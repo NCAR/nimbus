@@ -1,0 +1,267 @@
+.na
+.nh
+.TH VARDB 3 "20 Jan 1995" "RAF Library Functions"
+.SH NAME
+vardb \- Variable DataBase API
+.SH SYNOPSIS
+.nf
+.ft B
+#include "vardb.h"
+.ft
+.fi
+.LP
+.nf
+.ft B
+int InitializeVarDB(filename)
+char \(**filename;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int ReleaseVarDB()
+.ft
+.fi
+.LP
+.nf
+.ft B
+int SaveVarDB(filename)
+char \(**filename;
+.ft
+.fi
+.LP
+.nf
+.ft B
+char \(**VarDB_GetUnits(var_name)
+char \(**var_name;
+.ft
+.fi
+.LP
+.nf
+.ft B
+char \(**VarDB_GetAlternateUnits(var_name)
+char \(**var_name;
+.ft
+.fi
+.LP
+.nf
+.ft B
+char \(**VarDB_GetTitle(var_name)
+char \(**var_name;
+.ft
+.fi
+.LP
+.nf
+.ft B
+float VarDB_GetFixedRangeLower(var_name)
+char \(**var_name;
+.ft
+.fi
+.LP
+.nf
+.ft B
+float VarDB_GetFixedRangeUpper(var_name)
+char \(**var_name;
+.ft
+.fi
+.LP
+.nf
+.ft B
+float VarDB_GetFloatRange(var_name)
+char \(**var_name;
+.ft
+.fi
+.LP
+.nf
+.ft B
+float VarDB_GetMinLimit(var_name)
+char \(**var_name;
+.ft
+.fi
+.LP
+.nf
+.ft B
+float VarDB_GetMaxLimit(var_name)
+char \(**var_name;
+.ft
+.fi
+.LP
+.nf
+.ft B
+float VarDB_GetCalRangeLower(var_name)
+char \(**var_name;
+.ft
+.fi
+.LP
+.nf
+.ft B
+float VarDB_GetCalRangeUpper(var_name)
+char \(**var_name;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int VarDB_GetCatagory(var_name)
+char \(**var_name;
+.ft
+.fi
+.LP
+.nf
+.ft B
+float VarDB_GetSpikeSlope(var_name)
+char \(**var_name;
+.ft
+.fi
+.LP
+.nf
+.ft B
+VarDB_isRangeFixed(var_name)
+char \(**var_name;
+.ft
+.fi
+.LP
+.nf
+.ft B
+VarDB_isRangeFloating(var_name)
+char \(**var_name;
+.ft
+.fi
+.LP
+.nf
+.ft B
+VarDB_SetUnits(var_name, units)
+char \(**var_name;
+char \(**units;
+.ft
+.fi
+.LP
+.nf
+.ft B
+VarDB_SetAlternateUnits(var_name, units)
+char \(**var_name;
+char \(**units;
+.ft
+.fi
+.LP
+.nf
+.ft B
+VarDB_SetTitle(var_name, title)
+char \(**var_name;
+char \(**title;
+.ft
+.fi
+.LP
+.nf
+.ft B
+VarDB_SetRangeFixed(var_name, value)
+char \(**var_name;
+int value;
+.ft
+.fi
+.LP
+.nf
+.ft B
+VarDB_SetRangeFloating(var_name, value)
+char \(**var_name;
+int value;
+.ft
+.fi
+.LP
+.nf
+.ft B
+VarDB_SetFixedRangeLower(var_name, value)
+char \(**var_name;
+float value;
+.ft
+.fi
+.LP
+.nf
+.ft B
+VarDB_SetFixedRangeUpper(var_name, value)
+char \(**var_name;
+float value;
+.ft
+.fi
+.LP
+.nf
+.ft B
+VarDB_SetFloatRange(var_name, value)
+char \(**var_name;
+float value;
+.ft
+.fi
+.LP
+.nf
+.ft B
+VarDB_SetMinLimit(var_name, value)
+char \(**var_name;
+float value;
+.ft
+.fi
+.LP
+.nf
+.ft B
+VarDB_SetMaxLimit(var_name, value)
+char \(**var_name;
+float value;
+.ft
+.fi
+.LP
+.nf
+.ft B
+VarDB_SetCalRangeLower(var_name, value)
+char \(**var_name;
+float value;
+.ft
+.fi
+.LP
+.nf
+.ft B
+VarDB_SetCalRangeUpper(var_name, value)
+char \(**var_name;
+float value;
+.ft
+.fi
+.LP
+.nf
+.ft B
+VarDB_SetCatagory(var_name, value)
+char \(**var_name;
+int value;
+.ft
+.fi
+.LP
+.nf
+.ft B
+VarDB_SetSpikeSlope(var_name, value)
+char \(**var_name;
+float value;
+.ft
+.fi
+.SH DESCRIPTION
+.LP
+These functions provide an easy method for accessing the Variable
+Data Base (bulletin 9).  There are two groups of functions, VarDB_Get*()
+and VarDB_Set*().  You must use SaveVarDB() if you want VarDB_Set*()
+calls to be written to disk, otherwise changes are only kept in memory.
+If a variable does not exist for a given variable, then default values
+will be returned.
+.SH EXAMPLE
+.LP
+.nf
+	#include "/home/local/include/vardb.h"
+
+
+	if (InitializeVarDB("/home/local/proj/817/VarDB") == ERR)
+		{
+		Croak;
+		}
+
+	printf("%s  %f\n", VarDB_GetUnits("LAT"), VarDB_GetFloatRange("LAT"));
+
+	VarDB_SetMinLimit("THDG", 0.0);
+	VarDB_SetMaxLimit("THDG", 360.0);
+
+	SaveVarDB("/home/local/proj/817/VarDB");
+	ReleaseVarDB();

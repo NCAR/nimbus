@@ -1,0 +1,4755 @@
+<?xml version='1.0'?>
+<vardb version='3.0'>
+  <variable name='2D-C'>
+    <long_name>2-D Cloud Probe Asynchronous Data ID</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>0.000000</display_range>
+  </variable>
+  <variable name='2D-P'>
+    <long_name>2-D Precip. Probe Asynchronous Data ID</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>0.000000</display_range>
+  </variable>
+  <variable name='2DEE1'>
+    <long_name>PMS-2D Probe Housekeeping</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='2DEE32'>
+    <long_name>PMS-2D Probe Housekeeping</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='2DMTMP'>
+    <long_name>PMS-2D Probe Housekeeping</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='2DV15'>
+    <long_name>PMS-2D Probe Housekeeping</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='2DV5'>
+    <long_name>PMS-2D Probe Housekeeping</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='2DVN15'>
+    <long_name>PMS-2D Probe Housekeeping</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='A1DC'>
+    <long_name>2D-C Accumulation, 260X Emulation (per cell)</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='A1DP'>
+    <long_name>2D-P Accumulation, 260X Emulation (per cell)</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='A200X'>
+    <long_name>200X Raw Accumulation (per cell)</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='A200Y'>
+    <long_name>200Y Raw Accumulation (per cell)</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='A260X'>
+    <long_name>260X Raw Accumulation (per cell)</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='A2DC'>
+    <long_name>2D-C Accumulation, Reconstruction (per cell)</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='A2DP'>
+    <long_name>2D-P Accumulation, Reconstruction (per cell)</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='ACINS'>
+    <long_name>Aircraft Vertical Acceleration</long_name>
+    <units>M/s2</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='ADIF'>
+    <long_name>Vertical Differential Pressure, Boom</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>-20.000000 20.000000</display_range>
+  </variable>
+  <variable name='ADIFR'>
+    <long_name>Vertical Differential Pressure, Radome</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>-20.000000 20.000000</display_range>
+  </variable>
+  <variable name='AF300'>
+    <long_name>FSSP-300 Raw Accumulation (per cell)</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='AFSSP'>
+    <long_name>FSSP-100 Raw Accumulation (per cell)</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='AKDF'>
+    <long_name>Attack Angle, Boom Diff. Pressure</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='AKRD'>
+    <long_name>Attack Angle, Radome Diff. Pressure</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='ALT'>
+    <long_name>IRS Baro-Inertial Altitude</long_name>
+    <units>M</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>200.000000</display_range>
+  </variable>
+  <variable name='ALTX'>
+    <long_name>Altitude, Reference (MSL)</long_name>
+    <units>M</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1000.000000</display_range>
+  </variable>
+  <variable name='AMASP'>
+    <long_name>MASP Raw Accumulation (per cell)</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='APCAS'>
+    <long_name>PCAS Raw Accumulation (per cell)</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='ARDMA'>
+    <long_name>RDMA Raw Accumulation (per cell)</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='AS100'>
+    <long_name>FSSP-100 Raw Accumulation (per cell) - DMT</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='AS200'>
+    <long_name>SPP-200 (PCASP) Raw Accumulation (per cell) - DMT</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='AS300'>
+    <long_name>FSSP-300 Raw Accumulation (per cell) - DMT</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='ATB'>
+    <long_name>Ambient Temperature, Radome</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='ATF'>
+    <long_name>Ambient Temperature, Fuselage</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='ATFH'>
+    <long_name>Ambient Temperature, Deiced Fuselage</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='ATLH'>
+    <long_name>Total Temperature, TDL Hygrometer</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='ATOPH'>
+    <long_name>Ambient Temperature, Ophir III</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='ATRF'>
+    <long_name>Ambient Temperature, Reverse Flow</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='ATRL'>
+    <long_name>Ambient Temperature, Radome Left</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='ATRR'>
+    <long_name>Ambient Temperature, Radome Right</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='ATTACK'>
+    <long_name>Attack Angle, Reference</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='ATW'>
+    <long_name>Ambient Temperature, Wing</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='ATWH'>
+    <long_name>Ambient Temperature, Deiced Wing</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='ATX'>
+    <long_name>Ambient Temperature, Reference</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='BDIF'>
+    <long_name>Horizontal Differential Pressure, Boom</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>-20.000000 20.000000</display_range>
+  </variable>
+  <variable name='BDIFR'>
+    <long_name>Horizontal Differential Pressure, Radome</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>-20.000000 20.000000</display_range>
+  </variable>
+  <variable name='BITS'>
+    <long_name></long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 65535.000000</display_range>
+  </variable>
+  <variable name='BLATA'>
+    <long_name>IRS Lateral Body Acceleration</long_name>
+    <units>G</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>-10.000000 10.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='BLONA'>
+    <long_name>IRS Longitudinal Body Acceleration</long_name>
+    <units>G</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>-10.000000 10.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='BLONGA'>
+    <long_name>IRS Longitudinal Body Acceleration</long_name>
+    <units>G</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>-10.000000 10.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='BNORMA'>
+    <long_name>IRS Normal Body Acceleration</long_name>
+    <units>G</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>-10.000000 10.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='BPITCHR'>
+    <long_name>IRS Body Pitch Rate</long_name>
+    <units>deg/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 25.000000</valid_range>
+    <display_range type='Floating'>20.000000</display_range>
+  </variable>
+  <variable name='BROLLR'>
+    <long_name>IRS Body Roll Rate</long_name>
+    <units>deg/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 25.000000</valid_range>
+    <display_range type='Floating'>20.000000</display_range>
+  </variable>
+  <variable name='BYAWR'>
+    <long_name>IRS Body Yaw Rate</long_name>
+    <units>deg/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 25.000000</valid_range>
+    <display_range type='Floating'>20.000000</display_range>
+  </variable>
+  <variable name='C1DC'>
+    <long_name>2D-C Concentration, 260X Emulation (per cell)</long_name>
+    <units>N/L</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='C1DP'>
+    <long_name>2D-P Concentration, 260X Emulation (per cell)</long_name>
+    <units>N/L</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='C200X'>
+    <long_name>200X Concentration (per cell)</long_name>
+    <units>N/L</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='C200Y'>
+    <long_name>200Y Concentration (per cell)</long_name>
+    <units>N/L</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='C260X'>
+    <long_name>260X Concentration (per cell)</long_name>
+    <units>N/L</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='C2DC'>
+    <long_name>2D-C Concentration, Reconstruction (per cell)</long_name>
+    <units>N/L</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='C2DP'>
+    <long_name>2D-P Concentration, Reconstruction (per cell)</long_name>
+    <units>N/L</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='CCEP'>
+    <long_name>LORAN-C Circular Error of Probability</long_name>
+    <units>nmi</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='CF300'>
+    <long_name>FSSP-300 Concentration (per cell)</long_name>
+    <units>N/cM3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='CFSSP'>
+    <long_name>FSSP-100 Concentration (per cell)</long_name>
+    <units>N/cM3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='CGS'>
+    <long_name>LORAN-C Ground Speed</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='CGSF'>
+    <long_name>LORAN-C Ground Speed</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>25.000000</display_range>
+  </variable>
+  <variable name='CH4'>
+    <long_name>Methane Concentration</long_name>
+    <units>ppb</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='CHGME'>
+    <long_name>Coarse Geometric Altitude (APN-159)</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 360.000000</display_range>
+  </variable>
+  <variable name='CLAT'>
+    <long_name>LORAN-C Latitude</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='CLON'>
+    <long_name>LORAN-C Longitude</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='CMAGVR'>
+    <long_name>LORAN-C Magnetic Variation</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='CMASP'>
+    <long_name>MASP Concentration (per cell)</long_name>
+    <units>N/cM3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='CMODE'>
+    <long_name>Carbon Monoxide Analyzer Status</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='CNTEMP'>
+    <long_name>CN Counter Inlet Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='CNTS'>
+    <long_name>TSI CN Counter Output</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='CO'>
+    <long_name>Raw Carbon Monoxide Concentration</long_name>
+    <units>ppb</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='COCAL'>
+    <long_name>Corrected Carbon Monoxide Concentration</long_name>
+    <units>ppbv</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='COCOR'>
+    <long_name>Raw Carbon Monoxide, Baseline Corrected</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='CON2C1'>
+    <long_name>2D-C Concentration</long_name>
+    <units>N/L</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1000.000000</display_range>
+  </variable>
+  <variable name='CON2P1'>
+    <long_name>2D-P Concentration</long_name>
+    <units>N/L</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 50.000000</display_range>
+  </variable>
+  <variable name='CONC1DC'>
+    <long_name>2D-C Concentration, 260X Emulation (all cells)</long_name>
+    <units>N/L</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1000.000000</display_range>
+  </variable>
+  <variable name='CONC1DP'>
+    <long_name>2D-P Concentration, 260X Emulation (all cells)</long_name>
+    <units>N/L</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1000.000000</display_range>
+  </variable>
+  <variable name='CONC2C'>
+    <long_name>2D-C Concentration</long_name>
+    <units>N/L</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1000.000000</display_range>
+  </variable>
+  <variable name='CONC2DC'>
+    <long_name>2D-C Concentraton, Reconstruction (all cells)</long_name>
+    <units>N/L</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1000.000000</display_range>
+  </variable>
+  <variable name='CONC2DP'>
+    <long_name>2D-P Concentraton, Reconstruction (all cells)</long_name>
+    <units>N/L</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1000.000000</display_range>
+  </variable>
+  <variable name='CONC2P'>
+    <long_name>2D-P Concentration</long_name>
+    <units>N/L</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 50.000000</display_range>
+  </variable>
+  <variable name='CONC3'>
+    <long_name>FSSP-300 Concentration (all cells)</long_name>
+    <units>N/cm3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 2000.000000</display_range>
+  </variable>
+  <variable name='CONC6'>
+    <long_name>260X Concentration (all cells)</long_name>
+    <units>N/L</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1000.000000</display_range>
+  </variable>
+  <variable name='CONCA'>
+    <long_name>PCAS Concentration (all cells)</long_name>
+    <units>N/cm3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 2000.000000</display_range>
+  </variable>
+  <variable name='CONCF'>
+    <long_name>FSSP-100 Concentration (all cells)</long_name>
+    <units>N/cm3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 1000.000000</display_range>
+  </variable>
+  <variable name='CONCM'>
+    <long_name>MASP Concentration (all cells)</long_name>
+    <units>N/cm3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 1000.000000</display_range>
+  </variable>
+  <variable name='CONCN'>
+    <long_name>Condensation Nuclei (CN) Concentration</long_name>
+    <units>N/cm3</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>500.000000</display_range>
+  </variable>
+  <variable name='CONCP'>
+    <long_name>PCAS Concentration (all cells)</long_name>
+    <units>N/cm3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='CONCR'>
+    <long_name>RDMA Concentration (all cells)</long_name>
+    <units>N/cM3</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='CONCX'>
+    <long_name>200X Concentration (all cells)</long_name>
+    <units>N/L</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1000.000000</display_range>
+  </variable>
+  <variable name='CONCY'>
+    <long_name>200Y Concentration (all cells)</long_name>
+    <units>N/L</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 50.000000</display_range>
+  </variable>
+  <variable name='COZRO'>
+    <long_name>Carbon Monoxide Baseline Zero Signal</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='CPCAS'>
+    <long_name>PCAS Concentration (per cell)</long_name>
+    <units>N/cM3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='CRDMA'>
+    <long_name>RDMA Concentration (per cell)</long_name>
+    <units>N/cM3</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='CRHP'>
+    <long_name>Cryogenic Hygrometer Inlet Pressure</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='CS100'>
+    <long_name>FSSP-100 Concentration (per cell) - DMT</long_name>
+    <units>N/cM3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='CS200'>
+    <long_name>SPP-100 (PCASP) Concentration (per cell) - DMT</long_name>
+    <units>N/cM3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='CS300'>
+    <long_name>FSSP-300 Concentration (per cell) - DMT</long_name>
+    <units>N/cM3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='CSTAT'>
+    <long_name>LORAN-C Status</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='CTK'>
+    <long_name>LORAN-C Track Angle</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='CTMLAG'>
+    <long_name>Loran-C Data Time Offset</long_name>
+    <units>s</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='DAY'>
+    <long_name>Raw Tape Date Component</long_name>
+    <units>day</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.000000</display_range>
+  </variable>
+  <variable name='DBAR1DC'>
+    <long_name>2D-C Mean Particle Diameter, 260X Emulation</long_name>
+    <units>uM</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='DBAR1DP'>
+    <long_name>2D-P Mean Particle Diameter, 260X Emulation</long_name>
+    <units>uM</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='DBAR2DC'>
+    <long_name>2D-C Mean Particle Diameter, Reconstruction</long_name>
+    <units>uM</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='DBAR2DP'>
+    <long_name>2D-P Mean Particle Diameter, Reconstruction</long_name>
+    <units>uM</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='DBAR3'>
+    <long_name>FSSP-300 Mean Particle Diameter</long_name>
+    <units>uM</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 1.000000</display_range>
+  </variable>
+  <variable name='DBAR6'>
+    <long_name>260X Mean Particle Diameter</long_name>
+    <units>uM</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 300.000000</display_range>
+  </variable>
+  <variable name='DBARA'>
+    <long_name>PCAS Mean Particle Diameter</long_name>
+    <units>uM</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 1.000000</display_range>
+  </variable>
+  <variable name='DBARF'>
+    <long_name>FSSP-100 Mean Particle Diameter</long_name>
+    <units>uM</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 40.000000</display_range>
+  </variable>
+  <variable name='DBARM'>
+    <long_name>MASP Mean Particle Diameter</long_name>
+    <units>uM</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 40.000000</display_range>
+  </variable>
+  <variable name='DBARP'>
+    <long_name>PCAS Mean Particle Diameter</long_name>
+    <units>uM</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='DBARX'>
+    <long_name>200X Mean Particle Diameter</long_name>
+    <units>uM</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 300.000000</display_range>
+  </variable>
+  <variable name='DBARY'>
+    <long_name>200Y Mean Particle Diameter</long_name>
+    <units>uM</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 3000.000000</display_range>
+  </variable>
+  <variable name='DBZ1DC'>
+    <long_name>2D-C Calculated Reflectivity, 260X Emulation</long_name>
+    <units>dBZ</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>20.000000</display_range>
+  </variable>
+  <variable name='DBZ1DP'>
+    <long_name>2D-P Calculated Reflectivity, 260X Emulation</long_name>
+    <units>dBZ</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>20.000000</display_range>
+  </variable>
+  <variable name='DBZ2DC'>
+    <long_name>2D-C Calculated Reflectivity, Reconstruction</long_name>
+    <units>dBZ</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>20.000000</display_range>
+  </variable>
+  <variable name='DBZ2DP'>
+    <long_name>2D-P Calculated Reflectivity, Reconstruction</long_name>
+    <units>dBZ</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>20.000000</display_range>
+  </variable>
+  <variable name='DBZ6'>
+    <long_name>260X Calculated Reflectivity</long_name>
+    <units>dBZ</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>20.000000</display_range>
+  </variable>
+  <variable name='DBZF'>
+    <long_name>FSSP-100 Calculated Reflectivity</long_name>
+    <units>dBZ</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>20.000000</display_range>
+  </variable>
+  <variable name='DEI'>
+    <long_name>Distance East of Fixed Reference</long_name>
+    <units>kM</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='DISP1DC'>
+    <long_name>2D-C Dispersion, 260X Emulation (sigma/dbarx)</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='DISP1DP'>
+    <long_name>2D-P Dispersion, 260X Emulation (sigma/dbarx)</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='DISP2DC'>
+    <long_name>2D-C Dispersion, Reconstruction (sigma/dbarx)</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='DISP2DP'>
+    <long_name>2D-P Dispersion, Reconstruction (sigma/dbarx)</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='DISP6'>
+    <long_name>260X Dispersion (sigma/dbarx)</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='DISPF'>
+    <long_name>FSSP-100 Dispersion (sigma/dbarx)</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='DISPP'>
+    <long_name>PCAS Dispersion (sigma/dbarx)</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='DISPY'>
+    <long_name>200Y Dispersion (sigma/dbarx)</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='DMTHK0'>
+    <long_name>SPP Housekeeping</long_name>
+    <units>Unk</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DMTHK1'>
+    <long_name>SPP Housekeeping</long_name>
+    <units>Unk</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DMTHK2'>
+    <long_name>SPP Housekeeping</long_name>
+    <units>Unk</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DMTHK3'>
+    <long_name>SPP Housekeeping</long_name>
+    <units>Unk</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DMTHK5'>
+    <long_name>SPP Housekeeping</long_name>
+    <units>Unk</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DMTHK6'>
+    <long_name>SPP Housekeeping</long_name>
+    <units>Unk</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DMTREF'>
+    <long_name>SPP Reference Voltage</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DMTTMP'>
+    <long_name>SPP Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DNI'>
+    <long_name>Distance North of Fixed Reference</long_name>
+    <units>kM</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='DPB'>
+    <long_name>Dew/Frost Point Temperature, Fuselage Bottom</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DPBC'>
+    <long_name>Dew Point Temperature, T-Electric Bottom</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DPCRC'>
+    <long_name>Dew Point Temperature, Cryogenic</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DPT'>
+    <long_name>Dew/Frost Point Temperature, Fuselage Top</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DPTC'>
+    <long_name>Dew Point Temperature, T-Electric Top</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DPX'>
+    <long_name>Dew/Frost Point Temperature, Reference</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DPXC'>
+    <long_name>Dew Point Temperature, Reference</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DRFTA'>
+    <long_name>IRS Drift Angle</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='DSAT'>
+    <long_name>Dropsonde Ambient Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DSGALT'>
+    <long_name>Dropsonde Geopotential Altitude</long_name>
+    <units>M</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='DSID'>
+    <long_name>Dropsonde ID number</long_name>
+    <units>#</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='DSLAT'>
+    <long_name>Dropsonde GPS Latitude</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='DSLON'>
+    <long_name>Dropsonde GPS Longitude</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='DSPS'>
+    <long_name>Dropsonde Static Pressure</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>50.000000</display_range>
+  </variable>
+  <variable name='DSRH'>
+    <long_name>Dropsonde Relative Humidity</long_name>
+    <units>%</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DSVSPD'>
+    <long_name>Dropsonde Vertical Velocity</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DSWD'>
+    <long_name>Dropsonde Horizontal Wind Direction</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 360.000000</display_range>
+  </variable>
+  <variable name='DSWS'>
+    <long_name>Dropsonde Horizontal Wind Speed</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DT1DC'>
+    <long_name>PMS-2D Cloud Probe Dead Time</long_name>
+    <units>ms</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='DT2DC'>
+    <long_name>PMS-2D Cloud Probe Dead Time</long_name>
+    <units>ms</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='DTB'>
+    <long_name>Pyrgeometer Dome Temperature, Bottom</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DTT'>
+    <long_name>Pyrgeometer Dome Temperature, Top</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='DVALU'>
+    <long_name>D-VALUE (HGME - PALT)</long_name>
+    <units>M</units>
+    <alt_units></alt_units>
+    <category>Thermodynamic</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1000.000000</display_range>
+  </variable>
+  <variable name='EDPC'>
+    <long_name>Ambient Water Vapor Pressure, Reference</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Thermodynamic</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='EV1'>
+    <long_name>Event Pad Markers</long_name>
+    <units>N</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='EVENT'>
+    <long_name>Event Marker</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='EVENT_CKP'>
+    <long_name>Event Marker - Cockpit</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='EVENT_CTL'>
+    <long_name>Event Marker - ADS Operator Station</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='EVENT_FWD'>
+    <long_name>Event Marker - Forward Observer Display</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='EVENT_OBL'>
+    <long_name>Event Marker - Aft Left Observer Display</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='EVENT_OBR'>
+    <long_name>Event Marker - Aft Right Observer Display</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='EVTCKP'>
+    <long_name>Event Marker - Cockpit</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='EVTCTL'>
+    <long_name>Event Marker - ADS Operator Station</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='EVTFWD'>
+    <long_name>Event Marker - Forward Observer Display</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='EVTOBL'>
+    <long_name>Event Marker - Aft Left Observer Display</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='EVTOBR'>
+    <long_name>Event Marker - Aft Right Observer Display</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='FACT'>
+    <long_name>FSSP-100 Activity Fraction</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 1000.000000</display_range>
+  </variable>
+  <variable name='FANV'>
+    <long_name>FSSP-100 Annulus Baseline Voltage</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FBMFR'>
+    <long_name>FSSP-100 Beam Fraction</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 1.000000</display_range>
+  </variable>
+  <variable name='FCN'>
+    <long_name>Raw CN Counter Sample Flow Rate</long_name>
+    <units>slpm</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 5.000000</display_range>
+  </variable>
+  <variable name='FCNC'>
+    <long_name>Corrected CN Counter Sample Flow Rate</long_name>
+    <units>vlpm</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 5.000000</display_range>
+  </variable>
+  <variable name='FLOADS'>
+    <long_name>ADS Air Flow Monitor Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FLXCO2CO2'>
+    <long_name>Var. of XCO2C over last N minutes</long_name>
+    <units>(ppmv)^2</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FLXO3O3'>
+    <long_name>Var. of O3FC over last N minutes</long_name>
+    <units>(ppbv)^2</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FLXQQ'>
+    <long_name>Var. of Absolute Humidity over last N minutes</long_name>
+    <units>(g/M3)^2</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FLXTT'>
+    <long_name>Var. of Potential Temperature over last N minutes</long_name>
+    <units>(K)^2</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FLXUU'>
+    <long_name>Var. of UI over last N minutes</long_name>
+    <units>(M/s)^2</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FLXVV'>
+    <long_name>Var. of VI over last N minutes</long_name>
+    <units>(M/s)^2</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FLXWCO2'>
+    <long_name>Covar. of WI and XCO2C over last N minutes</long_name>
+    <units>(M/s)(ppmv)</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FLXWO3'>
+    <long_name>Covar. of WI and O3FC over last N minutes</long_name>
+    <units>(M/s)(ppbv)</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FLXWQ'>
+    <long_name>Covar. of WI and Absolute Humidity over last N minutes</long_name>
+    <units>(M/s)(g/M3)</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FLXWT'>
+    <long_name>Covar. of WI and Potential Temperature over last N minutes</long_name>
+    <units>(M/s)(K)</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FLXWU'>
+    <long_name>Covar. of WI and UI over last N minutes</long_name>
+    <units>(M/s)^2</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FLXWV'>
+    <long_name>Covar. of WI and VI over last N minutes</long_name>
+    <units>(M/s)^2</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FLXWW'>
+    <long_name>Var. of WI computed over last N minutes</long_name>
+    <units>(M/s)^2</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FMB'>
+    <long_name>Field Mill Output, Bottom Fuselage</long_name>
+    <units>kV/M</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='FMRB'>
+    <long_name>Field Mill Output, Bottom Radome</long_name>
+    <units>kV/M</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='FMRL'>
+    <long_name>Field Mill Output, Left Radome</long_name>
+    <units>kV/M</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='FMRR'>
+    <long_name>Field Mill Output, Right Radome</long_name>
+    <units>kV/M</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='FMRT'>
+    <long_name>Field Mill Output, Top Radome</long_name>
+    <units>kV/M</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='FMT'>
+    <long_name>Field Mill Output, Top Fuselage</long_name>
+    <units>kV/M</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='FPCRC'>
+    <long_name>Frost Point Temperature, Cryogenic</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FRANGE'>
+    <long_name>FSSP-100 Size Range Category</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 4.000000</display_range>
+  </variable>
+  <variable name='FREF'>
+    <long_name>FSSP-100 Laser Reference Voltage</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FREF3'>
+    <long_name>SPP-300 Laser Reference Voltage</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FRESET'>
+    <long_name>FSSP-100 Fast Resets</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 1000.000000</display_range>
+  </variable>
+  <variable name='FRNG'>
+    <long_name>FSSP-100 Size Range Category</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FRST'>
+    <long_name>FSSP-100 Fast Resets</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FSIG'>
+    <long_name>FSSP-100 Signal Voltage</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FSTB'>
+    <long_name>FSSP-100 Strobes</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FSTROB'>
+    <long_name>FSSP-100 Fast Strobes</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10000.000000</display_range>
+  </variable>
+  <variable name='FSTT'>
+    <long_name>FSSP-100 Signal Transit Time</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FTMP'>
+    <long_name>FSSP-100 Housekeeping Data</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FTMP3'>
+    <long_name>SPP-300 Housekeeping Data</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='FXAZIM'>
+    <long_name>Radial Azimuth from Fixed Reference</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>0.000000 360.000000</valid_range>
+    <display_range type='Fixed'>0.000000 360.000000</display_range>
+  </variable>
+  <variable name='FXDIST'>
+    <long_name>Radial Distance from Fixed Reference</long_name>
+    <units>kM</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>-5000.000000 5000.000000</valid_range>
+    <display_range type='Floating'>300.000000</display_range>
+  </variable>
+  <variable name='FZV'>
+    <long_name>Fixed Zero Voltage</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='FZVR'>
+    <long_name>Fixed Zero Voltage (through resistor)</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>-1.000000 1.000000</display_range>
+  </variable>
+  <variable name='GALT'>
+    <long_name>GPS Altitude (MSL)</long_name>
+    <units>M</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1000.000000</display_range>
+  </variable>
+  <variable name='GGALT'>
+    <long_name>GPS Geopotential Altitude</long_name>
+    <units>M</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1000.000000</display_range>
+  </variable>
+  <variable name='GGSF'>
+    <long_name>GPS Ground Speed</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>25.000000</display_range>
+  </variable>
+  <variable name='GLAT'>
+    <long_name>GPS Latitude</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='GLON'>
+    <long_name>GPS Longitude</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='GMODE'>
+    <long_name>GPS Mode</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='GSF'>
+    <long_name>Inertial Ground Speed</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>25.000000</display_range>
+  </variable>
+  <variable name='GSFC'>
+    <long_name>Computed Ground Speed</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>25.000000</display_range>
+  </variable>
+  <variable name='GSTAT'>
+    <long_name>GPS Status</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='GVEW'>
+    <long_name>GPS Ground Speed Vector, East Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>50.000000</display_range>
+  </variable>
+  <variable name='GVNS'>
+    <long_name>GPS Ground Speed Vector, North Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>50.000000</display_range>
+  </variable>
+  <variable name='GVZI'>
+    <long_name>GPS-Computed Aircraft Vertical Velocity</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='HGM'>
+    <long_name>Geometric (Radio) Altitude</long_name>
+    <units>M</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 800.000000</display_range>
+  </variable>
+  <variable name='HGM232'>
+    <long_name>Geometric (Radar) Altitude (APN-232)</long_name>
+    <units>M</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1000.000000</display_range>
+  </variable>
+  <variable name='HGM232S'>
+    <long_name>Geometric Altitude Status Monitor (APN-232)</long_name>
+    <units></units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1000.000000</display_range>
+  </variable>
+  <variable name='HGME'>
+    <long_name>Geometric (Radar) Altitude (APN-159)</long_name>
+    <units>M</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1000.000000</display_range>
+  </variable>
+  <variable name='HI3'>
+    <long_name>Pressure-Damped Inertial Altitude</long_name>
+    <units>M</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1000.000000</display_range>
+  </variable>
+  <variable name='HK28AII'>
+    <long_name>28 Vdc Power Housekeeping</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='HK28AIV'>
+    <long_name>28 Vdc Power Housekeeping</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='HK28UI'>
+    <long_name>28 Vdc Power Housekeeping</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='HK28UV'>
+    <long_name>28 Vdc Power Housekeeping</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='HK400'>
+    <long_name>400 Hz Power Housekeeping</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='HK60D'>
+    <long_name>60 Hz Power Housekeeping</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='HK60L'>
+    <long_name>60 Hz Power Housekeeping</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='HK60R'>
+    <long_name>60 Hz Power Housekeeping</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='HOUR'>
+    <long_name>Raw Tape Time Component</long_name>
+    <units>hours</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='HVCBTMP'>
+    <long_name>HVPS Center Brace Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='HVCMTMP'>
+    <long_name>HVPS Control Module Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='HVDATMP'>
+    <long_name>HVPS Detector Arm Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='HVLASER'>
+    <long_name>HVPS Laser Power</long_name>
+    <units>mW</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='HVLT'>
+    <long_name>High Voltage Skin Charge</long_name>
+    <units>kVdc</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='HVSATMP'>
+    <long_name>HVPS Source Arm Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='HVUVV'>
+    <long_name>HVPS Upper Video Voltage</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='HVWTMP'>
+    <long_name>HVPS Window Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='IAS'>
+    <long_name>Indicated Airspeed</long_name>
+    <units>knots</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>50.000000</display_range>
+  </variable>
+  <variable name='IASX'>
+    <long_name>Aircraft Indicated Airspeed, Reference</long_name>
+    <units>knots</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>25.000000</display_range>
+  </variable>
+  <variable name='INFLOW'>
+    <long_name>C.A.I. Excess Flow</long_name>
+    <units>splm</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='INFLOWC'>
+    <long_name>SCAI Corrected Excess Flow</long_name>
+    <units>vlpm</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 2000.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='INPDIFF'>
+    <long_name>C.A.I. Shroud Pressure Difference</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='INPS1'>
+    <long_name>C.A.I. Shroud Static Pressure</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='INPS2'>
+    <long_name>C.A.I. Sample Plane Static Pressure</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='INPWANT'>
+    <long_name>C.A.I Desired Inlet Pressure Differential</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>20.000000</display_range>
+  </variable>
+  <variable name='INQC1'>
+    <long_name>C.A.I. Shroud Dynamic Pressure</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='INQC2'>
+    <long_name>C.A.I. Sample Plane Dynamic Pressure</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='INTAS1'>
+    <long_name>C.A.I. Shroud True Air Speed</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='INTAS2'>
+    <long_name>C.A.I. Sample Plane True Air Speed</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='INTEMP'>
+    <long_name>C.A.I. Sample Plane Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='IRB'>
+    <long_name>Raw Infrared Irradiance, Bottom</long_name>
+    <units>W/M2</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='IRBC'>
+    <long_name>Corrected Infrared Irradiance, Bottom</long_name>
+    <units>W/M2</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 500.000000</display_range>
+  </variable>
+  <variable name='IRT'>
+    <long_name>Raw Infrared Irradiance, Top</long_name>
+    <units>W/M2</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='IRTC'>
+    <long_name>Corrected Infrared Irradiance, Top</long_name>
+    <units>W/M2</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 500.000000</display_range>
+  </variable>
+  <variable name='LAT'>
+    <long_name>Inertial Latitude</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>-90.000000 90.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='LATC'>
+    <long_name>GPS-Corrected Inertial Latitude</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>-90.000000 90.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='LON'>
+    <long_name>Inertial Longitude</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>-180.000000 180.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='LONC'>
+    <long_name>GPS-Corrected Inertial Longitude</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>-180.000000 180.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='LWC'>
+    <long_name>Raw C-T Liquid Water Content</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.250000</display_range>
+  </variable>
+  <variable name='LWCC'>
+    <long_name>Corrected C-T Liquid Water Content</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>Liquid Water</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 2.500000</display_range>
+  </variable>
+  <variable name='MCR1'>
+    <long_name>Multichannel Cloud Radiometer, Channel 1</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='MCR2'>
+    <long_name>Multichannel Cloud Radiometer, Channel 2</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='MCR3'>
+    <long_name>Multichannel Cloud Radiometer, Channel 3</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='MCR4'>
+    <long_name>Multichannel Cloud Radiometer, Channel 4</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='MCR5'>
+    <long_name>Multichannel Cloud Radiometer, Channel 5</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='MCR6'>
+    <long_name>Multichannel Cloud Radiometer, Channel 6</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='MCR7'>
+    <long_name>Multichannel Cloud Radiometer, Channel 7</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='MCRMOT'>
+    <long_name>Multichannel Radiometer Scan Motor Rotation Rate</long_name>
+    <units>KHz</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='MCROUT'>
+    <long_name>Multichannel Radiometer Digital Output</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='MCRSTAT'>
+    <long_name>Multichannel Radiometer Status</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='MILSEC'>
+    <long_name>Raw Tape Time Component</long_name>
+    <units>msec</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='MINUTE'>
+    <long_name>Raw Tape Time Component</long_name>
+    <units>minutes</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='MONTH'>
+    <long_name>Raw Tape Date Component</long_name>
+    <units>month</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.000000</display_range>
+  </variable>
+  <variable name='MR'>
+    <long_name>Mixing Ratio, T-Electric</long_name>
+    <units>g/kg</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='MRCR'>
+    <long_name>Mixing Ratio, Cryogenic</long_name>
+    <units>g/kg</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='MRLA'>
+    <long_name>Mixing Ratio, Lyman-alpha</long_name>
+    <units>g/kg</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='MRLA1'>
+    <long_name>Mixing Ratio, Lyman-alpha</long_name>
+    <units>g/kg</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='MRLHS'>
+    <long_name>Mixing Ratio, TDL Hygrometer - strong</long_name>
+    <units>g/kg</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='MRLHW'>
+    <long_name>Mixing Ratio, TDL Hygrometer - weak</long_name>
+    <units>g/kg</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='MRUV'>
+    <long_name>Mixing Ratio, UV Hygrometer</long_name>
+    <units>g/kg</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='NLWC'>
+    <long_name>Raw Nevzorov Liquid Water Content</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='NLWCC'>
+    <long_name>Corrected Nevzorov Liquid Water Content</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>Liquid Water</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='NMODE'>
+    <long_name>NO/NOY Analyzer Mode Status</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 5.000000</display_range>
+  </variable>
+  <variable name='NO'>
+    <long_name>Raw Nitric Oxide Output</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='NOC'>
+    <long_name>Corrected Nitric Oxide Concentration</long_name>
+    <units>ppb</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='NOF'>
+    <long_name>NO/NOY Detector, Sample Flow Rate</long_name>
+    <units>sccm</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>500.000000</display_range>
+  </variable>
+  <variable name='NOY'>
+    <long_name>Raw Oxides of Nitrogen Output</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='NOYC'>
+    <long_name>Corrected Oxides of Nitrogen Concentration</long_name>
+    <units>ppb</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='NOZF'>
+    <long_name>NO/NOY Detector Ozonizer Flow Rate</long_name>
+    <units>sccm</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='NSYS'>
+    <long_name>NO/NOY Analyzer System Monitor</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='NTWC'>
+    <long_name>Raw Nevzorov Total Water Content</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='NTWCC'>
+    <long_name>Corrected Nevzorov Total Water Content</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>Liquid Water</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='O3CF'>
+    <long_name>Chemiluminescent Ozone Sample Flow Rate</long_name>
+    <units>slpm</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='O3CP'>
+    <long_name>Chemiluminescent Ozone Sample Pressure</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='O3CS'>
+    <long_name>Raw Chemiluminescent Ozone Output</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='O3CSC'>
+    <long_name>Corrected Chemiluminescent Ozone Concentration</long_name>
+    <units>ppb</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 150.000000</display_range>
+  </variable>
+  <variable name='O3FC'>
+    <long_name>Corrected Fast-Response Ozone Concentration</long_name>
+    <units>ppbv</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 150.000000</display_range>
+  </variable>
+  <variable name='O3FF'>
+    <long_name>Chemiluminescent Ozone Sample Flow Rate</long_name>
+    <units>slpm</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='O3FN'>
+    <long_name>Fast-Response Ozone Nitric Oxide Flow Rate</long_name>
+    <units>slpm</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='O3FP'>
+    <long_name>Fast-Response Ozone Reactor Sample Pressure</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='O3FS'>
+    <long_name>Chemiluminescent Ozone Signal</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='O3FSC'>
+    <long_name>Corrected Fast-Response Ozone Concentration</long_name>
+    <units>ppb</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 150.000000</display_range>
+  </variable>
+  <variable name='O3FT'>
+    <long_name>Fast-Response Ozone Reactor Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>20.000000</display_range>
+  </variable>
+  <variable name='OAT'>
+    <long_name>Ambient Temperature, Ophir III</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='OBBCOD'>
+    <long_name>Ophir-III Black Body Code</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='OBBCR'>
+    <long_name>Ophir-III Hemispherical Black Body Radiance</long_name>
+    <units>W/M2/uM</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='ODETDC'>
+    <long_name>Ophir-III Detector Bias Voltage</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='ODETOF'>
+    <long_name>Ophir-III Detector Offset</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='ODETSG'>
+    <long_name>Ophir-III Raw Detector Signal</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='ODSIGC'>
+    <long_name>Ophir-III Detector Signal, Corrected</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='OGAIN'>
+    <long_name>Ophir-III Gain</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='OGAINF'>
+    <long_name>Ophir-III Detector Gain Factor</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='ONE'>
+    <long_name>Constant value of 1.</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 2.000000</display_range>
+  </variable>
+  <variable name='OSMOTR'>
+    <long_name>Ophir-III Chopper Motor Speed</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='OTBBC'>
+    <long_name>Ophir-III Controlled Black Body Temperature</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='OTBBF'>
+    <long_name>Ophir-III Free Black Body Temperature</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='OTBNCH'>
+    <long_name>Ophir-III Optical Bench Temperature</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='OTBOX'>
+    <long_name>Ophir-III Electronics Box Temperature</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='OTDET'>
+    <long_name>Ophir-III Detector Temperature</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='OTDETC'>
+    <long_name>Ophir-III Detector Temperature, Corrected</long_name>
+    <units>K</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='OTSNT'>
+    <long_name>Ophir-III Optics Temperature</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='OVFLW'>
+    <long_name>SPP-100 AtoD Converter Overflow/Overrange</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>0.000000</display_range>
+  </variable>
+  <variable name='P6E01'>
+    <long_name>260X End Diode Voltage</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='P6E64'>
+    <long_name>260X End Diode Voltage</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='P6RST'>
+    <long_name>260X Resets</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='P6TMP'>
+    <long_name>260X Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='PACT'>
+    <long_name>PCAS Raw Activity</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>500.000000</display_range>
+  </variable>
+  <variable name='PALT'>
+    <long_name>NACA Pressure Altitude</long_name>
+    <units>M</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1000.000000</display_range>
+  </variable>
+  <variable name='PALTF'>
+    <long_name>NACA Pressure Altitude</long_name>
+    <units>feet</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1000.000000</display_range>
+  </variable>
+  <variable name='PBRS'>
+    <long_name>PCAS Beam Diffraction Ratio</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='PCAB'>
+    <long_name>Interior Cabin Static Pressure</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='PCN'>
+    <long_name>CN Counter Inlet Pressure</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='PERFA'>
+    <long_name>Hydrogen Peroxide Sample Flow Rate A</long_name>
+    <units>slpm</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='PERFB'>
+    <long_name>Hydrogen Peroxide Sample Flow Rate B</long_name>
+    <units>slpm</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='PERLM'>
+    <long_name>Hydrogen Peroxide Lamp Intensity</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='PERSA'>
+    <long_name>Hydrogen Peroxide Signal A</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='PERSB'>
+    <long_name>Hydrogen Peroxide Signal B</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='PFLW'>
+    <long_name>PCAS Flow</long_name>
+    <units>std cm3/s</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='PFLWC'>
+    <long_name>PCAS Corrected Flow</long_name>
+    <units>vol cm3/s</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='PFLWS'>
+    <long_name>SPP-200 Sheath Flow</long_name>
+    <units>std cm3/s</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='PFSSP'>
+    <long_name>FSSP-100 Particle Spacing</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='PHGB'>
+    <long_name>SPP-200 High-Gain Baseline</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='PITCH'>
+    <long_name>Aircraft Pitch Angle</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>-10.000000 10.000000</display_range>
+  </variable>
+  <variable name='PLGB'>
+    <long_name>SPP-200 Low-Gain Baseline</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='PLWC'>
+    <long_name>Raw PMS-King Liquid Water Content Output</long_name>
+    <units>W</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='PLWC1'>
+    <long_name>Raw PMS-King Liquid Water Content Output</long_name>
+    <units>W</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='PLWC1DC'>
+    <long_name>2D-C Water/Ice Content, 260X Emulation</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 2.500000</display_range>
+  </variable>
+  <variable name='PLWC1DP'>
+    <long_name>2D-P Water/Ice Content, 260X Emulation</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 2.500000</display_range>
+  </variable>
+  <variable name='PLWC2'>
+    <long_name>Raw PMS-King Liquid Water Content Output</long_name>
+    <units>W</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='PLWC2DC'>
+    <long_name>2D-C Water/Ice Content, Reconstruction</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 2.500000</display_range>
+  </variable>
+  <variable name='PLWC2DP'>
+    <long_name>2D-P Water/Ice Content, Reconstruction</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 2.500000</display_range>
+  </variable>
+  <variable name='PLWC3'>
+    <long_name>FSSP-300 Water/Ice Content</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 2.500000</display_range>
+  </variable>
+  <variable name='PLWC6'>
+    <long_name>260X Water/Ice Content</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 2.500000</display_range>
+  </variable>
+  <variable name='PLWCC'>
+    <long_name>Corrected PMS-King Liquid Water Content</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>Liquid Water</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 2.500000</display_range>
+  </variable>
+  <variable name='PLWCC1'>
+    <long_name>Corrected PMS-King Liquid Water Content</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>Liquid Water</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 2.500000</display_range>
+  </variable>
+  <variable name='PLWCC2'>
+    <long_name>Corrected PMS-King Liquid Water Content</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>Liquid Water</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 2.500000</display_range>
+  </variable>
+  <variable name='PLWCF'>
+    <long_name>FSSP-100 Water/Ice Content</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 2.500000</display_range>
+  </variable>
+  <variable name='PLWCX'>
+    <long_name>200X Water/Ice Content</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 2.500000</display_range>
+  </variable>
+  <variable name='PLWCY'>
+    <long_name>200Y Water/Ice Content</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 2.500000</display_range>
+  </variable>
+  <variable name='PMGB'>
+    <long_name>SPP-200 Mid-Gain Baseline</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='PMODE'>
+    <long_name>Hydrogen Peroxide Analyzer Status</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='PODFANL'>
+    <long_name>Pod Fan Status, Left Wing</long_name>
+    <units>boolean</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 2.000000</display_range>
+  </variable>
+  <variable name='PODFANR'>
+    <long_name>Pod Fan Status, Right Wing</long_name>
+    <units>boolean</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 2.000000</display_range>
+  </variable>
+  <variable name='PODTMPL'>
+    <long_name>Pod Temperature, Left Wing</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='PODTMPR'>
+    <long_name>Pod Temperature, Right Wing</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='PREF'>
+    <long_name>PCAS Laser Reference Voltage</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='PSB'>
+    <long_name>Raw Static Pressure, Boom</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='PSBC'>
+    <long_name>Corrected Static Pressure, Boom</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='PSF'>
+    <long_name>Raw Static Pressure, Fuselage</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='PSFC'>
+    <long_name>Corrected Static Pressure, Fuselage</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='PSFD'>
+    <long_name>Raw Static Pressure, Fuselage Digital</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='PSFD1'>
+    <long_name>Raw PSFD, Low-order word</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='PSFD2'>
+    <long_name>Raw PSFD, High-order word</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='PSFDC'>
+    <long_name>Corrected Static Pressure, Fuselage Digital</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='PSFRD'>
+    <long_name>Raw Static Pressure, Fuselage (Ruska)</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='PSLH'>
+    <long_name>Raw Static Pressure, TDL Hygrometer</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='PSTT'>
+    <long_name>PCAS Signal Transit Time</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='PSURF'>
+    <long_name>Calculated Surface Pressure</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Thermodynamic</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>900.000000 1050.000000</display_range>
+  </variable>
+  <variable name='PSW'>
+    <long_name>Raw Static Pressure, Wing</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='PSWC'>
+    <long_name>Corrected Static Pressure, Wing</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='PSX'>
+    <long_name>Raw Static Pressure, Reference</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='PSXC'>
+    <long_name>Corrected Static Pressure, Reference</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='PTALT1'>
+    <long_name>Parcel Tracking, Altitude Difference</long_name>
+    <units>feet</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>500.000000</display_range>
+  </variable>
+  <variable name='PTALT2'>
+    <long_name>Parcel Tracking, Altitude Difference</long_name>
+    <units>feet</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>500.000000</display_range>
+  </variable>
+  <variable name='PTDST1'>
+    <long_name>Parcel Tracking, Distance to Parcel</long_name>
+    <units>nmi</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>500.000000</display_range>
+  </variable>
+  <variable name='PTDST2'>
+    <long_name>Parcel Tracking, Distance to Parcel</long_name>
+    <units>nmi</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>500.000000</display_range>
+  </variable>
+  <variable name='PTIME'>
+    <long_name>Processor Time</long_name>
+    <units>s</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='PTMP'>
+    <long_name>PCAS Detector Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='PTRAD1'>
+    <long_name>Parcel Tracking, Heading to Parcel</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 360.000000</display_range>
+  </variable>
+  <variable name='PTRAD2'>
+    <long_name>Parcel Tracking, Heading to Parcel</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 360.000000</display_range>
+  </variable>
+  <variable name='PVOL3'>
+    <long_name>SPP-300 Equivalent Volume</long_name>
+    <units>cc/M3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>0.000000</display_range>
+  </variable>
+  <variable name='PVOLP'>
+    <long_name>PCASP Equivalent Volume</long_name>
+    <units>cc/M3</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>0.000000</display_range>
+  </variable>
+  <variable name='QCB'>
+    <long_name>Raw Dynamic Pressure, Boom</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='QCBC'>
+    <long_name>Corrected Dynamic Pressure, Boom</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='QCF'>
+    <long_name>Raw Dynamic Pressure, Fuselage</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='QCFC'>
+    <long_name>Corrected Dynamic Pressure, Fuselage</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='QCR'>
+    <long_name>Raw Dynamic Pressure, Radome</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='QCRC'>
+    <long_name>Corrected Dynamic Pressure, Radome</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='QCW'>
+    <long_name>Raw Dynamic Pressure, Wing</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='QCWC'>
+    <long_name>Corrected Dynamic Pressure, Wing</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='QCX'>
+    <long_name>Raw Dynamic Pressure, Reference</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='QCXC'>
+    <long_name>Corrected Dynamic Pressure, Reference</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='RADCF'>
+    <long_name>Radiation Correction Factor</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>0.200000</display_range>
+  </variable>
+  <variable name='RDMAHVPS'>
+    <long_name>RDMA High Voltage Power Supply</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='RDMAPABS'>
+    <long_name>RDMA Absolute Pressure</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>50.000000</display_range>
+  </variable>
+  <variable name='RDMAQA'>
+    <long_name>RDMA Aerosol Inflow</long_name>
+    <units>Lpm</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>50.000000</display_range>
+  </variable>
+  <variable name='RDMAQEX'>
+    <long_name>RDMA Excess Outflow</long_name>
+    <units>Lpm</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>50.000000</display_range>
+  </variable>
+  <variable name='RDMAQS'>
+    <long_name>RDMA Classified Aerosol Outflow</long_name>
+    <units>Lpm</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>50.000000</display_range>
+  </variable>
+  <variable name='RDMAQSH'>
+    <long_name>RDMA Sheath Inflow</long_name>
+    <units>Lpm</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>50.000000</display_range>
+  </variable>
+  <variable name='RDMARH'>
+    <long_name>RDMA Relative Humidity</long_name>
+    <units>%</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>50.000000</display_range>
+  </variable>
+  <variable name='RDMATEMP'>
+    <long_name>RDMA Sample Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>50.000000</display_range>
+  </variable>
+  <variable name='RDMAVD'>
+    <long_name>RDMA Dilution Valve Control Voltage</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>50.000000</display_range>
+  </variable>
+  <variable name='RDMAVSH'>
+    <long_name>RDMA Sheath Valve Control Voltage</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>50.000000</display_range>
+  </variable>
+  <variable name='REJAT'>
+    <long_name>SPP-100 Average Transit Rejected Particles</long_name>
+    <units></units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='REJDOF'>
+    <long_name>Particles Rejected (Outside Depth-of-Field))</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>0.000000</display_range>
+  </variable>
+  <variable name='RHOCR'>
+    <long_name>Absolute Humidity, Cryogenic</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='RHODB'>
+    <long_name>Absolute Humidity, T-Electric Bottom</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='RHODT'>
+    <long_name>Absolute Humidity, T-Electric Top</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='RHOLA'>
+    <long_name>Absolute Humidity, Lyman-alpha</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='RHOLA1'>
+    <long_name>Absolute Humidity, Lyman-alpha</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='RHUM'>
+    <long_name>Relative Humidity</long_name>
+    <units>%</units>
+    <alt_units></alt_units>
+    <category>Atmos. State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 100.000000</display_range>
+  </variable>
+  <variable name='RICE'>
+    <long_name>Raw Icing-Rate Indicator</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='ROLL'>
+    <long_name>Aircraft Roll Angle</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>-45.000000 45.000000</display_range>
+  </variable>
+  <variable name='RSTB'>
+    <long_name>Radiometric Surface Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>15.000000</display_range>
+  </variable>
+  <variable name='RSTB1'>
+    <long_name>Radiometric Surface Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>15.000000</display_range>
+  </variable>
+  <variable name='RSTT'>
+    <long_name>Radiometric Sky/Cloud-Base Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>15.000000</display_range>
+  </variable>
+  <variable name='SDWC1'>
+    <long_name>2D-C Shadow OR Counts</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>500.000000</display_range>
+  </variable>
+  <variable name='SDWH1'>
+    <long_name>HVPS Shadow OR Counts</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>500.000000</display_range>
+  </variable>
+  <variable name='SDWP1'>
+    <long_name>2D-P Shadow OR Counts</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>500.000000</display_range>
+  </variable>
+  <variable name='SECOND'>
+    <long_name>Raw Tape Time Component</long_name>
+    <units>s</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='SFMB'>
+    <long_name>Sensitive Field Mill, Bottom Fuselage</long_name>
+    <units>kV/M</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='SFMRB'>
+    <long_name>Sensitive Field Mill, Bottom Radome</long_name>
+    <units>kV/M</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='SFMRL'>
+    <long_name>Sensitive Field Mill, Left Radome</long_name>
+    <units>kV/M</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='SFMRR'>
+    <long_name>Sensitive Field Mill, Right Radome</long_name>
+    <units>kV/M</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='SFMRT'>
+    <long_name>Sensitive Field Mill, Top Radome</long_name>
+    <units>kV/M</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='SFMT'>
+    <long_name>Sensitive Field Mill, Top Fuselage</long_name>
+    <units>kV/M</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='SHDORC'>
+    <long_name>2D-C Shadow OR Counts</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>500.000000</display_range>
+  </variable>
+  <variable name='SHDORP'>
+    <long_name>2D-P Shadow OR Counts</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>500.000000</display_range>
+  </variable>
+  <variable name='SO2'>
+    <long_name>Raw Sulfur Dioxide Output</long_name>
+    <units>ppb</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 50.000000</display_range>
+  </variable>
+  <variable name='SO2C'>
+    <long_name>Corrected Sulfur Dioxide Concentration</long_name>
+    <units>ppb</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 50.000000</display_range>
+  </variable>
+  <variable name='SO2P'>
+    <long_name>Sulfur Dioxide Internal Pressure</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='SOLAZ'>
+    <long_name>Solar Azimuth Angle</long_name>
+    <units>radians</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='SOLDE'>
+    <long_name>Solar Declination Angle</long_name>
+    <units>radians</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='SOLEL'>
+    <long_name>Solar Elevation Angle</long_name>
+    <units>radians</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='SOLZE'>
+    <long_name>Solar Zenith Angle</long_name>
+    <units>radians</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='SSDF'>
+    <long_name>Sideslip Angle, Boom Diff. Pressure</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>-5.000000 5.000000</display_range>
+  </variable>
+  <variable name='SSLIP'>
+    <long_name>Sideslip Angle, Reference</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>-5.000000 5.000000</display_range>
+  </variable>
+  <variable name='SSRD'>
+    <long_name>Sideslip Angle, Radome Diff. Pressure</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>-5.000000 5.000000</display_range>
+  </variable>
+  <variable name='STB'>
+    <long_name>Pyrgeometer Sink Temperature, Bottom</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='STT'>
+    <long_name>Pyrgeometer Sink Temperature, Top</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='SVR650'>
+    <long_name>Spectral Vegetation Radiometer (650 nm)</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>3.000000</display_range>
+  </variable>
+  <variable name='SVR862'>
+    <long_name>Spectral Vegetation Radiometer (862 nm)</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>3.000000</display_range>
+  </variable>
+  <variable name='SWB'>
+    <long_name>Shortwave Irradiance, Bottom</long_name>
+    <units>W/M2</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 1000.000000</display_range>
+  </variable>
+  <variable name='SWT'>
+    <long_name>Shortwave Irradiance, Top</long_name>
+    <units>W/M2</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 1500.000000</display_range>
+  </variable>
+  <variable name='SWTC'>
+    <long_name>Shortwave Irradiance, Top, (Attitude-Corrected)</long_name>
+    <units>W/M2</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 1500.000000</display_range>
+  </variable>
+  <variable name='TA2D'>
+    <long_name>2D Can Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='TADS'>
+    <long_name>ADS Cabinet Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='TASB'>
+    <long_name>Aircraft True Airspeed, Boom</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>25.000000</display_range>
+  </variable>
+  <variable name='TASF'>
+    <long_name>Aircraft True Airspeed, Fuselage</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>25.000000</display_range>
+  </variable>
+  <variable name='TASHC'>
+    <long_name>Aircraft True Airspeed, Humidity Corrected</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>25.000000</display_range>
+  </variable>
+  <variable name='TASR'>
+    <long_name>Aircraft True Airspeed, Radome</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>25.000000</display_range>
+  </variable>
+  <variable name='TASW'>
+    <long_name>Aircraft True Airspeed, Wing</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>25.000000</display_range>
+  </variable>
+  <variable name='TASX'>
+    <long_name>Aircraft True Airspeed, Reference</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>25.000000</display_range>
+  </variable>
+  <variable name='TCAVB'>
+    <long_name>Cavity Temperature, Bottom PRT-5</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>35.000000 50.000000</display_range>
+  </variable>
+  <variable name='TCAVT'>
+    <long_name>Cavity Temperature, Top PRT-5</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>35.000000 50.000000</display_range>
+  </variable>
+  <variable name='TDCH1'>
+    <long_name>HVPS Housekeeping</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='TEMP1'>
+    <long_name>CN Counter Inlet Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='TEMP2'>
+    <long_name>CVI CN Counter Sample Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='TEO3'>
+    <long_name>Raw TECO Ozone Output</long_name>
+    <units>ppb</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 150.000000</display_range>
+  </variable>
+  <variable name='TEO3C'>
+    <long_name>Corrected TECO (UV) Ozone Concentration</long_name>
+    <units>ppbv</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 150.000000</display_range>
+  </variable>
+  <variable name='TEO3P'>
+    <long_name>Internal TECO Ozone Sampling Pressure</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='TEP'>
+    <long_name>Internal TECO Ozone Sampling Pressure</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='TET'>
+    <long_name>Internal TECO Ozone Sampling Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='THC'>
+    <long_name>Total Hydrocarbons (THC) Concentration</long_name>
+    <units>ppb</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='THCF'>
+    <long_name>Total Hydrocarbons, Sample Flow Rate</long_name>
+    <units>sccm</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='THCH2'>
+    <long_name>Total Hydrocarbons, Hydrogen Flow Rate</long_name>
+    <units>sccm</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='THDG'>
+    <long_name>Aircraft True Heading Angle</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 360.000000</display_range>
+  </variable>
+  <variable name='THETA'>
+    <long_name>Potential Temperature</long_name>
+    <units>K</units>
+    <alt_units></alt_units>
+    <category>Thermodynamic</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>12.500000</display_range>
+  </variable>
+  <variable name='THETAE'>
+    <long_name>Equivalent Potential Temperature</long_name>
+    <units>K</units>
+    <alt_units></alt_units>
+    <category>Thermodynamic</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>12.500000</display_range>
+  </variable>
+  <variable name='THETAV'>
+    <long_name>Virtual Potential Temperature</long_name>
+    <units>K</units>
+    <alt_units></alt_units>
+    <category>Thermodynamic</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>12.500000</display_range>
+  </variable>
+  <variable name='TKAR'>
+    <long_name>IRS Track Angle Rate</long_name>
+    <units>deg/S</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='TKAT'>
+    <long_name>IRS Track Angle, True</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 360.000000</display_range>
+  </variable>
+  <variable name='TLSI'>
+    <long_name>LSI System Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='TMLAG'>
+    <long_name>LTN-51 ARINC Time Lag</long_name>
+    <units>s</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='TPTIME'>
+    <long_name>Unaltered Tape Time</long_name>
+    <units>s</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 0.000000</display_range>
+  </variable>
+  <variable name='TRSTB'>
+    <long_name>RSTB Sensor Head Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='TS2D'>
+    <long_name>2D Can Temperature</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='TTB'>
+    <long_name>Total Temperature, Radome</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='TTF'>
+    <long_name>Total Temperature, Fuselage</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='TTFH'>
+    <long_name>Total Temperature, Deiced Fuselage</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='TTRF'>
+    <long_name>Total Temperature, Reverse Flow</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='TTRL'>
+    <long_name>Total Temperature, Radome Left</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='TTRR'>
+    <long_name>Total Temperature, Radome Right</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='TTW'>
+    <long_name>Total Temperature, Wing</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='TTWH'>
+    <long_name>Total Temperature, Deiced Wing</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='TTX'>
+    <long_name>Total Temperature, Reference</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='TV10'>
+    <long_name>Temperature of 10-Volt Reference</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='TWCH1'>
+    <long_name>2D Housekeeping</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='TWCH2'>
+    <long_name>2D Housekeeping</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='TWDA1'>
+    <long_name>2D-C Housekeeping</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='TWDB1'>
+    <long_name>2D-P Housekeeping</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>PMS Probe</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='UI'>
+    <long_name>Wind Vector, East Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='UIC'>
+    <long_name>GPS-Corrected Wind Vector, East Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='UVB'>
+    <long_name>Ultraviolet Irradiance, Bottom</long_name>
+    <units>W/M2</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 75.000000</display_range>
+  </variable>
+  <variable name='UVCHRF'>
+    <long_name>UV Hygrometer Lamp-Off Reference Detector</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='UVCHSP'>
+    <long_name>UV Hygrometer Lamp-Off Signal Detector</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='UVHREF'>
+    <long_name>UV Hygrometer H-lamp Reference Detector</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='UVHSMP'>
+    <long_name>UV Hygrometer H-lamp Signal Detector</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='UVKRRF'>
+    <long_name>UV Hygrometer K-lamp Reference Detector</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='UVKRSP'>
+    <long_name>UV Hygrometer K-lamp Signal Detector</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='UVPVOL'>
+    <long_name>UV Hygrometer Sample Volume Pressure</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='UVT'>
+    <long_name>Ultraviolet Irradiance, Top</long_name>
+    <units>W/M2</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 75.000000</display_range>
+  </variable>
+  <variable name='UVTVOL'>
+    <long_name>UV Hygrometer Sample Volume Temperature</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='UX'>
+    <long_name>Wind Vector, Longitudinal Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='UXC'>
+    <long_name>GPS-Corrected Wind Vector, Longitudinal Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='V10'>
+    <long_name>10-Volt Reference</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='V10R'>
+    <long_name>10-Volt Reference (through resistor)</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='V28'>
+    <long_name>Aircraft DC Voltage Supply</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>5.000000</display_range>
+  </variable>
+  <variable name='VCRH'>
+    <long_name>Dew/Frost Point Temperature, Cryogenic</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='VDREF'>
+    <long_name>Difference of 10-Vdc References</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>-5.000000 5.000000</display_range>
+  </variable>
+  <variable name='VEW'>
+    <long_name>Inertial Ground Speed Vector, East Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>50.000000</display_range>
+  </variable>
+  <variable name='VEWC'>
+    <long_name>GPS-Corrected Inertial Ground Speed Vector, East Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='VI'>
+    <long_name>Wind Vector, North Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='VIC'>
+    <long_name>GPS-Corrected Wind Vector, North Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='VLA'>
+    <long_name>Raw Lyman-alpha Hygrometer Output</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='VLA1'>
+    <long_name>Raw Lyman-alpha Hygrometer Output</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.500000</display_range>
+  </variable>
+  <variable name='VM15A'>
+    <long_name>-15V Analog Voltage</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='VNS'>
+    <long_name>Inertial Ground Speed Vector, North Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>50.000000</display_range>
+  </variable>
+  <variable name='VNSC'>
+    <long_name>GPS-Corrected Inertial Ground Speed Vector, North Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='VOLTAGE'>
+    <long_name></long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>-10.000000 10.000000</display_range>
+  </variable>
+  <variable name='VP15A'>
+    <long_name>+15V Analog Voltage</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='VP15D'>
+    <long_name>+15V Digital Voltage</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='VSPD'>
+    <long_name>IRS-Computed Aircraft Vertical Velocity</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>15.000000</display_range>
+  </variable>
+  <variable name='VY'>
+    <long_name>Wind Vector, Lateral Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='VYC'>
+    <long_name>GPS-Corrected Wind Vector, Lateral Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='VZI'>
+    <long_name>Aircraft Integrated Vertical Velocity</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>25.000000</display_range>
+  </variable>
+  <variable name='WD'>
+    <long_name>Horizontal Wind Direction</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 360.000000</display_range>
+  </variable>
+  <variable name='WDC'>
+    <long_name>GPS-Corrected Horizontal Wind Direction</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 360.000000</display_range>
+  </variable>
+  <variable name='WI'>
+    <long_name>Wind Vector, Vertical Gust Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>-5.000000 5.000000</display_range>
+  </variable>
+  <variable name='WIC'>
+    <long_name>GPS-Corrected Wind Vector, Vertical Gust Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='WP3'>
+    <long_name>Damped Aircraft Vertical Velocity</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>15.000000</display_range>
+  </variable>
+  <variable name='WS'>
+    <long_name>Horizontal Wind Speed</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='WSC'>
+    <long_name>GPS-Corrected Horizontal Wind Speed</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='XACCUX'>
+    <long_name>Aircraft Acceleration, Lateral</long_name>
+    <units>G</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='XACCVY'>
+    <long_name>Aircraft Acceleration, Longitudinal</long_name>
+    <units>G</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='XACCWZ'>
+    <long_name>Aircraft Acceleration, Vertical</long_name>
+    <units>G</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='XFORF'>
+    <long_name>Formaldehyde Sample Flow Rate</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='XFORM'>
+    <long_name>Formaldehyde Analyzer Status</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='XFORS'>
+    <long_name>Raw Formaldehyde Signal Output</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 10.000000</display_range>
+  </variable>
+  <variable name='XFZV'>
+    <long_name>Fixed Zero Voltage, External Chassis</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='XGLWC'>
+    <long_name>Gerber PV-100 Probe Liquid Water Content</long_name>
+    <units>g/M3</units>
+    <alt_units></alt_units>
+    <category>Liquid Water</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='XGMODE'>
+    <long_name>Gerber PV-100 Probe Mode</long_name>
+    <units>cnts</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>100.000000</display_range>
+  </variable>
+  <variable name='XGREFF'>
+    <long_name>Gerber PV-100 Effective Droplet Radius</long_name>
+    <units>uM</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='XGSFC'>
+    <long_name>Gerber PV-100 Particle Surface Area (Raw)</long_name>
+    <units>cM2/M3</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='XICN'>
+    <long_name>CN Isokinetic Side Flow Rate</long_name>
+    <units>slpm</units>
+    <alt_units></alt_units>
+    <category>Uncorr'd Raw</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 5.000000</display_range>
+  </variable>
+  <variable name='XICNC'>
+    <long_name>Corrected CN Isokinetic Side Flow Rate</long_name>
+    <units>vlpm</units>
+    <alt_units></alt_units>
+    <category>Chemistry</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 5.000000</display_range>
+  </variable>
+  <variable name='XLATC'>
+    <long_name>GPS-Corrected Inertial Latitude</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>-90.000000 90.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='XLONC'>
+    <long_name>GPS-Corrected Inertial Longitude</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Position</category>
+    <valid_range>-180.000000 180.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='XMACH2'>
+    <long_name>Aircraft Mach Number Squared</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>Thermodynamic</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>0.100000</display_range>
+  </variable>
+  <variable name='XOAT'>
+    <long_name>Ambient Temperature, Ophir III</long_name>
+    <units>C</units>
+    <alt_units></alt_units>
+    <category>Non-Standard</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='XPODXAC'>
+    <long_name>Pod Acceleration, Lateral</long_name>
+    <units>G</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='XPODYAC'>
+    <long_name>Pod Acceleration, Longitudinal</long_name>
+    <units>G</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='XPODZAC'>
+    <long_name>Pod Acceleration, Vertical</long_name>
+    <units>G</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='XPSFD'>
+    <long_name>Raw Static Pressure, Fuselage (Ruska)</long_name>
+    <units>mbar</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>150.000000</display_range>
+  </variable>
+  <variable name='XRADCF'>
+    <long_name>Radiation Correction Factor</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>0.200000</display_range>
+  </variable>
+  <variable name='XSWTC'>
+    <long_name>Shortwave Irradiance, Top, (Attitude-Corrected)</long_name>
+    <units>W/M2</units>
+    <alt_units></alt_units>
+    <category>Radiation</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 1500.000000</display_range>
+  </variable>
+  <variable name='XUIC'>
+    <long_name>GPS-Corrected Wind Vector, East Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='XUXC'>
+    <long_name>GPS-Corrected Wind Vector, Longitudinal Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='XV10'>
+    <long_name>10-Volt Reference, External Chassis</long_name>
+    <units>Vdc</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>1.000000</display_range>
+  </variable>
+  <variable name='XVEWC'>
+    <long_name>GPS-Corrected Inertial Ground Speed Vector, East Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='XVIC'>
+    <long_name>GPS-Corrected Wind Vector, North Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='XVNSC'>
+    <long_name>GPS-Corrected Inertial Ground Speed Vector, North Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Aircraft State</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='XVYC'>
+    <long_name>GPS-Corrected Wind Vector, Lateral Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='XWDC'>
+    <long_name>GPS-Corrected Horizontal Wind Direction</long_name>
+    <units>deg</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>0.000000 360.000000</display_range>
+  </variable>
+  <variable name='XWIC'>
+    <long_name>GPS-Corrected Wind Vector, Vertical Gust Component</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='XWSC'>
+    <long_name>GPS-Corrected Horizontal Wind Speed</long_name>
+    <units>M/s</units>
+    <alt_units></alt_units>
+    <category>Wind</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>10.000000</display_range>
+  </variable>
+  <variable name='YEAR'>
+    <long_name>Raw Tape Date Component</long_name>
+    <units>year</units>
+    <alt_units></alt_units>
+    <category>None</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Floating'>2.000000</display_range>
+  </variable>
+  <variable name='ZERO'>
+    <long_name>Constant value of 0.</long_name>
+    <units>none</units>
+    <alt_units></alt_units>
+    <category>Housekeeping</category>
+    <valid_range>0.000000 0.000000</valid_range>
+    <display_range type='Fixed'>-1.000000 1.000000</display_range>
+  </variable>
+</vardb>

@@ -1,0 +1,39 @@
+CatagoryLookup	catagory.c	/^static CatagoryLookup(int cn)$/
+CreateVarDB	merge.c	/^CreateVarDB(Bull9_name, Pattr_name)$/
+InitializeVarDB	init.c	/^InitializeVarDB(char fileName[])$/
+ReadCatagories	catagory.c	/^ReadCatagories()$/
+ReleaseVarDB	init.c	/^void ReleaseVarDB()$/
+SaveVarDB	save.c	/^SaveVarDB(char fileName[])$/
+SetCatagoryFileName	catagory.c	/^void SetCatagoryFileName(char fn[])$/
+SortVarDB	sort.c	/^void SortVarDB()$/
+VarDB_GetAlternateUnits	get.c	/^char *VarDB_GetAlternateUnits(char vn[])$/
+VarDB_GetCalRangeLower	get.c	/^float VarDB_GetCalRangeLower(char vn[])$/
+VarDB_GetCalRangeUpper	get.c	/^float VarDB_GetCalRangeUpper(char vn[])$/
+VarDB_GetCatagory	get.c	/^int VarDB_GetCatagory(char vn[])$/
+VarDB_GetCatagoryList	catagory.c	/^int VarDB_GetCatagoryList(char *list[])$/
+VarDB_GetCatagoryName	catagory.c	/^char *VarDB_GetCatagoryName(char vn[])$/
+VarDB_GetCatagoryNumber	catagory.c	/^int VarDB_GetCatagoryNumber(char catagoryName[])$/
+VarDB_GetFixedRangeLower	get.c	/^float VarDB_GetFixedRangeLower(char vn[])$/
+VarDB_GetFixedRangeUpper	get.c	/^float VarDB_GetFixedRangeUpper(char vn[])$/
+VarDB_GetFloatRange	get.c	/^float VarDB_GetFloatRange(char vn[])$/
+VarDB_GetMaxLimit	get.c	/^float VarDB_GetMaxLimit(char vn[])$/
+VarDB_GetMinLimit	get.c	/^float VarDB_GetMinLimit(char vn[])$/
+VarDB_GetTitle	get.c	/^char *VarDB_GetTitle(char vn[])$/
+VarDB_GetUnits	get.c	/^char *VarDB_GetUnits(char vn[])$/
+VarDB_GetVariablesInCatagory	catagory.c	/^char **VarDB_GetVariablesInCatagory(int catNum)$/
+VarDB_SetAlternateUnits	set.c	/^VarDB_SetAlternateUnits(char vn[], char units[])$/
+VarDB_SetCalRangeLower	set.c	/^VarDB_SetCalRangeLower(char vn[], float value)$/
+VarDB_SetCalRangeUpper	set.c	/^VarDB_SetCalRangeUpper(char vn[], float value)$/
+VarDB_SetCatagory	set.c	/^VarDB_SetCatagory(char vn[], int value)$/
+VarDB_SetFixedRangeLower	set.c	/^VarDB_SetFixedRangeLower(char vn[], float value)$/
+VarDB_SetFixedRangeUpper	set.c	/^VarDB_SetFixedRangeUpper(char vn[], float value)$/
+VarDB_SetFloatRange	set.c	/^VarDB_SetFloatRange(char vn[], float value)$/
+VarDB_SetMaxLimit	set.c	/^VarDB_SetMaxLimit(char vn[], float value)$/
+VarDB_SetMinLimit	set.c	/^VarDB_SetMinLimit(char vn[], float value)$/
+VarDB_SetRangeFixed	set.c	/^VarDB_SetRangeFixed(char vn[])$/
+VarDB_SetRangeFloating	set.c	/^VarDB_SetRangeFloating(char vn[])$/
+VarDB_SetTitle	set.c	/^VarDB_SetTitle(char vn[], char title[])$/
+VarDB_SetUnits	set.c	/^VarDB_SetUnits(char vn[], char units[])$/
+VarDB_isRangeFixed	get.c	/^VarDB_isRangeFixed(char vn[])$/
+VarDB_isRangeFloating	get.c	/^VarDB_isRangeFloating(char vn[])$/
+VarDB_lookup	init.c	/^VarDB_lookup(char vn[])$/

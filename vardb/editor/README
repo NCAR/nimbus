@@ -1,0 +1,14 @@
+Directions for editing the Master Varriable DataBase
+
+cd /home/local/dev/proj/defaults
+sccs edit VarDB
+
+At this point you may get error messages saying someone already has it checked
+out.  This must be resolved before you can continue.
+
+vared VarDB
+sccs delget VarDB
+get_sccs_winds
+
+The get_sccs_winds command makes a release of WINDS and associated projects.
+It might be worthwhile to tell Gary and Chris before doing this last step.
