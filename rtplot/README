@@ -1,0 +1,7 @@
+I've had to remove pms2_data.o from libxlate.a to get this program to link.  The
+addition of the 2d processor into nimbus has really complicated linking this
+program.  :-(
+
+cd $LOCAL/nimbus/lib
+ar d libxlate.a pms2_data.o
+

@@ -1,0 +1,18 @@
+class MyScaleDraw: public QwtScaleDraw
+{
+  public:
+    virtual QString label(double v) const
+    {
+      // convert v to your time string
+      // and return it.
+    }
+  protected:    
+    virtual int maxLabelWidth(const QFontMetrics &) const
+    {
+      // depends on your format
+    }
+};
+
+QwtPlot plot;
+plot.setAxisScaleDraw(axis, new MyScaleDraw());
+
