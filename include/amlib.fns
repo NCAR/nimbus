@@ -41,6 +41,7 @@
 # DYCOMS-II
 #
 # Gerber
+	"XCIM",		NULL,           NULL,           sCINext,
 	"CING",		NULL,           NULL,           sCing,
 	"CINSIG",	NULL,           NULL,           sCinsig,
 	"XGRFF",	NULL,           NULL,           sxgrff,
