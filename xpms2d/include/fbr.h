@@ -23,7 +23,7 @@ static String fallback_resources[] =
   "*XmTextField.foreground:		black",
   "*XmForm.horizontalSpacing:		4",
   "*XmForm.verticalSpacing:		4",
-  "*canvasShell.title:			xpms2d 2.2.1",
+  "*canvasShell.title:			xpms2d 2.2.2",
   "*canvasShell.iconName:		xpms2d",
   "*canvasShell.allowShellResize:	True",
   "*canvasShell.x:			25",
