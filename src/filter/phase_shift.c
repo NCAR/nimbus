@@ -117,6 +117,8 @@ void PhaseShift(
 
   for (i = 0; i < nsdi_ps; ++i)
     {
+    sp = sdi_ps[i];
+
     if (abs(sp->StaticLag) < JITTER)
       continue;
 
