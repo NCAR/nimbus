@@ -1,0 +1,537 @@
+.na
+.nh
+.TH HDR_API 3 "12 May 1994" "Printed: \n(yr.\n(mo.\n(dy" "RAF Library Functions"
+.SH NAME
+hdr_api \- ADS Header API
+.SH SYNOPSIS
+.nf
+.ft B
+#include "ctape.h"
+.ft
+.fi
+.LP
+.nf
+.ft B
+int InitFlightHeader(filename, action)
+char \(**filename;
+int action;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int ReleaseFlightHeader()
+.ft
+.fi
+.LP
+.nf
+.ft B
+char \(**\(**GetVariableList()
+.ft
+.fi
+.LP
+.nf
+.ft B
+char \(**GetFirst()	/* Get first variable in list		*/
+.ft
+.fi
+.LP
+.nf
+.ft B
+char \(**GetNext()	/* Get next variable in list		*/
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetVersion(result)
+char \(**\(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetProjectNumber(result)
+char \(**\(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetTapeNumber(result)
+char \(**\(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetFlightNumber(result)
+char \(**\(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetHeaderDate(result)
+char \(**\(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetHeaderTime(result)
+char \(**\(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetTimeZone(result)
+char \(**\(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetAircraft(result)
+char \(**\(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetNumberItems(result)
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetADStype(result)
+char \(**\(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int get_lrlen(result)
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int get_lrppr(result)
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int get_thdrlen(result)
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+struct Fl *get_header()
+.ft
+.fi
+.LP
+.nf
+.ft B
+void \(**GetStructPointer(vn)		/* Valid: All			*/
+char vn[];
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetCalCoeff(vn, result)		/* Valid: Sh			*/
+char vn[];
+float \(**\(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetChannelGain(vn, result) /* Valid: Sh			*/
+char vn[];
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetChannelOffset(vn, result) /* Valid: Sh			*/
+char vn[];
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetConversionFactor(vn, result) /* Valid: Sh			*/
+char vn[];
+float \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetConversionOffset(vn, result) /* Valid: Sh			*/
+char vn[];
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetHouseKeepingNames(vn, result)	/* Valid: Pms1v2		*/
+char vn[];
+char \(*\(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetInterfaceNumber(vn, result)	/* Valid: Pms1v2		*/
+char vn[];
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetInterfaceChannel(vn, result)	/* Valid: Pms1v2	*/
+char vn[];
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetItemLength(vn, result)		/* Valid: All			*/
+char vn[];
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetItemType(vn, result)		/* Valid: All			*/
+char vn[];
+char \(**\(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetLRLength(vn, result)		/* Valid: Pms2, Asy		*/
+char vn[];
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetLRPPR(vn, result)			/* Valid: Pms2, Asy		*/
+char vn[];
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetLength(vn, result) /* Valid: Sh, Pms1, Ins, Irs, Dme, Evt, Blk	*/
+char vn[];
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetLocation(vn, result)		/* Valid: Irs, Evt, Pms2, Pms1, Pms1v2, Blk, Uvhyg	*/
+char vn[];
+char \(**\(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetDSMlocation(vn, result)		/* Valid: All	*/
+char vn[];
+char \(**\(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetName(vn, result)			/* Valid: Sh, Pms1, Pms1v2, Pms2, Async	*/
+char vn[];
+char \(**\(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetOrder(vn, result)			/* Valid: Sh				*/
+char vn[];
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetParticleSpacingStart(vn, result)	/* Valid: Pms1v2		*/
+char vn[];
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetParticleSpacingLength(vn, result)	/* Valid: Pms1v2		*/
+char vn[];
+char \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetParticleSpacingGate(vn, result)	/* Valid: Pms1v2		*/
+char vn[];
+float \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetPrimaryAddr(vn, result)	/* Valid: Sh, Pms1, Ins		*/
+char vn[];
+char \(**\(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetRate(vn, result)			/* Valid: Sh, Pms1, Ins, Dme	*/
+char vn[];
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetReadAddr1(vn, result)		/* Valid: Dme			*/
+char vn[];
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetReadAddr2(vn, result)		/* Valid: Dme			*/
+char vn[];
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetResolution(vn, result)		/* Valid: Pms2			*/
+char vn[];
+short \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetSampleOffset(vn, result)	/* Valid: Sh			*/
+char vn[];
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetSecondaryAddr(vn, result) /* Valid: Pms1, Ins		*/
+char vn[];
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetSerialNumber(vn, result) /* Valid: Pms2, Pms1v2, Pms1, Uvhyg	*/
+char vn[];
+char \(**\(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetStart(vn, result) /* Valid: Sh, Pms1, Ins, Irs, Dme, Evt, Blk	*/
+char vn[];
+long \(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetType(vn, result)			/* Valid: Sh			*/
+char vn[];
+char \(**\(**result;
+.ft
+.fi
+.LP
+.nf
+.ft B
+int GetWriteAddr(vn, result)		/* Valid: Dme			*/
+char vn[];
+long \(**result;
+.ft
+.fi
+.SH DESCRIPTION
+.LP
+These functions provide an easy method for accessing flight header
+data.  The Get*() functions are broken into three groups.  The
+first group allows you to step through the file variable by variable.
+The second group is used for retrieving the Flight header datum.
+The third group retrieves datum from individual variables.  The
+second two groups return
+.SM OK
+or
+.SM ERR
+with
+.IR taperr
+set to the error code.
+.LP
+.B InitFlightHeader(\|)
+opens
+.IR filename
+and reads the header information into memory.  If
+.IR filename
+equals "ex?" where ? is a valid exabyte drive number, then the header
+will be read from the tape drive attached to /dev/rex?.  Upon success
+.B InitFlightHeader(\|)
+returns
+.SM OK
+otherwise
+.SM ERR
+and
+.IR taperr
+is set to error.  If the error is a system error (malloc/open failure), then
+.IR taperr
+will be set equal to
+.IR errno .
+The second parameter specifies weather to leave the file opened.  Possible
+values are
+.SM LEAVE_OPEN
+and
+.SM CLOSE.
+If
+.SM LEAVE_OPEN
+is specified then a file descriptor will be returned.
+.LP
+.B GetVariableList(\|)
+returns a character pointer to the
+.SM NULL
+terminated list of variable names.
+.LP
+.SS Group 1
+.B GetFirst(\|) and GetNext(\|)
+return the variable name of the first or next variable in the list.
+This variable is then used as the first argument in the third group
+of Get*() functions.
+.B GetNext(\|)
+returns
+.SM NULL
+upon reaching the end of the list.
+.LP
+.SS Group 2
+GetVersion, GetProjectNumber, GetFlightNumber,
+GetTapeNumber, GetHeaderDate, GetHeaderTime, GetTimeZone, GetAircraft,
+GetNumberItems, get_lrlen, get_lrppr, get_thdrlen, all require a
+pointer to the location of where to place the data.
+.LP
+.SS Group 3
+These functions require two input parameters.  The first is
+the variable name, obtained via
+.B GetVariableList(\|)
+or
+.B GetFirst(\|)/GetNext(\|) .
+The second parameter is a pointer of the location where the result is
+to be placed.  Many of these functions are used for multiple variables.
+.LP
+.B GetPrimaryAddr(\|) places the
+.IR adsaddr
+field into result for Sh and Pms1 variables and the
+.IR adsadr1
+field for Ins variables.
+.LP
+.B GetSecondaryAddr(\|) places the
+.IR auxaddr
+field into result for Pms1 variables and
+.IR adsadr2
+field for Ins variables.
+.SH RETURN VALUE
+.B GetVariableList(\|) returns a character pointer to the
+.SM NULL
+terminated list of variable names.
+.B GetFirst(\|), GetNext(\|)
+both return a character pointer to the next variable.  All other
+functions return
+.SM OK
+upon success and
+.SM ERR
+upon failure with
+.I taperr
+set to the error number.  Any number less than 200 is a unix system
+error (i.e. malloc, open failure).  The rest of the errors are listed
+in the include file ctape.h.
+.SH EXAMPLE
+.LP
+.nf
+	#include "/home/local/include/ctape.h"
+
+	char		*s, *var, *type;
+	float	*fp;
+	long		l;
+	int		i;
+
+	if (InitFlightHeader("ex0", CLOSE) == ERR)
+		{
+		Croak;
+		}
+
+	GetProjectNumber(&s);
+	printf("Prj # = [%s]\\n", s);
+
+	for (var = GetFirst(); var; var = GetNext())
+		{
+		GetItemType(var, &type);
+
+		if (strcmp(type, "SDI") == 0)
+			{
+			GetOrder(var, &l);
+			GetCalCoeff(var, &fp);
+
+			for (i = 0; i < l; ++i)
+				printf("Coeff[%d] = %f\\n", i, fp[i]);
+			}
+
+		if (GetName(var, &s) != ERR)
+			printf("Name = [%s]\n", s);
+
+		if (strcmp(type, "INS") == 0 ||
+		    strcmp(type, "PMS1D") == 0)
+			{
+			GetPrimaryAddr(var, &l);
+			printf("ADS Address = [%ld]\\n", l);
+
+			GetSecondaryAddr(var, &l);
+			printf("Aux Address = [%ld]\\n", l);
+			}
+		}
