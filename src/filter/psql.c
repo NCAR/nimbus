@@ -272,9 +272,10 @@ printf("  done derived.\n");
     fprintf(stderr, "%s", PQerrorMessage(conn));
     }
 
-  // Clear out an residual shit after restarting the DB.
-  PQclear(PQexec(conn, "VACUUM FULL"));
-  fprintf(stderr, "%s", PQerrorMessage(conn));
+  // Clear out an residual shit after restarting the DB.  This causes long
+  // delay at start-up......
+//  PQclear(PQexec(conn, "VACUUM FULL"));
+//  fprintf(stderr, "%s", PQerrorMessage(conn));
 
   return(true);
 

@@ -154,14 +154,15 @@ void InitAircraftDependencies()
       recfrn	= 0.65;
 
       sprintf(buffer, "%04d%02d", FlightDate[2], FlightDate[0]);
+printf("[%s] == [%s]\n", buffer, "200309");
       if (strcmp(buffer, "200309") > 0)
-      { /* AIRS-II & Later */
+      { // AIRS-II & Later
 printf(">>>>>>>>>>>>>>>  AIRS-II and later pcors\n");
         pcorPSF	= pcorf1_3;
         pcorQCFR = pcorf1_4;	
       }
       else
-      { /* Pre-AIRS-II */
+      { // Pre-AIRS-II
 printf(">>>>>>>>>>>>>>>  Pre AIRS-II pcors\n");
         pcorPSF	= pcorf1;
         pcorQCFR = pcorf1_2;
