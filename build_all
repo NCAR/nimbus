@@ -16,7 +16,8 @@ end
 
 # Programs withOUT install target
 
-foreach file ( ads/disc/src ads/dsm/src winds/src )
+#foreach file ( ads/disc/src ads/dsm/src winds/src )
+foreach file ( winds/src )
   (cd $file; make)
 end
 
@@ -35,3 +36,9 @@ foreach file ( asc2cdf n2asc ncReorder ncav ncextr ncmerge )
   (cd $file; make install)
 end
 cd ..
+
+
+foreach file ( nimbus/src/filter )
+  (cd $file; make install)
+end
+
