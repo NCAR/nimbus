@@ -1,39 +1,80 @@
-CatagoryLookup	catagory.c	/^static CatagoryLookup(int cn)$/
-CreateVarDB	merge.c	/^CreateVarDB(Bull9_name, Pattr_name)$/
-InitializeVarDB	init.c	/^InitializeVarDB(char fileName[])$/
-ReadCatagories	catagory.c	/^ReadCatagories()$/
-ReleaseVarDB	init.c	/^void ReleaseVarDB()$/
-SaveVarDB	save.c	/^SaveVarDB(char fileName[])$/
-SetCatagoryFileName	catagory.c	/^void SetCatagoryFileName(char fn[])$/
-SortVarDB	sort.c	/^void SortVarDB()$/
-VarDB_GetAlternateUnits	get.c	/^char *VarDB_GetAlternateUnits(char vn[])$/
-VarDB_GetCalRangeLower	get.c	/^float VarDB_GetCalRangeLower(char vn[])$/
-VarDB_GetCalRangeUpper	get.c	/^float VarDB_GetCalRangeUpper(char vn[])$/
-VarDB_GetCatagory	get.c	/^int VarDB_GetCatagory(char vn[])$/
-VarDB_GetCatagoryList	catagory.c	/^int VarDB_GetCatagoryList(char *list[])$/
-VarDB_GetCatagoryName	catagory.c	/^char *VarDB_GetCatagoryName(char vn[])$/
-VarDB_GetCatagoryNumber	catagory.c	/^int VarDB_GetCatagoryNumber(char catagoryName[])$/
-VarDB_GetFixedRangeLower	get.c	/^float VarDB_GetFixedRangeLower(char vn[])$/
-VarDB_GetFixedRangeUpper	get.c	/^float VarDB_GetFixedRangeUpper(char vn[])$/
-VarDB_GetFloatRange	get.c	/^float VarDB_GetFloatRange(char vn[])$/
-VarDB_GetMaxLimit	get.c	/^float VarDB_GetMaxLimit(char vn[])$/
-VarDB_GetMinLimit	get.c	/^float VarDB_GetMinLimit(char vn[])$/
-VarDB_GetTitle	get.c	/^char *VarDB_GetTitle(char vn[])$/
-VarDB_GetUnits	get.c	/^char *VarDB_GetUnits(char vn[])$/
-VarDB_GetVariablesInCatagory	catagory.c	/^char **VarDB_GetVariablesInCatagory(int catNum)$/
-VarDB_SetAlternateUnits	set.c	/^VarDB_SetAlternateUnits(char vn[], char units[])$/
-VarDB_SetCalRangeLower	set.c	/^VarDB_SetCalRangeLower(char vn[], float value)$/
-VarDB_SetCalRangeUpper	set.c	/^VarDB_SetCalRangeUpper(char vn[], float value)$/
-VarDB_SetCatagory	set.c	/^VarDB_SetCatagory(char vn[], int value)$/
-VarDB_SetFixedRangeLower	set.c	/^VarDB_SetFixedRangeLower(char vn[], float value)$/
-VarDB_SetFixedRangeUpper	set.c	/^VarDB_SetFixedRangeUpper(char vn[], float value)$/
-VarDB_SetFloatRange	set.c	/^VarDB_SetFloatRange(char vn[], float value)$/
-VarDB_SetMaxLimit	set.c	/^VarDB_SetMaxLimit(char vn[], float value)$/
-VarDB_SetMinLimit	set.c	/^VarDB_SetMinLimit(char vn[], float value)$/
-VarDB_SetRangeFixed	set.c	/^VarDB_SetRangeFixed(char vn[])$/
-VarDB_SetRangeFloating	set.c	/^VarDB_SetRangeFloating(char vn[])$/
-VarDB_SetTitle	set.c	/^VarDB_SetTitle(char vn[], char title[])$/
-VarDB_SetUnits	set.c	/^VarDB_SetUnits(char vn[], char units[])$/
-VarDB_isRangeFixed	get.c	/^VarDB_isRangeFixed(char vn[])$/
-VarDB_isRangeFloating	get.c	/^VarDB_isRangeFloating(char vn[])$/
-VarDB_lookup	init.c	/^VarDB_lookup(char vn[])$/
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.5.4	//
+CATEGORY	category.c	/^	} CATEGORY;$/;"	t	file:
+CAT_NAME_LEN	category.c	32;"	d	file:
+Category	category.c	/^static CATEGORY	*Category[MAX_CATEGORIES];$/;"	v	file:
+CreateVarDB	merge.c	/^CreateVarDB(Bull9_name, Pattr_name)$/;"	f
+InitializeVarDB	init.c	/^int InitializeVarDB(const char fileName[])$/;"	f
+MAX_CATEGORIES	category.c	31;"	d	file:
+MAX_STD_NAMES	std_name.c	27;"	d	file:
+Name	category.c	/^	char	Name[CAT_NAME_LEN];$/;"	m	file:
+Name	std_name.c	/^  char	Name[STD_NAME_LEN];$/;"	m	file:
+Number	category.c	/^	int	Number;$/;"	m	file:
+Number	std_name.c	/^  int	Number;$/;"	m	file:
+ReadCategories	category.c	/^ReadCategories()$/;"	f
+ReadStandardNames	std_name.c	/^ReadStandardNames()$/;"	f
+ReleaseVarDB	init.c	/^void ReleaseVarDB()$/;"	f
+STD_NAME	std_name.c	/^  } STD_NAME;$/;"	t	file:
+STD_NAME_LEN	std_name.c	28;"	d	file:
+SaveVarDB	save.c	/^SaveVarDB(const char fileName[])$/;"	f
+SaveXML	save.c	/^SaveXML(FILE *out)$/;"	f
+SetCategoryFileName	category.c	/^void SetCategoryFileName(const char fn[])$/;"	f
+SetStandardNameFileName	std_name.c	/^void SetStandardNameFileName(const char fn[])$/;"	f
+SortVarDB	sort.c	/^void SortVarDB()$/;"	f
+StdName	std_name.c	/^static STD_NAME	*StdName[MAX_STD_NAMES];$/;"	v	file:
+VarDB	init.c	/^void			*VarDB = NULL;$/;"	v
+VarDB_CurrentVersion	init.c	/^const long	VarDB_CurrentVersion	= 3;$/;"	v
+VarDB_GetAlternateUnits	get.c	/^char *VarDB_GetAlternateUnits(const char vn[])$/;"	f
+VarDB_GetCalRangeLower	get.c	/^float VarDB_GetCalRangeLower(const char vn[])$/;"	f
+VarDB_GetCalRangeUpper	get.c	/^float VarDB_GetCalRangeUpper(const char vn[])$/;"	f
+VarDB_GetCategory	get.c	/^int VarDB_GetCategory(const char vn[])$/;"	f
+VarDB_GetCategoryList	category.c	/^int VarDB_GetCategoryList(char *list[])$/;"	f
+VarDB_GetCategoryName	category.c	/^char *VarDB_GetCategoryName(const char vn[])$/;"	f
+VarDB_GetCategoryNumber	category.c	/^int VarDB_GetCategoryNumber(const char catagoryName[])$/;"	f
+VarDB_GetFixedRangeLower	get.c	/^float VarDB_GetFixedRangeLower(const char vn[])$/;"	f
+VarDB_GetFixedRangeUpper	get.c	/^float VarDB_GetFixedRangeUpper(const char vn[])$/;"	f
+VarDB_GetFloatRange	get.c	/^float VarDB_GetFloatRange(const char vn[])$/;"	f
+VarDB_GetMaxLimit	get.c	/^float VarDB_GetMaxLimit(const char vn[])$/;"	f
+VarDB_GetMinLimit	get.c	/^float VarDB_GetMinLimit(const char vn[])$/;"	f
+VarDB_GetStandardNameList	std_name.c	/^int VarDB_GetStandardNameList(char *list[])$/;"	f
+VarDB_GetStandardNameName	std_name.c	/^char *VarDB_GetStandardNameName(const char vn[])$/;"	f
+VarDB_GetStandardNameNumber	std_name.c	/^int VarDB_GetStandardNameNumber(const char catagoryName[])$/;"	f
+VarDB_GetTitle	get.c	/^char *VarDB_GetTitle(const char vn[])$/;"	f
+VarDB_GetUnits	get.c	/^char *VarDB_GetUnits(const char vn[])$/;"	f
+VarDB_GetVariablesInCategory	category.c	/^char **VarDB_GetVariablesInCategory(int catNum)$/;"	f
+VarDB_GetVariablesInStandardName	std_name.c	/^char **VarDB_GetVariablesInStandardName(int catNum)$/;"	f
+VarDB_Hdr	init.c	/^struct vardb_hdr	VarDB_Hdr;$/;"	v
+VarDB_MagicCookie	init.c	/^const long	VarDB_MagicCookie	= 0x42756c6c;$/;"	v
+VarDB_RecLength	init.c	/^long	VarDB_RecLength, VarDB_nRecords;$/;"	v
+VarDB_SetAlternateUnits	set.c	/^VarDB_SetAlternateUnits(const char vn[], char units[])$/;"	f
+VarDB_SetCalRangeLower	set.c	/^VarDB_SetCalRangeLower(const char vn[], float value)$/;"	f
+VarDB_SetCalRangeUpper	set.c	/^VarDB_SetCalRangeUpper(const char vn[], float value)$/;"	f
+VarDB_SetCategory	set.c	/^VarDB_SetCategory(const char vn[], long value)$/;"	f
+VarDB_SetFixedRangeLower	set.c	/^VarDB_SetFixedRangeLower(const char vn[], float value)$/;"	f
+VarDB_SetFixedRangeUpper	set.c	/^VarDB_SetFixedRangeUpper(const char vn[], float value)$/;"	f
+VarDB_SetFloatRange	set.c	/^VarDB_SetFloatRange(const char vn[], float value)$/;"	f
+VarDB_SetMaxLimit	set.c	/^VarDB_SetMaxLimit(const char vn[], float value)$/;"	f
+VarDB_SetMinLimit	set.c	/^VarDB_SetMinLimit(const char vn[], float value)$/;"	f
+VarDB_SetRangeFixed	set.c	/^VarDB_SetRangeFixed(const char vn[])$/;"	f
+VarDB_SetRangeFloating	set.c	/^VarDB_SetRangeFloating(const char vn[])$/;"	f
+VarDB_SetStandardName	set.c	/^VarDB_SetStandardName(const char vn[], long value)$/;"	f
+VarDB_SetTitle	set.c	/^VarDB_SetTitle(const char vn[], char title[])$/;"	f
+VarDB_SetUnits	set.c	/^VarDB_SetUnits(const char vn[], char units[])$/;"	f
+VarDB_isRangeFixed	get.c	/^int VarDB_isRangeFixed(const char vn[])$/;"	f
+VarDB_isRangeFloating	get.c	/^int VarDB_isRangeFloating(const char vn[])$/;"	f
+VarDB_lookup	init.c	/^int VarDB_lookup(const char vn[])$/;"	f
+VarDB_nRecords	init.c	/^long	VarDB_RecLength, VarDB_nRecords;$/;"	v
+defaults	get.c	/^static struct var_v2 defaults =$/;"	v	file:
+fileName	category.c	/^static char	*fileName;$/;"	v	file:
+fileName	std_name.c	/^static char	*fileName;$/;"	v	file:
+firstTime	category.c	/^static int	firstTime = TRUE;$/;"	v	file:
+firstTime	std_name.c	/^static int	firstTime = TRUE;$/;"	v	file:
+master_VarDB	init.c	/^void			*master_VarDB = NULL;$/;"	v
+master_VarDB_Hdr	init.c	/^struct vardb_hdr	master_VarDB_Hdr;$/;"	v
+nCategories	category.c	/^static int	nCategories = 0;$/;"	v	file:
+nStdNames	std_name.c	/^static int	nStdNames = 0;$/;"	v	file:
+readFile	init.c	/^void *readFile(const char fileName[], struct vardb_hdr *vdbHdr)$/;"	f

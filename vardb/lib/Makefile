@@ -13,9 +13,9 @@ INCLUDES=	-I. -I${INCLUDEDIR}
 DEFINES=
 CFLAGS=		-g -O2 ${INCLUDES} ${DEFINES}
 
-OBJS=	init.o get.o set.o save.o merge.o sort.o category.o
+OBJS=	init.o get.o set.o save.o merge.o sort.o category.o std_name.o
 
-SRCS=	init.c get.c set.c save.c merge.c sort.c category.c
+SRCS=	init.c get.c set.c save.c merge.c sort.c category.c std_name.c
 
 HDRS=	vardb.h
 

@@ -10,15 +10,7 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	vared.c (main)
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
 */
 
@@ -39,7 +31,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 
 /* Global widget declarations.
  */
-Widget	EFtext[16], opMenu, x;
+Widget	EFtext[16], catMenu, stdNameMenu, catXx, stdNameXx;
 Widget	list, fixedButton, floatButton;
 
 extern char	buffer[];
@@ -129,7 +121,7 @@ Widget CreateMainWindow(Widget parent)
 
   /* Create 11 Form and 10 Label widgets
    */
-  for (i = 0; i < 11; ++i)
+  for (i = 0; i < 12; ++i)
     {
     n = 0;
     sprintf(buffer, "EFform%d", i);
@@ -148,7 +140,7 @@ Widget CreateMainWindow(Widget parent)
       }
     }
 
-  XtManageChildren(EFform, 11);
+  XtManageChildren(EFform, 12);
 
 
   /* Add first 4 TextField widgets
@@ -243,11 +235,31 @@ Widget CreateMainWindow(Widget parent)
    */
   n = 0;
   XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
-  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNrightWidget, XmATTACH_WIDGET); n++;
   XtSetArg(args[n], XmNrightWidget, buttonFrame); n++;
-  opMenu = XmCreatePulldownMenu(EFform[10], "optionMenu", args, n);
+  catMenu = XmCreatePulldownMenu(EFform[10], "optionMenu", args, n);
+
+  n = 0;
+  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
+  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
+  XtSetArg(args[n], XmNrightWidget, XmATTACH_WIDGET); n++;
+  XtSetArg(args[n], XmNrightWidget, buttonFrame); n++;
+  XtSetArg(args[n], XmNsubMenuId, catMenu); ++n;
+  catXx = XmCreateOptionMenu(EFform[10], "catMenu", args, n);
+
+  XtManageChild(catXx);
+
+  /* Create standard_name option menu
+   */
+  n = 0;
+  XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
+  XtSetArg(args[n], XmNtopWidget, catMenu); n++;
+  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
+  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
+  XtSetArg(args[n], XmNrightWidget, XmATTACH_WIDGET); n++;
+//  XtSetArg(args[n], XmNrightWidget, buttonFrame); n++;
+  stdNameMenu = XmCreatePulldownMenu(EFform[11], "optionMenu", args, n);
 
   n = 0;
   XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
@@ -255,10 +267,10 @@ Widget CreateMainWindow(Widget parent)
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNrightWidget, XmATTACH_WIDGET); n++;
   XtSetArg(args[n], XmNrightWidget, buttonFrame); n++;
-  XtSetArg(args[n], XmNsubMenuId, opMenu); ++n;
-  x = XmCreateOptionMenu(EFform[10], "opMenu", args, n);
+  XtSetArg(args[n], XmNsubMenuId, stdNameMenu); ++n;
+  stdNameXx = XmCreateOptionMenu(EFform[11], "stdNameMenu", args, n);
 
-  XtManageChild(x);
+  XtManageChild(stdNameXx);
 
 
   /* Scrolled List of variable names

@@ -43,10 +43,12 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 #include "portable.h"
 #include "vardb.h"
 
-static int	ChangesMade = FALSE, currentCategory = 0;
+static int	ChangesMade = FALSE, currentCategory = 0, currentStdName = 0;
 
-extern Widget	x, opMenu, list, EFtext[], fixedButton, floatButton;
-extern char	buffer[], FileName[], *catList[], *ProjectDirectory;
+extern Widget	catXx, stdNameXx, catMenu, stdNameMenu, list,
+		EFtext[], fixedButton, floatButton;
+extern char	buffer[], FileName[], *catList[], *ProjectDirectory,
+		*stdNameList[];
 extern long	VarDB_nRecords, VarDB_RecLength;
 
 void	exit();
@@ -77,7 +79,25 @@ void SetCategory(Widget w, XtPointer client, XtPointer call)
     {
     name = XmStringCreateLocalized(catList[currentCategory]);
     XtSetArg(args[0], XmNlabelString, name);
-    XtSetValues(XmOptionButtonGadget(x), args, 1);
+    XtSetValues(XmOptionButtonGadget(catXx), args, 1);
+    XmStringFree(name);
+    }
+
+}	/* END SETCATEGORY */
+
+/* -------------------------------------------------------------------- */
+void SetStandardName(Widget w, XtPointer client, XtPointer call)
+{
+  Arg		args[2];
+  XmString	name;
+
+  currentStdName = (int)client;
+
+  if (!w)	/* If this is being called from EditVariable()	*/
+    {
+    name = XmStringCreateLocalized(stdNameList[currentStdName]);
+    XtSetArg(args[0], XmNlabelString, name);
+    XtSetValues(XmOptionButtonGadget(stdNameXx), args, 1);
     XmStringFree(name);
     }
 
@@ -146,8 +166,25 @@ void OpenNewFile_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct
 
     n = 0;
     XtSetArg(args[n], XmNlabelString, name); ++n;
-    b[i] = XmCreatePushButton(opMenu, "opMenB", args, n);
+    b[i] = XmCreatePushButton(catMenu, "opMenB", args, n);
     XtAddCallback(b[i], XmNactivateCallback, SetCategory, (XtPointer)i);
+
+    XmStringFree(name);
+    }
+
+  XtManageChildren(b, i);
+
+  ReadStandardNames();
+  VarDB_GetStandardNameList(stdNameList);
+
+  for (i = 0; stdNameList[i]; ++i)
+    {
+    name = XmStringCreateLocalized(stdNameList[i]);
+
+    n = 0;
+    XtSetArg(args[n], XmNlabelString, name); ++n;
+    b[i] = XmCreatePushButton(stdNameMenu, "opMenB", args, n);
+    XtAddCallback(b[i], XmNactivateCallback, SetStandardName, (XtPointer)i);
 
     XmStringFree(name);
     }
@@ -156,6 +193,7 @@ void OpenNewFile_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct
 
   ChangesMade = FALSE;
   currentCategory = 0;
+  currentStdName = 0;
 
 }	/* END OPENNEWFILE_OK */
 
@@ -259,6 +297,7 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
     }
 
   SetCategory(NULL, (XtPointer)ntohl(((struct var_v2 *)VarDB)[pos].Category), NULL);
+  SetStandardName(NULL, (XtPointer)ntohl(((struct var_v2 *)VarDB)[pos].standard_name), NULL);
 
 }	/* END EDITVARIABLE */
 
@@ -374,6 +413,7 @@ void Accept(Widget w, XtPointer client, XtPointer call)
   XmListSelectPos(list, pos+1, FALSE);
 
   ((struct var_v2 *)VarDB)[pos].Category = htonl(currentCategory);
+  ((struct var_v2 *)VarDB)[pos].standard_name = htonl(currentStdName);
 
   ChangesMade = TRUE;
 

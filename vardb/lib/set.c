@@ -187,7 +187,7 @@ VarDB_SetCalRangeUpper(const char vn[], float value)
 }	/* END VARDB_SETCALRANGEUPPER */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetCategory(const char vn[], int value)
+VarDB_SetCategory(const char vn[], long value)
 {
   int	indx;
 
@@ -198,5 +198,18 @@ VarDB_SetCategory(const char vn[], int value)
   return(OK);
 
 }	/* END VARDB_SETCATEGORY */
+
+/* -------------------------------------------------------------------- */
+VarDB_SetStandardName(const char vn[], long value)
+{
+  int	indx;
+
+  if ((indx = VarDB_lookup(vn)) == ERR)
+    return(ERR);
+
+  ((struct var_v2 *)VarDB)[indx].standard_name = htonl(value);
+  return(OK);
+
+}	/* END VARDB_SETSTANDARDNAME */
 
 /* END SET.C */

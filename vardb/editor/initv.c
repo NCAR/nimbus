@@ -28,7 +28,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 #include "define.h"
 #include "vardb.h"
 
-char	buffer[1024], FileName[1024], *catList[64], *ProjectDirectory;
+char	buffer[1024], FileName[1024], *catList[128], *ProjectDirectory,
+	stdNameList[512];
 
 char	*getenv();
 
@@ -50,6 +51,7 @@ void Initialize(int argc, char *argv[])
     strcpy(FileName, argv[1]);
 
   catList[0] = NULL;
+  stdNameList[0] = NULL;
   OpenNewFile_OK(NULL, NULL, NULL);
 
 }	/* END INITIALIZE */

@@ -31,7 +31,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2004
 #include "portable.h"
 
 const long	VarDB_MagicCookie	= 0x42756c6c;
-const long	VarDB_CurrentVersion	= 2;
+const long	VarDB_CurrentVersion	= 3;
 
 struct vardb_hdr	master_VarDB_Hdr;
 void			*master_VarDB = NULL;
@@ -60,6 +60,7 @@ int InitializeVarDB(const char fileName[])
   }
 
   SetCategoryFileName(fileName);
+  SetStandardNameFileName(fileName);
 
   VarDB = readFile(fileName, &VarDB_Hdr);
 
@@ -117,38 +118,28 @@ void *readFile(const char fileName[], struct vardb_hdr *vdbHdr)
     return(0);
   }
 
+  fclose(fp);
 
   if (ntohl(vdbHdr->Version) < VarDB_CurrentVersion)
   {
     int		i;
-    void	*oldDB = varDB;
 
-    fclose(fp);
     fprintf(stderr, "VarDB: File has older version, converting to new version.\n");
 
-
-    if ((varDB = (void *)malloc((unsigned)VarDB_nRecords *
-				(unsigned)sizeof(struct var_v2))) == NULL)
-    {
-      fprintf(stderr, "VarDB: out of memory.\n");
-      return(0);
-    }
-
-    memset((char *)varDB, '\0', VarDB_nRecords * sizeof(struct var_v2));
-
     for (i = 0; i < VarDB_nRecords; ++i)
-      memcpy((char *)&((struct var_v2 *)varDB)[i],
-             (char *)&((struct var_v1 *)oldDB)[i],
-             (unsigned)VarDB_RecLength);
+      {
+      ((struct var_v2 *)varDB)[i].standard_name = 0;
+      ((struct var_v2 *)varDB)[i].reference = FALSE;;
+      }
 
     vdbHdr->Version = htonl(VarDB_CurrentVersion);
     vdbHdr->RecordLen = htonl(sizeof(struct var_v2));
 
+    VarDB = varDB;
     SaveVarDB(fileName);
   }
 
 
-  fclose(fp);
   return(varDB);
 
 }	/* END _INIT */

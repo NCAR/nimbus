@@ -71,7 +71,8 @@ struct var_v2
 	float	CalRange[2];	/* Analog SDI's only	*/
 
 	long	Category;
-	char	unused[8];
+	long	standard_name;	/* V3, was "unused" space in V2	*/
+	long	reference;	/* V3 - bool, was "unused" space in V2	*/
 	};
 
 
@@ -87,16 +88,20 @@ extern "C" {
 char	*VarDB_GetUnits(const char vn[]),
 	*VarDB_GetAlternateUnits(const char vn[]),
 	*VarDB_GetCategoryName(const char vn[]),
+	*VarDB_GetStandardNameName(const char vn[]),
 	*VarDB_GetTitle(const char vn[]),
 	**VarDB_GetVariablesInCategory(const int catNum);
 
 int	InitializeVarDB(const char fileName[]),
 	VarDB_lookup(const char name[]),
 	SaveVarDB(const char fileName[]),
-	ReadCategories(),
+	ReadCategories(), ReadStandardNames(),
 	VarDB_GetCategory(const char vn[]),
 	VarDB_GetCategoryNumber(const char catagoryName[]),
 	VarDB_GetCategoryList(char *list[]),
+	VarDB_GetStandardName(const char vn[]),
+	VarDB_GetStandardNameNumber(const char catagoryName[]),
+	VarDB_GetStandardNameList(char *list[]),
 	VarDB_isRangeFixed(const char vn[]),
 	VarDB_isRangeFloating(const char vn[]);
 
@@ -123,7 +128,9 @@ int	VarDB_SetUnits(const char vn[], char units[]),
 	VarDB_SetMaxLimit(const char vn[], float value),
 	VarDB_SetCalRangeLower(const char vn[], float value),
 	VarDB_SetCalRangeUpper(const char vn[], float value),
-	VarDB_SetCategory(const char vn[], int value),
+	VarDB_SetCategory(const char vn[], long value),
+	VarDB_SetStandardName(const char vn[], long value),
+	VarDB_SetReference(const char vn[], long value),
 	VarDB_SetSpikeSlope(const char vn[], float value);
 #ifdef __cplusplus
 	}

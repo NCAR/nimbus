@@ -81,6 +81,10 @@ SaveXML(FILE *out)
     fprintf(out, "    <category>%s</category>\n",
 	VarDB_GetCategoryName(((struct var_v2 *)VarDB)[i].Name));
 
+// Add reference as attribute to standard_name
+    fprintf(out, "    <standard_name>%s</standard_name>\n",
+	VarDB_GetStandardNameName(((struct var_v2 *)VarDB)[i].Name));
+
     fprintf(out, "    <valid_range>%f %f</valid_range>\n",
 	ntohf(((struct var_v2 *)VarDB)[i].MinLimit),
 	ntohf(((struct var_v2 *)VarDB)[i].MaxLimit));
