@@ -1,11 +1,11 @@
 //  warningbox.cc:  A. Bokinsky  QC project Spring 1995
 //  This file contains the functions provided by the WarningBox class.
 
-#include <iostream.h>
+#include <iostream>
 #include <Xm/MessageB.h>
 #include <Xm/Protocols.h>
 #include <Xm/AtomMgr.h>
-#include <string.h>
+#include <cstring>
 #include <time.h>
 
 #include "warningbox.h"

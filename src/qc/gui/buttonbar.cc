@@ -1,7 +1,7 @@
 //  buttonbar.cc:  A. Bokinsky  QC project Spring 1995
 //  This file contains the functions provided by the ButtonBar class.
 
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
 #include <X11/Intrinsic.h>
 #include <X11/IntrinsicP.h>
