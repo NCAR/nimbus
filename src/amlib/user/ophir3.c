@@ -46,7 +46,9 @@ static NR_TYPE  MAXCNT      = 62500,
                 DFLT_OFFSET = 31515.0,
                 A1          = -3.910e-5,
                 A2          = -4.285e-5,
-                A3          = 0.972;
+                A3          = 0.972,
+                A4          = 1.0,
+                A5          = 0.0;
 
 static double  planck_rad(double), planck_t(double), therm(double);
 
@@ -81,6 +83,22 @@ void ophir3Init(DERTBL *varp)
   }
   else
     A3 = tmp[0];
+
+  if ((tmp = GetDefaultsValue("A4", varp->name)) == NULL)
+  {
+    sprintf(buffer, "Value A4 set to %e in AMLIB function ophir3Init.\n", A4);
+    LogMessage(buffer);
+  }
+  else
+    A4 = tmp[0];
+
+  if ((tmp = GetDefaultsValue("A5", varp->name)) == NULL)
+  {
+    sprintf(buffer, "Value A5 set to %e in AMLIB function ophir3Init.\n", A5);
+    LogMessage(buffer);
+  }
+  else
+    A5 = tmp[0];
 
   if ((tmp = GetDefaultsValue("MAXCNT", varp->name)) == NULL)
   {
@@ -135,7 +153,7 @@ void ophir3Init(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void soat(DERTBL *varp)
 {
-  NR_TYPE	oat, detdc, tdet, tbbc, detsg, sntem, sntrad;
+  NR_TYPE	oat, detdc, tdet, tbbc, detsg, sntem, sntrad, bntem, bnrad;
   int		bbcod;
   double	gain;
 
@@ -152,6 +170,12 @@ void soat(DERTBL *varp)
   tbbc	= GetSample(varp, 3);
   detsg	= GetSample(varp, 4);
   sntem	= GetSample(varp, 5);
+
+  // Older projects do not have this extra dependency.
+  if (varp->ndep == 7)
+    bntem = GetSample(varp, 6);
+  else
+    bntem = 0.0;
 
   oat = 0.0;
 
@@ -206,11 +230,12 @@ void soat(DERTBL *varp)
       detsig = ((double)detsg - DFLT_OFFSET) * 10.0 / MAXCNT;
       bbcrad = planck_rad((double)tbbc);
       sntrad = planck_rad((double)sntem);
+      bnrad = planck_rad((double)bntem);
 
 //printf("%f %f %f %f\n", detsig, bbcrad, sntrad, oat);
 
       /* calc_airtem = OphirAirTem = oat */
-      oat = detsig * A1 + A2 + bbcrad + sntrad * A3;
+      oat = detsig * A1 + A2 + bbcrad * A4 + sntrad * A3 + bnrad * A5;
 
       if (oat > 0.0) 
         oat = planck_t((double)oat);
