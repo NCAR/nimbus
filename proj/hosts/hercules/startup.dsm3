@@ -1,0 +1,16 @@
+routeAdd("128.117.84.0", "128.117.184.69")
+hostAdd("hercules", "128.117.84.69")
+#nfsMount("hercules", "/home/local", "/home/local")
+putenv("PROJ_DIR=/home/local/proj");
+cd "/home/local/ads/dsm/obj"
+ld<dsmComm.o
+ld<dsmDisplay.o
+ld<dsmTape.o
+ld<dsmAsync.o
+sp(dsmAsync__Fv)
+#ld<cklhtdl.o
+#sp(cklhtdl__Fv)
+#ld<ckophir.o
+#sp(ckophir__Fv)
+#ld<ckdsp.o
+#sp(ckdsp__Fv)

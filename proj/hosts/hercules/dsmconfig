@@ -1,0 +1,10 @@
+/home/local/proj/135/header
+
+locn        machine  port   time_master  record  nats  serial_time
+----	    -------  ----   -----------  ------  ----  -----------
+AFT	    dsm1     1101   yes          no      no	no
+FORWARD     dsm2     1102   no           no      no	no
+PODRW       dsm3     1103   no           no      no	no
+PODLW       dsm4     1104   no           no      no	no
+WINDS	    hercules 1106   no           no      no	no
+CTL	    hercules 1106   no           no      no	no
