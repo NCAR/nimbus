@@ -14,15 +14,15 @@ INPUT:		Variable Name
 
 OUTPUT:		Value
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-7
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
 */
 
 #include <stdio.h>
 #include <sys/types.h>
-#include <netinet/in.h> // htonl macros.
 
 #include "vardb.h"
+#include "portable.h"
 
 static struct var_v2 defaults =
 	{
@@ -107,9 +107,7 @@ float VarDB_GetFixedRangeLower(const char vn[])
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(defaults.FixedRange[0]);
 
-  p = ntohl(*((int *)&(((struct var_v2 *)VarDB)[indx].FixedRange[0])));
-
-  return(*rc);
+  return(ntohf(((struct var_v2 *)VarDB)[indx].FixedRange[0]));
 
 }	/* END VARDB_GETFIXEDRANGELOWER */
 
@@ -123,9 +121,7 @@ float VarDB_GetFixedRangeUpper(const char vn[])
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(defaults.FixedRange[1]);
 
-  p = ntohl(*((int *)&(((struct var_v2 *)VarDB)[indx].FixedRange[1])));
-
-  return(*rc);
+  return(ntohf(((struct var_v2 *)VarDB)[indx].FixedRange[1]));
 
 }	/* END VARDB_GETFIXEDRANGEUPPER */
 
@@ -139,9 +135,7 @@ float VarDB_GetFloatRange(const char vn[])
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(defaults.FloatRange);
 
-  p = ntohl(*((int *)&(((struct var_v2 *)VarDB)[indx].FloatRange)));
-
-  return(*rc);
+  return(ntohf(((struct var_v2 *)VarDB)[indx].FloatRange));
 
 }	/* END VARDB_GETFLOATRANGE */
 
@@ -155,9 +149,7 @@ float VarDB_GetMinLimit(const char vn[])
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(defaults.MinLimit);
 
-  p = ntohl(*((int *)&(((struct var_v2 *)VarDB)[indx].MinLimit)));
-
-  return(*rc);
+  return(ntohf(((struct var_v2 *)VarDB)[indx].MinLimit));
 
 }	/* END VARDB_GETMINLIMIT */
 
@@ -171,9 +163,7 @@ float VarDB_GetMaxLimit(const char vn[])
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(defaults.MaxLimit);
 
-  p = ntohl(*((int *)&(((struct var_v2 *)VarDB)[indx].MaxLimit)));
-
-  return(*rc);
+  return(ntohf(((struct var_v2 *)VarDB)[indx].MaxLimit));
 
 }	/* END VARDB_GETMINLIMIT */
 
@@ -187,9 +177,7 @@ float VarDB_GetCalRangeLower(const char vn[])
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(defaults.CalRange[0]);
 
-  p = ntohl(*((int *)&(((struct var_v2 *)VarDB)[indx].CalRange[0])));
-
-  return(*rc);
+  return(ntohf(((struct var_v2 *)VarDB)[indx].CalRange[0]));
 
 }	/* END VARDB_GETCALRANGELOWER */
 
@@ -203,9 +191,7 @@ float VarDB_GetCalRangeUpper(const char vn[])
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(defaults.CalRange[1]);
 
-  p = ntohl(*((int *)&(((struct var_v2 *)VarDB)[indx].CalRange[1])));
-
-  return(*rc);
+  return(ntohf(((struct var_v2 *)VarDB)[indx].CalRange[1]));
 
 }	/* END VARDB_GETCALRANGEUPPER */
 

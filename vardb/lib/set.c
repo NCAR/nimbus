@@ -14,15 +14,15 @@ INPUT:		Variable Name, value to set
 
 OUTPUT:		OK/ERR
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
 */
 
 #include <stdio.h>
 #include <sys/types.h>
-#include <netinet/in.h> // htonl macros.
 
 #include "vardb.h"
+#include "portable.h"
 
 extern struct vardb_hdr	VarDB_Hdr;
 extern void		*VarDB;
@@ -98,12 +98,11 @@ VarDB_SetRangeFloating(const char vn[])
 VarDB_SetFixedRangeLower(const char vn[], float value)
 {
   int	indx;
-  ulong	*p = (ulong *)&value;
 
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(ERR);
 
-  *((int *)&(((struct var_v2 *)VarDB)[indx].FixedRange[0])) = htonl(*p);
+  ((struct var_v2 *)VarDB)[indx].FixedRange[0] = htonf(value);
   return(OK);
 
 }	/* END VARDB_SETFIXEDRANGELOWER */
@@ -112,12 +111,11 @@ VarDB_SetFixedRangeLower(const char vn[], float value)
 VarDB_SetFixedRangeUpper(const char vn[], float value)
 {
   int	indx;
-  ulong	*p = (ulong *)&value;
 
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(ERR);
 
-  *((int *)&(((struct var_v2 *)VarDB)[indx].FixedRange[1])) = htonl(*p);
+  ((struct var_v2 *)VarDB)[indx].FixedRange[1] = htonf(value);
   return(OK);
 
 }	/* END VARDB_SETFIXEDRANGEUPPER */
@@ -126,12 +124,11 @@ VarDB_SetFixedRangeUpper(const char vn[], float value)
 VarDB_SetFloatRange(const char vn[], float value)
 {
   int	indx;
-  ulong	*p = (ulong *)&value;
 
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(ERR);
 
-  *((int *)&(((struct var_v2 *)VarDB)[indx].FloatRange)) = htonl(*p);
+  ((struct var_v2 *)VarDB)[indx].FloatRange = htonf(value);
   return(OK);
 
 }	/* END VARDB_SETFLOATRANGE */
@@ -140,12 +137,11 @@ VarDB_SetFloatRange(const char vn[], float value)
 VarDB_SetMinLimit(const char vn[], float value)
 {
   int	indx;
-  ulong	*p = (ulong *)&value;
 
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(ERR);
 
-  *((int *)&(((struct var_v2 *)VarDB)[indx].MinLimit)) = htonl(*p);
+  ((struct var_v2 *)VarDB)[indx].MinLimit = htonf(value);
   return(OK);
 
 }	/* END VARDB_SETMINLIMIT */
@@ -154,12 +150,11 @@ VarDB_SetMinLimit(const char vn[], float value)
 VarDB_SetMaxLimit(const char vn[], float value)
 {
   int	indx;
-  ulong	*p = (ulong *)&value;
 
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(ERR);
 
-  *((int *)&(((struct var_v2 *)VarDB)[indx].MaxLimit)) = htonl(*p);
+  ((struct var_v2 *)VarDB)[indx].MaxLimit = htonf(value);
   return(OK);
 
 }	/* END VARDB_SETMINLIMIT */
@@ -168,12 +163,11 @@ VarDB_SetMaxLimit(const char vn[], float value)
 VarDB_SetCalRangeLower(const char vn[], float value)
 {
   int	indx;
-  ulong	*p = (ulong *)&value;
 
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(ERR);
 
-  *((int *)&(((struct var_v2 *)VarDB)[indx].CalRange[0])) = htonl(*p);
+  ((struct var_v2 *)VarDB)[indx].CalRange[0] = htonf(value);
   return(OK);
 
 }	/* END VARDB_SETCALRANGELOWER */
@@ -187,7 +181,7 @@ VarDB_SetCalRangeUpper(const char vn[], float value)
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(ERR);
 
-  *((int *)&(((struct var_v2 *)VarDB)[indx].CalRange[1])) = htonl(*p);
+  ((struct var_v2 *)VarDB)[indx].CalRange[1] = htonf(value);
   return(OK);
 
 }	/* END VARDB_SETCALRANGEUPPER */
