@@ -22,7 +22,7 @@ REFERENCES:	none
 
 REFERENCED BY:	interact.c mrf.c
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 -------------------------------------------------------------------------
 */
 
@@ -37,17 +37,18 @@ static std::vector<mRFilterPtr> sdiFilters;
 static std::vector<mRFilterPtr> rawFilters;
 
 static filterData	TwoFiftyTo25, FiftyTo25, OneTo25, FiveTo25, TenTo25,
-			ThousandTo25;
+			ThousandTo25, TwentyFive;
 
 static size_t	PSCBindex, currentHz, HzDelay;
 static NR_TYPE	*inputRec;
 
 static circBuffPtr	newCircBuff(int);
 
-static bool	mrf_debug = false;
+static int	disposMultiRateFilter(mRFilterPtr aMRFPtr);
 
 static NR_TYPE	getBuff(int offset, circBuffPtr aCBPtr);
-static void	initCircBuff(), disposCircBuff(), putBuff(),
+static void	initCircBuff(circBuffPtr aCBPtr), disposCircBuff(circBuffPtr aCBPtr),
+		putBuff(NR_TYPE datum, circBuffPtr aCBPtr),
 		setTimeDelay(size_t, size_t *, size_t *),
 		filterCounter(SDITBL *sp),
 		LinearInterpAndSingleStageFilter(CircularBuffer *PSCB,
@@ -152,10 +153,11 @@ void InitMRFilters()
         break;
 
       case 10:
-        rawFilters[i] = createMRFilter(1, 2, &TenTo25, mv_p);
+        rawFilters[i] = createMRFilter(1, 1, &TenTo25, mv_p);
         break;
 
       case 25:		/* Just filter	*/
+        rawFilters[i] = createMRFilter(1, 1, &TwentyFive, mv_p);
         rawFilters[i] = NULL;
         break;
 
@@ -181,14 +183,16 @@ void Filter(CircularBuffer *PSCB)
     {
     SDITBL *sp = sdi[i];
 
-    if (sdiFilters[i] == (mRFilterPtr)ERR)	/* Filtering not needed	*/
-      continue;
-
-    if (sp->SampleRate == ProcessingRate)
+    if (sdiFilters[i] == 0)	// Filtering not wanted/needed.
       {
-      memcpy(	(char *)&HighRateData[sp->HRstart],
+      if (sp->SampleRate == ProcessingRate)
+        memcpy(	(char *)&HighRateData[sp->HRstart],
 		(char *)&SampledData[sp->SRstart],
 		NR_SIZE * HIGH_RATE);
+      else
+        memset(	(char *)&HighRateData[sp->HRstart], 0,
+		NR_SIZE * sp->SampleRate * sp->Length);
+
       continue;
       }
 
@@ -229,6 +233,7 @@ void Filter(CircularBuffer *PSCB)
 				sp->SampleRate, sp->SRstart, sp->HRstart);
         break;
 
+      case 25:
       case 50:
         SingleStageFilter(PSCB, sdiFilters[i],
 				sp->SampleRate, sp->SRstart, sp->HRstart);
@@ -257,11 +262,16 @@ void Filter(CircularBuffer *PSCB)
     if (rawFilters[i] == (mRFilterPtr)ERR)	/* Filtering not needed	*/
       continue;
 
-    if (rawFilters[i] == NULL)
+    if (rawFilters[i] == 0)	/* Filtering not needed/wanted	*/
       {
-      memcpy(	(char *)&HighRateData[rp->HRstart],
+      if (rp->SampleRate == ProcessingRate)
+        memcpy(	(char *)&HighRateData[rp->HRstart],
 		(char *)&SampledData[rp->SRstart],
 		NR_SIZE * rp->SampleRate * rp->Length);
+      else
+        memset(	(char *)&HighRateData[rp->HRstart], 0,
+		NR_SIZE * rp->SampleRate * rp->Length);
+
       continue;
       }
 
@@ -303,6 +313,7 @@ void Filter(CircularBuffer *PSCB)
 				rp->SampleRate, rp->SRstart, rp->HRstart);
         break;
 
+      case 25:
       case 50:
         SingleStageFilter(PSCB, rawFilters[i],
 				rp->SampleRate, rp->SRstart, rp->HRstart);
@@ -365,7 +376,7 @@ static void LinearInterpAndSingleStageFilter(
 {
   int		task;
   NR_TYPE	output;
-  NR_TYPE	input, diff;
+  NR_TYPE	input, diff = 0.0;
   int		L = (ProcessingRate * thisMRF->M) / inputRate;
   int		intermedHzcnt = L - 1;
 
@@ -523,8 +534,8 @@ static void setTimeDelay(size_t rate, size_t *sec, size_t *msec)
       *sec += 2;
       break;
 
-    case 10:		// nTaps / (2 * L), doesn't check out (should be 2 sec).
-      *sec += 1;
+    case 10:		// nTaps / (2 * L), checks out.
+      *sec += 2;
       break;
 
     case 25:		// nTaps / (2 * L), checks out.
