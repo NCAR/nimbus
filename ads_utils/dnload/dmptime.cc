@@ -45,6 +45,7 @@ main(int argc, char *argv[])
   {
     printf("Enter file : ");
     fgets(sourceTape, 200, stdin);
+    sourceTape[strlen(sourceTape)-1] = '\0';
   }
   else
     strcpy(sourceTape, argv[1]);
@@ -80,6 +81,8 @@ int WriteDisk(char buff[], int nBytes)
   P2d_rec *p2d;
   Mcr_rec *mcr;
 
+  static int recCntr = 0;
+
   hdr = (Hdr_blk *)buffer;
   p2d = (P2d_rec *)buffer;
   mcr = (Mcr_rec *)buffer;
@@ -87,7 +90,10 @@ int WriteDisk(char buff[], int nBytes)
   switch (ntohs(*(unsigned short *)buff))
     {
     case 0x8681:
-      printf("Sync, nBytes=%d, %02d:%02d:%02d\n", nBytes, ntohs(hdr->hour), ntohs(hdr->minute), ntohs(hdr->second));
+      printf("[%d] Sync, nBytes=%d, %02d/%02d/%02d - %02d:%02d:%02d\n",
+	recCntr++, nBytes,
+	ntohs(hdr->year), ntohs(hdr->month), ntohs(hdr->day),
+	ntohs(hdr->hour), ntohs(hdr->minute), ntohs(hdr->second));
       break;
 
     case 0x4331:	// PMS2D types.
