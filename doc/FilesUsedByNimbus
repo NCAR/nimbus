@@ -6,10 +6,12 @@ Nimbus system files:
 -------------------------------------------------------------------------------
 	Mandatory files:
 
+proj/defaults/RawNames	; List of variables to add to RAWTBL for an instrument
 proj/defaults/DerivedNames ; List of derived variables to drag in for any given
-			;  SDI or RAW variable
-proj/defaults/*.names	; Contains names of raw vars for block probes
-proj/defaults/AircraftSpecs	; Airplane specific information (boom length).
+			;  SDITBL or RAWTBL variable.
+proj/defaults/*.names	; Contains names of raw vars for block probes.
+			; Depricating, see RawNames
+proj/defaults/AircraftSpecs	; Airplane specific information (e.g. boom length).
 
 	Optional files:
 

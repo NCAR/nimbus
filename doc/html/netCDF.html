@@ -1,0 +1,320 @@
+<html>
+<head>
+
+<title>NCAR-RAF netCDF Conventions</title>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<style type="text/css">
+<!--
+body { background: white; color: black; margin: 2em; margin-left: 3em; }
+h1,h2 { font-size: 1.5em }
+h3 { font-size: 1.3em }
+h4 { font-size: 1.2em }
+h1, h2, h3, h4 { font-style: normal; font-weight: normal; color: #3860B0; }
+span.runin { font-size: 1.1em; font-weight: bold; color: #3860B0; }
+a:link { color:navy; }
+a:visited { color:#386090; }
+li.toc { list-style: none; padding: .1em; }
+kbd.att { font-weight: normal; color: blue; }
+div.example { margin-left: 3em; margin-right: 3em; }
+div.definition { margin-left: 1em; }
+pre.CDL { color: brown; }
+table { padding: .25em; }
+span.new { background-color: #FF6666; }
+span.old { background-color: #FFFF88; text-decoration: line-through; }
+span.comment { background-color: #88FF88; font-style: italic; }
+-->
+</style>
+
+</head>
+
+<body>
+
+<h1 align=center>NCAR-RAF netCDF Conventions</h1>
+<h3 align=center>Version 1.1</h3>
+<hr>
+<h4 align=center>National Center for Atmospheric Research</h4>
+<h4 align=center>Research Aviation Facility</h4>
+<p>
+<h4 align=center>NOAA G-IV</h4>
+<p>
+<h4 align=center>University of Wyoming King Air</h4>
+
+<!--------------------------------------------------------------------------- ABS -->
+
+<hr>
+<h3 align=center>Introduction</h3>
+The goal is to support synchronous time series including the following properties:
+<p>
+<ul>
+<li>Both scalar and vector variables.
+<li>Different sample rates among variables
+</ul>
+<p>
+RAF's primary datasets consist of synchronous time series data.  Data are
+written to the netCDF file one record per second, even for data at higher rates.
+<p>
+Data acquisition of numerous instruments at high-rate (from 1 to 5K samples per second)
+for 10 to 11 hours can produce large data files.  Typical, raw packed data files from the
+NCAR C-130 are 600MB, and unpacked with no data reduction would be twice that size.
+Files reduced to 1 sample per second (sps) are typically 70-100MB.
+<p>
+<h4>1.0.1 Vector data</h4>
+Instruments which measure particle size distributions produce histograms or vector
+data.  These instruments include the suite of PMS-1D probes, the RDMA and quantitative
+data reduction from the PMS-2D probes.
+<p>
+<h4>1.0.2 Multi-rate files</h4>
+RAF's standard data product is a netCDF file where all measurements are output at
+1 sps.  Certain projects require high-rate data.  RAF has standardized at 25 sps
+for high-rate data.  In general we don't want to put out variables sampled at 1 sps
+at 25 sps, as there is no information in the data, and it would take up excess space.
+<p>
+There is also an occasional need to look at data at the sample rate. 
+<p>
+
+<!--------------------------------------------------------------------------- ABS -->
+
+<hr>
+<h3 align=center>NetCDF File Component Descriptions</h3>
+
+
+<!--------------------------------------------------------------------------- ABS -->
+
+<h3>1 Filename</h3>
+
+<p>RAF uses a naming convention consisting of the 3 digit project number, followed
+by the flight type, followed by a 2 digit flight number, followed by "<kbd>.nc</kbd>".
+<p>
+
+e.g.<br>
+<div class="example">
+
+<span class="runin">217tf01.nc</span> would be <b>test</b> flight 1 from project 217.<br>
+<span class="runin">131ff01.nc</span> would be <b>ferry</b> flight 1 from project 131.<br>
+<span class="runin">803rf17h.nc</span> would be high-rate data from <b>research</b> flight 17 of project 803.<br>
+</div>
+<p>
+Flight types used by RAF are "ff", "tf", and "rf".
+<p>
+
+<!--------------------------------------------------------------------------- ABS -->
+
+<h3>2 Data types</h3>
+
+All data are stored using type <kbd>float</kbd>, except for <b>base_time</b> which is
+of type <kbd>int</kbd>.
+<p>
+
+<!--------------------------------------------------------------------------- ABS -->
+
+<h3>3 Naming conventions</h3>
+
+Variable, dimension and attribute names should begin with a letter and be
+composed of letters, digits, and underscores.
+<p>
+<h4>3.1 Variable names</h4>
+The <b>underscore</b> has special meaning for variable names.  Anything
+following an underscore is considered a suffix for grouping variables from
+the same instrument or probe.  There is no standard for suffix names, but
+RAF regularly uses about a dozen specific ones for describing an instrument's
+mounting location on the aircraft.
+<p>
+
+e.g.,<br>
+<div class="example">
+
+<span class="runin">AFSSP_RPO</span>,
+<span class="runin">CFSSP_RPO</span>,
+<span class="runin">PLWC_RPO</span>,
+<span class="runin">CONCF_RPO</span>
+all belong to the same intrument.
+</div>
+<p>
+In our files RPO stands for "Right Pod Outboard".
+<p>
+<h4>3.2 Dimension names</h4>
+Dimension names we use are:
+<ul>
+<li><kbd>sps#</kbd> for variable data rate (sps1, sps5, sps25, sps1000, etc.)
+<li><kbd>Vector#</kbd> for vector lengths (Vector16, Vector41, etc.)
+</ul>
+although I don't believe it matters what they are called.
+<p>
+
+<!--------------------------------------------------------------------------- ABS -->
+
+<h3>4 Dimensions</h3>
+<h4>4.1 First dimension - Time</h4>
+<p><b>Time</b> is the <b>unlimited dimension</b>, and every variable (except
+<b>base_time</b>) has the <b>Time</b> dimension.  No more than one record is to be
+written per second; all high-rate data are to be contained "per record", though
+data averaged down slower than 1 sps may be written (e.g., when you have 1 sample
+every 10 seconds).
+<p>
+<h4>4.2 Second dimension - data rate</h4>
+The second dimension, if present, represents the number of samples
+per second.  The size of this dimension will vary according to the output
+rate of the variable (e.g., RAF uses 1, 5, 10, 25, 50, 250, and 1000).
+If the dimension does not exist, then there is only one sample for the second.
+<p>
+<h4>4.3 Third dimension - vector length</h4>
+The third dimension, if present, is the vector length of the data.
+(This will be present only for variables with vector data).  Only PMS-1D
+probes are producing vector data at this time.
+<p>
+A new dimension has been added called <b>Async</b>.  <b>Async</b> is a
+triplet containing the location of the asynchronous data in a separate
+binary "heap" file.  The first value contains the offset in bytes into the
+file of the first record for that second, the second number tells the record
+length, and the third is the number of records for that particular second.
+<b>Async</b> will always be in the 3rd (or Vector) dimension, e.g., float
+2D-P_LPI(Time, sps1, Async).  <b>Async</b> was added to facilitate future
+capabilities of being able to provide satellite images, PMS-2D data, and other
+asynchronous products into one "heap" file.  (Note:  I have yet to use this
+feature, so implementation of file name, etc., are incomplete).
+<p>
+
+<!--------------------------------------------------------------------------- ABS -->
+
+<h3>5 Variables</h3>
+
+<h4>5.1 Time</h4>
+<p>Time is stored in 2 different methods.  The first is a <b>base_time</b>
+and <b>time_offset</b> pair.  <b>base_time</b> is standard Unix time
+(seconds since Jan 1, 1970), and is typically the time stamp of the
+first record in the file.  <b>base_time</b> has only one value, and does
+not contain the time dimension.  <b>time_offset</b> is added to <b>base_time</b>
+to give the time of the current record.
+<p>
+For the second method, 3 variables are stored in each record called <b>HOUR</b>,
+<b>MINUTE</b>, and <b>SECOND</b> which maintain the current GMT time for that record.
+In 1998 three additional variables were added:  <b>YEAR</b>, <b>MONTH</b>, and
+<b>DAY</b>.
+
+<p>
+<h4>5.2 Missing data</h4>
+At this time we use the <kbd class="att">missing_value</kbd> attribute.  As
+of 01/27/2003 we have added <kbd class="att">_FillValue</kbd> as the missing
+value, <kbd class="att">missing_value</kbd> is being deprecated.
+<p>
+
+<!--------------------------------------------------------------------------- ABS -->
+
+<h3>6 Attributes</h3>
+<h4>6.1 Global attributes</h4>
+<p>
+<pre class="CDL">
+// global attributes:
+                :Source = "NCAR Research Aviation Facility" ;
+                :Address = "P.O. Box 3000, Boulder, CO 80307-3000" ;
+                :Phone = "(303) 497-1030" ;
+                :Conventions = "NCAR-RAF/nimbus" ;
+                :Version = "1.1" ;
+                :DateProcessed = "Sep 18 17:02 UTC 1998" ;
+                :ProjectName = "SHEBA" ;
+                :Aircraft = "N130AR" ;
+                :ProjectNumber = "101" ;
+                :FlightNumber = "rf16" ;
+                :FlightDate = "07/29/1998" ;
+                :TimeInterval = "18:19:14-03:25:20" ;
+                :Categories = "Position,Thermodynamic,Aircraft State,Atmos. State,Liquid Water,Uncorr\'d Raw,Wind,PMS Probe,Housekeeping,Chemistry,Radiation,Non-Standard" ;
+</pre>
+<p>
+<kbd class="att">TimeInterval</kbd> is required (by <b>ncplot</b> and <b>ncpp</b>).
+
+<h4>6.2 Variable attributes</h4>
+<p>All variables contain the basic attributes <kbd class="att">units</kbd>,
+<kbd class="att">long_name</kbd>, and <kbd class="att">_FillValue</kbd>
+(pre 1998 spelled <kbd class="att">MissingValue</kbd>).  In addition
+we provide some other attributes; not all are used for every variable:
+<p>
+<kbd class="att">SampledRate</kbd> is the rate (sps) at which the variable was
+sampled onboard the aircraft.  This does not apply to derived variables.
+<p>
+<kbd class="att">DataQuality</kbd> attempts to inform the user of the quality
+of these data.  Some values are <kbd>Bad</kbd>, <kbd>Preliminary</kbd> and
+<kbd>Good</kbd>
+<p>
+<kbd class="att">Category</kbd> matches one of the categories found in
+the global attributes called <kbd class="att">Categories</kbd>.  Since
+a file can contain hundreds of variables with not very descriptive names,
+this is provided to help create sub-lists of variables.
+<p>
+<kbd class="att">CalibrationCoefficients</kbd> are the values used to produce
+engineering units from a measurement's DC voltage.  It is used by the analog/digital
+group.  <b>These values have already been applied!</b>  They are present for
+documentation.
+<p>
+<kbd class="att">Dependencies</kbd> are the input variables that were used to
+produce this derived value.  Like <kbd class="att">CalibrationCoefficients</kbd>,
+these are present for documentation.
+<p>
+For processing purposes, variables in <b>our</b> files are organized into 3 sorted
+lists.  The first sorted list consists of Analog or Digitally-sampled variables.
+These only have calibration coefficients applied to them.  The second group is raw
+data from "block" probes (e.g., PMS1D, IRS, GPS, and a few from group 1 that need
+special processing).  The third group consists of purely derived variables.  I have
+included one example from each of the 3 groups (which also show different dimension
+schemes):
+<pre class="CDL">
+        float ADIFR(Time) ;
+                ADIFR:units = "mbar" ;
+                ADIFR:long_name = "Vertical Differential Pressure, Radome" ;
+                ADIFR:Category = "Uncorr\'d Raw" ;
+                ADIFR:missing_value = -32767.f ;
+                ADIFR:_FillValue = -32767.f ;
+                ADIFR:SampledRate = 25 ;
+                ADIFR:DataQuality = "Preliminary" ;
+                ADIFR:CalibrationCoefficients = -0.0115f, 5.1637f, 0.001f ;
+
+        float AFSSP_RPC(Time, sps1, Vector16) ;
+                AFSSP_RPC:units = "cnts" ;
+                AFSSP_RPC:long_name = "FSSP-100 Raw Accumulation (per cell)" ;
+                AFSSP_RPC:Category = "PMS Probe" ;
+                AFSSP_RPC:missing_value = -32767.f ;
+                AFSSP_RPC:_FillValue = -32767.f ;
+                AFSSP_RPC:SampledRate = 10 ;
+                AFSSP_RPC:DataQuality = "Preliminary" ;
+                AFSSP_RPC:SerialNumber = "FSSP076" ;
+                AFSSP_RPC:FirstBin = 1 ;
+                AFSSP_RPC:LastBin = 15 ;
+                AFSSP_RPC:CellSizes = 2.f, 5.f, 8.f, 11.f, 14.f, 17.f, 20.f, 23.f, 26.f, 29.f, 32.f, 35.f, 38.f, 41.f, 44.f, 47.f, 2.f, 4.f, 6.f, 8.f, 10.f, 12.f, 14.f, 16.f, 18.f, 20.f, 22.f, 24.f, 26.f, 28.f, 30.f, 32.f, 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f, 9.f, 10.f, 11.f, 12.f, 13.f, 14.f, 15.f, 16.f, 0.5f, 1.f, 1.5f, 2.f, 2.5f, 3.f, 3.5f, 4.f, 4.5f, 5.f, 5.5f, 6.f, 6.5f, 7.f, 7.5f, 8.f ;
+                AFSSP_RPC:CellSizeUnits = "micrometers" ;
+                AFSSP_RPC:DepthOfField = 2.7f ;
+                AFSSP_RPC:BeamDiameter = 0.18f ;
+                AFSSP_RPC:Density = 1.f ;
+                AFSSP_RPC:PLWfactor = 1.e-06f ;
+                AFSSP_RPC:DBZfactor = 1000000.f ;
+
+        float WIC(Time, sps25) ;
+                WIC:units = "M/s" ;
+                WIC:long_name = "GPS-Corrected Wind Vector, Vertical Gust Component" ;
+                WIC:Category = "Wind" ;
+                WIC:missing_value = -32767.f ;
+                WIC:_FillValue = -32767.f ;
+                WIC:DataQuality = "Preliminary" ;
+                WIC:Dependencies = "9 TASX VEWC VNSC PITCH ROLL THDG ATTACK SSLIP VSPD" ;
+</pre>
+
+<p>
+
+
+<!--------------------------------------------------------------------------- ABS -->
+<hr>
+For further information contact:
+<p>
+Chris Webster<br>
+National Center for Atmospheric Research<br>
+Research Aviation Facility<br>
+(303) 497-1044
+<p>
+<address><a href="/cgi-bin/mail_me1.pl/cjw+from_RAF_Web_Software_Page_netCDF">email</a></address>
+<hr>
+<font size=2>
+Last update:
+Mon Jan 27 12:05:22 MST 2003
+</font>
+
+</body>
+</html>
