@@ -146,7 +146,6 @@ void sTwodInit(RAWTBL *varp)
       }
     DBZFAC[probeNum] = atof(p);
 
-printf("sTwodInit: %s %d len=%d:\n", varp->name, probeNum, varp->Length);
     /* 1DC/P has length 32, 2DC/P has length 64.
      */
     length = varp->Length;
@@ -170,7 +169,6 @@ printf("sTwodInit: %s %d len=%d:\n", varp->name, probeNum, varp->Length);
 
     if (j > 0)  /* 2DC only (not 1DC). */
       {
-printf("    2DC EAW for %s %d:\n", varp->name, probeNum);
       if (varp->name[3] == 'C')		/* EAW is fixed .8 for 2DC */
         for (i = 0; i < length; ++i)
           eaw[probeNum][i] = 0.8;
@@ -242,7 +240,6 @@ void sTwodInitH(RAWTBL *varp)
     }
   DBZFAC[probeNum] = atof(p);
 
-printf("sTwodInit: %s %d len=%d:\n", varp->name, probeNum, varp->Length);
   /* 1DC/P has length 32, 2DC/P has length 64.
    */
   length = varp->Length;
