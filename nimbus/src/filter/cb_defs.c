@@ -18,15 +18,11 @@ STATIC FNS:	set_defaultText()
 DESCRIPTION:	The Defaults file contains constants for various probe
 		calculations.
 
-INPUT:		none
-
-OUTPUT:			
-
 REFERENCES:	OpenProjectFile()
 
 REFERENCED BY:	hdr_decode.c, cb_main(), various AMLIB fn's.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 -------------------------------------------------------------------------
 */
 
@@ -111,88 +107,88 @@ void ResetDefaults(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void CreateEditDefaultsWindow()
 {
-	Arg		args[16];
-	Cardinal	n;
-	XmString	labelString;
-	Widget		edFrame, edRC, b[2], defWin, defRC,
-			form[MAX_DEFAULTS], label[MAX_DEFAULTS];
+  Arg		args[16];
+  Cardinal	n;
+  XmString	labelString;
+  Widget	edFrame, edRC, b[2], defWin, defRC,
+		form[MAX_DEFAULTS], label[MAX_DEFAULTS];
 
-	extern Widget	AppShell;
+  extern Widget	AppShell;
 
 
-	n = 0;
-	XtSetArg(args[n], XmNtitle, "Edit Defaults"); n++;
-	XtSetArg(args[n], XmNtransientFor, Shell001); n++;
-	Shell004 = XtCreatePopupShell("editDefaultsShell",
+  n = 0;
+  XtSetArg(args[n], XmNtitle, "Edit Defaults"); n++;
+  XtSetArg(args[n], XmNtransientFor, Shell001); n++;
+  Shell004 = XtCreatePopupShell("editDefaultsShell",
 		transientShellWidgetClass, AppShell, args, n);
 
-	n = 0;
-	EditDefaultsWindow = XmCreateForm(Shell004, "editDefForm", args, n);
+  n = 0;
+  EditDefaultsWindow = XmCreateForm(Shell004, "editDefForm", args, n);
 
-	n = 0;
-	XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
-	XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
-	XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM); n++;
-	XtSetArg(args[n], XmNscrollingPolicy, XmAUTOMATIC); n++;
-	defWin = XmCreateScrolledWindow(EditDefaultsWindow, "defWin", args, n);
-	XtManageChild(defWin);
+  n = 0;
+  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
+  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
+  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM); n++;
+  XtSetArg(args[n], XmNscrollingPolicy, XmAUTOMATIC); n++;
+  defWin = XmCreateScrolledWindow(EditDefaultsWindow, "defWin", args, n);
+  XtManageChild(defWin);
 
-	n = 0;
-	defRC = XmCreateRowColumn(defWin, "defRC", args, n);
-	XtManageChild(defRC);
+  n = 0;
+  defRC = XmCreateRowColumn(defWin, "defRC", args, n);
+  XtManageChild(defRC);
 
-	for (size_t i = 0; i < nDefaults; ++i)
-		{
-		n = 0;
-		form[i] = XmCreateForm(defRC, "frm", args, n);
+  for (size_t i = 0; i < nDefaults; ++i)
+    {
+    n = 0;
+    form[i] = XmCreateForm(defRC, "frm", args, n);
 
-		labelString = XmStringCreate(Defaults[i]->Name, XmFONTLIST_DEFAULT_TAG);
+    labelString = XmStringCreate(Defaults[i]->Name, XmFONTLIST_DEFAULT_TAG);
 
-		n = 0;
-		XtSetArg(args[n], XmNlabelString, labelString); ++n;
-		label[i] = XmCreateLabel(form[i], "lbl", args, n);
-		XtManageChild(label[i]);
-		XmStringFree(labelString);
+    n = 0;
+    XtSetArg(args[n], XmNlabelString, labelString); ++n;
+    label[i] = XmCreateLabel(form[i], "lbl", args, n);
+    XtManageChild(label[i]);
+    XmStringFree(labelString);
 
-		n = 0;
-		XtSetArg(args[n], XmNcolumns, 14 * Defaults[i]->nValues); n++;
-		XtSetArg(args[n], XmNmaxLength, 14 * Defaults[i]->nValues); n++;
-		XtSetArg(args[n], XmNleftAttachment, XmATTACH_WIDGET); n++;
-		XtSetArg(args[n], XmNleftWidget, label[i]); n++;
-		defaultText[i] = XmCreateTextField(form[i], "txt", args, n);
-		XtAddCallback(defaultText[i], XmNlosingFocusCallback,
+    n = 0;
+    XtSetArg(args[n], XmNcolumns, 14 * Defaults[i]->nValues); n++;
+    XtSetArg(args[n], XmNmaxLength, 14 * Defaults[i]->nValues); n++;
+    XtSetArg(args[n], XmNleftAttachment, XmATTACH_WIDGET); n++;
+    XtSetArg(args[n], XmNleftWidget, label[i]); n++;
+    defaultText[i] = XmCreateTextField(form[i], "txt", args, n);
+    XtAddCallback(defaultText[i], XmNlosingFocusCallback,
 				(XtCallbackProc)VerifyDefault, (XtPointer)i);
-		XtAddCallback(defaultText[i], XmNvalueChangedCallback,
+    XtAddCallback(defaultText[i], XmNvalueChangedCallback,
 				(XtCallbackProc)MarkDirty, (XtPointer)i);
-		XtManageChild(defaultText[i]);
+    XtManageChild(defaultText[i]);
 
-		set_defaultText(i);
-		}
+    set_defaultText(i);
+    }
 
-	XtManageChildren(form, nDefaults);
+  XtManageChildren(form, nDefaults);
 
-	n = 0;
-	XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
-	XtSetArg(args[n], XmNtopWidget, defWin); n++;
-	XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
-	XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM); n++;
-	XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
-	edFrame = XmCreateFrame(EditDefaultsWindow, "buttonFrame", args, n);
-	XtManageChild(edFrame);
+  n = 0;
+  XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
+  XtSetArg(args[n], XmNtopWidget, defWin); n++;
+  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
+  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM); n++;
+  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
+  edFrame = XmCreateFrame(EditDefaultsWindow, "buttonFrame", args, n);
+  XtManageChild(edFrame);
 
-	n = 0;
-	edRC = XmCreateRowColumn(edFrame, "edRC", args, n);
-	XtManageChild(edRC);
+  n = 0;
+  edRC = XmCreateRowColumn(edFrame, "edRC", args, n);
+  XtManageChild(edRC);
 
 
-	n = 0;
-	b[0] = XmCreatePushButton(edRC, "resetButton", args, n);
-	XtAddCallback(b[0], XmNactivateCallback, ResetDefaults, NULL);
+  n = 0;
+  b[0] = XmCreatePushButton(edRC, "resetButton", args, n);
+  XtAddCallback(b[0], XmNactivateCallback, ResetDefaults, NULL);
 
-	n = 0;
-	b[1] = XmCreatePushButton(edRC, "dismissButton", args, n);
-	XtAddCallback(b[1], XmNactivateCallback, DismissDefaultsWindow, NULL);
-	XtManageChildren(b, 2);
+  n = 0;
+  b[1] = XmCreatePushButton(edRC, "dismissButton", args, n);
+  XtAddCallback(b[1], XmNactivateCallback, DismissDefaultsWindow, NULL);
+  XtManageChildren(b, 2);
 
 }	/* END CREATEEDITDEFAULTSWINDOW */
 

@@ -25,7 +25,7 @@ static String fallback_resources[] =
    */
   "*topLevelShell.x:				75",
   "*topLevelShell.y:				75",
-  "*topLevelShell.title:			Nimbus 3.7.0",
+  "*topLevelShell.title:			Nimbus 3.7.1",
   "*topLevelShell.iconName:			Nimbus",
   "*topLevelForm.resizePolicy:			RESIZE_GROW",
   "*topLevelForm*buttonRC.spacing:		244",
@@ -221,7 +221,7 @@ static String fallback_resources[] =
   "*edRC.XmPushButton.width:		120",
   "*edRC.orientation:			HORIZONTAL",
   "*defWin.width:			500",
-  "*defWin.height:			310",
+  "*defWin.height:			510",
   "*defWin*XmLabel.height:		35",
   "*defWin*XmLabel.width:		150",
   "*defWin*XmLabel.alignment:		ALIGNMENT_END",
