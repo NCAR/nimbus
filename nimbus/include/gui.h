@@ -38,7 +38,7 @@ extern Widget	list1, goButton, menuBar, readHeaderButton;
 extern Widget	varNameLabel;
 extern Widget	outputVarYes, outputVarNo;
 extern Widget	outputLRbutton, outputSRbutton, outputHRbutton;
-extern Widget	lagText, spikeText, synthconstText, ev_text[], ts_text[];
+extern Widget	lagText, spikeText, synthConstText, ev_text[], ts_text[];
 
 
 /*	Callback prototypes

@@ -40,7 +40,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2000
 #include "decode.h"
 #include "gui.h"
 #include "vardb.h"
-#include "iostream.h"
 #include "injectsd.h"
 
 
@@ -166,7 +165,7 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
   int		outputRate, lag;
   char		*p, *dq;
   float		f;
-  float constsynthval;
+  float		constsynthval;
   NR_TYPE	spike;
   Arg		args[3];
   XmString	newAttr;
@@ -194,7 +193,7 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
   spike = atof(p);
   XtFree(p);
 
-  p=XmTextFieldGetString(synthconstText);
+  p=XmTextFieldGetString(synthConstText);
   constsynthval=atof(p);
   XtFree(p);
 
@@ -424,7 +423,7 @@ static void set_edit_window_data(
   XtSetValues(XmOptionButtonGadget(funcOpMenu),sarg,1);
   XmStringFree(ns);
 
-  XmTextFieldSetString(synthconstText, "");     //display nothing in this field each time editvariable is clicked
+  XmTextFieldSetString(synthConstText, "");     //display nothing in this field each time editvariable is clicked
 
 
   if (VariableType == DERIVED)
@@ -434,8 +433,8 @@ static void set_edit_window_data(
     XtSetSensitive(lagText, false);
     XtSetSensitive(spikeText, false);
     XtSetSensitive(outputSRbutton, false);
-    XmTextFieldSetString(synthconstText,"NA");
-    XtSetSensitive(synthconstText,false);
+    XmTextFieldSetString(synthConstText,"NA");
+    XtSetSensitive(synthConstText,false);
     XtSetSensitive(funcOpMenu,false);
     }
   else
@@ -444,7 +443,7 @@ static void set_edit_window_data(
     XtSetSensitive(spikeText, true);
     XtSetSensitive(outputSRbutton, true);
     XtSetSensitive(funcOpMenu,true);    //for some reason a segmentation error occures here on some occasions
-    XtSetSensitive(synthconstText,true);
+    XtSetSensitive(synthConstText,true);
    
     sprintf(buffer, "%d", lag);
     XmTextFieldSetString(lagText, buffer);

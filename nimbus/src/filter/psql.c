@@ -1,3 +1,4 @@
+#define UDP_BRDCST
 /*
 -------------------------------------------------------------------------
 OBJECT NAME:    psql.c (PostgreS)
@@ -27,7 +28,11 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2003
 #include "gui.h"
 #include "ctape.h"
 #include "vardb.h"
+
+#ifdef UDP_BRDCST
 #include "UdpSocket.h"
+#endif
+
 #include <ctype.h>
 #include <libpq-fe.h>
 
@@ -37,11 +42,13 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2003
 
 static char	sql_str[30000];		// SQL string
 static char	sql2d_str[50000];	// 2D SQL string
-static char	brd_str[30000];		// Broadcast string
 
 static PGconn	*conn;
 
+#ifdef UDP_BRDCST
+static char	brd_str[30000];		// Broadcast string
 static UdpSocket	brdcst(2101, "128.117.84.255");
+#endif
 
 extern NR_TYPE	*SampledData, *AveragedData;
 extern char	dateProcessed[];	// From netcdf.c
@@ -58,8 +65,10 @@ bool InitSQL()
 
 printf("InitSQL\n");
 
+#ifdef UDP_BRDCST
   if (Mode == REALTIME)
     brdcst.openSock(UDP_BROADCAST);
+#endif
 
   conn = PQconnectdb("");
 
@@ -346,8 +355,10 @@ void WriteSQL(char timeStamp[])
     SQLcommand(temp);
     }
 
+#ifdef UDP_BRDCST
   sprintf(brd_str, "RAF-TS %s ", timeStamp);
   brd_p = &brd_str[strlen(brd_str)];
+#endif
 
   sprintf(sql_str, "INSERT INTO RAF_1hz VALUES ('%s', ", timeStamp);
   sql_p = &sql_str[strlen(sql_str)];
@@ -361,11 +372,13 @@ void WriteSQL(char timeStamp[])
     strcpy(sql_p, buffer);
     sql_p += strlen(buffer);
 
+#ifdef UDP_BRDCST
     if (sdi[i]->Broadcast)
       {
       strcpy(brd_p, buffer);
       brd_p += strlen(buffer);
       }
+#endif
     }
 
   for (i = 0; i < nraw; ++i)
@@ -387,9 +400,11 @@ void WriteSQL(char timeStamp[])
       strcpy(sql_p, temp);
       sql_p += len;
 
+#ifdef UDP_BRDCST
       strcpy(brd_p, &temp[1]);
       brd_p += len-2;
       strcpy(&brd_p[-1], ",");
+#endif
       continue;
       }
 
@@ -400,11 +415,13 @@ void WriteSQL(char timeStamp[])
     strcpy(sql_p, buffer);
     sql_p += strlen(buffer);
 
+#ifdef UDP_BRDCST
     if (raw[i]->Broadcast)
       {
       strcpy(brd_p, buffer);
       brd_p += strlen(buffer);
       }
+#endif
     }
 
   for (i = 0; i < nderive; ++i)
@@ -426,9 +443,11 @@ void WriteSQL(char timeStamp[])
       strcpy(sql_p, temp);
       sql_p += len;
 
+#ifdef UDP_BRDCST
       strcpy(brd_p, &temp[1]);
       brd_p += len-2;
       strcpy(&brd_p[-1], ",");
+#endif
       continue;
       }
 
@@ -442,13 +461,16 @@ void WriteSQL(char timeStamp[])
     strcpy(sql_p, buffer);
     sql_p += strlen(buffer);
 
+#ifdef UDP_BRDCST
     if (derived[i]->Broadcast)
       {
       strcpy(brd_p, buffer);
       brd_p += strlen(buffer);
       }
+#endif
     }
 
+#ifdef UDP_BRDCST
   if (Mode == REALTIME)
     {
     strcpy(brd_p, "\n");
@@ -457,6 +479,7 @@ void WriteSQL(char timeStamp[])
     }
 //  else
 //    strcpy(buffer, ");");
+#endif
 
   sprintf(buffer, "); UPDATE global_attributes SET value='%s' WHERE key='EndTime';", timeStamp);
 

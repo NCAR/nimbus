@@ -10,10 +10,10 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #ifndef NIMBUS_H
 #define NIMBUS_H
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <string>
-#include <string.h>
+#include <cstring>
 #include <sys/types.h>
 #include "constants.h"
 
@@ -196,14 +196,9 @@ extern int	ProcessingRate, FlightNumberInt, PauseWhatToDo, Mode;
 extern char	buffer[];
 
 extern int timeindex[3];
-extern float temptime;
-extern int  hr;
-extern int mins;
-extern int sec;
 extern bool SDF;
 extern bool SDC;
 extern bool SDP;
-
 
 
 /*      Function Prototypes

@@ -1,6 +1,9 @@
 
 Version number is changed in version.h.
 -------------------------------------------------------------------------
+08/15/04	3.6.0
+	Synthetic data.
+
 07/07/04	3.5.0
 	Fixed HRT Modulo bug!!!!!  Fixed Garmin GTRK issue by turning GGVEW
 	and GGVNS into raw's removing from derived table.  Fixed 1 hz toggle

@@ -1,4 +1,4 @@
-/***********************************************/
+//***********************************************/
 //  injectsd.cpp
 //******************************************/
 #ifndef ninjectsdc
@@ -6,8 +6,10 @@
 
 
 #include <iostream>
-#include "injectsd.h"
 #include "nimbus.h"
+#include "injectsd.h"
+
+#include <vector>
 
 extern NR_TYPE          *AveragedData,*HighRateData,*SampledData;
 

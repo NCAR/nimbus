@@ -31,8 +31,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "gui.h"
 #include "circbuff.h"
 #include "amlib.h"
-#include <iostream>
-#include <string.h>
 #include "injectsd.h"
 
 
@@ -145,18 +143,23 @@ printf("cntr=%d\n", cntr);
 
     AverageSampledData();
    
-    if (SynthData==true)   //checks to see if the user has chosen to use synthetic data 
+    if (SynthData == true)
       {
-/* and this in the Inject fn? */
-	hr = (int)SampledData[timeindex[0]];
-	mins = (int)SampledData[timeindex[1]];
-	sec = (int)SampledData[timeindex[2]];
-	temptime=(hr*3600)+(mins*60)+sec;
+      int	hr, mins, sec;
 
-        sd.InjectSyntheticData(temptime); 
+      hr = (int)SampledData[timeindex[0]];
+      mins = (int)SampledData[timeindex[1]];
+      sec = (int)SampledData[timeindex[2]];
+      float temptime=(hr*3600)+(mins*60)+sec;
+
+      sd.InjectSyntheticData(temptime); 
       }
     
     ComputeLowRateDerived();
+
+//printf(" %02d:%02d:%02d cd: %f\n",
+//  ntohs(h->hour), ntohs(h->minute), ntohs(h->second),
+//  AveragedData[derived[SearchTable((char**)derived, nderive, "TTX")]->LRstart]);
 
     WriteNetCDF();
     UpdateTime(SampledData);
