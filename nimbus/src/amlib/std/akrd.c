@@ -31,7 +31,7 @@ extern int    Aircraft;
 /* -------------------------------------------------------------------- */
 void sakrd(DERTBL *varp)
 {
-  NR_TYPE    qcxc, adifr, pitch, thedot, pfactor;
+  NR_TYPE    qcxc, adifr;
   NR_TYPE    akrd, ratio;
 
   adifr    = GetSample(varp, 0);

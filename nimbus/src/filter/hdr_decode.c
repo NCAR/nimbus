@@ -100,7 +100,8 @@ static PMS	pms2d_probes[] =
 
 
 static int	InertialSystemCount, GPScount, twoDcnt, NephCnt;
-static int	probeCnt, probeType;
+static size_t	probeCnt;
+static int	probeType;
 static long	start, rate, length;
 static char	*item_type, location[NAMELEN];
 static char	*derivedlist[MAX_DEFAULTS*4],	/* DeriveNames file	*/
@@ -147,7 +148,6 @@ int DecodeHeader(char header_file[])
   char	*vn;
   FILE	*fp;
   char	*loc, *p;
-  int	i;		/* fd of header source */
 
   InertialSystemCount = GPScount = twoDcnt = NephCnt = 0;
 
@@ -574,7 +574,7 @@ int DecodeHeader(char header_file[])
       if (strcmp(vn, AVAPS_STR) == 0)
         {
         AVAPS = true;
-        for (i = 0; i < 4; ++i)
+        for (size_t i = 0; i < 4; ++i)
           {
           sprintf(location, "_%02d", i);
           add_raw_names(item_type);
@@ -637,9 +637,9 @@ probeCnt = 0;
   /* Add some final items to 'Toggle Probe' menu.
    */
   {
-  int	cnt, i;
+  int	cnt = 0;
 
-  for (i = 0; pms1_probes[i].name; ++i)
+  for (size_t i = 0; pms1_probes[i].name; ++i)
     cnt += pms1_probes[i].cnt + pms1v2_probes[i].cnt;
 
   if (cnt > 2)
@@ -652,19 +652,16 @@ probeCnt = 0;
   if (AccessProjectFile(USERNAMES, "r") == true)
     add_file_to_DERTBL(USERNAMES);
 
-{
-int	i;
 /*
-for (i = 0; i < sdi.size(); ++i)
+for (size_t i = 0; i < sdi.size(); ++i)
   printf("%-12s%5d, %d\n", sdi[i]->name, sdi[i]->SampleRate, sdi[i]->ADSstart);
 
-for (i = 0; i < raw.size(); ++i)
+for (size_t i = 0; i < raw.size(); ++i)
   printf("%-12s%5d\n", raw[i]->name, raw[i]->xlate);
 
-for (i = 0; i < derived.size(); ++i)
+for (size_t i = 0; i < derived.size(); ++i)
   printf("%-12s\n", derived[i]->name, derived[i]->compute);
 */
-}
 
   std::sort(sdi.begin(), sdi.end(), VarCompareLT);
   std::sort(raw.begin(), raw.end(), VarCompareLT);
@@ -762,7 +759,9 @@ static void initSDI(char vn[])
       rp->convertOffset = 0;
 
     GetConversionFactor(vn, &(rp->convertFactor));
-    GetOrder(vn, &(rp->order));
+    long tmp;
+    GetOrder(vn, &tmp);
+    rp->order = tmp;
     GetCalCoeff(vn, &f);
     memcpy((char *)rp->cof, (char *)f, (int)sizeof(float) * rp->order);
     rp->order = check_cal_coes(rp->order, rp->cof);
@@ -804,7 +803,9 @@ static void initSDI(char vn[])
 
   GetConversionFactor(vn, &(cp->convertFactor));
   GetSampleOffset(vn, &(cp->ADSoffset));
-  GetOrder(vn, &(cp->order));
+  long tmp;
+  GetOrder(vn, &tmp);
+  cp->order = tmp;
   GetType(vn, &type);
 
   strcpy(cp->type, type);
@@ -830,7 +831,6 @@ static void initSDI(char vn[])
 */
 static void initHoneywell(char vn[])
 {
-  int		i;
   RAWTBL	*rp;
   char		*names[50];
   char		name[NAMELEN];
@@ -844,9 +844,9 @@ static void initHoneywell(char vn[])
 
   ReadTextFile(IRSNAMES, names);
 
-  for (i = 0; names[i]; ++i)
+  for (int i = 0; names[i]; ++i)
     {
-    sscanf(names[i], "%s %d", name, &rate);
+    sscanf(names[i], "%s %ld", name, &rate);
 
     if ((rp = add_name_to_RAWTBL(name)) == (RAWTBL *)ERR)
       continue;
@@ -895,7 +895,6 @@ static void initGustCorrected(char vn[])
 /* -------------------------------------------------------------------- */
 static void initLitton51(char vn[])
 {
-  int	i;
   char	*names[50];
   char	name[NAMELEN];
 
@@ -910,9 +909,9 @@ static void initLitton51(char vn[])
 
   ReadTextFile(INSNAMES, names);
 
-  for (i = 0; names[i]; ++i)
+  for (int i = 0; names[i]; ++i)
     {
-    sscanf(names[i], "%s %d", name, &rate);
+    sscanf(names[i], "%s %ld", name, &rate);
     add_name_to_RAWTBL(name);
     }
 
@@ -933,12 +932,11 @@ static void initLitton51(char vn[])
 static void initOphir3(char vn[])
 {
   RAWTBL	*rp;
-  int		i, j;
   char		*list[32];
 
   ReadTextFile(OPHIR3NAMES, list);
 
-  for (i = 0; list[i]; ++i)
+  for (size_t i = 0; list[i]; ++i)
     {
     if ((rp = add_name_to_RAWTBL(strtok(list[i], " \t"))) == (RAWTBL *)ERR)
       continue;
@@ -947,7 +945,7 @@ static void initOphir3(char vn[])
     rp->convertFactor	= 1.0;
     rp->order		= atoi(strtok((char *)NULL, " \t"));
 
-    for (j = 0; j < rp->order; ++j)
+    for (size_t j = 0; j < rp->order; ++j)
       rp->cof[j] = (float)atof(strtok((char *)NULL, " \t"));
     }
 
@@ -959,7 +957,7 @@ static void initOphir3(char vn[])
 /* -------------------------------------------------------------------- */
 static void initMASP(char vn[])
 {
-  int		i, indx, nbins = 1;
+  int		indx, nbins = 1;
   RAWTBL	*rp;
   DERTBL	*dp;
   char		temp[NAMELEN];
@@ -1035,8 +1033,6 @@ static void initMASP(char vn[])
 static void initCLIMET(char vn[])
 {
   int		indx;
-  RAWTBL	*rp;
-  DERTBL	*dp;
 
   add_raw_names(vn);
   add_derived_names(vn);
@@ -1069,9 +1065,7 @@ static void initCLIMET(char vn[])
 /* -------------------------------------------------------------------- */
 static void initRDMA(char vn[])
 {
-  int		i, indx;
-  RAWTBL	*rp;
-  DERTBL	*dp;
+  int		indx;
 
   add_raw_names(vn);
   add_derived_names(vn);
@@ -1096,7 +1090,7 @@ static void initRDMA(char vn[])
 
   derived[indx]->Length = 64;
 
-  for (i = 0; i < derived.size(); ++i)
+  for (size_t i = 0; i < derived.size(); ++i)
     if (derived[i]->ProbeType == PROBE_RDMA)
       derived[i]->Default_HR_OR = rate;
 
@@ -1202,7 +1196,7 @@ static void initPMS1D(char vn[])
 /* -------------------------------------------------------------------- */
 static void initPMS1Dv2(char vn[])
 {
-  int		i, indx;
+  int		indx;
   RAWTBL	*rp;
   DERTBL	*dp;
   strnam	*hsk_name;
@@ -1240,7 +1234,7 @@ static void initPMS1Dv2(char vn[])
   GetHouseKeepingNames(vn, (char **)&hsk_name);
   GetCalCoeff(vn, &cals);
 
-  for (i = 0; i < P1DV2_AUX; ++i)
+  for (size_t i = 0; i < P1DV2_AUX; ++i)
     {
     if (strcmp(hsk_name[i], "DUMMY") == 0 || strcmp(hsk_name[i], "") == 0)
       continue;
@@ -1350,7 +1344,7 @@ static void initPMS1Dv2(char vn[])
 /* -------------------------------------------------------------------- */
 static void initPMS1Dv3(char vn[])
 {
-  int		i, j, indx;
+  int		indx;
   long		nbins;
   RAWTBL	*rp;
   DERTBL	*dp;
@@ -1400,8 +1394,10 @@ static void initPMS1Dv3(char vn[])
   SetLookupSuffix("_V3");
 
   /* Housekeeping names and cals from PMSspecs */
-  for (i = 0; i < 8; ++i)
+  for (int i = 0; i < 8; ++i)
     {
+    int j;
+
     sprintf(buffer, "HSKP%d", i);
     p = GetPMSparameter(serialNum, buffer);
     
@@ -1463,7 +1459,6 @@ static void initPMS1Dv3(char vn[])
 /* -------------------------------------------------------------------- */
 static void initGreyHouse(char vn[])
 {
-  int		i;
   strnam	*hsk_name;
   float		*cals;
   RAWTBL	*rp;
@@ -1474,7 +1469,7 @@ static void initGreyHouse(char vn[])
   GetHouseKeepingNames(vn, (char **)&hsk_name);
   GetCalCoeff(vn, &cals);
 
-  for (i = 0; i < GREY_HOUSE; ++i)
+  for (int i = 0; i < GREY_HOUSE; ++i)
     {
     if (strcmp(hsk_name[i], "DUMMY") == 0 || strcmp(hsk_name[i], "") == 0)
       continue;
@@ -1496,7 +1491,6 @@ static void initGreyHouse(char vn[])
 /* -------------------------------------------------------------------- */
 static void initPMS2Dhouse(char vn[])
 {
-  int		i;
   strnam	*hsk_name;
   float		*cals;
   RAWTBL	*rp;
@@ -1508,7 +1502,7 @@ static void initPMS2Dhouse(char vn[])
   GetHouseKeepingNames(vn, (char **)&hsk_name);
   GetCalCoeff(vn, &cals);
 
-  for (i = 0; i < P2D_HOUSE; ++i)
+  for (int i = 0; i < P2D_HOUSE; ++i)
     {
     if (strcmp(hsk_name[i], "DUMMY") == 0 || strcmp(hsk_name[i], "") == 0)
       continue;
@@ -1539,7 +1533,7 @@ static void initPMS2Dhouse(char vn[])
 /* -------------------------------------------------------------------- */
 static void initPMS2D(char vn[], int order)
 {
-  int		i, indx, nBins;
+  int		indx, nBins;
   char		*p, name[32], buff[128];
   RAWTBL	*rp;
   DERTBL	*dp;

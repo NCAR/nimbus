@@ -25,7 +25,7 @@ REFERENCED BY:	lrloop.c hrloop.c winputops.c
 NOTE:		If you chnage one, make sure the other does/doesn't need
 		the same change.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-97
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 -------------------------------------------------------------------------
 */
 
@@ -35,8 +35,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-97
 #include <netinet/in.h>
 
 extern ushort	*bits;
-extern NR_TYPE	*volts;
-
 
 /* -------------------------------------------------------------------- */
 void DecodeADSrecord(
@@ -45,7 +43,7 @@ void DecodeADSrecord(
 {
   /* Cast SDI variables into new record
    */
-  for (int i = 0; i < sdi.size(); ++i)
+  for (size_t i = 0; i < sdi.size(); ++i)
   {
     SDITBL	*sp = sdi[i];
     int		pos;
@@ -54,22 +52,20 @@ void DecodeADSrecord(
     lrp	= &lr[sp->ADSstart];
     pos	= sp->SRstart;
 
+    // Raw analog/digital bits/counts for WINDS display.
     if (Mode == REALTIME)
-    {
       bits[sp->LRstart] = ntohs(lrp[0]);
-      volts[sp->LRstart] = (NR_TYPE)((short)ntohs(lrp[0]) - sp->convertOffset) * sp->convertFactor;
-    }
 
     if (sp->type[0] == 'C')
     {
       if (strcmp(sp->type, "C24") == 0)
       {
-        for (int j = 0; j < sp->SampleRate; ++j, ++pos)
+        for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
           nlr[pos] = (NR_TYPE)ntohl(*((unsigned long *)&lrp[j * sp->ADSoffset]));
       }
       else
       {
-        for (int j = 0; j < sp->SampleRate; ++j, ++pos)
+        for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
           nlr[pos] = (NR_TYPE)ntohs(lrp[j * sp->ADSoffset]);
       }
     }
@@ -77,12 +73,12 @@ void DecodeADSrecord(
     {
       if (strcmp(sp->type, "D20") == 0)
       {
-        for (int j = 0; j < sp->SampleRate; ++j, ++pos)
+        for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
           nlr[pos] = (NR_TYPE)ntohl(*((long *)&lrp[j * sp->ADSoffset]));
       }
       else
       {
-        for (int j = 0; j < sp->SampleRate; ++j, ++pos)
+        for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
           nlr[pos] = (short)ntohs((ushort)lrp[j * sp->ADSoffset]);
       }
     }
@@ -91,7 +87,7 @@ void DecodeADSrecord(
 
   /* Extract block variables into new record
    */
-  for (int i = 0; i < raw.size(); ++i)
+  for (size_t i = 0; i < raw.size(); ++i)
   {
     RAWTBL *rp = raw[i];
 

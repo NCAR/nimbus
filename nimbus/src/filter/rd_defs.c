@@ -36,7 +36,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-8
 #define ARRAY_TOKENS  ", \t\n"
 
 
-extern int	nDefaults;
+extern size_t	nDefaults;
 extern DEFAULT	*Defaults[];
 
 static void  process_line(char *line_p, FILE *fp);
@@ -84,7 +84,7 @@ void ReadDefaultsFile()
 /* -------------------------------------------------------------------- */
 NR_TYPE *GetDefaultsValue(char target[], char var[])
 {
-  for (int i = 0; i < nDefaults; ++i)
+  for (size_t i = 0; i < nDefaults; ++i)
     {
     if (strcmp(Defaults[i]->Name, target) == 0)
       {
@@ -104,9 +104,7 @@ NR_TYPE *GetDefaultsValue(char target[], char var[])
 /* -------------------------------------------------------------------- */
 void CheckAndAddAttrs(int fd, int varid, char name[])
 {
-  int	i;
-
-  for (i = 0; i < nDefaults; ++i)
+  for (size_t i = 0; i < nDefaults; ++i)
     {
     if (strcmp(name, Defaults[i]->var) == 0)
       {
@@ -120,7 +118,7 @@ void CheckAndAddAttrs(int fd, int varid, char name[])
 /* -------------------------------------------------------------------- */
 static void process_line(char *line_p, FILE *fp)
 {
-  int    i, whichOne;
+  size_t whichOne;
   char  *name, *nxt, *is_array;
 
   name = strupr(strtok(line_p, TOKENS));
@@ -131,7 +129,7 @@ static void process_line(char *line_p, FILE *fp)
    */
   whichOne = nDefaults;
 
-  for (i = 0; i < nDefaults; ++i)
+  for (size_t i = 0; i < nDefaults; ++i)
     if (strcmp(name, Defaults[i]->Name) == 0)
       {
       whichOne = i;
@@ -166,7 +164,7 @@ static void process_line(char *line_p, FILE *fp)
 
   if (is_array)
     {
-    for (i = 0; i < Defaults[whichOne]->nValues; ++i)
+    for (size_t i = 0; i < Defaults[whichOne]->nValues; ++i)
       {
       nxt = strtok((char *)NULL, ARRAY_TOKENS);
 

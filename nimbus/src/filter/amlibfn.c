@@ -35,13 +35,11 @@ static char	*suffix;
 /* -------------------------------------------------------------------- */
 void RunAMLIBinitializers()
 {
-  int	i;
-
-  for (i = 0; i < raw.size(); ++i)
+  for (size_t i = 0; i < raw.size(); ++i)
     if (raw[i]->Initializer)
       (*raw[i]->Initializer)(raw[i]);
 
-  for (i = 0; i < derived.size(); ++i)
+  for (size_t i = 0; i < derived.size(); ++i)
     if (derived[i]->Initializer)
       (*derived[i]->Initializer)(derived[i]);
 

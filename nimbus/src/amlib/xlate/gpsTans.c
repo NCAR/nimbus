@@ -36,16 +36,16 @@ void decodeJulianDay(int julian_day, int year, int *month, int *day);
 /* -------------------------------------------------------------------- */
 void xlgstat(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-  Hdr_blk *hdr = (Hdr_blk *)ADSrecord;
-
   *output = (NR_TYPE)ntohf(((Gps_blk *)input)->ghealth);
 
   if (*output != 0.0)
     printf("gpsTans: GSTAT = %d\n", (int)*output);
 
-//printf("%02d:%02d:%02d\n",
-//	ntohs(hdr->hour), ntohs(hdr->minute), ntohs(hdr->second));
 /*
+  Hdr_blk *hdr = (Hdr_blk *)ADSrecord;
+printf("%02d:%02d:%02d\n",
+	ntohs(hdr->hour), ntohs(hdr->minute), ntohs(hdr->second));
+
 printf("week=%d, secs=%f, pos_time=%f, vel_time=%f, bias=%f, biasrt=%f\n",
 	ntohl(((Gps_blk *)input)->gpsweek),
 	((Gps_blk *)input)->gpstime, ((Gps_blk *)input)->postime,
@@ -263,7 +263,6 @@ int computeJulianDay(int year, int month, int day)
 void decodeJulianDay(int julian_day, int year, int *month, int *day)
 {
   int *cal_ptr;                                 // calendar pointer
-  int tmp;
  
   static int calendar[] =
          {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365};

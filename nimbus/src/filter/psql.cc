@@ -71,9 +71,7 @@ PostgreSQL::PostgreSQL(std::string specifier)
 void
 PostgreSQL::WriteSQL(const std::string timeStamp)
 {
-  int	i, j, len;
-
-  static int	cntr = 0;
+  static size_t	cntr = 0;
 
   /* Set global attributes start and end time to the timeStamp of the
    * first record to arrive.
@@ -106,7 +104,7 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
    */
   bool addComma = false;
 
-  for (i = 0; i < sdi.size(); ++i)
+  for (size_t i = 0; i < sdi.size(); ++i)
   {
     addValue(_sqlString, _broadcastString, AveragedData[sdi[i]->LRstart], addComma);
     addComma = true;
@@ -115,7 +113,7 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
 
   /* Three loops again, analog, raw and derived.  This is raw.
    */
-  for (i = 0; i < raw.size(); ++i)
+  for (size_t i = 0; i < raw.size(); ++i)
   {
     if (raw[i]->Length > 1)	// PMS/vector data.
       addVector(_sqlString, _broadcastString, &AveragedData[raw[i]->LRstart], raw[i]->Length, true);
@@ -126,7 +124,7 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
 
   /* Three loops again, analog, raw and derived.  This is derived.
    */
-  for (i = 0; i < derived.size(); ++i)
+  for (size_t i = 0; i < derived.size(); ++i)
   {
     if (derived[i]->Length > 1)
       addVector(_sqlString, _broadcastString, &AveragedData[derived[i]->LRstart], derived[i]->Length, true);
@@ -223,7 +221,7 @@ void
 PostgreSQL::createTables()
 {
   submitCommand(
-  "CREATE TABLE Variable_List (Name char(20) PRIMARY KEY, Units char(16), long_name char(80), SampleRateTable char(16), nDims int, dims int[], nCals int, poly_cals float[], missing_value float, data_quality char(16))");
+  "CREATE TABLE Variable_List (Name char(20) PRIMARY KEY, Units char(16), Uncalibrated_Units char(16), long_name char(80), SampleRateTable char(16), nDims int, dims int[], nCals int, poly_cals float[], missing_value float, data_quality char(16))");
 
   submitCommand(
   "CREATE TABLE Categories (variable char(20), category char(20))");
@@ -285,9 +283,14 @@ PostgreSQL::initializeVariableList()
 
   /* 3 big loops here for analog, raw and derived.  This is analog.
    */
-  for (int i = 0; i < sdi.size(); ++i)
+  for (size_t i = 0; i < sdi.size(); ++i)
   {
-    addVariableToDataBase(sdi[i]->name, VarDB_GetUnits(sdi[i]->name),
+    std::string alt_units("V");
+
+    if (sdi[i]->type[0] == 'C')	// Pulse Counters.
+      alt_units = "count";
+
+    addVariableToDataBase(sdi[i]->name, VarDB_GetUnits(sdi[i]->name), alt_units,
 	VarDB_GetTitle(sdi[i]->name), sdi[i]->SampleRate, nDims, dims,
 	sdi[i]->order, sdi[i]->cof, MISSING_VALUE, "Preliminary");
 
@@ -299,7 +302,7 @@ PostgreSQL::initializeVariableList()
 
   /* 3 big loops here for analog, raw and derived.  This is raw.
    */
-  for (int i = 0; i < raw.size(); ++i)
+  for (size_t i = 0; i < raw.size(); ++i)
   {
     std::string        name;
 
@@ -319,7 +322,7 @@ PostgreSQL::initializeVariableList()
 
       _sqlString.str("");
       _sqlString << "INSERT INTO PMS2D_list VALUES ('" << name
-	<< name << "', '" << raw[i]->SerialNumber << "')";
+	<< "', '" << raw[i]->SerialNumber << "')";
       submitCommand(_sqlString.str());
 
       _sqlString.str("");
@@ -354,7 +357,7 @@ PostgreSQL::initializeVariableList()
     else
       nDims = 1;
 
-    addVariableToDataBase(raw[i]->name, VarDB_GetUnits(raw[i]->name),
+    addVariableToDataBase(raw[i]->name, VarDB_GetUnits(raw[i]->name), "",
 	VarDB_GetTitle(raw[i]->name), raw[i]->SampleRate, nDims, dims,
 	0, 0, MISSING_VALUE, "Preliminary");
 
@@ -371,7 +374,7 @@ PostgreSQL::initializeVariableList()
 
   /* 3 big loops here for analog, raw and derived.  This is derived.
    */
-  for (int i = 0; i < derived.size(); ++i)
+  for (size_t i = 0; i < derived.size(); ++i)
   {
     if (derived[i]->Length > 1)
     {
@@ -381,7 +384,7 @@ PostgreSQL::initializeVariableList()
     else
       nDims = 1;
 
-    addVariableToDataBase(derived[i]->name, VarDB_GetUnits(derived[i]->name),
+    addVariableToDataBase(derived[i]->name, VarDB_GetUnits(derived[i]->name), "",
 	VarDB_GetTitle(derived[i]->name), derived[i]->SampleRate, nDims, dims,
 	0, 0, MISSING_VALUE, "Preliminary");
 
@@ -403,7 +406,7 @@ PostgreSQL::WriteSQLvolts(const std::string timeStamp)
   rateTableList::iterator it;
   int	maxRate = 1;
 
-  extern NR_TYPE	*SampledData;
+  extern NR_TYPE	*SampledData, *SRTvolts;
 
   for (it = _ratesTables.begin(); it != _ratesTables.end(); ++it)
   {
@@ -420,12 +423,12 @@ PostgreSQL::WriteSQLvolts(const std::string timeStamp)
       _sqlString << "INSERT INTO " << it->second << " VALUES ('" << timeStamp
 	<< "." << std::setfill('0') << std::setw(3) << 1000 / it->first * i << "'";
 
-      for (int j = 0; j < sdi.size(); ++j)
-        if (sdi[j]->SampleRate == it->first)
-          addValue(_sqlString, SampledData[sdi[j]->SRstart+i], true);
+      for (size_t j = 0; j < sdi.size(); ++j)
+        if (sdi[j]->SampleRate == (size_t)it->first)
+          addValue(_sqlString, SRTvolts[sdi[j]->SRstart+i], true);
 
-      for (int j = 0; j < raw.size(); ++j)
-        if (raw[j]->SampleRate == it->first && raw[j]->Length == 1)
+      for (size_t j = 0; j < raw.size(); ++j)
+        if (raw[j]->SampleRate == (size_t)it->first && raw[j]->Length == 1)
           addValue(_sqlString, SampledData[raw[j]->SRstart+i], true);
 
       _sqlString << ");";
@@ -452,8 +455,6 @@ PostgreSQL::Write2dSQL(RAWTBL *rp, long time, long msec, ulong *p, int nSlices)
 {
   if (nSlices < 2)
     return;
-
-  char	temp[128];
 
   std::string name(rp->name);
   name = name.substr(0, name.length()-1);
@@ -566,6 +567,7 @@ void
 PostgreSQL::addVariableToDataBase(
 		const std::string& name,
 		const std::string& units,
+		const std::string& uncaled_units,
 		const std::string& longName,
 		const int sampleRate,
 		const int nDims,
@@ -580,6 +582,7 @@ PostgreSQL::addVariableToDataBase(
   entry << "INSERT INTO Variable_List VALUES ('" <<
 	name		<< "', '" <<
 	units		<< "', '" <<
+	uncaled_units	<< "', '" <<
 	longName	<< "', '";
 
   if (sampleRate > 0)
@@ -641,7 +644,7 @@ PostgreSQL::addVariableToTables(rateTableMap &tableMap, const var_base *var, boo
   if (addToSRTtable)
     rates.push_back(var->SampleRate);
 
-  for (int i = 0; i < rates.size(); ++i)
+  for (size_t i = 0; i < rates.size(); ++i)
   {
     // Set up raw tables.
     std::stringstream preamble, rt;

@@ -37,12 +37,12 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2001
 
 static std::vector<SDITBL *> sdi_spike;
 static std::vector<RAWTBL *> raw_spike;
-static std::vector<int>	nSpikesSDI, nSpikesRAW;
+static std::vector<size_t>   nSpikesSDI, nSpikesRAW;
 
 static char	*name;
 
-static void checkVariable(int, int, NR_TYPE, int *);
-static void check1Hz(int, int, NR_TYPE, int *);
+static void checkVariable(int, size_t, NR_TYPE, size_t *);
+static void check1Hz(int, size_t, NR_TYPE, size_t *);
 static NR_TYPE despike(NR_TYPE *);
 static NR_TYPE polyinterp(NR_TYPE xa[], NR_TYPE ya[], int n, int x);
 
@@ -66,7 +66,7 @@ void AddVariableToRAWdespikeList(RAWTBL *varp)
 /* -------------------------------------------------------------------- */
 void LogDespikeInfo()
 {
-  int	i;
+  size_t i;
 
   for (i = 0; i < sdi_spike.size(); ++i)
     {
@@ -97,7 +97,7 @@ static NR_TYPE	*prev_rec, *this_rec, *next_rec, *prev2_rec, *next2_rec;
 
 void DespikeData(CircularBuffer *LRCB, int index)
 {
-  int		i;
+  size_t i;
 
   /* I don't expect to be doing despiking often, so let's check.
   */
@@ -154,7 +154,7 @@ void DespikeData(CircularBuffer *LRCB, int index)
 }	/* END DESPIKEDATA */
 
 /* -------------------------------------------------------------------- */
-static void check1Hz(int SRstart, int SampleRate, NR_TYPE SpikeSlope, int *counter)
+static void check1Hz(int SRstart, size_t SampleRate, NR_TYPE SpikeSlope, size_t *counter)
 {
   NR_TYPE	points[5], dir1, dir2;	/* Direction of data	*/
 
@@ -178,13 +178,13 @@ static void check1Hz(int SRstart, int SampleRate, NR_TYPE SpikeSlope, int *count
 }	/* END CHECK1HZ */
 
 /* -------------------------------------------------------------------- */
-static void checkVariable(int SRstart, int SampleRate, NR_TYPE SpikeSlope, int *counter)
+static void checkVariable(int SRstart, size_t SampleRate, NR_TYPE SpikeSlope, size_t *counter)
 {
-  int		i, j, k, sx, ex, spikeCount = 0,
+  size_t	sx, ex, spikeCount = 0,
 		spCnt, consecutiveCnt, nPoints;
 
   NR_TYPE	points[2004], xa[6], ya[6],
-		dir1, dir2;	/* Direction of data	*/
+		dir1;	/* Direction of data	*/
 
   /* Copy all points to a seperate place for inspection.
    */
@@ -194,7 +194,7 @@ static void checkVariable(int SRstart, int SampleRate, NR_TYPE SpikeSlope, int *
   memcpy((char *)&points[SampleRate+2], (char *)&next_rec[SRstart], NR_SIZE * SampleRate);
   nPoints = 2 * SampleRate + 2;
 
-  for (i = 2; i < SampleRate+2; ++i)
+  for (size_t i = 2; i < SampleRate+2; ++i)
     {
     sx = ex = i;
 
@@ -229,8 +229,8 @@ static void checkVariable(int SRstart, int SampleRate, NR_TYPE SpikeSlope, int *
         printf("Despike: %s, delta %g - slope=%g, point = %g, nPoints=%d\n",
 		name, dir1, SpikeSlope, this_rec[sx+1], ex-sx-1);
 
-        for (j = 1; j < spCnt-2; ++j)
-          for (k = (int)xa[j]+1; k < (int)xa[j+1]; ++k)
+        for (size_t j = 1; j < spCnt-2; ++j)
+          for (int k = (int)xa[j]+1; k < (int)xa[j+1]; ++k)
             points[k] = polyinterp(xa, ya, spCnt, k);
 
         i = ex-1;
@@ -249,12 +249,11 @@ static void checkVariable(int SRstart, int SampleRate, NR_TYPE SpikeSlope, int *
 /* -------------------------------------------------------------------- */
 static NR_TYPE despike(NR_TYPE *points)
 {
-  int		i;
   NR_TYPE	y = 0.0;
 
   static NR_TYPE c[] = { -0.166667, 0.666667, 0.0, 0.666667, -0.166667 };
 
-  for (i = 0; i < 5; ++i)
+  for (size_t i = 0; i < 5; ++i)
     if (i != 2)
       y += c[i] * points[i];
 

@@ -26,7 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2002
 #include "amlib.h"
 
 static const NR_TYPE Tzero = 273.0;
-static NR_TYPE	cal[] = { 58.915, 33.57, 1.0 };
+//static NR_TYPE	cal[] = { 58.915, 33.57, 1.0 };
 static NR_TYPE	supersat, conc;
 
 static NR_TYPE	esw(NR_TYPE T);
@@ -61,10 +61,10 @@ void sccns(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void sccnc(DERTBL *varp)
 {
-  int		ccn_status, sig;
-  NR_TYPE	bt, avet, delv;
+  int		ccn_status = 0, sig;
+  NR_TYPE	bt, avet, delv = 0.0;
   NR_TYPE	dt, tt, lp, stat;
-  static int	ccnprev=10, sigmin=10, sigmax=-10, prestat=10;
+  static int	sigmin=10, sigmax=-10, prestat=10;
   static int	difstat, sec=0, flg=0;
   static NR_TYPE	ttave = 0, btave = 0;
 
@@ -131,7 +131,7 @@ void sccnc(DERTBL *varp)
     // calculate CCN concentration
 
     if (ccn_status != 0)
-    delv = sigmax - sigmin;
+      delv = sigmax - sigmin;
     if (supersat > 0)
       conc = delv * 91.35 * pow(supersat, -0.562);
     sigmin = 10;
@@ -146,7 +146,7 @@ void sccnc(DERTBL *varp)
 
   if (stat == 10 || stat == 0){
     sigmin = 10;
-    sigmax - -10;
+    sigmax = -10;
   }
 
 

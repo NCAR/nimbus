@@ -37,7 +37,7 @@ std::vector<RAWTBL *> raw;	/* Alphabeticly sorted pointers		*/
 std::vector<DERTBL *> derived;	/* Alphabeticly sorted pointers		*/
 std::vector<DERTBL *> ComputeOrder;	/* Compute Order for derived	*/
 
-int	nDefaults;
+size_t	nDefaults;
 DEFAULT	*Defaults[MAX_DEFAULTS];	/* Values from 'Defaults' file	*/
 
 bool	LITTON51_present,	/* hdr_decode.c & adsIO.c		*/
@@ -50,10 +50,9 @@ bool	LITTON51_present,	/* hdr_decode.c & adsIO.c		*/
 	RawData,		/* No despiking or phase_shifting	*/
 	QCenabled;		/* QC Library, currently not enabled.	*/
 
-
+size_t	ProcessingRate;
 
 int	Mode,		/* RealTime or PostProcessing (winput or nimbus)*/
-	ProcessingRate,
 	FeedBack, SampleOffset,	/* Used by amlib fns, set in hrloop.c	*/
 	PauseWhatToDo,
 	Aircraft, FlightNumberInt;
@@ -69,8 +68,8 @@ NR_TYPE	*SampledData, *AveragedData, *HighRateData;
 
 float	HDRversion;
 
-long	nFloats;	/* Contains number of floats used in SampledData */
-long	LITTON51_start;		/* hdr_decode.c & adsIO.c		*/
+size_t	nFloats;	/* Contains number of floats used in SampledData */
+size_t	LITTON51_start;		/* hdr_decode.c & adsIO.c		*/
 
 
 //****************************synthetic data varables**************************//

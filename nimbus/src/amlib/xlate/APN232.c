@@ -30,13 +30,12 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996
 /* -------------------------------------------------------------------- */
 void xlhgm232(RAWTBL *varp, void *p, NR_TYPE *output)
 {
-  int		i;
   ushort	status, sample;
   ushort	*input = (ushort *)p;
   NR_TYPE	out;
   static NR_TYPE	lastGood = 0.0;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     status = ntohs(input[i * varp->ADSoffset]) & 0x0001;
     sample = ntohs(input[i * varp->ADSoffset]) & 0xFFFE;
@@ -55,9 +54,7 @@ void xlhgm232(RAWTBL *varp, void *p, NR_TYPE *output)
 /* -------------------------------------------------------------------- */
 void xlhgm232s(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-  int	i;
-
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     output[i] = ntohs(((short *)input)[i * varp->ADSoffset]) & 0x0001;
 
 }	/* END XLHGM232S */

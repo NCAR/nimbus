@@ -61,7 +61,7 @@ int GetPreviousTime();
 /* -------------------------------------------------------------------- */
 void InitAsyncModule(char fileName[])
 {
-  int	i, cnt = 0;
+  size_t	cnt = 0;
   char	tempName[512];
 
 
@@ -70,7 +70,7 @@ void InitAsyncModule(char fileName[])
   return;
 
 
-  for (i = 0; i < raw.size(); ++i)
+  for (size_t i = 0; i < raw.size(); ++i)
     {
     if (cnt == MAX_ASYNC_VARS)
       {
@@ -212,8 +212,8 @@ static void flush2dQueue(int indx, int syncTime)
 /* -------------------------------------------------------------------- */
 static int locateAsyncVar(ushort record[])
 {
-  int	indx = 0, probeCnt;
-  char	target[NAMELEN];
+  size_t	indx = 0, probeCnt;
+  char		target[NAMELEN];
 
   switch (record[0])
     {
@@ -255,7 +255,7 @@ static int locateAsyncVar(ushort record[])
   for (indx = 0; AsyncVar[indx]; ++indx)
     {
     if (strncmp(AsyncVar[indx]->name, target, strlen(target)) == 0 &&
-    AsyncVar[indx]->ProbeCount == probeCnt)
+        AsyncVar[indx]->ProbeCount == probeCnt)
     return(indx);
     }
 

@@ -34,7 +34,7 @@ extern NR_TYPE	*SampledData, *AveragedData;
 /* -------------------------------------------------------------------- */
 void AverageSampledData()
 {
-  for (int i = 0; i < sdi.size(); ++i)
+  for (size_t i = 0; i < sdi.size(); ++i)
   {
     SDITBL *sp = sdi[i];
 
@@ -42,7 +42,7 @@ void AverageSampledData()
   }
 
 
-  for (int i = 0; i < raw.size(); ++i)
+  for (size_t i = 0; i < raw.size(); ++i)
   {
     RAWTBL *rp = raw[i];
 
@@ -65,7 +65,7 @@ void AverageSDI(NR_TYPE *in_data, NR_TYPE *out_data, SDITBL *sp)
 {
   double	sum = 0.0;
 
-  for (int i = 0; i < sp->SampleRate; ++i)
+  for (size_t i = 0; i < sp->SampleRate; ++i)
     sum += in_data[i];
 
   out_data[0] = sum / sp->SampleRate;
@@ -76,8 +76,8 @@ void AverageSDI(NR_TYPE *in_data, NR_TYPE *out_data, SDITBL *sp)
 void Average(
 	NR_TYPE	*in_data,
 	NR_TYPE	*out_data,
-	int	n,
-	int	l,
+	size_t	n,
+	size_t	l,
 	MOD	*mp)
 {
   double	sum = 0.0;
@@ -89,7 +89,7 @@ void Average(
 
     low_value = high_value = false;
 
-    for (int i = 0; i < n; ++i)
+    for (size_t i = 0; i < n; ++i)
       if ((int)in_data[i] < mp->bound[0])
         {
         low_value = true;
@@ -103,7 +103,7 @@ void Average(
       sum = 0.0;
     }
 
-  for (int i = 0; i < n; ++i)
+  for (size_t i = 0; i < n; ++i)
     sum += in_data[i];
 
   average = sum / n;
@@ -124,7 +124,7 @@ void SumSDI(NR_TYPE *in_data, NR_TYPE *out_data, SDITBL *sp)
 {
   NR_TYPE	sum = 0.0;
 
-  for (int i = 0; i < sp->SampleRate; ++i)
+  for (size_t i = 0; i < sp->SampleRate; ++i)
     sum += in_data[i];
 
   out_data[0] = sum;
@@ -132,11 +132,11 @@ void SumSDI(NR_TYPE *in_data, NR_TYPE *out_data, SDITBL *sp)
 }	/* END SUMSDI */
 
 /* -------------------------------------------------------------------- */
-void Sum(NR_TYPE *in_data, NR_TYPE *out_data, int n)
+void Sum(NR_TYPE *in_data, NR_TYPE *out_data, size_t n)
 {
   double	sum = 0.0;
 
-  for (int i = 0; i < n; ++i)
+  for (size_t i = 0; i < n; ++i)
     sum += in_data[i];
 
   out_data[0] = sum;
@@ -147,16 +147,16 @@ void Sum(NR_TYPE *in_data, NR_TYPE *out_data, int n)
 void SumVector(
 	NR_TYPE	*in_data,
 	NR_TYPE	*out_data,
-	int	n,
-	int	l)
+	size_t	n,
+	size_t	l)
 {
   double	sum;
 
-  for (int i = 0; i < l; ++i)
+  for (size_t i = 0; i < l; ++i)
     {
     sum = 0.0;
 
-    for (int j = 0; j < n; ++j)
+    for (size_t j = 0; j < n; ++j)
       sum += in_data[(j * l) + i];
 
     out_data[i] = sum;

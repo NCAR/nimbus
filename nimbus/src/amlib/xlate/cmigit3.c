@@ -10,15 +10,7 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	rec_decode.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 2003
+COPYRIGHT:	University Corporation for Atmospheric Research, 2003-2005
 -------------------------------------------------------------------------
 */
 
@@ -33,26 +25,24 @@ static const float	cm16 = 1.525879e-05;
 /* -------------------------------------------------------------------- */
 void xlclat(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-  int		i;
   Cmigits3_blk	*cm = (Cmigits3_blk *)input;
-  long		*lp = (long *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     output[i] = 180.0 * cm31 * cm->Clatitude[i];
-
-//    printf("lat = %f %f\n", (float)lp[i] * pow(2, -31)*180.0, pow(2,-31));
-//    printf("lon = %f %f\n", (float)lp[10+i] * pow(2, -31)*180.0, pow(2,-31));
-//    printf("alt = %f %f\n", (float)lp[20+i] * pow(2, -16), pow(2,-16));
-
+/*
+  long		*lp = (long *)input;
+    printf("lat = %f %f\n", (float)lp[i] * pow(2, -31)*180.0, pow(2,-31));
+    printf("lon = %f %f\n", (float)lp[10+i] * pow(2, -31)*180.0, pow(2,-31));
+    printf("alt = %f %f\n", (float)lp[20+i] * pow(2, -16), pow(2,-16));
+*/
 }	/* END XLCLAT */
 
 /* -------------------------------------------------------------------- */
 void xlclon(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-  int		i;
   Cmigits3_blk	*cm = (Cmigits3_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     output[i] = 180.0 * cm31 * cm->Clongitude[i];
 
 }	/* END XLCLON */
@@ -60,10 +50,9 @@ void xlclon(RAWTBL *varp, void *input, NR_TYPE *output)
 /* -------------------------------------------------------------------- */
 void xlcalt(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-  int		i;
   Cmigits3_blk	*cm = (Cmigits3_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     output[i] = cm16 * cm->Caltitude[i];
 
 }	/* END XLCALT */
@@ -71,10 +60,9 @@ void xlcalt(RAWTBL *varp, void *input, NR_TYPE *output)
 /* -------------------------------------------------------------------- */
 void xlcvew(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-  int		i;
   Cmigits3_blk	*cm = (Cmigits3_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     output[i] = cm21 * cm->Cvelocity_east[i];
 
 }	/* END XLCVEW */
@@ -82,10 +70,9 @@ void xlcvew(RAWTBL *varp, void *input, NR_TYPE *output)
 /* -------------------------------------------------------------------- */
 void xlcvns(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-  int		i;
   Cmigits3_blk	*cm = (Cmigits3_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     output[i] = cm21 * cm->Cvelocity_north[i];
 
 }	/* END XLCVNS */
@@ -93,10 +80,9 @@ void xlcvns(RAWTBL *varp, void *input, NR_TYPE *output)
 /* -------------------------------------------------------------------- */
 void xlcvspd(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-  int		i;
   Cmigits3_blk	*cm = (Cmigits3_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     output[i] = cm21 * cm->Cvelocity_up[i];
 
 }	/* END XLCVSPD */
@@ -104,10 +90,9 @@ void xlcvspd(RAWTBL *varp, void *input, NR_TYPE *output)
 /* -------------------------------------------------------------------- */
 void xlcpitch(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-  int		i;
   Cmigits3_blk	*cm = (Cmigits3_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     output[i] = 180.0 * cm31 * cm->Cpitch[i];
 
 }	/* END XLCPITCH */
@@ -115,11 +100,10 @@ void xlcpitch(RAWTBL *varp, void *input, NR_TYPE *output)
 /* -------------------------------------------------------------------- */
 void xlcroll(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-  int		i;
   Cmigits3_blk	*cm = (Cmigits3_blk *)input;
   NR_TYPE	roll;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     roll = 180.0 * cm31 * cm->Croll[i];
 
@@ -134,11 +118,10 @@ void xlcroll(RAWTBL *varp, void *input, NR_TYPE *output)
 /* -------------------------------------------------------------------- */
 void xlcthdg(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-  int		i;
   Cmigits3_blk	*cm = (Cmigits3_blk *)input;
   NR_TYPE	hdg;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     hdg = 180.0 * cm31 * cm->Ctrue_heading[i];
 

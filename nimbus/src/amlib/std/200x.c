@@ -29,7 +29,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 #define MAX_200X	1
 
-static int	FIRST_BIN[MAX_200X], LAST_BIN[MAX_200X], SampleRate[MAX_200X];
+static size_t	FIRST_BIN[MAX_200X], LAST_BIN[MAX_200X], SampleRate[MAX_200X];
 static NR_TYPE	responseTime, armDistance, resolution;
 static double	DENS[MAX_200X], PLWFAC[MAX_200X];
 
@@ -41,18 +41,17 @@ static NR_TYPE	radius[BINS_16], dia[BINS_16], dia2[BINS_16], dia3[BINS_16],
 
 
 void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
-                float minRange, float resolution, int nDiodes, int length),
+                float minRange, float resolution, size_t nDiodes, size_t length),
 
 	ComputeDOF(NR_TYPE radius[], NR_TYPE tas, NR_TYPE dof[],
-		int FirstBin, int LastBin, float RES, NR_TYPE RESPONSE_TIME);
+		size_t FirstBin, size_t LastBin, float RES, NR_TYPE RESPONSE_TIME);
 
 /* -------------------------------------------------------------------- */
 void c200xInit(RAWTBL *varp)
 {
-  int	i, probeNum;
-  int	nDiodes;
-  char	*p, *serialNumber;
-  float	minRange;
+  size_t	i, probeNum, nDiodes;
+  char		*p, *serialNumber;
+  float		minRange;
 
   serialNumber = varp->SerialNumber;
   probeNum = varp->ProbeCount;
@@ -122,7 +121,7 @@ void c200xInit(RAWTBL *varp)
 /* -------------------------------------------------------------------- */
 void sc200x(DERTBL *varp)
 {
-  int		i, probeNum;
+  size_t	i, probeNum;
   NR_TYPE	*actual, *concentration, tas;
   NR_TYPE	dof[BINS_16],	/* Depth Of Field		*/
 		sampleVolume[BINS_16];

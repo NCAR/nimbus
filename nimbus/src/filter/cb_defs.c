@@ -46,7 +46,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 static Widget	Shell004, EditDefaultsWindow, defaultText[MAX_DEFAULTS];
 
-extern int	nDefaults;
+extern size_t	nDefaults;
 extern DEFAULT	*Defaults[];
 
 static void	set_defaultText(int);
@@ -58,12 +58,12 @@ static void VerifyDefault(Widget w, int indx, XtPointer call);
 /* -------------------------------------------------------------------- */
 void SaveDefaults(FILE *fp)	/* Save modified defaults into "Setup" file */
 {
-  for (int i = 0; i < nDefaults; ++i)
+  for (size_t i = 0; i < nDefaults; ++i)
     if (Defaults[i]->Dirty)
       {
       fprintf(fp, "DEFAULT=%s %d", Defaults[i]->Name, Defaults[i]->nValues);
 
-      for (int j = 0; j < Defaults[i]->nValues; ++j)
+      for (size_t j = 0; j < Defaults[i]->nValues; ++j)
         fprintf(fp, " %e", Defaults[i]->Value[j]);
 
       fprintf(fp, "\n");
@@ -74,12 +74,12 @@ void SaveDefaults(FILE *fp)	/* Save modified defaults into "Setup" file */
 /* -------------------------------------------------------------------- */
 void SetDefaultsValue(char target[], NR_TYPE *new_value)
 {
-  for (int i = 0; i < nDefaults; ++i)
+  for (size_t i = 0; i < nDefaults; ++i)
     if (strcmp(Defaults[i]->Name, target) == 0)
       {
       Defaults[i]->Dirty = true;
 
-      for (int j = 0; j < Defaults[i]->nValues; ++j)
+      for (size_t j = 0; j < Defaults[i]->nValues; ++j)
         Defaults[i]->Value[j] = new_value[j];
 
       return;
@@ -93,7 +93,7 @@ void SetDefaultsValue(char target[], NR_TYPE *new_value)
 /* -------------------------------------------------------------------- */
 void ResetDefaults(Widget w, XtPointer client, XtPointer call)
 {
-  for (int i = 0; i < nDefaults; ++i)
+  for (size_t i = 0; i < nDefaults; ++i)
     {
     delete [] Defaults[i]->Value;
     delete Defaults[i];
@@ -103,7 +103,7 @@ void ResetDefaults(Widget w, XtPointer client, XtPointer call)
 
   ReadDefaultsFile();
 
-  for (int i = 0; i < nDefaults; ++i)
+  for (size_t i = 0; i < nDefaults; ++i)
     set_defaultText(i);
 
 }	/* END RESETDEFAULTS */
@@ -111,14 +111,13 @@ void ResetDefaults(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void CreateEditDefaultsWindow()
 {
-	int			i;
-	Arg			args[16];
+	Arg		args[16];
 	Cardinal	n;
 	XmString	labelString;
 	Widget		edFrame, edRC, b[2], defWin, defRC,
-				form[MAX_DEFAULTS], label[MAX_DEFAULTS];
+			form[MAX_DEFAULTS], label[MAX_DEFAULTS];
 
-	extern Widget	AppShell, Shell004;
+	extern Widget	AppShell;
 
 
 	n = 0;
@@ -142,7 +141,7 @@ void CreateEditDefaultsWindow()
 	defRC = XmCreateRowColumn(defWin, "defRC", args, n);
 	XtManageChild(defRC);
 
-	for (i = 0; i < nDefaults; ++i)
+	for (size_t i = 0; i < nDefaults; ++i)
 		{
 		n = 0;
 		form[i] = XmCreateForm(defRC, "frm", args, n);
@@ -195,7 +194,6 @@ void CreateEditDefaultsWindow()
 	XtAddCallback(b[1], XmNactivateCallback, DismissDefaultsWindow, NULL);
 	XtManageChildren(b, 2);
 
-
 }	/* END CREATEEDITDEFAULTSWINDOW */
 
 /* -------------------------------------------------------------------- */
@@ -245,7 +243,7 @@ static void VerifyDefault(Widget w, int indx, XtPointer call)
    */
   p1 = strtok(p, ", ");
 
-  for (int i = 0; i < Defaults[indx]->nValues; ++i)
+  for (size_t i = 0; i < Defaults[indx]->nValues; ++i)
     {
     f[i] = p1 ? (NR_TYPE)atof(p1) : 0.0;
 
@@ -257,7 +255,7 @@ static void VerifyDefault(Widget w, int indx, XtPointer call)
 
   /* Set values & reprint text widget
    */
-  for (int i = 0; i < Defaults[indx]->nValues; ++i)
+  for (size_t i = 0; i < Defaults[indx]->nValues; ++i)
     Defaults[indx]->Value[i] = f[i];
 
   set_defaultText(indx);
@@ -271,7 +269,7 @@ static void set_defaultText(int indx)
 
   buffer[0] = '\0';
 
-  for (int i = 0; i < Defaults[indx]->nValues; ++i)
+  for (size_t i = 0; i < Defaults[indx]->nValues; ++i)
     {
     if (i > 0)
       strcat(buffer, ", ");

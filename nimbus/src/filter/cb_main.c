@@ -75,7 +75,7 @@ extern FILE	*LogFile;
 static time_t	startWALL, finishWALL;
 static clock_t	startCPU, finishCPU;
 
-extern int	nDefaults;
+extern size_t	nDefaults;
 extern DEFAULT	*Defaults[];
 
 void	FillListWidget(), CloseSQL();
@@ -94,7 +94,7 @@ void	OpenLogFile(), InitAsyncModule(char fileName[]), RealTimeLoop(),
 /* -------------------------------------------------------------------- */
 void CancelSetup(Widget w, XtPointer client, XtPointer call)
 {
-  int		i;
+  size_t	i;
 
   CloseADSfile();
 
@@ -256,7 +256,7 @@ static void readHeader()
    */
 {
   FILE	*ofp = LogFile ? LogFile : stderr;
-  int	i;
+  size_t	i;
 
   for (i = 0; i < sdi.size(); ++i)
     if (VarDB_lookup(sdi[i]->name) == ERR)
@@ -276,7 +276,7 @@ static void readHeader()
 /* -------------------------------------------------------------------- */
 void SetHighRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
 {
-  int	i;
+  size_t	i;
 
   if (call->set == false)
     return;
@@ -318,7 +318,7 @@ void SetHighRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
 /* -------------------------------------------------------------------- */
 void SetLowRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
 {
-  int		i;
+  size_t	i;
 
   if (call->set == false)
     return;
@@ -355,7 +355,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
 {
   XmString	label;
   Arg		args[1];
-  int		i, rc;
+  int		rc;
   long		btim, etim;
 
   DismissEditWindow(NULL, NULL, NULL);
@@ -384,6 +384,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   InitAircraftDependencies();
 
   {
+  size_t i;
   bool	firstSpike = true;
 
   for (i = 0; i < sdi.size(); ++i) {
@@ -634,15 +635,14 @@ void SaveSetup(Widget w, XtPointer client, XtPointer call)
 void ToggleRate(Widget w, XtPointer client, XtPointer call)
 {
   int		*pos_list, pos_cnt = 0;
-  int		i, indx;
   XmString	item;
 
   if (XmListGetSelectedPos(list1, &pos_list, &pos_cnt) == false)
     return;
 
-  for (i = 0; i < pos_cnt; ++i)
+  for (size_t i = 0; i < (size_t)pos_cnt; ++i)
     {
-    indx = pos_list[i] - 1;
+    size_t indx = pos_list[i] - 1;
 
     if (indx >= sdi.size()+raw.size())
       {
@@ -737,15 +737,14 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
 void ToggleOutput(Widget w, XtPointer client, XtPointer call)
 {
   int		*pos_list, pos_cnt = 0;
-  int		i, indx;
   XmString	item;
 
   if (XmListGetSelectedPos(list1, &pos_list, &pos_cnt) == false)
     return;
 
-  for (i = 0; i < pos_cnt; ++i)
+  for (size_t i = 0; i < (size_t)pos_cnt; ++i)
     {
-    indx = pos_list[i] - 1;
+    size_t indx = pos_list[i] - 1;
 
     if (indx >= sdi.size()+raw.size())
       {
@@ -817,7 +816,6 @@ static int validateInputFile()
 void ValidateOutputFile(Widget w, XtPointer client, XtPointer call)
 {
   char	*p;
-  FILE	*fp;
   struct stat statBuf;
 
   if (w)
@@ -906,7 +904,6 @@ static void setOutputFileName()
 /* -------------------------------------------------------------------- */
 XmString CreateListLineItem(void *pp, int var_type)
 {
-  int		i;
   SDITBL	*sp;
   RAWTBL	*rp;
   DERTBL	*dp;
@@ -923,7 +920,7 @@ XmString CreateListLineItem(void *pp, int var_type)
 		sp->StaticLag, sp->SpikeSlope,
 		sp->DataQuality[0]);
 
-      for (i = 0; i < sp->order; ++i)
+      for (size_t i = 0; i < sp->order; ++i)
         {
         sprintf(tmp, "%10.4f", sp->cof[i]);
         strcat(buffer, tmp);
@@ -940,7 +937,7 @@ XmString CreateListLineItem(void *pp, int var_type)
 		rp->StaticLag, rp->SpikeSlope,
 		rp->DataQuality[0]);
 
-      for (i = 0; i < rp->order; ++i)
+      for (size_t i = 0; i < rp->order; ++i)
         {
         sprintf(tmp, "%10.4f", rp->cof[i]);
         strcat(buffer, tmp);
@@ -959,7 +956,7 @@ XmString CreateListLineItem(void *pp, int var_type)
       buffer[33] = 'N'; buffer[34] = 'A';
       memcpy(&buffer[40], "NA    ", 5);
 
-      for (i = 0; i < dp->ndep; ++i)
+      for (size_t i = 0; i < dp->ndep; ++i)
         {
         if (i > 0)
           strcat(buffer, ",");
@@ -978,7 +975,7 @@ XmString CreateListLineItem(void *pp, int var_type)
 /* -------------------------------------------------------------------- */
 void FillListWidget()
 {
-  int		i, cnt;
+  size_t	i, cnt;
   XmString	items[MAX_VARIABLES];
 
   static int	firstTime = true;
@@ -1032,7 +1029,7 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
   fprintf(fp, "Name       Output  SR    OR     Lag   Spike Slope\n");
   fprintf(fp, "--------------------------------------------------------------------------------\n");
 
-  for (int i = 0; i < sdi.size(); ++i)
+  for (size_t i = 0; i < sdi.size(); ++i)
     {
     SDITBL *sp = sdi[i];
 
@@ -1045,14 +1042,14 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
 			sp->StaticLag,
 			sp->SpikeSlope);
 
-    for (int j = 0; j < sp->order; ++j)
+    for (size_t j = 0; j < sp->order; ++j)
       fprintf(fp, "%14e", sp->cof[j]);
 
     fprintf(fp, "\n");
     }
 
 
-  for (int i = 0; i < raw.size(); ++i)
+  for (size_t i = 0; i < raw.size(); ++i)
     {
     RAWTBL *rp = raw[i];
 
@@ -1065,14 +1062,14 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
 			rp->StaticLag,
 			rp->SpikeSlope);
 
-    for (int j = 0; j < rp->order; ++j)
+    for (size_t j = 0; j < rp->order; ++j)
       fprintf(fp, "%14e", rp->cof[j]);
 
     fprintf(fp, "\n");
     }
 
 
-  for (int i = 0; i < derived.size(); ++i)
+  for (size_t i = 0; i < derived.size(); ++i)
     {
     DERTBL *dp = derived[i];
 
@@ -1087,7 +1084,7 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
     buffer[33] = 'N'; buffer[34] = 'A';
     fprintf(fp, buffer);
 
-    for (int j = 0; j < dp->ndep; ++j)
+    for (size_t j = 0; j < dp->ndep; ++j)
       {
       if (j > 0)
         {
@@ -1105,7 +1102,7 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
 
   fprintf(fp, "\n\nDefaults:\n\n");
 
-  for (int i = 0; i < nDefaults; ++i)
+  for (size_t i = 0; i < nDefaults; ++i)
     {
     if (Defaults[i]->Used == false)
       continue;
@@ -1115,7 +1112,7 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
     if (Defaults[i]->nValues > 5)
       fprintf(fp, "\n\t");
 
-    for (int j = 0; j < Defaults[i]->nValues; ++j)
+    for (size_t j = 0; j < Defaults[i]->nValues; ++j)
       {
       if (j > 0 && j % 5 == 0)
         fprintf(fp, "\n\t");
@@ -1134,14 +1131,14 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void ToggleProbe(Widget w, XtPointer client, XtPointer call)
 {
-  int		i,
-		cat  = (int)client & 0xf0000000,
+  size_t i;
+  unsigned	cat  = (int)client & 0xf0000000,
 		type = (int)client & 0x0ffffff0,
 		cnt  = (int)client & 0x0000000f;
 
-  if ((int)client == ALL_ON || (int)client == ALL_OFF)
+  if ((unsigned)client == ALL_ON || (unsigned)client == ALL_OFF)
     {
-    bool	value = (int)client == ALL_ON ? true : false;
+    bool	value = (unsigned)client == ALL_ON ? true : false;
 
     for (i = 0; i < sdi.size(); ++i) {
       sdi[i]->Dirty = true;

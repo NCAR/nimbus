@@ -54,7 +54,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 
 #include <cmath>
 
-#define NETCDF_FORMAT_VERSION   "1.2"
+#define NETCDF_FORMAT_VERSION   "1.3"
 
 #define DEFAULT_TI_LENGTH	(19 * MAX_TIME_SLICES)
 
@@ -63,7 +63,7 @@ struct missDat	/* (Time gap) / (missing data) information */
 	int		hour;
 	int		minute;
 	int		second;
-	int		nRecords;
+	size_t		nRecords;
 	} ;
 
 static int		fd = -1;
@@ -100,8 +100,6 @@ void	AddPMS1dAttrs(int ncid, RAWTBL *rp),
 /* -------------------------------------------------------------------- */
 void SetBaseTime(struct Hdr_blk *hdr)
 {
-  struct tm	*gt;
-  char		s1[10], s2[10];
   time_t	BaseTime;
 
   StartFlight.tm_hour	= ntohs(hdr->hour);
@@ -121,7 +119,10 @@ void SetBaseTime(struct Hdr_blk *hdr)
   ncvarput1(fd, baseTimeID, NULL, (void *)&BaseTime);
 
   if (BaseTime <= 0)
-    fprintf(stderr, "\nWARNING:  >>>>> base_time = %d <<<<<\n\n", BaseTime);
+    {
+    sprintf(buffer, "\nWARNING:  >>>>> base_time = %ld <<<<<\n\n", BaseTime);
+    LogMessage(buffer);
+    }
 
 }	/* END SETBASETIME */
 
@@ -130,7 +131,8 @@ static int	timeOffsetID, timeVarID;
 /* -------------------------------------------------------------------- */
 void CreateNetCDF(char fileName[])
 {
-  int		i, j, indx, catIdx;
+  size_t	i, j;
+  int		indx, catIdx;
   SDITBL	*sp;
   RAWTBL	*rp;
   DERTBL	*dp;
@@ -264,10 +266,10 @@ void CreateNetCDF(char fileName[])
 
   buffer[0] = '\0';
 
-  for (i = 1; i < catIdx; ++i)	/* Skip category "None"	*/
+  for (i = 1; i < (size_t)catIdx; ++i)	/* Skip category "None"	*/
     {
     strcat(buffer, list[i]);
-    if (i != catIdx - 1)
+    if (i != (size_t)catIdx - 1)
       strcat(buffer, ",");
     }
 
@@ -782,7 +784,7 @@ void SwitchNetCDFtoDataMode()
 /* -------------------------------------------------------------------- */
 void writeColumn()
 {
-  int i, cntr = 0;
+  int cntr = 0;
   long idx[3];
 
   idx[0] = recordNumber;
@@ -790,13 +792,13 @@ void writeColumn()
 
   ncvarput1(fd, timeOffsetID, idx, data_p[cntr++]);
 
-  for (i = 0; i < sdi.size(); ++i)
+  for (size_t i = 0; i < sdi.size(); ++i)
     ncvarput1(fd, sdi[i]->varid, idx, data_p[cntr++]);
 
-  for (i = 0; i < raw.size(); ++i)
+  for (size_t i = 0; i < raw.size(); ++i)
     ncvarput1(fd, raw[i]->varid, idx, data_p[cntr++]);
 
-  for (i = 0; i < derived.size(); ++i)
+  for (size_t i = 0; i < derived.size(); ++i)
     ncvarput1(fd, derived[i]->varid, idx, data_p[cntr++]);
 
 }
@@ -809,8 +811,7 @@ void WriteNetCDF()
 
 //writeColumn();
 
-DERTBL *d = derived[SearchTable(derived, "TTX")];
-
+//DERTBL *d = derived[SearchTable(derived, "TTX")];
 //printf(" - %f %f\n", data_p[ttxI], AveragedData[d->LRstart]);
 
   if (ncrecput(fd, recordNumber, data_p) == ERR)
@@ -826,7 +827,7 @@ DERTBL *d = derived[SearchTable(derived, "TTX")];
       }
 
     fprintf(stderr,
-            "WriteNetCDF: ncrecput failure, RecordNumber = %d, errno = %d\n",
+            "WriteNetCDF: ncrecput failure, RecordNumber = %ld, errno = %d\n",
             recordNumber, errno);
 
     if (++errCnt > 8)
@@ -859,7 +860,7 @@ DERTBL *d = derived[SearchTable(derived, "TTX")];
 /* -------------------------------------------------------------------- */
 void WriteNetCDF_MRF()
 {
-  int		i, indx = startVarIndx;
+  int		indx = startVarIndx;
   SDITBL	*sp;
   RAWTBL	*rp;
 
@@ -867,7 +868,7 @@ void WriteNetCDF_MRF()
   /* We need to reset SampleRate indices, because for HighRate, SampleData
    * is from a circular buffer.
    */
-  for (i = 0; i < sdi.size(); ++i)
+  for (size_t i = 0; i < sdi.size(); ++i)
     if ((sp = sdi[i])->Output)
       {
       if (sp->OutputRate == sp->SampleRate)
@@ -876,7 +877,7 @@ void WriteNetCDF_MRF()
       ++indx;
       }
 
-  for (i = 0; i < raw.size(); ++i)
+  for (size_t i = 0; i < raw.size(); ++i)
     if ((rp = raw[i])->Output)
       {
       if (rp->OutputRate == rp->SampleRate && rp->OutputRate != ProcessingRate)
@@ -918,7 +919,8 @@ void QueueMissingData(int h, int m, int s, int nRecords)
 /* -------------------------------------------------------------------- */
 static void WriteMissingRecords()
 {
-  int		i, indx = startVarIndx;
+  size_t	i;
+  int		indx = startVarIndx;
   NR_TYPE	*d, hour, minute, second;
   void		*ldp[MAX_VARIABLES];
   struct missDat	*dp;
@@ -1031,7 +1033,7 @@ void CloseNetCDF()
 void BlankOutBadData()
 {
   char  *blanks[512], target[NAMELEN];
-  int	sTime[4], eTime[4], i, index;
+  int	sTime[4], eTime[4], index;
   long	start[3], count[3];
   int	fsTime[4], feTime[4];
 
@@ -1060,7 +1062,7 @@ void BlankOutBadData()
   start[0] = start[1] = start[2] = 0;
   count[0] = feTime[3] - fsTime[3];
 
-  for (i = 0; i < sdi.size(); ++i)
+  for (size_t i = 0; i < sdi.size(); ++i)
     {
     if (strcmp(sdi[i]->DataQuality, "Bad") == 0)
       {
@@ -1085,7 +1087,7 @@ void BlankOutBadData()
       }
     }
 
-  for (i = 0; i < raw.size(); ++i)
+  for (size_t i = 0; i < raw.size(); ++i)
     {
     if (strcmp(raw[i]->DataQuality, "Bad") == 0)
       {
@@ -1109,7 +1111,7 @@ void BlankOutBadData()
       }
     }
 
-  for (i = 0; i < derived.size(); ++i)
+  for (size_t i = 0; i < derived.size(); ++i)
     {
     if (strcmp(derived[i]->DataQuality, "Bad") == 0)
       {
@@ -1135,7 +1137,7 @@ void BlankOutBadData()
 
   /* Loop through each line item in BLANKVARS file.
    */
-  for (i = 0; blanks[i]; ++i)
+  for (int i = 0; blanks[i]; ++i)
     {
     sscanf(blanks[i], "%s %d:%d:%d %d:%d:%d", target,
 	&sTime[0], &sTime[1], &sTime[2], &eTime[0], &eTime[1], &eTime[2]);
@@ -1308,7 +1310,7 @@ static void writeTimeUnits()
 /* -------------------------------------------------------------------- */
 static void clearDependedByList()
 {
-  for (int i = 0; i < derived.size(); ++i)
+  for (size_t i = 0; i < derived.size(); ++i)
     if (derived[i]->DependedUpon & 0xf0)
       derived[i]->DependedUpon &= 0x0f;
 
@@ -1317,11 +1319,11 @@ static void clearDependedByList()
 /* -------------------------------------------------------------------- */
 static void markDependedByList(char target[])
 {
-  for (int i = 0; i < derived.size(); ++i)
+  for (size_t i = 0; i < derived.size(); ++i)
   {
     DERTBL *dp = derived[i];
 
-    for (int j = 0; j < dp->ndep; ++j)
+    for (size_t j = 0; j < dp->ndep; ++j)
       if (strcmp(target, dp->depend[j]) == 0)
       {
         dp->DependedUpon |= 0xf0;
@@ -1336,7 +1338,7 @@ static void printDependedByList()
 {
   LogMessage(" The following variables depend upon this variable:\n ");
 
-  for (int i = 0; i < derived.size(); ++i)
+  for (size_t i = 0; i < derived.size(); ++i)
     if (derived[i]->DependedUpon & 0xf0)
       {
       sprintf(buffer, " %s", derived[i]->name);

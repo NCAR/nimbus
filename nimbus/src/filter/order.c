@@ -29,7 +29,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 /* -------------------------------------------------------------------- */
 void GenerateComputeOrder()
 {
-  int i, j;
+  size_t i, j;
 {
   /* Copy over the list of Derived variables, placing the
    * ones with 0 dependencies at the beginning and the rest

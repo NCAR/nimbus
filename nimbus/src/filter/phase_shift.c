@@ -93,7 +93,7 @@ void PhaseShift(
 	int		index,		/* Index into CircBuff		*/
 	NR_TYPE		*output)	/* Place to put shifted record	*/
 {
-	int	i;
+  size_t i;
 
   prev_prev_rec	= (NR_TYPE *)GetBuffer(LRCB, index-2);
   prev_rec	= (NR_TYPE *)GetBuffer(LRCB, index-1);

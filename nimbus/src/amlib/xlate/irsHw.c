@@ -78,15 +78,15 @@ void irsInit(RAWTBL *varp)
 /* -------------------------------------------------------------------- */
 void xlilat(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int    i, j, label;
+  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* (degs) 20 bits, +- 0.5 pirad, label 310  */
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->present_lat[i] = ntohl(p->present_lat[i]);
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     label = p->present_lat[i] & 0x000000ff;
 
@@ -97,7 +97,7 @@ void xlilat(RAWTBL *varp, void *input, NR_TYPE *np)
 
       if (i == 0)
         {
-        for (j = 1; j < varp->SampleRate && label != 0xc8; ++j)
+        for (size_t j = 1; j < varp->SampleRate && label != 0xc8; ++j)
           if ((label = p->present_lat[j] & 0x000000ff) == 0xc8)
             p->present_lat[i] = p->present_lat[j];
         }
@@ -115,15 +115,15 @@ void xlilat(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlilon(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int    i, j, label;
+  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* (degs) 20 bits, +- 0.5 pirad, label 311  */
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->present_lon[i] = ntohl(p->present_lon[i]);
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     label = p->present_lon[i] & 0x000000ff;
 
@@ -134,7 +134,7 @@ void xlilon(RAWTBL *varp, void *input, NR_TYPE *np)
 
       if (i == 0)
         {
-        for (j = 1; j < varp->SampleRate && label != 0xc9; ++j)
+        for (size_t j = 1; j < varp->SampleRate && label != 0xc9; ++j)
           if ((label = p->present_lon[j] & 0x000000ff) == 0xc9)
             p->present_lon[i] = p->present_lon[j];
         }
@@ -152,7 +152,7 @@ void xlilon(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlipitch(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int    i, j, label;
+  int	label;
   Irs_blk  *p = (Irs_blk *)input;
   float  correction;
 
@@ -163,10 +163,10 @@ void xlipitch(RAWTBL *varp, void *input, NR_TYPE *np)
 
   /* (degs) 20 bits, +- 0.5 pirad, label 324  */
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->pitch_angle[i] = ntohl(p->pitch_angle[i]);
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     label = p->pitch_angle[i] & 0x000000ff;
 
@@ -177,7 +177,7 @@ void xlipitch(RAWTBL *varp, void *input, NR_TYPE *np)
 
       if (i == 0)
         {
-        for (j = 1; j < varp->SampleRate && label != 0xd4; ++j)
+        for (size_t j = 1; j < varp->SampleRate && label != 0xd4; ++j)
           if ((label = p->pitch_angle[j] & 0x000000ff) == 0xd4)
             p->pitch_angle[i] = p->pitch_angle[j];
         }
@@ -195,15 +195,15 @@ void xlipitch(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xliroll(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int    i, j, label;
+  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* (degs) 20 bits, +- 0.5 pirad, label 325  */
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->roll_angle[i] = ntohl(p->roll_angle[i]);
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     label = p->roll_angle[i] & 0x000000ff;
 
@@ -214,7 +214,7 @@ void xliroll(RAWTBL *varp, void *input, NR_TYPE *np)
 
       if (i == 0)
         {
-        for (j = 1; j < varp->SampleRate && label != 0xd5; ++j)
+        for (size_t j = 1; j < varp->SampleRate && label != 0xd5; ++j)
           if ((label = p->roll_angle[j] & 0x000000ff) == 0xd5)
             p->roll_angle[i] = p->roll_angle[j];
         }
@@ -232,7 +232,7 @@ void xliroll(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlithdg(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int    i, j, label;
+  int	label;
   Irs_blk  *p = (Irs_blk *)input;
   float  correction;
 
@@ -244,10 +244,10 @@ void xlithdg(RAWTBL *varp, void *input, NR_TYPE *np)
 
   /* (degs) 20 bits, +- 0.5 pirad, label 314  */
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->true_heading[i] = ntohl(p->true_heading[i]);
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     label = p->true_heading[i] & 0x000000ff;
 
@@ -258,7 +258,7 @@ void xlithdg(RAWTBL *varp, void *input, NR_TYPE *np)
 
       if (i == 0)
         {
-        for (j = 1; j < varp->SampleRate && label != 0xcc; ++j)
+        for (size_t j = 1; j < varp->SampleRate && label != 0xcc; ++j)
           if ((label = p->true_heading[j] & 0x000000ff) == 0xcc)
             p->true_heading[i] = p->true_heading[j];
         }
@@ -282,15 +282,15 @@ void xlithdg(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlialt(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int    i, j, label;
+  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* (degs) 20 bits, +- 0.5 pirad, label 361  */
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->inertial_alt[i] = ntohl(p->inertial_alt[i]);
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     label = p->inertial_alt[i] & 0x000000ff;
 
@@ -301,7 +301,7 @@ void xlialt(RAWTBL *varp, void *input, NR_TYPE *np)
 
       if (i == 0)
         {
-        for (j = 1; j < varp->SampleRate && label != 0xf1; ++j)
+        for (size_t j = 1; j < varp->SampleRate && label != 0xf1; ++j)
           if ((label = p->inertial_alt[j] & 0x000000ff) == 0xf1)
             p->inertial_alt[i] = p->inertial_alt[j];
         }
@@ -319,15 +319,15 @@ void xlialt(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlivspd(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int    i, j, label;
+  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* (degs) 20 bits, +- 0.5 pirad, label 365  */
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->inrt_vert_speed[i] = ntohl(p->inrt_vert_speed[i]);
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     label = p->inrt_vert_speed[i] & 0x000000ff;
 
@@ -338,7 +338,7 @@ void xlivspd(RAWTBL *varp, void *input, NR_TYPE *np)
 
       if (i == 0)
         {
-        for (j = 1; j < varp->SampleRate && label != 0xf5; ++j)
+        for (size_t j = 1; j < varp->SampleRate && label != 0xf5; ++j)
           if ((label = p->inrt_vert_speed[j] & 0x000000ff) == 0xf5)
             p->inrt_vert_speed[i] = p->inrt_vert_speed[j];
         }
@@ -356,15 +356,15 @@ void xlivspd(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlvacc(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int    i, j, label;
+  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* (G) 15 bits, +- 4.0 kts, label 364  */
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->vertical_accel[i] = ntohl(p->vertical_accel[i]);
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     label = p->vertical_accel[i] & 0x000000ff;
 
@@ -375,7 +375,7 @@ void xlvacc(RAWTBL *varp, void *input, NR_TYPE *np)
 
       if (i == 0)
         {
-        for (j = 1; j < varp->SampleRate && label != 0xf4; ++j)
+        for (size_t j = 1; j < varp->SampleRate && label != 0xf4; ++j)
           if ((label = p->vertical_accel[j] & 0x000000ff) == 0xf4)
             p->vertical_accel[i] = p->vertical_accel[j];
         }
@@ -393,15 +393,15 @@ void xlvacc(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlivew(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int    i, j, label;
+  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* 20 bits, +-4095 kts, label 367  */
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->velocity_ew[i] = ntohl(p->velocity_ew[i]);
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     label = p->velocity_ew[i] & 0x000000ff;
 
@@ -412,7 +412,7 @@ void xlivew(RAWTBL *varp, void *input, NR_TYPE *np)
 
       if (i == 0)
         {
-        for (j = 1; j < varp->SampleRate && label != 0xf7; ++j)
+        for (size_t j = 1; j < varp->SampleRate && label != 0xf7; ++j)
           if ((label = p->velocity_ew[j] & 0x000000ff) == 0xf7)
             p->velocity_ew[i] = p->velocity_ew[j];
         }
@@ -430,15 +430,15 @@ void xlivew(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlivns(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int    i, j, label;
+  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* 20 bits, +-4095 kts, label 366  */
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->velocity_ns[i] = ntohl(p->velocity_ns[i]);
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     label = p->velocity_ns[i] & 0x000000ff;
 
@@ -449,7 +449,7 @@ void xlivns(RAWTBL *varp, void *input, NR_TYPE *np)
 
       if (i == 0)
         {
-        for (j = 1; j < varp->SampleRate && label != 0xf6; ++j)
+        for (size_t j = 1; j < varp->SampleRate && label != 0xf6; ++j)
           if ((label = p->velocity_ns[j] & 0x000000ff) == 0xf6)
             p->velocity_ns[i] = p->velocity_ns[j];
         }
@@ -467,15 +467,15 @@ void xlivns(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xliwd(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int    i, j, label;
+  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* 20 bits, +-4095 kts, label 366  */
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->wind_dir_true[i] = ntohl(p->wind_dir_true[i]);
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     label = p->wind_dir_true[i] & 0x000000ff;
 
@@ -486,7 +486,7 @@ void xliwd(RAWTBL *varp, void *input, NR_TYPE *np)
 
       if (i == 0)
         {
-        for (j = 1; j < varp->SampleRate && label != 0xce; ++j)
+        for (size_t j = 1; j < varp->SampleRate && label != 0xce; ++j)
           if ((label = p->wind_dir_true[j] & 0x000000ff) == 0xce)
             p->wind_dir_true[i] = p->wind_dir_true[j];
         }
@@ -510,15 +510,15 @@ void xliwd(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xliws(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int    i, j, label;
+  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* 20 bits, +-4095 kts, label 366  */
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->wind_speed[i] = ntohl(p->wind_speed[i]);
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     label = p->wind_speed[i] & 0x000000ff;
 
@@ -529,7 +529,7 @@ void xliws(RAWTBL *varp, void *input, NR_TYPE *np)
 
       if (i == 0)
         {
-        for (j = 1; j < varp->SampleRate && label != 0xcd; ++j)
+        for (size_t j = 1; j < varp->SampleRate && label != 0xcd; ++j)
           if ((label = p->wind_speed[j] & 0x000000ff) == 0xcd)
             p->wind_speed[i] = p->wind_speed[j];
         }
@@ -547,15 +547,15 @@ void xliws(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xligspd(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int    i, j, label;
+  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* 20 bits, 0 to 4095 kts, label 312  */
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->ground_speed[i] = ntohl(p->ground_speed[i]);
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     label = p->ground_speed[i] & 0x000000ff;
 
@@ -566,7 +566,7 @@ void xligspd(RAWTBL *varp, void *input, NR_TYPE *np)
 
       if (i == 0)
         {
-        for (j = 1; j < varp->SampleRate && label != 0xca; ++j)
+        for (size_t j = 1; j < varp->SampleRate && label != 0xca; ++j)
           if ((label = p->ground_speed[j] & 0x000000ff) == 0xca)
             p->ground_speed[i] = p->ground_speed[j];
         }
@@ -612,13 +612,12 @@ void xllag5(RAWTBL *varp, void *p, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlbrollr(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int  i;
   Irs_blk  *p = (Irs_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->roll_rate[i] = ntohl(p->roll_rate[i]);
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (NR_TYPE)(p->roll_rate[i] >> 16) * 0.0039;
 
   varp->DynamicLag = ntohl(p->lag_50hz_frame);
@@ -628,13 +627,12 @@ void xlbrollr(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlbpitchr(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int  i;
   Irs_blk  *p = (Irs_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->pitch_rate[i] = ntohl(p->pitch_rate[i]);
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (NR_TYPE)(p->pitch_rate[i] >> 16) * 0.0039;
 
   varp->DynamicLag = ntohl(p->lag_50hz_frame);
@@ -644,13 +642,12 @@ void xlbpitchr(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlbyawr(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int  i, x;
   Irs_blk  *p = (Irs_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->yaw_rate[i] = ntohl(p->yaw_rate[i]);
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (NR_TYPE)(p->yaw_rate[i] >> 16) * 0.0039;
 
   varp->DynamicLag = ntohl(p->lag_50hz_frame);
@@ -660,13 +657,12 @@ void xlbyawr(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlblata(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int		i;
   Irs_blk	*p = (Irs_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->lat_accel[i] = ntohl(p->lat_accel[i]);
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (NR_TYPE)(p->lat_accel[i] >> 16) * 1.22e-4; // * MPS2;
 
   varp->DynamicLag = ntohl(p->lag_50hz_frame);
@@ -676,13 +672,12 @@ void xlblata(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlblona(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int		i;
   Irs_blk	*p = (Irs_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->long_accel[i] = ntohl(p->long_accel[i]);
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (NR_TYPE)(p->long_accel[i] >> 16) * 1.22e-4; // * MPS2;
 
   varp->DynamicLag = ntohl(p->lag_50hz_frame);
@@ -692,13 +687,12 @@ void xlblona(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlbnorma(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int		i;
   Irs_blk	*p = (Irs_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->normal_accel[i] = ntohl(p->normal_accel[i]);
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (NR_TYPE)(p->normal_accel[i] >> 16) * 1.22e-4; // * MPS2;
 
   varp->DynamicLag = ntohl(p->lag_50hz_frame);
@@ -708,15 +702,14 @@ void xlbnorma(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlitrkart(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int		i;
   Irs_blk	*p = (Irs_blk *)input;
 
   /* (degs) 20 bits, +- 32.0 Deg/S, label 335  */
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->track_ang_rate[i] = ntohl(p->track_ang_rate[i]);
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (double)(p->track_ang_rate[i] >> 11) * 3.05e-05;
 
   varp->DynamicLag = ntohl(p->lag_50hz_frame);
@@ -726,15 +719,14 @@ void xlitrkart(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlittrka(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int		i;
   Irs_blk	*p = (Irs_blk *)input;
 
   /* (degs) 20 bits, +- 1.0 pirad, label 313  */
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->track_angle_true[i] = ntohl(p->track_angle_true[i]);
  
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
 /*          Diagnostic print below   
     if ( (p->track_angle_true[i] & 0xff) != 0xcb)
@@ -756,15 +748,15 @@ void xlittrka(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlidrift(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int		i, j, label;
+  int	label;
   Irs_blk	*p = (Irs_blk *)input;
 
   /* (degs) 20 bits, +- 0.5 pirad, label 321  */
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     p->drift_angle[i] = ntohl(p->drift_angle[i]);
  
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     label = p->drift_angle[i] & 0x000000ff;
  
@@ -775,7 +767,7 @@ void xlidrift(RAWTBL *varp, void *input, NR_TYPE *np)
  
       if (i == 0)
         {
-        for (j = 1; j < varp->SampleRate && label != 0xd1; ++j)
+        for (size_t j = 1; j < varp->SampleRate && label != 0xd1; ++j)
           if ((label = p->drift_angle[j] & 0x000000ff) == 0xd1)
             p->drift_angle[i] = p->drift_angle[j];
         }

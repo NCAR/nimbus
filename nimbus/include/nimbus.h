@@ -65,7 +65,7 @@ typedef struct
 	char	var[NAMELEN];	/* Variable which uses this default	*/
 	bool	Used;		/* Was it requested by amlib		*/
 	bool	Dirty;		/* value changed via GUI		*/
-	int	nValues;
+	size_t	nValues;
 	NR_TYPE	*Value;
 	} DEFAULT;
 
@@ -84,12 +84,12 @@ class var_base
 
 	char	name[NAMELEN];	/* Variable name			*/
 	int	varid;		/* NetCDF variable ID			*/
-	int	LRstart;	/* Start indx into AveragedData		*/
-	int	SRstart;	/* Start indx into SampledData		*/
-	int	HRstart;	/* Start indx into HighRateData		*/
+	size_t	LRstart;	/* Start indx into AveragedData		*/
+	size_t	SRstart;	/* Start indx into SampledData		*/
+	size_t	HRstart;	/* Start indx into HighRateData		*/
 
-	int	SampleRate;	/* Sampled rate				*/
-	int	Length;		/* Vector length (used by PMS1D)	*/
+	size_t	SampleRate;	/* Sampled rate				*/
+	size_t	Length;		/* Vector length (used by PMS1D)	*/
 
 	bool	DependedUpon;	/* Is this variable depended upon?	*/
 
@@ -98,7 +98,7 @@ class var_base
 	bool	Dirty;		/* Was variable modified by user	*/
 	bool	Output;		/* Is this going into the output file?	*/
 	bool	Broadcast;	/* Real-time, ether broadcast?		*/
-	int	OutputRate;
+	size_t	OutputRate;
 	char	*DataQuality;	/* Prelim, QC'd, Bad, etc		*/
 	};
 
@@ -123,7 +123,7 @@ class SDITBL : public var_base
 
 	long	convertOffset;
 	float	convertFactor;
-	long	order;
+	size_t	order;
 	float	cof[MAX_COF];
         SYNTHTYPE synthtype; 
 	} ;
@@ -141,7 +141,7 @@ class RAWTBL : public var_base
 	int	StaticLag;	/* Static lag in ms to shift data	*/
 	NR_TYPE	SpikeSlope;	/* Slope for spike detection		*/
 	char	SerialNumber[8];	/* Probe Serial Number		*/
-	int	ProbeCount;	/* For mulitple identicle probes	*/
+	size_t	ProbeCount;	/* For mulitple identicle probes	*/
 	int	ProbeType;	/* Is this a probe & which one		*/
 
 	long	ADSstart;
@@ -155,7 +155,7 @@ class RAWTBL : public var_base
 
 	long	convertOffset;	/* These 4 fields are used by a few	*/
 	float	convertFactor;	/* variables only.			*/
-	long	order;		/* (PSFD, HGM, HGME).			*/
+	size_t	order;		/* (PSFD, HGM, HGME).			*/
 	float	cof[MAX_COF];
         SYNTHTYPE synthtype;
 	} ;
@@ -171,7 +171,7 @@ class DERTBL : public var_base
 
 	char	SerialNumber[8];	/* Probe Serial Number		*/
 	int	ProbeType;	/* Is this a probe & which one		*/
-	int	ProbeCount;	/* For mulitple identicle probes	*/
+	size_t	ProbeCount;	/* For mulitple identicle probes	*/
 				/* Used by AMLIB			*/
 
 	int	Default_HR_OR;	/* Default OutputRate for HighRate run	*/
@@ -179,7 +179,7 @@ class DERTBL : public var_base
 	void	(*Initializer)(void *);	/* amlib "constructor"		*/
 	void	(*compute)(void *);	/* Function to compute data	*/
 
-	int	ndep;				/* # dependancies	*/
+	size_t	ndep;				/* # dependancies	*/
 	char	depend[MAXDEPEND][NAMELEN];	/* Depandancies		*/
 	int	depend_LRindex[MAXDEPEND];
 	int	depend_HRindex[MAXDEPEND];
@@ -194,11 +194,10 @@ extern std::vector<RAWTBL *> raw;
 extern std::vector<DERTBL *> derived;
 extern std::vector<DERTBL *> ComputeOrder;
 
-extern int	nderive, nsdi, nraw;
-
 extern bool	LoadProductionSetupFile, ProductionRun, PauseFlag, QCenabled,
 		RawData,SynthData;
-extern int	ProcessingRate, FlightNumberInt, PauseWhatToDo, Mode;
+extern size_t	ProcessingRate;
+extern int	FlightNumberInt, PauseWhatToDo, Mode;
 extern char	buffer[];
 
 extern int timeindex[3];

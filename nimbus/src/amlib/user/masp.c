@@ -27,9 +27,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 #include "amlib.h"
 #include "pms.h"
 
-const int	MAX_MASP = 2;
+static const size_t	MAX_MASP = 2;
 
-static int FIRST_BIN[MAX_MASP], LAST_BIN[MAX_MASP], SampleRate[MAX_MASP];
+static size_t FIRST_BIN[MAX_MASP], LAST_BIN[MAX_MASP], SampleRate[MAX_MASP];
 
 static NR_TYPE	total_concen[MAX_MASP], dbar[MAX_MASP], pvol[MAX_MASP];
 static NR_TYPE	cell_size[MAX_MASP][BINS_32], disp[MAX_MASP],
@@ -39,7 +39,7 @@ static NR_TYPE	cell_size[MAX_MASP][BINS_32], disp[MAX_MASP],
 /* -------------------------------------------------------------------- */
 void maspInit(RAWTBL *varp)
 {
-  int   i, probeNum;
+  size_t   i, probeNum;
   char  *p, *serialNumber;
  
 //  serialNumber = varp->SerialNumber;
@@ -90,7 +90,7 @@ serialNumber = "MASP_DEF";
 /* -------------------------------------------------------------------- */
 void scmasp(DERTBL *varp)
 {
-  int		i, probeNum;
+  size_t	i, probeNum;
   NR_TYPE	*actual, *concentration, *dia, *dia2, *dia3;
   NR_TYPE	tas, vol, sampleVolume[BINS_32];
 

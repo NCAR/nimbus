@@ -41,7 +41,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2003
 #include "amlib.h"
 #include "pms.h"
 
-static int	FIRST_BIN[MAX_FSSP], LAST_BIN[MAX_FSSP], SampleRate[MAX_FSSP];
+static size_t	FIRST_BIN[MAX_FSSP], LAST_BIN[MAX_FSSP], SampleRate[MAX_FSSP];
 static double	PLWFAC[MAX_FSSP], DBZFAC[MAX_FSSP];
 static NR_TYPE	sa[MAX_FSSP], tau1[MAX_FSSP], tau2[MAX_FSSP], vol[MAX_FSSP],
 		fssp_csiz[MAX_FSSP][BINS_40*4+4], DENS[MAX_FSSP],
@@ -56,7 +56,7 @@ NR_TYPE		refff3[MAX_FSSP], refff2[MAX_FSSP];  /* For export to reff.c */
 /* -------------------------------------------------------------------- */
 void cfsspInit(RAWTBL *varp)
 {
-  int		i, probeNum;
+  size_t	i, probeNum;
   char		*p, *serialNumber;
   NR_TYPE	DOF, beamDiameter;
 
@@ -153,7 +153,7 @@ void cfsspInit(RAWTBL *varp)
 /* -------------------------------------------------------------------- */
 void scfssp(DERTBL *varp)
 {
-  int		i, probeNum;
+  size_t	i, probeNum;
   NR_TYPE	*actual, *concentration, *dia, *dia2, *dia3;
   NR_TYPE	tas;		/* True Air Speed	*/
   NR_TYPE	activity;	/* Activity		*/
@@ -203,7 +203,7 @@ void scfssp(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void scs100(DERTBL *varp)
 {
-  int           i, probeNum;
+  size_t	i, probeNum;
   NR_TYPE       *actual, *concentration, *dia, *dia2, *dia3;
   NR_TYPE       tas;		/* True Air Speed		*/
   NR_TYPE       rejAT;		/* Rejected, Avg Transit	*/
@@ -290,7 +290,7 @@ void sfact(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void sfbmfr(DERTBL *varp)
 {
-  int		i;
+  size_t	i;
   NR_TYPE	*afssp;
   NR_TYPE	fstrob, fbmfr = 0.0, total_actual = 0.0;
 

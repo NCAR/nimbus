@@ -22,7 +22,6 @@ void sssrd(DERTBL *varp)
   NR_TYPE	qcxc, bdifr;
   NR_TYPE	ssrd, xmach2;
   double	xmach;
-  char		*p;
 
   bdifr	= GetSample(varp, 0);
   qcxc	= GetSample(varp, 1);

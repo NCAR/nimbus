@@ -35,8 +35,6 @@ COPYRIGHT:  University Corporation for Atmospheric Research, 1992
 static NR_TYPE  rholap[2], corc1[2] = {0.0, 0.0};
 static int  n1[2] = {0, 0};
 
-static NR_TYPE compute_rhola();
-
 static NR_TYPE compute_rhola(int indx, DERTBL *varp, NR_TYPE vla, NR_TYPE psxc, NR_TYPE atx, NR_TYPE qcxc, NR_TYPE rhodt, NR_TYPE XC, NR_TYPE THRSH, NR_TYPE CX[]);
 
 /*  Values from /home/local/proj/Defaults on 23 April 1998           RLR */
@@ -213,7 +211,7 @@ static NR_TYPE compute_rhola(int indx, DERTBL *varp, NR_TYPE vla, NR_TYPE psxc, 
   ertst = (NR_TYPE)fabs(errlr);
 
 /*  (code lines 154-168 changed by RLR on 7 May 1997 to agree with GENPRO)
-/* Allen Schanot's safety check, 7/5/88
+// Allen Schanot's safety check, 7/5/88
   if (n1[indx] < 10)
     ertst = 0.0;
 */

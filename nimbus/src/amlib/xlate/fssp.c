@@ -29,9 +29,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 /* -------------------------------------------------------------------- */
 void xlfreset(RAWTBL *varp, void *p, NR_TYPE *np)
 {
-  int	i;
-
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (NR_TYPE)ntohs(((P16_blk *)p)[i].aux[3]);
 
 }	/* END XLFRESET */
@@ -39,9 +37,7 @@ void xlfreset(RAWTBL *varp, void *p, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlfrange(RAWTBL *varp, void *p, NR_TYPE *np)
 {
-  int	i;
-
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     np[i] = (NR_TYPE)ntohs(((P16_blk *)p)[i].rng_flg);
 
@@ -54,9 +50,7 @@ void xlfrange(RAWTBL *varp, void *p, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlfrange2(RAWTBL *varp, void *p, NR_TYPE *np)
 {
-  int	i;
-
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     np[i] = (NR_TYPE)ntohs(((P16v2_blk *)p)[i].rng_flg);
 
@@ -69,9 +63,7 @@ void xlfrange2(RAWTBL *varp, void *p, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlfrange3(RAWTBL *varp, void *p, NR_TYPE *np)
 {
-  int	i;
-
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     np[i] = (NR_TYPE)ntohs(((DMT100_blk *)p)[i].range);
 
@@ -84,9 +76,7 @@ void xlfrange3(RAWTBL *varp, void *p, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlfstrob(RAWTBL *varp, void *p, NR_TYPE *np)
 {
-  int	i;
-
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (NR_TYPE)ntohs(((P16_blk *)p)[i].aux[2]);
 
 }	/* END XLFSTROB */

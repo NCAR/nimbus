@@ -180,11 +180,10 @@ static double velocity(long value)
 /* -------------------------------------------------------------------- */
 void xlpitch51(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-	int	i;
 	short	*p = (short *)input;
 	NR_TYPE	pitch;
 
-	for (i = 0; i < varp->SampleRate; ++i)
+	for (size_t i = 0; i < varp->SampleRate; ++i)
 		{
 		pitch = ~p[i * varp->ADSoffset] * RESOLV14BIT * 0.125;
 		pitch = angcr(pitch, (NR_TYPE)0.0, (float)45.0, (float)-180.0);
@@ -199,10 +198,9 @@ static NR_TYPE	croll[50];
 
 void xlcroll51(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-	int	i;
 	short	*p = (short *)input;
 
-	for (i = 0; i < varp->SampleRate; ++i)
+	for (size_t i = 0; i < varp->SampleRate; ++i)
 		output[i] = 
 		croll[i] = (NR_TYPE)~p[i * varp->ADSoffset] * RESOLV14BIT;
 
@@ -211,11 +209,10 @@ void xlcroll51(RAWTBL *varp, void *input, NR_TYPE *output)
 /* -------------------------------------------------------------------- */
 void xlroll51(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-	int	i;
 	short	*p = (short *)input;
 	NR_TYPE	roll;
 
-	for (i = 0; i < varp->SampleRate; ++i)
+	for (size_t i = 0; i < varp->SampleRate; ++i)
 		{
 		roll = ~p[i * varp->ADSoffset] * RESOLV14BIT * 0.125;
 		roll = angcr(roll, croll[i], (float)45.0, (float)-180.0);
@@ -228,10 +225,9 @@ void xlroll51(RAWTBL *varp, void *input, NR_TYPE *output)
 /* -------------------------------------------------------------------- */
 void xlphdg51(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-	int	i;
 	short	*p = (short *)input;
 
-	for (i = 0; i < varp->SampleRate; ++i)
+	for (size_t i = 0; i < varp->SampleRate; ++i)
 		output[i] = (NR_TYPE)~p[i*varp->ADSoffset] * RESOLV14BIT * 0.125;
 
 }	/* END XLPHDG51 */
@@ -239,7 +235,6 @@ void xlphdg51(RAWTBL *varp, void *input, NR_TYPE *output)
 /* -------------------------------------------------------------------- */
 void xlvzi51(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-	int	i;
 	NR_TYPE		vzi, vzidif;
 	static bool	firstTime = TRUE;
 	static int	ncvzi;
@@ -252,7 +247,7 @@ void xlvzi51(RAWTBL *varp, void *input, NR_TYPE *output)
 		firstTime = FALSE;
 		}
 
-	for (i = 0; i < varp->SampleRate; ++i)
+	for (size_t i = 0; i < varp->SampleRate; ++i)
 		{
 		vzi	= ((short *)input)[i] * 0.012192;
 		vzidif	= vzi - vzi0;

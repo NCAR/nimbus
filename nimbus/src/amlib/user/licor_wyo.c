@@ -92,7 +92,7 @@ void UWO_LICORinit(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void sxwco2c(DERTBL *varp)
 {
-  NR_TYPE  co2c, co2p, co2s, co2t, cpress, co2ml;
+  NR_TYPE  co2p, co2s, co2t, cpress, co2ml;
 
   co2p  = GetSample(varp, 0);
   co2s  = GetSample(varp, 1);

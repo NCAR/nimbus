@@ -28,7 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "amlib.h"
 #include "pms.h"
 
-static int FIRST_BIN[MAX_ASAS], LAST_BIN[MAX_ASAS];
+static size_t FIRST_BIN[MAX_ASAS], LAST_BIN[MAX_ASAS], SampleRate[MAX_ASAS];
 
 static NR_TYPE	total_concen[MAX_ASAS], disp[MAX_ASAS], dbar[MAX_ASAS];
 static NR_TYPE	aact[MAX_ASAS], pvol[MAX_ASAS], tact[MAX_ASAS];
@@ -36,12 +36,10 @@ static NR_TYPE	cell_size[MAX_ASAS][BINS_40+1];
 static NR_TYPE	cell_size2[MAX_ASAS][BINS_40+1];
 static NR_TYPE	cell_size3[MAX_ASAS][BINS_40+1];
 
-static int	SampleRate[MAX_ASAS];
-
 /* -------------------------------------------------------------------- */
 void casasInit(RAWTBL *varp)
 {
-  int	i, probeNum;
+  size_t	i, probeNum;
   char	*p, *serialNumber;
 
   serialNumber = varp->SerialNumber;
@@ -94,7 +92,7 @@ void casasInit(RAWTBL *varp)
 /* -------------------------------------------------------------------- */
 void scasas(DERTBL *varp)
 {
-  int		i, probeNum;
+  size_t	i, probeNum;
   NR_TYPE	*actual, *concentration, activity, *dia, *dia2, *dia3;
   NR_TYPE	flow;           /* PCAS Flow Rate       */
   NR_TYPE	sampleVolume[BINS_40+1];
@@ -137,7 +135,7 @@ void scasas(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void scs200(DERTBL *varp)
 {
-  int		i, probeNum;
+  size_t	i, probeNum;
   NR_TYPE	*actual, *concentration, *dia, *dia2, *dia3;
   NR_TYPE	flow;
   NR_TYPE	sampleVolume[BINS_40+1];

@@ -80,7 +80,7 @@ void kokInit(DERTBL *varp)
   if ((tmp = GetDefaultsValue("XO3F1T_CAL", varp->name)) == NULL)
   {
 	xo3f1t_cal = Xo3f1t_cal;
-    sprintf(buffer, "Values set to %f, %f in AMLIB function kokInit.\n", xo3f1t_cal);
+    sprintf(buffer, "Values set to %f in AMLIB function kokInit.\n", xo3f1t_cal);
     LogMessage(buffer);
   }
   else
@@ -106,7 +106,7 @@ void so3fc(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void sxeco2c(DERTBL *varp)
 {
-  NR_TYPE  xeco2c, xecco2, xecco2p, xecco2t, x, y;
+  NR_TYPE  xecco2, xecco2p, xecco2t, x, y;
 
   xecco2  = GetSample(varp, 0);
   xecco2p  = GetSample(varp, 1);

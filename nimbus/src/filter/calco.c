@@ -19,38 +19,41 @@ REFERENCES:	none
 
 REFERENCED BY:	LowRateLoop(), HighRateLoop(), winputops.c
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1994-7
+COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2005
 -------------------------------------------------------------------------
 */
 
 #include "nimbus.h"
 #include "decode.h"
 
+extern NR_TYPE *SRTvolts, *volts;
 
 /* -------------------------------------------------------------------- */
 void ApplyCalCoes(NR_TYPE *record)
 {
-  int		corder, pos;
-
-  for (int i = 0; i < sdi.size(); ++i)
+  for (size_t i = 0; i < sdi.size(); ++i)
   {
     SDITBL *sp = sdi[i];
-    pos = sp->SRstart;
+    int pos = sp->SRstart;
 
-    for (int j = 0; j < sp->SampleRate; ++j, ++pos)
+    for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
     {
-      corder  = sp->order - 1;
+      int corder  = sp->order - 1;
 
       NR_TYPE out     = sp->cof[corder];
 
       if (sp->type[0] == 'A')
-        record[pos] = (record[pos] - sp->convertOffset) * sp->convertFactor;
+        SRTvolts[pos] = record[pos] =
+		(record[pos] - sp->convertOffset) * sp->convertFactor;
 
-      for (int k = 1; k < sp->order; k++)
+      for (size_t k = 1; k < sp->order; k++)
         out = sp->cof[corder-k] + record[pos] * out;
 
       record[pos] = out;
     }
+
+    // Voltages for WINDS display.
+    volts[sp->LRstart] = SRTvolts[sp->SRstart];
   }
 
 }	/* END APPLYCALCOES */

@@ -27,7 +27,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-8
 #include "amlib.h"
 #include "pms.h"
 
-static int	FIRST_BIN[MAX_260X], LAST_BIN[MAX_260X], SampleRate[MAX_260X];
+static size_t	FIRST_BIN[MAX_260X], LAST_BIN[MAX_260X], SampleRate[MAX_260X];
 static NR_TYPE	responseTime[MAX_260X], armDistance[MAX_260X], DENS[MAX_260X],
 		resolution[MAX_260X], tact[MAX_260X];
 static double	PLWFAC[MAX_260X], DBZFAC[MAX_260X];
@@ -42,19 +42,18 @@ static NR_TYPE	radius[MAX_260X][BINS_64], cell_size[MAX_260X][BINS_64],
 NR_TYPE         reff63[MAX_260X], reff62[MAX_260X];  /* For export to reff.c */
 
 void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
-		float minRange, float resolution, int nDiodes, int length),
+		float minRange, float resolution, size_t nDiodes, size_t length),
 
 	ComputeDOF(NR_TYPE radius[], NR_TYPE tas, NR_TYPE dof[],
-		int FirstBin, int LastBin, float RES, NR_TYPE RESPONSE_TIME);
+		size_t FirstBin, size_t LastBin, float RES, NR_TYPE RESPONSE_TIME);
 
 
 /* -------------------------------------------------------------------- */
 void c260xInit(RAWTBL *varp)
 {
-  int	i, probeNum;
-  int	nDiodes;
-  char	*p, *serialNumber;
-  float	minRange;
+  size_t	i, probeNum, nDiodes;
+  char		*p, *serialNumber;
+  float		minRange;
 
   serialNumber = varp->SerialNumber;
   probeNum = varp->ProbeCount;
@@ -134,7 +133,7 @@ void c260xInit(RAWTBL *varp)
 /* -------------------------------------------------------------------- */
 void sc260x(DERTBL *varp)
 {
-  int		i, probeNum;
+  size_t	i, probeNum;
   NR_TYPE	*actual, tas, *concentration, *dia, *dia2, *dia3;
   NR_TYPE	dof[BINS_64],	/* Depth Of Field	*/
 		sampleVolume[BINS_64];

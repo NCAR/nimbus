@@ -54,7 +54,7 @@ void Set_SetupFileName(char s[])
 /* -------------------------------------------------------------------- */
 void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *call)
 {
-  int	i, indx;
+  int	indx;
   FILE	*fp;
   char	*file, *target;
   bool	ProductionSetup;
@@ -164,7 +164,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
           {
           sdi[indx]->order = atoi(strchr(target, '=')+1);
 
-          for (i = 0; i < sdi[indx]->order; ++i)
+          for (size_t i = 0; i < sdi[indx]->order; ++i)
             sdi[indx]->cof[i] = (float)atof(strtok(NULL, " \t"));
           }
         }
@@ -210,7 +210,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
           {
           raw[indx]->order = atoi(strchr(target, '=')+1);
 
-          for (i = 0; i < raw[indx]->order; ++i)
+          for (size_t i = 0; i < raw[indx]->order; ++i)
             raw[indx]->cof[i] = (float)atof(strtok(NULL, " \t"));
           }
         }
@@ -249,7 +249,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
           {
           derived[indx]->ndep = atoi(strchr(target, '=')+1);
 
-          for (i = 0; i < derived[indx]->ndep; ++i)
+          for (size_t i = 0; i < derived[indx]->ndep; ++i)
             {
             strcpy(derived[indx]->depend[i], strtok(NULL, " \t\n"));
             DependIndexLookup(derived[indx], i);
@@ -262,13 +262,12 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
       {
       char	def_name[20];
       NR_TYPE	f[128];
-      int	i, n;
 
       strcpy(def_name, strtok(NULL, " \t"));
 
-      n = atoi(strtok(NULL, " \t"));
+      size_t n = atoi(strtok(NULL, " \t"));
 
-      for (i = 0; i < n; ++i)
+      for (size_t i = 0; i < n; ++i)
         f[i] = (NR_TYPE)atof(strtok(NULL, " \t"));
 
       SetDefaultsValue(def_name, f);
@@ -306,7 +305,6 @@ void LoadSynthetic_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStru
 /* -------------------------------------------------------------------- */
 void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *call)
 {
-  int	i, j;
   FILE	*fp;
   char	*file;
 
@@ -329,7 +327,7 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
   fprintf(fp, "ProjNum=%s\n", ProjectNumber);
   fprintf(fp, "PRate=%d\n", ProcessingRate);
 
-  for (i = 0; i < sdi.size(); ++i)
+  for (size_t i = 0; i < sdi.size(); ++i)
     if (sdi[i]->Dirty)
       {
       fprintf(fp, "SDI=%s O=%d ", sdi[i]->name, sdi[i]->Output);
@@ -343,13 +341,13 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
       fprintf(fp, "DQ=%s OR=%d nCOEF=%d",
 		sdi[i]->DataQuality, sdi[i]->OutputRate, sdi[i]->order);
 
-      for (j = 0; j < sdi[i]->order; ++j)
+      for (size_t j = 0; j < sdi[i]->order; ++j)
         fprintf(fp, " %e", sdi[i]->cof[j]);
 
       fprintf(fp, "\n");
       }
 
-  for (i = 0; i < raw.size(); ++i)
+  for (size_t i = 0; i < raw.size(); ++i)
     if (raw[i]->Dirty)
       {
       fprintf(fp, "RAW=%s O=%d ", raw[i]->name, raw[i]->Output);
@@ -363,13 +361,13 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
       fprintf(fp, "DQ=%s OR=%d nCOEF=%d", 
 		raw[i]->DataQuality, raw[i]->OutputRate, raw[i]->order);
 
-      for (j = 0; j < raw[i]->order; ++j)
+      for (size_t j = 0; j < raw[i]->order; ++j)
         fprintf(fp, " %e", raw[i]->cof[j]);
 
       fprintf(fp, "\n");
       }
 
-  for (i = 0; i < derived.size(); ++i)
+  for (size_t i = 0; i < derived.size(); ++i)
     if (derived[i]->Dirty)
       {
       fprintf(fp, "DERIVED=%s O=%d DQ=%s OR=%d nDEP=%d",
@@ -379,7 +377,7 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 				derived[i]->OutputRate,
 				derived[i]->ndep);
 
-      for (j = 0; j < derived[i]->ndep; ++j)
+      for (size_t j = 0; j < derived[i]->ndep; ++j)
         fprintf(fp, " %s", derived[i]->depend[j]);
 
       fprintf(fp, "\n");

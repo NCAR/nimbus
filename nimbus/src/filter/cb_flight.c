@@ -65,9 +65,7 @@ static void	ResetFlightInfo(Widget w, XtPointer client, XtPointer call);
 /* Set a value being read in from a setup file */
 void SetFlightValue(char target[], char new_value[])
 {
-  int	i, j;
-
-  for (i = 0; i < nFlightInfo; ++i)
+  for (int i = 0; i < nFlightInfo; ++i)
     if (strcmp(FlightInfo[i].Name, target) == 0)
       {
       FlightInfo[i].Dirty = true;
@@ -82,9 +80,7 @@ void SetFlightValue(char target[], char new_value[])
 /* -------------------------------------------------------------------- */
 void ResetFlightInfo(Widget w, XtPointer client, XtPointer call)
 {
-  int	i;
-
-  for (i = 0; i < nFlightInfo; ++i)
+  for (int i = 0; i < nFlightInfo; ++i)
     {
     FlightInfo[i].Dirty = false;
     XmTextFieldSetString(flightText[i], FlightInfo[i].originalValue);
@@ -102,7 +98,7 @@ void CreateFlightInfoWindow()
   Widget	drFrame, drRC, efiFrame, b[2], defRC,
 		form[nFlightInfo], label[nFlightInfo];
 
-  extern Widget	AppShell, Shell005;
+  extern Widget	AppShell;
 
 
   n = 0;
@@ -239,7 +235,6 @@ static void VerifyFlightInfo(Widget w, int indx, XtPointer call)
 {
   int	i;
   char	*p, *p1;
-  NR_TYPE	f[128];
   struct Fl   *fp = get_header();
 
   extern int  Aircraft;
