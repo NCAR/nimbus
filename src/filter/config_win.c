@@ -119,8 +119,13 @@ void ResetFlightInfo(Widget w, XtPointer client, XtPointer call)
     XmTextFieldSetString(ts_text[i], TimeSliceInfo[i].originalValue);
     }
 
-  XmToggleButtonSetState(lowRateButton, true, true);
-  XmToggleButtonSetState(highRateButton, false, true);
+/** @todo
+ * We need a Set & Reset function.  Don't want reset being called when the
+ * user pops up this window after loading a setup.  Setup stuff gets whiped
+ * out.
+ */
+//  XmToggleButtonSetState(lowRateButton, true, true);
+//  XmToggleButtonSetState(highRateButton, false, true);
 
 }	/* END RESETFLIGHTINFO */
 
@@ -129,7 +134,13 @@ void SetLowRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
 {
   size_t        i;
 
-  if (w && call->set == false)
+  if (w == 0)
+    {
+    XmToggleButtonSetState(lowRateButton, true, true);
+   return;
+    }
+
+  if (call->set == false)
     return;
 
   cfg.SetProcessingRate(Config::LowRate);
@@ -163,7 +174,13 @@ void SetHighRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
 {
   size_t        i;
 
-  if (w && call->set == false)
+  if (w == 0)
+    {
+    XmToggleButtonSetState(highRateButton, true, true);
+    return;
+    }
+
+  if (call->set == false)
     return;
 
   cfg.SetProcessingRate(Config::HighRate);
@@ -559,7 +576,6 @@ void EditConfiguration(Widget w, XtPointer client, XtPointer call)
   if (firstTime)
     {
     char	*p;
-
 
     strcpy(FlightInfo[0].originalValue, ProjectNumber);
     XtSetSensitive(flightText[0], false);

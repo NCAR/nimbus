@@ -25,7 +25,7 @@ REFERENCES:	none
 
 REFERENCED BY:	hdr_decode.c, lrloop.c, hrloop.c
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2001
+COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2005
 -------------------------------------------------------------------------
 */
 
@@ -166,7 +166,7 @@ static void checkVariable(var_base *varp, NR_TYPE SpikeSlope, size_t *counter)
   size_t	sx, ex, spikeCount = 0,
 		spCnt, consecutiveCnt, nPoints;
 
-  NR_TYPE	points[2004], xa[6], ya[6],
+  NR_TYPE	points[2004], xa[varp->SampleRate+2], ya[varp->SampleRate+2],
 		dir1;	/* Direction of data	*/
 
   /* Copy all points to a seperate place for inspection.
@@ -206,7 +206,7 @@ static void checkVariable(var_base *varp, NR_TYPE SpikeSlope, size_t *counter)
         }
       while (consecutiveCnt < 2 && ex < nPoints);
 
-//for (j = 0; j < spCnt; ++j)
+//for (size_t j = 0; j < spCnt; ++j)
 //  printf("xa[%d] = %f, ya[%d] = %f\n", j, xa[j], j, ya[j]);
 
       if (ex < nPoints)
