@@ -88,7 +88,7 @@ static void	checkForProductionSetup(), displaySetupWindow(),
 
 void	OpenLogFile(), InitAsyncModule(char fileName[]), RealTimeLoop(),
 	CloseLogFile(), LogDespikeInfo(), InitAircraftDependencies(),
-	CloseRemoveLogFile();
+	CloseRemoveLogFile(), LogIRSerrors();
 
 
 /* -------------------------------------------------------------------- */
@@ -355,7 +355,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
 {
   XmString	label;
   Arg		args[1];
-  int		rc;
+  int		rc = 0;
   long		btim, etim;
 
   DismissEditWindow(NULL, NULL, NULL);
@@ -491,6 +491,7 @@ void stopProcessing()
   CloseNetCDF();
 
   LogDespikeInfo();
+  LogIRSerrors();
 
   /* Log wall clock time.
    */
