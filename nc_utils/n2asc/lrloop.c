@@ -28,6 +28,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 #include "define.h"
 #include "netcdf.h"
 
+#include <math.h>
+
 static const int	NVARS_PER_LINE = 10;
 
 static long	timeVarID[3];
@@ -43,6 +45,7 @@ static int FindNextRecordNumber(long endtime);
 
 static int Month(char s[]);
 void UpdateTime(int currentTime[]);
+bool isMissingValue(float target, float fillValue);
 
 /* -------------------------------------------------------------------- */
 int LowRateLoop(long starttime, long endtime)
@@ -63,8 +66,7 @@ int LowRateLoop(long starttime, long endtime)
     xTraLines = (nVars-1) / NVARS_PER_LINE;
 
     fprintf(OutputFile, "%3d 1001\n", 15 + nVars + (xTraLines<<1));
-//    fprintf(OutputFile, "Lastname, Firstname\n");
-fprintf(OutputFile, "Schanot, Allen\n");
+    fprintf(OutputFile, "Lastname, Firstname\n");
     ncattget(InputFile, NC_GLOBAL, "Source", tmp);
     fprintf(OutputFile, "%s\n", tmp);
     ncattget(InputFile, NC_GLOBAL, "Aircraft", tmp);
@@ -95,7 +97,11 @@ fprintf(OutputFile, "Schanot, Allen\n");
     for (i = 0; i < nVariables; ++i)
       if (Variable[i]->Output)
         {
-        ncattget(InputFile, Variable[i]->inVarID, "missing_value", &miss);
+        if (ncattget(InputFile, Variable[i]->inVarID, "_FillValue", &miss) < 0)
+          if (ncattget(InputFile, Variable[i]->inVarID, "missing_value", &miss) < 0)
+            if (ncattget(InputFile, Variable[i]->inVarID, "MissingValue", &miss) < 0)
+              miss = -32767.0;	// Kinda Bogus.
+
         fprintf(OutputFile, "99999 ");
         Variable[i]->MissingValue = miss;
 
@@ -242,8 +248,8 @@ static void PrintVariables()
 
           if (AmesFormat)
             for (j = 1; j < vp->VectorLength; ++j)
-              if (data[j] == vp->MissingValue)
-                data[j] = 99999;
+              if (isMissingValue(data[j], vp->MissingValue))
+                data[j] = 99999.0;
 
           if (strchr(vp->Format, 'd'))
             for (j = 1; j < vp->VectorLength; ++j)
@@ -256,8 +262,8 @@ static void PrintVariables()
           {
           ncvarget1(InputFile, vp->inVarID, start, (void *)data);
 
-          if (AmesFormat && data[0] == vp->MissingValue)
-              data[0] = 99999;
+          if (AmesFormat && isMissingValue(data[0], vp->MissingValue))
+              data[0] = 99999.0;
 
           if (strchr(vp->Format, 'd'))
             fprintf(OutputFile, vp->Format, (int)data[0]);
@@ -353,5 +359,15 @@ static int Month(char s[])
   return(0);
 
 }
+
+/* -------------------------------------------------------------------- */
+bool isMissingValue(float target, float fillValue)
+{
+  if (isnan(fillValue))
+    return(isnan(target));
+  else
+    return(fillValue == target);
+
+}       /* END ISMISSINGVALUE */
 
 /* END LRLOOP.C */
