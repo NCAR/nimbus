@@ -4,18 +4,13 @@ OBJECT NAME:	PlotInfo.cc
 
 FULL NAME:	Plot Information/Parameters
 
-ENTRY POINTS:	PlotInfo()
-		PopUp()
-
-STATIC FNS:	
-
-DESCRIPTION:	
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2001
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2005
 -------------------------------------------------------------------------
 */
 
 #include "PlotInfo.h"
+
+const std::string PlotInfo::prelimWarning = "This plot contains preliminary data";
 
 extern Printer	*printerSetup;
 
@@ -530,6 +525,21 @@ void PlotInfo::printTitles(PostScript& pen)
     pen.ShowStr(subTitle);
     }
 
+  bool warning = false;
+  for (DataSet *set = sets.FirstSet(); set; set = sets.NextSet())
+    if (set->file->isPreliminaryData())
+      warning = true;
+
+  if (warning)
+    {
+    pen.SetFont(40);
+    sprintf(buffer, "%d (%s) stringwidth pop 2 div sub %d moveto\n",
+		offset, prelimWarning.c_str(), ps.subTitleOffset-40);
+    pen.Issue(buffer);
+
+    pen.ShowStr(prelimWarning);
+    }
+
 }	/* END PRINTTITLES */
 
 /* -------------------------------------------------------------------- */
@@ -564,6 +574,24 @@ void PlotInfo::drawTitles(int sizeOffset)
 		(fonts.StringWidth(fontIdx, subTitle) >> 1);
 
     blackPen.DrawText(canvas.Surface(), offset, x.subTitleOffset, subTitle);
+    }
+
+  bool warning = false;
+  for (DataSet *set = sets.FirstSet(); set; set = sets.NextSet())
+    if (set->file->isPreliminaryData())
+      warning = true;
+
+  if (warning)
+    {
+    fontIdx = XFonts::Point14 + sizeOffset;
+
+    blackPen.SetFont(fonts.Font(fontIdx));
+
+    offset = panel[0]->dimsX.LV + ((panel[0]->dimsX.HD * nCols) >> 1) -
+		(fonts.StringWidth(fontIdx, prelimWarning.c_str()) >> 1);
+
+    blackPen.DrawText(canvas.Surface(), offset,
+		x.subTitleOffset+15, prelimWarning.c_str());
     }
 
 }	/* END DRAWTITLES */

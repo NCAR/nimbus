@@ -92,6 +92,7 @@ private:
   bool		grid, color, ditc;
 
   std::string	title, subTitle;
+  static const std::string prelimWarning;
 
   struct plotOffset	ps;	/* PostScript info, valid for all panels*/
   struct plotOffset	x;	/* Xwindow info, valid for all panels	*/

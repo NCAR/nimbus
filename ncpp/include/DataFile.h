@@ -35,8 +35,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 
 /* -------------------------------------------------------------------- */
-class DataFile {
-
+class DataFile
+{
 public:
 	DataFile(char fName[]);
 	~DataFile();
@@ -54,6 +54,8 @@ public:
   bool  operator==(DataFile& rhs) { return(fileName == rhs.fileName); }
   bool  operator==(const DataFile& rhs) { return(fileName == rhs.fileName); }
 
+  bool  isPreliminaryData()	{ return prelimData; }
+
   Probe		*probe[MAX_PROBES];
 
 
@@ -70,6 +72,8 @@ private:
   FlightClock	startTime, endTime;
 
   bool	validProbeName(const char target[]) const;
+
+  bool  prelimData;
 
 };	/* END DATAFILE.H */
 

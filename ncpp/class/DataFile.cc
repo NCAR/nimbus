@@ -59,6 +59,12 @@ DataFile::DataFile(char fName[]) : fileName(fName)
   if (attr->is_valid())
     flightDate = attr->as_string(0);
 
+  attr = file->get_att("WARNING");
+  if (attr->is_valid())
+    prelimData = true;
+  else
+    prelimData = false;
+
   attr = file->get_att("TimeInterval");
   if (attr->is_valid())
     {
