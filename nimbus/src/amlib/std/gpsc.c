@@ -28,11 +28,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 #include "amlib.h"
 
 static NR_TYPE
-		UPFCTR	= 0.999444,
-		FCTRF	= 0.997,
-		TAUP	= 100.0,
-		CDM	= 111120.0,
-		ROLL_MAX = 40.0;
+	UPFCTR	= 0.999444,
+	FCTRF	= 0.997,
+	TAUP	= 100.0,
+	CDM	= 111120.0,
+	ROLL_MAX = 40.0;
 
 #define NCF	3
 
@@ -68,20 +68,20 @@ void slatc(DERTBL *varp)
 
   static double	h[NCF][NCF], hi[NCF][NCF], zf[nFeedBackTypes][4][6];
   static double	am[2][NCF], bm[2][NCF], c[2][NCF], cp[2][NCF];
-  static int	countr = 0, goodGPS = 0, gps_is_flat = 0;
+  static int	countr[nFeedBackTypes] = { 0, 0 },
+		goodGPS = 0, gps_is_flat = 0;
 
   alat	= GetSample(varp, 0);
   alon	= GetSample(varp, 1);
-  vns	= GetSample(varp, 4);
-  vew	= GetSample(varp, 5);
-  roll	= GetSample(varp, 8);
   glat	= GetSample(varp, 2);
   glon	= GetSample(varp, 3);
+  vns	= GetSample(varp, 4);
+  vew	= GetSample(varp, 5);
   gvns	= GetSample(varp, 6);
   gvew	= GetSample(varp, 7);
+  roll	= GetSample(varp, 8);
   gstat	= (long)GetSample(varp, 9);	/* nSats for Tans & Garmin	*/
   gmode	= (long)GetSample(varp, 10);	/* GMODE or GGMODE		*/
-
 
   if (firstTime[FeedBack])
     {
@@ -200,8 +200,8 @@ void slatc(DERTBL *varp)
 
   if (goodGPS < 10)	/* < 10 seconds		*/
     {
-    if (countr > 1800)	/* 30 minutes of operation.	*/
-      {
+    if (countr[FeedBack] > 1800 / DELT[FeedBack])
+      { /* 30 minutes of operation.	*/
       if (FeedBack == LOW_RATE_FEEDBACK && matrix_updated[FeedBack])
         {
         matrix_updated[FeedBack] = FALSE;
@@ -219,7 +219,7 @@ void slatc(DERTBL *varp)
         if (det == 0.0)
           {
           printf("GPS determinate is zero, reseting countr.\n");
-          countr = 0;
+          countr[FeedBack] = 0;
           goto label546;
           }
 
@@ -312,7 +312,7 @@ void slatc(DERTBL *varp)
       h[2][2] = UPFCTR * h[2][2] + coswt * coswt;
 
       matrix_updated[FeedBack] = TRUE;
-      ++countr;
+      ++countr[FeedBack];
       }
     }
 
