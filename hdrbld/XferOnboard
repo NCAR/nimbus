@@ -1,8 +1,8 @@
-#!/usr/bin/csh -x
+#!/bin/csh -x
 
-cd ${PROJ_DIR}/$argv[0]
+cd ${PROJ_DIR}/$argv[1]
 
-rcp -rp ${PROJ_DIR}/$argv[0] ads@hercules:/home/local/proj
+rcp -rp ${PROJ_DIR}/$argv[1] ads@hercules:/home/local/proj
 
 echo "Type 'exit' when finished."
 sleep 10
