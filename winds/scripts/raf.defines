@@ -1,0 +1,152 @@
+# raf.defines -- csh variable settings relevant to RAF's in-house WINDS installs
+#
+# define directories, pathnames, and filenames of interest 
+#
+# WINDSHOME must match WINDS as set in /sysutil files
+#
+# variable WINDSHOME is used only in RAF local operations, in scripts that
+# perform project setups and make WINDS releases, so this redundancy will
+# not affect outside distributions. It is, however, a point to remember
+# if value of WINDS is changed in system file mentioned above.
+#
+if ( !( $?RAF_DEFINES )) then
+set RAF_DEFINES = yes
+umask 000
+#
+source $LOCAL/scripts/SetAirplanesAndHosts
+#
+set WINDSHOME = /home/local/winds
+set DEV_WINDS = $LOCAL/dev/winds
+set RELEASE = $WINDSHOME
+set WINDSSOURCEDIR = src
+set WINDSINCLUDEDIR = include
+set PROJ_SUBDIR=proj
+set HOSTS_SUBDIR = hosts
+set HOSTS = $PROJ_DIR/$HOSTS_SUBDIR
+set LOG_SUBDIR = log
+set DEFAULTS_SUBDIR = defaults
+set WDEF = $WINDS/$DEFAULTS_SUBDIR
+set DATA_SUBDIR=data
+set NETCONFIG_FILENAME = netconfig
+set NETCONFIG = $PROJ_DIR/$NETCONFIG_FILENAME
+set PROJNUMFILE = $PROJ_DIR/$HOSTS_SUBDIR/ProjectNumber
+if ( -f $PROJNUMFILE ) then
+ set ProjectNumber = `cat $PROJNUMFILE`
+else
+ set ProjectNumber = unknown
+endif
+set VERSIONFILE = $WINDSINCLUDEDIR/version.h
+set MAKE_RELEASE_TIME = $DEV_WINDS/scripts/make_release_time
+set WINDSFILES = "openwin-init rhosts OWdefaults my_defaults gdbinit cshrc login openwin-menu"
+set ATTRFILE = plot_attr
+#
+# define hostnames for various dealies
+#
+set PROJDIR_HOST = mistral
+set SOLARIS_HOST = mistral
+#
+# EDITABLE_FILES are offered to user for editing at proj_setup time
+#
+set EDITABLE_FILES = (bulletin.9 plot_attr config regions ascii_parms flat_panel_parms ../netconfig ophir3.names)
+set EDITABLE_FUNCS = ("Titles Database" "General Plot Attributes" "General Configuration" "Coastline Mapping Boundaries" "Serial Line Data Feeds" "Flat Panel Display" "Network Configuration" "Ophir-3 Calcoes")
+#
+# PROJDEFAULTFILES are the default config files for all projects; they come 
+# from $PROJ_DIR/defaults, then can be customized per project. All files under
+# SCCS control will be moved from dev to release in this dir; however, only
+# those files listed here will be transferred via proj_setup script to onboard.
+#
+# We maintain an explicit list of filenames here instead of simply grabbing 
+# every file in the directory because: not all files are essential (see OPTIONAL
+# file below); there is no guarantee that users won't leave core files, gmeta
+# files, etc. in the directory (this has been a problem in the past); and, since
+# $PROJDEFAULTFILES is defined in onboard logins also: if the onboard
+# system has not had its $PROJ_DIR/defaults directory updated with new files, 
+# then a dynamically acquired value for $PROJDEFAULTFILES will not be accurate.
+#
+set PROJDEFAULTFILES = "plotspex PMSspecs VarDB Categories bulletin.9 calib_attr config Defaults DependTable landmarks plot_attr LowRateVars Lags Despike"
+#
+# OPTIONAL_FILES are optional, depending on project needs
+#
+set OPTIONAL_FILES = (ascii_parms flat_panel_parms ophir3.names)
+set OPTIONAL_FUNCS = ("Serial Line Data Feeds" "Flat Panel Display" "Ophir-3 Calcoes")
+#
+# OTHER_PROJFILES are created by someone else -- NIMBUS, XBuild, etc.
+#
+set OTHER_PROJFILES = "ProjectName header regions UserNames" 
+#
+# PROJ_FILES are all of the above
+#
+set PROJ_FILES = ( $OTHER_PROJFILES $PROJDEFAULTFILES $OPTIONAL_FILES )
+#
+# soft links maintained to facilitate binary release kept under one directory
+# heirarchy only. These names should correspond one-to-one with those listed
+# under "defaults" subdir in $WINDS/doc/tar/include.binary, as used in
+# make release by script make_winds_release.
+#
+set ProjDefaultsLinks = "regions coast.data bulletin.9 netconfig plot_attr config landmarks VarDB"
+#
+# Nimbus directories of relevance that should be updated onboard
+#
+set NimbusDirs = "src/amlib include src/filter src/filter/obj src/amlib/std src/amlib/user src/amlib/xlate lib"
+#
+# Project directories of relevance that should be updated onboard
+#
+set ProjDirs = "defaults"
+#
+# define directories to be copied over to target for standalone installs:
+# WINDS developers must keep this up to date...
+#
+set RAFINSTALLDIRS = "bin include include/icons obj scripts src defaults"
+#
+# define directories to be examined for sccs files:
+# WINDS developers must keep this up to date...
+#
+set RAFSCCSDIRS = "include include/icons scripts src "
+#
+# dirs for binary release
+#
+set BINARY_RELEASE_DIRS = "bin data distribution log proj proj/hosts defaults"
+#
+# binaries being dealt with
+#
+set WINDS_BINARIES = "prt_srvr psprint windcomm sun_natscom winds winput"
+#
+# following used as strings in netconfig file. These must match the hardwired
+# strings used in ../src/netconfig.c source code file. Eventually these strings
+# should be extracted into a file that both scripts and c code can read in
+# in order to preclude replication of these hardwires...
+# 
+# netconfig "modes"
+#
+set NFS = "nfs"
+set RAF = "ctl"
+set DEVRAF = "devctl"
+set DEVCDF = "devctl_cdf"
+set NETCDF = "netcdf"
+set SETUP = "setup"
+set OUT_BOARD_LEFT = "obl"
+set OUT_BOARD_RIGHT = "obr"
+set IN_BOARD_LEFT = "ibl"
+set IN_BOARD_RIGHT = "ibr"
+set FORWARD = "fwd"
+set COCKPIT = "ckp"
+set DEVELOPMENT = "dev"
+#
+# netconfig port-server values
+#
+set NONE = "none"
+set HPTP = "hptp"
+set PJET = "pjet"
+set HP1200C = "1200c"
+set PHP1200C = "p1200c"
+set PPJET = "ppjet"
+set SPJET = "spjet"
+set EPSON = "epson"
+set ASCII = "ascii"
+set LCD = "lcd"
+set FLIP = "flip"
+#
+# 150M cartridge tape parameters
+#
+set BS = 126
+endif

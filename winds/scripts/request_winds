@@ -1,0 +1,99 @@
+#!/bin/csh -f
+#
+# request_winds <WindsServer> <Display1> [-P] [<Display2> [-P] ...] 
+#
+# ...provide way for any host to request a winds WINDS session to be displayed 
+# on any other host.  Assumed used in .openwin-init file so request is generated
+# each time OW starts up.  This way, clients can start up at any time -- before
+# winds server is up, since the ping loop waits for winds server; or after winds
+# server has been up for any length of time, and have its request honored.
+#
+# Wait for detection of winds server on network. This must succeed or the 
+# process will terminate.
+#
+# check for winds server on net. Wait for 5 minutes.
+#
+if ( ! ($?WindsServer) ) then
+ echo ""
+ echo "WARNING: can't determine WINDS Server. Cannot proceed with request"
+ echo "for WINDS on following host(s): $* "
+ echo ""
+ exit
+endif
+if (`uname` == Linux) then
+  set host=`hostname -s`
+  set ping="/bin/ping"
+else
+  set host=`uname -n`
+  set ping="/usr/sbin/ping -s"
+endif
+
+if ( $WindsServer != $host) then
+ set waited=0
+ echo ""
+ echo "Polling network for $WindsServer...will wait for 5 minutes..." 
+ while ( ! { ($ping $WindsServer -w 3 >&/dev/null) } )
+  @ waited = $waited + 3
+  if ( $waited == 300 )  then
+   echo ""
+   echo "Timed out waiting for network response from $WindsServer...giving up."
+   exit
+  endif
+ end
+ echo ""
+ echo "Detected $WindsServer on net..."
+endif
+#
+# request WINDS displayed from winds server
+#
+while ( "$1" != "" )
+ set WindsDisplay = $1
+ shift
+ set ARGS = -onboard
+#
+# check for parcel tracking request
+#
+#############################################################################
+#
+# ALWAYS TURN ON parcel tracking and QC, as per Chris on GARY'S LAST DAY:
+#
+#if ( "$1" == "-P" ) then
+# set ARGS = "$ARGS -P"
+# shift
+#endif
+#
+# check for quality control request
+#
+#if ( "$1" == "-q" ) then
+# set ARGS = "$ARGS -q"
+# shift
+#endif
+#
+ if ( $WindsServer == $host) then
+  echo "$WindsServer starting WINDS on $WindsDisplay... "
+#
+# QC and parcel always on Winds Server
+#
+  set ARGS = "$ARGS -P -q"
+  $WINDS/scripts/winds -h $WindsDisplay $ARGS &
+ else
+#
+# no QC except on Winds Server
+#
+  set ARGS = "$ARGS -P"
+#
+############################################################################# 
+#
+  echo "$WindsServer is asked by $host to start WINDS on $WindsDisplay..."
+  rsh $WindsServer -l ads $WINDS/scripts/winds -h $WindsDisplay $ARGS &
+  if ( $status == 1 ) then
+   echo ""
+   echo "PROBLEM: failed remote request from $host to $WindsServer to "
+   echo "execute winds via request_winds. Verify permissions and try again. "
+   echo ""
+  endif
+ endif
+ echo ""
+end
+echo "Done."
+echo ""

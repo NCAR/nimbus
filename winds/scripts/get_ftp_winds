@@ -1,0 +1,96 @@
+#!/bin/csh -f
+#
+# do what it takes to get release winds over to ftp directory on mistral
+#
+set SrcDirs = "defaults doc include log proj scripts src"
+set BinaryDirs = "bin defaults doc log proj scripts"
+onintr exit
+echo ""
+echo -n "Update the WINDS ftp release...continue (y/n)? "
+set ans = $<
+if ( "$ans" != "y" ) then
+ exit
+endif
+set FTPDIR = /home/users/ftp/pub/winds
+if ( ! (-d $FTPDIR)) then
+ mkdir -p $FTPDIR
+endif
+echo ""
+echo -n "Update the source code (y/n)? "
+set ans = $<
+if ( "$ans" == "y" ) then
+ chdir $FTPDIR
+ /bin/rm -f $FTPDIR/winds.source.Z
+ chdir $WINDS/release/distribution
+ set dirs = "$SrcDirs"
+ tar cvfhFF - $dirs | compress -fv > $FTPDIR/winds.source.Z
+endif
+echo ""
+echo -n "Update the binary release (y/n)? "
+set ans = $<
+if ( "$ans" == "y" ) then
+ chdir $FTPDIR
+ /bin/rm -f $FTPDIR/winds.Z
+#
+# maintain soft links to needed files in ../distribution subdirs
+#
+ chdir $WINDS/release/distribution
+ set dirs = "$BinaryDirs"
+ tar cvfh - $dirs | compress -fv > $FTPDIR/winds.Z
+ cp $WINDS/release/doc/README.ftp $FTPDIR/README.ftp
+endif
+echo ""
+echo -n "Update the field-project release (y/n)? "
+set ans = $<
+if ( "$ans" == "y" ) then
+ chdir $WINDS/release
+ echo ""
+ echo -n "Hit <r> to edit the include file for field release files..."
+ set ready = $<
+ chmod +w doc/tar/include.field 
+ vi doc/tar/include.field
+ chmod -w doc/tar/include.field
+ /bin/rm -f $FTPDIR/winds.field.Z
+ tar cvfh - -I $WINDS/release/doc/tar/include.field | compress -fv > $FTPDIR/winds.field.Z
+ cp $WINDS/release/doc/README.ftp $FTPDIR/README.ftp
+endif
+echo ""
+echo -n "Update a project directory (y/n)? "
+set ans = $<
+if ( "$ans" == "y" ) then
+ echo -n "enter project number: "
+ set proj = $<
+ if ( ! ( -d $FTPDIR/proj/$proj) ) then
+  mkdir $FTPDIR/proj/$proj
+ endif
+ chdir $WINDS/proj/$proj
+ foreach file (README.$proj plotspex landmarks config regions VarDB bulletin.9 plot_attr)
+  if ( -e $file) then
+   cp $file $FTPDIR/proj/$proj
+  else
+   echo "WARNING: file $file does not exist in ../proj/$proj directory."
+  endif
+ end
+endif
+echo ""
+echo -n "Update a dataset directory (y/n)? "
+set ans = $<
+if ( "$ans" == "y" ) then
+ echo -n "enter project number: "
+ set proj = $<
+ mkdir $FTPDIR/data/$proj
+ chdir $WINDS/data/$proj
+ foreach file (*)
+  cp $file $FTPDIR/data/$proj
+ end
+endif
+echo ""
+echo -n "Update a project netconfig file (y/n)? "
+set ans = $<
+if ( "$ans" == "y" ) then
+ echo -n "enter project number: "
+ set proj = $<
+ vi $FTPDIR/proj/$proj/netconfig
+endif
+exit:
+exit

@@ -1,0 +1,8 @@
+#!/bin/csh -f
+#
+# GetWINDS-SCCSComponents
+#
+source $WINDS/scripts/raf.defines
+foreach dir ($RAFSCCSDIRS)
+ $WINDS/scripts/GetSCCSComponents $WINDS/$dir
+end

@@ -1,0 +1,32 @@
+#!/bin/csh -f
+#
+# CopyWinds -- script to copy winds software from one location to another
+#
+if ( $#argv != 1 ) then
+ echo ""
+ echo "USAGE: CopyWinds [source directory]"
+ echo ""
+ exit
+endif
+set SrcDir = $1
+if ( ! ( -d $SrcDir ) ) then
+ echo ""
+ echo "Directory $SrcDir does not exist.  Try again."
+ exit
+ echo ""
+endif
+if ( ! ( -d $WINDS ) ) then
+ echo ""
+ echo "Creating directory $WINDS..."
+ mkdir -p $WINDS
+ echo ""
+endif
+cd $SrcDir
+echo ""
+echo "Copying WINDS stuff from $SrcDir to $WINDS..."
+echo ""
+find . -depth -print | cpio -pdl $WINDS
+cd $WINDS
+find . -exec chmod a+w {} \;
+echo ""
+exit

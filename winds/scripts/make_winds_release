@@ -1,0 +1,186 @@
+#!/bin/csh -f
+#
+#  make_winds_release 
+#
+# prevent make with stuff under release directories 
+#
+if ( ! {( echo $WINDS | grep dev >&/dev/null )} ) then
+ echo ""
+ echo "WINDS directory: $WINDS"
+ echo "FATAL: you must setenv WINDS to development directory"
+ echo ""
+ exit
+endif
+source $WINDS/scripts/raf.defines
+#
+# verify release version number
+#
+if ( -e $RELEASE/$VERSIONFILE ) then
+ set VERSION = `cat $RELEASE/$VERSIONFILE | tail -1 | sed 's/\"//g'`
+else
+ set VERSION = `cat $WINDS/$VERSIONFILE | tail -1 | sed 's/\"//g'`
+endif
+echo ""
+echo "Version number designated in release is $VERSION"
+echo ""
+echo -n "Change version number for release (y/n)? "
+set edit = $<
+if ( "$edit" == "y" ) then
+ chdir $DEV_WINDS/$VERSIONFILE:h
+ if ( ! ( -w $VERSIONFILE:t )) then
+  sccs edit $VERSIONFILE:t
+ endif
+ vi $VERSIONFILE:t
+ sccs deledit $VERSIONFILE:t
+ chdir $RELEASE/$VERSIONFILE:h
+ sccs -d$DEV_WINDS/$VERSIONFILE:h get $VERSIONFILE:t
+ set VERSION = `cat $RELEASE/$VERSIONFILE | tail -1 | sed 's/\"//g'`
+ echo ""
+ echo "Version number designated in release is now $VERSION ..."
+endif
+echo ""
+echo "Setting up environment for release dirs..."
+source $LOCAL/scripts/chgrel
+#
+# Make all dirs as needed
+#
+if ( ! (-d $WINDS)) then
+ mkdir -p $WINDS
+endif
+#
+# following links commented out, 5/18: not giving what I want, too busy to fix
+#
+#ln -s $LOCAL/dev/ads $WINDS/ads
+#ln -s $LOCAL/proj $WINDS/proj
+#ln -s $RELEASE $WINDS/release
+foreach dir ($RAFINSTALLDIRS)
+ if ( ! (-d $dir)) then
+  mkdir -p $WINDS/$dir
+ endif
+end
+#
+# project default links from release defaults dir
+#
+chdir $WINDS/defaults
+foreach link ($ProjDefaultsLinks)
+#
+# link may already be there but pointing to wrong place. It doesn't hurt
+# any to remove it and create it anew just to be sure. These are links
+# maintained in release dir only to facilitate monoheirarchichal distribution
+# of binary release.
+#
+ /bin/rm $link
+ ln -s $PROJ_DIR/defaults/$link
+end
+#
+# create WINDS distribution directory links to actual files elsewhere
+#
+chdir $WINDS
+#
+# remove old and create new
+#
+/bin/rm -r distribution
+mkdir -p $WINDS/distribution
+if ( -e $WINDS/doc/tar/include.binary) then
+ set binaryfile = $WINDS/doc/tar/include.binary
+else
+ set binaryfile = $DEV_WINDS/doc/tar/include.binary
+endif
+#
+# make sure soft links are in place for tar command that creates the
+# binary release of winds ($WINDS/doc/tar/include.binary is include 
+# file, make ftp is target to do it). This assumes that script install_winds
+# does NOT copy soft links over as files to onboard/etc. installations. 
+# That was done in the past, but caused undue confusion and maintenance
+# headaches.
+# 
+foreach file (`cat $binaryfile`)
+ if ( -d $file ) then
+  mkdir -p $WINDS/distribution/$file
+ else
+  ln -s $WINDS/$file distribution/$file 
+ endif
+end
+#
+# repeat for source distribution, including libraries
+#
+if ( -e $WINDS/doc/tar/include.source) then
+ set binaryfile = $WINDS/doc/tar/include.source
+else
+ set binaryfile = $DEV_WINDS/doc/tar/include.source
+endif
+chdir $WINDS/distribution
+foreach file (`cat $binaryfile`)
+ if ( "$file" == "LIBRARIES" ) then
+  if ( ! ( -d $WINDS/distribution/libraries )) then
+   mkdir $WINDS/distribution/libraries
+  endif
+  chdir $WINDS/distribution/libraries
+ else
+  ln -s $file 
+ endif
+end
+chdir $WINDS/bin
+if ( -e $WINDS/scripts/move_binaries) then
+ source $WINDS/scripts/move_binaries
+else
+ source $DEV_WINDS/scripts/move_binaries
+endif
+#
+# make release binaries, etc.
+#
+echo ""
+echo "Making new release..."
+chdir $WINDS/src
+${GNU}/bin/pmake -L -3 -J 15 -k
+# 
+# need group permissions set for winds to write to various project dir files 
+# 
+chgrp proj $WINDS/bin/winds
+chmod g+s $WINDS/bin/winds
+#
+# there's some weirdness on winds binary created from this script: doesn't see
+# the libxview library. Believe it or not, a workaround is to copy this file to a
+# different name then mv it back to original. Remove this kluge when problem
+# is fixed.
+#
+cp $WINDS/bin/winds $WINDS/bin/winds.x
+mv $WINDS/bin/winds.x $WINDS/bin/winds
+#
+# offer ftp release update
+#
+make -k -s ftp 
+#
+# offer creation of release components file
+#
+setenv WINDS "$DEV_WINDS"
+echo ""
+echo -n "Create Release-Components file for version $VERSION (y/n)? "
+set yes = $<
+if ( "$yes" == "y" ) then
+ set RELEASEFILE = $LOCAL/dev/winds/doc/releases/components.$VERSION
+ if ( -e $RELEASEFILE ) then
+  /bin/rm -f $RELEASEFILE
+ endif
+ echo ""
+ echo "Creating Release-Components file...this will take a minute..."
+ echo ""
+ make -k -s components > $RELEASEFILE
+endif
+#
+# verify development version number
+#
+set VERSION = `cat $DEV_WINDS/$VERSIONFILE | tail -1 | sed 's/\"//g'`
+echo ""
+echo "Version number being developed is $VERSION"
+echo ""
+echo -n "Change version number for development (y/n)? "
+set edit = $<
+if ( "$edit" == "y" ) then
+ chdir $DEV_WINDS/$VERSIONFILE:h
+ vi $VERSIONFILE:t
+ set VERSION = `cat $DEV_WINDS/$VERSIONFILE | tail -1 | sed 's/\"//g'`
+ echo ""
+ echo "Version number being developed is now $VERSION"
+ echo ""
+endif

@@ -1,0 +1,24 @@
+#!/bin/csh -f
+#
+# disk-space-check
+#
+# examine space used under filesystem(s) designated in argument 2, doing
+# a recursive examination into subdirs with size (in kilobytes) greater than 
+# argument 1. 
+#
+# Look for and catalog core files.
+#
+if ( $#argv == 2 ) then
+ @ threshold = $1
+ set dir =  $2
+else 
+ echo ""
+ echo "USAGE: $0 <threshold> <start-point directory>"
+ echo ""
+ exit
+endif
+echo ""
+echo "Files under $dir larger than ${threshold} kilobytes, `date`: "
+echo ""
+find $2 -size +${1}000c -exec du -k -s {} \; | sort -rn
+echo ""

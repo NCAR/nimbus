@@ -1,0 +1,262 @@
+#!/bin/csh -f
+
+# display_network_config  -- give a description of the current network 
+# configuration as per the $NETCONFIG file
+
+source $WINDS/scripts/raf.defines
+
+if ( $ProjectNumber == unknown ) then
+ echo ""
+ echo -n "Enter project number: "
+ set ProjectNumber = $<
+ if ( "$ProjectNumber" == "" ) then
+  exit
+ endif
+endif
+echo " "
+echo "Extracting workstation configuration info..."
+
+# ignore commented lines that start with "#"
+# NetconfigHosts are all onboard except ads station
+
+if (`uname` == Linux) then
+  set one_host = `hostname -s`
+else
+  set one_host = `uname -n`
+endif
+
+source $LOCAL/scripts/AskHostForWindsServer
+if ( ! ($?WindsServer) ) then
+ echo "WARNING: No WINDS Server listed. THIS CANNOT BE WHAT IS INTENDED..."
+ echo ""
+ echo "Hit <r> to continue and answer 'n' to question to follow about"
+ echo "whether this is what is intended..."
+ set ready = $<
+else
+ echo "WINDS Server will be $WindsServer..."
+endif
+
+# NetVUE
+
+set video = `grep NetVUE $WINDS/proj/netconfig|grep -v '^#'|awk '{print $2}'`
+if ( "$video" != "" ) then
+ set screen = `grep NetVUE $WINDS/proj/netconfig|grep -v '^#'|awk '{print $3}'`
+ echo ""
+ echo "NetVUE server is enabled with these hosts as servers:"
+ echo ""
+ @ which = 1
+ foreach host ($video)
+  echo "host $video[$which], screen $screen[$which]"
+  @ which = $which + 1
+ end
+else
+ echo ""
+ echo "No NetVUE session configured..."
+endif
+
+set NFSServer = `grep "^nfs" $NETCONFIG | awk '{print $2}'`
+set SaveDir = `grep "^nfs" $NETCONFIG | awk '{print $3}'`
+if ( "$NFSServer" != "" ) then
+ echo ""
+ echo "NFS server will be $NFSServer..."
+else
+ echo ""
+ echo "No NFS server designated..."
+endif
+if ( "$SaveDir" != "" ) then
+ echo ""
+ echo "Save location for core files will be $SaveDir..."
+else
+ echo ""
+ echo "No save location for core files designated..."
+endif
+
+set NetconfigHosts = (`grep "$ProjectNumber"$ $NETCONFIG | grep -v "^nfs" | grep -v "^#" | awk '{print $2}'`)
+set disp_locn = (`grep $ProjectNumber $NETCONFIG | grep -v "^nfs" | grep -v "^#" | awk '{print $1}'`)
+set disp_ttya = (`grep $ProjectNumber $NETCONFIG | grep -v "^nfs" | grep -v "^#" | awk '{print $6}'`)
+set disp_ttyb = (`grep $ProjectNumber $NETCONFIG | grep -v "^nfs" | grep -v "^#" | awk '{print $7}'`)
+
+# WindsControl station taken to be first one encountered with any valid
+# WindsControl position
+
+foreach posn ($RAF $DEVRAF $NETCDF $SETUP)
+ set WindsControl = `grep $ProjectNumber $NETCONFIG | grep -v "^#" | grep -w $posn | head -1 |          awk '{print $2}'`
+ if ("$WindsControl" != "") then
+  switch ( $posn )
+   case $RAF:
+    echo " "
+    echo "Data input will be from ADS..."
+    breaksw;
+   case $DEVRAF:
+    echo " "
+    echo "Data input will be from disk file..."
+    breaksw;
+   case $NETCDF:
+    echo " "
+    echo "Data input will be from NetCDF file..."
+    breaksw;
+   case $SETUP:
+    echo " "
+    echo "No input yet...in setup mode..."
+    breaksw;
+  endsw
+ break;
+ endif
+end
+set winds_ttya = `grep $ProjectNumber $NETCONFIG | grep -v "^nfs" | grep -v "^#" | grep $posn | head -1 | awk '{print $6}'`
+set winds_ttyb = `grep $ProjectNumber $NETCONFIG | grep -v "^nfs" | grep -v "^#" | grep $posn | head -1 | awk '{print $7}'`
+
+echo " "
+if ( "$WindsControl" == "" ) then
+ echo "**********************************************************************"
+ echo "WARNING: there is NO WINDS Control Host designated for project $ProjectNumber. "
+ echo "**********************************************************************"
+else
+
+ echo "**********************************************************************"
+ echo -n "WINDS will be displayed for proj. # $ProjectNumber. WINDS Control Host will"
+ echo " be $WindsControl."
+
+# make sure subdirectory exists for control host 
+
+ chdir $HOSTS
+ if ( ! ( -d $WindsControl )  ) then
+  echo " "
+  echo "making new subdirectory for $WindsControl..."
+  mkdir $WindsControl
+  chmod 777 $WindsControl
+ endif
+ 
+ if ( $#NetconfigHosts != 0 ) then
+  echo " "
+  echo "display stations are as follows: " 
+  echo " "
+  @ host_num = 0
+  foreach host ($NetconfigHosts)
+   @ host_num = $host_num + 1
+   echo -n "$host is at "
+   switch ( $disp_locn[$host_num] )
+    case $NFS:
+     breaksw;
+    case $RAF:
+     echo -n "the Real-time control station "
+     breaksw;
+    case $SETUP:
+     echo " "
+     echo " (No input yet...in setup mode...) "
+     breaksw;
+    case $DEVELOPMENT:
+     echo -n "the development location "
+     breaksw;
+    case $IN_BOARD_RIGHT:
+     echo -n "the in-board right cabin location "
+     breaksw;
+    case $IN_BOARD_LEFT:
+     echo -n "the in-board left cabin location "
+     breaksw;
+    case $OUT_BOARD_RIGHT:
+     echo -n "the out-board right cabin location "
+     breaksw;
+    case $OUT_BOARD_LEFT:
+     echo -n "the out-board left cabin location "
+     breaksw;
+    case $FORWARD:
+     echo -n "the forward location "
+     breaksw;
+    case $COCKPIT:
+     echo -n "the cockpit location "
+     breaksw;
+    default:
+     echo -n "an unknown location "
+     breaksw;
+   endsw 
+   echo "and has "
+   switch ( $disp_ttya[$host_num] ) 
+    case $NONE: 
+     echo -n "no output device "
+     breaksw;
+    case $HPTP: 
+     echo -n "an HP Thermal printer "
+     breaksw;
+    case $HP1200C:
+     echo -n "an HP 1200C printer, with S/P converter "
+     breaksw;
+    case $PHP1200C:
+     echo -n "an HP 1200C printer, parallel port both ends "
+     breaksw;
+    case $PPJET:
+     echo -n "an HP PaintJet printer, parallel port both ends "
+     breaksw;
+    case $SPJET: 
+     echo -n "an HP PaintJet printer, serial port both ends "
+     breaksw;
+    case $PJET: 
+     echo -n "an HP PaintJet printer, with S/P converter  "
+     breaksw;
+    case $EPSON: 
+     echo -n "an Epson printer "
+     breaksw;
+    case $ASCII: 
+     echo -n "Serial Line Data Feed "
+     breaksw;
+    case $LCD: 
+     echo -n "LCD display "
+     breaksw;
+    case $FLIP: 
+     echo -n "FLIP display "
+     breaksw;
+    default:
+     echo -n "an unknown output device"
+     breaksw;
+   endsw
+   echo -n "at the ttya port, and "
+   switch ( $disp_ttyb[$host_num] ) 
+    case $NONE: 
+     echo -n "no output device "
+     breaksw;
+    case $HPTP: 
+     echo -n "an HP Thermal printer "
+     breaksw;
+    case $HP1200C:
+     echo -n "an HP 1200C printer, with S/P converter "
+     breaksw;
+    case $PHP1200C:
+     echo -n "an HP 1200C printer, parallel port both ends "
+     breaksw;
+    case $PPJET:
+     echo -n "an HP PaintJet printer, parallel port both ends "
+     breaksw;
+    case $SPJET: 
+     echo -n "an HP PaintJet printer, serial port both ends "
+     breaksw;
+    case $PJET: 
+     echo -n "an HP PaintJet printer, with S/P converter  "
+     breaksw;
+    case $EPSON: 
+     echo -n "an Epson printer "
+     breaksw;
+    case $ASCII: 
+     echo -n "Serial Line Data Feed "
+     breaksw;
+    case $LCD: 
+     echo -n "LCD display "
+     breaksw;
+    case $FLIP: 
+     echo -n "FLIP display "
+     breaksw;
+    default:
+     echo -n "an unknown output device "
+     breaksw;
+   endsw
+   echo "at the ttyb port."
+   echo " "
+  end 
+ else
+  echo " "
+  echo "no display stations are configured..." 
+  echo " "
+ endif
+endif
+echo ""
+echo "**********************************************************************"
+echo " "

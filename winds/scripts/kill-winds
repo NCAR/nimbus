@@ -1,0 +1,28 @@
+#!/bin/csh -f
+# kill-file
+#
+# kill winds process displaying on host indicated by $1 argument.
+# 
+if (`uname` == Linux) then
+  set psopts='-x'
+else
+  set psopts='-e -o "pid comm"'
+endif
+
+foreach display ($*)
+  echo "Checking for unwanted WINDS process on ${display}..."
+
+  set pid = `ps $psopts | grep "winds/bin/winds -h $display" | grep -v grep | awk '{print $1}'`
+
+  if ( "$pid" == "") then
+    set pid = `ps $psopts | grep "winds/bin/winds -h$display" | grep -v grep | awk '{print $1}'`
+  endif
+  if ( "$pid" != "") then
+    echo "  killing WINDS on ${display}, process $pid..."
+    echo ""
+    kill -9 $pid
+  else
+    echo "  no WINDS on ${display}."
+    echo ""
+  endif
+end

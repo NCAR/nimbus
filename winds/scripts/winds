@@ -1,0 +1,346 @@
+#!/bin/csh -fx
+#
+################################################################################
+#
+# winds -- startup script for WINDS binary process. Recommended that binary
+#  winds is started up with this script. No guarantees if binary started 
+#  directly. Here's what this script does:
+#
+# verifies that environment variable WINDS is set
+# sets mask to grant a+rw permission to files created 
+# sets defaulted command line arguments for binary/parses arguments passed in
+# sets environment variable DISPLAY (with appended ":x")
+# kills any currently running winds process on same display host, if onboard
+# establishes logging file operation and name
+# start up binary winds process
+# on completion of winds process, re-name log file with startup time stamp
+#  
+################################################################################
+#
+# handle interrupts
+#
+onintr cleanup
+#
+# any files created should be writable by anyone
+#
+umask 000
+#
+if ( ! ($?WINDS) ) then
+ echo ""
+ echo "You must first set environment variable WINDS to the parent directory"
+ echo "for the WINDS installation before running WINDS programs. Also set "
+ echo "environment DATA_DIR for dataset locations, if you are not using the"
+ echo "default dataset location."
+ echo ""
+ echo "WINDS exiting..."
+ exit
+endif
+#
+# set pathnames...must match heirarchy in standard release of WINDS software
+#
+set PROJ = $PROJ_DIR
+set HOSTS = $PROJ/hosts
+set LOGS = $WINDS/log
+set WBIN = $WINDS/bin
+#
+# set default values for possible command line arguments:
+#
+set ARGS = ""
+#
+if (`uname` == Linux) then
+  set loc_host=`hostname -s`
+  set PING = '/bin/ping -w 3'
+else
+  set loc_host=`uname -n`
+  set PING = /usr/sbin/ping
+endif
+
+# DISPLAY_ARG is of form hostname:0  / DISPLAY_HOST is of form hostname
+# defaulted display host is first $DISPLAY, else compute host
+# but don't set DISPLAY_HOST yet, wait until cmdline args are examined
+#
+if ($?DISPLAY) then
+#
+# cover any special cases that don't have hostname in the DISPLAY value
+#
+ if ( {( echo $DISPLAY | grep unix >&/dev/null )} ) then
+  setenv DISPLAY ${loc_host}:0
+ else if ( "$DISPLAY" == ":0" || "$DISPLAY" == ":0.0") then
+  setenv DISPLAY ${loc_host}:0
+ endif
+else
+ setenv DISPLAY ${loc_host}:0
+endif
+set DISPLAY_ARG = $DISPLAY
+#
+# whether logging is to be done: default is on
+#
+set logfile = on
+#
+# optional logging to standard out: default off.
+#
+set logstdout = off
+#
+# whether this is an RAF onboard host. Default off.
+#
+set onboard = off
+#
+# check out each argument supplied to script
+#
+@ index = 0
+foreach arg ( $argv )
+ if ("$arg" == "-datasets" ) then
+#
+# recurse with internal argument that puts out list with more.
+#
+  $0 -Datasets | more
+  exit
+ endif
+ if ("$arg" == "-Datasets" ) then
+#
+# display all netcdf files, in either $DATA_DIR or $WINDS/data and 
+# having .cdf as extension. This search will NOT look in subdirectories!
+#
+  echo ""
+  echo "Listing of datasets WINDS will display...type 'winds -help' for usage: "
+  if ( -d $WINDS/data ) then
+   echo ""
+   echo "Raw (ADS) datasets (mode = devctl / with project #): "
+   echo ""
+   chdir $WINDS/data
+   set files = `ls */rawdata`
+   foreach file ($files)
+    if ( -e $file) then
+     echo $file | sed 's/\/rawdata//'
+    endif
+   end
+   echo ""
+   echo "netCDF datasets (mode = netcdf / with project #): "
+   echo ""
+   chdir $WINDS/data
+   set files = `ls */*.cdf`
+   foreach file ($files)
+    if ( -e $file) then
+     echo $file | sed 's/\//-/' | sed 's/\.cdf//'
+    endif
+   end
+  else
+   echo ""
+   echo "Default data directory ($WINDS/data) does not exist..."
+   echo ""
+  endif
+  if ($?DATA_DIR) then
+   if ( -d $DATA_DIR ) then
+    echo ""
+    echo "netCDF datasets (mode = netcdf / project # is your guess):"
+    echo ""
+    chdir $DATA_DIR
+    set files = `ls *.cdf`
+    foreach file ($files)
+     if ( -e $file) then
+      echo $file | sed 's/\.cdf//'
+     endif
+    end
+    echo ""
+    echo "netCDF datasets (mode = netcdf / with project #): "
+    echo ""
+    set files = `ls */*.cdf`
+    foreach file ($files)
+     if ( -e $file) then
+      echo $file | sed 's/\//-/' | sed 's/\.cdf//'
+     endif
+    end
+    echo ""
+   else
+#
+# no need to put out this message here, it's already been put out once above
+#
+#   echo ""
+#   echo "Directory $DATA_DIR does not exist..."
+#   echo ""
+   endif
+  endif
+  exit
+ endif
+ if ("$arg" == "-help" ) then
+#
+# supply command line refresher course and exit
+#
+  echo ""
+  echo "USAGE: $0 [-help] [<-datasets>] [-h <display host>]"
+  echo "   [-c <blue | black>] [-m <mode>] [-p <pnum>] [-f <dataset name>] "
+  echo "   [-N <pnum-cdfname>] [-nolog] [-onboard] [-] "
+  echo ""
+  echo "-help			show command line options and exit"
+  echo "-datasets		show available datasets and exit"
+  echo "-h <host>		name of host on which to display winds"
+  echo "-c <color>		either 'blue' or 'black' background color"
+  echo "-m <mode>		runtime mode, which determines input -- one of: "
+  echo ""
+  echo "			  netcdf 	netCDF file "
+  echo "			  ctl 		RAF ADS real-time "
+  echo "			  devctl 	RAF ADS disk file"
+  echo "			  setup 	no input source: project setup "
+  echo ""
+  echo "-p <pnum>		project number"
+  echo "-P       		activate Parcel Tracking controls"
+  echo "-f <dataset>		dataset name (netcdf mode)"
+  echo "			argument is project number-dataset name"
+  echo "-N <pnum-cdfname>	indicates mode is netcdf, "
+  echo "			argument is project number-dataset name"
+  echo "-nolog			disable logging"
+  echo "-onboard		enable onboard turnkey mgmt (ctl mode only)"
+  echo "-			logging goes to standard out"
+  echo ""
+  exit
+ endif
+ @ index += 1
+#
+# For args -onboard, -nolog, and -, translate to single characters
+# to allow for handling by winds binary 
+#
+ if ( "$arg" == "-onboard" ) then
+#
+# if onboard argument is supplied, enable check for kill of extant session
+#
+  set onboard = on
+  set ARGS = ($ARGS -o)
+ else
+  if ( "$arg" == "-nolog" ) then
+#
+# turn logging off
+#
+   set logfile = off
+   set logstdout = off
+   set ARGS = ($ARGS -n)
+  else
+   if ( "$arg" == "-" ) then
+#
+# log to standard out
+#
+    set logstdout = on
+    set logfile = off
+    set ARGS = ($ARGS -)
+   else
+#
+# non-script-specific argument
+#
+    if ( { ( echo $arg | grep '^-h' >&/dev/null ) } ) then
+#
+# hostname argument -- script needs name of display host, so do some extra
+# examination here
+#
+     if ( "$arg" != "-h" ) then
+#
+# no space between -h and argument
+#
+      set DISPLAY_ARG = `echo $arg | sed 's/^-h//'`
+     else
+#
+# yes space between -h and argument
+#
+      @ hostindex = $index + 1
+      set DISPLAY_ARG = $argv[$hostindex]
+     endif
+    endif
+#
+# concatenate argument to list to be sent to binary command line
+#
+    set ARGS = ($ARGS $arg)
+   endif
+  endif
+ endif
+end
+set DISPLAY_HOST = `echo $DISPLAY_ARG | awk -F: '{print $1}'`
+#
+# following MUST agree with SESSIONFILE in ../include/files.h
+#
+set SESSIONFILE = $HOSTS/$DISPLAY_HOST/session
+#
+# greeting
+#
+echo ""
+echo "WINDS requested on ${loc_host} ...to be displayed on $DISPLAY_ARG..."
+#
+# check if this session is to be displayed on a host other than compute host
+#
+if ( $DISPLAY_HOST != $loc_host) then
+#
+# verify display host is around
+#
+ if (! {($PING $DISPLAY_HOST >&/dev/null)}) then
+  echo ""
+  echo "WINDS requested on $DISPLAY_ARG, but it was not detected on net..."
+  echo "WINDS exiting...."
+  exit
+ endif
+endif
+if ( $onboard == on ) then
+#
+# kill off any current session on this host
+#
+ if ( -f $WINDS/scripts/kill-winds ) then
+#
+# kill-winds script is not part of binary distribution, where it is  not
+# needed anyway - only real-time winds wants to kill extant sessions
+#
+  $WINDS/scripts/kill-winds $DISPLAY_HOST
+ endif
+endif
+#
+# perform log file chores if needed
+#
+if ( $logfile == on ) then
+#
+# clean up (rename) any leftover log files
+#
+ @ index = 0
+ foreach leftoverlog ( `find $LOGS -name $DISPLAY_HOST.current.\* -print` )
+  @ index += 1
+  set save = `echo $leftoverlog | sed 's/current/leftover/'`
+  mv $leftoverlog $save
+ end
+#
+# set filename for log file renames on exit to reflect startup time of session
+#
+ set session_start = `date '+%h.%d.%y.%T'` >&/dev/null
+#
+# establish log filename 
+#
+ set log = $LOGS/$DISPLAY_HOST.current.$session_start
+endif
+#
+# startup winds process 
+#
+echo "Starting up WINDS process to be displayed on $DISPLAY_ARG..."
+if ( $logstdout == on ) then
+ echo "WINDS logging will go to standard out..."
+ $WBIN/winds $ARGS
+else 
+ if ( $logfile == on ) then
+  echo "WINDS logging will go to log file $log..."
+  $WBIN/winds $ARGS >&$log
+ else
+  echo "WINDS logging operations disabled..."
+  $WBIN/winds $ARGS >&/dev/null
+ endif
+endif
+#
+# done; cleanup time
+#
+cleanup:
+echo "WINDS display on $DISPLAY_ARG (WINDS Server: $loc_host) is done..."
+#
+# save log file by renaming it
+#
+if ( $logfile == on ) then
+ if ( -f $log )  then
+  if ( -f $SESSIONFILE ) then
+   set logname = $LOGS/$DISPLAY_HOST.`cat $SESSIONFILE`
+  else
+   set logname = $LOGS/$DISPLAY_HOST.$session_start
+  endif
+  echo "...rename log file '$log' to $logname..."
+  /bin/mv -f $log $logname
+ endif
+endif

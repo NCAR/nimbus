@@ -1,0 +1,72 @@
+#!/bin/csh -f
+#
+# deltext <file> <string> -- search for given string in named file, comment
+# on number of matches and display them all, offer option to delete any or all
+# found
+#
+# strings entered for deletion MUST match in case...
+#
+ if ($#argv != 2) then
+  exit
+ endif
+ set file = $1
+ shift
+ set string = "$*"
+ if (! (-e $file )) then
+  echo ""
+  echo "File $file not found..."
+  echo ""
+  exit
+ endif
+ @ num_matches = `grep -c "$string" $file`
+ switch ( $num_matches ) 
+  case 0:
+   echo ''
+   echo "Did NOT find '$string' in $file"
+   echo ''
+   breaksw;
+  case 1:
+   echo ""
+   echo "Found '$string' in ${file}: "
+   echo ""
+   grep "$string" $file
+   echo ""
+   echo -n "Delete (y/n)? "
+   set delete = $<
+   if ( $delete ==  y ) then
+    mv $file $file.$$
+    sed "/$string/d" $file.$$ > $file
+    rm $file.$$
+   endif
+   breaksw;
+  default:
+   echo ""
+   echo "There is more than one line in $file with '$string' in it: "
+   echo ""
+   grep -n "$string" $file
+   echo ""
+   echo -n "Delete all (y/n)? "
+   set delete = $<
+   if ( $delete ==  y ) then
+    mv $file $file.$$
+    sed "/$string/d" $file.$$ > $file
+    rm $file.$$
+   else
+    set line = 1
+    while ($line != q) 
+     echo ""
+     echo -n "Indicate line # to delete (q to quit deletions): "
+     set line = $<
+     if ( $line != q ) then
+      mv $file $file.$$
+      sed "$line,$line d" $file.$$ > $file
+      rm $file.$$
+      echo ""
+      if ( ! { ( grep -n "$string" $file ) } ) then
+       set line = q
+      endif
+     endif
+    end
+   endif
+   breaksw;
+ endsw

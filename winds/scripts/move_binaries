@@ -1,0 +1,18 @@
+#!/bin/csh -f
+# 
+# move_binaries
+#
+# save any binaries, presumably just before installing its successor, so as not 
+# to crash any current sessions running the old version
+# 
+echo ""
+echo "Saving binaries...."
+echo ""
+foreach file ($WINDS_BINARIES)
+ if ( -e $file.old ) then
+  /bin/rm $file.old
+ endif
+ if ( -e $file ) then
+  cp $file $file.old
+ endif
+end

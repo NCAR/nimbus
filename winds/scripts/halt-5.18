@@ -1,0 +1,99 @@
+#!/bin/csh -f
+#
+# halt [<hostnames>]
+#
+# ...will shutdown all hosts listed as arguments, and then finally shutdown
+# it's own host
+#
+set remote_halt = false
+set kill_self = false
+set killhosts
+if (`uname` == Linux) then
+  set localhost = `hostname -s`
+else
+  set localhost = `uname -n`
+endif
+set output = syslog
+if ( "$1" == "-" ) then
+ set output = stdout
+ shift
+endif
+#
+# SYSLOG should be same name as that used in setup_server_init for soft link to
+# logging file (/var/log/<host>)
+#
+set SYSLOG = $WINDS/proj/hosts/$localhost/syslog
+foreach host ( $* )
+ if ( $host != $HOST ) then
+#
+# localhost will issue remote request to shutdown host
+#
+  echo "" 
+  if ( {( /bin/ping $host -w 3)} ) then
+   if ( $output == stdout ) then
+    echo "$localhost requesting $host to halt itself..." 
+    rsh $host $WINDS/scripts/halt - $host &
+   else
+    echo "$localhost requesting $host to halt itself..." >> $SYSLOG
+    rsh $host $WINDS/scripts/halt $host &
+   endif
+   set remote_halt = true
+   set killhosts = ( $killhosts $host )
+  else
+   if ( $output == stdout ) then
+    echo "$host not on net...no attempt will be made to halt it" 
+   else
+    echo "$host not on net...no attempt will be made to halt it" >> $SYSLOG
+   endif
+  endif
+ else
+#
+# localhost has been asked to kill itself
+#
+  set kill_self = true
+ endif
+end
+if  ( $remote_halt == true ) then
+#
+# localhost has successfully initiated at least one remote halt request
+#
+ if  ( $kill_self == true ) then
+#
+# localhost has been asked to kill itself 
+#
+  echo "$localhost verifying all clients are gone before halting itself..."
+ else
+#
+# localhost has not been asked to kill itself 
+#
+  echo "$localhost verifying that all clients are gone..."
+ endif
+#
+# if there are any remote hosts pending shutdown as per a request from this
+# host, wait for them to be confirmed dead
+#
+ foreach host ( $killhosts )
+  if ( $host != $HOST ) then
+   while ( {( /bin/ping $host -w 3 >&/dev/null )} ) 
+    if (! ($?msgout)) then
+     echo "$localhost is waiting for $host to shut down..."
+     set msgout
+    endif
+   end
+   echo "$host is gone..."
+  endif
+ end
+endif
+if  ( $kill_self == true ) then
+#
+# hari-kari time
+#
+ if ( $output == stdout ) then
+  echo "${localhost}: System halting on `date`"
+ else
+  echo "${localhost}: System halting on `date`" >> $SYSLOG
+ endif
+ chdir /
+ rsh $localhost -l root /usr/sbin/halt 
+ exit
+endif

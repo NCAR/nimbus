@@ -1,0 +1,23 @@
+INHOUSE:
+
+ -get
+ -put
+x G
+x P
+ 
+ONBOARD:
+
+x -get
+x -put
+x G
+x P
+
+ offer merge of file chg'd onboard since last proj_setup
+
+ offer merge of file chg'd inhouse since last proj_setup
+
+ header view-diff/edit w/xbuild capability
+
+rcp scraff:/home/local/dev/winds/scripts/proj_setup /home/local/winds/scripts/proj_setup
+rcp scraff:/home/local/scripts/GetEditorFromUser /home/local/scripts
+rcp scraff:/home/local/scripts/GetDISPLAYfromUser /home/local/scripts

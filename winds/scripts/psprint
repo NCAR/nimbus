@@ -1,0 +1,6 @@
+#!/bin/sh
+#
+# psprint -- start up POSTSCRIPT print server
+#
+umask 0
+$WINDS/bin/psprint & 

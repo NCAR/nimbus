@@ -1,0 +1,53 @@
+#!/bin/csh -f 
+#
+# GetSCCSComponents 
+#
+#	given either a working directory as the only argument,
+#	or a handle followed by one or more building blocks, determine and
+#	print to standard out either, respectively, the SCCS files and each
+#	file's version number, or an interpretation of each of the building
+#	blocks listed. A building block item preceded with "-l" will be
+#	interpreted as a "library", and a building block item preceded with 
+#	"-l" will be interpreted as a "Library path". All others will be 
+#	interpreted as an "etcetera".
+# 
+if ($#argv > 1 ) then
+
+ echo " "
+ echo "############## Building Blocks for $1 #############################"
+ echo " "
+ shift
+ foreach component ($*)
+  if ({ ( echo "$component" | grep "^-L" >&/dev/null ) }) then
+#
+# Library path 
+#
+   set component = `echo $component | sed 's/^-L//'`
+   echo "Library Path: $component"
+  else if ({ ( echo "$component" | grep "^-l" >&/dev/null ) }) then
+#
+# library file
+#
+   set component = `echo $component | sed 's/^-l//'`
+   echo "library: lib$component.a"
+  else
+#
+# whatever
+#
+   echo "etcetera: $component"
+  endif
+ end
+else
+ echo " "
+ echo "########### Sccs Components for $1 Directory ##########################"
+ echo " "
+ echo "Working Directory: $1"
+ echo " "
+ cd $1
+ if ( -d SCCS ) then
+  sccs prs -d":M:\t:I:" SCCS
+ else
+  echo " "
+  echo "No SCCS directory for $1..."
+ endif
+endif

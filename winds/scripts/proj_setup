@@ -1,0 +1,1375 @@
+#!/bin/csh -f
+#
+# proj_setup <project number> [-get <filename>] [-put <filename>] [-help]
+#
+if (`uname` == Linux) then
+  set HOST = `hostname -s`
+else
+  set HOST = `uname -n`
+endif
+alias find. "find . \( -type d ! -name . -prune \) -o \( ! -name . -print \) | sed 's/\.\///'"
+alias findnewer. "find . \( -type d ! -name . -prune \) -o ! -newer \!* -o \( ! -name . -print \) | sed 's/\.\///'"
+echo ""
+echo "######################################################################"
+echo "Project setup invoked by $USER on $HOST, `date`"
+#
+umask 002
+#
+# user must belong to proj group to use this script
+#
+if ( ! {( groups | grep proj >&/dev/null )} ) then
+ echo ""
+ echo "Sorry ... you do not belong to the proj group. Contact a WINDS expert."
+ echo ""
+ exit
+endif
+#
+# get arguments
+#
+set devmode = 0
+if ($#argv < 1) then
+ echo " "
+ echo -n "Enter Project Number: "
+ set proj_number = $<
+else
+ set proj_number = $1
+ foreach arg ($argv)
+  if ( "$arg" == "-help" ) then
+   echo ""
+   echo "USAGE: proj_setup <project number> [<-get | -put> <filename>] [-help]"
+   echo ""
+   exit
+  endif
+#
+# additional arguments for developers: -dev -onboard
+#
+# invoke with dev as argument after project number to override env-var 
+# restriction - useful in development mode
+#
+  if ( "$arg" == "-dev" ) then
+   set devmode = -dev
+  endif
+  if ( "$arg" == "-onboard" ) then
+   echo "   (simulating onboard environment...)"
+   echo ""
+   set onboard_host = true
+  endif
+  if ( $?next_arg_is_getfile ) then
+   unset next_arg_is_getfile
+   set getfile = $arg
+   echo "   (quick GET of file $getfile requested...)"
+   echo ""
+  endif
+  if ( $?next_arg_is_putfile ) then
+   unset next_arg_is_putfile
+   set putfile = $arg
+   echo "   (quick PUT of file $putfile requested...)"
+   echo ""
+  endif
+  if ( "$arg" == "-get" ) then
+   set next_arg_is_getfile
+  endif
+  if ( "$arg" == "-put" ) then
+   set next_arg_is_putfile
+  endif
+ end
+endif
+#
+# prevent proj. setup with stuff under development directories unless special
+# devmode arg is given explicitly
+#
+if ( { ( echo $WINDS | grep dev >&/dev/null ) } ) then
+ if ( "$devmode" == "0" ) then
+  echo ""
+  echo "WINDS directory: $WINDS"
+  echo "FATAL: you must setenv WINDS to non-development directory"
+  echo ""
+  exit
+ else
+#
+# ensure PROJ_DIR value is correct
+#
+  setenv PROJ_DIR $LOCAL/proj
+ endif
+endif
+#
+# OS dependencies
+#
+source $WINDS/scripts/OSDependencies
+#
+# make dirs as needed
+#
+if ( ! ( -d $PROJ_DIR/$proj_number ) ) then
+ echo ""
+ echo "Creating directory for project $proj_number..."
+ mkdir -p -m 777 $PROJ_DIR/$proj_number
+ mkdir -p -m 777 $PROJ_DIR/$proj_number/save
+ if ( (-d $LOCAL/dev) && ! ( -e $LOCAL/dev/proj/$proj_number )) then
+  echo ""
+  echo "...making soft link for $proj_number..."
+  ln -s $PROJ_DIR/$proj_number $LOCAL/dev/proj/$proj_number
+ endif
+endif
+#
+# set up environment
+#
+unalias cp
+source $WINDS/scripts/raf.defines
+#
+# following hoses vi sessions under xterms:
+#
+#setenv TERM sun-cmd
+#
+# determine whether invoked in-house or onboard
+#
+# if host is the designated development host, or has that devhost's $LOCAL 
+# partition mounted (other than explicitly listed onboard hosts, which may
+# have it mounted for WINDS' installation purposes), than the host is 
+# considered in-house; else, it is onboard
+#
+if ( $HOST == $CALCART ) then
+ echo ""
+ echo "FATAL: can't do proj_setup from Cal Cart."
+ echo ""
+ exit
+else
+ if (! ($?onboard_host) ) then
+  set onboard_host = false
+  set NFSServer = `grep ^nfs $NETCONFIG | awk '{print $2}'`
+  if ( "$NFSServer" != "" ) then
+   if ( $NFSServer != $SOLARIS_HOST && $NFSServer != $PROJDIR_HOST ) then
+    set onboard_host = true
+   endif
+  endif
+ endif
+endif
+if ( $onboard_host == false) then #{
+
+# IN-HOUSE LOG IN
+
+ if (!($?getfile || $?putfile)) then
+  echo ""
+  echo "Logged into $HOST, on RAF Inhouse network for Project $proj_number."
+  echo ""
+ endif
+
+# IN-HOUSE LOG IN: check for project directory
+
+set command = 0
+while ( "$command" != "q" ) #{
+
+ if ($?putfile) then
+  set command = P 
+  echo ""
+  echo "...transfer project $proj_number file '$putfile' TO Onboard..."
+  echo ""
+ else if ($?getfile) then #{
+  set command = G 
+  echo ""
+  echo "...transfer project $proj_number file '$getfile' FROM Onboard..."
+  echo ""
+ else #}{
+  echo ""
+  echo "##########  RAF In-House Project Setup Menu  (on $HOST) ############"
+  echo ""
+  echo "p	Set new Project Number"
+  echo "l	List Current Setup Files for Project $proj_number"
+  echo "i	Automatic Initialization for Project $proj_number (overwrite any existing)"
+  echo "v	Verified Initialization for Project $proj_number (verify overwrites)"
+  echo "o	Onboard Chores (Install, etc.) for Project $proj_number"
+  echo "P	Put file TO Onboard"
+  echo "G	Get file FROM Onboard"
+  echo "e	Edit Project $proj_number files"
+  echo "w	Write Project $proj_number to Tape"
+  echo "R	Remove Project $proj_number "
+  echo "q	Quit"
+  echo ""
+  echo -n "Please enter menu option: "
+  set command = $<
+ endif #}
+ switch ( $command )  #{
+
+  case "q":
+   echo ""
+   echo "In-House Project Setup is done..."
+   echo ""
+   breaksw;
+
+  case "l":
+
+# IN-HOUSE LOG IN
+# list mandatory project setup configuration files
+
+   if ( ! ( -d $PROJ_DIR/$proj_number)) then
+    echo ""
+    echo "Project $proj_number does not exist..."
+    breaksw;
+   endif
+   chdir $PROJ_DIR/$proj_number
+   touch /tmp/proj_setup.$$
+   echo "" >> /tmp/proj_setup.$$
+   echo "Essential Project Files (present?): " >> /tmp/proj_setup.$$
+   echo "" >> /tmp/proj_setup.$$
+   foreach file ($OTHER_PROJFILES)
+    if ( ! (-e $PROJ_DIR/$proj_number/$file)) then
+     echo " $file (NO)" >> /tmp/proj_setup.$$
+    else
+     echo " $file (YES)" >> /tmp/proj_setup.$$
+    endif
+   end
+   foreach file ($PROJDEFAULTFILES)
+    if ( ! (-e $PROJ_DIR/$proj_number/$file)) then
+     echo " $file (NO)" >> /tmp/proj_setup.$$
+    else
+     echo " $file (YES)" >> /tmp/proj_setup.$$
+    endif
+   end
+
+# IN-HOUSE LOG IN
+# list optional project files
+
+   echo "" >> /tmp/proj_setup.$$
+   echo "Optional Project Files (present?): " >> /tmp/proj_setup.$$
+   echo "" >> /tmp/proj_setup.$$
+   @ which = 0
+   foreach function ($OPTIONAL_FUNCS)
+    @ which = $which + 1
+    if ( $which > $#OPTIONAL_FUNCS) then
+     break
+    endif
+    if ( ! (-e $PROJ_DIR/$proj_number/$OPTIONAL_FILES[$which] )) then
+     echo " $OPTIONAL_FUNCS[$which] (NO)" >> /tmp/proj_setup.$$
+    else
+     echo " $OPTIONAL_FUNCS[$which] (YES)" >> /tmp/proj_setup.$$
+    endif
+   end
+   more /tmp/proj_setup.$$
+   /bin/rm /tmp/proj_setup.$$
+   echo ""
+   echo -n "Hit <r> to return to main menu..."
+   set ready = $<
+   echo ""
+   breaksw;
+
+  case "R":
+
+# IN-HOUSE LOGIN: remove a project
+
+   if ( ! {( groups | grep wheel >&/dev/null )} ) then
+    echo ""
+    echo "Sorry - you must belong to the wheel group to remove a project"
+    echo ""
+    breaksw;
+   endif
+   echo -n "You have asked to remove project $proj_number...proceed (y/n)? "
+   if ("$<" == "y") then
+    echo ""
+    echo "Removing project $proj_number dev dir soft link..."
+    if ( -e $LOCAL/dev/proj/$proj_number ) then
+     /bin/rm $LOCAL/dev/proj/$proj_number 
+    endif
+    echo ""
+    echo "Removing project $proj_number..."
+    /bin/rm -r $PROJ_DIR/$proj_number
+   else
+    breaksw;
+   endif
+  case "p":
+
+# IN-HOUSE LOGIN: set new project number
+
+   if ( -d  $LOCAL/dev/proj ) then
+    echo ""
+    echo "Current project directory links without valid directories: "
+    echo ""
+    chdir $LOCAL/dev/proj
+    /bin/ls -1FL . | grep @ | sed 's/@//' | more
+    echo ""
+   endif
+   echo "Current valid project directories: "
+   echo ""
+   chdir $PROJ_DIR
+   /bin/ls -1FL . | grep / | sed 's/\///' | more
+   echo ""
+   echo -n "Enter new project number: "
+   set proj_number = $<
+   if ( ! ( -d $PROJ_DIR/$proj_number ) ) then
+    echo ""
+    echo "Creating directory for project $proj_number..."
+    mkdir -p -m 777 $PROJ_DIR/$proj_number
+    mkdir -p -m 777 $PROJ_DIR/$proj_number/save
+    if ( ( -d $LOCAL/dev) && ! ( -e $LOCAL/dev/proj/$proj_number )) then
+     echo ""
+     echo "...making soft link for $proj_number..."
+     ln -s $PROJ_DIR/$proj_number $LOCAL/dev/proj/$proj_number
+    endif
+   endif
+   breaksw;
+
+  case "v": 
+  case "i": 
+
+# IN-HOUSE LOG IN: offer initialization steps
+
+  if ( ! ( -d $PROJ_DIR/$proj_number)) then
+   echo ""
+   echo "Project $proj_number does not exist..."
+   breaksw;
+  endif
+  if ($command == "v") then
+   echo ""
+   echo "You may now bring over each and every project setup file for "
+   echo "Project $proj_number. No existing files will be overwritten "
+   echo "without first asking for verification. You can answer no on "
+   echo "any question and then come back later if you change your mind."
+   echo "Any default project files not currently in the $proj_number setup"
+   echo "will be brought in without asking for this verification."
+   echo ""
+   echo -n "Proceed with verified setup for project $proj_number (y/n)? "
+  else
+   echo ""
+   echo "You have requested to completely initialize project $proj_number."
+   echo "This means that any existing setup files for that project will be"
+   echo "overwritten without asking for any verification, EXCEPT the header."
+   echo "The header, if present, will ONLY be overwritten or changed by xbuild."
+   echo ""
+   echo -n "Is this what you want (y/n)? "
+  endif
+  set init = $<
+  if ( "$init" == "y" ) then
+   echo ""
+   echo "Proceeding with configuration setup from default files..."
+   if ( ! ( -d $PROJ_DIR/$proj_number )) then
+    echo ""
+    echo "...making directory for $proj_number..."
+    mkdir -p -m 777 $PROJ_DIR/$proj_number
+    mkdir -p -m 777 $PROJ_DIR/$proj_number/save
+   endif
+   if ( ( -d $LOCAL/dev) && ! ( -e $LOCAL/dev/proj/$proj_number )) then
+    echo ""
+    echo "...making soft link for $proj_number..."
+    ln -s $PROJ_DIR/$proj_number $LOCAL/dev/proj/$proj_number
+   endif
+ 
+# IN-HOUSE LOG IN
+# get essential configuration files
+
+   chdir $PROJ_DIR/defaults
+   echo ""
+   foreach file ($PROJDEFAULTFILES)
+    if ( ! (-e $PROJ_DIR/$proj_number/$file)) then
+     echo " $file file does not exist yet...copying..."
+     cp $file $PROJ_DIR/$proj_number
+     chmod ug+rw $PROJ_DIR/$proj_number/$file
+    else
+     if ($command == "v") then
+      echo -n " $file file DOES exist...overwrite it (y/n)? "
+      set overwrite = $<
+     else
+      set overwrite = "y"
+     endif
+     if ($command == "i" || "$overwrite" == "y" ) then
+      echo " copying $file file..."
+      cp $file $PROJ_DIR/$proj_number
+      chmod ug+rw $PROJ_DIR/$proj_number/$file
+     endif
+    endif
+   end
+
+# IN-HOUSE LOG IN
+# offer optional files
+
+   chdir $PROJ_DIR/defaults
+   @ which = 0
+   foreach function ($OPTIONAL_FUNCS)
+    @ which = $which + 1
+    if ( $which > $#OPTIONAL_FUNCS) then
+     break
+    endif
+    if ( ! (-e $PROJ_DIR/$proj_number/$OPTIONAL_FILES[$which] )) then
+     echo ""
+     echo -n "Do you wish to have $OPTIONAL_FUNCS[$which] (y/n) ? "
+     set yes = $<
+     if ( "$yes" == "y" ) then
+      echo ""
+      echo " copying generic file for $OPTIONAL_FUNCS[$which]..."
+      echo " ...please note that you will need to edit this file "
+      echo " explicitly for Project $proj_number."
+      cp $OPTIONAL_FILES[$which] $PROJ_DIR/$proj_number
+      chmod ug+rw $PROJ_DIR/$proj_number/$OPTIONAL_FILES[$which]
+     endif
+    else
+     echo ""
+     echo -n "$OPTIONAL_FUNCS[$which] file is installed...remove it (y/n)? "
+     set rem = $<
+     if ( "$rem" == "y" ) then
+      /bin/rm -f $PROJ_DIR/$proj_number/$OPTIONAL_FILES[$which]
+      echo ""
+      echo "$OPTIONAL_FUNCS[$which] file is removed..."
+     endif
+    endif
+   end
+
+# IN-HOUSE LOGIN: prep for post-flight processing
+
+   if ( -e $LOCAL/scripts/ProjectInit ) then
+    echo ""
+    echo "Initializing post-processing stuff..."
+    $LOCAL/scripts/ProjectInit $proj_number
+   endif
+  endif
+ breaksw;
+
+# IN-HOUSE LOG IN
+# offer editing of files
+
+ case "e":
+
+ if ( ! ( -d $PROJ_DIR/$proj_number)) then
+  echo ""
+  echo "Project $proj_number does not exist..."
+  breaksw;
+ endif
+ source $LOCAL/scripts/GetEditorFromUser
+ echo ""
+ if ( ( -d $PROJ_DIR/$proj_number )) then
+  chdir $PROJ_DIR/$proj_number
+  @ which = 0
+  foreach function ($EDITABLE_FUNCS)
+   @ which = $which + 1
+   if ( $which > $#EDITABLE_FUNCS) then
+    break
+   endif
+   if ( (-e $EDITABLE_FILES[$which] )) then
+    echo ""
+    echo -n "Do you wish to edit the $EDITABLE_FUNCS[$which] file (y/n) ? "
+    set yes = $<
+    if ( "$yes" == "y" ) then
+     $editor $EDITABLE_FILES[$which]
+    endif
+   endif
+  end
+ else
+  echo ""
+  echo "You must first Initialize Project $proj_number..."
+  echo ""
+ endif
+ breaksw;
+
+# IN-HOUSE LOG IN
+#
+# get file FROM onboard
+#
+ case "G":
+  chdir $PROJ_DIR/$proj_number
+  if (!($?getfile)) then
+   echo ""
+   echo -n "Enter name of file to transfer (<r> to abort): "
+   set getfile = $<
+  else
+   set need_exit
+  endif
+  if ( "$getfile" == "") then
+   unset getfile 
+   breaksw;
+  endif   
+  unset WindsServer
+  unsetenv WindsServer
+  source $LOCAL/scripts/GetAirplaneFromPnum $proj_number
+  source $LOCAL/scripts/AskHostForWindsServer
+  if ( ($?WindsServer) ) then #{
+   echo ""
+   echo "Attempting connection with $WindsServer..."
+   if ( ! { (/bin/ping $WindsServer -w 3)  } ) then #{
+    echo ""
+    echo "$WindsServer is not on the net.  Correct this and try again."
+    echo "" 
+   else
+    echo ""
+    echo "getting project $proj_number file '$getfile' from onboard host $WindsServer..."
+    if ( -e $getfile ) then #{
+     if (!(-e proj_setup_done)) then #{
+      set need_confirm
+     else if ( `tslm proj_setup_done` > `tslm $getfile` ) then #}{
+      set need_confirm
+     endif #}
+     if ($?need_confirm) then #{
+      echo ""
+      echo "   saving current inhouse file '$getfile'"
+      cp $getfile save
+     endif #}
+    endif #}
+    rsh $WindsServer -l winds rcp $PROJ_DIR/$proj_number/$getfile ${PROJDIR_HOST}:$PROJ_DIR/$proj_number
+    if ( $?need_confirm ) then #{
+     unset need_confirm
+#
+# INHOUSE LOG IN
+#
+# offer user chance to compare any file that was modified INHOUSE since last
+# proj_setup with the new version from onboard...
+
+#    echo " "
+#    echo "WARNING: project setup file '$getfile' has been modified INHOUSE"
+#    echo "since the last proj_setup\!\! You may wish to merge the changes"
+#    echo "done on the previous version with the new one."
+#    echo ""
+#    echo -n "Would you like to view/merge the differences (y/n)? "
+#    if ( "$<" == "y" ) then #{
+      echo -n "Checking for differences in file '$getfile'..."
+      if ( $getfile != header ) then #{
+       diff -c $getfile save/$getfile > /tmp/diffs
+       if ( { ( egrep "[-|+]" /tmp/diffs >&/dev/null )}) then #{
+        echo ""
+        echo ""
+        echo "WARNING: project setup file '$getfile' has been modified INHOUSE"
+        echo "since the last proj_setup\!\! You may wish to merge the changes"
+        echo "done on the previous version with the new one."
+        echo ""
+        set fname = "new-vs-old-$getfile"
+        echo "" > $fname
+        echo "#### Diffs for $getfile, new vs. old: " >> $fname
+        echo "" >> $fname
+        cat /tmp/diffs >> $fname
+        echo ""
+        source $LOCAL/scripts/GetEditorFromUser
+        echo ""
+        echo "Launching editors for onboard and inhouse versions, displaying"
+        echo "diffs between new and previous '$getfile'; quit each window "
+        echo "and then hit <r> when done..."
+        echo ""
+        $editor $fname &
+        $editor $getfile &
+        $editor save/$getfile &
+        $<
+        /bin/rm $fname
+        echo ""
+       else #}{
+        echo "none found."
+        echo ""
+       endif #}
+      else #}{ this is the header
+       hdump header > /tmp/header.new 
+       hdump save/header > /tmp/header.old
+       diff -c /tmp/header.new /tmp/header.old > /tmp/new-vs-old-headers 
+       if ( $status != 0 ) then
+        echo " "
+        echo " "
+        echo "WARNING: project setup file 'header' has been modified INHOUSE"
+        echo "since the last proj_setup\!\! You may wish to merge the changes"
+        echo "done on previous header with the new one..."
+        echo ""  
+        source $LOCAL/scripts/GetEditorFromUser
+        echo ""
+        echo "Launching xbuild with new header, displaying diffs between "
+        echo "inhouse (new) and onboard (old) versions; quit the editing"
+        echo "window, and then proj_setup will wait for you to exit xbuild "
+        echo "session..."
+        echo ""
+        $editor /tmp/new-vs-old-headers &
+        xbuild header
+        echo ""
+       else
+        echo "none found."
+        echo ""
+       endif
+      endif #}
+#    endif #} yes, view diffs
+    endif #} need confirm
+    echo "   ...done."
+   endif #} ping good
+  endif #} WindsServer good
+  echo ""
+  unset getfile
+  if ($?need_exit) then
+   set command = q
+  endif
+  breaksw;
+
+# IN-HOUSE LOG IN
+#
+# put file TO onboard
+#
+ case "P":
+  chdir $PROJ_DIR/$proj_number
+  if (!($?putfile)) then
+   echo ""
+   echo -n "Enter name of file to transfer TO Onboard (<r> to abort): "
+   set putfile = $<
+  else
+   set need_exit
+  endif
+  if ( "$putfile" == "" ) then
+   unset putfile
+   breaksw;
+  endif
+  if (!(-f $putfile) ) then
+   echo ""
+   echo "Sorry, file '$putfile' does not exist"
+   echo ""
+   unset putfile
+   breaksw;
+  endif
+#
+# NOTE: case P should FALL THRU to case o
+#
+ case "o":
+
+# IN-HOUSE LOG IN
+# offer project setup installation onboard
+
+  if ( ! ( -d $PROJ_DIR/$proj_number)) then
+   echo ""
+   echo "Project $proj_number does not exist..."
+   breaksw;
+  endif
+  if ( -d $PROJ_DIR/$proj_number ) then
+   chdir $PROJ_DIR/$proj_number 
+   unset WindsServer
+   unsetenv WindsServer
+   source $LOCAL/scripts/GetAirplaneFromPnum $proj_number
+   source $LOCAL/scripts/AskHostForWindsServer
+   if ( ($?WindsServer) ) then
+    echo ""
+    echo "Attempting connection with $WindsServer..."
+    if ( ! { (/bin/ping $WindsServer -w 3)  } ) then 
+     echo ""
+     echo "$WindsServer is not on the net.  Correct this and try again."
+     echo "" 
+    else
+     echo ""
+     if ($?putfile) then
+      set xfer_arg = "-get $putfile"
+      echo "   saving current inhouse file '$putfile'"
+      cp $putfile save
+     else
+      set xfer_arg = ""
+      echo "   saving current inhouse files: "
+      foreach file (`find. | grep -v proj_setup_done`)
+       echo "     $file..."
+       cp $file save
+      end
+     endif
+#    source /home/local/scripts/GetDISPLAYfromUser
+     rsh $WindsServer -l winds "csh -f $WINDS/scripts/proj_setup $proj_number $devmode $xfer_arg"
+     if ( $status == 1 ) then
+      echo ""
+      echo "WARNING: problem with remote request to $WindsServer to execute"
+      echo "proj_setup. Verify permissions set correctly, and try again. "
+      echo "Hit <r> to continue..."
+      echo ""
+      set ready = $<
+     else if (!($?putfile)) then
+#
+# don't want to update timestamp when transferring just one file, since
+# other files that were modified inhouse wouldn't be detected at next 
+# transfer back to here 
+#
+      chdir $PROJ_DIR/$proj_number
+      if ( -e proj_setup_done ) then
+       chmod +w proj_setup_done
+      endif
+      touch proj_setup_done
+      chmod -w proj_setup_done
+     endif
+    endif
+   else
+    echo ""
+    echo "Sorry ... can't determine Winds Server..."
+    echo ""
+   endif
+  else
+   echo ""
+   echo "You must first Initialize Project $proj_number..."
+   echo ""
+  endif
+  unset putfile
+  if ($?need_exit) then
+   set command = q
+  endif
+  breaksw;
+
+ case "w":
+
+# IN-HOUSE LOG IN
+# offer write setup to tape
+
+  if ( ! ( -d $PROJ_DIR/$proj_number)) then
+   echo ""
+   echo "Project $proj_number does not exist..."
+   breaksw;
+  else
+   chdir $PROJ_DIR/$proj_number 
+
+# copy from setup directory to tape
+
+   echo  " "
+   echo " insert tape cartridge, and hit <r> when ready"
+   set ready = $<
+   tar cvhf /dev/rst8 $PROJ_FILES 
+   chmod a+rw $PROJ_FILES >&/dev/null
+   echo " "
+   echo "**********************************************************************"
+   echo "Now, to transfer setup to onboard, go to onboard computer and:"
+   echo " "
+   echo  1. insert cartridge tape
+   echo  2. login and enter the following:
+   echo  " "
+   echo  % proj_setup $proj_number
+   echo ""
+   echo "...and answer questions to install project setup from tape."
+   echo "**********************************************************************"
+   echo  " "
+  endif
+ breaksw;
+endsw #}
+
+end #}
+
+else #}{
+
+# ONBOARD LOG IN
+# not on development host network...$ROOTCMD should be available
+# ...transfer files either from cartridge tape or network to on-board
+
+ echo ""
+ echo "Logged into $HOST, an ONBOARD network, for project $proj_number"
+ echo " "
+set command = 0
+while ( "$command" != "q" ) #{
+
+ set oldnum = `cat $PROJNUMFILE`
+ if ("$oldnum" == "") then
+  echo "WINDS network on $HOST is currently NOT configured for any project."
+ else
+  echo "WINDS network on $HOST is currently configured for project $oldnum."
+ endif
+ if ($?getfile) then
+  set command = G
+  echo ""
+  echo "...transfer project $proj_number file '$getfile' FROM Inhouse..."
+  echo ""
+ else if ($?putfile) then
+  set command = P
+  echo ""
+  echo "...transfer project $proj_number file '$putfile' TO Inhouse..."
+  echo ""
+ else
+  echo ""
+  echo ""
+  echo "#########  Onboard Project Setup Menu  (on $HOST) ############"
+  echo ""
+  echo "o	Onboard Install of Project $proj_number"
+  echo "i	Inhouse chores for Project $proj_number"
+  echo "c	Configure WINDS Network for Project $proj_number"
+  echo "P	Put file back TO Inhouse"
+  echo "G	Get file FROM Inhouse"
+  echo "h	Copy Project $proj_number Header from Onboard TO In-house"
+  echo "t	Copy Project $proj_number Calib History from Onboard TO In-house"
+  echo "f	Copy Project $proj_number Calib History FROM In-house to Onboard"
+  echo "q	Quit"
+  echo ""
+  echo -n "Please enter menu option: "
+  set command = $<
+ endif
+ switch ( $command )  #{
+
+  case "i":
+
+# ONBOARD LOG IN
+# offer project setup from inhouse
+
+   echo "Attempting connection with $PROJDIR_HOST..."
+   if ( ! { (/bin/ping $PROJDIR_HOST -w 3)  } ) then
+    echo ""
+    echo "$PROJDIR_HOST is not on the net.  Correct this and try again."
+    echo ""
+   else
+    echo ""
+#   source /home/local/scripts/GetDISPLAYfromUser
+    rsh $PROJDIR_HOST "csh -f $WINDS/scripts/proj_setup $proj_number $devmode"
+    if ( $status == 1 ) then
+     echo ""
+     echo "WARNING: problem with remote request to $PROJDIR_HOST to execute"
+     echo "proj_setup. Verify permissions set correctly, and try again. "
+     echo "Hit <r> to continue..."
+     echo ""
+     set ready = $<
+    endif
+   endif
+   breaksw;
+#
+# ONBOARD LOGIN
+# transfer header back to inhouse
+
+  case "h":
+   set putfile = header
+#
+# ONBOARD LOGIN
+#
+# NOTE: case h should FALL THRU to case P
+#
+# xfer back to inhouse
+#
+ case "P":
+  chdir $PROJ_DIR/$proj_number
+  if (!($?putfile)) then
+   echo ""
+   echo -n "Enter name of file to transfer (<r> to abort): "
+   set putfile = $<
+  else
+   set need_exit
+  endif
+  if ( "$putfile" != "" ) then
+   set xfer_arg = "-get $putfile"
+  else
+   unset putfile
+   breaksw;
+  endif
+  if (!(-f $putfile) ) then
+   echo "" 
+   echo "Sorry, file '$putfile' does not exist" 
+   echo "" 
+   unset putfile
+   breaksw;
+  endif
+  echo "Attempting connection with $PROJDIR_HOST..."
+  if ( ! { (/bin/ping $PROJDIR_HOST -w 3)  } ) then
+   echo ""
+   echo "$PROJDIR_HOST is not on the net.  Correct this and try again."
+   echo ""
+  else
+   echo ""
+   echo "saving project $proj_number file '$putfile' back to $PROJDIR_HOST..."
+#  source /home/local/scripts/GetDISPLAYfromUser
+   rsh $PROJDIR_HOST -l winds "csh -f $WINDS/scripts/proj_setup $proj_number $devmode $xfer_arg"
+   if ( $status == 1 ) then
+    echo ""
+    echo "WARNING: problem with remote request to $PROJDIR_HOST to execute"
+    echo "proj_setup. Verify permissions set correctly, and try again. "
+    echo "Hit <r> to continue..."
+    echo ""
+    set ready = $<
+   endif
+   echo "   ...done."
+  endif
+  echo ""
+  unset putfile
+  if ($?need_exit) then
+   set command = q
+  endif
+  breaksw;
+
+# ONBOARD LOGIN
+# quit
+
+  case "q":
+   echo ""
+   echo "Onboard Project Setup is done..."
+   echo ""
+   breaksw;
+#
+# ONBOARD LOGIN
+# quick xfer FROM inhouse
+#
+ case "G":
+  if (!($?getfile)) then
+   echo ""
+   echo -n "Enter name of file to transfer (<r> to abort): "
+   set getfile = $<
+  else 
+   set need_exit
+  endif
+  if ( "$getfile" == "") then
+   unset getfile 
+   breaksw;
+  endif   
+#
+# NOTE: case G should FALL THRU to case o
+#  
+  case "o":  #{
+
+  chdir $PROJ_DIR
+  if (  ! ( -d $proj_number )) then #{
+   echo ""
+   echo "Directory for Project $proj_number does NOT exist..."
+   echo ""
+#
+# ONBOARD LOG IN
+#
+# first time onboard project setup for this project number: make directories
+#
+   $ROOTCMD "mkdir -p -m 777 $PROJ_DIR/$proj_number $PROJ_DIR/$proj_number/save"
+   if ( $status == 1 ) then #{
+    echo ""
+    echo "WARNING: problem with request to make a directory named"
+    echo "$PROJ_DIR/$proj_number and/or $PROJ_DIR/$proj_number/save."
+    echo ""
+    echo "Please verify rsh permissions are set correctly, and re-run"
+    echo "proj_setup script..."
+    echo ""
+    echo "Hit <r> to continue..."
+    set ready = $<
+   endif #}
+   chdir $proj_number
+  else #}{
+
+   chdir $proj_number
+#
+# ONBOARD LOG IN
+#
+# save names of files that have been modified onboard since last proj_setup
+#
+   set modfiles = ""
+   if ( -e proj_setup_done ) then
+    if ($?getfile) then
+#
+# check only this specific file for having been modified
+#
+     if ( -e $getfile && `tslm proj_setup_done` > `tslm $getfile`) then
+      set modfiles = $getfile
+     endif
+    else
+#
+# check all files for having been modified
+#
+     set modfiles = `findnewer. proj_setup_done`
+    endif
+   endif
+   if ($?getfile) then
+#
+# only network transfers done for quick transfers
+#
+    set source = 2
+   else
+    echo " "
+    echo -n "Install from (1) tape (2) network "
+    set source = $<
+   endif
+#
+   if ( "$source" == "1" ) then #{
+
+# ONBOARD LOG IN
+# install from tape
+
+    echo " "
+    echo " insert tape cartridge, and hit <r> when ready"
+    set ready = $<
+    echo "removing previous files .."
+    echo " "
+
+# remove old files
+
+    /bin/rm -f * 
+    echo " "
+    echo "copying archive from tape /dev/rst8 to $PROJ_DIR/$proj_number... "
+    echo " "
+    tar xvpf /dev/rst8
+ 
+   else #}{
+
+# ONBOARD LOG IN
+# install over network: start by mounting inhouse filesystem, temp mount point
+
+    set TEMP_UTIL = $WINDS/temputil
+    if ( ! ( -d $TEMP_UTIL )) then #{
+     $ROOTCMD mkdir -p -m 777 $TEMP_UTIL
+     if ( $status == 1 ) then #{
+      echo ""
+      echo "WARNING: problem with request to make a directory named"
+      echo "$TEMP_UTIL."
+      echo ""
+      echo "Please verify rsh permissions are set correctly, and re-run"
+      echo "proj_setup script..."
+      echo ""
+      echo "Hit <r> to continue..."
+      set ready = $<
+     endif #}
+    endif #}
+    $ROOTCMD mount $MOUNTARGS ${PROJDIR_HOST}:${PROJ_DIR} $TEMP_UTIL
+    if ( $status == 1 ) then #{
+     echo ""
+     echo "WARNING: problem with request to NFS-mount directory $PROJ_DIR"
+     echo "from $PROJDIR_HOST."
+     echo ""
+     echo "Please verify rsh permissions are set correctly, and re-run"
+     echo "proj_setup script..."
+     echo ""
+     echo "Hit <r> to continue..."
+     set ready = $<
+     exit
+    endif #}
+    chdir $TEMP_UTIL/$proj_number
+#
+# ONBOARD LOG IN
+#
+# provide for saving proj-specific files in case revisions are being made 
+# in more than one place -- i.e., onboard in test flights and in dev. lab 
+# between test flights.  Latest version of onboard project files are saved
+# to $PROJ_DIR/$proj_number/save.
+#
+    echo ""
+    if ($?getfile) then
+     set xfer_files = $getfile
+    else
+#
+# NOTE: we're changing filename list for full transfer from $PROJ_FILES to
+# simply global match on all files present. This was a problem in the past
+# when non-project files appeared within inhouse project dir, but may not
+# be a problem anymore. Besides, it provides for xfer of new files that
+# have appeared inhouse that have not been recognized yet in raf.defines
+# with $PROJ_FILES variable.
+#
+     set xfer_files = `find. | grep -v proj_setup_done`
+    endif
+    chdir $PROJ_DIR/$proj_number
+    echo "   saving current onboard files:"
+    foreach file ($xfer_files) #{
+     if ( -e $file ) then
+      echo "     $file" 
+      cp $file save
+     endif
+    end #}
+#
+#
+# ONBOARD LOG IN
+#
+# copy files from temp mount point to project dir
+#
+    chdir $TEMP_UTIL/$proj_number
+    echo " "
+    echo "copying from ${PROJDIR_HOST}:${PROJ_DIR}/$proj_number to $HOST... "
+    echo " "
+    echo "  copying new files:"
+    foreach file ( $xfer_files ) #{
+     echo "    $file..."
+     cp $file $PROJ_DIR/$proj_number/$file >&/dev/null
+    end #}
+#
+# get files that may have various versions present, identified by suffix
+#
+# NOTE: this is obviated by use of global match xfer as discussed above. 
+# Comment out for now until the global match has been deemed a stable approach.
+#
+#   if (!($?getfile)) then #{
+#    set FOLDERFILES = `find . -name save -prune -o -name plotspex?\* -print`
+#    foreach file ($FOLDERFILES) #{
+#     echo "  copying new folder '$file'..."
+#     cp $file $WINDS/proj/$proj_number/$file >&/dev/null
+#    end #}
+#   endif #}
+#   chdir /
+#
+#
+# ONBOARD LOG IN
+#
+# dismount
+#
+    chdir /
+    $ROOTCMD "umount $TEMP_UTIL"
+    if ( $status == 1 ) then #{
+     echo ""
+     echo "WARNING: problem with request to unmount $PROJ_DIR..."
+     echo ""
+     echo "Please verify rsh permissions are set correctly, and re-run"
+     echo "proj_setup script..."
+     echo ""
+     echo "Hit <r> to continue..."
+     set ready = $<
+    endif #}
+   endif #} proj_number subdir exists
+#
+   chdir $PROJ_DIR/$proj_number
+   if ( "$modfiles" != "" ) then #{
+#
+# ONBOARD LOG IN
+#
+# offer user chance to compare any files that were modified since last
+# proj_setup with these new versions
+
+#    echo " "
+#    if ($?getfile) then
+#     echo "WARNING: project setup file '$getfile' has been modified ONBOARD"
+#    else
+#     echo "WARNING: some project setup files have been modified ONBOARD"
+#    endif
+#    echo "since the last proj_setup\!\! You may wish to merge the changes"
+#    echo "done on these previous files with the new project setup files."
+#    echo ""
+#    echo -n "Would you like to view/merge the differences (y/n)? "
+#    if ( "$<" == "y" ) then #{
+      foreach file ($modfiles) #{
+       echo -n "Checking for differences in file '$file'..."
+       if ( $file != header ) then #{
+        if (!( -e $file )) then #{
+         echo ""
+         echo "#### WARNING: File $file in previous setup but NOT in new one..."
+         echo "You might want to check into this... hit <r> to continue..."
+         echo ""
+         set ready = $<
+        else #}{
+         diff -c $file save/$file > /tmp/diffs
+         if ( { ( egrep "[-|+]" /tmp/diffs >&/dev/null )}) then #{
+          echo " "
+          echo " "
+          echo "WARNING: project setup file '$file' has been modified ONBOARD"
+          echo "since the last proj_setup\!\! You may wish to merge the changes"
+          echo "done on previous file with the new project setup file..."
+          echo ""  
+          set fname = "new-vs-old-$file" 
+          echo "" > $fname  
+          echo "#### Diffs for $file, new vs. old: " >> $fname
+          echo "" >> $fname  
+          cat /tmp/diffs >> $fname
+          echo ""  
+          source $LOCAL/scripts/GetEditorFromUser
+          echo "" 
+          echo "Launching editors for onboard and inhouse versions, displaying"
+          echo "diffs between new and previous '$file'; quit each window "
+          echo "and then hit <r> when done..."
+          echo "" 
+          $editor $fname &
+          $editor $file &
+          $editor save/$file & 
+          $<
+          /bin/rm $fname
+          echo ""
+         else #}{
+          echo "none found"
+          echo ""
+         endif #}
+        endif #}
+       else #}{ this is the header
+        chdir $PROJ_DIR/$proj_number
+        hdump header > /tmp/header.new
+        hdump save/header > /tmp/header.old
+        diff -c /tmp/header.new /tmp/header.old > /tmp/new-vs-old-headers
+        if ( $status != 0 ) then
+         echo " "
+         echo " "
+         echo "WARNING: project setup file 'header' has been modified ONBOARD"
+         echo "since the last proj_setup\!\! You may wish to merge the changes"
+         echo "done on previous header with the new one..."
+         echo ""  
+         source $LOCAL/scripts/GetEditorFromUser
+         echo ""
+         echo "Launching xbuild with new header, displaying diffs between "
+         echo "inhouse (new) and onboard (old) versions; quit the editing"
+         echo "window, and then proj_setup will wait for you to exit xbuild "
+         echo "session..."
+         echo ""
+         $editor /tmp/new-vs-old-headers &
+         xbuild header
+         echo ""
+        else
+         echo "none found."
+         echo ""
+        endif
+       endif #}
+      end #} foreach modfile
+#    endif #} yes, view diffs
+   endif #} modfiles != ""
+#
+# ONBOARD LOG IN
+# if any essential files have not been transferred, copy them from default
+# directory
+
+   if (!($?getfile)) then #{
+    echo ""
+    echo "Verifying all project setup files present..."
+    chdir $PROJ_DIR/$proj_number
+    foreach file ( $OTHER_PROJFILES $PROJDEFAULTFILES) #{
+     if ( ! -e $file ) then #{
+      echo ""
+      echo "$file not seen in project setup file transfer..."
+      if ( { ( cp $PROJ_DIR/defaults/$file . >&/dev/null ) } ) then #{
+       echo " copied $file from $PROJ_DIR/defaults."
+      else #}{
+       echo " problem trying to copy $file from $PROJ_DIR/defaults."
+      endif #}
+     endif #}
+    end #}
+   endif #}
+   $ROOTCMD "chdir $PROJ_DIR/$proj_number; chmod a+rw $xfer_files > /dev/null"
+   if ( $status == 1 ) then #{
+    echo ""
+    echo "WARNING: problem with request to change permissions on"
+    echo "$PROJ_DIR/$proj_number."
+    echo ""
+    echo "Please verify rsh permissions are set correctly, and re-run"
+    echo "proj_setup script..."
+    echo ""
+    echo "Hit <r> to continue..."
+    set ready = $<
+   endif #}
+ 
+# ONBOARD LOG IN
+# verify that $ATTRFILE file has no more entries than expected
+
+   if (!($?getfile)) then #{
+    set includefile = `grep -l MAX_ATTR $WINDS/$WINDSINCLUDEDIR/*.h`
+    set max = `grep 'define MAX_ATTR' $includefile | awk '{print $3}'`
+    set attr = `wc $PROJ_DIR/$proj_number/$ATTRFILE | awk '{print $1}'`
+    if ( $attr > $max) then #{
+     echo " "
+     echo "WARNING: there are $max entries in $PROJ_DIR/$proj_number/$ATTRFILE"
+     echo "which is more than allowed (MAX_ATTR=$max) in $includefilefile. You "
+     echo "MUST (1) remove some entries OR (2) increase MAX_ATTR and recompile "
+     echo "for project release (contact WINDS expert)...hit <r> to continue..."
+     echo " "
+     $<
+    endif #}
+    echo ""
+    echo "Please NOTE that to complete project install, you MUST request the"
+    echo "Configure WINDS Network option from the menu IF THIS HAS NOT ALREADY"
+    echo "BEEN DONE. Execute this once at initial project setup install and"
+    echo "again when changes are made to onboard network, i.e. workstations,"
+    echo "their locations, and serial line assignments (printing, etc.)."
+    echo ""
+   else #}{
+    echo ""
+    echo "...done with quick transfer of $getfile."
+    echo ""
+   endif #}
+   if (($?need_exit)) then
+    set command = q
+   else
+    echo "Hit <r> to return to Onboard Menu..."
+    $<
+   endif
+#
+# ONBOARD LOG IN
+#
+# timestamps onboard
+#
+   if (!($?getfile)) then #{
+# 
+# don't want to update timestamp when transferring just one file, since 
+# other files that were modified onboard wouldn't be detected at next 
+# complete transfer
+# 
+    chdir $PROJ_DIR/$proj_number
+    if ( -e proj_setup_done ) then
+     chmod +w proj_setup_done
+    endif
+    touch proj_setup_done
+    chmod -w proj_setup_done
+   endif #}
+  endif #}
+  unset getfile
+  breaksw; #}
+
+ case "c":
+
+# ONBOARD LOG IN
+# setup turn-key startup files
+
+  if ( ! ( -d $PROJ_DIR/$proj_number)) then
+   echo ""
+   echo "Project $proj_number does not exist..."
+   breaksw;
+  endif
+  set oldnum = `cat $PROJNUMFILE`
+  if ( "$oldnum" != "" ) then
+   set newnum = $proj_number
+   if ( -f /tmp/sed.$$ ) then
+    /bin/rm /tmp/sed.$$
+   endif
+   echo -n "s/$oldnum" > /tmp/sed.$$
+   echo -n '$' >> /tmp/sed.$$
+   echo "/$proj_number/" >> /tmp/sed.$$
+   if ( { ( echo $WINDS | grep dev >&/dev/null ) } ) then
+    sed -f /tmp/sed.$$ $NETCONFIG | grep $proj_number
+   else 
+    /bin/mv $NETCONFIG /tmp/netconfig.$$
+    sed -f /tmp/sed.$$ /tmp/netconfig.$$ > $NETCONFIG
+   endif
+   if ( -f $PROJNUMFILE ) then
+    /bin/rm $PROJNUMFILE
+   endif
+   echo $proj_number > $PROJNUMFILE
+  else
+   echo ""
+   echo "WARNING: can't change project number, network configuration not"
+   echo "done properly up to now. Remedy: indicate that current config IS"
+   echo "indeed what you want; then re-execute Configure Network operation"
+   echo "again. Hit <r> to continue..."
+   $<
+   echo ""
+  endif
+  $WINDS/scripts/setup_server_init $proj_number
+  set proj_number = `cat $PROJNUMFILE`
+  breaksw;
+
+ case "t":
+
+# ONBOARD LOG IN
+# copy calibration history archive from on-board to in-house host
+
+  echo ""
+  echo "Attempting connection with $PROJDIR_HOST..."
+  if ( ! { (/bin/ping $PROJDIR_HOST -w 3) } ) then
+   echo ""
+   echo "$PROJDIR_HOST is not on the net.  Correct this and try again."
+   echo ""
+  else
+   chdir $PROJ_DIR/$proj_number
+   echo ""
+   echo -n "Indicate (1) pre-cals (2) post-cals "
+   set cals = $<
+   echo ""
+   if ( "$cals" == "1" ) then
+    echo "saving $proj_number Calib History (pre-cals) to $PROJDIR_HOST..."
+    rcp history_file ${PROJDIR_HOST}:$PROJ_DIR/$proj_number/history_file.pre-cals
+   else
+    echo "saving $proj_number Calib History (post-cals) to $PROJDIR_HOST..."
+    rcp history_file ${PROJDIR_HOST}:$PROJ_DIR/$proj_number/history_file.post-cals
+   endif
+   echo "   ...done."
+   echo ""
+  endif
+  breaksw;
+
+# ONBOARD LOG IN
+# copy calibration history archive from inhouse to onboard host
+
+ case "f":
+
+  if ( ( -d $PROJ_DIR/$proj_number )) then
+   echo ""
+   echo "Attempting connection with $PROJDIR_HOST..."
+   if ( ! { (/bin/ping $PROJDIR_HOST -w 3) } ) then
+    echo ""
+    echo "$PROJDIR_HOST is not on the net.  Correct this and try again."
+    echo ""
+   else
+    chdir $PROJ_DIR/$proj_number
+    echo ""
+    echo -n "Indicate (1) pre-cals (2) post-cals " 
+    set cals = $< 
+    echo ""
+    echo -n "Indicate project # from which to restore: "
+    set old_pnum = $< 
+    echo ""
+    if ( "$cals" == "1" ) then 
+     echo "copy $old_pnum Calib History (pre-cals) from $PROJDIR_HOST..."
+     rcp ${PROJDIR_HOST}:$PROJ_DIR/$old_pnum/history_file.pre-cals history_file
+    else 
+     echo "copy $old_pnum Calib History (post-cals) from $PROJDIR_HOST..."
+     rcp ${PROJDIR_HOST}:$PROJ_DIR/$old_pnum/history_file.post-cals history_file
+    endif 
+    chmod ug+rw $PROJ_DIR/$proj_number/history_file
+    echo "   ...done."
+    echo ""
+   endif
+  else
+   echo ""
+   echo "Project $proj_number does not exist..."
+   echo ""
+  endif
+ breaksw;
+ endsw #}
+end #}
+echo ""
+echo "Project Setup is done..."
+echo ""
+endif #}

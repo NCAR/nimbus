@@ -1,0 +1,5 @@
+#!/bin/csh -f
+#
+# print -- script provided for access to a line printer on /dev/ttya
+#
+cat $1 > /dev/ttya

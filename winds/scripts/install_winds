@@ -1,0 +1,462 @@
+#!/bin/csh -f
+#
+# install_winds --  note that usage is tied to following alias being set:
+#
+# alias Winst "mount mistral:$WINDS $LOCAL/winds_release; chdir $LOCAL/winds_release/scripts; install_winds $WINDS; chdir /; umount $LOCAL/winds_release"
+#
+# ..and then invoke this script with 
+#
+# Winst
+#
+# To install winds on a standalone system, you must be logged in as root
+#
+onintr cleanup
+if ( $#argv == 0 ) then #{
+ echo ""
+ echo -n "Enter destination directory for WINDS install: "
+ echo ""
+ set INSTALL_WINDS = $<
+ echo ""
+ echo "Now DON'T forget to setenv WINDS before trying to run WINDS..."
+ echo ""
+else #}{
+ set INSTALL_WINDS = $1
+ if ( $#argv == 2 ) then #{
+  if ( $2 == -y ) then #{
+#
+# enable batch mode, all interactive questioning goes automatically to a yes
+# ...installation will be "allfiles", "standalone-auto", "network"
+#
+   set auto_yes
+  endif #}
+ endif #}
+endif #}
+set SCRIPT_DIR = `pwd`
+set NFSMount = ${HOMEROOT}$LOCAL/winds_release 
+source $NFSMount/scripts/raf.defines
+set LocalPROJ_DIR = ${HOMEROOT}$PROJ_DIR
+#
+echo ""
+echo "Installing WINDS in $INSTALL_WINDS..."
+echo ""
+#
+if ( $?auto_yes ) then #{
+ set type = 4
+ echo "setting install type to 'automatic'..."
+else #}{
+# install from tape created by $WINDS/scripts/winds.out or via network
+
+ echo " "
+ echo "Indicate install: (1) tape-binary "
+ echo "                  (2) tape-source "
+ echo "                  (3) interactive (tape or network)"
+ echo "                  (4) automatic (tape or network) "
+ echo " "
+ set type = $<
+endif #}
+if ( $type == 1 ) then #{
+ set type = binary
+ echo ""
+ echo "Installing BINARY release of WINDS..."
+ echo ""
+endif #}
+if ( $type == 2 ) then #{
+ set type = full
+endif #}
+if ( $type == 3 ) then #{
+ echo ""
+ echo "Installation options will be offered..."
+ set type = standalone
+endif #}
+if ( $type == 4 ) then #{
+ echo ""
+ echo "Installation options will proceed automatically..."
+ set type = standalone-auto
+endif #}
+if ( $type == binary || $type == full || $type == standalone-auto) then #{
+ echo ""
+ echo "All sets of WINDS files will be installed."
+ set install = allfiles
+else #}{
+ echo ""
+ echo "You can optionally install each set of WINDS files."
+ set install = interactive
+endif #}
+if ( $type == standalone || $type == standalone-auto) then #{
+ set standalone = true
+else #}{
+ set standalone = false
+endif #}
+
+if ( $standalone != true ) then #{
+ set WINDS = $INSTALL_WINDS
+ set LOCAL = ""
+else #}{
+
+# standalone install -- only root should do this
+
+ if (`whoami` != root) then #{
+  echo " "
+  echo "Sorry -- you must be root to install winds on a standalone."
+  echo " "
+  exit
+ endif #}
+endif #}
+rdate $SOLARIS_HOST
+
+# verify proceed if extraneous NFS directories are present, unless automatic
+# session is enabled
+
+if ( !($?auto_yes) && $standalone == true && { ( grep nfs /etc/mnttab | grep -v winds_release >&/dev/null ) } ) then   #{
+ echo ""  
+ echo "WARNING: following NFS systems are mounted: " 
+ echo "" 
+ grep nfs /etc/mnttab | grep -v winds_release | awk '{print $1"\t"$2}'   
+ echo ""  
+ echo -n "Do you wish to proceed (this could be dangerous...) (y/n)? "  
+ set ready = $<  
+ if ( $ready != y ) then   #{
+  exit 
+ endif #}
+ echo ""  
+endif #}
+#
+if ( ! ( -d $INSTALL_WINDS ) ) then #{
+ mkdir -p $INSTALL_WINDS
+ chmod a+rw $INSTALL_WINDS
+endif #}
+chdir $INSTALL_WINDS
+
+# offer tape or network install type
+
+if ($?auto_yes) then #{
+ set source = network
+else #}{
+ echo " "
+ echo -n "Install from (1) tape (2) network "
+  set source = $<
+ if ( $source == 1 ) then #{
+  set source = tape
+ else #}{
+  set source = network
+#
+# source is network 
+#
+ endif #}
+endif #}
+## else #
+
+# this script being run via extract_unbundled
+
+##   set source = tape
+## endif #
+
+# get NIMBUS files first so make winds can work properly
+
+ set proceedwithinstall = no
+ if ( $type != binary ) then
+  if ( $install == interactive ) then
+   echo " "
+   echo -n "Do you wish to install NIMBUS files (y/n)? "
+   set proceedwithinstall = $<
+  else
+   set proceedwithinstall = y
+ endif
+ if ( $proceedwithinstall == 'y' || $proceedwithinstall == 'Y' ) then
+  if ( ! ( -d $NIMBUS ) ) then
+   mkdir -p $NIMBUS
+   chmod a+rw $NIMBUS
+  endif
+  if ( $source == tape ) then
+#
+# not reconciled with winds.out yet
+#
+#  mt -f /dev/rst$device rew
+#  mt -f /dev/nrst$device fsf 3
+#  chdir $NIMBUS
+#  tar xvfbp /dev/nrst$device $blocksize
+  else
+
+   set ProjMount = ${HOMEROOT}/tmp/proj
+   if ( ! ( -d $ProjMount )) then
+    mkdir -p $ProjMount
+   endif
+   mount ${PROJDIR_HOST}:$LOCAL/proj $ProjMount
+
+# network install of LocalPROJ_DIR files
+
+   foreach dir ($ProjDirs)
+    chdir $LocalPROJ_DIR
+    if ( ! ( -d $dir )) then
+     mkdir -p $dir
+     chmod a+rw $dir
+    endif
+
+# network install of LocalPROJ_DIR files
+# copy files over from each ProjMount subdir to install dir
+
+    echo " "
+    echo "copying files from $ProjMount/$dir to $LocalPROJ_DIR/$dir..."
+
+# network install of LocalPROJ_DIR files
+# only copy files that have been modified since last install
+
+    umask 000
+    /bin/rm -f /tmp/files >/dev/null
+    chdir $ProjMount/$dir
+    if ( -e $WINDS/nimbus_install_time) then
+     find . -type f -follow -newer $WINDS/nimbus_install_time -print>/tmp/files
+    else
+     find . -type f -follow -print > /tmp/files
+    endif
+    foreach file (`cat /tmp/files`)
+     echo $file
+     cp $file $LocalPROJ_DIR/$dir/$file 
+     chmod a+rw $LocalPROJ_DIR/$dir/$file
+   end
+   chdir /
+   umount $ProjMount
+
+# network install of NIMBUS files
+
+   set NimbusMount = ${HOMEROOT}/tmp/nimbus
+   if ( ! ( -d $NimbusMount )) then
+    mkdir -p $NimbusMount
+   endif
+   mount ${SOLARIS_HOST}:$NIMBUS $NimbusMount
+
+   foreach dir ($NimbusDirs)
+    chdir $NIMBUS
+    if ( ! ( -d $dir )) then
+     mkdir -p $dir
+     chmod a+rw $dir
+    endif
+
+# network install of NIMBUS files
+# copy files over from each NimbusMount subdir to install dir
+
+    echo " "
+    echo "copying files from $NimbusMount/$dir to $NIMBUS/$dir..."
+
+# network install of NIMBUS files
+# only copy files that have been modified since last install
+
+    umask 000
+    /bin/rm -f /tmp/files >/dev/null
+    chdir $NimbusMount/$dir
+    if ( -e $WINDS/nimbus_install_time) then
+     find . -type f -follow -newer $WINDS/nimbus_install_time -print>/tmp/files
+    else
+     find . -type f -print > /tmp/files
+    endif
+#
+# if we continue to get 'Word too long' problems with this, here's the tar
+# command to use as option:
+#
+# chdir /tmp
+# tar cf - nimbus | (chdir /home/local; tar xfBp -)
+#
+    foreach file (`cat /tmp/files`)
+     echo $file
+     cp $file $NIMBUS/$dir/$file 
+     chmod a+rw $NIMBUS/$dir/$file
+    end
+   end
+   chdir /
+   umount $NimbusMount
+  endif
+  echo ""
+  echo "doing make -tk on NIMBUS files..."
+  echo ""
+  chdir $NIMBUS/src/filter
+  pmake -tk obj -f Makefile
+  foreach timestamp ( $WINDS/nimbus_install_time $NFSMount/installs/nimbus.`hostname -s`)
+   touch $timestamp
+   chmod 644 $timestamp
+  end
+ endif
+ if ( $install == interactive ) then
+  echo " "
+  echo -n "Proceed with WINDS files (y/n)? "
+  set proceedwithinstall = $<
+ else
+  set proceedwithinstall = 'y'
+ endif
+
+# install of WINDS files
+
+ if ( $proceedwithinstall == 'y' || $proceedwithinstall == 'Y' ) then
+
+# make run-time directories as needed
+
+  chdir $INSTALL_WINDS
+  foreach dir ( $DATA_SUBDIR $LOG_SUBDIR )
+   if ( ! ( -d $dir )) then
+    mkdir -p $INSTALL_WINDS/$dir
+    chmod 777 $INSTALL_WINDS/$dir
+   endif
+  end
+  if ( $source == tape ) then
+
+# tape install of WINDS files
+
+   echo " "
+   echo " "
+   echo -n "Indicate input device: (1) 150M cartridge (2) Exabyte "
+   set device = $<
+   switch ($device)
+    case 1:
+     set blocksize = $BS
+     breaksw;
+    case 2:
+     set blocksize = 32768
+     breaksw;
+   endsw
+   echo ""
+   echo -n "Indicate input device name: /dev/rst"
+   set device = $<
+   echo ""
+   echo "Insert tape and hit <r> when ready ... "
+   set ready = $<
+   mt -f /dev/rst$device rew
+
+# tape install of WINDS files
+# NOTE that the numbers attached to fsf argument throughout this scripts MUST 
+# correspond to order of archiving in $WINDS/scripts/winds.out
+
+   mt -f /dev/nrst$device fsf 2
+   chdir $INSTALL_WINDS
+   tar xvfbp /dev/nrst$device $blocksize
+  else
+
+# network install of WINDS files
+# make subdirectories under $INSTALL_WINDS as exemplified in the NFSMount dir
+
+   echo " "
+   echo "making WINDS subdirectories..."
+   chdir $INSTALL_WINDS
+   foreach dir ($RAFINSTALLDIRS)
+    if ( ! ( -d $dir )) then
+     if ( $dir == defaults) then
+      mkdir -p $dir
+      chmod a+rw $dir
+     else
+#
+# normal check for dirs - retain this block if removing above transition stuff
+#
+      mkdir -p $dir
+      chmod a+rw $dir
+     endif
+    endif
+   end
+
+# network install of WINDS files
+# copy files over from each NFSMount subdir to install dir
+
+   echo " "
+   foreach dir ($RAFINSTALLDIRS)
+    echo " "
+    echo "copying files from $NFSMount/$dir to $INSTALL_WINDS/$dir..."
+    chdir $NFSMount/$dir
+ 
+# network install of WINDS files
+# only copy files that have been modified since last install
+
+    umask 000
+    /bin/rm -f /tmp/files >/dev/null
+    if ( -e $WINDS/winds_install_time) then
+     find . -type f -follow -newer $WINDS/winds_install_time -print>/tmp/files
+    else
+     find . -type f -follow -print > /tmp/files
+    endif
+    if ( $dir == bin && -f $WINDS/scripts/move_binaries ) then
+     chdir $INSTALL_WINDS/bin 
+     source $WINDS/scripts/move_binaries
+     chdir $NFSMount/bin
+    endif
+    foreach file (`cat /tmp/files`)
+     echo $file
+     if ($dir == bin) then
+      if ("$file:e" == "old") then
+#
+# don't overwrite just saved binaries with ones from in-house, else what's
+# the point of saving binaries
+#
+       set copy = false
+       echo "Not copying file $file to preserve saved binary..."
+      else
+       set copy = true
+       cp $file $INSTALL_WINDS/$dir/$file 
+      endif
+     else
+      set copy = true
+      cp $file $INSTALL_WINDS/$dir/$file 
+     endif
+     if ( $copy == true ) then
+      if ($dir == bin || $dir == scripts) then
+       chmod a+rwx $INSTALL_WINDS/$dir/$file
+      else
+       chmod a+rw $INSTALL_WINDS/$dir/$file
+      endif
+     endif
+    end
+   end
+   chdir /
+   if ( $type != binary ) then
+
+# network install of WINDS files
+
+    if ( ! ( -e $WINDS/release )) then
+     ln -s $WINDS $WINDS/release 
+    endif
+    if ( ! ( -e $WINDS/dev )) then
+     ln -s $WINDS $WINDS/dev 
+    endif
+    if ( ! ( -e $WINDS/proj )) then
+     ln -s $LOCAL/proj $WINDS/proj 
+    endif
+   endif
+   echo ""
+   echo "doing make -tk on WINDS files..."
+   echo ""
+   chdir $INSTALL_WINDS/$WINDSSOURCEDIR
+   pmake -tk 
+#
+# update a timestamp file on both destination and source reflecting date
+# of install and version #. Add name of destination host to source host
+# timestamp for full reference.
+#
+   set VERSION = `cat $RELEASE/$VERSIONFILE | tail -1 | sed 's/\"//g'`
+   foreach timestamp ( $WINDS/winds_install_time $NFSMount/installs/winds.`hostname -s`)
+    if ( -f $timestamp ) then
+     /bin/rm $timestamp
+    endif
+    echo "WINDS Version $VERSION" > $timestamp
+    chmod 644 $timestamp
+   end
+  endif
+ endif
+
+# miscellaneous every-time tasks
+# create project-setup default files if needed
+
+ if ( ! ( -e $LocalPROJ_DIR/$NETCONFIG_FILENAME )) then
+  /bin/cp $LocalPROJ_DIR/defaults/$NETCONFIG_FILENAME $LocalPROJ_DIR
+  chmod a+rw $LocalPROJ_DIR/$NETCONFIG_FILENAME
+ endif
+
+# miscellaneous every-time tasks
+# grant execute permission to scripts 
+ 
+ chmod a+x  $INSTALL_WINDS/scripts/*
+cleanup:
+
+ echo ""
+ echo "install_winds cleaning up..."
+ if ($source == tape) then
+  mt -f /dev/rst$device rew
+ endif
+ echo "  "
+ echo WINDS install is done...good-bye.
+ echo "  "
+ exit

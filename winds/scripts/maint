@@ -1,0 +1,446 @@
+#!/bin/csh -f
+# maint <command> -- WINDS directories maintenance
+
+source $WINDS/scripts/raf.defines
+unalias rm
+
+if ($#argv != 1 ) then
+ echo " "
+ echo "*********************************************************************"
+ echo "                    maint options:"
+ echo "*********************************************************************"
+ echo " "
+ echo " "
+ echo "              verdeps	verify dependencies in makefiles"
+ echo "              changes    get list of sccs changes since given delta"
+ echo "              sccs       various sccs operations"
+ echo "              backup     tar WINDS stuff"
+ echo "              install    extract WINDS release software"
+ echo ""
+ echo ""
+ echo -n "Please select from above: "
+ set choice = $<
+ echo ""
+ echo ""
+else
+ set choice = $1
+endif
+
+chdir $WINDS
+set dirs = `/bin/ls`
+set months = (Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec)
+
+switch ($choice)
+
+case "verdeps":
+ foreach dir ($dirs)
+  chdir $WINDS
+  if ( -d $dir) then
+   chdir $WINDS/$dir
+   if ( -f makefile ) then
+    verify_deps
+   endif
+  endif
+ end
+breaksw;
+
+case "changes":
+ echo -n "enter earliest delta for which comments are desired: "
+ set delta = $<
+ echo -n "cd only or all (c/a)? "
+ set direc = $<
+ if ($direc == c) then
+  set direc = $dirs
+ else
+  set direc = ""
+ endif
+ foreach dir (. $direc)
+  chdir $WINDS
+  if ( -d $dir) then
+   chdir $WINDS/$dir
+   if ( -e $WINDS/$dir/SCCS ) then
+    echo " "
+    echo "***********************************"
+    echo "changes for `pwd`:"
+    echo "***********************************"
+    echo " "
+    sccs prs -r$delta -l -a -d":D: :C:" SCCS
+   endif
+  endif
+ end
+breaksw;
+
+case "sccs":
+
+chdir $WINDS
+set select = 1
+set got_dirs = 0
+set dirs = ""
+
+while ($select != 8)
+
+ echo " "
+ echo "Current search directories: $dirs "
+ echo " "
+ echo -n "Pick (1) levels (2) diffs (3) no SCCS (4) extinct files (5) raise all levels to target (6) personal files ops (7) set directory (8) done "
+ set select = $<
+ if ( $select == 7 ) then
+  echo ""
+  echo -n "Enter dir name(s) ('all' for all): "
+  set dirs = $<
+  if ("$dirs" == "all" ) then
+   chdir $WINDS
+   set dirs = "$RAFSCCSDIRS"
+  endif
+  set got_dirs = 1
+ endif
+ if ( $select == 1 ) then
+  echo " "
+  echo -n "Enter level desired in SCCS: "
+  set level = $<
+ endif
+ if ( $select == 5 ) then
+  echo " "
+  echo "This operation checks in ALL files under SCCS in each directory that"
+  echo "are not at the target level.  Repeat this as many times as necessary"
+  echo "to bring all files UP to target level...THIS ASSUMES THAT THERE ARE "
+  echo "NO SCCS LEVELS CURRENTLY HIGHER THAN THE TARGET."
+  echo ""
+  echo -n "enter target level desired: "
+  echo ""
+  set target = $<
+  set owner = `whoami`
+ endif
+ if ( $select == 6 ) then
+  echo " "
+  echo "This operation gets all sccs files checked out for `whoami` and then"
+  echo "performs a designated operation on all of them."
+  echo " "
+  set owner = `whoami`
+ endif
+ if ( $select != 7 && $select != 8 && "$select" != "" ) then
+ set op = ""
+ foreach dir ($dirs)
+  if ("$op" == "previous") then
+   break
+  endif
+  chdir $WINDS/$dir
+  if ( -e $WINDS/$dir/SCCS ) then
+   echo " "
+   switch ($select)
+   case 1:
+    echo " "
+    echo "in $dir ..."
+    foreach file (SCCS/s.*)
+     set sccs_info = `sccs prs -d":F: version :I:" $file`
+     set sccs_level = `echo $sccs_info | awk '{print $3}'`
+     if ( $sccs_level != $level ) then
+      echo " "
+      echo "WARNING: $sccs_info"
+     endif
+    end
+    breaksw;
+   case 2:
+    echo "differences between working and SCCS, $dir directory: "
+    echo " "
+    sccs diffs `sccs tell`
+    breaksw;
+   case 5:
+    set files = `sccs prs -d":F: :I: :P:" SCCS | sed 's/s\.//' | grep $owner | grep -v $target | awk '{print $1}'`
+    echo "in $dir -- "
+    echo " "
+    foreach file ( $files )
+     if ( ! -e SCCS/p.$file ) then
+      echo "sccs edit $file..."
+      sccs edit $file
+     endif
+    end
+    if ( "$files" != "" ) then
+     sccs delget $files
+     echo " "
+    endif
+    if ( $dir == scripts ) then
+     chmod +x *
+    endif
+    breaksw;
+   case 6:
+    set files = `sccs info | grep $owner | awk '{FS=":"} {print $1}'`
+    set op = 0
+    while ($op != done )
+     echo " "
+     echo "Here are the files under control of $owner in $dir -->"
+     echo " "
+     if ( "$files" != "" ) then
+      echo $files
+     else
+      echo "No files under control of $owner in $dir ..."
+     endif
+     echo " "
+     echo "select (0) diffs (1) diffs w/opts (2) unedit (3) delget " 
+     echo "       (4) deledit (5) get (6) edit (7) chmod +x "
+     echo "       (8) update file list (9) unchk'd files (10) enter (11) enter binary "
+     echo "       (12) next directory (13) new major delta # (14) previous menu "
+     echo "       (15) done "
+     set op = $<
+     switch ($op) 
+     case 0:
+      set op = diffs
+      breaksw;
+     case 1:
+      set op = diff_w/options
+      breaksw;
+     case 2:
+      set op = unedit
+      breaksw;
+     case 3:
+      set op = delget
+      breaksw;
+     case 4:
+      set op = deledit
+      breaksw;
+     case 5:
+      set op = get
+      breaksw;
+     case 6:
+      set op = edit
+      breaksw;
+     case 7:
+      set op = chmod
+      breaksw;
+     case 8:
+      set op = relist
+      set files = `sccs info | grep $owner | awk '{FS=":"} {print $1}'`
+      breaksw;
+     case 9:
+      set op = unchkd
+      breaksw;
+     case 10:
+      set op = enter
+      breaksw;
+     case 11:
+      set op = binary_enter
+      breaksw;
+     case 12:
+      set op = done
+      breaksw;
+     case 13:
+      set op = newdelta
+      breaksw;
+     case 14:
+      set op = previous
+      break
+      breaksw
+     case 15:
+      exit
+     endsw
+     echo " "
+     if ( $op != binary_enter && $op != unchkd && $op != relist && $op != done && $op != newdelta ) then
+      if ( $op == diff_w/options ) then
+       set FILES = all
+      else
+       echo ""
+       echo -n "  Enter names of files to ${op} (all, SCCS, <r>): "
+       set FILES = ($<)
+      endif
+      if (`echo $FILES |awk '{print $1}'` == all) then
+       set FILES = ($files)
+      endif
+      if ( $op == chmod ) then
+       chmod +x $FILES
+      else
+       if ( $op == diff_w/options) then
+        foreach File ($FILES)
+         /bin/rm -f /tmp/diffs >&/dev/null
+         sccs diffs $File | tee /tmp/diffs
+         if ( { ( egrep "[<|>]" /tmp/diffs >&/dev/null )}) then
+	  echo ""
+	  echo "   Select: (1) deledit (2) delget (3) unedit "
+	  echo -n "           (4) skip it (5) previous menu "
+	  set op = $<
+          switch ($op) 
+          case 1:
+           sccs deledit $File
+           breaksw;
+          case 2:
+           sccs delget $File
+           breaksw;
+          case 3:
+           sccs unedit $File
+           breaksw;
+          case 4:
+           breaksw;
+          case 5:
+           break
+           breaksw;
+          endsw
+         endif
+        end
+       else
+        sccs $op $FILES
+       endif
+      endif
+      if ( $op == enter) then
+       /bin/rm ,*
+       echo ""
+       echo -n "Enter desired delta revision # (level.delta): "
+       set desired_rev = $<
+       set level = `echo $desired_rev|awk '{print $1}' | awk -F. '{print $1}'`
+       set delta = `echo $desired_rev|awk '{print $1}' | awk -F. '{print $2}'`
+       sccs edit -r$level $FILES
+       foreach File ($FILES)
+        echo ""
+        echo " delta-ing $File..."
+        echo ""
+        set rev = `sccs prs -d":I:" $File`
+        while ($rev != $desired_rev) 
+         sccs deledit $File < /dev/null
+         set rev = `sccs prs -d":I:" $File`
+        end
+       end
+      endif
+     else 
+      if ( $op == newdelta ) then
+       echo ""
+       echo -n "enter delta # (1 digit) for top level sccs files: "
+       set delta = $<
+       echo ""
+       echo "testing for differences in sccs files ..."
+       echo ""
+       ~gary/scripts/test_sccs $files
+       echo -n "No WARNING's means it's OK. Continue (y/n)? "
+       set ok=$<
+       if ($ok == "y" || $ok == "Y") then
+        if ("$files" != "" ) then
+         sccs unedit $files
+         sccs edit -r$delta $files
+        endif
+       endif
+      endif
+      if ( $op == binary_enter ) then
+       echo -n "  Enter names of binary files to enter: "
+       set FILES = ($<)
+       sccs create -b $FILES
+       /bin/rm ,*
+       echo ""
+       echo -n "Enter desired delta revision # (level.delta): "
+       set desired_rev = $<
+       set level = `echo $desired_rev|awk '{print $1}' | awk -F. '{print $1}'`
+       set delta = `echo $desired_rev|awk '{print $1}' | awk -F. '{print $2}'`
+       sccs edit -r$level $FILES
+       foreach File ($FILES)
+        echo ""
+        echo " delta-ing $File..."
+        echo ""
+        set rev = `sccs prs -d":I:" $File`
+        while ($rev != $desired_rev) 
+         sccs deledit $File < /dev/null
+         set rev = `sccs prs -d":I:" $File`
+        end
+       end
+      endif
+      if ( $op == unchkd) then
+       switch ($dir)
+
+# list files for each directory that won't be checked into SCCS, and thus can
+# be ignored
+
+       case "doc":
+        set good_files = (releases chg_display.memo next results specifics)
+        breaksw;
+       case "scripts":
+        set good_files = (backup_time *_time test sccs_owners hdr-demo.out)
+        breaksw;
+       case "src":
+        set good_files = (hdr_atoms.c.new gray_scale.c grays data_atoms.c hdr-demo.c tags)
+        breaksw;
+       case "setup":
+        set good_files = (hd312)
+        breaksw;
+       case "defaults":
+        breaksw;
+       default:
+        set good_files = ""
+        breaksw;
+       endsw
+       sccs_ver $good_files
+       breaksw;
+      endif
+     endif
+    end
+    breaksw;
+   endsw
+   if ( $select == 4 ) then
+    if ( ! ( -d $WINDS/release/$dir )) then
+     echo " "
+     echo "No release directory for $WINDS/$dir"
+    else
+     chdir $WINDS/release/$dir
+     echo " "
+
+# exempt files that are not SCCS'd or maintained as soft links for binary
+# releases
+
+     set good_files = ( VarDB@ coast.data@ regions@ bulletin.9@ config@ plot_attr@ netconfig@ landmarks@ plot_attr_append WINDS.info)
+     foreach file (`ls -F | grep -v \/`)
+      set sccs_file = SCCS/s.$file
+      if ( ! ( -f $WINDS/$dir/$sccs_file ) ) then
+       set ok = 0
+       foreach good ($good_files)
+        if ($file == $good ) then
+         set ok = 1
+        endif
+       end
+       if ( $ok == 0 ) then
+        echo "Release has $dir/$file, but there is no SCCS file for it."
+        echo ""
+        echo -n "Remove from release (y/n)? "
+        set remove = $<
+        if ( $remove == 'y' ) then
+         /bin/rm -f $WINDS/release/$dir/$file
+        endif
+       endif
+      endif
+     end
+    endif
+   endif
+   if ( $select == 3 ) then
+    if ( ! ( -d $WINDS/$dir )) then
+     echo " "
+     echo " no SCCS directory for $dir"
+     echo " "
+    endif
+   endif
+  endif
+ end 
+ endif
+ end
+breaksw;
+
+case "backup":
+
+ echo " "
+ echo "backing up $WINDS development and all users directories ..."
+ chdir $WINDS
+ echo " " 
+ echo " remove WINDS core files: "
+ echo " " 
+ find . -name core\* -print -exec /bin/rm -f {} \;
+ echo " " 
+ echo "Insert cartridge tape and hit <r> when ready..."
+ set ready = $<
+# time stamp of backup as first file in archive
+ touch $WINDS/scripts/backup_time
+ chdir $LOCAL
+# excluded and included files listed in ../doc/tar
+ tar cvfX /dev/rst8 $WINDS/doc/tar/exclude.tar.backups $WINDS/scripts/backup_time dev/winds dev/proj dev/nimbus proj pms2d ~/gary winds
+ chdir $WINDS
+ breaksw;
+
+case "install":
+ $WINDS/scripts/winds.out
+ breaksw;
+
+default:
+ exit
+
+endsw

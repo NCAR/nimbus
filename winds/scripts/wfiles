@@ -1,0 +1,478 @@
+#!/bin/csh -f
+#
+# wfiles [<filetype> [<project #>]] -- inserting, deleting, etc. operations on 
+# relevant WINDS files
+#
+ set start_dir = `pwd`
+ set filelist = none
+ set filetype = none
+ set pnum = none
+ set access = none
+ set host = $HOST
+ if ($#argv == 1) then
+  set pnum = $1
+ endif
+ set op = go
+ while ($op != quit) 
+  echo ""
+  echo "**********************************************************************"
+  echo "Current project #: $pnum"
+  echo "Current file(s): $filelist"
+  echo "Current host: $host"
+  echo ""
+  echo "Select op: "
+  echo " p 	(set project #) "
+  echo " f 	(set file list) "
+  echo " h 	(set host for logfile access) "
+  if ($access == rw || $access == ro ) then
+   echo " l 	(list field from file) "
+   echo " e 	(list entry from file) "
+   echo " pr 	(print file to PaintJet) "
+  endif
+  if ($access == rw ) then
+   echo " tx 	(textedit on file) "
+   echo " vi 	(visual edit on file) "
+   echo " i 	(insert entry into file) "
+   echo " d 	(delete entry from file) "
+  else
+   if ($access == ro ) then
+    echo " tx 	(textedit on file) "
+   endif
+  endif
+  if ($access != none) then
+   echo " tc 	(list contents of tape) "
+   echo " lo 	(load file(s) onto tape) "
+   echo " do 	(download file(s) from tape) "
+  endif
+  if ($access == type_rm_mv ) then
+   echo " ty 	(describe file(s))"
+   echo " mv 	(move file(s))"
+   echo " rm 	(remove file(s))"
+  endif
+  echo " q 	(quit) "
+  set op = $<
+  switch ($op)
+   case ty:
+    /bin/rm /tmp/types-$$ >&/dev/null
+    echo ""
+    echo "One moment please..."
+    echo ""
+   case rm:
+   case mv:
+    if ($access != type_rm_mv ) then
+     breaksw;
+    endif
+    foreach filename ( `cat /tmp/files-$$` )
+     switch ( $op )
+      case rm:
+       set operation = "/bin/rm $filename"
+       echo ""
+       echo -n "Remove $filename...ok (y/n)? "
+       set verify = yes
+       breaksw;
+      case mv:
+       echo "Enter new name for ${filename}: "
+       set newname = $<
+       if ( "$newname" == "" ) then
+        set verify = no
+       else
+        set operation = "mv $filename $newname"
+        echo ""
+        echo -n "Rename $filename to $newname...ok (y/n)? "
+        set verify = yes
+       endif
+       breaksw;
+      case ty:
+       touch /tmp/types-$$
+       set filedate = `ls -lt $filename | awk '{print $6,$7,$8}'`
+       set filenametype = `file $filename`
+       set name = `echo $filenametype | awk -F: '{print $1}'`
+       set type = `echo $filenametype | awk -F: '{print $2}'`
+       echo "File: $name" >> /tmp/types-$$
+       echo "Filetype: $type" >> /tmp/types-$$
+       echo "Date: $filedate" >> /tmp/types-$$
+       echo "" >> /tmp/types-$$
+       set verify = no
+       breaksw;
+     endsw
+     if ( "$verify" == "yes" ) then
+      set load = $<
+      if ( "$load" == "y" ) then
+       $operation
+      endif 
+     endif
+    end
+    if ( $op == ty ) then
+     more /tmp/types-$$
+     echo ""
+     echo "Hit <r> to continue..."
+     set ready = $<
+    endif
+    breaksw;
+   case tc:
+    tar tvf /dev/rst8
+    breaksw;
+   case lo:
+    echo ""
+    echo "Load following onto 150M tape: "
+    echo ""
+    echo $filelist
+    echo ""
+    echo -n "Continue (y/n)? "
+    set load = $<
+    if ( $load == y ) then
+     tar cvf /dev/rst8 $filelist
+    endif
+    breaksw;
+   case do:
+    echo ""
+    echo "Downloading from 150M tape onto directory `pwd`... "
+    echo ""
+    echo -n "Continue (y/n)? "
+    set load = $<
+    if ( $load == y ) then
+     tar xvf /dev/rst8
+    endif
+    breaksw;
+   case 'pr':
+    if ( $access != rw  && $access != ro ) then
+     breaksw;
+    endif
+    echo ""
+    echo  "Print following to PaintJet: "
+    echo ""
+    echo $filelist 
+    echo ""
+    echo -n "Continue (y/n)? "
+    set load = $<
+    if ( $load == y ) then
+     $WINDS/scripts/print $filelist
+    endif
+    breaksw;
+   case h:
+    echo ""
+    echo "Enter hostname for logfile access: "
+    echo ""
+    set host = $<
+    breaksw;
+   case 'q':
+    set op = quit
+    breaksw;
+   case 'p':
+    echo ""
+    echo -n "Enter project number: "
+    set pnum = $<
+    breaksw;
+   case 'f':
+    echo ""
+    echo "Select file: "
+    echo "    n 	(network-config) "
+    echo "    p 	(project setup) "
+    echo "    s 	(plot-spex) "
+    echo "    f 	(flat-panel display) "
+    echo "    a 	(plot-attrs) "
+    echo "    c 	(calib-attrs)"
+    echo "    sp 	(serial-line data feeds)"
+    echo "    qr 	(quick-reference manual)"
+    echo "    mm 	(maintenance manual)"
+    echo "    ck 	(check-list)"
+    echo "    ll 	(most recent logfile for $host) "
+    echo "    al 	(all logfiles for $host)"
+    echo "    co	(all core files) "
+    echo "    ck	(all files under given dir, larger than given size...) "
+    echo "    o 	(other...) "
+    set save_type = $filetype
+    set filetype = $<
+    switch ($filetype)
+     case 'ck':
+      echo ""
+      echo -n "Enter directory start point for search: "
+      set dir = $<
+      if ( "$dir" != "" ) then
+       echo -n "Enter minimum size (in kilobytes) of file to list: "
+       set size = $<
+       if ( "$size" != "" ) then
+        echo ""
+        echo "One moment please ..."
+        echo ""
+        find $dir -size +${size}000c -exec du -k -s {} \; | sort -rn > /tmp/templist-$$
+        echo ""
+        echo "Files under $dir larger than $size kilobytes: "
+        echo ""
+        more /tmp/templist-$$ 
+        echo ""
+        echo "Hit <r> to continue..."
+        set ready = $<
+        /bin/rm /tmp/files-$$ >&/dev/null
+        cat /tmp/templist-$$ | awk '{print $2}' > /tmp/files-$$
+        /bin/rm /tmp/templist-$$ >&/dev/null
+        set filelist = "as listed above..."
+        set access = type_rm_mv
+       endif
+      endif
+      breaksw;
+     case 'co':
+      echo ""
+      echo "Please select directory start point for search. Selections"
+      echo "are listed in order of how long it takes to conduct search, "
+      echo "longest search time is #0, next longest is #1, etc. Shorter"
+      echo "searches save time only because not as many places are searched: "
+      echo ""
+      echo "0- root 1- home 2- local 3- winds 4- projects "
+      echo ""
+      set dir = none
+      switch ($<)
+       case 0:
+        set dir = /
+        breaksw;
+       case 1:
+        set dir = /home
+        breaksw;
+       case 2:
+        set dir = $LOCAL
+        breaksw;
+       case 3:
+        set dir = $WINDS
+        breaksw;
+       case 4:
+        set dir = $LOCAL/proj
+        breaksw;
+      endsw
+      if ( "$dir" != none ) then
+       echo ""
+       echo "One moment please ..."
+       echo ""
+       set filelist = (`find $dir -name core -print`)
+       /bin/rm /tmp/files-$$ >&/dev/null
+       echo $filelist > /tmp/files-$$
+       set access = type_rm_mv
+      endif
+      breaksw;
+     case 'n':
+      set filelist = $WINDS/proj/netconfig
+      set access = rw
+      breaksw;
+     case 'p':
+      chdir $WINDS/proj/$pnum/
+      set filelist = (`ls *`)
+      set access = tar_only
+      breaksw;
+     case 'al':
+      chdir $WINDS/log
+      set filelist = `ls -t $host.*`
+      set access = ro
+      breaksw;
+     case 'll':
+      chdir $WINDS/log
+      set filelist = `ls -t $host.* | head -1`
+      set access = ro
+      breaksw;
+     case 'mm':
+      set filelist = $WINDS/doc/maint.man
+      set access = ro
+      breaksw;
+     case 'qr':
+      set filelist = $WINDS/doc/qwik_ref
+      set access = ro
+      breaksw;
+     case 's':
+      if ( $pnum == none ) then
+       echo ""
+       echo "Set project # first..."
+       echo ""
+       set filelist = $save_type
+       breaksw;
+      endif
+      set filelist = $WINDS/proj/$pnum/plotspex
+      set access = rw
+      breaksw;
+     case 'sp':
+      if ( $pnum == none ) then
+       echo ""
+       echo "Set project # first..."
+       echo ""
+       set filelist = $save_type
+       breaksw;
+      endif
+      set filelist = $WINDS/proj/$pnum/ascii_parms
+      set access = rw
+      breaksw;
+     case 'f':
+      if ( $pnum == none ) then
+       echo ""
+       echo "Set project # first..."
+       echo ""
+       set filelist = $save_type
+       breaksw;
+      endif
+      set filelist = $WINDS/proj/$pnum/flat_panel_parms
+      set access = rw
+      breaksw;
+     case 'c':
+      if ( $pnum == none ) then
+       echo ""
+       echo "Set project # first..."
+       echo ""
+       set filelist = $save_type
+       breaksw;
+      endif
+      set filelist = $WINDS/proj/$pnum/calib_attr
+      set access = rw
+      breaksw;
+     case 'a':
+      if ( $pnum == none ) then
+       echo ""
+       echo "Set project # first..."
+       echo ""
+       set filetype = $save_type
+       breaksw;
+      endif
+      set filelist = $WINDS/proj/$pnum/plot_attr
+      set access = rw
+      breaksw;
+     case 'o':
+      echo ""
+      echo -n "Enter filename: "
+      set filelist = $<
+      /bin/rm /tmp/files-$$ >&/dev/null
+      echo $filelist > /tmp/files-$$
+      set access = rw
+      breaksw;
+    endsw
+    breaksw;
+   case tx:
+    if ( $access == rw ) then
+     textedit $filelist
+    else
+     if ( $access == ro ) then
+      textedit -read_only $filelist
+     endif
+    endif
+    breaksw;
+   case vi:
+    if ( $access != rw ) then
+     breaksw;
+    endif
+    vi $filelist
+    breaksw;
+   case 'i':
+    if ( $access != rw ) then
+     breaksw;
+    endif
+    echo ""
+    echo -n "Enter string to insert (case-sensitive): "
+    set text = $<
+    echo ""
+    echo -n "Enter line # to insert text BEFORE (e to insert at end of file): "
+    set position = $<
+    if ($position == 'e' ) then
+     @ length = `wc -l $filelist | awk '{print $1}'`
+     @ position = $length + 1
+    endif
+    $WINDS/scripts/inserttext $filelist $position "$text"
+    breaksw;    
+   case 'd':
+    if ( $access != rw ) then
+     breaksw;
+    endif
+    echo ""
+    echo -n "Enter string to match for deletion (case-sensitive): "
+    set delete = $<
+    $WINDS/scripts/deltext $filelist "$delete"
+    breaksw;    
+   case 'e':
+    if ( $access != rw  && $access != ro ) then
+     breaksw;
+    endif
+    echo ""
+    echo -n "Enter string to match for entry listing (any case): "
+    set entry = $<
+    echo ""
+    cat -n $filelist | grep -i -w $entry | more
+    breaksw;    
+   case 'l':
+    if ( $access != rw  && $access != ro ) then
+     breaksw;
+    endif
+    switch ($filetype)
+     case 'll':
+      echo ""
+      more $filelist
+      breaksw;
+     case 'sp':
+      echo ""
+      cat -n $filelist | more
+      breaksw;
+     case 's':
+      echo ""
+      echo -n "Select field: a (all) t (title) "
+      set field = $<
+      switch ($field)
+       case a:
+        echo ""
+        cat -n $filelist | more
+        breaksw; 
+       case t:
+        echo ""
+        cat -n $filelist | grep "DESCRIPTION" | awk -FARGS '{print $1}' | awk '{print $5 " " $6 " " $7 " " $8 " " $9}' | more
+        breaksw; 
+      endsw
+      echo ""
+      breaksw;
+     case 'p':
+     case 'f':
+      echo ""
+      echo -n "Select field: a (all) l (label) v (variable) u (units) f (format) "
+      set field = $<
+      switch ($field)
+       case a:
+        echo ""
+        cat -n $filelist | more
+        breaksw; 
+       case l:
+        echo ""
+        cat -n $filelist | awk '{print $1 " " $3}'  | more
+        breaksw; 
+       case v:
+        echo ""
+        cat -n $filelist | awk '{print $1 " " $4}' | more
+        breaksw; 
+       case u:
+        echo ""
+        cat -n $filelist | awk '{print $1 " " $5}' | more
+        breaksw; 
+       case f:
+        echo ""
+        cat -n $filelist | awk '{print $1 " " $6}' | more
+        breaksw; 
+      endsw
+      echo ""
+      breaksw;
+     case 'c':
+     case 'a':
+      echo ""
+      echo -n "Select field: a (all) v (variable) "
+      set field = $<
+      switch ($field)
+       case a:
+        echo ""
+        cat -n $filelist | more
+        breaksw; 
+       case v:
+        echo ""
+        cat -n $filelist | awk '{print $1 " " $2}' | more
+        breaksw; 
+       default:
+        breaksw;
+      endsw 
+      breaksw;
+     default:
+      echo ""
+      more $filelist
+      breaksw;
+    endsw
+    breaksw;    
+  endsw
+ end
+ chdir $start_dir
+ exit

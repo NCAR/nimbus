@@ -1,0 +1,212 @@
+#!/bin/csh -f
+#
+# sudo [-x] [<hostnames>] 
+#
+# NOTE: uncomment the rsh line with -k argument for testing
+#
+# compare list of hostnames in command line args against list of onboard session
+# hosts from netconfig file; those that match can be killed. The local host
+# from which sudo is run will be added to list to be killed if it is not already
+# part of command line args. If the NFS/WINDS server is part of kill list,
+# verify that ALL of its clients are also being killed; if any are not, and they
+# are still alive, verify with user that this is the desired action. Finally,
+# update monitor flag file with validated list of hostnames to be killed.
+#
+# If the -x arg is added, sudo will not automatically add local host to list
+# of killees
+#
+# if the file $WINDS/proj/hosts/halt.winds exists, then the monitor
+# process will halt the hostnames listed therein via sudo -x, which invokes
+# halt - <hostnames>
+#
+source $WINDS/scripts/raf.defines
+if (`uname` == Linux) then
+  set one_host = `hostname -s`
+else
+  set one_host = `uname -n`
+endif
+#
+# must know who the WindsServer is to continue, unless this is the cal-cart.
+# It may not be connected at this point, in which case eliminate any risk of
+# killing the WindsServer by killing ONLY the cal-cart.
+#
+if  ( $HOST == $CALCART ) then
+ set cmdlinehosts = $CALCART
+ set SessionHosts = $CALCART
+else 
+ source $LOCAL/scripts/AskHostForWindsServer
+ if ( ! ($?WindsServer) ) then
+  echo ""
+  echo "FATAL: Can't continue sudo, no Winds Server found for ${HOST}\!"
+  echo ""
+  exit
+ else
+#
+# set list of all hosts sent in command line to sudo
+#
+  if ( "$1" == "-x" ) then
+   set omit_self
+   echo ""
+   echo "-x arg received; localhost $HOST will NOT shut itself down."
+   echo ""
+   shift
+  endif
+  set cmdlinehosts = "$*"
+#
+# get list of all hosts available for shutdown from netconfig file. Need
+# project number first:
+#
+  if ( $ProjectNumber == unknown ) then 
+   echo "" 
+   echo "Project Number is not yet set."
+   set t = `tty`
+   if ( "$t" == "not a tty" ) then
+    echo "" 
+    echo "This is FATAL: sudo exiting..."
+    exit
+   else
+    echo ""
+    echo -n "Please enter project number: "
+    set ProjectNumber = $<
+    if ( "$ProjectNumber" == "" ) then
+     echo ""
+     echo "Empty response: sudo exiting..."
+     exit
+    endif
+   endif
+  endif
+#
+# omit CALCART here since god only knows whether its user wants it shutdown
+# at this point
+#
+  set SessionHosts = (`grep "$ProjectNumber"$ $NETCONFIG |grep -v "^$CALCART" |grep -v "^#"| awk '{print $2}'`)
+ endif
+endif
+if ( "$cmdlinehosts" == "" ) then
+#
+# no argument list; default to kill this host only
+#
+ set cmdlinehosts = $HOST
+ echo ""
+ echo "No argument list to sudo; only host $HOST will be shut down."
+ echo ""
+endif
+#
+# if local host is not requesting its own shutdown (and the -x option is
+# not in effect), add local host name to list
+#
+if ( ! ( $?omit_self )) then
+ set kill_self = FALSE
+ foreach killhost ($cmdlinehosts)
+  if ( $killhost == $HOST ) then
+   set kill_self = TRUE
+  endif
+ end
+ if ( $kill_self == FALSE ) then
+#
+# local host was not in argument list; add it
+#
+  set cmdlinehosts = "$cmdlinehosts $HOST"
+  echo ""
+  echo "-x argument not supplied; therefore $HOST adds itself to kill list..."
+  echo ""
+ endif
+endif
+echo ""
+echo "request received to kill these hosts: $cmdlinehosts"
+echo ""
+#
+# flags to control orderly shutdown w/o deadlock from NFS server dying first
+#
+set killingserver = FALSE
+set notkilled = ""
+set killed = ""
+#
+# compare list of candidate shutdown hosts against argument list
+#
+foreach sessionhost ( $SessionHosts )
+ set gotmatch = FALSE
+ foreach killhost ( $cmdlinehosts )
+  if ( $killhost == $sessionhost ) then
+   set gotmatch = TRUE
+  endif
+  if ( $killingserver == FALSE && "$killhost" == "$WindsServer" ) then
+#
+# the NFS/WINDS server is part of the kill list; remember this for later
+#
+   set killingserver = TRUE
+  endif
+ end
+ if ( $gotmatch == FALSE ) then
+#
+# remember which onboard session hosts are NOT being killed
+#
+  set notkilled = "$notkilled $sessionhost"
+ else
+#
+# kill host only if there is a match
+#
+  set killed = "$killed $sessionhost"
+ endif
+end
+if ( $killingserver == TRUE ) then
+#
+# the NFS/WINDS server is part of the kill list. Make sure all session-hosts
+# that are still alive are also being killed, else those clients will lock 
+# up. User has option to force this.
+#
+ set repreives = ""
+ foreach repreive ( $notkilled ) 
+  if ( { ( /bin/ping $repreive -w 3 >&/dev/null ) } ) then
+#
+# this host is not on list to be killed, but it is alive and well on network
+#
+   set repreives = ( $repreives $repreive )
+  endif
+ end
+ if ( "$repreives" != "" ) then
+  echo ""
+  echo "WARNING: You are asking to halt $WindsServer WITHOUT halting all clients."
+  echo "The clients not being asked to halt are: $repreives."
+  echo ""
+  echo "Since $WindsServer is an NFS server, THESE CLIENTS WILL LOCK UP "
+  echo "UNTIL $WindsServer IS REBOOTED\!."
+  echo ""
+  set t = `tty`
+  if ( "$t" != "not a tty" ) then
+   echo -n "Are you sure you want to do this (y/n)? "
+   set doit = $<
+  else
+   echo ""
+   echo "No attempt to shut down requested hosts will be made. To override"
+   echo "this, invoke sudo from a Unix prompt. sudo will now exit."
+   echo ""
+   exit
+  endif
+  if ( "$doit" != "y" ) then
+   echo ""
+   echo -n "Enter any character to kill all hosts listed, or <r> to exit: "
+   set killall = $<
+   if ( "$killall" != "" ) then
+    set killed = "$killed $notkilled"
+   else
+    exit
+   endif
+  endif
+ endif
+endif
+#
+if ( "$killed" != "") then
+#
+# notify winds-halt routine to do the deed (use the -k line for testing)
+#
+# $WINDS/scripts/halt - -k "$killed" 
+ $WINDS/scripts/halt - "$killed" 
+else
+ echo ""
+ echo "Sorry...the list of hosts sent on command line is: $cmdlinehosts"
+ echo "...the list of possible host you can kill is: $SessionHosts."
+ echo ""
+ echo "Since no hosts match in these lists, none will be killed."
+ exit
+endif

@@ -1,0 +1,103 @@
+#!/bin/csh -f
+# winds.out -- files to copy from development host to tape for WINDS config'n
+#
+source $WINDS/release/scripts/raf.defines
+
+echo " "
+echo -n "Select type of distribution: (1) demo (2) binary (3) full (4) onboard "
+echo " "
+set dist = $<
+echo " "
+echo " "
+echo -n "Select output tape drive: (1) 150M cartridge (2) Exabyte 0 (3) Exabyte 1 "
+echo " "
+set device = $<
+switch ($device) 
+ case 1:
+  set device = rst8
+  set args = hcvfb
+  set value = $BS
+  echo " "
+  echo "Insert cartridge tape and hit <r> when ready ..."
+  echo " "
+  breaksw;
+ case 2:
+  set device = rex0
+  set args = hcvf
+  set value = ""
+  echo " "
+  echo "Insert exabyte tape into drive 0 and hit <r> when ready ..."
+  echo " "
+  breaksw;
+ case 3:
+  set device = rex1
+  set args = hcvf
+  set value = ""
+  echo " "
+  echo "Insert exabyte tape into drive 1 and hit <r> when ready ..."
+  echo " "
+  breaksw;
+endsw
+set ready = $<
+mt -f /dev/$device rew
+
+# file 0 -- installation header
+
+chdir $WINDS/release/doc
+tar $args /dev/n$device $value 
+
+if ( $dist == 1 ) then
+
+# demo release
+
+else if ( $dist == 2 ) then
+
+# file 1 -- installation scripts
+
+ chdir $WINDS/release/scripts
+ tar $args /dev/n$device $value raf.defines install_winds binary_install
+
+# mt -f /dev/n$device fsf 2 to get here -- WINDS files
+
+ set FTPDIR = /home/chinook/ftp/pub/winds
+ chdir $FTPDIR
+#
+# this isn't working yet. defer until necessary 2/4/94
+#
+ zcat winds.Z | tar cvf /dev/n$device
+#tar FF$args /dev/n$device $value -I $WINDS/release/doc/tar/include.binary
+
+else if ( $dist == 3 ) then
+
+# full distribution -- file 1 -- installation scripts
+
+ chdir $WINDS/release/scripts
+ tar $args /dev/n$device $value raf.defines install_winds binary_install
+
+# mt -f /dev/n$device fsf 2 to get here -- WINDS files
+
+ chdir $WINDS/release
+ tar FF$args /dev/n$device $value -I $WINDS/release/doc/tar/include.full
+
+else if ( $dist == 4 ) then
+
+# full source and binary distribution for onboard systems
+
+# file 1 -- installation scripts
+
+ chdir $WINDS/release/scripts
+ tar $args /dev/n$device $value raf.defines install_winds offer_turnkey_login
+
+# mt -f /dev/n$device fsf 2 to get here -- WINDS files
+
+ chdir $WINDS/release
+ tar ${args}X /dev/n$device $value $WINDS/release/doc/tar/exclude.tar.winds *
+
+# mt -f /dev/n$device fsf 3 to get here -- AMLIB files
+
+ chdir $AMLIB
+ tar $args /dev/n$device $value *
+
+endif
+mt -f /dev/$device rew
+

@@ -1,0 +1,4 @@
+#!/bin/csh -f
+
+kill `ps -ef | grep prt_s | grep -v grep | awk '{print $2}'`
+/home/local/winds/bin/prt_srvr ttyS0 &

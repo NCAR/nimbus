@@ -1,0 +1,31 @@
+#!/bin/csh -f
+#
+# VerifyMonitor - verify the monitor process is running; if not detected,
+# start one up, with any arguments supplied to this script. The likely one
+# is -r argument, specifying to NOT remove any flag files deposited
+# by WINDS process, to ensure that if this was executed just prior to an
+# intended shutdown that the monitor won't remove the associated flag shutdown
+# flag file and thus ignore the request to halt.
+#
+#
+# check that any halt scripts are not hanging around, this can cause a
+# re-started monitor, who is supposed to invoke a halt, to hang
+#
+if (`uname` == Linux) then
+  set psopts='-x'
+else
+  set psopts='-e -o "pid comm"'
+endif
+
+set haltpids = `ps $psopts |grep $WINDS/scripts/halt|grep -v grep|awk '{print $1}'`
+if ( "$haltpids" != "" ) then
+ kill -9 $haltpids
+endif
+if ( { ( ps $psopts | grep $WINDS/bin/monitor | grep -v grep >&/dev/null ) } ) then
+# echo "Monitor on `hostname -s` running OK"
+ exit
+else
+# echo "`date '+%h.%d.%y.%T'`: Monitor NOT running on `hostname -s`; restarting." > /dev/console
+ $WINDS/bin/monitor $* >&/dev/null &
+ exit
+endif

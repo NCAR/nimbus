@@ -1,0 +1,27 @@
+#!/bin/csh -f
+#
+# inserttext <file> <position> <string>-- insert string into file BEFORE 
+# position
+#
+ if ($#argv != 3) then
+  exit
+ endif
+ set file = $1
+ set position = $2
+ if (! (-e $file )) then
+  echo ""
+  echo "File $file not found..."
+  echo ""
+  exit
+ endif
+ shift
+ shift
+ set string = "$*"
+ @ top_part_of_file = $position - 1
+ @ length_of_file = `wc -l $file | awk '{print $1}'`
+ @ rest_of_file = $length_of_file - $top_part_of_file
+ mv $file $file.save
+ head -$top_part_of_file $file.save > $file
+ echo $string  >> $file
+ tail -$rest_of_file $file.save >> $file
+ rm $file.save 

@@ -1,0 +1,218 @@
+#!/bin/csh -f
+#
+# NetVUE - provide various utility for UniFlix servers and clients
+#
+# NOTE: DISPLAY values here are dependent on which order X server starts up 
+# the two framebuffers (openwin command line args -dev). If that changes, these 
+# must change also.
+#
+# UniFlix server vlive_server must always be on tvtwo0 framebuffer, user viewing
+# must then always be on the other, e.g. cgsix, to keep server video out of
+# view.
+#
+# For kills, we SHOULD use signal 2 for vlive_server (and we DO for nvtool) so 
+# they are notified to clean up properly; however, we find that behavior, as
+# far as I can tell to this point, with signal 9 is preferable for vlive_server,
+# since it does NOT take its clients with it. This is better since we
+# can restart the server w/o needing to MANUALLY restart all the clients that
+# got axed, i.e. less headache in a networked session.
+#
+# For SoftNET we use signal 9 since 2 doesn't seem to get it.
+#
+if (`uname` == Linux) then
+  set host = `hostname -s`
+else
+  set host = `uname -n`
+endif
+switch ( $1 )
+#
+###########################################################################
+#
+ case -VOD:
+  echo ""
+  echo "----- NetVUE: kill old server (if any), start new in VOD mode..."
+  killproc -s 2 -p vlive_server >& /dev/null
+#
+# netconfig field positions:
+#
+# NetVUE serverhostname serverdisplay xpos ypos title framespeed dummy
+#
+  set entry = `grep NetVUE $PROJ_DIR/netconfig | grep -v '^#' | grep $host`
+  if ( "$entry" == "" ) then
+   echo ""
+   echo "----- NetVUE: no server entry for $host in Netconfig file"
+   echo ""
+   breaksw;
+  endif
+  set serverdisplay = `echo $entry | awk '{print $3}'`
+  set title = `echo $entry | awk '{print $6}'`
+  setenv DISPLAY $serverdisplay; vlive_server -a -Wl "NetVUE: $host - $title" &
+  breaksw;
+#
+###########################################################################
+#
+ case -startall:
+  echo ""
+  echo "----- NetVUE: kill old server (if any)..."
+  killproc -s 9 -p vlive_server >& /dev/null
+#
+# IMPORTANT: this rather kludgy piece of code is position dependent: the startall
+# case MUST IMMEDIATELY PRECEDE the startserver block, which must test for presence
+# of variable named $fallthrough (and unset it if found active) for this to work.
+# This is done to save some execution time; previously the desired case stmts were
+# accessed by invoking this script recursively as it were, but this is slow.
+#
+  set fallthrough
+  breaksw;
+#
+###########################################################################
+#
+ case -startserver:
+#
+# first confirm that this host is configured as a server
+#
+# we extract last octet from this host's IP address for multicast address
+# AND for the channel number (both must be unique; channel number must be <=127)
+#
+  @ addr = `ypcat hosts | grep $host | head -1 | awk '{print $1}' | awk -F. '{print $4}'`
+  if ( $addr > 127 ) then
+   @ addr = $addr - 128
+#
+# yes, a duplication of channel numbers here (and under startclients) is possible, 
+# since IP addresses can certainly range beyond 127, but it is highly unlikely
+# that a given host AND another whose IP address is 128 away are both NetVUE servers
+# on same net at same time.
+#
+  endif
+#
+# netconfig field positions:
+#
+# NetVUE serverhostname serverdisplay xpos ypos title framespeed dummy
+#
+  set entry = `grep NetVUE $PROJ_DIR/netconfig | grep -v '^#' | grep $host`
+  if ( "$entry" == "" ) then
+   echo ""
+   echo "----- NetVUE: $host is NOT configured as a server in Netconfig file"
+   echo ""
+   if (!($?fallthrough)) then
+    breaksw;
+   else
+#
+# this case has been accessed via a fallthrough from above, and a continued 
+# fallthrough is desired. Unset that variable so it doesn't happen again unless
+# desired.
+#
+    unset fallthrough
+   endif
+  else
+   echo ""
+   echo "----- NetVUE: start server (Multicast mode, if not already there)..."
+   echo ""
+   set serverdisplay = `echo $entry | awk '{print $3}'`
+   set title = `echo $entry | awk '{print $6}'`
+   setenv DISPLAY $serverdisplay; vlive_server -a -m 224.0.1.$addr -c $addr -Wl "NetVUE Server: $host - $title" &
+   if (!($?fallthrough)) then
+    breaksw;
+   else
+    unset fallthrough
+   endif
+  endif
+#
+###########################################################################
+#
+ case -startclients:
+  echo ""
+  echo "----- NetVUE: kill old client(s) (if any) and start new ones..."
+  killproc -s 9 -p SoftNET >& /dev/null
+#
+# netconfig field positions:
+#
+# NetVUE serverhostname serverdisplay xpos ypos title framespeed dummy
+#
+  set videohosts = `grep NetVUE $PROJ_DIR/netconfig | grep -v '^#' | awk '{print $2}'`
+  if ( "$videohosts" == "" ) then
+   breaksw;
+  endif
+#
+  foreach host ($videohosts)
+   @ addr = `ypcat hosts | grep $host | head -1 | awk '{print $1}' | awk -F. '{print $4}'`
+   if ( $addr > 127 ) then
+    @ addr = $addr - 128
+   endif
+   set vinfo = `grep NetVUE $PROJ_DIR/netconfig|grep -v '^#'|grep $host`
+   set xpos = `echo $vinfo |awk '{print $4}'`
+   set ypos = `echo $vinfo |awk '{print $5}'`
+   set title = `echo $vinfo |awk '{print $6}'`
+   set fps = `echo $vinfo |awk '{print $7}'`
+   SoftNET -c $addr -h $host -k -n224.0.1.$addr -d -x $xpos -y $ypos -s $fps " $title" &
+#
+# NOTE:
+# the -o argument is supplied to SoftNET when started by nvtool; however I
+# hesitate to use it since I don't know how to determine which IP address is
+# the one to use, and it seems to work without. It looked like this when
+# developing the thing with scraff and samba:
+#
+# -o128.117.84.56
+#
+  end
+  breaksw;
+#
+###########################################################################
+#
+ case -killserver:
+  echo ""
+  echo "----- NetVUE: kill old server (if any)..."
+  killproc -s 9 -p vlive_server >& /dev/null
+  breaksw;
+#
+###########################################################################
+#
+ case -killclients:
+  echo ""
+  echo "----- NetVUE: kill old client(s) (if any)..."
+  killproc -s 9 -p SoftNET >& /dev/null
+  breaksw;
+#
+###########################################################################
+#
+ case -view:
+  echo ""
+  echo "----- NetVUE: kill old View Menu (if any), start new..."
+  killproc -s 2 -p nvtool >& /dev/null
+  setenv DISPLAY :0.0
+  nvtool -Wl " NetVUE View Menu" &
+  breaksw;
+#
+###########################################################################
+#
+ case -openwin:
+  set enabled = `$WINDS/scripts/NetVUE -enabled`
+  if ( "$enabled" != "") then
+   echo ""
+   echo "----- NetVUE: starting openwin on double-headed display..."
+   echo ""
+   openwin -dev /dev/cgsix0 -dev /dev/fbs/tvtwo0
+  else
+   echo ""
+   echo "starting Parallax OW..."
+   echo ""
+   $LOCAL/scripts/start_ow3
+  endif
+  breaksw;
+#
+###########################################################################
+#
+ case -enabled:
+  if (`uname` == Linux) then
+    set host = `hostname -s`
+  else
+    set host = `uname -n`
+  endif
+  set NetVUEserver = `grep NetVUE $PROJ_DIR/netconfig|grep -v '^#'|grep $host`
+  if ( "$NetVUEserver" == "") then
+   echo ""
+  else
+   echo "enabled"
+  endif
+  breaksw;
+endsw

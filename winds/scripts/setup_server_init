@@ -1,0 +1,301 @@
+#!/bin/csh -f
+#
+# setup_server_init -- initialize x-server startup
+#
+# configure the WINDS displays on bootup;
+# make host subdirectories as needed; verify hosts all listed in x-display
+# enable-access file; modify WINDS menu to offer all hosts in current project
+#
+
+source $WINDS/scripts/raf.defines
+source $WINDS/scripts/OSDependencies
+
+if ( ($#argv == 0 )) then
+ echo ""
+ echo -n "Enter project number: "
+ set ProjectNumber = $<
+ if ( "$ProjectNumber" == "" ) then
+  exit
+ endif
+else
+ set ProjectNumber = $1
+endif
+
+# change mask so that all have write permission to system startup files
+
+umask 0
+
+while (1)
+
+ source $WINDS/scripts/display_network_config 
+
+ echo " "
+ echo -n "Is this what is intended (y/n)? "
+ set config = $<
+ if ( $config == 'y' || $config == 'Y' ) then
+
+  if ( !($?WindsServer) ) then
+   echo ""
+   echo "FATAL: can't determine WINDS Server. Contact expert about this."
+   echo ""
+   exit
+  endif
+#
+# ensure existence of needed dirs
+#
+ if ( ! (-d $SaveDir)) then
+  mkdir -p -m 777 $SaveDir
+ endif
+#
+# set project number for all to know
+#
+  if ( -f $PROJNUMFILE ) then
+   /bin/rm $PROJNUMFILE
+  endif
+  mkdir -p -m 777 $HOSTS
+  echo $ProjectNumber > $PROJNUMFILE
+
+# special startup options
+
+#
+#############################################################################
+#
+# commented out on Gary's LAST DAY as per Chris W. request. Hardwired ON
+# in request_winds script:
+#
+  set parcel = ""
+  set QC = ""
+#
+# echo ""
+# echo "If Parcel Tracking parameters are being sent to a flat panel"
+# echo "display, the Parcel Tracking control buttons will automatically"
+# echo "be activated. If, however, these parameters are NOT being sent "
+# echo "to a flat panel, but they ARE in the dataset and you DO want the "
+# echo "control buttons, answer yes to the following; else answer no: "
+# echo ""
+# echo -n "Do you wish to enable Parcel Tracking control buttons (y/n)? "
+# set parcel = $<
+# if ( "$parcel" == "y" || "$parcel" == "Y" ) then
+#  set parcel = "-P"
+#  echo ""
+#  echo "Please note that option to enable Parcel Tracking buttons is NOT "
+#  echo "automatically set in OW Menus, i.e. you must edit that menu file"
+#  echo "and add that argument manually."
+#  echo ""
+# else
+#  set parcel = ""
+# endif
+
+# QC program
+# echo ""
+# echo -n "Do you wish to disable the QC process (y/n)? "
+# set disable = $<
+# if ( "$disable" == "y" || "$disable" == "Y" ) then
+#  set QC = ""
+#  echo ""
+#  echo "Please note that option to enable QC process is NOT "
+#  echo "automatically set in OW Menus, i.e. you must edit that menu file"
+#  echo "and add that argument manually."
+# else
+#  set QC = "-q"
+# endif
+#############################################################################
+#
+
+# NetconfigHosts == all displays
+
+  @ host_num = 0
+#
+# following menu filenames must match those INCLUDE'd in 
+# /auto_install/client_files/openwin-menu-onboard
+#
+  set HostsMenu = $PROJ_DIR/hosts-onboard-menu
+  set WindsMenu = $PROJ_DIR/winds-onboard-menu
+  /bin/rm $HostsMenu $WindsMenu >&/dev/null
+  set all_hosts = ""
+
+  foreach host ($NetconfigHosts)
+
+# create directory and copy over all login files
+
+   @ host_num = $host_num + 1
+   echo ""
+   echo "Configuring display $host for auto-winds startup..."
+
+# ensure subdirectory exists for display host
+
+   chdir $HOSTS
+   if ( ! ( -d $host ) ) then
+    echo "  making home directory for winds on $host..."
+    mkdir -p -m 777 $HOSTS/$host
+   endif
+
+# copy auto-install versions of general login files
+
+   chdir $HOSTS/$host
+   foreach file ( $WINDSFILES )
+    cp -p /auto_install/client_files/$file-onboard $HOSTS/$host/.$file
+    if ( {( /usr/bin/id | grep '(root)' >&/dev/null )} ) then
+     chown winds $HOSTS/$host/.$file
+    endif
+   end
+
+# provide for manual startup of NetVUE as per recommended procedure, i.e. user
+# executes .login file from unix prompt
+
+   chmod +x .login
+
+# tailor menus as needed
+
+   foreach login (winds root)
+     echo "$host-$login exec rsh $host -l $login XXXsetenv DISPLAY YYYuname -nYYY:0; cmdtool -Wl $host-${login}XXX"\
+     | sed 's/XXX/"/g' | sed 's/YYY/`/g' >> $HostsMenu
+   end
+   echo "$host	exec $WINDS/scripts/request_winds $host">>$WindsMenu
+
+# ...exclude "development" locations, except the $CALCART hostname, since these
+# might be on the net but in a valid use mode.
+
+   if ( $host != $CALCART && "$disp_locn[$host_num]" == "$DEVELOPMENT" ) then
+    echo "  Omit startup commands for $host; it is a development station..."
+   else
+# 
+# make link to system logging file. This filename must match that used in 
+# auto-install setup (S20sysetup-onboard) files. 
+# 
+    /bin/rm $HOSTS/$host/syslog >&/dev/null
+    ln -s /var/log/$host $HOSTS/$host/syslog
+#
+# create the script file for auto-startup
+#
+# portservers are actually started up via winds, and so are not really
+# needed here...except for the lack of providing for parcel tracking data
+# feeds and the need for a console message at startup so techs can see
+# which port is being served...leave in for now until these issues are
+# resolved
+#
+    /bin/rm autowinds >&/dev/null
+    echo '#\!/bin/csh -f' > autowinds
+    echo "$WINDS/scripts/NetVUE -startall &" >> autowinds
+    echo "$WINDS/bin/prt_srvr ttya $WindsServer &" >> autowinds
+    echo "$WINDS/bin/prt_srvr ttyb $WindsServer &" >> autowinds
+    echo "if ( -f whatever ) then" >> autowinds
+    echo " whatever &" >> autowinds
+    echo "endif" >> autowinds
+#
+# Control host gets ads communication; all append names to display list file
+#
+#    if ( $host == $WindsControl ) then
+#
+# don't add discWin for now, until determined why it is spawning three of itself
+# ...also there is some incompatibility with starting up that motif window from
+# openwindows init file
+#
+#     echo "$DISC/bin/discWin &" >> autowinds
+#    endif
+#
+# clients (and server) request WINDS from server, clients AND server start 
+# up the WINDS monitor
+#
+    echo "$WINDS/scripts/request_winds $host $parcel $QC &" >>autowinds
+    echo "$WINDS/bin/monitor &" >> autowinds
+    chmod a+rwx autowinds
+#
+    if ( $host != $CALCART ) then
+     set all_hosts = "$all_hosts $host"
+    endif
+   endif
+  end
+#
+# add ads login on ControlHost and an in-house login just to be nice to ourselves
+#
+  set host = $SOLARIS_HOST
+  echo "$host-winds      exec rsh $host -l winds XXXsetenv DISPLAY YYYuname -nYYY:0; cmdtool -Wl $host-windsXXX"\
+   | sed 's/XXX/"/g' | sed 's/YYY/`/g' >> $HostsMenu
+  echo "$WindsServer-ads      exec rsh $WindsServer -l ads XXXsetenv DISPLAY YYYuname -nYYY:0; cmdtool -Wl $WindsServer-ads"\
+   | sed 's/XXX/"/g' | sed 's/YYY/`/g' >> $HostsMenu
+  echo "Hosts		END PIN">> $HostsMenu
+  echo "Start-All	exec $WINDS/scripts/request_winds $all_hosts" \
+   >> $WindsMenu
+  echo "WINDS		END PIN" >> $WindsMenu
+  echo "Done..."
+  echo ""
+  exit
+
+ else
+
+  echo ""
+  echo -n "Select (1) Change project number (2) Edit Network Configuration File"
+  echo ""
+  switch ("$<")
+   case 1:
+    set oldnum = `cat $PROJNUMFILE`
+    if ( "$oldnum" != "" ) then
+     echo -n "Last configured project was $oldnum. Enter new project #: "
+     set newnum = $<
+     if ( "$newnum" != "" ) then
+      if ( -f /tmp/sed.$$ ) then
+       /bin/rm /tmp/sed.$$
+      endif
+      echo -n "s/$oldnum" > /tmp/sed.$$
+      echo -n '$' >> /tmp/sed.$$
+      echo "/$newnum/" >> /tmp/sed.$$
+      if ( { ( echo $WINDS | grep dev >&/dev/null ) } ) then
+       sed -f /tmp/sed.$$ $NETCONFIG | grep $newnum
+      else
+       /bin/mv $NETCONFIG /tmp/netconfig.$$
+       sed -f /tmp/sed.$$ /tmp/netconfig.$$ > $NETCONFIG
+      endif
+      set ProjectNumber = $newnum 
+      if ( -f $PROJNUMFILE ) then
+       /bin/rm $PROJNUMFILE
+      endif
+      echo $ProjectNumber > $PROJNUMFILE
+     endif
+    else
+     echo ""
+     echo "WARNING: can't change project number, network configuration not"
+     echo "done properly up to now. Remedy: indicate that current config IS"
+     echo "indeed what you want; then re-execute Configure Network operation"
+     echo "again. Hit <r> to continue..."
+     $<
+     echo ""
+    endif
+    breaksw
+   case 2:
+    echo -n "Please indicate editor: (1) textedit (2) vi (default) "
+    set editor = $<
+    if ( "$editor" == ""  || "$editor" == "2" ) then
+     set editor = vi
+    else
+     if ( $editor == 1 ) then
+      set editor = textedit
+     else
+      set editor = vi
+     endif
+    endif
+    if ( "$editor" == "textedit" ) then   
+     if ($?DISPLAY) then 
+      echo "You will now be offered editing on the Network Configuration File. "
+      echo "Edit window will appear on display $DISPLAY...enter <r> if ok, else"
+      echo -n "enter name of proper DISPLAY (please include the ':0' suffix): "
+      set display = $<
+     else 
+      echo "WARNING: no DISPLAY variable set...you MUST enter one or die..."
+      echo -n "enter name of proper DISPLAY (please include the ':0' suffix): "
+      set display = $<
+     endif
+     if ( "$display" != "" ) then
+      setenv DISPLAY $display
+     endif
+    endif
+    echo ""
+    $editor $NETCONFIG
+    echo " "
+    breaksw
+   default:
+    breaksw
+  endsw
+ endif
+end
+echo " "

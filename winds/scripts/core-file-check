@@ -1,0 +1,39 @@
+#!/bin/csh -f
+#
+# core-file-check
+#
+# locate and catalog all core files under directory specified in command line
+#
+if ( $#argv == 1 ) then
+ set dir =  $1
+ set savedir = ""
+else if ($#argv == 2 ) then
+ set dir =  $1
+ set savedir = $2
+else
+ echo ""
+ echo "USAGE: $0 <start-point directory> [<core-file save directory>]"
+ echo ""
+ exit
+endif
+set Date = `date '+%h %d %y %T'` >&/dev/null
+echo "${Date}: core-file-check under $1 ..."
+set cores = `find $1 -name core -print`
+if ( "$cores" != "") then
+ echo "Core files under ${dir}: "
+ echo ""
+ foreach file ( $cores )
+  set info1 = `ls -lt $file | awk '{print $6,$7,$8}'`
+  set info2 = `file $file`
+  echo $info1 $info2 
+  echo ""
+  echo "GDB Info for ${file}: "
+  echo ""
+  $GNU/bin/gdb -q -c $file -x $WINDS/scripts/gdb-batch
+  if ( "$savedir" != "" ) then
+   echo "Moving core file to $savedir/core-`date '+%T'`"
+   /bin/mv $file $savedir/core-`date '+%T'`
+  endif
+ end
+ echo ""
+endif

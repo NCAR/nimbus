@@ -1,0 +1,67 @@
+#!/bin/csh -f
+#
+# get_sccs_winds -- extract the SCCS versions of newly changed files
+#
+source $LOCAL/winds/scripts/raf.defines
+echo ""
+chdir $DEV_WINDS
+foreach dir ($RAFSCCSDIRS)
+ chdir $DEV_WINDS/$dir
+ echo ""
+ echo "Determining out-of-date files in $dir..."
+ echo ""
+ chdir $DEV_WINDS/$dir
+ set files = `find SCCS -newer $MAKE_RELEASE_TIME -print | grep "SCCS\/s" | sed "s/SCCS\/s\.//"`
+ if ( "$files" != "" ) then
+  echo " "
+  echo "Getting SCCS versions of following: "
+  echo " "
+  echo $files
+  if ( ! (-e $RELEASE/$dir )) then
+   mkdir $RELEASE/$dir
+  endif
+  chdir $RELEASE/$dir
+  sccs -d$DEV_WINDS/$dir get $files  
+ endif
+
+# need execute permission on the scripts so remote host can use them to do
+# network installs
+
+ if ( { ( echo $dir | grep scripts >&/dev/null )}) then
+  foreach file ($files)
+   chmod +x $RELEASE/scripts/$file
+  end
+ endif
+end
+
+# deal with files external to WINDS file directory heirarchy that are needed
+# for onboard and binary releases. 
+
+set dir = $PROJ_DIR/defaults
+chdir $dir
+set sccsfiles = `find SCCS -newer $MAKE_RELEASE_TIME -print | grep "SCCS\/s" | sed "s/SCCS\/s\.//"`
+set nonsccsfiles = ( bulletin.9 )
+echo ""
+echo "Determining out-of-date files in $dir..."
+echo ""
+foreach file ( $nonsccsfiles ) 
+ echo " "
+ echo "Getting development version of ${file} (non-SCCS file; done always)..."
+ echo " "
+ chdir ${LOCAL}/proj/defaults
+ cp $dir/$file .
+end
+foreach file ( $sccsfiles ) 
+ echo " "
+ echo "Getting SCCS version of ${file}: "
+ echo " "
+#
+# copy file to defaults locations 
+#
+ chdir ${LOCAL}/proj/defaults
+ sccs -d$dir get $file  
+end
+chdir $RELEASE
+/bin/rm -f $MAKE_RELEASE_TIME
+touch $MAKE_RELEASE_TIME
+chmod -w $MAKE_RELEASE_TIME

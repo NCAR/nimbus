@@ -1,0 +1,14 @@
+Running:
+	xhost +
+	setenv DISPLAY blues:0	# for running binary.
+
+
+
+
+Changes made during Linux conversion
+
+Makefile:		Remove all traces of pmake
+			Need -DSVR4 for Solaris
+winputops.c:		QC, was #ifdef'ed
+prt_srver.c:1010	setting parity & baud rate.
+

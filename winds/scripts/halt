@@ -1,0 +1,128 @@
+#!/bin/csh -f
+#
+# halt [<hostnames>]
+#
+# NOTE: uncomment the line set haltargs = "-k" for testing
+#
+# if the file $PROJ_DIR/hosts/<WindsServer>/halt.winds exists,
+# then monitor process will execute "halt - <all connected session hosts>"
+#
+# if the file $PROJ_DIR/hosts/halt.winds exists, then the monitor
+# process will halt the hostnames listed therein via sudo -x, which invokes
+# halt - <hostnames>
+#
+# halt will shutdown all hosts listed as arguments, and then finally shutdown
+# it's own host. Send - as first argument to have output echoed to standard
+# out as well as the system log file; send -k argument to only echo what
+# halt command WOULD have been executed without actually executing it.
+#
+#
+# SYSLOG should be same name as that used in setup_server_init for soft link to
+# logging file (/var/log/<host>)
+#
+if (`uname` == Linux) then
+  set localhost = `hostname -s`
+else
+  set localhost = `uname -n`
+endif
+set SYSLOG = $PROJ_DIR/hosts/$localhost/syslog
+set remote_halt = false
+set kill_self = false
+set killhosts
+set haltargs
+set output = syslog
+#
+# JustKidding: uncomment here for testing, re-comment for functional mode:
+#
+#set haltargs = "-k"
+if ( "$1" == "-" ) then
+#
+# echo's go to standard out as well as system log file
+#
+ set output = stdout
+ set haltargs = "- $haltargs"
+ shift
+endif
+foreach host ( $* )
+ if ( "$host" == "-k" ) then
+  set JustKidding
+  set haltargs = "$haltargs -k"
+ else if ( $host != $HOST ) then
+#
+# localhost will issue remote request to shutdown host
+#
+  echo "" 
+  if ( {( /bin/ping $host -w 3)} ) then
+   if ( $output == stdout ) then
+    echo "$localhost requesting $host to halt itself..." 
+   endif
+   echo "$localhost requesting $host to halt itself..." >> $SYSLOG
+   rsh $host $WINDS/scripts/halt $haltargs $host &
+   set remote_halt = true
+   set killhosts = ( $killhosts $host )
+  else
+   if ( $output == stdout ) then
+    echo "$host not on net...no attempt will be made to halt it" 
+   endif
+   echo "$host not on net...no attempt will be made to halt it" >> $SYSLOG
+  endif
+ else
+#
+# localhost has been asked to kill itself
+#
+  set kill_self = true
+ endif
+end
+if  ( $remote_halt == true ) then
+#
+# localhost has successfully initiated at least one remote halt request
+#
+ if  ( $kill_self == true ) then
+#
+# localhost has been asked to kill itself 
+#
+  echo "$localhost verifying all clients are gone before halting itself..."
+ else
+#
+# localhost has not been asked to kill itself 
+#
+  echo "$localhost will NOT halt itself, but is verifying that all clients are gone..."
+ endif
+#
+# if there are any remote hosts pending shutdown as per a request from this
+# host, wait a *reasonable* amount of time for them to be confirmed dead
+#
+ onintr skip
+ foreach host ( $killhosts )
+  if ( $host != $HOST ) then
+   while ( {( /bin/ping $host -w 3 >&/dev/null )} ) 
+    if (! ($?msgout)) then
+     echo "$localhost waiting for $host to halt; hit ctl-c to skip $host..."
+     set msgout
+    endif
+   end
+   echo "$host is gone..."
+skip:
+   unset msgout
+  endif
+ end
+endif
+onintr done
+if  ( $kill_self == true ) then
+#
+# hari-kari time
+#
+ if ( $output == stdout ) then
+  echo "=========== ${localhost}: System halting on `date`==========="
+ endif
+ echo "=========== ${localhost}: System halting on `date`===========" >> $SYSLOG
+ chdir /
+ if ( ($?JustKidding) ) then
+  echo "$HOST halt script would have executed: rsh $localhost -l root /usr/sbin/halt"
+ else
+  echo "$HOST halt script executing: rsh $localhost -l root /usr/sbin/halt"
+  rsh $localhost -l root /usr/sbin/halt 
+ endif
+endif
+done:
+exit

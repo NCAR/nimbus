@@ -1,0 +1,72 @@
+#!/bin/csh -f
+#
+# wops [<project #>] -- driver for various WINDS operations
+#
+source $WINDS/scripts/raf.defines
+cd
+if ($#argv == 1) then
+ set ProjectNumber = $1
+endif
+set op = go
+while ($op != quit)
+ echo ""
+ echo "Current project #: $ProjectNumber"
+ echo ""
+ echo "Select op: "
+ echo " p      (set project #) "
+ echo " h      (halt system) "
+ echo " d      (disk space usage on /home) "
+ echo " f      (file operations) "
+ echo " ps     (project setup chores) "
+ echo " q      (quit) "
+ set op = $<
+ switch ($op)
+  case ps:
+   if ( $ProjectNumber == unknown ) then
+    $WINDS/scripts/proj_setup
+   else
+    $WINDS/scripts/proj_setup $ProjectNumber
+   endif
+   breaksw;
+  case d:
+   echo ""
+   df /home
+   echo ""
+   echo "Files larger than 1000 bytes: "
+   echo ""
+   $WINDS/scripts/disk-space-check 1000 /home
+   breaksw;
+  case p:
+   echo ""
+   echo -n "Enter project number: "
+   set ProjectNumber = $<
+   breaksw;
+  case h:
+   set hosts = (`grep "$ProjectNumber"$ $NETCONFIG | grep -v "^#"| |awk '{print $2}'`)
+   echo ""
+   echo "Onboard hosts are as follows: $hosts"
+   echo ""
+   echo 'From this, enter hosts to shutdown, separated'
+   echo -n 'by spaces, on one line (use cut and paste\!); then hit <r>: '
+   set hosts = $<
+   echo ""
+   echo "Shutting down the following: "
+   echo ""
+   echo $hosts
+   echo ""
+   echo "Continue (y/n)? "
+   set die = $<
+   if ($die == y) then
+    $WINDS/scripts/sudo $hosts
+   endif
+   breaksw;
+  case q:
+   set op = quit
+   breaksw;
+  case f:
+   $WINDS/scripts/wfiles $ProjectNumber
+   breaksw;
+ endsw
+end
+cd
+exit

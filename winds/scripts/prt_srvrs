@@ -1,0 +1,15 @@
+#!/bin/csh -f
+#
+# prt_srvrs -- start up print servers for serial ports 
+#
+umask 0
+#
+# define serial ports
+#
+set ports = "ttya ttyb"
+#
+# startup each
+#
+foreach port ($ports)
+  $WINDS/bin/prt_srvr $port &
+end

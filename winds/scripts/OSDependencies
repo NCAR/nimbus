@@ -1,0 +1,24 @@
+if (! ($?OS)) then
+ echo ""
+ echo "WARNING: var OS not set...setting to default of SunOS."
+ echo ""
+ setenv OS SunOS
+endif
+if ( $OS == Solaris) then
+ set MTAB = /etc/mnttab
+ set MOUNTARGS = ""
+#
+# this needs a better solution before release...don't know how yet to
+# get suid permission on rootcmd scripts on Solaris, so for now have used
+# /.rhosts kluge (on sushiq only) to get permissions right
+#
+ if (`uname` == Linux) then
+   set ROOTCMD = "rsh -l root `hostname -s`"
+ else
+   set ROOTCMD = "rsh -l root `uname -n`"
+ endif
+else
+ set ROOTCMD = "$WINDS/scripts/rootcmd"
+ set MTAB = /etc/mtab
+ set MOUNTARGS = "-t nfs"
+endif
