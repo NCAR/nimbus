@@ -515,7 +515,9 @@ static void setTimeDelay(int rate, int *sec, int *msec)
   switch (rate)
     {
     case 1:		// nTaps / (2 * L), checks out.
-      *sec += 4;
+			//  Sort of, 3.5 would be optimal 7/14/04.
+			// Adjusted # of taps to make it align
+      *sec += 3;
       break;
 
     case 5:		// nTaps / (2 * L), checks out.
