@@ -61,7 +61,7 @@ void swp3(DERTBL *varp)
 		if (FeedBack == LOW_RATE_FEEDBACK)
 			deltaT[FeedBack] = 1.0;
 		else
-			deltaT[FeedBack] = 1.0 / ProcessingRate;
+			deltaT[FeedBack] = 1.0 / (float)cfg.ProcessingRate();
 
 		hx[FeedBack]	= hxx[FeedBack] = wp3[FeedBack] = 0.0;
 		hi3[FeedBack]	= palt;

@@ -206,7 +206,7 @@ long FindNextLogicalRecord(char record[], long endtime)
     }
 
 
-  if (Mode == REALTIME)
+  if (cfg.ProcessingMode() == Config::RealTime)
     return(lrlen);
 
   /* Lag the Litton 51 INS one second.
@@ -496,7 +496,7 @@ static long FindNextDataRecord(char buff[])
         nbytes =  crayread(&infd, buff, &nWords, &iconv);
       }
 
-    if (AsyncFileEnabled && IsThisAnAsyncRecord((short *)buff))
+    if (cfg.AsyncFileEnabled() && IsThisAnAsyncRecord((short *)buff))
       WriteAsyncData(buff);
     }
   while (nbytes > 0 && ntohs(*((ushort *)buff)) != SDI_WORD);

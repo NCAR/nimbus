@@ -50,9 +50,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2005
 static const size_t nFlightInfo = 4;
 static const size_t nTimeSliceInfo = 2;
 
-static Widget	Shell005, ConfigWindow, flightText[nFlightInfo];
+static Widget	ConfigShell = 0, ConfigWindow = 0, flightText[nFlightInfo],
+		lowRateButton, highRateButton;
 
-Widget ts_text[nTimeSliceInfo], lowRateButton, highRateButton;
+Widget ts_text[nTimeSliceInfo];
 
 struct flightInfo
   {
@@ -61,8 +62,11 @@ struct flightInfo
   char	originalValue[10];
   } FlightInfo[nFlightInfo], TimeSliceInfo[nTimeSliceInfo];
 
+extern char OutputFileName[];
+
 static void	VerifyFlightInfo(Widget w, int indx, XtPointer call);
-static void	sMarkDirty(Widget w, int indx, XtPointer call);
+static void	markFlightInfoDirty(Widget w, int indx, XtPointer call);
+static void	markTimeSliceDirty(Widget w, int indx, XtPointer call);
 static void	ResetFlightInfo(Widget w, XtPointer client, XtPointer call);
 
 
@@ -83,6 +87,24 @@ void SetFlightValue(char target[], char new_value[])
 }	/* END SETDEFAULTSVALUE */
 
 /* -------------------------------------------------------------------- */
+void SetDespiking(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
+{
+  cfg.SetDespiking(call->set);
+}
+
+/* -------------------------------------------------------------------- */
+void SetTimeShifting(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
+{
+  cfg.SetTimeShifting(call->set);
+}
+
+/* -------------------------------------------------------------------- */
+void SetHWcleanup(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
+{
+  cfg.SetHoneyWellCleanup(call->set);
+}
+
+/* -------------------------------------------------------------------- */
 void ResetFlightInfo(Widget w, XtPointer client, XtPointer call)
 {
   for (size_t i = 0; i < nFlightInfo; ++i)
@@ -91,10 +113,91 @@ void ResetFlightInfo(Widget w, XtPointer client, XtPointer call)
     XmTextFieldSetString(flightText[i], FlightInfo[i].originalValue);
     }
 
-  XmTextFieldSetString(ts_text[0], "");
-  XmTextFieldSetString(ts_text[1], "");
+  for (size_t i = 0; i < nTimeSliceInfo; ++i)
+    {
+    TimeSliceInfo[i].Dirty = false;
+    XmTextFieldSetString(ts_text[i], TimeSliceInfo[i].originalValue);
+    }
+
+  XmToggleButtonSetState(lowRateButton, true, true);
+  XmToggleButtonSetState(highRateButton, false, true);
 
 }	/* END RESETFLIGHTINFO */
+
+/* -------------------------------------------------------------------- */
+void SetLowRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
+{
+  size_t        i;
+
+  if (w && call->set == false)
+    return;
+
+  cfg.SetProcessingRate(Config::LowRate);
+
+  for (i = 0; i < sdi.size(); ++i)
+    sdi[i]->OutputRate = Config::LowRate;
+
+  for (i = 0; i < raw.size(); ++i)
+    raw[i]->OutputRate = Config::LowRate;
+
+  for (i = 0; i < derived.size(); ++i)
+    derived[i]->OutputRate = Config::LowRate;
+
+  FillListWidget();
+  XtSetSensitive(outputHRbutton, false);
+
+  if (cfg.ProductionRun())
+    {
+    char *p = strstr(OutputFileName, "h.");
+
+    if (p)
+      {
+      strcpy(p, ".nc");
+      XmTextFieldSetString(outputFileText, OutputFileName);
+      }
+    }
+}       /* END SETLOWRATE */
+
+/* -------------------------------------------------------------------- */
+void SetHighRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
+{
+  size_t        i;
+
+  if (w && call->set == false)
+    return;
+
+  cfg.SetProcessingRate(Config::HighRate);
+
+  for (i = 0; i < sdi.size(); ++i)
+    if (sdi[i]->SampleRate >= Config::HighRate)
+      sdi[i]->OutputRate = Config::HighRate;
+
+  for (i = 0; i < raw.size(); ++i)
+    {
+    if (raw[i]->SampleRate >= Config::HighRate)
+      raw[i]->OutputRate = Config::HighRate;
+
+    if (raw[i]->ProbeType & PROBE_PMS1D)
+      raw[i]->OutputRate = raw[i]->SampleRate;
+    }
+
+  for (i = 0; i < derived.size(); ++i)
+    derived[i]->OutputRate = derived[i]->Default_HR_OR;
+
+  FillListWidget();
+  XtSetSensitive(outputHRbutton, true);
+
+  if (cfg.ProductionRun())
+    {
+    char *p = strchr(OutputFileName, '.');
+
+    if (p)
+      {
+      strcpy(p, "h.nc");
+      XmTextFieldSetString(outputFileText, OutputFileName);
+      }
+    }
+}       /* END SETHIGHRATE */
 
 /* -------------------------------------------------------------------- */
 void createFlightInfo(Widget parent)
@@ -111,6 +214,9 @@ void createFlightInfo(Widget parent)
   efiFrame = XmCreateFrame(parent, "efiFrame", args, n);
   XtManageChild(efiFrame);
 
+  n = 0;
+  label = XmCreateLabel(efiFrame, "flightInfoTitle", args, n);
+  XtManageChild(label);
 
   n = 0;
   defRC = XmCreateRowColumn(efiFrame, "defRC", args, n);
@@ -136,7 +242,7 @@ void createFlightInfo(Widget parent)
     XtAddCallback(flightText[i], XmNlosingFocusCallback,
 		(XtCallbackProc)VerifyFlightInfo, (XtPointer)i);
     XtAddCallback(flightText[i], XmNvalueChangedCallback,
-		(XtCallbackProc)sMarkDirty, (XtPointer)i);
+		(XtCallbackProc)markFlightInfoDirty, (XtPointer)i);
     XtManageChild(flightText[i]);
     }
 
@@ -161,6 +267,10 @@ void createTimeSlice(Widget parent)
   XtManageChild(tsFrame);
 
   n = 0;
+  label = XmCreateLabel(tsFrame, "timeSliceTitle", args, n);
+  XtManageChild(label);
+
+  n = 0;
   tsRC = XmCreateRowColumn(tsFrame, "flightEntryRC", args, n);
   XtManageChild(tsRC);
 
@@ -181,10 +291,9 @@ void createTimeSlice(Widget parent)
     XtAddCallback(ts_text[i], XmNlosingFocusCallback,
                 (XtCallbackProc)ValidateTime, (XtPointer)i);
     XtAddCallback(ts_text[i], XmNvalueChangedCallback,
-                (XtCallbackProc)sMarkDirty, (XtPointer)i);
+                (XtCallbackProc)markTimeSliceDirty, (XtPointer)i);
     XtManageChild(ts_text[i]);
     }
-
 }	/* END CREATETIMESLICE */
 
 /* -------------------------------------------------------------------- */
@@ -192,11 +301,8 @@ void createProcessingRate(Widget parent)
 {
   Arg args[8];
   Cardinal n;
-  Widget rateFrame, rateRB;
+  Widget rateFrame, rateRB, label;
 
-
-  /* Create Low/High Rate toggle box.
-   */
   n = 0;
   XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_WIDGET); n++;
@@ -205,35 +311,89 @@ void createProcessingRate(Widget parent)
   XtManageChild(rateFrame);
 
   n = 0;
+  label = XmCreateLabel(rateFrame, "rateTitle", args, n);
+  XtManageChild(label);
+
+  n = 0;
   rateRB = XmCreateRadioBox(rateFrame, "rateRadioBox", args, n);
   XtManageChild(rateRB);
 
   n = 0;
   lowRateButton = XmCreateToggleButton(rateRB, "lowRateButton", args,n);
   XtAddCallback(lowRateButton, XmNvalueChangedCallback,
-                (XtCallbackProc)SetLowRate, NULL);
+		(XtCallbackProc)SetLowRate, NULL);
   XtManageChild(lowRateButton);
 
   n = 0;
   highRateButton = XmCreateToggleButton(rateRB, "highRateButton", args, n);
   XtAddCallback(highRateButton, XmNvalueChangedCallback,
-                (XtCallbackProc)SetHighRate, NULL);
+		(XtCallbackProc)SetHighRate, NULL);
   XtManageChild(highRateButton);
 
 }	/* END CREATEPROCESSINGRATE */
 
 /* -------------------------------------------------------------------- */
+void createOptions(Widget parent)
+{
+  Arg args[8];
+  Cardinal n;
+  Widget optFrame, optRC, butt[8], label;
+
+  n = 0;
+  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
+  XtSetArg(args[n], XmNleftAttachment, XmATTACH_WIDGET); n++;
+  XtSetArg(args[n], XmNleftWidget, menuBar); n++;
+  optFrame = XmCreateFrame(parent, "optFrame", args, n);
+  XtManageChild(optFrame);
+
+  n = 0;
+  label = XmCreateLabel(optFrame, "optionsTitle", args, n);
+  XtManageChild(label);
+
+  n = 0;
+  optRC = XmCreateRowColumn(optFrame, "optCheckBox", args, n);
+  XtManageChild(optRC);
+
+  n = 0;
+  butt[0] = XmCreateToggleButton(optRC, "despikeButton", args,n);
+  XtAddCallback(butt[0], XmNvalueChangedCallback,
+		(XtCallbackProc)SetDespiking, NULL);
+
+  n = 0;
+  butt[1] = XmCreateToggleButton(optRC, "lagButton", args, n);
+  XtAddCallback(butt[1], XmNvalueChangedCallback,
+		(XtCallbackProc)SetTimeShifting, NULL);
+
+  n = 0;
+  butt[2] = XmCreateToggleButton(optRC, "hwCleanButton", args, n);
+  XtAddCallback(butt[2], XmNvalueChangedCallback,
+		(XtCallbackProc)SetHWcleanup, NULL);
+
+  XtManageChildren(butt, 3);
+
+}       /* END CREATEOPTIONS */
+
+/* -------------------------------------------------------------------- */
 void DismissConfigWindow(Widget w, XtPointer client, XtPointer call)
 {
-  XtPopdown(XtParent(ConfigWindow));
-  XtUnmanageChild(ConfigWindow);
-
+  if (ConfigWindow)
+    {
+    XtPopdown(XtParent(ConfigWindow));
+    XtUnmanageChild(ConfigWindow);
+    }
 }	/* END DISMISSCONFIGWINDOW */
 
 /* -------------------------------------------------------------------- */
-static void sMarkDirty(Widget w, int indx, XtPointer call)
+static void markFlightInfoDirty(Widget w, int indx, XtPointer call)
 {
   FlightInfo[indx].Dirty = true;
+
+}	/* END MARKDIRTY */
+
+/* -------------------------------------------------------------------- */
+static void markTimeSliceDirty(Widget w, int indx, XtPointer call)
+{
+  TimeSliceInfo[indx].Dirty = true;
 
 }	/* END MARKDIRTY */
 
@@ -340,22 +500,30 @@ void CreateConfigWindow()
   Arg		args[16];
   Cardinal	n;
 
-  extern Widget	AppShell;
+  extern Widget	Shell001, AppShell;
+
+  FlightInfo[0].Name = "   Project Number";
+  FlightInfo[1].Name = "    Flight Number";
+  FlightInfo[2].Name = "Date [MM/DD/YYYY]";
+  FlightInfo[3].Name = "         Aircraft";
+
+  TimeSliceInfo[0].Name = "Start Time";
+  TimeSliceInfo[1].Name = "End Time";
 
 
   n = 0;
   XtSetArg(args[n], XmNtitle, "Processor Configuration"); n++;
   XtSetArg(args[n], XmNtransientFor, Shell001); n++;
-  Shell005 = XtCreatePopupShell("editFlightShell",
+  ConfigShell = XtCreatePopupShell("editFlightShell",
 		transientShellWidgetClass, AppShell, args, n);
 
   n = 0;
-  ConfigWindow = XmCreateRowColumn(Shell005, "configWindow", args, n);
+  ConfigWindow = XmCreateRowColumn(ConfigShell, "configWindow", args, n);
 
   createFlightInfo(ConfigWindow);
   createTimeSlice(ConfigWindow);
   createProcessingRate(ConfigWindow);
-//  createOptions(ConfigWindow);
+  createOptions(ConfigWindow);
 
 
   Widget	drFrame, drRC, b[2];
@@ -392,15 +560,6 @@ void EditConfiguration(Widget w, XtPointer client, XtPointer call)
     {
     char	*p;
 
-    FlightInfo[0].Name = "   Project Number";
-    FlightInfo[1].Name = "    Flight Number";
-    FlightInfo[2].Name = "Date [MM/DD/YYYY]";
-    FlightInfo[3].Name = "         Aircraft";
-
-    TimeSliceInfo[0].Name = "Start Time";
-    TimeSliceInfo[1].Name = "End Time";
-
-    CreateConfigWindow();
 
     strcpy(FlightInfo[0].originalValue, ProjectNumber);
     XtSetSensitive(flightText[0], false);

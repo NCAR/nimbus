@@ -90,7 +90,7 @@ void sgaltc(DERTBL *varp)
       if (FeedBack == LOW_RATE_FEEDBACK)
         DELT[FeedBack]  = 1.0;
       else
-        DELT[FeedBack]  = 1.0 / ProcessingRate;
+        DELT[FeedBack]  = 1.0 / (float)cfg.ProcessingRate();
 
 /*  Initialize  */
       newalt = alt*Coef1 + Coef2;
@@ -243,7 +243,7 @@ void sggaltc(DERTBL *varp)
       if (FeedBack == LOW_RATE_FEEDBACK)
         DELT[FeedBack]  = 1.0;
       else
-        DELT[FeedBack]  = 1.0 / ProcessingRate;
+        DELT[FeedBack]  = 1.0 / (float)cfg.ProcessingRate();
 
 /*  Initialize  */
       newalt = alt*Coef1 + Coef2;

@@ -21,7 +21,7 @@ REFERENCES:	none
 
 REFERENCED BY:	cb_main.c (LoadSetup(), SaveSetup()).
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1995
+COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2005
 -------------------------------------------------------------------------
 */
 
@@ -33,15 +33,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 #include "gui.h"
 #include "injectsd.h"
 
-
 static char	SetupFileName[MAXPATHLEN];
 
 extern char *dataQuality[];
 extern SyntheticData sd;
-
-
-void FillListWidget();
-
 
 /* -------------------------------------------------------------------- */
 void Set_SetupFileName(char s[])
@@ -64,7 +59,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
   if (ProductionSetup)
     file = buffer;
   else
-    if (Interactive)
+    if (cfg.Interactive())
       ExtractFileName(call->value, &file);
     else
       file = SetupFileName;
@@ -82,7 +77,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
     else
       return;
 
-  if (Interactive && !ProductionSetup)
+  if (cfg.Interactive() && ProductionSetup)
     FileCancel((Widget)NULL, (XtPointer)NULL, (XtPointer)NULL);
 
 
@@ -104,18 +99,11 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
   fgets(buffer, 128, fp);
 
-  if (!ProductionSetup)
-    if (atoi(strchr(buffer, '=')+1) == HIGH_RATE)
-      {
-      XmToggleButtonSetState(lowRateButton, false, true);
-      XmToggleButtonSetState(highRateButton, true, true);
-      }
+  if (!ProductionSetup || cfg.ProductionRun())
+    if (atoi(strchr(buffer, '=')+1) == Config::HighRate)
+      SetHighRate(NULL, NULL, NULL);
     else
-      {
-      XmToggleButtonSetState(lowRateButton, true, true);
-      XmToggleButtonSetState(highRateButton, false, true);
-      }
-
+      SetLowRate(NULL, NULL, NULL);
 
   while (fgets(buffer, 2048, fp))
     {
@@ -137,18 +125,18 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
         continue;
         }
 
-      if (!ProductionSetup || ProductionRun)
+      if (!ProductionSetup || cfg.ProductionRun())
         sdi[indx]->Dirty = true;
 
 
       while ( (target = strtok(NULL, " \t")) )
         {
         if (strncmp(target, "O=", 2) == 0)
-          if (!ProductionSetup || ProductionRun)
+          if (!ProductionSetup || cfg.ProductionRun())
             sdi[indx]->Output = atoi(&target[2]);
 
         if (strncmp(target, "OR=", 3) == 0)
-          if (!ProductionSetup || ProductionRun)
+          if (!ProductionSetup || cfg.ProductionRun())
             sdi[indx]->OutputRate = atoi(&target[3]);
 
         if (strncmp(target, "SL=", 3) == 0)
@@ -183,18 +171,18 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
         continue;
         }
 
-      if (!ProductionSetup || ProductionRun)
+      if (!ProductionSetup || cfg.ProductionRun())
         raw[indx]->Dirty = true;
 
 
       while ( (target = strtok(NULL, " \t")) )
         {
         if (strncmp(target, "O=", 2) == 0)
-          if (!ProductionSetup || ProductionRun)
+          if (!ProductionSetup || cfg.ProductionRun())
             raw[indx]->Output = atoi(&target[2]);
 
         if (strncmp(target, "OR=", 3) == 0)
-          if (!ProductionSetup || ProductionRun)
+          if (!ProductionSetup || cfg.ProductionRun())
             raw[indx]->OutputRate = atoi(&target[3]);
 
         if (strncmp(target, "DQ=", 3) == 0)
@@ -229,17 +217,17 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
         continue;
         }
 
-      if (!ProductionSetup || ProductionRun)
+      if (!ProductionSetup || cfg.ProductionRun())
         derived[indx]->Dirty = true;
 
       while ( (target = strtok(NULL, " \t")) )
         {
         if (strncmp(target, "O=", 2) == 0)
-          if (!ProductionSetup || ProductionRun)
+          if (!ProductionSetup || cfg.ProductionRun())
             derived[indx]->Output = atoi(&target[2]);
 
         if (strncmp(target, "OR=", 3) == 0)
-          if (!ProductionSetup || ProductionRun)
+          if (!ProductionSetup || cfg.ProductionRun())
             derived[indx]->OutputRate = atoi(&target[3]);
 
         if (strncmp(target, "DQ=", 3) == 0)
@@ -325,7 +313,7 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
 
   fprintf(fp, "ProjNum=%s\n", ProjectNumber);
-  fprintf(fp, "PRate=%d\n", ProcessingRate);
+  fprintf(fp, "PRate=%d\n", (int)cfg.ProcessingRate());
 
   for (size_t i = 0; i < sdi.size(); ++i)
     if (sdi[i]->Dirty)

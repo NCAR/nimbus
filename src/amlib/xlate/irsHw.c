@@ -612,7 +612,7 @@ NR_TYPE polyinterp(NR_TYPE xa[], NR_TYPE ya[], int n, int x);
 
 void postProcessData(var_base *varp, long input[], NR_TYPE *out)
 {
-  if (RawData)
+  if (cfg.HoneyWellCleanup() == false)
     return;
 
   bool  allZeros = true;

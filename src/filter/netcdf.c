@@ -109,8 +109,8 @@ void SetBaseTime(struct Hdr_blk *hdr)
 
   /* Account for circular buffer spin up in [lr|hr]loop.c
    */
-  if (Mode != REALTIME)
-    if (ProcessingRate == LOW_RATE)
+  if (cfg.ProcessingMode() != Config::RealTime)
+    if (cfg.ProcessingRate() == Config::LowRate)
       StartFlight.tm_sec += 2;
     else
       StartFlight.tm_sec += 14;
@@ -148,7 +148,7 @@ void CreateNetCDF(char fileName[])
 
   fd = nccreate(fileName, NC_CLOBBER);
 
-  if (ProductionRun)
+  if (cfg.ProductionRun())
     chmod(fileName, 0644);
   else
     chmod(fileName, 0666);
@@ -184,7 +184,7 @@ void CreateNetCDF(char fileName[])
   ncattput(fd, NC_GLOBAL, "Version", NC_CHAR, strlen(buffer)+1, (void *)buffer);
 
 
-  if (!ProductionRun)
+  if (!cfg.ProductionRun())
     {
     strcpy(buffer, "This file contains PRELIMINARY DATA that are NOT to be used for critical analysis.");
 
@@ -222,7 +222,7 @@ void CreateNetCDF(char fileName[])
   GetFlightNumber(&p);
   ncattput(fd, NC_GLOBAL, "FlightNumber", NC_CHAR, strlen(p)+1, (void *)p);
 
-  if (Mode == REALTIME)
+  if (cfg.ProcessingMode() == Config::RealTime)
   {
     time_t	x = time(NULL);
     gmtime_r(&x, &StartFlight);
@@ -396,7 +396,7 @@ void CreateNetCDF(char fileName[])
       ncattput(fd, sp->varid, "modulus_range", NC_FLOAT, 2, mod);
       }
 
-    if (sp->OutputRate == LOW_RATE)
+    if (sp->OutputRate == Config::LowRate)
       data_p[indx++] = (void *)&AveragedData[sp->LRstart];
     else
     if (sp->OutputRate == sp->SampleRate)
@@ -584,10 +584,10 @@ void CreateNetCDF(char fileName[])
 
     CheckAndAddAttrs(fd, rp->varid, rp->name);
 
-    if (rp->OutputRate == LOW_RATE)
+    if (rp->OutputRate == Config::LowRate)
       data_p[indx++] = (void *)&AveragedData[rp->LRstart];
     else
-    if (rp->OutputRate == rp->SampleRate && rp->OutputRate != ProcessingRate)
+    if (rp->OutputRate == rp->SampleRate && rp->OutputRate != (size_t)cfg.ProcessingRate())
       data_p[indx++] = (void *)&SampledData[rp->SRstart];
     else
       data_p[indx++] = (void *)&HighRateData[rp->HRstart];
@@ -765,7 +765,7 @@ void CreateNetCDF(char fileName[])
 
     CheckAndAddAttrs(fd, dp->varid, dp->name);
 if (strcmp(dp->name, "TTX") == 0) ttxI = indx;
-    if (dp->OutputRate == LOW_RATE)
+    if (dp->OutputRate == Config::LowRate)
       data_p[indx++] = (void *)&AveragedData[dp->LRstart];
     else
       data_p[indx++] = (void *)&HighRateData[dp->HRstart];
@@ -884,7 +884,7 @@ void WriteNetCDF_MRF()
   for (size_t i = 0; i < raw.size(); ++i)
     if ((rp = raw[i])->Output)
       {
-      if (rp->OutputRate == rp->SampleRate && rp->OutputRate != ProcessingRate)
+      if (rp->OutputRate == rp->SampleRate && rp->OutputRate != (size_t)cfg.ProcessingRate())
         data_p[indx] = (void *)&SampledData[rp->SRstart];
 
       ++indx;
@@ -915,7 +915,7 @@ void QueueMissingData(int h, int m, int s, int nRecords)
 
   EnQueue(missingRecords, (void *)dp);
 
-  if (Mode == REALTIME)
+  if (cfg.ProcessingMode() == Config::RealTime)
     WriteMissingRecords();
 
 }	/* END QUEUEMISSINGDATA */

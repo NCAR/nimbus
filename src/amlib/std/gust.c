@@ -66,7 +66,7 @@ void swi(DERTBL *varp)
     DELT[FeedBack] = 1.0;
 
     if (FeedBack != LOW_RATE_FEEDBACK)
-      DELT[FeedBack] /= ProcessingRate;
+      DELT[FeedBack] /= (float)cfg.ProcessingRate();
 
     pitch0[probeCnt][FeedBack]	= pitch;
     thdg0[probeCnt][FeedBack]	= thdg;

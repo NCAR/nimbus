@@ -22,7 +22,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 /* -------------------------------------------------------------------- */
 void HandleError(char err_msg[])
 {
-  if (Interactive)
+  if (cfg.Interactive())
     ShowError(err_msg);
   else
     {
@@ -35,7 +35,7 @@ void HandleError(char err_msg[])
 /* -------------------------------------------------------------------- */
 void HandleWarning(char msg[], XtCallbackProc okCB, XtCallbackProc cancelCB)
 {
-  if (Interactive)
+  if (cfg.Interactive())
     WarnUser(msg, okCB, cancelCB);
   else
     {

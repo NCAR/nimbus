@@ -154,9 +154,19 @@ static String fallback_resources[] =
 
   /* Edit Configuration
    */
-  "*editFlightShell.x:				300",
-  "*editFlightShell.y:				300",
+  "*editFlightShell.x:				600",
+  "*editFlightShell.y:				150",
+  "*editFlightShell.configWindow.spacing:	10",
+  "*configWindow.XmFrame.XmLabel.childHorizontalAlignment: ALIGNMENT_CENTER",
+  "*configWindow.XmFrame.XmLabel.childVerticalAlignment:   ALIGNMENT_BASELINE_TOP",
+  "*configWindow.XmFrame.XmLabel.childHorizontalSpacing:   5",
+  "*configWindow.XmFrame.XmLabel.childType:        FRAME_TITLE_CHILD",
+
   "*flightEntryRC.orientation:			HORIZONTAL",
+  "*flightInfoTitle.labelString:		Flight Information",
+  "*timeSliceTitle.labelString:			Time Period to Process",
+  "*rateTitle.labelString:			Processing Rate",
+  "*optionsTitle.labelString:			Processing Options",
   "*efiRC.entryAlignment:			ALIGNMENT_CENTER",
   "*efiRC.spacing:				12",
   "*efiRC.XmPushButton.recomputeSize:		False",
@@ -171,6 +181,17 @@ static String fallback_resources[] =
   "*highRateButton.labelString:			High Rate",
   "*highRateButton.set:				False",
   "*highRateButton.traversalOn:			False",
+  "*optFrame.shadowType:			SHADOW_IN",
+  "*optFrame.entryAlignment:			ALIGNMENT_CENTER",
+  "*despikeButton.labelString:			Despiking",
+  "*despikeButton.set:				True",
+  "*despikeButton.traversalOn:			False",
+  "*lagButton.labelString:			Time shifting",
+  "*lagButton.set:				True",
+  "*lagButton.traversalOn:			False",
+  "*hwCleanButton.labelString:			Honeywell IRS cleanup",
+  "*hwCleanButton.set:				True",
+  "*hwCleanButton.traversalOn:			False",
 
   /* Edit Defaults Window
    */

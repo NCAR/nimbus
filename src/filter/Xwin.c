@@ -6,21 +6,13 @@ FULL NAME:	Create X window GUI
 
 ENTRY POINTS:	CreateMainWindow()
 		CreateSetupWindow()
-		CreateEditWindow()
 		CreateProbeMenu()
 		FlushXEvents()
+		NextWidget()
 
-STATIC FNS:	NextWidget()
+STATIC FNS:	none
 
 DESCRIPTION:	Create all or most widgets for the GUI.
-
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	nimbus.c (main)
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
@@ -57,8 +49,6 @@ extern char *dataQuality[];
 extern void LoadSynthetic(Widget w, XtPointer client, XtPointer call);  //this may belong somewhere else
 extern char *func[19];
 
-
-void	NextWidget(Widget w, int client, XtPointer call);
 
 /* -------------------------------------------------------------------- */
 Widget CreateMainWindow(Widget parent)
@@ -653,7 +643,7 @@ void FlushXEvents()
 {
   extern XtAppContext context;
 
-  if (Interactive)
+  if (cfg.Interactive())
     while (XtAppPending(context))
       XtAppProcessEvent(context, XtIMAll);
 

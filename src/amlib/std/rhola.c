@@ -1,12 +1,12 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:  rhola.c
+OBJECT NAME:	rhola.c
 
-FULL NAME:  Absolute humidity (Lyman-alpha) (g/m3)
+FULL NAME:	Absolute humidity (Lyman-alpha) (g/m3)
 
-ENTRY POINTS:  srhola()
+ENTRY POINTS:	srhola()
 
-STATIC FNS:  none
+STATIC FNS:	none
 
 DESCRIPTION:  
 
@@ -14,11 +14,11 @@ INPUT:
 
 OUTPUT:    
 
-REFERENCES:  lyalf.c
+REFERENCES:	lyalf.c
 
-REFERENCED BY:  compute.c
+REFERENCED BY:	compute.c
 
-COPYRIGHT:  University Corporation for Atmospheric Research, 1992
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 -------------------------------------------------------------------------
 */
 
@@ -192,6 +192,7 @@ static NR_TYPE compute_rhola(int indx, DERTBL *varp, NR_TYPE vla, NR_TYPE psxc, 
 
   /* Calculate corrected Lyman-alpha humidity  */
   rhola = (CX[0] + vh2o * (CX[1] + vh2o * (CX[2] + vh2o * CX[3]))) / XC;
+//printf("del = %f, vh2o = %f, rhola = %f\n", del, vh2o, rhola);
 
   /* Following lines added to keep routine from blowing up.   RLR  920331 */
   if (rhola > 99999.)

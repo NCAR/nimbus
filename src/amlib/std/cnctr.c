@@ -53,7 +53,7 @@ void sconcn(DERTBL *varp)
   fcnc  = GetSample(varp, 1);
 
   if (FeedBack == HIGH_RATE_FEEDBACK)
-    cnts *= HIGH_RATE;
+    cnts *= (float)Config::HighRate;
 
   concn  = cnts * DIV / (fcnc * 1000.0 / 60.0);
 

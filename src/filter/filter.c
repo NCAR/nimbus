@@ -31,15 +31,19 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 #include "filters.h"
 #include "circbuff.h"
 
+#include <cmath>
+
 extern NR_TYPE	*SampledData, *HighRateData;
 
 static std::vector<mRFilterPtr> sdiFilters;
 static std::vector<mRFilterPtr> rawFilters;
 
 static filterData	TwoFiftyTo25, FiftyTo25, OneTo25, FiveTo25, TenTo25,
-			ThousandTo25, TwentyFive;
+			ThousandTo25, TwentyFive, vspd;
 
 static size_t	PSCBindex, currentHz, HzDelay;
+static size_t	filterRate;
+
 static NR_TYPE	*inputRec;
 
 static circBuffPtr	newCircBuff(int);
@@ -47,14 +51,17 @@ static circBuffPtr	newCircBuff(int);
 static int	disposMultiRateFilter(mRFilterPtr aMRFPtr);
 
 static NR_TYPE	getBuff(int offset, circBuffPtr aCBPtr);
-static void	initCircBuff(circBuffPtr aCBPtr), disposCircBuff(circBuffPtr aCBPtr),
+static void	initCircBuff(circBuffPtr aCBPtr),
+		disposCircBuff(circBuffPtr aCBPtr),
 		putBuff(NR_TYPE datum, circBuffPtr aCBPtr),
-		setTimeDelay(size_t, size_t *, size_t *),
+		setTimeDelay(size_t, size_t, size_t *, size_t *),
 		filterCounter(SDITBL *sp),
-		LinearInterpAndSingleStageFilter(CircularBuffer *PSCB,
-		 mRFilterPtr thisMRF, size_t inputRate, int SRstart, int HRstart),
+		ProcessVariable(CircularBuffer *PSCB, var_base *vp, mRFilterPtr vpFilter),
 		SingleStageFilter(CircularBuffer *PSCB, mRFilterPtr thisMRF,
-		 size_t inputRate, int SRstart, int HRstart);
+			var_base *vp);
+
+char *GetProcessedBuffer(CircularBuffer *cb, int offset, var_base *vp);
+
 
 /* -------------------------------------------------------------------- */
 void InitMRFilters()
@@ -70,7 +77,7 @@ void InitMRFilters()
     {
     /* Doesn't require filtering.
      */
-    if (sdi[i]->DependedUpon == false && sdi[i]->OutputRate != HIGH_RATE)
+    if (sdi[i]->DependedUpon == false && sdi[i]->OutputRate != Config::HighRate)
       {
       sdiFilters[i] = (mRFilterPtr)ERR;
       continue;
@@ -125,7 +132,7 @@ void InitMRFilters()
     {
     /* Doesn't require filtering.
      */
-    if (raw[i]->DependedUpon == false && raw[i]->OutputRate != HIGH_RATE)
+    if (raw[i]->DependedUpon == false && raw[i]->OutputRate != Config::HighRate)
       {
       rawFilters[i] = (mRFilterPtr)ERR;
       continue;
@@ -157,8 +164,9 @@ void InitMRFilters()
         break;
 
       case 25:		/* Just filter	*/
-        rawFilters[i] = createMRFilter(1, 1, &TwentyFive, mv_p);
-//        rawFilters[i] = NULL;
+        rawFilters[i] = NULL;
+        if (strncmp(raw[i]->name, "VSPD", 4) == 0)
+          rawFilters[i] = createMRFilter(1, 1, &vspd, mv_p);
         break;
 
       case 50:		/* Decimate	*/
@@ -179,149 +187,78 @@ void Filter(CircularBuffer *PSCB)
 {
   SampledData = (NR_TYPE *)GetBuffer(PSCB, -(PSCB->nbuffers - 1));
 
+  /* Do Analog variables.
+   */
   for (size_t i = 0; i < sdi.size(); ++i)
     {
-    SDITBL *sp = sdi[i];
-
-    if (sdiFilters[i] == 0)	// Filtering not wanted/needed.
-      {
-      if (sp->SampleRate == ProcessingRate)
-        memcpy(	(char *)&HighRateData[sp->HRstart],
-		(char *)&SampledData[sp->SRstart],
-		NR_SIZE * HIGH_RATE);
-      else
-        memset(	(char *)&HighRateData[sp->HRstart], 0,
-		NR_SIZE * sp->SampleRate * sp->Length);
-
-      continue;
-      }
-
     /* Counters shouldn't need to be filtered.  Applies averaging or
      * linear interpolation.
      */
-    if (sp->type[0] == 'C')
+    if (sdi[i]->type[0] == 'C' && sdi[i]->SampleRate != 25)
       {
-      filterCounter(sp);
+      filterCounter(sdi[i]);
       continue;
       }
 
-    PSCBindex = -(PSCB->nbuffers - 1);
-    setTimeDelay(sp->SampleRate, &PSCBindex, &HzDelay);
-    inputRec = (NR_TYPE *)GetBuffer(PSCB, PSCBindex);
-
-    if (sdiFilters[i]->task == GET_INPUT)
-      {
-      currentHz = HzDelay;
-      ++PSCBindex;
-      }
-    else
-      if ((currentHz = sp->SampleRate - 1 + HzDelay) >= sp->SampleRate)
-        {
-        ++PSCBindex;
-        currentHz -= sp->SampleRate;
-        }
-
-    switch (sp->SampleRate)
-      {
-      case 1:
-        LinearInterpAndSingleStageFilter(PSCB, sdiFilters[i],
-				sp->SampleRate, sp->SRstart, sp->HRstart);
-        break;
-
-      case 5:
-        LinearInterpAndSingleStageFilter(PSCB, sdiFilters[i],
-				sp->SampleRate, sp->SRstart, sp->HRstart);
-        break;
-
-      case 25:
-      case 50:
-        SingleStageFilter(PSCB, sdiFilters[i],
-				sp->SampleRate, sp->SRstart, sp->HRstart);
-        break;
-
-      case 250:
-        SingleStageFilter(PSCB, sdiFilters[i],
-				sp->SampleRate, sp->SRstart, sp->HRstart);
-        break;
-
-      case 1000:
-        SingleStageFilter(PSCB, sdiFilters[i],
-				sp->SampleRate, sp->SRstart, sp->HRstart);
-        break;
-      }
+    ProcessVariable(PSCB, sdi[i], sdiFilters[i]);
     }
-
-
 
   /* Do raw variables
    */
   for (size_t i = 0; i < raw.size(); ++i)
     {
-    RAWTBL *rp = raw[i];
-
-    if (rawFilters[i] == (mRFilterPtr)ERR)	/* Filtering not needed	*/
-      continue;
-
-    if (rawFilters[i] == 0)	/* Filtering not needed/wanted	*/
-      {
-      if (rp->SampleRate == ProcessingRate)
-        memcpy(	(char *)&HighRateData[rp->HRstart],
-		(char *)&SampledData[rp->SRstart],
-		NR_SIZE * rp->SampleRate * rp->Length);
-      else
-        memset(	(char *)&HighRateData[rp->HRstart], 0,
-		NR_SIZE * rp->SampleRate * rp->Length);
-
-      continue;
-      }
-
     /* We don't support filtering vector data.
      */
-    if (rp->Length > 1)
+    if (raw[i]->Length > 1)
       continue;
 
-    PSCBindex = -(PSCB->nbuffers - 1);
-    setTimeDelay(rp->SampleRate, &PSCBindex, &HzDelay);
-    inputRec = (NR_TYPE *)GetBuffer(PSCB, PSCBindex);
-
-    if (rawFilters[i]->task == GET_INPUT)
-      {
-      currentHz = HzDelay;
-      ++PSCBindex;
-      }
-    else
-      if ((currentHz = rp->SampleRate - 1 + HzDelay) >= rp->SampleRate)
-        {
-        ++PSCBindex;
-        currentHz -= rp->SampleRate;
-        }
-
-    switch (rp->SampleRate)
-      {
-      case 1:
-        LinearInterpAndSingleStageFilter(PSCB, rawFilters[i],
-				rp->SampleRate, rp->SRstart, rp->HRstart);
-        break;
-
-      case 5:
-        LinearInterpAndSingleStageFilter(PSCB, rawFilters[i],
-				rp->SampleRate, rp->SRstart, rp->HRstart);
-        break;
-
-      case 10:
-        LinearInterpAndSingleStageFilter(PSCB, rawFilters[i],
-				rp->SampleRate, rp->SRstart, rp->HRstart);
-        break;
-
-      case 25:
-      case 50:
-        SingleStageFilter(PSCB, rawFilters[i],
-				rp->SampleRate, rp->SRstart, rp->HRstart);
-        break;
-      }
+    ProcessVariable(PSCB, raw[i], rawFilters[i]);
     }
 
-}	/* END FILTER */
+}	/* FILTER */
+
+/* -------------------------------------------------------------------- */
+static void ProcessVariable(CircularBuffer *PSCB, var_base *vp, mRFilterPtr vpFilter)
+{
+  if (vpFilter == (mRFilterPtr)ERR)	/* Filtering not needed	*/
+    return;
+
+  if (vpFilter == 0)	/* Filtering not needed/wanted	*/
+    {
+    if (vp->SampleRate == (size_t)cfg.ProcessingRate())
+      memcpy(	(char *)&HighRateData[vp->HRstart],
+		(char *)&SampledData[vp->SRstart],
+		NR_SIZE * vp->SampleRate * vp->Length);
+    else
+      memset(	(char *)&HighRateData[vp->HRstart], 0,
+		NR_SIZE * vp->SampleRate * vp->Length);
+
+    return;
+    }
+
+  /* Because data with SampleRate below 25 is linear interpolated first, we
+   * can't use SampleRate, but must use 25.  Fake it with filterRate.
+   */
+  filterRate = vp->SampleRate < (size_t)cfg.ProcessingRate() ? (size_t)cfg.ProcessingRate() : vp->SampleRate;
+  PSCBindex = -(PSCB->nbuffers - 1);
+  setTimeDelay(filterRate, vpFilter->filter->order, &PSCBindex, &HzDelay);
+  inputRec = (NR_TYPE *)GetProcessedBuffer(PSCB, PSCBindex, vp);
+
+  if (vpFilter->task == GET_INPUT)
+    {
+    currentHz = HzDelay;
+    ++PSCBindex;
+    }
+  else
+    if ((currentHz = filterRate - 1 + HzDelay) >= filterRate)
+      {
+      ++PSCBindex;
+      currentHz -= filterRate;
+      }
+
+  SingleStageFilter(PSCB, vpFilter, vp);
+
+}	/* END PROCESSVARIABLE */
 
 /* -------------------------------------------------------------------- */
 static void filterCounter(SDITBL *sp)
@@ -332,26 +269,26 @@ static void filterCounter(SDITBL *sp)
   switch (sp->SampleRate)
     {
     case 50:
-      for (OUTindex = 0; OUTindex < ProcessingRate; ++OUTindex)
+      for (OUTindex = 0; OUTindex < (size_t)cfg.ProcessingRate(); ++OUTindex)
         HighRateData[sp->HRstart + OUTindex] =
 			sdp[OUTindex * 2] + sdp[OUTindex * 2 + 1];
 
       break;
 
     case 5:
-      for (OUTindex = 0; OUTindex < ProcessingRate; ++OUTindex)
+      for (OUTindex = 0; OUTindex < (size_t)cfg.ProcessingRate(); ++OUTindex)
         HighRateData[sp->HRstart+OUTindex] = sdp[OUTindex / 5] / 5;
 
       break;
 
     case 1:
-      for (OUTindex = 0; OUTindex < ProcessingRate; ++OUTindex)
+      for (OUTindex = 0; OUTindex < (size_t)cfg.ProcessingRate(); ++OUTindex)
         HighRateData[sp->HRstart+OUTindex] = sdp[0] / 25;
 
       break;
 
     case 250:
-      for (OUTindex = 0; OUTindex < ProcessingRate; ++OUTindex)
+      for (OUTindex = 0; OUTindex < (size_t)cfg.ProcessingRate(); ++OUTindex)
         HighRateData[sp->HRstart + OUTindex] =
 			sdp[OUTindex * 2] + sdp[OUTindex * 2 + 1] +
 			sdp[OUTindex * 2 + 2] + sdp[OUTindex * 2 + 3] +
@@ -367,84 +304,26 @@ static void filterCounter(SDITBL *sp)
 }	/* END FILTERCOUNTER */
 
 /* -------------------------------------------------------------------- */
-static void LinearInterpAndSingleStageFilter(
-	CircularBuffer	*PSCB,
-	mRFilterPtr	thisMRF,
-	size_t		inputRate,
-	int		SRstart,
-	int		HRstart)
-{
-  int		task;
-  NR_TYPE	output;
-  NR_TYPE	input, diff = 0.0;
-  int		L = (ProcessingRate * thisMRF->M) / inputRate;
-  int		intermedHzcnt = L - 1;
-
-  input = inputRec[SRstart];
-
-  for (size_t OUTindex = 0; OUTindex < ProcessingRate; ++OUTindex)
-    {
-    do
-      {
-      task = iterateMRFilter(thisMRF, input, &output);
-
-      if (task == GET_INPUT)
-        {
-        if (++intermedHzcnt == L)
-          {
-          if (++currentHz == inputRate)
-            {
-            currentHz = 0;
-            inputRec=(NR_TYPE *)GetBuffer(PSCB,PSCBindex++);
-            }
-
-          intermedHzcnt = 0;
-
-          if (currentHz == inputRate - 1)
-            {
-            NR_TYPE *tmpRec = (NR_TYPE *)GetBuffer(PSCB,PSCBindex);
-            diff = (tmpRec[SRstart] - inputRec[SRstart+currentHz]) / L;
-            }
-          else
-            diff = (inputRec[SRstart+currentHz+1] - inputRec[SRstart+currentHz]) / L;
-          }
-
-        input = inputRec[SRstart+currentHz] + (diff*intermedHzcnt);
-        }
-      }
-    while (task == GET_INPUT);
-
-    HighRateData[HRstart + OUTindex] = output;
-    }
-
-}
-
-/* -------------------------------------------------------------------- */
-static void SingleStageFilter(
-	CircularBuffer	*PSCB,
-	mRFilterPtr	thisMRF,
-	size_t		inputRate,
-	int		SRstart,
-	int		HRstart)
+static void SingleStageFilter(CircularBuffer *PSCB, mRFilterPtr thisMRF, var_base *vp)
 {
   int		task;
   NR_TYPE	output;
 
-  for (size_t OUTindex = 0; OUTindex < ProcessingRate; ++OUTindex)
+  for (size_t OUTindex = 0; OUTindex < (size_t)cfg.ProcessingRate(); ++OUTindex)
     {
     do
       {
-      task = iterateMRFilter(thisMRF,inputRec[SRstart+currentHz],&output);
+      task = iterateMRFilter(thisMRF, inputRec[currentHz], &output);
 
-      if (task == GET_INPUT && ++currentHz == inputRate)
+      if (task == GET_INPUT && ++currentHz == filterRate)
         {
         currentHz = 0;
-        inputRec = (NR_TYPE *)GetBuffer(PSCB, PSCBindex++);
+        inputRec = (NR_TYPE *)GetProcessedBuffer(PSCB, PSCBindex++, vp);
         }
       }
     while (task == GET_INPUT);
 
-    HighRateData[HRstart + OUTindex] = output;
+    HighRateData[vp->HRstart + OUTindex] = output;
     }
 }
 
@@ -480,6 +359,7 @@ static void readFilters()
   readAfilter("5to25", &FiveTo25);
   readAfilter("10to25", &TenTo25);
   readAfilter("25hz", &TwentyFive);
+  readAfilter("VSPD", &vspd);
   readAfilter("50to25", &FiftyTo25);
   readAfilter("250to25", &TwoFiftyTo25);
   readAfilter("1000to25", &ThousandTo25);
@@ -516,51 +396,40 @@ static mRFilterPtr createMRFilter(int L, int M, filterPtr filter, MOD *modvar)
 }	/* END CREATEMRFILTER */
 
 /* -------------------------------------------------------------------- */
-static void setTimeDelay(size_t rate, size_t *sec, size_t *msec)
+static void setTimeDelay(size_t rate, size_t nTaps, size_t *sec, size_t *msec)
 {
+  /* Set up time lags due to filtering.  nTaps should be a multiple of 25
+   * (odd # taps ok i.e. nTaps=101).
+   */
   *msec = 0;
 
-  /* Set up time lags due to filtering.  Don't ask me why (nTaps / 2) isn't
-   * the exact delay.
-   */
-  switch (rate)
-    {
-    case 1:		// nTaps / (2 * L), checks out.
-			//  Sort of, 3.5 would be optimal 7/14/04.
-			// Adjusted # of taps to make it align
-      *sec += 3;
-      break;
+  int L = 1;	// No actual interp here.
+  int samples = nTaps / (2 * L);
 
-    case 5:		// nTaps / (2 * L), checks out.
-      *sec += 2;
-      break;
+  if (rate <= 25)
+    *sec += (samples / rate);
+  else
+    // Why are the decimaters off by 1 sample?
+    switch (rate)
+      {
+      case 50:		// nTaps / (2 * L), almost checks out.
+        *sec += 0;
+        *msec = 49;
+        break;
 
-    case 10:		// nTaps / (2 * L), checks out.
-      *sec += 2;
-      break;
+      case 250:		// nTaps / (2 * L), almost checks out.
+        *sec += 0;
+        *msec = 240;
+        break;
 
-    case 25:		// nTaps / (2 * L), checks out.
-      *sec += 2;
-      break;
-
-    case 50:		// nTaps / (2 * L), checks out.
-      *sec += 1;
-      break;
-
-    case 250:		// nTaps / (2 * L), almost checks out.
-      *sec += 0;
-      *msec = 240;
-      break;
-
-    case 1000:		// nTaps / (2 * L), ????
-      *sec += 0;
-      *msec = 0;
+      case 1000:		// nTaps / (2 * L), ????
+        *sec += 0;
+        *msec = 0;
 //      *msec = 500;
-      break;
-    }
+        break;
+      }
 
 }	/* END SETTIMEDELAY */
-
 
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*\
@@ -816,6 +685,66 @@ static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output)
     thisMRF->coefPhase++;
     }
 
+}
+
+/* -------------------------------------------------------------------- */
+static NR_TYPE out[250];
+NR_TYPE polyinterp(NR_TYPE xa[], NR_TYPE ya[], int n, int x);
+
+char *GetProcessedBuffer(CircularBuffer *cb, int offset, var_base *vp)
+{
+  NR_TYPE *prevBuff = (NR_TYPE *)GetBuffer(cb, offset-1);
+  NR_TYPE *thisBuff = (NR_TYPE *)GetBuffer(cb, offset);
+  NR_TYPE *nextBuff = (NR_TYPE *)GetBuffer(cb, offset+1);
+
+  if (vp->SampleRate >= (size_t)cfg.ProcessingRate())
+    return (char *)&thisBuff[vp->SRstart];
+
+  /* Load up data. 1 sample from prev second and 1 from the next second also.
+   */
+  NR_TYPE x[cfg.ProcessingRate()+2], y[cfg.ProcessingRate()+2];
+  float L = (float)cfg.ProcessingRate() / vp->SampleRate;
+
+  x[0] = -L;
+  y[0] = prevBuff[vp->SRstart + (vp->SampleRate-1)];
+
+  for (size_t i = 0; i < vp->SampleRate; ++i)
+  {
+    x[i+1] = L * i;
+    y[i+1] = thisBuff[vp->SRstart+i];
+  }
+
+  x[vp->SampleRate+1] = (float)cfg.ProcessingRate();
+  y[vp->SampleRate+1] = nextBuff[vp->SRstart];
+
+  /* We need 4 points, 1hz data only has 3 so for, get another.
+   */
+  if (vp->SampleRate == 1)
+  {
+    nextBuff = (NR_TYPE *)GetBuffer(cb, offset+2);
+    x[vp->SampleRate+2] = (float)cfg.ProcessingRate()*2;
+    y[vp->SampleRate+2] = nextBuff[vp->SRstart];
+  }
+  else
+  {
+    x[vp->SampleRate+2] = (float)cfg.ProcessingRate() + L;
+    y[vp->SampleRate+2] = nextBuff[vp->SRstart+1];
+  }
+
+  /* Inerpolate data to 25hz.
+   */
+  for (size_t i = 0; i < (size_t)cfg.ProcessingRate(); ++i)
+    out[i] = polyinterp(&x[(int)((float)i / L)], &y[(int)((float)i / L)], 4, i);
+
+// Linear interp
+//    out[i] =	y[(int)((float)i / L)+1] +
+//		((y[(int)((float)i / L)+2] - y[(int)((float)i / L+1)]) *
+//		((1.0 / L) * (i % (int)L)));
+
+// poly inter /w whole second, 4 pts seemed better.
+//    out[i] = polyinterp(x, y, vp->SampleRate+3, i);
+
+  return (char *)out;
 }
 
 /* END FILTER.C */

@@ -49,7 +49,7 @@ void RTinit()
   sprintf(buffer, "%s/mock_rt", "/home/tmp");
 //  sprintf(buffer, "%s/mock_rt", getenv("DATA_DIR"));
 #else
-  FILE  *fp;
+  FILE  *fp = 0;
   int   j;
   char  *p, host[80];
 
@@ -79,12 +79,12 @@ void RTinit()
   XmTextFieldSetString(aDSdataText, buffer);
 
   strcpy(strstr(buffer, ".ads"), ".nc");
-fprintf(stderr, "nimbus -rt: realtime netCDF is: %s\n", buffer);
   XmTextFieldSetString(outputFileText, buffer);
+  fprintf(stderr, "nimbus -rt: realtime netCDF is: %s\n", buffer);
 
-  Mode = REALTIME;
-  Interactive = FALSE;
-  LoadProductionSetupFile = FALSE;
+  cfg.SetProcessingMode(Config::RealTime);
+  cfg.SetInteractive(false);
+  cfg.SetLoadProductionSetup(false);
 
 }	/* END RTINIT */
 
@@ -92,7 +92,7 @@ fprintf(stderr, "nimbus -rt: realtime netCDF is: %s\n", buffer);
 void RealTimeLoop()
 {
   struct timeval tv;
-  double	ts, pts;
+  double	ts, pts = 0.0;
   Hdr_blk	*hdr;
   char		timeStamp[32];
 

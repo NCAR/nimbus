@@ -28,10 +28,8 @@ extern bool	Interactive;
 
 
 /* Setup window widgets */
-extern Widget	Shell001;
-extern Widget	SetupWindow, EditWindow, TimeSliceWindow;
-extern Widget	aDSdataText, outputFileText;
-extern Widget	lowRateButton, highRateButton, timeDisplayText;
+extern Widget	SetupWindow;
+extern Widget	aDSdataText, outputFileText, timeDisplayText;
 extern Widget	list1, goButton, menuBar, readHeaderButton;
 
 /* Edit Variable window widgets */
@@ -43,6 +41,9 @@ extern Widget	lagText, spikeText, synthConstText, ev_text[], ts_text[];
 
 /*	Callback prototypes
  */
+void    NextWidget(Widget w, int client, XtPointer call);
+void    FillListWidget();
+
 void	ApplyVariableMods(Widget w, XtPointer client, XtPointer call),
 	CancelSetup(Widget w, XtPointer client, XtPointer call),
 	DismissDefaultsWindow(Widget w, XtPointer client, XtPointer call),
@@ -54,6 +55,9 @@ void	ApplyVariableMods(Widget w, XtPointer client, XtPointer call),
 	EditConfiguration(Widget w, XtPointer client, XtPointer call),
 	EditTimeSlices(Widget w, XtPointer client, XtPointer call),
 	EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call),
+	SetLowRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call),
+        SetHighRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call),
+
 	LoadSetup(Widget w, XtPointer client, XtPointer call),
 	LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *call),
 	LoadSynthetic_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *call),
@@ -68,8 +72,6 @@ void	ApplyVariableMods(Widget w, XtPointer client, XtPointer call),
 	Quit(Widget w, XtPointer client, XtPointer call),
 	SaveSetup(Widget w, XtPointer client, XtPointer call),
 	SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *call),
-	SetLowRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call),
-	SetHighRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call),
 	StartProcessing(Widget w, XtPointer client, XtPointer call),
 	ToggleProbe(Widget w, XtPointer client, XtPointer call),
 	ToggleOutput(Widget w, XtPointer client, XtPointer call),

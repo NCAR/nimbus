@@ -13,8 +13,6 @@ ENTRY POINTS:	CancelSetup()
 		Proceed()
 		Quit()
 		SaveSetup()
-		SetLowRate()
-		SetHighRate()
 		StartProcessing()
 		ToggleOutput()
 		ToggleRate()
@@ -39,7 +37,7 @@ REFERENCES:	Everything.
 
 REFERENCED BY:	XtAppMainLoop()
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
 */
 
@@ -75,10 +73,11 @@ extern FILE	*LogFile;
 static time_t	startWALL, finishWALL;
 static clock_t	startCPU, finishCPU;
 
+extern Widget	Shell001;
 extern size_t	nDefaults;
 extern DEFAULT	*Defaults[];
 
-void	FillListWidget(), CloseSQL();
+void	CloseSQL();
 void	ValidateOutputFile(Widget w, XtPointer client, XtPointer call);
 static int	validateInputFile();
 
@@ -197,7 +196,7 @@ static void readHeader()
   if (FlightNumberInt == 0)
     HandleWarning("Flight Number is 0, a new one may be entered\nvia the 'Edit/Flight Info' menu item,\nor run fixFltNum on the ADS image and start nimbus again.", NULL, NULL);
 
-  if (ProductionRun)
+  if (cfg.ProductionRun())
     OpenLogFile();
 
   sprintf(buffer, VARDB, ProjectDirectory, ProjectNumber);
@@ -211,7 +210,7 @@ static void readHeader()
       }
     }
 
-  if (Interactive)
+  if (cfg.Interactive())
     {
     Arg		args[1];
 
@@ -240,8 +239,8 @@ static void readHeader()
     }
   else
     {
-    if (ProcessingRate == HIGH_RATE)
-      XmToggleButtonSetState(highRateButton, true, true);
+    if (cfg.ProcessingRate() == Config::HighRate)
+      SetHighRate(NULL, NULL, NULL);
 
     sprintf(buffer, "%s - %s, Flight %s\n",
 		ProjectName, ProjectNumber, FlightNumber);
@@ -274,83 +273,6 @@ static void readHeader()
 }	/* END READHEADER */
 
 /* -------------------------------------------------------------------- */
-void SetHighRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
-{
-  size_t	i;
-
-  if (call->set == false)
-    return;
-
-  ProcessingRate = HIGH_RATE;
-
-  for (i = 0; i < sdi.size(); ++i)
-    if (sdi[i]->SampleRate >= HIGH_RATE)
-      sdi[i]->OutputRate = HIGH_RATE;
-
-  for (i = 0; i < raw.size(); ++i)
-    {
-    if (raw[i]->SampleRate >= HIGH_RATE)
-      raw[i]->OutputRate = HIGH_RATE;
-
-    if (raw[i]->ProbeType & PROBE_PMS1D)
-      raw[i]->OutputRate = raw[i]->SampleRate;
-    }
-
-  for (i = 0; i < derived.size(); ++i)
-    derived[i]->OutputRate = derived[i]->Default_HR_OR;
-
-  FillListWidget();
-  XtSetSensitive(outputHRbutton, true);
-
-  if (ProductionRun)
-    {
-    char *p = strchr(OutputFileName, '.');
-
-    if (p)
-      {
-      strcpy(p, "h.nc");
-      XmTextFieldSetString(outputFileText, OutputFileName);
-      }
-    }
-
-}	/* END SETHIGHRATE */
-
-/* -------------------------------------------------------------------- */
-void SetLowRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
-{
-  size_t	i;
-
-  if (call->set == false)
-    return;
-
-  ProcessingRate = LOW_RATE;
-
-  for (i = 0; i < sdi.size(); ++i)
-    sdi[i]->OutputRate = LOW_RATE;
-
-  for (i = 0; i < raw.size(); ++i)
-    raw[i]->OutputRate = LOW_RATE;
-
-  for (i = 0; i < derived.size(); ++i)
-    derived[i]->OutputRate = LOW_RATE;
-
-  FillListWidget();
-  XtSetSensitive(outputHRbutton, false);
-
-  if (ProductionRun)
-    {
-    char *p = strstr(OutputFileName, "h.");
-
-    if (p)
-      {
-      strcpy(p, ".nc");
-      XmTextFieldSetString(outputFileText, OutputFileName);
-      }
-    }
-
-}	/* END SETLOWRATE */
-
-/* -------------------------------------------------------------------- */
 void StartProcessing(Widget w, XtPointer client, XtPointer call)
 {
   XmString	label;
@@ -368,7 +290,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   GenerateComputeOrder();	/* for Derived variables		*/
   GetUserTimeIntervals();
 
-  if (ProductionRun)		/* Do it again in case Flight# changed	*/
+  if (cfg.ProductionRun())	/* Do it again in case Flight# changed	*/
     setOutputFileName();
 
 
@@ -429,7 +351,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
 
   FlushXEvents();
 
-  if (ProcessingRate == HIGH_RATE)
+  if (cfg.ProcessingRate() == Config::HighRate)
     InitMRFilters();
 
   /* Turn "Go" button into "Pause" button.
@@ -445,7 +367,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
 
   EngageSignals();
 
-  if (Mode == REALTIME)
+  if (cfg.ProcessingMode() == Config::RealTime)
     {
     NextTimeInterval(&btim, &etim);
     RealTimeLoop();	/* Never to return	*/
@@ -458,13 +380,13 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
 
   while (NextTimeInterval(&btim, &etim))
     {
-    switch (ProcessingRate)
+    switch (cfg.ProcessingRate())
       {
-      case LOW_RATE:
+      case Config::LowRate:
         rc = LowRateLoop(btim, etim);
         break;
 
-      case HIGH_RATE:
+      case Config::HighRate:
         rc = HighRateLoop(btim, etim);
         break;
       }
@@ -549,7 +471,7 @@ static void checkForProductionSetup()
   int	i, revision2 = False;
   char	*group[256];
 
-  if (LoadProductionSetupFile == false)
+  if (cfg.LoadProductionSetup() == false)
     return;
 
 
@@ -613,7 +535,7 @@ static void checkForProductionSetup()
 /* -------------------------------------------------------------------- */
 void SaveSetup(Widget w, XtPointer client, XtPointer call)
 {
-  if (ProductionRun)
+  if (cfg.ProductionRun())
     {
     sprintf(buffer, "%s/%s/Production", ProjectDirectory, ProjectNumber);
 
@@ -653,13 +575,13 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
 
       switch (dp->OutputRate)
         {
-        case LOW_RATE:
-          if (ProcessingRate == HIGH_RATE)
-            dp->OutputRate = HIGH_RATE;
+        case Config::LowRate:
+          if (cfg.ProcessingRate() == Config::LowRate)
+            dp->OutputRate = Config::LowRate;
           break;
 
-        case HIGH_RATE:
-          dp->OutputRate = LOW_RATE;
+        case Config::HighRate:
+          dp->OutputRate = Config::LowRate;
           break;
         }
 
@@ -677,23 +599,23 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
 
         switch (rp->OutputRate)
           {
-          case LOW_RATE:
+          case Config::LowRate:
             if (rp->OutputRate != rp->SampleRate)
               rp->OutputRate = rp->SampleRate;
             else
-            if (ProcessingRate == HIGH_RATE)
-              rp->OutputRate = HIGH_RATE;
+            if (cfg.ProcessingRate() == Config::HighRate)
+              rp->OutputRate = Config::HighRate;
             break;
 
-          case HIGH_RATE:
-            rp->OutputRate = LOW_RATE;
+          case Config::HighRate:
+            rp->OutputRate = Config::LowRate;
             break;
 
           default:
-            if (ProcessingRate == HIGH_RATE)
-              rp->OutputRate = HIGH_RATE;
+            if (cfg.ProcessingRate() == Config::HighRate)
+              rp->OutputRate = Config::HighRate;
             else
-              rp->OutputRate = LOW_RATE;
+              rp->OutputRate = Config::LowRate;
           }
         }
 
@@ -706,19 +628,19 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
 
       switch (sp->OutputRate)
         {
-        case LOW_RATE:
+        case Config::LowRate:
           sp->OutputRate = sp->SampleRate;
           break;
 
-        case HIGH_RATE:
-          sp->OutputRate = LOW_RATE;
+        case Config::HighRate:
+          sp->OutputRate = Config::LowRate;
           break;
 
         default:
-          if (ProcessingRate == HIGH_RATE)
-            sp->OutputRate = HIGH_RATE;
+          if (cfg.ProcessingRate() == Config::HighRate)
+            sp->OutputRate = Config::HighRate;
           else
-            sp->OutputRate = LOW_RATE;
+            sp->OutputRate = Config::LowRate;
         }
 
       item = CreateListLineItem(sp, SDI);
@@ -801,7 +723,7 @@ void Quit(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 static int validateInputFile()
 {
-  if (Mode == REALTIME)
+  if (cfg.ProcessingMode() == Config::RealTime)
     return(OK);
 
   if (strlen(ADSfileName) == 0 || access(ADSfileName, R_OK) == ERR)
@@ -829,7 +751,7 @@ void ValidateOutputFile(Widget w, XtPointer client, XtPointer call)
     }
 
 
-  if (strlen(OutputFileName) == 0 || ProductionRun)
+  if (strlen(OutputFileName) == 0 || cfg.ProductionRun())
     setOutputFileName();
 
 
@@ -875,9 +797,9 @@ void ValidateOutputFile(Widget w, XtPointer client, XtPointer call)
 static void setOutputFileName()
 {
   char	*s;
-  char	*p = ProcessingRate == LOW_RATE ? (char *)"%s%s.nc" : (char *)"%s%sh.nc";
+  char	*p = cfg.ProcessingRate() == Config::LowRate ? (char *)"%s%s.nc" : (char *)"%s%sh.nc";
 
-  if (ProductionRun)
+  if (cfg.ProductionRun())
     s = getenv("PROD_DATA");
   else
     s = getenv("DATA_DIR");
@@ -888,7 +810,7 @@ static void setOutputFileName()
     strcat(OutputFileName, "/");
     }
 
-  if (ProductionRun)
+  if (cfg.ProductionRun())
     {
     sprintf(buffer, p, ProjectNumber, FlightNumber);
     strcat(OutputFileName, buffer);
@@ -1188,7 +1110,7 @@ void ToggleProbe(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void QueryOutputFile(Widget w, XtPointer client, XtPointer call)
 {
-  if (!ProductionRun)
+  if (!cfg.ProductionRun())
     {
     GetDataDirectory(buffer);
     strcat(buffer, "*.nc");
@@ -1231,7 +1153,7 @@ void LogMessage(char msg[])
   XmTextPosition	position;
   extern Widget	logText;
 
-  if (Interactive)
+  if (cfg.Interactive())
     {
     position = XmTextGetInsertionPosition(logText);
     XmTextInsert(logText, position, msg);

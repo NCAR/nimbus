@@ -211,7 +211,7 @@ void SyntheticData::CheckTime()
     else if(passedtime==timestamp)
       {
       Inject();
-      if(ProcessingRate==HIGH_RATE)
+      if (cfg.ProcessingRate() == Config::HighRate)
         {
         ReadhrLine();
         }
@@ -233,7 +233,7 @@ void SyntheticData::Inject()
       {
       SetAverageData('s',varnames[i].index,varnames[i].value);
 
-      if (ProcessingRate==HIGH_RATE)
+      if (cfg.ProcessingRate() == Config::HighRate)
         {
         temptallyfunc[i]+=varnames[i].value; 
 	   
@@ -249,7 +249,7 @@ void SyntheticData::Inject()
       {
       SetAverageData('r',varnames[i].index,varnames[i].value);
 	
-      if(ProcessingRate==HIGH_RATE)
+      if(cfg.ProcessingRate() == Config::HighRate)
         {
         temptallyfunc[i]+=varnames[i].value;
 
@@ -321,7 +321,7 @@ void SyntheticData::InjectConstants()
 
       SetAverageData('s',constvarnames[i].index,constvarnames[i].value);
 	
-      if(ProcessingRate==HIGH_RATE)
+      if(cfg.ProcessingRate() == Config::HighRate)
         {
         for(int kk=0;kk<25;kk++)
           {
@@ -343,7 +343,7 @@ void SyntheticData::InjectConstants()
       rp=rt[constvarnames[i].index];
       SetAverageData('r',constvarnames[i].index,constvarnames[i].value);
 
-      if(ProcessingRate==HIGH_RATE)
+      if(cfg.ProcessingRate() == Config::HighRate)
         {
         for(int kk=0;kk<25;kk++)
           {
@@ -376,7 +376,7 @@ void SyntheticData::InjectFunctions()
       if(funcvarnames[i].type=='s')
         {
         sp=st[funcvarnames[i].index];
-        if (ProcessingRate==HIGH_RATE)
+        if (cfg.ProcessingRate() == Config::HighRate)
           {
           for(int a=0;a<25;a++)
             {
@@ -405,7 +405,7 @@ void SyntheticData::InjectFunctions()
       else if(funcvarnames[i].type=='r')
         {
         rp=rt[funcvarnames[i].index];
-        if(ProcessingRate==HIGH_RATE)
+        if(cfg.ProcessingRate() == Config::HighRate)
           {
           for(int a=0;a<25;a++)
             {
@@ -438,7 +438,7 @@ void SyntheticData::InjectFunctions()
       if(funcvarnames[i].type=='s')
         {
         sp=st[funcvarnames[i].index];
-        if (ProcessingRate==HIGH_RATE)
+        if (cfg.ProcessingRate() == Config::HighRate)
           {
           for(int a=0;a<25;a++)
             {
@@ -467,7 +467,7 @@ void SyntheticData::InjectFunctions()
       else  if(funcvarnames[i].type=='r')
         {
         rp=rt[funcvarnames[i].index];
-        if(ProcessingRate==HIGH_RATE)
+        if(cfg.ProcessingRate() == Config::HighRate)
           {
           for(int a=0;a<25;a++)
             {
@@ -499,7 +499,7 @@ void SyntheticData::InjectFunctions()
       if(funcvarnames[i].type=='s')
         {
         sp=st[funcvarnames[i].index];
-        if (ProcessingRate==HIGH_RATE)
+        if (cfg.ProcessingRate() == Config::HighRate)
           {
           for(int a=0;a<25;a++)
             {
@@ -528,7 +528,7 @@ void SyntheticData::InjectFunctions()
       else  if(funcvarnames[i].type=='r')
         {
         rp=rt[funcvarnames[i].index];
-        if(ProcessingRate==HIGH_RATE)
+        if(cfg.ProcessingRate() == Config::HighRate)
           {
           for(int a=0;a<25;a++)
             {
@@ -560,7 +560,7 @@ void SyntheticData::InjectFunctions()
       if(funcvarnames[i].type=='s')
         {
         sp=st[funcvarnames[i].index];
-        if (ProcessingRate==HIGH_RATE)
+        if (cfg.ProcessingRate() == Config::HighRate)
           {
           for(int a=0;a<25;a++)
             {
@@ -589,7 +589,7 @@ void SyntheticData::InjectFunctions()
       else  if(funcvarnames[i].type=='r')
         {
         rp=rt[funcvarnames[i].index];
-        if(ProcessingRate==HIGH_RATE)
+        if(cfg.ProcessingRate() == Config::HighRate)
           {
           for(int a=0;a<25;a++)
             {
@@ -621,7 +621,7 @@ void SyntheticData::InjectFunctions()
       if(funcvarnames[i].type=='s')
         {
         sp=st[funcvarnames[i].index];
-        if (ProcessingRate==HIGH_RATE)
+        if (cfg.ProcessingRate() == Config::HighRate)
           {
           for(int a=0;a<25;a++)
             {
@@ -650,7 +650,7 @@ void SyntheticData::InjectFunctions()
       else  if(funcvarnames[i].type=='r')
         {
         rp=rt[funcvarnames[i].index];
-        if(ProcessingRate==HIGH_RATE)
+        if(cfg.ProcessingRate() == Config::HighRate)
           {
           for(int a=0;a<25;a++)
             {
@@ -682,7 +682,7 @@ void SyntheticData::InjectFunctions()
       if(funcvarnames[i].type=='s')
         {
         sp=st[funcvarnames[i].index];
-        if (ProcessingRate==HIGH_RATE)
+        if (cfg.ProcessingRate() == Config::HighRate)
           {
           for(int a=0;a<25;a++)
             {
@@ -711,7 +711,7 @@ void SyntheticData::InjectFunctions()
       else  if(funcvarnames[i].type=='r')
         {
         rp=rt[funcvarnames[i].index];
-        if(ProcessingRate==HIGH_RATE)
+        if(cfg.ProcessingRate() == Config::HighRate)
           {
           for(int a=0;a<25;a++)
             {
@@ -743,7 +743,7 @@ void SyntheticData::InjectFunctions()
       if(funcvarnames[i].type=='s')
         {
         sp=st[funcvarnames[i].index];
-        if (ProcessingRate==HIGH_RATE)
+        if (cfg.ProcessingRate() == Config::HighRate)
           {
           for(int a=0;a<25;a++)
             {
@@ -772,7 +772,7 @@ void SyntheticData::InjectFunctions()
       else  if(funcvarnames[i].type=='r')
         {
         rp=rt[funcvarnames[i].index];
-        if(ProcessingRate==HIGH_RATE)
+        if(cfg.ProcessingRate() == Config::HighRate)
           {
           for(int a=0;a<25;a++)
             {
@@ -806,7 +806,7 @@ void SyntheticData::InjectFunctions()
 	      	if(funcvarnames[i].type=='s')
 		  {
 		    sp=st[funcvarnames[i].index];
-		    if (ProcessingRate==HIGH_RATE)
+		    if (cfg.ProcessingRate() == Config::HighRate)
 		      {
 			for(int a=0;a<25;a++)
 			  {
@@ -834,7 +834,7 @@ void SyntheticData::InjectFunctions()
 		else  if(funcvarnames[i].type=='r')
 		  {
 		    rp=rt[funcvarnames[i].index];
-		    if(ProcessingRate==HIGH_RATE)
+		    if(cfg.ProcessingRate() == Config::HighRate)
 		      {
 			 for(int a=0;a<25;a++)
 			  {
@@ -868,7 +868,7 @@ void SyntheticData::InjectFunctions()
 	      	if(funcvarnames[i].type=='s')
 		  {
 		    sp=st[funcvarnames[i].index];
-		    if (ProcessingRate==HIGH_RATE)
+		    if (cfg.ProcessingRate() == Config::HighRate)
 		      {
 			for(int a=0;a<25;a++)
 			  {
@@ -896,7 +896,7 @@ void SyntheticData::InjectFunctions()
 		else  if(funcvarnames[i].type=='r')
 		  {
 		    rp=rt[funcvarnames[i].index];
-		    if(ProcessingRate==HIGH_RATE)
+		    if(cfg.ProcessingRate() == Config::HighRate)
 		      {
 			 for(int a=0;a<25;a++)
 			  {
@@ -929,7 +929,7 @@ void SyntheticData::InjectFunctions()
 	      	if(funcvarnames[i].type=='s')
 		  {
 		    sp=st[funcvarnames[i].index];
-		    if (ProcessingRate==HIGH_RATE)
+		    if (cfg.ProcessingRate() == Config::HighRate)
 		      {
 			for(int a=0;a<25;a++)
 			  {
@@ -957,7 +957,7 @@ void SyntheticData::InjectFunctions()
 		else  if(funcvarnames[i].type=='r')
 		  {
 		    rp=rt[funcvarnames[i].index];
-		    if(ProcessingRate==HIGH_RATE)
+		    if(cfg.ProcessingRate() == Config::HighRate)
 		      {
 			 for(int a=0;a<25;a++)
 			  {
@@ -991,7 +991,7 @@ void SyntheticData::InjectFunctions()
 	      	if(funcvarnames[i].type=='s')
 		  {
 		    sp=st[funcvarnames[i].index];
-		    if (ProcessingRate==HIGH_RATE)
+		    if (cfg.ProcessingRate() == Config::HighRate)
 		      {
 			for(int a=0;a<25;a++)
 			  {
@@ -1019,7 +1019,7 @@ void SyntheticData::InjectFunctions()
 		else  if(funcvarnames[i].type=='r')
 		  {
 		    rp=rt[funcvarnames[i].index];
-		    if(ProcessingRate==HIGH_RATE)
+		    if(cfg.ProcessingRate() == Config::HighRate)
 		      {
 			 for(int a=0;a<25;a++)
 			  {
@@ -1052,7 +1052,7 @@ void SyntheticData::InjectFunctions()
 	      	if(funcvarnames[i].type=='s')
 		  {
 		    sp=st[funcvarnames[i].index];
-		    if (ProcessingRate==HIGH_RATE)
+		    if (cfg.ProcessingRate() == Config::HighRate)
 		      {
 			for(int a=0;a<25;a++)
 			  {
@@ -1080,7 +1080,7 @@ void SyntheticData::InjectFunctions()
 		else  if(funcvarnames[i].type=='r')
 		  {
 		    rp=rt[funcvarnames[i].index];
-		    if(ProcessingRate==HIGH_RATE)
+		    if(cfg.ProcessingRate() == Config::HighRate)
 		      {
 			 for(int a=0;a<25;a++)
 			  {
@@ -1113,7 +1113,7 @@ void SyntheticData::InjectFunctions()
 	      	if(funcvarnames[i].type=='s')
 		  {
 		    sp=st[funcvarnames[i].index];
-		    if (ProcessingRate==HIGH_RATE)
+		    if (cfg.ProcessingRate() == Config::HighRate)
 		      {
 			for(int a=0;a<25;a++)
 			  {
@@ -1141,7 +1141,7 @@ void SyntheticData::InjectFunctions()
 		else  if(funcvarnames[i].type=='r')
 		  {
 		    rp=rt[funcvarnames[i].index];
-		    if(ProcessingRate==HIGH_RATE)
+		    if(cfg.ProcessingRate() == Config::HighRate)
 		      {
 			 for(int a=0;a<25;a++)
 			  {
@@ -1175,7 +1175,7 @@ void SyntheticData::InjectFunctions()
 	      	if(funcvarnames[i].type=='s')
 		  {
 		    sp=st[funcvarnames[i].index];
-		    if (ProcessingRate==HIGH_RATE)
+		    if (cfg.ProcessingRate() == Config::HighRate)
 		      {
 			for(int a=0;a<25;a++)
 			  {
@@ -1203,7 +1203,7 @@ void SyntheticData::InjectFunctions()
 		else  if(funcvarnames[i].type=='r')
 		  {
 		    rp=rt[funcvarnames[i].index];
-		    if(ProcessingRate==HIGH_RATE)
+		    if(cfg.ProcessingRate() == Config::HighRate)
 		      {
 			 for(int a=0;a<25;a++)
 			  {
@@ -1237,7 +1237,7 @@ void SyntheticData::InjectFunctions()
 	      	if(funcvarnames[i].type=='s')
 		  {
 		    sp=st[funcvarnames[i].index];
-		    if (ProcessingRate==HIGH_RATE)
+		    if (cfg.ProcessingRate() == Config::HighRate)
 		      {
 			for(int a=0;a<25;a++)
 			  {
@@ -1265,7 +1265,7 @@ void SyntheticData::InjectFunctions()
 		else  if(funcvarnames[i].type=='r')
 		  {
 		    rp=rt[funcvarnames[i].index];
-		    if(ProcessingRate==HIGH_RATE)
+		    if(cfg.ProcessingRate() == Config::HighRate)
 		      {
 			 for(int a=0;a<25;a++)
 			  {
@@ -1297,7 +1297,7 @@ void SyntheticData::InjectFunctions()
 	      	if(funcvarnames[i].type=='s')
 		  {
 		    sp=st[funcvarnames[i].index];
-		    if (ProcessingRate==HIGH_RATE)
+		    if (cfg.ProcessingRate() == Config::HighRate)
 		      {
 			for(int a=0;a<25;a++)
 			  {
@@ -1325,7 +1325,7 @@ void SyntheticData::InjectFunctions()
 		else  if(funcvarnames[i].type=='r')
 		  {
 		    rp=rt[funcvarnames[i].index];
-		    if(ProcessingRate==HIGH_RATE)
+		    if(cfg.ProcessingRate() == Config::HighRate)
 		      {
 			 for(int a=0;a<25;a++)
 			  {
@@ -1359,7 +1359,7 @@ void SyntheticData::InjectFunctions()
 	      	if(funcvarnames[i].type=='s')
 		  {
 		    sp=st[funcvarnames[i].index];
-		    if (ProcessingRate==HIGH_RATE)
+		    if (cfg.ProcessingRate() == Config::HighRate)
 		      {
 			for(int a=0;a<25;a++)
 			  {
@@ -1387,7 +1387,7 @@ void SyntheticData::InjectFunctions()
 		else  if(funcvarnames[i].type=='r')
 		  {
 		    rp=rt[funcvarnames[i].index];
-		    if(ProcessingRate==HIGH_RATE)
+		    if(cfg.ProcessingRate() == Config::HighRate)
 		      {
 			 for(int a=0;a<25;a++)
 			  {
@@ -1468,7 +1468,7 @@ void SyntheticData::Injecthr(int m)
     {
     if(varnames[i].type=='s')
       {
-      if(ProcessingRate==HIGH_RATE)
+      if(cfg.ProcessingRate() == Config::HighRate)
         {
         SetHighData('s',varnames[i].index,m,varnames[i].value);
         temptallyfunc[i]+=varnames[i].value; 
@@ -1483,7 +1483,7 @@ void SyntheticData::Injecthr(int m)
 
     if(varnames[i].type=='r')
       {
-      if(ProcessingRate==HIGH_RATE)
+      if(cfg.ProcessingRate() == Config::HighRate)
         {
         SetHighData('r',varnames[i].index,m,varnames[i].value);
 
