@@ -268,10 +268,11 @@ lib$(LIBNAME).a: $(OBJS)
 	$(RM) $@
 	$(AR) $@ $(OBJS)
 	$(RANLIB) $@
-	@if [ -d $(BUILDLIBDIR) ]; then set +x; \
-	else (set -x; $(MKDIRHIER) $(BUILDLIBDIR)); fi
-	$(RM) $(BUILDLIBDIR)/$@
-	cd $(BUILDLIBDIR); $(LN) $(BUILDLIBTOP)/$(CURRENT_DIR)/$@ .
+#	@if [ -d $(BUILDLIBDIR) ]; then set +x; \
+#	else (set -x; $(MKDIRHIER) $(BUILDLIBDIR)); fi
+#	$(RM) $(BUILDLIBDIR)/$@
+#	cd $(BUILDLIBDIR); $(LN) $(BUILDLIBTOP)/$(CURRENT_DIR)/$@ .
+	cp libncaru.a ../../../lib
 
 install:: lib$(LIBNAME).a
 	@if [ -d $(DESTDIR)$(LINKLIBDIR) ]; then set +x; \
