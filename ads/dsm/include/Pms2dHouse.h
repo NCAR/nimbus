@@ -13,6 +13,7 @@
 #define PMSVME2DHOUSE_H
 
 #include <vxWorks.h>
+#include <vxLib.h>
 #include <sysLib.h>
 #include <taskLib.h>
 #include <logLib.h>
@@ -48,12 +49,15 @@ public:
 private:
   inline void getSem()    {for (*dpr_sem = 0; *dpr_sem & 0x01; *dpr_sem = 0);}
   inline void releaseSem()           {*dpr_sem = 1;}
+  int probeInterface(char *);          // test for interface card.
 
   int ptog;                             // put buffer index
   int gtog;                             // get buffer index
 
   short	*dpr_sem;                       // dual-port ram semaphore
   int	idx;
+  bool  interfaceInstalled;
+
 };
 
 #endif

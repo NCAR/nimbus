@@ -34,6 +34,7 @@ SyncRecord::SyncRecord (TapeHeader& hdr, DsmConfig& dcfg, SampleTable& st,
                         Pms2dHouse *tdh[],
                         GpsTans2 *tan2[],
                         GpsTans3 *tan3[],
+			Garmin *garmingps[],
                         PpsGps *gpspps[],
                         Spp *serspp[],
                         UvHyg *uv[],
@@ -44,7 +45,9 @@ SyncRecord::SyncRecord (TapeHeader& hdr, DsmConfig& dcfg, SampleTable& st,
                         LhTdl *tdllh,
                         Rdma *rdma,
                         Neph *neph[],
-                        Climet *climet
+                        Cmigits3 *cmigits[],
+                        Climet *climet,
+                        Mca *mca
 			) : samp_table (st), tfp (tp)
  
 // Class constructor.
@@ -60,8 +63,12 @@ SyncRecord::SyncRecord (TapeHeader& hdr, DsmConfig& dcfg, SampleTable& st,
   synchro = synch;
   lh_tdl = tdllh;
   climet_cn = climet;
+  mca_cn = mca;
   radial_dma = rdma;
   
+  for (j = 0; j < MAX_CMIG_INTFC; j++)
+    cmigits3[j] = cmigits[j];
+
   for (j = 0; j < MAX_UVHYG_INTFC; j++)
     nephelometer[j] = neph[j];
 
@@ -89,6 +96,7 @@ SyncRecord::SyncRecord (TapeHeader& hdr, DsmConfig& dcfg, SampleTable& st,
   for (j = 0; j < MAX_TANS_INTFC; j++) {
     tans2[j] = tan2[j];
     tans3[j] = tan3[j];
+    garmin[j] = garmingps[j];
   }
 
   for (j = 0; j < MAX_SPP_INTFC; j++)
@@ -132,10 +140,12 @@ void SyncRecord::buildRecord ()
   buildAnalog();			// enter the analog channels block
   buildAnaAux();			// enter the analog aux channels block
   buildCounter();			// enter the counter channels block
+  buildCmigits3();			// enter the cmigits channels block
   buildDigitalIn();			// enter the digital input chans block
   buildDigitalOut();			// enter the digital output chans block
   buildDpres();			        // enter the digital pressure blocks
   buildGpsTans();			// enter the Trimble tans blocks
+  buildGarmin();			// enter the Garmin gps blocks
   buildHwIrs();				// enter the Honeywell irs blocks
   buildHwGps();				// enter the Honeywell gps blocks
   buildJplTdl();			// enter the JPL TDL blocks
@@ -145,6 +155,7 @@ void SyncRecord::buildRecord ()
   buildPms1Vme();			// enter the vme pms 1d blocks
   buildPms2dHouse();			// enter the 2d house blocks
   buildClimet();			// enter the Climet block
+  buildMca();	   	    		// enter the Mca block
   buildNeph();				// enter the Neph block
   buildRdma();				// enter the rdma block
   buildSynchro();			// enter the synchro block
@@ -162,11 +173,7 @@ void SyncRecord::buildHdr ()
 {
   static int	firstTime = true;
 
-  if (firstTime)
-    {
-    hdr_blk.year = tfp.year();
-    hdr_blk.month = tfp.month();
-    hdr_blk.day = tfp.day();
+  if (firstTime) {
     hdr_blk.hour = tfp.hour();
     hdr_blk.minute = tfp.minute();
     hdr_blk.second = tfp.second();
@@ -185,15 +192,19 @@ void SyncRecord::buildHdr ()
       }
 
     firstTime = false;
-    }
+  }
 
-  // Read date once an hour.
-  if (hdr_blk.second == 0)
-    {
+  if (garmin[0]) {
+    hdr_blk.year = garmin[0]->year();
+    hdr_blk.month = garmin[0]->month();
+    hdr_blk.day = garmin[0]->day();
+    }
+  else {
     hdr_blk.year = tfp.year();
     hdr_blk.month = tfp.month();
     hdr_blk.day = tfp.day();
     }
+
 
   // Copy to the record buffer.
   buf->putBuf ((char*)&hdr_blk, samp_table.startHdr(), samp_table.lenHdr());
@@ -206,7 +217,7 @@ void SyncRecord::buildHdr ()
 /**
   printf ("SyncRecord: %02d/%02d/%02d, %02d:%02d:%02d\n", 
           hdr_blk.month, hdr_blk.day, hdr_blk.year, hdr_blk.hour, 
-          hdr_blk.minute, hdr_blk.sec);
+          hdr_blk.minute, hdr_blk.second);
 **/
 }
 /*****************************************************************************/
@@ -276,6 +287,30 @@ void SyncRecord::buildAnaAux ()
          src += len, idx += off, j++) {
       buf->putBuf (src, idx, len);
     }
+  }
+}
+/*****************************************************************************/
+
+void SyncRecord::buildCmigits3 ()
+
+// Enters the Cmigits blocks into the logical record.
+{
+  int stat;
+  int j;
+  Cmigits3_blk *cmigits3_blk;
+
+  for (j = 0, stat = samp_table.cmigits3_table.firstEntry(); stat;
+       j++, stat = samp_table.cmigits3_table.nextEntry()) {
+
+    while(!cmigits3[j]->Cmig_sem);
+
+    buf->putBuf (cmigits3[j]->buffer(),
+                 samp_table.cmigits3_table.start(),
+                 samp_table.cmigits3_table.length());
+
+    cmigits3[j]->Cmig_sem = FALSE;
+
+//    cmigits3_blk = (Cmigits3_blk*)cmigits3[j]->buffer();
   }
 }
 /*****************************************************************************/
@@ -421,6 +456,35 @@ void SyncRecord::buildGpsTans ()
   }
 }
 /*****************************************************************************/
+ 
+void SyncRecord::buildGarmin ()
+ 
+// Enters the Garmin blocks into the logical record.
+{
+  int stat;
+  int j;
+  Garmin_blk *garmin_blk;
+ 
+  for (j = 0, stat = samp_table.garmin_table.firstEntry(); stat;
+       j++, stat = samp_table.garmin_table.nextEntry()) {
+    buf->putBuf (garmin[j]->buffer(),
+                 samp_table.garmin_table.start(),
+                 samp_table.garmin_table.length());
+
+
+//    garmin_blk = (Garmin_blk*)garmin[j]->buffer();
+/*
+    printf ("GARMIN: glat = %f, glon = %f, galt = %f, utctime = %s\n",
+            garmin_blk->glat, garmin_blk->glon, garmin_blk->height,
+            garmin_blk->utctime);
+*/
+//    printf ("GARMIN: status = %c\n",garmin_blk->status);
+//    printf ("GARMIN: Gspd = %f, Course = %f\n",garmin_blk->ground_speed,
+//	     garmin_blk->course);
+
+  }
+}
+/*****************************************************************************/
 
 void SyncRecord::buildPpsGps ()
  
@@ -517,6 +581,22 @@ void SyncRecord::buildClimet ()
     buf->putBuf((char *)(p = (Climet_blk *)climet_cn->buffer()),
 		samp_table.climet_table.start(),
 		samp_table.climet_table.length());
+  }
+
+}
+/*****************************************************************************/
+
+void SyncRecord::buildMca ()
+
+// Enters the Mca block into the logical record.
+{
+
+  Mca_blk *p;
+
+  if (mca_cn) {
+    buf->putBuf((char *)(p = (Mca_blk *)mca_cn->buffer()),
+                samp_table.mca_table.start(),
+                samp_table.mca_table.length());
   }
 
 }

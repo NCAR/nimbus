@@ -15,8 +15,29 @@ PmsVme2d::PmsVme2d (unsigned char *intf_base, void (*stat_msg)(char* msg_str))
                 
 {
   int j;
+
 //  printf("Begin Constructor\n");
 // Set interface pointers.
+
+  interfaceInstalled = false;
+  probeInterface((char *)intf_base);
+
+// Create the particle and record buffer class.
+  for (j = 0; j < TOG; j++) {
+    buf[j] = new SerialBuf (sizeof(P2d_rec) * 7);
+  }
+// Initialize buffer control variables.
+  memset ((char*)probe_names, 0, sizeof(probe_names));
+  gtog = 0;
+  ptog = 0;
+  p_cnt = 0;
+  c_cnt = 0;
+  rec_cnt = 0;
+  hvps_type = FALSE;
+
+  if (interfaceInstalled == false)
+    return;
+
   statusMsg = stat_msg;                         // status message handler
   gctl = (Pms2dGctl*)(intf_base + PMS2D_GBL_CTL);
   pctl[0] = (Pms2dPctl*)(intf_base + PMS2D_PRB_0_CTL);
@@ -35,18 +56,6 @@ PmsVme2d::PmsVme2d (unsigned char *intf_base, void (*stat_msg)(char* msg_str))
 // Issue a software reset to the interface.
 //  reset();
   taskDelay (sysClkRateGet() / 10);		// delay for reset
-
-// Create the particle and record buffer class.
-  for (j = 0; j < TOG; j++) {
-    buf[j] = new SerialBuf (sizeof(P2d_rec) * 7);
-  }
-// Initialize buffer control variables.
-  memset ((char*)probe_names, 0, sizeof(probe_names));
-  gtog = 0;
-  ptog = 0;
-  p_cnt = 0;
-  c_cnt = 0;
-  rec_cnt = 0;
 
   for (j = 0; j < PMS2D_NUM_PROBES; j++) 
     ptype[j] = GNONE;
@@ -70,6 +79,9 @@ void PmsVme2d::initProbe (int channel, char *id, int type, int res)
 // header, P2D_P_STR or P2D_C_STR, or P2D_H_STR.
 
 { 
+  if (interfaceInstalled == false)
+    return;
+
 // C probes and HVPS probes are both sampled through the C interface channel.
   if(type == 1) {
     c_cnt++;
@@ -82,6 +94,7 @@ void PmsVme2d::initProbe (int channel, char *id, int type, int res)
   else if (type == 3) {
     c_cnt++;
     sprintf (msg, "H%1d", c_cnt);                // build the probe id string
+    hvps_type = TRUE;
  
 // If a HVPS probe is being sampled through this interface, the tas is limited
 // to HVPS_MAX_TAS.  NOTE: This limits the tas for all probes on this
@@ -113,6 +126,9 @@ void PmsVme2d::enableProbe (char *id)
 {
   int channel;
 
+  if (interfaceInstalled == false)
+    return;
+
   if ((channel = probeIndex (id)) != ERROR) {
     pctl[channel]->type = ptype[channel];
 //    sprintf (msg, "%s probe enabled.\n", id);
@@ -130,6 +146,9 @@ void PmsVme2d::disableProbe (char *id)
 {
   int channel;
 
+  if (interfaceInstalled == false)
+    return;
+
   if ((channel = probeIndex (id)) != ERROR) {
     pctl[channel]->type = GNONE;
     sprintf (msg, "%s probe disabled.\n", id);
@@ -145,10 +164,14 @@ void PmsVme2d::setTas (int tas)
 
 // Sets the true air speed if the tas_mode is TAS2D_AUTO.
 {
+  if (interfaceInstalled == false)
+    return;
 
+  if (hvps_type) {
+    tas = 45;
+  }
   if (tas_mode == TAS2D_AUTO) {
     volatile short	newTas = (short)tas * (255 / 125) + 1;
-
     getSem_2();
     gctl->tas = newTas;
     releaseSem_2();
@@ -160,6 +183,9 @@ void PmsVme2d::setTasMode (int mode)
  
 // Set the true air speed mode to auto or a fixed tas mode.
 {
+  if (interfaceInstalled == false)
+    return;
+
   if ((tas_mode = mode) != TAS2D_AUTO) {
     volatile short	newTas = (short)mode * (255 / 125) + 1;
 
@@ -183,6 +209,9 @@ void PmsVme2d::setTime (int hour, int minute, int sec)
 
 // Sets the interface time.
 {
+  if (interfaceInstalled == false)
+    return;
+
   getSem_2();
   gctl->hour = (short)hour;
   gctl->minute = (short)minute;
@@ -196,23 +225,30 @@ void PmsVme2d::startSampling ()
 
 // Sets the interface go flag, which enables sampling.
 {
+  if (interfaceInstalled == false)
+    return;
+
 //  getSem_2();
   gctl->go = TRUE;
 //  releaseSem_2();
 }
 /******************************************************************************/
 
-void PmsVme2d::collect (int new_second)
+short PmsVme2d::collect (int new_second)
 
 // Copies data from the interface buffers into the local buffers.
 {
   int channel;
   P2d_rec *rec;
   int gfull, idx;			// buffer full number of bytes 
+  short rec_full = FALSE;
+
+  if (interfaceInstalled == false)
+    return rec_full;
 
 // If this is the start of a new second, reset the record counter.
-  if (new_second) 
-    rec_cnt = 0;
+//  if (new_second) 
+//    rec_cnt = 0;
 
 
   for (channel = 0; channel < PMS2D_NUM_PROBES; channel++)
@@ -243,8 +279,13 @@ void PmsVme2d::collect (int new_second)
       rec = (P2d_rec*)buf[ptog]->getBufPtr();
       buf[ptog]->copyToBuf ((char*)h2rec[channel], sizeof (P2d_hdr));
       buf[ptog]->copyToBuf ((char*)g2rec[channel], sizeof (P2d_data));
+//      logMsg("2D collect rec_cnt = %d\n",rec_cnt,0,0,0,0,0);
       rec_cnt++;
-
+/*
+      logMsg("%x %x %x %x %x %x\n",g2rec[channel]->data[0],g2rec[channel]->data[1],
+              g2rec[channel]->data[2],g2rec[channel]->data[3],g2rec[channel]->data[4],
+              g2rec[channel]->data[5]);      
+*/
       // Clear the buffer full flag.
       if (channel == 0) {
         getSem_0();
@@ -257,30 +298,48 @@ void PmsVme2d::collect (int new_second)
         releaseSem_1();
         }
 
-      logMsg("Gfull = %d Channel = %d ptog = %d \n",gfull,channel,ptog,0,0,0);
+//      logMsg("Gfull = %d Channel = %d ptog = %d \n",gfull,channel,ptog,0,0,0);
 //      logMsg("rec_rate = %d  rec_cnt = %d\n",rec_rate,rec_cnt,0,0,0,0);
 //  if (new_second)
 //      logMsg("min = %d sec = %d\n",rec->minute,rec->second,0,0,0,0);
       }
-/*
+
     // If this record is from an HVPS probe then overwrite the id word.
 
     idx = probeIndex ((char*)&rec->id);
     if (probe_names[idx][0] == 'H') {	// does name start with 'H' ?
       strncpy ((char*)&rec->id, probe_names[idx], strlen (probe_names[idx]));
+      hvps_type = TRUE;
       }
-*/
+
 
     // Check for a full local buffer. Toggle buffers if so.
-    if (buf[ptog]->bufFull())
+    if (buf[ptog]->bufFull()){
+//      logMsg("2D bufFull  Channel = %d ptog = %d \n",channel,ptog,0,0,0,0);
+      gtog = ptog;
       ptog = 1 - ptog;
+      rec_full = TRUE;
+      rec_cnt = 0;
     }
+  }
+  return rec_full;
 }
 
 /******************************************************************************
 ** Private Functions
 ******************************************************************************/
 
+int PmsVme2d::probeInterface(char *intf_base)
+{
+  char testW = 1;
+
+  if (vxMemProbe(intf_base, VX_WRITE, 1, &testW) == OK)
+    interfaceInstalled = true;
+
+printf("2D interface card: %d\n", interfaceInstalled);
+}
+
+/******************************************************************************/
 int PmsVme2d::probeIndex (char *id)
 
 // Returns the index corresponding the the passed in id, or ERROR if invalid.
@@ -299,4 +358,3 @@ int PmsVme2d::probeIndex (char *id)
     return H2IDX;
   return ERROR;
 }
-/******************************************************************************/

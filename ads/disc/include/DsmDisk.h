@@ -24,6 +24,7 @@
 #include <TapeHeader.h>
 #include <DsmConfig.h>
 #include <DsmTape.h>
+#include <UnixTask.h>
 
 class DsmDisk
 {
@@ -40,6 +41,8 @@ private:
   TapeHeader &tape_header;
   DsmMessage &win_msg;
   DsmConfig &dsm_config;
+
+  UnixTask	*nimbus;
 
   int filesopened;                              // indicates file status
   int diskfull;                                 // indicates disk full

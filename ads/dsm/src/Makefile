@@ -1,30 +1,30 @@
-S=              $(DSM)/src/
-I=		$(DSM)/include/
-O=              $(DSM)/obj/
-B=              $(DSM)/bin/
-L=              $(DSM)/lib/
-LD=             $(DISC)/lib/
-LH=             $(HEADER)/lib/
+S=              ../src/
+I=		../include/
+O=              ../obj/
+B=              ../bin/
+L=              ../lib/
+LD=             ../../disc/lib/
+LH=             ../../header/lib/
 LC=		$(JLOCAL)/lib/gcc-lib/m68k-wrs-vxworks/2.95.2/msoft-float/
 IL=		$(JLOCAL)/include/
-IH=		$(HEADER)/include/
-IW=		$(WINDS)/include/
-ID=		$(DISC)/include/
+IH=		../../header/include/
+ID=		../../disc/include/
 IV=		$(WIND_BASE)/target/config/mv162lc/
-OD=		$(DISC)/obj/
-OH=		$(HEADER)/obj/
+OD=		../../disc/obj/
+OH=		../../header/obj/
 
 DSM_LIBS=       $(L)libdsm.a $(LC)libgcc.a
 DISC_LIBS=      $(LD)libvxdisc.a
 HDR_LIBS=    	$(LH)libvxheader.a
+RELEASE	=	${JLOCAL}/ads
 
 CFLAGS = -c -m68040 -DCPU=MC68LC040 -msoft-float -DVXWORKS -fno-builtin \
          -I$(WIND_BASE)/target/h -nostdinc -D__cpluscplus \
-         -I$(I) -I$(IH) -I$(ID) -I$(IW) -I$(IL) -I$(IV) 
+         -I$(I) -I$(IH) -I$(ID) -I$(IL) -I$(IV) 
 
 ASYNC.H= $(ID)dsmctl.h $(I)dsmVmeDefs.h $(I)ipicDefs.h $(IL)header.h $(ID)messageDefs.h
 
-ASYNC.O = $(O)APN232.o $(O)AnalogCal.o $(O)Bc635Vme.o $(O)Counter.o $(O)DigitalIn.o $(O)Dsp56002.o $(OD)DsmConfig.o $(OD)DsmMessage.o $(O)GpsTans2.o $(O)GpsTans3.o $(O)GreyVme.o $(O)HwGps.o $(O)HwGpsTable.o $(O)HwIrs.o $(O)IP429.o $(O)IsioPort.o $(O)Mcr.o $(O)MsgQueue.o $(OD)Palt.o $(O)Pms1Vme.o $(OD)RandomBuf.o $(O)SampleTable.o $(O)SyncRecord.o $(OD)SyncVar.o $(OD)TapeHeader.o $(OD)Tasx.o $(OD)VarConfig.o $(O)Vmio12.o $(O)Vmio14In.o $(O)PpsGps.o $(O)SerialTod.o $(O)DigOut.o $(O)Dpres.o $(O)PmsVme2d.o $(O)Synchro.o $(O)SynchroTable.o $(O)TodClock.o $(O)Pms2dHouse.o $(O)Pms2dhTable.o $(O)IPcounter.o $(O)Vm3118.o $(O)GreyVmeHouse.o $(O)GreyVmehTable.o $(O)JplTdl.o $(O)Spp.o $(O)LhTdl.o $(O)Rdma.o $(O)Neph.o $(O)Climet.o
+ASYNC.O = $(O)APN232.o $(O)AnalogCal.o $(O)Bc635Vme.o $(O)Counter.o $(O)DigitalIn.o $(O)Dsp56002.o $(OD)DsmConfig.o $(OD)DsmMessage.o $(O)GpsTans2.o $(O)GpsTans3.o $(O)GreyVme.o $(O)HwGps.o $(O)HwGpsTable.o $(O)HwIrs.o $(O)IP429.o $(O)IsioPort.o $(O)Mcr.o $(O)MsgQueue.o $(OD)Palt.o $(O)Pms1Vme.o $(OD)RandomBuf.o $(O)SampleTable.o $(O)SyncRecord.o $(OD)SyncVar.o $(OD)TapeHeader.o $(OD)Tasx.o $(OD)VarConfig.o $(O)Vmio12.o $(O)Vmio14In.o $(O)PpsGps.o $(O)SerialTod.o $(O)DigOut.o $(O)Dpres.o $(O)PmsVme2d.o $(O)Synchro.o $(O)SynchroTable.o $(O)TodClock.o $(O)Pms2dHouse.o $(O)Pms2dhTable.o $(O)IPcounter.o $(O)Vm3118.o $(O)GreyVmeHouse.o $(O)GreyVmehTable.o $(O)JplTdl.o $(O)Spp.o $(O)LhTdl.o $(O)Rdma.o $(O)Neph.o $(O)Climet.o $(O)Mca.o $(O)Cmigits3.o $(O)Garmin.o 
 
 #$(O)Aimr.o $(O)NoNoy.o $(O)Noaa.o $(O)Ozone.o
 
@@ -37,10 +37,13 @@ DISPLAY.O= $(OD)DsmConfig.o $(OD)DsmMessage.o $(O)MsgQueue.o $(OD)SyncVar.o $(OD
 TAPE.H= $(ID)dsmctl.h $(I)dsmVmeDefs.h
 TAPE.O= $(OD)DsmConfig.o $(OD)DsmMessage.o $(O)DsmTapeCtl.o $(O)MsgQueue.o $(OD)SerialBuf.o $(OD)TapeHeader.o $(O)Exb162.o
 
-all: hdrClass discClass dsmClass $(O)dsmAsync.o $(O)dsmComm.o $(O)maspComm.o $(O)dsmDisplay.o $(O)dsmTape.o $(O)vxtcp.o $(O)ck3118.o $(O)ck429.o $(O)ckapn232.o $(O)ckctr.o $(O)ckdio.o $(O)ckdsp.o $(O)ckgrey.o $(O)ckirs.o $(O)ckophir.o $(O)ckscsi.o $(O)cktans2.o $(O)cktans3.o $(O)cktelem.o $(O)cktfp.o $(O)cktod.o $(O)ckuvh.o $(O)ckv1d.o $(O)vxtcp.o $(O)vxudp.o $(O)fptst.o $(O)ckarinc.o $(O)ckarincgps.o $(O)ckppsgps.o $(O)ckdpres.o $(O)cksynchro.o $(O)ck2d.o $(O)ckcnt.o $(O)ck2dgrey.o $(O)ckjpltdl.o $(O)ckspp.o $(O)cklhtdl.o $(O)ckrdma.o
+all: hdrClass dsmClass $(O)dsmAsync.o $(O)dsmComm.o $(O)maspComm.o $(O)dsmDisplay.o $(O)dsmTape.o $(O)vxtcp.o $(O)ck3118.o $(O)ck429.o $(O)ckapn232.o $(O)ckctr.o $(O)ckdio.o $(O)ckdsp.o $(O)ckgrey.o $(O)ckirs.o $(O)ckophir.o $(O)ckscsi.o $(O)cktans2.o $(O)cktans3.o $(O)cktelem.o $(O)cktfp.o $(O)cktod.o $(O)ckuvh.o $(O)ckv1d.o $(O)vxtcp.o $(O)vxudp.o $(O)fptst.o $(O)ckarinc.o $(O)ckarincgps.o $(O)ckppsgps.o $(O)ckdpres.o $(O)cksynchro.o $(O)ck2d.o $(O)ckcnt.o $(O)ck2dgrey.o $(O)ckjpltdl.o $(O)ckspp.o $(O)cklhtdl.o $(O)ckrdma.o $(O)ckstod.o
 
 # $(O)cknonoy.o $(O)cknoaa.o $(O)ckozone.o
 
+
+install:
+	cp ../obj/* ${RELEASE}/dsm/obj
 
 clean:
 	rm ${O}/* ${L}/*
@@ -48,11 +51,8 @@ clean:
 hdrClass:
 	make -f $(HEADER)/class/Makefile
 
-discClass:
-#	make -f $(DISC)/class/Makefile
-
 dsmClass:
-	make -f $(DSM)/class/Makefile
+	make -f ../class/Makefile
 
 $(O)dsmAsync.o: $(S)dsmAsync.cc $(ASYNC.O) $(ASYNC.H)
 	cc68k $(CFLAGS) $(S)dsmAsync.cc -o $(O)dsmAsync_st.o
@@ -176,6 +176,11 @@ $(O)cknonoy.o: $(S)cknonoy.cc $(O)NoNoy.o
 $(O)ckdpres.o: $(S)ckdpres.cc $(O)Dpres.o $(O)IsioPort.o
 	cc68k $(CFLAGS) $(S)ckdpres.cc -o $(O)tmp.o
 	ld68k -r $(O)tmp.o $(DISC_LIBS) $(DSM_LIBS) -o $(O)ckdpres.o
+	/bin/rm $(O)tmp.o
+
+$(O)ckstod.o: $(S)ckstod.cc $(O)SerialTod.o $(O)IsioPort.o
+	cc68k $(CFLAGS) $(S)ckstod.cc -o $(O)tmp.o
+	ld68k -r $(O)tmp.o $(DISC_LIBS) $(DSM_LIBS) -o $(O)ckstod.o
 	/bin/rm $(O)tmp.o
 
 $(O)ckophir.o: $(S)ckophir.cc $(O)Ophir3.o

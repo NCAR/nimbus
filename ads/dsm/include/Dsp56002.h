@@ -25,7 +25,7 @@
 #define DSP_BUFFER_3_OFFSET	0x4940		// offset to data buffer #1
 #define DSP_BUFFER_4_OFFSET	0x1280		// offset to data buffer #2
 #define DSP_BUFFER_5_OFFSET	0x0C30		// offset to data buffer #1
-#define DSP_BUFFER_6_OFFSET	0x39E0		// offset to data buffer #2
+#define DSP_BUFFER_6_OFFSET	0x4618		// offset to data buffer #2
 
 // Dual-port ram semaphore macros.
 #define get_sem() for (*dsp_sem = 0; *dsp_sem & 0x01; *dsp_sem = 0)

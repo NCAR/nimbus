@@ -42,7 +42,7 @@ public:
   int recon();					// enable port receiver
   void enableInterrupt (const int vect, const int level); // enable port ints
   int abort (const int chan);			// abort ops on a channel
-  void baudRate(const int baud);		// change baud rate
+  void baudRate(const int baud_rate);		// change baud rate
 
 
 protected:

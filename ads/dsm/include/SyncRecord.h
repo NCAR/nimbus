@@ -14,6 +14,7 @@
 #include <header.h>
 
 #include <Bc635Vme.h>
+#include <Cmigits3.h>
 #include <Counter.h>
 #include <DigitalIn.h>
 #include <Dpres.h>
@@ -21,6 +22,7 @@
 #include <Dsp56002.h>
 #include <GpsTans2.h>
 #include <GpsTans3.h>
+#include <Garmin.h>
 #include <GreyVmeHouse.h>
 #include <HwIrs.h>
 #include <HwGps.h>
@@ -28,6 +30,7 @@
 #include <LhTdl.h>
 #include <Mcr.h>
 #include <Climet.h>
+#include <Mca.h>
 #include <Neph.h>
 #include <Ophir3.h>
 #include <Ozone.h>
@@ -59,6 +62,7 @@ public:
               Pms2dHouse *tdh[],
               GpsTans2 *tan2[],
               GpsTans3 *tan3[],
+              Garmin *garmingps[], 
               PpsGps *gpspps[],
               Spp *serspp[],
               UvHyg *uv[],
@@ -69,7 +73,9 @@ public:
               LhTdl *lhtdl,
               Rdma *rdma,
               Neph *neph[],
-              Climet *climet
+              Cmigits3 *cmigits[],
+              Climet *climet,
+              Mca *mca
               );
 
   void buildRecord ();				// build the 1 second record
@@ -80,16 +86,19 @@ private:
   void buildAnalog();				// build the Analog block
   void buildAnaAux();				// build the Analog aux block
   void buildCounter();				// build the Counters block
+  void buildCmigits3();			// build the Cmigits3 block
   void buildDigitalIn();			// build the Digital inputs blk
   void buildDigitalOut();			// build the Digital outputs blk
   void buildDpres();				// build the Digital pressure 
   void buildGpsTans();				// build the Trimble tans blks
+  void buildGarmin();				// build the Garmin gps blks
   void buildGreyVmeHouse();			// build the Grey house blocks
   void buildHwIrs();				// build the Honeywell irs blks
   void buildHwGps();				// build the Honeywell gps blks
   void buildJplTdl();				// build the JPlTdl blks
   void buildLhTdl();				// build the JPlTdl blks
   void buildClimet();				// build the Climet block
+  void buildMca();				// build the Mca block
   void buildNeph();				// build the Neph block
   void buildNoNoy();				// build the NO_NOY blks
   void buildPpsGps();				// build the Honeywell gps blks
@@ -105,11 +114,13 @@ private:
   SampleTable &samp_table;			// sample table
   Bc635Vme &tfp;				// time-freq processor intfc
   Counter *counter;				// counters interface
+  Cmigits3 *cmigits3[MAX_CMIG_INTFC];		// C-MIGITS 3 interfaces
   DigitalIn *digital_in;			// digital inputs interfaces
   Dpres *d_pres[MAX_UVHYG_INTFC];		// digital pressure interface
   Dsp56002 *dsp;				// M56002 dsp board interface
   GpsTans2 *tans2[MAX_TANS_INTFC];		// Trimble Tans I & II intfcs 
   GpsTans3 *tans3[MAX_TANS_INTFC];		// Trimble Tans III intfcs 
+  Garmin *garmin[MAX_TANS_INTFC];		// Trimble Tans III intfcs 
   GreyVmeHouse *greyh[MAX_GREYVME_INTFC];  	// pms Grey interfaces
   HwIrs *hw_irs[MAX_HWIRS_INTFC];		// Honeywell irs interfaces 
   HwGps *hw_gps[MAX_HWGPS_INTFC];		// Honeywell irs interfaces 
@@ -125,6 +136,7 @@ private:
   JplTdl *jpl_tdl[MAX_UVHYG_INTFC];		// Laser Hygrometer
   LhTdl *lh_tdl;				// Small laser hygrometer
   Climet *climet_cn;				// Climet
+  Mca *mca_cn;	 				// Mca 
   Neph *nephelometer[MAX_UVHYG_INTFC];				// Neph
   Rdma *radial_dma;				// Rdma
 

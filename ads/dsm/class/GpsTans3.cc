@@ -102,6 +102,7 @@ void GpsTans3::isr()
   register char *src;
   register int j;
 
+//  logMsg("In Tans3 Isr\n",0,0,0,0,0,0);
 // Check for data from the isio port.
   if (!(int)(src = getData()))
     return;

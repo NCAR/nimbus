@@ -21,6 +21,7 @@ void SampleTable::buildTable  ()
   int j;
   int stat;
   int tans_count = 0;
+  int garmin_count = 0;
   int ophir_count = 0;
   int uvh_count = 0;
   int pps_count = 0;
@@ -30,8 +31,10 @@ void SampleTable::buildTable  ()
   int jpltdl_count = 0;
   int lhtdl_count = 0;
   int climet_count = 0;
+  int mca_count = 0;
   int neph_count = 0;
   int rdma_count = 0;
+  int cmigits3_count = 0;
   str8 tstr;
 
 // Parse through the header building the sample tables. 
@@ -77,6 +80,12 @@ void SampleTable::buildTable  ()
     else if (dsm_hdr.gpsTans3Type()) {
       tans3_table.enter (dsm_hdr, TANS_PORT_1 + tans_count++);
     }
+    else if (dsm_hdr.garminType()) {
+      garmin_table.enter (dsm_hdr, GARMIN_PORT_1 + garmin_count++);
+    }
+    else if (dsm_hdr.cmigits3Type()) {
+      cmigits3_table.enter (dsm_hdr, CMIGITS3_PORT_1 + cmigits3_count++);
+    }
     else if (dsm_hdr.dpresType()) { 
       dpres_table.enter (dsm_hdr, DPRES_PORT_1 + dpres_count++);
     }
@@ -96,7 +105,10 @@ void SampleTable::buildTable  ()
       lhtdl_table.enter (dsm_hdr, LHTDL_PORT_1 + lhtdl_count++);
     }
     else if (dsm_hdr.climetType()) {
-      climet_table.enter (dsm_hdr, CLIMET_PORT_1 + neph_count++);
+      climet_table.enter (dsm_hdr, CLIMET_PORT_1 + climet_count++);
+    }
+    else if (dsm_hdr.mcaType()) {
+      mca_table.enter (dsm_hdr, MCA_PORT_1 + mca_count++);
     }
     else if (dsm_hdr.nephType()) {
       neph_table.enter (dsm_hdr, NEPH_PORT_1 + neph_count++);
@@ -196,6 +208,10 @@ void SampleTable::buildTable  ()
   printf ("Trimble Tans 3\n");
   tans3_table.displayTable();
   printf ("Collins PPS GPS\n");
+  garmin_table.displayTable();
+  printf ("GARMIN GPS\n");
+  cmigits3_table.displayTable();
+  printf ("CMIGITS3\n");
   pps_table.displayTable();
   printf ("UV Hygrometer\n");
   uvh_table.displayTable();

@@ -155,10 +155,6 @@ void Bc635Vme::readTime()
                (((treg1 >>= BCD_DIGIT_SHIFT) & BCD_DIGIT_MASK) * 10) +
                (bc_reg->time0 & BCD_DIGIT_MASK) * 100;
 
-
-// Read the julian day. 
-  treg2 = t1 + (t1 * 10) + (bc_reg->time0 & BCD_DIGIT_MASK) * 100;
-
 // Check for a new julian day.
   if (bc_julian_day != (int)treg2) {
 //    logMsg("\nreadTime: julianDay changed, bc_julian_day=%d, treg2=%d.\n\n",
@@ -387,21 +383,23 @@ void Bc635Vme::strobeIsr ()
   bc_reg->intstat = 4;			// clear the interrupt
 //  readTime();
   setMinorStrobeTime();
-
   if (newSecond())
-    {
+  {
     // Advance time for next round.
     if (++ourSecond > 59)
-      {
+    {
       ourSecond = 0;
       if (++ourMinute > 59)
-        {
+      {
         ourMinute = 0;
         if (++ourHour > 23)
+	{
           ourHour = 0;
-        }
+	  readTime();
+	}
       }
     }
+  }
 
 }
 

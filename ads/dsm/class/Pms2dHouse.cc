@@ -15,7 +15,6 @@
 /******************************************************************************
 ** Public Functions
 ******************************************************************************/
-
 Pms2dHouse::Pms2dHouse (char *intf_base) 
 
 // Constructor.
@@ -25,14 +24,20 @@ Pms2dHouse::Pms2dHouse (char *intf_base)
   gtog = 1;
   ptog = 0;
 
+  interfaceInstalled = false;
+  probeInterface((char *)intf_base);
+
+  if (interfaceInstalled == false)
+    return;
+
 // Set the register pointers.
   house[0] = (P2d_house *)(intf_base + PMS2D_HOUSE_BUF_0);
   house[1] = (P2d_house *)(intf_base + PMS2D_HOUSE_BUF_1);
   dpr_sem = (short*)(intf_base + PMS2D_DPR_SEM);
 
 }
+
 /*****************************************************************************/
- 
 void Pms2dHouse::secondAlign ()
  
 // This routine is to be called at each 1 second clock tick. The 2D 
@@ -42,13 +47,16 @@ void Pms2dHouse::secondAlign ()
   ptog = 1 - ptog;
  
 }
-/*****************************************************************************/
 
+/*****************************************************************************/
 void Pms2dHouse::getData (int chan)
 
 // Reads housekeeping and shadowor data from one or two 2-D probes.
 {
   P2dChan* rec;
+
+  if (interfaceInstalled == false)
+    return;
 
 // If this is the start of a new second, release the last second's buffers
 // and toggle the buffers.
@@ -59,7 +67,9 @@ void Pms2dHouse::getData (int chan)
 
   rec = (P2dChan*)gbuffer(chan);
 
+// printf("2dH #2\n");
   getSem();
+// printf("2dH #3\n");
   memcpy ((void *)rec, (void *)house[chan], sizeof(P2d_house));
   releaseSem();
 
@@ -72,3 +82,15 @@ void Pms2dHouse::getData (int chan)
          house[chan]->hdata[6], house[chan]->hdata[7],0,0);
 */
 }
+
+/*****************************************************************************/
+int Pms2dHouse::probeInterface(char *intf_base)
+{
+  char testW = 1;
+
+  if (vxMemProbe(intf_base, VX_WRITE, 1, &testW) == OK)
+    interfaceInstalled = true;
+
+printf("2D interface card: %d\n", interfaceInstalled);
+}
+

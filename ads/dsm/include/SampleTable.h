@@ -53,6 +53,8 @@ public:
   SerialTable ophir3_table;		// Ophir radiometer table
   SerialTable pps_table;		// Collins PPS GPS table
   SerialTable tans2_table;		// Trimble Tans I and II table
+  SerialTable garmin_table;		// Garmin table
+  SerialTable cmigits3_table;		// Cmidgets3 table
   SerialTable tans3_table;		// Trimble Tans III table
   SerialTable uvh_table;		// UV hygrometer table
   SerialTable dpres_table;		// DPRES table
@@ -61,6 +63,7 @@ public:
   SerialTable jpltdl_table;		// JPL TDL table
   SerialTable lhtdl_table;		// JPL TDL table
   SerialTable climet_table;		// Climet table
+  SerialTable mca_table;		// Mca table
   SerialTable neph_table;		// Neph table
   SerialTable rdma_table;		// Rdma table
   SerialTable spp_table;		// SPP table

@@ -25,7 +25,7 @@ HwIrs::HwIrs(IP429 *ip, Bc635Vme& tp, int rxchan, int txchan) : tfp(tp)
   gtog = 1;
   last_alt = 0.0;
   head = ring[ptog];
-cntr[2] = 0;
+  cntr[2] = 0;
 
   cur_drift = 0;
   cur_gnd_speed = 0;
@@ -298,6 +298,8 @@ char *HwIrs::buffer()
 for (int i=180; i<250; ++i)
   if (cntr[i] > 0)
     {
+        break;
+/*
     switch (i)
       {
       case 0265: case 0323: case 0324: case 0325: case 0326: case 0327:
@@ -328,7 +330,7 @@ for (int i=180; i<250; ++i)
         break;
 
       }
-
+*/
     cntr[i]=0;
     }
 

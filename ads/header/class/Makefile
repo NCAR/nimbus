@@ -1,7 +1,7 @@
-S=		$(HEADER)/class/
-I=		$(HEADER)/include/
-O=              $(HEADER)/obj/
-L=              $(HEADER)/lib/
+S=		../class/
+I=		../include/
+O=              ../obj/
+L=              ../lib/
 IL=		$(JLOCAL)/include/
 
 POFLAGS =  -c -g -DSVR4 -I$(I) -I$(IL)

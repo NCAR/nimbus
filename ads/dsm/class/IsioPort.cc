@@ -91,14 +91,14 @@ int IsioPort::getcnt (char *const str, const int len)
 
   isio->cmdram[rx_chan].parm1 = len;          // set the length 
   isio->cmdram[rx_chan].cmd = GETCNT;         // issue command 
- 
+/* 
   while (isio->cmdram[rx_chan].cmd > 0);         // wait for completion
  
   if (!(stat = isio->cmdram[rx_chan].cmd  & 0x00ff)) {   // if no error 
     memcpy (str, (char*)isio->ibufs[rx_chan], len);	// get the data
   }
   return (isio->cmdram[rx_chan].cmd & 0x00ff);   
-
+*/
 }
 /*****************************************************************************/
 void IsioPort::igetcnt (const int len)
@@ -254,7 +254,6 @@ int IsioPort::initPort ()
 // initial parameters. Returns TRUE if successful FALSE otherwise.
 {
   ChiniRegs regs;
-
 // Set the parity, and asynchronous mode.
   switch (parity_type) {
     case SER_NONE:
@@ -368,7 +367,7 @@ int IsioPort::initPort ()
   printf ("ccr2 = 0x%2X\n", regs.ccr2);
   printf ("pcr = 0x%2X\n", regs.pcr);
 **/
-
+  
   if (setoffs (rx_chan) & 0x00FF)     		// set board address 
     return ERROR;
   if (setoffs (tx_chan) & 0x00FF)
@@ -383,6 +382,40 @@ int IsioPort::initPort ()
   return OK;
 }
 /*****************************************************************************/
+void IsioPort::baudRate (const int baud_rate)
+{
+  ChiniRegs regs;
+// Set the baud rate, and use the bit rate generator for a clock source.
+  switch (baud_rate) {
+    case 1200:
+      regs.ttr = (char)(TTR_BRG_CLK | TTR_RTR_BAUD_1200);
+      regs.rtr = (char)(RTR_BRG_CLK | TTR_RTR_BAUD_1200);
+      break;
+    case 2400:
+      regs.ttr = (char)(TTR_BRG_CLK | TTR_RTR_BAUD_2400);
+      regs.rtr = (char)(RTR_BRG_CLK | TTR_RTR_BAUD_2400);
+      break;
+    case 4800:
+      regs.ttr = (char)(TTR_BRG_CLK | TTR_RTR_BAUD_4800);
+      regs.rtr = (char)(RTR_BRG_CLK | TTR_RTR_BAUD_4800);
+      break;
+    case 9600:
+      regs.ttr = (char)(TTR_BRG_CLK | TTR_RTR_BAUD_9600);
+      regs.rtr = (char)(RTR_BRG_CLK | TTR_RTR_BAUD_9600);
+      break;
+    case 19200:
+      regs.ttr = (char)(TTR_BRG_CLK | TTR_RTR_BAUD_19200);
+      regs.rtr = (char)(RTR_BRG_CLK | TTR_RTR_BAUD_19200);
+      break;
+    case 38400:
+      regs.ttr = (char)(TTR_BRG_CLK | TTR_RTR_BAUD_38400);
+      regs.rtr = (char)(RTR_BRG_CLK | TTR_RTR_BAUD_38400);
+      break;
+    default:;
+  }
+}
+/*****************************************************************************/
+
 
 int IsioPort::chini2 (const ChiniRegs *const regs)
 

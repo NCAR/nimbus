@@ -13,6 +13,7 @@
 #define PMSVME2D_H
 
 #include <vxWorks.h>
+#include <vxLib.h>
 #include <sysLib.h>
 #include <taskLib.h>
 #include <logLib.h>
@@ -66,6 +67,7 @@ typedef struct {
   short res;				// resolution(microns) 25,50,100,200
 } Pms2dPctl;
 
+
 class PmsVme2d {
 public:
   PmsVme2d (unsigned char *intf_base, void (*stat_msg)(char* msg_str));
@@ -77,7 +79,7 @@ public:
   void setRate (int rate);              // set max data record rate
   void startSampling();                 // set the interface go flag
   void setTime (int hour, int minute, int second); // set intfc time
-  void collect (int hz_cnt);		// get global data 
+  short collect (int hz_cnt);		// get global data 
   inline void enableInterrupt (int vect, int level)
         {*bim_vct = (short)vect; *bim_ctl = (short)(PMS2D_INT_ENABLE + level);}
   inline void disableInterrupt(){*bim_ctl = PMS2D_INT_DISABLE;}
@@ -86,10 +88,12 @@ public:
   inline int bufFull()		{return buf[gtog]->bufFull();}
   inline char *buffer()    	{return buf[gtog]->getBuf();}
   inline int length()    	{return buf[gtog]->bufIndex();}
-  inline void releaseBuf()	{buf[gtog]->releaseBuf();gtog = 1 - gtog;}
+  inline void releaseBuf()	{buf[gtog]->releaseBuf();}
+//  inline void releaseBuf()	{buf[gtog]->releaseBuf();gtog = 1 - gtog;}
 
 private:
-  int probeIndex (char *id);            // get a probe's array index
+  int probeIndex(char *id);		// get a probe's array index
+  int probeInterface(char *);		// test for interface card.
 
   inline void getSem_0()       {for (*dpr_sem_0 = 0; *dpr_sem_0 & 0x01; 
                                   *dpr_sem_0 = 0);}
@@ -114,6 +118,7 @@ private:
 
   int ptog;                             // put buffer index
   int gtog;                             // get buffer index
+  int hvps_type;
 
   Pms2dGctl *gctl;			// global control struct
   Pms2dPctl *pctl[PMS2D_NUM_PROBES];	// global particle struct
@@ -137,6 +142,9 @@ private:
   int tas_mode;				// tas mode auto or fixed value
   int max_tas;				// max tas value
   char msg[DSM_MSG_STRING_SIZE];
+
+  bool interfaceInstalled;
+
 };
 
 #endif

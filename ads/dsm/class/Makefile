@@ -1,24 +1,23 @@
-S=		$(DSM)/class/
-I=		$(DSM)/include/
-O=              $(DSM)/obj/
-L=              $(DSM)/lib/
-IH=		$(HEADER)/include/
+S=		../class/
+I=		../include/
+O=              ../obj/
+L=              ../lib/
+IH=		../../header/include/
 IL=		$(JLOCAL)/include/
-IW=		$(WINDS)/include/
-ID=		$(DISC)/include/
-SD=		$(DISC)/class/
+ID=		../../disc/include/
+SD=		../../disc/class/
 IV=		$(WIND_BASE)/target/config/mv162lc/
-OD=		$(DISC)/obj/
-OH=		$(HEADER)/obj/
+OD=		../../disc/obj/
+OH=		../../header/obj/
 
 AR68K=	ar68k
 RL68K=	ranlib68k
 
 CFLAGS = -c -m68040 -DCPU=MC68LC040 -msoft-float -fno-builtin -D__cpluscplus \
          -DVXWORKS -I$(WIND_BASE)/target/h -nostdinc \
-         -I$(I) -I$(IH) -I$(ID) -I$(IW) -I$(IL) -I$(IV) 
+         -I$(I) -I$(IH) -I$(ID) -I$(IL) -I$(IV) 
 
-all: ${O}APN232.o ${O}AnaAuxTable.o ${O}AnalogCal.o ${O}AnalogTable.o ${O}ArincGps.o ${O}Bc635Vme.o ${O}Counter.o ${O}DigOut.o ${O}DigitalIn.o ${O}DigitalTable.o ${O}Dpres.o ${O}DsmNatsComm.o ${O}DsmTapeCtl.o ${O}Dsp56002.o ${O}Exb162.o ${O}GpsTans2.o ${O}GpsTans3.o ${O}GreyVme.o ${O}GreyVmeTable.o ${O}HwGps.o ${O}HwGpsTable.o ${O}HwIrs.o ${O}HwIrsTable.o ${O}IP429.o ${O}IPcounter.o ${O}IsioPort.o ${O}Mcr.o ${O}McrTable.o ${O}MsgQueue.o ${O}Ophir3.o ${O}Pms1Vme.o ${O}Pms1VmeTable.o ${O}Pms2dHouse.o ${O}Pms2dhTable.o ${O}PmsVme2d.o ${O}PmsVme2dTable.o ${O}PpsGps.o ${O}SampleTable.o ${O}SccClass.o ${O}SerialTable.o ${O}SerialTod.o ${O}SyncRecord.o ${O}Synchro.o ${O}SynchroTable.o ${O}TodClock.o ${O}TvmConfig.o ${O}TvmDisplay.o ${O}TvmFixedFmt.o ${O}TvmFltNumber.o ${O}TvmStatus.o ${O}TvmTape.o ${O}TvmUtilities.o ${O}UvHyg.o ${O}Vm3118.o ${O}Vmio12.o ${O}Vmio14Count.o ${O}Vmio14In.o ${O}Vmio14Out.o $(O)GreyVmeHouse.o $(O)GreyVmehTable.o $(O)JplTdl.o  $(O)Spp.o $(O)LhTdl.o $(O)Rdma.o $(O)Neph.o $(O)Climet.o
+all: ${O}APN232.o ${O}AnaAuxTable.o ${O}AnalogCal.o ${O}AnalogTable.o ${O}ArincGps.o ${O}Bc635Vme.o ${O}Counter.o ${O}DigOut.o ${O}DigitalIn.o ${O}DigitalTable.o ${O}Dpres.o ${O}DsmNatsComm.o ${O}DsmTapeCtl.o ${O}Dsp56002.o ${O}Exb162.o ${O}GpsTans2.o ${O}GpsTans3.o ${O}GreyVme.o ${O}GreyVmeTable.o ${O}HwGps.o ${O}HwGpsTable.o ${O}HwIrs.o ${O}HwIrsTable.o ${O}IP429.o ${O}IPcounter.o ${O}IsioPort.o ${O}Mcr.o ${O}McrTable.o ${O}MsgQueue.o ${O}Ophir3.o ${O}Pms1Vme.o ${O}Pms1VmeTable.o ${O}Pms2dHouse.o ${O}Pms2dhTable.o ${O}PmsVme2d.o ${O}PmsVme2dTable.o ${O}PpsGps.o ${O}SampleTable.o ${O}SccClass.o ${O}SerialTable.o ${O}SerialTod.o ${O}SyncRecord.o ${O}Synchro.o ${O}SynchroTable.o ${O}TodClock.o ${O}TvmConfig.o ${O}TvmDisplay.o ${O}TvmFixedFmt.o ${O}TvmFltNumber.o ${O}TvmStatus.o ${O}TvmTape.o ${O}TvmUtilities.o ${O}UvHyg.o ${O}Vm3118.o ${O}Vmio12.o ${O}Vmio14Count.o ${O}Vmio14In.o ${O}Vmio14Out.o $(O)GreyVmeHouse.o $(O)GreyVmehTable.o $(O)JplTdl.o  $(O)Spp.o $(O)LhTdl.o $(O)Rdma.o $(O)Neph.o $(O)Climet.o $(O)Mca.o $(O)Cmigits3.o $(O)Garmin.o
 
 
 ANAAUXTABLE.H = $(I)AnaAuxTable.h $(IL)header.h
@@ -36,8 +35,16 @@ CLIMET.H = $(I)Climet.h $(IL)header.h $(ID)messageDefs.h $(ID)dsmctl.h \
         $(I)IsioPort.h
 CLIMET.O = $(O)IsioPort.o
 
+MCA.H = $(I)Mca.h $(IL)header.h $(ID)messageDefs.h $(ID)dsmctl.h \
+        $(I)IsioPort.h
+MCA.O = $(O)IsioPort.o
+
 COUNTER.H = $(I)Counter.h $(I)DigitalTable.h $(ID)SerialBuf.h $(I)Vmio12.h \
 	$(I)Vmio14Count.h
+
+CMIDGETS.H = $(I)Cmigits3.h $(IL)header.h $(ID)messageDefs.h $(ID)dsmctl.h \
+	$(I)IsioPort.h
+CMIDGETS.O = $(O)IsioPort.o 
 
 DIGITALIN.H = $(I)DigitalIn.h $(I)APN232.h $(I)DigitalTable.h $(ID)SerialBuf.h \
 	$(I)Vmio12.h $(I)Vmio14In.h
@@ -61,6 +68,8 @@ GPSTANS2.H = $(I)GpsTans2.h $(ID)messageDefs.h $(IL)header.h $(I)IsioPort.h
 GPSTANS2.O = $(O)IsioPort.o
 GPSTANS3.H = $(I)GpsTans3.h $(ID)messageDefs.h $(IL)header.h $(I)IsioPort.h 
 GPSTANS3.O = $(O)IsioPort.o
+GARMIN.H = $(I)Garmin.h $(ID)messageDefs.h $(IL)header.h $(I)IsioPort.h
+GARMIN.O = $(O)IsioPort.o
 GREYVME.H = $(I)GreyVme.h $(ID)SerialBuf.h $(IL)header.h $(ID)messageDefs.h \
 	$(ID)dsmctl.h
 GREYVMETABLE.H= $(I)GreyVmeTable.h $(ID)dsmctl.h $(IL)header.h $(ID)TapeHeader.h
@@ -125,8 +134,8 @@ SAMPLETABLE.O = $(O)AnaAuxTable.o $(O)AnalogTable.o $(O)DigitalTable.o $(O)GreyV
 
 SCCCLASS.H = $(I)SccClass.h $(I)SerialTable.h
 SERIALTABLE.H = $(I)SerialTable.h $(ID)dsmctl.h $(IL)header.h $(ID)TapeHeader.h
-SERIALTOD.H = $(ID)dsmctl.h $(IL)header.h $(I)IsioPort.h $(ID)messageDefs.h \
-	$(I)Bc635Vme.h
+SERIALTOD.H = $(I)SerialTod.h $(ID)dsmctl.h $(IL)header.h $(I)IsioPort.h \
+	$(ID)messageDefs.h  $(I)Bc635Vme.h
 SERIALTOD.O = $(O)IsioPort.o $(O)Bc635Vme.o
 SYNCRECORD.H = $(I)SyncRecord.h $(I)Bc635Vme.h $(I)Counter.h $(ID)DsmConfig.h \
 	$(I)DigitalIn.h $(I)Dpres.h $(I)Dsp56002.h $(I)GpsTans2.h $(I)GpsTans3.h\
@@ -210,6 +219,16 @@ $(O)Climet.o: $(S)Climet.cc $(CLIMET.H) $(CLIMET.O)
 	${AR68K} r $(L)libdsm.a $(O)Climet.o
 	${RL68K} $(L)libdsm.a
 
+$(O)Cmigits3.o: $(S)Cmigits3.cc $(CMIGITS.H) $(CMIGITS.O)
+	cc68k $(CFLAGS) $(S)Cmigits3.cc -o $(O)Cmigits3.o
+	${AR68K} r $(L)libdsm.a $(O)Cmigits3.o
+	${RL68K} $(L)libdsm.a
+
+$(O)Mca.o: $(S)Mca.cc $(MCA.H) $(MCA.O)
+	cc68k $(CFLAGS) $(S)Mca.cc -o $(O)Mca.o
+	${AR68K} r $(L)libdsm.a $(O)Mca.o
+	${RL68K} $(L)libdsm.a
+
 $(O)Counter.o: $(S)Counter.cc $(COUNTER.H)
 	cc68k $(CFLAGS) $(S)Counter.cc -o $(O)Counter.o
 	${AR68K} r $(L)libdsm.a $(O)Counter.o
@@ -253,6 +272,11 @@ $(O)GpsTans2.o: $(S)GpsTans2.cc $(GPSTANS2.H) $(GPSTANS2.O)
 $(O)GpsTans3.o: $(S)GpsTans3.cc $(GPSTANS3.H) $(GPSTANS3.O)
 	cc68k $(CFLAGS) $(S)GpsTans3.cc -o $(O)GpsTans3.o
 	${AR68K} r $(L)libdsm.a $(O)GpsTans3.o
+	${RL68K} $(L)libdsm.a
+
+$(O)Garmin.o: $(S)Garmin.cc $(GARMIN.H) $(GARMIN.O)
+	cc68k $(CFLAGS) $(S)Garmin.cc -o $(O)Garmin.o
+	${AR68K} r $(L)libdsm.a $(O)Garmin.o
 	${RL68K} $(L)libdsm.a
 
 $(O)GreyVme.o: $(S)GreyVme.cc $(GREYVME.H)
@@ -400,7 +424,7 @@ $(O)SerialTable.o: $(S)SerialTable.cc $(SERIALTABLE.H)
 	${AR68K} r $(L)libdsm.a $(O)SerialTable.o
 	${RL68K} $(L)libdsm.a
 
-$(O)SerialTod.o: $(S)SerialTod.cc $(SerialTod.H) $(SerialTod.O)
+$(O)SerialTod.o: $(S)SerialTod.cc $(SERIALTOD.H) $(SERIALTOD.O)
 	cc68k $(CFLAGS) $(S)SerialTod.cc -o $(O)SerialTod.o
 	${AR68K} r $(L)libdsm.a $(O)SerialTod.o
 	${RL68K} $(L)libdsm.a

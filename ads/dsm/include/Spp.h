@@ -59,10 +59,11 @@ public:
   void	getSppData();			// get probe data
   int	initSpp (int range);		// setup Spp probe	
   void	isr ();				// isr for this class
-  int	firstSample()	{idx = 0; return TRUE;}
-  int	nextSample()	{return (idx < RATE_10 - 1)? ++idx: FALSE;}
+  int	firstSample()	{ idx = 0; return TRUE; }
+  int	nextSample()	{ return (idx < RATE_10 - 1)? ++idx: FALSE; }
   const char* buffer();
-  int	index()		{return idx;}
+  int	index()		{ return(idx); }
+  int	SerialPort()	{ return(chan - 1); }
 
 private:
   int setup_range;

@@ -45,6 +45,7 @@
 #include <HwGps.h>
 #include <IP429.h>
 #include <IPcounter.h>
+#include <Mca.h>
 #include <Mcr.h>
 #include <MsgQueue.h>
 #include <Neph.h>
@@ -98,7 +99,7 @@ static void hwGpsReadIsr (int intf);	// Honeywell gps read isr wrapper
 static void hwIrsWriteIsr (int intf);	// Honeywell irs write isr wrapper
 static void isio1Bim1Isr (int intf);	// isio1 chans 3,4 isr, (uv hyg)
 static void isio1Bim2Isr (int intf);	// isio1 chans 3,4 isr, (uv hyg)
-static void isio1Bim3Isr (int intf);	// isio1 chans 5,6 isr, (tans)
+static void isio1Bim3Isr (int intf);	// isio1 chans 5,6 isr, (gps)
 static void isio1Bim4Isr (int intf);	// isio1 chans 7,8 isr, (ophir3 & PPS)
 static void dms_isr ();			// DigitalIn Isr for DMS
 
@@ -127,6 +128,8 @@ static DsmMessage *tape_msg;		// tape message handler class
 static Dsp56002 *dsp;			// dsp interface class
 static GpsTans2 *tans2[MAX_TANS_INTFC];	// Trimble Tans I & II  class
 static GpsTans3 *tans3[MAX_TANS_INTFC];	// Trimble Tans III  class
+static Cmigits3 *cmigits3[MAX_CMIG_INTFC];	// C-MIGITS III class
+static Garmin *garmin[MAX_TANS_INTFC];	// Garmin  class
 static PpsGps *pps[MAX_PPS_INTFC];	// Collins PPS GPS class
 static SerialTod *serialtod[MAX_SERIALTOD_INTFC]; // Serial TOD output class
 static GreyVme *greyv[MAX_GREYVME_INTFC]; // Grey scale interface class
@@ -169,6 +172,7 @@ static Vm3118 *vm3118;			// analog auxiliary inputs class
 static JplTdl *jpltdl[MAX_UVHYG_INTFC];	// Laser Hygrometer class
 static LhTdl *lhtdl;
 static Climet *climet;			// Climet class
+static Mca *mca;			// Mca class
 static Neph *neph[MAX_UVHYG_INTFC];       // Neph interface classes
 static Rdma *rdma;			// Rdma class
 
@@ -197,6 +201,7 @@ void dsmAsync()
   int	new_second;
   int	priority;
   int   rec;
+  short rec_full;
 
   const char *buf;			// local buffer pointer
   int	len;				// record length
@@ -322,9 +327,9 @@ void dsmAsync()
 // Create the 1 second sync record class.
   sync_rec = new SyncRecord(*dsm_hdr, *dsm_config, *sample_table, *tfp, counter,
                         digital_in, dpres, dsp, hw_irs, hw_gps, mcr,
-                        ophir3, pms1v, pms2dh, tans2, tans3, pps, spp, uvh, 
-                        vm3118, synchro, greyh, jpltdl, lhtdl, rdma, neph, 
-                        climet);
+                        ophir3, pms1v, pms2dh, tans2, tans3, garmin, pps, spp, 
+                        uvh, vm3118, synchro, greyh, jpltdl, lhtdl, rdma, neph, 
+                        cmigits3,climet, mca);
 // Set up the isr communication semaphore.
   if (!(isr_sem = semBCreate(SEM_Q_FIFO, SEM_EMPTY))) {
     fprintf (stderr, "Failure creating isr_sem.\n");
@@ -399,15 +404,20 @@ printf("interrupts initialized\n");
 //  Call the 2d data collection routine.
     for (j = 0; (j < MAX_PMSVME2D_INTFC); j++) {
       if ((int)pms2d[j]) {
-        pms2d[j]->collect (new_second);
+        rec_full = pms2d[j]->collect (new_second);
  
 //      Check for 2d data available, and send it to the comm task.
-        if (pms2d[j]->bufFull()) {
+//        if (pms2d[j]->bufFull()) {
+        if (rec_full) {
           rec += 1;
+/*
+fprintf(stderr, "%d:%d:%d\n", ((P2d_rec *)(pms2d[j]->buffer()))->hour,
+	((P2d_rec *)(pms2d[j]->buffer()))->minute, ((P2d_rec *)(pms2d[j]->buffer()))->second);
+*/
           if (comm_pms2Q->msgSend (pms2d[j]->buffer(), pms2d[j]->length()) ==
                 ERROR)
             fprintf(stderr, "Failure sending Pms 2D data to comm_pms2Q.\n");
- 
+
 //        If local recording is enabled, send data to the tape task.
           if (dsm_config->localRecord() && tape_syncQ_enabled) {
             if (tape_pms2Q->msgSend (pms2d[j]->buffer(), pms2d[j]->length()) 
@@ -525,6 +535,10 @@ printf("interrupts initialized\n");
         tans2[j]->checkStatus();
       for (j = 0; (j < MAX_TANS_INTFC) && (int)tans3[j]; j++)
         tans3[j]->checkStatus();
+      for (j = 0; (j < MAX_TANS_INTFC) && (int)garmin[j]; j++)
+        garmin[j]->checkStatus();
+      for (j = 0; (j < MAX_CMIG_INTFC) && (int)cmigits3[j]; j++)
+        cmigits3[j]->checkStatus();
 #ifdef NOAA_GIV
       for (j = 0; (j < MAX_PPS_INTFC) && (int)pps[j]; j++)
         pps[j]->checkStatus();
@@ -552,6 +566,9 @@ printf("interrupts initialized\n");
 
       if ((int)climet)
         climet->checkStatus();
+
+      if ((int)mca)
+        mca->checkStatus();
 
       if ((int)rdma)
         rdma->checkStatus();
@@ -862,24 +879,27 @@ static void pms2dInit ()
   unsigned char *base_adr[MAX_PMSVME2D_INTFC] =
 			{(unsigned char *)(A24D16_BASE + PMSVME2D_BASE_0),
 			 (unsigned char *)(A24D16_BASE + PMSVME2D_BASE_1)};
+
 // Null the class pointers.
   for (intf = 0; intf < MAX_PMSVME2D_INTFC; intf++)
     pms2d[intf] = (PmsVme2d*)0;
 
 // Initialize the channels from the sample table.
   for (stat = sample_table->pms2d_table.firstEntry(); stat;
-       stat = sample_table->pms2d_table.nextEntry()) {
- 
+       stat = sample_table->pms2d_table.nextEntry())
+    {
     intf = sample_table->pms2d_table.interface();     // get interface number
  
 // If the class for this interface hasn't been created, create it.
-    if (!(int)pms2d[intf]) {
+    if (!(int)pms2d[intf])
+      {
       pms2d[intf] = new PmsVme2d (base_adr[intf], statusMsg);
+
       if (pms2d[intf] == NULL) {
         perror ("Creating PmsVme2d:");
         exit (ERROR);
+        }
       }
-    }
 
     printf("chan = %d name = %s type = %d res = %d\n",
                             sample_table->pms2d_table.channel(),
@@ -891,7 +911,7 @@ static void pms2dInit ()
                             sample_table->pms2d_table.name(),
                             sample_table->pms2d_table.type(),
                             sample_table->pms2d_table.resolution());
-  }
+    }
 
 
 // Start data collection
@@ -901,6 +921,7 @@ static void pms2dInit ()
       pms2d[intf]->startSampling();
     }
   }
+
 }
 
 /*****************************************************************************/
@@ -912,7 +933,6 @@ static void pms2dhInit ()
   char *base_adr[MAX_PMSVME2D_INTFC] =
                         {(char *)(A24D16_BASE + PMSVME2D_BASE_0),
                          (char *)(A24D16_BASE + PMSVME2D_BASE_1)};
-
 
 // Null the class pointers.
   for (intf = 0; intf < MAX_PMSVME2D_INTFC; intf++)
@@ -1022,6 +1042,7 @@ static void serialInit ()
   for (idx = 0; idx < MAX_TANS_INTFC; idx++) {
     tans2[idx]	= (GpsTans2*)0;
     tans3[idx]	= (GpsTans3*)0;
+    garmin[idx]	= (Garmin*)0;
   }
   for (idx = 0; idx < MAX_PPS_INTFC; idx++)
     pps[idx] = (PpsGps*)0;
@@ -1037,8 +1058,11 @@ static void serialInit ()
     jpltdl[idx] = (JplTdl*)0;
   for (idx = 0; idx < MAX_UVHYG_INTFC; idx++)
     neph[idx] = (Neph*)0;
+  for (idx = 0; idx < MAX_CMIG_INTFC; idx++)
+    cmigits3[idx] = (Cmigits3*)0;
   lhtdl = (LhTdl*)0;
   climet = (Climet*)0;
+  mca = (Mca*)0;
   rdma = (Rdma*)0;
 
 // Create the Trimble Tans 2 class objects.
@@ -1061,6 +1085,26 @@ static void serialInit ()
                           sample_table->tans3_table.port(), statusMsg, setTime);
     if (tans3[idx] == NULL) {
       perror ("Creating GpsTans3:");
+      exit (ERROR);
+    }
+  }
+// Create the Garmin class objects.
+  for (stat = sample_table->garmin_table.firstEntry(), idx = 0;
+       stat; stat = sample_table->garmin_table.nextEntry(), idx++) {
+    garmin[idx] = new Garmin ((char*)(A24D16_BASE + ISIO1_BASE),
+                      sample_table->garmin_table.port(), statusMsg,setTime);
+    if (garmin[idx] == NULL) {
+      perror ("Creating Garmin:");
+      exit (ERROR);
+    }
+  }
+// Create the Cmigits3 class objects.
+  for (stat = sample_table->cmigits3_table.firstEntry(), idx = 0;
+       stat; stat = sample_table->cmigits3_table.nextEntry(), idx++) {
+    cmigits3[idx] = new Cmigits3((char*)(A24D16_BASE + ISIO1_BASE),
+                      sample_table->cmigits3_table.port(), statusMsg);
+    if (cmigits3[idx] == NULL) {
+      perror ("Creating Cmigits3:");
       exit (ERROR);
     }
   }
@@ -1174,6 +1218,18 @@ static void serialInit ()
     }
   }
 
+// Create the Mca class object.
+
+  if (sample_table->mca_table.firstEntry()) {
+    mca = new Mca ((char*)(A24D16_BASE + ISIO1_BASE), MCA_PORT_1,
+                  statusMsg);
+
+    if (mca == NULL) {
+      perror ("Creating Mca:");
+      exit (ERROR);
+    }
+  }
+
 // Create the Neph class object.
 
   for (stat = sample_table->neph_table.firstEntry(), idx = 0;
@@ -1203,7 +1259,7 @@ static void serialInit ()
   if (dsm_config->dsmSerialTod()) {
     for (idx = 0; idx < MAX_SERIALTOD_INTFC; idx++) {
       serialtod[idx] = new SerialTod ((char*)(A24D16_BASE + ISIO1_BASE),
-                               SERTOD_PORT + idx, statusMsg, *tfp);
+                               SERTOD_PORT + idx, statusMsg, tfp);
       if (serialtod[idx] == NULL) {
         perror ("Creating SerialTod:");
         exit (ERROR);
@@ -1231,12 +1287,13 @@ static void checkMessage ()
 
       case MCR_MSG:
 // printf("MCR message received.\n");
-        if ((int)mcr)
+        if ((int)mcr) {
           mcr->control (comm_msg->action(), comm_msg->value());
+        }
         break;
  
       case DIGOUT_MSG:
-// printf("DIGOUT message received.\n");
+ printf("DIGOUT message received.\n");
         if ((int)digOut)
           digOut->control(comm_msg->action(), comm_msg->connector(),
 			comm_msg->channel());
@@ -1248,7 +1305,7 @@ static void checkMessage ()
         break;
 
       case PMS2_MSG:             	// Pms 2d message
-// printf("PMS2 change\n");
+ printf("PMS2 change\n");
         switch (comm_msg->action()) {
 
           case PMS2_TAS_SELECT:
@@ -1316,6 +1373,8 @@ static void checkMessage ()
 
       case TIME_MSG:
       case DT_MSG:
+        printf("Garmin date = %d/&d/%d\n",garmin[0]->month(),garmin[0]->day(),
+                garmin[0]->year()); 
         setTime(comm_msg->year(), comm_msg->month(), comm_msg->day(),
 		comm_msg->hour(), comm_msg->minute(), comm_msg->second());
         break;
@@ -1437,7 +1496,10 @@ static void setTasAlt (float tas, float alt)
 
   for (j = 0; (j < MAX_TANS_INTFC) && (int)tans3[j]; j++)
     tans3[j]->setAltitude (alt);
-
+/*
+  for (j = 0; (j < MAX_TANS_INTFC) && (int)garmin[j]; j++)
+    garmin[j]->setAltitude (alt);
+*/
   if (sample_table->hwirs_table.firstEntry())
     hw_irs[sample_table->hwirs_table.index()]->setTasAlt (tas, alt);
  
@@ -1597,6 +1659,11 @@ static void initInterrupts ()
 {
   int stat;
   int j;
+  bool	connect_bim[4];
+  int	vector[4];
+
+  vector[0] = ISIO1_BIM1_VCT; vector[1] = ISIO1_BIM2_VCT;
+  vector[2] = ISIO1_BIM3_VCT; vector[3] = ISIO1_BIM4_VCT;
 
 // Connect the time-freq processor isr.
   if (intConnect ((VOIDFUNCPTR*)TFP_ADR,(VOIDFUNCPTR)hertz50_isr, TRUE)){
@@ -1610,29 +1677,45 @@ static void initInterrupts ()
   }
 
 // Connect the isio1 bim 2 isr.  UV hygrometer, JPL TDL, and NOAA ozone.
-  if ((int)uvh[0] || (int)jpltdl || (int)lhtdl || (int)rdma || (int)neph){
+  for (j = 0; j < 4; ++j)
+    connect_bim[j] = false;
+
+  for (j = 0; spp[j]; ++j)
+    connect_bim[spp[j]->SerialPort() / 2] = true;
+
+
+  if ((int)garmin[0] || (int)uvh[0] || (int)jpltdl[0] || (int)lhtdl || (int)rdma || (int)neph[0] || (int)cmigits3[0])
+    connect_bim[1] = true;
+
+  if ((int)dpres[0] || (int)climet)
+    connect_bim[2] = true;
+
+  if ((int)tans2[0] || (int)tans3[0] || (int)ophir3[0] || (int)pps[0] || (int)mca)
+    connect_bim[3] = true;
+
+
+// Connect the isio1 bim 2 isr. 
+  if (connect_bim[1])
     if (intConnect((VOIDFUNCPTR*)ISIO1_BIM2_ADR, (VOIDFUNCPTR)isio1Bim2Isr, 0)){
       perror ("intConnect isio1Bim2Isr");
       exit(ERROR);
     }
-  }
 
 // Connect the isio1 bim 3 isr. 
-  if ((int)dpres[0] || (int)spp[0] || (int)climet) {
+  if (connect_bim[2])
     if (intConnect((VOIDFUNCPTR*)ISIO1_BIM3_ADR, (VOIDFUNCPTR)isio1Bim3Isr, 0)){
       perror ("intConnect isio1Bim3Isr");
       exit(ERROR);
     }
-  }
  
-// Connect the isio1 bim 4 isr.  tans2 and tans3, ophir3 & Collins PPS & NO_NOY.
-  if ((int)tans2[0] || (int)tans3[0] || (int)ophir3[0] || (int)pps[0]){
+// Connect the isio1 bim 4 isr.  tans2 and tans3, ophir3, mca.
+  if (connect_bim[3])
     if (intConnect((VOIDFUNCPTR*)ISIO1_BIM4_ADR, (VOIDFUNCPTR)isio1Bim4Isr, 0)){
       perror ("intConnect isio1Bim4Isr");
       exit(ERROR);
     }
-  }
  
+
 // Connect the HwIrs receive isr.  The IP429 uses a base vector with the lower
 // three bits of the vector specifying the interrupting channel.
   for (stat = sample_table->hwirs_table.firstEntry(); stat;
@@ -1698,18 +1781,32 @@ static void initInterrupts ()
 // Enable interrupts from the tans at level 1.
   for (j = 0; (j < MAX_TANS_INTFC) && (int)tans2[j]; j++)
     tans2[j]->enableInterrupt (ISIO1_BIM4_VCT, 1);
+
   for (j = 0; (j < MAX_TANS_INTFC) && (int)tans3[j]; j++) {
     tans3[j]->enableInterrupt (ISIO1_BIM4_VCT, 1);
-    tans3[j]->checkStatus();
     taskDelay(sysClkRateGet());
+    tans3[j]->checkStatus();
+  }
+
+  for (j = 0; (j < MAX_TANS_INTFC) && (int)garmin[j]; j++) {
+    garmin[j]->enableInterrupt (ISIO1_BIM2_VCT, 1);
+    taskDelay(sysClkRateGet());
+//    garmin[j]->checkStatus();
+    garmin[j]->initGarmin();
+  }
+
+  for (j = 0; (j < MAX_CMIG_INTFC) && (int)cmigits3[j]; j++) {
+    cmigits3[j]->enableInterrupt (ISIO1_BIM2_VCT, 1);
+    taskDelay(sysClkRateGet());
+//    cmigits3[j]->checkStatus();
+    cmigits3[j]->initCmigits3();
   }
 
 // Enable interrupts from the ophir3 at level 1.
-  for (j = 0; (j < MAX_OPHIR3_INTFC) && (int)ophir3[j]; j++)
-{
+  for (j = 0; (j < MAX_OPHIR3_INTFC) && (int)ophir3[j]; j++) {
     ophir3[j]->enableInterrupt (ISIO1_BIM4_VCT, 1);
     ophir3[j]->initOphir();
-}
+  }
   
 // Enable interrupts from the Collins PPS at level 1.
   for (j = 0; (j < MAX_PPS_INTFC) && (int)pps[j]; j++)
@@ -1722,7 +1819,7 @@ static void initInterrupts ()
 // Enable interrupts from the SPP probes at level 1.
   for (j = 0; (j < MAX_SPP_INTFC) && (int)spp[j]; j++) {
     spp[j]->initSpp(0);
-    spp[j]->enableInterrupt (ISIO1_BIM3_VCT, 1);
+    spp[j]->enableInterrupt (vector[spp[j]->SerialPort()/2], 1);
   }
 
 // Enable interrupts from the digital pressure at level 1.
@@ -1745,6 +1842,12 @@ static void initInterrupts ()
   if ((int)climet) {
     climet->enableInterrupt (ISIO1_BIM3_VCT, 1);
     climet->initClimet();
+  }
+
+// Enable interrupts from the Mca at level 1.
+  if ((int)mca) {
+    mca->enableInterrupt (ISIO1_BIM4_VCT, 1);
+    mca->initMca();
   }
 
 // Enable interrupts from the NEPH at level 1.
@@ -1836,6 +1939,12 @@ static void hertz50_isr(int hertz5_flag)
       for (j = 0; (int)spp[j] && j < MAX_SPP_INTFC; j++) 
         spp[j]->secondAlign();  	// align the SPP data
 
+      for (j = 0; (int)garmin[j] && j < MAX_GPS_INTFC; j++) 
+        garmin[j]->secondAlign();  	// align the Garmin data
+
+      for (j = 0; (int)cmigits3[j] && j < MAX_CMIG_INTFC; j++) 
+        cmigits3[j]->secondAlign();  	// align the Cmigits3 data
+
       for (j = 0; (int)ophir3[j] && j < MAX_OPHIR3_INTFC; j++) 
         ophir3[j]->secondAlign();
 #ifdef NOAA_GIV
@@ -1857,6 +1966,9 @@ static void hertz50_isr(int hertz5_flag)
       if ((int)climet)
         climet->secondAlign();
 
+      if ((int)mca)
+        mca->secondAlign();
+
       for (j = 0; (int)neph[j] && j < MAX_UVHYG_INTFC; j++)
         neph[j]->secondAlign();
 
@@ -1867,6 +1979,8 @@ static void hertz50_isr(int hertz5_flag)
       for (j = 0; (int)pms2dh[j] && j < MAX_PMSVME2D_INTFC; j++) {
         pms2dh[j]->secondAlign();
         pms2d[j]->setTime(tfp->hour(), tfp->minute(), tfp->second()); 
+//        logMsg("2D seconds = %d\n",tfp->second(),0,0,0,0,0);
+
       }
 
       // Set the time on the grey scale interfaces once per hour.
@@ -1967,6 +2081,9 @@ static void gatherData()
     if ((int)climet) {
       climet->reqstData();
     }
+    if ((int)mca) {
+      mca->reqstData();
+    }
 
   // PMS 2D house data.
 
@@ -2035,11 +2152,12 @@ static void isio1Bim2Isr (int intf)
 {
   int j;
  
-  for (j = 0; (j < MAX_UVHYG_INTFC) && (int)uvh[j]; j++)
-    uvh[j]->isr();
+  for (j = 0; (j < MAX_CMIG_INTFC) && (int)cmigits3[j]; j++)
+    cmigits3[j]->readIsr();
 
-  for (j = 0; (j < MAX_UVHYG_INTFC) && (int)jpltdl[j]; j++)
-    jpltdl[j]->isr();
+  for (j = 0; (j < MAX_SPP_INTFC) && (int)spp[j]; j++)
+    if (spp[j]->SerialPort()/2 == 1)
+      spp[j]->isr();
 
   if ((int)lhtdl)
     lhtdl->isr();
@@ -2049,21 +2167,31 @@ static void isio1Bim2Isr (int intf)
 
   if ((int)rdma)
     rdma->isr();
+
+  for (j = 0; (j < MAX_TANS_INTFC) && (int)garmin[j]; j++)
+    garmin[j]->isr();
+
+  for (j = 0; (j < MAX_UVHYG_INTFC) && (int)uvh[j]; j++)
+    uvh[j]->isr();
+
+  for (j = 0; (j < MAX_UVHYG_INTFC) && (int)jpltdl[j]; j++)
+    jpltdl[j]->isr();
+
 }
 
 /*****************************************************************************/
 static void isio1Bim3Isr (int intf)
  
-// Interrupt service routine for the isio #1 ports 5 and 6.  Trimble tans.
+// Interrupt service routine for the isio #1 ports 5 and 6.  
 {
   int j;
 
   for (j = 0; (j < MAX_UVHYG_INTFC) && (int)dpres[j]; j++)
     dpres[j]->isr();
 
-  for (j = 0; (j < MAX_SPP_INTFC) && (int)spp[j]; j++) {
-    spp[j]->isr();
-  }
+  for (j = 0; (j < MAX_SPP_INTFC) && (int)spp[j]; j++)
+    if (spp[j]->SerialPort()/2 == 2)
+      spp[j]->isr();
 
   if ((int)climet)
     climet->isr();
@@ -2079,13 +2207,17 @@ static void isio1Bim4Isr (int intf)
 
   for (j = 0; (j < MAX_TANS_INTFC) && (int)tans3[j]; j++)
     tans3[j]->isr();
+/*
+  for (j = 0; (j < MAX_TANS_INTFC) && (int)garmin[j]; j++)
+    garmin[j]->isr();
+*/
+  for (j = 0; (j < MAX_SPP_INTFC) && (int)spp[j]; j++)
+    if (spp[j]->SerialPort()/2 == 3)
+      spp[j]->isr();
 
   for (j = 0; (j < MAX_OPHIR3_INTFC) && (int)ophir3[j]; j++)
     ophir3[j]->isr();
-/*
-  for (j = 0; (j < MAX_SPP_INTFC) && (int)spp[j]; j++)
-    spp[j]->isr();
-*/
+
   for (j = 0; (j < MAX_TANS_INTFC) && (int)tans2[j]; j++)
     tans2[j]->isr();
 
@@ -2094,7 +2226,11 @@ static void isio1Bim4Isr (int intf)
     pps[j]->isr();
 #endif
 
+  if ((int)mca)
+    mca->isr();
+
 }
+
 /*****************************************************************************/
 static void dms_isr()
 
@@ -2102,6 +2238,5 @@ static void dms_isr()
 {
   digital_in->readIsr();
 }
-/*****************************************************************************/
 
 /* END DSMASYNC.CC */
