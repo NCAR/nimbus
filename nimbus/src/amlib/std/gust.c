@@ -57,7 +57,7 @@ void swi(DERTBL *varp)
   pitch	= GetSample(varp, 3) * DEG_RAD;
   roll	= GetSample(varp, 4) * DEG_RAD;
   thdg	= GetSample(varp, 5) * DEG_RAD;
-  attack= (GetSample(varp, 6)-0.25) * DEG_RAD;
+  attack= GetSample(varp, 6) * DEG_RAD;
   sslip	= GetSample(varp, 7) * DEG_RAD;
   wp3	= GetSample(varp, 8);
 
