@@ -180,4 +180,21 @@ static void ReadBatchFile(char *fileName)
 
 }	/* END READBATCHFILE */
 
+/* -------------------------------------------------------------------- */
+void GetDataDirectory(char buff[])
+{
+  buff[0] = 0;
+
+  char *p;
+
+  if ( (p = getenv("DATA_FILTER")) )
+    strcpy(buff, p);
+  else
+  if ( (p = getenv("DATA_DIR")) )
+  {
+    strcpy(buff, p);
+    strcat(buff, "/");
+  }
+}
+
 /* END INIT.C */
