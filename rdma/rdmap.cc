@@ -64,11 +64,11 @@ int main(int argc, char *argv[])
     pigeon = false;
    
 
-//  cout << "Enter RDMA counts file [ /jnet/data/181rf01.cnts.rdma ] :";
-//  cin >> counts_filename;
+  cout << "Enter RDMA counts file [ /jnet/data/181rf01.cnts.rdma ] :";
+  cin >> counts_filename;
 
-strcpy(counts_filename, "/jnet/data/161rf09");
-cout << "Filename is fixed at " << counts_filename;
+//strcpy(counts_filename, "/jnet/data/161rf09");
+//cout << " WARNING !!!!!  Filename is fixed at " << counts_filename;
 
   if (strstr(counts_filename, ".cnts.rdma") == NULL)
     strcat(counts_filename, ".cnts.rdma");
