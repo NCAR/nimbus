@@ -232,9 +232,9 @@ void Quit(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 static int ValidateFileNames()
 {
-	if (strcmp(&InputFileName[strlen(InputFileName)-4], ".cdf") != 0)
+	if (strcmp(&InputFileName[strlen(InputFileName)-4], ".nc") != 0)
 		{
-		strcat(InputFileName, ".cdf");
+		strcat(InputFileName, ".nc");
 		XmTextFieldSetString(inputFileText, InputFileName);
 		}
 
@@ -251,9 +251,9 @@ static int ValidateFileNames()
 		return(ERR);
 		}
 
-	if (strcmp(&OutputFileName[strlen(OutputFileName)-4], ".cdf") != 0)
+	if (strcmp(&OutputFileName[strlen(OutputFileName)-4], ".nc") != 0)
 		{
-		strcat(OutputFileName, ".cdf");
+		strcat(OutputFileName, ".nc");
 		XmTextFieldSetString(outputFileText, OutputFileName);
 		}
 
