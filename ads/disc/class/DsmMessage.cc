@@ -269,7 +269,7 @@ void DsmMessage::parseDSMTimeMsg ()
 /*****************************************************************************/
 void DsmMessage::parseThdgMsg ()
 {
-  sscanf(rx_msg, "%d %f", &rx_type, rx_thdg);
+  sscanf(rx_msg, "%d %f", &rx_type, &rx_thdg);
 }
 
 /*****************************************************************************/

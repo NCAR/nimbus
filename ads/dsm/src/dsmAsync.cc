@@ -1304,7 +1304,6 @@ static void checkMessage ()
       case PMS2_MSG:             	// Pms 2d message
 // printf("PMS2 change\n");
         switch (comm_msg->action()) {
-
           case PMS2_TAS_SELECT:
             for (stat = sample_table->pms2d_table.firstEntry(); stat;
                  stat = sample_table->pms2d_table.nextEntry())
@@ -1365,6 +1364,7 @@ static void checkMessage ()
         break;
  
       case THDG_MSG:             	// true heading message
+// printf("THDG change\n");
         setTHDG(comm_msg->thdg());
         break;
 

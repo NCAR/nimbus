@@ -283,8 +283,8 @@ void checkMessage ()
 
 // Check for received messages.
 {
-printf("%s\n", dsm_msg.rxMessage());
   while (dsm_msg.readMsg()) {
+printf("discWin:checkMsg: type = %d\n", dsm_msg.type());
     switch (dsm_msg.type()) {
       case ANALOG_MSG:		// update analog state display
         analogWin->displayState(dsm_msg.action(), dsm_msg.location());

@@ -503,8 +503,9 @@ void checkIRS_GPS(const char *buf)
     if (memcmp(&buf[IRSstart], zeroes, sizeof(Irs_blk)) == 0) {
       netMessage(NET_STATUS, dsm, "  *** No IRS data! ***\n");
 
-    thdgMessage((Irs_blk *)&buf[IRSstart]);
     }
+
+    thdgMessage((Irs_blk *)&buf[IRSstart]);
 
     if (memcmp(&buf[GPSstart], zeroes, sizeof(Gps_blk)) == 0) {
       netMessage(NET_STATUS, dsm, "  *** No GPS data! ***\n");
@@ -739,13 +740,13 @@ void thdgMessage(Irs_blk *p)
   float	thdg;
   char	tx_msg[DSM_MSG_MAX_LEN];
 
-  thdg = (float)(p->true_heading[0] >> 11) * ((1.0 / (1 << 20)) * 180.0);
+  thdg = (float)(ntohl(p->true_heading[0]) >> 11) * ((1.0 / (1 << 20)) * 180.0);
 
-netMessage(NET_STATUS, dsm_config.location(), "Sending THDG to CMIGITS.\n");
+//netMessage(NET_STATUS, "CTL", "Sending THDG to CMIGITS.\n");
 
-  sprintf(tx_msg, "%2d %1d %11s %1d %1d %s", THDG_MSG, thdg);
+  sprintf(tx_msg, "%2d %.1f", THDG_MSG, thdg);
 
-  dsm_nets.selectNet("FWD");        // select dest dsm
+  dsm_nets.selectNet("FORWARD");        // select dest dsm
   dsm_nets.curNet()->writeNet(tx_msg, strlen(tx_msg)+1, DSM_MSG_DATA);
 
 }	/* END THDGMESSAGE */
