@@ -10,7 +10,9 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #ifndef DECODE_H
 #define DECODE_H
 
-#define MISSING_VALUE	(-32767.0)
+//#define MISSING_VALUE	(-32767.0)
+#include <cmath>
+#define MISSING_VALUE	(NAN)
 
 #define GAP_FOUND	TRUE	/* For CheckForTimeGap()	*/
 
