@@ -33,6 +33,7 @@
 #define MASP_MSG  	13              /* Masp message			*/
 #define DSMTIME_MSG  	14              /* Individ DSM time to discWin	*/
 #define DT_MSG  	15              /* Date and time when no GPS    */ 
+#define THDG_MSG  	16              /* THDG for CMIGITS		*/ 
 
 /* Analog control actions */
 #define ANALOG_RUN_MODE		0	/* select normal analog run mode */

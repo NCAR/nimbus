@@ -76,6 +76,7 @@ static void computeDerived (const char *buf);	// compute derived variables
 static void checkMessage();		// check for and process messages
 static void setPms1Range (char *name, int range);	
 static void setTasAlt (float tas, float alt);
+static void setTHDG (float thdg);
 static void setTime (int year, int month, int day, 
                      int hour, int minute, int second);
 static void setDate (int year, int month, int day);
@@ -1363,6 +1364,10 @@ static void checkMessage ()
         }
         break;
  
+      case THDG_MSG:             	// true heading message
+        setTHDG(comm_msg->thdg());
+        break;
+
       case TASALT_MSG:             	// tas-altitude message
         setTasAlt(comm_msg->tas(), comm_msg->altitude());
         break;
@@ -1478,6 +1483,16 @@ static void setPms1Range (char *name, int range)
 
   comm_msg->sendPms1Msg (range, name, "", msg_str);
   fprintf (stderr, msg_str);
+}
+
+/*****************************************************************************/
+static void setTHDG (float thdg)
+
+// Sends true heading to the necessary interfaces.
+{
+  for (int j = 0; (j < MAX_CMIG_INTFC) && (int)cmigits3[j]; j++)
+    cmigits3[j]->setTHDG (thdg);
+
 }
 
 /*****************************************************************************/

@@ -51,6 +51,7 @@ void processAsync(DsmNet* cur_net, int type);
 void processMessage(DsmNet* cur_net);	// process message data
 void *serialThread(void *arg);		// watch serial port for AVAPS data
 void processNats();			// process NATS data
+void thdgMessage(Irs_blk*);		// Send THDG to DSMs/CMIGITS
 void checkIRS_GPS(const char *buf);	// Validate IRS & GPS
 void computeDerived(const char *buf);	// compute derived variables
 void checkMessage ();			// check for messages from gui
@@ -501,13 +502,16 @@ void checkIRS_GPS(const char *buf)
   if (!(firstTime % 5) && strcmp(win_msg.flight(), "0")) {
     if (memcmp(&buf[IRSstart], zeroes, sizeof(Irs_blk)) == 0) {
       netMessage(NET_STATUS, dsm, "  *** No IRS data! ***\n");
+
+    thdgMessage((Irs_blk *)&buf[IRSstart]);
     }
 
     if (memcmp(&buf[GPSstart], zeroes, sizeof(Gps_blk)) == 0) {
       netMessage(NET_STATUS, dsm, "  *** No GPS data! ***\n");
     }
   }
-}
+
+}	/* END CHECKIRS_GPS */
 
 /* -------------------------------------------------------------------- */
 void computeDerived(const char *buf)
@@ -728,6 +732,25 @@ void tasAltMessage(float tas, float alt)
 }
 
 /* -------------------------------------------------------------------- */
+void thdgMessage(Irs_blk *p)
+
+// Send THDG to FWD dsm for CMIGITS.
+{
+  float	thdg;
+  char	tx_msg[DSM_MSG_MAX_LEN];
+
+  thdg = (float)(p->true_heading[0] >> 11) * ((1.0 / (1 << 20)) * 180.0);
+
+netMessage(NET_STATUS, dsm_config.location(), "Sending THDG to CMIGITS.\n");
+
+  sprintf(tx_msg, "%2d %1d %11s %1d %1d %s", THDG_MSG, thdg);
+
+  dsm_nets.selectNet("FWD");        // select dest dsm
+  dsm_nets.curNet()->writeNet(tx_msg, strlen(tx_msg)+1, DSM_MSG_DATA);
+
+}	/* END THDGMESSAGE */
+
+/* -------------------------------------------------------------------- */
 void radarAltMessage(float alt)
 
 // Send (as a Generic DIGOUT button) radar altimeter to AFT dsm for SABLE.
@@ -761,16 +784,16 @@ void radarAltMessage(float alt)
       action = 1;
   }
   prev_alt = alt;
-netMessage(NET_STATUS, dsm_config.location(), "Crossed 6k feet\n");
-return;
+
+netMessage(NET_STATUS, dsm_config.location(), "Crossed 6k feet AGL.\n");
 
   sprintf(tx_msg, "%2d %1d %11s %1d %1d %s", DIGOUT_MSG, action,
-                "AFT", connector, channel, "");
+                locn, connector, channel, "");
 
-  dsm_nets.selectNet("AFT");        // select dest dsm
+  dsm_nets.selectNet(locn);        // select dest dsm
   dsm_nets.curNet()->writeNet(tx_msg, strlen(tx_msg)+1, DSM_MSG_DATA);
 
-}
+}	/* END RADARALTMESSAGE */
  
 /* -------------------------------------------------------------------- */
 void dateMessage (int year, int month, int day)

@@ -52,6 +52,7 @@ public:
   void readIsr ();					// isr for this class
   void initCmigits3 ();
   void secondAlign ();
+  void setTHDG (float);
   void gatherData ();
 
 private:

@@ -94,6 +94,10 @@ int DsmMessage::readMsg ()
         parsePms2Msg();
         break;
     
+      case THDG_MSG:
+        parseThdgMsg();
+        break;
+    
       case STATUS_MSG:
         parseStatusMsg();
         break;
@@ -137,6 +141,13 @@ void DsmMessage::sendAnalogMsg (int action, char *locn, int adr, int volt,
 void DsmMessage::sendFlightMsg (char *flight_number)
 {
   sprintf(tx_msg, "%2d %s", FLIGHT_MSG, flight_number);
+  sendMsg();
+}
+
+/*****************************************************************************/
+void DsmMessage::sendTHDG (float thdg)
+{
+  sprintf(tx_msg, "%2d %f", THDG_MSG, thdg);
   sendMsg();
 }
 
@@ -253,6 +264,12 @@ void DsmMessage::parseDateMsg ()
 void DsmMessage::parseDSMTimeMsg ()
 {
   sscanf(rx_msg, "%d %s %d %d %d", &rx_type, rx_name, &rx_hour, &rx_minute, &rx_second);
+}
+
+/*****************************************************************************/
+void DsmMessage::parseThdgMsg ()
+{
+  sscanf(rx_msg, "%d %f", &rx_type, rx_thdg);
 }
 
 /*****************************************************************************/

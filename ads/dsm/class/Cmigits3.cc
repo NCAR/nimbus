@@ -51,6 +51,12 @@ void Cmigits3::initCmigits3()
 }
 
 /*****************************************************************************/
+void Cmigits3::setTHDG(float thdg)
+{
+
+}
+
+/*****************************************************************************/
 void Cmigits3::secondAlign()
 
 // Called at the start of a second to align the indices and toggle buffers.
@@ -58,8 +64,8 @@ void Cmigits3::secondAlign()
   newSecond = TRUE;
   memset ((char*)&cmigits3_blk, 0, sizeof(Cmigits3_blk));
 }
-/*****************************************************************************/
 
+/*****************************************************************************/
 void Cmigits3::checkStatus()
 
 // Checks the status of the irs receiver and isio port.

@@ -54,12 +54,14 @@ public:
   int value()		{return rx_value;}	// get misc value field
   float altitude()	{return rx_alt;}	// get altitude field
   float tas()		{return rx_tas;}	// get true air speed 
+  float thdg()		{return rx_thdg;}	// get true heading 
   char *flight()	{return rx_flight;}	// get flight number 
   char *name()		{return rx_name;}	// get name field
   char *location()	{return rx_locn;}	// get location field
   char *string() 	{return rx_string;}	// get string field
   void sendAnalogMsg (int action, char *locn, int chan, int volt, 
                       int gain, int offset, char *msg_str);
+  void sendTHDG(float);				// send a thdg message
   void sendFlightMsg (char*);			// send a flight number message
   void sendDSMTimeMsg(Hdr_blk *buf);
   void sendMcrMsg (int action, int value, char *locn, char *msg_str);
@@ -84,6 +86,7 @@ private:
   void parseNetMsg();				// parse a net message string
   void parsePms1Msg();				// parse a pms 1d message 
   void parsePms2Msg();				// parse a pms 2d message 
+  void parseThdgMsg();				// parse a THDG message 
   void parseStatusMsg();			// parse a status message 
   void parseTapeMsg();				// parse a tape message string
   void parseTasAltMsg();			// parse a tasalt message str
@@ -117,6 +120,7 @@ private:
   int rx_value;					// action values
   float rx_tas;					// true air speed
   float rx_alt;					// altitude
+  float rx_thdg;				// true heading
   str12 rx_flight;				// flight number
   str12 rx_name;				// dsm/device name
   str12 rx_locn;				// dsm/probe location
