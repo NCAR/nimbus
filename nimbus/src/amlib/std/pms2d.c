@@ -322,9 +322,9 @@ void sTwoD(DERTBL *varp)
 
 #include "pms1d_cv"
 
-//printf("%f %f %f %f %f\n", actual[1], actual[2], actual[3], actual[4], actual[5]);
-//printf("%f %f %f %f %f\n", sampleVolume[1], sampleVolume[2], sampleVolume[3], sampleVolume[4], sampleVolume[5]);
-//printf("%f %f %f %f %f\n", concentration[1], concentration[2], concentration[3], concentration[4], concentration[5]);
+//printf("cnt: %f %f %f %f %f\n", actual[1], actual[2], actual[3], actual[4], actual[5]);
+//printf("sv: %f %f %f %f %f\n", sampleVolume[1], sampleVolume[2], sampleVolume[3], sampleVolume[4], sampleVolume[5]);
+//printf("cnc: %f %f %f %f %f\n", concentration[1], concentration[2], concentration[3], concentration[4], concentration[5]);
 
   if (strstr(varp->name, "1DC"))
     {

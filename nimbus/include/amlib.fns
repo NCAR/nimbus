@@ -4,7 +4,7 @@
 #
 # NOTE:  Use TABs not SPACEs, they will not sort the same.
 #
-#		Name		Constructor	xlate fn	compute fn
+#	Name		Constructor	xlate fn	compute fn
 # ----------------------------------------------------------------------------
 #
 # AIRS-II
@@ -17,6 +17,10 @@
 	"XCCNC",	NULL,           NULL,		sccnc,
 	"XCCNSS",	NULL,           NULL,		sccns,
 	"XNASC",	NULL,           NULL,		stasr,
+#
+# Cooper UltraFine CN
+#
+	"XUFCN",	NULL,           NULL,		sxufcn,
 #
 # M903 Nephelometer.
 #
