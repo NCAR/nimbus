@@ -1,0 +1,72 @@
+.na
+.nh
+.TH N2ASC 1 "29 January 1994" "Local Command"
+.SH NAME
+n2asc \- netCDF to ASCII converter
+.SH SYNOPSIS
+.B n2asc [-f format] [-b batchFile] [-c] [-a] [-n]
+.SH DESCRIPTION
+.B n2asc 
+is a program for converting a netCDF file (or subset of) to ASCII.  n2asc
+provides a GUI similar to nimbus, where you may choose which variables to
+output.  To change the "output" of a variable, just double click on the
+variable.  You may also select many and then use CTRL-O to toggle them
+all at once.
+.PP
+By default n2asc uses "%10.3f" as it's formating statement.  The default
+may be changed in the command line with the -f option.  See printf(3)
+for a description of formats.  Formats may also be set for individual
+variables.  At startup, n2asc reads $HOME/nimbus/.n2asc and applies
+any formats listed there.
+.PP
+Format of .n2asc file should be varName=Format:
+.PP
+.nf
+XCVCNTS=%10d
+CVCNTS=%10d
+AFSSP=%8d
+APCAS=%8d
+AF300=%8d
+A200Y=%8d
+A200Y=%8d
+A260X=%8d
+.f
+.PP
+Normally n2asc prints a time stamp in the first column (X axis).  The -c
+option changes this to a running counter, which can be more useful for
+plotting programs.
+.PP
+n2asc supports batch files.  This is useful if you want to dump many
+files with the same setup.  A sample batch file follows:
+.PP
+.nf
+if=/home/local/data/231RF10.cdf
+of=junk.asc
+ti=09:00:00-09:05:00
+var=ADIFR
+var=BDIFR
+.f
+.PP
+The -a option tells n2asc to produce an ASCII file following the NASA
+Ames Data Exchange Format.
+.PP
+The -n option tells n2asc to not place colons in the time stamp.  Format
+will be HHMMSS instead of HH:MM:SS.
+.PP
+.SH EXAMPLE:
+.PP
+To change the default to the style of 2.52932e-01, use:
+.PP
+7% n2asc -f %14e
+.PP
+.SH FILES
+.PP
+$HOME/nimbus/.n2asc
+.PP
+.SH BUGS
+.PP
+If you specify format statements that have a length less than that
+of the variable name, then the title may not remain lined up with the
+data columns.
+.SH AUTHOR
+Chris Webster, National Center for Atmospheric Research

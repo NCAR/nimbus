@@ -1,0 +1,5 @@
+if=/home/data/130rf14.cdf
+of=/home/data/cjw.asc
+ti=23:00:00-23:30:00
+var=atx
+var=ADIFR
