@@ -30,6 +30,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <netinet/in.h> // htonl macros.
 
@@ -45,21 +46,24 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 
 static int	ChangesMade = FALSE, currentCategory = 0, currentStdName = 0;
 
-extern Widget	catXx, stdNameXx, catMenu, stdNameMenu, list,
+extern Widget	catXx, stdNameXx, catMenu, stdNameMenu, list, referenceButton,
 		EFtext[], fixedButton, floatButton;
 extern char	buffer[], FileName[], *catList[], *ProjectDirectory,
 		*stdNameList[];
 extern long	VarDB_nRecords, VarDB_RecLength;
 
-void	exit();
-double	atof();
+char *strupr(char *);
+void ShowError(char msg[]), FileCancel(Widget, XtPointer, XtPointer);
+void QueryFile(char *, char *, XtCallbackProc), ExtractFileName(XmString, char **);
+void WarnUser(char msg[], XtCallbackProc, XtCallbackProc);
+
 
 /* -------------------------------------------------------------------- */
 void Quit(Widget w, XtPointer client, XtPointer call)
 {
   if (ChangesMade)
     {
-    WarnUser("You have not saved this file.", exit);
+    WarnUser("You have not saved this file.", (XtCallbackProc)exit, NULL);
     return;
     }
 
@@ -102,14 +106,6 @@ void SetStandardName(Widget w, XtPointer client, XtPointer call)
     }
 
 }	/* END SETCATEGORY */
-
-/* -------------------------------------------------------------------- */
-void OpenNewFile(Widget w, XtPointer client, XtPointer call)
-{
-  sprintf(buffer, "%s/*", ProjectDirectory);
-  QueryFile("Enter file name to load:", buffer, OpenNewFile_OK);
-
-}	/* END OPENNEWFILE */
 
 /* -------------------------------------------------------------------- */
 void OpenNewFile_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *call)
@@ -198,12 +194,12 @@ void OpenNewFile_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct
 }	/* END OPENNEWFILE_OK */
 
 /* -------------------------------------------------------------------- */
-void SaveFileAs(Widget w, XtPointer client, XtPointer call)
+void OpenNewFile(Widget w, XtPointer client, XtPointer call)
 {
-  strcpy(buffer, FileName);
-  QueryFile("Save as:", buffer, SaveFileAs_OK);
+  sprintf(buffer, "%s/*", ProjectDirectory);
+  QueryFile("Enter file name to load:", buffer, (XtCallbackProc)OpenNewFile_OK);
 
-}	/* END SAVEFILEAS */
+}	/* END OPENNEWFILE */
 
 /* -------------------------------------------------------------------- */
 void SaveFileAs_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *call)
@@ -221,6 +217,14 @@ void SaveFileAs_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct 
 }	/* END SAVEFILEAS_OK */
 
 /* -------------------------------------------------------------------- */
+void SaveFileAs(Widget w, XtPointer client, XtPointer call)
+{
+  strcpy(buffer, FileName);
+  QueryFile("Save as:", buffer, (XtCallbackProc)SaveFileAs_OK);
+
+}	/* END SAVEFILEAS */
+
+/* -------------------------------------------------------------------- */
 void SaveFile(Widget w, XtPointer client, XtPointer call)
 {
   if (SaveVarDB(FileName) == ERR)
@@ -234,7 +238,6 @@ void SaveFile(Widget w, XtPointer client, XtPointer call)
 void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
 {
   int		pos, *pos_list, pcnt;
-  char		*p;
   float		fl;
   static char	*format = "%.6f";
 
@@ -298,6 +301,9 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
 
   SetCategory(NULL, (XtPointer)ntohl(((struct var_v2 *)VarDB)[pos].Category), NULL);
   SetStandardName(NULL, (XtPointer)ntohl(((struct var_v2 *)VarDB)[pos].standard_name), NULL);
+
+  XmToggleButtonSetState(referenceButton,
+		ntohl(((struct var_v2 *)VarDB)[pos].reference), False);
 
 }	/* END EDITVARIABLE */
 
@@ -414,6 +420,8 @@ void Accept(Widget w, XtPointer client, XtPointer call)
 
   ((struct var_v2 *)VarDB)[pos].Category = htonl(currentCategory);
   ((struct var_v2 *)VarDB)[pos].standard_name = htonl(currentStdName);
+  ((struct var_v2 *)VarDB)[pos].reference =
+			htonl(XmToggleButtonGetState(referenceButton));
 
   ChangesMade = TRUE;
 
@@ -426,6 +434,10 @@ void Clear(Widget w, XtPointer client, XtPointer call)
 
   for (i = 0; i < 11; ++i)
     XmTextFieldSetString(EFtext[i], "");
+
+  SetCategory(NULL, 0, NULL);
+  SetStandardName(NULL, 0, NULL);
+  XmToggleButtonSetState(referenceButton, False, False);
 
 }	/* END CLEAR */
 

@@ -23,15 +23,17 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <Xm/List.h>
 
 #include "define.h"
 #include "vardb.h"
 
 char	buffer[1024], FileName[1024], *catList[128], *ProjectDirectory,
-	stdNameList[512];
+	*stdNameList[512];
 
-char	*getenv();
+void ShowError(char msg[]);
+void WarnUser(char msg[], void (*okCB)(Widget, XtPointer, XtPointer), void (*cancelCB)(Widget, XtPointer, XtPointer));
 
 
 /* -------------------------------------------------------------------- */

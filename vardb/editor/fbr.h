@@ -91,6 +91,7 @@ static String fallback_resources[] =
   "*catMenu*XmLabelGadget.alignment:		ALIGNMENT_END",
   "*stdNameMenu.labelString:			Standard Name:",
   "*stdNameMenu*XmLabelGadget.alignment:	ALIGNMENT_END",
+  "*referenceButton.labelString:		Is this variable *the* reference?",
   "*EFtext0.columns:				16",
   "*EFtext0.maxLength:				16",
   "*EFtext1.columns:				35",

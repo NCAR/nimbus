@@ -6,7 +6,7 @@ BINDIR=		${JLOCAL}/bin
 MANDIR=		${JLOCAL}/man/manl
 LINTLIBS=	${LIBS}
 INCLUDES=	-I${JLOCAL}/include -I/usr/X11R6/include
-CFLAGS=		-g -O2 ${INCLUDES}
+CFLAGS=		-Wall -g -O2 ${INCLUDES}
 
 # Solaris
 #LIBS=		-lVarDB -lraf -lXm -lXt -lX11

@@ -10,15 +10,7 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	Xwin.c, init.c then enters XtAppMainLoop()
-
-REFERENCED BY:	user
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
 */
 
@@ -30,9 +22,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 
 Widget	Shell000, MainWindow;
 
+void CreateErrorBox(Widget);
+void CreateWarningBox(Widget);
+void CreateFileSelectionBox(Widget);
+
 
 /* -------------------------------------------------------------------- */
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
   Widget	AppShell;	/* The Main Application Shell */
   XtAppContext	context;

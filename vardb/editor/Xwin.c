@@ -29,10 +29,12 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include "vardb.h"
 
 
+static const int nForms = 13;
+
 /* Global widget declarations.
  */
 Widget	EFtext[16], catMenu, stdNameMenu, catXx, stdNameXx;
-Widget	list, fixedButton, floatButton;
+Widget	list, fixedButton, floatButton, referenceButton;
 
 extern char	buffer[];
 
@@ -46,9 +48,9 @@ Widget CreateMainWindow(Widget parent)
   Widget	topLevelForm;
   Widget	buttonFrame, buttonRC;
   Widget	menuBar, pullDown[3], cascadeButton[2];
-  Widget	b[10], acceptButton, clearButton;
+  Widget	b[10], acceptButton;
   Widget	separ, typeRB;
-  Widget	editFieldRC, EFform[16], EFlabel[16];
+  Widget	editFieldRC, EFform[nForms], EFlabel[nForms];
 
   n = 0;
   topLevelForm = XmCreateForm(parent, "topLevelForm", args, n);
@@ -94,7 +96,7 @@ Widget CreateMainWindow(Widget parent)
   b[2] = XmCreatePushButton(pullDown[1], "resetVar", args, n);
   XtAddCallback(b[0], XmNactivateCallback, Clear, NULL);
   XtAddCallback(b[1], XmNactivateCallback, Delete, NULL);
-  XtAddCallback(b[2], XmNactivateCallback, EditVariable, NULL);
+  XtAddCallback(b[2], XmNactivateCallback, (XtCallbackProc)EditVariable, NULL);
   XtManageChildren(b, 3);
 
 
@@ -121,7 +123,7 @@ Widget CreateMainWindow(Widget parent)
 
   /* Create 11 Form and 10 Label widgets
    */
-  for (i = 0; i < 12; ++i)
+  for (i = 0; i < nForms; ++i)
     {
     n = 0;
     sprintf(buffer, "EFform%d", i);
@@ -140,7 +142,7 @@ Widget CreateMainWindow(Widget parent)
       }
     }
 
-  XtManageChildren(EFform, 12);
+  XtManageChildren(EFform, nForms);
 
 
   /* Add first 4 TextField widgets
@@ -213,24 +215,6 @@ Widget CreateMainWindow(Widget parent)
     }
 
 
-  /* Create accept button
-   */
-  n = 0;
-  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM); n++;
-  buttonFrame = XmCreateFrame(EFform[10], "buttonFrame", args, n);
-  XtManageChild(buttonFrame);
-
-  n = 0;
-  buttonRC = XmCreateRowColumn(buttonFrame, "buttonRC", args, n);
-  XtManageChild(buttonRC);
-
-  n = 0;
-  acceptButton = XmCreatePushButton(buttonRC, "acceptButton", args, n);
-  XtAddCallback(acceptButton, XmNactivateCallback, Accept, (XtPointer)0);
-  XtManageChild(acceptButton);
-
   /* Create category option menu
    */
   n = 0;
@@ -257,8 +241,6 @@ Widget CreateMainWindow(Widget parent)
   XtSetArg(args[n], XmNtopWidget, catMenu); n++;
   XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
-  XtSetArg(args[n], XmNrightWidget, XmATTACH_WIDGET); n++;
-//  XtSetArg(args[n], XmNrightWidget, buttonFrame); n++;
   stdNameMenu = XmCreatePulldownMenu(EFform[11], "optionMenu", args, n);
 
   n = 0;
@@ -272,6 +254,9 @@ Widget CreateMainWindow(Widget parent)
 
   XtManageChild(stdNameXx);
 
+  n = 0;
+  referenceButton = XmCreateToggleButton(EFform[12], "referenceButton", args, n);
+  XtManageChild(referenceButton);
 
   /* Scrolled List of variable names
    */
@@ -283,8 +268,26 @@ Widget CreateMainWindow(Widget parent)
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_WIDGET); n++;
   XtSetArg(args[n], XmNleftWidget, editFieldRC); n++;
   list = XmCreateScrolledList(topLevelForm, "varList", args, n);
-  XtAddCallback(list, XmNbrowseSelectionCallback, EditVariable, NULL);
+  XtAddCallback(list, XmNbrowseSelectionCallback, (XtCallbackProc)EditVariable, NULL);
   XtManageChild(list);
+
+  /* Create accept button
+   */
+  n = 0;
+  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
+  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
+  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM); n++;
+  buttonFrame = XmCreateFrame(EFform[12], "buttonFrame", args, n);
+  XtManageChild(buttonFrame);
+
+  n = 0;
+  buttonRC = XmCreateRowColumn(buttonFrame, "buttonRC", args, n);
+  XtManageChild(buttonRC);
+
+  n = 0;
+  acceptButton = XmCreatePushButton(buttonRC, "acceptButton", args, n);
+  XtAddCallback(acceptButton, XmNactivateCallback, Accept, (XtPointer)0);
+  XtManageChild(acceptButton);
 
 
   return(topLevelForm);
