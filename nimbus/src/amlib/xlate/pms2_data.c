@@ -36,7 +36,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999-2000
 #include "amlib.h"
 #include "queue.h"
 
-#define OVERLOAD	(-1)
+#define OVERLOAD	(0xffffffff)
 
 static Queue	*probes[MAX_PMS2];
 
@@ -49,11 +49,11 @@ static short	startMilliSec[MAX_PMS2];
 static NR_TYPE	twoD[MAX_PMS2][BINS_64];
 
 #ifdef SQL
-RAWTBL	*cur_rp;
+#include "psql.h"
 
-void Start2dSQL(RAWTBL *);
-void Write2dSQL(RAWTBL *name, long time, long msec, ulong *p, int nSlices);
-void Submit2dSQL();
+extern PostgreSQL	*psql;
+
+RAWTBL	*cur_rp;
 #endif
 
 
@@ -615,7 +615,7 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
 
   /* Determine number milliseconds to add/subtract to each particle.
    */
-  tBarElapsedtime *= frequency;	/* Convert to microseconds */
+  tBarElapsedtime = (int)((float)tBarElapsedtime * frequency);	/* Convert to microseconds */
   tBarElapsedtime += overLoad * 1000;
   overLap = (NR_TYPE)tBarElapsedtime / DASelapsedTime;
 
@@ -660,7 +660,7 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
 #ifdef SQL
   if (Mode == REALTIME && partCnt > 0)
   {
-    Start2dSQL(cur_rp);
+    psql->Start2dSQL();
 //    SQLcommand("BEGIN");
   }
 
@@ -681,7 +681,7 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
       }
 
     cp->msec = startMilliSec[probeCnt] +
-		(((tBarElapsedtime * frequency / 1000) + oload) * overLap);
+	(long)((((float)tBarElapsedtime * frequency / 1000) + oload) * overLap);
 
     while (cp->msec < 0)
       {
@@ -708,15 +708,14 @@ for (i = 0; i < cp->nSlices+1; ++i)
 */
 #ifdef SQL
     if (Mode == REALTIME)
-      Write2dSQL(cur_rp, cp->time, cp->msec, cp->p, cp->w);
+      psql->Write2dSQL(cur_rp, cp->time, cp->msec, cp->p, cp->w);
 #endif
     }
 
 #ifdef SQL
   if (Mode == REALTIME && partCnt > 0)
   {
-    Submit2dSQL();
-//    SQLcommand("COMMIT");
+    psql->Submit2dSQL();
   }
 #endif
 
@@ -910,7 +909,7 @@ int minunshaded = 256;
        * can be reduced accordingly.
        */
       cp->liveTime = (ulong)((float)(cp->w + 1) * frequency);
-      cp->w *= TAS_COMPENSATE;
+      cp->w = (int)((float)cp->w * TAS_COMPENSATE);
 
       t = MAX(cp->x1, cp->x2);
       cp->x1 = MIN(cp->x1, cp->x2);
@@ -923,7 +922,7 @@ int minunshaded = 256;
 
   /* Determine number milliseconds to add/subtract to each particle.
    */
-  tBarElapsedtime *= frequency; /* Convert to microseconds */
+  tBarElapsedtime = (int)((float)tBarElapsedtime * frequency); /* Convert to microseconds */
   tBarElapsedtime += overLoad * 1000;
   overLap = (NR_TYPE)tBarElapsedtime / DASelapsedTime;
 
@@ -948,7 +947,7 @@ int minunshaded = 256;
       }
 
     cp->msec = startMilliSec[probeCnt] +
-                (((tBarElapsedtime * frequency / 1000) + oload) * overLap);
+	(long)((((float)tBarElapsedtime * frequency / 1000) + oload) * overLap);
 
     while (cp->msec < 0)
       {

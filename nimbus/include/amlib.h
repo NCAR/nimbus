@@ -10,7 +10,7 @@ DESCRIPTION:	Header File declaring amlib functions.
 #define AMLIB_H
 
 #include "header.h"
-#include <math.h>
+#include <cmath>
 #include <netinet/in.h>
 
 const int MAX_FSSP = 4;

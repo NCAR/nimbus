@@ -26,7 +26,6 @@ void sssrd(DERTBL *varp)
 
   bdifr	= GetSample(varp, 0);
   qcxc	= GetSample(varp, 1);
-  xmach2	= GetSample(varp, 2);
 
   /* Blow-up protection:  output zero while on ground (QCX < 5.5 mbar)
        installed by Ron Ruth  18 October 2001 */
@@ -63,6 +62,8 @@ void sssrd(DERTBL *varp)
 
       case SABRELINER:
       case B57:
+        xmach2 = GetSample(varp, 2);
+
         xmach = sqrt(xmach2);
         ssrd = ((bdifr / qcxc) + 0.0241628 * xmach - 0.0754196)
 			/ (0.030640 + 0.0664595 * xmach - 0.0881156 * xmach2);

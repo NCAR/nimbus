@@ -58,7 +58,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #define FIRST_DATA_RECORD	((long)3)
 
 
-static bool	DiskData = false;
+static int	DiskData = TAPE_DATA;
 static char	phys_rec[MX_PHYS] = "";
 static char	*adsFileName;
 static long	lrlen, lrppr, currentLR;
@@ -285,7 +285,7 @@ char *ExtractHeaderIntoFile(char *fileName)
 */
   if (strncmp(adsFileName, "/dev/rmt/", 9) == 0)
     {
-    DiskData = false;
+    DiskData = TAPE_DATA;
     TapeOpen(adsFileName);
 
     nBytes = TapeRead(phys_rec);	/* Skip "ADS_DATA_TAPE" record	*/
@@ -360,7 +360,7 @@ int CloseADSfile()
 {
   switch (DiskData)
     {
-    case false:
+    case TAPE_DATA:
       TapeClose();
       return(0);
 
@@ -381,7 +381,7 @@ static int GetNextADSfile()
 
   static char seq;
 
-  if (DiskData == false || dot == NULL || islower(dot[-1]) == false)
+  if (DiskData == TAPE_DATA || dot == NULL || islower(dot[-1]) == false)
     return(false);
 
   seq = dot[-1];
@@ -480,7 +480,7 @@ static long FindNextDataRecord(char buff[])
         }
       }
     else
-    if (DiskData == false)
+    if (DiskData == TAPE_DATA)
       {
       nbytes = TapeRead(buff);
       }

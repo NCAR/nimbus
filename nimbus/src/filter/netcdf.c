@@ -69,7 +69,7 @@ static void		*data_p[MAX_SDI+MAX_RAW+MAX_DERIVE];
 static long		recordNumber = 0;
 static float		TimeOffset = 0.0;
 
-static int	ttxI;	// junk var, delete if hanging around
+static int	ttxI;	// junk var, delete if hanging around July-2004
 
 static Queue	*missingRecords;
 static void	WriteMissingRecords();

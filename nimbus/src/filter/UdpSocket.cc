@@ -176,7 +176,7 @@ int UdpSocket::readSock (char *dest, int len)
 }
 
 /*****************************************************************************/
-int UdpSocket::writeSock (char *src, int len)
+int UdpSocket::writeSock (const char *src, int len)
 {
   int slen;
  

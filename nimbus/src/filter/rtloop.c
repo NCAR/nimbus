@@ -28,17 +28,16 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1997-2003
 #include "decode.h"
 #include "gui.h"
 #include "vardb.h"
-#include <ctype.h>
+#include "psql.h"
+
 #include <Xm/TextF.h>
 
 #include "adsIOrt.h"
 
-#include <errno.h>
 #include <sys/time.h>
 #include <unistd.h>
 
-bool	InitSQL();
-void	WriteSQL(char ts[]);
+PostgreSQL	*psql;
 
 extern NR_TYPE	*SampledData, *AveragedData;
 extern char	*ADSrecord;
@@ -108,7 +107,7 @@ printf("rtloop: entered ONBOARD_RT\n");
   SetBaseTime((Hdr_blk *)ADSrecord);
 
 #ifdef SQL
-  InitSQL();
+  psql = new PostgreSQL("");
 #endif
 //  GetUserTimeIntervals();
 //  NextTimeInterval(&dummy[0], &dummy[1]);
@@ -133,13 +132,13 @@ pts = ts;
     AverageSampledData();
     ComputeLowRateDerived();
  
+#ifdef SQL
+    psql->WriteSQL(timeStamp);
+#endif
+
     WriteNetCDF();
     UpdateTime(SampledData);
     SyncNetCDF();
-
-#ifdef SQL
-    WriteSQL(timeStamp);
-#endif
 
 //gettimeofday(&tv, NULL);
 //printf("%s  %d.%d\n", timeStamp, tv.tv_sec, tv.tv_usec); fflush(stdout);

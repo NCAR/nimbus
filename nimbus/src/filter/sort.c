@@ -22,7 +22,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------
 */
 
-#include <string.h>
+#include <cstring>
 
 static char	*mid, *temp, **sort_table;
 
