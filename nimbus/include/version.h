@@ -1,1 +1,1 @@
-#define NIMBUS_VERSION          "Version - 3.7.0\n"
+#define NIMBUS_VERSION          "Version - 3.8.0\n"

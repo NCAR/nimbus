@@ -22,7 +22,7 @@ REFERENCES:	none
 
 REFERENCED BY:	nimbus.c (main)
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2000
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
 */
 
@@ -662,20 +662,18 @@ Widget CreateEditWindow(Widget parent)
 /* -------------------------------------------------------------------- */
 void CreateProbeMenu()
 {
-  Widget	b[34];// was b[32]
-  int		i;
-  char		**probeNames;
+  std::vector<Widget>	btts;
+  std::vector<std::string> probeNames = GetProbeList();
 
-  probeNames = GetProbeList();
-
-  for (i = 0; probeNames[i] != NULL; ++i)
+  for (size_t i = 0; i < probeNames.size(); ++i)
     {
-    b[i] = XmCreatePushButton(pullRight, probeNames[i], NULL, 0);
-    XtAddCallback(b[i], XmNactivateCallback, ToggleProbe,
+    Widget b = XmCreatePushButton(pullRight, (char*)probeNames[i].c_str(), NULL, 0);
+    XtAddCallback(b, XmNactivateCallback, ToggleProbe,
 			(XtPointer)GetProbeType(probeNames[i]));
+    btts.push_back(b);
     }
 
-  XtManageChildren(b, i);
+  XtManageChildren(&btts[0], btts.size());
 
 }	/* END CREATEPROBEMENU */
 

@@ -136,10 +136,6 @@ void	Sum(NR_TYPE *in_data, NR_TYPE *out_data, size_t n),
 
 void	AllocateDataArrays(), FreeDataArrays(), ResetTimeGapper();
 
-void	AddProbeToList(char name[], int type), ResetProbeList();
-char	**GetProbeList();
-unsigned long	GetProbeType(char name[]);
-
 int	SearchDERIVEFTNS(char target[]),
 	DecodeHeader(char header_file[]),
 	DependIndexLookup(DERTBL *dp, int which_dep),

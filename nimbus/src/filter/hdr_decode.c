@@ -50,11 +50,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2001
 
 typedef struct
   {
-  char	*name;
-  int	type;	/* #defines used for switch's, in WINDS		*/
-  int	VecLen;	/* VectorLength					*/
-  int	pType;	/* probeType for 'ToggleProbe' menu, redundant	*/
-  int	cnt;	/* Total # of these probes present.		*/
+  char		*name;
+  int		type;	/* #defines used for switch's, in WINDS		*/
+  size_t	VecLen;	/* VectorLength					*/
+  unsigned long	pType;	/* probeType for 'ToggleProbe' menu, redundant	*/
+  size_t	cnt;	/* Total # of these probes present.		*/
   } PMS;
 
 
@@ -99,9 +99,9 @@ static PMS	pms2d_probes[] =
   };
 
 
-static int	InertialSystemCount, GPScount, twoDcnt, NephCnt;
+static size_t	InertialSystemCount, GPScount, twoDcnt, NephCnt;
 static size_t	probeCnt;
-static int	probeType;
+static unsigned long	probeType;
 static long	start, rate, length;
 static char	*item_type, location[NAMELEN];
 static char	*derivedlist[MAX_DEFAULTS*4],	/* DeriveNames file	*/
@@ -610,7 +610,7 @@ probeCnt = 2;
     add_name_to_DERTBL("XISNAS");
 probeCnt = 0;
 */
-    AddProbeToList("Fluxes", PROBE_FLUX);
+    AddProbeToList("Fluxes", (unsigned long)PROBE_FLUX);
     }
   else
     add_derived_names("SAIL");
@@ -640,14 +640,26 @@ probeCnt = 0;
   int	cnt = 0;
 
   for (size_t i = 0; pms1_probes[i].name; ++i)
-    cnt += pms1_probes[i].cnt + pms1v2_probes[i].cnt;
+    cnt += pms1_probes[i].cnt;
+  for (size_t i = 0; pms1v2_probes[i].name; ++i)
+    cnt += pms1v2_probes[i].cnt;
+  for (size_t i = 0; pms1v3_probes[i].name; ++i)
+    cnt += pms1v3_probes[i].cnt;
 
-  if (cnt > 2)
-    AddProbeToList("All PMS1D's", PROBE_PMS1D);
+  if (cnt > 1)
+    AddProbeToList("All PMS1D's", (unsigned long)PROBE_PMS1D);
+
+  cnt = 0;
+
+  for (size_t i = 0; pms2d_probes[i].name; ++i)
+    cnt += pms2d_probes[i].cnt;
+
+  if (cnt > 1)
+    AddProbeToList("All PMS2D's", (unsigned long)PROBE_PMS2D);
   }
 
-  AddProbeToList("All On", ALL_ON);
-  AddProbeToList("All Off", ALL_OFF);
+  AddProbeToList("All On", (unsigned long)ALL_ON);
+  AddProbeToList("All Off", (unsigned long)ALL_OFF);
 
   if (AccessProjectFile(USERNAMES, "r") == true)
     add_file_to_DERTBL(USERNAMES);
@@ -880,7 +892,7 @@ static void initGustCorrected(char vn[])
   if (Aircraft != SAILPLANE)
     {
     probeType = PROBE_GUSTC;
-    AddProbeToList("Corrected Winds", PROBE_GUSTC);
+    AddProbeToList("Corrected Winds", (unsigned long)PROBE_GUSTC);
 
     /* ProbeCnt here relies on the fact that xbuild puts inertials before
      * GPSs.
