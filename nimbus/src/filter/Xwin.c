@@ -171,23 +171,23 @@ Widget CreateSetupWindow(Widget parent)
 
   n = 0;
   XtSetArg(args[n], XmNsubMenuId, pullDown[0]); ++n;
-  cascadeButton[0] = XmCreateCascadeButton(menuBar, "setupPD_CB", args, n);
+  cascadeButton[0] = XmCreateCascadeButton(menuBar, "File", args, n);
 
   n = 0;
   XtSetArg(args[n], XmNsubMenuId, pullDown[1]); ++n;
-  cascadeButton[1] = XmCreateCascadeButton(menuBar, "editPD_CB", args, n);
+  cascadeButton[1] = XmCreateCascadeButton(menuBar, "Edit", args, n);
 
   XtManageChildren(cascadeButton, 2);
   XtManageChildren(pullDown, 2);
 
 
   n = 0;
-  b[0] = XmCreatePushButton(pullDown[0], "loadSetupButton", args, n);
-  b[1] = XmCreatePushButton(pullDown[0], "saveSetupButton", args, n);
+  b[0] = XmCreatePushButton(pullDown[0], "Load setup", args, n);
+  b[1] = XmCreatePushButton(pullDown[0], "Save setup", args, n);
   b[2] = XmCreateSeparator(pullDown[0], "setupSeparator", args, n);
-  b[3] = XmCreatePushButton(pullDown[0], "printButton", args, n);
+  b[3] = XmCreatePushButton(pullDown[0], "Print", args, n);
   b[4] = XmCreateSeparator(pullDown[0], "setupSeparator", args, n);
-  b[5] = XmCreatePushButton(pullDown[0], "cancelSetupButton", args, n);
+  b[5] = XmCreatePushButton(pullDown[0], "Quit", args, n);
   XtAddCallback(b[0], XmNactivateCallback, LoadSetup, NULL);
   XtAddCallback(b[1], XmNactivateCallback, SaveSetup, NULL);
   XtAddCallback(b[3], XmNactivateCallback, PrintSetup, NULL);
@@ -199,13 +199,13 @@ Widget CreateSetupWindow(Widget parent)
   pullRight = XmCreatePulldownMenu(pullDown[1], "editPR_CB", args, n);
 
   n = 0;
-  b[0] = XmCreatePushButton(pullDown[1], "editDefaultsButton", args, n);
-  b[1] = XmCreatePushButton(pullDown[1], "editTimeSlices", args, n);
-  b[2] = XmCreatePushButton(pullDown[1], "editFlightInfo", args, n);
-  b[3] = XmCreatePushButton(pullDown[1], "toggleOutput", args, n);
-  b[4] = XmCreatePushButton(pullDown[1], "toggleRate", args, n);
+  b[0] = XmCreatePushButton(pullDown[1], "Defaults", args, n);
+  b[1] = XmCreatePushButton(pullDown[1], "Time Slices", args, n);
+  b[2] = XmCreatePushButton(pullDown[1], "Flight Info", args, n);
+  b[3] = XmCreatePushButton(pullDown[1], "Toggle Output", args, n);
+  b[4] = XmCreatePushButton(pullDown[1], "Toggle Rate", args, n);
   XtSetArg(args[n], XmNsubMenuId, pullRight); ++n;
-  b[5] = XmCreateCascadeButton(pullDown[1], "toggleProbe", args, n);
+  b[5] = XmCreateCascadeButton(pullDown[1], "Toggle Probe", args, n);
   XtAddCallback(b[0], XmNactivateCallback, EditDefaultsFile, NULL);
   XtAddCallback(b[1], XmNactivateCallback, EditTimeSlices, NULL);
   XtAddCallback(b[2], XmNactivateCallback, EditFlightInfo, NULL);

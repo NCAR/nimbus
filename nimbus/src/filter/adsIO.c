@@ -243,8 +243,9 @@ long FindNextLogicalRecord(char record[], long endtime)
 
   if (GetStart(GPS_GARMIN_STR, &TansStart) != ERR)
     {
-    Garmin_blk	*gp_src = (Garmin_blk *)&phys_rec[currentLR * lrlen + TansStart],
-		*gp_dst = (Garmin_blk *)&record[TansStart];
+    Garmin_blk
+	*gp_src = (Garmin_blk *)&phys_rec[currentLR * lrlen + TansStart],
+	*gp_dst = (Garmin_blk *)&record[TansStart];
 
     memcpy(gp_dst, gp_src, sizeof(Garmin_blk));
     }

@@ -370,9 +370,13 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   if (ProductionRun)		/* Do it again in case Flight# changed	*/
     setOutputFileName();
 
-  CreateNetCDF(OutputFileName);
   InitAircraftDependencies();
+
+  /* RunAMLIB inits before creating netCDF to setup defaults into
+   * netCDF attributes.
+   */
   RunAMLIBinitializers();
+  CreateNetCDF(OutputFileName);
   InitAsyncModule(OutputFileName);
 
   {
@@ -660,7 +664,11 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
         switch (rp->OutputRate)
           {
           case LOW_RATE:
-            rp->OutputRate = rp->SampleRate;
+            if (rp->OutputRate != rp->SampleRate)
+              rp->OutputRate = rp->SampleRate;
+            else
+            if (ProcessingRate == HIGH_RATE)
+              rp->OutputRate = HIGH_RATE;
             break;
 
           case HIGH_RATE:

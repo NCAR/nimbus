@@ -412,24 +412,19 @@ static void shift_1hz(int start, int lag)
   gap_size  = 1000;
   remainder = lag % gap_size;
 
-
-  /* Start by moving the data to the nearest ms gap, then
-   * if the remainder is greater than the allowable JITTER,
-   * interpolate between the points.
-   */
   if (lag > 0)
     {	/* Shift data backwards	*/
 
     points[0] = prev_rec[start];
     points[1] = this_rec[start];
-    points[2] = next_rec[start];
+    points[2] = out_rec[start] = next_rec[start];
     points[3] = next_next_rec[start];
     }
   else
     {	/* Shift data forward	*/
 
     points[0] = prev_prev_rec[start];
-    points[1] = prev_rec[start];
+    points[1] = out_rec[start] = prev_rec[start];
     points[2] = this_rec[start];
     points[3] = next_rec[start];
     }

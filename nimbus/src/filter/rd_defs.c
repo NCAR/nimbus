@@ -87,12 +87,14 @@ NR_TYPE *GetDefaultsValue(char target[], char var[])
   int i;
  
   for (i = 0; i < nDefaults; ++i)
+    {
     if (strcmp(Defaults[i]->Name, target) == 0)
       {
       Defaults[i]->Used = true;
       strcpy(Defaults[i]->var, var);
       return(Defaults[i]->Value);
       }
+    }
  
   sprintf(buffer, "Request for non-existent default, %s.\n", target);
   LogMessage(buffer);
@@ -107,11 +109,13 @@ void CheckAndAddAttrs(int fd, int varid, char name[])
   int	i;
 
   for (i = 0; i < nDefaults; ++i)
+    {
     if (strcmp(name, Defaults[i]->var) == 0)
       {
       ncattput(fd, varid, Defaults[i]->Name, NC_FLOAT,
 		Defaults[i]->nValues, Defaults[i]->Value);
       }
+    }
 
 }	/* END CHECKANDADDATTRS */
 
@@ -157,6 +161,7 @@ static void process_line(char *line_p, FILE *fp)
     strcpy(Defaults[whichOne]->Name, name);
     }
 
+  Defaults[whichOne]->var[0] = '\0';
   Defaults[whichOne]->Dirty = false;
   Defaults[whichOne]->Used  = false;
   Defaults[whichOne]->Value = (NR_TYPE *)GetMemory(NR_SIZE *
