@@ -26,9 +26,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995-9
 #include <sys/utsname.h>
 #include <errno.h>
 #include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <unistd.h>
 
 #include "eth_shm.h"

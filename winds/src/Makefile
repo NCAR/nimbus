@@ -10,7 +10,8 @@
 #
 # default flags, assuming development mode (debug on)
 #
-NIMBUS=		/jnet/tmp/chris/raf/nimbus
+NIMBUS=		/code/chris/nimbus
+OPENWINHOME=	/usr/openwin
 LOCAL_INCL=     $(JLOCAL)/include/
 INC= 		$(WINDS)/include/
 NIMBINC=	$(NIMBUS)/include/
@@ -37,7 +38,7 @@ INCLUDE=        $(XVIEW_INCL) $(WINDS_INCL) $(SHARE_INCL)
 #
 # library paths
 #
-LIB_PATH=       -L/jnet/linux/lib -L/usr/openwin/lib -L/usr/X11R6/lib
+LIB_PATH=       -L/jnet/local/lib -L/usr/openwin/lib -L/usr/X11R6/lib
 #
 # libraries
 #
@@ -402,7 +403,7 @@ NIMBUS.O = $(NOBJ)globals.o $(NOBJ)hdr_decode.o $(NOBJ)rd_lag.o $(NOBJ)popen.o \
 	$(NOBJ)depend.o $(NOBJ)order.o $(NOBJ)rec_decode.o $(NOBJ)compute.o \
 	$(NOBJ)rd_defs.o $(NOBJ)amlibfn.o $(NOBJ)pms1d_rt.o $(NOBJ)memalloc.o \
 	$(NOBJ)textfile.o $(NOBJ)search.o $(NOBJ)rd_mod.o $(NOBJ)average.o \
-	$(NOBJ)rd_sum.o $(NOBJ)rd_ddor.o \
+	$(NOBJ)rd_sum.o $(NOBJ)rd_ddor.o $(NOBJ)injectsd.o \
 	$(NOBJ)calco.o $(NOBJ)rd_spike.o $(NOBJ)probe.o
 
 WINPUT.O = $(OBJ)winputops.o $(OBJ)netcdf.o $(OBJ)netconfig.o \
@@ -454,7 +455,7 @@ WINDCOMM.O = $(SRC)windComm.cc $(OBJ)shmem.o
 WINDCOMM.H = $(INC)eth_shm.h $(INC)shmem.h
 
 $(EXEC)windComm: $(WINDCOMM.O) $(WINDCOMM.H)
-	g++ -g -O $(WINDCOMM.O) $(WINDS_INCL) -I$(LOCAL_INCL) -L$(JLOCAL)/lib -o $(EXEC)windComm -lraf -lraf++
+	g++ -g -O $(WINDCOMM.O) $(WINDS_INCL) -I$(LOCAL_INCL) -L$(JLOCAL)/lib -o $(EXEC)windComm -lraf -lraf++ -lz
 
 ##########################  HELP MODULES  ####################################
 ##############################################################################

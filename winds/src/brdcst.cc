@@ -26,7 +26,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 -------------------------------------------------------------------------
 */
 
-#include <stdio.h>
 #include "constants.h"
 #include "network.h"
 #include "socket.h"

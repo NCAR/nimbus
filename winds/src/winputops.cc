@@ -1,6 +1,6 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:	winputops.c
+OBJECT NAME:	winputops.cc
 
 FULL NAME:	winput Operations
 
@@ -10,14 +10,6 @@ STATIC FNS:
 
 DESCRIPTION:	Read and process real-time data or netCDF files and place
 		data into shared memory for WINDS.
-
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	
-
-REFERENCED BY:	
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 -------------------------------------------------------------------------
@@ -36,7 +28,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 #include <netdb.h>
 #include <unistd.h>
 #include <fcntl.h> 
-#include <stdlib.h> 
 
 #include <shmem.h>
 #include <lengths.h>
@@ -1005,5 +996,6 @@ char *ExtractHeaderIntoFile(char *fileName)
 /* Shutup Linker */
 void AddVariableToRAWlagList(RAWTBL *varp) {}
 void AddVariableToSDIlagList(SDITBL *varp) {}
+void FillListWidget() {}
 
 /* END WINPUT.C */

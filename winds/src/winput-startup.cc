@@ -1,11 +1,11 @@
 /*
-winput-startup.c
+winput-startup.cc
 */
-#include <stdio.h>
+#include <cstdio>
 #include <sys/param.h>
 #include <signal.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 #include <unistd.h>
 
 #include <constants.h>
