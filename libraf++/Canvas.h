@@ -62,16 +62,3 @@ private:
 };	/* END CANVAS.H */
 
 #endif
-/* Silly comments for testing
-One
-two
-three
-four
-five
-a line to delete
-another line to delete
-another line to delete
-a line to change
-another line to delete
-another line to delete
-*/

@@ -107,6 +107,7 @@ void Header::readHeader(const char fileName[])
 	nBytes = read(fd, buff, sizeof(Fl));
 	nBytes += read(fd, &buff[sizeof(Fl)], ntohl(header->thdrlen));
       }
+/*
     else
       {
 	// Close the file and re-open as an XML document.
@@ -157,6 +158,7 @@ void Header::readHeader(const char fileName[])
 	
 
       }
+*/
     close(fd);
     }
 
