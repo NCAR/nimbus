@@ -25,7 +25,7 @@ static String fallback_resources[] =
    */
   "*topLevelShell.x:				75",
   "*topLevelShell.y:				75",
-  "*topLevelShell.title:			Nimbus 3.6.1",
+  "*topLevelShell.title:			Nimbus 3.7.0",
   "*topLevelShell.iconName:			Nimbus",
   "*topLevelForm.resizePolicy:			RESIZE_GROW",
   "*topLevelForm*buttonRC.spacing:		244",
