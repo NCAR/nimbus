@@ -25,6 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2004
 
 /* -------------------------------------------------------------------- */
 typedef std::map<std::string, std::string> rateTableMap;
+typedef std::map<int, std::string> rateTableList;
 
 class PostgreSQL
 {
@@ -39,6 +40,7 @@ public:
 
 //@{
   void	WriteSQL(const std::string timeStamp);
+  void	WriteSQLvolts(const std::string timeStamp);
 
   /**
    * Generic function to submit a query/command to the database.
@@ -83,13 +85,26 @@ private:
    */
   PGconn   *_conn;
 
-  std::string	_sql2d_str;
+  std::stringstream	_sql2d_str;
+
+  /**
+   * List of data rate tables (e.g. RAF_1sps, RAF_10sps, RAF_25sps)
+   * created for this database.
+   */
+  rateTableList	_ratesTables;
 
 //@{
   UdpSocket*	_brdcst;
 
   static const int RT_UDP_PORT;
+
 //@}
+  static const std::string GLOBAL_ATTR_TABLE;
+  static const std::string VARIABLE_LIST_TABLE;
+  static const std::string CATEGORIES_TABLE;
+  static const std::string LRT_TABLE;
+  static const std::string RATE_TABLE_PREFIX;
+
   void	dropAllTables();
   void	createTables();
   void	initializeGlobalAttributes();
@@ -98,7 +113,8 @@ private:
   /**
    * Low level add a variable with given params.
    */
-  void	addVariableToDataBase(const std::string& name, const std::string& units,
+  void
+  addVariableToDataBase(const std::string& name, const std::string& units,
 	const std::string& longName, const int sampleRate, const int nDims,
 	const int dims[], const int nCals, const float cals[],
 	const float missingValue, const std::string& dataQuality);
@@ -109,7 +125,8 @@ private:
    * @param varName is the variable name.
    * @param category and it's corresponding category.
    */
-  void addCategory(std::string varName, std::string category);
+  void
+  addCategory(std::string varName, std::string category);
 
   /**
    * Add a varible to the list for it's Sample Rate group.  By
@@ -122,7 +139,8 @@ private:
    * @param var is the variable to add.
    * @see createSampleRateTables()
    */
-  void addVariableToTables(rateTableMap &tableMap, const var_base *var);
+  void
+  addVariableToTables(rateTableMap &tableMap, const var_base *var);
 
 
   /**
@@ -130,7 +148,8 @@ private:
    * addToSampleRateList() method.
    * @see addVariableToTables()
    */
-  void createSampleRateTables(const rateTableMap &tableMap);
+  void
+  createSampleRateTables(const rateTableMap &tableMap);
 
 
   /**
@@ -142,7 +161,10 @@ private:
    * @param value is the value to add.
    * @param addComma is whether to add a comma to the stream.
    */
-  void	addValue(std::stringstream& sqlStr, std::stringstream& brdStr, const NR_TYPE value, const bool addComma);
+  void
+  addValue(std::stringstream& sqlStr, std::stringstream& brdStr, const NR_TYPE value, const bool addComma);
+  void
+  addValue(std::stringstream& sqlStr, const NR_TYPE value, const bool addComma);
 
   /**
    * Add a vector of values to the stringstream-s, used for building UDP
@@ -154,7 +176,8 @@ private:
    * @param nValues is the vector length.
    * @param addComma is whether to add a comma to the stream.
    */
-  void	addVector(std::stringstream& sql, std::stringstream& udp, const NR_TYPE *values, int nValues, const bool addComma);
+  void
+  addVector(std::stringstream& sql, std::stringstream& udp, const NR_TYPE *values, int nValues, const bool addComma);
 
 };	// END PGSQL.H
 
