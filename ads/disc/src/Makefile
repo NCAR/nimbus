@@ -46,10 +46,10 @@ sunudp: $(B)sunudp
 exatst: $(B)exatst
 
 discClass:
-	make -f ../class/Makefile
+	cd ../class; make
 
 hdrClass:
-	make -f $(HEADER)/class/Makefile
+	cd ../../header/class; make
 
 clean:
 	rm -f ${O}/* ${L}/* ${B}/ck* ${B}/disc*

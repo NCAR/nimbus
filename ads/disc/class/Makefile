@@ -3,7 +3,7 @@ I=              ../include/
 O=              ../obj/
 L=              ../lib/
 
-ID=		$(DSM)/include/
+ID=		../../dsm/include/
 IL=		$(JLOCAL)/include/
 IV=		$(WIND_BASE)/target/config/mv162lc/
 

@@ -49,10 +49,10 @@ clean:
 	rm ${O}/* ${L}/*
 
 hdrClass:
-	make -f $(HEADER)/class/Makefile
+	cd ../../header/class; make
 
 dsmClass:
-	make -f ../class/Makefile
+	cd ../class; make
 
 $(O)dsmAsync.o: $(S)dsmAsync.cc $(ASYNC.O) $(ASYNC.H)
 	cc68k $(CFLAGS) $(S)dsmAsync.cc -o $(O)dsmAsync_st.o
