@@ -195,7 +195,7 @@ void PlotInfo::SetDefaultLabels(int idx)
     if (cnt++ == idx)
       {
       panel[idx]->xAxis.label = "Diameter (um)";
-      panel[idx]->yAxis.label = "N/cm3";
+      panel[idx]->yAxis.label = "#/cm3";
       panel[idx]->zAxis.label = "Time";
       }
     }

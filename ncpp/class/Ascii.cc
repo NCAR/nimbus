@@ -71,12 +71,12 @@ void Ascii::Update(SetManager& sets, PlotManager *plotMgr)
       strcat(buffer, "\n  Concentrations dN");
 
       if (sets.GetNormalization() == LINEAR)
-        strcat(buffer, "/dD (N/cm3/um)\n");
+        strcat(buffer, "/dD (#/cm3/um)\n");
       else
       if (sets.GetNormalization() == LOG)
-        strcat(buffer, "/dlogD (N/cm3)\n");
+        strcat(buffer, "/dlogD (#/cm3)\n");
       else
-        strcat(buffer, " (N/cm3)\n");
+        strcat(buffer, " (#/cm3)\n");
 
       for (i = 0; i < sets.NumberRecords(); ++i)
         {
