@@ -1,0 +1,41 @@
+This file provides a simple example for adding a derived variable.  This
+example will assume that you have an analog channel being sampled, and you'd
+like to create a derived concentration.  Our example will use 'CNTS' as our
+analog variable and 'CONCN' as our derived variable.
+
+
+Order of these steps is not important.
+
+1)  Edit the '$PROJ_DIR/defaults/DependTable' file and add a line setting up
+    the dependencies.  In this case CONCN depends upon CNTS, and let's say
+    true air speed also:
+
+CONCN	CNTS TASX
+
+
+2)  Edit the '$PROJ_DIR/defaults/DerivedNames' file and add a line telling
+    nimbus that if it sees CNTS, that it should add a derived variable named
+    CONCN:
+
+CNTS	CONCN
+
+
+3)  cd $NIMBUS/src/amlib/[std|user]*, and cp template.c concn.c.  Now edit
+    concn.c to contain the appropriate computation.  Add concn.c to the
+    Makefile.
+
+
+4)  Edit '$NIMBUS/include/amlib.fns' and add a line equating CONCN with a
+    C function.  This is the file that equates variable names with actual
+    routines.  If someone can figure out how to do this without recompiling,
+    I'll give you a weeks salary.
+
+5)  Make nimbus.
+
+6)  Tinker with steps 1-5 until it works.
+
+
+
+* At NCAR/RAF, the 'std' directory is for blessed instruments/computations,
+  the 'user' directory is for [piggy back | fly by night | we'll never see
+  this again | are you sure this will work? | chemistry] instruments.

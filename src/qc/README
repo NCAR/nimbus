@@ -1,0 +1,37 @@
+
+
+-----------------------------------------------
+README File for Valkyrie Quality Control System
+-----------------------------------------------
+
+
+(For a more detailed discussion of the installation process, see the
+document _Valkyrie Maintenance Manual_.)
+
+To build the system:
+
+	1) Inspect the following Makefiles, and change if necessary
+
+		./Makefile
+		./socklib/Makefile
+		./timerlib/Makefile
+		./gui/Makefile
+		./vallib/Makefile
+
+	2) Type 'make' from root of the source distribution
+
+To install after build:
+
+	1) Type 'make install' from root of the source distribution.
+	   This does the following actions:
+
+		cp gui/qc-gui $(WINDS)/bin
+		cp vallib/libval.a $(NIMBUS)/lib
+		cp vallib/qc.h $(NIMBUS)/include
+
+	(The man page (man/qc.l) will ultimately get copied to 
+	/usr/local/man/manl when permission issues are resolved).
+
+Official Release History:
+
+	4-30-94:  Version 1.0:  Initial Release

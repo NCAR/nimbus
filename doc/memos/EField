@@ -1,0 +1,64 @@
+Here are the variable names for the SailPlane Electric Mill Field thingy.
+
+Raw SDI Variables:
+
+	SPROLL	Roll
+
+	SPVNT	Nose Top
+	SPVNB	Nose Bottom
+	SPVNS	Nose Starboard
+	SPVNP	Nose Port
+
+	SPVFT	Fueselage Top
+	SPVFB	Fueselage Bottom
+	SPVFS	Fueselage Starboard
+	SPVFP	Fueselage Port
+
+	SPVYO
+	SPVZO
+
+	SPSFP	Sign bits for Fueselage Mills.
+	SPSFS
+	SPSFT
+	SPSFB
+	
+	ZRANGE
+	YRANGE
+
+These last 6 variables are all in a flag word called DIG3.
+
+Corresponding calibrated derived Variables:
+
+	SPENT	Nose Top
+	SPENB	Nose Bottom
+	SPENS	Nose Starboard
+	SPENP	Nose Port
+
+	SPEFT	Fueselage Top
+	SPEFB	Fueselage Bottom
+	SPEFS	Fueselage Starboard
+	SPEFP	Fueselage Port
+
+	SPEYO
+	SPEZO
+
+
+I was hoping to avoid the SP prefix, but VNS and VNSC are already used.
+Here are the rest of the derived variables:
+
+	SPEXZ
+	SPEXY
+
+	SPEFZ
+	SPEFY
+	SPEFQZ
+	SPEFQY
+
+	SPENZ
+	SPENY
+	SPENQZ
+	SPENQY
+
+Are the final output variables.
+
+--Chris

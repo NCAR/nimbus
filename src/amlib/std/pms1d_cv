@@ -1,0 +1,106 @@
+/*
+-------------------------------------------------------------------------
+OBJECT NAME:	pms1d_cv
+
+FULL NAME:	PMS1D Compute Variables
+
+ENTRY POINTS:	none
+
+STATIC FNS:	none
+
+DESCRIPTION:	This is the compute engine used by all PMS1D probes.
+		It is included into each pms probe .c file in the
+		apropriate place.  Certain variables are already expected
+		to exist.
+
+INCLUDED BY:	sfssp(), sasas(), s200x(), s200y(), s260x(), f300.c
+
+NOTES:		Calculations taken from Bulletin 24 dated 1/89.
+-------------------------------------------------------------------------
+*/
+
+  {
+  NR_TYPE	dbar2, conc, TAS_LIMIT = 30.0;
+  double	z;
+
+  disp[probeNum] = dbar[probeNum] = dbar2 = z = total_concen[probeNum] = 0.0;
+
+  if (FeedBack == HIGH_RATE_FEEDBACK)
+    TAS_LIMIT /= SampleRate[probeNum];
+
+#ifdef PLWC
+  plwc[probeNum] = 0.0;
+#endif
+#ifdef VOLUME
+  pvol[probeNum] = 0.0;
+#endif
+#ifdef REFF
+  reff2[probeNum] = reff3[probeNum] = 0.0;
+#endif
+#ifdef TACT
+  tact[probeNum] = 0.0;
+#endif
+
+  for (i = 0; i < FIRST_BIN[probeNum]; ++i)
+    concentration[i] = 0.0;
+
+  for (i = LAST_BIN[probeNum]; i < varp->Length; ++i)
+    concentration[i] = 0.0;
+
+  for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
+    if (sampleVolume[i] == 0.0 || tas < TAS_LIMIT)
+      concentration[i] = 0.0;
+    else
+      {
+      concentration[i]	= conc = actual[i] / sampleVolume[i];
+      dbar[probeNum]	+= dia[i] * conc;
+      dbar2		+= dia2[i] * conc;
+#ifdef PLWC
+      plwc[probeNum]	+= dia3[i] * conc;
+#endif
+#ifdef VOLUME
+      pvol[probeNum]	+= dia3[i] * conc;
+#endif
+#ifdef DBZ	/* Reflectivity */
+      z += conc * pow((double)dia[i] / 1000.0, 6.0);
+#endif
+#ifdef TACT	/* Total counts (actual) */
+      tact[probeNum] += actual[i];
+#endif
+
+      total_concen[probeNum] += conc;
+      }
+
+#ifdef REFF	/* Effective Radius */
+    reff2[probeNum] = dbar2;
+#ifdef PLWC
+    reff3[probeNum] = plwc[probeNum];
+#else
+    reff3[probeNum] = pvol[probeNum];
+#endif
+#endif
+
+#ifdef PLWC
+    plwc[probeNum] *= M_PI / 6.0 * DENS[probeNum] * PLWFAC[probeNum];
+#endif
+#ifdef VOLUME
+    pvol[probeNum] *= M_PI / 6.0;
+#endif
+#ifdef DBZ
+    if (z > 0.0)
+      dbz[probeNum] = 10.0 * log10((double)(z * DBZFAC[probeNum]));
+    else
+      dbz[probeNum] = -100.0;
+#endif
+
+    if (total_concen[probeNum] > 0.0001)
+      {
+      dbar[probeNum] /= total_concen[probeNum];
+
+      disp[probeNum] = (NR_TYPE)sqrt(fabs((double)(dbar2 /
+			total_concen[probeNum] - dbar[probeNum] *
+			dbar[probeNum]))) / dbar[probeNum];
+      }
+    }
+
+/* END PMS1D_CV */

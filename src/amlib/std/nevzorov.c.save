@@ -1,0 +1,89 @@
+/*
+-------------------------------------------------------------------------
+OBJECT NAME:	nevzorov.c
+
+FULL NAME:	
+
+ENTRY POINTS:	sfunc()
+
+STATIC FNS:	
+
+DESCRIPTION:	Template for AMLIB std & user directories.
+
+INPUT:		
+
+OUTPUT:		
+
+REFERENCES:	
+
+REFERENCED BY:	compute.c
+
+COPYRIGHT:	University Corporation for Atmospheric Research, 2002
+-------------------------------------------------------------------------
+*/
+
+#include "nimbus.h"
+#include "amlib.h"
+
+static NR_TYPE L = 2598.0;
+static NR_TYPE Cl = 4.184;
+static NR_TYPE Ci = 1.875;
+static NR_TYPE TMP[] = { 70.0, 90.0 };
+static NR_TYPE RSL[] = { 0.905, 0.986 };
+static NR_TYPE RST[] = { 1.134, 1.235 };
+
+static int	indx = 0;
+
+NR_TYPE LatentHeatMelting(NR_TYPE temp);
+NR_TYPE LatentHeatEvaporation(NR_TYPE temp);
+
+/* -------------------------------------------------------------------- */
+void sNevLWC(DERTBL *varp)
+{
+  NR_TYPE	sig, tas, atx, out, Ll;
+
+  sig = GetSample(varp, 0);
+  tas = GetSample(varp, 1) * 1.05; /* TAS is 5% higher at inlet, per DCR/IDEAS3 */
+  atx = GetSample(varp, 2);
+
+  Ll = Cl * (TMP[indx] - atx) + LatentHeatEvaporation(TMP[indx]);
+  out = (sig * sig) / tas * Ll * RSL[indx];
+
+  PutSample(varp, out / 1000.0);
+
+}
+
+/* -------------------------------------------------------------------- */
+void sNevTWC(DERTBL *varp)
+{
+  NR_TYPE       sig, tas, atx, out, Li;
+
+  sig = GetSample(varp, 0);
+  tas = GetSample(varp, 1) * 1.05; /* TAS is 5% higher at inlet, per DCR/IDEAS3 */
+  atx = GetSample(varp, 2);
+
+  Li = Cl * TMP[indx] + LatentHeatEvaporation(TMP[indx]);
+
+  if (atx <= 0.0)
+    Li += Ci * -atx + LatentHeatMelting(TMP[indx]);
+
+  out = (sig * sig) / tas * Li * RST[indx];
+
+  PutSample(varp, out / 1000.0);
+
+}
+
+/* -------------------------------------------------------------------- */
+NR_TYPE LatentHeatMelting(NR_TYPE temp)
+{
+  return(((79.7 + 0.485 * temp - 2.5e-3 * temp * temp) * 1055.0) / 252.0);
+
+}
+/* -------------------------------------------------------------------- */
+NR_TYPE LatentHeatEvaporation(NR_TYPE temp)
+{
+  return(((597 - ((597-540) * (temp / 100.0))) * 1055.0) / 252.0);
+
+}
+
+/* END NEVZOROV.C */

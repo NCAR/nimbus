@@ -1,0 +1,937 @@
+# This file does not need to be sorted.  Variables are organized by probe.
+# make(1) in this directory will do the sorting, and create the appropriate
+# files.
+#
+# NOTE:  Use TABs not SPACEs, they will not sort the same.
+#
+#		Name		Constructor	xlate fn	compute fn
+# ----------------------------------------------------------------------------
+#
+# AIRS-II
+#
+	"XICING",	NULL,           NULL,		sicing,
+#
+# IDEAS
+#
+	"INFLOWUWC",	NULL,           NULL,		suwflow,
+	"XCCNC",	NULL,           NULL,		sccnc,
+	"XCCNSS",	NULL,           NULL,		sccns,
+	"XNASC",	NULL,           NULL,		stasr,
+#
+# M903 Nephelometer.
+#
+	"XN9BSCT",	NULL,           xlfloat0,	NULL,
+	"XN9CAL",	NULL,           xlfloat1,	NULL,
+	"XN9PSX",	NULL,           xlfloat2,	NULL,
+	"XN9ATX",	NULL,           xlfloat3,	NULL,
+	"XN9RHUM",	NULL,           xlfloat4,	NULL,
+	"XN9RELA",	NULL,           xlfloat5,	NULL,
+#
+# Don Lukins, UWYO Licor
+	"XWLCO2C",	(void(*)(void*))UWO_LICORinit,	NULL,		sxwco2c,
+	"XWLH2OC",	NULL,		NULL,		sxwlh2oc,
+#
+# Climet
+#
+	"ACLMT",	NULL,		xlClimet,	NULL,
+	"CCLMT",	NULL,		NULL,		sClimet,
+	"CONCT",	NULL,		NULL,		sconct,
+	"CLMPOF",	NULL,		xlClimetPOF,	NULL,
+#
+# DYCOMS-II
+#
+# Gerber
+	"CING",		NULL,           NULL,           sCing,
+	"CINSIG",	NULL,           NULL,           sCinsig,
+	"XGRFF",	NULL,           NULL,           sxgrff,
+#
+# ACE-Asia / DYCOMS-II
+#
+# Lynn Russel
+	"POFCCTL1",	NULL,           NULL,           sLynn,
+	"POFCCTL2",	NULL,           NULL,           sLynn,
+	"POFCCTL3",	NULL,           NULL,           sLynn,
+	"POFCCTLF",	NULL,           NULL,           sLynn,
+#
+# UWA Neph
+	"XP10",		NULL,           xlNephP10,	NULL,
+	"XT10",		NULL,           xlNephT10,	NULL,
+	"XRH10",	NULL,           xlNephRH10,	NULL,
+	"XTSG10",	NULL,           xlNephTSG10,	NULL,
+#
+# Steve Howell - PELTI?
+#
+#		"XNASFLW",      NULL,           NULL,           snasaFlow,
+#		"XISCAI",       NULL,           NULL,           ssteve,
+#		"XISTAS",       NULL,           NULL,           ssteve,
+#		"XISNAS",       NULL,           NULL,           ssteve,
+
+	"XTASHC",	NULL,           NULL,           sxtashc,
+	"SPHUM",	NULL,           NULL,           ssphum,
+#
+#
+# MASP
+#
+	"AMASP",	(void(*)(void*))maspInit,	xlP32v2bin,	NULL,
+	"CMASP",	NULL,		NULL,		scmasp,
+	"CONCM",	NULL,		NULL,		sconcm,
+	"DBARM",	NULL,		NULL,		sdbarm,
+	"PVOLM",	NULL,		NULL,		spvolm,
+#
+#	PMS1d Probes
+#
+# DMT Modified stuff.
+#
+	"AS100",	(void(*)(void*))cfsspInit,	xlSPP100,	NULL,
+	"AS200",	(void(*)(void*))casasInit,	xlSPP200,	NULL,
+	"AS300",	(void(*)(void*))cf300Init,	xlSPP300,	NULL,
+	"REJDOF_V3",	NULL,		xlrejDOF,	NULL,
+	"REJAT_V3",	NULL,		xlrejAT,	NULL,
+	"OVFLW_V3",	NULL,		xloFlow,	NULL,
+
+	"FREF_V3",	NULL,		xlS100cabin4,	NULL,
+	"FTMP_V3",	NULL,		xlS100cabin7,	NULL,
+
+	"PHGB_V3",	NULL,		xlS200cabin0,	NULL,
+	"PMGB_V3",	NULL,		xlS200cabin1,	NULL,
+	"PLGB_V3",	NULL,		xlS200cabin2,	NULL,
+	"PFLW_V3",	NULL,		xlS200cabin3,	NULL,
+	"PREF_V3",	NULL,		xlS200cabin4,	NULL,
+	"PFLWS_V3",	NULL,		xlS200cabin6,	NULL,
+	"PTMP_V3",	NULL,		xlS200cabin7,	NULL,
+
+	"FREF3_V3",	NULL,		xlS300cabin4,	NULL,
+	"FTMP3_V3",	NULL,		xlS300cabin7,	NULL,
+#
+	"CS100",	NULL,		NULL,		scs100,
+	"CS200",	NULL,		NULL,		scs200,
+	"CS300",	NULL,		NULL,		scf300,
+#
+# PMS actual data arrays
+	"A200X_OLD",	(void(*)(void*))c200xInit,	xlP16bin,	NULL,
+	"A200X",	(void(*)(void*))c200xInit,	xlP16v2bin,	NULL,
+	"A200Y_OLD",	(void(*)(void*))c200yInit,	xlP16bin,	NULL,
+	"A200Y",	(void(*)(void*))c200yInit,	xlP16v2bin,	NULL,
+	"A260X_OLD",	(void(*)(void*))c260xInit,	xlP260bin,	NULL,
+	"A260X",	(void(*)(void*))c260xInit,	xlP64v2bin,	NULL,
+	"AASAS_OLD",	(void(*)(void*))casasInit,	xlP16bin,	NULL,
+	"APCAS",	(void(*)(void*))casasInit,	xlP16v2bin,	NULL,
+	"AF300_OLD",	(void(*)(void*))cf300Init,	xlP300bin,	NULL,
+	"AF300",	(void(*)(void*))cf300Init,	xlP32v2bin,	NULL,
+	"AFSSP_OLD",	(void(*)(void*))cfsspInit,	xlP16bin,	NULL,
+	"AFSSP",	(void(*)(void*))cfsspInit,	xlP16v2bin,	NULL,
+
+# PMS Concentration arrays
+	"C200X",	NULL,		NULL,		sc200x,
+	"C200Y",	NULL,		NULL,		sc200y,
+	"C260X",	NULL,		NULL,		sc260x,
+	"CASAS",	NULL,		NULL,		scasas,
+	"CFSSP",	NULL,		NULL,		scfssp,
+	"CF300",	NULL,		NULL,		scf300,
+	"CPCAS",	NULL,		NULL,		scasas,
+
+# PMS Particle Spacing arrays
+	"P200X",	NULL,		xlpartspace,	NULL,
+	"P200Y",	NULL,		xlpartspace,	NULL,
+	"P260X",	NULL,		xlpartspace,	NULL,
+	"PFSSP",	NULL,		xlpartspace,	NULL,
+	"PF300",	NULL,		xlpartspace,	NULL,
+	"PPCAS",	NULL,		xlpartspace,	NULL,
+
+# PMS Total Counts
+	"TCNT3",	NULL,		NULL,		stcnt3,
+	"TCNT6",	NULL,		NULL,		stcnt6,
+	"TCNTF",	NULL,		NULL,		stcntf,
+	"TCNTP",	NULL,		NULL,		stcntp,
+	"TCNT2DC",	NULL,		NULL,		stcnt2,
+	"TCNT2DP",	NULL,		NULL,		stcnt2,
+	"TCNT1DC",	NULL,		NULL,		stcnt2,
+	"TCNT1DP",	NULL,		NULL,		stcnt2,
+	"TCNT1DH",	NULL,		NULL,		stcnt2,
+
+# PMS total concentration
+#
+	"CONC3",	NULL,		NULL,		sconc3,
+	"CONC6",	NULL,		NULL,		sconc6,
+	"CONCA",	NULL,		NULL,		sconca,
+	"CONCF",	NULL,		NULL,		sconcf,
+	"CONCP",	NULL,		NULL,		sconca,
+	"CONCX",	NULL,		NULL,		sconcx,
+	"CONCY",	NULL,		NULL,		sconcy,
+	"CONC2DC",	NULL,		NULL,		sconc2,
+	"CONC2DP",	NULL,		NULL,		sconc2,
+	"CONC1DC",	NULL,		NULL,		sconc2,
+	"CONC1DP",	NULL,		NULL,		sconc2,
+	"CONCHV",	NULL,		NULL,		sconc2,
+
+# PMS DBAR
+	"DBAR3",	NULL,		NULL,		sdbar3,
+	"DBAR6",	NULL,		NULL,		sdbar6,
+	"DBARA",	NULL,		NULL,		sdbara,
+	"DBARF",	NULL,		NULL,		sdbarf,
+	"DBARP",	NULL,		NULL,		sdbara,
+	"DBARX",	NULL,		NULL,		sdbarx,
+	"DBARY",	NULL,		NULL,		sdbary,
+	"DBAR2DC",	NULL,		NULL,		sdbar2,
+	"DBAR2DP",	NULL,		NULL,		sdbar2,
+	"DBAR1DC",	NULL,		NULL,		sdbar2,
+	"DBAR1DP",	NULL,		NULL,		sdbar2,
+	"DBARHV",	NULL,		NULL,		sdbar2,
+
+# PMS DISP
+	"DISP6",	NULL,		NULL,		sdisp6,
+	"DISPA",	NULL,		NULL,		sdispa,
+	"DISPF",	NULL,		NULL,		sdispf,
+	"DISPP",	NULL,		NULL,		sdispa,
+	"DISPX",	NULL,		NULL,		sdispx,
+	"DISPY",	NULL,		NULL,		sdispy,
+	"DISP2DC",	NULL,		NULL,		sdisp2,
+	"DISP2DP",	NULL,		NULL,		sdisp2,
+	"DISP1DC",	NULL,		NULL,		sdisp2,
+	"DISP1DP",	NULL,		NULL,		sdisp2,
+	"DISPHV",	NULL,		NULL,		sdisp2,
+
+# PMS Liquid Water Content
+	"PLWC6",	NULL,		NULL,		splwc6,
+	"PLWCF",	NULL,		NULL,		splwcf,
+	"PLWCX",	NULL,		NULL,		splwcx,
+	"PLWCY",	NULL,		NULL,		splwcy,
+	"PLWC2DC",	NULL,		NULL,		splwc2,
+	"PLWC2DP",	NULL,		NULL,		splwc2,
+	"PLWC1DC",	NULL,		NULL,		splwc2,
+	"PLWC1DP",	NULL,		NULL,		splwc2,
+	"PLWCHV",	NULL,		NULL,		splwc2,
+
+# PMS Effective Radius
+	"REFFF",	NULL,		NULL,		srefff,
+	"REFF3",	NULL,		NULL,		sreff3,
+	"REFF6",	NULL,		NULL,		sreff6,
+	"REFFF6",	NULL,		NULL,		srefff6,
+	"REFF2DC",	NULL,		NULL,		sreff2,
+	"REFFF2DC",	NULL,		NULL,		srefff2,
+
+# Laser Hygrometer
+	"MRLHS",	NULL,		xlfloat0,	NULL,
+	"MRLHW",	NULL,		xlfloat1,	NULL,
+	"PSLH",		NULL,		xlfloat2,	NULL,
+	"TTLH",		NULL,		xlfloat3,	NULL,
+
+# Cloud Base
+	"LCLT",		NULL,		NULL,		slclt,
+	"LCLP",		NULL,		NULL,		slclp,
+
+# Laser Hygrometer II
+	"WVVV",		NULL,		xllh_ppmv,	NULL,
+	"WVMR",		NULL,		xllh_vmr,	NULL,
+	"WVRH",		NULL,		xllh_relhum,	NULL,
+	"WVPS",		NULL,		xllh_press,	NULL,
+	"WVAT",		NULL,		xllh_temp,	NULL,
+	"WVPF",		NULL,		xllh_pp2f,	NULL,
+	"WVPR",		NULL,		xllh_Pv0,	NULL,
+	"WVIX",		NULL,		xllh_indexmax,	NULL,
+	"WVZO",		NULL,		xllh_yzero,	NULL,
+
+# Reflectivity
+	"DBZF",		NULL,		NULL,		sdbzf,
+	"DBZ6",		NULL,		NULL,		sdbz6,
+	"DBZ1DP",	NULL,		NULL,		sdbz2,
+	"DBZ1DC",	NULL,		NULL,		sdbz2,
+	"DBZHV",	NULL,		NULL,		sdbz2,
+	"DBZ2DP",	NULL,		NULL,		sdbz2,
+	"DBZ2DC",	NULL,		NULL,		sdbz2,
+
+# Volume
+	"PVOL3",	NULL,		NULL,		spvol3,
+	"PVOLP",	NULL,		NULL,		spvolp,
+
+#	"TCNT3",	NULL,		xlP32v2_sum,	NULL,
+	"TEVT3",	NULL,		xlpms32_sum,	NULL,
+
+# FSSP housekeeping
+	"FSTB_OLD",	NULL,		xlfstrob,	NULL,
+	"FRST_OLD",	NULL,		xlfreset,	NULL,
+	"FRNG_OLD",	NULL,		xlfrange,	NULL,
+	"FSTB",		NULL,		xlpms16_hskp0,	NULL,
+	"FRST",		NULL,		xlpms16_hskp1,	NULL,
+	"FACT",		NULL,		xlpms16_hskp2,	sfact,
+	"FSTT",		NULL,		xlpms16_hskp3,	NULL,
+	"FTMP",		NULL,		xlpms16_hskp4,	NULL,
+	"FANV",		NULL,		xlpms16_hskp5,	NULL,
+	"FSIG",		NULL,		xlpms16_hskp6,	NULL,
+	"FREF",		NULL,		xlpms16_hskp7,	NULL,
+	"FRNG",		NULL,		xlfrange2,	NULL,
+	"FRNG_V3",	NULL,		xlfrange3,	NULL,
+	"FBMFR",	NULL,		NULL,		sfbmfr,	
+
+# 260x housekeeping
+	"P6RST",	NULL,		xlpms64_hskp0,	NULL,
+	"P6TMP",	NULL,		xlpms64_hskp4,	NULL,
+	"P6E01",	NULL,		xlpms64_hskp5,	NULL,
+	"P6E64",	NULL,		xlpms64_hskp6,	NULL,
+
+# PCASP housekeeping
+	"AACT_OLD",	NULL,		xlaact,		NULL,
+	"PACT",		NULL,		xlpms16_hskp0,	NULL,
+	"PSTT",		NULL,		xlpms16_hskp1,	NULL,
+	"PTMP",		NULL,		xlpms16_hskp4,	NULL,
+	"PREF",		NULL,		xlpms16_hskp5,	NULL,
+	"PFLW",		NULL,		xlpms16_hskp6,	NULL,
+	"PBRS",		NULL,		xlpms16_hskp7,	NULL,
+	"PFLWC",	NULL,		NULL,		spflwc,
+# For Proj 280.
+	"PCACTV",	NULL,		xlpms16_hskp0,	NULL,
+	"PCFLOW",	NULL,		xlpms16_hskp6,	NULL,
+
+# PMS 2D housekeeping
+	"2DV15",	NULL,		xl2d_hskp0,	NULL,
+	"2DMTMP",	NULL,		xl2d_hskp1,	NULL,
+	"2DEE1",	NULL,		xl2d_hskp4,	NULL,
+	"2DEE32",	NULL,		xl2d_hskp5,	NULL,
+	"2DVN15",	NULL,		xl2d_hskp6,	NULL,
+	"2DV5",		NULL,		xl2d_hskp7,	NULL,
+	"2DV5",		NULL,		xl2d_hskp7,	NULL,
+	"2DV5",		NULL,		xl2d_hskp7,	NULL,
+	"SHDORC",	(void(*)(void*))initP2DH,	xl2d_shadow,	NULL,
+	"SHDORP",	(void(*)(void*))initP2DH,	xl2d_shadow,	NULL,
+	"DT1DC",	NULL,		xl2dDeadTime1,	NULL,
+	"DT1DP",	NULL,		xl2dDeadTime1,	NULL,
+	"DTHVPS",	NULL,		xl2dDeadTime1,	NULL,
+	"DT2DC",	NULL,		xl2dDeadTime2,	NULL,
+	"DT2DP",	NULL,		xl2dDeadTime2,	NULL,
+# HVPS housekeeping
+	"HVWTMP",	NULL,		xl2d_hskp0,	NULL,
+	"HVSATMP",	NULL,		xl2d_hskp1,	NULL,
+	"HVDATMP",	NULL,		xl2d_hskp2,	NULL,
+	"HVCBTMP",	NULL,		xl2d_hskp3,	NULL,
+	"HVCMTMP",	NULL,		xl2d_hskp4,	NULL,
+	"HVUVV1",	NULL,		xl2d_hskp5,	NULL,
+	"HVUVV2",	NULL,		xl2d_hskp6,	NULL,
+	"HVLASER",	NULL,		xl2d_hskp7,	NULL,
+# Grey housekeeping
+	"GREYEE1",	NULL,		xlGrey_hskp0,	NULL,
+	"GREYEE64",	NULL,		xlGrey_hskp1,	NULL,
+#
+#	Honeywell Laser Ref II & III Inertial System
+#
+# The "_IRS" after the variable names should only appear in this file, NOT in
+# DependTable, irs.names or DerivedNames.  hdr_decode.c adds the "_IRS" before
+# all searchs into this file.  This allows which ever navigation system is
+# present on board (IRS or INS) to adopt the "primary reference system" names.
+#
+	"ACINS_IRS",	(void(*)(void*))irsInit,	xlvacc,		NULL,
+	"LAT_IRS",	NULL,		xlilat,		NULL,
+	"LON_IRS",	NULL,		xlilon,		NULL,
+	"ALT_IRS",	NULL,		xlialt,		NULL,
+	"GSF_IRS",	NULL,		xligspd,	NULL,
+	"PITCH_IRS",	NULL,		xlipitch,	NULL,
+	"ROLL_IRS",	NULL,		xliroll,	NULL,
+	"THDG_IRS",	NULL,		xlithdg,	NULL,
+	"VEW_IRS",	NULL,		xlivew,		NULL,
+	"VNS_IRS",	NULL,		xlivns,		NULL,
+	"IWD_IRS",	NULL,		xliwd,		NULL,
+	"IWS_IRS",	NULL,		xliws,		NULL,
+	"VSPD_IRS",	NULL,		xlivspd,	NULL,
+	"TKAR_IRS",	NULL,		xlitrkart,	NULL,
+	"TKAT_IRS",	NULL,		xlittrka,	NULL,
+	"DRFTA_IRS",	NULL,		xlidrift,	NULL,
+	"LAG50_IRS",	NULL,		xllag50,	NULL,
+	"LAG25_IRS",	NULL,		xllag25,	NULL,
+	"LAG10_IRS",	NULL,		xllag10,	NULL,
+	"LAG5_IRS",	NULL,		xllag5,		NULL,
+	"WP3_IRS",	NULL,		NULL,		swp3,
+	"HI3_IRS",	NULL,		NULL,		shi3,
+	"GSFC_IRS",	NULL,		NULL,		sgsf,
+	"BROLLR_IRS",	NULL,		xlbrollr,	NULL,
+	"BPITCHR_IRS",	NULL,		xlbpitchr,	NULL,
+	"BYAWR_IRS",	NULL,		xlbyawr,	NULL,
+	"BLONGA_IRS",	NULL,		xlblona,	NULL,
+	"BLATA_IRS",	NULL,		xlblata,	NULL,
+	"BNORMA_IRS",	NULL,		xlbnorma,	NULL,
+#
+#	INS probe (Litton 51)
+#
+# The "_INS" after the variable names should only appear in this file, NOT in
+# DependTable, ins.names or DerivedNames.  hdr_decode.c adds the "_INS" before
+# all searchs into this file.  This allows which ever navigation system is
+# present on board (IRS or INS) to adopt the "primary reference system" names.
+#
+	"LAT_INS",	NULL,		xlalat,		NULL,
+	"LON_INS",	NULL,		xlalon,		NULL,
+	"ALPHA_INS",	NULL,		xlalpha,	NULL,
+#	"CROLL",	NULL,		xlcroll51,	NULL,
+	"GSF_INS",	NULL,		NULL,		sgsf,
+	"GSI_INS",	NULL,		xlgsi,		NULL,
+	"INSSEC_INS",	NULL,		xlinssec,	NULL,
+	"PHDG",		NULL,		xlphdg51,	NULL,
+	"PITCH",	NULL,		xlpitch51,	NULL,
+	"ROLL",		NULL,		xlroll51,	NULL,
+	"THF_INS",	NULL,		NULL,		sthf,
+	"THI_INS",	NULL,		xlthi,		NULL,
+	"TRKI_INS",	NULL,		xltrki,		NULL,
+	"VZI",		NULL,		xlvzi51,	NULL,
+	"XVI_INS",	NULL,		xlxvi,		NULL,
+	"YVI_INS",	NULL,		xlyvi,		NULL,
+	"ACINS_INS",	NULL,		NULL,		sacinsL51,
+	"VEW_INS",	NULL,		NULL,		svewL51,
+	"VNS_INS",	NULL,		NULL,		svnsL51,
+	"WP3_INS",	NULL,		NULL,		swp3L51,
+	"HI3_INS",	NULL,		NULL,		shi3L51,
+#
+#	Gust Variables
+#
+	"UI",		NULL,		NULL,		sui,
+	"VI",		NULL,		NULL,		svi,
+	"UX",		NULL,		NULL,		sux,
+	"VY",		NULL,		NULL,		svy,
+	"WI",		NULL,		NULL,		swi,
+	"WD",		NULL,		NULL,		swd,
+	"WS",		NULL,		NULL,		sws,
+	"VIC",		NULL,		NULL,		svi,
+	"UIC",		NULL,		NULL,		sui,
+	"WIC",		NULL,		NULL,		swi,
+	"VYC",		NULL,		NULL,		svy,
+	"UXC",		NULL,		NULL,		sux,
+	"WSC",		NULL,		NULL,		sws,
+	"WDC",		NULL,		NULL,		swd,
+#
+#	Fluxes
+#						ProbeCount field.
+#	"FLXWW",	NULL,		NULL,		sflux_ww,
+#	"FLXWU",	NULL,		(void*)0,	sflux_wx,
+#	"FLXWV",	NULL,		(void*)1,	sflux_wx,
+#	"FLXWT",	NULL,		(void*)2,	sflux_wx,
+#	"FLXWQ",	NULL,		(void*)3,	sflux_wx,
+#	"FLXWCO2",	NULL,		(void*)4,	sflux_wx,
+#	"FLXWO3",	NULL,		(void*)5,	sflux_wx,
+#	"FLXUU",	(void(*)(void*))initFlux,	(void*)0,	sflux_xx,
+#	"FLXVV",	(void(*)(void*))initFlux,	(void*)1,	sflux_xx,
+#	"FLXTT",	(void(*)(void*))initFlux,	(void*)2,	sflux_xx,
+#	"FLXQQ",	(void(*)(void*))initFlux,	(void*)3,	sflux_xx,
+#	"FLXCO2CO2",	(void(*)(void*))initFlux,	(void*)4,	sflux_xx,
+#	"FLXO3O3",	(void(*)(void*))initFlux,	(void*)5,	sflux_xx,
+#
+#	DME
+#
+	"DMECH",	NULL,		xldmech,	NULL,
+	"DMEDI",	NULL,		xldmedi,	NULL,
+	"DMEFL",	NULL,		xldmefl,	NULL,
+#
+#	Events
+#
+	"EVENT",	NULL,		xlevent,	NULL,
+#
+#	Loran C
+#
+#	"ATMNS",	NULL,		xlatmns,	NULL,
+#	"CCEP",		NULL,		xlccep,		NULL,
+#	"CGS",		NULL,		xlccgs,		NULL,
+#	"CLAT",		NULL,		xlclat,		NULL,
+#	"CLON",		NULL,		xlclon,		NULL,
+#	"CLORTM",	NULL,		xlclortm,	NULL,
+#	"CMAGVR",	NULL,		xlcmagvr,	NULL,
+#	"CNAVTM",	NULL,		xlcnavtm,	NULL,
+#	"CSTAT",	NULL,		xlcstat,	NULL,
+#	"CTK",		NULL,		xlcctk,		NULL,
+#	"CTMLAG",	NULL,		xlctmlag,	NULL,
+#	"CWARN",	NULL,		xlcwarn,	NULL,
+#
+#	GPS, Honeywell
+#
+#	"GHMSTT",	NULL,		xlghmstat,	NULL,
+#	"GHUTC",	NULL,		xlghutc,	NULL,
+#	"GHALT",	NULL,		xlghalt,	NULL,
+#	"GHHDOP",	NULL,		xlghhdop,	NULL,
+#	"GHVDOP",	NULL,		xlghvdop,	NULL,
+#	"GHLAT",	NULL,		xlghlat,	NULL,
+#	"GHLON",	NULL,		xlghlon,	NULL,
+#	"GHLATF",	NULL,		xlghlatf,	NULL,
+#	"GHLONF",	NULL,		xlghlonf,	NULL,
+#	"GHGSF",	NULL,		xlghgspd,	NULL,
+#	"GHVFOM",	NULL,		xlghvfom,	NULL,
+#	"GHHFOM",	NULL,		xlghhfom,	NULL,
+#	"GHVZI",	NULL,		xlghvzi,	NULL,
+#	"GHVEW",	NULL,		xlghvew,	NULL,
+#	"GHVNS",	NULL,		xlghvns,	NULL,
+#	"GHSTAT",	NULL,		xlghstat,	NULL,
+#
+#	GPS, Collins PPS
+#
+#	"GPTIME",	NULL,		xlgptime,	NULL,
+#	"GPALT",	NULL,		xlgpalt,	NULL,
+#	"GPLAT",	NULL,		xlgplat,	NULL,
+#	"GPLON",	NULL,		xlgplon,	NULL,
+#	"GPVEW",	NULL,		xlgpvew,	NULL,
+#	"GPVNS",	NULL,		xlgpvns,	NULL,
+#	"GPVSPD",	NULL,		xlgpvspd,	NULL,
+#	"GPGALT",	NULL,		NULL,		sGeopot,
+#
+#	GPS, Trimble Tans (II, & III)
+#
+	"GALT",		NULL,		xlgalt,		NULL,
+	"GLAT",		NULL,		xlglat,		NULL,
+	"GLON",		NULL,		xlglon,		NULL,
+	"GMODE",	NULL,		xlgmode,	NULL,
+	"GSTAT",	NULL,		xlgstat,	NULL,
+	"GTIMP",	NULL,		xlgtimp,	NULL,
+	"GTIMV",	NULL,		xlgtimv,	NULL,
+	"GVEW",		NULL,		xlgvew,		NULL,
+	"GVNS",		NULL,		xlgvns,		NULL,
+	"GVZI",		NULL,		xlgvzi,		NULL,
+	"GPGALT",	NULL,		NULL,		sGeopot,
+	"LATC",		NULL,		NULL,		slatc,
+	"LONC",		NULL,		NULL,		slonc,
+	"VNSC",		NULL,		NULL,		svnsc,
+	"VEWC",		NULL,		NULL,		svewc,
+	"GALTC",	NULL,		NULL,		sgaltc,
+	"GGALTC",	NULL,		NULL,		sggaltc,
+#
+#	GPS, Garmin WAAS
+#
+	"GGALT",	NULL,		xlggalt,	NULL,
+	"GGLAT",	NULL,		xlgglat,	NULL,
+	"GGLON",	NULL,		xlgglon,	NULL,
+	"GGSPD",	NULL,		xlggspd,	NULL,
+	"GGTRK",	NULL,		xlggtrk,	NULL,
+	"GGMODE",	NULL,		xlggstat,	NULL,
+	"GGNSAT",	NULL,		xlggnsat,	NULL,
+	"GGVEW",	NULL,           NULL,		sggvew,
+	"GGVNS",	NULL,           NULL,		sggvns,
+#
+#	C Midgets
+#
+	"CLAT",		NULL,		xlclat,		NULL,
+	"CLON",		NULL,		xlclon,		NULL,
+	"CALT",		NULL,		xlcalt,		NULL,
+	"CVEW",		NULL,		xlcvew,		NULL,
+	"CVNS",		NULL,		xlcvns,		NULL,
+	"CVSPD",	NULL,		xlcvspd,	NULL,
+	"CPITCH",	NULL,		xlcpitch,	NULL,
+	"CROLL",	NULL,		xlcroll,	NULL,
+	"CTHDG",	NULL,		xlcthdg,	NULL,
+#
+#	Magnavox GPS dropped.
+#
+#	"GMALT",	NULL,		xlgmalt,	NULL,
+#	"GMGEOH",	NULL,		xlgmgeoh,	NULL,
+#	"GMLAT",	NULL,		xlgmlat,	NULL,
+#	"GMLON",	NULL,		xlgmlon,	NULL,
+#	"GMMODE",	NULL,		xlgmmode,	NULL,
+#	"GMTIME",	NULL,		xlgmtime,	NULL,
+#	"GMVEW",	NULL,		xlgmvew,	NULL,
+#	"GMVNS",	NULL,		xlgmvns,	NULL,
+#
+#	Time
+#
+	"YEAR",		NULL,		xlyear,		NULL,
+	"MONTH",	NULL,		xlmonth,	NULL,
+	"DAY",		NULL,		xlday,		NULL,
+	"HOUR",		NULL,		xlhour,		NULL,
+	"MINUTE",	NULL,		xlmin,		NULL,
+	"SECOND",	NULL,		xlsec,		NULL,
+#
+#	Ophir III
+#
+	"OGAIN",	NULL,		xlogain,	NULL,
+	"OBBCOD",	NULL,		xlobbcod,	NULL,
+	"ODETDC",	NULL,		xlodetdc,	NULL,
+	"OTSNT",	NULL,		xlotsnt,	NULL,
+	"OTBNCH",	NULL,		xlotbnch,	NULL,
+	"OTDET",	NULL,		xlotdet,	NULL,
+	"OTBBC",	NULL,		xlotbbc,	NULL,
+	"OTBBF",	NULL,		xlotbbf,	NULL,
+	"OSMOTR",	NULL,		xlosmotr,	NULL,
+	"ODETSG",	NULL,		xlodetsg,	NULL,
+	"OTBOX",	NULL,		xlotbox,	NULL,
+
+	"OAT",		(void(*)(void*))ophir3Init,	NULL,		soat,
+	"OBBCR",	NULL,		NULL,		sobbcr,
+	"ODETOF",	NULL,		NULL,		sodetof,
+	"ODSIGC",	NULL,		NULL,		sodsigc,
+	"OGAINF",	NULL,		NULL,		sogainf,
+	"OTDETC",	NULL,		NULL,		sotdetc,
+#
+#	UV Hygrometer
+#
+	"UVCHRF",	NULL,		xluvchrf,	NULL,
+	"UVCHSP",	NULL,		xluvchsp,	NULL,
+	"UVHREF",	NULL,		xluvhref,	NULL,
+	"UVHSMP",	NULL,		xluvhsmp,	NULL,
+	"UVKRRF",	NULL,		xluvkrrf,	NULL,
+	"UVKRSP",	NULL,		xluvkrsp,	NULL,
+	"UVPVOL",	NULL,		xluvpvol,	NULL,
+	"UVTVOL",	NULL,		xluvtvol,	NULL,
+	"MRUV",		NULL,		xlmruv,		NULL,
+#
+#	Chemstry vars.
+#
+	"CO2C",		NULL,		NULL,		sco2c,
+	"XCO2C",	(void(*)(void*))LICORinit,	NULL,		sxco2c,
+	"XLH2OC",	NULL,		NULL,		sxlh2oc,
+	"XMRLI",	NULL,		NULL,		sxmrli,
+	"XNOYM",	(void(*)(void*))kokInit,	NULL,		sxnoym,
+	"XNOM",		(void(*)(void*))kokInit,	NULL,		sxnom,
+	"XNO2",		NULL,		NULL,		sxno2,
+	"XNO2C",	(void(*)(void*))kokInit,	NULL,		sxno2c,
+	"O3FC",		(void(*)(void*))kokInit,	NULL,		so3fc,
+	"XO3FDG",	(void(*)(void*))kokInit,	NULL,		sxo3fdg,
+	"XECO2C",	NULL,		NULL,		sxeco2c,
+	"XSO2SZRO",	NULL,		NULL,		smissval,
+	"XSO2SCAL",	NULL,		NULL,		smissval,
+	"XSO2SCOR",	NULL,		NULL,		smissval,
+	"COZRO",	NULL,		NULL,		smissval,
+	"COCAL",	NULL,		NULL,		smissval,
+	"COCOR",	NULL,		NULL,		smissval,
+	"XNOZRO",	NULL,		NULL,		smissval,
+	"XNOCAL",	NULL,		NULL,		smissval,
+	"XNOCOR",	NULL,		NULL,		smissval,
+	"XNOYZRO",	NULL,		NULL,		smissval,
+	"XNOYCAL",	NULL,		NULL,		smissval,
+	"XNOYCOR",	NULL,		NULL,		smissval,
+	"PERAZRO",	NULL,		NULL,		smissval,
+	"PERACOR",	NULL,		NULL,		smissval,
+	"PERACAL",	NULL,		NULL,		smissval,
+	"PERBZRO",	NULL,		NULL,		smissval,
+	"PERBCOR",	NULL,		NULL,		smissval,
+	"PERBCAL",	NULL,		NULL,		smissval,
+	"H2O2",		NULL,		NULL,		smissval,
+	"ROOH",		NULL,		NULL,		smissval,
+	"MHPEQ",	NULL,		NULL,		smissval,
+#
+#
+#	Solar Angle Calculations
+#
+	"SOLZE",	NULL,		NULL,		ssolze,
+	"SOLAZ",	NULL,		NULL,		ssolaz,
+	"SOLDE",	NULL,		NULL,		ssolde,
+	"SOLEL",	NULL,		NULL,		ssolel,
+#
+#	Radiation Attitude Angle Corrections
+	"RADCF",	(void(*)(void*))radcInit,	NULL,		sradcf,
+	"SWTC",		NULL,		NULL,		sradc,
+#
+#	PMS2D concentrations.
+#
+	"CONC2C",	NULL,		NULL,		sconc2dc,
+	"CONC2P",	NULL,		NULL,		sconc2dp,
+	"CON2C1",	(void(*)(void*))conc2cInit,	NULL,		scon2c,
+	"CON2C2",	NULL,		NULL,		scon2c,
+	"CON2P1",	(void(*)(void*))conc2pInit,	NULL,		scon2p,
+	"CON2P2",	NULL,		NULL,		scon2p,
+#
+#	Parcel Tracking, Methods 1, 2, and 3.
+#
+	"PTDRTIM",	NULL,		NULL,		sptdrtim,
+	"PTDRDST",	(void(*)(void*))deadReckInit,	NULL,		sptdrdst,
+	"PTDRRAD",	NULL,		NULL,		sptdrrad,
+	"PTLGALT",	(void(*)(void*))parcelInit,	NULL,		sptlgalt,
+	"PTLGDST",	NULL,		NULL,		sptlgdst,
+	"PTLGRAD",	NULL,		NULL,		sptlgrad,
+#
+#	Flying in circles.
+#
+	"CIRHDGC",	(void(*)(void*))initCircles,	NULL,		scircP,
+	"CIRHDGN",	NULL,		NULL,		scircN,
+	"CIRRAD",	NULL,		NULL,		scircR,
+#
+#	Ambient Temperature.
+#
+	"ATB",		NULL,		NULL,		satb,
+	"ATBH",		(void(*)(void*))atfhInit,	NULL,		satfh,
+	"ATF",		NULL,		NULL,		satf,
+	"ATFH",		(void(*)(void*))atfhInit,	NULL,		satfh,
+	"ATKP",		NULL,		NULL,		satkp,
+	"ATRF",		NULL,		NULL,		satrf,
+	"ATW",		NULL,		NULL,		satf,
+	"ATX",		NULL,		NULL,		sRefer,
+	"ATRR",		NULL,		NULL,		satb,
+	"ATWH",		(void(*)(void*))atfhInit,	NULL,		satfh,
+	"ATRL",		NULL,		NULL,		satb,
+#
+#	Derived temperatues
+#
+	"THETA",	NULL,		NULL,		stheta,
+	"THETAE",	NULL,		NULL,		sthetae,
+	"THETAV",	NULL,		NULL,		sthetav,
+#
+#	Total Temperature
+#
+	"TTX",		NULL,		NULL,		sRefer,
+#
+#	CN Counter.
+#
+	"CONCN",	(void(*)(void*))cnctrInit,	NULL,		sconcn,
+	"CONCN1",	NULL,		NULL,		sconcn,
+	"FCNC",		NULL,		NULL,		scFlow,
+	"FCNC1",	NULL,		NULL,		scFlow,
+	"XICNC",	NULL,		NULL,		scFlow,
+	"XICNC1",	NULL,		NULL,		scFlow,
+#
+#	Community Inlet
+#
+	"INTAS1",	NULL,		NULL,		sCItas,
+	"INTAS2",	NULL,		NULL,		sCItas,
+	"INTAS3",	NULL,		NULL,		sCItas,
+	"INFLOWC",	NULL,		NULL,		scFlow,
+	"INPWANT",	NULL,		NULL,		scDiff,
+	"FLOW1C",	NULL,		NULL,		scFlow,
+	"FLOW2C",	NULL,		NULL,		scFlow,
+	"FLOW3C",	NULL,		NULL,		scFlow,
+	"FLOW4C",	NULL,		NULL,		scFlow,
+	"FLOW5C",	NULL,		NULL,		scFlow,
+#
+#	Dew Pointers.
+#
+	"DPBC",		NULL,		NULL,		sdpc,
+	"DPRC",		NULL,		NULL,		sdpc,
+	"DPCRC",	NULL,		NULL,		sdpcrc,
+	"DPTC",		NULL,		NULL,		sdpc,
+	"DPXC",		NULL,		NULL,		sRefer,
+#
+#	Others
+#
+	"AKDF",		NULL,		NULL,		sakdf,
+	"AKRD",		NULL,		NULL,		sakrd,
+	"ATTACK",	NULL,		NULL,		sRefer,
+	"ALTX",		NULL,		NULL,		sRefer,
+	"CMRCR",	NULL,		NULL,		scmrcr,
+	"CONCCN",	NULL,		NULL,		sconccn,
+	"DEI",		(void(*)(void*))deiInit,	NULL,		sdei,
+	"DNI",		NULL,		NULL,		sdni,
+	"FXDIST",	(void(*)(void*))razInit,	NULL,		srange,
+	"FXAZIM",	NULL,		NULL,		sazimuth,
+	"DVALU",	NULL,		NULL,		sdiff,
+	"EDPC",		NULL,		NULL,		sedpc,
+#
+#   NRL P-3 stuff
+	"RALTM",	NULL,		NULL,		sraltm,
+#
+#
+#	Sail Plane Misc stuff
+#
+	"SPIAS",	NULL,		NULL,		sspias,
+	"SPALT",	NULL,		NULL,		sspalt,
+	"SPBATTWN",	NULL,		NULL,		sbit5,
+	"SPRATESW",	NULL,		NULL,		sbit6,
+	"SPMETPW",	NULL,		NULL,		sbit7,
+	"SPFSSPPW",	NULL,		NULL,		sbit0,
+	"SPKINGPW",	NULL,		NULL,		sbit1,
+	"SPREGBY",	NULL,		NULL,		sbit2,
+	"SPGYROPW",	NULL,		NULL,		sbit3,
+	"SPZDQPW",	NULL,		NULL,		sbit4,
+	"SPDIVE",	NULL,		NULL,		sbit5,
+	"SPFSSPHT",	NULL,		NULL,		sbit6,
+	"SPRINGHT",	NULL,		NULL,		sbit7,
+	"SP2DQHT",	NULL,		NULL,		sbit0,
+	"SPPITOTHT",	NULL,		NULL,		sbit1,
+	"SPKINGHT",	NULL,		NULL,		sbit2,
+	"SPRADIO2",	NULL,		NULL,		sbit3,
+	"SPRADIO1",	NULL,		NULL,		sbit4,
+	"SPVARMSB",	NULL,		NULL,		sbit5,
+	"SPVARLSB",	NULL,		NULL,		sbit6,
+	"SP28VPW",	NULL,		NULL,		sbit7,
+	"SPNOSEPW",	NULL,		NULL,		sbit0,
+	"SPYRANGE",	NULL,		NULL,		sbit1,
+	"SPZRANGE",	NULL,		NULL,		sbit2,
+	"SPFUSEPW",	NULL,		NULL,		sbit3,
+	"SPSFS",	NULL,		NULL,		sbit4,
+	"SPSFP",	NULL,		NULL,		sbit5,
+	"SPSFT",	NULL,		NULL,		sbit7,
+	"SPSFB",	NULL,		NULL,		sbit6,
+#
+#	Sail Plane E-Field
+#
+	"SPEFT",	(void(*)(void*))EFinit,		NULL,		sefeft,
+	"SPEFB",	NULL,		NULL,		sefefb,
+	"SPEFP",	NULL,		NULL,		sefefp,
+	"SPEFS",	NULL,		NULL,		sefefs,
+	"SPENT",	NULL,		NULL,		sefent,
+	"SPENB",	NULL,		NULL,		sefenb,
+	"SPENP",	NULL,		NULL,		sefenp,
+	"SPENS",	NULL,		NULL,		sefens,
+	"SPEYO",	NULL,		NULL,		sefeyo,
+	"SPEZO",	NULL,		NULL,		sefezo,
+	"SPEFZ",	NULL,		NULL,		sefefz,
+	"SPEFY",	NULL,		NULL,		sefefy,
+	"SPEFQZ",	NULL,		NULL,		sefefqz,
+	"SPEFQY",	NULL,		NULL,		sefefqy,
+	"SPENZ",	NULL,		NULL,		sefenz,
+	"SPENY",	NULL,		NULL,		sefeny,
+	"SPENQZ",	NULL,		NULL,		sefenqz,
+	"SPENQY",	NULL,		NULL,		sefenqy,
+	"SPEXY",	NULL,		NULL,		sefexy,
+	"SPEXZ",	NULL,		NULL,		sefexz,
+#
+#	King Air E-Field
+#
+	"EFQYR",	NULL,		NULL,		sefqyr,
+	"EFQYRS",	NULL,		NULL,		sefqyrs,
+	"EFQZ",		NULL,		NULL,		sefqz,
+	"EFQZR",	NULL,		NULL,		sefqzr,
+	"EFQZRS",	NULL,		NULL,		sefqzrs,
+	"EFQZS",	NULL,		NULL,		sefqzs,
+	"EFX1",		NULL,		NULL,		sefx1,
+	"EFX1S",	NULL,		NULL,		sefx1s,
+	"EFX2",		NULL,		NULL,		sefx2,
+	"EFX2S",	NULL,		NULL,		sefx2s,
+	"EFYR",		NULL,		NULL,		sefyr,
+	"EFYRS",	NULL,		NULL,		sefyrs,
+	"EFZ",		NULL,		NULL,		sefz,
+	"EFZR",		NULL,		NULL,		sefzr,
+	"EFZRS",	NULL,		NULL,		sefzrs,
+	"EFZS",		NULL,		NULL,		sefzs,
+#
+	"ETORQ",	NULL,		xletorq,	NULL,
+	"FPCRC",	NULL,		NULL,		sfpcrc,
+	"CHGME",	NULL,		xlchgme,	NULL,
+	"HGME",		NULL,		xlhgme,		NULL,
+	"HGM",		NULL,		xlhgm,		NULL,
+	"IRBC",		NULL,		NULL,		sirc,
+	"IRTC",		NULL,		NULL,		sirc,
+	"LWCC",		NULL,		NULL,		slwcc,
+	"MR",		NULL,		NULL,		smr,
+	"MRLA",		NULL,		NULL,		smrla,
+	"MRLA1",	NULL,		NULL,		smrla,
+	"NDVI",		NULL,		NULL,		sndvi,
+	"PALT",		(void(*)(void*))initPalt,	NULL,		spalt,
+	"PALTF",	NULL,		NULL,		spaltf,
+	"PSBC",		NULL,		NULL,		spsbc,
+	"PSFC",		NULL,		NULL,		spsfc,
+	"PSFD",		NULL,		xlpsfd,		NULL,
+	"PSFD1",	NULL,		xlpsfd_ADS2,	NULL,
+	"PSFRD",	NULL,		xlxpsfd,	NULL,
+	"PSFDC",	NULL,		NULL,		spsfdc,
+	"XPSFDC",	NULL,		NULL,		sxpsfdc,
+	"PSURF",	(void(*)(void*))initPsurf,	NULL,		spsurf,
+	"PSWC",		NULL,		NULL,		spswc,
+	"PSX",		NULL,		NULL,		sRefer,
+	"PSXC",		NULL,		NULL,		sRefer,
+	"QCBC",		NULL,		NULL,		sqcbc,
+	"QCFC",		NULL,		NULL,		sqcfc,
+	"QCRC",		NULL,		NULL,		sqcrc,
+	"QCFRC",	NULL,		NULL,		sqcfrc,
+	"QCWC",		NULL,		NULL,		sqcwc,
+	"QCX",		NULL,		NULL,		sRefer,
+	"QCXC",		NULL,		NULL,		sRefer,
+	"RHOCR",	NULL,		NULL,		srhocr,
+	"RHODR",	NULL,		NULL,		srhodt,
+	"RHODT",	NULL,		NULL,		srhodt,
+	"RHOLA",	(void(*)(void*))lymanInit,	NULL,		srhola,
+	"RHOLA1",	(void(*)(void*))lyman1Init,	NULL,		srhola1,
+#
+#  Vapor Density from Laser Hygrometer (uses TDL mixing ratio when available)
+	"RHOLH",	NULL,		NULL,		srhomr,
+	"MRLH",		NULL,		NULL,		stdlmr,
+#
+#  Vapor Density for testing (from General Eastern's dew pointer)
+	"RHOMR",	NULL,		NULL,		srhomr,
+	"DPLA",		NULL,		NULL,		sdprho,
+	"DPLA1",	NULL,		NULL,		sdprho,
+	"RHUM",		NULL,		NULL,		srhum,
+	"RHLA",		NULL,		NULL,		srhrho,
+	"RHLA1",	NULL,		NULL,		srhrho,
+	"SERIAL",	NULL,		xlserial,	NULL,
+	"SSDF",		NULL,		NULL,		sssdf,
+	"SSLIP",	NULL,		NULL,		sRefer,
+	"SSRD",		NULL,		NULL,		sssrd,
+#
+#	True Air Speed
+#
+	"TASB",		NULL,		NULL,		stasf,
+	"TASF",		NULL,		NULL,		stasf,
+	"TASR",		NULL,		NULL,		stasr,
+	"TASW",		NULL,		NULL,		stasw,
+	"TASX",		NULL,		NULL,		stasx,
+	"TASHC",	NULL,		NULL,		stash,
+	"IAS",		NULL,		NULL,		sias,
+	"XMACH2",	NULL,		NULL,		sxmach2,
+#
+#	Ozone
+#
+	"TEO3C",	NULL,		NULL,		steo3c,
+#
+#	Miscellaneous
+#
+	"DIFF1",	NULL,		NULL,		sdiff,
+	"DIFF2",	NULL,		NULL,		sdiff,
+	"DIFF3",	NULL,		NULL,		sdiff,
+	"RATIO",	NULL,		NULL,		sratio,
+	"ZERO",		NULL,		NULL,		szero,
+	"ONE",		NULL,		NULL,		sone,
+#
+#	CVI
+#
+	"XCFACT",	NULL,		NULL,		scfact,
+	"XCVCNC",	NULL,		NULL,		scvcnc,
+	"XCVCNO",	NULL,		NULL,		scvcno,
+	"XCVF2C",	NULL,		NULL,		scvf2c,
+	"XCVFCC",	NULL,		NULL,		scvfcc,
+	"XCVFHC",	NULL,		NULL,		scvfhc,
+	"XCVFXC",	NULL,		NULL,		scvfxc,
+	"XCVL",		(void(*)(void*))cviInit,	NULL,		scvl,
+	"XCVS4",	NULL,		NULL,		scvs4,
+	"XCVS7",	NULL,		NULL,		scvs7,
+	"XRHCV",	NULL,		NULL,		srhcv,
+	"XFLOWC",	NULL,		NULL,		scFlow,
+#
+#	PMS 2d Probes
+#
+	"A1DC",		(void(*)(void*))xlTwodInit,	xlOneD,		NULL,
+	"A1DP",		(void(*)(void*))xlTwodInit,	xlOneD,		NULL,
+	"AHVPS",	(void(*)(void*))xlTwodInit,	xlHVPS,		NULL,
+	"A2DC",		NULL,		xlTwoD,		NULL,
+	"A2DP",		NULL,		xlTwoD,		NULL,
+#	"A2DG",		xlTwodInit,	xlTwoDG,	NULL,
+	"C1DC",		NULL,		NULL,		sTwoD,
+	"C1DP",		NULL,		NULL,		sTwoD,
+	"CHVPS",	NULL,		NULL,		sHVPS,
+	"C2DC",		NULL,		NULL,		sTwoD,
+	"C2DP",		NULL,		NULL,		sTwoD,
+#	"C2DG",		NULL,		NULL,		sTwoDG,
+	"2D-C",		NULL,		xlAsync,	NULL,
+	"2D-P",		NULL,		xlAsync,	NULL,
+#	"2D-G",		NULL,		xlAsync,	NULL,
+#	"2D-H",		NULL,		xlAsync,	NULL,
+#
+# King & PMS Liquid Water Probes
+	"PLWCC",	(void(*)(void*))plwccInit,	NULL,		splwcc,
+	"PLWCC1",	(void(*)(void*))plwcc1Init,	NULL,		splwcc1,
+	"PLWCC2",	(void(*)(void*))plwcc2Init,	NULL,		splwcc2,
+#
+# Russian liquid water.
+	"XLWCR",	NULL,		NULL,		srlwc,
+	"XLWCTR",	NULL,		NULL,		srlwc,
+#
+# Nevzorov Probe
+	"NLWCC",	NULL,		NULL,		sNevLWC,
+	"NTWCC",	NULL,		NULL,		sNevTWC,
+#
+# APN-232 Radar Altimeter.
+	"HGM232",	NULL,		xlhgm232,	NULL,
+	"HGM232S",	NULL,		xlhgm232s,	NULL,
+#
+# AVAPS DropSonde
+	"DSTIME",	NULL,		xldstime,	NULL,
+	"DSPS",		NULL,		xldsps,		NULL,
+	"DSAT",		NULL,		xldsat,		NULL,
+	"DSRH",		NULL,		xldsmr,		NULL,
+	"DSWD",		NULL,		xldswd,		NULL,
+	"DSWS",		NULL,		xldsws,		NULL,
+	"DSVSPD",	NULL,		xldsvspd,	NULL,
+	"DSLAT",	NULL,		xldslat,	NULL,
+	"DSLON",	NULL,		xldslon,	NULL,
+	"DSGALT",	NULL,		xldsgalt,	NULL,
+#
+# RDMA
+	"ARDMA",	NULL,		xlardma,	NULL,
+	"CRDMA",	NULL,		NULL,		scrdma,
+	"CONCR",	NULL,		NULL,		smissval,
+	"RDMAHVPS",	NULL,		xlrdmahvps,	NULL,
+	"RDMAPABS",	NULL,		xlrdmapabs,	NULL,
+	"RDMAQA",	NULL,		xlrdmaqa,	NULL,
+	"RDMAQEX",	NULL,		xlrdmaqex,	NULL,
+	"RDMAQS",	NULL,		xlrdmaqs,	NULL,
+	"RDMAQSH",	NULL,		xlrdmaqsh,	NULL,
+	"RDMARH",	NULL,		xlrdmarh,	NULL,
+	"RDMATEMP",	NULL,		xlrdmatemp,	NULL,
+	"RDMAVD",	NULL,		xlrdmavd,	NULL,
+	"RDMAVSH",	NULL,		xlrdmavsh,	NULL,

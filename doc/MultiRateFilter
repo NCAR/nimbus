@@ -1,0 +1,33 @@
+			Nimbus' Multi-rate Filter(s)
+
+Filtering is done via a multi-rate FIR filter.  Requirements are to keep the
+attenuation in the StopBand down around 80db, with very nominal ripple in the
+PassBand.
+
+
+There are 4 low pass Parks-McClellan filters used for processing:
+
+					Corner frequencies (nyquist = 1)
+Filter #	nTaps	Factor	Type	 Pass band	Stop band
+-----------------------------------------------------------------------
+
+New filters:
+Interp		Preserve
+		Bandwidth
+  1 -> 25	0.5hz	200	[0.0 - 0.02, 0.07 - 1.0]  weight to 1.000064
+  5 -> 25	1.0hz	100	[0.0 - 0.08, 0.2 - 1.0]
+ 10 -> 25	2.5hz	100	[0.0 - 0.2, 0.3 - 1.0]  weight to 1.000063
+
+Decim
+ 50 -> 25	10hz	100	[0.0 - 0.4, 0.5 - 1.0]  weight to 1.000062
+250 -> 25	10hz	500	[0.0 - 0.08, 0.1 - 1.0]  weight to 1.000055
+
+1000 -> 25	10hz	1000	[0.0 - 0.016, 0.025 - 1.0]  weight to 1.000055
+
+
+The filters were generated using the remez() function in MATLAB's signal
+toolbox.
+
+Command to generate
+-----------------------------------------------------------------------
+b=remez(499, [0.0, 0.08, 0.1, 1.0], [1.000055, 1.000055, 0.0, 0.0]);

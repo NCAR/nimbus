@@ -1,0 +1,75 @@
+National Center for Atmospheric Research
+Atmospheric Technology Division
+Research Aviation Facility
+10800 West 120th Ave.
+Broomfield, CO 80021
+
+Christopher J. Webster
+1251 Marshall Rd.
+Boulder, CO 80303
+
+497-1044 W
+494-6369 H
+
+chris@chinook.atd.ucar.edu
+
+
+	    Proposal for Real-Time Data Quality Analysis Software
+
+Background:
+
+	We operate 4 aircraft out of Jefferson County Airport.  The aircraft
+have a "home-built" data acquisition system, known as the ADS, and a network
+of Sun workstations.  All the instruments onboard are plugged directly into
+the ADS which then samples the data, constructs a record once per second,
+records it to Exabyte tape, and then passes the data off to our data processing
+software which in turn passes it to the real-time display software.  There are
+typically 200 variables on a given flight, some redundant (e.g. We typically
+have 3 temperature sensors out board).
+
+	Instruments range from simple temperature and pressure sensors to
+particle measuring, fast-response temperature, holographic cameras, inertial
+systems, UV hygrometers, ozone & CO2 instruments, winds (vertical & horizontal,
+speed & direction).
+
+	Projects vary from pollution studies in Switzerland and Hong Kong,
+to Cloud Physics research in Florida & Colorado, to how the Boreal forrests
+in Canada affect CO2 & Ozone budgets, Ozone research in New Zealand, and
+Ocean/Atmosphere interaction in the South Pacific.
+
+
+What we need:
+
+	We are looking for a real-time quality control/analysis program.
+Something that will analyze each variable for defects and alert the operator
+on board.
+
+I see two parts to this:
+
+	1.  A library of routines for each variable, where each routine will
+		perform the analysis for a given variable(s).  The analysis
+		will include detecting shifts, spikes, drift, range checks,
+		or whether the instrument is even on or working (Each variable
+		will have different criteria for what must be detected).
+
+	2.  A Motif GUI which will alert the users onboard when something has
+		gone wrong with a given instrument/variable.
+
+
+I also envision 1 & 2 being seperate entities, using IPC (sockets, streams,
+whatever).
+
+We would also like the group to do some research into algorithms which have
+been used and with what success for detecting the various types of problems
+(drift, shift, spike, etc).
+
+An example variable:  Temperature.  Create a function that would accept all
+temperature sensor inputs, perform range checking (ranges already stored in
+a variable database), check all the temps against each other to make sure one
+is not completly out of line, and also detect a level shift of unrealistic
+magnitude (i.e temperature can only change so much in 1/25 of a second).
+
+System specs:
+	Sun Microsystems Hardware
+	Solaris 2.3 (Unix SVR4)
+	Languages C or C++.

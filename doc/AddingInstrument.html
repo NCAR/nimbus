@@ -1,0 +1,143 @@
+<html>
+<h1 align=center>Adding a Serial instrument to the ADS-II data system.</h1>
+<hr>
+This document uses an existing serial instrument (Digital Pressure, Dpres) as
+a concrete example.  You may search for the examples used in the code.  The
+ADS code is written to only handle one Dpres, whereas you will see examples
+of other serial instruments where the code is written to handle more than
+one of the given instrument (you will see 'for ()' loops, and MAX_MYPROBE, etc).
+<hr>
+
+<b>local/include/header.h</b>
+<ul>
+<li>A string definition needs to be added (e.g. #define DPRES_STR "DPRES").  This string will be copied into the 'item_type' field of the header structure (e.g. Blk).
+<p>
+<li>Add a struct for the data block you would like recorded (not for the incoming data, though they may be the same).  By convention these end with '_blk' (e.g. Dpres_blk).
+</ul>
+<p>
+
+<b>ads</b>
+<ul>
+<b>disc/include</b>
+<ul>
+<li>For serial instruments <b>dsmctl.h</b> must be edited to add which serial
+port the given instrument will be plugged in (e.g. DPRES_PORT).  This should
+really be configurable through <b>xbuild</b>, not hard coded.
+<p>
+<li>Edit <b>TapeHeader.h</b> to add '*Type()' (e.g.  dpresType()), don't
+forget to the new type to 'blkType()' if it is using the <b>struct Blk</b>.
+</ul>
+<p>
+
+<b>dsm/class</b>
+<ul>
+<li>Create a new class (e.g. Dpres.h and Dpres.cc).  For data acquisition two
+data buffers are required.  Data is not removed from the class until after
+1/10 of second into the following second.  The [toggle] buffers are indexed
+via 'ptog' (put toggle buffer), and 'gtog' (get/read toggle buffer).  A member
+function called 'secondAlign()' is typically used to flip these indices to
+the other buffer.  An inerupt service routine (typically called 'isr()') is
+required to read the data.  Don't forget to add class to Makefile.
+<p>
+<li><b>SyncRecord.cc</b>:  New class created above must be added to the
+constructor, and a new 'build*()' (e.g.  buildDpres()) function must be added
+to copy the data from the class into the record which will be recorded.
+<p>
+<li><b>SampleTable.cc</b> must be edited to.  Replicate a the <b>dpres</b>
+example.
+</ul>
+<p>
+
+<b>dsm/src</b>
+<ul>
+There is quit a bit of work in <b>dsmAsync.cc</b>.  initSerial() needs the
+new instrument added, along with serial isr() wrapper function.  secondAlign()
+needs to be called from hertz50_isr(), and checkStatus() from the main loop.
+Follow an example. 
+</ul>
+<p>
+
+</ul>
+
+<b>hdr_api</b>
+<ul>
+For most instruments (struct Blk) it is sufficient to edit get_itemtype() in
+<b>init.c</b> and add a strcmp(), for the new probe name, in the switch/case.
+More complex instrument definitions (e.g. Pms1d, Irs, etc), typically when
+more than on of a given instrument is allowed and you need to differentiate
+with probe location, will require modifying the set_var_name() function in
+the same file.  Don't forget 'make install'.
+<p>
+<b>nimbus</b>, <b>xbuild</b>, and <b>xhd</b> all use the hdr_api.
+</ul>
+<p>
+
+<b>libraf++/hdrAPI</b>
+<ul>
+For C++ programs there is a C++ class analogous to hdr_api.  At this time
+(Mar 2000) <b>rtplot</b> and <b>xpms2d</b> are the only programs using hdrAPI.
+For struct Blk instruments no modifications should be necessary.
+</ul>
+<p>
+
+<b>xbuild</b>
+<ul>
+xbuild uses the hdr_api to read in an existing header, but generates new
+headers internally (i.e. hdr_api has no "set" ability, just "get").
+<p>
+<li><b>configure.c</b> is used to create GUI buttons.  For this example
+replicate the 5 lines of code for "DPRES", and increment the
+'NumOtherBlockItems' count.
+
+If the instrument has multiple locations look at the Pms1 code.
+<p>
+<li><b>otherblockwidgets.c</b> is the code for filling in the header structures
+(i.e. struct Blk, Pms1, Irs, Evt, etc) before writing the header to disk.  Make
+sure you have appropriate byte swapping (htonl()/htons())!  Replicate the "DPRES" example of about 20 lines of code.  If you are adding a Pms probe or a
+navigation probe, you may wnat to add it to a different source file (e.g.
+<b>navwidgets.c</b>, <b>pmswidgets.c</b>, etc).
+</ul>
+<p>
+
+<b>nimbus</b>
+<ul>
+<li><b>include</b>
+<ul>
+Edit <b>amlib.fns</b> (DO NOT IGNORE THE WARNING ABOUT TABS), and add lines
+for new variables.  If it's a raw variable to decoded from the recorded data,
+then add <b>xlate</b> function names (typically start with xl) in the third
+column, if you are adding derived (you may be adding both) names, then add
+functions to the fourth column.  If you need a "initialization" function for
+the instrument (e.g. to read constants from the <b>Defaults</b> file), then
+add a function into the second column.
+</ul>
+<p>
+
+<li><b>src/amlib/xlate</b>
+<ul>
+This directory is for functions which decode raw data from the recorded data
+records.  Functions are called once for each data record (each data record
+contains one seconds worth of data).  Add a new file with appropriate function
+for decoding data (e.g. last function in psfd.c has Dpres).
+</ul>
+<p>
+
+<li><b>src/amlib/std</b>
+<ul>
+If you desire derived variables, then add functions in this directory.  Similar
+principal as xlate directory functions are called once per output sample (once
+per record for low rate data, 25 times for high rate data).  You'll need to
+add an entry into the <b>DerivedNames</b> and <b>DependTable</b>.
+<p>
+
+<li><b>src/filter</b>
+<ul>
+Edit <b>hdr_decode.c</b>, which cycles through the header via the hdr_api, and
+decodes each struct in the header.  (e.g. DPRES_STR).
+</ul>
+<p>
+
+</ul>
+
+
+</html>

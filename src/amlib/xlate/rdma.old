@@ -1,0 +1,235 @@
+/*
+-------------------------------------------------------------------------
+OBJECT NAME:	rdma.c
+
+FULL NAME:	Translate RDMA houskeeping variables to Nimbus record
+		format
+
+ENTRY POINTS:	xlrdma*()
+
+STATIC FNS:	none
+
+DESCRIPTION:	
+
+INPUT:		
+
+OUTPUT:		
+
+REFERENCES:	none
+
+REFERENCED BY:	rec_decode.c
+
+COPYRIGHT:	University Corporation for Atmospheric Research, 2001-02
+-------------------------------------------------------------------------
+*/
+
+#include "nimbus.h"
+#include "amlib.h"
+
+static int	timeCounter = 0;
+static float	temp, press, rdma_raw_cnts[256];
+
+extern char	*ADSrecord;
+
+
+/* -------------------------------------------------------------------- */
+void xlardma(RAWTBL *varp, void *input, NR_TYPE *np)
+{
+  int	i;
+
+  memcpy((char *)np, (char *)rdma_raw_cnts, varp->Length * sizeof(NR_TYPE));
+
+}
+
+/* -------------------------------------------------------------------- */
+void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
+{
+  int	i;
+  FILE	*inFP, *parmFP;
+  Rdma_blk	*rdma = (Rdma_blk *)input;
+
+  static int firstTime = TRUE;
+  static FILE *outFP;
+
+  *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->hvps);
+
+  if (firstTime)
+    {
+    if (ProductionRun)
+      sprintf(buffer, "%s/%s%s.rdma", getenv("PROD_DATA"), ProjectNumber, FlightNumber);
+    else
+      sprintf(buffer, "%s/%s%s.rdma", getenv("DATA_DIR"), ProjectNumber, FlightNumber);
+
+    if ((outFP = fopen(buffer, "w+")) == NULL)
+      {
+      fprintf(stderr, "rdma.c: can't open %s\n", buffer);
+      exit(1);
+      }
+
+    press = temp = 0.0;
+
+    firstTime = FALSE;
+    }
+
+
+  if (rdma->item_type[0] != 'h')
+    {
+    fprintf(outFP, "%s @ %02d:%02d:%02d\n", rdma->item_type,
+	ntohs(((short *)ADSrecord)[1]), ntohs(((short *)ADSrecord)[2]),
+	ntohs(((short *)ADSrecord)[3]));
+
+
+    for (i = 0; i < 200; ++i)
+      fprintf(outFP, "%.2f ", (NR_TYPE)ntohf(rdma->scan[i]));
+
+    fprintf(outFP, "\n"); fflush(outFP);
+
+    /* Drop concentration arrays, we are recomputing anew.
+     */
+    if (strcmp(rdma->item_type, "cnts"))
+      return;
+
+    press /= timeCounter;
+    temp /= timeCounter;
+
+    sprintf(buffer, "%s/rdma/dma/inv/stored/param.txt", getenv("NIMBUS"));
+
+    if ((parmFP = fopen(buffer, "w+")) == NULL) {
+      fprintf(stderr, "rdma.c: can't open %s\n", buffer);
+      exit(1);
+      }
+
+    if (press > 2.0 || press < 0.0)
+      press = 0.83;
+
+    if (temp > 100.0 || temp < 0.0)
+      temp = 20.0;
+
+    fprintf(parmFP, "60\n1\n0.49\n0.49\n4.98\n4.98\n0.88\n5000\n25\n1\n1\n25\n18\n1\n5\n%f\n%f\n", temp+273.16, press);
+
+    fclose(parmFP);
+
+
+    sprintf(buffer, "%s/rdma/dma/inv/input/counts.txt", getenv("NIMBUS"));
+
+    if ((parmFP = fopen(buffer, "w+")) == NULL) {
+      fprintf(stderr, "rdma.c: can't open %s\n", buffer);
+      exit(1);
+      }
+
+    fprintf(parmFP, "1\n");
+
+    for (i = 0; ntohf(rdma->scan[i]) != -99; ++i)
+      {
+      fprintf(parmFP, "%d\n", (int)ntohf(rdma->scan[i]));
+      rdma_raw_cnts[i] = (int)ntohf(rdma->scan[i]);
+      }
+
+    fclose(parmFP);
+
+    sprintf(buffer, "%s/rdma/src/rdma_mat", getenv("NIMBUS"));
+    system(buffer);
+//    rdma_mat__Fv();
+
+
+    sprintf(buffer,
+	"%s/rdma/src/rdma_inv %s %02d/%02d/%02d %02d:%02d:%02d %e %e",
+	getenv("NIMBUS"), FlightNumber, 
+	ntohs(((short *)ADSrecord)[4]), ntohs(((short *)ADSrecord)[5]),
+        ntohs(((short *)ADSrecord)[6]), ntohs(((short *)ADSrecord)[1]),
+	ntohs(((short *)ADSrecord)[2]), ntohs(((short *)ADSrecord)[3]),
+	press, temp);
+    system(buffer);
+
+
+    sprintf(buffer, "%s/rdma/dma/inv/input/out_to_nimbus", getenv("NIMBUS"));
+
+    if ((inFP = fopen(buffer, "r")) == NULL) {
+      fprintf(stderr, "rdma.c: can't open %s\n", buffer);
+      exit(1);
+      }
+
+// Read in counts & conc.???  Interp to fixed diameters.
+
+
+    fclose(inFP);
+
+    timeCounter = 0;
+    press = temp = 0.0;
+    }
+  else
+    {
+    memset((char *)rdma_raw_cnts, 0, sizeof(rdma_raw_cnts));
+    ++timeCounter;
+    }
+
+}	/* END XLRDMAHVPS */
+
+/* -------------------------------------------------------------------- */
+void xlrdmavsh(RAWTBL *varp, void *input, NR_TYPE *np)
+{
+  *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->vsh);
+
+}
+
+/* -------------------------------------------------------------------- */
+void xlrdmaqa(RAWTBL *varp, void *input, NR_TYPE *np)
+{
+  *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->qa);
+
+}
+
+/* -------------------------------------------------------------------- */
+void xlrdmaqsh(RAWTBL *varp, void *input, NR_TYPE *np)
+{
+  *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->qsh);
+
+}
+
+/* -------------------------------------------------------------------- */
+void xlrdmaqs(RAWTBL *varp, void *input, NR_TYPE *np)
+{
+  *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->qs);
+
+}
+
+/* -------------------------------------------------------------------- */
+void xlrdmaqex(RAWTBL *varp, void *input, NR_TYPE *np)
+{
+  *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->qex);
+
+}
+
+/* -------------------------------------------------------------------- */
+void xlrdmavd(RAWTBL *varp, void *input, NR_TYPE *np)
+{
+  *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->vd);
+
+}
+
+/* -------------------------------------------------------------------- */
+void xlrdmarh(RAWTBL *varp, void *input, NR_TYPE *np)
+{
+  *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->rh);
+
+}
+
+/* -------------------------------------------------------------------- */
+void xlrdmatemp(RAWTBL *varp, void *input, NR_TYPE *np)
+{
+  *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->temp);
+
+  temp += *np;
+
+}
+
+/* -------------------------------------------------------------------- */
+void xlrdmapabs(RAWTBL *varp, void *input, NR_TYPE *np)
+{
+  *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->pabs);
+
+  press += *np;
+
+}
+
+/* END RDMA.C */
