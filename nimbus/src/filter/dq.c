@@ -12,16 +12,14 @@ DESCRIPTION:
 
 NOTES:		
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2000
+COPYRIGHT:	University Corporation for Atmospheric Research, 2000-05
 -------------------------------------------------------------------------
 */
 
 #include "nimbus.h"
 
 
-char *dataQuality[] = {
-  "Preliminary", "Good", "Bad", "Drift", "Spiky","synthetic",
-        NULL };
+char *dataQuality[] = { "Preliminary", "Good", "Bad", "Synthetic", NULL };
 
 
 /* -------------------------------------------------------------------- */
