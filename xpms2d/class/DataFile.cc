@@ -132,7 +132,7 @@ ADS_DataFile::ADS_DataFile(char fName[])
     rewind(fp);
     }
 
-  if ((buffer[0] = 'C' || buffer[0] == 'P') && isdigit(buffer[1]))
+  if ((buffer[0] == 'C' || buffer[0] == 'P') && isdigit(buffer[1]))
     {
     hdr = NULL;
     hasRAFheader = false;
