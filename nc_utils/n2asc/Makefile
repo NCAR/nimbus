@@ -3,8 +3,7 @@
 #
 CC=		gcc
 BINDIR=		${LOCAL}/bin
-RELEASE=	${JLOCAL}/n2asc
-MANDIR=		${JLOCAL}/man/man1
+MANDIR=		${LOCAL}/man/man1
 
 # Solaris
 #
@@ -12,7 +11,7 @@ INCLUDES= -I${JLOCAL}/include
 DEFINES = -DSVR4
 LIBS    = -R /usr/dt/lib -lraf -lXm -lXt -lX11 -lnetcdf
 LIB_DIRS= -L${JLOCAL}/lib
-ANONFTP = /jnet/ftp/pub/src/bin.Solaris2.9
+ANONFTP = /net/ftp/pub/archive/RAF-src/bin.Solaris2.9
 IHOST	= mead
 
 # Linux
@@ -48,15 +47,10 @@ ${PROG}: ${OBJS}
 install: ${PROG}
 	cp ${PROG} ${BINDIR}
 	rcp ${PROG} ${IHOST}:${BINDIR}
+	rcp ${PROG}.man ${IHOST}:${MANDIR}/${PROG}.1
 	cp ${PROG} $(ANONFTP)
 	cp ${PROG}.man ${ANONFTP}
 	cp ${PROG}.man ${MANDIR}/${PROG}.1
-
-
-release:
-	tar cFFf - . | (cd ${RELEASE}; tar xfBp -)
-	sed s/-g/-O2/g Makefile > ${RELEASE}/Makefile
-	rm -f ${RELEASE}/LOCK.make
 
 clean:
 	rm -f ${OBJS} ${PROG}

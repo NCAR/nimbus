@@ -70,10 +70,10 @@ rdma
   RDMA processor (rdmap).  C++.
 
 
-rtplot
+rtplot_motif
   RealTime high-rate display program.  Hacked down version of ncplot.
 
-rtplot2
+rtplot
   New version using Qt/Qwt instead of Xlib/Motif.
 
 

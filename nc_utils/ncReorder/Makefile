@@ -5,6 +5,8 @@ DESTDIR=	${JLOCAL}
 BINDIR=		${DESTDIR}/bin
 MANDIR=		${DESTDIR}/man/manl
 INCDIR=		${DESTDIR}/include
+ANONFTP=	/net/ftp/pub/archive/RAF-src/bin.RedHat9.0
+
 
 LIBS=		-L${JLOCAL}/lib -lnetcdf_c++ -lnetcdf
 INCLUDES=	-I$(INCDIR)
@@ -23,6 +25,7 @@ ${PROG}: ncReorder.cc ${JLOCAL}/lib/libnetcdf_c++.a
 
 install: ${PROG}
 	cp ${PROG} ${BINDIR}
+	cp ${PROG} $(ANONFTP)
 
 clean:
 	rm -f core ${PROG}

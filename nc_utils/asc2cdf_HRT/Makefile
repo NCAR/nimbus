@@ -3,10 +3,9 @@
 #
 CC=		gcc
 DESTDIR=
-BINDIR=		/home/local/bin
-ANONFTP=	/home/users/ftp/pub/src/bin.sol2
-RELEASE=	/home/local/nimbus/src/asc2cdf
-MANDIR=		/home/local/man/man1
+BINDIR=		/jnet/local/bin
+ANONFTP=	/net/ftp/pub/archive/RAF-src/bin.RedHat9.0
+MANDIR=		/jnet/local/man/man1
 LIBS=		-lVarDB -lnetcdf -lraf
 LINTLIBS=	${LIBS}
 INCLUDES=	-I$(JLOCAL)/include
@@ -29,12 +28,6 @@ install: ${PROG}
 	cp ${PROG}.man ${DESTDIR}${MANDIR}/${PROG}.1
 	cp ${PROG} $(ANONFTP)
 	cp ${PROG}.man ${ANONFTP}
-
-
-release:
-	tar cFFf - . | (cd ${RELEASE}; tar xfBp -)
-	sed s/-g/-O/g Makefile > ${RELEASE}/Makefile
-	rm -f ${RELEASE}/LOCK.make
 
 clean:
 	rm -f ${OBJS} ${PROG} core

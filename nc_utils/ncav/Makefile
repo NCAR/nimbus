@@ -1,10 +1,9 @@
 #
-#    Makefile for Skeleton program
+#    Makefile for ncav program
 #
 CC=		gcc
-BINDIR=		${LOCAL}/bin
-RELEASE=	${LOCAL}/ncav
-MANDIR=		${LOCAL}/man/man1
+BINDIR=		${JLOCAL}/bin
+MANDIR=		${JLOCAL}/man/man1
 
 
 # Solaris
@@ -13,7 +12,7 @@ INCLUDES= -I${JLOCAL}/include
 DEFINES = -DSVR4
 LIBS    = -R /usr/dt/lib -lraf -lXm -lXt -lX11 -lnetcdf -lm
 LIB_DIRS= -L${JLOCAL}/lib
-ANONFTP = /jnet/ftp/pub/src/bin.Solaris2.9
+ANONFTP = /net/ftp/pub/archive/RAF-src/bin.Solaris2.9
 
 # Linux
 #
@@ -47,11 +46,6 @@ install: ${PROG}
 	cp ${PROG}.man ${MANDIR}/${PROG}.1
 	cp ${PROG} $(ANONFTP)
 	cp ${PROG}.man ${ANONFTP}
-
-release:
-	tar cFFf - . | (cd ${RELEASE}; tar xfBp -)
-	sed s/-g/-O2/g Makefile > ${RELEASE}/Makefile
-	rm -f ${RELEASE}/LOCK.make
 
 clean:
 	rm -f ${OBJS} ${PROG}

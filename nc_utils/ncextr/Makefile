@@ -2,9 +2,8 @@
 #    Makefile for Skeleton program
 #
 CC=             gcc
-BINDIR=         ${LOCAL}/bin
-RELEASE=        ${LOCAL}/ncextr
-MANDIR=         ${LOCAL}/man/man1
+BINDIR=         ${JLOCAL}/bin
+MANDIR=         ${JLOCAL}/man/man1
 
 # Solaris
 #
@@ -44,11 +43,6 @@ install: ${PROG}
 	cp ${PROG}.man ${DESTDIR}${MANDIR}/${PROG}.1
 	cp ${PROG} $(ANONFTP)
 	cp ${PROG}.man ${ANONFTP}
-
-release:
-	tar cFFf - . | (cd ${RELEASE}; tar xfBp -)
-	sed s/-g/-O2/g Makefile > ${RELEASE}/Makefile
-	rm -f ${RELEASE}/LOCK.make
 
 clean:
 	rm -f ${OBJS} ${PROG}
