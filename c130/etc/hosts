@@ -1,0 +1,51 @@
+# Do not remove the following line, or various programs
+# that require network functionality will fail.
+
+127.0.0.1	localhost.localdomain	localhost
+
+# JeffCo Subnet (128.117.84.xxx)
+128.117.84.100	mistral.atd.ucar.edu	mistral
+128.117.84.57	chinaco.atd.ucar.edu	chinaco
+128.117.84.60	blizzard.atd.ucar.edu	blizzard
+128.117.84.52	lenado.atd.ucar.edu	lenado
+128.117.84.31	orion.atd.ucar.edu	orion
+128.117.84.8	vivaldi.atd.ucar.edu	vivaldi
+
+# JeffCo Guest Subnet (128.117.44.xxx)
+128.117.44.101	hercules.guest.ucar.edu	hercules-guest
+
+# FL Subnet (128.117.78.xxx)
+128.117.78.2	syrah.atd.ucar.edu	syrah
+
+# FL Subnet (128.117.80.xxx)
+128.117.80.30	ale.atd.ucar.edu	ale
+
+# FL Guest Subnet (128.117.188.xxx)
+#128.117.188.104	rdcc.guest.ucar.edu	rdcc
+
+# C130 Display Subnet (192.168.84.xxx)
+192.168.84.11	syncserv130.display.c130	syncserv130
+192.168.84.18	blanc.display.c130	blanc
+192.168.84.33	atd-wsiserver.display.c130	atd-wsiserver
+192.168.84.34	atd-ncar-c130.display.c130	atd-ncar-c130
+192.168.84.42	fric.display.c130	fric
+192.168.84.48	bonnie.display.c130	bonnie
+192.168.84.49	clyde.display.c130	clyde
+192.168.84.70	cam130.display.c130	cam130
+192.168.84.71	cadmus.display.c130	cadmus
+192.168.84.72	perseus.display.c130	perseus
+192.168.84.101	hercules.display.c130	hercules	
+
+192.168.84.200	dc-200.atd.ucar.edu	dc-200
+192.168.84.201	dc-201.atd.ucar.edu	dc-201
+192.168.84.202	dc-202.atd.ucar.edu	dc-202
+192.168.84.203	dc-203.atd.ucar.edu	dc-203
+192.168.84.204	dc-204.atd.ucar.edu	dc-204
+192.168.84.205	dc-205.atd.ucar.edu	dc-205
+
+# C130 Data Subnet (192.198.184.xxx)
+192.168.184.1	dsm1.data.c130	dsm1
+192.168.184.2	dsm2.data.c130	dsm2
+192.168.184.3	dsm3.data.c130	dsm3
+192.168.184.4	dsm4.data.c130	dsm4
+192.168.184.101	hercules-data.data.c130	hercules-data

@@ -1,0 +1,12 @@
+nodetach
+lock
+passive
+noauth
+nocrtscts
+local
+defaultroute
+lcp-echo-interval 10
+lcp-echo-failure 3
+/dev/ttyS1
+19200
+name rafgs1
