@@ -1,9 +1,9 @@
 // window.cc: A. Bokinsky QC project Spring 1995
 // This file contains the functions provided by the Motif_Window class.
 
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
-#include <math.h>
+#include <cmath>
 #include <Xm/Xm.h>
 #include <Xm/XmP.h>
 #include <Xm/ShellEP.h>
@@ -20,7 +20,7 @@ static const int increment_y = 20;
 //  This constructor is used for the WarningBox.  It creates a Motif
 //  TopLevelShellWidgetClass for the WarningBox window.
 Motif_Window::Motif_Window( Widget p, const char *name ) {
-  int	tmpX = log10( x_ + 1 );
+  int	tmpX = (int)log10( x_ + 1 );
   char *location  = new char[ tmpX + 4 ]; 
   sprintf( location, "+%d+%d", x_, y_ );
   x_ += increment_x;  y_ += increment_y;

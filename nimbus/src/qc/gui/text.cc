@@ -1,7 +1,7 @@
 //  text.cc:  A. Bokinsky  QC project Spring 1995
 //  This file contains the functions provided by the Text class.
 
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
 #include <X11/Intrinsic.h>
 #include <X11/IntrinsicP.h>
@@ -12,7 +12,7 @@
 #include <Xm/Text.h>
 #include <Xm/Label.h>
 #include <Xm/ScrolledW.h>
-#include <string.h>
+#include <cstring>
 
 #include "text.h"
 static const int screen_width = 100;         // the constant width of the text.

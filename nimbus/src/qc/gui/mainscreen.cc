@@ -2,8 +2,8 @@
 //  This file contains the functions provided by the MainScreen class.
 
 #include <stdlib.h>
-#include <iostream.h>
-#include <fstream.h>
+#include <iostream>
+#include <fstream>
 #include <Xm/MessageB.h>
 
 #include "mainscreen.h"

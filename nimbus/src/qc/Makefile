@@ -71,8 +71,8 @@ release:
 #
 # install files in their appropriate WINPUT/WINDS destinations
 #
-install:
+install: all
 	cp vallib/qc.h ../../include
 	cp vallib/libval.a ../../lib
-	cp man/qc.l /usr/local/man/manl
+	cp man/qc.l ${JLOCAL}/man/manl
 	cp gui/qc-gui $(WINDS)/bin
