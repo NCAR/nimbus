@@ -52,7 +52,7 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #define MAX_TIME_SLICES	5
 
 
-enum SYNTHTYPE {file,constant,function,none};
+enum SYNTHTYPE {sy_file, sy_constant, sy_function, sy_none};
 
 typedef struct
 	{
