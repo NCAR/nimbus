@@ -44,7 +44,7 @@ INPUT.O = $(NOBJ)adsIO.o $(NOBJ)amlibfn.o $(NOBJ)async.o $(NOBJ)average.o\
 
 
 # ------------------------------------------------------------------------
-nimbus:	include $(INPUT.O) amlib
+nimbus:	include $(INPUT.O) amlib ncaru
 	rm -f obj/pms1d_rt.o
 	${CC} $(CFLAGS) ${LIB_DIRS} $(INPUT.O) -o nimbus $(CLIBS)
 
@@ -54,6 +54,9 @@ include:
 
 amlib:
 	cd ${NSRC}/amlib; make
+
+ncaru:
+	cd ${NSRC}/ncaru/lib; make
 
 obj: $(INPUT.O) amlib $(NOBJ)pms1d_rt.o
 
