@@ -1,0 +1,34 @@
+NIMBUS VarDB standard units
+Ronald L. Ruth   rev. 13 October 1995
+
+Unit      Meaning                         Comment
+--------  -----------------------------  ------------------
+%         per cent
+boolean   boolean                        Don't use bool
+C         Celsius                        Don't use oC
+cnts      counts                         Don't use Cnts
+deg       degrees                        angular measurement
+feet      feet
+G         acceleration of gravity units  Don't use G's
+g         grams                          Don't use G
+K         Kelvins                        Don't use k
+k         kilo                           Don't use K
+L         liters
+M         Meters                         Don't use m
+M3        cubic meters
+cm3       cubic centimeters              This one fell through the cracks
+m         milli                          Don't use M
+mbar      millibars                      Don't use mb
+nmi       nautical miles                 Don't use NMI
+none      unitless                       explicitly stated
+ppb       parts per billion
+ppm       parts per million
+ppmv      parts per million (volume)
+s         seconds                        Don't use S or sec or seconds
+s2        seconds squared
+sccm      standard cubic centimeters per minute
+slpm      standard liters per minute
+uM        micrometers                    Don't use microns
+Vdc       DC volts                       Don't use vdc or VDC
+vlpm      volume liters per minute
+W         watts

@@ -1,0 +1,77 @@
+For Krista on project 891:
+
+M A K E   P R O D U C T I O N   M A S S   S T O R E   B I T F I L E   L O G
+- - - -   - - - - - - - - - -   - - - -   - - - - -   - - - - - - -   - - -
+
+Log in as `nimbus.'
+Change to the FASTEX Production directory:
+     hl proj/891/Production
+Enter the following command:
+     gentl 891
+  (Using the FASTEX files in the `productiondata' directory, assuming that
+  they have standard names, this script will produce a bitfile log named
+  `taplog.891,' in your current directory.  If any flights have segments,
+  it will list them after the others.  If both high- and low-rate data
+  files exist, it will have two separate sections.)
+
+
+A R C H I V E   P R O D U C T I O N   n e t C D F   D A T A
+- - - - - - -   - - - - - - - - - -   - - - - - -   - - - -
+
+Log in as `nimbus.'
+Change to the FASTEX Production directory.
+     hl proj/891/Production
+Enter the following command:
+     genar 891
+  (Using the FASTEX files in the `productiondata' directory, assuming
+  that they have standard names, this script will produce another script
+  in your current directory, named `arch.891,' having MIGS Mass Store copy
+  commands.)
+Run the script `arch.891,' and it will echo to your screen a series of
+  "nrnet" commands to archive all the production netCDF files found.  If
+  everything looks OK (i.e., the path and bitfile names are as they should
+  be), edit the `arch.891' file to remove all the leading "echo" words at
+  the beginning of the lines.  If using `vi' you can use the following
+  command:
+     :%s/^echo //
+Save and exit.
+Logout as the `nimbus' login.
+Login as yourself!
+Using X windows, change to the FASTEX Production directory and run the
+  `arch.891' script again.  It will echo to your screen the date and time
+  followed by a series of Sequence numbers.
+Please capture those lines with the mouse and insert them as new lines at
+  the end of the `arch.891' file.  (There is group permission on the file,
+  so you should have no problem editing it as yourself.)  Save and exit.
+Each sequence number corresponds to a MIGS job that will archive one netCDF
+  file.  For each of these you will get an email message from MIGS telling
+  you whether or not the MSS archive job was successful.  Please SAVE or
+  forward to me every one of these messages.
+(The reason you submit this script under your own login and not `nimbus' is
+  that `nimbus' has no separate MIGS account.)
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+                                 DRAFT
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+         Archive tasks (to be done after production processing):
+                RLR  11 December 1998
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+(All of these tasks should be done with the "nimbus" while in the project's
+ Production subdirectory.  Since "nimbus" has no MIGS access, actual archiving
+ via MIGS must be done under some other login.)
+- run "gentl <projno> to create/replace the taplog.<projno> file
+- run genar <projno> to create a script (arch.<projno>) which will archive the
+ production netCDF files for a project
+- review, comment out the "echo"s, then run arch.<projno> to archive the
+ production netCDF files to the SCD Mass Store System (MSS)
+- copy and edit and run tarit.<projno> to create <projno>.tar and
+ <projno>.tar.dir
+- run tarit.nimbus.tar to create nimbus.tar, nimbus.tar.dir,
+  nimbus_defaults.tar and nimbus_defaults.tar.dir
+- copy and edit and run archive.support to archive important files to the MSS
+- copy taplog.<projno> to .../archives/taplog directory
+- update http://raf.atd.ucar.edu/data_catalog.html
+- get new Master RAF MSS Directory list (see instructions in the file:
+   /home/local/proj/archives/msfiles/msraw.RAF.all)
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

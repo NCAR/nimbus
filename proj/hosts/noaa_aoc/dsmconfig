@@ -1,0 +1,8 @@
+/home/local/proj/400/header
+
+locn        machine  port   time_master  record  nats
+----	    -------  ----   -----------  ------  ----
+FORWARD     dsm20    1102   yes          no      no
+AFT	    dsm21    1101   no           no      no
+WINDS	    rainier  1106   no           no      no
+CTL	    rainier  1106   no           no      no

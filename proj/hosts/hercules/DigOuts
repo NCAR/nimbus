@@ -1,0 +1,11 @@
+#
+# Port or channel refers to A, B or C port on the VMIO14 daughter card.  Valid
+# values are 0-7 for ports A & B, 8-15 for C port.  Bit # is which bit in the
+# port to output (0-7 for A & B, 0-4 for C).  Code currently has it all
+# hardwired to Board 0.
+#
+# DSM		Port	Bit	Label		Default State
+#
+PODLW,  	8,	2,	GRBR_Pwr,	1
+PODLW,  	8,	3,	GRBR_Cal,	1
+PODRW,  	3,	0,	TDL,		0

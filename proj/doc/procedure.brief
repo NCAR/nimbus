@@ -1,0 +1,161 @@
+        -----------------------------------------------------------
+         Quick Overview of NIMBUS Production Processing Procedures
+            for Project Managers and Data Management Personnel
+        -----------------------------------------------------------
+                           Ronald L. Ruth
+                          RAF Data Manager
+                           rev. May 1998
+        -----------------------------------------------------------
+
+  Note:  Production processing is unique.  Do not use the `nimbus' login
+          unless you are prepared to set up and perform production (final)
+          processing.
+
+ A)  The master raw ADS data tapes need to be archived to the SCD Mass Store
+      System (MSS).  Make sure this is done before doing any production
+      processing.  (See Ron for assistance.)
+ B)  Peruse the entire project's data using quick-look tools.  Identify all
+      changes that are needed for production processing.
+   1)  Use whatever tools you want, including NIMBUS, ncplot, WINDS, PV-Wave,
+        MATLAB, Xanadu, etc.
+   2)  Make a list of instrument anomalies, failures, etc., that occurred
+        during the project and when they occurred.
+   3)  Make a list of equipment changes made during the project.
+   4)  Edit the `Defaults' file in the project's directory
+        (`hl proj/### ; vi Defaults') to make changes that reflect the
+        *typical* flight.  (This file has reference constants used for
+        making derived calculations.)
+   5)  Make a list of per-flight changes needed for production.  Examples
+        include:  new calibrations, reference variable substitutions, unique
+        Defaults values.
+   6)  Using information from B)5), create groups of flights which all need
+        the same setup and whose processing will be identical.  (A group
+        consists of one or more flights.)  Select one reference flight from
+        each group.
+   7)  If you use NIMBUS during this time, be sure to use your own login (not
+        the `nimbus' login).  You may want to save setup files in your own
+        processing directory.  (Make a list of those you want to recall for
+        production processing.)
+   8)  Completely summarize all the information needed for production
+        processing (basically, all the above information); put it in a
+        Project Production Setup document (or file); and send a copy to Ron.
+        (Include the project's instrumentation list and ADS setup table.)
+ C)  Set up NIMBUS for the default, low-rate processing (no matter what the
+      final output rate will be).
+   1)  Login as user `nimbus.'  See Chris Webster or Ron if you need the
+        password.
+   2)  Change to the project's directory (`hl proj/###'). 
+   3)  Edit the `Production/FlightGroups' file to agree with B)6).  See Chris
+        or Ron if you need help with this.
+   4)  Edit the following files in the project's directory, if necessary, to
+        make changes that reflect the typical flight.
+         DependTable -- reference variables to be used for all the derived
+                         calculations.
+         PMSspecs    -- default constants for all PMS probes
+         ProjectName -- project's title written to the netCDF header
+         lags        -- static lags for IRS variables (Editing should
+                         not be needed, but the file should be present.)
+         ophir3.names -- names for Ophir (Editing should not be needed, but
+                          the file should be present if the instrument was
+                          used.)
+   5)  If you are adding derived user variables, create a UserNames file in
+        the project's directory and include each name separated by white
+        space.  (This lets NIMBUS know they exist.)
+   6)  If you will be doing high-rate processing later, make sure that the
+        project's  LowRateVars file is present and make appropriate changes,
+        if necessary.  (This file determines which derived variables should
+        always be at low rate, such as the thermoelectric dew point.)
+   7)  Please make sure that the project's VarDB file is up to date.  You
+        may have to add and/or change extended definitions to the variable
+        dictionary (using the command:  `vared VarDB' -- make sure your
+        DISPLAY environment variable is set properly).  If you created a
+        UserNames file, you will need to add their definitions, too.
+   8)  Get the reference raw ADS data sets from the MSS.  One can use the
+        "msget" or "msgetads" script for this.  If a data set is split into
+        contiguous segments, retrieve all of them.  NIMBUS will process the
+        entire flight as one output file by sequentially reading each ADS
+        data set.  (If there is a time gap between flight segments, it is
+        best to retrieve and process each one separately.  You will then
+        have to rename each output file with its correct, segmented name.)
+   9)  Run NIMBUS with each reference flight to create the reference setup
+        files.  Refer to the ADS Reference Manual, Chapter 5, or the NIMBUS
+        `walkthrough' document (located in the `nimbus' home directory), if
+        necessary.
+     a)  If present, load appropriate setup file from B)6) above, and check to
+          make sure it makes no inappropriate changes.  (It can change rates,
+          Defaults values, calibration coefficients, dependencies, lag,
+          variable output on/off.)  Multiple setup files can be loaded,
+          one after another, in case multiple changes are necessary.
+     b)  From within NIMBUS, edit the Defaults file, if necessary.
+     c)  Make appropriate changes to the calibration coefficients.
+     d)  Make appropriate changes to the dependencies.
+     e)  Carefully choose which variables are to be output to or omitted
+          from the production netCDF file.
+     f)  Be sure all output rates are correct.
+     g)  Save the setup.  (You will not be asked for a setup file name,
+          since, in production mode, it is predefined.)
+     h)  Repeat for the next reference data set, if necessary.
+ D)  Preproduction test
+   1)  Make one production run using a representative flight.
+     a)  The output data set will be put in the directory
+          `/home/productiondata,' and its name will follow the prescribed
+          naming convention:  pppTfnn[H].cdf  (Example:  120rf03.cdf)
+          where:  ppp = 3-digit project number
+                    T = type of flight (f=ferry, r=research, t=test)
+                   nn = flight number without a segment letter
+                         (e.g., 03)
+                  [h] = suffix letter to indicate high-rate data
+                         (Example:  120rf03h.cdf)
+   2)  Peruse the production log file (logFile_xRT.nn, where "x" is H for
+        HRT, L for LRT) in the project's `Production' subdirectory created
+        during the NIMBUS run.  (See Ron for help, if needed.)
+   3)  Peruse the netCDF header.  (Use `ncdump -h <file> | more'.)
+     a)  Make sure that the variable list is correct.
+     b)  Make sure that no variable has "units" of "Unk" or "Unknown" and
+          "long_name" of "No title".  If any do exist, repeat step C)7).
+          (Within the `more' comand, use the `vi'-like command:  "/Unk" and
+          "/No title" to find them.)
+   4)  Review output data using ncplot, WINDS or other available tools.
+   5)  Note changes that are needed to the processing, update the associated
+        setup file, and rerun, if necessary. 
+   6)  Repeat this section using the reference example from each flight group.
+ E)  Production
+   1)  When all is ready for production, check available disk space to make
+       sure that room exists for the processed data.  (You may have to do
+       production runs in sections and have the output data archived before
+       continuing.  Also, other project processing may compete for the
+       available disk space which may require negotiation with other users.)
+   2)  Use NIMBUS to process each flight/segment.
+     a)  NIMBUS now has automatic output file naming, and if a flight has
+          to be processed in segments, one must rename each output file to
+          add the segment's letter, for example, 120rf05.cdf --> 120rf05a.cdf.
+     b)  If necessary, rename the production log file for this segment, too,
+          for example, logFile_LRT.05 --> logFile_LRT.05a.  It will be located
+          in the project's `Production' subdirectory.  (I hope to have NIMBUS
+          changed soon to append to this file instead of overwriting it.)
+     c)  Thoroughly peruse the output from each production run, looking for
+          errors and things overlooked in setup.
+     d)  When flight/segments have been processed to your satisfaction, have
+          Ron archive the output files to the MSS.  (This may have to be done
+          in sections if disk space is at a premium.)  It is recommended that
+          all the low-rate files be archived before commencing with high-rate
+          production processing.
+ F)  If high-rate processing is required, repeat steps D) and E), but
+      select the `high-rate' button in the NIMBUS window before starting
+      the processing.
+   1)  You may need to make alterations to the setup.  One example would be
+        setting the output rates for variables like VEW and VNS to 10 sps.
+        A separate and independent setup file could be loaded to make these
+        changes (and set the "high-rate" flag, too).  (For an example, see
+        the file `HRT.convert' in the `870/Production' directory.)
+   2)  NIMBUS now has automatic production output file naming, so one should 
+        not have to rename the low-rate output file to avoid overwriting
+        extant data.  (If a low-rate file exists for this flight, you will
+        get a warning message which you can safely ignore.)
+   3)  Check a representative sample of high-rate, processed data using
+        appropriate tools.  (This may include spectrum analysis.)
+ G)  When all data have been processed to your satisfaction and archived to
+      the MSS, prepare the final documentation binder(s) for shipment to the
+      Principal Investigator(s).
+ H)  Determine the type of output product(s) needed by PI(s) and schedule RDP
+      to copy and ship the output data.  (See Ron for instructions.)

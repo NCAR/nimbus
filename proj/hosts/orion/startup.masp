@@ -1,0 +1,9 @@
+routeAdd("128.117.84.0", "128.117.184.77")
+hostAdd("mistral", "128.117.84.100")
+nfsMount("mistral", "/home/local", "/home/local")
+putenv("PROJ_DIR=/home/local/proj");
+cd "/home/local/ads/dsm/obj"
+ld < maspComm.o
+cd "/home/local/ads/dsm/masp/newmasp/obj"
+ld < maspDas.o
+sp(maspDas__Fv)

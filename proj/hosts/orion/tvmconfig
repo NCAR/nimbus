@@ -1,0 +1,5 @@
+locn		type		var_name	disp_num	disp_entry
+-----		------		--------	--------	---------  
+FORWARD		FIXEDFMT	PSF		0		0
+FORWARD		FIXEDFMT	ADIFR		0		1
+FORWARD		FIXEDFMT	BDIFR		0		2

@@ -1,0 +1,17 @@
+#routeAdd("128.117.84.0", "128.117.184.22")
+#hostAdd("mistral", "128.117.84.100")
+#nfsMount("mistral", "/jnet/shared", "/usr/local")
+putenv("PROJ_DIR=/jnet/local/proj");
+#cd "/h/9/ads/ads/dsm/obj"
+cd "/jnet/local/ads/dsm/obj"
+ld < dsmComm.o
+ld < dsmDisplay.o
+ld < dsmTape.o
+ld < dsmAsync.o
+sp(dsmAsync__Fv)
+#ld < ckspp.o
+#sp(ckspp__Fv)
+#ld < ckv1d.o
+#sp(ckv1d__Fv)
+#ld < ck2d.o
+#sp(ck2d__Fv)

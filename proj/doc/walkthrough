@@ -1,0 +1,807 @@
+                Using  N I M B U S  --  A Walkthrough
+                            Version 3.1.2
+
+                            Ronald L. Ruth
+                            org.  Apr 1995
+                            rev.  Apr 2002
+
+
+Introduction
+------------
+   This document is an explanation of the mechanics of running
+NIMBUS under X-windows/Motif on your workstation.  Please note
+that NIMBUS is designed for X-windows/Motif and cannot be run
+outside of this environment.
+
+
+Mouse Operation
+---------------
+   In NIMBUS the left mouse button is used almost exclusively for
+all functions.  If a scroll bar is present in the window, the left or
+center mouse button can be used to drag the middle scroll bar indicator
+(a small black rectangle) to a desired location; the contents will
+scroll as the mouse moves.  If the cursor is placed above or below
+the middle scroll bar indicator, a click of the left mouse button will
+scroll the display up or down in the list one screenful at a time.  If
+the middle mouse button is clicked instead, the scroll bar indicator
+jumps directly to the mouse pointer location.  The right mouse button
+is inactive for NIMBUS.
+
+
+Control Keys
+------------
+   Certain commands can be entered using control characters (holding
+down the [CONTROL] key while pressing another key).  NIMBUS uses the
+`^' character to indicate [CONTROL], e.g., ^T means [CONTROL][T].  If an
+underscore appears below the letter on a button, using the [CONTROL] key
+with that letter will "click" the button or select the function.  (Two
+exceptions are the `Setup' and `Edit' buttons which have underscores but
+no corresponding function.)  The following control letters (whose
+functions are described in the `Set Up' section) are active:
+  ^L -- Load a setup file
+  ^S -- Save a setup file
+  ^P -- Print a setup file to the printer designated by the environment
+          variable LPDEST
+  ^Q -- Cancel the setup process
+  ^D -- Open an "Edit Defaults" window
+  ^T -- Open an "Edit Time Slices" window
+  ^F -- Open an "Edit Flight Info" window
+  ^O -- Toggle output yes/no flag on highlighted variable(s)
+  ^R -- Change output rate on highlighted variable(s)
+         Depending upon the type of variable (raw or derived) and the
+         setting of the master processing rate, the rate will advance
+         from PHR, PLR, Sample Rate, PHR, PLR, etc., skipping any rates
+         that are not legal.
+
+
+Begin
+-----
+   Before running NIMBUS, make sure that you have a DISPLAY environment
+variable and that it is set to your workstation (c-shell):
+     echo $DISPLAY
+Here is the command to set it (c-shell):
+     setenv DISPLAY <your_workstation_name>:0
+
+   If you plan to do production processing for a project (using the
+"nimbus" login), it is a good idea to change your current working
+directory to the project's `Production' subdirectory before you start
+running NIMBUS.
+     cd $PROJ_DIR/###/Production
+   where:  ### is its 3-digit project number.
+
+   I suggest running the NIMBUS processor in background:
+     nimbus &
+
+   There are now three (3) comand-line options for NIMBUS.
+ 1.  If production processing has been completed for a project, setup
+      files for it will be automatically loaded for you when you run
+      NIMBUS.  (See explanation in "Setup Files" below.)  If you want
+      to start NIMBUS without loading ANY setup file, use the "-n"
+      option:
+          nimbus -n &
+      (If you wish, you may then load setup files from within NIMBUS.)
+
+ 2.  If you want to run NIMBUS with despike and static lag disabled,
+      use the "-r" option:
+          nimbus -r &
+
+ 3.  If you want to run NIMBUS in batch mode (See "BATCH OPERATION"
+      below.), use the "-b" option and a batch-file name (with an
+      optional log-file redirection):
+          nimbus -b <batch_file> >& <log_file> &
+
+
+Startup Window
+--------------
+   When you start NIMBUS (without the `-b' option), a standard Motif
+file-selection window pops up on your screen showing all ADS files in
+the default directory ($DATA_DIR, usually /jnet/data).  Select a file
+from the list or use the window features to browse for your raw ADS
+data input file.
+ 1.  You may enter the full path name of an extant ADS data file saved
+      on disk.  (The environment variable `DATA_DIR' points to the
+      directory where these files normally can be found.  It, at
+      present, is set to /jnet/data.)
+ 2.  If multiple input files are required for processing a flight,
+      specify the first one here, and NIMBUS will process all of them in
+      order.  (It is assumed that segment files have consecutive letters
+      in their names, e.g., 101rf03a.ads, 101rf03b.ads, 101rf03c.ads.)
+ 3.  If you enter the path for a tape drive, it assumes you are
+      specifying an 8mm tape mounted in an attached Exabyte drive.
+Click on the OK radio button once your file is selected.
+
+Note:  If you dismiss the file-selection window without selecting a file,
+for example, by using the "Cancel" button, NIMBUS will continue to run.
+One will have to "kill" NIMBUS with, usually, the ^C button in the window
+used to start NIMBUS.
+
+   If you are NOT doing production processing (i.e., you used your own
+login), [TAB] to or click on the `Output File' box and enter a name for
+your desired netCDF output file.  (Adding the `.cdf' extension is not
+necessary, but NIMBUS will NOT produce a file having a double ".cdf"
+extension.)  By default, the output netCDF file will be put in the
+directory defined by the environment variable DATA_DIR.  If you want to
+put the output file somewhere else, you can edit the box to enter your
+desired full name.
+   If you are doing production processing (i.e., you are using
+the "nimbus" login), the file name and output path (defined by
+the environment variable `PROD_DATA' which, at present, points to
+/jnet/productiondata) are predefined.
+
+   NIMBUS will now read the ADS header from the input file.  If this
+operation completes successfully, a new, large "setup" window will pop up
+with a major portion devoted to variable names and their parameters.  If
+it fails, a small pop-up window will show an error message.
+   Take note of any entries in the grey information box at the bottom
+of the "setup" window and in the window you used to run NIMBUS; they can
+point to undefined variables or other unexpected anomalies found in the
+header.
+
+Note:  The grey window may contain more information than is visible in
+the box.  You can use the vertical scroll bar on the right side of the
+box to view it all.
+
+
+Setup Window
+------------
+   At the top of the "setup" window are a series of buttons:
+       `Setup' `Edit'  `Low Rate' `High Rate'  `Go'
+       Notes:  1. `Setup' and `Edit' comprise a `menu bar' and appear
+                    to be one button; they are actually two separate
+                    buttons.
+               2. `Low Rate' and `High Rate' are buttons within a `radio
+                    box.'
+     Setup -- Set up processing for this data set
+         Click this button to produce a pop-up selection window with
+         four choices:
+             `Load' `Save' `Print' `Cancel'
+        Load -- Load an extant setup file  (^L)
+            Select this option to pop-up a dialog box that asks for
+            the name of a previously-saved NIMBUS setup file to use.
+            Note:  The changes in this setup file will be ADDED to
+            whatever is currently set up.  The default directory for
+            this file is `$HOME/nimbus/.'
+        Save -- Save current setup to a file  (^S)
+            Select this option to save the current setup.  A setup file
+            takes two forms:  production and user.  If you are a user
+            (i.e., you are NOT logged in as "nimbus"), a dialog box
+            will pop up to ask you for a file name for saving the
+            current setup.  (The default directory is `$HOME/nimbus.')
+            With a "nimbus" login, a production setup file is saved
+            in the project's `Production' subdirectory with a name of
+            the form `Flight_CfX,' where C defines the flight category
+            (t=test, r=research, f=ferry) and X is the flight number,
+            example:  Flight_rf14.  You will not be asked for it,
+            so a dialog box will not appear.  (A previous file name
+            format having Flight_X is still supported for backward
+            compatibility.)
+        Print -- Print current setup  (^P)
+            Select this option to print the current setup to the
+            printer defined by your LPDEST environment variable.
+        Quit -- Quit NIMBUS  (^Q)
+            Select this option to close the "setup" window and end NIMBUS.
+     Edit --  Edit functions
+         Click this button to pop-up a selection window with six
+         choices:
+            `Defaults' `Time Slices' `Flight Info' `Toggle Output'
+            `Toggle Rate `Toggle Groups'
+        Defaults -- Edit the defaults  (^D)
+            Select this option to pop up an "Edit Defaults" window which
+            allows you to change entries from the `Defaults' file for
+            this flight.  (See full explanation in the "Edit Defaults
+            Window" section below.)
+        Time Slices -- Select time periods to process  (^T)
+            Select this option to pop up a small "Edit Time Slices"
+            window with 5 pairs of dialog boxes into which you can
+            enter start and finish times in 24-hour format.  Fill out
+            pairs of boxes from top to bottom.  You can use [TAB] and
+            [SHIFT][TAB] to skip through them.  NIMBUS accepts input
+            with or without colon delimiters and tries to be intelligent
+            about how you enter time by automatically decoding the
+            numbers.  However, if you do not enter six digits, it may
+            not decode the time you intended, e.g., if you enter `034,'
+            it interprets the time as 03:04:00, not 03:40:00.
+            Notes:  1.  The pop-up window has `Reset' and `Dismiss'
+                         buttons but no `Apply' button.  Therefore, it
+                         is unclear whether NIMBUS will read the times
+                         you have entered.  Be assured that it does.
+                    2.  If you want to enter a time that has rolled over
+                         to a new day, enter it by adding 24 hours.  For
+                         example, if a flight starts at 23:15:00 and you
+                         want to add a time slice beginning at 01:20:00
+                         on the next day, enter the value 25:20:00.
+                    3.  NIMBUS will accept illegal times, such as
+                         56:78:90.  However, it interprets time beyond
+                         24 hours as the next day and will not set a
+                         time greater than 48:59:59.  If one enters a
+                         value of minutes or seconds greater than 59,
+                         it will be set to 59.  If one enters a negative
+                         time, it will set hours to zero, and the
+                         minutes and seconds are unpredictable.
+                    4.  After the `Go' button has been clicked, one
+                         cannot add, delete or change time slices.
+                    5.  If a processing time of -1:00:00 appears in the
+                         grey information box, NIMBUS has been unable
+                         to find the requested time slice.  Check for
+                         incorrect time input or a faulty ExaByte tape.
+        Flight Info -- Edit Flight Info  (^F)
+            Select this option to pop up a small "Edit Flight Info"
+            window which allows you to change certain critical
+            flight-related information in case the ADS header was in
+            error:  project number, flight number, date or aircraft tail
+            number.  (At present, only flight number and date can be
+            changed.)  This pop-up window has `Reset' and `Dismiss'
+            buttons.
+        Toggle Output --  Toggle output on/off  (^O)
+            Select this option to toggle the output (yes/no) flag on
+            the variable(s) you have highlighted in the "setup" window.
+            If no variable has been selected, this button does nothing.
+            When NIMBUS is started, the first variable at the top of the
+            window is selected by default.
+        Toggle Rate --  Toggle output rate  (^R)
+            Select this option to toggle the output rate on the
+            variable(s) you have highlighted in the "setup" window.
+            If no variable has been selected, this button does nothing.
+            When NIMBUS is started, the first variable is selected by
+            default.
+        Toggle Groups -- Toggle output for selected groups of variables
+            Select this option for a pull-down window of categories.
+            Clicking on one of them will toggle (on/off) the group of
+            variables associated with the category.  Among others, the
+            categories include Inertial Reference System (IRS), Global
+            Positioning System (GPS), GPS-corrected wind data, PMS-1D
+            probes, Ophir Radiometer, Flux calculations, All On, All Off. 
+            (The pull-down menu for this can be converted to a "tear-off"
+            menu by clicking on the dashed lines at the top of the
+            pull-down.  One can then move this window anywhere on your
+            screen.  Press the `Esc' key to remove it.)
+     Low Rate -- Select "low-rate" output
+         Click this button to set the NIMBUS processor's Master
+         Processing Rate (MPR) to the Predefined Low Rate (PLR),
+         presently defined as one sample per second (sps).  All output
+         data values will be an average (or sum, if appropriate) of all
+         the sample-rate data values present in one PLR frame.  When
+         NIMBUS starts, the MPR is preset to `Low Rate.' 
+     High Rate -- Select "high-rate" output
+         Click this button to set the NIMBUS processor's MPR to the
+         Predefined High Rate (PHR), presently defined as 25 sps.  The
+         NIMBUS processor will then be set to output the variable data
+         at two rates, the PLR and the PHR.  If a variable has a sample
+         rate lower than the PHR, output data values will be output
+         at PLR using an average (or sum, if appropriate) of all the
+         sample-rate data values present in one PLR frame.  If a
+         variable has a sample rate equal to the PHR, input data values
+         will be passed along unchanged.  If a variable has a sample
+         rate higher than the PHR, input data values will be passed
+         through a digital, multi-rate filter to produce PHR output
+         data.  The default rate for all derived variables is PHR,
+         but the rate is affected by entries in the file `LowRateVars'
+         located in the project's home directory ($PROJ_DIR/###, where
+         ### is its 3-digit project number).
+     Go -- Process data
+         Click this button to put NIMBUS in its processing mode.
+         Data are read from the ADS input file, processed and written to
+         the specified netCDF output file.  A small panel in the upper
+         right corner of the "setup" window shows the ADS time which
+         is updated after each minute of data has been processed.  When
+         NIMBUS is processing data, the `Go' button changes its name
+         and function to `Pause.'
+     Pause -- Interrupt data processing
+         Click this button to produce a pop-up selection window with two
+         choices:
+             `Stop' `Continue'
+        Stop -- Click this button to halt processing.  At present,
+            the only option available after this is to `Quit' NIMBUS.
+            In the future, you may be allowed to set up and run the
+            processing again.
+        Continue -- Click this button to continue processing from
+            where it was interrupted.
+   
+   The central section of the "setup" window has a number of labeled
+       columns:
+       `Name' `Output' `Sample Rate' `Output Rate' `Static Lag'
+       `Spike Slope' `Data Qual' `Cal Coes/Dependencies'
+     Name --  This is a variable's short name.
+     Output -- This is the variable's output yes/no flag.  It shows
+         whether or not the variable's data will be output to the netCDF
+         file.  An asterisk (*) appearing before the flag's value (Y or
+         N) indicates that the variable is "dirty,"  that is, at least
+         one parameter (and perhaps more) associated with this variable
+         has been changed from its original value.  Original values can
+         come from the ADS header or from the project files:
+         `Defaults,' `DependTable,' `PMSspecs,' `Lags,' `Despike,'
+         and/or `LowRateVars.'  (See the section below titled "Other
+         NIMBUS-Related Files.")  Loading any setup files (automatically
+         or manually) will mark affected variables "dirty." 
+     Sample Rate -- This is the variable's input sample rate (in sps,
+         not Hz).
+     Output Rate -- This is the variable's output rate (in sps, not Hz).
+     Static Lag -- This is the lag (in milliseconds) by which the
+         variable's data are delayed from the reference time.  Values
+         can be preset by a "Lags" file located in the project's home
+         directory.  (See further discussion below in the "Edit Variable
+         Window" section.)
+     Spike Slope -- If despiking is enabled, this value is the maximum
+         sample-to-sample change allowed for a measurement.  If this
+         value is exceeded, the single-point despike code may remove
+         the point and replace it with an interpolated value.  Spike
+         Slope values can be preset via a "Despike" file located in
+         the project's home directory.  (A spike must be a one-point
+         anomaly; otherwise the code will not change its value.)
+     Data Qual -- This column displays a one-character representation of
+         a variable's Data Quality flag.  (Implementation of this flag
+         is under review, and the flag's meaning is not officially
+         defined.)  Present values of this flag are:  P=Preliminary,
+         G=Good, B=Bad, D=Drift, S=Spiky.
+     Cal Coes/Dependencies -- This column has two meanings, one for raw 
+         variables and another for derived variables.  For raw variables
+         the column lists the variable's calibration coefficients, if
+         any.  For derived variables, the column lists the variable's
+         dependencies.  A derived variable is calculated using some
+         combination of raw and other derived variables.  For example,
+         TASF, a true airspeed, is normally calculated using the
+         variables QCFC (a dynamic pressure), PSFDC (a static pressure)
+         and TTB (a total temperature).  Within NIMBUS is an AMLIB
+         function that uses the variables named in the dependencies
+         list to calculate the derived variable's values.
+         Note:  Dependency order is important.  In the example, the
+         third entry must point to a "total temperature."
+
+Edit Defaults Window
+--------------------
+   When you use the mouse to select "Edit" "Defaults" (or use the ^D
+key), the "Edit Defaults" window pops up.  This window allows you to
+make changes (for this flight setup only) to the values of parameters
+present in the project's `Defaults' file (or the master `Defaults'
+file if no `Defaults' file exists in the project's home directory.)
+You cannot add new parameter names using this window.  (That can only
+be done by editing the appropriate `Defaults' file.)  The `Defaults'
+file, which contains generic parameter values, is not altered by changes
+made via this window.  Changed defaults values will be saved in the
+setup file when a "Save Setup" function is chosen.  (See "Setup" "Save"
+description above.)  If changes are not saved, new defaults values will
+only be used for this session of NIMBUS.  (They are documented in the
+output netCDF file's header.)
+   This window has two sections:
+       "Parameters" and  "Action"
+     Parameters -- The upper window section has a list parameter names
+         on the left and their current values in dialog boxes on the
+         right.  You can use the vertical scroll bar to view all the
+         parameters.  If a parameter's dialog box extends beyond the
+         right edge of the window, you can enlarge the window or use the
+         horizontal scroll bar to see its values.  Select a parameter
+         to change by clicking the left mouse button in its dialog
+         box or by using the [TAB] and [SHIFT][TAB] keys until it is
+         highlighted.  If a parameter has multiple values, they are
+         order-dependent and separated by commas within the dialog box.
+         You can use the mouse cursor, left mouse button and arrow keys
+         to position the cursor within the box.  You can then make any
+         changes to values in the box by typing in the new values and
+         using the edit keys, such as [Del] and the left and right arrow
+         keys.  You also can enter a previously-highlighted value from
+         another window by clicking the center mouse button.  By using
+         [CONTROL] with an arrow key you can jump to the next/previous
+         value if there are multiple values.  You may have to use the
+         horizontal scroll bar to see the results of this action.
+     Action -- The lower section of this window has two buttons:
+          `Reset' `Dismiss'
+        Dismiss -- Close the window
+            Click this button to close the window.  Any changes made to
+            the values will be kept.  If the window is recalled later,
+            it will be positioned as it was when closed.
+        Reset -- Reset values
+            Click this button to reset all the values in this window
+            to their preset values.  The effect of this command is to
+            negate changes made anywhere in this window no matter when
+            they were made.
+
+Edit Variable Window
+--------------------
+   The mouse's cursor and left button can be used to highlight a
+variable in the "Setup" window.  Once highlighted, one can "select"
+that variable for modification with a single press of the [RETURN]
+key or a double-click of the left mouse button.  A new "Edit Variable"
+window will pop up which shows the variable's name and extended
+description at the top.  Using this window you can change a variable's
+characteristics.  It has the following sections:
+       `Output' `Output Rate' `Static Lag' `Spike Slope'
+       `Cal Coes/Dependencies' `Data Quality' and
+       `Apply' `Reset' `Dismiss'
+     Output -- Click on the appropriate radio button to select whether
+       or not to output data from this variable
+          Note:  One can use the ^O key instead of bringing up this
+                 window, if this is the only change desired for a
+                 variable.
+        Yes -- This variable's output will go to the netCDF file.
+        No -- This variable's output will NOT go to the netCDF file.
+     Output Rate -- Click on the appropriate radio button to select
+       the output rate
+          Notes:  1.  This value is dependent on which MPR has been
+                       selected (PLR or PHR).  If the variable is raw,
+                       one can select its sample rate to be its output
+                       rate.
+                  2.  Impossible rates are shaded in light gray and
+                       cannot be selected.
+                  3.  If the MPR is changed after these buttons have
+                       been used, the rates for all variables will be
+                       set to predefined values, and previous changes
+                       made using this window will be lost.
+         Low Rate -- Click this button to set the output rate of this
+            variable to PLR.
+         Sample Rate -- Click this button (when active) to set the
+            output rate of this variable to its sample rate.
+            Note:  This button is NOT active for derived variables.
+         High Rate -- Click this button (when active) to set the output
+            rate of this variable to the PHR.  This button is active
+            only when the MPR is set to "High Rate."
+     Static (ms) -- Set or change the static lag
+         Enter a value (in milliseconds) by which the variable's data
+         should "lag" behind the reference time.  Positive values will
+         put the selected variable's data behind the other data.  Legal
+         values are between -1000 ms and +1000 ms.
+     Spike -- Set or change the spike slope
+         Enter a value representing the largest point-to-point change,
+         above which single-point despiking will occur.
+     Cal Coes/Dependencies -- Change dependencies or calibration
+       coefficients
+         Enter changes in the "dialog" boxes (arranged vertically in two
+         columns).  You can use the [TAB] and [SHIFT][TAB] keys or the
+         mouse to navigate through this section.
+     Data Quality -- Change the data quality flag
+         Click the button to display a menu of choices.  Use the mouse
+         to select the desired value, and click the mouse again to
+         select it.  (At present, use of this flag is under review, and
+         the flag's meaning is not officially defined.)
+     Apply -- Make the changes
+        Click this button to permanently save the changes made in
+        this window.
+     Reset -- Reset to previous values
+        Click this button to ignore any changes made after a variable
+        was selected and this window was opened.  It will restore all
+        entries to the values extant at the time this variable was
+        selected, except that changes made by any previous use of the
+        `Apply' button will be kept.
+     Dismiss -- Forget changes
+        Click this button to close the window.  It will ignore any
+        changes made to the chosen variable except those made by a
+        previous click of the `Apply' button.
+
+
+
+M i s c e l l a n y
+-------------------
+
+Setup Files
+-----------
+   Setup files are created by the NIMBUS processor when one clicks
+on the Save Setup button.  (See the `Setup, Save' section above.)
+Entries in a setup file consist only of configuration information that
+a user has changed from within NIMBUS.  (This is not entirely true.
+Complete information for a variable will be put into a setup file even
+if only one of its parameters is changed.  Parameters for a changed
+variable which will be put into the setup file are:  Output yes/no,
+output rate, static lag, spike slope, raw calibration coefficients
+or derived dependencies, data quality flag and Defaults parameter
+values.)
+   All other information that NIMBUS uses, which is either read
+from the ADS header, read from various default files or defaulted from
+within NIMBUS and not specifically changed, is simply ignored and does
+not appear in the file.  Those values will be set again the next time
+NIMBUS accesses the flight.
+   It is important to remember this principle, because when a setup file
+is loaded, only the information in it is used.  For example, if you want
+to transfer a variable's calibration from a "good" flight to a "bad"
+flight, you cannot do it by saving a "good" setup then loading that
+setup into NIMBUS for the "bad" flight.  The proper way to do this is to
+load the "bad" flight, make the appropriate calibration changes and save
+the setup to a new file.
+   Since multiple setup files can be loaded, one can have a series of
+changes saved in setup files which can be loaded one after another.  The
+lines in a setup file can be in any order, but NIMBUS will use the most
+recent change to a given setting.  This applies to the setup files that
+are loaded as well as the lines within a setup file.  (A proper setup
+file will have only one line for each changed variable.)
+   Since setup files are ordinary ASCII files, they can be created
+with common UNIX editors.  Because one must adhere to strict formatting
+rules, the normal procedure is to have NIMBUS create a setup file which
+one edits later.  So long as order is preserved, one is allowed to
+delete settings on one line.  For example, given the line:
+        DERIVED=FLXCO2CO2 O=0 OR=1 nDEP=4 SECOND WI XCO2C FLXWW
+one can delete the "OR=1 nDEP=4 SECOND WI XCO2C FLXWW" section if one
+wants only to turn off output.  The resulting line would be:
+        DERIVED=FLXCO2CO2 O=0
+If instead, one wanted only to change the dependencies, the line would
+look like this:
+        DERIVED=FLXCO2CO2 nDEP=4 SECOND WI XCO2C FLXWW
+   Whenever NIMBUS is started, it first looks for a file
+named `FlightGroups' in the project's `Production' subdirectory
+($PROJ_DIR/###/Production).  (Entries in this file map a flight
+number to a specific setup file.)  If it exists, NIMBUS looks in it
+for an entry corresponding to the flight that has been chosen and, if
+found, loads the appropriate setup file (also located in the project's
+`Production' subdirectory) with a name of the form `Flight_CfX,' where
+C defines the flight category (t=test, r=research, f=ferry) and X is
+the flight number, example:  Flight_rf07.  If multiple entries exist for
+this flight, setup files are loaded for each of them in the order they
+appear in the file.  NIMBUS then looks for a setup file (also in the
+project's `Production' subdirectory) corresponding to the flight that
+has been chosen, and loads it, if it exists.  All of this happens
+regardless of the login name running NIMBUS with the following
+exception:  with a login other than "nimbus," any settings of:
+1) processing rate (low or high), 2) individual variable output rate
+(low, high, sample), and 3) individual variable output (yes/no) are
+ignored; their default values are used instead.
+
+Other NIMBUS-Related Files
+--------------------------
+   NIMBUS uses a group of support files to do its work.  Unless
+otherwise indicated, each file listed below is located in the project's
+home directory ($PROJ_DIR/###, where ### is its 3-digit project
+number).  Other files are located in the project's `Production'
+subdirectory ($PROJ_DIR/###/Production).  All these files (except
+`VarDB') are plain-text ASCII, and any line in them that begins with
+a "#" character is considered a comment.  Some of these files are
+optional, and, if so, a reference version of it may exist in the NIMBUS
+`defaults' directory ($PROJ_DIR/defaults).  A local version of an
+optional file is used to modify the default information contained
+in the reference copy.
+  Categories:  This optional ASCII file contains the list of categories
+    one of which can be assigned to each variable.  Its value will
+    appear as a variable attribute in the output netCDF file.  A file
+    template exists in the $PROJ_DIR/defaults directory.
+  Defaults:  This required ASCII file contains important constants
+    related to specific variables.  An example is the wire temperature
+    setting for the King Liquid Water Content probe.  A file template
+    exists in the $PROJ_DIR/defaults directory.
+  DependTable:  This required ASCII file has the dependency list for
+    the derived variables.  Each line is an entry for one variable; the
+    left-most variable is calculated using the variables to its right.
+    The order of the dependent variables is important, since these
+    are used in the same order by the AMLIB compute function for the
+    derived variable.
+  Despike:  This optional ASCII file has one-point despike tolerances.
+    Each line has a variable name followed by its tolerance (<TAB>
+    separated).  A file template exists in the $PROJ_DIR/defaults
+    directory.
+  FlightGroups (in project's `Production' subdirectory):  This optional
+    ASCII file is used to designate which flight setup file is to be
+    loaded when processing a particular flight.  It consists of a series
+    of lines, each of which has a flight number on the left, a colon
+    equals sign pair in the middle and second flight number on the
+    right.  A line is interpreted as:  load the setup file from the
+    "right" flight number when processing the "left" flight number.  If
+    multiple lines exist for a "left" flight number, each "right" setup
+    file will be loaded in the order it appears in the file.  A file
+    template exists in the $PROJ_DIR/defaults directory.
+  Flight_CfX (in project's `Production' subdirectory):  These are
+    optional ASCII flight setup files.  (For a complete description,
+    see "Setup Files" section above.  It is rare for a project to have
+    no setup files.)
+  Lags:  This optional ASCII file has static lag values.  Each line has
+    a variable name followed by its static lag in milliseconds (<TAB>
+    separated).  A file template exists in the $PROJ_DIR/defaults
+    directory.
+  LowRateVars:  This optional ASCII file has a list of derived variables
+    for which NIMBUS presets the output rate to PLR (low-rate) when the
+    MPR is set to PHR (high-rate).  This file is ignored when the MPR
+    is set to PLR.  (By default NIMBUS sets the output rate for all
+    derived variables to the MPR.  High-rate output makes little sense
+    for a derived variable whose primary source is a low-rate sensor.)
+    A file template exists in the $PROJ_DIR/defaults directory.
+  PMSspecs:  This required ASCII file contains all the information
+    for PMS-1D probes.  An example is an array of cell sizes for the
+    FSSP-100 probe.  A file template exists in the $PROJ_DIR/defaults
+    directory.
+  Sxxx.default:  This required ASCII file contains all the information
+    for a specific DMT-modified PMS-1D probe.
+  ProjectName:  This required ASCII file has the project's name.
+  UserNames:  This optional ASCII file has variable names for special
+    variables RATIO, DIFF1, DIFF2 and "user-defined" variables.
+    Entries for these variable names also must appear in the project's
+    `DependTable' file.
+  VarDB:  This optional binary file contains detailed information about
+    each variable, such as its units, long name and category.  It can
+    be modified using the program `vared' (described elsewhere).  If
+    this file doesn't exist in the $PROJ_DIR/defaults directory, the
+    reference version from the $PROJ_DIR/defaults directory is used
+    instead.
+  ophir3.names:  This optional ASCII file, used for the Ophir-III
+    Radiation Thermometer, is used to define calibration factors for the
+    intermediate measurements needed to calculate the derived ambient
+    temperature value from this instrument.  A file template exists in
+    the $PROJ_DIR/defaults directory.
+
+   The following NIMBUS support files are used as reference files or
+contain information not unique to a project.  These files are found in
+the NIMBUS `defaults' directory ($PROJ_DIR/defaults).  All these files
+(except `VarDB') are plain-text ASCII, and any line in them that begins
+with a "#" character is considered a comment.  Although these are
+reference files, NIMBUS does not use some of them, because NIMBUS
+instead uses a copy of it found in the project's home directory,
+if present.
+  AircraftSpecs:  This ASCII file, with a separate section for
+    each aircraft, has unique data acquisition and instrumentation
+    information, such as ADS DSMs, locations of PMS probes and
+    "boomln," the distance (in meters) between where the incident angle
+    measurements, attack and sideslip, are made (usually the radome) and
+    the Inertial Reference System.
+  Categories:  This ASCII file contains the list of categories one of
+    which can be assigned to each variable.  Its value will appear as
+    a variable attribute in the output netCDF file.
+  Defaults:  Reference `Defaults' file (See description above.)
+  DependTable:  Reference `DependTable' file (See description above.)
+  DerivedNames:  This ASCII file has a list of raw variable names as
+    the first item in each line followed by one or more derived variable
+    names which are to be added to the standard output variable list.
+    In effect this file maps raw variables to the derived.  The line
+    beginning with ALWAYS designates those derived variables that, by
+    default, always will be present in the output file.
+  LowRateVars:  Reference `LowRateVars' file (See description above.)
+  ModVars:  This ASCII file has a list of variables that are circular.
+    This includes all angle measurements and counters that may reset
+    at some full-scale value.
+  PMSspecs:  Reference `PMSspecs' file (See description above.)
+  SumVars:  This ASCII file has a list of variables whose samples are
+    to be summed rather than averaged.  This includes counters and most
+    PMS-1D variables.
+  VarDB:  Reference `VarDB' file (See description above.)
+  *.names:  These ASCII files have variable names and other associated
+    information (such as sample rate, calibration factors) for the raw
+    blocked data, such as the PMS-1D probes, Ophir, GPS, IRS, etc.
+    The file `ophir3.names,' because it can contain project-specific
+    information, can also appear in a project's home directory, and if
+    it does, it will supersede the one in this directory.
+
+Multiple Variable Selection for Output Toggle and Rate Change
+-------------------------------------------------------------
+   If the cursor is in the variable section of the "setup" window, you
+can select a block of variables by holding down the left mouse button
+and dragging the mouse.  The selected variables will be highlighted
+in reverse video.  Once you have selected a block, if you want to add
+another variable (or block of variables) separated (or not) from the
+first:
+ - move the cursor (scrolling the variable window, if necessary) to the
+    first new variable;
+ - hold down the [CONTROL] key and press and hold down the left mouse
+    button;
+ - drag the mouse to add additional variables;
+ - release [CONTROL] key and mouse button.
+Then a single ^O will toggle the output flag (or a single ^R will toggle
+the output rate) for all of the variables selected.
+Note:  After using ^O or ^R, the `selected variables' are released, so
+you must use the cursor and left mouse button to select another variable
+(or set of variables).
+
+Windows
+-------
+   While NIMBUS is running, it, from time to time, pops up new windows
+   when you click certain buttons.  Any of these can be moved to a convenient
+location in your workspace.  It also can be resized, but important areas
+of a window can be hidden if made too small.
+  WARNING:  Do not use the standard X-window options to "quit" any
+    window that NIMBUS has created (e.g., "Edit Time Slices").  Doing
+    so will likely cause a NIMBUS segmentation fault and subsequent
+    core dump.  Instead, use the built-in NIMBUS window buttons, like
+    "Dismiss."  If the window lacks such a button, allow it to remain
+    on screen.  (It is OK to Iconify, Full Size, Move, Resize, Back
+    and Refresh.)
+
+Messages
+--------
+   The bottom grey area of the setup window is for informational
+messages.  Example:  after NIMBUS has finished processing a time slice
+(or the entire flight), one message will show the start and finish
+times, and another, how long it took to do the processing.  Error
+messages also can appear in this window.  Be aware of the scroll bar on
+the right side which can be used to expose messages that have scrolled
+up beyond the display.  NIMBUS also outputs information into the
+window from which it was run.  Unless doing production processing, the
+information from either of the above sources is not kept anywhere else,
+so one must capture the information with a mouse and save it somewhere
+if a permanent record is desired.  When running in production mode, the
+information from the grey area is saved to a log file whose name is
+of the form `logFile_tRT.CfX,' where t, the processing rate, is L if
+MPR = PLR and H if MPR = PHR, C is the flight category, and X is the
+flight number, example:  logFile_LRT.rf01.
+
+Continuation
+------------
+   If you selected a time slice, when processing completes, the "setup"
+window again becomes active in case you want to do further processing.
+(I think this will work.  It may require that the next time period start
+after the previous finish time.)
+
+Arrow Keys
+----------
+   Instead of the mouse, you can use the up, down, left and right arrow
+keys and the [ENTER] key to change the highlighted selection in the
+"setup" window.  (The [CONTROL] add feature does not work, however.)
+
+Window Feature
+--------------
+   For some implemetations of X-windows/Motif the center mouse button
+can be used to capture "green" highlighted text in the setup window
+which can then be inserted in another window on your desktop.  (At
+present it seems only to work with the variable window within the
+setup window.)
+   To do this, first highlight the text you want to save.  Next move
+the mouse somewhere in the variable window.  Next, click and hold down
+the center mouse button and drag it to the desktop window where you
+want to insert the text.  Lastly, release the mouse button, and the
+text will be inserted into the selected window.
+
+
+
+---------------
+BATCH OPERATION
+---------------
+   Instead of running in an interactive mode, NIMBUS can be run in
+`batch' mode using predefined setup files.  Batch mode allows the NIMBUS
+processor to run at hours when a user would not be present and frees
+NIMBUS from all user interaction.  (NIMBUS uses Motif window functions
+internally, so batch mode must be scheduled within an X-windows/Motif
+session.)  Batch mode is available only via a command-line option.
+   For batch mode to operate properly, all the setup files must exist in
+the project's `Production' subdirectory.  Also, for each flight segment
+to be processed, a batch file for it must exist in that same directory.
+The format of the batch file is:
+     if <input_file>
+     of <output_file>
+     sf <setup_file>
+     pr n
+     ti start-finish
+where:   <input_file> -- full name of raw ADS data tape or file
+        <output_file> -- full name of output netCDF file
+         <setup_file> -- full name of setup file to load
+                    n -- processing rate (1 or 25)
+                start -- start time (hh:mm:ss)
+               finish -- finish time (hh:mm:ss)
+Notes:  1.  All the commands and settings in a batch file are loaded
+             first, before, for example, a setup file.  Other files used
+             by NIMBUS are loaded after the batch file and can affect
+             the processing operation.  One example is setting the
+             processing rate.  A setup file has processing rate as its
+             first entry and can supersede a batch file's setting.
+        2.  The "ti" line is optional and will default, if missing, to
+             process the entire time period of the available data.
+        3.  The "of" line is optional and will be defaulted, if missing,
+             to write a standard-named file to the directory pointed
+             to by the DATA_DIR environment variable.  If running in
+             production mode, the "of" line, if present, is ignored,
+             since the file will be written to a predefined full path
+             name.
+        4.  Multiple setup files are allowed.
+        5.  A batch file template exists as the file
+              $LOCAL/nimbus/src/filter/batch
+
+   To have NIMBUS run immediately in batch mode (in background), from
+the project's `Production' subdirectory, enter:
+     nimbus -b <batch_file> >& <log_file> &
+where:  <batch_file> -- batch file (See above.)
+          <log_file> -- output file used to log NIMBUS messages
+
+   To have NIMBUS run at a later time (like in the evening) one could
+add a sleep process before NIMBUS executes.  Example, suppose you want
+to process this file at 10:00 p.m. and it is now 4:00 p.m. (6 hours =
+21600 seconds earlier).  Enter:
+     sleep 21600; nimbus -b <batch_file> >& <log_file> &
+Note:  For this procedure to work, the computer must remain up between
+the time you issue the command and when it is scheduled to run.
+
+   You can also schedule NIMBUS to run in batch mode via `at' command.
+Example:
+  Create a <script_file> which has the following line (essentially the
+  same command you would type interactively):
+     nimbus -b <batch_file> >& <log_file>
+  Issue the following command:
+     at -m 10:00pm today <script_file>
+    
+where:  -m -- send mail message after the job has been run (You may omit
+                this option if you don't want mail.)
+
+Note:  The <script_file> can contain more than one batch request if you
+         want to submit multiple jobs.  If you do this, please be sure
+         to specify an unique <log_file> for each job.
+
+End
+---

@@ -1,0 +1,10 @@
+/jnet/shared/proj/100/header
+
+locn        machine  port   time_master  record  nats  serial_time
+----	    -------  ----   -----------  ------  ----  -----------
+AFT         dsm5     1101   yes           no      no        no
+FORWARD     dsm6     1102   no            no      no        yes
+PODRW       dsm3     1103   no            no      no        no
+PODLW       dsm4     1104   no            no      no        no
+WINDS	    orion    1106   no            no      no        no
+CTL	    orion    1106   no            no      no        no

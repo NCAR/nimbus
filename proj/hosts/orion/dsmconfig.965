@@ -1,0 +1,7 @@
+/home/local/proj/965/header
+
+locn        machine  port   time_master  record  nats
+----	    -------  ----   -----------  ------  ----
+AFT         dsm5     1121   yes          no      no
+WINDS       wheeler  1126   no           no      no
+CTL         wheeler  1126   no           no      no 

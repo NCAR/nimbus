@@ -1,0 +1,14 @@
+routeAdd("128.117.84.0", "128.117.184.37")
+hostAdd("mistral", "128.117.84.100")
+nfsMount("mistral", "/home/local", "/home/local")
+putenv("PROJ_DIR=/home/local/proj");
+cd "/home/local/ads/dsm/obj"
+#ld<dsmComm.o
+#ld<dsmDisplay.o
+#ld<dsmTape.o
+#ld<dsmAsync.o
+#sp(dsmAsync__Fv)
+ld<ckarinc.o
+sp(ckarinc__Fv)
+#ld<ckcnt.o
+#sp(ckcnt__Fv)

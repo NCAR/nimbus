@@ -1,0 +1,14 @@
+#hostAdd("phoenix", "128.117.84.77")
+#nfsMount ("phoenix", "/home/local", "/home/local")
+#putenv ("PROJ_DIR=/home/local/proj");
+#cd "/home/local/ads/dsm/obj"
+#
+hostAdd("mistral", "128.117.84.100")
+nfsMount ("mistral", "/home/local", "/home/local")
+putenv ("PROJ_DIR=/home/local/proj");
+cd "/home/local/ads/dsm/obj"
+ld<dsmComm.o
+ld<dsmDisplay.o
+ld<dsmTape.o
+ld<dsmAsync.o
+sp(dsmAsync__Fv)

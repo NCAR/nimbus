@@ -1,0 +1,20 @@
+#routeAdd("128.117.84.0", "128.117.184.31")
+#hostAdd("mistral", "128.117.84.100")
+#nfsMount("orion", "/home/tmp", "/jnet/shared")
+putenv("PROJ_DIR=/jnet/shared/proj");
+cd "/jnet/local/ads/dsm/obj"
+ftpVerbose=1
+ftpDebug=1
+ld<dsmComm.o
+ld<dsmDisplay.o
+ld<dsmTape.o
+ld<dsmAsync.o
+sp(dsmAsync__Fv)
+#ld<ckarinc.o
+#sp(ckarinc__Fv)
+#ld<ckv1d.o
+#sp(ckv1d__Fv)
+#ld<ckdio.o
+#sp(ckdio__Fv)
+#ld<ckstod.o
+#sp(ckstod__Fv)

@@ -1,0 +1,12 @@
+/home/local/proj/100/header
+
+locn        machine  port   time_master  record  nats  serial_time
+----	    -------  ----   -----------  ------  ----  -----------
+AFT         dsm5     1101   no	          no      no        no
+FORWARD     dsm6     1102   yes            no      no        no
+PODRW       dsm3     1103   no            no      no        no
+PODLW       dsm4     1104   no            no      no        no
+MASP        masp     1108   no		  no      no        no
+MCR	    phoenix  1107   no            no      no        no
+WINDS	    blues    1106   no            no      no        no
+CTL	    blues    1106   no            no      no        no

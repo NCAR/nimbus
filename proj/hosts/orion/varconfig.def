@@ -1,0 +1,7 @@
+locn		var_name	dependencies
+-----		--------	------------
+CTL             QCX             QCF
+CTL             PSX             PSF
+CTL             TTX             TTRL
+CTL    		TASX		QCX PSX TTX
+CTL    		PALT		PSX
