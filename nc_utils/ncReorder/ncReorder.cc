@@ -29,41 +29,54 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2004
 
 #include "netcdf.hh"
 
+#include <cstdio>
+#include <cstring>
+
+
+bool	verbose = false;
 float	data[50000000];
 
 /* -------------------------------------------------------------------- */
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-  NcFile	inFile(argv[1]);
+  int		argIndx = 1;
 
   if (argc < 3)
   {
-    fprintf(stderr, "Usage: ncReorder infile.nc outfile.nc\n");
-    exit(1);
+    fprintf(stderr, "Usage: ncReorder [-v] infile.nc outfile.nc\n");
+    return(1);
   }
 
+  if (strcmp(argv[argIndx], "-v") == 0)
+  {
+    verbose = true;
+    ++argIndx;
+  }
+
+  NcFile	inFile(argv[argIndx++]);
 
   if (!inFile.is_valid())
   {
     fprintf(stderr, "ncReorder: Invalid input file, exiting.\n");
-    exit(1);
+    return(1);
   }
 
   if (!inFile.get_dim("Time")->is_unlimited())
   {
     fprintf(stderr,
 	"ncReorder: 'Time' dimension is not UNLIMITED, reorder unnecessary...\n");
-    exit(1);
+    return(1);
   }
 
-  NcFile	outFile(argv[2], NcFile::Replace);
+
+  NcFile	outFile(argv[argIndx++], NcFile::Replace);
 
   outFile.set_fill(NcFile::NoFill);
 
   if (!outFile.is_valid())
   {
     fprintf(stderr, "ncReorder: Unable to create/destroy output file, exiting.\n");
-    exit(1);
+    return(1);
   }
 
   // Transfer dimensions.
@@ -128,19 +141,28 @@ main(int argc, char *argv[])
 
 
   // Transfer data.
-  long	*edges;
-  for (int i = 0; i < inFile.num_vars(); ++i)
+  long	*edges, nVars = inFile.num_vars();
+  for (int i = 0; i < nVars; ++i)
   {
     edges = inFile.get_var(i)->edges();
 
-printf("%s\n", inFile.get_var(i)->name());
+    if (verbose)
+      printf("%s\n", inFile.get_var(i)->name());
+    else
+    {
+      printf("\r%d%%", (int)(100 * ((float)i / nVars)));
+      fflush(stdout);
+    }
 
     inFile.get_var(i)->get(data, inFile.get_var(i)->edges());
     outFile.get_var(i)->put(data, outFile.get_var(i)->edges());
   }
 
+  printf("\n");
   inFile.close();
   outFile.close();
+
+  return(0);
 
 }	/* END MAIN */
 
