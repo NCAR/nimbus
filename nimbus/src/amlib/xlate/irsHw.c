@@ -25,6 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-8
 #include "nimbus.h"
 #include "amlib.h"
 
+#include <map>
 
 static const double  arinc20bits = (1.0 / (1 << 20)) * 180.0;
 static const double  arinc15bits = (1.0 / (1 << 15));
@@ -36,10 +37,42 @@ static NR_TYPE	pitchlcorr = 0.0,	/* PITCH_BIAS_1   */
 		pitchrcorr = 0.0,	/* PITCH_BIAS_2   */
 		thdgrcorr  = 0.0;	/* HEADING_BIAS_2 */
 
+/* Start generating some stats on missing labels & 0.0 values from the
+ * IRS.
+ */
+static int	label_errors[256];	// One for each possible arinc label.
+static int	zero_errors[256];	// One for each possible arinc label.
+static void	processData(var_base *varp, long input[], int thisLabel);
+
+static std::map<int, std::string> _labelMap;
+
 /* -------------------------------------------------------------------- */
 void irsInit(RAWTBL *varp)
 {
   NR_TYPE  *tmp;
+
+  // Setup ARINC label --> variable map.
+  _labelMap[0xc8] = "Latitude";
+  _labelMap[0xc9] = "Longitude";
+  _labelMap[0xd4] = "Pitch";
+  _labelMap[0xd5] = "Roll";
+  _labelMap[0xcc] = "True Heading";
+  _labelMap[0xf1] = "Altitude";
+  _labelMap[0xf5] = "Vertical Speed";
+  _labelMap[0xf4] = "Vertical Acceleration";
+  _labelMap[0xf7] = "EW Velocity";
+  _labelMap[0xf6] = "NS Velocity";
+  _labelMap[0xce] = "Wind Diretion";
+  _labelMap[0xcd] = "Wind Speed";
+  _labelMap[0xca] = "Ground Speed";
+  _labelMap[0xcb] = "Track Angle";
+  _labelMap[0xd1] = "Drift Angle";
+
+  for (int i = 0; i < 256; ++i)
+    {
+    label_errors[i] = 0;
+    zero_errors[i] = 0;
+    }
 
   if ((tmp = GetDefaultsValue("HEADING_BIAS_1", varp->name)) == NULL)
     {
@@ -78,35 +111,14 @@ void irsInit(RAWTBL *varp)
 /* -------------------------------------------------------------------- */
 void xlilat(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* (degs) 20 bits, +- 0.5 pirad, label 310  */
 
-  for (size_t i = 0; i < varp->SampleRate; ++i)
-    p->present_lat[i] = ntohl(p->present_lat[i]);
+  processData(varp, p->present_lat, 0xc8);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
-    {
-    label = p->present_lat[i] & 0x000000ff;
-
-    if (!RawData && label != 0xc8)
-      {
-      if (label)
-        printf("irsHw: %s arinc label of %o\n", varp->name, label);
-
-      if (i == 0)
-        {
-        for (size_t j = 1; j < varp->SampleRate && label != 0xc8; ++j)
-          if ((label = p->present_lat[j] & 0x000000ff) == 0xc8)
-            p->present_lat[i] = p->present_lat[j];
-        }
-      else
-        p->present_lat[i] = p->present_lat[i-1];
-      }
-
     np[i] = (double)(p->present_lat[i] >> 11) * arinc20bits;
-    }
 
   varp->DynamicLag = ntohl(p->lag_5hz_frame);
 
@@ -115,35 +127,14 @@ void xlilat(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlilon(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* (degs) 20 bits, +- 0.5 pirad, label 311  */
 
-  for (size_t i = 0; i < varp->SampleRate; ++i)
-    p->present_lon[i] = ntohl(p->present_lon[i]);
+  processData(varp, p->present_lon, 0xc9);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
-    {
-    label = p->present_lon[i] & 0x000000ff;
-
-    if (!RawData && label != 0xc9)
-      {
-      if (label)
-        printf("irsHw: %s arinc label of %o\n", varp->name, label);
-
-      if (i == 0)
-        {
-        for (size_t j = 1; j < varp->SampleRate && label != 0xc9; ++j)
-          if ((label = p->present_lon[j] & 0x000000ff) == 0xc9)
-            p->present_lon[i] = p->present_lon[j];
-        }
-      else
-        p->present_lon[i] = p->present_lon[i-1];
-      }
-
     np[i] = (double)(p->present_lon[i] >> 11) * arinc20bits;
-    }
 
   varp->DynamicLag = ntohl(p->lag_5hz_frame);
 
@@ -152,7 +143,6 @@ void xlilon(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlipitch(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	label;
   Irs_blk  *p = (Irs_blk *)input;
   float  correction;
 
@@ -163,30 +153,10 @@ void xlipitch(RAWTBL *varp, void *input, NR_TYPE *np)
 
   /* (degs) 20 bits, +- 0.5 pirad, label 324  */
 
-  for (size_t i = 0; i < varp->SampleRate; ++i)
-    p->pitch_angle[i] = ntohl(p->pitch_angle[i]);
+  processData(varp, p->pitch_angle, 0xd4);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
-    {
-    label = p->pitch_angle[i] & 0x000000ff;
-
-    if (!RawData && label != 0xd4)
-      {
-      if (label)
-        printf("irsHw: %s arinc label of %o\n", varp->name, label);
-
-      if (i == 0)
-        {
-        for (size_t j = 1; j < varp->SampleRate && label != 0xd4; ++j)
-          if ((label = p->pitch_angle[j] & 0x000000ff) == 0xd4)
-            p->pitch_angle[i] = p->pitch_angle[j];
-        }
-      else
-        p->pitch_angle[i] = p->pitch_angle[i-1];
-      }
-
     np[i] = (double)(p->pitch_angle[i] >> 11) * arinc20bits + correction;
-    }
 
   varp->DynamicLag = ntohl(p->lag_50hz_frame);
 
@@ -195,35 +165,14 @@ void xlipitch(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xliroll(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* (degs) 20 bits, +- 0.5 pirad, label 325  */
 
-  for (size_t i = 0; i < varp->SampleRate; ++i)
-    p->roll_angle[i] = ntohl(p->roll_angle[i]);
+  processData(varp, p->roll_angle, 0xd5);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
-    {
-    label = p->roll_angle[i] & 0x000000ff;
-
-    if (!RawData && label != 0xd5)
-      {
-      if (label)
-        printf("irsHw: %s arinc label of %o\n", varp->name, label);
-
-      if (i == 0)
-        {
-        for (size_t j = 1; j < varp->SampleRate && label != 0xd5; ++j)
-          if ((label = p->roll_angle[j] & 0x000000ff) == 0xd5)
-            p->roll_angle[i] = p->roll_angle[j];
-        }
-      else
-        p->roll_angle[i] = p->roll_angle[i-1];
-      }
-
     np[i] = (double)(p->roll_angle[i] >> 11) * arinc20bits;
-    }
 
   varp->DynamicLag = ntohl(p->lag_50hz_frame);
 
@@ -232,7 +181,6 @@ void xliroll(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlithdg(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	label;
   Irs_blk  *p = (Irs_blk *)input;
   float  correction;
 
@@ -244,28 +192,10 @@ void xlithdg(RAWTBL *varp, void *input, NR_TYPE *np)
 
   /* (degs) 20 bits, +- 0.5 pirad, label 314  */
 
-  for (size_t i = 0; i < varp->SampleRate; ++i)
-    p->true_heading[i] = ntohl(p->true_heading[i]);
+  processData(varp, p->true_heading, 0xcc);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
-    label = p->true_heading[i] & 0x000000ff;
-
-    if (!RawData && label != 0xcc)
-      {
-      if (label)
-        printf("irsHw: %s arinc label of %o\n", varp->name, label);
-
-      if (i == 0)
-        {
-        for (size_t j = 1; j < varp->SampleRate && label != 0xcc; ++j)
-          if ((label = p->true_heading[j] & 0x000000ff) == 0xcc)
-            p->true_heading[i] = p->true_heading[j];
-        }
-      else
-        p->true_heading[i] = p->true_heading[i-1];
-      }
-
     np[i] = (double)(p->true_heading[i] >> 11) * arinc20bits + correction;
 
     if (np[i] < 0.0)
@@ -282,35 +212,14 @@ void xlithdg(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlialt(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* (degs) 20 bits, +- 0.5 pirad, label 361  */
 
-  for (size_t i = 0; i < varp->SampleRate; ++i)
-    p->inertial_alt[i] = ntohl(p->inertial_alt[i]);
+  processData(varp, p->inertial_alt, 0xf1);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
-    {
-    label = p->inertial_alt[i] & 0x000000ff;
-
-    if (!RawData && label != 0xf1)
-      {
-      if (label)
-        printf("irsHw: %s arinc label of %o\n", varp->name, label);
-
-      if (i == 0)
-        {
-        for (size_t j = 1; j < varp->SampleRate && label != 0xf1; ++j)
-          if ((label = p->inertial_alt[j] & 0x000000ff) == 0xf1)
-            p->inertial_alt[i] = p->inertial_alt[j];
-        }
-      else
-        p->inertial_alt[i] = p->inertial_alt[i-1];
-      }
-
     np[i] = (double)(p->inertial_alt[i] >> 11)* 0.125 * FTMTR;
-    }
 
   varp->DynamicLag = ntohl(p->lag_25hz_frame);
 
@@ -319,35 +228,14 @@ void xlialt(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlivspd(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* (degs) 20 bits, +- 0.5 pirad, label 365  */
 
-  for (size_t i = 0; i < varp->SampleRate; ++i)
-    p->inrt_vert_speed[i] = ntohl(p->inrt_vert_speed[i]);
+  processData(varp, p->inrt_vert_speed, 0xf5);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
-    {
-    label = p->inrt_vert_speed[i] & 0x000000ff;
-
-    if (!RawData && label != 0xf5)
-      {
-      if (label)
-        printf("irsHw: %s arinc label of %o\n", varp->name, label);
-
-      if (i == 0)
-        {
-        for (size_t j = 1; j < varp->SampleRate && label != 0xf5; ++j)
-          if ((label = p->inrt_vert_speed[j] & 0x000000ff) == 0xf5)
-            p->inrt_vert_speed[i] = p->inrt_vert_speed[j];
-        }
-      else
-        p->inrt_vert_speed[i] = p->inrt_vert_speed[i-1];
-      }
-
     np[i] = (double)(p->inrt_vert_speed[i] >> 11) * 0.03125 * FTMIN;
-    }
 
   varp->DynamicLag = ntohl(p->lag_25hz_frame);
 
@@ -356,35 +244,14 @@ void xlivspd(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlvacc(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* (G) 15 bits, +- 4.0 kts, label 364  */
 
-  for (size_t i = 0; i < varp->SampleRate; ++i)
-    p->vertical_accel[i] = ntohl(p->vertical_accel[i]);
+  processData(varp, p->vertical_accel, 0xf4);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
-    {
-    label = p->vertical_accel[i] & 0x000000ff;
-
-    if (!RawData && label != 0xf4)
-      {
-      if (label)
-        printf("irsHw: %s arinc label of %o\n", varp->name, label);
-
-      if (i == 0)
-        {
-        for (size_t j = 1; j < varp->SampleRate && label != 0xf4; ++j)
-          if ((label = p->vertical_accel[j] & 0x000000ff) == 0xf4)
-            p->vertical_accel[i] = p->vertical_accel[j];
-        }
-      else
-        p->vertical_accel[i] = p->vertical_accel[i-1];
-      }
-
     np[i] = (double)(p->vertical_accel[i] >> 16) * 1.22e-04 * MPS2;
-    }
 
   varp->DynamicLag = ntohl(p->lag_50hz_frame);
 
@@ -393,35 +260,14 @@ void xlvacc(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlivew(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* 20 bits, +-4095 kts, label 367  */
 
-  for (size_t i = 0; i < varp->SampleRate; ++i)
-    p->velocity_ew[i] = ntohl(p->velocity_ew[i]);
+  processData(varp, p->velocity_ew, 0xf7);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
-    {
-    label = p->velocity_ew[i] & 0x000000ff;
-
-    if (!RawData && label != 0xf7)
-      {
-      if (label)
-        printf("irsHw: %s arinc label of %o\n", varp->name, label);
-
-      if (i == 0)
-        {
-        for (size_t j = 1; j < varp->SampleRate && label != 0xf7; ++j)
-          if ((label = p->velocity_ew[j] & 0x000000ff) == 0xf7)
-            p->velocity_ew[i] = p->velocity_ew[j];
-        }
-      else
-        p->velocity_ew[i] = p->velocity_ew[i-1];
-      }
-
     np[i] = (double)(p->velocity_ew[i] >> 11) * 0.00390625 * KTS2MS;
-    }
 
   varp->DynamicLag = ntohl(p->lag_10hz_frame);
 
@@ -430,35 +276,14 @@ void xlivew(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlivns(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* 20 bits, +-4095 kts, label 366  */
 
-  for (size_t i = 0; i < varp->SampleRate; ++i)
-    p->velocity_ns[i] = ntohl(p->velocity_ns[i]);
+  processData(varp, p->velocity_ns, 0xf6);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
-    {
-    label = p->velocity_ns[i] & 0x000000ff;
-
-    if (!RawData && label != 0xf6)
-      {
-      if (label)
-        printf("irsHw: %s arinc label of %o\n", varp->name, label);
-
-      if (i == 0)
-        {
-        for (size_t j = 1; j < varp->SampleRate && label != 0xf6; ++j)
-          if ((label = p->velocity_ns[j] & 0x000000ff) == 0xf6)
-            p->velocity_ns[i] = p->velocity_ns[j];
-        }
-      else
-        p->velocity_ns[i] = p->velocity_ns[i-1];
-      }
-
     np[i] = (double)(p->velocity_ns[i] >> 11) * 0.00390625 * KTS2MS;
-    }
 
   varp->DynamicLag = ntohl(p->lag_10hz_frame);
 
@@ -467,33 +292,14 @@ void xlivns(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xliwd(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* 20 bits, +-4095 kts, label 366  */
 
-  for (size_t i = 0; i < varp->SampleRate; ++i)
-    p->wind_dir_true[i] = ntohl(p->wind_dir_true[i]);
+  processData(varp, p->wind_dir_true, 0xce);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
-    label = p->wind_dir_true[i] & 0x000000ff;
-
-    if (!RawData && label != 0xce)
-      {
-      if (label)
-        printf("irsHw: %s arinc label of %o\n", varp->name, label);
-
-      if (i == 0)
-        {
-        for (size_t j = 1; j < varp->SampleRate && label != 0xce; ++j)
-          if ((label = p->wind_dir_true[j] & 0x000000ff) == 0xce)
-            p->wind_dir_true[i] = p->wind_dir_true[j];
-        }
-      else
-        p->wind_dir_true[i] = p->wind_dir_true[i-1];
-      }
-
     np[i] = (double)(p->wind_dir_true[i] >> 11) * arinc20bits;
  
     if (np[i] < 0.0)
@@ -510,35 +316,14 @@ void xliwd(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xliws(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* 20 bits, +-4095 kts, label 366  */
 
-  for (size_t i = 0; i < varp->SampleRate; ++i)
-    p->wind_speed[i] = ntohl(p->wind_speed[i]);
+  processData(varp, p->wind_speed, 0xcd);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
-    {
-    label = p->wind_speed[i] & 0x000000ff;
-
-    if (!RawData && label != 0xcd)
-      {
-      if (label)
-        printf("irsHw: %s arinc label of %o\n", varp->name, label);
-
-      if (i == 0)
-        {
-        for (size_t j = 1; j < varp->SampleRate && label != 0xcd; ++j)
-          if ((label = p->wind_speed[j] & 0x000000ff) == 0xcd)
-            p->wind_speed[i] = p->wind_speed[j];
-        }
-      else
-        p->wind_speed[i] = p->wind_speed[i-1];
-      }
-
     np[i] = (double)(p->wind_speed[i] >> 10) * 1.22e-04 * KTS2MS;
-    }
 
   varp->DynamicLag = ntohl(p->lag_10hz_frame);
 
@@ -547,35 +332,14 @@ void xliws(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xligspd(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	label;
   Irs_blk  *p = (Irs_blk *)input;
 
   /* 20 bits, 0 to 4095 kts, label 312  */
 
-  for (size_t i = 0; i < varp->SampleRate; ++i)
-    p->ground_speed[i] = ntohl(p->ground_speed[i]);
+  processData(varp, p->ground_speed, 0xca);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
-    {
-    label = p->ground_speed[i] & 0x000000ff;
-
-    if (!RawData && label != 0xca)
-      {
-      if (label)
-        printf("irsHw: %s arinc label of %o\n", varp->name, label);
-
-      if (i == 0)
-        {
-        for (size_t j = 1; j < varp->SampleRate && label != 0xca; ++j)
-          if ((label = p->ground_speed[j] & 0x000000ff) == 0xca)
-            p->ground_speed[i] = p->ground_speed[j];
-        }
-      else
-        p->ground_speed[i] = p->ground_speed[i-1];
-      }
-
     np[i] = (double)(p->ground_speed[i] >> 11) * 0.00390625 * KTS2MS;
-    }
 
   varp->DynamicLag = ntohl(p->lag_10hz_frame);
 
@@ -748,38 +512,104 @@ void xlittrka(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlidrift(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	label;
   Irs_blk	*p = (Irs_blk *)input;
 
   /* (degs) 20 bits, +- 0.5 pirad, label 321  */
 
+  processData(varp, p->drift_angle, 0xd1);
+
   for (size_t i = 0; i < varp->SampleRate; ++i)
-    p->drift_angle[i] = ntohl(p->drift_angle[i]);
- 
-  for (size_t i = 0; i < varp->SampleRate; ++i)
-    {
-    label = p->drift_angle[i] & 0x000000ff;
- 
-    if (!RawData && label != 0xd1)
-      {
-      if (label)
-        printf("irsHw: %s arinc label of %o\n", varp->name, label);
- 
-      if (i == 0)
-        {
-        for (size_t j = 1; j < varp->SampleRate && label != 0xd1; ++j)
-          if ((label = p->drift_angle[j] & 0x000000ff) == 0xd1)
-            p->drift_angle[i] = p->drift_angle[j];
-        }
-      else
-        p->drift_angle[i] = p->drift_angle[i-1];
-      }
- 
     np[i] = (double)(p->drift_angle[i] >> 11) * arinc20bits;
-    }
 
   varp->DynamicLag = ntohl(p->lag_25hz_frame);
 
 }  /* END XLIDRIFT */
+
+/* -------------------------------------------------------------------- */
+void processData(var_base *varp, long input[], int thisLabel)
+{
+  bool	allZeros = true;
+  int	zeroCnt = 0;
+
+  for (size_t i = 0; i < varp->SampleRate; ++i)
+    if (input[i] == 0)
+    {
+      ++zeroCnt;
+      ++zero_errors[thisLabel];
+    }
+    else
+      allZeros = false;
+
+  if (zeroCnt > 0)
+  {
+    fprintf(stderr,
+	"irsHw: %s: %d of %d zero values this second.\n",
+	varp->name, zeroCnt, varp->SampleRate);
+  }
+
+  if (allZeros)
+    return;
+
+
+  for (size_t i = 0; i < varp->SampleRate; ++i)
+  {
+    // Byte swap.
+    input[i] = ntohl(input[i]);
+
+    int label = input[i] & 0x000000ff;
+ 
+    if (label != thisLabel)
+    {
+      if (input[i] != 0)
+        fprintf(stderr,
+		"irsHw: %s: Incorrect arinc label of %o, zero'ing data.\n",
+		varp->name, label);
+
+      input[i] = 0;
+      ++label_errors[thisLabel];
+    }
+    else
+    if ((input[i] & 0xffffff00) == 0)
+      fprintf(stderr, "irsHw: %s:  Label correct, value is pure zero though.\n",
+		varp->name);
+
+    // Replicate missing samples.
+    if (!RawData && label != thisLabel)
+    {
+      if (i == 0)
+      {
+        for (size_t j = 1; j < varp->SampleRate && label != thisLabel; ++j)
+          if ((label = input[j] & 0x000000ff) == thisLabel)
+            input[i] = input[j];
+      }
+      else
+        input[i] = input[i-1];
+    }
+  }
+}
+
+/* -------------------------------------------------------------------- */
+void LogIRSerrors()
+{
+  std::map<int, std::string>::iterator it;
+
+  for (it = _labelMap.begin(); it != _labelMap.end(); ++it)
+  {
+    if (label_errors[it->first] > 0)
+    {
+      sprintf(buffer, "IRS Error report: %s had %d wrong ARINC labels.\n",
+		(it->second).c_str(), label_errors[it->first]);
+      LogMessage(buffer);
+    }
+
+    if (zero_errors[it->first] > 0)
+    {
+      sprintf(buffer, "IRS Error report: %s had %d values of 0 (zero).\n",
+		(it->second).c_str(), zero_errors[it->first]);
+      LogMessage(buffer);
+    }
+  }
+
+}
 
 /* END IRSHW.C */
