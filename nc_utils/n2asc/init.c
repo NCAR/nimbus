@@ -41,7 +41,7 @@ void Initialize()
   PauseFlag	= FALSE;
   PauseWhatToDo	= P_CONTINUE;
 
-  strcpy(DefaultFormat, " %.3f");
+  strcpy(DefaultFormat, " %g");
 
   if ( (p = getenv("DATA_DIR")) )
     {

@@ -15,6 +15,8 @@ DESCRIPTION:	Header File for Nimbus Skeleton.
 #include <sys/types.h>
 #include <Xm/Xm.h>
 
+#define NO_NETCDF_2
+
 typedef unsigned char   bool;
 
 #ifndef TRUE
@@ -107,7 +109,8 @@ extern bool	PauseFlag, Interactive, AmesFormat;
 extern int	nVariables, InputFile, PauseWhatToDo, XaxisType;
 extern FILE	*OutputFile;
 extern char	buffer[];
-extern long	nRecords, CurrentInputRecordNumber;
+extern size_t	nRecords;
+extern long	CurrentInputRecordNumber;
 
 
 /* Setup window widgets */

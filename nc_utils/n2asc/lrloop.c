@@ -7,7 +7,6 @@ FULL NAME:	Main loop for low rate processing
 ENTRY POINTS:	LowRateLoop()
 
 STATIC FNS:	PrintVariables()
-		Month()
 		FindFirstLogicalRecord()
 		FindNextLogicalRecord()
 
@@ -45,13 +44,14 @@ static int FindNextRecordNumber(long endtime);
 
 static int Month(char s[]);
 void UpdateTime(int currentTime[]);
+void getNCattr(int ncid, char attr[], char **dest);
 bool isMissingValue(float target, float fillValue);
 
 /* -------------------------------------------------------------------- */
 int LowRateLoop(long starttime, long endtime)
 {
   int	rc, i, Cntr = 0;
-  char	tmp[128], units[32], long_name[64];
+  char	*tmp, units[32], long_name[64];
   float	miss;
 
   if ((rc = FindFirstRecordNumber(starttime)) == ERR)
@@ -61,28 +61,30 @@ int LowRateLoop(long starttime, long endtime)
    */
   if (AmesFormat)
     {
-    int	mon, nVars = nVariables - 3, xTraLines;
+    int	nVars = nVariables - 3, xTraLines;
 
     xTraLines = (nVars-1) / NVARS_PER_LINE;
 
     fprintf(OutputFile, "%3d 1001\n", 15 + nVars + (xTraLines<<1));
     fprintf(OutputFile, "Lastname, Firstname\n");
-    ncattget(InputFile, NC_GLOBAL, "Source", tmp);
+    getNCattr(InputFile, "Source", &tmp);
     fprintf(OutputFile, "%s\n", tmp);
-    ncattget(InputFile, NC_GLOBAL, "Aircraft", tmp);
+    getNCattr(InputFile, "Aircraft", &tmp);
     fprintf(OutputFile, "%s\n", tmp);
-    ncattget(InputFile, NC_GLOBAL, "ProjectName", tmp);
+    getNCattr(InputFile, "ProjectName", &tmp);
     fprintf(OutputFile, "%s\n", tmp);
     fprintf(OutputFile, "  1  1\n");
 
-    ncattget(InputFile, NC_GLOBAL, "FlightDate", tmp);
+    getNCattr(InputFile, "FlightDate", &tmp);
     fprintf(OutputFile, "%s %c%c %c%c  ", &tmp[6], tmp[0],
 		tmp[1], tmp[3], tmp[4]);
 
-    ncattget(InputFile, NC_GLOBAL, "DateProcessed", tmp);
-    mon = Month(tmp);
-    fprintf(OutputFile, "%s %2d %c%c\n", strstr(tmp, "UTC")+4,
-		mon, tmp[4], tmp[5]);
+    getNCattr(InputFile, "DateProcessed", &tmp);
+    tmp[10] = '\0';
+    while (strchr(tmp, '-'))
+      *strchr(tmp, '-') = ' ';
+
+    fprintf(OutputFile, "%s\n", tmp);
 
     fprintf(OutputFile, "1.0\n");
     fprintf(OutputFile, "Time in seconds from 00Z\n");
@@ -97,9 +99,9 @@ int LowRateLoop(long starttime, long endtime)
     for (i = 0; i < nVariables; ++i)
       if (Variable[i]->Output)
         {
-        if (ncattget(InputFile, Variable[i]->inVarID, "_FillValue", &miss) < 0)
-          if (ncattget(InputFile, Variable[i]->inVarID, "missing_value", &miss) < 0)
-            if (ncattget(InputFile, Variable[i]->inVarID, "MissingValue", &miss) < 0)
+        if (nc_get_att_float(InputFile, i, "_FillValue", &miss) != NC_NOERR)
+          if (nc_get_att_float(InputFile, i, "missing_value", &miss) != NC_NOERR)
+            if (nc_get_att_float(InputFile, i, "MissingValue", &miss) != NC_NOERR)
               miss = -32767.0;	// Kinda Bogus.
 
         fprintf(OutputFile, "99999 ");
@@ -115,8 +117,9 @@ int LowRateLoop(long starttime, long endtime)
     for (i = 0; i < nVariables; ++i)
       if (Variable[i]->Output)
         {
-        ncattget(InputFile, Variable[i]->inVarID, "units", units);
-        ncattget(InputFile, Variable[i]->inVarID, "long_name", long_name);
+        nc_get_att_text(InputFile, Variable[i]->inVarID, "units", units);
+        nc_get_att_text(InputFile, Variable[i]->inVarID, "long_name", long_name);
+
         fprintf(OutputFile, "%s (%s)\n", long_name, units);
         }
 
@@ -189,8 +192,8 @@ static void PrintVariables()
   VARTBL	*vp;
 
   static int	prevHour = 0;
-  static long	start[] = {0, 0, 0};
-  static long	count[] = {1, 1, 1};
+  static size_t	start[] = {0, 0, 0};
+  static size_t	count[] = {1, 1, 1};
 
   start[0] = CurrentInputRecordNumber;
   start[1] = 0;
@@ -244,7 +247,7 @@ static void PrintVariables()
           {
           count[2] = vp->VectorLength;
 
-          ncvarget(InputFile, vp->inVarID, start, count, (void *)data);
+          nc_get_vara_float(InputFile, vp->inVarID, start, count, (void *)data);
 
           if (AmesFormat)
             for (j = 1; j < vp->VectorLength; ++j)
@@ -260,7 +263,7 @@ static void PrintVariables()
           }
         else
           {
-          ncvarget1(InputFile, vp->inVarID, start, (void *)data);
+          nc_get_var1_float(InputFile, vp->inVarID, start, (void *)data);
 
           if (AmesFormat && isMissingValue(data[0], vp->MissingValue))
               data[0] = 99999.0;
@@ -305,7 +308,7 @@ static int FindFirstRecordNumber(long starttime)
 static int FindNextRecordNumber(long endtime)
 {
   int		current_time;
-  long		mindex[1];
+  size_t	mindex[1];
   NR_TYPE	f;
 
   static bool	rollOver = FALSE;
@@ -315,15 +318,15 @@ static int FindNextRecordNumber(long endtime)
 
   mindex[0] = CurrentInputRecordNumber;
 
-  ncvarget1(InputFile, timeVarID[0], mindex, (void *)&f);
+  nc_get_var1_float(InputFile, timeVarID[0], mindex, (void *)&f);
   current_time = (int)f * 3600;
   currentTime[0] = (int)f;
 
-  ncvarget1(InputFile, timeVarID[1], mindex, (void *)&f);
+  nc_get_var1_float(InputFile, timeVarID[1], mindex, (void *)&f);
   current_time += (int)f * 60;
   currentTime[1] = (int)f;
 
-  ncvarget1(InputFile, timeVarID[2], mindex, (void *)&f);
+  nc_get_var1_float(InputFile, timeVarID[2], mindex, (void *)&f);
   current_time += (int)f;
   currentTime[2] = (int)f;
 

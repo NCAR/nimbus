@@ -32,6 +32,7 @@ int	nVariables;
 bool	PauseFlag, Interactive, AmesFormat;
 int	InputFile, PauseWhatToDo, XaxisType;
 FILE	*OutputFile;
-long	nRecords, CurrentInputRecordNumber;
+size_t	nRecords;
+long	CurrentInputRecordNumber;
 
 /* END GLOBALS.C */
