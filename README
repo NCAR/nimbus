@@ -1,0 +1,100 @@
+ads
+  dsm
+	Realtime aircraft software. C++. vxWorks.
+
+  disc
+	Data recording software.  C++/Motif.  Unix.
+
+
+asc2cdf
+  ASCII to netCDF uploader.  Produces netCDF files that follow the
+  NCAR-RAF/nimbus conventions.  Usable by ncplot, etc.  man asc2cdf.
+
+
+dnload
+  Exabyte tape downloader and copier, also seperates 2d and MCR data into
+  seperate files.  Directory also contains misc quick and dirty programs
+   to look at/debug ADS files.
+
+
+hdr_api
+  C API for reading an ADS header.
+
+
+hdrbld
+  Program for building [binary] headers.
+
+
+hvps
+  Program for looking at HVPS diagnostic records.
+
+
+irig
+  Linux IRIG code for reading Truetime PCI IRIG card on hercules.
+
+
+libaircraft
+  C library to read and parse proj/defaults/AircraftSpecs.
+
+libpms
+  C library to read and parse proj/###/PMSspecs file.
+
+libraf
+  Misc building blocks for C programs.
+
+libraf++
+  Misc building blocks for C++ programs.  This includes PMSspecs and aircraft listed
+  above.
+
+
+mcr
+  display - mcrtd C++/Motif.
+  processor - mcrp C++.
+
+
+n2asc
+  netCDF to ASCII converter.
+
+
+ncpp
+  PMS1D and histogram display program.  C++/Motif.
+
+
+nimbus
+  Main RAF processor.  Reads ADS files and produces netCDF.  C/Motif.
+
+
+proj
+
+rdma
+  RDMA processor (rdmap).  C++.
+
+
+rtplot
+  RealTime high-rate display program.  Hacked down version of ncplot.
+
+rtplot2
+  New version using Qt/Qwt instead of Xlib/Motif.
+
+
+vardb - Variable database, binary file.
+  editor - vared.  C/Motif.
+  lib - C API
+  utils - ASCII dump etc.
+
+
+vme2d
+  PMS2D VME EPROM code.
+
+
+winds
+  Main aircraft display program.  C/Xview/OpenWindows.
+
+
+xhd
+  X window header dump.  C/Motif.
+
+
+xpms2d
+  2D quick look program.  C++/Motif.
+
