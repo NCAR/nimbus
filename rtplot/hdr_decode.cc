@@ -22,7 +22,7 @@ DESCRIPTION:	Read header & add variables to appropriate table.  There
 
 INPUT:		Header filename.
 
-OUTPUT:		sdi, nsdi, raw, nraw, derived, nderive
+OUTPUT:		sdi, raw
 		(These globals are initialized in this file)
 
 REFERENCES:	Header API (libhdr_api.a)
@@ -58,7 +58,7 @@ char	*ProjectDirectory, *ProjectNumber;
 static int	InertialSystemCount;
 static int	start, rate, probe_cnt = 0;
 static char	*item_type, location[NAMELEN],
-		*rawlist[MAX_RAW*2];
+		*rawlist[MAX_DEFAULTS*4];
 
 
 static void	add_raw_names(char name[]);
@@ -73,12 +73,18 @@ static Header	*hdr;
 extern int	Aircraft;
 
 /* -------------------------------------------------------------------- */
+bool VarCompareLT(const var_base *x, const var_base *y)
+{
+    return(strcmp(x->name, y->name) < 0);
+}
+
+/* -------------------------------------------------------------------- */
 void DecodeHeader()
 {
   void	*vn;
   FILE	*fp;
 
-  nsdi = nraw = InertialSystemCount = 0;
+  InertialSystemCount = 0;
 
   probe_cnt = 0;
 
@@ -208,21 +214,17 @@ void DecodeHeader()
 {
 /*
 int	i;
-for (i = 0; i < nsdi; ++i)
+for (i = 0; i < sdi.size(); ++i)
   printf("%-12s%5d\n", sdi[i]->name, sdi[i]->convertOffset);
 
-for (i = 0; i < nraw; ++i)
+for (i = 0; i < raw.size(); ++i)
   printf("%-12s%3d%5d\n", raw[i]->name, raw[i]->SampleRate, raw[i]->NRstart);
 
 */
 }
 
-
-  sdi[nsdi] = NULL;
-  raw[nraw] = NULL;
-
-  SortTable((char **)sdi, 0, nsdi - 1);
-  SortTable((char **)raw, 0, nraw - 1);
+  std::sort(sdi.begin(), sdi.end(), VarCompareLT);
+  std::sort(raw.begin(), raw.end(), VarCompareLT);
 
 }	/* END DECODEHEADER */
 
@@ -243,7 +245,6 @@ static void in_hdr()
 static void in_sdi(Sh *vn)
 {
   int		i;
-  SDITBL	*cp;
 
   if (hdr->SampleRate(vn) == 5000)
     return;
@@ -283,30 +284,18 @@ static void in_sdi(Sh *vn)
 
   /* Ok, it's strictly nth order polynomial, put it in the SDI table.
    */
-  if (nsdi == MAX_SDI)
-    {
-    std::cerr << "MAX_SDI reached, modify in nimbus.h and recompile.\n";
-    exit(1);
-    }
-
-  cp = sdi[nsdi++] = new SDITBL;
+  SDITBL *cp = new SDITBL(hdr->VariableName(vn));
+  sdi.push_back(cp);
 
   cp->convertFactor = hdr->AtoDconversionFactor(vn);
   cp->convertOffset = hdr->AtoDconversionOffset(vn);
   cp->ADSoffset = hdr->InterleaveOffset(vn) >> 1;
 
-  strcpy(cp->name, hdr->VariableName(vn));
   strcpy(cp->type, hdr->SDItype(vn));
   cp->SampleRate	= hdr->SampleRate(vn);
-  cp->OutputRate	= LOW_RATE;
   cp->ADSstart		= hdr->Start(vn) >> 1;
-  cp->StaticLag		= 0;
-  cp->SpikeSlope	= 0;
   cp->Average		= NULL;
-  cp->Dirty		= false;
   cp->Modulo		= NULL;
-  cp->Output		= true;
-  cp->DependedUpon	= false;
 
   cp->order = hdr->CalibrationOrder(vn);
 
@@ -421,7 +410,6 @@ static void add_file_to_RAWTBL(char filename[])
 static RAWTBL *add_name_to_RAWTBL(char name[])
 {
   int		indx;
-  RAWTBL	*rp;
 
   if ((indx = SearchDERIVEFTNS(name)) == ERR)
     {
@@ -429,15 +417,9 @@ static RAWTBL *add_name_to_RAWTBL(char name[])
     return((RAWTBL *)ERR);
     }
 
-  if (nraw == MAX_RAW)
-    {
-    std::cerr << "MAX_RAW reached, modify in nimbus.h and recompile.\n";
-    exit(1);
-    }
+  RAWTBL *rp = new RAWTBL(name);
+  raw.push_back(rp);
 
-  rp = raw[nraw++] = new RAWTBL;
-
-  strcpy(rp->name, name);
   if (*location)
     strcat(rp->name, location);
 
@@ -446,20 +428,12 @@ static RAWTBL *add_name_to_RAWTBL(char name[])
   rp->ADSstart		= start >> 1;
   rp->ADSoffset		= 1;
   rp->SampleRate	= rate;
-  rp->OutputRate	= LOW_RATE;
   rp->Length		= 1;
   rp->convertOffset	= 0;
   rp->convertFactor	= 1.0;
-  rp->order		= 0;
-  rp->StaticLag		= 0;
-  rp->SpikeSlope	= 0;
-  rp->DynamicLag	= 0;
 
-  rp->Dirty		= false;
   rp->Average		= NULL;
   rp->Modulo		= NULL;
-  rp->Output		= true;
-  rp->DependedUpon	= false;
   rp->ProbeType		= 0;
 
   return(rp);
@@ -480,5 +454,49 @@ static int check_cal_coes(int order, float *coef)
   return(order + 1);
 
 }	/* END CHECK_CAL_COES */
+
+/* -------------------------------------------------------------------- */
+var_base::var_base(const char s[])
+{
+  strcpy(name, s);
+  varid = 0;
+  LRstart = SRstart = HRstart = 0;
+
+  SampleRate = 0;
+  Length = 1;
+
+  OutputRate = LOW_RATE;
+
+  Dirty = false;
+  Output = true;
+  DependedUpon = false;
+  Broadcast = Mode == REALTIME ? true : false;
+
+  DataQuality   = 0;
+
+}
+
+SDITBL::SDITBL(const char s[]) : var_base(s)
+{
+  order = 0;
+  StaticLag = 0;
+  SpikeSlope = 0.0;
+
+}
+
+RAWTBL::RAWTBL(const char s[]) : var_base(s)
+{
+  order = 0;
+  StaticLag = 0;
+  DynamicLag = 0;
+  SpikeSlope = 0.0;
+  ProbeCount = 0;
+}
+
+DERTBL::DERTBL(const char s[]) : var_base(s)
+{
+  ndep = 0;
+  ProbeCount = 0;
+}
 
 /* END HDR_DECODE.C */

@@ -40,13 +40,13 @@ void AllocateDataArrays()
 
   nFloats = 0;
 
-  for (i = 0; i < nsdi; ++i)
+  for (i = 0; i < sdi.size(); ++i)
     {
     sdi[i]->SRstart = nFloats;
     nFloats += sdi[i]->SampleRate;
     }
 
-  for (i = 0; i < nraw; ++i)
+  for (i = 0; i < raw.size(); ++i)
     {
     raw[i]->SRstart = nFloats;
     nFloats += (raw[i]->SampleRate * raw[i]->Length);

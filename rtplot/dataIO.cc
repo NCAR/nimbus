@@ -55,9 +55,9 @@ void AddDataToBuffer(NR_TYPE *newData)
 /* -------------------------------------------------------------------- */
 void AddVariable(int indx, DataPlot *plot)
 {
-  if (indx >= nsdi)
+  if (indx >= sdi.size())
   {
-    indx -= nsdi;
+    indx -= sdi.size();
 
     strcpy(Variable[nVariables].name, raw[indx]->name);
     Variable[nVariables].SampleRate = raw[indx]->SampleRate;

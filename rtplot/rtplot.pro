@@ -21,5 +21,5 @@ SOURCES += amlibfn.cc \
            rec_decode.cc \
            rtplot.cc
 INCLUDEPATH += $$(JLOCAL)/include $$(NIMBUS)/include
-OBJECTS += $$(NIMBUS)/src/filter/obj/calco.o $$(NIMBUS)/src/filter/obj/sort.o $$(NIMBUS)/src/filter/obj/search.o $$(NIMBUS)/src/filter/obj/textfile.o $$(NIMBUS)/src/filter/obj/popen.o
+OBJECTS += $$(NIMBUS)/src/filter/obj/calco.o $$(NIMBUS)/src/filter/obj/search.o $$(NIMBUS)/src/filter/obj/textfile.o $$(NIMBUS)/src/filter/obj/popen.o
 LIBS += -L$$(JLOCAL)/lib -lqwt -lraf++ -L$$(NIMBUS)/lib -lxlate -lraf

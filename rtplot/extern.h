@@ -17,11 +17,12 @@ extern bool	Grid, Frozen, FlashMode;
 
 extern char	buffer[], DataPath[], *ProjectName, FlightNumber[];
 
-extern SDITBL  *sdi[];          /* SDI (aka raw) variable list  */
-extern RAWTBL  *raw[];          /* Alphabeticly sorted pointers */
+extern std::vector<SDITBL *> sdi;          /* SDI (aka raw) variable list  */
+extern std::vector<RAWTBL *> raw;          /* Alphabeticly sorted pointers */
+
 extern DEFAULT *Defaults[];
 
-extern int	nsdi, nraw, nVariables;
+extern int	nVariables;
 extern VARTBL	Variable[];
 
 

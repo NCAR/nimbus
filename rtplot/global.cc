@@ -18,11 +18,10 @@ bool	Grid,				/* Overlay grid on graph?	*/
 char	buffer[BUFFSIZE], DataPath[1024], *ProjectName, FlightNumber[32],
 	OutputFileName[256];
 
-SDITBL	*sdi[MAX_SDI];			/* SDI (aka raw) variable list	*/
-RAWTBL	*raw[MAX_RAW];			/* Alphabeticly sorted pointers	*/
+std::vector<SDITBL *> sdi;	/* SDI (aka raw) variable list	*/
+std::vector<RAWTBL *> raw;	/* Alphabeticly sorted pointers	*/
 
-
-int	nsdi, nraw, nVariables;
+int	nVariables;
 VARTBL	Variable[MAXDATASETS];
 
 

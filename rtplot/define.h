@@ -28,7 +28,6 @@ DESCRIPTION:
 
 #define	SPACE		' '
 
-#define MAX_VARIABLES	2048
 #define MAXDATASETS	5
 
 #define TITLESIZE	128

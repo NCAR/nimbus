@@ -94,10 +94,10 @@ CanvasWindow::CanvasWindow(QApplication *qApp) : QMainWindow(0, "canvas")
   connect(list, SIGNAL(clicked(QListBoxItem *)), SLOT(ModifyActiveVars(QListBoxItem *)));
 
 
-  for (int i = 0; i < nsdi; ++i)
+  for (int i = 0; i < sdi.size(); ++i)
     list->insertItem(sdi[i]->name);
 
-  for (int i = 0; i < nraw; ++i)
+  for (int i = 0; i < raw.size(); ++i)
     list->insertItem(raw[i]->name);
 
   plot->show();
@@ -170,9 +170,9 @@ void CanvasWindow::ModifyActiveVars(QListBoxItem *item)
   int	i;
   int	indx = list->currentItem();
 
-  if (indx >= nsdi)
+  if (indx >= sdi.size())
   {
-    indx -= nsdi;
+    indx -= sdi.size();
 
     for (i = 0; i < nVariables; ++i)
       if (strcmp(Variable[i].name, raw[indx]->name) == 0)
@@ -187,7 +187,7 @@ void CanvasWindow::ModifyActiveVars(QListBoxItem *item)
       return;
     }
     else
-      AddVariable(indx + nsdi, plot);
+      AddVariable(indx + sdi.size(), plot);
   }
   else
   {
