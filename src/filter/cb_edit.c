@@ -160,9 +160,8 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
 /* -------------------------------------------------------------------- */
 void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
 {
-  size_t	i;
   bool		output;
-  int		outputRate, lag;
+  int		outputRate = LOW_RATE, lag;
   char		*p, *dq;
   float		f;
   float		constsynthval;
@@ -242,7 +241,7 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
       sp->DataQuality = dq;
       sp->order = 0;
 
-      for (i = MAX_COF-1; i >= 0; --i)
+      for (int i = MAX_COF-1; i >= 0; --i)
         {
         p = XmTextFieldGetString(ev_text[i]);
         f = atof(p);
@@ -292,7 +291,7 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
       rp->SpikeSlope = spike;
       rp->DataQuality = dq;
 
-      for (i = 0; i < rp->order; ++i)
+      for (size_t i = 0; i < rp->order; ++i)
         {
         p = XmTextFieldGetString(ev_text[i]);
         rp->cof[i] = atof(p);
@@ -312,7 +311,7 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
       if ((dp->ProbeType & PROBE_PMS1D) && outputRate == HIGH_RATE)
         dp->OutputRate = dp->Default_HR_OR;
 
-      for (i = 0; i < dp->ndep; ++i)
+      for (size_t i = 0; i < dp->ndep; ++i)
         {
         p = XmTextFieldGetString(ev_text[i]);
         strcpy(dp->depend[i], p);
