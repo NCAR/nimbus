@@ -1,6 +1,10 @@
 
 Version number is changed in version.h.
 -------------------------------------------------------------------------
+01/25/05	3.7.0
+	Refactor the VARTBL (SDITBL, RAWTBL, & DERTBL) to have a base
+	class.  Then change the arrays of them to vectors.
+
 08/15/04	3.6.0
 	Synthetic data.
 
