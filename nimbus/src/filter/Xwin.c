@@ -37,9 +37,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2000
 #include <Xm/Text.h>
 #include <Xm/TextF.h>
 #include <Xm/ToggleB.h>
-
 #include "nimbus.h"
 #include "gui.h"
+#include "iostream.h"
 
 
 /* Global widget declarations.
@@ -47,16 +47,17 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2000
 Widget	readHeaderButton;
 Widget	aDSdataText, outputFileText;
 
-Widget	menuBar, timeDisplayText, list1, goButton, logText, pullRight,
-	lowRateButton, highRateButton;
-
+Widget	menuBar, timeDisplayText, list1, goButton, logText, pullRight,lowRateButton, highRateButton;
 Widget	varNameLabel;
 Widget	outputVarYes, outputVarNo;
 Widget	outputLRbutton, outputSRbutton, outputHRbutton;
-Widget	lagText, spikeText;
-Widget	ev_text[16], slOpMenu;
+Widget	lagText, spikeText,synthconstText;
+Widget	ev_text[16], slOpMenu,funcOpMenu;
 
 extern char	*dataQuality[];
+extern void  LoadSynthetic(Widget w, XtPointer client, XtPointer call);                          //this may belong somewhere else
+extern char * func[19];
+
 
 void	NextWidget(Widget w, int client, XtPointer call);
 
@@ -149,7 +150,7 @@ Widget CreateSetupWindow(Widget parent)
   XmString	xmstr[1];
   Widget	setupForm;
   Widget	rateFrame, rateRB;
-  Widget	pullDown[2], cascadeButton[2], b[16];
+  Widget	pullDown[2], cascadeButton[2], b[16]; 
   Widget	listRC, listTitle, separ1, separ2;
 
 
@@ -180,19 +181,25 @@ Widget CreateSetupWindow(Widget parent)
   XtManageChildren(cascadeButton, 2);
   XtManageChildren(pullDown, 2);
 
-
   n = 0;
   b[0] = XmCreatePushButton(pullDown[0], "Load setup", args, n);
   b[1] = XmCreatePushButton(pullDown[0], "Save setup", args, n);
   b[2] = XmCreateSeparator(pullDown[0], "setupSeparator", args, n);
   b[3] = XmCreatePushButton(pullDown[0], "Print", args, n);
   b[4] = XmCreateSeparator(pullDown[0], "setupSeparator", args, n);
-  b[5] = XmCreatePushButton(pullDown[0], "Quit", args, n);
+  b[5]=  XmCreatePushButton(pullDown[0], "Synthetic", args, n);
+  b[6] = XmCreateSeparator(pullDown[0], "setupSeparator", args, n);
+  b[7] = XmCreatePushButton(pullDown[0], "Quit", args, n);
+  
+
+
   XtAddCallback(b[0], XmNactivateCallback, LoadSetup, NULL);
   XtAddCallback(b[1], XmNactivateCallback, SaveSetup, NULL);
   XtAddCallback(b[3], XmNactivateCallback, PrintSetup, NULL);
-  XtAddCallback(b[5], XmNactivateCallback, Quit, NULL);
-  XtManageChildren(b, 6);
+   XtAddCallback(b[5], XmNactivateCallback, LoadSynthetic, NULL);
+  XtAddCallback(b[7], XmNactivateCallback, Quit, NULL);
+  
+  XtManageChildren(b, 8);// was originally 6
 
   n = 0;
   XtSetArg(args[n], XmNtearOffModel, XmTEAR_OFF_ENABLED); ++n;
@@ -327,14 +334,38 @@ Widget CreateEditWindow(Widget parent)
   Arg		args[16];
   Cardinal	n;
   Widget	editForm;
-  Widget	frame[10];
+  Widget	frame[12];
   Widget	obRC, radioBox;
   Widget	form, label;
   Widget	cbRC, b[3];
   Widget	evRC[2];
-  Widget	slPD, slButts[15];
+  Widget	slPD, slButts[15],funcPD,funcButts[19];
   XmString	name;
   int		i;
+
+  //**************Definition of FuncPD******************//
+  func[0]="none";
+  func[1]="abs";
+  func[2]="acos";
+  func[3]="asin";
+  func[4]="atan";
+  func[5]="ceil";
+  func[6]="cos";
+  func[7]="cosh";
+  func[8]="exp";
+  func[9]="fabs";
+  func[10]="floor";
+  func[11]="ln";
+  func[12]="log";
+  func[13]="pow";
+  func[14]="sin";
+  func[15]="sinh";
+  func[16]="sqrt";
+  func[17]="tan";
+  func[18]="tanh";
+ //***************************************************//
+
+
 
   n = 0;
   editForm = XmCreateForm(parent, "editForm", args, n);
@@ -368,10 +399,15 @@ Widget CreateEditWindow(Widget parent)
   frame[4] = XmCreateFrame(editForm, "spikeFrame", args, n);
   n = 0;
   XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
+  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
+  XtSetArg(args[n], XmNtopWidget, frame[4]); n++;
+  frame[8] = XmCreateFrame(editForm, "synthconstFrame", args, n);
+  n = 0;
+  XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
   XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM); n++;
-  XtSetArg(args[n], XmNtopWidget, frame[4]); n++;
+  XtSetArg(args[n], XmNtopWidget, frame[8]); n++;
   frame[5] = XmCreateFrame(editForm, "buttonFrame", args, n);
   n = 0;
   XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
@@ -385,12 +421,18 @@ Widget CreateEditWindow(Widget parent)
   XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
   XtSetArg(args[n], XmNtopWidget, frame[6]); n++;
   XtSetArg(args[n], XmNbottomAttachment, XmATTACH_WIDGET); n++;
-  XtSetArg(args[n], XmNbottomWidget, frame[5]); n++;
+  XtSetArg(args[n], XmNbottomWidget, frame[8]); n++;
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_WIDGET); n++;
   XtSetArg(args[n], XmNleftWidget, frame[4]); n++;
   frame[7] = XmCreateFrame(editForm, "dqFrame", args, n);
+   n = 0;
+  XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
+  XtSetArg(args[n], XmNleftAttachment, XmATTACH_WIDGET); n++;
+  XtSetArg(args[n], XmNleftWidget,frame[8]); n++;
+  XtSetArg(args[n], XmNtopWidget, frame[4]); n++;
+  frame[9] = XmCreateFrame(editForm, "funcmenuFrame", args, n);  
 
-  XtManageChildren(frame, 8);
+  XtManageChildren(frame, 10);
 
   /* Var Name TF.
    */
@@ -495,6 +537,30 @@ Widget CreateEditWindow(Widget parent)
   XtManageChild(spikeText);
 
 
+  /*Synthetic Constant Text
+   */
+
+ n = 0;
+  form = XmCreateForm(frame[8], "synthconstForm", args, n);
+  XtManageChild(form);
+
+  n = 0;
+  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
+  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
+  XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
+  label = XmCreateLabel(form, "Constant Value", args, n);
+  XtManageChild(label);
+
+  n = 0;
+  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
+  XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
+  XtSetArg(args[n], XmNleftAttachment, XmATTACH_WIDGET); n++;
+  XtSetArg(args[n], XmNleftWidget, label); n++;
+  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM); n++;
+  synthconstText = XmCreateTextField(form, "synthconstText", args, n);
+  XtManageChild(synthconstText);
+
+
   /* Command buttons.
    */
   n = 0;
@@ -505,10 +571,11 @@ Widget CreateEditWindow(Widget parent)
   b[0] = XmCreatePushButton(cbRC, "applyButton", args, n);
   b[1] = XmCreatePushButton(cbRC, "resetButton", args, n);
   b[2] = XmCreatePushButton(cbRC, "dismissButton", args, n);
+  
   XtAddCallback(b[0], XmNactivateCallback, ApplyVariableMods, NULL);
   XtAddCallback(b[1], XmNactivateCallback, (XtCallbackProc)EditVariable,NULL);
   XtAddCallback(b[2], XmNactivateCallback, DismissEditWindow, NULL);
-  XtManageChildren(b, 3);
+  XtManageChildren(b,3);
   
 
   n = 0;
@@ -564,6 +631,34 @@ Widget CreateEditWindow(Widget parent)
   XtManageChildren(slButts, i);
 
 
+  /* Functions menu*/
+  
+  n=0;
+  funcPD=XmCreatePulldownMenu(frame[9],"funcPD",args,n);
+
+  name=XmStringCreateLocalized("Functions");
+  n=0;
+  XtSetArg(args[n],XmNlabelString,name);++n;
+  XtSetArg(args[n],XmNsubMenuId,funcPD);++n;
+  funcOpMenu=XmCreateOptionMenu(frame[9],"Function Menu",args,n);
+  XtManageChild(funcOpMenu);
+  XmStringFree(name);
+  
+  for(i=0;i<18;++i)
+  {
+    name=XmStringCreateLocalized(func[i]);
+
+    n=0;
+    XtSetArg(args[n],XmNlabelString,name);++n;
+    funcButts[i]=XmCreatePushButton(funcPD,"Function Menu",args,n);
+
+    XmStringFree(name);
+  }
+
+  XtManageChildren(funcButts,i);
+ 
+ //end functions menu
+
   return(editForm);
 
 }	/* END CREATEEDITWINDOW */
@@ -571,7 +666,7 @@ Widget CreateEditWindow(Widget parent)
 /* -------------------------------------------------------------------- */
 void CreateProbeMenu()
 {
-  Widget	b[32];
+  Widget	b[34];// was b[32]
   int		i;
   char		**probeNames;
 

@@ -25,18 +25,27 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------
 */
 
+
 #include "nimbus.h"
 #include "decode.h"
 #include "gui.h"
 #include "circbuff.h"
 #include "amlib.h"
+#include <iostream>
+#include <string.h>
+#include "injectsd.h"
+
+
 
 #define NBUFFERS	5
 #define INDEX		-(NBUFFERS-2)
 
+extern SyntheticData sd;
+
 extern char		*ADSrecord;
 extern NR_TYPE		*SampledData, *AveragedData;
 extern XtAppContext	context;
+
 
 void	DespikeData(CircularBuffer *LRCB, int index),
 	PhaseShift(CircularBuffer  *LRCB, int index, NR_TYPE *output);  
@@ -114,7 +123,11 @@ printf("cntr=%d\n", cntr);
     DecodeADSrecord((short *)ADSrecord, BuffPtr);
     ApplyCalCoes(BuffPtr);
     }
-
+ 
+/* should this be in inject constructor? */
+ timeindex[0] = raw[SearchTable((char **)raw, nraw, "HOUR")]->SRstart;
+ timeindex[1] = raw[SearchTable((char **)raw, nraw, "MINUTE")]->SRstart;
+ timeindex[2] = raw[SearchTable((char **)raw, nraw, "SECOND")]->SRstart;
 
   /* This is the main loop.
    */
@@ -131,6 +144,18 @@ printf("cntr=%d\n", cntr);
     PhaseShift(LRCB, INDEX, SampledData);
 
     AverageSampledData();
+   
+    if (SynthData==true)   //checks to see if the user has chosen to use synthetic data 
+      {
+/* and this in the Inject fn? */
+	hr = (int)SampledData[timeindex[0]];
+	mins = (int)SampledData[timeindex[1]];
+	sec = (int)SampledData[timeindex[2]];
+	temptime=(hr*3600)+(mins*60)+sec;
+
+        sd.InjectSyntheticData(temptime); 
+      }
+    
     ComputeLowRateDerived();
 
     WriteNetCDF();
@@ -154,3 +179,4 @@ exit:
 }	/* END LOWRATELOOP */
 
 /* END LRLOOP.C */
+

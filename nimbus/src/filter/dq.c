@@ -20,7 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 
 
 char *dataQuality[] = {
-        "Preliminary", "Good", "Bad", "Drift", "Spiky",
+  "Preliminary", "Good", "Bad", "Drift", "Spiky","synthetic",
         NULL };
 
 

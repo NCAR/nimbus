@@ -29,11 +29,18 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "decode.h"
 #include "gui.h"
 #include "circbuff.h"
+#include <iostream>
+#include <string.h>
+#include "injectsd.h"
+
+
 
 #define NLRBUFFERS	5	/* Number of LR Buffers			*/
 #define NPSBUFFERS	50
 
 #define LRINDEX		-(NLRBUFFERS-2)
+
+extern SyntheticData sd;
 
 extern char		*ADSrecord;
 extern NR_TYPE		*SampledData, *AveragedData;
@@ -118,7 +125,9 @@ int HighRateLoop(long starttime, long endtime)
     PhaseShift(LRCB, LRINDEX, ps_data);
     }
 
-
+ timeindex[0] = raw[SearchTable((char **)raw, nraw, "HOUR")]->SRstart;
+ timeindex[1] = raw[SearchTable((char **)raw, nraw, "MINUTE")]->SRstart;
+ timeindex[2] = raw[SearchTable((char **)raw, nraw, "SECOND")]->SRstart;
 
   /* This is the main control loop.
    */
@@ -141,6 +150,16 @@ int HighRateLoop(long starttime, long endtime)
       continue;
 
     AverageSampledData();
+
+   if(SynthData==true)        //checks to see if the user has chosen to use synthetic data 
+      {
+	hr = (int)SampledData[timeindex[0]];
+	mins = (int)SampledData[timeindex[1]];
+	sec = (int)SampledData[timeindex[2]];
+	temptime=(hr*3600)+(mins*60)+sec;
+        sd.InjectSyntheticData(temptime); 
+      }
+
     ComputeLowRateDerived();
     ComputeHighRateDerived();
 

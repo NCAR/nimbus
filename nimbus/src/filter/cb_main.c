@@ -532,6 +532,14 @@ void LoadSetup(Widget w, XtPointer client, XtPointer call)
 }	/* END LOADSETUP */
 
 /* -------------------------------------------------------------------- */
+void  LoadSynthetic(Widget w, XtPointer client, XtPointer call)
+{
+  sprintf(buffer, "%s/nimbus/*", getenv("HOME"));
+  QueryFile("Enter synthetic data file name to load:", buffer, (XtCallbackProc)LoadSynthetic_OK);
+
+}	/* END LOADSYNTHETIC */
+
+/* -------------------------------------------------------------------- */
 static void checkForProductionSetup()
 {
   int	i, revision2 = False;

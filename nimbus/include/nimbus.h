@@ -12,10 +12,11 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string>
 #include <string.h>
 #include <sys/types.h>
-
 #include "constants.h"
+
 
 #define NAMELEN		NAMLEN
 
@@ -49,6 +50,9 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #define MAX_COF		10
 #define MAXDEPEND	12
 #define MAX_TIME_SLICES	5
+
+
+enum SYNTHTYPE {file,constant,function,none};
 
 typedef struct
 	{
@@ -102,6 +106,7 @@ typedef struct
 	float	convertFactor;
 	long	order;
 	float	cof[MAX_COF];
+        SYNTHTYPE synthtype; 
 	} SDITBL;
 
 
@@ -142,6 +147,7 @@ typedef struct
 	float	convertFactor;	/* variables only.			*/
 	long	order;		/* (PSFD, HGM, HGME).			*/
 	float	cof[MAX_COF];
+        SYNTHTYPE synthtype;
 	} RAWTBL;
 
 
@@ -185,9 +191,19 @@ extern RAWTBL	*raw[];
 extern DERTBL	*derived[], *ComputeOrder[];
 extern int	nderive, nsdi, nraw;
 extern bool	LoadProductionSetupFile, ProductionRun, PauseFlag, QCenabled,
-		RawData;
+		RawData,SynthData;
 extern int	ProcessingRate, FlightNumberInt, PauseWhatToDo, Mode;
 extern char	buffer[];
+
+extern int timeindex[3];
+extern float temptime;
+extern int  hr;
+extern int mins;
+extern int sec;
+extern bool SDF;
+extern bool SDC;
+extern bool SDP;
+
 
 
 /*      Function Prototypes
@@ -216,7 +232,7 @@ void	SortTable(char **table, int beg, int end),
 	AddProbeToList(char name[], int type),
 	SetBaseTime(struct Hdr_blk *hdr),
 	BlankOutBadData(),
-	FlushXEvents();
+        FlushXEvents();
 
 void	SaveDefaults(FILE *fp),
 	SetDefaultsValue(char target[], NR_TYPE *new_value),
@@ -236,4 +252,4 @@ char    *strupr(char s[]), *strlower(char s[]);
 
 #endif
 
-/* END NIMBUS.H */
+// END NIMBUS.H

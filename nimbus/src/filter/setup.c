@@ -27,17 +27,19 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 
 #include <sys/param.h>
 #include <unistd.h>
-
 #include <Xm/ToggleB.h>
-
 #include "nimbus.h"
 #include "decode.h"
 #include "gui.h"
+#include "iostream.h"
+#include "injectsd.h"
 
 
 static char	SetupFileName[MAXPATHLEN];
 
 extern char *dataQuality[];
+extern SyntheticData sd;
+
 
 void FillListWidget();
 
@@ -284,6 +286,23 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
   FillListWidget();
 
 }	/* END LOADSETUP_OK */
+
+/* -------------------------------------------------------------------- */
+void LoadSynthetic_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *call)
+{
+  char *file;
+  ExtractFileName(call->value, &file); 
+
+  if (strlen(file) == 0 || access(file, R_OK) == ERR)
+    {
+    HandleError("Non-existent input file.");
+    return;
+    }
+
+  sd.InitSynth(file);
+  FileCancel((Widget)NULL, (XtPointer)NULL, (XtPointer)NULL);
+
+}
 
 /* -------------------------------------------------------------------- */
 void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *call)
