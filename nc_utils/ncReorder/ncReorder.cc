@@ -36,6 +36,13 @@ main(int argc, char *argv[])
 {
   NcFile	inFile(argv[1]);
 
+  if (argc < 3)
+  {
+    fprintf(stderr, "Usage: ncReorder infile.nc outfile.nc\n");
+    exit(1);
+  }
+
+
   if (!inFile.is_valid())
   {
     fprintf(stderr, "ncReorder: Invalid input file, exiting.\n");
