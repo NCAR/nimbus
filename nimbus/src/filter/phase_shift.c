@@ -106,7 +106,7 @@ void PhaseShift(
    */
   memcpy((char *)out_rec, (char *)this_rec, NR_SIZE * nFloats);
 
-  if (RawData)
+  if (!cfg.TimeShifting())
     return;
 
   {

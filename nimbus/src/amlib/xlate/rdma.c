@@ -67,14 +67,14 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
     {
     extern char		OutputFileName[];	// imported from cb_main.c
 
-    if (ProductionRun)
+    if (cfg.ProductionRun())
       sprintf(buffer, "%s/%s%s.rdma", getenv("PROD_DATA"),
 			ProjectNumber, FlightNumber);
     else
       sprintf(buffer, "%s/%s%s.rdma", getenv("DATA_DIR"),
 			ProjectNumber, FlightNumber);
 
-    if (Mode != REALTIME)
+    if (cfg.ProcessingMode() != Config::RealTime)
       {
       if ((outFP = fopen(buffer, "w+")) == NULL)
         fprintf(stderr, "xlate/rdma.c: can't open %s\n", buffer);

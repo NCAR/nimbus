@@ -118,7 +118,7 @@ void slatc(DERTBL *varp)
     if (FeedBack == LOW_RATE_FEEDBACK)
       DELT[FeedBack]	= 1.0;
     else
-      DELT[FeedBack]  = 1.0 / ProcessingRate;
+      DELT[FeedBack]  = 1.0 / (float)cfg.ProcessingRate();
 
     old_glat[FeedBack]	= glat;
     old_glon[FeedBack]	= glon;
@@ -392,7 +392,7 @@ static NR_TYPE filter(double x, double zf[])
     if (FeedBack == LOW_RATE_FEEDBACK)
       TAU = 600.0;
     else
-      TAU = 600.0 * ProcessingRate;
+      TAU = 600.0 * (float)cfg.ProcessingRate();
 
     a[FeedBack]	= 2.0 * M_PI / TAU;
     b1		= sqrt(3.0) / 2.0;

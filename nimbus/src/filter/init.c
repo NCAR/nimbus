@@ -46,19 +46,13 @@ void Initialize()
   if ((ProjectDirectory = (char *)getenv("PROJ_DIR")) == NULL)
     {
     fprintf(stderr,
-    "Environment variable PROJ_DIR not defined, this is fatal.\n");
+      "Environment variable PROJ_DIR not defined, this is fatal.\n");
     exit(1);
     }
 
-  Mode			= POST_PROCESSING;
   LITTON51_present	= false;
   AVAPS			= false;
   PauseFlag		= false;
-  ProductionRun		= false;
-  QCenabled		= false;
-  AsyncFileEnabled	= false;
-  RawData		= false;
-  ProcessingRate	= LOW_RATE;
   PauseWhatToDo		= P_CONTINUE;
   FeedBack		= LOW_RATE_FEEDBACK;
 
@@ -74,9 +68,9 @@ void Initialize()
   /* Check to see if user is 'nimbus'.
    */
   if (getuid() == 130)
-    ProductionRun = true;
+    cfg.SetProductionRun(true);
 
-  if (ProductionRun)
+  if (cfg.ProductionRun())
     XtSetSensitive(outputFileText, false);
 
 }	/* END INITIALIZE */
@@ -86,7 +80,8 @@ void ProcessArgv(int argc, char **argv)
 {
   int	i;
 
-  Interactive = LoadProductionSetupFile = true;
+  cfg.SetInteractive(true);
+  cfg.SetLoadProductionSetup(true);
 
   for (i = 1; i < argc; ++i)
     {
@@ -99,12 +94,13 @@ void ProcessArgv(int argc, char **argv)
     switch (argv[i][1])
       {
       case 'b':
-        Interactive = false;
+        cfg.SetInteractive(false);
         ReadBatchFile(argv[++i]);
         break;
 
       case 'r':
-        RawData = true;
+        cfg.SetTimeShifting(false);
+        cfg.SetDespiking(false);
 
         if (argv[i][2] == 't')	/* -rt	*/
           RTinit();
@@ -112,11 +108,11 @@ void ProcessArgv(int argc, char **argv)
         break;
 
       case 'n':
-        LoadProductionSetupFile = false;
+        cfg.SetLoadProductionSetup(false);
         break;
 
       case 'q':
-        QCenabled = true;
+        cfg.SetQCenabled(true);
         break;
 
       default:
@@ -159,8 +155,7 @@ static void ReadBatchFile(char *fileName)
     else
     if (strcmp(p, "pr") == 0)
       {
-      if ((ProcessingRate = atoi(strtok(NULL, " \t\n"))) != HIGH_RATE)
-        ProcessingRate = LOW_RATE;
+      cfg.SetProcessingRate((Config::processingRate)atoi(strtok(NULL, " \t\n")));
       }
     else
     if (strcmp(p, "ti") == 0)
@@ -195,6 +190,23 @@ void GetDataDirectory(char buff[])
     strcpy(buff, p);
     strcat(buff, "/");
   }
+}
+
+/* -------------------------------------------------------------------- */
+Config::Config()
+{
+  SetInteractive(true);
+  SetProductionRun(false);
+  SetDespiking(true);
+  SetTimeShifting(true);
+  SetQCenabled(false);
+  SetProcessingMode(PostProcessing);
+  SetAsyncFileEnabled(false);
+  SetLoadProductionSetup(true);
+  SetHoneyWellCleanup(true);
+
+  SetProcessingRate(LowRate);
+
 }
 
 /* END INIT.C */

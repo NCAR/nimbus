@@ -57,7 +57,7 @@ PostgreSQL::PostgreSQL(std::string specifier)
   initializeGlobalAttributes();
   initializeVariableList();
 
-  if (Mode == REALTIME)
+  if (cfg.ProcessingMode() == Config::RealTime)
   {
     _brdcst = new UdpSocket(RT_UDP_PORT, "128.117.84.255");
     _brdcst->openSock(UDP_BROADCAST);
@@ -136,7 +136,7 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
   submitCommand(_sqlString.str());
 
 
-  if (Mode == REALTIME)
+  if (cfg.ProcessingMode() == Config::RealTime)
   {
     _broadcastString << '\n';
     _brdcst->writeSock(_broadcastString.str().c_str(), _broadcastString.str().length());

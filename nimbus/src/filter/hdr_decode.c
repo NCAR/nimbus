@@ -241,7 +241,7 @@ int DecodeHeader(char header_file[])
     }
 
 
-  if (ProductionRun)
+  if (cfg.ProductionRun())
     defaultQuality = "Good";
   else
     defaultQuality = "Preliminary";
@@ -569,7 +569,7 @@ int DecodeHeader(char header_file[])
         }
       }
     else
-    if (!strcmp(item_type, ASYNC_STR) && Mode == REALTIME)
+    if (!strcmp(item_type, ASYNC_STR) && cfg.ProcessingMode() == Config::RealTime)
       {
       if (strcmp(vn, AVAPS_STR) == 0)
         {
@@ -615,7 +615,7 @@ probeCnt = 0;
   else
     add_derived_names("SAIL");
 
-  if (Mode == REALTIME)
+  if (cfg.ProcessingMode() == Config::RealTime)
     {
     for (probeCnt = 0; probeCnt < 3; ++probeCnt)
       {
@@ -682,11 +682,11 @@ for (size_t i = 0; i < derived.size(); ++i)
   ReadModuloVariables();
   ReadSumVariables();
 
-  if (!RawData)
-    {
+  if (cfg.TimeShifting())
     ReadStaticLags();
+
+  if (cfg.Despiking())
     ReadDespikeFile();
-    }
 
   ReadDefaultDerivedOutputRate();
   SetUpDependencies();
@@ -1799,7 +1799,8 @@ static DERTBL *add_name_to_DERTBL(char name[])
   /* Eliminate chemistry vars that are computed via second pass program.
    * (Can be used for any variable).
    */
-  if (Mode == REALTIME && deriveftns[indx].compute == smissval)
+  if (cfg.ProcessingMode() == Config::RealTime &&
+      deriveftns[indx].compute == smissval)
     return((DERTBL *)ERR);
 
 
@@ -1812,7 +1813,7 @@ static DERTBL *add_name_to_DERTBL(char name[])
   dp->Initializer	= deriveftns[indx].constructor;
   dp->compute		= (void (*) (void *))deriveftns[indx].compute;
 
-  dp->Default_HR_OR	= HIGH_RATE;
+  dp->Default_HR_OR	= Config::HighRate;
   dp->Length		= length;
   dp->ProbeType		= probeType;
   dp->ProbeCount	= probeCnt;
@@ -1870,12 +1871,12 @@ var_base::var_base(const char s[])
   SampleRate = 0;
   Length = 1;
 
-  OutputRate = LOW_RATE;
+  OutputRate = Config::LowRate;
 
   Dirty = false;
   Output = true;
   DependedUpon = false;
-  Broadcast = Mode == REALTIME ? true : false;
+  Broadcast = cfg.ProcessingMode() == Config::RealTime ? true : false;
 
   DataQuality	= defaultQuality;
 

@@ -93,7 +93,7 @@ void AllocateDataArrays()
   SampledData = new NR_TYPE[nFloats];
   AveragedData = new NR_TYPE[nLRfloats];
 
-  if (ProcessingRate == HIGH_RATE)
+  if (cfg.ProcessingRate() == Config::HighRate)
     HighRateData = new NR_TYPE[nHRfloats];
 
   ArraysInitialized = true;
@@ -112,7 +112,7 @@ void FreeDataArrays()
     delete [] SampledData;
     delete [] AveragedData;
 
-    if (ProcessingRate == HIGH_RATE)
+    if (cfg.ProcessingRate() == Config::HighRate)
       delete [] HighRateData;
 
     if (AVAPS)

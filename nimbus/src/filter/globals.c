@@ -41,20 +41,16 @@ std::vector<DERTBL *> ComputeOrder;	/* Compute Order for derived	*/
 size_t	nDefaults;
 DEFAULT	*Defaults[MAX_DEFAULTS];	/* Values from 'Defaults' file	*/
 
+Config cfg;
+
 bool	LITTON51_present,	/* hdr_decode.c & adsIO.c		*/
 	AVAPS,			/* Is AVAPS dropesonde present.		*/
 	PauseFlag,
-	AsyncFileEnabled,
-	LoadProductionSetupFile,
-	Interactive,
-	ProductionRun,
-	RawData,		/* No despiking or phase_shifting	*/
-	QCenabled;		/* QC Library, currently not enabled.	*/
+	LoadProductionSetupFile;
 
 size_t	ProcessingRate;
 
-int	Mode,		/* RealTime or PostProcessing (winput or nimbus)*/
-	FeedBack, SampleOffset,	/* Used by amlib fns, set in hrloop.c	*/
+int	FeedBack, SampleOffset,	/* Used by amlib fns, set in hrloop.c	*/
 	PauseWhatToDo,
 	Aircraft, FlightNumberInt;
 

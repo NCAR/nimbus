@@ -66,7 +66,7 @@ void InitAsyncModule(char fileName[])
 
 
   /* Currently disabling this feature.  CJW 10/97 */
-  AsyncFileEnabled = false;
+  cfg.SetAsyncFileEnabled(false);
   return;
 
 
@@ -83,13 +83,13 @@ void InitAsyncModule(char fileName[])
       {
       AsyncVar[cnt] = raw[i];
       AsyncQueue[cnt++] = CreateQueue();
-      AsyncFileEnabled = true;
+      cfg.SetAsyncFileEnabled(true);
       }
     }
 
   AsyncVar[cnt] = NULL;
 
-  if (AsyncFileEnabled == false)
+  if (cfg.AsyncFileEnabled() == false)
     return;
 
   strcpy(tempName, fileName);
@@ -100,10 +100,10 @@ void InitAsyncModule(char fileName[])
     sprintf(buffer, "Async: Unable to destroy/create %s.\n", tempName);
     LogMessage(buffer);
     LogMessage("Disabling Async data processing, and continuing.\n");
-    AsyncFileEnabled = false;
+    cfg.SetAsyncFileEnabled(false);
     }
   else
-    if (ProductionRun)
+    if (cfg.ProductionRun())
       chmod(tempName, 0644);
     else
       chmod(tempName, 0666);

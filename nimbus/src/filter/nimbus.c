@@ -27,16 +27,14 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 Widget	AppShell;		/* The Main Application Shell */
 Widget	Shell000, MainWindow;
 Widget	Shell001, SetupWindow;
-Widget	Shell002, EditWindow;
-Widget	Shell003, TimeSliceWindow;
 
 XtAppContext context;
 
 
 Widget	CreateMainWindow(Widget parent);
 Widget	CreateSetupWindow(Widget parent);
-Widget	CreateEditWindow(Widget parent);
-Widget	CreateTimeSliceWindow(Widget parent);
+void	CreateEditWindow();
+void	CreateConfigWindow();
 void	CreatePauseWindows(Widget topLevel);
 
 #ifdef __cplusplus
@@ -59,7 +57,6 @@ int main(int argc, char *argv[])
 
   printf(NIMBUS_VERSION);
 
-
   n = 0;
   AppShell = XtAppInitialize(&context, APP_CLASS, NULL, 0, &argc, argv,
               fallback_resources, NULL, 0);
@@ -77,23 +74,8 @@ int main(int argc, char *argv[])
 
   SetupWindow = CreateSetupWindow(Shell001);
 
-  n = 0;
-  XtSetArg(args[n], XmNtitle, "Edit Variable"); n++;
-  XtSetArg(args[n], XmNiconName, "VarEdit"); n++;
-  XtSetArg(args[n], XmNtransientFor, Shell001); n++;
-  Shell002 = XtCreatePopupShell("editVariableShell", 
-              transientShellWidgetClass, AppShell, args, n);
-
-  EditWindow = CreateEditWindow(Shell002);
-/*
-  n = 0;
-  XtSetArg(args[n], XmNtitle, "Edit Time Slices"); n++;
-  XtSetArg(args[n], XmNtransientFor, Shell001); n++;
-  Shell003 = XtCreatePopupShell("timeSliceShell",
-              transientShellWidgetClass, AppShell, args, n);
-
-  TimeSliceWindow = CreateTimeSliceWindow(Shell003);
-*/
+  CreateEditWindow();
+  CreateConfigWindow();
 
   CreatePauseWindows(AppShell);
   CreateErrorBox(AppShell);
@@ -106,7 +88,7 @@ int main(int argc, char *argv[])
 
   signal(SIGUSR2, (void (*) (int))Quit);
 
-  if (Interactive)
+  if (cfg.Interactive())
   {
     GetDataDirectory(buffer);
 

@@ -99,7 +99,8 @@ void DespikeData(CircularBuffer *LRCB, int index)
 
   /* I don't expect to be doing despiking often, so let's check.
   */
-  if ((sdi_spike.size() == 0 && raw_spike.size() == 0) || RawData)
+  if ((sdi_spike.size() == 0 && raw_spike.size() == 0) ||
+      cfg.Despiking() == false)
     return;
 
   prev2_rec	= (NR_TYPE *)GetBuffer(LRCB, index-2);

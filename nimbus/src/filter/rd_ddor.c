@@ -39,7 +39,7 @@ void ReadDefaultDerivedOutputRate()
 
   for (i = 0; ddor[i]; ++i)
     if ((index = SearchTable(derived, ddor[i])) != ERR)
-      derived[index]->Default_HR_OR = LOW_RATE;
+      derived[index]->Default_HR_OR = Config::LowRate;
 
   FreeTextFile(ddor);
 

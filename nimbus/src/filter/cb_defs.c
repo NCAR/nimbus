@@ -113,8 +113,7 @@ void CreateEditDefaultsWindow()
   Widget	edFrame, edRC, b[2], defWin, defRC,
 		form[MAX_DEFAULTS], label[MAX_DEFAULTS];
 
-  extern Widget	AppShell;
-
+  extern Widget	Shell001, AppShell;
 
   n = 0;
   XtSetArg(args[n], XmNtitle, "Edit Defaults"); n++;

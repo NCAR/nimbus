@@ -251,7 +251,7 @@ int CheckForTimeGap(struct Hdr_blk *ADShdr, int initMode)
     UserBtim[i+1] = newTime;
 
 
-    if (ProcessingRate == LOW_RATE)
+    if (cfg.ProcessingRate() == Config::LowRate)
       UserBtim[i+1] += 2;
     else
       UserBtim[i+1] += 14;
@@ -287,7 +287,7 @@ void UpdateTime(NR_TYPE *record)
 
   sprintf(buffer, "%02d:%02d:%02d", hour, minute, second);
 
-  if (Interactive && second == 0)
+  if (cfg.Interactive() && second == 0)
     {
     XmTextFieldSetString(timeDisplayText, buffer);
     FlushXEvents();

@@ -25,17 +25,6 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #define MAX_DEFAULTS	256
 
 
-/* Modes			*/
-#define POST_PROCESSING		0
-#define REALTIME		1
-
-
-/* Processing Rates		*/
-#define SAMPLE_RATE		0
-#define LOW_RATE                1
-#define HIGH_RATE               25
-
-
 /* Nimbus Record Info		*/
 #define NR_TYPE float
 #define NR_SIZE sizeof(NR_TYPE)
@@ -196,9 +185,7 @@ extern std::vector<RAWTBL *> raw;
 extern std::vector<DERTBL *> derived;
 extern std::vector<DERTBL *> ComputeOrder;
 
-extern bool	LoadProductionSetupFile, ProductionRun, PauseFlag, QCenabled,
-		RawData,SynthData;
-extern size_t	ProcessingRate;
+extern bool	PauseFlag, SynthData;
 extern int	FlightNumberInt, PauseWhatToDo, Mode;
 extern char	buffer[];
 
@@ -216,6 +203,52 @@ int	AccessProjectFile(char filename[], char mode[]),
 	ReadTextFile(char filename[], char **list),
 	CheckForTimeGap(struct Hdr_blk *ADShdr, int initMode),
 	AccessProjectFile(char filename[], char mode[]);
+
+class Config
+{
+public:
+    enum ProcessingMode { PostProcessing, RealTime };
+    enum processingRate { SampleRate=0, LowRate=1, HighRate=25 };
+
+    Config();
+
+    bool Interactive()	{ return _interactive; }
+    bool Despiking()	{ return _despiking; }
+    bool TimeShifting()	{ return _timeShifting; }
+    bool QCenabled()	{ return _qcEnabled; }
+    bool ProcessingMode()	{ return _mode; }
+    bool ProductionRun()	{ return _productionRun; }
+    bool AsyncFileEnabled()	{ return _asyncFileEnabled; }
+    bool LoadProductionSetup()	{ return _loadProductionSetup; }
+    bool HoneyWellCleanup()	{ return _honeywellCleanup; }
+
+    processingRate ProcessingRate()	{ return _processingRate; }
+
+    void SetInteractive(bool state)	{ _interactive = state; }
+    void SetProductionRun(bool state)	{ _productionRun = state; }
+    void SetDespiking(bool state)	{ _despiking = state; }
+    void SetTimeShifting(bool state)	{ _timeShifting = state; }
+    void SetQCenabled(bool state)	{ _qcEnabled = state; }
+    void SetProcessingMode(bool state)	{ _mode = state; }
+    void SetAsyncFileEnabled(bool state)	{ _asyncFileEnabled = state; }
+    void SetLoadProductionSetup(bool state)	{ _loadProductionSetup = state; }
+    void SetHoneyWellCleanup(bool state)	{ _honeywellCleanup = state; }
+
+    void SetProcessingRate(processingRate pr)	{ _processingRate = pr; }
+
+private:
+    bool _interactive;
+    bool _productionRun;
+    bool _despiking;
+    bool _timeShifting;
+    bool _qcEnabled;
+    bool _mode;
+    bool _asyncFileEnabled;
+    bool _loadProductionSetup;
+    bool _honeywellCleanup;
+
+    processingRate _processingRate;
+};
 
 struct var_match_name
 {
@@ -297,6 +330,7 @@ void	SaveDefaults(FILE *fp),
 
 void	HandleError(char []);
 
+extern Config cfg;
 
 #ifdef __cplusplus
 extern "C" {

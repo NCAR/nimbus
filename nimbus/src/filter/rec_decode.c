@@ -53,7 +53,7 @@ void DecodeADSrecord(
     pos	= sp->SRstart;
 
     // Raw analog/digital bits/counts for WINDS display.
-    if (Mode == REALTIME)
+    if (cfg.ProcessingMode() == Config::RealTime)
       bits[sp->LRstart] = ntohs(lrp[0]);
 
     if (sp->type[0] == 'C')
