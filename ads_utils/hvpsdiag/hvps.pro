@@ -5,9 +5,9 @@
 CONFIG += debug
 TEMPLATE = app
 INCLUDEPATH += .
-INCLUDEPATH += /jnet/shared/include
+INCLUDEPATH += ${JLOCAL}/include
 
 # Input
 HEADERS += CanvasWindow.h DataPlot.h define.h extern.h
 SOURCES += CanvasWindow.cc DataPlot.cc error.cc global.cc hvpsdiag.cc init.cc
-LIBS += -L/jnet/linux/lib -lqwt -lraf++
+LIBS += -L${JLOCAL}/lib -lqwt -lraf++
