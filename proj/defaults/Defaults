@@ -36,9 +36,11 @@ THERM_COEFF	-2700.0
 DFLT_GAIN	-4.4913167e-5
 DFLT_OFFSET	31515.0
 # Digital signal coefficients
-A1              -5.6558e-5
-A2              2.0565e-6
-A4		1.2
+A1              -3.4563e-05,
+A2              -6.5242e-06,
+A3              0.0,
+A4              1.0955,
+A5              0.0;
 
 #
 # King Probe wire temperatures - PMS version
