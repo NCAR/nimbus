@@ -73,9 +73,13 @@ DataFile::DataFile(char fName[]) : fileName(fName)
 
   /* Scan variables for PMS1D vectors.
    */
-  for (i = 2; i < file->num_vars(); ++i)
+  for (i = 0; i < file->num_vars(); ++i)
     {
     avar = file->get_var(i);
+
+    if (strcmp(avar->name(), "base_time") == 0 ||
+        strcmp(avar->name(), "time_offset") == 0)
+      continue;
 
     if (avar->num_dims() >= 3 && validProbeName(avar->name()))
       {

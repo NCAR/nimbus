@@ -101,9 +101,12 @@ int ReadInputFile(char fileName[])
   FlightNumber = GetMemory(len);
   ncattget(InputFile, NC_GLOBAL, "FlightNumber", FlightNumber);
 
-  for (i = 1; i < nVars; ++i)
+  for (i = 0; i < nVars; ++i)
     {
     ncvarinq(InputFile, i, name, NULL, &nDims, dimIDs, NULL);
+
+    if (strcmp(name, "base_time") == 0)
+      continue;
 
     vp = Variable[nVariables++] = (VARTBL *)GetMemory(sizeof(VARTBL));
 

@@ -54,7 +54,7 @@ char	**argv;
 
   n = 0;
   AppShell = XtAppInitialize(&context, APP_CLASS, NULL, 0, &argc, argv,
-															NULL, NULL, 0);
+			fallback_resources, NULL, 0);
 
   n = 0;
   Shell000 = XtCreatePopupShell("topLevelShell", 

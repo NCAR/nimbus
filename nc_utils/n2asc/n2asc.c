@@ -10,10 +10,6 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
 REFERENCES:	Xwin.c, init.c then enters XtAppMainLoop()
 
 REFERENCED BY:	user
@@ -66,7 +62,7 @@ int main(int argc, char *argv[])
   MainWindow = CreateMainWindow(Shell000);
 
   n = 0;
-  XtSetArg(args[n], XmNiconName, "Nimbus"); n++;
+  XtSetArg(args[n], XmNiconName, "n2asc"); n++;
   Shell001 = XtCreatePopupShell("setupShell", 
 			topLevelShellWidgetClass, AppShell, args, n);
 

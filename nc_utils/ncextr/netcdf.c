@@ -83,9 +83,12 @@ char  fileName[];
   ncattget(InputFile, NC_GLOBAL, "TimeInterval", TimeInterval);
 
 
-  for (i = 2; i < nVars; ++i)
+  for (i = 0; i < nVars; ++i)
     {
     ncvarinq(InputFile, i, name, NULL, &nDims, dimIDs, NULL);
+
+    if (strcmp(name, "base_time") == 0 || strcmp(name, "time_offset") == 0)
+      continue;
 
     vp = Variable[nVariables++] = (VARTBL *)GetMemory(sizeof(VARTBL));
 
