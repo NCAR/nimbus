@@ -1,0 +1,38 @@
+.na
+.nh
+.TH ASC2CDF 1 "12 March 1998" "Local Command"
+.SH NAME
+asc2cdf \- ASCII to netCDF converter
+.SH SYNOPSIS
+asc2cdf [-b time_t] [-a] [-l] [-m] [-r n] [-s n] ASCII_file netCDF_file
+.SH DESCRIPTION
+.B asc2cdf 
+is program for uploading ASCII data into a netCDF file that follows the
+NCAR-RAF/nimbus conventions.  Files that are then useable by ncplot and
+the suite of nc* programs at RAF.  With no options, asc2cdf expects the
+file to look like something produced by n2asc.  A top row with variable
+names, and time in the HH:MM:SS format in the left column.
+.PP
+The -a option tells asc2cdf that the input file will be following the NASA
+Data Exchange Format (Ames).
+.PP
+The -l option tells asc2cdf that the input file will be following the NASA
+Data Exchange Format (Langley).
+.PP
+The -b option defines a base_time in Unix seconds since January 1st 1970. 
+This is useful when trying to merge data back into a netCDF file, where
+ncmerge(1) complains about no overlapping time segments.  The default value
+is 0.  This option has no affect when the -a or -l option is enabled.
+.PP
+The -r option defines the data rate.  Where the rate must be less than 1 Hz.
+n = 5 means 1 sample every 5 seconds.  The default is 1.
+.PP
+The -s option tells asc2cdf to skip 'n' lines before getting to the data.
+This option is ignored if -a or -l option has been specified.  The default is 1.
+.PP
+The -m option tells asc2cdf that time in the left column will be in
+seconds since midnight format (with rounding).  This is automatically
+turned on with the -a or -l option.
+.PP
+.SH AUTHOR
+Chris Webster, National Center for Atmospheric Research
