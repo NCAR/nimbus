@@ -78,7 +78,7 @@ project-name = vallib
 # !!! ultimately just in /home/local/bin ?
 val-guipath = -DVAL_GUIPATH=\"$(WINDS)/bin/qc-gui\"
 
-winput-includes = -I$(NIMBUS)/include -I${JLOCAL}/include \
+winput-includes = -I../../../include -I${JLOCAL}/include \
 		-I$(WINDS)/include
 
 #
