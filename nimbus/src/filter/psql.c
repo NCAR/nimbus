@@ -52,10 +52,12 @@ void SQLcommand(char command[]);
 /* -------------------------------------------------------------------- */
 bool InitSQL()
 {
-  int		i, nVars = 0;
+  int		i, j, nVars = 0, nDims, dims[3];
   PGresult	*res;
-  char		temp[5000], name[32];
+  char		temp[5000], temp1[100];
+
 printf("InitSQL\n");
+
   if (Mode == REALTIME)
     brdcst.openSock(UDP_BROADCAST);
 
@@ -79,10 +81,10 @@ printf("InitSQL\n");
   PQclear(PQexec(conn, "DROP TABLE PMS1D_list"));
   PQclear(PQexec(conn, "DROP TABLE PMS2D_list"));
   PQclear(PQexec(conn, "DROP TABLE RAF_1hz"));
-//  PQclear(PQexec(conn, "DROP TABLE current")); superceeded by globa_attr:endtime
+//  PQclear(PQexec(conn, "DROP TABLE current")); superceeded by global_attr:endtime
 
   PQclear(PQexec(conn, "CREATE TABLE Global_Attributes (key char(20) PRIMARY KEY, value char(120))"));
-  PQclear(PQexec(conn, "CREATE TABLE Variable_List (Name char(20) PRIMARY KEY, Units char(16), long_name char(80), SampleRateTable char(16), vector_length int, category char(16), missing_value float, data_quality char(16))"));
+  PQclear(PQexec(conn, "CREATE TABLE Variable_List (Name char(20) PRIMARY KEY, Units char(16), long_name char(80), SampleRateTable char(16), nDims int, dims int[], category char(16), missing_value float, data_quality char(16))"));
   PQclear(PQexec(conn, "CREATE TABLE PMS1D_list (Name char(20), SerialNumber char(16), SampleRateTable char(16), FirstBin INT, LastBin INT, CellSizes FLOAT[])"));
   PQclear(PQexec(conn, "CREATE TABLE PMS2D_list (Name char(20), SerialNumber char(16))"));
 
@@ -108,6 +110,10 @@ printf("InitSQL\n");
   sprintf(temp, "INSERT INTO global_attributes VALUES ('DateProcessed', '%s')", dateProcessed);
   PQclear(PQexec(conn, temp));
 
+printf("  starting variables.\n");
+
+  nDims = 1;
+  dims[0] = 1;
 
   for (i = 0; i < nsdi; ++i)
     {
@@ -115,15 +121,20 @@ printf("InitSQL\n");
     strcat(sql_str, " FLOAT, ");
     ++nVars;
 
-    sprintf(temp, "INSERT INTO Variable_List VALUES ('%s', '%s', '%s', 'RAF_%dhz', '%d', '%s', '-32767.0', 'Preliminary')",
-	sdi[i]->name, VarDB_GetUnits(sdi[i]->name), VarDB_GetTitle(sdi[i]->name),
-	sdi[i]->SampleRate, 1);
+    sprintf(temp, "INSERT INTO Variable_List VALUES ('%s', '%s', '%s', 'RAF_%dhz', '%d', '{%d}', '%s', '%f', 'Preliminary')",
+	sdi[i]->name, VarDB_GetUnits(sdi[i]->name),
+	VarDB_GetTitle(sdi[i]->name),
+	sdi[i]->SampleRate, nDims, dims[0], "None", MISSING_VALUE);
+
     PQclear(PQexec(conn, temp));
     fprintf(stderr, "%s", PQerrorMessage(conn));
     }
 
+printf("  done analog.\n");
+
   for (i = 0; i < nraw; ++i)
     {
+    char	name[64];
     if (isdigit(raw[i]->name[0]))	// Can't support vars starting with number.
       {
       name[0] = 'A';
@@ -171,38 +182,74 @@ printf("InitSQL\n");
     strcat(sql_str, name);
 
     if (raw[i]->Length > 1)
+    {
+      nDims = 2;
+      dims[1] = raw[i]->Length;
       strcat(sql_str, " FLOAT[], ");
+    }
     else
+    {
+      nDims = 1;
       strcat(sql_str, " FLOAT, ");
+    }
 
     ++nVars;
 
-    sprintf(temp, "INSERT INTO Variable_List VALUES ('%s', '%s', '%s', 'RAF_%dhz', '%d')",
+    sprintf(temp, "INSERT INTO Variable_List VALUES ('%s', '%s', '%s', 'RAF_%dhz', '%d', '{%d",
 	name, VarDB_GetUnits(raw[i]->name), VarDB_GetTitle(raw[i]->name),
-	raw[i]->SampleRate, raw[i]->Length);
+	raw[i]->SampleRate, nDims, dims[0]);
+
+    for (j = 1; j < nDims; ++j)
+      {
+      sprintf(temp1, ",%d", dims[j]);
+      strcat(temp, temp1);
+      }
+    sprintf(temp1, "}', 'None', '%f', 'Preliminary')", MISSING_VALUE);
+    strcat(temp, temp1);
+
     PQclear(PQexec(conn, temp));
     fprintf(stderr, "%s", PQerrorMessage(conn));
     }
+
+printf("  done raw.\n");
 
   for (i = 0; i < nderive; ++i)
     {
     strcat(sql_str, derived[i]->name);
 
     if (derived[i]->Length > 1)
+    {
+      nDims = 2;
       strcat(sql_str, " FLOAT[]");
+    }
     else
+    {
+      nDims = 1;
       strcat(sql_str, " FLOAT");
+    }
 
     if (i != nderive-1)
       strcat(sql_str, ", ");
     ++nVars;
 
-    sprintf(temp, "INSERT INTO Variable_List VALUES ('%s', '%s', '%s', 'RAF_%dhz', '%d')",
+    sprintf(temp, "INSERT INTO Variable_List VALUES ('%s', '%s', '%s', 'RAF_%dhz', '%d', '{%d",
 	derived[i]->name, VarDB_GetUnits(derived[i]->name),
-	VarDB_GetTitle(derived[i]->name), derived[i]->OutputRate, derived[i]->Length);
+	VarDB_GetTitle(derived[i]->name), derived[i]->OutputRate,
+        nDims, dims[0]);
+                                                                                
+    for (j = 1; j < nDims; ++j)
+      {
+      sprintf(temp1, ",%d", dims[j]);
+      strcat(temp, temp1);
+      }
+    sprintf(temp1, "}', 'None', '%f', 'Preliminary')", MISSING_VALUE);
+    strcat(temp, temp1);
+
     PQclear(PQexec(conn, temp));
     fprintf(stderr, "%s", PQerrorMessage(conn));
     }
+
+printf("  done derived.\n");
 
   strcat(sql_str, ")");
   PQclear(PQexec(conn, sql_str));
@@ -324,7 +371,6 @@ void WriteSQL(char timeStamp[])
     if (raw[i]->Length > 1)
       {
       strcpy(temp, "'{");
-//      sql_p += 2;
 
       for (j = 0; j < raw[i]->Length; ++j)
         {
@@ -332,7 +378,6 @@ void WriteSQL(char timeStamp[])
         if (j != raw[i]->Length-1)
           strcat(buffer, ",");
         strcat(temp, buffer);
-//        sql_p += strlen(buffer);
         }
 
       strcat(temp, "}',");
@@ -341,9 +386,8 @@ void WriteSQL(char timeStamp[])
       sql_p += len;
 
       strcpy(brd_p, &temp[1]);
-      brd_p += len-3;
-      strcpy(brd_p, ",");
-//      sql_p += 3;
+      brd_p += len-2;
+      strcpy(&brd_p[-1], ",");
       continue;
       }
 
@@ -366,7 +410,6 @@ void WriteSQL(char timeStamp[])
     if (derived[i]->Length > 1)
       {
       strcpy(temp, "'{");
-//      sql_p += 2;
 
       for (j = 0; j < derived[i]->Length; ++j)
         {
@@ -374,7 +417,6 @@ void WriteSQL(char timeStamp[])
         if (j != derived[i]->Length-1)
           strcat(buffer, ",");
         strcat(temp, buffer);
-//        sql_p += strlen(buffer);
         }
 
       strcat(temp, "}',");
@@ -383,9 +425,8 @@ void WriteSQL(char timeStamp[])
       sql_p += len;
 
       strcpy(brd_p, &temp[1]);
-      brd_p += len-3;
-      strcpy(brd_p, ",");
-//      sql_p += 3;
+      brd_p += len-2;
+      strcpy(&brd_p[-1], ",");
       continue;
       }
 
