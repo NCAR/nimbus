@@ -256,7 +256,7 @@ static void InitPMSdata()
         else
           PMS1Dprobe[i].width[j] = 1.0;
 
-        if (PMS1Dprobe[i].width[j] = 0.0)
+        if (PMS1Dprobe[i].width[j] == 0.0)
           PMS1Dprobe[i].width[j] = 1.0;
 
         p = strtok(NULL, " \t,");
