@@ -696,6 +696,7 @@
 #
 	"AKDF",		NULL,		NULL,		sakdf,
 	"AKRD",		NULL,		NULL,		sakrd,
+	"AQRATIO",	NULL,		NULL,		sratio,
 	"ATTACK",	NULL,		NULL,		sRefer,
 	"ALTX",		NULL,		NULL,		sRefer,
 	"CMRCR",	NULL,		NULL,		scmrcr,
