@@ -1,0 +1,53 @@
+.na
+.nh
+.TH NCAV 1 "08 Januaary 1998" "Local Command"
+.SH NAME
+ncav \- netCDF average utility
+.SH SYNOPSIS
+.B ncav [-r AveRate] [-m threshhold] [-b batchFile]
+.SH DESCRIPTION
+.B ncav 
+is a program for averageing netCDF data to less than 1 sample per second.
+.B AveRate
+may be any integer value greater than 1, representing the number if
+seconds to reduce to.  ncav provides a GUI similar to nimbus, where you may
+choose which variables to output.  To change the "output" of a variable,
+just double click on the variable.  You may also select many and then use
+CTRL-O to toggle them all at once.
+.PP
+By default ncav uses 10 as its AverageRate.  The default
+may be changed on the command line with the -r option.  
+.PP
+ncav does not include "missing_value" in the averages.  A "missing_value"
+can be placed in the file, if a certain percentage of values to be
+averaged are "missing_value".  The -m option allows you to specify the
+maximum percentage of missing_values to be accepted in a given averaging
+period.  The default value is 100%.
+.PP
+ncav supports batch files.  This is useful if you want to dump many files
+with the same setup.  A sample batch file follows (note all variables will
+be averaged, if no "var=" statements are found in the batchfile):
+.PP
+.nf
+if=/home/data/231RF10.cdf
+of=junk.asc
+ti=09:00:00-09:05:00
+.f
+.PP
+.SH EXAMPLE:
+.PP
+To change the default rate to 5 second averages, and specify that any sample
+period with more than 80% "missing_value"s for any variable, be replaced
+with "missing_value":
+.PP
+1024% ncav -r 5 -t 80
+.PP
+.SH BUGS:
+.PP
+ncav doesn't do minute roll-overs gracefully (e.g. if you run n2asc
+after ncav, the time stamp printed during a roll-over can be wrong).  Make
+sure to choose an averaging rate that divides into 60 seconds evenly, and
+make sure your start time starts on the beginning of a minute (e.g. 23:07:00).
+.PP
+.SH AUTHOR
+Chris Webster, National Center for Atmospheric Research

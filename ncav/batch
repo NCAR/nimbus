@@ -1,0 +1,4 @@
+if=/home/data/130rf17.cdf
+of=/home/data/ncav.cdf
+ti=23:00:00-23:30:00
+var=atx
