@@ -351,13 +351,17 @@ void DoWinputShmemStuff()
 /*
 get desired size of shared memory, AFTER project # established
 */
- {
- int size;
- if ((size=get_config_parm(SHMEM_SEX))==ERROR)
-  set_shmem_size(DEFAULT_SHMEM_SEX);
- else
-  set_shmem_size(size);
- }
+  {
+  int size;
+
+  if ((size = get_config_parm(SHMEM_SEX)) == ERROR)
+  {
+fprintf(stderr, "DoWinputShmemStuff calling set_shmem_Size with %d\n", DEFAULT_SHMEM_SEX);
+    set_shmem_size(DEFAULT_SHMEM_SEX);
+  }
+  else
+    set_shmem_size(size);
+  }
 
 /*
 establish shared memory, AFTER shmem size established

@@ -61,7 +61,7 @@
 #define WINDCOMM_PIDKEY    19 /* process id for windComm process */
 #define INPUT_PIDKEY 	   20 /* process id for input process */
 
-#define DEFAULT_SHMEM_SEX 7200  /* seconds stored in shared mem default */
+#define DEFAULT_SHMEM_SEX 14400  /* seconds stored in shared mem default */
 
 #define RWUGO 0666          /* mask for creation of shared mem ids */
 

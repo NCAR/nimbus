@@ -16,7 +16,7 @@ array and menus
 /* 
 how many plot setups are possible by default
 */
-#define DEFAULT_MAX_SETUPS 75           
+#define DEFAULT_MAX_SETUPS 200
 /* 
 special code for calibration window 
 */

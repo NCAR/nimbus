@@ -1,4 +1,4 @@
-#!/bin/csh -f
+#!/bin/csh
 #
 # request_winds <WindsServer> <Display1> [-P] [<Display2> [-P] ...] 
 #
@@ -13,6 +13,12 @@
 #
 # check for winds server on net. Wait for 5 minutes.
 #
+
+set host = `hostname -s`
+source $LOCAL/scripts/SetAirplanesAndHosts
+set one_host = $host
+source $LOCAL/scripts/AskHostForWindsServer
+
 if ( ! ($?WindsServer) ) then
  echo ""
  echo "WARNING: can't determine WINDS Server. Cannot proceed with request"
