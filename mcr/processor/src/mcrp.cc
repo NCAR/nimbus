@@ -43,15 +43,15 @@ main(int argc, char *argv[])
 
   nice(4);
 
-  cout << "RAF MCR processor.\n\n";
+  std::cout << "RAF MCR processor.\n\n";
 
-  cout << "Enter MCR file name (e.g. /jnet/data/101rf05) :";
+  std::cout << "Enter MCR file name (e.g. /jnet/data/101rf05) :";
   gets(mcrFileName);
 
-  cout << "Enter netCDF file name (e.g. /jnet/productiondata/101rf05) :";
+  std::cout << "Enter netCDF file name (e.g. /jnet/productiondata/101rf05) :";
   gets(netCDFfileName);
 
-  cout << "Enter output file name (e.g. /jnet/data/MCRrf16) :";
+  std::cout << "Enter output file name (e.g. /jnet/data/MCRrf16) :";
   gets(outputFileName);
 /*
 strcpy(mcrFileName, "/jnet/data/migs/krista/101rf01");
@@ -65,7 +65,7 @@ strcpy(outputFileName, "/jnet/data/cjw");
     strcat(netCDFfileName, ".nc");
 
 
-  cout << "Which channels would you like processed (e.g. 13456) :";
+  std::cout << "Which channels would you like processed (e.g. 13456) :";
   gets(buffer);
 
   for (i = 0; i < N_CHANNELS; ++i)
@@ -102,7 +102,7 @@ file->NextMCRRecord(&mcrRec);
     if (!netCDF.NextTimeSegment(StartTime, EndTime))
       break;
 
-    cout << "Processing " << StartTime.c_str() << " - " << EndTime.c_str()
+    std::cout << "Processing " << StartTime.c_str() << " - " << EndTime.c_str()
 		<< ".\n locating first MCR record.\n";
 
     // Get to start of segment.
@@ -112,24 +112,24 @@ file->NextMCRRecord(&mcrRec);
       if (file->NextMCRRecord(&mcrRec) == false)
         if (NextMCRfile() == false)
           {
-          cerr<<"Failed to locate start of segment at "<<StartTime.c_str()<<"\n";
+          std::cerr<<"Failed to locate start of segment at "<<StartTime.c_str()<<"\n";
           return(0);
           }
         else
-          cerr << "Next MCR file " << currTime.c_str() << "\n";
+          std::cerr << "Next MCR file " << currTime.c_str() << "\n";
       }
 
-cout << " pos = " << file->filePos() << ", @ " << currTime.c_str() << "\n";
+std::cout << " pos = " << file->filePos() << ", @ " << currTime.c_str() << "\n";
     prevTime = currTime - 1;
 
     OutFile	outFile(outputFileName, StartTime, EndTime);
     outFile.WriteHeader(file->hdr, netCDF);
 
-    cout << " starting processing.\n";
+    std::cout << " starting processing.\n";
 
     do
       {
-      cout << " \r" << currTime.c_str(); fflush(stdout);
+      std::cout << " \r" << currTime.c_str(); fflush(stdout);
 
       if (currTime != prevTime + 1 && (prevTime != 86399L && currTime != 0))
         {
@@ -150,7 +150,7 @@ cout << " pos = " << file->filePos() << ", @ " << currTime.c_str() << "\n";
           tpTime = currTime;
           }
 
-        cerr << "\nA time anomaly has occured, @ " << prevTime.c_str() <<
+        std::cerr << "\nA time anomaly has occured, @ " << prevTime.c_str() <<
 		", advancing to " << currTime.c_str() << ".\n";
 
         outFile.IncrementCurrentScan(netCDF.GSpeed() * (currTime - prevTime));
@@ -213,7 +213,7 @@ cout << " pos = " << file->filePos() << ", @ " << currTime.c_str() << "\n";
     while ((currTime = file->HdrBlkToSeconds(mcrRec)) <= EndTime ||
 		(StartTime > EndTime && currTime > 70000));
 
-    cout << "\n cleaning up file.\n"; fflush(stdout);
+    std::cout << "\n cleaning up file.\n"; fflush(stdout);
     outFile.InterpMissingData(processChannel);
     }
   while (1);
@@ -229,7 +229,7 @@ static bool NextMCRfile()
 
   file = new ADS_DataFile(mcrFileName);
 
-  cout << "   \nChanging to MCR file " << mcrFileName << ".\n";
+  std::cout << "   \nChanging to MCR file " << mcrFileName << ".\n";
 
   return(file->FirstMCRRecord(&mcrRec));
 

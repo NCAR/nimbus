@@ -14,7 +14,7 @@ AircraftData::AircraftData(const char fileName[])
 
   if (!file->is_valid())
     {
-    cerr << "Unable to open netCDF file " << fileName << ".\n";
+    std::cerr << "Unable to open netCDF file " << fileName << ".\n";
     return;
     }
 
@@ -139,23 +139,23 @@ void AircraftData::SearchStraightAndLevel()
 
   nRecords = file->rec_dim()->size();
 
-  cout << "Number records in netCDF = " << nRecords << ".\n";
-  cout << "Reading data" << flush;
+  std::cout << "Number records in netCDF = " << nRecords << ".\n";
+  std::cout << "Reading data" << std::flush;
 
   wp3 = file->get_var("WP3")->values();
-  cout << "." << flush;
+  std::cout << "." << std::flush;
 
   alt = file->get_var("PALT")->values();
-  cout << "." << flush;
+  std::cout << "." << std::flush;
 
   roll = file->get_var("ROLL")->values();
-  cout << "." << flush;
+  std::cout << "." << std::flush;
 
   gspd = file->get_var("GSF")->values();
-  cout << ".\n" << flush;
+  std::cout << ".\n" << std::flush;
 
   track = file->get_var("TKAT")->values();
-  cout << ".\n" << flush;
+  std::cout << ".\n" << std::flush;
 
 
   for (i = 180; i < nRecords; ++i)
@@ -168,7 +168,7 @@ void AircraftData::SearchStraightAndLevel()
 
   if (i == nRecords)
     {
-    cerr << "Never surpassed " << startALT << " meters, exiting....\n";
+    std::cerr << "Never surpassed " << startALT << " meters, exiting....\n";
     exit(1);
     }
 
@@ -180,7 +180,7 @@ void AircraftData::SearchStraightAndLevel()
 	hour->as_short(0), minute->as_short(0), second->as_short(0));
 
 
-  cout << "\t\t\tMean    Sigma       Min        Max\n";
+  std::cout << "\t\t\tMean    Sigma       Min        Max\n";
 
   do
     {
@@ -248,20 +248,20 @@ void AircraftData::SearchStraightAndLevel()
         break;
 
       altMean += alt->as_float(i);
-      altMin = min(altMin, alt->as_float(i));
-      altMax = max(altMax, alt->as_float(i));
+      altMin = std::min(altMin, alt->as_float(i));
+      altMax = std::max(altMax, alt->as_float(i));
 
       hdgMean += roll->as_float(i);
-      hdgMin = min(hdgMin, roll->as_float(i));
-      hdgMax = max(hdgMax, roll->as_float(i));
+      hdgMin = std::min(hdgMin, roll->as_float(i));
+      hdgMax = std::max(hdgMax, roll->as_float(i));
 
       spdMean += gspd->as_float(i);
-      spdMin = min(spdMin, gspd->as_float(i));
-      spdMax = max(spdMax, gspd->as_float(i));
+      spdMin = std::min(spdMin, gspd->as_float(i));
+      spdMax = std::max(spdMax, gspd->as_float(i));
 
       trackMean += track->as_float(i);
-      trackMin = min(trackMin, track->as_float(i));
-      trackMax = max(trackMax, track->as_float(i));
+      trackMin = std::min(trackMin, track->as_float(i));
+      trackMax = std::max(trackMax, track->as_float(i));
 
       if (fabs(wp3->as_float(i)) >= delta_wp3)
         ++wp3Cnt;
@@ -311,7 +311,7 @@ void AircraftData::SearchStraightAndLevel()
 
     if (alt->as_float(i) < 200.0)
       {
-      cout << ", broken by low altitude.";
+      std::cout << ", broken by low altitude.";
 
       while (alt->as_float(++i) < 200.0)
         ;
@@ -320,18 +320,18 @@ void AircraftData::SearchStraightAndLevel()
     if (wp3Cnt == 15)
       {
       i += 15;
-      cout << ", broken by Altitude.";
+      std::cout << ", broken by Altitude.";
       }
     else
     if (rollCnt == 5)
       {
       i += 5;
-      cout << ", broken by Roll.";
+      std::cout << ", broken by Roll.";
       }
     else
       {
       i++;
-      cout << ", broken possibly by time gap.\n";
+      std::cout << ", broken possibly by time gap.\n";
       }
 
     meanTrack[nSegs] = trackMean;

@@ -51,7 +51,7 @@ OutFile::OutFile(const char fileName[], FlightClock& start, FlightClock& end)
 
   if ((outFP = fopen(outName, "w+b")) == NULL)
     {
-    cerr << "Can't open output file " << outName << ".\n";
+    std::cerr << "Can't open output file " << outName << ".\n";
     }
 
   startPos = sizeof(MCR_HDR) + (sizeof(MCR_CHAN_INFO) * N_CHANNELS);
@@ -126,9 +126,9 @@ void OutFile::WriteHeader(Header *ADSheader, AircraftData& acData)
   nextRec.recHdr.pixWidth = pixWidth;
   nextRec.recHdr.pixLength = pixLength;
 
-cout << "  file(R, C) = " << nOutRecords*4 << ", " << nPixInWidth << "\n";
-cout << "  pix(W, L) = " << pixWidth << ", " << pixLength << "\n";
-cout << "  recLength = " << recLength << "\n";
+std::cout << "  file(R, C) = " << nOutRecords*4 << ", " << nPixInWidth << "\n";
+std::cout << "  pix(W, L) = " << pixWidth << ", " << pixLength << "\n";
+std::cout << "  recLength = " << recLength << "\n";
 
   nOutRecords = 0;
 
@@ -153,8 +153,8 @@ void OutFile::ApplyScanToFile(DataBuffer *scans[], AircraftData& acData)
     // records we need.
     for (i = 0; i < scans[0]->nSamplesPerScan[scan]; ++i)
       {
-      minMeters = min(minMeters, scans[0]->scan[scan][i].y);
-      maxMeters = max(maxMeters, scans[0]->scan[scan][i].y);
+      minMeters = std::min(minMeters, scans[0]->scan[scan][i].y);
+      maxMeters = std::max(maxMeters, scans[0]->scan[scan][i].y);
       }
 
     // First time through determine recordOffset, we don't want 50 records
@@ -190,7 +190,7 @@ void OutFile::ApplyScanToFile(DataBuffer *scans[], AircraftData& acData)
       if (idx < 0 || idx >= nPixInWidth)
         continue;
 
-      lastRecUsed = max(whichRec, lastRecUsed);
+      lastRecUsed = std::max(whichRec, lastRecUsed);
 
       for (chan = 0; chan < N_CHANNELS; ++chan)
         {
@@ -227,19 +227,19 @@ FILE	*char_fp = fopen("/home/data/charFile", "w+");
 
   if ((data = new char [N_RECS * recLength]) == NULL)
     {
-    cerr << "OutFile::CleanUpFile: out of memory\n";
+    std::cerr << "OutFile::CleanUpFile: out of memory\n";
     exit(1);
     }
 
   if ((data1 = new char [N_RECS * recLength]) == NULL)
     {
-    cerr << "OutFile::CleanUpFile: out of memory\n";
+    std::cerr << "OutFile::CleanUpFile: out of memory\n";
     exit(1);
     }
 
 
   startRecNum = 0;
-  endRecNum = min(nOutRecords, (long)N_RECS);
+  endRecNum = std::min(nOutRecords, (long)N_RECS);
 
   inP = (struct _recP *)data1;
   outP = (struct _recP *)data;
@@ -348,7 +348,7 @@ void OutFile::FlushRecords()
       {
       if (errno == ENOSPC)
         {
-        cerr << "\nERROR: Disk full.\n";
+        std::cerr << "\nERROR: Disk full.\n";
         exit(1);
         }
       }
@@ -387,7 +387,7 @@ void OutFile::LoadRecords(int start, int end)
 
   if ((data = new char [nRecords * recLength]) == NULL)
     {
-    cerr << "OutFile::LoadRecords: out of memory\n";
+    std::cerr << "OutFile::LoadRecords: out of memory\n";
     exit(1);
     }
 
@@ -395,10 +395,10 @@ void OutFile::LoadRecords(int start, int end)
 
   if (ftell(outFP) != startPos + (firstRecord * recLength))
     {
-    cerr << "fseek failure, current pos " << ftell(outFP) << ", requested "
+    std::cerr << "fseek failure, current pos " << ftell(outFP) << ", requested "
 	<< startPos + (firstRecord * recLength) << ".\n";
 
-    cerr << startPos << " + " << firstRecord << " * " << recLength << "\n";
+    std::cerr << startPos << " + " << firstRecord << " * " << recLength << "\n";
     }
 
   if ((rc = fread(data, recLength, nRecords, outFP)) != nRecords)

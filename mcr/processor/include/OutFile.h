@@ -27,7 +27,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 #include <cfloat>
 #include <cmath>
 #include <cstdio>
-#include <iostream.h>
+#include <iostream>
 #include <string>
 #include <algorithm>
 

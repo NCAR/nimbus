@@ -110,7 +110,7 @@ void ValTest::error_handle(ValErrorMsg val_msg, char *current_timestr,
 
     if(!socket_msg)
     {
-	cerr << "QC: ValTest::error_handle(): memory alloc error\n";
+	std::cerr << "QC: ValTest::error_handle(): memory alloc error\n";
 	return;
     }
 
@@ -157,7 +157,7 @@ void ValTest::error_handle(ValErrorMsg val_msg, char *current_timestr,
 
         if(!time_queue.enqueue(current_elapsed))
 	{
-	    cerr << "QC: error allocating queue entry for last2min\n";
+	    std::cerr << "QC: error allocating queue entry for last2min\n";
 	    delete socket_msg;
 	    return;
 	}
@@ -200,20 +200,21 @@ void ValTest::error_handle(ValErrorMsg val_msg, char *current_timestr,
     // deallocates dynamic memory.. (unparanthetical dynamic memory -- yuck)
     val_socket->Send(socket_msg);
 #endif // VAL_USEGUI
-    
+
+char buffer[200];
 
 #ifdef VAL_DISKLOG
-    val_disklog->form("%s %-10s --> %s\n", 
-		      socket_msg->Timestamp,
-		      vars[0].get_name(), 
-		      socket_msg->message);
+    sprintf(buffer, "%s %-10s --> %s\n",
+        socket_msg->Timestamp, vars[0].get_name(), socket_msg->message);
+
+//    val_disklog << std::string(buffer);
 #endif
 
 #ifdef VAL_DIAGS
-    cout.form("QC: vallib: %s %-10s --> %s\n", 
-	      socket_msg->Timestamp,
-	      vars[0].get_name(), 
-	      socket_msg->message);
+    sprintf(buffer, "QC: vallib: %s %-10s --> %s\n", 
+	socket_msg->Timestamp, vars[0].get_name(), socket_msg->message);
+
+    std::cout << std::string(buffer);
 #endif
 
 
@@ -334,7 +335,7 @@ boolean ValVarref::get_winput_SR_range(WinputDatavalue *dest,
       //   break;
 
       default:
-	cerr << "QC: ValVarref::get_winput_SR_range(): invalid type\n";
+	std::cerr << "QC: ValVarref::get_winput_SR_range(): invalid type\n";
 	return false;
     }
 
@@ -429,7 +430,7 @@ boolean ValVarref::get_winput_HR_range(WinputDatavalue *dest,
 	break;
 
       default:
-	cerr << "QC: ValVarref::get_winput_HR_range(): invalid type\n";
+	std::cerr << "QC: ValVarref::get_winput_HR_range(): invalid type\n";
 	return FALSE;
     }
 
@@ -609,7 +610,7 @@ ValTestRtn ValTestLevel::test(char *current_timestr, int current_elapsed)
 
     if(!history)
     {
-	cerr << "QC: ValTestLevel::test(): out of memory -- error ignored\n";
+	std::cerr << "QC: ValTestLevel::test(): out of memory -- error ignored\n";
 	return VAL_PASSED;    // don't have a return type for memory failure
     }
     

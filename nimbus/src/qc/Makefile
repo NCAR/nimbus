@@ -72,7 +72,7 @@ release:
 # install files in their appropriate WINPUT/WINDS destinations
 #
 install:
-	cp gui/qc-gui $(WINDS)/bin
-	cp vallib/libval.a $(NIMBUS)/lib
-	cp vallib/qc.h $(NIMBUS)/include
+	cp vallib/qc.h ../../include
+	cp vallib/libval.a ../../lib
 	cp man/qc.l /usr/local/man/manl
+	cp gui/qc-gui $(WINDS)/bin

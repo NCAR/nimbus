@@ -18,6 +18,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998-2001
 
 #include "DataBuffer.h"
 
+#include <cstring>
 
 /* -------------------------------------------------------------------- */
 DataBuffer::DataBuffer(Header *hdr, int chan) : channel(chan), adsHdr(hdr)
@@ -302,7 +303,8 @@ void DataBuffer::ClearAllScans()
 /* -------------------------------------------------------------------- */
 void DataBuffer::RemoveFullScans()
 {
-  scan[0] = scan[scanIdx];
+  memcpy(	(void *)scan[0], (void *)scan[scanIdx],
+		sizeof(struct bit) * MAX_SAMPLES);
   scanIdx = 0;
 
 }       /* END REMOVEFULLSCANS */

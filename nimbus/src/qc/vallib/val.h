@@ -13,9 +13,9 @@
 #define VAL_H
 
 #include <time.h>
-#include <fstream.h>
+#include <fstream>
 #include <stdarg.h>
-#include <string>
+#include <cstring>
 #include "stddefs.h"
 #include "valqueue.h"
 
@@ -254,7 +254,7 @@ class ValTest
     virtual char *get_name(void) = 0;    
 
     // write out a string containing the validation test params (for diags)
-    virtual void out_params(ostream &str) = 0;
+    virtual void out_params(std::ostream &str) = 0;
 
     void error_handle(ValErrorMsg error_msg, char *current_timestr,
 		      int current_elapsed); 
@@ -286,7 +286,7 @@ class ValTestRange : public ValTest
 
     char *get_name(void) { return "range"; }
 
-    void out_params(ostream &str) 
+    void out_params(std::ostream &str) 
        { str << low_thresh << " " << high_thresh << " " << highprio_delta; }
 };
 
@@ -315,7 +315,7 @@ class ValTestFlatline : public ValTest
 
     char *get_name(void) { return "flatline"; }
 
-    void out_params(ostream &str)
+    void out_params(std::ostream &str)
        { str << min_var_low << " " << min_var_high; }
 };
 
@@ -350,7 +350,7 @@ class ValTestLevel : public ValTest
 
     char *get_name(void) { return "level"; }
  
-    void out_params(ostream &str)
+    void out_params(std::ostream &str)
        { str << min_slope << " " << min_shift << " " << spike_peak_maxintvls 
 	 << " " << spike_rtn_slack; }
 };
@@ -378,7 +378,7 @@ class ValTestLevel : public ValTest
 #endif
 
 #ifdef VAL_DISKLOG
-   ofstream *val_disklog;
+   std::ofstream *val_disklog;
 #endif
 
 
@@ -395,7 +395,7 @@ class ValTestLevel : public ValTest
 #endif
 
 #ifdef VAL_DISKLOG
-   extern ofstream *val_disklog;
+   extern std::ofstream *val_disklog;
 #endif
 
 #endif  // outer ifdef VAL_C -------------------------------------------------

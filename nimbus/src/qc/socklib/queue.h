@@ -1,7 +1,7 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
-#include <iostream.h>
+#include <iostream>
 #include "message.h"
 
 

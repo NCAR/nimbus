@@ -23,8 +23,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 
 #include <cfloat>
 #include <cmath>
-#include <iostream.h>
-#include <string>
+#include <iostream>
 #include <algorithm>
 
 #define MAX_SEGS	128

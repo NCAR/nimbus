@@ -71,7 +71,7 @@ project-name = vallib
 # -DVAL_DISKLOG       --> turn on disk logging
 
 #val-mode = -DVAL_DIAGS -DVAL_USEGUI -DVAL_DISKLOG
-val-mode = -DVAL_USEGUI -DVAL_DISKLOG
+#val-mode = -DVAL_USEGUI -DVAL_DISKLOG
 #val-mode = -DVAL_DISKLOG
 
 

@@ -45,7 +45,7 @@ static float	*atx, *psx;	// Temp & pressure from netCDF file (whole flight).
 
 static float counts1[] = { 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 3, 3, 3, 3, 1, 2, 2, 1, 2, 4, 7, 6, 5, 8, 8, 5, 7, 14, 12, 9, 12, 11, 12, 14, 12, 6, 11, 8, 16, 8, 8, 11, 5, 9, 5, 3, 13, 17, 22, 14, 12, 19, 27, 41, 61, 92, 108, 91, 78, 44, 65, 91, 84, 79, 77, 61, 79, 84, 80, 78, 78, 77, 114, 86, 69, 48, 68, 93, 126, 109, 77, 67, 27, 27, 20, 8, 8, 13, 10, 7, 10, 4, 8, 11, 16, 7, 11, 8, 20, 16, 11, 16, 8, 17, 18, 7, 8, 8, 6, 9, 4, 3, 9, 3, 8, 5, 5, 3, 3, 1, 1, 2, 5, 3, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, -99 };
 
-using namespace std;
+//using namespace std;
 
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
@@ -64,18 +64,18 @@ int main(int argc, char *argv[])
     pigeon = false;
    
 
-  cout << "Enter RDMA counts file [ /jnet/data/181rf01.cnts.rdma ] :";
-  cin >> counts_filename;
+  std::cout << "Enter RDMA counts file [ /jnet/data/181rf01.cnts.rdma ] :";
+  std::cin >> counts_filename;
 
 //strcpy(counts_filename, "/jnet/data/161rf09");
-//cout << " WARNING !!!!!  Filename is fixed at " << counts_filename;
+//std::cout << " WARNING !!!!!  Filename is fixed at " << counts_filename;
 
   if (strstr(counts_filename, ".cnts.rdma") == NULL)
     strcat(counts_filename, ".cnts.rdma");
 
   std::ifstream	counts_file(counts_filename);
 
-  cout << "\n";
+  std::cout << "\n";
 
   counts_file >> netCDF_filename; 
   ReadNetCDF(netCDF_filename);
@@ -104,7 +104,7 @@ for (i = 2; counts1[i] != -99; ++i)
     sprintf(pressure, "%f", fixed_psx);
 #endif
 
-cout << "--------------------------\n" << date << " " << time << "\n";
+std::cout << "--------------------------\n" << date << " " << time << "\n";
 
     i = 0;
     do
@@ -133,7 +133,7 @@ void processScan(char date[], char time[], float counts[])
 
   strcpy(buffer, getenv("DATA_DIR"));
   strcat(buffer, "/rdma/dma/inv/stored/param.txt");
-  ofstream	parmFP(buffer, ios::trunc);
+  std::ofstream	parmFP(buffer, std::ios::trunc);
 
   parmFP << "60\n1\n0.49\n0.49\n4.98\n4.98\n0.88\n5000\n25\n1\n1\n25\n18\n1\n5\n" << temperature << "\n" << pressure << "\n";
 
@@ -142,7 +142,7 @@ void processScan(char date[], char time[], float counts[])
 
   strcpy(buffer, getenv("DATA_DIR"));
   strcat(buffer, "/rdma/dma/inv/input/counts.txt");
-  ofstream	cntsFP(buffer, ios::trunc);
+  std::ofstream	cntsFP(buffer, std::ios::trunc);
 
   cntsFP << "1\n";
 
@@ -190,7 +190,7 @@ void readNewScan(char time[], float counts[])
   press = atof(pressure);
   temp = atof(temperature);
 
-  ifstream inFP(buffer);
+  std::ifstream inFP(buffer);
 
   if (inFP.is_open() == false)
   {
@@ -218,8 +218,8 @@ void readNewScan(char time[], float counts[])
 
     thisTime = time;
 
-//cout << "   " << startTime.c_str() << " " << thisTime.c_str() << "\n";
-//cout << "   " << thisTime - startTime << "\n";
+//std::cout << "   " << startTime.c_str() << " " << thisTime.c_str() << "\n";
+//std::cout << "   " << thisTime - startTime << "\n";
 
     recordNumber = thisTime - startTime;
     if (recordNumber < 0)
@@ -227,7 +227,7 @@ void readNewScan(char time[], float counts[])
 
     if (recordNumber > 43200)
       continue;
-//cout << "   " << recordNumber << "\n";
+//std::cout << "   " << recordNumber << "\n";
 
     start[0] = recordNumber; start[1] = start[2] = 0;
     count[0] = count[1] = 1; count[2] = 64;
@@ -279,7 +279,7 @@ printf("\n");
         if (oc >= N_IN_BINS)
           break; 
 
-        oc = min(oc-2, N_IN_BINS-4);
+        oc = std::min(oc-2, N_IN_BINS-4);
         f = polyinterp(&diameter[oc], &concentration[oc], 4, midDiam[nc]);
 /*
         // Avoid letting things go below zero.
@@ -287,7 +287,7 @@ printf("\n");
           if (concentration[oc+1] < 1.0 && concentration[oc+2] < 1.0)
             f = 0.0;
           else
-            f = min(concentration[oc+1], concentration[oc+2]);
+            f = std::min(concentration[oc+1], concentration[oc+2]);
 */
         concOut[nc] = f;
         }
@@ -328,7 +328,7 @@ printf("iConc=%f, oConc=%f, nConc=%f\n", inConc, oldTotalConc, newTotalConc);
 
     conc->set_cur(start);
     conc->put(&newTotalConc, 1);
-printf("%d %f\n", start[0], newTotalConc);
+printf("%ld %f\n", start[0], newTotalConc);
     }
 
   inFP.close();
@@ -352,7 +352,7 @@ void ReadNetCDF(char fileName[])
 
   if (netCDF_file->is_valid() == false)
   {
-    cerr << "Can't open " << fileName << "\n";
+    std::cerr << "Can't open " << fileName << "\n";
     exit(1);
   }
 
@@ -412,7 +412,7 @@ void ReadNetCDF(char fileName[])
 
   if (avar == 0 || cvar == 0 || conc == 0)
   {
-    cerr << "ReadNetCDF: ARDMA or CRDMA or CONCR_FCR not found.\n";
+    std::cerr << "ReadNetCDF: ARDMA or CRDMA or CONCR_FCR not found.\n";
     exit(1);
   }
 
@@ -437,7 +437,7 @@ void ReadNetCDF(char fileName[])
   }
   else
   {
-    cerr << stderr, "rdmap: CellSizes attribute not found.\n";
+    std::cerr << "rdmap: CellSizes attribute not found.\n";
     exit(1);
   }
 
@@ -456,7 +456,7 @@ void ReadNetCDF(char fileName[])
   }
   else
   {
-    cerr << "ReadNetCDF: No ATX variable\n";
+    std::cerr << "ReadNetCDF: No ATX variable\n";
     exit(1);
   }
 
@@ -467,7 +467,7 @@ void ReadNetCDF(char fileName[])
   }
   else
   {
-    cerr << "ReadNetCDF: No PSXC variable\n";
+    std::cerr << "ReadNetCDF: No PSXC variable\n";
     exit(1);
   }
 

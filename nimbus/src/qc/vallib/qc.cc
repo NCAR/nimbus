@@ -35,7 +35,7 @@
 
 #include <time.h>
 #include <unistd.h>
-#include <fstream.h>
+#include <fstream>
 #include "stddefs.h"
 #include "val.h"
 #include "qc.h"
@@ -117,12 +117,12 @@ int qc_rt_init(void)
 #endif
 
 #ifdef VAL_USEGUI
-    cout << "QC: GUI use is enabled and will be executed\n";
+    std::cout << "QC: GUI use is enabled and will be executed\n";
 #else
-    cout << "QC: GUI is _disabled_\n";
+    std::cout << "QC: GUI is _disabled_\n";
 #endif
 
-    cout << "QC: winput: reading configuration file:\n";
+    std::cout << "QC: winput: reading configuration file:\n";
 
     if(rt_parse_configfile() == FALSE)
       return ERR;
@@ -145,8 +145,8 @@ int qc_rt_init(void)
 		 VAL_FLATLINESTR,
 		 NULL) == -1)
 	{
-	    cerr.form("QC: qc_rt_init(): GUI execution failed: path=%s\n",
-		      VAL_GUIPATH);
+	    std::cerr << "QC: qc_rt_init(): GUI execution failed: path="
+		      << VAL_GUIPATH << std::endl;
 	    exit(1);
 	}
 
@@ -160,29 +160,29 @@ int qc_rt_init(void)
 
     if(!val_socket)
     {
-	cerr << "QC: qc_rt_init(): error allocating Report class\n";
+	std::cerr << "QC: qc_rt_init(): error allocating Report class\n";
 
 	return ERR;    // abort
     }
 
     if(val_socket->error_constructing)
     {
-	cerr << "QC: qc_rt_init(): error in socket construction\n";
+	std::cerr << "QC: qc_rt_init(): error in socket construction\n";
 	return ERR;    // abort 
     }
       
 
-    cout << "QC: winput: waiting for gui to come up\n";
+    std::cout << "QC: winput: waiting for gui to come up\n";
     sleep(2); 
 #endif
 
 
 #ifdef VAL_DISKLOG
-    val_disklog = new ofstream(QC_DISKLOGNAME);
+    val_disklog = new std::ofstream(QC_DISKLOGNAME);
 
     if(!val_disklog)
     {
-	cerr << "QC: qc_rt_init():  error allocating disklog class\n";
+	std::cerr << "QC: qc_rt_init():  error allocating disklog class\n";
 
 #ifdef VAL_USEGUI
 	delete val_socket;
@@ -192,7 +192,7 @@ int qc_rt_init(void)
     }
 
     time(&current_time);
-    val_disklog->form("qc validation library disk log\n");
+    val_disklog << "qc validation library disk log\n";
     val_disklog->form("opened:  %s\n\n", ctime(&current_time));
 #endif
 
@@ -252,7 +252,7 @@ int qc_rt_exec(void)
         // something analogous to time_t.
         if((index = search_winput_table((char **)raw, nraw, "HOUR")) == ERR)
 	{
-	    cerr << "QC: qc_rt_exec(): couldn't look up HOUR\n";
+	    std::cerr << "QC: qc_rt_exec(): couldn't look up HOUR\n";
 	    return OK; // not ok, but 'ERR' indicates quit so we can't use it
         }
 	else
@@ -260,7 +260,7 @@ int qc_rt_exec(void)
 
 	if((index = search_winput_table((char **)raw, nraw, "MINUTE")) == ERR)
 	{
-	    cerr << "QC: qc_rt_exec(): couldn't look up MINUTE\n";
+	    std::cerr << "QC: qc_rt_exec(): couldn't look up MINUTE\n";
 	    return OK; // not ok, but 'ERR' indicates quit so we can't use it
         }
 	else
@@ -268,7 +268,7 @@ int qc_rt_exec(void)
 
 	if((index = search_winput_table((char **)raw, nraw, "SECOND")) == ERR)
 	{
-	    cerr << "QC: qc_rt_exec(): couldn't look up SECOND\n";
+	    std::cerr << "QC: qc_rt_exec(): couldn't look up SECOND\n";
 	    return OK; // not ok, but 'ERR' indicates quit so we can't use it
         }
 	else
@@ -294,8 +294,8 @@ int qc_rt_exec(void)
 #ifdef VAL_DIAGS
 	    else
 	    {
-		cout.form("QC: %10-s: (tests disabled -- sleeping)\n",
-			  batch.varref->get_name());
+		std::cout << "QC: " << batch.varref->get_name()
+		<< ": (tests disabled -- sleeping)\n",
 	    }
 #endif 
 	}
@@ -316,10 +316,11 @@ int qc_rt_exec(void)
 //
 // dump state of the world (useful for diagnostics and debugging)
 //
-// (dumps to 'cout')
+// (dumps to 'std::cout')
 //
 void qc_rt_dumpstate(void)
 {
+    char buffer[200];
     u_int16 batch_index, test_index;
     WinputSRindex sample_index, num_samples;
 
@@ -328,25 +329,28 @@ void qc_rt_dumpstate(void)
 	ValRealtimeTestbatch &batch = rt_batches[batch_index];
 
 	// print name and latest value from 'average' database
-	cout.form("QC: %-10s: avg=[%5.3f] sr=[ ", batch.varref->get_name(),
-		  batch.varref->get_winput_avg());
+        sprintf(buffer, "QC: %-10s: avg=[%5.3f] sr=[ ", batch.varref->get_name(),                  batch.varref->get_winput_avg());
+	std::cout << buffer;
 
 	// print out entries from 'SR' database
 	num_samples = batch.varref->get_winput_SR_freq();
 
 	for(sample_index=0; sample_index<num_samples; ++sample_index)
-	  cout.form("%5.3f ", batch.varref->get_winput_SR(sample_index));
+        {
+          sprintf(buffer, "%5.3f ", batch.varref->get_winput_SR(sample_index));
+	  std::cout << buffer;
+        }
 
-	cout.form("]\n");
+	std::cout << "]\n";
 
 	// print each of the tests and their arguments
 	for(test_index=0; test_index<batch.num_tests; ++test_index)
 	{
-	    cout.form("     %s( ", batch.tests[test_index]->get_name());
+	    std::cout << "     " << batch.tests[test_index]->get_name() << "( ";
 
-	    batch.tests[test_index]->out_params(cout);
+	    batch.tests[test_index]->out_params(std::cout);
 	    
-	    cout.form(" )\n");
+	    std::cout << " )\n";
 	}
     }
 }
@@ -449,7 +453,7 @@ static boolean rt_parse_configfile(void)
     WinputVarType found_db;
 
     // configuration file..   (old way -- location is static):
-    // ifstream configfile(strcat(QC_CONFIGDIR, QC_CONFIGNAME));
+    // std::ifstream configfile(strcat(QC_CONFIGDIR, QC_CONFIGNAME));
 
     // (new way of doing it -- dynamically determine config file pathname):
     char project_configname[100];
@@ -458,13 +462,14 @@ static boolean rt_parse_configfile(void)
     sprintf(project_configname, "%s/%s/%s", project_directory, 
 	    proj_number, QC_CONFIGNAME);
 
-    cout.form("QC: configuration file full path is: %s\n", project_configname);
+    std::cout << "QC: configuration file full path is: "
+	<< project_configname << std::endl;
 
-    ifstream configfile(project_configname);
+    std::ifstream configfile(project_configname);
 
     if(!configfile)
     {
-	cerr.form("QC: error opening configuration file!\n");
+	std::cerr << "QC: error opening configuration file!\n";
 	return FALSE;
     }
 
@@ -524,8 +529,7 @@ static boolean rt_parse_configfile(void)
 
 	    if(!found)
 	    {
-		cerr << "QC: qc_rt_init(): unknown variable in config file: "<<
-		  varname << "\n";
+		std::cerr << "QC: qc_rt_init(): unknown variable in config file: " << varname << std::endl;
 		continue;
 	    }
 
@@ -549,7 +553,7 @@ static boolean rt_parse_configfile(void)
 	    {
 		if(rt_batches_num == RT_BATCHES_MAXNUM)
 		{
-		    cerr << "QC: qc_rt_init(): too many testbatches!\n";
+		    std::cerr << "QC: qc_rt_init(): too many testbatches!\n";
 		    return FALSE;
 		}
 
@@ -558,7 +562,7 @@ static boolean rt_parse_configfile(void)
 
 		if(!rt_batches[rt_batches_num].varref)
 		{
-		    cerr << "QC: qc_rt_init(): error alloc varref memory\n";
+		    std::cerr << "QC: qc_rt_init(): error alloc varref memory\n";
 		    return FALSE;
 		}
 		
@@ -568,7 +572,7 @@ static boolean rt_parse_configfile(void)
 	    }
 
 
-	    cout.form("QC:   %s ", varname);
+	    std::cout << "QC:   " << varname << " ";
 
 
 	    // now get validation test type and construct validation test class
@@ -588,14 +592,12 @@ static boolean rt_parse_configfile(void)
 
 		if(low_thresh >= high_thresh)
 		{
-		    cout.form("test: %s -- error: invalid rngs! (%f, %f)\n",
-			      testname, (float)low_thresh, (float)high_thresh);
+		    std::cout << "test: " << testname << " -- error: invalid rngs! (" << (float)low_thresh << ", " << (float)high_thresh << std::endl;
 		    return FALSE;
 		}
 		else if(highprio_delta < 0)
 		{
-		    cout.form("test: %s -- error: highprio_del negative(%f)\n",
-			      testname, (float)highprio_delta);
+		    std::cout << "test: " << testname << " -- error: highprio_del negative(" << (float)highprio_delta << ")\n";
 		    return FALSE;
 		}
 		else
@@ -603,8 +605,7 @@ static boolean rt_parse_configfile(void)
 		    newtest = new ValTestRange(*(batch->varref), low_thresh, 
 					       high_thresh, highprio_delta); 
 
-		    cout.form("test: %s (%f, %f, %f)\n", testname, low_thresh, 
-			      high_thresh, highprio_delta);
+		    std::cout << "test: " << testname << " (" << low_thresh << ", " << high_thresh << ", " << highprio_delta << ")\n";
 		}
 	    }
 
@@ -617,8 +618,7 @@ static boolean rt_parse_configfile(void)
 		
 		if(min_var_low <= min_var_high)
 		{
-		    cout.form("test: %s -- error: invalid variances(%f, %f)\n",
-			  testname, (float)min_var_low, (float)min_var_high);
+		    std::cout << "test: " << testname << " -- error: invalid variances(" << (float)min_var_low << ", " << (float)min_var_high << ")\n";
 		    return FALSE;
 		}
 		else
@@ -626,8 +626,7 @@ static boolean rt_parse_configfile(void)
 		    newtest = new ValTestFlatline(*(batch->varref), 
 					   min_var_low, min_var_high);
 
-		    cout.form("test: %s (%f, %f)\n", testname, min_var_low, 
-			      min_var_high);
+		    std::cout << "test: " << testname << " (" << min_var_low << ", " << min_var_high;
 		}
 	    }
 
@@ -648,20 +647,17 @@ static boolean rt_parse_configfile(void)
 
 		if(min_slope < 0)
 		{
-		    cout.form("test: %s -- error: min_slope negative? (%f)\n",
-			      testname, (float)min_slope);
+		    std::cout << "test: " << testname << " -- error: min_slope negative? (" << (float)min_slope << ")\n";
 		    return FALSE;
 		}
 		else if(min_shift < 0)
 		{
-		    cout.form("test: %s -- error: min_shift negative? (%f)\n",
-			      testname, (float) min_shift);
+		    std::cout << "test: " << testname << " -- error: min_shift negative? (" << (float)min_shift << ")\n";
 		    return FALSE;
 		}
 		else if(spike_rtn_slack < 0)
 		{
-		    cout.form("test: %s -- error: rtn_slack negative? (%f)\n",
-			      testname, (float) spike_rtn_slack);
+		    std::cout << "test: " << testname << " -- error: rtn_slack negative? (" << (float)spike_rtn_slack << ")\n";
 		    return FALSE;
 		}
 		else
@@ -669,23 +665,21 @@ static boolean rt_parse_configfile(void)
 		    newtest = new ValTestLevel(*(batch->varref), min_slope, 
 			    min_shift, spike_peak_maxintvls, spike_rtn_slack);
 
-		    cout.form("test: %s (%f, %f, %d, %f)\n", testname,
-			      min_slope, min_shift, spike_peak_maxintvls,
-			      spike_rtn_slack);
+		    std::cout << "test: " << testname << " (" << min_slope << ", " << min_shift << ", " << spike_peak_maxintvls << ", " << spike_rtn_slack << ")\n";
 		}
 	    }
 
 	    else // invalid realtime validation test type
 	    {
-		cout << "unknown test -- aborting parse operation: " <<
-		  testname << "\n";
+		std::cout << "unknown test -- aborting parse operation: " <<
+		  testname << std::endl;
 		return FALSE;
 	    }
 
 	    // make sure memory for test was allocated correctly
 	    if(!newtest)
 	    {
-		cerr << "QC: qc_rt_init(): out of mem alloc test object\n";
+		std::cerr << "QC: qc_rt_init(): out of mem alloc test object\n";
 		return FALSE;
 	    }
 
@@ -695,7 +689,7 @@ static boolean rt_parse_configfile(void)
 	    {
 		delete(newtest);
 
-		cerr << "QC: qc_rt_init(): too many tests for variable [" <<
+		std::cerr << "QC: qc_rt_init(): too many tests for variable [" <<
 		  varname << "]\n";
 
 		return FALSE;  // could omit return and just keep going though
@@ -729,7 +723,7 @@ static boolean rt_parse_sleepmsg(Sleep_Message &msg)
     // supposed to shut down as well..
     if(strcmp(msg.name, QC_QUIT) == 0)
     {
-        cout << "QC:  rcvd 'quit' msg -- shutting validation system down\n";
+        std::cout << "QC:  rcvd 'quit' msg -- shutting validation system down\n";
 	return FALSE;
     }
     
@@ -745,7 +739,7 @@ static boolean rt_parse_sleepmsg(Sleep_Message &msg)
 	break;
        
       default:
-	cerr << "QC: rt_parse_sleepmsg(): invalid sleep mode\n";
+	std::cerr << "QC: rt_parse_sleepmsg(): invalid sleep mode\n";
 	return TRUE;
     }
 
@@ -780,7 +774,7 @@ static boolean rt_parse_sleepmsg(Sleep_Message &msg)
 	  rt_batches[batch_index].enabled = new_enable;
 	else // (not found)
         {   
-	    cerr << "QC: rt_parse_sleepmsg(): invalid sleep var name:" << 
+	    std::cerr << "QC: rt_parse_sleepmsg(): invalid sleep var name:" << 
 	      msg.name << "\n";
 	    return TRUE;
 	}

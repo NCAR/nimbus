@@ -21,7 +21,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1997
 -------------------------------------------------------------------------
 */
 
-#include <new.h>
+#include <new>
 #include <unistd.h>
 
 #include "define.h"
@@ -61,7 +61,7 @@ void SetColorNames(char str[]);
 /* --------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
-  set_new_handler(outOfMemory);
+  std::set_new_handler(outOfMemory);
 
   ncopts = 0;
   Initialize();
