@@ -31,7 +31,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 #include "nimbus.h"
 #include "decode.h"
 #include "gui.h"
-#include "iostream.h"
 #include "injectsd.h"
 
 

@@ -69,6 +69,8 @@ static void		*data_p[MAX_SDI+MAX_RAW+MAX_DERIVE];
 static long		recordNumber = 0;
 static float		TimeOffset = 0.0;
 
+static int	ttxI;	// junk var, delete if hanging around
+
 static Queue	*missingRecords;
 static void	WriteMissingRecords();
 
@@ -278,12 +280,6 @@ void CreateNetCDF(char fileName[])
   FlightDate[1] = StartFlight.tm_mday;
   FlightDate[2] = StartFlight.tm_year;
 
-/*  Ron doesn't like Timezone tacked onto date.
-  if (strlen(p)) {
-    strcat(buffer, " ");
-    strcat(buffer, p);
-    }
-*/
   ncattput(fd, NC_GLOBAL, "FlightDate", NC_CHAR, strlen(buffer)+1, (void *)buffer);
 
   if (LogFile)
@@ -814,7 +810,7 @@ void CreateNetCDF(char fileName[])
       }
 
     CheckAndAddAttrs(fd, dp->varid, dp->name);
-
+if (strcmp(dp->name, "TTX") == 0) ttxI = indx;
     if (dp->OutputRate == LOW_RATE)
       data_p[indx++] = (void *)&AveragedData[dp->LRstart];
     else
@@ -826,6 +822,13 @@ void CreateNetCDF(char fileName[])
   ncendef(fd);
 
 }	/* END CREATENETCDF */
+
+/* -------------------------------------------------------------------- */
+void SwitchNetCDFtoDataMode()
+{
+  ncendef(fd);
+
+}	/* END SWITCHNETCDFTODATAMODE */
 
 /* -------------------------------------------------------------------- */
 void writeColumn()
@@ -856,6 +859,10 @@ void WriteNetCDF()
   static int		errCnt = 0;
 
 //writeColumn();
+
+DERTBL *d = derived[SearchTable((char**)derived, nderive, "TTX")];
+
+//printf(" - %f %f\n", data_p[ttxI], AveragedData[d->LRstart]);
 
   if (ncrecput(fd, recordNumber, data_p) == ERR)
     {

@@ -29,8 +29,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "decode.h"
 #include "gui.h"
 #include "circbuff.h"
-#include <iostream>
-#include <string.h>
 #include "injectsd.h"
 
 
@@ -151,13 +149,17 @@ int HighRateLoop(long starttime, long endtime)
 
     AverageSampledData();
 
-   if(SynthData==true)        //checks to see if the user has chosen to use synthetic data 
+   if (SynthData == true)
       {
-	hr = (int)SampledData[timeindex[0]];
-	mins = (int)SampledData[timeindex[1]];
-	sec = (int)SampledData[timeindex[2]];
-	temptime=(hr*3600)+(mins*60)+sec;
-        sd.InjectSyntheticData(temptime); 
+      int	hr, mins, sec;
+
+      hr = (int)SampledData[timeindex[0]];
+      mins = (int)SampledData[timeindex[1]];
+      sec = (int)SampledData[timeindex[2]];
+
+      float temptime=(hr*3600)+(mins*60)+sec;
+
+      sd.InjectSyntheticData(temptime); 
       }
 
     ComputeLowRateDerived();

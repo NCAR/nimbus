@@ -69,7 +69,7 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
     if ((outFP = fopen(buffer, "w+")) == NULL)
       {
       fprintf(stderr, "xlate/rdma.c: can't open %s\n", buffer);
-      exit(1);
+//      exit(1);
       }
 
 
@@ -77,10 +77,11 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
 
     if ((rdmapFP = fopen(buffer, "w+")) == NULL) {
       fprintf(stderr, "xlate/rdma.c: can't open %s\n", buffer);
-      exit(1);
+//      exit(1);
       }
 
-    fprintf(rdmapFP, "%s\n", OutputFileName);	/* Stamp netCDF file name */
+    if (rdmapFP)
+      fprintf(rdmapFP, "%s\n", OutputFileName);	/* Stamp netCDF file name */
 
     press = temp = 0.0;
 
@@ -89,15 +90,18 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
 
   if (rdma->item_type[0] == 'c')
     {
-    fprintf(outFP, "%s @ %02d:%02d:%02d\n", rdma->item_type,
+    if (outFP)
+      {
+      fprintf(outFP, "%s @ %02d:%02d:%02d\n", rdma->item_type,
 	ntohs(((short *)ADSrecord)[1]), ntohs(((short *)ADSrecord)[2]),
 	ntohs(((short *)ADSrecord)[3]));
 
 
-    for (i = 0; ntohf(rdma->scan[i]) != -99.0; ++i)
-      fprintf(outFP, "%.2f ", (NR_TYPE)ntohf(rdma->scan[i]));
+      for (i = 0; ntohf(rdma->scan[i]) != -99.0; ++i)
+        fprintf(outFP, "%.2f ", (NR_TYPE)ntohf(rdma->scan[i]));
 
-    fprintf(outFP, "\n"); fflush(outFP);
+      fprintf(outFP, "\n"); fflush(outFP);
+      }
 
 
     /* Drop concentration arrays, we are recomputing anew.
@@ -113,18 +117,21 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
 
     if (temp > 100.0 || temp < 0.0)
       temp = 20.0;
-
-    fprintf(rdmapFP, "%02d/%02d/%02d %02d:%02d:%02d  ",
+ 
+    if(rdmapFP)
+      {
+      fprintf(rdmapFP, "%02d/%02d/%02d %02d:%02d:%02d  ",
         ntohs(((short *)ADSrecord)[4]), ntohs(((short *)ADSrecord)[5]),
         ntohs(((short *)ADSrecord)[6]), ntohs(((short *)ADSrecord)[1]),
 	ntohs(((short *)ADSrecord)[2]), ntohs(((short *)ADSrecord)[3]));
 
-    fprintf(rdmapFP, "%f %f  ", temp+273.16, press);
+      fprintf(rdmapFP, "%f %f  ", temp+273.16, press);
 
-    for (i = 0; ntohf(rdma->scan[i]) != -99.0; ++i)
-      fprintf(rdmapFP, "%.2f ", (NR_TYPE)ntohf(rdma->scan[i]));
+      for (i = 0; ntohf(rdma->scan[i]) != -99.0; ++i)
+        fprintf(rdmapFP, "%.2f ", (NR_TYPE)ntohf(rdma->scan[i]));
 
-    fprintf(rdmapFP, "-99.0\n"); fflush(rdmapFP);
+      fprintf(rdmapFP, "-99.0\n"); fflush(rdmapFP);
+      }
 
     timeCounter = 0;
     press = temp = 0.0;

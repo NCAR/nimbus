@@ -39,7 +39,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2000
 #include <Xm/ToggleB.h>
 #include "nimbus.h"
 #include "gui.h"
-#include "iostream.h"
 
 
 /* Global widget declarations.
@@ -51,12 +50,12 @@ Widget	menuBar, timeDisplayText, list1, goButton, logText, pullRight,lowRateButt
 Widget	varNameLabel;
 Widget	outputVarYes, outputVarNo;
 Widget	outputLRbutton, outputSRbutton, outputHRbutton;
-Widget	lagText, spikeText,synthconstText;
+Widget	lagText, spikeText, synthConstText;
 Widget	ev_text[16], slOpMenu,funcOpMenu;
 
 extern char	*dataQuality[];
 extern void  LoadSynthetic(Widget w, XtPointer client, XtPointer call);                          //this may belong somewhere else
-extern char * func[19];
+extern char *func[19];
 
 
 void	NextWidget(Widget w, int client, XtPointer call);
@@ -182,35 +181,33 @@ Widget CreateSetupWindow(Widget parent)
   XtManageChildren(pullDown, 2);
 
   n = 0;
-  b[0] = XmCreatePushButton(pullDown[0], "Load setup", args, n);
-  b[1] = XmCreatePushButton(pullDown[0], "Save setup", args, n);
+  b[0] = XmCreatePushButton(pullDown[0], "loadSetupButton", args, n);
+  b[1] = XmCreatePushButton(pullDown[0], "saveSetupButton", args, n);
   b[2] = XmCreateSeparator(pullDown[0], "setupSeparator", args, n);
-  b[3] = XmCreatePushButton(pullDown[0], "Print", args, n);
+  b[3] = XmCreatePushButton(pullDown[0], "printButton", args, n);
   b[4] = XmCreateSeparator(pullDown[0], "setupSeparator", args, n);
-  b[5]=  XmCreatePushButton(pullDown[0], "Synthetic", args, n);
+  b[5]=  XmCreatePushButton(pullDown[0], "synthButton", args, n);
   b[6] = XmCreateSeparator(pullDown[0], "setupSeparator", args, n);
-  b[7] = XmCreatePushButton(pullDown[0], "Quit", args, n);
-  
-
+  b[7] = XmCreatePushButton(pullDown[0], "cancelSetupButton", args, n);
 
   XtAddCallback(b[0], XmNactivateCallback, LoadSetup, NULL);
   XtAddCallback(b[1], XmNactivateCallback, SaveSetup, NULL);
   XtAddCallback(b[3], XmNactivateCallback, PrintSetup, NULL);
-   XtAddCallback(b[5], XmNactivateCallback, LoadSynthetic, NULL);
+  XtAddCallback(b[5], XmNactivateCallback, LoadSynthetic, NULL);
   XtAddCallback(b[7], XmNactivateCallback, Quit, NULL);
   
-  XtManageChildren(b, 8);// was originally 6
+  XtManageChildren(b, 8);
 
   n = 0;
   XtSetArg(args[n], XmNtearOffModel, XmTEAR_OFF_ENABLED); ++n;
   pullRight = XmCreatePulldownMenu(pullDown[1], "editPR_CB", args, n);
 
   n = 0;
-  b[0] = XmCreatePushButton(pullDown[1], "Defaults", args, n);
-  b[1] = XmCreatePushButton(pullDown[1], "Time Slices", args, n);
-  b[2] = XmCreatePushButton(pullDown[1], "Flight Info", args, n);
-  b[3] = XmCreatePushButton(pullDown[1], "Toggle Output", args, n);
-  b[4] = XmCreatePushButton(pullDown[1], "Toggle Rate", args, n);
+  b[0] = XmCreatePushButton(pullDown[1], "editDefaultsButton", args, n);
+  b[1] = XmCreatePushButton(pullDown[1], "editTimeSlices", args, n);
+  b[2] = XmCreatePushButton(pullDown[1], "editFlightInfo", args, n);
+  b[3] = XmCreatePushButton(pullDown[1], "toggleOutput", args, n);
+  b[4] = XmCreatePushButton(pullDown[1], "toggleRate", args, n);
   XtSetArg(args[n], XmNsubMenuId, pullRight); ++n;
   b[5] = XmCreateCascadeButton(pullDown[1], "Toggle Probe", args, n);
   XtAddCallback(b[0], XmNactivateCallback, EditDefaultsFile, NULL);
@@ -401,7 +398,7 @@ Widget CreateEditWindow(Widget parent)
   XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNtopWidget, frame[4]); n++;
-  frame[8] = XmCreateFrame(editForm, "synthconstFrame", args, n);
+  frame[8] = XmCreateFrame(editForm, "synthConstFrame", args, n);
   n = 0;
   XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
   XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
@@ -540,8 +537,8 @@ Widget CreateEditWindow(Widget parent)
   /*Synthetic Constant Text
    */
 
- n = 0;
-  form = XmCreateForm(frame[8], "synthconstForm", args, n);
+  n = 0;
+  form = XmCreateForm(frame[8], "synthConstForm", args, n);
   XtManageChild(form);
 
   n = 0;
@@ -557,8 +554,8 @@ Widget CreateEditWindow(Widget parent)
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_WIDGET); n++;
   XtSetArg(args[n], XmNleftWidget, label); n++;
   XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM); n++;
-  synthconstText = XmCreateTextField(form, "synthconstText", args, n);
-  XtManageChild(synthconstText);
+  synthConstText = XmCreateTextField(form, "synthConstText", args, n);
+  XtManageChild(synthConstText);
 
 
   /* Command buttons.
