@@ -283,6 +283,7 @@ cout << "Count[] = " << countV[0] << ", "<< countV[1]<<", "<< countV[2] << "\n";
 
 // Convert 260X and 2D's to N/cm3.
 if (conc && probe->Name().find("260X") != probe->Name().npos ||
+    conc && probe->Name().find("200X") != probe->Name().npos ||
     conc && probe->Name().find("1D") != probe->Name().npos ||
     conc && probe->Name().find("2D") != probe->Name().npos ||
     conc && probe->Name().find("HVPS") != probe->Name().npos)
