@@ -28,15 +28,19 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2001-02
 
 static int	timeCounter = 0;
 static float	temp, press;
+static RAWTBL	*ardma_varp;
 
 extern char	*ADSrecord;
+extern float	SampledData[];
 
+float	crdma_cnc[128];
 
 /* -------------------------------------------------------------------- */
 void xlardma(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   int	i;
 
+  ardma_varp = varp;
   memset((char *)np, 0, varp->Length * sizeof(NR_TYPE));
 
 }
@@ -52,6 +56,10 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
 
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->hvps);
 
+  for (i = 0; i < 64; ++i)
+    crdma_cnc[i] = MISSING_VALUE;
+
+  float *ardma = &SampledData[ardma_varp->SRstart];
 
   /* Two ASCII files will be written.  .rdma will be the raw data, cnts and
    * concentrations, for archival to the MASS Store.  .cnts.rdma is counts
@@ -99,10 +107,24 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
 	ntohs(((short *)ADSrecord)[1]), ntohs(((short *)ADSrecord)[2]),
 	ntohs(((short *)ADSrecord)[3]));
 
+      /* This code to put the labview concentrations array into the netCDF
+       * The cell diameters will not match.  This is for "debugging" purposes
+       * only.
+       */
+/*
+      crdma_cnc[0] = (NR_TYPE)ntohf(rdma->scan[0]);
 
       for (i = 0; ntohf(rdma->scan[i]) != -99.0; ++i)
+        {
         fprintf(outFP, "%.2f ", (NR_TYPE)ntohf(rdma->scan[i]));
 
+        if (i > 1 && strcmp(rdma->item_type, "cnup") == 0)
+          crdma_cnc[i] = (NR_TYPE)ntohf(rdma->scan[i]);
+
+        if (i > 1 && strcmp(rdma->item_type, "cndn") == 0)
+          crdma_cnc[i] = (NR_TYPE)ntohf(rdma->scan[64-i]);
+        }
+*/
       fprintf(outFP, "\n"); fflush(outFP);
       }
 
@@ -131,7 +153,10 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
       fprintf(rdmapFP, "%f %f  ", temp+273.16, press);
 
       for (i = 0; ntohf(rdma->scan[i]) != -99.0; ++i)
+        {
         fprintf(rdmapFP, "%.2f ", (NR_TYPE)ntohf(rdma->scan[i]));
+        ardma[i+1] = (NR_TYPE)ntohf(rdma->scan[i]);
+        }
 
       fprintf(rdmapFP, "-99.0\n"); fflush(rdmapFP);
       }
