@@ -81,6 +81,7 @@ static unsigned short HtestParticle[] = {
   0x427e,
   };
 
+static int P2dLRpPR = P2DLRPR;
 
 /* -------------------------------------------------------------------- */
 ADS_DataFile::ADS_DataFile(char fName[])
@@ -131,9 +132,10 @@ ADS_DataFile::ADS_DataFile(char fName[])
     rewind(fp);
     }
 
-  if ((buffer[0] == 'C' || buffer[0] == 'P') && isdigit(buffer[1]))
+  if (isValidProbe(buffer))
     {
-    hdr = NULL;
+    hdr = 0;
+    P2dLRpPR = 1;
     hasRAFheader = false;
     printf("No RAF header found, assuming raw PMS2D file.\n");
     }
@@ -159,7 +161,7 @@ ADS_DataFile::ADS_DataFile(char fName[])
         probe[nProbes++] = new Probe(hdr, (Pms2 *)p, ++Hcnt);
       }
     }
-
+printf("nProbes = %d\n", nProbes);
   buildIndices();
 
   currLR = -1; currPhys = 0;
@@ -266,7 +268,7 @@ bool ADS_DataFile::LocatePMS2dRecord(P2d_rec *buff, int hour, int minute, int se
     return(false);
 
   currPhys = std::max(0, i - 2);
-  currLR = P2DLRPR;
+  currLR = P2dLRpPR;
   rc = NextPMS2dRecord(buff);
 
   while (rc && ntohs(buff->second) < second)
@@ -295,13 +297,13 @@ bool ADS_DataFile::FirstPMS2dRecord(P2d_rec *buff)
   if (gzipped)
     {
     gzseek(gz_fd, indices[0].index, SEEK_SET);
-    gzread(gz_fd, physRecord, sizeof(P2d_rec) * P2DLRPR);
+    gzread(gz_fd, physRecord, sizeof(P2d_rec) * P2dLRpPR);
     }
   else
 #endif
     {
     fseek(fp, indices[0].index, SEEK_SET);
-    fread(physRecord, sizeof(P2d_rec), P2DLRPR, fp);
+    fread(physRecord, sizeof(P2d_rec), P2dLRpPR, fp);
     }
 
   memcpy((char *)buff, (char *)physRecord, sizeof(P2d_rec));
@@ -335,7 +337,7 @@ bool ADS_DataFile::NextPMS2dRecord(P2d_rec *buff)
     return(true);
     }
 
-  if (++currLR >= P2DLRPR)
+  if (++currLR >= P2dLRpPR)
     {
     currLR = 0;
 
@@ -349,13 +351,13 @@ bool ADS_DataFile::NextPMS2dRecord(P2d_rec *buff)
     if (gzipped)
       {
       gzseek(gz_fd, indices[currPhys].index, SEEK_SET);
-      gzread(gz_fd, physRecord, sizeof(P2d_rec) * P2DLRPR);
+      gzread(gz_fd, physRecord, sizeof(P2d_rec) * P2dLRpPR);
       }
     else
 #endif
       {
       fseek(fp, indices[currPhys].index, SEEK_SET);
-      fread(physRecord, sizeof(P2d_rec), P2DLRPR, fp);
+      fread(physRecord, sizeof(P2d_rec), P2dLRpPR, fp);
       }
     }
 
@@ -389,7 +391,7 @@ bool ADS_DataFile::PrevPMS2dRecord(P2d_rec *buff)
 
   if (--currLR < 0)
     {
-    currLR = P2DLRPR-1;
+    currLR = P2dLRpPR-1;
 
     if (--currPhys < 0)
       {
@@ -402,13 +404,13 @@ bool ADS_DataFile::PrevPMS2dRecord(P2d_rec *buff)
     if (gzipped)
       {
       gzseek(gz_fd, indices[currPhys].index, SEEK_SET);
-      gzread(gz_fd, physRecord, sizeof(P2d_rec) * P2DLRPR);
+      gzread(gz_fd, physRecord, sizeof(P2d_rec) * P2dLRpPR);
       }
     else
 #endif
       {
       fseek(fp, indices[currPhys].index, SEEK_SET);
-      fread(physRecord, sizeof(P2d_rec), P2DLRPR, fp);
+      fread(physRecord, sizeof(P2d_rec), P2dLRpPR, fp);
       }
     }
 
@@ -464,7 +466,7 @@ int ADS_DataFile::NextPhysicalRecord(char buff[])
     case PMS2DC1: case PMS2DC2: /* PMS2D */
     case PMS2DP1: case PMS2DP2:
     case PMS2DH1: case PMS2DH2: /* HVPS */
-      size = PMS2_RECSIZE - sizeof(short);
+      size = (P2dLRpPR * sizeof(P2d_rec)) - sizeof(short);
       break;
 
     case PMS2DG1: case PMS2DG2: /* GrayScale */
@@ -574,6 +576,10 @@ void ADS_DataFile::buildIndices()
         if (strcmp(probe[i]->Code, buffer) == 0)
           break;
 
+      // Sanity check.
+      if (!isValidProbe(buffer))
+        continue;
+
       if (i == nProbes)
         probe[nProbes++] = new Probe(buffer, PMS2_RECSIZE);
       }
@@ -655,6 +661,17 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
       for (int i = 0; i < 1024; ++i, ++p)
         *p = ntohl(*p);
     }
+}
+
+/* -------------------------------------------------------------------- */
+bool ADS_DataFile::isValidProbe(char *pr)
+{
+  // Sanity check.
+  if ((pr[0] == 'C' || pr[0] == 'P' || pr[0] == 'H') && isdigit(pr[1]))
+    return(true);
+
+  return(false);
+
 }
 
 /* -------------------------------------------------------------------- */

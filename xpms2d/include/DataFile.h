@@ -76,6 +76,8 @@ public:
 
   void	ToggleSyntheticData();
 
+  bool	isValidProbe(char *pr);
+
   Probe	*probe[MAX_PROBES];
 
 private:
