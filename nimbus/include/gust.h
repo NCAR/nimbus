@@ -9,7 +9,7 @@ FULL NAME:	Include file for ins.c & irs.c in std & xlate directories.
 #ifndef GUST_H
 #define GUST_H
 
-#include <math.h>
+#include <cmath>
 
 #define PI	M_PI		/* defined in math.h    */
 

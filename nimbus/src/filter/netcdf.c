@@ -194,7 +194,6 @@ void CreateNetCDF(char fileName[])
   /* Dimensions.
    */
   TimeDim	= ncdimdef(fd, "Time", NC_UNLIMITED);
-//  TimeDim	= ncdimdef(fd, "Time", 34060);
   LowRateDim	= ncdimdef(fd, "sps1", 1);
 
   Dim2Hz = Dim4Hz = Dim5Hz = Dim10Hz = HighRateDim = Dim50Hz = Dim250Hz =
@@ -411,8 +410,8 @@ void CreateNetCDF(char fileName[])
     p = VarDB_GetCategoryName(sp->name);
     ncattput(fd, sp->varid, "Category", NC_CHAR, strlen(p)+1, p);
 
-    ncattput(fd, sp->varid, "missing_value", NC_FLOAT, 1, &missing_val);
     ncattput(fd, sp->varid, "_FillValue", NC_FLOAT, 1, &missing_val);
+    ncattput(fd, sp->varid, "missing_value", NC_FLOAT, 1, &missing_val);
     ncattput(fd, sp->varid, "SampledRate", NC_LONG, 1, &sp->SampleRate);
     ncattput(fd, sp->varid, "DataQuality", NC_CHAR, strlen(sp->DataQuality)+1,
 		sp->DataQuality);
