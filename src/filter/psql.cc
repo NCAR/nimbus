@@ -408,6 +408,8 @@ PostgreSQL::WriteSQLvolts(const std::string timeStamp)
 
   extern NR_TYPE	*SampledData, *SRTvolts;
 
+  _sqlString.str("");
+
   for (it = _ratesTables.begin(); it != _ratesTables.end(); ++it)
   {
     /* @todo should the LRT_TABLE be in the rateTableMap?
@@ -419,7 +421,6 @@ PostgreSQL::WriteSQLvolts(const std::string timeStamp)
 
     for (int i = 0; i < it->first; ++i)
     {
-      _sqlString.str("");
       _sqlString << "INSERT INTO " << it->second << " VALUES ('" << timeStamp
 	<< "." << std::setfill('0') << std::setw(3) << 1000 / it->first * i << "'";
 
@@ -432,9 +433,10 @@ PostgreSQL::WriteSQLvolts(const std::string timeStamp)
           addValue(_sqlString, SampledData[raw[j]->SRstart+i], true);
 
       _sqlString << ");";
-      submitCommand(_sqlString.str());
     }
   }
+
+  submitCommand(_sqlString.str());
 
   // Return lastest timestamp written in usec.
   return((maxRate / 1000) * (maxRate-1)* 1000);

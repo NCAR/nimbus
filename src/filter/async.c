@@ -41,7 +41,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 #include "netcdf.h"
 #include "header.h"
 #include "raf.h"
-#include "/jnet/local/include/queue.h"
+#include "queue.h"
 
 #define MAX_ASYNC_VARS	32
 

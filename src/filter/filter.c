@@ -342,8 +342,8 @@ static void filterCounter(SDITBL *sp)
     case 250:
       for (OUTindex = 0; OUTindex < ProcessingRate; ++OUTindex)
         HighRateData[sp->HRstart + OUTindex] =
-			sdp[OUTindex * 2] + sdp[OUTindex * 2 + 1];
-			sdp[OUTindex * 2 + 2] + sdp[OUTindex * 2 + 3];
+			sdp[OUTindex * 2] + sdp[OUTindex * 2 + 1] +
+			sdp[OUTindex * 2 + 2] + sdp[OUTindex * 2 + 3] +
 			sdp[OUTindex * 2 + 4];
 
       break;

@@ -49,7 +49,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include "gui.h"
 #include "ctape.h"
 #include "netcdf.h"
-#include "/jnet/local/include/queue.h"
+#include "queue.h"
 #include "vardb.h"
 
 #include <cmath>
@@ -285,13 +285,12 @@ void CreateNetCDF(char fileName[])
   dims[0] = TimeDim;
 
 
-  /* Time Variables.  WARNING: Many programs downstream of here are
-   * expecting these two variables to be first in the netCDF file.
+  /* Time Variables.
    */
   baseTimeID = ncvardef(fd, "base_time", NC_LONG, 0, 0);
   strcpy(buffer, "seconds since 1970-01-01 00:00:00 +0000");
   ncattput(fd, baseTimeID, "units", NC_CHAR, strlen(buffer)+1, buffer);
-  strcpy(buffer, "Seconds since Jan 1, 1970 - deprecating.");
+  strcpy(buffer, "Start time of data recording.");
   ncattput(fd, baseTimeID, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
 
   timeVarID = ncvardef(fd, "Time", NC_LONG, 1, dims);
@@ -299,7 +298,7 @@ void CreateNetCDF(char fileName[])
   ncattput(fd, timeVarID, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
 
   timeOffsetID = ncvardef(fd, "time_offset", NC_FLOAT, 1, dims);
-  strcpy(buffer, "time of measurement - deprecating.");
+  strcpy(buffer, "Seconds since base_time.");
   ncattput(fd, timeOffsetID, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
 
   // Write units for both Time & time_offset.
