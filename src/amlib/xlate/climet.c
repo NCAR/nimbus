@@ -38,10 +38,9 @@ void xlClimetPOF(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlClimet(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	i;
   Climet_blk *p = (Climet_blk *)input;
 
-  for (i = 1; i < varp->Length; ++i)
+  for (size_t i = 1; i < varp->Length; ++i)
     np[i] = ntohs(p->counts[i-1]);
 
 }	/* END XLCLIMET */

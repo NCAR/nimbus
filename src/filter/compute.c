@@ -30,12 +30,11 @@ extern NR_TYPE	*HighRateData, *AveragedData;
 /* -------------------------------------------------------------------- */
 void ComputeLowRateDerived()
 {
-  int		i;
   DERTBL	*dp;
 
   FeedBack = LOW_RATE_FEEDBACK;
 
-  for (i = 0; i < derived.size(); i++)
+  for (size_t i = 0; i < derived.size(); i++)
     if ((dp = ComputeOrder[i])->compute)
       (*dp->compute)(dp);
     else
@@ -46,13 +45,12 @@ void ComputeLowRateDerived()
 /* -------------------------------------------------------------------- */
 void ComputeHighRateDerived()
 {
-  int		i;
   DERTBL	*dp;
 
   FeedBack = HIGH_RATE_FEEDBACK;
 
   for (SampleOffset = 0; SampleOffset < HIGH_RATE; ++SampleOffset)
-    for (i = 0; i < derived.size(); i++)
+    for (size_t i = 0; i < derived.size(); i++)
       if ((dp = ComputeOrder[i])->compute)
         (*dp->compute)(dp);
       else

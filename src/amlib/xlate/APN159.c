@@ -29,11 +29,10 @@ NR_TYPE angcr(NR_TYPE, NR_TYPE, float, float);
 /* -------------------------------------------------------------------- */
 void xlhgme(RAWTBL *varp, void *p, NR_TYPE *output)
 {
-  int		i;
   ushort	*input = (ushort *)p;
   NR_TYPE	hgme;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     if (HDRversion < 3.1)
       {
       hgme = (NR_TYPE)ntohs(~input[i * varp->ADSoffset]) * RESOLV14BIT * 0.04;
@@ -52,10 +51,9 @@ void xlhgme(RAWTBL *varp, void *p, NR_TYPE *output)
 /* -------------------------------------------------------------------- */
 void xlchgme(RAWTBL *varp, void *p, NR_TYPE *output)
 {
-  int		i;
   ushort	*input = (ushort *)p;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     if (HDRversion < 3.1)
       output[i] = chgme[i] =
                   (NR_TYPE)ntohs(~input[i * varp->ADSoffset]) * RESOLV14BIT;

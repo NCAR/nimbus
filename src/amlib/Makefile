@@ -2,7 +2,7 @@ DESTDIR=
 
 SUBDIR= std user xlate
 CC= "CC=g++"
-CFLAGS= "COPS=-g -O2"
+CFLAGS= "COPS=-Wall -g -O2"
 
 all: ${SUBDIR}
 

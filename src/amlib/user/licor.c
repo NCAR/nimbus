@@ -127,7 +127,7 @@ void sxco2c(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void sxlh2oc(DERTBL *varp)
 {
-  NR_TYPE  h2oc, co2p, co2t, h2os, x, y, x2;
+  NR_TYPE  co2p, co2t, h2os, x, y, x2;
 
   co2p  = GetSample(varp, 0);
   co2t  = GetSample(varp, 1);

@@ -67,7 +67,7 @@ extern char * func[19];
 /* -------------------------------------------------------------------- */
 void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
 {
-  int	i, indx;
+  size_t i, indx;
 
   if (w == list1)
     {
@@ -160,7 +160,7 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
 /* -------------------------------------------------------------------- */
 void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
 {
-  int		i;
+  size_t	i;
   bool		output;
   int		outputRate, lag;
   char		*p, *dq;
@@ -169,8 +169,7 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
   NR_TYPE	spike;
   Arg		args[3];
   XmString	newAttr;
-  struct v tempvar; 
-  bool alreadyset=false;
+  struct v	tempvar; 
 
   output = XmToggleButtonGetState(outputVarYes);
 
@@ -340,9 +339,7 @@ void DismissEditWindow(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void VerifyLagText(Widget w, XtPointer client, XmTextVerifyCallbackStruct *call)
 {
-  int	i;
-
-  for (i = 0; i < call->text->length; ++i)
+  for (int i = 0; i < call->text->length; ++i)
     if (!isdigit(call->text->ptr[i]))
       {
       call->doit = false;

@@ -32,15 +32,14 @@ extern int	Aircraft;
 /* -------------------------------------------------------------------- */
 void xlhgm(RAWTBL *varp, void *p, NR_TYPE *output)
 {
-  int		i;
   short		*input = (short *)p;
   NR_TYPE	hgm, hgmv;
 
   if (Aircraft == KINGAIR)
-    for (i = 0; i < varp->SampleRate; ++i)
+    for (size_t i = 0; i < varp->SampleRate; ++i)
       {
       hgmv = (ntohs(input[i * varp->ADSoffset]) - varp->convertOffset) *
-							varp->convertFactor;
+						varp->convertFactor;
 
       hgm  = 480.0 - 50.0 * hgmv;
 
@@ -57,7 +56,7 @@ void xlhgm(RAWTBL *varp, void *p, NR_TYPE *output)
       }
   else
     /* This is hard wired for 2 or 3 cal coe's */
-    for (i = 0; i < varp->SampleRate; ++i)
+    for (size_t i = 0; i < varp->SampleRate; ++i)
       {
       hgm = (ntohs(input[i * varp->ADSoffset]) - varp->convertOffset) *
 							varp->convertFactor;

@@ -29,11 +29,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 /* -------------------------------------------------------------------- */
 void xlpartspace(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int		i, j;
   P1dSpc_blk	*p = (P1dSpc_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
-    for (j = 0; j < varp->Length; ++j)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
+    for (size_t j = 0; j < varp->Length; ++j)
       np[(i*varp->Length)+j] = ntohs(p[i].bins[j]);
 
 }	/* END XLPARTSPACE */

@@ -55,7 +55,7 @@ void sCing(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void sCinsig(DERTBL *varp)
 {
-  NR_TYPE	F, B, cF, cB, out;
+  NR_TYPE	F, B, out;
 
   F = GetSample(varp, 0);
   B = GetSample(varp, 1);

@@ -60,7 +60,7 @@ void	CreateErrorBox(Widget parent),
 
 
 /* -------------------------------------------------------------------- */
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   Arg		args[8];
   Cardinal	n;

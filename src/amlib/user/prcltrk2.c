@@ -63,7 +63,7 @@ void parcelInit(DERTBL *varp)
 
   if ((tmp = GetDefaultsValue("PRCLTRK_INTRVL", varp->name)) == NULL)
   {
-    sprintf(buffer, "Value set to %f in AMLIB function parcelInit.\n", INTRVL);
+    sprintf(buffer, "Value set to %d in AMLIB function parcelInit.\n", INTRVL);
     LogMessage(buffer);
   }
   else

@@ -87,13 +87,17 @@ void xlgglon(RAWTBL *varp, void *input, NR_TYPE *output)
 /* -------------------------------------------------------------------- */
 void xlggalt(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-  float		posTime;
-  Hdr_blk	*h = (Hdr_blk *)ADSrecord;
   Garmin_blk	*gps = (Garmin_blk *)input;
 
-//  posTime = ntohf(gps->postime) - (int)ntohf(gps->postime);
-//  posLag = (int)((posTime - 0.5) * 1000);
-//printf("ADS = %02d:%02d:%02d  GGPS = %s\n", ntohs(h->hour), ntohs(h->minute), ntohs(h->second), gps->utctime);
+/*
+  float		posTime;
+  Hdr_blk	*h = (Hdr_blk *)ADSrecord;
+
+  posTime = ntohf(gps->postime) - (int)ntohf(gps->postime);
+  posLag = (int)((posTime - 0.5) * 1000);
+printf("ADS = %02d:%02d:%02d  GGPS = %s\n", ntohs(h->hour), ntohs(h->minute), ntohs(h->second), gps->utctime);
+*/
+
   *output = (NR_TYPE)ntohf(gps->height);
 
   varp->DynamicLag = posLag;

@@ -29,11 +29,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 /* -------------------------------------------------------------------- */
 void xlpsfd(RAWTBL *varp, void *p, NR_TYPE *output)
 {
-  int		i;
   ushort	*input = (ushort *)p;
   unsigned long	psfd;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     psfd = (~input[varp->ADSoffset * i - 1] & 0x0001) << 16;
     psfd |= ~input[varp->ADSoffset * i] & 0x0000ffff;
@@ -46,7 +45,6 @@ void xlpsfd(RAWTBL *varp, void *p, NR_TYPE *output)
 /* -------------------------------------------------------------------- */
 void xlpsfd_ADS2(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-  int		i;
   unsigned long	psfd;
   ushort	*p1_input, *p2_input;
 
@@ -76,7 +74,7 @@ void xlpsfd_ADS2(RAWTBL *varp, void *input, NR_TYPE *output)
   p1_input = (ushort *)input;
   p2_input = &((ushort *)input)[-(psfd1->ADSstart) + (psfd2->ADSstart)];
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     psfd = (ntohs(p2_input[psfd2->ADSoffset * i]) & 0x0001) << 16;
     psfd |= ntohs(p1_input[psfd1->ADSoffset * i]) & 0x0000ffff;
@@ -89,9 +87,7 @@ void xlpsfd_ADS2(RAWTBL *varp, void *input, NR_TYPE *output)
 /* -------------------------------------------------------------------- */
 void xlxpsfd(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-  int	i;
-
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     output[i] = ntohf(((Dpres_blk *)input)->press[i]) * 10.0;
  
 }	/* END XLETORQ */

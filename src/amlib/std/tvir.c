@@ -13,8 +13,7 @@
 /* -------------------------------------------------------------------- */
 void stvir(DERTBL *varp)
 {
-  NR_TYPE	tvir, sphum, atx;
-  NR_TYPE	otvir;
+  NR_TYPE	tvir = 0.0, sphum, atx, otvir;
 
   atx	= GetSample(varp, 0);
   sphum	= GetSample(varp, 1);

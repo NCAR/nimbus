@@ -100,7 +100,7 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 /*	External definitions
  */
 extern bool	LITTON51_present, AsyncFileEnabled, AVAPS;
-extern long	nFloats, LITTON51_start;
+extern size_t	nFloats, LITTON51_start;
 
 
 /*      Function Prototypes
@@ -130,10 +130,10 @@ void	SetLookupSuffix(char *new_suffix),
 	UpdateTime(NR_TYPE *record),
 	FormatTimeSegmentsForOutputFile(char *buff);
 
-void	Sum(NR_TYPE *in_data, NR_TYPE *out_data, int n),
+void	Sum(NR_TYPE *in_data, NR_TYPE *out_data, size_t n),
 	SumSDI(NR_TYPE *in_data, NR_TYPE *out_data, SDITBL *sp),
-	SumVector(NR_TYPE *in_data, NR_TYPE *out_data, int n, int l),
-	Average(NR_TYPE *in_data, NR_TYPE *out_data, int n, int l, MOD *mp),
+	SumVector(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l),
+	Average(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l, MOD *mp),
 	AverageSDI(NR_TYPE *in_data, NR_TYPE *out_data, SDITBL *sp);
 
 void	AllocateDataArrays(), FreeDataArrays(), ResetTimeGapper();

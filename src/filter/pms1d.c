@@ -117,8 +117,6 @@ void AddPMS1dAttrs(int ncid, RAWTBL *rp)
   if (rp->ProbeType & PROBE_260X || rp->ProbeType & PROBE_200X ||
       rp->ProbeType & PROBE_200Y || rp->ProbeType & PROBE_PMS2D)
     {
-    float	min = 0.0, max = 0.0, step = 0.0;
-
     if ((p = GetPMSparameter(rp->SerialNumber, "NDIODES")) ) {
       int	value = atoi(p);
       ncattput(ncid, rp->varid, "nDiodes", NC_INT, 1, &value);

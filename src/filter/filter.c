@@ -37,22 +37,23 @@ static std::vector<mRFilterPtr> sdiFilters;
 static std::vector<mRFilterPtr> rawFilters;
 
 static filterData	TwoFiftyTo25, FiftyTo25, OneTo25, FiveTo25, TenTo25,
-			TwentyFive, ThousandTo25;
+			ThousandTo25;
 
-static int	PSCBindex, currentHz, HzDelay;
+static size_t	PSCBindex, currentHz, HzDelay;
 static NR_TYPE	*inputRec;
 
 static circBuffPtr	newCircBuff(int);
 
-static int	mrf_debug = false;
+static bool	mrf_debug = false;
 
-static NR_TYPE	getBuff();
+static NR_TYPE	getBuff(int offset, circBuffPtr aCBPtr);
 static void	initCircBuff(), disposCircBuff(), putBuff(),
-		setTimeDelay(int, int *, int *), filterCounter(SDITBL *sp),
+		setTimeDelay(size_t, size_t *, size_t *),
+		filterCounter(SDITBL *sp),
 		LinearInterpAndSingleStageFilter(CircularBuffer *PSCB,
-		 mRFilterPtr thisMRF, int inputRate, int SRstart, int HRstart),
+		 mRFilterPtr thisMRF, size_t inputRate, int SRstart, int HRstart),
 		SingleStageFilter(CircularBuffer *PSCB, mRFilterPtr thisMRF,
-		 int inputRate, int SRstart, int HRstart);
+		 size_t inputRate, int SRstart, int HRstart);
 
 /* -------------------------------------------------------------------- */
 void InitMRFilters()
@@ -64,7 +65,7 @@ void InitMRFilters()
   /* Create filter Data for each variable
    */
   sdiFilters.resize(sdi.size());
-  for (int i = 0; i < sdi.size(); ++i)
+  for (size_t i = 0; i < sdi.size(); ++i)
     {
     /* Doesn't require filtering.
      */
@@ -119,7 +120,7 @@ void InitMRFilters()
 
 
   rawFilters.resize(raw.size());
-  for (int i = 0; i < raw.size(); ++i)
+  for (size_t i = 0; i < raw.size(); ++i)
     {
     /* Doesn't require filtering.
      */
@@ -174,12 +175,9 @@ void InitMRFilters()
 /* -------------------------------------------------------------------- */
 void Filter(CircularBuffer *PSCB)
 {
-  int			OUTindex, task;
-  NR_TYPE		output;
-
   SampledData = (NR_TYPE *)GetBuffer(PSCB, -(PSCB->nbuffers - 1));
 
-  for (int i = 0; i < sdi.size(); ++i)
+  for (size_t i = 0; i < sdi.size(); ++i)
     {
     SDITBL *sp = sdi[i];
 
@@ -252,7 +250,7 @@ void Filter(CircularBuffer *PSCB)
 
   /* Do raw variables
    */
-  for (int i = 0; i < raw.size(); ++i)
+  for (size_t i = 0; i < raw.size(); ++i)
     {
     RAWTBL *rp = raw[i];
 
@@ -318,7 +316,7 @@ void Filter(CircularBuffer *PSCB)
 static void filterCounter(SDITBL *sp)
 {
   NR_TYPE *sdp = &SampledData[sp->SRstart];
-  int		OUTindex;
+  size_t	OUTindex;
 
   switch (sp->SampleRate)
     {
@@ -361,11 +359,11 @@ static void filterCounter(SDITBL *sp)
 static void LinearInterpAndSingleStageFilter(
 	CircularBuffer	*PSCB,
 	mRFilterPtr	thisMRF,
-	int		inputRate,
+	size_t		inputRate,
 	int		SRstart,
 	int		HRstart)
 {
-  int		task, OUTindex;
+  int		task;
   NR_TYPE	output;
   NR_TYPE	input, diff;
   int		L = (ProcessingRate * thisMRF->M) / inputRate;
@@ -373,7 +371,7 @@ static void LinearInterpAndSingleStageFilter(
 
   input = inputRec[SRstart];
 
-  for (OUTindex = 0; OUTindex < ProcessingRate; ++OUTindex)
+  for (size_t OUTindex = 0; OUTindex < ProcessingRate; ++OUTindex)
     {
     do
       {
@@ -414,14 +412,14 @@ static void LinearInterpAndSingleStageFilter(
 static void SingleStageFilter(
 	CircularBuffer	*PSCB,
 	mRFilterPtr	thisMRF,
-	int		inputRate,
+	size_t		inputRate,
 	int		SRstart,
 	int		HRstart)
 {
-  int		task, OUTindex;
+  int		task;
   NR_TYPE	output;
 
-  for (OUTindex = 0; OUTindex < ProcessingRate; ++OUTindex)
+  for (size_t OUTindex = 0; OUTindex < ProcessingRate; ++OUTindex)
     {
     do
       {
@@ -479,11 +477,11 @@ static void readFilters()
 /* -------------------------------------------------------------------- */
 void ClearMRFilters()
 {
-  for (int i = 0; i < sdi.size(); ++i)
+  for (size_t i = 0; i < sdi.size(); ++i)
     if ((int)sdiFilters[i] > 0)
       initMultiRateFilter(sdiFilters[i]);
 
-  for (int i = 0; i < raw.size(); ++i)
+  for (size_t i = 0; i < raw.size(); ++i)
     if ((int)rawFilters[i] > 0)
       initMultiRateFilter(rawFilters[i]);
 
@@ -506,7 +504,7 @@ static mRFilterPtr createMRFilter(int L, int M, filterPtr filter, MOD *modvar)
 }	/* END CREATEMRFILTER */
 
 /* -------------------------------------------------------------------- */
-static void setTimeDelay(int rate, int *sec, int *msec)
+static void setTimeDelay(size_t rate, size_t *sec, size_t *msec)
 {
   *msec = 0;
 

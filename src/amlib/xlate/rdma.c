@@ -39,8 +39,6 @@ float	crdma_cnc[128];
 /* -------------------------------------------------------------------- */
 void xlardma(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	i;
-
   ardma_varp = varp;
   memset((char *)np, 0, varp->Length * sizeof(NR_TYPE));
 
@@ -49,7 +47,6 @@ void xlardma(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	i;
   Rdma_blk	*rdma = (Rdma_blk *)input;
 
   static int firstTime = TRUE;
@@ -57,7 +54,7 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
 
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->hvps);
 
-  for (i = 0; i < 64; ++i)
+  for (size_t i = 0; i < 64; ++i)
     crdma_cnc[i] = MISSING_VALUE;
 
   float *ardma = &SampledData[ardma_varp->SRstart];
@@ -115,7 +112,7 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
 /*
       crdma_cnc[0] = (NR_TYPE)ntohf(rdma->scan[0]);
 
-      for (i = 0; ntohf(rdma->scan[i]) != -99.0; ++i)
+      for (size_t i = 0; ntohf(rdma->scan[i]) != -99.0; ++i)
         {
         fprintf(outFP, "%.2f ", (NR_TYPE)ntohf(rdma->scan[i]));
 
@@ -153,7 +150,7 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
 
       fprintf(rdmapFP, "%f %f  ", temp+273.16, press);
 
-      for (i = 0; ntohf(rdma->scan[i]) != -99.0; ++i)
+      for (size_t i = 0; ntohf(rdma->scan[i]) != -99.0; ++i)
         {
         fprintf(rdmapFP, "%.2f ", (NR_TYPE)ntohf(rdma->scan[i]));
         ardma[i+1] = (NR_TYPE)ntohf(rdma->scan[i]);

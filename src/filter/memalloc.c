@@ -52,7 +52,7 @@ void AllocateDataArrays()
   nFloats = 0;
   nLRfloats = nSRfloats = nHRfloats = 0;
 
-  for (int i = 0; i < sdi.size(); ++i)
+  for (size_t i = 0; i < sdi.size(); ++i)
     {
     sdi[i]->LRstart = nLRfloats++;
     sdi[i]->SRstart = nFloats;
@@ -63,7 +63,7 @@ void AllocateDataArrays()
 
   int nVoltFloats = nFloats;
 
-  for (int i = 0; i < raw.size(); ++i)
+  for (size_t i = 0; i < raw.size(); ++i)
     {
     raw[i]->LRstart = nLRfloats;
     raw[i]->SRstart = nFloats;
@@ -73,7 +73,7 @@ void AllocateDataArrays()
     nHRfloats += (25 * raw[i]->Length);
     }
 
-  for (int i = 0; i < derived.size(); ++i)
+  for (size_t i = 0; i < derived.size(); ++i)
     {
     derived[i]->LRstart = nLRfloats;
     derived[i]->HRstart = nHRfloats;
@@ -83,8 +83,8 @@ void AllocateDataArrays()
 
   /* Reset dependIndices.
    */
-  for (int i = 0; i < derived.size(); ++i)
-    for (int j = 0; j < derived[i]->ndep; ++j)
+  for (size_t i = 0; i < derived.size(); ++i)
+    for (size_t j = 0; j < derived[i]->ndep; ++j)
       DependIndexLookup(derived[i], j);
 
   bits = new ushort[sdi.size()];
@@ -116,7 +116,7 @@ void FreeDataArrays()
       delete [] HighRateData;
 
     if (AVAPS)
-      for (int i = 0; i < MAX_AVAPS; ++i)
+      for (size_t i = 0; i < MAX_AVAPS; ++i)
         delete [] AVAPSrecord[i];
     }
 

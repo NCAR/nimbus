@@ -51,7 +51,7 @@ static NR_TYPE DOF2dC[] = { 0.0, 1.56, 6.25, 14.06, 25.0, 39.06, 56.25,
 	61.0, 61.0, 61.0 };
 
 
-static int      FIRST_BIN[MAX_PMS2D], LAST_BIN[MAX_PMS2D];
+static size_t	FIRST_BIN[MAX_PMS2D], LAST_BIN[MAX_PMS2D];
 static NR_TYPE  responseTime[MAX_PMS2D], armDistance[MAX_PMS2D],
 		DENS[MAX_PMS2D], resolution[MAX_PMS2D], SampleRate[MAX_PMS2D];
 static double   PLWFAC[MAX_PMS2D], DBZFAC[MAX_PMS2D];
@@ -66,15 +66,14 @@ static NR_TYPE  radius[MAX_PMS2D][BINS_64], cell_size[MAX_PMS2D][BINS_64],
 NR_TYPE         reff23[MAX_PMS2D], reff22[MAX_PMS2D];  /* For export to reff.c */
 
 void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
-		float minRange, float resolution, int nDiodes, int length);
+	float minRange, float resolution, size_t nDiodes, size_t length);
 
 
 /* -------------------------------------------------------------------- */
 void sTwodInit(RAWTBL *varp)
 {
-  int		i, j, length, probeNum, nDiodes, minRange;
+  size_t	i, j, length, probeNum, nDiodes, minRange;
   char		*p, *serialNumber;
-  NR_TYPE	DOF, beamDiameter;
 
   for (i = 0; i < MAX_PMS2D; ++i)
     SampleRate[i] = 1.0;
@@ -189,8 +188,8 @@ printf("    2DC EAW for %s %d:\n", varp->name, probeNum);
 /* -------------------------------------------------------------------- */
 void sTwodInitH(RAWTBL *varp)
 {
-  int           i, j, length, probeNum, nDiodes, minRange;
-  char          *p, *serialNumber;
+  size_t	i, length, probeNum, nDiodes = 0, minRange;
+  char		*p, *serialNumber;
 
   for (i = 0; i < MAX_PMS2D; ++i)
     SampleRate[i] = 1.0;
@@ -265,7 +264,7 @@ printf("sTwodInit: %s %d len=%d:\n", varp->name, probeNum, varp->Length);
 /* -------------------------------------------------------------------- */
 void sTwoD(DERTBL *varp)
 {
-  int		i, j, probeNum;
+  size_t	i, probeNum;
   NR_TYPE	*actual, *concentration, *dia, *dia2, *dia3;
   NR_TYPE	tas;		/* True Air Speed	*/
   NR_TYPE	sampleVolume[BINS_64], sampleArea;
@@ -343,11 +342,11 @@ void sTwoD(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void sHVPS(DERTBL *varp)
 {
-  int		i, j, probeNum;
+  size_t	i, probeNum;
   NR_TYPE	*actual, *concentration, *dia, *dia2, *dia3;
   NR_TYPE	tas;		/* True Air Speed	*/
   NR_TYPE	sampleVolume[256], sampleArea;
-  NR_TYPE	*dof, deadTime;
+  NR_TYPE	deadTime;
 
   actual	= GetVector(varp, 0, varp->Length);
   tas		= GetSampleFor1D(varp, 1);

@@ -13,11 +13,11 @@ DESCRIPTION:	Header File declaring amlib functions.
 #include <cmath>
 #include <netinet/in.h>
 
-const int MAX_FSSP = 4;
-const int MAX_260X = 2;
-const int MAX_ASAS = 2;
-const int MAX_F300 = 2;
-const int MAX_PMS2D = (MAX_PMS2 * 2);
+const size_t MAX_FSSP = 4;
+const size_t MAX_260X = 2;
+const size_t MAX_ASAS = 2;
+const size_t MAX_F300 = 2;
+const size_t MAX_PMS2D = (MAX_PMS2 * 2);
 
 const NR_TYPE FTMTR  = 0.3048;
 const NR_TYPE MPS2   = 9.7959;
@@ -84,7 +84,8 @@ int	SearchDERIVFTNS(char target[]);
 void	RunAMLIBinitializers();
 
 extern NR_TYPE		*AveragedData, *HighRateData;
-extern int		FeedBack, SampleOffset;
+extern int		FeedBack;
+extern size_t		SampleOffset;
 extern struct _dnfn	deriveftns[];
 
 extern float	HDRversion;

@@ -1,27 +1,26 @@
 /*
-:set ts=4
 -------------------------------------------------------------------------
 OBJECT NAME:	solang.c
 
-FULL NAME:		Solar angle calculations
+FULL NAME:	Solar angle calculations
 
 ENTRY POINTS:	ssolze(), ssolaz(), ssolde(), ssolel()
 
 STATIC FNS:		
 
 DESCRIPTION:	Calculate various solar angles for use by other functions
-				 (especially for "radc.c," the radiation attitude-angle
-				 corrections)
+		(especially for "radc.c," the radiation attitude-angle
+		corrections)
 
-INPUT:			YEAR MONTH DAY HOUR MINUTE SECOND LAT LON
+INPUT:		YEAR MONTH DAY HOUR MINUTE SECOND LAT LON
 
-OUTPUT:			SOLZE SOLAZ SOLDE SOLEL
+OUTPUT:		SOLZE SOLAZ SOLDE SOLEL
 
 REFERENCES:		
 
 REFERENCED BY:	compute.c
 
-COPYRIGHT:		University Corporation for Atmospheric Research, 1997
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 ORIG. AUTHOR:	Ron Ruth
 -------------------------------------------------------------------------

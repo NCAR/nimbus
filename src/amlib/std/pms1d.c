@@ -37,15 +37,14 @@ void ComputePMS1DParams(
 	NR_TYPE	diam[],
 	float	minRange,
 	float	resolution,
-	int	nDiodes,
-	int	nBins)
+	size_t	nDiodes,
+	size_t	nBins)
 {
-  int	i;
   float	mag = diodeDiameter / (resolution / 1000);
 
   minRange += resolution / 2;	/* Create mid-points for diam. */
 
-  for (i = 1; i < nBins; ++i, minRange += resolution)
+  for (size_t i = 1; i < nBins; ++i, minRange += resolution)
     {
     diam[i]	= minRange;
     radius[i]	= minRange / 2000; /* Units: mm */
@@ -60,16 +59,15 @@ void ComputeDOF(
 	NR_TYPE	radius[],
 	NR_TYPE	tasx,
 	NR_TYPE	dof[],		/* Output	*/
-	int	FirstBin,
-	int	LastBin,
+	size_t	FirstBin,
+	size_t	LastBin,
 	float	RESOLUTION,
 	NR_TYPE	RESPONSE_TIME)
 {
-  int		i;
   NR_TYPE	szz, timex, frac, f, z;
   float		mag = diodeDiameter / (RESOLUTION / 1000);
 
-  for (i = FirstBin; i < LastBin; ++i)
+  for (size_t i = FirstBin; i < LastBin; ++i)
     {
     /* Determine size in terms of # of array elements
      */

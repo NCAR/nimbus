@@ -15,8 +15,8 @@ LOCAL_INC = ${JLOCAL}/include/
 INCLUDES = -I${NINC} -I${LOCAL_INC} -I${LOCAL}/include
 INCLUDES = -I${NINC} -I${LOCAL_INC}
 
-CFLAGS	= -g -O2 -L../../lib
-COFLAGS	= -g -O2 -c $(INCLUDES)
+CFLAGS	= -Wall -g -O2 -L../../lib
+COFLAGS	= -Wall -g -O2 -c $(INCLUDES)
 
 
 CLIBS	= -lstd -luser -lxlate -lAircraft -lhdr_api -lpms -lVarDB -lraf -lm -lncaru -lnetcdf -lraf++ -lXm -lXt -lX11 -lpq

@@ -64,7 +64,7 @@ static char	*adsFileName;
 static long	lrlen, lrppr, currentLR;
 static int	infd;
 
-extern long	LITTON51_start;
+extern size_t	LITTON51_start;
 
 static long	FindNextDataRecord(char buff[]);
 static bool	IsThisAnAsyncRecord(short buff[]);
@@ -167,7 +167,7 @@ long FindFirstLogicalRecord(
 /* -------------------------------------------------------------------- */
 long FindNextLogicalRecord(char record[], long endtime)
 {
-  int	nbytes, i;
+  int	nbytes;
   long	TansStart, rectime;
     Hdr_blk *ADShdr = (Hdr_blk *)record;
 
@@ -371,6 +371,8 @@ int CloseADSfile()
       return(crayclose(&infd));
     }
 
+  return(ERR);
+
 }	/* END CLOSEADSFILE */
 
 /* -------------------------------------------------------------------- */
@@ -419,7 +421,7 @@ static int GetNextADSfile()
 
 static long FindNextDataRecord(char buff[])
 {
-  long	nbytes;
+  long	nbytes = 0;
 
   do
     {

@@ -35,11 +35,10 @@ static NR_TYPE	fte[] =	{ -925.09894, 0.16334911, 4.9590147e-07 };
 /* -------------------------------------------------------------------- */
 void xletorq(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-  int		i;
   short		etorq;
   NR_TYPE	*cc;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     etorq = ntohs(((short *)input)[i * varp->ADSoffset]);
 

@@ -52,10 +52,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000-2001
 /* -------------------------------------------------------------------- */
 void xlrejDOF(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	i;
   DMT100_blk	*p = (DMT100_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (NR_TYPE)ntohl(p[i].rejDOF);
 
 }
@@ -63,10 +62,9 @@ void xlrejDOF(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlrejAT(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	i;
   DMT100_blk	*p = (DMT100_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (NR_TYPE)ntohl(p[i].rejAvgTrans);
 
 }
@@ -74,10 +72,9 @@ void xlrejAT(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xloFlow(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	i;
   DMT100_blk	*p = (DMT100_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (NR_TYPE)ntohl(p[i].ADCoverflow);
 
 }
@@ -85,13 +82,12 @@ void xloFlow(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlsumCabin(RAWTBL *varp, void *input, NR_TYPE *np)
 { 
-  int   i, j;
   DMT300_blk    *p = (DMT300_blk *)input;
   
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
     np[i] = 0.0;
-    for (j = 0; j < 8; ++j)
+    for (size_t j = 0; j < 8; ++j)
       np[i] += (NR_TYPE)ntohl(p[i].cabinChan[j]);
     }
 
@@ -100,10 +96,9 @@ void xlsumCabin(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlS100cabin4(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int		i;
   DMT100_blk	*p = (DMT100_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = ((NR_TYPE)ntohs(p[i].cabinChan[4]) - 2048) * 4.882812e-3;
 
 }
@@ -111,20 +106,18 @@ void xlS100cabin4(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlS100cabin7(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int		i;
   DMT100_blk	*p = (DMT100_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = ((NR_TYPE)ntohs(p[i].cabinChan[7]) - 2328) * 0.9765625;
 }
 
 /* -------------------------------------------------------------------- */
 void xlS200cabin0(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int		i;
   DMT200_blk	*p = (DMT200_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = ((NR_TYPE)ntohs(p[i].cabinChan[0]) - 2048) * 4.882812e-3;
 
 }
@@ -132,10 +125,9 @@ void xlS200cabin0(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlS200cabin1(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int		i;
   DMT200_blk	*p = (DMT200_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = ((NR_TYPE)ntohs(p[i].cabinChan[1]) - 2048) * 4.882812e-3;
 
 }
@@ -143,10 +135,9 @@ void xlS200cabin1(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlS200cabin2(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int		i;
   DMT200_blk	*p = (DMT200_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = ((NR_TYPE)ntohs(p[i].cabinChan[2]) - 2048) * 4.882812e-3;
 
 }
@@ -154,21 +145,19 @@ void xlS200cabin2(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlS200cabin3(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int		i, k, corder;
-  NR_TYPE	cts, x;
   DMT200_blk	*p = (DMT200_blk *)input;
 
-  static NR_TYPE        flowValues[AVERAGE_LENGTH], flowSum = 0.0;
-  static int            nValues = 0, index = 0;
+  static NR_TYPE	flowValues[AVERAGE_LENGTH], flowSum = 0.0;
+  static size_t		nValues = 0, index = 0;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
-    cts = (NR_TYPE)ntohs(p[i].cabinChan[3]);
+    NR_TYPE cts = (NR_TYPE)ntohs(p[i].cabinChan[3]);
 
-    corder  = varp->order - 1;
-    x     = varp->cof[corder];
+    size_t corder  = varp->order - 1;
+    NR_TYPE x     = varp->cof[corder];
 
-    for (k = 1; k < varp->order; k++)
+    for (size_t k = 1; k < varp->order; k++)
       x = varp->cof[corder-k] + cts * x;
 
 //    x = 16.89368 - 0.01583*cts + 3.70579E-6*cts*cts;
@@ -196,10 +185,9 @@ void xlS200cabin3(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlS200cabin4(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int		i;
   DMT200_blk	*p = (DMT200_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = ((NR_TYPE)ntohs(p[i].cabinChan[4]) - 2048) * 4.882812e-3;
 
 }
@@ -207,21 +195,19 @@ void xlS200cabin4(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlS200cabin6(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int		i, k, corder;
-  NR_TYPE	cts, x;
   DMT200_blk	*p = (DMT200_blk *)input;
 
   static NR_TYPE        flowValues[AVERAGE_LENGTH], flowSum = 0.0;
-  static int            nValues = 0, index = 0;
+  static size_t		nValues = 0, index = 0;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     {
-    cts = (NR_TYPE)ntohs(p[i].cabinChan[6]);
+    NR_TYPE cts = (NR_TYPE)ntohs(p[i].cabinChan[6]);
 
-    corder  = varp->order - 1;
-    x     = varp->cof[corder];
+    size_t corder  = varp->order - 1;
+    NR_TYPE x     = varp->cof[corder];
 
-    for (k = 1; k < varp->order; k++)
+    for (size_t k = 1; k < varp->order; k++)
       x = varp->cof[corder-k] + cts * x;
 
 //    x = -729.57 + 0.87564*cts - 3.5197e-4*cts*cts + 4.750368e-8*cts*cts*cts;
@@ -249,10 +235,9 @@ void xlS200cabin6(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlS200cabin7(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int		i;
   DMT200_blk	*p = (DMT200_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = ((NR_TYPE)ntohs(p[i].cabinChan[7]) - 2328) * 0.9765625;
 
 }
@@ -260,10 +245,9 @@ void xlS200cabin7(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlS300cabin4(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int		i;
   DMT300_blk	*p = (DMT300_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = ((NR_TYPE)ntohs(p[i].cabinChan[4]) - 2048) * 4.882812e-3;
 
 }
@@ -271,10 +255,9 @@ void xlS300cabin4(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlS300cabin7(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int		i;
   DMT300_blk	*p = (DMT300_blk *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = ((NR_TYPE)ntohs(p[i].cabinChan[7]) - 2328) * 0.9765625;
 }
 

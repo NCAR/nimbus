@@ -69,11 +69,11 @@ void xlmonth(RAWTBL *varp, void *input, NR_TYPE *output)
 {
   if (HDRversion < 2.99999)
     {
-    Hdr_blk *h = (Hdr_blk *)input;
-
     *output = FlightDate[0];	/* Month from ADS header */
     
 /* This needs to be fixed.  Add check for End of Month
+    Hdr_blk *h = (Hdr_blk *)input;
+
     if (h->hour == 0 && h->minute == 0 && h->second == 0)
       *output += 1.0;
 */

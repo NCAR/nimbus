@@ -29,7 +29,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 #define MAX_200Y	1
 
-static int	FIRST_BIN[MAX_200Y], LAST_BIN[MAX_200Y], SampleRate[MAX_200Y];
+static size_t	FIRST_BIN[MAX_200Y], LAST_BIN[MAX_200Y], SampleRate[MAX_200Y];
 static NR_TYPE	responseTime, armDistance, DENS[MAX_200Y], resolution;
 static double	PLWFAC[MAX_200Y];
 
@@ -41,19 +41,18 @@ static NR_TYPE	radius[BINS_16],
 		eaw[BINS_16];	/* Effective Sample Width	*/
 
 void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
-                float minRange, float resolution, int nDiodes, int length),
+                float minRange, float resolution, size_t nDiodes, size_t length),
 
 	ComputeDOF(NR_TYPE radius[], NR_TYPE tas, NR_TYPE dof[],
-		int FirstBin, int LastBin, float RES, NR_TYPE RESPONSE_TIME);
+		size_t FirstBin, size_t LastBin, float RES, NR_TYPE RESPONSE_TIME);
 
 
 /* -------------------------------------------------------------------- */
 void c200yInit(RAWTBL *varp)
 {
-  int	i, probeNum;
+  size_t	i, probeNum, nDiodes;
   char	*p;
   char	*serialNumber = "200Y_DEF";
-  int	nDiodes;
   NR_TYPE	minRange;
 
   serialNumber = varp->SerialNumber;
@@ -124,7 +123,7 @@ void c200yInit(RAWTBL *varp)
 /* -------------------------------------------------------------------- */
 void sc200y(DERTBL *varp)
 {
-  int		i, probeNum;
+  size_t	i, probeNum;
   NR_TYPE	*actual, *concentration;
   NR_TYPE	tas;		/* True Air Speed		*/
   NR_TYPE	dof[BINS_16],	/* Depth Of Field		*/

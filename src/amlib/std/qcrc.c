@@ -23,7 +23,7 @@ extern int	Aircraft;
 /* -------------------------------------------------------------------- */
 void sqcrc(DERTBL *varp)
 {
-	NR_TYPE	qcr, akrd, qcrc, adifr, bdifr;
+	NR_TYPE	qcr, akrd, qcrc = 0.0, adifr, bdifr;
 	NR_TYPE	bqcrc, satk3, sbeta3;
 	double	atk3, beta3;
 

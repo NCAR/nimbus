@@ -36,7 +36,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "amlib.h"
 #include "pms.h"
 
-static int FIRST_BIN[MAX_F300], LAST_BIN[MAX_F300], SampleRate[MAX_F300];
+static size_t FIRST_BIN[MAX_F300], LAST_BIN[MAX_F300], SampleRate[MAX_F300];
 
 static NR_TYPE	total_concen[MAX_F300], dbar[MAX_F300], disp[MAX_F300];
 static NR_TYPE	cell_size[MAX_F300][BINS_40+1], pvol[MAX_F300], SAMPLE_AREA[MAX_F300],
@@ -46,8 +46,8 @@ static NR_TYPE	cell_size[MAX_F300][BINS_40+1], pvol[MAX_F300], SAMPLE_AREA[MAX_F
 /* -------------------------------------------------------------------- */
 void cf300Init(RAWTBL *varp)
 {
-  int	i, probeNum;
-  char	*p, *serialNumber;
+  size_t	i, probeNum;
+  char		*p, *serialNumber;
 
   serialNumber = varp->SerialNumber;
   probeNum = varp->ProbeCount;
@@ -104,7 +104,7 @@ void cf300Init(RAWTBL *varp)
 /* -------------------------------------------------------------------- */
 void scf300(DERTBL *varp)
 {
-  int		i, probeNum;
+  size_t	i, probeNum;
   NR_TYPE	*actual, *concentration, *dia, *dia2, *dia3;
   NR_TYPE	tas, vol, sampleVolume[BINS_40+1];
 

@@ -36,7 +36,7 @@ static void	doubleCheck(DERTBL *dp);
 /* -------------------------------------------------------------------- */
 void SetUpDependencies()
 {
-  int		j;
+  size_t	j;
   char		tokens[] = " \t";
   char		*dependlist[2000];
   char		*s, name[NAMELEN], location[NAMELEN];
@@ -44,7 +44,7 @@ void SetUpDependencies()
 
   ReadTextFile(DEPENDTBL, dependlist);
 
-  for (int i = 0; i < derived.size(); ++i)
+  for (size_t i = 0; i < derived.size(); ++i)
     {
     DERTBL *dp = derived[i];
 
@@ -134,7 +134,7 @@ void SetUpDependencies()
 /* -------------------------------------------------------------------- */
 void CleanOutUnwantedVariables()
 {
-  int	i, cnt;
+  size_t i, cnt;
 
   for (i = 0; i < derived.size(); ++i)
     if (derived[i]->Output)
@@ -164,7 +164,7 @@ void CleanOutUnwantedVariables()
 /* -------------------------------------------------------------------- */
 int DependIndexLookup(DERTBL *dp, int which_dep)
 {
-  int		di;
+  int di;
 
   if ((di = SearchTable(sdi, dp->depend[which_dep])) != ERR)
     {
@@ -193,9 +193,9 @@ int DependIndexLookup(DERTBL *dp, int which_dep)
 /* -------------------------------------------------------------------- */
 static void doubleCheck(DERTBL *dp)	/* This function is recursive	*/
 {
-  int		i, indx;
+  int indx;
 
-  for (i = 0; i < dp->ndep; ++i)
+  for (size_t i = 0; i < dp->ndep; ++i)
     {
     if ((indx = SearchTable(sdi, dp->depend[i])) != ERR)
       sdi[indx]->DependedUpon = true;

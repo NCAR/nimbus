@@ -40,11 +40,11 @@ public:
 
 //@{
   /** 
-   * Write LRT data into the database.
+   * Write LowRate (LRT) data into the database.
    */
   void	WriteSQL(const std::string timeStamp);
   /** 
-   * Write LRT data into the database.
+   * Write SampleRate (SRT) data into the database.
    * @returns usec of last sample written.
    */
   long	WriteSQLvolts(const std::string timeStamp);
@@ -124,9 +124,10 @@ private:
    */
   void
   addVariableToDataBase(const std::string& name, const std::string& units,
-	const std::string& longName, const int sampleRate, const int nDims,
-	const int dims[], const int nCals, const float cals[],
-	const float missingValue, const std::string& dataQuality);
+	const std::string& uncaled_units, const std::string& longName,
+	const int sampleRate, const int nDims, const int dims[],
+	const int nCals, const float cals[], const float missingValue,
+	const std::string& dataQuality);
 
   /**
    * Add a category variable-name pair to the categories table in the

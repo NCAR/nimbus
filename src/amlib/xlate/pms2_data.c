@@ -60,7 +60,7 @@ RAWTBL	*cur_rp;
 /* Exported to amlib/std/pms2d.c */
 
 NR_TYPE	deadTime[MAX_PMS2D][2];	/* Probe down time (subtract from 1 second) */
-int	overFlowCnt[MAX_PMS2];	/* Number of particles greater than 64 bins */
+size_t	overFlowCnt[MAX_PMS2];	/* Number of particles greater than 64 bins */
 
 
 struct particle
@@ -68,14 +68,14 @@ struct particle
   long	time;		/* Seconds since mid-night	*/
   long	msec;
 
-  int		w, h;
+  size_t	w, h;
   bool		edge;		/* particle touched either edge		*/
   ulong		timeWord;
   ushort	x1, x2;		/* for particles that touch both edges.	*/
   NR_TYPE	deltaTime;	/* Amount of time between prev & this particle*/
   NR_TYPE	liveTime;	/* Amount of time consumed by particle	*/
   ulong		*p;		/* Pointer into P2d_rec			*/
-  int		nSlices;
+  size_t	nSlices;
   };
 
 typedef struct particle Particle;
@@ -91,8 +91,8 @@ bool	Next2dRecord(P2d_rec *, int, short);
 /* -------------------------------------------------------------------- */
 void Add2DtoList(RAWTBL *varp)	/* Called by hdr_decode.c */
 {
-  int	i, cCnt, pCnt, hCnt;
-  static int piCnt = 0;
+  size_t	cCnt, pCnt, hCnt;
+  static size_t	piCnt = 0;
 
   probes[piCnt] = CreateQueue();
   
@@ -109,7 +109,7 @@ void Add2DtoList(RAWTBL *varp)	/* Called by hdr_decode.c */
    * probe index
    */
   cCnt = pCnt = hCnt = '1';
-  for (i = 0; i < piCnt; ++i)
+  for (size_t i = 0; i < piCnt; ++i)
     {
     if ((probeIDorder[i] & 0x4300) == 0x4300)   /* 2D-C */
       probeIDorder[i] |= cCnt++;
@@ -128,7 +128,7 @@ void Add2DtoList(RAWTBL *varp)	/* Called by hdr_decode.c */
 /* -------------------------------------------------------------------- */
 void xlTwodInit(RAWTBL *varp)
 {
-  int		probeCnt = varp->ProbeCount;
+  size_t	probeCnt = varp->ProbeCount;
   P2d_rec	rec;
 
 
@@ -160,7 +160,7 @@ void xlTwodInit(RAWTBL *varp)
 /* -------------------------------------------------------------------- */
 void xl2dDeadTime1(RAWTBL *varp, void *in, NR_TYPE *np)
 {
-  int	probeCnt = varp->ProbeCount >> 1;
+  size_t	probeCnt = varp->ProbeCount >> 1;
 
   /* Return Milliseconds.
    */
@@ -171,7 +171,7 @@ void xl2dDeadTime1(RAWTBL *varp, void *in, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xl2dDeadTime2(RAWTBL *varp, void *in, NR_TYPE *np)
 {
-  int	probeCnt = varp->ProbeCount >> 1;
+  size_t	probeCnt = varp->ProbeCount >> 1;
 
   /* Return Milliseconds.
    */
@@ -182,10 +182,9 @@ void xl2dDeadTime2(RAWTBL *varp, void *in, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlTwoD(RAWTBL *varp, void *in, NR_TYPE *np)
 {
-  int	i;
-  int	probeCnt = varp->ProbeCount >> 1;
+  size_t	probeCnt = varp->ProbeCount >> 1;
 
-  for (i = 0; i < varp->Length; ++i)
+  for (size_t i = 0; i < varp->Length; ++i)
     np[i] = twoD[probeCnt][i];
 
 }	/* END XLTWOD */
@@ -193,7 +192,8 @@ void xlTwoD(RAWTBL *varp, void *in, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlOneD(RAWTBL *varp, void *in, NR_TYPE *np)
 {
-  int		i, thisTime, n, probeCount;
+  size_t	n, probeCount;
+  int		thisTime;
   bool		rejected;
   Queue		*probe;
   Particle	*p;
@@ -326,7 +326,8 @@ return;
 /* -------------------------------------------------------------------- */
 void xlHVPS(RAWTBL *varp, void *in, NR_TYPE *np)
 {
-  int           i, thisTime, n, probeCount;
+  size_t	probeCount;
+  int		thisTime;
   bool          rejected;
   Queue         *probe;
   Particle      *p;
@@ -454,7 +455,7 @@ static void AddMore2dData(Queue *probe, long thisTime, int probeCnt)
 /* -------------------------------------------------------------------- */
 void Process(Queue *probe, P2d_rec *rec, int probeCnt)
 {
-  int		i, j, h, partCnt;
+  size_t	i, j, h, partCnt;
   long		endTime, oload;
   bool		firstParticleAfter512;
   ulong		*p, slice, pSlice, ppSlice, tBarElapsedtime, DASelapsedTime;
@@ -739,11 +740,11 @@ cleanup:
 
 /* -------------------------------------------------------------------- */
 static const float	TAS_COMPENSATE = 2.5;
-static const int	lower_mask = 215, upper_mask = 40;
+static const size_t	lower_mask = 215, upper_mask = 40;
 
 void ProcessHVPS(Queue *probe, P2d_rec *rec, int probeCnt)
 {
-  int           i, j, h, partCnt, shaded, unshaded;
+  size_t	i, partCnt, shaded, unshaded;
   long          endTime, oload;
   bool          firstParticleAfter512;
   ulong		tBarElapsedtime, DASelapsedTime;
@@ -751,7 +752,6 @@ void ProcessHVPS(Queue *probe, P2d_rec *rec, int probeCnt)
   NR_TYPE       tas, frequency, overLap;
   ushort        t;
   Particle      *part[1024], *cp; /* cp stands for "currentParticle" */
-int minunshaded = 256;
 
   static int    overLoad = 0;
 
@@ -760,13 +760,13 @@ int minunshaded = 256;
   if (1 != ntohs(1))
     {
     short       *sp = (short *)rec;
-                                                                                          
+
     for (i = 1; i < 10; ++i, ++sp)
       *sp = ntohs(*sp);
-                                                                                          
-                                                                                          
+
+
     p = (ushort *)rec->data;
-                                                                                          
+
     for (i = 0; i < 2048; ++i, ++p)
       *p = ntohs(*p);
     }
@@ -969,7 +969,6 @@ int minunshaded = 256;
     EnQueue(probe, cp);
     }
 
-cleanup:
   startTime[probeCnt]	= endTime;
   startMilliSec[probeCnt] = rec->msec;
   overLoad		= rec->overld;

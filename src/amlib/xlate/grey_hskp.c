@@ -27,10 +27,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 /* -------------------------------------------------------------------- */
 void xlGrey_hskp0(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	i;
   Grey_house	*p = (Grey_house *)input;
 
-  for (i = 0; i < varp->SampleRate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (NR_TYPE)SecondPoly((NR_TYPE)ntohs(p[i].hdata[0]), varp->cof);
 
 }	/* END XLGREY_HSKP0 */
@@ -38,10 +37,10 @@ void xlGrey_hskp0(RAWTBL *varp, void *input, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlGrey_hskp1(RAWTBL *varp, void *input, NR_TYPE *np)
 {
-  int	i;
   Grey_house	*p = (Grey_house *)input;
 
-  for (i = 0, np[0] = 0.0; i < varp->SampleRate; ++i)
+  np[0] = 0.0;
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (NR_TYPE)SecondPoly((NR_TYPE)ntohs(p[i].hdata[1]), varp->cof);
 
 }	/* END XLGREY_HSKP1 */

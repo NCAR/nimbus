@@ -38,7 +38,7 @@ void OpenLogFile()
           ProjectDirectory, ProjectNumber, getpid());
 
   if ((LogFile = fopen(logFileName, "w")) == NULL) {
-    sprintf(buffer, "Unable to create %s\n");
+    sprintf(buffer, "Unable to create %s\n", logFileName);
     LogMessage(buffer);
     }
 
