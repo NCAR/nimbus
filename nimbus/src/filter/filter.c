@@ -158,7 +158,7 @@ void InitMRFilters()
 
       case 25:		/* Just filter	*/
         rawFilters[i] = createMRFilter(1, 1, &TwentyFive, mv_p);
-        rawFilters[i] = NULL;
+//        rawFilters[i] = NULL;
         break;
 
       case 50:		/* Decimate	*/
@@ -479,6 +479,7 @@ static void readFilters()
   readAfilter("1to25", &OneTo25);
   readAfilter("5to25", &FiveTo25);
   readAfilter("10to25", &TenTo25);
+  readAfilter("25hz", &TwentyFive);
   readAfilter("50to25", &FiftyTo25);
   readAfilter("250to25", &TwoFiftyTo25);
   readAfilter("1000to25", &ThousandTo25);
