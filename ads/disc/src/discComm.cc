@@ -104,7 +104,7 @@ Palt *palt;				// pressure altitude
 Tasx *tasx;				// true air speed
 
 // Broadcast sockets.
-UdpSocket udp_sock(DSM_BROADCAST_PORT, "128.117.184.255");
+UdpSocket udp_sock(DSM_BROADCAST_PORT, "192.168.184.255");
 
 char ctl_buf[256];			// temp buffer for ctl data
  
@@ -226,7 +226,6 @@ int main()
 
     // Check for messages from the GUI and tape tasks.
     checkMessage();
-
 
     // Once each second check the net connections, and check for Events
     // from WINDS.

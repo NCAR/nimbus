@@ -62,10 +62,14 @@ void TcpSocket::openSock(int accept)
       exit(ERROR);
     }
 
+#ifndef VXWORKS
+//    fcntl(tcp_sock, F_SETFL, O_NONBLOCK);
+#endif
   }
-}
-/*****************************************************************************/
 
+}
+
+/*****************************************************************************/
 int TcpSocket::connectSock ()
 
 // Connects the socket.
