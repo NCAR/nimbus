@@ -46,7 +46,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 Widget	readHeaderButton;
 Widget	aDSdataText, outputFileText;
 
-Widget	menuBar, timeDisplayText, list1, goButton, logText, pullRight,lowRateButton, highRateButton;
+Widget	menuBar, timeDisplayText, list1, goButton, logText, pullRight;
 Widget	varNameLabel;
 Widget	outputVarYes, outputVarNo;
 Widget	outputLRbutton, outputSRbutton, outputHRbutton;
@@ -147,7 +147,6 @@ Widget CreateSetupWindow(Widget parent)
   Cardinal	n;
   XmString	xmstr[1];
   Widget	setupForm;
-  Widget	rateFrame, rateRB;
   Widget	pullDown[2], cascadeButton[2], b[16]; 
   Widget	listRC, listTitle, separ1, separ2;
 
@@ -202,45 +201,17 @@ Widget CreateSetupWindow(Widget parent)
   pullRight = XmCreatePulldownMenu(pullDown[1], "editPR_CB", args, n);
 
   n = 0;
-  b[0] = XmCreatePushButton(pullDown[1], "editDefaultsButton", args, n);
-  b[1] = XmCreatePushButton(pullDown[1], "editTimeSlices", args, n);
-  b[2] = XmCreatePushButton(pullDown[1], "editFlightInfo", args, n);
-  b[3] = XmCreatePushButton(pullDown[1], "toggleOutput", args, n);
-  b[4] = XmCreatePushButton(pullDown[1], "toggleRate", args, n);
+  b[0] = XmCreatePushButton(pullDown[1], "editConfiguration", args, n);
+  b[1] = XmCreatePushButton(pullDown[1], "editDefaultsButton", args, n);
+  b[2] = XmCreatePushButton(pullDown[1], "toggleOutput", args, n);
+  b[3] = XmCreatePushButton(pullDown[1], "toggleRate", args, n);
   XtSetArg(args[n], XmNsubMenuId, pullRight); ++n;
-  b[5] = XmCreateCascadeButton(pullDown[1], "Toggle Probe", args, n);
-  XtAddCallback(b[0], XmNactivateCallback, EditDefaultsFile, NULL);
-  XtAddCallback(b[1], XmNactivateCallback, EditTimeSlices, NULL);
-  XtAddCallback(b[2], XmNactivateCallback, EditFlightInfo, NULL);
-  XtAddCallback(b[3], XmNactivateCallback, ToggleOutput, NULL);
-  XtAddCallback(b[4], XmNactivateCallback, ToggleRate, NULL);
-  XtManageChildren(b, 6);
-
-
-  /* Create Low/High Rate toggle box.
-   */
-  n = 0;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_WIDGET); n++;
-  XtSetArg(args[n], XmNleftWidget, menuBar); n++;
-  rateFrame = XmCreateFrame(setupForm, "rateFrame", args, n);
-  XtManageChild(rateFrame);
-
-  n = 0;
-  rateRB = XmCreateRadioBox(rateFrame, "rateRadioBox", args, n);
-  XtManageChild(rateRB);
-
-  n = 0;
-  lowRateButton = XmCreateToggleButton(rateRB, "lowRateButton", args,n);
-  XtAddCallback(lowRateButton, XmNvalueChangedCallback,
-                (XtCallbackProc)SetLowRate, NULL);
-  XtManageChild(lowRateButton);
-
-  n = 0;
-  highRateButton = XmCreateToggleButton(rateRB, "highRateButton", args, n);
-  XtAddCallback(highRateButton, XmNvalueChangedCallback,
-                (XtCallbackProc)SetHighRate, NULL);
-  XtManageChild(highRateButton);
+  b[4] = XmCreateCascadeButton(pullDown[1], "Toggle Probe", args, n);
+  XtAddCallback(b[0], XmNactivateCallback, EditConfiguration, NULL);
+  XtAddCallback(b[1], XmNactivateCallback, EditDefaultsFile, NULL);
+  XtAddCallback(b[2], XmNactivateCallback, ToggleOutput, NULL);
+  XtAddCallback(b[3], XmNactivateCallback, ToggleRate, NULL);
+  XtManageChildren(b, 5);
 
 
   /* Go Button
@@ -248,7 +219,7 @@ Widget CreateSetupWindow(Widget parent)
   n = 0;
   XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_WIDGET); n++;
-  XtSetArg(args[n], XmNleftWidget, rateFrame); n++;
+  XtSetArg(args[n], XmNleftWidget, menuBar); n++;
   goButton = XmCreatePushButton(setupForm, "goButton", args, n);
   XtAddCallback(goButton, XmNactivateCallback, QueryOutputFile, NULL);
   XtManageChild(goButton);
@@ -257,7 +228,7 @@ Widget CreateSetupWindow(Widget parent)
    */
   n = 0;
   XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
-  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM); n++;
+//  XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_WIDGET); n++;
   XtSetArg(args[n], XmNleftWidget, goButton); n++;
   timeDisplayText = XmCreateTextField(setupForm, "timeDisplayText", args, n);

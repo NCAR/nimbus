@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
               transientShellWidgetClass, AppShell, args, n);
 
   EditWindow = CreateEditWindow(Shell002);
-
+/*
   n = 0;
   XtSetArg(args[n], XmNtitle, "Edit Time Slices"); n++;
   XtSetArg(args[n], XmNtransientFor, Shell001); n++;
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
               transientShellWidgetClass, AppShell, args, n);
 
   TimeSliceWindow = CreateTimeSliceWindow(Shell003);
-
+*/
 
   CreatePauseWindows(AppShell);
   CreateErrorBox(AppShell);

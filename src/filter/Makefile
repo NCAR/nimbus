@@ -23,8 +23,8 @@ COFLAGS	= -Wall -g -O2 -c $(INCLUDES)
 
 
 INPUT.O = $(NOBJ)adsIO.o $(NOBJ)amlibfn.o $(NOBJ)async.o $(NOBJ)average.o\
-	$(NOBJ)calco.o $(NOBJ)cb_defs.o $(NOBJ)cb_edit.o $(NOBJ)cb_flight.o\
-	$(NOBJ)cb_main.o $(NOBJ)cb_pause.o $(NOBJ)cb_time.o $(NOBJ)circbuff.o\
+	$(NOBJ)calco.o $(NOBJ)cb_defs.o $(NOBJ)cb_edit.o $(NOBJ)cb_main.o\
+	$(NOBJ)cb_pause.o $(NOBJ)config_win.o $(NOBJ)circbuff.o\
 	$(NOBJ)compute.o $(NOBJ)depend.o $(NOBJ)despike.o $(NOBJ)error.o\
 	$(NOBJ)filter.o $(NOBJ)globals.o $(NOBJ)hdr_decode.o $(NOBJ)hrloop.o\
 	$(NOBJ)init.o $(NOBJ)interp.o $(NOBJ)logfile.o $(NOBJ)lrloop.o\
@@ -182,9 +182,9 @@ CCB.H = $(NINC)nimbus.h $(NINC)gui.h $(NINC)injectsd.h
 $(NOBJ)cb_edit.o: cb_edit.c $(CCB.H)
 	${CC} $(COFLAGS) $(DEFINES) cb_edit.c -o $(NOBJ)cb_edit.o
 
-CCB.H = $(NINC)nimbus.h $(NINC)gui.h
-$(NOBJ)cb_time.o: cb_time.c $(CCB.H)
-	${CC} $(COFLAGS) $(DEFINES) cb_time.c -o $(NOBJ)cb_time.o
+CFG_WIN.H = $(NINC)nimbus.h $(NINC)gui.h
+$(NOBJ)config_win.o: config_win.c $(CFG_WIN.H)
+	${CC} $(COFLAGS) $(DEFINES) config_win.c -o $(NOBJ)config_win.o
 
 CCB.H = $(NINC)nimbus.h $(NINC)gui.h
 $(NOBJ)cb_pause.o: cb_pause.c $(CCB.H)
@@ -213,10 +213,6 @@ $(NOBJ)amlibfn.o: amlibfn.c $(AMLIBFN.H)
 CB_DEF.H =  $(NINC)nimbus.h $(NINC)decode.h $(NINC)gui.h
 $(NOBJ)cb_defs.o: cb_defs.c $(CB_DEF.H)
 	${CC} $(COFLAGS) $(DEFINES) cb_defs.c -o $(NOBJ)cb_defs.o
-
-CB_FLIGHT.H =  $(NINC)nimbus.h $(NINC)decode.h $(NINC)gui.h
-$(NOBJ)cb_flight.o: cb_flight.c $(CB_FLIGHT.H)
-	${CC} $(COFLAGS) $(DEFINES) cb_flight.c -o $(NOBJ)cb_flight.o
 
 RD_DEF.H =  $(NINC)nimbus.h $(NINC)decode.h
 $(NOBJ)rd_defs.o: rd_defs.c $(RD_DEF.H)
