@@ -12,13 +12,13 @@ LIBS=	-L${JLOCAL}/lib -lVarDB -lraf
 
 SRCS=	vdbdump.cc
 OBJS=	vdbdump.o
-HDRS=	define.h vardb.h
+HDRS=	${JLOCAL}/include/vardb.h
 PROG=	vdbdump
 
 .c.o:
 	${CC} ${CFLAGS} -c $*.cc
 
-${PROG}:
+${PROG}: ${SRCS} ${HDRS}
 	${CC} ${CFLAGS} ${SRCS} ${LIBS} -o $@
 
 install: ${PROG}
