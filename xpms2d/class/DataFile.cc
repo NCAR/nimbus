@@ -68,19 +68,18 @@ static unsigned long CtestParticle[] = {
  };
 
 static unsigned short HtestParticle[] = {
-0x8000,
-0x807a,
+  0x8000,
+  0x807a,
 
-0x427e,
-0x437d,
-0x447c,
-0x447c,
-0x447c,
-0x447c,
-0x437d,
-0x427e,
-
- };
+  0x427e,
+  0x437d,
+  0x447c,
+  0x447c,
+  0x447c,
+  0x447c,
+  0x437d,
+  0x427e,
+  };
 
 
 /* -------------------------------------------------------------------- */
@@ -141,6 +140,9 @@ ADS_DataFile::ADS_DataFile(char fName[])
   else
     {
     hdr = new Header(fileName);
+    if (hdr->isValid() == false)
+      return;
+
     hasRAFheader = true;
 
     for (p = hdr->GetFirst("PMS2D"); p; p = hdr->GetNext("PMS2D"))
@@ -659,39 +661,39 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
 void ADS_DataFile::SortIndices(int cnt)
 {
   sort_the_table(0, cnt-1);
-                                                                                     
+
 }       /* SORTTABLE */
-                                                                                     
+
 /* -------------------------------------------------------------------- */
 void ADS_DataFile::sort_the_table(int beg, int end)
 {
   Index	*mid, temp;
   int	x = beg, y = end;
-                                                                                     
+
   mid = &indices[(x + y) / 2];
-                                                                                     
+
   while (x <= y)
     {
     while (memcmp(indices[x].time, mid->time, 6) < 0)
       ++x;
-                                                                                     
+
     while (memcmp(indices[y].time, mid->time, 6) > 0)
       --y;
-                                                                                     
+
     if (x <= y)
       {
       temp = indices[x];
       indices[x] = indices[y];
       indices[y] = temp;
-                                                                                     
+
       ++x;
       --y;
       }
     }
-                                                                                     
+
   if (beg < y)
     sort_the_table(beg, y);
-                                                                                     
+
   if (x < end)
     sort_the_table(x, end);
 
