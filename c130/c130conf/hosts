@@ -1,0 +1,16 @@
+# Do not remove the following line, or various programs
+# that require network functionality will fail.
+127.0.0.1               localhost.localdomain localhost
+192.168.84.101           hercules.display.c130 hercules
+192.168.84.71           cadmus.display.c130 cadmus
+192.168.84.72           perseus.display.c130 perseus
+192.168.84.48           bonnie.display.c130 bonnie
+192.168.84.49           clyde.display.c130 clyde
+192.168.84.18           blanc.display.c130 blanc
+192.168.84.11           syncserv130.display.c130 syncserv130
+192.168.84.70           cam130.display.c130 cam130
+
+
+128.117.84.100          mistral.atd.ucar.edu mistral
+128.117.84.8            vivaldi.atd.ucar.edu vivaldi
+#128.117.188.104         rdcc.guest.ucar.edu rdcc

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Exec=/usr/bin/poweroff
+TryExec=
+Icon=/usr/share/pixmaps/gnome-error.png
+X-GNOME-DocPath=
+Terminal=false
+Name[en_US]=Shutdown
+GenericName[en_US]=
+Comment[en_US]=

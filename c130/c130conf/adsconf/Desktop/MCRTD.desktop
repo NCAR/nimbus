@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Exec=/home/ads/scripts/client_call_MCRTD
+TryExec=
+Icon=/usr/share/pixmaps/gnome-ccbackground.png
+X-GNOME-DocPath=
+Terminal=false
+Name[en_US]=MCRTD
+GenericName[en_US]=
+Comment[en_US]=

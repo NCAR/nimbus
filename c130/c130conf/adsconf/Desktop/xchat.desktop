@@ -1,0 +1,23 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=IRC Client
+Name[de]=IRC-Client
+Name[es]=Aplicación de IRC
+Name[fi]=IRC-sovellus
+Name[fr]=Client IRC
+Comment[lt]=IRC klientas
+Name[ko]=IRC 클라이언트
+Name[no]=IRC-klient
+Name[pt_BR]=Cliente de IRC
+Name[ro]=Client de IRC
+Name[sl]=Odjemalec IRC
+Name[sv]=IRC-klient
+Name[uk]=Клієнт IRC
+Name[zh_TW]=IRC 用戶端程式
+GenericName=IRC Client
+Comment=X-Chat
+Exec=xchat
+Icon=xchat.png
+Terminal=false
+Type=Application
+Categories=X-Red-Hat-Extra;Application;Network;

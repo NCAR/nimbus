@@ -1,0 +1,27 @@
+#!/bin/csh -f
+## client_call_MCRTD
+## Script to start MCRTD on a Display computer.
+## 7/12/04 Brandon Slaten
+## 10/21/04 Modifed for Private Subnet BLS
+
+# Hercules
+set mcrtdserver = hercules.display.c130
+
+# echo $mcrtdserver
+
+ping -w 1 $mcrtdserver 
+if ($status) then 
+#        echo Cannot ping $mcrtdserver, I give up. 
+#        echo ''
+       exit 
+endif
+
+# Get ProjectNumber
+set projnum = `rsh $mcrtdserver cat /jnet/local/proj/hosts/ProjectNumber`
+#echo $projnum
+
+/usr/bin/X11/xhost + 
+
+#echo  start MCRTD for  `uname -n`
+/usr/bin/rsh $mcrtdserver mcrtd -d `uname -n`:0 $projnum
+#echo $mcrtdserver mcrtd -d `uname -n`:0 $projnum
