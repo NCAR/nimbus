@@ -42,7 +42,7 @@ public:
   void openSock (int);			// open the socket
   int querySock();			// query for data avail
   int readSock (char*, int);		// read from the socket
-  int writeSock (char*, int);		// write to the socket
+  int writeSock (const char*, int);		// write to the socket
   void closeSock();			// close the socket
   inline int sockId() {return udp_sock;}	// get the socket handle
 

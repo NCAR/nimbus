@@ -140,8 +140,8 @@ $(NOBJ)interp.o: interp.c $(INTERP.H)
 	${CC} $(COFLAGS) $(DEFINES) interp.c -o $(NOBJ)interp.o
 
 PSQL.H = $(NINC)nimbus.h $(NINC)decode.h
-$(NOBJ)psql.o: psql.c $(PSQL.H)
-	${CC} $(COFLAGS) $(DEFINES) psql.c -o $(NOBJ)psql.o
+$(NOBJ)psql.o: psql.cc $(PSQL.H)
+	${CC} $(COFLAGS) $(DEFINES) psql.cc -o $(NOBJ)psql.o
 
 RTLOOP.H = $(NINC)nimbus.h $(NINC)decode.h ${NINC}gui.h
 $(NOBJ)rtloop.o: rtloop.c $(RTLOOP.H)

@@ -797,6 +797,7 @@ static void initSDI(char vn[])
     }
 
   cp = sdi[nsdi++] = (SDITBL *)GetMemory(sizeof(SDITBL));
+  memset(cp, 0, sizeof(SDITBL));
 
   if (GetConversionOffset(vn, &(cp->convertOffset)) == ERR)
     cp->convertOffset = 0;
@@ -1746,6 +1747,7 @@ static RAWTBL *add_name_to_RAWTBL(char name[])
     }
 
   rp = raw[nraw++] = (RAWTBL *)GetMemory(sizeof(RAWTBL));
+  memset(rp, 0, sizeof(RAWTBL));
 
   strcpy(rp->name, name);
   if (*location)
@@ -1822,6 +1824,7 @@ static DERTBL *add_name_to_DERTBL(char name[])
 
 
   dp = derived[nderive++] = (DERTBL *)GetMemory(sizeof(DERTBL));
+  memset(dp, 0, sizeof(DERTBL));
 
   strcpy(dp->name, name);
   if (*location)

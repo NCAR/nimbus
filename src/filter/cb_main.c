@@ -61,6 +61,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 #include "ctape.h"
 #include "gui.h"
 #include "vardb.h"
+#include "psql.h"
 #include "version.h"
 
 
@@ -1199,9 +1200,11 @@ void QueryOutputFile(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void sighandler(int s)
 {
+  extern PostgreSQL *psql;
+
   printf("SigHandler: cleaning up netCDF file.\n");
   CloseNetCDF();
-  CloseSQL();
+  psql->closeSQL();
 
   exit(0);
 

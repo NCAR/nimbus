@@ -22,7 +22,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 -------------------------------------------------------------------------
 */
 
-#include <math.h>
+#include <cmath>
 
 #include "nimbus.h"
 #include "decode.h"
