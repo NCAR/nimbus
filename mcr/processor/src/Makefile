@@ -15,7 +15,7 @@ CXX	= g++
 CXXFLAGS= -g -O ${INCLUDES} ${DEFINES} -L${DISC}/lib
 CXXFLAGS= -g -O ${INCLUDES} ${DEFINES}
 
-LIBS	= -lraf++ -lnetcdf_c++ -lnetcdf
+LIBS	= -L${JLOCAL}/lib -lraf++ -lnetcdf_c++ -lnetcdf
 
 PROG	= mcrp
 HDRS	= ../../include/mcr.h

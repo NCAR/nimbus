@@ -29,6 +29,8 @@ all: ${OBJS}
 #	ranlib lib${LIBNAME}.a
 
 install: all
+	test -d ${RELEASE} || mkdir ${RELEASE}
+	test -d ${I2D} || mkdir ${I2D}
 	install -Cp --mode=664 lib${LIBNAME}.a ${RELEASE}
 	install -Cp --mode=444 *.h ${I2D}
 

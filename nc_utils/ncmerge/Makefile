@@ -23,8 +23,12 @@ ${PROG}: ${OBJS}
 	${CC} ${CFLAGS} ${OBJS} ${LIBS} -o $@
 
 install: ${PROG}
+	test -d ${DESTDIR}${BINDIR} || mkdir ${DESTDIR}${BINDIR}
 	cp ${PROG} ${DESTDIR}${BINDIR}
+	test -d ${DESTDIR}${MANDIR} || mkdir ${DESTDIR}${MANDIR}
 	cp ${PROG}.man ${DESTDIR}${MANDIR}/${PROG}.1
+
+publish: $(PROG)
 	cp ${PROG} $(ANONFTP)
 	cp ${PROG}.man ${ANONFTP}
 

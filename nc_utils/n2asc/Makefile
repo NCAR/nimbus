@@ -46,7 +46,10 @@ ${PROG}: ${OBJS}
 
 install: ${PROG}
 	cp ${PROG} ${BINDIR}
+	test -d $(MANDIR) || mkdir $(MANDIR)
 	cp ${PROG}.man ${MANDIR}/${PROG}.1
+
+publish: $(PROG)
 	scp ${PROG} ${IHOST}:${BINDIR}
 	scp ${PROG}.man ${IHOST}:${MANDIR}/${PROG}.1
 	cp ${PROG} $(ANONFTP)

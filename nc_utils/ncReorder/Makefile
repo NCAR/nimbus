@@ -24,7 +24,10 @@ ${PROG}: ncReorder.cc ${JLOCAL}/lib/libnetcdf_c++.a
 	${CC} ${CFLAGS} ncReorder.cc ${LIBS} -o $@
 
 install: ${PROG}
+	test -d ${BINDIR} || mkdir ${BINDIR}
 	cp ${PROG} ${BINDIR}
+
+publish: $(PROG)
 	cp ${PROG} $(ANONFTP)
 
 clean:

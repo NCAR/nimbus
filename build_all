@@ -1,12 +1,33 @@
 #!/bin/csh
 
+# Environment variables that are needed:
+# setenv JLOCAL /code/granger/jlocal
+# setenv LOCAL $JLOCAL
+# setenv WINDS $JLOCAL
+
+if ( ! $?JLOCAL || ! $?LOCAL || ! $?WINDS ) then
+    echo "Need to set LOCAL, JLOCAL, and WINDS."
+    exit 1
+endif
+
 # Pre-req's that you will need to install are netcdf & Qwt.
+
+if ($#argv > 0) then
+  if ("$argv[1]" == init) then
+    # Copy the netcdf dependencies into place
+    setenv OPT_LOCAL /net/opt_lnx/local_fc2/.
+    echo "Copying netcdf dependencies from $OPT_LOCAL..."
+    ( cd $OPT_LOCAL && rsync -avR `find . -name "*netcdf*" -o -name "*ncvalues*"` $JLOCAL )
+    # Make sure all the directories exist
+    (cd $JLOCAL ; mkdir -p bin lib include man man/man1 man/man3 )
+  endif
+endif
 
 # Pre-req's that most likely exist on your system, Motif, Qt.
 
-# Build libraries first.
+# Build libraries first.  libraf++ needs to go first to install header.h.
 
-foreach file ( hdr_api lib* vardb/lib )
+foreach file ( libraf++ hdr_api libraf libaircraft libpms vardb/lib )
   (cd $file; echo ""; make install)
 end
 

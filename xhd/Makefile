@@ -31,6 +31,7 @@ ${PROG}: ${OBJS}
 	${CC} ${CFLAGS} ${OBJS} ${LIBS} -o $@
 
 install: ${PROG}
+	test -d ${BINDIR} || mkdir ${BINDIR}
 	cp ${PROG} ${BINDIR}
 
 clean:

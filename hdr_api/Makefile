@@ -41,8 +41,11 @@ lib${LIBNAME}.a: ${OBJS}
 	ar cr lib${LIBNAME}.a ${OBJS}
 
 install: all
+	test -d ${LIBDIR} || mkdir ${LIBDIR}
+	test -d ${INCLUDEDIR} || mkdir ${INCLUDEDIR}
 	install -Cp --mode=664  lib${LIBNAME}.a ${LIBDIR}
 	install -Cp --mode=444  ${HEADER} ${INCLUDEDIR}
+	test -d ${MANDIR} || mkdir ${MANDIR}
 	install -Cp --mode=664  ${LIBNAME}.3 ${MANDIR}
 
 clean:

@@ -30,8 +30,11 @@ ${PROG}: ${OBJS}
 	${CC} ${CFLAGS} ${OBJS} ${LIBS} -o $@
 
 install: ${PROG}
+	test -d $(BINDIR) || mkdir $(BINDIR)
 	cp ${PROG} ${BINDIR}
 	cp ${PROG}.man ${MANDIR}/${PROG}.1
+
+publish:
 	scp ${PROG} ${HOST}:${BINDIR}
 	scp ${PROG}.man ${HOST}:${MANDIR}/${PROG}.1
 	cp ${PROG} $(ANONFTP)

@@ -75,7 +75,10 @@ release:
 	rm -f ${RELEASE}/LOCK.make
 
 install: ${PROG}
+	test -d ${BIN} || mkdir ${BIN}
 	cp ${PROG} ${BIN}
+
+publish:
 	scp ${PROG} ${IHOST}:${BIN}
 	cp ${PROG} ${ANONFTP}
 	cp ${PROG}.html ${WWW}
