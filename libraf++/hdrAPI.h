@@ -4,16 +4,12 @@ OBJECT NAME:	hdrAPI.h
 
 DESCRIPTION:	Header file tape API package
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1998
+COPYRIGHT:	University Corporation for Atmospheric Research, 1998-2005
 -------------------------------------------------------------------------
 */
 
 #ifndef HDRAPI_H
 #define HDRAPI_H
-
-#ifndef NULL
-#define NULL		(0)
-#endif
 
 #include "header.h"
 #include "tapeIO.h"
@@ -25,6 +21,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 
 
 /* -------------------------------------------------------------------- */
+/**
+ * Class to read and parse an ADS header.
+ */
 class Header
 {
 public:
@@ -36,26 +35,26 @@ public:
 
   void 	readHeader(const char fName[]);
 
-  void 	*HeaderPointer()	{ return((void *)header); }
+  void 	*HeaderPointer()	{ return((void *)_header); }
 
   char	*ProjectName();		// May not work if no PROJ_DIR
 
   // Struct Fl fields.
-  char	*Version()		{ return(header->version); }
-  char	*ProjectNumber()	{ return(header->prnum); }
-  char	*FlightNumber()		{ return(header->fltnum); }
-  char	*TapeNumber()		{ return(header->tpnum); }
-  char	*FlightDate()		{ return(header->date); }
-  char	*FlightTime()		{ return(header->time); }
-  char	*TimeZone()		{ return(header->tzone); }
-  char	*Aircraft()		{ return(header->acraft); }
+  char	*Version()		{ return(_header->version); }
+  char	*ProjectNumber()	{ return(_header->prnum); }
+  char	*FlightNumber()		{ return(_header->fltnum); }
+  char	*TapeNumber()		{ return(_header->tpnum); }
+  char	*FlightDate()		{ return(_header->date); }
+  char	*FlightTime()		{ return(_header->time); }
+  char	*TimeZone()		{ return(_header->tzone); }
+  char	*Aircraft()		{ return(_header->acraft); }
 
-  long	NumberItems()		{ return(ntohl(header->n_items)); }
-  long	lrLength()		{ return(ntohl(header->lrlen)); }
-  long	lrPpr()			{ return(ntohl(header->lrppr)); }
-  long	HeaderLength()		{ return(ntohl(header->thdrlen)); }
+  long	NumberItems()		{ return(ntohl(_header->n_items)); }
+  long	lrLength()		{ return(ntohl(_header->lrlen)); }
+  long	lrPpr()			{ return(ntohl(_header->lrppr)); }
+  long	HeaderLength()		{ return(ntohl(_header->thdrlen)); }
 
-  char	*ADStype()		{ return(header->ads_type); }
+  char	*ADStype()		{ return(_header->ads_type); }
 
 
   void	*GetFirst(), *GetFirst(char blkName[]), *GetSDI(char varName[]);
@@ -148,15 +147,17 @@ public:
 
   short	Resolution(Pms2 *vp)	{ return(ntohs(vp->resolution)); }
 
+  bool	isValid()		{ return(_valid); }
 
 private:
-  Fl	*header;
-  char	*hdr;
-  int	currentIndx;
-  char	*currentPtr;
+  Fl	*_header;
+  char	*_hdr;
+  int	_currentIndx;
+  char	*_currentPtr;
 
-  char	projName[32];
+  char	_projName[80];
 
+  bool	_valid;
 };
 
 #endif

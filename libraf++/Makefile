@@ -4,14 +4,15 @@
 RELEASE=${JLOCAL}/lib
 I2D=	${JLOCAL}/include
 
-
 LIBNAME=	raf++
 
-INCLUDES=	-I${I2D} -I/usr/X11R6/include
-CXXFLAGS=	-g -O2 ${INCLUDES} ${DEFINES}
+DEFINES=	-DPNG
 
 # Solaris & Mac OS X.
 #DEFINES=	-DSVR4
+
+INCLUDES=	-I${I2D} -I/usr/X11R6/include
+CXXFLAGS=	-g -O2 ${INCLUDES} ${DEFINES}
 
 OBJS=	ACconfig.o adsIO.o adsIOrt.o Application.o Canvas.o Cursor.o\
 	hdrAPI.o gettext.o ntohf.o PixMap.o PMSspex.o PostScript.o\

@@ -1,22 +1,8 @@
-/*
--------------------------------------------------------------------------
-OBJECT NAME:	hdrAPI.cc
-
-FULL NAME:	Header API, C++ version.
-
-ENTRY POINTS:	
-
-STATIC FNS:	
-
-DESCRIPTION:	
-
-NOTES:		
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997
--------------------------------------------------------------------------
-*/
-
 #include "hdrAPI.h"
+
+#ifdef PNG
+#include <zlib.h>
+#endif
 
 #include <memory.h>
 #include <cerrno>
@@ -29,93 +15,122 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #include <unistd.h>
 #include <iostream>
 
-using namespace std;
-
 /* -------------------------------------------------------------------- */
-Header::Header(const string fileName)
+Header::Header(const std::string fileName)
 {
+  _valid = false;
   readHeader(fileName.c_str());
 }
 
 /* -------------------------------------------------------------------- */
 Header::Header(const char fileName[])
 {
+  _valid = false;
   readHeader(fileName);
 }
 
 /* -------------------------------------------------------------------- */
 void Header::readHeader(const char fileName[])
 {
-  int		fd;
   int		nBytes;
   char		buff[65535];
   bool		tape = false;
-  TapeDrive	*drv;
+  bool		gzipped = false;
 
-  projName[0] = '\0';
+  _projName[0] = '\0';
 
   if (strncmp(fileName, "/dev", 4) == 0)
     tape = true;
 
-  header = (Fl *)buff;
+  if (strstr(fileName, ".gz"))
+    {
+    std::cout << "hdrAPI: We have gzipped file.\n";
+#ifdef PNG
+    gzipped = true;
+#else
+    std::cerr << "hdrAPI: gzip support not compiled into libraf++.\n";
+    return;
+#endif
+    }
+
+  _header = (Fl *)buff;
 
   if (tape)
     {
-    drv = new TapeDrive(fileName);
-    }
-  else
-    {
-    if ((fd = open(fileName, O_RDONLY)) == (-1))
-      {
-      cerr << "Header: can't open " << fileName << " fatal, errno = " << errno << ".\n";
-      exit(1);
-      }
-    }
-
-
-  if (tape)
-    {
+    TapeDrive *drv = new TapeDrive(fileName);
     int	len = strlen(FIRST_REC_STRING);
 
     if (drv->Read(buff) < len)
       {
-      cerr << "Header: read problem.\n";
-      exit(1);
+      std::cerr << "hdrAPI: read problem.\n";
+      return;
       }
 
     if (strncmp(FIRST_REC_STRING, buff, len) != 0)
       {
-      cerr << "Header: not an ADS tape, fatal.\n";
-      exit(1);
+      std::cerr << "hdrAPI: not an ADS tape.\n";
+      return;
       }
 
     nBytes = drv->Read(buff);
     delete drv;
     }
   else
+#ifdef PNG
+  if (gzipped)
     {
+    gzFile fd;
+
+    if ((fd = gzopen(fileName, "rb")) <= 0)
+      {
+      std::cerr << "hdrAPI: can't open " << fileName << ".\n";
+      return;
+      }
+
+    gzread(fd, buff, 20);
+
+    if (strncmp(buff, FIRST_REC_STRING, strlen(FIRST_REC_STRING)) != 0)
+      gzseek(fd, 0, SEEK_SET);
+
+    nBytes = gzread(fd, buff, sizeof(Fl));
+    nBytes += gzread(fd, &buff[sizeof(Fl)], ntohl(_header->thdrlen));
+    gzclose(fd);
+    }
+  else
+#endif
+    {
+    int	fd;
+
+    if ((fd = open(fileName, O_RDONLY)) == (-1))
+      {
+      std::cerr	<< "hdrAPI: can't open " << fileName
+		<< " fatal, errno = " << errno << ".\n";
+      return;
+      }
+
     read(fd, buff, 20);
 
     if (strncmp(buff, FIRST_REC_STRING, strlen(FIRST_REC_STRING)) != 0)
       lseek(fd, 0, 0);
 
     nBytes = read(fd, buff, sizeof(Fl));
-    nBytes += read(fd, &buff[sizeof(Fl)], ntohl(header->thdrlen));
+    nBytes += read(fd, &buff[sizeof(Fl)], ntohl(_header->thdrlen));
     close(fd);
     }
 
-
-  hdr = new char [nBytes];
-  memcpy((void *)hdr, (void *)buff, (unsigned)nBytes);
-  header = (Fl *)hdr;
+  _hdr = new char [nBytes];
+  memcpy((void *)_hdr, (void *)buff, (unsigned)nBytes);
+  _header = (Fl *)_hdr;
 
   /* Check if valid file
    */
-  if (strcmp(TAPEHDR_STR, header->thdr) != 0)
+  if (strcmp(TAPEHDR_STR, _header->thdr) != 0)
     {
-    cerr << "Header: Bad header, fatal [" << header->thdr << "].\n";
-    exit(1);
+    std::cerr << "hdrAPI: Bad header [" << _header->thdr << "].\n";
+    return;
     }
+
+  _valid = true;
 
 }	/* END READHEADER */
 
@@ -129,119 +144,139 @@ Header::Header(TapeDrive &drv)
 
   if ((nBytes = drv.Read(buff)) < len)
     {
-    cerr << stderr, "Header: read problem.\n";
-    exit(1);
+    std::cerr << stderr, "Header: read problem.\n";
+    return;
     }
 
   if (strncmp(FIRST_REC_STRING, buff, len) !=0)
     {
-    cerr << "Header: not an ADS tape, fatal.\n";
-    exit(1);
+    std::cerr << "Header: not an ADS tape, fatal.\n";
+    return;
     }
 
   if ((nBytes = drv.Read(buff)) == 0)
     {
-    cerr << "Header: empty tape.\n";
-    exit(1);
+    std::cerr << "Header: empty tape.\n";
+    return;
     }
 
-  hdr = new char [nBytes];
-  memcpy((void *)hdr, (void *)buff, (unsigned)nBytes);
-  header = (Fl *)hdr;
+  _hdr = new char [nBytes];
+  memcpy((void *)_hdr, (void *)buff, (unsigned)nBytes);
+  _header = (Fl *)_hdr;
 
   /* Check if valid file
    */
-  if (strcmp(TAPEHDR_STR, header->thdr) != 0)
+  if (strcmp(TAPEHDR_STR, _header->thdr) != 0)
     {
-    cerr << "Header: Bad header, fatal.\n";
-    exit(1);
+    std::cerr << "Header: Bad header, fatal.\n";
+    return;
     }
+
+  _valid = true;
 
 }	/* END CONSTRUCTOR */
 
 /* -------------------------------------------------------------------- */
 void *Header::GetFirst()
 {
-  currentIndx = 0;
-  currentPtr = (char *)header + sizeof(Fl);
+  if (!_valid)
+    return(0);
 
-  return(currentPtr);
+  _currentIndx = 0;
+  _currentPtr = (char *)_header + sizeof(Fl);
+
+  return(_currentPtr);
 
 }	/* END GETFIRST */
 
 /* -------------------------------------------------------------------- */
 void *Header::GetFirst(char blkName[])
 {
-  currentIndx = 0;
-  currentPtr = (char *)header + ntohl(((Fl *)header)->item_len);
+  if (!_valid)
+    return(0);
 
-  for (currentIndx = 0; currentIndx < ntohl(header->n_items); ++currentIndx)
+  _currentIndx = 0;
+  _currentPtr = (char *)_header + ntohl(((Fl *)_header)->item_len);
+
+  for (_currentIndx = 0; _currentIndx < ntohl(_header->n_items); ++_currentIndx)
     {
-    if (strcmp(((Blk *)currentPtr)->item_type, blkName) == 0)
-      return(currentPtr);
+    if (strcmp(((Blk *)_currentPtr)->item_type, blkName) == 0)
+      return(_currentPtr);
 
-    currentPtr += ntohl(((Blk *)currentPtr)->item_len);
+    _currentPtr += ntohl(((Blk *)_currentPtr)->item_len);
     }
 
-  return(NULL);
+  return(0);
 
 }	/* END GETFIRST */
 
 /* -------------------------------------------------------------------- */
 void *Header::GetSDI(char varName[])
 {
-  currentIndx = 0;
-  currentPtr = (char *)header + ntohl(((Fl *)header)->item_len);
+  if (!_valid)
+    return(0);
 
-  for (currentIndx = 0; currentIndx < ntohl(header->n_items); ++currentIndx)
+  _currentIndx = 0;
+  _currentPtr = (char *)_header + ntohl(((Fl *)_header)->item_len);
+
+  for (_currentIndx = 0; _currentIndx < ntohl(_header->n_items); ++_currentIndx)
     {
-    if (strcmp(((Blk *)currentPtr)->item_type, "SDI") == 0 &&
-        strcmp(((Sh *)currentPtr)->name, varName) == 0)
-        return(currentPtr);
+    if (strcmp(((Blk *)_currentPtr)->item_type, "SDI") == 0 &&
+        strcmp(((Sh *)_currentPtr)->name, varName) == 0)
+        return(_currentPtr);
 
-    currentPtr += ntohl(((Blk *)currentPtr)->item_len);
+    _currentPtr += ntohl(((Blk *)_currentPtr)->item_len);
     }
 
-  return(NULL);
+  return(0);
 
 }	/* END GETFIRST */
 
 /* -------------------------------------------------------------------- */
 void *Header::GetNext()
 {
-  if (++currentIndx >= ntohl(header->n_items))
-    return(NULL);
+  if (!_valid)
+    return(0);
 
-  currentPtr += ntohl(((Blk *)currentPtr)->item_len);
+  if (++_currentIndx >= ntohl(_header->n_items))
+    return(0);
 
-  return(currentPtr);
+  _currentPtr += ntohl(((Blk *)_currentPtr)->item_len);
+
+  return(_currentPtr);
 
 }	/* END GETNEXT */
 
 /* -------------------------------------------------------------------- */
 void *Header::GetNext(char blkName[])
 {
-  if (++currentIndx >= ntohl(header->n_items))
-    return(NULL);
+  if (!_valid)
+    return(0);
 
-  currentPtr += ntohl(((Blk *)currentPtr)->item_len);
+  if (++_currentIndx >= ntohl(_header->n_items))
+    return(0);
 
-  for (; currentIndx < ntohl(header->n_items); ++currentIndx)
+  _currentPtr += ntohl(((Blk *)_currentPtr)->item_len);
+
+  for (; _currentIndx < ntohl(_header->n_items); ++_currentIndx)
     {
-    if (strcmp(((Blk *)currentPtr)->item_type, blkName) == 0)
-      return(currentPtr);
+    if (strcmp(((Blk *)_currentPtr)->item_type, blkName) == 0)
+      return(_currentPtr);
 
-    currentPtr += ntohl(((Blk *)currentPtr)->item_len);
+    _currentPtr += ntohl(((Blk *)_currentPtr)->item_len);
     }
 
-  return(NULL);
+  return(0);
 
 }	/* END GETNEXT */
 
 /* -------------------------------------------------------------------- */
 char *Header::ProjectName()
 {
-  if (strlen(projName) == 0)
+  if (!_valid)
+    return(0);
+
+  if (strlen(_projName) == 0)
     {
     char	*p;
 
@@ -254,24 +289,24 @@ char *Header::ProjectName()
 
       if ((fp = fopen(tmp, "r")))
         {
-        fgets(projName, 32, fp);
+        fgets(_projName, 32, fp);
         fclose(fp);
-        projName[31] = '\0';
+        _projName[31] = '\0';
 
-        if (projName[strlen(projName)-1] == '\n')
-          projName[strlen(projName)-1] = '\0';
+        if (_projName[strlen(_projName)-1] == '\n')
+          _projName[strlen(_projName)-1] = '\0';
         }
       }
     }
 
-  return(projName);
+  return(_projName);
 
 }	/* END PROJECTNAME */
 
 /* -------------------------------------------------------------------- */
 Header::~Header()
 {
-  delete [] hdr;
+  delete [] _hdr;
 
 }	/* END DESTRUCTOR */
 
