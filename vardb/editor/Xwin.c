@@ -163,7 +163,7 @@ Widget CreateMainWindow(Widget parent)
     sprintf(buffer, "EFtext%d", i);
     EFtext[i] = XmCreateTextField(EFform[i], buffer, args, n);
     XtAddCallback(EFtext[i], XmNactivateCallback,
-    XmProcessTraversal, XmTRAVERSE_NEXT_TAB_GROUP);
+	XmProcessTraversal, (XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
     XtManageChild(EFtext[i]);
     }
 
@@ -199,7 +199,7 @@ Widget CreateMainWindow(Widget parent)
     sprintf(buffer, "EFtext%d", textCnt);
     EFtext[textCnt] = XmCreateTextField(EFform[i], buffer, args, n);
     XtAddCallback(EFtext[textCnt], XmNactivateCallback,
-    XmProcessTraversal, XmTRAVERSE_NEXT_TAB_GROUP);
+    	XmProcessTraversal, (XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
     XtManageChild(EFtext[textCnt]);
     ++textCnt;
 
@@ -214,7 +214,7 @@ Widget CreateMainWindow(Widget parent)
       sprintf(buffer, "EFtext%d", textCnt);
       EFtext[textCnt] = XmCreateTextField(EFform[i], buffer, args, n);
       XtAddCallback(EFtext[textCnt], XmNactivateCallback,
-      XmProcessTraversal, XmTRAVERSE_NEXT_TAB_GROUP);
+	XmProcessTraversal, (XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
       XtManageChild(EFtext[textCnt]);
       ++textCnt;
       }
@@ -271,7 +271,7 @@ Widget CreateMainWindow(Widget parent)
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_WIDGET); n++;
   XtSetArg(args[n], XmNleftWidget, editFieldRC); n++;
   list = XmCreateScrolledList(topLevelForm, "varList", args, n);
-  XtAddCallback(list, XmNbrowseSelectionCallback, EditVariable, (XtPointer)0);
+  XtAddCallback(list, XmNbrowseSelectionCallback, EditVariable, NULL);
   XtManageChild(list);
 
 

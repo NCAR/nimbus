@@ -26,6 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 #include <Xm/Form.h>
 #include <Xm/Frame.h>
 #include <Xm/Label.h>
+#include <Xm/PushB.h>
 #include <Xm/RowColumn.h>
 #include <Xm/Separator.h>
 #include <Xm/TextF.h>
@@ -152,7 +153,7 @@ Widget CreateMainWindow(Widget parent)
     sprintf(buffer, "EFtext%d", i);
     EFtext[i] = XmCreateTextField(EFform[i], buffer, args, n);
     XtAddCallback(EFtext[i], XmNactivateCallback,
-    	XmProcessTraversal, XmTRAVERSE_NEXT_TAB_GROUP);
+    	XmProcessTraversal, (XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
     XtManageChild(EFtext[i]);
     }
 
