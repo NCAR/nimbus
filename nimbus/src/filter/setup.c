@@ -77,7 +77,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
     else
       return;
 
-  if (cfg.Interactive() && ProductionSetup)
+  if (cfg.Interactive() && !ProductionSetup)
     FileCancel((Widget)NULL, (XtPointer)NULL, (XtPointer)NULL);
 
 
