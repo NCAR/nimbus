@@ -52,20 +52,19 @@ static char	InputFileName[MAXPATHLEN], OutputFileName[MAXPATHLEN];
 long	start, finish;
 
 
-void		StopProcessing();
-static void	FillListWidget(), CheckForProductionSetup();
+void	StopProcessing(), SetComputeFunctions();
+int	ReadInputFile(char fileName[]),
+	LowRateLoop(long starttime, long endtime);
+bool	NextTimeInterval(long *start, long *end);
+
+static void	FillListWidget();
 static int	ValidateFileNames();
 
 
 /* -------------------------------------------------------------------- */
-/* ARGSUSED */
-void
-CancelSetup(w, client, call)
-Widget w;
-XtPointer client;
-XtPointer call;
+void CancelSetup(Widget w, XtPointer client, XtPointer call)
 {
-	int		i;
+	int	i;
 
 	close(InputFile);
 
@@ -91,12 +90,7 @@ XtPointer call;
 }	/* END CANCELSETUP */
 
 /* -------------------------------------------------------------------- */
-/* ARGSUSED */
-void
-Proceed(w, client, call)
-Widget		w;
-XtPointer	client;
-XtPointer	call;
+void Proceed(Widget w, XtPointer client, XtPointer call)
 {
 	strcpy(InputFileName, XmTextFieldGetString(inputFileText));
 	strcpy(OutputFileName, XmTextFieldGetString(outputFileText));
@@ -107,15 +101,8 @@ XtPointer	call;
 }	/* END PROCEED */
 
 /* -------------------------------------------------------------------- */
-/* ARGSUSED */
-void
-ReadHeader(w, client, call)
-Widget w;
-XtPointer client;
-XtPointer call;
+void ReadHeader(Widget w, XtPointer client, XtPointer call)
 {
-	int		hdrfd;
-
 	XtSetSensitive(readHeaderButton, FALSE);
 	XtSetSensitive(inputFileText, FALSE);
 	XtSetSensitive(outputFileText, FALSE);
@@ -132,9 +119,7 @@ XtPointer call;
 	if (!Interactive)
 		{
 		sprintf(buffer, "%s - %s, Flight #%d",
-				ProjectName,
-				ProjectNumber,
-				atoi(FlightNumber));
+			ProjectName, ProjectNumber, atoi(FlightNumber));
 
 		LogMessage(buffer);
 		}
@@ -145,9 +130,7 @@ XtPointer call;
 		FillListWidget();
 
 		sprintf(buffer, "%s - %s, Flight #%d",
-				ProjectName,
-				ProjectNumber,
-				atoi(FlightNumber));
+			ProjectName, ProjectNumber, atoi(FlightNumber));
 
 		XtSetArg(args[0], XmNtitle, buffer);
 		XtSetValues(Shell001, args, 1);
@@ -159,12 +142,7 @@ XtPointer call;
 }	/* END READHEADER */
 
 /* -------------------------------------------------------------------- */
-/* ARGSUSED */
-void
-StartProcessing(w, client, call)
-Widget w;
-XtPointer client;
-XtPointer call;
+void StartProcessing(Widget w, XtPointer client, XtPointer call)
 {
 	XmString	label;
 	Arg		args[1];
@@ -212,7 +190,7 @@ XtPointer call;
 void StopProcessing()
 {
 	XmString	label;
-	Arg			args[1];
+	Arg		args[1];
 	float		x;
 
 	CloseNetCDF();
@@ -246,22 +224,14 @@ void StopProcessing()
 }	/* END STOPPROCESSING */
 
 /* -------------------------------------------------------------------- */
-/* ARGSUSED */
-void
-Quit(w, client, call)
-Widget w;
-XtPointer client;
-XtPointer call;
+void Quit(Widget w, XtPointer client, XtPointer call)
 {
 	exit(0);
 }
 
 /* -------------------------------------------------------------------- */
-static ValidateFileNames()
+static int ValidateFileNames()
 {
-	char	scratch[16];	/* character scratch area */
-	int		proj_num;
-
 	if (strcmp(&InputFileName[strlen(InputFileName)-4], ".cdf") != 0)
 		{
 		strcat(InputFileName, ".cdf");
@@ -304,11 +274,8 @@ static ValidateFileNames()
 }	/* END VALIDATEFILENAMES */
 
 /* -------------------------------------------------------------------- */
-XmString CreateListLineItem(vp)
-VARTBL	*vp;
+XmString CreateListLineItem(VARTBL *vp)
 {
-	int			i;
-	char		tmp[16];
 	static char	*list1lineFrmt = "%-13s  %c   %4d    %4d";
 
 	sprintf(buffer, list1lineFrmt,
@@ -343,15 +310,10 @@ static void FillListWidget()
 }	/* END FILLLISTWIDGET */
 
 /* -------------------------------------------------------------------- */
-/* ARGSUSED */
-void
-ToggleOutput(w, client, call)
-Widget w;
-XtPointer client;
-XmListCallbackStruct *call;
+void ToggleOutput(Widget w, XtPointer client, XtPointer call)
 {
-	int			*pos_list, pos_cnt = 0;
-	int			i, indx;
+	int		*pos_list, pos_cnt = 0;
+	int		i, indx;
 	XmString	new;
 
 	XmListGetSelectedPos(list1, &pos_list, &pos_cnt);
@@ -372,8 +334,7 @@ XmListCallbackStruct *call;
 }	/* END TOGGLEOUTPUT */
 
 /* -------------------------------------------------------------------- */
-void LogMessage(msg)
-char	msg[];
+void LogMessage(char msg[])
 {
 	XmTextPosition	position;
 	extern Widget	logText;

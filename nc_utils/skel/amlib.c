@@ -26,6 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993,1994
 */
 
 #include "define.h"
+#include "netcdf.h"
 
 
 /* STEP 4: To appease the compiler, place all AMLIB function names here.
@@ -60,10 +61,10 @@ DERVAR	derivftns[] =
 /*			Out  Vector			*/
 /*  Name	Units Rate Length  Function Title	*/
 /* ------------------------------------------------------------------------ */
-  "ADIFR",	"",	1,	1,	   sadifr,	"",
-  "LATC",	"deg",	1,	1,	   slatc,	"Corrected Latitude",
-/*  "XNOYM",	"ppm",	50,	1,	   sxnoym,	"Nitro Measured", */
-  NULL,		NULL,	0,	0,	   NULL
+  { "ADIFR",	"",	1,	1,	   sadifr,	"" },
+  { "LATC",	"deg",	1,	1,	   slatc,	"Corrected Latitude" },
+/*  { "XNOYM",	"ppm",	50,	1,	   sxnoym,	"Nitro Measured" }, */
+  { NULL,		NULL,	0,	0,	   NULL }
   };
 
 
@@ -198,7 +199,7 @@ void SetComputeFunctions()
   int	i, indx;
 
   for (i = 0; derivftns[i].Compute; ++i)
-    if ((indx = SearchTable(Variable,nVariables,derivftns[i].Name)) != ERR)
+    if ((indx = SearchTable((char **)Variable,nVariables,derivftns[i].Name)) != ERR)
       Variable[indx]->Compute = derivftns[i].Compute;
 
 }	/* END SETCOMPUTEFUNCTIONS */

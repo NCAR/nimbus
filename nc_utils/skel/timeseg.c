@@ -42,7 +42,7 @@ static long	prev_time,
 		UserBtim[MAX_TIME_SLICES*4],
 		UserEtim[MAX_TIME_SLICES*4];
 
-/* Actual time intervals in output file.			*/
+/* Actual time intervals in output file.		*/
 static int	currentTimeSegment;
 static NR_TYPE	BtimeInt[MAX_TIME_SLICES*4][3],
 		EtimeInt[MAX_TIME_SLICES*4][3];
@@ -51,8 +51,8 @@ static NR_TYPE	BtimeInt[MAX_TIME_SLICES*4][3],
 /* -------------------------------------------------------------------- */
 void GetUserTimeIntervals() /* From TimeSliceWindow	*/
 {
-	int		i;
-	int		hour, minute, second;
+	int	i;
+	int	hour, minute, second;
 	char	*bp, *ep;
 
 	nTimeIntervals = 0;
@@ -86,9 +86,7 @@ void GetUserTimeIntervals() /* From TimeSliceWindow	*/
 }	/* END GETUSERTIMEINTERVALS */
 
 /* -------------------------------------------------------------------- */
-NextTimeInterval(start, end)
-long	*start;
-long	*end;
+bool NextTimeInterval(long *start, long *end)
 {
 	if (++currentTimeSegment >= nTimeIntervals)
 		return(FALSE);
@@ -105,11 +103,10 @@ long	*end;
 }	/* END NEXTTIMEINTERVAL */
 
 /* -------------------------------------------------------------------- */
-CheckForTimeGap(currentTime)
-int	currentTime[];
+bool CheckForTimeGap(int currentTime[])
 {
-	register long	new_time;
-	long			i, j;
+	long	new_time;
+	long	i, j;
 
 	new_time = currentTime[0] * 3600 + currentTime[1] * 60 + currentTime[2];
 
@@ -164,8 +161,7 @@ int	currentTime[];
 }	/* END CHECKFORTIMEGAP */
 
 /* -------------------------------------------------------------------- */
-void UpdateTime(currentTime)
-int		currentTime[];
+void UpdateTime(int currentTime[])
 {
 	++CurrentOutputRecordNumber;
 
@@ -191,10 +187,9 @@ int		currentTime[];
 }	/* END UPDATETIME */
 
 /* -------------------------------------------------------------------- */
-void FormatTimeSegmentsForOutputFile(buff)
-char	*buff;
+void FormatTimeSegmentsForOutputFile(char buff[])
 {
-	int		i;
+	int	i;
 	char	temp[32];
 
 	buff[0] = '\0';

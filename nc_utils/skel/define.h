@@ -11,6 +11,7 @@ DESCRIPTION:	Header File for Nimbus Skeleton.
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <Xm/Xm.h>
 
@@ -20,32 +21,32 @@ DESCRIPTION:	Header File for Nimbus Skeleton.
  * used to determine the size of the circular buffer.  This number should
  * be odd.
  */
-#define NBUFFERS		1
+#define NBUFFERS	1
 #define CURRENT_BUFFER	-((NBUFFERS >> 1) + 1))
 
 
-#define NAMELEN			NAMLEN
+#define NAMELEN		NAMLEN
 #define MAX_VARIABLES	2000
 #define MAX_TIME_SLICES	5
 
 
 /* Values for "VariableType"	*/
-#define SDI				0
-#define RAW				1
-#define DERIVED			2
+#define SDI		0
+#define RAW		1
+#define DERIVED		2
 
 
 /* PauseWhatToDo values.		*/
-#define P_QUIT			0
-#define P_CONTINUE		1
+#define P_QUIT		0
+#define P_CONTINUE	1
 
 
-#define BEG_OF_TAPE		(-1)
-#define END_OF_TAPE		(-1)
+#define BEG_OF_TAPE	(-1)
+#define END_OF_TAPE	(-1)
 
 /* OpenProjectFile action values	*/
-#define RETURN			0
-#define EXIT			1
+#define RETURN		0
+#define EXIT		1
 
 
 #define LOW_RATE	1
@@ -62,11 +63,11 @@ typedef struct
 	char	name[NAMELEN];
 	char	*units;		/* Units and title only used for NEW variables.	*/
 	char	*title;		/* (i.e. variables that don't exist in the input file */
-	int		inVarID;
-	int		outVarID;
-	int		SampleRate;
-	int		OutputRate;
-	int		VectorLength;
+	int	inVarID;
+	int	outVarID;
+	int	SampleRate;
+	int	OutputRate;
+	int	VectorLength;
 	bool	Output;
 
 	void	(*Average)();
@@ -77,22 +78,22 @@ typedef struct
 	{
 	char	*Name;
 	char	*Units;
-	int		Rate;
-	int		VectorLength;
+	int	Rate;
+	int	VectorLength;
 	void	(*Compute)();
 	char	*Title;
 	} DERVAR;
 
 
-/*		Global Variables
+/* Global Variables
  */
-extern char		*ProjectNumber, *ProjectName;
-extern char		*Aircraft, *FlightNumber, *FlightDate, *Defaults;
+extern char	*ProjectNumber, *ProjectName;
+extern char	*Aircraft, *FlightNumber, *FlightDate, *Defaults;
 extern VARTBL	*Variable[];
-extern bool		PauseFlag, Interactive;
-extern int		nVariables, InputFile, OutputFile, PauseWhatToDo;
-extern char		buffer[];
-extern long		nRecords, CurrentInputRecordNumber, CurrentOutputRecordNumber;
+extern bool	PauseFlag, Interactive;
+extern int	nVariables, InputFile, OutputFile, PauseWhatToDo;
+extern char	buffer[];
+extern long	nRecords, CurrentInputRecordNumber, CurrentOutputRecordNumber;
 
 
 /* Setup window widgets */
@@ -106,27 +107,38 @@ extern Widget	list1, goButton, menuBar, readHeaderButton;
 extern Widget	ts_text[];
 
 
-double	atof();
-
-/*		Local Functions
+/* Local Functions
  */
 char	*SearchList(), *GetMemory();
-int		ReadTextFile(), AccessProjectFile();
-void	FreeTextFile();
-void	Average(), Sum(), SumVector(), AverageVector();
 
 void	CreateNetCDF(), WriteNetCDF(), CloseNetCDF(),
-		SetBaseTime(), FlushXEvents(), GetUserTimeIntervals(), Initialize(),
-		LogMessage(), FormatTimeSegmentsForOutputFile(), AverageSampledData(),
-		AllocateDataArrays(), FreeDataArrays(), HandleError(), HandleWarning();
+	SetBaseTime(), FlushXEvents(), GetUserTimeIntervals(), Initialize(),
+	LogMessage(), FormatTimeSegmentsForOutputFile(), AverageSampledData(),
+	AllocateDataArrays(), FreeDataArrays(),
+	HandleError(char msg[]), HandleWarning(char msg[], void (*callBack)());
+
+int	SearchTable(char *table[], int, char t[]);
 
 /* Callbacks	*/
-void	CancelWarning(), ApplyVariableMods(), CancelSetup(), EditTimeSlices(),
-		DismissEditWindow(), EditVariable(), MapCalCof(), Quit(), ReadHeader(),
-		StartProcessing(), ValidateTime(), Proceed(), ToggleOutput(),
-		PauseProcessing(), VerifyLagText(), ResetTimeSliceWindow(),
-		PauseStop(), PauseContinue(), DismissTimeSliceWindow();
-
+void	CancelWarning(Widget, XtPointer, XtPointer),
+	ApplyVariableMods(Widget, XtPointer, XtPointer),
+	CancelSetup(Widget, XtPointer, XtPointer),
+	EditTimeSlices(Widget, XtPointer, XtPointer),
+	DismissEditWindow(Widget, XtPointer, XtPointer),
+	EditVariable(Widget, XtPointer, XtPointer),
+	MapCalCof(Widget, XtPointer, XtPointer),
+	Quit(Widget, XtPointer, XtPointer),
+	ReadHeader(Widget, XtPointer, XtPointer),
+	StartProcessing(Widget, XtPointer, XtPointer),
+	ValidateTime(Widget, XtPointer, XtPointer),
+	Proceed(Widget, XtPointer, XtPointer),
+	ToggleOutput(Widget, XtPointer, XtPointer),
+	PauseProcessing(Widget, XtPointer, XtPointer),
+	VerifyLagText(Widget, XtPointer, XtPointer),
+	ResetTimeSliceWindow(Widget, XtPointer, XtPointer),
+	PauseStop(Widget, XtPointer, XtPointer),
+	PauseContinue(Widget, XtPointer, XtPointer),
+	DismissTimeSliceWindow(Widget, XtPointer, XtPointer);
 
 #endif
 

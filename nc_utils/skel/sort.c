@@ -12,25 +12,18 @@ DESCRIPTION:
 
 INPUT:		table, start & position in table to sort
 
-OUTPUT:		none
-
-REFERENCES:	none
-
-REFERENCED BY:	hdr_decode.c
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------
 */
 
-static char	*mid, *temp, **sort_table;
+#include <string.h>
+
+static char *mid, *temp, **sort_table;
 
 static void sort_the_table();
 
 /* -------------------------------------------------------------------- */
-void SortTable(table, beg, end)
-char	**table;
-int	beg;
-int	end;
+void SortTable(char **table, int beg, int end)
 {
 	sort_table = table;
 	sort_the_table(beg, end);
@@ -38,12 +31,10 @@ int	end;
 }	/* SORTTABLE */
 
 /* -------------------------------------------------------------------- */
-static void sort_the_table(beg, end)
-int	beg;		/* Beggining array index        */
-int	end;		/* Last array index             */
+static void sort_the_table(int beg, int end)
 {
-	register	x = beg,
-			y = end;
+	int	x = beg,
+		y = end;
 
 	mid = sort_table[(x + y) / 2];
 

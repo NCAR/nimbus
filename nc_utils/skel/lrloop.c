@@ -25,84 +25,84 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 */
 
 #include "define.h"
+#include "netcdf.h"
 
 static long	timeVarID[3];
 static int	currentTime[3];
 
 extern XtAppContext context;
 
+static int FindFirstRecordNumber(long starttime);
+static int FindNextRecordNumber(long endtime);
+
+void UpdateTime(int currentTime[]);
+void PassThroughData(long nRecs), ComputeDerived();
+bool CheckForTimeGap(int currentTime[]);
 
 /* -------------------------------------------------------------------- */
-LowRateLoop(starttime, endtime)
-long	starttime;
-long	endtime;
+int LowRateLoop(long starttime, long endtime)
 {
-	int		rc;
+  int	rc;
+
+  if ((rc = FindFirstRecordNumber(starttime)) == ERR)
+    return(rc);
+
+  PassThroughData(endtime - starttime);
+  SetBaseTime();		/* See netcdf.c	*/
 
 
-	if ((rc = FindFirstRecordNumber(starttime)) == ERR)
-		goto exit;
+  /* This is the main control loop.
+   */
+  do
+    {
+    if (CheckForTimeGap(currentTime) == TRUE)
+       break;
 
-	PassThroughData(endtime - starttime);
-	SetBaseTime();		/* See netcdf.c	*/
+    ComputeDerived();
+    UpdateTime(currentTime);
 
+    while (PauseFlag == TRUE)
+       XtAppProcessEvent(context, XtIMAll);
 
-	/* This is the main control loop.
-	 */
-	do
-		{
-		if (CheckForTimeGap(currentTime) == TRUE)
-			break;
+    if (PauseWhatToDo == P_QUIT)
+       {
+       rc = ERR;
+       break;
+       }
+    }
+  while ((rc = FindNextRecordNumber(endtime)) == OK);
 
-		ComputeDerived();
-		UpdateTime(currentTime);
-
-		while (PauseFlag == TRUE)
-			XtAppProcessEvent(context, XtIMAll);
-
-		if (PauseWhatToDo == P_QUIT)
-			{
-			rc = ERR;
-			break;
-			}
-		}
-	while ((rc = FindNextRecordNumber(endtime)) == OK);
-
-
-exit:
-	return(rc);
+  return(rc);
 
 }	/* END LOWRATELOOP */
 
 /* -------------------------------------------------------------------- */
-FindFirstRecordNumber(starttime)
-long	starttime;
+int FindFirstRecordNumber(long starttime)
 {
-	timeVarID[0] =
-		Variable[SearchTable(Variable, nVariables, "HOUR")]->inVarID;
-	timeVarID[1] =
-		Variable[SearchTable(Variable, nVariables, "MINUTE")]->inVarID;
-	timeVarID[2] =
-		Variable[SearchTable(Variable, nVariables, "SECOND")]->inVarID;
+  timeVarID[0] =
+	Variable[SearchTable((char**)Variable, nVariables, "HOUR")]->inVarID;
+  timeVarID[1] =
+	Variable[SearchTable((char**)Variable, nVariables, "MINUTE")]->inVarID;
+  timeVarID[2] =
+	Variable[SearchTable((char**)Variable, nVariables, "SECOND")]->inVarID;
 
-	CurrentInputRecordNumber = -1;
-	CurrentOutputRecordNumber = 0;
+  CurrentInputRecordNumber = -1;
+  CurrentOutputRecordNumber = 0;
 
-	if (starttime != BEG_OF_TAPE)
-		while (FindNextRecordNumber(starttime) == OK)
-			;
-	else
-		FindNextRecordNumber(starttime);
+  if (starttime != BEG_OF_TAPE)
+    while (FindNextRecordNumber(starttime) == OK)
+      ;
+  else
+    FindNextRecordNumber(starttime);
 
-	return(OK);
+  return(OK);
 
 }	/* END FINDFIRSTRECORDNUMBER */
 
 /* -------------------------------------------------------------------- */
-FindNextRecordNumber(endtime)
-long	endtime;
+int FindNextRecordNumber(long endtime)
 {
-	int		current_time;
+	int	current_time;
 	long	mindex[1];
 	NR_TYPE	f;
 

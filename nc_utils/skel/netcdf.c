@@ -30,6 +30,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 
 #include <errno.h>
 #include <time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+
+#include <Xm/TextF.h>
 
 #include "define.h"
 #include "netcdf.h"
@@ -41,9 +45,10 @@ static int	baseTimeID;
 extern char	*passThrough[];
 extern DERVAR	derivftns[];
 
+void SortTable(char *table[], int, int);
+
 /* -------------------------------------------------------------------- */
-ReadInputFile(fileName)
-char	fileName[];
+int ReadInputFile(char fileName[])
 {
 	VARTBL	*vp;
 	int	i, indx, len, nVars, nDims, dimIDs[3], recDim;
@@ -98,12 +103,12 @@ char	fileName[];
 			vp->VectorLength = 1;
 		}
 
-	SortTable(Variable, 0, nVariables - 1);
+	SortTable((char **)Variable, 0, nVariables - 1);
 
 	/* Turn on variables for Pass through.
 	 */
 	for (i = 0; passThrough[i]; ++i)
-		if ((indx = SearchTable(Variable, nVariables, passThrough[i])) != ERR)
+		if ((indx = SearchTable((char **)Variable, nVariables, passThrough[i])) != ERR)
 			Variable[indx]->Output = TRUE;
 
 
@@ -112,7 +117,7 @@ char	fileName[];
 	nVars = nVariables;
 
 	for (i = 0; derivftns[i].Compute; ++i)
-		if ((indx = SearchTable(Variable,nVariables,derivftns[i].Name)) != ERR)
+		if ((indx = SearchTable((char **)Variable,nVariables,derivftns[i].Name)) != ERR)
 			{
 			Variable[indx]->Output = TRUE;
 			Variable[indx]->Compute = derivftns[i].Compute;
@@ -135,7 +140,7 @@ char	fileName[];
 			}
 
 	nVariables = nVars;
-	SortTable(Variable, 0, nVariables - 1);
+	SortTable((char **)Variable, 0, nVariables - 1);
 
 	return(OK);
 
@@ -144,27 +149,17 @@ char	fileName[];
 /* -------------------------------------------------------------------- */
 void SetBaseTime()
 {
-	static bool	first_time = TRUE;
-	long		BaseTime;
+  time_t	BaseTime;
 
-	if (first_time)
-		{
-		time_t	BaseTime;
-
-		first_time = FALSE;
-
-		ncvarget1(InputFile, baseTimeID, NULL, (void *)&BaseTime);
-		ncvarput1(OutputFile, baseTimeID, NULL, (void *)&BaseTime);
-		}
+  ncvarget1(InputFile, baseTimeID, NULL, (void *)&BaseTime);
+  ncvarput1(OutputFile, baseTimeID, NULL, (void *)&BaseTime);
 
 }	/* END SETBASETIME */
 
 /* -------------------------------------------------------------------- */
-void CreateNetCDF(file_name)
-char	file_name[];
+void CreateNetCDF(char file_name[])
 {
-	register int	i;
-	register VARTBL	*vp;
+	VARTBL	*vp;
 
 	int	timeOffsetID;
 	int	ndims, dims[3],
@@ -172,8 +167,7 @@ char	file_name[];
 		LowRateDim, HighRateDim, Dim5Hz, Dim10Hz, Dim50Hz, Dim250Hz,
 		Vector16Dim, Vector32Dim, Vector64Dim, Dim1000Hz, Dim2Hz,
 		AsyncDim;
-	int	j, indx;
-	char	*p;
+	int	i, indx;
 
 
 	OutputFile = nccreate(file_name, NC_CLOBBER);
@@ -356,7 +350,7 @@ char	file_name[];
 /* -------------------------------------------------------------------- */
 void CloseNetCDF()
 {
-	int		len;
+	int	len;
 
 	FormatTimeSegmentsForOutputFile(buffer);
 
@@ -376,11 +370,10 @@ void CloseNetCDF()
 /* -------------------------------------------------------------------- */
 #define nBYTES	500000
 
-void PassThroughData(nRecs)
-long	nRecs;
+void PassThroughData(long nRecs)
 {
-	int		i, j;
-	int		nDims, dimID[3], bytesPerSec, nSec, nPasses, itoid, otoid;
+	int	i, j;
+	int	nDims, dimID[3], bytesPerSec, nSec, nPasses, itoid, otoid;
 	long	inStart[3], outStart[3], count[3];
 	VARTBL	*vp;
 	NR_TYPE	*data;

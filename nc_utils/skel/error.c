@@ -11,47 +11,38 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	
-
-REFERENCED BY:	
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 -------------------------------------------------------------------------
 */
 
 #include "define.h"
 
+void ShowError(char msg[]);
+void WarnUser(char msg[], void (*okCB)(Widget, XtPointer, XtPointer), void (*cancelCB)(Widget, XtPointer, XtPointer));
 
 /* -------------------------------------------------------------------- */
-void HandleError(err_msg)
-char	*err_msg;
+void HandleError(char err_msg[])
 {
-	if (Interactive)
-		ShowError(err_msg);
-	else
-		{
-		fprintf(stderr, "%s\n", err_msg);
-		exit(1);
-		}
+  if (Interactive)
+    ShowError(err_msg);
+  else
+    {
+    fprintf(stderr, "%s\n", err_msg);
+    exit(1);
+    }
 
 }	/* END HANDLEERROR */
 
 /* -------------------------------------------------------------------- */
-void HandleWarning(msg, callBack)
-char	*msg;
-void	(*callBack)();
+void HandleWarning(char msg[], void (*callBack)())
 {
-	if (Interactive)
-		WarnUser(msg, callBack, NULL);
-	else
-		{
-		fprintf(stderr, "%s\n", msg);
-		(*callBack)(NULL, NULL, NULL);
-		}
+  if (Interactive)
+    WarnUser(msg, callBack, NULL);
+  else
+    {
+    fprintf(stderr, "%s\n", msg);
+    (*callBack)(NULL, NULL, NULL);
+    }
 
 }	/* END HANDLEWARNING */
 

@@ -26,12 +26,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-SearchTable(table, ntable, target)
-char	*table[];
-int	ntable;		/* Number in list	*/
-char	target[];
+int SearchTable(char *table[], int ntable, char target[])
 {
-	register int	beg, mid, end, rc;
+	int	beg, mid, end, rc;
 
 	if (ntable == 0)
 		return(ERR);

@@ -55,7 +55,6 @@ Widget	ts_text[MAX_TIME_SLICES*2];
 /* -------------------------------------------------------------------- */
 Widget CreateMainWindow(Widget parent)
 {
-	int		i;
 	Arg		args[32];
 	Cardinal	n;
 	Widget		topLevelForm;
@@ -139,7 +138,6 @@ Widget CreateSetupWindow(Widget parent)
 	Cardinal	n;
 	XmString	xmstr[1];
 	Widget		setupForm;
-	Widget		rateFrame, rateRB;
 	Widget		pullDown[2], cascadeButton[2], b[6];
 	Widget		listRC, listTitle, separ1, separ2;
 
