@@ -26,7 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 #include "amlib.h"
 #include "gust.h"
 
-#define MAX_PROBES	4
+static const int MAX_PROBES = 4;
 
 static const NR_TYPE	THDG_TEST	= 180.0 * M_PI / 180.0;
 static const NR_TYPE	PITCH_TEST	= 22.5 * M_PI / 180.0;
@@ -42,8 +42,8 @@ void swi(DERTBL *varp)
   int		probeCnt = varp->ProbeCount;
   NR_TYPE	wi, attack, sslip, tas, thdg, vew, vns, pitch, roll, wp3;
   NR_TYPE	tas_dab, delph, thedot, delth,
-		a, b, c, d, e, f, g, h, ab, p, r, s, t, psidot, bvns, bvew,
-		cs, ss, ch, sh, cr, sr, ca, sa, cb, sb, ta, tb;
+		e, f, h, ab, p, r, s, t, psidot, bvns, bvew,
+		cs, ss, ch, sh, cr, sr, ta, tb;
 
   static bool		firstTime[nFeedBackTypes] = { TRUE, TRUE };
   static float		boomln;

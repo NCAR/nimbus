@@ -44,6 +44,8 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
   sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, ProjectNumber);
   InitPMSspecs(buffer);
 
+  fb = 0;
+  lb = rp->Length-1;
 
   if ((p = GetPMSparameter(rp->SerialNumber, "FIRST_BIN")) )
     fb = atoi(p);

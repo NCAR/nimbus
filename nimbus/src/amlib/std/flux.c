@@ -137,7 +137,7 @@ void sflux_ww(DERTBL *varp)
   NR_TYPE  wi, ww;
 
   static int  buffIndex = 0;
-  static NR_TYPE  wi2_bar, prev_second = -1;
+  static NR_TYPE  wi2_bar;
 
   wi = GetSample(varp, 0);
 
