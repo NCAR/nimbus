@@ -53,8 +53,8 @@ Widget	outputLRbutton, outputSRbutton, outputHRbutton;
 Widget	lagText, spikeText, synthConstText;
 Widget	ev_text[16], slOpMenu,funcOpMenu;
 
-extern char	*dataQuality[];
-extern void  LoadSynthetic(Widget w, XtPointer client, XtPointer call);                          //this may belong somewhere else
+extern char *dataQuality[];
+extern void LoadSynthetic(Widget w, XtPointer client, XtPointer call);  //this may belong somewhere else
 extern char *func[19];
 
 
@@ -68,7 +68,6 @@ Widget CreateMainWindow(Widget parent)
   Widget	topLevelForm;
   Widget	buttonFrame, buttonRC, quitButton;
   Widget	FNframe, fileNameRC, form[3];
-  int		i;
 
   n = 0;
   topLevelForm = XmCreateForm(parent, "topLevelForm", args, n);
