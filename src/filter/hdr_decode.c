@@ -208,7 +208,7 @@ int DecodeHeader(char header_file[])
     if (buffer[strlen(buffer)-1] == '\n')
       buffer[strlen(buffer)-1] = '\0';
 
-    ProjectName = (char *)GetMemory(strlen(buffer)+1);
+    ProjectName = new char[strlen(buffer)+1];
     strcpy(ProjectName, buffer);
     fclose(fp);
     }

@@ -99,23 +99,23 @@ void CancelSetup(Widget w, XtPointer client, XtPointer call)
   CloseADSfile();
 
   for (i = 0; i < sdi.size(); ++i)
-    free((char *)sdi[i]);
+    delete sdi[i];
 
   for (i = 0; i < raw.size(); ++i)
-    free((char *)raw[i]);
+    delete raw[i];
 
   for (i = 0; i < derived.size(); ++i)
-    free((char *)derived[i]);
+    delete derived[i];
 
   for (i = 0; i < nDefaults; ++i)
     {
-    free((char *)Defaults[i]->Value);
-    free((char *)Defaults[i]);
+    delete [] Defaults[i]->Value;
+    delete Defaults[i];
     }
 
   FreeDataArrays();
   ReleaseFlightHeader();
-  free(ProjectName);
+  delete [] ProjectName;
 
 
   DismissEditWindow(NULL, NULL, NULL);
@@ -233,7 +233,7 @@ static void readHeader()
       fprintf(LogFile, buffer);
 
       fprintf(LogFile, p);
-      free(p);
+      XtFree(p);
       }
 
     checkForProductionSetup();

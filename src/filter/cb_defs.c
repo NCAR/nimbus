@@ -58,14 +58,12 @@ static void VerifyDefault(Widget w, int indx, XtPointer call);
 /* -------------------------------------------------------------------- */
 void SaveDefaults(FILE *fp)	/* Save modified defaults into "Setup" file */
 {
-  int	i, j;
-
-  for (i = 0; i < nDefaults; ++i)
+  for (int i = 0; i < nDefaults; ++i)
     if (Defaults[i]->Dirty)
       {
       fprintf(fp, "DEFAULT=%s %d", Defaults[i]->Name, Defaults[i]->nValues);
 
-      for (j = 0; j < Defaults[i]->nValues; ++j)
+      for (int j = 0; j < Defaults[i]->nValues; ++j)
         fprintf(fp, " %e", Defaults[i]->Value[j]);
 
       fprintf(fp, "\n");
@@ -76,14 +74,12 @@ void SaveDefaults(FILE *fp)	/* Save modified defaults into "Setup" file */
 /* -------------------------------------------------------------------- */
 void SetDefaultsValue(char target[], NR_TYPE *new_value)
 {
-  int	i, j;
-
-  for (i = 0; i < nDefaults; ++i)
+  for (int i = 0; i < nDefaults; ++i)
     if (strcmp(Defaults[i]->Name, target) == 0)
       {
       Defaults[i]->Dirty = true;
 
-      for (j = 0; j < Defaults[i]->nValues; ++j)
+      for (int j = 0; j < Defaults[i]->nValues; ++j)
         Defaults[i]->Value[j] = new_value[j];
 
       return;
@@ -97,19 +93,17 @@ void SetDefaultsValue(char target[], NR_TYPE *new_value)
 /* -------------------------------------------------------------------- */
 void ResetDefaults(Widget w, XtPointer client, XtPointer call)
 {
-  int	i;
-
-  for (i = 0; i < nDefaults; ++i)
+  for (int i = 0; i < nDefaults; ++i)
     {
-    free((char *)Defaults[i]->Value);
-    free((char *)Defaults[i]);
+    delete [] Defaults[i]->Value;
+    delete Defaults[i];
     }
 
   nDefaults = 0;
 
   ReadDefaultsFile();
 
-  for (i = 0; i < nDefaults; ++i)
+  for (int i = 0; i < nDefaults; ++i)
     set_defaultText(i);
 
 }	/* END RESETDEFAULTS */
@@ -238,61 +232,61 @@ static void MarkDirty(Widget w, XtPointer indx, XtPointer call)
 /* -------------------------------------------------------------------- */
 static void VerifyDefault(Widget w, int indx, XtPointer call)
 {
-	int		i;
-	char	*p, *p1;
-	NR_TYPE	f[128];
+  char	*p, *p1;
+  NR_TYPE	f[128];
 
-	if (Defaults[indx]->Dirty == false)
-		return;
-
-
-	p = XmTextFieldGetString(defaultText[indx]);
-
-	/* Verify values
-	 */
-	p1 = strtok(p, ", ");
-
-	for (i = 0; i < Defaults[indx]->nValues; ++i)
-		{
-		f[i] = p1 ? (NR_TYPE)atof(p1) : 0.0;
-
-		p1 = strtok(NULL, ", ");
-		}
-
-	XtFree(p);
+  if (Defaults[indx]->Dirty == false)
+    return;
 
 
-	/* Set values & reprint text widget
-	 */
-	for (i = 0; i < Defaults[indx]->nValues; ++i)
-		Defaults[indx]->Value[i] = f[i];
+  p = XmTextFieldGetString(defaultText[indx]);
 
-	set_defaultText(indx);
+  /* Verify values
+   */
+  p1 = strtok(p, ", ");
+
+  for (int i = 0; i < Defaults[indx]->nValues; ++i)
+    {
+    f[i] = p1 ? (NR_TYPE)atof(p1) : 0.0;
+
+    p1 = strtok(NULL, ", ");
+    }
+
+  XtFree(p);
+
+
+  /* Set values & reprint text widget
+   */
+  for (int i = 0; i < Defaults[indx]->nValues; ++i)
+    Defaults[indx]->Value[i] = f[i];
+
+  set_defaultText(indx);
 
 }	/* END VERIFYDEFAULT */
 
 /* -------------------------------------------------------------------- */
 static void set_defaultText(int indx)
 {
-	int		i;
-	char	temp[32];
+  char	temp[64];
 
-	buffer[0] = '\0';
+  buffer[0] = '\0';
 
-	for (i = 0; i < Defaults[indx]->nValues; ++i)
-		{
-		if (i > 0)
-			strcat(buffer, ", ");
+  for (int i = 0; i < Defaults[indx]->nValues; ++i)
+    {
+    if (i > 0)
+      strcat(buffer, ", ");
 
-		sprintf(temp, "%e", Defaults[indx]->Value[i]);
-		strcat(buffer, temp);
-		}
+    sprintf(temp, "%e", Defaults[indx]->Value[i]);
+    strcat(buffer, temp);
+    }
 
-	XtRemoveCallback(defaultText[indx], XmNvalueChangedCallback,
-												MarkDirty, (XtPointer)indx);
-	XmTextFieldSetString(defaultText[indx], buffer);
-	XtAddCallback(defaultText[indx], XmNvalueChangedCallback,
-												MarkDirty, (XtPointer)indx);
+  XtRemoveCallback(	defaultText[indx], XmNvalueChangedCallback,
+			MarkDirty, (XtPointer)indx);
+
+  XmTextFieldSetString(defaultText[indx], buffer);
+
+  XtAddCallback(	defaultText[indx], XmNvalueChangedCallback,
+			MarkDirty, (XtPointer)indx);
 
 }	/* END SETDEFAULTTEXT */
 

@@ -270,8 +270,8 @@ static NR_TYPE polyinterp(NR_TYPE xa[], NR_TYPE ya[], int n, int x)
   NR_TYPE	*c, *d, y, dy;
 
   dif = fabs(x - xa[0]);
-  c = (NR_TYPE *)GetMemory(n * sizeof(NR_TYPE));
-  d = (NR_TYPE *)GetMemory(n * sizeof(NR_TYPE));
+  c = new NR_TYPE[n];
+  d = new NR_TYPE[n];
 
   for (i = 0; i < n; ++i)
     {
@@ -302,8 +302,8 @@ static NR_TYPE polyinterp(NR_TYPE xa[], NR_TYPE ya[], int n, int x)
     y += (dy = (2 * ns < (n-m) ? c[ns+1] : d[ns--]));
     }
 
-  free(c);
-  free(d);
+  delete [] c;
+  delete [] d;
 
   return(y);
 

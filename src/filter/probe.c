@@ -13,10 +13,6 @@ STATIC FNS:	none
 
 DESCRIPTION:	Routines for the Toggle Probe Menu item.
 
-INPUT:		
-
-OUTPUT:		
-
 REFERENCES:	none
 
 REFERENCED BY:	
@@ -42,7 +38,7 @@ void AddProbeToList(char name[], int type)
     return;
     }
 
-  probeNames[nProbes] = (char *)GetMemory(strlen(name)+1);
+  probeNames[nProbes] = new char[strlen(name)+1];
   strcpy(probeNames[nProbes], name);
   probeTypes[nProbes] = type;
 
@@ -53,10 +49,8 @@ void AddProbeToList(char name[], int type)
 /* -------------------------------------------------------------------- */
 void ResetProbeList()
 {
-  int	i;
-
-  for (i = 0; i < nProbes; ++i)
-    free(probeNames[i]);
+  for (int i = 0; i < nProbes; ++i)
+    delete [] probeNames[i];
 
   nProbes = 0;
 
@@ -72,13 +66,11 @@ char **GetProbeList()
 /* -------------------------------------------------------------------- */
 unsigned long GetProbeType(char name[])
 {
-  int		i;
-
-  for (i = 0; i < nProbes; ++i)
+  for (int i = 0; i < nProbes; ++i)
     if (strcmp(name, probeNames[i]) == 0)
       return(probeTypes[i]);
 
-	return(0);
+  return(0);
 
 }	/* END GETPROBETYPE */
 

@@ -35,64 +35,61 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 /* -------------------------------------------------------------------- */
 CircularBuffer *CreateCircularBuffer(int nbuffers, int nbytes)
 {
-	int		i;
-	CircularBuffer	*cb;
+  CircularBuffer	*cb;
 
-	cb = (CircularBuffer *)GetMemory(sizeof(CircularBuffer));
+  cb = new CircularBuffer;
 
-	cb->nbuffers	= nbuffers;
-	cb->buffsize	= nbytes;
-	cb->index	= 0;
+  cb->nbuffers	= nbuffers;
+  cb->buffsize	= nbytes;
+  cb->index	= 0;
 
-	cb->buffer = (char **)GetMemory(nbuffers * sizeof(char *));
+  cb->buffer = new char*[nbuffers];
 
-	for (i = 0; i < nbuffers; ++i)
-		cb->buffer[i] = (char *)GetMemory(nbytes);
+  for (int i = 0; i < nbuffers; ++i)
+    cb->buffer[i] = new char[nbytes];
 
-	return(cb);
+  return(cb);
 
 }	/* END CREATECIRCULARBUFFER */
 
 /* -------------------------------------------------------------------- */
 char *AddToCircularBuffer(CircularBuffer *cb)
 {
-	char	*buff = cb->buffer[cb->index];
+  char	*buff = cb->buffer[cb->index];
 
-	if (++cb->index >= cb->nbuffers)
-		cb->index = 0;
+  if (++cb->index >= cb->nbuffers)
+    cb->index = 0;
 
-	return(buff);
+  return(buff);
 
 }	/* END ADDTOCIRCULARBUFFER */
 
 /* -------------------------------------------------------------------- */
 char *GetBuffer(CircularBuffer *cb, int offset)
 {
-	if (offset > 0)
-		{
-		fprintf(stderr, "GetBuffer: offset = %d\n", offset);
-		return(NULL);
-		}
+  if (offset > 0)
+  {
+    fprintf(stderr, "GetBuffer: offset = %d\n", offset);
+    return(NULL);
+  }
 
-	offset += cb->index;
+  offset += cb->index;
 
-	if (offset < 0)
-		offset += cb->nbuffers;
+  if (offset < 0)
+    offset += cb->nbuffers;
 
-	return(cb->buffer[offset]);
+  return(cb->buffer[offset]);
 
 }	/* END GETBUFFER */
 
 /* -------------------------------------------------------------------- */
 void ReleaseCircularBuffer(CircularBuffer *cb)
 {
-	int	i;
+  for (int i = 0; i < cb->nbuffers; ++i)
+    delete [] cb->buffer[i];
 
-	for (i = 0; i < cb->nbuffers; ++i)
-		free(cb->buffer[i]);
-
-	free(cb->buffer);
-	free(cb);
+  delete [] cb->buffer;
+  delete cb;
 
 }	/* END RELEASECIRCULARBUFFER */
 

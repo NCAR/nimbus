@@ -57,7 +57,6 @@ static void	initCircBuff(), disposCircBuff(), putBuff(),
 /* -------------------------------------------------------------------- */
 void InitMRFilters()
 {
-  int	i;
   MOD	*mv_p;
 
   readFilters();
@@ -65,7 +64,7 @@ void InitMRFilters()
   /* Create filter Data for each variable
    */
   sdiFilters.resize(sdi.size());
-  for (i = 0; i < sdi.size(); ++i)
+  for (int i = 0; i < sdi.size(); ++i)
     {
     /* Doesn't require filtering.
      */
@@ -120,7 +119,7 @@ void InitMRFilters()
 
 
   rawFilters.resize(raw.size());
-  for (i = 0; i < raw.size(); ++i)
+  for (int i = 0; i < raw.size(); ++i)
     {
     /* Doesn't require filtering.
      */
@@ -175,12 +174,12 @@ void InitMRFilters()
 /* -------------------------------------------------------------------- */
 void Filter(CircularBuffer *PSCB)
 {
-  int			i, OUTindex, task;
+  int			OUTindex, task;
   NR_TYPE		output;
 
   SampledData = (NR_TYPE *)GetBuffer(PSCB, -(PSCB->nbuffers - 1));
 
-  for (i = 0; i < sdi.size(); ++i)
+  for (int i = 0; i < sdi.size(); ++i)
     {
     SDITBL *sp = sdi[i];
 
@@ -253,7 +252,7 @@ void Filter(CircularBuffer *PSCB)
 
   /* Do raw variables
    */
-  for (i = 0; i < raw.size(); ++i)
+  for (int i = 0; i < raw.size(); ++i)
     {
     RAWTBL *rp = raw[i];
 
@@ -443,26 +442,25 @@ static void SingleStageFilter(
 /* -------------------------------------------------------------------- */
 static void readAfilter(char *file, filterPtr daFilt)
 {
-	int		i;
-	char	*nimbus = getenv("PROJ_DIR");
-	char	*filter[1050];
-	double	sum = 0.0;
+  char	*nimbus = getenv("PROJ_DIR");
+  char	*filter[1050];
+  double	sum = 0.0;
 
-	sprintf(buffer, "%s/defaults/filters/%s", nimbus, file);
-	ReadTextFile(buffer, filter);
+  sprintf(buffer, "%s/defaults/filters/%s", nimbus, file);
+  ReadTextFile(buffer, filter);
 
-	daFilt->order = atoi(filter[0]);
-	daFilt->aCoef = (filterType *)GetMemory(sizeof(filterType) * daFilt->order);
+  daFilt->order = atoi(filter[0]);
+  daFilt->aCoef = new filterType[daFilt->order];
 
-	for (i = 0; i < daFilt->order; ++i)
-		{
-		daFilt->aCoef[i] = atof(filter[i+1]);
-		sum += daFilt->aCoef[i];
-		}
+  for (int i = 0; i < daFilt->order; ++i)
+  {
+    daFilt->aCoef[i] = atof(filter[i+1]);
+    sum += daFilt->aCoef[i];
+  }
 
-	FreeTextFile(filter);
+  FreeTextFile(filter);
 
-	printf("filter.c: filter sum of %s\t= %15.8lf\n", file, sum);
+  printf("filter.c: filter sum of %s\t= %15.8lf\n", file, sum);
 
 }	/* END READAFILTER */
 
@@ -496,7 +494,7 @@ static mRFilterPtr createMRFilter(int L, int M, filterPtr filter, MOD *modvar)
 {
   mRFilterPtr	aMRFPtr;
 
-  aMRFPtr		= (mRFilterPtr)GetMemory(sizeof(mRFilterData));
+  aMRFPtr		= new mRFilterData;
   aMRFPtr->inBuff	= newCircBuff(filter->order / L);
   aMRFPtr->filter	= filter;
   aMRFPtr->L		= L;
@@ -592,10 +590,10 @@ static circBuffPtr newCircBuff(int size)
     }
 
   /* Allocate memory for structure.		*/
-  aCBPtr = (circBuffPtr)GetMemory(sizeof(circBuff));
+  aCBPtr = new circBuff;
 
   /* Allocate memory for data buffer.	*/
-  aCBPtr->value = (NR_TYPE *)GetMemory(sizeof(NR_TYPE) * size);
+  aCBPtr->value = new NR_TYPE[size];
   aCBPtr->size  = size;
 
   return(aCBPtr);
@@ -607,12 +605,9 @@ static circBuffPtr newCircBuff(int size)
 */
 static void initCircBuff(circBuffPtr aCBPtr)
 {
-  NR_TYPE	*buffer;
-  int		i;
+  NR_TYPE *buffer = aCBPtr->value;
 
-  buffer = aCBPtr->value;
-
-  for (i = 0; i < aCBPtr->size; i++)
+  for (int i = 0; i < aCBPtr->size; i++)
     buffer[i] = 0.0;
 
   aCBPtr->index = 0;
@@ -625,8 +620,8 @@ static void initCircBuff(circBuffPtr aCBPtr)
 */
 static void disposCircBuff(circBuffPtr aCBPtr)
 {
-  free((char *)aCBPtr->value);
-  free((char *)aCBPtr);
+  delete [] aCBPtr->value;
+  delete aCBPtr;
 }
 
 /*------------------------------------------------------------
@@ -706,7 +701,7 @@ static int disposMultiRateFilter(mRFilterPtr aMRFPtr)
 
   disposCircBuff(aMRFPtr->inBuff);
   aMRFPtr->inBuff = NULL;
-  free((char *)aMRFPtr);
+  delete aMRFPtr;
 
   return(true);
 }
