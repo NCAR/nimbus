@@ -1,0 +1,3 @@
+#!/bin/csh -f
+
+/jnet/local/bin/hdrbld `cat $PROJ_DIR/hosts/ProjectNumber`
