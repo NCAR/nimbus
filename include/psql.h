@@ -39,8 +39,15 @@ public:
   bool	isValid() const { return(_conn ? true : false); }
 
 //@{
+  /** 
+   * Write LRT data into the database.
+   */
   void	WriteSQL(const std::string timeStamp);
-  void	WriteSQLvolts(const std::string timeStamp);
+  /** 
+   * Write LRT data into the database.
+   * @returns usec of last sample written.
+   */
+  long	WriteSQLvolts(const std::string timeStamp);
 
   /**
    * Generic function to submit a query/command to the database.
@@ -85,6 +92,8 @@ private:
    */
   PGconn   *_conn;
 
+  std::stringstream	_sqlString;
+  std::stringstream	_broadcastString;
   std::stringstream	_sql2d_str;
 
   /**
@@ -138,9 +147,11 @@ private:
    * appended to that 'value'.
    * @param var is the variable to add.
    * @see createSampleRateTables()
+   * @param addToSRTtable whether to add this to the SampleRate tables in
+   * the DB.
    */
   void
-  addVariableToTables(rateTableMap &tableMap, const var_base *var);
+  addVariableToTables(rateTableMap &tableMap, const var_base *var, bool addToSRTtable);
 
 
   /**
