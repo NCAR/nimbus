@@ -8,7 +8,16 @@
 
 #if defined(__LITTLE_ENDIAN) || defined(_LITTLE_ENDIAN) || defined(LITTLE_ENDIAN)
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+                                                                                          
 float   ntohf(float);
+                                                                                          
+#ifdef __cplusplus
+}
+#endif
+
 
 #else
 
