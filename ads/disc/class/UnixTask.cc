@@ -17,7 +17,7 @@ UnixTask::UnixTask(char *name)
   int temp_pid;
   char *disc_dir, bin[512];
 
-  if ((disc_dir = getenv("DISC")) == NULL)
+  if (name[0] == '/' || (disc_dir = getenv("DISC")) == NULL)
     strcpy(bin, name);
   else {
     strcpy(bin, disc_dir);
@@ -34,7 +34,11 @@ printf("UnixTask: spawning [%s]\n", bin);
       exit (ERROR);
 
     case 0:
-      (void)execl(bin, bin, 0, NULL);
+      if (name[0] == '/')
+        (void)execl(bin, bin, "-rt", NULL);
+      else
+        (void)execl(bin, bin, 0, NULL);
+
       perror("UnixTask: execl");
       break;
 

@@ -1,25 +1,15 @@
-S=              $(DISC)/src/
-I=		$(DISC)/include/
-O=              $(DISC)/obj/
-B=              $(DISC)/bin/
-L=		$(DISC)/lib/
+S=              ./
+I=		../include/
+O=              ../obj/
+B=              ../bin/
+L=		../lib/
 IL=		$(JLOCAL)/include/
-IW=		$(WINDS)/include/
-RELEASE=	${LOCAL}/ads/
+RELEASE=	${JLOCAL}/ads/
 
-#
-# -DSOCK_WINDS	used for when data was passed to WINDS via socket, not disk.
-#
-
-WRITEFLAGS = -DTAPE_WRITE -DDISK_WRITE
+#WRITEFLAGS = -DTAPE_WRITE -DDISK_WRITE
 #WRITEFLAGS = -DTAPE_WRITE
-#WRITEFLAGS = -DDISK_WRITE
+WRITEFLAGS = -DDISK_WRITE
  
-# Solaris
-#CFLAGS =  -g -DSVR4 $(WRITEFLAGS) -lm -lsocket -lnsl -I$(I) -I$(IL)
-#PFLAGS =  -g -DSVR4 $(WRITEFLAGS) -I$(I) -I$(IL)
-#DISC_LIBS=	$(L)libdisc.a -lsocket -lnsl -lposix4
-#X11_LIBS=       -lXm -lXt -lX11 -lgen
 # Linux
 CFLAGS =  -g $(WRITEFLAGS) -lm -lnsl -I$(I) -I$(IL)
 PFLAGS =  -g $(WRITEFLAGS) -I$(I) -I$(IL)
@@ -28,13 +18,13 @@ X11_LIBS=      -L/usr/X11R6/lib -lXm -lXt -lX11 -lXp -lXext
           
 COMM.O = $(O)DiscNatsComm.o $(O)DsmCollect.o $(O)DsmConfig.o $(O)DsmHeaders.o $(O)DsmMessage.o $(O)DsmNet.o $(O)DsmNets.o $(O)DsmTables.o $(O)NatsData.o $(O)Palt.o $(O)RandomBuf.o $(O)SyncQueue.o $(O)SyncVar.o $(O)TapeHeader.o $(O)Tasx.o $(O)TcpSocket.o $(O)UdpSocket.o $(O)Queue.o
 
-TAPE.O = $(O)DsmConfig.o $(O)DsmMessage.o $(O)DsmNet.o $(O)DsmTape.o $(O)TapeHeader.o $(O)TcpSocket.o $(O)TapeDrv.o $(O)DsmDisk.o
+TAPE.O = $(O)DsmConfig.o $(O)DsmMessage.o $(O)DsmNet.o $(O)DsmTape.o $(O)TapeHeader.o $(O)TcpSocket.o $(O)TapeDrv.o $(O)DsmDisk.o $(O)UnixTask.o
 
 WIN.O = $(O)AnalogWin.o $(O)DsmConfig.o $(O)DsmHeaders.o $(O)DsmMessage.o $(O)DsmNet.o $(O)FlightWin.o $(O)InstrumentWin.o $(O)McrWin.o $(O)Pms1dWin.o $(O)Pms2dWin.o $(O)StatusWin.o $(O)TapeHeader.o $(O)TcpSocket.o $(O)UdpSocket.o $(O)UnixTask.o $(O)GenericButtons.o $(O)TextFile.o
 
 SIM.O = $(O)DsmNet.o $(O)TcpSocket.o
 
-COMM.H = $(IL)header.h $(I)dsmctl.h ${IW}Events.h
+COMM.H = $(IL)header.h $(I)dsmctl.h ${IL}Events.h
 
 TAPE.H = $(IL)header.h $(I)dsmctl.h 
 
@@ -56,7 +46,7 @@ sunudp: $(B)sunudp
 exatst: $(B)exatst
 
 discClass:
-	make -f $(DISC)/class/Makefile
+	make -f ../class/Makefile
 
 hdrClass:
 	make -f $(HEADER)/class/Makefile
@@ -64,13 +54,8 @@ hdrClass:
 clean:
 	rm -f ${O}/* ${L}/* ${B}/ck* ${B}/disc*
 
-release:
-	(cd /usr/local/dev/ads; tar cFFf - dsm disc header masp | (cd ${RELEASE}; tar xfBp -))
-	find ${RELEASE} \( -name '*.cc' -o -name '*.h' -o -name Makefile \) -exec chmod o-w {} \;
- 
-	sed s/-g/-O/g ${DISC}/src/Makefile > ${RELEASE}/disc/src/Makefile
-	sed s/-g/-O/g ${DISC}/class/Makefile > ${RELEASE}/disc/class/Makefile
-	chmod -R u+w ${RELEASE}
+install:
+	cp ../bin/* ${RELEASE}/disc/bin
 
 
 $(B)bldhdr3: $(S)bldhdr3.c $(IL)header.h
@@ -80,7 +65,7 @@ $(B)disphdr: ${S}disphdr.cc $(O)TapeHeader.o $(IL)header.h
 	g++ $(PFLAGS) disphdr.cc $(DISC_LIBS) -o $(B)disphdr
 
 $(B)discComm: ${S}discComm.cc $(COMM.O) $(COMM.H)
-	g++ $(PFLAGS) -I${IW} discComm.cc $(DISC_LIBS) -lpthread -o $(B)discComm
+	g++ $(PFLAGS) discComm.cc $(DISC_LIBS) -lpthread -o $(B)discComm
 
 $(B)discTape: ${S}discTape.cc $(TAPE.O) $(TAPE.H)
 	g++ $(PFLAGS) discTape.cc $(DISC_LIBS) -lpthread -o $(B)discTape

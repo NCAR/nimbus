@@ -39,6 +39,7 @@
 #define MAX_DESC_SIZE		128	/* max header descriptor size, bytes */
 #define MAX_DSM			8	/* max number of dsms */
 #define MAX_SDI_RATES   	4	/* max number of sdi sample rates */
+#define MAX_CMIG_INTFC		2	/* max num cmigits3 irs intfc per dsm*/
 #define MAX_HWIRS_INTFC		2	/* max num honeywell irs intfc per dsm*/
 #define MAX_HWGPS_INTFC		2	/* max num honeywell gps intfc per dsm*/
 #define MAX_GPS_INTFC           2       /* max num ARINC GPS per dsm */
@@ -52,7 +53,7 @@
 #define MAX_PPS_INTFC		1       /* max num of PPS receivers per dsm */
 #define MAX_UVHYG_INTFC         2       /* max num of UV hygrometers per dsm */
 #define MAX_VMIO12_INTFC        2       /* max num of VMIO12 dig IO boards */
-#define MAX_SERIALTOD_INTFC     2       /* max num of SerialTod ports */
+#define MAX_SERIALTOD_INTFC     8       /* max num of SerialTod ports */
 
 /* Define the isio port numbers. Port numbers begin at 1. */
 #define SERTOD_PORT		1	/* Serial TOD output */
@@ -63,13 +64,18 @@
 #define UVHYG_PORT_2          	5      	/* uv hygrometer #2 */
 #define TANS_PORT_1          	8       /* Trimble tans #1 */
 #define TANS_PORT_2          	6       /* Trimble tans #2 */
+#define GARMIN_PORT_1		3	/* Garmin GPS #1*/
+#define GARMIN_PORT_2		6	/* Garmin GPS #2*/
+#define CMIGITS3_PORT_1	        4	/* C-MIGITS 3 IRS #1*/
+#define CMIGITS3_PORT_2		5	/* C-MIGITS 3 IRS #2*/
 #define OPHIR_PORT_1          	7       /* Ophir radiometer port #1 */
 #define OPHIR_PORT_2          	8       /* Ophir radiometer port #2 */
 #define PPSGPS_PORT_1          	8       /* Collins PPS GPS port #1 */
 #define JPLTDL_PORT_1           3       /* JPL TDL #1 */
 #define LHTDL_PORT_1            4       /* LH TDL #1 */
 #define LASAIR_PORT_1           6       /* LASAIR #1 */
-#define CLIMET_PORT_1           2       /* CLIMET #1 */
+#define CLIMET_PORT_1           6       /* CLIMET #1 */
+#define MCA_PORT_1              7       /* MCA #1 */
 #define NEPH_PORT_1             3       /* NEPH #1 */
 #define NEPH_PORT_2             4       /* NEPH #1 */
 #define RDMA_PORT_1             4       /* RDMA #1 */
@@ -106,8 +112,8 @@
 #define NDRV	 	1
 #define DRV_0    	0               /* drive 0 identification */
 #define DRV_NONE 	-1              /* no drive identification */
-#define R1DRIVE         1               /* /home/r1 removable disk drive */
-#define R2DRIVE         2               /* /home/r2 removable disk drive */
+#define R1DRIVE         1               /* /jnet/r1 removable disk drive */
+#define R2DRIVE         2               /* /jnet/r2 removable disk drive */
 
 /* Pms 1d probe control words. */
 #define RANGE_NONE      -2              /* non-ranging probe */

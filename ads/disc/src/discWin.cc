@@ -134,7 +134,6 @@ main (int argc, char *argv[])
   Shell002 = XtCreatePopupShell("instrumentShell",
 			topLevelShellWidgetClass, AppShell, NULL, 0);
 
-
 // Create the project information window.
   statusWin = new StatusWin(Shell000, tape_msg,
 				QuitButtonWrap,
@@ -290,7 +289,6 @@ void checkMessage ()
       case ANALOG_MSG:		// update analog state display
         analogWin->displayState(dsm_msg.action(), dsm_msg.location());
         statusWin->displayMsg(dsm_msg.string());  // display message string
-printf("ANALOG_MSG\n");
         break;
 
       case DSMTIME_MSG:         // update time from given DSM
@@ -301,14 +299,12 @@ printf("ANALOG_MSG\n");
       case NET_MSG:		// update the network state display
         statusWin->displayNetState(dsm_msg.name(), dsm_msg.action());
         statusWin->displayMsg(dsm_msg.string());  // display message string
-printf("NET_MSG\n");
         sendInstrumentControlStates();
         break;
 
       case MCR_MSG:		// update the mcr state display
         mcr_win->displayState(dsm_msg.action(), dsm_msg.value());
         statusWin->displayMsg(dsm_msg.string());  // display message string
-printf("MCR_MSG\n");
         break;
 
       case PMS1_MSG:
@@ -317,7 +313,6 @@ printf("MCR_MSG\n");
 		!(strncmp(dsm_msg.string(), "System time", 11) == 0 &&
 		  flightWin->flightNumber()[0] == '0'))
           statusWin->displayMsg (dsm_msg.string());  // display message string
-printf("PMS_MSG\n");
         break;
 
       case TIME_MSG:             // update the date/time display
@@ -339,7 +334,6 @@ printf("PMS_MSG\n");
   if (tape_msg.readMsg()) {
     statusWin->displayDriveState(tape_msg.drive(), tape_msg.action()); 
     statusWin->displayMsg(tape_msg.string());
-printf("TAPETASK_MSG\n");
 
     // if we started recording, then write out the new 'flightNums' file.
     if (tape_msg.drive() == DRV_0 && tape_msg.action() == RECORDING)
@@ -536,8 +530,8 @@ void QuitButtonWrap(Widget w, XtPointer client,
   comm_win_net.closeNet();
   tape_win_net.closeNet();
 
-//  tape_task.killTask();
   comm_task.killTask();
+//  tape_task.killTask();
 
   statusWin->Quit(w, client, cbs);
   netMessage(0, NULL, "discWin: Quit.\n");

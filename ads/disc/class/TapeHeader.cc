@@ -88,7 +88,7 @@ int TapeHeader::firstDesc ()
 {
   desc = hdr; 
   desc_cnt = 0;
-  return TRUE;
+  return true;
 }
 
 /*****************************************************************************/
@@ -96,14 +96,14 @@ int TapeHeader::firstDesc (char blkName[])
 
 // Finds first descriptor with matching type.
 {
-   int stat;
+  int stat;
    
-   for (stat = firstDesc(); stat; stat = nextDesc()) {
-      if (strcmp(item_type(), blkName) == 0)
-         return(TRUE);
-   }
+  for (stat = firstDesc(); stat; stat = nextDesc()) {
+    if (strcmp(item_type(), blkName) == 0)
+      return(true);
+  }
 
-   return(FALSE);
+  return(false);
 }
 
 /*****************************************************************************/
@@ -114,9 +114,24 @@ int TapeHeader::nextDesc ()
 {
   if (desc_cnt++ < ntohl(((Fl *)hdr)->n_items)) {
     desc += item_len();
-    return TRUE;
+    return(true);
   }
-  return FALSE;
+
+  return(false);
+}
+
+/*****************************************************************************/
+int TapeHeader::nextDesc (char blkName[])
+
+// Sets the desc pointer to the next descriptor of the header.
+// Returns FALSE if the end of the header is reached.
+{
+  while (nextDesc()) {
+    if (strcmp(item_type(), blkName) == 0)
+      return(true);
+  }
+
+  return(false);
 }
 
 /*****************************************************************************/
@@ -129,10 +144,10 @@ int TapeHeader::selectShDesc (char *sh_name)
 
   for (stat = firstDesc(); stat; stat = nextDesc()) {
     if (shType() && !strcmp (sh_name, name()))
-      return TRUE;
+      return true;
   }
 
-  return FALSE;
+  return false;
 }
 
 /*****************************************************************************/
@@ -145,10 +160,10 @@ int TapeHeader::getSDI(char varName[])
    for (stat = firstDesc(); stat; stat = nextDesc()) {
       if ((strcmp(item_type(),SDI_STR) == 0) &&
           (strcmp(name(),varName) == 0))
-         return(TRUE);
+         return(true);
    }
 
-   return(FALSE);
+   return(false);
 }
 
 /*****************************************************************************/
@@ -162,10 +177,10 @@ int TapeHeader::getPMS2DType(char varName[])
    for (stat = firstDesc(); stat; stat = nextDesc()) {
       if ((strcmp(item_type(),PMS2D_STR) == 0) &&
           (strcmp(name(),varName) == 0))
-         return(TRUE);
+         return(true);
    }
 
-   return(FALSE);
+   return(false);
 }
 
 /*****************************************************************************/
@@ -179,10 +194,10 @@ int TapeHeader::getAsync(char varName[])
    {
       if ((strcmp(item_type(),ASYNC_STR) == 0) &&
           (strcmp(name(),varName) == 0))
-         return(TRUE);
+         return(true);
    }
 
-   return(FALSE);
+   return(false);
 }
 
 /*****************************************************************************/
@@ -306,6 +321,9 @@ void TapeHeader::calcDescFields ()
     else if (serialType())
       ((Serial*)desc)->start = htonl(start);
 
+    else if (sppType())
+      ((Pms1v3*)desc)->start = htonl(start);
+
     else if (uvhygType())
       ((Uvhyg*)desc)->start = htonl(start);
 
@@ -350,6 +368,9 @@ int TapeHeader::start()
  
   if (pms1v2Type())
     return(ntohl(((Pms1v2 *)desc)->start));
+
+  if (sppType())
+    return(ntohl(((Pms1v3 *)desc)->start));
 
   if (pms1Type())
     return(ntohl(((Pms1 *)desc)->start));
@@ -400,6 +421,9 @@ int TapeHeader::length()
   if (pms1v2Type())
     return(ntohl(((Pms1v2*)desc)->length));
 
+  if (sppType())
+    return(ntohl(((Pms1v3*)desc)->length));
+
   if (pms1Type())
     return(ntohl(((Pms1*)desc)->length));
 
@@ -441,8 +465,21 @@ void TapeHeader::coefficients (float cof[])
 {
   int j;
 
-    for (j = 0; j < order(); j++)
-      cof[j] = ntohf(((Sh*)desc)->cof[j]);
+  for (j = 0; j < order(); j++)
+    cof[j] = ntohf(((Sh*)desc)->cof[j]);
+
+}
+
+/*****************************************************************************/
+void TapeHeader::spp_OPCthesholds (unsigned short chans[])
+
+// Copies the coefficients of the current descriptor into the passed in array.
+// Returns TRUE if ok, FALSE otherwise.
+{
+  int j;
+
+  for (j = 0; j < spp_bins(); j++)
+    chans[j] = ntohs(((Pms1v3 *)desc)->OPCthreshold[j]);
 
 }
 
@@ -455,6 +492,9 @@ char* TapeHeader::name ()
 
   if (pms1v2Type())
     return ((Pms1v2*)desc)->name;
+
+  if (sppType())
+    return ((Pms1v3*)desc)->name;
 
   if (pms1Type())
     return ((Pms1*)desc)->name;
@@ -486,6 +526,9 @@ int TapeHeader::rate()
 {
   if (shType())
     return(ntohl(((Sh *)desc)->rate));
+
+  if (sppType())
+    return(ntohl(((Pms1v3 *)desc)->rate));
 
   if (pms1v2Type())
     return(ntohl(((Pms1v2 *)desc)->rate));
@@ -535,6 +578,9 @@ char* TapeHeader::dsm_locn()
 
   if (pms1v2Type())
     return ((Pms1v2*)desc)->dsm_locn;
+
+  if (sppType())
+    return ((Pms1v3*)desc)->dsm_locn;
 
   if (pms1Type())
     return ((Pms1*)desc)->dsm_locn;
@@ -589,6 +635,9 @@ char* TapeHeader::locn ()
 
   if (pms1v2Type())
     return ((Pms1v2*)desc)->locn;
+
+  if (sppType())
+    return ((Pms1v3*)desc)->locn;
 
   if (greyhType())
     return ((Greyh*)desc)->locn;

@@ -22,13 +22,13 @@ DsmDisk::DsmDisk(TapeHeader &th, DsmMessage &win_m, DsmConfig &dsm_c) :
    struct mntent *mtresult;
 #endif
    
-   filesopened = FALSE;
-   diskfull = FALSE;
-   avaps = FALSE;
-   mcr = FALSE;
-   pms2d = FALSE;
-   masp = FALSE;
-   grey = FALSE;
+   filesopened = false;
+   diskfull = false;
+   avaps = false;
+   mcr = false;
+   pms2d = false;
+   masp = false;
+   grey = false;
    
    strcpy(extfile,".ads");
    strcpy(extmcr,".rawMCRa");
@@ -43,7 +43,7 @@ DsmDisk::DsmDisk(TapeHeader &th, DsmMessage &win_m, DsmConfig &dsm_c) :
    savelen = strlen(rtdatadir[0]) - 1;
    for (i = 0; i < 2; i++)
    {
-      rmounted[i] = FALSE;
+      rmounted[i] = false;
       sprintf(msg_str,"mount %s >&/dev/null",rtdatadir[i]);
       system(msg_str);
    }
@@ -70,12 +70,12 @@ DsmDisk::DsmDisk(TapeHeader &th, DsmMessage &win_m, DsmConfig &dsm_c) :
          if (strncmp(mtresult->mnt_dir,rtdatadir[i],savelen) == 0)
 #endif
          {
-            rmounted[i] = TRUE;
+            rmounted[i] = true;
          }
       }
    }
    fclose(mntptr);
-   if (rmounted[0] == TRUE)
+   if (rmounted[0] == true)
    {
       sprintf(msg_str,"DsmDisk: Removable drive r1 mounted.\n");
       win_msg.sendTapeMsg(RECORDING, R1DRIVE, msg_str);
@@ -86,7 +86,7 @@ DsmDisk::DsmDisk(TapeHeader &th, DsmMessage &win_m, DsmConfig &dsm_c) :
       win_msg.sendTapeMsg(UNLOADED, R1DRIVE, msg_str);
    }
    numberwrites = 1;
-   if (rmounted[1] == TRUE)
+   if (rmounted[1] == true)
    {
       sprintf(msg_str,"DsmDisk: Removable drive r2 mounted.\n");
       win_msg.sendTapeMsg(RECORDING, R2DRIVE, msg_str);
@@ -204,14 +204,14 @@ void DsmDisk::openFiles()
          sprintf(msg_str,"DsmDisk: Cannot open ptr to ads file %s\n",destfile[i]);
          win_msg.sendTapeMsg(FAILED,filesopened,msg_str);
       }
-      if ((pms2d = tape_header.firstDesc(PMS2D_STR)) == TRUE)
+      if ((pms2d = tape_header.firstDesc(PMS2D_STR)) == true)
       {
          strcat(dest2d,ext2d);
          if ((out2d[i] = open(dest2d, O_CREAT | O_WRONLY | O_TRUNC, 0666)) == ERROR)
          {
             sprintf(msg_str,"DsmDisk: Cannot open 2D destination file %s\n",dest2d);
             win_msg.sendTapeMsg(FAILED,filesopened,msg_str);
-            pms2d = FALSE;
+            pms2d = false;
          }
 // Associate a FILE stream with an existing file handle.
          if ((ptr2d[i] = fdopen(out2d[i],"w")) == NULL)
@@ -220,14 +220,14 @@ void DsmDisk::openFiles()
             win_msg.sendTapeMsg(FAILED,filesopened,msg_str);
          }
       }
-      if ((grey = tape_header.getPMS2DType(P2D_G_STR)) == TRUE)
+      if ((grey = tape_header.getPMS2DType(P2D_G_STR)) == true)
       {
          strcat(destgrey,extgrey);
          if ((outgrey[i] = open(destgrey, O_CREAT | O_WRONLY | O_TRUNC, 0666)) == ERROR)
          {
             sprintf(msg_str,"DsmDisk: Cannot open grey scale destination file %s\n",destgrey);
             win_msg.sendTapeMsg(FAILED,filesopened,msg_str);
-            grey = FALSE;
+            grey = false;
          }
 // Associate a FILE stream with an existing file handle.
          if ((ptrgrey[i] = fdopen(outgrey[i],"w")) == NULL)
@@ -236,14 +236,14 @@ void DsmDisk::openFiles()
             win_msg.sendTapeMsg(FAILED,filesopened,msg_str);
          }
       }
-      if ((mcr = tape_header.getSDI("MCROUT")) == TRUE)
+      if ((mcr = tape_header.getSDI("MCROUT")) == true)
       {
          strcat(destmcr[i],extmcr);
          if ((outmcr[i] = open(destmcr[i], O_CREAT | O_WRONLY | O_TRUNC, 0666)) == ERROR)
          {
             sprintf(msg_str,"DsmDisk: Cannot open MCR destination file %s\n",destmcr[i]);
             win_msg.sendTapeMsg(FAILED,filesopened,msg_str);
-            mcr = FALSE;
+            mcr = false;
          }
 // Associate a FILE stream with an existing file handle.
          if ((ptrmcr[i] = fdopen(outmcr[i],"w")) == NULL)
@@ -252,14 +252,14 @@ void DsmDisk::openFiles()
             win_msg.sendTapeMsg(FAILED,filesopened,msg_str);
          }
       }
-      if ((avaps = tape_header.getAsync(AVAPS_STR)) == TRUE)
+      if ((avaps = tape_header.getAsync(AVAPS_STR)) == true)
       {
          strcat(destavaps,extavaps);
          if ((outavaps[i] = open(destavaps, O_CREAT | O_WRONLY | O_TRUNC, 0666)) == ERROR)
          {
             sprintf(msg_str,"DsmDisk: Cannot open avaps destination file %s\n",destavaps);
             win_msg.sendTapeMsg(FAILED,filesopened,msg_str);
-            avaps = FALSE;
+            avaps = false;
          }
 // Associate a FILE stream with an existing file handle.
          if ((ptravaps[i] = fdopen(outavaps[i],"w")) == NULL)
@@ -268,7 +268,7 @@ void DsmDisk::openFiles()
             win_msg.sendTapeMsg(FAILED,filesopened,msg_str);
          }
       }
-      if ((masp = tape_header.firstDesc(MASP_STR)) == TRUE)
+      if ((masp = tape_header.firstDesc(MASP_STR)) == true)
       {
          strcat(destmh,extmh);
          if ((outmh[i] = open(destmh, O_CREAT | O_WRONLY | O_TRUNC, 0666)) == ERROR)
@@ -309,7 +309,7 @@ void DsmDisk::openFiles()
       }
    }
    umask(002);
-   filesopened = TRUE;
+   filesopened = true;
 }
 
 /* -------------------------------------------------------------------- */
@@ -378,11 +378,11 @@ void DsmDisk::closeFiles()
       }
    }
 
-   filesopened = FALSE;
+   filesopened = false;
 
    for (i = 0; i < numberwrites; i++)
    {
-      if (rmounted[i] == TRUE)
+      if (rmounted[i] == true)
       {
          sprintf(msg_str,"umount %s",rtdatadir[i]);
 //         sprintf(msg_str,"umount %s >&/dev/null",rtdatadir[i]);
@@ -410,7 +410,7 @@ void DsmDisk::writeFiles(char *buff, int len)
          openFiles();
          writeHeader();
 
-         nimbus = new UnixTask("/usr/local/bin/nimbus");
+         nimbus = new UnixTask("/jnet/linux/bin/nimbus");
       }
       else
          return;
@@ -506,7 +506,7 @@ printf("%x %02d:%02d:%02d - %d ftell=%d\n", ntohs(p->id), ntohs(p->hour), ntohs(
             {
                sprintf(msg_str,"DsmDisk: Cannot open MCR file %s.  Continuing.\n",destmcr[i]);
                win_msg.sendTapeMsg(FAILED,filesopened,msg_str);
-               mcr = FALSE;
+               mcr = false;
                return;
             }
 // Write header to file.
@@ -605,7 +605,7 @@ printf("%x %02d:%02d:%02d - %d ftell=%d\n", ntohs(p->id), ntohs(p->hour), ntohs(
          sprintf(msg_str,"DsmDisk:>>> DISK FULL, closing disk file(s), continuing.\n");
          win_msg.sendTapeMsg(FAILED,filesopened,msg_str);
          closeFiles();
-         diskfull = TRUE;
+         diskfull = true;
          return;
       }
       sprintf(msg_str,"DsmDisk: Write failure to dest disk, errno = %d.\n", errno);

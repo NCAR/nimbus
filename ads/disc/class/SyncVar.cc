@@ -53,6 +53,12 @@ void SyncVar::computeFromSample (short raw)
 {
   int k;
 
+  if (strcmp(sv_name, "HGM232") == 0)
+  {
+    sv_value = 0.3048 * (ntohs(raw) & 0xFFFE);
+    return;
+  }
+
 // Compute the voltage value.
   sv_volts = (float)((short)ntohs(raw) - convert_offset) * convert;
 

@@ -40,6 +40,7 @@
 #define DSM_ACTIVITY_DATA	9		// network activity packet
 #define DSM_MCR_DATA		6		// mcr data type
 #define DSM_MASP_DATA		7		// masp data type
+#define DSM_LHTDL_DATA		8		// LH TDL data type
 #define DSM_MASP_HISTO		0xA		// masp histo type
 
 // Define the header for each record passed across the network.

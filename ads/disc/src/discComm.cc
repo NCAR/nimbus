@@ -56,6 +56,7 @@ void computeDerived(const char *buf);	// compute derived variables
 void checkMessage ();			// check for messages from gui
 void netMessage (int, char*, char*); 	// network message handler
 void tasAltMessage (float tas, float alt); // broadcasts tas and palt to dsms
+void radarAltMessage (float alt);	// send radar alt to AFT dsm.
 void dateMessage (int, int, int);	// broadcasts date to dsms
 void dateTimeMessage ();		// broadcasts date to dsms
 void catchAlarm (int);			// SIGALRM catcher
@@ -97,6 +98,7 @@ NatsData *nats_data;			// nats data handler
 SyncVar *qcx;				// dynamic pressure
 SyncVar *psx;				// static pressure
 SyncVar *ttx;				// total temperature
+SyncVar *hgm;				// Radar Altimeter
 Palt *palt;				// pressure altitude
 Tasx *tasx;				// true air speed
 
@@ -106,12 +108,13 @@ UdpSocket udp_sock(DSM_BROADCAST_PORT, "128.117.184.255");
 char ctl_buf[256];			// temp buffer for ctl data
  
 static time_t	cur_sec;		// current second count
+static char	FlightNumber[16];	// Sent from DiscWin
 
 static sem_t	tapeSema, windsSema;
 static pthread_t	tid;
 
 /* -------------------------------------------------------------------- */
-main()   
+int main()   
 {
   int	stat;
   int	type;				// data block type
@@ -385,11 +388,12 @@ void processAsync(DsmNet *curNet, int type)
 #ifdef SOCK_WINDS
       if (last_sec != cur_sec)	// only send one logical/second
         {
-        if (type != DSM_GREY_DATA)
+        if (type != DSM_GREY_DATA) {
           sendWINDS(buf, sizeof(P2d_rec), type);
-        else
+        }
+        else {
           sendWINDS(buf, curNet->dsm_buf->bufIndex(), type);
-
+        }
         last_sec = cur_sec;
         }
 #endif
@@ -496,11 +500,11 @@ void checkIRS_GPS(const char *buf)
   // Only check every 5 seconds.
   if (!(firstTime % 5) && strcmp(win_msg.flight(), "0")) {
     if (memcmp(&buf[IRSstart], zeroes, sizeof(Irs_blk)) == 0) {
-      netMessage(NET_STATUS, dsm, "  *** No IRS data  ***\n");
+      netMessage(NET_STATUS, dsm, "  *** No IRS data! ***\n");
     }
 
     if (memcmp(&buf[GPSstart], zeroes, sizeof(Gps_blk)) == 0) {
-      netMessage(NET_STATUS, dsm, "  *** No GPS data  ***\n");
+      netMessage(NET_STATUS, dsm, "  *** No GPS data! ***\n");
     }
   }
 }
@@ -512,6 +516,7 @@ void computeDerived(const char *buf)
 {
   static float tas = 0.0;               // current values
   static float alt = 0.0;
+  static float hgm232 = 0.0;
  
   if ((int)psx)                         // static pressure
     psx->computeFromLR(buf);
@@ -522,11 +527,24 @@ void computeDerived(const char *buf)
   if ((int)ttx)                         // total temperature
     ttx->computeFromLR(buf);
  
+  if ((int)hgm)                         // Radar altimeter
+    {
+    hgm->computeFromLR(buf);
+    radarAltMessage(hgm->value());
+    }
+ 
   if ((int)tasx) {                      // true air speed
     tasx->compute();
     tas = tasx->value();
+
+    if (FlightNumber[0] == '0' && tas > 5.0)
+      {
+      dsm_config.selectByLocn("CTL");
+      netMessage(NET_STATUS, dsm_config.location(),
+		"  *** Flight Number is 0! ***\n");
+      }
   }
- 
+
   if ((int)palt) {                      // pressure altitude
     palt->compute();
     alt = tasx->value();
@@ -537,8 +555,7 @@ void computeDerived(const char *buf)
 
 // Broadcast tas and palt to the dsms.
   tasAltMessage(tas, alt);
-// Hardcoded for Antarctic project.
-//  tasAltMessage(13.45, 3000.0);
+
 }
  
 /* -------------------------------------------------------------------- */
@@ -546,7 +563,7 @@ void checkMessage()
  
 // Checks for received messages from the window and tape tasks.
 {
-  int stat;
+  int stat, dummy;
 
   if (win_msg.readMsg()) {
     switch (win_msg.type()) {
@@ -567,6 +584,8 @@ void checkMessage()
              stat = (int)dsm_nets.nextNet())
            dsm_nets.curNet()->writeNet (
                    win_msg.rxMessage(), win_msg.rxLength(), DSM_MSG_DATA);
+
+//        sscanf(rx_msg, "%d %s", &dummy, FlightNumber);
         break;
 
       default:
@@ -697,7 +716,7 @@ void sendTapeTask(const char *buf, int len, int type)
 }	/* END SENDTAPETASK */
 
 /* -------------------------------------------------------------------- */
-void tasAltMessage (float tas, float alt)
+void tasAltMessage(float tas, float alt)
 
 // Broadcasts computed tas and palt needed by the dsms.
 {
@@ -705,6 +724,52 @@ void tasAltMessage (float tas, float alt)
 
   sprintf (tx_msg, "%1d %8.3f %8.3f\n", TASALT_MSG, tas, alt);
   udp_sock.writeSock (tx_msg, strlen (tx_msg)+1);
+
+}
+
+/* -------------------------------------------------------------------- */
+void radarAltMessage(float alt)
+
+// Send (as a Generic DIGOUT button) radar altimeter to AFT dsm for SABLE.
+{
+  static int	action;
+  char	tx_msg[DSM_MSG_MAX_LEN];
+
+  static bool	bloSixK = false;
+  static char	*locn = "AFT";
+  static int	connector = 3;
+  static int	channel = 0;
+  static float  prev_alt;
+
+/*
+  if (alt < 2000.0 && bloSixK ||	// No toggle required.
+      alt > 2000.0 && !bloSixK)
+    return;
+
+  if (alt < 2000.0)
+    action = 1;
+  else
+    action = 0;
+*/
+
+  if (action) {
+    if (prev_alt < 2000 && alt > 2000)
+      action = 0;
+  }
+  else {
+    if (prev_alt > 1900 && alt < 1900)
+      action = 1;
+  }
+  prev_alt = alt;
+netMessage(NET_STATUS, dsm_config.location(), "Crossed 6k feet\n");
+return;
+
+  sprintf(tx_msg, "%2d %1d %11s %1d %1d %s", DIGOUT_MSG, action,
+                "AFT", connector, channel, "");
+
+  dsm_nets.selectNet("AFT");        // select dest dsm
+  dsm_nets.curNet()->writeNet(tx_msg, strlen(tx_msg)+1, DSM_MSG_DATA);
+
 }
  
 /* -------------------------------------------------------------------- */
@@ -813,6 +878,8 @@ void derivedInit()
   palt = (Palt*)0;
   tasx = (Tasx*)0;
  
+//  hgm = new SyncVar(dsm_headers.mainHeader(), "HGM232");
+
   for (stat = var_config.firstVar(); stat; stat = var_config.nextVar()) {
     if (!strcmp (var_config.varName(), "PSX")) {
       var_config.firstDepend();
@@ -854,9 +921,10 @@ void derivedInit()
         "Unknown derived variable requested in the varconfig file, %s.\n",
         var_config.varName());
   }
-}
-/*****************************************************************************/
 
+}
+
+/*****************************************************************************/
 void natsInit()
 
 // Checks if the NATS is enabled, and creates the classes if so.

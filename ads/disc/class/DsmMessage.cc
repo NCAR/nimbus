@@ -25,13 +25,18 @@ DsmMessage::DsmMessage (MsgQueue &tQ, MsgQueue &rQ) :tx_msgQ (tQ), rx_msgQ (rQ)
 #ifndef VXWORKS
   time_t      ct;
 
-  logFP = fopen("/usr/local/winds/log/dsmAsync.log", "a");
+  logFP = fopen("/jnet/local/dev/winds/log/dsmAsync.log", "a");
+
+  if (logFP == NULL)
+    logFP = fopen("/jnet/local/winds/log/dsmAsync.log", "a");
 
   if (logFP)
     {
     ct = time(NULL);
     fprintf(logFP, "dsmAsync: reset %s", ctime(&ct));
     }
+  else
+    fprintf(stderr, "dsmAsync:DsmMessage can't open logfile.\n");
 
 #endif
 }

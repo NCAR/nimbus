@@ -1,27 +1,25 @@
-S=              $(DISC)/class/
-I=              $(DISC)/include/
-O=              $(DISC)/obj/
-L=              $(DISC)/lib/
+S=              ../class/
+I=              ../include/
+O=              ../obj/
+L=              ../lib/
 
 ID=		$(DSM)/include/
 IL=		$(JLOCAL)/include/
-IW=		$(WINDS)/include/
 IV=		$(WIND_BASE)/target/config/mv162lc/
 
-WRITEFLAGS = -DTAPE_WRITE -DDISK_WRITE
+#WRITEFLAGS = -DTAPE_WRITE -DDISK_WRITE
 #WRITEFLAGS = -DTAPE_WRITE
-#WRITEFLAGS = -DDISK_WRITE
-#POFLAGS =  -c -O -DSVR4 -D_REENTRANT $(WRITEFLAGS) -I$(I) -I$(IL)
+WRITEFLAGS = -DDISK_WRITE
 
-# Solaris
-#POFLAGS =  -c -g -DSVR4 $(WRITEFLAGS) -I$(I) -I$(IL) -I$(IW)
 # Linux
-POFLAGS =  -c -g $(WRITEFLAGS) -I$(I) -I$(IL) -I$(IW)
+POFLAGS =  -c -g $(WRITEFLAGS) -I$(I) -I$(IL) -I$(IW) -I/usr/X11R6/include
+POFLAGS =  -c -g $(WRITEFLAGS) -I$(I) -I$(IL) -I/usr/X11R6/include
 
 CPVFLAGS = -c -m68040 -msoft-float -DVXWORKS -DCPU=MC68LC040 \
 	   -fno-builtin -nostdinc \
            -D__cpluscplus -I$(WIND_BASE)/target/h \
-           -I$(I) -I$(ID) -I$(IL) -I$(IV) -I$(IW)
+           -I$(I) -I$(ID) -I$(IL) -I$(IV)
+#           -I$(I) -I$(ID) -I$(IL) -I$(IV) -I$(IW)
           
 all: $(O)AnalogWin.o $(O)DiscNatsComm.o $(O)DsmCollect.o $(O)DsmConfig.o $(O)DsmHeaders.o $(O)DsmMessage.o $(O)DsmNet.o $(O)DsmNets.o $(O)DsmTables.o $(O)DsmTape.o $(O)DsmDisk.o $(O)Event.o $(O)FlightWin.o $(O)GenericButtons.o $(O)InstrumentWin.o $(O)McrWin.o $(O)NatsData.o $(O)Palt.o $(O)PickTable.o $(O)Pms1dWin.o $(O)Pms2dWin.o $(O)Queue.o $(O)RandomBuf.o $(O)StatusWin.o $(O)SerialBuf.o $(O)SyncQueue.o $(O)SyncVar.o $(O)TapeDrv.o $(O)TapeHeader.o $(O)Tasx.o $(O)TcpSocket.o $(O)TextFile.o $(O)UdpSocket.o $(O)UnixTask.o $(O)VarConfig.o $(O)portable.o
 
@@ -38,8 +36,8 @@ DSMNET.H= $(I)DsmNet.h $(I)dsmctl.h $(IL)header.h $(I)messageDefs.h $(I)SerialBu
 DSMNETS.H= $(I)DsmNets.h $(I)DsmConfig.h $(I)dsmctl.h
 DSMTABLES.H= $(I)DsmTables.h $(I)DsmConfig.h $(I)DsmHeaders.h $(O)PickTable.o $(I)TapeHeader.h $(I)dsmctl.h 
 DSMTAPE.H= $(I)DsmTape.h $(I)DsmMessage.h $(I)TapeDrv.h $(I)TapeHeader.h $(I)dsmctl.h
-DSMDISK.H= $(I)DsmDisk.h $(I)DsmMessage.h $(I)DsmConfig.h $(I)TapeHeader.h $(I)dsmctl.h
-EVENT.H= $(I)DsmConfig.h $(I)UdpSocket.h $(IW)Events.h
+DSMDISK.H= $(I)DsmDisk.h $(I)DsmMessage.h $(I)DsmConfig.h $(I)TapeHeader.h $(I)dsmctl.h $(I)UnixTask.h
+EVENT.H= $(I)DsmConfig.h $(I)UdpSocket.h $(IL)Events.h
 DAT.H= $(I)TapeDrv.h 
 FLIGHTWIN.H= $(I)FlightWin.h 
 GENBUTT.H= $(I)GenericButtons.h 
@@ -125,7 +123,7 @@ $(O)DsmDisk.o: $(S)DsmDisk.cc $(DSMDISK.H)
 	ar r $(L)libdisc.a $(O)DsmDisk.o
 
 $(O)Event.o: $(S)Event.cc $(EVENT.H) 
-	g++ $(POFLAGS) -I${IW} $(S)Event.cc -o $(O)Event.o
+	g++ $(POFLAGS) $(S)Event.cc -o $(O)Event.o
 	ar r $(L)libdisc.a $(O)Event.o
 
 $(O)FlightWin.o: $(S)FlightWin.cc $(FLIGHTWIN.H) 

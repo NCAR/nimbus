@@ -100,13 +100,14 @@ public:
   int synchroType()	{return sdiType() && !strcmp(type(),"S");}
   int aerosolType()     {return !strcmp(desc, AEROSOL_STR);}
   int asyType()		{return !strcmp(desc, ASYNC_STR);}
-  int blkType()		{return hdrType() || gpsTans2Type() || 
-			  gpsTans3Type()|| lrncType() || ophir3Type() ||
+  int blkType()		{return hdrType() || gpsTans2Type() || gpsTans3Type() ||
+			  garminType()|| lrncType() || ophir3Type() ||
 			  climetType() || hwGpsType() || ppsGpsType() ||
 			  masspecType() || jpltdlType() || lhtdlType() ||
 			  aerosolType() || dpresType() || rdmaType() || 
-			  nephType();}
+			  nephType() || cmigits3Type() || mcaType();}
   int climetType()	{return !strcmp (desc, CLIMET_STR);}
+  int mcaType()	        {return !strcmp (desc, MCA_STR);}
   int counterType()	{return sdiType() && 
 				 !strncmp (type(), COUNTER_STR, 1);}
   int digitalType()	{return sdiType() && 
@@ -119,6 +120,8 @@ public:
   int gpsTans2Type()	{return !strcmp (desc, GPS_TRIM_STR) || 
                                  !strcmp (desc, GPS_TANS2_STR);}
   int gpsTans3Type()	{return !strcmp (desc, GPS_TANS3_STR);}
+  int garminType()	{return !strcmp (desc, GPS_GARMIN_STR);}
+  int cmigits3Type()	{return !strcmp (desc, CMIGITS3_STR);}
   int greyhType()	{return !strcmp (desc, GREYVMEH_STR);}
   int hwGpsType()	{return !strcmp (desc, HW_GPS_STR);}
   int hdrType()		{return !strcmp (desc, HDR_STR);}

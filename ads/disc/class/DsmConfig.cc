@@ -40,11 +40,11 @@ DsmConfig::DsmConfig ()
     readConfigLines();
     closeConfig();
   }
-  else {
 #ifndef VXWORKS
+  else {
     exit (ERROR);		// fatal error in the non-DSM environment
-#endif
   }
+#endif
 
   stand_alone = FALSE;
   firstDsm();
@@ -137,16 +137,17 @@ extern BOOT_PARAMS sysBootParams;
   (void)sprintf(tstr, "%s/hosts/%s/dsmconfig", getenv("PROJ_DIR"), t1str);
 #endif
  
-  printf ("config file = %s\n", tstr);
+  printf("config file = [%s]\n", tstr);
 
-  if (!(int)(fp = fopen (tstr, "r"))) {
+  if ((fp = fopen (tstr, "r")) == NULL) {
     perror ("DsmConfig: fopen");
     return ERROR;
   }
+
   return OK;
 }
+
 /*****************************************************************************/
- 
 void DsmConfig::readHeaderName ()
  
 // Reads the header path name from the the config file.
