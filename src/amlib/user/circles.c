@@ -36,7 +36,7 @@ static NR_TYPE  heading,      /* Current heading shoud be    */
                 thdgAccum,     /* Distance of circumference covered  */
                 Circles[MAX_CIRCLE], circleSize;
 /*  Values from /home/local/proj/defaults/Defaults on 29 April 1998  RLR  */
-static NR_TYPE  Mins[MAX_CIRCLE] = {40, 50, 60};
+static NR_TYPE  Minutes[MAX_CIRCLE] = {40, 50, 60};
 
 /* -------------------------------------------------------------------- */
 void initCircles(DERTBL *varp)
@@ -47,13 +47,12 @@ void initCircles(DERTBL *varp)
 
   if ((tmp = GetDefaultsValue("CIRCLES", varp->name)) == NULL)
   {
-    mins = Mins;
+    mins = Minutes;
     sprintf(buffer, "Values set to %f, %f, %f in AMLIB function initCircles.\n", mins[0], mins[1], mins[2]);
     LogMessage(buffer);
   }
   else
     mins = tmp;
-/*  mins = GetDefaultsValue("CIRCLES", varp->name);  <-- original code */
 
   for (i = 0; i < MAX_CIRCLE; ++i)
     Circles[i] = 360.0 / (mins[i] * 60.0);
@@ -64,22 +63,6 @@ void initCircles(DERTBL *varp)
 void ResetCircle(int num)
 {
   reset = TRUE;
-
-/* For DYCOMS II only, remove later.
- */
-{
-char tbuf[128];
-int i1, i2, i3;
-FILE *fp = fopen("/home/local/proj/circle", "r");
-
-fscanf(fp, "%d %d %d", &i1, &i2, &i3);
-Circles[0] = 360.0 / (i1 * 60);
-Circles[1] = 360.0 / (i2 * 60);
-Circles[2] = 360.0 / (i3 * 60);
-
-fclose(fp);
-}
-
   circleSize = Circles[num];
 
 }  /* END RESETCIRCLE */
