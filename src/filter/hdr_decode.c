@@ -726,6 +726,13 @@ static void initSDI(char vn[])
   if (strcmp(vn, "PSFD2") == 0 && strcmp(type, ADS_TYPE_1_STR) == 0)
     return;
 
+  /* Rename analog TEO3C to TEO3.  Naming mistake by ProjMgmt/Campos.
+   */
+  if (strcmp(vn, "TEO3C") == 0)
+    {
+    LogMessage("Analog TEO3C being renamed to TEO3.\n");
+    strcpy(vn, "TEO3");
+    }
 
   /* By placing an SDI variable into the 'deriveftns[]' list
    * (ninc/amlib.fns) the variable will automatically be placed
