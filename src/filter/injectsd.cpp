@@ -67,253 +67,231 @@ int SyntheticData::InitSynth(std::string k)
 int SyntheticData::InitSynth(char* tt)
 {
 //this function should probably check to file format ???
- std::string temporary=tt;
-    f.open(tt);  
-   if(f.is_open())
-     {
-       
-       SDF=true;
-      f>>tf;     //reads the label time
+  std::string temporary=tt;
+  f.open(tt);  
+  if (f.is_open())
+    {
+    SDF=true;
+    f>>tf;     //reads the label time
 
-      temp=f.get();   //get the space after time
+    temp=f.get();   //get the space after time
       
-      /*************get the variable names and stores them in the array names*********************/
-    
-      while(temp==' ')       //checks to see if a newline has been reached
-	{
-	  f>>tempv.name;
-	  varnames.push_back(tempv);
-	  varcount++;
-	    temp=f.get();
-	}
+    /* get the variable names and stores them in the array names
+     */
+    while (temp==' ')       //checks to see if a newline has been reached
+      {
+      f>>tempv.name;
+      varnames.push_back(tempv);
+      varcount++;
+      temp=f.get();
+      }
     
     //end get variable names code
 
-    /*******************************/
-
-    for(int i=0;i<varcount;i++)
+    for (int i=0;i<varcount;i++)
       {
-       
-	indexs=SearchTable(sdi,varnames[i].name.c_str());    //find the variables location in the appropriate table      
-	indexr=SearchTable(raw,varnames[i].name.c_str());
+      indexs=SearchTable(sdi,varnames[i].name.c_str());    //find the variables location in the appropriate table      
+      indexr=SearchTable(raw,varnames[i].name.c_str());
 
-
-	if(!((indexs==-1)||(indexs==ERR)))
-	  {
-	    sdi[indexs]->DataQuality="synthetic";                           //changes the data quality flg
-	    sdi[indexs]->Dirty=true;
-	    sdi[indexs]->synthtype=sy_file;
-	    st.push_back(sdi[indexs]);    //push it on to the sditable pointer vector 
-	    varnames[i].type='s';
-	    varnames[i].index=is;        //keep track of it's locationin the sdi vector
-	    is++;                        //increment the  index counter
-	    FillListWidget();
-	  }
-	else if(!((indexr==-1)||(indexr==ERR)))
-	  {
-	    raw[indexr]->DataQuality="synthetic";
-	    raw[indexr]->Dirty=true;
-	    raw[indexr]->synthtype=sy_file;
-	    rt.push_back(raw[indexr]);      //push the variable on to the rawtable pointer vector
-	    varnames[i].type='r';
-	    varnames[i].index=ir;          //keep track of it's location in the raw  vectors 
-	    ir++;                          //increment the index counter
-	    FillListWidget();
-	   }
-	else
-	  {
-	    //variable not found 
-	  }
+      if (!((indexs==-1)||(indexs==ERR)))
+        {
+        sdi[indexs]->DataQuality="synthetic";                           //changes the data quality flg
+        sdi[indexs]->Dirty=true;
+        sdi[indexs]->synthtype=sy_file;
+        st.push_back(sdi[indexs]);    //push it on to the sditable pointer vector 
+        varnames[i].type='s';
+        varnames[i].index=is;        //keep track of it's locationin the sdi vector
+        is++;                        //increment the  index counter
+        FillListWidget();
+        }
+      else if(!((indexr==-1)||(indexr==ERR)))
+        {
+        raw[indexr]->DataQuality="Synthetic";
+        raw[indexr]->Dirty=true;
+        raw[indexr]->synthtype=sy_file;
+        rt.push_back(raw[indexr]);      //push the variable on to the rawtable pointer vector
+        varnames[i].type='r';
+        varnames[i].index=ir;          //keep track of it's location in the raw  vectors 
+        ir++;                          //increment the index counter
+        FillListWidget();
+        }
+      else
+        {
+        printf("injectsd: Variable not found.\n");
+        }
       }
   
-    /********************************/
-   
- SynthData=true;
-     }
-   else
-     {
-       std::cout<<"A valid file name was not entered."<<std::endl;
-   f.close();
-   return 0;
-     }
-return 1;
+    SynthData=true;
+    }
+  else
+    {
+    std::cout<<"A valid file name was not entered."<<std::endl;
+    f.close();
+    return 0;
+    }
+
+  return 1;
 }
 
 
 
 void SyntheticData::ReadLine()
 {
-  if(!(f.eof()))
+  if (!(f.eof()))
   {
-             // read the time stamp   
-             f>>dummy;
+    // read the time stamp   
+    f>>dummy;
 	    
-	     if(dummy.size()==8)  //not a hirate
-	     {
-	     timestamp=(dummy[0]-48)*36000;
-	     timestamp+=(dummy[1]-48)*3600;
-	     timestamp+=(dummy[3]-48)*600;  //index 2 is skipped b/c it's the ":"  
-	     timestamp+=(dummy[4]-48)*60; 
-	     timestamp+=(dummy[6]-48)*10;  //index 5 is skipped b/c it is the ":"
-	     timestamp+=(dummy[7]-48);
-	     }
-	     if(dummy.size()==10)  // hirate ie 12:23:36:0
-	     {
-	     timestamp=(dummy[0]-48)*36000;
-	     timestamp+=(dummy[1]-48)*3600;
-	     timestamp+=(dummy[3]-48)*600;  //index 2 is skipped b/c it's the ":"  
-	     timestamp+=(dummy[4]-48)*60; 
-	     timestamp+=(dummy[6]-48)*10;  //index 5 is skipped b/c it is the ":"
-	     timestamp+=(dummy[7]-48);
-	     timestamp+=(float)((dummy[9]-48)/1000.00);
-	     }
-	     if(dummy.size()==11)
-	     {
-	     timestamp=(dummy[0]-48)*36000;
-	     timestamp+=(dummy[1]-48)*3600;
-	     timestamp+=(dummy[3]-48)*600;  //index 2 is skipped b/c it's the ":"  
-	     timestamp+=(dummy[4]-48)*60; 
-	     timestamp+=(dummy[6]-48)*10;  //index 5 is skipped b/c it is the ":"
-	     timestamp+=(dummy[7]-48);
-	     timestamp+=(float)(((dummy[9]-48)*10)+(dummy[10]-48))/1000.00;
-	     }
-	      if(dummy.size()==12)
-	     {
-	     timestamp=(dummy[0]-48)*36000;
-	     timestamp+=(dummy[1]-48)*3600;
-	     timestamp+=(dummy[3]-48)*600;  //index 2 is skipped b/c it's the ":"  
-	     timestamp+=(dummy[4]-48)*60; 
-	     timestamp+=(dummy[6]-48)*10;  //index 5 is skipped b/c it is the ":"
-	     timestamp+=(dummy[7]-48);
-	     timestamp+=(float)(((dummy[9]-48)*100)+((dummy[10]-48)*10)+(dummy[11]-48))/1000.00;
-	     }
-
-	     //**  finished reading the timestamp
-	     
-	  
-	     for (int i=0;i<varcount;i++)
-	       {
-		 f>>varnames[i].value;
-	       }
-     }
-     else
+    if(dummy.size()==8)  //not a hirate
       {
-         f.close();
+      timestamp=(dummy[0]-48)*36000;
+      timestamp+=(dummy[1]-48)*3600;
+      timestamp+=(dummy[3]-48)*600;  //index 2 is skipped b/c it's the ":"  
+      timestamp+=(dummy[4]-48)*60; 
+      timestamp+=(dummy[6]-48)*10;  //index 5 is skipped b/c it is the ":"
+      timestamp+=(dummy[7]-48);
       }
+    if(dummy.size()==10)  // hirate ie 12:23:36:0
+      {
+      timestamp=(dummy[0]-48)*36000;
+      timestamp+=(dummy[1]-48)*3600;
+      timestamp+=(dummy[3]-48)*600;  //index 2 is skipped b/c it's the ":"  
+      timestamp+=(dummy[4]-48)*60; 
+      timestamp+=(dummy[6]-48)*10;  //index 5 is skipped b/c it is the ":"
+      timestamp+=(dummy[7]-48);
+      timestamp+=(float)((dummy[9]-48)/1000.00);
+      }
+    if(dummy.size()==11)
+      {
+      timestamp=(dummy[0]-48)*36000;
+      timestamp+=(dummy[1]-48)*3600;
+      timestamp+=(dummy[3]-48)*600;  //index 2 is skipped b/c it's the ":"  
+      timestamp+=(dummy[4]-48)*60; 
+      timestamp+=(dummy[6]-48)*10;  //index 5 is skipped b/c it is the ":"
+      timestamp+=(dummy[7]-48);
+      timestamp+=(float)(((dummy[9]-48)*10)+(dummy[10]-48))/1000.00;
+      }
+    if(dummy.size()==12)
+      {
+      timestamp=(dummy[0]-48)*36000;
+      timestamp+=(dummy[1]-48)*3600;
+      timestamp+=(dummy[3]-48)*600;  //index 2 is skipped b/c it's the ":"  
+      timestamp+=(dummy[4]-48)*60; 
+      timestamp+=(dummy[6]-48)*10;  //index 5 is skipped b/c it is the ":"
+      timestamp+=(dummy[7]-48);
+      timestamp+=(float)(((dummy[9]-48)*100)+((dummy[10]-48)*10)+(dummy[11]-48))/1000.00;
+      }
+      
+    //  finished reading the timestamp
+    for (int i=0;i<varcount;i++)
+      {
+      f>>varnames[i].value;
+      }
+    }
+  else
+    f.close();
 
 }
 
 
 void SyntheticData::CheckTime()
 {
-
-  if(!f.eof())
+  if (!f.eof())
     {
- 
-       if(passedtime>timestamp)    //read until the times match or you've gotten to the end of the synthetic data file;
+    if (passedtime>timestamp)
+    //read until the times match or you've gotten to the end of the synthetic data file;
+      {
+      ReadLine();
+      CheckTime();
+      }
+    else if(passedtime<timestamp)  //
+      {
+      //do nothing, don't read from the synth data file, give passed time a chance to catch up
+      }
+    else if(passedtime==timestamp)
+      {
+      Inject();
+      if(ProcessingRate==HIGH_RATE)
         {
-         ReadLine();
-         CheckTime();
+        ReadhrLine();
         }
-        else if(passedtime<timestamp)  //
-        {
-         //do nothing, don't read from the synth data file, give passed time a chance to catch up
-        }
-        else if(passedtime==timestamp)
-	  {
-	    Inject();
-	    if(ProcessingRate==HIGH_RATE)
-	      {
-		ReadhrLine();
-	      }
-	  }
-     }
- 
+      }
+    }
 }
 
 void SyntheticData::Inject()
 {
-temptallyfunc=new float[varcount] ;
+  temptallyfunc=new float[varcount] ;
 
- for(int f=0;f<varcount;f++)
-   {
-     temptallyfunc[f]=0;
-   }
+ for (int f=0;f<varcount;f++)
+   temptallyfunc[f]=0;
 
 
-    for(int i=0;i<varcount;i++)
+  for (int i=0;i<varcount;i++)
+    {
+    if (varnames[i].type=='s')
       {
+      SetAverageData('s',varnames[i].index,varnames[i].value);
 
-      if(varnames[i].type=='s')
-       {
-	 SetAverageData('s',varnames[i].index,varnames[i].value);
-
-	if(ProcessingRate==HIGH_RATE)
-	  {
-	   temptallyfunc[i]+=varnames[i].value; 
+      if (ProcessingRate==HIGH_RATE)
+        {
+        temptallyfunc[i]+=varnames[i].value; 
 	   
-	   SetHighData('s',varnames[i].index,0,varnames[i].value);
+        SetHighData('s',varnames[i].index,0,varnames[i].value);
 	  
-	      if (st[varnames[i].index]->OutputRate ==st[varnames[i].index]->SampleRate)
-		 {
-		  SetSampleData('s',varnames[i].index,0,varnames[i].value);
-		 }
-	  }
-       }
-       if(varnames[i].type=='r')
-       {
-	 SetAverageData('r',varnames[i].index,varnames[i].value);
-	
-	if(ProcessingRate==HIGH_RATE)
-	  {
-	    temptallyfunc[i]+=varnames[i].value;
-	   
-	     
-	    SetHighData('r',varnames[i].index,0,varnames[i].value);
-	   
-
-	     if (rt[varnames[i].index]->OutputRate ==rt[varnames[i].index]->SampleRate)
-		 {
-		   SetSampleData('r',varnames[i].index,0,varnames[i].value);
-		 }
-
-	  }
-
-       }
+        if (st[varnames[i].index]->OutputRate ==st[varnames[i].index]->SampleRate)
+          {
+          SetSampleData('s',varnames[i].index,0,varnames[i].value);
+          }
+        }
       }
+    if (varnames[i].type=='r')
+      {
+      SetAverageData('r',varnames[i].index,varnames[i].value);
+	
+      if(ProcessingRate==HIGH_RATE)
+        {
+        temptallyfunc[i]+=varnames[i].value;
 
-    
+        SetHighData('r',varnames[i].index,0,varnames[i].value);
+
+        if (rt[varnames[i].index]->OutputRate ==rt[varnames[i].index]->SampleRate)
+          {
+          SetSampleData('r',varnames[i].index,0,varnames[i].value);
+          }
+        }
+      }
+    }
 }
-
 
 void SyntheticData:: registervar(struct v ttemp)
 {
- SynthData=true;
- SDC=true;
+  SynthData=true;
+  SDC=true;
  
- constvarnames.push_back(ttemp);
+  constvarnames.push_back(ttemp);
 
   if(ttemp.type=='s')
     {
-       indexs=SearchTable(sdi,ttemp.name.c_str()); 
-       sdi[indexs]->DataQuality="synthetic";
-       sdi[indexs]->Dirty=true;
-       FillListWidget();
-       sdi[indexs]->synthtype=sy_constant;
-       st.push_back(sdi[indexs]);
-       constvarnames[constcount].index=is;
-       is++;
+    indexs=SearchTable(sdi,ttemp.name.c_str()); 
+    sdi[indexs]->DataQuality="synthetic";
+    sdi[indexs]->Dirty=true;
+    FillListWidget();
+    sdi[indexs]->synthtype=sy_constant;
+    st.push_back(sdi[indexs]);
+    constvarnames[constcount].index=is;
+    is++;
     }
   if(ttemp.type=='r')
     {
-      indexr=SearchTable(raw,ttemp.name.c_str()); 
-      raw[indexr]->DataQuality="synthetic";
-      raw[indexr]->Dirty=true;
-      FillListWidget();
-      raw[indexr]->synthtype=sy_constant;
-      rt.push_back(raw[indexr]);
-      constvarnames[constcount].index=ir;
-      ir++;
+    indexr=SearchTable(raw,ttemp.name.c_str()); 
+    raw[indexr]->DataQuality="synthetic";
+    raw[indexr]->Dirty=true;
+    FillListWidget();
+    raw[indexr]->synthtype=sy_constant;
+    rt.push_back(raw[indexr]);
+    constvarnames[constcount].index=ir;
+    ir++;
     }
   constcount++;
 }
@@ -332,481 +310,474 @@ SyntheticData::SyntheticData()
 
 void SyntheticData::InjectConstants()
 {
+  for(int i=0;i<constcount;i++)
+    {
+    SDITBL * sp;
+    RAWTBL * rp;
 
- for(int i=0;i<constcount;i++)
-   {
-     SDITBL * sp;
-     RAWTBL * rp;
+    if (constvarnames[i].type=='s')
+      {
+      sp=st[constvarnames[i].index];
 
-      if(constvarnames[i].type=='s')
-	{
-	sp=st[constvarnames[i].index];
-
-	SetAverageData('s',constvarnames[i].index,constvarnames[i].value);
+      SetAverageData('s',constvarnames[i].index,constvarnames[i].value);
 	
-	if(ProcessingRate==HIGH_RATE)
-	  {
-	    for(int kk=0;kk<25;kk++)
-	      {
-	       SetHighData('s',constvarnames[i].index,kk,constvarnames[i].value);
-	       if ((sp->OutputRate ==25)&&(sp->SampleRate==25))
-	       {
-		 SetSampleData('s',constvarnames[i].index,kk,constvarnames[i].value); 
-	       }
-	       else if((sp->OutputRate==1)&&(sp->SampleRate==1))
-	      {
-	       SetSampleData('s',constvarnames[i].index,0,constvarnames[i].value);
-	      }
-	      }
-	    
-	  }
-	}
+      if(ProcessingRate==HIGH_RATE)
+        {
+        for(int kk=0;kk<25;kk++)
+          {
+          SetHighData('s',constvarnames[i].index,kk,constvarnames[i].value);
+          if ((sp->OutputRate ==25)&&(sp->SampleRate==25))
+            {
+            SetSampleData('s',constvarnames[i].index,kk,constvarnames[i].value); 
+            }
+          else if((sp->OutputRate==1)&&(sp->SampleRate==1))
+            {
+            SetSampleData('s',constvarnames[i].index,0,constvarnames[i].value);
+            }
+          }
+        }
+      }
    
-       if(constvarnames[i].type=='r')
-	 {
-	   rp=rt[constvarnames[i].index];
-	 SetAverageData('r',constvarnames[i].index,constvarnames[i].value);
+    if(constvarnames[i].type=='r')
+      {
+      rp=rt[constvarnames[i].index];
+      SetAverageData('r',constvarnames[i].index,constvarnames[i].value);
 
-	if(ProcessingRate==HIGH_RATE)
-	  {
-	    for(int kk=0;kk<25;kk++)
-	      {
-        	SetHighData('r',constvarnames[i].index,kk,constvarnames[i].value);	
-	      if ((rp->OutputRate ==25)&&( rp->SampleRate==25))
-		{
-		  SetSampleData('r',constvarnames[i].index,kk,constvarnames[i].value);
-		}
-	      else if((rp->OutputRate ==1)&&( rp->SampleRate==1))
-		{
-		  SetSampleData('r',constvarnames[i].index,0,constvarnames[i].value);
-		}
-	      }
-	  }
-	 }
-  
-   }
+      if(ProcessingRate==HIGH_RATE)
+        {
+        for(int kk=0;kk<25;kk++)
+          {
+          SetHighData('r',constvarnames[i].index,kk,constvarnames[i].value);	
+          if ((rp->OutputRate ==25)&&( rp->SampleRate==25))
+            {
+            SetSampleData('r',constvarnames[i].index,kk,constvarnames[i].value);
+            }
+          else if((rp->OutputRate ==1)&&( rp->SampleRate==1))
+            {
+            SetSampleData('r',constvarnames[i].index,0,constvarnames[i].value);
+            }
+          }
+        }
+      }
+    }
 }
 
 
 void SyntheticData::InjectFunctions()
 {
-float dummyfloat,df;
+  float dummyfloat,df;
   temptally=0;
- for(int i=0;i<funccount;i++)
+  for(int i=0;i<funccount;i++)
     {
-      SDITBL *sp;
-      RAWTBL *rp;
-	  if(funcvarnames[i].function== "abs")
-	    {
-		if(funcvarnames[i].type=='s')
-		  {
-		    sp=st[funcvarnames[i].index];
-		    if (ProcessingRate==HIGH_RATE)
-		      {
-			for(int a=0;a<25;a++)
-			  {
-			    dummyfloat=fabs(GetValue('h','s',funcvarnames[i].index,a));
-			    SetHighData('s',funcvarnames[i].index,a,dummyfloat);
-			    temptally+=dummyfloat;
-			    if ((sp->OutputRate ==25)&&( sp->SampleRate==25))
-				  { df=fabs(GetValue('s','s',funcvarnames[i].index,a));
-				    SetSampleData('s',funcvarnames[i].index,a,df);
-				  }
-			    else if((sp->OutputRate==1) &&(sp->SampleRate==1))
-			      {
-				 df=fabs(GetValue('s','s',funcvarnames[i].index,0));
-				    SetSampleData('s',funcvarnames[i].index,0,df);
-			      }
-			  }
-			SetAverageData('s',funcvarnames[i].index,temptally/25.0);
-		      }
-		     else
-		     {
-		       dummyfloat=fabs(GetValue('a','s',funcvarnames[i].index,0));
-		       SetAverageData('s',funcvarnames[i].index,dummyfloat);
-		     }
-		  }
-		else  if(funcvarnames[i].type=='r')
-		  {
-		    rp=rt[funcvarnames[i].index];
-		    if(ProcessingRate==HIGH_RATE)
-		      {
-			 for(int a=0;a<25;a++)
-			  {
-			    dummyfloat=fabs(GetValue('h','r',funcvarnames[i].index,a));
-			    SetHighData('r',funcvarnames[i].index,a,dummyfloat);
-			    temptally+=dummyfloat;
-			    if ((rp->OutputRate==25)&&(rp->SampleRate==25))
-				  { df=fabs(GetValue('s','r',funcvarnames[i].index,a));
-				    SetSampleData('r',funcvarnames[i].index,a,df);
-				  }
-			    else  if((rp->OutputRate==1)&&(rp->SampleRate==1))
-				  { df=fabs(GetValue('s','r',funcvarnames[i].index,0));
-				    SetSampleData('r',funcvarnames[i].index,0,df);
-				  }
-			  }
-			 SetAverageData('r',funcvarnames[i].index,temptally/25.0);
+    SDITBL *sp;
+    RAWTBL *rp;
+    if(funcvarnames[i].function== "abs")
+      {
+      if(funcvarnames[i].type=='s')
+        {
+        sp=st[funcvarnames[i].index];
+        if (ProcessingRate==HIGH_RATE)
+          {
+          for(int a=0;a<25;a++)
+            {
+            dummyfloat=fabs(GetValue('h','s',funcvarnames[i].index,a));
+            SetHighData('s',funcvarnames[i].index,a,dummyfloat);
+            temptally+=dummyfloat;
+            if ((sp->OutputRate ==25)&&( sp->SampleRate==25))
+              {
+              df=fabs(GetValue('s','s',funcvarnames[i].index,a));
+              SetSampleData('s',funcvarnames[i].index,a,df);
+              }
+            else if((sp->OutputRate==1) &&(sp->SampleRate==1))
+              {
+              df=fabs(GetValue('s','s',funcvarnames[i].index,0));
+              SetSampleData('s',funcvarnames[i].index,0,df);
+              }
+            }
+          SetAverageData('s',funcvarnames[i].index,temptally/25.0);
+          }
+        else
+          {
+          dummyfloat=fabs(GetValue('a','s',funcvarnames[i].index,0));
+          SetAverageData('s',funcvarnames[i].index,dummyfloat);
+          }
+        }
+      else if(funcvarnames[i].type=='r')
+        {
+        rp=rt[funcvarnames[i].index];
+        if(ProcessingRate==HIGH_RATE)
+          {
+          for(int a=0;a<25;a++)
+            {
+            dummyfloat=fabs(GetValue('h','r',funcvarnames[i].index,a));
+            SetHighData('r',funcvarnames[i].index,a,dummyfloat);
+            temptally+=dummyfloat;
+            if ((rp->OutputRate==25)&&(rp->SampleRate==25))
+              {
+              df=fabs(GetValue('s','r',funcvarnames[i].index,a));
+              SetSampleData('r',funcvarnames[i].index,a,df);
+              }
+            else  if((rp->OutputRate==1)&&(rp->SampleRate==1))
+              {
+              df=fabs(GetValue('s','r',funcvarnames[i].index,0));
+              SetSampleData('r',funcvarnames[i].index,0,df);
+              }
+            }
+            SetAverageData('r',funcvarnames[i].index,temptally/25.0);
 
-		      }
-		    else
-		      {
-			 dummyfloat=fabs(GetValue('a','r',funcvarnames[i].index,0));
-			 SetAverageData('r',funcvarnames[i].index,dummyfloat);
-		      }
-		  }
-	     }//end if abs
-else if(funcvarnames[i].function== "acos")
-	    {
-	      
-	if(funcvarnames[i].type=='s')
-		  {
-		    sp=st[funcvarnames[i].index];
-		    if (ProcessingRate==HIGH_RATE)
-		      {
-			for(int a=0;a<25;a++)
-			  {
-			    dummyfloat=acos(GetValue('h','s',funcvarnames[i].index,a));
-			    SetHighData('s',funcvarnames[i].index,a,dummyfloat);
-			    temptally+=dummyfloat;
-			    if ((sp->OutputRate ==25)&&( sp->SampleRate==25))
-				  { df=acos(GetValue('s','s',funcvarnames[i].index,a));
-				    SetSampleData('s',funcvarnames[i].index,a,df);
-				  }
-			    else if((sp->OutputRate==1) &&(sp->SampleRate==1))
-			      {
-				 df=acos(GetValue('s','s',funcvarnames[i].index,0));
-				    SetSampleData('s',funcvarnames[i].index,0,df);
-			      }
-			  }
-			SetAverageData('s',funcvarnames[i].index,temptally/25.0);
-		      }
-		     else
-		     {
-		       dummyfloat=acos(GetValue('a','s',funcvarnames[i].index,0));
-		       SetAverageData('s',funcvarnames[i].index,dummyfloat);
-		     }
-		  }
-		else  if(funcvarnames[i].type=='r')
-		  {
-		    rp=rt[funcvarnames[i].index];
-		    if(ProcessingRate==HIGH_RATE)
-		      {
-			 for(int a=0;a<25;a++)
-			  {
-			    dummyfloat=acos(GetValue('h','r',funcvarnames[i].index,a));
-			    SetHighData('r',funcvarnames[i].index,a,dummyfloat);
-			    temptally+=dummyfloat;
-			    if ((rp->OutputRate==25)&&(rp->SampleRate==25))
-				  { df=acos(GetValue('s','r',funcvarnames[i].index,a));
-				    SetSampleData('r',funcvarnames[i].index,a,df);
-				  }
-			    else  if((rp->OutputRate==1)&&(rp->SampleRate==1))
-				  { df=acos(GetValue('s','r',funcvarnames[i].index,0));
-				    SetSampleData('r',funcvarnames[i].index,0,df);
-				  }
-			  }
-			 SetAverageData('r',funcvarnames[i].index,temptally/25.0);
-
-		      }
-		    else
-		      {
-			 dummyfloat=acos(GetValue('a','r',funcvarnames[i].index,0));
-			 SetAverageData('r',funcvarnames[i].index,dummyfloat);
-		      }
-		  }
-
-	      	
-	    }
-
- else if(funcvarnames[i].function=="asin")
-	    {
-	      
-	if(funcvarnames[i].type=='s')
-		  {
-		    sp=st[funcvarnames[i].index];
-		    if (ProcessingRate==HIGH_RATE)
-		      {
-			for(int a=0;a<25;a++)
-			  {
-			    dummyfloat=asin(GetValue('h','s',funcvarnames[i].index,a));
-			    SetHighData('s',funcvarnames[i].index,a,dummyfloat);
-			    temptally+=dummyfloat;
-			    if ((sp->OutputRate ==25)&&( sp->SampleRate==25))
-				  { df=asin(GetValue('s','s',funcvarnames[i].index,a));
-				    SetSampleData('s',funcvarnames[i].index,a,df);
-				  }
-			    else if((sp->OutputRate==1) &&(sp->SampleRate==1))
-			      {
-				 df=asin(GetValue('s','s',funcvarnames[i].index,0));
-				    SetSampleData('s',funcvarnames[i].index,0,df);
-			      }
-			  }
-			SetAverageData('s',funcvarnames[i].index,temptally/25.0);
-		      }
-		     else
-		     {
-		       dummyfloat=asin(GetValue('a','s',funcvarnames[i].index,0));
-		       SetAverageData('s',funcvarnames[i].index,dummyfloat);
-		     }
-		  }
-		else  if(funcvarnames[i].type=='r')
-		  {
-		    rp=rt[funcvarnames[i].index];
-		    if(ProcessingRate==HIGH_RATE)
-		      {
-			 for(int a=0;a<25;a++)
-			  {
-			    dummyfloat=asin(GetValue('h','r',funcvarnames[i].index,a));
-			    SetHighData('r',funcvarnames[i].index,a,dummyfloat);
-			    temptally+=dummyfloat;
-			    if ((rp->OutputRate==25)&&(rp->SampleRate==25))
-				  { df=asin(GetValue('s','r',funcvarnames[i].index,a));
-				    SetSampleData('r',funcvarnames[i].index,a,df);
-				  }
-			    else  if((rp->OutputRate==1)&&(rp->SampleRate==1))
-				  { df=asin(GetValue('s','r',funcvarnames[i].index,0));
-				    SetSampleData('r',funcvarnames[i].index,0,df);
-				  }
-			  }
-			 SetAverageData('r',funcvarnames[i].index,temptally/25.0);
-
-		      }
-		    else
-		      {
-			 dummyfloat=asin(GetValue('a','r',funcvarnames[i].index,0));
-			 SetAverageData('r',funcvarnames[i].index,dummyfloat);
-		      }
-		  }
-
-	      
-	     }
-	   else if(funcvarnames[i].function=="atan")
-	    {
-
-	     
-	if(funcvarnames[i].type=='s')
-		  {
-		    sp=st[funcvarnames[i].index];
-		    if (ProcessingRate==HIGH_RATE)
-		      {
-			for(int a=0;a<25;a++)
-			  {
-			    dummyfloat=atan(GetValue('h','s',funcvarnames[i].index,a));
-			    SetHighData('s',funcvarnames[i].index,a,dummyfloat);
-			    temptally+=dummyfloat;
-			    if ((sp->OutputRate ==25)&&( sp->SampleRate==25))
-				  { df=atan(GetValue('s','s',funcvarnames[i].index,a));
-				    SetSampleData('s',funcvarnames[i].index,a,df);
-				  }
-			    else if((sp->OutputRate==1) &&(sp->SampleRate==1))
-			      {
-				 df=atan(GetValue('s','s',funcvarnames[i].index,0));
-				    SetSampleData('s',funcvarnames[i].index,0,df);
-			      }
-			  }
-			SetAverageData('s',funcvarnames[i].index,temptally/25.0);
-		      }
-		     else
-		     {
-		       dummyfloat=atan(GetValue('a','s',funcvarnames[i].index,0));
-		       SetAverageData('s',funcvarnames[i].index,dummyfloat);
-		     }
-		  }
-		else  if(funcvarnames[i].type=='r')
-		  {
-		    rp=rt[funcvarnames[i].index];
-		    if(ProcessingRate==HIGH_RATE)
-		      {
-			 for(int a=0;a<25;a++)
-			  {
-			    dummyfloat=atan(GetValue('h','r',funcvarnames[i].index,a));
-			    SetHighData('r',funcvarnames[i].index,a,dummyfloat);
-			    temptally+=dummyfloat;
-			    if ((rp->OutputRate==25)&&(rp->SampleRate==25))
-				  { df=atan(GetValue('s','r',funcvarnames[i].index,a));
-				    SetSampleData('r',funcvarnames[i].index,a,df);
-				  }
-			    else  if((rp->OutputRate==1)&&(rp->SampleRate==1))
-				  { df=atan(GetValue('s','r',funcvarnames[i].index,0));
-				    SetSampleData('r',funcvarnames[i].index,0,df);
-				  }
-			  }
-			 SetAverageData('r',funcvarnames[i].index,temptally/25.0);
-
-		      }
-		    else
-		      {
-			 dummyfloat=atan(GetValue('a','r',funcvarnames[i].index,0));
-			 SetAverageData('r',funcvarnames[i].index,dummyfloat);
-		      }
-		  }
- 
-	
-	    }
-
-	    else if(funcvarnames[i].function=="ceil")
-	    {
-	      
-	if(funcvarnames[i].type=='s')
-		  {
-		    sp=st[funcvarnames[i].index];
-		    if (ProcessingRate==HIGH_RATE)
-		      {
-			for(int a=0;a<25;a++)
-			  {
-			    dummyfloat=ceil(GetValue('h','s',funcvarnames[i].index,a));
-			    SetHighData('s',funcvarnames[i].index,a,dummyfloat);
-			    temptally+=dummyfloat;
-			    if ((sp->OutputRate ==25)&&( sp->SampleRate==25))
-				  { df=ceil(GetValue('s','s',funcvarnames[i].index,a));
-				    SetSampleData('s',funcvarnames[i].index,a,df);
-				  }
-			    else if((sp->OutputRate==1) &&(sp->SampleRate==1))
-			      {
-				 df=ceil(GetValue('s','s',funcvarnames[i].index,0));
-				    SetSampleData('s',funcvarnames[i].index,0,df);
-			      }
-			  }
-			SetAverageData('s',funcvarnames[i].index,temptally/25.0);
-		      }
-		     else
-		     {
-		       dummyfloat=ceil(GetValue('a','s',funcvarnames[i].index,0));
-		       SetAverageData('s',funcvarnames[i].index,dummyfloat);
-		     }
-		  }
-		else  if(funcvarnames[i].type=='r')
-		  {
-		    rp=rt[funcvarnames[i].index];
-		    if(ProcessingRate==HIGH_RATE)
-		      {
-			 for(int a=0;a<25;a++)
-			  {
-			    dummyfloat=ceil(GetValue('h','r',funcvarnames[i].index,a));
-			    SetHighData('r',funcvarnames[i].index,a,dummyfloat);
-			    temptally+=dummyfloat;
-			    if ((rp->OutputRate==25)&&(rp->SampleRate==25))
-				  { df=ceil(GetValue('s','r',funcvarnames[i].index,a));
-				    SetSampleData('r',funcvarnames[i].index,a,df);
-				  }
-			    else  if((rp->OutputRate==1)&&(rp->SampleRate==1))
-				  { df=ceil(GetValue('s','r',funcvarnames[i].index,0));
-				    SetSampleData('r',funcvarnames[i].index,0,df);
-				  }
-			  }
-			 SetAverageData('r',funcvarnames[i].index,temptally/25.0);
-
-		      }
-		    else
-		      {
-			 dummyfloat=ceil(GetValue('a','r',funcvarnames[i].index,0));
-			 SetAverageData('r',funcvarnames[i].index,dummyfloat);
-		      }
-		  }
-
-	
-	    }
-	  else if(funcvarnames[i].function=="cos")
-	    {
-	      
-	if(funcvarnames[i].type=='s')
-		  {
-		    sp=st[funcvarnames[i].index];
-		    if (ProcessingRate==HIGH_RATE)
-		      {
-			for(int a=0;a<25;a++)
-			  {
-			    dummyfloat=cos(GetValue('h','s',funcvarnames[i].index,a));
-			    SetHighData('s',funcvarnames[i].index,a,dummyfloat);
-			    temptally+=dummyfloat;
-			    if ((sp->OutputRate ==25)&&( sp->SampleRate==25))
-				  { df=cos(GetValue('s','s',funcvarnames[i].index,a));
-				    SetSampleData('s',funcvarnames[i].index,a,df);
-				  }
-			    else if((sp->OutputRate==1) &&(sp->SampleRate==1))
-			      {
-				 df=cos(GetValue('s','s',funcvarnames[i].index,0));
-				    SetSampleData('s',funcvarnames[i].index,0,df);
-			      }
-			  }
-			SetAverageData('s',funcvarnames[i].index,temptally/25.0);
-		      }
-		     else
-		     {
-		       dummyfloat=cos(GetValue('a','s',funcvarnames[i].index,0));
-		       SetAverageData('s',funcvarnames[i].index,dummyfloat);
-		     }
-		  }
-		else  if(funcvarnames[i].type=='r')
-		  {
-		    rp=rt[funcvarnames[i].index];
-		    if(ProcessingRate==HIGH_RATE)
-		      {
-			 for(int a=0;a<25;a++)
-			  {
-			    dummyfloat=cos(GetValue('h','r',funcvarnames[i].index,a));
-			    SetHighData('r',funcvarnames[i].index,a,dummyfloat);
-			    temptally+=dummyfloat;
-			    if ((rp->OutputRate==25)&&(rp->SampleRate==25))
-				  { df=cos(GetValue('s','r',funcvarnames[i].index,a));
-				    SetSampleData('r',funcvarnames[i].index,a,df);
-				  }
-			    else  if((rp->OutputRate==1)&&(rp->SampleRate==1))
-				  { df=cos(GetValue('s','r',funcvarnames[i].index,0));
-				    SetSampleData('r',funcvarnames[i].index,0,df);
-				  }
-			  }
-			 SetAverageData('r',funcvarnames[i].index,temptally/25.0);
-
-		      }
-		    else
-		      {
-			 dummyfloat=cos(GetValue('a','r',funcvarnames[i].index,0));
-			 SetAverageData('r',funcvarnames[i].index,dummyfloat);
-		      }
-		  }
-
-	      
-	     }
-	  else if(funcvarnames[i].function== "cosh")
-	    {
-	      	if(funcvarnames[i].type=='s')
-		  {
-		    sp=st[funcvarnames[i].index];
-		    if (ProcessingRate==HIGH_RATE)
-		      {
-			for(int a=0;a<25;a++)
-			  {
-			    dummyfloat=cosh(GetValue('h','s',funcvarnames[i].index,a));
-			    SetHighData('s',funcvarnames[i].index,a,dummyfloat);
-			    temptally+=dummyfloat;
-			    if ((sp->OutputRate ==25)&&( sp->SampleRate==25))
-				  { df=cosh(GetValue('s','s',funcvarnames[i].index,a));
-				    SetSampleData('s',funcvarnames[i].index,a,df);
-				  }
-			    else if((sp->OutputRate==1) &&(sp->SampleRate==1))
-			      {
-				 df=cosh(GetValue('s','s',funcvarnames[i].index,0));
-				    SetSampleData('s',funcvarnames[i].index,0,df);
-			      }
-			  }
-			SetAverageData('s',funcvarnames[i].index,temptally/25.0);
-		      }
-		     else
-		     {
-		       dummyfloat=cosh(GetValue('a','s',funcvarnames[i].index,0));
-		       SetAverageData('s',funcvarnames[i].index,dummyfloat);
-		     }
-		  }
-		else  if(funcvarnames[i].type=='r')
-		  {
-		    rp=rt[funcvarnames[i].index];
-		    if(ProcessingRate==HIGH_RATE)
-		      {
-			 for(int a=0;a<25;a++)
-			  {
-			    dummyfloat=cosh(GetValue('h','r',funcvarnames[i].index,a));
-			    SetHighData('r',funcvarnames[i].index,a,dummyfloat);
+          }
+        else
+          {
+          dummyfloat=fabs(GetValue('a','r',funcvarnames[i].index,0));
+          SetAverageData('r',funcvarnames[i].index,dummyfloat);
+          }
+        }
+      } //end if abs
+    else if(funcvarnames[i].function== "acos")
+      {
+      if(funcvarnames[i].type=='s')
+        {
+        sp=st[funcvarnames[i].index];
+        if (ProcessingRate==HIGH_RATE)
+          {
+          for(int a=0;a<25;a++)
+            {
+            dummyfloat=acos(GetValue('h','s',funcvarnames[i].index,a));
+            SetHighData('s',funcvarnames[i].index,a,dummyfloat);
+            temptally+=dummyfloat;
+            if ((sp->OutputRate ==25)&&( sp->SampleRate==25))
+              {
+              df=acos(GetValue('s','s',funcvarnames[i].index,a));
+              SetSampleData('s',funcvarnames[i].index,a,df);
+              }
+            else if((sp->OutputRate==1) &&(sp->SampleRate==1))
+              {
+              df=acos(GetValue('s','s',funcvarnames[i].index,0));
+              SetSampleData('s',funcvarnames[i].index,0,df);
+              }
+            }
+          SetAverageData('s',funcvarnames[i].index,temptally/25.0);
+          }
+        else
+          {
+          dummyfloat=acos(GetValue('a','s',funcvarnames[i].index,0));
+          SetAverageData('s',funcvarnames[i].index,dummyfloat);
+          }
+        }
+      else  if(funcvarnames[i].type=='r')
+        {
+        rp=rt[funcvarnames[i].index];
+        if(ProcessingRate==HIGH_RATE)
+          {
+          for(int a=0;a<25;a++)
+            {
+            dummyfloat=acos(GetValue('h','r',funcvarnames[i].index,a));
+            SetHighData('r',funcvarnames[i].index,a,dummyfloat);
+            temptally+=dummyfloat;
+            if ((rp->OutputRate==25)&&(rp->SampleRate==25))
+              {
+              df=acos(GetValue('s','r',funcvarnames[i].index,a));
+              SetSampleData('r',funcvarnames[i].index,a,df);
+              }
+            else  if((rp->OutputRate==1)&&(rp->SampleRate==1))
+              {
+              df=acos(GetValue('s','r',funcvarnames[i].index,0));
+              SetSampleData('r',funcvarnames[i].index,0,df);
+              }
+            }
+          SetAverageData('r',funcvarnames[i].index,temptally/25.0);
+          }
+        else
+          {
+          dummyfloat=acos(GetValue('a','r',funcvarnames[i].index,0));
+          SetAverageData('r',funcvarnames[i].index,dummyfloat);
+          }
+        }
+      }
+    else if(funcvarnames[i].function=="asin")
+      {
+      if(funcvarnames[i].type=='s')
+        {
+        sp=st[funcvarnames[i].index];
+        if (ProcessingRate==HIGH_RATE)
+          {
+          for(int a=0;a<25;a++)
+            {
+            dummyfloat=asin(GetValue('h','s',funcvarnames[i].index,a));
+            SetHighData('s',funcvarnames[i].index,a,dummyfloat);
+            temptally+=dummyfloat;
+            if ((sp->OutputRate ==25)&&( sp->SampleRate==25))
+              {
+              df=asin(GetValue('s','s',funcvarnames[i].index,a));
+              SetSampleData('s',funcvarnames[i].index,a,df);
+              }
+            else if((sp->OutputRate==1) &&(sp->SampleRate==1))
+              {
+              df=asin(GetValue('s','s',funcvarnames[i].index,0));
+              SetSampleData('s',funcvarnames[i].index,0,df);
+              }
+            }
+          SetAverageData('s',funcvarnames[i].index,temptally/25.0);
+          }
+        else
+          {
+          dummyfloat=asin(GetValue('a','s',funcvarnames[i].index,0));
+          SetAverageData('s',funcvarnames[i].index,dummyfloat);
+          }
+        }
+      else  if(funcvarnames[i].type=='r')
+        {
+        rp=rt[funcvarnames[i].index];
+        if(ProcessingRate==HIGH_RATE)
+          {
+          for(int a=0;a<25;a++)
+            {
+            dummyfloat=asin(GetValue('h','r',funcvarnames[i].index,a));
+            SetHighData('r',funcvarnames[i].index,a,dummyfloat);
+            temptally+=dummyfloat;
+            if ((rp->OutputRate==25)&&(rp->SampleRate==25))
+              {
+              df=asin(GetValue('s','r',funcvarnames[i].index,a));
+              SetSampleData('r',funcvarnames[i].index,a,df);
+              }
+            else  if((rp->OutputRate==1)&&(rp->SampleRate==1))
+              {
+              df=asin(GetValue('s','r',funcvarnames[i].index,0));
+              SetSampleData('r',funcvarnames[i].index,0,df);
+              }
+            }
+          SetAverageData('r',funcvarnames[i].index,temptally/25.0);
+          }
+        else
+          {
+          dummyfloat=asin(GetValue('a','r',funcvarnames[i].index,0));
+          SetAverageData('r',funcvarnames[i].index,dummyfloat);
+          }
+        }
+      }
+    else if(funcvarnames[i].function=="atan")
+      {
+      if(funcvarnames[i].type=='s')
+        {
+        sp=st[funcvarnames[i].index];
+        if (ProcessingRate==HIGH_RATE)
+          {
+          for(int a=0;a<25;a++)
+            {
+            dummyfloat=atan(GetValue('h','s',funcvarnames[i].index,a));
+            SetHighData('s',funcvarnames[i].index,a,dummyfloat);
+            temptally+=dummyfloat;
+            if ((sp->OutputRate ==25)&&( sp->SampleRate==25))
+              {
+              df=atan(GetValue('s','s',funcvarnames[i].index,a));
+              SetSampleData('s',funcvarnames[i].index,a,df);
+              }
+            else if((sp->OutputRate==1) &&(sp->SampleRate==1))
+              {
+              df=atan(GetValue('s','s',funcvarnames[i].index,0));
+              SetSampleData('s',funcvarnames[i].index,0,df);
+              }
+            }
+          SetAverageData('s',funcvarnames[i].index,temptally/25.0);
+          }
+        else
+          {
+          dummyfloat=atan(GetValue('a','s',funcvarnames[i].index,0));
+          SetAverageData('s',funcvarnames[i].index,dummyfloat);
+          }
+        }
+      else  if(funcvarnames[i].type=='r')
+        {
+        rp=rt[funcvarnames[i].index];
+        if(ProcessingRate==HIGH_RATE)
+          {
+          for(int a=0;a<25;a++)
+            {
+            dummyfloat=atan(GetValue('h','r',funcvarnames[i].index,a));
+            SetHighData('r',funcvarnames[i].index,a,dummyfloat);
+            temptally+=dummyfloat;
+            if ((rp->OutputRate==25)&&(rp->SampleRate==25))
+              {
+              df=atan(GetValue('s','r',funcvarnames[i].index,a));
+              SetSampleData('r',funcvarnames[i].index,a,df);
+              }
+            else  if((rp->OutputRate==1)&&(rp->SampleRate==1))
+              {
+              df=atan(GetValue('s','r',funcvarnames[i].index,0));
+              SetSampleData('r',funcvarnames[i].index,0,df);
+              }
+            }
+          SetAverageData('r',funcvarnames[i].index,temptally/25.0);
+          }
+        else
+          {
+          dummyfloat=atan(GetValue('a','r',funcvarnames[i].index,0));
+          SetAverageData('r',funcvarnames[i].index,dummyfloat);
+          }
+        }
+      }
+    else if(funcvarnames[i].function=="ceil")
+      {
+      if(funcvarnames[i].type=='s')
+        {
+        sp=st[funcvarnames[i].index];
+        if (ProcessingRate==HIGH_RATE)
+          {
+          for(int a=0;a<25;a++)
+            {
+            dummyfloat=ceil(GetValue('h','s',funcvarnames[i].index,a));
+            SetHighData('s',funcvarnames[i].index,a,dummyfloat);
+            temptally+=dummyfloat;
+            if ((sp->OutputRate ==25)&&( sp->SampleRate==25))
+              {
+              df=ceil(GetValue('s','s',funcvarnames[i].index,a));
+              SetSampleData('s',funcvarnames[i].index,a,df);
+              }
+            else if((sp->OutputRate==1) &&(sp->SampleRate==1))
+              {
+              df=ceil(GetValue('s','s',funcvarnames[i].index,0));
+              SetSampleData('s',funcvarnames[i].index,0,df);
+              }
+            }
+          SetAverageData('s',funcvarnames[i].index,temptally/25.0);
+          }
+        else
+          {
+          dummyfloat=ceil(GetValue('a','s',funcvarnames[i].index,0));
+          SetAverageData('s',funcvarnames[i].index,dummyfloat);
+          }
+        }
+      else  if(funcvarnames[i].type=='r')
+        {
+        rp=rt[funcvarnames[i].index];
+        if(ProcessingRate==HIGH_RATE)
+          {
+          for(int a=0;a<25;a++)
+            {
+            dummyfloat=ceil(GetValue('h','r',funcvarnames[i].index,a));
+            SetHighData('r',funcvarnames[i].index,a,dummyfloat);
+            temptally+=dummyfloat;
+            if ((rp->OutputRate==25)&&(rp->SampleRate==25))
+              {
+              df=ceil(GetValue('s','r',funcvarnames[i].index,a));
+              SetSampleData('r',funcvarnames[i].index,a,df);
+              }
+            else  if((rp->OutputRate==1)&&(rp->SampleRate==1))
+              {
+              df=ceil(GetValue('s','r',funcvarnames[i].index,0));
+              SetSampleData('r',funcvarnames[i].index,0,df);
+              }
+            }
+            SetAverageData('r',funcvarnames[i].index,temptally/25.0);
+          }
+        else
+          {
+          dummyfloat=ceil(GetValue('a','r',funcvarnames[i].index,0));
+          SetAverageData('r',funcvarnames[i].index,dummyfloat);
+          }
+        }
+      }
+    else if(funcvarnames[i].function=="cos")
+      {
+      if(funcvarnames[i].type=='s')
+        {
+        sp=st[funcvarnames[i].index];
+        if (ProcessingRate==HIGH_RATE)
+          {
+          for(int a=0;a<25;a++)
+            {
+            dummyfloat=cos(GetValue('h','s',funcvarnames[i].index,a));
+            SetHighData('s',funcvarnames[i].index,a,dummyfloat);
+            temptally+=dummyfloat;
+            if ((sp->OutputRate ==25)&&( sp->SampleRate==25))
+              {
+              df=cos(GetValue('s','s',funcvarnames[i].index,a));
+              SetSampleData('s',funcvarnames[i].index,a,df);
+              }
+            else if((sp->OutputRate==1) &&(sp->SampleRate==1))
+              {
+              df=cos(GetValue('s','s',funcvarnames[i].index,0));
+              SetSampleData('s',funcvarnames[i].index,0,df);
+              }
+            }
+          SetAverageData('s',funcvarnames[i].index,temptally/25.0);
+          }
+        else
+          {
+          dummyfloat=cos(GetValue('a','s',funcvarnames[i].index,0));
+          SetAverageData('s',funcvarnames[i].index,dummyfloat);
+          }
+        }
+      else  if(funcvarnames[i].type=='r')
+        {
+        rp=rt[funcvarnames[i].index];
+        if(ProcessingRate==HIGH_RATE)
+          {
+          for(int a=0;a<25;a++)
+            {
+            dummyfloat=cos(GetValue('h','r',funcvarnames[i].index,a));
+            SetHighData('r',funcvarnames[i].index,a,dummyfloat);
+            temptally+=dummyfloat;
+            if ((rp->OutputRate==25)&&(rp->SampleRate==25))
+              {
+              df=cos(GetValue('s','r',funcvarnames[i].index,a));
+              SetSampleData('r',funcvarnames[i].index,a,df);
+              }
+            else  if((rp->OutputRate==1)&&(rp->SampleRate==1))
+              {
+              df=cos(GetValue('s','r',funcvarnames[i].index,0));
+              SetSampleData('r',funcvarnames[i].index,0,df);
+              }
+            }
+          SetAverageData('r',funcvarnames[i].index,temptally/25.0);
+          }
+        else
+          {
+          dummyfloat=cos(GetValue('a','r',funcvarnames[i].index,0));
+          SetAverageData('r',funcvarnames[i].index,dummyfloat);
+          }
+        }
+      }
+    else if(funcvarnames[i].function== "cosh")
+      {
+      if(funcvarnames[i].type=='s')
+        {
+        sp=st[funcvarnames[i].index];
+        if (ProcessingRate==HIGH_RATE)
+          {
+          for(int a=0;a<25;a++)
+            {
+            dummyfloat=cosh(GetValue('h','s',funcvarnames[i].index,a));
+            SetHighData('s',funcvarnames[i].index,a,dummyfloat);
+            temptally+=dummyfloat;
+            if ((sp->OutputRate ==25)&&( sp->SampleRate==25))
+              {
+              df=cosh(GetValue('s','s',funcvarnames[i].index,a));
+              SetSampleData('s',funcvarnames[i].index,a,df);
+              }
+            else if((sp->OutputRate==1) &&(sp->SampleRate==1))
+              {
+              df=cosh(GetValue('s','s',funcvarnames[i].index,0));
+              SetSampleData('s',funcvarnames[i].index,0,df);
+              }
+            }
+          SetAverageData('s',funcvarnames[i].index,temptally/25.0);
+          }
+        else
+          {
+          dummyfloat=cosh(GetValue('a','s',funcvarnames[i].index,0));
+          SetAverageData('s',funcvarnames[i].index,dummyfloat);
+          }
+        }
+      else  if(funcvarnames[i].type=='r')
+        {
+        rp=rt[funcvarnames[i].index];
+        if(ProcessingRate==HIGH_RATE)
+          {
+          for(int a=0;a<25;a++)
+            {
+            dummyfloat=cosh(GetValue('h','r',funcvarnames[i].index,a));
+            SetHighData('r',funcvarnames[i].index,a,dummyfloat);
 			    temptally+=dummyfloat;
 			    if ((rp->OutputRate==25)&&(rp->SampleRate==25))
 				  { df=cosh(GetValue('s','r',funcvarnames[i].index,a));
@@ -1455,113 +1426,86 @@ void SyntheticData::registerfunc(struct v ttemp)
 
   if(ttemp.type=='s')
     { 
-       indexs=SearchTable(sdi,ttemp.name.c_str()); 
-       sdi[indexs]->DataQuality="synthetic";
-       sdi[indexs]->synthtype=sy_function;
-       st.push_back(sdi[indexs]);
-       funcvarnames[funccount].index=is;
-       is++;
+    indexs=SearchTable(sdi,ttemp.name.c_str()); 
+    sdi[indexs]->DataQuality="synthetic";
+    sdi[indexs]->synthtype=sy_function;
+    st.push_back(sdi[indexs]);
+    funcvarnames[funccount].index=is;
+    is++;
     }
 
   if(ttemp.type=='r')
     {
-    
-      indexr=SearchTable(raw,ttemp.name.c_str());
-      raw[indexr]->DataQuality="synthetic";
-      raw[indexr]->synthtype=sy_function;
-      rt.push_back(raw[indexr]);
-      funcvarnames[funccount].index=ir;
-      ir++;
+    indexr=SearchTable(raw,ttemp.name.c_str());
+    raw[indexr]->DataQuality="synthetic";
+    raw[indexr]->synthtype=sy_function;
+    rt.push_back(raw[indexr]);
+    funcvarnames[funccount].index=ir;
+    ir++;
     }
+
   funccount++;
 }
 
 void SyntheticData::ReadhrLine()
 {    
-
   for(int w=1;w<25;w++)
     {
-      ReadLine();
-      if(passedtime==(int)timestamp)
-	{
+    ReadLine();
+    if(passedtime==(int)timestamp)
       Injecthr(w);
-	}
-      else
-	{
-	  std::cout<<"25 milliseconds worth of data was not provided"<<std::endl;
-	  exit(1);
-	}
+    else
+      {
+      std::cout<<"25 milliseconds worth of data was not provided"<<std::endl;
+      exit(1);
+      }
     }
-
 }
 
 void SyntheticData::Injecthr(int m)
 {
-
-
-
- for(int i=0;i<varcount;i++)
+  for(int i=0;i<varcount;i++)
+    {
+    if(varnames[i].type=='s')
       {
+      if(ProcessingRate==HIGH_RATE)
+        {
+        SetHighData('s',varnames[i].index,m,varnames[i].value);
+        temptallyfunc[i]+=varnames[i].value; 
 
-      if(varnames[i].type=='s')
-       {
-
-	if(ProcessingRate==HIGH_RATE)
-	  {
-	    SetHighData('s',varnames[i].index,m,varnames[i].value);
-
-	     temptallyfunc[i]+=varnames[i].value; 
-	     
-	     if ((st[varnames[i].index]->OutputRate ==25)&&( st[varnames[i].index]->SampleRate=25))
-		 {
-		   SetSampleData('s',varnames[i].index,m,varnames[i].value);
-		 }
-	     if(m==24)
-	       {
-		SetAverageData('s',varnames[i].index,temptallyfunc[i]/25.00); 
-	       }
-
-
-	  }
-       }
-       if(varnames[i].type=='r')
-       {
-	
-	
-	if(ProcessingRate==HIGH_RATE)
-	  {
-	     SetHighData('r',varnames[i].index,m,varnames[i].value);
-
-	     temptallyfunc[i]+=varnames[i].value; 
-
-	     if ((rt[varnames[i].index]->OutputRate ==25)&&( rt[varnames[i].index]->SampleRate==25))
-		 {
-		       SetSampleData('r',varnames[i].index,m,varnames[i].value);
-		 }
-
-	      if(m==24)
-	       {
-
-		 SetAverageData('r',varnames[i].index,temptallyfunc[i]/25.00); 
-	       }
-	  }
-       }
+        if (	(st[varnames[i].index]->OutputRate == 25) &&
+		(st[varnames[i].index]->SampleRate == 25))
+          SetSampleData('s',varnames[i].index,m,varnames[i].value);
+        if (m==24)
+          SetAverageData('s',varnames[i].index,temptallyfunc[i]/25.00); 
+        }
       }
+
+    if(varnames[i].type=='r')
+      {
+      if(ProcessingRate==HIGH_RATE)
+        {
+        SetHighData('r',varnames[i].index,m,varnames[i].value);
+
+        temptallyfunc[i]+=varnames[i].value; 
+
+        if (	(rt[varnames[i].index]->OutputRate == 25) &&
+		(rt[varnames[i].index]->SampleRate == 25))
+          SetSampleData('r',varnames[i].index,m,varnames[i].value);
+
+        if (m==24)
+          SetAverageData('r',varnames[i].index,temptallyfunc[i]/25.00); 
+        }
+      }
+    }
 }
-		    
-		 
 
 void SyntheticData::SetHighData(char t,int ind,int offset,float val)  
 {
-  if(t=='r')
-    {
-      HighRateData[(rt[ind]->HRstart)+offset]=val;
-    }
-  if(t=='s')
-    {
-      HighRateData[(st[ind]->HRstart)+offset]=val;
-    }
-
+  if (t == 'r')
+    HighRateData[(rt[ind]->HRstart)+offset]=val;
+  if (t == 's')
+    HighRateData[(st[ind]->HRstart)+offset]=val;
 
   /*
 ind= the current variables index in the appropriate table
@@ -1573,30 +1517,23 @@ val= the value that is to be stored
 }
 
 
-
 void SyntheticData::SetSampleData(char t,int ind,int offset,float val)
 {
-  if(t=='r')
-    {
-      SampledData[(rt[ind]->SRstart)+offset]=val;
-    }
-  if(t=='s')
-    {
-      SampledData[(st[ind]->SRstart)+offset]=val;
-    }
+  if(t == 'r')
+    SampledData[(rt[ind]->SRstart)+offset]=val;
+
+  if(t == 's')
+    SampledData[(st[ind]->SRstart)+offset]=val;
 
 }
 
 void SyntheticData::SetAverageData(char t,int ind,float val)
 {
-  if(t=='r')
-    {
-      AveragedData[rt[ind]->LRstart]=val;
-    }
-  if(t=='s')
-    {
-      AveragedData[st[ind]->LRstart]=val;
-    }
+  if(t == 'r')
+    AveragedData[rt[ind]->LRstart]=val;
+
+  if(t == 's')
+    AveragedData[st[ind]->LRstart]=val;
 
 }
 
@@ -1605,48 +1542,30 @@ float SyntheticData::GetValue(char k,char t,int ind,int offset)
   float z;
   if(k=='h')//from the highrate 
     {
-      if(t=='r')
-	{
-	  z= HighRateData[(rt[ind]->HRstart)+offset];
-	}
-      else if(t=='s')
-	{
-	  z= HighRateData[(st[ind]->HRstart)+offset];
-	}
+    if(t=='r')
+      z = HighRateData[(rt[ind]->HRstart)+offset];
+    else if(t=='s')
+      z = HighRateData[(st[ind]->HRstart)+offset];
     }
   else  if(k=='a')//from the averagerate
     {
-       if(t=='r')
-	{
-	  z= AveragedData[(rt[ind]->LRstart)];
-	}
-       else  if(t=='s')
-	{
-	  z= AveragedData[(st[ind]->LRstart)];
-	}
-      
+    if(t=='r')
+      z = AveragedData[(rt[ind]->LRstart)];
+    else  if(t=='s')
+      z = AveragedData[(st[ind]->LRstart)];
     }
   else  if(k=='s')//from the samplerate
     {
-      if(t=='r')
-	{
-	  z= SampledData[(rt[ind]->SRstart)+offset];
-	}
-      else if(t=='s')
-	{
-	  z= SampledData[(st[ind]->SRstart)+offset];
-	}
+    if(t=='r')
+      z= SampledData[(rt[ind]->SRstart)+offset];
+    else if(t=='s')
+      z= SampledData[(st[ind]->SRstart)+offset];
     }
 
-
   return z;
-}
 
+}
 
 #endif
 
-//end  injectsd.cpp
-
-
-
-
+// END  INJECTSD.CPP

@@ -261,7 +261,7 @@ static void shift(
 }	/* END SHIFT */
 
 /* -------------------------------------------------------------------- */
-#define NPOINTS		4
+static const int NPOINTS = 4;
 
 static void
 interp_regular(

@@ -514,12 +514,13 @@ void stopProcessing()
 
   /* Turn "Pause" button back into "Go" button.
    */
-  label = XmStringCreate("Go", XmFONTLIST_DEFAULT_TAG);
+  label = XmStringCreate("Quit", XmFONTLIST_DEFAULT_TAG);
   XtSetArg(args[0], XmNlabelString, label);
   XtSetValues(goButton, args, 1);
   XmStringFree(label);
   XtRemoveAllCallbacks(goButton, XmNactivateCallback);
-  XtAddCallback(goButton, XmNactivateCallback, StartProcessing, NULL);
+  XtAddCallback(goButton, XmNactivateCallback, Quit, NULL);
+  XtSetSensitive(goButton, true);
 
   XtSetSensitive(menuBar, true);
   XtSetSensitive(list1, true);
@@ -1189,7 +1190,9 @@ void QueryOutputFile(Widget w, XtPointer client, XtPointer call)
 {
   if (!ProductionRun)
     {
-    sprintf(buffer, "%s/*.nc", getenv("DATA_DIR"));
+    GetDataDirectory(buffer);
+    strcat(buffer, "*.nc");
+
     QueryFile("Enter netCDF file name:", buffer, ValidateOutputFile);
     }
   else
