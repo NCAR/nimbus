@@ -494,8 +494,8 @@
 	"GGTRK",	NULL,		xlggtrk,	NULL,
 	"GGMODE",	NULL,		xlggstat,	NULL,
 	"GGNSAT",	NULL,		xlggnsat,	NULL,
-	"GGVEW",	NULL,           NULL,		sggvew,
-	"GGVNS",	NULL,           NULL,		sggvns,
+	"GGVEW",	NULL,           xlggvew,	NULL,
+	"GGVNS",	NULL,           xlggvns,	NULL,
 #
 #	C Midgets
 #
