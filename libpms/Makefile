@@ -2,7 +2,6 @@
 # Makefile for Header API
 #
 LIBDIR=		${JLOCAL}/lib
-LINTDIR=	${JLOCAL}/lib/lint
 MANDIR=		${JLOCAL}/man/man3
 INCLUDEDIR=	${JLOCAL}/include
 CC=			gcc
@@ -23,8 +22,6 @@ HDRS=		pms.h
 .SUFFIXES: .o .h .c
 
 .c.o:
-#	${CC} -pg ${CFLAGS} -c $*.c
-#	mv $*.o profiled/$*.o
 	${CC} ${CFLAGS} -c $*.c
 
 all: lib${LIBNAME}.a
@@ -34,21 +31,10 @@ ${OBJS}: ${HDRS}
 lib${LIBNAME}.a: ${OBJS}
 	rm -f lib${LIBNAME}.a
 	ar cr lib${LIBNAME}.a ${OBJS}
-#	@ranlib lib${LIBNAME}.a
-
-lib${LIBNAME}_p.a: ${OBJS}
-#	rm -f lib${LIBNAME}_p.a
-#	cd profiled; ar cr ../lib${LIBNAME}_p.a ${OBJS}
-#	@ranlib lib${LIBNAME}_p.a
-
-lint:
-	lint -C${LIBNAME} ${INCLUDES} *.c
 
 install: all
-	cp -p lib${LIBNAME}.a ${LIBDIR}
-#	cp -p lib${LIBNAME}_p.a ${LIBDIR}
-#	-install -f ${MANDIR} ${LIBNAME}.3
-	cp -p ${HEADER} ${JLOCAL}/include
+	install -Cp --mode=664 lib${LIBNAME}.a ${LIBDIR}
+	install -Cp --mode=444 ${HEADER} ${JLOCAL}/include
 
 clean:
 	rm -f *.o *.a *.ln

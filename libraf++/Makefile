@@ -26,8 +26,8 @@ all: ${OBJS}
 	ar cr lib${LIBNAME}.a ${OBJS}
 
 install: all
-	cp -fp lib${LIBNAME}.a ${RELEASE}
-	cp -fp *.h ${I2D}
+	install -Cp --mode=664 lib${LIBNAME}.a ${RELEASE}
+	install -Cp --mode=444 *.h ${I2D}
 
 
 # IO classes.

@@ -2,7 +2,6 @@
 # Makefile for Header API
 #
 LIBDIR=		${JLOCAL}/lib
-LINTDIR=	${JLOCAL}/lib/lint
 MANDIR=		${JLOCAL}/man/man3
 INCLUDEDIR=	${JLOCAL}/include
 CC=		gcc
@@ -10,7 +9,7 @@ CC=		gcc
 LIBNAME=	hdr_api
 HEADER=		ctape.h
 
-INCLUDES=	-I. -I${INCLUDEDIR}
+INCLUDES=	-I${INCLUDEDIR}
 DEFINES=	
 CFLAGS=		-Wall -g ${INCLUDES} ${DEFINES}
 
@@ -41,13 +40,10 @@ lib${LIBNAME}.a: ${OBJS}
 	rm -f lib${LIBNAME}.a
 	ar cr lib${LIBNAME}.a ${OBJS}
 
-lint:
-	lint -C${LIBNAME} ${INCLUDES} *.c
-
 install: all
-	cp lib${LIBNAME}.a ${LIBDIR}
-	cp -p ${HEADER} ${INCLUDEDIR}
-	cp -p ${LIBNAME}.3 ${MANDIR}
+	install -Cp --mode=664  lib${LIBNAME}.a ${LIBDIR}
+	install -Cp --mode=444  ${HEADER} ${INCLUDEDIR}
+	install -Cp --mode=664  ${LIBNAME}.3 ${MANDIR}
 
 clean:
 	rm -f *.o *.a *.ln

@@ -3,7 +3,6 @@
 #
 DESTDIR=
 LIBDIR=		${JLOCAL}/lib
-LINTDIR=	${JLOCAL}/lib/lint
 MANDIR=		${JLOCAL}/man/man3
 INCLUDEDIR=	${JLOCAL}/include
 CC=		gcc
@@ -44,15 +43,12 @@ lib${LIBNAME}.a: ${OBJS}
 	rm -f lib${LIBNAME}.a
 	ar cr lib${LIBNAME}.a ${OBJS}
 
-lint:
-	lint -C${LIBNAME} ${INCLUDES} *.c
-
 install: all
-	cp -p lib${LIBNAME}.a ${DESTDIR}/${LIBDIR}
-	cp -p *.h ${DESTDIR}/${INCLUDEDIR}
+	install -Cp --mode=664 lib${LIBNAME}.a ${DESTDIR}/${LIBDIR}
+	install -Cp --mode=444 *.h ${DESTDIR}/${INCLUDEDIR}
 
 include:
 	install -c -m 0444 ${LIBNAME}.h ${DESTDIR}/${INCLUDEDIR}
 
 clean:
-	rm -f *.o *.a *.ln profiled/*.o
+	rm -f *.o *.a *.ln
