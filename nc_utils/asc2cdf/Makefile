@@ -14,7 +14,7 @@ ANONFTP=	/jnet/ftp/pub/src/bin.Solaris2.9
 
 # Linux
 HOST=	syrah
-LIBS=		-L/jnet/linux/lib -lVarDB -lraf++ -lraf -lnetcdf 
+LIBS=		-L${JLOCAL}/lib -lVarDB -lraf++ -lraf -lnetcdf 
 ANONFTP=	/net/ftp/pub/archive/RAF-src/bin.RedHat9.0
 
 SRCS=   asc2cdf.c plain.c nasaAmes.c nasaLangley.c getmem.c
