@@ -1510,6 +1510,7 @@ static void initPMS2Dhouse(char vn[])
   strnam	*hsk_name;
   float		*cals;
   RAWTBL	*rp;
+  char		name[64];
 
 
   /* Add Housekeeping variables to RAWTBL
@@ -1522,7 +1523,16 @@ static void initPMS2Dhouse(char vn[])
     if (strcmp(hsk_name[i], "DUMMY") == 0 || strcmp(hsk_name[i], "") == 0)
       continue;
 
-    if ((rp = add_name_to_RAWTBL(hsk_name[i])) == (RAWTBL *)ERR)
+    if (isdigit(hsk_name[i][0]))
+      {
+      name[0] = 'H';
+      strcpy(&name[1], hsk_name[i]);
+      }
+    else
+      strcpy(name, hsk_name[i]);
+
+
+    if ((rp = add_name_to_RAWTBL(name)) == (RAWTBL *)ERR)
       continue;
 
     rp->order = P1DV2_COF;
@@ -1531,7 +1541,7 @@ static void initPMS2Dhouse(char vn[])
            (char *)&cals[i * P1DV2_COF],
            (int)sizeof(float) * P1DV2_COF);
 
-    add_derived_names(hsk_name[i]);
+    add_derived_names(name);
     }
 
 }	/* END INITPMS2DHOUSE */

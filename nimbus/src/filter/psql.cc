@@ -223,6 +223,11 @@ void PostgreSQL::dropAllTables()
   submitCommand("DROP TABLE PMS1D_list");
   submitCommand("DROP TABLE PMS2D_list");
   submitCommand("DROP TABLE RAF_1hz");
+  /*
+   * Database seems to slow down after a number of runs without VACUUMing.
+   *  It's not sufficient to just DROP all tables.
+   */
+  submitCommand("VACUUM FULL");
 
 }	// END DROPTABLES
 
