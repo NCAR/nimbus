@@ -1,0 +1,61 @@
+	Digital Port Description, Addressing, and Channel Numbering
+
+1. Standard 8 bit digital inputs and outputs.
+
+There are 8 standard digital I/O ports per VMIO12 board.  Each port consists of 
+8 bits which are programmed by software as either inputs or outputs.  
+Even numbered ports also have 2 auxilliary input only bits available .
+A maximum of 2 boards may be installed in any one DSM.  The digital ports are 
+accessed through 2 96 pin DIN connectors on the front of the VMIO12 card.
+Each 8 bit port is wired to a 26 pin MS style connector on the back of the DSM.
+Refer to the attached drawing for the wiring connections.
+
+Digital input addresses are of the hex form 0x00XY where X is the board number,
+either 0 or 1, and Y is the port number, 0-7.  Thus the address 0x0015 refers
+to the port 5 on board 1. 0x0003 refers to port 3 on board 0 
+
+The back of the DSM has the digital port connectors labeled as D1 through D8.
+Assuming these connectors are wired to the digital ports in a sequential 
+fashion, D1 would correspond to address 0x0000, D2 to address 0x0001, etc.
+At present there is no connector accomodation to handle more than 8 digital
+ports in a DSM, even though the software can handle a second board.
+
+2. 16 bit digital inputs.
+
+A few instruments provide digital output words which are 16 bits in length.
+The MCR status word is an example of this.  Addressing for these instruments
+is the same as for the standard 8 bit ports, except that only even port numbers
+may be assigned.  Thus address 0x0000 would refer to port 2 on board 0.  The
+instrument would be wired into ports 2 and 3.  The software recognizes the
+instrument as a 16 bit instrument by its name.  When the ports are sampled,
+ports 2 and 3 are concatenated into a single 16 bit word.  At present there
+is no way in the header to define a digital input as either 8 or 16 bits.  Thus
+specific instrument names are coded into the DSM software.  This is an issue
+that needs to be dealt with in the future. 
+
+3. Digital Pressure.
+
+The digital pressure is a special digital interface that requires 18 bits.  The
+digital pressure is recorded as 2 16 bit words named PSFD1 and PSFD2.  The 
+additional 2 most significant bits are acquired through the 2 auxilliary bits
+described above on the even numbered port.  The auxilliary bits are addressed
+as addresses 8, A, B, and C which correspond to the auxilliary bits available
+on the port 0, 2, 4, and 6 connectors.  An example of valid digital pressure
+addresses would be 0x0000 for PSFD1 and 0x0008 for PSFD2.  For this example,
+PSFD is assigned to ports 0 and 1 of board 0, and PSFD2 is assigned to the
+aux bits on the port 0 connector of board 0.  Totally straightforward.
+
+4. Counters.
+
+Each Vmio12 board provides 8 counters.  The counters are available only 
+through the odd numbered ports, however.  Two counters may be accessed
+through each odd numbered port.  The format of the counter addresses is
+0x0ZXY. X is the board number. Y is the port number, 1, 3, 5, or 7.
+Z identifies the counter number on that port, 0 or 1.  Counter number 0 is
+accessed through bit 5 of the port, and counter timer 1 is accessed through
+bit 1 of the port.  An example of a counter address would be 0x0005.  This
+address refers to counter 0 on port 5 of board 0. Address 0x0103 refers to
+counter 1 on port 3 of board 0.
+
+Cio_port = 0-2 (A,B,C) of chip 8536
+Cio_num  = 0-3 chip no. on VMIO12

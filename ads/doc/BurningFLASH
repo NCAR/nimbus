@@ -1,0 +1,37 @@
+1) Make a vxWorks image to burn.
+
+ - Edit mv162lc/config.h, add '#define STANDALONE_NET' near the top.
+
+ - Type 'make vxWorks.st_rom.hex'
+
+ - Type 'aoutToBin < vxWorks.st_rom > vxWorks.st_rom_bin'
+
+
+2) Load and burn image.
+
+ - On the Solaris host, make sure the 'tftp' line in /etc/inetd.conf is not
+   commented out.
+
+ - Boot 162-bug (remove vxWorks ROM, and replace with 162-bug ROM).  DO NOT
+   boot from 162-bug in FLASH.
+
+ - Use 'niot' to set up the ethernet interface (default params, except IP
+   addrs).
+
+ - Use 'niop' to transfer vxWorks.st_rom_bin (see mv162/target.nr).
+
+ - Use 'mm' to modify first 8 bytes (see mv162/target.nr).
+
+ - Use 'pflash' to burn FLASH (see mv162/target.nr).
+
+ - Place jumper 5 into J22 (all jumpers should be in), this tells it to boot
+   from FLASH.
+
+
+162bug revs (which bug chip to use):
+---------------
+dsm1	C01D
+dsm2	C01D
+dsm4	C01D
+dsm9	C01D
+dsm10	C01C

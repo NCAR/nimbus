@@ -1,0 +1,28 @@
+Handle SIGUSR2 in child tasks for clean shutdown.
+
+Put code into discComm to build the control station blocks.
+
+When the same selection is made in a radio box, cbs->set is true when
+  the button is pushed and released, resulting in two messages being sent.
+
+Set range buttons on pms 1d probes based on return status messages.
+
+Create a GpsTans base class of common functions between GpsTans2 and GpsTans3.
+
+Create a common message format for all status message strings. 
+  i.e. time location: msg.
+
+In the config file, if the winds and ctl machine are the same, confusion exists.
+  temporary fix is to list the ctl entry after the winds entry.  To fix, the
+  net names should be the machine location, not the machine name.
+
+If the time master dsm is not running, invalid time messages are generated
+  for all other dsms.  Try to make this more independent of the time master.
+
+Make the select timeout in TcpSocket and UdpSocket a passed in variable.
+
+The timing interface is quite sensitive to noise on the 1 hz input line.  
+  The interface apparently generates false interupts and dsmAsync hangs.
+
+Fix opening of tape drive to not lock up winds and loose data.
+

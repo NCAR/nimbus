@@ -1,0 +1,68 @@
+
+			ADS Software installation
+
+
+Install onboard from inhouse, place a tape into a drive on the in-house system:
+
+everest% tar cf /dev/rmt/0 /home/local/ads
+
+
+Move tape over to airplane:
+
+rainier% tar xf /dev/rmt/0
+
+
+Make sure the /home/local/proj/hosts/hostname/dsmconfig file is updated for the
+current project, after the installation is completed.  See discWin users guide.
+
+
+
+Building vxWorks from scratch:
+
+vxWorks must be installed, the default vxWorks image provided by Wind River
+Systems is NOT sufficient to run the ADS software.
+
+$WIND_BASE/target/config/all/configAll.h, the following 'excluded'
+packages must be enabled:
+
+  #define INCLUDE_CPLUS           /* include C++ support (unbundled) */
+  #define INCLUDE_SW_FP           /* software floating point emulation */
+  #define INCLUDE_CONFIGURATION_5_2  /* pre-tornado tools */
+ 
+  #define INCLUDE_FTP_SERVER	may be un-included.
+
+
+$WIND_BASE/target/config/mv162lc/config.h:
+
+  #define INCLUDE_SCSI2
+  #define INCLUDE_NFS
+  #define STANDALONE_NET
+
+
+The following lines must be added to the
+$WIND_BASE/target/config/mv162lc/mv162.h file:
+
+/* Define the user configuration jumper address and bits. */
+#define MCC_USER_CFG            *(char*)(MCC_BASE_ADRS+0x2d)
+#define MCC_USER_CFG_NONET      0x01    /* network disab bit */
+ 
+
+A new vxWorks image must then be generated, following the directions in
+Chapter 10 of the vxWorks Programmers Reference.
+
+A startup script must then be generated for each DSM.  Create 
+$PROJ_DIR/hosts/eiger/startup.dsm#, where a file exists for each DSM,
+and where dsm# equals the hostname for each DSM.  Here is the startup.dsm7
+file:
+
+routeAdd("128.117.84.0", "128.117.184.126")
+hostAdd("eiger","128.117.84.126")
+nfsMount("eiger", "/home/local", "/home/local")
+putenv("PROJ_DIR=/home/local/proj");
+cd "/home/local/ads/dsm/obj"
+ld < dsmComm.o
+ld < dsmDisplay.o
+ld < dsmTape.o
+ld < dsmAsync.o
+sp(dsmAsync__Fv)
+

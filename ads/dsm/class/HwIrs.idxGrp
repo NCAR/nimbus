@@ -1,0 +1,350 @@
+/* HwIrs.cc
+
+   Honeywell YG1854 IRS interface class.
+
+   Original Author: Jerry V. Pelk
+   Copyright by the National Center for Atmospheric Research
+ 
+   Revisions:
+ 
+*/
+
+#include <HwIrs.h>
+
+/******************************************************************************
+** Public Functions
+******************************************************************************/
+
+HwIrs::HwIrs (IP429 *ip, Bc635Vme &tp, int rxchan, 
+       	      int txchan) : tfp (tp)
+         
+// Constructor.
+{
+  ip429 = ip;
+  rx_chan = rxchan;
+  tx_chan = txchan;
+
+  ptog = 0;
+  gtog = 0;
+  idx50 = 0;
+  idx25 = 0;
+  idx10 = 0;
+  idx5 = 0;
+  idx2 = 0;
+  newSecond = FALSE;
+  last_alt = 0.0;
+  memset ((char*)irs_blk, 0, sizeof (irs_blk));
+
+  cur_drift = 0;
+  cur_gnd_speed = 0;
+  cur_inertial_alt = 0;
+  cur_lat = 0;
+  cur_lon = 0;
+  cur_pitch = 0;
+  cur_roll = 0;
+  cur_true_heading = 0;
+
+  if (tx_chan) {
+    ip429->setSpeedLow (tx_chan);		// transmit at low speed
+    setTasAlt (0.0, 0.0);			// set default values
+  }
+}
+/*****************************************************************************/
+ 
+void HwIrs::secondAlign ()
+
+// Called at the start of a second to align the indices and toggle buffers.
+{
+  newSecond = TRUE;			// set the new second flag
+  gtog = ptog;                   	// toggle the get buffer index 
+}
+/*****************************************************************************/
+
+void HwIrs::setTasAlt (float tas, float alt)
+
+// Builds the arinc 429 format tas, altitude, and altitude rate words.
+// This routine is called once per second.
+{
+  float rate;
+
+// True air speed (kts). 
+  tas *= (float)SECS_PER_HOUR / METERS_PER_NAUT;	// convert m/s to kts	
+  tas_alt[HW_TAS_IDX] = ((int)((tas / 2048.0) * 2147483648.0) & 0xfffff800) +
+                       ARINC_SSM_VALID + ARINC_TAS_LABEL;
+
+// Altitude (feet).
+  alt *= (float)FEET_PER_METER;		// convert altitude to feet
+  tas_alt[HW_ALT_IDX] = ((int)((alt / 131072.0) * 2147483648.0) & 0xfffff800) +
+                       ARINC_SSM_VALID + ARINC_PALT_LABEL;
+
+// Altitude rate (feet/min) is computed as the change from the last altitude
+// times SECS_PER_MIN, since this routine is called once per second.
+  rate = (alt - last_alt) * (float)SECS_PER_MIN;
+  tas_alt[HW_ALT_RATE_IDX] = 
+                ((int)((rate / 32768.0) * 2147483648.0) & 0xfffff800) +
+                ARINC_SSM_VALID + ARINC_PALT_RATE_LABEL;
+
+  last_alt = alt;			// save the altitude value
+
+//printf ("tas = %f, alt = %f, rate = %f\n", tas, alt, rate);
+//printf ("tas_alt[] = %X %X %X\n", tas_alt[0], tas_alt[1], tas_alt[2]);
+}
+/*****************************************************************************/
+
+void HwIrs::readIsr ()
+
+// Sampling isr. 
+{
+  int arinc_data;
+
+// Read the data words from the arinc interface.
+  *(short*)(((char*)&arinc_data) + sizeof(short)) = ip429->data1 (rx_chan);
+  *(short*)&arinc_data = ip429->data2 (rx_chan);
+
+// Process the data. 
+  switch (arinc_data & ARINC_LABEL_MASK) {  	// switch on the arinc label
+ 
+// The 50 Hz parameters 
+    case 0265:			// first 50 hz param, starts a new block
+      if (newSecond) {					// check for new second
+        long lag;
+
+        lag = tfp.readMsec(); 				// read 50 hz lag
+        togglePut();					// toggle put buffer
+        irs_blk[ptog].lag_50hz_frame = lag;	 	// set 50 hz lag
+        newSecond = FALSE;
+      }
+      if (idx50 < RATE_50)
+        irs_blk[ptog].integ_vert_accel[idx50] = arinc_data;
+      break;
+    case 0324:
+      if (idx50 < RATE_50)
+        irs_blk[ptog].pitch_angle[idx50] = arinc_data;
+      cur_pitch = arinc_data;
+      break;
+    case 0325:
+      if (idx50 < RATE_50)
+        irs_blk[ptog].roll_angle[idx50] = arinc_data;
+      cur_roll = arinc_data;
+      break;
+    case 0326:
+      if (idx50 < RATE_50)
+        irs_blk[ptog].pitch_rate[idx50] = arinc_data;
+      break;
+    case 0327:
+      if (idx50 < RATE_50)
+        irs_blk[ptog].roll_rate[idx50] = arinc_data;
+      break;
+    case 0330:
+      if (idx50 < RATE_50)
+        irs_blk[ptog].yaw_rate[idx50] = arinc_data;
+      break;
+    case 0331:
+      if (idx50 < RATE_50)
+        irs_blk[ptog].long_accel[idx50] = arinc_data;
+      break;
+    case 0332:
+      if (idx50 < RATE_50)
+        irs_blk[ptog].lat_accel[idx50] = arinc_data;
+      break;
+    case 0333:
+      if (idx50 < RATE_50)
+        irs_blk[ptog].normal_accel[idx50] = arinc_data;
+      break;
+    case 0335:
+      if (idx50 < RATE_50)
+        irs_blk[ptog].track_ang_rate[idx50] = arinc_data;
+      break;
+    case 0336:
+      if (idx50 < RATE_50)
+        irs_blk[ptog].pitch_att_rate[idx50] = arinc_data;
+      break;
+    case 0337:
+      if (idx50 < RATE_50)
+        irs_blk[ptog].roll_att_rate[idx50] = arinc_data;
+      break;
+    case 0360:
+      if (idx50 < RATE_50)
+        irs_blk[ptog].pot_vert_speed[idx50] = arinc_data;
+      break;
+    case 0364:
+      if (idx50 < RATE_50)
+        irs_blk[ptog].vertical_accel[idx50] = arinc_data;
+      idx50++;				// last 50 hz param, increment index
+      break;
+ 
+// 25 Hz parameters 
+    case 0313:                        			// first 25 Hz param
+      if (!idx25)                                       // check for new sec
+        irs_blk[ptog].lag_25hz_frame = tfp.readMsec(); 	// read 25 hz lag
+      if (idx25 < RATE_25)
+        irs_blk[ptog].track_angle_true[idx25] = arinc_data;
+      break;
+    case 0365:                        			
+      if (idx25 < RATE_25)
+        irs_blk[ptog].inrt_vert_speed[idx25] = arinc_data;
+      break;
+    case 0361:
+      if (idx25 < RATE_25)
+        irs_blk[ptog].inertial_alt[idx25] = arinc_data;
+      cur_inertial_alt = arinc_data;
+      break;
+    case 0321:
+      if (idx25 < RATE_25)
+        irs_blk[ptog].drift_angle[idx25] = arinc_data;
+      cur_drift = arinc_data;
+      break;
+    case 0314:
+      if (idx25 < RATE_25)
+        irs_blk[ptog].true_heading[idx25] = arinc_data;
+      cur_true_heading = arinc_data;
+      idx25++;				// last 25 hz param, increment index 
+      break;
+ 
+/* The 10 Hz parameters */
+    case 0312:                        			// first 10 Hz param
+      if (!idx10)                             		// check for new sec
+        irs_blk[ptog].lag_10hz_frame = tfp.readMsec();	// read 10 hz lag
+      if (idx10 < RATE_10)
+        irs_blk[ptog].ground_speed[idx10] = arinc_data;
+      cur_gnd_speed = arinc_data;
+      break;
+    case 0315:
+      if (idx10 < RATE_10)
+        irs_blk[ptog].wind_speed[idx10] = arinc_data;
+      break;
+    case 0316:
+      if (idx10 < RATE_10)
+        irs_blk[ptog].wind_dir_true[idx10] = arinc_data;
+      break;
+    case 0366:
+      if (idx10 < RATE_10)
+        irs_blk[ptog].velocity_ns[idx10] = arinc_data;
+      break;
+    case 0367:
+      if (idx10 < RATE_10)
+        irs_blk[ptog].velocity_ew[idx10] = arinc_data;
+      break;
+    case 0334:
+      if (idx10 < RATE_10)
+        irs_blk[ptog].platform_hdg[idx10] = arinc_data;
+      idx10++;				// last 10 hz param, increment index
+      break;
+ 
+// 5 Hz parameters
+    case 0310:                        			// first 5 Hz param
+      if (!idx5)                                       	// check for new sec
+        irs_blk[ptog].lag_5hz_frame = tfp.readMsec(); 	// read 5 hz lag
+      if (idx5 < RATE_5)
+        irs_blk[ptog].present_lat[idx5] = arinc_data;
+      cur_lat = arinc_data;
+      break;
+    case 0311:
+      if (idx5 < RATE_5)
+        irs_blk[ptog].present_lon[idx5] = arinc_data;
+      cur_lon = arinc_data;
+      break;
+    case 0370:
+      if (idx5 < RATE_5)
+        irs_blk[ptog].norm_accel[idx5] = arinc_data;
+      idx5++;				// last 5 hz param, increment index
+      break;
+ 
+// 2 Hz parameters
+    case 0350:        			// first 2 Hz parameter, no 2 hz lag 
+      if (idx2 < RATE_2)
+        irs_blk[ptog].irs_maint_discretes[idx2] = arinc_data;
+      break;
+    case 0270:
+      if (idx2 < RATE_2)
+        irs_blk[ptog].irs_discretes[idx2] = arinc_data;
+      break;
+    case 0371:
+      if (idx2 < RATE_2)
+        irs_blk[ptog].equipment_id[idx2] = arinc_data;
+      break;
+    case 0351:
+      if (idx2 < RATE_2)
+        irs_blk[ptog].time_to_nav_ready[idx2] = arinc_data;
+      idx2++;				// last 2 hz param, increment index
+      break;
+ 
+    default:
+      break;				// unused data
+  }
+}
+/******************************************************************************
+** Private Functions
+******************************************************************************/
+
+void HwIrs::togglePut ()
+
+// Fills in any missing samples due to walking clocks, resets the buffer
+// indices, and toggles the put index.
+{
+  for (; idx50 < RATE_50; idx50++) {
+    irs_blk[ptog].integ_vert_accel[idx50] =
+                  irs_blk[ptog].integ_vert_accel[idx50 - 1];
+    irs_blk[ptog].pitch_angle[idx50] = irs_blk[ptog].pitch_angle[idx50 - 1];
+    irs_blk[ptog].roll_angle[idx50] = irs_blk[ptog].roll_angle[idx50 - 1];
+    irs_blk[ptog].pitch_rate[idx50] = irs_blk[ptog].pitch_rate[idx50 - 1];
+    irs_blk[ptog].roll_rate[idx50] = irs_blk[ptog].roll_rate[idx50 - 1];
+    irs_blk[ptog].yaw_rate[idx50] = irs_blk[ptog].yaw_rate[idx50 - 1];
+    irs_blk[ptog].long_accel[idx50] = irs_blk[ptog].long_accel[idx50 - 1];
+    irs_blk[ptog].lat_accel[idx50] = irs_blk[ptog].lat_accel[idx50 - 1];
+    irs_blk[ptog].normal_accel[idx50] = irs_blk[ptog].normal_accel[idx50 - 1];
+    irs_blk[ptog].pitch_att_rate[idx50] =
+                  irs_blk[ptog].pitch_att_rate[idx50 - 1];
+    irs_blk[ptog].roll_att_rate[idx50] =
+                  irs_blk[ptog].roll_att_rate[idx50 - 1];
+    irs_blk[ptog].pot_vert_speed[idx50] =
+                  irs_blk[ptog].pot_vert_speed[idx50 - 1];
+    irs_blk[ptog].vertical_accel[idx50] =
+                  irs_blk[ptog].vertical_accel[idx50 - 1];
+    irs_blk[ptog].track_ang_rate[idx50] =
+                  irs_blk[ptog].track_ang_rate[idx50 -1];  
+  }
+
+  for (; idx25 < RATE_25; idx25++) {
+    irs_blk[ptog].inrt_vert_speed[idx25] =
+                  irs_blk[ptog].inrt_vert_speed[idx25 - 1];
+    irs_blk[ptog].true_heading[idx25] = irs_blk[ptog].true_heading[idx25 - 1];
+    irs_blk[ptog].inertial_alt[idx25] = irs_blk[ptog].inertial_alt[idx25 - 1];
+    irs_blk[ptog].track_angle_true[idx25] = 
+                  irs_blk[ptog].track_angle_true[idx25 - 1];
+    irs_blk[ptog].drift_angle[idx25] = irs_blk[ptog].drift_angle[idx25 - 1]; 
+  }
+
+  for (; idx10 < RATE_10; idx10++) {
+    irs_blk[ptog].ground_speed[idx10] = irs_blk[ptog].ground_speed[idx10 - 1];
+    irs_blk[ptog].wind_speed[idx10] = irs_blk[ptog].wind_speed[idx10 - 1];
+    irs_blk[ptog].wind_dir_true[idx10] = irs_blk[ptog].wind_dir_true[idx10-1];
+    irs_blk[ptog].platform_hdg[idx10] = irs_blk[ptog].platform_hdg[idx10 - 1];
+    irs_blk[ptog].velocity_ns[idx10] = irs_blk[ptog].velocity_ns[idx10 - 1];
+    irs_blk[ptog].velocity_ew[idx10] = irs_blk[ptog].velocity_ew[idx10 - 1];
+  }
+
+  for (; idx5 < RATE_5; idx5++) {
+    irs_blk[ptog].present_lat[idx5] = irs_blk[ptog].present_lat[idx5 - 1];
+    irs_blk[ptog].present_lon[idx5] = irs_blk[ptog].present_lon[idx5 - 1];
+    irs_blk[ptog].norm_accel[idx5] = irs_blk[ptog].norm_accel[idx5 - 1];
+  }
+
+  for (; idx2 < RATE_2; idx2++) {
+    irs_blk[ptog].irs_maint_discretes[idx2] =
+                  irs_blk[ptog].irs_maint_discretes[idx2 - 1];
+    irs_blk[ptog].irs_discretes[idx2] = irs_blk[ptog].irs_discretes[idx2 - 1];
+    irs_blk[ptog].time_to_nav_ready[idx2] =
+                  irs_blk[ptog].time_to_nav_ready[idx2 - 1];
+    irs_blk[ptog].equipment_id[idx2] = irs_blk[ptog].equipment_id[idx2 - 1];
+  }
+
+  idx50 = 0;
+  idx25 = 0;
+  idx10 = 0;
+  idx5 = 0;
+  idx2 = 0;
+  ptog = ++ptog % TOG;
+}
+/*****************************************************************************/
+

@@ -1,0 +1,443 @@
+/* HwIrs.cc
+
+   Honeywell YG1854 IRS interface class.
+
+   Original Author: Jerry V. Pelk
+   Copyright by the National Center for Atmospheric Research
+ 
+   Revisions:
+ 
+*/
+
+#include <HwIrs.h>
+/*
+extern DsmMessage *comm_msg;
+extern DsmConfig *dsm_config;
+*/
+
+/******************************************************************************
+** Public Functions
+******************************************************************************/
+
+HwIrs::HwIrs (IP429 *ip, Bc635Vme &tp, int rxchan, 
+       	      int txchan) : tfp (tp)
+         
+// Constructor.
+{
+  ip429 = ip;
+  rx_chan = rxchan;
+  tx_chan = txchan;
+
+  ptog = 0;
+  gtog = 0;
+
+  idx_integ_vert_accel = 0;
+  idx_pitch_angle = 0;
+  idx_roll_angle = 0;
+  idx_pitch_rate = 0;
+  idx_roll_rate = 0;
+  idx_yaw_rate = 0;
+  idx_long_accel = 0;
+  idx_lat_accel = 0;
+  idx_normal_accel = 0;
+  idx_pitch_att_rate = 0;
+  idx_roll_att_rate = 0;
+  idx_pot_vert_speed = 0;
+  idx_vertical_accel = 0;
+  idx_track_ang_rate = 0;
+  idx_inrt_vert_speed = 0;
+  idx_true_heading = 0;
+  idx_inertial_alt = 0;
+  idx_track_angle_true = 0;
+  idx_drift_angle = 0;
+  idx_ground_speed = 0;
+  idx_wind_speed = 0;
+  idx_wind_dir_true = 0;
+  idx_platform_hdg = 0;
+  idx_velocity_ns = 0;
+  idx_velocity_ew = 0;
+  idx_present_lat = 0;
+  idx_present_lon = 0;
+  idx_norm_accel = 0;
+  idx_irs_maint_discretes = 0;
+  idx_irs_discretes = 0;
+  idx_time_to_nav_ready = 0;
+  idx_equipment_id = 0;
+
+  newSecond = FALSE;
+  last_alt = 0.0;
+  memset((char*)irs_blk, 0, sizeof(irs_blk));
+
+  cur_drift = 0;
+  cur_gnd_speed = 0;
+  cur_inertial_alt = 0;
+  cur_lat = 0;
+  cur_lon = 0;
+  cur_pitch = 0;
+  cur_roll = 0;
+  cur_true_heading = 0;
+
+  if (tx_chan) {
+    ip429->setSpeedLow(tx_chan);		// transmit at low speed
+    setTasAlt(0.0, 0.0);			// set default values
+  }
+}
+
+/*****************************************************************************/
+void HwIrs::secondAlign ()
+
+// Called at the start of a second to align the indices and toggle buffers.
+{
+  newSecond = TRUE;			// set the new second flag
+  gtog = ptog;                   	// toggle the get buffer index 
+}
+
+/*****************************************************************************/
+void HwIrs::setTasAlt(float tas, float alt)
+
+// Builds the arinc 429 format tas, altitude, and altitude rate words.
+// This routine is called once per second.
+{
+  float rate;
+
+// True air speed (kts). 
+  tas *= (float)SECS_PER_HOUR / METERS_PER_NAUT;	// convert m/s to kts	
+  tas_alt[HW_TAS_IDX] = ((int)((tas / 2048.0) * 2147483648.0) & 0xfffff800) +
+                       ARINC_SSM_VALID + ARINC_TAS_LABEL;
+
+// Altitude (feet).
+  alt *= (float)FEET_PER_METER;		// convert altitude to feet
+  tas_alt[HW_ALT_IDX] = ((int)((alt / 131072.0) * 2147483648.0) & 0xfffff800) +
+                       ARINC_SSM_VALID + ARINC_PALT_LABEL;
+
+// Altitude rate (feet/min) is computed as the change from the last altitude
+// times SECS_PER_MIN, since this routine is called once per second.
+  rate = (alt - last_alt) * (float)SECS_PER_MIN;
+  tas_alt[HW_ALT_RATE_IDX] = 
+                ((int)((rate / 32768.0) * 2147483648.0) & 0xfffff800) +
+                ARINC_SSM_VALID + ARINC_PALT_RATE_LABEL;
+
+  last_alt = alt;			// save the altitude value
+
+//printf ("tas = %f, alt = %f, rate = %f\n", tas, alt, rate);
+//printf ("tas_alt[] = %X %X %X\n", tas_alt[0], tas_alt[1], tas_alt[2]);
+}
+
+/*****************************************************************************/
+void HwIrs::readIsr()
+
+// Sampling isr. 
+{
+  int arinc_data;
+
+// Read the data words from the arinc interface.
+  *(short*)(((char*)&arinc_data) + sizeof(short)) = ip429->data1 (rx_chan);
+  *(short*)&arinc_data = ip429->data2 (rx_chan);
+
+
+// Process the data. 
+  switch (arinc_data & ARINC_LABEL_MASK) {  	// switch on the arinc label
+ 
+// The 50 Hz parameters 
+    case 0265:			// first 50 hz param, starts a new block
+      if (newSecond) {                                  // check for new second
+        long lag;
+ 
+        lag = tfp.readMsec();                           // read 50 hz lag
+        togglePut();                                    // toggle put buffer
+        irs_blk[ptog].lag_50hz_frame = lag;             // set 50 hz lag
+        newSecond = FALSE;
+      }
+
+      if (idx_integ_vert_accel < RATE_50)
+        irs_blk[ptog].integ_vert_accel[idx_integ_vert_accel++] = arinc_data;
+      break;
+
+    case 0324:
+      if (idx_pitch_angle < RATE_50)
+        irs_blk[ptog].pitch_angle[idx_pitch_angle++] = arinc_data;
+
+      cur_pitch = arinc_data;
+      break;
+
+    case 0325:
+      if (idx_roll_angle < RATE_50)
+        irs_blk[ptog].roll_angle[idx_roll_angle++] = arinc_data;
+
+      cur_roll = arinc_data;
+      break;
+
+    case 0326:
+      if (idx_pitch_rate < RATE_50)
+        irs_blk[ptog].pitch_rate[idx_pitch_rate++] = arinc_data;
+      break;
+
+    case 0327:
+      if (idx_roll_rate < RATE_50)
+        irs_blk[ptog].roll_rate[idx_roll_rate++] = arinc_data;
+      break;
+
+    case 0330:
+      if (idx_yaw_rate < RATE_50)
+        irs_blk[ptog].yaw_rate[idx_yaw_rate++] = arinc_data;
+      break;
+
+    case 0331:
+      if (idx_long_accel < RATE_50)
+        irs_blk[ptog].long_accel[idx_long_accel++] = arinc_data;
+      break;
+
+    case 0332:
+      if (idx_lat_accel < RATE_50)
+        irs_blk[ptog].lat_accel[idx_lat_accel++] = arinc_data;
+      break;
+
+    case 0333:
+      if (idx_normal_accel < RATE_50)
+        irs_blk[ptog].normal_accel[idx_normal_accel++] = arinc_data;
+      break;
+
+    case 0335:
+      if (idx_track_ang_rate < RATE_50)
+        irs_blk[ptog].track_ang_rate[idx_track_ang_rate++] = arinc_data;
+      break;
+
+    case 0336:
+      if (idx_pitch_att_rate < RATE_50)
+        irs_blk[ptog].pitch_att_rate[idx_pitch_att_rate++] = arinc_data;
+      break;
+
+    case 0337:
+      if (idx_roll_att_rate < RATE_50)
+        irs_blk[ptog].roll_att_rate[idx_roll_att_rate++] = arinc_data;
+      break;
+
+    case 0360:
+      if (idx_pot_vert_speed < RATE_50)
+        irs_blk[ptog].pot_vert_speed[idx_pot_vert_speed++] = arinc_data;
+      break;
+
+    case 0364:
+      if (idx_vertical_accel < RATE_50)
+        irs_blk[ptog].vertical_accel[idx_vertical_accel++] = arinc_data;
+      break;
+ 
+// 25 Hz parameters 
+    case 0313:                        			// first 25 Hz param
+      if (!idx_track_angle_true)			// check for new sec
+        irs_blk[ptog].lag_25hz_frame = tfp.readMsec();  // read 25 hz lag
+
+      if (idx_track_angle_true < RATE_25)
+        irs_blk[ptog].track_angle_true[idx_track_angle_true++] = arinc_data;
+      break;
+
+    case 0365:                        			
+      if (idx_inrt_vert_speed < RATE_25)
+        irs_blk[ptog].inrt_vert_speed[idx_inrt_vert_speed++] = arinc_data;
+      break;
+
+    case 0361:
+      if (idx_inertial_alt < RATE_25)
+        irs_blk[ptog].inertial_alt[idx_inertial_alt++] = arinc_data;
+
+      cur_inertial_alt = arinc_data;
+      break;
+
+    case 0321:
+      if (idx_drift_angle < RATE_25)
+        irs_blk[ptog].drift_angle[idx_drift_angle++] = arinc_data;
+
+      cur_drift = arinc_data;
+      break;
+
+    case 0314:
+      if (idx_true_heading < RATE_25)
+        irs_blk[ptog].true_heading[idx_true_heading++] = arinc_data;
+
+      cur_true_heading = arinc_data;
+      break;
+ 
+/* The 10 Hz parameters */
+    case 0312:                        			// first 10 Hz param
+      if (!idx_ground_speed)				// check for new sec
+        irs_blk[ptog].lag_10hz_frame = tfp.readMsec();  // read 10 hz lag
+
+      if (idx_ground_speed < RATE_10)
+        irs_blk[ptog].ground_speed[idx_ground_speed++] = arinc_data;
+
+      cur_gnd_speed = arinc_data;
+      break;
+
+    case 0315:
+      if (idx_wind_speed < RATE_10)
+        irs_blk[ptog].wind_speed[idx_wind_speed++] = arinc_data;
+      break;
+
+    case 0316:
+      if (idx_wind_dir_true < RATE_10)
+        irs_blk[ptog].wind_dir_true[idx_wind_dir_true++] = arinc_data;
+      break;
+
+    case 0366:
+      if (idx_velocity_ns < RATE_10)
+        irs_blk[ptog].velocity_ns[idx_velocity_ns++] = arinc_data;
+      break;
+
+    case 0367:
+      if (idx_velocity_ew < RATE_10)
+        irs_blk[ptog].velocity_ew[idx_velocity_ew++] = arinc_data;
+      break;
+
+    case 0334:
+      if (idx_platform_hdg < RATE_10)
+        irs_blk[ptog].platform_hdg[idx_platform_hdg++] = arinc_data; 
+      break;
+ 
+// 5 Hz parameters
+    case 0310:                        			// first 5 Hz param
+      if (!idx_present_lat)				// check for new sec
+        irs_blk[ptog].lag_5hz_frame = tfp.readMsec();   // read 5 hz lag
+
+      if (idx_present_lat < RATE_5)
+        irs_blk[ptog].present_lat[idx_present_lat++] = arinc_data;
+
+      cur_lat = arinc_data;
+      break;
+
+    case 0311:
+      if (idx_present_lon < RATE_5)
+        irs_blk[ptog].present_lon[idx_present_lon++] = arinc_data;
+
+      cur_lon = arinc_data;
+      break;
+
+    case 0370:
+      if (idx_norm_accel < RATE_5)
+        irs_blk[ptog].norm_accel[idx_norm_accel++] = arinc_data;
+      break;
+ 
+// 2 Hz parameters
+    case 0350:        			// first 2 Hz parameter, no 2 hz lag 
+      if (idx_irs_maint_discretes < RATE_2)
+        irs_blk[ptog].irs_maint_discretes[idx_irs_maint_discretes++] = arinc_data;
+      break;
+
+    case 0270:
+      if (idx_irs_discretes < RATE_2)
+        irs_blk[ptog].irs_discretes[idx_irs_discretes++] = arinc_data;
+      break;
+
+    case 0371:
+      if (idx_equipment_id < RATE_2)
+        irs_blk[ptog].equipment_id[idx_equipment_id++] = arinc_data;
+      break;
+
+    case 0351:
+      if (idx_time_to_nav_ready < RATE_2)
+        irs_blk[ptog].time_to_nav_ready[idx_time_to_nav_ready++] = arinc_data;
+      break;
+ 
+    default:
+      break;				// unused data
+  }
+
+}
+
+/******************************************************************************
+** Private Functions
+******************************************************************************/
+
+void HwIrs::togglePut()
+
+// Fills in any missing samples due to walking clocks, resets the buffer
+// indices, and toggles the put index.
+{
+/*
+  if (idx_integ_vert_accel != RATE_50)
+    logMsg("idx_integ_vert_accel = %d\n",idx_integ_vert_accel,0,0,0,0,0);
+  if (idx_pitch_angle != RATE_50)
+    logMsg("idx_pitch_angle = %d\n",idx_pitch_angle,0,0,0,0,0);
+  if (idx_roll_angle != RATE_50)
+    logMsg("idx_roll_angle = %d\n",idx_roll_angle,0,0,0,0,0);
+  if (idx_pitch_rate!= RATE_50)
+    logMsg("idx_pitch_rate= %d\n",idx_pitch_rate,0,0,0,0,0);
+  if (idx_roll_rate!= RATE_50)
+    logMsg("idx_roll_rate= %d\n",idx_roll_rate,0,0,0,0,0);
+  if (idx_yaw_rate!= RATE_50)
+    logMsg("idx_yaw_rate= %d\n",idx_yaw_rate,0,0,0,0,0);
+  if (idx_long_accel!= RATE_50)
+    logMsg("idx_long_accel= %d\n",idx_long_accel,0,0,0,0,0);
+  if (idx_lat_accel!= RATE_50)
+    logMsg("idx_lat_accel= %d\n",idx_lat_accel,0,0,0,0,0);
+  if (idx_normal_accel!= RATE_50)
+    logMsg("idx_normal_accel= %d\n",idx_normal_accel,0,0,0,0,0);
+  if (idx_pitch_att_rate!= RATE_50)
+    logMsg("idx_pitch_att_rate= %d\n",idx_pitch_att_rate,0,0,0,0,0);
+  if (idx_roll_att_rate!= RATE_50)
+    logMsg("idx_roll_att_rate= %d\n",idx_roll_att_rate,0,0,0,0,0);
+  if (idx_pot_vert_speed!= RATE_50)
+    logMsg("idx_pot_vert_speed= %d\n",idx_pot_vert_speed,0,0,0,0,0);
+  if (idx_vertical_accel!= RATE_50)
+    logMsg("idx_vertical_accel= %d\n",idx_vertical_accel,0,0,0,0,0);
+  if (idx_track_ang_rate!= RATE_50)
+    logMsg("idx_track_ang_rate= %d\n",idx_track_ang_rate,0,0,0,0,0);
+
+  if (idx_inrt_vert_speed != RATE_25)
+    logMsg("idx_inrt_vert_speed = %d\n",idx_inrt_vert_speed,0,0,0,0,0);
+  if (idx_true_heading!= RATE_25)
+    logMsg("idx_true_heading= %d\n",idx_true_heading,0,0,0,0,0);
+  if (idx_inertial_alt!= RATE_25)
+    logMsg("idx_inertial_alt= %d\n",idx_inertial_alt,0,0,0,0,0);
+  if (idx_track_angle_true!= RATE_25)
+    logMsg("idx_track_angle_true= %d\n",idx_track_angle_true,0,0,0,0,0); 
+  if (idx_drift_angle!= RATE_25)
+    logMsg("idx_drift_angle= %d\n",idx_drift_angle,0,0,0,0,0);
+
+  if (idx_ground_speed!= RATE_10)
+    logMsg("idx_ground_speed= %d\n",idx_ground_speed,0,0,0,0,0);
+  if (idx_wind_speed!= RATE_10)
+    logMsg("idx_wind_speed= %d\n",idx_wind_speed,0,0,0,0,0);
+  if (idx_wind_dir_true!= RATE_10)
+    logMsg("idx_wind_dir_true= %d\n",idx_wind_dir_true,0,0,0,0,0);
+  if (idx_platform_hdg!= RATE_10)
+    logMsg("idx_platform_hdg= %d\n",idx_platform_hdg,0,0,0,0,0);
+  if (idx_velocity_ns!= RATE_10)
+    logMsg("idx_velocity_ns= %d\n",idx_velocity_ns,0,0,0,0,0);
+  if (idx_velocity_ew!= RATE_10)
+    logMsg("idx_velocity_ew= %d\n",idx_velocity_ew,0,0,0,0,0);
+
+  if (idx_present_lat!= RATE_5)
+    logMsg("idx_present_lat= %d\n",idx_present_lat,0,0,0,0,0);
+  if (idx_present_lon!= RATE_5)
+    logMsg("idx_present_lon= %d\n",idx_present_lon,0,0,0,0,0);
+  if (idx_norm_accel!= RATE_5)
+    logMsg("idx_norm_accel= %d\n",idx_norm_accel,0,0,0,0,0);
+  
+
+  if (idx_irs_maint_discretes!= RATE_2)
+    logMsg("idx_irs_maint_discretes= %d\n",idx_irs_maint_discretes,0,0,0,0,0); 
+  if (idx_irs_discretes!= RATE_2)
+    logMsg("idx_irs_discretes= %d\n",idx_irs_discretes,0,0,0,0,0);
+  if (idx_time_to_nav_ready!= RATE_2)
+    logMsg("idx_time_to_nav_ready= %d\n",idx_time_to_nav_ready,0,0,0,0,0);
+  if (idx_equipment_id!= RATE_2)
+    logMsg("idx_equipment_id= %d\n",idx_equipment_id,0,0,0,0,0);
+*/
+
+  idx_integ_vert_accel = idx_pitch_angle = idx_roll_angle = idx_pitch_rate = 
+  idx_roll_rate = idx_yaw_rate = idx_long_accel = idx_lat_accel = 
+  idx_normal_accel = idx_pitch_att_rate = idx_roll_att_rate = 
+  idx_pot_vert_speed = idx_vertical_accel = idx_track_ang_rate = 
+  idx_inrt_vert_speed = idx_true_heading = idx_inertial_alt = 
+  idx_track_angle_true = idx_drift_angle = idx_ground_speed = idx_wind_speed = 
+  idx_wind_dir_true = idx_platform_hdg = idx_velocity_ns = idx_velocity_ew = 
+  idx_present_lat = idx_present_lon = idx_norm_accel = 
+  idx_irs_maint_discretes = idx_irs_discretes = idx_time_to_nav_ready = 
+  idx_equipment_id = 0;
+
+  ptog = ++ptog % TOG;
+  memset ((char *)&irs_blk[ptog], 0, sizeof (irs_blk[ptog]));
+
+}
+
+/* END HWIRS.CC */

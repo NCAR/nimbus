@@ -1,0 +1,135 @@
+/* cktfp.cc
+   Check the time and frequency processor.
+
+   Original Author: Jerry V. Pelk
+   Copyright by the National Center for Atmospheric Research
+ 
+   Revisions:
+
+*/
+
+#include "mv162.h"         // mvme162 defines
+#include <vxWorks.h>
+#include <intLib.h>
+#include <logLib.h>
+#include <stdioLib.h>
+#include <taskLib.h>
+
+// Program include files.
+#include <dsmVmeDefs.h>
+
+// Class include files.
+#include <Bc635Vme.h>
+
+// Program functions.
+void initInterrupts ();				// initialize interrupts
+void tfp_isr ();				// time-freq processor isr
+
+// Class declarations.
+Bc635Vme tfp ((char*)(A24D16_BASE + TFP_BASE));  // time-freq processor
+
+cktfp ()
+
+// If mode == 0, operate as the master, else a slave.
+{
+  int mode = 0;
+  int last_sec;
+  int error_cnt = 0;
+
+  int	this_year, this_month, this_day, this_hour, this_minute, this_second;
+  int	last_year, last_month, last_day, last_hour, last_minute, last_second;
+
+
+// Initialize the time-freq processor class.
+  tfp.Bc635Vme ((char*)(A24D16_BASE + TFP_BASE));
+
+  tfp.setPath();				// send default path packet
+  tfp.selectModulatedInput();			// select modulated irig input
+  tfp.selectModulatedOutput();			// select modulated irig input
+
+// Sync to the 1PPS if operating as the master.
+  if (mode == 0) 
+    tfp.select1PPSMode();
+
+// Sync to irig time code if operating as a slave.
+  else 
+    tfp.selectTimeCodeMode();
+
+  tfp.setMajorTime (96,2,14,12,59,0);
+
+// Set the periodic output at 10 Khz, and a 50 usec pulse width.
+  tfp.setPeriodicOutput (10000, 50);
+
+// Initialize interrupts.
+  initInterrupts ();
+
+// Clear the new second flag.
+  tfp.clearNewSecond();
+
+  while (TRUE) {
+    this_year	= tfp.year();
+    this_month	= tfp.month();
+    this_day	= tfp.day();
+    this_hour	= tfp.hour();
+    this_minute	= tfp.minute();
+    this_second	= tfp.second();
+
+    if ((this_second != last_second && this_second != last_second+1) ||
+	this_minute != last_minute || this_hour != last_hour)
+      printf ("dec %02d/%02d/%02d %02d:%02d:%02d.%03d\n",
+        this_month, this_day, this_year,
+        this_hour, this_minute, this_second, tfp.msec()); 
+
+
+    if (tfp.newSecond()) {
+      tfp.clearNewSecond();
+//      printf ("dec %02d/%02d/%02d %02d:%02d:%02d.%03d\n",
+//        this_month, this_day, this_year,
+//        this_hour, this_minute, this_second, tfp.msec()); 
+ 
+
+// Check for dropped time.  This happens if the clocks are too far off.
+      if (tfp.second() != ((last_sec + 1) % 60)) {
+          printf ("last_sec = %d, tfp.second() = %d\n", last_sec, tfp.second());
+        error_cnt++;
+      }
+      last_sec = tfp.second();
+    }
+//    taskDelay(sysClkRateGet() / 20);
+
+    last_year	= this_year;
+    last_month	= this_month;
+    last_day	= this_day;
+    last_hour	= this_hour;
+    last_minute	= this_minute;
+    last_second	= this_second;
+  }
+}
+/*****************************************************************************/
+
+void initInterrupts ()
+
+// Initialize interrupts and handlers.
+{
+// Connect the time-freq processor isr.
+  if (intConnect ((VOIDFUNCPTR*)TFP_ADR,(VOIDFUNCPTR)tfp_isr, 0)) {
+    perror ("cktfp: intConnect tfp_isr");
+    exit(ERROR);
+  }
+
+// Enable the interrupt handler on the mv162 board.
+  *VMECHIP2_LBIER = 0x04;     
+
+// Enable strobe interrupts from the tfp at 5 hertz.
+  tfp.enableMinorStrobeInt (TFP_VCT, 3, 200);
+}
+/*****************************************************************************/
+
+void tfp_isr ()
+
+// Interrupt service routine for the time-freq processor.
+{
+  tfp.strobeIsr ();
+}
+/*****************************************************************************/
+

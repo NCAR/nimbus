@@ -1,0 +1,47 @@
+
+discWin.cc
+	AnalogWin	Analog Control window creation & callbacks.
+	FlightWin	'Enter Flight Number' window
+	InstrumentWin	Instrument control window creation & callbacks.
+	McrWin		MCR window creation & callbacks.
+	Pms1dWin	PMS1D window creation & callbacks.
+	Pms2dWin	PMS2D window creation & callbacks.
+	StatusWin	Primary discWin window creation & callbacks.
+
+	DsmConfig	Reads and manipulating 'dsmconfig' file.
+	DsmHeaders	Creates and manages the DSM sampling headers.
+	DsmMessage	Manages snding and rcving status and command messages.
+	DsmNet		General purpose socket communications class for a DSM.
+	TapeHeader	Class for reading and manipulating the tape header.
+
+	TcpSocket	Low level TCP socket class.
+	UdpSocket	Low level UDP socket class.
+	UnixTask	Start up other processes (discComm & discTape).
+
+discComm.cc
+	DiscNatsComm
+	DsmCollect
+	DsmConfig
+	DsmHeaders
+	DsmMessage
+	DsmNet
+	DsmNets
+	DsmTables
+	NatsData
+	Palt
+	RandomBuf
+	SyncVar
+	TapeHeader
+	Tasx
+	TcpSocket
+	UdpSocket
+
+discTape.cc
+	DsmConfig
+	DsmMessage
+	DsmNet
+	DsmTape
+	Exa
+	TapeHeader
+	TcpSocket
+

@@ -1,0 +1,287 @@
+!
+! Resource file for discWin
+!
+!       Some Generics
+!
+*background:    cornflower blue
+*foreground:    black
+!
+*defaultFontList:		-adobe-courier-bold-r-*-*-14-140-75-75-*-*-*-*
+*XmTextField.background:		Burlywood
+*XmTextField.foreground:		navy
+*XmTextField.marginHeight:		3
+*XmPushButton.height:			32
+*XmPushButton.width:			135
+*XmPushButton.recomputeSize:		False
+*XmScrolledText.background:		gray
+!
+!
+*flightNum_popup.title:			Flight Number
+*flightNum_popup*XmPushButton.width:	100
+!
+*topLevelShell.x:			50
+*topLevelShell.y:			50
+*topLevelShell.title:			DiscWin 2.4
+*topLevelShell.iconName:		discWin
+*topLevelForm.horizontalSpacing:	8
+*topLevelForm.verticalSpacing:		8
+*topLevelForm.resizePolicy:		RESIZE_GROW
+!
+! Project info window (StatusWin.cc)
+!
+*projRC.orientation:			HORIZONTAL
+*projRC.rowColumnType:			WORK_AREA
+*projRC.marginWidth:			7
+*projRC.spacing:			8
+!
+*projTitle.labelString:			Flight Information
+*projTitle.childType:			FRAME_TITLE_CHILD
+*projTitle.childHorizontalAlignment:	ALIGNMENT_CENTER
+*projTitle.childVerticalAlignment:	ALIGNMENT_BASELINE_BOTTOM
+*projTitle.childHorizontalSpacing:	5
+!
+*proj_num_label.labelString:		Project Number
+!
+*proj_num_text.columns:			4
+*proj_num_text.value:			000
+*proj_num_text.editable:		False
+*proj_num_text.cursorPositionVisible:	False
+!
+*flt_num_label.labelString:		Flight Number
+!
+*flt_num_text.columns:			4
+*flt_num_text.value:			0
+*flt_num_text.editable:			False
+*flt_num_text.cursorPositionVisible:	False
+!
+*tsRC.orientation:			HORIZONTAL
+*tsRC.rowColumnType:			WORK_AREA
+*tsRC.marginWidth:			17
+*tsRC.spacing:				15
+!
+*tsTitle.labelString:			Time Information
+*tsTitle.childType:			FRAME_TITLE_CHILD
+*tsTitle.childHorizontalAlignment:	ALIGNMENT_CENTER
+*tsTitle.childVerticalAlignment:	ALIGNMENT_BASELINE_BOTTOM
+*tsTitle.childHorizontalSpacing:	5
+!
+*dateLabel.labelString:			Date
+!
+*dateText.columns:			8
+*dateText.value:			00/00/00
+*dateText.editable:			False
+*dateText.cursorPositionVisible:	False
+!
+*timeLabel.labelString:			Time
+!
+*timeText.columns:			8
+*timeText.value:			00:00:00
+*timeText.editable:			False
+*timeText.cursorPositionVisible:	False
+!
+! Network Status Window (StatusWin.cc).
+!
+*netTitle.labelString:			Network Status
+*netTitle.childType:			FRAME_TITLE_CHILD
+*netTitle.childHorizontalAlignment:	ALIGNMENT_CENTER
+*netTitle.childVerticalAlignment:	ALIGNMENT_BASELINE_BOTTOM
+*netTitle.childHorizontalSpacing:	5
+!
+*netRC.orientation:			VERTICAL
+*netRC.rowColumnType:			WORK_AREA
+*netRC.spacing:				0
+*netRC*XmTextField.columns:		14
+*netRC*XmTextField.value:		DISCONNECTED
+*netRC*XmTextField.editable:		False
+*netRC*XmTextField.cursorPositionVisible:	False
+*netRC*XmLabel.alignment:		ALIGNMENT_BEGINNING
+*netForm.orientation:			HORIZONTAL
+*netForm.rowColumnType:			WORK_AREA
+!
+! Tape recording status (StatusWin.cc).
+!
+*rcdTitle.labelString:			Tape Recording
+*rcdTitle.childType:			FRAME_TITLE_CHILD
+*rcdTitle.childHorizontalAlignment:	ALIGNMENT_CENTER
+*rcdTitle.childVerticalAlignment:	ALIGNMENT_BASELINE_BOTTOM
+*rcdTitle.childHorizontalSpacing:	5
+!
+*rcdRC.orientation:			VERTICAL
+*rcdRC.rowColumnType:			WORK_AREA
+*rcdRC.spacing:				0
+!
+*drvRC.orientation:			HORIZONTAL
+*drvRC.rowColumnType:			WORK_AREA
+!
+*drvLabel0.labelString:			Drive 0 :
+*drvLabel1.labelString:			Drive 1 :
+!
+*drvText.value:				UNLOADED
+*drvText.columns:			10
+*drvText.editable:			False
+*drvText.cursorPositionVisible:		False
+!
+*drvUnload.labelString:			Unload Drive
+*drvUnload.marginLeft:			8
+*drvUnload.marginRight:			8
+!
+! Message window (StatusWin.cc)
+!
+*msgText.background:			Gray
+*msgText.columns:			80
+*msgText.cursorPositionVisible:		False
+*msgText.editable:			False
+*msgText.editMode:			MULTI_LINE_EDIT
+*msgText.foreground:			navy
+*msgText.rows:				10
+*msgText.scrollHorizontal:		False
+*msgText.wordWrap:			True
+!
+! Buttons (StatusWin.cc)
+!
+*buttonFrame.shadowType:		SHADOW_IN
+*buttonRC.entryAlignment:		ALIGNMENT_CENTER
+*buttonRC.isAligned:			True
+*buttonRC.orientation:			HORIZONTAL
+*buttonRC.rowColumnType:		WORK_AREA
+*buttonRC.spacing:			75
+*buttonRC.XmPushButton.recomputeSize:	False
+*buttonRC.XmPushButton.width:		200
+!
+*quitButton.labelString:		Quit
+*analogButton.labelString:		Analog Control
+*instrumentButton.labelString:		Instrument Control
+!
+! Analog window (AnalogWin.cc)
+!
+*analogShell.x				300
+*analogShell.y				400
+*analogShell.title:			Analog Control
+*analogShell.iconName:			analogCtl
+!
+*analogForm.horizontalSpacing:		8
+*analogForm.verticalSpacing:		8
+*analogForm.resizePolicy:		RESIZE_GROW
+*analogMessage.title:			Analog Control Message
+*analogMessage.background:		DarkSlateGray
+*analogMessage.foreground:		Yellow
+!
+*modeFrame.shadowType:			SHADOW_IN
+!
+*modeTitle.labelString:			Analog Mode
+*modeTitle.childType:			FRAME_TITLE_CHILD
+*modeTitle.childHorizontalAlignment:	ALIGNMENT_CENTER
+*modeTitle.childVerticalAlignment:	ALIGNMENT_WIDGET_BOTTOM
+*modeTitle.childHorizontalSpacing:	5
+!
+*modeRadioBox.orientation:		VERTICAL
+*modeRadioBox.spacing:			0
+!
+*diagFrame.shadowType:			SHADOW_IN
+!
+*diagTitle.labelString:			Diagnostic Params
+*diagTitle.childType:			FRAME_TITLE_CHILD
+*diagTitle.childHorizontalAlignment:	ALIGNMENT_CENTER
+*diagTitle.childVerticalAlignment:	ALIGNMENT_WIDGET_BOTTOM
+*diagTitle.childHorizontalSpacing:	5
+!
+*diagRC.orientation:			VERTICAL
+*diagRC.rowColumnType:			WORK_AREA
+*diagRC.spacing:			0
+*diagRC*XmPushButton.recomputeSize:	True
+!
+*runButt.labelString:			Run
+*calButt.labelString:			Calibrate
+*qcButt.labelString:			Quality Check
+*diagButt.labelString:			Diagnostics
+!
+*anaButtonRC.entryAlignment:		ALIGNMENT_CENTER
+*anaButtonRC.orientation:		VERTICAL
+*anaButtonRC.rowColumnType:		WORK_AREA
+*anaButtonRC.spacing:			0
+!
+*dsmCascade.labelString:		DSM    
+*chanCascade.labelString:		Channel
+*voltCascade.labelString:		Voltage
+*gainCascade.labelString:		Gain   
+*offsetCascade.labelString:		Offset 
+!
+*dsmCascade*marginHeight:		1
+*chanCascade*marginHeight:		1
+*voltCascade*marginHeight:		1
+*gainCascade*marginHeight:		1
+*offsetCascade*marginHeight:		1
+!
+*anaButtonRC.spacing:			5
+*reportButt.labelString:		Report
+*dismissButt.labelString:		Dismiss
+!
+*reportShell.title:			Analog Report
+*reportShell.x:				150
+*reportShell.y:				75
+!
+*reportForm.horizontalSpacing:		8
+*reportForm.verticalSpacing:		8
+!
+*reportText.background:			Gray
+*reportText.columns:			80
+*reportText.cursorPositionVisible:	False
+*reportText.editable:			False
+*reportText.editMode:			MULTI_LINE_EDIT
+*reportText.foreground:			navy
+*reportText.rows:			40
+*reportText.scrollHorizontal:		False
+*reportText.wordWrap:			True
+!
+*reportFrame.shadowType:		SHADOW_IN
+!
+*reportRC.entryAlignment:		ALIGNMENT_CENTER
+*reportRC.isAligned:			True
+*reportRC.orientation:			HORIZONTAL
+*reportRC.rowColumnType:		WORK_AREA
+*reportRC.marginWidth:			300
+*reportRC.XmPushButton.recomputeSize:	False
+*reportRC.XmPushButton.width:		150
+!
+*report_ok_button.labelString:		OK
+!
+! Instrument Window
+!
+*instrumentShell.x:			100
+*instrumentShell.y:			100
+*instrumentShell.title:			Instrument Control
+*instrumentShell.iconName:		instrumentCtl
+*instrumentForm.resizePolicy:		RESIZE_GROW
+!
+*instrumentRC*XmFrame.shadowType:	SHADOW_IN
+*instrumentRC.orientation:		VERTICAL
+*instrumentRC*buttonRC.marginWidth:	250
+*instrumentRC.spacing:			15
+!
+*pms1_title.labelString:		PMS 1D Control
+*pms1_title.childType:			FRAME_TITLE_CHILD
+*pms1_title.childHorizontalAlignment:	ALIGNMENT_CENTER
+*pms1_title.childVerticalAlignment:	ALIGNMENT_WIDGET_BOTTOM
+*pms1_title.childHorizontalSpacing:	5
+!
+*pms2_title.labelString:		PMS 2D Control
+*pms2_title.childType:			FRAME_TITLE_CHILD
+*pms2_title.childHorizontalAlignment:	ALIGNMENT_CENTER
+*pms2_title.childVerticalAlignment:	ALIGNMENT_WIDGET_BOTTOM
+*pms2_title.childHorizontalSpacing:	5
+!
+*mcr_title.labelString:			MCR Control
+*mcr_title.childType:			FRAME_TITLE_CHILD
+*mcr_title.childHorizontalAlignment:	ALIGNMENT_CENTER
+*mcr_title.childVerticalAlignment:	ALIGNMENT_WIDGET_BOTTOM
+*mcr_title.childHorizontalSpacing:	5
+!
+*genButtTitle.labelString:		Miscellaneous Control
+*genButtTitle.childType:		FRAME_TITLE_CHILD
+*genButtTitle.childHorizontalAlignment:	ALIGNMENT_CENTER
+*genButtTitle.childVerticalAlignment:	ALIGNMENT_WIDGET_BOTTOM
+*genButtTitle.childHorizontalSpacing:	5
+!
+*genButtRC*numColumns:			6
+*genButtRC*packing:			PACK_COLUMN
+*genButtRC*indicatorType:		N_OF_MANY

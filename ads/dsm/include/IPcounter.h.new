@@ -1,0 +1,50 @@
+/* IPcounter.h
+ 
+   IP counter card (Industry Pack) driver.
+
+   Original Author: Chris Webster
+   Copyright by the National Center for Atmospheric Research
+ 
+   Revisions:
+
+*/
+
+#ifndef IPCOUNTER_H
+#define IPCOUNTER_H
+
+#include <vxWorks.h>
+#include <logLib.h>
+#include <sysLib.h>
+#include <taskLib.h>
+
+#include <dsmctl.h>
+
+#define IP_CTL_REG_OFFSET		0x7F	// byte offset to the ctl reg
+
+#define IP_MASTER_DATA_OFFSET		0x1F	// byte offset to master counter data
+#define IP_MASTER_CTL_OFFSET		0x5F	// byte offset to master counter control
+
+#define IP_SLAVES_DATA_OFFSET		0x00	// byte offset to slave counters' data
+#define IP_SLAVES_CTL_OFFSET		0x40	// byte offset to slave counters' control
+
+class IPcounter {
+public:
+  IPcounter(char *base_adr);
+  short	counter(int port)	{return(data[port]);}
+
+  void	readCounters();
+  void	adjustMaster();
+
+
+private:
+  volatile char  *ip_ctl;		// IP control register
+  volatile char  *ip_master_data;	// master counter data register
+  volatile char  *ip_master_ctl;	// master counter control registers
+  volatile short *ip_slaves_data;	// slave counters' data registers
+  volatile short *ip_slaves_ctl;	// slave counters' control registers
+
+  unsigned long data[5];
+
+};
+
+#endif

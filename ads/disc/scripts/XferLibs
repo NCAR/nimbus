@@ -1,0 +1,34 @@
+#!/usr/bin/csh
+
+\ping $argv[1] 3
+
+if ($status == 1) then
+        echo "Exiting...."
+        sleep 3
+        exit
+endif
+ 
+echo "Copying ${LOCAL}/include to ${argv[1]}"
+rcp -r mistral:${LOCAL}/include winds@${argv[1]}:${LOCAL}/
+
+echo "Copying ${LOCAL}/lib/libhdr_api.a to ${argv[1]}"
+rcp -r mistral:${LOCAL}/lib/libhdr_api.a winds@${argv[1]}:${LOCAL}/lib
+
+echo "Copying ${LOCAL}/lib/libraf.a to ${argv[1]}"
+rcp -r mistral:${LOCAL}/lib/libraf.a winds@${argv[1]}:${LOCAL}/lib
+
+echo "Copying ${LOCAL}/lib/libVarDB.a to ${argv[1]}"
+rcp -r mistral:${LOCAL}/lib/libVarDB.a winds@${argv[1]}:${LOCAL}/lib
+
+echo "Copying ${LOCAL}/lib/libAircraft.a to ${argv[1]}"
+rcp -r mistral:${LOCAL}/lib/libAircraft.a winds@${argv[1]}:${LOCAL}/lib
+
+echo "Copying ${LOCAL}/lib/libpms.a to ${argv[1]}"
+rcp -r mistral:${LOCAL}/lib/libpms.a winds@${argv[1]}:${LOCAL}/lib
+
+echo "Copying ${LOCAL}/lib/app-defaults to ${argv[1]}"
+rcp -r mistral:${LOCAL}/lib/app-defaults winds@${argv[1]}:${LOCAL}/lib
+
+echo "Done...Press return to exit."
+
+$<

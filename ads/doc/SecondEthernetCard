@@ -1,0 +1,23 @@
+To add a second ethernet interface to a Solaris workstation:
+
+1) Install the interface.
+2) Create /etc/hostname.le1 file with the hostname for the le1 port.  The 
+   convention established is to append -data to the le0 hostname, i.e. 
+   wheeler and wheeler-data.
+3) Add an entry to the /etc/hosts file for the le1 interface hostname.
+
+6) If running with separate subnet numbers, i.e 128.117.84.xx and 
+   128.117.184.xx, the machine will automatically come up as a router
+   on the next boot.
+7) If running with the same subnet on both interfaces, a specific route
+   for each machine on the le1 port must be added to the /etc/rc2.d/S72inetsvc
+   file, i.e. /usr/sbin/route add dsm5 wheeler-data 0.
+8) To add the machine as a router on another machine use the command
+   route add net 128.117.184.0 hostname 1
+9) If running with the same subnet number on both interfaces, nfs and rlogin
+   don't work correctly.  A bridge must be added across the le0 and le1 ports
+   to add these services.
+10)If running with different subnet numbers, configure the dsms to use the
+   le0 hostname for the host, and the le1 hostname as a router.  If running
+   with the same subnet numbers, configure the dsms to use the le1 hostname as
+   both host and router.

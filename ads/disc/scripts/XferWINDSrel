@@ -1,0 +1,25 @@
+#!/usr/bin/csh
+
+\ping $argv[1] 3
+
+if ($status == 1) then
+        echo "Exiting...."
+        sleep 3
+        exit
+endif
+ 
+echo "Copying ${LOCAL}/winds/src to ${argv[1]}"
+rcp -r mistral:${LOCAL}/winds/src winds@${argv[1]}:${LOCAL}/winds
+
+echo "Copying ${LOCAL}/winds/include to ${argv[1]}"
+rcp -r mistral:${LOCAL}/winds/include winds@${argv[1]}:${LOCAL}/winds
+
+echo "Copying ${LOCAL}/winds/obj to ${argv[1]}"
+rcp -r mistral:${LOCAL}/winds/obj winds@${argv[1]}:${LOCAL}/winds
+
+echo "Copying ${LOCAL}/winds/bin to ${argv[1]}"
+rcp -r mistral:${LOCAL}/winds/bin winds@${argv[1]}:${LOCAL}/winds
+
+echo "Done...Press return to exit."
+
+$<

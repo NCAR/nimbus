@@ -1,0 +1,16 @@
+#!/usr/bin/csh
+
+\ping $argv[1] 3
+if ($status == 1) then
+        echo "Exiting...."
+        sleep 3
+        exit
+endif
+ 
+echo "Copying ${LOCAL}/ads to ${argv[1]}"
+
+rcp -r mistral:${LOCAL}/ads ads@${argv[1]}:${LOCAL}
+
+echo "Done...Press return to exit."
+
+$<

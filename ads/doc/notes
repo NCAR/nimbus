@@ -1,0 +1,13 @@
+In the old ads, digital bits are inverted in polarity.  In the new ads, they 
+are not.  A correction in Nimbus needs to be made for this.  I believe the
+only interface affected is the digital pressure.
+
+Auxiliary analog Sh struct specs:
+        type, ANALOG_AUX_STR as defined in header.h
+        rate, sample rates are 25 or 5 hertz.
+        adsaddr, address range is 0x100 to 0x140, 64 channels
+        convert, always .000305175 volts / bit
+        convert_offset, always 0
+        ch_gain, gain options are 1 or 10
+        ch_offset, always 0
+

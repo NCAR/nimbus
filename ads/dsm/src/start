@@ -1,0 +1,2 @@
+ld < DOSC:cktfp.o
+sp(cktfp__Fv)

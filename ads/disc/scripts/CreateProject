@@ -1,0 +1,35 @@
+#!/bin/csh -x
+
+set PROJ_DIR = ${LOCAL}/proj
+set DEFS_DIR = ${LOCAL}/proj/defaults
+
+#
+# Setup Production Directory.
+#
+
+mkdir ${PROJ_DIR}/$1
+ln -s ${PROJ_DIR}/$1 ${LOCAL}/dev/proj
+
+/bin/cp ${DEFS_DIR}/Categories ${PROJ_DIR}/$1
+/bin/cp ${DEFS_DIR}/Defaults ${PROJ_DIR}/$1
+/bin/cp ${DEFS_DIR}/DependTable ${PROJ_DIR}/$1
+/bin/cp ${DEFS_DIR}/Despike ${PROJ_DIR}/$1
+/bin/cp ${DEFS_DIR}/Lags ${PROJ_DIR}/$1
+/bin/cp ${DEFS_DIR}/LowRateVars ${PROJ_DIR}/$1
+/bin/cp ${DEFS_DIR}/PMSspecs ${PROJ_DIR}/$1
+/bin/cp ${DEFS_DIR}/VarDB ${PROJ_DIR}/$1
+
+mkdir ${PROJ_DIR}/$1/Production
+/bin/cp ${DEFS_DIR}/FlightGroups ${PROJ_DIR}/$1/Production
+
+
+#
+# Set permissions and ownerships.  Ownerships must be done via a binary.
+#
+
+chmod -R ug+rw,o-w ${PROJ_DIR}/$1
+chmod -R u+rw,go-w ${PROJ_DIR}/$1/Production
+
+chownDP ${PROJ_DIR}/$1
+
+sleep 10
