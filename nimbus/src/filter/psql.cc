@@ -4,21 +4,11 @@ OBJECT NAME:    psql.c (PostgreS)
 
 FULL NAME:      PostgreSQL database routines.
 
-ENTRY POINTS:   InitSQL()
-		WriteSQL()
-		Write2dSQL()
-
-STATIC FNS:     none
-
 DESCRIPTION:
-
-REFERENCES:     none
-
-REFERENCED BY:  rtloop.c
 
 NOTES:		
 
-COPYRIGHT:      University Corporation for Atmospheric Research, 2003
+COPYRIGHT:      University Corporation for Atmospheric Research, 2003-2004
 -------------------------------------------------------------------------
 */
 
@@ -313,7 +303,6 @@ printf("InitializeVariableList\n");
 	MISSING_VALUE, "Preliminary");
 
     addCategory(sdi[i]->name, "Analog");
-    addCategory(sdi[i]->name, VarDB_GetCategoryName(sdi[i]->name));
     }
 
 
@@ -387,7 +376,6 @@ printf("InitializeVariableList\n");
 	MISSING_VALUE, "Preliminary");
 
     addCategory(raw[i]->name, "Raw");
-    addCategory(raw[i]->name, VarDB_GetCategoryName(raw[i]->name));
   }
 
 
