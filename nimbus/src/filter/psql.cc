@@ -19,11 +19,17 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2003-2004
 #include <ctype.h>
 #include <cmath>
 #include <set>
+#include <iomanip>
 
 
 void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[]);
 
 const int PostgreSQL::RT_UDP_PORT = 2101;
+const std::string PostgreSQL::GLOBAL_ATTR_TABLE = "Global_Attributes";
+const std::string PostgreSQL::VARIABLE_LIST_TABLE = "Variable_List";
+const std::string PostgreSQL::CATEGORIES_TABLE = "Categories";
+const std::string PostgreSQL::LRT_TABLE = "RAF_LRT";
+const std::string PostgreSQL::RATE_TABLE_PREFIX = "SampleRate";
 
 
 /* -------------------------------------------------------------------- */
@@ -38,7 +44,7 @@ PostgreSQL::PostgreSQL(std::string specifier)
     fprintf(stderr, "Connection to database failed, check environment variables.\n");
     fprintf(stderr, "%s", PQerrorMessage(_conn));
     PQfinish(_conn);
-    _conn = NULL;
+    _conn = 0;
     return;
   }
 
@@ -64,54 +70,13 @@ PostgreSQL::PostgreSQL(std::string specifier)
 }	/* END INITSQL */
 
 /* -------------------------------------------------------------------- */
-void PostgreSQL::Start2dSQL()
-{
-  _sql2d_str = "BEGIN;";
-
-}	/* END START2DSQL */
-
-/* -------------------------------------------------------------------- */
-void PostgreSQL::Write2dSQL(RAWTBL *rp, long time, long msec, ulong *p, int nSlices)
-{
-  int	i;
-  char	name[16], temp[128];
-
-  if (nSlices < 2)
-    return;
-
-  strcpy(name, rp->name);
-  name[strlen(name)-1] = '\0';
-
-  sprintf(temp, "INSERT INTO %s VALUES ('%02d:%02d:%02d', %u, %d, '{%lu", name, time/3600, (time%3600)/60, time%60, msec, nSlices, p[0]);
-  _sql2d_str += temp;
-
-  for (i = 1; i < nSlices; ++i)
-    {
-    sprintf(temp, ", %d", p[i]);
-    _sql2d_str += temp;
-    }
-
-  _sql2d_str += "}');";
-
-}	/* END WRITE2DSQL */
-
-/* -------------------------------------------------------------------- */
-void PostgreSQL::Submit2dSQL()
-{
-  _sql2d_str += "COMMIT;";
-  submitCommand(_sql2d_str);
-
-}	/* END SUBMIT2DSQL */
-
-/* -------------------------------------------------------------------- */
-void PostgreSQL::WriteSQL(const std::string timeStamp)
+void
+PostgreSQL::WriteSQL(const std::string timeStamp)
 {
   int	i, j, len;
   std::string	temp;
 
   static int	cntr = 0;
-
-//printf("WriteSQL\n");
 
   /* Set global attributes start and end time to the timeStamp of the
    * first record to arrive.
@@ -132,17 +97,22 @@ void PostgreSQL::WriteSQL(const std::string timeStamp)
    * UDP = {5, 6, 7, 8}
    */
   std::stringstream	sqlStr;
-  sqlStr << "INSERT INTO RAF_1hz VALUES ('" << timeStamp << "', ";
+  sqlStr << "INSERT INTO " << LRT_TABLE << " VALUES ('" << timeStamp << "', ";
 
   std::stringstream	brdStr;
-  brdStr << "RAF-TS " << timeStamp << " ";
+  brdStr << "RAF-TS " << timeStamp << ' ';
 
   extern NR_TYPE	*AveragedData;
 
   /* Three loops again, analog, raw and derived.  This is analog.
    */
+  bool addComma = false;
+
   for (i = 0; i < sdi.size(); ++i)
-    addValue(sqlStr, brdStr, AveragedData[sdi[i]->LRstart], true);
+  {
+    addValue(sqlStr, brdStr, AveragedData[sdi[i]->LRstart], addComma);
+    addComma = true;
+  }
 
 
   /* Three loops again, analog, raw and derived.  This is raw.
@@ -160,12 +130,10 @@ void PostgreSQL::WriteSQL(const std::string timeStamp)
    */
   for (i = 0; i < derived.size(); ++i)
   {
-    bool addComma = (i == derived.size()-1) ? false : true;
-
     if (derived[i]->Length > 1)
-      addVector(sqlStr, brdStr, &AveragedData[derived[i]->LRstart], derived[i]->Length, addComma);
+      addVector(sqlStr, brdStr, &AveragedData[derived[i]->LRstart], derived[i]->Length, true);
     else
-      addValue(sqlStr, brdStr, AveragedData[derived[i]->LRstart], addComma);
+      addValue(sqlStr, brdStr, AveragedData[derived[i]->LRstart], true);
   }
 
 
@@ -178,59 +146,46 @@ void PostgreSQL::WriteSQL(const std::string timeStamp)
 
   if (Mode == REALTIME)
   {
-    brdStr << "\n";
-    _brdcst->writeSock(brdStr.str().c_str(), brdStr.str().size());
+    brdStr << '\n';
+    _brdcst->writeSock(brdStr.str().c_str(), brdStr.str().length());
   }
 
-//  if (++cntr < 10900 && cntr % 3600 == 0)     // every hour, 1st 3 hours
+  WriteSQLvolts(timeStamp);
+
+
   if (++cntr % 3600 == 0)     // every hour
   {
 fprintf(stderr, "Performing ANALYZE @ %s\n", timeStamp.c_str());
-    submitCommand("ANALYZE raf_1hz (datetime)");
+
+    std::stringstream cmd;
+    cmd << "ANALYZE " << LRT_TABLE << " (datetime)";
+
+    submitCommand(cmd.str());
   }
 
 }	/* END WRITESQL */
 
 /* -------------------------------------------------------------------- */
-void PostgreSQL::submitCommand(const std::string command)
+void
+PostgreSQL::dropAllTables()
 {
-//printf("submitCommand\n");
+  std::set<std::string> tablesToDelete;
 
-  if (_conn == NULL)
-    return;
+  tablesToDelete.insert(GLOBAL_ATTR_TABLE);
+  tablesToDelete.insert(VARIABLE_LIST_TABLE);
+  tablesToDelete.insert(CATEGORIES_TABLE);
+  tablesToDelete.insert(LRT_TABLE);
+  tablesToDelete.insert("PMS1D_list");
+  tablesToDelete.insert("PMS2D_list");
 
   PGresult* res;
 
-  while ( (res = PQgetResult(_conn)) )
-    PQclear(res);
-
-  PQsendQuery(_conn, command.c_str());
-  fprintf(stderr, "%s", PQerrorMessage(_conn));
-
-  while ( (res = PQgetResult(_conn)) )
-    PQclear(res);
-
-}	/* END SUBMITCOMMAND */
-
-/* -------------------------------------------------------------------- */
-void PostgreSQL::dropAllTables()
-{
-  std::set<std::string> tables;
-
-  tables.insert("Global_Attributes");
-  tables.insert("Variable_List");
-  tables.insert("Categories");
-  tables.insert("PMS1D_list");
-  tables.insert("PMS2D_list");
-
-  PGresult* res;
-
-  /* Add RAF_*hz tables.
+  /* Add SampleRate* tables.
    */
   res = PQexec(_conn, "SELECT sampleratetable FROM Variable_List");
 
   for (int i = 0; i < PQntuples(res); ++i)
-    tables.insert(PQgetvalue(res, i, 0));
+    tablesToDelete.insert(PQgetvalue(res, i, 0));
 
   PQclear(res);
 
@@ -239,7 +194,7 @@ void PostgreSQL::dropAllTables()
   res = PQexec(_conn, "SELECT Name FROM PMS2D_list");
 
   for (int i = 0; i < PQntuples(res); ++i)
-    tables.insert(PQgetvalue(res, i, 0));
+    tablesToDelete.insert(PQgetvalue(res, i, 0));
 
   PQclear(res);
 
@@ -247,7 +202,7 @@ void PostgreSQL::dropAllTables()
   /* Loop & DROP.
    */
   std::set<std::string>::iterator it;
-  for (it = tables.begin(); it != tables.end(); ++it)
+  for (it = tablesToDelete.begin(); it != tablesToDelete.end(); ++it)
   {
     std::string cmd("DROP TABLE ");
     cmd += it->c_str();
@@ -264,7 +219,8 @@ void PostgreSQL::dropAllTables()
 }	// END DROPTABLES
 
 /* -------------------------------------------------------------------- */
-void PostgreSQL::createTables()
+void
+PostgreSQL::createTables()
 {
   submitCommand(
   "CREATE TABLE Variable_List (Name char(20) PRIMARY KEY, Units char(16), long_name char(80), SampleRateTable char(16), nDims int, dims int[], nCals int, poly_cals float[], missing_value float, data_quality char(16))");
@@ -283,7 +239,8 @@ void PostgreSQL::createTables()
 }	// END CREATETABLES
 
 /* -------------------------------------------------------------------- */
-void PostgreSQL::initializeGlobalAttributes()
+void
+PostgreSQL::initializeGlobalAttributes()
 {
   submitCommand(
   "CREATE TABLE Global_Attributes (key char(20) PRIMARY KEY, value char(120))");
@@ -315,18 +272,16 @@ void PostgreSQL::initializeGlobalAttributes()
 }	// END INITIALIZEGLOBALATTRIBUTES
 
 /* -------------------------------------------------------------------- */
-void PostgreSQL::initializeVariableList()
+void
+PostgreSQL::initializeVariableList()
 {
   int	nDims, dims[3];
 
   rateTableMap		rateTableMap;
 
-printf("InitializeVariableList\n");
-
   nDims = 1;
   dims[0] = 1;
 
-//  sqlStr << "CREATE TABLE RAF_1hz (datetime timestamp PRIMARY KEY, ";
 
   /* 3 big loops here for analog, raw and derived.  This is analog.
    */
@@ -360,7 +315,7 @@ printf("InitializeVariableList\n");
     if (strncmp(raw[i]->name, "A1D", 3) == 0)
     {
       std::string name(raw[i]->name);
-      name = name.substr(0, name.size()-1);
+      name = name.substr(0, name.length()-1);
 
       std::string	temp;
       temp = "INSERT INTO PMS2D_list VALUES ('" + name + "', '" +
@@ -368,7 +323,7 @@ printf("InitializeVariableList\n");
       submitCommand(temp);
 
       temp = "CREATE TABLE " + name +
-		" (datetime time, msec int, nSlices int, particle int[])";
+	" (datetime time (3) PRIMARY KEY, nSlices int, particle int[])";
       submitCommand(temp);
     }
 
@@ -380,11 +335,12 @@ printf("InitializeVariableList\n");
       std::string name(&raw[i]->name[1]);
 
       temp << "INSERT INTO PMS1D_list VALUES ('" << name << "', '" <<
-	raw[i]->SerialNumber << "', 'RAF_" << raw[i]->SampleRate << "hz'";
+	raw[i]->SerialNumber << "', '" << RATE_TABLE_PREFIX <<
+	raw[i]->SampleRate << '\'';
 
       GetPMS1DAttrsForSQL(raw[i], buffer);
       temp << buffer;
-      temp << ")";
+      temp << ')';
       submitCommand(temp.str());
     }
 
@@ -419,7 +375,7 @@ printf("InitializeVariableList\n");
       nDims = 1;
 
     addVariableToDataBase(derived[i]->name, VarDB_GetUnits(derived[i]->name),
-	VarDB_GetTitle(derived[i]->name), derived[i]->OutputRate, nDims, dims,
+	VarDB_GetTitle(derived[i]->name), derived[i]->SampleRate, nDims, dims,
 	0, 0, MISSING_VALUE, "Preliminary");
 
     addCategory(derived[i]->name, "Derived");
@@ -427,14 +383,178 @@ printf("InitializeVariableList\n");
     addVariableToTables(rateTableMap, derived[i]);
   }
 
-  /* Send commands to create the "RAF_*hz" tables.
+  /* Send commands to create the "SampleRate*" tables.
    */
   createSampleRateTables(rateTableMap);
 
 }	// END INITIALIZEVARIABLELIST
 
 /* -------------------------------------------------------------------- */
-void PostgreSQL::addVariableToDataBase(
+void
+PostgreSQL::WriteSQLvolts(const std::string timeStamp)
+{
+  rateTableList::iterator it;
+
+  extern NR_TYPE	*SampledData;
+
+  for (it = _ratesTables.begin(); it != _ratesTables.end(); ++it)
+  {
+    /* @todo should the LRT_TABLE be in the rateTableMap?
+     */
+    if (it->second == LRT_TABLE)
+      continue;
+
+    for (int i = 0; i < it->first; ++i)
+    {
+      std::stringstream sqlStr;
+      sqlStr << "INSERT INTO " << it->second << " VALUES ('" << timeStamp
+	<< "." << std::setfill('0') << std::setw(3) << 1000 / it->first * i << "' ";
+
+      for (int j = 0; j < sdi.size(); ++j)
+      {
+        if (sdi[j]->SampleRate == it->first)
+          addValue(sqlStr, SampledData[sdi[j]->SRstart+i], true);
+      }
+
+      for (int j = 0; j < raw.size(); ++j)
+      {
+        if (raw[j]->SampleRate == it->first && raw[j]->Length == 1)
+          addValue(sqlStr, SampledData[raw[j]->SRstart+i], true);
+      }
+
+      sqlStr << ");";
+      submitCommand(sqlStr.str());
+    }
+  }
+
+}	// END WRITESQLVOLTS
+
+/* -------------------------------------------------------------------- */
+void
+PostgreSQL::Start2dSQL()
+{
+  _sql2d_str.str("BEGIN;");
+
+}	/* END START2DSQL */
+
+/* -------------------------------------------------------------------- */
+void
+PostgreSQL::Write2dSQL(RAWTBL *rp, long time, long msec, ulong *p, int nSlices)
+{
+  if (nSlices < 2)
+    return;
+
+  char	temp[128];
+
+  std::string name(rp->name);
+  name = name.substr(0, name.length()-1);
+
+  _sql2d_str << "INSERT INTO " << name << " VALUES ('";
+
+//  sprintf(temp, "%02d:%02d:%02d.%03u', %d, '{",
+//	time/3600, (time%3600)/60, time%60, msec, nSlices);
+
+  char  pf = _sql2d_str.fill('0');
+  int   pw = _sql2d_str.width(2);
+
+  _sql2d_str << time/3600 << ':' << (time%3600)/60 << ':' << time%60 << '.';
+  _sql2d_str.width(3);
+  _sql2d_str << msec << "', " << nSlices << ", '{" << p[0];
+
+  _sql2d_str.fill(pf);
+  _sql2d_str.width(pw);
+
+  for (int i = 1; i < nSlices; ++i)
+    _sql2d_str << ',' << p[i];
+
+  _sql2d_str << "}');";
+
+}	/* END WRITE2DSQL */
+
+/* -------------------------------------------------------------------- */
+void
+PostgreSQL::Submit2dSQL()
+{
+  _sql2d_str << "COMMIT;";
+  submitCommand(_sql2d_str.str());
+
+}	/* END SUBMIT2DSQL */
+
+/* -------------------------------------------------------------------- */
+inline void
+PostgreSQL::addValue(std::stringstream& sql, const NR_TYPE value, const bool addComma)
+{
+  if (addComma)
+    sql << ',';
+
+  if (isnan(value) || isinf(value))
+    sql << MISSING_VALUE;
+  else
+    sql << value;
+
+}	// END ADDVALUE
+
+/* -------------------------------------------------------------------- */
+inline void
+PostgreSQL::addValue(
+		std::stringstream& sql,
+		std::stringstream& udp,
+		const NR_TYPE value,
+		const bool addComma)
+{
+  if (addComma)
+  {
+    sql << ',';
+    udp << ',';
+  }
+
+  if (isnan(value) || isinf(value))
+  {
+    sql << MISSING_VALUE;
+    udp << MISSING_VALUE;
+  }
+  else
+  {
+    sql << value;
+    udp << value;
+  }
+
+}	// END ADDVALUE
+
+/* -------------------------------------------------------------------- */
+inline void
+PostgreSQL::addVector(
+		std::stringstream& sql,
+		std::stringstream& udp,
+		const NR_TYPE *value,
+		const int nValues,
+		const bool addComma)
+{
+  if (addComma)
+  {
+    sql << ',';
+    udp << ',';
+  }
+
+  sql << "'{";
+  udp << '{';
+
+  for (int j = 0; j < nValues; ++j)
+  {
+    if (j != 0)
+      addValue(sql, udp, value[j], true);
+    else
+      addValue(sql, udp, value[j], false);
+  }
+
+  sql << "}'";
+  udp << '}';
+
+}	// END ADDVECTOR
+
+/* -------------------------------------------------------------------- */
+void
+PostgreSQL::addVariableToDataBase(
 		const std::string& name,
 		const std::string& units,
 		const std::string& longName,
@@ -451,14 +571,17 @@ void PostgreSQL::addVariableToDataBase(
   entry << "INSERT INTO Variable_List VALUES ('" <<
 	name		<< "', '" <<
 	units		<< "', '" <<
-	longName	<< "', '" <<
-	"RAF_" << sampleRate << "hz', '" <<
-	nDims		<< "', '{";
+	longName	<< "', '";
+
+  if (sampleRate > 0)
+    entry << RATE_TABLE_PREFIX << sampleRate;
+
+  entry << "', '" << nDims << "', '{";
 
   for (int i = 0; i < nDims; ++i)
   {
     if (i > 0)
-      entry << ",";
+      entry << ',';
 
     entry << dims[i];
   }
@@ -467,7 +590,7 @@ void PostgreSQL::addVariableToDataBase(
   for (int i = 0; i < nCals; ++i)
   {
     if (i > 0)
-      entry << ",";
+      entry << ',';
 
     entry << cal[i];
   }
@@ -480,58 +603,15 @@ void PostgreSQL::addVariableToDataBase(
 }	// END ADDVARIABLETODATABASE
 
 /* -------------------------------------------------------------------- */
-void PostgreSQL::addValue(std::stringstream& sql, std::stringstream& udp, const NR_TYPE value, const bool addComma)
-{
-  if (isnan(value) || isinf(value))
-  {
-    sql << MISSING_VALUE;
-    udp << MISSING_VALUE;
-  }
-  else
-  {
-    sql << value;
-    udp << value;
-  }
-
-  if (addComma)
-  {
-    sql << ",";
-    udp << ",";
-  }
-
-}	// END ADDVALUE
-
-/* -------------------------------------------------------------------- */
-void PostgreSQL::addVector(std::stringstream& sql, std::stringstream& udp, const NR_TYPE *value, const int nValues, const bool addComma)
-{
-  sql << "'{";
-  udp << "{";
-
-  for (int j = 0; j < nValues; ++j)
-  {
-    if (j != nValues-1)
-      addValue(sql, udp, value[j], true);
-    else
-      addValue(sql, udp, value[j], false);
-  }
-
-  sql << "}'";
-  udp << "}";
-
-  if (addComma)
-  {
-    sql << ",";
-    udp << ",";
-  }
-
-}	// END ADDVECTOR
-
-/* -------------------------------------------------------------------- */
-void PostgreSQL::addCategory(std::string varName, std::string category)
+void
+PostgreSQL::addCategory(std::string varName, std::string category)
 {
   if (category.length() == 0)
     return;
 
+  /* @todo Must check  the category for a ' (single quote), appears
+   * we have one with one.
+   */
   std::string entry = "INSERT INTO categories VALUES ('" + varName +
 			"', '" + category + "')";
 
@@ -540,26 +620,41 @@ void PostgreSQL::addCategory(std::string varName, std::string category)
 }	// END ADDCATEGORY
 
 /* -------------------------------------------------------------------- */
-void PostgreSQL::addVariableToTables(
-	rateTableMap &tableMap, const var_base *var)
+void
+PostgreSQL::addVariableToTables(rateTableMap &tableMap, const var_base *var)
 {
   std::vector<int> rates;
 
+  /* Add to LRT_TABLE.
+   */
   rates.push_back(1);
 
-  if (var->SampleRate > 1)
+  /* Don't add derived. - or vectors for the time being.
+   */
+  if (var->SampleRate > 0 && var->Length == 1)
     rates.push_back(var->SampleRate);
 
   for (int i = 0; i < rates.size(); ++i)
   {
     // Set up raw tables.
-    std::stringstream preamble;
+    std::stringstream preamble, rt;
 
-    preamble	<< "CREATE TABLE RAF_" << rates[i]
-		<< "hz (datetime timestamp PRIMARY KEY, ";
+    if (i == 0)
+      rt << LRT_TABLE;
+    else
+      rt << RATE_TABLE_PREFIX << rates[i];
+
+    _ratesTables[rates[i]] = rt.str();
+
+    preamble << "CREATE TABLE " << rt.str() << " (datetime timestamp ";
+
+    if (rates[i] > 1)
+      preamble << "(3) ";
+
+    preamble << "PRIMARY KEY, ";
 
     if (tableMap[preamble.str()].length() > 0)
-      tableMap[preamble.str()] += ",";
+      tableMap[preamble.str()] += ',';
 
     tableMap[preamble.str()] += var->name;
 
@@ -569,22 +664,43 @@ void PostgreSQL::addVariableToTables(
       tableMap[preamble.str()] += " FLOAT";
   }
 
-}	// END ADDTOSAMPLERATELIST
+}	// END ADDVARIABLETOTABLES
 
 /* -------------------------------------------------------------------- */
-void PostgreSQL::createSampleRateTables(const rateTableMap &tableMap)
+void
+PostgreSQL::createSampleRateTables(const rateTableMap &tableMap)
 {
   rateTableMap::const_iterator it;
 
   for (it = tableMap.begin(); it != tableMap.end(); ++it)
   {
     std::stringstream  cmd;
-    cmd << it->first << it->second << ")";
+    cmd << it->first << it->second << ')';
 
     submitCommand(cmd.str());
   }
 
 }	// END CREATESAMPLERATETABLES
+
+/* -------------------------------------------------------------------- */
+void
+PostgreSQL::submitCommand(const std::string command)
+{
+  if (_conn == 0)
+    return;
+
+  PGresult* res;
+
+  while ( (res = PQgetResult(_conn)) )
+    PQclear(res);
+
+  PQsendQuery(_conn, command.c_str());
+  fprintf(stderr, "%s", PQerrorMessage(_conn));
+
+  while ( (res = PQgetResult(_conn)) )
+    PQclear(res);
+
+}	/* END SUBMITCOMMAND */
 
 /* -------------------------------------------------------------------- */
 void PostgreSQL::closeSQL()
