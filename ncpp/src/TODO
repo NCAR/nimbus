@@ -15,4 +15,6 @@ H XYZ
 - optional total conc/surface/volume displayed in corner.
 - Toggle /Liter vs /cm3
 - data from ncav?
-- Just accum or just conc.
+- Support files with just accum or just conc.
+
+- read ncplots .ncplotrc (for colors at least)
