@@ -12,15 +12,11 @@ STATIC FNS:	PrintVariables()
 
 DESCRIPTION:	
 
-INPUT:		long beginning and ending times
-
-OUTPUT:		
-
 REFERENCES:	average.c, compute.c, netcdf.c, timeseg.c
 
 REFERENCED BY:	StartProcessing()
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
 */
 
@@ -42,7 +38,6 @@ static void PrintVariables();
 static int FindFirstRecordNumber(long starttime);
 static int FindNextRecordNumber(long endtime);
 
-static int Month(char s[]);
 void UpdateTime(int currentTime[]);
 void getNCattr(int ncid, char attr[], char **dest);
 bool isMissingValue(float target, float fillValue);
@@ -50,7 +45,8 @@ bool isMissingValue(float target, float fillValue);
 /* -------------------------------------------------------------------- */
 int LowRateLoop(long starttime, long endtime)
 {
-  int	rc, i, Cntr = 0;
+  size_t i;
+  int	rc, Cntr = 0;
   char	*tmp, units[32], long_name[64];
   float	miss;
 
@@ -60,8 +56,8 @@ int LowRateLoop(long starttime, long endtime)
   /* Print Title
    */
   if (AmesFormat)
-    {
-    int	nVars = nVariables - 3, xTraLines;
+  {
+    int	nVars = outputList.size(), xTraLines;
 
     xTraLines = (nVars-1) / NVARS_PER_LINE;
 
@@ -90,73 +86,78 @@ int LowRateLoop(long starttime, long endtime)
     fprintf(OutputFile, "Time in seconds from 00Z\n");
     fprintf(OutputFile, "%3d\n", nVars);
 
-    for (i = 0; i < nVariables; ++i)
-      if (Variable[i]->Output)
-        fprintf(OutputFile, "1.0 ");
+    for (i = 0; i < outputList.size(); ++i)
+      fprintf(OutputFile, "1.0 ");
 
     fprintf(OutputFile, "\n");
 
-    for (i = 0; i < nVariables; ++i)
-      if (Variable[i]->Output)
-        {
-        if (nc_get_att_float(InputFile, i, "_FillValue", &miss) != NC_NOERR)
-          if (nc_get_att_float(InputFile, i, "missing_value", &miss) != NC_NOERR)
-            if (nc_get_att_float(InputFile, i, "MissingValue", &miss) != NC_NOERR)
-              miss = -32767.0;	// Kinda Bogus.
+    for (i = 0; i < outputList.size(); ++i)
+    {
+      if (nc_get_att_float(InputFile, i, "_FillValue", &miss) != NC_NOERR)
+        if (nc_get_att_float(InputFile, i, "missing_value", &miss) != NC_NOERR)
+          if (nc_get_att_float(InputFile, i, "MissingValue", &miss) != NC_NOERR)
+            miss = -32767.0;	// Kinda Bogus.
 
-        fprintf(OutputFile, "99999 ");
-        Variable[i]->MissingValue = miss;
+      fprintf(OutputFile, "99999 ");
+      outputList[i]->MissingValue = miss;
 
-        if (++Cntr % NVARS_PER_LINE == 0)
-          fprintf(OutputFile, "\n");
-        }
+      if (++Cntr % NVARS_PER_LINE == 0)
+        fprintf(OutputFile, "\n");
+    }
 
     if (Cntr % NVARS_PER_LINE)
       fprintf(OutputFile, "\n");
 
-    for (i = 0; i < nVariables; ++i)
-      if (Variable[i]->Output)
-        {
-        nc_get_att_text(InputFile, Variable[i]->inVarID, "units", units);
-        nc_get_att_text(InputFile, Variable[i]->inVarID, "long_name", long_name);
+    for (i = 0; i < outputList.size(); ++i)
+    {
+      nc_get_att_text(InputFile, outputList[i]->inVarID, "units", units);
+      nc_get_att_text(InputFile, outputList[i]->inVarID, "long_name", long_name);
 
-        fprintf(OutputFile, "%s (%s)\n", long_name, units);
-        }
+      fprintf(OutputFile, "%s (%s)\n", long_name, units);
+    }
 
     fprintf(OutputFile, "  0\n");
     fprintf(OutputFile, "%3d\n", 1 + xTraLines);
-    }
+  }
 
 
-  fprintf(OutputFile, "UTC   ");
+  fprintf(OutputFile, "UTC     ");
 
   highestRate = 1;
   Cntr = 0;
 
-  for (i = 0; i < nVariables; ++i)
-    if (Variable[i]->Output)
-      {
-//      if ((siz = atoi(&Variable[i]->Format[1])) < 5)
-//        siz = 13;
+  for (i = 0; i < outputList.size(); ++i)
+  {
+//    if ((siz = atoi(&outputList[i]->Format[1])) < 5)
+//      siz = 13;
 
-      fprintf(OutputFile, " %-8s", Variable[i]->name);
+    fprintf(OutputFile, " %s ", outputList[i]->name.c_str());
 
-      if (Variable[i]->VectorLength > 1)
-        {
-        int	j;
+    if (outputList[i]->VectorLength > 1)
+    {
+      for (size_t j = 2; j < outputList[i]->VectorLength; ++j)
+        fprintf(OutputFile, " %3d", j);
+    }
 
-        for (j = 2; j < Variable[i]->VectorLength; ++j)
-          fprintf(OutputFile, " %3d", j);
-        }
+    highestRate = std::max(highestRate, outputList[i]->OutputRate);
 
-      highestRate = MAX(highestRate, Variable[i]->OutputRate);
-
-      if (AmesFormat && ++Cntr % NVARS_PER_LINE == 0)
-        fprintf(OutputFile, "\n");
-      }
+    if (AmesFormat && ++Cntr % NVARS_PER_LINE == 0)
+      fprintf(OutputFile, "\n");
+  }
 
   if (!AmesFormat || (AmesFormat && Cntr % NVARS_PER_LINE))
     fprintf(OutputFile, "\n");
+
+
+  if (!AmesFormat && PrintUnits)
+  {
+    fprintf(OutputFile, "Time    ");
+
+    for (i = 0; i < outputList.size(); ++i)
+      fprintf(OutputFile, " %s ", outputList[i]->units.c_str());
+
+    fprintf(OutputFile, "\n");
+  }
 
 
   /* This is the main control loop.
@@ -166,7 +167,7 @@ int LowRateLoop(long starttime, long endtime)
     PrintVariables();
     UpdateTime(currentTime);
 
-    while (PauseFlag == TRUE)
+    while (PauseFlag == true)
       XtAppProcessEvent(context, XtIMAll);
 
     if (PauseWhatToDo == P_QUIT)
@@ -187,8 +188,9 @@ exit:
 /* -------------------------------------------------------------------- */
 static void PrintVariables()
 {
-  int		i, j, msec, cntr = 0;
-  NR_TYPE	data[640];
+  size_t	i, j;
+  int		msec, cntr = 0;
+  float		data[640];
   VARTBL	*vp;
 
   static int	prevHour = 0;
@@ -199,11 +201,11 @@ static void PrintVariables()
   start[1] = 0;
 
   for (msec = 0; msec < 1000; msec += (1000 / highestRate))
-    {
+  {
     /* Print timestamp / rolling counter.
      */
     if (XaxisType & TIME)
-      {
+    {
       static int	prevVal = 0, val;
       val = currentTime[0] * 3600 + currentTime[1] * 60 + currentTime[2];
 
@@ -221,10 +223,10 @@ static void PrintVariables()
 
       if (highestRate > 1)
         fprintf(OutputFile, ".%03d", msec);
-      }
+    }
     else
     if (XaxisType == UTS)
-      {
+    {
       static int	offset = 0;
 
       if (currentTime[0] == 0 && prevHour == 23)	/* midnight wrap */
@@ -235,62 +237,62 @@ static void PrintVariables()
 
 
       prevHour = currentTime[0];
-      }
+    }
     else
       fprintf(OutputFile, "%ld", CurrentInputRecordNumber);
 
 
-    for (i = 0; i < nVariables; ++i)
-      if ((vp = Variable[i])->Output)
+    for (i = 0; i < outputList.size(); ++i)
+    {
+      vp = outputList[i];
+      if (vp->VectorLength > 1)
         {
-        if (vp->VectorLength > 1)
-          {
-          count[2] = vp->VectorLength;
+        count[2] = vp->VectorLength;
 
-          nc_get_vara_float(InputFile, vp->inVarID, start, count, (void *)data);
+        nc_get_vara_float(InputFile, vp->inVarID, start, count, data);
 
-          if (AmesFormat)
-            for (j = 1; j < vp->VectorLength; ++j)
-              if (isMissingValue(data[j], vp->MissingValue))
-                data[j] = 99999.0;
+        if (AmesFormat)
+          for (j = 1; j < vp->VectorLength; ++j)
+            if (isMissingValue(data[j], vp->MissingValue))
+              data[j] = 99999.0;
 
-          if (strchr(vp->Format, 'd'))
-            for (j = 1; j < vp->VectorLength; ++j)
-              fprintf(OutputFile, vp->Format, (int)data[j]);
-          else
-            for (j = 1; j < vp->VectorLength; ++j)
-              fprintf(OutputFile, vp->Format, data[j]);
-          }
+        if (strchr(vp->Format, 'd'))
+          for (j = 1; j < vp->VectorLength; ++j)
+            fprintf(OutputFile, vp->Format, (int)data[j]);
         else
-          {
-          nc_get_var1_float(InputFile, vp->inVarID, start, (void *)data);
+          for (j = 1; j < vp->VectorLength; ++j)
+            fprintf(OutputFile, vp->Format, data[j]);
+      }
+      else
+      {
+        nc_get_var1_float(InputFile, vp->inVarID, start, data);
 
-          if (AmesFormat && isMissingValue(data[0], vp->MissingValue))
-              data[0] = 99999.0;
+        if (AmesFormat && isMissingValue(data[0], vp->MissingValue))
+            data[0] = 99999.0;
 
-          if (strchr(vp->Format, 'd'))
-            fprintf(OutputFile, vp->Format, (int)data[0]);
-          else
-            fprintf(OutputFile, vp->Format, data[0]);
-          }
+        if (strchr(vp->Format, 'd'))
+          fprintf(OutputFile, vp->Format, (int)data[0]);
+        else
+          fprintf(OutputFile, vp->Format, data[0]);
+      }
 
-        if (AmesFormat && ++cntr % NVARS_PER_LINE == 0)
-          fprintf(OutputFile, "\n");
-        }
+      if (AmesFormat && ++cntr % NVARS_PER_LINE == 0)
+        fprintf(OutputFile, "\n");
+    }
 
     if (!AmesFormat || (AmesFormat && cntr % NVARS_PER_LINE))
       fprintf(OutputFile, "\n");
     ++start[1];
-    }
+  }
 
 }	/* END PRINTVARIABLES */
  
 /* -------------------------------------------------------------------- */
 static int FindFirstRecordNumber(long starttime)
 {
-  timeVarID[0] = Variable[SearchTable(Variable, nVariables, "HOUR")]->inVarID;
-  timeVarID[1] = Variable[SearchTable(Variable, nVariables, "MINUTE")]->inVarID;
-  timeVarID[2] = Variable[SearchTable(Variable, nVariables, "SECOND")]->inVarID;
+  timeVarID[0] = Variable[SearchTable(Variable, Variable.size(), "HOUR")]->inVarID;
+  timeVarID[1] = Variable[SearchTable(Variable, Variable.size(), "MINUTE")]->inVarID;
+  timeVarID[2] = Variable[SearchTable(Variable, Variable.size(), "SECOND")]->inVarID;
 
   CurrentInputRecordNumber = -1;
 
@@ -309,24 +311,24 @@ static int FindNextRecordNumber(long endtime)
 {
   int		current_time;
   size_t	mindex[1];
-  NR_TYPE	f;
+  int		f;
 
-  static bool	rollOver = FALSE;
+  static bool	rollOver = false;
 
-  if (++CurrentInputRecordNumber >= nRecords)	/* End of tape	*/
+  if (++CurrentInputRecordNumber >= (long)nRecords)	/* End of tape	*/
     return(ERR);
 
   mindex[0] = CurrentInputRecordNumber;
 
-  nc_get_var1_float(InputFile, timeVarID[0], mindex, (void *)&f);
+  nc_get_var1_int(InputFile, timeVarID[0], mindex, &f);
   current_time = (int)f * 3600;
   currentTime[0] = (int)f;
 
-  nc_get_var1_float(InputFile, timeVarID[1], mindex, (void *)&f);
+  nc_get_var1_int(InputFile, timeVarID[1], mindex, &f);
   current_time += (int)f * 60;
   currentTime[1] = (int)f;
 
-  nc_get_var1_float(InputFile, timeVarID[2], mindex, (void *)&f);
+  nc_get_var1_int(InputFile, timeVarID[2], mindex, &f);
   current_time += (int)f;
   currentTime[2] = (int)f;
 
@@ -335,7 +337,7 @@ static int FindNextRecordNumber(long endtime)
 
 
   if (current_time == 0 && CurrentInputRecordNumber > 0)
-    rollOver = TRUE;
+    rollOver = true;
 
   if (rollOver)
     current_time += 86400;
@@ -346,22 +348,6 @@ static int FindNextRecordNumber(long endtime)
     return(ERR);
 
 }	/* END FINDNEXTRECORDNUMBER */
-
-/* -------------------------------------------------------------------- */
-static char *mons[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
-	"Aug", "Sep", "Oct", "Nov", "Dec" };
-
-static int Month(char s[])
-{
-  int	i;
-
-  for (i = 0; i < 12; ++i)
-    if (strncmp(mons[i], s, 3) == 0)
-      return(i+1);
-
-  return(0);
-
-}
 
 /* -------------------------------------------------------------------- */
 bool isMissingValue(float target, float fillValue)

@@ -1,5 +1,6 @@
-if=/home/data/130rf14.cdf
+if=/home/data/135rf01.nc
 of=/home/data/cjw.asc
-ti=23:00:00-23:30:00
-var=atx
+ti=18:00:00-19:30:00
+var=WS
+var=BDIFR
 var=ADIFR

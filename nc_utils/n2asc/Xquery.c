@@ -29,33 +29,33 @@ static Widget	queryBox;
 /* -------------------------------------------------------------------- */
 void QueryUser(char str[], int maxlen, void (*callBack)())
 {
-	Widget	w;
-	Arg	args[5];
-	int	n;
-	XmString	xStr;
+  Widget	w;
+  Arg		args[5];
+  int		n;
+  XmString	xStr;
 
-	n = 0;
-	w = XmSelectionBoxGetChild(queryBox, XmDIALOG_SELECTION_LABEL);
-	xStr = XmStringCreateLtoR(str, XmSTRING_DEFAULT_CHARSET);
-	XtSetArg(args[n], XmNlabelString, xStr); ++n;
-	XtSetValues(w, args, n);
-	XmStringFree(xStr);
+  n = 0;
+  w = XmSelectionBoxGetChild(queryBox, XmDIALOG_SELECTION_LABEL);
+  xStr = XmStringCreateLtoR(str, XmSTRING_DEFAULT_CHARSET);
+  XtSetArg(args[n], XmNlabelString, xStr); ++n;
+  XtSetValues(w, args, n);
+  XmStringFree(xStr);
 
 
-	n = 0;
-	w = XmSelectionBoxGetChild(queryBox, XmDIALOG_TEXT);
-	XtSetArg(args[n], XmNmaxLength, maxlen); ++n;
-	XtSetArg(args[n], XmNwidth, 0); ++n;
-	XtSetArg(args[n], XmNcolumns, maxlen); ++n;
-	XtSetValues(w, args, n);
-	XmTextSetString(w, "");
+  n = 0;
+  w = XmSelectionBoxGetChild(queryBox, XmDIALOG_TEXT);
+  XtSetArg(args[n], XmNmaxLength, maxlen); ++n;
+  XtSetArg(args[n], XmNwidth, 0); ++n;
+  XtSetArg(args[n], XmNcolumns, maxlen); ++n;
+  XtSetValues(w, args, n);
+  XmTextSetString(w, "");
 
-	XtRemoveAllCallbacks(queryBox, XmNokCallback);
-	XtAddCallback(queryBox, XmNokCallback, (XtCallbackProc)callBack,
+  XtRemoveAllCallbacks(queryBox, XmNokCallback);
+  XtAddCallback(queryBox, XmNokCallback, (XtCallbackProc)callBack,
 							(XtPointer)NULL);
 
-	XtManageChild(queryBox);
-	XtPopup(XtParent(queryBox), XtGrabNonexclusive);
+  XtManageChild(queryBox);
+  XtPopup(XtParent(queryBox), XtGrabNonexclusive);
 
 }	/* END QUERYUSER */
 
@@ -66,34 +66,34 @@ void QueryCancel(
 	XtPointer	clientData,
 	XtPointer	callData)
 {
-	XtPopdown(XtParent(queryBox));
-	XtUnmanageChild(queryBox);
+  XtPopdown(XtParent(queryBox));
+  XtUnmanageChild(queryBox);
 
 }	/* END QUERYOK */
 
 /* -------------------------------------------------------------------- */
 void CreateQueryBox(Widget parent)
 {
-	queryBox = XmCreatePromptDialog(parent, "queryBox", NULL, 0);
-	XtSetSensitive(	XmSelectionBoxGetChild(queryBox, XmDIALOG_HELP_BUTTON),
+  queryBox = XmCreatePromptDialog(parent, "queryBox", NULL, 0);
+  XtSetSensitive(XmSelectionBoxGetChild(queryBox, XmDIALOG_HELP_BUTTON),
 					FALSE);
 
-	XtAddCallback(queryBox, XmNcancelCallback, (XtCallbackProc)QueryCancel,
-							(XtPointer)NULL);
+  XtAddCallback(queryBox, XmNcancelCallback, (XtCallbackProc)QueryCancel,
+					(XtPointer)NULL);
 
 }	/* END CREATEQUERYBOX */
 
 /* -------------------------------------------------------------------- */
 void ExtractAnswer(char *s)
 {
-	Widget	w;
-	char	*a;
+  Widget	w;
+  char	*a;
 
-	w = XmSelectionBoxGetChild(queryBox, XmDIALOG_TEXT);
-	a = XmTextGetString(w);
+  w = XmSelectionBoxGetChild(queryBox, XmDIALOG_TEXT);
+  a = XmTextGetString(w);
 
-	strcpy(s, a);
-	XtFree(a);
+  strcpy(s, a);
+  XtFree(a);
 
 }	/* END EXTRACTANSWER */
 

@@ -16,7 +16,7 @@ REFERENCES:	none
 
 REFERENCED BY:	none
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
 */
 
@@ -26,10 +26,9 @@ char	buffer[4096];		/* Generic, volatile string space	*/
 char	*ProjectNumber, *ProjectName, DefaultFormat[32];
 char	*Aircraft, *FlightNumber, *FlightDate, *Defaults;
 
-VARTBL  *Variable[MAX_VARIABLES];
+std::vector<VARTBL *> Variable, outputList;
 
-int	nVariables;
-bool	PauseFlag, Interactive, AmesFormat;
+bool	PauseFlag, Interactive, AmesFormat, PrintUnits;
 int	InputFile, PauseWhatToDo, XaxisType;
 FILE	*OutputFile;
 size_t	nRecords;

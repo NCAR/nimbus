@@ -1,10 +1,10 @@
 .na
 .nh
-.TH N2ASC 1 "29 January 1994" "Local Command"
+.TH N2ASC 1 "27 February 2005" "Local Command"
 .SH NAME
 n2asc \- netCDF to ASCII converter
 .SH SYNOPSIS
-.B n2asc [-f format] [-b batchFile] [-c] [-a] [-n]
+.B n2asc [-f format] [-b batchFile] [-c] [-a] [-n] [-u]
 .SH DESCRIPTION
 .B n2asc 
 is a program for converting a netCDF file (or subset of) to ASCII.  n2asc
@@ -52,6 +52,9 @@ Ames Data Exchange Format.
 .PP
 The -n option tells n2asc to not place colons in the time stamp.  Format
 will be HHMMSS instead of HH:MM:SS.
+.PP
+The -u option tells n2asc to print variable units on the 2nd line.  This
+will not apply to NASA output formats.
 .PP
 .SH EXAMPLE:
 .PP

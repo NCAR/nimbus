@@ -10,15 +10,7 @@ STATIC FNS:	none
 
 DESCRIPTION:	Contains callbacks for the nimbus GUI pause related stuff.
 
-INPUT:			
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	XtAppMainLoop()
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
 */
 
@@ -32,8 +24,8 @@ static Widget	PauseShell;
 /* -------------------------------------------------------------------- */
 void PauseProcessing(Widget w, XtPointer client, XtPointer call)
 {
-  PauseFlag = TRUE;
-  XtSetSensitive(goButton, FALSE);
+  PauseFlag = true;
+  XtSetSensitive(goButton, false);
 
   XtManageChild(PauseShell);
   XtPopup(XtParent(PauseShell), XtGrabNonexclusive);
@@ -43,7 +35,7 @@ void PauseProcessing(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void PauseStop(Widget w, XtPointer client, XtPointer call)
 {
-  PauseFlag = FALSE;
+  PauseFlag = false;
   PauseWhatToDo = P_QUIT;
 
   XtPopdown(XtParent(PauseShell));
@@ -54,9 +46,9 @@ void PauseStop(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void PauseContinue(Widget w, XtPointer client, XtPointer call)
 {
-  PauseFlag = FALSE;
+  PauseFlag = false;
   PauseWhatToDo = P_CONTINUE;
-  XtSetSensitive(goButton, TRUE);
+  XtSetSensitive(goButton, true);
 
   XtPopdown(XtParent(PauseShell));
   XtUnmanageChild(PauseShell);

@@ -11,7 +11,7 @@ INPUT:		String to Display.
 
 OUTPUT:		Error message in its own tidy little window.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1991
+COPYRIGHT:	University Corporation for Atmospheric Research, 1991-2005
 -------------------------------------------------------------------------
 */
 
@@ -24,7 +24,7 @@ static Widget	errorBox;
 /* -------------------------------------------------------------------- */
 void ShowError(char str[])
 {
-  Widget		label;
+  Widget	label;
   Arg		args[5];
   XmString	xStr;
 
@@ -41,10 +41,7 @@ void ShowError(char str[])
 
 /* -------------------------------------------------------------------- */
 /* ARGSUSED */
-void ErrorOK(
-	Widget		w,
-	XtPointer	clientData,
-	XtPointer	callData)
+void ErrorOK(Widget w, XtPointer clientData, XtPointer callData)
 {
   XtPopdown(XtParent(errorBox));
   XtUnmanageChild(errorBox);

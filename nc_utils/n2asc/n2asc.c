@@ -12,16 +12,13 @@ DESCRIPTION:
 
 REFERENCES:	Xwin.c, init.c then enters XtAppMainLoop()
 
-REFERENCED BY:	user
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2000
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
 */
 
 #include "define.h"
 #include "fbr.h"
 
-#define APP_NAME	"n2asc"
 #define APP_CLASS	"XmN2Ascii"
 
 
@@ -86,19 +83,19 @@ int main(int argc, char *argv[])
   ProcessArgv(argc, argv);
 
   if (Interactive)
-    {
+  {
     XtManageChild(MainWindow);
     XtPopup(XtParent(MainWindow), XtGrabNone);
 
     XtAppMainLoop(context);
-    }
+  }
   else
-    {
+  {
     ReadBatchFile(NULL);
     Proceed(NULL, NULL, NULL);
     ReadBatchFile(NULL);
     StartProcessing(NULL, NULL, NULL);
-    }
+  }
 
   return(0);
 

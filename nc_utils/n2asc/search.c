@@ -15,11 +15,7 @@ INPUT:		An array of pointers and target pointer.
 
 OUTPUT:		pointer to located item or NULL
 
-REFERENCES:	none
-
-REFERENCED BY:	hdr_decode.c, order.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 -------------------------------------------------------------------------
 */
 
@@ -29,9 +25,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int SearchTable(char *table[], int ntable, char target[])
+int SearchTable(std::vector<VARTBL*>& table, int ntable, char target[])
 {
-  register int	beg, mid, end, rc;
+  int	beg, mid, end, rc;
 
   if (ntable == 0)
     return(ERR);
@@ -43,7 +39,7 @@ int SearchTable(char *table[], int ntable, char target[])
     {
     mid = (end + beg) >> 1;
 
-    if ((rc = strcmp(target, table[mid])) == 0)
+    if ((rc = strcmp(target, table[mid]->name.c_str())) == 0)
       return(mid);
 
     if (rc < 0)
@@ -58,20 +54,20 @@ int SearchTable(char *table[], int ntable, char target[])
 }	/* END SEARCHTABLE */
 
 /* -------------------------------------------------------------------- */
-int SearchTableSansLocation(char *table[], int ntable, char target[])
+int SearchTableSansLocation(std::vector<VARTBL*>& table, int ntable, char target[])
 {
   int     i, rc;
   char    *p, c = '\0';
  
   for (i = 0; i < ntable; ++i)
     {
-    if ( (p = strchr(table[i], '_')) )
+    if ( (p = strchr(table[i]->name.c_str(), '_')) )
       {
       c = *p;
       *p = '\0';
       }
  
-    rc = strcmp(target, table[i]);
+    rc = strcmp(target, table[i]->name.c_str());
  
     if (p)
       *p = c;

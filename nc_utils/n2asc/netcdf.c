@@ -14,18 +14,11 @@ DESCRIPTION:	This file has the routines necassary to Create and write
 		data for distribution of NCAR/RAF aircraft data in netCDF
 		format.
 
-INPUT:			
-
-OUTPUT:		none
-
-REFERENCES:	none
-
-REFERENCED BY:	LowRateLoop()
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
 */
 
+#include <algorithm>
 #include <errno.h>
 #include <time.h>
 
@@ -33,8 +26,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 #include "netcdf.h"
 
 void FormatTimeSegmentsForOutputFile(char buff[]);
-void SortTable(char **table, int beg, int end);
+void SortTable(std::vector<VARTBL*>, int beg, int end);
 void getNCattr(int ncid, char attr[], char **dest);
+static bool VarCompareLT(const VARTBL *x, const VARTBL *y);
 
 
 /* -------------------------------------------------------------------- */
@@ -56,10 +50,8 @@ int ReadInputFile(char fileName[])
 {
   VARTBL	*vp;
   int		i, nVars, nDims, dimIDs[3], recDim;
-  size_t		tmp;
-  char	name[NAMELEN];
-
-  nVariables = 0;
+  size_t	tmp;
+  char		name[128], units[128];
 
 
   /* Open Input File
@@ -88,43 +80,46 @@ int ReadInputFile(char fileName[])
   getNCattr(InputFile, "FlightNumber", &FlightNumber);
 
   for (i = 0; i < nVars; ++i)
-    {
+  {
     nc_inq_var(InputFile, i, name, 0, &nDims, dimIDs, 0);
 
     if (strcmp(name, "base_time") == 0)
       continue;
 
-    vp = Variable[nVariables++] = (VARTBL *)GetMemory(sizeof(VARTBL));
+    vp = new VARTBL;
+    Variable.push_back(vp);
 
-    strcpy(vp->name, name);
+    vp->name = name;
     vp->SampleRate = 0;
-    nc_get_att_int(InputFile, i, "SampledRate", (void *)&vp->SampleRate);
+    nc_get_att_int(InputFile, i, "SampledRate", &vp->SampleRate);
+    nc_get_att_text(InputFile, i, "units", units);
+    vp->units = units;
 
     if (nDims >= 2)
-      {
+    {
       nc_inq_dimlen(InputFile, dimIDs[1], &tmp);
       vp->OutputRate = tmp;
-      }
+    }
     else
       vp->OutputRate = 1;
 
-    vp->Output	= FALSE;
+    vp->Output	= false;
     vp->inVarID	= i;
-    if (strcmp(vp->name, "Time") == 0)
+    if (vp->name == "Time")
       strcpy(vp->Format, " %d");
     else
       strcpy(vp->Format, DefaultFormat);
 
     if (nDims >= 3)
-      {
+    {
       nc_inq_dimlen(InputFile, dimIDs[2], &tmp);
       vp->VectorLength = tmp;
-      }
+    }
     else
        vp->VectorLength = 1;
-    }
+  }
 
-  SortTable(Variable, 0, nVariables - 1);
+  std::sort(Variable.begin(), Variable.end(), VarCompareLT);
 
   return(OK);
 
@@ -137,7 +132,7 @@ void getNCattr(int ncid, char attr[], char **dest)
 
   if (nc_inq_attlen(ncid, NC_GLOBAL, attr, &len) == NC_NOERR)
     {
-    *dest = (char *)GetMemory(len+1);
+    *dest = new char[len+1];
     nc_get_att_text(ncid, NC_GLOBAL, attr, *dest);
     (*dest)[len] = '\0';
 
@@ -146,7 +141,7 @@ void getNCattr(int ncid, char attr[], char **dest)
     }
   else
     {
-    *dest = (char *)GetMemory(1);
+    *dest = new char[1];
     *dest[0] = '\0';
     }
 
@@ -165,5 +160,11 @@ void CloseNetCDF()
   LogMessage("\n");
 
 }	/* END CLOSENETCDF */
+
+/* -------------------------------------------------------------------- */
+static bool VarCompareLT(const VARTBL *x, const VARTBL *y)
+{
+    return(x->name < y->name);
+}
 
 /* END NETCDF.C */

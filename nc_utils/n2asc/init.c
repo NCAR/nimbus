@@ -12,15 +12,7 @@ STATIC FNS:
 
 DESCRIPTION:	
 
-INPUT:		none
-
-OUTPUT:		none
-
-REFERENCES:	none
-
-REFERENCED BY:	nimbus.c, cb_main.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
 */
 
@@ -38,19 +30,20 @@ void Initialize()
   char	*p;
 
   XaxisType	= TIME;
-  PauseFlag	= FALSE;
+  PauseFlag	= false;
+  PrintUnits	= false;
   PauseWhatToDo	= P_CONTINUE;
 
   strcpy(DefaultFormat, " %g");
 
   if ( (p = getenv("DATA_DIR")) )
-    {
+  {
     strcpy(buffer, p);
     strcat(buffer, "/");
 
     XmTextFieldSetString(inputFileText, buffer);
     XmTextFieldSetString(outputFileText, buffer);
-    }
+  }
 
   pos = XmTextFieldGetLastPosition(inputFileText);
   XmTextFieldSetInsertionPosition(inputFileText, pos);
@@ -58,34 +51,32 @@ void Initialize()
   pos = XmTextFieldGetLastPosition(outputFileText);
   XmTextFieldSetInsertionPosition(outputFileText, pos);
 
-  XtSetSensitive(goButton, TRUE);
+  XtSetSensitive(goButton, true);
 
 }	/* END INITIALIZE */
 
 /* -------------------------------------------------------------------- */
 void ProcessArgv(int argc, char *argv[])
 {
-  int	i;
+  Interactive = true;
 
-  Interactive = TRUE;
-
-  for (i = 1; i < argc; ++i)
-    {
+  for (int i = 1; i < argc; ++i)
+  {
     if (argv[i][0] != '-')
-      {
+    {
       fprintf(stderr, "Invalid option %s, ignoring.\n", argv[i]);
       continue;
-      }
+    }
 
     switch (argv[i][1])
-      {
-      case 'a':
-        AmesFormat = TRUE;
+    {
+      case 'a':	/* Ouput NASA Ames DEF format */
+        AmesFormat = true;
         XaxisType = UTS;
         break;
 
       case 'b':
-        Interactive = FALSE;
+        Interactive = false;
         ReadBatchFile(argv[++i]);
         break;
 
@@ -98,15 +89,18 @@ void ProcessArgv(int argc, char *argv[])
         XaxisType = COLONLESS;
         break;
 
+      case 'u':	/* Print units on 2nd line of output, plain */
+        PrintUnits = true;
+        break;
+
       case 'c':	/* Change Xaxis to Running Counter	*/
         XaxisType = RUNCOUNT;
         break;
 
       default:
         fprintf(stderr, "Invalid option %s, ignoring.\n", argv[i]);
-      }
-
     }
+  }
 
 }	/* END PROCESSARGV */
 
@@ -116,25 +110,25 @@ void ReadBatchFile(char file[])
   char		*p;
   FILE		*fp;
   int		indx;
-  static bool	entryCnt = 0;
+  static int	entryCnt = 0;
   static char	fileName[256];
 
   if (++entryCnt == 1)
-    {
+  {
     strcpy(fileName, file);
     return;
-    }
+  }
 
 
   if ((fp = fopen(fileName, "r")) == NULL)
-    {
+  {
     fprintf(stderr, "Can't open batch file %s.\n", fileName);
     exit(1);
-    }
+  }
 
 
   while (fgets(buffer, 512, fp))
-    {
+  {
     if (buffer[0] == COMMENT)
       continue;
 
@@ -148,23 +142,26 @@ void ReadBatchFile(char file[])
       XmTextFieldSetString(outputFileText, strtok(NULL, " \t\n"));
     else
     if (strcmp(p, "ti") == 0 && entryCnt > 2)
-      {
+    {
       XmTextFieldSetString(ts_text[0], strtok(NULL, "- \t"));
       XmTextFieldSetString(ts_text[MAX_TIME_SLICES],strtok(NULL," \t\n"));
       ValidateTime(ts_text[0], NULL, NULL);
       ValidateTime(ts_text[MAX_TIME_SLICES], NULL, NULL);
-      }
+    }
     else
     if (strcmp(p, "var") == 0 && entryCnt > 2)
-      {
+    {
       p = strtok(NULL, " \t\n");
 
-      if ((indx = SearchTable(Variable, nVariables, p)) != ERR)
-        Variable[indx]->Output = TRUE;
+      if ((indx = SearchTable(Variable, Variable.size(), p)) != ERR)
+      {
+        Variable[indx]->Output = true;
+        outputList.push_back(Variable[indx]);
+      }
       else
         fprintf(stderr, "n2asc: no such variable: %s.\n", p);
-      }
     }
+  }
 
   fclose(fp);
 
@@ -187,14 +184,14 @@ void ReadFormatFile()
 
 
   while (fgets(buffer, 512, fp))
-    {
+  {
     if (buffer[0] == COMMENT)
       continue;
 
     if ((var = strtok(buffer, " \t=")) == NULL)
       continue;
 
-    if ((indx = SearchTableSansLocation(Variable, nVariables, var)) == ERR)
+    if ((indx = SearchTableSansLocation(Variable, Variable.size(), var)) == ERR)
       continue;
 
     format = strtok(NULL, "\n");
@@ -202,12 +199,12 @@ void ReadFormatFile()
     strcat(target, "_");
 
     do
-      {
+    {
       strcpy(Variable[indx]->Format, " ");
       strcat(Variable[indx]->Format, format);
-      }
-    while (strncmp((char *)Variable[++indx], target, strlen(target)) == 0);
     }
+    while (strncmp((char *)Variable[++indx], target, strlen(target)) == 0);
+  }
 
   fclose(fp);
 

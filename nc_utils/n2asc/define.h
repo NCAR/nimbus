@@ -9,49 +9,29 @@ DESCRIPTION:	Header File for Nimbus Skeleton.
 #ifndef DEFINE_H
 #define DEFINE_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <sys/types.h>
 #include <Xm/Xm.h>
 
+#include <string>
+#include <vector>
+
 #define NO_NETCDF_2
 
-typedef unsigned char   bool;
-
-#ifndef TRUE
-#define TRUE            1
-#define FALSE           0
-#endif
+//typedef unsigned char   bool;
 
 #ifndef ERR
 #define OK              (0)
 #define ERR             (-1)
 #endif
 
-#ifndef MAX
-#define MAX(x,y) (x>y?x:y)
-#endif
-
-#ifndef MIN
-#define MIN(x,y) (x>y?y:x)
-#endif
-
 
 #define COMMENT         '#'     /* Comment character for textfiles      */
 
-/* This is the number of records that you wish to have access to.  This is
- * used to determine the size of the circular buffer.  This number should
- * be odd.
- */
-#define NBUFFERS		1
-#define CURRENT_BUFFER		-((NBUFFERS >> 1) + 1))
-
-
-#define NAMELEN			20
 #define MAX_VARIABLES		2000
 #define MAX_TIME_SLICES		5
-
 
 /* Values for "XaxisType"	*/
 #define TIME			0x01
@@ -59,16 +39,9 @@ typedef unsigned char   bool;
 #define RUNCOUNT		0x04
 #define UTS			0x08
 
-/* Values for "VariableType"	*/
-#define SDI			0
-#define RAW			1
-#define DERIVED			2
-
-
 /* PauseWhatToDo values.		*/
 #define P_QUIT			0
 #define P_CONTINUE		1
-
 
 #define BEG_OF_TAPE		(-1)
 #define END_OF_TAPE		(-1)
@@ -88,25 +61,27 @@ typedef unsigned char   bool;
 
 
 typedef struct
-	{
-	char	name[NAMELEN];
-	int	inVarID;		/* netCDF variable ID		*/
-	int	SampleRate;
-	int	OutputRate;
-	int	VectorLength;
-	bool	Output;
-	float	MissingValue;
-	char	Format[12];		/* Format to use for printf	*/
-	} VARTBL;
+  {
+  std::string	name;
+  std::string	units;
+
+  int	inVarID;		/* netCDF variable ID		*/
+  int	SampleRate;
+  int	OutputRate;
+  size_t	VectorLength;
+  bool	Output;
+  float	MissingValue;
+  char	Format[12];		/* Format to use for printf	*/
+  } VARTBL;
 
 
 /*		Global Variables
  */
 extern char	*ProjectNumber, *ProjectName, DefaultFormat[];
 extern char	*Aircraft, *FlightNumber, *FlightDate, *Defaults;
-extern VARTBL	*Variable[];
-extern bool	PauseFlag, Interactive, AmesFormat;
-extern int	nVariables, InputFile, PauseWhatToDo, XaxisType;
+extern std::vector<VARTBL*> Variable, outputList;
+extern bool	PauseFlag, Interactive, AmesFormat, PrintUnits;
+extern int	InputFile, PauseWhatToDo, XaxisType;
 extern FILE	*OutputFile;
 extern char	buffer[];
 extern size_t	nRecords;
@@ -124,24 +99,33 @@ extern Widget	list1, goButton, menuBar, readHeaderButton;
 extern Widget	ts_text[];
 
 
-double	atof();
-
 /*		Local Functions
  */
-char	*GetMemory();
-int	SearchTable(char *table[], int ntable, char target[]);
-int	SearchTableSansLocation(char *table[], int ntable, char target[]);
+int	SearchTable(std::vector<VARTBL*>&, int n, char target[]);
+int	SearchTableSansLocation(std::vector<VARTBL*>&, int n, char target[]);
 
 void	CloseNetCDF(), FlushXEvents(), GetUserTimeIntervals(), Initialize(),
-	LogMessage(), HandleError(), HandleWarning(), ReadBatchFile();
+	LogMessage(char msg[]), HandleError(char msg[]),
+	HandleWarning(char msg[], void (*callBack)(Widget, XtPointer, XtPointer)),
+	ReadBatchFile(char fileName[]);
 
 /* Callbacks	*/
-void	CancelWarning(), CancelSetup(), EditTimeSlices(),
-	DismissEditWindow(), EditVariable(), Quit(), ReadHeader(),
-	StartProcessing(), ValidateTime(), Proceed(), ToggleOutput(),
-	PauseProcessing(), PauseStop(), PauseContinue(),
-	DismissTimeSliceWindow(), ResetTimeSliceWindow();
-
+void	CancelWarning(Widget w, XtPointer client, XtPointer call),
+	CancelSetup(Widget w, XtPointer client, XtPointer call),
+	EditTimeSlices(Widget w, XtPointer client, XtPointer call),
+	DismissEditWindow(Widget w, XtPointer client, XtPointer call),
+	EditVariable(Widget w, XtPointer client, XtPointer call),
+	Quit(Widget w, XtPointer client, XtPointer call),
+	ReadHeader(Widget w, XtPointer client, XtPointer call),
+	StartProcessing(Widget w, XtPointer client, XtPointer call),
+	ValidateTime(Widget w, XtPointer client, XtPointer call),
+	Proceed(Widget w, XtPointer client, XtPointer call),
+	ToggleOutput(Widget w, XtPointer client, XtPointer call),
+	PauseProcessing(Widget w, XtPointer client, XtPointer call),
+	PauseStop(Widget w, XtPointer client, XtPointer call),
+	PauseContinue(Widget w, XtPointer client, XtPointer call),
+	DismissTimeSliceWindow(Widget w, XtPointer client, XtPointer call),
+	ResetTimeSliceWindow(Widget w, XtPointer client, XtPointer call);
 
 #endif
 

@@ -21,15 +21,7 @@ STATIC FNS:	ValidateFileNames()
 DESCRIPTION:	Contains callbacks for the nimbus GUI main window & setup
 		window.
 
-INPUT:			
-
-OUTPUT:		
-
-REFERENCES:	Everything.
-
-REFERENCED BY:	XtAppMainLoop()
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
 */
 
@@ -67,12 +59,12 @@ int	ReadInputFile(char fileName[]);
 /* -------------------------------------------------------------------- */
 void CancelSetup(Widget w, XtPointer client, XtPointer call)
 {
-  int		i;
-
   close(InputFile);
 
-  for (i = 0; i < nVariables; ++i)
-    free((char *)Variable[i]);
+  for (size_t i = 0; i < Variable.size(); ++i)
+    delete Variable[i];
+
+  Variable.clear();
 
   free(ProjectName);
 
@@ -84,9 +76,9 @@ void CancelSetup(Widget w, XtPointer client, XtPointer call)
 
   XmListDeleteAllItems(list1);
 
-  XtSetSensitive(readHeaderButton, TRUE);
-  XtSetSensitive(inputFileText, TRUE);
-  XtSetSensitive(outputFileText, TRUE);
+  XtSetSensitive(readHeaderButton, true);
+  XtSetSensitive(inputFileText, true);
+  XtSetSensitive(outputFileText, true);
 
   Initialize();
 
@@ -106,9 +98,9 @@ void Proceed(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void ReadHeader(Widget w, XtPointer client, XtPointer call)
 {
-  XtSetSensitive(readHeaderButton, FALSE);
-  XtSetSensitive(inputFileText, FALSE);
-  XtSetSensitive(outputFileText, FALSE);
+  XtSetSensitive(readHeaderButton, false);
+  XtSetSensitive(inputFileText, false);
+  XtSetSensitive(outputFileText, false);
 
   XmUpdateDisplay(Shell001);
 
@@ -153,11 +145,12 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   long		btim, etim;
 
   DismissTimeSliceWindow(NULL, NULL, NULL);
-  XtSetSensitive(list1, FALSE);
-  XtSetSensitive(menuBar, FALSE);
+  XtSetSensitive(list1, false);
+  XtSetSensitive(menuBar, false);
 
   GetUserTimeIntervals();
-  CondenseVariableList();
+  if (Interactive)
+    CondenseVariableList();
   CreateOutputFile(OutputFileName);
   ReadFormatFile();
 
@@ -221,8 +214,8 @@ void StopProcessing()
   XtRemoveAllCallbacks(goButton, XmNactivateCallback);
   XtAddCallback(goButton, XmNactivateCallback, StartProcessing, NULL);
 
-  XtSetSensitive(menuBar, TRUE);
-  XtSetSensitive(list1, TRUE);
+  XtSetSensitive(menuBar, true);
+  XtSetSensitive(list1, true);
 
 }	/* END STOPPROCESSING */
 
@@ -284,7 +277,7 @@ XmString CreateListLineItem(VARTBL *vp)
   static char	*list1lineFrmt = "%-13s  %c   %4d    %4d";
 
   sprintf(buffer, list1lineFrmt,
-		vp->name,
+		vp->name.c_str(),
 		vp->Output ? 'Y' : 'N',
 		vp->SampleRate,
 		vp->OutputRate);
@@ -296,20 +289,20 @@ XmString CreateListLineItem(VARTBL *vp)
 /* -------------------------------------------------------------------- */
 static void FillListWidget()
 {
-  int		i, cnt;
+  size_t	cnt;
   XmString	items[MAX_VARIABLES];
 
   XmListDeleteAllItems(list1);
 
   cnt = 0;
 
-  for (i = 0; i < nVariables; ++i)
+  for (size_t i = 0; i < Variable.size(); ++i)
     items[cnt++] = CreateListLineItem(Variable[i]);
 
 
   XmListAddItems(list1, items, cnt, 1);
 
-  for (i = 0; i < cnt; ++i)
+  for (size_t i = 0; i < cnt; ++i)
     XmStringFree(items[i]);
 
 }	/* END FILLLISTWIDGET */
@@ -319,21 +312,21 @@ void ToggleOutput(Widget w, XtPointer client, XtPointer call)
 {
   int		*pos_list, pos_cnt = 0;
   int		i, indx;
-  XmString	new;
+  XmString	s;
 
   XmListGetSelectedPos(list1, &pos_list, &pos_cnt);
 
   for (i = 0; i < pos_cnt; ++i)
-    {
+  {
     indx = pos_list[i] - 1;
 
     Variable[indx]->Output = 1 - Variable[indx]->Output;
 
-    new = CreateListLineItem(Variable[indx]);
+    s = CreateListLineItem(Variable[indx]);
 
-    XmListReplaceItemsPos(list1, &new, 1, pos_list[i]);
-    XmStringFree(new);
-    }
+    XmListReplaceItemsPos(list1, &s, 1, pos_list[i]);
+    XmStringFree(s);
+  }
 
 }	/* END TOGGLEOUTPUT */
 
@@ -360,27 +353,9 @@ void LogMessage(char msg[])
 /* -------------------------------------------------------------------- */
 static void CondenseVariableList()
 {
-  int	i, newCnt;
-
-  newCnt = 0;
-
-  for (i = 0; i < nVariables; ++i)
-    if (Variable[i]->Output	|| strcmp(Variable[i]->name, "HOUR") == 0
-				|| strcmp(Variable[i]->name, "MINUTE") == 0
-				|| strcmp(Variable[i]->name, "SECOND") == 0)
-      {
-      if (i == newCnt)
-        {
-        ++newCnt;
-        continue;
-        }
-
-      Variable[newCnt++] = Variable[i];
-      }
-    else
-      free((char *)Variable[i]);
-
-  nVariables = newCnt;
+  for (size_t i = 0; i < Variable.size(); ++i)
+    if (Variable[i]->Output)
+      outputList.push_back(Variable[i]);
 
 }	/* END CONDENSEVARIABLELIST */
 

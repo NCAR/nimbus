@@ -1,7 +1,7 @@
 #
 #    Makefile for n2asc program
 #
-CC=		gcc
+CC=		g++
 BINDIR=		${LOCAL}/bin
 MANDIR=		${LOCAL}/man/man1
 
@@ -9,7 +9,7 @@ MANDIR=		${LOCAL}/man/man1
 #
 INCLUDES= -I${JLOCAL}/include
 DEFINES = -DSVR4
-LIBS    = -R /usr/dt/lib -lraf -lXm -lXt -lX11 -lnetcdf
+LIBS    = -R /usr/dt/lib -lXm -lXt -lX11 -lnetcdf
 LIB_DIRS= -L${JLOCAL}/lib
 ANONFTP = /net/ftp/pub/archive/RAF-src/bin.Solaris2.9
 IHOST	= mead
@@ -19,22 +19,22 @@ IHOST	= mead
 INCLUDES= -I${JLOCAL}/include -I/usr/X11R6/include
 DEFINES = 
 LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib
-LIBS    = -lraf -lXm -lXp -lXt -lXext -lX11 -lnetcdf
+LIBS    = -lXm -lXp -lXt -lXext -lX11 -lnetcdf
 ANONFTP = /net/ftp/pub/archive/RAF-src/bin.RedHat9.0
 IHOST	= syrah
 
 CFLAGS=		-Wall -g -O2 ${INCLUDES} ${DEFINES}
 
 
-SRCS=	n2asc.c globals.c init.c timeseg.c sort.c search.c lrloop.c\
+SRCS=	n2asc.c globals.c init.c timeseg.c search.c lrloop.c\
 	netcdf.c cb_main.c cb_time.c cb_pause.c Xwin.c error.c Xerror.c\
-	Xfile.c Xquery.c Xwarn.c getmem.c
+	Xfile.c Xquery.c Xwarn.c
 
 HDRS=	define.h
 
-OBJS=	n2asc.o globals.o init.o timeseg.o sort.o search.o lrloop.o\
+OBJS=	n2asc.o globals.o init.o timeseg.o search.o lrloop.o\
 	netcdf.o cb_main.o cb_time.o cb_pause.o Xwin.o error.o Xerror.o\
-	Xfile.o Xquery.o Xwarn.o getmem.o
+	Xfile.o Xquery.o Xwarn.o
 
 PROG=	n2asc
 

@@ -16,14 +16,6 @@ DESCRIPTION:	Functions should be used in the order shown above.
 		what is actually output (e.g. User requests 00:00:00 -
 		15:00:00, and ADS actually started recording at 13:00:00).
 
-INPUT:		struct Hdr_blk
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	cb_main.c, oppo.c, mrf.c
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 -------------------------------------------------------------------------
 */
@@ -88,7 +80,7 @@ void GetUserTimeIntervals() /* From TimeSliceWindow	*/
 bool NextTimeInterval(long *start, long *end)
 {
   if (++currentTimeSegment >= nTimeIntervals)
-    return(FALSE);
+    return(false);
 
   prev_time = NEW_SEG;
 
@@ -98,7 +90,7 @@ bool NextTimeInterval(long *start, long *end)
 
   BtimeInt[currentTimeSegment][0] = NEW_SEG;
 
-  return(TRUE);
+  return(true);
 
 }	/* END NEXTTIMEINTERVAL */
 

@@ -25,62 +25,57 @@ static Widget	fileBox;
 void QueryFile(
 	char	*prompt,
 	char	*directory,
-	void	(*callBack)())
+	void	(*callBack)(Widget, XtPointer, XtPointer))
 {
-	XmString	xmdir, xmprompt;
-	Arg		args[4];
-	int		n = 0;
+  XmString	xmdir, xmprompt;
+  Arg		args[4];
+  int		n = 0;
 
-	xmdir =
-	XmStringCreate(directory ? directory : "", XmSTRING_DEFAULT_CHARSET);
+  xmdir =
+  XmStringCreate(directory ? directory : (char *)"", XmSTRING_DEFAULT_CHARSET);
 
-	xmprompt =
-	XmStringCreate(prompt ? prompt : "", XmSTRING_DEFAULT_CHARSET);
+  xmprompt =
+  XmStringCreate(prompt ? prompt : (char *)"", XmSTRING_DEFAULT_CHARSET);
 
-	XtSetArg(args[n], XmNselectionLabelString, xmprompt); ++n;
-	XtSetValues(fileBox, args, n);
-	XmFileSelectionDoSearch(fileBox, xmdir);
+  XtSetArg(args[n], XmNselectionLabelString, xmprompt); ++n;
+  XtSetValues(fileBox, args, n);
+  XmFileSelectionDoSearch(fileBox, xmdir);
 
-	XtRemoveAllCallbacks(fileBox, XmNokCallback);
-	XtAddCallback(fileBox, XmNokCallback, (XtCallbackProc)callBack,
-							(XtPointer)NULL);
+  XtRemoveAllCallbacks(fileBox, XmNokCallback);
+  XtAddCallback(fileBox, XmNokCallback, (XtCallbackProc)callBack,
+					(XtPointer)NULL);
 
-	XmStringFree(xmdir);
-	XmStringFree(xmprompt);
+  XmStringFree(xmdir);
+  XmStringFree(xmprompt);
 
-	XtAddGrab(fileBox, TRUE, FALSE);
-	XtManageChild(fileBox);
+  XtAddGrab(fileBox, TRUE, FALSE);
+  XtManageChild(fileBox);
 
 }	/* END QUERYFILE */
 
 /* -------------------------------------------------------------------- */
 /* ARGSUSED */
-void FileCancel(
-	Widget		w,
-	XtPointer	clientData,
-	XtPointer	callData)
+void FileCancel(Widget w, XtPointer clientData, XtPointer callData)
 {
-	XtUnmanageChild(fileBox);
-	XtRemoveGrab(fileBox);
+  XtUnmanageChild(fileBox);
+  XtRemoveGrab(fileBox);
 
 }	/* END FILECANCEL */
 
 /* -------------------------------------------------------------------- */
 void CreateFileSelectionBox(Widget parent)
 {
-	fileBox = XmCreateFileSelectionDialog(parent, "fileBox", NULL, 0);
-	XtSetSensitive(	XmFileSelectionBoxGetChild(fileBox, XmDIALOG_HELP_BUTTON),
-					FALSE);
+  fileBox = XmCreateFileSelectionDialog(parent, "fileBox", NULL, 0);
+  XtSetSensitive(XmFileSelectionBoxGetChild(fileBox, XmDIALOG_HELP_BUTTON), FALSE);
 
-	XtAddCallback(fileBox, XmNcancelCallback, (XtCallbackProc)FileCancel,
-							(XtPointer)FALSE);
+  XtAddCallback(fileBox, XmNcancelCallback, (XtCallbackProc)FileCancel, (XtPointer)FALSE);
 
 }	/* END CREATEFILESELECTIONBOX */
 
 /* -------------------------------------------------------------------- */
 void ExtractFileName(XmString str, char **text)
 {
-	XmStringGetLtoR(str, XmSTRING_DEFAULT_CHARSET, text);
+  XmStringGetLtoR(str, XmSTRING_DEFAULT_CHARSET, text);
 
 }	/* END EXTRACTFILENAME */
 
