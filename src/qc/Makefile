@@ -15,6 +15,7 @@ make = make
 # build entire system
 #
 all:
+	cd ../../include; $(make)
 	cd socklib; $(make)
 	cd vallib; $(make)
 	cd timerlib; $(make)

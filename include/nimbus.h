@@ -215,18 +215,61 @@ int	AccessProjectFile(char filename[], char mode[]),
 	ReadTextFile(char filename[], char **list),
 	CheckForTimeGap(struct Hdr_blk *ADShdr, int initMode),
 	AccessProjectFile(char filename[], char mode[]);
-/*
-int	SearchTable(std::vector<var_base *> &table, const char target[]),
-	SearchTableSansLocation(std::vector<var_base *> &table, const char target[]),
-*/
-int	SearchTable(std::vector<SDITBL *> &table, const char target[]),
-	SearchTable(std::vector<RAWTBL *> &table, const char target[]),
-	SearchTable(std::vector<DERTBL *> &table, const char target[]),
-	SearchTableSansLocation(std::vector<SDITBL *> &table, const char target[]),
-	SearchTableSansLocation(std::vector<RAWTBL *> &table, const char target[]),
-	SearchTableSansLocation(std::vector<DERTBL *> &table, const char target[]),
-	SearchTable(std::vector<DERTBL *> &list, int n, const char target[]),
-	SearchTable(std::vector<DERTBL *> &list, int start, int end, const char target[]);
+
+struct var_match_name
+{
+  var_match_name (const std::string& target);
+  bool operator()(var_base*) const;
+  std::string _target;
+};
+
+struct var_match_name_sans_location
+{
+  var_match_name_sans_location (const std::string& target);
+  bool operator()(var_base*) const;
+  std::string _target;
+};
+
+
+template <typename T, typename P>
+int
+SearchTable_p(std::vector<T *> &table, const P& predicate, int s=0, int e=-1)
+{
+  typename std::vector<T*>::iterator end;
+  end = (e == -1) ? table.end() : table.begin()+e;
+  typename std::vector<T*>::iterator it;
+  it = std::find_if(table.begin()+s, end, predicate);
+  return (it != end) ? it - table.begin() : ERR;
+}
+
+template <typename T>
+int
+SearchTable(std::vector<T *> &table, const char target[])
+{
+  return SearchTable_p (table, var_match_name(target));
+}
+
+template <typename T>
+int
+SearchTableSansLocation(std::vector<T *> &table, const char target[])
+{
+  return SearchTable_p (table, var_match_name_sans_location(target));
+}  
+
+template <typename T>
+int
+SearchTable(std::vector<T *> &list, int n, const char target[])
+{
+  return SearchTable_p (list, var_match_name(target), 0, n);
+}
+
+template <typename T>
+int
+SearchTable(std::vector<T *> &list, int s, int e, const char target[])
+{
+  return SearchTable_p (list, var_match_name(target), s, e);
+}
+
 
 unsigned long	GetProbeType(char name[]);
 
