@@ -29,11 +29,6 @@ static int	velLag = 0, posLag = 0;
 
 extern char *ADSrecord;
 
-static int calcDateTime(int week, int secs, int gps_off);
-int computeJulianDay(int year, int month, int day);
-void decodeJulianDay(int julian_day, int year, int *month, int *day);
-
-
 /* -------------------------------------------------------------------- */
 void xlggstat(RAWTBL *varp, void *input, NR_TYPE *output)
 {
@@ -106,26 +101,44 @@ void xlggalt(RAWTBL *varp, void *input, NR_TYPE *output)
 }
 
 /* -------------------------------------------------------------------- */
+void xlggnsat(RAWTBL *varp, void *input, NR_TYPE *output)
+{
+  *output = (NR_TYPE)ntohs(((Garmin_blk *)input)->nsat);
+
+}
+
+/* -------------------------------------------------------------------- */
+static NR_TYPE	gspd, trk;
+
 void xlggspd(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-  *output = (NR_TYPE)ntohf(((Garmin_blk *)input)->ground_speed) * KTS2MS;
-
+  gspd = *output = (NR_TYPE)ntohf(((Garmin_blk *)input)->ground_speed) * KTS2MS;
   varp->DynamicLag = velLag;
 }
 
 /* -------------------------------------------------------------------- */
 void xlggtrk(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-  *output = (NR_TYPE)ntohf(((Garmin_blk *)input)->course);
-
+  trk = *output = (NR_TYPE)ntohf(((Garmin_blk *)input)->course);
   varp->DynamicLag = velLag;
 }
 
 /* -------------------------------------------------------------------- */
-void xlggnsat(RAWTBL *varp, void *input, NR_TYPE *output)
+/* These next two should be derived, but the HRT FIR filtering of TRK
+ * above causes headaches, so I moved them into raw.  This works as
+ * long as variables are processed in alphabetical order.
+ */
+void xlggvew(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-  *output = (NR_TYPE)ntohs(((Garmin_blk *)input)->nsat);
+  *output = (gspd * sin((double)(DEG_RAD*trk)));
+  varp->DynamicLag = velLag;
+}
 
+/* -------------------------------------------------------------------- */
+void xlggvns(RAWTBL *varp, void *input, NR_TYPE *output)
+{
+  *output = (gspd * cos((double)(DEG_RAD*trk)));
+  varp->DynamicLag = velLag;
 }
 
 /* END GPSGARMIN.C */
