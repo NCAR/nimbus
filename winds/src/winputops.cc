@@ -156,11 +156,8 @@ void DoDataInitStuff()
    }
  
  get_lrlen(&LRlen);
- *len_raw = nsdi;
- *len_derive = nraw+nderive;
- if(*len_raw>MAX_RAW) {
-   NotifyWINDS("FATAL: Input process has exited due to exceeding MAXRAW with # of raw variables. This WINDS process will now also exit...contact a WINDS expert about this problem.",TRUE);
- }
+ *len_raw = sdi.size();
+ *len_derive = raw.size()+derived.size();
  ProjectNumber=proj_number;
 }
 
@@ -208,14 +205,14 @@ void InitRawDataMode()
 
   /* Transfer names to shared memory.
    */
-  for (in = 0; in < nsdi; ++in) 
+  for (in = 0; in < sdi.size(); ++in) 
     (void)strcpy(&raw_list[in*NAMLEN], sdi[in]->name);
 
-  for (in = 0; in < nraw; ++in)
+  for (in = 0; in < raw.size(); ++in)
     (void)strcpy(&derive_list[in*NAMLEN], raw[in]->name);
 
   jn = in;                                                      
-  for (in = 0; in < nderive; ++in, ++jn)
+  for (in = 0; in < derived.size(); ++in, ++jn)
     (void)strcpy(&derive_list[jn*NAMLEN], derived[in]->name);
  
 }
@@ -915,9 +912,9 @@ void TransferDataToSHMEM(NR_TYPE record[], int index)
     {
     firstTime = FALSE;
 
-    timeIndex[0] = raw[SearchTable((char **)raw, nraw, "HOUR")]->LRstart;
-    timeIndex[1] = raw[SearchTable((char **)raw, nraw, "MINUTE")]->LRstart;
-    timeIndex[2] = raw[SearchTable((char **)raw, nraw, "SECOND")]->LRstart;
+    timeIndex[0] = raw[SearchTable(raw, "HOUR")]->LRstart;
+    timeIndex[1] = raw[SearchTable(raw, "MINUTE")]->LRstart;
+    timeIndex[2] = raw[SearchTable(raw, "SECOND")]->LRstart;
     }
 
   ptr3		= 3 * index;
@@ -925,24 +922,24 @@ void TransferDataToSHMEM(NR_TYPE record[], int index)
   hhmmss[ptr3+1]  = (volatile int)record[timeIndex[1]];
   hhmmss[ptr3+2]  = (volatile int)record[timeIndex[2]];
 
-  offset  = nsdi * index;
-  memcpy((char *)&bitdata[offset], (char *)bits, sizeof(short) * nsdi);
-  memcpy((char *)&voltsdata[offset], (char *)volts, NR_SIZE * nsdi);
-  memcpy((char *)&rawdata[offset], (char *)record, NR_SIZE * nsdi);
+  offset  = sdi.size() * index;
+  memcpy((char *)&bitdata[offset], (char *)bits, sizeof(short) * sdi.size());
+  memcpy((char *)&voltsdata[offset], (char *)volts, NR_SIZE * sdi.size());
+  memcpy((char *)&rawdata[offset], (char *)record, NR_SIZE * sdi.size());
 
-/*  for (i = 0; i < nsdi; ++i, ++offset)
+/*  for (i = 0; i < sdi.size(); ++i, ++offset)
     {
     bitdata[offset]		= bits[sdi[i]->LRstart];
     voltsdata[offset]	= volts[sdi[i]->LRstart];
     rawdata[offset]		= record[sdi[i]->LRstart];
     }
 */
-  offset  = (nraw+nderive) * index;
+  offset  = (raw.size()+derived.size()) * index;
 
-  for (i = 0; i < nraw; ++i, ++offset)
+  for (i = 0; i < raw.size(); ++i, ++offset)
     data[offset] = record[raw[i]->LRstart];
 
-  for (i = 0; i < nderive; ++i, ++offset)
+  for (i = 0; i < derived.size(); ++i, ++offset)
     data[offset] = record[derived[i]->LRstart];
 
 }	/* END GETNIMBUSDATA */

@@ -10,6 +10,7 @@
 #
 # default flags, assuming development mode (debug on)
 #
+NIMBUS=		/jnet/tmp/chris/raf/nimbus
 LOCAL_INCL=     $(JLOCAL)/include/
 INC= 		$(WINDS)/include/
 NIMBINC=	$(NIMBUS)/include/
@@ -401,7 +402,7 @@ NIMBUS.O = $(NOBJ)globals.o $(NOBJ)hdr_decode.o $(NOBJ)rd_lag.o $(NOBJ)popen.o \
 	$(NOBJ)depend.o $(NOBJ)order.o $(NOBJ)rec_decode.o $(NOBJ)compute.o \
 	$(NOBJ)rd_defs.o $(NOBJ)amlibfn.o $(NOBJ)pms1d_rt.o $(NOBJ)memalloc.o \
 	$(NOBJ)textfile.o $(NOBJ)search.o $(NOBJ)rd_mod.o $(NOBJ)average.o \
-	$(NOBJ)sort.o $(NOBJ)rd_sum.o $(NOBJ)rd_ddor.o \
+	$(NOBJ)rd_sum.o $(NOBJ)rd_ddor.o \
 	$(NOBJ)calco.o $(NOBJ)rd_spike.o $(NOBJ)probe.o
 
 WINPUT.O = $(OBJ)winputops.o $(OBJ)netcdf.o $(OBJ)netconfig.o \

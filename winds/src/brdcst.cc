@@ -112,21 +112,21 @@ void ReadBroadcastVariables(void)
     Variable[nVariables] = (VAR_PTRS *)GetMemory(sizeof(VAR_PTRS));
 
 
-    if ((index = SearchTable((char **)sdi, nsdi, target)) != ERR)
+    if ((index = SearchTable(sdi, target)) != ERR)
       {
       Variable[nVariables]->table = SDI;
       Variable[nVariables]->u.sp = sdi[index];
       Variable[nVariables]->rate = sdi[index]->SampleRate;
       }
     else
-    if ((index = SearchTable((char **)raw, nraw, target)) != ERR)
+    if ((index = SearchTable(raw, target)) != ERR)
       {
       Variable[nVariables]->table = RAW;
       Variable[nVariables]->u.rp = raw[index];
       Variable[nVariables]->rate = raw[index]->SampleRate;
       }
     else
-    if ((index = SearchTable((char **)derived, nderive, target)) != ERR)
+    if ((index = SearchTable(derived, target)) != ERR)
       {
       Variable[nVariables]->table = DERIVED;
       Variable[nVariables]->u.dp = derived[index];
@@ -177,9 +177,9 @@ int BroadcastSyncData (void)
 
   if (rollingCounter == 0)
     {
-    time_indx[0] = raw[SearchTable((char **)raw, nraw, "HOUR")]->SRstart;
-    time_indx[1] = raw[SearchTable((char **)raw, nraw, "MINUTE")]->SRstart;
-    time_indx[2] = raw[SearchTable((char **)raw, nraw, "SECOND")]->SRstart;
+    time_indx[0] = raw[SearchTable(raw, "HOUR")]->SRstart;
+    time_indx[1] = raw[SearchTable(raw, "MINUTE")]->SRstart;
+    time_indx[2] = raw[SearchTable(raw, "SECOND")]->SRstart;
     }
 
   /* Broadcast names once a minute for Synchronization purposes.
