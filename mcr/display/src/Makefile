@@ -14,8 +14,8 @@ LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib
 DEFINES	=
 CXXFLAGS= -g ${INCLUDES} ${DEFINES}
 
-LIBS	= -lraf++ -lXm -lXt -lX11
-#LIBS	= -L${JLOCAL}/lib -L/usr/X11R6/lib -lraf++ -lXm -lXt -lX11
+LIBS	= -lraf++ -lXm -lXt -lX11 -lz
+#LIBS	= -L${JLOCAL}/lib -L/usr/X11R6/lib -lraf++ -lXm -lXt -lX11 -lz
 
 PROG	= mcrtd
 HDRS	= ${I2D}/mcrtd.h

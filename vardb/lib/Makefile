@@ -38,8 +38,8 @@ lib${LIBNAME}_p.a: ${OBJS}
 
 install: all
 	install -Cp --mode=664 lib${LIBNAME}.a ${LIBDIR}
-	install -Cp --mode=664 vardb.3 ${MANDIR}
 	install -Cp --mode=444 ${HEADER} ${INCLUDEDIR}
+	install -Cp --mode=664 vardb.3 ${MANDIR}
 
 clean:
 	rm -f *.o *.a *.ln

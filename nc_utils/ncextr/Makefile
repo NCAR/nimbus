@@ -41,6 +41,8 @@ ${PROG}: ${OBJS}
 install: ${PROG}
 	cp ${PROG} ${DESTDIR}${BINDIR}
 	cp ${PROG}.man ${DESTDIR}${MANDIR}/${PROG}.1
+
+publish:
 	cp ${PROG} $(ANONFTP)
 	cp ${PROG}.man ${ANONFTP}
 

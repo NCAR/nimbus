@@ -10,6 +10,7 @@ if ( ! $?JLOCAL || ! $?LOCAL || ! $?WINDS ) then
     exit 1
 endif
 
+# Pre-req's that most likely exist on your system, Motif, Qt.
 # Pre-req's that you will need to install are netcdf & Qwt.
 
 if ($#argv > 0) then
@@ -18,12 +19,16 @@ if ($#argv > 0) then
     setenv OPT_LOCAL /net/opt_lnx/local_fc2/.
     echo "Copying netcdf dependencies from $OPT_LOCAL..."
     ( cd $OPT_LOCAL && rsync -avR `find . -name "*netcdf*" -o -name "*ncvalues*"` $JLOCAL )
-    # Make sure all the directories exist
-    (cd $JLOCAL ; mkdir -p bin lib include man man/man1 man/man3 )
   endif
 endif
 
-# Pre-req's that most likely exist on your system, Motif, Qt.
+# Make sure all the [obvious] directories exist
+test -d ${JLOCAL}/bin || mkdir ${JLOCAL}/bin
+test -d ${JLOCAL}/lib || mkdir ${JLOCAL}/lib
+test -d ${JLOCAL}/include || mkdir ${JLOCAL}/include
+test -d ${JLOCAL}/man || mkdir ${JLOCAL}/man
+test -d ${JLOCAL}/man/man1 || mkdir ${JLOCAL}/man/man1
+test -d ${JLOCAL}/man/man3 || mkdir ${JLOCAL}/man/man3
 
 # Build libraries first.  libraf++ needs to go first to install header.h.
 

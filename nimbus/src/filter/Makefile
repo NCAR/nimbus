@@ -1,31 +1,25 @@
 #
 # Makefile for Nimbus input program.
 #
-CC		= g++
+CC	= g++
 
 NIMBUS	= ../..
 NINC	= ../../include/
 NSRC	= $(NIMBUS)/src/
 WINC	= $(WINDS)/include/
 
-RELEASE	= /jnet/solaris/nimbus
 NOBJ	= obj/
 LOCAL_INC = ${JLOCAL}/include/
 
-INCLUDES = -I${NINC} -I${LOCAL_INC} -I${LOCAL}/include
-INCLUDES = -I${NINC} -I${LOCAL_INC}
-
-CFLAGS	= -Wall -g -O2 -L../../lib
-COFLAGS	= -Wall -g -O2 -c $(INCLUDES)
-
-
-CLIBS	= -lstd -luser -lxlate -lAircraft -lhdr_api -lpms -lVarDB -lraf -lm -lncaru -lnetcdf -lraf++ -lXm -lXt -lX11 -lpq
 
 # Linux
 #
 INCLUDES = -I$(NINC) -I$(LOCAL_INC) -I/usr/X11R6/include
-LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib -L/usr/lib/pgsql
-CLIBS   = -lstd -luser -lxlate -lAircraft -lhdr_api -lpms -lVarDB -lraf -lm -lncaru -lnetcdf -lraf++ -lXm -lXt -lX11 -lpq
+LIB_DIRS = -L/usr/X11R6/lib -L${JLOCAL}/lib -L/usr/lib/pgsql -L../../lib
+CLIBS    = -lstd -luser -lxlate -lAircraft -lhdr_api -lpms -lVarDB -lraf -lm -lncaru -lnetcdf -lraf++ -lXm -lXt -lX11 -lpq
+
+CFLAGS	= -Wall -g -O2
+COFLAGS	= -Wall -g -O2 -c $(INCLUDES)
 
 
 INPUT.O = $(NOBJ)adsIO.o $(NOBJ)amlibfn.o $(NOBJ)async.o $(NOBJ)average.o\
@@ -59,13 +53,6 @@ ncaru:
 	cd ${NSRC}/ncaru/lib; make
 
 obj: $(INPUT.O) amlib $(NOBJ)pms1d_rt.o
-
-release:
-	(cd ${JLOCAL}/dev/nimbus; tar cFFf - include src/filter src/amlib | (cd ${RELEASE}; tar xfBp -))
-	find ${RELEASE} \( -name '*.c' -o -name '*.h' -o -name Makefile \) -exec chmod go-w {} \;
-	chmod -R ug+w ${RELEASE}
-	chmod go-w ${RELEASE}/include/amlib.fns
-	rm -f ${RELEASE}/src/filter/LOCK.make
 
 install:	nimbus
 	cp nimbus ${JLOCAL}/bin
