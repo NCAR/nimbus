@@ -38,7 +38,7 @@ extern Widget	list1, goButton, menuBar, readHeaderButton;
 extern Widget	varNameLabel;
 extern Widget	outputVarYes, outputVarNo;
 extern Widget	outputLRbutton, outputSRbutton, outputHRbutton;
-extern Widget	lagText, spikeText, ev_text[], ts_text[];
+extern Widget	lagText, spikeText, synthconstText, ev_text[], ts_text[];
 
 
 /*	Callback prototypes
@@ -55,6 +55,8 @@ void	ApplyVariableMods(Widget w, XtPointer client, XtPointer call),
 	EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call),
 	LoadSetup(Widget w, XtPointer client, XtPointer call),
 	LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *call),
+	LoadSynthetic_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *call),
+	LoadSynthetic(Widget w, XtPointer client, XtPointer call),
 	MapCalCof(Widget w, XtPointer client, XtPointer call),
 	PauseProcessing(Widget w, XtPointer client, XtPointer call),
 	PauseStop(Widget w, XtPointer client, XtPointer call),

@@ -40,6 +40,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2000
 #include "decode.h"
 #include "gui.h"
 #include "vardb.h"
+#include "iostream.h"
+#include "injectsd.h"
 
 
 static int	VariableType, ListPosition;
@@ -57,8 +59,11 @@ static void set_edit_window_data(
 
 extern char *dataQuality[];
 
-extern Widget slOpMenu;
+extern Widget slOpMenu,funcOpMenu;
 
+extern  vars tempvar;
+extern SyntheticData sd;
+extern char * func[19];
 
 /* -------------------------------------------------------------------- */
 void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
@@ -79,6 +84,7 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
       {
       rp = raw[indx];
       VariableType = RAW;
+      
       }
     else
       {
@@ -160,9 +166,12 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
   int		outputRate, lag;
   char		*p, *dq;
   float		f;
+  float constsynthval;
   NR_TYPE	spike;
   Arg		args[3];
   XmString	newAttr;
+  struct v tempvar; 
+  bool alreadyset=false;
 
   output = XmToggleButtonGetState(outputVarYes);
 
@@ -185,16 +194,46 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
   spike = atof(p);
   XtFree(p);
 
+  p=XmTextFieldGetString(synthconstText);
+  constsynthval=atof(p);
+  XtFree(p);
+
+
   /* Extract "Data Quality" */
   XtSetArg(args[0], XmNlabelString, &newAttr);
   XtGetValues(XmOptionButtonGadget(slOpMenu), args, 1);
   XmStringGetLtoR(newAttr, XmSTRING_DEFAULT_CHARSET, &p);
   dq = SearchDataQuality(p);
 
+  /*Extract Function */
+  XtSetArg(args[0],XmNlabelString,&newAttr);
+  XtGetValues(XmOptionButtonGadget(funcOpMenu),args,1);
+  XmStringGetLtoR(newAttr,XmSTRING_DEFAULT_CHARSET, &p);
+
 
   switch (VariableType)
     {
     case SDI:
+      /*synthetic data modifications*/
+      if(constsynthval)
+	{
+        tempvar.type='s';
+        tempvar.name=sp->name;
+        tempvar.value=constsynthval;
+        sd.registervar(tempvar);
+        alreadyset=true;
+	}
+      else if(!(p=="none"))
+	{
+        tempvar.type='s';
+        tempvar.name=sp->name;
+        tempvar.function=p;
+        sd.registerfunc(tempvar); 
+        alreadyset=true;
+       }
+      /****************************/
+      dq = SearchDataQuality(p);
+
       sp->Dirty = true;
       sp->Output = output;
 
@@ -203,7 +242,10 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
 
       sp->StaticLag = lag;
       sp->SpikeSlope = spike;
+      if(!alreadyset)
+	{
       sp->DataQuality = dq;
+	}
       sp->order = 0;
 
       for (i = MAX_COF-1; i >= 0; --i)
@@ -223,6 +265,26 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
       break;
 
     case RAW:
+       /*synthetic data modifications*/
+       if(constsynthval)
+	{
+        tempvar.type='r';
+        tempvar.name=rp->name;
+        tempvar.value=constsynthval;
+        sd.registervar(tempvar);
+	alreadyset=true;
+       }
+       else if(!(p=="none"))
+	{
+        tempvar.type='r';
+        tempvar.name=rp->name;
+        tempvar.function=p;
+        sd.registerfunc(tempvar);
+	alreadyset=true;
+       }
+      /****************************/
+       dq = SearchDataQuality(p);
+
       rp->Dirty = true;
       rp->Output = output;
 
@@ -235,8 +297,10 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
 
       rp->StaticLag = lag;
       rp->SpikeSlope = spike;
+      if(!alreadyset)
+	{
       rp->DataQuality = dq;
-
+	}
       for (i = 0; i < rp->order; ++i)
         {
         p = XmTextFieldGetString(ev_text[i]);
@@ -305,7 +369,7 @@ static void set_edit_window_data(
 		char	*dq)
 {
   int		pos, n;
-  Arg		args[3];
+  Arg		args[3],sarg[1];
   XmString	ns;
 
   strcpy(buffer, name);
@@ -317,6 +381,9 @@ static void set_edit_window_data(
   XtSetArg(args[n], XmNlabelString, ns); n++;
   XtSetValues(varNameLabel, args, n);
   XmStringFree(ns);
+ 
+
+
 
   XmToggleButtonSetState(outputVarYes, output, false);
   XmToggleButtonSetState(outputVarNo, !output, false);
@@ -351,6 +418,13 @@ static void set_edit_window_data(
   XtSetArg(args[0], XmNlabelString, ns);
   XtSetValues(XmOptionButtonGadget(slOpMenu), args, 1);
   XmStringFree(ns);
+ 
+  ns=XmStringCreateLocalized(func[0]);   //sets the function to none
+  XtSetArg(sarg[0],XmNlabelString,ns);
+  XtSetValues(XmOptionButtonGadget(funcOpMenu),sarg,1);
+  XmStringFree(ns);
+
+  XmTextFieldSetString(synthconstText, "");     //display nothing in this field each time editvariable is clicked
 
 
   if (VariableType == DERIVED)
@@ -360,13 +434,18 @@ static void set_edit_window_data(
     XtSetSensitive(lagText, false);
     XtSetSensitive(spikeText, false);
     XtSetSensitive(outputSRbutton, false);
+    XmTextFieldSetString(synthconstText,"NA");
+    XtSetSensitive(synthconstText,false);
+    XtSetSensitive(funcOpMenu,false);
     }
   else
     {
     XtSetSensitive(lagText, true);
     XtSetSensitive(spikeText, true);
     XtSetSensitive(outputSRbutton, true);
-
+    XtSetSensitive(funcOpMenu,true);    //for some reason a segmentation error occures here on some occasions
+    XtSetSensitive(synthconstText,true);
+   
     sprintf(buffer, "%d", lag);
     XmTextFieldSetString(lagText, buffer);
     pos = XmTextFieldGetLastPosition(lagText);

@@ -39,7 +39,8 @@ INPUT.O = $(NOBJ)adsIO.o $(NOBJ)amlibfn.o $(NOBJ)async.o $(NOBJ)average.o\
 	$(NOBJ)rd_defs.o $(NOBJ)rd_ddor.o $(NOBJ)rd_mod.o $(NOBJ)rd_lag.o\
 	$(NOBJ)rd_spike.o $(NOBJ)rd_sum.o $(NOBJ)rtloop.o $(NOBJ)rec_decode.o\
 	$(NOBJ)search.o $(NOBJ)setup.o $(NOBJ)sort.o $(NOBJ)textfile.o\
-	$(NOBJ)timeseg.o $(NOBJ)Xwin.o $(NOBJ)dq.o $(NOBJ)UdpSocket.o $(NOBJ)psql.o
+	$(NOBJ)timeseg.o $(NOBJ)Xwin.o $(NOBJ)dq.o $(NOBJ)UdpSocket.o $(NOBJ)psql.o\
+	$(NOBJ)injectsd.o
 
 
 # ------------------------------------------------------------------------
@@ -65,7 +66,6 @@ release:
 
 install:	nimbus
 	cp nimbus ${JLOCAL}/bin
-
 lint:
 	lint ${INCLUDES} *.c
 #	lint ${INCLUDES} *.c ${CLIBS}
@@ -147,18 +147,21 @@ RTLOOP.H = $(NINC)nimbus.h $(NINC)decode.h ${NINC}gui.h
 $(NOBJ)rtloop.o: rtloop.c $(RTLOOP.H)
 	${CC} $(COFLAGS) $(DEFINES) rtloop.c -o $(NOBJ)rtloop.o
 
-LRLOOP.H = $(NINC)nimbus.h $(NINC)decode.h $(NINC)circbuff.h $(NINC)gui.h
+LRLOOP.H = $(NINC)nimbus.h $(NINC)decode.h $(NINC)circbuff.h $(NINC)gui.h $(NINC)injectsd.h
 $(NOBJ)lrloop.o: lrloop.c $(LRLOOP.H)
 	${CC} $(COFLAGS) $(DEFINES) lrloop.c -o $(NOBJ)lrloop.o
 
-HRLOOP.H = $(NINC)nimbus.h $(NINC)decode.h $(NINC)circbuff.h $(NINC)gui.h
+INJECTSD.H = $(NINC)nimbus.h $(NINC)decode.h $(NINC)gui.h 
+$(NOBJ)injectsd.o: injectsd.cpp $(INJECTSD.H)
+	$(CC) $(COFLAGS) $(DEFINES) injectsd.cpp -o $(NOBJ)injectsd.o
+
+HRLOOP.H = $(NINC)nimbus.h $(NINC)decode.h $(NINC)circbuff.h $(NINC)gui.h $(NINC)injectsd.h
 $(NOBJ)hrloop.o: hrloop.c $(HRLOOP.H)
 	${CC} $(COFLAGS) $(DEFINES) hrloop.c -o $(NOBJ)hrloop.o
 
 FILTER.H = $(NINC)nimbus.h $(NINC)decode.h $(NINC)filters.h $(NINC)circbuff.h
 $(NOBJ)filter.o: filter.c $(FILTER.H)
 	${CC} $(COFLAGS) $(DEFINES) filter.c -o $(NOBJ)filter.o
-#	${CC} $(COFLAGS) -inline=getBuff $(DEFINES) filter.c -o $(NOBJ)filter.o
 
 FILTER.H = $(NINC)nimbus.h $(NINC)decode.h $(NINC)filters.h
 $(NOBJ)filters.o: filters.c $(FILTER.H)
@@ -189,7 +192,7 @@ CCB.H = $(NINC)nimbus.h $(NINC)gui.h $(NINC)version.h
 $(NOBJ)cb_main.o: cb_main.c $(CCB.H)
 	${CC} $(COFLAGS) $(DEFINES) cb_main.c -o $(NOBJ)cb_main.o
 
-CCB.H = $(NINC)nimbus.h $(NINC)gui.h
+CCB.H = $(NINC)nimbus.h $(NINC)gui.h $(NINC)injectsd.h
 $(NOBJ)cb_edit.o: cb_edit.c $(CCB.H)
 	${CC} $(COFLAGS) $(DEFINES) cb_edit.c -o $(NOBJ)cb_edit.o
 
@@ -261,7 +264,7 @@ CIRCBUFF.H =  $(NINC)nimbus.h $(NINC)circbuff.h
 $(NOBJ)circbuff.o: circbuff.c $(CIRCBUFF.H)
 	${CC} $(COFLAGS) $(DEFINES) circbuff.c -o $(NOBJ)circbuff.o
 
-SETUP.H =  $(NINC)nimbus.h $(NINC)gui.h
+SETUP.H =  $(NINC)nimbus.h $(NINC)gui.h $(NINC)injectsd.h
 $(NOBJ)setup.o: setup.c $(SETUP.H)
 	${CC} $(COFLAGS) $(DEFINES) setup.c -o $(NOBJ)setup.o
 
@@ -284,3 +287,4 @@ $(NOBJ)dq.o: dq.c $(DQ.H)
 UDP.H = $(NINC)UdpSocket.h
 $(NOBJ)UdpSocket.o: UdpSocket.cc $(UDP.H)
 	${CC} $(COFLAGS) $(DEFINES) UdpSocket.cc -o $(NOBJ)UdpSocket.o
+
