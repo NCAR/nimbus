@@ -1,6 +1,6 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:    psql.c (PostgreS)
+OBJECT NAME:    psql.cc (PostgreS)
 
 FULL NAME:      PostgreSQL database routines.
 
@@ -60,10 +60,6 @@ PostgreSQL::PostgreSQL(std::string specifier)
     submitCommand(
     "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current");
   }
-
-  // Clear out an residual shit after restarting the DB.  This causes long
-  // delay at start-up......
-//  submitCommand("VACUUM FULL"));
 
 }	/* END INITSQL */
 
@@ -255,7 +251,7 @@ void PostgreSQL::dropAllTables()
   {
     std::string cmd("DROP TABLE ");
     cmd += it->c_str();
-printf("%s\n", cmd.c_str());
+
     submitCommand(cmd);
   }
 
