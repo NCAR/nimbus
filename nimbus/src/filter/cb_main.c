@@ -1204,7 +1204,9 @@ void sighandler(int s)
 
   printf("SigHandler: cleaning up netCDF file.\n");
   CloseNetCDF();
-  psql->closeSQL();
+
+  if (psql)
+    psql->closeSQL();
 
   exit(0);
 
