@@ -32,8 +32,8 @@ ${PROG}: ${OBJS}
 install: ${PROG}
 	cp ${PROG} ${BINDIR}
 	cp ${PROG}.man ${MANDIR}/${PROG}.1
-	rcp ${PROG} ${HOST}:${BINDIR}
-	rcp ${PROG}.man ${HOST}:${MANDIR}/${PROG}.1
+	scp ${PROG} ${HOST}:${BINDIR}
+	scp ${PROG}.man ${HOST}:${MANDIR}/${PROG}.1
 	cp ${PROG} $(ANONFTP)
 	cp ${PROG}.man ${ANONFTP}
 

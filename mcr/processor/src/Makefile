@@ -7,12 +7,13 @@ I2D	= ../include
 C2D	= ../class
 O2D	= ../class
 
-INCLUDES= -I${I2D} -I${JLOCAL}/include -I../../include -I/jnet/shared/include
-INCLUDES= -I${I2D} -I/usr/openwin/include -I/usr/dt/include -I../../include -I/jnet/shared/include
+INCLUDES= -I${I2D} -I${JLOCAL}/include -I../../include
+#INCLUDES= -I${I2D} -I/usr/openwin/include -I/usr/dt/include -I../../include -I/jnet/shared/include
 
 DEFINES	=
 CXX	= g++
 CXXFLAGS= -g -O ${INCLUDES} ${DEFINES} -L${DISC}/lib
+CXXFLAGS= -g -O ${INCLUDES} ${DEFINES}
 
 LIBS	= -lraf++ -lnetcdf_c++ -lnetcdf
 

@@ -1,7 +1,6 @@
 #
 # Makefile for Header API
 #
-DESTDIR=
 LIBDIR=		${JLOCAL}/lib
 LINTDIR=	${JLOCAL}/lib/lint
 MANDIR=		${JLOCAL}/man/man3
@@ -46,9 +45,9 @@ lint:
 	lint -C${LIBNAME} ${INCLUDES} *.c
 
 install: all
-	cp lib${LIBNAME}.a ${DESTDIR}/${LIBDIR}
-	cp -p ${HEADER} ${DESTDIR}/${INCLUDEDIR}
-	cp -p ${LIBNAME}.3 ${DESTDIR}/${MANDIR}
+	cp lib${LIBNAME}.a ${LIBDIR}
+	cp -p ${HEADER} ${INCLUDEDIR}
+	cp -p ${LIBNAME}.3 ${MANDIR}
 
 clean:
 	rm -f *.o *.a *.ln

@@ -71,7 +71,7 @@ release:
 
 install: ${PROG}
 	cp ${PROG} $(BIN)
-	rcp ${PROG} ${IHOST}:$(BIN)
+	scp ${PROG} ${IHOST}:$(BIN)
 	cp ${PROG} $(ANONFTP)
 	cp ${PROG}.html $(WWW)
 

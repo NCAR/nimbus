@@ -49,6 +49,7 @@ lint:
 
 install: all
 	cp -p lib${LIBNAME}.a ${DESTDIR}/${LIBDIR}
+	cp -p *.h ${DESTDIR}/${INCLUDEDIR}
 
 include:
 	install -c -m 0444 ${LIBNAME}.h ${DESTDIR}/${INCLUDEDIR}
