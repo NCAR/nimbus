@@ -4,18 +4,17 @@
 
 # Pre-req's that most likely exist on your system, Motif, Qt.
 
-
 # Build libraries first.
 
 foreach file ( hdr_api lib* vardb/lib )
-  (cd $file; make install)
+  (cd $file; echo ""; make install)
 end
 
 
 # Programs with "install" target.
 
-foreach file ( hdrbld ncplot ncpp/src vardb/editor xhd xpms2d/src )
-  (cd $file; make install)
+foreach file ( hdrbld ncplot ncpp/src vardb/editor xhd xpms2d/src nimbus/src/qc nimbus/src/filter mcr/display/src mcr/processor/src rdma ads_utils/edADShdr)
+  (cd $file; echo ""; make install)
 end
 
 
@@ -23,14 +22,14 @@ end
 
 #foreach file ( ads/disc/src ads/dsm/src winds/src )
 foreach file ( winds/src )
-  (cd $file; make)
+  (cd $file; echo ""; make)
 end
 
 
 # Programs with Qt [and Qwt].
 
 foreach file ( rtplot ads_utils/hvpsdiag )
-  (cd $file; qmake; make)
+  (cd $file; echo ""; qmake; make)
 end
 
 
@@ -38,12 +37,6 @@ end
 
 cd nc_utils
 foreach file ( asc2cdf n2asc ncReorder ncav ncextr ncmerge )
-  (cd $file; make install)
+  (cd $file; echo ""; make install)
 end
 cd ..
-
-
-foreach file ( nimbus/src/filter )
-  (cd $file; make install)
-end
-
