@@ -236,7 +236,7 @@ void PostgreSQL::dropAllTables()
 void PostgreSQL::createTables()
 {
   submitCommand(
-  "CREATE TABLE Variable_List (Name char(20) PRIMARY KEY, Units char(16), long_name char(80), SampleRateTable char(16), nDims int, dims int[], missing_value float, data_quality char(16))");
+  "CREATE TABLE Variable_List (Name char(20) PRIMARY KEY, Units char(16), long_name char(80), SampleRateTable char(16), nDims int, dims int[], nCals int, poly_cals float[], missing_value float, data_quality char(16))");
 
   submitCommand(
   "CREATE TABLE Categories (variable char(20), category char(20))");
@@ -306,7 +306,7 @@ printf("InitializeVariableList\n");
 
     addVariableToDataBase(sdi[i]->name, VarDB_GetUnits(sdi[i]->name),
 	VarDB_GetTitle(sdi[i]->name), sdi[i]->SampleRate, nDims, dims,
-	MISSING_VALUE, "Preliminary");
+	sdi[i]->order, sdi[i]->cof, MISSING_VALUE, "Preliminary");
 
     addCategory(sdi[i]->name, "Analog");
     }
@@ -379,7 +379,7 @@ printf("InitializeVariableList\n");
 
     addVariableToDataBase(raw[i]->name, VarDB_GetUnits(raw[i]->name),
 	VarDB_GetTitle(raw[i]->name), raw[i]->SampleRate, nDims, dims,
-	MISSING_VALUE, "Preliminary");
+	0, 0, MISSING_VALUE, "Preliminary");
 
     addCategory(raw[i]->name, "Raw");
   }
@@ -409,7 +409,7 @@ printf("InitializeVariableList\n");
 
     addVariableToDataBase(derived[i]->name, VarDB_GetUnits(derived[i]->name),
 	VarDB_GetTitle(derived[i]->name), derived[i]->OutputRate, nDims, dims,
-	MISSING_VALUE, "Preliminary");
+	0, 0, MISSING_VALUE, "Preliminary");
 
     addCategory(derived[i]->name, "Derived");
   }
@@ -431,6 +431,8 @@ void PostgreSQL::addVariableToDataBase(
 		const int sampleRate,
 		const int nDims,
 		const int dims[],
+		const int nCals,
+		const float cal[],
 		const float missingValue,
 		const std::string& dataQuality)
 {
@@ -450,10 +452,17 @@ void PostgreSQL::addVariableToDataBase(
 
     entry << dims[i];
   }
+  entry << "}', '" << nCals << "', '{";
 
-  entry << "}', '" <<
-	missingValue	<< "', '" <<
-	dataQuality	<< "')";
+  for (int i = 0; i < nCals; ++i)
+  {
+    if (i > 0)
+      entry << ",";
+
+    entry << cal[i];
+  }
+
+  entry << "}', '" << missingValue << "', '" << dataQuality << "')";
 
   submitCommand(entry.str());
   addCategory(name, VarDB_GetCategoryName(name.c_str()));
