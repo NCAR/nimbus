@@ -50,7 +50,7 @@ void Bc635Vme::masterSyncUp()
 void Bc635Vme::syncUp()
 {
   int   consecutiveCnt, prevTime, newTime;
-  int   theCount = 15;  // n consecutive seconds to count up to...
+  int   theCount = 10;  // n consecutive seconds to count up to...
  
   // Wait for 15 consecutive time-stamps.  This is not part of the constructor
   // becuase the TodClock initializes this after the constructor and destroys
@@ -343,7 +343,6 @@ void Bc635Vme::setMajorTime (int new_year, int new_month, int new_day,
   setLeapYear();			// compute date variables
   computeJulianDay();
   computeBcdDate();
-
   sprintf(packet, "%cB%03d%02d%02d%02d%c", SOH,
            bc_julian_day, bc_hour, bc_minute, bc_second, ETB);
 
@@ -383,6 +382,7 @@ void Bc635Vme::strobeIsr ()
   bc_reg->intstat = 4;			// clear the interrupt
 //  readTime();
   setMinorStrobeTime();
+
   if (newSecond())
   {
     // Advance time for next round.

@@ -91,14 +91,14 @@ int IsioPort::getcnt (char *const str, const int len)
 
   isio->cmdram[rx_chan].parm1 = len;          // set the length 
   isio->cmdram[rx_chan].cmd = GETCNT;         // issue command 
-/* 
+ 
   while (isio->cmdram[rx_chan].cmd > 0);         // wait for completion
  
   if (!(stat = isio->cmdram[rx_chan].cmd  & 0x00ff)) {   // if no error 
     memcpy (str, (char*)isio->ibufs[rx_chan], len);	// get the data
   }
   return (isio->cmdram[rx_chan].cmd & 0x00ff);   
-*/
+
 }
 /*****************************************************************************/
 void IsioPort::igetcnt (const int len)
@@ -171,8 +171,8 @@ int IsioPort::clrbuf()
 // Clears the interrupt driver input buffer of the receive channel. 
 {
   isio->cmdram[rx_chan].cmd = CLRBUF;  	// issue the command */
-  taskDelay(sysClkRateGet());
-//  while (isio->cmdram[rx_chan].cmd > 0);
+//  taskDelay(sysClkRateGet());
+  while (isio->cmdram[rx_chan].cmd > 0);
   return(isio->cmdram[rx_chan].cmd & 0x00FF);
 }
 
@@ -385,6 +385,7 @@ int IsioPort::initPort ()
 void IsioPort::baudRate (const int baud_rate)
 {
   ChiniRegs regs;
+  
 // Set the baud rate, and use the bit rate generator for a clock source.
   switch (baud_rate) {
     case 1200:

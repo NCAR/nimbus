@@ -74,9 +74,9 @@ public:
   int garmin_minute;
   int garmin_second;
   int garmin_height;
-  bool time_rqst;
-  bool date_rqst;
-  bool date_time;
+  int time_rqst;
+  int date_rqst;
+  int date_time;
 };
 
 #endif

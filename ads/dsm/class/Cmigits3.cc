@@ -11,37 +11,6 @@
 
 #include <Cmigits3.h>
 
-struct initPckt
-  {
-  ushort sync;
-  ushort msg_id;
-  ushort word_cnt;
-  ushort flags;
-  ushort hdr_cksum;
-  ushort data_valid;
-  ushort mode;
-  short lat_deg;
-  short lat_min;
-  short lat_sec;
-  short lon_deg;
-  short lon_min;
-  short lon_sec;
-  long  alt;
-  short gnd_speed;
-  short gnd_track;
-  short year;
-  short julian_day;
-  short hour;
-  short minute;
-  short second;
-  short true_hdg;
-  short sequence;
-  long  reserved;
-  ushort data_cksum;
-  };
-
-static struct initPckt cmigits_init = CMIGITS_INIT;
-   
 /******************************************************************************
 ** Public Functions
 ******************************************************************************/
@@ -130,15 +99,7 @@ void Cmigits3::readIsr()	// Sampling isr.
       buffer_add += 4;
       num_data[ptog] += 4;
       pcktLen = (swapushort(*((ushort*)&datap[2])) * 2) + 6;
-/*
-      if ((pcktLen < 20) | (pcktLen > 300)) { 
-        state = 0;
-	logMsg("Bad Cmid. pcktLen\n",0,0,0,0,0,0);
-        igetstr(term_str);
-      }
-      else 
-*/
-        igetcnt(pcktLen);
+      igetcnt(pcktLen);
 //  logMsg("pcktLen = %d, state = %d\n",pcktLen,state,0,0,0,0);
       break;
 
@@ -160,27 +121,6 @@ void Cmigits3::readIsr()	// Sampling isr.
       igetstr(term_str);
       break;
   }
-
-/*
-
-  j = 0;
-  *buffer_add++ = datap[j];
-  num_data[ptog]++;
-
-  do { 
-    j++;
-    *buffer_add++ = datap[j];
-    num_data[ptog]++;
-  } while(!((datap[j] == SYNC2) && (datap[j-1] == SYNC1))); 
-
-  if (newSecond) {
-    newSecond = FALSE;
-    ptog = 1 - gtog;
-    buffer_add = data_buffer[gtog];
-    num_data[ptog] = 0;
-  }
-  igetstr (term_str);                 // issue next read 6 bytes
-*/
 }
 /*****************************************************************************/
 char *Cmigits3::buffer()	// Sort the data. 
@@ -274,7 +214,7 @@ char *Cmigits3::buffer()	// Sort the data.
 //      printf("Message ID = %d\n",message_id);
 
   } while (data_count < num_data[gtog]);
-  printf("rate = %d\n",rate);
+//  printf("rate = %d\n",rate);
 
   num_data[gtog] = 0;
   gtog = ptog;                   	// toggle the get buffer index 

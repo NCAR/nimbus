@@ -24,10 +24,10 @@ Garmin::Garmin (const char *base, const int port,
         
 // Class constructor.
 {
-  memset((char*)&garmin_blk, 0, sizeof(garmin_blk));
-  time_rqst = false;
-  date_rqst = false;
-  date_time = false;
+  memset ((char*)&garmin_blk, 0, sizeof(garmin_blk));
+  time_rqst = FALSE;
+  date_rqst = FALSE;
+  date_time = FALSE;
   ptog = 0;
   gtog = 0;
   term_str[0] = '\r';
@@ -43,6 +43,7 @@ Garmin::Garmin (const char *base, const int port,
 /*****************************************************************************/
 void Garmin::initGarmin()
 {
+
   igetstr (term_str);                   // issue first read
 
 }
@@ -53,30 +54,33 @@ void Garmin::checkStatus()
 // Checks the status of the gps receiver and isio port.
 {
 // Check the isio channels. 
-  if (time_rqst && date_rqst & !date_time) {
+
+  if (time_rqst && date_rqst &! date_time) {
     setTime(garmin_year, garmin_month, garmin_day, garmin_hour,
             garmin_minute, garmin_second);
-    date_time = true;
-    printf("System date/time set from GPS\n");
+    date_time = TRUE;
+  printf("System date/time set from GPS\n");
+  printf("Garmin %d/%d/%d  %d:%d:%d\n",garmin_year, garmin_month, garmin_day, 
+          garmin_hour,garmin_minute, garmin_second);
+  printf("\n");
   }
 
-  if (checkPort() != true) {
+  if (checkPort() != TRUE) {
     igetstr (term_str);		// new read if an error or dropped interrupt
     statusMsg ("Garmin: Dropped isio interrupt.\n");
   }
-
 }
 
 /*****************************************************************************/
-void Garmin::secondAlign()
+void Garmin::secondAlign ()
 
 // This routine is to be called at each 1 second clock tick. The garmin_blk
 // buffers are toggled.
 {
+
   gtog = ptog;
   ptog = 1 - gtog;
   memset ((char*)&garmin_blk[ptog], 0, sizeof(Garmin_blk));
-
 }
 
 /*****************************************************************************/
@@ -92,14 +96,18 @@ void Garmin::isr()
   char c1, c2, c3, c4, sentence_name[8];
   int i;
 
+//  logMsg("Garmin ISR\n",0,0,0,0,0,0);
 // Check for data from the isio port.
   if (!(int)(datap = getData()))
     return;
 
   if (*datap == GARMIN_START) {
+
+
 //    memcpy (sentence_name, (char *)datap[1], 5);
 
     if (!strncmp (GPGGA, datap, strlen(GPGGA))) { 
+
       for (j = 0; j < 6; j++)
         utctime[j] = datap[j + 7];
       utctime[6] = '\0';
@@ -109,7 +117,7 @@ void Garmin::isr()
       garmin_hour = (utctime[0] - '0') * 10 + (utctime[1] - '0');
       garmin_minute = (utctime[2] - '0') * 10 + (utctime[3] - '0');
       garmin_second = (utctime[4] - '0') * 10 + (utctime[5] - '0');
-      time_rqst = true;
+      time_rqst = TRUE;
 
       if (garmin_hour == 0 && garmin_minute == 0 && garmin_second < 5)
         date_rqst = true;
@@ -124,18 +132,19 @@ void Garmin::isr()
       garmin_blk[ptog].height = f4;
       garmin_height = f4;
       garmin_blk[ptog].geoidal_height = f5;
+
     }
-    else if (!strncmp(GPRMC, datap, strlen(GPRMC))) {
-      sscanf(&datap[14], "%c", &c1);
+
+    else if (!strncmp (GPRMC, datap, strlen(GPRMC))) {
+      sscanf (&datap[14], "%c", &c1);
       garmin_blk[ptog].status = datap[14];
       if (datap[14] == 'A') 
-        date_rqst = true;
+        date_rqst = TRUE;
       else {
-        date_rqst = false;
-        date_time = false;
+        date_rqst = FALSE;
+        date_time = FALSE;
       }
-
-      sscanf(&datap[41], "%f,%f", &f1, &f2);
+      sscanf (&datap[41], "%f,%f", &f1,&f2);
       garmin_blk[ptog].ground_speed = f1;
       garmin_blk[ptog].course = f2;
       for (j = 0; j < 6; j++)
@@ -146,15 +155,24 @@ void Garmin::isr()
       garmin_month = (utctime[2] - '0') * 10 + (utctime[3] - '0');
       garmin_year = (utctime[4] - '0') * 10 + (utctime[5] - '0');
     }
+/*  
     else if (!strncmp (GPGLL, datap, strlen(GPGLL))) {
 //      logMsg ("Garmin GPGLLpacket \n",0,0,0,0,0,0);
+
     }
+*/
     else {
 //      logMsg (" Bad Garmin packet \n",0,0,0,0,0,0);
     }    
+
   }
 
 // Issue the next serial port read.
   igetstr (term_str);
 
 }
+/******************************************************************************
+** Private Functions
+******************************************************************************/
+ 
+/*****************************************************************************/

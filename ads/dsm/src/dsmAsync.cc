@@ -128,7 +128,7 @@ static DsmMessage *tape_msg;		// tape message handler class
 static Dsp56002 *dsp;			// dsp interface class
 static GpsTans2 *tans2[MAX_TANS_INTFC];	// Trimble Tans I & II  class
 static GpsTans3 *tans3[MAX_TANS_INTFC];	// Trimble Tans III  class
-static Cmigits3 *cmigits3[MAX_CMIG_INTFC];	// C-MIGITS III class
+static Cmigits3 *cmigits3[MAX_CMIG_INTFC];	// Cmigits3 class
 static Garmin *garmin[MAX_TANS_INTFC];	// Garmin  class
 static PpsGps *pps[MAX_PPS_INTFC];	// Collins PPS GPS class
 static SerialTod *serialtod[MAX_SERIALTOD_INTFC]; // Serial TOD output class
@@ -201,7 +201,6 @@ void dsmAsync()
   int	new_second;
   int	priority;
   int   rec;
-  short rec_full;
 
   const char *buf;			// local buffer pointer
   int	len;				// record length
@@ -404,11 +403,10 @@ printf("interrupts initialized\n");
 //  Call the 2d data collection routine.
     for (j = 0; (j < MAX_PMSVME2D_INTFC); j++) {
       if ((int)pms2d[j]) {
-        rec_full = pms2d[j]->collect (new_second);
+        pms2d[j]->collect (new_second);
  
 //      Check for 2d data available, and send it to the comm task.
-//        if (pms2d[j]->bufFull()) {
-        if (rec_full) {
+        if (pms2d[j]->bufFull()) {
           rec += 1;
 /*
 fprintf(stderr, "%d:%d:%d\n", ((P2d_rec *)(pms2d[j]->buffer()))->hour,
@@ -523,12 +521,11 @@ fprintf(stderr, "%d:%d:%d\n", ((P2d_rec *)(pms2d[j]->buffer()))->hour,
         for (j = 0; j< MAX_SERIALTOD_INTFC; j++)
         serialtod[j]->sendtod();
       }
-/*
-      printf ("%02d/%02d/%02d %02d:%02d:%02d tfp = %02d:%02d:%02d\r",
+
+      printf ("%02d/%02d/%02d %02d:%02d:%02d\n",
 		tfp->month(), tfp->day(), tfp->year(),
-		tfp->hour(), tfp->minute(), tfp->second(),
-		tfp->ihour(), tfp->iminute(), tfp->isecond());
-*/
+		tfp->hour(), tfp->minute(), tfp->second());
+
 
 // Check the status of the various interfaces once per second.
       for (j = 0; (j < MAX_TANS_INTFC) && (int)tans2[j]; j++)
@@ -553,7 +550,7 @@ fprintf(stderr, "%d:%d:%d\n", ((P2d_rec *)(pms2d[j]->buffer()))->hour,
       }
 
      for (j = 0; (j < MAX_UVHYG_INTFC) && (int)dpres[j]; j++)
-        dpres[j]->checkStatus();
+       dpres[j]->checkStatus();
 
       for (j = 0; (j < MAX_UVHYG_INTFC) && (int)jpltdl[j]; j++)
         jpltdl[j]->checkStatus();
@@ -1259,7 +1256,7 @@ static void serialInit ()
   if (dsm_config->dsmSerialTod()) {
     for (idx = 0; idx < MAX_SERIALTOD_INTFC; idx++) {
       serialtod[idx] = new SerialTod ((char*)(A24D16_BASE + ISIO1_BASE),
-                               SERTOD_PORT + idx, statusMsg, tfp);
+                               SERTOD_PORT + idx, statusMsg, *tfp);
       if (serialtod[idx] == NULL) {
         perror ("Creating SerialTod:");
         exit (ERROR);
@@ -1287,16 +1284,15 @@ static void checkMessage ()
 
       case MCR_MSG:
 // printf("MCR message received.\n");
-        if ((int)mcr) {
+        if ((int)mcr)
           mcr->control (comm_msg->action(), comm_msg->value());
-        }
         break;
  
       case DIGOUT_MSG:
- printf("DIGOUT message received.\n");
-        if ((int)digOut)
+        if ((int)digOut) {
           digOut->control(comm_msg->action(), comm_msg->connector(),
 			comm_msg->channel());
+	}
         break;
  
       case PMS1_MSG:             	// Pms 1d message
@@ -1305,7 +1301,7 @@ static void checkMessage ()
         break;
 
       case PMS2_MSG:             	// Pms 2d message
- printf("PMS2 change\n");
+// printf("PMS2 change\n");
         switch (comm_msg->action()) {
 
           case PMS2_TAS_SELECT:
@@ -1659,11 +1655,6 @@ static void initInterrupts ()
 {
   int stat;
   int j;
-  bool	connect_bim[4];
-  int	vector[4];
-
-  vector[0] = ISIO1_BIM1_VCT; vector[1] = ISIO1_BIM2_VCT;
-  vector[2] = ISIO1_BIM3_VCT; vector[3] = ISIO1_BIM4_VCT;
 
 // Connect the time-freq processor isr.
   if (intConnect ((VOIDFUNCPTR*)TFP_ADR,(VOIDFUNCPTR)hertz50_isr, TRUE)){
@@ -1677,45 +1668,30 @@ static void initInterrupts ()
   }
 
 // Connect the isio1 bim 2 isr.  UV hygrometer, JPL TDL, and NOAA ozone.
-  for (j = 0; j < 4; ++j)
-    connect_bim[j] = false;
-
-  for (j = 0; spp[j]; ++j)
-    connect_bim[spp[j]->SerialPort() / 2] = true;
-
-
-  if ((int)garmin[0] || (int)uvh[0] || (int)jpltdl[0] || (int)lhtdl || (int)rdma || (int)neph[0] || (int)cmigits3[0])
-    connect_bim[1] = true;
-
-  if ((int)dpres[0] || (int)climet)
-    connect_bim[2] = true;
-
-  if ((int)tans2[0] || (int)tans3[0] || (int)ophir3[0] || (int)pps[0] || (int)mca)
-    connect_bim[3] = true;
-
-
-// Connect the isio1 bim 2 isr. 
-  if (connect_bim[1])
+  if ((int)garmin[0] || (int)uvh[0] || (int)jpltdl || (int)lhtdl || (int)rdma || (int)neph || (int)cmigits3){
     if (intConnect((VOIDFUNCPTR*)ISIO1_BIM2_ADR, (VOIDFUNCPTR)isio1Bim2Isr, 0)){
       perror ("intConnect isio1Bim2Isr");
       exit(ERROR);
     }
+  }
 
 // Connect the isio1 bim 3 isr. 
-  if (connect_bim[2])
+  if ((int)dpres[0] || (int)spp[0] || (int)climet) {
     if (intConnect((VOIDFUNCPTR*)ISIO1_BIM3_ADR, (VOIDFUNCPTR)isio1Bim3Isr, 0)){
       perror ("intConnect isio1Bim3Isr");
       exit(ERROR);
     }
+  }
  
 // Connect the isio1 bim 4 isr.  tans2 and tans3, ophir3, mca.
-  if (connect_bim[3])
+  if ((int)tans2[0] || (int)tans3[0] || (int)ophir3[0] || (int)pps[0] || 
+      (int)mca || (int)cmigits3){
     if (intConnect((VOIDFUNCPTR*)ISIO1_BIM4_ADR, (VOIDFUNCPTR)isio1Bim4Isr, 0)){
       perror ("intConnect isio1Bim4Isr");
       exit(ERROR);
     }
+  }
  
-
 // Connect the HwIrs receive isr.  The IP429 uses a base vector with the lower
 // three bits of the vector specifying the interrupting channel.
   for (stat = sample_table->hwirs_table.firstEntry(); stat;
@@ -1796,17 +1772,18 @@ static void initInterrupts ()
   }
 
   for (j = 0; (j < MAX_CMIG_INTFC) && (int)cmigits3[j]; j++) {
-    cmigits3[j]->enableInterrupt (ISIO1_BIM2_VCT, 1);
+    cmigits3[j]->enableInterrupt (ISIO1_BIM4_VCT, 1);
     taskDelay(sysClkRateGet());
 //    cmigits3[j]->checkStatus();
     cmigits3[j]->initCmigits3();
   }
 
 // Enable interrupts from the ophir3 at level 1.
-  for (j = 0; (j < MAX_OPHIR3_INTFC) && (int)ophir3[j]; j++) {
+  for (j = 0; (j < MAX_OPHIR3_INTFC) && (int)ophir3[j]; j++)
+{
     ophir3[j]->enableInterrupt (ISIO1_BIM4_VCT, 1);
     ophir3[j]->initOphir();
-  }
+}
   
 // Enable interrupts from the Collins PPS at level 1.
   for (j = 0; (j < MAX_PPS_INTFC) && (int)pps[j]; j++)
@@ -1819,12 +1796,14 @@ static void initInterrupts ()
 // Enable interrupts from the SPP probes at level 1.
   for (j = 0; (j < MAX_SPP_INTFC) && (int)spp[j]; j++) {
     spp[j]->initSpp(0);
-    spp[j]->enableInterrupt (vector[spp[j]->SerialPort()/2], 1);
+    spp[j]->enableInterrupt (ISIO1_BIM3_VCT, 1);
   }
 
 // Enable interrupts from the digital pressure at level 1.
-  for (j = 0; (j < MAX_UVHYG_INTFC) && (int)dpres[j]; j++)
+  for (j = 0; (j < MAX_UVHYG_INTFC) && (int)dpres[j]; j++) {
     dpres[j]->enableInterrupt (ISIO1_BIM3_VCT, 1);
+//    dpres[j]->initDpres();
+  }
 
 // Enable interrupts from the JPL TDL at level 1.
   for (j = 0; (j < MAX_UVHYG_INTFC) && (int)jpltdl[j]; j++) {
@@ -1979,8 +1958,6 @@ static void hertz50_isr(int hertz5_flag)
       for (j = 0; (int)pms2dh[j] && j < MAX_PMSVME2D_INTFC; j++) {
         pms2dh[j]->secondAlign();
         pms2d[j]->setTime(tfp->hour(), tfp->minute(), tfp->second()); 
-//        logMsg("2D seconds = %d\n",tfp->second(),0,0,0,0,0);
-
       }
 
       // Set the time on the grey scale interfaces once per hour.
@@ -2063,9 +2040,10 @@ static void gatherData()
 //        dpres[i]->clrbuf();
 //        dpres[i]->checkStatus();
         dpres[i]->reqstData();
-        }
-      } 
-    }
+      }
+    } 
+
+  }
 
   // Increment the 50 hertz counter.  Set the sync data ready flag on the
   // first 50 hz interrupt following the start of a new second.  This allows
@@ -2152,12 +2130,11 @@ static void isio1Bim2Isr (int intf)
 {
   int j;
  
-  for (j = 0; (j < MAX_CMIG_INTFC) && (int)cmigits3[j]; j++)
-    cmigits3[j]->readIsr();
+  for (j = 0; (j < MAX_UVHYG_INTFC) && (int)uvh[j]; j++)
+    uvh[j]->isr();
 
-  for (j = 0; (j < MAX_SPP_INTFC) && (int)spp[j]; j++)
-    if (spp[j]->SerialPort()/2 == 1)
-      spp[j]->isr();
+  for (j = 0; (j < MAX_UVHYG_INTFC) && (int)jpltdl[j]; j++)
+    jpltdl[j]->isr();
 
   if ((int)lhtdl)
     lhtdl->isr();
@@ -2171,12 +2148,6 @@ static void isio1Bim2Isr (int intf)
   for (j = 0; (j < MAX_TANS_INTFC) && (int)garmin[j]; j++)
     garmin[j]->isr();
 
-  for (j = 0; (j < MAX_UVHYG_INTFC) && (int)uvh[j]; j++)
-    uvh[j]->isr();
-
-  for (j = 0; (j < MAX_UVHYG_INTFC) && (int)jpltdl[j]; j++)
-    jpltdl[j]->isr();
-
 }
 
 /*****************************************************************************/
@@ -2189,9 +2160,9 @@ static void isio1Bim3Isr (int intf)
   for (j = 0; (j < MAX_UVHYG_INTFC) && (int)dpres[j]; j++)
     dpres[j]->isr();
 
-  for (j = 0; (j < MAX_SPP_INTFC) && (int)spp[j]; j++)
-    if (spp[j]->SerialPort()/2 == 2)
-      spp[j]->isr();
+  for (j = 0; (j < MAX_SPP_INTFC) && (int)spp[j]; j++) {
+    spp[j]->isr();
+  }
 
   if ((int)climet)
     climet->isr();
@@ -2211,15 +2182,17 @@ static void isio1Bim4Isr (int intf)
   for (j = 0; (j < MAX_TANS_INTFC) && (int)garmin[j]; j++)
     garmin[j]->isr();
 */
-  for (j = 0; (j < MAX_SPP_INTFC) && (int)spp[j]; j++)
-    if (spp[j]->SerialPort()/2 == 3)
-      spp[j]->isr();
-
   for (j = 0; (j < MAX_OPHIR3_INTFC) && (int)ophir3[j]; j++)
     ophir3[j]->isr();
-
+/*
+  for (j = 0; (j < MAX_SPP_INTFC) && (int)spp[j]; j++)
+    spp[j]->isr();
+*/
   for (j = 0; (j < MAX_TANS_INTFC) && (int)tans2[j]; j++)
     tans2[j]->isr();
+
+  for (j = 0; (j < MAX_CMIG_INTFC) && (int)cmigits3[j]; j++)
+    cmigits3[j]->readIsr();
 
 #ifdef NOAA_GIV
   for (j = 0; (j < MAX_PPS_INTFC) && (int)pps[j]; j++)
@@ -2230,7 +2203,6 @@ static void isio1Bim4Isr (int intf)
     mca->isr();
 
 }
-
 /*****************************************************************************/
 static void dms_isr()
 
@@ -2238,5 +2210,6 @@ static void dms_isr()
 {
   digital_in->readIsr();
 }
+/*****************************************************************************/
 
 /* END DSMASYNC.CC */

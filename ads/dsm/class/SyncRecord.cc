@@ -173,7 +173,8 @@ void SyncRecord::buildHdr ()
 {
   static int	firstTime = true;
 
-  if (firstTime) {
+  if (firstTime)
+  {
     hdr_blk.hour = tfp.hour();
     hdr_blk.minute = tfp.minute();
     hdr_blk.second = tfp.second();
@@ -181,30 +182,34 @@ void SyncRecord::buildHdr ()
     // Keep in mind you come in here AFTER the second is over, so subtract 1.
 
     if (--hdr_blk.second < 0)
-      {
+    {
       hdr_blk.second = 59;
       if (--hdr_blk.minute < 0)
-        {
+      {
         hdr_blk.minute = 59;
         if (--hdr_blk.hour < 0)
           hdr_blk.hour = 23;
-        }
       }
+    }
 
     firstTime = false;
   }
-
-  if (garmin[0]) {
-    hdr_blk.year = garmin[0]->year();
-    hdr_blk.month = garmin[0]->month();
-    hdr_blk.day = garmin[0]->day();
+  else
+  {
+  // Read date once an hour.
+    if (garmin[0])
+    {
+      hdr_blk.year = garmin[0]->year();
+      hdr_blk.month = garmin[0]->month();
+      hdr_blk.day = garmin[0]->day();
     }
-  else {
-    hdr_blk.year = tfp.year();
-    hdr_blk.month = tfp.month();
-    hdr_blk.day = tfp.day();
+    else
+    {
+      hdr_blk.year = tfp.year();
+      hdr_blk.month = tfp.month();
+      hdr_blk.day = tfp.day();
     }
-
+  }
 
   // Copy to the record buffer.
   buf->putBuf ((char*)&hdr_blk, samp_table.startHdr(), samp_table.lenHdr());
@@ -214,11 +219,11 @@ void SyncRecord::buildHdr ()
   hdr_blk.second = tfp.second();
   ++hdr_blk.rec_cnt;
 
-/**
+  /*
   printf ("SyncRecord: %02d/%02d/%02d, %02d:%02d:%02d\n", 
           hdr_blk.month, hdr_blk.day, hdr_blk.year, hdr_blk.hour, 
           hdr_blk.minute, hdr_blk.second);
-**/
+  */
 }
 /*****************************************************************************/
 
@@ -302,7 +307,7 @@ void SyncRecord::buildCmigits3 ()
   for (j = 0, stat = samp_table.cmigits3_table.firstEntry(); stat;
        j++, stat = samp_table.cmigits3_table.nextEntry()) {
 
-    while(!cmigits3[j]->Cmig_sem);
+//    while(!cmigits3[j]->Cmig_sem);
 
     buf->putBuf (cmigits3[j]->buffer(),
                  samp_table.cmigits3_table.start(),
@@ -472,7 +477,7 @@ void SyncRecord::buildGarmin ()
                  samp_table.garmin_table.length());
 
 
-//    garmin_blk = (Garmin_blk*)garmin[j]->buffer();
+    garmin_blk = (Garmin_blk*)garmin[j]->buffer();
 /*
     printf ("GARMIN: glat = %f, glon = %f, galt = %f, utctime = %s\n",
             garmin_blk->glat, garmin_blk->glon, garmin_blk->height,

@@ -23,10 +23,10 @@
 #include <IsioPort.h>
 
 typedef struct {
-  int hours;
-  int minutes;
-  int seconds;
-  int days;
+  short hours;
+  short minutes;
+  short seconds;
+  short days;
 } SerialTodData;
 
 const int SERTOD_BAUD =      	9600;           // baud rate
@@ -36,11 +36,11 @@ const float SERTOD_STOP =	1.0;            // stop bits
 const int SERTOD_FLOW =      	FALSE;          // no flow control
 const int SERTOD_LEN = 27;
 
-class SerialTod : public IsioPort {
+class SerialTod : IsioPort {
 
 public:
   SerialTod (const char *base,const int port,void (*statMsg)(char* msg),
-             Bc635Vme *);
+             Bc635Vme&);
   void sendtod();				// send time-of-day 
 
 private:
@@ -48,9 +48,6 @@ private:
 
   SerialTodData st_data;                       // time data
   int *st_datap;
-  Bc635Vme *tfp;                        // time-freq processor class
-  int ser_port;
-  char term_str[1];
-  char *datap;
+  Bc635Vme &tfp;                        // time-freq processor class
 };
 #endif

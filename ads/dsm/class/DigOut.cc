@@ -47,10 +47,14 @@ DigOut::DigOut(char host[], char target[], Vmio12 *vmio12[], DsmMessage& dm) : d
 /* -------------------------------------------------------------------- */
 void DigOut::control(int action, int connector, int channel)
 {
-  if (action)
+  if (action) {
+//    printf("DigOut action Conn. %d, Ch. %d\n",connector,channel);
     setChannel(connector, channel);
-  else
+  }
+  else {
+//    printf("DigOut clear Conn. %d, Ch. %d\n",connector,channel);
     clearChannel(connector, channel);
+  }
 }
 
 /******************************************************************************

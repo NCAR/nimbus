@@ -37,7 +37,7 @@ DISPLAY.O= $(OD)DsmConfig.o $(OD)DsmMessage.o $(O)MsgQueue.o $(OD)SyncVar.o $(OD
 TAPE.H= $(ID)dsmctl.h $(I)dsmVmeDefs.h
 TAPE.O= $(OD)DsmConfig.o $(OD)DsmMessage.o $(O)DsmTapeCtl.o $(O)MsgQueue.o $(OD)SerialBuf.o $(OD)TapeHeader.o $(O)Exb162.o
 
-all: hdrClass dsmClass $(O)dsmAsync.o $(O)dsmComm.o $(O)maspComm.o $(O)dsmDisplay.o $(O)dsmTape.o $(O)vxtcp.o $(O)ck3118.o $(O)ck429.o $(O)ckapn232.o $(O)ckctr.o $(O)ckdio.o $(O)ckdsp.o $(O)ckgrey.o $(O)ckirs.o $(O)ckophir.o $(O)ckscsi.o $(O)cktans2.o $(O)cktans3.o $(O)cktelem.o $(O)cktfp.o $(O)cktod.o $(O)ckuvh.o $(O)ckv1d.o $(O)vxtcp.o $(O)vxudp.o $(O)fptst.o $(O)ckarinc.o $(O)ckarincgps.o $(O)ckppsgps.o $(O)ckdpres.o $(O)cksynchro.o $(O)ck2d.o $(O)ckcnt.o $(O)ck2dgrey.o $(O)ckjpltdl.o $(O)ckspp.o $(O)cklhtdl.o $(O)ckrdma.o $(O)ckstod.o
+all: hdrClass dsmClass $(O)dsmAsync.o $(O)dsmComm.o $(O)maspComm.o $(O)dsmDisplay.o $(O)dsmTape.o $(O)vxtcp.o $(O)ck3118.o $(O)ck429.o $(O)ckapn232.o $(O)ckctr.o $(O)ckdio.o $(O)ckdsp.o $(O)ckgrey.o $(O)ckirs.o $(O)ckophir.o $(O)ckscsi.o $(O)cktans2.o $(O)cktans3.o $(O)cktelem.o $(O)cktfp.o $(O)cktod.o $(O)ckuvh.o $(O)ckv1d.o $(O)vxtcp.o $(O)vxudp.o $(O)fptst.o $(O)ckarinc.o $(O)ckarincgps.o $(O)ckppsgps.o $(O)ckdpres.o $(O)cksynchro.o $(O)ck2d.o $(O)ckcnt.o $(O)ck2dgrey.o $(O)ckjpltdl.o $(O)ckspp.o $(O)cklhtdl.o $(O)ckrdma.o
 
 # $(O)cknonoy.o $(O)cknoaa.o $(O)ckozone.o
 

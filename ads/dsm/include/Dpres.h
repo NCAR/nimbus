@@ -22,9 +22,9 @@
 
 #include <IsioPort.h>
 
+const int DPRES_DATA_LEN = 25;		// data string length
 const int DPRES_SYNC_IDX = 0;
-const int DPRES_SYNC = '*';
-//const int DPRES_SYNC = '#';
+const int DPRES_SYNC = 43;
 
 // Port configuration.
 const int DPRES_BAUD = 9600;	       // baud rate
@@ -53,9 +53,8 @@ private:
   int	idx;
   float	prevSample;
 
-  char term_str[2];                             // read termintation string
-  char start_press[9];				// send pressure cmd.
-  char change_baud[15];				
+  char term_str[3];                             // read termintation string
+  char start_press[4];				// continuous pressure cmd.
 
 };
 

@@ -423,7 +423,7 @@ void DsmDisk::writeFiles(char *buff, int len)
       {
          rc[i] = write(outads[i],buff,len);
          status = fflush(ptrads[i]);
-         if (status != 0)
+         if (rc[i] != len)
          {
             sprintf(msg_str,"DsmDisk: ERROR on flush on %s.\n",destfile[i]);
             win_msg.sendTapeMsg(FAILED,filesopened,msg_str);

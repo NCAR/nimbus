@@ -11,6 +11,7 @@
 
 #include <Dpres.h>
 
+
 /******************************************************************************
 ** Public Functions
 ******************************************************************************/
@@ -94,7 +95,7 @@ void Dpres::isr()
  
 // Check the data alignment.
   if ((datap[DPRES_SYNC_IDX] == DPRES_SYNC))
-    dpres_blk[ptog].press[idx++] = atof(datap);
+    dpres_blk[ptog].press[idx++] = (float)atof(datap);
 
 }
 

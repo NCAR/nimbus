@@ -36,8 +36,6 @@
  
 #define CMIGITS_RESET	{0x81FF, 0x0, 0x0, 0x02, 0x8201}
 
-#define CMIGITS_INIT    {0x81FF,3510,21,0x0,0x8FCA,0x7F,0,35,0,0,-105,0,0,1700,0,0,3,1,0,0,0,0,0x100,0,7E1} 
-
 // Port configuration defines.
 const int CMIGITS_BAUD =       38400;		// baud rate
 const int CMIGITS_BITS =       8;		// data bits
@@ -58,7 +56,6 @@ public:
 
 private:
 
-  ushort computeCheckSum (unsigned char *pkt, int len); // compute check sum
   void (*statusMsg)(char* msg_str);		// status msg handler
   int   ptog;                                   // put toggle index
   int   gtog;                                   // get toggle index
