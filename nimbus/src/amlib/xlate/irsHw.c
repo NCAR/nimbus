@@ -569,7 +569,10 @@ void preProcessData(var_base *varp, long input[], int thisLabel)
     else
       allZeros = false;
 
-  if (zeroCnt > 0)
+  /* Well we could print this even for 1 missing value, but that happens
+   * every 15 minutes when the clocks walk, so only print out of ordinary.
+   */
+  if (zeroCnt > 1)
   {
     fprintf(stderr,
 	"irsHw: %s: %d of %d zero values this second.\n",

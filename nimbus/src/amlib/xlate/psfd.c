@@ -79,7 +79,7 @@ void xlpsfd_ADS2(RAWTBL *varp, void *input, NR_TYPE *output)
     psfd = (ntohs(p2_input[psfd2->ADSoffset * i]) & 0x0001) << 16;
     psfd |= ntohs(p1_input[psfd1->ADSoffset * i]) & 0x0000ffff;
 
-    output[i] = 0.033864 * psfd;
+    output[i] = 0.033864 * psfd + varp->cof[0];
     }
 
 }	/* END XLPSFD */

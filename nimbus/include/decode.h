@@ -10,8 +10,6 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #ifndef DECODE_H
 #define DECODE_H
 
-#define MISSING_VALUE	(-32767.0)
-
 #define GAP_FOUND	TRUE	/* For CheckForTimeGap()	*/
 
 /* Used for defining time segments that start/end at one end of the tape */

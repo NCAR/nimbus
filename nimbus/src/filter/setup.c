@@ -104,7 +104,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
   fgets(buffer, 128, fp);
 
-  if (!ProductionSetup || ProductionRun)
+  if (!ProductionSetup)
     if (atoi(strchr(buffer, '=')+1) == HIGH_RATE)
       {
       XmToggleButtonSetState(lowRateButton, false, true);
