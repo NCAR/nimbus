@@ -1,0 +1,5 @@
+#!/bin/csh
+
+# Command used to format removable drives.
+
+mkfs.ext3 -c -b 4096 -j -T largefile -v /dev/sdc1
