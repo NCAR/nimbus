@@ -1,7 +1,7 @@
 #include "DataPlot.h"
 
 #include <unistd.h>
-#include <qwt/qwt_legend.h>
+#include <qwt_legend.h>
 
 P2d_rec	hvpsRecord;
 

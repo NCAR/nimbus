@@ -1,4 +1,4 @@
-#include <qwt/qwt_plot.h>
+#include <qwt_plot.h>
 
 #include "define.h"
 #include "adsIOrt.h"
