@@ -71,8 +71,10 @@ static int		baseTimeID;
 static struct tm	StartFlight;
 static void		*data_p[MAX_VARIABLES];
 static long		recordNumber = 0;
+static long		TimeVar = 0;
 static float		TimeOffset = 0.0;
 static const float	missing_val = MISSING_VALUE;
+static const int	startVarIndx = 2;
 
 static int	ttxI;	// junk var, delete if hanging around July-2004
 
@@ -123,7 +125,7 @@ void SetBaseTime(struct Hdr_blk *hdr)
 
 }	/* END SETBASETIME */
 
-static int	timeOffsetID;
+static int	timeOffsetID, timeVarID;
 
 /* -------------------------------------------------------------------- */
 void CreateNetCDF(char fileName[])
@@ -287,19 +289,24 @@ void CreateNetCDF(char fileName[])
   baseTimeID = ncvardef(fd, "base_time", NC_LONG, 0, 0);
   strcpy(buffer, "seconds since 1970-01-01 00:00:00 +0000");
   ncattput(fd, baseTimeID, "units", NC_CHAR, strlen(buffer)+1, buffer);
-  strcpy(buffer, "Seconds since Jan 1, 1970");
+  strcpy(buffer, "Seconds since Jan 1, 1970 - deprecating.");
   ncattput(fd, baseTimeID, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
 
+  timeVarID = ncvardef(fd, "Time", NC_LONG, 1, dims);
+  strcpy(buffer, "time of measurement");
+  ncattput(fd, timeVarID, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
+
   timeOffsetID = ncvardef(fd, "time_offset", NC_FLOAT, 1, dims);
-  writeTimeUnits();
-  strcpy(buffer, "Seconds since base_time");
+  strcpy(buffer, "time of measurement - deprecating.");
   ncattput(fd, timeOffsetID, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
 
+  // Write units for both Time & time_offset.
+  writeTimeUnits();
 
 
   /* SDI variables.
    */
-  indx = 1;	/* Index for data_p	*/
+  indx = startVarIndx;	/* Index for data_p	*/
 
   /* For each variable:
    *	- Set dimensions
@@ -758,7 +765,8 @@ if (strcmp(dp->name, "TTX") == 0) ttxI = indx;
       data_p[indx++] = (void *)&HighRateData[dp->HRstart];
     }
 
-  data_p[0] = (void *)&TimeOffset;
+  data_p[0] = (void *)&TimeVar;
+  data_p[1] = (void *)&TimeOffset;
 
   ncendef(fd);
 
@@ -831,6 +839,7 @@ DERTBL *d = derived[SearchTable(derived, "TTX")];
     }
 
   TimeOffset += 1.0;
+  ++TimeVar;
   ++recordNumber;
 
   if ( (dp = (struct missDat *)FrontQueue(missingRecords)) )
@@ -850,7 +859,7 @@ DERTBL *d = derived[SearchTable(derived, "TTX")];
 /* -------------------------------------------------------------------- */
 void WriteNetCDF_MRF()
 {
-  int		i, indx = 1;
+  int		i, indx = startVarIndx;
   SDITBL	*sp;
   RAWTBL	*rp;
 
@@ -909,7 +918,7 @@ void QueueMissingData(int h, int m, int s, int nRecords)
 /* -------------------------------------------------------------------- */
 static void WriteMissingRecords()
 {
-  int		i, ind = 1;
+  int		i, indx = startVarIndx;
   NR_TYPE	*d, hour, minute, second;
   void		*ldp[MAX_VARIABLES];
   struct missDat	*dp;
@@ -921,11 +930,12 @@ static void WriteMissingRecords()
   for (i = 0; i < 2500; ++i)
     d[i] = MISSING_VALUE;
 
-  ldp[0] = (void *)&TimeOffset;
+  ldp[0] = (void *)&TimeVar;
+  ldp[1] = (void *)&TimeOffset;
 
   for (i = 0; i < sdi.size(); ++i)
     if (sdi[i]->Output)
-      ldp[ind++] = (void *)d;
+      ldp[indx++] = (void *)d;
 
   for (i = 0; i < raw.size(); ++i)
     {
@@ -934,28 +944,28 @@ static void WriteMissingRecords()
 
     if (strcmp("HOUR", raw[i]->name) == 0)
       {
-      ldp[ind++] = &hour;
+      ldp[indx++] = &hour;
       hour = dp->hour;
       }
     else
     if (strcmp("MINUTE", raw[i]->name) == 0)
       {
-      ldp[ind++] = &minute;
+      ldp[indx++] = &minute;
       minute = dp->minute;
       }
     else
     if (strcmp("SECOND", raw[i]->name) == 0)
       {
-      ldp[ind++] = &second;
+      ldp[indx++] = &second;
       second = dp->second;
       }
     else
-      ldp[ind++] = (void *)d;
+      ldp[indx++] = (void *)d;
     }
 
   for (i = 0; i < derived.size(); ++i)
     if (derived[i]->Output)
-      ldp[ind++] = (void *)d;
+      ldp[indx++] = (void *)d;
 
   for (i = 0; i < dp->nRecords; ++i)
     {
@@ -973,6 +983,7 @@ static void WriteMissingRecords()
     ncrecput(fd, recordNumber, ldp);
 
     TimeOffset += 1.0;
+    ++TimeVar;
     ++recordNumber;
     }
 
@@ -1289,6 +1300,7 @@ static int writeBlank(int varid, long start[], long count[], int OutputRate)
 static void writeTimeUnits()
 {
   strftime(buffer, 256, "seconds since %F %T +0000", &StartFlight);
+  ncattput(fd, timeVarID, "units", NC_CHAR, strlen(buffer)+1, buffer);
   ncattput(fd, timeOffsetID, "units", NC_CHAR, strlen(buffer)+1, buffer);
 
 }
