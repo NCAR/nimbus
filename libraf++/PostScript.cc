@@ -6,11 +6,7 @@ FULL NAME:	PostScript Class
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2005
 -------------------------------------------------------------------------
 */
 
@@ -108,8 +104,8 @@ void PostScript::PSheader(char progName[], const string& title, float scale)
 
   if (printerSetup->Shape() == Printer::LANDSCAPE)
     {
-    fprintf(fp, "%d %d translate\n", 0, (int)(792 / scale));
-    fprintf(fp, "-90 rotate\n");
+    fprintf(fp, "%d %d translate\n", (int)(612 / scale), 0);
+    fprintf(fp, "90 rotate\n");
 
     MoveTo((int)(712 / scale), (int)(587 / scale));
     }

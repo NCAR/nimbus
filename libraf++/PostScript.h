@@ -10,7 +10,7 @@ DESCRIPTION:	Postscript version of class PlotX
 
 NOTES:		
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2005
 -------------------------------------------------------------------------
 */
 
@@ -25,8 +25,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 
 /* -------------------------------------------------------------------- */
-class PostScript {
-
+/**
+ * Wrapper class for generating PostScript plots.
+ */
+class PostScript
+{
 public:
 	PostScript(char *outFile, char progName[], const std::string& title, float scale);
 	~PostScript();
@@ -63,6 +66,6 @@ private:
 
   void	PSheader(char progName[], const std::string& title, float scale);
 
-};	/* END POSTSCRIPT.H */
+};	// END POSTSCRIPT.H
 
 #endif

@@ -21,6 +21,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998-2004
 /* -------------------------------------------------------------------- */
 namespace libraf {
 
+/**
+ * Read and parse an aircraft configuration file 'ACconfig'.  Generally
+ * this file can be found in $PROJ_DIR/defaults/
+ */
 class ACconfig
 {
 public:

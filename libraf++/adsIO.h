@@ -44,7 +44,15 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 
 
 /* -------------------------------------------------------------------- */
-class ADS_DataFile {
+/**
+ * Class to read an existing ADS file for post-processing purposes.  This
+ * does not parse the header, just reads different physical and
+ * logical records.  Reads from either disk file or tape drive.  Data on
+ * tape drive is generally packed N logical records per physical record.
+ * @see adsIOrt
+ */
+class ADS_DataFile
+{
 
 public:
 	ADS_DataFile(char fName[]);
