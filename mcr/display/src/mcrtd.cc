@@ -43,7 +43,7 @@ void	DisplayTS(Mcr_rec *buf), DisplayData(), DisplayColorBar();
 void	RealTimeLoop(), PostProcLoop(char s[]);
 static bool NextMCRfile(), NextMCRfileRT();
 
-bool	Frozen = false, RealTimeMode = true;
+bool	Frozen = false, RealTimeMode = false;
 char	buffer[2048], mcrFileName[1024];
 Mcr_rec	mcrRec;
 
@@ -62,15 +62,24 @@ static ADS_rtFile	*rtFile;
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
+  int	argIdx = 1;
+
   application = new Application("XmMcrtd", &argc, argv, fallback_resources);
 
   if (argc < 2)
-    {
-    std::cerr << "Not enough arguments: mcrtd file_name\n";
+  {
+    std::cerr << "Not enough arguments: mcrtd [-rt proj_num] | [file_name]\n";
     exit(1);
-    }
+  }
  
-  proc = new DataBuffer(argv[1]);
+  if (strcmp(argv[argIdx], "-rt") == 0)
+  {
+    printf("Entering real-time mode.\n");
+    RealTimeMode = true;
+    ++argIdx;
+  }
+
+  proc = new DataBuffer(argv[argIdx]);
 
 
   /* Get X window going.
@@ -89,7 +98,7 @@ int main(int argc, char *argv[])
   if (RealTimeMode)
     RealTimeLoop();
   else
-    PostProcLoop(argv[1]);
+    PostProcLoop(argv[argIdx]);
 
 }	/* END MAIN */
 
