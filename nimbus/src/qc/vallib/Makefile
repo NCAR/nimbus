@@ -88,7 +88,6 @@ val-target = $(out)/libval.a
 val-objs = \
 	$(obj)/val.o \
 	$(obj)/qc.o \
-	$(obj)/cint.o \
 	$(obj)/valqueue.o
 val-cflags = $(val-mode) $(val-guipath) $(winput-includes)
 val-libsuffix = val
@@ -146,7 +145,7 @@ backup:
 # include files -- shared between targets
 #
 
-val-h = $(inc)/val.h $(inc)/valqueue.h $(inc)/cint.h
+val-h = $(inc)/val.h $(inc)/valqueue.h
 
 qc-h = $(val-h) $(inc)/qc.h
 
@@ -182,8 +181,6 @@ $(obj)/val.o: $(val-h)
 $(obj)/qc.o: $(val-h) $(qc-h)
 
 $(obj)/valqueue.o: $(inc)/valqueue.h
-
-$(obj)/cint.o: $(inc)/cint.h
 
 # (not part of val-objs)
 #$(obj)/cint.o: $(src)/cint.cc $(inc)/cint.h

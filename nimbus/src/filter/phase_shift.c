@@ -37,11 +37,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "bounds.h"
 #include "circbuff.h"
 
-#define MAX_VARIABLES	64
-
-static SDITBL	*sdi_ps[MAX_VARIABLES];
-static RAWTBL	*raw_ps[MAX_VARIABLES];
-static int	nsdi_ps = 0, nraw_ps = 0;
+static std::vector<SDITBL *> sdi_ps;
+static std::vector<RAWTBL *> raw_ps;
 
 /* Global to ease parameter pushing in intensive loops.	*/
 static NR_TYPE	*prev_prev_rec, *prev_rec,
@@ -64,7 +61,7 @@ NR_TYPE	PolyInterp(NR_TYPE yaxis[], int ms_gap, int ms_want),
 /* -------------------------------------------------------------------- */
 void AddVariableToSDIlagList(SDITBL *varp)
 {
-  sdi_ps[nsdi_ps++] = varp;
+  sdi_ps.push_back(varp);
 
   sprintf(buffer, "Time lag for %s enabled, with lag of %d milliseconds.\n",
           varp->name, varp->StaticLag);
@@ -76,7 +73,7 @@ void AddVariableToSDIlagList(SDITBL *varp)
 /* -------------------------------------------------------------------- */
 void AddVariableToRAWlagList(RAWTBL *varp)
 {
-  raw_ps[nraw_ps++] = varp;
+  raw_ps.push_back(varp);
 
   /* Don't print message for dynamic lagged variables.
    */
@@ -115,7 +112,7 @@ void PhaseShift(
   {
   SDITBL	*sp;
 
-  for (i = 0; i < nsdi_ps; ++i)
+  for (i = 0; i < sdi_ps.size(); ++i)
     {
     sp = sdi_ps[i];
 
@@ -133,7 +130,7 @@ void PhaseShift(
   RAWTBL	*rp;
   int		lag;
 
-  for (i = 0; i < nraw_ps; ++i)
+  for (i = 0; i < raw_ps.size(); ++i)
     {
     rp = raw_ps[i];
 

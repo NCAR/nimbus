@@ -33,7 +33,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 extern NR_TYPE	*SampledData, *HighRateData;
 
-static mRFilterPtr	sdiFilters[MAX_SDI], rawFilters[MAX_RAW];
+static std::vector<mRFilterPtr> sdiFilters;
+static std::vector<mRFilterPtr> rawFilters;
+
 static filterData	TwoFiftyTo25, FiftyTo25, OneTo25, FiveTo25, TenTo25,
 			TwentyFive, ThousandTo25;
 
@@ -62,7 +64,8 @@ void InitMRFilters()
 
   /* Create filter Data for each variable
    */
-  for (i = 0; i < nsdi; ++i)
+  sdiFilters.resize(sdi.size());
+  for (i = 0; i < sdi.size(); ++i)
     {
     /* Doesn't require filtering.
      */
@@ -116,7 +119,8 @@ void InitMRFilters()
     }
 
 
-  for (i = 0; i < nraw; ++i)
+  rawFilters.resize(raw.size());
+  for (i = 0; i < raw.size(); ++i)
     {
     /* Doesn't require filtering.
      */
@@ -172,14 +176,14 @@ void InitMRFilters()
 void Filter(CircularBuffer *PSCB)
 {
   int			i, OUTindex, task;
-  SDITBL		*sp;
-  RAWTBL		*rp;
   NR_TYPE		output;
 
   SampledData = (NR_TYPE *)GetBuffer(PSCB, -(PSCB->nbuffers - 1));
 
-  for (i = 0; (sp = sdi[i]); ++i)
+  for (i = 0; i < sdi.size(); ++i)
     {
+    SDITBL *sp = sdi[i];
+
     if (sdiFilters[i] == (mRFilterPtr)ERR)	/* Filtering not needed	*/
       continue;
 
@@ -249,8 +253,10 @@ void Filter(CircularBuffer *PSCB)
 
   /* Do raw variables
    */
-  for (i = 0; (rp = raw[i]); ++i)
+  for (i = 0; i < raw.size(); ++i)
     {
+    RAWTBL *rp = raw[i];
+
     if (rawFilters[i] == (mRFilterPtr)ERR)	/* Filtering not needed	*/
       continue;
 
@@ -305,7 +311,6 @@ void Filter(CircularBuffer *PSCB)
 				rp->SampleRate, rp->SRstart, rp->HRstart);
         break;
       }
-
     }
 
 }	/* END FILTER */
@@ -476,15 +481,13 @@ static void readFilters()
 /* -------------------------------------------------------------------- */
 void ClearMRFilters()
 {
-	int		i, j;
+  for (int i = 0; i < sdi.size(); ++i)
+    if ((int)sdiFilters[i] > 0)
+      initMultiRateFilter(sdiFilters[i]);
 
-	for (i = 0; i < nsdi; ++i)
-		if ((int)sdiFilters[i] > 0)
-			initMultiRateFilter(sdiFilters[i]);
-
-	for (i = 0; i < nraw; ++i)
-		if ((int)rawFilters[i] > 0)
-			initMultiRateFilter(rawFilters[i]);
+  for (int i = 0; i < raw.size(); ++i)
+    if ((int)rawFilters[i] > 0)
+      initMultiRateFilter(rawFilters[i]);
 
 }	/* END CLEARMRFILTER */
 

@@ -22,7 +22,7 @@ DESCRIPTION:	Read header & add variables to appropriate table.  There
 
 INPUT:		Header filename.
 
-OUTPUT:		sdi, nsdi, raw, nraw, derived, nderive
+OUTPUT:		sdi, raw, derived
 		(These globals are initialized in this file)
 
 REFERENCES:	Header API (libhdr_api.a)
@@ -30,7 +30,6 @@ REFERENCES:	Header API (libhdr_api.a)
 		ReadTextFile(), FreeTextFile()
 		SearchList(), SearchDERIVEFTNS()
 		ReadStaticLags(), SetUpDependencies(), ReadDefaultsFile()
-		SortTable()
 
 REFERENCED BY:	winput.c, nimbus.c
 
@@ -104,8 +103,8 @@ static int	InertialSystemCount, GPScount, twoDcnt, NephCnt;
 static int	probeCnt, probeType;
 static long	start, rate, length;
 static char	*item_type, location[NAMELEN];
-static char	*derivedlist[MAX_DERIVE*2],	/* DeriveNames file	*/
-		*rawlist[MAX_RAW*2];		/* RawNames file	*/
+static char	*derivedlist[MAX_DEFAULTS*4],	/* DeriveNames file	*/
+		*rawlist[MAX_DEFAULTS*4];	/* RawNames file	*/
 
 
 static RAWTBL	*add_name_to_RAWTBL(char []);
@@ -137,6 +136,12 @@ void	Add2DtoList(RAWTBL *varp);
 
 
 /* -------------------------------------------------------------------- */
+bool VarCompareLT(const var_base *x, const var_base *y)
+{
+    return(strcmp(x->name, y->name) < 0);
+}
+
+/* -------------------------------------------------------------------- */
 int DecodeHeader(char header_file[])
 {
   char	*vn;
@@ -144,7 +149,7 @@ int DecodeHeader(char header_file[])
   char	*loc, *p;
   int	i;		/* fd of header source */
 
-  nsdi = nraw = nderive = InertialSystemCount = GPScount = twoDcnt = NephCnt = 0;
+  InertialSystemCount = GPScount = twoDcnt = NephCnt = 0;
 
   for (probeCnt = 0; pms1_probes[probeCnt].name; ++probeCnt)
     {
@@ -650,25 +655,20 @@ probeCnt = 0;
 {
 int	i;
 /*
-for (i = 0; i < nsdi; ++i)
+for (i = 0; i < sdi.size(); ++i)
   printf("%-12s%5d, %d\n", sdi[i]->name, sdi[i]->SampleRate, sdi[i]->ADSstart);
 
-for (i = 0; i < nraw; ++i)
+for (i = 0; i < raw.size(); ++i)
   printf("%-12s%5d\n", raw[i]->name, raw[i]->xlate);
 
-for (i = 0; i < nderive; ++i)
+for (i = 0; i < derived.size(); ++i)
   printf("%-12s\n", derived[i]->name, derived[i]->compute);
 */
 }
 
-
-  sdi[nsdi] = NULL;
-  raw[nraw] = NULL;
-  derived[nderive] = NULL;
-
-  SortTable((char **)sdi, 0, nsdi - 1);
-  SortTable((char **)raw, 0, nraw - 1);
-  SortTable((char **)derived, 0, nderive - 1);
+  std::sort(sdi.begin(), sdi.end(), VarCompareLT);
+  std::sort(raw.begin(), raw.end(), VarCompareLT);
+  std::sort(derived.begin(), derived.end(), VarCompareLT);
 
   ReadModuloVariables();
   ReadSumVariables();
@@ -700,7 +700,6 @@ static void initHDR(char vn[])
 /* -------------------------------------------------------------------- */
 static void initSDI(char vn[])
 {
-  SDITBL	*cp;
   char		*type;
   float		*f;
   int		indx;
@@ -790,14 +789,8 @@ static void initSDI(char vn[])
 
   /* Ok, it's strictly nth order polynomial, put it in the SDI table.
    */
-  if (nsdi == MAX_SDI)
-    {
-    fprintf(stderr, "MAX_SDI reached, modify in nimbus.h and recompile.\n");
-    exit(1);
-    }
-
-  cp = sdi[nsdi++] = (SDITBL *)GetMemory(sizeof(SDITBL));
-  memset(cp, 0, sizeof(SDITBL));
+  SDITBL *cp = new SDITBL(vn);
+  sdi.push_back(cp);
 
   if (GetConversionOffset(vn, &(cp->convertOffset)) == ERR)
     cp->convertOffset = 0;
@@ -807,22 +800,12 @@ static void initSDI(char vn[])
   GetOrder(vn, &(cp->order));
   GetType(vn, &type);
 
-  strcpy(cp->name, vn);
   strcpy(cp->type, type);
   cp->SampleRate	= rate;
-//  cp->OutputRate	= Mode == REALTIME ? rate : LOW_RATE;
-cp->OutputRate	= LOW_RATE;
   cp->ADSstart		= start >> 1;
   cp->ADSoffset		>>= 1;
-  cp->StaticLag		= 0;
-  cp->SpikeSlope	= 0;
-  cp->DataQuality	= defaultQuality;
   cp->Average		= (void (*) (NR_TYPE *, NR_TYPE *, void *))(cp->type[0] == 'C' ? SumSDI : AverageSDI);
-  cp->Dirty		= false;
   cp->Modulo		= NULL;
-  cp->Output		= true;
-  cp->Broadcast		= Mode == REALTIME ? true : false;
-  cp->DependedUpon	= false;
 
   if (strncmp(cp->name, "PSFD", 4) == 0)
     cp->DependedUpon = true;
@@ -1052,7 +1035,7 @@ static void initCLIMET(char vn[])
   add_derived_names(vn);
 
   strcpy(buffer, "ACLMT"); strcat(buffer, location);
-  if ((indx = LinearSearchTable((char **)raw, nraw, buffer)) == ERR)
+  if ((indx = SearchTable(raw, buffer)) == ERR)
     {
     fprintf(stderr, "ACLMT not found, fatal, update $PROJ_DIR/defaults/RawNames\n");
     exit(1);
@@ -1063,7 +1046,7 @@ static void initCLIMET(char vn[])
 
 
   strcpy(buffer, "CCLMT"); strcat(buffer, location);
-  if ((indx = LinearSearchTable((char **)derived, nderive, buffer)) == ERR)
+  if ((indx = SearchTable(derived, buffer)) == ERR)
     {
     fprintf(stderr, "CCLMT not found, fatal, update $PROJ_DIR/defaults/DerivedNames\n");
     exit(1);
@@ -1087,7 +1070,7 @@ static void initRDMA(char vn[])
   add_derived_names(vn);
 
   strcpy(buffer, "ARDMA"); strcat(buffer, location);
-  if ((indx = LinearSearchTable((char **)raw, nraw, buffer)) == ERR)
+  if ((indx = SearchTable(raw, buffer)) == ERR)
     {
     fprintf(stderr, "ARDMA not found, fatal, update $PROJ_DIR/defaults/RawNames\n");
     exit(1);
@@ -1098,7 +1081,7 @@ static void initRDMA(char vn[])
 
 
   strcpy(buffer, "CRDMA"); strcat(buffer, location);
-  if ((indx = LinearSearchTable((char **)derived, nderive, buffer)) == ERR)
+  if ((indx = SearchTable(derived, buffer)) == ERR)
     {
     fprintf(stderr, "CRDMA not found, fatal, update $PROJ_DIR/defaults/DerivedNames\n");
     exit(1);
@@ -1106,7 +1089,7 @@ static void initRDMA(char vn[])
 
   derived[indx]->Length = 64;
 
-  for (i = 0; i < nderive; ++i)
+  for (i = 0; i < derived.size(); ++i)
     if (derived[i]->ProbeType == PROBE_RDMA)
       derived[i]->Default_HR_OR = rate;
 
@@ -1739,7 +1722,6 @@ static void add_file_to_RAWTBL(char filename[])
 static RAWTBL *add_name_to_RAWTBL(char name[])
 {
   int		indx;
-  RAWTBL	*rp;
 
   if ((indx = SearchDERIVEFTNS(name)) == ERR)
     {
@@ -1750,16 +1732,9 @@ static RAWTBL *add_name_to_RAWTBL(char name[])
     return((RAWTBL *)ERR);
     }
 
-  if (nraw == MAX_RAW)
-    {
-    fprintf(stderr, "MAX_RAW reached, fix in nimbus.h and recompile.");
-    exit(1);
-    }
+  RAWTBL *rp = new RAWTBL(name);
+  raw.push_back(rp);
 
-  rp = raw[nraw++] = (RAWTBL *)GetMemory(sizeof(RAWTBL));
-  memset(rp, 0, sizeof(RAWTBL));
-
-  strcpy(rp->name, name);
   if (*location)
     strcat(rp->name, location);
 
@@ -1771,23 +1746,12 @@ static RAWTBL *add_name_to_RAWTBL(char name[])
   rp->ADSstart		= start >> 1;
   rp->ADSoffset		= 1;
   rp->SampleRate	= rate;
-//  rp->OutputRate	= Mode == REALTIME ? rate : LOW_RATE;
-rp->OutputRate	= LOW_RATE;
   rp->Length		= length;
   rp->convertOffset	= 0;
   rp->convertFactor	= 1.0;
-  rp->order		= 0;
-  rp->StaticLag		= 0;
-  rp->SpikeSlope	= 0;
-  rp->DataQuality	= defaultQuality;
-  rp->DynamicLag	= 0;
 
-  rp->Dirty		= false;
   rp->Average		= (void (*) (...))Average;
   rp->Modulo		= NULL;
-  rp->Output		= true;
-  rp->Broadcast		= Mode == REALTIME ? true : false;
-  rp->DependedUpon	= false;
   rp->ProbeType		= probeType;
   rp->ProbeCount	= probeCnt;
 
@@ -1799,7 +1763,6 @@ rp->OutputRate	= LOW_RATE;
 static DERTBL *add_name_to_DERTBL(char name[])
 {
   int		indx;
-  DERTBL	*dp;
 
   if ((indx = SearchDERIVEFTNS(name)) == ERR)
   {
@@ -1810,19 +1773,13 @@ static DERTBL *add_name_to_DERTBL(char name[])
     return((DERTBL *)ERR);
   }
 
-  if (LinearSearchTable((char **)derived, nderive, name) != ERR)
+  if (SearchTable(derived, name) != ERR)
   {
     char	msg[128];
 
     sprintf(msg, "%s already added to derived list, ignoring duplicate, check dependencies.\n", name);
     LogMessage(msg);
     return((DERTBL *)ERR);
-  }
-
-  if (nderive == MAX_DERIVE)
-  {
-    fprintf(stderr,"MAX_DERIVE reached, modify in nimbus.h and recompile.");
-    exit(1);
   }
 
 
@@ -1833,29 +1790,21 @@ static DERTBL *add_name_to_DERTBL(char name[])
     return((DERTBL *)ERR);
 
 
-  dp = derived[nderive++] = (DERTBL *)GetMemory(sizeof(DERTBL));
-  memset(dp, 0, sizeof(DERTBL));
+  DERTBL *dp = new DERTBL(name);
+  derived.push_back(dp);
 
-  strcpy(dp->name, name);
   if (*location)
     strcat(dp->name, location);
 
   dp->Initializer	= deriveftns[indx].constructor;
   dp->compute		= (void (*) (void *))deriveftns[indx].compute;
 
-  dp->OutputRate	= LOW_RATE;
   dp->Default_HR_OR	= HIGH_RATE;
   dp->Length		= length;
   dp->ProbeType		= probeType;
   dp->ProbeCount	= probeCnt;
-  dp->DataQuality	= defaultQuality;
 
-  dp->ndep		= 0;
-  dp->Dirty		= false;
   dp->Modulo		= NULL;
-  dp->Output		= true;
-  dp->Broadcast		= Mode == REALTIME ? true : false;
-  dp->DependedUpon	= false;
 
   /* As a kludge, .xlate field used as ProbeCount for FLUX variables.
    */
@@ -1897,5 +1846,49 @@ static int check_cal_coes(int order, float *coef)
   return(order + 1);
 
 }	/* END CHECK_CAL_COES */
+
+/* -------------------------------------------------------------------- */
+var_base::var_base(const char s[])
+{
+  strcpy(name, s);
+  varid = 0;
+  LRstart = SRstart = HRstart = 0;
+
+  SampleRate = 0;
+  Length = 1;
+
+  OutputRate = LOW_RATE;
+
+  Dirty = false;
+  Output = true;
+  DependedUpon = false;
+  Broadcast = Mode == REALTIME ? true : false;
+
+  DataQuality	= defaultQuality;
+
+}
+
+SDITBL::SDITBL(const char s[]) : var_base(s)
+{
+  order = 0;
+  StaticLag = 0;
+  SpikeSlope = 0.0;
+
+}
+
+RAWTBL::RAWTBL(const char s[]) : var_base(s)
+{
+  order = 0;
+  StaticLag = 0;
+  DynamicLag = 0;
+  SpikeSlope = 0.0;
+  ProbeCount = 0;
+}
+
+DERTBL::DERTBL(const char s[]) : var_base(s)
+{
+  ndep = 0;
+  ProbeCount = 0;
+}
 
 /* END HDR_DECODE.C */

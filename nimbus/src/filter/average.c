@@ -34,15 +34,18 @@ extern NR_TYPE	*SampledData, *AveragedData;
 /* -------------------------------------------------------------------- */
 void AverageSampledData()
 {
-  int		i;
-  SDITBL	*sp;
-  RAWTBL	*rp;
+  for (int i = 0; i < sdi.size(); ++i)
+  {
+    SDITBL *sp = sdi[i];
 
-  for (i = 0; (sp = sdi[i]); ++i)
     (*sp->Average)(&SampledData[sp->SRstart], &AveragedData[sp->LRstart], sp);
+  }
 
 
-  for (i = 0; (rp = raw[i]); ++i)
+  for (int i = 0; i < raw.size(); ++i)
+  {
+    RAWTBL *rp = raw[i];
+
     if (rp->SampleRate <= 1)
       memcpy( (char *)&AveragedData[rp->LRstart],
               (char *)&SampledData[rp->SRstart],
@@ -53,16 +56,16 @@ void AverageSampledData()
               rp->SampleRate,
               rp->Length,
               rp->Modulo);
+  }
 
 }	/* END AVERAGESAMPLEDDATA */
 
 /* -------------------------------------------------------------------- */
 void AverageSDI(NR_TYPE *in_data, NR_TYPE *out_data, SDITBL *sp)
 {
-  int		i;
   double	sum = 0.0;
 
-  for (i = 0; i < sp->SampleRate; ++i)
+  for (int i = 0; i < sp->SampleRate; ++i)
     sum += in_data[i];
 
   out_data[0] = sum / sp->SampleRate;
@@ -77,7 +80,6 @@ void Average(
 	int	l,
 	MOD	*mp)
 {
-  int		i;
   double	sum = 0.0;
   double	average;
 
@@ -87,7 +89,7 @@ void Average(
 
     low_value = high_value = false;
 
-    for (i = 0; i < n; ++i)
+    for (int i = 0; i < n; ++i)
       if ((int)in_data[i] < mp->bound[0])
         {
         low_value = true;
@@ -101,7 +103,7 @@ void Average(
       sum = 0.0;
     }
 
-  for (i = 0; i < n; ++i)
+  for (int i = 0; i < n; ++i)
     sum += in_data[i];
 
   average = sum / n;
@@ -120,10 +122,9 @@ void Average(
 /* -------------------------------------------------------------------- */
 void SumSDI(NR_TYPE *in_data, NR_TYPE *out_data, SDITBL *sp)
 {
-  int		i;
   NR_TYPE	sum = 0.0;
 
-  for (i = 0; i < sp->SampleRate; ++i)
+  for (int i = 0; i < sp->SampleRate; ++i)
     sum += in_data[i];
 
   out_data[0] = sum;
@@ -133,10 +134,9 @@ void SumSDI(NR_TYPE *in_data, NR_TYPE *out_data, SDITBL *sp)
 /* -------------------------------------------------------------------- */
 void Sum(NR_TYPE *in_data, NR_TYPE *out_data, int n)
 {
-  int		i;
   double	sum = 0.0;
 
-  for (i = 0; i < n; ++i)
+  for (int i = 0; i < n; ++i)
     sum += in_data[i];
 
   out_data[0] = sum;
@@ -150,14 +150,13 @@ void SumVector(
 	int	n,
 	int	l)
 {
-  int		i, j;
   double	sum;
 
-  for (i = 0; i < l; ++i)
+  for (int i = 0; i < l; ++i)
     {
     sum = 0.0;
 
-    for (j = 0; j < n; ++j)
+    for (int j = 0; j < n; ++j)
       sum += in_data[(j * l) + i];
 
     out_data[i] = sum;

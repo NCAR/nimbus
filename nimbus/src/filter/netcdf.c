@@ -50,6 +50,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2000
 #include "queue.h"
 #include "vardb.h"
 
+#include <cmath>
+
 #define NETCDF_FORMAT_VERSION   "1.2"
 
 #define DEFAULT_TI_LENGTH	(19 * MAX_TIME_SLICES)
@@ -65,7 +67,7 @@ struct missDat	/* (Time gap) / (missing data) information */
 static int		fd = -1;
 static int		baseTimeID;
 static struct tm	StartFlight;
-static void		*data_p[MAX_SDI+MAX_RAW+MAX_DERIVE];
+static void		*data_p[MAX_VARIABLES];
 static long		recordNumber = 0;
 static float		TimeOffset = 0.0;
 static const float	missing_val = MISSING_VALUE;
@@ -344,7 +346,7 @@ void CreateNetCDF(char fileName[])
    *	- Set attributes
    *	- Set data_pointer
    */
-  for (i = 0; i < nsdi; ++i)
+  for (i = 0; i < sdi.size(); ++i)
     {
     if ((sp = sdi[i])->Output == false)
       continue;
@@ -433,7 +435,7 @@ void CreateNetCDF(char fileName[])
 
   /* Raw/"block probe" variables.
    */
-  for (i = 0; i < nraw; ++i)
+  for (i = 0; i < raw.size(); ++i)
     {
     if ((rp = raw[i])->Output == false)
       continue;
@@ -621,7 +623,7 @@ void CreateNetCDF(char fileName[])
 
   /* Derived variables.
    */
-  for (i = 0; i < nderive; ++i)
+  for (i = 0; i < derived.size(); ++i)
     {
     if ((dp = derived[i])->Output == false)
       continue;
@@ -819,13 +821,13 @@ void writeColumn()
 
   ncvarput1(fd, timeOffsetID, idx, data_p[cntr++]);
 
-  for (i = 0; i < nsdi; ++i)
+  for (i = 0; i < sdi.size(); ++i)
     ncvarput1(fd, sdi[i]->varid, idx, data_p[cntr++]);
 
-  for (i = 0; i < nraw; ++i)
+  for (i = 0; i < raw.size(); ++i)
     ncvarput1(fd, raw[i]->varid, idx, data_p[cntr++]);
 
-  for (i = 0; i < nderive; ++i)
+  for (i = 0; i < derived.size(); ++i)
     ncvarput1(fd, derived[i]->varid, idx, data_p[cntr++]);
 
 }
@@ -838,7 +840,7 @@ void WriteNetCDF()
 
 //writeColumn();
 
-DERTBL *d = derived[SearchTable((char**)derived, nderive, "TTX")];
+DERTBL *d = derived[SearchTable(derived, "TTX")];
 
 //printf(" - %f %f\n", data_p[ttxI], AveragedData[d->LRstart]);
 
@@ -874,9 +876,9 @@ DERTBL *d = derived[SearchTable((char**)derived, nderive, "TTX")];
     {
     int		hour, min, sec;
 
-    hour = (int)SampledData[raw[SearchTable((char **)raw, nraw, "HOUR")]->SRstart];
-    min = (int)SampledData[raw[SearchTable((char **)raw, nraw, "MINUTE")]->SRstart];
-    sec = (int)SampledData[raw[SearchTable((char **)raw, nraw, "SECOND")]->SRstart];
+    hour = (int)SampledData[raw[SearchTable(raw, "HOUR")]->SRstart];
+    min = (int)SampledData[raw[SearchTable(raw, "MINUTE")]->SRstart];
+    sec = (int)SampledData[raw[SearchTable(raw, "SECOND")]->SRstart];
 
     if (hour == dp->hour && min == dp->minute && sec == dp->second)
       WriteMissingRecords();
@@ -895,7 +897,7 @@ void WriteNetCDF_MRF()
   /* We need to reset SampleRate indices, because for HighRate, SampleData
    * is from a circular buffer.
    */
-  for (i = 0; i < nsdi; ++i)
+  for (i = 0; i < sdi.size(); ++i)
     if ((sp = sdi[i])->Output)
       {
       if (sp->OutputRate == sp->SampleRate)
@@ -904,7 +906,7 @@ void WriteNetCDF_MRF()
       ++indx;
       }
 
-  for (i = 0; i < nraw; ++i)
+  for (i = 0; i < raw.size(); ++i)
     if ((rp = raw[i])->Output)
       {
       if (rp->OutputRate == rp->SampleRate && rp->OutputRate != ProcessingRate)
@@ -948,7 +950,7 @@ static void WriteMissingRecords()
 {
   int		i, ind = 1;
   NR_TYPE	*d, hour, minute, second;
-  void	*ldp[MAX_SDI+MAX_RAW+MAX_DERIVE];
+  void		*ldp[MAX_VARIABLES];
   struct missDat	*dp;
 
   dp = (struct missDat *)FrontQueue(missingRecords);
@@ -960,11 +962,11 @@ static void WriteMissingRecords()
 
   ldp[0] = (void *)&TimeOffset;
 
-  for (i = 0; i < nsdi; ++i)
+  for (i = 0; i < sdi.size(); ++i)
     if (sdi[i]->Output)
       ldp[ind++] = (void *)d;
 
-  for (i = 0; i < nraw; ++i)
+  for (i = 0; i < raw.size(); ++i)
     {
     if (raw[i]->Output == false)
       continue;
@@ -990,7 +992,7 @@ static void WriteMissingRecords()
       ldp[ind++] = (void *)d;
     }
 
-  for (i = 0; i < nderive; ++i)
+  for (i = 0; i < derived.size(); ++i)
     if (derived[i]->Output)
       ldp[ind++] = (void *)d;
 
@@ -1031,10 +1033,10 @@ void SyncNetCDF()
 /* -------------------------------------------------------------------- */
 void CloseNetCDF()
 {
-  int	len;
-
   if (fd == ERR)
     return;
+
+  int	len;
 
   FormatTimeSegmentsForOutputFile(buffer);
 
@@ -1084,7 +1086,7 @@ void BlankOutBadData()
   start[0] = start[1] = start[2] = 0;
   count[0] = feTime[3] - fsTime[3];
 
-  for (i = 0; i < nsdi; ++i)
+  for (i = 0; i < sdi.size(); ++i)
     {
     if (strcmp(sdi[i]->DataQuality, "Bad") == 0)
       {
@@ -1109,7 +1111,7 @@ void BlankOutBadData()
       }
     }
 
-  for (i = 0; i < nraw; ++i)
+  for (i = 0; i < raw.size(); ++i)
     {
     if (strcmp(raw[i]->DataQuality, "Bad") == 0)
       {
@@ -1133,7 +1135,7 @@ void BlankOutBadData()
       }
     }
 
-  for (i = 0; i < nderive; ++i)
+  for (i = 0; i < derived.size(); ++i)
     {
     if (strcmp(derived[i]->DataQuality, "Bad") == 0)
       {
@@ -1211,7 +1213,7 @@ void BlankOutBadData()
 
     clearDependedByList();
 
-    if ((index = SearchTable((char **)sdi, nsdi, target)) != ERR &&
+    if ((index = SearchTable(sdi, target)) != ERR &&
 	sdi[index]->Output)
       {
 
@@ -1237,7 +1239,7 @@ void BlankOutBadData()
         }
       }
     else
-    if ((index = SearchTableSansLocation((char **)raw, nraw, target)) != ERR &&
+    if ((index = SearchTableSansLocation(raw, target)) != ERR &&
 	raw[index]->Output)
       {
 
@@ -1264,10 +1266,10 @@ void BlankOutBadData()
       }
     else
 
-/*  if ((index = SearchTableSansLocation((char **)derived, nderive, target)) != ERR)
+/*  if ((index = SearchTableSansLocation(derived, target)) != ERR)
    */
 
-    if ((index = SearchTable((char **)derived, nderive, target)) != ERR &&
+    if ((index = SearchTable(derived, target)) != ERR &&
 	derived[index]->Output)
       {
 /*  See if measurement has already been blanked for whole flight  */
@@ -1324,9 +1326,7 @@ static int writeBlank(int varid, long start[], long count[], int OutputRate)
 /* -------------------------------------------------------------------- */
 static void clearDependedByList()
 {
-  int           i;
-
-  for (i = 0; derived[i]; ++i)
+  for (int i = 0; i < derived.size(); ++i)
     if (derived[i]->DependedUpon & 0xf0)
       derived[i]->DependedUpon &= 0x0f;
 
@@ -1335,27 +1335,26 @@ static void clearDependedByList()
 /* -------------------------------------------------------------------- */
 static void markDependedByList(char target[])
 {
-  int           i, j, indx;
-  DERTBL	*dp;
+  for (int i = 0; i < derived.size(); ++i)
+  {
+    DERTBL *dp = derived[i];
 
-  for (i = 0; (dp = derived[i]); ++i)
-    for (j = 0; j < dp->ndep; ++j)
+    for (int j = 0; j < dp->ndep; ++j)
       if (strcmp(target, dp->depend[j]) == 0)
-        {
+      {
         dp->DependedUpon |= 0xf0;
         markDependedByList(dp->name);
-        }
+      }
+  }
 
 }       /* END DOUBLECHECK */
 
 /* -------------------------------------------------------------------- */
 static void printDependedByList()
 {
-  int	i;
-
   LogMessage(" The following variables depend upon this variable:\n ");
 
-  for (i = 0; derived[i]; ++i)
+  for (int i = 0; i < derived.size(); ++i)
     if (derived[i]->DependedUpon & 0xf0)
       {
       sprintf(buffer, " %s", derived[i]->name);

@@ -70,7 +70,7 @@ void InitAsyncModule(char fileName[])
   return;
 
 
-  for (i = 0; i < nraw; ++i)
+  for (i = 0; i < raw.size(); ++i)
     {
     if (cnt == MAX_ASYNC_VARS)
       {

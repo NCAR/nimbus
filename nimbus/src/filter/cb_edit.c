@@ -73,13 +73,13 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
     {
     indx = (ListPosition = call->item_position) - 1;
 
-    if (indx < nsdi)
+    if (indx < sdi.size())
       {
       sp = sdi[indx];
       VariableType = SDI;
       }
     else
-    if ((indx -= nsdi) < nraw)
+    if ((indx -= sdi.size()) < raw.size())
       {
       rp = raw[indx];
       VariableType = RAW;
@@ -87,7 +87,7 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
       }
     else
       {
-      dp = derived[indx - nraw];
+      dp = derived[indx - raw.size()];
       VariableType = DERIVED;
       }
     }

@@ -36,17 +36,18 @@ static void	doubleCheck(DERTBL *dp);
 /* -------------------------------------------------------------------- */
 void SetUpDependencies()
 {
-  DERTBL	*dp;
-  int		i, j;
+  int		j;
   char		tokens[] = " \t";
-  char		*dependlist[MAX_DERIVE*4];
+  char		*dependlist[2000];
   char		*s, name[NAMELEN], location[NAMELEN];
 
 
   ReadTextFile(DEPENDTBL, dependlist);
 
-  for (i = 0; (dp = derived[i]); ++i)
+  for (int i = 0; i < derived.size(); ++i)
     {
+    DERTBL *dp = derived[i];
+
     strcpy(name, dp->name);
     location[0] = '\0';
 
@@ -135,28 +136,28 @@ void CleanOutUnwantedVariables()
 {
   int	i, cnt;
 
-  for (i = 0; derived[i]; ++i)
+  for (i = 0; i < derived.size(); ++i)
     if (derived[i]->Output)
       doubleCheck(derived[i]);
 
 
-  for (cnt = 0, i = 0; i < nsdi; ++i)
+  for (cnt = 0, i = 0; i < sdi.size(); ++i)
     if (sdi[i]->Output || sdi[i]->DependedUpon)
       sdi[cnt++] = sdi[i];
 
-  sdi[(nsdi = cnt)] = NULL;
+  sdi.resize(cnt);
 
-  for (cnt = 0, i = 0; i < nraw; ++i)
+  for (cnt = 0, i = 0; i < raw.size(); ++i)
     if (raw[i]->Output || raw[i]->DependedUpon)
       raw[cnt++] = raw[i];
 
-  raw[(nraw = cnt)] = NULL;
+  raw.resize(cnt);
 
-  for (cnt = 0, i = 0; i < nderive; ++i)
+  for (cnt = 0, i = 0; i < derived.size(); ++i)
     if (derived[i]->Output || derived[i]->DependedUpon)
       derived[cnt++] = derived[i];
 
-  derived[(nderive = cnt)] = NULL;
+  derived.resize(cnt);
 
 }	/* CLEANOUTUNWANTEDVARIABLES */
 
@@ -165,19 +166,19 @@ int DependIndexLookup(DERTBL *dp, int which_dep)
 {
   int		di;
 
-  if ((di = SearchTable((char **)sdi, nsdi, dp->depend[which_dep])) != ERR)
+  if ((di = SearchTable(sdi, dp->depend[which_dep])) != ERR)
     {
     dp->depend_LRindex[which_dep] = sdi[di]->LRstart;
     dp->depend_HRindex[which_dep] = sdi[di]->HRstart;
     }
   else
-  if ((di = SearchTable((char **)raw, nraw, dp->depend[which_dep])) != ERR)
+  if ((di = SearchTable(raw, dp->depend[which_dep])) != ERR)
     {
     dp->depend_LRindex[which_dep] = raw[di]->LRstart;
     dp->depend_HRindex[which_dep] = raw[di]->HRstart;
     }
   else
-  if ((di = SearchTable((char **)derived, nderive, dp->depend[which_dep])) !=ERR)
+  if ((di = SearchTable(derived, dp->depend[which_dep])) !=ERR)
     {
     dp->depend_LRindex[which_dep] = derived[di]->LRstart;
     dp->depend_HRindex[which_dep] = derived[di]->HRstart;
@@ -196,13 +197,13 @@ static void doubleCheck(DERTBL *dp)	/* This function is recursive	*/
 
   for (i = 0; i < dp->ndep; ++i)
     {
-    if ((indx = SearchTable((char **)sdi, nsdi, dp->depend[i])) != ERR)
+    if ((indx = SearchTable(sdi, dp->depend[i])) != ERR)
       sdi[indx]->DependedUpon = true;
     else
-    if ((indx = SearchTable((char **)raw, nraw, dp->depend[i])) != ERR)
+    if ((indx = SearchTable(raw, dp->depend[i])) != ERR)
       raw[indx]->DependedUpon = true;
     else
-    if ((indx = SearchTable((char **)derived,nderive, dp->depend[i])) != ERR)
+    if ((indx = SearchTable(derived, dp->depend[i])) != ERR)
       {
       derived[indx]->DependedUpon = true;
       doubleCheck(derived[indx]);

@@ -37,11 +37,11 @@ void RunAMLIBinitializers()
 {
   int	i;
 
-  for (i = 0; i < nraw; ++i)
+  for (i = 0; i < raw.size(); ++i)
     if (raw[i]->Initializer)
       (*raw[i]->Initializer)(raw[i]);
 
-  for (i = 0; i < nderive; ++i)
+  for (i = 0; i < derived.size(); ++i)
     if (derived[i]->Initializer)
       (*derived[i]->Initializer)(derived[i]);
 

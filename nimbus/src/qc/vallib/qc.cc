@@ -93,6 +93,10 @@ static ValRealtimeTestbatch rt_batches[RT_BATCHES_MAXNUM];
 static boolean global_enable;
 
 
+int     SearchTable(std::vector<SDITBL *> &table, const char target[]),
+        SearchTable(std::vector<RAWTBL *> &table, const char target[]),
+        SearchTable(std::vector<DERTBL *> &table, const char target[]);
+
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -250,7 +254,7 @@ int qc_rt_exec(void)
 	// look up UTC time from WINPUT database (needed for last2min counter
         // maintenance) -- this is ugly.  i wish we would have access to 
         // something analogous to time_t.
-        if((index = search_winput_table((char **)raw, nraw, "HOUR")) == ERR)
+        if((index = SearchTable(raw, "HOUR")) == ERR)
 	{
 	    std::cerr << "QC: qc_rt_exec(): couldn't look up HOUR\n";
 	    return OK; // not ok, but 'ERR' indicates quit so we can't use it
@@ -258,7 +262,7 @@ int qc_rt_exec(void)
 	else
 	  hour = (int) AveragedData[raw[index]->LRstart];
 
-	if((index = search_winput_table((char **)raw, nraw, "MINUTE")) == ERR)
+	if((index = SearchTable(raw, "MINUTE")) == ERR)
 	{
 	    std::cerr << "QC: qc_rt_exec(): couldn't look up MINUTE\n";
 	    return OK; // not ok, but 'ERR' indicates quit so we can't use it
@@ -266,7 +270,7 @@ int qc_rt_exec(void)
 	else
 	  minute = (int) AveragedData[raw[index]->LRstart];
 
-	if((index = search_winput_table((char **)raw, nraw, "SECOND")) == ERR)
+	if((index = SearchTable(raw, "SECOND")) == ERR)
 	{
 	    std::cerr << "QC: qc_rt_exec(): couldn't look up SECOND\n";
 	    return OK; // not ok, but 'ERR' indicates quit so we can't use it
@@ -493,7 +497,7 @@ static boolean rt_parse_configfile(void)
 
 	    // search for variable in each of the three WINPUT databases
 	    db_index = 0;
-	    while((!found) && (db_index < nsdi))
+	    while((!found) && (db_index < sdi.size()))
 	      if(strcmp(sdi[db_index]->name, varname) == 0)
 	      {
 		  found = TRUE;
@@ -504,7 +508,7 @@ static boolean rt_parse_configfile(void)
 		++db_index;
 
 	    db_index = 0;
-	    while((!found) && (db_index < nraw))
+	    while((!found) && (db_index < raw.size()))
 	      if(strcmp(raw[db_index]->name, varname) == 0)
 	      {
 		  found = TRUE;
@@ -516,7 +520,7 @@ static boolean rt_parse_configfile(void)
 
 	    // !! do we do any realtime tests on derived variables?
 	    db_index = 0;
-	    while((!found) && (db_index < nderive))
+	    while((!found) && (db_index < derived.size()))
 	      if(strcmp(derived[db_index]->name, varname) == 0)
 	      {
 		  found = TRUE;

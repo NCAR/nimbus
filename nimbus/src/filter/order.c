@@ -29,20 +29,18 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 /* -------------------------------------------------------------------- */
 void GenerateComputeOrder()
 {
-  int		i, j;
-  int		index;
-  bool		found;
-  DERTBL	*ihold;
-
+  int i, j;
 {
   /* Copy over the list of Derived variables, placing the
    * ones with 0 dependencies at the beginning and the rest
    * at the end.  This will speed up processing.
    */
   int	bpos = 0,
-  epos = nderive-1;
+  epos = derived.size()-1;
 
-  for (i = 0; i < nderive; ++i)
+  ComputeOrder.resize(derived.size());
+
+  for (i = 0; i < derived.size(); ++i)
     if (derived[i]->ndep == 0)
       ComputeOrder[bpos++] = derived[i];
     else
@@ -51,21 +49,20 @@ void GenerateComputeOrder()
   i = bpos;
 }
 
-  for (; i < nderive; )
+  for (; i < derived.size(); )
     {
-    found = true;
+    bool found = true;
 
     for (j = 0; j < ComputeOrder[i]->ndep; j++)
       {
-      if (SearchTable((char **)sdi, nsdi, ComputeOrder[i]->depend[j]) == ERR
-          && SearchTable((char **)raw, nraw, ComputeOrder[i]->depend[j]) == ERR
-          && LinearSearchTable((char **)ComputeOrder, i, ComputeOrder[i]->depend[j]) == ERR)
+      if (SearchTable(sdi, ComputeOrder[i]->depend[j]) == ERR
+          && SearchTable(raw, ComputeOrder[i]->depend[j]) == ERR
+          && SearchTable(ComputeOrder, i, ComputeOrder[i]->depend[j]) == ERR)
         {
         found = false;
         break;
         }
       }
-
 
     if (found)
       ++i;
@@ -74,10 +71,9 @@ void GenerateComputeOrder()
       /* Start the search after the current position and
        * compensate by adding i+1
        */
-      index = LinearSearchTable((char **)&ComputeOrder[i+1],
-		nderive - i-1, ComputeOrder[i]->depend[j]) + i+1;
+      int index = SearchTable(ComputeOrder, i+1, derived.size(), ComputeOrder[i]->depend[j]);
 
-      ihold = ComputeOrder[i];
+      DERTBL *ihold = ComputeOrder[i];
       ComputeOrder[i] = ComputeOrder[index];
       ComputeOrder[index] = ihold;
       }

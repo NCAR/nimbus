@@ -52,7 +52,7 @@ void AllocateDataArrays()
   nFloats = 0;
   nLRfloats = nSRfloats = nHRfloats = 0;
 
-  for (i = 0; i < nsdi; ++i)
+  for (i = 0; i < sdi.size(); ++i)
     {
     sdi[i]->LRstart = nLRfloats++;
     sdi[i]->SRstart = nFloats;
@@ -61,7 +61,7 @@ void AllocateDataArrays()
     nHRfloats += 25;
     }
 
-  for (i = 0; i < nraw; ++i)
+  for (i = 0; i < raw.size(); ++i)
     {
     raw[i]->LRstart = nLRfloats;
     raw[i]->SRstart = nFloats;
@@ -71,7 +71,7 @@ void AllocateDataArrays()
     nHRfloats += (25 * raw[i]->Length);
     }
 
-  for (i = 0; i < nderive; ++i)
+  for (i = 0; i < derived.size(); ++i)
     {
     derived[i]->LRstart = nLRfloats;
     derived[i]->HRstart = nHRfloats;
@@ -81,12 +81,12 @@ void AllocateDataArrays()
 
   /* Reset dependIndices.
    */
-  for (i = 0; i < nderive; ++i)
+  for (i = 0; i < derived.size(); ++i)
     for (j = 0; j < derived[i]->ndep; ++j)
       DependIndexLookup(derived[i], j);
 
-  bits = (ushort *)GetMemory((unsigned)sizeof(ushort) * nsdi);
-  volts = (NR_TYPE *)GetMemory((unsigned)sizeof(NR_TYPE) * nsdi);
+  bits = (ushort *)GetMemory((unsigned)sizeof(ushort) * sdi.size());
+  volts = (NR_TYPE *)GetMemory((unsigned)sizeof(NR_TYPE) * sdi.size());
   SampledData = (NR_TYPE *)GetMemory((unsigned)sizeof(NR_TYPE) * nFloats);
   AveragedData = (NR_TYPE *)GetMemory((unsigned)sizeof(NR_TYPE) * nLRfloats);
 

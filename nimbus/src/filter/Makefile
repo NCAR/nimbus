@@ -38,7 +38,7 @@ INPUT.O = $(NOBJ)adsIO.o $(NOBJ)amlibfn.o $(NOBJ)async.o $(NOBJ)average.o\
 	$(NOBJ)phase_shift.o $(NOBJ)pms1d.o $(NOBJ)popen.o $(NOBJ)probe.o\
 	$(NOBJ)rd_defs.o $(NOBJ)rd_ddor.o $(NOBJ)rd_mod.o $(NOBJ)rd_lag.o\
 	$(NOBJ)rd_spike.o $(NOBJ)rd_sum.o $(NOBJ)rtloop.o $(NOBJ)rec_decode.o\
-	$(NOBJ)search.o $(NOBJ)setup.o $(NOBJ)sort.o $(NOBJ)textfile.o\
+	$(NOBJ)search.o $(NOBJ)setup.o $(NOBJ)textfile.o\
 	$(NOBJ)timeseg.o $(NOBJ)Xwin.o $(NOBJ)dq.o $(NOBJ)UdpSocket.o $(NOBJ)psql.o\
 	$(NOBJ)injectsd.o
 
@@ -101,10 +101,6 @@ $(NOBJ)rd_spike.o: rd_spike.c $(SPIKE.H)
 LAG.H = $(NINC)nimbus.h $(NINC)decode.h $(NINC)bounds.h
 $(NOBJ)rd_lag.o: rd_lag.c $(LAG.H)
 	${CC} $(COFLAGS) $(DEFINES) rd_lag.c -o $(NOBJ)rd_lag.o
-
-SORT.H = 
-$(NOBJ)sort.o: sort.c $(SORT.H)
-	${CC} $(COFLAGS) $(DEFINES) sort.c -o $(NOBJ)sort.o
 
 CALCO.H = $(NINC)nimbus.h
 $(NOBJ)calco.o: calco.c $(CALCO.H)

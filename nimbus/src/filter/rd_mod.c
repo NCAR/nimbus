@@ -27,7 +27,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 /* -------------------------------------------------------------------- */
 void ReadModuloVariables()
 {
-  int	i, index;
+  int	index;
   char	*modvars[512], target[NAMELEN];
   int	val[2], ten_percent;
   MOD	*mp;
@@ -35,7 +35,7 @@ void ReadModuloVariables()
 
   ReadTextFile(MODVARS, modvars);
 
-  for (i = 0; modvars[i]; ++i)
+  for (int i = 0; modvars[i]; ++i)
     {
     sscanf(modvars[i], "%s %d %d", target, &val[0], &val[1]);
     mp = (MOD *)GetMemory(sizeof(MOD));
@@ -47,10 +47,10 @@ void ReadModuloVariables()
     mp->bound[0]	= val[0] + ten_percent;
     mp->bound[1]	= val[1] - ten_percent;
 
-  if ((index = SearchTable((char **)sdi, nsdi, target)) != ERR)
+  if ((index = SearchTable(sdi, target)) != ERR)
     sdi[index]->Modulo = mp;
   else
-    if ((index = SearchTableSansLocation((char **)raw, nraw, target)) != ERR)
+    if ((index = SearchTableSansLocation(raw, target)) != ERR)
       {
       raw[index]->Modulo = mp;
 
@@ -60,7 +60,7 @@ void ReadModuloVariables()
         raw[index]->Modulo = mp;
       }
     else
-     if ((index = SearchTableSansLocation((char **)derived, nderive, target)) != ERR)
+     if ((index = SearchTableSansLocation(derived, target)) != ERR)
       {
       derived[index]->Modulo = mp;
 

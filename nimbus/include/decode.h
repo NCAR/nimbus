@@ -11,8 +11,6 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #define DECODE_H
 
 #define MISSING_VALUE	(-32767.0)
-#include <cmath>
-//#define MISSING_VALUE	(NAN)
 
 #define GAP_FOUND	TRUE	/* For CheckForTimeGap()	*/
 
