@@ -3,7 +3,6 @@ util.c -- utility operations - operations on strings, files, etc.
 */
 
 #include <stdio.h>
-#include <constants.h>
 #include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
@@ -17,6 +16,8 @@ util.c -- utility operations - operations on strings, files, etc.
 #include <sys/utsname.h>
 #include <time.h>
 #include <utime.h>
+
+#include "constants.h"
 
 #define MAX_FLNM_LNGTH 128
 
