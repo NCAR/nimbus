@@ -102,7 +102,7 @@ int SyntheticData::InitSynth(char* tt)
 	  {
 	    sdi[indexs]->DataQuality="synthetic";                           //changes the data quality flg
 	    sdi[indexs]->Dirty=true;
-	    sdi[indexs]->synthtype=file;
+	    sdi[indexs]->synthtype=sy_file;
 	    st.push_back(sdi[indexs]);    //push it on to the sditable pointer vector 
 	    varnames[i].type='s';
 	    varnames[i].index=is;        //keep track of it's locationin the sdi vector
@@ -113,7 +113,7 @@ int SyntheticData::InitSynth(char* tt)
 	  {
 	    raw[indexr]->DataQuality="synthetic";
 	    raw[indexr]->Dirty=true;
-	    raw[indexr]->synthtype=file;
+	    raw[indexr]->synthtype=sy_file;
 	    rt.push_back(raw[indexr]);      //push the variable on to the rawtable pointer vector
 	    varnames[i].type='r';
 	    varnames[i].index=ir;          //keep track of it's location in the raw  vectors 
@@ -299,7 +299,7 @@ void SyntheticData:: registervar(struct v ttemp)
        sdi[indexs]->DataQuality="synthetic";
        sdi[indexs]->Dirty=true;
        FillListWidget();
-       sdi[indexs]->synthtype=constant;
+       sdi[indexs]->synthtype=sy_constant;
        st.push_back(sdi[indexs]);
        constvarnames[constcount].index=is;
        is++;
@@ -310,7 +310,7 @@ void SyntheticData:: registervar(struct v ttemp)
       raw[indexr]->DataQuality="synthetic";
       raw[indexr]->Dirty=true;
       FillListWidget();
-      raw[indexr]->synthtype=constant;
+      raw[indexr]->synthtype=sy_constant;
       rt.push_back(raw[indexr]);
       constvarnames[constcount].index=ir;
       ir++;
@@ -1445,15 +1445,6 @@ else if(funcvarnames[i].function== "acos")
 	    }
     }}
 
-    
-   
-
-
-
-
-
-
-
 
 
 void SyntheticData::registerfunc(struct v ttemp)
@@ -1466,7 +1457,7 @@ void SyntheticData::registerfunc(struct v ttemp)
     { 
        indexs=SearchTable((char **)sdi,nsdi,(char *)ttemp.name.c_str()); 
        sdi[indexs]->DataQuality="synthetic";
-       sdi[indexs]->synthtype=function;
+       sdi[indexs]->synthtype=sy_function;
        st.push_back(sdi[indexs]);
        funcvarnames[funccount].index=is;
        is++;
@@ -1477,7 +1468,7 @@ void SyntheticData::registerfunc(struct v ttemp)
     
       indexr=SearchTable((char **)raw,nraw,(char *)ttemp.name.c_str());
       raw[indexr]->DataQuality="synthetic";
-      raw[indexr]->synthtype=function;
+      raw[indexr]->synthtype=sy_function;
       rt.push_back(raw[indexr]);
       funcvarnames[funccount].index=ir;
       ir++;
