@@ -1,0 +1,22 @@
+#!/bin/csh
+#
+#  This script requires the Xdialog rpm/package to be installed.
+#
+
+mount /jnet/r1
+set use = `df | grep r1 | cut --bytes=52,53,54`
+
+if ($use >= 85) then
+  Xdialog --title "Disk Full" --msgbox "WARNING: The disk 'r1' is over 85% full." 10 41
+endif
+
+umount /jnet/r1
+
+mount /jnet/r2
+set use = `df | grep r2 | cut --bytes=52,53,54`
+
+if ($use >= 85) then
+  Xdialog --title "Disk Full" --msgbox "WARNING: The disk 'r2' is over 85% full." 10 41
+endif
+
+umount /jnet/r2

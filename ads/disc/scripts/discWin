@@ -1,0 +1,5 @@
+#!/bin/csh -f
+
+/jnet/local/ads/disc/scripts/checkDisks
+/jnet/local/ads/disc/bin/discWin
+
