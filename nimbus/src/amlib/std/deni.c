@@ -1,27 +1,19 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:  deni.c
+OBJECT NAME:	deni.c
 
-FULL NAME:  
+FULL NAME:	Distance East & Distance North.
 
-ENTRY POINTS:  deiInit()
-    sdei()
-    sdni()
+ENTRY POINTS:	deiInit()
+		sdei()
+		sdni()
 
-STATIC FNS:  none
+STATIC FNS:	none
 
-DESCRIPTION:  Compute distance north and east of the initial latitude
-    and longitude in km.
+DESCRIPTION:	Compute distance north and east of the initial latitude
+		and longitude in km.
 
-INPUT:    
-
-OUTPUT:    
-
-REFERENCES:  
-
-REFERENCED BY:  compute.c
-
-COPYRIGHT:  University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2004
 -------------------------------------------------------------------------
 */
 
@@ -30,7 +22,7 @@ COPYRIGHT:  University Corporation for Atmospheric Research, 1993
 
 /*  Values for BJC (Jeffco Airport, Broomfield, Colorado)
  *    based on Hangar Apron Reference Point Summary, January 1994   RLR */
-static NR_TYPE startLat = 39.913333, startLon = -105.118333;
+static NR_TYPE	startLat = 39.913333, startLon = -105.118333;
 
 /* -------------------------------------------------------------------- */
 void deiInit(DERTBL *varp)
@@ -76,5 +68,29 @@ void sdni(DERTBL *varp)
   PutSample(varp, (lat - startLat) * 111.17);
 
 }  /* END SDNI */
+
+/* -------------------------------------------------------------------- */
+void sdri(DERTBL *varp)
+{
+  NR_TYPE    dei, dni;
+
+  dei = GetSample(varp, 0);
+  dni = GetSample(varp, 1);
+
+  PutSample(varp, (float)sqrt(dei*dei+dni*dni));
+
+}
+
+/* -------------------------------------------------------------------- */
+void sdai(DERTBL *varp)
+{
+  NR_TYPE    dei, dni;
+
+  dei = GetSample(varp, 0);
+  dni = GetSample(varp, 1);
+
+  PutSample(varp, (float)atan2(dni, dei) * RAD_DEG);
+
+}
 
 /* END DENI.C */
