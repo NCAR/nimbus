@@ -1,5 +1,10 @@
 #!/bin/csh
 
+# Pre-req's that you will need to install are netcdf & Qwt.
+
+# Pre-req's that most likely exist on your system, Motif, Qt.
+
+
 # Build libraries first.
 
 foreach file ( hdr_api lib* vardb/lib )
@@ -14,7 +19,7 @@ foreach file ( hdrbld ncplot ncpp/src vardb/editor xhd xpms2d/src )
 end
 
 
-# Programs withOUT install target
+# Programs withOUT install target.  WINDS requires xview toolkit.
 
 #foreach file ( ads/disc/src ads/dsm/src winds/src )
 foreach file ( winds/src )
@@ -22,7 +27,7 @@ foreach file ( winds/src )
 end
 
 
-# Programs with Qt programs
+# Programs with Qt [and Qwt].
 
 foreach file ( rtplot ads_utils/hvpsdiag )
   (cd $file; qmake; make)
