@@ -120,9 +120,9 @@ Colors::Colors(const Widget w)
   for (i = 0; i < numberColors; ++i)
     {
     if (image->depth == 16)
-      colorInfo[i].cpixel = ((ushort *)image->data)[i];
+      colorInfo[i].cpixel = ((unsigned short *)image->data)[i];
     if (image->depth > 16)
-      colorInfo[i].cpixel = ((ulong *)image->data)[i];
+      colorInfo[i].cpixel = ((unsigned long *)image->data)[i];
     }
 
 }
@@ -138,7 +138,7 @@ void Colors::SavePNG(const char file_name[], XImage *image)
 {
   int           i, j;
   FILE          *outFP;
-  ushort        *s;
+  unsigned short        *s;
   png_structp   png_ptr;
   png_infop     info_ptr;
   png_bytep     row_pointers[2000];
@@ -216,13 +216,13 @@ void Colors::SavePNG(const char file_name[], XImage *image)
 
       case 16:
         for (j = 0; j < image->width; ++j)
-          row_pointers[i][j] = getColorIndex(((ushort *)p)[j]);
+          row_pointers[i][j] = getColorIndex(((unsigned short *)p)[j]);
 
         break;
 
       case 24: case 32:
         for (j = 0; j < image->width; ++j)
-          row_pointers[i][j] = getColorIndex(((ulong *)p)[j]);
+          row_pointers[i][j] = getColorIndex(((unsigned long *)p)[j]);
 
         break;
       }
@@ -247,7 +247,7 @@ void Colors::checkByteSwap(XImage *image)
 {
   int   i;
   bool	prog_byte_order;
-  ulong pixel, x;
+  unsigned long pixel, x;
 
   static bool firstTime = TRUE;
 
@@ -260,10 +260,10 @@ void Colors::checkByteSwap(XImage *image)
   prog_byte_order = (1 == ntohl(1)) ? MSBFirst : LSBFirst;
 
   if (image->depth == 16)
-    pixel = ((ushort *)image->data)[0];
+    pixel = ((unsigned short *)image->data)[0];
 
   if (image->depth > 16)
-    pixel = ((ulong *)image->data)[0];
+    pixel = ((unsigned long *)image->data)[0];
 
   for (i = 0; i < numberColors; ++i)
     {
@@ -292,7 +292,7 @@ void Colors::checkByteSwap(XImage *image)
 }
 
 /* -------------------------------------------------------------------- */
-int Colors::getColorIndex(ulong pixel)
+int Colors::getColorIndex(unsigned long pixel)
 {
   int   i;
 

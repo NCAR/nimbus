@@ -10,22 +10,31 @@ INC	= ../include
 RAFINC	= ${JLOCAL}/include
 COD	= ../class
 
-#	Solaris
-#
-INCLUDES= -I${INC} -I${RAFINC} -I${LOCAL}/include -I/usr/dt/include
-LIBS	= -lraf++ -Wl,-Bstatic -lpng -lz -Wl,-Bdynamic -R /usr/dt/lib -lXm -lXt -lX11 -lnetcdf_c++ -lnetcdf -lm
-DEFINES	= -DSVR4 -DPNG
-IHOST	= mead
-ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.Solaris2.9
-
 #	Linux
 #
+DEFINES	= -DPNG
 INCLUDES= -I${INC} -I/usr/X11R6/include -I${RAFINC}
 LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib
 LIBS	= -lraf++ -lXm -lXt -lX11 -lXp -lXext -lnetcdf_c++ -lnetcdf -lpng -lz
-DEFINES	= -DPNG
 IHOST	= syrah
 ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.RedHat9.0
+
+#	Mac OS X
+#
+#DEFINES	= -DPNG
+#INCLUDES= -I${INC} -I/sw/include -I/usr/X11R6/include -I${RAFINC}
+#LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib -L/sw/lib
+#LIBS	= -lraf++ -lXm -lXt -lX11 -lXext -lnetcdf_c++ -lnetcdf -lpng -lz
+#LIBS	= -lraf++ -lXm -lXt -lX11 -lXext -lnetcdf_c++ -lnetcdf
+
+
+#	Solaris
+#
+#INCLUDES= -I${INC} -I${RAFINC} -I${LOCAL}/include -I/usr/dt/include
+#LIBS	= -lraf++ -Wl,-Bstatic -lpng -lz -Wl,-Bdynamic -R /usr/dt/lib -lXm -lXt -lX11 -lnetcdf_c++ -lnetcdf -lm
+#DEFINES	= -DSVR4 -DPNG
+#IHOST	= mead
+#ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.Solaris2.9
 
 
 CXXFLAGS= -g -O ${INCLUDES} ${DEFINES}
@@ -58,7 +67,7 @@ ${PROG}: ${OBJS} classDir
 	rm -f core
 
 classDir:
-	cd ${COD}; gmake "CXXFLAGS=${CXXFLAGS}"
+	cd ${COD}; make "CXXFLAGS=${CXXFLAGS}"
 
 release:
 	(cd ..; tar cFFf - . | (cd ${RELEASE}; tar xfBp -))
@@ -76,7 +85,7 @@ install: ${PROG}
 	cp ${PROG}.html $(WWW)
 
 clean:
-	(cd ../class; gmake clean)
+	(cd ../class; make clean)
 	${RM} core* ${OBJS} ${PROG}
 
 print:

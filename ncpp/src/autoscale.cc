@@ -35,7 +35,7 @@ void AutoScaleAccum(SetManager& sets, Panel *panel)
     panel->yAxis.min = panel->yAxis.logScale ? 1.0 : 0.0;
 
     if (sets.maxAccum > 0)
-      panel->yAxis.max = pow10(ceil(log10((double)sets.maxAccum)));
+      panel->yAxis.max = pow(10.0, ceil(log10((double)sets.maxAccum)));
 
     if (panel->yAxis.min == panel->yAxis.max)
       panel->yAxis.max += 1.0;
@@ -51,8 +51,8 @@ void AutoScaleConc(SetManager& sets, Panel *panel)
 
   if (panel->xAxis.logScale)
     {
-    panel->xAxis.min = pow10(floor(log10(sets.minCell)));
-    panel->xAxis.max = pow10(ceil(log10(sets.maxCell)));
+    panel->xAxis.min = pow(10.0, floor(log10(sets.minCell)));
+    panel->xAxis.max = pow(10.0, ceil(log10(sets.maxCell)));
     }
   else
     {
@@ -65,8 +65,8 @@ void AutoScaleConc(SetManager& sets, Panel *panel)
     if (sets.minConc <= 0.0)
       panel->yAxis.min = 0.01;
     else
-      panel->yAxis.min = pow10(floor(log10(sets.minConc)));
-    panel->yAxis.max = pow10(ceil(log10(sets.maxConc)));
+      panel->yAxis.min = pow(10.0, floor(log10(sets.minConc)));
+    panel->yAxis.max = pow(10.0, ceil(log10(sets.maxConc)));
     }
   else
     {
@@ -90,8 +90,8 @@ void AutoScaleSurface(SetManager& sets, Panel *panel)
 
   if (panel->xAxis.logScale)
     {
-    panel->xAxis.min = pow10(floor(log10(sets.minCell)));
-    panel->xAxis.max = pow10(ceil(log10(sets.maxCell)));
+    panel->xAxis.min = pow(10.0, floor(log10(sets.minCell)));
+    panel->xAxis.max = pow(10.0, ceil(log10(sets.maxCell)));
     }
   else
     {
@@ -104,8 +104,8 @@ void AutoScaleSurface(SetManager& sets, Panel *panel)
     if (sets.minConc <= 0.0)
       panel->yAxis.min = 0.01;
     else
-      panel->yAxis.min = pow10(floor(log10(sets.minSurf)));
-    panel->yAxis.max = pow10(ceil(log10(sets.maxSurf)));
+      panel->yAxis.min = pow(10.0, floor(log10(sets.minSurf)));
+    panel->yAxis.max = pow(10.0, ceil(log10(sets.maxSurf)));
     }
   else
     {
@@ -129,22 +129,22 @@ void AutoScaleVolume(SetManager& sets, Panel *panel)
 
   if (panel->xAxis.logScale)
     {
-    panel->xAxis.min = pow10(floor(log10(sets.minCell)));
-    panel->xAxis.max = pow10(ceil(log10(sets.maxCell)));
+    panel->xAxis.min = pow(10.0, floor(log10(sets.minCell)));
+    panel->xAxis.max = pow(10.0, ceil(log10(sets.maxCell)));
     }
   else
     {
     if (sets.minConc <= 0.0)
       panel->yAxis.min = 0.01;
     else
-      panel->yAxis.min = pow10(floor(log10(sets.minVol)));
+      panel->yAxis.min = pow(10.0, floor(log10(sets.minVol)));
     panel->xAxis.max = sets.maxCell;
     }
 
   if (panel->yAxis.logScale)
     {
     panel->yAxis.min = 0.01;
-    panel->yAxis.max = pow10(ceil(log10(sets.maxVol)));
+    panel->yAxis.max = pow(10.0, ceil(log10(sets.maxVol)));
     }
   else
     {

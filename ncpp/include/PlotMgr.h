@@ -71,8 +71,10 @@ public:
   void  SetNormalize(NormType normalize)
 			{ plot[plotType]->SetNormalization(normalize); }
 
+#ifdef PNG
   void	SavePNG(const char fileName[], XImage *image)
 			{ colors.SavePNG(fileName, image); }
+#endif
 
 private:
   Widget	plotTypeB[N_PLOTTYPES];
