@@ -34,7 +34,7 @@ static struct	// Initialization parameters for EditWindow.
 
 
 static char *nNormalize[] =
-        { "None", "Linear", "Log", NULL };
+        { "Log", "Linear", "None", NULL };
 
 static char *nPanel[] =
         { "1x1", "2x3", "3x4", "4x6", "5x7", "6x8", "7x9", NULL };
@@ -161,10 +161,6 @@ XtSetSensitive(plotTypeB[1], false);
   XtSetArg(args[n], XmNsubMenuId, nlPD); ++n;
   nlOpMenu = XmCreateOptionMenu(plRC[1], "normPanMenu", args, n);
   XtManageChild(nlOpMenu);
-
-  name = XmStringCreateLocalized("None");
-  name = XmStringCreateLocalized("Linear");
-  name = XmStringCreateLocalized("Log");
 
   for (i = 0; nNormalize[i]; ++i)
     {

@@ -85,8 +85,8 @@ int main(int argc, char *argv[])
   plotMgr->PopUp();
 
   SetPlotTypeCB(NULL, XY, NULL);
+  SetNormalization(NULL, (XtPointer)"Log", NULL);
   ModifyActiveDataTypes(NULL, NULL, NULL);
-
   ReadConfigFile();
 
   ProcessArgs(argv);
