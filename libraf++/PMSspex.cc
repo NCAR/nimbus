@@ -34,10 +34,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 
 #include "PMSspex.h"
 
-using namespace std;
 
 /* -------------------------------------------------------------------- */
-PMSspex::PMSspex(char fileName[])
+PMSspex::PMSspex(const char fileName[])
 {
   int	i, cnt;
   char	*file[2048], PMSbuffer[512], *p;
@@ -45,7 +44,7 @@ PMSspex::PMSspex(char fileName[])
 
   if ((fp = fopen(fileName, "r")) == NULL)
     {
-    cerr << "PMSspex: Can't open " << fileName << ".\n";
+    std::cerr << "PMSspex: Can't open " << fileName << ".\n";
     exit(1);
     }
 
@@ -98,7 +97,7 @@ PMSspex::PMSspex(char fileName[])
 }	/* END INITPMSSPECS */
 
 /* -------------------------------------------------------------------- */
-char *PMSspex::GetParameter(char serialNumber[],  char parameter[])
+char *PMSspex::GetParameter(const char serialNumber[],  const char parameter[])
 {
   int	i;
   char	*p;
