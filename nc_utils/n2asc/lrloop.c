@@ -5,10 +5,11 @@ OBJECT NAME:	lrloop.c
 FULL NAME:	Main loop for low rate processing
 
 ENTRY POINTS:	LowRateLoop()
+
+STATIC FNS:	PrintVariables()
+		Month()
 		FindFirstLogicalRecord()
 		FindNextLogicalRecord()
-
-STATIC FNS:	none
 
 DESCRIPTION:	
 
@@ -37,13 +38,16 @@ extern XtAppContext context;
 static int	highestRate;
 
 static void PrintVariables();
+static int FindFirstRecordNumber(long starttime);
+static int FindNextRecordNumber(long endtime);
 
-int Month(char s[]);
+static int Month(char s[]);
+void UpdateTime(int currentTime[]);
 
 /* -------------------------------------------------------------------- */
 int LowRateLoop(long starttime, long endtime)
 {
-  int	rc, i, siz, Cntr = 0;
+  int	rc, i, Cntr = 0;
   char	tmp[128], units[32], long_name[64];
   float	miss;
 
@@ -178,7 +182,7 @@ static void PrintVariables()
   NR_TYPE	data[640];
   VARTBL	*vp;
 
-  static	prevHour = 0;
+  static int	prevHour = 0;
   static long	start[] = {0, 0, 0};
   static long	count[] = {1, 1, 1};
 
@@ -224,7 +228,7 @@ static void PrintVariables()
       prevHour = currentTime[0];
       }
     else
-      fprintf(OutputFile, "%d", CurrentInputRecordNumber);
+      fprintf(OutputFile, "%ld", CurrentInputRecordNumber);
 
 
     for (i = 0; i < nVariables; ++i)
@@ -273,7 +277,7 @@ static void PrintVariables()
 }	/* END PRINTVARIABLES */
  
 /* -------------------------------------------------------------------- */
-int FindFirstRecordNumber(long starttime)
+static int FindFirstRecordNumber(long starttime)
 {
   timeVarID[0] = Variable[SearchTable(Variable, nVariables, "HOUR")]->inVarID;
   timeVarID[1] = Variable[SearchTable(Variable, nVariables, "MINUTE")]->inVarID;
@@ -292,7 +296,7 @@ int FindFirstRecordNumber(long starttime)
 }	/* END FINDFIRSTRECORDNUMBER */
 
 /* -------------------------------------------------------------------- */
-int FindNextRecordNumber(long endtime)
+static int FindNextRecordNumber(long endtime)
 {
   int		current_time;
   long		mindex[1];
@@ -338,7 +342,7 @@ int FindNextRecordNumber(long endtime)
 static char *mons[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
 	"Aug", "Sep", "Oct", "Nov", "Dec" };
 
-int Month(char s[])
+static int Month(char s[])
 {
   int	i;
 

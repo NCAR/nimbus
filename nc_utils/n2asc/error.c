@@ -25,6 +25,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 
 #include "define.h"
 
+void ShowError(char msg[]);
+void WarnUser(char msg[], void (*okCB)(), void (*cancelCB)());
 
 /* -------------------------------------------------------------------- */
 void HandleError(char err_msg[])

@@ -117,13 +117,13 @@ Widget CreateMainWindow(Widget parent)
   n = 0;
   inputFileText = XmCreateTextField(form[0], "inputFileText", args, n);
   XtAddCallback(inputFileText, XmNactivateCallback,
-			XmProcessTraversal, XmTRAVERSE_NEXT_TAB_GROUP);
+		XmProcessTraversal, (XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
   XtManageChild(inputFileText);
 
   n = 0;
   outputFileText = XmCreateTextField(form[1], "outputFileText", args, n);
   XtAddCallback(outputFileText, XmNactivateCallback,
-			XmProcessTraversal, XmTRAVERSE_NEXT_TAB_GROUP);
+		XmProcessTraversal, (XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
   XtManageChild(outputFileText);
 
   XtManageChildren(form, 2);
@@ -323,7 +323,7 @@ Widget CreateTimeSliceWindow(Widget parent)
 
     XtAddCallback(ts_text[i], XmNlosingFocusCallback, ValidateTime, NULL);
     XtAddCallback(ts_text[i], XmNactivateCallback,
-			XmProcessTraversal, XmTRAVERSE_NEXT_TAB_GROUP);
+		XmProcessTraversal, (XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
     }
 
   XtManageChildren(ts_text, MAX_TIME_SLICES * 2);

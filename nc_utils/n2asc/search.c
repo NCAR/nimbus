@@ -61,7 +61,7 @@ int SearchTable(char *table[], int ntable, char target[])
 int SearchTableSansLocation(char *table[], int ntable, char target[])
 {
   int     i, rc;
-  char    *p, c;
+  char    *p, c = '\0';
  
   for (i = 0; i < ntable; ++i)
     {

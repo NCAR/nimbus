@@ -57,6 +57,12 @@ void		StopProcessing();
 static void	FillListWidget(), CondenseVariableList();
 static int	ValidateFileNames();
 
+void	ReadFormatFile();
+bool	NextTimeInterval(long *start, long *end);
+int	LowRateLoop(long starttime, long endtime);
+int	CreateOutputFile(char fileName[]);
+int	ReadInputFile(char fileName[]);
+
 
 /* -------------------------------------------------------------------- */
 void CancelSetup(Widget w, XtPointer client, XtPointer call)
