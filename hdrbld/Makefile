@@ -3,6 +3,7 @@
 #
 CC=		g++
 BINDIR=		${JLOCAL}/bin
+xxxx
 MANDIR=		${JLOCAL}/man/manl
 
 # Solaris
