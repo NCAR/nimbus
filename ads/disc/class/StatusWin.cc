@@ -438,7 +438,7 @@ void StatusWin::displayMsg(char *msg)
   int last_pos;
  
   XtPopup(XtParent(mainForm), XtGrabNone);
-printf("Popup was performed.\n");
+printf("Popup was performed [%s].\n", msg);
   last_pos = XmTextGetLastPosition(msgText);
   XmTextInsert(msgText, last_pos, msg);
   XmTextShowPosition(msgText, last_pos);

@@ -53,7 +53,7 @@
 #define MAX_PPS_INTFC		1       /* max num of PPS receivers per dsm */
 #define MAX_UVHYG_INTFC         2       /* max num of UV hygrometers per dsm */
 #define MAX_VMIO12_INTFC        2       /* max num of VMIO12 dig IO boards */
-#define MAX_SERIALTOD_INTFC     8       /* max num of SerialTod ports */
+#define MAX_SERIALTOD_INTFC     2       /* max num of SerialTod ports */
 
 /* Define the isio port numbers. Port numbers begin at 1. */
 #define SERTOD_PORT		1	/* Serial TOD output */
@@ -66,7 +66,7 @@
 #define TANS_PORT_2          	6       /* Trimble tans #2 */
 #define GARMIN_PORT_1		3	/* Garmin GPS #1*/
 #define GARMIN_PORT_2		6	/* Garmin GPS #2*/
-#define CMIGITS3_PORT_1	        4	/* C-MIGITS 3 IRS #1*/
+#define CMIGITS3_PORT_1	        7	/* C-MIGITS 3 IRS #1*/
 #define CMIGITS3_PORT_2		5	/* C-MIGITS 3 IRS #2*/
 #define OPHIR_PORT_1          	7       /* Ophir radiometer port #1 */
 #define OPHIR_PORT_2          	8       /* Ophir radiometer port #2 */

@@ -354,7 +354,7 @@ void DsmDisk::closeFiles()
 {
    int i;
    
-   nimbus->killTask();
+//   nimbus->killTask();
    sleep(2);
 
    for (i = 0; i < numberwrites; i++)
@@ -410,7 +410,7 @@ void DsmDisk::writeFiles(char *buff, int len)
          openFiles();
          writeHeader();
 
-         nimbus = new UnixTask("/jnet/linux/bin/nimbus");
+//         nimbus = new UnixTask("/jnet/linux/bin/nimbus");
       }
       else
          return;

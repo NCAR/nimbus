@@ -283,7 +283,7 @@ void checkMessage ()
 
 // Check for received messages.
 {
-
+printf("%s\n", dsm_msg.rxMessage());
   while (dsm_msg.readMsg()) {
     switch (dsm_msg.type()) {
       case ANALOG_MSG:		// update analog state display

@@ -1683,7 +1683,7 @@ static void initInterrupts ()
   }
 
 // Connect the isio1 bim 2 isr.  UV hygrometer, JPL TDL, and NOAA ozone.
-  if ((int)garmin[0] || (int)uvh[0] || (int)jpltdl || (int)lhtdl || (int)rdma || (int)neph || (int)cmigits3){
+  if ((int)garmin[0] || (int)uvh[0] || (int)jpltdl || (int)lhtdl || (int)rdma || (int)neph){
     if (intConnect((VOIDFUNCPTR*)ISIO1_BIM2_ADR, (VOIDFUNCPTR)isio1Bim2Isr, 0)){
       perror ("intConnect isio1Bim2Isr");
       exit(ERROR);
