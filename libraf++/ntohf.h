@@ -1,4 +1,4 @@
-#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #if defined(__LITTLE_ENDIAN) || defined(_LITTLE_ENDIAN) || defined(LITTLE_ENDIAN)
 

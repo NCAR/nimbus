@@ -8,8 +8,10 @@ I2D=	${JLOCAL}/include
 LIBNAME=	raf++
 
 INCLUDES=	-I${I2D} -I/usr/X11R6/include
-#DEFINES=	-DSVR4
 CXXFLAGS=	-g -O2 ${INCLUDES} ${DEFINES}
+
+# Solaris & Mac OS X.
+#DEFINES=	-DSVR4
 
 OBJS=	ACconfig.o adsIO.o adsIOrt.o Application.o Canvas.o Cursor.o\
 	hdrAPI.o gettext.o ntohf.o PixMap.o PMSspex.o PostScript.o\
@@ -24,6 +26,7 @@ SRCS=	ACconfig.cc adsIO.cc adsIOrt.cc Application.cc Canvas.cc Cursor.cc\
 all: ${OBJS}
 	rm -f lib${LIBNAME}.a
 	ar cr lib${LIBNAME}.a ${OBJS}
+#	ranlib lib${LIBNAME}.a
 
 install: all
 	install -Cp --mode=664 lib${LIBNAME}.a ${RELEASE}
