@@ -147,15 +147,25 @@ int main(int argc, char *argv[])
     edges = inFile.get_var(i)->edges();
 
     if (verbose)
-      printf("%s\n", inFile.get_var(i)->name());
+      printf("%s , nDims = %d\n", inFile.get_var(i)->name(), inFile.get_var(i)->num_dims());
     else
     {
       printf("\r%d%%", (int)(100 * ((float)i / nVars)));
       fflush(stdout);
     }
 
-    inFile.get_var(i)->get(data, inFile.get_var(i)->edges());
-    outFile.get_var(i)->put(data, outFile.get_var(i)->edges());
+    if (inFile.get_var(i)->num_dims() == 0)
+    {
+      int	v = inFile.get_var(i)->as_int(0);
+      long	l = 1;
+
+      outFile.get_var(i)->put(&v, &l);
+    }
+    else
+    {
+      inFile.get_var(i)->get(data, inFile.get_var(i)->edges());
+      outFile.get_var(i)->put(data, outFile.get_var(i)->edges());
+    }
   }
 
   printf("\n");
