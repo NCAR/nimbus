@@ -159,7 +159,7 @@ VarDB_SetMaxLimit(const char vn[], float value)
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(ERR);
 
-  *((int *)&(((struct var_v2 *)VarDB)[indx].MinLimit)) = htonl(*p);
+  *((int *)&(((struct var_v2 *)VarDB)[indx].MaxLimit)) = htonl(*p);
   return(OK);
 
 }	/* END VARDB_SETMINLIMIT */
