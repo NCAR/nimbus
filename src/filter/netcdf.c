@@ -600,6 +600,7 @@ void CreateNetCDF(char fileName[])
     p = VarDB_GetCategoryName(rp->name);
     ncattput(fd, rp->varid, "Category", NC_CHAR, strlen(p)+1, p);
 
+    ncattput(fd, rp->varid, "_FillValue", NC_FLOAT, 1, &missing_val);
     ncattput(fd, rp->varid, "missing_value", NC_FLOAT, 1, &missing_val);
     ncattput(fd, rp->varid, "SampledRate", NC_LONG, 1, &rp->SampleRate);
     ncattput(fd, rp->varid, "DataQuality", NC_CHAR, strlen(rp->DataQuality)+1,
@@ -787,6 +788,7 @@ void CreateNetCDF(char fileName[])
     p = VarDB_GetCategoryName(dp->name);
     ncattput(fd, dp->varid, "Category", NC_CHAR, strlen(p)+1, p);
 
+    ncattput(fd, dp->varid, "_FillValue", NC_FLOAT, 1, &missing_val);
     ncattput(fd, dp->varid, "missing_value", NC_FLOAT, 1, &missing_val);
     ncattput(fd, dp->varid, "DataQuality", NC_CHAR, strlen(dp->DataQuality)+1,
 		dp->DataQuality);
