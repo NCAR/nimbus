@@ -1,0 +1,61 @@
+.na
+.nh
+.TH RTPLOT 1 "30 March 1995" "Local Command"
+.SH NAME
+rtplot \- RealTime Plotting
+.SH SYNOPSIS
+.B rtplot [-h ads_control_host] [-s NumSeconds]
+.SH DESCRIPTION
+.B rtplot 
+performs realtime plotting of sample-rate ADS data.  It can be run from any
+display station.  If you are not running on the ADS control station, you
+must specify the "-h host" option.
+.B rtplot
+will give you the option to display up to 5 variables at once from a list.
+You only have the option of analog/digtial channels and variables from
+block-probes (IRS, GPS, PMS1D, OphirIII), there are no derived variables
+present.
+.SH PARAMETERS
+.TP 4
+\f4\-h\f2 ADS_control_host\f1
+Specify ads control host, so rtplot can locate the realtime ADS image.
+.SH OPTIONS
+.TP 4
+\f4\-s\f2 Seconds\f1
+Specify how many seconds to display across the X axis.  This not changable
+once the program is running.  The default is 10 seconds.
+.SH RUNTIME OPTIONS
+Through the
+.B Edit Menu
+there are several options:
+.TP 4
+\f4\Toggle Counts\f1
+This toggles between
+.B counts
+and
+.B engineering units.
+The default at start up is
+.B engineering units.
+.TP 4
+\f4\Toggle Snapshot Mode\f1
+This toggles between updating once per second, the default, and once per
+window size.  If you have set the number of seconds to 5 at startup, then
+snapshot mode will show the previous 5 seconds worth of data for the next
+5 seconds.
+.TP 4
+\f4\Toggle Grid\f1
+Toggle a background grid on the data window.
+.TP 4
+\f4\Autscale Axies\f1
+Autoscale axies.  This shouldn't be necessary, as autoscaling is performed
+every screen update.
+.f
+.PP
+.SH EXAMPLE:
+.PP
+To change the number of seconds to display to 5, and attach to C-130 control:
+.PP
+7% rtplot -h hercules -s 5
+.PP
+.SH AUTHOR
+Chris Webster, National Center for Atmospheric Research
