@@ -31,8 +31,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "circbuff.h"
 #include "injectsd.h"
 
-
-
 #define NLRBUFFERS	5	/* Number of LR Buffers			*/
 #define NPSBUFFERS	50
 
