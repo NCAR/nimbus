@@ -47,14 +47,14 @@ void initFlux(DERTBL *varp)
     NR_TYPE  *tmp;
 
     if ((tmp = GetDefaultsValue("FLUX_RUN", varp->name)) == NULL)
-      {
+    {
       sprintf(buffer,"Value set to %d in AMLIB function initFlux.\n", nSeconds);
       LogMessage(buffer);
-      }
+    }
     else
       nSeconds = (int)tmp[0];
 
-    wi_buffer = (NR_TYPE *)GetMemory(nSeconds * NR_SIZE);
+    wi_buffer = new NR_TYPE[nSeconds];
     wi_sum = wi2_sum = 0.0;
 
     for (i = 0; i < nSeconds; ++i)
@@ -72,7 +72,7 @@ void initFlux(DERTBL *varp)
     exit(1);
   }
 
-  x_buffer[pCnt] = (NR_TYPE *)GetMemory(nSeconds * NR_SIZE);
+  x_buffer[pCnt] = new NR_TYPE[nSeconds];
 
   for (i = 0; i < nSeconds; ++i)
     x_buffer[pCnt][i] = 0.0;
@@ -97,12 +97,12 @@ void sflux_xx(DERTBL *varp)
 
 
   if (second != prev_second)
-    {
+  {
     if (++buffIndex >= nSeconds)
       buffIndex = 0;
 
     prev_second = second;
-    }
+  }
 
   probeCount = varp->ProbeCount;
 

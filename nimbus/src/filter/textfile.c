@@ -57,7 +57,7 @@ int ReadTextFile(char filename[], char **list)
     if (buffer[0] == COMMENT)
       continue;
 
-    *list = (char *)GetMemory((len = strlen(buffer)));
+    *list = new char[(len = strlen(buffer))];
 
     buffer[len-1] = '\0';
     strcpy(*list++, buffer);
@@ -76,7 +76,7 @@ int ReadTextFile(char filename[], char **list)
 void FreeTextFile(char **list)
 {
   while (*list)
-    free(*list++);
+    delete [] *list++;
 
   list[0] = NULL;
 

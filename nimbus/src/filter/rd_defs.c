@@ -140,7 +140,7 @@ static void process_line(char *line_p, FILE *fp)
 
   if (whichOne == nDefaults)
     {
-    Defaults[whichOne] = (DEFAULT *)GetMemory(sizeof(DEFAULT));
+    Defaults[whichOne] = new DEFAULT;
     ++nDefaults;
     }
 
@@ -162,8 +162,7 @@ static void process_line(char *line_p, FILE *fp)
   Defaults[whichOne]->var[0] = '\0';
   Defaults[whichOne]->Dirty = false;
   Defaults[whichOne]->Used  = false;
-  Defaults[whichOne]->Value = (NR_TYPE *)GetMemory(NR_SIZE *
-                      Defaults[whichOne]->nValues);
+  Defaults[whichOne]->Value = new NR_TYPE[Defaults[whichOne]->nValues];
 
   if (is_array)
     {

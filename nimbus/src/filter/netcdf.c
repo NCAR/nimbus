@@ -47,7 +47,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2000
 #include "gui.h"
 #include "ctape.h"
 #include "netcdf.h"
-#include "queue.h"
+#include "/jnet/local/include/queue.h"
 #include "vardb.h"
 
 #include <cmath>
@@ -931,7 +931,7 @@ void QueueMissingData(int h, int m, int s, int nRecords)
     firstTime = false;
     }
 
-  dp = (struct missDat *)GetMemory(sizeof(struct missDat));
+  dp = new struct missDat;
 
   dp->hour = h;
   dp->minute = m;
@@ -954,7 +954,7 @@ static void WriteMissingRecords()
   struct missDat	*dp;
 
   dp = (struct missDat *)FrontQueue(missingRecords);
-  d = (float *)GetMemory(sizeof(float) * 2500);
+  d = new float[2500];
   /* 1000 is fastest sampling rate */
 
   for (i = 0; i < 2500; ++i)
@@ -1016,7 +1016,7 @@ static void WriteMissingRecords()
     }
 
   DeQueue(missingRecords);
-  free(d);
+  delete [] d;
 
 }	/* WRITEMISSINGRECORDS */
 
@@ -1314,7 +1314,7 @@ static int writeBlank(int varid, long start[], long count[], int OutputRate)
   count[2] = 1;
 
   nValues = count[0] * count[1] * count[2];
-  p = (NR_TYPE *)GetMemory(nValues * NR_SIZE);
+  p = new NR_TYPE[nValues];
 
   for (i = 0; i < nValues; ++i)
     p[i] = MISSING_VALUE;

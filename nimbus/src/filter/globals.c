@@ -64,6 +64,7 @@ char	*ADSrecord;		/* Raw ADS record as read from tape.	*/
 char	*AVAPSrecord[MAX_AVAPS];/* Raw AVAPS data as read from tape.	*/
 ushort	*bits;			/* Realtime (winput) only.		*/
 NR_TYPE	*volts;			/* Realtime (winput) only.		*/
+NR_TYPE	*SRTvolts;		/* Realtime (aeros) only.		*/
 NR_TYPE	*SampledData, *AveragedData, *HighRateData;
 
 float	HDRversion;

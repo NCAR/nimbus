@@ -297,7 +297,6 @@ void	HandleError(char []);
 #ifdef __cplusplus
 extern "C" {
 #endif
-void	*GetMemory(unsigned nbytes);
 char    *strupr(char s[]), *strlower(char s[]);
 #ifdef __cplusplus
 }

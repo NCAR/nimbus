@@ -38,7 +38,7 @@ void ReadModuloVariables()
   for (int i = 0; modvars[i]; ++i)
     {
     sscanf(modvars[i], "%s %d %d", target, &val[0], &val[1]);
-    mp = (MOD *)GetMemory(sizeof(MOD));
+    mp = new MOD;
 
     ten_percent		= (int)((val[1] - val[0]) * 0.10);
     mp->value[0]	= val[0];
@@ -70,7 +70,7 @@ void ReadModuloVariables()
         derived[index]->Modulo = mp;
       }
     else
-      free((char *)mp);
+      delete mp;
     }
 
   FreeTextFile(modvars);

@@ -248,7 +248,7 @@ return;
   /* Skip prior particles.  In theory this shouldn't happen.
    */
   while (FrontQueue(probe) && ((Particle *)FrontQueue(probe))->time < thisTime)
-    free(DeQueue(probe));
+    delete (Particle *)DeQueue(probe);
 
 
   while (FrontQueue(probe) && ((Particle *)FrontQueue(probe))->time == thisTime)
@@ -318,7 +318,7 @@ return;
         deadTime[probeCount][0] += p->liveTime;
       }
 
-    free(p);
+    delete p;
     }
 //printf(" leaving\n");
 }	/* END XLONED */
@@ -369,7 +369,7 @@ printf("------ %02d:%02d:%02d - %x -------------\n",
   /* Skip prior particles.  In theory this shouldn't happen.
    */
   while (FrontQueue(probe) && ((Particle *)FrontQueue(probe))->time < thisTime)
-    free(DeQueue(probe));
+    delete (Particle *)DeQueue(probe);
 
 
   while (FrontQueue(probe) && ((Particle *)FrontQueue(probe))->time == thisTime)
@@ -403,7 +403,7 @@ printf("------ %02d:%02d:%02d - %x -------------\n",
         deadTime[probeCount][0] += p->liveTime;
       }
 
-    free(p);
+    delete p;
     }
 
 //printf(" leaving %d %d\n", partCnt1, partCnt2);
@@ -531,7 +531,7 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
         {
         /* Overload is treated as a particle.
          */
-        cp = part[partCnt++] = (Particle *)GetMemory(sizeof(Particle));
+        cp = part[partCnt++] = new Particle;
 
         cp->time = startTime[probeCnt];
         cp->msec = startMilliSec[probeCnt];
@@ -543,7 +543,7 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
         firstParticleAfter512 = FALSE;
         }
 
-      cp = part[partCnt++] = (Particle *)GetMemory(sizeof(Particle));
+      cp = part[partCnt++] = new Particle;
       cp->time = startTime[probeCnt];
       cp->msec = startMilliSec[probeCnt];
       cp->timeWord = pSlice & 0x00ffffff;
@@ -817,7 +817,7 @@ int minunshaded = 256;
         {
         /* Overload is treated as a particle.
          */
-        cp = part[partCnt++] = (Particle *)GetMemory(sizeof(Particle));
+        cp = part[partCnt++] = new Particle;
 
         cp->time = startTime[probeCnt];
         cp->msec = startMilliSec[probeCnt];
@@ -829,7 +829,7 @@ int minunshaded = 256;
         firstParticleAfter512 = FALSE;
         }
 
-      cp = part[partCnt++] = (Particle *)GetMemory(sizeof(Particle));
+      cp = part[partCnt++] = new Particle;
       cp->time = startTime[probeCnt];
       cp->msec = startMilliSec[probeCnt];
       cp->timeWord = (((ulong)p[0] << 14) & 0x0fffc000);

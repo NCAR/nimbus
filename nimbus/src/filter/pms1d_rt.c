@@ -13,12 +13,6 @@ STATIC FNS:	none
 
 DESCRIPTION:	Shared memory interface with WINDS, for PMS1D probes.
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	GetMemory()
-
 REFERENCED BY:	winput.c
 
 NOTE:		This file has "FRNG" hard-wired into it, and also the
@@ -67,10 +61,10 @@ void WritePMS1DdataToSHMEM(NR_TYPE data[])
 /* -------------------------------------------------------------------- */
 void SetUpPMS1D_SHMEM()
 {
-  int	i ,indx;
+  int	indx;
   char	target[NAMELEN];
 
-  for (i = 0; i < pcnt; ++i)
+  for (int i = 0; i < pcnt; ++i)
     {
     strcpy((char *)PMS1Dprobe[i].name, probe_name[i]);
     strcpy((char *)PMS1Dprobe[i].SerialNumber, serialNums[i]);
@@ -98,8 +92,8 @@ void SetUpPMS1D_SHMEM()
     else
       range[i] = NULL;
 
-    free(probe_name[i]);
-    free(serialNums[i]);
+    delete [] probe_name[i];
+    delete [] serialNums[i];
     }
 
   *nPMS1Dprobes = pcnt;
@@ -109,9 +103,9 @@ void SetUpPMS1D_SHMEM()
 /* -------------------------------------------------------------------- */
 void AddToPMS1DprobeList(char probe[], char location[], char serial_num[], int type)
 {
-  strcpy((probe_name[pcnt] = (char *)GetMemory(NAMELEN)), probe);
+  strcpy((probe_name[pcnt] = new char[NAMELEN]), probe);
   strcat(probe_name[pcnt], location);
-  strcpy((serialNums[pcnt] = (char *)GetMemory(NAMELEN)), serial_num);
+  strcpy((serialNums[pcnt] = new char[NAMELEN]), serial_num);
   probe_type[pcnt] = type;
   probe_name[++pcnt] = NULL;
 

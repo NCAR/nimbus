@@ -68,11 +68,10 @@ void parcelInit(DERTBL *varp)
   }
   else
     INTRVL = (int)tmp[0];
-/*  INTRVL = (GetDefaultsValue("PRCLTRK_INTRVL", varp->name))[0];  <-- original code */
 
-  u = (NR_TYPE *)GetMemory(NR_SIZE * INTRVL);
-  v = (NR_TYPE *)GetMemory(NR_SIZE * INTRVL);
-  w = (NR_TYPE *)GetMemory(NR_SIZE * INTRVL);
+  u = new NR_TYPE[INTRVL];
+  v = new NR_TYPE[INTRVL];
+  w = new NR_TYPE[INTRVL];
 
 }  /* END PARCELINIT */
 
