@@ -530,10 +530,11 @@ bool Open2dFile(char file[], int probeCnt)
 {
   char	*p;
 
-  printf("adsIO:Open2dFile: %s ....", file);
   strcpy(twoDfile, file);
   p = strstr(twoDfile, ".ads");
   strcpy(p, ".2d");
+
+  printf("adsIO:Open2dFile: %s ....", twoDfile);
 
   if (access(twoDfile, R_OK) == ERR)
     {
