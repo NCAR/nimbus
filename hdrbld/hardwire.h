@@ -5,7 +5,7 @@
 
 #include <Xm/Xm.h>
 #include "constants.h"
-#undef NULL
+//#undef NULL
 
 struct bb
 	{

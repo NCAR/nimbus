@@ -28,7 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996
 
 
 /* -------------------------------------------------------------------- */
-void InitializeOpMenu(Widget pd, char *list[], void (*cb)())
+void InitializeOpMenu(Widget pd, char *list[], void (*cb)(Widget, XtPointer, XtPointer))
 {
   int     i, n;
   Arg     args[8];

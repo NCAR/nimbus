@@ -34,6 +34,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2000
 #include <Xm/TextF.h>
 
 
+void	DiffSDI(Sh *old, Sh *newS);
 static XmString CreateListLineItem(Sh *);
 
 
@@ -65,10 +66,10 @@ void Search(Widget w, XtPointer client, XtPointer call)
 }	/* END SEARCH */
 
 /* -------------------------------------------------------------------- */
-void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
+void EditVariable(Widget w, XtPointer client, XtPointer call)
 {
   int	i;
-  int	indx = call->item_position - 1;
+  int	indx = ((XmListCallbackStruct *)call)->item_position - 1;
   char	tbuf[20];
 
 

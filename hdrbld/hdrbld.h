@@ -16,7 +16,7 @@ DESCRIPTION:	Main header file for hdrbld.c
 #include <Xm/Xm.h>
 
 #include "constants.h"
-#undef NULL
+//#undef NULL
 #include "header.h"
 
 #define NAMELEN			NAMLEN
@@ -34,9 +34,9 @@ extern char		*ProjectDirectory, *ProjectNumber, ProjectName[];
 extern int		nsdi, nPMS;
 extern int		Inertial[], GPS[];
 extern bool		ChangesMade;
-extern struct Sh	*sdi[];
-extern struct Sh	currentSh;
-extern struct Fl	flightInfo;
+extern Sh	*sdi[];
+extern Sh	currentSh;
+extern Fl	flightInfo;
 
 extern Widget  projText[];
  
@@ -65,7 +65,7 @@ void	SortTable(char **table, int beg, int end),
 	ProcessArgv(int argc, char **argv),
 	SetDSMlist(char s[]), SetPMSlocns(char s[]),
 	FillListWidget(), SortSh(),
-	InitializeDSMmenu(Widget parent, char *dsmList[], void (*cb)()),
+	InitializeDSMmenu(Widget parent, char *dsmList[], void (*cb)(Widget, XtPointer, XtPointer)),
 	LogMessage(char msg[]), AddToChangeLog(char msg[]);
 
 void	HandleError(), HandleWarning();
@@ -73,13 +73,11 @@ void	HandleError(), HandleWarning();
 
 void
 	OpenNewFile(Widget w, XtPointer client, XtPointer call),
-	OpenNewFile_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct
-	*call),
+	OpenNewFile_OK(Widget w, XtPointer client, XtPointer call),
 	SaveFileAs(Widget w, XtPointer client, XtPointer call),
-	SaveFileAs_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
-call),
+	SaveFileAs_OK(Widget w, XtPointer client, XtPointer call),
 	SaveFile(Widget w, XtPointer client, XtPointer call),
-	EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call),
+	EditVariable(Widget w, XtPointer client, XtPointer call),
 	Accept(Widget w, XtPointer client, XtPointer call),
 	Clear(Widget w, XtPointer client, XtPointer call),
 	Delete(Widget w, XtPointer client, XtPointer call),
@@ -120,28 +118,30 @@ void
 
 void	ClearCurrentSh(Widget w, XtPointer client, XtPointer call),
 	SetPMS(Widget w, XtPointer client, XtPointer call),
-	SetOther(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call),
-	SetAsync(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call);
+	SetOther(Widget w, XtPointer client, XtPointer call),
+	SetAsync(Widget w, XtPointer client, XtPointer call);
 
 /* libraf declarations
  */
+extern "C" {
+
 void *GetMemory(unsigned nbytes);
 char *strupr(char s[]);
 
-void	QueryFile(char *prompt, char *directory, void (*callBack)()),
+void	QueryFile(char *prompt, char *directory, void (*cb)(Widget, XtPointer, XtPointer)),
 	FileCancel(Widget w, XtPointer clientData, XtPointer callData),
 	ExtractFileName(XmString str, char **text),
 	CreateFileSelectionBox(Widget parent),
 	ShowError(char str[]),
 	ErrorOK(Widget w, XtPointer clientData, XtPointer callData),
 	CreateErrorBox(Widget parent),
-	WarnUser(char str[], void (*okCB)(), void (*cancelCB)()),
+	WarnUser(char str[], void (*okCB)(Widget, XtPointer, XtPointer), void (*cb)(Widget, XtPointer, XtPointer)),
 	CancelWarning(Widget w, XtPointer clientData, XtPointer callData),
 	CreateWarningBox(Widget parent),
-	QueryUser(char str[], int maxlen, void (*callBack)()),
+	QueryUser(char str[], int maxlen, void (*cb)(Widget, XtPointer, XtPointer)),
 	QueryCancel(Widget w, XtPointer clientData, XtPointer callData),
 	CreateQueryBox(Widget parent),  ExtractAnswer(char *s);
-
+}
 #endif
 
 /* END HDRBLD.H */

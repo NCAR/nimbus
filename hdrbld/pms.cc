@@ -28,7 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996
 
 
 /* -------------------------------------------------------------------- */
-void InitializePMSmenu(Widget dsmMenu, char *dsmList[], void (*cb)())
+void InitializePMSmenu(Widget dsmMenu, char *dsmList[], void (*cb)(Widget, XtPointer, XtPointer))
 {
   int     i, n;
   Arg     args[8];

@@ -150,7 +150,7 @@ void EditProjFile()
 
   fseek(fp, 0L, SEEK_END);
   len = ftell(fp);
-  p = GetMemory(len+3);
+  p = (char *)GetMemory(len+3);
   rewind(fp);
   fread(p, len, 1, fp);
   fclose(fp);
@@ -225,7 +225,7 @@ void DismissEditWindow(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void CreateProject_OK(Widget w, XtPointer client, XtPointer call)
 {
-  forkXterm(NULL, "CreateProject", NULL);
+  forkXterm(NULL, (XtPointer)"CreateProject", NULL);
 
 }
 
@@ -241,7 +241,7 @@ void CreateProject2(Widget w, XtPointer client, XtPointer call)
   if (strlen(buffer) == 0)
     return;
 
-  ProjectNumber = GetMemory(strlen(buffer)+1);
+  ProjectNumber = (char *)GetMemory(strlen(buffer)+1);
   strcpy(ProjectNumber, buffer);
 
   if (access(temp, R_OK) == 0)

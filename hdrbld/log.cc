@@ -34,65 +34,65 @@ static char	*changeLog[512];
 /* -------------------------------------------------------------------- */
 void AddToChangeLog(char newMsg[])
 {
-  changeLog[logCnt] = GetMemory(strlen(newMsg)+1);
+  changeLog[logCnt] = (char *)GetMemory(strlen(newMsg)+1);
   strcpy(changeLog[logCnt], newMsg);
   ++logCnt;
 
 }
 
 /* -------------------------------------------------------------------- */
-void DiffSDI(Sh *old, Sh *new)
+void DiffSDI(Sh *old, Sh *newS)
 {
   int	i;
   char	temp[32];
   bool	CalsChanged = FALSE;
 
 
-  if (strcmp(old->dsm_locn, new->dsm_locn))
+  if (strcmp(old->dsm_locn, newS->dsm_locn))
     {
-    sprintf(buffer, "\tDSM: from %s to %s\n", old->dsm_locn, new->dsm_locn);
+    sprintf(buffer, "\tDSM: from %s to %s\n", old->dsm_locn, newS->dsm_locn);
     AddToChangeLog(buffer);
     }
 
-  if (strcmp(old->type, new->type))
+  if (strcmp(old->type, newS->type))
     {
-    sprintf(buffer, "\tType: from %s to %s\n", old->type, new->type);
+    sprintf(buffer, "\tType: from %s to %s\n", old->type, newS->type);
     AddToChangeLog(buffer);
     }
 
-  if (old->rate != new->rate)
+  if (old->rate != newS->rate)
     {
-    sprintf(buffer, "\tRate: from %ld to %ld\n", old->rate, new->rate);
+    sprintf(buffer, "\tRate: from %ld to %ld\n", old->rate, newS->rate);
     AddToChangeLog(buffer);
     }
 
-  if (old->adsaddr != new->adsaddr)
+  if (old->adsaddr != newS->adsaddr)
     {
-    sprintf(buffer, "\tAddress: from %ld to %ld\n", old->adsaddr, new->adsaddr);
+    sprintf(buffer, "\tAddress: from %ld to %ld\n", old->adsaddr, newS->adsaddr);
     AddToChangeLog(buffer);
     }
 
-  if (old->ch_gain != new->ch_gain)
+  if (old->ch_gain != newS->ch_gain)
     {
-    sprintf(buffer, "\tGain: from %ld to %ld\n", old->ch_gain, new->ch_gain);
+    sprintf(buffer, "\tGain: from %ld to %ld\n", old->ch_gain, newS->ch_gain);
     AddToChangeLog(buffer);
     }
 
-  if (old->ch_offset != new->ch_offset)
+  if (old->ch_offset != newS->ch_offset)
     {
-    sprintf(buffer, "\tOffset: from %ld to %ld\n", old->ch_offset, new->ch_offset);
+    sprintf(buffer, "\tOffset: from %ld to %ld\n", old->ch_offset, newS->ch_offset);
     AddToChangeLog(buffer);
     }
 
-  if (old->order != new->order)
+  if (old->order != newS->order)
     {
-    sprintf(buffer, "\tCals: from %ld to %ld\n", old->order, new->order);
+    sprintf(buffer, "\tCals: from %ld to %ld\n", old->order, newS->order);
     AddToChangeLog(buffer);
     CalsChanged = TRUE;
     }
   else
     for (i = 0; i < old->order; ++i)
-      if (old->cof[i] != new->cof[i])
+      if (old->cof[i] != newS->cof[i])
         CalsChanged = TRUE;
 
   if (CalsChanged)
@@ -107,9 +107,9 @@ void DiffSDI(Sh *old, Sh *new)
     AddToChangeLog(buffer);
 
     strcpy(buffer, "\tNew Cals: ");
-    for (i = 0; i < new->order; ++i)
+    for (i = 0; i < newS->order; ++i)
       {
-      sprintf(temp, "%f ", new->cof[i]);
+      sprintf(temp, "%f ", newS->cof[i]);
       strcat(buffer, temp);
       }
 

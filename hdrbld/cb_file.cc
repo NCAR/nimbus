@@ -36,23 +36,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 #include <Xm/ToggleB.h>
 
 
-static void	OpenNewFile_Q();
+void		DumpToChangeLog(char FileName[]);
 static int	WriteHeader(char s[]), RateGroupSDI(int s);
 static bool	Quiting = False, OutstandingWarnings = False;
 
 
 /* -------------------------------------------------------------------- */
-void OpenNewFile(Widget w, XtPointer client, XtPointer call)
-{
-  if (ChangesMade)
-    WarnUser("You have not saved this file.", OpenNewFile_Q, NULL);
-  else
-    OpenNewFile_Q();
-
-}
-
-/* -------------------------------------------------------------------- */
-static void OpenNewFile_Q()
+static void OpenNewFile_Q(Widget, XtPointer, XtPointer)
 {
   sprintf(buffer, "%s/*/header", ProjectDirectory);
   QueryFile("Enter file name to load:", buffer, OpenNewFile_OK);
@@ -60,9 +50,17 @@ static void OpenNewFile_Q()
 }
 
 /* -------------------------------------------------------------------- */
-void OpenNewFile_OK(	Widget w,
-			XtPointer client,
-			XmFileSelectionBoxCallbackStruct *call)
+void OpenNewFile(Widget w, XtPointer client, XtPointer call)
+{
+  if (ChangesMade)
+    WarnUser("You have not saved this file.", OpenNewFile_Q, NULL);
+  else
+    OpenNewFile_Q(NULL, NULL, NULL);
+
+}
+
+/* -------------------------------------------------------------------- */
+void OpenNewFile_OK(Widget w, XtPointer client, XtPointer call)
 {
   int		i, j;
   FILE		*fp, *fp1;
@@ -79,7 +77,7 @@ void OpenNewFile_OK(	Widget w,
     {
     char	*file;
 
-    ExtractFileName(call->value, &file);
+    ExtractFileName(((XmFileSelectionBoxCallbackStruct *)call)->value, &file);
     FileCancel((Widget)NULL, (XtPointer)NULL, (XtPointer)NULL);
 
     strcpy(FileName, file);
@@ -359,11 +357,11 @@ void SaveQuit(Widget w, XtPointer client, XtPointer call)
 }
 
 /* -------------------------------------------------------------------- */
-void SaveFileAs_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *call)
+void SaveFileAs_OK(Widget w, XtPointer client, XtPointer call)
 {
   char    *file;
 
-  ExtractFileName(call->value, &file);
+  ExtractFileName(((XmFileSelectionBoxCallbackStruct *)call)->value, &file);
   FileCancel((Widget)NULL, (XtPointer)NULL, (XtPointer)NULL);
 
   if (WriteHeader(file) == ERR)
@@ -1031,7 +1029,7 @@ void Quit(Widget w, XtPointer client, XtPointer call)
 {
   if (ChangesMade)
     {
-    WarnUser("You have not saved this file.", exit, NULL);
+    WarnUser("You have not saved this file.", (void (*)(Widget, XtPointer, XtPointer))exit, NULL);
     return;
     }
 

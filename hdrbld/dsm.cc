@@ -28,7 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996
 
 
 /* -------------------------------------------------------------------- */
-void InitializeDSMmenu(Widget dsmMenu, char *dsmList[], void (*cb)())
+void InitializeDSMmenu(Widget dsmMenu, char *dsmList[], void (*cb)(Widget, XtPointer, XtPointer))
 {
   int		i, n;
   Arg		args[8];
@@ -69,7 +69,7 @@ void SetDSMlist(char ac[])
 
   for (i = 0; p; ++i)
     {
-    DSM[i] = GetMemory(strlen(p));
+    DSM[i] = (char *)GetMemory(strlen(p));
     strcpy(DSM[i], p);
     p = strtok(NULL, ", \t\n");
     }

@@ -69,36 +69,36 @@ static struct menu      editMenu[] = {
 	{ "search", Search, NULL },
 	{ "seperator", NULL, NULL },
 	{ "editVarDB", EditVarDB, NULL },
-	{ "editDepend", EditProjectFile, "DependTable" },
-	{ "editDefaults", EditProjectFile, "Defaults" },
-	{ "editDespike", EditProjectFile, "Despike" },
-	{ "editLags", EditProjectFile, "Lags" },
-	{ "editPMS", EditProjectFile, "PMSspecs" },
-	{ "editAsciiParms", EditProjectFile, "ascii_parms" },
+	{ "editDepend", EditProjectFile, (XtPointer)"DependTable" },
+	{ "editDefaults", EditProjectFile, (XtPointer)"Defaults" },
+	{ "editDespike", EditProjectFile, (XtPointer)"Despike" },
+	{ "editLags", EditProjectFile, (XtPointer)"Lags" },
+	{ "editPMS", EditProjectFile, (XtPointer)"PMSspecs" },
+	{ "editAsciiParms", EditProjectFile, (XtPointer)"ascii_parms" },
 	{ "seperator", NULL, NULL },
-	{ "vinet", EditProjectFile, "netconfig" },
-	{ "editRegions", EditDefaultFile, "regions" },
-	{ "editAC", EditDefaultFile, "AircraftSpecs" },
-	{ "editDSM", EditHostsFile, "dsmconfig" },
+	{ "vinet", EditProjectFile, (XtPointer)"netconfig" },
+	{ "editRegions", EditDefaultFile, (XtPointer)"regions" },
+	{ "editAC", EditDefaultFile, (XtPointer)"AircraftSpecs" },
+	{ "editDSM", EditHostsFile, (XtPointer)"dsmconfig" },
 	{ NULL, NULL, NULL }};
 
 static struct menu      projMenu[] = {
 	{ "create", CreateProject, NULL },
-	{ "transOnboard", forkXterm, "XferOnboard" },
-	{ "transInhouse", forkXterm, "XferInhouse" },
+	{ "transOnboard", forkXterm, (XtPointer)"XferOnboard" },
+	{ "transInhouse", forkXterm, (XtPointer)"XferInhouse" },
 	{ NULL, NULL, NULL }};
 
 static struct menu      transMenu[] = {
-	{ "xferADSrel", forkXterm4xfer, "XferADSrel" },
-	{ "xferNIMrel", forkXterm4xfer, "XferNIMrel" },
-	{ "xferWINDSrel", forkXterm4xfer, "XferWINDSrel" },
-	{ "xferProjDefs", forkXterm4xfer, "XferProjDefs" },
-	{ "xferLibs", forkXterm4xfer, "XferLibs" },
-	{ "xfervxWorks", forkXterm4xfer, "XferVxWorks" },
+	{ "xferADSrel", forkXterm4xfer, (XtPointer)"XferADSrel" },
+	{ "xferNIMrel", forkXterm4xfer, (XtPointer)"XferNIMrel" },
+	{ "xferWINDSrel", forkXterm4xfer, (XtPointer)"XferWINDSrel" },
+	{ "xferProjDefs", forkXterm4xfer, (XtPointer)"XferProjDefs" },
+	{ "xferLibs", forkXterm4xfer, (XtPointer)"XferLibs" },
+	{ "xfervxWorks", forkXterm4xfer, (XtPointer)"XferVxWorks" },
 	{ "seperator", NULL, NULL },
-	{ "xferADSdev", forkXterm4xfer, "XferADSdev" },
-	{ "xferNIMdev", forkXterm4xfer, "XferNIMdev" },
-	{ "xferWINDSdev", forkXterm4xfer, "XferWINDSdev" },
+	{ "xferADSdev", forkXterm4xfer, (XtPointer)"XferADSdev" },
+	{ "xferNIMdev", forkXterm4xfer, (XtPointer)"XferNIMdev" },
+	{ "xferWINDSdev", forkXterm4xfer, (XtPointer)"XferWINDSdev" },
 	{ NULL, NULL, NULL }};
 
 static struct
@@ -779,7 +779,7 @@ void InitOtherProbes(Widget frame)
       XtManageChild(other[i].toggleB[j]);
 
       XtAddCallback(other[i].toggleB[j], XmNvalueChangedCallback,
-				(XtCallbackProc)SetOther, (XtPointer)(i<<8)+j);
+				(XtCallbackProc)SetOther, (XtPointer)((i<<8)+j));
       }
     }
 

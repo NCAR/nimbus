@@ -115,7 +115,7 @@ void ProcessArgv(int argc, char **argv)
     {
     if (argv[i][0] != '-')
       {
-      ProjectNumber = GetMemory(strlen(argv[i]+1));
+      ProjectNumber = (char *)GetMemory(strlen(argv[i]+1));
       strcpy(ProjectNumber, argv[i]);
       continue;
       }
