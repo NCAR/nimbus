@@ -30,11 +30,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2003
 
 
 char	buffer[0x8000];
-char	sourceTape[64], destTape[64], destFile[80], dest2d[80], destMCR[80],
-	destAVAPS[80];
-int	outTape, outDisk, out2D, outMCR, outAVAPS;
-int	cntTape, cntDisk, cnt2D, cntMCR, cntAVAPS;
-int	pms2d = false, mcr = false, avaps = false;
+char	sourceTape[200];
 
 int WriteDisk(char buff[], int nBytes);
 
@@ -45,22 +41,18 @@ main(int argc, char *argv[])
   int	rc, nBytes;
   ADS_DataFile	*source;
 
-
-  outTape = outDisk = out2D = outMCR = outAVAPS = ERR;
-
-
-  printf("Enter source tape drive [/dev/rmt/0] : ");
-  gets(sourceTape);
-
-  if (strlen(sourceTape) == 0)
-    strcpy(sourceTape, "/dev/rmt/0");
+  if (argc < 2)
+  {
+    printf("Enter file : ");
+    fgets(sourceTape, 200, stdin);
+  }
+  else
+    strcpy(sourceTape, argv[1]);
 
   source = new ADS_DataFile(sourceTape);
 
 
-
   rc = 0;	/* Return Code	*/
-  cntTape = cntDisk = cnt2D = cntAVAPS = 0;
 
   while ((nBytes = source->NextPhysicalRecord(buffer)) > 0)
     {
