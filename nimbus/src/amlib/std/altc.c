@@ -263,10 +263,12 @@ void sggaltc(DERTBL *varp)
       newalt = alt*Coef1 + Coef2;
 
     /* Bad GPS Status ?  */
-    /*  Garmin's status is different.  Value of one (1) is good.  */
-    /*    According to the actual data, above is incorrect.  RLR 17Nov2003 */
-    /*  Garmin's status is different.  Value of two (2) is good.  */
-      if (ggstat != 2 || ggnsat < 4 ) {
+    /*  Garmin's status comes from GGA's GPS quality indication:
+     *   0 = fix not available                          <-- don't use
+     *   1 = non-differential GPS fix available
+     *   2 = differential GPS (DGPS) fix available
+     *   6 = estimated                                  <-- don't use       */
+      if (ggstat == 0 || ggstat == 6 || ggnsat < 4 ) {
         goodGPS = 0;
         }
 
@@ -343,6 +345,11 @@ void sggaltc(DERTBL *varp)
       ++countr;
       }
     }
+
+/*  ###############   Begin Debug Print   ############### *
+  printf (" altc.c debug: ggalt = %f, alt = %f, altc = %f, dalt_sav[%i] = %f\n",
+     ggalt, alt, altc, isav, dalt_sav[isav]);
+ *  ###############    End  Debug Print   ############### */
 
   PutSample(varp, altc);
 
