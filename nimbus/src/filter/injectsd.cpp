@@ -10,6 +10,7 @@
 #include "injectsd.h"
 
 #include <vector>
+#include <cmath>
 
 extern NR_TYPE          *AveragedData,*HighRateData,*SampledData;
 
@@ -404,16 +405,16 @@ float dummyfloat,df;
 		      {
 			for(int a=0;a<25;a++)
 			  {
-			    dummyfloat=abs(GetValue('h','s',funcvarnames[i].index,a));
+			    dummyfloat=fabs(GetValue('h','s',funcvarnames[i].index,a));
 			    SetHighData('s',funcvarnames[i].index,a,dummyfloat);
 			    temptally+=dummyfloat;
 			    if ((sp->OutputRate ==25)&&( sp->SampleRate==25))
-				  { df=abs(GetValue('s','s',funcvarnames[i].index,a));
+				  { df=fabs(GetValue('s','s',funcvarnames[i].index,a));
 				    SetSampleData('s',funcvarnames[i].index,a,df);
 				  }
 			    else if((sp->OutputRate==1) &&(sp->SampleRate==1))
 			      {
-				 df=abs(GetValue('s','s',funcvarnames[i].index,0));
+				 df=fabs(GetValue('s','s',funcvarnames[i].index,0));
 				    SetSampleData('s',funcvarnames[i].index,0,df);
 			      }
 			  }
@@ -421,7 +422,7 @@ float dummyfloat,df;
 		      }
 		     else
 		     {
-		       dummyfloat=abs(GetValue('a','s',funcvarnames[i].index,0));
+		       dummyfloat=fabs(GetValue('a','s',funcvarnames[i].index,0));
 		       SetAverageData('s',funcvarnames[i].index,dummyfloat);
 		     }
 		  }
@@ -432,15 +433,15 @@ float dummyfloat,df;
 		      {
 			 for(int a=0;a<25;a++)
 			  {
-			    dummyfloat=abs(GetValue('h','r',funcvarnames[i].index,a));
+			    dummyfloat=fabs(GetValue('h','r',funcvarnames[i].index,a));
 			    SetHighData('r',funcvarnames[i].index,a,dummyfloat);
 			    temptally+=dummyfloat;
 			    if ((rp->OutputRate==25)&&(rp->SampleRate==25))
-				  { df=abs(GetValue('s','r',funcvarnames[i].index,a));
+				  { df=fabs(GetValue('s','r',funcvarnames[i].index,a));
 				    SetSampleData('r',funcvarnames[i].index,a,df);
 				  }
 			    else  if((rp->OutputRate==1)&&(rp->SampleRate==1))
-				  { df=abs(GetValue('s','r',funcvarnames[i].index,0));
+				  { df=fabs(GetValue('s','r',funcvarnames[i].index,0));
 				    SetSampleData('r',funcvarnames[i].index,0,df);
 				  }
 			  }
@@ -449,7 +450,7 @@ float dummyfloat,df;
 		      }
 		    else
 		      {
-			 dummyfloat=abs(GetValue('a','r',funcvarnames[i].index,0));
+			 dummyfloat=fabs(GetValue('a','r',funcvarnames[i].index,0));
 			 SetAverageData('r',funcvarnames[i].index,dummyfloat);
 		      }
 		  }
