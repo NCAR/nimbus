@@ -72,7 +72,7 @@ size_t	nFloats;	/* Contains number of floats used in SampledData */
 size_t	LITTON51_start;		/* hdr_decode.c & adsIO.c		*/
 
 
-//****************************synthetic data varables**************************//
+//***************************synthetic data varables*************************//
 
 int	timeindex[3];	// array of time
 float	temptime;	//temporary time  holder
@@ -88,6 +88,6 @@ bool    SDP=false;      // wheter or not a variable is being modified by a funct
 //these are the functions that the synthetic data injector can modify
 std::string functions[25];
 
-//******************************************************************************//
+//***************************************************************************//
 
 /* END GLOBALS.C */
