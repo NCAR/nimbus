@@ -162,7 +162,13 @@ void slatc(DERTBL *varp)
     ++goodGPS;
 
     /* Major hack to determine Garmin vs. Trimble GPS.  MODE/STAT vars
-     * are different.  Fake the Garmin varibles to mimic the Trimble.
+     * are different.  Fake the Garmin variables to mimic the Trimble.
+     *  gstat = number of satellites
+     *  gmode = GPS quality indication
+     *      0 = fix not available
+     *      1 = non-differential GPS fix available
+     *      2 = differential GPS (DGPS) fix available
+     *      6 = estimated
      */
     if (varp->depend[3][1] == 'G') /* This is the Garmin */
       {
@@ -170,7 +176,13 @@ void slatc(DERTBL *varp)
         gstat = 0;
 
       if (gmode == 1 || gmode == 2)
+        {
         gmode = 4;
+        }
+      else              /*  gmode = 0 or gmode = 6 defined as "bad" */
+        {
+        gmode = 0;
+        }
       }
 
     if (gstat == 0x0b00)	/* 3 satellites is also considered good	*/
