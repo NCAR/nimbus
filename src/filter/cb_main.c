@@ -98,13 +98,13 @@ void CancelSetup(Widget w, XtPointer client, XtPointer call)
 
   CloseADSfile();
 
-  for (i = 0; i < nsdi; ++i)
+  for (i = 0; i < sdi.size(); ++i)
     free((char *)sdi[i]);
 
-  for (i = 0; i < nraw; ++i)
+  for (i = 0; i < raw.size(); ++i)
     free((char *)raw[i]);
 
-  for (i = 0; i < nderive; ++i)
+  for (i = 0; i < derived.size(); ++i)
     free((char *)derived[i]);
 
   for (i = 0; i < nDefaults; ++i)
@@ -258,15 +258,15 @@ static void readHeader()
   FILE	*ofp = LogFile ? LogFile : stderr;
   int	i;
 
-  for (i = 0; i < nsdi; ++i)
+  for (i = 0; i < sdi.size(); ++i)
     if (VarDB_lookup(sdi[i]->name) == ERR)
       fprintf(ofp, "%s has no description or units.\n", sdi[i]->name);
 
-  for (i = 0; i < nraw; ++i)
+  for (i = 0; i < raw.size(); ++i)
     if (VarDB_lookup(raw[i]->name) == ERR)
       fprintf(ofp, "%s has no description or units.\n", raw[i]->name);
 
-  for (i = 0; i < nderive; ++i)
+  for (i = 0; i < derived.size(); ++i)
     if (VarDB_lookup(derived[i]->name) == ERR)
       fprintf(ofp, "%s has no description or units.\n", derived[i]->name);
 }
@@ -283,11 +283,11 @@ void SetHighRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
 
   ProcessingRate = HIGH_RATE;
 
-  for (i = 0; i < nsdi; ++i)
+  for (i = 0; i < sdi.size(); ++i)
     if (sdi[i]->SampleRate >= HIGH_RATE)
       sdi[i]->OutputRate = HIGH_RATE;
 
-  for (i = 0; i < nraw; ++i)
+  for (i = 0; i < raw.size(); ++i)
     {
     if (raw[i]->SampleRate >= HIGH_RATE)
       raw[i]->OutputRate = HIGH_RATE;
@@ -296,7 +296,7 @@ void SetHighRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
       raw[i]->OutputRate = raw[i]->SampleRate;
     }
 
-  for (i = 0; i < nderive; ++i)
+  for (i = 0; i < derived.size(); ++i)
     derived[i]->OutputRate = derived[i]->Default_HR_OR;
 
   FillListWidget();
@@ -325,13 +325,13 @@ void SetLowRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
 
   ProcessingRate = LOW_RATE;
 
-  for (i = 0; i < nsdi; ++i)
+  for (i = 0; i < sdi.size(); ++i)
     sdi[i]->OutputRate = LOW_RATE;
 
-  for (i = 0; i < nraw; ++i)
+  for (i = 0; i < raw.size(); ++i)
     raw[i]->OutputRate = LOW_RATE;
 
-  for (i = 0; i < nderive; ++i)
+  for (i = 0; i < derived.size(); ++i)
     derived[i]->OutputRate = LOW_RATE;
 
   FillListWidget();
@@ -386,7 +386,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   {
   bool	firstSpike = true;
 
-  for (i = 0; i < nsdi; ++i) {
+  for (i = 0; i < sdi.size(); ++i) {
     if (sdi[i]->StaticLag != 0)
       AddVariableToSDIlagList(sdi[i]);
 
@@ -403,7 +403,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
       fprintf(LogFile, "%s has no entry in the VarDB.\n", sdi[i]->name);
     }
 
-  for (i = 0; i < nraw; ++i) {
+  for (i = 0; i < raw.size(); ++i) {
     if (raw[i]->StaticLag != 0 || raw[i]->DynamicLag != 0)
       AddVariableToRAWlagList(raw[i]);
 
@@ -420,7 +420,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
       fprintf(LogFile, "%s has no entry in the VarDB.\n", raw[i]->name);
     }
 
-  for (i = 0; i < nderive; ++i) {
+  for (i = 0; i < derived.size(); ++i) {
     if (derived[i]->Output && VarDB_lookup(derived[i]->name) == ERR && LogFile)
       fprintf(LogFile,"%s has no entry in the VarDB.\n", derived[i]->name);
     }
@@ -644,9 +644,9 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
     {
     indx = pos_list[i] - 1;
 
-    if (indx >= nsdi+nraw)
+    if (indx >= sdi.size()+raw.size())
       {
-      DERTBL	*dp = derived[indx-(nsdi+nraw)];
+      DERTBL	*dp = derived[indx-(sdi.size()+raw.size())];
       dp->Dirty = true;
 
       switch (dp->OutputRate)
@@ -664,9 +664,9 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
       item = CreateListLineItem(dp, DERIVED);
       }
     else
-    if (indx >= nsdi)
+    if (indx >= sdi.size())
       {
-      RAWTBL	*rp = raw[indx-nsdi];
+      RAWTBL	*rp = raw[indx-sdi.size()];
 
       if (strcmp(rp->name, "HOUR") != 0 && strcmp(rp->name, "MINUTE") != 0
 				&& strcmp(rp->name, "SECOND") != 0)
@@ -747,18 +747,18 @@ void ToggleOutput(Widget w, XtPointer client, XtPointer call)
     {
     indx = pos_list[i] - 1;
 
-    if (indx >= nsdi+nraw)
+    if (indx >= sdi.size()+raw.size())
       {
-      DERTBL	*dp = derived[indx-(nsdi+nraw)];
+      DERTBL	*dp = derived[indx-(sdi.size()+raw.size())];
       dp->Dirty = true;
       dp->Output = 1 - dp->Output;
 
       item = CreateListLineItem(dp, DERIVED);
       }
     else
-    if (indx >= nsdi)
+    if (indx >= sdi.size())
       {
-      RAWTBL	*rp = raw[indx-nsdi];
+      RAWTBL	*rp = raw[indx-sdi.size()];
 
       if (strcmp(rp->name, "HOUR") != 0 && strcmp(rp->name, "MINUTE") != 0
 				&& strcmp(rp->name, "SECOND") != 0)
@@ -979,7 +979,7 @@ XmString CreateListLineItem(void *pp, int var_type)
 void FillListWidget()
 {
   int		i, cnt;
-  XmString	items[MAX_SDI+MAX_RAW+MAX_DERIVE];
+  XmString	items[MAX_VARIABLES];
 
   static int	firstTime = true;
 
@@ -988,13 +988,13 @@ void FillListWidget()
 
   cnt = 0;
 
-  for (i = 0; i < nsdi; ++i)
+  for (i = 0; i < sdi.size(); ++i)
     items[cnt++] = CreateListLineItem(sdi[i], SDI);
 
-  for (i = 0; i < nraw; ++i)
+  for (i = 0; i < raw.size(); ++i)
     items[cnt++] = CreateListLineItem(raw[i], RAW);
 
-  for (i = 0; i < nderive; ++i)
+  for (i = 0; i < derived.size(); ++i)
     items[cnt++] = CreateListLineItem(derived[i], DERIVED);
 
 
@@ -1018,11 +1018,7 @@ void FillListWidget()
 /* -------------------------------------------------------------------- */
 void PrintSetup(Widget w, XtPointer client, XtPointer call)
 {
-  int		i, j;
   FILE	*fp;
-  SDITBL	*sp;
-  RAWTBL	*rp;
-  DERTBL	*dp;
 
   if ((fp = popen("lpr", "w")) == NULL)
     {
@@ -1036,8 +1032,10 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
   fprintf(fp, "Name       Output  SR    OR     Lag   Spike Slope\n");
   fprintf(fp, "--------------------------------------------------------------------------------\n");
 
-  for (i = 0; (sp = sdi[i]); ++i)
+  for (int i = 0; i < sdi.size(); ++i)
     {
+    SDITBL *sp = sdi[i];
+
     fprintf(fp, list1lineFrmt,
 			sp->name,
 			sp->Dirty ? '*' : ' ',
@@ -1047,15 +1045,17 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
 			sp->StaticLag,
 			sp->SpikeSlope);
 
-    for (j = 0; j < sp->order; ++j)
+    for (int j = 0; j < sp->order; ++j)
       fprintf(fp, "%14e", sp->cof[j]);
 
     fprintf(fp, "\n");
     }
 
 
-  for (i = 0; (rp = raw[i]); ++i)
+  for (int i = 0; i < raw.size(); ++i)
     {
+    RAWTBL *rp = raw[i];
+
     fprintf(fp, list1lineFrmt,
 			rp->name,
 			rp->Dirty ? '*' : ' ',
@@ -1065,15 +1065,17 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
 			rp->StaticLag,
 			rp->SpikeSlope);
 
-    for (j = 0; j < rp->order; ++j)
+    for (int j = 0; j < rp->order; ++j)
       fprintf(fp, "%14e", rp->cof[j]);
 
     fprintf(fp, "\n");
     }
 
 
-  for (i = 0; (dp = derived[i]); ++i)
+  for (int i = 0; i < derived.size(); ++i)
     {
+    DERTBL *dp = derived[i];
+
     sprintf(buffer, list1lineFrmt,
 			dp->name,
 			dp->Dirty ? '*' : ' ',
@@ -1085,7 +1087,7 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
     buffer[33] = 'N'; buffer[34] = 'A';
     fprintf(fp, buffer);
 
-    for (j = 0; j < dp->ndep; ++j)
+    for (int j = 0; j < dp->ndep; ++j)
       {
       if (j > 0)
         {
@@ -1103,7 +1105,7 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
 
   fprintf(fp, "\n\nDefaults:\n\n");
 
-  for (i = 0; i < nDefaults; ++i)
+  for (int i = 0; i < nDefaults; ++i)
     {
     if (Defaults[i]->Used == false)
       continue;
@@ -1113,7 +1115,7 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
     if (Defaults[i]->nValues > 5)
       fprintf(fp, "\n\t");
 
-    for (j = 0; j < Defaults[i]->nValues; ++j)
+    for (int j = 0; j < Defaults[i]->nValues; ++j)
       {
       if (j > 0 && j % 5 == 0)
         fprintf(fp, "\n\t");
@@ -1141,12 +1143,12 @@ void ToggleProbe(Widget w, XtPointer client, XtPointer call)
     {
     bool	value = (int)client == ALL_ON ? true : false;
 
-    for (i = 0; sdi[i]; ++i) {
+    for (i = 0; i < sdi.size(); ++i) {
       sdi[i]->Dirty = true;
       sdi[i]->Output = value;
       }
 
-    for (i = 0; raw[i]; ++i) {
+    for (i = 0; i < raw.size(); ++i) {
       if (strcmp(raw[i]->name, "HOUR") == 0 ||
 	  strcmp(raw[i]->name, "MINUTE") == 0 ||
 	  strcmp(raw[i]->name, "SECOND") == 0)
@@ -1156,14 +1158,14 @@ void ToggleProbe(Widget w, XtPointer client, XtPointer call)
       raw[i]->Output = value;
       }
 
-    for (i = 0; derived[i]; ++i) {
+    for (i = 0; i < derived.size(); ++i) {
       derived[i]->Dirty = true;
       derived[i]->Output = value;
       }
     }
   else
     {
-    for (i = 0; raw[i]; ++i)
+    for (i = 0; i < raw.size(); ++i)
       if ((cat && raw[i]->ProbeType & cat) || (raw[i]->ProbeType & type &&
 		raw[i]->ProbeCount == cnt))
         {
@@ -1171,7 +1173,7 @@ void ToggleProbe(Widget w, XtPointer client, XtPointer call)
         raw[i]->Output = 1 - raw[i]->Output;
         }
 
-    for (i = 0; derived[i]; ++i)
+    for (i = 0; i < derived.size(); ++i)
       if ((cat && derived[i]->ProbeType & cat) ||
 	(derived[i]->ProbeType & type && derived[i]->ProbeCount == cnt))
         {

@@ -43,9 +43,7 @@ void DecodeADSrecord(
 	short	lr[],	/* ADS Logical Record	*/
 	NR_TYPE	nlr[])	/* New Logical Record	*/
 {
-  int		i, j, pos;
-  SDITBL	*sp;		/* Current SDI Variable Pointer	*/
-  RAWTBL	*rp;		/* Current Raw Variable Pointer	*/
+  int		j, pos;
   short		*lrp;		/* ADS Logical Record Pointer	*/
 
 static int firstTime = true;
@@ -53,8 +51,10 @@ static FILE *fp;
 
   /* Cast SDI variables into new record
    */
-  for (i = 0; (sp = sdi[i]); ++i)
+  for (int i = 0; i < sdi.size(); ++i)
     {
+    SDITBL *sp = sdi[i];
+
     lrp	= &lr[sp->ADSstart];
     pos	= sp->SRstart;
 
@@ -137,8 +137,12 @@ if (strcmp(sp->name, "XDMSEC") == 0)
 
   /* Extract block variables into new record
    */
-  for (i = 0; (rp = raw[i]); ++i)
+  for (int i = 0; i < raw.size(); ++i)
+  {
+    RAWTBL *rp = raw[i];
+
     (*rp->xlate)(rp, &lr[rp->ADSstart], &nlr[rp->SRstart]);
+  }
 
 }	/* END DECODEADSRECORD */
 

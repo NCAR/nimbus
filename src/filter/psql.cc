@@ -144,13 +144,13 @@ void PostgreSQL::WriteSQL(const std::string timeStamp)
 
   /* Three loops again, analog, raw and derived.  This is analog.
    */
-  for (i = 0; i < nsdi; ++i)
+  for (i = 0; i < sdi.size(); ++i)
     addValue(sqlStr, brdStr, AveragedData[sdi[i]->LRstart], true);
 
 
   /* Three loops again, analog, raw and derived.  This is raw.
    */
-  for (i = 0; i < nraw; ++i)
+  for (i = 0; i < raw.size(); ++i)
   {
     if (raw[i]->Length > 1)	// PMS/vector data.
       addVector(sqlStr, brdStr, &AveragedData[raw[i]->LRstart], raw[i]->Length, true);
@@ -161,9 +161,9 @@ void PostgreSQL::WriteSQL(const std::string timeStamp)
 
   /* Three loops again, analog, raw and derived.  This is derived.
    */
-  for (i = 0; i < nderive; ++i)
+  for (i = 0; i < derived.size(); ++i)
   {
-    bool addComma = (i == nderive-1) ? false : true;
+    bool addComma = (i == derived.size()-1) ? false : true;
 
     if (derived[i]->Length > 1)
       addVector(sqlStr, brdStr, &AveragedData[derived[i]->LRstart], derived[i]->Length, addComma);
@@ -281,7 +281,7 @@ void PostgreSQL::initializeGlobalAttributes()
   sprintf(temp, "INSERT INTO global_attributes VALUES ('DateProcessed', '%s')", dateProcessed);
   submitCommand(temp);
 
-}	// END INTIALIZEGLOBALATTRIBUTES
+}	// END INITIALIZEGLOBALATTRIBUTES
 
 /* -------------------------------------------------------------------- */
 void PostgreSQL::initializeVariableList()
@@ -289,19 +289,20 @@ void PostgreSQL::initializeVariableList()
   int	nVars = 0, nDims, dims[3];
 
   std::stringstream	sqlStr;
+  sampleRateTableMap	rawMap;
 
 printf("InitializeVariableList\n");
 
   nDims = 1;
   dims[0] = 1;
 
-  sqlStr << "CREATE TABLE RAF_1hz (datetime timestamp PRIMARY KEY, ";
+//  sqlStr << "CREATE TABLE RAF_1hz (datetime timestamp PRIMARY KEY, ";
 
   /* 3 big loops here for analog, raw and derived.  This is analog.
    */
-  for (int i = 0; i < nsdi; ++i)
-    {
-    sqlStr << sdi[i]->name << " FLOAT, ";
+  for (int i = 0; i < sdi.size(); ++i)
+  {
+//    sqlStr << sdi[i]->name << " FLOAT, ";
     ++nVars;
 
     addVariableToDataBase(sdi[i]->name, VarDB_GetUnits(sdi[i]->name),
@@ -309,12 +310,15 @@ printf("InitializeVariableList\n");
 	sdi[i]->order, sdi[i]->cof, MISSING_VALUE, "Preliminary");
 
     addCategory(sdi[i]->name, "Analog");
-    }
+
+//    addToSampleRateList(rawMap, sdi[i]->name, 1);
+    addToSampleRateList(rawMap, sdi[i]);
+  }
 
 
   /* 3 big loops here for analog, raw and derived.  This is raw.
    */
-  for (int i = 0; i < nraw; ++i)
+  for (int i = 0; i < raw.size(); ++i)
   {
     std::string        name;
 
@@ -382,12 +386,14 @@ printf("InitializeVariableList\n");
 	0, 0, MISSING_VALUE, "Preliminary");
 
     addCategory(raw[i]->name, "Raw");
+
+    addToSampleRateList(rawMap, raw[i]);
   }
 
 
   /* 3 big loops here for analog, raw and derived.  This is derived.
    */
-  for (int i = 0; i < nderive; ++i)
+  for (int i = 0; i < derived.size(); ++i)
   {
     sqlStr << derived[i]->name;
 
@@ -403,7 +409,7 @@ printf("InitializeVariableList\n");
       sqlStr << " FLOAT";
     }
 
-    if (i != nderive-1)
+    if (i != derived.size()-1)
       sqlStr << ", ";
     ++nVars;
 
@@ -528,6 +534,42 @@ void PostgreSQL::addCategory(std::string varName, std::string category)
   submitCommand(entry);
 
 }	// END ADDCATEGORY
+
+/* -------------------------------------------------------------------- */
+void PostgreSQL::addToSampleRateList(
+	sampleRateTableMap &srTableMap,
+//	const std::string varName,
+//	const int sampleRate)
+	const var_base *var)
+{
+  // Set up raw tables.
+  std::stringstream preamble;
+
+  preamble	<< "CREATE TABLE RAF_" << var->SampleRate
+		<< "hz (datetime timestamp PRIMARY KEY, ";
+
+  if (srTableMap[preamble.str()].length() > 0)
+    srTableMap[preamble.str()] += ",";
+
+  srTableMap[preamble.str()] += var->name;
+  srTableMap[preamble.str()] += " FLOAT";
+
+}	// END ADDTOSAMPLERATELIST
+
+/* -------------------------------------------------------------------- */
+void PostgreSQL::createSampleRateTables(const sampleRateTableMap &srTableMap)
+{
+  sampleRateTableMap::const_iterator it;
+
+  for (it = srTableMap.begin(); it != srTableMap.end(); ++it)
+  {
+    std::stringstream  cmd;
+    cmd << it->first << it->second << ")";
+
+    submitCommand(cmd.str());
+  }
+
+}	// END CREATESAMPLERATETABLES
 
 /* -------------------------------------------------------------------- */
 void PostgreSQL::closeSQL()

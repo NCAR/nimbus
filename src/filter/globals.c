@@ -27,19 +27,19 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "nimbus.h"
 #include "decode.h"
 #include "header.h"
-#include <cstring>
 #include <injectsd.h>
 
 
 char	buffer[4096];		/* Generic, volatile string space	*/
 char	*ProjectDirectory, *ProjectNumber, *ProjectName, FlightNumber[12];
 
-SDITBL  *sdi[MAX_SDI];		/* SDI (aka raw) variable list		*/
-RAWTBL	*raw[MAX_RAW];		/* Alphabeticly sorted pointers		*/
-DERTBL	*derived[MAX_DERIVE];	/* Alphabeticly sorted pointers		*/
-DERTBL	*ComputeOrder[MAX_DERIVE];	/* Compute Order for derived	*/
+std::vector<SDITBL *> sdi;	/* SDI (aka raw) variable list		*/
+std::vector<RAWTBL *> raw;	/* Alphabeticly sorted pointers		*/
+std::vector<DERTBL *> derived;	/* Alphabeticly sorted pointers		*/
+std::vector<DERTBL *> ComputeOrder;	/* Compute Order for derived	*/
+
+int	nDefaults;
 DEFAULT	*Defaults[MAX_DEFAULTS];	/* Values from 'Defaults' file	*/
-int	nsdi, nraw, nderive, nDefaults;
 
 bool	LITTON51_present,	/* hdr_decode.c & adsIO.c		*/
 	AVAPS,			/* Is AVAPS dropesonde present.		*/

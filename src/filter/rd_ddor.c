@@ -38,7 +38,7 @@ void ReadDefaultDerivedOutputRate()
   ReadTextFile(DEFDEROR, ddor);
 
   for (i = 0; ddor[i]; ++i)
-    if ((index = SearchTable((char **)derived, nderive, ddor[i])) != ERR)
+    if ((index = SearchTable(derived, ddor[i])) != ERR)
       derived[index]->Default_HR_OR = LOW_RATE;
 
   FreeTextFile(ddor);

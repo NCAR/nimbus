@@ -30,28 +30,28 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1994-7
 /* -------------------------------------------------------------------- */
 void ApplyCalCoes(NR_TYPE *record)
 {
-  int		i, j, k, corder, pos;
-  SDITBL	*sp;
-  NR_TYPE	out;
+  int		corder, pos;
 
-  for (i = 0; (sp = sdi[i]); ++i)
-    {
+  for (int i = 0; i < sdi.size(); ++i)
+  {
+    SDITBL *sp = sdi[i];
     pos = sp->SRstart;
 
-    for (j = 0; j < sp->SampleRate; ++j, ++pos)
-      {
+    for (int j = 0; j < sp->SampleRate; ++j, ++pos)
+    {
       corder  = sp->order - 1;
-      out     = sp->cof[corder];
+
+      NR_TYPE out     = sp->cof[corder];
 
       if (sp->type[0] == 'A')
         record[pos] = (record[pos] - sp->convertOffset) * sp->convertFactor;
 
-      for (k = 1; k < sp->order; k++)
+      for (int k = 1; k < sp->order; k++)
         out = sp->cof[corder-k] + record[pos] * out;
 
       record[pos] = out;
-      }
     }
+  }
 
 }	/* END APPLYCALCOES */
 

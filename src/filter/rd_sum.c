@@ -27,23 +27,23 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 /* -------------------------------------------------------------------- */
 void ReadSumVariables()
 {
-  int	i, index;
+  int	index;
   char	*sumvar[512], target[NAMELEN];
 
 
   ReadTextFile(SUMVARS, sumvar);
 
-  for (i = 0; sumvar[i]; ++i)
+  for (int i = 0; sumvar[i]; ++i)
     {
     strcpy(target, sumvar[i]);
 
-    if ((index = SearchTable((char **)sdi, nsdi, target)) != ERR)
+    if ((index = SearchTable(sdi, target)) != ERR)
       {
       sdi[index]->type[0] = 'C';
       sdi[index]->Average = (void (*) (NR_TYPE *, NR_TYPE *, void *))SumSDI;
       }
     else
-    if ((index = SearchTableSansLocation((char **)raw, nraw, target)) != ERR)
+    if ((index = SearchTableSansLocation(raw, target)) != ERR)
       {
       raw[index]->Average = (void (*) (...))Sum;
 

@@ -121,9 +121,9 @@ int HighRateLoop(long starttime, long endtime)
     PhaseShift(LRCB, LRINDEX, ps_data);
     }
 
- timeindex[0] = raw[SearchTable((char **)raw, nraw, "HOUR")]->SRstart;
- timeindex[1] = raw[SearchTable((char **)raw, nraw, "MINUTE")]->SRstart;
- timeindex[2] = raw[SearchTable((char **)raw, nraw, "SECOND")]->SRstart;
+ timeindex[0] = raw[SearchTable(raw, "HOUR")]->SRstart;
+ timeindex[1] = raw[SearchTable(raw, "MINUTE")]->SRstart;
+ timeindex[2] = raw[SearchTable(raw, "SECOND")]->SRstart;
 
   /* This is the main control loop.
    */

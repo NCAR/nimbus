@@ -128,7 +128,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
       {
       target = strtok(NULL, " \t");
 
-      if ((indx = SearchTable((char **)sdi, nsdi, target)) == ERR)
+      if ((indx = SearchTable(sdi, target)) == ERR)
         {
         char	tmp[64];
 
@@ -174,7 +174,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
       {
       target = strtok(NULL, " \t");
 
-      if ((indx = SearchTable((char **)raw, nraw, target)) == ERR)
+      if ((indx = SearchTable(raw, target)) == ERR)
         {
         char	tmp[64];
 
@@ -220,7 +220,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
       {
       target = strtok(NULL, " \t");
 
-      if ((indx = SearchTable((char **)derived, nderive, target)) == ERR)
+      if ((indx = SearchTable(derived, target)) == ERR)
         {
         char	tmp[64];
 
@@ -329,7 +329,7 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
   fprintf(fp, "ProjNum=%s\n", ProjectNumber);
   fprintf(fp, "PRate=%d\n", ProcessingRate);
 
-  for (i = 0; i < nsdi; ++i)
+  for (i = 0; i < sdi.size(); ++i)
     if (sdi[i]->Dirty)
       {
       fprintf(fp, "SDI=%s O=%d ", sdi[i]->name, sdi[i]->Output);
@@ -349,7 +349,7 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
       fprintf(fp, "\n");
       }
 
-  for (i = 0; i < nraw; ++i)
+  for (i = 0; i < raw.size(); ++i)
     if (raw[i]->Dirty)
       {
       fprintf(fp, "RAW=%s O=%d ", raw[i]->name, raw[i]->Output);
@@ -369,7 +369,7 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
       fprintf(fp, "\n");
       }
 
-  for (i = 0; i < nderive; ++i)
+  for (i = 0; i < derived.size(); ++i)
     if (derived[i]->Dirty)
       {
       fprintf(fp, "DERIVED=%s O=%d DQ=%s OR=%d nDEP=%d",

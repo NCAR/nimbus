@@ -14,16 +14,14 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #include <cstdlib>
 #include <string>
 #include <cstring>
+#include <vector>
 #include <sys/types.h>
 #include "constants.h"
 
 
 #define NAMELEN		NAMLEN
 
-#define MAX_SDI		400
-#define MAX_RAW		400
-#define MAX_DERIVE	400
-
+#define MAX_VARIABLES	2000
 #define MAX_DEFAULTS	256
 
 
@@ -76,25 +74,46 @@ typedef struct
  * 3 variable catagories we have, Analog/Digital, Block probes, and Derived.
  */
 
-/* Struct for SDI raw variables
+/* Base for the rest.  Refactored Jan/05.
  */
-typedef struct
+class var_base
 	{
+	public:
+
+	var_base(const char s[]);
+
 	char	name[NAMELEN];	/* Variable name			*/
 	int	varid;		/* NetCDF variable ID			*/
 	int	LRstart;	/* Start indx into AveragedData		*/
 	int	SRstart;	/* Start indx into SampledData		*/
 	int	HRstart;	/* Start indx into HighRateData		*/
+
 	int	SampleRate;	/* Sampled rate				*/
+	int	Length;		/* Vector length (used by PMS1D)	*/
+
+	bool	DependedUpon;	/* Is this variable depended upon?	*/
+
 	MOD	*Modulo;	/* Pointer for modulo data, if any	*/
+
 	bool	Dirty;		/* Was variable modified by user	*/
 	bool	Output;		/* Is this going into the output file?	*/
 	bool	Broadcast;	/* Real-time, ether broadcast?		*/
-	bool	DependedUpon;	/* Is this variable depended upon?	*/
 	int	OutputRate;
+	char	*DataQuality;	/* Prelim, QC'd, Bad, etc		*/
+	};
+
+
+/* Struct for SDI analog variables, this variables only require polynomial cals
+ * to be processed.
+ */
+class SDITBL : public var_base
+	{
+	public:
+
+	SDITBL(const char s[]);
+
 	int	StaticLag;	/* Static lag in ms			*/
 	NR_TYPE	SpikeSlope;	/* Slope for spike detection		*/
-	char	*DataQuality;	/* Prelim, QC'd, Bad, etc		*/
 
 	long	ADSstart;	/* Start offset of variable in block	*/
 	long	ADSoffset;	/* Offset between samples		*/
@@ -107,32 +126,23 @@ typedef struct
 	long	order;
 	float	cof[MAX_COF];
         SYNTHTYPE synthtype; 
-	} SDITBL;
+	} ;
 
 
-/* Struct for raw variables (mostly block probes)
+/* Struct for raw variables (mostly block probes), some analog's come down
+ * here for specialized processing (i.e. not polynomial cals).
  */
-typedef struct
+class RAWTBL : public var_base
 	{
-	char	name[NAMELEN];
-	int	varid;		/* NetCDF variable ID			*/
-	int	LRstart;	/* Start indx into AveragedData		*/
-	int	SRstart;	/* Start indx into SampledData		*/
-	int	HRstart;	/* Start indx into HighRateData		*/
-	int	SampleRate;
-	MOD	*Modulo;	/* !NULL means 0 - 360 or -180 - 180	*/
-	bool	Dirty;		/* Was variable modified by user	*/
-	bool	Output;		/* Is this going into the output file?	*/
-	bool	Broadcast;	/* Real-time, ether broadcast?		*/
-	bool	DependedUpon;	/* Is this variable depended upon?	*/
-	int	OutputRate;
-	int	Length;		/* Vector length (used by PMS1D)	*/
+	public:
+
+	RAWTBL(const char s[]);
+
 	int	StaticLag;	/* Static lag in ms to shift data	*/
 	NR_TYPE	SpikeSlope;	/* Slope for spike detection		*/
 	char	SerialNumber[8];	/* Probe Serial Number		*/
 	int	ProbeCount;	/* For mulitple identicle probes	*/
 	int	ProbeType;	/* Is this a probe & which one		*/
-	char	*DataQuality;	/* Prelim, QC'd, Bad, etc		*/
 
 	long	ADSstart;
 	long	ADSoffset;	/* Offset between samples		*/
@@ -148,48 +158,44 @@ typedef struct
 	long	order;		/* (PSFD, HGM, HGME).			*/
 	float	cof[MAX_COF];
         SYNTHTYPE synthtype;
-	} RAWTBL;
+	} ;
 
 
 /* Struct for derived variables
  */
-typedef struct
+class DERTBL : public var_base
 	{
-	char	name[NAMELEN];
-	int	varid;		/* NetCDF variable ID			*/
-	int	LRstart;	/* Start indx into AveragedData		*/
-	int	HRstart;	/* Start indx into HighRateData		*/
-	MOD	*Modulo;	/* !NULL means 0 - 360 or -180 - 180	*/
-	bool	Dirty;		/* Was variable modified by user	*/
-	bool	Output;		/* Is this going into the output file?	*/
-	bool	Broadcast;	/* Real-time, ether broadcast?		*/
-	bool	DependedUpon;	/* Is this variable depended upon?	*/
-	int	OutputRate;
-	int	Length;		/* Vector length			*/
+	public:
+
+	DERTBL(const char s[]);
+
 	char	SerialNumber[8];	/* Probe Serial Number		*/
 	int	ProbeType;	/* Is this a probe & which one		*/
 	int	ProbeCount;	/* For mulitple identicle probes	*/
 				/* Used by AMLIB			*/
 
 	int	Default_HR_OR;	/* Default OutputRate for HighRate run	*/
-	char	*DataQuality;	/* Prelim, QC'd, Bad, etc		*/
 
 	void	(*Initializer)(void *);	/* amlib "constructor"		*/
-	void	(*compute)(void *);	/* Function to compute data		*/
+	void	(*compute)(void *);	/* Function to compute data	*/
 
 	int	ndep;				/* # dependancies	*/
 	char	depend[MAXDEPEND][NAMELEN];	/* Depandancies		*/
 	int	depend_LRindex[MAXDEPEND];
 	int	depend_HRindex[MAXDEPEND];
-	} DERTBL;
+	} ;
 
 
 /* Global Variables	*/
 extern char	*ProjectDirectory, *ProjectNumber, *ProjectName, FlightNumber[];
-extern SDITBL	*sdi[];
-extern RAWTBL	*raw[];
-extern DERTBL	*derived[], *ComputeOrder[];
+
+extern std::vector<SDITBL *> sdi;
+extern std::vector<RAWTBL *> raw;
+extern std::vector<DERTBL *> derived;
+extern std::vector<DERTBL *> ComputeOrder;
+
 extern int	nderive, nsdi, nraw;
+
 extern bool	LoadProductionSetupFile, ProductionRun, PauseFlag, QCenabled,
 		RawData,SynthData;
 extern int	ProcessingRate, FlightNumberInt, PauseWhatToDo, Mode;
@@ -206,12 +212,21 @@ extern bool SDP;
 FILE	*OpenProjectFile(char filename[], char mode[], int action);
 
 int	AccessProjectFile(char filename[], char mode[]),
-	SearchTable(char *table[], int ntable, char target[]),
-	SearchTableSansLocation(char *table[], int ntable, char target[]),
-	LinearSearchTable(char **list, int n, char target[]),
 	ReadTextFile(char filename[], char **list),
 	CheckForTimeGap(struct Hdr_blk *ADShdr, int initMode),
 	AccessProjectFile(char filename[], char mode[]);
+/*
+int	SearchTable(std::vector<var_base *> &table, const char target[]),
+	SearchTableSansLocation(std::vector<var_base *> &table, const char target[]),
+*/
+int	SearchTable(std::vector<SDITBL *> &table, const char target[]),
+	SearchTable(std::vector<RAWTBL *> &table, const char target[]),
+	SearchTable(std::vector<DERTBL *> &table, const char target[]),
+	SearchTableSansLocation(std::vector<SDITBL *> &table, const char target[]),
+	SearchTableSansLocation(std::vector<RAWTBL *> &table, const char target[]),
+	SearchTableSansLocation(std::vector<DERTBL *> &table, const char target[]),
+	SearchTable(std::vector<DERTBL *> &list, int n, const char target[]),
+	SearchTable(std::vector<DERTBL *> &list, int start, int end, const char target[]);
 
 unsigned long	GetProbeType(char name[]);
 

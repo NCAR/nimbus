@@ -28,7 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 /* -------------------------------------------------------------------- */
 void ReadStaticLags()
 {
-  int	i, index;
+  int	index;
   int	lag;
   char	*lags[512], target[NAMELEN];
 
@@ -37,7 +37,7 @@ void ReadStaticLags()
 
   ReadTextFile(LAGS, lags);
 
-  for (i = 0; lags[i]; ++i)
+  for (int i = 0; lags[i]; ++i)
     {
     sscanf(lags[i], "%s %d", target, &lag);
 
@@ -49,10 +49,10 @@ void ReadStaticLags()
       continue;
       }
 
-    if ((index = SearchTable((char **)sdi, nsdi, target)) != ERR)
+    if ((index = SearchTable(sdi, target)) != ERR)
       sdi[index]->StaticLag = lag;
     else
-    if ((index = SearchTable((char **)raw, nraw, target)) != ERR)
+    if ((index = SearchTable(raw, target)) != ERR)
       raw[index]->StaticLag = lag;
     else
       {

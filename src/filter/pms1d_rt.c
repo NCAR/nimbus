@@ -77,11 +77,11 @@ void SetUpPMS1D_SHMEM()
 
     strcpy(target, "A");
     strcat(target, probe_name[i]);
-    indx = SearchTable((char **)raw, nraw, target);
+    indx = SearchTable(raw, target);
     actual[i] = raw[indx];
 
     target[0] = 'C';
-    indx = SearchTable((char **)derived, nderive, target);
+    indx = SearchTable(derived, target);
     conc[i] = derived[indx];
 
     PMS1Dprobe[i].type	= probe_type[i];
@@ -93,7 +93,7 @@ void SetUpPMS1D_SHMEM()
       strcat(target, strchr((char *)PMS1Dprobe[i].name, '_'));
       strcpy((char *)PMS1Dprobe[i].rangeName, target);
 
-/*    range[i] = raw[SearchTable((char **)raw, nraw, target)]; */
+/*    range[i] = raw[SearchTable(raw, target)]; */
       }
     else
       range[i] = NULL;

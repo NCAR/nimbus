@@ -84,9 +84,7 @@ void ReadDefaultsFile()
 /* -------------------------------------------------------------------- */
 NR_TYPE *GetDefaultsValue(char target[], char var[])
 {
-  int i;
- 
-  for (i = 0; i < nDefaults; ++i)
+  for (int i = 0; i < nDefaults; ++i)
     {
     if (strcmp(Defaults[i]->Name, target) == 0)
       {

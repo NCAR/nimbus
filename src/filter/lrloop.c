@@ -123,9 +123,9 @@ printf("cntr=%d\n", cntr);
     }
  
 /* should this be in inject constructor? */
- timeindex[0] = raw[SearchTable((char **)raw, nraw, "HOUR")]->SRstart;
- timeindex[1] = raw[SearchTable((char **)raw, nraw, "MINUTE")]->SRstart;
- timeindex[2] = raw[SearchTable((char **)raw, nraw, "SECOND")]->SRstart;
+ timeindex[0] = raw[SearchTable(raw, "HOUR")]->SRstart;
+ timeindex[1] = raw[SearchTable(raw, "MINUTE")]->SRstart;
+ timeindex[2] = raw[SearchTable(raw, "SECOND")]->SRstart;
 
   /* This is the main loop.
    */
@@ -159,7 +159,7 @@ printf("cntr=%d\n", cntr);
 
 //printf(" %02d:%02d:%02d cd: %f\n",
 //  ntohs(h->hour), ntohs(h->minute), ntohs(h->second),
-//  AveragedData[derived[SearchTable((char**)derived, nderive, "TTX")]->LRstart]);
+//  AveragedData[derived[SearchTable(derived, "TTX")]->LRstart]);
 
     WriteNetCDF();
     UpdateTime(SampledData);

@@ -35,12 +35,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2001
 #include "decode.h"
 #include "circbuff.h"
 
-#define MAX_VARIABLES	128
+static std::vector<SDITBL *> sdi_spike;
+static std::vector<RAWTBL *> raw_spike;
+static std::vector<int>	nSpikesSDI, nSpikesRAW;
 
-static SDITBL	*sdi_spike[MAX_VARIABLES];
-static RAWTBL	*raw_spike[MAX_VARIABLES];
-static int	nsdi_spike = 0, nraw_spike = 0;
-static int	nSpikesSDI[MAX_VARIABLES], nSpikesRAW[MAX_VARIABLES];
 static char	*name;
 
 static void checkVariable(int, int, NR_TYPE, int *);
@@ -52,30 +50,16 @@ static NR_TYPE polyinterp(NR_TYPE xa[], NR_TYPE ya[], int n, int x);
 /* -------------------------------------------------------------------- */
 void AddVariableToSDIdespikeList(SDITBL *varp)
 {
-  if (nsdi_spike >= MAX_VARIABLES)
-    {
-    LogMessage("despike.c: MAX_VARIABLES exceeded.\n");
-    return;
-    }
-
-  sdi_spike[nsdi_spike] = varp;
-  nSpikesSDI[nsdi_spike] = 0;
-  ++nsdi_spike;
+  sdi_spike.push_back(varp);
+  nSpikesSDI.push_back(0);
 
 }
 
 /* -------------------------------------------------------------------- */
 void AddVariableToRAWdespikeList(RAWTBL *varp)
 {
-  if (nraw_spike >= MAX_VARIABLES)
-    {
-    LogMessage("despike.c: MAX_VARIABLES exceeded.\n");
-    return;
-    }
-
-  raw_spike[nraw_spike] = varp;
-  nSpikesRAW[nraw_spike] = 0;
-  ++nraw_spike;
+  raw_spike.push_back(varp);
+  nSpikesRAW.push_back(0);
 
 }
 
@@ -84,7 +68,7 @@ void LogDespikeInfo()
 {
   int	i;
 
-  for (i = 0; i < nsdi_spike; ++i)
+  for (i = 0; i < sdi_spike.size(); ++i)
     {
     if (nSpikesSDI[i] > 0)
       {
@@ -95,7 +79,7 @@ void LogDespikeInfo()
       }
     }
 
-  for (i = 0; i < nraw_spike; ++i)
+  for (i = 0; i < raw_spike.size(); ++i)
     {
     if (nSpikesRAW[i] > 0)
       {
@@ -117,7 +101,7 @@ void DespikeData(CircularBuffer *LRCB, int index)
 
   /* I don't expect to be doing despiking often, so let's check.
   */
-  if ((nsdi_spike == 0 && nraw_spike == 0) || RawData)
+  if ((sdi_spike.size() == 0 && raw_spike.size() == 0) || RawData)
     return;
 
   prev2_rec	= (NR_TYPE *)GetBuffer(LRCB, index-2);
@@ -126,7 +110,7 @@ void DespikeData(CircularBuffer *LRCB, int index)
   next_rec	= (NR_TYPE *)GetBuffer(LRCB, index+1);
   next2_rec	= (NR_TYPE *)GetBuffer(LRCB, index+2);
 
-  for (i = 0; i < nsdi_spike; ++i)
+  for (i = 0; i < sdi_spike.size(); ++i)
     {
     name = sdi_spike[i]->name;
 
@@ -147,7 +131,7 @@ void DespikeData(CircularBuffer *LRCB, int index)
     }
 
 
-  for (i = 0; i < nraw_spike; ++i)
+  for (i = 0; i < raw_spike.size(); ++i)
     {
     name = raw_spike[i]->name;
 

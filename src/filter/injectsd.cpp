@@ -94,8 +94,8 @@ int SyntheticData::InitSynth(char* tt)
     for(int i=0;i<varcount;i++)
       {
        
-	indexs=SearchTable((char **)sdi,nsdi,(char *)varnames[i].name.c_str());    //find the variables location in the appropriate table      
-	indexr=SearchTable((char **)raw,nraw,(char *)varnames[i].name.c_str());
+	indexs=SearchTable(sdi,varnames[i].name.c_str());    //find the variables location in the appropriate table      
+	indexr=SearchTable(raw,varnames[i].name.c_str());
 
 
 	if(!((indexs==-1)||(indexs==ERR)))
@@ -295,7 +295,7 @@ void SyntheticData:: registervar(struct v ttemp)
 
   if(ttemp.type=='s')
     {
-       indexs=SearchTable((char **)sdi,nsdi,(char *)ttemp.name.c_str()); 
+       indexs=SearchTable(sdi,ttemp.name.c_str()); 
        sdi[indexs]->DataQuality="synthetic";
        sdi[indexs]->Dirty=true;
        FillListWidget();
@@ -306,7 +306,7 @@ void SyntheticData:: registervar(struct v ttemp)
     }
   if(ttemp.type=='r')
     {
-      indexr=SearchTable((char **)raw,nraw,(char *)ttemp.name.c_str()); 
+      indexr=SearchTable(raw,ttemp.name.c_str()); 
       raw[indexr]->DataQuality="synthetic";
       raw[indexr]->Dirty=true;
       FillListWidget();
@@ -1455,7 +1455,7 @@ void SyntheticData::registerfunc(struct v ttemp)
 
   if(ttemp.type=='s')
     { 
-       indexs=SearchTable((char **)sdi,nsdi,(char *)ttemp.name.c_str()); 
+       indexs=SearchTable(sdi,ttemp.name.c_str()); 
        sdi[indexs]->DataQuality="synthetic";
        sdi[indexs]->synthtype=sy_function;
        st.push_back(sdi[indexs]);
@@ -1466,7 +1466,7 @@ void SyntheticData::registerfunc(struct v ttemp)
   if(ttemp.type=='r')
     {
     
-      indexr=SearchTable((char **)raw,nraw,(char *)ttemp.name.c_str());
+      indexr=SearchTable(raw,ttemp.name.c_str());
       raw[indexr]->DataQuality="synthetic";
       raw[indexr]->synthtype=sy_function;
       rt.push_back(raw[indexr]);

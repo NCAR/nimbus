@@ -57,8 +57,8 @@ void xlpsfd_ADS2(RAWTBL *varp, void *input, NR_TYPE *output)
     {
     int	indx1, indx2;
 
-    indx1 = SearchTable((char **)sdi, nsdi, "PSFD1");
-    indx2 = SearchTable((char **)sdi, nsdi, "PSFD2");
+    indx1 = SearchTable(sdi, "PSFD1");
+    indx2 = SearchTable(sdi, "PSFD2");
 
     if ((int)psfd1 == ERR || (int)psfd2 == ERR)
       {

@@ -31,62 +31,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int SearchTable(char *table[], int ntable, char target[])
-{
-  int	beg, mid, end, rc;
-
-  if (ntable == 0)
-    return(ERR);
-
-  beg = 0;
-  end = ntable - 1;
-
-  do
-    {
-    mid = (end + beg) >> 1;
-
-    if ((rc = strcmp(target, table[mid])) == 0)
-      return(mid);
-
-    if (rc < 0)
-      end = mid - 1;
-    else
-      beg = mid + 1;
-    }
-  while (beg <= end);
-
-  return(ERR);
-
-}	/* END SEARCHTABLE */
-
-/* -------------------------------------------------------------------- */
-int SearchTableSansLocation(char *table[], int ntable, char target[])
-{
-  int	i, rc;
-  char	*p, c;
-
-  for (i = 0; i < ntable; ++i)
-    {
-    if ( (p = strchr(table[i], '_')) )
-      {
-      c = *p;
-      *p = '\0';
-      }
-
-    rc = strcmp(target, table[i]);
-
-    if (p)
-      *p = c;
-
-    if (rc == 0)
-      return(i);
-    }
-
-  return(ERR);
-
-}	/* END SEARCHTABLESANSLOCATION */
-
-/* -------------------------------------------------------------------- */
 char *SearchList(char **list, char target[])
 {
   int	len = strlen(target);
@@ -103,16 +47,142 @@ char *SearchList(char **list, char target[])
 }	/* END SEARCHLIST */
 
 /* -------------------------------------------------------------------- */
-int LinearSearchTable(char **list, int n, char target[])
+int SearchTableSansLocation(std::vector<SDITBL *> &table, const char target[])
 {
-  int	i;
+  int	rc;
 
-  for (i = 0; i < n; ++i)
-    if (strcmp(list[i], target) == 0)
+  for (int i = 0; i < table.size(); ++i)
+    {
+    char	*p, c;
+
+    if ( (p = strchr(table[i]->name, '_')) )
+      {
+      c = *p;
+      *p = '\0';
+      }
+
+    rc = strcmp(target, table[i]->name);
+
+    if (p)
+      *p = c;
+
+    if (rc == 0)
+      return(i);
+    }
+
+  return(ERR);
+
+}	/* END SEARCHTABLESANSLOCATION */
+
+/* -------------------------------------------------------------------- */
+int SearchTableSansLocation(std::vector<RAWTBL *> &table, const char target[])
+{
+  int	rc;
+
+  for (int i = 0; i < table.size(); ++i)
+    {
+    char	*p, c;
+
+    if ( (p = strchr(table[i]->name, '_')) )
+      {
+      c = *p;
+      *p = '\0';
+      }
+
+    rc = strcmp(target, table[i]->name);
+
+    if (p)
+      *p = c;
+
+    if (rc == 0)
+      return(i);
+    }
+
+  return(ERR);
+
+}	/* END SEARCHTABLESANSLOCATION */
+
+/* -------------------------------------------------------------------- */
+int SearchTableSansLocation(std::vector<DERTBL *> &table, const char target[])
+{
+  int	rc;
+
+  for (int i = 0; i < table.size(); ++i)
+    {
+    char	*p, c;
+
+    if ( (p = strchr(table[i]->name, '_')) )
+      {
+      c = *p;
+      *p = '\0';
+      }
+
+    rc = strcmp(target, table[i]->name);
+
+    if (p)
+      *p = c;
+
+    if (rc == 0)
+      return(i);
+    }
+
+  return(ERR);
+
+}	/* END SEARCHTABLESANSLOCATION */
+
+/* -------------------------------------------------------------------- */
+int SearchTable(std::vector<SDITBL *> &list, const char target[])
+{
+  for (int i = 0; i < list.size(); ++i)
+    if (strcmp(list[i]->name, target) == 0)
       return(i);
 
   return(ERR);
 
-}	/* END LINEARSEARCHVATBL */
+}	/* END SEARCHTABLE */
+
+/* -------------------------------------------------------------------- */
+int SearchTable(std::vector<RAWTBL *> &list, const char target[])
+{
+  for (int i = 0; i < list.size(); ++i)
+    if (strcmp(list[i]->name, target) == 0)
+      return(i);
+
+  return(ERR);
+
+}	/* END SEARCHTABLE */
+
+/* -------------------------------------------------------------------- */
+int SearchTable(std::vector<DERTBL *> &list, const char target[])
+{
+  for (int i = 0; i < list.size(); ++i)
+    if (strcmp(list[i]->name, target) == 0)
+      return(i);
+
+  return(ERR);
+
+}	/* END SEARCHTABLE */
+
+/* -------------------------------------------------------------------- */
+int SearchTable(std::vector<DERTBL *> &list, int n, const char target[])
+{
+  for (int i = 0; i < n; ++i)
+    if (strcmp(list[i]->name, target) == 0)
+      return(i);
+
+  return(ERR);
+
+}	/* END SEARCHTABLE */
+
+/* -------------------------------------------------------------------- */
+int SearchTable(std::vector<DERTBL *> &list, int s, int e, const char target[])
+{
+  for (int i = s; i < e; ++i)
+    if (strcmp(list[i]->name, target) == 0)
+      return(i);
+
+  return(ERR);
+
+}	/* END SEARCHTABLE */
 
 /* END SEARCH.C */
