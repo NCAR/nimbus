@@ -370,14 +370,17 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   if (ProductionRun)		/* Do it again in case Flight# changed	*/
     setOutputFileName();
 
-  InitAircraftDependencies();
 
-  /* RunAMLIB inits before creating netCDF to setup defaults into
+  /* RunAMLIBinits before creating netCDF to setup defaults into
    * netCDF attributes.
    */
   RunAMLIBinitializers();
   CreateNetCDF(OutputFileName);
   InitAsyncModule(OutputFileName);
+
+  /* This needs to be after CreateNetCDF, so that FlightDate is initialized.
+   */
+  InitAircraftDependencies();
 
   {
   bool	firstSpike = true;
