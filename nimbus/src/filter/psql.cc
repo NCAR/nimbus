@@ -17,6 +17,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2003-2004
 #include "vardb.h"
 
 #include <ctype.h>
+#include <cmath>
 
 
 void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[]);
