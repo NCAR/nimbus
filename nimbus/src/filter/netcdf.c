@@ -15,9 +15,11 @@ ENTRY POINTS:	CreateNetCDF()
 		BlankOutBadData()
 
 STATIC FNS:	writeBlank()
+		writeTimeUnits()
 		clearDependedByList()
 		markDependedByList()
 		printDependedByList()
+		addCommonVariableAttributes()
 
 DESCRIPTION:	This file has the routines necessary to Create and write
 		data for distribution of NCAR/RAF aircraft data in netCDF
@@ -31,7 +33,7 @@ REFERENCES:	pms1d.c
 
 REFERENCED BY:	LowRateLoop(), HighRateLoop()
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2000
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
 */
 
@@ -81,11 +83,11 @@ extern NR_TYPE	*SampledData, *AveragedData, *HighRateData;
 extern FILE	*LogFile;
 
 int	FlightDate[3];		// HACK: for amlib
-char	dateProcessed[32];	// For export to psql.c
+char	dateProcessed[64];	// For export to psql.c
 
 
 static int	writeBlank(int varid, long start[], long count[], int OutputRate);
-static void	markDependedByList(char target[]);
+static void	markDependedByList(char target[]), writeTimeUnits();
 static void	clearDependedByList(), printDependedByList();
 static void	addCommonVariableAttributes(char name[], int varid);
 
@@ -98,9 +100,7 @@ void SetBaseTime(struct Hdr_blk *hdr)
 {
   struct tm	*gt;
   char		s1[10], s2[10];
-
-  static bool	firstTime = true;
-  static time_t	BaseTime;
+  time_t	BaseTime;
 
   StartFlight.tm_hour	= ntohs(hdr->hour);
   StartFlight.tm_min	= ntohs(hdr->minute);
@@ -115,55 +115,11 @@ void SetBaseTime(struct Hdr_blk *hdr)
     else
       StartFlight.tm_sec += 14;
 
+  BaseTime = mktime(&StartFlight) - timezone;
+  ncvarput1(fd, baseTimeID, NULL, (void *)&BaseTime);
 
-  if (firstTime)
-    {
-    firstTime = false;
-
-    BaseTime = mktime(&StartFlight);
-    gt = gmtime(&BaseTime);
-
-    sprintf(s1, "%04d%02d%02d", StartFlight.tm_year + 1900,
-		StartFlight.tm_mon, StartFlight.tm_mday);
-
-    sprintf(s2, "%04d%02d%02d", gt->tm_year + 1900, gt->tm_mon, gt->tm_mday);
-
-    if (strcmp(s2, s1) > 0)
-      gt->tm_hour += 24;
-    else
-      if (strcmp(s2, s1) < 0)
-        gt->tm_hour -= 24;
-
-    StartFlight.tm_hour += StartFlight.tm_hour - gt->tm_hour;
-
-    BaseTime = mktime(&StartFlight);
-    ncvarput1(fd, baseTimeID, NULL, (void *)&BaseTime);
-if (BaseTime < 0)
-  fprintf(stderr, "\nWARNING:  >>>>> base_time = %d <<<<<\n\n", BaseTime);
-    }
-  else
-    {
-    time_t	NewTime;
-
-    NewTime = mktime(&StartFlight);
-    gt = gmtime(&NewTime);
-
-    sprintf(s1, "%04d%02d%02d", StartFlight.tm_year + 1900,
-            StartFlight.tm_mon, StartFlight.tm_mday);
-
-    sprintf(s2, "%04d%02d%02d", gt->tm_year + 1900, gt->tm_mon, gt->tm_mday);
-
-    if (strcmp(s2, s1) > 0)
-      gt->tm_hour += 24;
-    else
-      if (strcmp(s2, s1) < 0)
-        gt->tm_hour -= 24;
-
-    StartFlight.tm_hour += StartFlight.tm_hour - gt->tm_hour;
-
-    NewTime = mktime(&StartFlight);
-    TimeOffset = NewTime - BaseTime;
-    }
+  if (BaseTime <= 0)
+    fprintf(stderr, "\nWARNING:  >>>>> base_time = %d <<<<<\n\n", BaseTime);
 
 }	/* END SETBASETIME */
 
@@ -200,9 +156,9 @@ void CreateNetCDF(char fileName[])
   LowRateDim	= ncdimdef(fd, "sps1", 1);
 
   Dim2Hz = Dim4Hz = Dim5Hz = Dim10Hz = HighRateDim = Dim50Hz = Dim250Hz =
-  Dim1000Hz = AsyncDim = Vector16Dim = Vector32Dim = Vector64Dim = Vector256Dim =
-  Vector10Dim = Vector20Dim = Vector30Dim = Vector40Dim = Vector6Dim = Dim100Hz =
-	ERR;
+  Dim1000Hz = AsyncDim = Vector16Dim = Vector32Dim = Vector64Dim =
+  Vector256Dim = Vector10Dim = Vector20Dim = Vector30Dim = Vector40Dim =
+  Vector6Dim = Dim100Hz = ERR;
 
 
   /* Global Attributes.
@@ -238,8 +194,8 @@ void CreateNetCDF(char fileName[])
   struct tm	tm;
 
   t = time(0);
-  tm = *gmtime(&t);
-  strftime(dateProcessed, 128, "%h %d %R UTC %Y", &tm);
+  tm = *localtime(&t);
+  strftime(dateProcessed, 64, "%F %T %z", &tm);
   ncattput(fd, NC_GLOBAL, "DateProcessed", NC_CHAR,
 	  strlen(dateProcessed)+1, (void *)dateProcessed);
 
@@ -281,6 +237,9 @@ void CreateNetCDF(char fileName[])
   FlightDate[0] = StartFlight.tm_mon;  /* HACK: for amlib/xlate/time.c */
   FlightDate[1] = StartFlight.tm_mday;
   FlightDate[2] = StartFlight.tm_year;
+
+  StartFlight.tm_year -= 1900;
+  StartFlight.tm_mon -= 1;
 
   ncattput(fd, NC_GLOBAL, "FlightDate", NC_CHAR, strlen(buffer)+1, (void *)buffer);
 
@@ -326,14 +285,16 @@ void CreateNetCDF(char fileName[])
    * expecting these two variables to be first in the netCDF file.
    */
   baseTimeID = ncvardef(fd, "base_time", NC_LONG, 0, 0);
-  strcpy(buffer, "Seconds since Jan 1, 1970.");
+  strcpy(buffer, "seconds since 1970-01-01 00:00:00 +0000");
+  ncattput(fd, baseTimeID, "units", NC_CHAR, strlen(buffer)+1, buffer);
+  strcpy(buffer, "Seconds since Jan 1, 1970");
   ncattput(fd, baseTimeID, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
-  StartFlight.tm_year -= 1900;
-  StartFlight.tm_mon -= 1;
 
   timeOffsetID = ncvardef(fd, "time_offset", NC_FLOAT, 1, dims);
-  strcpy(buffer, "Seconds since base_time.");
+  writeTimeUnits();
+  strcpy(buffer, "Seconds since base_time");
   ncattput(fd, timeOffsetID, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
+
 
 
   /* SDI variables.
@@ -1038,6 +999,8 @@ void CloseNetCDF()
 
   int	len;
 
+  writeTimeUnits();
+
   FormatTimeSegmentsForOutputFile(buffer);
 
   if ((len = strlen(buffer) + 1) > DEFAULT_TI_LENGTH)
@@ -1305,7 +1268,6 @@ void BlankOutBadData()
 /* -------------------------------------------------------------------- */
 static int writeBlank(int varid, long start[], long count[], int OutputRate)
 {
-  int		i;
   long		nValues;
   NR_TYPE	*p;
 
@@ -1316,10 +1278,18 @@ static int writeBlank(int varid, long start[], long count[], int OutputRate)
   nValues = count[0] * count[1] * count[2];
   p = new NR_TYPE[nValues];
 
-  for (i = 0; i < nValues; ++i)
+  for (int i = 0; i < nValues; ++i)
     p[i] = MISSING_VALUE;
 
   return(ncvarput(fd, varid, start, count, (void *)p));
+
+}
+
+/* -------------------------------------------------------------------- */
+static void writeTimeUnits()
+{
+  strftime(buffer, 256, "seconds since %F %T +0000", &StartFlight);
+  ncattput(fd, timeOffsetID, "units", NC_CHAR, strlen(buffer)+1, buffer);
 
 }
 
