@@ -26,13 +26,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------
 */
 
-#include <math.h>
 #include "nimbus.h"
 #include "decode.h"
+#include <cmath>
 
-#define N	4
-#define DEGREE	(N-1)
-
+static const int N = 4;
 
 /* -------------------------------------------------------------------- */
 NR_TYPE PolyInterp(NR_TYPE yaxis[], int ms_gap, int ms_want)

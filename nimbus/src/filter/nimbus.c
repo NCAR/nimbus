@@ -10,15 +10,7 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	Xwin.c, init.c then enters XtAppMainLoop()
-
-REFERENCED BY:	user
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
 */
 
@@ -115,12 +107,14 @@ int main(int argc, char *argv[])
   signal(SIGUSR2, (void (*) (int))Quit);
 
   if (Interactive)
-    {
-    sprintf(buffer, "%s/*.ads", getenv("DATA_DIR"));
+  {
+    GetDataDirectory(buffer);
+
+    strcat(buffer, "*.ads");
     QueryFile("Enter ADS file name:", buffer, Proceed);
 
     XtAppMainLoop(context);
-    }
+  }
   else
     Proceed(NULL, NULL, NULL);
 
