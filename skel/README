@@ -1,0 +1,26 @@
+
+1)	All editing should be done in amlib.c, unless you are doing something
+	special.  There are 4 steps to complete which are labeled throughout
+	amlib.c (they are not in order).
+
+	If you need "one time" code to execute, the function Initialize() in
+	init.c is a good choice, this will be before the header has been read
+	from the input file.  If you need one time code executed after the
+	header has been read from the input file, you can put it at the bottom
+	of ReadInputFile() in netcdf.c.
+
+	When editing these files, keep in mind that I wrote this code with
+	tabstops set to 4 not 8.  Typing the command ":set ts=4" after
+	entering vi will work.  You may also edit the file '.exrc' in your
+	skel directory and put the command "set tabstop=4" into it.
+
+2)	type 'make'
+
+3)	To run it type, 'skel'
+
+4)	After you have debugged it, you may edit the Makefile, and change the
+	'-g' option to '-O' for faster performance.  After editing Makefile,
+	type:
+
+	make clean
+	make
