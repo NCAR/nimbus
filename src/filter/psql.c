@@ -220,6 +220,7 @@ printf("  done raw.\n");
     if (derived[i]->Length > 1)
     {
       nDims = 2;
+      dims[1] = derived[i]->Length;
       strcat(sql_str, " FLOAT[]");
     }
     else

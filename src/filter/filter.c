@@ -42,6 +42,8 @@ static NR_TYPE	*inputRec;
 
 static circBuffPtr	newCircBuff(int);
 
+static int	mrf_debug = false;
+
 static NR_TYPE	getBuff();
 static void	initCircBuff(), disposCircBuff(), putBuff(),
 		setTimeDelay(int, int *, int *), filterCounter(SDITBL *sp),
@@ -303,6 +305,7 @@ void Filter(CircularBuffer *PSCB)
 				rp->SampleRate, rp->SRstart, rp->HRstart);
         break;
       }
+
     }
 
 }	/* END FILTER */
@@ -748,7 +751,7 @@ static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output)
         {
         NR_TYPE	value;
         bool	low_value = false,
-        high_value = false;
+		high_value = false;
 
         for(i = 0; tap < thisMRF->filter->order; tap += thisMRF->L, i++)
           {
@@ -761,6 +764,8 @@ static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output)
             low_value = true;
           }
 
+        tap = thisMRF->coefPhase;
+
         if (low_value && high_value)
           {
           for (i = 0; tap < thisMRF->filter->order; tap += thisMRF->L, i++)
@@ -771,11 +776,19 @@ static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output)
             result += thisMRF->filter->aCoef[tap] * (double)value;
             }
           }
+        else
+          {
+          for(i = 0; tap < thisMRF->filter->order; tap += thisMRF->L, i++)
+            result += thisMRF->filter->aCoef[tap] *
+                    (double)getBuff(i, thisMRF->inBuff);
+          }
         }
       else
+        {
         for(i = 0; tap < thisMRF->filter->order; tap += thisMRF->L, i++)
           result += thisMRF->filter->aCoef[tap] *
                     (double)getBuff(i, thisMRF->inBuff);
+        }
 
       *output = result;
 

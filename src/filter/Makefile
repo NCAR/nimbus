@@ -79,7 +79,7 @@ $(NINC)decode.h: $(LOCAL_INC)header.h
 
 # ------------------------------------------------------------------------
 
-NIMBUS.H = $(NINC)nimbus.h $(NINC)gui.h $(NINC)version.h
+NIMBUS.H = $(NINC)nimbus.h $(NINC)gui.h $(NINC)version.h $(NINC)fbr.h
 $(NOBJ)nimbus.o: nimbus.c $(NIMBUS.H)
 	${CC} $(COFLAGS) $(DEFINES) nimbus.c -o $(NOBJ)nimbus.o
 
