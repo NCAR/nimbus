@@ -24,6 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2001-02
 */
 
 #include "nimbus.h"
+#include "decode.h"
 #include "amlib.h"
 
 static int	timeCounter = 0;
@@ -31,7 +32,7 @@ static float	temp, press;
 static RAWTBL	*ardma_varp;
 
 extern char	*ADSrecord;
-extern float	SampledData[];
+extern float	*SampledData;
 
 float	crdma_cnc[128];
 
