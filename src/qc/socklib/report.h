@@ -1,9 +1,9 @@
 #ifndef REPORT_H
 #define REPORT_H
 
-#include <stdio.h> 
-#include <stdlib.h> 
-#include <iostream.h> 
+#include <cstdio> 
+#include <cstdlib> 
+#include <iostream> 
 #include <unistd.h> 
 
 #include "queue.h"

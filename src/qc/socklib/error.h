@@ -1,9 +1,9 @@
 #ifndef ERROR_H
 #define ERROR_H
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <iostream.h>
+#include <cstdlib>
+#include <cstdio>
+#include <iostream>
 #include "sleep.h"
 #include "message.h"
 

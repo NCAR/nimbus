@@ -57,7 +57,7 @@ int Queue::add(Message *msg)
 	Q_element *temp;
 
 	if ((temp = (Q_element*) new Q_element) == 0)
-	{       cout << "New failed in message queueing" << endl;
+	{       std::cout << "New failed in message queueing" << std::endl;
 		return(0);
 	}
 
