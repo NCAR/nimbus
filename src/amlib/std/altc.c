@@ -45,7 +45,7 @@ static const int DELAY = 2; /*  delay before walking substituted data back to GP
 void sgaltc(DERTBL *varp)
 /*  Code for the Trimble TANS-III GPS  */
 {
-  NR_TYPE        altc, galt, alt;
+  NR_TYPE        altc = MISSING_VALUE, galt, alt;
   NR_TYPE        newalt, dalt;
   long           gstat, gmode;
   int            i;
@@ -198,7 +198,7 @@ void sgaltc(DERTBL *varp)
 void sggaltc(DERTBL *varp)
 /*  Code for the Garmin GPS  */
 {
-  NR_TYPE        altc, ggalt, alt;
+  NR_TYPE        altc = MISSING_VALUE, ggalt, alt;
   NR_TYPE        newalt, dalt;
   long           ggstat, ggnsat;
   int            i;

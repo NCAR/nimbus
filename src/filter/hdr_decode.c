@@ -49,54 +49,54 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2001
 
 
 typedef struct
-	{
-	char	*name;
-	int	type;	/* #defines used for switch's, in WINDS		*/
-	int	VecLen;	/* VectorLength					*/
-	int	pType;	/* probeType for 'ToggleProbe' menu, redundant	*/
-	int	cnt;	/* Total # of these probes present.		*/
-	} PMS;
+  {
+  char	*name;
+  int	type;	/* #defines used for switch's, in WINDS		*/
+  int	VecLen;	/* VectorLength					*/
+  int	pType;	/* probeType for 'ToggleProbe' menu, redundant	*/
+  int	cnt;	/* Total # of these probes present.		*/
+  } PMS;
 
 
 static PMS	pms1_probes[] =
-	{
-	FSSP_STR,	FSSP,	16,	PROBE_FSSP,	0,
-	ASAS_STR,	ASAS,	16,	PROBE_PCASP,	0,
-	F300_STR,	F300,	32,	PROBE_F300,	0,
-	X200_STR,	X200,	16,	PROBE_200X,	0,
-	Y200_STR,	Y200,	16,	PROBE_200Y,	0,
-	X260_STR,	X260,	64,	PROBE_260X,	0,
-	NULL,		0,	0,	0,		0
-	};
+  {
+  { FSSP_STR,	FSSP,	16,	PROBE_FSSP,	0 },
+  { ASAS_STR,	ASAS,	16,	PROBE_PCASP,	0 },
+  { F300_STR,	F300,	32,	PROBE_F300,	0 },
+  { X200_STR,	X200,	16,	PROBE_200X,	0 },
+  { Y200_STR,	Y200,	16,	PROBE_200Y,	0 },
+  { X260_STR,	X260,	64,	PROBE_260X,	0 },
+  { NULL,	0,	0,	0,		0 }
+  };
 
 static PMS	pms1v2_probes[] =
-	{
-	FSSP_STR,	FSSP,	16,	PROBE_FSSP,	0,
-	PCAS_STR,	ASAS,	16,	PROBE_PCASP,	0,
-	F300_STR,	F300,	32,	PROBE_F300,	0,
-	X200_STR,	X200,	16,	PROBE_200X,	0,
-	Y200_STR,	Y200,	16,	PROBE_200Y,	0,
-	X260_STR,	X260,	64,	PROBE_260X,	0,
-	MASP_STR,	MASP,	32,	PROBE_MASP,	0,
-	NULL,		0,	0,	0,		0
-	};
+  {
+  { FSSP_STR,	FSSP,	16,	PROBE_FSSP,	0 },
+  { PCAS_STR,	ASAS,	16,	PROBE_PCASP,	0 },
+  { F300_STR,	F300,	32,	PROBE_F300,	0 },
+  { X200_STR,	X200,	16,	PROBE_200X,	0 },
+  { Y200_STR,	Y200,	16,	PROBE_200Y,	0 },
+  { X260_STR,	X260,	64,	PROBE_260X,	0 },
+  { MASP_STR,	MASP,	32,	PROBE_MASP,	0 },
+  { NULL,	0,	0,	0,		0 }
+  };
 
 static PMS	pms1v3_probes[] =
-	{
-	SPP100_STR,	FSSP,	0,	PROBE_FSSP,	0,
-	SPP200_STR,	ASAS,	0,	PROBE_PCASP,	0,
-	SPP300_STR,	F300,	0,	PROBE_F300,	0,
-	NULL,		0,	0,	0,		0
-	};
+  {
+  { SPP100_STR,	FSSP,	0,	PROBE_FSSP,	0 },
+  { SPP200_STR,	ASAS,	0,	PROBE_PCASP,	0 },
+  { SPP300_STR,	F300,	0,	PROBE_F300,	0 },
+  { NULL,	0,	0,	0,		0 }
+  };
 
 static PMS	pms2d_probes[] =
-	{
-	P2D_C_STR,	0,	0,	PROBE_2DC,	0,
-	P2D_P_STR,	0,	0,	PROBE_2DP,	0,
-	P2D_G_STR,	0,	0,	PROBE_PMS2D,	0,
-	P2D_H_STR,	0,	0,	PROBE_HVPS,	0,
-	NULL,		0,	0,	0,		0
-	};
+  {
+  { P2D_C_STR,	0,	0,	PROBE_2DC,	0 },
+  { P2D_P_STR,	0,	0,	PROBE_2DP,	0 },
+  { P2D_G_STR,	0,	0,	PROBE_PMS2D,	0 },
+  { P2D_H_STR,	0,	0,	PROBE_HVPS,	0 },
+  { NULL,	0,	0,	0,		0 }
+  };
 
 
 static int	InertialSystemCount, GPScount, twoDcnt, NephCnt;

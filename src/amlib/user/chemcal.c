@@ -79,8 +79,8 @@ void kokInit(DERTBL *varp)
 
   if ((tmp = GetDefaultsValue("XO3F1T_CAL", varp->name)) == NULL)
   {
-	xo3f1t_cal = Xo3f1t_cal;
-    sprintf(buffer, "Values set to %f in AMLIB function kokInit.\n", xo3f1t_cal);
+    xo3f1t_cal = Xo3f1t_cal;
+    sprintf(buffer, "Values set to %f in AMLIB function kokInit.\n", xo3f1t_cal[0]);
     LogMessage(buffer);
   }
   else

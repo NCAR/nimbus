@@ -197,7 +197,7 @@ int CheckForTimeGap(struct Hdr_blk *ADShdr, int initMode)
     s = (prevTime - (h * 3600 + m * 60));
 
 
-    sprintf(buffer, "Time break of %d seconds ending @ %02d:%02d:%02d, filling in with MISSING_VALUE.\n",
+    sprintf(buffer, "Time break of %ld seconds ending @ %02d:%02d:%02d, filling in with MISSING_VALUE.\n",
 	newTime - prevTime - 1,
 	ntohs(ADShdr->hour), ntohs(ADShdr->minute), ntohs(ADShdr->second));
     LogMessage(buffer);
@@ -236,7 +236,7 @@ int CheckForTimeGap(struct Hdr_blk *ADShdr, int initMode)
    */
   if (newTime <= UserEtim[i] || UserEtim[i] == END_OF_TAPE)
     {
-    sprintf(buffer, "Break in time sequence of %d seconds, ", newTime-prevTime);
+    sprintf(buffer, "Break in time sequence of %ld seconds, ", newTime-prevTime);
     LogMessage(buffer);
 
     LogMessage("adding new time interval.\n");

@@ -266,7 +266,7 @@
 	"FREF",		NULL,		xlpms16_hskp7,	NULL,
 	"FRNG",		NULL,		xlfrange2,	NULL,
 	"FRNG_V3",	NULL,		xlfrange3,	NULL,
-	"FBMFR",	NULL,		NULL,		sfbmfr,	
+	"FBMFR",	NULL,		NULL,		sfbmfr,
 
 # 260x housekeeping
 	"P6RST",	NULL,		xlpms64_hskp0,	NULL,
@@ -855,7 +855,7 @@
 #
 #	Ozone
 #
-	"TEO3C",	NULL,		NULL,		steo3c,
+	"TEO3C",	(void(*)(void*))teo3cInit,	NULL,	steo3c,
 #
 #	Miscellaneous
 #

@@ -204,7 +204,7 @@ void CreateNetCDF(char fileName[])
 	  strlen(dateProcessed)+1, (void *)dateProcessed);
 
   if (LogFile)
-    fprintf(LogFile, "Processed on: %s\n", buffer);
+    fprintf(LogFile, "Processed on: %s\n", dateProcessed);
   }
 
   if (ProjectName)
@@ -235,6 +235,7 @@ void CreateNetCDF(char fileName[])
 
     sscanf(p, "%d/%d/%d", &StartFlight.tm_mon, &StartFlight.tm_mday, &StartFlight.tm_year);
     strcpy(buffer, p);
+
     GetTimeZone(&p);
   }
 
