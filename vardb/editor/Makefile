@@ -12,7 +12,7 @@ CFLAGS=		-g -O2 ${INCLUDES}
 #LIBS=		-lVarDB -lraf -lXm -lXt -lX11
 
 #Linux
-LIBS=		-L${JLOCAL}/lib -L/usr/X11R6/lib -lVarDB -lraf -lXm -lXt -lX11 -lXp -lXext
+LIBS=		-L../lib -L${JLOCAL}/lib -L/usr/X11R6/lib -lVarDB -lraf -lXm -lXt -lX11 -lXext
 
 SRCS=	vared.c initv.c Xwin.c ccb.c
 HDRS=	define.h vardb.h
