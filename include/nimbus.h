@@ -12,8 +12,8 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 
 #include <cstdio>
 #include <cstdlib>
-#include <string>
 #include <cstring>
+#include <string>
 #include <vector>
 #include <sys/types.h>
 #include "constants.h"
@@ -272,20 +272,23 @@ SearchTable(std::vector<T *> &list, int s, int e, const char target[])
 }
 
 
-unsigned long	GetProbeType(char name[]);
+unsigned long	GetProbeType(std::string&);
 
 char	*SearchList(char **list, char target[]),
-	*SearchDataQuality(char target[]),
-	**GetProbeList(void);
+	*SearchDataQuality(char target[]);
+
+std::vector<std::string> GetProbeList(void);
 
 void	SortTable(char **table, int beg, int end),
 	FreeTextFile(char **list),
 	Initialize(),
+	ResetProbeList(),
 	ProcessArgv(int argc, char **argv),
 	LogMessage(char msg[]),
-	AddProbeToList(char name[], int type),
+	AddProbeToList(char name[], unsigned long type),
 	SetBaseTime(struct Hdr_blk *hdr),
 	BlankOutBadData(),
+	GetDataDirectory(char buff[]),
         FlushXEvents();
 
 void	SaveDefaults(FILE *fp),

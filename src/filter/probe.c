@@ -17,60 +17,55 @@ REFERENCES:	none
 
 REFERENCED BY:	
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1995
+COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2005
 -------------------------------------------------------------------------
 */
 
 #include "nimbus.h"
 
-#define MAX_PROBES	32
+#include <map>
 
-static int	nProbes = 0;
-static char	*probeNames[MAX_PROBES];
-static int	probeTypes[MAX_PROBES];
+std::map<std::string, unsigned long> probeMap;
+
 
 /* -------------------------------------------------------------------- */
-void AddProbeToList(char name[], int type)
+void AddProbeToList(char name[], unsigned long type)
 {
-  if (nProbes >= MAX_PROBES)
-    {
-    fprintf(stderr, "Max probes exceeded, please call a programmer.\n");
-    return;
-    }
-
-  probeNames[nProbes] = new char[strlen(name)+1];
-  strcpy(probeNames[nProbes], name);
-  probeTypes[nProbes] = type;
-
-  probeNames[++nProbes] = NULL;
+  probeMap[name] = type;
 
 }	/* END ADDPROBETOLIST */
 
 /* -------------------------------------------------------------------- */
 void ResetProbeList()
 {
-  for (int i = 0; i < nProbes; ++i)
-    delete [] probeNames[i];
-
-  nProbes = 0;
+  probeMap.clear();
 
 }	/* END RESETPROBELIST */
 
 /* -------------------------------------------------------------------- */
-char **GetProbeList()
+std::vector<std::string> GetProbeList()
 {
-  return(probeNames);
+  std::vector<std::string> list;
+  std::map<std::string, unsigned long>::const_iterator it;
+
+  for (it = probeMap.begin(); it != probeMap.end(); ++it)
+    list.push_back(it->first);
+
+  return(list);
 
 }	/* END GETPROBELIST */
 
 /* -------------------------------------------------------------------- */
-unsigned long GetProbeType(char name[])
+unsigned long GetProbeType(std::string& name)
 {
-  for (int i = 0; i < nProbes; ++i)
-    if (strcmp(name, probeNames[i]) == 0)
-      return(probeTypes[i]);
+  std::map<std::string, unsigned long>::const_iterator it;
 
-  return(0);
+  it = probeMap.find(name);
+
+  if (it == probeMap.end())
+    return(0);
+  else
+    return(it->second);
 
 }	/* END GETPROBETYPE */
 
