@@ -201,7 +201,7 @@ static void PrintVariables()
         fprintf(OutputFile, "%02d:%02d:%02d",
               currentTime[0], currentTime[1], currentTime[2]);
 
-      if (prevVal+1!= val)
+      if (prevVal+1 != val)
         printf("Gap - %02d:%02d:%02d\n",
 		currentTime[0], currentTime[1],currentTime[2]);
       prevVal = val;

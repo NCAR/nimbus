@@ -73,6 +73,15 @@ int ReadInputFile(char fileName[])
   if ( recDim == -1 )
     recDim = ncdimid( InputFile, "time" );
 
+  if ( recDim == -1 )
+    recDim = ncdimid( InputFile, "Time" );
+
+  if (recDim == -1)
+    {
+    fprintf(stderr, "Can't locate 'record' dimension, fatal.\n");
+    exit(1);
+    }
+
   ncdiminq(InputFile, recDim, (char *)NULL, &nRecords);
 
 

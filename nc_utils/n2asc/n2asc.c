@@ -47,7 +47,7 @@ main(int argc, char *argv[])
 {
   Arg		args[8];
   Cardinal	n;
-printf("argc=%d\n", argc);
+
   n = 0;
   AppShell = XtAppInitialize(&context, APP_CLASS, NULL, 0, &argc, argv,
 			fallback_resources, NULL, 0);
