@@ -1372,6 +1372,10 @@ static void addCommonVariableAttributes(char name[], int varid)
   p = VarDB_GetCategoryName(name);
   ncattput(fd, varid, "Category", NC_CHAR, strlen(p)+1, p);
 
+  p = VarDB_GetStandardNameName(name);
+  if (p && strcmp(p, "None") != 0)
+    ncattput(fd, varid, "standard_name", NC_CHAR, strlen(p)+1, p);
+
   ncattput(fd, varid, "missing_value", NC_FLOAT, 1, &missing_val);
 
 }	/* END ADDCOMMONVARIABLEATTRIBUTES */
