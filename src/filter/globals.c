@@ -28,6 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "header.h"
 #include <injectsd.h>
 
+const NR_TYPE MISSING_VALUE = -32767;
 
 char	buffer[4096];		/* Generic, volatile string space	*/
 char	*ProjectDirectory, *ProjectNumber, *ProjectName, FlightNumber[12];

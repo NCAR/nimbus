@@ -189,6 +189,8 @@ class DERTBL : public var_base
 /* Global Variables	*/
 extern char	*ProjectDirectory, *ProjectNumber, *ProjectName, FlightNumber[];
 
+extern const NR_TYPE MISSING_VALUE;
+
 extern std::vector<SDITBL *> sdi;
 extern std::vector<RAWTBL *> raw;
 extern std::vector<DERTBL *> derived;
