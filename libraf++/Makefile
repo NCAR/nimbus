@@ -11,15 +11,15 @@ INCLUDES=	-I${I2D} -I/usr/X11R6/include
 #DEFINES=	-DSVR4
 CXXFLAGS=	-g -O2 ${INCLUDES} ${DEFINES}
 
-OBJS=	adsIO.o adsIOrt.o Application.o Canvas.o Cursor.o hdrAPI.o gettext.o\
-	ntohf.o PixMap.o PMSspex.o PostScript.o Printer.o Queue.o tapeIO.o\
-	TextWindow.o Time.o validate.o Window.o XFonts.o XPen.o XmError.o\
-	XmFile.o XmQuery.o XmWarn.o
+OBJS=	ACconfig.o adsIO.o adsIOrt.o Application.o Canvas.o Cursor.o\
+	hdrAPI.o gettext.o ntohf.o PixMap.o PMSspex.o PostScript.o\
+	Printer.o Queue.o tapeIO.o TextWindow.o Time.o validate.o\
+	Window.o XFonts.o XPen.o XmError.o XmFile.o XmQuery.o XmWarn.o
 
-SRCS=	adsIO.cc adsIOrt.cc Application.cc Canvas.cc Cursor.cc hdrAPI.cc\
-	gettext.cc ntohf.cc PixMap.cc PMSspex.cc PostScript.o Printer.cc\
-	Queue.cc tapeIO.cc TextWindow.o Time.cc validate.cc Window.cc\
-	XFonts.cc XPen.cc XmError.cc XmFile.cc XmQuery.cc XmWarn.cc
+SRCS=	ACconfig.cc adsIO.cc adsIOrt.cc Application.cc Canvas.cc Cursor.cc\
+	hdrAPI.cc gettext.cc ntohf.cc PixMap.cc PMSspex.cc PostScript.o\
+	Printer.cc Queue.cc tapeIO.cc TextWindow.o Time.cc validate.cc\
+	Window.cc XFonts.cc XPen.cc XmError.cc XmFile.cc XmQuery.cc XmWarn.cc
 
 all: ${OBJS}
 	rm -f lib${LIBNAME}.a
