@@ -42,7 +42,7 @@ static std::vector<size_t>   nSpikesSDI, nSpikesRAW;
 static void checkVariable(var_base *, NR_TYPE, size_t *);
 static void check1Hz(var_base *, NR_TYPE, size_t *);
 static NR_TYPE despike(NR_TYPE *);
-static NR_TYPE polyinterp(NR_TYPE xa[], NR_TYPE ya[], int n, int x);
+NR_TYPE polyinterp(NR_TYPE xa[], NR_TYPE ya[], int n, int x);
 
 
 /* -------------------------------------------------------------------- */
@@ -251,7 +251,7 @@ static NR_TYPE despike(NR_TYPE *points)
 }	/* END DESPIKE */
 
 /* -------------------------------------------------------------------- */
-static NR_TYPE polyinterp(NR_TYPE xa[], NR_TYPE ya[], int n, int x)
+NR_TYPE polyinterp(NR_TYPE xa[], NR_TYPE ya[], int n, int x)
 {
   int		i, m, ns = 0;
   NR_TYPE	den, dif, dift, ho, hp, w;
