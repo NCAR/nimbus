@@ -27,6 +27,11 @@ H2T	314.65
 H2O_CAL	7.1352e-3, 3.6484e-6, -3.8355e-11
 
 #
+# Teresa's TEO3 cal's.
+#
+TEO3CAL[4]      0.3460490, 1.8829829, -0.0080433, 8.07e-5
+
+#
 # Ophir radiometer 
 #
 MAXCNT		62500
