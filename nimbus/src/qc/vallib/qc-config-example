@@ -1,0 +1,31 @@
+#
+# Valkyrie Airborne Validation System Configuration File
+#
+
+# range tests			low		high     	high delta
+# -----------			------		-----		----------
+GLAT			range	-180.0		180.0		0.5
+GLON			range	-90.0		90.0		0.5
+LAT			range	-180.0		180.0		0.3
+
+TTB			range	200.0		300.0		50.0
+
+# flatline tests			minvarlow	minvarhigh
+# --------------			---------	----------
+GLAT			flatline	0.001		0.0001   
+GLON			flatline	0.002		0.0002
+
+V10			flatline	0.002		0.0003
+V10R			flatline	0.003		0.0003
+
+ROLL			flatline	0.002		0.0003
+PITCH			flatline	0.002		0.0002
+
+# levelshift tests		minslope	minshift   peakmaxint	rtnslk
+# ----------------		--------	--------   ----------	------
+GLAT			level	0.1		0.2		1	0.4
+GLON			level	0.1		0.2		1	0.4
+
+PITCH			level	0.005		0.005		0	1.0
+
+

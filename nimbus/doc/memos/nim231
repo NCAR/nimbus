@@ -1,0 +1,47 @@
+I released a new version of nimbus.  Here are the changes/additions:
+
+Nimbus:
+	- Nothing new.
+
+
+winput:
+	- Modified to handle real-time receiving of AVAPS Dropsonde data for
+	  display in WINDS, via a serial port.
+
+
+AMLIB:
+	- AKRD modified for the C-130.
+
+	- Added RATIO.  This allows you to define your own ratio of two
+	  parameters.
+
+	- Added DIFF1, DIFF2, DIFF3.  Allows for upto 3 user defined
+	  differences.
+
+	- AVAPS Dropsonde support added (this currently only works in
+	  real-time onboard).
+
+	- Collins GPS support added (NOAA/GIV).
+
+	- B57 support.
+
+Notes on RATIO & DIFF#.  Both RATIO and DIFF's are not present by default.
+They must be added to the proj/###/UserNames file, this will tell nimbus/
+winput to add them to the derived variable list.  Then the entry in the
+proj/###/DependTable must be modified to caontain what you want.
+
+
+Ex (2 differences):
+
+UserNames:
+
+DIFF1 DIFF2
+
+
+DependTable:
+
+RATIO	ADIFR QCXC	# Equates to RATIO = ADIFR - QCXC
+DIFF1	TTRL TTRR	# Equates to DIFF1 = TTRL - TTRR
+DIFF2	PALT HGM
+
+--Chris

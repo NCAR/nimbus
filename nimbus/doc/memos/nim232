@@ -1,0 +1,15 @@
+I released a new version of nimbus.  Here are the changes/additions:
+
+Nimbus:
+	- Nothing new.
+
+
+AMLIB:
+	- IAS, indicated airspeed added for B57.
+
+	- PALT modifications for the B57
+
+	- O3 params modified for ACE high-rate.
+	  differences.
+
+--Chris

@@ -1,0 +1,101 @@
+	Instructions on how to add probes into the nimbus source code.
+
+
+Directories:
+
+  amlib/std		RAF supported derived variable computations.
+  amlib/user		User requested derived variable computations.
+  amlib/xlate		Functions for extracting variables from block probes.
+
+There is a template.c file in each of the "AMLIB" directories for making/adding
+new probes/variables.
+
+
+How to add a probe.
+	1) Add xlate routines to get "raw" data.
+	2) Add std or user routines to create derived variables.
+	3) Edit hdr_decode.c to decode whatever header info on ADS tape.
+
+--------------------------------------------------------------------------
+
+1) Step 1 is extracting "raw" variables stored on the ADS tape.  If all raw
+   variables are SDI Anolog or Digital channels, then skip this step.  This
+   step is for if the raw data comes in a block similar to IRS or PMS1D.
+
+   cd xlate; cp template.c new_probe.c
+
+   Edit new_probe.c and add a function for each variable you want to extract
+from the structure stored on the ADS tape.  By convention each function name
+starts with 'xl'.
+
+   For each variable you want extracted, you must create a name and add it to
+the file ${NIMBUS}/include/amlib.fns.  The corresponding function name goes
+in the first column of amlib.fns (Derived functions go in the second column).
+Example entry (Ophir III):
+
+	"OGAIN",	NULL,	xlogain,	NULL,
+	"OBBCOD",	NULL,	xlobbcod,	NULL,
+	"ODETDC",	NULL,	xlodetdc,	NULL,
+	"OTSNT",	NULL,	xlotsnt,	NULL,
+	"OTBNCH",	NULL,	xlotbnch,	NULL,
+	"OTDET",	NULL,	xlotdet,	NULL,
+	"OTBBC",	NULL,	xlotbbc,	NULL,
+	"OTBBF",	NULL,	xlotbbf,	NULL,
+	"OSMOTR",	NULL,	xlosmotr,	NULL,
+	"ODETSG",	NULL,	xlodetsg,	NULL,
+	"OTBOX",	NULL,	xlotbox,	NULL,
+
+Add the new file name to the Makefile in the xlate directory.
+
+
+cd ${LOCAL}/proj/defaults and create a file probe_name.names, that hdr_decode.c
+will read to get these names from.  Examples are in *.names.  You can be
+creative here and add other important information about the variables here
+(see irs.names, ophir3.names, and any pms1d.names file).
+
+
+-------------------------------------
+2) Step 2 is creating/adding any "derived" variables you may want.  If you
+   have no derived variables, then goto step 3.
+
+   cd ../std; cp template.c new_probe.c
+or
+   cd ../user; cp template.c new_probe.c
+
+   Edit new_probe.c and add a function for each variable you want created.
+By convention each function starts with 's'.  Look at some of the other
+files to see how dependancies (input variables) are extracted.
+
+   For each variable you want created, you must create a name and add it to
+the file ${NIMBUS}/include/amlib.fns.  The corresponding function name goes
+in the second column of amlib.fns.  Example entry (Ophir III):
+
+	"OAT",		NULL,	NULL,	soat,
+	"OBBCR",	NULL,	NULL,	sobbcr,
+	"ODETOF",	NULL,	NULL,	sodetof,
+	"ODSIGC",	NULL,	NULL,	sodsigc,
+	"OGAINF",	NULL,	NULL,	sogainf,
+	"OTDETC",	NULL,	NULL,	sotdetc,
+
+Add the new file name to the Makefile (in nimbus/src/amlib/[std|user]).
+
+
+cd ${LOCAL}/proj/defaults and add an entry to 'DerivedNames'.  Example entry:
+
+	OPHIR3	OAT OTDETC ODSIGC OBBCR OGAINF ODETOF
+or
+	GPS	GALT GLAT GLON GMODE GSTAT GSF
+
+cd ${NIMBUS}/proj/defaults and add appropriate dependancies to 'DependTable'.
+The dependancies you put in here will become the inputs to the functions.
+Example entry:
+
+	OAT	OBBCOD ODETDC OTDET OTBBC ODETSG
+
+
+-------------------------------------
+3) Step 3 is to edit hdr_decode.c, and add the processing to decode the
+header information about this probe.  This step sucks.  Lots of "special
+cases" exist here to handle how the probe works.  Be creative, I've left
+lot's of loopholes (e.g.  By placing an SDI variable in the amlib.fns file
+you can get the variable processed by an xlate function, see HGM & PSFD).

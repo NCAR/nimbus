@@ -1,0 +1,139 @@
+
+	    netCDF Conventions used for datasets produced by:
+
+		National Center for Atmospheric Research
+			Research Aviation Facility
+
+				NOAA GIV
+
+
+			    18 February 1994
+
+
+Updated 14 April 1996 for Asynchronous data support.
+
+
+	RAF produces time series aircraft data.  Data are written out one
+record per second, even for data at higher rates.  Our format is designed
+to support multi-rate data files (not to be confused with variable-rate).
+
+
+Dimensions:
+	Time is the unlimited dimension, and is written once per second.
+Every variable has at least the Time dimension.  The second dimension, if
+present, represents the number of samples per second.  The 3rd dimension, if
+present, is the vector length of the data (this will only be present for
+variables with vector data).  Currently 6 sps dimension sizes exist and 3
+vector dimension sizes exist. (See sample header for names.)  Only PMS1D
+probes are producing vector data at this time.
+
+A new dimension has been added called 'Async'.  Async is a triplet containing
+the location of the asynchronous data in a seperate binary "heap" file.  The
+first value contains the offset in bytes into the file of the first record for
+that second, the second number tells the record length, and the third is the
+number of records for that particaular second.  'Async' will always be in the
+3rd (or Vector) dimension (e.g. float 2D-P_LPI(Time, sps1, Async) ).  Async
+is used by PMS2D probes, and soon the AVAPS dropsonde.
+
+
+
+Time:
+	Time is stored in 2 different methods.  The first is with a base_time
+and time_offset pair.  base_time is standard Unix time (seconds since Jan 1,
+1970), and is typically the time stamp of the first record in the file.
+time_offset is added to base_time to give the time of the current record.  For
+the second method, 3 variables are stored in each record called HOUR, MINUTE,
+& SECOND which maintain the current GMT time for that record.
+
+
+Global attributes:
+	The only attribute that doesn't seem obvious is "Defaults".  This
+contains miscellaneous offsets.  They are separated by colons.  Some examples:
+
+HEADING_BIAS_1, PITCH_BIAS_1 are the offsets used to compensate for the fact
+that we can't install the inertial system in perfect alignment with the
+aircraft.  FSSP_CSIZ contains the bin sizes for each bin of the PMS1D-FSSP
+probe.
+
+// global attributes:
+                :Source = "NCAR Research Aviation Facility" ;
+                :Address = "P.O. Box 3000, Boulder, CO 80307-3000" ;
+                :Phone = "(303) 497-1030" ;
+                :Conventions = "NCAR-RAF/nimbus" ;
+                :DateProcessed = "Feb 15 23:25 GMT 1994" ;
+                :ProjectName = "Swiss Oxidant" ;
+                :Aircraft = "N312D" ;
+                :ProjectNumber = "231" ;
+                :FlightNumber = "22" ;
+                :FlightDate = " 7/27/1993 " ;
+                :TimeInterval = "08:30:00-09:30:00" ;
+                :Defaults = "O3FSM_CAL=3.495000e+01 : XNOYM_CAL=0.000000e+00,1.0
+00000e+00 : XNOM_CAL=0.000000e+00,1.000000e+00 : XNO2C_CAL=9.580000e+02 : PITCH_
+BIAS_1=-4.500000e-01 : HEADING_BIAS_1=0.000000e+00 : PITCH_BIAS_2=0.000000e+00 :
+ HEADING_BIAS_2=0.000000e+00 : XC_1=5.550000e-01 : THRSH_1=9.000000e+02 : CX_1=2
+.190000e+00,8.767000e-01,1.973000e-02,6.900000e-04 : XC_2=5.190000e-01 : THRSH_2
+=1.000000e+02 : CX_2=4.955000e+00,1.169600e+00,5.575000e-02,-8.405000e-04 : ASAS
+_CSIZ=0.000000e+00,1.320000e-01,1.700000e-01,2.330000e-01,3.200000e-01,4.330000e
+-01,5.700000e-01,7.330000e-01,9.200000e-01,1.133000e+00,1.370000e+00,1.632000e+0
+0,1.920000e+00,2.233000e+00,2.570000e+00,2.932000e+00 : DIV=1.000000e+00 : C1_EA
+W=8.000000e-01 : C2_EAW=8.000000e-01" ;
+
+
+Variable attributes:
+	Variables in the file are organized into 3 sorted lists.  The first
+sorted list consists of Analog or Digitally-sampled variables, these only have
+calibration coefficients applied to them.  The second group is raw data from
+"block" probes (e.g.  PMS1D, IRS, GPS, and some from group 1 that need special
+processing).  The third group consists of purely derived variables.  I have
+included one [low rate] example from each of the 3 groups.
+
+float ADIFR(Time) ;
+	ADIFR:units = "mbar" ;
+	ADIFR:long_name = "Vertical Differential Pressure, Radome" ;
+	ADIFR:SampledRate = 50 ;
+	ADIFR:OutputRate = 1 ;
+	ADIFR:CalibrationCoefficients = 0.092f, 6.9450002f, 0.0011f ;
+	ADIFR:MissingValue = -32767.f ;
+
+float AFSSP_IBR(Time, sps1, Vector16) ;
+	AFSSP_IBR:units = "cnts" ;
+	AFSSP_IBR:long_name = "FSSP-100 Raw Counts" ;
+	AFSSP_IBR:SampledRate = 10 ;
+	AFSSP_IBR:OutputRate = 1 ;
+	AFSSP_IBR:VectorLength = 16 ;
+	AFSSP_IBR:MissingValue = -32767.f ;
+
+float WI(Time) ;
+	WI:units = "M/s" ;
+	WI:long_name = "Wind Vector, Vertical Gust Component" ;
+	WI:OutputRate = 1 ;
+	WI:VectorLength = 1 ;
+	WI:Dependencies = "9 TASX VEW VNS PITCH ROLL THDG ATTACK SSLIP WP3" ;
+	WI:MissingValue = -32767.f ;
+
+
+	"SampledRate" is the rate at which the variable was sampled aboard the
+aircraft.
+
+	"OutputRate" is the rate which the variable appears in this file; it
+must match the second dimension (no second dimension implies 1 sample).
+
+	"VectorLength" will match the third dimension, if present.  "Vector-
+Length" does not make sense for analog channels, and therefore does not appear
+in the first list of variables.
+
+	"CalibrationCoefficients" for group 1 only, have already been applied
+as follows: (Note: There can be more or fewer coefficients.)
+
+	c[0] + c[1]*x + c[2]*x*x.
+
+	"Dependencies" lists the inputs required to compute a given derived
+variable (group 3 only).  This can be used to trace back what we did.
+
+
+-----------------------------------------------------------------------------
+Chris Webster			Phone: (303) 497-1044
+NCAR/RAF			Internet: websterc@ncar.ucar.edu
+P.O. Box 3000
+Boulder, CO 80307
+-----------------------------------------------------------------------------

@@ -1,0 +1,330 @@
+
+
+
+qc(l)             Misc. Reference Manual Pages              qc(l)
+
+
+
+NNNNAAAAMMMMEEEE
+     qc - Quality control for WINPUT data collection system
+
+SSSSYYYYNNNNOOOOPPPPSSSSIIIISSSS
+     ####iiiinnnncccclllluuuuddddeeee <<<<qqqqcccc....hhhh>>>>
+     iiiinnnntttt qqqqcccc____rrrrtttt____iiiinnnniiiitttt((((vvvvooooiiiidddd))))
+     iiiinnnntttt qqqqcccc____rrrrtttt____eeeexxxxeeeecccc((((vvvvooooiiiidddd))))
+     vvvvooooiiiidddd qqqqcccc____rrrrtttt____cccclllleeeeaaaannnnuuuupppp((((vvvvooooiiiidddd))))
+
+DDDDEEEESSSSCCCCRRRRIIIIPPPPTTTTIIIIOOOONNNN
+     The  qqqqcccc  system,  also  called  the  Valkyrie  project,  was
+     developed  in  the  Fall of '94 through the Spring of '95 by
+     four University of Colorado students  (see  AAAAUUUUTTTTHHHHOOOORRRRSSSS  section
+     below),  as their Computer Science senior project.  Its pur-
+     pose is to rest on top of the WWWWIIIINNNNPPPPUUUUTTTT data collection system,
+     provide  realtime  validation  for the data WWWWIIIINNNNPPPPUUUUTTTT collects,
+     and to represent error information meaningfully to the tech-
+     nicians aboard the aircraft.
+
+     The qqqqcccc system consists of two major components:  (1) a vali-
+     dation  library  -- a collection of C++ classes that perform
+     various sorts of tests on WWWWIIIINNNNPPPPUUUUTTTT variables, and (2) a graph-
+     ical  user  interface (GUI) -- which provides an X11 display
+     of validation errors as they occur.  The validation  library
+     code  is linked into the WWWWIIIINNNNPPPPUUUUTTTT process and thus executes on
+     the same thread, whereas the GUI is forked off as a separate
+     process.   The  validation library communicates with the GUI
+     through a BSD non-blocking socket interface.
+
+     There are four specific types of validation  that  are  per-
+     formed by the qqqqcccc system:  range checking, flatline checking,
+     spike detection, and a level shift test.   These  tests  are
+     explained  in  more detail in the EEEEXXXXAAAAMMMMPPPPLLLLEEEE CCCCOOOONNNNFFFFIIIIGGGGUUUURRRRAAAATTTTIIIIOOOONNNN sec-
+     tion of this file.
+
+     The entire system's functionality is encapsulated into three
+     C function calls that are available to the WWWWIIIINNNNPPPPUUUUTTTT system:
+
+     iiiinnnntttt qqqqcccc____rrrrtttt____iiiinnnniiiitttt((((vvvvooooiiiidddd))))
+
+     This initializes the validation library and  forks  off  the
+     GUI process.
+
+     The validation library is setup externally through a  confi-
+     guration  file  (qc-config) which specifies the WWWWIIIINNNNPPPPUUUUTTTT vari-
+     ables to perform validation on, the types of  validation  to
+     be  performed,  and  specific  parameters  required for each
+     validation test.
+
+     After  reading   and   parsing   the   configuration   file,
+     qqqqcccc____rrrrtttt____iiiinnnniiiitttt(((()))) opens a disk log in which all validation errors
+     are recorded throughout the flight.
+
+
+
+Sun Microsystems   Last change: April 30 1995                   1
+
+
+
+
+
+
+qc(l)             Misc. Reference Manual Pages              qc(l)
+
+
+
+     The qqqqcccc____rrrrtttt____iiiinnnniiiitttt(((()))) procedure also forks off the GUI process so
+     that it can initialize itself.  In order for this step to be
+     successful, the DISPLAY variable must be set  locally,  and,
+     if displaying onto another machine, the "xhost" utility must
+     be set up to allow access to the remote  display.   The  GUI
+     functionality  will  be  briefly  summarized  in the section
+     labeled GGGGUUUUIIII OOOOVVVVEEEERRRRVVVVIIIIEEEEWWWW....
+
+     qqqqcccc____rrrrtttt____iiiinnnniiiitttt(((()))) returns the WINPUT-defined constant OK on  suc-
+     cess, or ERR on any of several initialization failure condi-
+     tions:  (1) the configuration file was  determined  invalid,
+     (2)  the  GUI  execution  failed,  or (3) the socket was not
+     bound correctly.
+
+     iiiinnnntttt qqqqcccc____rrrrtttt____eeeexxxxeeeecccc((((vvvvooooiiiidddd))))
+
+     This performs one cycle of validation through the  variables
+     that  were configured.  If any of the validation tests fail,
+     a disk log entry is stored, and a socket message  is  passed
+     to the GUI to be displayed.
+
+     If during this cycle the GUI terminates execution (i.e.  the
+     user  presses  the  "Quit"  button on the main screen), then
+     qqqqcccc____rrrrtttt____eeeexxxxeeeecccc(((()))) returns the constant ERR  so  that  WINPUT  can
+     clean  up  the qqqqcccc system gracefully (with qqqqcccc____rrrrtttt____cccclllleeeeaaaannnnuuuupppp(((()))) ).
+     Otherwise, this function returns the OK constant.
+
+     vvvvooooiiiidddd qqqqcccc____rrrrtttt____cccclllleeeeaaaannnnuuuupppp((((vvvvooooiiiidddd))))
+
+     This function gracefully cleans up the qqqqcccc system.  It should
+     be   called  in  the  WWWWIIIINNNNPPPPUUUUTTTT  termination  sequence,  or  if
+     qqqqcccc____rrrrtttt____eeeexxxxeeeecccc(((()))) returns ERR.  It performs  general  cleanup  of
+     the  validation system and instructs the GUI to terminate if
+     it is still running.  The disk log  is  timestamped  and  is
+     then closed.
+
+EEEEXXXXAAAAMMMMPPPPLLLLEEEE CCCCOOOONNNNFFFFIIIIGGGGUUUURRRRAAAATTTTIIIIOOOONNNN
+     The configuration file specifies what  validation  tests  qqqqcccc
+     should perform.  A comment can be placed anywhere on a line,
+     as long as the comment is preceeded with  a  "#"  character,
+     and  either  tabs or spaces can be used to separate columns.
+     The first column of this file specifies a variable name, the
+     second specifies the validation test to be run, and the sub-
+     sequent columns are reserved for parameters that  depend  on
+     the specific test.
+
+     Examples of how to configure each  of  the  four  validation
+     tests are presented below.  Note that for purposes of optim-
+     ization, the level shift test and spike detection  test  are
+     combined  into a single algorithm, and thus their parameters
+     are combined into a single line in the configuration file.
+
+
+
+
+Sun Microsystems   Last change: April 30 1995                   2
+
+
+
+
+
+
+qc(l)             Misc. Reference Manual Pages              qc(l)
+
+
+
+     #### rrrraaaannnnggggeeee tttteeeessssttttssss          lllloooowwww     hhhhiiiigggghhhh     hhhhiiiigggghhhh ddddeeeellllttttaaaa
+     #### --------------------------------------------          --------------------   ----------------     ----------------------------------------
+     GGGGLLLLOOOONNNN      rrrraaaannnnggggeeee        ----99990000....0000   99990000....0000     0000....5555
+
+     The range test is the simplest of the qqqqcccc  validation  tests.
+     It makes sure that a variable stays within the ranges speci-
+     fied in the "low" and "high" columns.
+
+     The qqqqcccc system has a useful feature  of  distinguishing  "low
+     priority" errors from "high priority" errors (the GUI treats
+     these sorts of errors differently -- this is explained  more
+     in the GGGGUUUUIIII OOOOVVVVEEEERRRRVVVVIIIIEEEEWWWW section).  The "high delta" parameter of
+     the range test is an additional threshold used to  determine
+     which  range  test  errors are high priority errors.  In the
+     above example, a value greater than or equal  90.5  or  less
+     than  or  equal to -90.5 will generate a high priority range
+     error.  If one would always want to generate  high  priority
+     errors  when  "low" or "high" are exceeded, the "high delta"
+     parameter can be set to  0.   Alternatively,  if  one  would
+     never  want  to  generate  high  priority  errors, the "high
+     delta" parameter could just be set to a very large number.
+
+     #### ffffllllaaaattttlllliiiinnnneeee tttteeeessssttttssss       mmmmiiiinnnnvvvvaaaarrrrlllloooowwww   mmmmiiiinnnnvvvvaaaarrrrhhhhiiiigggghhhh
+     #### --------------------------------------------------------       ------------------------------------   ----------------------------------------
+     GGGGLLLLAAAATTTT     ffffllllaaaattttlllliiiinnnneeee      0000....000000001111       0000....0000000000001111
+
+     The flatline detector, similarly, is  straightforward.   The
+     qqqqcccc  system  detects  the flatline condition by calculating a
+     standard statistical variance over a fixed number of seconds
+     (currently  10 seconds of averaged data). If the variance is
+     less then "minvarhigh," a high priority  flatline  error  is
+     issued.   If  the  variance  is less than "minvarlow," a low
+     priority flatline error is issued to the  GUI.   Never  will
+     both  a  low  and  high priority error be generated:  if the
+     value is less than "minvarlow" and "minvarhigh," then only a
+     high priority flatline error will be issued.
+
+     #### lllleeeevvvveeeellll////ssssppppiiiikkkkeeee tttteeeessssttttssss    mmmmiiiinnnnssssllllooooppppeeee mmmmiiiinnnnsssshhhhiiiifffftttt ppppeeeeaaaakkkkmmmmaaaaxxxxiiiinnnntttt rrrrttttnnnnssssllllaaaacccckkkk
+     #### --------------------------------------------------------------------    -------------------------------- -------------------------------- ---------------------------------------- --------------------------------
+     GGGGLLLLAAAATTTT     lllleeeevvvveeeellll         0000....1111      0000....2222      1111          0000....4444
+
+     In the qqqqcccc system, level shift/spike detection  is  the  most
+     complicated  of the three validation tests. Spikes and level
+     shifts are closely related to one another:  a spike  is  two
+     level  shifts in opposite directions, which rationalizes why
+     their detection is combined into a single algorithm.
+
+     The "minslope" parameter defines the minimum  slope  that  a
+     variable's  value  must  exceed,  initially,  in order for a
+     level shift or spike to be considered.   The  slope  is  the
+     ratio of the rise in value over the run in number of samples
+     (the sample rate is defined by  WWWWIIIINNNNPPPPUUUUTTTT  and  varies  between
+
+
+
+Sun Microsystems   Last change: April 30 1995                   3
+
+
+
+
+
+
+qc(l)             Misc. Reference Manual Pages              qc(l)
+
+
+
+     variables).   The  slope  parameter  can  be exceeded in the
+     positive or negative direction, so that positive  and  nega-
+     tive spikes/level shifts are both detected.
+
+     "Minshift" defines  the  minimum  value  the  variable  must
+     change,  at  the  slope  specified  by  "minslope."  This is
+     required because slope, alone, doesn't determine the  magni-
+     tude of a spike or level shift.
+
+     "Peakmaxint" and "rtnslack" are used to  distinguish  spikes
+     from  level  shifts.   After  "minshift"  is exceeded at the
+     slope specified by "minslope," in order for the algorithm to
+     detect  a  spike  instead  of  a level shift, the variable's
+     value must return to its baseline region within "peakmaxint"
+     samples.  The baseline region is defined as the value before
+     "minslope" was exceeded, plus or minus the "rtnslack" param-
+     eter.   If  "peakmaxint"  samples  go  by,  or  if the value
+     doesn't return  to  the  baseline  region,  a  level  shift,
+     instead of spike, will be signaled.
+
+GGGGUUUUIIII OOOOVVVVEEEERRRRVVVVIIIIEEEEWWWW
+     The qqqqcccc  GUI  (executable  named  qc-gui)  maintains  an  X11
+     display  of  validation  errors as they are detected.  There
+     are two routes by which errors are  displayed  by  the  GUI:
+     low  priority  and high priority errors are displayed on the
+     "main screen," while high priority errors are also displayed
+     by  the GUI in "warning boxes."  The distinction between low
+     priority and high priority errors is made in the  validation
+     library  (see  EEEEXXXXAAAAMMMMPPPPLLLLEEEE  CCCCOOOONNNNFFFFIIIIGGGGUUUURRRRAAAATTTTIIIIOOOONNNN  section  of  this man
+     page).
+
+     The main screen consists of four  windows  containing  space
+     for  the  four  types  of errors that the validation library
+     produces, and a button bar with options for the  user.   The
+     "Pause" button allows the user to pause the GUI for a period
+     of time (when paused, the button name changes to  "Resume").
+     The  "Snooze  10 min." button will cause validation to cease
+     for all variables over the next  10  minutes.   The  "Reset"
+     button clears all validation errors present in the four win-
+     dows on the main screen.   The  "Clear  Boxes"  button  will
+     dismiss  all  warning  boxes  (see below) that are currently
+     being displayed.  The "Quit" button will terminate  the  GUI
+     and have the validation library (linked into the WINPUT pro-
+     cess) stop using CPU cycles for validation.
+
+     A warning box is displayed when a high priority  error  mes-
+     sage is generated by the validation library.  Separate warn-
+     ing boxes are generated for  each  variable  that  has  high
+     priority errors.  A warning box lists all errors for a given
+     variable, and also has a button bar of options available  to
+     the user.  The "Snooze 10 min." button causes validation for
+     the variable associated with the warning box to be  disabled
+
+
+
+Sun Microsystems   Last change: April 30 1995                   4
+
+
+
+
+
+
+qc(l)             Misc. Reference Manual Pages              qc(l)
+
+
+
+     for  the  next  10  minutes.  Similarly, the "Snooze 2 min."
+     button disables validation for 2 minutes. The "Clear" button
+     will   erase  all  accumulated  warning  messages  from  the
+     selected warning box, and also remove messages for the vari-
+     able  associated with the warning box, from the main screen.
+     Finally, the "Dismiss" button causes the warning box  to  be
+     removed without effecting the main screen.
+
+FFFFIIIILLLLEEEESSSS
+     $$$$PPPPRRRROOOOJJJJ____DDDDIIIIRRRR////[[[[pppprrrroooojjjjeeeecccctttt nnnnuuuummmmbbbbeeeerrrr]]]]////qqqqcccc----ccccoooonnnnffffiiiigggg"""" --  full  path  of  qc
+     configuration file for a specific research project
+
+SSSSEEEEEEEE AAAALLLLSSSSOOOO
+     _V_a_l_k_y_r_i_e _P_r_o_j_e_c_t _B_o_o_k :  An  assortment  of  papers  written
+     through the course of this project.
+
+BBBBUUUUGGGGSSSS
+     The socket link between the validation library and  the  GUI
+     relies  on  a  hardcoded  binding port number.  Occasionally
+     after crashing the system, the port number needs to  be  re-
+     assigned.  This can be done by changing the Makefile present
+     in the 'socklib/' directory of the source distribution,  and
+     then  by  rebuilding the entire system by typing "make clean
+     all" at the root level of the source distribution.
+
+AAAAUUUUTTTTHHHHOOOORRRRSSSS
+     Marc Anderson <andersom@colorado.edu>
+     Alexandra Bokinsky <bokinsky@colorado.edu>
+     Edward Stautler <stautler@colorado.edu>
+     Kent Larson <larsonk@colorado.edu>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Sun Microsystems   Last change: April 30 1995                   5
+
+
+

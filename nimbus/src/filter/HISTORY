@@ -1,0 +1,200 @@
+
+Version number is changed in version.h.
+-------------------------------------------------------------------------
+11/01/03	3.4.1
+	Icing (XICING).  New PCORS for C130.  More SQL & RT development.
+
+08/12/03	3.4.0
+	Garmin GPS, CMIGITS3, TCNT for PMS1D probes/variables added.
+	UDP broadcast & sql added to realtime (prototype though).
+
+12/05/02	3.3.0
+	Moved to C++ compiler.  Realtime works.
+
+10/12/02	3.2.0
+	Nevsorov, CLIMET.
+
+08/02/02	3.1.5
+	RDMA upgrades, removed forks from 3.1.4, creates new text files
+	for rdmap processor.  NRL-P3 fixes.
+
+05/07/02	3.1.4
+	NRL-P3.  Fork of RDMA mat & inv programs.
+
+
+11/21/01	3.1.2
+	Cals for SPP probe housekeeping come from PMSspecs now.
+
+10/30/01	3.1.0
+	Center-in algorithm for 2DC & 2DP arrays.  Fxied bugs sample volume
+	for 2d histograms.  Ron added some variables.  1000 -> 25 hz filtering,
+	averaging though.  New despiker!  Can remove long spikes now.  I'm sure
+	more work on the DMT 1d probes has been done.
+
+08/08/01	3.0.1 (not yet released -- RLR)
+	Fixed bugs in netcdf.c BlankOutBadData().  Added code to load DQ flag
+	for derived variables in setup.c LoadSetup_OK(). 2D processor finished.
+
+??/??/??	3.0.0 (Combo 2D processor, new open window, & DQ flags)
+	Modified SSRD to use pre 1998 co-eff vs post 1998.  Fixed PMS HSKP
+	SecondPoly() to actually square x for the second order part, duh.
+	XmNimbus into fbr.h.  Added version # to grey window.  Blank out
+	bad times (config file).  PCAS FLOW 30 second average.
+
+08/09/00	2.7.1
+	Second TDL, PELTI, new opening window.
+
+06/15/00	2.7.0
+	Renames: XPSFD -> PSFRD, X's removed from angle corrected radiation and
+	corrected winds.  King LW wire diameter into Defaults.  modified
+	GetNextADS file to work starting letters other than 'a'.  DMT pms1d
+	support added.  GPS correction stuff.
+
+04/28/00	2.6.0
+	Change flightNum to use ff, rf & tf.  Added DataQuality attribute
+	for all variables.  netCDF file moved to version 1.2.  Added 2D
+	processor to produce 1D histograms.  Moved F300 sample area to
+	PMSspecs file.  TDL Hygrometer support.
+
+11/30/98	2.5.5
+	MASP support.  Cell sizes are end-points now, not mid-points.
+	260x changes/fixes, including removal physical bin-shift between
+	ACCUM & CONC, now just adjust starting.
+
+05/19/98	2.5.4
+	netCDF mods, removed global defaults, and stored default with given
+	variable.  Made nimbus check default directory for Defaults
+	then local proj dir.  netCDF file version 1.1.  fixed fssp range
+	affecting HRT sampled FRNG.  Cleaned up all processing of HRT
+	sampled PMS1D (mostly housekeeping).  Corrections to 260x for
+	HRT sampling also.  Modified to handle 30 minute time gaps before
+	inserting new time period.  New AKRD calcoes for C130.
+
+01/02/98	2.5.3
+	netCDF mods.  PMSspecs recorded with AFSSP, etc.  Only Dimensions
+	used are created.  Categories added to netCDF file.  Solar angle,
+	radiation corrections.
+
+10/01/97	2.5.2
+	DAY, MONTH, YEAR added.  Fixed Production output file name, if
+	FlightNum was changed.  Log File name corrected for LRT/HRT from
+	setup file & if flighNum changed.
+
+05/02/97	2.5.0
+	RealTime mode added.  CAINE-II variables.
+
+04/02/97	2.4.2
+	Fixed bugs in Toggle Probe.  Tacked h onto HRT production file name.
+	ASTG for PALT moved to Defaults.  Fluxes off by default.  Added
+	PSURF_ALT_MAX to defaults.
+
+11/06/96	2.4.0
+	WP3 modified.  Support for new APN159.  PMSspecs file.  New high rate
+	filters.  Fixed minor discrepencies in AMLIB.  Goff-Gratch for EDPC.
+	Transport delays for IRS.  Dynamic lags for GPS.  Option to disable
+	all lagging && despiking.
+
+07/31/96	2.3.2
+	DBZ calc fix.  Support for ex? dropped.  Production log file.
+	(Supposedly) Improved file name validation.  Despike stats.  More
+	B-57 AMLIB.  AKRD finalized for C-130.  Read COS blocked files.
+
+04/14/96	2.3.1
+	Differences.  New IRS parms, TKA, DRFTA, TKAR.  GIV.  B57.
+	Condensed all refernce fns to one.  RATIO.  DropSonde.  Collins GPS.
+	Modified AKRD for C-130.  EVTCKP renamed to EVENT_CKP.
+
+02/11/96	2.3.0
+	Fixed bug in SumCounter (was truncating), bug only affected Counters
+	with calcos.  When nimbus asked for flight number, it then failed to
+	record it in netCDF file.  ACE variable XFCN added. GIV.  Filled data
+	gaps had time stamp of -32767:-32767:-32767, fixed.  Added 'Edit'
+	Menu option to edit flight info (Date, Flt#, etc).  Added
+	Dismiss/Reset to TimeSlice window.
+
+10/23/95	2.2.1
+	Added support for high-rate processing of counters sampled at 1 hz.
+	Fixed bug in PSFD & INPWANT.  Flying in circles.  Allowed cal coes
+	for counters.
+
+09/15/95	2.2.0
+	Fixed CheckForTimeGap to handle all time malfunctions.  260x dof alg
+	change.  Added more chemistry vars for ACE.  Added spike slope to
+	setup files & Edit window.  Async data file/storage added.
+	Reflectivity added for FSSP-100 & ????.  Community inlet pressure
+	differntial variable added.  Mod PCAS code to use FLOW for Sample
+	Volume.
+
+08/13/95	2.1.6
+	Another despike bug fixed.  Checks for multiple ADS files, and
+	crosses files automatically (mass store limitation).  C130 Pcor
+	corrections.
+
+06/06/95	2.1.5
+	Despike bug & Sailplane bug fixed.
+
+05/12/95	2.1.4
+	Finished Sailplane stuff.
+
+04/27/95	2.1.3
+	Hard code output filename for production runs.  New code for TASHC.
+	Community Inlet parameters added.
+
+04/13/95	2.1.2
+	Bug fixes, corrected winds hr bug, added fluxes to toggle probe.
+	Fixed Toggle Rate bug.  X's put in front of Corrected WINDS.  TASHC.
+	Sailplane stuff.  All probe's limited to 16.
+
+??/??/95	2.1.1 - ?????
+
+02/01/95	2.1.0
+	Toggle Probe menu item. C130 PCORS.  Fixed XSO2.  New 250hz decimating
+	filter (5:1 only).  Don't HR variables that don't need it.  added
+	convertOffset.  New method of decodeing IRS data.
+
+12/22/94	2.0.1
+	Some bug fixes, Coeff for WP3 barrel modified and fixed all Aircraft
+	WP3.
+
+12/19/94	2.0
+	Averaging modified, to apply cal coes after averaging for real-time,
+	saving 10-15% in procesing of Analog channels.  Overhauled access to
+	data in amlib, and modified HighRate data storage, causing 10-15%
+	decrease in processing time of high rate runs.  ^R added for toggling
+	output rates.  Converted to ANSI C.  Fixed bugs in batch processing.
+	Despiking added.  SampleRate computation of PMS1D derived varibles.
+	Fixed constants in PSURF calculation.
+
+11/09/94	1.8
+	Fixed high-rate for counter variables.  PALTF.  WIC bug fixed.
+	FPCRC bug fixed.  DependedUpon, used for removing unwanted variables
+	from computation.
+
+08/31/94	1.7
+	support for 1000 hz.  New PSFD code for DSM.  Disk full fix, Warning
+	on non-production files.  Re-arranged some PMS1D stuff, by adding
+	fake1d.c.  More C130 support.
+
+07/15/94	1.6
+	HI3 -> ALT, C130 support, base_time bug, PMS1D bin Output defaults
+	TRUE, Mark Dirty vars for user to see, created file for LowRateVars.
+	Bug fixes.  FLUXes to AMLIB.
+
+04/??/94	1.5
+	hr/batch bug.  New hr decimating filters.
+
+02/??/94	1.4
+	added TimeSlice time verification.  EditWindow, add full variable
+	name.  More bug fixes.
+
+02/15/94	1.3
+	Removed ADS header text field.
+
+02/10/94	1.2
+	added derived variables ZERO, ONE to ALWAYS.  Straightened out the
+	boys in Chemistry.
+
+01/26/94	1.1
+	released, bug fixes, changes to CVI, DPCRC, added FastOzone.
+
+11/25/93	Nimbus 1.0 released.

@@ -1,0 +1,21 @@
+Nimbus 2.1.0 has been released.  Features/bugs include:
+
+- I've added a sub-menu to the edit menu called 'Toggle Probe'.  This allows
+  you turn on/off whole probes at once, without having to locate and select
+  each variable.  However it has a bug in it;  If you select a PMS1D probe, it
+  does all of 1D probes, not just the one you selected.
+
+- PCORS for C130 ready for prime time.
+
+- XSO2 variables and code added to AMLIB.
+
+
+Transparent changes:
+
+- New 250hz decimating filters.  Speeded up by 30% while maintaining old specs.
+
+- Logic in Filtering to not filter varaibles that are not required.
+
+- convertOffset computations for autocalibration added.
+
+--Chris

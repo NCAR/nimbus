@@ -1,0 +1,41 @@
+	This file contains a list of files used by nimbus which are user
+configurable.
+
+
+Nimbus system files:
+-------------------------------------------------------------------------------
+	Mandatory files:
+
+proj/defaults/DerivedNames ; List of derived variables to drag in for any given
+			;  SDI or RAW variable
+proj/defaults/*.names	; Contains names of raw vars for block probes
+proj/defaults/AircraftSpecs	; Airplane specific information (boom length).
+
+	Optional files:
+
+proj/defaults/ModVars	; List of circular angle variables
+proj/defaults/SumVars	; List of variables that should be summed vs. averaged
+proj/defaults/VarDB	; Used if proj/###/VarDB doesn't exist
+proj/defaults/Categories	; Used if proj/###/Categories doesn't exist
+
+
+Project specific data files associated with Nimbus:
+-------------------------------------------------------------------------------
+		Mandatory files:
+
+proj/###/ProjectName	; ASCII Text file with project name
+proj/###/DependTable	; Dependencies for derived variables
+proj/###/Defaults	; Misc user-modifiable values for derived variables
+proj/###/VarDB		; Variable Database, contains titles, units, etc.
+proj/###/Categories	; Variable Database category list.
+proj/###/PMSspecs	; Defaults for PMS probes
+
+		Optional files:
+
+proj/###/LowRateVars	; Variables to default to LowRate during a HighRate run
+proj/###/Lags		; SDI or RAW variables to lag (upto +- 1000ms)
+proj/###/Despike	; SDI or RAW variables to despike
+proj/###/ophir3.names	; Only required if proj has Ophir III
+
+proj/###/Production/FlightGroups ; List of groups of flights with same setup
+proj/###/Production/Flight_##	 ; Production setup, loaded automatically
