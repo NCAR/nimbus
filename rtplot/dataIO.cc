@@ -31,29 +31,27 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2003
 
 #include "DataPlot.h"
 
-#include <qwt/qwt_math.h>
+#include <qwt_math.h>
 
 static char	*color[] = { "red", "blue", "green", "purple", "maroon" };
 
 /* -------------------------------------------------------------------- */
 void AddDataToBuffer(NR_TYPE *newData)
 {
-  int	i, j, idx;
-
-  for (i = 0; i < nVariables; ++i)
+  for (size_t i = 0; i < nVariables; ++i)
   {
     qwtShiftArray(plotData[i], Variable[i].nPoints, -Variable[i].SampleRate);
 
-    idx = Variable[i].nPoints - Variable[i].SampleRate;
+    size_t idx = Variable[i].nPoints - Variable[i].SampleRate;
 
-    for (j = 0; j < Variable[i].SampleRate; ++j)
+    for (size_t j = 0; j < Variable[i].SampleRate; ++j)
       plotData[i][idx+j] = (double)newData[Variable[i].SRstart+j];
   }
 
 }	/* END ADDDATATOBUFFER */
 
 /* -------------------------------------------------------------------- */
-void AddVariable(int indx, DataPlot *plot)
+void AddVariable(size_t indx, DataPlot *plot)
 {
   if (indx >= sdi.size())
   {
@@ -76,8 +74,8 @@ void AddVariable(int indx, DataPlot *plot)
   plotData[nVariables] = new double[Variable[nVariables].nPoints];
   memset(plotData[nVariables], 0, Variable[nVariables].nPoints * sizeof(double));
 
-  for (int i = 0; i < NumberSeconds; ++i)
-    for (int j = 0; j < Variable[nVariables].SampleRate; ++j)
+  for (size_t i = 0; i < NumberSeconds; ++i)
+    for (size_t j = 0; j < Variable[nVariables].SampleRate; ++j)
     {
       xData[nVariables][(i*Variable[nVariables].SampleRate)+j] =
 	-NumberSeconds + (double)i + (j*Variable[nVariables].SampleRate/1000);
@@ -95,16 +93,14 @@ void AddVariable(int indx, DataPlot *plot)
 }	/* END ADDVARIABLE */
 
 /* -------------------------------------------------------------------- */
-void DeleteVariable(int indx, DataPlot *plot)
+void DeleteVariable(size_t indx, DataPlot *plot)
 {
-  int	i;
-
   delete [] xData[indx];
   delete [] plotData[indx];
 
   plot->removeCurve(Variable[indx].plotID);
 
-  for (i = indx+1; i < NumberDataSets; ++i)
+  for (size_t i = indx+1; i < NumberDataSets; ++i)
   {
     memcpy(&Variable[i-1], &Variable[i], sizeof(VARTBL));
     plotData[i-1] = plotData[i];

@@ -26,7 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2003
 #include <qpopupmenu.h>
 #include <qstatusbar.h>
 #include <qprinter.h>
-#include <qwt/qwt_plot.h>
+#include <qwt_plot.h>
 
 #include "define.h"
 #include "DataPlot.h"

@@ -94,10 +94,10 @@ CanvasWindow::CanvasWindow(QApplication *qApp) : QMainWindow(0, "canvas")
   connect(list, SIGNAL(clicked(QListBoxItem *)), SLOT(ModifyActiveVars(QListBoxItem *)));
 
 
-  for (int i = 0; i < sdi.size(); ++i)
+  for (size_t i = 0; i < sdi.size(); ++i)
     list->insertItem(sdi[i]->name);
 
-  for (int i = 0; i < raw.size(); ++i)
+  for (size_t i = 0; i < raw.size(); ++i)
     list->insertItem(raw[i]->name);
 
   plot->show();
@@ -160,21 +160,20 @@ void CanvasWindow::SetEngineering()
 }	/* END TOGGLEUNITS */
 
 /* -------------------------------------------------------------------- */
-void AddVariable(int indx, DataPlot *), DeleteVariable(int indx, DataPlot *);
+void AddVariable(size_t indx, DataPlot *), DeleteVariable(size_t indx, DataPlot *);
 
 void CanvasWindow::ModifyActiveVars(QListBoxItem *item)
 {
   if (item == 0)
     return;
 
-  int	i;
-  int	indx = list->currentItem();
+  size_t indx = (size_t)list->currentItem();
 
   if (indx >= sdi.size())
   {
     indx -= sdi.size();
 
-    for (i = 0; i < nVariables; ++i)
+    for (size_t i = 0; i < nVariables; ++i)
       if (strcmp(Variable[i].name, raw[indx]->name) == 0)
       {
       	DeleteVariable(i, plot);
@@ -191,7 +190,7 @@ void CanvasWindow::ModifyActiveVars(QListBoxItem *item)
   }
   else
   {
-    for (i = 0; i < nVariables; ++i)
+    for (size_t i = 0; i < nVariables; ++i)
       if (strcmp(Variable[i].name, sdi[indx]->name) == 0)
       {
         DeleteVariable(i, plot);

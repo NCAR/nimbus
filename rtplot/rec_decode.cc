@@ -34,7 +34,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-9
 /* -------------------------------------------------------------------- */
 void DecodeRecord()
 {
-  int		i, j, pos;
+  int		pos;
   SDITBL	*sp;		/* Current SDI Variable Pointer	*/
   RAWTBL	*rp;		/* Current Raw Variable Pointer	*/
   ushort	*lrp;		/* ADS Logical Record Pointer	*/
@@ -42,7 +42,7 @@ void DecodeRecord()
 
   /* Cast SDI variables into new record
    */
-  for (i = 0; (sp = sdi[i]); ++i)
+  for (size_t i = 0; (sp = sdi[i]); ++i)
     {
     lrp	= &((ushort *)ADSrecord)[sp->ADSstart];
     pos	= sp->SRstart;
@@ -52,7 +52,7 @@ void DecodeRecord()
       {
       if (strcmp(sp->type, "C24") == 0)
         {
-        for (j = 0; j < sp->SampleRate; ++j, ++pos)
+        for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
           {
           SampledData[pos] = bits[pos] =
 			ntohl(*((unsigned long *)&lrp[j * sp->ADSoffset]));
@@ -61,7 +61,7 @@ void DecodeRecord()
         }
       else
         {
-        for (j = 0; j < sp->SampleRate; ++j, ++pos)
+        for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
           {
           SampledData[pos] = bits[pos] = ntohs(lrp[j * sp->ADSoffset]);
           volts[pos] = (bits[pos] - sp->convertOffset) * sp->convertFactor;
@@ -72,7 +72,7 @@ void DecodeRecord()
       {
       if (strcmp(sp->type, "D20") == 0)
         {
-        for (j = 0; j < sp->SampleRate; ++j, ++pos)
+        for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
           {
           SampledData[pos] = bits[pos] =
 			(long)ntohl(*((long *)&lrp[j * sp->ADSoffset]));
@@ -81,7 +81,7 @@ void DecodeRecord()
         }
       else
         {
-        for (j = 0; j < sp->SampleRate; ++j, ++pos)
+        for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
           {
           SampledData[pos] = bits[pos] =
 			(short)ntohs((ushort)lrp[j * sp->ADSoffset]);
@@ -94,7 +94,7 @@ void DecodeRecord()
 
   /* Extract block variables into new record
    */
-  for (i = 0; (rp = raw[i]); ++i)
+  for (size_t i = 0; (rp = raw[i]); ++i)
     (*rp->xlate)(	rp,
 			&((ushort *)ADSrecord)[rp->ADSstart],
 			&SampledData[rp->SRstart]);

@@ -22,11 +22,11 @@ extern std::vector<RAWTBL *> raw;          /* Alphabeticly sorted pointers */
 
 extern DEFAULT *Defaults[];
 
-extern int	nVariables;
+extern size_t	nVariables;
 extern VARTBL	Variable[];
 
 
-extern int	NumberDataSets, NumberSeconds, NumberElements[], CurrentDataSet;
+extern size_t	NumberDataSets, NumberSeconds, NumberElements[], CurrentDataSet;
 extern int	Aircraft;
 
 extern char	*ADSrecord;

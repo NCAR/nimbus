@@ -1,6 +1,6 @@
 #include "DataPlot.h"
 
-#include <qwt/qwt_legend.h>
+#include <qwt_legend.h>
 
 /* -------------------------------------------------------------------- */
 DataPlot::DataPlot(QWidget *parent, ADS_rtFile *f) : QwtPlot(parent)

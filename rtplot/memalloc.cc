@@ -26,27 +26,23 @@ REFERENCED BY:	cb_main.c
 #include "decode.h"
 #include "adsIOrt.h"
 
-static bool	ArraysInitialized = false;
-
 extern ADS_rtFile       *file;
 
 
 /* -------------------------------------------------------------------- */
 void AllocateDataArrays()
 {
-  int	i;
-
   ADSrecord = new char[file->hdr->lrLength()];
 
   nFloats = 0;
 
-  for (i = 0; i < sdi.size(); ++i)
+  for (size_t i = 0; i < sdi.size(); ++i)
     {
     sdi[i]->SRstart = nFloats;
     nFloats += sdi[i]->SampleRate;
     }
 
-  for (i = 0; i < raw.size(); ++i)
+  for (size_t i = 0; i < raw.size(); ++i)
     {
     raw[i]->SRstart = nFloats;
     nFloats += (raw[i]->SampleRate * raw[i]->Length);
@@ -60,20 +56,15 @@ void AllocateDataArrays()
   memset((void *)bits, 0, sizeof(long) * nFloats);
   memset((void *)volts, 0, sizeof(NR_TYPE) * nFloats);
 
-  ArraysInitialized = true;
-
 }	/* END ALLOCATEDATAARRAYS */
 
 /* -------------------------------------------------------------------- */
 void FreeDataArrays()
 {
-  if (ArraysInitialized)
-    {
-    delete [] ADSrecord;
-    delete [] SampledData;
-    }
-
-  ArraysInitialized = false;
+  delete [] ADSrecord;
+  delete [] SampledData;
+  delete [] bits;
+  delete [] volts;
 
 }	/* END FREEDATAARRAYS */
 

@@ -21,20 +21,22 @@ char	buffer[BUFFSIZE], DataPath[1024], *ProjectName, FlightNumber[32],
 std::vector<SDITBL *> sdi;	/* SDI (aka raw) variable list	*/
 std::vector<RAWTBL *> raw;	/* Alphabeticly sorted pointers	*/
 
-int	nVariables;
+size_t	nVariables;
 VARTBL	Variable[MAXDATASETS];
 
 
 /* Vars related to data sets	*/
-int	NumberDataSets, NumberSeconds, NumberElements[MAXDATASETS],
-	CurrentDataSet, Aircraft;
+size_t	NumberDataSets, NumberSeconds, NumberElements[MAXDATASETS],
+	CurrentDataSet;
 
-long	nFloats;
+int	Aircraft;
+
+size_t	nFloats;
 
 /* Data record pointers
  */
 char	*ADSrecord, *AVAPSrecord[4];
-NR_TYPE	*bits, *volts;
+NR_TYPE	*bits, *volts, *SRTvolts;
 NR_TYPE	*SampledData, *AveragedData;
 double	*plotData[MAXDATASETS], *xData[MAXDATASETS];
 

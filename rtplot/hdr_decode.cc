@@ -213,11 +213,10 @@ void DecodeHeader()
 
 {
 /*
-int	i;
-for (i = 0; i < sdi.size(); ++i)
+for (size_t i = 0; i < sdi.size(); ++i)
   printf("%-12s%5d\n", sdi[i]->name, sdi[i]->convertOffset);
 
-for (i = 0; i < raw.size(); ++i)
+for (size_t i = 0; i < raw.size(); ++i)
   printf("%-12s%3d%5d\n", raw[i]->name, raw[i]->SampleRate, raw[i]->NRstart);
 
 */
@@ -244,8 +243,6 @@ static void in_hdr()
 /* -------------------------------------------------------------------- */
 static void in_sdi(Sh *vn)
 {
-  int		i;
-
   if (hdr->SampleRate(vn) == 5000)
     return;
 
@@ -268,7 +265,7 @@ static void in_sdi(Sh *vn)
 
     rp->order = hdr->CalibrationOrder(vn);
 
-    for (i = 0; i < rp->order; ++i)
+    for (size_t i = 0; i < rp->order; ++i)
       rp->cof[i] = hdr->CalibrationCoefficient(vn, i);
 
     rp->order = check_cal_coes(rp->order, rp->cof);
@@ -299,7 +296,7 @@ static void in_sdi(Sh *vn)
 
   cp->order = hdr->CalibrationOrder(vn);
 
-  for (i = 0; i < cp->order; ++i)
+  for (size_t i = 0; i < cp->order; ++i)
     cp->cof[i] = hdr->CalibrationCoefficient(vn, i);
 
   cp->order = check_cal_coes(cp->order, cp->cof);
@@ -312,9 +309,8 @@ static void in_sdi(Sh *vn)
  * header first.  Currently this is LEFT PIT.  xbuild.c is responsible
  * for insuring this.
  */
-static void in_irs(Irs *vn)
+static void in_irs(Irs *)
 {
-  int		i;
   RAWTBL	*rp;
   char		*names[50];
   char		name[NAMELEN];
@@ -328,7 +324,7 @@ static void in_irs(Irs *vn)
 
   ReadTextFile(IRSNAMES, names);
 
-  for (i = 0; names[i]; ++i)
+  for (size_t i = 0; names[i]; ++i)
     {
     sscanf(names[i], "%s %d", name, &rate);
 
@@ -344,15 +340,14 @@ static void in_irs(Irs *vn)
 }	/* END IN_IRS */
 
 /* -------------------------------------------------------------------- */
-static void in_ophir3(Blk *vn)
+static void in_ophir3(Blk *)
 {
   RAWTBL	*rp;
-  int		i, j;
   char		*list[32];
 
   ReadTextFile(OPHIR3NAMES, list);
 
-  for (i = 0; list[i]; ++i)
+  for (size_t i = 0; list[i]; ++i)
     {
     if ((rp = add_name_to_RAWTBL(strtok(list[i], " \t"))) == (RAWTBL *)ERR)
       continue;
@@ -361,7 +356,7 @@ static void in_ophir3(Blk *vn)
     rp->convertFactor	= 1.0;
     rp->order		= atoi(strtok((char *)NULL, " \t"));
 
-    for (j = 0; j < rp->order; ++j)
+    for (size_t j = 0; j < rp->order; ++j)
       rp->cof[j] = (float)atof(strtok((char *)NULL, " \t"));
     }
 

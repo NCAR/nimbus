@@ -19,6 +19,7 @@ DESCRIPTION:
 #include <netinet/in.h>
 
 #define CONSTANTS_H
+#define ERR		(-1)
 #define NAMLEN          13
 
 #include "nimbus.h"
@@ -44,9 +45,9 @@ DESCRIPTION:
 typedef struct
 	{
 	char    name[NAMLEN];
-	int     SampleRate;
+	size_t	SampleRate;
 	int     SRstart;
-	int     nPoints;
+	size_t	nPoints;
 	int	plotID;
 	} VARTBL;
 
