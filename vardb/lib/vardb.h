@@ -75,6 +75,9 @@ struct var_v2
 	};
 
 
+extern struct vardb_hdr	master_VarDB_Hdr;
+extern void		*master_VarDB;
+
 extern struct vardb_hdr	VarDB_Hdr;
 extern void		*VarDB;
 
