@@ -68,6 +68,7 @@ static struct tm	StartFlight;
 static void		*data_p[MAX_SDI+MAX_RAW+MAX_DERIVE];
 static long		recordNumber = 0;
 static float		TimeOffset = 0.0;
+static const float	missing_val = MISSING_VALUE;
 
 static int	ttxI;	// junk var, delete if hanging around July-2004
 
@@ -81,9 +82,10 @@ int	FlightDate[3];		// HACK: for amlib
 char	dateProcessed[32];	// For export to psql.c
 
 
-static int writeBlank(int varid, long start[], long count[], int OutputRate);
-static void markDependedByList(char target[]);
-static void clearDependedByList(), printDependedByList();
+static int	writeBlank(int varid, long start[], long count[], int OutputRate);
+static void	markDependedByList(char target[]);
+static void	clearDependedByList(), printDependedByList();
+static void	addCommonVariableAttributes(char name[], int varid);
 
 void	AddPMS1dAttrs(int ncid, RAWTBL *rp),
 	CheckAndAddAttrs(int fd, int varid, char name[]);
@@ -180,7 +182,6 @@ void CreateNetCDF(char fileName[])
 	Vector6Dim, Vector256Dim, Dim100Hz;
 
   char	*p;
-  float	missing_val = MISSING_VALUE;
 
 
   fd = nccreate(fileName, NC_CLOBBER);
@@ -402,16 +403,8 @@ void CreateNetCDF(char fileName[])
 //printf("SDI:%s\n", sp->name); fflush(stdout);
     sp->varid = ncvardef(fd, sp->name, NC_FLOAT, ndims, dims);
 
-    p = VarDB_GetUnits(sp->name);
-    ncattput(fd, sp->varid, "units", NC_CHAR, strlen(p)+1, p);
-    p = VarDB_GetTitle(sp->name);
-    ncattput(fd, sp->varid, "long_name", NC_CHAR, strlen(p)+1, p);
+    addCommonVariableAttributes(sp->name, sp->varid);
 
-    p = VarDB_GetCategoryName(sp->name);
-    ncattput(fd, sp->varid, "Category", NC_CHAR, strlen(p)+1, p);
-
-    ncattput(fd, sp->varid, "_FillValue", NC_FLOAT, 1, &missing_val);
-    ncattput(fd, sp->varid, "missing_value", NC_FLOAT, 1, &missing_val);
     ncattput(fd, sp->varid, "SampledRate", NC_LONG, 1, &sp->SampleRate);
     ncattput(fd, sp->varid, "DataQuality", NC_CHAR, strlen(sp->DataQuality)+1,
 		sp->DataQuality);
@@ -591,16 +584,8 @@ void CreateNetCDF(char fileName[])
 //printf("RAW:%s\n", rp->name); fflush(stdout);
     rp->varid = ncvardef(fd, rp->name, NC_FLOAT, ndims, dims);
 
-    p = VarDB_GetUnits(rp->name);
-    ncattput(fd, rp->varid, "units", NC_CHAR, strlen(p)+1, p);
-    p = VarDB_GetTitle(rp->name);
-    ncattput(fd, rp->varid, "long_name", NC_CHAR, strlen(p)+1, p);
+    addCommonVariableAttributes(rp->name, rp->varid);
 
-    p = VarDB_GetCategoryName(rp->name);
-    ncattput(fd, rp->varid, "Category", NC_CHAR, strlen(p)+1, p);
-
-    ncattput(fd, rp->varid, "_FillValue", NC_FLOAT, 1, &missing_val);
-    ncattput(fd, rp->varid, "missing_value", NC_FLOAT, 1, &missing_val);
     ncattput(fd, rp->varid, "SampledRate", NC_LONG, 1, &rp->SampleRate);
     ncattput(fd, rp->varid, "DataQuality", NC_CHAR, strlen(rp->DataQuality)+1,
 		rp->DataQuality);
@@ -779,16 +764,8 @@ void CreateNetCDF(char fileName[])
 //printf("DER:%s\n", dp->name); fflush(stdout);
     dp->varid = ncvardef(fd, dp->name, NC_FLOAT, ndims, dims);
 
-    p = VarDB_GetUnits(dp->name);
-    ncattput(fd, dp->varid, "units", NC_CHAR, strlen(p)+1, p);
-    p = VarDB_GetTitle(dp->name);
-    ncattput(fd, dp->varid, "long_name", NC_CHAR, strlen(p)+1, p);
+    addCommonVariableAttributes(dp->name, dp->varid);
 
-    p = VarDB_GetCategoryName(dp->name);
-    ncattput(fd, dp->varid, "Category", NC_CHAR, strlen(p)+1, p);
-
-    ncattput(fd, dp->varid, "_FillValue", NC_FLOAT, 1, &missing_val);
-    ncattput(fd, dp->varid, "missing_value", NC_FLOAT, 1, &missing_val);
     ncattput(fd, dp->varid, "DataQuality", NC_CHAR, strlen(dp->DataQuality)+1,
 		dp->DataQuality);
 
@@ -1388,5 +1365,32 @@ static void printDependedByList()
   LogMessage("\n");
 
 }
+
+/* -------------------------------------------------------------------- */
+static void addCommonVariableAttributes(char name[], int varid)
+{
+  char *p;
+
+  ncattput(fd, varid, "_FillValue", NC_FLOAT, 1, &missing_val);
+  p = VarDB_GetUnits(name);
+  ncattput(fd, varid, "units", NC_CHAR, strlen(p)+1, p);
+  p = VarDB_GetTitle(name);
+  ncattput(fd, varid, "long_name", NC_CHAR, strlen(p)+1, p);
+
+  if (fabs(VarDB_GetMinLimit(name)) + fabs(VarDB_GetMaxLimit(name)) > 0.0001)
+  {
+    NR_TYPE   range[2];
+
+    range[0] = VarDB_GetMinLimit(name);
+    range[1] = VarDB_GetMaxLimit(name);
+    ncattput(fd, varid, "valid_range", NC_FLOAT, 2, range);
+  }
+
+  p = VarDB_GetCategoryName(name);
+  ncattput(fd, varid, "Category", NC_CHAR, strlen(p)+1, p);
+
+  ncattput(fd, varid, "missing_value", NC_FLOAT, 1, &missing_val);
+
+}	/* END ADDCOMMONVARIABLEATTRIBUTES */
 
 /* END NETCDF.C */
