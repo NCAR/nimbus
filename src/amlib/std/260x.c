@@ -42,10 +42,10 @@ static NR_TYPE	radius[MAX_260X][BINS_64], cell_size[MAX_260X][BINS_64],
 NR_TYPE         reff63[MAX_260X], reff62[MAX_260X];  /* For export to reff.c */
 
 void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
-		float minRange, float resolution, size_t nDiodes, size_t length),
+	float minRange, float resolution, size_t nDiodes, size_t length),
 
 	ComputeDOF(NR_TYPE radius[], NR_TYPE tas, NR_TYPE dof[],
-		size_t FirstBin, size_t LastBin, float RES, NR_TYPE RESPONSE_TIME);
+	size_t FirstBin, size_t LastBin, float RES, NR_TYPE RESPONSE_TIME);
 
 
 /* -------------------------------------------------------------------- */
@@ -117,7 +117,7 @@ void c260xInit(RAWTBL *varp)
   ReleasePMSspecs();
 
   SampleRate[probeNum] = varp->SampleRate;
-//  printf("260X:\n");
+
   ComputePMS1DParams(radius[probeNum], eaw[probeNum], cell_size[probeNum],
 	minRange, resolution[probeNum], nDiodes, varp->Length);
 
@@ -159,14 +159,12 @@ void sc260x(DERTBL *varp)
   else
     concentration = &AveragedData[varp->LRstart];
 
-//printf("%s - %f\n", varp->name, tas);
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
     {
     if (dof[i] > armDistance[probeNum])
       dof[i] = armDistance[probeNum];
 
     sampleVolume[i] = tas * (dof[i] * eaw[probeNum][i]) * 0.001;
-//printf("%d %d %f %f\n", i, (int)dia[i], sampleVolume[i], dof[i] * eaw[probeNum][i]);
     }
 
 #define PLWC
