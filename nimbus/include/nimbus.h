@@ -47,7 +47,7 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 
 #define MAX_COF		10
 #define MAXDEPEND	12
-#define MAX_TIME_SLICES	5
+#define MAX_TIME_SLICES	1
 
 
 enum SYNTHTYPE {sy_file, sy_constant, sy_function, sy_none};

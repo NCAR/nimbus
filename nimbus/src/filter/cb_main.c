@@ -119,7 +119,7 @@ void CancelSetup(Widget w, XtPointer client, XtPointer call)
 
 
   DismissEditWindow(NULL, NULL, NULL);
-  DismissTimeSliceWindow(NULL, NULL, NULL);
+  DismissConfigWindow(NULL, NULL, NULL);
 
   XtPopdown(XtParent(SetupWindow));
   XtUnmanageChild(SetupWindow);
@@ -359,7 +359,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   long		btim, etim;
 
   DismissEditWindow(NULL, NULL, NULL);
-  DismissTimeSliceWindow(NULL, NULL, NULL);
+  DismissConfigWindow(NULL, NULL, NULL);
   XtSetSensitive(list1, false);
   XtSetSensitive(menuBar, false);
 
