@@ -1,6 +1,6 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:	Xwin.c
+OBJECT NAME:	Xwin.cc
 
 FULL NAME:	Create X window GUI
 
@@ -822,4 +822,4 @@ static void CreateDSMmenu(Widget parent, Widget *om, Widget *pd)
 
 }	/* END CREATEDSMMENU */
 
-/* END XWIN.C */
+/* END XWIN.CC */

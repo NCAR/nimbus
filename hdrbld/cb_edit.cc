@@ -1,6 +1,6 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:	cb_edit.c
+OBJECT NAME:	cb_edit.cc
 
 FULL NAME:	Callbacks for SDI edit area.
 
@@ -22,7 +22,7 @@ REFERENCES:
 
 REFERENCED BY:	
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2000
+COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2004
 -------------------------------------------------------------------------
 */
 
@@ -332,4 +332,4 @@ void MapCalCof(Widget w, XtPointer client, XtPointer call)
  
 }   /* END MAPCALCOE */
 
-/* END CCB.C */
+/* END CB_EDIT.CC */

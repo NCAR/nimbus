@@ -1,6 +1,6 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:	projFile.c
+OBJECT NAME:	projFile.cc
 
 FULL NAME:	Edit Project File Window Callbacks
 
@@ -22,7 +22,7 @@ REFERENCED BY:
 
 NOTES:		
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2002
+COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2004
 -------------------------------------------------------------------------
 */
 
@@ -254,8 +254,13 @@ void CreateProject2(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void CreateProject(Widget w, XtPointer client, XtPointer call)
 {
-  QueryUser("Enter Project Number:", 12, CreateProject2);
+  /* Check to see if user is 'nimbus'.
+   */
+  if (getuid() != 130)
+    ShowError("Must be logged in as 'nimbus' to create a project.");
+  else
+    QueryUser("Enter Project Number:", 12, CreateProject2);
 
 }
 
-/* END PROJFILE.C */
+/* END PROJFILE.CC */

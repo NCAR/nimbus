@@ -1,6 +1,6 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:	cb_file.c
+OBJECT NAME:	cb_file.cc
 
 FULL NAME:	File Menu Callbacks
 
@@ -1036,4 +1036,4 @@ void Quit(Widget w, XtPointer client, XtPointer call)
   exit(0);
 }
 
-/* END CB_FILE.C */
+/* END CB_FILE.CC */
