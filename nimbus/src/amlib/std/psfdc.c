@@ -24,12 +24,8 @@ void spsfdc(DERTBL *varp)
 
   psfdc = psfd + (*pcorPSFD)(akrd,1.0);
 
-/*  if (qcx < 10.0)
+  if (qcx < 10.0)
     psfdc = psfd;
-*/
-
-  if (psfdc < 50.0)
-    psfdc = 50.0;
 
   PutSample(varp, psfdc);
 

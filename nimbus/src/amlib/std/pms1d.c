@@ -11,17 +11,13 @@ STATIC FNS:	none
 
 DESCRIPTION:	Functions used by all PMS1D OAP probes.
 
-INPUT:		
-
-OUTPUT:		
-
 REFERENCES:	none
 
 REFERENCED BY:	s260x(), stwoDc(), stwoDp()
 
 NOTES:		Calculations taken from Bulletin 24 dated 1/89.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2002
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 -------------------------------------------------------------------------
 */
 
@@ -49,7 +45,6 @@ void ComputePMS1DParams(
     diam[i]	= minRange;
     radius[i]	= minRange / 2000; /* Units: mm */
     eaw[i]	= diodeDiameter * (nDiodes - i - 1) / mag; /* Units: mm */
-//printf("%f %f\n", diam[i], eaw[i]);
     }
 
 }	/* END COMPUTEPMS1DPARAMS */

@@ -31,18 +31,18 @@ extern int    Aircraft;
 /* -------------------------------------------------------------------- */
 void sakrd(DERTBL *varp)
 {
-  NR_TYPE    qcxc, adifr;
-  NR_TYPE    akrd, ratio;
+  NR_TYPE	qcxc, adifr;
+  NR_TYPE	akrd, ratio;
 
-  adifr    = GetSample(varp, 0);
-  qcxc    = GetSample(varp, 1);
+  adifr	= GetSample(varp, 0);
+  qcxc	= GetSample(varp, 1);
 
   /* Blow-up protection:  output zero while on ground (QCX < 5.5 mbar)
-       installed by Ron Ruth  18 October 2001 */
-
+   * installed by Ron Ruth  18 October 2001
+   */
   if (qcxc < 5.5)
     {
-      akrd = 0.0;
+    akrd = 0.0;
     }
   else
     {
