@@ -10,25 +10,33 @@ RAFINC	= ${JLOCAL}/include
 C2D	= ../class
 O2D	= ../class
 
-#       Solaris
-#
-DEFINES	= -DSVR4 -DPNG
-INCLUDES= -I${INC} -I${RAFINC} -I/usr/dt/include
-LIB_DIRS= -L${JLOCAL}/lib
-LIBS    = -lraf++ -Wl,-Bstatic -lpng -lz -Wl,-Bdynamic -R /usr/dt/lib -lXm -lXt -lX11
-IHOST	= mead
-ANONFTP	= /net/ftp/pub/src/bin.Solaris2.9
- 
 #       Linux
 #
 DEFINES	= -DPNG
 INCLUDES= -I${INC} -I/usr/X11R6/include -I${RAFINC}
 LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib
-LIBS   = -lraf++ -lXm -lXt -LSM -lICE -lXext -lXp -lX11 -lpng -lz
+LIBS   = -lraf++ -lXm -lXt -lXext -lX11 -lpng -lz
 IHOST	= syrah
 ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.RedHat9.0
 
+#       Mac OS X
+#
+#DEFINES	= -DPNG
+#INCLUDES= -I${INC} -I${RAFINC} -I/usr/X11R6/include -I/sw/include
+#LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib -L/sw/lib
+#LIBS   = -lraf++ -lXm -lXt -lICE -lXext -lX11 -lpng -lz
+#LIBS   = -lraf++ -lXm -lXt -lICE -lXext -lX11
 
+
+#       Solaris
+#
+#DEFINES	= -DSVR4 -DPNG
+#INCLUDES= -I${INC} -I${RAFINC} -I/usr/dt/include
+#LIB_DIRS= -L${JLOCAL}/lib
+#LIBS    = -lraf++ -Wl,-Bstatic -lpng -lz -Wl,-Bdynamic -R /usr/dt/lib -lXm -lXt -lX11
+#IHOST	= mead
+#ANONFTP	= /net/ftp/pub/src/bin.Solaris2.9
+ 
 
 # Don't use optimization with gcc (2.95.2 and earlier) and C++.
 CXX	= g++
@@ -55,7 +63,7 @@ ${PROG}: ${OBJS} classDir
 	${CXX} ${CXXFLAGS} ${LIB_DIRS} ${OBJS} ${O2DOB} ${LIBS} -o $@
 
 classDir:
-	cd ${O2D}; gmake "CXXFLAGS=${CXXFLAGS}"
+	cd ${O2D}; make "CXXFLAGS=${CXXFLAGS}"
 
 release:
 	(cd ..; tar cFFf - . | (cd ${RELEASE}; tar xfBp -))

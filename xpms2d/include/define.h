@@ -17,14 +17,9 @@ DESCRIPTION:
 #include <cstring>
 #include <iostream>
 
-#include <string.h>
-
 #include <Xm/Xm.h>
 
 #include "Queue.h"
-
-typedef unsigned long	ulong;
-typedef unsigned short	ushort;
 
 #ifndef NULL
 #define NULL		(0)

@@ -58,15 +58,15 @@ FILE *fout;
 struct recStats &ProcessRecord(P2d_rec *record, float version)
 {
   int		i, j, thisTime, probeIdx, h, startTime, bin, nBins, overload;
-  ulong		*p, slice, ppSlice, pSlice, syncWord, startMilliSec;
+  unsigned long		*p, slice, ppSlice, pSlice, syncWord, startMilliSec;
   bool		overloadAdded = false, debug = false;
   double	sampleVolume[128], diameter, z, conc, totalLiveTime;
 
   Particle	*cp;
 
   static P2d_hdr	prevHdr[MAX_PROBES];
-  static ulong		prevTime[MAX_PROBES] = { 1,1,1,1 };
-  static ulong		prevSlice[MAX_PROBES][2];
+  static unsigned long		prevTime[MAX_PROBES] = { 1,1,1,1 };
+  static unsigned long		prevSlice[MAX_PROBES][2];
 
   if (((char *)&record->id)[0] == 'H')
     return(ProcessHVPSrecord(record, version));
@@ -137,7 +137,7 @@ if (debug)
 			(output.DASelapsedTime - record->overld) * 0.001;
 
   // Scan record, compute tBarElapsedtime and stats.
-  p = (ulong *)record->data;
+  p = (unsigned long *)record->data;
   ppSlice = prevSlice[probeIdx][0];
   pSlice = prevSlice[probeIdx][1];
   output.tBarElapsedtime = 0;
@@ -178,7 +178,7 @@ if (debug) printf("%08x %08x %08x\n", ppSlice, pSlice, slice);
       cp->timeReject = false;
 
       cp->timeWord = pSlice & 0x00ffffff;
-      cp->deltaTime = (ulong)((float)cp->timeWord * output.frequency);
+      cp->deltaTime = (unsigned long)((float)cp->timeWord * output.frequency);
       output.minBar = std::min(output.minBar, cp->deltaTime);
       output.maxBar = std::max(output.maxBar, cp->deltaTime);
 
@@ -232,7 +232,7 @@ if (debug) printf("%08x %08x %08x\n", ppSlice, pSlice, slice);
        * particle consumed, so we can add it to the deadTime, so sampleVolume
        * can be reduced accordingly.
        */
-      cp->liveTime = (ulong)((float)(cp->w + 3) * output.frequency);
+      cp->liveTime = (unsigned long)((float)(cp->w + 3) * output.frequency);
 
       cp->msec /= 1000;
 
@@ -351,7 +351,7 @@ if (debug)
   if (output.nTimeBars > 0)
     output.meanBar = output.tBarElapsedtime / output.nTimeBars;
 
-output.tBarElapsedtime += (ulong)(1024 * output.frequency);
+output.tBarElapsedtime += (unsigned long)(1024 * output.frequency);
 
   output.tBarElapsedtime /= 1000;	// convert to milliseconds
   output.frequency /= 1000;
@@ -390,7 +390,7 @@ output.tBarElapsedtime += (ulong)(1024 * output.frequency);
   prevTime[probeIdx] = thisTime;
   memcpy((char *)&prevHdr[probeIdx], (char *)record, sizeof(P2d_hdr));
 
-  p = (ulong *)record->data;
+  p = (unsigned long *)record->data;
   prevSlice[probeIdx][0] = p[1022];
   prevSlice[probeIdx][1] = p[1023];
 
@@ -403,18 +403,18 @@ struct recStats &ProcessHVPSrecord(P2d_rec *record, float version)
 {
   int		i, j, thisTime, probeIdx, h, startTime, bin, nBins,
 		shaded, unshaded;
-  ushort	*p, slice, ppSlice, pSlice, startMilliSec;
+  unsigned short	*p, slice, ppSlice, pSlice, startMilliSec;
   bool		overloadAdded = false, debug = false;
   double	sampleVolume[512], diameter, z, conc, totalLiveTime;
 
   Particle	*cp;
 
   static P2d_hdr	prevHdr[MAX_PROBES];
-  static ulong	prevTime[MAX_PROBES] = { 1,1,1,1 };
-  static ushort	prevSlice[MAX_PROBES][2];
+  static unsigned long	prevTime[MAX_PROBES] = { 1,1,1,1 };
+  static unsigned short	prevSlice[MAX_PROBES][2];
 
   probeIdx = ((char *)&record->id)[1] - '1';
-  p = (ushort *)record->data;
+  p = (unsigned short *)record->data;
 
 
   if (p[0] == 0xcaaa)
@@ -490,7 +490,7 @@ if (debug)
 			(output.DASelapsedTime - record->overld);
 
   // Scan record, compute tBarElapsedtime and stats.
-  p = (ushort *)record->data;
+  p = (unsigned short *)record->data;
   ppSlice = prevSlice[probeIdx][0];
   pSlice = prevSlice[probeIdx][1];
   output.tBarElapsedtime = 0;
@@ -538,10 +538,10 @@ if (debug) printf("%08x %08x %08x\n", ppSlice, pSlice, p[0]);
 
 //printf("timing words %x %x %x\n", p[-1], p[0], p[1]);
 
-      cp->timeWord = (((ulong)p[0] << 14) & 0x0fffc000);
-      cp->timeWord += (ulong)(p[1] & 0x3fff);
+      cp->timeWord = (((unsigned long)p[0] << 14) & 0x0fffc000);
+      cp->timeWord += (unsigned long)(p[1] & 0x3fff);
 //printf("  time out = %x\n", cp->timeWord);
-      cp->deltaTime = (ulong)((float)cp->timeWord * output.frequency);
+      cp->deltaTime = (unsigned long)((float)cp->timeWord * output.frequency);
       output.minBar = std::min(output.minBar, cp->deltaTime);
       output.maxBar = std::max(output.maxBar, cp->deltaTime);
 
@@ -616,7 +616,7 @@ if (debug) printf("%08x %08x %08x\n", ppSlice, pSlice, p[0]);
        * particle consumed, so we can add it to the deadTime, so sampleVolume
        * can be reduced accordingly.
        */
-      cp->liveTime = (ulong)((float)(cp->w) * output.frequency);
+      cp->liveTime = (unsigned long)((float)(cp->w) * output.frequency);
       cp->w *= TAS_COMPENSATE;
 
       cp->msec /= 1000;
@@ -734,7 +734,7 @@ if (debug)
   if (output.nTimeBars > 0)
     output.meanBar = output.tBarElapsedtime / output.nTimeBars;
 
-//output.tBarElapsedtime += (ulong)(2048 * output.frequency);
+//output.tBarElapsedtime += (unsigned long)(2048 * output.frequency);
 
   output.tBarElapsedtime /= 1000;	// convert to milliseconds
   output.frequency /= 1000;
@@ -777,7 +777,7 @@ if (debug)
   prevTime[probeIdx] = thisTime;
   memcpy((char *)&prevHdr[probeIdx], (char *)record, sizeof(P2d_hdr));
 
-  p = (ushort *)record->data;
+  p = (unsigned short *)record->data;
   prevSlice[probeIdx][0] = p[2046];
   prevSlice[probeIdx][1] = p[2047];
 

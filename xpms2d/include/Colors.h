@@ -47,9 +47,9 @@ public:
   int	NumberOfColors()	{ return(numberColors); }
   void	ResetColors()		{ colorIndex = 0; }
 
-  ulong	GetColor(int indx);
-  ulong	NextColor();
-  ulong	CurrentColor();
+  unsigned long	GetColor(int indx);
+  unsigned long	NextColor();
+  unsigned long	CurrentColor();
 
   float	*GetColorPS(int indx);
   float	*NextColorPS();
@@ -64,7 +64,7 @@ public:
 private:
 #ifdef PNG
   void	checkByteSwap(XImage *image);
-  int	getColorIndex(ulong pixel);
+  int	getColorIndex(unsigned long pixel);
 #endif
 
   int	colorIndex, numberColors;

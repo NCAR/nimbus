@@ -92,14 +92,14 @@ void MainCanvas::reset(ADS_DataFile *file)
 void MainCanvas::draw(P2d_rec *record, struct recStats &stats, float version, int probeNum, PostScript *ps)
 {
   int		i, j, nextColor, cntr = 0, y1, shaded, unshaded;
-  ulong		*p, slice, pSlice, ppSlice, timeWord, thisTime, syncWord;
+  unsigned long	*p, slice, pSlice, ppSlice, timeWord, thisTime, syncWord;
   char		buffer[256];
   bool		debug = false, colorIsBlack = False;
   Particle	*cp;
 
   static short  prevOverLoad = 0;
-  static ulong  prevSlice[2];
-  static ulong  prevTime;
+  static unsigned long  prevSlice[2];
+  static unsigned long  prevTime;
 
   if (version < 3.35)
     syncWord = 0xff000000;
@@ -109,7 +109,7 @@ void MainCanvas::draw(P2d_rec *record, struct recStats &stats, float version, in
 //  if (record->msec == 397) debug = true;
 
   // Ok, now go back and display the data.
-  p = (ulong *)record->data;
+  p = (unsigned long *)record->data;
   ppSlice = prevSlice[0];
   pSlice = prevSlice[1];
   pen->SetFont(fonts->Font(3));
@@ -131,7 +131,7 @@ void MainCanvas::draw(P2d_rec *record, struct recStats &stats, float version, in
   if (((char *)&record->id)[0] == 'H')
     {
     int		line = LEFT_MARGIN;
-    ushort	*sp = (ushort *)record->data;
+    unsigned short	*sp = (unsigned short *)record->data;
 
     if (*sp == 0xcaaa)
       {
@@ -189,7 +189,7 @@ void MainCanvas::draw(P2d_rec *record, struct recStats &stats, float version, in
         if (ps) ps->SetColor(color->GetColorPS(BLUE));
         else pen->SetColor(color->GetColor(BLUE));
 
-//printf("\ntiming: %d, ovrld=%x - %x", (((ulong)sp[i] << 15) & 0x3fff0000)+(ulong)(sp[i+1] & 0x3fff), sp[i] & 0xc000, sp[i+1] & 0xc000);
+//printf("\ntiming: %d, ovrld=%x - %x", (((unsigned long)sp[i] << 15) & 0x3fff0000)+(unsigned long)(sp[i+1] & 0x3fff), sp[i] & 0xc000, sp[i+1] & 0xc000);
 
         i += 2;
 
@@ -252,7 +252,7 @@ void MainCanvas::draw(P2d_rec *record, struct recStats &stats, float version, in
 
 if (debug) if (cp) printf("dq: %06x %d %d\n", cp->timeWord, cp->h, cp->w); else printf("NULL\n");
 
-      timeWord = (ulong)((float)cp->timeWord * stats.frequency);
+      timeWord = (unsigned long)((float)cp->timeWord * stats.frequency);
 
       if (timeWord >= stats.DASelapsedTime)
         {
@@ -483,7 +483,7 @@ colWidth = Width() / nCols;
 }
 
 exit:
-  p = (ulong *)record->data;
+  p = (unsigned long *)record->data;
   prevSlice[0] = p[1022];
   prevSlice[1] = p[1023];
   prevOverLoad = record->overld;
@@ -530,7 +530,7 @@ void MainCanvas::enchiladaLineItem(PostScript *ps, int i, int cnt,
 }
 
 /* -------------------------------------------------------------------- */
-void MainCanvas::drawSlice(PostScript *ps, int i, ulong slice)
+void MainCanvas::drawSlice(PostScript *ps, int i, unsigned long slice)
 {
   int		j, cnt;
   XPoint	pts[32];

@@ -21,7 +21,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2001
 
 static P2d_rec PtestRecord, CtestRecord, HtestRecord;
 
-static ulong PtestParticle[] = {
+static unsigned long PtestParticle[] = {
 0xffffffff,
 0xff000134,
 0x55000000,
@@ -40,7 +40,7 @@ static ulong PtestParticle[] = {
 0xffffffff
  };
 
-static ulong CtestParticle[] = {
+static unsigned long CtestParticle[] = {
 0xffffffff,
 0xff000e00,
 0x55000000,
@@ -67,7 +67,7 @@ static ulong CtestParticle[] = {
 0xffffffff
  };
 
-static ushort HtestParticle[] = {
+static unsigned short HtestParticle[] = {
 0x8000,
 0x807a,
 
@@ -168,8 +168,8 @@ ADS_DataFile::ADS_DataFile(char fName[])
 void ADS_DataFile::ToggleSyntheticData()
 {
   int		i, j;
-  ulong		*p;
-  ushort	*s;
+  unsigned long		*p;
+  unsigned short	*s;
 
   useTestRecord = 1 - useTestRecord;
 
@@ -181,7 +181,7 @@ void ADS_DataFile::ToggleSyntheticData()
   CtestRecord.msec = 100;
   CtestRecord.overld = 36;
 
-  p = (ulong *)CtestRecord.data;
+  p = (unsigned long *)CtestRecord.data;
   for (i = 0; i < 48; ++i)
     for (j = 0; j < 21; ++j)
       *p++ = CtestParticle[j];
@@ -198,7 +198,7 @@ void ADS_DataFile::ToggleSyntheticData()
   PtestRecord.msec = 100;
   PtestRecord.overld = 30;
 
-  p = (ulong *)PtestRecord.data;
+  p = (unsigned long *)PtestRecord.data;
   for (i = 0; i < 78; ++i)
     for (j = 0; j < 13; ++j)
       *p++ = PtestParticle[j];
@@ -215,7 +215,7 @@ void ADS_DataFile::ToggleSyntheticData()
   HtestRecord.msec = 100;
   HtestRecord.overld = 30;
 
-  s = (ushort *)HtestRecord.data;
+  s = (unsigned short *)HtestRecord.data;
   for (i = 0; i < 204; ++i)
     for (j = 0; j < 10; ++j)
       *s++ = HtestParticle[j];
@@ -439,7 +439,7 @@ int ADS_DataFile::NextPhysicalRecord(char buff[])
   if (rc != 1)
     return(0);
 
-  idWord = ntohs(*((ushort *)buff));
+  idWord = ntohs(*((unsigned short *)buff));
 
   switch (idWord)
     {
@@ -637,14 +637,14 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
   // Perform byte swapping on whole [data] record if required.
   if (1 != ntohs(1))
     {
-    ulong       *p;
-    ushort       *sp = (ushort *)buff;
+    unsigned long       *p;
+    unsigned short       *sp = (unsigned short *)buff;
 
     for (int i = 1; i < 10; ++i)
       sp[i] = ntohs(sp[i]);
 
-    p = (ulong *)buff->data;
-    sp = (ushort *)buff->data;
+    p = (unsigned long *)buff->data;
+    sp = (unsigned short *)buff->data;
 
     if (((char *)&buff->id)[0] == 'H')
       for (int i = 0; i < 2048; ++i, ++sp)
