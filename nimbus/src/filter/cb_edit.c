@@ -214,24 +214,23 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
     {
     case SDI:
       /*synthetic data modifications*/
-      if(constsynthval)
-	{
-        tempvar.type='s';
-        tempvar.name=sp->name;
-        tempvar.value=constsynthval;
-        sd.registervar(tempvar);
-        alreadyset=true;
-	}
-      else if(!(p=="none"))
-	{
-        tempvar.type='s';
-        tempvar.name=sp->name;
-        tempvar.function=p;
-        sd.registerfunc(tempvar); 
-        alreadyset=true;
-       }
-      /****************************/
-      dq = SearchDataQuality(p);
+       if (strcmp(dq, "synthetic") == 0)
+         {
+         if (constsynthval)
+           {
+           tempvar.type='s';
+           tempvar.name=sp->name;
+           tempvar.value=constsynthval;
+           sd.registervar(tempvar);
+           }
+         else if(!(p=="none"))
+           {
+           tempvar.type='s';
+           tempvar.name=sp->name;
+           tempvar.function=p;
+           sd.registerfunc(tempvar); 
+          }
+        }
 
       sp->Dirty = true;
       sp->Output = output;
@@ -241,10 +240,7 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
 
       sp->StaticLag = lag;
       sp->SpikeSlope = spike;
-      if(!alreadyset)
-	{
       sp->DataQuality = dq;
-	}
       sp->order = 0;
 
       for (i = MAX_COF-1; i >= 0; --i)
@@ -265,24 +261,23 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
 
     case RAW:
        /*synthetic data modifications*/
-       if(constsynthval)
-	{
-        tempvar.type='r';
-        tempvar.name=rp->name;
-        tempvar.value=constsynthval;
-        sd.registervar(tempvar);
-	alreadyset=true;
-       }
-       else if(!(p=="none"))
-	{
-        tempvar.type='r';
-        tempvar.name=rp->name;
-        tempvar.function=p;
-        sd.registerfunc(tempvar);
-	alreadyset=true;
-       }
-      /****************************/
-       dq = SearchDataQuality(p);
+       if (strcmp(dq, "synthetic") == 0)
+         {
+         if (constsynthval)
+           {
+           tempvar.type='r';
+           tempvar.name=rp->name;
+           tempvar.value=constsynthval;
+           sd.registervar(tempvar);
+           }
+         else if(!(p=="none"))
+           {
+           tempvar.type='r';
+           tempvar.name=rp->name;
+           tempvar.function=p;
+           sd.registerfunc(tempvar);
+           }
+         }
 
       rp->Dirty = true;
       rp->Output = output;
@@ -296,10 +291,8 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
 
       rp->StaticLag = lag;
       rp->SpikeSlope = spike;
-      if(!alreadyset)
-	{
       rp->DataQuality = dq;
-	}
+
       for (i = 0; i < rp->order; ++i)
         {
         p = XmTextFieldGetString(ev_text[i]);

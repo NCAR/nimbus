@@ -530,7 +530,7 @@ bool Open2dFile(char file[], int probeCnt)
 {
   char	*p;
 
-  printf("Checking for 2d file %s....\n", file);
+  printf("adsIO:Open2dFile: %s ....", file);
   strcpy(twoDfile, file);
   p = strstr(twoDfile, ".ads");
   strcpy(p, ".2d");
@@ -543,18 +543,18 @@ bool Open2dFile(char file[], int probeCnt)
 
     if (access(twoDfile, R_OK) == ERR)
       {
-      fprintf(stderr, "\nadsIO: failed to locate.\n");
+      fprintf(stderr, "  Failed to locate.\n");
       return(false);
       }
     }
 
   if ((twoDfd[probeCnt] = open(twoDfile, O_RDONLY)) < 0)
     {
-    fprintf(stderr, "\nadsIO: failed to open.\n");
+    fprintf(stderr, "  Failed to open.\n");
     return(false);
     }
 
-printf("Opened.\n");
+  printf("  Opened.\n");
   return(true);
 
 }	/* OPEN2DFILE */
@@ -575,14 +575,16 @@ static int GetNext2Dfile()
 
   if (access(twoDfile, R_OK) == ERR)
     return(false);
-printf("Switching 2d file to %s\n", twoDfile);
+
+  printf("adsIO:GetNext2dFile: Switching 2d file to %s\n", twoDfile);
+
   for (i = 0; twoDfd[i] != -1; ++i)
     {
     close(twoDfd[i]);
 
     if ((twoDfd[i] = open(twoDfile, O_RDONLY)) == ERR)
       {
-      LogMessage("Can't open next 2d file in sequence.\n");
+      LogMessage("  Can't open next 2d file in sequence.\n");
       return(false);
       }
     }

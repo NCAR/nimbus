@@ -193,7 +193,7 @@ static void readHeader()
     CancelSetup(NULL, NULL, NULL);
     return;
     }
-printf("%d %d %d\n", nsdi, nraw, nderive);
+
   if (FlightNumberInt == 0)
     HandleWarning("Flight Number is 0, a new one may be entered\nvia the 'Edit/Flight Info' menu item,\nor run fixFltNum on the ADS image and start nimbus again.", NULL, NULL);
 
@@ -484,7 +484,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
 void stopProcessing()
 {
   XmString	label;
-  Arg			args[1];
+  Arg		args[1];
   float		x;
 
   CloseNetCDF();
