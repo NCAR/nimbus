@@ -1,0 +1,61 @@
+#
+#    Makefile for Skeleton program
+#
+CC=             gcc
+BINDIR=         ${LOCAL}/bin
+RELEASE=        ${LOCAL}/ncextr
+MANDIR=         ${LOCAL}/man/man1
+
+# Solaris
+#
+INCLUDES= -I${JLOCAL}/include
+DEFINES = -DSVR4
+LIBS    = -R /usr/dt/lib -lraf -lXm -lXt -lX11 -lnetcdf
+LIB_DIRS= -L${JLOCAL}/lib
+ANONFTP = /jnet/ftp/pub/src/bin.Solaris2.9
+
+# Linux
+#
+INCLUDES= -I${JLOCAL}/include -I/usr/X11R6/include
+DEFINES =
+LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib
+LIBS    = -lraf -lXm -lXp -lXt -lXext -lX11 -lnetcdf
+ANONFTP = /net/ftp/pub/archive/RAF-src/bin.RedHat9.0
+
+
+CFLAGS=         -O2 ${INCLUDES} ${DEFINES}
+
+SRCS=	Xwin.c cb_pause.c error.c init.c netcdf.c sort.c cb_main.c cb_time.c\
+	globals.c ncextr.c search.c timeseg.c
+
+OBJS=	Xwin.o cb_pause.o error.o init.o netcdf.o sort.o cb_main.o cb_time.o\
+	globals.o ncextr.o search.o timeseg.o
+
+PROG=	ncextr
+
+.c.o:
+	${CC} ${CFLAGS} -c $*.c
+
+${PROG}: ${OBJS}
+	${CC} ${CFLAGS} ${OBJS} ${LIB_DIRS} ${LIBS} -o $@
+
+install: ${PROG}
+	cp ${PROG} ${DESTDIR}${BINDIR}
+	cp ${PROG}.man ${DESTDIR}${MANDIR}/${PROG}.1
+	cp ${PROG} $(ANONFTP)
+	cp ${PROG}.man ${ANONFTP}
+
+release:
+	tar cFFf - . | (cd ${RELEASE}; tar xfBp -)
+	sed s/-g/-O2/g Makefile > ${RELEASE}/Makefile
+	rm -f ${RELEASE}/LOCK.make
+
+clean:
+	rm -f ${OBJS} ${PROG}
+
+print:
+	enscript -2Gr -b${PROG} ${HDRS} ${SRCS}
+
+${OBJS}:	define.h
+netcdf.o:	${LOCAL}/include/netcdf.h
+ncextr.o:	fbr.h

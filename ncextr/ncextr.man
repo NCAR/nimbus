@@ -1,0 +1,31 @@
+.na
+.nh
+.TH NCEXTR 1 "18 Febuary 1996" "Local Command"
+.SH NAME
+ncextr \- netCDF extract utility
+.SH SYNOPSIS
+.B ncextr [-b batchFile]
+.SH DESCRIPTION
+.B ncextr 
+is a program for creating subset netCDF files.  You may choose the variables
+you wish output and a given time slice to extract.  The input file must
+follow the NCAR-RAF conventions.  ncextr provides a GUI similar to nimbus,
+where you may choose which variables to output.  To change the "output" of
+a variable, just double click on the variable.  You may also select many and
+then use CTRL-O to toggle them all at once.
+.PP
+ncextr supports batch files.  This is useful if you want to dump many files
+with the same setup.  A sample batch file follows (Note: all variables will
+be output, if no "var=" statments are found):
+.PP
+.nf
+if=/home/data/231RF10.cdf
+of=junk.cdf
+ti=09:00:00-10:00:00
+var=ADIFR
+var=LAT
+var=LON
+.f
+.PP
+.SH AUTHOR
+Chris Webster, National Center for Atmospheric Research

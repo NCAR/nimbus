@@ -1,0 +1,6 @@
+if=/home/data/130rf17.cdf
+of=/home/data/ncextr.cdf
+ti=23:00:00-24:00:00
+var=ADIFR
+var=LAT
+var=LON
