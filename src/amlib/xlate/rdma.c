@@ -48,7 +48,7 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
   Rdma_blk	*rdma = (Rdma_blk *)input;
 
   static int firstTime = TRUE;
-  static FILE *outFP, *rdmapFP;
+  static FILE *outFP = NULL, *rdmapFP = NULL;
 
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->hvps);
 
@@ -62,23 +62,26 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
     extern char		OutputFileName[];	// imported from cb_main.c
 
     if (ProductionRun)
-      sprintf(buffer, "%s/%s%s.rdma", getenv("PROD_DATA"), ProjectNumber, FlightNumber);
+      sprintf(buffer, "%s/%s%s.rdma", getenv("PROD_DATA"),
+			ProjectNumber, FlightNumber);
     else
-      sprintf(buffer, "%s/%s%s.rdma", getenv("DATA_DIR"), ProjectNumber, FlightNumber);
+      sprintf(buffer, "%s/%s%s.rdma", getenv("DATA_DIR"),
+			ProjectNumber, FlightNumber);
 
-    if ((outFP = fopen(buffer, "w+")) == NULL)
+    if (Mode != REALTIME)
       {
-      fprintf(stderr, "xlate/rdma.c: can't open %s\n", buffer);
-//      exit(1);
+      if ((outFP = fopen(buffer, "w+")) == NULL)
+        fprintf(stderr, "xlate/rdma.c: can't open %s\n", buffer);
+
+
+      sprintf(buffer, "%s/%s%s.cnts.rdma", getenv("DATA_DIR"),
+			ProjectNumber, FlightNumber);
+
+      if ((rdmapFP = fopen(buffer, "w+")) == NULL)
+        fprintf(stderr, "xlate/rdma.c: can't open %s\n", buffer);
       }
-
-
-    sprintf(buffer, "%s/%s%s.cnts.rdma", getenv("DATA_DIR"), ProjectNumber, FlightNumber);
-
-    if ((rdmapFP = fopen(buffer, "w+")) == NULL) {
-      fprintf(stderr, "xlate/rdma.c: can't open %s\n", buffer);
-//      exit(1);
-      }
+    else
+      rdmapFP = outFP = NULL;
 
     if (rdmapFP)
       fprintf(rdmapFP, "%s\n", OutputFileName);	/* Stamp netCDF file name */
@@ -118,7 +121,7 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
     if (temp > 100.0 || temp < 0.0)
       temp = 20.0;
  
-    if(rdmapFP)
+    if (rdmapFP)
       {
       fprintf(rdmapFP, "%02d/%02d/%02d %02d:%02d:%02d  ",
         ntohs(((short *)ADSrecord)[4]), ntohs(((short *)ADSrecord)[5]),
