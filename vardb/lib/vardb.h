@@ -81,47 +81,47 @@ extern void		*VarDB;
 #ifdef __cplusplus
 extern "C" {
 #endif
-char	*VarDB_GetUnits(char vn[]),
-	*VarDB_GetAlternateUnits(char vn[]),
-	*VarDB_GetCategoryName(char vn[]),
-	*VarDB_GetTitle(char vn[]),
-	**VarDB_GetVariablesInCategory(int catNum);
+char	*VarDB_GetUnits(const char vn[]),
+	*VarDB_GetAlternateUnits(const char vn[]),
+	*VarDB_GetCategoryName(const char vn[]),
+	*VarDB_GetTitle(const char vn[]),
+	**VarDB_GetVariablesInCategory(const int catNum);
 
-int	InitializeVarDB(char fileName[]),
-	VarDB_lookup(char name[]),
-	SaveVarDB(char fileName[]),
+int	InitializeVarDB(const char fileName[]),
+	VarDB_lookup(const char name[]),
+	SaveVarDB(const char fileName[]),
 	ReadCategories(),
-	VarDB_isRangeFixed(char vn[]),
-	VarDB_isRangeFloating(char vn[]),
-	VarDB_GetCategory(char vn[]),
-	VarDB_GetCategoryNumber(char catagoryName[]),
-	VarDB_GetCategoryList(char *list[]);
+	VarDB_GetCategory(const char vn[]),
+	VarDB_GetCategoryNumber(const char catagoryName[]),
+	VarDB_GetCategoryList(char *list[]),
+	VarDB_isRangeFixed(const char vn[]),
+	VarDB_isRangeFloating(const char vn[]);
 
-void	SortVarDB(), ReleaseVarDB(), SetCategoryFileName(char fn[]);
+void	SortVarDB(), ReleaseVarDB(), SetCategoryFileName(const char fn[]);
 
-float	VarDB_GetFixedRangeLower(char vn[]),
-	VarDB_GetFixedRangeUpper(char vn[]),
-	VarDB_GetFloatRange(char vn[]),
-	VarDB_GetMinLimit(char vn[]),
-	VarDB_GetMaxLimit(char vn[]),
-	VarDB_GetCalRangeLower(char vn[]),
-	VarDB_GetCalRangeUpper(char vn[]),
-	VarDB_GetSpikeSlope(char vn[]);
+float	VarDB_GetFixedRangeLower(const char vn[]),
+	VarDB_GetFixedRangeUpper(const char vn[]),
+	VarDB_GetFloatRange(const char vn[]),
+	VarDB_GetMinLimit(const char vn[]),
+	VarDB_GetMaxLimit(const char vn[]),
+	VarDB_GetCalRangeLower(const char vn[]),
+	VarDB_GetCalRangeUpper(const char vn[]),
+	VarDB_GetSpikeSlope(const char vn[]);
 
-int	VarDB_SetUnits(char vn[], char units[]),
-	VarDB_SetAlternateUnits(char vn[], char units[]),
-	VarDB_SetTitle(char vn[], char title[]),
-	VarDB_SetRangeFixed(char vn[]),
-	VarDB_SetRangeFloating(char vn[]),
-	VarDB_SetFixedRangeLower(char vn[], float value),
-	VarDB_SetFixedRangeUpper(char vn[], float value),
-	VarDB_SetFloatRange(char vn[], float value),
-	VarDB_SetMinLimit(char vn[], float value),
-	VarDB_SetMaxLimit(char vn[], float value),
-	VarDB_SetCalRangeLower(char vn[], float value),
-	VarDB_SetCalRangeUpper(char vn[], float value),
-	VarDB_SetCategory(char vn[], int value),
-	VarDB_SetSpikeSlope(char vn[], float value);
+int	VarDB_SetUnits(const char vn[], char units[]),
+	VarDB_SetAlternateUnits(const char vn[], char units[]),
+	VarDB_SetTitle(const char vn[], char title[]),
+	VarDB_SetRangeFixed(const char vn[]),
+	VarDB_SetRangeFloating(const char vn[]),
+	VarDB_SetFixedRangeLower(const char vn[], float value),
+	VarDB_SetFixedRangeUpper(const char vn[], float value),
+	VarDB_SetFloatRange(const char vn[], float value),
+	VarDB_SetMinLimit(const char vn[], float value),
+	VarDB_SetMaxLimit(const char vn[], float value),
+	VarDB_SetCalRangeLower(const char vn[], float value),
+	VarDB_SetCalRangeUpper(const char vn[], float value),
+	VarDB_SetCategory(const char vn[], int value),
+	VarDB_SetSpikeSlope(const char vn[], float value);
 #ifdef __cplusplus
 	}
 #endif

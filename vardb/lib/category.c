@@ -46,7 +46,7 @@ static CATEGORY	*Category[MAX_CATEGORIES];
 char	*GetMemory();
 
 /* -------------------------------------------------------------------- */
-void SetCategoryFileName(char fn[])
+void SetCategoryFileName(const char fn[])
 {
   char	*p;
 
@@ -108,7 +108,7 @@ ReadCategories()
 }	/* END READCATEGORIES */
 
 /* -------------------------------------------------------------------- */
-char *VarDB_GetCategoryName(char vn[])
+char *VarDB_GetCategoryName(const char vn[])
 {
   int	i, rc, indx;
   int	catNum;
@@ -192,7 +192,7 @@ int VarDB_GetCategoryList(char *list[])
 }	/* END VARDB_GETCATEGORYLIST */
 
 /* -------------------------------------------------------------------- */
-int VarDB_GetCategoryNumber(char catagoryName[])
+int VarDB_GetCategoryNumber(const char catagoryName[])
 {
   int	i;
 

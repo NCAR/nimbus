@@ -32,7 +32,7 @@ static struct var_v2 defaults =
 
 
 /* -------------------------------------------------------------------- */
-char *VarDB_GetUnits(char vn[])
+char *VarDB_GetUnits(const char vn[])
 {
   int	indx;
 
@@ -44,7 +44,7 @@ char *VarDB_GetUnits(char vn[])
 }	/* END VARDB_GETUNITS */
 
 /* -------------------------------------------------------------------- */
-char *VarDB_GetAlternateUnits(char vn[])
+char *VarDB_GetAlternateUnits(const char vn[])
 {
   int	indx;
 
@@ -56,7 +56,7 @@ char *VarDB_GetAlternateUnits(char vn[])
 }	/* END VARDB_GETALTERNATEUNITS */
 
 /* -------------------------------------------------------------------- */
-char *VarDB_GetTitle(char vn[])
+char *VarDB_GetTitle(const char vn[])
 {
   int	indx;
 
@@ -68,7 +68,7 @@ char *VarDB_GetTitle(char vn[])
 }	/* END VARDB_GETTITLE */
 
 /* -------------------------------------------------------------------- */
-int VarDB_isRangeFixed(char vn[])
+int VarDB_isRangeFixed(const char vn[])
 {
   int	indx;
   long	type;
@@ -83,7 +83,7 @@ int VarDB_isRangeFixed(char vn[])
 }	/* END VARDB_ISRANGEFIXED */
 
 /* -------------------------------------------------------------------- */
-int VarDB_isRangeFloating(char vn[])
+int VarDB_isRangeFloating(const char vn[])
 {
   int	indx;
   long	type;
@@ -98,7 +98,7 @@ int VarDB_isRangeFloating(char vn[])
 }	/* END VARDB_ISRANGEFLOATING */
 
 /* -------------------------------------------------------------------- */
-float VarDB_GetFixedRangeLower(char vn[])
+float VarDB_GetFixedRangeLower(const char vn[])
 {
   int	indx;
   ulong	p;
@@ -114,7 +114,7 @@ float VarDB_GetFixedRangeLower(char vn[])
 }	/* END VARDB_GETFIXEDRANGELOWER */
 
 /* -------------------------------------------------------------------- */
-float VarDB_GetFixedRangeUpper(char vn[])
+float VarDB_GetFixedRangeUpper(const char vn[])
 {
   int	indx;
   ulong	p;
@@ -130,7 +130,7 @@ float VarDB_GetFixedRangeUpper(char vn[])
 }	/* END VARDB_GETFIXEDRANGEUPPER */
 
 /* -------------------------------------------------------------------- */
-float VarDB_GetFloatRange(char vn[])
+float VarDB_GetFloatRange(const char vn[])
 {
   int	indx;
   ulong	p;
@@ -146,7 +146,7 @@ float VarDB_GetFloatRange(char vn[])
 }	/* END VARDB_GETFLOATRANGE */
 
 /* -------------------------------------------------------------------- */
-float VarDB_GetMinLimit(char vn[])
+float VarDB_GetMinLimit(const char vn[])
 {
   int	indx;
   ulong	p;
@@ -162,7 +162,7 @@ float VarDB_GetMinLimit(char vn[])
 }	/* END VARDB_GETMINLIMIT */
 
 /* -------------------------------------------------------------------- */
-float VarDB_GetMaxLimit(char vn[])
+float VarDB_GetMaxLimit(const char vn[])
 {
   int	indx;
   ulong	p;
@@ -178,7 +178,7 @@ float VarDB_GetMaxLimit(char vn[])
 }	/* END VARDB_GETMINLIMIT */
 
 /* -------------------------------------------------------------------- */
-float VarDB_GetCalRangeLower(char vn[])
+float VarDB_GetCalRangeLower(const char vn[])
 {
   int	indx;
   ulong	p;
@@ -194,7 +194,7 @@ float VarDB_GetCalRangeLower(char vn[])
 }	/* END VARDB_GETCALRANGELOWER */
 
 /* -------------------------------------------------------------------- */
-float VarDB_GetCalRangeUpper(char vn[])
+float VarDB_GetCalRangeUpper(const char vn[])
 {
   int	indx;
   ulong	p;
@@ -210,7 +210,7 @@ float VarDB_GetCalRangeUpper(char vn[])
 }	/* END VARDB_GETCALRANGEUPPER */
 
 /* -------------------------------------------------------------------- */
-int VarDB_GetCategory(char vn[])
+int VarDB_GetCategory(const char vn[])
 {
   int	indx;
 

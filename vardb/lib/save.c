@@ -28,7 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-7
 extern long VarDB_RecLength, VarDB_nRecords;
 
 /* -------------------------------------------------------------------- */
-SaveVarDB(char fileName[])
+SaveVarDB(const char fileName[])
 {
   FILE	*fp;
   int	rc;

@@ -30,7 +30,7 @@ extern void		*VarDB;
 extern long	VarDB_nRecords, VarDB_RecLength;
 
 /* -------------------------------------------------------------------- */
-VarDB_SetUnits(char vn[], char units[])
+VarDB_SetUnits(const char vn[], char units[])
 {
   int	indx;
 
@@ -43,7 +43,7 @@ VarDB_SetUnits(char vn[], char units[])
 }	/* END VARDB_SETUNITS */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetAlternateUnits(char vn[], char units[])
+VarDB_SetAlternateUnits(const char vn[], char units[])
 {
   int	indx;
 
@@ -56,7 +56,7 @@ VarDB_SetAlternateUnits(char vn[], char units[])
 }	/* END VARDB_SETALTERNATEUNITS */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetTitle(char vn[], char title[])
+VarDB_SetTitle(const char vn[], char title[])
 {
   int	indx;
 
@@ -69,7 +69,7 @@ VarDB_SetTitle(char vn[], char title[])
 }	/* END VARDB_SETTITLE */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetRangeFixed(char vn[])
+VarDB_SetRangeFixed(const char vn[])
 {
   int	indx;
 
@@ -82,7 +82,7 @@ VarDB_SetRangeFixed(char vn[])
 }	/* END VARDB_ISRANGEFIXED */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetRangeFloating(char vn[])
+VarDB_SetRangeFloating(const char vn[])
 {
   int	indx;
 
@@ -95,7 +95,7 @@ VarDB_SetRangeFloating(char vn[])
 }	/* END VARDB_ISRANGEFIXED */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetFixedRangeLower(char vn[], float value)
+VarDB_SetFixedRangeLower(const char vn[], float value)
 {
   int	indx;
   ulong	*p = (ulong *)&value;
@@ -109,7 +109,7 @@ VarDB_SetFixedRangeLower(char vn[], float value)
 }	/* END VARDB_SETFIXEDRANGELOWER */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetFixedRangeUpper(char vn[], float value)
+VarDB_SetFixedRangeUpper(const char vn[], float value)
 {
   int	indx;
   ulong	*p = (ulong *)&value;
@@ -123,7 +123,7 @@ VarDB_SetFixedRangeUpper(char vn[], float value)
 }	/* END VARDB_SETFIXEDRANGEUPPER */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetFloatRange(char vn[], float value)
+VarDB_SetFloatRange(const char vn[], float value)
 {
   int	indx;
   ulong	*p = (ulong *)&value;
@@ -137,7 +137,7 @@ VarDB_SetFloatRange(char vn[], float value)
 }	/* END VARDB_SETFLOATRANGE */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetMinLimit(char vn[], float value)
+VarDB_SetMinLimit(const char vn[], float value)
 {
   int	indx;
   ulong	*p = (ulong *)&value;
@@ -151,7 +151,7 @@ VarDB_SetMinLimit(char vn[], float value)
 }	/* END VARDB_SETMINLIMIT */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetMaxLimit(char vn[], float value)
+VarDB_SetMaxLimit(const char vn[], float value)
 {
   int	indx;
   ulong	*p = (ulong *)&value;
@@ -165,7 +165,7 @@ VarDB_SetMaxLimit(char vn[], float value)
 }	/* END VARDB_SETMINLIMIT */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetCalRangeLower(char vn[], float value)
+VarDB_SetCalRangeLower(const char vn[], float value)
 {
   int	indx;
   ulong	*p = (ulong *)&value;
@@ -179,7 +179,7 @@ VarDB_SetCalRangeLower(char vn[], float value)
 }	/* END VARDB_SETCALRANGELOWER */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetCalRangeUpper(char vn[], float value)
+VarDB_SetCalRangeUpper(const char vn[], float value)
 {
   int	indx;
   ulong	*p = (ulong *)&value;
@@ -193,7 +193,7 @@ VarDB_SetCalRangeUpper(char vn[], float value)
 }	/* END VARDB_SETCALRANGEUPPER */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetCategory(char vn[], int value)
+VarDB_SetCategory(const char vn[], int value)
 {
   int	indx;
 

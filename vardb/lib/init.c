@@ -41,7 +41,7 @@ void	readXML(FILE *fp);
 long	VarDB_RecLength, VarDB_nRecords;
 
 /* -------------------------------------------------------------------- */
-int InitializeVarDB(char fileName[])
+int InitializeVarDB(const char fileName[])
 {
   FILE	*fp;
   int	rc;
@@ -240,7 +240,7 @@ void ReleaseVarDB()
 }	/* END RELEASEVARDB */
 
 /* -------------------------------------------------------------------- */
-int VarDB_lookup(char vn[])
+int VarDB_lookup(const char vn[])
 {
   int		i;
   char		tname[64];
