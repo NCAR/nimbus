@@ -18,6 +18,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2003-2004
 
 #include <ctype.h>
 #include <cmath>
+#include <set>
 
 
 void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[]);
@@ -218,12 +219,46 @@ void PostgreSQL::submitCommand(const std::string command)
 /* -------------------------------------------------------------------- */
 void PostgreSQL::dropAllTables()
 {
-  submitCommand("DROP TABLE Global_Attributes");
-  submitCommand("DROP TABLE Variable_List");
-  submitCommand("DROP TABLE Categories");
-  submitCommand("DROP TABLE PMS1D_list");
-  submitCommand("DROP TABLE PMS2D_list");
-  submitCommand("DROP TABLE RAF_1hz");
+  std::set<std::string> tables;
+
+  tables.insert("Global_Attributes");
+  tables.insert("Variable_List");
+  tables.insert("Categories");
+  tables.insert("PMS1D_list");
+  tables.insert("PMS2D_list");
+
+  PGresult* res;
+
+  /* Add RAF_*hz tables.
+   */
+  res = PQexec(_conn, "SELECT sampleratetable FROM Variable_List");
+
+  for (int i = 0; i < PQntuples(res); ++i)
+    tables.insert(PQgetvalue(res, i, 0));
+
+  PQclear(res);
+
+  /* Add pms2d particle tables.
+   */
+  res = PQexec(_conn, "SELECT Name FROM PMS2D_list");
+
+  for (int i = 0; i < PQntuples(res); ++i)
+    tables.insert(PQgetvalue(res, i, 0));
+
+  PQclear(res);
+
+
+  /* Loop & DROP.
+   */
+  std::set<std::string>::iterator it;
+  for (it = tables.begin(); it != tables.end(); ++it)
+  {
+    std::string cmd("DROP TABLE ");
+    cmd += it->c_str();
+printf("%s\n", cmd.c_str());
+    submitCommand(cmd);
+  }
+
   /*
    * Database seems to slow down after a number of runs without VACUUMing.
    *  It's not sufficient to just DROP all tables.
@@ -286,10 +321,9 @@ void PostgreSQL::initializeGlobalAttributes()
 /* -------------------------------------------------------------------- */
 void PostgreSQL::initializeVariableList()
 {
-  int	nVars = 0, nDims, dims[3];
+  int	nDims, dims[3];
 
-  std::stringstream	sqlStr;
-  sampleRateTableMap	rawMap;
+  rateTableMap		rateTableMap;
 
 printf("InitializeVariableList\n");
 
@@ -302,17 +336,13 @@ printf("InitializeVariableList\n");
    */
   for (int i = 0; i < sdi.size(); ++i)
   {
-//    sqlStr << sdi[i]->name << " FLOAT, ";
-    ++nVars;
-
     addVariableToDataBase(sdi[i]->name, VarDB_GetUnits(sdi[i]->name),
 	VarDB_GetTitle(sdi[i]->name), sdi[i]->SampleRate, nDims, dims,
 	sdi[i]->order, sdi[i]->cof, MISSING_VALUE, "Preliminary");
 
     addCategory(sdi[i]->name, "Analog");
 
-//    addToSampleRateList(rawMap, sdi[i]->name, 1);
-    addToSampleRateList(rawMap, sdi[i]);
+    addVariableToTables(rateTableMap, sdi[i]);
   }
 
 
@@ -341,9 +371,6 @@ printf("InitializeVariableList\n");
 		raw[i]->SerialNumber + "')";
       submitCommand(temp);
 
-      temp = "DROP TABLE " + name;
-      submitCommand(temp);
-
       temp = "CREATE TABLE " + name +
 		" (datetime time, msec int, nSlices int, particle int[])";
       submitCommand(temp);
@@ -365,21 +392,13 @@ printf("InitializeVariableList\n");
       submitCommand(temp.str());
     }
 
-    sqlStr << name;
-
     if (raw[i]->Length > 1)
     {
       nDims = 2;
       dims[1] = raw[i]->Length;
-      sqlStr << " FLOAT[], ";
     }
     else
-    {
       nDims = 1;
-      sqlStr << " FLOAT, ";
-    }
-
-    ++nVars;
 
     addVariableToDataBase(raw[i]->name, VarDB_GetUnits(raw[i]->name),
 	VarDB_GetTitle(raw[i]->name), raw[i]->SampleRate, nDims, dims,
@@ -387,7 +406,7 @@ printf("InitializeVariableList\n");
 
     addCategory(raw[i]->name, "Raw");
 
-    addToSampleRateList(rawMap, raw[i]);
+    addVariableToTables(rateTableMap, raw[i]);
   }
 
 
@@ -395,37 +414,26 @@ printf("InitializeVariableList\n");
    */
   for (int i = 0; i < derived.size(); ++i)
   {
-    sqlStr << derived[i]->name;
-
     if (derived[i]->Length > 1)
     {
       nDims = 2;
       dims[1] = derived[i]->Length;
-      sqlStr << " FLOAT[]";
     }
     else
-    {
       nDims = 1;
-      sqlStr << " FLOAT";
-    }
-
-    if (i != derived.size()-1)
-      sqlStr << ", ";
-    ++nVars;
 
     addVariableToDataBase(derived[i]->name, VarDB_GetUnits(derived[i]->name),
 	VarDB_GetTitle(derived[i]->name), derived[i]->OutputRate, nDims, dims,
 	0, 0, MISSING_VALUE, "Preliminary");
 
     addCategory(derived[i]->name, "Derived");
+
+    addVariableToTables(rateTableMap, derived[i]);
   }
 
-  /* Send command to create the "RAF_1hz" table.
+  /* Send commands to create the "RAF_*hz" tables.
    */
-  sqlStr << ")";
-  submitCommand(sqlStr.str());
-
-printf("nVars = %d\n", nVars);
+  createSampleRateTables(rateTableMap);
 
 }	// END INITIALIZEVARIABLELIST
 
@@ -536,32 +544,43 @@ void PostgreSQL::addCategory(std::string varName, std::string category)
 }	// END ADDCATEGORY
 
 /* -------------------------------------------------------------------- */
-void PostgreSQL::addToSampleRateList(
-	sampleRateTableMap &srTableMap,
-//	const std::string varName,
-//	const int sampleRate)
-	const var_base *var)
+void PostgreSQL::addVariableToTables(
+	rateTableMap &tableMap, const var_base *var)
 {
-  // Set up raw tables.
-  std::stringstream preamble;
+  std::vector<int> rates;
 
-  preamble	<< "CREATE TABLE RAF_" << var->SampleRate
+  rates.push_back(1);
+
+  if (var->SampleRate > 1)
+    rates.push_back(var->SampleRate);
+
+  for (int i = 0; i < rates.size(); ++i)
+  {
+    // Set up raw tables.
+    std::stringstream preamble;
+
+    preamble	<< "CREATE TABLE RAF_" << rates[i]
 		<< "hz (datetime timestamp PRIMARY KEY, ";
 
-  if (srTableMap[preamble.str()].length() > 0)
-    srTableMap[preamble.str()] += ",";
+    if (tableMap[preamble.str()].length() > 0)
+      tableMap[preamble.str()] += ",";
 
-  srTableMap[preamble.str()] += var->name;
-  srTableMap[preamble.str()] += " FLOAT";
+    tableMap[preamble.str()] += var->name;
+
+    if (var->Length > 1)
+      tableMap[preamble.str()] += " FLOAT[]";
+    else
+      tableMap[preamble.str()] += " FLOAT";
+  }
 
 }	// END ADDTOSAMPLERATELIST
 
 /* -------------------------------------------------------------------- */
-void PostgreSQL::createSampleRateTables(const sampleRateTableMap &srTableMap)
+void PostgreSQL::createSampleRateTables(const rateTableMap &tableMap)
 {
-  sampleRateTableMap::const_iterator it;
+  rateTableMap::const_iterator it;
 
-  for (it = srTableMap.begin(); it != srTableMap.end(); ++it)
+  for (it = tableMap.begin(); it != tableMap.end(); ++it)
   {
     std::stringstream  cmd;
     cmd << it->first << it->second << ")";
