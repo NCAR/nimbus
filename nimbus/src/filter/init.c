@@ -104,6 +104,11 @@ void ProcessArgv(int argc, char **argv)
 
         if (argv[i][2] == 't')	/* -rt	*/
           RTinit();
+        else
+          {
+          cfg.SetHoneyWellCleanup(false); // We want this in real-time.
+          cfg.SetInertialShift(false); // We want this in real-time.
+          }
 
         break;
 
@@ -204,9 +209,9 @@ Config::Config()
   SetAsyncFileEnabled(false);
   SetLoadProductionSetup(true);
   SetHoneyWellCleanup(true);
+  SetInertialShift(true);
 
   SetProcessingRate(LowRate);
-
 }
 
 /* END INIT.C */

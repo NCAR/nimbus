@@ -27,7 +27,7 @@ REFERENCES:	tapeIO.c
 
 REFERENCED BY:	lrloop.c, hrloop.c
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 -------------------------------------------------------------------------
 */
 
@@ -211,7 +211,7 @@ long FindNextLogicalRecord(char record[], long endtime)
 
   /* Lag the Litton 51 INS one second.
   */
-  if (LITTON51_present)
+  if (cfg.InertialShift() && LITTON51_present)
     memcpy( &record[LITTON51_start],
             &phys_rec[currentLR * lrlen + LITTON51_start],
             sizeof(struct Ins_blk));
@@ -219,7 +219,7 @@ long FindNextLogicalRecord(char record[], long endtime)
 
   /* Lag GPS position & velocity, only if off by 1 second.
    */
-  if (GetStart(GPS_TANS3_STR, &TansStart) != ERR)
+  if (cfg.InertialShift() && GetStart(GPS_TANS3_STR, &TansStart) != ERR)
     {
     Gps_blk	*gp_src = (Gps_blk *)&phys_rec[currentLR * lrlen + TansStart],
                 *gp_dst = (Gps_blk *)&record[TansStart];
@@ -241,7 +241,7 @@ long FindNextLogicalRecord(char record[], long endtime)
       }
     }
 
-  if (GetStart(GPS_GARMIN_STR, &TansStart) != ERR)
+  if (cfg.InertialShift() && GetStart(GPS_GARMIN_STR, &TansStart) != ERR)
     {
     Garmin_blk
 	*gp_src = (Garmin_blk *)&phys_rec[currentLR * lrlen + TansStart],
@@ -250,7 +250,7 @@ long FindNextLogicalRecord(char record[], long endtime)
     memcpy(gp_dst, gp_src, sizeof(Garmin_blk));
     }
 
-  if (GetStart(CMIGITS3_STR, &TansStart) != ERR)
+  if (cfg.InertialShift() && GetStart(CMIGITS3_STR, &TansStart) != ERR)
     {
     Cmigits3_blk
 	*gp_src = (Cmigits3_blk *)&phys_rec[currentLR * lrlen + TansStart],
@@ -546,14 +546,14 @@ bool Open2dFile(char file[], int probeCnt)
 
     if (access(twoDfile, R_OK) == ERR)
       {
-      fprintf(stderr, "  Failed to locate.\n");
+      printf("  Failed to locate.\n");
       return(false);
       }
     }
 
   if ((twoDfd[probeCnt] = open(twoDfile, O_RDONLY)) < 0)
     {
-    fprintf(stderr, "  Failed to open.\n");
+    printf("  Failed to open.\n");
     return(false);
     }
 
