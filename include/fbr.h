@@ -192,6 +192,9 @@ static String fallback_resources[] =
   "*hwCleanButton.labelString:			Honeywell IRS cleanup",
   "*hwCleanButton.set:				True",
   "*hwCleanButton.traversalOn:			False",
+  "*inertialShift.labelString:			1 second GPS/CMIGITS shift",
+  "*inertialShift.set:				True",
+  "*inertialShift.traversalOn:			False",
 
   /* Edit Defaults Window
    */

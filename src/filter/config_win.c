@@ -51,7 +51,8 @@ static const size_t nFlightInfo = 4;
 static const size_t nTimeSliceInfo = 2;
 
 static Widget	ConfigShell = 0, ConfigWindow = 0, flightText[nFlightInfo],
-		lowRateButton, highRateButton;
+		lowRateButton, highRateButton, despikeButton, lagButton,
+		irsCleanupButton, inertialShiftButton;
 
 Widget ts_text[nTimeSliceInfo];
 
@@ -105,6 +106,27 @@ void SetHWcleanup(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call
 }
 
 /* -------------------------------------------------------------------- */
+void SetInertialShift(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
+{
+  cfg.SetInertialShift(call->set);
+}
+
+/* -------------------------------------------------------------------- */
+void SetConfigWinFromConfig()
+{
+  if (cfg.ProcessingRate() == Config::LowRate)
+    XmToggleButtonSetState(lowRateButton, true, true);
+  else
+    XmToggleButtonSetState(highRateButton, true, true);
+
+  XmToggleButtonSetState(despikeButton, cfg.Despiking(), false);
+  XmToggleButtonSetState(lagButton, cfg.TimeShifting(), false);
+  XmToggleButtonSetState(despikeButton, cfg.HoneyWellCleanup(), false);
+  XmToggleButtonSetState(despikeButton, cfg.InertialShift(), false);
+
+}
+
+/* -------------------------------------------------------------------- */
 void ResetFlightInfo(Widget w, XtPointer client, XtPointer call)
 {
   for (size_t i = 0; i < nFlightInfo; ++i)
@@ -124,8 +146,6 @@ void ResetFlightInfo(Widget w, XtPointer client, XtPointer call)
  * user pops up this window after loading a setup.  Setup stuff gets whiped
  * out.
  */
-//  XmToggleButtonSetState(lowRateButton, true, true);
-//  XmToggleButtonSetState(highRateButton, false, true);
 
 }	/* END RESETFLIGHTINFO */
 
@@ -354,7 +374,7 @@ void createOptions(Widget parent)
 {
   Arg args[8];
   Cardinal n;
-  Widget optFrame, optRC, butt[8], label;
+  Widget optFrame, optRC, label;
 
   n = 0;
   XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
@@ -372,21 +392,29 @@ void createOptions(Widget parent)
   XtManageChild(optRC);
 
   n = 0;
-  butt[0] = XmCreateToggleButton(optRC, "despikeButton", args,n);
-  XtAddCallback(butt[0], XmNvalueChangedCallback,
+  despikeButton = XmCreateToggleButton(optRC, "despikeButton", args,n);
+  XtAddCallback(despikeButton, XmNvalueChangedCallback,
 		(XtCallbackProc)SetDespiking, NULL);
 
   n = 0;
-  butt[1] = XmCreateToggleButton(optRC, "lagButton", args, n);
-  XtAddCallback(butt[1], XmNvalueChangedCallback,
+  lagButton = XmCreateToggleButton(optRC, "lagButton", args, n);
+  XtAddCallback(lagButton, XmNvalueChangedCallback,
 		(XtCallbackProc)SetTimeShifting, NULL);
 
   n = 0;
-  butt[2] = XmCreateToggleButton(optRC, "hwCleanButton", args, n);
-  XtAddCallback(butt[2], XmNvalueChangedCallback,
+  irsCleanupButton = XmCreateToggleButton(optRC, "hwCleanButton", args, n);
+  XtAddCallback(irsCleanupButton, XmNvalueChangedCallback,
 		(XtCallbackProc)SetHWcleanup, NULL);
 
-  XtManageChildren(butt, 3);
+  n = 0;
+  inertialShiftButton = XmCreateToggleButton(optRC, "inertialShift", args, n);
+  XtAddCallback(inertialShiftButton, XmNvalueChangedCallback,
+		(XtCallbackProc)SetInertialShift, NULL);
+
+  XtManageChild(despikeButton);
+  XtManageChild(lagButton);
+  XtManageChild(irsCleanupButton);
+  XtManageChild(inertialShiftButton);
 
 }       /* END CREATEOPTIONS */
 
@@ -598,6 +626,7 @@ void EditConfiguration(Widget w, XtPointer client, XtPointer call)
     firstTime = false;
     }
 
+  SetConfigWinFromConfig();
   XtManageChild(ConfigWindow);
   XtPopup(XtParent(ConfigWindow), XtGrabNone);
 

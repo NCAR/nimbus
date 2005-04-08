@@ -221,6 +221,7 @@ public:
     bool AsyncFileEnabled()	{ return _asyncFileEnabled; }
     bool LoadProductionSetup()	{ return _loadProductionSetup; }
     bool HoneyWellCleanup()	{ return _honeywellCleanup; }
+    bool InertialShift()	{ return _inertialShift; }
 
     processingRate ProcessingRate()	{ return _processingRate; }
 
@@ -233,6 +234,7 @@ public:
     void SetAsyncFileEnabled(bool state)	{ _asyncFileEnabled = state; }
     void SetLoadProductionSetup(bool state)	{ _loadProductionSetup = state; }
     void SetHoneyWellCleanup(bool state)	{ _honeywellCleanup = state; }
+    void SetInertialShift(bool state)		{ _inertialShift = state; }
 
     void SetProcessingRate(processingRate pr)	{ _processingRate = pr; }
 
@@ -246,6 +248,7 @@ private:
     bool _asyncFileEnabled;
     bool _loadProductionSetup;
     bool _honeywellCleanup;
+    bool _inertialShift;
 
     processingRate _processingRate;
 };
