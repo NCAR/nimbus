@@ -8,8 +8,8 @@ ENTRY POINTS:	PhaseShift()
 		AddVariableToSDIlagList()
 		AddVariableToRAWlagList()
 
-STATIC FNS:	shift()				Does all except 1hz
-		shift_1hz()			Optimized for 1hz variables
+STATIC FNS:	shift()			Does all except 1hz
+		shift_1hz()		Optimized for 1hz variables
 		interp_regular()	(no wraparound)
 		interp_360_degree()	(0 to 360)
 		interp_180_degree()	(-180 to +180)
@@ -26,7 +26,7 @@ REFERENCES:	GetBuffer(), Interpolate()
 
 REFERENCED BY:	LowRateLoop(), HighRateLoop()
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 -------------------------------------------------------------------------
 */
 
@@ -36,6 +36,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "decode.h"
 #include "bounds.h"
 #include "circbuff.h"
+
+#include <gsl/gsl_spline.h>
 
 static std::vector<SDITBL *> sdi_ps;
 static std::vector<RAWTBL *> raw_ps;
@@ -54,8 +56,7 @@ static void	shift(char name[], int start, int rate, int lag),
 			int start, int rate, int gap_size, int remainder),
 		check_for_wrap(NR_TYPE points[]);
 
-NR_TYPE	PolyInterp(NR_TYPE yaxis[], int ms_gap, int ms_want),
-	LinearInterpolate(NR_TYPE p1, NR_TYPE p2, int ms_gap, int ms_want);
+NR_TYPE	PolyInterp(NR_TYPE yaxis[], int ms_gap, int ms_want);
 
 
 /* -------------------------------------------------------------------- */
@@ -405,31 +406,25 @@ static void check_for_wrap(NR_TYPE points[])
 /* -------------------------------------------------------------------- */
 static void shift_1hz(int start, int lag)
 {
-  int		gap_size, remainder;
-  NR_TYPE	points[4];
+  static const size_t	spCnt = 5;
 
-  gap_size  = 1000;
-  remainder = lag % gap_size;
+  double	x[spCnt], y[spCnt];
 
-  if (lag > 0)
-    {	/* Shift data backwards	*/
+  for (size_t i = 0; i < spCnt; ++i)
+    x[i] = i * 1000;
 
-    points[0] = prev_rec[start];
-    points[1] = this_rec[start];
-    points[2] = out_rec[start] = next_rec[start];
-    points[3] = next_next_rec[start];
-    }
-  else
-    {	/* Shift data forward	*/
+  y[0] = prev_prev_rec[start];
+  y[1] = prev_rec[start];
+  y[2] = this_rec[start];
+  y[3] = next_rec[start];
+  y[4] = next_next_rec[start];
 
-    points[0] = prev_prev_rec[start];
-    points[1] = out_rec[start] = prev_rec[start];
-    points[2] = this_rec[start];
-    points[3] = next_rec[start];
-    }
+  gsl_spline *spline = gsl_spline_alloc(gsl_interp_cspline, spCnt);
+  gsl_spline_init(spline, x, y, spCnt);
 
-  if (remainder > JITTER)
-    out_rec[start] = PolyInterp(points, gap_size, remainder);
+  out_rec[start] = gsl_spline_eval(spline, (double)2000 - lag, 0);
+
+  gsl_spline_free(spline);
 
 }	/* END SHIFT_1HZ */
 
