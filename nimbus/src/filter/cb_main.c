@@ -573,17 +573,19 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
       DERTBL	*dp = derived[indx-(sdi.size()+raw.size())];
       dp->Dirty = true;
 
-      switch (dp->OutputRate)
-        {
-        case Config::LowRate:
-          if (cfg.ProcessingRate() == Config::LowRate)
-            dp->OutputRate = Config::LowRate;
-          break;
+      if (cfg.ProcessingRate() == Config::LowRate)
+        dp->OutputRate = Config::LowRate;
+      else
+        switch (dp->OutputRate)
+          {
+          case Config::LowRate:
+            dp->OutputRate = Config::HighRate;
+            break;
 
-        case Config::HighRate:
-          dp->OutputRate = Config::LowRate;
-          break;
-        }
+          case Config::HighRate:
+            dp->OutputRate = Config::LowRate;
+            break;
+          }
 
       item = CreateListLineItem(dp, DERIVED);
       }
