@@ -303,8 +303,6 @@ void CreateNetCDF(char fileName[])
   timeOffsetID = ncvardef(fd, "time_offset", NC_FLOAT, 1, dims);
   strcpy(buffer, "Seconds since base_time.");
   ncattput(fd, timeOffsetID, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
-  strcpy(buffer, "time");
-  ncattput(fd, timeOffsetID, "standard_name", NC_CHAR, strlen(buffer)+1, buffer);
 
   // Write units for both Time & time_offset.
   writeTimeUnits();
