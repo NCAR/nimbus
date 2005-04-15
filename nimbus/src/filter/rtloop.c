@@ -1,4 +1,11 @@
-#define SQL
+#define RT_SQL
+
+/**
+ * This only affects writing of netCDF file.  File is still created
+ * elsewhere.
+*/
+//#define RT_NETCDF
+
 /*
 -------------------------------------------------------------------------
 OBJECT NAME:    rtloop.c (PostgreS)
@@ -20,7 +27,7 @@ NOTES:		This can be compiled with #define MOCK_RT for use to fake
 		realtime with an existing ADS image.  You must hard code
 		ADS filename below for this to work.
 
-COPYRIGHT:      University Corporation for Atmospheric Research, 1997-2003
+COPYRIGHT:      University Corporation for Atmospheric Research, 1997-2005
 -------------------------------------------------------------------------
 */
 
@@ -50,7 +57,6 @@ void RTinit()
 //  sprintf(buffer, "%s/mock_rt", getenv("DATA_DIR"));
 #else
   FILE  *fp = 0;
-  int   j;
   char  *p, host[80];
 
   gethostname(host, 80);
@@ -58,7 +64,7 @@ void RTinit()
 
   sprintf(buffer, "%s/hosts/%s/rtdata.filename", ProjectDirectory, host);
 
-  for (j = 0; j < 60 && (fp = fopen(buffer, "r")) == NULL; ++j)
+  for (int j = 0; j < 60 && (fp = fopen(buffer, "r")) == NULL; ++j)
     sleep(1);
 
   if (fp == NULL) {
@@ -100,13 +106,13 @@ void RealTimeLoop()
 
 //  file->LastSyncRecord(ADSrecord);
   file->FirstSyncRecord(ADSrecord);
-printf("rtloop: entered ONBOARD_RT\n");
+  fprintf(stderr, "rtloop: entered ONBOARD_RT, going for 1st record in file, NOT last.\n");
 
   /* wait for record and write base_time to netCDF file.
    */
   SetBaseTime((Hdr_blk *)ADSrecord);
 
-#ifdef SQL
+#ifdef RT_SQL
   psql = new PostgreSQL("");
 #endif
 //  GetUserTimeIntervals();
@@ -122,7 +128,7 @@ printf("rtloop: entered ONBOARD_RT\n");
 gettimeofday(&tv, NULL);
 ts = tv.tv_sec + ((double)tv.tv_usec/1000000);
 if (ts-pts > 2.0)
-  fprintf(stderr, "%s %d.%d   %lf\n", timeStamp, tv.tv_sec, tv.tv_usec, ts-pts);
+  fprintf(stderr, "%s %ld.%ld   %lf\n", timeStamp, tv.tv_sec, tv.tv_usec, ts-pts);
 pts = ts;
 
     CheckForTimeGap((Hdr_blk *)ADSrecord, false);
@@ -132,13 +138,17 @@ pts = ts;
     AverageSampledData();
     ComputeLowRateDerived();
  
-#ifdef SQL
+#ifdef RT_SQL
     psql->WriteSQL(timeStamp);
 #endif
 
+#ifdef RT_NETCDF
     WriteNetCDF();
+#endif
     UpdateTime(SampledData);
+#ifdef RT_NETCDF
     SyncNetCDF();
+#endif
 
 //gettimeofday(&tv, NULL);
 //printf("%s  %d.%d\n", timeStamp, tv.tv_sec, tv.tv_usec); fflush(stdout);
