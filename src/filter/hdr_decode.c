@@ -1270,11 +1270,15 @@ static void initPMS1Dv2(char vn[])
 
   /* Read raw variable names from *.names
    */
-  strcpy(temp, "A");	/* Actual	*/
-  strcat(temp, probe);
+  strcpy(name, probe);
+  if (strcmp(probe, "FSSP") == 0)
+    strcat(name, "V2");
 
-  if ( (p = SearchList(rawlist, probe)) )
+  if ( (p = SearchList(rawlist, name)) )
     {
+    strcpy(temp, "A");	/* Actual	*/
+    strcat(temp, probe);
+
     strcpy(buff, p);
     p = strtok(buff, " \t");
 
