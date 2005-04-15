@@ -34,10 +34,7 @@ const NR_TYPE RESOLV16BIT = 360.0 / 65536.0;
 
 
 /* Values for 'FeedBack' variable	*/
-#define	nFeedBackTypes		2
-
-#define LOW_RATE_FEEDBACK	0
-#define HIGH_RATE_FEEDBACK	1
+enum RateFeedBack { LOW_RATE_FEEDBACK, HIGH_RATE_FEEDBACK, nFeedBackTypes };
 
 #define AMBIENT(t, rf, xm2)	((t + 273.16) / (1.0 + 0.2 * rf * xm2) - 273.16)
 
@@ -84,7 +81,7 @@ int	SearchDERIVFTNS(char target[]);
 void	RunAMLIBinitializers();
 
 extern NR_TYPE		*AveragedData, *HighRateData;
-extern int		FeedBack;
+extern RateFeedBack	FeedBack;
 extern size_t		SampleOffset;
 extern struct _dnfn	deriveftns[];
 

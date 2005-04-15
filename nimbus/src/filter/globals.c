@@ -25,7 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 #include "nimbus.h"
 #include "decode.h"
-#include "header.h"
+#include "amlib.h"
 #include <injectsd.h>
 
 const NR_TYPE MISSING_VALUE = -32767;
@@ -48,11 +48,12 @@ bool	LITTON51_present,	/* hdr_decode.c & adsIO.c		*/
 	PauseFlag,
 	LoadProductionSetupFile;
 
-size_t	ProcessingRate;
+size_t	ProcessingRate,
+	SampleOffset;	/* Used by amlib fns, set in hrloop.c	*/
 
-int	FeedBack, SampleOffset,	/* Used by amlib fns, set in hrloop.c	*/
-	PauseWhatToDo,
-	Aircraft, FlightNumberInt;
+RateFeedBack	FeedBack;
+
+int	PauseWhatToDo, Aircraft, FlightNumberInt;
 
 /* Data record pointers
  */
