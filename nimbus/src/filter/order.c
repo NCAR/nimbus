@@ -36,7 +36,7 @@ void GenerateComputeOrder()
    * at the end.  This will speed up processing.
    */
   int	bpos = 0,
-  epos = derived.size()-1;
+	epos = derived.size()-1;
 
   ComputeOrder.resize(derived.size());
 
