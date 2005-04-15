@@ -728,6 +728,9 @@ static int validateInputFile()
   if (cfg.ProcessingMode() == Config::RealTime)
     return(OK);
 
+  if (strcmp(&ADSfileName[strlen(ADSfileName)-4], ".ads") != 0)
+    strcat(ADSfileName, ".ads");
+
   if (strlen(ADSfileName) == 0 || access(ADSfileName, R_OK) == ERR)
     {
     HandleError("Non-existent input file.");
