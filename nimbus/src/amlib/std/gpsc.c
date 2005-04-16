@@ -19,7 +19,7 @@ REFERENCES:	none
 
 REFERENCED BY:	compute.c
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
 */
 
@@ -34,14 +34,82 @@ static NR_TYPE
 	CDM	= 111120.0,
 	ROLL_MAX = 40.0;
 
-#define NCF	3
+static const int NCF = 3;
 
 static NR_TYPE	latc[nFeedBackTypes], lonc[nFeedBackTypes],
 		vnsc[nFeedBackTypes], vewc[nFeedBackTypes];
 
+static NR_TYPE	DELT[nFeedBackTypes], factorp[nFeedBackTypes],
+		dlat[nFeedBackTypes], dlon[nFeedBackTypes],
+		dvy[nFeedBackTypes], dvx[nFeedBackTypes],
+		time_duration[nFeedBackTypes];
+
+static double	h[NCF][NCF], zf[nFeedBackTypes][4][6];
+static double	am[2][NCF], bm[2][NCF], c[2][NCF], cp[2][NCF];
+
 static NR_TYPE	filter(double, double *);
 static double	invert(double a[][NCF]);
 
+
+/* -------------------------------------------------------------------- */
+void initLATC(DERTBL *varp)
+{
+  NR_TYPE  *tmp;
+
+  /* Get constant values from Defaults file, if available
+   */
+  if ((tmp = GetDefaultsValue("GPS_ROLL_MAX", varp->name)) == NULL)
+  {
+    sprintf(buffer, "Value set to %f in AMLIB function slatc.\n", ROLL_MAX);
+    LogMessage(buffer);
+  }
+  else
+    ROLL_MAX = tmp[0];
+
+  if ((tmp = GetDefaultsValue("GPS_TAUP", varp->name)) == NULL)
+  {
+    sprintf(buffer, "Value set to %f in AMLIB function slatc.\n", TAUP);
+    LogMessage(buffer);
+  }
+  else
+    TAUP = tmp[0];
+
+  if ((tmp = GetDefaultsValue("GPS_UPFCTR", varp->name)) == NULL)
+  {
+    sprintf(buffer, "Value set to %f in AMLIB function slatc.\n", UPFCTR);
+    LogMessage(buffer);
+  }
+  else
+    UPFCTR = tmp[0];
+
+  if ((tmp = GetDefaultsValue("GPS_FCTRF", varp->name)) == NULL)
+  {
+    sprintf(buffer, "Value set to %f in AMLIB function slatc.\n", FCTRF);
+    LogMessage(buffer);
+  }
+  else
+    FCTRF = tmp[0];
+
+  memset((char *)zf, 0, sizeof(zf));
+  memset((char *)am, 0, sizeof(am));
+  memset((char *)bm, 0, sizeof(bm));
+  memset((char *)h, 0, sizeof(h));
+  memset((char *)c, 0, sizeof(c));
+  memset((char *)cp, 0, sizeof(cp));
+
+  for (int i = 0; i < nFeedBackTypes; ++i)
+    {
+    if (i == LOW_RATE_FEEDBACK)
+      DELT[i] = 1.0;
+    else
+      DELT[i] = 1.0 / (float)cfg.ProcessingRate();
+
+    factorp[i] = 0.002 * (1000.0 / DELT[i]) * M_PI / TAUP;
+
+    time_duration[i] = dvy[i] = dvx[i] = dlat[i] = dlon[i] = 0.0;
+    }
+
+}	/* END INITLATC */
 
 /* -------------------------------------------------------------------- */
 void slatc(DERTBL *varp)
@@ -54,87 +122,32 @@ void slatc(DERTBL *varp)
 
   double	det;
 
-  NR_TYPE  *tmp;  /* for getting values from the project's Defaults file */
-
-  static bool	firstTime[nFeedBackTypes] = { TRUE, TRUE },
-		matrix_updated[nFeedBackTypes] = { FALSE, FALSE };
-
-  static NR_TYPE	old_glat[nFeedBackTypes], old_glon[nFeedBackTypes];
-
-  static NR_TYPE	DELT[nFeedBackTypes], factorp[nFeedBackTypes],
-			dlat[nFeedBackTypes], dlon[nFeedBackTypes],
-			dvy[nFeedBackTypes], dvx[nFeedBackTypes],
-			time[nFeedBackTypes];
-
-  static double	h[NCF][NCF], hi[NCF][NCF], zf[nFeedBackTypes][4][6];
-  static double	am[2][NCF], bm[2][NCF], c[2][NCF], cp[2][NCF];
+  static bool	firstTime[nFeedBackTypes] = { true, true },
+		matrix_updated[nFeedBackTypes] = { false, false };
   static int	countr[nFeedBackTypes] = { 0, 0 },
 		goodGPS = 0, gps_is_flat = 0;
 
-  alat	= GetSample(varp, 0);
-  alon	= GetSample(varp, 1);
-  glat	= GetSample(varp, 2);
-  glon	= GetSample(varp, 3);
-  vns	= GetSample(varp, 4);
-  vew	= GetSample(varp, 5);
-  gvns	= GetSample(varp, 6);
-  gvew	= GetSample(varp, 7);
-  roll	= GetSample(varp, 8);
+  static NR_TYPE old_glat[nFeedBackTypes], old_glon[nFeedBackTypes];
+
+
+  alat	= GetSample(varp, 0);	// IRS Lat
+  alon	= GetSample(varp, 1);	// IRS Lon
+  glat	= GetSample(varp, 2);	// GPS Lat
+  glon	= GetSample(varp, 3);	// GPS Lon
+  vns	= GetSample(varp, 4);	// IRS NS ground speed
+  vew	= GetSample(varp, 5);	// IRS EW ground speed
+  gvns	= GetSample(varp, 6);	// GPS NS ground speed
+  gvew	= GetSample(varp, 7);	// GPS EW ground speed
+  roll	= GetSample(varp, 8);	// IRS Roll
   gstat	= (long)GetSample(varp, 9);	/* nSats for Tans & Garmin	*/
   gmode	= (long)GetSample(varp, 10);	/* GMODE or GGMODE		*/
 
   if (firstTime[FeedBack])
     {
-/*  Get constant values from Defaults file, if available  */
-    if ((tmp = GetDefaultsValue("GPS_ROLL_MAX", varp->name)) == NULL)
-    {
-      sprintf(buffer, "Value set to %f in AMLIB function slatc.\n", ROLL_MAX);
-      LogMessage(buffer);
-    }
-    else
-      ROLL_MAX = tmp[0];
-    if ((tmp = GetDefaultsValue("GPS_TAUP", varp->name)) == NULL)
-    {
-      sprintf(buffer, "Value set to %f in AMLIB function slatc.\n", TAUP);
-      LogMessage(buffer);
-    }
-    else
-      TAUP = tmp[0];
-    if ((tmp = GetDefaultsValue("GPS_UPFCTR", varp->name)) == NULL)
-    {
-      sprintf(buffer, "Value set to %f in AMLIB function slatc.\n", UPFCTR);
-      LogMessage(buffer);
-    }
-    else
-      UPFCTR = tmp[0];
-    if ((tmp = GetDefaultsValue("GPS_FCTRF", varp->name)) == NULL)
-    {
-      sprintf(buffer, "Value set to %f in AMLIB function slatc.\n", FCTRF);
-      LogMessage(buffer);
-    }
-    else
-      FCTRF = tmp[0];
+    old_glat[FeedBack] = glat;
+    old_glon[FeedBack] = glon;
 
-    if (FeedBack == LOW_RATE_FEEDBACK)
-      DELT[FeedBack]	= 1.0;
-    else
-      DELT[FeedBack]  = 1.0 / (float)cfg.ProcessingRate();
-
-    old_glat[FeedBack]	= glat;
-    old_glon[FeedBack]	= glon;
-
-    memset((char *)zf, 0, sizeof(zf));
-    memset((char *)am, 0, sizeof(am));
-    memset((char *)bm, 0, sizeof(bm));
-    memset((char *)h, 0, sizeof(h));
-
-    factorp[FeedBack] = 0.002 * (1000.0 / DELT[FeedBack]) * M_PI / TAUP;
-
-    time[FeedBack] = dvy[FeedBack] = dvx[FeedBack] = dlat[FeedBack] =
-      dlon[FeedBack] = 0.0;
-
-
-    firstTime[FeedBack] = FALSE;
+    firstTime[FeedBack] = false;
     }
 
 
@@ -144,10 +157,11 @@ void slatc(DERTBL *varp)
     {
     latc[FeedBack] = lonc[FeedBack] = vewc[FeedBack] = vnsc[FeedBack] = 0.0;
     PutSample(varp, latc[FeedBack]);
+    return;
     }
 
 
-  time[FeedBack] += DELT[FeedBack];
+  time_duration[FeedBack] += DELT[FeedBack];
 
   dx	= glat - old_glat[FeedBack];
   dy	= glon - old_glon[FeedBack];
@@ -193,7 +207,7 @@ void slatc(DERTBL *varp)
      */
     if (gstat > 0 || gmode < 4 || fabs(glat) > 90.0 || fabs(glon) > 180.0 || fabs(roll) > ROLL_MAX)
       {
-//      printf("LATC: GPS disabled.\n");
+      printf("xlatc %d: GPS disabled.\n", FeedBack);
       goodGPS = 0;
       }
 
@@ -201,7 +215,7 @@ void slatc(DERTBL *varp)
       {
       if (++gps_is_flat > 2)	/* > 2 seconds	*/
         {
-//        printf("GPS is flat.\n");
+        printf("xlatc %d: GPS is flat.\n", FeedBack);
         goodGPS = 0;
         }
       }
@@ -216,11 +230,13 @@ void slatc(DERTBL *varp)
       { /* 30 minutes of operation.	*/
       if (FeedBack == LOW_RATE_FEEDBACK && matrix_updated[FeedBack])
         {
-        matrix_updated[FeedBack] = FALSE;
+        matrix_updated[FeedBack] = false;
 
         h[0][1] = h[1][0];
         h[0][2] = h[2][0];
         h[1][2] = h[2][1];
+
+        double hi[NCF][NCF];
 
         memcpy(hi, h, sizeof(h));
 
@@ -230,7 +246,7 @@ void slatc(DERTBL *varp)
          */
         if (det == 0.0)
           {
-          printf("GPS determinate is zero, reseting countr.\n");
+          printf("xlatc: GPS determinate is zero, reseting countr.\n");
           countr[FeedBack] = 0;
           goto label546;
           }
@@ -250,7 +266,7 @@ void slatc(DERTBL *varp)
             }
         }
 
-      omegat = 2.0 * M_PI * time[FeedBack] / 5040.0;
+      omegat = 2.0 * M_PI * time_duration[FeedBack] / 5040.0;
       sinwt = sin(omegat);
       coswt = cos(omegat);
 
@@ -297,7 +313,7 @@ void slatc(DERTBL *varp)
 
     if (FeedBack == LOW_RATE_FEEDBACK) /* Only do this in the Low-rate pass */
       {
-      omegat = 2.0 * M_PI * time[FeedBack] / 5040.0;
+      omegat = 2.0 * M_PI * time_duration[FeedBack] / 5040.0;
       sinwt = sin(omegat);
       coswt = cos(omegat);
 
@@ -323,16 +339,16 @@ void slatc(DERTBL *varp)
       h[2][1] = UPFCTR * h[2][1] + sinwt * coswt;
       h[2][2] = UPFCTR * h[2][2] + coswt * coswt;
 
-      matrix_updated[FeedBack] = TRUE;
+      matrix_updated[FeedBack] = true;
       ++countr[FeedBack];
       }
     }
 
 label546:
-vnsc[FeedBack] = vns + dvy[FeedBack];
-vewc[FeedBack] = vew + dvx[FeedBack];
+  vnsc[FeedBack] = vns + dvy[FeedBack];
+  vewc[FeedBack] = vew + dvx[FeedBack];
 
-if (fabs(lonc[FeedBack] - alon) > 5 || fabs(latc[FeedBack] - alat) > 5)
+  if (fabs(lonc[FeedBack] - alon) > 5 || fabs(latc[FeedBack] - alat) > 5)
     {
     lonc[FeedBack] = alon;
     latc[FeedBack] = alat;
@@ -382,17 +398,15 @@ static NR_TYPE filter(double x, double zf[])
 {
   static double	a[nFeedBackTypes], a2[nFeedBackTypes],
 		a3[nFeedBackTypes], a4[nFeedBackTypes];
-  static bool	firstTime[nFeedBackTypes] = { TRUE, TRUE };
+  static bool	firstTime[nFeedBackTypes] = { true, true };
 
   if (firstTime[FeedBack])
     {
-    double	TAU;
+    double	TAU = 600.0;
     double	b1, b2, c, c2, e, f;
 
-    if (FeedBack == LOW_RATE_FEEDBACK)
-      TAU = 600.0;
-    else
-      TAU = 600.0 * (float)cfg.ProcessingRate();
+    if (FeedBack == HIGH_RATE_FEEDBACK)
+      TAU *= (float)cfg.ProcessingRate();
 
     a[FeedBack]	= 2.0 * M_PI / TAU;
     b1		= sqrt(3.0) / 2.0;
@@ -405,7 +419,7 @@ static NR_TYPE filter(double x, double zf[])
     a3[FeedBack]= 2.0 * exp(-a[FeedBack] / 2.0) * cos(e);
     a4[FeedBack]= exp(-a[FeedBack]);
 
-    firstTime[FeedBack] = FALSE;
+    firstTime[FeedBack] = false;
     }
 
   zf[2] = -a[FeedBack] * x + a2[FeedBack] * zf[5] + a3[FeedBack] * zf[3] - a4[FeedBack] * zf[4];
@@ -421,7 +435,7 @@ static NR_TYPE filter(double x, double zf[])
 /* -------------------------------------------------------------------- */
 int ludcmp(double a[NCF][NCF], int N, int indx[], double *det)
 {
-  int		i, imax, j, k;
+  int		i, imax = 0, j, k;
   double	big, dum, sum, temp;
   double	vv[NCF];
 
