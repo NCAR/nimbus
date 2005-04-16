@@ -1,6 +1,26 @@
 
 Version number is changed in version.h.
 -------------------------------------------------------------------------
+04/15/05	4.0.0
+	Consolidated Config stuff; for GUI, time slice, flight info, new
+	buttons enable/disable despiking/time shift, LRT vs. HRT into one
+	window.  Internally all config moved into a C++ class.  Changed ALL
+	interp (irs, despike, time-shift, FIR filtering) to use gnu/gsl
+	cubic-splines.  Added support for DATA_FILTER environment variable
+	(over-rides DATA_DIR (e.g. "/jnet/data/135").  Add .ads extension
+	on input filename.  Change 'Start Processing' button to a 'Quit'
+	button when finished.  Fix 4 second offset for LRT files not started
+	at BOF.  Added a filter specifically for VSPD.  New FIR filters from
+	Matlab.  Simplified filter.c code.
+
+04/0?/05	3.8.0	I think 4.0 eclipsed this.
+	Found bug in in counting for FIR varibles being interpolated.   This
+	caused a scalloping effect.  Tweaked GUI size/placement.
+
+03/27/05	3.7.2
+	Improve irs error reporting.  Fix Despike error counting.  Fix
+	10hz HRT filtering bug (no filtering was happening).
+
 01/25/05	3.7.0
 	Refactor the VARTBL (SDITBL, RAWTBL, & DERTBL) to have a base
 	class.  Then change the arrays of them to vectors.
