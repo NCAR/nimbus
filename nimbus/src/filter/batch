@@ -1,2 +1,5 @@
-if=/jnet/data/113rf06b.ads
-of=/jnet/data/113rf06.nc
+pr=25
+if=/home/tmp/135rf18.ads
+of=/home/tmp/135_hrtn.nc
+sf=/h/9/cjw/nimbus/135wind
+ti=10:00:00-19:00:00

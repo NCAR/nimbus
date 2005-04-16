@@ -32,6 +32,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 #include "circbuff.h"
 
 #include <cmath>
+#include <gsl/gsl_spline.h>
 
 extern NR_TYPE	*SampledData, *HighRateData;
 
@@ -41,7 +42,8 @@ static std::vector<mRFilterPtr> rawFilters;
 static filterData	TwoFiftyTo25, FiftyTo25, OneTo25, FiveTo25, TenTo25,
 			ThousandTo25, TwentyFive, vspd;
 
-static size_t	PSCBindex, currentHz, HzDelay;
+static int	PSCBindex;
+static size_t	currentHz, HzDelay;
 static size_t	filterRate;
 
 static NR_TYPE	*inputRec;
@@ -54,7 +56,7 @@ static NR_TYPE	getBuff(int offset, circBuffPtr aCBPtr);
 static void	initCircBuff(circBuffPtr aCBPtr),
 		disposCircBuff(circBuffPtr aCBPtr),
 		putBuff(NR_TYPE datum, circBuffPtr aCBPtr),
-		setTimeDelay(size_t, size_t, size_t *, size_t *),
+		setTimeDelay(size_t, size_t, int *, size_t *),
 		filterCounter(SDITBL *sp),
 		ProcessVariable(CircularBuffer *PSCB, var_base *vp, mRFilterPtr vpFilter),
 		SingleStageFilter(CircularBuffer *PSCB, mRFilterPtr thisMRF,
@@ -236,7 +238,7 @@ static void ProcessVariable(CircularBuffer *PSCB, var_base *vp, mRFilterPtr vpFi
     return;
     }
 
-  /* Because data with SampleRate below 25 is linear interpolated first, we
+  /* Because data with SampleRate below 25 is interpolated first, we
    * can't use SampleRate, but must use 25.  Fake it with filterRate.
    */
   filterRate = vp->SampleRate < (size_t)cfg.ProcessingRate() ? (size_t)cfg.ProcessingRate() : vp->SampleRate;
@@ -396,7 +398,7 @@ static mRFilterPtr createMRFilter(int L, int M, filterPtr filter, MOD *modvar)
 }	/* END CREATEMRFILTER */
 
 /* -------------------------------------------------------------------- */
-static void setTimeDelay(size_t rate, size_t nTaps, size_t *sec, size_t *msec)
+static void setTimeDelay(size_t rate, size_t nTaps, int *sec, size_t *msec)
 {
   /* Set up time lags due to filtering.  nTaps should be a multiple of 25
    * (odd # taps ok i.e. nTaps=101).
@@ -428,9 +430,7 @@ static void setTimeDelay(size_t rate, size_t nTaps, size_t *sec, size_t *msec)
 //      *msec = 500;
         break;
       }
-
 }	/* END SETTIMEDELAY */
-
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*\
 
@@ -689,7 +689,6 @@ static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output)
 
 /* -------------------------------------------------------------------- */
 static NR_TYPE out[250];
-NR_TYPE polyinterp(NR_TYPE xa[], NR_TYPE ya[], int n, int x);
 
 char *GetProcessedBuffer(CircularBuffer *cb, int offset, var_base *vp)
 {
@@ -702,7 +701,7 @@ char *GetProcessedBuffer(CircularBuffer *cb, int offset, var_base *vp)
 
   /* Load up data. 1 sample from prev second and 1 from the next second also.
    */
-  NR_TYPE x[cfg.ProcessingRate()+2], y[cfg.ProcessingRate()+2];
+  double x[cfg.ProcessingRate()+3], y[cfg.ProcessingRate()+3];
   float L = (float)cfg.ProcessingRate() / vp->SampleRate;
 
   x[0] = -L;
@@ -731,18 +730,18 @@ char *GetProcessedBuffer(CircularBuffer *cb, int offset, var_base *vp)
     y[vp->SampleRate+2] = nextBuff[vp->SRstart+1];
   }
 
-  /* Inerpolate data to 25hz.
+  /* Interpolate data to 25hz.
    */
+  gsl_interp_accel *acc = gsl_interp_accel_alloc();
+  gsl_spline *spline = gsl_spline_alloc(gsl_interp_cspline, vp->SampleRate+3);
+
+  gsl_spline_init(spline, x, y, vp->SampleRate+3);
+
   for (size_t i = 0; i < (size_t)cfg.ProcessingRate(); ++i)
-    out[i] = polyinterp(&x[(int)((float)i / L)], &y[(int)((float)i / L)], 4, i);
+    out[i] = gsl_spline_eval(spline, i, acc);
 
-// Linear interp
-//    out[i] =	y[(int)((float)i / L)+1] +
-//		((y[(int)((float)i / L)+2] - y[(int)((float)i / L+1)]) *
-//		((1.0 / L) * (i % (int)L)));
-
-// poly inter /w whole second, 4 pts seemed better.
-//    out[i] = polyinterp(x, y, vp->SampleRate+3, i);
+  gsl_spline_free(spline);
+  gsl_interp_accel_free(acc);
 
   return (char *)out;
 }
