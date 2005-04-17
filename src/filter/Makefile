@@ -56,11 +56,9 @@ obj: $(INPUT.O) amlib $(NOBJ)pms1d_rt.o
 
 install:	nimbus
 	cp nimbus ${JLOCAL}/bin
-lint:
-	lint ${INCLUDES} *.c
-#	lint ${INCLUDES} *.c ${CLIBS}
 
 clean:
+	cd ${NINC}; make clean
 	rm -f core* nimbus $(NOBJ)*.o LOCK.make mk.tmp
 
 $(NINC)nimbus.h: $(LOCAL_INC)constants.h
@@ -69,7 +67,7 @@ $(NINC)decode.h: $(LOCAL_INC)header.h
 
 # ------------------------------------------------------------------------
 
-NIMBUS.H = $(NINC)nimbus.h $(NINC)gui.h $(NINC)version.h $(NINC)fbr.h
+NIMBUS.H = $(NINC)nimbus.h $(NINC)gui.h $(NINC)svnInfo.h $(NINC)fbr.h
 $(NOBJ)nimbus.o: nimbus.c $(NIMBUS.H)
 	${CC} $(COFLAGS) $(DEFINES) nimbus.c -o $(NOBJ)nimbus.o
 
@@ -174,7 +172,7 @@ DEPEND.H = $(NINC)nimbus.h $(NINC)decode.h
 $(NOBJ)depend.o: depend.c $(DEPEND.H)
 	${CC} $(COFLAGS) $(DEFINES) depend.c -o $(NOBJ)depend.o
  
-CCB.H = $(NINC)nimbus.h $(NINC)gui.h $(NINC)version.h
+CCB.H = $(NINC)nimbus.h $(NINC)gui.h $(NINC)svnInfo.h
 $(NOBJ)cb_main.o: cb_main.c $(CCB.H)
 	${CC} $(COFLAGS) $(DEFINES) cb_main.c -o $(NOBJ)cb_main.o
 

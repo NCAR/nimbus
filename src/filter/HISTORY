@@ -11,11 +11,13 @@ Version number is changed in version.h.
 	on input filename.  Change 'Start Processing' button to a 'Quit'
 	button when finished.  Fix 4 second offset for LRT files not started
 	at BOF.  Added a filter specifically for VSPD.  New FIR filters from
-	Matlab.  Simplified filter.c code.
+	Matlab.  Simplified filter.c code.  Change from version.h to svnInfo.h
+	for version #, now I don't have to think about it.
 
 04/0?/05	3.8.0	I think 4.0 eclipsed this.
-	Found bug in in counting for FIR varibles being interpolated.   This
-	caused a scalloping effect.  Tweaked GUI size/placement.
+	Found bug in in counting for FIR varibles being interpolated, was
+	passing actual SampleRate in not 25 since data was already interped.
+	Tweaked GUI size/placement.
 
 03/27/05	3.7.2
 	Improve irs error reporting.  Fix Despike error counting.  Fix

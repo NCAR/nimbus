@@ -60,7 +60,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include "gui.h"
 #include "vardb.h"
 #include "psql.h"
-#include "version.h"
+#include "svnInfo.h"
 
 
 static char	ADSfileName[MAXPATHLEN];
@@ -186,7 +186,7 @@ static void readHeader()
   XtSetSensitive(outputFileText, false);
 
   XmUpdateDisplay(Shell001);
-  LogMessage(NIMBUS_VERSION);
+  LogMessage(SVNREVISION);
 
   if (DecodeHeader(ADSfileName) == ERR) {
     CancelSetup(NULL, NULL, NULL);
@@ -1155,23 +1155,28 @@ static void EngageSignals()
 /* -------------------------------------------------------------------- */
 void LogMessage(char msg[])
 {
-  XmTextPosition	position;
-  extern Widget	logText;
+  std::string messg(msg);
+
+  if (messg[messg.length()-1] != '\n')
+    messg.append("\n");
 
   if (cfg.Interactive())
     {
-    position = XmTextGetInsertionPosition(logText);
-    XmTextInsert(logText, position, msg);
+    XmTextPosition	position;
+    extern Widget	logText;
 
-    position += strlen(msg);
+    position = XmTextGetInsertionPosition(logText);
+    XmTextInsert(logText, position, (char*)messg.c_str());
+
+    position += messg.length();
     XmTextShowPosition(logText, position);
     XmTextSetInsertionPosition(logText, position);
     }
   else
-    fprintf(stderr, msg);
+    fprintf(stderr, messg.c_str());
 
   if (LogFile)
-    fprintf(LogFile, msg);
+    fprintf(LogFile, messg.c_str());
 
 }	/* END LOGMESSAGE */
 
