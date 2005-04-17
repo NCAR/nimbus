@@ -19,7 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include "nimbus.h"
 #include "gui.h"
 #include "fbr.h"
-#include "version.h"
+#include "svnInfo.h"
 
 #define APP_CLASS	"XmNimbus"
 
@@ -55,7 +55,9 @@ int main(int argc, char *argv[])
   Arg		args[8];
   Cardinal	n;
 
-  printf(NIMBUS_VERSION);
+  printf("%s\n", SVNREVISION);
+  printf("%s\n", SVNLASTCHANGEDDATE);
+  printf("%s\n\n", SVNURL);
 
   n = 0;
   AppShell = XtAppInitialize(&context, APP_CLASS, NULL, 0, &argc, argv,
