@@ -10,7 +10,7 @@ PROG=	make_amlib
 
 all:	amlibfn.h svnInfo.h
 
-svnInfo.h:
+svnInfo.h: .force
 	makeSvnInfoHeaderFile.sh
 
 amlibfn.h:	amlib.fns make_amlib
@@ -24,3 +24,5 @@ make_amlib: make_amlib.c
 
 clean:
 	rm -f ${PROG} svnInfo.h amlibfn.h xlatefns.h amlibProto.h
+
+.force:
