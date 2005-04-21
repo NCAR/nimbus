@@ -51,7 +51,7 @@ NR_TYPE angcr(
 		if (d > 0.0)
 			angle2 -= syncro_range;
 		else
-			fprintf(stderr, "angcr: Impossible\n");
+			LogStdMsg("angcr: Impossible.");
 		}
 
 

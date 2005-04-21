@@ -78,7 +78,8 @@ NR_TYPE	FirstPoly(NR_TYPE x, NR_TYPE c[]);
 NR_TYPE	SecondPoly(NR_TYPE x, NR_TYPE c[]);
 
 int	SearchDERIVFTNS(char target[]);
-void	RunAMLIBinitializers();
+void	RunAMLIBinitializers(), LogXlateMsg(char msg[]),
+	Log2dXlateMsg(P2d_rec *p, char msg[]), LogStdMsg(char msg[]);
 
 extern NR_TYPE		*AveragedData, *HighRateData;
 extern RateFeedBack	FeedBack;

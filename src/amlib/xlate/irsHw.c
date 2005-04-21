@@ -622,9 +622,10 @@ void preProcessData(var_base *varp, long input[], int thisLabel)
   if (false)	// Too much of a good thing, turn off by default....
 //  if (zeroCnt > 1)
   {
-    fprintf(stderr,
-	"irsHw: %s: %d of %d zero values this second.\n",
+    sprintf(buffer,
+	"irsHw: %s: %d of %d zero values this second.",
 	varp->name, zeroCnt, varp->SampleRate);
+    LogXlateMsg(buffer);
   }
 
   if (allZeros)
@@ -644,17 +645,21 @@ void preProcessData(var_base *varp, long input[], int thisLabel)
  
     if (label != thisLabel)
     {
-      fprintf(stderr,
-		"irsHw: %s: Incorrect arinc label of %o, zero'ing data.\n",
+      sprintf(buffer,
+		"irsHw: %s: Incorrect arinc label of %o, zero'ing data.",
 		varp->name, label);
+      LogXlateMsg(buffer);
 
       input[i] = 0;
       ++label_errors[thisLabel];
     }
     else
     if ((input[i] & 0xffffff00) == 0)
-      fprintf(stderr, "irsHw: %s:  Label correct, value is pure zero though.\n",
+    {
+      sprintf(buffer, "irsHw: %s:  Label correct, value is pure zero though.",
 		varp->name);
+      LogXlateMsg(buffer);
+    }
   }
 
 
@@ -727,19 +732,28 @@ void postProcessData(var_base *varp, long input[], NR_TYPE *out)
       ++goodPoints;
     }
 
-  gsl_interp_accel *acc = gsl_interp_accel_alloc();
-  gsl_spline *spline = gsl_spline_alloc(gsl_interp_cspline, goodPoints);
+  if (goodPoints < 2)
+    {
+    LogXlateMsg("irsHw.c: gsl_spline to few points to interp with, setting to MISSING_VALUE.");
 
-  gsl_spline_init(spline, x, y, goodPoints);
+    for (size_t i = 0; i < varp->SampleRate; ++i)
+      if (input[i] == 0)
+        out[i] = MISSING_VALUE;
+    }
+  else
+    {
+    gsl_interp_accel *acc = gsl_interp_accel_alloc();
+    gsl_spline *spline = gsl_spline_alloc(gsl_interp_cspline, goodPoints);
 
+    gsl_spline_init(spline, x, y, goodPoints);
 
-  for (size_t i = 0; i < varp->SampleRate; ++i)
-    if (input[i] == 0)
-      out[i] = gsl_spline_eval(spline, i, acc);
+    for (size_t i = 0; i < varp->SampleRate; ++i)
+      if (input[i] == 0)
+        out[i] = gsl_spline_eval(spline, i, acc);
 
-  gsl_spline_free(spline);
-  gsl_interp_accel_free(acc);
-
+    gsl_spline_free(spline);
+    gsl_interp_accel_free(acc);
+    }
 }
 
 /* -------------------------------------------------------------------- */

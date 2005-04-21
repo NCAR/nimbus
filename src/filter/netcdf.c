@@ -252,6 +252,9 @@ void CreateNetCDF(char fileName[])
     fprintf(LogFile, "Flight Date: %s\n", buffer);
 
 
+  strcpy(buffer, "LONC LATC ALTX Time");
+  ncattput(fd, NC_GLOBAL, "coordinates", NC_CHAR, strlen(buffer)+1, (void *)buffer);
+
   /* Will be updated later.
    */
   memset(buffer, ' ', DEFAULT_TI_LENGTH);
