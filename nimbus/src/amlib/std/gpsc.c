@@ -30,7 +30,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 static NR_TYPE
 	UPFCTR	= 0.999444,
 	FCTRF	= 0.997,
-	TAUP	= 100.0,
+	TAUP	= 600.0,	// Very original value was 150.
+	TAU	= 600.0,
 	CDM	= 111120.0,
 	ROLL_MAX = 40.0;
 
@@ -74,6 +75,14 @@ void initLATC(DERTBL *varp)
   else
     TAUP = tmp[0];
 
+  if ((tmp = GetDefaultsValue("GPS_TAU", varp->name)) == NULL)
+  {
+    sprintf(buffer, "Value set to %f in AMLIB function slatc.\n", TAU);
+    LogMessage(buffer);
+  }
+  else
+    TAU = tmp[0];
+
   if ((tmp = GetDefaultsValue("GPS_UPFCTR", varp->name)) == NULL)
   {
     sprintf(buffer, "Value set to %f in AMLIB function slatc.\n", UPFCTR);
@@ -116,7 +125,6 @@ void slatc(DERTBL *varp)
 {
   int		i, j, k;
   NR_TYPE	alat, alon, vew, vns, roll, glat, glon, gvew, gvns;
-  NR_TYPE	dx, dy, dgps;
   NR_TYPE	omegat, sinwt, coswt, gvnsf, gvewf, vnsf, vewf;
   long		gstat, gmode;
 
@@ -163,16 +171,15 @@ void slatc(DERTBL *varp)
 
   time_duration[FeedBack] += DELT[FeedBack];
 
-  dx	= glat - old_glat[FeedBack];
-  dy	= glon - old_glon[FeedBack];
-  dgps	= dx*dx + dy*dy;
-  old_glat[FeedBack] = glat;
-  old_glon[FeedBack] = glon;
-
   /* Check GPS status, only do this on the Low-rate pass.
    */
   if (FeedBack == LOW_RATE_FEEDBACK)
     {
+    double dx, dy, dgps;
+    dx	= glat - old_glat[FeedBack];
+    dy	= glon - old_glon[FeedBack];
+    dgps = dx*dx + dy*dy;
+
     ++goodGPS;
 
     /* Major hack to determine Garmin vs. Trimble GPS.  MODE/STAT vars
@@ -207,7 +214,8 @@ void slatc(DERTBL *varp)
      */
     if (gstat > 0 || gmode < 4 || fabs(glat) > 90.0 || fabs(glon) > 180.0 || fabs(roll) > ROLL_MAX)
       {
-      printf("xlatc %d: GPS disabled.\n", FeedBack);
+      sprintf(buffer, "xlatc %d: GPS disabled.", FeedBack);
+      LogStdMsg(buffer);
       goodGPS = 0;
       }
 
@@ -215,7 +223,8 @@ void slatc(DERTBL *varp)
       {
       if (++gps_is_flat > 2)	/* > 2 seconds	*/
         {
-        printf("xlatc %d: GPS is flat.\n", FeedBack);
+        sprintf(buffer, "xlatc %d: GPS is flat.", FeedBack);
+        LogStdMsg(buffer);
         goodGPS = 0;
         }
       }
@@ -246,7 +255,7 @@ void slatc(DERTBL *varp)
          */
         if (det == 0.0)
           {
-          printf("xlatc: GPS determinate is zero, reseting countr.\n");
+          LogStdMsg("xlatc: GPS determinate is zero, reseting countr.");
           countr[FeedBack] = 0;
           goto label546;
           }
@@ -402,7 +411,6 @@ static NR_TYPE filter(double x, double zf[])
 
   if (firstTime[FeedBack])
     {
-    double	TAU = 600.0;
     double	b1, b2, c, c2, e, f;
 
     if (FeedBack == HIGH_RATE_FEEDBACK)
@@ -451,7 +459,7 @@ int ludcmp(double a[NCF][NCF], int N, int indx[], double *det)
 
     if (big == 0.0)
       {
-      fprintf(stderr, "Singular matrix in LUdcmp.\n");
+      LogStdMsg("gpsc.c: Singular matrix in LUdcmp.");
       return(ERR);
     }
 

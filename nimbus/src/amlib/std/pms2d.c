@@ -300,7 +300,8 @@ void sTwoD(DERTBL *varp)
 
     if (sampleVolume[i] < 0.0)
       {
-      printf("2D Sample Volume went negative, %f\n", sampleVolume[i]);
+      sprintf(buffer, "2D Sample Volume went negative, %f", sampleVolume[i]);
+      LogStdMsg(buffer);
       sampleVolume[i] = 0.0;
       }
 

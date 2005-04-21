@@ -632,20 +632,22 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
    */
   if (partCnt < 20)
     {
-    printf("Rejecting 2D record: %x %02d:%02d:%02d.%d, too few particles, nPart=%d\n", rec->id, rec->hour, rec->minute, rec->second, rec->msec, partCnt);
+    sprintf(buffer, "Rejecting 2D record: %x %02d:%02d:%02d.%d, too few particles, nPart=%d", rec->id, rec->hour, rec->minute, rec->second, rec->msec, partCnt);
+    Log2dXlateMsg(rec, buffer);
     goto cleanup;
     }
 
   if (DASelapsedTime > 8000000)	/* 8 seconds */
     {
-    printf("Rejecting 2D record: %x %02d:%02d:%02d.%d, too much elapsed time, %ld seconds.\n", rec->id, rec->hour, rec->minute, rec->second, rec->msec, DASelapsedTime / 1000000);
+    sprintf(buffer, "Rejecting 2D record: %x %02d:%02d:%02d.%d, too much elapsed time, %ld seconds.", rec->id, rec->hour, rec->minute, rec->second, rec->msec, DASelapsedTime / 1000000);
+    Log2dXlateMsg(rec, buffer);
     goto cleanup;
     }
 
   if (overLap > 2 && tas < 70.0)
     {
-    printf("Rejecting 2D record: %x %02d:%02d:%02d.%d, oLap=%f, tas=%5.1f\n",
-	rec->id, rec->hour, rec->minute, rec->second, rec->msec, overLap, tas);
+    sprintf(buffer, "Rejecting 2D record: %x %02d:%02d:%02d.%d, oLap=%f, tas=%5.1f", rec->id, rec->hour, rec->minute, rec->second, rec->msec, overLap, tas);
+    Log2dXlateMsg(rec, buffer);
     goto cleanup;
     }
 
