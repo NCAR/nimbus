@@ -6,11 +6,7 @@ FULL NAME:	netCDF Data File Class
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2003
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-05
 -------------------------------------------------------------------------
 */
 
@@ -48,29 +44,34 @@ DataFile::DataFile(char fName[]) : fileName(fName)
     }
 
   attr = file->get_att("ProjectName");
-  if (attr->is_valid())
+  if (attr && attr->is_valid())
     projName = attr->as_string(0);
+  delete attr;
 
   attr = file->get_att("FlightNumber");
-  if (attr->is_valid())
+  if (attr && attr->is_valid())
     flightNum = attr->as_string(0);
+  delete attr;
 
   attr = file->get_att("FlightDate");
-  if (attr->is_valid())
+  if (attr && attr->is_valid())
     flightDate = attr->as_string(0);
+  delete attr;
 
   attr = file->get_att("WARNING");
-  if (attr->is_valid())
+  if (attr && attr->is_valid())
     prelimData = true;
   else
     prelimData = false;
+  delete attr;
 
   attr = file->get_att("TimeInterval");
-  if (attr->is_valid())
+  if (attr && attr->is_valid())
     {
     startTime = attr->as_string(0);
     endTime = strchr(attr->as_string(0), '-')+1;
     }
+  delete attr;
 
 
   // Bump up endTime if we have midnight roll-over.
