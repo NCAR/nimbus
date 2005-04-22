@@ -14,14 +14,14 @@ OBJS=	APN159.o APN232.o asas.o async.o avaps.o climet.o cmigit3.o\
 	gpsPps.o gpsTans.o hgm.o irsHw.o irsL51.o loranc.o ophir3.o\
 	pms1_data.o pms1_hskp.o pms1_ps.o pms2_data.o pms2_hskp.o\
 	psfd.o rdma.o serial.o time.o uvhyg.o gpsGarmin.o grey_hskp.o\
-	tdl.o float.o log.o AceAsia.o
+	tdl.o float.o AceAsia.o
 
 SRCS=	APN159.c APN232.c asas.c async.c avaps.c climet.c cmigit3.c\
 	const.c dme.c dmt_hskp.c etorq.c event.c fssp.c gpsHw.c\
 	gpsPps.c gpsTans.c hgm.c irsHw.c irsL51.c loranc.c ophir3.c\
 	pms1_data.c pms1_hskp.c pms1_ps.c pms2_data.c pms2_hskp.c\
 	psfd.c rdma.c serial.c time.c uvhyg.c gpsGarmin.c grey_hskp.c\
-	tdl.c float.c log.c AceAsia.c
+	tdl.c float.c AceAsia.c
 
 HDRS=	${JLOCAL}/include/header.h ${NIMBUS}/include/amlib.h \
 	${NIMBUS}/include/nimbus.h ${JLOCAL}/include/constants.h
