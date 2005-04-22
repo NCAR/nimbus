@@ -34,6 +34,8 @@ static void checkVariable(var_base *, NR_TYPE, size_t *);
 static void check1Hz(var_base *, NR_TYPE, size_t *);
 static NR_TYPE despike(NR_TYPE *);
 
+void LogThisRecordMsg(NR_TYPE *record, char msg[]);
+
 
 /* -------------------------------------------------------------------- */
 void AddVariableToSDIdespikeList(SDITBL *varp)
@@ -125,7 +127,8 @@ static void check1Hz(var_base *varp, NR_TYPE SpikeSlope, size_t *counter)
     {
     this_rec[varp->SRstart] = despike(points);
     (*counter)++;
-    printf("Despike: %s, deltas %g %g - slope=%g\n", varp->name,dir1,dir2,SpikeSlope);
+    sprintf(buffer, "Despike: %s, deltas %g %g - slope=%g\n", varp->name,dir1,dir2,SpikeSlope);
+    LogThisRecordMsg(this_rec, buffer);
     }
 
 }	/* END CHECK1HZ */
@@ -178,8 +181,9 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
 
       if (ex < nPoints)
         {
-        printf("Despike: %s, delta %g - slope=%g, point = %g, nPoints=%d\n",
+        sprintf(buffer, "Despike: %s, delta %g - slope=%g, point = %g, nPoints=%d\n",
 		vp->name, dir1, SpikeSlope, this_rec[sx+1], ex-sx-1);
+        LogThisRecordMsg(this_rec, buffer);
 
         gsl_interp_accel *acc = gsl_interp_accel_alloc();
         gsl_spline *spline = gsl_spline_alloc(gsl_interp_cspline, spCnt);

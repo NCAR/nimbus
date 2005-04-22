@@ -8,7 +8,6 @@ ENTRY POINTS:	CancelSetup()
 		CreateListLineItem()
 		FillListWidget()
 		LoadSetup()
-		LogMessage()
 		PrintSetup()
 		Proceed()
 		Quit()
@@ -1151,33 +1150,5 @@ static void EngageSignals()
   signal(SIGTERM, sighandler);
 
 }	/* END ENGAGESIGNALS */
-
-/* -------------------------------------------------------------------- */
-void LogMessage(char msg[])
-{
-  std::string messg(msg);
-
-  if (messg[messg.length()-1] != '\n')
-    messg.append("\n");
-
-  if (cfg.Interactive())
-    {
-    XmTextPosition	position;
-    extern Widget	logText;
-
-    position = XmTextGetInsertionPosition(logText);
-    XmTextInsert(logText, position, (char*)messg.c_str());
-
-    position += messg.length();
-    XmTextShowPosition(logText, position);
-    XmTextSetInsertionPosition(logText, position);
-    }
-  else
-    fprintf(stderr, messg.c_str());
-
-  if (LogFile)
-    fprintf(LogFile, messg.c_str());
-
-}	/* END LOGMESSAGE */
 
 /* END CB_MAIN.C */

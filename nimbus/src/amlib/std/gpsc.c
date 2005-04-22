@@ -212,9 +212,23 @@ void slatc(DERTBL *varp)
 
     /* Bad Positions for using GPS?
      */
-    if (gstat > 0 || gmode < 4 || fabs(glat) > 90.0 || fabs(glon) > 180.0 || fabs(roll) > ROLL_MAX)
+    if (gstat > 0 || gmode < 4)
       {
-      sprintf(buffer, "xlatc %d: GPS disabled.", FeedBack);
+      sprintf(buffer, "latc: GPS disabled, status reject gstat=%d, gmode=%d.",
+		(int)gstat, (int)gmode);
+      LogStdMsg(buffer);
+      goodGPS = 0;
+      }
+
+    if (fabs(glat) > 90.0 || fabs(glon) > 180.0)
+      {
+      LogStdMsg("latc: GPS disabled, bad position.");
+      goodGPS = 0;
+      }
+
+    if (fabs(roll) > ROLL_MAX)
+      {
+      sprintf(buffer, "latc: GPS disabled, ROLL_MAX of %.1f exceeded.", ROLL_MAX);
       LogStdMsg(buffer);
       goodGPS = 0;
       }
@@ -223,8 +237,7 @@ void slatc(DERTBL *varp)
       {
       if (++gps_is_flat > 2)	/* > 2 seconds	*/
         {
-        sprintf(buffer, "xlatc %d: GPS is flat.", FeedBack);
-        LogStdMsg(buffer);
+        LogStdMsg("latc: GPS is flat-lined.");
         goodGPS = 0;
         }
       }
@@ -255,7 +268,7 @@ void slatc(DERTBL *varp)
          */
         if (det == 0.0)
           {
-          LogStdMsg("xlatc: GPS determinate is zero, reseting countr.");
+          LogStdMsg("latc: GPS determinate is zero, reseting countr.");
           countr[FeedBack] = 0;
           goto label546;
           }

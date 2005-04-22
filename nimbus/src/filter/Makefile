@@ -32,7 +32,7 @@ INPUT.O = $(NOBJ)adsIO.o $(NOBJ)amlibfn.o $(NOBJ)async.o $(NOBJ)average.o\
 	$(NOBJ)phase_shift.o $(NOBJ)pms1d.o $(NOBJ)popen.o $(NOBJ)probe.o\
 	$(NOBJ)rd_defs.o $(NOBJ)rd_ddor.o $(NOBJ)rd_mod.o $(NOBJ)rd_lag.o\
 	$(NOBJ)rd_spike.o $(NOBJ)rd_sum.o $(NOBJ)rtloop.o $(NOBJ)rec_decode.o\
-	$(NOBJ)search.o $(NOBJ)setup.o $(NOBJ)textfile.o\
+	$(NOBJ)search.o $(NOBJ)setup.o $(NOBJ)textfile.o $(NOBJ)log.o\
 	$(NOBJ)timeseg.o $(NOBJ)Xwin.o $(NOBJ)dq.o $(NOBJ)UdpSocket.o $(NOBJ)psql.o\
 	$(NOBJ)injectsd.o
 
@@ -255,6 +255,10 @@ $(NOBJ)probe.o: probe.c $(PROBE.H)
 ASYNC.H =  $(NINC)nimbus.h $(NINC)decode.h $(LOCAL)/include/netcdf.h
 $(NOBJ)async.o: async.c $(ASYNC.H)
 	${CC} $(COFLAGS) $(DEFINES) async.c -o $(NOBJ)async.o
+
+LOG.H = $(NINC)nimbus.h
+$(NOBJ)log.o: log.c $(LOG.H)
+	${CC} $(COFLAGS) $(DEFINES) log.c -o $(NOBJ)log.o
 
 LOG.H = $(NINC)nimbus.h
 $(NOBJ)logfile.o: logfile.c $(LOG.H)
