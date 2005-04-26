@@ -178,6 +178,12 @@ void AddPMS1dAttrs(int ncid, RAWTBL *rp)
   ReleasePMSspecs();
 
 
+  if (rp->ProbeType & PROBE_PMS2D)
+    {
+    strcpy(buffer, "2D buffers with more than 8 seconds elapsed time or fewer than 20 particles.");
+    ncattput(ncid, rp->varid, "Rejected", NC_CHAR, strlen(buffer), buffer);
+    }
+
   /* Older projects have a PMSspecs file with mid-points instead of end-points.
    * Warn the user about this, as it will produce incorrect PMS1D results.
    */
