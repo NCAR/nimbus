@@ -9,15 +9,7 @@ ENTRY POINTS:	xlggstat(), xlgglon(), xlgglat(), xlggalt(),
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	rec_decode.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 2003
+COPYRIGHT:	University Corporation for Atmospheric Research, 2003-05
 -------------------------------------------------------------------------
 */
 
@@ -25,15 +17,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2003
 #include "decode.h"
 #include "amlib.h"
 
-static int	velLag = 0, posLag = 0;
-
-extern char *ADSrecord;
-
 /* -------------------------------------------------------------------- */
 void xlggstat(RAWTBL *varp, void *input, NR_TYPE *output)
 {
   *output = (NR_TYPE)ntohs(((Garmin_blk *)input)->quality);
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -55,9 +42,6 @@ void xlgglat(RAWTBL *varp, void *input, NR_TYPE *output)
     *output = MISSING_VALUE;
   else
     *output = lat;
-
-  varp->DynamicLag = posLag;
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -79,9 +63,6 @@ void xlgglon(RAWTBL *varp, void *input, NR_TYPE *output)
     *output = MISSING_VALUE;
   else
     *output = lon;
-
-  varp->DynamicLag = posLag;
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -89,26 +70,13 @@ void xlggalt(RAWTBL *varp, void *input, NR_TYPE *output)
 {
   Garmin_blk	*gps = (Garmin_blk *)input;
 
-/*
-  float		posTime;
-  Hdr_blk	*h = (Hdr_blk *)ADSrecord;
-
-  posTime = ntohf(gps->postime) - (int)ntohf(gps->postime);
-  posLag = (int)((posTime - 0.5) * 1000);
-printf("ADS = %02d:%02d:%02d  GGPS = %s\n", ntohs(h->hour), ntohs(h->minute), ntohs(h->second), gps->utctime);
-*/
-
   *output = (NR_TYPE)ntohf(gps->height);
-
-  varp->DynamicLag = posLag;
-
 }
 
 /* -------------------------------------------------------------------- */
 void xlggnsat(RAWTBL *varp, void *input, NR_TYPE *output)
 {
   *output = (NR_TYPE)ntohs(((Garmin_blk *)input)->nsat);
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -117,14 +85,12 @@ static NR_TYPE	gspd, trk;
 void xlggspd(RAWTBL *varp, void *input, NR_TYPE *output)
 {
   gspd = *output = (NR_TYPE)ntohf(((Garmin_blk *)input)->ground_speed) * KTS2MS;
-  varp->DynamicLag = velLag;
 }
 
 /* -------------------------------------------------------------------- */
 void xlggtrk(RAWTBL *varp, void *input, NR_TYPE *output)
 {
   trk = *output = (NR_TYPE)ntohf(((Garmin_blk *)input)->course);
-  varp->DynamicLag = velLag;
 }
 
 /* -------------------------------------------------------------------- */
@@ -135,14 +101,12 @@ void xlggtrk(RAWTBL *varp, void *input, NR_TYPE *output)
 void xlggvew(RAWTBL *varp, void *input, NR_TYPE *output)
 {
   *output = (gspd * sin((double)(DEG_RAD*trk)));
-  varp->DynamicLag = velLag;
 }
 
 /* -------------------------------------------------------------------- */
 void xlggvns(RAWTBL *varp, void *input, NR_TYPE *output)
 {
   *output = (gspd * cos((double)(DEG_RAD*trk)));
-  varp->DynamicLag = velLag;
 }
 
 /* END GPSGARMIN.C */

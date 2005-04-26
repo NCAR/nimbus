@@ -47,11 +47,12 @@ static int	zero_errors[256];	// One for each possible arinc label.
 /* previous sample.  persist from one second to the next.
  */
 static long	prev_input[256];	// One for each possible arinc label.
-static NR_TYPE	prev_out[256];		// One for each possible arinc label.
+static NR_TYPE	prev_y[256];		// Previous output value.
+static NR_TYPE	prev_x[256];		//  and associated x position (-indx).
 static bool	groundSpeedIsAlternating = false;
 
 static void	preProcessData(var_base *varp, long input[], int thisLabel);
-static void	postProcessData(var_base *varp, long input[], NR_TYPE *out);
+static void	postProcessData(var_base *varp, long input[], NR_TYPE *out, int thisLabel);
 
 static std::map<int, std::string> _labelMap;
 
@@ -89,7 +90,8 @@ void irsInit(RAWTBL *varp)
     label_errors[i] = 0;
     zero_errors[i] = 0;
     prev_input[i] = 0;
-    prev_out[i] = 0.0;
+    prev_x[i] = 0.0;
+    prev_y[i] = 0.0;
     }
 
   if ((tmp = GetDefaultsValue("HEADING_BIAS_1", varp->name)) == NULL)
@@ -132,13 +134,14 @@ void xlilat(RAWTBL *varp, void *input, NR_TYPE *np)
   long  *p = ((Irs_blk *)input)->present_lat;
 
   /* (degs) 20 bits, +- 0.5 pirad, label 310  */
+  int label = 0xc8;
 
-  preProcessData(varp, p, 0xc8);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (double)(p[i] >> 11) * arinc20bits;
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_5hz_frame);
 
@@ -150,13 +153,14 @@ void xlilon(RAWTBL *varp, void *input, NR_TYPE *np)
   long  *p = ((Irs_blk *)input)->present_lon;
 
   /* (degs) 20 bits, +- 1.0 pirad, label 311  */
+  int label = 0xc9;
 
-  preProcessData(varp, p, 0xc9);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (double)(p[i] >> 11) * arinc20bits;
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_5hz_frame);
 
@@ -174,13 +178,14 @@ void xlipitch(RAWTBL *varp, void *input, NR_TYPE *np)
     correction = pitchlcorr;
 
   /* (degs) 20 bits, +- 0.5 pirad, label 324  */
+  int label = 0xd4;
 
-  preProcessData(varp, p, 0xd4);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (double)(p[i] >> 11) * arinc20bits + correction;
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame);
 
@@ -192,13 +197,14 @@ void xliroll(RAWTBL *varp, void *input, NR_TYPE *np)
   long  *p = ((Irs_blk *)input)->roll_angle;
 
   /* (degs) 20 bits, +- 1.0 pirad, label 325  */
+  int label = 0xd5;
 
-  preProcessData(varp, p, 0xd5);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (double)(p[i] >> 11) * arinc20bits;
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame);
 
@@ -217,8 +223,9 @@ void xlithdg(RAWTBL *varp, void *input, NR_TYPE *np)
 
 
   /* (degs) 20 bits, +- 1.0 pirad, label 314  */
+  int label = 0xcc;
 
-  preProcessData(varp, p, 0xcc);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -231,7 +238,7 @@ void xlithdg(RAWTBL *varp, void *input, NR_TYPE *np)
       np[i] -= 360.0;
     }
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_25hz_frame);
 
@@ -243,13 +250,14 @@ void xlialt(RAWTBL *varp, void *input, NR_TYPE *np)
   long  *p = ((Irs_blk *)input)->inertial_alt;
 
   /* (degs) 20 bits, +- 131072 Ft, label 361  */
+  int label = 0xf1;
 
-  preProcessData(varp, p, 0xf1);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (double)(p[i] >> 11) * 0.125 * FTMTR;
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_25hz_frame);
 
@@ -261,13 +269,14 @@ void xlivspd(RAWTBL *varp, void *input, NR_TYPE *np)
   long  *p = ((Irs_blk *)input)->inrt_vert_speed;
 
   /* (degs) 20 bits, +- 32768 Ft/min, label 365  */
+  int label = 0xf5;
 
-  preProcessData(varp, p, 0xf5);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (double)(p[i] >> 11) * 0.03125 * FTMIN;
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_25hz_frame);
 
@@ -279,13 +288,14 @@ void xlvacc(RAWTBL *varp, void *input, NR_TYPE *np)
   long  *p = ((Irs_blk *)input)->vertical_accel;
 
   /* (G) 15 bits, +- 4.0 kts, label 364  */
+  int label = 0xf4;
 
-  preProcessData(varp, p, 0xf4);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (double)(p[i] >> 16) * arinc13bits * MPS2;
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame);
 
@@ -297,13 +307,14 @@ void xlivew(RAWTBL *varp, void *input, NR_TYPE *np)
   long  *p = ((Irs_blk *)input)->velocity_ew;
 
   /* 20 bits, +-4095 kts, label 367  */
+  int label = 0xf7;
 
-  preProcessData(varp, p, 0xf7);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (double)(p[i] >> 11) * arinc8bits * KTS2MS;
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_10hz_frame);
 
@@ -318,13 +329,14 @@ void xlivns(RAWTBL *varp, void *input, NR_TYPE *np)
   long  *p = ((Irs_blk *)input)->velocity_ns;
 
   /* 20 bits, +-4095 kts, label 366  */
+  int label = 0xf6;
 
-  preProcessData(varp, p, 0xf6);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (double)(p[i] >> 11) * arinc8bits * KTS2MS;
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_10hz_frame);
 
@@ -339,8 +351,9 @@ void xliwd(RAWTBL *varp, void *input, NR_TYPE *np)
   long  *p = ((Irs_blk *)input)->wind_dir_true;
 
   /* 20 bits, +-1 pirad, label 316  */
+  int label = 0xce;
 
-  preProcessData(varp, p, 0xce);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -353,7 +366,7 @@ void xliwd(RAWTBL *varp, void *input, NR_TYPE *np)
       np[i] -= 360.0;
     }
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_10hz_frame);
 
@@ -365,13 +378,14 @@ void xliws(RAWTBL *varp, void *input, NR_TYPE *np)
   long  *p = ((Irs_blk *)input)->wind_speed;
 
   /* 20 bits, 0-255 kts, label 315  */
+  int label = 0xcd;
 
-  preProcessData(varp, p, 0xcd);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (double)(p[i] >> 10) * arinc13bits * KTS2MS;
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_10hz_frame);
 
@@ -383,13 +397,14 @@ void xligspd(RAWTBL *varp, void *input, NR_TYPE *np)
   long  *p = ((Irs_blk *)input)->ground_speed;
 
   /* 20 bits, 0 to 4095 kts, label 312  */
+  int label = 0xca;
 
-  preProcessData(varp, p, 0xca);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (double)(p[i] >> 11) * arinc8bits * KTS2MS;
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_10hz_frame);
 
@@ -433,13 +448,14 @@ void xlbrollr(RAWTBL *varp, void *input, NR_TYPE *np)
   long  *p = ((Irs_blk *)input)->roll_rate;
 
   /* 20 bits, +- 128 Deg/s, label 327  */
+  int label = 0xd7;
 
-  preProcessData(varp, p, 0xd7);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (double)(p[i] >> 16) * arinc8bits;
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame);
 
@@ -451,13 +467,14 @@ void xlbpitchr(RAWTBL *varp, void *input, NR_TYPE *np)
   long  *p = ((Irs_blk *)input)->pitch_rate;
 
   /* 20 bits, +- 128 Deg/s, label 326  */
+  int label = 0xd6;
 
-  preProcessData(varp, p, 0xd6);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (double)(p[i] >> 16) * arinc8bits;
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame);
 
@@ -469,13 +486,14 @@ void xlbyawr(RAWTBL *varp, void *input, NR_TYPE *np)
   long  *p = ((Irs_blk *)input)->yaw_rate;
 
   /* 20 bits, +- 128 Deg/s, label 330  */
+  int label = 0xd8;
 
-  preProcessData(varp, p, 0xd8);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (double)(p[i] >> 16) * arinc8bits;
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame);
 
@@ -487,13 +505,14 @@ void xlblata(RAWTBL *varp, void *input, NR_TYPE *np)
   long  *p = ((Irs_blk *)input)->lat_accel;
 
   /* 20 bits, +-4 G's, label 332  */
+  int label = 0xda;
 
-  preProcessData(varp, p, 0xda);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (double)(p[i] >> 16) * arinc13bits;
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame);
 
@@ -505,13 +524,14 @@ void xlblona(RAWTBL *varp, void *input, NR_TYPE *np)
   long  *p = ((Irs_blk *)input)->long_accel;
 
   /* 20 bits, +-4 G's, label 331  */
+  int label = 0xd9;
 
-  preProcessData(varp, p, 0xd9);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (double)(p[i] >> 16) * arinc13bits;
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame);
 
@@ -523,13 +543,14 @@ void xlbnorma(RAWTBL *varp, void *input, NR_TYPE *np)
   long  *p = ((Irs_blk *)input)->normal_accel;
 
   /* 20 bits, +-4 G's, label 333  */
+  int label = 0xdb;
 
-  preProcessData(varp, p, 0xdb);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (double)(p[i] >> 16) * arinc13bits;
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame);
 
@@ -541,13 +562,14 @@ void xlitrkart(RAWTBL *varp, void *input, NR_TYPE *np)
   long	*p = ((Irs_blk *)input)->track_ang_rate;
 
   /* (degs) 20 bits, +- 32.0 Deg/S, label 335  */
+  int label = 0xdd;
 
-  preProcessData(varp, p, 0xdd);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (double)(p[i] >> 11) * arinc15bits;
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame);
 
@@ -559,8 +581,9 @@ void xlittrka(RAWTBL *varp, void *input, NR_TYPE *np)
   long	*p = ((Irs_blk *)input)->track_angle_true;
 
   /* (degs) 20 bits, +- 1.0 pirad, label 313  */
+  int label = 0xcb;
 
-  preProcessData(varp, p, 0xcb);
+  preProcessData(varp, p, label);
  
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -577,7 +600,7 @@ void xlittrka(RAWTBL *varp, void *input, NR_TYPE *np)
       np[i] -= 360.0;
     }
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_25hz_frame);
 
@@ -589,13 +612,14 @@ void xlidrift(RAWTBL *varp, void *input, NR_TYPE *np)
   long  *p = ((Irs_blk *)input)->drift_angle;
 
   /* (degs) 20 bits, +- 0.5 pirad, label 321  */
+  int label = 0xd1;
 
-  preProcessData(varp, p, 0xd1);
+  preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     np[i] = (double)(p[i] >> 11) * arinc20bits;
 
-  postProcessData(varp, p, np);
+  postProcessData(varp, p, np, label);
 
   varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_25hz_frame);
 
@@ -678,17 +702,21 @@ void preProcessData(var_base *varp, long input[], int thisLabel)
 }
 
 /* -------------------------------------------------------------------- */
-void postProcessData(var_base *varp, long input[], NR_TYPE *out)
+void postProcessData(var_base *varp, long input[], NR_TYPE *out, int label)
 {
   if (cfg.HoneyWellCleanup() == false)
     return;
 
   bool  allZeros = true;
   int   zeroCnt = 0;
-  unsigned int label = 0;
-  NR_TYPE prevValue;
+  int	rate = varp->SampleRate;
+  NR_TYPE prevX, prevY;
 
-  for (size_t i = 0; i < varp->SampleRate; ++i)
+  // Extract prev value before we over-write it.
+  prevX = prev_x[label];
+  prevY = prev_y[label];
+
+  for (int i = 0; i < rate; ++i)
     if (input[i] == 0)
     {
       ++zeroCnt;
@@ -696,35 +724,35 @@ void postProcessData(var_base *varp, long input[], NR_TYPE *out)
     else
     {
       allZeros = false;
-      label = input[i] & 0xff;
+
+      // Stash last smaple for next round.
+      prev_x[label] = -(rate - i);
+      prev_y[label] = out[i];
     }
-
-  if (prev_input[label] == 0)
-    prevValue = MISSING_VALUE;
-  else
-    prevValue = prev_out[label];
-
-  // Stash last sample (before we leave) in case we need it next round.
-  prev_input[label] = input[varp->SampleRate-1];
-  prev_out[label] = out[varp->SampleRate-1];
 
   // If it's all 0's or all good, then leave.
   if (allZeros || zeroCnt == 0)
     return;
 
-
-  size_t goodPoints = 0;
-  double x[varp->SampleRate+1];
-  double y[varp->SampleRate+1];
-
-  if (prevValue != MISSING_VALUE)
+  /* If this is just the once every 15 minute walking clock missing sample,
+   * then let the despiker handle it.
+   */
+  if (zeroCnt == 1 && input[rate-1] == 0)
   {
-    x[goodPoints] = -1;
-    y[goodPoints] = prevValue;
-    ++goodPoints;
+    out[rate-1] = MISSING_VALUE;
+    return;
   }
 
-  for (size_t i = 0; i < varp->SampleRate; ++i)
+
+  int	goodPoints = 0;
+  double x[rate+1];
+  double y[rate+1];
+
+  x[goodPoints] = prevX;
+  y[goodPoints] = prevY;
+  ++goodPoints;
+
+  for (int i = 0; i < rate; ++i)
     if (input[i] != 0)
     {
       x[goodPoints] = i;
@@ -732,28 +760,38 @@ void postProcessData(var_base *varp, long input[], NR_TYPE *out)
       ++goodPoints;
     }
 
-  if (goodPoints < 2)
-    {
-    LogXlateMsg("irsHw.c: gsl_spline to few points to interp with, setting to MISSING_VALUE.");
+  if (goodPoints < 3)
+  {
+    sprintf(buffer, "irsHw.c: [%s] gsl_spline too few points to interp with, setting to MISSING_VALUE\n  and letting the despiker handle it.\n", varp->name);
+    LogXlateMsg(buffer);
 
-    for (size_t i = 0; i < varp->SampleRate; ++i)
+    for (int i = 0; i < rate; ++i)
       if (input[i] == 0)
         out[i] = MISSING_VALUE;
-    }
+  }
   else
-    {
+  {
+//    sprintf(buffer, "irsHw.c: [%s] interpolating, rate=%d, goodPoints = %d\n",
+//		varp->name, rate, goodPoints);
+//    LogXlateMsg(buffer);
+
     gsl_interp_accel *acc = gsl_interp_accel_alloc();
-    gsl_spline *spline = gsl_spline_alloc(gsl_interp_cspline, goodPoints);
+    gsl_spline *spline;
+
+    if (goodPoints >= 5)
+      spline = gsl_spline_alloc(gsl_interp_akima, goodPoints);
+    else
+      spline = gsl_spline_alloc(gsl_interp_cspline, goodPoints);
 
     gsl_spline_init(spline, x, y, goodPoints);
 
-    for (size_t i = 0; i < varp->SampleRate; ++i)
+    for (int i = 0; i < rate; ++i)
       if (input[i] == 0)
         out[i] = gsl_spline_eval(spline, i, acc);
 
     gsl_spline_free(spline);
     gsl_interp_accel_free(acc);
-    }
+  }
 }
 
 /* -------------------------------------------------------------------- */
