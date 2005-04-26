@@ -138,6 +138,8 @@ printf("cntr=%d\n", cntr);
     DecodeADSrecord((short *)ADSrecord, BuffPtr);
     ApplyCalCoes(BuffPtr);
 
+    /* Despike 1 record ahead of what we will be working with (INDEX+1).
+     */
     DespikeData(LRCB, INDEX+1);
     PhaseShift(LRCB, INDEX, SampledData);
 
