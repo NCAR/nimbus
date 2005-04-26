@@ -247,7 +247,8 @@ long FindNextLogicalRecord(char record[], long endtime)
 	*gp_src = (Garmin_blk *)&phys_rec[currentLR * lrlen + TansStart],
 	*gp_dst = (Garmin_blk *)&record[TansStart];
 
-    memcpy(gp_dst, gp_src, sizeof(Garmin_blk));
+    gp_dst->ground_speed = gp_src->ground_speed;
+    gp_dst->course = gp_src->course;
     }
 
   if (cfg.InertialShift() && GetStart(CMIGITS3_STR, &TansStart) != ERR)
