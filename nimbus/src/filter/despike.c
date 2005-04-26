@@ -136,23 +136,24 @@ static void check1Hz(var_base *varp, NR_TYPE SpikeSlope, size_t *counter)
 /* -------------------------------------------------------------------- */
 static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
 {
-  size_t	sx, ex, spikeCount = 0,
-		spCnt, consecutiveCnt, nPoints;
+  static const int nPrevPts = 3;
 
-  double	xa[vp->SampleRate+2], ya[vp->SampleRate+2];
-  NR_TYPE	points[vp->SampleRate*2+4], dir1; /* Direction of data	*/
+  size_t	sx, ex, spikeCount = 0, nPoints;
+  double	xa[vp->SampleRate+nPrevPts], ya[vp->SampleRate+nPrevPts];
+  NR_TYPE	points[vp->SampleRate*nPrevPts], dir1; /* Direction of data	*/
 
   /* Copy all points to a seperate place for inspection.
    */
-  points[0] = prev_rec[vp->SRstart + vp->SampleRate - 2];
-  points[1] = prev_rec[vp->SRstart + vp->SampleRate - 1];
-  memcpy((char *)&points[2], (char *)&this_rec[vp->SRstart],
+  points[0] = prev_rec[vp->SRstart + vp->SampleRate - 3];
+  points[1] = prev_rec[vp->SRstart + vp->SampleRate - 2];
+  points[2] = prev_rec[vp->SRstart + vp->SampleRate - 1];
+  memcpy((char *)&points[nPrevPts], (char *)&this_rec[vp->SRstart],
 		NR_SIZE * vp->SampleRate);
-  memcpy((char *)&points[vp->SampleRate+2], (char *)&next_rec[vp->SRstart],
+  memcpy((char *)&points[vp->SampleRate+nPrevPts], (char *)&next_rec[vp->SRstart],
 		NR_SIZE * vp->SampleRate);
-  nPoints = 2 * vp->SampleRate + 2;
+  nPoints = 2 * vp->SampleRate + nPrevPts;
 
-  for (size_t i = 2; i < vp->SampleRate+2; ++i)
+  for (size_t i = nPrevPts; i < vp->SampleRate + nPrevPts; ++i)
     {
     sx = ex = i;
 
@@ -160,10 +161,11 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
 
     if (fabs((double)dir1) > SpikeSlope)
       {
-      ya[0] = points[sx-2]; xa[0] = sx-2;
-      ya[1] = points[sx-1]; xa[1] = sx-1;
-      spCnt = 2;
-      consecutiveCnt = 0;
+      ya[0] = points[sx-3]; xa[0] = sx-3;
+      ya[1] = points[sx-2]; xa[1] = sx-2;
+      ya[2] = points[sx-1]; xa[2] = sx-1;
+      int spCnt = nPrevPts;
+      int consecutiveCnt = 0;
 
       do
         {
@@ -177,7 +179,7 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
         else
           consecutiveCnt = 0;
         }
-      while (consecutiveCnt < 2 && ex < nPoints);
+      while (consecutiveCnt < 3 && ex < nPoints);
 
       if (ex < nPoints)
         {
@@ -186,13 +188,17 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
         LogThisRecordMsg(this_rec, buffer);
 
         gsl_interp_accel *acc = gsl_interp_accel_alloc();
-        gsl_spline *spline = gsl_spline_alloc(gsl_interp_cspline, spCnt);
+        gsl_spline *spline;
+
+        if (spCnt >= 5)
+          spline = gsl_spline_alloc(gsl_interp_akima, spCnt);
+        else
+          spline = gsl_spline_alloc(gsl_interp_cspline, spCnt);
 
         gsl_spline_init(spline, xa, ya, spCnt);
 
-        for (size_t j = 1; j < spCnt-2; ++j)
-          for (int k = (int)xa[j]+1; k < (int)xa[j+1]; ++k)
-            points[k] = gsl_spline_eval(spline, k, acc);
+        for (int k = (int)xa[nPrevPts-1]+1; k < (int)xa[nPrevPts]; ++k)
+          points[k] = gsl_spline_eval(spline, (double)k, acc);
 
         gsl_spline_free(spline);
         gsl_interp_accel_free(acc);
@@ -200,14 +206,12 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
         i = ex-1;
         ++spikeCount;
         }
-//      else
-//        printf("Despike, found something, but can't remove it, shouldn't receive this?\n");
       }
     }
 
   if (spikeCount > 0)
   {
-    memcpy(	(char *)&this_rec[vp->SRstart], (char *)&points[2],
+    memcpy(	(char *)&this_rec[vp->SRstart], (char *)&points[nPrevPts],
 		NR_SIZE * vp->SampleRate);
 
     *counter += spikeCount;
