@@ -71,21 +71,6 @@ void Log2dXlateMsg(P2d_rec *p, char msg[])
 }
 
 /* -------------------------------------------------------------------- */
-void LogStdMsg(char msg[])
-{
-  std::string messg(msg);
-
-  if (messg[messg.length()-1] != '\n')
-    messg.append("\n");
-
-  fprintf(stderr, "%02d:%02d:%02d: %s",
-	(int)SampledData[timeindex[0]],
-	(int)SampledData[timeindex[1]],
-	(int)SampledData[timeindex[2]],
-	messg.c_str());
-}
-
-/* -------------------------------------------------------------------- */
 void LogThisRecordMsg(NR_TYPE *record, char msg[])
 {
   std::string messg(msg);
@@ -98,6 +83,12 @@ void LogThisRecordMsg(NR_TYPE *record, char msg[])
 	(int)record[timeindex[1]],
 	(int)record[timeindex[2]],
 	messg.c_str());
+}
+
+/* -------------------------------------------------------------------- */
+void LogStdMsg(char msg[])
+{
+  LogThisRecordMsg(SampledData, msg);
 }
 
 /* END LOG.C */
