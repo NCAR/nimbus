@@ -377,12 +377,21 @@ void CreateNetCDF(char fileName[])
       }
 
 
-//printf("SDI:%s\n", sp->name); fflush(stdout);
     sp->varid = ncvardef(fd, sp->name, NC_FLOAT, ndims, dims);
 
     addCommonVariableAttributes(sp->name, sp->varid);
 
     ncattput(fd, sp->varid, "SampledRate", NC_LONG, 1, &sp->SampleRate);
+
+    if (cfg.TimeShifting() && sp->StaticLag != 0)
+      {
+      ncattput(fd, sp->varid, "TimeLag", NC_LONG, 1, &sp->StaticLag);
+      ncattput(fd, sp->varid, "TimeLagUnits", NC_CHAR, 12, "milliseconds");
+      }
+
+    if (cfg.Despiking() && sp->SpikeSlope != 0.0)
+      ncattput(fd, sp->varid, "DespikeSlope", NC_FLOAT, 1, &sp->SpikeSlope);
+
     ncattput(fd, sp->varid, "DataQuality", NC_CHAR, strlen(sp->DataQuality)+1,
 		sp->DataQuality);
     ncattput(fd, sp->varid, "CalibrationCoefficients", NC_FLOAT,
@@ -558,14 +567,24 @@ void CreateNetCDF(char fileName[])
       }
 
 
-//printf("RAW:%s\n", rp->name); fflush(stdout);
     rp->varid = ncvardef(fd, rp->name, NC_FLOAT, ndims, dims);
 
     addCommonVariableAttributes(rp->name, rp->varid);
 
     ncattput(fd, rp->varid, "SampledRate", NC_LONG, 1, &rp->SampleRate);
+
+    if (cfg.TimeShifting() && rp->StaticLag != 0)
+      {
+      ncattput(fd, rp->varid, "TimeLag", NC_LONG, 1, &rp->StaticLag);
+      ncattput(fd, rp->varid, "TimeLagUnits", NC_CHAR, 13, "milliseconds");
+      }
+
+    if (cfg.Despiking() && rp->SpikeSlope != 0.0)
+      ncattput(fd, rp->varid, "DespikeSlope", NC_FLOAT, 1, &rp->SpikeSlope);
+
     ncattput(fd, rp->varid, "DataQuality", NC_CHAR, strlen(rp->DataQuality)+1,
 		rp->DataQuality);
+
     if (rp->order > 0)
       ncattput(fd, rp->varid, "CalibrationCoefficients", NC_FLOAT,
                rp->order, rp->cof);
