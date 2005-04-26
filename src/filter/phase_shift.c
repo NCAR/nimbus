@@ -14,9 +14,7 @@ STATIC FNS:	shift()			Does all except 1hz
 		interp_360_degree()	(0 to 360)
 		interp_180_degree()	(-180 to +180)
 
-DESCRIPTION:	For each variable to be time shifted, shift the data in
-		the current record to the closest desired ms.  Next,
-		interpolate between points if necassary.
+DESCRIPTION:	Use Akima non-periodic spline for time shifting.
 
 INPUT:		Logical Record, CircularBuffers, CircBuff index.
 
@@ -29,8 +27,6 @@ REFERENCED BY:	LowRateLoop(), HighRateLoop()
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 -------------------------------------------------------------------------
 */
-
-#include <memory.h>
 
 #include "nimbus.h"
 #include "decode.h"
@@ -47,16 +43,7 @@ static NR_TYPE	*prev_prev_rec, *prev_rec,
 		*this_rec, *out_rec,
 		*next_rec, *next_next_rec;
 
-static void	shift(char name[], int start, int rate, int lag),
-		shift_1hz(int start, int lag),
-		interp_regular(NR_TYPE, NR_TYPE *, int, int, int, int),
-		interp_360_angle(NR_TYPE prev_point, NR_TYPE *next_point,
-			int start, int rate, int gap_size, int remainder),
-		interp_180_angle(NR_TYPE prev_point, NR_TYPE *next_point,
-			int start, int rate, int gap_size, int remainder),
-		check_for_wrap(NR_TYPE points[]);
-
-NR_TYPE	PolyInterp(NR_TYPE yaxis[], int ms_gap, int ms_want);
+static void	shift(var_base *vp, int lag), shift_1hz(int start, int lag);
 
 
 /* -------------------------------------------------------------------- */
@@ -94,14 +81,12 @@ void PhaseShift(
 	int		index,		/* Index into CircBuff		*/
 	NR_TYPE		*output)	/* Place to put shifted record	*/
 {
-  size_t i;
-
   prev_prev_rec	= (NR_TYPE *)GetBuffer(LRCB, index-2);
   prev_rec	= (NR_TYPE *)GetBuffer(LRCB, index-1);
   this_rec	= (NR_TYPE *)GetBuffer(LRCB, index);
-  out_rec	= output;
   next_rec	= (NR_TYPE *)GetBuffer(LRCB, index+1);
   next_next_rec	= (NR_TYPE *)GetBuffer(LRCB, index+2);
+  out_rec	= output;
 
   /* Copy current rec into output rec.
    */
@@ -110,12 +95,9 @@ void PhaseShift(
   if (!cfg.TimeShifting())
     return;
 
-  {
-  SDITBL	*sp;
-
-  for (i = 0; i < sdi_ps.size(); ++i)
+  for (size_t i = 0; i < sdi_ps.size(); ++i)
     {
-    sp = sdi_ps[i];
+    SDITBL *sp = sdi_ps[i];
 
     if (abs(sp->StaticLag) < JITTER)
       continue;
@@ -123,17 +105,13 @@ void PhaseShift(
     if (sp->SampleRate == 1)
       shift_1hz(sp->SRstart, sp->StaticLag);
     else
-      shift(sp->name, sp->SRstart, sp->SampleRate, sp->StaticLag);
+      shift(sp, sp->StaticLag);
     }
-  }
 
-  {
-  RAWTBL	*rp;
-  int		lag;
-
-  for (i = 0; i < raw_ps.size(); ++i)
+  for (size_t i = 0; i < raw_ps.size(); ++i)
     {
-    rp = raw_ps[i];
+    RAWTBL *rp = raw_ps[i];
+    int		lag;
 
     if (abs((lag = rp->StaticLag + rp->DynamicLag)) > 1000)
       {
@@ -152,256 +130,75 @@ void PhaseShift(
       if (rp->SampleRate == 1)
         shift_1hz(rp->SRstart, lag);
       else
-        shift(rp->name, rp->SRstart, rp->SampleRate, lag);
+        shift(rp, lag);
     }
-  }
-
 }	/* END PHASESHIFT */
 
 /* -------------------------------------------------------------------- */
-static void shift(
-	char	name[],	/* This is needed for a couple special cases	*/
-	int	start,	/* Index into this_rec & out_rec for this var	*/
-	int	rate,
-	int	lag)
+static void shift(var_base *vp, int lag)
 {
-  int		gap_size, ngaps, remainder;
-  int		source, dest, nbytes;
-  NR_TYPE	prev_point, next_point[2];	/* End points for Interp */
+  size_t	nPoints = vp->SampleRate * 3;
+  double	gap_size = 1000.0 / vp->SampleRate;
+  double	x[nPoints], y[nPoints];
 
-  gap_size	= 1000 / rate;
-  ngaps		= abs(lag) / gap_size;
-  remainder	= lag - (ngaps * gap_size);
-  nbytes	= NR_SIZE * (rate - ngaps);
+  for (size_t i = 0; i < nPoints; ++i)
+    x[i] = gap_size * i;
 
-  /* Start by moving the data to the nearest ms gap, then
-   * if the remainder is greater than the allowable JITTER,
-   * interpolate between the points.
-   */
-  if (lag > 0)
-    {	/* Shift data backwards	*/
-    if ((rate >= 50 && remainder > gap_size / 2) || remainder)
-      {
-      ++ngaps;
-      nbytes -= NR_SIZE;
-      }
+  for (size_t i = 0; i < vp->SampleRate; ++i)
+  {
+    y[i] = prev_rec[vp->SRstart + i];
+    y[vp->SampleRate + i] = this_rec[vp->SRstart + i];
+    y[(vp->SampleRate*2) + i] = next_rec[vp->SRstart + i];
+  }
 
-    source	= start + ngaps;
-    dest	= start;
+  if (vp->Modulo)	// 0 - 360 stuff.
+  {
+    bool high_value = false, low_value = false;
 
-    prev_point = this_rec[source-1];
-
-    memcpy((char *)&out_rec[dest], (char *)&this_rec[source], nbytes);
-
-
-    /* Get data from Next record
-     */
-    source	= start;
-    dest	= start + rate - ngaps;
-    nbytes	= sizeof(NR_TYPE) * ngaps;
-
-    memcpy((char *)&out_rec[dest], (char *)&next_rec[source], nbytes);
-
-    if (ngaps < rate-1)
-      memcpy((char *)next_point, (char *)&next_rec[source + ngaps], 2*NR_SIZE);
-    else if (ngaps == rate-1)
-      {
-      next_point[0] = next_rec[source+ngaps];
-      next_point[1] = next_next_rec[start];
-      }
-    else if (rate == ngaps)
-      memcpy((char *)next_point, (char *)&next_next_rec[start], 2*NR_SIZE);
-    else
-      fprintf(stderr, "PhaseShift: impossible.\n");
+    for (size_t i = 0; i < nPoints; ++i)
+    {
+      if (y[i] < vp->Modulo->bound[0])
+        low_value = true;
+      if (y[i] > vp->Modulo->bound[1])
+        high_value = true;
     }
+
+    if (low_value && high_value)
+      for (size_t i = 0; i < nPoints; ++i)
+        if (y[i] < vp->Modulo->bound[0])
+          y[i] += vp->Modulo->diff;
+  }
+
+
+  gsl_interp_accel *acc = gsl_interp_accel_alloc();
+  gsl_spline *spline;
+
+  if (nPoints >= 5)
+    spline = gsl_spline_alloc(gsl_interp_akima, nPoints);
   else
-    {	/* Shift data forward	*/
+    spline = gsl_spline_alloc(gsl_interp_cspline, nPoints);
 
-    source	= start;
-    dest	= start + ngaps;
+  gsl_spline_init(spline, x, y, nPoints);
 
-    if (ngaps == 0)
-      memcpy((char *)next_point, (char *)&next_rec[start], 2*NR_SIZE);
-    if (ngaps == 1)
-      {
-      next_point[0] = this_rec[start+rate-1];
-      next_point[1] = next_rec[start];
-      }
-    else
-      memcpy((char *)next_point, (char *)&this_rec[dest], 2*NR_SIZE);
+  double rqst = 1000.0 - lag;
+  for (size_t i = 0; i < vp->SampleRate; ++i, rqst += gap_size)
+    out_rec[vp->SRstart+i] = gsl_spline_eval(spline, rqst, acc);
 
-    memcpy((char *)&out_rec[dest], (char *)&this_rec[source], nbytes);
+  gsl_spline_free(spline);
+  gsl_interp_accel_free(acc);
 
 
-    /* Get data from Previous record
-    */
-    source	= start + rate - ngaps;
-    dest	= start;
-    nbytes	= sizeof(NR_TYPE) * ngaps;
-
-    memcpy((char *)&out_rec[dest], (char *)&prev_rec[source], nbytes);
-
-    if (ngaps == rate)
-      prev_point = prev_prev_rec[start+rate-1];
-    else if (ngaps == 0)
-      prev_point = prev_rec[start+rate-1];
-    else
-      prev_point = prev_rec[source-1];
+  if (vp->Modulo)	// Go back through and move to within bounds.
+  {
+    for (size_t i = 0; i < nPoints; ++i)
+    {
+      if (y[i] < vp->Modulo->value[0])
+        y[i] += vp->Modulo->diff;
+      if (y[i] > vp->Modulo->value[1])
+        y[i] -= vp->Modulo->diff;
     }
-
-
-  if (remainder > JITTER * 2)		/* Then Interpolate	*/
-    if (strncmp(name, "THDG", 4) == 0)
-      interp_360_angle(prev_point, next_point, start, rate, gap_size,remainder);
-    else
-    if (strncmp(name, "LON", 3) == 0)
-      interp_180_angle(prev_point, next_point, start, rate, gap_size,remainder);
-    else
-      interp_regular(prev_point, next_point, start, rate, gap_size, remainder);
-
+  }
 }	/* END SHIFT */
-
-/* -------------------------------------------------------------------- */
-static const int NPOINTS = 4;
-
-static void
-interp_regular(
-	NR_TYPE	prevPoint,
-	NR_TYPE	*nextPoint,
-	int	start,
-	int	rate,
-	int	gap_size,
-	int	remainder)
-{
-  int		i;
-  NR_TYPE	points[NPOINTS];
-
-  for (i = start; i < start + rate - 2; ++i)
-    {
-    points[0] = prevPoint;
-    memcpy((char *)&points[1], (char *)&out_rec[i], 3*NR_SIZE);
-    prevPoint = out_rec[i];
-    out_rec[i] = PolyInterp(points, gap_size, remainder);
-    }
-
-  points[0]	= prevPoint;
-  prevPoint	= out_rec[i];
-  memcpy((char *)&points[1], (char *)&out_rec[i], 2*NR_SIZE);
-  points[3]	= nextPoint[0];
-  out_rec[i]	= PolyInterp(points, gap_size, remainder);
-  ++i;
-
-  points[0] = prevPoint;
-  points[1] = prevPoint = out_rec[i];
-  memcpy((char *)&points[2], (char *)nextPoint, 2*NR_SIZE);
-  out_rec[i] = PolyInterp(points, gap_size, remainder);
-
-}	/* END INTERP_REGULAR */
-
-/* -------------------------------------------------------------------- */
-static void interp_360_angle(NR_TYPE prev_point, NR_TYPE *next_point, int start, int rate, int gap_size, int remainder)
-{
-  int		i;
-  NR_TYPE	points[NPOINTS];
-
-  for (i = start; i < start + rate - 2; ++i)
-    {
-    points[0] = prev_point;
-    memcpy((char *)&points[1], (char *)&out_rec[i], 3*NR_SIZE);
-    prev_point = out_rec[i];
-
-    check_for_wrap(points);
-    out_rec[i] = PolyInterp(points, gap_size, remainder);
-
-    /* mod 360	*/
-    if (out_rec[i] >= 360.0)
-      out_rec[i] -= 360.0;
-    }
-
-  points[0] = prev_point;
-  prev_point = out_rec[i];
-  memcpy((char *)&points[1], (char *)&out_rec[i], 2*NR_SIZE);
-  points[3] = next_point[0];
-  check_for_wrap(points);
-
-  if ((out_rec[i] = PolyInterp(points, gap_size, remainder)) >= 360.0)
-    out_rec[i] -= 360.0;
-  ++i;
-
-  points[0] = prev_point;
-  points[1] = prev_point = out_rec[i];
-  memcpy((char *)&points[2], (char *)next_point, 2*NR_SIZE);
-
-  check_for_wrap(points);
-  if ((out_rec[i] = PolyInterp(points, gap_size, remainder)) >= 360.0)
-    out_rec[i] -= 360.0;
-
-}	/* END INTERP_360_ANGLE */
-
-/* -------------------------------------------------------------------- */
-static void interp_180_angle(NR_TYPE prev_point, NR_TYPE *next_point, int start, int rate, int gap_size, int remainder)
-{
-  int		i;
-  NR_TYPE	points[NPOINTS];
-
-  for (i = start; i < start + rate - 2; ++i)
-    {
-    points[0] = prev_point;
-    memcpy((char *)&points[1], (char *)&out_rec[i], 3*NR_SIZE);
-    prev_point = out_rec[i];
-
-    check_for_wrap(points);
-    out_rec[i] = PolyInterp(points, gap_size, remainder);
-
-    /* mod 360	*/
-    if (out_rec[i] >= 360.0)
-      out_rec[i] -= 360.0;
-    }
-
-  points[0] = prev_point;
-  prev_point = out_rec[i];
-  memcpy((char *)&points[1], (char *)&out_rec[i], 2*NR_SIZE);
-  points[3] = next_point[0];
-
-  check_for_wrap(points);
-  if ((out_rec[i] = PolyInterp(points, gap_size, remainder)) >= 360.0)
-    out_rec[i] -= 360.0;
-  ++i;
-
-  points[0] = prev_point;
-  points[1] = prev_point = out_rec[i];
-  memcpy((char *)&points[2], (char *)next_point, 2*NR_SIZE);
-
-  check_for_wrap(points);
-  if ((out_rec[i] = PolyInterp(points, gap_size, remainder)) >= 360.0)
-    out_rec[i] -= 360.0;
-
-}	/* END INTERP_180_ANGLE */
-
-/* -------------------------------------------------------------------- */
-/* Make sure all the points to be used by interpolation aren't wrapping
- * around.  (i.e. Degrees are 0-360 and then wrap around).
- */
-static void check_for_wrap(NR_TYPE points[])
-{
-  int	i;
-  bool	needs_fixing = false;
-
-  /* Check for wrap around
-   */
-  for (i = 0; i < NPOINTS-1; ++i)
-    if (abs((int)(points[i] - points[i+1])) > 300)
-      {
-      needs_fixing = true;
-      break;
-      }
-
-  if (needs_fixing)
-    for (i = 0; i < NPOINTS; ++i)
-      if (points[i] < 75)
-        points[i] += 360.0;
-
-}	/* END CHECK_FOR_WRAP */
 
 /* -------------------------------------------------------------------- */
 static void shift_1hz(int start, int lag)
@@ -419,7 +216,7 @@ static void shift_1hz(int start, int lag)
   y[3] = next_rec[start];
   y[4] = next_next_rec[start];
 
-  gsl_spline *spline = gsl_spline_alloc(gsl_interp_cspline, spCnt);
+  gsl_spline *spline = gsl_spline_alloc(gsl_interp_akima, spCnt);
   gsl_spline_init(spline, x, y, spCnt);
 
   out_rec[start] = gsl_spline_eval(spline, (double)2000 - lag, 0);
