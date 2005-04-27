@@ -15,7 +15,7 @@ LIBS=		-lraf -lXm -lXt -lX11
 LIBS=		-L${JLOCAL}/lib -L/usr/X11R6/lib -lraf -lXm -lXt -lX11 -lXp -lXext
 
 SRCS=	edADShdr.c init.c Xwin.c ccb.c
-HDRS=	define.h vardb.h
+HDRS=	define.h
 OBJS=	edADShdr.o init.o Xwin.o ccb.o
 PROG=	edADShdr
 
