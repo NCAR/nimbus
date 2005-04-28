@@ -304,49 +304,44 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
    */
   InitAircraftDependencies();
 
-  {
-  size_t i;
-  bool	firstSpike = true;
+  if (cfg.Despiking())
+    LogMessage("Despiking enabled.");
+  else
+    LogMessage("Despiking disabled.");
 
-  for (i = 0; i < sdi.size(); ++i) {
-    if (sdi[i]->StaticLag != 0)
+  if (cfg.TimeShifting())
+    LogMessage("Time-shifting enabled.");
+  else
+    LogMessage("Time-shifting disabled.");
+
+  for (size_t i = 0; i < sdi.size(); ++i)
+    {
+    if (cfg.TimeShifting() && sdi[i]->StaticLag != 0)
       AddVariableToSDIlagList(sdi[i]);
 
-    if (sdi[i]->SpikeSlope > 0) {
+    if (cfg.Despiking() && sdi[i]->SpikeSlope > 0)
       AddVariableToSDIdespikeList(sdi[i]);
-
-      if (firstSpike) {
-        LogMessage("Despiking enabled.\n");
-        firstSpike = false;
-        }
-      }
 
     if (sdi[i]->Output && VarDB_lookup(sdi[i]->name) == ERR && LogFile)
       fprintf(LogFile, "%s has no entry in the VarDB.\n", sdi[i]->name);
     }
 
-  for (i = 0; i < raw.size(); ++i) {
-    if (raw[i]->StaticLag != 0 || raw[i]->DynamicLag != 0)
+  for (size_t i = 0; i < raw.size(); ++i)
+    {
+    if (cfg.TimeShifting() && raw[i]->StaticLag != 0 || raw[i]->DynamicLag != 0)
       AddVariableToRAWlagList(raw[i]);
 
-    if (raw[i]->SpikeSlope > 0) {
+    if (cfg.Despiking() && raw[i]->SpikeSlope > 0)
       AddVariableToRAWdespikeList(raw[i]);
-
-      if (firstSpike) {
-        LogMessage("Despiking enabled.\n");
-        firstSpike = false;
-        }
-      }
 
     if (raw[i]->Output && VarDB_lookup(raw[i]->name) == ERR && LogFile)
       fprintf(LogFile, "%s has no entry in the VarDB.\n", raw[i]->name);
     }
 
-  for (i = 0; i < derived.size(); ++i) {
+  for (size_t i = 0; i < derived.size(); ++i) {
     if (derived[i]->Output && VarDB_lookup(derived[i]->name) == ERR && LogFile)
       fprintf(LogFile,"%s has no entry in the VarDB.\n", derived[i]->name);
     }
-  }
 
   FlushXEvents();
 
