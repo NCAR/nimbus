@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	filter.c
 
-FULL NAME:	
+FULL NAME:	FIR Filter routines.
 
 ENTRY POINTS:	InitMRFilters()
 		ClearMRFilters()
@@ -12,15 +12,8 @@ STATIC FNS:	See below.
 
 DESCRIPTION:	The mrf filter has it's own circular buffer routines
 		which are included in this module and are not associated
-		with circbuff.[ch].  filters.c contains the coefficients.
-
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	interact.c mrf.c
+		with circbuff.[ch].  $PROJ_DIR/defaults/filters contains
+		the coefficients.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 -------------------------------------------------------------------------
@@ -40,7 +33,7 @@ static std::vector<mRFilterPtr> sdiFilters;
 static std::vector<mRFilterPtr> rawFilters;
 
 static filterData	TwoFiftyTo25, FiftyTo25, OneTo25, FiveTo25, TenTo25,
-			ThousandTo25, TwentyFive, vspd;
+			ThousandTo25, TwentyFive, vspd, acins, gsf;
 
 static int	PSCBindex;
 static size_t	currentHz, HzDelay;
@@ -162,17 +155,26 @@ void InitMRFilters()
         break;
 
       case 10:
-        rawFilters[i] = createMRFilter(1, 1, &TenTo25, mv_p);
+        if (strncmp(raw[i]->name, "GSF", 4) == 0 ||
+            strncmp(raw[i]->name, "VEW", 4) == 0 ||
+            strncmp(raw[i]->name, "VNS", 4) == 0)
+          rawFilters[i] = createMRFilter(1, 1, &gsf, mv_p);
+        else
+          rawFilters[i] = createMRFilter(1, 1, &TenTo25, mv_p);
         break;
 
       case 25:		/* Just filter	*/
-        rawFilters[i] = NULL;
         if (strncmp(raw[i]->name, "VSPD", 4) == 0)
           rawFilters[i] = createMRFilter(1, 1, &vspd, mv_p);
+        else
+          rawFilters[i] = NULL;
         break;
 
       case 50:		/* Decimate	*/
-        rawFilters[i] = createMRFilter(1, 2, &FiftyTo25, mv_p);
+        if (strncmp(raw[i]->name, "ACINS", 4) == 0)
+          rawFilters[i] = createMRFilter(1, 2, &acins, mv_p);
+        else
+          rawFilters[i] = createMRFilter(1, 2, &FiftyTo25, mv_p);
         break;
 
       default:
@@ -362,6 +364,8 @@ static void readFilters()
   readAfilter("10to25", &TenTo25);
   readAfilter("25hz", &TwentyFive);
   readAfilter("VSPD", &vspd);
+  readAfilter("GSF", &gsf);
+  readAfilter("ACINS", &acins);
   readAfilter("50to25", &FiftyTo25);
   readAfilter("250to25", &TwoFiftyTo25);
   readAfilter("1000to25", &ThousandTo25);
@@ -416,7 +420,7 @@ static void setTimeDelay(size_t rate, size_t nTaps, int *sec, size_t *msec)
       {
       case 50:		// nTaps / (2 * L), almost checks out.
         *sec += 0;
-        *msec = 49;
+        *msec = (nTaps / 2) - 1;
         break;
 
       case 250:		// nTaps / (2 * L), almost checks out.
@@ -699,43 +703,35 @@ char *GetProcessedBuffer(CircularBuffer *cb, int offset, var_base *vp)
   if (vp->SampleRate >= (size_t)cfg.ProcessingRate())
     return (char *)&thisBuff[vp->SRstart];
 
-  /* Load up data. 1 sample from prev second and 1 from the next second also.
+  /* Load up data. 3 Seconds worth.
    */
-  double x[cfg.ProcessingRate()+3], y[cfg.ProcessingRate()+3];
+  double x[vp->SampleRate * 3], y[vp->SampleRate * 3];
   float L = (float)cfg.ProcessingRate() / vp->SampleRate;
-
-  x[0] = -L;
-  y[0] = prevBuff[vp->SRstart + (vp->SampleRate-1)];
 
   for (size_t i = 0; i < vp->SampleRate; ++i)
   {
-    x[i+1] = L * i;
-    y[i+1] = thisBuff[vp->SRstart+i];
-  }
+    x[i] = -(L * (vp->SampleRate-i));
+    y[i] = prevBuff[vp->SRstart + (vp->SampleRate-1)];
 
-  x[vp->SampleRate+1] = (float)cfg.ProcessingRate();
-  y[vp->SampleRate+1] = nextBuff[vp->SRstart];
+    x[vp->SampleRate + i] = L * i;
+    y[vp->SampleRate + i] = thisBuff[vp->SRstart+i];
 
-  /* We need 4 points, 1hz data only has 3 so for, get another.
-   */
-  if (vp->SampleRate == 1)
-  {
-    nextBuff = (NR_TYPE *)GetBuffer(cb, offset+2);
-    x[vp->SampleRate+2] = (float)cfg.ProcessingRate()*2;
-    y[vp->SampleRate+2] = nextBuff[vp->SRstart];
-  }
-  else
-  {
-    x[vp->SampleRate+2] = (float)cfg.ProcessingRate() + L;
-    y[vp->SampleRate+2] = nextBuff[vp->SRstart+1];
+    x[(vp->SampleRate<<1) + i] = (float)cfg.ProcessingRate() + (L * i);
+    y[(vp->SampleRate<<1) + i] = nextBuff[vp->SRstart];
   }
 
   /* Interpolate data to 25hz.
    */
   gsl_interp_accel *acc = gsl_interp_accel_alloc();
-  gsl_spline *spline = gsl_spline_alloc(gsl_interp_cspline, vp->SampleRate+3);
+  gsl_spline *spline;
+  if (vp->SampleRate == 1)
+    spline = gsl_spline_alloc(gsl_interp_cspline, vp->SampleRate*3);
+  else
+  {
+    spline = gsl_spline_alloc(gsl_interp_akima, vp->SampleRate*3);
+  }
 
-  gsl_spline_init(spline, x, y, vp->SampleRate+3);
+  gsl_spline_init(spline, x, y, vp->SampleRate*3);
 
   for (size_t i = 0; i < (size_t)cfg.ProcessingRate(); ++i)
     out[i] = gsl_spline_eval(spline, i, acc);
