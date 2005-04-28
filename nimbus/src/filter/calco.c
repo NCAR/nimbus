@@ -38,6 +38,9 @@ void ApplyCalCoes(NR_TYPE *record)
 
     for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
     {
+      if (record[pos] == MISSING_VALUE)
+        continue;
+
       int corder  = sp->order - 1;
 
       NR_TYPE out     = sp->cof[corder];
@@ -55,7 +58,6 @@ void ApplyCalCoes(NR_TYPE *record)
     // Voltages for WINDS display.
     volts[sp->LRstart] = SRTvolts[sp->SRstart];
   }
-
 }	/* END APPLYCALCOES */
 
 /* END CALCO.C */

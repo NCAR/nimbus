@@ -22,7 +22,7 @@ REFERENCES:	none
 
 REFERENCED BY:	LowRateLoop(), Filter(), winputops.c
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-05
 -------------------------------------------------------------------------
 */
 
@@ -63,12 +63,17 @@ void AverageSampledData()
 /* -------------------------------------------------------------------- */
 void AverageSDI(NR_TYPE *in_data, NR_TYPE *out_data, SDITBL *sp)
 {
+  int		sampleCntr = 0;
   double	sum = 0.0;
 
   for (size_t i = 0; i < sp->SampleRate; ++i)
-    sum += in_data[i];
+    if (in_data[i] != MISSING_VALUE)
+      sum += in_data[sampleCntr++];
 
-  out_data[0] = sum / sp->SampleRate;
+  if (sampleCntr == 0)
+    out_data[0] = MISSING_VALUE;
+  else
+    out_data[0] = sum / sampleCntr;
 
 }	/* END AVERAGESDI */
 
@@ -80,6 +85,7 @@ void Average(
 	size_t	l,
 	MOD	*mp)
 {
+  int		sampleCntr = 0;
   double	sum = 0.0;
   double	average;
 
@@ -104,9 +110,13 @@ void Average(
     }
 
   for (size_t i = 0; i < n; ++i)
-    sum += in_data[i];
+    if (in_data[i] != MISSING_VALUE)
+      sum += in_data[sampleCntr++];
 
-  average = sum / n;
+  if (sampleCntr == 0)
+    average = MISSING_VALUE;
+  else
+    average = sum / sampleCntr;
 
   if (mp)
     if (average > mp->value[1])
@@ -125,7 +135,8 @@ void SumSDI(NR_TYPE *in_data, NR_TYPE *out_data, SDITBL *sp)
   NR_TYPE	sum = 0.0;
 
   for (size_t i = 0; i < sp->SampleRate; ++i)
-    sum += in_data[i];
+    if (in_data[i] != MISSING_VALUE)
+      sum += in_data[i];
 
   out_data[0] = sum;
 
@@ -137,7 +148,8 @@ void Sum(NR_TYPE *in_data, NR_TYPE *out_data, size_t n)
   double	sum = 0.0;
 
   for (size_t i = 0; i < n; ++i)
-    sum += in_data[i];
+    if (in_data[i] != MISSING_VALUE)
+      sum += in_data[i];
 
   out_data[0] = sum;
 
@@ -157,11 +169,11 @@ void SumVector(
     sum = 0.0;
 
     for (size_t j = 0; j < n; ++j)
-      sum += in_data[(j * l) + i];
+      if (in_data[(j*l)+i] != MISSING_VALUE)
+        sum += in_data[(j * l) + i];
 
     out_data[i] = sum;
     }
-
 }	/* END SUMVECTOR */
 
 /* END AVERAGE.C */
