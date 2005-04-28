@@ -49,6 +49,9 @@ static void	shift(var_base *vp, int lag), shift_1hz(int start, int lag);
 /* -------------------------------------------------------------------- */
 void AddVariableToSDIlagList(SDITBL *varp)
 {
+  if (!cfg.TimeShifting())
+    return;
+
   sdi_ps.push_back(varp);
 
   sprintf(buffer, "Time lag for %s enabled, with lag of %d milliseconds.\n",
@@ -61,6 +64,9 @@ void AddVariableToSDIlagList(SDITBL *varp)
 /* -------------------------------------------------------------------- */
 void AddVariableToRAWlagList(RAWTBL *varp)
 {
+  if (!cfg.TimeShifting())
+    return;
+
   raw_ps.push_back(varp);
 
   /* Don't print message for dynamic lagged variables.
@@ -91,9 +97,6 @@ void PhaseShift(
   /* Copy current rec into output rec.
    */
   memcpy((char *)out_rec, (char *)this_rec, NR_SIZE * nFloats);
-
-  if (!cfg.TimeShifting())
-    return;
 
   for (size_t i = 0; i < sdi_ps.size(); ++i)
     {

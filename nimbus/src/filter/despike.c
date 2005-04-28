@@ -40,6 +40,9 @@ void LogThisRecordMsg(NR_TYPE *record, char msg[]);
 /* -------------------------------------------------------------------- */
 void AddVariableToSDIdespikeList(SDITBL *varp)
 {
+  if (!cfg.Despiking())
+    return;
+
   sdi_spike.push_back(varp);
   nSpikesSDI.push_back(0);
 }
@@ -47,6 +50,9 @@ void AddVariableToSDIdespikeList(SDITBL *varp)
 /* -------------------------------------------------------------------- */
 void AddVariableToRAWdespikeList(RAWTBL *varp)
 {
+  if (!cfg.Despiking())
+    return;
+
   raw_spike.push_back(varp);
   nSpikesRAW.push_back(0);
 }
@@ -84,9 +90,6 @@ static NR_TYPE	*prev_rec, *this_rec, *next_rec, *prev2_rec, *next2_rec;
 
 void DespikeData(CircularBuffer *LRCB, int index)
 {
-  if (cfg.Despiking() == false)
-    return;
-
   prev2_rec	= (NR_TYPE *)GetBuffer(LRCB, index-2);
   prev_rec	= (NR_TYPE *)GetBuffer(LRCB, index-1);
   this_rec	= (NR_TYPE *)GetBuffer(LRCB, index);
