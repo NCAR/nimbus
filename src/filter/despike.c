@@ -128,7 +128,8 @@ static void check1Hz(var_base *varp, NR_TYPE SpikeSlope, size_t *counter)
   if (dir1 * dir2 < 0.0 &&
       fabs((double)dir1) > SpikeSlope && fabs((double)dir2) > SpikeSlope)
     {
-    this_rec[varp->SRstart] = despike(points);
+    this_rec[varp->SRstart] = MISSING_VALUE;
+//    this_rec[varp->SRstart] = despike(points);
     (*counter)++;
     sprintf(buffer, "Despike: %s, deltas %g %g - slope=%g\n", varp->name,dir1,dir2,SpikeSlope);
     LogThisRecordMsg(this_rec, buffer);
@@ -188,8 +189,8 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
         {
         sprintf(buffer, "Despike: %s, delta %g - slope=%g, point = %g, nPoints=%d\n",
 		vp->name, dir1, SpikeSlope, this_rec[sx+1], ex-sx-1);
-        LogThisRecordMsg(this_rec, buffer);
-
+//        LogThisRecordMsg(this_rec, buffer);
+/*
         gsl_interp_accel *acc = gsl_interp_accel_alloc();
         gsl_spline *spline;
 
@@ -199,13 +200,15 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
           spline = gsl_spline_alloc(gsl_interp_cspline, spCnt);
 
         gsl_spline_init(spline, xa, ya, spCnt);
-
+*/
         for (int k = (int)xa[nPrevPts-1]+1; k < (int)xa[nPrevPts]; ++k)
+          points[k] = MISSING_VALUE;
+/*
           points[k] = gsl_spline_eval(spline, (double)k, acc);
 
         gsl_spline_free(spline);
         gsl_interp_accel_free(acc);
-
+*/
         i = ex-1;
         ++spikeCount;
         }

@@ -21,7 +21,7 @@ REFERENCED BY:	StartProcessing()
 
 NOTE:		Changes here may also be required in lrloop.c
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 -------------------------------------------------------------------------
 */
 
@@ -42,9 +42,10 @@ extern char		*ADSrecord;
 extern NR_TYPE		*SampledData, *AveragedData;
 extern XtAppContext	context;
 
-void	Filter(CircularBuffer *),
+void	Filter(CircularBuffer *, CircularBuffer *),
         DespikeData(CircularBuffer *LRCB, int index),
-        PhaseShift(CircularBuffer  *LRCB, int index, NR_TYPE *output);
+        PhaseShift(	CircularBuffer  *LRCB, int index,
+			NR_TYPE *output, NR_TYPE *hout);
 
 
 /* -------------------------------------------------------------------- */
@@ -52,9 +53,10 @@ int HighRateLoop(long starttime, long endtime)
 {
   int			i, j = 0;
   long			nbytes;
-  NR_TYPE		*ps_data;
+  NR_TYPE		*ps_data, *hrt_data;
   CircularBuffer	*LRCB;	/* Logical Record Circular Buffers	*/
   CircularBuffer	*PSCB;	/* Phase Shifted Circular Buffers	*/
+  CircularBuffer	*HSCB;	/* 25Hz resampled data (interped only).*/
 
 
   /* Account for Circular Buffer slop	*/
@@ -64,11 +66,16 @@ int HighRateLoop(long starttime, long endtime)
   if (endtime != END_OF_TAPE)
     endtime += NPSBUFFERS-1;
 
-  nbytes	= nFloats * NR_SIZE;
-
-
+  nbytes = nFloats * NR_SIZE;
   if ((LRCB = CreateCircularBuffer(NLRBUFFERS, nbytes)) == NULL ||
       (PSCB = CreateCircularBuffer(NPSBUFFERS, nbytes)) == NULL)
+    {
+    nbytes = ERR;
+    goto exit;
+    }
+
+  nbytes = cfg.ProcessingRate() * NR_SIZE * (sdi.size() + raw.size());
+  if ((HSCB = CreateCircularBuffer(NPSBUFFERS, nbytes)) == NULL)
     {
     nbytes = ERR;
     goto exit;
@@ -118,7 +125,8 @@ int HighRateLoop(long starttime, long endtime)
     DespikeData(LRCB, LRINDEX+1);
 
     ps_data = (NR_TYPE *)AddToCircularBuffer(PSCB);
-    PhaseShift(LRCB, LRINDEX, ps_data);
+    hrt_data = (NR_TYPE *)AddToCircularBuffer(HSCB);
+    PhaseShift(LRCB, LRINDEX, ps_data, hrt_data);
     }
 
  timeindex[0] = raw[SearchTable(raw, "HOUR")]->SRstart;
@@ -138,9 +146,10 @@ int HighRateLoop(long starttime, long endtime)
     DespikeData(LRCB, LRINDEX+1);
 
     ps_data = (NR_TYPE *)AddToCircularBuffer(PSCB);
-    PhaseShift(LRCB, LRINDEX, ps_data);
+    hrt_data = (NR_TYPE *)AddToCircularBuffer(HSCB);
+    PhaseShift(LRCB, LRINDEX, ps_data, hrt_data);
 
-    Filter(PSCB);
+    Filter(PSCB, HSCB);
 
     if (j++ < 10)	/* Skip 1st 10 passes, to help load things up. */
       continue;
@@ -179,6 +188,7 @@ int HighRateLoop(long starttime, long endtime)
 
 exit:
   ReleaseCircularBuffer(PSCB);
+  ReleaseCircularBuffer(HSCB);
   ReleaseCircularBuffer(LRCB);
 
   return(nbytes);

@@ -704,6 +704,11 @@ void preProcessData(var_base *varp, long input[], int thisLabel)
 /* -------------------------------------------------------------------- */
 void postProcessData(var_base *varp, long input[], NR_TYPE *out, int label)
 {
+  for (int i = 0; i < varp->SampleRate; ++i)
+    if (input[i] == 0)
+      out[i] = MISSING_VALUE;
+return;
+
   if (cfg.HoneyWellCleanup() == false)
     return;
 

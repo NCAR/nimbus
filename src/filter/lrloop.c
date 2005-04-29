@@ -10,21 +10,16 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-INPUT:		long beginning and ending times
-
-OUTPUT:		
-
 REFERENCES:	circbuff.c, adsIO.c, rec_decode.c, phase_shift.c average.c
 		compute.c netcdf.c, timeseg.c
 
 REFERENCED BY:	StartProcessing()
 
-NOTE:		Changes here may also be required in hrloop.c
+NOTE:		Changes here may also be required in hrloop.c and/or rtloop.c
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 -------------------------------------------------------------------------
 */
-
 
 #include "nimbus.h"
 #include "decode.h"
@@ -32,7 +27,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "circbuff.h"
 #include "amlib.h"
 #include "injectsd.h"
-
 
 
 #define NBUFFERS	5
@@ -44,9 +38,9 @@ extern char		*ADSrecord;
 extern NR_TYPE		*SampledData, *AveragedData;
 extern XtAppContext	context;
 
-
 void	DespikeData(CircularBuffer *LRCB, int index),
-	PhaseShift(CircularBuffer  *LRCB, int index, NR_TYPE *output);  
+	PhaseShift(CircularBuffer  *LRCB, int index, NR_TYPE *output,
+		NR_TYPE *);
 
 
 /* -------------------------------------------------------------------- */
@@ -122,10 +116,9 @@ printf("cntr=%d\n", cntr);
     ApplyCalCoes(BuffPtr);
     }
  
-/* should this be in inject constructor? */
- timeindex[0] = raw[SearchTable(raw, "HOUR")]->SRstart;
- timeindex[1] = raw[SearchTable(raw, "MINUTE")]->SRstart;
- timeindex[2] = raw[SearchTable(raw, "SECOND")]->SRstart;
+  timeindex[0] = raw[SearchTable(raw, "HOUR")]->SRstart;
+  timeindex[1] = raw[SearchTable(raw, "MINUTE")]->SRstart;
+  timeindex[2] = raw[SearchTable(raw, "SECOND")]->SRstart;
 
   /* This is the main loop.
    */
@@ -141,7 +134,7 @@ printf("cntr=%d\n", cntr);
     /* Despike 1 record ahead of what we will be working with (INDEX+1).
      */
     DespikeData(LRCB, INDEX+1);
-    PhaseShift(LRCB, INDEX, SampledData);
+    PhaseShift(LRCB, INDEX, SampledData, 0);
 
     AverageSampledData();
    
