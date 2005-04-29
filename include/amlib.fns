@@ -649,6 +649,7 @@
 	"ATW",		NULL,		NULL,		satf,
 	"ATX",		NULL,		NULL,		sRefer,
 	"ATRR",		NULL,		NULL,		satb,
+	"TTWHC",	NULL,		NULL,		sttwhc,
 	"ATWH",		(void(*)(void*))atfhInit,	NULL,		satfh,
 	"ATRL",		NULL,		NULL,		satb,
 #
