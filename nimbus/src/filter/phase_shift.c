@@ -193,12 +193,12 @@ static void shift(var_base *vp, int lag)
 
   if (vp->Modulo)	// Go back through and move to within bounds.
   {
-    for (size_t i = 0; i < nPoints; ++i)
+    for (size_t i = 0; i < vp->SampleRate; ++i)
     {
-      if (y[i] < vp->Modulo->value[0])
-        y[i] += vp->Modulo->diff;
-      if (y[i] > vp->Modulo->value[1])
-        y[i] -= vp->Modulo->diff;
+      if (out_rec[vp->SRstart+i] < vp->Modulo->value[0])
+        out_rec[vp->SRstart+i] += vp->Modulo->diff;
+      if (out_rec[vp->SRstart+i] > vp->Modulo->value[1])
+        out_rec[vp->SRstart+i] -= vp->Modulo->diff;
     }
   }
 }	/* END SHIFT */

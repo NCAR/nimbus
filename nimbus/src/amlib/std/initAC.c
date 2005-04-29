@@ -108,7 +108,7 @@ void InitAircraftDependencies()
       pcorPSF	= pcorr2;
       pcorQCF	= pcorr2;
       pcorQCR	= pcorr2;
-      pcorPSFD= pcorr2;
+      pcorPSFD	= pcorr2;
       break;
 
     case ELECTRA:
@@ -117,10 +117,10 @@ void InitAircraftDependencies()
 
       pcorQCW	= pcorw8;
       pcorPSW	= pcorw8;
-      pcorQCR = pcorf8;
+      pcorQCR	= pcorf8;
       pcorQCF	= pcorf8;
       pcorPSF	= pcorf8;
-      pcorPSFD= pcorf8;
+      pcorPSFD	= pcorf8;
       break;
 
     case NRL_P3:
@@ -137,7 +137,7 @@ void InitAircraftDependencies()
       jwref	= 1 * XMPHMS;
       recfrn	= 0.65;
 
-      pcorPSFD= pcorf1;
+      pcorPSFD	= pcorf1;
       pcorQCR	= pcorr1;
       pcorQCF	= pcorf1_2;
       pcorPSF	= pcorf1_3;
@@ -149,21 +149,23 @@ void InitAircraftDependencies()
       pcorQCB	= pcorb7;
       pcorPSB	= pcorb7;
 
-    case C130: case 300: case 600:
+    case C130:
+    case 300:
+    case 600:	/* Ground systems....to become HIAPER??? */
       jwref	= 1 * XMPHMS;
       recfrn	= 0.65;
 
       sprintf(buffer, "%04d%02d", FlightDate[2], FlightDate[0]);
-printf("[%s] == [%s]\n", buffer, "200309");
+//printf("[%s] == [%s]\n", buffer, "200309");
       if (strcmp(buffer, "200309") > 0)
       { // AIRS-II & Later
-printf(">>>>>>>>>>>>>>>  AIRS-II and later pcors\n");
+        LogMessage("PCORS:  AIRS-II and later pcors().\n");
         pcorPSF	= pcorf1_3;
         pcorQCFR = pcorf1_4;	
       }
       else
       { // Pre-AIRS-II
-printf(">>>>>>>>>>>>>>>  Pre AIRS-II pcors\n");
+        LogMessage("PCORS:  Pre-AIRS-II pcors().\n");
         pcorPSF	= pcorf1;
         pcorQCFR = pcorf1_2;
       }
@@ -186,7 +188,7 @@ printf(">>>>>>>>>>>>>>>  Pre AIRS-II pcors\n");
       pcorQCF	= pcorf7;
       pcorPSF	= pcorf7;
       pcorQCR	= pcorf7;
-      pcorPSFD= pcorf7;
+      pcorPSFD	= pcorf7;
       break;
 
     case SAILPLANE:
@@ -195,60 +197,59 @@ printf(">>>>>>>>>>>>>>>  Pre AIRS-II pcors\n");
       pcorPSF	= pcorr2;
       pcorQCF	= pcorr2;
       pcorQCR	= pcorr2;
-      pcorPSFD= pcorr2;
+      pcorPSFD	= pcorr2;
       break;
 
     default:
       fprintf(stderr, "Unknown aircraft [%d] encountered.\n", Aircraft);
       exit(1);
   }
-
 }	/* END INITAIRCRAFTDEPENDANCIES */
 
 /* Electra ------------------------------------------------------------ */
 NR_TYPE pcorw8(NR_TYPE q, NR_TYPE q1)
 {
-/*	return(0.517 - 0.0202 * q); */
-	return(1.23 - 0.0846 * q);	
+/*  return(0.517 - 0.0202 * q); */
+  return(1.23 - 0.0846 * q);	
 }
 
 NR_TYPE pcorf8(NR_TYPE q, NR_TYPE q1)
 {
-	return(0.366 - 0.0182 * q);	
+  return(0.366 - 0.0182 * q);	
 }
 
 /* NRL P-3 ------------------------------------------------------------ */
 NR_TYPE pcorr3(NR_TYPE q, NR_TYPE q1)
 {
-	return(0.0 - 0.02 * q);
+  return(0.0 - 0.02 * q);
 }
 
 NR_TYPE pcorf3(NR_TYPE q, NR_TYPE q1)
 {
-/*	return(-0.134 - 0.0182 * q);			*/
-	return(-0.046 + q * (-0.0265 + 0.000087 * q));
+/*  return(-0.134 - 0.0182 * q);			*/
+  return(-0.046 + q * (-0.0265 + 0.000087 * q));
 }
 
 /* KingAir ------------------------------------------------------------ */
 NR_TYPE pcorw2(NR_TYPE q, NR_TYPE q1)
 {
-	return(-0.3112 - 0.0339 * q);
+  return(-0.3112 - 0.0339 * q);
 }
 
 NR_TYPE pcorr2(NR_TYPE q, NR_TYPE q1)
 {
-	return(-1.781 + (0.0655 - 0.00025 * q) * q);
+  return(-1.781 + (0.0655 - 0.00025 * q) * q);
 }
 
 /* SaberLiner --------------------------------------------------------- */
 NR_TYPE pcorb7(NR_TYPE q, NR_TYPE q1)
 {
-	return(0.9404 + q * (0.000239 * q - 0.078));
+  return(0.9404 + q * (0.000239 * q - 0.078));
 }
 
 NR_TYPE pcorf7(NR_TYPE q, NR_TYPE q1)
 {
-	return(-0.8901 + q * (0.0460 + 0.000075 * q));
+  return(-0.8901 + q * (0.0460 + 0.000075 * q));
 }
 
 /* C130 --------------------------------------------------------------- */
@@ -259,14 +260,13 @@ NR_TYPE pcorf1(NR_TYPE q, NR_TYPE q1)		/* For PSFD */
 /*	return(2.14);	From C130/Electra intercomp 6/95	*/
 /*	return(3.66 - q * 0.01882);		*/
 /*  test run from trailing cone data  9/19/2003	*/
-
  
-   pcor = (4.66 + 11.4405 * q);
+  pcor = (4.66 + 11.4405 * q);
 
   if (q < -0.31)
     pcor = 1.113;
 
- return(pcor);
+  return(pcor);
 
 }
 
@@ -279,8 +279,7 @@ NR_TYPE pcorr1(NR_TYPE q, NR_TYPE q1)		/* For QCR */
 /* test run from trailing cone data	*/
 /*	return(2.17 - q * 0.01906);	*/
 
-
-   pcor = (4.66 + 11.4405 * q);
+  pcor = (4.66 + 11.4405 * q);
 
   if (q < -0.31)
     pcor = 1.113;

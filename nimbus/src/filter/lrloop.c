@@ -21,7 +21,7 @@ REFERENCED BY:	StartProcessing()
 
 NOTE:		Changes here may also be required in hrloop.c
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 -------------------------------------------------------------------------
 */
 
@@ -32,8 +32,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "circbuff.h"
 #include "amlib.h"
 #include "injectsd.h"
-
-
 
 #define NBUFFERS	5
 #define INDEX		-(NBUFFERS-2)
@@ -123,9 +121,9 @@ printf("cntr=%d\n", cntr);
     }
  
 /* should this be in inject constructor? */
- timeindex[0] = raw[SearchTable(raw, "HOUR")]->SRstart;
- timeindex[1] = raw[SearchTable(raw, "MINUTE")]->SRstart;
- timeindex[2] = raw[SearchTable(raw, "SECOND")]->SRstart;
+  timeindex[0] = raw[SearchTable(raw, "HOUR")]->SRstart;
+  timeindex[1] = raw[SearchTable(raw, "MINUTE")]->SRstart;
+  timeindex[2] = raw[SearchTable(raw, "SECOND")]->SRstart;
 
   /* This is the main loop.
    */
@@ -159,10 +157,6 @@ printf("cntr=%d\n", cntr);
     
     ComputeLowRateDerived();
 
-//printf(" %02d:%02d:%02d cd: %f\n",
-//  ntohs(h->hour), ntohs(h->minute), ntohs(h->second),
-//  AveragedData[derived[SearchTable(derived, "TTX")]->LRstart]);
-
     WriteNetCDF();
     UpdateTime(SampledData);
 
@@ -184,4 +178,3 @@ exit:
 }	/* END LOWRATELOOP */
 
 /* END LRLOOP.C */
-

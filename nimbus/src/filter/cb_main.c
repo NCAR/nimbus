@@ -316,10 +316,16 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
 
   for (size_t i = 0; i < sdi.size(); ++i)
     {
-    if (cfg.TimeShifting() && sdi[i]->StaticLag != 0)
+    if (!cfg.TimeShifting())
+      sdi[i]->StaticLag = 0;
+
+    if (!cfg.Despiking())
+      sdi[i]->SpikeSlope = 0.0;
+
+    if (sdi[i]->StaticLag != 0)
       AddVariableToSDIlagList(sdi[i]);
 
-    if (cfg.Despiking() && sdi[i]->SpikeSlope > 0)
+    if (sdi[i]->SpikeSlope > 0)
       AddVariableToSDIdespikeList(sdi[i]);
 
     if (sdi[i]->Output && VarDB_lookup(sdi[i]->name) == ERR && LogFile)
@@ -328,10 +334,16 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
 
   for (size_t i = 0; i < raw.size(); ++i)
     {
-    if (cfg.TimeShifting() && raw[i]->StaticLag != 0 || raw[i]->DynamicLag != 0)
+    if (!cfg.TimeShifting())
+      raw[i]->StaticLag = raw[i]->DynamicLag = 0;
+
+    if (!cfg.Despiking())
+      raw[i]->SpikeSlope = 0.0;
+
+    if (raw[i]->StaticLag != 0 || raw[i]->DynamicLag != 0)
       AddVariableToRAWlagList(raw[i]);
 
-    if (cfg.Despiking() && raw[i]->SpikeSlope > 0)
+    if (raw[i]->SpikeSlope > 0)
       AddVariableToRAWdespikeList(raw[i]);
 
     if (raw[i]->Output && VarDB_lookup(raw[i]->name) == ERR && LogFile)
