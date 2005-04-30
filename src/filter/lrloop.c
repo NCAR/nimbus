@@ -28,7 +28,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include "amlib.h"
 #include "injectsd.h"
 
-
 #define NBUFFERS	5
 #define INDEX		-(NBUFFERS-2)
 
@@ -151,10 +150,6 @@ printf("cntr=%d\n", cntr);
       }
     
     ComputeLowRateDerived();
-
-//printf(" %02d:%02d:%02d cd: %f\n",
-//  ntohs(h->hour), ntohs(h->minute), ntohs(h->second),
-//  AveragedData[derived[SearchTable(derived, "TTX")]->LRstart]);
 
     WriteNetCDF();
     UpdateTime(SampledData);
