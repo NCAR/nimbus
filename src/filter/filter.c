@@ -165,9 +165,9 @@ void InitMRFilters()
         break;
 
       case 10:
-        if (strncmp(raw[i]->name, "GSF", 4) == 0 ||
-            strncmp(raw[i]->name, "VEW", 4) == 0 ||
-            strncmp(raw[i]->name, "VNS", 4) == 0)
+        if (strncmp(raw[i]->name, "GSF", 3) == 0 ||
+            strncmp(raw[i]->name, "VEW", 3) == 0 ||
+            strncmp(raw[i]->name, "VNS", 3) == 0)
           rawFilters[i] = createMRFilter(1, 1, gsf, mv_p);
         else
           rawFilters[i] = createMRFilter(1, 1, TenTo25, mv_p);
@@ -181,7 +181,7 @@ void InitMRFilters()
         break;
 
       case 50:		/* Decimate	*/
-        if (strncmp(raw[i]->name, "ACINS", 4) == 0)
+        if (strncmp(raw[i]->name, "ACINS", 5) == 0)
           rawFilters[i] = createMRFilter(1, 2, acins, mv_p);
         else
           rawFilters[i] = createMRFilter(1, 2, FiftyTo25, mv_p);
