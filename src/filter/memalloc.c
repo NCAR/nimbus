@@ -58,7 +58,7 @@ void AllocateDataArrays()
     sdi[i]->SRstart = nFloats;
     sdi[i]->HRstart = nHRfloats;
     nFloats += sdi[i]->SampleRate;
-    nHRfloats += 25;
+    nHRfloats += cfg.ProcessingRate();
     }
 
   int nVoltFloats = nFloats;
@@ -70,7 +70,7 @@ void AllocateDataArrays()
     raw[i]->HRstart = nHRfloats;
     nLRfloats += raw[i]->Length;
     nFloats += (raw[i]->SampleRate * raw[i]->Length);
-    nHRfloats += (25 * raw[i]->Length);
+    nHRfloats += (cfg.ProcessingRate() * raw[i]->Length);
     }
 
   for (size_t i = 0; i < derived.size(); ++i)
@@ -78,7 +78,7 @@ void AllocateDataArrays()
     derived[i]->LRstart = nLRfloats;
     derived[i]->HRstart = nHRfloats;
     nLRfloats += derived[i]->Length;
-    nHRfloats += (25 * derived[i]->Length);
+    nHRfloats += (cfg.ProcessingRate() * derived[i]->Length);
     }
 
   /* Reset dependIndices.
@@ -93,7 +93,7 @@ void AllocateDataArrays()
   SampledData = new NR_TYPE[nFloats];
   AveragedData = new NR_TYPE[nLRfloats];
 
-  if (cfg.ProcessingRate() == Config::HighRate)
+  if (cfg.ProcessingRate() != Config::LowRate)
     HighRateData = new NR_TYPE[nHRfloats];
 
   ArraysInitialized = true;
@@ -112,7 +112,7 @@ void FreeDataArrays()
     delete [] SampledData;
     delete [] AveragedData;
 
-    if (cfg.ProcessingRate() == Config::HighRate)
+    if (cfg.ProcessingRate() != Config::LowRate)
       delete [] HighRateData;
 
     if (AVAPS)

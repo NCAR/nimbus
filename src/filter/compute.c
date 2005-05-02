@@ -49,7 +49,7 @@ void ComputeHighRateDerived()
 
   FeedBack = HIGH_RATE_FEEDBACK;
 
-  for (SampleOffset = 0; SampleOffset < Config::HighRate; ++SampleOffset)
+  for (SampleOffset = 0; SampleOffset < cfg.ProcessingRate(); ++SampleOffset)
     for (size_t i = 0; i < derived.size(); i++)
       if ((dp = ComputeOrder[i])->compute)
         (*dp->compute)(dp);

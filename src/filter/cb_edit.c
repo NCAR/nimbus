@@ -185,7 +185,7 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
     outputRate = Config::SampleRate;
   else
   if (XmToggleButtonGetState(outputHRbutton))
-    outputRate = Config::HighRate;
+    outputRate = cfg.ProcessingRate();
   else
     HandleError("Impossible, no outputRate set.");
 
@@ -290,7 +290,7 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
         rp->OutputRate = rp->SampleRate;
 
       /* PMS1D don't go to 25hz, keep them back at 10. */
-      if ((rp->ProbeType & PROBE_PMS1D) && outputRate == Config::HighRate)
+      if ((rp->ProbeType & PROBE_PMS1D) && outputRate != Config::LowRate)
         rp->OutputRate = rp->SampleRate;
 
       rp->StaticLag = lag;
@@ -314,7 +314,7 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
       dp->DataQuality = dq;
 
       /* PMS1D don't go to 25hz, keep them back at 10. */
-      if ((dp->ProbeType & PROBE_PMS1D) && outputRate == Config::HighRate)
+      if ((dp->ProbeType & PROBE_PMS1D) && outputRate != Config::LowRate)
         dp->OutputRate = dp->Default_HR_OR;
 
       for (size_t i = 0; i < dp->ndep; ++i)
@@ -393,6 +393,7 @@ static void set_edit_window_data(
       break;
 
     case Config::HighRate:
+    case Config::HighRate50:
       XmToggleButtonSetState(outputHRbutton, true, false);
       break;
 

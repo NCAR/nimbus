@@ -51,8 +51,8 @@ static const size_t nFlightInfo = 4;
 static const size_t nTimeSliceInfo = 2;
 
 static Widget	ConfigShell = 0, ConfigWindow = 0, flightText[nFlightInfo],
-		lowRateButton, highRateButton, despikeButton, lagButton,
-		irsCleanupButton, inertialShiftButton, interpB[3];
+		lowRateButton, hrt25Button, hrt50Button, despikeButton,
+		lagButton, irsCleanupButton, inertialShiftButton, interpB[3];
 
 Widget ts_text[nTimeSliceInfo];
 
@@ -117,7 +117,10 @@ void SetConfigWinFromConfig()
   if (cfg.ProcessingRate() == Config::LowRate)
     XmToggleButtonSetState(lowRateButton, true, true);
   else
-    XmToggleButtonSetState(highRateButton, true, true);
+  if (cfg.ProcessingRate() == Config::HighRate)
+    XmToggleButtonSetState(hrt25Button, true, true);
+  else
+    XmToggleButtonSetState(hrt50Button, true, true);
 
   XmToggleButtonSetState(interpB[(int)cfg.InterpolationType()], true, true);
 
@@ -203,33 +206,46 @@ void SetLowRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
 void SetHighRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
 {
   size_t        i;
+  int	rate = (int)client;
 
   if (w == 0)
     {
-    XmToggleButtonSetState(highRateButton, true, true);
+    if (rate == (int)Config::HighRate)
+      XmToggleButtonSetState(hrt25Button, true, true);
+    else
+    if (rate == (int)Config::HighRate50)
+      XmToggleButtonSetState(hrt50Button, true, true);
+
     return;
     }
 
   if (call->set == false)
     return;
 
-  cfg.SetProcessingRate(Config::HighRate);
+  if (rate == (int)Config::HighRate)
+    cfg.SetProcessingRate(Config::HighRate);
+  else
+  if (rate == (int)Config::HighRate50)
+    cfg.SetProcessingRate(Config::HighRate50);
 
   for (i = 0; i < sdi.size(); ++i)
     if (sdi[i]->SampleRate >= Config::HighRate)
-      sdi[i]->OutputRate = Config::HighRate;
+      sdi[i]->OutputRate = (int)cfg.ProcessingRate();
 
   for (i = 0; i < raw.size(); ++i)
     {
     if (raw[i]->SampleRate >= Config::HighRate)
-      raw[i]->OutputRate = Config::HighRate;
+      raw[i]->OutputRate = (int)cfg.ProcessingRate();
 
     if (raw[i]->ProbeType & PROBE_PMS1D)
       raw[i]->OutputRate = raw[i]->SampleRate;
     }
 
   for (i = 0; i < derived.size(); ++i)
-    derived[i]->OutputRate = derived[i]->Default_HR_OR;
+    if (derived[i]->Default_HR_OR == Config::LowRate)
+      derived[i]->OutputRate = derived[i]->Default_HR_OR;
+    else
+      derived[i]->OutputRate = cfg.ProcessingRate();
 
   FillListWidget();
   XtSetSensitive(outputHRbutton, true);
@@ -372,10 +388,16 @@ void createProcessingRate(Widget parent)
   XtManageChild(lowRateButton);
 
   n = 0;
-  highRateButton = XmCreateToggleButton(rateRB, "highRateButton", args, n);
-  XtAddCallback(highRateButton, XmNvalueChangedCallback,
-		(XtCallbackProc)SetHighRate, NULL);
-  XtManageChild(highRateButton);
+  hrt25Button = XmCreateToggleButton(rateRB, "hrt25Button", args, n);
+  XtAddCallback(hrt25Button, XmNvalueChangedCallback,
+		(XtCallbackProc)SetHighRate, (XtPointer)Config::HighRate);
+  XtManageChild(hrt25Button);
+
+  n = 0;
+  hrt50Button = XmCreateToggleButton(rateRB, "hrt50Button", args, n);
+  XtAddCallback(hrt50Button, XmNvalueChangedCallback,
+		(XtCallbackProc)SetHighRate, (XtPointer)Config::HighRate50);
+  XtManageChild(hrt50Button);
 
 }	/* END CREATEPROCESSINGRATE */
 

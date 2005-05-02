@@ -209,7 +209,7 @@ class Config
 public:
     enum ProcessingMode { PostProcessing, RealTime };
     enum interpolationType { Linear=0, CubicSpline, AkimaSpline };
-    enum processingRate { SampleRate=0, LowRate=1, HighRate=25 };
+    enum processingRate { SampleRate=0, LowRate=1, HighRate=25, HighRate50=50 };
 
     Config();
 

@@ -55,7 +55,7 @@ void CloseLogFile()
 
   sprintf(buffer, "%s/%s/Production/logFile_%s.%s",
           ProjectDirectory, ProjectNumber,
-          cfg.ProcessingRate() == Config::HighRate ? "HRT" : "LRT",
+          cfg.ProcessingRate() == Config::LowRate ? "LRT" : "HRT",
           FlightNumber);
 
   if (rename(logFileName, buffer) == ERR)

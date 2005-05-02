@@ -61,19 +61,19 @@ char *GetProcessedBuffer(CircularBuffer *, CircularBuffer *, int offset, var_bas
 void InitMRFilters()
 {
   MOD	*mv_p;
-  filterPtr	TwoFiftyTo25, FiftyTo25, OneTo25, FiveTo25, TenTo25,
-		ThousandTo25, TwentyFive, vspd, acins, gsf;
+  filterPtr	TwoFiftyToHRT, FiftyToHRT, OneToHRT, FiveToHRT, TenToHRT,
+		ThousandToHRT, TwentyFiveToHRT, vspd, acins, gsf;
 
-  OneTo25 = readAfilter("1to25");
-  FiveTo25 = readAfilter("5to25");
-  TenTo25 = readAfilter("10to25");
-  TwentyFive = readAfilter("25hz");
+  OneToHRT = readAfilter("1to");
+  FiveToHRT = readAfilter("5to");
+  TenToHRT = readAfilter("10to");
+  TwentyFiveToHRT = readAfilter("25to");
   vspd = readAfilter("VSPD");
   gsf = readAfilter("GSF");
   acins = readAfilter("ACINS");
-  FiftyTo25 = readAfilter("50to25");
-  TwoFiftyTo25 = readAfilter("250to25");
-  ThousandTo25 = readAfilter("1000to25");
+  FiftyToHRT = readAfilter("50to");
+  TwoFiftyToHRT = readAfilter("250to");
+  ThousandToHRT = readAfilter("1000to");
 
   /* Create filter Data for each variable
    */
@@ -82,7 +82,7 @@ void InitMRFilters()
     {
     /* Doesn't require filtering.
      */
-    if (sdi[i]->DependedUpon == false && sdi[i]->OutputRate != Config::HighRate)
+    if (sdi[i]->DependedUpon == false && sdi[i]->OutputRate != (size_t)cfg.ProcessingRate())
       {
       sdiFilters[i] = (mRFilterPtr)ERR;
       continue;
@@ -93,6 +93,8 @@ void InitMRFilters()
 
     mv_p = sdi[i]->Modulo;
 
+    int M = sdi[i]->SampleRate / (int)cfg.ProcessingRate();
+
     switch (sdi[i]->SampleRate)
       {
       /* For interpolation cases, L is set to 1 instead of what it really
@@ -101,27 +103,33 @@ void InitMRFilters()
        * do).
        */
       case 1:			/* Interpolate     L  M  */
-        sdiFilters[i] = createMRFilter(1, 1, OneTo25, mv_p);
+        sdiFilters[i] = createMRFilter(1, 1, OneToHRT, mv_p);
         break;
 
       case 5:
-        sdiFilters[i] = createMRFilter(1, 1, FiveTo25, mv_p);
+        sdiFilters[i] = createMRFilter(1, 1, FiveToHRT, mv_p);
         break;
 
-      case 25:		/* No filtering, just copy data */
-        sdiFilters[i] = NULL;
+      case 25:
+        if (cfg.ProcessingRate() == Config::HighRate)
+          sdiFilters[i] = NULL;	// No filtering, just copy data.
+        else
+          sdiFilters[i] = createMRFilter(1, 1, TwentyFiveToHRT, mv_p);
         break;
 
       case 50:		/* Decimate        L  M  */
-        sdiFilters[i] = createMRFilter(1, 2, FiftyTo25, mv_p);
+        if (cfg.ProcessingRate() == Config::HighRate50)
+          sdiFilters[i] = NULL;	// No filtering, just copy data.
+        else
+          sdiFilters[i] = createMRFilter(1, M, FiftyToHRT, mv_p);
         break;
 
       case 250:
-        sdiFilters[i] = createMRFilter(1, 10, TwoFiftyTo25, mv_p);
+        sdiFilters[i] = createMRFilter(1, M, TwoFiftyToHRT, mv_p);
         break;
 
       case 1000:
-        sdiFilters[i] = createMRFilter(1, 40, ThousandTo25, mv_p);
+        sdiFilters[i] = createMRFilter(1, M, ThousandToHRT, mv_p);
         break;
 
       default:
@@ -137,7 +145,7 @@ void InitMRFilters()
     {
     /* Doesn't require filtering.
      */
-    if (raw[i]->DependedUpon == false && raw[i]->OutputRate != Config::HighRate)
+    if (raw[i]->DependedUpon == false && raw[i]->OutputRate != (size_t)cfg.ProcessingRate())
       {
       rawFilters[i] = (mRFilterPtr)ERR;
       continue;
@@ -154,37 +162,45 @@ void InitMRFilters()
 
     mv_p = raw[i]->Modulo;
 
+    int M = raw[i]->SampleRate / (int)cfg.ProcessingRate();
+
     switch (raw[i]->SampleRate)
       {
       case 1:			/* Interpolate	*/
-        rawFilters[i] = createMRFilter(1, 1, OneTo25, mv_p);
+        rawFilters[i] = createMRFilter(1, 1, OneToHRT, mv_p);
         break;
 
       case 5:
-        rawFilters[i] = createMRFilter(1, 1, FiveTo25, mv_p);
+        rawFilters[i] = createMRFilter(1, 1, FiveToHRT, mv_p);
         break;
 
       case 10:
-        if (strncmp(raw[i]->name, "GSF", 4) == 0 ||
-            strncmp(raw[i]->name, "VEW", 4) == 0 ||
-            strncmp(raw[i]->name, "VNS", 4) == 0)
+        if (strncmp(raw[i]->name, "GSF", 3) == 0 ||
+            strncmp(raw[i]->name, "VEW", 3) == 0 ||
+            strncmp(raw[i]->name, "VNS", 3) == 0)
           rawFilters[i] = createMRFilter(1, 1, gsf, mv_p);
         else
-          rawFilters[i] = createMRFilter(1, 1, TenTo25, mv_p);
+          rawFilters[i] = createMRFilter(1, 1, TenToHRT, mv_p);
         break;
 
       case 25:		/* Just filter	*/
         if (strncmp(raw[i]->name, "VSPD", 4) == 0)
           rawFilters[i] = createMRFilter(1, 1, vspd, mv_p);
         else
+        if (cfg.ProcessingRate() == Config::HighRate)
           rawFilters[i] = NULL;
+        else
+          rawFilters[i] = createMRFilter(1, 1, TwentyFiveToHRT, mv_p);
         break;
 
       case 50:		/* Decimate	*/
-        if (strncmp(raw[i]->name, "ACINS", 4) == 0)
-          rawFilters[i] = createMRFilter(1, 2, acins, mv_p);
+        if (strncmp(raw[i]->name, "ACINS", 5) == 0)
+          rawFilters[i] = createMRFilter(1, M, acins, mv_p);
         else
-          rawFilters[i] = createMRFilter(1, 2, FiftyTo25, mv_p);
+        if (cfg.ProcessingRate() == Config::HighRate50)
+          rawFilters[i] = NULL;
+        else
+          rawFilters[i] = createMRFilter(1, M, FiftyToHRT, mv_p);
         break;
 
       default:
@@ -307,7 +323,7 @@ static void filterCounter(SDITBL *sp)
 
     case 1:
       for (OUTindex = 0; OUTindex < (size_t)cfg.ProcessingRate(); ++OUTindex)
-        HighRateData[sp->HRstart+OUTindex] = sdp[0] / 25;
+        HighRateData[sp->HRstart+OUTindex] = sdp[0] / cfg.ProcessingRate();
 
       break;
 
@@ -356,9 +372,10 @@ static filterPtr readAfilter(char file[])
 {
   char	*nimbus = getenv("PROJ_DIR");
   char	*filter[1050];
-  double	sum = 0.0;
 
-  sprintf(buffer, "%s/defaults/filters/%s", nimbus, file);
+  sprintf(buffer, "%s/defaults/filters/%d/%s%d",
+		nimbus, (size_t)cfg.ProcessingRate(),
+		file, (size_t)cfg.ProcessingRate());
   ReadTextFile(buffer, filter);
 
   filterPtr daFilt = new filterData;
@@ -366,6 +383,7 @@ static filterPtr readAfilter(char file[])
   daFilt->order = atoi(filter[0]);
   daFilt->aCoef = new filterType[daFilt->order];
 
+  double sum = 0.0;
   for (int i = 0; i < daFilt->order; ++i)
   {
     daFilt->aCoef[i] = atof(filter[i+1]);
@@ -374,7 +392,7 @@ static filterPtr readAfilter(char file[])
 
   FreeTextFile(filter);
 
-  printf("filter.c: filter sum of %s\t= %15.8lf\n", file, sum);
+  printf("filter.c: filter sum of %shz\t= %15.8lf\n", file, sum);
 
   return(daFilt);
 
@@ -420,7 +438,7 @@ static void setTimeDelay(size_t rate, size_t nTaps, int *sec, size_t *msec)
   int L = 1;	// No actual interp here.
   int samples = nTaps / (2 * L);
 
-  if (rate <= 25)
+  if (rate <= (size_t)cfg.ProcessingRate())
     *sec += (samples / rate);
   else
     // Why are the decimaters off by 1 sample?

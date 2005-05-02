@@ -238,8 +238,8 @@ static void readHeader()
     }
   else
     {
-    if (cfg.ProcessingRate() == Config::HighRate)
-      SetHighRate(NULL, NULL, NULL);
+    if (cfg.ProcessingRate() != Config::LowRate)
+      SetHighRate(NULL, (XtPointer)cfg.ProcessingRate(), NULL);
 
     sprintf(buffer, "%s - %s, Flight %s\n",
 		ProjectName, ProjectNumber, FlightNumber);
@@ -357,7 +357,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
 
   FlushXEvents();
 
-  if (cfg.ProcessingRate() == Config::HighRate)
+  if (cfg.ProcessingRate() != Config::LowRate)
     InitMRFilters();
 
   /* Turn "Go" button into "Pause" button.
@@ -389,10 +389,12 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
     switch (cfg.ProcessingRate())
       {
       case Config::LowRate:
+      case Config::SampleRate:
         rc = LowRateLoop(btim, etim);
         break;
 
       case Config::HighRate:
+      case Config::HighRate50:
         rc = HighRateLoop(btim, etim);
         break;
       }
@@ -585,10 +587,11 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
         switch (dp->OutputRate)
           {
           case Config::LowRate:
-            dp->OutputRate = Config::HighRate;
+            dp->OutputRate = cfg.ProcessingRate();
             break;
 
           case Config::HighRate:
+          case Config::HighRate50:
             dp->OutputRate = Config::LowRate;
             break;
           }
@@ -611,17 +614,18 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
             if (rp->OutputRate != rp->SampleRate)
               rp->OutputRate = rp->SampleRate;
             else
-            if (cfg.ProcessingRate() == Config::HighRate)
-              rp->OutputRate = Config::HighRate;
+            if (cfg.ProcessingRate() != Config::LowRate)
+              rp->OutputRate = cfg.ProcessingRate();
             break;
 
           case Config::HighRate:
+          case Config::HighRate50:
             rp->OutputRate = Config::LowRate;
             break;
 
           default:
-            if (cfg.ProcessingRate() == Config::HighRate)
-              rp->OutputRate = Config::HighRate;
+            if (cfg.ProcessingRate() != Config::LowRate)
+              rp->OutputRate = cfg.ProcessingRate();
             else
               rp->OutputRate = Config::LowRate;
           }
@@ -641,12 +645,13 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
           break;
 
         case Config::HighRate:
+        case Config::HighRate50:
           sp->OutputRate = Config::LowRate;
           break;
 
         default:
-          if (cfg.ProcessingRate() == Config::HighRate)
-            sp->OutputRate = Config::HighRate;
+          if (cfg.ProcessingRate() != Config::LowRate)
+            sp->OutputRate = cfg.ProcessingRate();
           else
             sp->OutputRate = Config::LowRate;
         }
