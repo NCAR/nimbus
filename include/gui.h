@@ -55,6 +55,7 @@ void	ApplyVariableMods(Widget w, XtPointer client, XtPointer call),
 	EditConfiguration(Widget w, XtPointer client, XtPointer call),
 	EditTimeSlices(Widget w, XtPointer client, XtPointer call),
 	EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call),
+	SetInterpType(Widget w, XtPointer client, XtPointer call),
 	SetLowRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call),
         SetHighRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call),
 

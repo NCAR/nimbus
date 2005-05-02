@@ -8,13 +8,11 @@ ENTRY POINTS:	PhaseShift()
 		AddVariableToSDIlagList()
 		AddVariableToRAWlagList()
 
-STATIC FNS:	shift()			Does all except 1hz
-		shift_1hz()		Optimized for 1hz variables
-		interp_regular()	(no wraparound)
-		interp_360_degree()	(0 to 360)
-		interp_180_degree()	(-180 to +180)
+STATIC FNS:	resample()		Does all except 1hz
+		resample1hz()		Optimized for 1hz variables
 
-DESCRIPTION:	Use Akima non-periodic spline for time shifting.
+DESCRIPTION:	Interpolate missing data (spikes) and phase shift data.
+		Also create HRT interpolated data.
 
 INPUT:		Logical Record, CircularBuffers, CircBuff index.
 
@@ -35,24 +33,18 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 
 #include <gsl/gsl_spline.h>
 
-static std::vector<SDITBL *> sdi_ps;
-static std::vector<RAWTBL *> raw_ps;
-
 /* Global to ease parameter pushing in intensive loops.	*/
 static NR_TYPE	*prev_prev_rec, *prev_rec,
 		*this_rec,
 		*next_rec, *next_next_rec;
 
-static void	shift(var_base *vp, int lag, NR_TYPE *, NR_TYPE *),
-		shift_1hz(var_base *vp, int lag, NR_TYPE *, NR_TYPE *);
+static void	resample(var_base *vp, int lag, NR_TYPE *, NR_TYPE *);
 
 /* -------------------------------------------------------------------- */
 void AddVariableToSDIlagList(SDITBL *varp)
 {
   if (!cfg.TimeShifting())
     return;
-
-  sdi_ps.push_back(varp);
 
   sprintf(buffer, "Time lag for %s enabled, with lag of %d milliseconds.\n",
           varp->name, varp->StaticLag);
@@ -65,8 +57,6 @@ void AddVariableToRAWlagList(RAWTBL *varp)
 {
   if (!cfg.TimeShifting())
     return;
-
-  raw_ps.push_back(varp);
 
   /* Don't print message for dynamic lagged variables.
    */
@@ -114,10 +104,7 @@ void PhaseShift(
       srt_out = output;
 
     if (srt_out || houtput)
-      if (sp->SampleRate == 1)
-        shift_1hz(sp, sp->StaticLag, srt_out, houtput);
-      else
-        shift(sp, sp->StaticLag, srt_out, houtput);
+      resample(sp, sp->StaticLag, srt_out, houtput);
   }
 
 
@@ -152,50 +139,97 @@ void PhaseShift(
       srt_out = output;
 
     if (srt_out || houtput)
-      if (rp->SampleRate == 1)
-        shift_1hz(rp, lag, srt_out, houtput);
-      else
-        shift(rp, lag, srt_out, houtput);
+      resample(rp, lag, srt_out, houtput);
   }
 }	/* END PHASESHIFT */
 
 /* -------------------------------------------------------------------- */
-static void shift(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
+static void resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 {
-  size_t	nPoints = vp->SampleRate * 3, goodPoints = 0, T = 0;
+  size_t	nPoints, goodPoints = 0, T = 0;
   size_t	gap_size = 1000 / vp->SampleRate;
-  double	x[nPoints], y[nPoints];
 
-  for (size_t i = 0; i < vp->SampleRate; ++i, T += gap_size)
+  if (vp->SampleRate == 1)
+    nPoints = 5;			// 5 Seconds.
+  else
+    nPoints = vp->SampleRate * 3;	// 3 Seconds.
+
+  double	x[nPoints], y[nPoints], startTime;
+
+  if (vp->SampleRate == 1)
   {
-    if (prev_rec[vp->SRstart + i] != MISSING_VALUE)
-    {
+    T = 0;
+    if (prev_prev_rec[vp->SRstart] != MISSING_VALUE) {
       x[goodPoints] = T;
-      y[goodPoints] = prev_rec[vp->SRstart + i];
+      y[goodPoints] = prev_prev_rec[vp->SRstart];
       ++goodPoints;
     }
-  }
-
-  for (size_t i = 0; i < vp->SampleRate; ++i, T += gap_size)
-  {
-    if (this_rec[vp->SRstart + i] != MISSING_VALUE)
-    {
+    T += gap_size;
+    if (prev_rec[vp->SRstart] != MISSING_VALUE) {
       x[goodPoints] = T;
-      y[goodPoints] = this_rec[vp->SRstart + i];
+      y[goodPoints] = prev_rec[vp->SRstart];
       ++goodPoints;
     }
-  }
-
-  for (size_t i = 0; i < vp->SampleRate; ++i, T += gap_size)
-  {
-    if (next_rec[vp->SRstart + i] != MISSING_VALUE)
-    {
+    T += gap_size;
+    if (this_rec[vp->SRstart] != MISSING_VALUE) {
       x[goodPoints] = T;
-      y[goodPoints] = next_rec[vp->SRstart + i];
+      y[goodPoints] = this_rec[vp->SRstart];
       ++goodPoints;
     }
+    T += gap_size;
+    if (next_rec[vp->SRstart] != MISSING_VALUE) {
+      x[goodPoints] = T;
+      y[goodPoints] = next_rec[vp->SRstart];
+      ++goodPoints;
+    }
+    T += gap_size;
+    if (next_next_rec[vp->SRstart] != MISSING_VALUE) {
+      x[goodPoints] = T;
+      y[goodPoints] = next_next_rec[vp->SRstart];
+      ++goodPoints;
+    }
+
+    startTime = 2000.0;
+  }
+  else  // else SampleRate > 1
+  {
+    for (size_t i = 0; i < vp->SampleRate; ++i, T += gap_size)
+    {
+      if (prev_rec[vp->SRstart + i] != MISSING_VALUE)
+      {
+        x[goodPoints] = T;
+        y[goodPoints] = prev_rec[vp->SRstart + i];
+        ++goodPoints;
+      }
+    }
+
+    for (size_t i = 0; i < vp->SampleRate; ++i, T += gap_size)
+    {
+      if (this_rec[vp->SRstart + i] != MISSING_VALUE)
+      {
+        x[goodPoints] = T;
+        y[goodPoints] = this_rec[vp->SRstart + i];
+        ++goodPoints;
+      }
+    }
+
+    for (size_t i = 0; i < vp->SampleRate; ++i, T += gap_size)
+    {
+      if (next_rec[vp->SRstart + i] != MISSING_VALUE)
+      {
+        x[goodPoints] = T;
+        y[goodPoints] = next_rec[vp->SRstart + i];
+        ++goodPoints;
+      }
+    }
+
+    startTime = 1000.0;
   }
 
+  startTime -= lag;
+
+  if (goodPoints < 3)
+    return;
 
   if (vp->Modulo)	// 0 - 360 stuff.
   {
@@ -217,30 +251,49 @@ static void shift(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 
 
   gsl_interp_accel *acc = gsl_interp_accel_alloc();
-  gsl_spline *spline;
+  gsl_interp *linear = 0;
+  gsl_spline *spline = 0;
 
-  if (nPoints >= 5)
-    spline = gsl_spline_alloc(gsl_interp_akima, goodPoints);
+  if (cfg.InterpolationType() == Config::Linear)
+  {
+    linear = gsl_interp_alloc(gsl_interp_linear, goodPoints);
+    gsl_interp_init(linear, x, y, goodPoints);
+  }
   else
-    spline = gsl_spline_alloc(gsl_interp_cspline, goodPoints);
+  {
+    if (cfg.InterpolationType() == Config::AkimaSpline && goodPoints >= 5)
+      spline = gsl_spline_alloc(gsl_interp_akima, goodPoints);
+    else
+      spline = gsl_spline_alloc(gsl_interp_cspline, goodPoints);
 
-  gsl_spline_init(spline, x, y, goodPoints);
+    gsl_spline_init(spline, x, y, goodPoints);
+  }
 
   if (srt_out)
   {
-    double rqst = 1000.0 - lag;
+    double rqst = startTime;
     for (size_t i = 0; i < vp->SampleRate; ++i, rqst += gap_size)
-      srt_out[vp->SRstart+i] = gsl_spline_eval(spline, rqst, acc);
+      if (cfg.InterpolationType() == Config::Linear)
+        srt_out[vp->SRstart+i] = gsl_interp_eval(linear, x, y, rqst, acc);
+      else
+        srt_out[vp->SRstart+i] = gsl_spline_eval(spline, rqst, acc);
   }
 
   if (hrt_out)
   {
-    double rqst = 1000.0 - lag;
+    double rqst = startTime;
     for (size_t i = 0; i < (size_t)cfg.ProcessingRate(); ++i, rqst += 40)
-      hrt_out[vp->HRstart+i] = gsl_spline_eval(spline, rqst, acc);
+      if (cfg.InterpolationType() == Config::Linear)
+        hrt_out[vp->HRstart+i] = gsl_interp_eval(linear, x, y, rqst, acc);
+      else
+        hrt_out[vp->HRstart+i] = gsl_spline_eval(spline, rqst, acc);
   }
 
-  gsl_spline_free(spline);
+  if (cfg.InterpolationType() == Config::Linear)
+    gsl_interp_free(linear);
+  else
+    gsl_spline_free(spline);
+
   gsl_interp_accel_free(acc);
 
 
@@ -265,39 +318,6 @@ static void shift(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
       }
     }
   }
-}	/* END SHIFT */
-
-/* -------------------------------------------------------------------- */
-static void shift_1hz(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
-{
-  static const size_t	spCnt = 5;
-
-  double	x[spCnt], y[spCnt];
-
-  for (size_t i = 0; i < spCnt; ++i)
-    x[i] = i * 1000;
-
-  y[0] = prev_prev_rec[vp->SRstart];
-  y[1] = prev_rec[vp->SRstart];
-  y[2] = this_rec[vp->SRstart];
-  y[3] = next_rec[vp->SRstart];
-  y[4] = next_next_rec[vp->SRstart];
-
-  gsl_spline *spline = gsl_spline_alloc(gsl_interp_akima, spCnt);
-  gsl_spline_init(spline, x, y, spCnt);
-
-  if (srt_out)
-    srt_out[vp->SRstart] = gsl_spline_eval(spline, (double)2000 - lag, 0);
-
-  if (hrt_out)
-  {
-    double rqst = 2000.0 - lag;
-    for (size_t i = 0; i < (size_t)cfg.ProcessingRate(); ++i, rqst += 40)
-      hrt_out[vp->HRstart+i] = gsl_spline_eval(spline, rqst, 0);
-  }
-
-  gsl_spline_free(spline);
-
-}	/* END SHIFT_1HZ */
+}	/* END RESAMPLE */
 
 /* END PHASE_SHIFT.C */

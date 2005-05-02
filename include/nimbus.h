@@ -208,6 +208,7 @@ class Config
 {
 public:
     enum ProcessingMode { PostProcessing, RealTime };
+    enum interpolationType { Linear=0, CubicSpline, AkimaSpline };
     enum processingRate { SampleRate=0, LowRate=1, HighRate=25 };
 
     Config();
@@ -224,6 +225,7 @@ public:
     bool InertialShift()	{ return _inertialShift; }
 
     processingRate ProcessingRate()	{ return _processingRate; }
+    interpolationType InterpolationType()	{ return _interpType; }
 
     void SetInteractive(bool state)	{ _interactive = state; }
     void SetProductionRun(bool state)	{ _productionRun = state; }
@@ -237,6 +239,7 @@ public:
     void SetInertialShift(bool state)		{ _inertialShift = state; }
 
     void SetProcessingRate(processingRate pr)	{ _processingRate = pr; }
+    void SetInterpolationType(interpolationType it)	{ _interpType = it; }
 
 private:
     bool _interactive;
@@ -251,6 +254,7 @@ private:
     bool _inertialShift;
 
     processingRate _processingRate;
+    interpolationType _interpType;
 };
 
 struct var_match_name

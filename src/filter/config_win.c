@@ -52,7 +52,7 @@ static const size_t nTimeSliceInfo = 2;
 
 static Widget	ConfigShell = 0, ConfigWindow = 0, flightText[nFlightInfo],
 		lowRateButton, highRateButton, despikeButton, lagButton,
-		irsCleanupButton, inertialShiftButton;
+		irsCleanupButton, inertialShiftButton, interpB[3];
 
 Widget ts_text[nTimeSliceInfo];
 
@@ -119,6 +119,8 @@ void SetConfigWinFromConfig()
   else
     XmToggleButtonSetState(highRateButton, true, true);
 
+  XmToggleButtonSetState(interpB[(int)cfg.InterpolationType()], true, true);
+
   XmToggleButtonSetState(despikeButton, cfg.Despiking(), false);
   XmToggleButtonSetState(lagButton, cfg.TimeShifting(), false);
   XmToggleButtonSetState(despikeButton, cfg.HoneyWellCleanup(), false);
@@ -150,6 +152,14 @@ void ResetFlightInfo(Widget w, XtPointer client, XtPointer call)
 }	/* END RESETFLIGHTINFO */
 
 /* -------------------------------------------------------------------- */
+void SetInterpType(Widget w, XtPointer client, XtPointer call)
+{
+  int it = (int)client;
+
+  cfg.SetInterpolationType((Config::interpolationType)it);
+}
+
+/* -------------------------------------------------------------------- */
 void SetLowRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
 {
   size_t        i;
@@ -157,7 +167,7 @@ void SetLowRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
   if (w == 0)
     {
     XmToggleButtonSetState(lowRateButton, true, true);
-   return;
+    return;
     }
 
   if (call->set == false)
@@ -370,6 +380,47 @@ void createProcessingRate(Widget parent)
 }	/* END CREATEPROCESSINGRATE */
 
 /* -------------------------------------------------------------------- */
+void createInterpType(Widget parent)
+{
+  Arg args[8];
+  Cardinal n;
+  Widget interpFrame, interpRB, label;
+
+  n = 0;
+  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
+  XtSetArg(args[n], XmNleftAttachment, XmATTACH_WIDGET); n++;
+  XtSetArg(args[n], XmNleftWidget, menuBar); n++;
+  interpFrame = XmCreateFrame(parent, "interpFrame", args, n);
+  XtManageChild(interpFrame);
+
+  n = 0;
+  label = XmCreateLabel(interpFrame, "interpTitle", args, n);
+  XtManageChild(label);
+
+  n = 0;
+  interpRB = XmCreateRadioBox(interpFrame, "interpRadioBox", args, n);
+  XtManageChild(interpRB);
+
+  n = 0;
+  interpB[0] = XmCreateToggleButton(interpRB, "linearButton", args,n);
+  XtAddCallback(interpB[0], XmNvalueChangedCallback,
+		(XtCallbackProc)SetInterpType, (XtPointer)Config::Linear);
+
+  n = 0;
+  interpB[1] = XmCreateToggleButton(interpRB, "csplineButton", args,n);
+  XtAddCallback(interpB[1], XmNvalueChangedCallback,
+		(XtCallbackProc)SetInterpType, (XtPointer)Config::CubicSpline);
+
+  n = 0;
+  interpB[2] = XmCreateToggleButton(interpRB, "akimaButton", args, n);
+  XtAddCallback(interpB[2], XmNvalueChangedCallback,
+		(XtCallbackProc)SetInterpType, (XtPointer)Config::AkimaSpline);
+
+  XtManageChildren(interpB, 3);
+
+}	/* END CREATEINTERPTYPE */
+
+/* -------------------------------------------------------------------- */
 void createOptions(Widget parent)
 {
   Arg args[8];
@@ -568,6 +619,7 @@ void CreateConfigWindow()
   createFlightInfo(ConfigWindow);
   createTimeSlice(ConfigWindow);
   createProcessingRate(ConfigWindow);
+  createInterpType(ConfigWindow);
   createOptions(ConfigWindow);
 
 

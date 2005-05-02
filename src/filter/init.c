@@ -212,6 +212,7 @@ Config::Config()
   SetInertialShift(true);
 
   SetProcessingRate(LowRate);
+  SetInterpolationType(Linear);
 }
 
 /* END INIT.C */

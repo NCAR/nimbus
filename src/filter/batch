@@ -1,5 +1,5 @@
 pr=25
-if=/home/tmp/135rf18.ads
-of=/jnet/data/cjw.nc
-sf=/h/9/cjw/nimbus/135wind
-ti=10:00:00-18:00:00
+if=/d1/data/135rf18b.ads
+of=/d1/data/cjw.nc
+sf=/home/users/cjw/nimbus/135wind
+ti=10:00:00-11:00:00
