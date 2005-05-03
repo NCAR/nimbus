@@ -32,6 +32,8 @@ extern NR_TYPE	*SampledData, *HighRateData;
 static std::vector<mRFilterPtr> sdiFilters;
 static std::vector<mRFilterPtr> rawFilters;
 
+static bool mrf_debug = false;
+
 static int	PSCBindex;
 static size_t	currentHz, HzDelay;
 static size_t	filterRate;
@@ -67,11 +69,21 @@ void InitMRFilters()
   OneToHRT = readAfilter("1to");
   FiveToHRT = readAfilter("5to");
   TenToHRT = readAfilter("10to");
-  TwentyFiveToHRT = readAfilter("25to");
+
+  if (cfg.ProcessingRate() == Config::HighRate)
+    TwentyFiveToHRT = 0;
+  else
+    TwentyFiveToHRT = readAfilter("25to");
+
   vspd = readAfilter("VSPD");
   gsf = readAfilter("GSF");
   acins = readAfilter("ACINS");
-  FiftyToHRT = readAfilter("50to");
+
+  if (cfg.ProcessingRate() == Config::HighRate50)
+    FiftyToHRT = 0;
+  else
+    FiftyToHRT = readAfilter("50to");
+
   TwoFiftyToHRT = readAfilter("250to");
   ThousandToHRT = readAfilter("1000to");
 
@@ -89,7 +101,7 @@ void InitMRFilters()
       }
 
     if (sdi[i]->type[0] == 'C')
-      sdiFilters[i] = NULL;
+      sdiFilters[i] = 0;
 
     mv_p = sdi[i]->Modulo;
 
@@ -112,14 +124,14 @@ void InitMRFilters()
 
       case 25:
         if (cfg.ProcessingRate() == Config::HighRate)
-          sdiFilters[i] = NULL;	// No filtering, just copy data.
+          sdiFilters[i] = 0;	// No filtering, just copy data.
         else
           sdiFilters[i] = createMRFilter(1, 1, TwentyFiveToHRT, mv_p);
         break;
 
       case 50:		/* Decimate        L  M  */
         if (cfg.ProcessingRate() == Config::HighRate50)
-          sdiFilters[i] = NULL;	// No filtering, just copy data.
+          sdiFilters[i] = 0;	// No filtering, just copy data.
         else
           sdiFilters[i] = createMRFilter(1, M, FiftyToHRT, mv_p);
         break;
@@ -156,7 +168,7 @@ void InitMRFilters()
      */
     if (raw[i]->Length > 1 || raw[i]->ProbeType & PROBE_PMS1D)
       {
-      rawFilters[i] = NULL;
+      rawFilters[i] = 0;
       continue;
       }
 
@@ -188,7 +200,7 @@ void InitMRFilters()
           rawFilters[i] = createMRFilter(1, 1, vspd, mv_p);
         else
         if (cfg.ProcessingRate() == Config::HighRate)
-          rawFilters[i] = NULL;
+          rawFilters[i] = 0;
         else
           rawFilters[i] = createMRFilter(1, 1, TwentyFiveToHRT, mv_p);
         break;
@@ -198,7 +210,7 @@ void InitMRFilters()
           rawFilters[i] = createMRFilter(1, M, acins, mv_p);
         else
         if (cfg.ProcessingRate() == Config::HighRate50)
-          rawFilters[i] = NULL;
+          rawFilters[i] = 0;
         else
           rawFilters[i] = createMRFilter(1, M, FiftyToHRT, mv_p);
         break;
@@ -392,7 +404,8 @@ static filterPtr readAfilter(char file[])
 
   FreeTextFile(filter);
 
-  printf("filter.c: filter sum of %shz\t= %15.8lf\n", file, sum);
+  printf("filter.c: filter sum of %s%d\t= %15.8lf\n",
+		file, (int)cfg.ProcessingRate(), sum);
 
   return(daFilt);
 
@@ -414,6 +427,9 @@ void ClearMRFilters()
 /* -------------------------------------------------------------------- */
 static mRFilterPtr createMRFilter(int L, int M, filterPtr filter, MOD *modvar)
 {
+  if (filter == 0)
+    return(0);
+
   mRFilterPtr	aMRFPtr;
 
   aMRFPtr		= new mRFilterData;
@@ -451,7 +467,10 @@ static void setTimeDelay(size_t rate, size_t nTaps, int *sec, size_t *msec)
 
       case 250:		// nTaps / (2 * L), almost checks out.
         *sec += 0;
-        *msec = 240;
+        if (cfg.ProcessingRate() == Config::HighRate)
+          *msec = 240;
+        else
+          *msec = 95;
         break;
 
       case 1000:		// nTaps / (2 * L), ????
@@ -605,11 +624,11 @@ static void initMultiRateFilter(mRFilterPtr aMRFPtr)
 */
 static int disposMultiRateFilter(mRFilterPtr aMRFPtr)
 {
-  if (aMRFPtr == NULL)
+  if (aMRFPtr == 0)
     return(false);
 
   disposCircBuff(aMRFPtr->inBuff);
-  aMRFPtr->inBuff = NULL;
+  aMRFPtr->inBuff = 0;
   delete aMRFPtr;
 
   return(true);

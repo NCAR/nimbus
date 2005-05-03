@@ -282,7 +282,9 @@ static void resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
   if (hrt_out)
   {
     double rqst = startTime;
-    for (size_t i = 0; i < (size_t)cfg.ProcessingRate(); ++i, rqst += 40)
+    int gap_size = 1000 / cfg.ProcessingRate();
+
+    for (size_t i = 0; i < (size_t)cfg.ProcessingRate(); ++i, rqst += gap_size)
       if (cfg.InterpolationType() == Config::Linear)
         hrt_out[vp->HRstart+i] = gsl_interp_eval(linear, x, y, rqst, acc);
       else
