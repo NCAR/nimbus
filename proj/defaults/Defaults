@@ -77,6 +77,12 @@ PITCH_BIAS_2	0.0
 HEADING_BIAS_2	0.0
 
 #
+# C-Migits - pitch and heading biases.
+#
+CM_PITCH_BIAS_1		0.0
+CM_HEADING_BIAS_1	0.0
+
+#
 # Lyman-Alpha constants - unit 1
 #
 XC_1	0.50
