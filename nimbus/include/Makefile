@@ -11,13 +11,13 @@ PROG=	make_amlib
 all:	amlibfn.h svnInfo.h
 
 svnInfo.h: .force
-	makeSvnInfoHeaderFile.sh
+	./makeSvnInfoHeaderFile.sh
 
 amlibfn.h:	amlib.fns make_amlib
-	make_amlib
+	./make_amlib
 
 xlatefns.h:	amlib.fns make_amlib
-	make_amlib
+	./make_amlib
 
 make_amlib: make_amlib.c
 	${CC} ${CFLAGS} make_amlib.c -o make_amlib
