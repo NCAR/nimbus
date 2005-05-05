@@ -506,7 +506,7 @@
 #
 	"CLAT",		NULL,		xlclat,		NULL,
 	"CLON",		NULL,		xlclon,		NULL,
-	"CALT",		NULL,		xlcalt,		NULL,
+	"CALT",		(void(*)(void*))cmigitsInit,	xlcalt,		NULL,
 	"CVEW",		NULL,		xlcvew,		NULL,
 	"CVNS",		NULL,		xlcvns,		NULL,
 	"CVSPD",	NULL,		xlcvspd,	NULL,
