@@ -180,6 +180,10 @@ void CreateNetCDF(char fileName[])
   ncattput(fd, NC_GLOBAL, "Conventions", NC_CHAR,
            strlen(buffer)+1, (void *)buffer);
 
+  strcpy(buffer, "http://raf.eol.ucar.edu/Software/netCDF.html");
+  ncattput(fd, NC_GLOBAL, "ConventionsURL", NC_CHAR,
+           strlen(buffer)+1, (void *)buffer);
+
   strcpy(buffer, NETCDF_FORMAT_VERSION);
   ncattput(fd, NC_GLOBAL, "Version", NC_CHAR, strlen(buffer)+1, (void *)buffer);
 
