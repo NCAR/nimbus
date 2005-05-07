@@ -165,10 +165,16 @@ void InitMRFilters()
         break;
 
       case 10:
+        /* At this time no filtering of groundspeeds from the IRS should be
+         * performed, due to poor quantization from the instrument.  Filtering
+         * introdouces ripple and a scalloping effect when the raw data is
+         * "stair-stepping".  Webster/Lenschow May-2005
+         */
         if (strncmp(raw[i]->name, "GSF", 3) == 0 ||
             strncmp(raw[i]->name, "VEW", 3) == 0 ||
             strncmp(raw[i]->name, "VNS", 3) == 0)
-          rawFilters[i] = createMRFilter(1, 1, gsf, mv_p);
+//          rawFilters[i] = createMRFilter(1, 1, gsf, mv_p);
+          rawFilters[i] = NULL;
         else
           rawFilters[i] = createMRFilter(1, 1, TenTo25, mv_p);
         break;
