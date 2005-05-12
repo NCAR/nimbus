@@ -22,19 +22,16 @@ REFERENCED BY:	Command line
 
 NOTES:		
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2004
+COPYRIGHT:	University Corporation for Atmospheric Research, 2004-05
 -------------------------------------------------------------------------
 */
-
 
 #include "netcdf.hh"
 
 #include <cstdio>
 #include <cstring>
 
-
 bool	verbose = false;
-float	data[50000000];
 
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
@@ -141,11 +138,9 @@ int main(int argc, char *argv[])
 
 
   // Transfer data.
-  long	*edges, nVars = inFile.num_vars();
+  long	nVars = inFile.num_vars();
   for (int i = 0; i < nVars; ++i)
   {
-    edges = inFile.get_var(i)->edges();
-
     if (verbose)
       printf("%s , nDims = %d\n", inFile.get_var(i)->name(), inFile.get_var(i)->num_dims());
     else
@@ -163,8 +158,25 @@ int main(int argc, char *argv[])
     }
     else
     {
-      inFile.get_var(i)->get(data, inFile.get_var(i)->edges());
-      outFile.get_var(i)->put(data, outFile.get_var(i)->edges());
+      long *edges = inFile.get_var(i)->edges();
+
+      if (inFile.get_var(i)->type() == ncFloat)
+      {
+        float data[inFile.get_var(i)->num_vals()];
+
+        inFile.get_var(i)->get(data, inFile.get_var(i)->edges());
+        outFile.get_var(i)->put(data, outFile.get_var(i)->edges());
+      }
+      else
+      if (inFile.get_var(i)->type() == ncInt)
+      {
+        int data[inFile.get_var(i)->num_vals()];
+
+        inFile.get_var(i)->get(data, inFile.get_var(i)->edges());
+        outFile.get_var(i)->put(data, outFile.get_var(i)->edges());
+      }
+
+      delete [] edges;
     }
   }
 
@@ -176,4 +188,4 @@ int main(int argc, char *argv[])
 
 }	/* END MAIN */
 
-/* END NCFAST.CC */
+/* END NCREORDER.CC */
