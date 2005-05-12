@@ -10,10 +10,6 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-INPUT:		long beginning and ending times
-
-OUTPUT:		
-
 REFERENCES:	circbuff.c, adsIO.c, rec_decode.c, phase_shift.c, compute.c,
 		filter.c, timeseg.c, netcdf.c
 
@@ -29,6 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include "decode.h"
 #include "gui.h"
 #include "circbuff.h"
+#include "amlib.h"
 #include "injectsd.h"
 
 #define NLRBUFFERS	5	/* Number of LR Buffers			*/
@@ -42,6 +39,7 @@ extern char		*ADSrecord;
 extern NR_TYPE		*SampledData, *AveragedData;
 extern XtAppContext	context;
 
+bool	LocateFirstRecord(long starttime, long endtime, int nBuffers);
 void	Filter(CircularBuffer *, CircularBuffer *),
         DespikeData(CircularBuffer *LRCB, int index),
         PhaseShift(	CircularBuffer  *LRCB, int index,
@@ -51,13 +49,12 @@ void	Filter(CircularBuffer *, CircularBuffer *),
 /* -------------------------------------------------------------------- */
 int HighRateLoop(long starttime, long endtime)
 {
-  int			i, j = 0;
-  long			nbytes;
+  int			j = 0;
+  long			nBytes;
   NR_TYPE		*ps_data, *hrt_data;
   CircularBuffer	*LRCB;	/* Logical Record Circular Buffers	*/
   CircularBuffer	*PSCB;	/* Phase Shifted Circular Buffers	*/
   CircularBuffer	*HSCB;	/* 25Hz resampled data (interped only).*/
-
 
   /* Account for Circular Buffer slop	*/
   if (starttime != BEG_OF_TAPE)
@@ -66,42 +63,44 @@ int HighRateLoop(long starttime, long endtime)
   if (endtime != END_OF_TAPE)
     endtime += NPSBUFFERS-1;
 
-  nbytes = nFloats * NR_SIZE;
-  if ((LRCB = CreateCircularBuffer(NLRBUFFERS, nbytes)) == NULL ||
-      (PSCB = CreateCircularBuffer(NPSBUFFERS, nbytes)) == NULL)
+  nBytes = nFloats * NR_SIZE;
+  if ((LRCB = CreateCircularBuffer(NLRBUFFERS, nBytes)) == NULL ||
+      (PSCB = CreateCircularBuffer(NPSBUFFERS, nBytes)) == NULL)
     {
-    nbytes = ERR;
+    nBytes = ERR;
     goto exit;
     }
 
-  nbytes = cfg.ProcessingRate() * NR_SIZE * (sdi.size() + raw.size());
-  if ((HSCB = CreateCircularBuffer(NPSBUFFERS, nbytes)) == NULL)
+  nBytes = cfg.ProcessingRate() * NR_SIZE * (sdi.size() + raw.size());
+  if ((HSCB = CreateCircularBuffer(NPSBUFFERS, nBytes)) == NULL)
     {
-    nbytes = ERR;
+    nBytes = ERR;
     goto exit;
     }
-
 
   /* Perform initialization before entering main loop.
    */
-  if ((nbytes = FindFirstLogicalRecord(ADSrecord, starttime)) <= 0)
+  if (LocateFirstRecord(starttime, endtime, NLRBUFFERS) == false)
+    {
+    nBytes = ERR;
     goto exit;
+    }
 
   ClearMRFilters();
-  SetBaseTime((Hdr_blk *)ADSrecord);		/* See netcdf.c	*/
 
 
   /* Fill circular Buffers
    */
   SampledData = (NR_TYPE *)AddToCircularBuffer(LRCB);
   DecodeADSrecord((short *)ADSrecord, SampledData);
+  ApplyCalCoes(SampledData);
 
-  for (i = 0; i < NLRBUFFERS-1; ++i)
+  for (int i = 0; i < NLRBUFFERS-1; ++i)
     {
-    if ((nbytes = FindNextLogicalRecord(ADSrecord, endtime)) <= 0)
+    if ((nBytes = FindNextLogicalRecord(ADSrecord, endtime)) <= 0)
       goto exit;
 
-    if (CheckForTimeGap((Hdr_blk *)ADSrecord, False) == GAP_FOUND)
+    if (CheckForTimeGap((Hdr_blk *)ADSrecord, false) == GAP_FOUND)
       goto exit;
 
     SampledData = (NR_TYPE *)AddToCircularBuffer(LRCB);
@@ -111,12 +110,12 @@ int HighRateLoop(long starttime, long endtime)
 
   /* Fill PhaseShifted Buffers for MultiRate
    */
-  for (i = 0; i < NPSBUFFERS-1; ++i)
+  for (int i = 0; i < NPSBUFFERS-1; ++i)
     {
-    if ((nbytes = FindNextLogicalRecord(ADSrecord, endtime)) <= 0)
+    if ((nBytes = FindNextLogicalRecord(ADSrecord, endtime)) <= 0)
       goto exit;
 
-    if (CheckForTimeGap((Hdr_blk *)ADSrecord, False) == GAP_FOUND)
+    if (CheckForTimeGap((Hdr_blk *)ADSrecord, false) == GAP_FOUND)
       goto exit;
 
     SampledData = (NR_TYPE *)AddToCircularBuffer(LRCB);
@@ -135,9 +134,9 @@ int HighRateLoop(long starttime, long endtime)
 
   /* This is the main control loop.
    */
-  while ((nbytes = FindNextLogicalRecord(ADSrecord, endtime)) > 0)
+  while ((nBytes = FindNextLogicalRecord(ADSrecord, endtime)) > 0)
     {
-    if (CheckForTimeGap((Hdr_blk *)ADSrecord, False) == GAP_FOUND)
+    if (CheckForTimeGap((Hdr_blk *)ADSrecord, false) == GAP_FOUND)
       break;
 
     SampledData = (NR_TYPE *)AddToCircularBuffer(LRCB);
@@ -175,12 +174,12 @@ int HighRateLoop(long starttime, long endtime)
     WriteNetCDF_MRF();
     UpdateTime(SampledData);
 
-    while (PauseFlag == True)
+    while (PauseFlag == true)
       XtAppProcessEvent(context, XtIMAll);
 
     if (PauseWhatToDo == P_QUIT)
       {
-      nbytes = ERR;
+      nBytes = ERR;
       break;
       }
     }
@@ -191,7 +190,7 @@ exit:
   ReleaseCircularBuffer(HSCB);
   ReleaseCircularBuffer(LRCB);
 
-  return(nbytes);
+  return(nBytes);
 
 }	/* END HIGHRATELOOP */
 

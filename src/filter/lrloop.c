@@ -28,8 +28,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include "amlib.h"
 #include "injectsd.h"
 
-#define NBUFFERS	5
-#define INDEX		-(NBUFFERS-2)
+#define NLRBUFFERS	5
+#define INDEX		-(NLRBUFFERS-2)
 
 extern SyntheticData sd;
 
@@ -37,6 +37,7 @@ extern char		*ADSrecord;
 extern NR_TYPE		*SampledData, *AveragedData;
 extern XtAppContext	context;
 
+bool	LocateFirstRecord(long starttime, long endtime, int nBuffers);
 void	DespikeData(CircularBuffer *LRCB, int index),
 	PhaseShift(CircularBuffer  *LRCB, int index, NR_TYPE *output,
 		NR_TYPE *);
@@ -45,55 +46,26 @@ void	DespikeData(CircularBuffer *LRCB, int index),
 /* -------------------------------------------------------------------- */
 int LowRateLoop(long starttime, long endtime)
 {
-  int			i, cntr;
   long			nBytes;
   NR_TYPE		*BuffPtr;
   CircularBuffer	*LRCB;	/* Logical Record Circular Buffers	*/
-  Hdr_blk *h = (Hdr_blk*)ADSrecord;
-
 
   /* Account for Circular Buffer slop	*/
   if (starttime != BEG_OF_TAPE)
-    starttime -= NBUFFERS+1;
+    starttime -= NLRBUFFERS+1;
 
   if (endtime != END_OF_TAPE)
     endtime += -(INDEX+1);
 
+  /* Perform initialization before entering main loop.
+   */
   nBytes = nFloats * NR_SIZE;
-  if ((LRCB = CreateCircularBuffer(NBUFFERS, nBytes)) == NULL)
+  if ((LRCB = CreateCircularBuffer(NLRBUFFERS, nBytes)) == NULL ||
+      LocateFirstRecord(starttime, endtime, NLRBUFFERS) == false)
     {
     nBytes = ERR;
     goto exit;
     }
-
-
-  /* Perform initialization before entering main loop.
-   */
-  if ((nBytes = FindFirstLogicalRecord(ADSrecord, starttime)) <= 0)
-    goto exit;
-
-  /* Now make sure we have at least 7 contigous records.
-   */
-  for (i = 0, cntr = 0; i < NBUFFERS+3; ++i, ++cntr)
-    {
-printf("%d:%d:%d\n", ntohs(h->hour), ntohs(h->minute), ntohs(h->second));
-    if (CheckForTimeGap((Hdr_blk *)ADSrecord, true) == GAP_FOUND)
-      { i = 0; printf("reset, cntr=%d\n", cntr); }
-
-    nBytes = FindNextLogicalRecord(ADSrecord, endtime);
-    }
-
-printf("cntr=%d\n", cntr);
-  cntr -= NBUFFERS-1;
-
-  nBytes = FindFirstLogicalRecord(ADSrecord, starttime);
-  for (i = 0; i < cntr; ++i)
-    nBytes = FindNextLogicalRecord(ADSrecord, endtime);
-
-  ResetTimeGapper();
-  printf("%d:%d:%d\n", ntohs(h->hour), ntohs(h->minute), ntohs(h->second));
-
-  SetBaseTime((Hdr_blk *)ADSrecord);		/* See netcdf.c	*/
 
 
   /* Fill circular Buffers
@@ -102,7 +74,7 @@ printf("cntr=%d\n", cntr);
   DecodeADSrecord((short *)ADSrecord, BuffPtr);
   ApplyCalCoes(BuffPtr);
 
-  for (i = 1; i < NBUFFERS-1; ++i)
+  for (int i = 1; i < NLRBUFFERS-1; ++i)
     {
     if ((nBytes = FindNextLogicalRecord(ADSrecord, endtime)) <= 0)
       goto exit;
@@ -170,6 +142,41 @@ exit:
   return(nBytes);
 
 }	/* END LOWRATELOOP */
+
+/* -------------------------------------------------------------------- */
+bool LocateFirstRecord(long starttime, long endtime, int nBuffers)
+{
+  int nBytes, cntr = 0;
+  Hdr_blk *h = (Hdr_blk*)ADSrecord;
+
+  if ((nBytes = FindFirstLogicalRecord(ADSrecord, starttime)) <= 0)
+    return false;
+
+  /* Now make sure we have at least 7 contigous records.
+   */
+  for (int i = 0, cntr = 0; i < nBuffers+3; ++i, ++cntr)
+    {
+    printf("%d:%d:%d\n", ntohs(h->hour), ntohs(h->minute), ntohs(h->second));
+    if (CheckForTimeGap((Hdr_blk *)ADSrecord, true) == GAP_FOUND)
+      { i = 0; printf("reset, cntr=%d\n", cntr); }
+
+    nBytes = FindNextLogicalRecord(ADSrecord, endtime);
+    }
+
+  cntr -= nBuffers-1;
+
+  nBytes = FindFirstLogicalRecord(ADSrecord, starttime);
+  for (int i = 0; i < cntr; ++i)
+    nBytes = FindNextLogicalRecord(ADSrecord, endtime);
+
+  ResetTimeGapper();
+  printf("%d:%d:%d\n", ntohs(h->hour), ntohs(h->minute), ntohs(h->second));
+
+  SetBaseTime((Hdr_blk *)ADSrecord);		/* See netcdf.c	*/
+
+  return true;
+
+}
 
 /* END LRLOOP.C */
 
