@@ -64,7 +64,8 @@ public:
 
   int	NumberOfProbes()	{ return(nProbes); }
   void	SetPosition(int position);
-  int	GetPosition()	{ return(100 * currPhys / nIndices); }
+  int	GetPosition()
+	{ return(nIndices == 0 ? 0 : 100 * currPhys / nIndices); }
 
 //  int	NextSyncRecord(char buff[]);
   bool	LocatePMS2dRecord(P2d_rec *buff, int h, int m, int s);

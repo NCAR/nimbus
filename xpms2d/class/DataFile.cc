@@ -161,7 +161,7 @@ ADS_DataFile::ADS_DataFile(char fName[])
         probe[nProbes++] = new Probe(hdr, (Pms2 *)p, ++Hcnt);
       }
     }
-printf("nProbes = %d\n", nProbes);
+
   buildIndices();
 
   currLR = -1; currPhys = 0;
@@ -336,6 +336,9 @@ bool ADS_DataFile::NextPMS2dRecord(P2d_rec *buff)
     memcpy((char *)buff, (char *)testRecP, sizeof(P2d_rec));
     return(true);
     }
+
+  if (indices[currPhys].index == -1)
+    return(false);
 
   if (++currLR >= P2dLRpPR)
     {
