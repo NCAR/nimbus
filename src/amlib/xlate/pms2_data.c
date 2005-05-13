@@ -103,7 +103,6 @@ void Add2DtoList(RAWTBL *varp)	/* Called by hdr_decode.c */
 
   ++piCnt;
 
-//printf("name=%s, cnt=%d\n", varp->name, varp->ProbeCount>>1);
 
   /* Set up ordering and ID's so we now which 2D records go with which
    * probe index
@@ -119,8 +118,6 @@ void Add2DtoList(RAWTBL *varp)	/* Called by hdr_decode.c */
 
     if ((probeIDorder[i] & 0x4800) == 0x4800)   /* HVPS */
       probeIDorder[i] |= hCnt++;
-
-//printf("%x\n", probeIDorder[i]);
     }
 
 }	/* END ADD2DTOLIST */
@@ -145,8 +142,8 @@ void xlTwodInit(RAWTBL *varp)
     startTime[probeCnt]	= ntohs(rec.hour)*3600+ntohs(rec.minute)*60+ntohs(rec.second);
     startMilliSec[probeCnt] = ntohs(rec.msec);
 
-//printf("  %x startTime = %d.%d\n", ntohs(rec.id), startTime[probeCnt], startMilliSec[probeCnt]);
-//printf("  %02d:%02d:%02d\n", ntohs(rec.hour), ntohs(rec.minute), ntohs(rec.second));
+printf("clTwodInit: %x startTime = %d.%d\n", ntohs(rec.id), startTime[probeCnt], startMilliSec[probeCnt]);
+printf("  %02d:%02d:%02d\n", ntohs(rec.hour), ntohs(rec.minute), ntohs(rec.second));
     }
   while (startTime[probeCnt] < 0 || startTime[probeCnt] > 86400);
 
@@ -155,7 +152,7 @@ void xlTwodInit(RAWTBL *varp)
   else
     sTwodInitH(varp);
 
-}	/* END INITTWOD */
+}	/* END XLTWODINIT */
 
 /* -------------------------------------------------------------------- */
 void xl2dDeadTime1(RAWTBL *varp, void *in, NR_TYPE *np)
@@ -205,6 +202,9 @@ void xlOneD(RAWTBL *varp, void *in, NR_TYPE *np)
   deadTime[probeCount][1] = 0.0;
   memset((void *)np, 0, NR_SIZE * varp->Length);
   memset((void *)twoD[probeCount], 0, NR_SIZE * BINS_64);
+
+  if (FeedBack == HIGH_RATE_FEEDBACK)	// Does not support high_rate
+    return;
 
 #ifdef SQL
   cur_rp = varp;
@@ -266,13 +266,13 @@ return;
       }
     else
       {
-      rejected = FALSE;
+      rejected = false;
 
       if (p->w > 121 ||
          (p->h < 24 && p->w > 6 * p->h) ||
          (p->h < 6 && p->w > 3 * p->h) ||
          (p->edge && (float)p->h / p->w < 0.2))
-        rejected = TRUE;
+        rejected = true;
 
       /* A2DC */
       if (!rejected && (!p->edge || (p->edge && p->w <= p->h * 2))) // Center-in
@@ -320,7 +320,7 @@ return;
 
     delete p;
     }
-//printf(" leaving\n");
+
 }	/* END XLONED */
 
 /* -------------------------------------------------------------------- */
@@ -338,6 +338,9 @@ void xlHVPS(RAWTBL *varp, void *in, NR_TYPE *np)
   deadTime[probeCount][0] = 0.0;
   deadTime[probeCount][1] = 0.0;
   memset((void *)np, 0, NR_SIZE * varp->Length);
+
+  if (FeedBack == HIGH_RATE_FEEDBACK)	// Hell no!
+    return;
 /*
 printf("------ %02d:%02d:%02d - %x -------------\n",
 	ntohs(((short *)in)[1]), ntohs(((short *)in)[2]),
@@ -388,13 +391,13 @@ printf("------ %02d:%02d:%02d - %x -------------\n",
       }
     else
       {
-      rejected = FALSE;
+      rejected = false;
 /*
       if (p->w > 121 ||
          (p->h < 24 && p->w > 6 * p->h) ||
          (p->h < 6 && p->w > 3 * p->h) ||
          (p->edge && (float)p->h / p->w < 0.2))
-        rejected = TRUE;
+        rejected = true;
 */
       /* MAX Y vs. Y */
       if (p->h > 0 && p->h < 4 * p->w && !p->edge)
@@ -406,8 +409,6 @@ printf("------ %02d:%02d:%02d - %x -------------\n",
 
     delete p;
     }
-
-//printf(" leaving %d %d\n", partCnt1, partCnt2);
 
 }       /* END XLHVPS */
 
@@ -424,7 +425,7 @@ static void AddMore2dData(Queue *probe, long thisTime, int probeCnt)
   while (probe->tail == NULL)
     {
     if (debug) printf("mo data\n");
-    if (Next2dRecord(&rec, probeCnt, probeIDorder[probeCnt]) == FALSE)
+    if (Next2dRecord(&rec, probeCnt, probeIDorder[probeCnt]) == false)
       {
       if (debug)
         printf("AddMore2dData: returning empty handed, no more data\n");
@@ -442,12 +443,12 @@ static void AddMore2dData(Queue *probe, long thisTime, int probeCnt)
 		Next2dRecord(&rec, probeCnt, probeIDorder[probeCnt]))
     {
     if (debug)
-      printf("  %x thisTime=%d, newRec=%d tail=%d, ol=%d\n", rec.id, thisTime, rec.hour*3600+rec.minute*60+rec.second, ((Particle *)probe->tail->datum)->time, rec.overld);
+      printf("  %x thisTime=%ld, newRec=%d tail=%ld, ol=%d\n", rec.id, thisTime, rec.hour*3600+rec.minute*60+rec.second, ((Particle *)probe->tail->datum)->time, rec.overld);
 
     Process(probe, &rec, probeCnt);
 
     if (debug)
-      printf("    %02d:%02d:%02d  tail=%d\n", rec.hour, rec.minute, rec.second, ((Particle *)probe->tail->datum)->time);
+      printf("    %02d:%02d:%02d  tail=%ld\n", rec.hour, rec.minute, rec.second, ((Particle *)probe->tail->datum)->time);
     }
 
 }	/* END ADDMORE2DDATA */
@@ -514,7 +515,7 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
   p = (ulong *)rec->data;
   partCnt = 0;
   tBarElapsedtime = 1024;
-  firstParticleAfter512 = TRUE;
+  firstParticleAfter512 = true;
 
   /* Locate each particle and characteristics (e.g. h & w, touched edge).
    */
@@ -541,7 +542,7 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
         cp->w = 0;
         cp->h = 0;
 
-        firstParticleAfter512 = FALSE;
+        firstParticleAfter512 = false;
         }
 
       cp = part[partCnt++] = new Particle;
@@ -551,7 +552,7 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
       cp->deltaTime = (NR_TYPE)cp->timeWord * frequency;
       cp->w = 1;	/* first slice of particle is in sync word */
       cp->h = 1;
-      cp->edge = FALSE;
+      cp->edge = false;
       cp->x1 = 0;
       cp->x2 = 0;
       cp->p = p;
@@ -796,7 +797,7 @@ void ProcessHVPS(Queue *probe, P2d_rec *rec, int probeCnt)
   p = (ushort *)rec->data;
   partCnt = 0;
   tBarElapsedtime = 0;
-  firstParticleAfter512 = TRUE;
+  firstParticleAfter512 = true;
 
 
   /* Locate each particle and characteristics (e.g. h & w, touched edge).
@@ -828,7 +829,7 @@ void ProcessHVPS(Queue *probe, P2d_rec *rec, int probeCnt)
         cp->w = 0;
         cp->h = 0;
 
-        firstParticleAfter512 = FALSE;
+        firstParticleAfter512 = false;
         }
 
       cp = part[partCnt++] = new Particle;
@@ -839,7 +840,7 @@ void ProcessHVPS(Queue *probe, P2d_rec *rec, int probeCnt)
       cp->deltaTime = (NR_TYPE)cp->timeWord * frequency;
       cp->w = 0;
       cp->h = 0;
-      cp->edge = FALSE;
+      cp->edge = false;
       cp->x1 = 0;
       cp->x2 = 0;
 

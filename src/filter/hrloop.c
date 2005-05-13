@@ -29,7 +29,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include "injectsd.h"
 
 #define NLRBUFFERS	5	/* Number of LR Buffers			*/
-#define NPSBUFFERS	50
+#define NPSBUFFERS	20
 
 #define LRINDEX		-(NLRBUFFERS-2)
 
@@ -52,7 +52,15 @@ int HighRateLoop(long starttime, long endtime)
   int			j = 0;
   long			nBytes;
   NR_TYPE		*ps_data, *hrt_data;
+
+  /* Basic circ-buff of records going into despiking and resampler.
+   */
   CircularBuffer	*LRCB;	/* Logical Record Circular Buffers	*/
+
+  /* Records coming out of resampler.  2 circ buffs, one for SampleRate
+   * Rate data and the other for HRT data.  PSCB will be FIR filtered
+   * into HSCB.
+   */
   CircularBuffer	*PSCB;	/* Phase Shifted Circular Buffers	*/
   CircularBuffer	*HSCB;	/* 25Hz resampled data (interped only).*/
 
@@ -63,7 +71,7 @@ int HighRateLoop(long starttime, long endtime)
   if (endtime != END_OF_TAPE)
     endtime += NPSBUFFERS-1;
 
-  nBytes = nFloats * NR_SIZE;
+  nBytes = nSRfloats * NR_SIZE;
   if ((LRCB = CreateCircularBuffer(NLRBUFFERS, nBytes)) == NULL ||
       (PSCB = CreateCircularBuffer(NPSBUFFERS, nBytes)) == NULL)
     {
@@ -71,7 +79,7 @@ int HighRateLoop(long starttime, long endtime)
     goto exit;
     }
 
-  nBytes = cfg.ProcessingRate() * NR_SIZE * (sdi.size() + raw.size());
+  nBytes = nHRfloats * NR_SIZE;
   if ((HSCB = CreateCircularBuffer(NPSBUFFERS, nBytes)) == NULL)
     {
     nBytes = ERR;

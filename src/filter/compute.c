@@ -9,13 +9,9 @@ ENTRY POINTS:	ComputeLowRateDerived()
 
 DESCRIPTION:	Compute, via AMLIB functions, all derived variables.
 
-INPUT:		NimbusRecord
-
-OUTPUT:		none
-
 REFERENCES:	AMLIB functions.
 
-REFERENCED BY:	lrloop.c/hrloop.c, winput.c
+REFERENCED BY:	lrloop.c, hrloop.c, rtloop.c, winput.c
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------

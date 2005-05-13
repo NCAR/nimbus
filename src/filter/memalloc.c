@@ -37,7 +37,6 @@ extern NR_TYPE	*SampledData, *AveragedData, *HighRateData;
 /* -------------------------------------------------------------------- */
 void AllocateDataArrays()
 {
-  int	nLRfloats, nSRfloats, nHRfloats;
   long	lrlen;
 
   get_lrlen(&lrlen);
@@ -49,27 +48,26 @@ void AllocateDataArrays()
       AVAPSrecord[i] = new char[256];
 
 
-  nFloats = 0;
   nLRfloats = nSRfloats = nHRfloats = 0;
 
   for (size_t i = 0; i < sdi.size(); ++i)
     {
     sdi[i]->LRstart = nLRfloats++;
-    sdi[i]->SRstart = nFloats;
+    sdi[i]->SRstart = nSRfloats;
     sdi[i]->HRstart = nHRfloats;
-    nFloats += sdi[i]->SampleRate;
+    nSRfloats += sdi[i]->SampleRate;
     nHRfloats += 25;
     }
 
-  int nVoltFloats = nFloats;
+  int nVoltFloats = nSRfloats;
 
   for (size_t i = 0; i < raw.size(); ++i)
     {
     raw[i]->LRstart = nLRfloats;
-    raw[i]->SRstart = nFloats;
+    raw[i]->SRstart = nSRfloats;
     raw[i]->HRstart = nHRfloats;
     nLRfloats += raw[i]->Length;
-    nFloats += (raw[i]->SampleRate * raw[i]->Length);
+    nSRfloats += (raw[i]->SampleRate * raw[i]->Length);
     nHRfloats += (25 * raw[i]->Length);
     }
 
@@ -90,7 +88,7 @@ void AllocateDataArrays()
   bits = new ushort[sdi.size()];
   volts = new NR_TYPE[sdi.size()];
   SRTvolts = new NR_TYPE[nVoltFloats];
-  SampledData = new NR_TYPE[nFloats];
+  SampledData = new NR_TYPE[nSRfloats];
   AveragedData = new NR_TYPE[nLRfloats];
 
   if (cfg.ProcessingRate() == Config::HighRate)

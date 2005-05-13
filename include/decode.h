@@ -98,7 +98,7 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 /*	External definitions
  */
 extern bool	LITTON51_present, AsyncFileEnabled, AVAPS;
-extern size_t	nFloats, LITTON51_start;
+extern size_t	nLRfloats, nSRfloats, nHRfloats, LITTON51_start;
 
 
 /*      Function Prototypes

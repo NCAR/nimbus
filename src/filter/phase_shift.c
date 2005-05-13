@@ -85,7 +85,7 @@ void PhaseShift(
 
   /* Copy current rec into srt output rec.
    */
-  memcpy((char *)output, (char *)this_rec, NR_SIZE * nFloats);
+  memcpy((char *)output, (char *)this_rec, NR_SIZE * nSRfloats);
 
   for (size_t i = 0; i < sdi.size(); ++i)
   {

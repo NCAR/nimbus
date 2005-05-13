@@ -66,7 +66,9 @@ NR_TYPE	*SampledData, *AveragedData, *HighRateData;
 
 float	HDRversion;
 
-size_t	nFloats;	/* Contains number of floats used in SampledData */
+size_t	nLRfloats,
+	nSRfloats,	// Contains number of floats used in SampledData.
+	nHRfloats;	// Contains number of floats used in HighRateData.
 size_t	LITTON51_start;		/* hdr_decode.c & adsIO.c		*/
 
 
