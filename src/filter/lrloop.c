@@ -144,17 +144,19 @@ exit:
 }	/* END LOWRATELOOP */
 
 /* -------------------------------------------------------------------- */
+static const int nConsecutive = 10;
+
 bool LocateFirstRecord(long starttime, long endtime, int nBuffers)
 {
-  int nBytes, cntr = 0;
+  int i, nBytes, cntr = 0;
   Hdr_blk *h = (Hdr_blk*)ADSrecord;
 
   if ((nBytes = FindFirstLogicalRecord(ADSrecord, starttime)) <= 0)
     return false;
 
-  /* Now make sure we have at least 7 contigous records.
+  /* Now make sure we have at least X contigous records.
    */
-  for (int i = 0, cntr = 0; i < nBuffers+3; ++i, ++cntr)
+  for (i = 0, cntr = 0; i < nConsecutive; ++i, ++cntr)
     {
     printf("%d:%d:%d\n", ntohs(h->hour), ntohs(h->minute), ntohs(h->second));
     if (CheckForTimeGap((Hdr_blk *)ADSrecord, true) == GAP_FOUND)
@@ -163,10 +165,10 @@ bool LocateFirstRecord(long starttime, long endtime, int nBuffers)
     nBytes = FindNextLogicalRecord(ADSrecord, endtime);
     }
 
-  cntr -= nBuffers-1;
+  cntr -= nConsecutive;
 
   nBytes = FindFirstLogicalRecord(ADSrecord, starttime);
-  for (int i = 0; i < cntr; ++i)
+  for (i = 0; i < cntr; ++i)
     nBytes = FindNextLogicalRecord(ADSrecord, endtime);
 
   ResetTimeGapper();
