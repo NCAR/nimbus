@@ -148,6 +148,14 @@ void cfsspInit(RAWTBL *varp)
   SampleRate[probeNum] = varp->SampleRate;
   sa[probeNum] = DOF * beamDiameter;
 
+  if (strncmp(varp->name, "AS100", 5) == 0 &&
+      strcmp(varp->SerialNumber, "FSSP128") == 0)
+  {
+    char msg[200];
+    sprintf(msg, "%s: Serial # %s, TAS will be altered as follows:\n  tas = -0.0466 + 0.95171 * tas;", varp->name, varp->SerialNumber);
+    LogMessage(msg);
+  }
+
 }	/* END CFSSPINIT */
 
 /* -------------------------------------------------------------------- */
@@ -197,6 +205,11 @@ void scfssp(DERTBL *varp)
 #define REFF
 
 #include "pms1d_cv"
+
+#undef PLWC
+#undef DBZ
+#undef TACT
+#undef REFF
 
 }	/* END SCFSSP */
 
