@@ -229,11 +229,6 @@ void Filter(	CircularBuffer *PSCB,	/* SampleRate data. */
    */
   for (size_t i = 0; i < raw.size(); ++i)
     {
-    /* We don't support filtering vector data.
-     */
-    if (raw[i]->Length > 1)
-      continue;
-
     ProcessVariable(PSCB, HSCB, raw[i], rawFilters[i]);
     }
 
