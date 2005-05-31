@@ -377,6 +377,19 @@ int DecodeHeader(char header_file[])
       add_raw_names(item_type);
       add_derived_names(item_type);
 
+      /* Force Garmin TRK & SPD to be depended upon, because of the way
+       * we create GGVEW & GGVNS.
+       */
+      if (strcmp(item_type, GPS_GARMIN_STR) == 0)
+        {
+        int indx;
+
+        if ((indx = SearchTable(raw, "GGTRK")) != ERR)
+          raw[indx]->DependedUpon = true;
+        if ((indx = SearchTable(raw, "GGSPD")) != ERR)
+          raw[indx]->DependedUpon = true;
+        }
+
       initGustCorrected(vn);
       ++GPScount;
       }
