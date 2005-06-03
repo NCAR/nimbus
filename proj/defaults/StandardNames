@@ -16,10 +16,10 @@
 9, longitude
 10, northward_wind
 11, relative_humidity
-11, surface_air_pressure
-12, true_air_speed
-13, upward_air_velocity
-14, wind_from_direction
-15, wind_speed
-16, water_vapor_pressure
-17, zenith_angle
+12, surface_air_pressure
+13, true_air_speed
+14, upward_air_velocity
+15, wind_from_direction
+16, wind_speed
+17, water_vapor_pressure
+18, zenith_angle
