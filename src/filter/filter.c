@@ -229,7 +229,12 @@ void Filter(	CircularBuffer *PSCB,	/* SampleRate data. */
    */
   for (size_t i = 0; i < raw.size(); ++i)
     {
-    ProcessVariable(PSCB, HSCB, raw[i], rawFilters[i]);
+    if ((raw[i]->ProbeType & PROBE_PMS1D) || (raw[i]->ProbeType & PROBE_PMS2D))
+      memcpy(	(char *)&HighRateData[raw[i]->HRstart],
+		(char *)&SampledData[raw[i]->SRstart],
+		NR_SIZE * raw[i]->SampleRate * raw[i]->Length);
+    else
+      ProcessVariable(PSCB, HSCB, raw[i], rawFilters[i]);
     }
 
 }	/* FILTER */

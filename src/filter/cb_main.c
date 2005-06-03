@@ -187,7 +187,15 @@ static void readHeader()
   XmUpdateDisplay(Shell001);
   LogMessage(SVNREVISION);
 
-  if (DecodeHeader(ADSfileName) == ERR) {
+  int rc;
+
+  if (cfg.isADS2())
+    rc = DecodeHeader(ADSfileName);
+  else
+  if (cfg.isADS3())
+    rc = DecodeHeader3(ADSfileName);
+
+  if (rc == ERR) {
     CancelSetup(NULL, NULL, NULL);
     return;
     }
@@ -585,10 +593,15 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
         switch (dp->OutputRate)
           {
           case Config::LowRate:
-            dp->OutputRate = Config::HighRate;
+            /* PMS Probes HRT is SampleRate.  Period.
+             */
+            if ((dp->ProbeType & PROBE_PMS2D) || (dp->ProbeType & PROBE_PMS1D))
+              dp->OutputRate = dp->Default_HR_OR;
+            else
+              dp->OutputRate = Config::HighRate;
             break;
 
-          case Config::HighRate:
+          default:
             dp->OutputRate = Config::LowRate;
             break;
           }
@@ -608,7 +621,8 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
         switch (rp->OutputRate)
           {
           case Config::LowRate:
-            if (rp->OutputRate != rp->SampleRate)
+            if (rp->OutputRate != rp->SampleRate ||
+               (rp->ProbeType & PROBE_PMS2D) || (rp->ProbeType & PROBE_PMS1D))
               rp->OutputRate = rp->SampleRate;
             else
             if (cfg.ProcessingRate() == Config::HighRate)
@@ -620,10 +634,11 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
             break;
 
           default:
-            if (cfg.ProcessingRate() == Config::HighRate)
-              rp->OutputRate = Config::HighRate;
-            else
+            if (cfg.ProcessingRate() != Config::HighRate ||
+               (rp->ProbeType & PROBE_PMS2D) || (rp->ProbeType & PROBE_PMS1D))
               rp->OutputRate = Config::LowRate;
+            else
+              rp->OutputRate = Config::HighRate;
           }
         }
 

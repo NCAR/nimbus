@@ -299,9 +299,8 @@ static void resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 
   if (vp->Modulo)	// Go back through and move to within bounds.
   {
-    for (size_t i = 0; i < vp->SampleRate; ++i)
-    {
-      if (srt_out)
+    if (srt_out)
+      for (size_t i = 0; i < vp->SampleRate; ++i)
       {
         if (srt_out[vp->SRstart+i] < vp->Modulo->value[0])
           srt_out[vp->SRstart+i] += vp->Modulo->diff;
@@ -309,14 +308,14 @@ static void resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
           srt_out[vp->SRstart+i] -= vp->Modulo->diff;
       }
 
-      if (hrt_out)
+    if (hrt_out)
+      for (size_t i = 0; i < (size_t)cfg.ProcessingRate(); ++i)
       {
         if (hrt_out[vp->SRstart+i] < vp->Modulo->value[0])
           hrt_out[vp->SRstart+i] += vp->Modulo->diff;
         if (hrt_out[vp->SRstart+i] > vp->Modulo->value[1])
           hrt_out[vp->SRstart+i] -= vp->Modulo->diff;
       }
-    }
   }
 }	/* END RESAMPLE */
 
