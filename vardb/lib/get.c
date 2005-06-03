@@ -207,4 +207,16 @@ int VarDB_GetCategory(const char vn[])
 
 }	/* END VARDB_GETCATEGORY */
 
+/* -------------------------------------------------------------------- */
+int VarDB_GetStandardName(const char vn[])
+{
+  int	indx;
+
+  if ((indx = VarDB_lookup(vn)) == ERR)
+    return(defaults.standard_name);
+
+  return(ntohl(((struct var_v2 *)VarDB)[indx].standard_name));
+
+}	/* END VARDB_GETCATEGORY */
+
 /* END GET.C */

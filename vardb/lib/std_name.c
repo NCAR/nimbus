@@ -162,7 +162,7 @@ char **VarDB_GetVariablesInStandardName(int catNum)
 
   return(p);
 
-}	/* END VARDB_GETVARIABLESINCATEGORY */
+}	/* END VARDB_GETVARIABLESINSTANDARDNAME */
 
 /* -------------------------------------------------------------------- */
 int VarDB_GetStandardNameList(char *list[])
@@ -185,7 +185,7 @@ int VarDB_GetStandardNameList(char *list[])
 
   return(i);
 
-}	/* END VARDB_GETCATEGORYLIST */
+}	/* END VARDB_GETSTANDARDNAMELIST */
 
 /* -------------------------------------------------------------------- */
 int VarDB_GetStandardNameNumber(const char catagoryName[])
@@ -207,6 +207,6 @@ int VarDB_GetStandardNameNumber(const char catagoryName[])
 
   return(0);	/* Category 0 is "None"	*/
 
-}	/* END VARDB_GETCATEGORYNUMBER */
+}	/* END VARDB_GETSTANDARDNAMENUMBER */
 
 /* END STD_NAME.C */

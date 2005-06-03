@@ -22,6 +22,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <netinet/in.h> // htonl macros.
 
@@ -52,9 +53,13 @@ main(int argc, char *argv[])
 
   for (i = 0; i < VarDB_nRecords; ++i)
     {
-    printf("%-12.12s %-40.40s %-15.15s\n", ((struct var_v2 *)VarDB)[i].Name,
-					   ((struct var_v2 *)VarDB)[i].Title,
-    VarDB_GetCategoryName(((struct var_v2 *)VarDB)[i].Name));
+if (VarDB_GetStandardName(((struct var_v2 *)VarDB)[i].Name) != 0)
+    printf("%-12.12s %-40.40s %-15.15s %d %s\n",
+		((struct var_v2 *)VarDB)[i].Name,
+		((struct var_v2 *)VarDB)[i].Title,
+		VarDB_GetCategoryName(((struct var_v2 *)VarDB)[i].Name),
+		VarDB_GetStandardName(((struct var_v2 *)VarDB)[i].Name),
+		VarDB_GetStandardNameName(((struct var_v2 *)VarDB)[i].Name));
     }
 
   ReleaseVarDB();

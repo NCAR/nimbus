@@ -62,7 +62,7 @@ main(int argc, char *argv[])
                ((struct var_v2 *)VarDB)[i].Units, ((struct var_v2 *)VarDB)[i].Title);
      }
      else {
-        printf("%-12.12s %-6.6s %-50.50s", ((struct var_v2 *)VarDB)[i].Name,
+        printf("%-12.12s %-12.12s %-50.50s", ((struct var_v2 *)VarDB)[i].Name,
                ((struct var_v2 *)VarDB)[i].Units, ((struct var_v2 *)VarDB)[i].Title);
      }
 
