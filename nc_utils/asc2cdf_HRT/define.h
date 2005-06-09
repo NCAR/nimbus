@@ -17,13 +17,14 @@
 #define NASA_LANGLEY	2
 
 extern char	buffer[];
-extern int	ncid, varid[], nVariables, timeOffsetID;
+extern int	ncid, varid[], nVariables, timeOffsetID, timeVarID, baseTimeID;
 extern float	scale[], offset[], missingVals[];
 extern char	*time_vars[];
 extern const char	*noTitle, *noUnits;
 extern const int	rateOne;
 extern time_t	BaseTime;
 extern int	BaseDataRate, dataRate;
+extern struct tm	StartFlight;
 
 extern int	SkipNlines;
 
@@ -31,3 +32,4 @@ void CreateNASAamesNetCDF(FILE *fp);
 void CreateNASAlangNetCDF(FILE *fp);
 void CreatePlainNetCDF(FILE *fp);
 void SetNASABaseTime(void), SetPlainBaseTime(void);
+void AddTimeVariables(int dims[]);

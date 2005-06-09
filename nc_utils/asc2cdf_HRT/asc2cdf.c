@@ -22,24 +22,31 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-7
 -------------------------------------------------------------------------
 */
 
+#define _XOPEN_SOURCE
 #include "define.h"
 #include "constants.h"
+
+#include <sys/types.h>
+#include <sys/stat.h>
 
 char	buffer[BUFFSIZE];
 
 int	ncid;
 FILE	*inFP;
-int	timeOffsetID, varid[MAX_VARS], nVariables, nRecords;
+int	baseTimeID, timeOffsetID, timeVarID, varid[MAX_VARS],
+	nVariables, nRecords;
 time_t	BaseTime = 0;
 float	scale[MAX_VARS], offset[MAX_VARS], missingVals[MAX_VARS];
 char	*time_vars[] = {"HOUR", "MINUTE", "SECOND"};
+struct tm StartFlight;
+
 
 /* Command line option flags.
  */
 bool	fileType = PLAIN_FILE, sexSinceMidnight = FALSE;
 int	SkipNlines = 1;
 
-int		BaseDataRate = 1, dataRate = 25;
+int		BaseDataRate = 1, dataRate = 10;
 const int	rateOne = 1;
 
 const char	*noTitle = "No Title";
@@ -162,6 +169,7 @@ int main(int argc, char *argv[])
 
     dataValue = (float)(nRecords * BaseDataRate);
     nc_put_var1_float(ncid, timeOffsetID, &nRecords, &dataValue);
+    nc_put_var1_float(ncid, timeVarID, &nRecords, &dataValue);
     dataValue = (float)hour;
     nc_put_var1_float(ncid, varid[0], &nRecords, &dataValue);
     dataValue = (float)minute;
@@ -169,18 +177,20 @@ int main(int argc, char *argv[])
     dataValue = (float)second;
     nc_put_var1_float(ncid, varid[2], &nRecords, &dataValue);
 
-    for (hz = 0; hz < 25; ++hz)
+    for (hz = 0; hz < dataRate; ++hz)
       {
       for (i = 0; i < nVariables; ++i)
         {
-        p = strtok(NULL, ", \t\n");
+        p = strtok(NULL, ", \t\r\n");
         dataValue = atof(p);
 
         if (fileType != PLAIN_FILE)
+          {
           if (dataValue == missingVals[i])
             dataValue = MISSING_VALUE;
           else
             dataValue = dataValue * scale[i] + offset[i];
+          }
 
         index[0] = nRecords; index[1] = hz;
         nc_put_var1_float(ncid, varid[i+3], index, &dataValue);
@@ -202,7 +212,7 @@ int main(int argc, char *argv[])
 
   sprintf(buffer, "%02d:%02d:%02d-%02d:%02d:%02d",
           startHour, startMinute, startSecond, hour, minute, second);
-
+printf("TimeInterval = %s\n", buffer);
   nc_put_att_text(ncid, NC_GLOBAL, "TimeInterval", strlen(buffer)+1, buffer);
   nc_close(ncid);
   chmod(argv[2], 0666);
@@ -212,6 +222,32 @@ int main(int argc, char *argv[])
   return(0);
 
 }	/* END MAIN */
+
+/* -------------------------------------------------------------------- */
+void AddTimeVariables(int dims[])
+{
+  nc_def_var(ncid, "base_time", NC_INT, 0, 0, &baseTimeID);
+  strcpy(buffer, "seconds since 1970-01-01 00:00:00 +0000");
+  nc_put_att_text(ncid, baseTimeID, "units", strlen(buffer)+1, buffer);
+  strcpy(buffer, "Start time of data recording.");
+  nc_put_att_text(ncid, baseTimeID, "long_name", strlen(buffer)+1, buffer);
+
+  nc_def_var(ncid, "Time", NC_INT, 1, dims, &timeVarID);
+  strcpy(buffer, "time of measurement");
+  nc_put_att_text(ncid, timeVarID, "long_name", strlen(buffer)+1, buffer);
+  strcpy(buffer, "time");
+  nc_put_att_text(ncid, timeVarID, "standard_name", strlen(buffer)+1, buffer);
+
+  nc_def_var(ncid, "time_offset", NC_FLOAT, 1, dims, &timeOffsetID);
+  strcpy(buffer, "Seconds since base_time.");
+  nc_put_att_text(ncid, timeOffsetID, "long_name", strlen(buffer)+1, buffer);
+
+
+  strftime(buffer, 256, "seconds since %F %T +0000", &StartFlight);
+  nc_put_att_text(ncid, timeVarID, "units", strlen(buffer)+1, buffer);
+  nc_put_att_text(ncid, timeOffsetID, "units", strlen(buffer)+1, buffer);
+
+}
 
 /* -------------------------------------------------------------------- */
 static void WriteMissingData(int currSecond, int lastSecond)
@@ -269,7 +305,9 @@ static int ProcessArgv(int argc, char **argv)
     switch (argv[i][1])
       {
       case 'b':
-        BaseTime = atoi(argv[++i]);
+        strptime(argv[++i], "%F %T +0000", &StartFlight);
+        BaseTime = timegm(&StartFlight);
+//        BaseTime = mktime(&StartFlight) - timezone;
         break;
 
       case 'm':

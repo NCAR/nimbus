@@ -23,8 +23,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-7
 #include "constants.h"
 #include "vardb.h"
 
-static int	baseTimeID;
-
+extern int dataRate;
 
 /* -------------------------------------------------------------------- */
 void SetPlainBaseTime()
@@ -69,7 +68,7 @@ void CreatePlainNetCDF(FILE *fp)
 
   t = time(0);
   tm = *gmtime(&t);
-  strftime(buffer, 128, "%h %d %R GMT %Y", &tm);
+  strftime(buffer, 128, "%F %T %z", &tm);
   nc_put_att_text(ncid, NC_GLOBAL, "DateConvertedFromASCII", 
                   strlen(buffer)+1, buffer);
   }
@@ -87,17 +86,7 @@ void CreatePlainNetCDF(FILE *fp)
   ndims = 1;
   dims[0] = TimeDim;
 
-
-  /* Time Variables, here to keep Gary/WINDS happy.
-   */
-  nc_def_var(ncid, "base_time", NC_INT, 0, 0, &baseTimeID);
-  strcpy(buffer, "Seconds since Jan 1, 1970.");
-  nc_put_att_text(ncid, baseTimeID, "long_name", strlen(buffer)+1, buffer);
-
-  nc_def_var(ncid, "time_offset", NC_FLOAT, 1, dims, &timeOffsetID);
-  strcpy(buffer, "Seconds since base_time.");
-  nc_put_att_text(ncid, timeOffsetID, "long_name", strlen(buffer)+1, buffer);
-
+  AddTimeVariables(dims);
 
   /* Create Time variables.
    */
@@ -110,7 +99,7 @@ void CreatePlainNetCDF(FILE *fp)
     p = varDB ? VarDB_GetTitle(time_vars[i]) : (char *)noTitle;
     nc_put_att_text(ncid, varid[i], "long_name", strlen(p)+1, p);
     nc_put_att_int(ncid, varid[i], "OutputRate", NC_INT, 1, &rateOne);
-    nc_put_att_float(ncid, varid[i], "MissingValue", NC_FLOAT, 1, &missing_val);
+    nc_put_att_float(ncid, varid[i], "_FillValue", NC_FLOAT, 1, &missing_val);
     }
 
 
@@ -141,7 +130,9 @@ void CreatePlainNetCDF(FILE *fp)
 
   do
     {
-    printf("var create = %d\n", nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[nVariables]));
+    printf("Creating variable [%s]\n", p);
+    printf(" nc_def_var = %d\n",
+	nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[nVariables]));
 
     p1 = varDB ? VarDB_GetUnits(p) : (char *)noUnits;
     nc_put_att_text(ncid, varid[nVariables], "units", strlen(p1)+1, p1);
@@ -150,11 +141,11 @@ printf("%s %s\n", p, VarDB_GetUnits(p));
     nc_put_att_text(ncid, varid[nVariables], "long_name", strlen(p1)+1, p1);
 printf("%s %s\n", p, p1);
     nc_put_att_int(ncid,varid[nVariables], "OutputRate", NC_INT, 1, &dataRate);
-    nc_put_att_float(ncid,varid[nVariables],"MissingValue",NC_FLOAT,1,&missing_val);
+    nc_put_att_float(ncid,varid[nVariables],"_FillValue",NC_FLOAT,1,&missing_val);
 
     ++nVariables;
     }
-  while ((p = strtok(NULL, " \t\n")) );
+  while ((p = strtok(NULL, " \t\r\n")) );
 
   nVariables -= 3;
 

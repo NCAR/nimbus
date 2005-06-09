@@ -23,9 +23,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-7
 #include "constants.h"
 #include "vardb.h"
 
-static int		baseTimeID;
-static struct tm	StartFlight;
-
 char *GetMemory();
 
 /* -------------------------------------------------------------------- */
@@ -82,7 +79,7 @@ void CreateNASANetCDF(FILE *fp)
 
   t = time(0);
   tm = *gmtime(&t);
-  strftime(buffer, 128, "%h %d %R GMT %Y", &tm);
+  strftime(buffer, 128, "%F %T %z", &tm);
   nc_put_att_text(ncid, NC_GLOBAL, "DateConvertedFromASCII", 
                   strlen(buffer)+1, buffer);
   }
@@ -148,18 +145,7 @@ void CreateNASANetCDF(FILE *fp)
   ndims = 1;
   dims[0] = TimeDim;
 
-
-  /* Time Variables.
-   */
-  nc_def_var(ncid, "base_time", NC_INT, 0, 0, &baseTimeID);
-  strcpy(buffer, "Seconds since Jan 1, 1970.");
-  nc_put_att_text(ncid, baseTimeID, "long_name", strlen(buffer)+1, buffer);
-  StartFlight.tm_mon -= 1;
-
-  nc_def_var(ncid, "time_offset", NC_FLOAT, 1, dims, &timeOffsetID);
-  strcpy(buffer, "Seconds since base_time.");
-  nc_put_att_text(ncid, timeOffsetID, "long_name", strlen(buffer)+1, buffer);
-
+  AddTimeVariables(dims);
 
   /* Create Time variables.
    */
