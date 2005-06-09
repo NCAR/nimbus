@@ -38,7 +38,8 @@ static NR_TYPE	*prev_prev_rec, *prev_rec,
 		*this_rec,
 		*next_rec, *next_next_rec;
 
-static void	resample(var_base *vp, int lag, NR_TYPE *, NR_TYPE *);
+static void	resample(var_base *vp, int lag, NR_TYPE *, NR_TYPE *),
+  shift_vector(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out);
 
 /* -------------------------------------------------------------------- */
 void AddVariableToSDIlagList(SDITBL *varp)
@@ -131,7 +132,7 @@ void PhaseShift(
       LogMessage(buffer);
       }
 
-    /* Only resample data, if we have a log or some missing values'.
+    /* Only resample data, if we have a lag or some 'missing values'.
      */
     if (lag == 0 && noMissingData)
       srt_out = 0;
@@ -139,12 +140,18 @@ void PhaseShift(
       srt_out = output;
 
     if (srt_out || houtput)
-      resample(rp, lag, srt_out, houtput);
+    {
+      if (rp->Length > 1)
+        shift_vector(rp, lag, srt_out, houtput);
+      else
+        resample(rp, lag, srt_out, houtput);
+    }
   }
 }	/* END PHASESHIFT */
 
 /* -------------------------------------------------------------------- */
-static void resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
+static void
+resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 {
   size_t	nPoints, goodPoints = 0, T = 0;
   size_t	gap_size = 1000 / vp->SampleRate;
@@ -318,5 +325,67 @@ static void resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
       }
   }
 }	/* END RESAMPLE */
+ 
+/* -------------------------------------------------------------------- */
+/*
+ * Only shift vectors, no interpolation.  Lag will be truncated to mod
+ * samplerate.
+ */
+static void
+shift_vector(RAWTBL *rp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
+{
+  if (lag == 0)
+    return;
+
+  int sampleInterval = 1000 / rp->SampleRate;
+  int nBytesPerVector = rp->Length;
+
+  /* Truncate lag.
+   */
+  int nIntervalsToMove = lag / sampleInterval;
+  int bytesPerVector = rp->Length * NR_SIZE;
+
+  if (lag < 0)
+  {
+    // SampleRate buffer.
+    memcpy(&srt_out[rp->SRstart],
+	&this_rec[rp->SRstart + (nIntervalsToMove * rp->Length)],
+	(rp->SampleRate - nIntervalsToMove) * bytesPerVector);
+
+    memcpy(&srt_out[rp->SRstart + (rp->Length * (rp->SampleRate - nIntervalsToMove))],
+	&next_rec[rp->SRstart],
+	nIntervalsToMove * bytesPerVector);
+
+    // HighRate buffer.
+    memcpy(&hrt_out[rp->HRstart],
+	&this_rec[rp->HRstart + (nIntervalsToMove * rp->Length)],
+	(rp->SampleRate - nIntervalsToMove) * bytesPerVector);
+
+    memcpy(&hrt_out[rp->HRstart + (rp->Length * (rp->SampleRate - nIntervalsToMove))],
+	&next_rec[rp->HRstart],
+	nIntervalsToMove * bytesPerVector);
+  }
+  else
+  {
+    // SampleRate buffer.
+    memcpy(&srt_out[rp->SRstart + (nIntervalsToMove * rp->Length)],
+	&this_rec[rp->SRstart],
+	(rp->SampleRate - nIntervalsToMove) * bytesPerVector);
+
+    memcpy(&srt_out[rp->SRstart],
+	&prev_rec[rp->SRstart + (rp->Length * (rp->SampleRate - nIntervalsToMove))],
+	nIntervalsToMove * bytesPerVector);
+
+    // HighRate buffer.
+    memcpy(&srt_out[rp->SRstart + (nIntervalsToMove * rp->Length)],
+	&this_rec[rp->SRstart],
+	(rp->SampleRate - nIntervalsToMove) * bytesPerVector);
+
+    memcpy(&srt_out[rp->SRstart],
+	&prev_rec[rp->SRstart + (rp->Length * (rp->SampleRate - nIntervalsToMove))],
+	nIntervalsToMove * bytesPerVector);
+  }
+
+}
 
 /* END PHASE_SHIFT.C */
