@@ -16,27 +16,20 @@ DESCRIPTION:	A merge may proceed IF:
 		vars that will get missing value if time intervals don't
 		match 100%.
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	
-
-REFERENCED BY:	
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-7
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-05
 -------------------------------------------------------------------------
 */
 
-#include <stdio.h>
-#include <string.h>
+#include <algorithm>
+#include <cstdio>
+#include <cstring>
 #include <netcdf.h>
 
 #include "constants.h"
 
 #define NAMELEN		16
-#define MAX_IN_VARS	500
-#define MAX_OUT_VARS	2000
+#define MAX_IN_VARS	800
+#define MAX_OUT_VARS	1000
 
 char	buffer[2048];
 char	VarList[MAX_IN_VARS][NAMELEN];
@@ -45,10 +38,11 @@ void	*inPtrs[MAX_IN_VARS], *outPtrs[MAX_OUT_VARS];
 int	infd1, infd2, VarCnt = 0;
 long	bt1, bt2, et1, et2;
 float	DataRecord[MAX_IN_VARS*25];
-bool	ExactTimeSegments = TRUE;
+bool	ExactTimeSegments = true;
 
 void	CopyVariablesDefinitions(), MoveData();
-char	*strupr();
+
+extern "C" char	*strupr(char s[]);
 
 
 /* -------------------------------------------------------------------- */
@@ -151,7 +145,7 @@ int main(int argc, char *argv[])
   if (bt1 != bt2 || et1 != et2)
     {
     printf("Time segments do not match exactly, this has potential to produce inconsistent results.\n");
-    ExactTimeSegments = FALSE;
+    ExactTimeSegments = false;
     }
 
 
@@ -197,7 +191,8 @@ void CopyVariablesDefinitions()
     /* Non-valid variables.
     */
     if (strcmp(name, "HOUR") == 0 || strcmp(name, "MINUTE") == 0 ||
-        strcmp(name, "SECOND") == 0 || strcmp(name, "time_offset") == 0)
+        strcmp(name, "SECOND") == 0 || strcmp(name, "time_offset") == 0 ||
+        strcmp(name, "Time") == 0)
       continue;
 
 
@@ -266,7 +261,7 @@ void MoveData()
   int	inRec, outRec, nRecords;
 
   inRec = outRec = 0;
-  nRecords = MIN(et1-bt1, et2-bt2);
+  nRecords = std::min(et1-bt1, et2-bt2);
 
   if (bt1 < bt2)
     outRec = bt2 - bt1;
