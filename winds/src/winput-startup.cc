@@ -16,6 +16,7 @@ winput-startup.cc
 #include <shmem.h>
 #include <config.h>
 #include <wproto.h>
+#include <nimbus.h>
 #include <vardb.h>
 
 char *DataDirectory, OutputFileName[1024];
@@ -560,7 +561,7 @@ display mode
 /*
 turn on QC
 */
-    QCenabled = TRUE;
+    cfg.SetQCenabled(true);
     (void)fprintf(stderr,"WINPUT QC enabled.\n"); 
     break;
    case 'p': 

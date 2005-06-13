@@ -10,7 +10,7 @@
 #
 # default flags, assuming development mode (debug on)
 #
-NIMBUS=		/code/chris/nimbus
+NIMBUS=		/code/chris/nimbus_resampler
 OPENWINHOME=	/usr/openwin
 LOCAL_INCL=     $(JLOCAL)/include/
 INC= 		$(WINDS)/include/
@@ -403,8 +403,8 @@ NIMBUS.O = $(NOBJ)globals.o $(NOBJ)hdr_decode.o $(NOBJ)rd_lag.o $(NOBJ)popen.o \
 	$(NOBJ)depend.o $(NOBJ)order.o $(NOBJ)rec_decode.o $(NOBJ)compute.o \
 	$(NOBJ)rd_defs.o $(NOBJ)amlibfn.o $(NOBJ)pms1d_rt.o $(NOBJ)memalloc.o \
 	$(NOBJ)textfile.o $(NOBJ)search.o $(NOBJ)rd_mod.o $(NOBJ)average.o \
-	$(NOBJ)rd_sum.o $(NOBJ)rd_ddor.o $(NOBJ)injectsd.o \
-	$(NOBJ)calco.o $(NOBJ)rd_spike.o $(NOBJ)probe.o
+	$(NOBJ)rd_sum.o $(NOBJ)rd_ddor.o $(NOBJ)injectsd.o $(NOBJ)log.o \
+	$(NOBJ)calco.o $(NOBJ)rd_spike.o $(NOBJ)probe.o $(NOBJ)config.o
 
 WINPUT.O = $(OBJ)winputops.o $(OBJ)netcdf.o $(OBJ)netconfig.o \
 	   $(OBJ)shmem.o $(OBJ)ipc.o $(OBJ)socket.o $(OBJ)config_mgmt.o \
@@ -413,8 +413,7 @@ WINPUT.O = $(OBJ)winputops.o $(OBJ)netcdf.o $(OBJ)netconfig.o \
 
 LIBEXEC = $(NIMBUS)/lib/
 
-LINKLIBS = -lstd -luser -lxlate -lval -lnetcdf -lAircraft -lhdr_api -lm -lVarDB -lraf++ -lraf -lpms
-
+LINKLIBS = -lstd -luser -lxlate -lval -lnetcdf -lAircraft -lhdr_api -lVarDB -lraf++ -lraf -lpms -lgsl -lgslcblas -lm
 
 winput: $(EXEC)winput
 

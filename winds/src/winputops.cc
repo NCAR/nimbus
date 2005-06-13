@@ -87,8 +87,8 @@ char	*progName = "WINPUT:";
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
-  Mode = REALTIME;
-  QCenabled = FALSE;
+  cfg.SetProcessingMode(Config::RealTime);
+  cfg.SetQCenabled(false);
 
   DoWinputInitStuff();
   DoWinputStartupStuff(argv, argc); 
