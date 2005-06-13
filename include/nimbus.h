@@ -207,22 +207,26 @@ int	AccessProjectFile(char filename[], char mode[]),
 class Config
 {
 public:
+    enum ADSVersion { ADS_2, ADS_3 };
     enum ProcessingMode { PostProcessing, RealTime };
     enum interpolationType { Linear=0, CubicSpline, AkimaSpline };
     enum processingRate { SampleRate=0, LowRate=1, HighRate=25 };
 
     Config();
 
-    bool Interactive()	{ return _interactive; }
-    bool Despiking()	{ return _despiking; }
-    bool TimeShifting()	{ return _timeShifting; }
-    bool QCenabled()	{ return _qcEnabled; }
+    bool Interactive()		{ return _interactive; }
+    bool Despiking()		{ return _despiking; }
+    bool TimeShifting()		{ return _timeShifting; }
+    bool QCenabled()		{ return _qcEnabled; }
     bool ProcessingMode()	{ return _mode; }
     bool ProductionRun()	{ return _productionRun; }
     bool AsyncFileEnabled()	{ return _asyncFileEnabled; }
     bool LoadProductionSetup()	{ return _loadProductionSetup; }
     bool HoneyWellCleanup()	{ return _honeywellCleanup; }
     bool InertialShift()	{ return _inertialShift; }
+
+    bool isADS2()		{ return _adsVersion == ADS_2; }
+    bool isADS3()		{ return _adsVersion == ADS_3; }
 
     processingRate ProcessingRate()	{ return _processingRate; }
     interpolationType InterpolationType()	{ return _interpType; }
@@ -241,6 +245,9 @@ public:
     void SetProcessingRate(processingRate pr)	{ _processingRate = pr; }
     void SetInterpolationType(interpolationType it)	{ _interpType = it; }
 
+    void SetADSVersion(ADSVersion nv)		{ _adsVersion = nv; }
+
+
 private:
     bool _interactive;
     bool _productionRun;
@@ -253,6 +260,7 @@ private:
     bool _honeywellCleanup;
     bool _inertialShift;
 
+    ADSVersion _adsVersion;
     processingRate _processingRate;
     interpolationType _interpType;
 };
