@@ -14,7 +14,7 @@ LOCAL_INC = ${JLOCAL}/include/
 
 # Linux
 #
-INCLUDES = -I$(NINC) -I$(LOCAL_INC) -I/usr/X11R6/include
+INCLUDES = -I$(NINC) -I$(LOCAL_INC) -I/usr/X11R6/include -I/code/chris/hiaper/ads3/dsm/class -I/net/opt_lnx/ads3/x86/include
 LIB_DIRS = -L/usr/X11R6/lib -L${JLOCAL}/lib -L/usr/lib/pgsql -L../../lib
 CLIBS    = -lstd -luser -lxlate -lAircraft -lhdr_api -lpms -lVarDB -lraf -lncaru -lnetcdf -lraf++ -lXm -lXt -lX11 -lpq -lgsl -lgslcblas -lm
 
@@ -24,7 +24,7 @@ COFLAGS	= -Wall -g -O2 -c $(INCLUDES)
 
 INPUT.O = $(NOBJ)adsIO.o $(NOBJ)amlibfn.o $(NOBJ)async.o $(NOBJ)average.o\
 	$(NOBJ)calco.o $(NOBJ)cb_defs.o $(NOBJ)cb_edit.o $(NOBJ)cb_main.o\
-	$(NOBJ)cb_pause.o $(NOBJ)config_win.o $(NOBJ)circbuff.o\
+	$(NOBJ)cb_pause.o $(NOBJ)config_win.o $(NOBJ)circbuff.o $(NOBJ)config.o\
 	$(NOBJ)compute.o $(NOBJ)depend.o $(NOBJ)despike.o $(NOBJ)error.o\
 	$(NOBJ)filter.o $(NOBJ)globals.o $(NOBJ)hdr_decode.o $(NOBJ)hrloop.o\
 	$(NOBJ)init.o $(NOBJ)interp.o $(NOBJ)logfile.o $(NOBJ)lrloop.o\
@@ -33,8 +33,8 @@ INPUT.O = $(NOBJ)adsIO.o $(NOBJ)amlibfn.o $(NOBJ)async.o $(NOBJ)average.o\
 	$(NOBJ)rd_defs.o $(NOBJ)rd_ddor.o $(NOBJ)rd_mod.o $(NOBJ)rd_lag.o\
 	$(NOBJ)rd_spike.o $(NOBJ)rd_sum.o $(NOBJ)rtloop.o $(NOBJ)rec_decode.o\
 	$(NOBJ)search.o $(NOBJ)setup.o $(NOBJ)textfile.o $(NOBJ)log.o\
-	$(NOBJ)timeseg.o $(NOBJ)Xwin.o $(NOBJ)dq.o $(NOBJ)UdpSocket.o $(NOBJ)psql.o\
-	$(NOBJ)injectsd.o
+	$(NOBJ)timeseg.o $(NOBJ)Xwin.o $(NOBJ)dq.o $(NOBJ)UdpSocket.o\
+	$(NOBJ)psql.o $(NOBJ)injectsd.o $(NOBJ)rtloop3.o
 
 
 # ------------------------------------------------------------------------
@@ -78,6 +78,10 @@ $(NOBJ)globals.o: globals.c $(GLOBALS.H)
 INIT.H = $(NINC)nimbus.h $(NINC)decode.h $(NINC)gui.h
 $(NOBJ)init.o: init.c $(INIT.H)
 	${CC} $(COFLAGS) $(DEFINES) init.c -o $(NOBJ)init.o
+
+CONFIG.H = $(NINC)nimbus.h
+$(NOBJ)config.o: config.cc $(INIT.H)
+	${CC} $(COFLAGS) $(DEFINES) config.cc -o $(NOBJ)config.o
 
 SPIKE.H = $(NINC)nimbus.h $(NINC)decode.h
 $(NOBJ)rd_spike.o: rd_spike.c $(SPIKE.H)
@@ -130,6 +134,10 @@ $(NOBJ)psql.o: psql.cc $(PSQL.H)
 RTLOOP.H = $(NINC)nimbus.h $(NINC)decode.h ${NINC}gui.h
 $(NOBJ)rtloop.o: rtloop.c $(RTLOOP.H)
 	${CC} $(COFLAGS) $(DEFINES) rtloop.c -o $(NOBJ)rtloop.o
+
+RTLOOP.H = $(NINC)nimbus.h $(NINC)decode.h ${NINC}gui.h
+$(NOBJ)rtloop3.o: rtloop3.c $(RTLOOP.H)
+	${CC} $(COFLAGS) $(DEFINES) rtloop3.c -o $(NOBJ)rtloop3.o
 
 LRLOOP.H = $(NINC)nimbus.h $(NINC)decode.h $(NINC)circbuff.h $(NINC)gui.h $(NINC)injectsd.h
 $(NOBJ)lrloop.o: lrloop.c $(LRLOOP.H)
