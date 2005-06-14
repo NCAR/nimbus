@@ -43,6 +43,8 @@ static char	*fileName;
 static int	nCategories = 0;
 static CATEGORY	*Category[MAX_CATEGORIES];
 
+extern long VarDB_RecLength, VarDB_nRecords;
+
 char	*GetMemory();
 
 /* -------------------------------------------------------------------- */
@@ -153,7 +155,7 @@ char **VarDB_GetVariablesInCategory(int catNum)
   cnt = 0;
   p = (char **)GetMemory(sizeof(char *));
 
-  for (i = 0; i < VarDB_Hdr.nRecords; ++i)
+  for (i = 0; i < VarDB_nRecords; ++i)
     if (ntohl(((struct var_v2 *)VarDB)[i].Category) == catNum)
       {
       p = realloc(p, sizeof(char *) * (cnt+2));

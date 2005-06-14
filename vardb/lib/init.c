@@ -56,7 +56,9 @@ int InitializeVarDB(const char fileName[])
   if (p)
   {
     sprintf(masterFileName, "%s/defaults/VarDB", p);
-    master_VarDB = readFile(masterFileName, &master_VarDB_Hdr);
+// We are not ready for a master file.  lookup returns a master, but then
+// the index always goes into the regular not master VarDB list.  Needs work.
+//    master_VarDB = readFile(masterFileName, &master_VarDB_Hdr);
   }
 
   SetCategoryFileName(fileName);
@@ -78,6 +80,9 @@ void *readFile(const char fileName[], struct vardb_hdr *vdbHdr)
   int	rc;
   void	*varDB;
 
+
+  VarDB_nRecords = 0;
+  VarDB_RecLength = 0;
 
   if ((fp = fopen(fileName, "rb")) == NULL)
   {
@@ -171,13 +176,13 @@ int VarDB_lookup(const char vn[])
   for (i = 0; i < VarDB_nRecords; ++i)
     if (strcmp(((struct var_v2 *)VarDB)[i].Name, tname) == 0)
       return(i);
-
+/*
   masterNrecords = ntohl(master_VarDB_Hdr.nRecords);
 
   for (i = 0; i < masterNrecords; ++i)
     if (strcmp(((struct var_v2 *)master_VarDB)[i].Name, tname) == 0)
       return(i);
-
+*/
   return(ERR);
 
 }	/* END VARDB_LOOKUP */

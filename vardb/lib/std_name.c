@@ -39,6 +39,8 @@ static char	*fileName;
 static int	nStdNames = 0;
 static STD_NAME	*StdName[MAX_STD_NAMES];
 
+extern long VarDB_RecLength, VarDB_nRecords;
+
 char	*GetMemory();
 
 /* -------------------------------------------------------------------- */
@@ -149,7 +151,7 @@ char **VarDB_GetVariablesInStandardName(int catNum)
   cnt = 0;
   p = (char **)GetMemory(sizeof(char *));
 
-  for (i = 0; i < VarDB_Hdr.nRecords; ++i)
+  for (i = 0; i < VarDB_nRecords; ++i)
     if (ntohl(((struct var_v2 *)VarDB)[i].standard_name) == catNum)
       {
       p = realloc(p, sizeof(char *) * (cnt+2));
