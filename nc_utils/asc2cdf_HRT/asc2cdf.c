@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
         nc_put_var1_float(ncid, varid[i+3], index, &dataValue);
         }
 
-      if (hz != 24)
+      if (hz != dataRate-1)
         if (fgets(buffer, BUFFSIZE, inFP) == NULL)
           break;
 
