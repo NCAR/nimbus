@@ -24,7 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetName(char vn[], char **result)
+int GetName(const char vn[], char **result)
 {
   int	indx;
 
@@ -73,7 +73,7 @@ int GetName(char vn[], char **result)
   {	/* Clean up bug in xbuild that allowed spaces to be stored as part
   * of the variable name.
   */
-  register char	*p, *t;
+  char	*p, *t;
 
   for (p = t = *result; *p; ++p)
     if (*p != ' ')

@@ -7,7 +7,7 @@ ENTRY POINTS:	GetChannelGain()
 
 DESCRIPTION:	
 
-INPUT:		char *var, char **result
+INPUT:		char *var, long **result
 
 OUTPUT:		OK/ERR
 
@@ -30,7 +30,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetChannelOffset(char vn[], long *result)
+int GetChannelOffset(const char vn[], long *result)
 {
   int	indx;
 
@@ -52,7 +52,7 @@ int GetChannelOffset(char vn[], long *result)
 }	/* END GETCHANNELOFFSET */
 
 /* -------------------------------------------------------------------- */
-int GetChannelGain(char vn[], long *result)
+int GetChannelGain(const char vn[], long *result)
 {
   int	indx;
 

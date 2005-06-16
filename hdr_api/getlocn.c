@@ -30,7 +30,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetLocation(char vn[], char **result)
+int GetLocation(const char vn[], char **result)
 {
   int	indx;
 
@@ -101,7 +101,7 @@ int GetLocation(char vn[], char **result)
 }	/* END GETLOCATION */
 
 /* -------------------------------------------------------------------- */
-int GetDSMlocation(char vn[], char **result)
+int GetDSMlocation(const char vn[], char **result)
 {
   int	indx;
 

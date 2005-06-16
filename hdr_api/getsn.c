@@ -6,7 +6,7 @@ ENTRY POINTS:	GetSerialNumber()
 
 DESCRIPTION:	
 
-INPUT:		char *var, long *result
+INPUT:		char *var, char *result
 
 OUTPUT:		OK/ERR
 
@@ -29,7 +29,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetSerialNumber(char vn[], char **result)
+int GetSerialNumber(const char vn[], char **result)
 {
   int	indx;
 

@@ -24,7 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetCalCoeff(char vn[], float **result)
+int GetCalCoeff(const char vn[], float **result)
 {
   int	i, j, indx;
   long  value;

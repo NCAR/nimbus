@@ -26,7 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetReadAddr1(char vn[], long *result)
+int GetReadAddr1(const char vn[], long *result)
 {
   int	indx;
 
@@ -40,7 +40,7 @@ int GetReadAddr1(char vn[], long *result)
 }	/* END GETREADADDR1 */
 
 /* -------------------------------------------------------------------- */
-int GetReadAddr2(char vn[], long *result)
+int GetReadAddr2(const char vn[], long *result)
 {
   int	indx;
 
@@ -54,7 +54,7 @@ int GetReadAddr2(char vn[], long *result)
 }	/* END GETREADADDR2 */
 
 /* -------------------------------------------------------------------- */
-int GetWriteAddr(char vn[], long *result)
+int GetWriteAddr(const char vn[], long *result)
 {
   int	indx;
 

@@ -24,7 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetItemLength(char vn[], long *result)
+int GetItemLength(const char vn[], long *result)
 {
   int	indx;
 

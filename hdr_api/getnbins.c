@@ -24,7 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 
 
 /* -------------------------------------------------------------------- */
-int GetNumberBins(char vn[], long *result)
+int GetNumberBins(const char vn[], long *result)
 {
   int	indx;
 

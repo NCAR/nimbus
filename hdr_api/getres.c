@@ -24,7 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetResolution(char vn[], short *result)
+int GetResolution(const char vn[], short *result)
 {
   int	indx;
 

@@ -47,7 +47,7 @@ static	int set_var_name(char *p, int i, int type);
 
 
 /* -------------------------------------------------------------------- */
-int InitFlightHeader(char name[], int status)
+int InitFlightHeader(const char name[], int status)
 {
   int	fd, rc, nbytes;
   bool	tape = FALSE;

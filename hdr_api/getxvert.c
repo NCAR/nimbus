@@ -25,7 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetConversionFactor(char vn[], float *result)
+int GetConversionFactor(const char vn[], float *result)
 {
   int	indx;
   long	value;
@@ -42,7 +42,7 @@ int GetConversionFactor(char vn[], float *result)
 }	/* END GETCONVERSIONFACTOR */
 
 /* -------------------------------------------------------------------- */
-int GetConversionOffset(char vn[], long *result)
+int GetConversionOffset(const char vn[], long *result)
 {
   int	indx;
 

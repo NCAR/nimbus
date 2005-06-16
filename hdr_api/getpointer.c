@@ -24,7 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-void *GetStructPointer(char vn[])
+void *GetStructPointer(const char vn[])
 {
   int	indx;
 

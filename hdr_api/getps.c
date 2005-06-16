@@ -24,7 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetParticleSpacingStart(char vn[], long *result)
+int GetParticleSpacingStart(const char vn[], long *result)
 {
   int	indx;
 
@@ -38,7 +38,7 @@ int GetParticleSpacingStart(char vn[], long *result)
 }	/* END GETPARTSPACESTART */
 
 /* -------------------------------------------------------------------- */
-int GetParticleSpacingLength(char vn[], long *result)
+int GetParticleSpacingLength(const char vn[], long *result)
 {
   int	indx;
 
@@ -52,7 +52,7 @@ int GetParticleSpacingLength(char vn[], long *result)
 }	/* END GETPARTSPACELENGTH */
 
 /* -------------------------------------------------------------------- */
-int GetParticleSpacingGate(char vn[], float *result)
+int GetParticleSpacingGate(const char vn[], float *result)
 {
   int	indx;
   long  value;

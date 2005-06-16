@@ -32,7 +32,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetBaudRate(char vn[], long *result)
+int GetBaudRate(const char vn[], long *result)
 {
   int	indx;
 
@@ -46,7 +46,7 @@ int GetBaudRate(char vn[], long *result)
 }	/* END GETBAUDRATE */
 
 /* -------------------------------------------------------------------- */
-int GetPortNumber(char vn[], long *result)
+int GetPortNumber(const char vn[], long *result)
 {
   int	indx;
 
@@ -60,7 +60,7 @@ int GetPortNumber(char vn[], long *result)
 }	/* END GETPORTNUMBER */
 
 /* -------------------------------------------------------------------- */
-int GetParity(char vn[], long *result)
+int GetParity(const char vn[], long *result)
 {
   int	indx;
 
@@ -74,7 +74,7 @@ int GetParity(char vn[], long *result)
 }	/* END GETPARITY */
 
 /* -------------------------------------------------------------------- */
-int GetFlowControl(char vn[], long *result)
+int GetFlowControl(const char vn[], long *result)
 {
   int	indx;
 
@@ -88,7 +88,7 @@ int GetFlowControl(char vn[], long *result)
 }	/* END GETFLOWCONTROL */
 
 /* -------------------------------------------------------------------- */
-int GetNumberDataBits(char vn[], long *result)
+int GetNumberDataBits(const char vn[], long *result)
 {
   int	indx;
 
@@ -102,7 +102,7 @@ int GetNumberDataBits(char vn[], long *result)
 }	/* END GETDATABITS */
 
 /* -------------------------------------------------------------------- */
-int GetNumberStopBits(char vn[], float *result)
+int GetNumberStopBits(const char vn[], float *result)
 {
   int	indx;
   long  value;
@@ -119,7 +119,7 @@ int GetNumberStopBits(char vn[], float *result)
 }	/* END GETNUMBERSTOPBITS */
 
 /* -------------------------------------------------------------------- */
-int GetDataType(char vn[], long *result)
+int GetDataType(const char vn[], long *result)
 {
   int	indx;
 
@@ -133,7 +133,7 @@ int GetDataType(char vn[], long *result)
 }	/* END GETDATATYPE */
 
 /* -------------------------------------------------------------------- */
-int GetTerminationString(char vn[], char **result)
+int GetTerminationString(const char vn[], char **result)
 {
   int	indx;
 
@@ -147,7 +147,7 @@ int GetTerminationString(char vn[], char **result)
 }	/* END GETTERMINATIONSTRING */
 
 /* -------------------------------------------------------------------- */
-int GetAlignmentString(char vn[], char **result)
+int GetAlignmentString(const char vn[], char **result)
 {
   int	indx;
 

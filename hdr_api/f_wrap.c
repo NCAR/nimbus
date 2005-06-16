@@ -26,9 +26,7 @@ char	*spaces = "            ";
 
 
 /* -------------------------------------------------------------------- */
-initflightheader_(filename, action)
-char	*filename;
-int	action;
+initflightheader_(char filename[], int action)
 {
 	return(InitFlightHeader(filename, action));
 

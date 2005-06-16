@@ -23,7 +23,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #define VALID_VARS	ALL
 
 /* -------------------------------------------------------------------- */
-int GetItemType(char vn[], char **result)
+int GetItemType(const char vn[], char **result)
 {
   int	indx;
 

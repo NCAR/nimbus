@@ -24,7 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetHouseKeepingNames(char vn[], char **result)
+int GetHouseKeepingNames(const char vn[], char **result)
 {
   int	indx;
 

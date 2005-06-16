@@ -27,7 +27,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetLRLength(char vn[], long *result)
+int GetLRLength(const char vn[], long *result)
 {
   int	indx;
 
@@ -55,7 +55,7 @@ int GetLRLength(char vn[], long *result)
 }	/* END GETLRLENGTH */
 
 /* -------------------------------------------------------------------- */
-int GetLRPPR(char vn[], long *result)
+int GetLRPPR(const char vn[], long *result)
 {
   int	indx;
 
