@@ -25,7 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 */
 
 #include <stdio.h>
-#include "queue.h"
+#include "raf_queue.h"
 
 
 /* -------------------------------------------------------------------- */

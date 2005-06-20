@@ -33,8 +33,8 @@ lib${LIBNAME}.a: ${OBJS}
 	ar cr lib${LIBNAME}.a ${OBJS}
 
 install: all
-	install -Cp --mode=664 lib${LIBNAME}.a ${LIBDIR}
-	install -Cp --mode=444 ${HEADER} ${JLOCAL}/include
+	install -p --mode=664 lib${LIBNAME}.a ${LIBDIR}
+	install -p --mode=444 ${HEADER} ${JLOCAL}/include
 
 clean:
 	rm -f *.o *.a *.ln

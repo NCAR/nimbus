@@ -32,8 +32,8 @@ all: ${OBJS}
 install: all
 	test -d ${RELEASE} || mkdir ${RELEASE}
 	test -d ${I2D} || mkdir ${I2D}
-	install -Cp --mode=664 lib${LIBNAME}.a ${RELEASE}
-	install -Cp --mode=444 *.h ${I2D}
+	install -p --mode=664 lib${LIBNAME}.a ${RELEASE}
+	install -p --mode=444 *.h ${I2D}
 
 
 # IO classes.

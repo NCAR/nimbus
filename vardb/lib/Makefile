@@ -37,9 +37,9 @@ lib${LIBNAME}_p.a: ${OBJS}
 	cd profiled; ar cr ../lib${LIBNAME}_p.a ${OBJS}
 
 install: all
-	install -Cp --mode=664 lib${LIBNAME}.a ${LIBDIR}
-	install -Cp --mode=444 ${HEADER} ${INCLUDEDIR}
-	install -Cp --mode=664 vardb.3 ${MANDIR}
+	install -p --mode=664 lib${LIBNAME}.a ${LIBDIR}
+	install -p --mode=444 ${HEADER} ${INCLUDEDIR}
+	install -p --mode=664 vardb.3 ${MANDIR}
 
 clean:
 	rm -f *.o *.a *.ln

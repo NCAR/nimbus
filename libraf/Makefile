@@ -44,8 +44,8 @@ lib${LIBNAME}.a: ${OBJS}
 	ar cr lib${LIBNAME}.a ${OBJS}
 
 install: all
-	install -Cp --mode=664 lib${LIBNAME}.a ${DESTDIR}/${LIBDIR}
-	install -Cp --mode=444 *.h ${DESTDIR}/${INCLUDEDIR}
+	install -p --mode=664 lib${LIBNAME}.a ${DESTDIR}/${LIBDIR}
+	install -p --mode=444 *.h ${DESTDIR}/${INCLUDEDIR}
 
 include:
 	install -c -m 0444 ${LIBNAME}.h ${DESTDIR}/${INCLUDEDIR}
