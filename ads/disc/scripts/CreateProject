@@ -1,16 +1,16 @@
 #!/bin/csh -x
 
-set PROJ_DIR = ${LOCAL}/proj
-set DEFS_DIR = ${LOCAL}/proj/defaults
+set PROJ_DIR = ${JLOCAL}/proj
+set DEFS_DIR = ${JLOCAL}/proj/defaults
 
 #
 # Setup Production Directory.
 #
 
 mkdir ${PROJ_DIR}/$1
-ln -s ${PROJ_DIR}/$1 ${LOCAL}/dev/proj
 
 /bin/cp ${DEFS_DIR}/Categories ${PROJ_DIR}/$1
+/bin/cp ${DEFS_DIR}/StandardNames ${PROJ_DIR}/$1
 /bin/cp ${DEFS_DIR}/Defaults ${PROJ_DIR}/$1
 /bin/cp ${DEFS_DIR}/DependTable ${PROJ_DIR}/$1
 /bin/cp ${DEFS_DIR}/Despike ${PROJ_DIR}/$1
