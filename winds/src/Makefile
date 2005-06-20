@@ -38,7 +38,7 @@ INCLUDE=        $(XVIEW_INCL) $(WINDS_INCL) $(SHARE_INCL)
 #
 # library paths
 #
-LIB_PATH=       -L/jnet/local/lib -L/usr/openwin/lib -L/usr/X11R6/lib
+LIB_PATH=       -L${JLOCAL}/lib -L/usr/openwin/lib -L/usr/X11R6/lib
 #
 # libraries
 #
