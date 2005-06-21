@@ -31,6 +31,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-9
 #include "define.h"
 #include "decode.h"
 
+extern NR_TYPE *SRTvolts;
+
 /* -------------------------------------------------------------------- */
 void DecodeRecord()
 {
@@ -56,7 +58,7 @@ void DecodeRecord()
           {
           SampledData[pos] = bits[pos] =
 			ntohl(*((unsigned long *)&lrp[j * sp->ADSoffset]));
-          volts[pos] = (bits[pos] - sp->convertOffset) * sp->convertFactor;
+          SRTvolts[pos] = (bits[pos] - sp->convertOffset) * sp->convertFactor;
           }
         }
       else
@@ -64,7 +66,7 @@ void DecodeRecord()
         for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
           {
           SampledData[pos] = bits[pos] = ntohs(lrp[j * sp->ADSoffset]);
-          volts[pos] = (bits[pos] - sp->convertOffset) * sp->convertFactor;
+          SRTvolts[pos] = (bits[pos] - sp->convertOffset) * sp->convertFactor;
           }
         }
       }
@@ -76,7 +78,7 @@ void DecodeRecord()
           {
           SampledData[pos] = bits[pos] =
 			(long)ntohl(*((long *)&lrp[j * sp->ADSoffset]));
-          volts[pos] = (bits[pos] - sp->convertOffset) * sp->convertFactor;
+          SRTvolts[pos] = (bits[pos] - sp->convertOffset) * sp->convertFactor;
           }
         }
       else
@@ -85,7 +87,7 @@ void DecodeRecord()
           {
           SampledData[pos] = bits[pos] =
 			(short)ntohs((ushort)lrp[j * sp->ADSoffset]);
-          volts[pos] = (bits[pos] - sp->convertOffset) * sp->convertFactor;
+          SRTvolts[pos] = (bits[pos] - sp->convertOffset) * sp->convertFactor;
           }
         }
       }

@@ -460,12 +460,12 @@ var_base::var_base(const char s[])
   SampleRate = 0;
   Length = 1;
 
-  OutputRate = LOW_RATE;
+  OutputRate = Config::LowRate;
 
   Dirty = false;
   Output = true;
   DependedUpon = false;
-  Broadcast = Mode == REALTIME ? true : false;
+  Broadcast = Mode == Config::RealTime ? true : false;
 
   DataQuality   = 0;
 

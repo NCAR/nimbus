@@ -26,8 +26,9 @@ void	Initialize(), process_args(char **argv), AllocateDataArrays(),
 	RealTimeLoop();
 
 bool	RawData = true;
-int     Mode    = REALTIME;
+int     Mode    = Config::RealTime;
 
+extern int timeIndex[];
 
 /* --------------------------------------------------------------------- */
 int main(int argc, char *argv[])
@@ -37,6 +38,10 @@ int main(int argc, char *argv[])
 
   DecodeHeader();
   AllocateDataArrays();
+  timeIndex[0] = raw[SearchTable(raw, "HOUR")]->SRstart;
+  timeIndex[1] = raw[SearchTable(raw, "MINUTE")]->SRstart;
+  timeIndex[2] = raw[SearchTable(raw, "SECOND")]->SRstart;
+
   printf("Header decoded\n"); fflush(stdout);
 
   QApplication app(argc, argv);

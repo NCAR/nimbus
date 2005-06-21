@@ -21,7 +21,8 @@ AUTHOR:		websterc@ncar.ucar.edu
 /* --------------------------------------------------------------------- */
 void Initialize()
 {
-  ProductionRun = FlashMode = Grid = Frozen = false;
+  cfg.SetProductionRun(false);
+  FlashMode = Grid = Frozen = false;
   NumberSeconds = 10;
 
 }	/* END INITIALIZE */

@@ -10,6 +10,8 @@ DESCRIPTION:	extern.h should look just like this.
 
 #include "define.h"
 
+const NR_TYPE MISSING_VALUE = -32767;
+
 bool	Grid,				/* Overlay grid on graph?	*/
 	Frozen,
 	ProductionRun,
@@ -24,6 +26,9 @@ std::vector<RAWTBL *> raw;	/* Alphabeticly sorted pointers	*/
 size_t	nVariables;
 VARTBL	Variable[MAXDATASETS];
 
+Config cfg;
+
+int     timeIndex[3];
 
 /* Vars related to data sets	*/
 size_t	NumberDataSets, NumberSeconds, NumberElements[MAXDATASETS],
@@ -31,7 +36,7 @@ size_t	NumberDataSets, NumberSeconds, NumberElements[MAXDATASETS],
 
 int	Aircraft;
 
-size_t	nFloats;
+size_t	nSRfloats;
 
 /* Data record pointers
  */

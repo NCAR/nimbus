@@ -28,33 +28,35 @@ REFERENCED BY:	cb_main.c
 
 extern ADS_rtFile       *file;
 
+extern NR_TYPE *SRTvolts;
 
 /* -------------------------------------------------------------------- */
 void AllocateDataArrays()
 {
   ADSrecord = new char[file->hdr->lrLength()];
 
-  nFloats = 0;
+  nSRfloats = 0;
 
   for (size_t i = 0; i < sdi.size(); ++i)
     {
-    sdi[i]->SRstart = nFloats;
-    nFloats += sdi[i]->SampleRate;
+    sdi[i]->SRstart = nSRfloats;
+    nSRfloats += sdi[i]->SampleRate;
     }
 
   for (size_t i = 0; i < raw.size(); ++i)
     {
-    raw[i]->SRstart = nFloats;
-    nFloats += (raw[i]->SampleRate * raw[i]->Length);
+    raw[i]->SRstart = nSRfloats;
+    nSRfloats += (raw[i]->SampleRate * raw[i]->Length);
     }
 
 
-  bits = new float[nFloats];
-  volts = new float[nFloats];
-  SampledData = new float[nFloats];
+  bits = new float[nSRfloats];
+  volts = new float[sdi.size()];
+  SRTvolts = new float[nSRfloats];
+  SampledData = new float[nSRfloats];
 
-  memset((void *)bits, 0, sizeof(long) * nFloats);
-  memset((void *)volts, 0, sizeof(NR_TYPE) * nFloats);
+  memset((void *)bits, 0, sizeof(long) * nSRfloats);
+  memset((void *)SRTvolts, 0, sizeof(NR_TYPE) * nSRfloats);
 
 }	/* END ALLOCATEDATAARRAYS */
 
@@ -64,6 +66,7 @@ void FreeDataArrays()
   delete [] ADSrecord;
   delete [] SampledData;
   delete [] bits;
+  delete [] SRTvolts;
   delete [] volts;
 
 }	/* END FREEDATAARRAYS */
