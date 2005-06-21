@@ -20,6 +20,7 @@ winput-startup.cc
 #include <vardb.h>
 
 char *DataDirectory, OutputFileName[1024];
+int  timeIndex[3];
 char header_filename[MAX_FLNM_LNGTH];   /* path name for header file */
 int Debug;              /* debug print variable 0=no,1=answers,2=int results */
 int refill_shmem;
