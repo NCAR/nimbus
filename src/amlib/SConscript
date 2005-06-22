@@ -1,0 +1,21 @@
+# -*- python -*-
+
+Import('env')
+
+# No RCS/SCCS checkout.
+env.SourceCode(['std', 'user', 'xlate'], None)
+
+##
+##  Build xlate library
+##
+SConscript('xlate/SConscript')
+
+##
+##  Build std derived calculations
+##
+SConscript('std/SConscript')
+
+##
+##  Build user derived calculations
+##
+SConscript('user/SConscript')
