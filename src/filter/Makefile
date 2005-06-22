@@ -11,10 +11,12 @@ WINC	= $(WINDS)/include/
 NOBJ	= obj/
 LOCAL_INC = ${JLOCAL}/include/
 
+ADS3_INC = -I/opt/ads3/x86/include
+
 
 # Linux
 #
-INCLUDES = -I$(NINC) -I$(LOCAL_INC) -I/usr/X11R6/include -I/code/chris/hiaper/ads3/dsm/class -I/net/opt_lnx/ads3/x86/include
+INCLUDES = -I$(NINC) -I$(LOCAL_INC) -I/usr/X11R6/include
 LIB_DIRS = -L/usr/X11R6/lib -L${JLOCAL}/lib -L/usr/lib/pgsql -L../../lib
 CLIBS    = -lstd -luser -lxlate -lAircraft -lhdr_api -lpms -lVarDB -lraf -lncaru -lnetcdf -lraf++ -lXm -lXt -lX11 -lpq -lgsl -lgslcblas -lm
 
@@ -23,18 +25,18 @@ COFLAGS	= -Wall -g -O2 -c $(INCLUDES)
 
 
 INPUT.O = $(NOBJ)adsIO.o $(NOBJ)amlibfn.o $(NOBJ)async.o $(NOBJ)average.o\
-	$(NOBJ)calco.o $(NOBJ)cb_defs.o $(NOBJ)cb_edit.o $(NOBJ)cb_main.o\
-	$(NOBJ)cb_pause.o $(NOBJ)config_win.o $(NOBJ)circbuff.o $(NOBJ)config.o\
-	$(NOBJ)compute.o $(NOBJ)depend.o $(NOBJ)despike.o $(NOBJ)error.o\
+	$(NOBJ)calco.o $(NOBJ)cb_defs.o $(NOBJ)cb_edit.o $(NOBJ)cb_pause.o\
+	$(NOBJ)circbuff.o $(NOBJ)compute.o $(NOBJ)config.o $(NOBJ)config_win.o\
+	$(NOBJ)depend.o $(NOBJ)despike.o $(NOBJ)dq.o $(NOBJ)error.o\
 	$(NOBJ)filter.o $(NOBJ)globals.o $(NOBJ)hdr_decode.o $(NOBJ)hrloop.o\
-	$(NOBJ)init.o $(NOBJ)interp.o $(NOBJ)logfile.o $(NOBJ)lrloop.o\
-	$(NOBJ)memalloc.o $(NOBJ)netcdf.o $(NOBJ)nimbus.o $(NOBJ)order.o\
-	$(NOBJ)phase_shift.o $(NOBJ)pms1d.o $(NOBJ)popen.o $(NOBJ)probe.o\
-	$(NOBJ)rd_defs.o $(NOBJ)rd_ddor.o $(NOBJ)rd_mod.o $(NOBJ)rd_lag.o\
-	$(NOBJ)rd_spike.o $(NOBJ)rd_sum.o $(NOBJ)rtloop.o $(NOBJ)rec_decode.o\
-	$(NOBJ)search.o $(NOBJ)setup.o $(NOBJ)textfile.o $(NOBJ)log.o\
-	$(NOBJ)timeseg.o $(NOBJ)Xwin.o $(NOBJ)dq.o $(NOBJ)UdpSocket.o\
-	$(NOBJ)psql.o $(NOBJ)injectsd.o $(NOBJ)rtloop3.o
+	$(NOBJ)init.o $(NOBJ)injectsd.o $(NOBJ)interp.o $(NOBJ)log.o\
+	$(NOBJ)logfile.o $(NOBJ)lrloop.o $(NOBJ)memalloc.o $(NOBJ)netcdf.o\
+	$(NOBJ)order.o $(NOBJ)phase_shift.o $(NOBJ)pms1d.o\
+	$(NOBJ)popen.o $(NOBJ)probe.o $(NOBJ)psql.o $(NOBJ)rd_defs.o\
+	$(NOBJ)rd_ddor.o $(NOBJ)rd_mod.o $(NOBJ)rd_lag.o $(NOBJ)rd_spike.o\
+	$(NOBJ)rd_sum.o $(NOBJ)rtloop.o $(NOBJ)rec_decode.o $(NOBJ)search.o\
+	$(NOBJ)setup.o $(NOBJ)textfile.o $(NOBJ)timeseg.o $(NOBJ)Xwin.o\
+	$(NOBJ)UdpSocket.o $(NOBJ)rtloop3.o $(NOBJ)cb_main.o $(NOBJ)nimbus.o
 
 
 # ------------------------------------------------------------------------
@@ -47,7 +49,7 @@ include:
 	cd ${NINC}; make
 
 amlib:
-	cd ${NSRC}/amlib; make
+	cd ${NSRC}/amlib; scons
 
 ncaru:
 	cd ${NSRC}/ncaru/lib; make
@@ -59,6 +61,11 @@ install:	nimbus
 
 clean:
 	cd ${NINC}; make clean
+	rm -f core* nimbus $(NOBJ)*.o LOCK.make mk.tmp
+
+distclean:
+	cd ${NINC}; make clean
+	cd ${NSRC}/amlib; scons -c
 	rm -f core* nimbus $(NOBJ)*.o LOCK.make mk.tmp
 
 $(NINC)nimbus.h: $(LOCAL_INC)constants.h
@@ -136,16 +143,16 @@ $(NOBJ)rtloop.o: rtloop.c $(RTLOOP.H)
 	${CC} $(COFLAGS) $(DEFINES) rtloop.c -o $(NOBJ)rtloop.o
 
 RTLOOP.H = $(NINC)nimbus.h $(NINC)decode.h ${NINC}gui.h
-$(NOBJ)rtloop3.o: rtloop3.c $(RTLOOP.H)
-	${CC} $(COFLAGS) $(DEFINES) rtloop3.c -o $(NOBJ)rtloop3.o
+$(NOBJ)rtloop3.o: rtloop3.cc $(RTLOOP.H)
+	${CC} $(COFLAGS) $(DEFINES) ${ADS3_INC} rtloop3.cc -o $(NOBJ)rtloop3.o
 
 LRLOOP.H = $(NINC)nimbus.h $(NINC)decode.h $(NINC)circbuff.h $(NINC)gui.h $(NINC)injectsd.h
 $(NOBJ)lrloop.o: lrloop.c $(LRLOOP.H)
 	${CC} $(COFLAGS) $(DEFINES) lrloop.c -o $(NOBJ)lrloop.o
 
 INJECTSD.H = $(NINC)nimbus.h $(NINC)decode.h $(NINC)gui.h 
-$(NOBJ)injectsd.o: injectsd.cpp $(INJECTSD.H)
-	$(CC) $(COFLAGS) $(DEFINES) injectsd.cpp -o $(NOBJ)injectsd.o
+$(NOBJ)injectsd.o: injectsd.cc $(INJECTSD.H)
+	$(CC) $(COFLAGS) $(DEFINES) injectsd.cc -o $(NOBJ)injectsd.o
 
 HRLOOP.H = $(NINC)nimbus.h $(NINC)decode.h $(NINC)circbuff.h $(NINC)gui.h $(NINC)injectsd.h
 $(NOBJ)hrloop.o: hrloop.c $(HRLOOP.H)
@@ -166,7 +173,7 @@ $(NOBJ)phase_shift.o: phase_shift.c $(PS.H)
 HD.H =	$(NINC)nimbus.h $(NINC)decode.h $(LOCAL_INC)ctape.h $(NINC)amlib.h \
 	$(LOCAL_INC)raf.h
 $(NOBJ)hdr_decode.o: hdr_decode.c $(HD.H)
-	${CC} $(COFLAGS) $(DEFINES) hdr_decode.c -o $(NOBJ)hdr_decode.o
+	${CC} $(COFLAGS) $(DEFINES) ${ADS3_INC} hdr_decode.c -o $(NOBJ)hdr_decode.o
 
 ORDER.H = $(NINC)nimbus.h $(NINC)decode.h
 $(NOBJ)order.o: order.c $(ORDER.H)
