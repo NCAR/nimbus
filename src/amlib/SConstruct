@@ -1,0 +1,39 @@
+# -*- python -*-
+
+SConsignFile()
+
+import os
+env = Environment(platform = 'posix',ENV= os.environ)
+
+# No RCS/SCCS checkout.
+env.SourceCode(['.', 'std', 'user', 'xlate'], None)
+
+env['CC'] = Split("""
+    g++
+""")
+
+env['CPPPATH'] = Split("""
+    #/../../include /jnet/local/include
+""")
+
+env['CCFLAGS'] = Split("""
+    -Wall -g -O2
+""")
+
+Export('env')
+
+
+##
+##  Build datastore
+##
+SConscript('xlate/SConscript')
+
+##
+##  Build plotlib
+##
+SConscript('std/SConscript')
+
+##
+##  Build plotlib
+##
+SConscript('user/SConscript')
