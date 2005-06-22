@@ -1,0 +1,84 @@
+# -*- python -*-
+
+Import('env')
+
+# No RCS/SCCS checkout.
+env.SourceCode('.', None)
+
+env.Append(CPPPATH=['/opt/ads3/x86/include'])
+env.Append(CPPPATH=['/opt/ads3/arm/include'])
+
+env.Append(LIBPATH=['#/../lib'])
+env.Append(LIBPATH=['$JLOCAL/lib'])
+env.Append(LIBPATH=['/usr/X11R6/lib'])
+env.Append(LIBPATH=['/opt/ads3/x86/lib'])
+
+env['LIBS'] = Split("""
+  std user xlate
+  Aircraft hdr_api pms VarDB raf raf++
+  ncaru netcdf
+  Xm Xt X11
+  pq
+  gsl gslcblas m
+  Dsm isa XmlRpc xerces-c
+""")
+
+sources = Split("""
+UdpSocket.cc
+Xwin.c
+adsIO.c
+amlibfn.c
+async.c
+average.c
+calco.c
+cb_defs.c
+cb_edit.c
+cb_main.c
+cb_pause.c
+circbuff.c
+compute.c
+config.cc
+config_win.c
+depend.c
+despike.c
+dq.c
+error.c
+filter.c
+globals.c
+hdr_decode.c
+hrloop.c
+init.c
+injectsd.cc
+interp.c
+log.c
+logfile.c
+lrloop.c
+memalloc.c
+netcdf.c
+nimbus.c
+order.c
+phase_shift.c
+pms1d.c
+popen.c
+probe.c
+psql.cc
+rd_ddor.c
+rd_defs.c
+rd_lag.c
+rd_mod.c
+rd_spike.c
+rd_sum.c
+rec_decode.c
+rtloop.c
+rtloop3.cc
+search.c
+setup.c
+textfile.c
+timeseg.c
+""")
+
+nimbus = env.Program('nimbus', sources)
+
+env.Install('$JLOCAL/bin', nimbus)
+
+env.Default(nimbus)

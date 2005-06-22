@@ -92,4 +92,4 @@ xmach2.c
 """)
 
 std = env.StaticLibrary('std' , sources)
-env.Default(env.Install('#/../../lib/', std))
+env.Default(env.Install('#/../lib/', std))
