@@ -2,25 +2,23 @@
 
 Import('env')
 
-# No RCS/SCCS checkout.
-env.SourceCode('.', None)
-
-env.Append(CPPPATH=['/opt/ads3/x86/include'])
-env.Append(CPPPATH=['/opt/ads3/arm/include'])
-
 env.Append(LIBPATH=['#/../lib'])
 env.Append(LIBPATH=['$JLOCAL/lib'])
 env.Append(LIBPATH=['/usr/X11R6/lib'])
-env.Append(LIBPATH=['/opt/ads3/x86/lib'])
 
+# In order:
+#  AMLIB (Atmospheric Mathmatical Library) calculations.
+#  raf 'building blocks'.
+#  File access stuff.
+#  X windows/GUI.
+#  General math libraries.
+#  ADS3 real-time libraries.  Moved lower to 'if env.realtime'
 env['LIBS'] = Split("""
   std user xlate
   Aircraft hdr_api pms VarDB raf raf++
-  ncaru netcdf
+  ncaru netcdf pq
   Xm Xt X11
-  pq
   gsl gslcblas m
-  Dsm isa XmlRpc xerces-c
 """)
 
 sources = Split("""
@@ -70,12 +68,21 @@ rd_spike.c
 rd_sum.c
 rec_decode.c
 rtloop.c
-rtloop3.cc
 search.c
 setup.c
 textfile.c
 timeseg.c
 """)
+
+if int(env.realtime):
+  env.Append(CCFLAGS=['-DRT'])
+  env.Append(CPPPATH=['/opt/ads3/x86/include'])
+  env.Append(CPPPATH=['/opt/ads3/arm/include'])
+  sources = [sources, 'rtloop3.cc']
+  env.Append(LIBS=['Dsm', 'isa', 'XmlRpc', 'xerces-c'])
+  env.Append(LIBPATH=['/opt/ads3/x86/lib'])
+  env.Append(_LIBFLAGS=['-Wl,-R', '/opt/ads3/x86/lib'])
+
 
 nimbus = env.Program('nimbus', sources)
 
