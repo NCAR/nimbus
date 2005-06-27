@@ -1869,8 +1869,6 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
   if (*location)
     strcat(rp->name, location);
 
-printf("Adding RAWTBL = %s\n", rp->name);
-
   strcpy(rp->SerialNumber, "");
 
 
