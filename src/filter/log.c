@@ -13,7 +13,7 @@ extern char *ADSrecord;
 extern NR_TYPE *SampledData;
 
 /* -------------------------------------------------------------------- */
-void LogXlateMsg(char msg[])
+void LogXlateMsg(const char msg[])
 {
   Hdr_blk *p = (Hdr_blk *)ADSrecord;
 
@@ -27,7 +27,7 @@ void LogXlateMsg(char msg[])
 }
 
 /* -------------------------------------------------------------------- */
-void Log2dXlateMsg(P2d_rec *p, char msg[])
+void Log2dXlateMsg(P2d_rec *p, const char msg[])
 {
   std::string messg(msg);
 
@@ -39,7 +39,7 @@ void Log2dXlateMsg(P2d_rec *p, char msg[])
 }
 
 /* -------------------------------------------------------------------- */
-void LogThisRecordMsg(NR_TYPE *record, char msg[])
+void LogThisRecordMsg(NR_TYPE *record, const char msg[])
 {
   std::string messg(msg);
 
@@ -54,7 +54,7 @@ void LogThisRecordMsg(NR_TYPE *record, char msg[])
 }
 
 /* -------------------------------------------------------------------- */
-void LogStdMsg(char msg[])
+void LogStdMsg(const char msg[])
 {
   LogThisRecordMsg(SampledData, msg);
 }

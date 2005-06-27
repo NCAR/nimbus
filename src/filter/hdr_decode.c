@@ -33,7 +33,7 @@ REFERENCES:	Header API (libhdr_api.a)
 
 REFERENCED BY:	winput.c, nimbus.c
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2001
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 -------------------------------------------------------------------------
 */
 
@@ -47,6 +47,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2001
 #include "ctape.h"	/* ADS header API		*/
 #include "amlib.h"
 
+#ifdef RT
+#include <SyncRecordReader.h>
+#endif
 
 typedef struct
   {
@@ -108,21 +111,24 @@ static char	*derivedlist[MAX_DEFAULTS*4],	/* DeriveNames file	*/
 		*rawlist[MAX_DEFAULTS*4];	/* RawNames file	*/
 
 
-static RAWTBL	*add_name_to_RAWTBL(char []);
-static DERTBL	*add_name_to_DERTBL(char []);
+#ifdef RT
+static SDITBL	*initSDI_ADS3(dsm::SyncRecordVariable* var);
+#endif
+static RAWTBL	*add_name_to_RAWTBL(const char []);
+static DERTBL	*add_name_to_DERTBL(const char []);
 
-static void add_file_to_RAWTBL(char []), add_file_to_DERTBL(char []),
+static void add_file_to_RAWTBL(const char []), add_file_to_DERTBL(const char []),
 	initHDR(char vn[]), initSDI(char vn[]), initHoneywell(char vn[]),
 	initOphir3(char vn[]), initPMS1D(char vn[]), initPMS1Dv2(char vn[]),
 	initGustCorrected(char vn[]), initLitton51(char vn[]),
-	add_derived_names(char vn[]), initPMS2D(char vn[], int n),
-	initPMS2Dhouse(char vn[]),
+	add_derived_names(const char vn[]), initPMS2D(char vn[], int n),
+	initPMS2Dhouse(char vn[]), add_raw_names(const char vn[]),
 	initGreyHouse(char vn[]), initMASP(char vn[]), initPMS1Dv3(char vn[]),
-	add_raw_names(char vn[]), initRDMA(char vn[]), initCLIMET(char vn[]);
+	ReadProjectName(), initRDMA(char vn[]), initCLIMET(char vn[]);
 
-
+static std::vector<float> getCalsForADS2(const char vn[]);
 static int	check_cal_coes(int order, float *coef);
-static int	locatePMS(char target[], PMS list[]);
+static int	locatePMS(const char target[], PMS list[]);
 
 
 static char	*defaultQuality;
@@ -130,9 +136,9 @@ static char	*defaultQuality;
 extern long	INS_start;
 extern int	Aircraft;
 
-char	*ExtractHeaderIntoFile(char *);
-bool	Open2dFile(char file[], int probeCnt);
-void	AddProbeToList(char name[], int type), ReadDespikeFile();
+char	*ExtractHeaderIntoFile(const char fn[]);
+bool	Open2dFile(const char file[], int probeCnt);
+void	AddProbeToList(const char name[], int type), ReadDespikeFile();
 void	Add2DtoList(RAWTBL *varp);
 
 
@@ -143,10 +149,141 @@ bool VarCompareLT(const var_base *x, const var_base *y)
 }
 
 /* -------------------------------------------------------------------- */
-int DecodeHeader(char header_file[])
+static void CommonInitialization()
+{
+
+  ReadProjectName();
+
+  if (cfg.ProductionRun())
+    defaultQuality = "Good";
+  else
+    defaultQuality = "Preliminary";
+
+
+  ReadTextFile(RAWNAMES, rawlist);
+
+  if (Aircraft != NOAA_G4)
+    ReadTextFile(DERIVEDNAMES, derivedlist);
+  else
+    derivedlist[0] = 0;
+
+  ReadDefaultsFile();
+
+  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, ProjectNumber);
+  InitPMSspecs(buffer);
+
+}
+
+/* -------------------------------------------------------------------- */
+#ifdef RT
+int DecodeHeader3(const char header_file[])
+{
+  extern dsm::SyncRecordReader* syncRecReader;
+printf("DecodeHeader3\n");
+
+  std::string proj_name = syncRecReader->getProjectName();
+  ProjectNumber = new char(proj_name.size()+1);
+  strcpy(ProjectNumber, proj_name.c_str());
+ProjectNumber = "601";
+printf("ProjectNumber = %s\n", ProjectNumber);
+
+  std::string tail_number = syncRecReader->getTailNumber();
+  char const *p = tail_number.c_str();
+
+  while (*p && !isdigit(*p))
+    ++p;
+  Aircraft = atoi(p);
+
+
+  // Perform common (ADS2 & ADS3).
+  CommonInitialization();
+
+  // Add Time variables, hour, min, sec, year, mon, day.
+  initHDR(0);
+
+  const std::list<const dsm::SyncRecordVariable*>& vars = syncRecReader->getVariables();
+
+  std::list<const dsm::SyncRecordVariable*>::const_iterator vi;
+  for (vi = vars.begin(); vi != vars.end(); ++vi)
+  {
+    dsm::SyncRecordVariable *var = const_cast<dsm::SyncRecordVariable*>(*vi);
+
+    rate = (int)ceil(var->getSampleRate());
+    length = var->getLength();
+
+printf("DecodeHeader3: adding %s, converter = %d, rate = %d\n",
+  var->getName().c_str(), (int)var->getConverter(), (int)ceil(var->getSampleRate()));
+
+    if (var->getConverter() == 0)
+      {
+      RAWTBL *rp = add_name_to_RAWTBL(var->getName().c_str());
+      rp->SRstart = var->getSyncRecOffset();
+      }
+    else
+      {
+      SDITBL *sp = initSDI_ADS3(var);
+      sp->SRstart = var->getSyncRecOffset();
+      }
+  }
+
+  return OK;
+}
+
+/* -------------------------------------------------------------------- */
+static SDITBL* initSDI_ADS3(dsm::SyncRecordVariable* var)
+{
+  SDITBL *cp = new SDITBL(var->getName().c_str());
+  sdi.push_back(cp);
+
+  // In ADS3, we don't get a/d counts.  They give us voltages.  These are
+  // not necessary.
+  cp->convertOffset = 0;
+  cp->convertFactor = 1.0;
+
+  cp->SampleRate   = rate;
+  cp->DependedUpon = false;
+  cp->Modulo       = 0;
+
+  switch (var->getType())
+  {
+    case  dsm::Variable::CONTINUOUS:
+      strcpy(cp->type, "A");
+      break;
+    case  dsm::Variable::COUNTER:
+      strcpy(cp->type, "C");
+      break;
+    default:
+      LogMessage("hdr_decode:initSDI_ADS3: Unsupported type from Variable->getType()\n");
+  }
+
+  cp->Average = (void (*) (NR_TYPE *, NR_TYPE *, void *))(cp->type[0] == 'C' ? SumSDI : AverageSDI);
+
+  dsm::VariableConverter* converter =
+		const_cast<dsm::VariableConverter*>(var->getConverter());
+
+  dsm::Polynomial* poly;
+  dsm::Linear* linear = dynamic_cast<dsm::Linear*>(converter);
+  if (linear)
+  {
+     cp->cof.push_back(linear->getIntercept());
+     cp->cof.push_back(linear->getSlope());
+  }
+  else
+  if ((poly = dynamic_cast<dsm::Polynomial*>(converter)))
+  {
+    const std::vector<float>& coefs = poly->getCoefficients();
+    cp->cof = coefs;
+  } 
+
+  return(cp);
+
+}
+#endif
+
+/* -------------------------------------------------------------------- */
+int DecodeHeader(const char header_file[])
 {
   char	*vn;
-  FILE	*fp;
   char	*loc, *p;
 
   InertialSystemCount = GPScount = twoDcnt = NephCnt = 0;
@@ -198,24 +335,6 @@ int DecodeHeader(char header_file[])
     return(ERR);
     }
 
-
-  /* Extract ProjectName
-   */
-  if ((fp = OpenProjectFile("%s/%s/ProjectName", "r", RETURN)) != NULL)
-    {
-    fgets(buffer, 512, fp);
-
-    if (buffer[strlen(buffer)-1] == '\n')
-      buffer[strlen(buffer)-1] = '\0';
-
-    ProjectName = new char[strlen(buffer)+1];
-    strcpy(ProjectName, buffer);
-    fclose(fp);
-    }
-  else
-    ProjectName = "";
-
-
   /* Old tapes don't set Aircraft field, so fudge it with proj_num.
   */
   if (Aircraft == 0)
@@ -240,25 +359,8 @@ int DecodeHeader(char header_file[])
       }
     }
 
-
-  if (cfg.ProductionRun())
-    defaultQuality = "Good";
-  else
-    defaultQuality = "Preliminary";
-
-
-  ReadTextFile(RAWNAMES, rawlist);
-
-  if (Aircraft != NOAA_G4)
-    ReadTextFile(DERIVEDNAMES, derivedlist);
-  else
-    derivedlist[0] = NULL;
-
-  ReadDefaultsFile();
-
-  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, ProjectNumber);
-  InitPMSspecs(buffer);
-
+  // Perform common (ADS2 & ADS3).
+  CommonInitialization();
 
   /* This is the main loop, loop through all variables in header
    */
@@ -278,7 +380,7 @@ int DecodeHeader(char header_file[])
     probeCnt = 0;
     probeType = 0;
     location[0] = '\0';
-    SetLookupSuffix((char *)NULL);
+    SetLookupSuffix((char *)0);
 
 
     /* Initialize variable/probe into appropriate table(s).
@@ -723,7 +825,6 @@ static void initHDR(char vn[])
 static void initSDI(char vn[])
 {
   char		*type;
-  float		*f;
   int		indx;
 
   if (strcmp(vn, "DUMMY") == 0)
@@ -732,7 +833,7 @@ static void initSDI(char vn[])
   /* Some words about PSFD.  In the original ADS, 2 variables were entered
    * into the Sample Table, PSFD & PSFD2.  They were guaranteed to be
    * adjacent to each other, and so I moved PSFD into the RAWTBL list (see
-   * xlpsfd().  In the new DSM ADS, PSFD was no longer inverted and they
+   * xlpsfd().  In the new DSM ADS2, PSFD was no longer inverted and they
    * wanted to see the raw output, to complicate things, PSFD1 & PSFD2 were
    * no longer guaranteed to be adjacent.  So the Sample Table will now have
    * PSFD1 and PSFD2.  PSFD is placed into the RAWTBL.  CJW - 2/96
@@ -771,7 +872,7 @@ static void initSDI(char vn[])
 /* Not sure this is necessary, we've had several projects where things that
  * were derived, became analog signals....
 
-    if (rp->xlate == NULL)
+    if (rp->xlate == 0)
       {
       fprintf(stderr, "DecodeHeader fatal error: A derived variable name has been entered into the Sample Table.\n");
       fprintf(stderr, "Please remove [%s] from the Sample Table.\n", rp->name);
@@ -784,20 +885,15 @@ static void initSDI(char vn[])
       rp->convertOffset = 0;
 
     GetConversionFactor(vn, &(rp->convertFactor));
-    long tmp;
-    GetOrder(vn, &tmp);
-    rp->order = tmp;
-    GetCalCoeff(vn, &f);
-    memcpy((char *)rp->cof, (char *)f, (int)sizeof(float) * rp->order);
-    rp->order = check_cal_coes(rp->order, rp->cof);
+
+    rp->cof = getCalsForADS2(vn);
+
     GetSampleOffset(vn, &offset);
     rp->ADSoffset = offset >> 1;
 
 
-    if (strcmp(rp->name, "HGM") == 0) {
-      rp->order = 3;
-      rp->cof[2] = 0.0;
-      }
+    if (strcmp(rp->name, "HGM") == 0)
+      rp->cof.push_back(0.0);
 
     if (strncmp(rp->name, "PSFD", 4) == 0 ||
         strcmp(rp->name, "HGM232") == 0 ||
@@ -828,9 +924,6 @@ static void initSDI(char vn[])
 
   GetConversionFactor(vn, &(cp->convertFactor));
   GetSampleOffset(vn, &(cp->ADSoffset));
-  long tmp;
-  GetOrder(vn, &tmp);
-  cp->order = tmp;
   GetType(vn, &type);
 
   strcpy(cp->type, type);
@@ -838,14 +931,12 @@ static void initSDI(char vn[])
   cp->ADSstart		= start >> 1;
   cp->ADSoffset		>>= 1;
   cp->Average		= (void (*) (NR_TYPE *, NR_TYPE *, void *))(cp->type[0] == 'C' ? SumSDI : AverageSDI);
-  cp->Modulo		= NULL;
+  cp->Modulo		= 0;
 
   if (strncmp(cp->name, "PSFD", 4) == 0)
     cp->DependedUpon = true;
 
-  GetCalCoeff(vn, &f);
-  memcpy((char *)cp->cof, (char *)f, (int)sizeof(float) * cp->order);
-  cp->order = check_cal_coes(cp->order, cp->cof);
+  cp->cof = getCalsForADS2(vn);
 
 }	/* END INITSDI */
 
@@ -886,11 +977,11 @@ static void initHoneywell(char vn[])
   if (InertialSystemCount++ == 0)
     {
     add_derived_names(item_type);
-    SetLookupSuffix((char *)NULL);
+    SetLookupSuffix((char *)0);
     add_derived_names("GUST");
     }
   else
-    SetLookupSuffix((char *)NULL);
+    SetLookupSuffix((char *)0);
 
 }	/* END INITHONEYWELL */
 
@@ -945,11 +1036,11 @@ static void initLitton51(char vn[])
   if (InertialSystemCount++ == 0)
     {
     add_derived_names(item_type);
-    SetLookupSuffix((char *)NULL);
+    SetLookupSuffix((char *)0);
     add_derived_names("GUST");
     }
   else
-    SetLookupSuffix((char *)NULL);
+    SetLookupSuffix((char *)0);
 
 }	/* END INITLITTON51 */
 
@@ -968,10 +1059,10 @@ static void initOphir3(char vn[])
 
     rp->convertOffset	= 0;
     rp->convertFactor	= 1.0;
-    rp->order		= atoi(strtok((char *)NULL, " \t"));
 
-    for (size_t j = 0; j < rp->order; ++j)
-      rp->cof[j] = (float)atof(strtok((char *)NULL, " \t"));
+    size_t order = atoi(strtok((char *)NULL, " \t"));
+    for (size_t j = 0; j < order; ++j)
+      rp->cof.push_back((float)atof(strtok((char *)NULL, " \t")));
     }
 
   FreeTextFile(list);
@@ -1188,7 +1279,7 @@ static void initPMS1D(char vn[])
       }
     }
 
-  SetLookupSuffix((char *)NULL);
+  SetLookupSuffix((char *)0);
 
 
   /* Perform add_derived_names manually	*/
@@ -1274,10 +1365,10 @@ static void initPMS1Dv2(char vn[])
     if ((rp = add_name_to_RAWTBL(name)) == (RAWTBL *)ERR)
       continue;
 
-    rp->order		= P1DV2_COF;
+    size_t order = P1DV2_COF;
 
-    memcpy( (char *)rp->cof, (char *)&cals[i * P1DV2_COF],
-            (int)sizeof(float) * P1DV2_COF);
+    for (size_t j = 0; j < order; ++j)
+      rp->cof.push_back(cals[i*P1DV2_COF+j]);
     }
 
 
@@ -1439,9 +1530,7 @@ static void initPMS1Dv3(char vn[])
     rp = add_name_to_RAWTBL(p);
 
     for (j = 0; (p = strtok(NULL, " \t\n")); ++j)
-      rp->cof[j] = atof(p);
-
-    rp->order = j;
+      rp->cof.push_back(atof(p));
     }
 
   if (strncmp(temp, "AS100", 5) == 0)
@@ -1452,7 +1541,7 @@ static void initPMS1Dv3(char vn[])
     add_name_to_RAWTBL("OVFLW");
     }
 
-  SetLookupSuffix((char *)NULL);
+  SetLookupSuffix((char *)0);
 
 
 {	/* Perform add_derived_names manually	*/
@@ -1506,11 +1595,10 @@ static void initGreyHouse(char vn[])
     if ((rp = add_name_to_RAWTBL(hsk_name[i])) == (RAWTBL *)ERR)
       continue;
 
-    rp->order = P1DV2_COF;
+    size_t order = P1DV2_COF;
 
-    memcpy((char *)rp->cof,
-           (char *)&cals[i * P1DV2_COF],
-           (int)sizeof(float) * P1DV2_COF);
+    for (size_t j = 0; j < order; ++j)
+      rp->cof.push_back(cals[i*P1DV2_COF+j]);
 
     add_derived_names(hsk_name[i]);
     }
@@ -1548,11 +1636,10 @@ static void initPMS2Dhouse(char vn[])
     if ((rp = add_name_to_RAWTBL(name)) == (RAWTBL *)ERR)
       continue;
 
-    rp->order = P1DV2_COF;
+    size_t order = P1DV2_COF;
 
-    memcpy((char *)rp->cof,
-           (char *)&cals[i * P1DV2_COF],
-           (int)sizeof(float) * P1DV2_COF);
+    for (size_t j = 0; j < order; ++j)
+      rp->cof.push_back(cals[i*P1DV2_COF+j]);
 
     add_derived_names(name);
     }
@@ -1680,7 +1767,7 @@ static void initPMS2D(char vn[], int order)
 /* -------------------------------------------------------------------- */
 /* Header Decode Atomic functions					*/
 /* -------------------------------------------------------------------- */
-static void add_raw_names(char name[])
+static void add_raw_names(const char name[])
 {
   char  *p;
   char  buff[512];
@@ -1699,7 +1786,7 @@ static void add_raw_names(char name[])
 }       /* END ADD_RAW_NAMES */
 
 /* -------------------------------------------------------------------- */
-static void add_derived_names(char name[])
+static void add_derived_names(const char name[])
 {
   char	*p;
   char	buff[512];
@@ -1719,7 +1806,7 @@ static void add_derived_names(char name[])
 }	/* END ADD_DERIVED_NAMES */
 
 /* -------------------------------------------------------------------- */
-static void add_file_to_DERTBL(char filename[])
+static void add_file_to_DERTBL(const char filename[])
 {
   FILE	*fp;
 
@@ -1734,7 +1821,7 @@ static void add_file_to_DERTBL(char filename[])
 }	/* END ADD_FILE_TO_DERTBL */
 
 /* -------------------------------------------------------------------- */
-static void add_file_to_RAWTBL(char filename[])
+static void add_file_to_RAWTBL(const char filename[])
 {
   FILE	*fp;
 
@@ -1749,13 +1836,13 @@ static void add_file_to_RAWTBL(char filename[])
 }	/* END ADD_FILE_TO_RAWTBL */
 
 /* -------------------------------------------------------------------- */
-static RAWTBL *add_name_to_RAWTBL(char name[])
+static RAWTBL *add_name_to_RAWTBL(const char name[])
 {
-  int		indx;
+  int indx = ERR;
 
-  if ((indx = SearchDERIVEFTNS(name)) == ERR)
+  if (cfg.isADS2() && (indx = SearchDERIVEFTNS(name)) == ERR)
     {
-    char	msg[128];
+    char msg[128];
 
     sprintf(msg, "Throwing away %s, has no decode function.\n", name);
     LogMessage(msg);
@@ -1765,13 +1852,27 @@ static RAWTBL *add_name_to_RAWTBL(char name[])
   RAWTBL *rp = new RAWTBL(name);
   raw.push_back(rp);
 
+  /* For ADS2 we decode raw/block/struct data.  ADS3 hands us everything in
+   * float format, so decode fn's not required.
+   */
+  if (cfg.isADS2())
+    {
+    rp->Initializer = deriveftns[indx].constructor;
+    rp->xlate = (void (*) (void *, void *, float *))deriveftns[indx].xlate;
+    }
+  else
+    {
+    rp->Initializer = 0;
+    rp->xlate = 0;
+    }
+
   if (*location)
     strcat(rp->name, location);
 
+printf("Adding RAWTBL = %s\n", rp->name);
+
   strcpy(rp->SerialNumber, "");
 
-  rp->Initializer	= deriveftns[indx].constructor;
-  rp->xlate		= (void (*) (void *, void *, float *))deriveftns[indx].xlate;
 
   rp->ADSstart		= start >> 1;
   rp->ADSoffset		= 1;
@@ -1781,7 +1882,7 @@ static RAWTBL *add_name_to_RAWTBL(char name[])
   rp->convertFactor	= 1.0;
 
   rp->Average		= (void (*) (...))Average;
-  rp->Modulo		= NULL;
+  rp->Modulo		= 0;
   rp->ProbeType		= probeType;
   rp->ProbeCount	= probeCnt;
 
@@ -1790,7 +1891,7 @@ static RAWTBL *add_name_to_RAWTBL(char name[])
 }	/* END ADD_NAME_TO_RAWTBL */
 
 /* -------------------------------------------------------------------- */
-static DERTBL *add_name_to_DERTBL(char name[])
+static DERTBL *add_name_to_DERTBL(const char name[])
 {
   int		indx;
 
@@ -1835,7 +1936,7 @@ static DERTBL *add_name_to_DERTBL(char name[])
   dp->ProbeType		= probeType;
   dp->ProbeCount	= probeCnt;
 
-  dp->Modulo		= NULL;
+  dp->Modulo		= 0;
 
   /* As a kludge, .xlate field used as ProbeCount for FLUX variables.
    */
@@ -1851,7 +1952,7 @@ static DERTBL *add_name_to_DERTBL(char name[])
 }	/* END ADD_NAME_TO_DERTBL */
 
 /* -------------------------------------------------------------------- */
-static int locatePMS(char target[], PMS list[])
+static int locatePMS(const char target[], PMS list[])
 {
   int	i;
 
@@ -1862,6 +1963,48 @@ static int locatePMS(char target[], PMS list[])
   return(ERR);
 
 }	/* END LOCATEPMS */
+
+/* -------------------------------------------------------------------- */
+static void ReadProjectName()
+{
+  FILE *fp;
+
+  /* Extract ProjectName
+   */
+  if ((fp = OpenProjectFile("%s/%s/ProjectName", "r", RETURN)) != NULL)
+    {
+    fgets(buffer, 512, fp);
+
+    if (buffer[strlen(buffer)-1] == '\n')
+      buffer[strlen(buffer)-1] = '\0'; 
+    ProjectName = new char[strlen(buffer)+1];
+    strcpy(ProjectName, buffer);
+    fclose(fp);
+    }
+  else
+    ProjectName = "";
+}
+
+/* -------------------------------------------------------------------- */
+static std::vector<float> getCalsForADS2(const char vn[])
+{
+  long order;
+  float *f;
+
+  GetOrder(vn, &order);
+  GetCalCoeff(vn, &f);
+
+  // Remove trailing zeroes.
+  order = check_cal_coes(order, f);
+
+  std::vector<float> cals;
+
+  for (long i = 0; i < order; ++i)
+    cals.push_back(f[i]);
+
+  return cals;
+
+}
 
 /* -------------------------------------------------------------------- */
 /* Strip out trailing 0 cal coe's
@@ -1901,7 +2044,6 @@ var_base::var_base(const char s[])
 
 SDITBL::SDITBL(const char s[]) : var_base(s)
 {
-  order = 0;
   StaticLag = 0;
   SpikeSlope = 0.0;
 
@@ -1909,7 +2051,6 @@ SDITBL::SDITBL(const char s[]) : var_base(s)
 
 RAWTBL::RAWTBL(const char s[]) : var_base(s)
 {
-  order = 0;
   StaticLag = 0;
   DynamicLag = 0;
   SpikeSlope = 0.0;

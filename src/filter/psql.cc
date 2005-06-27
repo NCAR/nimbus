@@ -135,7 +135,6 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
   _sqlString << ");";
   submitCommand(_sqlString.str());
 
-
   if (cfg.ProcessingMode() == Config::RealTime)
   {
     _broadcastString << '\n';
@@ -292,13 +291,15 @@ PostgreSQL::initializeVariableList()
 
     addVariableToDataBase(sdi[i]->name, VarDB_GetUnits(sdi[i]->name), alt_units,
 	VarDB_GetTitle(sdi[i]->name), sdi[i]->SampleRate, nDims, dims,
-	sdi[i]->order, sdi[i]->cof, MISSING_VALUE, "Preliminary");
+	sdi[i]->cof, MISSING_VALUE, "Preliminary");
 
     addCategory(sdi[i]->name, "Analog");
 
     addVariableToTables(rateTableMap, sdi[i], true);
   }
 
+
+  std::vector<float> noCals;
 
   /* 3 big loops here for analog, raw and derived.  This is raw.
    */
@@ -359,7 +360,7 @@ PostgreSQL::initializeVariableList()
 
     addVariableToDataBase(raw[i]->name, VarDB_GetUnits(raw[i]->name), "",
 	VarDB_GetTitle(raw[i]->name), raw[i]->SampleRate, nDims, dims,
-	0, 0, MISSING_VALUE, "Preliminary");
+	noCals, MISSING_VALUE, "Preliminary");
 
     addCategory(raw[i]->name, "Raw");
 
@@ -386,7 +387,7 @@ PostgreSQL::initializeVariableList()
 
     addVariableToDataBase(derived[i]->name, VarDB_GetUnits(derived[i]->name), "",
 	VarDB_GetTitle(derived[i]->name), derived[i]->SampleRate, nDims, dims,
-	0, 0, MISSING_VALUE, "Preliminary");
+	noCals, MISSING_VALUE, "Preliminary");
 
     addCategory(derived[i]->name, "Derived");
 
@@ -572,10 +573,9 @@ PostgreSQL::addVariableToDataBase(
 		const std::string& uncaled_units,
 		const std::string& longName,
 		const int sampleRate,
-		const int nDims,
+		const size_t nDims,
 		const int dims[],
-		const int nCals,
-		const float cal[],
+		const std::vector<float>& cals,
 		const float missingValue,
 		const std::string& dataQuality)
 {
@@ -592,21 +592,21 @@ PostgreSQL::addVariableToDataBase(
 
   entry << "', '" << nDims << "', '{";
 
-  for (int i = 0; i < nDims; ++i)
+  for (size_t i = 0; i < nDims; ++i)
   {
     if (i > 0)
       entry << ',';
 
     entry << dims[i];
   }
-  entry << "}', '" << nCals << "', '{";
+  entry << "}', '" << cals.size() << "', '{";
 
-  for (int i = 0; i < nCals; ++i)
+  for (size_t i = 0; i < cals.size(); ++i)
   {
     if (i > 0)
       entry << ',';
 
-    entry << cal[i];
+    entry << cals[i];
   }
 
   entry << "}', '" << missingValue << "', '" << dataQuality << "')";

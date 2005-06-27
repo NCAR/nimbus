@@ -89,9 +89,8 @@ void DecodeADSrecord(
    */
   for (size_t i = 0; i < raw.size(); ++i)
   {
-    RAWTBL *rp = raw[i];
-
-    (*rp->xlate)(rp, &lr[rp->ADSstart], &nlr[rp->SRstart]);
+    if (raw[i])
+      (*raw[i]->xlate)(raw[i], &lr[raw[i]->ADSstart], &nlr[raw[i]->SRstart]);
   }
 
 }	/* END DECODEADSRECORD */

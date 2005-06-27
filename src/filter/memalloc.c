@@ -39,9 +39,12 @@ void AllocateDataArrays()
 {
   long	lrlen;
 
-  get_lrlen(&lrlen);
-  ADSrecord = new char[lrlen];
-
+  // ADS3 we will be deposited directly into SampledData, don't need ADSrecord.
+  if (cfg.isADS2())
+    {
+    get_lrlen(&lrlen);
+    ADSrecord = new char[lrlen];
+    }
 
   if (AVAPS)
     for (int i = 0; i < MAX_AVAPS; ++i)
@@ -53,7 +56,7 @@ void AllocateDataArrays()
   for (size_t i = 0; i < sdi.size(); ++i)
     {
     sdi[i]->LRstart = nLRfloats++;
-    sdi[i]->SRstart = nSRfloats;
+    if (!cfg.isADS3()) sdi[i]->SRstart = nSRfloats;
     sdi[i]->HRstart = nHRfloats;
     nSRfloats += sdi[i]->SampleRate;
     nHRfloats += 25;
@@ -64,7 +67,7 @@ void AllocateDataArrays()
   for (size_t i = 0; i < raw.size(); ++i)
     {
     raw[i]->LRstart = nLRfloats;
-    raw[i]->SRstart = nSRfloats;
+    if (!cfg.isADS3()) raw[i]->SRstart = nSRfloats;
     raw[i]->HRstart = nHRfloats;
     nLRfloats += raw[i]->Length;
     nSRfloats += (raw[i]->SampleRate * raw[i]->Length);

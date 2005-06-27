@@ -50,7 +50,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 void xlpms16_hskp0(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   P16v2_blk	*p = (P16v2_blk *)input;
-  NR_TYPE	*c = varp->cof, x;
+  NR_TYPE	*c = &varp->cof[0], x;
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -67,7 +67,7 @@ void xlpms16_hskp0(RAWTBL *varp, void *input, NR_TYPE *np)
 void xlpms16_hskp1(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   P16v2_blk	*p = (P16v2_blk *)input;
-  NR_TYPE	*c = varp->cof, x;
+  NR_TYPE	*c = &varp->cof[0], x;
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -81,7 +81,7 @@ void xlpms16_hskp1(RAWTBL *varp, void *input, NR_TYPE *np)
 void xlpms16_hskp2(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   P16v2_blk	*p = (P16v2_blk *)input;
-  NR_TYPE	*c = varp->cof, x;
+  NR_TYPE	*c = &varp->cof[0], x;
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -95,7 +95,7 @@ void xlpms16_hskp2(RAWTBL *varp, void *input, NR_TYPE *np)
 void xlpms16_hskp3(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   P16v2_blk	*p = (P16v2_blk *)input;
-  NR_TYPE	*c = varp->cof, x;
+  NR_TYPE	*c = &varp->cof[0], x;
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -109,7 +109,7 @@ void xlpms16_hskp3(RAWTBL *varp, void *input, NR_TYPE *np)
 void xlpms16_hskp4(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   P16v2_blk	*p = (P16v2_blk *)input;
-  NR_TYPE	*c = varp->cof, x;
+  NR_TYPE	*c = &varp->cof[0], x;
 
   np[0] = 0.0;
   for (size_t i = 0; i < varp->SampleRate; ++i)
@@ -124,7 +124,7 @@ void xlpms16_hskp4(RAWTBL *varp, void *input, NR_TYPE *np)
 void xlpms16_hskp5(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   P16v2_blk	*p = (P16v2_blk *)input;
-  NR_TYPE	*c = varp->cof, x;
+  NR_TYPE	*c = &varp->cof[0], x;
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -140,7 +140,7 @@ void xlpms16_hskp5(RAWTBL *varp, void *input, NR_TYPE *np)
 void xlpms16_hskp6(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   P16v2_blk	*p = (P16v2_blk *)input;
-  NR_TYPE	*c = varp->cof, x;
+  NR_TYPE	*c = &varp->cof[0], x;
 
   static NR_TYPE	flowValues[AVERAGE_LENGTH], flowSum = 0.0;
   static size_t		nValues = 0, index = 0;
@@ -185,7 +185,7 @@ void xlpms16_hskp6(RAWTBL *varp, void *input, NR_TYPE *np)
 void xlpms16_hskp7(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   P16v2_blk	*p = (P16v2_blk *)input;
-  NR_TYPE	*c = varp->cof, x;
+  NR_TYPE	*c = &varp->cof[0], x;
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -219,7 +219,7 @@ void xlpms32_sum(RAWTBL *varp, void *input, NR_TYPE *np)
 void xlpms32_hskp1(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   P32v2_blk     *p = (P32v2_blk *)input;
-  NR_TYPE	*c = varp->cof, x;
+  NR_TYPE	*c = &varp->cof[0], x;
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -236,7 +236,7 @@ void xlpms32_hskp1(RAWTBL *varp, void *input, NR_TYPE *np)
 void xlpms32_hskp2(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   P32v2_blk     *p = (P32v2_blk *)input;
-  NR_TYPE	*c = varp->cof, x;
+  NR_TYPE	*c = &varp->cof[0], x;
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -253,7 +253,7 @@ void xlpms32_hskp2(RAWTBL *varp, void *input, NR_TYPE *np)
 void xlpms64_hskp0(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   P64v2_blk	*p = (P64v2_blk *)input;
-  NR_TYPE	*c = varp->cof, x;
+  NR_TYPE	*c = &varp->cof[0], x;
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -267,7 +267,7 @@ void xlpms64_hskp0(RAWTBL *varp, void *input, NR_TYPE *np)
 void xlpms64_hskp1(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   P64v2_blk	*p = (P64v2_blk *)input;
-  NR_TYPE	*c = varp->cof, x;
+  NR_TYPE	*c = &varp->cof[0], x;
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -281,7 +281,7 @@ void xlpms64_hskp1(RAWTBL *varp, void *input, NR_TYPE *np)
 void xlpms64_hskp2(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   P64v2_blk	*p = (P64v2_blk *)input;
-  NR_TYPE	*c = varp->cof, x;
+  NR_TYPE	*c = &varp->cof[0], x;
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -295,7 +295,7 @@ void xlpms64_hskp2(RAWTBL *varp, void *input, NR_TYPE *np)
 void xlpms64_hskp3(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   P64v2_blk	*p = (P64v2_blk *)input;
-  NR_TYPE	*c = varp->cof, x;
+  NR_TYPE	*c = &varp->cof[0], x;
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -309,7 +309,7 @@ void xlpms64_hskp3(RAWTBL *varp, void *input, NR_TYPE *np)
 void xlpms64_hskp4(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   P64v2_blk	*p = (P64v2_blk *)input;
-  NR_TYPE	*c = varp->cof, x;
+  NR_TYPE	*c = &varp->cof[0], x;
 
   np[0] = 0.0;
   for (size_t i = 0; i < varp->SampleRate; ++i)
@@ -324,7 +324,7 @@ void xlpms64_hskp4(RAWTBL *varp, void *input, NR_TYPE *np)
 void xlpms64_hskp5(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   P64v2_blk	*p = (P64v2_blk *)input;
-  NR_TYPE	*c = varp->cof, x;
+  NR_TYPE	*c = &varp->cof[0], x;
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -338,7 +338,7 @@ void xlpms64_hskp5(RAWTBL *varp, void *input, NR_TYPE *np)
 void xlpms64_hskp6(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   P64v2_blk	*p = (P64v2_blk *)input;
-  NR_TYPE	*c = varp->cof, x;
+  NR_TYPE	*c = &varp->cof[0], x;
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -352,7 +352,7 @@ void xlpms64_hskp6(RAWTBL *varp, void *input, NR_TYPE *np)
 void xlpms64_hskp7(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   P64v2_blk	*p = (P64v2_blk *)input;
-  NR_TYPE	*c = varp->cof, x;
+  NR_TYPE	*c = &varp->cof[0], x;
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {

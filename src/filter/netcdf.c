@@ -41,7 +41,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
-#include <stdio.h>
 #include <time.h>
 
 #include "nimbus.h"
@@ -49,7 +48,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include "gui.h"
 #include "ctape.h"
 #include "netcdf.h"
-#include "queue.h"
+#include "raf_queue.h"
 #include "vardb.h"
 
 #include <cmath>
@@ -115,7 +114,7 @@ void SetBaseTime(struct Hdr_blk *hdr)
     else
       StartFlight.tm_sec += 14;
 
-  BaseTime = mktime(&StartFlight) - timezone;
+  BaseTime = timegm(&StartFlight);
   ncvarput1(fd, baseTimeID, NULL, (void *)&BaseTime);
 
   if (BaseTime <= 0)
@@ -129,7 +128,7 @@ void SetBaseTime(struct Hdr_blk *hdr)
 static int	timeOffsetID, timeVarID;
 
 /* -------------------------------------------------------------------- */
-void CreateNetCDF(char fileName[])
+void CreateNetCDF(const char fileName[])
 {
   size_t	i, j;
   int		indx, catIdx;
@@ -217,14 +216,14 @@ void CreateNetCDF(char fileName[])
     strlen(ProjectName)+1, (void *)ProjectName);
     }
 
-  GetAircraft(&p);
-  ncattput(fd, NC_GLOBAL, "Aircraft", NC_CHAR, strlen(p)+1, (void *)p);
+  if (GetAircraft(&p) != ERR)
+    ncattput(fd, NC_GLOBAL, "Aircraft", NC_CHAR, strlen(p)+1, (void *)p);
 
-  GetProjectNumber(&p);
-  ncattput(fd, NC_GLOBAL, "ProjectNumber", NC_CHAR, strlen(p)+1, (void *)p);
+  if (GetProjectNumber(&p) != ERR)
+    ncattput(fd, NC_GLOBAL, "ProjectNumber", NC_CHAR, strlen(p)+1, (void *)p);
 
-  GetFlightNumber(&p);
-  ncattput(fd, NC_GLOBAL, "FlightNumber", NC_CHAR, strlen(p)+1, (void *)p);
+  if (GetFlightNumber(&p) != ERR)
+    ncattput(fd, NC_GLOBAL, "FlightNumber", NC_CHAR, strlen(p)+1, (void *)p);
 
   if (cfg.ProcessingMode() == Config::RealTime)
   {
@@ -399,7 +398,7 @@ void CreateNetCDF(char fileName[])
     ncattput(fd, sp->varid, "DataQuality", NC_CHAR, strlen(sp->DataQuality)+1,
 		sp->DataQuality);
     ncattput(fd, sp->varid, "CalibrationCoefficients", NC_FLOAT,
-		sp->order, sp->cof);
+		sp->cof.size(), &sp->cof[0]);
 
     if (sp->Modulo)
       {
@@ -589,9 +588,9 @@ void CreateNetCDF(char fileName[])
     ncattput(fd, rp->varid, "DataQuality", NC_CHAR, strlen(rp->DataQuality)+1,
 		rp->DataQuality);
 
-    if (rp->order > 0)
+    if (rp->cof.size() > 0)
       ncattput(fd, rp->varid, "CalibrationCoefficients", NC_FLOAT,
-               rp->order, rp->cof);
+               rp->cof.size(), &rp->cof[0]);
 
     if (rp->Modulo)
       {

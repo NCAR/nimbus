@@ -125,8 +125,8 @@ private:
   void
   addVariableToDataBase(const std::string& name, const std::string& units,
 	const std::string& uncaled_units, const std::string& longName,
-	const int sampleRate, const int nDims, const int dims[],
-	const int nCals, const float cals[], const float missingValue,
+	const int sampleRate, const size_t nDims, const int dims[],
+	const std::vector<float>& cals, const float missingValue,
 	const std::string& dataQuality);
 
   /**

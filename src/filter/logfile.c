@@ -47,7 +47,7 @@ void OpenLogFile()
 }	/* END OPENLOGFILE */
 
 /* -------------------------------------------------------------------- */
-void LogMessage(char msg[])
+void LogMessage(const char msg[])
 {
   std::string messg(msg);
 

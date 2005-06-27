@@ -29,7 +29,7 @@ std::map<std::string, unsigned long> probeMap;
 
 
 /* -------------------------------------------------------------------- */
-void AddProbeToList(char name[], unsigned long type)
+void AddProbeToList(const char name[], unsigned long type)
 {
   probeMap[name] = type;
 

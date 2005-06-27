@@ -32,7 +32,7 @@ static std::vector<size_t>   nSpikesSDI, nSpikesRAW;
 static void checkVariable(var_base *, NR_TYPE, size_t *);
 static void check1Hz(var_base *, NR_TYPE, size_t *);
 
-void LogThisRecordMsg(NR_TYPE *record, char msg[]);
+void LogThisRecordMsg(NR_TYPE *record, const char msg[]);
 
 
 /* -------------------------------------------------------------------- */

@@ -30,8 +30,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2005
 */
 
 #include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
 
 #include <Xm/Form.h>

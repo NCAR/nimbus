@@ -97,6 +97,7 @@ void GetUserTimeIntervals() /* From TimeSliceWindow	*/
   /* And while we're here let's get the indices for the time variables,
    * HOUR, MINUTE, SECOND, used by UpdateTime().
    */
+printf(">>>>>>>>>>>>>>>>>>\n");
   timeIndex[0] = raw[SearchTable(raw, "HOUR")]->SRstart;
   timeIndex[1] = raw[SearchTable(raw, "MINUTE")]->SRstart;
   timeIndex[2] = raw[SearchTable(raw, "SECOND")]->SRstart;

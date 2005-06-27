@@ -150,10 +150,10 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
         if (strncmp(target, "nCOEF=", 6) == 0)
           {
-          sdi[indx]->order = atoi(strchr(target, '=')+1);
+          size_t order = atoi(strchr(target, '=')+1);
 
-          for (size_t i = 0; i < sdi[indx]->order; ++i)
-            sdi[indx]->cof[i] = (float)atof(strtok(NULL, " \t"));
+          for (size_t i = 0; i < order; ++i)
+            sdi[indx]->cof.push_back((float)atof(strtok(NULL, " \t")));
           }
         }
       }
@@ -196,9 +196,9 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
         if (strncmp(target, "nCOEF=", 6) == 0)
           {
-          raw[indx]->order = atoi(strchr(target, '=')+1);
+          size_t order = atoi(strchr(target, '=')+1);
 
-          for (size_t i = 0; i < raw[indx]->order; ++i)
+          for (size_t i = 0; i < order; ++i)
             raw[indx]->cof[i] = (float)atof(strtok(NULL, " \t"));
           }
         }
@@ -262,7 +262,10 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
       }
     else
       {
-      LogMessage("Invalid keyword found in setup file, ignoring.\n");
+      char msg[200];
+      sprintf(msg, "Invalid keyword [%s] found in setup file, ignoring.\n",
+	target);
+      LogMessage(msg);
       continue;
       }
     }
@@ -327,9 +330,9 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
         fprintf(fp, "SS=%e ", sdi[i]->SpikeSlope);
 
       fprintf(fp, "DQ=%s OR=%d nCOEF=%d",
-		sdi[i]->DataQuality, sdi[i]->OutputRate, sdi[i]->order);
+		sdi[i]->DataQuality, sdi[i]->OutputRate, sdi[i]->cof.size());
 
-      for (size_t j = 0; j < sdi[i]->order; ++j)
+      for (size_t j = 0; j < sdi[i]->cof.size(); ++j)
         fprintf(fp, " %e", sdi[i]->cof[j]);
 
       fprintf(fp, "\n");
@@ -347,9 +350,9 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
         fprintf(fp, "SS=%e ", raw[i]->SpikeSlope);
 
       fprintf(fp, "DQ=%s OR=%d nCOEF=%d", 
-		raw[i]->DataQuality, raw[i]->OutputRate, raw[i]->order);
+		raw[i]->DataQuality, raw[i]->OutputRate, raw[i]->cof.size());
 
-      for (size_t j = 0; j < raw[i]->order; ++j)
+      for (size_t j = 0; j < raw[i]->cof.size(); ++j)
         fprintf(fp, " %e", raw[i]->cof[j]);
 
       fprintf(fp, "\n");

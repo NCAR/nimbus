@@ -20,7 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-05
 #include "amlib.h"
 
 /* -------------------------------------------------------------------- */
-NR_TYPE FirstPoly(NR_TYPE x, NR_TYPE c[])
+NR_TYPE FirstPoly(NR_TYPE x, std::vector<float>& c)
 {
   if (x == MISSING_VALUE)
     return(MISSING_VALUE);
@@ -29,7 +29,7 @@ NR_TYPE FirstPoly(NR_TYPE x, NR_TYPE c[])
 }
 
 /* -------------------------------------------------------------------- */
-NR_TYPE SecondPoly(NR_TYPE x, NR_TYPE c[])
+NR_TYPE SecondPoly(NR_TYPE x, std::vector<float>& c)
 {
   if (x == MISSING_VALUE)
     return(MISSING_VALUE);

@@ -34,7 +34,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999-2000
 
 #include "nimbus.h"
 #include "amlib.h"
-#include "queue.h"
+#include "raf_queue.h"
 
 #define OVERLOAD	(0xffffffff)
 

@@ -29,6 +29,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include <injectsd.h>
 
 const NR_TYPE MISSING_VALUE = -32767;
+const int MAX_COF = 10;
 
 char	buffer[4096];		/* Generic, volatile string space	*/
 char	*ProjectDirectory, *ProjectNumber, *ProjectName, FlightNumber[12];
@@ -38,7 +39,7 @@ std::vector<RAWTBL *> raw;	/* Alphabeticly sorted pointers		*/
 std::vector<DERTBL *> derived;	/* Alphabeticly sorted pointers		*/
 std::vector<DERTBL *> ComputeOrder;	/* Compute Order for derived	*/
 
-size_t	nDefaults;
+size_t	nDefaults = 0;
 DEFAULT	*Defaults[MAX_DEFAULTS];	/* Values from 'Defaults' file	*/
 
 Config cfg;
@@ -57,19 +58,19 @@ int	PauseWhatToDo, Aircraft, FlightNumberInt;
 
 /* Data record pointers
  */
-char	*ADSrecord;		/* Raw ADS record as read from tape.	*/
+char	*ADSrecord = 0;		/* Raw ADS record as read from tape.	*/
 char	*AVAPSrecord[MAX_AVAPS];/* Raw AVAPS data as read from tape.	*/
-ushort	*bits;			/* Realtime (winput) only.		*/
-NR_TYPE	*volts;			/* Realtime (winput) only.		*/
-NR_TYPE	*SRTvolts;		/* Realtime (aeros) only.		*/
-NR_TYPE	*SampledData, *AveragedData, *HighRateData;
+ushort	*bits = 0;		/* Realtime (winput) only.		*/
+NR_TYPE	*volts = 0;		/* Realtime (winput) only.		*/
+NR_TYPE	*SRTvolts = 0;		/* Realtime (aeros) only.		*/
+NR_TYPE	*SampledData = 0, *AveragedData = 0, *HighRateData = 0;
 
 float	HDRversion;
 
-size_t	nLRfloats,
-	nSRfloats,	// Contains number of floats used in SampledData.
-	nHRfloats;	// Contains number of floats used in HighRateData.
-size_t	LITTON51_start;		/* hdr_decode.c & adsIO.c		*/
+size_t	nLRfloats = 0,
+	nSRfloats = 0,	// Contains number of floats used in SampledData.
+	nHRfloats = 0;	// Contains number of floats used in HighRateData.
+size_t	LITTON51_start;	// hdr_decode.c & adsIO.c
 
 
 //***************************synthetic data varables*************************//

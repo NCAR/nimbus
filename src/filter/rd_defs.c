@@ -25,8 +25,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-8
 -------------------------------------------------------------------------
 */
 
-#include <stdio.h>
-
 #include "nimbus.h"
 #include "decode.h"
 #include "netcdf.h"
@@ -82,7 +80,7 @@ void ReadDefaultsFile()
 }  /* END READDEFAULTSFILE */
 
 /* -------------------------------------------------------------------- */
-NR_TYPE *GetDefaultsValue(char target[], char var[])
+NR_TYPE *GetDefaultsValue(const char target[], const char var[])
 {
   for (size_t i = 0; i < nDefaults; ++i)
     {

@@ -265,7 +265,7 @@ long FindNextLogicalRecord(char record[], long endtime)
 }	/* END FINDNEXTLOGICALRECORD */
 
 /* -------------------------------------------------------------------- */
-char *ExtractHeaderIntoFile(char *fileName)
+char *ExtractHeaderIntoFile(const char fileName[])
 {
   int	nBytes, rc, outFD;
   int	iflag = 0, mode = 0, nWords = 4096, iconv = 0;
@@ -273,7 +273,7 @@ char *ExtractHeaderIntoFile(char *fileName)
   static char	tmpFile[256];
 
   DiskData = RAW_ADS;
-  adsFileName = fileName;
+  adsFileName = (char *)fileName;
 
   strcpy(tmpFile, "/tmp/nimbusXXXXXX");
   outFD = mkstemp(tmpFile);
@@ -529,7 +529,7 @@ static int	twoDfd[] = { -1, -1, -1, -1, -1, -1 };
 static char	twoDfile[1024];
 
 /* -------------------------------------------------------------------- */
-bool Open2dFile(char file[], int probeCnt)
+bool Open2dFile(const char file[], int probeCnt)
 {
   char	*p;
 

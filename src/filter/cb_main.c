@@ -86,7 +86,7 @@ static void	checkForProductionSetup(), displaySetupWindow(),
 
 void	OpenLogFile(), InitAsyncModule(char fileName[]), RealTimeLoop(),
 	CloseLogFile(), LogDespikeInfo(), InitAircraftDependencies(),
-	CloseRemoveLogFile(), LogIRSerrors();
+	CloseRemoveLogFile(), LogIRSerrors(), RealTimeLoop3();
 
 
 /* -------------------------------------------------------------------- */
@@ -187,13 +187,15 @@ static void readHeader()
   XmUpdateDisplay(Shell001);
   LogMessage(SVNREVISION);
 
-  int rc;
+  int rc = ERR;
 
   if (cfg.isADS2())
     rc = DecodeHeader(ADSfileName);
+#ifdef RT
   else
   if (cfg.isADS3())
     rc = DecodeHeader3(ADSfileName);
+#endif
 
   if (rc == ERR) {
     CancelSetup(NULL, NULL, NULL);
@@ -384,7 +386,12 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   if (cfg.ProcessingMode() == Config::RealTime)
     {
     NextTimeInterval(&btim, &etim);
-    RealTimeLoop();	/* Never to return	*/
+
+    if (cfg.isADS2())
+      RealTimeLoop();	/* Never to return	*/
+    else
+      RealTimeLoop3();
+
     exit(0);
     }
 
@@ -870,7 +877,7 @@ XmString CreateListLineItem(void *pp, int var_type)
 		sp->StaticLag, sp->SpikeSlope,
 		sp->DataQuality[0]);
 
-      for (size_t i = 0; i < sp->order; ++i)
+      for (size_t i = 0; i < sp->cof.size(); ++i)
         {
         sprintf(tmp, "%10.4f", sp->cof[i]);
         strcat(buffer, tmp);
@@ -887,7 +894,7 @@ XmString CreateListLineItem(void *pp, int var_type)
 		rp->StaticLag, rp->SpikeSlope,
 		rp->DataQuality[0]);
 
-      for (size_t i = 0; i < rp->order; ++i)
+      for (size_t i = 0; i < rp->cof.size(); ++i)
         {
         sprintf(tmp, "%10.4f", rp->cof[i]);
         strcat(buffer, tmp);
@@ -992,7 +999,7 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
 			sp->StaticLag,
 			sp->SpikeSlope);
 
-    for (size_t j = 0; j < sp->order; ++j)
+    for (size_t j = 0; j < sp->cof.size(); ++j)
       fprintf(fp, "%14e", sp->cof[j]);
 
     fprintf(fp, "\n");
@@ -1012,7 +1019,7 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
 			rp->StaticLag,
 			rp->SpikeSlope);
 
-    for (size_t j = 0; j < rp->order; ++j)
+    for (size_t j = 0; j < rp->cof.size(); ++j)
       fprintf(fp, "%14e", rp->cof[j]);
 
     fprintf(fp, "\n");

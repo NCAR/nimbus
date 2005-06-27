@@ -51,7 +51,7 @@ enum RateFeedBack { LOW_RATE_FEEDBACK, HIGH_RATE_FEEDBACK, nFeedBackTypes };
 #define GetSampleFor1D(dp, di)	\
 	(FeedBack == LOW_RATE_FEEDBACK \
 		? AveragedData[dp->depend_LRindex[di]] \
-		: HighRateData[dp->depend_HRindex[di] + (SampleOffset << 1)])
+		: HighRateData[dp->depend_HRindex[di] + (int)(2.5 * SampleOffset)])
 
 
 #define PutSample(dp, y)	\
@@ -74,12 +74,12 @@ struct _dnfn
 	void		(*compute)(DERTBL *);
 	} ;
 
-NR_TYPE	FirstPoly(NR_TYPE x, NR_TYPE c[]);
-NR_TYPE	SecondPoly(NR_TYPE x, NR_TYPE c[]);
+NR_TYPE	FirstPoly(NR_TYPE x, std::vector<float>& cof);
+NR_TYPE	SecondPoly(NR_TYPE x, std::vector<float>& cof);
 
-int	SearchDERIVFTNS(char target[]);
-void	RunAMLIBinitializers(), LogXlateMsg(char msg[]),
-	Log2dXlateMsg(P2d_rec *p, char msg[]), LogStdMsg(char msg[]);
+int	SearchDERIVFTNS(const char target[]);
+void	RunAMLIBinitializers(), LogXlateMsg(const char msg[]),
+	Log2dXlateMsg(P2d_rec *p, const char msg[]), LogStdMsg(const char msg[]);
 
 extern NR_TYPE		*AveragedData, *HighRateData;
 extern RateFeedBack	FeedBack;
@@ -88,7 +88,7 @@ extern struct _dnfn	deriveftns[];
 
 extern float	HDRversion;
 
-NR_TYPE *GetDefaultsValue(char target[], char var[]);
+NR_TYPE *GetDefaultsValue(const char target[], const char var[]);
 
 #if defined(__LITTLE_ENDIAN) || defined(_LITTLE_ENDIAN) || defined(LITTLE_ENDIAN)
 float	ntohf(float);

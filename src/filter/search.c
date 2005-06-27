@@ -25,13 +25,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------
 */
 
+#include "nimbus.h"
 #include <ctype.h>
 
-#include "nimbus.h"
-
-
 /* -------------------------------------------------------------------- */
-char *SearchList(char **list, char target[])
+char *SearchList(char **list, const char target[])
 {
   int	len = strlen(target);
 

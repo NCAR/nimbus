@@ -2,9 +2,6 @@
 
 Import('env')
 
-# No RCS/SCCS checkout.
-env.SourceCode(['std', 'user', 'xlate'], None)
-
 ##
 ##  Build xlate library
 ##

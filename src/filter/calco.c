@@ -41,7 +41,7 @@ void ApplyCalCoes(NR_TYPE *record)
       if (record[pos] == MISSING_VALUE)
         continue;
 
-      int corder  = sp->order - 1;
+      int corder  = sp->cof.size() - 1;
 
       NR_TYPE out     = sp->cof[corder];
 
@@ -49,7 +49,7 @@ void ApplyCalCoes(NR_TYPE *record)
         SRTvolts[pos] = record[pos] =
 		(record[pos] - sp->convertOffset) * sp->convertFactor;
 
-      for (size_t k = 1; k < sp->order; k++)
+      for (size_t k = 1; k < sp->cof.size(); k++)
         out = sp->cof[corder-k] + record[pos] * out;
 
       record[pos] = out;

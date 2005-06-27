@@ -83,15 +83,15 @@ void	ApplyVariableMods(Widget w, XtPointer client, XtPointer call),
 XmString	CreateListLineItem(void *pp, int var_type);
 
 void	CreateProbeMenu(),
-	HandleWarning(char msg[], XtCallbackProc, XtCallbackProc);
+	HandleWarning(const char msg[], XtCallbackProc, XtCallbackProc);
 
 #ifdef __cplusplus
 	extern "C" {
 #endif
 void	FileCancel(Widget w, XtPointer clientData, XtPointer callData),
-	WarnUser(char str[], XtCallbackProc, XtCallbackProc),
-	ShowError(char str[]),
-	QueryFile(char *prompt, char *directory, XtCallbackProc),
+	WarnUser(const char str[], XtCallbackProc, XtCallbackProc),
+	ShowError(const char str[]),
+	QueryFile(const char *prompt, const char *directory, XtCallbackProc),
 	ExtractFileName(XmString str, char **text);
 #ifdef __cplusplus
 	}

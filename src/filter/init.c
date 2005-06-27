@@ -24,7 +24,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-05
 static void ReadBatchFile(char *filename);
 
 void	Set_SetupFileName(char s[]);
+
+#ifdef RT
 void	RTinit_ADS2(), RTinit_ADS3();
+#endif
 
 /* -------------------------------------------------------------------- */
 void Initialize()
@@ -89,7 +92,7 @@ void ProcessArgv(int argc, char **argv)
       case 'r':
         cfg.SetTimeShifting(false);
         cfg.SetDespiking(false);
-
+#ifdef RT
         if (strcmp(argv[i], "-rt") == 0)	/* RealTime ADS2 */
           RTinit_ADS2();
         else
@@ -100,7 +103,7 @@ void ProcessArgv(int argc, char **argv)
           cfg.SetHoneyWellCleanup(false); // We want this in real-time.
           cfg.SetInertialShift(false); // We want this in real-time.
           }
-
+#endif
         break;
 
       case 'n':
