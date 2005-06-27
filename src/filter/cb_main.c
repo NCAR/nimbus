@@ -389,8 +389,10 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
 
     if (cfg.isADS2())
       RealTimeLoop();	/* Never to return	*/
+#ifdef RT
     else
       RealTimeLoop3();
+#endif
 
     exit(0);
     }
