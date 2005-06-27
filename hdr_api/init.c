@@ -33,7 +33,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "hdr_api.h"
 
 
-struct Fl	*HAPI_header;	/* Pointer where data is/will be stored	*/
+struct Fl *HAPI_header = 0;	/* Pointer where data is/will be stored	*/
 struct var_list	HAPI_var[MAX_VARS]; /* Pointers into *header		*/
 
 char	*HAPI_var_name[MAX_VARS]; /* List of variable names on tape	*/

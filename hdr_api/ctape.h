@@ -70,32 +70,27 @@ extern struct Fl	*HAPI_header;
 extern int		taperr;
 
 
-/* Top Level Header Macros	*/
-#define GetVersion(r)		GetHeaderString(r, HAPI_header->version)
-#define GetProjectNumber(r)	GetHeaderString(r, HAPI_header->prnum)
-#define GetFlightNumber(r)	GetHeaderString(r, HAPI_header->fltnum)
-#define GetTapeNumber(r)	GetHeaderString(r, HAPI_header->tpnum)
-#define GetHeaderDate(r)	GetHeaderString(r, HAPI_header->date)
-#define GetHeaderTime(r)	GetHeaderString(r, HAPI_header->time)
-#define GetTimeZone(r)		GetHeaderString(r, HAPI_header->tzone)
-#define GetAircraft(r)		GetHeaderString(r, HAPI_header->acraft)
-
-#define GetNumberItems(r)	GetHeaderLong(r, HAPI_header->n_items)
 #define get_header()		(HAPI_header)
-#define get_lrlen(r)		GetHeaderLong(r, HAPI_header->lrlen)
-#define get_lrppr(r)		GetHeaderLong(r, HAPI_header->lrppr)
-#define get_thdrlen(r)		GetHeaderLong(r, HAPI_header->thdrlen)
-
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 char	*GetFirst(void ), *GetNext(void ), **GetVariableList(void );
-long	GetHeaderLong(long *result, long value);
 void	*GetStructPointer(const char vn[]), ReleaseFlightHeader(void);
 
 int	InitFlightHeader(const char name[], int status),
-	GetHeaderString(char **result, char *value),
+	GetVersion(char **result),
+	GetProjectNumber(char **result),
+	GetFlightNumber(char **result),
+	GetTapeNumber(char **result),
+	GetHeaderDate(char **result),
+	GetHeaderTime(char **result),
+	GetTimeZone(char **result),
+	GetAircraft(char **result),
+	GetNumberItems(long *result),
+	get_lrlen(long *result),
+	get_lrppr(long *result),
+	get_thdrlen(long *result),
 	GetADStype(char **result),
 	GetPrimaryAddr(const char vn[], long *result),
 	GetSecondaryAddr(const char vn[], long *result),
