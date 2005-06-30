@@ -50,6 +50,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include "netcdf.h"
 #include "raf_queue.h"
 #include "vardb.h"
+#include "svnInfo.h"
 
 #include <cmath>
 
@@ -185,6 +186,16 @@ void CreateNetCDF(const char fileName[])
 
   strcpy(buffer, NETCDF_FORMAT_VERSION);
   ncattput(fd, NC_GLOBAL, "Version", NC_CHAR, strlen(buffer)+1, (void *)buffer);
+
+  strcpy(buffer, &SVNREVISION[10]);
+  ncattput(fd, NC_GLOBAL, "ProcessorRevision", NC_CHAR, strlen(buffer)+1, (void *)buffer);
+
+  if (strstr(SVNURL, "http"))
+    strcpy(buffer, strstr(SVNURL, "http"));
+  else
+    strcpy(buffer, SVNURL);
+
+  ncattput(fd, NC_GLOBAL, "ProcessorURL", NC_CHAR, strlen(buffer)+1, (void *)buffer);
 
 
   if (!cfg.ProductionRun())
