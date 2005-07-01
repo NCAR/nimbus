@@ -162,18 +162,20 @@ int main(int argc, char *argv[])
 
       if (inFile.get_var(i)->type() == ncFloat)
       {
-        float data[inFile.get_var(i)->num_vals()];
+        float *data = new float[inFile.get_var(i)->num_vals()];
 
         inFile.get_var(i)->get(data, inFile.get_var(i)->edges());
         outFile.get_var(i)->put(data, outFile.get_var(i)->edges());
+        delete [] data;
       }
       else
       if (inFile.get_var(i)->type() == ncInt)
       {
-        int data[inFile.get_var(i)->num_vals()];
+        int *data = new int[inFile.get_var(i)->num_vals()];
 
         inFile.get_var(i)->get(data, inFile.get_var(i)->edges());
         outFile.get_var(i)->put(data, outFile.get_var(i)->edges());
+        delete [] data;
       }
 
       delete [] edges;
