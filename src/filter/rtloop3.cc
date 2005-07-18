@@ -42,7 +42,7 @@ using namespace dsm;
 
 SyncRecordReader* syncRecReader = 0;
 
-static const std::string hostName = "insiparon";
+static const std::string hostName = "hyper";
 static const int portNumber = 10001;
 
 extern PostgreSQL *psql;

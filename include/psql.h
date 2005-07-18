@@ -171,12 +171,12 @@ private:
    * @param sql is the SQL stringstream to add the value.
    * @param udp is the UDP stringstream to add the value.
    * @param value is the value to add.
-   * @param addComma is whether to add a comma to the stream.
+   * @param addComma is whether to prepend a comma to the stream.
    */
   void
-  addValue(std::stringstream& sqlStr, std::stringstream& brdStr, const NR_TYPE value, const bool addComma);
+  addValue(std::stringstream& sqlStr, std::stringstream& brdStr, const NR_TYPE value, const bool addComma = true);
   void
-  addValue(std::stringstream& sqlStr, const NR_TYPE value, const bool addComma);
+  addValue(std::stringstream& sqlStr, const NR_TYPE value, const bool addComma = true);
 
   /**
    * Add a vector of values to the stringstream-s, used for building UDP
@@ -186,10 +186,9 @@ private:
    * @param udp is the UDP stringstream to add the value.
    * @param values is a pointer to the values to add.
    * @param nValues is the vector length.
-   * @param addComma is whether to add a comma to the stream.
    */
   void
-  addVector(std::stringstream& sql, std::stringstream& udp, const NR_TYPE *values, int nValues, const bool addComma);
+  addVector(std::stringstream& sql, std::stringstream& udp, const NR_TYPE *values, int nValues);
 
 };	// END PGSQL.H
 

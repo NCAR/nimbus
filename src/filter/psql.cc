@@ -93,7 +93,7 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
    * UDP = {5, 6, 7, 8}
    */
   _sqlString.str("");
-  _sqlString << "INSERT INTO " << LRT_TABLE << " VALUES ('" << timeStamp << "', ";
+  _sqlString << "INSERT INTO " << LRT_TABLE << " VALUES ('" << timeStamp << "'";
 
   _broadcastString.str("");
   _broadcastString << "RAF-TS " << timeStamp << ' ';
@@ -105,10 +105,7 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
   bool addComma = false;
 
   for (size_t i = 0; i < sdi.size(); ++i)
-  {
-    addValue(_sqlString, _broadcastString, AveragedData[sdi[i]->LRstart], addComma);
-    addComma = true;
-  }
+    addValue(_sqlString, _broadcastString, AveragedData[sdi[i]->LRstart]);
 
 
   /* Three loops again, analog, raw and derived.  This is raw.
@@ -116,9 +113,9 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
   for (size_t i = 0; i < raw.size(); ++i)
   {
     if (raw[i]->Length > 1)	// PMS/vector data.
-      addVector(_sqlString, _broadcastString, &AveragedData[raw[i]->LRstart], raw[i]->Length, true);
+      addVector(_sqlString, _broadcastString, &AveragedData[raw[i]->LRstart], raw[i]->Length);
     else
-      addValue(_sqlString, _broadcastString, AveragedData[raw[i]->LRstart], true);
+      addValue(_sqlString, _broadcastString, AveragedData[raw[i]->LRstart]);
   }
 
 
@@ -127,9 +124,9 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
   for (size_t i = 0; i < derived.size(); ++i)
   {
     if (derived[i]->Length > 1)
-      addVector(_sqlString, _broadcastString, &AveragedData[derived[i]->LRstart], derived[i]->Length, true);
+      addVector(_sqlString, _broadcastString, &AveragedData[derived[i]->LRstart], derived[i]->Length);
     else
-      addValue(_sqlString, _broadcastString, AveragedData[derived[i]->LRstart], true);
+      addValue(_sqlString, _broadcastString, AveragedData[derived[i]->LRstart]);
   }
 
   _sqlString << ");";
@@ -427,11 +424,11 @@ PostgreSQL::WriteSQLvolts(const std::string timeStamp)
 
       for (size_t j = 0; j < sdi.size(); ++j)
         if (sdi[j]->SampleRate == (size_t)it->first)
-          addValue(_sqlString, SRTvolts[sdi[j]->SRstart+i], true);
+          addValue(_sqlString, SRTvolts[sdi[j]->SRstart+i]);
 
       for (size_t j = 0; j < raw.size(); ++j)
         if (raw[j]->SampleRate == (size_t)it->first && raw[j]->Length == 1)
-          addValue(_sqlString, SampledData[raw[j]->SRstart+i], true);
+          addValue(_sqlString, SampledData[raw[j]->SRstart+i]);
 
       _sqlString << ");";
     }
@@ -540,22 +537,15 @@ PostgreSQL::addVector(
 		std::stringstream& sql,
 		std::stringstream& udp,
 		const NR_TYPE *value,
-		const int nValues,
-		const bool addComma)
+		const int nValues)
 {
-  if (addComma)
-  {
-    sql << ',';
-    udp << ',';
-  }
-
-  sql << "'{";
-  udp << '{';
+  sql << ",'{";
+  udp << ",{";
 
   for (int j = 0; j < nValues; ++j)
   {
     if (j != 0)
-      addValue(sql, udp, value[j], true);
+      addValue(sql, udp, value[j]);
     else
       addValue(sql, udp, value[j], false);
   }

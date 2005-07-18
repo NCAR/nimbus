@@ -6,6 +6,7 @@ Version number is changed in version.h.
 	Accept renaming of queue.h to raf_queue.h
 	A round of const-ness.
 	First round of ADS3.
+	Change HRT[SampleOffset * 2.5] instead of just 2.
 	Moved from make to scons for build.
 
 04/15/05	4.0.0
