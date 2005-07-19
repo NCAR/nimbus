@@ -256,7 +256,7 @@ void CreateProject(Widget w, XtPointer client, XtPointer call)
 {
   /* Check to see if user is 'nimbus'.
    */
-  if (getuid() != 130)
+  if (getuid() != 20000)
     ShowError("Must be logged in as 'nimbus' to create a project.");
   else
     QueryUser("Enter Project Number:", 12, CreateProject2);
