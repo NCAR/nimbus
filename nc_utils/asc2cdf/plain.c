@@ -48,19 +48,21 @@ void CreatePlainNetCDF(FILE *fp)
 #ifdef VARDB
   if (InitializeVarDB("VarDB") == ERR)
     {
+    fprintf(stderr, "No VarDB in local directory, trying $PROJ_DIR/proj/defaults/VarDB.\n");
+
     if (getenv("PROJ_DIR") > 0)
       strcpy(buffer, getenv("PROJ_DIR"));
     else
       {
       strcpy(buffer, "/usr/local/proj");
-      fprintf(stderr, "env variable PROJ_DIR undefined, defaulting to /usr/local/proj.\n");
+      fprintf(stderr, "env variable PROJ_DIR undefined, trying /usr/local/proj.\n");
       }
 
     strcat(buffer, "/defaults/VarDB");
 
     if (InitializeVarDB(buffer) == ERR)
       {
-      fprintf(stderr,"Can't open ./VarDB or %s\n", buffer);
+      fprintf(stderr,"Can't open %s, continuing with no VarDB in use.\n", buffer);
       varDB = FALSE;
       }
     }
