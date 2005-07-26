@@ -49,7 +49,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include "gui.h"
 #include "ctape.h"
 #include "netcdf.h"
-#include "queue.h"
+#include "raf_queue.h"
 #include "vardb.h"
 
 #include <cmath>
