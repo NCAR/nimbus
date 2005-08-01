@@ -152,6 +152,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
           {
           size_t order = atoi(strchr(target, '=')+1);
 
+          sdi[indx]->cof.clear();
           for (size_t i = 0; i < order; ++i)
             sdi[indx]->cof.push_back((float)atof(strtok(NULL, " \t")));
           }
@@ -198,6 +199,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
           {
           size_t order = atoi(strchr(target, '=')+1);
 
+          raw[indx]->cof.clear();
           for (size_t i = 0; i < order; ++i)
             raw[indx]->cof[i] = (float)atof(strtok(NULL, " \t"));
           }
