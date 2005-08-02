@@ -42,8 +42,12 @@ using namespace dsm;
 
 SyncRecordReader* syncRecReader = 0;
 
-static const std::string hostName = "hyper";
-static const int portNumber = 10001;
+static const std::string DSMSERVER = "ac-server";
+static const int DSMSERVERPORT = 10001;
+
+static const std::string PGHOST = "ac-server";
+static const std::string PGDATABASE = "real-time";
+static const std::string PGUSER = "ads";
 
 extern PostgreSQL *psql;
 
@@ -54,7 +58,7 @@ void RTinit_ADS3()
 {
 printf("RTinit_ADS3, establishing connection....\n");
 
-  atdUtil::Socket* sock = new atdUtil::Socket(hostName, portNumber);
+  atdUtil::Socket* sock = new atdUtil::Socket(DSMSERVER, DSMSERVERPORT);
   IOChannel* iochan = new dsm::Socket(sock);
 
   syncRecReader = new SyncRecordReader(iochan);
@@ -80,7 +84,30 @@ void RealTimeLoop3()
   SampledData = new NR_TYPE[nSRfloats];
 
 #ifdef RT_SQL
-  psql = new PostgreSQL("");
+{
+  std::string specifier;
+  char *p;
+
+  specifier = "host=";
+  if ((p = getenv("PGHOST")) == 0)
+    specifier += PGHOST;
+  else
+    specifier += p;
+
+  specifier += " dbname=";
+  if ((p = getenv("PGDATABASE")) == 0)
+    specifier += PGDATABASE;
+  else
+    specifier += p;
+
+  specifier += " user=";
+  if ((p = getenv("PGUSER")) == 0)
+    specifier += PGUSER;
+  else
+    specifier += p;
+
+  psql = new PostgreSQL(specifier);
+}
 #endif
 
   for (;;)

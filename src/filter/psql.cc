@@ -4,11 +4,7 @@ OBJECT NAME:    psql.cc (PostgreS)
 
 FULL NAME:      PostgreSQL database routines.
 
-DESCRIPTION:
-
-NOTES:		
-
-COPYRIGHT:      University Corporation for Atmospheric Research, 2003-2004
+COPYRIGHT:      University Corporation for Atmospheric Research, 2003-2005
 -------------------------------------------------------------------------
 */
 
@@ -22,7 +18,6 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2003-2004
 #include <set>
 #include <iomanip>
 
-
 void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[]);
 
 const int PostgreSQL::RT_UDP_PORT = 2101;
@@ -32,11 +27,10 @@ const std::string PostgreSQL::CATEGORIES_TABLE = "Categories";
 const std::string PostgreSQL::LRT_TABLE = "RAF_LRT";
 const std::string PostgreSQL::RATE_TABLE_PREFIX = "SampleRate";
 
-
 /* -------------------------------------------------------------------- */
 PostgreSQL::PostgreSQL(std::string specifier)
 {
-  _conn = PQconnectdb("");
+  _conn = PQconnectdb(specifier.c_str());
 
   /* check to see that the backend connection was successfully made
    */
@@ -102,8 +96,6 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
 
   /* Three loops again, analog, raw and derived.  This is analog.
    */
-  bool addComma = false;
-
   for (size_t i = 0; i < sdi.size(); ++i)
     addValue(_sqlString, _broadcastString, AveragedData[sdi[i]->LRstart]);
 
