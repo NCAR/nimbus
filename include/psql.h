@@ -6,7 +6,7 @@ FULL NAME:	PostgreSQL output.
 
 DESCRIPTION:	Produce RAF PostgreSQL flight file.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2004
+COPYRIGHT:	University Corporation for Atmospheric Research, 2004-05
 -------------------------------------------------------------------------
 */
 
