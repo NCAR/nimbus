@@ -5,7 +5,6 @@
    Copyright by the National Center for Atmospheric Research
  
    Revisions:
-
 */
 
 #ifndef UDPSOCKET_H
