@@ -155,7 +155,7 @@ int UdpSocket::querySock ()
     {
     switch (errno) {
       case EINTR :
-        return FALSE;
+        return false;
       default:
         perror ("UdpSocket: select");
         exit (1);
