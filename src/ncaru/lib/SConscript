@@ -1,0 +1,15 @@
+# -*- python -*-
+
+Import('env')
+
+thisEnv = env.Copy(CC = 'gcc')
+
+sources = Split("""
+	conversion.c
+	cputget.c
+	cray.c
+	packf.c
+""")
+
+ncaru = thisEnv.StaticLibrary('ncaru' , sources)
+thisEnv.Default(thisEnv.Install('#/lib/' , ncaru)) 

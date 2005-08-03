@@ -37,6 +37,11 @@ SConscript('include/SConscript')
 ##
 ##  Build Derived Calculations libraries.
 ##
+SConscript('src/ncaru/lib/SConscript')
+
+##
+##  Build Derived Calculations libraries.
+##
 SConscript('src/amlib/SConscript')
 
 ##
