@@ -2,7 +2,7 @@
 
 Import('env')
 
-env.Append(LIBPATH=['#/../lib'])
+env.Append(LIBPATH=['#/lib'])
 env.Append(LIBPATH=['$JLOCAL/lib'])
 env.Append(LIBPATH=['/usr/X11R6/lib'])
 

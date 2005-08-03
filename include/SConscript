@@ -6,10 +6,10 @@ env = Environment()
 env.SourceCode('.', None)
 
 make_amlib = env.Program('make_amlib', 'make_amlib.c')
-amlibfn = env.Command('amlibfn.h', ['amlib.fns', make_amlib], "cd ../include; ./make_amlib")
+amlibfn = env.Command('amlibfn.h', ['amlib.fns', make_amlib], "cd include; ./make_amlib")
 env.Clean(amlibfn, ['xlatefns.h', 'amlibProto.h'])
 
-svnInfo = env.Command('svnInfo.h', None, "cd ../include; ./makeSvnInfoHeaderFile.sh")
+svnInfo = env.Command('svnInfo.h', None, "cd include; ./makeSvnInfoHeaderFile.sh")
 
 env.AlwaysBuild(svnInfo)
 env.Precious(svnInfo)

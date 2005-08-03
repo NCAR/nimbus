@@ -18,7 +18,7 @@ env['JLOCAL'] = os.environ['JLOCAL']
 env['CC'] = ['g++']
 
 env['CPPPATH'] = Split("""
-    #/../include
+    #/include
     $JLOCAL/include
 """)
 
@@ -32,14 +32,14 @@ Export('env')
 ##
 ##  Build include files.
 ##
-SConscript('../include/SConscript')
+SConscript('include/SConscript')
 
 ##
 ##  Build Derived Calculations libraries.
 ##
-SConscript('amlib/SConscript')
+SConscript('src/amlib/SConscript')
 
 ##
 ##  Build nimbus proper.
 ##
-SConscript('filter/SConscript')
+SConscript('src/filter/SConscript')
