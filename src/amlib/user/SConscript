@@ -37,4 +37,4 @@ ultrafine.c
 """)
 
 user = env.StaticLibrary('user' , sources)
-env.Default(env.Install('#/../lib/', user))
+env.Default(env.Install('#/lib/', user))
