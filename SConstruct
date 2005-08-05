@@ -3,7 +3,7 @@
 import os
 env = Environment(platform = 'posix',ENV= os.environ)
 
-env.realtime = ARGUMENTS.get('rt', 0)
+env.realtime = ARGUMENTS.get('rt', 1)
 
 import SCons
 file = "sconsign-%s" % (SCons.__version__)
