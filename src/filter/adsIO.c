@@ -45,9 +45,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 #include "portable.h"
 
 /* Values for DiskData, 1st one matches false.	*/
-#define TAPE_DATA	0
-#define RAW_ADS		1
-#define COS_BLOCKED	2
+enum FileType { TAPE_DATA, RAW_ADS, COS_BLOCKED };
 
 /* ADS image record types (sans pms2d).	*/
 #define ADS_WORD	0x4144
@@ -58,7 +56,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 #define FIRST_DATA_RECORD	((long)3)
 
 
-static int	DiskData = TAPE_DATA;
+static FileType	DiskData = RAW_ADS;
 static char	phys_rec[MX_PHYS] = "";
 static char	*adsFileName;
 static long	lrlen, lrppr, currentLR;
@@ -272,18 +270,11 @@ char *ExtractHeaderIntoFile(const char fileName[])
 
   static char	tmpFile[256];
 
-  DiskData = RAW_ADS;
   adsFileName = (char *)fileName;
 
   strcpy(tmpFile, "/tmp/nimbusXXXXXX");
   outFD = mkstemp(tmpFile);
-/*
-  if ((fp = fopen(tmpFile, "wb")) == NULL)
-    {
-    fprintf(stderr, "Unable to open tmpFile %s, fatal.\n", tmpFile);
-    exit(1);
-    }
-*/
+
   if (strncmp(adsFileName, "/dev/rmt/", 9) == 0)
     {
     DiskData = TAPE_DATA;
@@ -296,6 +287,19 @@ char *ExtractHeaderIntoFile(const char fileName[])
     return(tmpFile);
     }
 
+  if ((infd = open(adsFileName, O_RDONLY)) < 0)
+    {
+    fprintf(stderr, "adsIO: Failure opening input file %s.\n", adsFileName);
+    exit(1);
+    }
+
+  if (lseek(infd, 0, SEEK_END) < 200) // 200 is kinda random.
+    {
+    fprintf(stderr, "adsIO: File %s is empty???.\n", adsFileName);
+    exit(1);
+    }
+
+  close(infd);
 
   if ((infd = crayopen(adsFileName, &iflag, &mode, strlen(adsFileName))) < 0)
     DiskData = RAW_ADS;
@@ -311,7 +315,7 @@ char *ExtractHeaderIntoFile(const char fileName[])
     else
       {
       if ((rc = crayread(&infd, phys_rec, &nWords, &iconv)) < 0) {
-        fprintf(stderr, "crayread: read error %d\n", rc);
+        fprintf(stderr, "adsIO: crayread: read error %d\n", rc);
         exit(1);
         }
 
@@ -350,6 +354,9 @@ char *ExtractHeaderIntoFile(const char fileName[])
     read(infd, phys_rec, nBytes);
     write(outFD, phys_rec, nBytes);
     }
+
+  if (DiskData == COS_BLOCKED)
+    printf("adsIO: File is COS blocked.\n");
 
   close(outFD);
   return(tmpFile);
