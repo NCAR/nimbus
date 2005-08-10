@@ -256,7 +256,7 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
         if (f == 0.0 && sp->cof.size() == 0)
           continue;
 
-        sp->cof.push_back(f);
+        sp->cof.insert(sp->cof.begin(), f);
         }
 
       newAttr = CreateListLineItem((void *)sp, SDI);
@@ -306,7 +306,7 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
         if (f == 0.0 && rp->cof.size() == 0)
           continue;
 
-        rp->cof.push_back(f);
+        rp->cof.insert(rp->cof.begin(), f);
         }
 
       newAttr = CreateListLineItem((void *)rp, RAW);
