@@ -937,17 +937,17 @@ void TransferDataToSHMEM(NR_TYPE record[], int index)
 
 /* -------------------------------------------------------------------- */
 
-void HandleError(char s[])
+void HandleError(const char s[])
 {
   (void)fprintf(stderr, s);
 }
 
-void LogMessage(char s[])
+void LogMessage(const char s[])
 {
   (void)fprintf(stderr, s);
 }
 
-char *ExtractHeaderIntoFile(char *fileName)
+char *ExtractHeaderIntoFile(const char *fileName)
 {
   int	nBytes;
   char	*tmpFile;
