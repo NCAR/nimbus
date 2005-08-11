@@ -243,8 +243,10 @@ PostgreSQL::initializeGlobalAttributes()
   char	*p, temp[100];
   extern char	dateProcessed[];	// From netcdf.c
 
+  sprintf(temp, "INSERT INTO global_attributes VALUES ('ProjectName', '%s')", ProjectName);
+  PQclear(PQexec(_conn, temp));
   GetAircraft(&p);
-  sprintf(temp, "INSERT INTO global_attributes VALUES ('ProjectName', '%s')", p);
+  sprintf(temp, "INSERT INTO global_attributes VALUES ('Platform', '%s')", p);
   PQclear(PQexec(_conn, temp));
   GetProjectNumber(&p);
   sprintf(temp, "INSERT INTO global_attributes VALUES ('ProjectNumber', '%s')", p);
