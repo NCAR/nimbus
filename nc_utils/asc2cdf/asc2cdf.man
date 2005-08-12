@@ -4,7 +4,7 @@
 .SH NAME
 asc2cdf \- ASCII to netCDF converter
 .SH SYNOPSIS
-asc2cdf [-b time_t] [-a] [-l] [-m] [-r n] [-s n] ASCII_file netCDF_file
+asc2cdf [-b time_t] [-g globalAttrFile] [-a] [-l] [-m] [-r n] [-s n] ASCII_file netCDF_file
 .SH DESCRIPTION
 .B asc2cdf 
 is program for uploading ASCII data into a netCDF file that follows the
@@ -15,6 +15,20 @@ names, and time in the HH:MM:SS format in the left column.
 .PP
 The -a option tells asc2cdf that the input file will be following the NASA
 Data Exchange Format (Ames).
+.PP
+The -g option tells netCDF to read a file containing key/value pairs to
+be added as global attributes to the netCDF.  e.g.
+.br
+.nf
+Source=NCAR Research Aviation Facility
+Address=P.O. Box 3000, Boulder, CO 80307-3000
+Phone=(303) 497-1030
+Investigator=Teresa Campos
+ProjectName=RICO
+Aircraft=N130AR
+ProjectNumber=135
+FlightNumber=rf18
+.fi
 .PP
 The -l option tells asc2cdf that the input file will be following the NASA
 Data Exchange Format (Langley).

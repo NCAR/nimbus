@@ -21,7 +21,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-7
 
 #include "define.h"
 
-static int		baseTimeID;
 static struct tm	StartFlight;
 
 char *GetMemory();
@@ -42,6 +41,11 @@ void SetNASABaseTime(int hour, int min, int sec)
 
   BaseTime = mktime(&StartFlight);
   nc_put_var_long(ncid, baseTimeID, &BaseTime);
+
+  strftime(buffer, 128, "%F %T %z", &StartFlight);
+
+  nc_put_att_text(ncid, timeVarID, "units", strlen(buffer)+1, buffer);
+  nc_put_att_text(ncid, timeOffsetID, "units", strlen(buffer)+1, buffer);
 
 }	/* END SETNASABASETIME */
 
@@ -154,13 +158,7 @@ void CreateNASAamesNetCDF(FILE *fp)
 
   /* Time Variables.
    */
-  nc_def_var(ncid, "base_time", NC_INT, 0, 0, &baseTimeID);
-  strcpy(buffer, "Seconds since Jan 1, 1970.");
-  nc_put_att_text(ncid, baseTimeID, "long_name", strlen(buffer)+1, buffer);
-
-  nc_def_var(ncid, "time_offset", NC_FLOAT, 1, dims, &timeOffsetID);
-  strcpy(buffer, "Seconds since base_time.");
-  nc_put_att_text(ncid, timeOffsetID, "long_name", strlen(buffer)+1, buffer);
+  createTime(dims);
 
 
   /* Create Time variables.
@@ -170,9 +168,9 @@ void CreateNASAamesNetCDF(FILE *fp)
     p = time_vars[i];
     nc_def_var(ncid, time_vars[i], NC_FLOAT, 1, dims, &varid[i]);
 
+    nc_put_att_float(ncid, varid[i], "_FillValue", NC_FLOAT, 1, &missing_val);
     nc_put_att_text(ncid, varid[i], "units", strlen(p)+1, p);
     nc_put_att_text(ncid, varid[i], "long_name", strlen(p)+1, p);
-    nc_put_att_int(ncid, varid[i], "OutputRate", NC_INT, 1, &rateOne);
     nc_put_att_float(ncid, varid[i], "missing_value", NC_FLOAT, 1, &missing_val);
     }
 
@@ -301,18 +299,16 @@ void CreateNASAamesNetCDF(FILE *fp)
 //    nc_def_var(ncid, titles[i], NC_FLOAT, ndims, dims, &varid[i+3]);
 
 printf("%s\n", titles[i]);
+    nc_put_att_float(ncid,varid[i+3], "_FillValue",NC_FLOAT, 1, &missing_val);
     p = units[i];
     nc_put_att_text(ncid, varid[i+3], "units", strlen(p)+1, p);
     p = titles[i];
     nc_put_att_text(ncid, varid[i+3], "long_name", strlen(p)+1, p);
-    nc_put_att_int(ncid, varid[i+3], "OutputRate", NC_INT, 1, &dataRate);
     nc_put_att_float(ncid,varid[i+3], "missing_value",NC_FLOAT, 1, &missing_val);
 
     free(units[i]);
     free(titles[i]);
     }
-
-  nc_enddef(ncid);
 
 }	/* END CREATENASAAMESNETCDF */
 

@@ -15,7 +15,7 @@ REFERENCES:	none
 
 REFERENCED BY:	main()
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1996-7
+COPYRIGHT:	University Corporation for Atmospheric Research, 1996-05
 -------------------------------------------------------------------------
 */
 
@@ -25,13 +25,21 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-7
 #include "vardb.h"
 #endif
 
-static int	baseTimeID;
+char *baseTimeUnits = "seconds since 1970-01-01 00:00:00 +0000";
 
 
 /* -------------------------------------------------------------------- */
 void SetPlainBaseTime()
 {
+  struct tm     *t;
+
   nc_put_var_long(ncid, baseTimeID, &BaseTime);
+
+  t = gmtime(&BaseTime);
+  strftime(buffer, 128, "seconds since %F %T %z", t);
+
+  nc_put_att_text(ncid, timeVarID, "units", strlen(buffer)+1, buffer);
+  nc_put_att_text(ncid, timeOffsetID, "units", strlen(buffer)+1, buffer);
 
 }	/* END SETBASETIME */
 
@@ -109,13 +117,7 @@ void CreatePlainNetCDF(FILE *fp)
 
   /* Time Variables, here to keep Gary/WINDS happy.
    */
-  nc_def_var(ncid, "base_time", NC_INT, 0, 0, &baseTimeID);
-  strcpy(buffer, "Seconds since Jan 1, 1970.");
-  nc_put_att_text(ncid, baseTimeID, "long_name", strlen(buffer)+1, buffer);
-
-  nc_def_var(ncid, "time_offset", NC_FLOAT, 1, dims, &timeOffsetID);
-  strcpy(buffer, "Seconds since base_time.");
-  nc_put_att_text(ncid, timeOffsetID, "long_name", strlen(buffer)+1, buffer);
+  createTime(dims);
 
 
   /* Create Time variables.
@@ -123,6 +125,7 @@ void CreatePlainNetCDF(FILE *fp)
   for (i = 0; i < 3; ++i)
     {
     nc_def_var(ncid, time_vars[i], NC_FLOAT, 1, dims, &varid[i]);
+    nc_put_att_float(ncid, varid[i], "_FillValue", NC_FLOAT, 1, &missing_val);
 
     p =
 #ifdef VARDB
@@ -137,7 +140,6 @@ void CreatePlainNetCDF(FILE *fp)
 #endif
 	(char *)noTitle;
     nc_put_att_text(ncid, varid[i], "long_name", strlen(p)+1, p);
-    nc_put_att_int(ncid, varid[i], "OutputRate", NC_INT, 1, &rateOne);
     nc_put_att_float(ncid, varid[i], "missing_value", NC_FLOAT, 1, &missing_val);
     }
 
@@ -168,6 +170,7 @@ void CreatePlainNetCDF(FILE *fp)
   do
     {
     nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[nVariables]);
+    nc_put_att_float(ncid,varid[nVariables],"_FillValue",NC_FLOAT,1,&missing_val);
 
     p1 =
 #ifdef VARDB
@@ -182,8 +185,6 @@ void CreatePlainNetCDF(FILE *fp)
 #endif
 	(char *)noTitle;
     nc_put_att_text(ncid, varid[nVariables], "long_name", strlen(p1)+1, p1);
-
-    nc_put_att_int(ncid,varid[nVariables], "OutputRate", NC_INT, 1, &dataRate);
     nc_put_att_float(ncid,varid[nVariables],"missing_value",NC_FLOAT,1,&missing_val);
 
     ++nVariables;
@@ -192,13 +193,81 @@ void CreatePlainNetCDF(FILE *fp)
 
   nVariables -= 3;
 
-  nc_enddef(ncid);
-
 #ifdef VARDB
   if (varDB)
     ReleaseVarDB();
 #endif
 
 }	/* END CREATEPLAINNETCDF */
+
+/* -------------------------------------------------------------------- */
+void createTime(int dims[])
+{
+  /* Time Variables, base_time/time_offset being deprecated.  Feb05
+   */
+  nc_def_var(ncid, "base_time", NC_INT, 0, 0, &baseTimeID);
+  nc_put_att_text(ncid, baseTimeID, "units",
+                strlen(baseTimeUnits)+1, baseTimeUnits);
+  strcpy(buffer, "Start time of data recording.");
+  nc_put_att_text(ncid, baseTimeID, "long_name", strlen(buffer)+1, buffer);
+
+  nc_def_var(ncid, "Time", NC_INT, 1, dims, &timeVarID);
+  nc_put_att_text(ncid, timeVarID, "units",
+                strlen(baseTimeUnits)+1, baseTimeUnits);
+  strcpy(buffer, "time");
+  nc_put_att_text(ncid, timeVarID, "standard_name", strlen(buffer)+1, buffer);
+  strcpy(buffer, "time of measurement");
+  nc_put_att_text(ncid, timeVarID, "long_name", strlen(buffer)+1, buffer);
+
+  nc_def_var(ncid, "time_offset", NC_FLOAT, 1, dims, &timeOffsetID);
+  nc_put_att_text(ncid, timeOffsetID, "units",
+                strlen(baseTimeUnits)+1, baseTimeUnits);
+  strcpy(buffer, "Seconds since base_time.");
+  nc_put_att_text(ncid, timeOffsetID, "long_name", strlen(buffer)+1, buffer);
+}
+
+/* -------------------------------------------------------------------- */
+void addGlobalAttrs(const char *fileName)
+{
+  FILE *fp;
+
+  if (fileName == 0)
+    return;
+
+  if ((fp = fopen(fileName, "r")) == NULL)
+  {
+    fprintf(stderr, "Can't open global attribute file %s.\n", fileName);
+    exit(1);
+  }
+
+  while (fgets(buffer, BUFFSIZE, fp) > 0)
+  {
+    char *p, *attr, *value;
+
+    if (buffer[0] == '#' || strlen(buffer) < 4)
+      continue;
+
+    if ((p = strchr(buffer, '=')) == 0)
+    {
+      fprintf(stderr, "Invalid global attribute line, skipping.\n  [%s]\n", buffer);
+      continue;
+    }
+
+    buffer[strlen(buffer)-1] = '\0';
+    *p = '\0';
+
+    // Skip any leading whitespace at beginning of line.
+    for (attr = buffer; isspace(*attr); ++attr)
+      ;
+
+    // Skip any leading whitespace after equal sign.
+    for (value = ++p; isspace(*value); ++value)
+      ;
+
+    nc_put_att_text(ncid, NC_GLOBAL, attr, strlen(value)+1, value);
+  }
+
+  fclose(fp);
+}
 
 /* END PLAIN.C */

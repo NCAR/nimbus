@@ -31,10 +31,13 @@ char	buffer[BUFFSIZE];
 
 int	ncid;
 FILE	*inFP;
-int	timeOffsetID, varid[MAX_VARS], nVariables, nRecords;
+int	baseTimeID, timeOffsetID, timeVarID, varid[MAX_VARS],
+	nVariables, nRecords;
 time_t	BaseTime = 0;
 float	scale[MAX_VARS], offset[MAX_VARS], missingVals[MAX_VARS];
 char	*time_vars[] = {"HOUR", "MINUTE", "SECOND"};
+
+static char	*globalAttrFile = 0;
 
 /* Command line option flags.
  */
@@ -47,6 +50,7 @@ const int	rateOne = 1;
 const char	*noTitle = "No Title";
 const char	*noUnits = "Unk";
 
+void addGlobalAttrs(const char *p);
 
 static int ProcessArgv(int argc, char **argv);
 static void WriteMissingData(int, int);
@@ -64,20 +68,20 @@ int main(int argc, char *argv[])
 
   if ((argc - i) < 2)
     {
-    fprintf(stderr, "Usage: asc2cdf [-a] [-l] [-m] [-r n] [-s n] ascii_file output.nc\n");
+    fprintf(stderr, "Usage: asc2cdf [-b time_t] [-a] [-l] [-m] [-r n] [-s n] ascii_file output.nc\n");
     exit(1);
     }
 
   if ((inFP = fopen(argv[i], "r")) == NULL)
     {
-    fprintf(stderr, "Can't open %s.\n", argv[i]);
+    fprintf(stderr, "Can't open input file %s.\n", argv[i]);
     exit(1);
     }
 
 
   if (nc_create(argv[i+1], NC_CLOBBER, &ncid) != NC_NOERR)
     {
-    fprintf(stderr, "Can't destroy %s.\n", argv[i+1]);
+    fprintf(stderr, "Can't destroy/create output file %s.\n", argv[i+1]);
     exit(1);
     }
 
@@ -97,6 +101,9 @@ int main(int argc, char *argv[])
       CreateNASAlangNetCDF(inFP);
       break;
     }
+
+  addGlobalAttrs(globalAttrFile);
+  nc_enddef(ncid);
 
 
   printf("Averaging Period = %d, Data Rate = %dHz\n", BaseDataRate, dataRate);
@@ -295,6 +302,10 @@ static int ProcessArgv(int argc, char **argv)
       case 'l':
         fileType = NASA_LANGLEY;
         sexSinceMidnight = TRUE;
+        break;
+
+      case 'g':
+        globalAttrFile = argv[++i];
         break;
 
       case 'r':

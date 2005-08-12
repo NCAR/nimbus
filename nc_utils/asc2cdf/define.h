@@ -24,7 +24,7 @@ typedef unsigned char   bool;
 #define NASA_LANGLEY	2
 
 extern char	buffer[];
-extern int	ncid, varid[], nVariables, timeOffsetID;
+extern int	ncid, varid[], nVariables, timeOffsetID, timeVarID, baseTimeID;
 extern float	scale[], offset[], missingVals[];
 extern char	*time_vars[];
 extern const char	*noTitle, *noUnits;
@@ -38,3 +38,4 @@ void CreateNASAamesNetCDF(FILE *fp);
 void CreateNASAlangNetCDF(FILE *fp);
 void CreatePlainNetCDF(FILE *fp);
 void SetNASABaseTime(int, int, int), SetPlainBaseTime(void);
+void createTime(int dims[]);
