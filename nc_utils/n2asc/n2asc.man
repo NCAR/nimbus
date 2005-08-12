@@ -30,7 +30,7 @@ AF300=%8d
 A200Y=%8d
 A200Y=%8d
 A260X=%8d
-.f
+.fi
 .PP
 Normally n2asc prints a time stamp in the first column (X axis).  The -c
 option changes this to a running counter, which can be more useful for
@@ -45,7 +45,7 @@ of=junk.asc
 ti=09:00:00-09:05:00
 var=ADIFR
 var=BDIFR
-.f
+.fi
 .PP
 The -a option tells n2asc to produce an ASCII file following the NASA
 Ames Data Exchange Format.
