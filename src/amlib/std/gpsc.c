@@ -51,6 +51,7 @@ static double	am[2][NCF], bm[2][NCF], c[2][NCF], cp[2][NCF];
 static NR_TYPE	filter(double, double *);
 static double	invert(double a[][NCF]);
 
+static bool returnMissingValue = false;
 
 /* -------------------------------------------------------------------- */
 void initLATC(DERTBL *varp)
@@ -149,6 +150,18 @@ void slatc(DERTBL *varp)
   roll	= GetSample(varp, 8);	// IRS Roll
   gstat	= (long)GetSample(varp, 9);	/* nSats for Tans & Garmin	*/
   gmode	= (long)GetSample(varp, 10);	/* GMODE or GGMODE		*/
+
+  if (alat == MISSING_VALUE || alon == MISSING_VALUE || glat == MISSING_VALUE ||
+      glon == MISSING_VALUE || vns == MISSING_VALUE || vew == MISSING_VALUE ||
+      gvns == MISSING_VALUE || gvew == MISSING_VALUE)
+    {
+
+    returnMissingValue = true;
+    PutSample(varp, MISSING_VALUE);
+    return;
+    }
+  else
+    returnMissingValue = false;
 
   if (firstTime[FeedBack])
     {
@@ -388,19 +401,28 @@ label546:
 /* -------------------------------------------------------------------- */
 void slonc(DERTBL *varp)
 {
-  PutSample(varp, lonc[FeedBack]);
+  if (returnMissingValue)
+    PutSample(varp, MISSING_VALUE);
+  else
+    PutSample(varp, lonc[FeedBack]);
 }
 
 /* -------------------------------------------------------------------- */
 void svewc(DERTBL *varp)
 {
-  PutSample(varp, vewc[FeedBack]);
+  if (returnMissingValue)
+    PutSample(varp, MISSING_VALUE);
+  else
+    PutSample(varp, vewc[FeedBack]);
 }
 
 /* -------------------------------------------------------------------- */
 void svnsc(DERTBL *varp)
 {
-  PutSample(varp, vnsc[FeedBack]);
+  if (returnMissingValue)
+    PutSample(varp, MISSING_VALUE);
+  else
+    PutSample(varp, vnsc[FeedBack]);
 }
 
 /* -------------------------------------------------------------------- */

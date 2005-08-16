@@ -73,7 +73,6 @@ static void		*data_p[MAX_VARIABLES];
 static long		recordNumber = 0;
 static long		TimeVar = 0;
 static float		TimeOffset = 0.0;
-static const float	missing_val = MISSING_VALUE;
 static const int	startVarIndx = 2;
 
 static int	ttxI;	// junk var, delete if hanging around July-2004
@@ -1392,7 +1391,7 @@ static void addCommonVariableAttributes(char name[], int varid)
 {
   char *p;
 
-  ncattput(fd, varid, "_FillValue", NC_FLOAT, 1, &missing_val);
+  ncattput(fd, varid, "_FillValue", NC_FLOAT, 1, &MISSING_VALUE);
   p = VarDB_GetUnits(name);
   ncattput(fd, varid, "units", NC_CHAR, strlen(p)+1, p);
   p = VarDB_GetTitle(name);
@@ -1414,7 +1413,7 @@ static void addCommonVariableAttributes(char name[], int varid)
   if (p && strcmp(p, "None") != 0)
     ncattput(fd, varid, "standard_name", NC_CHAR, strlen(p)+1, p);
 
-  ncattput(fd, varid, "missing_value", NC_FLOAT, 1, &missing_val);
+  ncattput(fd, varid, "missing_value", NC_FLOAT, 1, &MISSING_VALUE);
 
 }	/* END ADDCOMMONVARIABLEATTRIBUTES */
 
