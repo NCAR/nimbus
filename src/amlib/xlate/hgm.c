@@ -25,7 +25,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "raf.h"
 #include "nimbus.h"
 #include "amlib.h"
-#include "gust.h"
 
 extern int	Aircraft;
 
@@ -61,7 +60,7 @@ void xlhgm(RAWTBL *varp, void *p, NR_TYPE *output)
       hgm = (ntohs(input[i * varp->ADSoffset]) - varp->convertOffset) *
 							varp->convertFactor;
 
-      if (varp->order == 2)
+      if (varp->cof.size() == 2)
         output[i] = FirstPoly(hgm, varp->cof);
       else
         output[i] = SecondPoly(hgm, varp->cof);

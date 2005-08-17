@@ -19,7 +19,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 
 #include "nimbus.h"
 #include "amlib.h"
-#include <gsl/gsl_spline.h>
 
 #include <map>
 
@@ -44,11 +43,6 @@ static NR_TYPE	pitchlcorr = 0.0,	/* PITCH_BIAS_1   */
 static int	label_errors[256];	// One for each possible arinc label.
 static int	zero_errors[256];	// One for each possible arinc label.
 
-/* previous sample.  persist from one second to the next.
- */
-static long	prev_input[256];	// One for each possible arinc label.
-static NR_TYPE	prev_y[256];		// Previous output value.
-static NR_TYPE	prev_x[256];		//  and associated x position (-indx).
 static bool	groundSpeedIsAlternating = false;
 
 static void	preProcessData(var_base *varp, long input[], int thisLabel);
@@ -89,9 +83,6 @@ void irsInit(RAWTBL *varp)
     {
     label_errors[i] = 0;
     zero_errors[i] = 0;
-    prev_input[i] = 0;
-    prev_x[i] = 0.0;
-    prev_y[i] = 0.0;
     }
 
   if ((tmp = GetDefaultsValue("HEADING_BIAS_1", varp->name)) == NULL)
@@ -707,91 +698,9 @@ void postProcessData(var_base *varp, long input[], NR_TYPE *out, int label)
   if (cfg.HoneyWellCleanup() == false)
     return;
 
-  bool  allZeros = true;
-  int   zeroCnt = 0;
-  int	rate = varp->SampleRate;
-  NR_TYPE prevX, prevY;
-
-  // Extract prev value before we over-write it.
-  prevX = prev_x[label];
-  prevY = prev_y[label];
-
-  for (int i = 0; i < rate; ++i)
+  for (size_t i = 0; i < varp->SampleRate; ++i)
     if (input[i] == 0)
-    {
-      ++zeroCnt;
-    }
-    else
-    {
-      allZeros = false;
-
-      // Stash last smaple for next round.
-      prev_x[label] = -(rate - i);
-      prev_y[label] = out[i];
-    }
-
-  // If it's all 0's or all good, then leave.
-  if (allZeros || zeroCnt == 0)
-    return;
-
-  /* If this is just the once every 15 minute walking clock missing sample,
-   * then let the despiker handle it.
-   */
-  if (zeroCnt == 1 && input[rate-1] == 0)
-  {
-    out[rate-1] = MISSING_VALUE;
-    return;
-  }
-
-
-  int	goodPoints = 0;
-  double x[rate+1];
-  double y[rate+1];
-
-  x[goodPoints] = prevX;
-  y[goodPoints] = prevY;
-  ++goodPoints;
-
-  for (int i = 0; i < rate; ++i)
-    if (input[i] != 0)
-    {
-      x[goodPoints] = i;
-      y[goodPoints] = out[i];
-      ++goodPoints;
-    }
-
-  if (goodPoints < 3)
-  {
-    sprintf(buffer, "irsHw.c: [%s] gsl_spline too few points to interp with, setting to MISSING_VALUE\n  and letting the despiker handle it.\n", varp->name);
-    LogXlateMsg(buffer);
-
-    for (int i = 0; i < rate; ++i)
-      if (input[i] == 0)
-        out[i] = MISSING_VALUE;
-  }
-  else
-  {
-//    sprintf(buffer, "irsHw.c: [%s] interpolating, rate=%d, goodPoints = %d\n",
-//		varp->name, rate, goodPoints);
-//    LogXlateMsg(buffer);
-
-    gsl_interp_accel *acc = gsl_interp_accel_alloc();
-    gsl_spline *spline;
-
-    if (goodPoints >= 5)
-      spline = gsl_spline_alloc(gsl_interp_akima, goodPoints);
-    else
-      spline = gsl_spline_alloc(gsl_interp_cspline, goodPoints);
-
-    gsl_spline_init(spline, x, y, goodPoints);
-
-    for (int i = 0; i < rate; ++i)
-      if (input[i] == 0)
-        out[i] = gsl_spline_eval(spline, i, acc);
-
-    gsl_spline_free(spline);
-    gsl_interp_accel_free(acc);
-  }
+      out[i] = floatNAN;
 }
 
 /* -------------------------------------------------------------------- */

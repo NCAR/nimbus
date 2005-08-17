@@ -5,7 +5,6 @@
    Copyright by the National Center for Atmospheric Research
  
    Revisions:
-
 */
 
 #ifndef UDPSOCKET_H
@@ -28,9 +27,6 @@
 #include <net/if.h>
 #include <netinet/in.h>
 #include <unistd.h>
-
-#define FALSE	0
-#define TRUE	1
 
 #define UDP_UNBOUND	0
 #define UDP_BOUND	1

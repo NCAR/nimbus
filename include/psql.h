@@ -6,7 +6,7 @@ FULL NAME:	PostgreSQL output.
 
 DESCRIPTION:	Produce RAF PostgreSQL flight file.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2004
+COPYRIGHT:	University Corporation for Atmospheric Research, 2004-05
 -------------------------------------------------------------------------
 */
 
@@ -125,8 +125,8 @@ private:
   void
   addVariableToDataBase(const std::string& name, const std::string& units,
 	const std::string& uncaled_units, const std::string& longName,
-	const int sampleRate, const int nDims, const int dims[],
-	const int nCals, const float cals[], const float missingValue,
+	const int sampleRate, const size_t nDims, const int dims[],
+	const std::vector<float>& cals, const float missingValue,
 	const std::string& dataQuality);
 
   /**
@@ -171,12 +171,12 @@ private:
    * @param sql is the SQL stringstream to add the value.
    * @param udp is the UDP stringstream to add the value.
    * @param value is the value to add.
-   * @param addComma is whether to add a comma to the stream.
+   * @param addComma is whether to prepend a comma to the stream.
    */
   void
-  addValue(std::stringstream& sqlStr, std::stringstream& brdStr, const NR_TYPE value, const bool addComma);
+  addValue(std::stringstream& sqlStr, std::stringstream& brdStr, const NR_TYPE value, const bool addComma = true);
   void
-  addValue(std::stringstream& sqlStr, const NR_TYPE value, const bool addComma);
+  addValue(std::stringstream& sqlStr, const NR_TYPE value, const bool addComma = true);
 
   /**
    * Add a vector of values to the stringstream-s, used for building UDP
@@ -186,10 +186,9 @@ private:
    * @param udp is the UDP stringstream to add the value.
    * @param values is a pointer to the values to add.
    * @param nValues is the vector length.
-   * @param addComma is whether to add a comma to the stream.
    */
   void
-  addVector(std::stringstream& sql, std::stringstream& udp, const NR_TYPE *values, int nValues, const bool addComma);
+  addVector(std::stringstream& sql, std::stringstream& udp, const NR_TYPE *values, int nValues);
 
 };	// END PGSQL.H
 

@@ -24,9 +24,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 #include "nimbus.h"
 #include "amlib.h"
-#include "gust.h"
-
-#define WH_GRAVITY	9.7959	/* Gravity in Woodland Hills	*/
 
 /* 60 Second time constants.
  */

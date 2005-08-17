@@ -98,7 +98,7 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 /*	External definitions
  */
 extern bool	LITTON51_present, AsyncFileEnabled, AVAPS;
-extern size_t	nFloats, LITTON51_start;
+extern size_t	nLRfloats, nSRfloats, nHRfloats, LITTON51_start;
 
 
 /*      Function Prototypes
@@ -116,7 +116,7 @@ void	SetLookupSuffix(char *new_suffix),
 	GetUserTimeIntervals(),
 	SetUpDependencies(), GenerateComputeOrder(),
 	CleanOutUnwantedVariables(),
-	CreateNetCDF(char file_name[]),
+	CreateNetCDF(const char file_name[]),
 	CheckAndAddAtts(int, int, char *),
 	InitMRFilters(), ClearMRFilters(),
 	DecodeADSrecord(short lr[], NR_TYPE nlr[]),
@@ -136,8 +136,9 @@ void	Sum(NR_TYPE *in_data, NR_TYPE *out_data, size_t n),
 
 void	AllocateDataArrays(), FreeDataArrays(), ResetTimeGapper();
 
-int	SearchDERIVEFTNS(char target[]),
-	DecodeHeader(char header_file[]),
+int	SearchDERIVEFTNS(const char target[]),
+	DecodeHeader(const char header_file[]),
+	DecodeHeader3(const char header_file[]),
 	DependIndexLookup(DERTBL *dp, int which_dep),
 	NextTimeInterval(long *start, long *end),
 	CloseADSfile(),

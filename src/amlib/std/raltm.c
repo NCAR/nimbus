@@ -35,9 +35,9 @@ void sraltm(DERTBL *varp)
   ralt = GetSample(varp, 0);
 
 /*  If RALT is missing, so is RALTM  */
-  if (ralt == MISSING_VALUE)
+  if (isnan(ralt))
     {
-    raltm = MISSING_VALUE;
+    raltm = floatNAN;
     }
   else
     {

@@ -24,7 +24,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 
 #include "nimbus.h"
 #include "amlib.h"
-#include "gust.h"
 
 static const int MAX_PROBES = 4;
 
@@ -61,6 +60,16 @@ void swi(DERTBL *varp)
   sslip	= GetSample(varp, 7) * DEG_RAD;
   wp3	= GetSample(varp, 8);
 
+  if (isnan(pitch) || isnan(thdg) || isnan(tas) || isnan(wp3))
+    {
+    ui[probeCnt] = floatNAN;
+    vi[probeCnt] = floatNAN;
+    ux[probeCnt] = floatNAN;
+    vy[probeCnt] = floatNAN;
+    wi = floatNAN;
+    return;
+    }
+
   if (firstTime[FeedBack])
     {
     DELT[FeedBack] = 1.0;
@@ -68,8 +77,11 @@ void swi(DERTBL *varp)
     if (FeedBack != LOW_RATE_FEEDBACK)
       DELT[FeedBack] /= (float)cfg.ProcessingRate();
 
-    pitch0[probeCnt][FeedBack]	= pitch;
-    thdg0[probeCnt][FeedBack]	= thdg;
+    pitch0[probeCnt][FeedBack] = thdg0[probeCnt][FeedBack] = 0;
+    if (!isnan(pitch))
+      pitch0[probeCnt][FeedBack] = pitch;
+    if (!isnan(thdg))
+      thdg0[probeCnt][FeedBack] = thdg;
 
     boomln = GetBoomLength();
 

@@ -1,6 +1,14 @@
 
 Version number is changed in version.h.
 -------------------------------------------------------------------------
+06/??/05	4.1.0
+	Change cof's from float[] to vector, remove order.
+	Accept renaming of queue.h to raf_queue.h
+	A round of const-ness.
+	First round of ADS3.
+	Change HRT[SampleOffset * 2.5] instead of just 2.
+	Moved from make to scons for build.
+
 04/15/05	4.0.0
 	Consolidated Config stuff; for GUI, time slice, flight info, new
 	buttons enable/disable despiking/time shift, LRT vs. HRT into one

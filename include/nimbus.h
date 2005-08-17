@@ -10,6 +10,7 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #ifndef NIMBUS_H
 #define NIMBUS_H
 
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -34,7 +35,6 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #define RETURN	0
 #define EXIT	1
 
-#define MAX_COF		10
 #define MAXDEPEND	12
 #define MAX_TIME_SLICES	1
 
@@ -112,8 +112,8 @@ class SDITBL : public var_base
 
 	long	convertOffset;
 	float	convertFactor;
-	size_t	order;
-	float	cof[MAX_COF];
+	std::vector<float> cof;
+
         SYNTHTYPE synthtype; 
 	} ;
 
@@ -144,8 +144,8 @@ class RAWTBL : public var_base
 
 	long	convertOffset;	/* These 4 fields are used by a few	*/
 	float	convertFactor;	/* variables only.			*/
-	size_t	order;		/* (PSFD, HGM, HGME).			*/
-	float	cof[MAX_COF];
+	std::vector<float> cof;
+
         SYNTHTYPE synthtype;
 	} ;
 
@@ -178,7 +178,8 @@ class DERTBL : public var_base
 /* Global Variables	*/
 extern char	*ProjectDirectory, *ProjectNumber, *ProjectName, FlightNumber[];
 
-extern const NR_TYPE MISSING_VALUE;
+extern const NR_TYPE MISSING_VALUE, floatNAN;
+extern const int MAX_COF;
 
 extern std::vector<SDITBL *> sdi;
 extern std::vector<RAWTBL *> raw;
@@ -197,25 +198,26 @@ extern bool SDP;
 
 /*      Function Prototypes
  */
-FILE	*OpenProjectFile(char filename[], char mode[], int action);
+FILE	*OpenProjectFile(const char filename[], const char mode[], int action);
 
-int	AccessProjectFile(char filename[], char mode[]),
-	ReadTextFile(char filename[], char **list),
-	CheckForTimeGap(struct Hdr_blk *ADShdr, int initMode),
-	AccessProjectFile(char filename[], char mode[]);
+int	AccessProjectFile(const char filename[], const char mode[]),
+	ReadTextFile(const char filename[], char **list),
+	CheckForTimeGap(struct Hdr_blk *ADShdr, int initMode);
 
 class Config
 {
 public:
+    enum ADSVersion { ADS_2, ADS_3 };
     enum ProcessingMode { PostProcessing, RealTime };
+    enum interpolationType { Linear=0, CubicSpline, AkimaSpline };
     enum processingRate { SampleRate=0, LowRate=1, HighRate=25 };
 
     Config();
 
-    bool Interactive()	{ return _interactive; }
-    bool Despiking()	{ return _despiking; }
-    bool TimeShifting()	{ return _timeShifting; }
-    bool QCenabled()	{ return _qcEnabled; }
+    bool Interactive()		{ return _interactive; }
+    bool Despiking()		{ return _despiking; }
+    bool TimeShifting()		{ return _timeShifting; }
+    bool QCenabled()		{ return _qcEnabled; }
     bool ProcessingMode()	{ return _mode; }
     bool ProductionRun()	{ return _productionRun; }
     bool AsyncFileEnabled()	{ return _asyncFileEnabled; }
@@ -223,7 +225,11 @@ public:
     bool HoneyWellCleanup()	{ return _honeywellCleanup; }
     bool InertialShift()	{ return _inertialShift; }
 
+    bool isADS2()		{ return _adsVersion == ADS_2; }
+    bool isADS3()		{ return _adsVersion == ADS_3; }
+
     processingRate ProcessingRate()	{ return _processingRate; }
+    interpolationType InterpolationType()	{ return _interpType; }
 
     void SetInteractive(bool state)	{ _interactive = state; }
     void SetProductionRun(bool state)	{ _productionRun = state; }
@@ -237,6 +243,10 @@ public:
     void SetInertialShift(bool state)		{ _inertialShift = state; }
 
     void SetProcessingRate(processingRate pr)	{ _processingRate = pr; }
+    void SetInterpolationType(interpolationType it)	{ _interpType = it; }
+
+    void SetADSVersion(ADSVersion nv)		{ _adsVersion = nv; }
+
 
 private:
     bool _interactive;
@@ -250,7 +260,9 @@ private:
     bool _honeywellCleanup;
     bool _inertialShift;
 
+    ADSVersion _adsVersion;
     processingRate _processingRate;
+    interpolationType _interpType;
 };
 
 struct var_match_name
@@ -310,8 +322,8 @@ SearchTable(std::vector<T *> &list, int s, int e, const char target[])
 
 unsigned long	GetProbeType(std::string&);
 
-char	*SearchList(char **list, char target[]),
-	*SearchDataQuality(char target[]);
+char	*SearchList(char **list, const char target[]),
+	*SearchDataQuality(const char target[]);
 
 std::vector<std::string> GetProbeList(void);
 
@@ -320,18 +332,18 @@ void	SortTable(char **table, int beg, int end),
 	Initialize(),
 	ResetProbeList(),
 	ProcessArgv(int argc, char **argv),
-	LogMessage(char msg[]),
-	AddProbeToList(char name[], unsigned long type),
+	LogMessage(const char msg[]),
+	AddProbeToList(const char name[], unsigned long type),
 	SetBaseTime(struct Hdr_blk *hdr),
 	BlankOutBadData(),
 	GetDataDirectory(char buff[]),
         FlushXEvents();
 
 void	SaveDefaults(FILE *fp),
-	SetDefaultsValue(char target[], NR_TYPE *new_value),
+	SetDefaultsValue(const char target[], NR_TYPE *new_value),
 	CreateEditDefaultsWindow(), StopProcessing(), CreateFlightInfoWindow();
 
-void	HandleError(char []);
+void	HandleError(const char msg[]);
 
 extern Config cfg;
 

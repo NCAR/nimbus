@@ -124,7 +124,7 @@ void sradcf(DERTBL *varp)
   if ( pitch > (double)PMAX || roll > (double)RMAX ||
      pitch < (double)PMIN || roll < (double)RMIN )
   {
-    radcf = MISSING_VALUE;
+    radcf = floatNAN;
   }
   else
   {
@@ -139,7 +139,7 @@ void sradcf(DERTBL *varp)
     if (cf2 != 0.0)
       radcf = (NR_TYPE)(cf1/cf2);
     else
-      radcf = MISSING_VALUE;
+      radcf = floatNAN;
   }
   PutSample(varp, radcf);
 /*  printf (" PutSample radiation correction factor = %f\n",radcf); */
@@ -153,14 +153,14 @@ void sradc(DERTBL *varp)
   NR_TYPE rad;  /* Uncorrected radiation value */
 
 /* Output a corrected value only of radcf is valid. */
-  if (radcf != MISSING_VALUE)
+  if (!isnan(radcf))
   {
     rad = GetSample(varp, 0);
     PutSample(varp, (rad*SWDIFF + rad*SWDIRF*radcf));
   }
   else
   {
-    PutSample(varp, MISSING_VALUE);
+    PutSample(varp, floatNAN);
   }
 
 }  /* END SRADC */

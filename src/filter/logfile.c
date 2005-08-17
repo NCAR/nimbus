@@ -28,7 +28,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #include "nimbus.h"
 #include <unistd.h>
 
-FILE		*LogFile = NULL;
+#include <Xm/Text.h>
+
+FILE	*LogFile = 0;
 static char	logFileName[256];
 
 /* -------------------------------------------------------------------- */
@@ -43,6 +45,34 @@ void OpenLogFile()
     }
 
 }	/* END OPENLOGFILE */
+
+/* -------------------------------------------------------------------- */
+void LogMessage(const char msg[])
+{
+  std::string messg(msg);
+
+  if (messg[messg.length()-1] != '\n')
+    messg.append("\n");
+
+  if (cfg.Interactive())
+    {
+    XmTextPosition      position;
+    extern Widget       logText;
+
+    position = XmTextGetInsertionPosition(logText);
+    XmTextInsert(logText, position, (char*)messg.c_str());
+
+    position += messg.length();
+    XmTextShowPosition(logText, position);
+    XmTextSetInsertionPosition(logText, position);
+    }
+  else
+    fprintf(stderr, messg.c_str());
+
+  if (LogFile)
+    fprintf(LogFile, messg.c_str());
+
+}       /* END LOGMESSAGE */
 
 /* -------------------------------------------------------------------- */
 void CloseLogFile()

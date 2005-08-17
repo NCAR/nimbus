@@ -1,0 +1,39 @@
+# -*- python -*-
+
+Import('env')
+
+sources = Split("""
+IDEAS2.c
+ACEASIA.c
+DYCOMS.c
+RICO.c
+
+bits.c
+chemcal.c
+circles.c
+climet.c
+co2c.c
+conccn.c
+cvi.c
+efield.c
+geopot.c
+licor.c
+licor_wyo.c
+masp.c
+ndvi.c
+ophir3.c
+prcltrk1.c
+prcltrk2.c
+raz.c
+rdma.c
+rlwp.c
+sail.c
+spefm.c
+xpsfdc.c
+cloudbase.c
+icing.c
+ultrafine.c
+""")
+
+user = env.StaticLibrary('user' , sources)
+env.Default(env.Install('#/lib/', user))

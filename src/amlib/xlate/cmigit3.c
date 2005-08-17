@@ -17,10 +17,32 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2003-2005
 #include "nimbus.h"
 #include "amlib.h"
 
-static const float	cm31 = 4.656613e-10;
-static const float	cm21 = 4.768372e-07;
-static const float	cm16 = 1.525879e-05;
+static const double	cm31 = 4.656613e-10;
+static const double	cm21 = 4.768372e-07;
+static const double	cm16 = 1.525879e-05;
 
+static NR_TYPE thdgCorr, pitchCorr;
+
+/* -------------------------------------------------------------------- */
+void cmigitsInit(RAWTBL *varp)
+{
+  NR_TYPE  *tmp;
+
+  if ((tmp = GetDefaultsValue("CM_HEADING_BIAS_1", varp->name)) == NULL)
+    {
+    sprintf(buffer,"Values set to %f, in AMLIB function cmigitInit.\n", thdgCorr);
+    LogMessage(buffer);
+    }
+  else
+    thdgCorr = tmp[0];
+
+  if ((tmp = GetDefaultsValue("CM_PITCH_BIAS_1", varp->name)) == NULL)
+    {
+    sprintf(buffer,"Values set to %f, in AMLIB function cmigitInit.\n", pitchCorr);    LogMessage(buffer);
+    }
+  else
+    pitchCorr = tmp[0];
+}
 
 /* -------------------------------------------------------------------- */
 void xlclat(RAWTBL *varp, void *input, NR_TYPE *output)
@@ -93,7 +115,7 @@ void xlcpitch(RAWTBL *varp, void *input, NR_TYPE *output)
   Cmigits3_blk	*cm = (Cmigits3_blk *)input;
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
-    output[i] = 180.0 * cm31 * cm->Cpitch[i];
+    output[i] = 180.0 * cm31 * cm->Cpitch[i] + pitchCorr;
 
 }	/* END XLCPITCH */
 
@@ -123,7 +145,7 @@ void xlcthdg(RAWTBL *varp, void *input, NR_TYPE *output)
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
-    hdg = 180.0 * cm31 * cm->Ctrue_heading[i];
+    hdg = 180.0 * cm31 * cm->Ctrue_heading[i] + thdgCorr;
 
     if (hdg < 0) hdg += 360.0;
 

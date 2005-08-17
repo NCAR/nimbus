@@ -41,7 +41,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
-#include <stdio.h>
 #include <time.h>
 
 #include "nimbus.h"
@@ -51,6 +50,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include "netcdf.h"
 #include "raf_queue.h"
 #include "vardb.h"
+#include "svnInfo.h"
 
 #include <cmath>
 
@@ -73,10 +73,7 @@ static void		*data_p[MAX_VARIABLES];
 static long		recordNumber = 0;
 static long		TimeVar = 0;
 static float		TimeOffset = 0.0;
-static const float	missing_val = MISSING_VALUE;
 static const int	startVarIndx = 2;
-
-static int	ttxI;	// junk var, delete if hanging around July-2004
 
 static Queue	*missingRecords;
 static void	WriteMissingRecords();
@@ -115,7 +112,7 @@ void SetBaseTime(struct Hdr_blk *hdr)
     else
       StartFlight.tm_sec += 14;
 
-  BaseTime = mktime(&StartFlight) - timezone;
+  BaseTime = timegm(&StartFlight);
   ncvarput1(fd, baseTimeID, NULL, (void *)&BaseTime);
 
   if (BaseTime <= 0)
@@ -129,7 +126,7 @@ void SetBaseTime(struct Hdr_blk *hdr)
 static int	timeOffsetID, timeVarID;
 
 /* -------------------------------------------------------------------- */
-void CreateNetCDF(char fileName[])
+void CreateNetCDF(const char fileName[])
 {
   size_t	i, j;
   int		indx, catIdx;
@@ -180,8 +177,22 @@ void CreateNetCDF(char fileName[])
   ncattput(fd, NC_GLOBAL, "Conventions", NC_CHAR,
            strlen(buffer)+1, (void *)buffer);
 
+  strcpy(buffer, "http://www.eol.ucar.edu/raf/Software/netCDF.html");
+  ncattput(fd, NC_GLOBAL, "ConventionsURL", NC_CHAR,
+           strlen(buffer)+1, (void *)buffer);
+
   strcpy(buffer, NETCDF_FORMAT_VERSION);
   ncattput(fd, NC_GLOBAL, "Version", NC_CHAR, strlen(buffer)+1, (void *)buffer);
+
+  strcpy(buffer, &SVNREVISION[10]);
+  ncattput(fd, NC_GLOBAL, "ProcessorRevision", NC_CHAR, strlen(buffer)+1, (void *)buffer);
+
+  if (strstr(SVNURL, "http"))
+    strcpy(buffer, strstr(SVNURL, "http"));
+  else
+    strcpy(buffer, SVNURL);
+
+  ncattput(fd, NC_GLOBAL, "ProcessorURL", NC_CHAR, strlen(buffer)+1, (void *)buffer);
 
 
   if (!cfg.ProductionRun())
@@ -213,14 +224,14 @@ void CreateNetCDF(char fileName[])
     strlen(ProjectName)+1, (void *)ProjectName);
     }
 
-  GetAircraft(&p);
-  ncattput(fd, NC_GLOBAL, "Aircraft", NC_CHAR, strlen(p)+1, (void *)p);
+  if (GetAircraft(&p) != ERR)
+    ncattput(fd, NC_GLOBAL, "Aircraft", NC_CHAR, strlen(p)+1, (void *)p);
 
-  GetProjectNumber(&p);
-  ncattput(fd, NC_GLOBAL, "ProjectNumber", NC_CHAR, strlen(p)+1, (void *)p);
+  if (GetProjectNumber(&p) != ERR)
+    ncattput(fd, NC_GLOBAL, "ProjectNumber", NC_CHAR, strlen(p)+1, (void *)p);
 
-  GetFlightNumber(&p);
-  ncattput(fd, NC_GLOBAL, "FlightNumber", NC_CHAR, strlen(p)+1, (void *)p);
+  if (GetFlightNumber(&p) != ERR)
+    ncattput(fd, NC_GLOBAL, "FlightNumber", NC_CHAR, strlen(p)+1, (void *)p);
 
   if (cfg.ProcessingMode() == Config::RealTime)
   {
@@ -395,7 +406,7 @@ void CreateNetCDF(char fileName[])
     ncattput(fd, sp->varid, "DataQuality", NC_CHAR, strlen(sp->DataQuality)+1,
 		sp->DataQuality);
     ncattput(fd, sp->varid, "CalibrationCoefficients", NC_FLOAT,
-		sp->order, sp->cof);
+		sp->cof.size(), &sp->cof[0]);
 
     if (sp->Modulo)
       {
@@ -585,9 +596,9 @@ void CreateNetCDF(char fileName[])
     ncattput(fd, rp->varid, "DataQuality", NC_CHAR, strlen(rp->DataQuality)+1,
 		rp->DataQuality);
 
-    if (rp->order > 0)
+    if (rp->cof.size() > 0)
       ncattput(fd, rp->varid, "CalibrationCoefficients", NC_FLOAT,
-               rp->order, rp->cof);
+               rp->cof.size(), &rp->cof[0]);
 
     if (rp->Modulo)
       {
@@ -784,7 +795,7 @@ void CreateNetCDF(char fileName[])
       }
 
     CheckAndAddAttrs(fd, dp->varid, dp->name);
-if (strcmp(dp->name, "TTX") == 0) ttxI = indx;
+
     if (dp->OutputRate == Config::LowRate)
       data_p[indx++] = (void *)&AveragedData[dp->LRstart];
     else
@@ -806,24 +817,20 @@ void SwitchNetCDFtoDataMode()
 }	/* END SWITCHNETCDFTODATAMODE */
 
 /* -------------------------------------------------------------------- */
-void writeColumn()
+void replaceNANwithMissingValue()
 {
-  int cntr = 0;
-  long idx[3];
+  for (size_t i = 0; i < nLRfloats; ++i)
+    if (isnan(AveragedData[i]))
+      AveragedData[i] = MISSING_VALUE;
 
-  idx[0] = recordNumber;
-  idx[1] = idx[2] = 0;
+  for (size_t i = 0; i < nSRfloats; ++i)
+    if (isnan(SampledData[i]))
+      SampledData[i] = MISSING_VALUE;
 
-  ncvarput1(fd, timeOffsetID, idx, data_p[cntr++]);
-
-  for (size_t i = 0; i < sdi.size(); ++i)
-    ncvarput1(fd, sdi[i]->varid, idx, data_p[cntr++]);
-
-  for (size_t i = 0; i < raw.size(); ++i)
-    ncvarput1(fd, raw[i]->varid, idx, data_p[cntr++]);
-
-  for (size_t i = 0; i < derived.size(); ++i)
-    ncvarput1(fd, derived[i]->varid, idx, data_p[cntr++]);
+  if (cfg.ProcessingRate() == Config::HighRate)
+    for (size_t i = 0; i < nHRfloats; ++i)
+      if (isnan(HighRateData[i]))
+        HighRateData[i] = MISSING_VALUE;
 
 }
 
@@ -833,10 +840,7 @@ void WriteNetCDF()
   struct missDat	*dp;
   static int		errCnt = 0;
 
-//writeColumn();
-
-//DERTBL *d = derived[SearchTable(derived, "TTX")];
-//printf(" - %f %f\n", data_p[ttxI], AveragedData[d->LRstart]);
+  replaceNANwithMissingValue();
 
   if (ncrecput(fd, recordNumber, data_p) == ERR)
     {
@@ -1265,10 +1269,6 @@ void BlankOutBadData()
         }
       }
     else
-
-/*  if ((index = SearchTableSansLocation(derived, target)) != ERR)
-   */
-
     if ((index = SearchTable(derived, target)) != ERR &&
 	derived[index]->Output)
       {
@@ -1299,7 +1299,6 @@ void BlankOutBadData()
       LogMessage(buffer);
       }
     }
-
 }       /* END BLANKOUTBADDATA */
 
 /* -------------------------------------------------------------------- */
@@ -1319,7 +1318,6 @@ static int writeBlank(int varid, long start[], long count[], int OutputRate)
     p[i] = MISSING_VALUE;
 
   return(ncvarput(fd, varid, start, count, (void *)p));
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -1328,7 +1326,6 @@ static void writeTimeUnits()
   strftime(buffer, 256, "seconds since %F %T +0000", &StartFlight);
   ncattput(fd, timeVarID, "units", NC_CHAR, strlen(buffer)+1, buffer);
   ncattput(fd, timeOffsetID, "units", NC_CHAR, strlen(buffer)+1, buffer);
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -1337,7 +1334,6 @@ static void clearDependedByList()
   for (size_t i = 0; i < derived.size(); ++i)
     if (derived[i]->DependedUpon & 0xf0)
       derived[i]->DependedUpon &= 0x0f;
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -1354,7 +1350,6 @@ static void markDependedByList(char target[])
         markDependedByList(dp->name);
       }
   }
-
 }       /* END DOUBLECHECK */
 
 /* -------------------------------------------------------------------- */
@@ -1370,7 +1365,6 @@ static void printDependedByList()
       }
 
   LogMessage("\n");
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -1378,7 +1372,7 @@ static void addCommonVariableAttributes(char name[], int varid)
 {
   char *p;
 
-  ncattput(fd, varid, "_FillValue", NC_FLOAT, 1, &missing_val);
+  ncattput(fd, varid, "_FillValue", NC_FLOAT, 1, &MISSING_VALUE);
   p = VarDB_GetUnits(name);
   ncattput(fd, varid, "units", NC_CHAR, strlen(p)+1, p);
   p = VarDB_GetTitle(name);
@@ -1400,7 +1394,7 @@ static void addCommonVariableAttributes(char name[], int varid)
   if (p && strcmp(p, "None") != 0)
     ncattput(fd, varid, "standard_name", NC_CHAR, strlen(p)+1, p);
 
-  ncattput(fd, varid, "missing_value", NC_FLOAT, 1, &missing_val);
+  ncattput(fd, varid, "missing_value", NC_FLOAT, 1, &MISSING_VALUE);
 
 }	/* END ADDCOMMONVARIABLEATTRIBUTES */
 

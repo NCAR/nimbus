@@ -34,7 +34,7 @@ static NR_TYPE	responseTime, armDistance, DENS[MAX_200Y], resolution;
 static double	PLWFAC[MAX_200Y];
 
 static NR_TYPE	total_concen[MAX_200Y], dbar[MAX_200Y], plwc[MAX_200Y],
-		disp[MAX_200Y];
+		disp[MAX_200Y], tact[MAX_200Y];
 
 static NR_TYPE	radius[BINS_16],
 		dia[BINS_16], dia2[BINS_16], dia3[BINS_16],

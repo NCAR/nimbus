@@ -37,6 +37,7 @@ void xletorq(RAWTBL *varp, void *input, NR_TYPE *output)
 {
   short		etorq;
   NR_TYPE	*cc;
+  std::vector<float> ccv;
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {
@@ -56,7 +57,11 @@ void xletorq(RAWTBL *varp, void *input, NR_TYPE *output)
       continue;
       }
 
-    output[i] = SecondPoly((NR_TYPE)etorq, cc);
+    // Copy into a vector.
+    for (size_t j = 0; j < 3; ++j)
+      ccv.push_back(cc[i]);
+
+    output[i] = SecondPoly((NR_TYPE)etorq, ccv);
     }
 
 }	/* END XLETORQ */

@@ -28,12 +28,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "nimbus.h"
 #include "amlib.h"
 #include "ctape.h"
-#include "gust.h"
 
 #define	INS_MASK	0x0003ffff
 #define MASK		0x3ffff000
 #define MSIGN		0x40000000
-
 
 static double	angle(long), velocity(long);
 NR_TYPE	angcr(float,float,float,float);

@@ -9,13 +9,9 @@ ENTRY POINTS:	ComputeLowRateDerived()
 
 DESCRIPTION:	Compute, via AMLIB functions, all derived variables.
 
-INPUT:		NimbusRecord
-
-OUTPUT:		none
-
 REFERENCES:	AMLIB functions.
 
-REFERENCED BY:	lrloop.c/hrloop.c, winput.c
+REFERENCED BY:	lrloop.c, hrloop.c, rtloop.c, winput.c
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------
@@ -38,7 +34,7 @@ void ComputeLowRateDerived()
     if ((dp = ComputeOrder[i])->compute)
       (*dp->compute)(dp);
     else
-      AveragedData[dp->LRstart] = MISSING_VALUE;
+      AveragedData[dp->LRstart] = floatNAN;
 
 }	/* END COMPUTELOWRATEDERIVED */
 
@@ -54,7 +50,7 @@ void ComputeHighRateDerived()
       if ((dp = ComputeOrder[i])->compute)
         (*dp->compute)(dp);
       else
-        HighRateData[dp->HRstart + (SampleOffset * dp->Length)] = MISSING_VALUE;
+        HighRateData[dp->HRstart + (SampleOffset * dp->Length)] = floatNAN;
 
 }	/* END COMPUTEHIGHRATEDERIVED */
  

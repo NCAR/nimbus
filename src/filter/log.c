@@ -9,43 +9,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005
 #include "nimbus.h"
 #include "amlib.h"
 
-#include <Xm/Text.h>
-
-extern FILE     *LogFile;
-
 extern char *ADSrecord;
 extern NR_TYPE *SampledData;
 
 /* -------------------------------------------------------------------- */
-void LogMessage(char msg[])
-{
-  std::string messg(msg);
-
-  if (messg[messg.length()-1] != '\n')
-    messg.append("\n");
-
-  if (cfg.Interactive())
-    {
-    XmTextPosition      position;
-    extern Widget       logText;
-
-    position = XmTextGetInsertionPosition(logText);
-    XmTextInsert(logText, position, (char*)messg.c_str());
-
-    position += messg.length();
-    XmTextShowPosition(logText, position);
-    XmTextSetInsertionPosition(logText, position);
-    }
-  else
-    fprintf(stderr, messg.c_str());
-
-  if (LogFile)
-    fprintf(LogFile, messg.c_str());
-
-}       /* END LOGMESSAGE */
-
-/* -------------------------------------------------------------------- */
-void LogXlateMsg(char msg[])
+void LogXlateMsg(const char msg[])
 {
   Hdr_blk *p = (Hdr_blk *)ADSrecord;
 
@@ -59,7 +27,7 @@ void LogXlateMsg(char msg[])
 }
 
 /* -------------------------------------------------------------------- */
-void Log2dXlateMsg(P2d_rec *p, char msg[])
+void Log2dXlateMsg(P2d_rec *p, const char msg[])
 {
   std::string messg(msg);
 
@@ -71,7 +39,7 @@ void Log2dXlateMsg(P2d_rec *p, char msg[])
 }
 
 /* -------------------------------------------------------------------- */
-void LogThisRecordMsg(NR_TYPE *record, char msg[])
+void LogThisRecordMsg(NR_TYPE *record, const char msg[])
 {
   std::string messg(msg);
 
@@ -86,7 +54,7 @@ void LogThisRecordMsg(NR_TYPE *record, char msg[])
 }
 
 /* -------------------------------------------------------------------- */
-void LogStdMsg(char msg[])
+void LogStdMsg(const char msg[])
 {
   LogThisRecordMsg(SampledData, msg);
 }

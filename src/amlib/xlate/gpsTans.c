@@ -67,7 +67,7 @@ void xlglat(RAWTBL *varp, void *input, NR_TYPE *output)
   lon = (NR_TYPE)ntohf(((Gps_blk *)input)->glon) * RAD_DEG;
 
   if (lat == 0.0 && lon == 0.0)
-    *output = MISSING_VALUE;
+    *output = floatNAN;
   else
     *output = lat;
 
@@ -83,7 +83,7 @@ void xlglon(RAWTBL *varp, void *input, NR_TYPE *output)
   lon = (NR_TYPE)ntohf(((Gps_blk *)input)->glon) * RAD_DEG;
 
   if (lat == 0.0 && lon == 0.0)
-    *output = MISSING_VALUE;
+    *output = floatNAN;
   else
     *output = lon;
 

@@ -39,9 +39,9 @@ void sdprho(DERTBL *varp)
     atx = GetSample(varp, 1);
 
 /*  If RHO and/or ATX are missing, so is DPRHO  */
-    if ( (rho == MISSING_VALUE) || (atx == MISSING_VALUE) )
+    if ( isnan(rho) || isnan(atx) )
       {
-      dprho = MISSING_VALUE;
+      dprho = floatNAN;
       }
     else
       {
@@ -65,7 +65,7 @@ void sdprho(DERTBL *varp)
         }
       else
         {
-        dprho = MISSING_VALUE;
+        dprho = floatNAN;
         }
       }
 

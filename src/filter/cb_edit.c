@@ -105,7 +105,7 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
       set_edit_window_data(sp->name, sp->Output, sp->OutputRate,
                            sp->StaticLag, sp->SpikeSlope, sp->DataQuality);
 
-      for (i = 0; i < sp->order; ++i)
+      for (i = 0; i < sp->cof.size(); ++i)
         {
         sprintf(buffer, "%e", sp->cof[i]);
         XmTextFieldSetString(ev_text[i], buffer);
@@ -124,7 +124,7 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
       set_edit_window_data(rp->name, rp->Output, rp->OutputRate,
                            rp->StaticLag, rp->SpikeSlope, rp->DataQuality);
 
-      for (i = 0; i < rp->order; ++i)
+      for (i = 0; i < rp->cof.size(); ++i)
         {
         sprintf(buffer, "%e", rp->cof[i]);
         XmTextFieldSetString(ev_text[i], buffer);
@@ -245,7 +245,7 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
       sp->StaticLag = lag;
       sp->SpikeSlope = spike;
       sp->DataQuality = dq;
-      sp->order = 0;
+      sp->cof.clear();
 
       for (int i = MAX_COF-1; i >= 0; --i)
         {
@@ -253,11 +253,10 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
         f = atof(p);
         XtFree(p);
 
-        if (f == 0.0 && sp->order == 0)
+        if (f == 0.0 && sp->cof.size() == 0)
           continue;
 
-        sp->cof[i] = f;
-        ++sp->order;
+        sp->cof.insert(sp->cof.begin(), f);
         }
 
       newAttr = CreateListLineItem((void *)sp, SDI);
@@ -296,12 +295,18 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
       rp->StaticLag = lag;
       rp->SpikeSlope = spike;
       rp->DataQuality = dq;
+      rp->cof.clear();
 
-      for (size_t i = 0; i < rp->order; ++i)
+      for (int i = MAX_COF-1; i >= 0; --i)
         {
         p = XmTextFieldGetString(ev_text[i]);
-        rp->cof[i] = atof(p);
+        f = atof(p);
         XtFree(p);
+
+        if (f == 0.0 && rp->cof.size() == 0)
+          continue;
+
+        rp->cof.insert(rp->cof.begin(), f);
         }
 
       newAttr = CreateListLineItem((void *)rp, RAW);

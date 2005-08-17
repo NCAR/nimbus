@@ -2,25 +2,13 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	init.c
 
-FULL NAME:	Initialize Global Variables
+FULL NAME:	Initialize
 
 ENTRY POINTS:	Initialize()
 		ProcessArgv()
 		ReadBatchFile()
 
-STATIC FNS:		
-
-DESCRIPTION:	
-
-INPUT:		none
-
-OUTPUT:		none
-
-REFERENCES:	none
-
-REFERENCED BY:	nimbus.c, cb_main.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-05
 -------------------------------------------------------------------------
 */
 
@@ -36,7 +24,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 static void ReadBatchFile(char *filename);
 
 void	Set_SetupFileName(char s[]);
-void	RTinit();
+
+#ifdef RT
+void	RTinit_ADS2(), RTinit_ADS3();
+#endif
 
 /* -------------------------------------------------------------------- */
 void Initialize()
@@ -101,15 +92,18 @@ void ProcessArgv(int argc, char **argv)
       case 'r':
         cfg.SetTimeShifting(false);
         cfg.SetDespiking(false);
-
-        if (argv[i][2] == 't')	/* -rt	*/
-          RTinit();
+#ifdef RT
+        if (strcmp(argv[i], "-rt") == 0)	/* RealTime ADS2 */
+          RTinit_ADS2();
+        else
+        if (strcmp(argv[i], "-rt3") == 0)	/* RealTime ADS3 */
+          RTinit_ADS3();
         else
           {
           cfg.SetHoneyWellCleanup(false); // We want this in real-time.
           cfg.SetInertialShift(false); // We want this in real-time.
           }
-
+#endif
         break;
 
       case 'n':
@@ -195,23 +189,6 @@ void GetDataDirectory(char buff[])
     strcpy(buff, p);
     strcat(buff, "/");
   }
-}
-
-/* -------------------------------------------------------------------- */
-Config::Config()
-{
-  SetInteractive(true);
-  SetProductionRun(false);
-  SetDespiking(true);
-  SetTimeShifting(true);
-  SetQCenabled(false);
-  SetProcessingMode(PostProcessing);
-  SetAsyncFileEnabled(false);
-  SetLoadProductionSetup(true);
-  SetHoneyWellCleanup(true);
-  SetInertialShift(true);
-
-  SetProcessingRate(LowRate);
 }
 
 /* END INIT.C */

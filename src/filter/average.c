@@ -67,11 +67,11 @@ void AverageSDI(NR_TYPE *in_data, NR_TYPE *out_data, SDITBL *sp)
   double	sum = 0.0;
 
   for (size_t i = 0; i < sp->SampleRate; ++i)
-    if (in_data[i] != MISSING_VALUE)
+    if (!isnan(in_data[i]))
       sum += in_data[sampleCntr++];
 
   if (sampleCntr == 0)
-    out_data[0] = MISSING_VALUE;
+    out_data[0] = floatNAN;
   else
     out_data[0] = sum / sampleCntr;
 
@@ -110,11 +110,11 @@ void Average(
     }
 
   for (size_t i = 0; i < n; ++i)
-    if (in_data[i] != MISSING_VALUE)
+    if (!isnan(in_data[i]))
       sum += in_data[sampleCntr++];
 
   if (sampleCntr == 0)
-    average = MISSING_VALUE;
+    average = floatNAN;
   else
     average = sum / sampleCntr;
 
@@ -135,7 +135,7 @@ void SumSDI(NR_TYPE *in_data, NR_TYPE *out_data, SDITBL *sp)
   NR_TYPE	sum = 0.0;
 
   for (size_t i = 0; i < sp->SampleRate; ++i)
-    if (in_data[i] != MISSING_VALUE)
+    if (!isnan(in_data[i]))
       sum += in_data[i];
 
   out_data[0] = sum;
@@ -148,7 +148,7 @@ void Sum(NR_TYPE *in_data, NR_TYPE *out_data, size_t n)
   double	sum = 0.0;
 
   for (size_t i = 0; i < n; ++i)
-    if (in_data[i] != MISSING_VALUE)
+    if (!isnan(in_data[i]))
       sum += in_data[i];
 
   out_data[0] = sum;
@@ -169,7 +169,7 @@ void SumVector(
     sum = 0.0;
 
     for (size_t j = 0; j < n; ++j)
-      if (in_data[(j*l)+i] != MISSING_VALUE)
+      if (!isnan(in_data[(j*l)+i]))
         sum += in_data[(j * l) + i];
 
     out_data[i] = sum;

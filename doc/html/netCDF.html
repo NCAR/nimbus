@@ -89,6 +89,11 @@ Instruments which measure particle size distributions produce histograms or
 vector data.  These instruments include the suite of PMS-1D probes, the RDMA
 and quantitative data reduction from the PMS-2D probes.
 <p>
+<b>Note:</b> For <b>all</b> size-distributions (PMS1D, PMS2D, RDMA) the
+zeroth or first (depending on how you count) bin is undefined, do not use
+this value.  Attributes for the various size distribution variables should
+include <kbd class="att">FirstBin</kbd> and <kbd class="att">LastBin</kbd>.
+<p>
 <h4>1.0.2 Multi-rate files</h4>
 RAF's standard data product is a netCDF file where all measurements are
 output at 1 sps.  Certain projects require high-rate data.  RAF has

@@ -10,10 +10,6 @@ STATIC FNS:
 
 DESCRIPTION:    Template for AMLIB std & user directories.
 
-INPUT:    
-
-OUTPUT:    
-
 REFERENCES:  
 
 REFERENCED BY:  compute.c
@@ -24,7 +20,6 @@ COPYRIGHT:  University Corporation for Atmospheric Research, 1995, 1998
 
 #include "nimbus.h"
 #include "amlib.h"
-#include "gust.h"
 
 static NR_TYPE  *vft0, *vft1, *vft2, *vfb0, *vfb1, *vfb2,
     *vfp0, *vfp1, *vfs0, *vfs1, *vfs2,

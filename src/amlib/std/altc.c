@@ -45,7 +45,7 @@ static const int DELAY = 2; /*  delay before walking substituted data back to GP
 void sgaltc(DERTBL *varp)
 /*  Code for the Trimble TANS-III GPS  */
 {
-  NR_TYPE        altc = MISSING_VALUE, galt, alt;
+  NR_TYPE        altc = floatNAN, galt, alt;
   NR_TYPE        newalt, dalt;
   long           gstat, gmode;
   int            i;
@@ -65,9 +65,9 @@ void sgaltc(DERTBL *varp)
   gmode		= (long)GetSample(varp, 3);
 
 /*  If ALT and/or GALT are missing, so is ALTC  */
-  if ( (galt == MISSING_VALUE) || (alt == MISSING_VALUE) )
+  if ( isnan(galt) || isnan(alt) )
     {
-    altc = MISSING_VALUE;
+    altc = floatNAN;
     dalt = 0.;
     }
   else
@@ -198,7 +198,7 @@ void sgaltc(DERTBL *varp)
 void sggaltc(DERTBL *varp)
 /*  Code for the Garmin GPS  */
 {
-  NR_TYPE        altc = MISSING_VALUE, ggalt, alt;
+  NR_TYPE        altc = floatNAN, ggalt, alt;
   NR_TYPE        newalt, dalt;
   long           ggstat, ggnsat;
   int            i;
@@ -218,9 +218,9 @@ void sggaltc(DERTBL *varp)
   ggstat	= (long)GetSample(varp, 3);
 
 /*  If ALT and/or GGALT are missing, so is ALTC  */
-  if ( (ggalt == MISSING_VALUE) || (alt == MISSING_VALUE) )
+  if ( isnan(ggalt) || isnan(alt) )
     {
-    altc = MISSING_VALUE;
+    altc = floatNAN;
     dalt = 0.;
     }
   else

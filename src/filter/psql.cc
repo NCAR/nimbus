@@ -4,11 +4,7 @@ OBJECT NAME:    psql.cc (PostgreS)
 
 FULL NAME:      PostgreSQL database routines.
 
-DESCRIPTION:
-
-NOTES:		
-
-COPYRIGHT:      University Corporation for Atmospheric Research, 2003-2004
+COPYRIGHT:      University Corporation for Atmospheric Research, 2003-2005
 -------------------------------------------------------------------------
 */
 
@@ -22,7 +18,6 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2003-2004
 #include <set>
 #include <iomanip>
 
-
 void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[]);
 
 const int PostgreSQL::RT_UDP_PORT = 2101;
@@ -32,11 +27,10 @@ const std::string PostgreSQL::CATEGORIES_TABLE = "Categories";
 const std::string PostgreSQL::LRT_TABLE = "RAF_LRT";
 const std::string PostgreSQL::RATE_TABLE_PREFIX = "SampleRate";
 
-
 /* -------------------------------------------------------------------- */
 PostgreSQL::PostgreSQL(std::string specifier)
 {
-  _conn = PQconnectdb("");
+  _conn = PQconnectdb(specifier.c_str());
 
   /* check to see that the backend connection was successfully made
    */
@@ -93,7 +87,7 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
    * UDP = {5, 6, 7, 8}
    */
   _sqlString.str("");
-  _sqlString << "INSERT INTO " << LRT_TABLE << " VALUES ('" << timeStamp << "', ";
+  _sqlString << "INSERT INTO " << LRT_TABLE << " VALUES ('" << timeStamp << "'";
 
   _broadcastString.str("");
   _broadcastString << "RAF-TS " << timeStamp << ' ';
@@ -102,13 +96,8 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
 
   /* Three loops again, analog, raw and derived.  This is analog.
    */
-  bool addComma = false;
-
   for (size_t i = 0; i < sdi.size(); ++i)
-  {
-    addValue(_sqlString, _broadcastString, AveragedData[sdi[i]->LRstart], addComma);
-    addComma = true;
-  }
+    addValue(_sqlString, _broadcastString, AveragedData[sdi[i]->LRstart]);
 
 
   /* Three loops again, analog, raw and derived.  This is raw.
@@ -116,9 +105,9 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
   for (size_t i = 0; i < raw.size(); ++i)
   {
     if (raw[i]->Length > 1)	// PMS/vector data.
-      addVector(_sqlString, _broadcastString, &AveragedData[raw[i]->LRstart], raw[i]->Length, true);
+      addVector(_sqlString, _broadcastString, &AveragedData[raw[i]->LRstart], raw[i]->Length);
     else
-      addValue(_sqlString, _broadcastString, AveragedData[raw[i]->LRstart], true);
+      addValue(_sqlString, _broadcastString, AveragedData[raw[i]->LRstart]);
   }
 
 
@@ -127,14 +116,13 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
   for (size_t i = 0; i < derived.size(); ++i)
   {
     if (derived[i]->Length > 1)
-      addVector(_sqlString, _broadcastString, &AveragedData[derived[i]->LRstart], derived[i]->Length, true);
+      addVector(_sqlString, _broadcastString, &AveragedData[derived[i]->LRstart], derived[i]->Length);
     else
-      addValue(_sqlString, _broadcastString, AveragedData[derived[i]->LRstart], true);
+      addValue(_sqlString, _broadcastString, AveragedData[derived[i]->LRstart]);
   }
 
   _sqlString << ");";
   submitCommand(_sqlString.str());
-
 
   if (cfg.ProcessingMode() == Config::RealTime)
   {
@@ -255,8 +243,10 @@ PostgreSQL::initializeGlobalAttributes()
   char	*p, temp[100];
   extern char	dateProcessed[];	// From netcdf.c
 
+  sprintf(temp, "INSERT INTO global_attributes VALUES ('ProjectName', '%s')", ProjectName);
+  PQclear(PQexec(_conn, temp));
   GetAircraft(&p);
-  sprintf(temp, "INSERT INTO global_attributes VALUES ('ProjectName', '%s')", p);
+  sprintf(temp, "INSERT INTO global_attributes VALUES ('Platform', '%s')", p);
   PQclear(PQexec(_conn, temp));
   GetProjectNumber(&p);
   sprintf(temp, "INSERT INTO global_attributes VALUES ('ProjectNumber', '%s')", p);
@@ -292,13 +282,15 @@ PostgreSQL::initializeVariableList()
 
     addVariableToDataBase(sdi[i]->name, VarDB_GetUnits(sdi[i]->name), alt_units,
 	VarDB_GetTitle(sdi[i]->name), sdi[i]->SampleRate, nDims, dims,
-	sdi[i]->order, sdi[i]->cof, MISSING_VALUE, "Preliminary");
+	sdi[i]->cof, MISSING_VALUE, "Preliminary");
 
     addCategory(sdi[i]->name, "Analog");
 
     addVariableToTables(rateTableMap, sdi[i], true);
   }
 
+
+  std::vector<float> noCals;
 
   /* 3 big loops here for analog, raw and derived.  This is raw.
    */
@@ -359,7 +351,7 @@ PostgreSQL::initializeVariableList()
 
     addVariableToDataBase(raw[i]->name, VarDB_GetUnits(raw[i]->name), "",
 	VarDB_GetTitle(raw[i]->name), raw[i]->SampleRate, nDims, dims,
-	0, 0, MISSING_VALUE, "Preliminary");
+	noCals, MISSING_VALUE, "Preliminary");
 
     addCategory(raw[i]->name, "Raw");
 
@@ -386,7 +378,7 @@ PostgreSQL::initializeVariableList()
 
     addVariableToDataBase(derived[i]->name, VarDB_GetUnits(derived[i]->name), "",
 	VarDB_GetTitle(derived[i]->name), derived[i]->SampleRate, nDims, dims,
-	0, 0, MISSING_VALUE, "Preliminary");
+	noCals, MISSING_VALUE, "Preliminary");
 
     addCategory(derived[i]->name, "Derived");
 
@@ -426,11 +418,11 @@ PostgreSQL::WriteSQLvolts(const std::string timeStamp)
 
       for (size_t j = 0; j < sdi.size(); ++j)
         if (sdi[j]->SampleRate == (size_t)it->first)
-          addValue(_sqlString, SRTvolts[sdi[j]->SRstart+i], true);
+          addValue(_sqlString, SRTvolts[sdi[j]->SRstart+i]);
 
       for (size_t j = 0; j < raw.size(); ++j)
         if (raw[j]->SampleRate == (size_t)it->first && raw[j]->Length == 1)
-          addValue(_sqlString, SampledData[raw[j]->SRstart+i], true);
+          addValue(_sqlString, SampledData[raw[j]->SRstart+i]);
 
       _sqlString << ");";
     }
@@ -539,22 +531,15 @@ PostgreSQL::addVector(
 		std::stringstream& sql,
 		std::stringstream& udp,
 		const NR_TYPE *value,
-		const int nValues,
-		const bool addComma)
+		const int nValues)
 {
-  if (addComma)
-  {
-    sql << ',';
-    udp << ',';
-  }
-
-  sql << "'{";
-  udp << '{';
+  sql << ",'{";
+  udp << ",{";
 
   for (int j = 0; j < nValues; ++j)
   {
     if (j != 0)
-      addValue(sql, udp, value[j], true);
+      addValue(sql, udp, value[j]);
     else
       addValue(sql, udp, value[j], false);
   }
@@ -572,10 +557,9 @@ PostgreSQL::addVariableToDataBase(
 		const std::string& uncaled_units,
 		const std::string& longName,
 		const int sampleRate,
-		const int nDims,
+		const size_t nDims,
 		const int dims[],
-		const int nCals,
-		const float cal[],
+		const std::vector<float>& cals,
 		const float missingValue,
 		const std::string& dataQuality)
 {
@@ -592,21 +576,21 @@ PostgreSQL::addVariableToDataBase(
 
   entry << "', '" << nDims << "', '{";
 
-  for (int i = 0; i < nDims; ++i)
+  for (size_t i = 0; i < nDims; ++i)
   {
     if (i > 0)
       entry << ',';
 
     entry << dims[i];
   }
-  entry << "}', '" << nCals << "', '{";
+  entry << "}', '" << cals.size() << "', '{";
 
-  for (int i = 0; i < nCals; ++i)
+  for (size_t i = 0; i < cals.size(); ++i)
   {
     if (i > 0)
       entry << ',';
 
-    entry << cal[i];
+    entry << cals[i];
   }
 
   entry << "}', '" << missingValue << "', '" << dataQuality << "')";

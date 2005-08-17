@@ -47,7 +47,6 @@ all: ${LIBDIR}/lib${LIBNAME}.a ${LIBDIR}/lib${LIBNAME}_p.a
 
 ${OBJS}:	${HDRS}
 ${PMS1OBJ}:	pms1d_cv
-irs.o ins.o gust.o wd.o ws.o:	${NIMBUS}/include/gust.h
 
 ${LIBDIR}/lib${LIBNAME}.a: ${OBJS}
 	rm -f ${LIBDIR}/lib${LIBNAME}.a
