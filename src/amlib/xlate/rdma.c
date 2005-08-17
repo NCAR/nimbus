@@ -53,6 +53,8 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
   static FILE *outFP = NULL, *rdmapFP = NULL;
 
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->hvps);
+  if (*np < -32000.0 || *np > 32000.0)
+    *np = floatNAN;
 
   for (size_t i = 0; i < 64; ++i)
     crdma_cnc[i] = floatNAN;
@@ -166,74 +168,82 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
     {
     ++timeCounter;
     }
-
 }	/* END XLRDMAHVPS */
 
 /* -------------------------------------------------------------------- */
 void xlrdmavsh(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->vsh);
-
+  if (*np < -32000.0 || *np > 32000.0)
+    *np = floatNAN;
 }
 
 /* -------------------------------------------------------------------- */
 void xlrdmaqa(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->qa);
-
+  if (*np < -32000.0 || *np > 32000.0)
+    *np = floatNAN;
 }
 
 /* -------------------------------------------------------------------- */
 void xlrdmaqsh(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->qsh);
-
+  if (*np < -32000.0 || *np > 32000.0)
+    *np = floatNAN;
 }
 
 /* -------------------------------------------------------------------- */
 void xlrdmaqs(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->qs);
-
+  if (*np < -32000.0 || *np > 32000.0)
+    *np = floatNAN;
 }
 
 /* -------------------------------------------------------------------- */
 void xlrdmaqex(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->qex);
-
+  if (*np < -32000.0 || *np > 32000.0)
+    *np = floatNAN;
 }
 
 /* -------------------------------------------------------------------- */
 void xlrdmavd(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->vd);
-
+  if (*np < -32000.0 || *np > 32000.0)
+    *np = floatNAN;
 }
 
 /* -------------------------------------------------------------------- */
 void xlrdmarh(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->rh);
-
+  if (*np < -32000.0 || *np > 32000.0)
+    *np = floatNAN;
 }
 
 /* -------------------------------------------------------------------- */
 void xlrdmatemp(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->temp);
-
-  temp += *np;
-
+  if (*np < -32000.0 || *np > 32000.0)
+    *np = floatNAN;
+  else
+    temp += *np;
 }
 
 /* -------------------------------------------------------------------- */
 void xlrdmapabs(RAWTBL *varp, void *input, NR_TYPE *np)
 {
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->pabs);
-
-  press += *np;
-
+  if (*np < -32000.0 || *np > 32000.0)
+    *np = floatNAN;
+  else
+    press += *np;
 }
 
 /* END RDMA.C */
