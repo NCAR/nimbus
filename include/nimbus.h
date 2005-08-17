@@ -10,6 +10,7 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #ifndef NIMBUS_H
 #define NIMBUS_H
 
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -177,7 +178,7 @@ class DERTBL : public var_base
 /* Global Variables	*/
 extern char	*ProjectDirectory, *ProjectNumber, *ProjectName, FlightNumber[];
 
-extern const NR_TYPE MISSING_VALUE;
+extern const NR_TYPE MISSING_VALUE, floatNAN;
 extern const int MAX_COF;
 
 extern std::vector<SDITBL *> sdi;

@@ -126,7 +126,7 @@ static void check1Hz(var_base *varp, NR_TYPE SpikeSlope, size_t *counter)
   if (dir1 * dir2 < 0.0 &&
       fabs((double)dir1) > SpikeSlope && fabs((double)dir2) > SpikeSlope)
     {
-    this_rec[varp->SRstart] = MISSING_VALUE;
+    this_rec[varp->SRstart] = floatNAN;
     (*counter)++;
     sprintf(buffer, "Despike: %s, deltas %g %g - slope=%g\n", varp->name,dir1,dir2,SpikeSlope);
     LogThisRecordMsg(this_rec, buffer);
@@ -189,7 +189,7 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
 //        LogThisRecordMsg(this_rec, buffer);
 
         for (int k = (int)xa[nPrevPts-1]+1; k < (int)xa[nPrevPts]; ++k)
-          points[k] = MISSING_VALUE;
+          points[k] = floatNAN;
 
         i = ex-1;
         ++spikeCount;

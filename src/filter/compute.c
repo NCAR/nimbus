@@ -34,7 +34,7 @@ void ComputeLowRateDerived()
     if ((dp = ComputeOrder[i])->compute)
       (*dp->compute)(dp);
     else
-      AveragedData[dp->LRstart] = MISSING_VALUE;
+      AveragedData[dp->LRstart] = floatNAN;
 
 }	/* END COMPUTELOWRATEDERIVED */
 
@@ -50,7 +50,7 @@ void ComputeHighRateDerived()
       if ((dp = ComputeOrder[i])->compute)
         (*dp->compute)(dp);
       else
-        HighRateData[dp->HRstart + (SampleOffset * dp->Length)] = MISSING_VALUE;
+        HighRateData[dp->HRstart + (SampleOffset * dp->Length)] = floatNAN;
 
 }	/* END COMPUTEHIGHRATEDERIVED */
  

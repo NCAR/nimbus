@@ -14,7 +14,6 @@ circles.c
 climet.c
 co2c.c
 conccn.c
-const.c
 cvi.c
 efield.c
 geopot.c

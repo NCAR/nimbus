@@ -700,7 +700,7 @@ void postProcessData(var_base *varp, long input[], NR_TYPE *out, int label)
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     if (input[i] == 0)
-      out[i] = MISSING_VALUE;
+      out[i] = floatNAN;
 }
 
 /* -------------------------------------------------------------------- */

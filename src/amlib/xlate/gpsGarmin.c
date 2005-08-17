@@ -39,7 +39,7 @@ void xlgglat(RAWTBL *varp, void *input, NR_TYPE *output)
     lat = -lat;
 
   if (lat == 0.0 && lon == 0.0)
-    *output = MISSING_VALUE;
+    *output = floatNAN;
   else
     *output = lat;
 }
@@ -60,7 +60,7 @@ void xlgglon(RAWTBL *varp, void *input, NR_TYPE *output)
     lon = -lon;
 
   if (lat == 0.0 && lon == 0.0)
-    *output = MISSING_VALUE;
+    *output = floatNAN;
   else
     *output = lon;
 }

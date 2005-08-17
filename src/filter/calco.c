@@ -38,9 +38,6 @@ void ApplyCalCoes(NR_TYPE *record)
 
     for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
     {
-      if (record[pos] == MISSING_VALUE)
-        continue;
-
       int corder  = sp->cof.size() - 1;
 
       NR_TYPE out     = sp->cof[corder];

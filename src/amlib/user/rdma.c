@@ -34,7 +34,7 @@ void scrdma(DERTBL *varp)
 
   for (i = 0; i < 64; ++i)
     AveragedData[varp->LRstart+i] = crdma_cnc[i];
-//    AveragedData[varp->LRstart+i] = MISSING_VALUE;
+//    AveragedData[varp->LRstart+i] = floatNAN;
 
 }	/* END SCRDMA */
 

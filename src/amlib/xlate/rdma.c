@@ -55,7 +55,7 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
   *np = (NR_TYPE)ntohf(((Rdma_blk *)input)->hvps);
 
   for (size_t i = 0; i < 64; ++i)
-    crdma_cnc[i] = MISSING_VALUE;
+    crdma_cnc[i] = floatNAN;
 
   float *ardma = &SampledData[ardma_varp->SRstart];
 

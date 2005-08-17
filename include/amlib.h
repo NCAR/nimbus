@@ -10,7 +10,6 @@ DESCRIPTION:	Header File declaring amlib functions.
 #define AMLIB_H
 
 #include "header.h"
-#include <cmath>
 #include <netinet/in.h>
 
 const size_t MAX_FSSP = 4;
@@ -19,18 +18,15 @@ const size_t MAX_ASAS = 2;
 const size_t MAX_F300 = 2;
 const size_t MAX_PMS2D = (MAX_PMS2 * 2);
 
-const NR_TYPE FTMTR  = 0.3048;
-const NR_TYPE MPS2   = 9.7959;
-const NR_TYPE KTS2MS = 0.514791;
-const NR_TYPE FTMIN  = 0.00508;
-
-const double RAD_DEG = 180.0 / M_PI;
-const double DEG_RAD = M_PI / 180.0;
-
-/* Resolver/synchro conversion equation
+/* See amlib/xlate/const.c
  */
-const NR_TYPE RESOLV14BIT = 180.0 / 8192.0;
-const NR_TYPE RESOLV16BIT = 360.0 / 65536.0;
+extern const double FTMTR, MPS2, KTS2MS, FTMIN, Kelvin, WH_GRAVITY;
+extern const double EARTH_RADIUS, OMEGAE, CKTMS, GRAVITY;
+extern const double RAD_DEG, DEG_RAD;
+
+/* Resolver/synchro conversion equation.  See amlib/xlate/const.c
+ */
+extern const double RESOLV14BIT, RESOLV16BIT;
 
 
 /* Values for 'FeedBack' variable	*/

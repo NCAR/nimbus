@@ -75,8 +75,6 @@ static long		TimeVar = 0;
 static float		TimeOffset = 0.0;
 static const int	startVarIndx = 2;
 
-static int	ttxI;	// junk var, delete if hanging around July-2004
-
 static Queue	*missingRecords;
 static void	WriteMissingRecords();
 
@@ -797,7 +795,7 @@ void CreateNetCDF(const char fileName[])
       }
 
     CheckAndAddAttrs(fd, dp->varid, dp->name);
-if (strcmp(dp->name, "TTX") == 0) ttxI = indx;
+
     if (dp->OutputRate == Config::LowRate)
       data_p[indx++] = (void *)&AveragedData[dp->LRstart];
     else
@@ -819,24 +817,20 @@ void SwitchNetCDFtoDataMode()
 }	/* END SWITCHNETCDFTODATAMODE */
 
 /* -------------------------------------------------------------------- */
-void writeColumn()
+void replaceNANwithMissingValue()
 {
-  int cntr = 0;
-  long idx[3];
+  for (size_t i = 0; i < nLRfloats; ++i)
+    if (isnan(AveragedData[i]))
+      AveragedData[i] = MISSING_VALUE;
 
-  idx[0] = recordNumber;
-  idx[1] = idx[2] = 0;
+  for (size_t i = 0; i < nSRfloats; ++i)
+    if (isnan(SampledData[i]))
+      SampledData[i] = MISSING_VALUE;
 
-  ncvarput1(fd, timeOffsetID, idx, data_p[cntr++]);
-
-  for (size_t i = 0; i < sdi.size(); ++i)
-    ncvarput1(fd, sdi[i]->varid, idx, data_p[cntr++]);
-
-  for (size_t i = 0; i < raw.size(); ++i)
-    ncvarput1(fd, raw[i]->varid, idx, data_p[cntr++]);
-
-  for (size_t i = 0; i < derived.size(); ++i)
-    ncvarput1(fd, derived[i]->varid, idx, data_p[cntr++]);
+  if (cfg.ProcessingRate() == Config::HighRate)
+    for (size_t i = 0; i < nHRfloats; ++i)
+      if (isnan(HighRateData[i]))
+        HighRateData[i] = MISSING_VALUE;
 
 }
 
@@ -846,10 +840,7 @@ void WriteNetCDF()
   struct missDat	*dp;
   static int		errCnt = 0;
 
-//writeColumn();
-
-//DERTBL *d = derived[SearchTable(derived, "TTX")];
-//printf(" - %f %f\n", data_p[ttxI], AveragedData[d->LRstart]);
+  replaceNANwithMissingValue();
 
   if (ncrecput(fd, recordNumber, data_p) == ERR)
     {
@@ -1278,10 +1269,6 @@ void BlankOutBadData()
         }
       }
     else
-
-/*  if ((index = SearchTableSansLocation(derived, target)) != ERR)
-   */
-
     if ((index = SearchTable(derived, target)) != ERR &&
 	derived[index]->Output)
       {
@@ -1312,7 +1299,6 @@ void BlankOutBadData()
       LogMessage(buffer);
       }
     }
-
 }       /* END BLANKOUTBADDATA */
 
 /* -------------------------------------------------------------------- */
@@ -1332,7 +1318,6 @@ static int writeBlank(int varid, long start[], long count[], int OutputRate)
     p[i] = MISSING_VALUE;
 
   return(ncvarput(fd, varid, start, count, (void *)p));
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -1341,7 +1326,6 @@ static void writeTimeUnits()
   strftime(buffer, 256, "seconds since %F %T +0000", &StartFlight);
   ncattput(fd, timeVarID, "units", NC_CHAR, strlen(buffer)+1, buffer);
   ncattput(fd, timeOffsetID, "units", NC_CHAR, strlen(buffer)+1, buffer);
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -1350,7 +1334,6 @@ static void clearDependedByList()
   for (size_t i = 0; i < derived.size(); ++i)
     if (derived[i]->DependedUpon & 0xf0)
       derived[i]->DependedUpon &= 0x0f;
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -1367,7 +1350,6 @@ static void markDependedByList(char target[])
         markDependedByList(dp->name);
       }
   }
-
 }       /* END DOUBLECHECK */
 
 /* -------------------------------------------------------------------- */
@@ -1383,7 +1365,6 @@ static void printDependedByList()
       }
 
   LogMessage("\n");
-
 }
 
 /* -------------------------------------------------------------------- */

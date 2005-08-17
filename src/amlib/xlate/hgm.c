@@ -25,7 +25,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "raf.h"
 #include "nimbus.h"
 #include "amlib.h"
-#include "gust.h"
 
 extern int	Aircraft;
 

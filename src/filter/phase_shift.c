@@ -94,7 +94,7 @@ void PhaseShift(
     bool	noMissingData = true;
 
     for (size_t j = 0; j < sp->SampleRate; ++j)
-      if (this_rec[sp->SRstart + j] == MISSING_VALUE)
+      if (isnan(this_rec[sp->SRstart + j]))
         noMissingData = false;
 
     /* Only resample data, if we have a log or some missing values'.
@@ -116,7 +116,7 @@ void PhaseShift(
     bool	noMissingData = true;
 
     for (size_t j = 0; j < rp->SampleRate; ++j)
-      if (this_rec[rp->SRstart + j] == MISSING_VALUE)
+      if (isnan(this_rec[rp->SRstart + j]))
         noMissingData = false;
 
     if (abs((lag = rp->StaticLag + rp->DynamicLag)) > 1000)
@@ -166,31 +166,31 @@ resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
   if (vp->SampleRate == 1)
   {
     T = 0;
-    if (prev_prev_rec[vp->SRstart] != MISSING_VALUE) {
+    if (!isnan(prev_prev_rec[vp->SRstart])) {
       x[goodPoints] = T;
       y[goodPoints] = prev_prev_rec[vp->SRstart];
       ++goodPoints;
     }
     T += gap_size;
-    if (prev_rec[vp->SRstart] != MISSING_VALUE) {
+    if (!isnan(prev_rec[vp->SRstart])) {
       x[goodPoints] = T;
       y[goodPoints] = prev_rec[vp->SRstart];
       ++goodPoints;
     }
     T += gap_size;
-    if (this_rec[vp->SRstart] != MISSING_VALUE) {
+    if (!isnan(this_rec[vp->SRstart])) {
       x[goodPoints] = T;
       y[goodPoints] = this_rec[vp->SRstart];
       ++goodPoints;
     }
     T += gap_size;
-    if (next_rec[vp->SRstart] != MISSING_VALUE) {
+    if (!isnan(next_rec[vp->SRstart])) {
       x[goodPoints] = T;
       y[goodPoints] = next_rec[vp->SRstart];
       ++goodPoints;
     }
     T += gap_size;
-    if (next_next_rec[vp->SRstart] != MISSING_VALUE) {
+    if (!isnan(next_next_rec[vp->SRstart])) {
       x[goodPoints] = T;
       y[goodPoints] = next_next_rec[vp->SRstart];
       ++goodPoints;
@@ -202,7 +202,7 @@ resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
   {
     for (size_t i = 0; i < vp->SampleRate; ++i, T += gap_size)
     {
-      if (prev_rec[vp->SRstart + i] != MISSING_VALUE)
+      if (!isnan(prev_rec[vp->SRstart + i]))
       {
         x[goodPoints] = T;
         y[goodPoints] = prev_rec[vp->SRstart + i];
@@ -212,7 +212,7 @@ resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 
     for (size_t i = 0; i < vp->SampleRate; ++i, T += gap_size)
     {
-      if (this_rec[vp->SRstart + i] != MISSING_VALUE)
+      if (!isnan(this_rec[vp->SRstart + i]))
       {
         x[goodPoints] = T;
         y[goodPoints] = this_rec[vp->SRstart + i];
@@ -222,7 +222,7 @@ resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 
     for (size_t i = 0; i < vp->SampleRate; ++i, T += gap_size)
     {
-      if (next_rec[vp->SRstart + i] != MISSING_VALUE)
+      if (!isnan(next_rec[vp->SRstart + i]))
       {
         x[goodPoints] = T;
         y[goodPoints] = next_rec[vp->SRstart + i];

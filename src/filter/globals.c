@@ -28,7 +28,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "amlib.h"
 #include <injectsd.h>
 
-const NR_TYPE MISSING_VALUE = -32767;
+const NR_TYPE floatNAN = nanf("");
+const NR_TYPE MISSING_VALUE = -32767.0;
 const int MAX_COF = 10;
 
 char	buffer[4096];		/* Generic, volatile string space	*/

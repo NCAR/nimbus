@@ -151,13 +151,11 @@ void slatc(DERTBL *varp)
   gstat	= (long)GetSample(varp, 9);	/* nSats for Tans & Garmin	*/
   gmode	= (long)GetSample(varp, 10);	/* GMODE or GGMODE		*/
 
-  if (alat == MISSING_VALUE || alon == MISSING_VALUE || glat == MISSING_VALUE ||
-      glon == MISSING_VALUE || vns == MISSING_VALUE || vew == MISSING_VALUE ||
-      gvns == MISSING_VALUE || gvew == MISSING_VALUE)
+  if (isnan(alat) || isnan(alon) || isnan(glat) || isnan(glon) ||
+      isnan(vns) || isnan(vew) || isnan(gvns) || isnan(gvew))
     {
-
     returnMissingValue = true;
-    PutSample(varp, MISSING_VALUE);
+    PutSample(varp, floatNAN);
     return;
     }
   else
@@ -402,7 +400,7 @@ label546:
 void slonc(DERTBL *varp)
 {
   if (returnMissingValue)
-    PutSample(varp, MISSING_VALUE);
+    PutSample(varp, floatNAN);
   else
     PutSample(varp, lonc[FeedBack]);
 }
@@ -411,7 +409,7 @@ void slonc(DERTBL *varp)
 void svewc(DERTBL *varp)
 {
   if (returnMissingValue)
-    PutSample(varp, MISSING_VALUE);
+    PutSample(varp, floatNAN);
   else
     PutSample(varp, vewc[FeedBack]);
 }
@@ -420,7 +418,7 @@ void svewc(DERTBL *varp)
 void svnsc(DERTBL *varp)
 {
   if (returnMissingValue)
-    PutSample(varp, MISSING_VALUE);
+    PutSample(varp, floatNAN);
   else
     PutSample(varp, vnsc[FeedBack]);
 }
