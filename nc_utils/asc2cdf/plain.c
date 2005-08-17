@@ -33,8 +33,6 @@ void SetPlainBaseTime()
 {
   struct tm     *t;
 
-  nc_put_var_long(ncid, baseTimeID, &BaseTime);
-
   t = gmtime(&BaseTime);
   strftime(buffer, 128, "seconds since %F %T %z", t);
 
@@ -42,6 +40,12 @@ void SetPlainBaseTime()
   nc_put_att_text(ncid, timeOffsetID, "units", strlen(buffer)+1, buffer);
 
 }	/* END SETBASETIME */
+
+/* -------------------------------------------------------------------- */
+void WriteBaseTime()
+{
+  nc_put_var_long(ncid, baseTimeID, &BaseTime);
+}
 
 /* -------------------------------------------------------------------- */
 void CreatePlainNetCDF(FILE *fp)

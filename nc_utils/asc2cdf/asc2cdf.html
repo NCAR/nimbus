@@ -1,0 +1,106 @@
+<head>
+<title>asc2cdf User's Manual</title>
+
+<style type="text/css">
+<!--
+body { background: white; color: black; margin: 2em; margin-left: 3em; }
+h1,h2 { font-size: 1.5em }
+h3 { font-size: 1.3em }
+h4 { font-size: 1.2em }
+h1, h2, h3, h4 { font-style: normal; font-weight: normal; color: #3860B0; }
+span.runin { font-size: 1.1em; font-weight: bold; color: #3860B0; }
+a:link { color:navy; }
+a:visited { color:#386090; }
+li.toc { list-style: none; padding: .1em; }
+kbd.att { font-weight: normal; color: blue; }
+div.example { margin-left: 3em; margin-right: 3em; }
+div.definition { margin-left: 1em; }
+pre.CDL { color: brown; }
+table { padding: .25em; }
+span.new { background-color: #FF6666; }
+span.old { background-color: #FFFF88; text-decoration: line-through; }
+span.comment { background-color: #88FF88; font-style: italic; }
+-->
+</style>
+
+</head>
+
+<body>
+
+<h1 align=CENTER>asc2cdf User's Guide</h1>
+<h3 align=CENTER>ASCII to netCDF converter</h3>
+<hr>
+
+<dl>
+<dt><h3>Synopsis</h3>
+<dd>asc2cdf [-b time_t] [-g globalAttrFile] [-a] [-l] [-m] [-r n] [-s n] ASCII_file netCDF_file
+<p>
+<dt><h3>Description</h3>
+<dd><b>asc2cdf</b> is a program for uploading ASCII data into a netCDF file that follow the
+<a href="http://raf.atd.ucar.edu/Software/netCDF.html">NCAR-RAF/nimbus</a>
+
+conventions.  Files are then useable by <b>ncplot</b> and the suite of nc* programs at RAF.  With no options, <b>asc2cdf</b> expects the file to look like something produced by <b>n2asc</b>.  A top row with variable names, and time in the HH:MM:SS format in the left column.
+
+<blockquote>
+<pre class="CDL">
+UTC             ATX           DPBC          GLAT          GLON          CONCF_IBR     
+15:26:01     2.048569e+01  1.396061e+01  4.725823e+01  1.133886e+01  1.408615e-01
+15:26:02     2.050103e+01  1.396254e+01  4.725826e+01  1.133879e+01  0.000000e+00
+15:26:03     2.050156e+01  1.396496e+01  4.725829e+01  1.133871e+01  0.000000e+00
+15:26:04     2.049350e+01  1.397820e+01  4.725832e+01  1.133864e+01  0.000000e+00
+15:26:05     2.048074e+01  1.398546e+01  4.725835e+01  1.133857e+01  0.000000e+00
+</pre>
+</blockquote>
+
+Columns should be seperated with any combination of <b>tabs</b> or <b>spaces</b>.  The data maybe in any format acceptable to <b>atof(3)</b>, which is just about anything.
+
+<p>
+<dt><h3>Command Line Options</h3>
+<dd>The <kbd class="att">-m</kbd> option tells asc2cdf that time in the left column will be in <b>seconds since midnight</b> format (with rounding).  This is automatically turned on with the <kbd class="att">-a</kbd> or <kbd class="att">-l</kbd> option.
+<p>
+<dd>The <kbd class="att">-b</kbd> option defines a <b>base_time</b> in Unix seconds since January 1st 1970. This is useful when trying to merge data back into a netCDF file, where <b>ncmerge</b> complains about no overlapping time segments.  The default value is 0.  This option has <b>no</b> affect when the <kbd class="att">-a</kbd> or <kbd class="att">-l</kbd> option is enabled.
+<p>
+<dd>The <kbd class="att">-r</kbd> option defines the data rate.  Where the rate must be less than 1 Hz.  n = 5 means 1 sample every 5 seconds.  The default is 1.
+<p>
+<dd>The <kbd class="att">-s</kbd> option tells asc2cdf to skip 'n' lines before getting to the data.  This option is ignored if -a or -l option has been specified.  The default is 1.
+<p>
+<dd>The <kbd class="att">-a</kbd> option tells asc2cdf that the input file will be following the NASA Data Exchange Format (Ames).
+<p>
+<dd>The <kbd class="att">-l</kbd> option tells asc2cdf that the input file will be following the NASA Data Exchange Format (Langley).
+<p>
+<dd>The <kbd class="att">-g</kbd> option tells netCDF to read a file containing key/value pairs to be added as global attributes to the netCDF.  e.g.  
+<blockquote>
+<pre class="CDL">
+Source=NCAR Research Aviation Facility
+Address=P.O. Box 3000, Boulder, CO 80307-3000
+Phone=(303) 497-1030
+Investigator=Teresa Campos
+ProjectName=RICO
+Aircraft=N130AR
+ProjectNumber=135
+FlightNumber=rf18
+coordinates=LONC LATC PALT Time
+</pre>
+</blockquote>
+
+<dt><h3>Requirements</h3>
+<dd><b>asc2cdf</b> should compile under any platform.
+<a href="http://www.unidata.ucar.edu/packages/netcdf/index.html">netCDF</a> 3.0 or later is required to compile.
+</dl>
+
+<hr>
+<h3>Author</h3>
+Christopher J. Webster<br>
+National Center for Atmospheric Research<br>
+Research Aviation Facility.<br>
+(303) 497-1044
+<p>
+<address><a href="/cgi-bin/mail_me1.pl/cjw+from_RAF_Web_Software_Page_asc2cdf">email</a></address>
+<hr>
+<font size=2>
+Last update:
+Wed Aug 17 08:55:10 MDT 2005
+</font>
+
+</body>
+</html>

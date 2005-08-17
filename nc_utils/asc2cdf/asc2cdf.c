@@ -32,7 +32,8 @@ char	buffer[BUFFSIZE];
 int	ncid;
 FILE	*inFP;
 int	baseTimeID, timeOffsetID, timeVarID, varid[MAX_VARS],
-	nVariables, nRecords;
+	nVariables;
+size_t	nRecords;
 time_t	BaseTime = 0;
 float	scale[MAX_VARS], offset[MAX_VARS], missingVals[MAX_VARS];
 char	*time_vars[] = {"HOUR", "MINUTE", "SECOND"};
@@ -50,7 +51,7 @@ const int	rateOne = 1;
 const char	*noTitle = "No Title";
 const char	*noUnits = "Unk";
 
-void addGlobalAttrs(const char *p);
+void addGlobalAttrs(const char *p), WriteBaseTime();
 
 static int ProcessArgv(int argc, char **argv);
 static void WriteMissingData(int, int);
@@ -104,6 +105,7 @@ int main(int argc, char *argv[])
 
   addGlobalAttrs(globalAttrFile);
   nc_enddef(ncid);
+  WriteBaseTime();
 
 
   printf("Averaging Period = %d, Data Rate = %dHz\n", BaseDataRate, dataRate);
@@ -182,7 +184,9 @@ int main(int argc, char *argv[])
     lastSecond = currSecond;
 
     dataValue = (float)(nRecords * BaseDataRate);
+    nc_put_var1_float(ncid, timeVarID, &nRecords, &dataValue);
     nc_put_var1_float(ncid, timeOffsetID, &nRecords, &dataValue);
+
     dataValue = (float)hour;
     nc_put_var1_float(ncid, varid[0], &nRecords, &dataValue);
     dataValue = (float)minute;

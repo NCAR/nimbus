@@ -40,9 +40,8 @@ void SetNASABaseTime(int hour, int min, int sec)
   StartFlight.tm_hour += StartFlight.tm_hour - gt->tm_hour;
 
   BaseTime = mktime(&StartFlight);
-  nc_put_var_long(ncid, baseTimeID, &BaseTime);
 
-  strftime(buffer, 128, "%F %T %z", &StartFlight);
+  strftime(buffer, 128, "seconds since %F %T %z", &StartFlight);
 
   nc_put_att_text(ncid, timeVarID, "units", strlen(buffer)+1, buffer);
   nc_put_att_text(ncid, timeOffsetID, "units", strlen(buffer)+1, buffer);
