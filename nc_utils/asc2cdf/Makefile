@@ -14,8 +14,9 @@ ANONFTP=	/jnet/ftp/pub/src/bin.Solaris2.9
 
 # Linux
 HOST=	syrah
-LIBS=		-L${JLOCAL}/lib -lVarDB -lraf++ -lraf -lnetcdf 
-ANONFTP=	/net/ftp/pub/archive/RAF-src/bin.RedHat9.0
+LIBS=	-L${JLOCAL}/lib -lVarDB -lraf++ -lraf -lnetcdf 
+ANONFTP=/net/ftp/pub/archive/RAF-src/bin.RedHat9.0
+WWWDOC=	/net/www/raf/Software
 
 SRCS=   asc2cdf.c plain.c nasaAmes.c nasaLangley.c getmem.c
 OBJS=   asc2cdf.o plain.o nasaAmes.o nasaLangley.o getmem.o
@@ -38,6 +39,7 @@ publish:
 	scp ${PROG} ${HOST}:${BINDIR}
 	scp ${PROG}.man ${HOST}:${MANDIR}/${PROG}.1
 	cp ${PROG} $(ANONFTP)
+	cp ${PROG}.html ${WWWDOC}
 	cp ${PROG}.man ${ANONFTP}
 
 clean:
