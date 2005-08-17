@@ -13,7 +13,7 @@ STATIC FNS:	despike()
 		check1Hz()
 		checkVariable()
 
-DESCRIPTION:	This implementation uses the gnu gsl library cubic spline.
+DESCRIPTION:	Locate spikes and replace the data with missing_value.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2005
 -------------------------------------------------------------------------
@@ -24,7 +24,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2005
 #include "circbuff.h"
 
 #include <cmath>
-#include <gsl/gsl_spline.h>
 
 static std::vector<SDITBL *> sdi_spike;
 static std::vector<RAWTBL *> raw_spike;
@@ -32,9 +31,8 @@ static std::vector<size_t>   nSpikesSDI, nSpikesRAW;
 
 static void checkVariable(var_base *, NR_TYPE, size_t *);
 static void check1Hz(var_base *, NR_TYPE, size_t *);
-static NR_TYPE despike(NR_TYPE *);
 
-void LogThisRecordMsg(NR_TYPE *record, char msg[]);
+void LogThisRecordMsg(NR_TYPE *record, const char msg[]);
 
 
 /* -------------------------------------------------------------------- */
@@ -128,7 +126,7 @@ static void check1Hz(var_base *varp, NR_TYPE SpikeSlope, size_t *counter)
   if (dir1 * dir2 < 0.0 &&
       fabs((double)dir1) > SpikeSlope && fabs((double)dir2) > SpikeSlope)
     {
-    this_rec[varp->SRstart] = despike(points);
+    this_rec[varp->SRstart] = floatNAN;
     (*counter)++;
     sprintf(buffer, "Despike: %s, deltas %g %g - slope=%g\n", varp->name,dir1,dir2,SpikeSlope);
     LogThisRecordMsg(this_rec, buffer);
@@ -188,23 +186,10 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
         {
         sprintf(buffer, "Despike: %s, delta %g - slope=%g, point = %g, nPoints=%d\n",
 		vp->name, dir1, SpikeSlope, this_rec[sx+1], ex-sx-1);
-        LogThisRecordMsg(this_rec, buffer);
-
-        gsl_interp_accel *acc = gsl_interp_accel_alloc();
-        gsl_spline *spline;
-
-        if (spCnt >= 5)
-          spline = gsl_spline_alloc(gsl_interp_akima, spCnt);
-        else
-          spline = gsl_spline_alloc(gsl_interp_cspline, spCnt);
-
-        gsl_spline_init(spline, xa, ya, spCnt);
+//        LogThisRecordMsg(this_rec, buffer);
 
         for (int k = (int)xa[nPrevPts-1]+1; k < (int)xa[nPrevPts]; ++k)
-          points[k] = gsl_spline_eval(spline, (double)k, acc);
-
-        gsl_spline_free(spline);
-        gsl_interp_accel_free(acc);
+          points[k] = floatNAN;
 
         i = ex-1;
         ++spikeCount;
@@ -221,20 +206,5 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
   }
 
 }	/* END CHECKVARIABLE */
-
-/* -------------------------------------------------------------------- */
-static NR_TYPE despike(NR_TYPE *points)
-{
-  NR_TYPE	y = 0.0;
-
-  static const NR_TYPE c[] = { -0.166667, 0.666667, 0.0, 0.666667, -0.166667 };
-
-  for (size_t i = 0; i < 5; ++i)
-    if (i != 2)
-      y += c[i] * points[i];
-
-  return(y);
-
-}	/* END DESPIKE */
 
 /* END DESPIKE.C */

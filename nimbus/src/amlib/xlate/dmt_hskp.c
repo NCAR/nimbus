@@ -154,10 +154,10 @@ void xlS200cabin3(RAWTBL *varp, void *input, NR_TYPE *np)
     {
     NR_TYPE cts = (NR_TYPE)ntohs(p[i].cabinChan[3]);
 
-    size_t corder  = varp->order - 1;
+    size_t corder  = varp->cof.size() - 1;
     NR_TYPE x     = varp->cof[corder];
 
-    for (size_t k = 1; k < varp->order; k++)
+    for (size_t k = 1; k < varp->cof.size(); k++)
       x = varp->cof[corder-k] + cts * x;
 
 //    x = 16.89368 - 0.01583*cts + 3.70579E-6*cts*cts;
@@ -204,10 +204,10 @@ void xlS200cabin6(RAWTBL *varp, void *input, NR_TYPE *np)
     {
     NR_TYPE cts = (NR_TYPE)ntohs(p[i].cabinChan[6]);
 
-    size_t corder  = varp->order - 1;
+    size_t corder  = varp->cof.size() - 1;
     NR_TYPE x     = varp->cof[corder];
 
-    for (size_t k = 1; k < varp->order; k++)
+    for (size_t k = 1; k < varp->cof.size(); k++)
       x = varp->cof[corder-k] + cts * x;
 
 //    x = -729.57 + 0.87564*cts - 3.5197e-4*cts*cts + 4.750368e-8*cts*cts*cts;

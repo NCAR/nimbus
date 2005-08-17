@@ -31,7 +31,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-FILE *OpenProjectFile(char filename[], char mode[], int action)
+FILE *OpenProjectFile(const char filename[], const char mode[], int action)
 {
   FILE	*fp;
   char	file[MAXPATHLEN];
@@ -55,7 +55,7 @@ FILE *OpenProjectFile(char filename[], char mode[], int action)
 }	/* END OPENPROJECTFILE */
 
 /* -------------------------------------------------------------------- */
-int AccessProjectFile(char filename[], char mode[])
+int AccessProjectFile(const char filename[], const char mode[])
 {
   FILE	*fp;
   int	accessable = false;

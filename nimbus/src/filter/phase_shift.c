@@ -8,13 +8,11 @@ ENTRY POINTS:	PhaseShift()
 		AddVariableToSDIlagList()
 		AddVariableToRAWlagList()
 
-STATIC FNS:	shift()			Does all except 1hz
-		shift_1hz()		Optimized for 1hz variables
-		interp_regular()	(no wraparound)
-		interp_360_degree()	(0 to 360)
-		interp_180_degree()	(-180 to +180)
+STATIC FNS:	resample()		Does all except 1hz
+		resample1hz()		Optimized for 1hz variables
 
-DESCRIPTION:	Use Akima non-periodic spline for time shifting.
+DESCRIPTION:	Interpolate missing data (spikes) and phase shift data.
+		Also create HRT interpolated data.
 
 INPUT:		Logical Record, CircularBuffers, CircBuff index.
 
@@ -35,16 +33,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 
 #include <gsl/gsl_spline.h>
 
-static std::vector<SDITBL *> sdi_ps;
-static std::vector<RAWTBL *> raw_ps;
-
 /* Global to ease parameter pushing in intensive loops.	*/
 static NR_TYPE	*prev_prev_rec, *prev_rec,
-		*this_rec, *out_rec,
+		*this_rec,
 		*next_rec, *next_next_rec;
 
-static void	shift(var_base *vp, int lag), shift_1hz(int start, int lag);
-
+static void	resample(var_base *vp, int lag, NR_TYPE *, NR_TYPE *),
+  shift_vector(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out);
 
 /* -------------------------------------------------------------------- */
 void AddVariableToSDIlagList(SDITBL *varp)
@@ -52,13 +47,10 @@ void AddVariableToSDIlagList(SDITBL *varp)
   if (!cfg.TimeShifting())
     return;
 
-  sdi_ps.push_back(varp);
-
   sprintf(buffer, "Time lag for %s enabled, with lag of %d milliseconds.\n",
           varp->name, varp->StaticLag);
 
   LogMessage(buffer);
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -66,8 +58,6 @@ void AddVariableToRAWlagList(RAWTBL *varp)
 {
   if (!cfg.TimeShifting())
     return;
-
-  raw_ps.push_back(varp);
 
   /* Don't print message for dynamic lagged variables.
    */
@@ -78,43 +68,56 @@ void AddVariableToRAWlagList(RAWTBL *varp)
           varp->name, varp->StaticLag);
 
   LogMessage(buffer);
-
 }
 
 /* -------------------------------------------------------------------- */
 void PhaseShift(
 	CircularBuffer	*LRCB,
 	int		index,		/* Index into CircBuff		*/
-	NR_TYPE		*output)	/* Place to put shifted record	*/
+	NR_TYPE		*output,	/* Place to put shifted record	*/
+	NR_TYPE		*houtput)	/* Place to put shifted record	*/
 {
+  NR_TYPE *srt_out;
   prev_prev_rec	= (NR_TYPE *)GetBuffer(LRCB, index-2);
   prev_rec	= (NR_TYPE *)GetBuffer(LRCB, index-1);
   this_rec	= (NR_TYPE *)GetBuffer(LRCB, index);
   next_rec	= (NR_TYPE *)GetBuffer(LRCB, index+1);
   next_next_rec	= (NR_TYPE *)GetBuffer(LRCB, index+2);
-  out_rec	= output;
 
-  /* Copy current rec into output rec.
+  /* Copy current rec into srt output rec.
    */
-  memcpy((char *)out_rec, (char *)this_rec, NR_SIZE * nFloats);
+  memcpy((char *)output, (char *)this_rec, NR_SIZE * nSRfloats);
 
-  for (size_t i = 0; i < sdi_ps.size(); ++i)
-    {
-    SDITBL *sp = sdi_ps[i];
+  for (size_t i = 0; i < sdi.size(); ++i)
+  {
+    SDITBL	*sp = sdi[i];
+    bool	noMissingData = true;
 
-    if (abs(sp->StaticLag) < JITTER)
-      continue;
+    for (size_t j = 0; j < sp->SampleRate; ++j)
+      if (isnan(this_rec[sp->SRstart + j]))
+        noMissingData = false;
 
-    if (sp->SampleRate == 1)
-      shift_1hz(sp->SRstart, sp->StaticLag);
+    /* Only resample data, if we have a log or some missing values'.
+     */
+    if (sp->StaticLag == 0 && noMissingData)
+      srt_out = 0;
     else
-      shift(sp, sp->StaticLag);
-    }
+      srt_out = output;
 
-  for (size_t i = 0; i < raw_ps.size(); ++i)
-    {
-    RAWTBL *rp = raw_ps[i];
+    if (srt_out || houtput)
+      resample(sp, sp->StaticLag, srt_out, houtput);
+  }
+
+
+  for (size_t i = 0; i < raw.size(); ++i)
+  {
+    RAWTBL	*rp = raw[i];
     int		lag;
+    bool	noMissingData = true;
+
+    for (size_t j = 0; j < rp->SampleRate; ++j)
+      if (isnan(this_rec[rp->SRstart + j]))
+        noMissingData = false;
 
     if (abs((lag = rp->StaticLag + rp->DynamicLag)) > 1000)
       {
@@ -129,36 +132,117 @@ void PhaseShift(
       LogMessage(buffer);
       }
 
-    if (abs(lag) > JITTER)
-      if (rp->SampleRate == 1)
-        shift_1hz(rp->SRstart, lag);
+    /* Only resample data, if we have a lag or some 'missing values'.
+     */
+    if (lag == 0 && noMissingData)
+      srt_out = 0;
+    else
+      srt_out = output;
+
+    if (srt_out || houtput)
+    {
+      if (rp->Length > 1)
+        shift_vector(rp, lag, srt_out, houtput);
       else
-        shift(rp, lag);
+        resample(rp, lag, srt_out, houtput);
     }
+  }
 }	/* END PHASESHIFT */
 
 /* -------------------------------------------------------------------- */
-static void shift(var_base *vp, int lag)
+static void
+resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 {
-  size_t	nPoints = vp->SampleRate * 3;
-  double	gap_size = 1000.0 / vp->SampleRate;
-  double	x[nPoints], y[nPoints];
+  size_t	nPoints, goodPoints = 0, T = 0;
+  size_t	gap_size = 1000 / vp->SampleRate;
 
-  for (size_t i = 0; i < nPoints; ++i)
-    x[i] = gap_size * i;
+  if (vp->SampleRate == 1)
+    nPoints = 5;			// 5 Seconds.
+  else
+    nPoints = vp->SampleRate * 3;	// 3 Seconds.
 
-  for (size_t i = 0; i < vp->SampleRate; ++i)
+  double	x[nPoints], y[nPoints], startTime;
+
+  if (vp->SampleRate == 1)
   {
-    y[i] = prev_rec[vp->SRstart + i];
-    y[vp->SampleRate + i] = this_rec[vp->SRstart + i];
-    y[(vp->SampleRate*2) + i] = next_rec[vp->SRstart + i];
+    T = 0;
+    if (!isnan(prev_prev_rec[vp->SRstart])) {
+      x[goodPoints] = T;
+      y[goodPoints] = prev_prev_rec[vp->SRstart];
+      ++goodPoints;
+    }
+    T += gap_size;
+    if (!isnan(prev_rec[vp->SRstart])) {
+      x[goodPoints] = T;
+      y[goodPoints] = prev_rec[vp->SRstart];
+      ++goodPoints;
+    }
+    T += gap_size;
+    if (!isnan(this_rec[vp->SRstart])) {
+      x[goodPoints] = T;
+      y[goodPoints] = this_rec[vp->SRstart];
+      ++goodPoints;
+    }
+    T += gap_size;
+    if (!isnan(next_rec[vp->SRstart])) {
+      x[goodPoints] = T;
+      y[goodPoints] = next_rec[vp->SRstart];
+      ++goodPoints;
+    }
+    T += gap_size;
+    if (!isnan(next_next_rec[vp->SRstart])) {
+      x[goodPoints] = T;
+      y[goodPoints] = next_next_rec[vp->SRstart];
+      ++goodPoints;
+    }
+
+    startTime = 2000.0;
   }
+  else  // else SampleRate > 1
+  {
+    for (size_t i = 0; i < vp->SampleRate; ++i, T += gap_size)
+    {
+      if (!isnan(prev_rec[vp->SRstart + i]))
+      {
+        x[goodPoints] = T;
+        y[goodPoints] = prev_rec[vp->SRstart + i];
+        ++goodPoints;
+      }
+    }
+
+    for (size_t i = 0; i < vp->SampleRate; ++i, T += gap_size)
+    {
+      if (!isnan(this_rec[vp->SRstart + i]))
+      {
+        x[goodPoints] = T;
+        y[goodPoints] = this_rec[vp->SRstart + i];
+        ++goodPoints;
+      }
+    }
+
+    for (size_t i = 0; i < vp->SampleRate; ++i, T += gap_size)
+    {
+      if (!isnan(next_rec[vp->SRstart + i]))
+      {
+        x[goodPoints] = T;
+        y[goodPoints] = next_rec[vp->SRstart + i];
+        ++goodPoints;
+      }
+    }
+
+    startTime = 1000.0;
+  }
+
+  startTime -= lag;
+
+  if (goodPoints < 3)
+    return;
 
   if (vp->Modulo)	// 0 - 360 stuff.
   {
     bool high_value = false, low_value = false;
 
-    for (size_t i = 0; i < nPoints; ++i)
+    for (size_t i = 0; i < goodPoints; ++i)
     {
       if (y[i] < vp->Modulo->bound[0])
         low_value = true;
@@ -167,65 +251,141 @@ static void shift(var_base *vp, int lag)
     }
 
     if (low_value && high_value)
-      for (size_t i = 0; i < nPoints; ++i)
+      for (size_t i = 0; i < goodPoints; ++i)
         if (y[i] < vp->Modulo->bound[0])
           y[i] += vp->Modulo->diff;
   }
 
 
   gsl_interp_accel *acc = gsl_interp_accel_alloc();
-  gsl_spline *spline;
+  gsl_interp *linear = 0;
+  gsl_spline *spline = 0;
 
-  if (nPoints >= 5)
-    spline = gsl_spline_alloc(gsl_interp_akima, nPoints);
+  if (cfg.InterpolationType() == Config::Linear)
+  {
+    linear = gsl_interp_alloc(gsl_interp_linear, goodPoints);
+    gsl_interp_init(linear, x, y, goodPoints);
+  }
   else
-    spline = gsl_spline_alloc(gsl_interp_cspline, nPoints);
+  {
+    if (cfg.InterpolationType() == Config::AkimaSpline && goodPoints >= 5)
+      spline = gsl_spline_alloc(gsl_interp_akima, goodPoints);
+    else
+      spline = gsl_spline_alloc(gsl_interp_cspline, goodPoints);
 
-  gsl_spline_init(spline, x, y, nPoints);
+    gsl_spline_init(spline, x, y, goodPoints);
+  }
 
-  double rqst = 1000.0 - lag;
-  for (size_t i = 0; i < vp->SampleRate; ++i, rqst += gap_size)
-    out_rec[vp->SRstart+i] = gsl_spline_eval(spline, rqst, acc);
+  if (srt_out)
+  {
+    double rqst = startTime;
+    for (size_t i = 0; i < vp->SampleRate; ++i, rqst += gap_size)
+      if (cfg.InterpolationType() == Config::Linear)
+        srt_out[vp->SRstart+i] = gsl_interp_eval(linear, x, y, rqst, acc);
+      else
+        srt_out[vp->SRstart+i] = gsl_spline_eval(spline, rqst, acc);
+  }
 
-  gsl_spline_free(spline);
+  if (hrt_out)
+  {
+    double rqst = startTime;
+    for (size_t i = 0; i < (size_t)cfg.ProcessingRate(); ++i, rqst += 40)
+      if (cfg.InterpolationType() == Config::Linear)
+        hrt_out[vp->HRstart+i] = gsl_interp_eval(linear, x, y, rqst, acc);
+      else
+        hrt_out[vp->HRstart+i] = gsl_spline_eval(spline, rqst, acc);
+  }
+
+  if (cfg.InterpolationType() == Config::Linear)
+    gsl_interp_free(linear);
+  else
+    gsl_spline_free(spline);
+
   gsl_interp_accel_free(acc);
 
 
   if (vp->Modulo)	// Go back through and move to within bounds.
   {
-    for (size_t i = 0; i < vp->SampleRate; ++i)
-    {
-      if (out_rec[vp->SRstart+i] < vp->Modulo->value[0])
-        out_rec[vp->SRstart+i] += vp->Modulo->diff;
-      if (out_rec[vp->SRstart+i] > vp->Modulo->value[1])
-        out_rec[vp->SRstart+i] -= vp->Modulo->diff;
-    }
+    if (srt_out)
+      for (size_t i = 0; i < vp->SampleRate; ++i)
+      {
+        if (srt_out[vp->SRstart+i] < vp->Modulo->value[0])
+          srt_out[vp->SRstart+i] += vp->Modulo->diff;
+        if (srt_out[vp->SRstart+i] > vp->Modulo->value[1])
+          srt_out[vp->SRstart+i] -= vp->Modulo->diff;
+      }
+
+    if (hrt_out)
+      for (size_t i = 0; i < (size_t)cfg.ProcessingRate(); ++i)
+      {
+        if (hrt_out[vp->SRstart+i] < vp->Modulo->value[0])
+          hrt_out[vp->SRstart+i] += vp->Modulo->diff;
+        if (hrt_out[vp->SRstart+i] > vp->Modulo->value[1])
+          hrt_out[vp->SRstart+i] -= vp->Modulo->diff;
+      }
   }
-}	/* END SHIFT */
-
+}	/* END RESAMPLE */
+ 
 /* -------------------------------------------------------------------- */
-static void shift_1hz(int start, int lag)
+/*
+ * Only shift vectors, no interpolation.  Lag will be truncated to mod
+ * samplerate.
+ */
+static void
+shift_vector(RAWTBL *rp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 {
-  static const size_t	spCnt = 5;
+  if (lag == 0)
+    return;
 
-  double	x[spCnt], y[spCnt];
+  int sampleInterval = 1000 / rp->SampleRate;
+  int nBytesPerVector = rp->Length;
 
-  for (size_t i = 0; i < spCnt; ++i)
-    x[i] = i * 1000;
+  /* Truncate lag.
+   */
+  int nIntervalsToMove = lag / sampleInterval;
+  int bytesPerVector = rp->Length * NR_SIZE;
 
-  y[0] = prev_prev_rec[start];
-  y[1] = prev_rec[start];
-  y[2] = this_rec[start];
-  y[3] = next_rec[start];
-  y[4] = next_next_rec[start];
+  if (lag < 0)
+  {
+    // SampleRate buffer.
+    memcpy(&srt_out[rp->SRstart],
+	&this_rec[rp->SRstart + (nIntervalsToMove * rp->Length)],
+	(rp->SampleRate - nIntervalsToMove) * bytesPerVector);
 
-  gsl_spline *spline = gsl_spline_alloc(gsl_interp_akima, spCnt);
-  gsl_spline_init(spline, x, y, spCnt);
+    memcpy(&srt_out[rp->SRstart + (rp->Length * (rp->SampleRate - nIntervalsToMove))],
+	&next_rec[rp->SRstart],
+	nIntervalsToMove * bytesPerVector);
 
-  out_rec[start] = gsl_spline_eval(spline, (double)2000 - lag, 0);
+    // HighRate buffer.
+    memcpy(&hrt_out[rp->HRstart],
+	&this_rec[rp->HRstart + (nIntervalsToMove * rp->Length)],
+	(rp->SampleRate - nIntervalsToMove) * bytesPerVector);
 
-  gsl_spline_free(spline);
+    memcpy(&hrt_out[rp->HRstart + (rp->Length * (rp->SampleRate - nIntervalsToMove))],
+	&next_rec[rp->HRstart],
+	nIntervalsToMove * bytesPerVector);
+  }
+  else
+  {
+    // SampleRate buffer.
+    memcpy(&srt_out[rp->SRstart + (nIntervalsToMove * rp->Length)],
+	&this_rec[rp->SRstart],
+	(rp->SampleRate - nIntervalsToMove) * bytesPerVector);
 
-}	/* END SHIFT_1HZ */
+    memcpy(&srt_out[rp->SRstart],
+	&prev_rec[rp->SRstart + (rp->Length * (rp->SampleRate - nIntervalsToMove))],
+	nIntervalsToMove * bytesPerVector);
+
+    // HighRate buffer.
+    memcpy(&srt_out[rp->SRstart + (nIntervalsToMove * rp->Length)],
+	&this_rec[rp->SRstart],
+	(rp->SampleRate - nIntervalsToMove) * bytesPerVector);
+
+    memcpy(&srt_out[rp->SRstart],
+	&prev_rec[rp->SRstart + (rp->Length * (rp->SampleRate - nIntervalsToMove))],
+	nIntervalsToMove * bytesPerVector);
+  }
+
+}
 
 /* END PHASE_SHIFT.C */

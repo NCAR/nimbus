@@ -50,7 +50,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 /* -------------------------------------------------------------------- */
 void xlogain(RAWTBL *varp, void *p, NR_TYPE *np)
 {
-  if (varp->order == 3)
+  if (varp->cof.size() == 3)
     *np = (NR_TYPE)SecondPoly((float)ntohs(((Oph3_blk *)p)->gain), varp->cof);
   else
     *np = (NR_TYPE)FirstPoly((float)ntohs(((Oph3_blk *)p)->gain), varp->cof);
@@ -67,7 +67,7 @@ void xlobbcod(RAWTBL *varp, void *p, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlodetdc(RAWTBL *varp, void *p, NR_TYPE *np)
 {
-  if (varp->order == 3)
+  if (varp->cof.size() == 3)
     *np = (NR_TYPE)SecondPoly((float)ntohs(((Oph3_blk *)p)->det_bias), varp->cof);
   else
     *np = (NR_TYPE)FirstPoly((float)ntohs(((Oph3_blk *)p)->det_bias), varp->cof);
@@ -77,7 +77,7 @@ void xlodetdc(RAWTBL *varp, void *p, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlotsnt(RAWTBL *varp, void *p, NR_TYPE *np)
 {
-  if (varp->order == 3)
+  if (varp->cof.size() == 3)
     *np = (NR_TYPE)SecondPoly((float)ntohs(((Oph3_blk *)p)->snout_tmp), varp->cof);
   else
     *np = (NR_TYPE)FirstPoly((float)ntohs(((Oph3_blk *)p)->snout_tmp), varp->cof);
@@ -87,7 +87,7 @@ void xlotsnt(RAWTBL *varp, void *p, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlotbnch(RAWTBL *varp, void *p, NR_TYPE *np)
 {
-  if (varp->order == 3)
+  if (varp->cof.size() == 3)
     *np = (NR_TYPE)SecondPoly((float)ntohs(((Oph3_blk *)p)->bench_tmp), varp->cof);
   else
     *np = (NR_TYPE)FirstPoly((float)ntohs(((Oph3_blk *)p)->bench_tmp), varp->cof);
@@ -97,7 +97,7 @@ void xlotbnch(RAWTBL *varp, void *p, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlotdet(RAWTBL *varp, void *p, NR_TYPE *np)
 {
-  if (varp->order == 3)
+  if (varp->cof.size() == 3)
     *np = (NR_TYPE)SecondPoly((float)ntohs(((Oph3_blk *)p)->det_tmp), varp->cof);
   else
     *np = (NR_TYPE)FirstPoly((float)ntohs(((Oph3_blk *)p)->det_tmp), varp->cof);
@@ -107,7 +107,7 @@ void xlotdet(RAWTBL *varp, void *p, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlotbbc(RAWTBL *varp, void *p, NR_TYPE *np)
 {
-  if (varp->order == 3)
+  if (varp->cof.size() == 3)
     *np = (NR_TYPE)SecondPoly((float)ntohs(((Oph3_blk *)p)->cool_tmp), varp->cof);
   else
     *np = (NR_TYPE)FirstPoly((float)ntohs(((Oph3_blk *)p)->cool_tmp), varp->cof);
@@ -117,7 +117,7 @@ void xlotbbc(RAWTBL *varp, void *p, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlotbbf(RAWTBL *varp, void *p, NR_TYPE *np)
 {
-  if (varp->order == 3)
+  if (varp->cof.size() == 3)
     *np = (NR_TYPE)SecondPoly((float)ntohs(((Oph3_blk *)p)->float_tmp), varp->cof);
   else
     *np = (NR_TYPE)FirstPoly((float)ntohs(((Oph3_blk *)p)->float_tmp), varp->cof);
@@ -127,7 +127,7 @@ void xlotbbf(RAWTBL *varp, void *p, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlosmotr(RAWTBL *varp, void *p, NR_TYPE *np)
 {
-  if (varp->order == 3)
+  if (varp->cof.size() == 3)
     *np = (NR_TYPE)SecondPoly((float)ntohs(((Oph3_blk *)p)->motor_spd), varp->cof);
   else
     *np = (NR_TYPE)FirstPoly((float)ntohs(((Oph3_blk *)p)->motor_spd), varp->cof);
@@ -137,7 +137,7 @@ void xlosmotr(RAWTBL *varp, void *p, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlodetsg(RAWTBL *varp, void *p, NR_TYPE *np)
 {
-  if (varp->order == 3)
+  if (varp->cof.size() == 3)
     *np = (NR_TYPE)SecondPoly((float)ntohs(((Oph3_blk *)p)->det_sig), varp->cof);
   else
     *np = (NR_TYPE)FirstPoly((float)ntohs(((Oph3_blk *)p)->det_sig), varp->cof);
@@ -147,7 +147,7 @@ void xlodetsg(RAWTBL *varp, void *p, NR_TYPE *np)
 /* -------------------------------------------------------------------- */
 void xlotbox(RAWTBL *varp, void *p, NR_TYPE *np)
 {
-  if (varp->order == 3)
+  if (varp->cof.size() == 3)
     *np = (NR_TYPE)SecondPoly((float)ntohs(((Oph3_blk *)p)->box_tmp), varp->cof);
   else
     *np = (NR_TYPE)FirstPoly((float)ntohs(((Oph3_blk *)p)->box_tmp), varp->cof);

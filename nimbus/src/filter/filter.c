@@ -32,17 +32,15 @@ extern NR_TYPE	*SampledData, *HighRateData;
 static std::vector<mRFilterPtr> sdiFilters;
 static std::vector<mRFilterPtr> rawFilters;
 
-static filterData	TwoFiftyTo25, FiftyTo25, OneTo25, FiveTo25, TenTo25,
-			ThousandTo25, TwentyFive, vspd, acins, gsf;
-
 static int	PSCBindex;
 static size_t	currentHz, HzDelay;
 static size_t	filterRate;
 
-static NR_TYPE	*inputRec;
+static NR_TYPE	*inputRec, *interpdData;
 
 static circBuffPtr	newCircBuff(int);
 
+static filterPtr readAfilter(char file[]);
 static int	disposMultiRateFilter(mRFilterPtr aMRFPtr);
 
 static NR_TYPE	getBuff(int offset, circBuffPtr aCBPtr);
@@ -51,19 +49,31 @@ static void	initCircBuff(circBuffPtr aCBPtr),
 		putBuff(NR_TYPE datum, circBuffPtr aCBPtr),
 		setTimeDelay(size_t, size_t, int *, size_t *),
 		filterCounter(SDITBL *sp),
-		ProcessVariable(CircularBuffer *PSCB, var_base *vp, mRFilterPtr vpFilter),
-		SingleStageFilter(CircularBuffer *PSCB, mRFilterPtr thisMRF,
-			var_base *vp);
+		ProcessVariable(CircularBuffer *, CircularBuffer *,
+				var_base *vp, mRFilterPtr vpFilter),
+		SingleStageFilter(	CircularBuffer *, CircularBuffer *,
+					mRFilterPtr thisMRF, var_base *vp);
 
-char *GetProcessedBuffer(CircularBuffer *cb, int offset, var_base *vp);
+char *GetProcessedBuffer(CircularBuffer *, CircularBuffer *, int offset, var_base *vp);
 
 
 /* -------------------------------------------------------------------- */
 void InitMRFilters()
 {
   MOD	*mv_p;
+  filterPtr	TwoFiftyTo25, FiftyTo25, OneTo25, FiveTo25, TenTo25,
+		ThousandTo25, TwentyFive, vspd, acins, gsf;
 
-  readFilters();
+  OneTo25 = readAfilter("1to25");
+  FiveTo25 = readAfilter("5to25");
+  TenTo25 = readAfilter("10to25");
+  TwentyFive = readAfilter("25hz");
+  vspd = readAfilter("VSPD");
+  gsf = readAfilter("GSF");
+  acins = readAfilter("ACINS");
+  FiftyTo25 = readAfilter("50to25");
+  TwoFiftyTo25 = readAfilter("250to25");
+  ThousandTo25 = readAfilter("1000to25");
 
   /* Create filter Data for each variable
    */
@@ -91,11 +101,11 @@ void InitMRFilters()
        * do).
        */
       case 1:			/* Interpolate     L  M  */
-        sdiFilters[i] = createMRFilter(1, 1, &OneTo25, mv_p);
+        sdiFilters[i] = createMRFilter(1, 1, OneTo25, mv_p);
         break;
 
       case 5:
-        sdiFilters[i] = createMRFilter(1, 1, &FiveTo25, mv_p);
+        sdiFilters[i] = createMRFilter(1, 1, FiveTo25, mv_p);
         break;
 
       case 25:		/* No filtering, just copy data */
@@ -103,15 +113,15 @@ void InitMRFilters()
         break;
 
       case 50:		/* Decimate        L  M  */
-        sdiFilters[i] = createMRFilter(1, 2, &FiftyTo25, mv_p);
+        sdiFilters[i] = createMRFilter(1, 2, FiftyTo25, mv_p);
         break;
 
       case 250:
-        sdiFilters[i] = createMRFilter(1, 10, &TwoFiftyTo25, mv_p);
+        sdiFilters[i] = createMRFilter(1, 10, TwoFiftyTo25, mv_p);
         break;
 
       case 1000:
-        sdiFilters[i] = createMRFilter(1, 40, &ThousandTo25, mv_p);
+        sdiFilters[i] = createMRFilter(1, 40, ThousandTo25, mv_p);
         break;
 
       default:
@@ -147,34 +157,40 @@ void InitMRFilters()
     switch (raw[i]->SampleRate)
       {
       case 1:			/* Interpolate	*/
-        rawFilters[i] = createMRFilter(1, 1, &OneTo25, mv_p);
+        rawFilters[i] = createMRFilter(1, 1, OneTo25, mv_p);
         break;
 
       case 5:
-        rawFilters[i] = createMRFilter(1, 1, &FiveTo25, mv_p);
+        rawFilters[i] = createMRFilter(1, 1, FiveTo25, mv_p);
         break;
 
       case 10:
+        /* At this time no filtering of groundspeeds from the IRS should be
+         * performed, due to poor quantization from the instrument.  Filtering
+         * introdouces ripple and a scalloping effect when the raw data is
+         * "stair-stepping".  Webster/Lenschow May-2005
+         */
         if (strncmp(raw[i]->name, "GSF", 3) == 0 ||
             strncmp(raw[i]->name, "VEW", 3) == 0 ||
             strncmp(raw[i]->name, "VNS", 3) == 0)
-          rawFilters[i] = createMRFilter(1, 1, &gsf, mv_p);
+//          rawFilters[i] = createMRFilter(1, 1, gsf, mv_p);
+          rawFilters[i] = NULL;
         else
-          rawFilters[i] = createMRFilter(1, 1, &TenTo25, mv_p);
+          rawFilters[i] = createMRFilter(1, 1, TenTo25, mv_p);
         break;
 
       case 25:		/* Just filter	*/
         if (strncmp(raw[i]->name, "VSPD", 4) == 0)
-          rawFilters[i] = createMRFilter(1, 1, &vspd, mv_p);
+          rawFilters[i] = createMRFilter(1, 1, vspd, mv_p);
         else
           rawFilters[i] = NULL;
         break;
 
       case 50:		/* Decimate	*/
         if (strncmp(raw[i]->name, "ACINS", 5) == 0)
-          rawFilters[i] = createMRFilter(1, 2, &acins, mv_p);
+          rawFilters[i] = createMRFilter(1, 2, acins, mv_p);
         else
-          rawFilters[i] = createMRFilter(1, 2, &FiftyTo25, mv_p);
+          rawFilters[i] = createMRFilter(1, 2, FiftyTo25, mv_p);
         break;
 
       default:
@@ -187,9 +203,11 @@ void InitMRFilters()
 }	/* END INITMRFILTER */
 
 /* -------------------------------------------------------------------- */
-void Filter(CircularBuffer *PSCB)
+void Filter(	CircularBuffer *PSCB,	/* SampleRate data. */
+		CircularBuffer *HSCB)	/* < 25Hz data interp'ed up to 25 */
 {
   SampledData = (NR_TYPE *)GetBuffer(PSCB, -(PSCB->nbuffers - 1));
+  interpdData = (NR_TYPE *)GetBuffer(HSCB, -(PSCB->nbuffers - 1));
 
   /* Do Analog variables.
    */
@@ -204,28 +222,35 @@ void Filter(CircularBuffer *PSCB)
       continue;
       }
 
-    ProcessVariable(PSCB, sdi[i], sdiFilters[i]);
+    ProcessVariable(PSCB, HSCB, sdi[i], sdiFilters[i]);
     }
 
   /* Do raw variables
    */
   for (size_t i = 0; i < raw.size(); ++i)
     {
-    /* We don't support filtering vector data.
-     */
-    if (raw[i]->Length > 1)
-      continue;
-
-    ProcessVariable(PSCB, raw[i], rawFilters[i]);
+    if ((raw[i]->ProbeType & PROBE_PMS1D) || (raw[i]->ProbeType & PROBE_PMS2D))
+      memcpy(	(char *)&HighRateData[raw[i]->HRstart],
+		(char *)&SampledData[raw[i]->SRstart],
+		NR_SIZE * raw[i]->SampleRate * raw[i]->Length);
+    else
+      ProcessVariable(PSCB, HSCB, raw[i], rawFilters[i]);
     }
 
 }	/* FILTER */
 
 /* -------------------------------------------------------------------- */
-static void ProcessVariable(CircularBuffer *PSCB, var_base *vp, mRFilterPtr vpFilter)
+static void ProcessVariable(	CircularBuffer *PSCB, CircularBuffer *HSCB,
+				var_base *vp, mRFilterPtr vpFilter)
 {
   if (vpFilter == (mRFilterPtr)ERR)	/* Filtering not needed	*/
     return;
+
+  /* Because data with SampleRate below 25 is interpolated first, we
+   * can't use SampleRate, but must use 25.  Fake it with filterRate.
+   */
+  filterRate = vp->SampleRate < (size_t)cfg.ProcessingRate()
+				? (size_t)cfg.ProcessingRate() : vp->SampleRate;
 
   if (vpFilter == 0)	/* Filtering not needed/wanted	*/
     {
@@ -234,19 +259,20 @@ static void ProcessVariable(CircularBuffer *PSCB, var_base *vp, mRFilterPtr vpFi
 		(char *)&SampledData[vp->SRstart],
 		NR_SIZE * vp->SampleRate * vp->Length);
     else
+    if (vp->SampleRate < (size_t)cfg.ProcessingRate())
+      memcpy(	(char *)&HighRateData[vp->HRstart],
+		(char *)&interpdData[vp->HRstart],
+		NR_SIZE * filterRate * vp->Length);
+    else
       memset(	(char *)&HighRateData[vp->HRstart], 0,
 		NR_SIZE * vp->SampleRate * vp->Length);
 
     return;
     }
 
-  /* Because data with SampleRate below 25 is interpolated first, we
-   * can't use SampleRate, but must use 25.  Fake it with filterRate.
-   */
-  filterRate = vp->SampleRate < (size_t)cfg.ProcessingRate() ? (size_t)cfg.ProcessingRate() : vp->SampleRate;
   PSCBindex = -(PSCB->nbuffers - 1);
   setTimeDelay(filterRate, vpFilter->filter->order, &PSCBindex, &HzDelay);
-  inputRec = (NR_TYPE *)GetProcessedBuffer(PSCB, PSCBindex, vp);
+  inputRec = (NR_TYPE *)GetProcessedBuffer(PSCB, HSCB, PSCBindex, vp);
 
   if (vpFilter->task == GET_INPUT)
     {
@@ -260,7 +286,7 @@ static void ProcessVariable(CircularBuffer *PSCB, var_base *vp, mRFilterPtr vpFi
       currentHz -= filterRate;
       }
 
-  SingleStageFilter(PSCB, vpFilter, vp);
+  SingleStageFilter(PSCB, HSCB, vpFilter, vp);
 
 }	/* END PROCESSVARIABLE */
 
@@ -308,7 +334,7 @@ static void filterCounter(SDITBL *sp)
 }	/* END FILTERCOUNTER */
 
 /* -------------------------------------------------------------------- */
-static void SingleStageFilter(CircularBuffer *PSCB, mRFilterPtr thisMRF, var_base *vp)
+static void SingleStageFilter(CircularBuffer *PSCB, CircularBuffer *HSCB, mRFilterPtr thisMRF, var_base *vp)
 {
   int		task;
   NR_TYPE	output;
@@ -322,7 +348,7 @@ static void SingleStageFilter(CircularBuffer *PSCB, mRFilterPtr thisMRF, var_bas
       if (task == GET_INPUT && ++currentHz == filterRate)
         {
         currentHz = 0;
-        inputRec = (NR_TYPE *)GetProcessedBuffer(PSCB, PSCBindex++, vp);
+        inputRec = (NR_TYPE *)GetProcessedBuffer(PSCB, HSCB, PSCBindex++, vp);
         }
       }
     while (task == GET_INPUT);
@@ -332,7 +358,7 @@ static void SingleStageFilter(CircularBuffer *PSCB, mRFilterPtr thisMRF, var_bas
 }
 
 /* -------------------------------------------------------------------- */
-static void readAfilter(char *file, filterPtr daFilt)
+static filterPtr readAfilter(char file[])
 {
   char	*nimbus = getenv("PROJ_DIR");
   char	*filter[1050];
@@ -340,6 +366,8 @@ static void readAfilter(char *file, filterPtr daFilt)
 
   sprintf(buffer, "%s/defaults/filters/%s", nimbus, file);
   ReadTextFile(buffer, filter);
+
+  filterPtr daFilt = new filterData;
 
   daFilt->order = atoi(filter[0]);
   daFilt->aCoef = new filterType[daFilt->order];
@@ -354,23 +382,9 @@ static void readAfilter(char *file, filterPtr daFilt)
 
   printf("filter.c: filter sum of %s\t= %15.8lf\n", file, sum);
 
+  return(daFilt);
+
 }	/* END READAFILTER */
-
-/* -------------------------------------------------------------------- */
-static void readFilters()
-{
-  readAfilter("1to25", &OneTo25);
-  readAfilter("5to25", &FiveTo25);
-  readAfilter("10to25", &TenTo25);
-  readAfilter("25hz", &TwentyFive);
-  readAfilter("VSPD", &vspd);
-  readAfilter("GSF", &gsf);
-  readAfilter("ACINS", &acins);
-  readAfilter("50to25", &FiftyTo25);
-  readAfilter("250to25", &TwoFiftyTo25);
-  readAfilter("1000to25", &ThousandTo25);
-
-}	/* END READFILTERS */
 
 /* -------------------------------------------------------------------- */
 void ClearMRFilters()
@@ -688,58 +702,28 @@ static int iterateMRFilter(mRFilterPtr thisMRF, NR_TYPE input, NR_TYPE *output)
     thisMRF->outTime++;
     thisMRF->coefPhase++;
     }
-
 }
 
 /* -------------------------------------------------------------------- */
 static NR_TYPE out[250];
 
-char *GetProcessedBuffer(CircularBuffer *cb, int offset, var_base *vp)
+char *GetProcessedBuffer(
+	CircularBuffer *srt_cb,
+	CircularBuffer *hrt_cb,
+	int offset, var_base *vp)
 {
-  NR_TYPE *prevBuff = (NR_TYPE *)GetBuffer(cb, offset-1);
-  NR_TYPE *thisBuff = (NR_TYPE *)GetBuffer(cb, offset);
-  NR_TYPE *nextBuff = (NR_TYPE *)GetBuffer(cb, offset+1);
 
   if (vp->SampleRate >= (size_t)cfg.ProcessingRate())
-    return (char *)&thisBuff[vp->SRstart];
-
-  /* Load up data. 3 Seconds worth.
-   */
-  double x[vp->SampleRate * 3], y[vp->SampleRate * 3];
-  float L = (float)cfg.ProcessingRate() / vp->SampleRate;
-
-  for (size_t i = 0; i < vp->SampleRate; ++i)
   {
-    x[i] = -(L * (vp->SampleRate-i));
-    y[i] = prevBuff[vp->SRstart + (vp->SampleRate-1)];
-
-    x[vp->SampleRate + i] = L * i;
-    y[vp->SampleRate + i] = thisBuff[vp->SRstart+i];
-
-    x[(vp->SampleRate<<1) + i] = (float)cfg.ProcessingRate() + (L * i);
-    y[(vp->SampleRate<<1) + i] = nextBuff[vp->SRstart];
+    NR_TYPE *thisBuff = (NR_TYPE *)GetBuffer(srt_cb, offset);
+    return (char *)&thisBuff[vp->SRstart];
   }
-
-  /* Interpolate data to 25hz.
-   */
-  gsl_interp_accel *acc = gsl_interp_accel_alloc();
-  gsl_spline *spline;
-  if (vp->SampleRate == 1)
-    spline = gsl_spline_alloc(gsl_interp_cspline, vp->SampleRate*3);
   else
   {
-    spline = gsl_spline_alloc(gsl_interp_akima, vp->SampleRate*3);
+    NR_TYPE *thisBuff = (NR_TYPE *)GetBuffer(hrt_cb, offset);
+    memcpy(out, &thisBuff[vp->HRstart], (size_t)cfg.ProcessingRate()*NR_SIZE);
+    return((char *)out);
   }
-
-  gsl_spline_init(spline, x, y, vp->SampleRate*3);
-
-  for (size_t i = 0; i < (size_t)cfg.ProcessingRate(); ++i)
-    out[i] = gsl_spline_eval(spline, i, acc);
-
-  gsl_spline_free(spline);
-  gsl_interp_accel_free(acc);
-
-  return (char *)out;
 }
 
 /* END FILTER.C */

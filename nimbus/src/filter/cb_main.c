@@ -86,7 +86,7 @@ static void	checkForProductionSetup(), displaySetupWindow(),
 
 void	OpenLogFile(), InitAsyncModule(char fileName[]), RealTimeLoop(),
 	CloseLogFile(), LogDespikeInfo(), InitAircraftDependencies(),
-	CloseRemoveLogFile(), LogIRSerrors();
+	CloseRemoveLogFile(), LogIRSerrors(), RealTimeLoop3();
 
 
 /* -------------------------------------------------------------------- */
@@ -187,7 +187,17 @@ static void readHeader()
   XmUpdateDisplay(Shell001);
   LogMessage(SVNREVISION);
 
-  if (DecodeHeader(ADSfileName) == ERR) {
+  int rc = ERR;
+
+  if (cfg.isADS2())
+    rc = DecodeHeader(ADSfileName);
+#ifdef RT
+  else
+  if (cfg.isADS3())
+    rc = DecodeHeader3(ADSfileName);
+#endif
+
+  if (rc == ERR) {
     CancelSetup(NULL, NULL, NULL);
     return;
     }
@@ -325,7 +335,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
     if (sdi[i]->StaticLag != 0)
       AddVariableToSDIlagList(sdi[i]);
 
-    if (sdi[i]->SpikeSlope > 0)
+    if (sdi[i]->SpikeSlope > 0.0)
       AddVariableToSDIdespikeList(sdi[i]);
 
     if (sdi[i]->Output && VarDB_lookup(sdi[i]->name) == ERR && LogFile)
@@ -343,7 +353,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
     if (raw[i]->StaticLag != 0 || raw[i]->DynamicLag != 0)
       AddVariableToRAWlagList(raw[i]);
 
-    if (raw[i]->SpikeSlope > 0)
+    if (raw[i]->SpikeSlope > 0.0)
       AddVariableToRAWdespikeList(raw[i]);
 
     if (raw[i]->Output && VarDB_lookup(raw[i]->name) == ERR && LogFile)
@@ -376,7 +386,14 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   if (cfg.ProcessingMode() == Config::RealTime)
     {
     NextTimeInterval(&btim, &etim);
-    RealTimeLoop();	/* Never to return	*/
+
+    if (cfg.isADS2())
+      RealTimeLoop();	/* Never to return	*/
+#ifdef RT
+    else
+      RealTimeLoop3();
+#endif
+
     exit(0);
     }
 
@@ -585,10 +602,15 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
         switch (dp->OutputRate)
           {
           case Config::LowRate:
-            dp->OutputRate = Config::HighRate;
+            /* PMS Probes HRT is SampleRate.  Period.
+             */
+            if ((dp->ProbeType & PROBE_PMS2D) || (dp->ProbeType & PROBE_PMS1D))
+              dp->OutputRate = dp->Default_HR_OR;
+            else
+              dp->OutputRate = Config::HighRate;
             break;
 
-          case Config::HighRate:
+          default:
             dp->OutputRate = Config::LowRate;
             break;
           }
@@ -608,7 +630,8 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
         switch (rp->OutputRate)
           {
           case Config::LowRate:
-            if (rp->OutputRate != rp->SampleRate)
+            if (rp->OutputRate != rp->SampleRate ||
+               (rp->ProbeType & PROBE_PMS2D) || (rp->ProbeType & PROBE_PMS1D))
               rp->OutputRate = rp->SampleRate;
             else
             if (cfg.ProcessingRate() == Config::HighRate)
@@ -620,10 +643,11 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
             break;
 
           default:
-            if (cfg.ProcessingRate() == Config::HighRate)
-              rp->OutputRate = Config::HighRate;
-            else
+            if (cfg.ProcessingRate() != Config::HighRate ||
+               (rp->ProbeType & PROBE_PMS2D) || (rp->ProbeType & PROBE_PMS1D))
               rp->OutputRate = Config::LowRate;
+            else
+              rp->OutputRate = Config::HighRate;
           }
         }
 
@@ -855,7 +879,7 @@ XmString CreateListLineItem(void *pp, int var_type)
 		sp->StaticLag, sp->SpikeSlope,
 		sp->DataQuality[0]);
 
-      for (size_t i = 0; i < sp->order; ++i)
+      for (size_t i = 0; i < sp->cof.size(); ++i)
         {
         sprintf(tmp, "%10.4f", sp->cof[i]);
         strcat(buffer, tmp);
@@ -872,7 +896,7 @@ XmString CreateListLineItem(void *pp, int var_type)
 		rp->StaticLag, rp->SpikeSlope,
 		rp->DataQuality[0]);
 
-      for (size_t i = 0; i < rp->order; ++i)
+      for (size_t i = 0; i < rp->cof.size(); ++i)
         {
         sprintf(tmp, "%10.4f", rp->cof[i]);
         strcat(buffer, tmp);
@@ -977,7 +1001,7 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
 			sp->StaticLag,
 			sp->SpikeSlope);
 
-    for (size_t j = 0; j < sp->order; ++j)
+    for (size_t j = 0; j < sp->cof.size(); ++j)
       fprintf(fp, "%14e", sp->cof[j]);
 
     fprintf(fp, "\n");
@@ -997,7 +1021,7 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
 			rp->StaticLag,
 			rp->SpikeSlope);
 
-    for (size_t j = 0; j < rp->order; ++j)
+    for (size_t j = 0; j < rp->cof.size(); ++j)
       fprintf(fp, "%14e", rp->cof[j]);
 
     fprintf(fp, "\n");

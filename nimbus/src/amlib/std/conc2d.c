@@ -33,7 +33,7 @@ void sconc2dc(DERTBL *varp)
   shador = GetSample(varp, 0);
   tasx = GetSample(varp, 1);
 
-  if (tasx == -32767)	/* Lab setting, for spinning disk */
+  if (isnan(tasx))	/* Lab setting, for spinning disk */
     tasx = 34.0;
 
   /* 0.8 is a hardwire "EAW" that needs to be pulled out of PMSspecs */
@@ -49,7 +49,7 @@ void sconc2dp(DERTBL *varp)
   shador = GetSample(varp, 0);
   tasx = GetSample(varp, 1);
 
-  if (tasx == -32767)	/* Lab setting, for spinning disk */
+  if (isnan(tasx))	/* Lab setting, for spinning disk */
     {
     tasx = 34.0;
     }

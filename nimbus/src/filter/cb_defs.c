@@ -26,8 +26,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 -------------------------------------------------------------------------
 */
 
-#include <stdio.h>
-
 #include <Xm/PushB.h>
 #include <Xm/Form.h>
 #include <Xm/Frame.h>
@@ -68,7 +66,7 @@ void SaveDefaults(FILE *fp)	/* Save modified defaults into "Setup" file */
 }	/* END SAVEDEFAULTS */
 
 /* -------------------------------------------------------------------- */
-void SetDefaultsValue(char target[], NR_TYPE *new_value)
+void SetDefaultsValue(const char target[], NR_TYPE *new_value)
 {
   for (size_t i = 0; i < nDefaults; ++i)
     if (strcmp(Defaults[i]->Name, target) == 0)

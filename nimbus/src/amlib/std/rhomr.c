@@ -55,10 +55,9 @@ void srhomr(DERTBL *varp)
   psxc = GetSample(varp, 2);
 
 /*  If MR, ATX and/or PSXC are missing, so is RHOMR  */
-  if ( (mr == MISSING_VALUE) || (atx == MISSING_VALUE) ||
-       (psxc == MISSING_VALUE) )
+  if ( isnan(mr) || isnan(atx) || isnan(psxc) )
     {
-    rhomr = MISSING_VALUE;
+    rhomr = floatNAN;
     }
   else
     {
@@ -74,7 +73,7 @@ void srhomr(DERTBL *varp)
       }
     else
       {
-      rhomr = MISSING_VALUE;
+      rhomr = floatNAN;
       }
     }
 

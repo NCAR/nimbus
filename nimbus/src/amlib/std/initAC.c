@@ -150,6 +150,7 @@ void InitAircraftDependencies()
       pcorPSB	= pcorb7;
 
     case C130:
+    case HIAPER:
     case 300:
     case 600:	/* Ground systems....to become HIAPER??? */
       jwref	= 1 * XMPHMS;

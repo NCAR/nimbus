@@ -10,10 +10,6 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-INPUT:		long beginning and ending times
-
-OUTPUT:		
-
 REFERENCES:	circbuff.c, adsIO.c, rec_decode.c, phase_shift.c, compute.c,
 		filter.c, timeseg.c, netcdf.c
 
@@ -21,7 +17,7 @@ REFERENCED BY:	StartProcessing()
 
 NOTE:		Changes here may also be required in lrloop.c
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 -------------------------------------------------------------------------
 */
 
@@ -29,10 +25,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "decode.h"
 #include "gui.h"
 #include "circbuff.h"
+#include "amlib.h"
 #include "injectsd.h"
 
 #define NLRBUFFERS	5	/* Number of LR Buffers			*/
-#define NPSBUFFERS	50
+#define NPSBUFFERS	20
 
 #define LRINDEX		-(NLRBUFFERS-2)
 
@@ -42,20 +39,30 @@ extern char		*ADSrecord;
 extern NR_TYPE		*SampledData, *AveragedData;
 extern XtAppContext	context;
 
-void	Filter(CircularBuffer *),
+bool	LocateFirstRecord(long starttime, long endtime, int nBuffers);
+void	Filter(CircularBuffer *, CircularBuffer *),
         DespikeData(CircularBuffer *LRCB, int index),
-        PhaseShift(CircularBuffer  *LRCB, int index, NR_TYPE *output);
+        PhaseShift(	CircularBuffer  *LRCB, int index,
+			NR_TYPE *output, NR_TYPE *hout);
 
 
 /* -------------------------------------------------------------------- */
 int HighRateLoop(long starttime, long endtime)
 {
-  int			i, j = 0;
-  long			nbytes;
-  NR_TYPE		*ps_data;
-  CircularBuffer	*LRCB;	/* Logical Record Circular Buffers	*/
-  CircularBuffer	*PSCB;	/* Phase Shifted Circular Buffers	*/
+  int			j = 0;
+  long			nBytes;
+  NR_TYPE		*ps_data, *hrt_data;
 
+  /* Basic circ-buff of records going into despiking and resampler.
+   */
+  CircularBuffer	*LRCB;	/* Logical Record Circular Buffers	*/
+
+  /* Records coming out of resampler.  2 circ buffs, one for SampleRate
+   * Rate data and the other for HRT data.  PSCB will be FIR filtered
+   * into HSCB.
+   */
+  CircularBuffer	*PSCB;	/* Phase Shifted Circular Buffers	*/
+  CircularBuffer	*HSCB;	/* 25Hz resampled data (interped only).*/
 
   /* Account for Circular Buffer slop	*/
   if (starttime != BEG_OF_TAPE)
@@ -64,37 +71,44 @@ int HighRateLoop(long starttime, long endtime)
   if (endtime != END_OF_TAPE)
     endtime += NPSBUFFERS-1;
 
-  nbytes	= nFloats * NR_SIZE;
-
-
-  if ((LRCB = CreateCircularBuffer(NLRBUFFERS, nbytes)) == NULL ||
-      (PSCB = CreateCircularBuffer(NPSBUFFERS, nbytes)) == NULL)
+  nBytes = nSRfloats * NR_SIZE;
+  if ((LRCB = CreateCircularBuffer(NLRBUFFERS, nBytes)) == NULL ||
+      (PSCB = CreateCircularBuffer(NPSBUFFERS, nBytes)) == NULL)
     {
-    nbytes = ERR;
+    nBytes = ERR;
     goto exit;
     }
 
+  nBytes = nHRfloats * NR_SIZE;
+  if ((HSCB = CreateCircularBuffer(NPSBUFFERS, nBytes)) == NULL)
+    {
+    nBytes = ERR;
+    goto exit;
+    }
 
   /* Perform initialization before entering main loop.
    */
-  if ((nbytes = FindFirstLogicalRecord(ADSrecord, starttime)) <= 0)
+  if (LocateFirstRecord(starttime, endtime, NLRBUFFERS) == false)
+    {
+    nBytes = ERR;
     goto exit;
+    }
 
   ClearMRFilters();
-  SetBaseTime((Hdr_blk *)ADSrecord);		/* See netcdf.c	*/
 
 
   /* Fill circular Buffers
    */
   SampledData = (NR_TYPE *)AddToCircularBuffer(LRCB);
   DecodeADSrecord((short *)ADSrecord, SampledData);
+  ApplyCalCoes(SampledData);
 
-  for (i = 0; i < NLRBUFFERS-1; ++i)
+  for (int i = 0; i < NLRBUFFERS-1; ++i)
     {
-    if ((nbytes = FindNextLogicalRecord(ADSrecord, endtime)) <= 0)
+    if ((nBytes = FindNextLogicalRecord(ADSrecord, endtime)) <= 0)
       goto exit;
 
-    if (CheckForTimeGap((Hdr_blk *)ADSrecord, False) == GAP_FOUND)
+    if (CheckForTimeGap((Hdr_blk *)ADSrecord, false) == GAP_FOUND)
       goto exit;
 
     SampledData = (NR_TYPE *)AddToCircularBuffer(LRCB);
@@ -104,12 +118,12 @@ int HighRateLoop(long starttime, long endtime)
 
   /* Fill PhaseShifted Buffers for MultiRate
    */
-  for (i = 0; i < NPSBUFFERS-1; ++i)
+  for (int i = 0; i < NPSBUFFERS-1; ++i)
     {
-    if ((nbytes = FindNextLogicalRecord(ADSrecord, endtime)) <= 0)
+    if ((nBytes = FindNextLogicalRecord(ADSrecord, endtime)) <= 0)
       goto exit;
 
-    if (CheckForTimeGap((Hdr_blk *)ADSrecord, False) == GAP_FOUND)
+    if (CheckForTimeGap((Hdr_blk *)ADSrecord, false) == GAP_FOUND)
       goto exit;
 
     SampledData = (NR_TYPE *)AddToCircularBuffer(LRCB);
@@ -118,7 +132,8 @@ int HighRateLoop(long starttime, long endtime)
     DespikeData(LRCB, LRINDEX+1);
 
     ps_data = (NR_TYPE *)AddToCircularBuffer(PSCB);
-    PhaseShift(LRCB, LRINDEX, ps_data);
+    hrt_data = (NR_TYPE *)AddToCircularBuffer(HSCB);
+    PhaseShift(LRCB, LRINDEX, ps_data, hrt_data);
     }
 
  timeindex[0] = raw[SearchTable(raw, "HOUR")]->SRstart;
@@ -127,9 +142,9 @@ int HighRateLoop(long starttime, long endtime)
 
   /* This is the main control loop.
    */
-  while ((nbytes = FindNextLogicalRecord(ADSrecord, endtime)) > 0)
+  while ((nBytes = FindNextLogicalRecord(ADSrecord, endtime)) > 0)
     {
-    if (CheckForTimeGap((Hdr_blk *)ADSrecord, False) == GAP_FOUND)
+    if (CheckForTimeGap((Hdr_blk *)ADSrecord, false) == GAP_FOUND)
       break;
 
     SampledData = (NR_TYPE *)AddToCircularBuffer(LRCB);
@@ -138,9 +153,10 @@ int HighRateLoop(long starttime, long endtime)
     DespikeData(LRCB, LRINDEX+1);
 
     ps_data = (NR_TYPE *)AddToCircularBuffer(PSCB);
-    PhaseShift(LRCB, LRINDEX, ps_data);
+    hrt_data = (NR_TYPE *)AddToCircularBuffer(HSCB);
+    PhaseShift(LRCB, LRINDEX, ps_data, hrt_data);
 
-    Filter(PSCB);
+    Filter(PSCB, HSCB);
 
     if (j++ < 10)	/* Skip 1st 10 passes, to help load things up. */
       continue;
@@ -166,12 +182,12 @@ int HighRateLoop(long starttime, long endtime)
     WriteNetCDF_MRF();
     UpdateTime(SampledData);
 
-    while (PauseFlag == True)
+    while (PauseFlag == true)
       XtAppProcessEvent(context, XtIMAll);
 
     if (PauseWhatToDo == P_QUIT)
       {
-      nbytes = ERR;
+      nBytes = ERR;
       break;
       }
     }
@@ -179,9 +195,10 @@ int HighRateLoop(long starttime, long endtime)
 
 exit:
   ReleaseCircularBuffer(PSCB);
+  ReleaseCircularBuffer(HSCB);
   ReleaseCircularBuffer(LRCB);
 
-  return(nbytes);
+  return(nBytes);
 
 }	/* END HIGHRATELOOP */
 

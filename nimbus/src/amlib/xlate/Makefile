@@ -36,7 +36,6 @@ HDRS=	${JLOCAL}/include/header.h ${NIMBUS}/include/amlib.h \
 all: ${LIBDIR}/lib${LIBNAME}.a ${LIBDIR}/lib${LIBNAME}_p.a
 
 ${OBJS}: ${HDRS}
-hgm.o ins.o:	${NIMBUS}/include/gust.h
 
 ${LIBDIR}/lib${LIBNAME}.a: ${OBJS}
 	rm -f ${LIBDIR}/lib${LIBNAME}.a

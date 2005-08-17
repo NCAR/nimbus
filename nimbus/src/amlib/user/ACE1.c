@@ -106,12 +106,12 @@ void sfudge(DERTBL *varp)
   o3fp = GetSample(varp, 0);
   o3ff = GetSample(varp, 1);
 
-  fudge = -32767.0;
+  fudge = floatNAN;
 
   if (o3fp > 1.0)
     o3fv = o3ff * 1013.25 / o3fp;
   else
-    o3fv = -32767.0;  /* Missing Value  */
+    o3fv = floatNAN;  /* Missing Value  */
 
   if (o3fv > 0.0)
     fudge = 1.269e+18 * ((1.422e-15 / o3fv ) + (o3fv / 1.211e+20));

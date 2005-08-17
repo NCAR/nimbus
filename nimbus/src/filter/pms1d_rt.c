@@ -194,7 +194,7 @@ float *SetPMS1DnetCDF(char name[], int length)
 
 #include "header.h"
 
-bool Open2dFile(char file[], int probeCnt)
+bool Open2dFile(const char file[], int probeCnt)
 {
   return(FALSE);
 }

@@ -44,13 +44,13 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1997-2005
 #include <sys/time.h>
 #include <unistd.h>
 
-PostgreSQL	*psql;
+PostgreSQL *psql;
 
 extern NR_TYPE	*SampledData, *AveragedData;
 extern char	*ADSrecord;
 
 /* -------------------------------------------------------------------- */
-void RTinit()
+void RTinit_ADS2()
 {
 #ifdef MOCK_RT
   sprintf(buffer, "%s/mock_rt", "/home/tmp");

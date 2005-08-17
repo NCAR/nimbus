@@ -23,7 +23,7 @@ char *dataQuality[] = { "Preliminary", "Good", "Bad", "Synthetic", NULL };
 
 
 /* -------------------------------------------------------------------- */
-char *SearchDataQuality(char target[])
+char *SearchDataQuality(const char target[])
 {
   int	i;
 

@@ -65,9 +65,9 @@ void saltx(DERTBL *varp)
   gmode		= (long)GetSample(varp, 3);
 
 /*  If ALT and/or GALT are missing, so is ALTC  */
-  if ( (galt == MISSING_VALUE) || (alt == MISSING_VALUE) )
+  if ( (galt == floatNAN) || (alt == floatNAN) )
     {
-    altc = MISSING_VALUE;
+    altc = floatNAN;
     dalt = 0.;
     }
   else
@@ -171,9 +171,7 @@ void saltx(DERTBL *varp)
               ((float)jj/(1.0+(float)WAIT-(float)DELAY))*(galt-(newalt+dalt));
             }
           }
-/*
-        }
- */
+//        }
       }
   else
       {
