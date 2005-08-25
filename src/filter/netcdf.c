@@ -25,14 +25,6 @@ DESCRIPTION:	This file has the routines necessary to Create and write
 		data for distribution of NCAR/RAF aircraft data in netCDF
 		format.
 
-INPUT:			
-
-OUTPUT:		none
-
-REFERENCES:	pms1d.c
-
-REFERENCED BY:	LowRateLoop(), HighRateLoop()
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
 */
@@ -53,8 +45,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include "svnInfo.h"
 
 #include <cmath>
+#include <map>
 
-#define NETCDF_FORMAT_VERSION   "1.3"
+static const std::string NETCDF_FORMAT_VERSION = "1.3";
 
 #define DEFAULT_TI_LENGTH	(19 * MAX_TIME_SLICES)
 
@@ -93,6 +86,10 @@ static void	addCommonVariableAttributes(char name[], int varid);
 void	AddPMS1dAttrs(int ncid, RAWTBL *rp),
 	CheckAndAddAttrs(int fd, int varid, char name[]);
 
+//      Rate, DimID
+std::map<int, int> _rateDimIDs;
+//   VectorLen, DimID
+std::map<int, int> _vectorDimIDs;
 
 /* -------------------------------------------------------------------- */
 void SetBaseTime(struct Hdr_blk *hdr)
@@ -134,11 +131,7 @@ void CreateNetCDF(const char fileName[])
   RAWTBL	*rp;
   DERTBL	*dp;
 
-  int	ndims, dims[3], TimeDim,
-	LowRateDim, HighRateDim, Dim2Hz, Dim4Hz, Dim5Hz, Dim10Hz, Dim50Hz,
-	Dim250Hz, Dim1000Hz, Vector16Dim, Vector32Dim, Vector64Dim,
-	Vector10Dim, Vector20Dim, Vector30Dim, Vector40Dim, AsyncDim,
-	Vector6Dim, Vector256Dim, Dim100Hz;
+  int	ndims, dims[3], TimeDim;
 
   char	*p;
 
@@ -153,13 +146,8 @@ void CreateNetCDF(const char fileName[])
 
   /* Dimensions.
    */
-  TimeDim	= ncdimdef(fd, "Time", NC_UNLIMITED);
-  LowRateDim	= ncdimdef(fd, "sps1", 1);
-
-  Dim2Hz = Dim4Hz = Dim5Hz = Dim10Hz = HighRateDim = Dim50Hz = Dim250Hz =
-  Dim1000Hz = AsyncDim = Vector16Dim = Vector32Dim = Vector64Dim =
-  Vector256Dim = Vector10Dim = Vector20Dim = Vector30Dim = Vector40Dim =
-  Vector6Dim = Dim100Hz = ERR;
+  TimeDim = ncdimdef(fd, "Time", NC_UNLIMITED);
+  _rateDimIDs[1] = ncdimdef(fd, "sps1", 1);
 
 
   /* Global Attributes.
@@ -181,7 +169,7 @@ void CreateNetCDF(const char fileName[])
   ncattput(fd, NC_GLOBAL, "ConventionsURL", NC_CHAR,
            strlen(buffer)+1, (void *)buffer);
 
-  strcpy(buffer, NETCDF_FORMAT_VERSION);
+  strcpy(buffer, NETCDF_FORMAT_VERSION.c_str());
   ncattput(fd, NC_GLOBAL, "Version", NC_CHAR, strlen(buffer)+1, (void *)buffer);
 
   strcpy(buffer, &SVNREVISION[10]);
@@ -337,54 +325,20 @@ void CreateNetCDF(const char fileName[])
     if ((sp = sdi[i])->Output == false)
       continue;
 
-    ndims = 2;
-
-    switch (sp->OutputRate)
+    // Check to see if dimension exists.  If not, create it.
+    if (_rateDimIDs.find(sp->OutputRate) == _rateDimIDs.end())
       {
-      case 1:
-        ndims = 1;
-        break;
+      char tmp[32];
+      sprintf(tmp, "sps%d", sp->OutputRate);
+      _rateDimIDs[sp->OutputRate] = ncdimdef(fd, tmp, sp->OutputRate);
+      }
 
-      case 5:
-        if (Dim5Hz == ERR)
-          Dim5Hz = ncdimdef(fd, "sps5", 5);
-
-        dims[1] = Dim5Hz;
-        break;
-
-      case 25:
-        if (HighRateDim == ERR)
-          HighRateDim = ncdimdef(fd, "sps25", 25);
-
-        dims[1] = HighRateDim;
-        break;
-
-      case 50:
-        if (Dim50Hz == ERR)
-          Dim50Hz = ncdimdef(fd, "sps50", 50);
-
-        dims[1] = Dim50Hz;
-        break;
-
-      case 250:
-        if (Dim250Hz == ERR)
-          Dim250Hz = ncdimdef(fd, "sps250", 250);
-
-        dims[1] = Dim250Hz;
-        break;
-
-      case 1000:
-        if (Dim1000Hz == ERR)
-          Dim1000Hz = ncdimdef(fd, "sps1000", 1000);
-
-        dims[1] = Dim1000Hz;
-        break;
-
-      default:
-        sprintf(buffer, "Variable %s has unsupported output rate of %d, setting to 1.\n", sp->name, sp->OutputRate);
-        LogMessage(buffer);
-        sp->OutputRate = 1;
-        ndims = 1;
+    if (sp->OutputRate == 1)
+      ndims = 1;
+    else
+      {
+      ndims = 2;
+      dims[1] = _rateDimIDs[sp->OutputRate];
       }
 
 
@@ -435,146 +389,35 @@ void CreateNetCDF(const char fileName[])
     if ((rp = raw[i])->Output == false)
       continue;
 
-    ndims = 2;
-
-    switch (rp->OutputRate)
+    // Check to see if dimension exists.  If not, create it.
+    if (_rateDimIDs.find(rp->OutputRate) == _rateDimIDs.end())
       {
-      case 1:
-        dims[1] = LowRateDim;
-        ndims = 1;
-        break;
+      char tmp[32];
+      sprintf(tmp, "sps%d", rp->OutputRate);
+      _rateDimIDs[rp->OutputRate] = ncdimdef(fd, tmp, rp->OutputRate);
+      }
 
-      case 4:
-        if (Dim4Hz == ERR)
-          Dim4Hz = ncdimdef(fd, "sps4", 4);
-
-        dims[1] = Dim4Hz;
-        break;
-
-      case 5:
-        if (Dim5Hz == ERR)
-          Dim5Hz = ncdimdef(fd, "sps5", 5);
-
-        dims[1] = Dim5Hz;
-        break;
-
-      case 10:
-        if (Dim10Hz == ERR)
-          Dim10Hz = ncdimdef(fd, "sps10", 10);
-
-        dims[1] = Dim10Hz;
-        break;
-
-      case 25:
-        if (HighRateDim == ERR)
-          HighRateDim = ncdimdef(fd, "sps25", 25);
-
-        dims[1] = HighRateDim;
-        break;
-
-      case 50:
-        if (Dim50Hz == ERR)
-          Dim50Hz = ncdimdef(fd, "sps50", 50);
-
-        dims[1] = Dim50Hz;
-        break;
-
-      case 100:
-        if (Dim100Hz == ERR)
-          Dim100Hz = ncdimdef(fd, "sps100", 100);
-
-        dims[1] = Dim100Hz;
-        break;
-
-      default:
-        sprintf(buffer, "Variable %s has unsupported output rate of %d, setting to 1.\n", rp->name, rp->OutputRate);
-        LogMessage(buffer);
-        rp->OutputRate = 1;
-        ndims = 1;
+    if (rp->OutputRate == 1)
+      ndims = 1;
+    else
+      {
+      ndims = 2;
+      dims[1] = _rateDimIDs[rp->OutputRate];
       }
 
 
     if (rp->Length > 1)
       {
-      ndims = 3;
-      sprintf(buffer, "Vector%d", rp->Length);
-
-      switch (rp->Length)
+      // Check to see if dimension exists.  If not, create it.
+      if (_vectorDimIDs.find(rp->Length) == _vectorDimIDs.end())
         {
-        case 3:	/* Async vector	*/
-          if (AsyncDim == ERR)
-            AsyncDim = ncdimdef(fd, "Async", 3);
-
-          dims[2] = AsyncDim;
-          break;
-
-        case 7:
-          if (Vector6Dim == ERR)
-            Vector6Dim = ncdimdef(fd, buffer, rp->Length);
-
-          dims[2] = Vector6Dim;
-          break;
-
-        case 11:
-          if (Vector10Dim == ERR)
-            Vector10Dim = ncdimdef(fd, buffer, rp->Length);
-
-          dims[2] = Vector10Dim;
-          break;
-
-        case 16:
-          if (Vector16Dim == ERR)
-            Vector16Dim = ncdimdef(fd, buffer, rp->Length);
-
-          dims[2] = Vector16Dim;
-          break;
-
-        case 21:
-          if (Vector20Dim == ERR)
-            Vector20Dim = ncdimdef(fd, buffer, rp->Length);
-
-          dims[2] = Vector20Dim;
-          break;
-
-        case 31:
-          if (Vector30Dim == ERR)
-            Vector30Dim = ncdimdef(fd, buffer, rp->Length);
-
-          dims[2] = Vector30Dim;
-          break;
-
-        case 32:
-          if (Vector32Dim == ERR)
-            Vector32Dim = ncdimdef(fd, buffer, rp->Length);
-
-          dims[2] = Vector32Dim;
-          break;
-
-        case 41:
-          if (Vector40Dim == ERR)
-            Vector40Dim = ncdimdef(fd, buffer, rp->Length);
-
-          dims[2] = Vector40Dim;
-          break;
-
-        case 64:
-          if (Vector64Dim == ERR)
-            Vector64Dim = ncdimdef(fd, buffer, rp->Length);
-
-          dims[2] = Vector64Dim;
-          break;
-
-        case 256:
-          if (Vector256Dim == ERR)
-            Vector256Dim = ncdimdef(fd, buffer, rp->Length);
-
-          dims[2] = Vector256Dim;
-          break;
-
-        default:
-          printf("Unsupported Vector Length of %d, fatal.\n", rp->Length);
-          exit(1);
+        char tmp[32];
+        sprintf(tmp, "Vector%d", rp->Length);
+        _vectorDimIDs[rp->Length] = ncdimdef(fd, tmp, rp->Length);
         }
+
+      ndims = 3;
+      dims[2] = _vectorDimIDs[rp->Length];
       }
 
 
@@ -633,139 +476,35 @@ void CreateNetCDF(const char fileName[])
     if ((dp = derived[i])->Output == false)
       continue;
 
-    ndims = 2;
-
-    switch (dp->OutputRate)
+    // Check to see if dimension exists.  If not, create it.
+    if (_rateDimIDs.find(dp->OutputRate) == _rateDimIDs.end())
       {
-      case 1:
-        dims[1] = LowRateDim;
-        ndims = 1;
-        break;
+      char tmp[32];
+      sprintf(tmp, "sps%d", dp->OutputRate);
+      _rateDimIDs[dp->OutputRate] = ncdimdef(fd, tmp, dp->OutputRate);
+      }
 
-      case 5:
-        if (Dim5Hz == ERR)
-          Dim5Hz = ncdimdef(fd, "sps5", 5);
-
-        dims[1] = Dim5Hz;
-        break;
-
-      case 10:
-        if (Dim10Hz == ERR)
-          Dim10Hz = ncdimdef(fd, "sps10", 10);
-
-        dims[1] = Dim10Hz;
-        break;
-
-      case 25:
-        if (HighRateDim == ERR)
-          HighRateDim = ncdimdef(fd, "sps25", 25);
-
-        dims[1] = HighRateDim;
-        break;
-
-      case 50:
-        if (Dim50Hz == ERR)
-          Dim50Hz = ncdimdef(fd, "sps50", 50);
-
-        dims[1] = Dim50Hz;
-        break;
-
-      case 250:
-        if (Dim250Hz == ERR)
-          Dim250Hz = ncdimdef(fd, "sps250", 250);
-
-        dims[1] = Dim250Hz;
-        break;
-
-      default:
-        sprintf(buffer, "Variable %s has unsupported output rate of %d, setting to 1.\n", dp->name, dp->OutputRate);
-        LogMessage(buffer);
-        dp->OutputRate = 1;
-        ndims = 1;
+    if (dp->OutputRate == 1)
+      ndims = 1;
+    else
+      {
+      ndims = 2;
+      dims[1] = _rateDimIDs[dp->OutputRate];
       }
 
 
     if (dp->Length > 1)
       {
-      ndims = 3;
-      sprintf(buffer, "Vector%d", dp->Length);
-
-      switch (dp->Length)
+      // Check to see if dimension exists.  If not, create it.
+      if (_vectorDimIDs.find(dp->Length) == _vectorDimIDs.end())
         {
-        case 3:	/* Async vector	*/
-          if (AsyncDim == ERR)
-            AsyncDim = ncdimdef(fd, "Async", 3);
-
-          dims[2] = AsyncDim;
-          break;
-
-        case 7:
-          if (Vector6Dim == ERR)
-            Vector6Dim = ncdimdef(fd, buffer, dp->Length);
-
-          dims[2] = Vector6Dim;
-          break;
-
-        case 11:
-          if (Vector10Dim == ERR)
-            Vector10Dim = ncdimdef(fd, buffer, dp->Length);
-
-          dims[2] = Vector10Dim;
-          break;
-
-        case 16:
-          if (Vector16Dim == ERR)
-            Vector16Dim = ncdimdef(fd, buffer, dp->Length);
-
-          dims[2] = Vector16Dim;
-          break;
-
-        case 21:
-          if (Vector20Dim == ERR)
-            Vector20Dim = ncdimdef(fd, buffer, dp->Length);
-
-          dims[2] = Vector20Dim;
-          break;
-
-        case 31:
-          if (Vector30Dim == ERR)
-            Vector30Dim = ncdimdef(fd, buffer, dp->Length);
-
-          dims[2] = Vector30Dim;
-          break;
-
-        case 32:
-          if (Vector32Dim == ERR)
-            Vector32Dim = ncdimdef(fd, buffer, dp->Length);
-
-          dims[2] = Vector32Dim;
-          break;
-
-        case 41:
-          if (Vector40Dim == ERR)
-            Vector40Dim = ncdimdef(fd, buffer, dp->Length);
-
-          dims[2] = Vector40Dim;
-          break;
-
-        case 64:
-          if (Vector64Dim == ERR)
-            Vector64Dim = ncdimdef(fd, buffer, dp->Length);
-
-          dims[2] = Vector64Dim;
-          break;
-
-        case 256:
-          if (Vector256Dim == ERR)
-            Vector256Dim = ncdimdef(fd, buffer, dp->Length);
-
-          dims[2] = Vector256Dim;
-          break;
-
-        default:
-          printf("Unsupported Vector Length of %d, fatal.\n", dp->Length);
-          exit(1);
+        char tmp[32];
+        sprintf(tmp, "Vector%d", dp->Length);
+        _vectorDimIDs[dp->Length] = ncdimdef(fd, tmp, dp->Length);
         }
+
+      ndims = 3;
+      dims[2] = _vectorDimIDs[dp->Length];
       }
 
 //printf("DER:%s\n", dp->name); fflush(stdout);
@@ -1025,8 +764,9 @@ static void WriteMissingRecords()
 /* -------------------------------------------------------------------- */
 void SyncNetCDF()
 {
-  FormatTimeSegmentsForOutputFile(buffer);
-  ncattput(fd, NC_GLOBAL, "TimeInterval", NC_CHAR, strlen(buffer), (void *)buffer);
+// Can't write attribute in data mode.
+//  FormatTimeSegmentsForOutputFile(buffer);
+//  ncattput(fd, NC_GLOBAL, "TimeInterval", NC_CHAR, strlen(buffer), (void *)buffer);
 
   ncsync(fd);
 
