@@ -1,10 +1,8 @@
 #define RT_SQL
 
-/**
- * This only affects writing of netCDF file.  File is still created
- * elsewhere.
-*/
-//#define RT_NETCDF
+// This only affects writing of netCDF file.  File is still created
+// elsewhere.
+#define RT_NETCDF
 
 /*
 -------------------------------------------------------------------------
@@ -12,20 +10,13 @@ OBJECT NAME:    rtloop.c (PostgreS)
 
 FULL NAME:      RealTime Loop
 
-ENTRY POINTS:   RTinit()
+ENTRY POINTS:   RTinit_ADS2()
 		RealTimeLoop()
 
 STATIC FNS:     none
 
-DESCRIPTION:
-
-REFERENCES:     none
-
-REFERENCED BY:  rtplot.c
-
-NOTES:		This can be compiled with #define MOCK_RT for use to fake
-		realtime with an existing ADS image.  You must hard code
-		ADS filename below for this to work.
+DESCRIPTION:	Realtime functions for processing and writing data for the
+		ADS2 data system.
 
 COPYRIGHT:      University Corporation for Atmospheric Research, 1997-2005
 -------------------------------------------------------------------------
@@ -52,10 +43,6 @@ extern char	*ADSrecord;
 /* -------------------------------------------------------------------- */
 void RTinit_ADS2()
 {
-#ifdef MOCK_RT
-  sprintf(buffer, "%s/mock_rt", "/home/tmp");
-//  sprintf(buffer, "%s/mock_rt", getenv("DATA_DIR"));
-#else
   FILE  *fp = 0;
   char  *p, host[80];
 
@@ -79,8 +66,6 @@ void RTinit_ADS2()
   if ( (p = strchr(buffer, '\n')) )
     *p = '\0';
 
-#endif
-
   strcat(buffer, ".ads");
   XmTextFieldSetString(aDSdataText, buffer);
 
@@ -92,7 +77,7 @@ void RTinit_ADS2()
   cfg.SetInteractive(false);
   cfg.SetLoadProductionSetup(false);
 
-}	/* END RTINIT */
+}	/* END RTINIT_ADS2 */
 
 /* -------------------------------------------------------------------- */
 void RealTimeLoop()
