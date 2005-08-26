@@ -217,10 +217,16 @@ printf("DecodeHeader3: adding %s, converter = %d, rate = %d\n",
     if (var->getConverter() == 0)
       {
       RAWTBL *rp = add_name_to_RAWTBL(var->getName().c_str());
+      // Default real-time netCDF to SAmpleRate.
+      if (cfg.ProcessingMode() == Config::RealTime)
+        rp->OutputRate = rp->SampleRate;
       }
     else
       {
       SDITBL *sp = initSDI_ADS3(var);
+      // Default real-time netCDF to SAmpleRate.
+      if (cfg.ProcessingMode() == Config::RealTime)
+        sp->OutputRate = sp->SampleRate;
       }
   }
 
