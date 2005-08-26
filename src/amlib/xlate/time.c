@@ -10,20 +10,14 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	rec_decode.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-7
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 -------------------------------------------------------------------------
 */
 
 #include "nimbus.h"
 #include "amlib.h"
+
+#include <ctime>
 
 extern int FlightDate[]; /* 0 = month, 1 = day, 2 = year */
 
@@ -100,5 +94,22 @@ void xlday(RAWTBL *varp, void *input, NR_TYPE *output)
     *output = (NR_TYPE)ntohs(((Hdr_blk *)input)->day);
 
 }	/* END XLDAY */
+
+/* -------------------------------------------------------------------- */
+void processTimeADS3(NR_TYPE *output, time_t ut)
+{
+  extern int timeIndex[];
+
+  struct tm tm;
+  gmtime_r(&ut, &tm);
+
+  output[timeIndex[0]] = tm.tm_hour;
+  output[timeIndex[1]] = tm.tm_min;
+  output[timeIndex[2]] = tm.tm_sec;
+  output[timeIndex[3]] = tm.tm_year + 1900;
+  output[timeIndex[4]] = tm.tm_mon + 1;
+  output[timeIndex[5]] = tm.tm_mday;
+
+}
 
 /* END TIME.C */
