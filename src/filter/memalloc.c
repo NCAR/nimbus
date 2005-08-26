@@ -26,6 +26,11 @@ REFERENCED BY:	cb_main.c
 #include "decode.h"
 #include "ctape.h"
 
+#ifdef RT
+#include <SyncRecordReader.h>
+extern dsm::SyncRecordReader* syncRecReader;
+#endif
+
 static bool	ArraysInitialized = false;
 
 extern char	*ADSrecord, *AVAPSrecord[];
@@ -41,10 +46,10 @@ void AllocateDataArrays()
 
   // ADS3 we will be deposited directly into SampledData, don't need ADSrecord.
   if (cfg.isADS2())
-    {
+  {
     get_lrlen(&lrlen);
     ADSrecord = new char[lrlen];
-    }
+  }
 
   if (AVAPS)
     for (int i = 0; i < MAX_AVAPS; ++i)
@@ -53,34 +58,53 @@ void AllocateDataArrays()
 
   nLRfloats = nSRfloats = nHRfloats = 0;
 
+  // Set nSRfloats to the number already being sent in by SyncRecordReader.
+  if (cfg.isADS3())
+    nSRfloats = syncRecReader->getNumFloats();
+
+  const dsm::SyncRecordVariable* var;
+
   for (size_t i = 0; i < sdi.size(); ++i)
-    {
+  {
     sdi[i]->LRstart = nLRfloats++;
-    if (!cfg.isADS3()) sdi[i]->SRstart = nSRfloats;
     sdi[i]->HRstart = nHRfloats;
-    nSRfloats += sdi[i]->SampleRate;
-    nHRfloats += 25;
+    if (cfg.isADS3() && (var = syncRecReader->getVariable(sdi[i]->name)) != 0)
+      raw[i]->SRstart = var->getSyncRecOffset();
+    else
+    {
+      sdi[i]->SRstart = nSRfloats;
+      nSRfloats += sdi[i]->SampleRate;
     }
+
+    nHRfloats += 25;
+  }
 
   int nVoltFloats = nSRfloats;
 
   for (size_t i = 0; i < raw.size(); ++i)
-    {
+  {
     raw[i]->LRstart = nLRfloats;
-    if (!cfg.isADS3()) raw[i]->SRstart = nSRfloats;
     raw[i]->HRstart = nHRfloats;
-    nLRfloats += raw[i]->Length;
-    nSRfloats += (raw[i]->SampleRate * raw[i]->Length);
-    nHRfloats += (25 * raw[i]->Length);
+    if (cfg.isADS3() && (var = syncRecReader->getVariable(raw[i]->name)) != 0)
+      raw[i]->SRstart = var->getSyncRecOffset();
+    else
+    {
+      raw[i]->SRstart = nSRfloats;
+      nSRfloats += (raw[i]->SampleRate * raw[i]->Length);
     }
 
+    nLRfloats += raw[i]->Length;
+    nHRfloats += (25 * raw[i]->Length);
+  }
+
   for (size_t i = 0; i < derived.size(); ++i)
-    {
+  {
     derived[i]->LRstart = nLRfloats;
     derived[i]->HRstart = nHRfloats;
     nLRfloats += derived[i]->Length;
     nHRfloats += (25 * derived[i]->Length);
-    }
+  }
+
 
   /* Reset dependIndices.
    */
@@ -105,7 +129,7 @@ void AllocateDataArrays()
 void FreeDataArrays()
 {
   if (ArraysInitialized)
-    {
+  {
     delete [] bits;
     delete [] volts;
     delete [] ADSrecord;
@@ -119,7 +143,7 @@ void FreeDataArrays()
     if (AVAPS)
       for (size_t i = 0; i < MAX_AVAPS; ++i)
         delete [] AVAPSrecord[i];
-    }
+  }
 
   ArraysInitialized = false;
 
