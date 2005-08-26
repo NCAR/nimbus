@@ -40,7 +40,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 
 #define NEW_SEG		(-1)
 
-int	timeIndex[3];
+int	timeIndex[6];
 
 static int	nTimeIntervals;
 
@@ -100,6 +100,9 @@ void GetUserTimeIntervals() /* From TimeSliceWindow	*/
   timeIndex[0] = raw[SearchTable(raw, "HOUR")]->SRstart;
   timeIndex[1] = raw[SearchTable(raw, "MINUTE")]->SRstart;
   timeIndex[2] = raw[SearchTable(raw, "SECOND")]->SRstart;
+  timeIndex[3] = raw[SearchTable(raw, "YEAR")]->SRstart;
+  timeIndex[4] = raw[SearchTable(raw, "MONTH")]->SRstart;
+  timeIndex[5] = raw[SearchTable(raw, "DAY")]->SRstart;
 
 }	/* END GETUSERTIMEINTERVALS */
 
