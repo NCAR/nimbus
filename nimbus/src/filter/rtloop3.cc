@@ -4,7 +4,7 @@
  * This only affects writing of netCDF file.  File is still created
  * elsewhere.
 */
-//#define RT_NETCDF
+#define RT_NETCDF
 
 /*
 -------------------------------------------------------------------------
@@ -28,6 +28,8 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2005
 #include "gui.h"
 #include "vardb.h"
 #include "psql.h"
+
+#include <Xm/TextF.h>
 
 #include <Socket.h>
 #include <SyncRecordReader.h>
@@ -53,6 +55,9 @@ extern PostgreSQL *psql;
 
 extern NR_TYPE	*SampledData, *AveragedData;
 
+void processTimeADS3(NR_TYPE *output, time_t ut);
+
+
 /* -------------------------------------------------------------------- */
 void RTinit_ADS3()
 {
@@ -68,6 +73,10 @@ printf("RTinit_ADS3, establishing connection....\n");
   cfg.SetInteractive(false);
   cfg.SetLoadProductionSetup(false);
 
+  GetDataDirectory(buffer);
+  strcat(buffer, "/real-time.nc");
+  XmTextFieldSetString(outputFileText, buffer);
+printf("netCDF file = %s\n", buffer);
 }	/* END RTINIT_ADS3 */
 
 /* -------------------------------------------------------------------- */
@@ -77,11 +86,6 @@ void RealTimeLoop3()
   double	ts, pts = 0.0;
   char		timeStamp[64];
   dsm_time_t	tt;
-
-  // Reset nSRfloats, SampledData.
-  delete [] SampledData;
-  nSRfloats = syncRecReader->getNumFloats();
-  SampledData = new NR_TYPE[nSRfloats];
 
 #ifdef RT_SQL
 {
@@ -113,6 +117,7 @@ void RealTimeLoop3()
   for (;;)
   {
     syncRecReader->read(&tt, SampledData, nSRfloats);
+    processTimeADS3(SampledData, tt / USECS_PER_SEC);
 
     time_t ut = tt / USECS_PER_SEC;
     struct tm tm;
@@ -140,7 +145,8 @@ pts = ts;
 #endif
 
 #ifdef RT_NETCDF
-    WriteNetCDF();
+//    WriteNetCDF();
+    WriteNetCDF_MRF();
 #endif
     UpdateTime(SampledData);
 #ifdef RT_NETCDF
