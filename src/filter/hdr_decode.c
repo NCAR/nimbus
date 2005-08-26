@@ -49,6 +49,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 
 #ifdef RT
 #include <SyncRecordReader.h>
+extern dsm::SyncRecordReader* syncRecReader;
 #endif
 
 typedef struct
@@ -178,7 +179,6 @@ static void CommonInitialization()
 #ifdef RT
 int DecodeHeader3(const char header_file[])
 {
-  extern dsm::SyncRecordReader* syncRecReader;
 printf("DecodeHeader3\n");
 
   std::string proj_name = syncRecReader->getProjectName();
@@ -217,12 +217,10 @@ printf("DecodeHeader3: adding %s, converter = %d, rate = %d\n",
     if (var->getConverter() == 0)
       {
       RAWTBL *rp = add_name_to_RAWTBL(var->getName().c_str());
-      rp->SRstart = var->getSyncRecOffset();
       }
     else
       {
       SDITBL *sp = initSDI_ADS3(var);
-      sp->SRstart = var->getSyncRecOffset();
       }
   }
 
@@ -816,7 +814,7 @@ static void initHDR(char vn[])
   /* These items must be added to the tables first (i.e. don't
    * add any variables above the main loop in the fn above).
    */
-  start = 0; rate = 1;
+  start = 0; rate = 1; length = 1;
   add_raw_names("TIME");
 
 }	/* END INITHDR */
@@ -1838,9 +1836,9 @@ static void add_file_to_RAWTBL(const char filename[])
 /* -------------------------------------------------------------------- */
 static RAWTBL *add_name_to_RAWTBL(const char name[])
 {
-  int indx = ERR;
+  int indx = SearchDERIVEFTNS(name);
 
-  if (cfg.isADS2() && (indx = SearchDERIVEFTNS(name)) == ERR)
+  if (indx == ERR && (cfg.isADS2() || syncRecReader->getVariable(name) == 0))
     {
     char msg[128];
 
@@ -1855,7 +1853,7 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
   /* For ADS2 we decode raw/block/struct data.  ADS3 hands us everything in
    * float format, so decode fn's not required.
    */
-  if (cfg.isADS2())
+  if (indx != ERR)
     {
     rp->Initializer = deriveftns[indx].constructor;
     rp->xlate = (void (*) (void *, void *, float *))deriveftns[indx].xlate;
