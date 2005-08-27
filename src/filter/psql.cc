@@ -53,7 +53,7 @@ PostgreSQL::PostgreSQL(std::string specifier)
 
   if (cfg.ProcessingMode() == Config::RealTime)
   {
-    _brdcst = new UdpSocket(RT_UDP_PORT, "192.168.184.255");
+    _brdcst = new UdpSocket(RT_UDP_PORT, "192.168.84.255");
     _brdcst->openSock(UDP_BROADCAST);
     submitCommand(
     "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current");
