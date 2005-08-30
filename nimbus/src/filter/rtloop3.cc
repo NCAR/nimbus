@@ -45,7 +45,7 @@ using namespace dsm;
 SyncRecordReader* syncRecReader = 0;
 
 static const std::string DSMSERVER = "ac-server";
-static const int DSMSERVERPORT = 10001;
+static const int DSMSERVERPORT = 30001;
 
 static const std::string PGHOST = "ac-server";
 static const std::string PGDATABASE = "real-time";
