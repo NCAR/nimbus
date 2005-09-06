@@ -388,6 +388,7 @@ void CreateNetCDF(const char fileName[])
     {
     if ((rp = raw[i])->Output == false)
       continue;
+printf("%s\n", raw[i]->name);
 
     // Check to see if dimension exists.  If not, create it.
     if (_rateDimIDs.find(rp->OutputRate) == _rateDimIDs.end())
@@ -397,14 +398,11 @@ void CreateNetCDF(const char fileName[])
       _rateDimIDs[rp->OutputRate] = ncdimdef(fd, tmp, rp->OutputRate);
       }
 
+    dims[1] = _rateDimIDs[rp->OutputRate];
     if (rp->OutputRate == 1)
       ndims = 1;
     else
-      {
       ndims = 2;
-      dims[1] = _rateDimIDs[rp->OutputRate];
-      }
-
 
     if (rp->Length > 1)
       {
@@ -475,6 +473,7 @@ void CreateNetCDF(const char fileName[])
     {
     if ((dp = derived[i])->Output == false)
       continue;
+printf("%s\n", derived[i]->name);
 
     // Check to see if dimension exists.  If not, create it.
     if (_rateDimIDs.find(dp->OutputRate) == _rateDimIDs.end())
@@ -484,14 +483,11 @@ void CreateNetCDF(const char fileName[])
       _rateDimIDs[dp->OutputRate] = ncdimdef(fd, tmp, dp->OutputRate);
       }
 
+    dims[1] = _rateDimIDs[dp->OutputRate];
     if (dp->OutputRate == 1)
       ndims = 1;
     else
-      {
       ndims = 2;
-      dims[1] = _rateDimIDs[dp->OutputRate];
-      }
-
 
     if (dp->Length > 1)
       {
