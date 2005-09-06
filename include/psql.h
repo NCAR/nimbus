@@ -27,10 +27,12 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2004-05
 typedef std::map<std::string, std::string> rateTableMap;
 typedef std::map<int, std::string> rateTableList;
 
+class sqlTransmit;
+
 class PostgreSQL
 {
 public:
-  PostgreSQL(std::string specifier);
+  PostgreSQL(std::string specifier, bool transmitToGround = false);
   ~PostgreSQL();
 
   /**
@@ -52,8 +54,10 @@ public:
   /**
    * Generic function to submit a query/command to the database.
    * @param command is a valid PostgreSQL command.
+   * @param xmitToGround is whether this command should be transmitted
+   * to the ground in addition to being executed locally.
    */
-  void	submitCommand(const std::string command);
+  void	submitCommand(const std::string command, bool xmitToGround = false);
 
   /**
    * Close the connection to the database.
@@ -86,15 +90,27 @@ public:
   void	Submit2dSQL();
 //@}
 
-private:
+  const std::stringstream&
+  transmitString() const
+    { return _transmitString; }
+
+protected:
   /**
    * Database connection pointer.
    */
-  PGconn   *_conn;
+  PGconn *_conn;
 
-  std::stringstream	_sqlString;
-  std::stringstream	_broadcastString;
-  std::stringstream	_sql2d_str;
+  sqlTransmit *_ldm;
+
+  std::stringstream _sqlString;
+
+  /// Ethernet broadcasting.
+  std::stringstream _broadcastString;
+
+  /// Ground transimission sub-set of _sqlString.
+  std::stringstream _transmitString;
+
+  std::stringstream _sql2d_str;
 
   /**
    * List of data rate tables (e.g. RAF_1sps, RAF_10sps, RAF_25sps)
@@ -103,7 +119,7 @@ private:
   rateTableList	_ratesTables;
 
 //@{
-  UdpSocket*	_brdcst;
+  UdpSocket* _brdcst;
 
   static const int RT_UDP_PORT;
 
@@ -114,10 +130,10 @@ private:
   static const std::string LRT_TABLE;
   static const std::string RATE_TABLE_PREFIX;
 
-  void	dropAllTables();
-  void	createTables();
-  void	initializeGlobalAttributes();
-  void	initializeVariableList();
+  void dropAllTables();
+  void createTables();
+  void initializeGlobalAttributes();
+  void initializeVariableList();
 
   /**
    * Low level add a variable with given params.
@@ -125,9 +141,9 @@ private:
   void
   addVariableToDataBase(const std::string& name, const std::string& units,
 	const std::string& uncaled_units, const std::string& longName,
-	const int sampleRate, const size_t nDims, const int dims[],
-	const std::vector<float>& cals, const float missingValue,
-	const std::string& dataQuality);
+	int sampleRate, size_t nDims, const int dims[],
+	const std::vector<float>& cals, float missingValue,
+	const std::string& dataQuality, bool beingTransmitted);
 
   /**
    * Add a category variable-name pair to the categories table in the
@@ -168,27 +184,27 @@ private:
    * Add a value to the stringstream-s, used for building UDP broadcast and
    * SQL strings.  If the value is Nan or Inf, then MISSING_VALUE is
    * substituted.
-   * @param sql is the SQL stringstream to add the value.
-   * @param udp is the UDP stringstream to add the value.
    * @param value is the value to add.
+   * @param xmitToGround is whether this variable/value is marked for
+   * transmission to the ground.
    * @param addComma is whether to prepend a comma to the stream.
    */
   void
-  addValue(std::stringstream& sqlStr, std::stringstream& brdStr, const NR_TYPE value, const bool addComma = true);
+  addValueToAllStreams(NR_TYPE value, bool xmitToGround, bool addComma = true);
   void
-  addValue(std::stringstream& sqlStr, const NR_TYPE value, const bool addComma = true);
+  addValue(std::stringstream& sqlStr, NR_TYPE value, bool addComma = true);
 
   /**
    * Add a vector of values to the stringstream-s, used for building UDP
    * broadcast and SQL strings.  If the value is Nan or Inf, then
    * MISSING_VALUE is substituted.
-   * @param sql is the SQL stringstream to add the value.
-   * @param udp is the UDP stringstream to add the value.
    * @param values is a pointer to the values to add.
    * @param nValues is the vector length.
+   * @param xmitToGround is whether this variable/value is marked for
+   * transmission to the ground.
    */
   void
-  addVector(std::stringstream& sql, std::stringstream& udp, const NR_TYPE *values, int nValues);
+  addVectorToAllStreams(const NR_TYPE *values, int nValues, bool xmitToGround);
 
 };	// END PGSQL.H
 

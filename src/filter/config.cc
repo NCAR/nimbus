@@ -2,13 +2,11 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	config.cc
 
-FULL NAME:	Initialize
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 2005
 -------------------------------------------------------------------------
 */
 
-#include "nimbus.h"
+#include "config.h"
 
 /* -------------------------------------------------------------------- */
 Config::Config()
@@ -19,6 +17,9 @@ Config::Config()
   SetTimeShifting(true);
   SetQCenabled(false);
   SetProcessingMode(PostProcessing);
+  SetOutputNetCDF(true);
+  SetOutputSQL(true);
+  SetTransmitToGround(false);
   SetAsyncFileEnabled(false);
   SetLoadProductionSetup(true);
   SetHoneyWellCleanup(true);
@@ -30,4 +31,4 @@ Config::Config()
   SetADSVersion(ADS_2);
 }
 
-/* END CONFIG.CC */
+// END CONFIG.CC

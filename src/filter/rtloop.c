@@ -1,9 +1,3 @@
-#define RT_SQL
-
-// This only affects writing of netCDF file.  File is still created
-// elsewhere.
-#define RT_NETCDF
-
 /*
 -------------------------------------------------------------------------
 OBJECT NAME:    rtloop.c (PostgreS)
@@ -35,7 +29,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1997-2005
 #include <sys/time.h>
 #include <unistd.h>
 
-PostgreSQL *psql;
+extern PostgreSQL *psql;
 
 extern NR_TYPE	*SampledData, *AveragedData;
 extern char	*ADSrecord;
@@ -55,7 +49,7 @@ void RTinit_ADS2()
     sleep(1);
 
   if (fp == NULL) {
-    fprintf(stderr, "nimbus -rt: Unable to open %s after 30 seconds, quitting\n", buffer);
+    fprintf(stderr, "nimbus -rt: Unable to open %s after 60 seconds, quitting\n", buffer);
     exit(0);
     }
   else
@@ -97,11 +91,8 @@ void RealTimeLoop()
    */
   SetBaseTime((Hdr_blk *)ADSrecord);
 
-#ifdef RT_SQL
-  psql = new PostgreSQL("");
-#endif
-//  GetUserTimeIntervals();
-//  NextTimeInterval(&dummy[0], &dummy[1]);
+  if (cfg.OutputSQL())
+    psql = new PostgreSQL("", cfg.TransmitToGround());
 
   do
     {
@@ -123,17 +114,15 @@ pts = ts;
     AverageSampledData();
     ComputeLowRateDerived();
  
-#ifdef RT_SQL
-    psql->WriteSQL(timeStamp);
-#endif
+    if (cfg.OutputSQL())
+      psql->WriteSQL(timeStamp);
+    if (cfg.OutputNetCDF())
+      WriteNetCDF();
 
-#ifdef RT_NETCDF
-    WriteNetCDF();
-#endif
     UpdateTime(SampledData);
-#ifdef RT_NETCDF
-    SyncNetCDF();
-#endif
+
+    if (cfg.OutputNetCDF())
+      SyncNetCDF();
 
 //gettimeofday(&tv, NULL);
 //printf("%s  %d.%d\n", timeStamp, tv.tv_sec, tv.tv_usec); fflush(stdout);

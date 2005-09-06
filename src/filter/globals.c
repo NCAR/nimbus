@@ -4,22 +4,9 @@ OBJECT NAME:	globals.c
 
 FULL NAME:	Global Variable Definitions
 
-ENTRY POINTS:	none
+NOTE:		Most global Widget definitions exist in Xwin.c.
 
-DESCRIPTION:	
-
-INPUT:		none
-
-OUTPUT:		none
-
-REFERENCES:	none
-
-REFERENCED BY:	none
-
-NOTE:		Globals also exist in nimbus.c, memalloc.c & sh_mem.c.
-		Most global Widget definitions exist in Xwin.c.
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 -------------------------------------------------------------------------
 */
 
@@ -28,22 +15,24 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "amlib.h"
 #include <injectsd.h>
 
+class PostgreSQL;
+
 const NR_TYPE floatNAN = nanf("");
 const NR_TYPE MISSING_VALUE = -32767.0;
 const int MAX_COF = 10;
 
-char	buffer[4096];		/* Generic, volatile string space	*/
+char	buffer[4096];		// Generic, volatile string space
 char	*ProjectDirectory, *ProjectNumber, *ProjectName, FlightNumber[12];
 
-std::vector<SDITBL *> sdi;	/* SDI (aka raw) variable list		*/
-std::vector<RAWTBL *> raw;	/* Alphabeticly sorted pointers		*/
-std::vector<DERTBL *> derived;	/* Alphabeticly sorted pointers		*/
-std::vector<DERTBL *> ComputeOrder;	/* Compute Order for derived	*/
+Config cfg;	// Global configuration.
+
+std::vector<SDITBL *> sdi;	// SDI (aka raw) variable list
+std::vector<RAWTBL *> raw;	// Alphabeticly sorted pointers
+std::vector<DERTBL *> derived;	// Alphabeticly sorted pointers
+std::vector<DERTBL *> ComputeOrder;	// Compute Order for derived
 
 size_t	nDefaults = 0;
-DEFAULT	*Defaults[MAX_DEFAULTS];	/* Values from 'Defaults' file	*/
-
-Config cfg;
+DEFAULT	*Defaults[MAX_DEFAULTS];	// Values from 'Defaults' file
 
 bool	LITTON51_present,	/* hdr_decode.c & adsIO.c		*/
 	AVAPS,			/* Is AVAPS dropesonde present.		*/
@@ -72,6 +61,8 @@ size_t	nLRfloats = 0,
 	nSRfloats = 0,	// Contains number of floats used in SampledData.
 	nHRfloats = 0;	// Contains number of floats used in HighRateData.
 size_t	LITTON51_start;	// hdr_decode.c & adsIO.c
+
+PostgreSQL *psql;
 
 
 //***************************synthetic data varables*************************//
