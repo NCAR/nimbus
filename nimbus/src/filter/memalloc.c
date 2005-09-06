@@ -12,13 +12,7 @@ STATIC FNS:	none
 DESCRIPTION:	Allocate storage for pointers & data array.  This is
 		analogous to shmem.c for winput.c
 
-INPUT:		none
-
-OUTPUT:		none
-
-REFERENCES:	none
-
-REFERENCED BY:	cb_main.c
+COPYRIGHT:      University Corporation for Atmospheric Research, 1992-05
 -------------------------------------------------------------------------
 */
 

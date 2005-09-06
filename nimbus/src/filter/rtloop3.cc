@@ -1,11 +1,3 @@
-#define RT_SQL
-
-/**
- * This only affects writing of netCDF file.  File is still created
- * elsewhere.
-*/
-#define RT_NETCDF
-
 /*
 -------------------------------------------------------------------------
 OBJECT NAME:    rtloop3.cc
@@ -14,8 +6,6 @@ FULL NAME:      RealTime Loop for ADS3
 
 ENTRY POINTS:   RTinit_ADS3()
 		RealTimeLoop_ADS3()
-
-STATIC FNS:     none
 
 DESCRIPTION:
 
@@ -87,32 +77,32 @@ void RealTimeLoop3()
   char		timeStamp[64];
   dsm_time_t	tt;
 
-#ifdef RT_SQL
-{
-  std::string specifier;
-  char *p;
+  if (cfg.OutputSQL())
+  {
+    std::string specifier;
+    char *p;
 
-  specifier = "host=";
-  if ((p = getenv("PGHOST")) == 0)
-    specifier += PGHOST;
-  else
-    specifier += p;
+    specifier = "host=";
+    if ((p = getenv("PGHOST")) == 0)
+      specifier += PGHOST;
+    else
+      specifier += p;
 
-  specifier += " dbname=";
-  if ((p = getenv("PGDATABASE")) == 0)
-    specifier += PGDATABASE;
-  else
-    specifier += p;
+    specifier += " dbname=";
+    if ((p = getenv("PGDATABASE")) == 0)
+      specifier += PGDATABASE;
+    else
+      specifier += p;
 
-  specifier += " user=";
-  if ((p = getenv("PGUSER")) == 0)
-    specifier += PGUSER;
-  else
-    specifier += p;
+    specifier += " user=";
+    if ((p = getenv("PGUSER")) == 0)
+      specifier += PGUSER;
+    else
+      specifier += p;
 
-  psql = new PostgreSQL(specifier);
-}
-#endif
+    psql = new PostgreSQL(specifier, cfg.TransmitToGround());
+  }
+
 
   for (;;)
   {
@@ -124,34 +114,30 @@ void RealTimeLoop3()
     gmtime_r(&ut,&tm);
     int msec = (tt % USECS_PER_SEC) / USECS_PER_MSEC;
     strftime(timeStamp, sizeof(timeStamp), "%Y-%m-%d %H:%M:%S", &tm);
-    std::cout << timeStamp << '.' << std::setw(3) << std::setfill('0') << msec <<
-	' ' << std::endl;
+    std::cout << timeStamp << '.' << std::setw(3) << std::setfill('0') << msec
+	<< ' ' << std::endl;
 
+{
 gettimeofday(&tv, NULL);
 ts = tv.tv_sec + ((double)tv.tv_usec/1000000);
 if (ts-pts > 2.0)
   fprintf(stderr, "%s %ld.%ld   %lf\n", timeStamp, tv.tv_sec, tv.tv_usec, ts-pts);
 pts = ts;
+}
 
-//    CheckForTimeGap((Hdr_blk *)ADSrecord, false);
-
-//    DecodeADSrecord((short *)ADSrecord, SampledData);
     ApplyCalCoes(SampledData);
     AverageSampledData();
     ComputeLowRateDerived();
  
-#ifdef RT_SQL
-    psql->WriteSQL(timeStamp);
-#endif
+    if (cfg.OutputSQL())
+      psql->WriteSQL(timeStamp);
+    if (cfg.OutputNetCDF())
+      WriteNetCDF_MRF();
 
-#ifdef RT_NETCDF
-//    WriteNetCDF();
-    WriteNetCDF_MRF();
-#endif
     UpdateTime(SampledData);
-#ifdef RT_NETCDF
-    SyncNetCDF();
-#endif
+
+    if (cfg.OutputNetCDF())
+      SyncNetCDF();
 
 //gettimeofday(&tv, NULL);
 //printf("%s  %d.%d\n", timeStamp, tv.tv_sec, tv.tv_usec); fflush(stdout);

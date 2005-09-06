@@ -43,10 +43,10 @@ FILE *OpenProjectFile(const char filename[], const char mode[], int action)
 
   if ((fp = fopen(file, mode)) == NULL && action == EXIT)
     {
-    char	buffer[MAXPATHLEN];
+    char msg[MAXPATHLEN];
 
-    sprintf(buffer, "ProjectOpen: can't open %s", file);
-    perror(buffer);
+    sprintf(msg, "ProjectOpen: can't open %s", file);
+    perror(msg);
     exit(ERROR);
     }
 

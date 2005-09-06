@@ -4,11 +4,12 @@ OBJECT NAME:    psql.cc (PostgreS)
 
 FULL NAME:      PostgreSQL database routines.
 
-COPYRIGHT:      University Corporation for Atmospheric Research, 2003-2005
+COPYRIGHT:      University Corporation for Atmospheric Research, 2003-05
 -------------------------------------------------------------------------
 */
 
 #include "psql.h"
+#include "transmit.h"
 #include "ctape.h"
 #include "vardb.h"
 
@@ -28,7 +29,7 @@ const std::string PostgreSQL::LRT_TABLE = "RAF_LRT";
 const std::string PostgreSQL::RATE_TABLE_PREFIX = "SampleRate";
 
 /* -------------------------------------------------------------------- */
-PostgreSQL::PostgreSQL(std::string specifier)
+PostgreSQL::PostgreSQL(std::string specifier, bool transmitToGround)
 {
   _conn = PQconnectdb(specifier.c_str());
 
@@ -45,6 +46,11 @@ PostgreSQL::PostgreSQL(std::string specifier)
 
   PQsetnonblocking(_conn, true);
 
+  if (cfg.TransmitToGround())
+    _ldm = new sqlTransmit();
+  else
+    _ldm = 0;
+
   dropAllTables();	// Remove existing tables, this is a reset.
   createTables();
 
@@ -56,7 +62,7 @@ PostgreSQL::PostgreSQL(std::string specifier)
     _brdcst = new UdpSocket(RT_UDP_PORT, "192.168.184.255");
     _brdcst->openSock(UDP_BROADCAST);
     submitCommand(
-    "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current");
+    "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current", true);
   }
 
 }	/* END INITSQL */
@@ -75,14 +81,14 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
     std::string	temp;
 
     temp = "INSERT INTO global_attributes VALUES ('StartTime', '" + timeStamp + "')";
-    submitCommand(temp);
+    submitCommand(temp, true);
     temp = "INSERT INTO global_attributes VALUES ('EndTime', '" + timeStamp + "')";
-    submitCommand(temp);
+    submitCommand(temp, true);
   }
 
 
   /* The difference between SQL & UDP strings is the preamble and for SQL
-   * the vectors must be encasulated with single quatations.
+   * the vectors must be encasulated with single quatations. e.g.
    * SQL = '{5, 6, 7, 8}'
    * UDP = {5, 6, 7, 8}
    */
@@ -97,7 +103,7 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
   /* Three loops again, analog, raw and derived.  This is analog.
    */
   for (size_t i = 0; i < sdi.size(); ++i)
-    addValue(_sqlString, _broadcastString, AveragedData[sdi[i]->LRstart]);
+    addValueToAllStreams(AveragedData[sdi[i]->LRstart], sdi[i]->Transmit);
 
 
   /* Three loops again, analog, raw and derived.  This is raw.
@@ -105,9 +111,9 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
   for (size_t i = 0; i < raw.size(); ++i)
   {
     if (raw[i]->Length > 1)	// PMS/vector data.
-      addVector(_sqlString, _broadcastString, &AveragedData[raw[i]->LRstart], raw[i]->Length);
+      addVectorToAllStreams(&AveragedData[raw[i]->LRstart], raw[i]->Length, raw[i]->Transmit);
     else
-      addValue(_sqlString, _broadcastString, AveragedData[raw[i]->LRstart]);
+      addValueToAllStreams(AveragedData[raw[i]->LRstart], raw[i]->Transmit);
   }
 
 
@@ -116,13 +122,11 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
   for (size_t i = 0; i < derived.size(); ++i)
   {
     if (derived[i]->Length > 1)
-      addVector(_sqlString, _broadcastString, &AveragedData[derived[i]->LRstart], derived[i]->Length);
+      addVectorToAllStreams(&AveragedData[derived[i]->LRstart], derived[i]->Length, derived[i]->Transmit);
     else
-      addValue(_sqlString, _broadcastString, AveragedData[derived[i]->LRstart]);
+      addValueToAllStreams(AveragedData[derived[i]->LRstart], derived[i]->Transmit);
   }
 
-  _sqlString << ");";
-  submitCommand(_sqlString.str());
 
   if (cfg.ProcessingMode() == Config::RealTime)
   {
@@ -130,13 +134,19 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
     _brdcst->writeSock(_broadcastString.str().c_str(), _broadcastString.str().length());
   }
 
+  _sqlString << ");";
+  submitCommand(_sqlString.str(), false);
+  if (_ldm)
+    _ldm->queueString(_transmitString.str());
+
+
   long usec = WriteSQLvolts(timeStamp);
 
 
   _sqlString.str("");
   _sqlString << "UPDATE global_attributes SET value='"
 	<< timeStamp << '.' << usec << "' WHERE key='EndTime';";
-  submitCommand(_sqlString.str());
+  submitCommand(_sqlString.str(), true);
 
 
   if (++cntr % 3600 == 0)     // every hour
@@ -146,7 +156,7 @@ fprintf(stderr, "Performing ANALYZE @ %s\n", timeStamp.c_str());
     _sqlString.str("");
     _sqlString << "ANALYZE " << LRT_TABLE << " (datetime)";
 
-    submitCommand(_sqlString.str());
+    submitCommand(_sqlString.str(), true);
   }
 
 }	/* END WRITESQL */
@@ -193,14 +203,14 @@ PostgreSQL::dropAllTables()
     std::string cmd("DROP TABLE ");
     cmd += it->c_str();
 
-    submitCommand(cmd);
+    submitCommand(cmd, true);
   }
 
   /*
    * Database seems to slow down after a number of runs without VACUUMing.
    *  It's not sufficient to just DROP all tables.
    */
-  submitCommand("VACUUM FULL");
+  submitCommand("VACUUM FULL", true);
 
 }	// END DROPTABLES
 
@@ -209,18 +219,18 @@ void
 PostgreSQL::createTables()
 {
   submitCommand(
-  "CREATE TABLE Variable_List (Name char(20) PRIMARY KEY, Units char(16), Uncalibrated_Units char(16), long_name char(80), SampleRateTable char(16), nDims int, dims int[], nCals int, poly_cals float[], missing_value float, data_quality char(16))");
+  "CREATE TABLE Variable_List (Name char(20) PRIMARY KEY, Units char(16), Uncalibrated_Units char(16), long_name char(80), SampleRateTable char(16), nDims int, dims int[], nCals int, poly_cals float[], missing_value float, data_quality char(16))", true);
 
   submitCommand(
-  "CREATE TABLE Categories (variable char(20), category char(20))");
+  "CREATE TABLE Categories (variable char(20), category char(20))", true);
 
   /*
    * PMS tables.
    */
   submitCommand(
-  "CREATE TABLE PMS1D_list (Name char(20), SerialNumber char(16), SampleRateTable char(16), FirstBin INT, LastBin INT, CellSizes FLOAT[])");
+  "CREATE TABLE PMS1D_list (Name char(20), SerialNumber char(16), SampleRateTable char(16), FirstBin INT, LastBin INT, CellSizes FLOAT[])", true);
   submitCommand(
-  "CREATE TABLE PMS2D_list (Name char(20), SerialNumber char(16))");
+  "CREATE TABLE PMS2D_list (Name char(20), SerialNumber char(16))", true);
 
 }	// END CREATETABLES
 
@@ -229,33 +239,37 @@ void
 PostgreSQL::initializeGlobalAttributes()
 {
   submitCommand(
-  "CREATE TABLE Global_Attributes (key char(20) PRIMARY KEY, value char(120))");
+  "CREATE TABLE Global_Attributes (key char(20) PRIMARY KEY, value char(120))", true);
 
   /* Add Global Attributes/Flight Data.
    */
   submitCommand(
-  "INSERT INTO global_attributes VALUES ('Source', 'NCAR Research Aviation Facility')");
+  "INSERT INTO global_attributes VALUES ('Source', 'NCAR Research Aviation Facility')", true);
   submitCommand(
-  "INSERT INTO global_attributes VALUES ('Address', 'P.O. Box 3000, Boulder, CO 80307-3000')");
+  "INSERT INTO global_attributes VALUES ('Address', 'P.O. Box 3000, Boulder, CO 80307-3000')", true);
   submitCommand(
-  "INSERT INTO global_attributes VALUES ('Phone', '(303) 497-1030')");
+  "INSERT INTO global_attributes VALUES ('Phone', '(303) 497-1030')", true);
 
   char	*p, temp[100];
   extern char	dateProcessed[];	// From netcdf.c
 
   sprintf(temp, "INSERT INTO global_attributes VALUES ('ProjectName', '%s')", ProjectName);
-  PQclear(PQexec(_conn, temp));
+  submitCommand(temp, true);
+
   GetAircraft(&p);
   sprintf(temp, "INSERT INTO global_attributes VALUES ('Platform', '%s')", p);
-  PQclear(PQexec(_conn, temp));
+  submitCommand(temp, true);
+
   GetProjectNumber(&p);
   sprintf(temp, "INSERT INTO global_attributes VALUES ('ProjectNumber', '%s')", p);
-  PQclear(PQexec(_conn, temp));
+  submitCommand(temp, true);
+
   GetFlightNumber(&p);
   sprintf(temp, "INSERT INTO global_attributes VALUES ('FlightNumber', '%s')", p);
-  PQclear(PQexec(_conn, temp));
+  submitCommand(temp, true);
+
   sprintf(temp, "INSERT INTO global_attributes VALUES ('DateProcessed', '%s')", dateProcessed);
-  submitCommand(temp);
+  submitCommand(temp, true);
 
 }	// END INITIALIZEGLOBALATTRIBUTES
 
@@ -266,6 +280,9 @@ PostgreSQL::initializeVariableList()
   int	nDims, dims[3];
 
   rateTableMap		rateTableMap;
+
+  // Use _transmitString to build the ground version of rateTableMap[1].
+  _transmitString.str("");
 
   nDims = 1;
   dims[0] = 1;
@@ -282,7 +299,7 @@ PostgreSQL::initializeVariableList()
 
     addVariableToDataBase(sdi[i]->name, VarDB_GetUnits(sdi[i]->name), alt_units,
 	VarDB_GetTitle(sdi[i]->name), sdi[i]->SampleRate, nDims, dims,
-	sdi[i]->cof, MISSING_VALUE, "Preliminary");
+	sdi[i]->cof, MISSING_VALUE, "Preliminary", sdi[i]->Transmit);
 
     addCategory(sdi[i]->name, "Analog");
 
@@ -338,7 +355,7 @@ PostgreSQL::initializeVariableList()
       GetPMS1DAttrsForSQL(raw[i], buffer);
       _sqlString << buffer;
       _sqlString << ')';
-      submitCommand(_sqlString.str());
+      submitCommand(_sqlString.str(), true);
     }
 
     if (raw[i]->Length > 1)
@@ -351,7 +368,7 @@ PostgreSQL::initializeVariableList()
 
     addVariableToDataBase(raw[i]->name, VarDB_GetUnits(raw[i]->name), "",
 	VarDB_GetTitle(raw[i]->name), raw[i]->SampleRate, nDims, dims,
-	noCals, MISSING_VALUE, "Preliminary");
+	noCals, MISSING_VALUE, "Preliminary", raw[i]->Transmit);
 
     addCategory(raw[i]->name, "Raw");
 
@@ -378,7 +395,7 @@ PostgreSQL::initializeVariableList()
 
     addVariableToDataBase(derived[i]->name, VarDB_GetUnits(derived[i]->name), "",
 	VarDB_GetTitle(derived[i]->name), derived[i]->SampleRate, nDims, dims,
-	noCals, MISSING_VALUE, "Preliminary");
+	noCals, MISSING_VALUE, "Preliminary", derived[i]->Transmit);
 
     addCategory(derived[i]->name, "Derived");
 
@@ -486,7 +503,7 @@ PostgreSQL::Submit2dSQL()
 
 /* -------------------------------------------------------------------- */
 inline void
-PostgreSQL::addValue(std::stringstream& sql, const NR_TYPE value, const bool addComma)
+PostgreSQL::addValue(std::stringstream& sql, NR_TYPE value, bool addComma)
 {
   if (addComma)
     sql << ',';
@@ -500,52 +517,50 @@ PostgreSQL::addValue(std::stringstream& sql, const NR_TYPE value, const bool add
 
 /* -------------------------------------------------------------------- */
 inline void
-PostgreSQL::addValue(
-		std::stringstream& sql,
-		std::stringstream& udp,
-		const NR_TYPE value,
-		const bool addComma)
+PostgreSQL::addValueToAllStreams(NR_TYPE value, bool xmit, bool addComma)
 {
-  if (addComma)
-  {
-    sql << ',';
-    udp << ',';
-  }
+  static const char commaFormat[] = ",%s";
+  static const char normalFormat[] = "%s";
+
+  const char *format = commaFormat;
+  char value_ascii[32];
+
+  if (!addComma)
+    format = normalFormat;
 
   if (isnan(value) || isinf(value))
-  {
-    sql << MISSING_VALUE;
-    udp << MISSING_VALUE;
-  }
-  else
-  {
-    sql << value;
-    udp << value;
-  }
+    value = MISSING_VALUE;
+
+  sprintf(value_ascii, format, value);
+
+  _sqlString << value_ascii;
+  _broadcastString << value_ascii;
+  if (xmit)
+    _transmitString << value_ascii;
 
 }	// END ADDVALUE
 
 /* -------------------------------------------------------------------- */
 inline void
-PostgreSQL::addVector(
-		std::stringstream& sql,
-		std::stringstream& udp,
-		const NR_TYPE *value,
-		const int nValues)
+PostgreSQL::addVectorToAllStreams(const NR_TYPE *value, int nValues, bool xmit)
 {
-  sql << ",'{";
-  udp << ",{";
+  _sqlString << ",'{";
+  _broadcastString << ",{";
+  if (xmit)
+    _transmitString << ",{";
 
   for (int j = 0; j < nValues; ++j)
   {
     if (j != 0)
-      addValue(sql, udp, value[j]);
+      addValueToAllStreams(value[j], xmit);
     else
-      addValue(sql, udp, value[j], false);
+      addValueToAllStreams(value[j], xmit, false);
   }
 
-  sql << "}'";
-  udp << '}';
+  _sqlString << "}'";
+  _broadcastString << '}';
+  if (xmit)
+    _transmitString << '}';
 
 }	// END ADDVECTOR
 
@@ -556,12 +571,13 @@ PostgreSQL::addVariableToDataBase(
 		const std::string& units,
 		const std::string& uncaled_units,
 		const std::string& longName,
-		const int sampleRate,
-		const size_t nDims,
+		int sampleRate,
+		size_t nDims,
 		const int dims[],
 		const std::vector<float>& cals,
-		const float missingValue,
-		const std::string& dataQuality)
+		float missingValue,
+		const std::string& dataQuality,
+		bool beingTransmitted)
 {
   std::stringstream   entry;
 
@@ -595,8 +611,9 @@ PostgreSQL::addVariableToDataBase(
 
   entry << "}', '" << missingValue << "', '" << dataQuality << "')";
 
-  submitCommand(entry.str());
-  addCategory(name, VarDB_GetCategoryName(name.c_str()));
+  submitCommand(entry.str(), beingTransmitted);
+  if (beingTransmitted)
+    addCategory(name, VarDB_GetCategoryName(name.c_str()));
 
 }	// END ADDVARIABLETODATABASE
 
@@ -613,13 +630,14 @@ PostgreSQL::addCategory(std::string varName, std::string category)
   std::string entry = "INSERT INTO categories VALUES ('" + varName +
 			"', '" + category + "')";
 
-  submitCommand(entry);
+  submitCommand(entry, true);
 
 }	// END ADDCATEGORY
 
 /* -------------------------------------------------------------------- */
 void
-PostgreSQL::addVariableToTables(rateTableMap &tableMap, const var_base *var, bool addToSRTtable)
+PostgreSQL::addVariableToTables(rateTableMap &tableMap, const var_base *var,
+  bool addToSRTtable)
 {
   std::vector<int> rates;
 
@@ -649,15 +667,25 @@ PostgreSQL::addVariableToTables(rateTableMap &tableMap, const var_base *var, boo
 
     preamble << "PRIMARY KEY, ";
 
+    /* We don't have a map entry for the ground transmit subset of
+     * variables.  Build it in _transmitString, initialize here.
+     */
+    if (var->Transmit && _transmitString.str().length() == 0)
+      _transmitString << preamble;
+    else
+      _transmitString << ',';
+
     if (tableMap[preamble.str()].length() > 0)
       tableMap[preamble.str()] += ',';
 
-    tableMap[preamble.str()] += var->name;
+    std::string build = var->name;
+    build += " FLOAT";
+    if (var->Length > 1)	// array.
+      build += "[]";
 
-    if (var->Length > 1)
-      tableMap[preamble.str()] += " FLOAT[]";
-    else
-      tableMap[preamble.str()] += " FLOAT";
+    tableMap[preamble.str()] += build;
+    if (var->Transmit)
+      _transmitString << build;
   }
 
 }	// END ADDVARIABLETOTABLES
@@ -676,11 +704,15 @@ PostgreSQL::createSampleRateTables(const rateTableMap &tableMap)
     submitCommand(cmd.str());
   }
 
+  // Send the subset'ed RAF_LRT table creation to ground.
+  if (_ldm)
+    _ldm->sendString(_transmitString.str());
+    
 }	// END CREATESAMPLERATETABLES
 
 /* -------------------------------------------------------------------- */
 void
-PostgreSQL::submitCommand(const std::string command)
+PostgreSQL::submitCommand(const std::string command, bool xmit)
 {
   if (_conn == 0)
     return;
@@ -692,6 +724,9 @@ PostgreSQL::submitCommand(const std::string command)
 
   PQsendQuery(_conn, command.c_str());
   fprintf(stderr, "%s", PQerrorMessage(_conn));
+
+  if (_ldm && xmit)
+    _ldm->sendString(command);
 
   while ( (res = PQgetResult(_conn)) )
     PQclear(res);

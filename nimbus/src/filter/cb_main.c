@@ -314,15 +314,28 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
    */
   InitAircraftDependencies();
 
-  if (cfg.Despiking())
-    LogMessage("Despiking enabled.");
-  else
-    LogMessage("Despiking disabled.");
-
-  if (cfg.TimeShifting())
-    LogMessage("Time-shifting enabled.");
-  else
-    LogMessage("Time-shifting disabled.");
+  LogMessage("Configuration dump:");
+  sprintf(buffer, "  Input file is %s.",
+	cfg.isADS2() ? "ADS-2" : "ADS-3"); LogMessage(buffer);
+  sprintf(buffer, "  %s mode.",
+	cfg.ProcessingMode() == Config::RealTime ? "Real-time" : "Post-processing");
+	LogMessage(buffer);
+  sprintf(buffer, "  %s run.",
+	cfg.ProductionRun() ? "Production" : "Preliminary"); LogMessage(buffer);
+  sprintf(buffer, "  De-spiking %s.",
+	cfg.Despiking() ? "enabled" : "disabled."); LogMessage(buffer);
+  sprintf(buffer, "  Time-shifting %s.",
+	cfg.TimeShifting() ? "enabled" : "disabled."); LogMessage(buffer);
+  sprintf(buffer, "  Honeywell IRS cleanup %s.",
+	cfg.HoneyWellCleanup() ? "enabled" : "disabled."); LogMessage(buffer);
+  sprintf(buffer, "  Interial time-shift %s.",
+	cfg.InertialShift() ? "enabled" : "disabled."); LogMessage(buffer);
+  sprintf(buffer, "  Output NetCDF: %s.",
+	cfg.OutputNetCDF() ? "yes" : "no"); LogMessage(buffer);
+  sprintf(buffer, "  Output SQL: %s.",
+	cfg.OutputSQL() ? "yes" : "no"); LogMessage(buffer);
+  sprintf(buffer, "  Ground transmission: %s.",
+	cfg.TransmitToGround() ? "yes" : "no"); LogMessage(buffer);
 
   for (size_t i = 0; i < sdi.size(); ++i)
     {

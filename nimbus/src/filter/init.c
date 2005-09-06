@@ -92,6 +92,7 @@ void ProcessArgv(int argc, char **argv)
       case 'r':
         cfg.SetTimeShifting(false);
         cfg.SetDespiking(false);
+        cfg.SetOutputSQL(true);
 #ifdef RT
         if (strcmp(argv[i], "-rt") == 0)	/* RealTime ADS2 */
           RTinit_ADS2();
@@ -104,6 +105,10 @@ void ProcessArgv(int argc, char **argv)
           cfg.SetInertialShift(false); // We want this in real-time.
           }
 #endif
+        break;
+
+      case 'x':
+        cfg.SetTransmitToGround(true);
         break;
 
       case 'n':

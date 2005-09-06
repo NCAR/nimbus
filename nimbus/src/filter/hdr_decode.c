@@ -2039,6 +2039,7 @@ var_base::var_base(const char s[])
   Output = true;
   DependedUpon = false;
   Broadcast = cfg.ProcessingMode() == Config::RealTime ? true : false;
+  Transmit = cfg.TransmitToGround();
 
   DataQuality	= defaultQuality;
 
