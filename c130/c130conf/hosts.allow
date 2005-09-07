@@ -1,8 +1,0 @@
-#
-# hosts.allow	This file describes the names of the hosts which are
-#		allowed to use the local INET services, as decided
-#		by the '/usr/sbin/tcpd' server.
-#
-ALL : LOCAL, .display.c130, 192.168.84., 127.0.0.1
-
-

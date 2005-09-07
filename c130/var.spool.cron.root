@@ -1,2 +1,0 @@
-10 3 * * * /opt/chkrootkit/cron_ckrkit 2>&1
-* * * * * /bin/sh /usr/bin/actrackup >> /tmp/actrackup.log
