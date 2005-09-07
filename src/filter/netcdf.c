@@ -388,7 +388,6 @@ void CreateNetCDF(const char fileName[])
     {
     if ((rp = raw[i])->Output == false)
       continue;
-printf("%s\n", raw[i]->name);
 
     // Check to see if dimension exists.  If not, create it.
     if (_rateDimIDs.find(rp->OutputRate) == _rateDimIDs.end())
@@ -473,7 +472,6 @@ printf("%s\n", raw[i]->name);
     {
     if ((dp = derived[i])->Output == false)
       continue;
-printf("%s\n", derived[i]->name);
 
     // Check to see if dimension exists.  If not, create it.
     if (_rateDimIDs.find(dp->OutputRate) == _rateDimIDs.end())
