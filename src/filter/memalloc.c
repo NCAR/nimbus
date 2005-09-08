@@ -63,7 +63,7 @@ void AllocateDataArrays()
     sdi[i]->LRstart = nLRfloats++;
     sdi[i]->HRstart = nHRfloats;
     if (cfg.isADS3() && (var = syncRecReader->getVariable(sdi[i]->name)) != 0)
-      raw[i]->SRstart = var->getSyncRecOffset();
+      sdi[i]->SRstart = var->getSyncRecOffset();
     else
     {
       sdi[i]->SRstart = nSRfloats;
