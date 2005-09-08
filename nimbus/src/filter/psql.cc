@@ -59,7 +59,7 @@ PostgreSQL::PostgreSQL(std::string specifier, bool transmitToGround)
 
   if (cfg.ProcessingMode() == Config::RealTime)
   {
-    _brdcst = new UdpSocket(RT_UDP_PORT, "192.168.184.255");
+    _brdcst = new UdpSocket(RT_UDP_PORT, "192.168.84.255");
     _brdcst->openSock(UDP_BROADCAST);
     submitCommand(
     "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current", true);
@@ -519,8 +519,8 @@ PostgreSQL::addValue(std::stringstream& sql, NR_TYPE value, bool addComma)
 inline void
 PostgreSQL::addValueToAllStreams(NR_TYPE value, bool xmit, bool addComma)
 {
-  static const char commaFormat[] = ",%s";
-  static const char normalFormat[] = "%s";
+  static const char commaFormat[] = ",%e";
+  static const char normalFormat[] = "%e";
 
   const char *format = commaFormat;
   char value_ascii[32];
