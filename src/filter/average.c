@@ -63,8 +63,8 @@ void AverageSampledData()
 /* -------------------------------------------------------------------- */
 void AverageSDI(NR_TYPE *in_data, NR_TYPE *out_data, SDITBL *sp)
 {
-  int		sampleCntr = 0;
-  double	sum = 0.0;
+  int	 sampleCntr = 0;
+  double sum = 0.0;
 
   for (size_t i = 0; i < sp->SampleRate; ++i)
     if (!isnan(in_data[i]))
@@ -91,7 +91,7 @@ void Average(
 
   if (mp)		/* if (ModuloVariable)		*/
     {
-    bool	low_value, high_value;
+    bool low_value, high_value;
 
     low_value = high_value = false;
 
@@ -132,7 +132,7 @@ void Average(
 /* -------------------------------------------------------------------- */
 void SumSDI(NR_TYPE *in_data, NR_TYPE *out_data, SDITBL *sp)
 {
-  NR_TYPE	sum = 0.0;
+  double sum = 0.0;
 
   for (size_t i = 0; i < sp->SampleRate; ++i)
     if (!isnan(in_data[i]))
@@ -145,7 +145,7 @@ void SumSDI(NR_TYPE *in_data, NR_TYPE *out_data, SDITBL *sp)
 /* -------------------------------------------------------------------- */
 void Sum(NR_TYPE *in_data, NR_TYPE *out_data, size_t n)
 {
-  double	sum = 0.0;
+  double sum = 0.0;
 
   for (size_t i = 0; i < n; ++i)
     if (!isnan(in_data[i]))
@@ -162,7 +162,7 @@ void SumVector(
 	size_t	n,
 	size_t	l)
 {
-  double	sum;
+  double sum;
 
   for (size_t i = 0; i < l; ++i)
     {
