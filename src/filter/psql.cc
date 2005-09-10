@@ -448,7 +448,8 @@ PostgreSQL::WriteSQLvolts(const std::string timeStamp)
   submitCommand(_sqlString.str());
 
   // Return lastest timestamp written in usec.
-  return((maxRate / 1000) * (maxRate-1)* 1000);
+  double usec = (1000.0 / maxRate) * (maxRate-1);
+  return (long)usec;
 
 }	// END WRITESQLVOLTS
 
