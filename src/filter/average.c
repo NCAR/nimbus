@@ -68,7 +68,10 @@ void AverageSDI(NR_TYPE *in_data, NR_TYPE *out_data, SDITBL *sp)
 
   for (size_t i = 0; i < sp->SampleRate; ++i)
     if (!isnan(in_data[i]))
-      sum += in_data[sampleCntr++];
+    {
+      sum += in_data[i];
+      ++sampleCntr;
+    }
 
   if (sampleCntr == 0)
     out_data[0] = floatNAN;
@@ -111,7 +114,10 @@ void Average(
 
   for (size_t i = 0; i < n; ++i)
     if (!isnan(in_data[i]))
-      sum += in_data[sampleCntr++];
+    {
+      sum += in_data[i];
+      ++sampleCntr;
+    }
 
   if (sampleCntr == 0)
     average = floatNAN;
