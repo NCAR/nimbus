@@ -38,9 +38,8 @@ void ApplyCalCoes(NR_TYPE *record)
 
     for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
     {
-      int corder  = sp->cof.size() - 1;
-
-      NR_TYPE out     = sp->cof[corder];
+      int corder = sp->cof.size() - 1;
+      NR_TYPE out = sp->cof[corder];
 
       if (sp->type[0] == 'A')
         SRTvolts[pos] = record[pos] =
