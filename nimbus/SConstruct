@@ -48,3 +48,5 @@ SConscript('src/amlib/SConscript')
 ##  Build nimbus proper.
 ##
 SConscript('src/filter/SConscript')
+
+Alias('install', [env['JLOCAL'] + '/bin'])
