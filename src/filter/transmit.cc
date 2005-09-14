@@ -22,7 +22,7 @@ void sqlTransmit::queueString(const std::string& str)
 
   if (++_counter > timeInterval())
   {
-    _q += "END;";
+    _q += "COMMIT;";
     sendString(_q);
     _counter = 0;
     _q = "BEGIN;";
