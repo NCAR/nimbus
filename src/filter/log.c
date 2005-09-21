@@ -47,9 +47,9 @@ void LogThisRecordMsg(NR_TYPE *record, const char msg[])
     messg.append("\n");
 
   fprintf(stderr, "%02d:%02d:%02d: %s",
-	(int)record[timeindex[0]],
-	(int)record[timeindex[1]],
-	(int)record[timeindex[2]],
+	(int)record[timeIndex[0]],
+	(int)record[timeIndex[1]],
+	(int)record[timeIndex[2]],
 	messg.c_str());
 }
 

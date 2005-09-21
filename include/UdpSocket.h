@@ -22,7 +22,7 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <errno.h>
+#include <cerrno>
 #include <netdb.h>
 #include <net/if.h>
 #include <netinet/in.h>

@@ -95,10 +95,13 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 
 #define SecondsSinceMidnite(t) (t[0] * 3600 + t[1] * 60 + t[2])
 
-/*	External definitions
+/* External definitions
  */
 extern bool	LITTON51_present, AsyncFileEnabled, AVAPS;
 extern size_t	nLRfloats, nSRfloats, nHRfloats, LITTON51_start;
+
+extern const std::string DSMSERVER;
+extern const int DSMSERVERPORT;
 
 
 /*      Function Prototypes
@@ -120,7 +123,6 @@ void	SetLookupSuffix(char *new_suffix),
 	CheckAndAddAtts(int, int, char *),
 	InitMRFilters(), ClearMRFilters(),
 	DecodeADSrecord(short lr[], NR_TYPE nlr[]),
-	DecodeADSrecordForRealtime(short lr[], NR_TYPE nlr[]),
 	AverageSampledData(),
 	ApplyCalCoes(NR_TYPE *record),
 	ComputeLowRateDerived(), ComputeHighRateDerived(),
@@ -134,7 +136,8 @@ void	Sum(NR_TYPE *in_data, NR_TYPE *out_data, size_t n),
 	Average(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l, MOD *mp),
 	AverageSDI(NR_TYPE *in_data, NR_TYPE *out_data, SDITBL *sp);
 
-void	AllocateDataArrays(), FreeDataArrays(), ResetTimeGapper();
+void	AllocateDataArrays(), FreeDataArrays(), ResetTimeGapper(),
+	processTimeADS3(NR_TYPE *output, time_t ut);
 
 int	SearchDERIVEFTNS(const char target[]),
 	DecodeHeader(const char header_file[]),
@@ -145,8 +148,14 @@ int	SearchDERIVEFTNS(const char target[]),
 	LowRateLoop(long starttime, long endtime),
 	HighRateLoop(long starttime, long endtime);
 
-long	FindFirstLogicalRecord(char record[], long starttime),
-	FindNextLogicalRecord(char record[], long endtime);
+long	FindFirstLogicalADS2(char record[], long starttime),
+	FindNextLogicalADS2(char record[], long endtime),
+	FindFirstLogicalADS3(char record[], long starttime),
+	FindNextLogicalADS3(char record[], long endtime);
+
+extern long
+	(*FindFirstLogicalRecord)(char record[], long starttime),
+	(*FindNextLogicalRecord)(char record[], long endtime);
 
 #endif
 

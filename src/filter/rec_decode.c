@@ -5,27 +5,23 @@ OBJECT NAME:	rec_decode.c
 FULL NAME:	Decode ADS data Record
 
 ENTRY POINTS:	DecodeADSrecord()
-		DecodeADSrecordForRealTime()
 
 DESCRIPTION:	Translates ADS data records into the internal format.
 		The internal format is all one data type for ease of
-		processing.  The 2 functions are essentially identical,
-		the difference is that the one ForRealTime also puts the
-		data into the arrays bits[] and volts[], for display
-		purposes.
+		processing.
 
 INPUT:		ADS logical record
 
-OUTPUT:		New logical record
+OUTPUT:		New logical record, everything of type NR_TYPE.
 
 REFERENCES:	libxlate.a
 
-REFERENCED BY:	lrloop.c hrloop.c winputops.c
+REFERENCED BY:	lrloop.c hrloop.c rtloop.c winputops.c
 
 NOTE:		If you chnage one, make sure the other does/doesn't need
 		the same change.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 -------------------------------------------------------------------------
 */
 
@@ -41,6 +37,14 @@ void DecodeADSrecord(
 	short	lr[],	/* ADS Logical Record	*/
 	NR_TYPE	nlr[])	/* New Logical Record	*/
 {
+  if (cfg.isADS3())
+  {
+    // Forcing ADS3 into the ADS2 architecture.  FindNextRecord will
+    // put it into ADSrecord, copy it out here.
+    memcpy((void *)nlr, (void *)lr, nSRfloats * sizeof(NR_TYPE));
+    return;
+  }
+
   /* Cast SDI variables into new record
    */
   for (size_t i = 0; i < sdi.size(); ++i)

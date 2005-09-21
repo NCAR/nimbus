@@ -28,14 +28,6 @@ STATIC FNS:	checkForProductionSetup()
 DESCRIPTION:	Contains callbacks for the nimbus GUI main window & setup
 		window.
 
-INPUT:			
-
-OUTPUT:		
-
-REFERENCES:	Everything.
-
-REFERENCED BY:	XtAppMainLoop()
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
 */
@@ -191,11 +183,9 @@ static void readHeader()
 
   if (cfg.isADS2())
     rc = DecodeHeader(ADSfileName);
-#ifdef RT
   else
   if (cfg.isADS3())
     rc = DecodeHeader3(ADSfileName);
-#endif
 
   if (rc == ERR) {
     CancelSetup(NULL, NULL, NULL);
@@ -282,6 +272,33 @@ static void readHeader()
 }	/* END READHEADER */
 
 /* -------------------------------------------------------------------- */
+void ConfigurationDump()
+{
+  LogMessage("Configuration dump:");
+  sprintf(buffer, "  Input file is %s.",
+	cfg.isADS2() ? "ADS-2" : "ADS-3"); LogMessage(buffer);
+  sprintf(buffer, "  %s mode.",
+	cfg.ProcessingMode() == Config::RealTime ? "Real-time" : "Post-processing");
+	LogMessage(buffer);
+  sprintf(buffer, "  %s run.",
+	cfg.ProductionRun() ? "Production" : "Preliminary"); LogMessage(buffer);
+  sprintf(buffer, "  De-spiking %s.",
+	cfg.Despiking() ? "enabled" : "disabled"); LogMessage(buffer);
+  sprintf(buffer, "  Time-shifting %s.",
+	cfg.TimeShifting() ? "enabled" : "disabled"); LogMessage(buffer);
+  sprintf(buffer, "  Honeywell IRS cleanup %s.",
+	cfg.HoneyWellCleanup() ? "enabled" : "disabled"); LogMessage(buffer);
+  sprintf(buffer, "  Intertial time-shift %s.",
+	cfg.InertialShift() ? "enabled" : "disabled"); LogMessage(buffer);
+  sprintf(buffer, "  Output NetCDF: %s.",
+	cfg.OutputNetCDF() ? "yes" : "no"); LogMessage(buffer);
+  sprintf(buffer, "  Output SQL: %s.",
+	cfg.OutputSQL() ? "yes" : "no"); LogMessage(buffer);
+  sprintf(buffer, "  Ground transmission: %s.",
+	cfg.TransmitToGround() ? "yes" : "no"); LogMessage(buffer);
+}
+
+/* -------------------------------------------------------------------- */
 void StartProcessing(Widget w, XtPointer client, XtPointer call)
 {
   XmString	label;
@@ -309,33 +326,12 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   RunAMLIBinitializers();
   CreateNetCDF(OutputFileName);
   InitAsyncModule(OutputFileName);
+  ConfigurationDump();
 
   /* This needs to be after CreateNetCDF, so that FlightDate is initialized.
    */
   InitAircraftDependencies();
 
-  LogMessage("Configuration dump:");
-  sprintf(buffer, "  Input file is %s.",
-	cfg.isADS2() ? "ADS-2" : "ADS-3"); LogMessage(buffer);
-  sprintf(buffer, "  %s mode.",
-	cfg.ProcessingMode() == Config::RealTime ? "Real-time" : "Post-processing");
-	LogMessage(buffer);
-  sprintf(buffer, "  %s run.",
-	cfg.ProductionRun() ? "Production" : "Preliminary"); LogMessage(buffer);
-  sprintf(buffer, "  De-spiking %s.",
-	cfg.Despiking() ? "enabled" : "disabled."); LogMessage(buffer);
-  sprintf(buffer, "  Time-shifting %s.",
-	cfg.TimeShifting() ? "enabled" : "disabled."); LogMessage(buffer);
-  sprintf(buffer, "  Honeywell IRS cleanup %s.",
-	cfg.HoneyWellCleanup() ? "enabled" : "disabled."); LogMessage(buffer);
-  sprintf(buffer, "  Interial time-shift %s.",
-	cfg.InertialShift() ? "enabled" : "disabled."); LogMessage(buffer);
-  sprintf(buffer, "  Output NetCDF: %s.",
-	cfg.OutputNetCDF() ? "yes" : "no"); LogMessage(buffer);
-  sprintf(buffer, "  Output SQL: %s.",
-	cfg.OutputSQL() ? "yes" : "no"); LogMessage(buffer);
-  sprintf(buffer, "  Ground transmission: %s.",
-	cfg.TransmitToGround() ? "yes" : "no"); LogMessage(buffer);
 
   for (size_t i = 0; i < sdi.size(); ++i)
     {
@@ -396,16 +392,32 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
 
   EngageSignals();
 
+  if (cfg.isADS2())
+  {
+    FindFirstLogicalRecord = FindFirstLogicalADS2;
+    FindNextLogicalRecord = FindNextLogicalADS2;
+  }
+  else
+  if (cfg.isADS3())
+  {
+    FindFirstLogicalRecord = FindFirstLogicalADS3;
+    FindNextLogicalRecord = FindNextLogicalADS3;
+  }
+  else
+  {
+    FindFirstLogicalRecord = 0;
+    FindNextLogicalRecord = 0;
+  }
+
+
   if (cfg.ProcessingMode() == Config::RealTime)
     {
     NextTimeInterval(&btim, &etim);
 
     if (cfg.isADS2())
       RealTimeLoop();	/* Never to return	*/
-#ifdef RT
     else
       RealTimeLoop3();
-#endif
 
     exit(0);
     }
@@ -424,6 +436,9 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
 
       case Config::HighRate:
         rc = HighRateLoop(btim, etim);
+        break;
+
+      default:	// Appease compiler.
         break;
       }
 
@@ -766,13 +781,26 @@ void Quit(Widget w, XtPointer client, XtPointer call)
 }
 
 /* -------------------------------------------------------------------- */
+static bool determineInputFileVersion()
+{
+  FILE *fp = fopen(ADSfileName, "r");
+
+  if (fp == 0)
+    return false;
+
+  fread(buffer, 20, 1, fp);
+  fclose(fp);
+
+  if ( memcmp(buffer, FIRST_REC_STRING, strlen(FIRST_REC_STRING)) )
+    cfg.SetADSVersion(Config::ADS_3);
+
+}	/* END DETERMINEINPUTFILEVERSION */
+
+/* -------------------------------------------------------------------- */
 static int validateInputFile()
 {
   if (cfg.ProcessingMode() == Config::RealTime)
     return(OK);
-
-  if (strcmp(&ADSfileName[strlen(ADSfileName)-4], ".ads") != 0)
-    strcat(ADSfileName, ".ads");
 
   if (strlen(ADSfileName) == 0 || access(ADSfileName, R_OK) == ERR)
     {
@@ -780,6 +808,7 @@ static int validateInputFile()
     return(ERR);
     }
 
+  determineInputFileVersion();
   return(OK);
 
 }	/* END VALIDATEINPUTFILE */

@@ -17,15 +17,7 @@ DESCRIPTION:	Functions should be used in the order shown above.
 		what is actually output (e.g. User requests 00:00:00 -
 		15:00:00, and ADS actually started recording at 13:00:00).
 
-INPUT:		struct Hdr_blk
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	cb_main.c, oppo.c, mrf.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-05
 -------------------------------------------------------------------------
 */
 
@@ -40,8 +32,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 
 #define NEW_SEG		(-1)
 
-int	timeIndex[6];
-
 static int	nTimeIntervals;
 
 /* User specified time intervals, stored as int's	*/
@@ -53,8 +43,6 @@ static long	prevTime,
 static int	currentTimeSegment;
 static int	BtimeInt[MAX_TIME_SLICES*4][3],
 		EtimeInt[MAX_TIME_SLICES*4][3];
-
-extern char     *ADSrecord;
 
 void QueueMissingData(int h, int m, int s, int nRecords);
 
@@ -130,12 +118,34 @@ void ResetTimeGapper()
 }
 
 /* -------------------------------------------------------------------- */
-int CheckForTimeGap(struct Hdr_blk *ADShdr, int initMode)
+long UTCseconds(const void *record, int *h, int *m, int *s)
+{
+  if (cfg.isADS2())
+  {
+    const Hdr_blk *r = (Hdr_blk *)record;
+    *h = (int)ntohs(r->hour);
+    *m = (int)ntohs(r->minute);
+    *s = (int)ntohs(r->second);
+  }
+  else
+  {
+    const NR_TYPE *r = (NR_TYPE *)record;
+    *h = (int)r[timeIndex[0]];
+    *m = (int)r[timeIndex[1]];
+    *s = (int)r[timeIndex[2]];
+  }
+
+  return *h * 3600 + *m * 60 + *s;
+}
+
+/* -------------------------------------------------------------------- */
+int CheckForTimeGap(void *ADShdr, int initMode)
 {
   long	i, j;
   long	newTime;
+  int	hour, minute, second;
 
-  newTime = (long)HdrBlkTimeToSeconds(ADShdr);
+  newTime = UTCseconds(ADShdr, &hour, &minute, &second);
 
   /* If everthing is peachy, then bail out.
    */
@@ -157,6 +167,7 @@ int CheckForTimeGap(struct Hdr_blk *ADShdr, int initMode)
 
   if (prevTime >= newTime)
     {
+    extern char     *ADSrecord;
     int		h, m, s;
 
     h = prevTime / 3600;
@@ -172,20 +183,19 @@ int CheckForTimeGap(struct Hdr_blk *ADShdr, int initMode)
 
       sprintf(buffer,
         "  previous time = %02d:%02d:%02d\n       odd time = %02d:%02d:%02d\n",
-      	h, m, s, ntohs(ADShdr->hour), ntohs(ADShdr->minute), ntohs(ADShdr->second));
+      	h, m, s, hour, minute, second);
       LogMessage(buffer);
 
-      if (FindNextLogicalRecord(ADSrecord, END_OF_TAPE) <= 0)
+      if ((*FindNextLogicalRecord)(ADSrecord, END_OF_TAPE) <= 0)
         return(GAP_FOUND);
 
-      newTime = (long)HdrBlkTimeToSeconds(ADShdr);
+      newTime = UTCseconds(ADShdr, &hour, &minute, &second);
       }
 
-    sprintf(buffer, "    advanced to = %02d:%02d:%02d\n",
-	ntohs(ADShdr->hour), ntohs(ADShdr->minute), ntohs(ADShdr->second));
+    sprintf(buffer, "    advanced to = %02d:%02d:%02d\n", hour, minute, second);
     LogMessage(buffer);
 
-    return(CheckForTimeGap((struct Hdr_blk *)ADSrecord, initMode));
+    return(CheckForTimeGap(ADSrecord, initMode));
     }
 
 
@@ -201,8 +211,7 @@ int CheckForTimeGap(struct Hdr_blk *ADShdr, int initMode)
 
 
     sprintf(buffer, "Time break of %ld seconds ending @ %02d:%02d:%02d, filling in with MISSING_VALUE.\n",
-	newTime - prevTime - 1,
-	ntohs(ADShdr->hour), ntohs(ADShdr->minute), ntohs(ADShdr->second));
+	newTime - prevTime - 1, hour, minute, second);
     LogMessage(buffer);
 
     QueueMissingData(h, m, s, newTime - prevTime - 1);

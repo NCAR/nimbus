@@ -5,8 +5,9 @@ OBJECT NAME:	lrloop.c
 FULL NAME:	Main loop for low rate processing
 
 ENTRY POINTS:	LowRateLoop()
+		LocateFirstRecord()
 
-STATIC FNS:	none
+STATIC FNS:	displayTime()
 
 DESCRIPTION:	
 
@@ -76,10 +77,10 @@ int LowRateLoop(long starttime, long endtime)
 
   for (int i = 1; i < NLRBUFFERS-1; ++i)
     {
-    if ((nBytes = FindNextLogicalRecord(ADSrecord, endtime)) <= 0)
+    if ((nBytes = (*FindNextLogicalRecord)(ADSrecord, endtime)) <= 0)
       goto exit;
 
-    if (CheckForTimeGap((Hdr_blk *)ADSrecord, false) == GAP_FOUND)
+    if (CheckForTimeGap(ADSrecord, false) == GAP_FOUND)
       goto exit;
 
     BuffPtr = (NR_TYPE *)AddToCircularBuffer(LRCB);
@@ -87,15 +88,12 @@ int LowRateLoop(long starttime, long endtime)
     ApplyCalCoes(BuffPtr);
     }
  
-  timeindex[0] = raw[SearchTable(raw, "HOUR")]->SRstart;
-  timeindex[1] = raw[SearchTable(raw, "MINUTE")]->SRstart;
-  timeindex[2] = raw[SearchTable(raw, "SECOND")]->SRstart;
 
   /* This is the main loop.
    */
-  while ((nBytes = FindNextLogicalRecord(ADSrecord, endtime)) > 0)
+  while ((nBytes = (*FindNextLogicalRecord)(ADSrecord, endtime)) > 0)
     {
-    if (CheckForTimeGap((Hdr_blk *)ADSrecord, false) == GAP_FOUND)
+    if (CheckForTimeGap(ADSrecord, false) == GAP_FOUND)
       break;
 
     BuffPtr = (NR_TYPE *)AddToCircularBuffer(LRCB);
@@ -113,9 +111,9 @@ int LowRateLoop(long starttime, long endtime)
       {
       int	hr, mins, sec;
 
-      hr = (int)SampledData[timeindex[0]];
-      mins = (int)SampledData[timeindex[1]];
-      sec = (int)SampledData[timeindex[2]];
+      hr = (int)SampledData[timeIndex[0]];
+      mins = (int)SampledData[timeIndex[1]];
+      sec = (int)SampledData[timeIndex[2]];
       float temptime=(hr*3600)+(mins*60)+sec;
 
       sd.InjectSyntheticData(temptime); 
@@ -144,37 +142,51 @@ exit:
 }	/* END LOWRATELOOP */
 
 /* -------------------------------------------------------------------- */
+static void displayTime(const void *record)
+{
+  if (cfg.isADS2())
+  {
+    const Hdr_blk *h = (Hdr_blk *)record;
+    printf("%02d:%02d:%02d\n", ntohs(h->hour), ntohs(h->minute), ntohs(h->second));
+  }
+  else
+  {
+    const NR_TYPE *r = (NR_TYPE *)record;
+    printf("%02d:%02d:%02d\n", (int)r[timeIndex[0]], (int)r[timeIndex[1]], (int)r[timeIndex[2]]);
+  }
+}
+
+/* -------------------------------------------------------------------- */
 static const int nConsecutive = 10;
 
 bool LocateFirstRecord(long starttime, long endtime, int nBuffers)
 {
   int i, nBytes, cntr = 0;
-  Hdr_blk *h = (Hdr_blk*)ADSrecord;
 
-  if ((nBytes = FindFirstLogicalRecord(ADSrecord, starttime)) <= 0)
+  if ((nBytes = (*FindFirstLogicalRecord)(ADSrecord, starttime)) <= 0)
     return false;
 
-  /* Now make sure we have at least X contigous records.
+  /* Now make sure we have at least N contiguous records.
    */
   for (i = 0, cntr = 0; i < nConsecutive; ++i, ++cntr)
-    {
-    printf("%d:%d:%d\n", ntohs(h->hour), ntohs(h->minute), ntohs(h->second));
-    if (CheckForTimeGap((Hdr_blk *)ADSrecord, true) == GAP_FOUND)
+  {
+    displayTime(ADSrecord);
+    if (CheckForTimeGap(ADSrecord, true) == GAP_FOUND)
       { i = 0; printf("reset, cntr=%d\n", cntr); }
 
-    nBytes = FindNextLogicalRecord(ADSrecord, endtime);
-    }
+    nBytes = (*FindNextLogicalRecord)(ADSrecord, endtime);
+  }
 
   cntr -= nConsecutive;
 
-  nBytes = FindFirstLogicalRecord(ADSrecord, starttime);
+  nBytes = (*FindFirstLogicalRecord)(ADSrecord, starttime);
   for (i = 0; i < cntr; ++i)
-    nBytes = FindNextLogicalRecord(ADSrecord, endtime);
+    nBytes = (*FindNextLogicalRecord)(ADSrecord, endtime);
 
   ResetTimeGapper();
-  printf("%d:%d:%d\n", ntohs(h->hour), ntohs(h->minute), ntohs(h->second));
+  displayTime(ADSrecord);
 
-  SetBaseTime((Hdr_blk *)ADSrecord);		/* See netcdf.c	*/
+  SetBaseTime(ADSrecord);		/* See netcdf.c	*/
 
   return true;
 

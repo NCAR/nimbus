@@ -32,7 +32,7 @@ void sqlTransmit::queueString(const std::string& str)
 void sqlTransmit::sendString(const std::string& str)
 {
   char fName[256];
-  sprintf(fName, "sql_sequence%d.gz", _packetCounter++);
+  sprintf(fName, "/tmp/xmit/sql_sequence%05d.gz", _packetCounter++);
 
   gzFile gzfd = gzopen(fName, "w+");
 

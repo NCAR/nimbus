@@ -24,7 +24,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 #include "filters.h"
 #include "circbuff.h"
 
-#include <cmath>
 #include <gsl/gsl_spline.h>
 
 extern NR_TYPE	*SampledData, *HighRateData;

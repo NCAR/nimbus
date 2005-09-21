@@ -20,10 +20,8 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1992-05
 #include "decode.h"
 #include "ctape.h"
 
-#ifdef RT
 #include <SyncRecordReader.h>
 extern dsm::SyncRecordReader* syncRecReader;
-#endif
 
 static bool	ArraysInitialized = false;
 
@@ -37,13 +35,6 @@ extern NR_TYPE	*SampledData, *AveragedData, *HighRateData;
 void AllocateDataArrays()
 {
   long	lrlen;
-
-  // ADS3 we will be deposited directly into SampledData, don't need ADSrecord.
-  if (cfg.isADS2())
-  {
-    get_lrlen(&lrlen);
-    ADSrecord = new char[lrlen];
-  }
 
   if (AVAPS)
     for (int i = 0; i < MAX_AVAPS; ++i)
@@ -111,6 +102,14 @@ void AllocateDataArrays()
   SRTvolts = new NR_TYPE[nVoltFloats];
   SampledData = new NR_TYPE[nSRfloats];
   AveragedData = new NR_TYPE[nLRfloats];
+
+  if (cfg.isADS2())
+  {
+    get_lrlen(&lrlen);
+    ADSrecord = new char[lrlen];
+  }
+  else // ADS3 will be put here, then copied out in rec_decode.c
+    ADSrecord = new char[nSRfloats * sizeof(NR_TYPE)];
 
   if (cfg.ProcessingRate() == Config::HighRate)
     HighRateData = new NR_TYPE[nHRfloats];
