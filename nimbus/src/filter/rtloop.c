@@ -89,7 +89,7 @@ void RealTimeLoop()
 
   /* wait for record and write base_time to netCDF file.
    */
-  SetBaseTime((Hdr_blk *)ADSrecord);
+  SetBaseTime(ADSrecord);
 
   if (cfg.OutputSQL())
     psql = new PostgreSQL("", cfg.TransmitToGround());
@@ -107,7 +107,7 @@ if (ts-pts > 2.0)
   fprintf(stderr, "%s %ld.%ld   %lf\n", timeStamp, tv.tv_sec, tv.tv_usec, ts-pts);
 pts = ts;
 
-    CheckForTimeGap((Hdr_blk *)ADSrecord, false);
+    CheckForTimeGap(ADSrecord, false);
 
     DecodeADSrecord((short *)ADSrecord, SampledData);
     ApplyCalCoes(SampledData);

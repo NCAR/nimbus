@@ -9,9 +9,6 @@
 #include "nimbus.h"
 #include "injectsd.h"
 
-#include <vector>
-#include <cmath>
-
 extern NR_TYPE          *AveragedData,*HighRateData,*SampledData;
 
 vars tempvar;   //used with the widgits

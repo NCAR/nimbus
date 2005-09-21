@@ -21,21 +21,12 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2005
 
 #include <Xm/TextF.h>
 
-#include <Socket.h>
 #include <SyncRecordReader.h>
 
-#include <sys/time.h>
+#include <ctime>
 #include <unistd.h>
 
 #include <iomanip>
-
-using namespace atdUtil;
-using namespace dsm;
-
-SyncRecordReader* syncRecReader = 0;
-
-static const std::string DSMSERVER = "ac-server";
-static const int DSMSERVERPORT = 30001;
 
 static const std::string PGHOST = "ac-server";
 static const std::string PGDATABASE = "real-time";
@@ -45,18 +36,11 @@ extern PostgreSQL *psql;
 
 extern NR_TYPE	*SampledData, *AveragedData;
 
-void processTimeADS3(NR_TYPE *output, time_t ut);
-
 
 /* -------------------------------------------------------------------- */
 void RTinit_ADS3()
 {
 printf("RTinit_ADS3, establishing connection....\n");
-
-  atdUtil::Socket* sock = new atdUtil::Socket(DSMSERVER, DSMSERVERPORT);
-  IOChannel* iochan = new dsm::Socket(sock);
-
-  syncRecReader = new SyncRecordReader(iochan);
 
   cfg.SetADSVersion(Config::ADS_3);
   cfg.SetProcessingMode(Config::RealTime);
@@ -72,10 +56,8 @@ printf("netCDF file = %s\n", buffer);
 /* -------------------------------------------------------------------- */
 void RealTimeLoop3()
 {
-  struct timeval tv;
-  double	ts, pts = 0.0;
-  char		timeStamp[64];
-  dsm_time_t	tt;
+  char timeStamp[64];
+  dsm::dsm_time_t tt;
 
   if (cfg.OutputSQL())
   {
@@ -103,6 +85,7 @@ void RealTimeLoop3()
     psql = new PostgreSQL(specifier, cfg.TransmitToGround());
   }
 
+  extern dsm::SyncRecordReader* syncRecReader;
 
   for (;;)
   {
@@ -111,19 +94,11 @@ void RealTimeLoop3()
 
     time_t ut = tt / USECS_PER_SEC;
     struct tm tm;
-    gmtime_r(&ut,&tm);
+    gmtime_r(&ut, &tm);
     int msec = (tt % USECS_PER_SEC) / USECS_PER_MSEC;
     strftime(timeStamp, sizeof(timeStamp), "%Y-%m-%d %H:%M:%S", &tm);
     std::cout << timeStamp << '.' << std::setw(3) << std::setfill('0') << msec
 	<< ' ' << std::endl;
-
-{
-gettimeofday(&tv, NULL);
-ts = tv.tv_sec + ((double)tv.tv_usec/1000000);
-if (ts-pts > 2.0)
-  fprintf(stderr, "%s %ld.%ld   %lf\n", timeStamp, tv.tv_sec, tv.tv_usec, ts-pts);
-pts = ts;
-}
 
     ApplyCalCoes(SampledData);
     AverageSampledData();
@@ -138,9 +113,6 @@ pts = ts;
 
     if (cfg.OutputNetCDF())
       SyncNetCDF();
-
-//gettimeofday(&tv, NULL);
-//printf("%s  %d.%d\n", timeStamp, tv.tv_sec, tv.tv_usec); fflush(stdout);
   }
 
 }	// END REALTIMELOOP3

@@ -47,10 +47,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include "ctape.h"	/* ADS header API		*/
 #include "amlib.h"
 
-#ifdef RT
+#include <Socket.h>
 #include <SyncRecordReader.h>
 extern dsm::SyncRecordReader* syncRecReader;
-#endif
 
 typedef struct
   {
@@ -112,9 +111,7 @@ static char	*derivedlist[MAX_DEFAULTS*4],	/* DeriveNames file	*/
 		*rawlist[MAX_DEFAULTS*4];	/* RawNames file	*/
 
 
-#ifdef RT
 static SDITBL	*initSDI_ADS3(dsm::SyncRecordVariable* var);
-#endif
 static RAWTBL	*add_name_to_RAWTBL(const char []);
 static DERTBL	*add_name_to_DERTBL(const char []);
 
@@ -152,7 +149,6 @@ bool VarCompareLT(const var_base *x, const var_base *y)
 /* -------------------------------------------------------------------- */
 static void CommonInitialization()
 {
-
   ReadProjectName();
 
   if (cfg.ProductionRun())
@@ -176,15 +172,37 @@ static void CommonInitialization()
 }
 
 /* -------------------------------------------------------------------- */
-#ifdef RT
 int DecodeHeader3(const char header_file[])
 {
 printf("DecodeHeader3\n");
+  extern dsm::SyncRecordReader* syncRecReader;
 
-  std::string proj_name = syncRecReader->getProjectName();
-  ProjectNumber = new char(proj_name.size()+1);
-  strcpy(ProjectNumber, proj_name.c_str());
-ProjectNumber = "601";
+  if (cfg.ProcessingMode() == Config::PostProcessing)
+  {
+    pid_t pid = fork();
+
+    if (pid == 0)
+    {
+      execl("/opt/ads3/x86/bin/launch_ss.sh", "launch_ss.sh", header_file, 0);
+      HandleError("Gordon says things are really screwed up!");
+      _exit(1);
+    }
+
+    sleep(2);
+  }
+  else
+    ; // sync_server is started elsewhere onboard.
+
+  atdUtil::Socket* sock = new atdUtil::Socket(DSMSERVER, DSMSERVERPORT);
+  dsm::IOChannel* iochan = new dsm::Socket(sock);
+
+  syncRecReader = new dsm::SyncRecordReader(iochan);
+
+//  std::string proj_name = syncRecReader->getProjectName();
+//  ProjectNumber = new char(proj_name.size()+1);
+//  strcpy(ProjectNumber, proj_name.c_str());
+
+ProjectNumber = "501";
 printf("ProjectNumber = %s\n", ProjectNumber);
 
   std::string tail_number = syncRecReader->getTailNumber();
@@ -282,7 +300,6 @@ static SDITBL* initSDI_ADS3(dsm::SyncRecordVariable* var)
   return(cp);
 
 }
-#endif
 
 /* -------------------------------------------------------------------- */
 int DecodeHeader(const char header_file[])

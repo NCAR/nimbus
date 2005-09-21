@@ -5,8 +5,8 @@ OBJECT NAME:	adsIO.c
 FULL NAME:	ADS Record IO routines
 
 ENTRY POINTS:	ExtractHeaderIntoFile(char *ADSfileName)
-		FindFirstLogicalRecord(char *record, long starttime)
-		FindNextLogicalRecord(char *record, long endtime)
+		FindFirstLogicalADS2(char *record, long starttime)
+		FindNextLogicalADS2(char *record, long endtime)
 		FindNextDataRecord(char *record)
 		CloseADSfile()
 		Open2dFile()
@@ -83,7 +83,7 @@ int crayclose(int *index);
 
 
 /* -------------------------------------------------------------------- */
-long FindFirstLogicalRecord(
+long FindFirstLogicalADS2(
 	char	record[],	/* First Data Record, for start time	*/
 	long	startTime)	/* User specified start time		*/
 {
@@ -114,7 +114,7 @@ long FindFirstLogicalRecord(
       return(nbytes);
 
     if (startTime == BEG_OF_TAPE)
-      return(FindNextLogicalRecord(record, startTime));
+      return(FindNextLogicalADS2(record, startTime));
     }
   else
     currentLR = 0;
@@ -142,11 +142,11 @@ long FindFirstLogicalRecord(
 
 
   /* Cover the case if start time is before first record on file
-  */
+   */
   if (startTime < recTime)
     startTime = recTime;
 
-  while ((nbytes = FindNextLogicalRecord(record, startTime)) > 0)
+  while ((nbytes = FindNextLogicalADS2(record, startTime)) > 0)
     {
     recTime = HdrBlkTimeToSeconds((struct Hdr_blk *)record);
 
@@ -163,7 +163,7 @@ long FindFirstLogicalRecord(
 }	/* END FINDFIRSTLOGICALRECORD */
 
 /* -------------------------------------------------------------------- */
-long FindNextLogicalRecord(char record[], long endtime)
+long FindNextLogicalADS2(char record[], long endtime)
 {
   int	nbytes;
   long	TansStart, rectime;
@@ -200,7 +200,7 @@ long FindNextLogicalRecord(char record[], long endtime)
 		ntohs(ADShdr->id), ntohs(ADShdr->hour),
 		ntohs(ADShdr->minute), ntohs(ADShdr->second));
     LogMessage(buffer);
-    FindNextLogicalRecord(record, endtime);
+    FindNextLogicalADS2(record, endtime);
     }
 
 
@@ -208,7 +208,7 @@ long FindNextLogicalRecord(char record[], long endtime)
     return(lrlen);
 
   /* Lag the Litton 51 INS one second.
-  */
+   */
   if (cfg.InertialShift() && LITTON51_present)
     memcpy( &record[LITTON51_start],
             &phys_rec[currentLR * lrlen + LITTON51_start],

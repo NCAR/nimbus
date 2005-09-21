@@ -28,7 +28,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 #include "nimbus.h"
 #include "decode.h"
-#include <cmath>
 
 static const int N = 4;
 

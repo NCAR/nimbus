@@ -32,8 +32,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include <netinet/in.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <errno.h>
-#include <time.h>
+#include <cerrno>
+#include <ctime>
+#include <map>
 
 #include "nimbus.h"
 #include "decode.h"
@@ -44,20 +45,20 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include "vardb.h"
 #include "svnInfo.h"
 
-#include <cmath>
-#include <map>
+#include <SyncRecordReader.h>
+
 
 static const std::string NETCDF_FORMAT_VERSION = "1.3";
 
 #define DEFAULT_TI_LENGTH	(19 * MAX_TIME_SLICES)
 
 struct missDat	/* (Time gap) / (missing data) information */
-	{
-	int		hour;
-	int		minute;
-	int		second;
-	size_t		nRecords;
-	} ;
+  {
+  int		hour;
+  int		minute;
+  int		second;
+  size_t	nRecords;
+  } ;
 
 static int		fd = -1;
 static int		baseTimeID;
@@ -92,14 +93,23 @@ std::map<int, int> _rateDimIDs;
 std::map<int, int> _vectorDimIDs;
 
 /* -------------------------------------------------------------------- */
-void SetBaseTime(struct Hdr_blk *hdr)
+void SetBaseTime(const void *record)
 {
-  time_t	BaseTime;
-
-  StartFlight.tm_hour	= ntohs(hdr->hour);
-  StartFlight.tm_min	= ntohs(hdr->minute);
-  StartFlight.tm_sec	= ntohs(hdr->second);
   StartFlight.tm_isdst	= -1;
+  if (cfg.isADS2())
+  {
+    const Hdr_blk *hdr = (Hdr_blk *)record;
+    StartFlight.tm_hour	= ntohs(hdr->hour);
+    StartFlight.tm_min	= ntohs(hdr->minute);
+    StartFlight.tm_sec	= ntohs(hdr->second);
+  }
+  else
+  {
+    const NR_TYPE *r = (NR_TYPE *)record;
+    StartFlight.tm_hour	= (int)r[timeIndex[0]];
+    StartFlight.tm_min	= (int)r[timeIndex[1]];
+    StartFlight.tm_sec	= (int)r[timeIndex[2]];
+  }
 
   /* Account for circular buffer spin up in [lr|hr]loop.c
    */
@@ -109,18 +119,28 @@ void SetBaseTime(struct Hdr_blk *hdr)
     else
       StartFlight.tm_sec += 14;
 
-  BaseTime = timegm(&StartFlight);
+  if (cfg.isADS3())	// We don't support BaseTime anymore.
+    return;
+
+  time_t BaseTime = timegm(&StartFlight);
   ncvarput1(fd, baseTimeID, NULL, (void *)&BaseTime);
 
   if (BaseTime <= 0)
-    {
+  {
     sprintf(buffer, "\nWARNING:  >>>>> base_time = %ld <<<<<\n\n", BaseTime);
     LogMessage(buffer);
-    }
+  }
 
 }	/* END SETBASETIME */
 
 static int	timeOffsetID, timeVarID;
+
+
+/* -------------------------------------------------------------------- */
+static void putGlobalAttribute(const char attrName[], const char *value)
+{
+  ncattput(fd, NC_GLOBAL, attrName, NC_CHAR, strlen(value)+1, (void *)value);
+}
 
 /* -------------------------------------------------------------------- */
 void CreateNetCDF(const char fileName[])
@@ -152,44 +172,24 @@ void CreateNetCDF(const char fileName[])
 
   /* Global Attributes.
    */
-  strcpy(buffer, "NCAR Research Aviation Facility");
-  ncattput(fd,NC_GLOBAL, "Source", NC_CHAR, strlen(buffer)+1, (void *)buffer);
-
-  strcpy(buffer, "P.O. Box 3000, Boulder, CO 80307-3000");
-  ncattput(fd,NC_GLOBAL, "Address", NC_CHAR, strlen(buffer)+1, (void *)buffer);
-
-  strcpy(buffer, "(303) 497-1030");
-  ncattput(fd,NC_GLOBAL, "Phone", NC_CHAR, strlen(buffer)+1, (void *)buffer);
-
-  strcpy(buffer, "NCAR-RAF/nimbus");
-  ncattput(fd, NC_GLOBAL, "Conventions", NC_CHAR,
-           strlen(buffer)+1, (void *)buffer);
-
-  strcpy(buffer, "http://www.eol.ucar.edu/raf/Software/netCDF.html");
-  ncattput(fd, NC_GLOBAL, "ConventionsURL", NC_CHAR,
-           strlen(buffer)+1, (void *)buffer);
-
-  strcpy(buffer, NETCDF_FORMAT_VERSION.c_str());
-  ncattput(fd, NC_GLOBAL, "Version", NC_CHAR, strlen(buffer)+1, (void *)buffer);
-
-  strcpy(buffer, &SVNREVISION[10]);
-  ncattput(fd, NC_GLOBAL, "ProcessorRevision", NC_CHAR, strlen(buffer)+1, (void *)buffer);
+  putGlobalAttribute("Source", "NCAR Research Aviation Facility");
+  putGlobalAttribute("Address", "P.O. Box 3000, Boulder, CO 80307-3000");
+  putGlobalAttribute("Phone", "(303) 497-1030");
+  putGlobalAttribute("Conventions", "NCAR-RAF/nimbus");
+  putGlobalAttribute("ConventionsURL", "http://www.eol.ucar.edu/raf/Software/netCDF.html");
+  putGlobalAttribute("Version", NETCDF_FORMAT_VERSION.c_str());
+  putGlobalAttribute("ProcessorRevision", &SVNREVISION[10]);
 
   if (strstr(SVNURL, "http"))
     strcpy(buffer, strstr(SVNURL, "http"));
   else
     strcpy(buffer, SVNURL);
 
-  ncattput(fd, NC_GLOBAL, "ProcessorURL", NC_CHAR, strlen(buffer)+1, (void *)buffer);
-
+  putGlobalAttribute("ProcessorURL", buffer);
 
   if (!cfg.ProductionRun())
-    {
-    strcpy(buffer, "This file contains PRELIMINARY DATA that are NOT to be used for critical analysis.");
-
-    ncattput(fd, NC_GLOBAL, "WARNING", NC_CHAR,
-		strlen(buffer)+1, (void *)buffer);
-    }
+    putGlobalAttribute("WARNING",
+	"This file contains PRELIMINARY DATA that are NOT to be used for critical analysis.");
 
 
   {
@@ -207,19 +207,25 @@ void CreateNetCDF(const char fileName[])
   }
 
   if (ProjectName)
-    {
-    ncattput(fd, NC_GLOBAL, "ProjectName", NC_CHAR,
-    strlen(ProjectName)+1, (void *)ProjectName);
-    }
+  {
+    ncattput(fd, NC_GLOBAL, "ProjectName", NC_CHAR, strlen(ProjectName)+1, (void *)ProjectName);
+  }
 
-  if (GetAircraft(&p) != ERR)
-    ncattput(fd, NC_GLOBAL, "Aircraft", NC_CHAR, strlen(p)+1, (void *)p);
+  extern dsm::SyncRecordReader* syncRecReader;
+  buffer[0] = '\0';
+  if (cfg.isADS2() && GetAircraft(&p) != ERR) strcpy(buffer, p);
+  if (cfg.isADS3()) strcpy(buffer, syncRecReader->getTailNumber().c_str());
+  if (strlen(buffer))
+    ncattput(fd, NC_GLOBAL, "Aircraft", NC_CHAR, strlen(buffer)+1, (void *)buffer);
 
-  if (GetProjectNumber(&p) != ERR)
-    ncattput(fd, NC_GLOBAL, "ProjectNumber", NC_CHAR, strlen(p)+1, (void *)p);
+  if (ProjectNumber)
+    ncattput(fd, NC_GLOBAL, "ProjectNumber", NC_CHAR, strlen(ProjectNumber)+1, (void *)ProjectNumber);
 
-  if (GetFlightNumber(&p) != ERR)
-    ncattput(fd, NC_GLOBAL, "FlightNumber", NC_CHAR, strlen(p)+1, (void *)p);
+  buffer[0] = '\0';
+  if (cfg.isADS2() && GetFlightNumber(&p) != ERR) strcpy(buffer, p);
+  if (cfg.isADS3()) strcpy(buffer, syncRecReader->getFlightName().c_str());
+  if (strlen(buffer))
+    ncattput(fd, NC_GLOBAL, "FlightNumber", NC_CHAR, strlen(buffer)+1, (void *)buffer);
 
   if (cfg.ProcessingMode() == Config::RealTime)
   {
@@ -252,12 +258,15 @@ void CreateNetCDF(const char fileName[])
 
 
   strcpy(buffer, "LONC LATC GGALT Time");
+if (cfg.isADS3())
+  strcpy(buffer, "GGLON GGLAT GGALT Time");
+
   ncattput(fd, NC_GLOBAL, "coordinates", NC_CHAR, strlen(buffer)+1, (void *)buffer);
 
   /* Will be updated later.
    */
-  memset(buffer, ' ', DEFAULT_TI_LENGTH);
-  ncattput(fd, NC_GLOBAL, "TimeInterval", NC_CHAR, DEFAULT_TI_LENGTH, (void *)buffer);
+  memset(buffer, ' ', DEFAULT_TI_LENGTH+1);
+  ncattput(fd, NC_GLOBAL, "TimeInterval", NC_CHAR, DEFAULT_TI_LENGTH+1, (void *)buffer);
 
 
   /* Write out Categories.
@@ -290,11 +299,14 @@ void CreateNetCDF(const char fileName[])
 
   /* Time Variables.
    */
-  baseTimeID = ncvardef(fd, "base_time", NC_LONG, 0, 0);
-  strcpy(buffer, "seconds since 1970-01-01 00:00:00 +0000");
-  ncattput(fd, baseTimeID, "units", NC_CHAR, strlen(buffer)+1, buffer);
-  strcpy(buffer, "Start time of data recording.");
-  ncattput(fd, baseTimeID, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
+  if (cfg.isADS2())  // When you remove these 2, look TimeOffset and make sure everything Jives.
+  {
+    baseTimeID = ncvardef(fd, "base_time", NC_LONG, 0, 0);
+    strcpy(buffer, "seconds since 1970-01-01 00:00:00 +0000");
+    ncattput(fd, baseTimeID, "units", NC_CHAR, strlen(buffer)+1, buffer);
+    strcpy(buffer, "Start time of data recording.");
+    ncattput(fd, baseTimeID, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
+  }
 
   timeVarID = ncvardef(fd, "Time", NC_LONG, 1, dims);
   strcpy(buffer, "time of measurement");
@@ -302,9 +314,12 @@ void CreateNetCDF(const char fileName[])
   strcpy(buffer, "time");
   ncattput(fd, timeVarID, "standard_name", NC_CHAR, strlen(buffer)+1, buffer);
 
-  timeOffsetID = ncvardef(fd, "time_offset", NC_FLOAT, 1, dims);
-  strcpy(buffer, "Seconds since base_time.");
-  ncattput(fd, timeOffsetID, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
+  if (cfg.isADS2())
+  {
+    timeOffsetID = ncvardef(fd, "time_offset", NC_FLOAT, 1, dims);
+    strcpy(buffer, "Seconds since base_time.");
+    ncattput(fd, timeOffsetID, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
+  }
 
   // Write units for both Time & time_offset.
   writeTimeUnits();
@@ -321,25 +336,25 @@ void CreateNetCDF(const char fileName[])
    *	- Set data_pointer
    */
   for (i = 0; i < sdi.size(); ++i)
-    {
+  {
     if ((sp = sdi[i])->Output == false)
       continue;
 
     // Check to see if dimension exists.  If not, create it.
     if (_rateDimIDs.find(sp->OutputRate) == _rateDimIDs.end())
-      {
+    {
       char tmp[32];
       sprintf(tmp, "sps%d", sp->OutputRate);
       _rateDimIDs[sp->OutputRate] = ncdimdef(fd, tmp, sp->OutputRate);
-      }
+    }
 
     if (sp->OutputRate == 1)
       ndims = 1;
     else
-      {
+    {
       ndims = 2;
       dims[1] = _rateDimIDs[sp->OutputRate];
-      }
+    }
 
 
     sp->varid = ncvardef(fd, sp->name, NC_FLOAT, ndims, dims);
@@ -349,10 +364,10 @@ void CreateNetCDF(const char fileName[])
     ncattput(fd, sp->varid, "SampledRate", NC_LONG, 1, &sp->SampleRate);
 
     if (cfg.TimeShifting() && sp->StaticLag != 0)
-      {
+    {
       ncattput(fd, sp->varid, "TimeLag", NC_LONG, 1, &sp->StaticLag);
       ncattput(fd, sp->varid, "TimeLagUnits", NC_CHAR, 12, "milliseconds");
-      }
+    }
 
     if (cfg.Despiking() && sp->SpikeSlope != 0.0)
       ncattput(fd, sp->varid, "DespikeSlope", NC_FLOAT, 1, &sp->SpikeSlope);
@@ -378,24 +393,23 @@ void CreateNetCDF(const char fileName[])
       data_p[indx++] = (void *)&SampledData[sp->SRstart];
     else
       data_p[indx++] = (void *)&HighRateData[sp->HRstart];
-    }
-
+  }
 
 
   /* Raw/"block probe" variables.
    */
   for (i = 0; i < raw.size(); ++i)
-    {
+  {
     if ((rp = raw[i])->Output == false)
       continue;
 
     // Check to see if dimension exists.  If not, create it.
     if (_rateDimIDs.find(rp->OutputRate) == _rateDimIDs.end())
-      {
+    {
       char tmp[32];
       sprintf(tmp, "sps%d", rp->OutputRate);
       _rateDimIDs[rp->OutputRate] = ncdimdef(fd, tmp, rp->OutputRate);
-      }
+    }
 
     dims[1] = _rateDimIDs[rp->OutputRate];
     if (rp->OutputRate == 1)
@@ -404,18 +418,18 @@ void CreateNetCDF(const char fileName[])
       ndims = 2;
 
     if (rp->Length > 1)
-      {
+    {
       // Check to see if dimension exists.  If not, create it.
       if (_vectorDimIDs.find(rp->Length) == _vectorDimIDs.end())
-        {
+      {
         char tmp[32];
         sprintf(tmp, "Vector%d", rp->Length);
         _vectorDimIDs[rp->Length] = ncdimdef(fd, tmp, rp->Length);
-        }
+      }
 
       ndims = 3;
       dims[2] = _vectorDimIDs[rp->Length];
-      }
+    }
 
 
     rp->varid = ncvardef(fd, rp->name, NC_FLOAT, ndims, dims);
@@ -425,10 +439,10 @@ void CreateNetCDF(const char fileName[])
     ncattput(fd, rp->varid, "SampledRate", NC_LONG, 1, &rp->SampleRate);
 
     if (cfg.TimeShifting() && rp->StaticLag != 0)
-      {
+    {
       ncattput(fd, rp->varid, "TimeLag", NC_LONG, 1, &rp->StaticLag);
       ncattput(fd, rp->varid, "TimeLagUnits", NC_CHAR, 13, "milliseconds");
-      }
+    }
 
     if (cfg.Despiking() && rp->SpikeSlope != 0.0)
       ncattput(fd, rp->varid, "DespikeSlope", NC_FLOAT, 1, &rp->SpikeSlope);
@@ -441,13 +455,13 @@ void CreateNetCDF(const char fileName[])
                rp->cof.size(), &rp->cof[0]);
 
     if (rp->Modulo)
-      {
+    {
       float mod[2];
 
       mod[0] = (float)rp->Modulo->value[0];
       mod[1] = (float)rp->Modulo->value[1];
       ncattput(fd, rp->varid, "modulus_range", NC_FLOAT, 2, mod);
-      }
+    }
 
 
     if (rp->Length > 3)
@@ -462,24 +476,24 @@ void CreateNetCDF(const char fileName[])
       data_p[indx++] = (void *)&SampledData[rp->SRstart];
     else
       data_p[indx++] = (void *)&HighRateData[rp->HRstart];
-    }
+  }
 
 
 
   /* Derived variables.
    */
   for (i = 0; i < derived.size(); ++i)
-    {
+  {
     if ((dp = derived[i])->Output == false)
       continue;
 
     // Check to see if dimension exists.  If not, create it.
     if (_rateDimIDs.find(dp->OutputRate) == _rateDimIDs.end())
-      {
+    {
       char tmp[32];
       sprintf(tmp, "sps%d", dp->OutputRate);
       _rateDimIDs[dp->OutputRate] = ncdimdef(fd, tmp, dp->OutputRate);
-      }
+    }
 
     dims[1] = _rateDimIDs[dp->OutputRate];
     if (dp->OutputRate == 1)
@@ -488,7 +502,7 @@ void CreateNetCDF(const char fileName[])
       ndims = 2;
 
     if (dp->Length > 1)
-      {
+    {
       // Check to see if dimension exists.  If not, create it.
       if (_vectorDimIDs.find(dp->Length) == _vectorDimIDs.end())
         {
@@ -499,7 +513,7 @@ void CreateNetCDF(const char fileName[])
 
       ndims = 3;
       dims[2] = _vectorDimIDs[dp->Length];
-      }
+    }
 
 //printf("DER:%s\n", dp->name); fflush(stdout);
     dp->varid = ncvardef(fd, dp->name, NC_FLOAT, ndims, dims);
@@ -511,21 +525,21 @@ void CreateNetCDF(const char fileName[])
 
     sprintf(buffer, "%d", dp->ndep);
     for (j = 0; j < dp->ndep; ++j)
-      {
+    {
       strcat(buffer, " ");
       strcat(buffer, dp->depend[j]);
-      }
+    }
 
     ncattput(fd, dp->varid, "Dependencies",NC_CHAR,strlen(buffer)+1,buffer);
 
     if (dp->Modulo)
-      {
+    {
       float mod[2];
 
       mod[0] = (float)dp->Modulo->value[0];
       mod[1] = (float)dp->Modulo->value[1];
       ncattput(fd, dp->varid, "modulus_range", NC_FLOAT, 2, mod);
-      }
+    }
 
     CheckAndAddAttrs(fd, dp->varid, dp->name);
 
@@ -533,7 +547,7 @@ void CreateNetCDF(const char fileName[])
       data_p[indx++] = (void *)&AveragedData[dp->LRstart];
     else
       data_p[indx++] = (void *)&HighRateData[dp->HRstart];
-    }
+  }
 
   data_p[0] = (void *)&TimeVar;
   data_p[1] = (void *)&TimeOffset;
@@ -576,36 +590,36 @@ void WriteNetCDF()
   replaceNANwithMissingValue();
 
   if (ncrecput(fd, recordNumber, data_p) == ERR)
-    {
+  {
     if (errno == ENOSPC)
-      {
+    {
       LogMessage("Disk full, closing file.\n");
       CloseNetCDF();
       PauseFlag = true;
       PauseWhatToDo = P_QUIT;
 
       return;
-      }
+    }
 
     fprintf(stderr,
             "WriteNetCDF: ncrecput failure, RecordNumber = %ld, errno = %d\n",
             recordNumber, errno);
 
     if (++errCnt > 8)
-      {
+    {
       fprintf(stderr,
               "Too many write errors, closing file and exiting...\n");
       CloseNetCDF();
       exit(1);
-      }
     }
+  }
 
   TimeOffset += 1.0;
   ++TimeVar;
   ++recordNumber;
 
   if ( (dp = (struct missDat *)FrontQueue(missingRecords)) )
-    {
+  {
     int		hour, min, sec;
 
     hour = (int)SampledData[raw[SearchTable(raw, "HOUR")]->SRstart];
@@ -614,7 +628,7 @@ void WriteNetCDF()
 
     if (hour == dp->hour && min == dp->minute && sec == dp->second)
       WriteMissingRecords();
-    }
+  }
 
 }	/* END WRITENETCDF */
 
@@ -631,21 +645,21 @@ void WriteNetCDF_MRF()
    */
   for (size_t i = 0; i < sdi.size(); ++i)
     if ((sp = sdi[i])->Output)
-      {
+    {
       if (sp->OutputRate == sp->SampleRate)
         data_p[indx] = (void *)&SampledData[sp->SRstart];
 
       ++indx;
-      }
+    }
 
   for (size_t i = 0; i < raw.size(); ++i)
     if ((rp = raw[i])->Output)
-      {
+    {
       if (rp->OutputRate == rp->SampleRate && rp->OutputRate != (size_t)cfg.ProcessingRate())
         data_p[indx] = (void *)&SampledData[rp->SRstart];
 
       ++indx;
-      }
+    }
 
   WriteNetCDF();
 
@@ -658,10 +672,10 @@ void QueueMissingData(int h, int m, int s, int nRecords)
   static int		firstTime = true;
 
   if (firstTime)
-    {
+  {
     missingRecords = CreateQueue();
     firstTime = false;
-    }
+  }
 
   dp = new struct missDat;
 
@@ -753,14 +767,16 @@ static void WriteMissingRecords()
   DeQueue(missingRecords);
   delete [] d;
 
-}	/* WRITEMISSINGRECORDS */
+}	/* END WRITEMISSINGRECORDS */
 
 /* -------------------------------------------------------------------- */
 void SyncNetCDF()
 {
-// Can't write attribute in data mode.
-//  FormatTimeSegmentsForOutputFile(buffer);
-//  ncattput(fd, NC_GLOBAL, "TimeInterval", NC_CHAR, strlen(buffer), (void *)buffer);
+  FormatTimeSegmentsForOutputFile(buffer);
+
+  ncredef(fd);
+  putGlobalAttribute("TimeInterval", buffer);
+  ncendef(fd);
 
   ncsync(fd);
 
@@ -772,16 +788,12 @@ void CloseNetCDF()
   if (fd == ERR)
     return;
 
-  int	len;
-
+  ncredef(fd);
   writeTimeUnits();
+  ncendef(fd);
 
-  FormatTimeSegmentsForOutputFile(buffer);
+  SyncNetCDF();
 
-  if ((len = strlen(buffer) + 1) > DEFAULT_TI_LENGTH)
-    ncredef(fd);
-
-  ncattput(fd, NC_GLOBAL, "TimeInterval", NC_CHAR, len, (void *)buffer);
   ncclose(fd);
   fd = ERR;
 
@@ -1059,7 +1071,8 @@ static void writeTimeUnits()
 {
   strftime(buffer, 256, "seconds since %F %T +0000", &StartFlight);
   ncattput(fd, timeVarID, "units", NC_CHAR, strlen(buffer)+1, buffer);
-  ncattput(fd, timeOffsetID, "units", NC_CHAR, strlen(buffer)+1, buffer);
+  if (cfg.isADS2())
+    ncattput(fd, timeOffsetID, "units", NC_CHAR, strlen(buffer)+1, buffer);
 }
 
 /* -------------------------------------------------------------------- */
@@ -1093,10 +1106,10 @@ static void printDependedByList()
 
   for (size_t i = 0; i < derived.size(); ++i)
     if (derived[i]->DependedUpon & 0xf0)
-      {
+    {
       sprintf(buffer, " %s", derived[i]->name);
       LogMessage(buffer);
-      }
+    }
 
   LogMessage("\n");
 }

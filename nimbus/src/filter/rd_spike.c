@@ -22,8 +22,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 -------------------------------------------------------------------------
 */
 
-#include <cmath>
-
 #include "nimbus.h"
 #include "decode.h"
 

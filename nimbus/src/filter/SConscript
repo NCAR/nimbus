@@ -25,6 +25,7 @@ sources = Split("""
 UdpSocket.cc
 Xwin.c
 adsIO.c
+ads3IO.c
 amlibfn.c
 async.c
 average.c
@@ -42,7 +43,7 @@ despike.c
 dq.c
 error.c
 filter.c
-globals.c
+globals.cc
 hdr_decode.c
 hrloop.c
 init.c

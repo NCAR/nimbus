@@ -24,7 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 
 #include "nimbus.h"
 #include "decode.h"
-#include "pms1d.h"
+#include "/jnet/local/winds/include/pms1d.h"
 
 #define RANGE_NAME	"FRNG"
 

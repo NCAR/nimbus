@@ -17,11 +17,19 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 
 class PostgreSQL;
 
+namespace dsm
+{
+  class SyncRecordReader;
+}
+
 const NR_TYPE floatNAN = nanf("");
 const NR_TYPE MISSING_VALUE = -32767.0;
-const int MAX_COF = 10;
+const int MAX_COF = 6;
 
-char	buffer[4096];		// Generic, volatile string space
+const std::string DSMSERVER = "ac-server";
+const int DSMSERVERPORT = 30001;
+
+char	buffer[8192];		// Generic, volatile string space
 char	*ProjectDirectory, *ProjectNumber, *ProjectName, FlightNumber[12];
 
 Config cfg;	// Global configuration.
@@ -62,12 +70,17 @@ size_t	nLRfloats = 0,
 	nHRfloats = 0;	// Contains number of floats used in HighRateData.
 size_t	LITTON51_start;	// hdr_decode.c & adsIO.c
 
+dsm::SyncRecordReader* syncRecReader = 0;
+
+long (*FindFirstLogicalRecord)(char lr[], long starttime);
+long (*FindNextLogicalRecord)(char lr[], long endtime);
+
 PostgreSQL *psql;
 
 
 //***************************synthetic data varables*************************//
 
-int	timeindex[3];	// array of time
+int	timeIndex[6];	// array of time
 float	temptime;	//temporary time  holder
 int	hr,sec,mins;	// store the hours, minutes and seconds 
 SyntheticData sd;

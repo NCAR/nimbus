@@ -15,11 +15,11 @@ Config::Config()
   SetProductionRun(false);
   SetDespiking(true);
   SetTimeShifting(true);
-  SetQCenabled(false);
+  SetQCenabled(false);		// Currently not implemented.
   SetProcessingMode(PostProcessing);
   SetOutputNetCDF(true);
-  SetOutputSQL(true);
-  SetTransmitToGround(false);
+  SetOutputSQL(false);		// Currently real-time only.
+  SetTransmitToGround(false);	// real-time only.
   SetAsyncFileEnabled(false);
   SetLoadProductionSetup(true);
   SetHoneyWellCleanup(true);

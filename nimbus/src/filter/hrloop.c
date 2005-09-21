@@ -105,10 +105,10 @@ int HighRateLoop(long starttime, long endtime)
 
   for (int i = 0; i < NLRBUFFERS-1; ++i)
     {
-    if ((nBytes = FindNextLogicalRecord(ADSrecord, endtime)) <= 0)
+    if ((nBytes = (*FindNextLogicalRecord)(ADSrecord, endtime)) <= 0)
       goto exit;
 
-    if (CheckForTimeGap((Hdr_blk *)ADSrecord, false) == GAP_FOUND)
+    if (CheckForTimeGap(ADSrecord, false) == GAP_FOUND)
       goto exit;
 
     SampledData = (NR_TYPE *)AddToCircularBuffer(LRCB);
@@ -120,10 +120,10 @@ int HighRateLoop(long starttime, long endtime)
    */
   for (int i = 0; i < NPSBUFFERS-1; ++i)
     {
-    if ((nBytes = FindNextLogicalRecord(ADSrecord, endtime)) <= 0)
+    if ((nBytes = (*FindNextLogicalRecord)(ADSrecord, endtime)) <= 0)
       goto exit;
 
-    if (CheckForTimeGap((Hdr_blk *)ADSrecord, false) == GAP_FOUND)
+    if (CheckForTimeGap(ADSrecord, false) == GAP_FOUND)
       goto exit;
 
     SampledData = (NR_TYPE *)AddToCircularBuffer(LRCB);
@@ -136,15 +136,12 @@ int HighRateLoop(long starttime, long endtime)
     PhaseShift(LRCB, LRINDEX, ps_data, hrt_data);
     }
 
- timeindex[0] = raw[SearchTable(raw, "HOUR")]->SRstart;
- timeindex[1] = raw[SearchTable(raw, "MINUTE")]->SRstart;
- timeindex[2] = raw[SearchTable(raw, "SECOND")]->SRstart;
 
   /* This is the main control loop.
    */
-  while ((nBytes = FindNextLogicalRecord(ADSrecord, endtime)) > 0)
+  while ((nBytes = (*FindNextLogicalRecord)(ADSrecord, endtime)) > 0)
     {
-    if (CheckForTimeGap((Hdr_blk *)ADSrecord, false) == GAP_FOUND)
+    if (CheckForTimeGap(ADSrecord, false) == GAP_FOUND)
       break;
 
     SampledData = (NR_TYPE *)AddToCircularBuffer(LRCB);
@@ -167,9 +164,9 @@ int HighRateLoop(long starttime, long endtime)
       {
       int	hr, mins, sec;
 
-      hr = (int)SampledData[timeindex[0]];
-      mins = (int)SampledData[timeindex[1]];
-      sec = (int)SampledData[timeindex[2]];
+      hr = (int)SampledData[timeIndex[0]];
+      mins = (int)SampledData[timeIndex[1]];
+      sec = (int)SampledData[timeIndex[2]];
 
       float temptime=(hr*3600)+(mins*60)+sec;
 

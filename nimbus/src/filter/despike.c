@@ -23,8 +23,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2005
 #include "decode.h"
 #include "circbuff.h"
 
-#include <cmath>
-
 static std::vector<SDITBL *> sdi_spike;
 static std::vector<RAWTBL *> raw_spike;
 static std::vector<size_t>   nSpikesSDI, nSpikesRAW;

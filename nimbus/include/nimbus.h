@@ -185,7 +185,7 @@ extern bool	PauseFlag, SynthData;
 extern int	FlightNumberInt, PauseWhatToDo, Mode;
 extern char	buffer[];
 
-extern int timeindex[3];
+extern int timeIndex[];
 extern bool SDF;
 extern bool SDC;
 extern bool SDP;
@@ -196,7 +196,7 @@ FILE	*OpenProjectFile(const char filename[], const char mode[], int action);
 
 int	AccessProjectFile(const char filename[], const char mode[]),
 	ReadTextFile(const char filename[], char **list),
-	CheckForTimeGap(struct Hdr_blk *ADShdr, int initMode);
+	CheckForTimeGap(void *ADShdr, int initMode);
 
 
 struct var_match_name
@@ -268,7 +268,7 @@ void	SortTable(char **table, int beg, int end),
 	ProcessArgv(int argc, char **argv),
 	LogMessage(const char msg[]),
 	AddProbeToList(const char name[], unsigned long type),
-	SetBaseTime(struct Hdr_blk *hdr),
+	SetBaseTime(const void *hdr),
 	BlankOutBadData(),
 	GetDataDirectory(char buff[]),
         FlushXEvents();
