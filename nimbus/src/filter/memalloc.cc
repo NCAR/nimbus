@@ -1,6 +1,6 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:	memalloc.c
+OBJECT NAME:	memalloc.cc
 
 FULL NAME:	Memory Allocation
 
@@ -116,7 +116,7 @@ void AllocateDataArrays()
 
   ArraysInitialized = true;
 
-}	/* END ALLOCATEDATAARRAYS */
+}	// END ALLOCATEDATAARRAYS
 
 /* -------------------------------------------------------------------- */
 void FreeDataArrays()
@@ -140,6 +140,6 @@ void FreeDataArrays()
 
   ArraysInitialized = false;
 
-}	/* END FREEDATAARRAYS */
+}	// END FREEDATAARRAYS
 
-/* END MEMALLOC.C */
+// END MEMALLOC.CC

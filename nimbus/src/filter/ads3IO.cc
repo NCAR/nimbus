@@ -1,6 +1,6 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:	ads3IO.c
+OBJECT NAME:	ads3IO.cc
 
 FULL NAME:	ADS3 Record IO routines
 

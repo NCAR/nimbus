@@ -25,7 +25,7 @@ sources = Split("""
 UdpSocket.cc
 Xwin.c
 adsIO.c
-ads3IO.c
+ads3IO.cc
 amlibfn.c
 async.c
 average.c
@@ -52,7 +52,7 @@ interp.c
 log.c
 logfile.c
 lrloop.c
-memalloc.c
+memalloc.cc
 netcdf.c
 nimbus.c
 order.c
