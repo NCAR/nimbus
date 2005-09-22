@@ -222,6 +222,7 @@ void CreateNetCDF(const char fileName[])
   {
     time_t	x = time(NULL);
     gmtime_r(&x, &StartFlight);
+    StartFlight.tm_mon += 1;
     StartFlight.tm_year += 1900;  /* will be subtracted off later	*/
     sprintf(buffer, "%02d/%02d/%04d", StartFlight.tm_mon, StartFlight.tm_mday, StartFlight.tm_year);
     p = "UTC";
