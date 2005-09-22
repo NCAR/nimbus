@@ -50,7 +50,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 
 static const std::string NETCDF_FORMAT_VERSION = "1.3";
 
-#define DEFAULT_TI_LENGTH	(19 * MAX_TIME_SLICES)
+static const int DEFAULT_TI_LENGTH = 17;
 
 struct missDat	/* (Time gap) / (missing data) information */
   {
@@ -60,14 +60,17 @@ struct missDat	/* (Time gap) / (missing data) information */
   size_t	nRecords;
   } ;
 
-static int		fd = -1;
-static int		baseTimeID;
-static struct tm	StartFlight;
-static void		*data_p[MAX_VARIABLES];
-static long		recordNumber = 0;
-static long		TimeVar = 0;
-static float		TimeOffset = 0.0;
-static const int	startVarIndx = 2;
+static int	fd = -1;
+static struct tm StartFlight;
+static void	*data_p[MAX_VARIABLES];	// Data pointers to pass into ncrecput()
+static long	recordNumber = 0;
+static long	TimeVar = 0;
+static int	startVarIndx = 0;
+
+// To be depracated.
+static int	baseTimeID;
+static float	TimeOffset = 0.0;
+
 
 static Queue	*missingRecords;
 static void	WriteMissingRecords();
@@ -76,7 +79,7 @@ extern NR_TYPE	*SampledData, *AveragedData, *HighRateData;
 extern FILE	*LogFile;
 
 int	FlightDate[3];		// HACK: for amlib
-char	dateProcessed[64];	// For export to psql.c
+char	dateProcessed[64];	// For export to psql.cc
 
 
 static int	writeBlank(int varid, long start[], long count[], int OutputRate);
@@ -145,16 +148,7 @@ static void putGlobalAttribute(const char attrName[], const char *value)
 /* -------------------------------------------------------------------- */
 void CreateNetCDF(const char fileName[])
 {
-  size_t	i, j;
-  int		indx, catIdx;
-  SDITBL	*sp;
-  RAWTBL	*rp;
-  DERTBL	*dp;
-
-  int	ndims, dims[3], TimeDim;
-
   char	*p;
-
 
   fd = nccreate(fileName, NC_CLOBBER);
 
@@ -166,7 +160,7 @@ void CreateNetCDF(const char fileName[])
 
   /* Dimensions.
    */
-  TimeDim = ncdimdef(fd, "Time", NC_UNLIMITED);
+  int TimeDim = ncdimdef(fd, "Time", NC_UNLIMITED);
   _rateDimIDs[1] = ncdimdef(fd, "sps1", 1);
 
 
@@ -199,39 +193,37 @@ void CreateNetCDF(const char fileName[])
   t = time(0);
   tm = *localtime(&t);
   strftime(dateProcessed, 64, "%F %T %z", &tm);
-  ncattput(fd, NC_GLOBAL, "DateProcessed", NC_CHAR,
-	  strlen(dateProcessed)+1, (void *)dateProcessed);
+  putGlobalAttribute("DateProcessed", dateProcessed);
 
   if (LogFile)
     fprintf(LogFile, "Processed on: %s\n", dateProcessed);
   }
 
   if (ProjectName)
-  {
-    ncattput(fd, NC_GLOBAL, "ProjectName", NC_CHAR, strlen(ProjectName)+1, (void *)ProjectName);
-  }
+    putGlobalAttribute("ProjectName", ProjectName);
 
   extern dsm::SyncRecordReader* syncRecReader;
   buffer[0] = '\0';
   if (cfg.isADS2() && GetAircraft(&p) != ERR) strcpy(buffer, p);
   if (cfg.isADS3()) strcpy(buffer, syncRecReader->getTailNumber().c_str());
   if (strlen(buffer))
-    ncattput(fd, NC_GLOBAL, "Aircraft", NC_CHAR, strlen(buffer)+1, (void *)buffer);
+    putGlobalAttribute("Aircraft", buffer);
 
   if (ProjectNumber)
-    ncattput(fd, NC_GLOBAL, "ProjectNumber", NC_CHAR, strlen(ProjectNumber)+1, (void *)ProjectNumber);
+    putGlobalAttribute("ProjectNumber", ProjectNumber);
 
   buffer[0] = '\0';
   if (cfg.isADS2() && GetFlightNumber(&p) != ERR) strcpy(buffer, p);
   if (cfg.isADS3()) strcpy(buffer, syncRecReader->getFlightName().c_str());
   if (strlen(buffer))
-    ncattput(fd, NC_GLOBAL, "FlightNumber", NC_CHAR, strlen(buffer)+1, (void *)buffer);
+    putGlobalAttribute("FlightNumber", buffer);
 
   if (cfg.ProcessingMode() == Config::RealTime)
   {
     time_t	x = time(NULL);
     gmtime_r(&x, &StartFlight);
     StartFlight.tm_year += 1900;  /* will be subtracted off later	*/
+    sprintf(buffer, "%02d/%02d/%04d", StartFlight.tm_mon, StartFlight.tm_mday, StartFlight.tm_year);
     p = "UTC";
   }
   else
@@ -251,22 +243,25 @@ void CreateNetCDF(const char fileName[])
   StartFlight.tm_year -= 1900;
   StartFlight.tm_mon -= 1;
 
-  ncattput(fd, NC_GLOBAL, "FlightDate", NC_CHAR, strlen(buffer)+1, (void *)buffer);
+  putGlobalAttribute("FlightDate", buffer);
 
   if (LogFile)
     fprintf(LogFile, "Flight Date: %s\n", buffer);
 
 
+  /// @todo get from a config file.
   strcpy(buffer, "LONC LATC GGALT Time");
-if (cfg.isADS3())
+
+if (cfg.isADS3()) // Temporary.
   strcpy(buffer, "GGLON GGLAT GGALT Time");
 
-  ncattput(fd, NC_GLOBAL, "coordinates", NC_CHAR, strlen(buffer)+1, (void *)buffer);
+  putGlobalAttribute("coordinates", buffer);
 
   /* Will be updated later.
    */
-  memset(buffer, ' ', DEFAULT_TI_LENGTH+1);
-  ncattput(fd, NC_GLOBAL, "TimeInterval", NC_CHAR, DEFAULT_TI_LENGTH+1, (void *)buffer);
+  memset(buffer, ' ', DEFAULT_TI_LENGTH);
+  buffer[DEFAULT_TI_LENGTH] = '\0';
+  putGlobalAttribute("TimeInterval", buffer);
 
 
   /* Write out Categories.
@@ -274,18 +269,18 @@ if (cfg.isADS3())
   {
   char *list[128];
 
-  catIdx = VarDB_GetCategoryList(list);
+  int catIdx = VarDB_GetCategoryList(list);
 
   buffer[0] = '\0';
 
-  for (i = 1; i < (size_t)catIdx; ++i)	/* Skip category "None"	*/
+  for (int i = 1; i < catIdx; ++i)	/* Skip category "None"	*/
     {
     strcat(buffer, list[i]);
     if (i != (size_t)catIdx - 1)
       strcat(buffer, ",");
     }
 
-  ncattput(fd, NC_GLOBAL, "Categories", NC_CHAR, strlen(buffer)+1, (void *)buffer);
+  putGlobalAttribute("Categories", buffer);
   }
 
 
@@ -294,7 +289,9 @@ if (cfg.isADS3())
    * Second is Rate in Hz.
    * Third is Vector Length.
    */
+  int ndims, dims[3];
   dims[0] = TimeDim;
+  int indx = 0;	// Index for data_p
 
 
   /* Time Variables.
@@ -313,13 +310,17 @@ if (cfg.isADS3())
   ncattput(fd, timeVarID, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
   strcpy(buffer, "time");
   ncattput(fd, timeVarID, "standard_name", NC_CHAR, strlen(buffer)+1, buffer);
+  data_p[indx++] = (void *)&TimeVar;
 
   if (cfg.isADS2())
   {
     timeOffsetID = ncvardef(fd, "time_offset", NC_FLOAT, 1, dims);
     strcpy(buffer, "Seconds since base_time.");
     ncattput(fd, timeOffsetID, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
+    data_p[indx++] = (void *)&TimeOffset;
   }
+
+  startVarIndx = indx;
 
   // Write units for both Time & time_offset.
   writeTimeUnits();
@@ -327,7 +328,6 @@ if (cfg.isADS3())
 
   /* SDI variables.
    */
-  indx = startVarIndx;	/* Index for data_p	*/
 
   /* For each variable:
    *	- Set dimensions
@@ -335,8 +335,9 @@ if (cfg.isADS3())
    *	- Set attributes
    *	- Set data_pointer
    */
-  for (i = 0; i < sdi.size(); ++i)
+  for (size_t i = 0; i < sdi.size(); ++i)
   {
+    SDITBL *sp;
     if ((sp = sdi[i])->Output == false)
       continue;
 
@@ -398,8 +399,9 @@ if (cfg.isADS3())
 
   /* Raw/"block probe" variables.
    */
-  for (i = 0; i < raw.size(); ++i)
+  for (size_t i = 0; i < raw.size(); ++i)
   {
+    RAWTBL *rp;
     if ((rp = raw[i])->Output == false)
       continue;
 
@@ -482,8 +484,9 @@ if (cfg.isADS3())
 
   /* Derived variables.
    */
-  for (i = 0; i < derived.size(); ++i)
+  for (size_t i = 0; i < derived.size(); ++i)
   {
+    DERTBL *dp;
     if ((dp = derived[i])->Output == false)
       continue;
 
@@ -524,7 +527,7 @@ if (cfg.isADS3())
 		dp->DataQuality);
 
     sprintf(buffer, "%d", dp->ndep);
-    for (j = 0; j < dp->ndep; ++j)
+    for (size_t j = 0; j < dp->ndep; ++j)
     {
       strcat(buffer, " ");
       strcat(buffer, dp->depend[j]);
@@ -548,9 +551,6 @@ if (cfg.isADS3())
     else
       data_p[indx++] = (void *)&HighRateData[dp->HRstart];
   }
-
-  data_p[0] = (void *)&TimeVar;
-  data_p[1] = (void *)&TimeOffset;
 
   ncendef(fd);
 
@@ -620,7 +620,7 @@ void WriteNetCDF()
 
   if ( (dp = (struct missDat *)FrontQueue(missingRecords)) )
   {
-    int		hour, min, sec;
+    int hour, min, sec;
 
     hour = (int)SampledData[raw[SearchTable(raw, "HOUR")]->SRstart];
     min = (int)SampledData[raw[SearchTable(raw, "MINUTE")]->SRstart];
@@ -695,20 +695,21 @@ void QueueMissingData(int h, int m, int s, int nRecords)
 static void WriteMissingRecords()
 {
   size_t	i;
-  int		indx = startVarIndx;
   NR_TYPE	*d, hour, minute, second;
   void		*ldp[MAX_VARIABLES];
   struct missDat	*dp;
 
   dp = (struct missDat *)FrontQueue(missingRecords);
-  d = new float[2500];
-  /* 1000 is fastest sampling rate */
+  d = new float[5000];
+  /* 5000 is fastest sampling rate */
 
-  for (i = 0; i < 2500; ++i)
+  for (i = 0; i < 5000; ++i)
     d[i] = MISSING_VALUE;
 
-  ldp[0] = (void *)&TimeVar;
-  ldp[1] = (void *)&TimeOffset;
+  int indx = 0;
+  ldp[indx++] = (void *)&TimeVar;
+  if (cfg.isADS2())
+    ldp[indx++] = (void *)&TimeOffset;
 
   for (i = 0; i < sdi.size(); ++i)
     if (sdi[i]->Output)
@@ -1118,12 +1119,26 @@ static void printDependedByList()
 static void addCommonVariableAttributes(char name[], int varid)
 {
   char *p;
+  const dsm::SyncRecordVariable* var = 0;
+  extern dsm::SyncRecordReader* syncRecReader;
+
+  if (cfg.isADS3())
+    var = syncRecReader->getVariable(name);
 
   ncattput(fd, varid, "_FillValue", NC_FLOAT, 1, &MISSING_VALUE);
-  p = VarDB_GetUnits(name);
-  ncattput(fd, varid, "units", NC_CHAR, strlen(p)+1, p);
-  p = VarDB_GetTitle(name);
-  ncattput(fd, varid, "long_name", NC_CHAR, strlen(p)+1, p);
+
+  if (var)
+    strcpy(buffer, var->getUnits().c_str());
+  else
+    strcpy(buffer, VarDB_GetUnits(name));
+  ncattput(fd, varid, "units", NC_CHAR, strlen(buffer)+1, buffer);
+
+  if (var)
+    strcpy(buffer, var->getLongName().c_str());
+  else
+    strcpy(buffer, VarDB_GetTitle(name));
+
+  ncattput(fd, varid, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
 
   if (fabs(VarDB_GetMinLimit(name)) + fabs(VarDB_GetMaxLimit(name)) > 0.0001)
   {
