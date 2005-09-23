@@ -85,7 +85,7 @@ char	dateProcessed[64];	// For export to psql.cc
 static int	writeBlank(int varid, long start[], long count[], int OutputRate);
 static void	markDependedByList(char target[]), writeTimeUnits();
 static void	clearDependedByList(), printDependedByList();
-static void	addCommonVariableAttributes(char name[], int varid);
+static void	addCommonVariableAttributes(var_base *var);
 
 void	AddPMS1dAttrs(int ncid, RAWTBL *rp),
 	CheckAndAddAttrs(int fd, int varid, char name[]);
@@ -146,10 +146,14 @@ static void putGlobalAttribute(const char attrName[], const char *value)
 }
 
 /* -------------------------------------------------------------------- */
+static void putGlobalAttribute(const char attrName[], const std::string value)
+{
+  putGlobalAttribute(attrName, value.c_str());
+}
+
+/* -------------------------------------------------------------------- */
 void CreateNetCDF(const char fileName[])
 {
-  char	*p;
-
   fd = nccreate(fileName, NC_CLOBBER);
 
   if (cfg.ProductionRun())
@@ -199,24 +203,10 @@ void CreateNetCDF(const char fileName[])
     fprintf(LogFile, "Processed on: %s\n", dateProcessed);
   }
 
-  if (ProjectName)
-    putGlobalAttribute("ProjectName", ProjectName);
-
-  extern dsm::SyncRecordReader* syncRecReader;
-  buffer[0] = '\0';
-  if (cfg.isADS2() && GetAircraft(&p) != ERR) strcpy(buffer, p);
-  if (cfg.isADS3()) strcpy(buffer, syncRecReader->getTailNumber().c_str());
-  if (strlen(buffer))
-    putGlobalAttribute("Aircraft", buffer);
-
-  if (ProjectNumber)
-    putGlobalAttribute("ProjectNumber", ProjectNumber);
-
-  buffer[0] = '\0';
-  if (cfg.isADS2() && GetFlightNumber(&p) != ERR) strcpy(buffer, p);
-  if (cfg.isADS3()) strcpy(buffer, syncRecReader->getFlightName().c_str());
-  if (strlen(buffer))
-    putGlobalAttribute("FlightNumber", buffer);
+  putGlobalAttribute("ProjectName", cfg.ProjectName());
+  putGlobalAttribute("Aircraft", cfg.Platform());
+  putGlobalAttribute("ProjectNumber", cfg.ProjectNumber());
+  putGlobalAttribute("FlightNumber", cfg.FlightNumber());
 
   if (cfg.ProcessingMode() == Config::RealTime)
   {
@@ -225,16 +215,12 @@ void CreateNetCDF(const char fileName[])
     StartFlight.tm_mon += 1;
     StartFlight.tm_year += 1900;  /* will be subtracted off later	*/
     sprintf(buffer, "%02d/%02d/%04d", StartFlight.tm_mon, StartFlight.tm_mday, StartFlight.tm_year);
-    p = "UTC";
   }
   else
   {
-    GetHeaderDate(&p);
-
-    sscanf(p, "%d/%d/%d", &StartFlight.tm_mon, &StartFlight.tm_mday, &StartFlight.tm_year);
-    strcpy(buffer, p);
-
-    GetTimeZone(&p);
+    strcpy(buffer, cfg.FlightDate().c_str());
+    if (cfg.FlightDate().size() > 0)
+      sscanf(buffer, "%d/%d/%d", &StartFlight.tm_mon, &StartFlight.tm_mday, &StartFlight.tm_year);
   }
 
   FlightDate[0] = StartFlight.tm_mon;  /* HACK: for amlib/xlate/time.c */
@@ -249,14 +235,7 @@ void CreateNetCDF(const char fileName[])
   if (LogFile)
     fprintf(LogFile, "Flight Date: %s\n", buffer);
 
-
-  /// @todo get from a config file.
-  strcpy(buffer, "LONC LATC GGALT Time");
-
-if (cfg.isADS3()) // Temporary.
-  strcpy(buffer, "GGLON GGLAT GGALT Time");
-
-  putGlobalAttribute("coordinates", buffer);
+  putGlobalAttribute("coordinates", cfg.CoordinateVariables());
 
   /* Will be updated later.
    */
@@ -277,7 +256,7 @@ if (cfg.isADS3()) // Temporary.
   for (int i = 1; i < catIdx; ++i)	/* Skip category "None"	*/
     {
     strcat(buffer, list[i]);
-    if (i != (size_t)catIdx - 1)
+    if (i != catIdx - 1)
       strcat(buffer, ",");
     }
 
@@ -361,7 +340,7 @@ if (cfg.isADS3()) // Temporary.
 
     sp->varid = ncvardef(fd, sp->name, NC_FLOAT, ndims, dims);
 
-    addCommonVariableAttributes(sp->name, sp->varid);
+    addCommonVariableAttributes(sp);
 
     ncattput(fd, sp->varid, "SampledRate", NC_LONG, 1, &sp->SampleRate);
 
@@ -437,7 +416,7 @@ if (cfg.isADS3()) // Temporary.
 
     rp->varid = ncvardef(fd, rp->name, NC_FLOAT, ndims, dims);
 
-    addCommonVariableAttributes(rp->name, rp->varid);
+    addCommonVariableAttributes(rp);
 
     ncattput(fd, rp->varid, "SampledRate", NC_LONG, 1, &rp->SampleRate);
 
@@ -522,7 +501,7 @@ if (cfg.isADS3()) // Temporary.
 //printf("DER:%s\n", dp->name); fflush(stdout);
     dp->varid = ncvardef(fd, dp->name, NC_FLOAT, ndims, dims);
 
-    addCommonVariableAttributes(dp->name, dp->varid);
+    addCommonVariableAttributes(dp);
 
     ncattput(fd, dp->varid, "DataQuality", NC_CHAR, strlen(dp->DataQuality)+1,
 		dp->DataQuality);
@@ -817,7 +796,7 @@ void BlankOutBadData()
   /* Come through as a second pass after all processing has been done, and
    * replace "bad" segments with MISSING_VALUE.
    */
-  sprintf(buffer, "%s.%s", BLANKVARS, FlightNumber);
+  sprintf(buffer, "%s.%s", BLANKVARS, cfg.FlightNumber().c_str());
   ReadTextFile(buffer, blanks);
 
   /* Acquire file start & end times. */
@@ -1117,47 +1096,40 @@ static void printDependedByList()
 }
 
 /* -------------------------------------------------------------------- */
-static void addCommonVariableAttributes(char name[], int varid)
+static void addCommonVariableAttributes(var_base *var)
 {
   char *p;
-  const dsm::SyncRecordVariable* var = 0;
-  extern dsm::SyncRecordReader* syncRecReader;
 
-  if (cfg.isADS3())
-    var = syncRecReader->getVariable(name);
+  ncattput(fd, var->varid, "_FillValue", NC_FLOAT, 1, &MISSING_VALUE);
 
-  ncattput(fd, varid, "_FillValue", NC_FLOAT, 1, &MISSING_VALUE);
+  strcpy(buffer, var->Units.c_str());
+  ncattput(fd, var->varid, "units", NC_CHAR, strlen(buffer)+1, buffer);
 
-  if (var)
-    strcpy(buffer, var->getUnits().c_str());
-  else
-    strcpy(buffer, VarDB_GetUnits(name));
-  ncattput(fd, varid, "units", NC_CHAR, strlen(buffer)+1, buffer);
+  strcpy(buffer, var->LongName.c_str());
+  ncattput(fd, var->varid, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
 
-  if (var)
-    strcpy(buffer, var->getLongName().c_str());
-  else
-    strcpy(buffer, VarDB_GetTitle(name));
-
-  ncattput(fd, varid, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
-
-  if (fabs(VarDB_GetMinLimit(name)) + fabs(VarDB_GetMaxLimit(name)) > 0.0001)
+  if (fabs(VarDB_GetMinLimit(var->name)) + fabs(VarDB_GetMaxLimit(var->name)) > 0.0001)
   {
     NR_TYPE   range[2];
 
-    range[0] = VarDB_GetMinLimit(name);
-    range[1] = VarDB_GetMaxLimit(name);
-    ncattput(fd, varid, "valid_range", NC_FLOAT, 2, range);
+    range[0] = VarDB_GetMinLimit(var->name);
+    range[1] = VarDB_GetMaxLimit(var->name);
+    ncattput(fd, var->varid, "valid_range", NC_FLOAT, 2, range);
   }
 
-  p = VarDB_GetCategoryName(name);
-  ncattput(fd, varid, "Category", NC_CHAR, strlen(p)+1, p);
+  if (var->CategoryList.size() > 0)
+  {
+    char temp[32];
+    strcpy(temp, var->CategoryList[0].c_str());
+    if ( strcmp(temp, "None") )
+      ncattput(fd, var->varid, "Category", NC_CHAR, strlen(temp)+1, temp);
+  }
 
-  p = VarDB_GetStandardNameName(name);
+  p = VarDB_GetStandardNameName(var->name);
   if (p && strcmp(p, "None") != 0)
-    ncattput(fd, varid, "standard_name", NC_CHAR, strlen(p)+1, p);
+    ncattput(fd, var->varid, "standard_name", NC_CHAR, strlen(p)+1, p);
 
-  ncattput(fd, varid, "missing_value", NC_FLOAT, 1, &MISSING_VALUE);
+  ncattput(fd, var->varid, "missing_value", NC_FLOAT, 1, &MISSING_VALUE);
 
 }	/* END ADDCOMMONVARIABLEATTRIBUTES */
 

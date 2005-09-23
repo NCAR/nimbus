@@ -105,7 +105,6 @@ void CancelSetup(Widget w, XtPointer client, XtPointer call)
 
   FreeDataArrays();
   ReleaseFlightHeader();
-  delete [] ProjectName;
 
 
   DismissEditWindow(NULL, NULL, NULL);
@@ -179,6 +178,9 @@ static void readHeader()
   XmUpdateDisplay(Shell001);
   LogMessage(SVNREVISION);
 
+  if (cfg.ProductionRun())
+    OpenLogFile();
+
   int rc = ERR;
 
   if (cfg.isADS2())
@@ -187,27 +189,14 @@ static void readHeader()
   if (cfg.isADS3())
     rc = DecodeHeader3(ADSfileName);
 
-  if (rc == ERR) {
+  if (rc == ERR)
+  {
     CancelSetup(NULL, NULL, NULL);
     return;
-    }
+  }
 
   if (FlightNumberInt == 0)
     HandleWarning("Flight Number is 0, a new one may be entered\nvia the 'Edit/Flight Info' menu item,\nor run fixFltNum on the ADS image and start nimbus again.", NULL, NULL);
-
-  if (cfg.ProductionRun())
-    OpenLogFile();
-
-  sprintf(buffer, VARDB, ProjectDirectory, ProjectNumber);
-  if (InitializeVarDB(buffer) == ERR) {
-    LogMessage("InitializeVarDB for project specific failed, trying master file.\n");
-
-    sprintf(buffer, VARDB, ProjectDirectory, "defaults");
-    if (InitializeVarDB(buffer) == ERR) {
-      fprintf(stderr, "InitializeVarDB for master file failed, this is fatal.\n");
-      exit(1);
-      }
-    }
 
   if (cfg.Interactive())
     {
@@ -217,7 +206,7 @@ static void readHeader()
     FillListWidget();
 
     sprintf(buffer, "%s - %s, Flight %s",
-		ProjectName, ProjectNumber, FlightNumber);
+	cfg.ProjectName().c_str(), cfg.ProjectNumber().c_str(), cfg.FlightNumber().c_str());
 
     XtSetArg(args[0], XmNtitle, buffer);
     XtSetValues(Shell001, args, 1);
@@ -242,32 +231,13 @@ static void readHeader()
       SetHighRate(NULL, NULL, NULL);
 
     sprintf(buffer, "%s - %s, Flight %s\n",
-		ProjectName, ProjectNumber, FlightNumber);
+	cfg.ProjectName().c_str(), cfg.ProjectNumber().c_str(), cfg.FlightNumber().c_str());
 
     LogMessage(buffer);
 
     checkForProductionSetup();
     LoadSetup_OK(Shell001, NULL, NULL); /* Fake it with any widget name */
     }
-
-  /* Scan VarDB for any non-existent variables.
-   */
-{
-  FILE	*ofp = LogFile ? LogFile : stderr;
-  size_t	i;
-
-  for (i = 0; i < sdi.size(); ++i)
-    if (VarDB_lookup(sdi[i]->name) == ERR)
-      fprintf(ofp, "%s has no description or units.\n", sdi[i]->name);
-
-  for (i = 0; i < raw.size(); ++i)
-    if (VarDB_lookup(raw[i]->name) == ERR)
-      fprintf(ofp, "%s has no description or units.\n", raw[i]->name);
-
-  for (i = 0; i < derived.size(); ++i)
-    if (VarDB_lookup(derived[i]->name) == ERR)
-      fprintf(ofp, "%s has no description or units.\n", derived[i]->name);
-}
 
 }	/* END READHEADER */
 
@@ -546,7 +516,7 @@ static void checkForProductionSetup()
       if (atoi(group[i]) == FlightNumberInt)
         {
         sprintf(buffer, "%s/%s/Production/Flight_%d", ProjectDirectory,
-		ProjectNumber, atoi(strrchr(group[i], '=')+1));
+		cfg.ProjectNumber().c_str(), atoi(strrchr(group[i], '=')+1));
 
         LoadSetup_OK(NULL, NULL, NULL);
 
@@ -555,10 +525,10 @@ static void checkForProductionSetup()
       }
     else
       {
-      if (strncmp(group[i], FlightNumber, 4) == 0)
+      if (strncmp(group[i], &cfg.FlightNumber()[0], 4) == 0)
         {
         sprintf(buffer, "%s/%s/Production/Flight_%s", ProjectDirectory,
-		ProjectNumber, strrchr(group[i], '=')+2);
+		cfg.ProjectNumber().c_str(), strrchr(group[i], '=')+2);
 
         LoadSetup_OK(NULL, NULL, NULL);
 
@@ -574,10 +544,10 @@ static void checkForProductionSetup()
    */
   if (!revision2)
     sprintf(buffer, "%s/%s/Production/Flight_%d",
-		ProjectDirectory, ProjectNumber, FlightNumberInt);
+		ProjectDirectory, cfg.ProjectNumber().c_str(), FlightNumberInt);
   else
     sprintf(buffer, "%s/%s/Production/Flight_%s",
-		ProjectDirectory, ProjectNumber, FlightNumber);
+		ProjectDirectory, cfg.ProjectNumber().c_str(), cfg.FlightNumber().c_str());
 
   LoadSetup_OK(NULL, NULL, NULL);
 
@@ -588,12 +558,12 @@ void SaveSetup(Widget w, XtPointer client, XtPointer call)
 {
   if (cfg.ProductionRun())
     {
-    sprintf(buffer, "%s/%s/Production", ProjectDirectory, ProjectNumber);
+    sprintf(buffer, "%s/%s/Production", ProjectDirectory, cfg.ProjectNumber().c_str());
 
     mkdir(buffer, 0775);
 
     sprintf(buffer, "%s/%s/Production/Flight_%s",
-			ProjectDirectory, ProjectNumber, FlightNumber);
+		ProjectDirectory, cfg.ProjectNumber().c_str(), cfg.FlightNumber().c_str());
 
     SaveSetup_OK(NULL, NULL, NULL);
     }
@@ -889,7 +859,7 @@ static void setOutputFileName()
 
   if (cfg.ProductionRun())
     {
-    sprintf(buffer, p, ProjectNumber, FlightNumber);
+    sprintf(buffer, p, cfg.ProjectNumber().c_str(), cfg.FlightNumber().c_str());
     strcat(OutputFileName, buffer);
     }
   else
@@ -1025,7 +995,7 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
     }
 
 
-  fprintf(fp, "%s - %s, Flight %s\n\n", ProjectName, ProjectNumber, FlightNumber);
+  fprintf(fp, "%s - %s, Flight %s\n\n", cfg.ProjectName().c_str(), cfg.ProjectNumber().c_str(), cfg.FlightNumber().c_str());
 
   fprintf(fp, "Name       Output  SR    OR     Lag   Spike Slope\n");
   fprintf(fp, "--------------------------------------------------------------------------------\n");

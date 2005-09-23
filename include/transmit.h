@@ -42,6 +42,8 @@ public:
   size_t
   timeInterval() const { return _timeInterval; }
 
+  bool
+  oneCommandLeft() const { return (_timeInterval - _counter) == 0; }
 
 protected:
   std::string _q;
@@ -57,6 +59,10 @@ protected:
    */
   size_t _counter;
 
+  /**
+   * Total running count of transmitted strings.  Used to build the
+   * file name sequence counter.
+   */
   size_t _packetCounter;
 };
 

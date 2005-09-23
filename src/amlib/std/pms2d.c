@@ -89,7 +89,7 @@ void sTwodInit(RAWTBL *varp)
   for (i = 0; i < MAX_PMS2D; ++i)
     reff23[i] = reff22[i] = 0.0;
 
-  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, ProjectNumber);
+  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, cfg.ProjectNumber().c_str());
   InitPMSspecs(buffer);
 
   /* Perform twice, once for 1DC, and again for 2DC.
@@ -200,7 +200,7 @@ void sTwodInitH(RAWTBL *varp)
   serialNumber = varp->SerialNumber;
   probeNum = varp->ProbeCount;
 
-  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, ProjectNumber);
+  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, cfg.ProjectNumber().c_str());
   InitPMSspecs(buffer);
 
   /* Perform twice, once for 1DC, and again for 2DC.

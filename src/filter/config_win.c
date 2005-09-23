@@ -558,7 +558,7 @@ static void VerifyFlightInfo(Widget w, int indx, XtPointer call)
       for (p1 = buffer; *p1 && !isdigit(*p1); ++p1)
         ;
 
-      strcpy(FlightNumber, buffer);
+      cfg.SetFlightNumber(buffer);
       FlightNumberInt = atoi(p1);
       break;
 
@@ -653,20 +653,13 @@ void EditConfiguration(Widget w, XtPointer client, XtPointer call)
 
   if (firstTime)
     {
-    char	*p;
-
-    strcpy(FlightInfo[0].originalValue, ProjectNumber);
+    strcpy(FlightInfo[0].originalValue, cfg.ProjectNumber().c_str());
     XtSetSensitive(flightText[0], false);
 
-    GetFlightNumber(&p);
-    strcpy(FlightInfo[1].originalValue, p);
-
-    GetHeaderDate(&p);
-    strcpy(FlightInfo[2].originalValue, p);
-
-    GetAircraft(&p);
-    strcpy(FlightInfo[3].originalValue, p);
-    if (strlen(p))
+    strcpy(FlightInfo[1].originalValue, cfg.FlightNumber().c_str());
+    strcpy(FlightInfo[2].originalValue, cfg.FlightDate().c_str());
+    strcpy(FlightInfo[3].originalValue, cfg.Platform().c_str());
+    if (cfg.Platform().size() > 0)
       XtSetSensitive(flightText[3], false);
 
 /** @todo Time Slice should be saved in setup files.

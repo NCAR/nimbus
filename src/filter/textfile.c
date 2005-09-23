@@ -46,7 +46,7 @@ int ReadTextFile(const char filename[], char **list)
 
   if ((fp = OpenProjectFile(filename, "r", RETURN)) == NULL)
     {
-    sprintf(buffer, filename, ProjectDirectory, ProjectNumber);
+    sprintf(buffer, filename, ProjectDirectory, cfg.ProjectNumber().c_str());
     fprintf(stderr, "ReadTextFile: can't open %s\n", buffer);
     *list = NULL;
     return(0);

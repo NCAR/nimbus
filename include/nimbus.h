@@ -70,6 +70,11 @@ public:
   var_base(const char s[]);
 
   char name[NAMELEN];	// Variable name
+
+  std::string Units;
+  std::string LongName;
+  std::vector<std::string> CategoryList;
+
   int varid;		// NetCDF variable ID
   size_t LRstart;	// Start indx into AveragedData
   size_t SRstart;	// Start indx into SampledData
@@ -171,7 +176,7 @@ public:
 
 
 // Global Variables
-extern char	*ProjectDirectory, *ProjectNumber, *ProjectName, FlightNumber[];
+extern char	*ProjectDirectory;
 
 extern const NR_TYPE MISSING_VALUE, floatNAN;
 extern const int MAX_COF;

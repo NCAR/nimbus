@@ -39,7 +39,7 @@ FILE *OpenProjectFile(const char filename[], const char mode[], int action)
   if (filename == NULL || filename[0] == '\0')
     return(NULL);
 
-  (void)sprintf(file, filename, ProjectDirectory, ProjectNumber);
+  (void)sprintf(file, filename, ProjectDirectory, cfg.ProjectNumber().c_str());
 
   if ((fp = fopen(file, mode)) == NULL && action == EXIT)
     {
@@ -61,7 +61,7 @@ int AccessProjectFile(const char filename[], const char mode[])
   int	accessable = false;
   char	file[MAXPATHLEN];
 
-  (void)sprintf(file, filename, ProjectDirectory, ProjectNumber);
+  (void)sprintf(file, filename, ProjectDirectory, cfg.ProjectNumber().c_str());
 
   if ((fp = fopen(file, mode)) != NULL)
     {

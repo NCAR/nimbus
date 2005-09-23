@@ -37,7 +37,7 @@ static char	logFileName[256];
 void OpenLogFile()
 {
   sprintf(logFileName, "%s/%s/Production/logFile.%d",
-          ProjectDirectory, ProjectNumber, getpid());
+          ProjectDirectory, cfg.ProjectNumber().c_str(), getpid());
 
   if ((LogFile = fopen(logFileName, "w")) == NULL) {
     sprintf(buffer, "Unable to create %s\n", logFileName);
@@ -84,9 +84,9 @@ void CloseLogFile()
   LogFile = NULL;
 
   sprintf(buffer, "%s/%s/Production/logFile_%s.%s",
-          ProjectDirectory, ProjectNumber,
+          ProjectDirectory, cfg.ProjectNumber().c_str(),
           cfg.ProcessingRate() == Config::HighRate ? "HRT" : "LRT",
-          FlightNumber);
+          cfg.FlightNumber().c_str());
 
   if (rename(logFileName, buffer) == ERR)
     {

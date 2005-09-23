@@ -41,7 +41,7 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
   if (rp->ProbeType & 0xff000000 != 0x80000000)
     return;
 
-  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, ProjectNumber);
+  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, cfg.ProjectNumber().c_str());
   InitPMSspecs(buffer);
 
   fb = 0;
@@ -88,7 +88,7 @@ void AddPMS1dAttrs(int ncid, RAWTBL *rp)
   if (rp->ProbeType & 0xff000000 != 0x80000000)
     return;
 
-  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, ProjectNumber);
+  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, cfg.ProjectNumber().c_str());
   InitPMSspecs(buffer);
 
   ncattput(ncid, rp->varid, "SerialNumber", NC_CHAR,

@@ -71,10 +71,10 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
 
     if (cfg.ProductionRun())
       sprintf(buffer, "%s/%s%s.rdma", getenv("PROD_DATA"),
-			ProjectNumber, FlightNumber);
+		cfg.ProjectNumber().c_str(), cfg.FlightNumber().c_str());
     else
       sprintf(buffer, "%s/%s%s.rdma", getenv("DATA_DIR"),
-			ProjectNumber, FlightNumber);
+		cfg.ProjectNumber().c_str(), cfg.FlightNumber().c_str());
 
     if (cfg.ProcessingMode() != Config::RealTime)
       {
@@ -83,7 +83,7 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
 
 
       sprintf(buffer, "%s/%s%s.cnts.rdma", getenv("DATA_DIR"),
-			ProjectNumber, FlightNumber);
+		cfg.ProjectNumber().c_str(), cfg.FlightNumber().c_str());
 
       if ((rdmapFP = fopen(buffer, "w+")) == NULL)
         fprintf(stderr, "xlate/rdma.c: can't open %s\n", buffer);

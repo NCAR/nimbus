@@ -139,20 +139,19 @@ protected:
    * Low level add a variable with given params.
    */
   void
-  addVariableToDataBase(const std::string& name, const std::string& units,
-	const std::string& uncaled_units, const std::string& longName,
-	int sampleRate, size_t nDims, const int dims[],
-	const std::vector<float>& cals, float missingValue,
-	const std::string& dataQuality, bool beingTransmitted);
+  addVariableToDataBase(const var_base* var, 
+	const std::string& uncaled_units,
+	size_t nDims, const int dims[],
+	const std::vector<float>& cals, float missingValue);
 
   /**
    * Add a category variable-name pair to the categories table in the
    * database.  The category table is many to many.
-   * @param varName is the variable name.
-   * @param category and it's corresponding category.
+   * @param entry target string to add the SQL command to.
+   * @param var is the variable whose categories to create.
    */
   void
-  addCategory(std::string varName, std::string category);
+  addCategory(std::stringstream& entry, const var_base * var) const;
 
   /**
    * Add a varible to the list for it's Sample Rate group.  By
@@ -205,6 +204,20 @@ protected:
    */
   void
   addVectorToAllStreams(const NR_TYPE *values, int nValues, bool xmitToGround);
+
+  /**
+   * Remove any trailing spaces from the string @p s.
+   */
+  void
+  remove_trailing_spaces(std::string & s) const;
+
+  /**
+   * Build the string to update the EndTime in the Database.  This
+   * string, once submitted,  triggers a NOTIFY in the Database for
+   * clients that new data is available.
+   */
+  std::string
+  updateEndTimeString(const std::string & timeStamp, long usec) const;
 
 };	// END PGSQL.H
 

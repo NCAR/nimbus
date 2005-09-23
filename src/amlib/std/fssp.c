@@ -66,7 +66,7 @@ void cfsspInit(RAWTBL *varp)
   for (i = 0; i < MAX_FSSP; ++i)
     refff3[i] = refff2[i] = 0.0;
 
-  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, ProjectNumber);
+  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, cfg.ProjectNumber().c_str());
   InitPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {

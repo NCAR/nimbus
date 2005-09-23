@@ -44,7 +44,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include "pms.h"
 #include "nimbus.h"
 #include "decode.h"
-#include "ctape.h"	/* ADS header API		*/
+#include "ctape.h"	// ADS header API
+#include "vardb.h"	// Variable DataBase
 #include "amlib.h"
 
 #include <Socket.h>
@@ -122,7 +123,8 @@ static void add_file_to_RAWTBL(const char []), add_file_to_DERTBL(const char [])
 	add_derived_names(const char vn[]), initPMS2D(char vn[], int n),
 	initPMS2Dhouse(char vn[]), add_raw_names(const char vn[]),
 	initGreyHouse(char vn[]), initMASP(char vn[]), initPMS1Dv3(char vn[]),
-	ReadProjectName(), initRDMA(char vn[]), initCLIMET(char vn[]);
+	ReadProjectName(), initRDMA(char vn[]), initCLIMET(char vn[]),
+	openVariableDatabase(), addUnitsAndLongName(var_base *var);
 
 static std::vector<float> getCalsForADS2(const char vn[]);
 static int	check_cal_coes(int order, float *coef);
@@ -150,12 +152,14 @@ bool VarCompareLT(const var_base *x, const var_base *y)
 static void CommonInitialization()
 {
   ReadProjectName();
+  cfg.SetCoordTime("Time");
 
   if (cfg.ProductionRun())
     defaultQuality = "Good";
   else
     defaultQuality = "Preliminary";
 
+  openVariableDatabase();
 
   ReadTextFile(RAWNAMES, rawlist);
 
@@ -166,7 +170,7 @@ static void CommonInitialization()
 
   ReadDefaultsFile();
 
-  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, ProjectNumber);
+  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, cfg.ProjectNumber().c_str());
   InitPMSspecs(buffer);
 
 }
@@ -198,15 +202,17 @@ printf("DecodeHeader3\n");
 
   syncRecReader = new dsm::SyncRecordReader(iochan);
 
-//  std::string proj_name = syncRecReader->getProjectName();
-//  ProjectNumber = new char(proj_name.size()+1);
-//  strcpy(ProjectNumber, proj_name.c_str());
+  cfg.SetProjectName(syncRecReader->getProjectName());
+  cfg.SetPlatform(syncRecReader->getTailNumber());
 
-ProjectNumber = "501";
-printf("ProjectNumber = %s\n", ProjectNumber);
+cfg.SetProjectNumber("501");
+printf("ProjectNumber is hardcoded = %s\n", cfg.ProjectNumber().c_str());
 
-  std::string tail_number = syncRecReader->getTailNumber();
-  char const *p = tail_number.c_str();
+  cfg.SetCoordLAT("GGLAT");
+  cfg.SetCoordLON("GGLON");
+  cfg.SetCoordALT("GGALT");
+
+  char const *p = &cfg.Platform()[0];
 
   while (*p && !isdigit(*p))
     ++p;
@@ -238,6 +244,9 @@ printf("DecodeHeader3: adding %s, converter = %d, rate = %d\n",
       // Default real-time netCDF to SAmpleRate.
       if (cfg.ProcessingMode() == Config::RealTime)
         rp->OutputRate = rp->SampleRate;
+
+      rp->Units = var->getUnits();
+      rp->LongName = var->getLongName();
       }
     else
       {
@@ -256,6 +265,10 @@ static SDITBL* initSDI_ADS3(dsm::SyncRecordVariable* var)
 {
   SDITBL *cp = new SDITBL(var->getName().c_str());
   sdi.push_back(cp);
+
+  cp->Units = var->getUnits();
+  cp->LongName = var->getLongName();
+  cp->CategoryList.push_back("Analog");
 
   // In ADS3, we don't get a/d counts.  They give us voltages.  These are
   // not necessary.
@@ -333,6 +346,7 @@ int DecodeHeader(const char header_file[])
   HDRversion = atof(p);
 
   GetAircraft(&p);
+  cfg.SetPlatform(p);
   while (*p && !isdigit(*p))
     ++p;
   Aircraft = atoi(p);
@@ -341,17 +355,21 @@ int DecodeHeader(const char header_file[])
     Aircraft = NRL_P3;
 
   GetFlightNumber(&p);
-  strcpy(FlightNumber, p);
+  cfg.SetFlightNumber(p);
   while (*p && !isdigit(*p))
     ++p;
   FlightNumberInt = atoi(p);
 
-  GetProjectNumber(&ProjectNumber);
+  GetProjectNumber(&p);
+  cfg.SetProjectNumber(p);
 
-  sprintf(buffer, "%s/%s", ProjectDirectory, ProjectNumber);
+  GetHeaderDate(&p);
+  cfg.SetFlightDate(p);
+
+  sprintf(buffer, "%s/%s", ProjectDirectory, cfg.ProjectNumber().c_str());
   if (access(buffer, R_OK) == ERR)
     {
-    sprintf(buffer, "No project directory for %s.", ProjectNumber);
+    sprintf(buffer, "No project directory for %s.", cfg.ProjectNumber().c_str());
     HandleError(buffer);
     return(ERR);
     }
@@ -360,7 +378,7 @@ int DecodeHeader(const char header_file[])
   */
   if (Aircraft == 0)
     {
-    switch (ProjectNumber[0])
+    switch (cfg.ProjectNumber()[0])
       {
       case '2':
         Aircraft = KINGAIR;
@@ -499,6 +517,7 @@ int DecodeHeader(const char header_file[])
       AddProbeToList(item_type, probeType);
       add_raw_names(item_type);
       add_derived_names(item_type);
+      cfg.SetCoordALT("GALT");
 
       /* Force Garmin TRK & SPD to be depended upon, because of the way
        * we create GGVEW & GGVNS.
@@ -511,6 +530,8 @@ int DecodeHeader(const char header_file[])
           raw[indx]->DependedUpon = true;
         if ((indx = SearchTable(raw, "GGSPD")) != ERR)
           raw[indx]->DependedUpon = true;
+
+        cfg.SetCoordALT("GGALT");
         }
 
       initGustCorrected(vn);
@@ -902,7 +923,7 @@ static void initSDI(char vn[])
 */
 
     if (GetConversionOffset(vn, &(rp->convertOffset)) == ERR ||
-        atoi(ProjectNumber) == 818)
+        atoi(cfg.ProjectNumber().c_str()) == 818)
       rp->convertOffset = 0;
 
     GetConversionFactor(vn, &(rp->convertFactor));
@@ -939,6 +960,9 @@ static void initSDI(char vn[])
    */
   SDITBL *cp = new SDITBL(vn);
   sdi.push_back(cp);
+
+  addUnitsAndLongName(cp);
+  cp->CategoryList.push_back("Analog");
 
   if (GetConversionOffset(vn, &(cp->convertOffset)) == ERR)
     cp->convertOffset = 0;
@@ -1025,6 +1049,8 @@ static void initGustCorrected(char vn[])
     probeCnt = InertialSystemCount;
     add_derived_names("POSNC");
     add_derived_names("GUSTC");
+    cfg.SetCoordLAT("LATC");
+    cfg.SetCoordLON("LONC");
     }
 
 }	/* END INITTANS */
@@ -1873,6 +1899,9 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
   RAWTBL *rp = new RAWTBL(name);
   raw.push_back(rp);
 
+  addUnitsAndLongName(rp);
+  rp->CategoryList.push_back("Raw");
+
   /* For ADS2 we decode raw/block/struct data.  ADS3 hands us everything in
    * float format, so decode fn's not required.
    */
@@ -1944,6 +1973,9 @@ static DERTBL *add_name_to_DERTBL(const char name[])
   DERTBL *dp = new DERTBL(name);
   derived.push_back(dp);
 
+  addUnitsAndLongName(dp);
+  dp->CategoryList.push_back("Derived");
+
   if (*location)
     strcat(dp->name, location);
 
@@ -1993,15 +2025,12 @@ static void ReadProjectName()
   if ((fp = OpenProjectFile("%s/%s/ProjectName", "r", RETURN)) != NULL)
     {
     fgets(buffer, 512, fp);
+    fclose(fp);
 
     if (buffer[strlen(buffer)-1] == '\n')
       buffer[strlen(buffer)-1] = '\0'; 
-    ProjectName = new char[strlen(buffer)+1];
-    strcpy(ProjectName, buffer);
-    fclose(fp);
+    cfg.SetProjectName(buffer);
     }
-  else
-    ProjectName = "";
 }
 
 /* -------------------------------------------------------------------- */
@@ -2039,6 +2068,43 @@ static int check_cal_coes(int order, float *coef)
   return(order + 1);
 
 }	/* END CHECK_CAL_COES */
+
+/* -------------------------------------------------------------------- */
+static void addUnitsAndLongName(var_base *var)
+{
+  extern FILE *LogFile;
+  FILE  *ofp = LogFile ? LogFile : stderr;
+
+  if (VarDB_lookup(var->name) == ERR)
+  {
+    fprintf(ofp, "%s has no description or units.\n", var->name);
+    return;
+  }
+
+  var->Units = VarDB_GetUnits(var->name);
+  var->LongName = VarDB_GetTitle(var->name);
+
+  char *p = VarDB_GetCategoryName(var->name);
+  if ( strcmp(p, "None") )
+    var->CategoryList.push_back(p);
+}
+
+/* -------------------------------------------------------------------- */
+static void openVariableDatabase()
+{
+  sprintf(buffer, VARDB, ProjectDirectory, cfg.ProjectNumber().c_str());
+  if (InitializeVarDB(buffer) == ERR)
+  {
+    LogMessage("InitializeVarDB for project specific failed, trying master file.\n");
+
+    sprintf(buffer, VARDB, ProjectDirectory, "defaults");
+    if (InitializeVarDB(buffer) == ERR)
+    {
+      fprintf(stderr, "InitializeVarDB for master file failed, this is fatal.\n");
+      exit(1);
+    }
+  }
+}
 
 /* -------------------------------------------------------------------- */
 var_base::var_base(const char s[])
