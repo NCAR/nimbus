@@ -30,7 +30,7 @@ const std::string DSMSERVER = "ac-server";
 const int DSMSERVERPORT = 30001;
 
 char	buffer[8192];		// Generic, volatile string space
-char	*ProjectDirectory, *ProjectNumber, *ProjectName, FlightNumber[12];
+char	*ProjectDirectory;
 
 Config cfg;	// Global configuration.
 

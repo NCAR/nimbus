@@ -31,7 +31,7 @@ void initP2DH(RAWTBL *varp)
 {
   int pnum;
 
-  pnum = atoi(ProjectNumber);
+  pnum = atoi(cfg.ProjectNumber().c_str());
 
   /* ADS II was only sampling at houskeeping at 1 Hz and it should have been
    * 5 Hz.  Compensate here.

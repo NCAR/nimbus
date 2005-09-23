@@ -43,7 +43,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2000
 #include "nimbus.h"
 #include "decode.h"
 #include "gui.h"
-#include "vardb.h"
 #include "injectsd.h"
 
 
@@ -55,12 +54,9 @@ static RAWTBL	*rp;
 static DERTBL	*dp;
 
 static void set_edit_window_data(
-		char	name[],
-		bool	output,
-		int	outputRate,
+		var_base *var,
 		int	lag,
-		NR_TYPE	spike,
-		char	*dq);
+		NR_TYPE	spike);
 
 extern char *dataQuality[];
 
@@ -102,8 +98,7 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
   switch (VariableType)
     {
     case SDI:
-      set_edit_window_data(sp->name, sp->Output, sp->OutputRate,
-                           sp->StaticLag, sp->SpikeSlope, sp->DataQuality);
+      set_edit_window_data(sp, sp->StaticLag, sp->SpikeSlope);
 
       for (i = 0; i < sp->cof.size(); ++i)
         {
@@ -121,8 +116,7 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
       break;
 
     case RAW:
-      set_edit_window_data(rp->name, rp->Output, rp->OutputRate,
-                           rp->StaticLag, rp->SpikeSlope, rp->DataQuality);
+      set_edit_window_data(rp, rp->StaticLag, rp->SpikeSlope);
 
       for (i = 0; i < rp->cof.size(); ++i)
         {
@@ -140,8 +134,7 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
       break;
 
     case DERIVED:
-      set_edit_window_data(dp->name, dp->Output, dp->OutputRate,
-			   ERR, 0.0, dp->DataQuality);
+      set_edit_window_data(dp, ERR, 0.0);
 
       for (i = 0; i < dp->ndep; ++i)
         {
@@ -360,20 +353,17 @@ void VerifyLagText(Widget w, XtPointer client, XmTextVerifyCallbackStruct *call)
 
 /* -------------------------------------------------------------------- */
 static void set_edit_window_data(
-		char	name[],
-		bool	output,
-		int	outputRate,
+		var_base *var,
 		int	lag,
-		NR_TYPE	spike,
-		char	*dq)
+		NR_TYPE	spike)
 {
   int		pos, n;
   Arg		args[3],sarg[1];
   XmString	ns;
 
-  strcpy(buffer, name);
+  strcpy(buffer, var->name);
   strcat(buffer, " - ");
-  strcat(buffer, VarDB_GetTitle(name));
+  strcat(buffer, var->LongName.c_str());
   ns = XmStringCreateLocalized(buffer);
 
   n = 0;
@@ -384,14 +374,14 @@ static void set_edit_window_data(
 
 
 
-  XmToggleButtonSetState(outputVarYes, output, false);
-  XmToggleButtonSetState(outputVarNo, !output, false);
+  XmToggleButtonSetState(outputVarYes, var->Output, false);
+  XmToggleButtonSetState(outputVarNo, !var->Output, false);
 
   XmToggleButtonSetState(outputLRbutton, false, false);
   XmToggleButtonSetState(outputSRbutton, false, false);
   XmToggleButtonSetState(outputHRbutton, false, false);
 
-  switch (outputRate)
+  switch (var->OutputRate)
     {
     case Config::LowRate:
       XmToggleButtonSetState(outputLRbutton, true, false);
@@ -413,13 +403,13 @@ static void set_edit_window_data(
     }
 
 
-  ns = XmStringCreateLocalized(SearchDataQuality(dq));
+  ns = XmStringCreateLocalized(SearchDataQuality(var->DataQuality));
   XtSetArg(args[0], XmNlabelString, ns);
   XtSetValues(XmOptionButtonGadget(slOpMenu), args, 1);
   XmStringFree(ns);
  
   ns=XmStringCreateLocalized(func[0]);   //sets the function to none
-  XtSetArg(sarg[0],XmNlabelString,ns);
+  XtSetArg(sarg[0], XmNlabelString, ns);
   XtSetValues(XmOptionButtonGadget(funcOpMenu),sarg,1);
   XmStringFree(ns);
 

@@ -58,7 +58,7 @@ void c200yInit(RAWTBL *varp)
   serialNumber = varp->SerialNumber;
   probeNum = varp->ProbeCount;
 
-  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, ProjectNumber);
+  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, cfg.ProjectNumber().c_str());
   InitPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {

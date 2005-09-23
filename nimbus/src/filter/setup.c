@@ -89,7 +89,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
    */
   fgets(buffer, 128, fp);
 
-  if (atoi(strchr(buffer, '=')+1) != atoi(ProjectNumber))
+  if (atoi(strchr(buffer, '=')+1) != atoi(cfg.ProjectNumber().c_str()))
     {
     fclose(fp);
     HandleError("Invalid file, project number does not match.");
@@ -317,7 +317,7 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
     FileCancel((Widget)NULL, (XtPointer)NULL, (XtPointer)NULL);
 
 
-  fprintf(fp, "ProjNum=%s\n", ProjectNumber);
+  fprintf(fp, "ProjNum=%s\n", cfg.ProjectNumber().c_str());
   fprintf(fp, "PRate=%d\n", (int)cfg.ProcessingRate());
 
   for (size_t i = 0; i < sdi.size(); ++i)

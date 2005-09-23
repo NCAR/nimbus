@@ -10,6 +10,8 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #ifndef _congig_h_
 #define _congig_h_
 
+#include <string>
+
 class Config
 {
 public:
@@ -59,6 +61,25 @@ public:
 
   void SetADSVersion(ADSVersion nv) { _adsVersion = nv; }
 
+  const std::string& ProjectName() const { return _projectName; }
+  const std::string& ProjectNumber() const { return _projectNumber; }
+  const std::string& Platform() const { return _platform; }
+  const std::string& FlightNumber() const { return _flightNumber; }
+  const std::string& FlightDate() const { return _flightDate; }
+
+  void SetProjectName(const std::string s)	{ _projectName = s; }
+  void SetProjectNumber(const std::string s)	{ _projectNumber = s; }
+  void SetPlatform(const std::string s)	{ _platform = s; }
+  void SetFlightNumber(const std::string s)	{ _flightNumber = s; }
+  void SetFlightDate(const std::string s)	{ _flightDate = s; }
+
+  std::string CoordinateVariables() const
+  { return _coordLON + " " + _coordLAT + " " + _coordALT + " " + _coordTime; }
+
+  void SetCoordLAT(const std::string s)		{ _coordLAT = s; }
+  void SetCoordLON(const std::string s)		{ _coordLON = s; }
+  void SetCoordALT(const std::string s)		{ _coordALT = s; }
+  void SetCoordTime(const std::string s)	{ _coordTime = s; }
 
 private:
   bool _interactive;
@@ -78,6 +99,18 @@ private:
   ADSVersion _adsVersion;
   processingRate _processingRate;
   interpolationType _interpType;
+
+  // Some meta-data.
+  std::string _projectName;
+  std::string _projectNumber;
+  std::string _platform;
+  std::string _flightNumber;
+  std::string _flightDate;
+
+  std::string _coordLAT;
+  std::string _coordLON;
+  std::string _coordALT;
+  std::string _coordTime;
 };
 
 #endif
