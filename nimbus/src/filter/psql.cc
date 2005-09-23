@@ -219,19 +219,19 @@ PostgreSQL::dropAllTables()
 
   /* Loop & DROP.
    */
-  _sqlString.str("");
-  _sqlString << "BEGIN;";
-
   std::set<std::string>::iterator it;
   for (it = tablesToDelete.begin(); it != tablesToDelete.end(); ++it)
+  {
+    _sqlString.str("");
     _sqlString << "DROP TABLE " << *it << ';';
+    submitCommand(_sqlString.str(), true);
+  }
 
   /*
    * Database seems to slow down after a number of runs without VACUUMing.
    * It's not sufficient to just DROP all tables.
    */
-  _sqlString << "COMMIT; VACUUM FULL;";
-  submitCommand(_sqlString.str(), true);
+  submitCommand("VACUUM FULL;", true);
 
 }	// END DROPTABLES
 
@@ -240,7 +240,6 @@ void
 PostgreSQL::createTables()
 {
   _sqlString.str("");
-  _sqlString << "BEGIN;";
 
   _sqlString << "CREATE TABLE Global_Attributes (key char(20) PRIMARY KEY, value char(120));";
   _sqlString << "CREATE TABLE Variable_List (Name char(20) PRIMARY KEY, Units char(16), Uncalibrated_Units char(16), long_name char(80), SampleRateTable char(16), nDims int, dims int[], nCals int, poly_cals float[], missing_value float, data_quality char(16));";
@@ -252,7 +251,6 @@ PostgreSQL::createTables()
   _sqlString << "CREATE TABLE PMS1D_list (Name char(20), SerialNumber char(16), SampleRateTable char(16), FirstBin INT, LastBin INT, CellSizes FLOAT[]);";
   _sqlString << "CREATE TABLE PMS2D_list (Name char(20), SerialNumber char(16));";
 
-  _sqlString << "COMMIT;";
   submitCommand(_sqlString.str(), true);
 
 }	// END CREATETABLES
@@ -264,7 +262,6 @@ PostgreSQL::initializeGlobalAttributes()
   extern char	dateProcessed[];	// From netcdf.c
 
   _sqlString.str("");
-  _sqlString << "BEGIN;";
 
   /* Add Global Attributes/Flight Data.
    */
@@ -278,7 +275,6 @@ PostgreSQL::initializeGlobalAttributes()
   _sqlString << "INSERT INTO global_attributes VALUES ('DateProcessed', '" << dateProcessed << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('coordinates', '" << cfg.CoordinateVariables() << "');";
 
-  _sqlString << "COMMIT;";
   submitCommand(_sqlString.str(), true);
 
 }	// END INITIALIZEGLOBALATTRIBUTES
@@ -679,12 +675,9 @@ PostgreSQL::createSampleRateTables(const rateTableMap &tableMap)
   rateTableMap::const_iterator it;
 
   _sqlString.str("");
-  _sqlString << "BEGIN;";
-
   for (it = tableMap.begin(); it != tableMap.end(); ++it)
     _sqlString << it->first << it->second << ");";
 
-  _sqlString << "COMMIT;";
   submitCommand(_sqlString.str());
 
   // Send the subset'ed RAF_LRT table creation to ground.
