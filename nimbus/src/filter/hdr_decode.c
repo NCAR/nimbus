@@ -342,6 +342,7 @@ printf("ProjectNumber is hardcoded = %s\n", cfg.ProjectNumber().c_str());
     }
   }
 
+  add_derived_names("GUST");
   CommonPostInitialization();
   return OK;
 }
@@ -2153,12 +2154,8 @@ DERTBL::DERTBL(const char s[]) : var_base(s)
 
 void closeSyncRecordReader()
 {
-  if (syncRecReader == 0)
-    return;
-
-  delete syncRecReader;
-//  delete iochan;
-//  delete sock;
+  if (syncRecReader)
+    delete syncRecReader;
 }
 
 /* END HDR_DECODE.C */

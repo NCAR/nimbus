@@ -59,6 +59,10 @@ void sssrd(DERTBL *varp)
         ssrd = ((bdifr / qcxc) - 0.002825) / 0.07448;
         break;
 
+      case HIAPER:
+        ssrd = ((bdifr / qcxc) -0.0013) / 0.075;
+        break;
+
       case SABRELINER:
       case B57:
         xmach2 = GetSample(varp, 2);

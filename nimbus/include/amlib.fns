@@ -651,6 +651,10 @@
 	"ATRR",		NULL,		NULL,		satb,
 	"TTWHC",	NULL,		NULL,		sttwhc,
 	"ATWH",		(void(*)(void*))atfhInit,	NULL,		satfh,
+	"ATRH1",	(void(*)(void*))atfhInit,	NULL,		satfh,
+	"ATRH2",	(void(*)(void*))atfhInit,	NULL,		satfh,
+	"ATLH1",	(void(*)(void*))atfhInit,	NULL,		satfh,
+	"ATLH2",	(void(*)(void*))atfhInit,	NULL,		satfh,
 	"ATRL",		NULL,		NULL,		satb,
 #
 #	Derived temperatues
@@ -689,6 +693,7 @@
 #
 	"DPBC",		NULL,		NULL,		sdpc,
 	"DPRC",		NULL,		NULL,		sdpc,
+	"DPLC",		NULL,		NULL,		sdpc,
 	"DPCRC",	NULL,		NULL,		sdpcrc,
 	"DPTC",		NULL,		NULL,		sdpc,
 	"DPXC",		NULL,		NULL,		sRefer,
@@ -823,6 +828,7 @@
 	"QCXC",		NULL,		NULL,		sRefer,
 	"RHOCR",	NULL,		NULL,		srhocr,
 	"RHODR",	NULL,		NULL,		srhodt,
+	"RHODL",	NULL,		NULL,		srhodt,
 	"RHODT",	NULL,		NULL,		srhodt,
 	"RHOLA",	(void(*)(void*))lymanInit,	NULL,		srhola,
 	"RHOLA1",	(void(*)(void*))lyman1Init,	NULL,		srhola1,

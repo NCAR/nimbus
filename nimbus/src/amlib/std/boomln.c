@@ -38,6 +38,10 @@ NR_TYPE GetBoomLength()
 
   switch (Aircraft)
     {
+    case HIAPER:
+      sprintf(aircraft, "N677F");
+      break;
+
     case NRL_P3:
       sprintf(aircraft, "NRL-P3");
       break;

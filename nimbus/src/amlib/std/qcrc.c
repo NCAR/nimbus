@@ -41,6 +41,10 @@ void sqcrc(DERTBL *varp)
       qcrc = qcr - (*pcorQCR)(akrd, 1.0);
       break;
 
+    case HIAPER:
+      qcrc = qcr - (*pcorQCR)(qcr, 1.0);
+      break;
+
     case ELECTRA:
       atk3 = fabs((double)((adifr / qcr) + 0.4095) / 0.0715);
       beta3= fabs((double)((bdifr / qcr) + 0.0375) / 0.06577);
@@ -62,7 +66,7 @@ void sqcrc(DERTBL *varp)
       bqcrc = 0.3 + adifr * (0.0402 + 0.0013 * adifr);
 
       if (bqcrc > 0.8)
-      bqcrc = 0.8;
+        bqcrc = 0.8;
 
       qcrc = qcr - (*pcorQCR)(qcr,1.0) + bqcrc;
       break;

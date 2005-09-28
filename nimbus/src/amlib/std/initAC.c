@@ -26,7 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2004
 #include "nimbus.h"
 #include "amlib.h"
 
-#define XMPHMS	0.44704    /* conversion factor mph to meters/sec */
+static const NR_TYPE XMPHMS = 0.44704; // conversion factor mph to meters/sec
 
 extern int	Aircraft, FlightDate[];
 
@@ -42,7 +42,7 @@ NR_TYPE	pcorw8(NR_TYPE, NR_TYPE),pcorf8(NR_TYPE, NR_TYPE),pcorw2(NR_TYPE, NR_TYP
 	pcorr2(NR_TYPE, NR_TYPE), pcorb7(NR_TYPE, NR_TYPE),pcorf7(NR_TYPE, NR_TYPE),
 	pcorr1(NR_TYPE, NR_TYPE),pcorf1(NR_TYPE, NR_TYPE), pcorf3(NR_TYPE, NR_TYPE),
 	pcorr3(NR_TYPE, NR_TYPE),pcorf1_2(NR_TYPE, NR_TYPE), pcorf1_3(NR_TYPE, NR_TYPE),
-	pcorf1_4(NR_TYPE, NR_TYPE);
+	pcorf1_4(NR_TYPE, NR_TYPE), pcorr5(NR_TYPE, NR_TYPE),pcorf5(NR_TYPE, NR_TYPE);
 
 /* reference airspeed on J-W liquid water content converted from MPH
  * to m/s
@@ -55,39 +55,39 @@ NR_TYPE	tfher1,tfher2;
 void InitAircraftDependencies()
 {
   /* Set up default values first, then AC dependant.
-  */
+   */
 
   /* TFHER = function to compute deiced Rosemount total temperature.
-  * ERROR (C) as a function of Z, where Z is mach number adjusted by
-  * the density ratio (STP is reference with dry air assumed).
-  * Dual element model 102DB1CB: Electra uses SN34263
-  * Dual element model 102DB1CB:Kingair uses SN34260
-  * Single element model 102U: Sabreliner uses SN27581
-  * TFHER(Z) = 10.**(-1.7841*ALOG10(Z)-1.4025)    (308)
-  * TFHER(Z) = 10.**(-1.7841*ALOG10(Z)-1.4025)    (312)
-  * TFHER(Z) = 10.**(-1.7244*ALOG10(Z)-1.5989)    (307)
-  * The function is included in the subroutine.  Only the constants
-  * are set here 
-  */
+   * ERROR (C) as a function of Z, where Z is mach number adjusted by
+   * the density ratio (STP is reference with dry air assumed).
+   * Dual element model 102DB1CB: Electra uses SN34263
+   * Dual element model 102DB1CB:Kingair uses SN34260
+   * Single element model 102U: Sabreliner uses SN27581
+   * TFHER(Z) = 10.**(-1.7841*ALOG10(Z)-1.4025)    (308)
+   * TFHER(Z) = 10.**(-1.7841*ALOG10(Z)-1.4025)    (312)
+   * TFHER(Z) = 10.**(-1.7244*ALOG10(Z)-1.5989)    (307)
+   * The function is included in the subroutine.  Only the constants
+   * are set here 
+   */
   tfher1 = -1.7841;
   tfher2 = -1.4025;
 
-  /* RECRN = recovery factor for reverse flow temp */
+  // RECRN = recovery factor for reverse flow temp
   recfrn = 0.625;
 
-  /* RECFB = Rosemount 102E2AL (boom) recovery factor */
+  // RECFB = Rosemount 102E2AL (boom) recovery factor
   recfb = 0.95;
 
-  /* RECFF = Rosemount 102E2AL (fuselage) recovery factor */
+  // RECFF = Rosemount 102E2AL (fuselage) recovery factor
   recff = 0.985;
 
-  /* RECFKP = Fast response temp recovery factor  */
+  // RECFKP = Fast response temp recovery factor
   recfkp = 0.80;
 
-  /* RECFRH= Rosemount 102E2AL (Heated) recovery factor */
+  // RECFRH= Rosemount 102E2AL (Heated) recovery factor
   recfrh = 0.98;
 
-  /* RECFW = Rosemount 102E2AL (wing) recovery factor */
+  // RECFW = Rosemount 102E2AL (wing) recovery factor
   recfw = 0.95;
 
   /* RECFRA = recovery factor for radome true air speed - depends on
@@ -96,11 +96,11 @@ void InitAircraftDependencies()
   recfra = 0.95;
 
 
-  /* Set up aircraft dependant values.
-   */
+  // Set up aircraft dependant values.
   switch (Aircraft)
   {
     case KINGAIR:
+      LogMessage("NCAR Kingair pcor's installed.");
       jwref	= 230 * XMPHMS;
 
       pcorQCW	= pcorw2;
@@ -112,6 +112,7 @@ void InitAircraftDependencies()
       break;
 
     case ELECTRA:
+      LogMessage("NCAR Electra pcor's installed.");
       jwref	= 300 * XMPHMS;
       recfrn	= 0.65;
 
@@ -124,6 +125,7 @@ void InitAircraftDependencies()
       break;
 
     case NRL_P3:
+      LogMessage("NRL P3 pcor's installed.");
       jwref	= 300 * XMPHMS;
       recfrn	= 0.65;
 
@@ -134,6 +136,7 @@ void InitAircraftDependencies()
 
 
     case NOAA_G4:
+      LogMessage("NOAA G4 pcor's installed.");
       jwref	= 1 * XMPHMS;
       recfrn	= 0.65;
 
@@ -146,13 +149,14 @@ void InitAircraftDependencies()
       break;
 
     case B57:
+      LogMessage("NCAR WB57 pcor's installed.");
       pcorQCB	= pcorb7;
       pcorPSB	= pcorb7;
 
     case C130:
-    case HIAPER:
     case 300:
     case 600:	/* Ground systems....to become HIAPER??? */
+      LogMessage("NCAR C-130 pcor's installed.");
       jwref	= 1 * XMPHMS;
       recfrn	= 0.65;
 
@@ -160,13 +164,13 @@ void InitAircraftDependencies()
 //printf("[%s] == [%s]\n", buffer, "200309");
       if (strcmp(buffer, "200309") > 0)
       { // AIRS-II & Later
-        LogMessage("PCORS:  AIRS-II and later pcors().\n");
+        LogMessage("PCORS:  AIRS-II and later pcors().");
         pcorPSF	= pcorf1_3;
         pcorQCFR = pcorf1_4;	
       }
       else
       { // Pre-AIRS-II
-        LogMessage("PCORS:  Pre-AIRS-II pcors().\n");
+        LogMessage("PCORS:  Pre-AIRS-II pcors().");
         pcorPSF	= pcorf1;
         pcorQCFR = pcorf1_2;
       }
@@ -178,7 +182,17 @@ void InitAircraftDependencies()
       pcorPSW	= NULL;
       break;
 
+    case HIAPER:
+      LogMessage("NCAR G5 pcor's installed.");
+      tfher1	= -1.7244;
+      tfher2	= -1.5989;
+      pcorQCF	= pcorf5;
+      pcorQCR	= pcorr5;	
+      pcorPSF	= pcorr5;
+      break;
+
     case SABRELINER:
+      LogMessage("NCAR Saberliner pcor's installed.");
       recff	= 0.95;
       jwref	= 200 * XMPHMS;
       tfher1	= -1.7244;
@@ -193,6 +207,7 @@ void InitAircraftDependencies()
       break;
 
     case SAILPLANE:
+      LogMessage("NCAR Sailplane pcor's installed.");
       pcorQCW	= pcorw2;
       pcorPSW	= pcorw2;
       pcorPSF	= pcorr2;
@@ -251,6 +266,19 @@ NR_TYPE pcorb7(NR_TYPE q, NR_TYPE q1)
 NR_TYPE pcorf7(NR_TYPE q, NR_TYPE q1)
 {
   return(-0.8901 + q * (0.0460 + 0.000075 * q));
+}
+
+/* GV ---------------------------------------------------------------- */
+NR_TYPE pcorr5(NR_TYPE q, NR_TYPE q1)
+{
+  return(2.2 - 0.033142 * q);
+}
+
+NR_TYPE pcorf5(NR_TYPE q, NR_TYPE q1)
+{
+  return(0.754 + q * (0.017657 + 7.557e-05 * q));
+
+//  return(0.24 - 0.005389 * q);
 }
 
 /* C130 --------------------------------------------------------------- */
