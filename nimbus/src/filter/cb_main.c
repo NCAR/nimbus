@@ -158,6 +158,9 @@ void Proceed(Widget w, XtPointer client, XtPointer call)
       }
     }
 
+  if (FlightNumberInt == 0)
+    HandleWarning("Flight Number is 0, a new one may be entered\nvia the 'Edit/Flight Info' menu item,\nor run fixFltNum on the ADS image and start nimbus again.", NULL, NULL);
+
 }	/* END PROCEED */
 
 /* -------------------------------------------------------------------- */
@@ -194,9 +197,6 @@ static void readHeader()
     CancelSetup(NULL, NULL, NULL);
     return;
   }
-
-  if (FlightNumberInt == 0)
-    HandleWarning("Flight Number is 0, a new one may be entered\nvia the 'Edit/Flight Info' menu item,\nor run fixFltNum on the ADS image and start nimbus again.", NULL, NULL);
 
   if (cfg.Interactive())
     {
@@ -454,6 +454,9 @@ void stopProcessing()
 */
 
   CloseLogFile();
+
+  extern void closeSyncRecordReader();
+  closeSyncRecordReader();
 
   /* Turn "Pause" button back into "Go" button.
    */

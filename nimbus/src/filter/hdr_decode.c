@@ -116,6 +116,9 @@ static SDITBL	*initSDI_ADS3(dsm::SyncRecordVariable* var);
 static RAWTBL	*add_name_to_RAWTBL(const char []);
 static DERTBL	*add_name_to_DERTBL(const char []);
 
+static atdUtil::Socket* sock;
+static dsm::IOChannel* iochan;
+
 static void add_file_to_RAWTBL(const char []), add_file_to_DERTBL(const char []),
 	initHDR(char vn[]), initSDI(char vn[]), initHoneywell(char vn[]),
 	initOphir3(char vn[]), initPMS1D(char vn[]), initPMS1Dv2(char vn[]),
@@ -149,7 +152,7 @@ bool VarCompareLT(const var_base *x, const var_base *y)
 }
 
 /* -------------------------------------------------------------------- */
-static void CommonInitialization()
+static void CommonPreInitialization()
 {
   ReadProjectName();
   cfg.SetCoordTime("Time");
@@ -176,6 +179,87 @@ static void CommonInitialization()
 }
 
 /* -------------------------------------------------------------------- */
+static void CommonPostInitialization()
+{
+  /* Add the default derived variables.
+   */
+  rate = 1;
+
+  if (Aircraft != SAILPLANE)
+    {
+    add_derived_names("ALWAYS");
+    AddProbeToList("Fluxes", (unsigned long)PROBE_FLUX);
+    }
+  else
+    add_derived_names("SAIL");
+
+  ReleasePMSspecs();
+
+  if (Aircraft != NOAA_G4)
+    FreeTextFile(derivedlist);
+
+  FreeTextFile(rawlist);
+
+  /* Add some final items to 'Toggle Probe' menu.
+   */
+  {
+  int	cnt = 0;
+
+  for (size_t i = 0; pms1_probes[i].name; ++i)
+    cnt += pms1_probes[i].cnt;
+  for (size_t i = 0; pms1v2_probes[i].name; ++i)
+    cnt += pms1v2_probes[i].cnt;
+  for (size_t i = 0; pms1v3_probes[i].name; ++i)
+    cnt += pms1v3_probes[i].cnt;
+
+  if (cnt > 1)
+    AddProbeToList("All PMS1D's", (unsigned long)PROBE_PMS1D);
+
+  cnt = 0;
+
+  for (size_t i = 0; pms2d_probes[i].name; ++i)
+    cnt += pms2d_probes[i].cnt;
+
+  if (cnt > 1)
+    AddProbeToList("All PMS2D's", (unsigned long)PROBE_PMS2D);
+  }
+
+  AddProbeToList("All On", (unsigned long)ALL_ON);
+  AddProbeToList("All Off", (unsigned long)ALL_OFF);
+
+  if (AccessProjectFile(USERNAMES, "r") == true)
+    add_file_to_DERTBL(USERNAMES);
+
+/*
+for (size_t i = 0; i < sdi.size(); ++i)
+  printf("%-12s%5d, %d\n", sdi[i]->name, sdi[i]->SampleRate, sdi[i]->ADSstart);
+
+for (size_t i = 0; i < raw.size(); ++i)
+  printf("%-12s%5d\n", raw[i]->name, raw[i]->xlate);
+
+for (size_t i = 0; i < derived.size(); ++i)
+  printf("%-12s\n", derived[i]->name, derived[i]->compute);
+*/
+
+  std::sort(sdi.begin(), sdi.end(), VarCompareLT);
+  std::sort(raw.begin(), raw.end(), VarCompareLT);
+  std::sort(derived.begin(), derived.end(), VarCompareLT);
+
+  ReadModuloVariables();
+  ReadSumVariables();
+
+  if (cfg.TimeShifting())
+    ReadStaticLags();
+
+  if (cfg.Despiking())
+    ReadDespikeFile();
+
+  ReadDefaultDerivedOutputRate();
+  SetUpDependencies();
+
+}
+
+/* -------------------------------------------------------------------- */
 int DecodeHeader3(const char header_file[])
 {
 printf("DecodeHeader3\n");
@@ -197,8 +281,8 @@ printf("DecodeHeader3\n");
   else
     ; // sync_server is started elsewhere onboard.
 
-  atdUtil::Socket* sock = new atdUtil::Socket(DSMSERVER, DSMSERVERPORT);
-  dsm::IOChannel* iochan = new dsm::Socket(sock);
+  sock = new atdUtil::Socket(DSMSERVER, DSMSERVERPORT);
+  iochan = new dsm::Socket(sock);
 
   syncRecReader = new dsm::SyncRecordReader(iochan);
 
@@ -220,7 +304,7 @@ printf("ProjectNumber is hardcoded = %s\n", cfg.ProjectNumber().c_str());
 
 
   // Perform common (ADS2 & ADS3).
-  CommonInitialization();
+  CommonPreInitialization();
 
   // Add Time variables, hour, min, sec, year, mon, day.
   initHDR(0);
@@ -235,28 +319,30 @@ printf("ProjectNumber is hardcoded = %s\n", cfg.ProjectNumber().c_str());
     rate = (int)ceil(var->getSampleRate());
     length = var->getLength();
 
-printf("DecodeHeader3: adding %s, converter = %d, rate = %d\n",
-  var->getName().c_str(), (int)var->getConverter(), (int)ceil(var->getSampleRate()));
+//printf("DecodeHeader3: adding %s, converter = %d, rate = %d\n",
+//  var->getName().c_str(), (int)var->getConverter(), (int)ceil(var->getSampleRate()));
 
     if (var->getConverter() == 0)
-      {
+    {
       RAWTBL *rp = add_name_to_RAWTBL(var->getName().c_str());
-      // Default real-time netCDF to SAmpleRate.
+      // Default real-time netCDF to SampleRate.
       if (cfg.ProcessingMode() == Config::RealTime)
         rp->OutputRate = rp->SampleRate;
 
+      add_derived_names(rp->name);
       rp->Units = var->getUnits();
       rp->LongName = var->getLongName();
-      }
+    }
     else
-      {
+    {
       SDITBL *sp = initSDI_ADS3(var);
-      // Default real-time netCDF to SAmpleRate.
+      // Default real-time netCDF to SampleRate.
       if (cfg.ProcessingMode() == Config::RealTime)
         sp->OutputRate = sp->SampleRate;
-      }
+    }
   }
 
+  CommonPostInitialization();
   return OK;
 }
 
@@ -310,6 +396,7 @@ static SDITBL* initSDI_ADS3(dsm::SyncRecordVariable* var)
     cp->cof = coefs;
   } 
 
+  add_derived_names(cp->name);
   return(cp);
 
 }
@@ -399,7 +486,7 @@ int DecodeHeader(const char header_file[])
     }
 
   // Perform common (ADS2 & ADS3).
-  CommonInitialization();
+  CommonPreInitialization();
 
   /* This is the main loop, loop through all variables in header
    */
@@ -750,28 +837,6 @@ int DecodeHeader(const char header_file[])
   probeType = 0;
   location[0] = '\0';
 
-
-  /* Add the default derived variables.
-   */
-  rate = 1;
-
-  if (Aircraft != SAILPLANE)
-    {
-    add_derived_names("ALWAYS");
-/*
-probeCnt = 0;
-    add_name_to_DERTBL("XISCAI");
-probeCnt = 1;
-    add_name_to_DERTBL("XISTAS");
-probeCnt = 2;
-    add_name_to_DERTBL("XISNAS");
-probeCnt = 0;
-*/
-    AddProbeToList("Fluxes", (unsigned long)PROBE_FLUX);
-    }
-  else
-    add_derived_names("SAIL");
-
   if (cfg.ProcessingMode() == Config::RealTime)
     {
     for (probeCnt = 0; probeCnt < 3; ++probeCnt)
@@ -784,70 +849,7 @@ probeCnt = 0;
     }
 
 
-  ReleasePMSspecs();
-
-  if (Aircraft != NOAA_G4)
-    FreeTextFile(derivedlist);
-
-  FreeTextFile(rawlist);
-
-  /* Add some final items to 'Toggle Probe' menu.
-   */
-  {
-  int	cnt = 0;
-
-  for (size_t i = 0; pms1_probes[i].name; ++i)
-    cnt += pms1_probes[i].cnt;
-  for (size_t i = 0; pms1v2_probes[i].name; ++i)
-    cnt += pms1v2_probes[i].cnt;
-  for (size_t i = 0; pms1v3_probes[i].name; ++i)
-    cnt += pms1v3_probes[i].cnt;
-
-  if (cnt > 1)
-    AddProbeToList("All PMS1D's", (unsigned long)PROBE_PMS1D);
-
-  cnt = 0;
-
-  for (size_t i = 0; pms2d_probes[i].name; ++i)
-    cnt += pms2d_probes[i].cnt;
-
-  if (cnt > 1)
-    AddProbeToList("All PMS2D's", (unsigned long)PROBE_PMS2D);
-  }
-
-  AddProbeToList("All On", (unsigned long)ALL_ON);
-  AddProbeToList("All Off", (unsigned long)ALL_OFF);
-
-  if (AccessProjectFile(USERNAMES, "r") == true)
-    add_file_to_DERTBL(USERNAMES);
-
-/*
-for (size_t i = 0; i < sdi.size(); ++i)
-  printf("%-12s%5d, %d\n", sdi[i]->name, sdi[i]->SampleRate, sdi[i]->ADSstart);
-
-for (size_t i = 0; i < raw.size(); ++i)
-  printf("%-12s%5d\n", raw[i]->name, raw[i]->xlate);
-
-for (size_t i = 0; i < derived.size(); ++i)
-  printf("%-12s\n", derived[i]->name, derived[i]->compute);
-*/
-
-  std::sort(sdi.begin(), sdi.end(), VarCompareLT);
-  std::sort(raw.begin(), raw.end(), VarCompareLT);
-  std::sort(derived.begin(), derived.end(), VarCompareLT);
-
-  ReadModuloVariables();
-  ReadSumVariables();
-
-  if (cfg.TimeShifting())
-    ReadStaticLags();
-
-  if (cfg.Despiking())
-    ReadDespikeFile();
-
-  ReadDefaultDerivedOutputRate();
-  SetUpDependencies();
-
+  CommonPostInitialization();
   return(OK);
 
 }	/* END DECODEHEADER */
@@ -2147,6 +2149,16 @@ DERTBL::DERTBL(const char s[]) : var_base(s)
 {
   ndep = 0;
   ProbeCount = 0;
+}
+
+void closeSyncRecordReader()
+{
+  if (syncRecReader == 0)
+    return;
+
+  delete syncRecReader;
+//  delete iochan;
+//  delete sock;
 }
 
 /* END HDR_DECODE.C */
