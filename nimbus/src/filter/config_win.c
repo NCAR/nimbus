@@ -553,7 +553,6 @@ static void VerifyFlightInfo(Widget w, int indx, XtPointer call)
       buffer[7] = '\0';
       strlower(buffer);
       XmTextFieldSetString(flightText[indx], buffer);
-      strcpy(fp->fltnum, buffer);
 
       for (p1 = buffer; *p1 && !isdigit(*p1); ++p1)
         ;
@@ -567,7 +566,7 @@ static void VerifyFlightInfo(Widget w, int indx, XtPointer call)
       buffer[10] = '\0';
 
       XmTextFieldSetString(flightText[indx], buffer);
-      strcpy(fp->date, buffer);
+      cfg.SetFlightDate(buffer);
       break;
 
     case 3:	/* Aircraft	*/
@@ -575,7 +574,8 @@ static void VerifyFlightInfo(Widget w, int indx, XtPointer call)
       buffer[7] = '\0';
       strupr(buffer);
       XmTextFieldSetString(flightText[indx], buffer);
-      strcpy(fp->acraft, buffer);
+      if (cfg.isADS2())
+        strcpy(fp->acraft, buffer);
 
       for (p1 = buffer; *p1 && !isdigit(*p1); ++p1)
         ;
