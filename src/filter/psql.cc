@@ -409,8 +409,7 @@ PostgreSQL::WriteSQLvolts(const std::string timeStamp)
 
   for (it = _ratesTables.begin(); it != _ratesTables.end(); ++it)
   {
-    /* @todo should the LRT_TABLE be in the rateTableMap?
-     */
+    /// @todo should the LRT_TABLE be in the rateTableMap?
     if (it->second == LRT_TABLE)
       continue;
 
@@ -649,7 +648,7 @@ PostgreSQL::addVariableToTables(rateTableMap &tableMap, const var_base *var,
      * variables.  Build it in _transmitString, initialize here.
      */
     if (var->Transmit && _transmitString.str().length() == 0)
-      _transmitString << preamble;
+      _transmitString << preamble.str();
     else
       _transmitString << ',';
 
@@ -682,7 +681,10 @@ PostgreSQL::createSampleRateTables(const rateTableMap &tableMap)
 
   // Send the subset'ed RAF_LRT table creation to ground.
   if (_ldm)
+  {
+    _transmitString << ");";
     _ldm->sendString(_transmitString.str());
+  }
     
 }	// END CREATESAMPLERATETABLES
 
