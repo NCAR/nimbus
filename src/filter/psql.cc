@@ -566,9 +566,9 @@ PostgreSQL::addVariableToDataBase(
 
   entry << "INSERT INTO Variable_List VALUES ('" <<
 	var->name	<< "', '" <<
-	var->Units	<< "', '" <<
-	uncaled_units	<< "', '" <<
-	var->LongName	<< "', '";
+	escape_string(var->Units)	<< "', '" <<
+	escape_string(uncaled_units)	<< "', '" <<
+	escape_string(var->LongName)	<< "', '";
 
   if (var->SampleRate > 0)
     entry << RATE_TABLE_PREFIX << var->SampleRate;
@@ -607,8 +607,8 @@ PostgreSQL::addCategory(std::stringstream& entry, const var_base * var) const
    * we have one with one.
    */
   for (size_t i = 0; i < var->CategoryList.size(); ++i)
-    entry << "INSERT INTO categories VALUES ('" << var->name <<
-			"', '" << var->CategoryList[i] << "');";
+    entry << "INSERT INTO categories VALUES ('" << var->name << "', '"
+	  << escape_string(var->CategoryList[i]) << "');";
 
 }	// END ADDCATEGORY
 
@@ -726,10 +726,24 @@ PostgreSQL::~PostgreSQL()
 
 /* -------------------------------------------------------------------- */
 void
-PostgreSQL::remove_trailing_spaces(std::string & s) const
+PostgreSQL::remove_trailing_spaces(std::string & target) const
 {
-  while (s[s.size()-1] == ' ')
-    s.resize(s.size()-1);
+  while (target[target.size()-1] == ' ')
+    target.resize(target.size()-1);
+}
+
+/* -------------------------------------------------------------------- */
+std::string
+PostgreSQL::escape_string(const std::string & target) const
+{
+  int pos;
+  std::string str;
+  if ((pos = target.find_first_of("'")) > 0)
+    str = target.substr(0, pos) + "\\'" + target.substr(pos + 1);
+  else
+    str = target;
+
+  return str;
 }
 
 // END PSQL.CC

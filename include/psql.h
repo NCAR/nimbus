@@ -206,10 +206,18 @@ protected:
   addVectorToAllStreams(const NR_TYPE *values, int nValues, bool xmitToGround);
 
   /**
-   * Remove any trailing spaces from the string @p s.
+   * Remove any trailing spaces from the string @p target.
    */
   void
-  remove_trailing_spaces(std::string & s) const;
+  remove_trailing_spaces(std::string & target) const;
+
+  /**
+   * Escape any characters requiring it before sending them to the
+   * DataBase.  Specifically the single quote.
+   * @returns input string if no characters are escaped else an escaped string.
+   */
+  std::string
+  escape_string(const std::string & target) const;
 
   /**
    * Build the string to update the EndTime in the Database.  This
