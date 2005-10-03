@@ -271,12 +271,12 @@ NR_TYPE pcorf7(NR_TYPE q, NR_TYPE q1)
 /* GV ---------------------------------------------------------------- */
 NR_TYPE pcorr5(NR_TYPE q, NR_TYPE q1)
 {
-  return(2.2 - 0.033142 * q);
+  return(1.86 - 0.04033 * q);
 }
 
 NR_TYPE pcorf5(NR_TYPE q, NR_TYPE q1)
 {
-  return(0.754 + q * (0.017657 + 7.557e-05 * q));
+  return(0.754 + q * (-0.017657 + 7.557e-05 * q));
 
 //  return(0.24 - 0.005389 * q);
 }

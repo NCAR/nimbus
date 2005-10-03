@@ -10,8 +10,11 @@
 
 #include "nimbus.h"
 #include "amlib.h"
+#include "raf.h"
 
 extern NR_TYPE (*pcorQCF)(NR_TYPE, NR_TYPE);
+
+extern int	Aircraft;
 
 /* -------------------------------------------------------------------- */
 void sqcfc(DERTBL *varp)
@@ -20,7 +23,16 @@ void sqcfc(DERTBL *varp)
 
   qcf	= GetSample(varp, 0);
   akrd  = GetSample(varp, 1);
-  qcfc	= qcf - (*pcorQCF)(akrd,1.0);
+
+  switch (Aircraft)
+  {
+    case C130:
+      qcfc = qcf - (*pcorQCF)(akrd, 1.0);
+      break;
+
+    default:
+      qcfc = qcf - (*pcorQCF)(qcf, 1.0);
+  }
 
   if (qcfc < 10.0)
     qcfc = qcf;
