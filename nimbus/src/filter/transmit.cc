@@ -32,10 +32,14 @@ void sqlTransmit::queueString(const std::string& str)
 void sqlTransmit::sendString(const std::string& str)
 {
   char fName[256];
-  sprintf(fName, "/jnet/tmp/xmit/sql_sequence%05d.gz", _packetCounter++);
+  sprintf(fName, "/home/tmp/xmit/sql_sequence%05d.gz", _packetCounter++);
 
   gzFile gzfd = gzopen(fName, "w+");
 
   gzwrite(gzfd, str.c_str(), str.length());
   gzclose(gzfd);
+
+  char command[256];
+  sprintf(command, "/home/local/bin/pqinsert %s", fName);
+  system(command);
 }
