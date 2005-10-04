@@ -1,23 +1,23 @@
 #!/bin/csh
 
-
-foreach file ( hdr_api lib* vardb/lib hdrbld ncplot ncpp/src vardb/editor xhd xpms2d/src nimbus/src/filter nimbus/src/amlib mcr/display/src mcr/processor/src rdma ads_utils/edADShdr rtplot ads_utils/hvpsdiag )
+foreach file ( hdr_api lib* vardb/lib hdrbld ncplot ncpp/src vardb/editor xhd xpms2d/src nimbus/src/qc mcr/display/src mcr/processor/src rdma ads_utils/edADShdr rtplot ads_utils/hvpsdiag )
   (cd $file; echo ""; make clean)
 end
-
-
-# Programs withOUT install target.  WINDS requires xview toolkit.
-
-#foreach file ( ads/disc/src ads/dsm/src winds/src )
-foreach file ( winds/src )
-  (cd $file; echo ""; rm *.o)
-end
-
-
-# Programs with "install" target.
 
 cd nc_utils
 foreach file ( asc2cdf n2asc ncReorder ncav ncextr ncmerge )
   (cd $file; echo ""; make clean)
 end
 cd ..
+
+foreach file ( nimbus )
+  (cd $file; echo ""; scons -c)
+end
+
+
+# Programs withOUT clean"" target.  WINDS requires xview toolkit.
+
+#foreach file ( ads/disc/src ads/dsm/src winds/src )
+foreach file ( winds/src )
+  (cd $file; echo ""; rm *.o)
+end
