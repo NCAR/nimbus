@@ -263,10 +263,10 @@ int CheckForTimeGap(void *ADShdr, int initMode)
     UserBtim[i+1] = newTime;
 
 
-    if (cfg.ProcessingRate() == Config::LowRate)
-      UserBtim[i+1] += 2;
-    else
+    if (cfg.ProcessingRate() == Config::HighRate)
       UserBtim[i+1] += 14;
+    else
+      UserBtim[i+1] += 2;
 
     ++nTimeIntervals;
 

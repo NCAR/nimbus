@@ -117,10 +117,10 @@ void SetBaseTime(const void *record)
   /* Account for circular buffer spin up in [lr|hr]loop.c
    */
   if (cfg.ProcessingMode() != Config::RealTime)
-    if (cfg.ProcessingRate() == Config::LowRate)
-      StartFlight.tm_sec += 2;
-    else
+    if (cfg.ProcessingRate() == Config::HighRate)
       StartFlight.tm_sec += 14;
+    else
+      StartFlight.tm_sec += 2;
 
   if (cfg.isADS3())	// We don't support BaseTime anymore.
     return;

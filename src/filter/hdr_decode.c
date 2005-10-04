@@ -248,6 +248,15 @@ for (size_t i = 0; i < derived.size(); ++i)
   ReadModuloVariables();
   ReadSumVariables();
 
+  if (cfg.ProcessingRate() == Config::SampleRate)
+  {
+    for (size_t i = 0; i < sdi.size(); ++i)
+      sdi[i]->OutputRate = sdi[i]->SampleRate;
+
+    for (size_t i = 0; i < raw.size(); ++i)
+      raw[i]->OutputRate = raw[i]->SampleRate;
+  }
+
   if (cfg.TimeShifting())
     ReadStaticLags();
 
@@ -271,7 +280,7 @@ printf("DecodeHeader3\n");
 
     if (pid == 0)
     {
-      execl("/opt/ads3/x86/bin/launch_ss.sh", "launch_ss.sh", header_file, 0);
+      execl("/opt/ads3/x86/bin/launch_ss.sh", "launch_ss.sh", header_file, NULL);
       HandleError("Gordon says things are really screwed up!");
       _exit(1);
     }
@@ -2128,14 +2137,12 @@ var_base::var_base(const char s[])
   Transmit = cfg.TransmitToGround();
 
   DataQuality	= defaultQuality;
-
 }
 
 SDITBL::SDITBL(const char s[]) : var_base(s)
 {
   StaticLag = 0;
   SpikeSlope = 0.0;
-
 }
 
 RAWTBL::RAWTBL(const char s[]) : var_base(s)

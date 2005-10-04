@@ -49,8 +49,9 @@ static const size_t nFlightInfo = 4;
 static const size_t nTimeSliceInfo = 2;
 
 static Widget	ConfigShell = 0, ConfigWindow = 0, flightText[nFlightInfo],
-		lowRateButton, highRateButton, despikeButton, lagButton,
-		irsCleanupButton, inertialShiftButton, interpB[3];
+		lowRateButton, sampleRateButton, highRateButton,
+		despikeButton, lagButton, irsCleanupButton,
+		inertialShiftButton, interpB[3];
 
 Widget ts_text[nTimeSliceInfo];
 
@@ -112,10 +113,18 @@ void SetInertialShift(Widget w, XtPointer client, XmToggleButtonCallbackStruct *
 /* -------------------------------------------------------------------- */
 void SetConfigWinFromConfig()
 {
-  if (cfg.ProcessingRate() == Config::LowRate)
-    XmToggleButtonSetState(lowRateButton, true, true);
-  else
-    XmToggleButtonSetState(highRateButton, true, true);
+  switch (cfg.ProcessingRate())
+  {
+    case Config::LowRate:
+      XmToggleButtonSetState(lowRateButton, true, true);
+      break;
+    case Config::SampleRate:
+      XmToggleButtonSetState(sampleRateButton, true, true);
+      break;
+    case Config::HighRate:
+      XmToggleButtonSetState(highRateButton, true, true);
+      break;
+  }
 
   XmToggleButtonSetState(interpB[(int)cfg.InterpolationType()], true, true);
 
@@ -160,7 +169,7 @@ void SetInterpType(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void SetLowRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
 {
-  size_t        i;
+  size_t i;
 
   if (w == 0)
     {
@@ -196,6 +205,46 @@ void SetLowRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
       }
     }
 }       /* END SETLOWRATE */
+
+/* -------------------------------------------------------------------- */
+void SetSampleRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
+{
+  size_t i;
+
+  if (w == 0)
+    {
+    XmToggleButtonSetState(sampleRateButton, true, true);
+    return;
+    }
+
+  if (call->set == false)
+    return;
+
+  cfg.SetProcessingRate(Config::SampleRate);
+
+  for (i = 0; i < sdi.size(); ++i)
+    sdi[i]->OutputRate = sdi[i]->SampleRate;
+
+  for (i = 0; i < raw.size(); ++i)
+    raw[i]->OutputRate = raw[i]->SampleRate;
+
+  for (i = 0; i < derived.size(); ++i)
+    derived[i]->OutputRate = Config::LowRate;
+
+  FillListWidget();
+  XtSetSensitive(outputHRbutton, false);
+
+  if (cfg.ProductionRun())
+    {
+    char *p = strstr(OutputFileName, "h.");
+
+    if (p)
+      {
+      strcpy(p, ".nc");
+      XmTextFieldSetString(outputFileText, OutputFileName);
+      }
+    }
+}       /* END SETSAMPLERATE */
 
 /* -------------------------------------------------------------------- */
 void SetHighRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
@@ -368,6 +417,12 @@ void createProcessingRate(Widget parent)
   XtAddCallback(lowRateButton, XmNvalueChangedCallback,
 		(XtCallbackProc)SetLowRate, NULL);
   XtManageChild(lowRateButton);
+
+  n = 0;
+  sampleRateButton = XmCreateToggleButton(rateRB, "sampleRateButton", args,n);
+  XtAddCallback(sampleRateButton, XmNvalueChangedCallback,
+		(XtCallbackProc)SetSampleRate, NULL);
+  XtManageChild(sampleRateButton);
 
   n = 0;
   highRateButton = XmCreateToggleButton(rateRB, "highRateButton", args, n);
