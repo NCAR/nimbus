@@ -13,9 +13,9 @@ DESCRIPTION:
 
 #define _NO_PROTO
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #ifndef ERR
 #define OK		(0)

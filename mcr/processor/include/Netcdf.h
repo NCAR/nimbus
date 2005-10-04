@@ -81,7 +81,7 @@ private:
   float	year, month, day, hour, minute, second, roll, pitch, radAlt, drft, gspd,
 	lat, lon, trk, tas, hdg, alt, ws, wd, zen, azim;
 
-  static const float	startGSF = 50.0, startALT = 2500.0;
+  static const float	startGSF, startALT;
 
 };	/* END NETCDF.H */
 

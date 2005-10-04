@@ -46,13 +46,13 @@ main(int argc, char *argv[])
   std::cout << "RAF MCR processor.\n\n";
 
   std::cout << "Enter MCR file name (e.g. /jnet/data/101rf05) :";
-  gets(mcrFileName);
+  fgets(mcrFileName, 1024, stdin);
 
   std::cout << "Enter netCDF file name (e.g. /jnet/productiondata/101rf05) :";
-  gets(netCDFfileName);
+  fgets(netCDFfileName, 1024, stdin);
 
   std::cout << "Enter output file name (e.g. /jnet/data/MCRrf16) :";
-  gets(outputFileName);
+  fgets(outputFileName, 1024, stdin);
 /*
 strcpy(mcrFileName, "/jnet/data/migs/krista/101rf01");
 strcpy(netCDFfileName, "/jnet/data/migs/krista/101Lrf01b");
@@ -66,7 +66,7 @@ strcpy(outputFileName, "/jnet/data/cjw");
 
 
   std::cout << "Which channels would you like processed (e.g. 13456) :";
-  gets(buffer);
+  fgets(buffer, 1024, stdin);
 
   for (i = 0; i < N_CHANNELS; ++i)
     processChannel[i] = false;

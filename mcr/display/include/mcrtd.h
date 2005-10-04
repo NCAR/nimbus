@@ -22,10 +22,6 @@ DESCRIPTION:
 #include <X11/StringDefs.h>
 #include <Xm/Xm.h>
 
-#ifndef NULL
-#define NULL		(0)
-#endif
- 
 #ifndef OK
 #define OK		(0)
 #endif

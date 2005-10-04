@@ -2,6 +2,8 @@
 #include "Netcdf.h"
 
 static const float	delta_wp3 = 2.0, delta_roll = 3.0;
+const float AircraftData::startGSF = 50.0;
+const float AircraftData::startALT = 2500.0;
 
 /* -------------------------------------------------------------------- */
 AircraftData::AircraftData(const char fileName[])
