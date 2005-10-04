@@ -16,7 +16,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-7
 -------------------------------------------------------------------------
 */
 
+#include <memory.h>
 #include <stdio.h>
+#include <string.h>
 #include "vardb.h"
 
 extern const long	VarDB_MagicCookie, VarDB_CurrentVersion;

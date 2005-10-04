@@ -19,6 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 */
 
 #include <stdio.h>
+#include <string.h>
 #include <sys/types.h>
 
 #include "vardb.h"

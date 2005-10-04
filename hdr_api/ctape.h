@@ -11,9 +11,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-8
 #ifndef TAPE_H
 #define TAPE_H
 
-#ifndef NULL
-#define NULL		(0)
-#endif
+//#ifndef NULL
+//#define NULL		(0)
+//#endif
 
 #ifndef ERR
 #define ERR		(-1)

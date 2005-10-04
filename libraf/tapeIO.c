@@ -42,6 +42,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 #include <errno.h>
 #include <fcntl.h>
+#include <memory.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/uio.h>
