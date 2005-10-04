@@ -21,7 +21,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-05
 #include "amlib.h"
 #include "gui.h"
 
-static void ReadBatchFile(char *filename);
+static void ReadBatchFile(char *filename), usage();
 
 void	Set_SetupFileName(char s[]);
 
@@ -73,21 +73,27 @@ void ProcessArgv(int argc, char **argv)
   cfg.SetLoadProductionSetup(true);
 
   for (i = 1; i < argc; ++i)
-    {
+  {
+    if (strstr(argv[i], "help"))
+      usage();
+
     if (argv[i][0] != '-')
-      {
+    {
       fprintf(stderr, "Invalid option %s, ignoring.\n", argv[i]);
       continue;
-      }
+    }
 
     switch (argv[i][1])
-      {
+    {
+      case 'h':
+        usage();
+        break;
       case 'b':
         cfg.SetInteractive(false);
         ReadBatchFile(argv[++i]);
         break;
-
       case 'r':
+        cfg.SetProcessingRate(Config::SampleRate);
         cfg.SetTimeShifting(false);
         cfg.SetDespiking(false);
         cfg.SetOutputSQL(true);
@@ -97,30 +103,28 @@ void ProcessArgv(int argc, char **argv)
         if (strcmp(argv[i], "-rt3") == 0)	/* RealTime ADS3 */
           RTinit_ADS3();
         else
-          {
+        {
+          cfg.SetOutputSQL(false);	// Not yet.
           cfg.SetHoneyWellCleanup(false); // We want this in real-time.
-          cfg.SetInertialShift(false); // We want this in real-time.
-          }
+          cfg.SetInertialShift(false);	// We want this in real-time.
+        }
         break;
-
       case 'x':
-        cfg.SetTransmitToGround(true);
+        if (cfg.ProcessingMode() == Config::RealTime)
+          cfg.SetTransmitToGround(true);
+        else
+          fprintf(stderr, "Must be in RealTime mode to TransmitToGround, ignoring -x.\n");
         break;
-
       case 'n':
         cfg.SetLoadProductionSetup(false);
         break;
-
       case 'q':
         cfg.SetQCenabled(true);
         break;
-
       default:
         fprintf(stderr, "Invalid option %s, ignoring.\n", argv[i]);
-      }
-
     }
-
+  }
 }	/* END PROCESSARGV */
 
 /* -------------------------------------------------------------------- */
@@ -190,6 +194,27 @@ void GetDataDirectory(char buff[])
     strcpy(buff, p);
     strcat(buff, "/");
   }
+}
+
+/* -------------------------------------------------------------------- */
+static void usage()
+{
+  fprintf(stderr, "Usage: nimbus [-b batch_file] [[-r[t[3]] -x] [-n]\n\n\
+  -b:	Loads a batch_file instead of going interactive.  File options\n\
+	are (last 3 are optional):\n\
+	if=input_file.ads\n\
+	of=output_file.nc\n\
+	sf=setup_file\n\
+	pr=processing_rate [SampleRate=0, LowRate=1, HighRate=25]\n\
+	ti=time_interval [xx:xx:xx-xx:xx:xx]\n\n\
+  -r:	Raw mode, no despiking, time shifting or Honeywell cleanup.\n\
+	Default all variables to sample rate output.\n\
+  -rt:	Real-time for ADS2.\n\
+  -rt3:	Real-time for ADS3.\n\
+  -x:	Transmit SQL statements to the ground via LDM.\n\
+  -n:	Do NOT load any existing production setup files.\n");
+
+  exit(0);
 }
 
 /* END INIT.C */

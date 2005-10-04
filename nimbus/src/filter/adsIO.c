@@ -167,7 +167,7 @@ long FindNextLogicalADS2(char record[], long endtime)
 {
   int	nbytes;
   long	TansStart, rectime;
-    Hdr_blk *ADShdr = (Hdr_blk *)record;
+  Hdr_blk *ADShdr = (Hdr_blk *)record;
 
   rectime = HdrBlkTimeToSeconds(&phys_rec[currentLR * lrlen]);
 

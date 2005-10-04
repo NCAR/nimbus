@@ -401,14 +401,11 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
     switch (cfg.ProcessingRate())
       {
       case Config::LowRate:
+      case Config::SampleRate:
         rc = LowRateLoop(btim, etim);
         break;
-
       case Config::HighRate:
         rc = HighRateLoop(btim, etim);
-        break;
-
-      default:	// Appease compiler.
         break;
       }
 
@@ -754,18 +751,20 @@ void Quit(Widget w, XtPointer client, XtPointer call)
 }
 
 /* -------------------------------------------------------------------- */
-static bool determineInputFileVersion()
+static int determineInputFileVersion()
 {
   FILE *fp = fopen(ADSfileName, "r");
 
   if (fp == 0)
-    return false;
+    return ERR;
 
   fread(buffer, 20, 1, fp);
   fclose(fp);
 
   if ( memcmp(buffer, FIRST_REC_STRING, strlen(FIRST_REC_STRING)) )
     cfg.SetADSVersion(Config::ADS_3);
+
+  return OK;
 
 }	/* END DETERMINEINPUTFILEVERSION */
 
@@ -781,8 +780,7 @@ static int validateInputFile()
     return(ERR);
     }
 
-  determineInputFileVersion();
-  return(OK);
+  return determineInputFileVersion();
 
 }	/* END VALIDATEINPUTFILE */
 
