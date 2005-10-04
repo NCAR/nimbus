@@ -135,6 +135,16 @@ protected:
   void initializeGlobalAttributes();
   void initializeVariableList();
 
+  std::string
+  getGlobalAttribute(const char key[]) const;
+
+  /**
+   * Determine if this is the same flight as the previous instance of nimbus.
+   * Desired real-time operation to determine whether nimbus has been
+   * restarted therefore database should not be 'dropped' and re-created.
+   */
+  bool isSameFlight() const;
+
   /**
    * Low level add a variable with given params.
    */
