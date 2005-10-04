@@ -21,10 +21,6 @@ DESCRIPTION:
 
 #include <Xm/Xm.h>
 
-#ifndef NULL
-#define NULL		(0)
-#endif
- 
 #ifndef ERR
 #define OK		(0)
 #define ERR		(-1)

@@ -11,10 +11,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 #ifndef PMSSPEX_H
 #define PMSSPEX_H
 
-//#ifndef NULL
-//#define NULL		(0)
-//#endif
-
 #define COMMENT		'#'
 
 

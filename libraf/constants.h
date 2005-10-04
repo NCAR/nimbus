@@ -20,10 +20,6 @@ typedef unsigned char   bool;
 #define FALSE		0
 #endif
 
-//#ifndef NULL
-//#define NULL		(0)
-//#endif
-
 #ifndef ERR
 #define OK		(0)
 #define ERR		(-1)
