@@ -49,6 +49,11 @@ PostgreSQL::PostgreSQL(std::string specifier, bool transmitToGround)
   else
     _ldm = 0;
 
+  if (isSameFlight())
+    printf(">>>>>>>>>>>>>>>> isSameFlight() == true;\n");
+  else
+    printf(">>>>>>>>>>>>>>>> isSameFlight() == false;\n");
+
   dropAllTables();	// Remove existing tables, this is a reset.
   createTables();
   initializeGlobalAttributes();
@@ -686,8 +691,41 @@ PostgreSQL::createSampleRateTables(const rateTableMap &tableMap)
     _transmitString << ");";
     _ldm->sendString(_transmitString.str());
   }
-    
 }	// END CREATESAMPLERATETABLES
+
+/* -------------------------------------------------------------------- */
+std::string
+PostgreSQL::getGlobalAttribute(const char key[]) const
+{
+  char temp[128];
+  std::string resultStr;
+
+  sprintf(temp, "SELECT value FROM global_attributes WHERE key='%s';", key);
+  PGresult *res = PQexec(_conn, temp);
+
+  if (PQntuples(res) > 0)
+  {
+    resultStr = PQgetvalue(res, 0, 0);
+    remove_trailing_spaces(resultStr);
+  }
+  PQclear(res);
+
+  return resultStr;
+}
+
+/* -------------------------------------------------------------------- */
+bool
+PostgreSQL::isSameFlight() const
+{
+  if (cfg.ProjectName() != getGlobalAttribute("ProjectName"))
+    return false;
+
+  if (cfg.FlightNumber() != getGlobalAttribute("FlightNumber"))
+    return false;
+
+  return true;
+
+}	// END ISSAMEFLIGHT
 
 /* -------------------------------------------------------------------- */
 void
@@ -696,11 +734,12 @@ PostgreSQL::submitCommand(const std::string command, bool xmit)
   if (_conn == 0)
     return;
 
+  // Clear any outstanding 'results'.
   PGresult* res;
-
   while ( (res = PQgetResult(_conn)) )
     PQclear(res);
 
+  // Submit command asynchronously.
   PQsendQuery(_conn, command.c_str());
   fprintf(stderr, "%s", PQerrorMessage(_conn));
 
