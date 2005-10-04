@@ -19,6 +19,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8
 
 #include <cmath>
 
+const float Panel::cosFactor = 0.866025;
+const float Panel::sinFactor = 0.5;
+
 /* -------------------------------------------------------------------- */
 Panel::Panel()
 {

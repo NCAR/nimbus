@@ -79,7 +79,7 @@ public:
 
 
 private:
-  static const float	cosFactor = 0.866025, sinFactor = 0.5;
+  static const float	cosFactor, sinFactor;
 
   void	drawLabels(PlotInfo& p),
 	printLabels(PlotInfo& p, PostScript& pen),

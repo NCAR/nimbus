@@ -43,7 +43,7 @@ public:
 protected:
   void		ComputeWidths(), ComputeDOF(float tasx);
 
-  static const float	diodeDiameter = 0.2;
+  static const float	diodeDiameter;
 
   int	nDiodes;
   float	responseTime, armDistance, PLWfac, DENS, DBZfac;

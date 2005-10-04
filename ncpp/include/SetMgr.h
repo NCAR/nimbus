@@ -23,6 +23,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2001
 #include "DataFile.h"
 #include "Time.h"
 
+class Panel; 
 
 /* -------------------------------------------------------------------- */
 class SetManager {

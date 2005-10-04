@@ -16,6 +16,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 
 #include "Probe200.h"
 
+const float Probe200::diodeDiameter = 0.2;
 
 /* -------------------------------------------------------------------- */
 Probe200::Probe200(NcFile *file, NcVar *av) : Probe(file, av)
