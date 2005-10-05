@@ -298,6 +298,17 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
   cfg.SetProjectName(syncRecReader->getProjectName());
   cfg.SetPlatform(syncRecReader->getTailNumber());
 
+  // For now extract Flight Date from file_name.
+  char *fd = strstr(header_file, "dsm_");
+  if (fd)
+  {
+    int year, month, day;
+
+    sscanf(fd, "dsm_%04d%02d%02d", &year, &month, &day);
+    sprintf(buffer, "%02d/%02d/%04d\n", month, day, year);
+    cfg.SetFlightDate(buffer);
+  }
+
 cfg.SetProjectNumber("501");
 printf("ProjectNumber is hardcoded = %s\n", cfg.ProjectNumber().c_str());
 
