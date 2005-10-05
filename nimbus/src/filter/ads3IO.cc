@@ -55,21 +55,29 @@ long FindFirstLogicalADS3(
 {
   dsm::dsm_time_t tt;
   time_t ut = 0;
+  long recTime;
   int rc;
 
-  while ((rc = syncRecReader->read(&tt, (float *)record, nSRfloats)) > 0)
+  do
   {
-    ut = tt / USECS_PER_SEC;
-    long recTime = xlateToSecondsSinceMidnight(ut);
+    try
+    {
+      rc = syncRecReader->read(&tt, (float *)record, nSRfloats);
+    }
+    catch (const atdUtil::IOException& e)
+    {
+      return 0;
+    }
 
-    // @todo get rid of this one mid-night rollover bullshit.  i.e. use date/time
+    ut = tt / USECS_PER_SEC;
+    recTime = xlateToSecondsSinceMidnight(ut);
+
+    /// @todo get rid of this one mid-night rollover bullshit.  i.e. use date/time
     //       12:00:00              23:59:59
     if (recTime < 43200L && startTime > 86399L)
       recTime += 86399L;
-
-    if (startTime == BEG_OF_TAPE || recTime >= startTime)
-      break;
   }
+  while (!(startTime == BEG_OF_TAPE || recTime >= startTime));
 
   processTimeADS3((float *)record, ut);
   return rc * sizeof(float);
@@ -82,9 +90,15 @@ long FindNextLogicalADS3(char record[], long endTime)
   dsm::dsm_time_t tt;
   int rc;
 
-  if ((rc = syncRecReader->read(&tt, (float *)record, nSRfloats)) == 0)
+  try
+  {
+    rc = syncRecReader->read(&tt, (float *)record, nSRfloats);
+  }
+  catch (const atdUtil::IOException& e)
+  {
     return 0;
-
+  }
+  
   time_t ut = tt / USECS_PER_SEC;
   long recTime = xlateToSecondsSinceMidnight(ut);
 

@@ -176,7 +176,7 @@ static void CommonPreInitialization()
   sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, cfg.ProjectNumber().c_str());
   InitPMSspecs(buffer);
 
-}
+}	// END COMMONPREINITIALIZATION
 
 /* -------------------------------------------------------------------- */
 static void CommonPostInitialization()
@@ -266,12 +266,12 @@ for (size_t i = 0; i < derived.size(); ++i)
   ReadDefaultDerivedOutputRate();
   SetUpDependencies();
 
-}
+}	// END COMMONPOSTINITIALIZATION
 
 /* -------------------------------------------------------------------- */
 int DecodeHeader3(const char header_file[])
 {
-printf("DecodeHeader3\n");
+printf("DecodeHeader3: header_file=%s\n", header_file);
   extern dsm::SyncRecordReader* syncRecReader;
 
   if (cfg.ProcessingMode() == Config::PostProcessing)
