@@ -6,8 +6,12 @@
 # setenv WINDS $JLOCAL
 
 if ( ! $?JLOCAL || ! $?LOCAL ) then
-    echo "Need to set LOCAL, JLOCAL, and WINDS."
+    echo "Need to set LOCAL, JLOCAL."
     exit 1
+endif
+
+if ( ! $?WINDS ) then
+    echo "WINDS not set, ADS2 and winds will NOT be built."
 endif
 
 # Pre-req's that most likely exist on your system, Motif, Qt.
@@ -33,7 +37,7 @@ test -d ${JLOCAL}/man/man3 || mkdir ${JLOCAL}/man/man3
 # Build libraries first.  libraf++ needs to go first to install header.h.
 
 foreach file ( libraf++ hdr_api libraf libaircraft libpms vardb/lib )
-  (cd $file; echo ""; make install)
+  (cd $file; echo $file; make install)
 end
 
 # Programs with "install" target.
@@ -45,21 +49,22 @@ end
 # Programs using "scons".
 
 foreach file ( nimbus )
-  (cd $file; echo ""; scons install)
+  (cd $file; echo $file; scons install)
 end
 
 # Programs withOUT install target.  WINDS requires xview toolkit.
 
-#foreach file ( ads/disc/src ads/dsm/src winds/src )
-#foreach file ( winds/src )
-#  (cd $file; echo ""; make)
-#end
+if ( $?WINDS ) then
+  foreach file ( ads/disc/src ads/dsm/src winds/src )
+    (cd $file; echo $file; make)
+  end
+endif
 
 
 # Programs with Qt [and Qwt].
 
 foreach file ( rtplot ads_utils/hvpsdiag )
-  (cd $file; echo ""; qmake; make)
+  (cd $file; echo $file; qmake; make)
 end
 
 
@@ -67,6 +72,6 @@ end
 
 cd nc_utils
 foreach file ( asc2cdf n2asc ncReorder ncav ncextr ncmerge )
-  (cd $file; echo ""; make install)
+  (cd $file; echo $file; make install)
 end
 cd ..
