@@ -24,7 +24,7 @@ WIN.O = $(O)AnalogWin.o $(O)DsmConfig.o $(O)DsmHeaders.o $(O)DsmMessage.o $(O)Ds
 
 SIM.O = $(O)DsmNet.o $(O)TcpSocket.o
 
-COMM.H = $(IL)header.h $(I)dsmctl.h ${IL}Events.h
+COMM.H = $(IL)header.h $(I)dsmctl.h ${L}Events.h
 
 TAPE.H = $(IL)header.h $(I)dsmctl.h 
 
