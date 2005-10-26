@@ -198,15 +198,13 @@ static void readHeader()
     return;
   }
 
+  sprintf(buffer, "%s - %s, Flight %s",
+	cfg.ProjectName().c_str(), cfg.ProjectNumber().c_str(),
+	cfg.FlightNumber().c_str());
+
   if (cfg.Interactive())
     {
     Arg		args[1];
-
-    CreateProbeMenu();
-    FillListWidget();
-
-    sprintf(buffer, "%s - %s, Flight %s",
-	cfg.ProjectName().c_str(), cfg.ProjectNumber().c_str(), cfg.FlightNumber().c_str());
 
     XtSetArg(args[0], XmNtitle, buffer);
     XtSetValues(Shell001, args, 1);
@@ -214,7 +212,7 @@ static void readHeader()
     if (LogFile)
       {
       extern Widget logText;
-      char	*p = XmTextGetString(logText);
+      char *p = XmTextGetString(logText);
 
       strcat(buffer, "\n");
       fprintf(LogFile, buffer);
@@ -223,15 +221,14 @@ static void readHeader()
       XtFree(p);
       }
 
+    CreateProbeMenu();
+    FillListWidget();
     checkForProductionSetup();
     }
   else
     {
     if (cfg.ProcessingRate() == Config::HighRate)
       SetHighRate(NULL, NULL, NULL);
-
-    sprintf(buffer, "%s - %s, Flight %s\n",
-	cfg.ProjectName().c_str(), cfg.ProjectNumber().c_str(), cfg.FlightNumber().c_str());
 
     LogMessage(buffer);
 
