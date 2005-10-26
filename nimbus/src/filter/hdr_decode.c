@@ -297,6 +297,7 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
 
   cfg.SetProjectName(syncRecReader->getProjectName());
   cfg.SetPlatform(syncRecReader->getTailNumber());
+  cfg.SetFlightNumber(syncRecReader->getFlightName());
 
   // For now extract Flight Date from file_name.
   char *fd = strstr(header_file, "dsm_");
