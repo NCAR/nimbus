@@ -25,6 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 
 #include <stdio.h>
 #include "header.h"
+#include <netinet/in.h>
 
 #define HdrBlkTimeToSeconds(hdr)		\
 	(ntohs(((struct Hdr_blk  *)hdr)->second) +	\

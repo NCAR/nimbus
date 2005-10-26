@@ -10,7 +10,7 @@
 #
 # default flags, assuming development mode (debug on)
 #
-NIMBUS=		/code/chris/nimbus_resampler
+NIMBUS=		/home/local/raf/nimbus/
 OPENWINHOME=	/usr/openwin
 LOCAL_INCL=     $(JLOCAL)/include/
 INC= 		$(WINDS)/include/
@@ -38,12 +38,12 @@ INCLUDE=        $(XVIEW_INCL) $(WINDS_INCL) $(SHARE_INCL)
 #
 # library paths
 #
-LIB_PATH=       -L${JLOCAL}/lib -L/usr/openwin/lib -L/usr/X11R6/lib
+LIB_PATH=       -L${JLOCAL}/lib -L/usr/openwin/lib -L/usr/X11R6/lib 
 #
 # libraries
 #
 UNIXLIBS=     	-lxview -lolgx -lnetcdf -lX11 -lXp -lXext -lm
-RAFLIBS=     	-lhdr_api -lVarDB -lraf -lpms
+RAFLIBS=     	-lhdr_api -lVarDB -lraf -lpms 
 #
 WLIBS=     	$(UNIXLIBS) $(RAFLIBS)
 #
@@ -398,7 +398,7 @@ $(OBJ)shmem.o: $(INC)shmem.h $(LOCAL_INCL)constants.h $(INC)display.h $(INC)leng
 # See Gary Horton for clarification.  
 #  
 # 
-NOBJ    = $(NIMBUS)/src/filter/obj/
+NOBJ    = $(NIMBUS)/src/filter/
 NIMBUS.O = $(NOBJ)globals.o $(NOBJ)hdr_decode.o $(NOBJ)rd_lag.o $(NOBJ)popen.o \
 	$(NOBJ)depend.o $(NOBJ)order.o $(NOBJ)rec_decode.o $(NOBJ)compute.o \
 	$(NOBJ)rd_defs.o $(NOBJ)amlibfn.o $(NOBJ)pms1d_rt.o $(NOBJ)memalloc.o \
@@ -413,11 +413,11 @@ WINPUT.O = $(OBJ)winputops.o $(OBJ)netcdf.o $(OBJ)netconfig.o \
 
 LIBEXEC = $(NIMBUS)/lib/
 
-LINKLIBS = -lstd -luser -lxlate -lval -lnetcdf -lAircraft -lhdr_api -lVarDB -lraf++ -lraf -lpms -lgsl -lgslcblas -lm
+LINKLIBS = -lstd -luser -lxlate -lval -lnetcdf -lAircraft -lhdr_api -lVarDB -lraf++ -lraf -lpms -lgsl -lgslcblas -lm -lDsm -lisa -lXmlRpc -lxerces-c -lpq
 
 winput: $(EXEC)winput
 
-WINPUTCOMPONENTS = -L$(LIBEXEC) -L${JLOCAL}/lib $(LINKLIBS)
+WINPUTCOMPONENTS = -L$(LIBEXEC) -L/opt/ads3/x86/lib -L${JLOCAL}/lib $(LINKLIBS)
 $(EXEC)winput: $(NIMBUS.O) $(WINPUT.O)
 #	cd $(NIMBUS)/src/filter; make obj
 	g++ -g -O $(WINPUT.O) $(NIMBUS.O) $(WINPUTCOMPONENTS) -o $(EXEC)/winput
@@ -426,10 +426,10 @@ $(EXEC)winput: $(NIMBUS.O) $(WINPUT.O)
 # different directories, must have explicit targets so we don't use wrong source
 #
 $(NOBJ)netcdf.o: $(NIMBUS)/src/filter/netcdf.c
-	cd $(NIMBUS)/src/filter; make obj
+#	cd $(NIMBUS)/src/filter; make obj
 
 $(NOBJ)pms1d_rt.o: $(NIMBUS)/src/filter/pms1d_rt.c
-	cd $(NIMBUS)/src/filter; make obj
+#	cd $(NIMBUS)/src/filter; make obj
 
 ###################  C FILES
 

@@ -46,6 +46,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 //#define QC
 
 static int infd;
+FILE *LogFile;
 static int set_start_time=FALSE;
 static int last_recs_read=0;
 static char buff[MAX_SOCKET_BUFF_LNGTH];
@@ -149,7 +150,7 @@ void DoDataInitStuff()
  get_lrlen(&LRlen);
  *len_raw = sdi.size();
  *len_derive = raw.size()+derived.size();
- ProjectNumber=proj_number;
+ cfg.SetProjectNumber(proj_number);
 }
 
 /**************************  LoopAndGetDataToShmem() *************************/
