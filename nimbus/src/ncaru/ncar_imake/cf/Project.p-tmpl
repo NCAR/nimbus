@@ -1,7 +1,0 @@
-/*
-**	 Dummy private Project file
-*/
-
-#ifndef	ProjectName
-#define	ProjectName	ncar_imake
-#endif
