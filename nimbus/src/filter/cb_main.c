@@ -757,8 +757,9 @@ static int determineInputFileVersion()
 
   fread(buffer, 20, 1, fp);
   fclose(fp);
+  buffer[20] = '\0';
 
-  if ( memcmp(buffer, FIRST_REC_STRING, strlen(FIRST_REC_STRING)) )
+  if ( strstr(buffer, "NCAR ADS3") )
     cfg.SetADSVersion(Config::ADS_3);
 
   return OK;
