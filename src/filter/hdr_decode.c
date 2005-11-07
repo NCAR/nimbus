@@ -281,7 +281,7 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
     if (pid == 0)
     {
       execl("/opt/ads3/x86/bin/launch_ss.sh", "launch_ss.sh", header_file, NULL);
-      HandleError("Gordon says things are really screwed up!");
+      fprintf(stderr, "nimbus: failed to exec launch_ss.sh\n");
       _exit(1);
     }
 
