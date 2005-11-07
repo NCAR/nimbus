@@ -26,7 +26,7 @@ const NR_TYPE floatNAN = nanf("");
 const NR_TYPE MISSING_VALUE = -32767.0;
 const int MAX_COF = 6;
 
-const std::string DSMSERVER = "ac-server";
+const std::string DSMSERVER = "localhost";
 const int DSMSERVERPORT = 30001;
 
 char	buffer[8192];		// Generic, volatile string space
