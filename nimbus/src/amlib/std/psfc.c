@@ -22,7 +22,7 @@ void spsfc(DERTBL *varp)
   psf = GetSample(varp, 0);
   qcx = GetSample(varp, 1);
 
-  psfc = psf + (*pcorPSF)(qcx,psf);
+  psfc = psf + (*pcorPSF)(qcx, psf);
 
   if (qcx < 10.0)
     psfc = psf;

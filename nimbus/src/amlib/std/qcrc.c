@@ -23,14 +23,11 @@ extern int	Aircraft;
 /* -------------------------------------------------------------------- */
 void sqcrc(DERTBL *varp)
 {
-  NR_TYPE	qcr, akrd, qcrc = 0.0, adifr, bdifr;
+  NR_TYPE	qcr, akrd, qcrc = 0.0, adifr, bdifr, psf;
   NR_TYPE	bqcrc, satk3, sbeta3;
   double	atk3, beta3;
 
   qcr	= GetSample(varp, 0);
-  adifr	= GetSample(varp, 1);
-  bdifr	= GetSample(varp, 2);
-  akrd	= GetSample(varp, 3);
 
   if (qcr < 0.001)
     qcr = 0.1;
@@ -38,14 +35,19 @@ void sqcrc(DERTBL *varp)
   switch (Aircraft)
     {
     case C130:
+      akrd = GetSample(varp, 3);
       qcrc = qcr - (*pcorQCR)(akrd, 1.0);
       break;
 
     case HIAPER:
-      qcrc = qcr - (*pcorQCR)(qcr, 1.0);
+      psf = GetSample(varp, 1);
+      qcrc = qcr - (*pcorQCR)(qcr, psf);
       break;
 
     case ELECTRA:
+      adifr = GetSample(varp, 1);
+      bdifr = GetSample(varp, 2);
+
       atk3 = fabs((double)((adifr / qcr) + 0.4095) / 0.0715);
       beta3= fabs((double)((bdifr / qcr) + 0.0375) / 0.06577);
       satk3	= sin(atk3 * DEG_RAD);
@@ -63,6 +65,7 @@ void sqcrc(DERTBL *varp)
       break;
 
     case NRL_P3:
+      adifr = GetSample(varp, 1);
       bqcrc = 0.3 + adifr * (0.0402 + 0.0013 * adifr);
 
       if (bqcrc > 0.8)
@@ -72,6 +75,9 @@ void sqcrc(DERTBL *varp)
       break;
 
     case KINGAIR:
+      adifr = GetSample(varp, 1);
+      bdifr = GetSample(varp, 2);
+
       atk3	= fabs((double)adifr / (qcr * 0.08485));
       beta3	= fabs((double)bdifr / (qcr * 0.07448));
       satk3	= sin(atk3 * DEG_RAD);
