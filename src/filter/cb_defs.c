@@ -55,10 +55,10 @@ void SaveDefaults(FILE *fp)	/* Save modified defaults into "Setup" file */
   for (size_t i = 0; i < nDefaults; ++i)
     if (Defaults[i]->Dirty)
       {
-      fprintf(fp, "DEFAULT=%s %d", Defaults[i]->Name, Defaults[i]->nValues);
+      fprintf(fp, "DEFAULT=%s %d", Defaults[i]->Name, Defaults[i]->Values.size());
 
-      for (size_t j = 0; j < Defaults[i]->nValues; ++j)
-        fprintf(fp, " %e", Defaults[i]->Value[j]);
+      for (size_t j = 0; j < Defaults[i]->Values.size(); ++j)
+        fprintf(fp, " %e", Defaults[i]->Values[j]);
 
       fprintf(fp, "\n");
       }
@@ -73,8 +73,8 @@ void SetDefaultsValue(const char target[], NR_TYPE *new_value)
       {
       Defaults[i]->Dirty = true;
 
-      for (size_t j = 0; j < Defaults[i]->nValues; ++j)
-        Defaults[i]->Value[j] = new_value[j];
+      for (size_t j = 0; j < Defaults[i]->Values.size(); ++j)
+        Defaults[i]->Values[j] = new_value[j];
 
       return;
       }
@@ -88,10 +88,7 @@ void SetDefaultsValue(const char target[], NR_TYPE *new_value)
 void ResetDefaults(Widget w, XtPointer client, XtPointer call)
 {
   for (size_t i = 0; i < nDefaults; ++i)
-    {
-    delete [] Defaults[i]->Value;
     delete Defaults[i];
-    }
 
   nDefaults = 0;
 
@@ -148,8 +145,8 @@ void CreateEditDefaultsWindow()
     XmStringFree(labelString);
 
     n = 0;
-    XtSetArg(args[n], XmNcolumns, 14 * Defaults[i]->nValues); n++;
-    XtSetArg(args[n], XmNmaxLength, 14 * Defaults[i]->nValues); n++;
+    XtSetArg(args[n], XmNcolumns, 14 * Defaults[i]->Values.size()); n++;
+    XtSetArg(args[n], XmNmaxLength, 14 * Defaults[i]->Values.size()); n++;
     XtSetArg(args[n], XmNleftAttachment, XmATTACH_WIDGET); n++;
     XtSetArg(args[n], XmNleftWidget, label[i]); n++;
     defaultText[i] = XmCreateTextField(form[i], "txt", args, n);
@@ -236,7 +233,7 @@ static void VerifyDefault(Widget w, int indx, XtPointer call)
    */
   p1 = strtok(p, ", ");
 
-  for (size_t i = 0; i < Defaults[indx]->nValues; ++i)
+  for (size_t i = 0; i < Defaults[indx]->Values.size(); ++i)
     {
     f[i] = p1 ? (NR_TYPE)atof(p1) : 0.0;
 
@@ -248,8 +245,8 @@ static void VerifyDefault(Widget w, int indx, XtPointer call)
 
   /* Set values & reprint text widget
    */
-  for (size_t i = 0; i < Defaults[indx]->nValues; ++i)
-    Defaults[indx]->Value[i] = f[i];
+  for (size_t i = 0; i < Defaults[indx]->Values.size(); ++i)
+    Defaults[indx]->Values[i] = f[i];
 
   set_defaultText(indx);
 
@@ -262,12 +259,12 @@ static void set_defaultText(int indx)
 
   buffer[0] = '\0';
 
-  for (size_t i = 0; i < Defaults[indx]->nValues; ++i)
+  for (size_t i = 0; i < Defaults[indx]->Values.size(); ++i)
     {
     if (i > 0)
       strcat(buffer, ", ");
 
-    sprintf(temp, "%e", Defaults[indx]->Value[i]);
+    sprintf(temp, "%e", Defaults[indx]->Values[i]);
     strcat(buffer, temp);
     }
 

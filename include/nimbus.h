@@ -54,8 +54,7 @@ typedef struct
 	char	var[NAMELEN];	// Variable which uses this default
 	bool	Used;		// Was it requested by amlib
 	bool	Dirty;		// value changed via GUI
-	size_t	nValues;
-	NR_TYPE	*Value;
+	std::vector<NR_TYPE> Values;
 	} DEFAULT;
 
 
