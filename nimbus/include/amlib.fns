@@ -649,17 +649,17 @@
 	"ATW",		NULL,		NULL,		satf,
 	"ATX",		NULL,		NULL,		sRefer,
 	"ATRR",		NULL,		NULL,		satb,
-	"TTWHC",	NULL,		NULL,		sttwhc,
-	"TTRH1C",	NULL,		NULL,		sttwhc,
-	"TTRH2C",	NULL,		NULL,		sttwhc,
-	"TTLH1C",	NULL,		NULL,		sttwhc,
-	"TTLH2C",	NULL,		NULL,		sttwhc,
+	"ATRL",		NULL,		NULL,		satb,
+	"TTWHC",	(void(*)(void*))tthcInit,	NULL,		sttwhc,
 	"ATWH",		(void(*)(void*))atfhInit,	NULL,		satfh,
+	"TTRH1C",	(void(*)(void*))tthcInit,	NULL,		sttwhc,
+	"TTRH2C",	(void(*)(void*))tthcInit,	NULL,		sttwhc,
+	"TTLH1C",	(void(*)(void*))tthcInit,	NULL,		sttwhc,
+	"TTLH2C",	(void(*)(void*))tthcInit,	NULL,		sttwhc,
 	"ATRH1",	(void(*)(void*))atfhInit,	NULL,		satfh,
 	"ATRH2",	(void(*)(void*))atfhInit,	NULL,		satfh,
 	"ATLH1",	(void(*)(void*))atfhInit,	NULL,		satfh,
 	"ATLH2",	(void(*)(void*))atfhInit,	NULL,		satfh,
-	"ATRL",		NULL,		NULL,		satb,
 #
 #	Derived temperatues
 #

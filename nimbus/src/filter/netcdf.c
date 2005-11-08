@@ -209,26 +209,9 @@ void CreateNetCDF(const char fileName[])
   putGlobalAttribute("FlightNumber", cfg.FlightNumber());
 
   if (cfg.ProcessingMode() == Config::RealTime)
-  {
-    time_t	x = time(NULL);
-    gmtime_r(&x, &StartFlight);
-    StartFlight.tm_mon += 1;
-    StartFlight.tm_year += 1900;  /* will be subtracted off later	*/
     sprintf(buffer, "%02d/%02d/%04d", StartFlight.tm_mon, StartFlight.tm_mday, StartFlight.tm_year);
-  }
   else
-  {
     strcpy(buffer, cfg.FlightDate().c_str());
-    if (cfg.FlightDate().size() > 0)
-      sscanf(buffer, "%d/%d/%d", &StartFlight.tm_mon, &StartFlight.tm_mday, &StartFlight.tm_year);
-  }
-
-  FlightDate[0] = StartFlight.tm_mon;  /* HACK: for amlib/xlate/time.c */
-  FlightDate[1] = StartFlight.tm_mday;
-  FlightDate[2] = StartFlight.tm_year;
-
-  StartFlight.tm_year -= 1900;
-  StartFlight.tm_mon -= 1;
 
   putGlobalAttribute("FlightDate", buffer);
 
@@ -531,8 +514,6 @@ void CreateNetCDF(const char fileName[])
     else
       data_p[indx++] = (void *)&HighRateData[dp->HRstart];
   }
-
-  ncendef(fd);
 
 }	/* END CREATENETCDF */
 
@@ -1132,5 +1113,30 @@ static void addCommonVariableAttributes(var_base *var)
   ncattput(fd, var->varid, "missing_value", NC_FLOAT, 1, &MISSING_VALUE);
 
 }	/* END ADDCOMMONVARIABLEATTRIBUTES */
+
+/* -------------------------------------------------------------------- */
+void ProcessFlightDate()
+{
+  if (cfg.ProcessingMode() == Config::RealTime)
+  {
+    time_t      x = time(NULL);
+    gmtime_r(&x, &StartFlight);
+    StartFlight.tm_mon += 1;
+    StartFlight.tm_year += 1900;  /* will be subtracted off later       */
+  }
+  else
+  {
+    strcpy(buffer, cfg.FlightDate().c_str());
+    if (cfg.FlightDate().size() > 0)
+      sscanf(buffer, "%d/%d/%d", &StartFlight.tm_mon, &StartFlight.tm_mday, &StartFlight.tm_year);
+  }
+
+  FlightDate[0] = StartFlight.tm_mon;  /* HACK: for amlib/xlate/time.c */
+  FlightDate[1] = StartFlight.tm_mday;
+  FlightDate[2] = StartFlight.tm_year;
+
+  StartFlight.tm_year -= 1900;
+  StartFlight.tm_mon -= 1;
+}
 
 /* END NETCDF.C */

@@ -22,6 +22,19 @@ static NR_TYPE atfh[nFeedBackTypes] = { 0.0, 0.0 };
 /* -------------------------------------------------------------------- */
 void atfhInit(DERTBL *varp)
 {
+  std::vector<NR_TYPE> values;
+  values.push_back(recfrh);
+  AddToDefaults(varp->name, "RecoveryFactor", values);
+
+}	/* END CONSTRUCTOR */
+
+/* -------------------------------------------------------------------- */
+void tthcInit(DERTBL *varp)
+{
+  std::vector<NR_TYPE> values;
+  values.push_back(tfher2);
+  values.push_back(tfher1);
+  AddToDefaults(varp->name, "RecoveryFactors", values);
 
 }	/* END CONSTRUCTOR */
 

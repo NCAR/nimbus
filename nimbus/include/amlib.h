@@ -12,6 +12,8 @@ DESCRIPTION:	Header File declaring amlib functions.
 #include "header.h"
 #include <netinet/in.h>
 
+#include <vector>
+
 const size_t MAX_FSSP = 4;
 const size_t MAX_260X = 2;
 const size_t MAX_ASAS = 2;
@@ -85,6 +87,8 @@ extern struct _dnfn	deriveftns[];
 extern float	HDRversion;
 
 NR_TYPE *GetDefaultsValue(const char target[], const char var[]);
+void AddToDefaults(const char varName[], const char attrName[],
+	const std::vector<NR_TYPE>& values);
 
 #if defined(__LITTLE_ENDIAN) || defined(_LITTLE_ENDIAN) || defined(LITTLE_ENDIAN)
 float	ntohf(float);

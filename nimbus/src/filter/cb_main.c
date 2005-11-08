@@ -68,7 +68,7 @@ extern Widget	Shell001;
 extern size_t	nDefaults;
 extern DEFAULT	*Defaults[];
 
-void	CloseSQL();
+void	CloseSQL(), ProcessFlightDate();
 void	ValidateOutputFile(Widget w, XtPointer client, XtPointer call);
 static int	validateInputFile();
 
@@ -98,10 +98,7 @@ void CancelSetup(Widget w, XtPointer client, XtPointer call)
     delete derived[i];
 
   for (i = 0; i < nDefaults; ++i)
-    {
-    delete [] Defaults[i]->Value;
     delete Defaults[i];
-    }
 
   FreeDataArrays();
   ReleaseFlightHeader();
@@ -290,14 +287,12 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   /* RunAMLIBinits before creating netCDF to setup defaults into
    * netCDF attributes.
    */
+  ProcessFlightDate();
+  InitAircraftDependencies();
   RunAMLIBinitializers();
   CreateNetCDF(OutputFileName);
   InitAsyncModule(OutputFileName);
   ConfigurationDump();
-
-  /* This needs to be after CreateNetCDF, so that FlightDate is initialized.
-   */
-  InitAircraftDependencies();
 
 
   for (size_t i = 0; i < sdi.size(); ++i)
@@ -376,6 +371,8 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
     FindNextLogicalRecord = 0;
   }
 
+  void SwitchNetCDFtoDataMode();
+  SwitchNetCDFtoDataMode();
 
   if (cfg.ProcessingMode() == Config::RealTime)
     {
@@ -1079,15 +1076,15 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
 
     fprintf(fp, "%s :", Defaults[i]->Name);
 
-    if (Defaults[i]->nValues > 5)
+    if (Defaults[i]->Values.size() > 5)
       fprintf(fp, "\n\t");
 
-    for (size_t j = 0; j < Defaults[i]->nValues; ++j)
+    for (size_t j = 0; j < Defaults[i]->Values.size(); ++j)
       {
       if (j > 0 && j % 5 == 0)
         fprintf(fp, "\n\t");
 
-      fprintf(fp, "%14e", Defaults[i]->Value[j]);
+      fprintf(fp, "%14e", Defaults[i]->Values[j]);
       }
 
     fprintf(fp, "\n");
