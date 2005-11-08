@@ -82,7 +82,7 @@ void sakrd(DERTBL *varp)
         break;
 
       case HIAPER:
-        akrd = ((adifr / qcxc) + 0.297 ) / 0.05575;
+        akrd = ((adifr / qcxc) + 0.2571 ) / 0.04727;
         break;
 
       case SABRELINER:

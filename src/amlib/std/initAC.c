@@ -41,8 +41,8 @@ NR_TYPE	(*pcorPSF)(NR_TYPE, NR_TYPE), (*pcorQCF)(NR_TYPE, NR_TYPE),
 NR_TYPE	pcorw8(NR_TYPE, NR_TYPE),pcorf8(NR_TYPE, NR_TYPE),pcorw2(NR_TYPE, NR_TYPE),
 	pcorr2(NR_TYPE, NR_TYPE), pcorb7(NR_TYPE, NR_TYPE),pcorf7(NR_TYPE, NR_TYPE),
 	pcorr1(NR_TYPE, NR_TYPE),pcorf1(NR_TYPE, NR_TYPE), pcorf3(NR_TYPE, NR_TYPE),
-	pcorr3(NR_TYPE, NR_TYPE),pcorf1_2(NR_TYPE, NR_TYPE), pcorf1_3(NR_TYPE, NR_TYPE),
-	pcorf1_4(NR_TYPE, NR_TYPE), pcorr5(NR_TYPE, NR_TYPE),pcorf5(NR_TYPE, NR_TYPE);
+	pcorr3(NR_TYPE, NR_TYPE),pcorf1_2(NR_TYPE, NR_TYPE), pcorf1_3(NR_TYPE, NR_TYPE), pcorf1_4(NR_TYPE, NR_TYPE),
+	pcorr5(NR_TYPE, NR_TYPE), pcorf5(NR_TYPE, NR_TYPE), pcorq5(NR_TYPE, NR_TYPE);
 
 /* reference airspeed on J-W liquid water content converted from MPH
  * to m/s
@@ -184,10 +184,12 @@ void InitAircraftDependencies()
 
     case HIAPER:
       LogMessage("NCAR G5 pcor's installed.");
-      tfher1	= -1.7244;
-      tfher2	= -1.5989;
+//      tfher1	= -1.7244;
+//      tfher2	= -1.5989;
+      tfher1	= -5.286;
+      tfher2	= -3.958;
       pcorQCF	= pcorf5;
-      pcorQCR	= pcorr5;	
+      pcorQCR	= pcorq5;	
       pcorPSF	= pcorr5;
       break;
 
@@ -271,13 +273,25 @@ NR_TYPE pcorf7(NR_TYPE q, NR_TYPE q1)
 /* GV ---------------------------------------------------------------- */
 NR_TYPE pcorr5(NR_TYPE q, NR_TYPE q1)
 {
-  return(1.86 - 0.04033 * q);
+  if (q > 140.0)
+    q = 140.0;
+
+  return 3.37 - 0.03776 * q + q1 * (1.04068e-06 * q1 - 0.00296);
+//  return(3.316 - 0.04033 * q - 0.00183 * q1);
+//  return(1.86 - 0.04033 * q);
+}
+
+NR_TYPE pcorq5(NR_TYPE q, NR_TYPE q1)
+{
+  if (q > 140.0)
+    q = 140.0;
+
+  return 7.75 - 0.03776 * q + q1 * (1.6849e-06 * q1 - 0.00662);
 }
 
 NR_TYPE pcorf5(NR_TYPE q, NR_TYPE q1)
 {
   return(0.754 + q * (-0.017657 + 7.557e-05 * q));
-
 //  return(0.24 - 0.005389 * q);
 }
 
