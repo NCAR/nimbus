@@ -110,7 +110,8 @@ public:
   long ADSoffset;	// Offset between samples
   char type[4];		// Analog, Digital or Counter
 
-  void (*Average)(NR_TYPE *, NR_TYPE *, void *); // Routine to use to average/sum data
+  void (*Average)(...);	// Routine to use to average/sum data
+//  void (*Average)(NR_TYPE *, NR_TYPE *, void *); // Routine to use to average/sum data
 
   long convertOffset;
   float	convertFactor;

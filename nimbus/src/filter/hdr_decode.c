@@ -399,7 +399,7 @@ static SDITBL* initSDI_ADS3(dsm::SyncRecordVariable* var)
       LogMessage("hdr_decode:initSDI_ADS3: Unsupported type from Variable->getType()\n");
   }
 
-  cp->Average = (void (*) (NR_TYPE *, NR_TYPE *, void *))(cp->type[0] == 'C' ? SumSDI : AverageSDI);
+  cp->Average = (void (*) (...))(cp->type[0] == 'C' ? Sum : Average);
 
   dsm::VariableConverter* converter =
 		const_cast<dsm::VariableConverter*>(var->getConverter());
@@ -999,7 +999,7 @@ static void initSDI(char vn[])
   cp->SampleRate	= rate;
   cp->ADSstart		= start >> 1;
   cp->ADSoffset		>>= 1;
-  cp->Average		= (void (*) (NR_TYPE *, NR_TYPE *, void *))(cp->type[0] == 'C' ? SumSDI : AverageSDI);
+  cp->Average		= (void (*) (...))(cp->type[0] == 'C' ? Sum : Average);
   cp->Modulo		= 0;
 
   if (strncmp(cp->name, "PSFD", 4) == 0)
