@@ -32,7 +32,6 @@ void ReadModuloVariables()
   int	val[2], ten_percent;
   MOD	*mp;
 
-
   ReadTextFile(MODVARS, modvars);
 
   for (int i = 0; modvars[i]; ++i)
@@ -47,31 +46,38 @@ void ReadModuloVariables()
     mp->bound[0]	= val[0] + ten_percent;
     mp->bound[1]	= val[1] - ten_percent;
 
-  if ((index = SearchTable(sdi, target)) != ERR)
+  if ((index = SearchTableSansLocation(sdi, target)) != ERR)
+    {
     sdi[index]->Modulo = mp;
-  else
-    if ((index = SearchTableSansLocation(raw, target)) != ERR)
-      {
-      raw[index]->Modulo = mp;
 
-      strcat(target, "_");
+    strcat(target, "_");
 
-      while (strncmp((char *)raw[++index], target, strlen(target)) == 0)
-        raw[index]->Modulo = mp;
-      }
-    else
-     if ((index = SearchTableSansLocation(derived, target)) != ERR)
-      {
-      derived[index]->Modulo = mp;
-
-      strcat(target, "_");
-
-      while (strncmp((char *)derived[++index],target,strlen(target)) == 0)
-        derived[index]->Modulo = mp;
-      }
-    else
-      delete mp;
+    while (strncmp((char *)sdi[++index], target, strlen(target)) == 0)
+      sdi[index]->Modulo = mp;
     }
+  else
+  if ((index = SearchTableSansLocation(raw, target)) != ERR)
+    {
+    raw[index]->Modulo = mp;
+
+    strcat(target, "_");
+
+    while (strncmp((char *)raw[++index], target, strlen(target)) == 0)
+      raw[index]->Modulo = mp;
+    }
+  else
+  if ((index = SearchTableSansLocation(derived, target)) != ERR)
+    {
+    derived[index]->Modulo = mp;
+
+    strcat(target, "_");
+
+    while (strncmp((char *)derived[++index],target,strlen(target)) == 0)
+      derived[index]->Modulo = mp;
+    }
+  else
+    delete mp;
+  }
 
   FreeTextFile(modvars);
 

@@ -40,7 +40,7 @@ void ReadSumVariables()
     if ((index = SearchTable(sdi, target)) != ERR)
       {
       sdi[index]->type[0] = 'C';
-      sdi[index]->Average = (void (*) (NR_TYPE *, NR_TYPE *, void *))SumSDI;
+      sdi[index]->Average = (void (*) (...))Sum;
       }
     else
     if ((index = SearchTableSansLocation(raw, target)) != ERR)

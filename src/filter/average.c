@@ -38,7 +38,11 @@ void AverageSampledData()
   {
     SDITBL *sp = sdi[i];
 
-    (*sp->Average)(&SampledData[sp->SRstart], &AveragedData[sp->LRstart], sp);
+    (*sp->Average)(&SampledData[sp->SRstart],
+              &AveragedData[sp->LRstart],
+              sp->SampleRate,
+              sp->Length,
+              sp->Modulo);
   }
 
 
@@ -59,26 +63,6 @@ void AverageSampledData()
   }
 
 }	/* END AVERAGESAMPLEDDATA */
-
-/* -------------------------------------------------------------------- */
-void AverageSDI(NR_TYPE *in_data, NR_TYPE *out_data, SDITBL *sp)
-{
-  int	 sampleCntr = 0;
-  double sum = 0.0;
-
-  for (size_t i = 0; i < sp->SampleRate; ++i)
-    if (!isnan(in_data[i]))
-    {
-      sum += in_data[i];
-      ++sampleCntr;
-    }
-
-  if (sampleCntr == 0)
-    out_data[0] = floatNAN;
-  else
-    out_data[0] = sum / sampleCntr;
-
-}	/* END AVERAGESDI */
 
 /* -------------------------------------------------------------------- */
 void Average(
@@ -136,20 +120,7 @@ void Average(
 }	/* END AVERAGE */
 
 /* -------------------------------------------------------------------- */
-void SumSDI(NR_TYPE *in_data, NR_TYPE *out_data, SDITBL *sp)
-{
-  double sum = 0.0;
-
-  for (size_t i = 0; i < sp->SampleRate; ++i)
-    if (!isnan(in_data[i]))
-      sum += in_data[i];
-
-  out_data[0] = sum;
-
-}	/* END SUMSDI */
-
-/* -------------------------------------------------------------------- */
-void Sum(NR_TYPE *in_data, NR_TYPE *out_data, size_t n)
+void Sum(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l, MOD *mp)
 {
   double sum = 0.0;
 
@@ -162,11 +133,7 @@ void Sum(NR_TYPE *in_data, NR_TYPE *out_data, size_t n)
 }	/* END SUM */
 
 /* -------------------------------------------------------------------- */
-void SumVector(
-	NR_TYPE	*in_data,
-	NR_TYPE	*out_data,
-	size_t	n,
-	size_t	l)
+void SumVector(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l)
 {
   double sum;
 
