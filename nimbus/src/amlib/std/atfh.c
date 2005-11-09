@@ -57,15 +57,12 @@ void sttwhc(DERTBL *varp)
   if (tth < -273.15)
     tth = -273.15;
 
-  if (xmach2 < 0.0)
-  {
-    LogStdMsg("atfh.c: xmach2 went negative!\n");
-    xmach2 = 0.0;
-  }
+  if (xmach2 <= 0.0 || isnan(xmach2))
+    xmach2 = 0.0001;
 
   zee = 0.269589 * psxc * sqrt((double)xmach2) / (atfh[FeedBack] + 273.16);
 
-  if (zee < 0.1)
+  if (zee < 0.1 || isnan(zee))
     zee = 0.99;
 
   tth -= (NR_TYPE)pow(	(double)10.0,
