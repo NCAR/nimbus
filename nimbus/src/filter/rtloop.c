@@ -21,6 +21,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1997-2005
 #include "gui.h"
 #include "vardb.h"
 #include "psql.h"
+#include "brdcast.h"
 
 #include <Xm/TextF.h>
 
@@ -30,6 +31,8 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1997-2005
 #include <unistd.h>
 
 extern PostgreSQL *psql;
+
+static Broadcast * bcast;
 
 extern NR_TYPE	*SampledData, *AveragedData;
 extern char	*ADSrecord;
@@ -94,6 +97,8 @@ void RealTimeLoop()
   if (cfg.OutputSQL())
     psql = new PostgreSQL("", cfg.TransmitToGround());
 
+  bcast = new Broadcast();
+
   do
     {
     hdr = (Hdr_blk *)ADSrecord;
@@ -116,6 +121,8 @@ pts = ts;
  
     if (cfg.OutputSQL())
       psql->WriteSQL(timeStamp);
+//    if (bcast)
+//      bcast->broadcastData(timeStamp);
     if (cfg.OutputNetCDF())
       WriteNetCDF();
 

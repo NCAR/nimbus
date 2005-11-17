@@ -18,6 +18,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2005
 #include "gui.h"
 #include "vardb.h"
 #include "psql.h"
+#include "brdcast.h"
 
 #include <Xm/TextF.h>
 
@@ -31,6 +32,8 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2005
 static const std::string PGHOST = "ac-server";
 static const std::string PGDATABASE = "real-time";
 static const std::string PGUSER = "ads";
+
+static Broadcast * bcast;
 
 extern PostgreSQL *psql;
 
@@ -85,6 +88,7 @@ void RealTimeLoop3()
     psql = new PostgreSQL(specifier, cfg.TransmitToGround());
   }
 
+  bcast = new Broadcast();
   extern dsm::SyncRecordReader* syncRecReader;
 
   for (;;)
@@ -106,6 +110,8 @@ void RealTimeLoop3()
  
     if (cfg.OutputSQL())
       psql->WriteSQL(timeStamp);
+    if (bcast)
+      bcast->broadcastData(timeStamp);
     if (cfg.OutputNetCDF())
       WriteNetCDF_MRF();
 

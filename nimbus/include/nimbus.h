@@ -88,8 +88,7 @@ public:
 
   bool Dirty;		// Was variable modified by user
   bool Output;		// Is this going into the output file?
-  bool Broadcast;	// Real-time, ether broadcast?
-  bool Transmit;	// Real-time, transmit to ground?
+  bool Transmit;
   size_t OutputRate;
   char *DataQuality;	// Prelim, QC'd, Bad, etc
 };

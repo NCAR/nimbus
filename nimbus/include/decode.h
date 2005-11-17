@@ -60,6 +60,7 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #define GROUPS		"%s/%s/Production/FlightGroups"
 #define BLANKVARS	"%s/%s/Production/BlankOuts"
 #define LAGS		"%s/%s/Lags"
+#define BROADCAST	"%s/%s/ascii_parms"
 #define SPIKE		"%s/%s/Despike"
 #define DEFDEROR	"%s/%s/LowRateVars"
 #define VARDB		"%s/%s/VarDB"
@@ -115,7 +116,7 @@ void	SetLookupSuffix(char *new_suffix),
 	AddVariableToRAWdespikeList(RAWTBL *varp),
 	ReadDefaultDerivedOutputRate(), ReadSumVariables(),
 	ReadDefaultsFile(), ReadStaticLags(), ReadModuloVariables(),
-	RunAMLIBinitializers(),
+	RunAMLIBinitializers(), ReadBroadcastVariables(),
 	GetUserTimeIntervals(),
 	SetUpDependencies(), GenerateComputeOrder(),
 	CleanOutUnwantedVariables(),
