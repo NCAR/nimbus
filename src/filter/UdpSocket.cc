@@ -14,7 +14,7 @@
 ** Public Functions
 ******************************************************************************/
 
-UdpSocket::UdpSocket (int sock_num, char *host)
+UdpSocket::UdpSocket (int sock_num, const char *host)
 {
   udp_num = sock_num;
   strcpy (udp_host, host);

@@ -34,7 +34,7 @@
 
 class UdpSocket {
 public:
-  UdpSocket(int, char*);		// constructor
+  UdpSocket(int, const char*);		// constructor
   void openSock (int);			// open the socket
   int querySock();			// query for data avail
   int readSock (char*, int);		// read from the socket
