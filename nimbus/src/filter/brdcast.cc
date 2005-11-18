@@ -50,6 +50,13 @@ Broadcast::Broadcast()
     {
       _varList.push_back(derived[index]);
     }
+    else
+    {
+      char msg[100];
+      sprintf(msg, "brdcast.cc: Variable [%s] not found, substituting ZERO.\n", target);
+      LogMessage(msg);
+      _varList.push_back(0);
+    }
   }
 
   FreeTextFile(bcast);
@@ -68,7 +75,10 @@ void Broadcast::broadcastData(std::string timeStamp) const
   extern NR_TYPE * AveragedData;
 
   for (size_t i = 0; i < _varList.size(); ++i)
-    bcast << " " << AveragedData[_varList[i]->LRstart];
+    if (_varList[i] == 0)
+      bcast << " 0.0";
+    else
+      bcast << " " << AveragedData[_varList[i]->LRstart];
 
   bcast << '\n';
   _brdcst->writeSock(bcast.str().c_str(), bcast.str().length());
