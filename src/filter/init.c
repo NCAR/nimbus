@@ -22,6 +22,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-05
 #include "gui.h"
 
 static void ReadBatchFile(char *filename), usage();
+static const std::string NIMBUS_RUNNING_CMD =
+	"ps ax | grep \"nimbus -r\" | grep -v grep";
 
 void	Set_SetupFileName(char s[]);
 
@@ -65,6 +67,22 @@ void Initialize()
 }	/* END INITIALIZE */
 
 /* -------------------------------------------------------------------- */
+bool nimbusIsAlreadyRunning()
+{
+  int runCnt = 0;
+  FILE *fp = popen(NIMBUS_RUNNING_CMD.c_str(), "r");
+
+  while (fgets(buffer, 256, fp) != 0)
+  {
+    printf(buffer);
+    runCnt++;
+  }
+
+  pclose(fp);
+  return runCnt > 1 ? true : false;
+}
+
+/* -------------------------------------------------------------------- */
 void ProcessArgv(int argc, char **argv)
 {
   int	i;
@@ -93,6 +111,12 @@ void ProcessArgv(int argc, char **argv)
         ReadBatchFile(argv[++i]);
         break;
       case 'r':
+        if (nimbusIsAlreadyRunning())
+	{
+	  fprintf(stderr, "nimbus is already running in real-time mode, exiting.\n");
+	  sleep(5);
+          exit(1);
+	}
         cfg.SetProcessingRate(Config::SampleRate);
         cfg.SetTimeShifting(false);
         cfg.SetDespiking(false);
