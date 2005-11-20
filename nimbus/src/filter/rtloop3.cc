@@ -99,10 +99,11 @@ void RealTimeLoop3()
     time_t ut = tt / USECS_PER_SEC;
     struct tm tm;
     gmtime_r(&ut, &tm);
-    int msec = (tt % USECS_PER_SEC) / USECS_PER_MSEC;
     strftime(timeStamp, sizeof(timeStamp), "%Y-%m-%d %H:%M:%S", &tm);
-    std::cout << timeStamp << '.' << std::setw(3) << std::setfill('0') << msec
-	<< ' ' << std::endl;
+    std::cout << timeStamp << std::endl;
+//    int msec = (tt % USECS_PER_SEC) / USECS_PER_MSEC;
+//    std::cout << timeStamp << '.' << std::setw(3) << std::setfill('0') << msec
+//	<< ' ' << std::endl;
 
     ApplyCalCoes(SampledData);
     AverageSampledData();

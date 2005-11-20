@@ -429,7 +429,9 @@ void CreateNetCDF(const char fileName[])
     }
 
 
-    if (rp->Length > 3)
+    if (rp->Length > 3 &&
+	(rp->ProbeType & PROBE_PMS2D || rp->ProbeType & PROBE_PMS1D ||
+	 rp->ProbeType & PROBE_RDMA || rp->ProbeType & PROBE_CLMT))
       AddPMS1dAttrs(fd, rp);
 
     CheckAndAddAttrs(fd, rp->varid, rp->name);
