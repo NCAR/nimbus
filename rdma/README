@@ -14,3 +14,7 @@ rdma_mat.cc and rdma_inv.cc are source files that came with the RDMA.  I have
 modified them so that they can be called by the wrapper program I wrote rdmap.cc.
 rmda_mat.cc and rdma_inv.cc produce many text files, these can be found in
 ${DATA_DIR}/rdma/dma/inv/[input|output].
+
+
+The *orginal* directory has some of the original code that was given to me
+to work with.
