@@ -17,9 +17,14 @@
 10, northward_wind
 11, relative_humidity
 12, surface_air_pressure
-13, true_air_speed
+13, platform_speed_wrt_air
 14, upward_air_velocity
 15, wind_from_direction
 16, wind_speed
 17, water_vapor_pressure
 18, zenith_angle
+19, platform_course
+20, platform_orientation
+21, platform_pitch_angle
+22, platform_roll_angle
+23, platform_speed_wrt_ground
