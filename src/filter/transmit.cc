@@ -31,8 +31,15 @@ void sqlTransmit::queueString(const std::string& str)
 
 void sqlTransmit::sendString(const std::string& str)
 {
-  char fName[256];
-  sprintf(fName, "/home/tmp/xmit/sql_sequence%05d.gz", _packetCounter++);
+  char fName[256], *dir;
+
+  if ((dir = getenv("XMIT_DIR")) == 0)
+  {
+    fprintf(stderr, "env XMIT_DIR undefined, fatal for '-x'\n");
+    exit(1);
+  }
+
+  sprintf(fName, "%s/nimbus_sql%05d.gz", dir, _packetCounter++);
 
   gzFile gzfd = gzopen(fName, "w+");
 

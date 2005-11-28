@@ -1,0 +1,18 @@
+#/bin/csh -f
+#
+# Launches nimbus for real-time aircraft mode.
+
+setenv XMIT_DIR /tmp/xmit
+
+# Make sure it exists.
+/bin/mkdir -p $XMIT_DIR
+
+# Expire any existing stuff (or is this done on the ground side???)
+pqexpire -a 0.001 -i 0 nimbus_sql*
+
+# Remove any existing sql files.
+/bin/rm ${XMIT_DIR}/nimbus_sql*
+
+# Fire up nimbus in real-time with transmit on (-x to be replaced by
+# standalone program).
+nimbus -rt3 -x
