@@ -135,11 +135,9 @@ void Sum(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l, MOD *mp)
 /* -------------------------------------------------------------------- */
 void SumVector(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l)
 {
-  double sum;
-
   for (size_t i = 0; i < l; ++i)
     {
-    sum = 0.0;
+    double sum = 0.0;
 
     for (size_t j = 0; j < n; ++j)
       if (!isnan(in_data[(j*l)+i]))
@@ -147,6 +145,28 @@ void SumVector(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l)
 
     out_data[i] = sum;
     }
-}	/* END SUMVECTOR */
+}
+
+/* -------------------------------------------------------------------- */
+void AverageVector(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l)
+{
+  for (size_t i = 0; i < l; ++i)
+    {
+    double sum = 0.0;
+
+    for (size_t j = 0; j < n; ++j)
+{
+printf("%f ", in_data[(j * l) + i]);
+      if (!isnan(in_data[(j*l)+i]))
+        sum += in_data[(j * l) + i];
+}
+printf("\n");
+
+    out_data[i] = sum / n;
+    }
+  for (size_t i = 0; i < l; ++i)
+printf("%f ", out_data[i]);
+printf("\n");
+}	/* END AVERAGEVECTOR */
 
 /* END AVERAGE.C */
