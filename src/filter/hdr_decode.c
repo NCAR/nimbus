@@ -304,25 +304,12 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
   cfg.SetPlatform(syncRecReader->getTailNumber());
   cfg.SetFlightNumber(syncRecReader->getFlightName());
 
-  // For now extract Flight Date from file_name.
-  char *fd = strstr(header_file, "dsm_");
-  if (fd)
   {
-    int year, month, day;
-
-    if (sscanf(fd, "dsm_%04d%02d%02d", &year, &month, &day) == 3)
-      sprintf(buffer, "%02d/%02d/%04d", month, day, year);
-    else
-      fd = 0;
-  }
-
-  if (fd == 0)
-  {
-    strcpy(buffer, "01/01/1970");
-    fprintf(stderr, "[WARNING] Failed to get a FlightDate from the file name, defaulting to %s.\n", buffer);
-  }
-
+  time_t t = syncRecReader->getStartTime();
+  struct tm *flDate = gmtime(&t);
+  sprintf(buffer, "%02d/%02d/%04d", flDate->tm_mon+1, flDate->tm_mday, flDate->tm_year+1900);
   cfg.SetFlightDate(buffer);
+  }
 
 cfg.SetProjectNumber("502");
 printf("[WARNING] ProjectNumber is hardcoded = %s\n", cfg.ProjectNumber().c_str());
