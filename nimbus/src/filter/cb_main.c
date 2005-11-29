@@ -155,7 +155,7 @@ void Proceed(Widget w, XtPointer client, XtPointer call)
       }
     }
 
-  if (FlightNumberInt == 0)
+  if (cfg.isADS2() && FlightNumberInt == 0)
     HandleWarning("Flight Number is 0, a new one may be entered\nvia the 'Edit/Flight Info' menu item,\nor run fixFltNum on the ADS image and start nimbus again.", NULL, NULL);
 
 }	/* END PROCEED */
