@@ -740,7 +740,16 @@ void ToggleOutput(Widget w, XtPointer client, XtPointer call)
 void Quit(Widget w, XtPointer client, XtPointer call)
 {
   CloseNetCDF();
+
+  extern PostgreSQL *psql;
+  if (psql)
+    psql->closeSQL();
+
+  // kill sync_server or any other processes.
+  kill(0, SIGTERM);
+
   CloseRemoveLogFile();
+
   exit(0);
 }
 
@@ -1168,15 +1177,8 @@ void QueryOutputFile(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void sighandler(int s)
 {
-  extern PostgreSQL *psql;
-
   printf("SigHandler: cleaning up netCDF file.\n");
-  CloseNetCDF();
-
-  if (psql)
-    psql->closeSQL();
-
-  exit(0);
+  Quit(NULL, NULL, NULL);
 
 }	/* END SIGHANDLER */
 
