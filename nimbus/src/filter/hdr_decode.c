@@ -1956,7 +1956,11 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
   rp->convertOffset	= 0;
   rp->convertFactor	= 1.0;
 
-  rp->Average		= (void (*) (...))Average;
+  if (length > 1)
+    rp->Average		= (void (*) (...))AverageVector;
+  else
+    rp->Average		= (void (*) (...))Average;
+
   rp->Modulo		= 0;
   rp->ProbeType		= probeType;
   rp->ProbeCount	= probeCnt;
