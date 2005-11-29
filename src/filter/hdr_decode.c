@@ -127,7 +127,8 @@ static void add_file_to_RAWTBL(const char []), add_file_to_DERTBL(const char [])
 	initPMS2Dhouse(char vn[]), add_raw_names(const char vn[]),
 	initGreyHouse(char vn[]), initMASP(char vn[]), initPMS1Dv3(char vn[]),
 	ReadProjectName(), initRDMA(char vn[]), initCLIMET(char vn[]),
-	openVariableDatabase(), addUnitsAndLongName(var_base *var);
+	openVariableDatabase(), addUnitsAndLongName(var_base *var),
+	checkUnitsTitles();
 
 static std::vector<float> getCalsForADS2(const char vn[]);
 static int	check_cal_coes(int order, float *coef);
@@ -199,6 +200,10 @@ static void CommonPostInitialization()
     FreeTextFile(derivedlist);
 
   FreeTextFile(rawlist);
+ 
+  // Log any variables without units & titles.
+  checkUnitsTitles();
+
 
   /* Add some final items to 'Toggle Probe' menu.
    */
@@ -306,12 +311,15 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
     int year, month, day;
 
     sscanf(fd, "dsm_%04d%02d%02d", &year, &month, &day);
-    sprintf(buffer, "%02d/%02d/%04d\n", month, day, year);
+
+    sprintf(buffer, "%02d/%02d/%04d", month, day, year);
     cfg.SetFlightDate(buffer);
   }
+  else
+    fprintf(stderr, "[WARNING] Failed to get a FlightDate from the file name.\n");
 
-cfg.SetProjectNumber("501");
-printf("ProjectNumber is hardcoded = %s\n", cfg.ProjectNumber().c_str());
+cfg.SetProjectNumber("502");
+printf("[WARNING] ProjectNumber is hardcoded = %s\n", cfg.ProjectNumber().c_str());
 
   cfg.SetCoordLAT("GGLAT");
   cfg.SetCoordLON("GGLON");
@@ -346,13 +354,14 @@ printf("ProjectNumber is hardcoded = %s\n", cfg.ProjectNumber().c_str());
     if (var->getConverter() == 0)
     {
       RAWTBL *rp = add_name_to_RAWTBL(var->getName().c_str());
+      rp->Units = var->getUnits();
+      rp->LongName = var->getLongName();
+
       // Default real-time netCDF to SampleRate.
       if (cfg.ProcessingMode() == Config::RealTime)
         rp->OutputRate = rp->SampleRate;
 
       add_derived_names(rp->name);
-      rp->Units = var->getUnits();
-      rp->LongName = var->getLongName();
     }
     else
     {
@@ -404,6 +413,7 @@ static SDITBL* initSDI_ADS3(dsm::SyncRecordVariable* var)
   dsm::VariableConverter* converter =
 		const_cast<dsm::VariableConverter*>(var->getConverter());
 
+  cp->Units = converter->getUnits();
   dsm::Polynomial* poly;
   dsm::Linear* linear = dynamic_cast<dsm::Linear*>(converter);
   if (linear)
@@ -2081,7 +2091,8 @@ static std::vector<float> getCalsForADS2(const char vn[])
 /* -------------------------------------------------------------------- */
 /* Strip out trailing 0 cal coe's
  */
-static int check_cal_coes(int order, float *coef)
+static int
+check_cal_coes(int order, float *coef)
 {
   do
     {
@@ -2094,27 +2105,66 @@ static int check_cal_coes(int order, float *coef)
 }	/* END CHECK_CAL_COES */
 
 /* -------------------------------------------------------------------- */
-static void addUnitsAndLongName(var_base *var)
+static void
+addUnitsAndLongName(var_base *var)
+{
+  if (VarDB_lookup(var->name) != ERR)
+  {
+    if (var->Units.size() == 0)
+      var->Units = VarDB_GetUnits(var->name);
+    if (var->LongName.size() == 0)
+      var->LongName = VarDB_GetTitle(var->name);
+
+    char *p = VarDB_GetCategoryName(var->name);
+    if ( strcmp(p, "None") )
+      var->CategoryList.push_back(p);
+  }
+}
+
+/* -------------------------------------------------------------------- */
+static void
+testUnitsTitles(var_base *var)
 {
   extern FILE *LogFile;
   FILE  *ofp = LogFile ? LogFile : stderr;
 
-  if (VarDB_lookup(var->name) == ERR)
+  bool units = false, title = false;
+
+  if (var->Units.size() == 0)
   {
-    fprintf(ofp, "%s has no description or units.\n", var->name);
-    return;
+    fprintf(ofp, "%s has no units", var->name);
+    units = true;
   }
 
-  var->Units = VarDB_GetUnits(var->name);
-  var->LongName = VarDB_GetTitle(var->name);
+  if (var->LongName.size() == 0)
+  {
+    if (units)
+      fprintf(ofp, " or title/long_name");
+    else
+      fprintf(ofp, "%s has no title/long_name", var->name);
+    title = true;
+  }
 
-  char *p = VarDB_GetCategoryName(var->name);
-  if ( strcmp(p, "None") )
-    var->CategoryList.push_back(p);
+  if (units || title)
+    fprintf(ofp, ".\n");
+}
+
+static void
+checkUnitsTitles()
+{
+  for (size_t i = 0; i < sdi.size(); ++i)
+    testUnitsTitles(sdi[i]);
+
+  for (size_t i = 0; i < raw.size(); ++i)
+    testUnitsTitles(raw[i]);
+
+  for (size_t i = 0; i < derived.size(); ++i)
+    testUnitsTitles(derived[i]);
 }
 
 /* -------------------------------------------------------------------- */
-static void openVariableDatabase()
+static void
+openVariableDatabase()
 {
   sprintf(buffer, VARDB, ProjectDirectory, cfg.ProjectNumber().c_str());
   if (InitializeVarDB(buffer) == ERR)
