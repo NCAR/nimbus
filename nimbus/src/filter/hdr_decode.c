@@ -310,13 +310,19 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
   {
     int year, month, day;
 
-    sscanf(fd, "dsm_%04d%02d%02d", &year, &month, &day);
-
-    sprintf(buffer, "%02d/%02d/%04d", month, day, year);
-    cfg.SetFlightDate(buffer);
+    if (sscanf(fd, "dsm_%04d%02d%02d", &year, &month, &day) == 3)
+      sprintf(buffer, "%02d/%02d/%04d", month, day, year);
+    else
+      fd = 0;
   }
-  else
-    fprintf(stderr, "[WARNING] Failed to get a FlightDate from the file name.\n");
+
+  if (fd == 0)
+  {
+    strcpy(buffer, "01/01/1970");
+    fprintf(stderr, "[WARNING] Failed to get a FlightDate from the file name, defaulting to %s.\n", buffer);
+  }
+
+  cfg.SetFlightDate(buffer);
 
 cfg.SetProjectNumber("502");
 printf("[WARNING] ProjectNumber is hardcoded = %s\n", cfg.ProjectNumber().c_str());
