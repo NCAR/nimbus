@@ -133,6 +133,7 @@ void	SetLookupSuffix(char *new_suffix),
 
 void	Sum(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l, MOD *mp),
 	SumVector(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l),
+	AverageVector(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l),
 	Average(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l, MOD *mp);
 
 void	AllocateDataArrays(), FreeDataArrays(), ResetTimeGapper(),
