@@ -652,14 +652,14 @@
 	"ATRL",		NULL,		NULL,		satb,
 	"TTWHC",	(void(*)(void*))tthcInit,	NULL,		sttwhc,
 	"ATWH",		(void(*)(void*))atfhInit,	NULL,		satfh,
-	"TTRH1C",	(void(*)(void*))tthcInit,	NULL,		sttwhc,
-	"TTRH2C",	(void(*)(void*))tthcInit,	NULL,		sttwhc,
-	"TTLH1C",	(void(*)(void*))tthcInit,	NULL,		sttwhc,
-	"TTLH2C",	(void(*)(void*))tthcInit,	NULL,		sttwhc,
-	"ATRH1",	(void(*)(void*))atfhInit,	NULL,		satfh,
-	"ATRH2",	(void(*)(void*))atfhInit,	NULL,		satfh,
-	"ATLH1",	(void(*)(void*))atfhInit,	NULL,		satfh,
-	"ATLH2",	(void(*)(void*))atfhInit,	NULL,		satfh,
+	"TTHR1C",	(void(*)(void*))tthcInit,	NULL,		sttwhc,
+	"TTHR2C",	(void(*)(void*))tthcInit,	NULL,		sttwhc,
+	"TTHL1C",	(void(*)(void*))tthcInit,	NULL,		sttwhc,
+	"TTHL2C",	(void(*)(void*))tthcInit,	NULL,		sttwhc,
+	"ATHR1",	(void(*)(void*))atfhInit,	NULL,		satfh,
+	"ATHR2",	(void(*)(void*))atfhInit,	NULL,		satfh,
+	"ATHL1",	(void(*)(void*))atfhInit,	NULL,		satfh,
+	"ATHL2",	(void(*)(void*))atfhInit,	NULL,		satfh,
 #
 #	Derived temperatues
 #
