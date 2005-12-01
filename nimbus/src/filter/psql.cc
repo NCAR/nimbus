@@ -55,7 +55,9 @@ PostgreSQL::PostgreSQL(std::string specifier, bool transmitToGround)
     printf(">>>>>>>>>>>>>>>> isSameFlight() == false;\n");
 
   dropAllTables();	// Remove existing tables, this is a reset.
+  sleep(30);
   createTables();
+  sleep(30);
   initializeGlobalAttributes();
   initializeVariableList();
 
@@ -539,7 +541,7 @@ PostgreSQL::addVectorToAllStreams(const NR_TYPE *value, int nValues, bool xmit)
   _sqlString << ",'{";
   _broadcastString << ",{";
   if (xmit)
-    _transmitString << ",{";
+    _transmitString << ",'{";
 
   for (int j = 0; j < nValues; ++j)
   {
@@ -552,7 +554,7 @@ PostgreSQL::addVectorToAllStreams(const NR_TYPE *value, int nValues, bool xmit)
   _sqlString << "}'";
   _broadcastString << '}';
   if (xmit)
-    _transmitString << '}';
+    _transmitString << "}'";
 
 }	// END ADDVECTOR
 
