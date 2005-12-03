@@ -47,9 +47,10 @@ static NR_TYPE	cell_size[MAX_F300][BINS_40+1], pvol[MAX_F300], SAMPLE_AREA[MAX_F
 void cf300Init(RAWTBL *varp)
 {
   size_t	i, probeNum;
-  char		*p, *serialNumber;
+  char		*p;
+  const char	*serialNumber;
 
-  serialNumber = varp->SerialNumber;
+  serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
 
   sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, cfg.ProjectNumber().c_str());

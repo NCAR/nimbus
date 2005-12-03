@@ -57,10 +57,11 @@ NR_TYPE		refff3[MAX_FSSP], refff2[MAX_FSSP];  /* For export to reff.c */
 void cfsspInit(RAWTBL *varp)
 {
   size_t	i, probeNum;
-  char		*p, *serialNumber;
+  char		*p;
+  const char	*serialNumber;
   NR_TYPE	DOF, beamDiameter;
 
-  serialNumber = varp->SerialNumber;
+  serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
 
   for (i = 0; i < MAX_FSSP; ++i)
@@ -149,10 +150,10 @@ void cfsspInit(RAWTBL *varp)
   sa[probeNum] = DOF * beamDiameter;
 
   if (strncmp(varp->name, "AS100", 5) == 0 &&
-      strcmp(varp->SerialNumber, "FSSP128") == 0)
+      varp->SerialNumber.compare("FSSP128") == 0)
   {
     char msg[200];
-    sprintf(msg, "%s: Serial # %s, TAS will be altered as follows:\n  tas = -0.0466 + 0.95171 * tas;", varp->name, varp->SerialNumber);
+    sprintf(msg, "fssp.c: <<< WARNING >>> %s: Serial # %s, TAS will be altered as follows:\n  tas = -0.0466 + 0.95171 * tas;", varp->name, varp->SerialNumber.c_str());
     LogMessage(msg);
   }
 
@@ -231,7 +232,7 @@ void scs100(DERTBL *varp)
   frange	= GetSample(varp, 4);
   probeNum	= varp->ProbeCount;
 
-  if (strcmp(varp->SerialNumber, "FSSP128") == 0)
+  if (varp->SerialNumber.compare("FSSP128") == 0)
     tas = -0.0466 + 0.95171 * tas;
 
   if (FeedBack == HIGH_RATE_FEEDBACK)

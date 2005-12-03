@@ -40,9 +40,10 @@ static NR_TYPE	cell_size3[MAX_ASAS][BINS_40+1];
 void casasInit(RAWTBL *varp)
 {
   size_t	i, probeNum;
-  char	*p, *serialNumber;
+  const char	*serialNumber;
+  char		*p;
 
-  serialNumber = varp->SerialNumber;
+  serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
 
   sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, cfg.ProjectNumber().c_str());

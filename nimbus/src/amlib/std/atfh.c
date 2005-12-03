@@ -34,7 +34,7 @@ void tthcInit(DERTBL *varp)
   std::vector<NR_TYPE> values;
   values.push_back(tfher2);
   values.push_back(tfher1);
-  AddToDefaults(varp->name, "RecoveryFactors", values);
+  AddToDefaults(varp->name, "Calibrations", values);
 
 }	/* END CONSTRUCTOR */
 
@@ -62,8 +62,8 @@ void sttwhc(DERTBL *varp)
 
   zee = 0.269589 * psxc * sqrt((double)xmach2) / (atfh[FeedBack] + 273.16);
 
-  if (zee < 0.1 || isnan(zee))
-    zee = 0.99;
+  if (zee < 0.18 || isnan(zee))
+    zee = 0.18;
 
   tth -= (NR_TYPE)pow(	(double)10.0,
 			(double)tfher1 * log10((double)zee) + tfher2);

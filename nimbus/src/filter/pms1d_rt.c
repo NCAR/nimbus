@@ -67,7 +67,7 @@ void SetUpPMS1D_SHMEM()
   for (int i = 0; i < pcnt; ++i)
     {
     strcpy((char *)PMS1Dprobe[i].name, probe_name[i]);
-    strcpy((char *)PMS1Dprobe[i].SerialNumber, serialNums[i]);
+    PMS1Dprobe[i].SerialNumber = serialNums[i];
 
     strcpy(target, "A");
     strcat(target, probe_name[i]);
@@ -133,43 +133,43 @@ float *SetPMS1DnetCDF(char name[], int length)
     if (memcmp(&name[1], "FSSP", 4) == 0)
       {
       PMS1Dprobe[pcnt].type = FSSP;
-      strcpy(PMS1Dprobe[pcnt].SerialNumber, "FSSP_DEF");
+      PMS1Dprobe[pcnt].SerialNumber = "FSSP_DEF";
       strcpy(PMS1Dprobe[pcnt].rangeName, RANGE_NAME);
       strcat(PMS1Dprobe[pcnt].rangeName, strchr(name, '_'));
       }
     else
     if (memcmp(&name[1], "F300", 4) == 0)
       {
-      strcpy(PMS1Dprobe[pcnt].SerialNumber, "F300_DEF");
+      PMS1Dprobe[pcnt].SerialNumber = "F300_DEF";
       PMS1Dprobe[pcnt].type = F300;
       }
     else
     if (memcmp(&name[1], "200X", 4) == 0)
       {
-      strcpy(PMS1Dprobe[pcnt].SerialNumber, "200X_DEF");
+      PMS1Dprobe[pcnt].SerialNumber = "200X_DEF";
       PMS1Dprobe[pcnt].type = X200;
       }
     else
     if (memcmp(&name[1], "200Y", 4) == 0)
       {
-      strcpy(PMS1Dprobe[pcnt].SerialNumber, "200Y_DEF");
+      PMS1Dprobe[pcnt].SerialNumber = "200Y_DEF";
       PMS1Dprobe[pcnt].type = Y200;
       }
     else
     if (memcmp(&name[1], "260X", 4) == 0)
       {
-      strcpy(PMS1Dprobe[pcnt].SerialNumber, "260X_DEF");
+      PMS1Dprobe[pcnt].SerialNumber = "260X_DEF";
       PMS1Dprobe[pcnt].type = X260;
       }
     else
     if (memcmp(&name[1], "MASP", 4) == 0)
       {
-      strcpy(PMS1Dprobe[pcnt].SerialNumber, "MASP_DEF");
+      PMS1Dprobe[pcnt].SerialNumber = "MASP_DEF";
       PMS1Dprobe[pcnt].type = MASP;
       }
     else
       {
-      strcpy(PMS1Dprobe[pcnt].SerialNumber, "ASAS_DEF");
+      PMS1Dprobe[pcnt].SerialNumber = "ASAS_DEF";
       PMS1Dprobe[pcnt].type = ASAS;
       }
 

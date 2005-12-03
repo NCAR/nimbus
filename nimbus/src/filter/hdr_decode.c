@@ -312,7 +312,7 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
   }
 
 cfg.SetProjectNumber("502");
-printf("[WARNING] ProjectNumber is hardcoded = %s\n", cfg.ProjectNumber().c_str());
+printf("hdr_decode.c: <<< WARNING >>> ProjectNumber is hardcoded = %s\n", cfg.ProjectNumber().c_str());
 
   cfg.SetCoordLAT("GGLAT");
   cfg.SetCoordLON("GGLON");
@@ -1186,8 +1186,8 @@ static void initMASP(char vn[])
   rp->Length	= nbins = BINS_32;
   rp->Average	= (void (*) (...))SumVector;
 
-  strcpy(rp->SerialNumber, vn);
-  strcat(rp->SerialNumber, "_DEF");
+  rp->SerialNumber = vn;
+  rp->SerialNumber += "_DEF";
 
 
 {	/* Perform add_derived_names manually	*/
@@ -1235,7 +1235,7 @@ static void initCLIMET(char vn[])
     }
 
   raw[indx]->Length = 7;
-  strcpy(raw[indx]->SerialNumber, "CLIMET1");
+  raw[indx]->SerialNumber = "CLIMET1";
 
 
   strcpy(buffer, "CCLMT"); strcat(buffer, location);
@@ -1268,7 +1268,7 @@ static void initRDMA(char vn[])
     }
 
   raw[indx]->Length = 64;
-  strcpy(raw[indx]->SerialNumber, "RDMA1");
+  raw[indx]->SerialNumber = "RDMA1";
 
 
   strcpy(buffer, "CRDMA"); strcat(buffer, location);
@@ -1348,8 +1348,8 @@ static void initPMS1D(char vn[])
         rp->Average	= (void (*) (...))SumVector;
         }
 
-      strcpy(rp->SerialNumber, probe);
-      strcat(rp->SerialNumber, "_DEF");
+      rp->SerialNumber = probe;
+      rp->SerialNumber += "_DEF";
       }
     }
 
@@ -1467,11 +1467,11 @@ static void initPMS1Dv2(char vn[])
         continue;
 
       if (GetSerialNumber(vn, &p) != ERR)
-        strcpy(rp->SerialNumber, p);
+        rp->SerialNumber = p;
       else
         {
-        strcpy(rp->SerialNumber, probe);
-        strcat(rp->SerialNumber, "_DEF");
+        rp->SerialNumber = probe;
+        rp->SerialNumber += "_DEF";
         }
 
       if (strcmp(name, temp) == 0)
@@ -1584,7 +1584,7 @@ static void initPMS1Dv3(char vn[])
     rp->Average	= (void (*) (...))SumVector;
     }
 
-  strcpy(rp->SerialNumber, serialNum);
+  rp->SerialNumber = serialNum;
   SetLookupSuffix("_V3");
 
   /* Housekeeping names and cals from PMSspecs */
@@ -1635,7 +1635,7 @@ static void initPMS1Dv3(char vn[])
         continue;
 
       dp->Default_HR_OR = rate;
-      strcpy(dp->SerialNumber, serialNum);
+      dp->SerialNumber = serialNum;
 
       /* Make sure CFSSP, C200X, etc, get proper space alloc
        */
@@ -1790,11 +1790,11 @@ static void initPMS2D(char vn[], int order)
     rp->Length	= nBins;
 
     if (GetSerialNumber(vn, &p) != ERR)
-      strcpy(rp->SerialNumber, p);
+      rp->SerialNumber = p;
     else
       {
-      strcpy(rp->SerialNumber, buffer);
-      strcat(rp->SerialNumber, "_DEF");
+      rp->SerialNumber = buffer;
+      rp->SerialNumber += "_DEF";
       }
 
     if (order == 0)
@@ -1945,9 +1945,6 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
 
   if (*location)
     strcat(rp->name, location);
-
-  strcpy(rp->SerialNumber, "");
-
 
   rp->ADSstart		= start >> 1;
   rp->ADSoffset		= 1;

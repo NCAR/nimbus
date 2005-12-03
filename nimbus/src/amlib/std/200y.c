@@ -51,11 +51,11 @@ void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
 void c200yInit(RAWTBL *varp)
 {
   size_t	i, probeNum, nDiodes;
-  char	*p;
-  char	*serialNumber = "200Y_DEF";
+  char		*p;
+  const char	*serialNumber;
   NR_TYPE	minRange;
 
-  serialNumber = varp->SerialNumber;
+  serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
 
   sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, cfg.ProjectNumber().c_str());

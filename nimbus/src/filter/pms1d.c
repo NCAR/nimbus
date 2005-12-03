@@ -47,10 +47,10 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
   fb = 0;
   lb = rp->Length-1;
 
-  if ((p = GetPMSparameter(rp->SerialNumber, "FIRST_BIN")) )
+  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "FIRST_BIN")) )
     fb = atoi(p);
 
-  if ((p = GetPMSparameter(rp->SerialNumber, "LAST_BIN")) ) {
+  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "LAST_BIN")) ) {
     lb = atoi(p) - 1;
 
     if (strstr(rp->name, "2D"))	/* 2D's use 63 bins, instead of 1DC */
@@ -92,14 +92,14 @@ void AddPMS1dAttrs(int ncid, RAWTBL *rp)
   InitPMSspecs(buffer);
 
   ncattput(ncid, rp->varid, "SerialNumber", NC_CHAR,
-           strlen(rp->SerialNumber)+1, rp->SerialNumber);
+           rp->SerialNumber.length()+1, rp->SerialNumber.c_str());
 
-  if ((p = GetPMSparameter(rp->SerialNumber, "FIRST_BIN")) ) {
+  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "FIRST_BIN")) ) {
     int	value = atoi(p);
     ncattput(ncid, rp->varid, "FirstBin", NC_INT, 1, &value);
     }
 
-  if ((p = GetPMSparameter(rp->SerialNumber, "LAST_BIN")) ) {
+  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "LAST_BIN")) ) {
     int	value = atoi(p) - 1;	/* Go from exclusive to inclusive */
 
     if (strstr(rp->name, "2D"))	/* 2D's use 63 bins, instead of 1DC */
@@ -119,22 +119,22 @@ void AddPMS1dAttrs(int ncid, RAWTBL *rp)
   if (rp->ProbeType & PROBE_260X || rp->ProbeType & PROBE_200X ||
       rp->ProbeType & PROBE_200Y || rp->ProbeType & PROBE_PMS2D)
     {
-    if ((p = GetPMSparameter(rp->SerialNumber, "NDIODES")) ) {
+    if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "NDIODES")) ) {
       int	value = atoi(p);
       ncattput(ncid, rp->varid, "nDiodes", NC_INT, 1, &value);
       }
 
-    if ((p = GetPMSparameter(rp->SerialNumber, "MAG")) ) {
+    if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "MAG")) ) {
       float	value = atof(p);
       ncattput(ncid, rp->varid, "Magnification", NC_FLOAT, 1, &value);
       }
 
-    if ((p = GetPMSparameter(rp->SerialNumber, "RESPONSE_TIME")) ) {
+    if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "RESPONSE_TIME")) ) {
       float	value = atof(p);
       ncattput(ncid, rp->varid, "ResponseTime", NC_FLOAT, 1, &value);
       }
 
-    if ((p = GetPMSparameter(rp->SerialNumber, "ARM_DISTANCE")) ) {
+    if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "ARM_DISTANCE")) ) {
       float	value = atof(p);
       ncattput(ncid, rp->varid, "ArmDistance", NC_FLOAT, 1, &value);
       }
@@ -144,32 +144,32 @@ void AddPMS1dAttrs(int ncid, RAWTBL *rp)
   ncattput(ncid, rp->varid, "CellSizeUnits", NC_CHAR, 12, "micrometers");
 
 
-  if ((p = GetPMSparameter(rp->SerialNumber, "DOF")) ) {
+  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "DOF")) ) {
     float	value = atof(p);
     ncattput(ncid, rp->varid, "DepthOfField", NC_FLOAT, 1, &value);
     }
 
-  if ((p = GetPMSparameter(rp->SerialNumber, "BEAM_DIAM")) ) {
+  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "BEAM_DIAM")) ) {
     float	value = atof(p);
     ncattput(ncid, rp->varid, "BeamDiameter", NC_FLOAT, 1, &value);
     }
 
-  if ((p = GetPMSparameter(rp->SerialNumber, "DENS")) ) {
+  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "DENS")) ) {
     float	value = atof(p);
     ncattput(ncid, rp->varid, "Density", NC_FLOAT, 1, &value);
     }
 
-  if ((p = GetPMSparameter(rp->SerialNumber, "PLWFAC")) ) {
+  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "PLWFAC")) ) {
     float	value = atof(p);
     ncattput(ncid, rp->varid, "PLWfactor", NC_FLOAT, 1, &value);
     }
 
-  if ((p = GetPMSparameter(rp->SerialNumber, "DBZFAC")) ) {
+  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "DBZFAC")) ) {
     float	value = atof(p);
     ncattput(ncid, rp->varid, "DBZfactor", NC_FLOAT, 1, &value);
     }
 
-  if ((p = GetPMSparameter(rp->SerialNumber, "SAMPLE_AREA")) ) {
+  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "SAMPLE_AREA")) ) {
     float	value = atof(p);
     ncattput(ncid, rp->varid, "SampleArea", NC_FLOAT, 1, &value);
     }
@@ -189,7 +189,7 @@ void AddPMS1dAttrs(int ncid, RAWTBL *rp)
    */
   if (warnMidPoints)
     {
-    fprintf(stderr, "PMSspecs file contains mid-point, not end-point cell diameters for %s %s.\n", rp->name, rp->SerialNumber);
+    fprintf(stderr, "PMSspecs file contains mid-point, not end-point cell diameters for %s %s.\n", rp->name, rp->SerialNumber.c_str());
     fprintf(stderr, "Nimbus was modified on 9/5/98 to use end-points.  Please fix.\n");
     exit(1);
     }
@@ -202,9 +202,9 @@ static int getCellSizes(RAWTBL *rp, float cellSize[])
   int	i, nBins;
   char	*p;
 
-  if ((p = GetPMSparameter(rp->SerialNumber, "CELL_SIZE")) == NULL) {
+  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "CELL_SIZE")) == NULL) {
     sprintf(buffer, "CELL_SIZE_%d", rp->Length-1);
-    p = GetPMSparameter(rp->SerialNumber, buffer);
+    p = GetPMSparameter(rp->SerialNumber.c_str(), buffer);
     }
 
   if (p)
@@ -216,7 +216,7 @@ static int getCellSizes(RAWTBL *rp, float cellSize[])
       {
       cellSize[i] = atof(p);
       p = strtok(NULL, " \t,");
-      if (strncmp(rp->SerialNumber, "RDMA", 4) == 0)
+      if (rp->SerialNumber.compare(0, 4, "RDMA") == 0)
         cellSize[i] /= 1000.0;
       }
 
@@ -237,13 +237,13 @@ static int getCellSizes(RAWTBL *rp, float cellSize[])
 
   float	min = 0.0, max = 0.0, step = 0.0;
 
-  if ((p = GetPMSparameter(rp->SerialNumber, "MIN_RANGE")) )
+  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "MIN_RANGE")) )
     min = atof(p);
 
-  if ((p = GetPMSparameter(rp->SerialNumber, "MAX_RANGE")) )
+  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "MAX_RANGE")) )
     max = atof(p);
 
-  if ((p = GetPMSparameter(rp->SerialNumber, "RANGE_STEP")) )
+  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "RANGE_STEP")) )
     step = atof(p);
 
   for (i = 0; i < nBins; min += step)

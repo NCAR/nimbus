@@ -184,10 +184,8 @@ void InitAircraftDependencies()
 
     case HIAPER:
       LogMessage("NCAR G5 pcor's installed.");
-//      tfher1	= -1.7244;
-//      tfher2	= -1.5989;
-      tfher1	= -5.286;
-      tfher2	= -3.958;
+      tfher1	= -5.862;
+      tfher2	= -4.1068;
       pcorQCF	= pcorf5;
       pcorQCR	= pcorq5;	
       pcorPSF	= pcorr5;
