@@ -52,10 +52,11 @@ void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
 void c260xInit(RAWTBL *varp)
 {
   size_t	i, probeNum, nDiodes;
-  char		*p, *serialNumber;
+  char		*p;
+  const char	*serialNumber;
   float		minRange;
 
-  serialNumber = varp->SerialNumber;
+  serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
 
   for (i = 0; i < MAX_260X; ++i)

@@ -73,7 +73,8 @@ void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
 void sTwodInit(RAWTBL *varp)
 {
   size_t	i, j, length, probeNum, nDiodes, minRange;
-  char		*p, *serialNumber;
+  char		*p;
+  const char	*serialNumber;
 
   for (i = 0; i < MAX_PMS2D; ++i)
     SampleRate[i] = 1.0;
@@ -83,7 +84,7 @@ void sTwodInit(RAWTBL *varp)
    * This function is called from the A1D? xlTwodInit, not A2D?...
    */
 
-  serialNumber = varp->SerialNumber;
+  serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
 
   for (i = 0; i < MAX_PMS2D; ++i)
@@ -187,7 +188,8 @@ void sTwodInit(RAWTBL *varp)
 void sTwodInitH(RAWTBL *varp)
 {
   size_t	i, length, probeNum, nDiodes = 0, minRange;
-  char		*p, *serialNumber;
+  char		*p;
+  const char	*serialNumber;
 
   for (i = 0; i < MAX_PMS2D; ++i)
     SampleRate[i] = 1.0;
@@ -197,7 +199,7 @@ void sTwodInitH(RAWTBL *varp)
    * This function is called from the A1D? xlTwodInit, not A2D?...
    */
 
-  serialNumber = varp->SerialNumber;
+  serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
 
   sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, cfg.ProjectNumber().c_str());

@@ -21,7 +21,7 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #include "config.h"
 
 
-#define NAMELEN		NAMLEN
+#define NAMELEN		32
 
 #define MAX_VARIABLES	2000
 #define MAX_DEFAULTS	256
@@ -69,6 +69,8 @@ public:
   var_base(const char s[]);
 
   char name[NAMELEN];	// Variable name
+
+  std::string SerialNumber;	// Probe Serial Number
 
   std::string Units;
   std::string LongName;
@@ -130,7 +132,6 @@ public:
 
   int StaticLag;	// Static lag in ms to shift data
   NR_TYPE SpikeSlope;	// Slope for spike detection
-  char SerialNumber[8];	// Probe Serial Number
   size_t ProbeCount;	// For mulitple identicle probes
   int ProbeType;	// Is this a probe & which one
 
@@ -157,7 +158,6 @@ class DERTBL : public var_base
 public:
   DERTBL(const char s[]);
 
-  char SerialNumber[8];		// Probe Serial Number
   int ProbeType;		// Is this a probe & which one
   size_t ProbeCount;		// For mulitple identicle probes
 				// Used by AMLIB
