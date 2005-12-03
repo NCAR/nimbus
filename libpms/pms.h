@@ -18,8 +18,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2000
 #ifdef __cplusplus
 extern "C" {
 #endif
-void	InitPMSspecs(char fileName[]), ReleasePMSspecs(void);
-char	*GetPMSparameter(char serialNumber[],  char parameter[]);
+void	InitPMSspecs(const char fileName[]), ReleasePMSspecs(void);
+char	*GetPMSparameter(const char serialNumber[], const char parameter[]);
 int	GetPMSlist(char *list[]);
 #ifdef __cplusplus
 }

@@ -40,7 +40,7 @@ static char	**PMSfile = NULL;
 char	*GetMemory();
 
 /* -------------------------------------------------------------------- */
-void InitPMSspecs(char fileName[])
+void InitPMSspecs(const char fileName[])
 {
   int	i, cnt, len, fCnt = 0;
   char	*file[2048], PMSbuffer[512], *p;
@@ -140,7 +140,7 @@ void InitPMSspecs(char fileName[])
 }	/* END INITPMSSPECS */
 
 /* -------------------------------------------------------------------- */
-char *GetPMSparameter(char serialNumber[],  char parameter[])
+char *GetPMSparameter(const char serialNumber[], const char parameter[])
 {
   int	i, j, k;
   char	*p;
