@@ -69,7 +69,7 @@ void InitAircraftSpecs(char fileName[])
    */
   for (cnt = 0; fgets(ACbuffer, 512, fp); )
     {
-    if (ACbuffer[0] == COMMENT)
+    if (ACbuffer[0] == COMMENT || strlen(ACbuffer) < 2)
       continue;
 
     ACbuffer[strlen(ACbuffer)] = '\0';		/* Ditch newline	*/
