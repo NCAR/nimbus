@@ -135,7 +135,7 @@ int LowRateLoop(long starttime, long endtime)
 
     if (outputList[i]->VectorLength > 1)
     {
-      for (size_t j = 2; j < outputList[i]->VectorLength; ++j)
+      for (size_t j = 1; j < outputList[i]->VectorLength; ++j)
         fprintf(OutputFile, " %3d", j);
     }
 
@@ -252,15 +252,15 @@ static void PrintVariables()
         nc_get_vara_float(InputFile, vp->inVarID, start, count, data);
 
         if (AmesFormat)
-          for (j = 1; j < vp->VectorLength; ++j)
+          for (j = 0; j < vp->VectorLength; ++j)
             if (isMissingValue(data[j], vp->MissingValue))
               data[j] = 99999.0;
 
         if (strchr(vp->Format, 'd'))
-          for (j = 1; j < vp->VectorLength; ++j)
+          for (j = 0; j < vp->VectorLength; ++j)
             fprintf(OutputFile, vp->Format, (int)data[j]);
         else
-          for (j = 1; j < vp->VectorLength; ++j)
+          for (j = 0; j < vp->VectorLength; ++j)
             fprintf(OutputFile, vp->Format, data[j]);
       }
       else
