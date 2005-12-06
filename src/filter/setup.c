@@ -209,7 +209,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
           raw[indx]->cof.clear();
           for (size_t i = 0; i < order; ++i)
-            raw[indx]->cof[i] = (float)atof(strtok(NULL, " \t"));
+            raw[indx]->cof.push_back((float)atof(strtok(NULL, " \t")));
           }
         }
       }
