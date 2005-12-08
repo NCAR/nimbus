@@ -52,7 +52,8 @@ void ReadModuloVariables()
 
     strcat(target, "_");
 
-    while (strncmp((char *)sdi[++index], target, strlen(target)) == 0)
+    while (++index < sdi.size() &&
+	strncmp((char *)sdi[index]->name, target, strlen(target)) == 0)
       sdi[index]->Modulo = mp;
     }
   else
@@ -62,7 +63,8 @@ void ReadModuloVariables()
 
     strcat(target, "_");
 
-    while (strncmp((char *)raw[++index], target, strlen(target)) == 0)
+    while (++index < raw.size() &&
+	strncmp((char *)raw[index]->name, target, strlen(target)) == 0)
       raw[index]->Modulo = mp;
     }
   else
@@ -72,7 +74,8 @@ void ReadModuloVariables()
 
     strcat(target, "_");
 
-    while (strncmp((char *)derived[++index],target,strlen(target)) == 0)
+    while (++index < derived.size() &&
+	strncmp((char *)derived[index]->name,target,strlen(target)) == 0)
       derived[index]->Modulo = mp;
     }
   else
