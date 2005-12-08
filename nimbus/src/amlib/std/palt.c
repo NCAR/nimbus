@@ -68,6 +68,7 @@ void spalt(DERTBL *varp)
   switch (Aircraft)
     {
     case B57:
+    case HIAPER:
       palt = psxc / ASTG;
 
       if (palt >= 0.223198605)
