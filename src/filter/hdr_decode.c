@@ -39,6 +39,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 
 #include <ctype.h>
 #include <unistd.h>
+#include <set>
 
 #include "raf.h"
 #include "pms.h"
@@ -277,7 +278,9 @@ for (size_t i = 0; i < derived.size(); ++i)
 int DecodeHeader3(const char header_file[])
 {
 printf("DecodeHeader3: header_file=%s\n", header_file);
+
   extern dsm::SyncRecordReader* syncRecReader;
+
 
   if (cfg.ProcessingMode() == Config::PostProcessing)
   {
@@ -285,7 +288,22 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
 
     if (pid == 0)
     {
-      execl("/opt/ads3/x86/bin/launch_ss.sh", "launch_ss.sh", header_file, NULL);
+      // Acquire list of all files which match the first 4 chars of this one
+      // plus are greater in time.  Pass this list of file names into
+      // launch_ss (which runs sync_server).
+      std::set<std::string> fileList, GetADSFileList(const char *);
+      fileList = GetADSFileList(header_file);
+      char *files[128];
+
+      size_t i = 0;
+      files[i++] = "launch_ss.sh";
+      std::set<std::string>::iterator it;
+      for (it = fileList.begin(); it != fileList.end(); ++it)
+        files[i++] = (char *)&(*it).c_str()[0];
+
+      files[i] = 0;
+
+      execv("/opt/ads3/x86/bin/launch_ss.sh", files);
       fprintf(stderr, "nimbus: failed to exec launch_ss.sh\n");
       _exit(1);
     }
@@ -2189,6 +2207,7 @@ var_base::var_base(const char s[])
   Dirty = false;
   Output = true;
   DependedUpon = false;
+  Transmit = true;
 
   DataQuality	= defaultQuality;
 }

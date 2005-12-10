@@ -117,4 +117,46 @@ long FindNextLogicalADS3(char record[], long endTime)
 
 }	// END FINDNEXTLOGICALADS3
 
+/* -------------------------------------------------------------------- */
+#include <sys/types.h>
+#include <dirent.h>
+#include <libgen.h>
+#include <set>
+
+std::set<std::string> GetADSFileList(const char *adsFileName)
+{
+  std::set<std::string> fileList;
+  DIR *dir;
+  char tmp_dir[256], tmp_name[256];
+
+  strcpy(tmp_dir, adsFileName);
+  char *directory = dirname(tmp_dir);
+
+  if ((dir = opendir(directory)) == 0)
+  {
+    fprintf(stderr, "Failed to open directory %s\n", tmp_dir);
+    return fileList;
+  }
+
+  strcpy(tmp_name, adsFileName);
+  char *file = basename(tmp_name);
+  struct dirent *entry;
+
+  while ( (entry = readdir(dir)) )
+    if (strncmp(file, entry->d_name, 4) == 0 &&
+        strcmp(file, entry->d_name) <= 0)
+    {
+      std::string s(directory);
+      s += "/";
+      s += entry->d_name;
+      fileList.insert(s);
+    }
+
+//  std::set<std::string>::iterator it;
+//  for (it = fileList.begin(); it != fileList.end(); ++it)
+//    printf("%s\n", (*it).c_str());
+
+  return fileList;
+}
+
 // END ADS3IO.CC
