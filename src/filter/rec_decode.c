@@ -28,6 +28,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include "nimbus.h"
 #include "decode.h"
 
+#include <SyncRecordReader.h>
+
 #include <netinet/in.h>
 
 extern ushort	*bits;
@@ -42,50 +44,20 @@ void DecodeADSrecord(
     // Forcing ADS3 into the ADS2 architecture.  FindNextRecord will
     // put it into ADSrecord, copy it out here.
     memcpy((void *)nlr, (void *)lr, nSRfloats * sizeof(NR_TYPE));
+
+    // Set dynamic lags.
+/*
+    float *rec_p = (float *)lr;
+    for (size_t i = 0; i < raw.size(); ++i)
+    {
+      float lag = rec_p[raw[i]->LAGstart];
+printf("%d/%d - %s %d %lx\n", i, raw.size(), raw[i]->name, &rec_p[raw[i]->LAGstart], lag);
+      if (!isnan(lag))
+        raw[i]->DynamicLag = (int)(lag / 1000.0);
+    }
+
+*/
     return;
-  }
-
-  /* Cast SDI variables into new record
-   */
-  for (size_t i = 0; i < sdi.size(); ++i)
-  {
-    SDITBL	*sp = sdi[i];
-    int		pos;
-    short	*lrp;		/* ADS Logical Record Pointer	*/
-
-    lrp	= &lr[sp->ADSstart];
-    pos	= sp->SRstart;
-
-    // Raw analog/digital bits/counts for WINDS display.
-    if (cfg.ProcessingMode() == Config::RealTime)
-      bits[sp->LRstart] = ntohs(lrp[0]);
-
-    if (sp->type[0] == 'C')
-    {
-      if (strcmp(sp->type, "C24") == 0)
-      {
-        for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
-          nlr[pos] = (NR_TYPE)ntohl(*((unsigned long *)&lrp[j * sp->ADSoffset]));
-      }
-      else
-      {
-        for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
-          nlr[pos] = (NR_TYPE)ntohs(lrp[j * sp->ADSoffset]);
-      }
-    }
-    else
-    {
-      if (strcmp(sp->type, "D20") == 0)
-      {
-        for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
-          nlr[pos] = (NR_TYPE)ntohl(*((long *)&lrp[j * sp->ADSoffset]));
-      }
-      else
-      {
-        for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
-          nlr[pos] = (short)ntohs((ushort)lrp[j * sp->ADSoffset]);
-      }
-    }
   }
 
 
@@ -93,10 +65,50 @@ void DecodeADSrecord(
    */
   for (size_t i = 0; i < raw.size(); ++i)
   {
-    if (raw[i])
+    if (raw[i]->xlate)
       (*raw[i]->xlate)(raw[i], &lr[raw[i]->ADSstart], &nlr[raw[i]->SRstart]);
   }
 
 }	/* END DECODEADSRECORD */
+
+/* -------------------------------------------------------------------- */
+void decodeADS2analog(RAWTBL *varp, void *input, NR_TYPE *output)
+{
+  /* Cast SDI variables into new record
+   */
+  int pos = 0;
+  short *lrp = (short *)input;
+
+  // Raw analog/digital bits/counts for WINDS display.
+  if (cfg.ProcessingMode() == Config::RealTime)
+    bits[varp->LRstart] = ntohs(lrp[0]);
+
+  if (varp->type[0] == 'C')
+  {
+    if (strcmp(varp->type, "C24") == 0)
+    {
+      for (size_t j = 0; j < varp->SampleRate; ++j, ++pos)
+        output[pos] = (NR_TYPE)ntohl(*((unsigned long *)&lrp[j * varp->ADSoffset]));
+    }
+    else
+    {
+      for (size_t j = 0; j < varp->SampleRate; ++j, ++pos)
+        output[pos] = (NR_TYPE)ntohs(lrp[j * varp->ADSoffset]);
+    }
+  }
+  else
+  {
+    if (strcmp(varp->type, "D20") == 0)
+    {
+      for (size_t j = 0; j < varp->SampleRate; ++j, ++pos)
+        output[pos] = (NR_TYPE)ntohl(*((long *)&lrp[j * varp->ADSoffset]));
+    }
+    else
+    {
+      for (size_t j = 0; j < varp->SampleRate; ++j, ++pos)
+        output[pos] = (short)ntohs((ushort)lrp[j * varp->ADSoffset]);
+    }
+  }
+}
 
 /* END REC_DECODE.C */

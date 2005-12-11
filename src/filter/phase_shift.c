@@ -42,18 +42,6 @@ static void	resample(var_base *vp, int lag, NR_TYPE *, NR_TYPE *),
   shift_vector(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out);
 
 /* -------------------------------------------------------------------- */
-void AddVariableToSDIlagList(SDITBL *varp)
-{
-  if (!cfg.TimeShifting())
-    return;
-
-  sprintf(buffer, "Time lag for %s enabled, with lag of %d milliseconds.\n",
-          varp->name, varp->StaticLag);
-
-  LogMessage(buffer);
-}
-
-/* -------------------------------------------------------------------- */
 void AddVariableToRAWlagList(RAWTBL *varp)
 {
   if (!cfg.TimeShifting())
@@ -87,27 +75,6 @@ void PhaseShift(
   /* Copy current rec into srt output rec.
    */
   memcpy((char *)output, (char *)this_rec, NR_SIZE * nSRfloats);
-
-  for (size_t i = 0; i < sdi.size(); ++i)
-  {
-    SDITBL	*sp = sdi[i];
-    bool	noMissingData = true;
-
-    for (size_t j = 0; j < sp->SampleRate; ++j)
-      if (isnan(this_rec[sp->SRstart + j]))
-        noMissingData = false;
-
-    /* Only resample data, if we have a log or some missing values'.
-     */
-    if (sp->StaticLag == 0 && noMissingData)
-      srt_out = 0;
-    else
-      srt_out = output;
-
-    if (srt_out || houtput)
-      resample(sp, sp->StaticLag, srt_out, houtput);
-  }
-
 
   for (size_t i = 0; i < raw.size(); ++i)
   {
@@ -338,7 +305,6 @@ shift_vector(RAWTBL *rp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
     return;
 
   int sampleInterval = 1000 / rp->SampleRate;
-  int nBytesPerVector = rp->Length;
 
   /* Truncate lag.
    */

@@ -49,7 +49,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2000
 static Widget   EditShell = 0, EditWindow = 0;
 
 static int	VariableType, ListPosition;
-static SDITBL	*sp;
 static RAWTBL	*rp;
 static DERTBL	*dp;
 
@@ -75,17 +74,10 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
     {
     indx = (ListPosition = call->item_position) - 1;
 
-    if (indx < sdi.size())
-      {
-      sp = sdi[indx];
-      VariableType = SDI;
-      }
-    else
-    if ((indx -= sdi.size()) < raw.size())
+    if (indx < raw.size())
       {
       rp = raw[indx];
       VariableType = RAW;
-      
       }
     else
       {
@@ -97,24 +89,6 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
 
   switch (VariableType)
     {
-    case SDI:
-      set_edit_window_data(sp, sp->StaticLag, sp->SpikeSlope);
-
-      for (i = 0; i < sp->cof.size(); ++i)
-        {
-        sprintf(buffer, "%e", sp->cof[i]);
-        XmTextFieldSetString(ev_text[i], buffer);
-        XtSetSensitive(ev_text[i], true);
-        }
-
-      for (; i < MAXDEPEND; ++i)
-        {
-        XmTextFieldSetString(ev_text[i], "");
-        XtSetSensitive(ev_text[i], true);
-        }
-
-      break;
-
     case RAW:
       set_edit_window_data(rp, rp->StaticLag, rp->SpikeSlope);
 
@@ -128,7 +102,7 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
       for (; i < MAXDEPEND; ++i)
         {
         XmTextFieldSetString(ev_text[i], "");
-        XtSetSensitive(ev_text[i], false);
+        XtSetSensitive(ev_text[i], true);
         }
 
       break;
@@ -209,52 +183,6 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
 
   switch (VariableType)
     {
-    case SDI:
-      /*synthetic data modifications*/
-       if (strcmp(dq, "synthetic") == 0)
-         {
-         if (constsynthval)
-           {
-           tempvar.type='s';
-           tempvar.name=sp->name;
-           tempvar.value=constsynthval;
-           sd.registervar(tempvar);
-           }
-         else if(!(p=="none"))
-           {
-           tempvar.type='s';
-           tempvar.name=sp->name;
-           tempvar.function=p;
-           sd.registerfunc(tempvar); 
-          }
-        }
-
-      sp->Dirty = true;
-      sp->Output = output;
-
-      if ((sp->OutputRate = outputRate) == 0)
-        sp->OutputRate = sp->SampleRate;
-
-      sp->StaticLag = lag;
-      sp->SpikeSlope = spike;
-      sp->DataQuality = dq;
-      sp->cof.clear();
-
-      for (int i = MAX_COF-1; i >= 0; --i)
-        {
-        p = XmTextFieldGetString(ev_text[i]);
-        f = atof(p);
-        XtFree(p);
-
-        if (f == 0.0 && sp->cof.size() == 0)
-          continue;
-
-        sp->cof.insert(sp->cof.begin(), f);
-        }
-
-      newAttr = CreateListLineItem((void *)sp, SDI);
-      break;
-
     case RAW:
        /*synthetic data modifications*/
        if (strcmp(dq, "synthetic") == 0)

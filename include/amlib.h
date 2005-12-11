@@ -36,6 +36,8 @@ enum RateFeedBack { LOW_RATE_FEEDBACK, HIGH_RATE_FEEDBACK, nFeedBackTypes };
 
 #define AMBIENT(t, rf, xm2)	((t + 273.16) / (1.0 + 0.2 * rf * xm2) - 273.16)
 
+NR_TYPE GetSample(DERTBL *dp, int di);
+
 #define GetSample(dp, di)	\
 	(FeedBack == LOW_RATE_FEEDBACK \
 		? AveragedData[dp->depend_LRindex[di]] \
@@ -95,6 +97,8 @@ float	ntohf(float);
 #else
 #define ntohf(x)        (x)
 #endif
+
+void decodeADS2analog(RAWTBL *varp, void *input, NR_TYPE *output);
 
 #include "amlibProto.h"
 

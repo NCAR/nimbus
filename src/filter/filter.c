@@ -28,7 +28,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 
 extern NR_TYPE	*SampledData, *HighRateData;
 
-static std::vector<mRFilterPtr> sdiFilters;
 static std::vector<mRFilterPtr> rawFilters;
 
 static int	PSCBindex;
@@ -47,7 +46,7 @@ static void	initCircBuff(circBuffPtr aCBPtr),
 		disposCircBuff(circBuffPtr aCBPtr),
 		putBuff(NR_TYPE datum, circBuffPtr aCBPtr),
 		setTimeDelay(size_t, size_t, int *, size_t *),
-		filterCounter(SDITBL *sp),
+		filterCounter(RAWTBL *sp),
 		ProcessVariable(CircularBuffer *, CircularBuffer *,
 				var_base *vp, mRFilterPtr vpFilter),
 		SingleStageFilter(	CircularBuffer *, CircularBuffer *,
@@ -76,61 +75,6 @@ void InitMRFilters()
 
   /* Create filter Data for each variable
    */
-  sdiFilters.resize(sdi.size());
-  for (size_t i = 0; i < sdi.size(); ++i)
-    {
-    /* Doesn't require filtering.
-     */
-    if (sdi[i]->DependedUpon == false && sdi[i]->OutputRate != Config::HighRate)
-      {
-      sdiFilters[i] = (mRFilterPtr)ERR;
-      continue;
-      }
-
-    if (sdi[i]->type[0] == 'C')
-      sdiFilters[i] = NULL;
-
-    mv_p = sdi[i]->Modulo;
-
-    switch (sdi[i]->SampleRate)
-      {
-      /* For interpolation cases, L is set to 1 instead of what it really
-       * is.  This is because we linear interpolate extra samples
-       * instead of zero filling (which is what the filter would normally
-       * do).
-       */
-      case 1:			/* Interpolate     L  M  */
-        sdiFilters[i] = createMRFilter(1, 1, OneTo25, mv_p);
-        break;
-
-      case 5:
-        sdiFilters[i] = createMRFilter(1, 1, FiveTo25, mv_p);
-        break;
-
-      case 25:		/* No filtering, just copy data */
-        sdiFilters[i] = NULL;
-        break;
-
-      case 50:		/* Decimate        L  M  */
-        sdiFilters[i] = createMRFilter(1, 2, FiftyTo25, mv_p);
-        break;
-
-      case 250:
-        sdiFilters[i] = createMRFilter(1, 10, TwoFiftyTo25, mv_p);
-        break;
-
-      case 1000:
-        sdiFilters[i] = createMRFilter(1, 40, ThousandTo25, mv_p);
-        break;
-
-      default:
-        sdiFilters[i] = (mRFilterPtr)ERR;
-        fprintf(stderr, "mrfFilter: non-supported input rate, ");
-        fprintf(stderr, "var=%s, rate=%d\n", sdi[i]->name, sdi[i]->SampleRate);
-      }
-    }
-
-
   rawFilters.resize(raw.size());
   for (size_t i = 0; i < raw.size(); ++i)
     {
@@ -141,6 +85,11 @@ void InitMRFilters()
       rawFilters[i] = (mRFilterPtr)ERR;
       continue;
       }
+
+    /* Don't filter counters.
+     */
+    if (raw[i]->type[0] == 'C')
+      rawFilters[i] = NULL;
 
     /* Can't filter Vectors.  And we don't want to filter PMS1D scalars.
      * This data will just be memcpy() into HighRateData[].
@@ -192,6 +141,14 @@ void InitMRFilters()
           rawFilters[i] = createMRFilter(1, 2, FiftyTo25, mv_p);
         break;
 
+      case 250:
+        rawFilters[i] = createMRFilter(1, 10, TwoFiftyTo25, mv_p);
+        break;
+
+      case 1000:
+        rawFilters[i] = createMRFilter(1, 40, ThousandTo25, mv_p);
+        break;
+
       default:
         rawFilters[i] = (mRFilterPtr)ERR;
         fprintf(stderr, "mrfFilter: non-supported input rate, ");
@@ -208,26 +165,19 @@ void Filter(	CircularBuffer *PSCB,	/* SampleRate data. */
   SampledData = (NR_TYPE *)GetBuffer(PSCB, -(PSCB->nbuffers - 1));
   interpdData = (NR_TYPE *)GetBuffer(HSCB, -(PSCB->nbuffers - 1));
 
-  /* Do Analog variables.
-   */
-  for (size_t i = 0; i < sdi.size(); ++i)
-    {
-    /* Counters shouldn't need to be filtered.  Applies averaging or
-     * linear interpolation.
-     */
-    if (sdi[i]->type[0] == 'C' && sdi[i]->SampleRate != 25)
-      {
-      filterCounter(sdi[i]);
-      continue;
-      }
-
-    ProcessVariable(PSCB, HSCB, sdi[i], sdiFilters[i]);
-    }
-
   /* Do raw variables
    */
   for (size_t i = 0; i < raw.size(); ++i)
     {
+    /* Counters shouldn't need to be filtered.  Applies averaging or
+     * linear interpolation.
+     */
+    if (raw[i]->type[0] == 'C' && raw[i]->SampleRate != 25)
+      {
+      filterCounter(raw[i]);
+      continue;
+      }
+
     if ((raw[i]->ProbeType & PROBE_PMS1D) || (raw[i]->ProbeType & PROBE_PMS2D))
       memcpy(	(char *)&HighRateData[raw[i]->HRstart],
 		(char *)&SampledData[raw[i]->SRstart],
@@ -290,7 +240,7 @@ static void ProcessVariable(	CircularBuffer *PSCB, CircularBuffer *HSCB,
 }	/* END PROCESSVARIABLE */
 
 /* -------------------------------------------------------------------- */
-static void filterCounter(SDITBL *sp)
+static void filterCounter(RAWTBL *sp)
 {
   NR_TYPE *sdp = &SampledData[sp->SRstart];
   size_t	OUTindex;
@@ -388,10 +338,6 @@ static filterPtr readAfilter(char file[])
 /* -------------------------------------------------------------------- */
 void ClearMRFilters()
 {
-  for (size_t i = 0; i < sdi.size(); ++i)
-    if ((int)sdiFilters[i] > 0)
-      initMultiRateFilter(sdiFilters[i]);
-
   for (size_t i = 0; i < raw.size(); ++i)
     if ((int)rawFilters[i] > 0)
       initMultiRateFilter(rawFilters[i]);

@@ -34,18 +34,6 @@ extern NR_TYPE	*SampledData, *AveragedData;
 /* -------------------------------------------------------------------- */
 void AverageSampledData()
 {
-  for (size_t i = 0; i < sdi.size(); ++i)
-  {
-    SDITBL *sp = sdi[i];
-
-    (*sp->Average)(&SampledData[sp->SRstart],
-              &AveragedData[sp->LRstart],
-              sp->SampleRate,
-              sp->Length,
-              sp->Modulo);
-  }
-
-
   for (size_t i = 0; i < raw.size(); ++i)
   {
     RAWTBL *rp = raw[i];
@@ -61,7 +49,6 @@ void AverageSampledData()
               rp->Length,
               rp->Modulo);
   }
-
 }	/* END AVERAGESAMPLEDDATA */
 
 /* -------------------------------------------------------------------- */

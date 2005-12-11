@@ -36,11 +36,6 @@ Broadcast::Broadcast()
   {
     strcpy(target, bcast[i]);
 
-    if ((index = SearchTable(sdi, target)) != ERR)
-    {
-      _varList.push_back(sdi[index]);
-    }
-    else
     if ((index = SearchTable(raw, target)) != ERR)
     {
       _varList.push_back(raw[index]);

@@ -49,14 +49,14 @@ void xlpsfd_ADS2(RAWTBL *varp, void *input, NR_TYPE *output)
   ushort	*p1_input, *p2_input;
 
   static bool	firstTime = TRUE;
-  static SDITBL	*psfd1, *psfd2;
+  static RAWTBL	*psfd1, *psfd2;
 
   if (firstTime)
     {
     int	indx1, indx2;
 
-    indx1 = SearchTable(sdi, "PSFD1");
-    indx2 = SearchTable(sdi, "PSFD2");
+    indx1 = SearchTable(raw, "PSFD1");
+    indx2 = SearchTable(raw, "PSFD2");
 
     if ((int)psfd1 == ERR || (int)psfd2 == ERR)
       {
@@ -65,8 +65,8 @@ void xlpsfd_ADS2(RAWTBL *varp, void *input, NR_TYPE *output)
       exit(1);
       }
 
-    psfd1 = sdi[indx1];
-    psfd2 = sdi[indx2];
+    psfd1 = raw[indx1];
+    psfd2 = raw[indx2];
 
     firstTime = FALSE;
     }

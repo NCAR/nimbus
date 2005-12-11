@@ -37,8 +37,7 @@ enum projOpenFailAction { RETURN, EXIT };
 
 #define MAXDEPEND	12
 #define MAX_TIME_SLICES	1
-
-
+ 
 enum SYNTHTYPE {sy_file, sy_constant, sy_function, sy_none};
 
 typedef struct
@@ -73,6 +72,7 @@ public:
   std::string SerialNumber;	// Probe Serial Number
 
   std::string Units;
+  std::string AltUnits;	// Alternate units.
   std::string LongName;
   std::vector<std::string> CategoryList;
 
@@ -80,10 +80,14 @@ public:
   size_t LRstart;	// Start indx into AveragedData
   size_t SRstart;	// Start indx into SampledData
   size_t HRstart;	// Start indx into HighRateData
+  size_t LAGstart;	// ads3 only, @see dsm::SyncRecordVariable
 
   size_t SampleRate;	// Sampled rate
   size_t Length;	// Vector length (used by PMS1D)
 
+  int ProbeType;	// Is this a probe & which one
+  size_t ProbeCount;	// For mulitple identicle probes
+			// Used by AMLIB
   bool DependedUpon;	// Is this variable depended upon?
 
   MOD *Modulo;		// Pointer for modulo data, if any
@@ -99,13 +103,11 @@ public:
 /* Struct for SDI analog variables, this variables only require polynomial cals
  * to be processed.
  */
+/*
 class SDITBL : public var_base
 {
 public:
   SDITBL(const char s[]);
-
-  int StaticLag;	// Static lag in ms
-  NR_TYPE SpikeSlope;	// Slope for spike detection
 
   long ADSstart;	// Start offset of variable in block
   long ADSoffset;	// Offset between samples
@@ -120,7 +122,7 @@ public:
 
   SYNTHTYPE synthtype; 
 };
-
+*/
 
 /* Struct for raw variables (mostly block probes), some analog's come down
  * here for specialized processing (i.e. not polynomial cals).
@@ -130,22 +132,21 @@ class RAWTBL : public var_base
 public:
   RAWTBL(const char s[]);
 
-  int StaticLag;	// Static lag in ms to shift data
-  NR_TYPE SpikeSlope;	// Slope for spike detection
-  size_t ProbeCount;	// For mulitple identicle probes
-  int ProbeType;	// Is this a probe & which one
-
   long ADSstart;
   long ADSoffset;	// Offset between samples
-  int DynamicLag;	// Dynamic lag (for IRS & GPS)
+  char type[4];		// Analog, Digital or Counter
 
   void (*Initializer)(void *); // Function to initialize xlate
-  void (*xlate)(void *, void *, float *); // Function to translate data
+  void (*xlate)(RAWTBL *, void *, float *); // Function to translate data
   void (*Average)(...);	// Routine to use to average/sum data
 
   long convertOffset;	// These 4 fields are used by a few
   float	convertFactor;	// variables only.
   std::vector<float> cof;
+
+  int StaticLag;	// Static lag in ms to shift data
+  int DynamicLag;	// Dynamic lag
+  NR_TYPE SpikeSlope;	// Slope for spike detection
 
   SYNTHTYPE synthtype;
 };
@@ -157,10 +158,6 @@ class DERTBL : public var_base
 {
 public:
   DERTBL(const char s[]);
-
-  int ProbeType;		// Is this a probe & which one
-  size_t ProbeCount;		// For mulitple identicle probes
-				// Used by AMLIB
 
   int Default_HR_OR;		// Default OutputRate for HighRate run
 
@@ -180,7 +177,6 @@ extern char	*ProjectDirectory;
 extern const NR_TYPE MISSING_VALUE, floatNAN;
 extern const int MAX_COF;
 
-extern std::vector<SDITBL *> sdi;
 extern std::vector<RAWTBL *> raw;
 extern std::vector<DERTBL *> derived;
 extern std::vector<DERTBL *> ComputeOrder;

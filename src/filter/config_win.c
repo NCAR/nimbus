@@ -182,9 +182,6 @@ void SetLowRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
 
   cfg.SetProcessingRate(Config::LowRate);
 
-  for (i = 0; i < sdi.size(); ++i)
-    sdi[i]->OutputRate = Config::LowRate;
-
   for (i = 0; i < raw.size(); ++i)
     raw[i]->OutputRate = Config::LowRate;
 
@@ -222,9 +219,6 @@ void SetSampleRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *cal
 
   cfg.SetProcessingRate(Config::SampleRate);
 
-  for (i = 0; i < sdi.size(); ++i)
-    sdi[i]->OutputRate = sdi[i]->SampleRate;
-
   for (i = 0; i < raw.size(); ++i)
     raw[i]->OutputRate = raw[i]->SampleRate;
 
@@ -261,10 +255,6 @@ void SetHighRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
     return;
 
   cfg.SetProcessingRate(Config::HighRate);
-
-  for (i = 0; i < sdi.size(); ++i)
-    if (sdi[i]->SampleRate >= Config::HighRate)
-      sdi[i]->OutputRate = Config::HighRate;
 
   for (i = 0; i < raw.size(); ++i)
     {

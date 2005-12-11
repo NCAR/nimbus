@@ -41,9 +41,6 @@ void ReadDespikeFile()
     {
     sscanf(spikes[i], "%s %f", target, &slope);
 
-    if ((index = SearchTable(sdi, target)) != ERR)
-      sdi[index]->SpikeSlope = fabs((double)slope);
-    else
     if ((index = SearchTable(raw, target)) != ERR)
       raw[index]->SpikeSlope = fabs((double)slope);
     else

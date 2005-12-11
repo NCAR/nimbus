@@ -140,13 +140,6 @@ void CleanOutUnwantedVariables()
     if (derived[i]->Output)
       doubleCheck(derived[i]);
 
-
-  for (cnt = 0, i = 0; i < sdi.size(); ++i)
-    if (sdi[i]->Output || sdi[i]->DependedUpon)
-      sdi[cnt++] = sdi[i];
-
-  sdi.resize(cnt);
-
   for (cnt = 0, i = 0; i < raw.size(); ++i)
     if (raw[i]->Output || raw[i]->DependedUpon)
       raw[cnt++] = raw[i];
@@ -166,12 +159,6 @@ int DependIndexLookup(DERTBL *dp, int which_dep)
 {
   int di;
 
-  if ((di = SearchTable(sdi, dp->depend[which_dep])) != ERR)
-    {
-    dp->depend_LRindex[which_dep] = sdi[di]->LRstart;
-    dp->depend_HRindex[which_dep] = sdi[di]->HRstart;
-    }
-  else
   if ((di = SearchTable(raw, dp->depend[which_dep])) != ERR)
     {
     dp->depend_LRindex[which_dep] = raw[di]->LRstart;
@@ -197,9 +184,6 @@ static void doubleCheck(DERTBL *dp)	/* This function is recursive	*/
 
   for (size_t i = 0; i < dp->ndep; ++i)
     {
-    if ((indx = SearchTable(sdi, dp->depend[i])) != ERR)
-      sdi[indx]->DependedUpon = true;
-    else
     if ((indx = SearchTable(raw, dp->depend[i])) != ERR)
       raw[indx]->DependedUpon = true;
     else

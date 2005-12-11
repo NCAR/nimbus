@@ -49,9 +49,6 @@ void ReadStaticLags()
       continue;
       }
 
-    if ((index = SearchTable(sdi, target)) != ERR)
-      sdi[index]->StaticLag = lag;
-    else
     if ((index = SearchTable(raw, target)) != ERR)
       raw[index]->StaticLag = lag;
     else

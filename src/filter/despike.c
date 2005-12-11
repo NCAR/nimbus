@@ -23,25 +23,14 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2005
 #include "decode.h"
 #include "circbuff.h"
 
-static std::vector<SDITBL *> sdi_spike;
 static std::vector<RAWTBL *> raw_spike;
-static std::vector<size_t>   nSpikesSDI, nSpikesRAW;
+static std::vector<size_t>   nSpikesRAW;	// Stats.
 
 static void checkVariable(var_base *, NR_TYPE, size_t *);
 static void check1Hz(var_base *, NR_TYPE, size_t *);
 
 void LogThisRecordMsg(NR_TYPE *record, const char msg[]);
 
-
-/* -------------------------------------------------------------------- */
-void AddVariableToSDIdespikeList(SDITBL *varp)
-{
-  if (!cfg.Despiking())
-    return;
-
-  sdi_spike.push_back(varp);
-  nSpikesSDI.push_back(0);
-}
 
 /* -------------------------------------------------------------------- */
 void AddVariableToRAWdespikeList(RAWTBL *varp)
@@ -57,17 +46,6 @@ void AddVariableToRAWdespikeList(RAWTBL *varp)
 void LogDespikeInfo()
 {
   size_t i;
-
-  for (i = 0; i < sdi_spike.size(); ++i)
-    {
-    if (nSpikesSDI[i] > 0)
-      {
-      sprintf(buffer, "%s: %d spikes removed with slope exceeding %f\n",
-	sdi_spike[i]->name, nSpikesSDI[i], sdi_spike[i]->SpikeSlope);
-
-      LogMessage(buffer);
-      }
-    }
 
   for (i = 0; i < raw_spike.size(); ++i)
     {
@@ -91,13 +69,6 @@ void DespikeData(CircularBuffer *LRCB, int index)
   this_rec	= (NR_TYPE *)GetBuffer(LRCB, index);
   next_rec	= (NR_TYPE *)GetBuffer(LRCB, index+1);
   next2_rec	= (NR_TYPE *)GetBuffer(LRCB, index+2);
-
-  for (size_t i = 0; i < sdi_spike.size(); ++i)
-    if (sdi_spike[i]->SampleRate == 1)
-      check1Hz(sdi_spike[i], sdi_spike[i]->SpikeSlope, &nSpikesSDI[i]);
-    else
-      checkVariable(sdi_spike[i], sdi_spike[i]->SpikeSlope, &nSpikesSDI[i]);
-
 
   for (size_t i = 0; i < raw_spike.size(); ++i)
     if (raw_spike[i]->SampleRate == 1)

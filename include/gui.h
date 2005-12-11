@@ -13,7 +13,6 @@ DESCRIPTION:	Header File declaring Variable and associated user
 #include <Xm/Xm.h>
 
 /* Values for "VariableType"	*/
-#define SDI	0
 #define RAW	1
 #define DERIVED	2
 
