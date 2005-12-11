@@ -117,13 +117,8 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
 
   extern NR_TYPE	*AveragedData;
 
-  /* Three loops again, analog, raw and derived.  This is analog.
-   */
-  for (size_t i = 0; i < sdi.size(); ++i)
-    addValueToAllStreams(AveragedData[sdi[i]->LRstart], sdi[i]->Transmit);
 
-
-  /* Three loops again, analog, raw and derived.  This is raw.
+  /* Two loops again, raw and derived.  This is raw.
    */
   for (size_t i = 0; i < raw.size(); ++i)
   {
@@ -134,7 +129,7 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
   }
 
 
-  /* Three loops again, analog, raw and derived.  This is derived.
+  /* Two loops again, raw and derived.  This is derived.
    */
   for (size_t i = 0; i < derived.size(); ++i)
   {
@@ -301,20 +296,6 @@ PostgreSQL::initializeVariableList()
   dims[0] = 1;
 
 
-  /* 3 big loops here for analog, raw and derived.  This is analog.
-   */
-  for (size_t i = 0; i < sdi.size(); ++i)
-  {
-    std::string alt_units("V");
-
-    if (sdi[i]->type[0] == 'C')	// Pulse Counters.
-      alt_units = "count";
-
-    addVariableToDataBase(sdi[i], alt_units, nDims, dims, sdi[i]->cof, MISSING_VALUE);
-    addVariableToTables(rateTableMap, sdi[i], true);
-  }
-
-
   std::vector<float> noCals;
 
   /* 3 big loops here for analog, raw and derived.  This is raw.
@@ -370,7 +351,7 @@ PostgreSQL::initializeVariableList()
     else
       nDims = 1;
 
-    addVariableToDataBase(raw[i], "", nDims, dims, noCals, MISSING_VALUE);
+    addVariableToDataBase(raw[i], nDims, dims, noCals, MISSING_VALUE);
 
     /* Don't add/duplicate rate 1. Don't add vectors for the time being.
      */
@@ -393,7 +374,7 @@ PostgreSQL::initializeVariableList()
     else
       nDims = 1;
 
-    addVariableToDataBase(derived[i], "", nDims, dims, noCals, MISSING_VALUE);
+    addVariableToDataBase(derived[i], nDims, dims, noCals, MISSING_VALUE);
     addVariableToTables(rateTableMap, derived[i], false);
   }
 
@@ -410,7 +391,7 @@ PostgreSQL::WriteSQLvolts(const std::string timeStamp)
   rateTableList::iterator it;
   int	maxRate = 1;
 
-  extern NR_TYPE	*SampledData, *SRTvolts;
+  extern NR_TYPE	*SampledData;
 
   _sqlString.str("");
 
@@ -426,10 +407,6 @@ PostgreSQL::WriteSQLvolts(const std::string timeStamp)
     {
       _sqlString << "INSERT INTO " << it->second << " VALUES ('" << timeStamp
 	<< "." << std::setfill('0') << std::setw(3) << 1000 / it->first * i << "'";
-
-      for (size_t j = 0; j < sdi.size(); ++j)
-        if (sdi[j]->SampleRate == (size_t)it->first)
-          addValue(_sqlString, SRTvolts[sdi[j]->SRstart+i]);
 
       for (size_t j = 0; j < raw.size(); ++j)
         if (raw[j]->SampleRate == (size_t)it->first && raw[j]->Length == 1)
@@ -562,7 +539,6 @@ PostgreSQL::addVectorToAllStreams(const NR_TYPE *value, int nValues, bool xmit)
 void
 PostgreSQL::addVariableToDataBase(
 		const var_base *var,
-		const std::string& uncaled_units,
 		size_t nDims,
 		const int dims[],
 		const std::vector<float>& cals,
@@ -573,7 +549,7 @@ PostgreSQL::addVariableToDataBase(
   entry << "INSERT INTO Variable_List VALUES ('" <<
 	var->name	<< "', '" <<
 	escape_string(var->Units)	<< "', '" <<
-	escape_string(uncaled_units)	<< "', '" <<
+	escape_string(var->AltUnits)	<< "', '" <<
 	escape_string(var->LongName)	<< "', '";
 
   if (var->SampleRate > 0)

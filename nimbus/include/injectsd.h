@@ -4,18 +4,13 @@
 /****************/
 //injectsd.h
 
-
-/********************************/
 #include <iostream>
 #include <fstream>
 #include "nimbus.h"
 #include <string>
 #include <vector>
 
-
-
-
- extern NR_TYPE          *AveragedData;
+extern NR_TYPE          *AveragedData;
 
 
 struct v 
@@ -33,12 +28,10 @@ class SyntheticData
 {
  private:
   std::vector<RAWTBL *> rt;              //holds pointers to the raw variables to be modified
-  std::vector<SDITBL *> st;              //holds pointers to the sdi variables to be modified
   int varcount;                     //variable count for variables to be modified from a file
   int constcount;                   // variable count for variables to be modifed with constant values
   int funccount;                    //variable count for variables to be modified with functions
   int ir;                           //rt vector counter
-  int is;                           //st vector counter
   std:: vector<vars> varnames;            //hold the info for variables to be modified from a file 
   std:: vector<vars> constvarnames;       //holds the info for variables to be modified by constant values
   std::vector<vars> funcvarnames;        //holds the info for variables to be modified by functions
@@ -47,7 +40,6 @@ class SyntheticData
   float timestamp;                  //holds the time from the datafile
   std::string dummy;                //temporary storage for timestamp
   std::ifstream f;                       //the input file stream that reads data from the 
-  int indexs;                       //holds the location of the current variable in the sdi table
   int indexr;                       //holds the location of the current variable in the raw table
   char temp;
  std::string tf;                   //temporary string

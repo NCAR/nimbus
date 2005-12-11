@@ -30,25 +30,20 @@ void ReadSumVariables()
   int	index;
   char	*sumvar[512], target[NAMELEN];
 
-
   ReadTextFile(SUMVARS, sumvar);
 
   for (int i = 0; sumvar[i]; ++i)
     {
     strcpy(target, sumvar[i]);
 
-    if ((index = SearchTable(sdi, target)) != ERR)
-      {
-      sdi[index]->type[0] = 'C';
-      sdi[index]->Average = (void (*) (...))Sum;
-      }
-    else
     if ((index = SearchTableSansLocation(raw, target)) != ERR)
       {
+      raw[index]->type[0] = 'C';
       raw[index]->Average = (void (*) (...))Sum;
 
       strcat(target, "_");
 
+      // Check multiple same variables, but different suffix.
       while (strncmp((char *)raw[++index], target, strlen(target)) == 0)
         raw[index]->Average = (void (*) (...))Sum;
       }

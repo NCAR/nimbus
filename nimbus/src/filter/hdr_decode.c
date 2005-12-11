@@ -113,7 +113,7 @@ static char	*derivedlist[MAX_DEFAULTS*4],	/* DeriveNames file	*/
 		*rawlist[MAX_DEFAULTS*4];	/* RawNames file	*/
 
 
-static SDITBL	*initSDI_ADS3(dsm::SyncRecordVariable* var);
+static RAWTBL	*initSDI_ADS3(dsm::SyncRecordVariable* var);
 static RAWTBL	*add_name_to_RAWTBL(const char []);
 static DERTBL	*add_name_to_DERTBL(const char []);
 
@@ -237,9 +237,6 @@ static void CommonPostInitialization()
     add_file_to_DERTBL(USERNAMES);
 
 /*
-for (size_t i = 0; i < sdi.size(); ++i)
-  printf("%-12s%5d, %d\n", sdi[i]->name, sdi[i]->SampleRate, sdi[i]->ADSstart);
-
 for (size_t i = 0; i < raw.size(); ++i)
   printf("%-12s%5d\n", raw[i]->name, raw[i]->xlate);
 
@@ -247,7 +244,6 @@ for (size_t i = 0; i < derived.size(); ++i)
   printf("%-12s\n", derived[i]->name, derived[i]->compute);
 */
 
-  std::sort(sdi.begin(), sdi.end(), VarCompareLT);
   std::sort(raw.begin(), raw.end(), VarCompareLT);
   std::sort(derived.begin(), derived.end(), VarCompareLT);
 
@@ -255,13 +251,8 @@ for (size_t i = 0; i < derived.size(); ++i)
   ReadSumVariables();
 
   if (cfg.ProcessingRate() == Config::SampleRate)
-  {
-    for (size_t i = 0; i < sdi.size(); ++i)
-      sdi[i]->OutputRate = sdi[i]->SampleRate;
-
     for (size_t i = 0; i < raw.size(); ++i)
       raw[i]->OutputRate = raw[i]->SampleRate;
-  }
 
   if (cfg.TimeShifting())
     ReadStaticLags();
@@ -365,6 +356,7 @@ printf("hdr_decode.c: <<< WARNING >>> ProjectNumber is hardcoded = %s\n", cfg.Pr
     if (var->getConverter() == 0)
     {
       RAWTBL *rp = add_name_to_RAWTBL(var->getName().c_str());
+      rp->LAGstart = var->getLagOffset();
       rp->Units = var->getUnits();
       rp->LongName = var->getLongName();
 
@@ -376,7 +368,7 @@ printf("hdr_decode.c: <<< WARNING >>> ProjectNumber is hardcoded = %s\n", cfg.Pr
     }
     else
     {
-      SDITBL *sp = initSDI_ADS3(var);
+      RAWTBL *sp = initSDI_ADS3(var);
       // Default real-time netCDF to SampleRate.
       if (cfg.ProcessingMode() == Config::RealTime)
         sp->OutputRate = sp->SampleRate;
@@ -389,23 +381,18 @@ printf("hdr_decode.c: <<< WARNING >>> ProjectNumber is hardcoded = %s\n", cfg.Pr
 }
 
 /* -------------------------------------------------------------------- */
-static SDITBL* initSDI_ADS3(dsm::SyncRecordVariable* var)
+static RAWTBL* initSDI_ADS3(dsm::SyncRecordVariable* var)
 {
-  SDITBL *cp = new SDITBL(var->getName().c_str());
-  sdi.push_back(cp);
+  RAWTBL *cp = new RAWTBL(var->getName().c_str());
+  raw.push_back(cp);
 
   cp->Units = var->getUnits();
   cp->LongName = var->getLongName();
   cp->CategoryList.push_back("Analog");
 
-  // In ADS3, we don't get a/d counts.  They give us voltages.  These are
-  // not necessary.
-  cp->convertOffset = 0;
-  cp->convertFactor = 1.0;
-
   cp->SampleRate   = rate;
-  cp->DependedUpon = false;
-  cp->Modulo       = 0;
+
+  cp->LAGstart = var->getLagOffset();
 
   switch (var->getType())
   {
@@ -424,7 +411,6 @@ static SDITBL* initSDI_ADS3(dsm::SyncRecordVariable* var)
   dsm::VariableConverter* converter =
 		const_cast<dsm::VariableConverter*>(var->getConverter());
 
-  cp->Units = converter->getUnits();
   dsm::Polynomial* poly;
   dsm::Linear* linear = dynamic_cast<dsm::Linear*>(converter);
   if (linear)
@@ -439,9 +425,14 @@ static SDITBL* initSDI_ADS3(dsm::SyncRecordVariable* var)
     cp->cof = coefs;
   } 
 
+  if (converter)
+  {
+    cp->AltUnits = var->getUnits();
+    cp->Units = converter->getUnits();
+  }
+
   add_derived_names(cp->name);
   return(cp);
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -944,10 +935,8 @@ static void initSDI(char vn[])
     strcpy(vn, "TEO3");
     }
 
-  /* By placing an SDI variable into the 'deriveftns[]' list
-   * (ninc/amlib.fns) the variable will automatically be placed
-   * into the 'raw' list instead of 'sdi' (i.e. if you have an SDI
-   * variable that requires special processing).
+  /* Certain analog's require special processing, locate them here and
+   * give them their special xlate function.
    */
   if ((indx = SearchDERIVEFTNS(vn)) != ERR && deriveftns[indx].xlate)
     {
@@ -1001,10 +990,10 @@ static void initSDI(char vn[])
     }
 
 
-  /* Ok, it's strictly nth order polynomial, put it in the SDI table.
+  /* Ok, it's strictly nth order polynomial.
    */
-  SDITBL *cp = new SDITBL(vn);
-  sdi.push_back(cp);
+  RAWTBL *cp = new RAWTBL(vn);
+  raw.push_back(cp);
 
   addUnitsAndLongName(cp);
   cp->CategoryList.push_back("Analog");
@@ -1020,8 +1009,8 @@ static void initSDI(char vn[])
   cp->SampleRate	= rate;
   cp->ADSstart		= start >> 1;
   cp->ADSoffset		>>= 1;
+  cp->xlate		= decodeADS2analog;
   cp->Average		= (void (*) (...))(cp->type[0] == 'C' ? Sum : Average);
-  cp->Modulo		= 0;
 
   if (strncmp(cp->name, "PSFD", 4) == 0)
     cp->DependedUpon = true;
@@ -1953,7 +1942,7 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
   if (indx != ERR)
     {
     rp->Initializer = deriveftns[indx].constructor;
-    rp->xlate = (void (*) (void *, void *, float *))deriveftns[indx].xlate;
+    rp->xlate = deriveftns[indx].xlate;
     }
   else
     {
@@ -1976,7 +1965,6 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
   else
     rp->Average		= (void (*) (...))Average;
 
-  rp->Modulo		= 0;
   rp->ProbeType		= probeType;
   rp->ProbeCount	= probeCnt;
 
@@ -2032,8 +2020,6 @@ static DERTBL *add_name_to_DERTBL(const char name[])
   dp->Length		= length;
   dp->ProbeType		= probeType;
   dp->ProbeCount	= probeCnt;
-
-  dp->Modulo		= 0;
 
   /* As a kludge, .xlate field used as ProbeCount for FLUX variables.
    */
@@ -2097,7 +2083,6 @@ static std::vector<float> getCalsForADS2(const char vn[])
     cals.push_back(f[i]);
 
   return cals;
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -2164,9 +2149,6 @@ testUnitsTitles(var_base *var)
 static void
 checkUnitsTitles()
 {
-  for (size_t i = 0; i < sdi.size(); ++i)
-    testUnitsTitles(sdi[i]);
-
   for (size_t i = 0; i < raw.size(); ++i)
     testUnitsTitles(raw[i]);
 
@@ -2196,11 +2178,13 @@ openVariableDatabase()
 var_base::var_base(const char s[])
 {
   strcpy(name, s);
-  varid = 0;
-  LRstart = SRstart = HRstart = 0;
+  varid = -1;
+  LRstart = SRstart = HRstart = LAGstart = 10000000;	// Force a core dump.
 
   SampleRate = 0;
   Length = 1;
+  ProbeCount = 0;
+  ProbeType = 0;
 
   OutputRate = Config::LowRate;
 
@@ -2209,27 +2193,31 @@ var_base::var_base(const char s[])
   DependedUpon = false;
   Transmit = true;
 
-  DataQuality	= defaultQuality;
-}
+  Modulo = 0;
 
-SDITBL::SDITBL(const char s[]) : var_base(s)
-{
-  StaticLag = 0;
-  SpikeSlope = 0.0;
+  DataQuality	= defaultQuality;
 }
 
 RAWTBL::RAWTBL(const char s[]) : var_base(s)
 {
+  type[0] = '\0';
+  Initializer = 0;
+  xlate = 0;
+  Average = 0;
+
+  convertOffset = 0;
+  convertFactor = 1.0;
+
   StaticLag = 0;
   DynamicLag = 0;
   SpikeSlope = 0.0;
-  ProbeCount = 0;
 }
 
 DERTBL::DERTBL(const char s[]) : var_base(s)
 {
+  Initializer = 0;
+  compute = 0;
   ndep = 0;
-  ProbeCount = 0;
 }
 
 void closeSyncRecordReader()

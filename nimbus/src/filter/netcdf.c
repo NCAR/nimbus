@@ -167,7 +167,6 @@ void CreateNetCDF(const char fileName[])
   int TimeDim = ncdimdef(fd, "Time", NC_UNLIMITED);
   _rateDimIDs[1] = ncdimdef(fd, "sps1", 1);
 
-
   /* Global Attributes.
    */
   putGlobalAttribute("Source", "NCAR Research Aviation Facility");
@@ -298,67 +297,6 @@ void CreateNetCDF(const char fileName[])
    *	- Set attributes
    *	- Set data_pointer
    */
-  for (size_t i = 0; i < sdi.size(); ++i)
-  {
-    SDITBL *sp;
-    if ((sp = sdi[i])->Output == false)
-      continue;
-
-    // Check to see if dimension exists.  If not, create it.
-    if (_rateDimIDs.find(sp->OutputRate) == _rateDimIDs.end())
-    {
-      char tmp[32];
-      sprintf(tmp, "sps%d", sp->OutputRate);
-      _rateDimIDs[sp->OutputRate] = ncdimdef(fd, tmp, sp->OutputRate);
-    }
-
-    if (sp->OutputRate == 1)
-      ndims = 1;
-    else
-    {
-      ndims = 2;
-      dims[1] = _rateDimIDs[sp->OutputRate];
-    }
-
-
-    sp->varid = ncvardef(fd, sp->name, NC_FLOAT, ndims, dims);
-
-    addCommonVariableAttributes(sp);
-
-    ncattput(fd, sp->varid, "SampledRate", NC_LONG, 1, &sp->SampleRate);
-
-    if (cfg.TimeShifting() && sp->StaticLag != 0)
-    {
-      ncattput(fd, sp->varid, "TimeLag", NC_LONG, 1, &sp->StaticLag);
-      ncattput(fd, sp->varid, "TimeLagUnits", NC_CHAR, 12, "milliseconds");
-    }
-
-    if (cfg.Despiking() && sp->SpikeSlope != 0.0)
-      ncattput(fd, sp->varid, "DespikeSlope", NC_FLOAT, 1, &sp->SpikeSlope);
-
-    ncattput(fd, sp->varid, "DataQuality", NC_CHAR, strlen(sp->DataQuality)+1,
-		sp->DataQuality);
-    ncattput(fd, sp->varid, "CalibrationCoefficients", NC_FLOAT,
-		sp->cof.size(), &sp->cof[0]);
-
-    if (sp->Modulo)
-      {
-      float mod[2];
-
-      mod[0] = (float)sp->Modulo->value[0];
-      mod[1] = (float)sp->Modulo->value[1];
-      ncattput(fd, sp->varid, "modulus_range", NC_FLOAT, 2, mod);
-      }
-
-    if (sp->OutputRate == Config::LowRate)
-      data_p[indx++] = (void *)&AveragedData[sp->LRstart];
-    else
-    if (sp->OutputRate == sp->SampleRate)
-      data_p[indx++] = (void *)&SampledData[sp->SRstart];
-    else
-      data_p[indx++] = (void *)&HighRateData[sp->HRstart];
-  }
-
 
   /* Raw/"block probe" variables.
    */
@@ -533,15 +471,15 @@ void replaceNANwithMissingValue()
     if (isnan(AveragedData[i]))
       AveragedData[i] = MISSING_VALUE;
 
-  for (size_t i = 0; i < nSRfloats; ++i)
-    if (isnan(SampledData[i]))
-      SampledData[i] = MISSING_VALUE;
+  for (size_t i = 0; i < raw.size(); ++i)
+    for (size_t j = 0; j < raw[i]->SampleRate; ++j)
+      if (isnan(SampledData[raw[i]->SRstart]+j))
+        SampledData[raw[i]->SRstart+j] = MISSING_VALUE;
 
   if (cfg.ProcessingRate() == Config::HighRate)
     for (size_t i = 0; i < nHRfloats; ++i)
       if (isnan(HighRateData[i]))
         HighRateData[i] = MISSING_VALUE;
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -599,25 +537,16 @@ void WriteNetCDF()
 void WriteNetCDF_MRF()
 {
   int		indx = startVarIndx;
-  SDITBL	*sp;
   RAWTBL	*rp;
-
 
   /* We need to reset SampleRate indices, because for HighRate, SampleData
    * is from a circular buffer.
    */
-  for (size_t i = 0; i < sdi.size(); ++i)
-    if ((sp = sdi[i])->Output)
-    {
-      if (sp->OutputRate == sp->SampleRate)
-        data_p[indx] = (void *)&SampledData[sp->SRstart];
-
-      ++indx;
-    }
-
   for (size_t i = 0; i < raw.size(); ++i)
     if ((rp = raw[i])->Output)
     {
+      // The 2nd part of this if test if for PMS1D, where highrate is still not
+      // 25Hz, but rather it's own 10hz.
       if (rp->OutputRate == rp->SampleRate && rp->OutputRate != (size_t)cfg.ProcessingRate())
         data_p[indx] = (void *)&SampledData[rp->SRstart];
 
@@ -673,10 +602,6 @@ static void WriteMissingRecords()
   ldp[indx++] = (void *)&TimeVar;
   if (cfg.isADS2())
     ldp[indx++] = (void *)&TimeOffset;
-
-  for (i = 0; i < sdi.size(); ++i)
-    if (sdi[i]->Output)
-      ldp[indx++] = (void *)d;
 
   for (i = 0; i < raw.size(); ++i)
     {
@@ -800,31 +725,6 @@ void BlankOutBadData()
   start[0] = start[1] = start[2] = 0;
   count[0] = feTime[3] - fsTime[3];
 
-  for (size_t i = 0; i < sdi.size(); ++i)
-    {
-    if (strcmp(sdi[i]->DataQuality, "Bad") == 0)
-      {
-      sprintf(buffer, "Blanking %s from %02d:%02d:%02d to %02d:%02d:%02d.\n",
-       sdi[i]->name, fsTime[0], fsTime[1], fsTime[2], feTime[0],
-       feTime[1], feTime[2]);
-      LogMessage(buffer);
-
-      clearDependedByList();
-
-      if (sdi[i]->DependedUpon)
-        {
-        markDependedByList(sdi[i]->name);
-        printDependedByList();
-        }
-      if (writeBlank(sdi[i]->varid, start, count, sdi[i]->OutputRate) == ERR)
-        {
-        sprintf(buffer, "Failure writing BadData for variable %s.\n",
-                sdi[i]->name);
-        LogMessage(buffer);
-        }
-      }
-    }
-
   for (size_t i = 0; i < raw.size(); ++i)
     {
     if (strcmp(raw[i]->DataQuality, "Bad") == 0)
@@ -833,6 +733,8 @@ void BlankOutBadData()
        raw[i]->name, fsTime[0], fsTime[1], fsTime[2], feTime[0],
        feTime[1], feTime[2]);
       LogMessage(buffer);
+
+      clearDependedByList();
 
       if (raw[i]->DependedUpon)
         {
@@ -857,6 +759,8 @@ void BlankOutBadData()
        derived[i]->name, fsTime[0], fsTime[1], fsTime[2], feTime[0],
        feTime[1], feTime[2]);
       LogMessage(buffer);
+
+      clearDependedByList();
 
       if (derived[i]->DependedUpon)
         {
@@ -927,32 +831,6 @@ void BlankOutBadData()
 
     clearDependedByList();
 
-    if ((index = SearchTable(sdi, target)) != ERR &&
-	sdi[index]->Output)
-      {
-
-/*  See if measurement has already been blanked for whole flight  */
-      if (strcmp(sdi[index]->DataQuality, "Bad") == 0)
-        {
-        sprintf(buffer, "%s has already been blanked because the DataQuality flag is Bad.\n",sdi[index]->name);
-        LogMessage(buffer);
-        }
-      else
-        {
-        if (sdi[index]->DependedUpon)
-          {
-          markDependedByList(sdi[index]->name);
-          printDependedByList();
-          }
-        if (writeBlank(sdi[index]->varid, start, count, sdi[index]->OutputRate) == ERR)
-          {
-          sprintf(buffer, "Failure writing BadData for variable %s.\n",
-		  sdi[index]->name);
-          LogMessage(buffer);
-          }
-        }
-      }
-    else
     if ((index = SearchTableSansLocation(raw, target)) != ERR &&
 	raw[index]->Output)
       {
@@ -1040,15 +918,16 @@ static void writeTimeUnits()
 }
 
 /* -------------------------------------------------------------------- */
-static void clearDependedByList()
+static void
+clearDependedByList()
 {
   for (size_t i = 0; i < derived.size(); ++i)
     if (derived[i]->DependedUpon & 0xf0)
       derived[i]->DependedUpon &= 0x0f;
 }
 
-/* -------------------------------------------------------------------- */
-static void markDependedByList(char target[])
+static void
+markDependedByList(char target[])
 {
   for (size_t i = 0; i < derived.size(); ++i)
   {
@@ -1061,10 +940,10 @@ static void markDependedByList(char target[])
         markDependedByList(dp->name);
       }
   }
-}       /* END DOUBLECHECK */
+}
 
-/* -------------------------------------------------------------------- */
-static void printDependedByList()
+static void
+printDependedByList()
 {
   LogMessage(" The following variables depend upon this variable:\n ");
 

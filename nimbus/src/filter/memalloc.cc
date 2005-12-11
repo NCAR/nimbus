@@ -49,23 +49,6 @@ void AllocateDataArrays()
 
   const dsm::SyncRecordVariable* var;
 
-  for (size_t i = 0; i < sdi.size(); ++i)
-  {
-    sdi[i]->LRstart = nLRfloats++;
-    sdi[i]->HRstart = nHRfloats;
-    if (cfg.isADS3() && (var = syncRecReader->getVariable(sdi[i]->name)) != 0)
-      sdi[i]->SRstart = var->getSyncRecOffset();
-    else
-    {
-      sdi[i]->SRstart = nSRfloats;
-      nSRfloats += sdi[i]->SampleRate;
-    }
-
-    nHRfloats += 25;
-  }
-
-  int nVoltFloats = nSRfloats;
-
   for (size_t i = 0; i < raw.size(); ++i)
   {
     raw[i]->LRstart = nLRfloats;
@@ -90,15 +73,16 @@ void AllocateDataArrays()
     nHRfloats += (25 * derived[i]->Length);
   }
 
-
   /* Reset dependIndices.
    */
   for (size_t i = 0; i < derived.size(); ++i)
     for (size_t j = 0; j < derived[i]->ndep; ++j)
       DependIndexLookup(derived[i], j);
 
-  bits = new ushort[sdi.size()];
-  volts = new NR_TYPE[sdi.size()];
+  int nVoltFloats = nSRfloats;
+
+  bits = new ushort[nLRfloats];
+  volts = new NR_TYPE[nLRfloats];
   SRTvolts = new NR_TYPE[nVoltFloats];
   SampledData = new NR_TYPE[nSRfloats];
   AveragedData = new NR_TYPE[nLRfloats];

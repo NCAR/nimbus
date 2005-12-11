@@ -113,6 +113,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
         break;
       }
 
+char tar[50];
   while (fgets(buffer, 2048, fp))
     {
     if (buffer[0] == COMMENT || buffer[0] == '\n')
@@ -120,57 +121,10 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
     target = strtok(buffer, "=");
 
-    if (strcmp(target, "SDI") == 0)
+    if (strcmp(target, "SDI") == 0 || strcmp(target, "RAW") == 0)
       {
       target = strtok(NULL, " \t");
-
-      if ((indx = SearchTable(sdi, target)) == ERR)
-        {
-        char	tmp[64];
-
-        sprintf(tmp, "LoadSetup: can't find %s.\n", target);
-        LogMessage(tmp);
-        continue;
-        }
-
-      if (!ProductionSetup || cfg.ProductionRun())
-        sdi[indx]->Dirty = true;
-
-
-      while ( (target = strtok(NULL, " \t")) )
-        {
-        if (strncmp(target, "O=", 2) == 0)
-          if (!ProductionSetup || cfg.ProductionRun())
-            sdi[indx]->Output = atoi(&target[2]);
-
-        if (strncmp(target, "OR=", 3) == 0)
-          if (!ProductionSetup || cfg.ProductionRun())
-            sdi[indx]->OutputRate = atoi(&target[3]);
-
-        if (strncmp(target, "SL=", 3) == 0)
-          sdi[indx]->StaticLag = atoi(&target[3]);
-
-        if (strncmp(target, "SS=", 3) == 0)
-          sdi[indx]->SpikeSlope = (NR_TYPE)atof(&target[3]);
-
-        if (strncmp(target, "DQ=", 3) == 0)
-          sdi[indx]->DataQuality = SearchDataQuality(&target[3]);
-
-        if (strncmp(target, "nCOEF=", 6) == 0)
-          {
-          size_t order = atoi(strchr(target, '=')+1);
-
-          sdi[indx]->cof.clear();
-          for (size_t i = 0; i < order; ++i)
-            sdi[indx]->cof.push_back((float)atof(strtok(NULL, " \t")));
-          }
-        }
-      }
-    else
-    if (strcmp(target, "RAW") == 0)
-      {
-      target = strtok(NULL, " \t");
-
+strcpy(tar, target);
       if ((indx = SearchTable(raw, target)) == ERR)
         {
         char	tmp[64];
@@ -327,26 +281,6 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
   fprintf(fp, "ProjNum=%s\n", cfg.ProjectNumber().c_str());
   fprintf(fp, "PRate=%d\n", (int)cfg.ProcessingRate());
-
-  for (size_t i = 0; i < sdi.size(); ++i)
-    if (sdi[i]->Dirty)
-      {
-      fprintf(fp, "SDI=%s O=%d ", sdi[i]->name, sdi[i]->Output);
-
-      if (sdi[i]->StaticLag != 0)
-        fprintf(fp, "SL=%d ", sdi[i]->StaticLag);
-
-      if (sdi[i]->SpikeSlope != 0.0)
-        fprintf(fp, "SS=%e ", sdi[i]->SpikeSlope);
-
-      fprintf(fp, "DQ=%s OR=%d nCOEF=%d",
-		sdi[i]->DataQuality, sdi[i]->OutputRate, sdi[i]->cof.size());
-
-      for (size_t j = 0; j < sdi[i]->cof.size(); ++j)
-        fprintf(fp, " %e", sdi[i]->cof[j]);
-
-      fprintf(fp, "\n");
-      }
 
   for (size_t i = 0; i < raw.size(); ++i)
     if (raw[i]->Dirty)

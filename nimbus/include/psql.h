@@ -150,7 +150,6 @@ protected:
    */
   void
   addVariableToDataBase(const var_base* var, 
-	const std::string& uncaled_units,
 	size_t nDims, const int dims[],
 	const std::vector<float>& cals, float missingValue);
 

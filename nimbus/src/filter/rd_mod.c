@@ -46,17 +46,6 @@ void ReadModuloVariables()
     mp->bound[0]	= val[0] + ten_percent;
     mp->bound[1]	= val[1] - ten_percent;
 
-  if ((index = SearchTableSansLocation(sdi, target)) != ERR)
-    {
-    sdi[index]->Modulo = mp;
-
-    strcat(target, "_");
-
-    while (++index < sdi.size() &&
-	strncmp((char *)sdi[index]->name, target, strlen(target)) == 0)
-      sdi[index]->Modulo = mp;
-    }
-  else
   if ((index = SearchTableSansLocation(raw, target)) != ERR)
     {
     raw[index]->Modulo = mp;

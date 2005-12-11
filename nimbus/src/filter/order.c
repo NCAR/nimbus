@@ -55,8 +55,7 @@ void GenerateComputeOrder()
 
     for (j = 0; j < ComputeOrder[i]->ndep; j++)
       {
-      if (SearchTable(sdi, ComputeOrder[i]->depend[j]) == ERR
-          && SearchTable(raw, ComputeOrder[i]->depend[j]) == ERR
+      if (SearchTable(raw, ComputeOrder[i]->depend[j]) == ERR
           && SearchTable(ComputeOrder, i, ComputeOrder[i]->depend[j]) == ERR)
         {
         found = false;

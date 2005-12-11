@@ -34,7 +34,6 @@ char	*ProjectDirectory;
 
 Config cfg;	// Global configuration.
 
-std::vector<SDITBL *> sdi;	// SDI (aka raw) variable list
 std::vector<RAWTBL *> raw;	// Alphabeticly sorted pointers
 std::vector<DERTBL *> derived;	// Alphabeticly sorted pointers
 std::vector<DERTBL *> ComputeOrder;	// Compute Order for derived

@@ -88,9 +88,6 @@ void CancelSetup(Widget w, XtPointer client, XtPointer call)
 
   CloseADSfile();
 
-  for (i = 0; i < sdi.size(); ++i)
-    delete sdi[i];
-
   for (i = 0; i < raw.size(); ++i)
     delete raw[i];
 
@@ -294,24 +291,6 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   InitAsyncModule(OutputFileName);
   ConfigurationDump();
 
-
-  for (size_t i = 0; i < sdi.size(); ++i)
-    {
-    if (!cfg.TimeShifting())
-      sdi[i]->StaticLag = 0;
-
-    if (!cfg.Despiking())
-      sdi[i]->SpikeSlope = 0.0;
-
-    if (sdi[i]->StaticLag != 0)
-      AddVariableToSDIlagList(sdi[i]);
-
-    if (sdi[i]->SpikeSlope > 0.0)
-      AddVariableToSDIdespikeList(sdi[i]);
-
-    if (sdi[i]->Output && VarDB_lookup(sdi[i]->name) == ERR && LogFile)
-      fprintf(LogFile, "%s has no entry in the VarDB.\n", sdi[i]->name);
-    }
 
   for (size_t i = 0; i < raw.size(); ++i)
     {
@@ -583,9 +562,9 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
     {
     size_t indx = pos_list[i] - 1;
 
-    if (indx >= sdi.size()+raw.size())
+    if (indx >= raw.size())
       {
-      DERTBL	*dp = derived[indx-(sdi.size()+raw.size())];
+      DERTBL	*dp = derived[indx-raw.size()];
       dp->Dirty = true;
 
       if (cfg.ProcessingRate() == Config::LowRate)
@@ -610,9 +589,8 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
       item = CreateListLineItem(dp, DERIVED);
       }
     else
-    if (indx >= sdi.size())
       {
-      RAWTBL	*rp = raw[indx-sdi.size()];
+      RAWTBL	*rp = raw[indx];
 
       if (strcmp(rp->name, "HOUR") != 0 && strcmp(rp->name, "MINUTE") != 0
 				&& strcmp(rp->name, "SECOND") != 0)
@@ -645,30 +623,6 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
 
       item = CreateListLineItem(rp, RAW);
       }
-    else
-      {
-      SDITBL	*sp = sdi[indx];
-      sp->Dirty = true;
-
-      switch (sp->OutputRate)
-        {
-        case Config::LowRate:
-          sp->OutputRate = sp->SampleRate;
-          break;
-
-        case Config::HighRate:
-          sp->OutputRate = Config::LowRate;
-          break;
-
-        default:
-          if (cfg.ProcessingRate() == Config::HighRate)
-            sp->OutputRate = Config::HighRate;
-          else
-            sp->OutputRate = Config::LowRate;
-        }
-
-      item = CreateListLineItem(sp, SDI);
-      }
 
     XmListReplaceItemsPos(list1, &item, 1, pos_list[i]);
     XmStringFree(item);
@@ -694,18 +648,17 @@ void ToggleOutput(Widget w, XtPointer client, XtPointer call)
     {
     size_t indx = pos_list[i] - 1;
 
-    if (indx >= sdi.size()+raw.size())
+    if (indx >= raw.size())
       {
-      DERTBL	*dp = derived[indx-(sdi.size()+raw.size())];
+      DERTBL	*dp = derived[indx-raw.size()];
       dp->Dirty = true;
       dp->Output = 1 - dp->Output;
 
       item = CreateListLineItem(dp, DERIVED);
       }
     else
-    if (indx >= sdi.size())
       {
-      RAWTBL	*rp = raw[indx-sdi.size()];
+      RAWTBL	*rp = raw[indx];
 
       if (strcmp(rp->name, "HOUR") != 0 && strcmp(rp->name, "MINUTE") != 0
 				&& strcmp(rp->name, "SECOND") != 0)
@@ -715,14 +668,6 @@ void ToggleOutput(Widget w, XtPointer client, XtPointer call)
         }
 
       item = CreateListLineItem(rp, RAW);
-      }
-    else
-      {
-      SDITBL	*sp = sdi[indx];
-      sp->Dirty = true;
-      sp->Output = 1 - sp->Output;
-
-      item = CreateListLineItem(sp, SDI);
       }
 
     XmListReplaceItemsPos(list1, &item, 1, pos_list[i]);
@@ -880,30 +825,12 @@ static void setOutputFileName()
 /* -------------------------------------------------------------------- */
 XmString CreateListLineItem(void *pp, int var_type)
 {
-  SDITBL	*sp;
   RAWTBL	*rp;
   DERTBL	*dp;
   char		tmp[16];
 
   switch (var_type)
     {
-    case SDI:
-      sp = (SDITBL *)pp;
-
-      sprintf(buffer, list1lineFrmt, sp->name,
-		sp->Dirty ? '*' : ' ', sp->Output ? 'Y' : 'N',
-		sp->SampleRate, sp->OutputRate,
-		sp->StaticLag, sp->SpikeSlope,
-		sp->DataQuality[0]);
-
-      for (size_t i = 0; i < sp->cof.size(); ++i)
-        {
-        sprintf(tmp, "%10.4f", sp->cof[i]);
-        strcat(buffer, tmp);
-        }
-
-      break;
-
     case RAW:
       rp = (RAWTBL *)pp;
 
@@ -961,9 +888,6 @@ void FillListWidget()
 
   cnt = 0;
 
-  for (i = 0; i < sdi.size(); ++i)
-    items[cnt++] = CreateListLineItem(sdi[i], SDI);
-
   for (i = 0; i < raw.size(); ++i)
     items[cnt++] = CreateListLineItem(raw[i], RAW);
 
@@ -1004,25 +928,6 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
 
   fprintf(fp, "Name       Output  SR    OR     Lag   Spike Slope\n");
   fprintf(fp, "--------------------------------------------------------------------------------\n");
-
-  for (size_t i = 0; i < sdi.size(); ++i)
-    {
-    SDITBL *sp = sdi[i];
-
-    fprintf(fp, list1lineFrmt,
-			sp->name,
-			sp->Dirty ? '*' : ' ',
-			sp->Output ? 'Y' : 'N',
-			sp->SampleRate,
-			sp->OutputRate,
-			sp->StaticLag,
-			sp->SpikeSlope);
-
-    for (size_t j = 0; j < sp->cof.size(); ++j)
-      fprintf(fp, "%14e", sp->cof[j]);
-
-    fprintf(fp, "\n");
-    }
 
 
   for (size_t i = 0; i < raw.size(); ++i)
@@ -1116,11 +1021,6 @@ void ToggleProbe(Widget w, XtPointer client, XtPointer call)
     {
     bool	value = (unsigned)client == ALL_ON ? true : false;
 
-    for (i = 0; i < sdi.size(); ++i) {
-      sdi[i]->Dirty = true;
-      sdi[i]->Output = value;
-      }
-
     for (i = 0; i < raw.size(); ++i) {
       if (strcmp(raw[i]->name, "HOUR") == 0 ||
 	  strcmp(raw[i]->name, "MINUTE") == 0 ||
@@ -1189,6 +1089,7 @@ static void EngageSignals()
   signal(SIGKILL, sighandler);
   signal(SIGFPE, sighandler);
   signal(SIGTERM, sighandler);
+  signal(SIGSEGV, sighandler);
 
 }	/* END ENGAGESIGNALS */
 
