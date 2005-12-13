@@ -49,25 +49,26 @@ PostgreSQL::PostgreSQL(std::string specifier, bool transmitToGround)
   else
     _ldm = 0;
 
-  if (isSameFlight())
-    printf(">>>>>>>>>>>>>>>> isSameFlight() == true;\n");
-  else
-    printf(">>>>>>>>>>>>>>>> isSameFlight() == false;\n");
+printf(">>>>>>>>>>>>>>>> isSameFlight() == %d\n", isSameFlight());
 
-  dropAllTables();	// Remove existing tables, this is a reset.
-  sleep(30);
-  createTables();
-  sleep(30);
-  initializeGlobalAttributes();
-  initializeVariableList();
+  // Don't recreate database if this is the same flight.
+  if (isSameFlight() == false)
+  {
+    dropAllTables();	// Remove existing tables, this is a reset.
+    createTables();
+    initializeGlobalAttributes();
+    initializeVariableList();
+    submitCommand(
+    "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current", true);
+  }
 
+#ifdef BCAST_DATA
   if (cfg.ProcessingMode() == Config::RealTime)
   {
     _brdcst = new UdpSocket(RT_UDP_PORT, "192.168.84.255");
     _brdcst->openSock(UDP_BROADCAST);
-    submitCommand(
-    "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current", true);
   }
+#endif
 
 }	/* END CTOR */
 
@@ -109,8 +110,10 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
   _sqlString.str("");
   _sqlString << "INSERT INTO " << LRT_TABLE << " VALUES ('" << timeStamp << "'";
 
+#ifdef BCAST_DATA
   _broadcastString.str("");
   _broadcastString << "RAF-TS " << timeStamp << ' ';
+#endif
 
   _transmitString.str("");
   _transmitString << _sqlString.str();
@@ -140,11 +143,13 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
   }
 
 
+#ifdef BCAST_DATA
   if (cfg.ProcessingMode() == Config::RealTime)
   {
     _broadcastString << '\n';
     _brdcst->writeSock(_broadcastString.str().c_str(), _broadcastString.str().length());
   }
+#endif
 
   _sqlString << ");";
   _transmitString << ");";
@@ -505,7 +510,9 @@ PostgreSQL::addValueToAllStreams(NR_TYPE value, bool xmit, bool addComma)
   sprintf(value_ascii, format, value);
 
   _sqlString << value_ascii;
+#ifdef BCAST_DATA
   _broadcastString << value_ascii;
+#endif
   if (xmit)
     _transmitString << value_ascii;
 
@@ -516,7 +523,9 @@ inline void
 PostgreSQL::addVectorToAllStreams(const NR_TYPE *value, int nValues, bool xmit)
 {
   _sqlString << ",'{";
+#ifdef BCAST_DATA
   _broadcastString << ",{";
+#endif
   if (xmit)
     _transmitString << ",'{";
 
@@ -529,7 +538,9 @@ PostgreSQL::addVectorToAllStreams(const NR_TYPE *value, int nValues, bool xmit)
   }
 
   _sqlString << "}'";
+#ifdef BCAST_DATA
   _broadcastString << '}';
+#endif
   if (xmit)
     _transmitString << "}'";
 
@@ -695,6 +706,15 @@ PostgreSQL::getGlobalAttribute(const char key[]) const
 bool
 PostgreSQL::isSameFlight() const
 {
+  // Always treat 'hangar' as a separate flight.
+  if (cfg.FlightNumber().compare("hangar") == 0)
+    return false;
+
+  // Lab test flight is 161 rf09.  Restarting is considered new flight.
+  if (cfg.ProjectNumber().compare("161") == 0 &&
+      cfg.FlightNumber().compare("rf09") == 0)
+    return false;
+
   if (cfg.ProjectName() != getGlobalAttribute("ProjectName"))
     return false;
 
