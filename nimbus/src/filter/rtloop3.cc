@@ -23,6 +23,8 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2005
 #include <Xm/TextF.h>
 
 #include <SyncRecordReader.h>
+#include <atdUtil/Socket.h>
+#include <Datagrams.h>
 
 #include <ctime>
 #include <unistd.h>
@@ -38,6 +40,41 @@ static Broadcast * bcast;
 extern PostgreSQL *psql;
 
 extern NR_TYPE	*SampledData, *AveragedData;
+
+
+class MultiCastStatus
+{
+public:
+  MultiCastStatus();
+  ~MultiCastStatus();
+
+  void sendStatus(const char ts[]);
+
+private:
+  atdUtil::MulticastSocket msock;
+  atdUtil::Inet4Address maddr;
+  atdUtil::Inet4SocketAddress msaddr;
+};
+
+MultiCastStatus::MultiCastStatus()
+{
+  maddr = atdUtil::Inet4Address::getByName(DSM_MULTICAST_ADDR);
+  msaddr = atdUtil::Inet4SocketAddress(maddr,DSM_MULTICAST_STATUS_PORT);
+}
+
+MultiCastStatus::~MultiCastStatus()
+{
+  msock.close();
+}
+
+void MultiCastStatus::sendStatus(const char timeStamp[])
+{
+  std::string statstr;
+  statstr = "<?xml version=\"1.0\"?><group><name>nimbus</name><clock>";
+  statstr += timeStamp;
+  statstr += "</clock></group>\n";
+  msock.sendto(statstr.c_str(), statstr.length()+1, 0, msaddr);
+}
 
 
 /* -------------------------------------------------------------------- */
@@ -88,8 +125,10 @@ void RealTimeLoop3()
     psql = new PostgreSQL(specifier, cfg.TransmitToGround());
   }
 
-  bcast = new Broadcast();
+  bcast = new Broadcast();	// ASCII feed.
   extern dsm::SyncRecordReader* syncRecReader;
+
+  MultiCastStatus mcStat;
 
   for (;;)
   {
@@ -101,6 +140,9 @@ void RealTimeLoop3()
     gmtime_r(&ut, &tm);
     strftime(timeStamp, sizeof(timeStamp), "%Y-%m-%d %H:%M:%S", &tm);
     std::cout << timeStamp << std::endl;
+
+    mcStat.sendStatus(timeStamp);
+
 //    int msec = (tt % USECS_PER_SEC) / USECS_PER_MSEC;
 //    std::cout << timeStamp << '.' << std::setw(3) << std::setfill('0') << msec
 //	<< ' ' << std::endl;
