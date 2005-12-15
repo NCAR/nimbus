@@ -46,17 +46,20 @@ void DecodeADSrecord(
     memcpy((void *)nlr, (void *)lr, nSRfloats * sizeof(NR_TYPE));
 
     // Set dynamic lags.
-/*
     float *rec_p = (float *)lr;
     for (size_t i = 0; i < raw.size(); ++i)
     {
-      float lag = rec_p[raw[i]->LAGstart];
-printf("%d/%d - %s %d %lx\n", i, raw.size(), raw[i]->name, &rec_p[raw[i]->LAGstart], lag);
-      if (!isnan(lag))
-        raw[i]->DynamicLag = (int)(lag / 1000.0);
+      raw[i]->DynamicLag = 0;  // reset.
+
+      if (raw[i]->LAGstart > 0)
+      {
+        float lag = rec_p[raw[i]->LAGstart];
+        if (!isnan(lag))
+          raw[i]->DynamicLag = (int)(lag / 1000.0);
+printf("%s - %d\n", raw[i]->name, raw[i]->DynamicLag);
+      }
     }
 
-*/
     return;
   }
 

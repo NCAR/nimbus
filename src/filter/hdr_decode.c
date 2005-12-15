@@ -2179,7 +2179,7 @@ var_base::var_base(const char s[])
 {
   strcpy(name, s);
   varid = -1;
-  LRstart = SRstart = HRstart = LAGstart = 10000000;	// Force a core dump.
+  LRstart = SRstart = HRstart = LAGstart = -1;
 
   SampleRate = 0;
   Length = 1;
