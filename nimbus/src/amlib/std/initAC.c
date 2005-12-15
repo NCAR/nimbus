@@ -289,7 +289,8 @@ NR_TYPE pcorq5(NR_TYPE q, NR_TYPE q1)
 
 NR_TYPE pcorf5(NR_TYPE q, NR_TYPE q1)
 {
-  return(0.754 + q * (-0.017657 + 7.557e-05 * q));
+  return 4.95 - 0.0038616 * q + 6.0 * q1;
+//  return(0.754 + q * (-0.017657 + 7.557e-05 * q));
 //  return(0.24 - 0.005389 * q);
 }
 
