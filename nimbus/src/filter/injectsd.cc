@@ -57,7 +57,7 @@ bool SyntheticData::InjectSyntheticData(float pt)
 
 int SyntheticData::InitSynth(std::string k)
 {
-  InitSynth(k.c_str());
+  return InitSynth(k.c_str());
 }   
 
 

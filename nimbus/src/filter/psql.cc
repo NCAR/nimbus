@@ -396,7 +396,7 @@ PostgreSQL::WriteSQLvolts(const std::string timeStamp)
   rateTableList::iterator it;
   int	maxRate = 1;
 
-  extern NR_TYPE	*SampledData;
+  extern NR_TYPE *SRTvolts;
 
   _sqlString.str("");
 
@@ -415,7 +415,7 @@ PostgreSQL::WriteSQLvolts(const std::string timeStamp)
 
       for (size_t j = 0; j < raw.size(); ++j)
         if (raw[j]->SampleRate == (size_t)it->first && raw[j]->Length == 1)
-          addValue(_sqlString, SampledData[raw[j]->SRstart+i]);
+          addValue(_sqlString, SRTvolts[raw[j]->SRstart+i]);
 
       _sqlString << ");";
     }

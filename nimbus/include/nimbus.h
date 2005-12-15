@@ -77,10 +77,10 @@ public:
   std::vector<std::string> CategoryList;
 
   int varid;		// NetCDF variable ID
-  size_t LRstart;	// Start indx into AveragedData
-  size_t SRstart;	// Start indx into SampledData
-  size_t HRstart;	// Start indx into HighRateData
-  size_t LAGstart;	// ads3 only, @see dsm::SyncRecordVariable
+  int LRstart;		// Start indx into AveragedData
+  int SRstart;		// Start indx into SampledData
+  int HRstart;		// Start indx into HighRateData
+  int LAGstart;		// ads3 only, @see dsm::SyncRecordVariable
 
   size_t SampleRate;	// Sampled rate
   size_t Length;	// Vector length (used by PMS1D)
