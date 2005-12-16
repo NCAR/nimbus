@@ -19,20 +19,20 @@ extern int	Aircraft;
 /* -------------------------------------------------------------------- */
 void sqcfc(DERTBL *varp)
 {
-  NR_TYPE qcf, qcfc;
+  NR_TYPE qcf, qcfc, akrd, aqratio, psf;
 
   qcf = GetSample(varp, 0);
 
   switch (Aircraft)
   {
     case HIAPER:
-      NR_TYPE aqratio = GetSample(varp, 1);
-      NR_TYPE psf = GetSample(varp, 2);
+      aqratio = GetSample(varp, 1);
+      psf = GetSample(varp, 2);
       qcfc = qcf - (*pcorQCF)(psf, aqratio);
       break;
 
     case C130:
-      NR_TYPE akrd  = GetSample(varp, 1);
+      akrd  = GetSample(varp, 1);
       qcfc = qcf - (*pcorQCF)(akrd, 1.0);
       break;
 
