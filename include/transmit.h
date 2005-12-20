@@ -12,15 +12,18 @@ DESCRIPTION:	Class to compress and transmit SQL statements to the
 
 #include <string>
 
+/**
+ * Class for queueing and sending strings to an ldm via pqinsert.  Queue
+ * interval can be set to a number of strings to queue before sending.
+ */
 class sqlTransmit
 {
 public:
-  sqlTransmit();
+  sqlTransmit(const std::string ac);
   ~sqlTransmit();
 
   /**
-   * Enqueue a string for transmission.  Strings are blocked up until
-   * _timeInterval strings have been submitted.
+   * Transmit string.
    */
   void
   sendString(const std::string& str);
@@ -64,6 +67,11 @@ protected:
    * file name sequence counter.
    */
   size_t _packetCounter;
+
+  /**
+   * Aircraft identifier.  Will be first line in all files transmitted.
+   */
+  std::string _aircraft;
 };
 
 #endif

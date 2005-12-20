@@ -56,7 +56,6 @@ void DecodeADSrecord(
         float lag = rec_p[raw[i]->LAGstart];
         if (!isnan(lag))
           raw[i]->DynamicLag = (int)(lag / 1000.0);
-printf("%s - %d\n", raw[i]->name, raw[i]->DynamicLag);
       }
     }
 

@@ -45,11 +45,9 @@ PostgreSQL::PostgreSQL(std::string specifier, bool transmitToGround)
   PQsetnonblocking(_conn, true);
 
   if (cfg.TransmitToGround())
-    _ldm = new sqlTransmit();
+    _ldm = new sqlTransmit("G5");
   else
     _ldm = 0;
-
-printf(">>>>>>>>>>>>>>>> isSameFlight() == %d\n", isSameFlight());
 
   // Don't recreate database if this is the same flight.
   if (isSameFlight() == false)
@@ -60,6 +58,8 @@ printf(">>>>>>>>>>>>>>>> isSameFlight() == %d\n", isSameFlight());
     initializeVariableList();
     submitCommand(
     "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current", true);
+    if (_ldm)
+      _ldm->setTimeInterval(5);
   }
 
 #ifdef BCAST_DATA
@@ -678,7 +678,7 @@ PostgreSQL::createSampleRateTables(const rateTableMap &tableMap)
   if (_ldm)
   {
     _transmitString << ");";
-    _ldm->sendString(_transmitString.str());
+    _ldm->queueString(_transmitString.str());
   }
 }	// END CREATESAMPLERATETABLES
 
@@ -742,7 +742,7 @@ PostgreSQL::submitCommand(const std::string command, bool xmit)
   fprintf(stderr, "%s", PQerrorMessage(_conn));
 
   if (_ldm && xmit)
-    _ldm->sendString(command);
+    _ldm->queueString(command);
 
   while ( (res = PQgetResult(_conn)) )
     PQclear(res);
