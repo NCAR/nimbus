@@ -1,0 +1,24 @@
+#!/bin/bash
+
+#
+# Format of incoming file should be:
+# line 1 : aircraft, 'gv' or 'c130'
+# line 2 : file type, 'script' or 'sql'
+# line 3...n : body of file to execute.
+#
+
+read aircraft
+read file_type
+
+case $file_type in
+  sql)
+    while read line; do
+      echo $line | /h/9/cjw/bin/static_psql
+    done;;
+
+  script)
+    while read line; do
+      $line
+    done;;
+esac
+
