@@ -11,8 +11,10 @@ setenv XMIT_DIR /tmp/xmit
 /home/local/bin/pqexpire -a 0.001 -i 0 -p "nimbus_sql*"
 
 # Remove any existing sql files.
-foreach file (${XMIT_DIR}/nimbus_sql*)
+set nonomatch
+foreach file (${XMIT_DIR}/*sql*)
   /bin/rm $file
+end
 
 # Fire up nimbus in real-time with transmit on (-x to be replaced by
 # standalone program).
