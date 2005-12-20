@@ -1,13 +1,12 @@
 #include "transmit.h"
 #include <zlib.h>
 
-sqlTransmit::sqlTransmit()
+sqlTransmit::sqlTransmit(const std::string ac) : _aircraft(ac)
 {
-  _timeInterval = 5;
+  _timeInterval = 0;
   _counter = 0;
   _packetCounter = 0;
-
-  _q = "BEGIN;";
+  _q = _aircraft + "\nsql\n";
 }
 
 sqlTransmit::~sqlTransmit()
@@ -19,13 +18,14 @@ sqlTransmit::~sqlTransmit()
 void sqlTransmit::queueString(const std::string& str)
 {
   _q += str;
+  _q += "\n";
+  ++_counter;
 
-  if (++_counter > timeInterval())
+  if (timeInterval() > 0 && _counter > timeInterval())
   {
-    _q += "COMMIT;";
     sendString(_q);
     _counter = 0;
-    _q = "BEGIN;";
+    _q = _aircraft + "\nsql\n";
   }
 }
 
