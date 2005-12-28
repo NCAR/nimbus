@@ -32,10 +32,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
 */
 
-#include <errno.h>
+#include <cerrno>
 #include <fcntl.h>
-#include <signal.h>
-#include <time.h>
+#include <csignal>
+#include <ctime>
 #include <unistd.h>
 #include <sys/param.h>
 #include <sys/stat.h>
@@ -121,6 +121,7 @@ void CancelSetup(Widget w, XtPointer client, XtPointer call)
 void Proceed(Widget w, XtPointer client, XtPointer call)
 {
   char	*p;
+  int	rc;
 
   if (w)
     {
@@ -128,7 +129,7 @@ void Proceed(Widget w, XtPointer client, XtPointer call)
     strcpy(ADSfileName, p);
     XmTextFieldSetString(aDSdataText, p);
 
-    if (validateInputFile() == OK)
+    if ((rc = validateInputFile()) == OK)
       {
       FileCancel((Widget)NULL, (XtPointer)NULL, (XtPointer)NULL);
       readHeader();
@@ -145,14 +146,14 @@ void Proceed(Widget w, XtPointer client, XtPointer call)
     strcpy(OutputFileName, p);
     XtFree(p);
 
-    if (validateInputFile() == OK)
+    if ((rc = validateInputFile()) == OK)
       {
       readHeader();
       ValidateOutputFile(NULL, NULL, NULL);
       }
     }
 
-  if (cfg.isADS2() && FlightNumberInt == 0)
+  if (rc == OK && cfg.isADS2() && FlightNumberInt == 0)
     HandleWarning("Flight Number is 0, a new one may be entered\nvia the 'Edit/Flight Info' menu item,\nor run fixFltNum on the ADS image and start nimbus again.", NULL, NULL);
 
 }	/* END PROCEED */
@@ -701,10 +702,15 @@ void Quit(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 static int determineInputFileVersion()
 {
-  FILE *fp = fopen(ADSfileName, "r");
+  FILE *fp = fopen64(ADSfileName, "r");
 
   if (fp == 0)
+  {
+    char msg[128];
+    sprintf(msg, "Failed to open input file [%s], errno = %d.\n", ADSfileName, errno);
+    HandleError(msg);
     return ERR;
+  }
 
   fread(buffer, 20, 1, fp);
   fclose(fp);
@@ -725,7 +731,9 @@ static int validateInputFile()
 
   if (strlen(ADSfileName) == 0 || access(ADSfileName, R_OK) == ERR)
     {
-    HandleError("Non-existent input file.");
+    char msg[128];
+    sprintf(msg, "Non-existent input file [%s]\n", ADSfileName);
+    HandleError(msg);
     return(ERR);
     }
 
