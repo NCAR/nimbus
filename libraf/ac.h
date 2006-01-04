@@ -4,9 +4,7 @@ OBJECT NAME:	ac.h
 
 FULL NAME:	Aircraft header file.
 
-DESCRIPTION:	
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1995
+COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2005
 -------------------------------------------------------------------------
 */
 

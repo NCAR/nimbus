@@ -1,29 +1,17 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:	init.c
+OBJECT NAME:	ac.c
 
-FULL NAME:	
+FULL NAME:	AircraftSpecs reader.
 
 ENTRY POINTS:	InitAircraftSpecs()
 		GetAircraftParameter()
 		GetAircraftList()
 		ReleaseAircraftSpecs()
 
-STATIC FNS:	none
+DESCRIPTION:	See example at the bottom of this file.
 
-DESCRIPTION:	
-
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	User level applications (xbuild, WINDS).
-
-NOTES:		
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1995
+COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2005
 -------------------------------------------------------------------------
 */
 
@@ -200,4 +188,33 @@ int GetAircraftList(char *list[])
 
 }	/* END GETAIRCRAFTLIST */
 
-/* END INIT.C */
+/* Sample.c
+#include <stdio.h>
+#include "ac.h"
+
+main()
+{
+  int   i;
+  char  *p, *acList[30];
+
+  InitAircraftSpecs("AircraftSpecs");
+
+  // Print while list.
+  GetAircraftList(acList);
+  for (i = 0; acList[i]; ++i)
+    printf("%s\n", acList[i]);
+
+  // Find something specific.
+  if ((p = GetAircraftParameter("N308D", "BOOM_LEN")) == NULL)
+  {
+    printf("Not found.\n");
+    exit(1);
+  }
+
+  printf("%s\n", p);
+
+  ReleaseAircraftSpecs();
+
+}
+*/
+/* END AC.C */

@@ -15,14 +15,14 @@ CFLAGS=		-g -O2 ${INCLUDES}
 FFLAGS=		-O
 
 OBJS=	strupr.o tapeIO.o getmem.o Xerror.o Xquery.o Xfile.o Xwarn.o \
-	util.o raf_queue.o chost.o date.o portable.o
+	util.o raf_queue.o chost.o date.o portable.o ac.o
 # cio.o flote.o sendhc.o sendpr.o 
 
 SRCS=	strupr.c tapeIO.c getmem.c Xerror.c Xquery.c Xfile.c Xwarn.c \
-	util.c raf_queue.c chost.c date.c portable.c
+	util.c raf_queue.c chost.c date.c portable.c ac.c
 # cio.c flote.f sendhc.f sendpr.f 
 
-HDRS=	
+HDRS=	ac.h
 
 .SUFFIXES: .o .h .c .cc
 
@@ -37,7 +37,7 @@ HDRS=
 
 all: lib${LIBNAME}.a
 
-${OBJS}: ${HDRS}
+ac.o: ac.h
 
 lib${LIBNAME}.a: ${OBJS}
 	rm -f lib${LIBNAME}.a
