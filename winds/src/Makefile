@@ -413,7 +413,7 @@ WINPUT.O = $(OBJ)winputops.o $(OBJ)netcdf.o $(OBJ)netconfig.o \
 
 LIBEXEC = $(NIMBUS)/lib/
 
-LINKLIBS = -lstd -luser -lxlate -lval -lnetcdf -lAircraft -lhdr_api -lVarDB -lraf++ -lraf -lpms -lgsl -lgslcblas -lm -lDsm -lisa -lXmlRpc -lxerces-c -lpq
+LINKLIBS = -lstd -luser -lxlate -lval -lnetcdf -lhdr_api -lVarDB -lraf++ -lraf -lpms -lgsl -lgslcblas -lm -lDsm -lisa -lXmlRpc -lxerces-c -lpq
 
 winput: $(EXEC)winput
 
