@@ -15,7 +15,7 @@ env.Append(LIBPATH=['/usr/X11R6/lib'])
 #  ADS3 real-time libraries.  Moved lower to 'if env.realtime'
 env['LIBS'] = Split("""
   std user xlate
-  Aircraft hdr_api pms VarDB raf raf++
+  hdr_api pms VarDB raf raf++
   ncaru netcdf pq
   Xm Xt X11
   gsl gslcblas m
