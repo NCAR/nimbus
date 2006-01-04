@@ -40,7 +40,7 @@ void SetLookupSuffix(char *new_suffix)
 }
 
 /* -------------------------------------------------------------------- */
-int SearchDERIVEFTNS(char target[])
+int SearchDERIVEFTNS(const char target[])
 {
   int		beg, mid, end, rc;
   char		name[32];

@@ -37,12 +37,6 @@ void AllocateDataArrays()
 
   nSRfloats = 0;
 
-  for (size_t i = 0; i < sdi.size(); ++i)
-    {
-    sdi[i]->SRstart = nSRfloats;
-    nSRfloats += sdi[i]->SampleRate;
-    }
-
   for (size_t i = 0; i < raw.size(); ++i)
     {
     raw[i]->SRstart = nSRfloats;
@@ -51,7 +45,7 @@ void AllocateDataArrays()
 
 
   bits = new float[nSRfloats];
-  volts = new float[sdi.size()];
+  volts = new float[raw.size()];
   SRTvolts = new float[nSRfloats];
   SampledData = new float[nSRfloats];
 

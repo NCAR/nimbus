@@ -17,7 +17,6 @@ extern bool	Grid, Frozen, FlashMode;
 
 extern char	buffer[], DataPath[], *ProjectName, FlightNumber[];
 
-extern std::vector<SDITBL *> sdi;          /* SDI (aka raw) variable list  */
 extern std::vector<RAWTBL *> raw;          /* Alphabeticly sorted pointers */
 
 extern DEFAULT *Defaults[];

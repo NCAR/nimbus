@@ -79,6 +79,28 @@ bool VarCompareLT(const var_base *x, const var_base *y)
 }
 
 /* -------------------------------------------------------------------- */
+static std::vector<float> getCalsForADS2(Sh* vn)
+{
+  long order;
+  float f[12];
+
+  order = hdr->CalibrationOrder(vn);
+
+  for (long i = 0; i < order; ++i)
+    f[i] = hdr->CalibrationCoefficient(vn, (size_t)i);
+
+  // Remove trailing zeroes.
+  order = check_cal_coes(order, f);
+
+  std::vector<float> cals;
+
+  for (long i = 0; i < order; ++i)
+    cals.push_back(f[i]);
+
+  return cals;
+}
+
+/* -------------------------------------------------------------------- */
 void DecodeHeader()
 {
   void	*vn;
@@ -213,16 +235,11 @@ void DecodeHeader()
 
 {
 /*
-for (size_t i = 0; i < sdi.size(); ++i)
-  printf("%-12s%5d\n", sdi[i]->name, sdi[i]->convertOffset);
-
 for (size_t i = 0; i < raw.size(); ++i)
   printf("%-12s%3d%5d\n", raw[i]->name, raw[i]->SampleRate, raw[i]->NRstart);
-
 */
 }
 
-  std::sort(sdi.begin(), sdi.end(), VarCompareLT);
   std::sort(raw.begin(), raw.end(), VarCompareLT);
 
 }	/* END DECODEHEADER */
@@ -263,12 +280,7 @@ static void in_sdi(Sh *vn)
     rp->convertFactor = hdr->AtoDconversionFactor(vn);
     rp->convertOffset = hdr->AtoDconversionOffset(vn);
 
-    rp->order = hdr->CalibrationOrder(vn);
-
-    for (size_t i = 0; i < rp->order; ++i)
-      rp->cof[i] = hdr->CalibrationCoefficient(vn, i);
-
-    rp->order = check_cal_coes(rp->order, rp->cof);
+    rp->cof = getCalsForADS2(vn);
 
     rp->ADSoffset = hdr->InterleaveOffset(vn) >> 1;
 
@@ -281,8 +293,8 @@ static void in_sdi(Sh *vn)
 
   /* Ok, it's strictly nth order polynomial, put it in the SDI table.
    */
-  SDITBL *cp = new SDITBL(hdr->VariableName(vn));
-  sdi.push_back(cp);
+  RAWTBL *cp = new RAWTBL(hdr->VariableName(vn));
+  raw.push_back(cp);
 
   cp->convertFactor = hdr->AtoDconversionFactor(vn);
   cp->convertOffset = hdr->AtoDconversionOffset(vn);
@@ -291,16 +303,11 @@ static void in_sdi(Sh *vn)
   strcpy(cp->type, hdr->SDItype(vn));
   cp->SampleRate	= hdr->SampleRate(vn);
   cp->ADSstart		= hdr->Start(vn) >> 1;
+  cp->xlate             = decodeADS2analog;
   cp->Average		= NULL;
   cp->Modulo		= NULL;
 
-  cp->order = hdr->CalibrationOrder(vn);
-
-  for (size_t i = 0; i < cp->order; ++i)
-    cp->cof[i] = hdr->CalibrationCoefficient(vn, i);
-
-  cp->order = check_cal_coes(cp->order, cp->cof);
-  cp->order = check_cal_coes(cp->order, cp->cof);
+  cp->cof = getCalsForADS2(vn);
 
 }	/* END IN_SDI */
 
@@ -354,10 +361,10 @@ static void in_ophir3(Blk *)
 
     rp->convertOffset	= 0;
     rp->convertFactor	= 1.0;
-    rp->order		= atoi(strtok((char *)NULL, " \t"));
+    long order		= atoi(strtok((char *)NULL, " \t"));
 
-    for (size_t j = 0; j < rp->order; ++j)
-      rp->cof[j] = (float)atof(strtok((char *)NULL, " \t"));
+    for (long j = 0; j < order; ++j)
+      rp->cof.push_back((float)atof(strtok((char *)NULL, " \t")));
     }
 
   FreeTextFile(list);
@@ -418,7 +425,7 @@ static RAWTBL *add_name_to_RAWTBL(char name[])
   if (*location)
     strcat(rp->name, location);
 
-  rp->xlate		= (void (*) (void *, void *, float *))deriveftns[indx].xlate;
+  rp->xlate		= deriveftns[indx].xlate;
 
   rp->ADSstart		= start >> 1;
   rp->ADSoffset		= 1;
@@ -454,44 +461,44 @@ static int check_cal_coes(int order, float *coef)
 var_base::var_base(const char s[])
 {
   strcpy(name, s);
-  varid = 0;
+  varid = -1;
   LRstart = SRstart = HRstart = 0;
 
   SampleRate = 0;
   Length = 1;
+  ProbeCount = 0;
+  ProbeType = 0;
 
   OutputRate = Config::LowRate;
 
   Dirty = false;
   Output = true;
   DependedUpon = false;
-  Broadcast = Mode == Config::RealTime ? true : false;
 
+  Modulo = 0;
   DataQuality   = 0;
-
-}
-
-SDITBL::SDITBL(const char s[]) : var_base(s)
-{
-  order = 0;
-  StaticLag = 0;
-  SpikeSlope = 0.0;
-
 }
 
 RAWTBL::RAWTBL(const char s[]) : var_base(s)
 {
-  order = 0;
+  type[0] = '\0';
+  Initializer = 0;
+  xlate = 0;
+  Average = 0;
+
+  convertOffset = 0;
+  convertFactor = 1.0;
+
   StaticLag = 0;
   DynamicLag = 0;
   SpikeSlope = 0.0;
-  ProbeCount = 0;
 }
 
 DERTBL::DERTBL(const char s[]) : var_base(s)
 {
+  Initializer = 0;
+  compute = 0;
   ndep = 0;
-  ProbeCount = 0;
 }
 
 /* END HDR_DECODE.C */

@@ -1,8 +1,8 @@
 TARGET = rtplot
 TEMPLATE = app
 
-NIMBUS = $${JLOCAL}/raf/nimbus_resampler
-NOBJ = $$(NIMBUS)/src/filter/obj
+NIMBUS = $${JLOCAL}/raf/nimbus
+NOBJ = $$(NIMBUS)/src/filter/
 
 # Input
 CONFIG += debug
@@ -20,5 +20,5 @@ SOURCES += amlibfn.cc \
            rec_decode.cc \
            rtplot.cc
 INCLUDEPATH += $(JLOCAL)/include $(NIMBUS)/include $(JLOCAL)/src/qwt-4.2.0/include
-OBJECTS += $(NIMBUS)/src/filter/obj/calco.o $(NIMBUS)/src/filter/obj/search.o $(NIMBUS)/src/filter/obj/textfile.o $(NIMBUS)/src/filter/obj/popen.o $(NIMBUS)/src/filter/obj/log.o $(NIMBUS)/src/filter/obj/config.o
-LIBS += -L$(JLOCAL)/lib -lraf++ -L$(NIMBUS)/lib -lxlate -lraf -L$(JLOCAL)/src/qwt-4.2.0/lib -lqwt
+OBJECTS += $(NIMBUS)/src/filter/calco.o $(NIMBUS)/src/filter/search.o $(NIMBUS)/src/filter/textfile.o $(NIMBUS)/src/filter/popen.o $(NIMBUS)/src/filter/log.o $(NIMBUS)/src/filter/config.o $(NIMBUS)/src/filter/rd_defs.o
+LIBS += -L$(JLOCAL)/lib -lraf++ -L$(NIMBUS)/lib -lxlate -lraf -L$(JLOCAL)/src/qwt-4.2.0/lib -lqwt -lnetcdf

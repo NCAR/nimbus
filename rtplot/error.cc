@@ -27,4 +27,14 @@ void HandleError(char s[])
 
 }	/* END HANDLERROR */
 
+void LogMessage(const char msg[])
+{
+  std::string messg(msg);
+
+  if (messg[messg.length()-1] != '\n')
+    messg.append("\n");
+
+  fprintf(stderr, messg.c_str());
+}
+
 /* END ERROR.C */

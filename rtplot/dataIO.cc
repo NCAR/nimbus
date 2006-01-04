@@ -53,22 +53,10 @@ void AddDataToBuffer(NR_TYPE *newData)
 /* -------------------------------------------------------------------- */
 void AddVariable(size_t indx, DataPlot *plot)
 {
-  if (indx >= sdi.size())
-  {
-    indx -= sdi.size();
-
-    strcpy(Variable[nVariables].name, raw[indx]->name);
-    Variable[nVariables].SampleRate = raw[indx]->SampleRate;
-    Variable[nVariables].SRstart = raw[indx]->SRstart;
-    Variable[nVariables].nPoints = raw[indx]->SampleRate * NumberSeconds;
-  }
-  else
-  {
-    strcpy(Variable[nVariables].name, sdi[indx]->name);
-    Variable[nVariables].SampleRate = sdi[indx]->SampleRate;
-    Variable[nVariables].SRstart = sdi[indx]->SRstart;
-    Variable[nVariables].nPoints = sdi[indx]->SampleRate * NumberSeconds;
-  }
+  strcpy(Variable[nVariables].name, raw[indx]->name);
+  Variable[nVariables].SampleRate = raw[indx]->SampleRate;
+  Variable[nVariables].SRstart = raw[indx]->SRstart;
+  Variable[nVariables].nPoints = raw[indx]->SampleRate * NumberSeconds;
 
   xData[nVariables] = new double[Variable[nVariables].nPoints];
   plotData[nVariables] = new double[Variable[nVariables].nPoints];

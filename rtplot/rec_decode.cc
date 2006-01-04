@@ -34,65 +34,61 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-9
 extern NR_TYPE *SRTvolts;
 
 /* -------------------------------------------------------------------- */
-void DecodeRecord()
+void decodeADS2analog(RAWTBL *sp, void *input, NR_TYPE *output)
 {
   int		pos;
-  SDITBL	*sp;		/* Current SDI Variable Pointer	*/
-  RAWTBL	*rp;		/* Current Raw Variable Pointer	*/
   ushort	*lrp;		/* ADS Logical Record Pointer	*/
 
+  lrp	= &((ushort *)ADSrecord)[sp->ADSstart];
+  pos	= sp->SRstart;
 
-  /* Cast SDI variables into new record
-   */
-  for (size_t i = 0; (sp = sdi[i]); ++i)
+  if (sp->type[0] == 'C')
     {
-    lrp	= &((ushort *)ADSrecord)[sp->ADSstart];
-    pos	= sp->SRstart;
-
-
-    if (sp->type[0] == 'C')
+    if (strcmp(sp->type, "C24") == 0)
       {
-      if (strcmp(sp->type, "C24") == 0)
+      for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
         {
-        for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
-          {
-          SampledData[pos] = bits[pos] =
-			ntohl(*((unsigned long *)&lrp[j * sp->ADSoffset]));
-          SRTvolts[pos] = (bits[pos] - sp->convertOffset) * sp->convertFactor;
-          }
-        }
-      else
-        {
-        for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
-          {
-          SampledData[pos] = bits[pos] = ntohs(lrp[j * sp->ADSoffset]);
-          SRTvolts[pos] = (bits[pos] - sp->convertOffset) * sp->convertFactor;
-          }
+        SampledData[pos] = bits[pos] =
+	ntohl(*((unsigned long *)&lrp[j * sp->ADSoffset]));
+        SRTvolts[pos] = (bits[pos] - sp->convertOffset) * sp->convertFactor;
         }
       }
     else
       {
-      if (strcmp(sp->type, "D20") == 0)
+     for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
         {
-        for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
-          {
-          SampledData[pos] = bits[pos] =
-			(long)ntohl(*((long *)&lrp[j * sp->ADSoffset]));
-          SRTvolts[pos] = (bits[pos] - sp->convertOffset) * sp->convertFactor;
-          }
-        }
-      else
-        {
-        for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
-          {
-          SampledData[pos] = bits[pos] =
-			(short)ntohs((ushort)lrp[j * sp->ADSoffset]);
-          SRTvolts[pos] = (bits[pos] - sp->convertOffset) * sp->convertFactor;
-          }
+        SampledData[pos] = bits[pos] = ntohs(lrp[j * sp->ADSoffset]);
+        SRTvolts[pos] = (bits[pos] - sp->convertOffset) * sp->convertFactor;
         }
       }
     }
+  else
+    {
+    if (strcmp(sp->type, "D20") == 0)
+      {
+      for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
+        {
+        SampledData[pos] = bits[pos] =
+		(long)ntohl(*((long *)&lrp[j * sp->ADSoffset]));
+        SRTvolts[pos] = (bits[pos] - sp->convertOffset) * sp->convertFactor;
+        }
+      }
+    else
+      {
+      for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
+        {
+        SampledData[pos] = bits[pos] =
+			(short)ntohs((ushort)lrp[j * sp->ADSoffset]);
+        SRTvolts[pos] = (bits[pos] - sp->convertOffset) * sp->convertFactor;
+        }
+      }
+    }
+}
 
+/* -------------------------------------------------------------------- */
+void DecodeRecord()
+{
+  RAWTBL *rp;
 
   /* Extract block variables into new record
    */

@@ -94,9 +94,6 @@ CanvasWindow::CanvasWindow(QApplication *qApp) : QMainWindow(0, "canvas")
   connect(list, SIGNAL(clicked(QListBoxItem *)), SLOT(ModifyActiveVars(QListBoxItem *)));
 
 
-  for (size_t i = 0; i < sdi.size(); ++i)
-    list->insertItem(sdi[i]->name);
-
   for (size_t i = 0; i < raw.size(); ++i)
     list->insertItem(raw[i]->name);
 
@@ -169,42 +166,20 @@ void CanvasWindow::ModifyActiveVars(QListBoxItem *item)
 
   size_t indx = (size_t)list->currentItem();
 
-  if (indx >= sdi.size())
-  {
-    indx -= sdi.size();
-
-    for (size_t i = 0; i < nVariables; ++i)
-      if (strcmp(Variable[i].name, raw[indx]->name) == 0)
-      {
-      	DeleteVariable(i, plot);
-      	return;
-      }
-
-    if (NumberDataSets + 1 > MAXDATASETS)
+  for (size_t i = 0; i < nVariables; ++i)
+    if (strcmp(Variable[i].name, raw[indx]->name) == 0)
     {
-      QMessageBox::critical(this, "rtplot", "Out of data sets.", "Cancel",0,0,0,1);
+      DeleteVariable(i, plot);
       return;
     }
-    else
-      AddVariable(indx + sdi.size(), plot);
+
+  if (NumberDataSets + 1 > MAXDATASETS)
+  {
+    QMessageBox::critical(this, "rtplot", "Out of data sets.", "Cancel",0,0,0,1);
+    return;
   }
   else
-  {
-    for (size_t i = 0; i < nVariables; ++i)
-      if (strcmp(Variable[i].name, sdi[indx]->name) == 0)
-      {
-        DeleteVariable(i, plot);
-        return;
-      }
-
-    if (NumberDataSets + 1 > MAXDATASETS)
-    {
-      QMessageBox::critical(this, "rtplot", "Out of data sets.", "Cancel",0,0,0,1);
-      return;
-    }
-    else
-      AddVariable(indx, plot);
-  }
+    AddVariable(indx, plot);
 
   list->clearSelection();
   plot->replot();
