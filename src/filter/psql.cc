@@ -56,6 +56,8 @@ PostgreSQL::PostgreSQL(std::string specifier, bool transmitToGround)
     createTables();
     initializeGlobalAttributes();
     initializeVariableList();
+    if (_ldm)
+      _ldm->setTimeInterval(5);
     submitCommand(
     "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current", true);
     if (_ldm)
@@ -266,7 +268,8 @@ PostgreSQL::createTables()
 void
 PostgreSQL::initializeGlobalAttributes()
 {
-  extern char	dateProcessed[];	// From netcdf.c
+  extern char dateProcessed[];	// From netcdf.c
+  std::string readLandmarks();
 
   _sqlString.str("");
 
@@ -281,6 +284,7 @@ PostgreSQL::initializeGlobalAttributes()
   _sqlString << "INSERT INTO global_attributes VALUES ('FlightNumber', '" << cfg.FlightNumber() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('DateProcessed', '" << dateProcessed << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('coordinates', '" << cfg.CoordinateVariables() << "');";
+  _sqlString << "INSERT INTO global_attributes VALUES ('landmarks', '" << readLandmarks() << "');";
 
   submitCommand(_sqlString.str(), true);
 

@@ -13,6 +13,7 @@ ENTRY POINTS:	CreateNetCDF()
 		QueueMissingData()
 		WriteMissingRecords()
 		BlankOutBadData()
+		readLandmarks()
 
 STATIC FNS:	writeBlank()
 		writeTimeUnits()
@@ -20,6 +21,7 @@ STATIC FNS:	writeBlank()
 		markDependedByList()
 		printDependedByList()
 		addCommonVariableAttributes()
+		addLandmarks()
 
 DESCRIPTION:	This file has the routines necessary to Create and write
 		data for distribution of NCAR/RAF aircraft data in netCDF
@@ -85,7 +87,7 @@ char	dateProcessed[64];	// For export to psql.cc
 static int	writeBlank(int varid, long start[], long count[], int OutputRate);
 static void	markDependedByList(char target[]), writeTimeUnits();
 static void	clearDependedByList(), printDependedByList();
-static void	addCommonVariableAttributes(var_base *var);
+static void	addCommonVariableAttributes(var_base *var), addLandmarks();
 
 void	AddPMS1dAttrs(int ncid, RAWTBL *rp),
 	CheckAndAddAttrs(int fd, int varid, char name[]);
@@ -218,6 +220,7 @@ void CreateNetCDF(const char fileName[])
     fprintf(LogFile, "Flight Date: %s\n", buffer);
 
   putGlobalAttribute("coordinates", cfg.CoordinateVariables());
+  addLandmarks();
 
   /* Will be updated later.
    */
@@ -1018,6 +1021,41 @@ void ProcessFlightDate()
 
   StartFlight.tm_year -= 1900;
   StartFlight.tm_mon -= 1;
+}
+
+/* -------------------------------------------------------------------- */
+std::string readLandmarks()
+{
+  FILE *fp;
+  char *projDir, label[128];
+  float lat, lon;
+  std::stringstream landMarks;
+  landMarks.str("");
+
+  if ((projDir = getenv("PROJ_DIR")) == NULL)
+    return landMarks.str();
+
+  sprintf(buffer, "%s/%s/landmarks", projDir, cfg.ProjectNumber().c_str());
+  if ((fp = fopen(buffer, "r")) == NULL)
+    return landMarks.str();
+
+  for (int nMarks = 0; fgets(buffer, 256, fp) != NULL; ++nMarks)
+    {
+    sscanf(buffer, "%f %f %s\n", &lat, &lon, label);
+
+    if (nMarks > 0)
+      landMarks << ",";
+    landMarks << lat << " " << lon << " " << label;
+    }
+
+  fclose(fp);
+  return landMarks.str();
+}
+
+/* -------------------------------------------------------------------- */
+static void addLandmarks()
+{
+  putGlobalAttribute("landmarks", readLandmarks());
 }
 
 /* END NETCDF.C */
