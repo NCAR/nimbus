@@ -1,0 +1,1797 @@
+#! /bin/csh -f
+#
+#  Script to handle remote processing of RAF Aircraft Data
+#   using hot-swappable disk drives
+#
+#  Usage:
+#    gndproc <proj#> [configuration_file_name] [-v] [-d]
+#   Required command-line argument:
+#     <proj#> -- 3-digit project number
+#   Optional command-line arguments:
+#     configuration_file_name -- name of configuration file (which must end
+#                                 with the extent "conf" and be located in a
+#                                 project's Production/gndproc subdirectory).
+#     -v -- sets verbose mode (not quiet mode which suppresses most terminal
+#             messages except user instructions)
+#     -d -- sets debug mode (verbose output of progress) and verbose mode
+#
+#  The configuration file, unique to each project, is required for the
+#   script to work.  It (or a link to it) must exist in the project's
+#   Production/gndproc subdirectory.  Its name will be set in the
+#   following order:
+#    1) from an argument on the command line
+#    2) from the environment variable "GNDPROC_CONF"
+#    3) assumed to be "gndproc.conf"
+#
+#  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+#  *  Copyright 2002, 2003, 2005                                             *
+#  *  University Corporation for Atmospheric Research, All Rights Reserved.  *
+#  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+#
+#  Written by Ronald L. Ruth  17 May 2002
+#  Revision  0 by RLR on 21 May 2002 (original code)
+#  Revision  1 by RLR on 26 Jul 2002 (rewrite to modularize each job)
+#  Revision  2 by RLR on 17 Apr 2003 (minor corrections)
+#  Revision  3 by RLR on 30 May 2003 (run "nimbus" once for segmented ADS files)
+#  Revision  4 by RLR on 26 Jul 2005 (debug email addressing; fix minor bugs)
+#  Revision  5 by RLR on 27 Jul 2005 (add "ldm" copy type)
+#  Revision  6 by RLR on  4 Aug 2005 (use "ldm" to send logfile)
+#  Revision  7 by RLR on 12 Aug 2005 (revised command-line argument processing
+#                                      and some "exit" logic)
+#  Revision  7.1 by RLR on 22 Aug 2005 ("fix" ftp code)
+#  Revision  7.2 by RLR on 25 Aug 2005 (correctly set output file gzip extent)
+#  Revision  7.3 by RLR on 25 Aug 2005 (fix some bad $result = $status logic)
+#   Don't forget to change revision number below
+#
+#  Dependencies:
+#     command line:  required:  Project number
+#                    optional:  config file name, debug and verbose flags
+#     stdin:  one entry to continue a paused script (after drive mount)
+#     Environment variables:  PROJ_DIR, DISPLAY
+#                             (may use GNDPROC_CONF, if extant)
+#     Hard wires:  job types ($j_type), file types ($f_type)
+#     Directories:   <project>/Production/gndproc/
+#     Files:  required:  gndproc.conf, $mbufr (gndproc_log)
+#             optional:  Instructions_1, Instructions_2,
+#                        job files with names of the form [a-z]*_[a-z]*_[a-z]*
+#     UNIX files/variables:  stdin, /dev/null, $status
+#     UNIX commands:  grep, awk, mount, umount, ls, cp, df, sed, rm, wc,
+#                     pushd, popd, echo
+#     Job commands:  nimbus, n2asc, gzip, gunzip [, scp, ftp, sftp, rsh]
+#
+#  Notes:  - If a program name (e.g., nimbus) is not found in the config
+#             file, its generic name will be used instead.  This method
+#             allows this script to use customized versions of programs,
+#             if needed (e.g., a development version of nimbus).
+#          - In "test" mode, nothing is done.  Every operation is echoed.
+#             (At least that was the original plan; it hasn't been fully
+#             implemented.)
+#          - In "debug" mode, verbose output logs progress through the script.
+#          - In "verbose" (notquiet) mode, logfile messages are output to the
+#             terminal as the script is executing.
+#          - Need to check code that should exit this script gracefully if
+#             the user doesn't want it to complete (i.e., ^C interrupt).
+#          - For bug-report lines, search for the string " -- line "
+#          - Exit error numbers:
+#             0 = normal completion exit (or no new files found to process)
+#             1 = script aborted by user (or script aborted with its own error)
+#             2 = configuration file problem
+#             3 = no job files found
+#             4 = removable disk drive mount problem
+#             5 = misconfigured command-line (See run instructions.)
+#             6 = missing PROJ_DIR environment variable or project subdirectory
+#             7 = could not create or write to the status message file
+#
+#  ToDo:  - Finish ftp job processing
+#         - Add sftp job processing
+#         - Possibly consolidate code by converting some lines to subroutines
+#            (See file "subs" for details)
+#
+###############  <-- search using this string for changes or needed code
+#
+#
+#      * * * * * * * * * * * * * * *
+#     *                             *
+#    *  Executable code starts here  *
+#     *                             *
+#      * * * * * * * * * * * * * * *
+#
+onintr abort
+#
+#
+#  Process command-line arguments (if any)
+foreach arg ($argv)
+#
+  if (! $?proj) then
+#   Check for project number
+    @ chars = `echo $arg | wc -m` - 1
+    if ($chars == 3) then
+      @ chars = `echo  $arg | grep -c "[0-9][0-9][0-9]"`
+      if ($chars == 1) then
+        set proj = $arg
+        continue
+      endif
+    endif
+  endif
+#   Check for configuration file name (must have string "conf")
+  if (! $?conf) then
+    set chars = `echo  $arg | grep -c "conf"`
+    if ($chars == 1) then
+      set conf = $arg
+      continue
+    endif
+  endif
+#   Check for verbose (not quiet) mode
+  if (! $?nqt) then
+    @ chars = `echo $arg | wc -m` - 1
+    if ($chars == 2) then
+      set chars = `echo $arg | grep -e '-v'`
+      if ($status == 0) then
+        @ nqt = 1
+        continue
+      endif
+    endif
+  endif
+#   Check for debug mode
+  if (! $?dbg) then
+    @ chars = `echo $arg | wc -m` - 1
+    if ($chars == 2) then
+      set chars = `echo $arg | grep -e '-d'`
+      if ($status == 0) then
+        @ dbg = 1
+        continue
+      endif
+    endif
+  endif
+end
+#
+if (! $?proj) then
+  echo ""
+  echo "   ${0} requires a 3-digit project number on the command line."
+  @ exitnum = 5
+  goto nostart
+endif
+#
+#  Check for needed project subdirectories
+if (! $?PROJ_DIR) then
+  echo "  ${0} -- no PROJ_DIR environment variable set."
+  @ exitnum = 6
+  goto nostart
+endif
+set projdir = "$PROJ_DIR/$proj/Production"
+if (! -e $projdir) then
+  echo "  ${0} $projdir subdirectory doesn't exist."
+  @ exitnum = 6
+  goto nostart
+else
+  set projdir = "$projdir/gndproc"
+endif
+#
+#  Set configuration file
+if ($?conf) then
+#   from run string
+  set conf_f = $argv[2]
+else if ($?GNDPROC_CONF) then
+#   from environment variable
+  set conf_f = $GNDPROC_CONF
+else
+#   using default name (most likely)
+  set conf_f = "gndproc.conf"
+endif
+#
+#   The file must be in the project's Production/gndproc subdirectory
+set conf_f = "$projdir/$conf_f"
+#
+#  Does configuration file exist?
+if (! -e $conf_f) then
+  echo "   ${0}:  Configuration file ($conf_f) does not exist."
+  @ exitnum = 2
+  goto nostart
+endif
+#
+#  Can I read the configuration file?
+if (! -r $conf_f) then
+  echo "   ${0} cannot read configuration file ($conf_f)."
+  @ exitnum = 2
+  goto nostart
+endif
+#
+#
+#  Initialize some variables
+#   Make sure display environment is set (for nimbus)
+if (! $?DISPLAY) setenv DISPLAY :0.0
+#   Messages
+set ns_msg1 = "Setting for"
+set ns_msg2 = "missing from configuration file $conf_f"
+set ns_msg3 = "Could not find"
+set ns_msg4 = "in configuration file $conf_f"
+#   OK flag
+set OK_flag = "yes"
+#   "nimbus" has not yet been run
+set nimbus_run = "no"
+#   Alphabet
+set ltrs = ("a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" "m" \
+            "n" "o" "p" "q" "r" "s" "t" "u" "v" "w" "x" "y" "z")
+#
+#  Set up scratch message file (and test config file)
+#   Get path name for message file
+set c_name = "msg_f"
+set input = `grep "^$c_name *=" $conf_f`
+@ result = $status
+if ($result == 0) then
+  set temp = `echo $input | awk -F= '{print $2}'`
+  if ($#temp > 0) then
+    set $c_name = $temp
+  else
+    echo '   '$ns_msg1' "'$c_name'" '$ns_msg2
+    @ exitnum = 2
+    goto nostart2
+  endif
+else
+  echo '   '$ns_msg3' "'$c_name'" '$ns_msg4
+  @ exitnum = 2
+  goto nostart2
+endif
+#
+#  Set up and test message file
+set $c_name = $msg_f.$$
+echo "  Status messages for ${0} script (created on `date`)" >! $msg_f
+@ result = $status
+if ($result != 0) then
+  echo "  Error $result when trying to write messages into message file $msg_f"
+  @ exitnum = 7
+  goto nostart2
+endif
+#
+#
+#  Read list of configuration variable names
+#   Note:  Order is important; "debug" should come first
+set c_name = "c_vars"
+set input = `grep "^$c_name *=" $conf_f`
+@ result = $status
+if ($result == 0) then
+  set temp = `echo $input | awk -F= '{print $2}'`
+  if ($#temp > 0) then
+    if ($?dbg) then
+      echo "  Got setting for ${c_name}:  $temp"
+    endif
+    set $c_name = ($temp)
+  else
+#   If I cannot get my configuration variables, I'm done
+    echo '   '$ns_msg1' "'$c_name'" '$ns_msg2
+    set OK_flag = "no"
+  endif
+else
+#   If I cannot get my configuration variables, I'm done
+  echo '   '$ns_msg3' "'$c_name'" '$ns_msg4
+  set OK_flag = "no"
+endif
+#
+if ($OK_flag == "no") then
+  @ exitnum = 2
+  goto cleanup
+endif
+#
+#
+#  Set all configuration variable values ("debug" should be first in list)
+foreach c_name ($c_vars)
+  set input = `grep "^$c_name *=" $conf_f`
+  @ result = $status
+  if ($result == 0) then
+    set temp = `echo $input | awk -F= '{print $2}'`
+    if ($#temp > 0) then
+      set $c_name = ($temp)
+      if ($c_name == "debug") then
+#   Command line option overrides configuration file debug setting
+        if ($?dbg) then
+          set debug = "yes"
+          echo "  Debug setting (below) has been overridden by command-line option."
+        endif
+      endif
+      if ($?debug) then
+        if ($debug == "yes") echo "  Got setting for ${c_name}:  $temp"
+      endif
+    else
+      echo '   '$ns_msg1' "'$c_name'" '$ns_msg2 >> $msg_f
+      set OK_flag = "no"
+    endif
+  else
+    echo '   '$ns_msg3' "'$c_name'" '$ns_msg4 >> $msg_f
+    set OK_flag = "no"
+  endif
+end
+#
+#
+#  Command-line "turn-on" settings override other setting methods
+#
+#   Set final debug mode (I had to play games with it above.)
+if ($?dbg) then
+#    from command line
+  @ debug = 1
+else if ($?debug) then
+#    from configuration file
+#     Change debug flag from string to logical variable
+  if ($debug == "yes") then
+    @ debug = 1
+  else
+    @ debug = 0
+  endif
+else
+  @ debug = 0
+endif
+#
+#   Set verbose mode
+if ($debug) then
+  @ notquiet = 1
+else if ($?nqt) then
+  @ notquiet = 1
+#   Default "quiet" setting
+else if ($?quiet) then
+#    Change "quiet" from string to logical
+  if ($quiet == "no") then
+    @ notquiet = 1
+  else
+    @ notquiet = 0
+  endif
+else
+  @ notquiet = 0
+endif
+#
+if ($notquiet) then
+  echo " ${0} -- automatically copy and process"
+  echo "  raw aircraft data and send it wherever"
+  echo "   Revision  7.3 by RLR  25 Aug 2005"
+  echo " Report bugs or questions about this script to Ron Ruth"
+  echo "     (ruth@ucar.edu)"
+  echo ""
+endif
+#  (End of command-line processing)
+#
+#
+#  Read list of file extensions to be used in this script
+#
+set c_name = "extensions"
+set $c_name = ""
+set input = `grep "^$c_name *=" $conf_f`
+@ result = $status
+if ($result == 0) then
+  set temp = `echo $input | awk -F= '{print $2}'`
+  if ($#temp > 0) then
+    set $c_name = ($temp)
+    if ($debug) echo "  Got setting for ${c_name}:  $temp"
+  else
+    if ($debug) echo '   '$ns_msg1' "'$c_name'" '$ns_msg2
+  endif
+else
+  if ($debug) echo '   '$ns_msg3' "'$c_name'" '$ns_msg4
+endif
+#
+if ($debug) echo "  $#extensions extensions = $extensions"
+#
+#   (following "noglob" is done because, at time of writing, the
+#    raw MCR extension is of the form rawMCR?, where ? = a, b, etc.)
+set noglob
+#  Set all the file extensions
+foreach c_name ($extensions)
+  set input = `grep "^$c_name *=" $conf_f`
+  @ result = $status
+  if ($result == 0) then
+    set temp = `echo $input | awk -F= '{print $2}'`
+    if ($#temp > 0) then
+      set $c_name = ($temp)
+    else
+      echo '   '$ns_msg1' "'$c_name'" '$ns_msg2 >> $msg_f
+      set OK_flag = "no"
+    endif
+  else
+    echo '   '$ns_msg3' "'$c_name'" '$ns_msg4 >> $msg_f
+    set OK_flag = "no"
+  endif
+end
+unset noglob
+#
+#
+#  Read the types of new, raw-data files I need to copy
+#
+set c_name = "raw_file_types"
+set $c_name = ""
+set input = `grep "^$c_name *=" $conf_f`
+@ result = $status
+if ($result == 0) then
+  set temp = `echo $input | awk -F= '{print $2}'`
+  if ($#temp > 0) then
+    set $c_name = ($temp)
+    if ($debug) echo "  Got setting for ${c_name}:  $temp"
+  else
+    echo '   '$ns_msg1' "'$c_name'" '$ns_msg2 >> $msg_f
+    set OK_flag = "no"
+  endif
+else
+  echo '   '$ns_msg3' "'$c_name'" '$ns_msg4 >> $msg_f
+  set OK_flag = "no"
+endif
+#
+if ($debug) echo "  $#raw_file_types raw_file_types = $raw_file_types"
+#
+if ($#raw_file_types < 1) then
+  echo "  No raw data file types have been specified to copy.  This is probably due " >> $msg_f
+  echo '   to incorrect or missing "raw_file_types" entries in the $conf_f file.' >> $msg_f
+  set OK_flag = "no"
+endif
+#
+#
+#  Read the types of jobs I can do
+#
+set c_name = "job_types"
+set $c_name = ""
+set input = `grep "^$c_name *=" $conf_f`
+@ result = $status
+if ($result == 0) then
+  set temp = `echo $input | awk -F= '{print $2}'`
+  if ($#temp > 0) then
+    set $c_name = ($temp)
+    if ($debug) echo "  Got setting for ${c_name}:  $temp"
+  else
+    echo '   '$ns_msg1' "'$c_name'" '$ns_msg2 >> $msg_f
+    set OK_flag = "no"
+  endif
+else
+  echo '   '$ns_msg3' "'$c_name'" '$ns_msg4 >> $msg_f
+  set OK_flag = "no"
+endif
+#
+if ($debug) then
+  echo "  $#job_types job_types = $job_types"
+  echo "  OK_flag = $OK_flag"
+endif
+#
+#
+#  Did I get all the configuration values I need?
+if ($OK_flag != "yes") then
+  @ exitnum = 2
+  goto cleanup
+endif
+#
+#  No need for status message buffer any more
+\rm $msg_f >& /dev/null
+#
+#
+#  Read list of program-name variables
+#
+set c_name = "p_vars"
+set $c_name = ""
+set input = `grep "^$c_name *=" $conf_f`
+@ result = $status
+if ($result == 0) then
+  set temp = `echo $input | awk -F= '{print $2}'`
+  if ($#temp > 0) then
+    set $c_name = ($temp)
+    if ($debug) echo "  Got setting for ${c_name}:  $temp"
+  else
+    if ($debug) echo '   '$ns_msg1' "'$c_name'" '$ns_msg2
+  endif
+else
+  if ($debug) echo '   '$ns_msg3' "'$c_name'" '$ns_msg4
+endif
+#
+if ($debug) echo "  $#p_vars p_vars = $p_vars"
+#
+#  Set all program names
+foreach c_name ($p_vars)
+  set $c_name = $c_name
+  set input = `grep "^$c_name *=" $conf_f`
+  @ result = $status
+  if ($result == 0) then
+    set temp = `echo $input | awk -F= '{print $2}'`
+    if ($#temp > 0) then
+      set $c_name = ($temp)
+      if ($debug) echo "  Got setting for ${c_name}:  $temp"
+    else
+      if ($debug) echo "   ${c_name} set to default = ${c_name}"
+    endif
+  else
+    if ($debug) echo "   ${c_name} set to default = ${c_name}"
+  endif
+end
+#
+#  Default any needed program names that didn't get set
+if (! $?grep) then
+  set grep = "grep"
+  if ($debug) echo "  grep set to default = $grep"
+endif
+if (! $?awk) then
+  set awk = "awk"
+  if ($debug) echo "  awk set to default = $awk"
+endif
+if (! $?mount) then
+  set mount = "mount"
+  if ($debug) echo "  mount set to default = $mount"
+endif
+if (! $?umount) then
+  set umount = "umount"
+  if ($debug) echo "  umount set to default = $umount"
+endif
+if (! $?ls) then
+  set ls = "ls"
+  if ($debug) echo "  ls set to default = $ls"
+endif
+if (! $?cp) then
+  set cp = "cp -p"
+  if ($debug) echo "  cp set to default = $cp"
+endif
+if (! $?df) then
+  set df = "df -k"
+  if ($debug) echo "  df set to default = $df"
+endif
+if (! $?gzip) then
+  set gzip = "gzip -f"
+  if ($debug) echo "  gzip set to default = $gzip"
+endif
+if (! $?gunzip) then
+  set gunzip = "gunzip"
+  if ($debug) echo "  gunzip set to default = $gunzip"
+endif
+if (! $?sed) then
+  set sed = "sed"
+  if ($debug) echo "  sed set to default = $sed"
+endif
+if (! $?rm) then
+  set rm = "rm"
+  if ($debug) echo "  rm set to default = $rm"
+endif
+if (! $?wc) then
+  set wc = "wc"
+  if ($debug) echo "  rm set to default = $rm"
+endif
+#
+#
+#  I don't have a log message buffer yet
+set mok = "no"
+#
+#  Set startup messages
+set mseparator = " --------------- "`date`" ---------------"
+set mbegin = "  ${0} script started  "`date`
+set mbegan = "  ${0} script restarted  "`date`
+#
+if ($debug) then
+  echo "debug:  mseparator = $mseparator"
+  echo "debug:  mbegin = $mbegin"
+  echo "debug:  mbegan = $mbegan"
+endif
+#
+#  Set up email/log message buffer and tell people that I have begun
+set mbufr = $D/$mbufr.$$
+if ($debug) then
+  echo "debug:  mbufr = $mbufr"
+  echo $mbegin
+endif
+#  Test write to log file
+echo "----------------------------------------------------" >! $mbufr
+@ result = $status
+if ($result != 0) then
+  if ($debug) then
+    echo "   Could not write to log buffer $mbufr"
+  endif
+  set mbufr = /dev/null     #              Writing to bit bucket instead <--
+endif
+#
+#
+#  Get started
+#
+#   Initialize "files-to-do" list
+set f2do = ""
+#
+#   Is this code being tested?
+if (! $?test) set test = "no"
+if ($debug) echo " Test mode = $test"
+#
+#   Make sure removable disk isn't mounted
+if ($test == "no") then
+  $umount $S >& /dev/null
+else
+  echo "test:  'umount $S >& /dev/null' would have been done here"
+endif
+#
+#   Give the user disk-mounting instructions
+if (! -e $projdir/Instructions_1) then
+#    Simple default "install" message
+  echo ""
+  echo ""
+  echo "  Insert removable disk drive with new data into proper chassis slot."
+  echo "  When drive is ready, hit [ENTER] key to continue."
+  echo ""
+else
+  cat $projdir/Instructions_1
+endif
+set input = "$<"
+#
+#   Mount removable drive
+if ($test == "yes") then
+  echo -n  "test:  mount $S (y, n, [r]=y)? "
+  set input = "$<"
+  if ($input == "") set input = "y"
+  set t1 = $input
+  if ($t1 == "y") then
+    $mount $S >& /dev/null
+    @ result = $status
+  else
+    echo -n  "test:  set successful mount flag (y, n, [r]=y)? "
+    set input = "$<"
+    if ($input == "") set input = "y"
+    if ($input == "y") then
+      @ result = 0
+    else
+      @ result = 1
+    endif
+  endif
+else
+  $mount $S >& /dev/null
+  @ result = $status
+endif
+if ($result != 0) then
+  set mesg = "   Could not mount removable drive.  Error code = ${result}"
+  echo $mesg
+  echo $mesg >> $mbufr
+  echo '  This can happen if the LED display did not indicate "1".'
+  echo "  Otherwise try removing and remounting the drive, then run ${0} again."
+  goto drive_err
+endif
+#
+#   See if it has files
+set files = (`$ls $S`)
+if ($#files < 1) then
+  $umount $S >& /dev/null
+  set mesg = "   Removable drive doesn't seem to be mounted (couldn't find any files)."
+  echo $mesg
+  echo $mesg >> $mbufr
+  echo "   Try removing and remounting the drive then run ${0} again."
+  echo $mesg
+  echo $mesg >> $mbufr
+  goto drive_err
+endif
+#
+#   Read files from removable media
+pushd $S >& /dev/null
+if ($debug) echo "   Changed directory to `pwd`"
+#
+#   Find all requested new raw files
+foreach type ($raw_file_types)
+#                        It would be nice if I didn't have to hard-wire these
+#  set noglob
+  switch ($type)
+    case rads
+      set ext = $rads
+      breaksw
+    case r2d
+      set ext = $r2d
+      breaksw
+    case rmcr
+      set ext = "$rmcr"
+      breaksw
+    default
+      set mesg = "   Skipping unrecognized file type ($type)."
+      if ($notquiet) echo $mesg
+      echo $mesg >> $mbufr
+      continue
+  endsw
+#
+  if ($debug) echo "  Searching for files with extension: $ext"
+#
+#   Get list of all raw data files of this type on removable drive
+  $ls ${proj}[frt]f*.$ext >& /dev/null
+  @ result = $status
+  if ($result == 0) then
+    set afiles = (`$ls ${proj}[frt]f*.$ext`) >& /dev/null
+  else 
+    set afiles = ""
+  endif
+  if ($debug) then
+    echo "$S $ext files = $afiles"
+    echo "number of $ext files = $#afiles"
+  endif
+#
+#   See if files are new
+  if ($#afiles < 1) then
+    set mesg = "   No new raw $ext data files found to copy"
+    if ($notquiet) echo $mesg
+    echo $mesg >> $mbufr
+  else
+    foreach afile ($afiles)
+      $ls $D/$afile >& /dev/null
+      @ result = $status
+      if ($result == 0) then
+#   Check file lengths to see if the removable file is larger
+        @ t1_len = `$ls -l $S/$afile | $awk '{print $5}'`
+        @ t2_len = `$ls -l $D/$afile | $awk '{print $5}'`
+        if ($t1_len <= $t2_len) continue
+      endif
+      set f2do = ($f2do $afile)
+      if ($debug) echo " afile = $afile, f2do after check -- line 709 is "$f2do
+      set mesg = "Copying $afile to $D"
+      if ($notquiet) echo $mesg
+      echo $mesg >> $mbufr
+#   Copy new file
+      $cp $afile $D/. 
+      @ result = $status
+      if ($result == 0) then
+        set mesg = "   Copied file from $S/$afile to $D/$afile"
+        if ($notquiet) echo $mesg
+        echo $mesg >> $mbufr
+      else
+        set mesg = "   File copy failed from $S/$afile to $D/$afile"
+        if ($notquiet) echo $mesg
+        echo $mesg >> $mbufr
+        $df $D >> $mbufr
+###############    need to add code here to analyze copy failure
+###############     disk full??
+      endif
+    end
+  endif
+end
+#
+#   Finished copying raw data files
+popd >& /dev/null
+$umount $S >& /dev/null
+@ result = $status
+if ($result == 0) then
+  set mesg = "  Removable drive (file path $S) unmounted."
+  if ($notquiet) then
+    echo $mesg
+    echo ""
+  endif
+  echo $mesg >> $mbufr
+else
+  set mesg = "   Could not unmount removable drive (file path $S)."
+  if ($notquiet) then
+    echo $mesg
+  endif
+  echo $mesg >> $mbufr
+  set mesg = "    umount return status = $result"
+  if ($notquiet) then
+    echo $mesg
+    echo ""
+  endif
+  echo $mesg >> $mbufr
+endif
+set mesg = "   New local raw-data file-copy job completed on "`date`
+if ($notquiet) then
+  echo $mesg
+  echo ""
+endif
+echo $mesg >> $mbufr
+#
+#  Give the user disk-removal instructions
+if (! -e $projdir/Instructions_2) then
+#   Simple default "remove" message
+  echo ""
+  echo ""
+  echo "  Remove the removable disk drive from its chassis slot."
+  echo "  ${0} script will now proceed to do its work automatically."
+  echo ""
+  echo ""
+else
+  cat $projdir/Instructions_2
+endif
+#
+#  Check email addressee(s), if any
+if ($?e_names) then
+  if ($e_names != "none") then
+    set mok = "yes"   ###############  <-- Note:  address validity not checked
+  endif
+  if ($debug) then
+    echo '   $#e_names = '$#e_names
+    echo "   e_names = $e_names"
+    echo "   mok = $mok"
+  endif
+else
+  if ($debug) then
+    echo "   Did not get email addressee list from config file $conf_f"
+    echo "   Log file will not be sent"
+  endif
+endif
+#
+#  Check to see if I have any files to process
+@ nf2do = `echo $f2do | wc -m`
+if ($nf2do > 0) @ nf2do = $#f2do
+if ($nf2do < 1) then
+  set mesg = "   ${0} script found no new files on the removable drive."
+  set f2do = (`echo $mbufr | sed -e "s:$D/::"` "dummy")
+  @ exitnum = 0
+  goto done
+endif
+#
+if ($debug) then
+  echo "$nf2do files to process after copying"
+  echo "File(s):  $f2do"
+  echo ""
+endif
+#
+#  Get the job list (file names in the .../Production/gndproc directory)
+pushd $projdir >& /dev/null
+$ls *_*_* >& /dev/null
+if ($status == 0) then
+  set jobs = (`$ls *_*_*`)
+else
+  set mesg = "  No job files found in $projdir."
+  if ($notquiet) echo $mesg
+  echo $mesg >> $mbufr
+  set mesg = "   ${0} script found no jobs to process."
+  set exitnum = 3
+  goto done
+endif
+popd >& /dev/null
+#
+if ($debug) echo "  $#jobs job(s) = $jobs"
+#
+#  Keep only recognized job types
+set ujobs
+foreach job ($jobs)
+  @ notfound = 1
+  foreach job_type ($job_types)
+    if (`echo $job | grep -c $job_type` > 0) then
+#   Compose unordered job list
+      set ujobs = ($ujobs $job)
+      @ notfound = 0
+      break
+    endif
+  end
+  if ($notfound) then
+    set mesg = "  Unrecognized job type.  Skipping job: $job."
+    if ($notquiet) echo $mesg
+    echo $mesg >> $mbufr
+  endif
+end
+#
+if ($debug) echo "   Unordered job list: $ujobs"
+#
+#  Make sure jobs get done in the right order
+#   (The order is actually set in the configuration file.)
+#    process jobs
+#      1) nimbus
+#      2) n2asc
+#    transfer jobs
+#      3) copy
+#
+#  Sort the job list according to the above criterion
+set jobs
+foreach job_type ($job_types)
+  foreach job ($ujobs)
+    if (`echo $job | grep -c $job_type` > 0) then
+      set jobs = ($jobs $job)
+    endif
+  end
+end
+#
+#
+if ($debug) echo "   Ordered job list: $jobs"
+#
+cd $D
+#
+#
+#  Process the job list
+#
+foreach job ($jobs)
+#
+#   Log job start to log file
+  set mesg = "  Starting job $job @ `date`."
+  if ($notquiet) echo $mesg
+  echo $mesg >> $mbufr
+#
+#   Parse job string
+  set parse = (`echo $job | $awk -F_ '{print $1} {print $2} {print $3}'`)
+  if ($#parse != 3) then
+    set mesg = "  Cannot decode job.  Skipping job: $job."
+    if ($notquiet) echo $mesg
+    echo $mesg >> $mbufr
+    continue
+  endif
+#    Set job type
+  set j_type = $parse[1]
+#    Set job source-file type
+  set f_type = $parse[2]
+#    Set job user name
+  set user = $parse[3]
+#
+  if ($debug) then
+    echo "  j_type = $j_type"
+    echo "  f_type = $f_type"
+    echo "  user = $user"
+  endif
+#
+#   Check source-file type
+  switch ($f_type)
+    case ads
+      breaksw
+    case 2d
+      breaksw
+    case mcr
+      breaksw
+    case rdma
+      breaksw
+    case cdf
+      breaksw
+    case asc
+      breaksw
+    default
+#    Unrecognized file type
+      set mesg = "  Unrecognized source-file type.  Skipping job: $job."
+      if ($notquiet) echo $mesg
+      echo $mesg >> $mbufr
+      continue
+  endsw
+#
+#   (No need to check user)
+#
+  if ($debug) then
+    echo "  Job $job passed initial tests."
+    echo ""
+  endif
+#
+#   Do the job
+  foreach afile ($f2do)
+#
+#    Parse source file name for later, e.g., 301rf03a.ads --> (301rf03a ads)
+    set pf = (`echo $afile | $awk -F. '{print $1} {print $2}'`)
+#
+#    Job types recognized as of 27 Jul 2002:  nimbus, n2asc, copy
+#    (The type list is actually set in the configuration file.)
+    switch ($j_type)
+#
+#
+#    +---------------------------------------------------+
+#    |  nimbus -- Process raw data; produce netCDF file  |
+#    +---------------------------------------------------+
+#
+      case nimbus
+#
+#     Check for a raw ADS file
+        switch ($f_type)
+          case ads
+            if ($pf[2] != $rads) then
+              if ($debug) then
+                echo "   File $afile type ($pf[2]) not $rads;  skipping."
+              endif
+              continue
+            endif
+            breaksw
+          default
+            continue
+            breaksw
+        endsw
+#
+#     Have I run nimbus yet?
+        if ($nimbus_run == "no") then
+          set nof = $pf[1]
+          if ($debug) then
+            echo "  nimbus not yet run."
+            echo "" 
+          endif
+          set skipjob = "no"
+          set nimbus_run = "yes"
+        else
+          if ($debug) then
+            echo "  nimbus has run at least once."
+          endif
+#
+#     Check for segmented ADS files after the first pass
+#
+#     Assumption:  the "ls" command lists files in the correct order
+          set of1 = `echo $nof | sed -e "s/\(.......\)./\1/"`
+          set of2 = `echo $nof | sed -e "s/.......\(.\)/\1/"`
+#
+#     Save file name for next pass
+          set nof = $pf[1]
+          set nf1 = `echo $pf[1] | sed -e "s/\(.......\)./\1/"`
+#
+#     Is new file from the same flight
+          if ($of1 == $nf1) then
+            if ($debug) then
+              echo "  Source file for this job is from same flight."
+            endif
+#
+#     Yes; is it the next flight segment?
+            set nf2 = `echo $pf[1] | sed -e "s/.......\(.\)/\1/"`
+            @ i = 2
+            while ($i <= $#ltrs)
+#
+#     Find "new" segment letter
+              if ($nf2 == $ltrs[$i]) then
+#
+#     Is it consecutive?
+                @ j = $i - 1
+                if ($of2 == $ltrs[$j]) then
+                  @ i =  $#ltrs
+                  if ($debug) then
+                    echo "  Source file is consecutive; skipping nimbus job."
+                    echo "" 
+                  endif
+#      Yes; skip processing
+                  set skipjob = "yes"
+                else
+                  set skipjob = "no"
+                  if ($debug) then
+                    echo "  Source file is not consecutive; running nimbus."
+                    echo "" 
+                  endif
+                endif
+              endif
+              @ i ++
+            end
+          else
+            if ($debug) then
+              echo  "file is from different flight."
+            endif
+            set skipjob = "no"
+          endif
+        endif
+        if ($skipjob == "yes") then
+          breaksw
+        endif
+#
+#
+#     Do the processing
+#
+#      Get list of settings from job file
+        set c_name = "nimbus_set"
+        set $c_name = ""
+        set input = `grep "^$c_name *=" $projdir/$job`
+        @ result = $status
+        if ($result == 0) then
+          set temp = `echo $input | awk -F= '{print $2}'`
+          if ($#temp > 0) then
+            set $c_name = ($temp)
+            if ($debug) echo "  Got setting for ${c_name}:  $temp"
+          else
+            set mesg = "   $ns_msg1 $c_name missing from file $job"
+            if ($notquiet) echo $mesg
+            echo $mesg >> $mbufr
+            set mesg = '   Skipping to next job.'
+            if ($notquiet) echo $mesg
+            echo $mesg >> $mbufr
+            break
+          endif
+        else
+          set mesg = "   $ns_msg3 $c_name in file $job"
+          if ($notquiet) echo $mesg
+          echo $mesg >> $mbufr
+          set mesg = '   Skipping to next job.'
+          if ($notquiet) echo $mesg
+          echo $mesg >> $mbufr
+          break
+        endif
+#
+        if ($debug) echo "  $#nimbus_set nimbus_set = $nimbus_set"
+#
+#      Set optional settings to default values
+        set nimbus_sf = ""
+        @ pr = 1
+        set nimbus_p = "nimbus"
+        set next = "nc"
+#
+#      Get the settings for this job
+        set gotem = "yes"
+        foreach c_name ($nimbus_set)
+          set input = `grep "^$c_name *=" $projdir/$job`
+          @ result = $status
+          if ($result == 0) then 
+            set temp = `echo $input | awk -F= '{print $2}'`
+            if ($#temp > 0) then
+              set $c_name = ($temp)
+              if ($debug) echo "  Got setting for ${c_name}:  $temp"
+            else
+              set mesg = "   $ns_msg1 $c_name missing from file $job"
+              if ($notquiet) echo $mesg
+              echo $mesg >> $mbufr
+              set gotem = "no"
+            endif
+          else
+            set mesg = "   $ns_msg3 $c_name in file $job"
+            if ($notquiet) echo $mesg
+            echo $mesg >> $mbufr
+            set gotem = "no"
+          endif
+        end
+#
+#      Check for all settings
+        if ($gotem == "no") then
+          set mesg = "   Skipping to next job."
+          if ($notquiet) echo $mesg
+          echo $mesg >> $mbufr
+          break
+        endif
+#
+#      Create nimbus batch file
+        if ($?fmod) then
+          set bfile = "${pf[1]}_$fmod.batch"
+          set ofile = "${pf[1]}_$fmod.$next"
+        else
+          set bfile = "${pf[1]}.batch"
+          set ofile = "${pf[1]}.$next"
+        endif
+        set mesg = "   Creating nimbus batch file $bfile"
+        if ($notquiet) echo $mesg
+        echo $mesg >> $mbufr
+        echo "pr=$pr" >! $bfile
+        @ result = $status
+        if ($result == 0) then
+          echo "if=$D/$afile" >> $bfile
+          echo "of=$D/$ofile" >> $bfile
+          if ($nimbus_sf != "") then
+            echo "sf=$nimbus_sf" >> $bfile
+          endif
+          if ($debug) then
+            echo "  Batch file follows"
+            cat $bfile
+            echo "  End of batch file"
+          endif
+#      Run nimbus with batch file
+          set mesg = "   Running nimbus for $user with command: $nimbus_p -b $bfile"
+          if ($notquiet) echo $mesg
+          echo $mesg >> $mbufr
+          if ($debug) then
+            $nimbus_p -b $bfile
+          else
+            $nimbus_p -b $bfile >& /dev/null
+          endif
+          @ result = $status
+          if ($result == 0) then
+            set mesg = "   Nimbus completed successfully and created file $ofile for $user"
+            if ($notquiet) echo $mesg
+            echo $mesg >> $mbufr
+          else
+            set mesg = "   Error $result running nimbus in batch mode on $afile for $user."
+            if ($notquiet) echo $mesg
+            echo $mesg >> $mbufr
+#      Make sure nimbus is run on the next file (if it's a segmented data set)
+            set nimbus_run = "no"
+            if ($debug) then
+              echo "  Resetting so nimbus WILL process the next file."
+              echo "" 
+            endif
+          endif
+          $rm $bfile >& /dev/null
+        else
+          set mesg = "   Could not create nimbus batch file $bfile for $user"
+          if ($notquiet) echo $mesg
+          echo $mesg >> $mbufr
+          set mesg = "   Skipping to next job."
+          if ($notquiet) echo $mesg
+          echo $mesg >> $mbufr
+        endif
+#
+#     Job finished
+        if ($?fmod) unset fmod
+        breaksw
+#
+#
+#    +----------------------------------------------------+
+#    |  n2asc -- Create ASCII data file from netCDF file  |
+#    +----------------------------------------------------+
+#
+      case n2asc
+#
+#     Get list of settings from job file
+        set c_name = "n2asc_set"
+        set $c_name = ""
+        set input = `grep "^$c_name *=" $projdir/$job`
+        @ result = $status
+        if ($result == 0) then
+          set temp = `echo $input | awk -F= '{print $2}'`
+          if ($#temp > 0) then
+            set $c_name = ($temp)
+            if ($debug) echo "  Got setting for ${c_name}:  $temp"
+          else
+            set mesg = "   $ns_msg1 $c_name missing from file $job"
+            if ($notquiet) echo $mesg
+            echo $mesg >> $mbufr
+            set mesg = '   Skipping to next job.'
+            if ($notquiet) echo $mesg
+            echo $mesg >> $mbufr
+            break
+          endif
+        else
+          set mesg = "   $ns_msg3 $c_name in file $job"
+          if ($notquiet) echo $mesg
+          echo $mesg >> $mbufr
+          set mesg = '   Skipping to next job.'
+          if ($notquiet) echo $mesg
+          echo $mesg >> $mbufr
+          break
+        endif
+#
+        if ($debug) echo "  $#n2asc_set n2asc_set = $n2asc_set"
+#
+#     Set optional settings to default values
+        set n2asc_p = "n2asc"
+        set varlist = ""
+        set nasa = "no"
+#
+#     Get the settings for this job
+        set gotem = "yes"
+        foreach c_name ($n2asc_set)
+          set input = `grep "^$c_name *=" $projdir/$job`
+          @ result = $status
+          if ($result == 0) then 
+            set temp = `echo $input | awk -F= '{print $2}'`
+            if ($#temp > 0) then
+              set $c_name = ($temp)
+              if ($debug) echo "  Got setting for ${c_name}:  $temp"
+            else
+              set mesg = "   $ns_msg1 $c_name missing from file $job"
+              if ($notquiet) echo $mesg
+              echo $mesg >> $mbufr
+              set gotem = "no"
+            endif
+          else
+            set mesg = "   $ns_msg3 $c_name in file $job"
+            if ($notquiet) echo $mesg
+            echo $mesg >> $mbufr
+            set gotem = "no"
+          endif
+        end
+#
+#     Check for all settings
+        if ($gotem == "no") then
+          set mesg = "   Skipping to next job."
+          if ($notquiet) echo $mesg
+          echo $mesg >> $mbufr
+          break
+        endif
+#
+#     I key off the ADS file name to avoid duplicating this job
+        if ($pf[2] != $rads) continue
+#
+#     Create n2asc processing-file names (netCDF, batch, ASCII)
+        if ($?fmod) then
+#       With user file-name modifier
+          set ifile = "${pf[1]}_$fmod.$next"
+          set bfile = "${pf[1]}_$fmod.batch"
+          set ofile = "${pf[1]}_$fmod.$aext"
+        else
+#       Without user file-name modifier
+          set ifile = "${pf[1]}.$next"
+          set bfile = "${pf[1]}.batch"
+          set ofile = "${pf[1]}.$aext"
+        endif
+#
+#     Check for netCDF file
+        $ls $ifile >& /dev/null
+        @ result = $status
+        if ($result != 0) then
+          set mesg = "   netCDF file ($ifile) not found.  Cannot run n2asc for $user."
+          if ($notquiet) echo $mesg
+          echo $mesg >> $mbufr
+          set mesg = "   Skipping to next job."
+          if ($notquiet) echo $mesg
+          echo $mesg >> $mbufr
+          if ($?fmod) unset fmod
+          breaksw
+        endif
+#
+#     Create n2asc batch file
+        set mesg = "   Creating n2asc batch file $bfile"
+        if ($notquiet) echo $mesg
+        echo $mesg >> $mbufr
+        echo "if=$D/$ifile" >! $bfile
+        @ result = $status
+        if ($result == 0) then
+          echo "of=$D/$ofile" >> $bfile
+#      Check for variable list
+          if (`echo $varlist | $wc -m` > 0) then
+            foreach var ($varlist)
+              echo "var=$var" >> $bfile
+            end
+          endif
+        endif
+        if ($debug) then
+          echo "  Batch file follows"
+          cat $bfile
+          echo "  End of batch file"
+        endif
+#
+#     Compose command-line options
+#      NASA output format
+        if ($?nasa) then
+          if ($nasa == "yes") then
+            set dasha = "-a"
+          else
+            set dasha = ""
+          endif
+        else
+          set dasha = ""
+        endif
+#      Number format (default is %10.3f)
+        if ($?format) then
+          set dashf = "-f $format"
+        else
+          set dashf = ""
+        endif
+#
+#     Run n2asc with batch file
+          set mesg = "   Running n2asc for $user with command: $n2asc_p $dasha $dashf -b $bfile"
+          if ($notquiet) echo $mesg
+          echo $mesg >> $mbufr
+          $n2asc_p $dasha $dashf -b $bfile >& /dev/null
+          @ result = $status
+          if ($result == 0) then
+            set mesg = "   n2asc completed successfully and created file $ofile for $user"
+          else
+            set mesg = "   Error $result running n2asc in batch mode on $ifile for $user."
+          endif
+          if ($notquiet) echo $mesg
+          echo $mesg >> $mbufr
+          $rm $bfile >& /dev/null
+        else
+          set mesg = "   Could not create n2asc batch file $bfile for $user."
+          if ($notquiet) echo $mesg
+          echo $mesg >> $mbufr
+          set mesg = "   Skipping to next job."
+          if ($notquiet) echo $mesg
+          echo $mesg >> $mbufr
+        endif
+#
+#     Job finished
+        if ($?fmod) unset fmod
+        breaksw
+#
+#
+#    +---------------+
+#    |  Copy a File  |
+#    +---------------+
+#
+      case copy
+#
+        @ raw = 1
+###############          It would be nice if I didn't have to hard-wire these.
+#     Is the job for this file type?
+        switch ($f_type)
+          case ads
+            if ($pf[2] != $rads) continue
+            breaksw
+          case 2d
+            if ($pf[2] != $r2d) continue
+            breaksw
+          case mcr
+#      This is a special case because of the unique extent-naming convention.
+            set noglob
+            if (`echo $rmcr | grep -c ?` == 1) then
+              set t1 = `echo $rmcr | $sed -e "s/?//"`
+              if (`echo $pf[2] | $grep -c $t1` != 1) then
+                unset noglob
+                continue
+              endif
+            else if (`echo $rmcr | grep -c *` == 1) then
+              set t1 = `echo $rmcr | $sed -e "s/*//"`
+              if (`echo $pf[2] | $grep -c $t1` != 1) then
+                unset noglob
+                continue
+              endif
+              unset noglob
+              if ($pf[2] != $rmcr) continue
+            else
+              unset noglob
+            endif
+            breaksw
+          case rdma
+            @ raw = 0
+            if ($pf[2] != $rrdma) continue
+            breaksw
+          case cdf
+          case asc
+            @ raw = 0
+            if ($pf[2] != $rads) continue
+            breaksw
+        endsw
+#
+#     Get list of settings from job file
+        set c_name = "copy_set"
+        set $c_name = ""
+        set input = `grep "^$c_name *=" $projdir/$job`
+        @ result = $status
+        if ($result == 0) then
+          set temp = `echo $input | awk -F= '{print $2}'`
+          if ($#temp > 0) then
+            set $c_name = ($temp)
+            if ($debug) echo "  Got setting for ${c_name}:  $temp"
+          else
+            set mesg = "   $ns_msg1 $c_name missing from file $job"
+            if ($notquiet) echo $mesg
+            echo $mesg >> $mbufr
+            set mesg = '   Skipping to next job.'
+            if ($notquiet) echo $mesg
+            echo $mesg >> $mbufr
+            break
+          endif
+        else
+          set mesg = "   $ns_msg3 $c_name in file $job"
+          if ($notquiet) echo $mesg
+          echo $mesg >> $mbufr
+          set mesg = '   Skipping to next job.'
+          if ($notquiet) echo $mesg
+          echo $mesg >> $mbufr
+          break
+        endif
+#
+        if ($debug) echo "  $#copy_set copy_set = $copy_set"
+#
+#     Set optional settings to default values
+        set zip = "no"
+#
+#     Get the settings for this job
+        set gotem = "yes"
+        foreach c_name ($copy_set)
+          set input = `grep "^$c_name *=" $projdir/$job`
+          @ result = $status
+          if ($result == 0) then 
+            set temp = `echo $input | awk -F= '{print $2}'`
+            if ($#temp > 0) then
+              set $c_name = ($temp)
+              if ($debug) echo "  Got setting for ${c_name}:  $temp"
+            else
+              set mesg = "   $ns_msg1 $c_name missing from file $job"
+              if ($notquiet) echo $mesg
+              echo $mesg >> $mbufr
+              set gotem = "no"
+            endif
+          else
+            set mesg = "   $ns_msg3 $c_name in file $job"
+            if ($notquiet) echo $mesg
+            echo $mesg >> $mbufr
+            set gotem = "no"
+          endif
+        end
+#
+#      Check for all settings
+        if ($gotem == "no") then
+          set mesg = "   Skipping to next job."
+          if ($notquiet) echo $mesg
+          echo $mesg >> $mbufr
+          break
+        endif
+#
+#     (For processed files, $pf is the corresponding ADS file.)
+#
+#     Does special file-name modifier match (raw files don't count)?
+        if ($raw) then
+          set cfile = $afile
+        else if ($f_type == "cdf") then
+          if ($?fmod) then
+            set cfile = `$ls ${pf[1]}_$fmod.$next` >& /dev/null
+            @ result = $status
+            if ($result != 0) then
+              set mesg = "   Cannot find file ${pf[1]}_$fmod.$next for $user.  Skipping to next job."
+              if ($notquiet) echo $mesg
+              echo $mesg >> $mbufr
+              continue
+            endif
+          else
+            set cfile = `$ls ${pf[1]}.$next`
+            @ result = $status
+            if ($result != 0) then
+              set mesg = "   Cannot find file ${pf[1]}.$next for $user.  Skipping to next job."
+              if ($notquiet) echo $mesg
+              echo $mesg >> $mbufr
+              continue
+            endif
+          endif
+        else if ($f_type == "asc") then
+          if ($?fmod) then
+            set cfile = `$ls ${pf[1]}_$fmod.$aext`
+            @ result = $status
+            if ($result != 0) then
+              set mesg = "   Cannot find file ${pf[1]}_$fmod.$aext for $user.  Skipping to next job."
+              if ($notquiet) echo $mesg
+              echo $mesg >> $mbufr
+              continue
+            endif
+          else
+            set cfile = `$ls ${pf[1]}.$aext`
+            @ result = $status
+            if ($result != 0) then
+              set mesg = "   Cannot find file ${pf[1]}.$aext for $user.  Skipping to next job."
+              if ($notquiet) echo $mesg
+              echo $mesg >> $mbufr
+              continue
+            endif
+          endif
+        else
+#     I should never get here
+          set mesg = "  ${0} -- bug in program -- line 1499"
+          echo $mesg
+          echo $mesg >> $mbufr
+          continue
+        endif
+#
+#     Make sure I got the type of copy from the job file
+        if ($?copy_type) then
+#
+#     Gzip the file, if needed
+          set ext = ""
+          if ($zip == "yes") then
+            if ($debug) echo "   gzipping $D/$cfile"
+            $gzip $cfile
+            @ result = $status
+            if ($result == 0) then
+              set ext = ".$gext"
+              if ($debug) echo "   gzipped $D/$cfile"
+            else
+              set mesg = "   Gzip failed on file $cfile with error $result"
+              if ($notquiet) echo $mesg
+              echo $mesg >> $mbufr
+            endif
+          endif
+          switch ($copy_type)
+#
+#           +-------------------------------------------+
+#           |  ldm -- Copy File Using Unidata's LDM     |
+#           +-------------------------------------------+
+            case ldm
+#     Copy file to destination
+              set mesg = "   Beginning $copy_type $D/$cfile$ext to $user"
+              if ($notquiet) echo $mesg
+              echo $mesg >> $mbufr
+              if ($debug) echo "   $copy_p $D/$cfile$ext"
+              $copy_p $D/$cfile$ext >& /dev/null
+              @ result = $status
+              breaksw
+#
+#           +-------------------------------------------+
+#           |  scp -- Copy File Using Secure File Copy  |
+#           +-------------------------------------------+
+            case scp
+#     Copy file to destination
+              set mesg = "   Beginning $copy_type $D/$cfile$ext to $user"
+              if ($notquiet) echo $mesg
+              echo $mesg >> $mbufr
+              if ($debug) echo "   $copy_p $D/$cfile$ext ${login}@${dest}:$ddp/$cfile$ext"
+              $copy_p $D/$cfile$ext ${login}@${dest}:$ddp/$cfile$ext >& /dev/null
+              @ result = $status
+              breaksw
+#
+#           +-------------------------------------------------+
+#           |  ftp -- Copy File Using File Transfer Protocol  |
+#           +-------------------------------------------------+
+            case ftp
+#     Copy file to destination
+              set mesg = "   Beginning $copy_type $D/$cfile$ext to $user"
+              if ($notquiet) echo $mesg
+              echo $mesg >> $mbufr
+#     Compose ftp command file
+              if ($?fmod) then
+                set bfile = "${pf[1]}_$fmod.ftp"
+              else
+                set bfile = "${pf[1]}.ftp"
+              endif
+              set mesg = "   Creating ftp command file $bfile"
+              if ($notquiet) echo $mesg
+              echo $mesg >> $mbufr
+              echo "#! /bin/csh -f" >! $bfile
+              @ result = $status
+              if ($result == 0) then
+                echo "$copy_p $dest << TextEnd" >> $bfile
+                echo "  user $login" >> $bfile
+                echo "  bi" >> $bfile
+                echo "  cd $ddp" >> $bfile
+                echo "  put $D/$cfile$ext" >> $bfile
+                echo "  quit" >> $bfile
+                echo "TextEnd" >> $bfile
+                echo "exit" >> $bfile
+              else
+                set mesg = "   Problem creating ftp command file $bfile"
+                if ($notquiet) echo $mesg
+                echo $mesg >> $mbufr
+                breaksw
+              endif
+              if ($debug) then
+                echo "  ftp command file follows"
+                cat $bfile
+                echo "  End of command file"
+              endif
+              if ($debug) echo "   source $bfile"
+#     Execute the ftp command file
+              source $bfile >& /dev/null
+              @ result = $status
+              breaksw
+#
+#           +---------------------------------------------------------+
+#           |  sftp -- Copy File Using Secure File Transfer Protocol  |
+#           +---------------------------------------------------------+
+            case sftp
+              set mesg = "  This copy type ($copy_type) isn't ready yet."
+              if ($notquiet) echo $mesg
+              echo $mesg >> $mbufr
+              breaksw
+          endsw
+#
+          if ($result == 0) then
+            set mesg = "   Copied file $cfile$ext to $user via $copy_type"
+          else
+            set mesg = "   $copy_type failed on file $cfile$ext with error $result."
+          endif
+          if ($notquiet) echo $mesg
+          echo $mesg >> $mbufr
+#     Gunzip the file, if zipped
+          if ($ext == ".$gext") then
+            $gunzip $cfile$ext
+            @ result = $status
+            if ($result == 0) then
+              set ext = ""
+              if ($debug) echo "   Gunzipped file $cfile$ext"
+            else
+              set mesg = "   Could not gunzip file $cfile$ext"
+              if ($notquiet) echo $mesg
+              echo $mesg >> $mbufr
+            endif
+          endif
+        else
+          set mesg = "   Did not get needed information from job file $afile; skipping job"
+          echo $mesg >> $mbufr
+        endif
+#
+#     Job finished
+        if ($?fmod) unset fmod
+        breaksw
+#
+#
+#    +----------+
+#    |  Oops !  |
+#    +----------+
+#
+      default
+        set mesg = "  Unrecognized job type: $j_type"
+        if ($notquiet) echo $mesg
+        echo $mesg >> $mbufr
+        breaksw
+    endsw
+#
+###############                  Make rudimentary project metadata entries ??
+#
+  end
+#
+end
+#
+#  Finished
+set mesg = "   Finished processing all jobs"
+@ exitnum = 0
+goto done
+#
+drive_err:
+set mesg = "   ${0} script quit with a drive-mount error."
+@ exitnum = 4
+#
+done:
+echo ""
+echo $mesg
+echo $mesg >> $mbufr
+echo ""
+#
+#   Compose "real" name for log file
+set ldmlogname = `echo $f2do[1] | $sed -e "s/\..*//"`.$lext
+set logname = $D/$ldmlogname
+if ($debug) echo "  Logfile name is $logname"
+if (-e $logname) then
+#    Add separator to logfile to separate runs
+  if (-w $logname) then
+    echo $mseparator >> $logname
+#    Append new log file to "real" name
+    @ result = $status
+    if ($result == 0) then
+      echo $mbegan >> $logname
+      cat $mbufr >> $logname
+      $rm $mbufr >& /dev/null
+    else
+      set mesg = "   Could not add this log file ($mbufr) to extant one ($logname)"
+      if ($notquiet) echo $mesg
+      echo $mesg >> $mbufr
+      set mesg = "   $mbufr will remain in $D."
+      if ($notquiet) echo $mesg
+      echo $mesg >> $mbufr
+      set logname = $mbufr
+    endif
+  endif
+else
+  echo $mbegin >! $logname
+  @ result = $status
+#   Copy new log file to "real" name
+  if ($result == 0) then
+    cat $mbufr >> $logname
+    $rm $mbufr >& /dev/null
+  else
+    set mesg = "   Could not copy this log file from ($mbufr) to ($logname)"
+    if ($notquiet) echo $mesg
+    echo $mesg >> $mbufr
+    set mesg = "   $mbufr will remain in $D."
+    if ($notquiet) echo $mesg
+    echo $mesg >> $mbufr
+    set logname = $mbufr
+  endif
+endif
+#
+set mesg = "   Log file for this job is $logname"
+echo $mesg
+echo $mesg >> $logname
+set mesg = "   ${0} script completed @ `date`"
+echo $mesg
+echo $mesg >> $logname
+#
+#   Send logfile, if requested
+if ($mok == "yes") then
+  if (debug) then
+    echo "  e_names = $e_names"
+  endif
+  if ($e_names == "via_ldm") then
+#    Send logfile via "ldm" ("ldm" handles the recipient list.)
+    if ($debug) then
+      echo "   logname = $logname"
+      echo '   ls $logname: '"`ls $logname`"
+      echo "   ldmlogname = $ldmlogname"
+      echo '   ls $ldmlogname: '"`ls $ldmlogname`"
+      echo "   send logfile command:  $mp $D/$ldmlogname"
+    endif
+    $mp $D/$ldmlogname     # Since "rsh" is used, need full path name to file
+  else 
+#    Send logfile as email message to recipients in the e_names list
+    $mp -s "${0} job completed" $e_names < $logname
+  endif
+  set mok = "no"
+endif
+#
+cleanup:
+if (! -e $msg_f) then
+#    Do nothing  (eliminates error message if this test's logic is reversed)
+  echo "" >& /dev/null
+else
+  cat $msg_f
+  \rm $msg_f
+endif
+#
+if ($?bfile) then
+  if (! -e $bfile) then
+#    Do nothing  (eliminates error message if this test's logic is reversed)
+    echo "" >& /dev/null
+  else
+    \rm $bfile >& /dev/null
+  endif
+endif
+if (! -e $mbufr) then
+#    Do nothing  (eliminates error message if this test's logic is reversed)
+  echo "" >& /dev/null
+else
+  cat $mbufr
+  \rm $mbufr >& /dev/null
+endif
+#
+exit $exitnum
+#------------   Script exits above this line   ------------
+#----------------------------------------------------------
+#
+nostart:
+echo ""
+echo "   Make sure the configuration file exists and is set up for this project"
+echo "    before running this script.  (See gndproc.doc file for instructions.)"
+echo "" 
+echo "   Usage:"
+echo "     ${0} <project_number> [configuration file name] [-v] [-d]"
+echo "              or"
+echo "     setenv GNDPROC_CONF <configuration file name>"
+echo "     ${0} <project_number> [-v] [-d]"
+echo "       where:"
+echo "         <project_number> -- valid 3-digit project number"
+echo "                       -v -- set verbose output of script's progress"
+echo "                       -d -- set debug mode"
+nostart2:
+echo ""
+echo "   Quitting."
+goto cleanup
+#
+abort:
+onintr -
+if (! -e $mbufr) then
+  echo "  Job aborted by user, no logfile available."
+else
+  set mesg = "  Job aborted by user."
+  echo $mesg >> $mbufr
+endif
+@ exitnum = 1
+if ($mok == "yes") goto done
+goto cleanup

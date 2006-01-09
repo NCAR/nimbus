@@ -1,0 +1,31 @@
+#      Get the settings for this job
+        set gotem = "yes"
+        foreach c_name ($nimbus_set)
+          set input = `grep "^$c_name *=" $projdir/$job`
+          @ result = $status
+          if ($result == 0) then 
+            set temp = `echo $input | awk -F= '{print $2}'`
+            if ($#temp > 0) then
+              set $c_name = ($temp)
+              if ($debug) echo "  Got setting for ${c_name}:  $temp"
+            else
+              set mesg = "   $ns_msg1 $c_name missing from file $job"
+              if ($notquiet) echo $mesg
+              echo $mesg >> $mbufr
+              set gotem = "no"
+            endif
+          else
+            set mesg = "   $ns_msg3 $c_name in file $job"
+            if ($notquiet) echo $mesg
+            echo $mesg >> $mbufr
+            set gotem = "no"
+          endif
+        end
+#
+#      Check for all settings
+        if ($gotem == "no") then
+          set mesg = "   Skipping to next job."
+          if ($notquiet) echo $mesg
+          echo $mesg >> $mbufr
+          break
+        endif

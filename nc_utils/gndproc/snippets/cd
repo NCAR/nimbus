@@ -1,0 +1,26 @@
+foreach c_name ($c_vars)
+  set input = `grep "^$c_name *=" $conf_f`
+  @ result = $status
+  if ($result == 0) then
+    set temp = `echo $input | awk -F= '{print $2}'`
+    if ($#temp > 0) then
+      set $c_name = ($temp)
+      if ($c_name == "debug") then
+#   Command line option overrides configuration file debug setting
+        if ($?dbg) then
+          set debug = "yes"
+          echo "  Debug setting (below) has been overridden by command-line option."
+        endif
+      endif
+      if ($?debug) then
+        if ($debug == "yes") echo "  Got setting for ${c_name}:  $temp"
+      endif
+    else
+      echo '   '$ns_msg1' "'$c_name'" '$ns_msg2 >> $msg_f
+      set OK_flag = "no"
+    endif
+  else
+    echo '   '$ns_msg3' "'$c_name'" '$ns_msg4 >> $msg_f
+    set OK_flag = "no"
+  endif
+end

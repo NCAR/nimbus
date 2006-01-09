@@ -1,0 +1,22 @@
+set c_name = "job_types"
+set $c_name = ""
+set input = `grep "^$c_name *=" $conf_f`
+@ result = $status
+if ($result == 0) then
+  set temp = `echo $input | awk -F= '{print $2}'`
+  if ($#temp > 0) then
+    set $c_name = ($temp)
+    if ($debug) echo "  Got setting for ${c_name}:  $temp"
+  else
+    echo '   '$ns_msg1' "'$c_name'" '$ns_msg2 >> $msg_f
+    set OK_flag = "no"
+  endif
+else
+  echo '   '$ns_msg3' "'$c_name'" '$ns_msg4 >> $msg_f
+  set OK_flag = "no"
+endif
+#
+if ($debug) then
+  echo "  $#job_types job_types = $job_types"
+  echo "  OK_flag = $OK_flag"
+endif

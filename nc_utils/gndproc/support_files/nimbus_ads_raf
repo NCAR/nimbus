@@ -1,0 +1,39 @@
+#
+#  gndproc job file
+#  name:  nimbus_ads_raf
+#    run "nimbus" using raw ADS data to produce the standard RAF netCDF file
+#
+#  Note:  Comment lines start with #
+#
+#  What is set (Edit this line to add/delete settings.)
+#nimbus_set = nimbus_p nimbus_sf pr fmod
+nimbus_set = nimbus_p nimbus_sf pr
+#
+#  Settings
+#   nimbus program
+#    Production version
+nimbus_p = nimbus
+#nimbus_p = /jnet/linux/bin/nimbus
+#    Development version
+#nimbus_p = /usr/local/dev/nimbus/src/filter/nimbus
+#
+#   nimbus setup file to use for processing
+nimbus_sf = /usr/local/proj/301/Production/setup.301
+#nimbus_sf = $PROJ_DIR/301/Production/setup.301     <-- cannot use environment
+#
+#   nimbus processing rate
+pr = 1
+#
+#  nimbus output file name modifier for user:  RAF
+#    file name will be of the form pppxfnns_fmod.next
+#     where:   ppp = 3-digit project number
+#                x = f (ferry), r (research), t(test)
+#                f = <f character>
+#               nn = 2-digit flight number
+#                s = possible segment letter (may not be present)
+#                _ = <underscore character>
+#             fmod = file name modifier       <-- (set below, if enabled above)
+#                . = <period character>
+#             next = netCDF extension (nc)
+fmod = raf
+#

@@ -1,0 +1,30 @@
+A number of places in the "gndproc" script have code that is virtually
+duplicated.  Rather than have the code repeated, it may make sense to convert
+these sections to "subroutines" and have the code exist in only one place
+within the script.  A setup line (or lines) followed by a "goto $sub" would
+execute the "subroutine," and its "return" at the end would be a "goto
+$return" where both of these varibles would be loaded with approprate labels.
+
+like snippets:
+*  gh ij      <-- very similar, easily resolvable (lines 2 - 18)
+*  op st wx   <-- virtually alike
+*  mn qr uv   <-- virtually alike
+   mn op      <-- some differences which probably are not resolvable
+
+file:  gndproc (as of Aug 12 16:37)
+ab - lines 246 to 270
+cd - lines 274 to 299
+ef - lines 350 to 388
+gh - lines 393 to 417
+ij - lines 422 to 443
+kl - lines 458 to 492
+mn - lines 1031 to 1058
+op - lines 1068 to 1098
+qr - lines 1168 to 1195
+st - lines 1204 to 1234
+uv - lines 1381 to 1408
+wx - lines 1415 to 1445
+
+-------
+Ron Ruth
+Mon Aug 15 15:10:28 MDT 2005

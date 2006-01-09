@@ -1,0 +1,39 @@
+set c_name = "extensions"
+set $c_name = ""
+set input = `grep "^$c_name *=" $conf_f`
+@ result = $status
+if ($result == 0) then
+  set temp = `echo $input | awk -F= '{print $2}'`
+  if ($#temp > 0) then
+    set $c_name = ($temp)
+    if ($debug) echo "  Got setting for ${c_name}:  $temp"
+  else
+    if ($debug) echo '   '$ns_msg1' "'$c_name'" '$ns_msg2
+  endif
+else
+  if ($debug) echo '   '$ns_msg3' "'$c_name'" '$ns_msg4
+endif
+#
+if ($debug) echo "  $#extensions extensions = $extensions"
+#
+#   (following "noglob" is done because, at time of writing, the
+#    raw MCR extension is of the form rawMCR?, where ? = a, b, etc.)
+set noglob
+#  Set all the file extensions
+foreach c_name ($extensions)
+  set input = `grep "^$c_name *=" $conf_f`
+  @ result = $status
+  if ($result == 0) then
+    set temp = `echo $input | awk -F= '{print $2}'`
+    if ($#temp > 0) then
+      set $c_name = ($temp)
+    else
+      echo '   '$ns_msg1' "'$c_name'" '$ns_msg2 >> $msg_f
+      set OK_flag = "no"
+    endif
+  else
+    echo '   '$ns_msg3' "'$c_name'" '$ns_msg4 >> $msg_f
+    set OK_flag = "no"
+  endif
+end
+unset noglob

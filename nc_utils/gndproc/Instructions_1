@@ -1,0 +1,22 @@
+
+
+  Remove "old" disk drive from *TOP* slot of the ZZYZX chassis.
+   - Turn the key clockwise one quarter turn to a vertical position.
+   - Wait for drive to spin down.  (The LED display will indicate "u"
+       when the drive can be removed.)
+   - Pull out the drive by its handle.
+   - Set this drive on top of the ZZYZX chassis.
+     (The LED display should indicate "1" at this time.)
+
+  Insert "new" disk drive into *TOP* slot of the ZZYZX chassis.
+   - Carefully push it all the way in until flush with the front
+     panel.  The last fraction of an inch will be harder to push,
+     since it's making an electrical connection.  (The LED display
+     should indicate "u" if it is properly inserted.)
+
+  Turn key counterclockwise one quarter turn to lock.
+
+  Wait for drive to spin up (LED display will be blinking.)
+
+  Hit [ENTER] key when LED display stops blinking and indicates "1".
+

@@ -1,0 +1,25 @@
+set c_name = "raw_file_types"
+set $c_name = ""
+set input = `grep "^$c_name *=" $conf_f`
+@ result = $status
+if ($result == 0) then
+  set temp = `echo $input | awk -F= '{print $2}'`
+  if ($#temp > 0) then
+    set $c_name = ($temp)
+    if ($debug) echo "  Got setting for ${c_name}:  $temp"
+  else
+    echo '   '$ns_msg1' "'$c_name'" '$ns_msg2 >> $msg_f
+    set OK_flag = "no"
+  endif
+else
+  echo '   '$ns_msg3' "'$c_name'" '$ns_msg4 >> $msg_f
+  set OK_flag = "no"
+endif
+#
+if ($debug) echo "  $#raw_file_types raw_file_types = $raw_file_types"
+#
+if ($#raw_file_types < 1) then
+  echo "  No raw data file types have been specified to copy.  This is probably due " >> $msg_f
+  echo '   to incorrect or missing "raw_file_types" entries in the $conf_f file.' >> $msg_f
+  set OK_flag = "no"
+endif

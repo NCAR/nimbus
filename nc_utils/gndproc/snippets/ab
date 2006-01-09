@@ -1,0 +1,25 @@
+set c_name = "c_vars"
+set input = `grep "^$c_name *=" $conf_f`
+@ result = $status
+if ($result == 0) then
+  set temp = `echo $input | awk -F= '{print $2}'`
+  if ($#temp > 0) then
+    if ($?dbg) then
+      echo "  Got setting for ${c_name}:  $temp"
+    endif
+    set $c_name = ($temp)
+  else
+#   If I cannot get my configuration variables, I'm done
+    echo '   '$ns_msg1' "'$c_name'" '$ns_msg2
+    set OK_flag = "no"
+  endif
+else
+#   If I cannot get my configuration variables, I'm done
+  echo '   '$ns_msg3' "'$c_name'" '$ns_msg4
+  set OK_flag = "no"
+endif
+#
+if ($OK_flag == "no") then
+  @ exitnum = 2
+  goto cleanup
+endif

@@ -1,0 +1,227 @@
+Automated Ground Processing Script Documentation
+  by Ron Ruth
+Version 2, (rev. 1)    26 July 2002
+           (rev. 1.1)  17 April 2003
+           (rev. 1.2)  15 May 2003
+           (rev. 1.3)  20 May 2003
+
+The c-shell script "gndproc" is used during a field project to copy files
+from an aircraft's removable disc drive to the ground station's local data
+partition.  In addition, other specific jobs can be done:
+ - run the nimbus processor to produce a netCDF file;
+ - run the n2asc program to produce an ASCII data file from a netCDF file;
+ - run a file-transfer program (scp, at present) to copy a file to a remote
+    destination machine (assuming a network connection is active).
+
+The script does its work based upon a series of files (one configuration
+file and a number of job files) all located in a project's Production/gndproc
+directory.
+
+Setting up Secure File Copy, if needed
+--------------------------------------
+One of the main jobs for this script is to transfer files off site.  At
+present, "scp" (version 2) is used for this purpose.  ("sftp" has not yet
+been set up for this script, and "anonymous" ftp has not yet been tested.)
+For "scp" to work, security key files must exist or be generated for the
+communicating machines.  If the ground station has keys and you don't
+think they need to be regenerated, then do the following:
+  1)  Log in to the ground station as the user who will run the script.
+  2)  Change to the user's ".ssh" subdirectory:
+       cd ~/.ssh
+  3)  See if security key files exist:
+       ls id_dsa*
+      You should see the files:
+       id_dsa
+       id_dsa.pub
+  4)  If they exist, go to step 8).
+If you want to regenerate the security key files or if one or both files
+don't exist, do the following:
+  5)  From the user's home directory, create the subdirectory ".ssh" if
+      it does not already exist:
+       mkdir .ssh
+  6)  Change to the ".ssh" subdirectory:
+       cd .ssh
+  7)  Run the following:
+       ssh-keygen -d
+      The program will issue the following prompts:
+       "Enter file in which to save the key"
+       "Enter passphrase (empty for no passphrase):"
+       "Enter same passphrase again:"
+      For all of these, use the [ENTER] key to select the default file
+       and generate no passphrase.
+      The program will then generate two keys, one of which is the
+       public key file in the .ssh subdirectory:  id_dsa.pub
+  8)  This key file needs to be sent to the login for each destination
+      machine.  (As of May 2003, RAF's machine's name is "linus.")  So:
+       scp id_dsa.pub <login>@<machine>:.ssh/id_dsa.pub.<ID>
+      where:  <login> is the login name to be used on the destination machine
+            <machine> is the destination machine's name
+                 <ID> is a tag you add to uniquely identify the file.
+      You probably will be asked for the <login> password to copy the file to
+      the destination machine.  If the .ssh directory does not exist on the
+      destination machine, then copy the file temporarily to the home
+      directory.  (The .ssh directory will need to be created later.)
+  9)  The next step is to log on to the destination machine:
+       ssh <login>@<machine>
+      Again, you probably will be asked for a password.
+ 10)  If the .ssh directory does not exist, then create it:
+       mkdir ~/.ssh
+ 11)  Change permissions to allow write only by owner:
+       chmod 755 ~/.ssh
+ 12)  Change to the .ssh subdirectory:
+       cd .ssh
+ 13)  Move the copied file (id_dsa.pub.<ID>) to the .ssh directory if it was
+      put in the login's home directory:
+       mv ../id_dsa.pub.<ID> .
+ 14)  Add the new public key file to the "authorized_keys2" file.  If the
+      "authorized_keys2" file already exists:
+       cat id_dsa.pub.<ID> >> authorized_keys2
+      Otherwise:
+       cp id_dsa.pub.<ID> authorized_keys2
+ 15)  Log out of the destination machine.
+ 16)  The destination login's .ssh directory may need an entry in the
+      "known_hosts2" file.  If one does not exist, one can accomplish this
+      by logging in to the groundstation from the destination machine:
+       ssh -l user renegade
+      You will be asked whether to continue login in, and if you say "yes,"
+      it will add the machine to the known_hosts2 file.
+ 17)  The scp function should now be set up to allow file copies without
+      having to interactively enter a password.  Test it with some dummy
+      files to make sure it works.
+ 18)  There is an outside chance you may have to add the groundstation's
+      login/machine-name pair to the destination machine's ~/.shosts file.
+ 19)  If, by chance, the destination machine is using ssh version 1 instead
+      of version 2, then file transfers cannot be done using this procedure.
+      (Seek system administration help.)
+
+Editing the Configuration File for a Project
+--------------------------------------------
+The "gndproc' script's configuration file is divided into three sections.
+The first section has settings applicable to a project.  The second governs
+the general configuration of the script and probably won't need to be changed
+unless the Ground Station computer's configuration is changed.  The third
+section has example job file templates.
+
+Section one has two "Project-Related Configuration" settings.  The first one
+is the list of email addresses for sending log files.  The second tells the
+script what types of raw data files will be present (ADS, PMS-2D, MCR) on the
+removable disc drive.
+
+The second section, labeled "General Configuration," has many settings,
+including:
+ - a list of program aliases (used if a special version of a program or
+    Linux/Unix command is needed.)
+ - directory paths for the removable drive and local destination data
+ - file names the script will manage
+ - file name extents (e.g., nc == netCDF)
+ - job types the script can handle (nimbus, n2asc and copy, at present)
+
+The configuration file has extensive comment lines to help explain the
+meaning of each setting.
+
+Instruction Files
+-----------------
+Two files (Instructions_1, Instructions_2) are used to give a user
+instructions for handling the removable disc drives.  The first one is used
+before the data are copied from it; the second one is used after all copies
+have been made.  These files may have to be created and/or modified for each
+project.  (The default files were used for IHOP_2002.)
+
+Generating Job Files for a Project
+----------------------------------
+Each job file has a number of settings:
+ - transformation jobs (nimbus, n2asc)
+  - name of program to be executed (e.g., nimbus)
+  - the executing program's settings, if applicable
+   - setup file (e.g., a nimbus setup file)
+   - processing rate (to override a nimbus setup file's setting)
+   - output format (e.g., a n2asc variable list)
+  - the user's ID which will be incorporated into the output file name (if not
+     a standard RAF file)
+ - copy jobs
+  - command to use for copying (scp, ftp, etc.)
+  - gzip file before copy (yes/no)?
+  - destination machine's IP address
+  - destination login name
+  - destination data path on destination machine
+  - the user's ID which will be incorporated into the output file name
+     (RAF excepted)
+
+The user ID (fmod) in a job file will be used to uniquely identify a file.
+For example, if someone from RTF wants a special nimbus netCDF file, it can
+be generated with an unique name, separate from the standard file that is
+always generated for RAF.
+
+Create Nimbus Setup File
+------------------------
+In a standard configuration, nimbus normally will be used to produce a
+standard netCDF file.  Since, in this application, nimbus is run in batch
+mode, a setup file must be created to specify, at least, the project number
+and processing rate.  (It also can be used to generate a standard variable
+list and/or to modify default settings.)  Do NOT specify input or output
+file names in this file, as it is done automatically by the script at run
+time.  If one or more special netCDF files needs to be created, a setup
+file for each will be used to define the needed customization.  Setup files
+should be put in the project's Production subdirectory.  Each full setup
+file's name must to be put in its associated job file.
+
+Steps to Set Up Automated Processing For a Project with "gndproc"
+-----------------------------------------------------------------
+ - In the project's Production subdirectory create the "gndproc" subdirectory:
+     hl proj/<proj>/Production
+       (<proj> is the 3-digit project number)
+     mkdir gndproc
+ - Change to this newly-created directory:
+     cd gndproc
+ - Copy the configuration file template into it:
+     cp $LOCAL/archives/scripts/gndproc/gndproc.conf .
+ - Edit the configuration file settings for the project:
+     vi gndproc.conf
+   - The script will send a completion message to everyone in the email list
+      (e_names).  Note the comma instead of white space for multiple addresses.
+   - Set the raw file types that will be generated for the project.
+ - Copy the user instruction files.  (These tell a user how and when to mount
+    and dismount the removable disc drive.)
+     cp $LOCAL/archives/scripts/gndproc/Instructions_* .
+ - Edit the instruction files, if necessary:
+     vi Instructions_1 Instructions_2
+ - Use the job file templates at the end of the configuration file to create
+    the needed job files for this project.  These files need to be saved in
+    the same "gndproc" subdirectory.  Make changes to settings as appropriate
+    (e.g., specify the nimbus setup file to be used).
+   - add the "fmod" setting to the "copy_set" line only if an unique data
+      file is to be referenced.  This is not needed for standard RAF files.
+      If "fmod" is needed, please use a short character string to set it,
+      since it will become part of the file's name.
+   - if "fmod" is used for "nimbus" and/or "n2asc," then remember to use
+      the same "fmod" character string for any attendant "copy" job files.
+ - Create nimbus setup files, if necessary.  Be sure to specify each setup
+    file name in its associated job file.
+
+You can use the BAMEX project directory as an example:
+  $LOCAL/proj/303/Production/gndproc
+
+
+Brief Explanaton of Script's Job Flow
+-------------------------------------
+The script has one built-in job that always will be performed.  It will
+search the removable drive for any NEW raw data files that are not on
+the local data disc and copy them over.  If no new files are found, then
+the script will quit and not do any other jobs.  Therefore, this script
+cannot be used, for example, to regenerate a lost netCDF file.  (The
+raw ADS file must be recopied by removing it from or renaming it on the
+local data disc.  If one deletes a file, however, make sure a copy of
+it exists on the removable drive so it can be recopied.)
+
+Once the new files are copied to the local disc, the removable drive can
+be dismounted and taken out of the chassis with no further need for user
+interaction.  From this point on, operation of the script is governed by
+a series of job files that are located in the project's Production/gndproc
+subdirectory.  (Example templates can be found at the end of the configuration
+file, gndproc.conf.)  These files must have a specific naming convention,
+otherwise the script will not recognize them.  The name is of the form:
+type_sourcefile_user, where "type" is the job's type (nimbus, n2asc, copy),
+"sourcefile" is the type of source file needed for the job (ads, cdf, asc)
+and "user" is a name used to identify the output file's recipient.  (The
+RAF job file names have the "user" name set to "raf", but the standard
+output files for RAF have no "user" identity and are given standard names.)

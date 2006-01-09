@@ -1,0 +1,414 @@
+Gndproc development notes
+
+Beforehand:
+ - create generic nimbus setup file to be used by all processing
+    /usr/local/proj/301/Production/setup.301
+
+ - create configuration file
+    /usr/local/scripts/gndproc.conf
+
+Steps for "automated" processing at IHOP.
+  Ron Ruth  29 April 2002
+      rev.  19 May 2002
+      rev.  22 May 2002
+
+Assumption:  ground system has correct date/time
+
+- login (necessary)
+ - .my_defaults file
+  - set unique environment variables, if necessary
+  - determine machine addresses (source/destination)
+  - determine file transfer protocol/procedures to use
+  - set distribution email list (project manager, data manager)
+  - email distribution that process has started
+ - as "user"
+
+- run "doit" script
+ - check/set proper environment (from config file)
+  - DISPLAY variable
+  - COPYADS == yes/no
+  - COPYCDF == yes/no
+  - COPYOTHER == yes/no (may need specific variable names)
+  - destination machine names/logins/passwords (using scp with keys)
+ - make sure removable drive partition is unmounted
+ - make sure removable drive is physically present in the system (if needed)
+ - operator given instructions to properly insert removable disk drive 
+ - pause for keyboard input
+ - mount drive (check for success)
+ - if mount is not successful
+  - notify appropriate people via screen and/or email
+  - supply "fix" suggestions
+  - ask that script be run again
+  - exit (log out/reboot ?)
+ - search removable drive for new ADS files since last processing
+  - check for duplicate file name(s) but without duplicate data (creation
+    date, file length and flight date all may help to determine)
+    (looking for length difference now)
+  - ignore each duplicate file name found
+ - check space on local drive (not currently done)
+  - if inadequate space
+   - repeatedly remove oldest file that has been successfully copied to Jeffco
+      until adequate room exists (use log file information)
+   - send file deletion info to log file (also to email file)
+   - if still inadequate space and no more files can be deleted
+    - send failure email to distribution list
+    - give operator the bad news
+    - hopefully have a contingency plan in place
+ - for each new/incomplete ADS file:
+  - copy to local disk (with new name if necessary)
+  - verify copy (not currently done)
+ - unmount removable drive
+ - notify operator to remove drive from ground system
+ - notify that operator can depart
+ - begin automatic operation
+ - check that file transfer links are up
+ - for each new file:
+  - if ($COPYADS) copy raw ADS file to Jeffco
+   - gzip raw ADS file
+   - check for succesful file transfer
+   - gunzip raw ADS file
+  - create batch script based on new ADS file's name
+  - run nimbus batch job sending all output to an unique output_log file
+  - check for succesful nimbus completion
+  - if ($COPYCDF) copy netCDF file to Jeffco
+   - gzip netCDF file
+   - check for succesful transfer
+  - if ($COPYRTF) copy requested files to RTF
+   - possibilities:  RDMA, PMS2D, nimbus output_log file
+   - check for succesful transfer
+  - if ($COPYJOSS)
+   - if special file(s) is/are needed, produce it/them
+      (usually a subset of the full netCDF file)
+   - transfer "shared" data file(s) to JOSS repository
+   - check for succesful transfer
+  - if ($COPYOTHER) copy other needed files to Jeffco (gzipped)
+########  stopped here  21 May 2002
+   - possibilities:  RDMA, PMS2D, nimbus output_log file
+   - check for succesful transfer
+  - update processing log file
+ - check for successful completion of all tasks
+ - check status of local disk (nearing capacity?)
+ - make rudimentary entries in RAFDIS ??
+ - compose job-completion report (actually the log file)
+ - send job-completion report email to distribution list
+ - move & rename (compose name) log file from scratch space to permanent space
+ - exit (log out?)
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ngndproc specs
+
+test/read config file
+test/write scratch message file
+read configuration variables from config file
+  (progress messages)
+read job list from config file
+  (progress messages)
+test/write job log file
+for each job
+ - read job configuration settings from config file
+  (log progress)
+ - do each job
+  (log progress)
+create log file
+
+list jobs for a new data set in the conf file
+(give list of job types recognized)
+(All special files should be in the project's Production directory)
+
+set jobs = ("RUN_NIMBUS_RAF" "RUN_N2ASC_DLR" "COPY_ADS_RAF" "COPY_CDF_RAF" \
+             "COPY_CDF_RTF" "COPY_ASC_DLR")
+
+Need to segregate different file types for processing
+
+foreach job ($jobs)
+  decode job class, type and purpose
+  read options for job from config file
+  perform job
+   gzip/gunzip, as needed
+   check for required files (e.g., netCDF for n2asc)
+   do specific operation
+   check for successful completion
+   set completion flag
+  handle any error condition
+end
+
+job classes:
+  copy
+  remote file transfer
+    scp
+    ftp
+  run program
+    nimbus
+    n2asc
+
+file types
+  ADS
+  netCDF
+
+purposes:
+  RAF
+  RTF
+  DLR
+  other
+
+----------------------
+config file contents:
+----------------------
+  "test" mode flag
+  location (file path) of scratch_message file (scr_msg_f)
+  location (file path) of scratch log file
+  location (file path) of output log file
+
+gndproc configuration settings:
+test  -- test mode (yes,no) (In test mode it will ask whether to do or skip
+           each operation)
+debug -- debug mode (yes,no) (In debug mode there is verbose output)
+proj -- 3-digit project number (unless put on command line)
+S -- source file directory (removable disk)
+D -- local destination file directory (fixed disk)
+e_names -- email addresses to send process log and error messages
+mp -- Mail program to use
+jobs -- job list to be parsed (contains names like:  NIMBUS_ADS_RAF)
+        (in addition to the automated ADS file copy from $S to $D)
+############
+add??
+ -- which grep to use
+ -- which awk to use
+ -- which mount to use ??
+ -- which umount to use ??
+ -- which ls to use
+ -- which cp to use
+ -- which df to use (df -k)
+ -- which gzip to use
+ -- which gunzip to use
+ -- which scp to use
+ -- which sed to use
+ -- which rm to use
+
+ -- method to make rudimentary entries in RAFDIS
+
+add if it doesn't already exist
+ -- whether to send any files back to Jeffco (in case there's no network)
+
+Decoded from $jobs:
+j_class: job class (nimbus, n2asc, ftp, scp)
+file_type:    ADS, netCDF, PMS-2D, rawMCR, ASCII, etc.
+user:  RAF, RTF, OTHER1
+
+Program:
+  nimbus
+    nimbus_sf -- optional nimbus setup file name
+                 (in project directory)
+    nimbus_p -- name of nimbus program to use
+
+  n2asc
+    n2asc_p -- name of n2asc program to use
+    n2asc_v_f -- name of file with variable list (inserted into batch file)
+
+  scp
+   scp_p -- name of scp program to use
+   scp_machine -- destination machine for file transfer
+   scp_login -- login name on destination machine
+   scp_path -- destination file path
+   scp_file -- file type (ADS, netCDF, ASCII, etc.) (comes from $file_type)
+   scp_gz -- gzip file (yes,no) (Don't forget to unzip afterwards.)
+
+  ftp
+
+Ron Ruth
+
+
+20 June 2002
+------------
+
+There are three types of jobs in this script:
+ 1) Copy new raw data files from removable media to local disk
+     (always done automatically)
+ 2) Produce special files (netCDF, ASCII, etc.)
+ 3) Transfer files to remote location(s)
+
+Obviously, one must produce the special files before copying them,
+so it makes sense to do the work in the following order:
+ 1) Copy new raw data files from removable media to local disk 
+ 2) Produce netCDF files via nimbus
+ 3) Produce special files (e.g., ASCII)
+ 4a) Transfer new raw data files to remote location(s)
+ 4b) Transfer special files (netCDF, ASCII, etc.) to remote location(s)
+
+Therefore, I should parse and sort the job list, and do 3 loops.  The first
+job class is already done separately.  For the others:
+ 1) Search for nimbus jobs, transform jobs (e.g., n2asc) and transfer jobs
+ 3) This will produce 3 lists:
+   a) nimbus jobs
+   b) transformation jobs
+   c) transfer jobs
+ 4) Do each of the jobs in separate foreach loops.  This will free up
+   the user from having to put the jobs in the correct order, since
+   this script will now do it automatically.
+Within each of these job classes, order should not be important.
+
+Therefore, the best tack is to sort the job list into the order it needs
+to be done.
+
+So, it seems to make more sense to have the first foreach loop be the
+job list and the second one be the file list.  In the second loop, find
+each file applicable to the job.  That way we only have to load up the
+job configuration file once per run.
+
+For ftp and scp jobs
+
+Must check to see if file being processed is the one requested
+  For raw files, this is straightforward, because they will be in
+   the file list.
+  For processed files (netCDF, ASCII), I need to get the job settings
+   to find the "fmod" file name modifier and see if the file exists.
+
+Procedure:
+  Check file type requested.  If raw, I just proceed.  If processed,
+   I'll set a flag, read the job settings and test later.
+
+get job list from a directory listing!
+
+If no files to process or no jobs to do, need to use an unique logfile name
+(the temporary name will do), not save it yet email it to the recipient list.
+
+file copy: - for raw files, no need to check if file exists
+           - for processed files, need to get "fmod" and see it it exists
+              before copying.  (Must also set proper file name with/without
+              "_fmod")
+
+Need to echo files with user instructions instead of using in-line code.
+Logical place for these files is the .../Production/gndproc directory.
+How about names like "Instructions_1 and Instructions_2 ??
+
+How about a "mute" flag?  If it is set, then after the new-file copy
+is finished (after the removable drive is no longer needed), it outputs
+nothing to the terminal (no easy way to monitoring script's progress).
+
+I don't know where to specify the extent for a created output file
+from a processing job, e.g., netCDF or ASCII.  For now I am defining
+all extents in the main configuration file.
+
+Need to test copying raw file types other than ADS, especially
+raw MCR which has an unique extension.
+
+All the file copy operations have pretty much the same information and
+preprocessing to get them ready for transmission.  With that in mind,
+perhaps a case "copy" would be in order that would set up everything
+that is the same and another "switch" that would be used for each
+unique "case" (scp, ftp, sftp, etc.).  I copied a lot of code from the
+"scp" case to produce the "ftp" case.
+
+25 July 2002
+------------
+I rewrote the copy part of the code to effect the last statement.  It seems
+to work well for those cases I can test.  I do not have a way to ftp anywhere,
+so I have yet to actually test that part.  However, I have no reason to
+expect it not to work (except for coding errors).
+
+example job files:
+nimbus_ads_raf
+n2asc_cdf_rtf
+copy_ads_raf
+copy_2d_raf
+copy_mcr_raf
+copy_cdf_raf
+copy_cdf_rtf
+copy_asc_rtf
+copy_cdf_rtf
+
+Ron Ruth
+
+
+17 April 2003
+-------------
+Just now ramping back up on this script in preparation for the next project
+where it will be used:  BAMEX.
+
+Ron Ruth
+
+
+2 June 2003
+-----------
+In the last week I modified the script to only run "nimbus" once if contiguous
+segmented files are found for a flight.
+
+I rewrote some of the script commands to use "if (e ...)" instead of
+"ls."  The "ls" command echoes "file not found" to stdout, and I'd like
+to avoid those messages.  I also added some "if ($?var)" instead of
+presetting "var" beforehand.  This should be more reliable.  I have to
+test and debug all these changes.
+
+In the field,  Janet modified the script to handle ftp transfers to JOSS.
+I plan to incorporate that into this future version after debug.
+
+Ron Ruth
+
+
+4 June 2003
+-----------
+The ftp code Janet incorporated creates/replaces the hard-wired file
+$HOME/.netrc into which all ftp commands are put.  From the ftp man
+page, it looks like "auto-login" is enabled for her method to work.
+With this being the case, commands put into the .netrc file will be
+automatically executed.  I will add code to save an extant copy of
+the file, temporarily replace it with my command file then restore
+it later.
+
+Ron Ruth
+
+
+6 June 2003
+-----------
+I did further work on the script to have the ftp portion conform to
+the general format of the other copy procedures and to use all the
+settings in its copy_*_* file.  I added a password setting (pwd).
+Tests at Jeffco failed, because apparently "auto-login" is not
+enabled.  It looks like a smoke test at BAMEX will be needed.
+
+I copied new versions of two files to BAMEX.  They are located there as:
+  /home/field/shared/proj/303/Production/gndproc/new_copy_cdf_joss
+  /home/field/shared/proj/archives/scripts/temp/ngndproc
+
+I hope to work with someone there to test them out next week.
+
+Ron Ruth
+
+
+19 March 2004
+-------------
+Archived present version of gncproc to the MSS:
+vivaldi/ruth % date ; msrcp -pe 32767 -pr 41113009 -wpwd RAFDMG gndproc.tar.dir
+mss:/RUTH/gndproc.tar.dir ; date
+Fri Mar 19 11:20:05 MST 2004
+Fri Mar 19 11:21:38 MST 2004
+vivaldi/ruth % date ; msrcp -pe 32767 -pr 41113009 -wpwd RAFDMG gndproc.tar mss:/RUTH/gndproc.tar ; date
+Fri Mar 19 11:52:30 MST 2004
+Fri Mar 19 11:52:33 MST 2004
+
+Ron Ruth
+
+
+15 August 2005
+--------------
+Over the last few weeks I prepared gndproc for the RAINEX project.  I fixed
+some minor bugs and debugged email addressing.  I also added an LDM copy job
+type and also modified the code so it can send log files via LDM.
+(In this case, the email address list is maintained via the LDM server, not
+within the gndproc configuration file.)
+
+After RAINEX setup, I went through and modified the command-line argument
+processing to make it order independent.  I also cleaned up the exit logic,
+which was somewhat convoluted.  Now, even though it jumps around a bit, all
+the cleanup operations get done the right way (I hope).
+
+I looked into the possibility of creating "subroutines" with some of the
+duplicated code that is interspersed within the script.  At this time, it
+looks to be more work than worth.  See the file "subs" and the subdirectory
+"snippets" for more information.
+
+I have not yet archived this version, although I have done a test run on
+mahler using Zip disks and its own /Temporary directory.  All seems to be
+working OK.
+
+Ron Ruth

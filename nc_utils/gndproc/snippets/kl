@@ -1,0 +1,35 @@
+set c_name = "p_vars"
+set $c_name = ""
+set input = `grep "^$c_name *=" $conf_f`
+@ result = $status
+if ($result == 0) then
+  set temp = `echo $input | awk -F= '{print $2}'`
+  if ($#temp > 0) then
+    set $c_name = ($temp)
+    if ($debug) echo "  Got setting for ${c_name}:  $temp"
+  else
+    if ($debug) echo '   '$ns_msg1' "'$c_name'" '$ns_msg2
+  endif
+else
+  if ($debug) echo '   '$ns_msg3' "'$c_name'" '$ns_msg4
+endif
+#
+if ($debug) echo "  $#p_vars p_vars = $p_vars"
+#
+#  Set all program names
+foreach c_name ($p_vars)
+  set $c_name = $c_name
+  set input = `grep "^$c_name *=" $conf_f`
+  @ result = $status
+  if ($result == 0) then
+    set temp = `echo $input | awk -F= '{print $2}'`
+    if ($#temp > 0) then
+      set $c_name = ($temp)
+      if ($debug) echo "  Got setting for ${c_name}:  $temp"
+    else
+      if ($debug) echo "   ${c_name} set to default = ${c_name}"
+    endif
+  else
+    if ($debug) echo "   ${c_name} set to default = ${c_name}"
+  endif
+end
