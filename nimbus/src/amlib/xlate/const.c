@@ -65,21 +65,21 @@ NR_TYPE SecondPoly(NR_TYPE x, std::vector<float>& c)
 /* -------------------------------------------------------------------- */
 void smissval(DERTBL *varp)
 {
-	PutSample(varp, floatNAN);
+  PutSample(varp, floatNAN);
 
 }	/* END SMISSVAL */
 
 /* -------------------------------------------------------------------- */
 void sone(DERTBL *varp)
 {
-	PutSample(varp, 1.0);
+  PutSample(varp, 1.0);
 
 }	/* END SONE */
 
 /* -------------------------------------------------------------------- */
 void szero(DERTBL *varp)
 {
-	PutSample(varp, 0.0);
+  PutSample(varp, 0.0);
 
 }	/* END SZERO */
 
