@@ -20,7 +20,6 @@ DESCRIPTION:
 
 #define CONSTANTS_H
 #define ERR		(-1)
-#define NAMLEN          13
 
 #include "nimbus.h"
 
@@ -44,7 +43,7 @@ DESCRIPTION:
 
 typedef struct
 	{
-	char    name[NAMLEN];
+	char    name[NAMELEN];
 	size_t	SampleRate;
 	int     SRstart;
 	size_t	nPoints;
