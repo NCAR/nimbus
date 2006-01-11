@@ -184,8 +184,9 @@ void InitAircraftDependencies()
 
     case HIAPER:
       LogMessage("NCAR G5 pcor's installed.");
-      tfher1	= -5.862;
-      tfher2	= -4.1068;
+      recfrh	= 1.00;
+      tfher1	= -1.7244;
+      tfher2	= -1.5989;
       pcorQCF	= pcorf5;
       pcorQCR	= pcorq5;	
       pcorPSF	= pcorr5;
@@ -271,27 +272,17 @@ NR_TYPE pcorf7(NR_TYPE q, NR_TYPE q1)
 /* GV ---------------------------------------------------------------- */
 NR_TYPE pcorr5(NR_TYPE q, NR_TYPE q1)
 {
-  if (q > 140.0)
-    q = 140.0;
-
-  return 3.37 - 0.03776 * q + q1 * (1.04068e-06 * q1 - 0.00296);
-//  return(3.316 - 0.04033 * q - 0.00183 * q1);
-//  return(1.86 - 0.04033 * q);
+  return 3.57 - 0.03776 * q + q1 * (1.04068e-06 * q1 - 0.00296);
 }
 
 NR_TYPE pcorq5(NR_TYPE q, NR_TYPE q1)
 {
-  if (q > 140.0)
-    q = 140.0;
-
-  return 7.75 - 0.03776 * q + q1 * (1.6849e-06 * q1 - 0.00662);
+  return 6.75 - 0.03776 * q + q1 * (1.6849e-06 * q1 - 0.00662);
 }
 
 NR_TYPE pcorf5(NR_TYPE q, NR_TYPE q1)
 {
-  return 4.95 - 0.0038616 * q + 6.0 * q1;
-//  return(0.754 + q * (-0.017657 + 7.557e-05 * q));
-//  return(0.24 - 0.005389 * q);
+  return 3.95 - 0.0038616 * q + 6.0 * q1;
 }
 
 /* C130 --------------------------------------------------------------- */
