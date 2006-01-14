@@ -662,7 +662,20 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
         *sp = ntohs(*sp);
     else
       for (int i = 0; i < 1024; ++i, ++p)
+      {
         *p = ntohl(*p);
+
+	/* Code for Lake-ICE data, which was shifted 1 bit from overclocking
+         * the data lines.  Clocking was fine, except the data lines from the
+         * wing tips was too long, so we had to cut in half.  This was the
+         * first project with ADS2 PMS2D card.
+         */
+        if (strcmp(ProjectNumber(), "812") == 0 && *p == 0xff800000)
+        {
+          *p = 0xff000000;
+          *(p-1) <<= *(p-1);
+        }
+      }
     }
 }
 
