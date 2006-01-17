@@ -26,6 +26,8 @@ const std::string PostgreSQL::CATEGORIES_TABLE = "Categories";
 const std::string PostgreSQL::LRT_TABLE = "RAF_LRT";
 const std::string PostgreSQL::RATE_TABLE_PREFIX = "SampleRate";
 
+std::string readLandmarks();
+
 /* -------------------------------------------------------------------- */
 PostgreSQL::PostgreSQL(std::string specifier, bool transmitToGround)
 {
@@ -56,8 +58,6 @@ PostgreSQL::PostgreSQL(std::string specifier, bool transmitToGround)
     createTables();
     initializeGlobalAttributes();
     initializeVariableList();
-    if (_ldm)
-      _ldm->setTimeInterval(5);
     submitCommand(
     "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current", true);
     if (_ldm)
@@ -248,9 +248,12 @@ PostgreSQL::dropAllTables()
 void
 PostgreSQL::createTables()
 {
+  std::string lm = readLandmarks();
   _sqlString.str("");
 
-  _sqlString << "CREATE TABLE Global_Attributes (key char(20) PRIMARY KEY, value char(120));";
+  int size = std::max((size_t)80, lm.size()+2);	// +2 cause I'm old fashioned.
+
+  _sqlString << "CREATE TABLE Global_Attributes (key char(20) PRIMARY KEY, value char(" << size << "));";
   _sqlString << "CREATE TABLE Variable_List (Name char(20) PRIMARY KEY, Units char(16), Uncalibrated_Units char(16), long_name char(80), SampleRateTable char(16), nDims int, dims int[], nCals int, poly_cals float[], missing_value float, data_quality char(16));";
   _sqlString << "CREATE TABLE Categories (variable char(20), category char(20));";
 
@@ -269,7 +272,6 @@ void
 PostgreSQL::initializeGlobalAttributes()
 {
   extern char dateProcessed[];	// From netcdf.c
-  std::string readLandmarks();
 
   _sqlString.str("");
 
