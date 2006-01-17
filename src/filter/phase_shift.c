@@ -38,8 +38,13 @@ static NR_TYPE	*prev_prev_rec, *prev_rec,
 		*this_rec,
 		*next_rec, *next_next_rec;
 
-static void	resample(var_base *vp, int lag, NR_TYPE *, NR_TYPE *),
+void LogThisRecordMsg(NR_TYPE *record, const char msg[]);
+
+static void
+  resample(var_base *vp, int lag, NR_TYPE *, NR_TYPE *),
   shift_vector(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out);
+
+static const int MaxLag = 2000;
 
 /* -------------------------------------------------------------------- */
 void AddVariableToRAWlagList(RAWTBL *varp)
@@ -72,8 +77,7 @@ void PhaseShift(
   next_rec	= (NR_TYPE *)GetBuffer(LRCB, index+1);
   next_next_rec	= (NR_TYPE *)GetBuffer(LRCB, index+2);
 
-  /* Copy current rec into srt output rec.
-   */
+  // Copy current rec into srt output rec.
   memcpy((char *)output, (char *)this_rec, NR_SIZE * nSRfloats);
 
   for (size_t i = 0; i < raw.size(); ++i)
@@ -86,16 +90,16 @@ void PhaseShift(
       if (isnan(this_rec[rp->SRstart + j]))
         noMissingData = false;
 
-    if (abs((lag = rp->StaticLag + rp->DynamicLag)) > 1000)
+    if (abs((lag = rp->StaticLag + rp->DynamicLag)) > MaxLag)
       {
       if (lag < 0)
-        lag = -1000;
+        lag = -MaxLag;
       else
-        lag = 1000;
+        lag = MaxLag;
 
       sprintf(buffer,
-        "Max lag of |1000| ms exceeded, setting to %d ms and continuing.\n",
-        lag);
+        "Max lag of |%d| ms exceeded, setting to %d ms and continuing.\n",
+        MaxLag, lag);
       LogMessage(buffer);
       }
 
@@ -123,87 +127,48 @@ resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
   size_t	nPoints, goodPoints = 0, T = 0;
   size_t	gap_size = 1000 / vp->SampleRate;
 
-  if (vp->SampleRate == 1)
-    nPoints = 5;			// 5 Seconds.
-  else
-    nPoints = vp->SampleRate * 3;	// 3 Seconds.
+  nPoints = vp->SampleRate * 5;	// 5 Seconds.
 
   double	x[nPoints], y[nPoints], startTime;
 
-  if (vp->SampleRate == 1)
+  NR_TYPE *recPtrs[] = {
+	&prev_prev_rec[vp->SRstart],
+	&prev_rec[vp->SRstart],
+	&this_rec[vp->SRstart],
+	&next_rec[vp->SRstart],
+	&next_next_rec[vp->SRstart],
+	0 } ;
+
+  // Loop through all 5 records (above) and pull out all the valid data
+  // points and make one big record.
+  for (size_t ri = 0; recPtrs[ri] != 0; ++ri)
   {
-    T = 0;
-    if (!isnan(prev_prev_rec[vp->SRstart])) {
-      x[goodPoints] = T;
-      y[goodPoints] = prev_prev_rec[vp->SRstart];
-      ++goodPoints;
-    }
-    T += gap_size;
-    if (!isnan(prev_rec[vp->SRstart])) {
-      x[goodPoints] = T;
-      y[goodPoints] = prev_rec[vp->SRstart];
-      ++goodPoints;
-    }
-    T += gap_size;
-    if (!isnan(this_rec[vp->SRstart])) {
-      x[goodPoints] = T;
-      y[goodPoints] = this_rec[vp->SRstart];
-      ++goodPoints;
-    }
-    T += gap_size;
-    if (!isnan(next_rec[vp->SRstart])) {
-      x[goodPoints] = T;
-      y[goodPoints] = next_rec[vp->SRstart];
-      ++goodPoints;
-    }
-    T += gap_size;
-    if (!isnan(next_next_rec[vp->SRstart])) {
-      x[goodPoints] = T;
-      y[goodPoints] = next_next_rec[vp->SRstart];
-      ++goodPoints;
-    }
-
-    startTime = 2000.0;
-  }
-  else  // else SampleRate > 1
-  {
-    for (size_t i = 0; i < vp->SampleRate; ++i, T += gap_size)
-    {
-      if (!isnan(prev_rec[vp->SRstart + i]))
-      {
-        x[goodPoints] = T;
-        y[goodPoints] = prev_rec[vp->SRstart + i];
-        ++goodPoints;
-      }
-    }
+    NR_TYPE *curPtr = recPtrs[ri];
 
     for (size_t i = 0; i < vp->SampleRate; ++i, T += gap_size)
     {
-      if (!isnan(this_rec[vp->SRstart + i]))
+      if (!isnan(curPtr[i]))
       {
         x[goodPoints] = T;
-        y[goodPoints] = this_rec[vp->SRstart + i];
+        y[goodPoints] = curPtr[i];
         ++goodPoints;
       }
     }
-
-    for (size_t i = 0; i < vp->SampleRate; ++i, T += gap_size)
-    {
-      if (!isnan(next_rec[vp->SRstart + i]))
-      {
-        x[goodPoints] = T;
-        y[goodPoints] = next_rec[vp->SRstart + i];
-        ++goodPoints;
-      }
-    }
-
-    startTime = 1000.0;
   }
 
-  startTime -= lag;
+  startTime = 2000.0 - lag;
 
   if (goodPoints < 3)
+  {
+    if (goodPoints != 0)
+    {
+      char msg[80];
+      sprintf(msg, "Not enough points for interp, var=%s, sr=%d, goodPoints=%d",
+		vp->name, vp->SampleRate, goodPoints);
+      LogThisRecordMsg(this_rec, msg);
+    }
     return;
+  }
 
   if (vp->Modulo)	// 0 - 360 stuff.
   {
@@ -256,7 +221,8 @@ resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
   if (hrt_out)
   {
     double rqst = startTime;
-    for (size_t i = 0; i < (size_t)cfg.ProcessingRate(); ++i, rqst += 40)
+    gap_size = 1000 / cfg.ProcessingRate();
+    for (size_t i = 0; i < (size_t)cfg.ProcessingRate(); ++i, rqst += gap_size)
       if (cfg.InterpolationType() == Config::Linear)
         hrt_out[vp->HRstart+i] = gsl_interp_eval(linear, x, y, rqst, acc);
       else
