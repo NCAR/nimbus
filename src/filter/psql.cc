@@ -712,8 +712,11 @@ PostgreSQL::getGlobalAttribute(const char key[]) const
 bool
 PostgreSQL::isSameFlight() const
 {
-  // Always treat 'hangar' as a separate flight.
-  if (cfg.FlightNumber().compare("hangar") == 0)
+  // Anything not starting with pre-ordained prefix is not the same flight.
+  // FlightNumber="hangar" being the most obvious.
+  if (cfg.FlightNumber().compare(0, 2, "rf") != 0 &&
+      cfg.FlightNumber().compare(0, 2, "tf") != 0 &&
+      cfg.FlightNumber().compare(0, 2, "ff") != 0)
     return false;
 
   // Lab test flight is 161 rf09.  Restarting is considered new flight.
