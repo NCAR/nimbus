@@ -18,6 +18,7 @@ env['JLOCAL'] = os.environ['JLOCAL']
 env['CC'] = ['g++']
 
 env['CPPPATH'] = Split("""
+    /usr/X11R6/include
     #/include
     $JLOCAL/include
 """)
