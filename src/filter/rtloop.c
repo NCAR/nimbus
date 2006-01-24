@@ -95,7 +95,10 @@ void RealTimeLoop()
   SetBaseTime(ADSrecord);
 
   if (cfg.OutputSQL())
-    psql = new PostgreSQL("", cfg.TransmitToGround());
+  {
+    std::string BuildPGspecString();
+    psql = new PostgreSQL(BuildPGspecString(), cfg.TransmitToGround());
+  }
 
   bcast = new Broadcast();
 
