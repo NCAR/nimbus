@@ -78,7 +78,6 @@ transmit.cc
 """)
 
 if int(env.realtime):
-  env.Append(CCFLAGS=['-DRT'])
   env.Append(CPPPATH=['/opt/ads3/x86/include'])
   env.Append(CPPPATH=['/opt/ads3/arm/include'])
   sources = [sources, 'rtloop3.cc']

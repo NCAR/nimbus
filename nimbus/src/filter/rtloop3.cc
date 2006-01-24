@@ -31,10 +31,6 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2005
 
 #include <iomanip>
 
-static const std::string PGHOST = "ac-server";
-static const std::string PGDATABASE = "real-time";
-static const std::string PGUSER = "ads";
-
 static Broadcast * bcast;
 
 extern PostgreSQL *psql;
@@ -101,28 +97,8 @@ void RealTimeLoop3()
 
   if (cfg.OutputSQL())
   {
-    std::string specifier;
-    char *p;
-
-    specifier = "host=";
-    if ((p = getenv("PGHOST")) == 0)
-      specifier += PGHOST;
-    else
-      specifier += p;
-
-    specifier += " dbname=";
-    if ((p = getenv("PGDATABASE")) == 0)
-      specifier += PGDATABASE;
-    else
-      specifier += p;
-
-    specifier += " user=";
-    if ((p = getenv("PGUSER")) == 0)
-      specifier += PGUSER;
-    else
-      specifier += p;
-
-    psql = new PostgreSQL(specifier, cfg.TransmitToGround());
+    std::string BuildPGspecString();
+    psql = new PostgreSQL(BuildPGspecString(), cfg.TransmitToGround());
   }
 
   bcast = new Broadcast();	// ASCII feed.
