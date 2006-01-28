@@ -647,7 +647,7 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
 {
   // Perform byte swapping on whole [data] record if required.
   if (1 != ntohs(1))
-    {
+  {
     unsigned long       *p;
     unsigned short       *sp = (unsigned short *)buff;
 
@@ -662,21 +662,28 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
         *sp = ntohs(*sp);
     else
       for (int i = 0; i < 1024; ++i, ++p)
-      {
         *p = ntohl(*p);
+  }
 
-	/* Code for Lake-ICE data, which was shifted 1 bit from overclocking
-         * the data lines.  Clocking was fine, except the data lines from the
-         * wing tips was too long, so we had to cut in half.  This was the
-         * first project with ADS2 PMS2D card.
-         */
-        if (strcmp(ProjectNumber(), "812") == 0 && *p == 0xff800000)
-        {
-          *p = 0xff000000;
-          *(p-1) <<= *(p-1);
-        }
+  /* Code for Lake-ICE data, which was shifted 1 bit from overclocking
+   * the data lines.  Clocking was fine, except the data lines from the
+   * wing tips was too long, so we had to cut in half.  This was the
+   * first project with ADS2 PMS2D card.
+   */
+  if (strcmp(ProjectNumber(), "812") == 0)
+  {
+    unsigned long *p = (unsigned long *)buff->data;
+
+    for (int i = 0; i < 1024; ++i, ++p)
+    {
+      // It only matters to fix the sync & timing words.
+      if (*p == 0xff800000)
+      {
+        *p = 0xff000000;
+        *(p-1) <<= *(p-1);
       }
     }
+  }
 }
 
 /* -------------------------------------------------------------------- */
