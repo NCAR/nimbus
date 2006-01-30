@@ -951,7 +951,7 @@ void LogMessage(const char s[])
 char *ExtractHeaderIntoFile(const char *fileName)
 {
   int	nBytes;
-  char	*tmpFile;
+  char 	*tmpFile;
   FILE	*fp;
   Fl	fi;
   char	phys_rec[20000];
@@ -995,8 +995,10 @@ char *ExtractHeaderIntoFile(const char *fileName)
 }
 
 /* Shutup Linker */
+#include <set>
 void AddVariableToRAWlagList(RAWTBL *varp) {}
 void AddVariableToSDIlagList(SDITBL *varp) {}
+std::set<std::string> GetADSFileList(const char *adsFileName) {}
 void FillListWidget() {}
 
-/* END WINPUT.C */
+/* END WINPUTOPS.CC */
