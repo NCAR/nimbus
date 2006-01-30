@@ -50,7 +50,7 @@ special broadcast host value; note that if a host named broadcast is targetted
 for non-broadcast socket transmission, that transmission *will* be broadcast
 (see usage in make_client_socket() )
 */
-#define BROADCAST 		"broadcast"
+#define BROADCAST2 		"broadcast"
 /*
 preamble identifiers of data type to follow in broadcasts of data
 */

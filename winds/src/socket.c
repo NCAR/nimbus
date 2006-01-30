@@ -474,7 +474,7 @@ int on=1;
 
  memset((void *)&server[port], 0, sizeof(server[port]));
  server[port].sin_family = AF_INET;
- if (!(strcmp(host,BROADCAST))) {
+ if (!(strcmp(host,BROADCAST2))) {
   setsockopt(sock[port],SOL_SOCKET,SO_BROADCAST,(const char *)&on,sizeof on);
   setBrdAddr(port);
  } else {

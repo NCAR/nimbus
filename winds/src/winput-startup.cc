@@ -168,7 +168,7 @@ dialogue.
 /*
 set up socket for broadcast networked data feeds
 */
- talk_to_socket("WINPUT-CALIB_NETDATA",CALIB_NETDATA,CALIB_NETDATA,BROADCAST);
+ talk_to_socket("WINPUT-CALIB_NETDATA",CALIB_NETDATA,CALIB_NETDATA,BROADCAST2);
 /* 
 establish operation mode, etc., from netconfig file
 */
