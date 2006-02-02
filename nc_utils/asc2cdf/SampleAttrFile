@@ -6,3 +6,5 @@ ProjectName=RICO
 Aircraft=N130AR
 ProjectNumber=135
 FlightNumber=rf18
+coordinates=GGLON GGLAT GGALT Time
+landmarks=17.1415 -61.7783 ANU,17.6075 -61.82395 SPol
