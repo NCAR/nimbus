@@ -1,0 +1,107 @@
+<head>
+<title>n2asc User's Manual</title>
+
+<style type="text/css">
+<!--
+body { background: white; color: black; margin: 2em; margin-left: 3em; }
+h1,h2 { font-size: 1.5em }
+h3 { font-size: 1.3em }
+h4 { font-size: 1.2em }
+h1, h2, h3, h4 { font-style: normal; font-weight: normal; color: #3860B0; }
+span.runin { font-size: 1.1em; font-weight: bold; color: #3860B0; }
+a:link { color:navy; }
+a:visited { color:#386090; }
+li.toc { list-style: none; padding: .1em; }
+kbd.att { font-weight: normal; color: blue; }
+div.example { margin-left: 3em; margin-right: 3em; }
+div.definition { margin-left: 1em; }
+pre.CDL { color: brown; }
+table { padding: .25em; }
+span.new { background-color: #FF6666; }
+span.old { background-color: #FFFF88; text-decoration: line-through; }
+span.comment { background-color: #88FF88; font-style: italic; }
+-->
+</style>
+
+</head>
+
+<body>
+
+<h1 align=CENTER>n2asc User's Guide</h1>
+<h3 align=CENTER>netCDF to ASCII converter</h3>
+<hr>
+
+<dl>
+<dt><h3>Synopsis</h3>
+<dd>n2asc [-f format] [-b batchFile] [-c] [-a] [-n]
+<p>
+<dt><h3>Description</h3>
+<dd><b>n2asc</b> is a program for converting a netCDF file (or subset of) to ASCII.  <b>n2asc</b> provides a GUI similar to <b>nimbus</b>, where you may choose which variables to output.  To change the "output" of a variable, just double click on the variable.  You may also select many and then use CTRL-O to toggle them all at once.
+<p>
+
+
+<dt><h3>Command Line Options</h3>
+<dd>By default <b>n2asc</b> uses "%10.3f" as it's formating statement.  The default may be changed in the command line with the -f option.  See <b>printf(3)</b> for a description of formats.  Formats may also be set for individual variables.  At startup, <b>n2asc</b> reads $HOME/nimbus/.n2asc and applies any formats listed there.
+
+<p>
+<dd>Format of <b>.n2asc</b> file should be varName=Format:
+
+<blockquote>
+<pre class="CDL">
+XCVCNTS=%10d
+CVCNTS=%10d
+AFSSP=%8d
+APCAS=%8d
+AF300=%8d
+A200Y=%8d
+A200Y=%8d
+A260X=%8d
+</pre>
+</blockquote>
+
+
+<dd>Normally <b>n2asc</b> prints a time stamp in the first column (X axis).  The <kbd class="att">-c</kbd> option changes this to a running counter, which can be more useful for plotting programs.
+<p>
+
+<dd><b>n2asc</b> supports batch files.  This is useful if you want to dump many files with the same setup.  A sample batch file follows:
+
+<blockquote>
+<pre class="CDL">
+if=/home/data/231RF10.nc
+of=junk.asc
+ti=09:00:00-09:05:00
+var=ADIFR
+var=BDIFR
+</pre>
+</blockquote>
+
+<p>
+The -a option tells n2asc to produce an ASCII file following the NASA
+Ames Data Exchange Format.
+
+<p>
+The -n option tells n2asc to not place colons in the time stamp.  Format
+will be HHMMSS instead of HH:MM:SS.
+
+<p>
+<dt><h3>Requirements</h3>
+<dd><b>n2asc</b> requires X-Windows with the Motif toolkit and
+<a href="http://www.unidata.ucar.edu/packages/netcdf/index.html">netCDF</a> 3.0 or later to compile.
+</dl>
+
+<hr>
+<h3>Author</h3>
+Christopher J. Webster<br>
+National Center for Atmospheric Research<br>
+Research Aviation Facility.<br>
+(303) 497-1044
+<p>
+<address><a href="mail&#116;&#111;:cjw&#064;ucar.edu?Subject=from_RAF_Web_Software_Page">email Chris Webster</a></address>
+<hr>
+<font size=2>
+Last update:
+Wed Feb  1 21:44:59 MST 2006
+</font>
+
+</body>
+</html>
