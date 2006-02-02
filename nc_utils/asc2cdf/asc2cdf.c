@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
 
     for (i = 0; i < nVariables; ++i)
       {
-      if ((p = strtok(NULL, ", \t\n")) == NULL)
+      if ((p = strtok(NULL, ", \t\n\r")) == NULL)
         break;
 
       dataValue = atof(p);

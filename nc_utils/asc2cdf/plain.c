@@ -166,8 +166,8 @@ void CreatePlainNetCDF(FILE *fp)
 
   /* Attempt to skip title for 'time' column.
    */
-  if ((p = strtok(buffer, " \t\n")) == buffer)
-    p = strtok(NULL, " \t\n");
+  if ((p = strtok(buffer, " \t\n\r")) == buffer)
+    p = strtok(NULL, " \t\n\r");
 
   nVariables = 3;
 
@@ -193,7 +193,7 @@ void CreatePlainNetCDF(FILE *fp)
 
     ++nVariables;
     }
-  while ((p = strtok(NULL, " \t\n")) );
+  while ((p = strtok(NULL, " \t\n\r")) );
 
   nVariables -= 3;
 

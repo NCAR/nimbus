@@ -190,22 +190,22 @@ void CreateNASAamesNetCDF(FILE *fp)
 
   /* Get Scale Factors. */
   fgets(buffer, BUFFSIZE, fp);
-  p = strtok(buffer, " \t\n");
+  p = strtok(buffer, " \t\n\r");
   for (i = 0; i < nVariables; ++i)
     {
     scale[i] = atof(p);
     offset[i] = 0.0;
-    p = strtok(NULL, " \t\n");
+    p = strtok(NULL, " \t\n\r");
     }
 
   /* Get missing values, these will be translated to nimbus MISSING_VALUES.
    */
   fgets(buffer, BUFFSIZE, fp);
-  p = strtok(buffer, " \t\n");
+  p = strtok(buffer, " \t\n\r");
   for (i = 0; i < nVariables; ++i)
     {
     missingVals[i] = atof(p);
-    p = strtok(NULL, " \t\n");
+    p = strtok(NULL, " \t\n\r");
     }
 
   /* Get Titles. */
@@ -243,22 +243,22 @@ void CreateNASAamesNetCDF(FILE *fp)
 
     /* Get Scale Factors. */
     fgets(buffer, BUFFSIZE, fp);
-    p = strtok(buffer, " \t\n");
+    p = strtok(buffer, " \t\n\r");
     for (i = start; i < nVariables; ++i)
       {
       scale[i] = atof(p);
       offset[i] = 0.0;
-      p = strtok(NULL, " \t\n");
+      p = strtok(NULL, " \t\n\r");
       }
 
     /* Get missing values, these will be xlated to nimbus MISSING_VALUES.
      */
     fgets(buffer, BUFFSIZE, fp);
-    p = strtok(buffer, " \t\n");
+    p = strtok(buffer, " \t\n\r");
     for (i = start; i < nVariables; ++i)
       {
       missingVals[i] = atof(p);
-      p = strtok(NULL, " \t\n");
+      p = strtok(NULL, " \t\n\r");
       }
 
     /* Get Titles. */
@@ -292,7 +292,7 @@ void CreateNASAamesNetCDF(FILE *fp)
 
   for (i = 0; i < nVariables; ++i)
     {
-    p = strtok(NULL, " \t\n");
+    p = strtok(NULL, " \t\n\r");
     nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[i+3]);
 //*(strchr(titles[i], '(') -1) = '\0';
 //    nc_def_var(ncid, titles[i], NC_FLOAT, ndims, dims, &varid[i+3]);
