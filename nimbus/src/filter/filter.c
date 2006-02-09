@@ -172,7 +172,7 @@ void Filter(	CircularBuffer *PSCB,	/* SampleRate data. */
     /* Counters shouldn't need to be filtered.  Applies averaging or
      * linear interpolation.
      */
-    if (raw[i]->type[0] == 'C' && raw[i]->SampleRate != 25)
+    if (raw[i]->type[0] == 'C' && raw[i]->SampleRate != raw[i]->OutputRate)
       {
       filterCounter(raw[i]);
       continue;
@@ -276,8 +276,9 @@ static void filterCounter(RAWTBL *sp)
       break;
 
     default:
-      fprintf(stderr, "Rate [%d] not supported for Counters, exiting.\n", sp->SampleRate);
-    exit(1);
+      fprintf(stderr, "Rate [%s, %d] not supported for Counters, exiting.\n",
+	sp->name, sp->SampleRate);
+      exit(1);
     }
 
 }	/* END FILTERCOUNTER */
