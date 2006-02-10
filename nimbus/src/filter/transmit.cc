@@ -39,7 +39,7 @@ void sqlTransmit::sendString(const std::string& str)
     exit(1);
   }
 
-  sprintf(fName, "%s/nimbus_sql%05d.gz", dir, _packetCounter++);
+  sprintf(fName, "%s/nimbus_sql_%s_%05d.gz", dir, _aircraft.c_str(), _packetCounter++);
 
   gzFile gzfd = gzopen(fName, "w+");
 
