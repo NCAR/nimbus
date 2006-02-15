@@ -47,6 +47,8 @@ void ApplyCalCoes(NR_TYPE *record)
       if (sp->type[0] == 'A')
         SRTvolts[pos] = record[pos] =
 		(record[pos] - sp->convertOffset) * sp->convertFactor;
+      else
+        SRTvolts[pos] = record[pos];
 
       if (sp->cof.size() > 0)
       {
