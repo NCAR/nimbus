@@ -47,7 +47,12 @@ PostgreSQL::PostgreSQL(std::string specifier, bool transmitToGround)
   PQsetnonblocking(_conn, true);
 
   if (cfg.TransmitToGround())
-    _ldm = new sqlTransmit("G5");
+  {
+   if (cfg.Aircraft() == Config::HIAPER)
+      _ldm = new sqlTransmit("G5");
+   if (cfg.Aircraft() == Config::C130)
+      _ldm = new sqlTransmit("C130");
+  }
   else
     _ldm = 0;
 
