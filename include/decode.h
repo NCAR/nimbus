@@ -65,6 +65,7 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #define DEFDEROR	"%s/%s/LowRateVars"
 #define VARDB		"%s/%s/VarDB"
 #define BROADCASTVARS	"%s/%s/BcastVars"
+#define XMIT_VARS	"%s/%s/groundvars"
 
 #define AIRCRAFT	"AircraftSpecs"
 #define MODVARS		"%s/defaults/ModVars"
@@ -114,6 +115,7 @@ void	SetLookupSuffix(char *new_suffix),
 	AddVariableToRAWdespikeList(RAWTBL *varp),
 	ReadDefaultDerivedOutputRate(), ReadSumVariables(),
 	ReadDefaultsFile(), ReadStaticLags(), ReadModuloVariables(),
+	ReadGroundVarsFile(),
 	RunAMLIBinitializers(), GetUserTimeIntervals(),
 	SetUpDependencies(), GenerateComputeOrder(),
 	CleanOutUnwantedVariables(),

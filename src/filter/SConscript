@@ -68,6 +68,7 @@ rd_lag.c
 rd_mod.c
 rd_spike.c
 rd_sum.c
+rd_xmit.c
 rec_decode.c
 rtloop.c
 search.c

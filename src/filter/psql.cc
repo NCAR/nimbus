@@ -652,11 +652,13 @@ PostgreSQL::addVariableToTables(rateTableMap &tableMap, const var_base *var,
     /* We don't have a map entry for the ground transmit subset of
      * variables.  Build it in _transmitString, initialize here.
      */
-    if (i == 0) // Only do this for LRT table.
-      if (var->Transmit && _transmitString.str().length() == 0)
+    if (i == 0 && var->Transmit) // Only do this for LRT table.
+    {
+      if (_transmitString.str().length() == 0)
         _transmitString << preamble.str();
       else
         _transmitString << ',';
+    }
 
     if (tableMap[preamble.str()].length() > 0)
       tableMap[preamble.str()] += ',';
