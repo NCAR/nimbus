@@ -23,7 +23,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-9
 -------------------------------------------------------------------------
 */
 
-#include "raf.h"
 #include "nimbus.h"
 #include "amlib.h"
 
@@ -33,7 +32,6 @@ static NR_TYPE ASTG = 1013.246; /* Default altimeter setting (mbar)     */
 /*  Value to be used when this part of code is implemented              */
 static NR_TYPE SFCT = 288.15; /* Default mean surface temp setting (K)  */
 
-extern int  Aircraft;
 
 /* -------------------------------------------------------------------- */
 void initPalt(DERTBL *varp)
@@ -65,10 +63,10 @@ void spalt(DERTBL *varp)
 
   psxc = GetSample(varp, 0);
 
-  switch (Aircraft)
+  switch (cfg.Aircraft())
     {
-    case B57:
-    case HIAPER:
+    case Config::B57:
+    case Config::HIAPER:
       palt = psxc / ASTG;
 
       if (palt >= 0.223198605)

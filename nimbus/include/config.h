@@ -15,6 +15,12 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 class Config
 {
 public:
+  enum aircraft	
+  {
+	ELECTRA=308, KINGAIR=312, SABRELINER=307, C130=130, SAILPLANE=9929,
+	NOAA_G4=49, HIAPER=677, NRL_P3=303, B57=357, TECHS=300, TADS=600
+  };
+
   enum ADSVersion	{ ADS_2, ADS_3 };
   enum ProcessingMode	{ PostProcessing, RealTime };
   enum interpolationType { Linear=0, CubicSpline, AkimaSpline };
@@ -39,6 +45,7 @@ public:
   bool isADS2() const			{ return _adsVersion == ADS_2; }
   bool isADS3() const			{ return _adsVersion == ADS_3; }
 
+  aircraft Aircraft()			{ return _aircraft; }
   processingRate ProcessingRate() const	{ return _processingRate; }
   interpolationType InterpolationType() const	{ return _interpType; }
 
@@ -56,6 +63,8 @@ public:
   void SetHoneyWellCleanup(bool state)	{ _honeywellCleanup = state; }
   void SetInertialShift(bool state)	{ _inertialShift = state; }
 
+  void SetAircraft(aircraft ac)		{ _aircraft = ac; }
+  void SetAircraft(int ac)		{ _aircraft = (aircraft)ac; }
   void SetProcessingRate(processingRate pr) { _processingRate = pr; }
   void SetInterpolationType(interpolationType it) { _interpType = it; }
 
@@ -96,6 +105,7 @@ private:
   bool _honeywellCleanup;
   bool _inertialShift;
 
+  aircraft _aircraft;
   ADSVersion _adsVersion;
   processingRate _processingRate;
   interpolationType _interpType;

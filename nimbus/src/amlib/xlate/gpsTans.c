@@ -175,7 +175,7 @@ int calcDateTime(int week, int secs, int gps_off)
   int julian_day;                               // current julian day
   int *cal_ptr;                                 // calendar pointer
   int hour, minute, second, year, month, day;
-  Hdr_blk *hdr = (Hdr_blk *)ADSrecord;
+//  Hdr_blk *hdr = (Hdr_blk *)ADSrecord;
 
   static int calendar[] =
          {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365};

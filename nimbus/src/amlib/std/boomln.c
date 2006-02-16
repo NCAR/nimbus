@@ -26,33 +26,31 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-96
 #include "nimbus.h"
 #include "decode.h"
 #include "ac.h"
-#include "raf.h"
 
-extern int Aircraft;
 
 /* -------------------------------------------------------------------- */
 NR_TYPE GetBoomLength()
 {
-  NR_TYPE	boomln;
-  char    aircraft[8];
+  NR_TYPE boomln;
+  char aircraft[16];
 
-  switch (Aircraft)
+  switch (cfg.Aircraft())
     {
-    case HIAPER:
+    case Config::HIAPER:
       sprintf(aircraft, "N677F");
       break;
 
-    case NRL_P3:
+    case Config::NRL_P3:
       sprintf(aircraft, "NRL-P3");
       break;
 
-    case C130:
-    case B57:
-      sprintf(aircraft, "N%03dAR", Aircraft);
+    case Config::C130:
+    case Config::B57:
+      sprintf(aircraft, "N%03dAR", cfg.Aircraft());
       break;
 
     default:
-      sprintf(aircraft, "N%03dD", Aircraft);
+      sprintf(aircraft, "N%03dD", cfg.Aircraft());
     }
 
   InitAircraftSpecs(AIRCRAFT);

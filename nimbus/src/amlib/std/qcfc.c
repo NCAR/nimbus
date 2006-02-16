@@ -10,11 +10,9 @@
 
 #include "nimbus.h"
 #include "amlib.h"
-#include "raf.h"
 
 extern NR_TYPE (*pcorQCF)(NR_TYPE, NR_TYPE);
 
-extern int	Aircraft;
 
 /* -------------------------------------------------------------------- */
 void sqcfc(DERTBL *varp)
@@ -23,15 +21,15 @@ void sqcfc(DERTBL *varp)
 
   qcf = GetSample(varp, 0);
 
-  switch (Aircraft)
+  switch (cfg.Aircraft())
   {
-    case HIAPER:
+    case Config::HIAPER:
       aqratio = GetSample(varp, 1);
       psf = GetSample(varp, 2);
       qcfc = qcf - (*pcorQCF)(psf, aqratio);
       break;
 
-    case C130:
+    case Config::C130:
       akrd  = GetSample(varp, 1);
       qcfc = qcf - (*pcorQCF)(akrd, 1.0);
       break;

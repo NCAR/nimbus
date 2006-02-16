@@ -11,7 +11,6 @@
 
 #include "nimbus.h"
 #include "amlib.h"
-#include "raf.h"
  
 /*  Values from /home/local/proj/Defaults on 23 April 1998, RLR		*/
 static NR_TYPE  twire[3] = {155.0, 155.0, 155.0}; /* Wire temperature (K)	*/

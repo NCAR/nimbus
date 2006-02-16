@@ -14,11 +14,9 @@
 
 #include "nimbus.h"
 #include "amlib.h"
-#include "raf.h"
 
 extern NR_TYPE	(*pcorQCR)(NR_TYPE, NR_TYPE);
 
-extern int	Aircraft;
 
 /* -------------------------------------------------------------------- */
 void sqcrc(DERTBL *varp)
@@ -32,19 +30,19 @@ void sqcrc(DERTBL *varp)
   if (qcr < 0.001)
     qcr = 0.1;
 
-  switch (Aircraft)
+  switch (cfg.Aircraft())
     {
-    case C130:
+    case Config::C130:
       akrd = GetSample(varp, 3);
       qcrc = qcr - (*pcorQCR)(akrd, 1.0);
       break;
 
-    case HIAPER:
+    case Config::HIAPER:
       psf = GetSample(varp, 1);
       qcrc = qcr - (*pcorQCR)(qcr, psf);
       break;
 
-    case ELECTRA:
+    case Config::ELECTRA:
       adifr = GetSample(varp, 1);
       bdifr = GetSample(varp, 2);
 
@@ -64,7 +62,7 @@ void sqcrc(DERTBL *varp)
       qcrc = qcr - (*pcorQCR)(qcr, 1.0);
       break;
 
-    case NRL_P3:
+    case Config::NRL_P3:
       adifr = GetSample(varp, 1);
       bqcrc = 0.3 + adifr * (0.0402 + 0.0013 * adifr);
 
@@ -74,7 +72,7 @@ void sqcrc(DERTBL *varp)
       qcrc = qcr - (*pcorQCR)(qcr,1.0) + bqcrc;
       break;
 
-    case KINGAIR:
+    case Config::KINGAIR:
       adifr = GetSample(varp, 1);
       bdifr = GetSample(varp, 2);
 
@@ -91,7 +89,7 @@ void sqcrc(DERTBL *varp)
       qcrc	= (qcr / bqcrc) - (*pcorQCR)(qcr,1.0);
       break;
 
-		case SABRELINER:
+    case Config::SABRELINER:
       atk3    = fabs((double)adifr / (qcr * 0.057));
       beta3   = fabs((double)bdifr / (qcr * 0.041));
       satk3   = sin(atk3 * DEG_RAD);

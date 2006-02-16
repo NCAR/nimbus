@@ -4,20 +4,6 @@
 #ifndef RAF_H
 #define RAF_H
 
-/* airplanes
-*/
-#define ELECTRA		308
-#define KINGAIR		312
-#define SABRELINER	307
-#define C130		130
-#define SAILPLANE	9929
-#define NOAA_G4		49
-#define HIAPER		677
-#define NRL_P3		303
-#define B57		357
-#define TECHS		300
-#define TADS		600
-
 #define PROJ_C130	'1'
 #define PROJ_KINGAIR	'2'
 #define PROJ_P3		'3'

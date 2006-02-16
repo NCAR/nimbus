@@ -8,13 +8,10 @@
                 ssrd - attack angle of the radome (deg)
 */
 
-#include "raf.h"
 #include "nimbus.h"
 #include "amlib.h"
 
-
 extern int	FlightDate[];
-extern int	Aircraft;
 
 /* -------------------------------------------------------------------- */
 void sssrd(DERTBL *varp)
@@ -35,17 +32,17 @@ void sssrd(DERTBL *varp)
     }
   else
     {
-    switch (Aircraft)
+    switch (cfg.Aircraft())
       {
-      case ELECTRA:
+      case Config::ELECTRA:
 	ssrd = ((bdifr / qcxc) + 0.0375) / 0.06577;
 	break;
 
-      case NRL_P3:
+      case Config::NRL_P3:
         ssrd = ((bdifr / qcxc) + 0.0025) / 0.06577;
         break;
 
-      case C130:
+      case Config::C130:
         if (FlightDate[2] < 1998)
           ssrd = ((bdifr / qcxc) - 0.070) / 0.079;
         else
@@ -55,16 +52,16 @@ void sssrd(DERTBL *varp)
           ssrd = ((bdifr / qcxc) - 0.000983) / 0.08189;
         break;
 
-      case KINGAIR:
+      case Config::KINGAIR:
         ssrd = ((bdifr / qcxc) - 0.002825) / 0.07448;
         break;
 
-      case HIAPER:
+      case Config::HIAPER:
         ssrd = ((bdifr / qcxc) -0.0013) / 0.075;
         break;
 
-      case SABRELINER:
-      case B57:
+      case Config::SABRELINER:
+      case Config::B57:
         xmach2 = GetSample(varp, 2);
 
         xmach = sqrt(xmach2);
