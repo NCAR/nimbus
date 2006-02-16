@@ -22,13 +22,12 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2004
 -------------------------------------------------------------------------
 */
 
-#include "raf.h"
 #include "nimbus.h"
 #include "amlib.h"
 
 static const NR_TYPE XMPHMS = 0.44704; // conversion factor mph to meters/sec
 
-extern int	Aircraft, FlightDate[];
+extern int	FlightDate[];
 
 NR_TYPE	recfb, recff, recfkp, recfrh, recfrn, recfw, recfra;
 
@@ -97,9 +96,9 @@ void InitAircraftDependencies()
 
 
   // Set up aircraft dependant values.
-  switch (Aircraft)
+  switch (cfg.Aircraft())
   {
-    case KINGAIR:
+    case Config::KINGAIR:
       LogMessage("NCAR Kingair pcor's installed.");
       jwref	= 230 * XMPHMS;
 
@@ -111,7 +110,7 @@ void InitAircraftDependencies()
       pcorPSFD	= pcorr2;
       break;
 
-    case ELECTRA:
+    case Config::ELECTRA:
       LogMessage("NCAR Electra pcor's installed.");
       jwref	= 300 * XMPHMS;
       recfrn	= 0.65;
@@ -124,7 +123,7 @@ void InitAircraftDependencies()
       pcorPSFD	= pcorf8;
       break;
 
-    case NRL_P3:
+    case Config::NRL_P3:
       LogMessage("NRL P3 pcor's installed.");
       jwref	= 300 * XMPHMS;
       recfrn	= 0.65;
@@ -135,7 +134,7 @@ void InitAircraftDependencies()
       break;
 
 
-    case NOAA_G4:
+    case Config::NOAA_G4:
       LogMessage("NOAA G4 pcor's installed.");
       jwref	= 1 * XMPHMS;
       recfrn	= 0.65;
@@ -148,14 +147,14 @@ void InitAircraftDependencies()
       pcorPSW	= NULL;
       break;
 
-    case B57:
+    case Config::B57:
       LogMessage("NCAR WB57 pcor's installed.");
       pcorQCB	= pcorb7;
       pcorPSB	= pcorb7;
 
-    case C130:
-    case 300:
-    case 600:	/* Ground systems....to become HIAPER??? */
+    case Config::C130:
+    case Config::TECHS:
+    case Config::TADS:	/* Ground systems....to become HIAPER??? */
       LogMessage("NCAR C-130 pcor's installed.");
       jwref	= 1 * XMPHMS;
       recfrn	= 0.65;
@@ -182,7 +181,7 @@ void InitAircraftDependencies()
       pcorPSW	= NULL;
       break;
 
-    case HIAPER:
+    case Config::HIAPER:
       LogMessage("NCAR G5 pcor's installed.");
       recfrh	= 1.00;
       tfher1	= -1.7244;
@@ -192,7 +191,7 @@ void InitAircraftDependencies()
       pcorPSF	= pcorr5;
       break;
 
-    case SABRELINER:
+    case Config::SABRELINER:
       LogMessage("NCAR Saberliner pcor's installed.");
       recff	= 0.95;
       jwref	= 200 * XMPHMS;
@@ -207,7 +206,7 @@ void InitAircraftDependencies()
       pcorPSFD	= pcorf7;
       break;
 
-    case SAILPLANE:
+    case Config::SAILPLANE:
       LogMessage("NCAR Sailplane pcor's installed.");
       pcorQCW	= pcorw2;
       pcorPSW	= pcorw2;
@@ -218,7 +217,7 @@ void InitAircraftDependencies()
       break;
 
     default:
-      fprintf(stderr, "Unknown aircraft [%d] encountered.\n", Aircraft);
+      fprintf(stderr, "Unknown aircraft [%d] encountered.\n", (int)cfg.Aircraft());
       exit(1);
   }
 }	/* END INITAIRCRAFTDEPENDANCIES */

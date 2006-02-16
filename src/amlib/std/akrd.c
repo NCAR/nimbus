@@ -1,32 +1,22 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:    akrd.c
+OBJECT NAME:	akrd.c
 
-FULL NAME:    Attack Angle of the Radome
+FULL NAME:	Attack Angle of the Radome
 
-ENTRY POINTS:    sakrd()
+ENTRY POINTS:	sakrd()
 
-STATIC FNS:    none
+STATIC FNS:	none
 
 DESCRIPTION:    
 
-INPUT:        
-
-OUTPUT:        
-
-REFERENCES:    none
-
-REFERENCED BY:    ComputeDerived()
-
-COPYRIGHT:    University Corporation for Atmospheric Research, 1992
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 -------------------------------------------------------------------------
 */
 
-#include "raf.h"
 #include "nimbus.h"
 #include "amlib.h"
 
-extern int    Aircraft;
 
 /* -------------------------------------------------------------------- */
 void sakrd(DERTBL *varp)
@@ -47,9 +37,9 @@ void sakrd(DERTBL *varp)
   else
     {
     ratio = adifr / qcxc;
-    switch (Aircraft)
+    switch (cfg.Aircraft())
       {
-      case C130:
+      case Config::C130:
         if ( ratio >= -0.28)        
         akrd = (( ratio + 0.3843 ) / (0.06653));
 /*        akrd = (( ratio + 0.3898 ) / (0.06630));        */
@@ -69,24 +59,24 @@ void sakrd(DERTBL *varp)
 
         break;
 
-      case ELECTRA:
+      case Config::ELECTRA:
 	akrd = ((adifr / qcxc) + 0.4095) / 0.07155;
 	break;
 
-      case NRL_P3:
+      case Config::NRL_P3:
         akrd = ((adifr / qcxc) + 0.3472) / 0.071442;
         break;
 
-      case KINGAIR:
+      case Config::KINGAIR:
         akrd = ((adifr / qcxc) + 0.01414) / 0.08485;
         break;
 
-      case HIAPER:
+      case Config::HIAPER:
         akrd = ((adifr / qcxc) + 0.2571 ) / 0.04727;
         break;
 
-      case SABRELINER:
-      case B57:
+      case Config::SABRELINER:
+      case Config::B57:
         {
         double    xmach2;
 

@@ -41,7 +41,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include <unistd.h>
 #include <set>
 
-#include "raf.h"
 #include "pms.h"
 #include "nimbus.h"
 #include "decode.h"
@@ -139,7 +138,6 @@ static int	locatePMS(const char target[], PMS list[]);
 static char	*defaultQuality;
 
 extern long	INS_start;
-extern int	Aircraft;
 
 char	*ExtractHeaderIntoFile(const char fn[]);
 bool	Open2dFile(const char file[], int probeCnt);
@@ -168,7 +166,7 @@ static void CommonPreInitialization()
 
   ReadTextFile(RAWNAMES, rawlist);
 
-  if (Aircraft != NOAA_G4)
+  if (cfg.Aircraft() != Config::NOAA_G4)
     ReadTextFile(DERIVEDNAMES, derivedlist);
   else
     derivedlist[0] = 0;
@@ -187,7 +185,7 @@ static void CommonPostInitialization()
    */
   rate = 1;
 
-  if (Aircraft != SAILPLANE)
+  if (cfg.Aircraft() != Config::SAILPLANE)
     {
     add_derived_names("ALWAYS");
     AddProbeToList("Fluxes", (unsigned long)PROBE_FLUX);
@@ -197,7 +195,7 @@ static void CommonPostInitialization()
 
   ReleasePMSspecs();
 
-  if (Aircraft != NOAA_G4)
+  if (cfg.Aircraft() != Config::NOAA_G4)
     FreeTextFile(derivedlist);
 
   FreeTextFile(rawlist);
@@ -331,7 +329,7 @@ printf("hdr_decode.c: <<< WARNING >>> ProjectNumber is hardcoded = %s\n", cfg.Pr
 
   while (*p && !isdigit(*p))
     ++p;
-  Aircraft = atoi(p);
+  cfg.SetAircraft(atoi(p));
 
 
   // Perform common (ADS2 & ADS3).
@@ -470,10 +468,10 @@ int DecodeHeader(const char header_file[])
   cfg.SetPlatform(p);
   while (*p && !isdigit(*p))
     ++p;
-  Aircraft = atoi(p);
+  cfg.SetAircraft(atoi(p));
 
-  if (Aircraft == 3)
-    Aircraft = NRL_P3;
+  if ((int)cfg.Aircraft() == 3)
+    cfg.SetAircraft(Config::NRL_P3);
 
   GetFlightNumber(&p);
   cfg.SetFlightNumber(p);
@@ -497,24 +495,24 @@ int DecodeHeader(const char header_file[])
 
   /* Old tapes don't set Aircraft field, so fudge it with proj_num.
   */
-  if (Aircraft == 0)
+  if (cfg.Aircraft() == 0)
     {
     switch (cfg.ProjectNumber()[0])
       {
       case '2':
-        Aircraft = KINGAIR;
+        cfg.SetAircraft(Config::KINGAIR);
         break;
       case '3':
-        Aircraft = NRL_P3;
+        cfg.SetAircraft(Config::NRL_P3);
         break;
       case '6':
-        Aircraft = 600;
+        cfg.SetAircraft(Config::TADS);
         break;
       case '7':
-        Aircraft = SABRELINER;
+        cfg.SetAircraft(Config::SABRELINER);
         break;
       case '8':
-        Aircraft = ELECTRA;
+        cfg.SetAircraft(Config::ELECTRA);
         break;
       }
     }
@@ -1072,7 +1070,7 @@ static void initGustCorrected(char vn[])
   if (GPScount > 0)
     return;
 
-  if (Aircraft != SAILPLANE)
+  if (cfg.Aircraft() != Config::SAILPLANE)
     {
     probeType = PROBE_GUSTC;
     AddProbeToList("Corrected Winds", (unsigned long)PROBE_GUSTC);

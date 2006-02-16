@@ -572,9 +572,6 @@ static void VerifyFlightInfo(Widget w, int indx, XtPointer call)
   char	*p, *p1;
   struct Fl   *fp = get_header();
 
-  extern int  Aircraft;
-
-
   if (FlightInfo[indx].Dirty == false)
     return;
 
@@ -625,7 +622,7 @@ static void VerifyFlightInfo(Widget w, int indx, XtPointer call)
       for (p1 = buffer; *p1 && !isdigit(*p1); ++p1)
         ;
 
-      Aircraft = atoi(p1);
+      cfg.SetAircraft(atoi(p1));
       break;
     }
 

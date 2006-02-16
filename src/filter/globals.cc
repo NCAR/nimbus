@@ -51,7 +51,7 @@ size_t	ProcessingRate,
 
 RateFeedBack	FeedBack;
 
-int	PauseWhatToDo, Aircraft, FlightNumberInt;
+int	PauseWhatToDo, FlightNumberInt;
 
 /* Data record pointers
  */

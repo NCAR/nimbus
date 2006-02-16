@@ -24,7 +24,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 #include "nimbus.h"
 #include "amlib.h"
-#include "raf.h"
 
 /* Honeywell Manual Time constants.  126 second time constants  	*/
 #define C1	0.15
@@ -32,8 +31,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #define C3	0.000125		
 
 static NR_TYPE	hi3[nFeedBackTypes] = { 0.0, 0.0 };
-
-extern int	Aircraft;
 
 
 /* -------------------------------------------------------------------- */

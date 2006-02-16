@@ -14,11 +14,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 -------------------------------------------------------------------------
 */
 
-#include "raf.h"
 #include "nimbus.h"
 #include "amlib.h"
 
-extern int	Aircraft;
 
 /* -------------------------------------------------------------------- */
 void xlhgm(RAWTBL *varp, void *p, NR_TYPE *output)
@@ -26,7 +24,7 @@ void xlhgm(RAWTBL *varp, void *p, NR_TYPE *output)
   short		*input = (short *)p;
   NR_TYPE	hgm, hgmv;
 
-  if (Aircraft == KINGAIR)
+  if (cfg.Aircraft() == Config::KINGAIR)
     for (size_t i = 0; i < varp->SampleRate; ++i)
       {
       hgmv = (ntohs(input[i * varp->ADSoffset]) - varp->convertOffset) *
