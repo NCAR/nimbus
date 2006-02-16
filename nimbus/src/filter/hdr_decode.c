@@ -247,6 +247,7 @@ for (size_t i = 0; i < derived.size(); ++i)
 
   ReadModuloVariables();
   ReadSumVariables();
+  ReadGroundVarsFile();
 
   if (cfg.ProcessingRate() == Config::SampleRate)
     for (size_t i = 0; i < raw.size(); ++i)
@@ -2189,7 +2190,7 @@ var_base::var_base(const char s[])
   Dirty = false;
   Output = true;
   DependedUpon = false;
-  Transmit = true;
+  Transmit = false;
 
   Modulo = 0;
 
