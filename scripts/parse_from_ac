@@ -10,6 +10,16 @@
 read aircraft
 read file_type
 
+case $aircraft in
+  C130)
+    PGHOST=orion.atd.ucar.edu ; export PGHOST;
+    ;;
+
+  G5)
+    PGHOST=sloop.atd.ucar.edu ; export PGHOST;
+    ;;
+esac
+
 case $file_type in
   sql)
     while read line; do
