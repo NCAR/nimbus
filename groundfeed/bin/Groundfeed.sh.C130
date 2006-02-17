@@ -1,0 +1,16 @@
+#!/bin/sh
+
+PATH=$PATH:/sbin:/usr/sbin:/usr/bin
+
+app=Groundfeed.Sender
+
+groundvars=/jnet/local/proj/145/groundvars
+dbhost=hercules
+dbname=real-time
+outname=/tmp/xmit/nimbus_sql_
+
+cd /home/local/raf/groundfeed/lib
+
+/usr/java/jre/bin/java \
+  -cp groundfeed.jar:getopt.jar:postgresql.jar $app -g $groundvars -v \
+  -h $dbhost -n $dbname -c -o $outname >> /tmp/Groundfeed.out 2>&1 &
