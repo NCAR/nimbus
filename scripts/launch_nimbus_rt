@@ -18,5 +18,6 @@ end
 
 # Fire up nimbus in real-time with transmit on (-x to be replaced by
 # standalone program).
-nimbus -rt3 -x
+nimbus -rt3 -x &
+sleep 10
 /home/local/raf/groundfeed/Groundfeed.sh
