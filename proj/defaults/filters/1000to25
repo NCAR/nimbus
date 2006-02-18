@@ -1,8 +1,5 @@
 #
-# Used for 1000 hz data being decimated to 25 hz.  Start roll off at 8hz,
-# and finish at 12.5hz (of nyquist).
-#
-# Corner freqz of [0.0 - 0.016, 0.025 - 1.0].  Noise is below 80 dB.
+# Used for 1000 hz data being decimated to 25 hz.  Box car average.
 #
 40 taps
 #
