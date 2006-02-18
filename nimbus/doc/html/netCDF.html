@@ -18,6 +18,7 @@ li.toc { list-style: none; padding: .1em; }
 kbd.att { font-weight: normal; color: blue; }
 div.example { margin-left: 3em; margin-right: 3em; }
 div.definition { margin-left: 1em; }
+div.sidebar { margin-left: 50px; margin-right: 50px; padding: 20px; background-color: #f5deb4; }
 pre.CDL { color: brown; }
 table { padding: .25em; }
 span.new { background-color: #FF6666; }
@@ -103,7 +104,7 @@ in the data, and it would take up excess space.
 <p>
 There is also an occasional need to look at data at the sample rate. 
 <p>
-<img src="http://raf.atd.ucar.edu/Software/record.png" align=center>
+<img src="http://www.eol.ucar.edu/raf/Software/record.png" align=center>
 <p>
 
 <!--------------------------------------------------------------------------- ABS -->
@@ -223,6 +224,7 @@ Time follows the recomendations set forth in the <a href="http://www.cgd.ucar.ed
 </pre>
 
 <p>
+<div class="sidebar">
 Pre version 1.3 time was represented as follows, it is still included for
 backwards compatibility but is being deprecated.
 <p>
@@ -241,12 +243,16 @@ the time of the current record.
                 time_offset:long_name = "Seconds since base_time." ;
                 time_offset:units = "seconds since 2004-08-02 16:46:11 +0000" ;
 </pre>
+</div>
 
 <p>
 <h4>5.2 Missing data</h4>
-At this time we use the <kbd class="att">missing_value</kbd> attribute.  As
-of 01/27/2003 we have added <kbd class="att">_FillValue</kbd> as the missing
-value, <kbd class="att">missing_value</kbd> (pre 1998 spelled <kbd class="att">MissingValue</kbd>) is being deprecated.
+At this time we use the <kbd class="att">_FillValue</kbd> attribute.
+<p>
+<div class="sidebar">
+Prior to 01/27/2003 we used <kbd class="att">missing_value</kbd> as the missing
+value.  <kbd class="att">missing_value</kbd> (pre 1998 spelled <kbd class="att">MissingValue</kbd>) is being deprecated.
+</div>
 <p>
 
 <!--------------------------------------------------------------------------- ABS -->
@@ -260,15 +266,19 @@ value, <kbd class="att">missing_value</kbd> (pre 1998 spelled <kbd class="att">M
                 :Address = "P.O. Box 3000, Boulder, CO 80307-3000" ;
                 :Phone = "(303) 497-1030" ;
                 :Conventions = "NCAR-RAF/nimbus" ;
+                :ConventionsURL = "http://www.eol.ucar.edu/raf/Software/netCDF.html" ;
                 :Version = "1.3" ;
-                :DateProcessed = "2005-03-30 15:38:27 -0700" ;
-                :ProjectName = "SHEBA" ;
-                :Aircraft = "N130AR" ;
-                :ProjectNumber = "101" ;
-                :FlightNumber = "rf16" ;
-                :FlightDate = "07/29/1998" ;
-                :coordinates = "LONC LATC ALTX Time" ;
-                :TimeInterval = "18:19:14-03:25:20" ;
+                :ProcessorRevision = "3213" ;
+                :ProcessorURL = "http://svn/svn/raf/trunk/nimbus" ;
+                :DateProcessed = "2006-02-17 16:57:57 -0700" ;
+                :ProjectName = "TREX" ;
+                :Aircraft = "N677F" ;
+                :ProjectNumber = "503" ;
+                :FlightNumber = "tf01" ;
+                :FlightDate = "02/17/2006" ;
+                :coordinates = "GGLON GGLAT GGALT Time" ;
+                :landmarks = "39.9083 -105.116 BJC,40.25 -103.799 FtMrg,43.5838 -96.7346 FSD,46.8392 -92.1897 DLH,32.9048 -97.0459 DFW,36.0847 -115.151 LAS,40.7858 -111.979 SLC,33.4358 -112.013 PHX,45.5894 -122.592 PDX,33.9436 -118.403 LAX" ;
+                :TimeInterval = "00:03:16-01:29:43" ;
 </pre>
 <p>
 <kbd class="att">coordinates</kbd> is required starting with version 1.3.  These
@@ -379,12 +389,11 @@ National Center for Atmospheric Research<br>
 Research Aviation Facility<br>
 (303) 497-1044
 <p>
-<address><a href="/cgi-bin/mail_me1.pl/cjw+from_RAF_Web_Software_Page_netCDF">email</a></address>
+<address><a href="mail&#116;&#111;:cjw&#064;ucar.edu?Subject=from_RAF_Web_Software_Page_netCDF">email</a></address>
 <hr>
 <font size=2>
 Last update:
-Thu Mar 31 09:14:39 MST 2005
+Sat Feb 18 15:06:44 MST 2006
 </font>
-
 </body>
 </html>
