@@ -56,6 +56,47 @@ void ReadGroundVarsFile()
 
   FreeTextFile(list);
 
+  FILE *fp;
+  char fileName[256];
+  strcpy(fileName, XMIT_VARS);
+  strcat(fileName, ".rt");
+  if ((fp = OpenProjectFile(fileName, "w", RETURN)) == NULL)
+  {
+    sprintf(buffer, fileName, ProjectDirectory, cfg.ProjectNumber().c_str());
+    fprintf(stderr, "ReadGroundVarsFile: can't open %s for writing.\n", buffer);
+    exit(1);
+  }
+
+
+  bool oneOut = false;
+  for (size_t i = 0; i < raw.size(); ++i)
+  {
+    if (raw[i]->Transmit)
+    {
+      if (oneOut)
+        fprintf(fp, ", %s", raw[i]->name);
+      else
+        fprintf(fp, raw[i]->name);
+
+      oneOut = true;
+    }
+  }
+
+  for (size_t i = 0; i < derived.size(); ++i)
+  {
+    if (derived[i]->Transmit)
+    {
+      if (oneOut)
+        fprintf(fp, ", %s", derived[i]->name);
+      else
+        fprintf(fp, derived[i]->name);
+
+      oneOut = true;
+    }
+  }
+
+  fclose(fp);
+
 }	/* END READGROUNDVARSFILE */
 
 /* END RD_XMIT.C */
