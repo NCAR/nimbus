@@ -65,14 +65,11 @@ PostgreSQL::PostgreSQL(std::string specifier, bool transmitToGround)
     sleep(3);
     initializeGlobalAttributes();
     initializeVariableList();
-    if (_ldm)
-      _ldm->setTimeInterval(5);
     submitCommand(
     "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current", true);
+    if (_ldm)
+      _ldm->setTimeInterval(5);
   }
-
-  // transmit of 1 second data removed from nimbus...
-  _ldm = 0;
 
 #ifdef BCAST_DATA
   if (cfg.ProcessingMode() == Config::RealTime)
@@ -114,6 +111,9 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
 	<< timeStamp << "'); INSERT INTO global_attributes VALUES ('EndTime', '"
 	<< timeStamp << "');";
     submitCommand(_sqlString.str(), true);
+
+    // transmit of 1 second data removed from nimbus...
+    _ldm = 0;
   }
 
 
