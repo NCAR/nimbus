@@ -59,15 +59,20 @@ PostgreSQL::PostgreSQL(std::string specifier, bool transmitToGround)
   // Don't recreate database if this is the same flight.
   if (isSameFlight() == false)
   {
+    LogMessage("Not the same flight as previous startup, dropping databases.");
     dropAllTables();	// Remove existing tables, this is a reset.
     createTables();
+    sleep(3);
     initializeGlobalAttributes();
     initializeVariableList();
-    submitCommand(
-    "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current", true);
     if (_ldm)
       _ldm->setTimeInterval(5);
+    submitCommand(
+    "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current", true);
   }
+
+  // transmit of 1 second data removed from nimbus...
+  _ldm = 0;
 
 #ifdef BCAST_DATA
   if (cfg.ProcessingMode() == Config::RealTime)
@@ -76,6 +81,9 @@ PostgreSQL::PostgreSQL(std::string specifier, bool transmitToGround)
     _brdcst->openSock(UDP_BROADCAST);
   }
 #endif
+
+  if (cfg.TransmitToGround())
+    LaunchGroundFeed();
 
 }	/* END CTOR */
 
@@ -161,6 +169,7 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
   _sqlString << ");";
   _transmitString << ");";
   submitCommand(_sqlString.str(), false);
+
   if (_ldm)
   {
     if (_ldm->oneCommandLeft())
@@ -832,6 +841,22 @@ BuildPGspecString()
     specifier += p;
 
   return specifier;
+}
+
+/* -------------------------------------------------------------------- */
+static const char feedCommand[] =
+		"/home/local/raf/groundfeed/bin/Groundfeed.sh";
+void
+PostgreSQL::LaunchGroundFeed()
+{
+  pid_t pid = fork();
+
+  if (pid == 0)
+  {
+    execl(feedCommand, feedCommand, cfg.ProjectNumber().c_str(), 0);
+    fprintf(stderr, "nimbus: failed to exec %s\n", feedCommand);
+    _exit(1);
+  }
 }
 
 // END PSQL.CC

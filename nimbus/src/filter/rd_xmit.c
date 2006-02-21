@@ -29,7 +29,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2006
 /* -------------------------------------------------------------------- */
 void ReadGroundVarsFile()
 {
-  int	i, index;
   char	*list[512];
 
   if (AccessProjectFile(XMIT_VARS, "r") == false)
@@ -37,13 +36,22 @@ void ReadGroundVarsFile()
 
   ReadTextFile(XMIT_VARS, list);
 
-  for (i = 0; list[i]; ++i)
+  for (int i = 0; list[i]; ++i)
   {
-    if ((index = SearchTable(raw, list[i])) != ERR)
-      raw[index]->Transmit = true;
+    int r_idx, d_idx;
 
-    if ((index = SearchTable(derived, list[i])) != ERR)
-      derived[index]->Transmit = true;
+    if ((r_idx = SearchTable(raw, list[i])) != ERR)
+      raw[r_idx]->Transmit = true;
+
+    if ((d_idx = SearchTable(derived, list[i])) != ERR)
+      derived[d_idx]->Transmit = true;
+
+    if (r_idx == ERR && d_idx == ERR)
+    {
+      char msg[100];
+      sprintf(msg, "rd_xmit.c: Variable [%s] not found, ignoring.\n", list[i]);
+      LogMessage(msg);
+    }
   }
 
   FreeTextFile(list);
