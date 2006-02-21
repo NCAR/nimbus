@@ -1,33 +1,29 @@
 #!/bin/sh
 
-#
-# File must be changed for each aircraft presently.
-# This will be changed later.  For now, see the comments below.
-#
+# Requires project number as 1st arg.
+if [ $# == 0 ]; then
+  echo $0: Usage 'Groundfeed.sh proj_number'.
+  exit 1
+fi
 
 PATH=$PATH:/sbin:/usr/sbin:/usr/bin
 
 app=Groundfeed.Sender
 
 dbname=real-time
-outname=/tmp/xmit/nimbus_sql_
+outname=$XMIT_DIR/nimbus_sql_
+groundvars=$PROJ_DIR/$1/groundvars
 
-cd /home/local/raf/groundfeed/lib
+if [ ${1:0:1} == 1 ]; then
+  dbhost=hercules
+fi
 
-#
-# C130 
-#
-groundvars=/jnet/local/proj/145/groundvars
-dbhost=hercules
+if [ ${1:0:1} == 5 ]; then
+  dbhost=hyper
+fi
+
+cd $JLOCAL/raf/groundfeed/lib
+
 /usr/java/jre/bin/java \
   -cp groundfeed.jar:getopt.jar:postgresql.jar $app -g $groundvars -v \
-  -h $dbhost -n $dbname -c -o $outname >> /tmp/Groundfeed.out 2>&1 &
-
-#
-# GV
-#
-#groundvars=/jnet/local/proj/145/groundvars
-#dbhost=hyper
-#/usr/java/jre/bin/java \
-#  -cp groundfeed.jar:getopt.jar:postgresql.jar $app -g $groundvars -v \
-#  -h $dbhost -n $dbname -5 -o $outname >> /tmp/Groundfeed.out 2>&1 &
+  -h $dbhost -n $dbname -${1:0:1} -o $outname >> /tmp/Groundfeed.out 2>&1 &
