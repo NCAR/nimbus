@@ -410,7 +410,10 @@ void DsmDisk::writeFiles(char *buff, int len)
          openFiles();
          writeHeader();
 
-         nimbus = new UnixTask("/jnet/local/bin/nimbus");
+         char command[256];
+         sprintf(command,	"%s/raf/nimbus/scripts/launch_nimbus_rt",
+				getenv("JLOCAL"));
+         nimbus = new UnixTask(command);
       }
       else
          return;
