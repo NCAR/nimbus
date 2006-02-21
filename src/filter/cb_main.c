@@ -236,7 +236,7 @@ static void readHeader()
 /* -------------------------------------------------------------------- */
 void ConfigurationDump()
 {
-  LogMessage("Configuration dump:");
+  LogMessage("\nConfiguration dump:");
   sprintf(buffer, "  Input file is %s.",
 	cfg.isADS2() ? "ADS-2" : "ADS-3"); LogMessage(buffer);
   sprintf(buffer, "  %s mode.",

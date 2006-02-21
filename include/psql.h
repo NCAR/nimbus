@@ -236,6 +236,10 @@ protected:
   std::string
   updateEndTimeString(const std::string & timeStamp, long usec) const;
 
+  // Launch script/program which feeds data to the ground.
+  void
+  LaunchGroundFeed();
+
 };	// END PGSQL.H
 
 #endif
