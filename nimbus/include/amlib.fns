@@ -11,6 +11,11 @@
 #
 	"XICING",	NULL,           NULL,		sicing,
 #
+# T-REX - Turbulence
+#
+	"TKE",		NULL,           NULL,		stke,
+	"ACVAR",	NULL,           NULL,		sacvar,
+#
 # IDEAS
 #
 	"INFLOWUWC",	NULL,           NULL,		suwflow,

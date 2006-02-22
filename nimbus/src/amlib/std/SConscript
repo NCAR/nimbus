@@ -28,7 +28,6 @@ dpcrc.c
 dprho.c
 esubt.c
 f300.c
-flux.c
 fssp.c
 ggps.c
 gpsc.c

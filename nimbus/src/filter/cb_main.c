@@ -294,7 +294,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
 
 
   for (size_t i = 0; i < raw.size(); ++i)
-    {
+  {
     if (!cfg.TimeShifting())
       raw[i]->StaticLag = raw[i]->DynamicLag = 0;
 
@@ -309,12 +309,13 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
 
     if (raw[i]->Output && VarDB_lookup(raw[i]->name) == ERR && LogFile)
       fprintf(LogFile, "%s has no entry in the VarDB.\n", raw[i]->name);
-    }
+  }
 
-  for (size_t i = 0; i < derived.size(); ++i) {
+  for (size_t i = 0; i < derived.size(); ++i)
+  {
     if (derived[i]->Output && VarDB_lookup(derived[i]->name) == ERR && LogFile)
       fprintf(LogFile,"%s has no entry in the VarDB.\n", derived[i]->name);
-    }
+  }
 
   FlushXEvents();
 

@@ -16,6 +16,7 @@ co2c.c
 conccn.c
 cvi.c
 efield.c
+flux.c
 geopot.c
 licor.c
 licor_wyo.c
@@ -29,6 +30,7 @@ rdma.c
 rlwp.c
 sail.c
 spefm.c
+turbulence.c
 xpsfdc.c
 cloudbase.c
 icing.c

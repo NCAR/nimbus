@@ -4,7 +4,7 @@ OBJECT NAME:    psql.cc (PostgreS)
 
 FULL NAME:      PostgreSQL database routines.
 
-COPYRIGHT:      University Corporation for Atmospheric Research, 2003-05
+COPYRIGHT:      University Corporation for Atmospheric Research, 2003-06
 -------------------------------------------------------------------------
 */
 
