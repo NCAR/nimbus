@@ -247,7 +247,8 @@ for (size_t i = 0; i < derived.size(); ++i)
 
   ReadModuloVariables();
   ReadSumVariables();
-  ReadGroundVarsFile();
+  if (cfg.ProcessingMode() == Config::RealTime)
+    ReadGroundVarsFile();
 
   if (cfg.ProcessingRate() == Config::SampleRate)
     for (size_t i = 0; i < raw.size(); ++i)
