@@ -76,7 +76,7 @@ public class DbAccess {
                 if (datetimeData.substring(0,19).equals(oldTime))
                    continue;
                 else {
-                   for (int i = 1; i <= numVars; i++) {
+                   for (int i = 1; i < numVars; i++) {
                       Double number = new Double(res.getDouble(i + 1));
                       dataResults.add(number);
                    }
