@@ -12,7 +12,7 @@ app=Groundfeed.Sender
 
 dbname=real-time
 outname=$XMIT_DIR/nimbus_sql_
-groundvars=$PROJ_DIR/$1/groundvars
+groundvars=$PROJ_DIR/$1/groundvars.rt
 
 if [ ${1:0:1} == 1 ]; then
   dbhost=hercules

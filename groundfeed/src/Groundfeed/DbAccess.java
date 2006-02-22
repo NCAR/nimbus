@@ -24,7 +24,6 @@ public class DbAccess {
     protected String oldTime = "2006-01-01 01:01:01";
     protected String sqlString = null;
     protected String sqlString2 = "select value from global_attributes where key='EndTime';";
-    protected int numVars;
     protected Vector dataResults = new Vector();
 
     public DbAccess(String dbHostName, String dbName) {
@@ -48,11 +47,7 @@ public class DbAccess {
     }
 
     public void createRequestString(GroundVarsInfo groundVarsInfo) {
-       numVars = groundVarsInfo.getSize();
-       String varNames = groundVarsInfo.getName(0);
-       for (int i = 1; i < numVars; i++) {
-          varNames = varNames.concat(", ").concat(groundVarsInfo.getName(i));
-       }
+       String varNames = groundVarsInfo.getNames();
        sqlString = "select datetime, " + varNames + " from raf_lrt where datetime >= '";
     }
 
@@ -74,14 +69,20 @@ public class DbAccess {
           } else {
 //             System.out.println(sqlString + oldTime + "';");
              res = statement.executeQuery(sqlString + oldTime + "';");
+             ResultSetMetaData rsmd = res.getMetaData();
+             int numVars = rsmd.getColumnCount();
              while (res.next()) {
                 datetimeData = res.getString(1);
-                for (int i = 1; i <= numVars; i++) {
-                   Double number = new Double(res.getDouble(i + 1));
-                   dataResults.add(number);
+                if (datetimeData.substring(0,19).equals(oldTime))
+                   continue;
+                else {
+                   for (int i = 1; i <= numVars; i++) {
+                      Double number = new Double(res.getDouble(i + 1));
+                      dataResults.add(number);
+                   }
+                   outDataFile.addSqlStatement(datetimeData, dataResults);
+                   dataResults.clear();
                 }
-                outDataFile.addSqlStatement(datetimeData, dataResults);
-                dataResults.clear();
              }
              outDataFile.endSqlStatement(datetimeData);
              outDataFile.closeLdmFile();

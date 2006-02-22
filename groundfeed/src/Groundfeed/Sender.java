@@ -83,8 +83,8 @@ public class Sender extends java.lang.Object {
         "-h hostDBname\n" +
         "-n DBname\n" +
         "-o outdir+fileprefix\n" +
-        "-c\n" +
-        "-5\n");
+        "-1 (C130)\n" +
+        "-5 (GV)\n");
         System.exit(ret);
     }
 
@@ -94,7 +94,7 @@ public class Sender extends java.lang.Object {
      */
     public static void main(java.lang.String[] args) {
 
-        Getopt g = new Getopt("Groundfeed.Sender", args, "g:h:n:vo:c5");
+        Getopt g = new Getopt("Groundfeed.Sender", args, "g:h:n:vo:15");
 
         boolean verbose = false;
         String dbName = new String("");
@@ -122,7 +122,7 @@ public class Sender extends java.lang.Object {
                 case 'o':
                    outdirfile = g.getOptarg();
                    break;
-                case 'c':
+                case '1':
                    plane = "C130";
                    break;
                 case '5':

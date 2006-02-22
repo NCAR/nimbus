@@ -18,7 +18,7 @@ public class GroundVarsInfo {
 
    protected String infile;
    protected BufferedReader indata = null;
-   protected Vector names = new Vector();
+   protected String sqlnames;
 
    public GroundVarsInfo(String groundvarsName)
        throws IOException {
@@ -32,21 +32,16 @@ public class GroundVarsInfo {
          System.out.println("File not found " + infile);
       }
       try {
-         while ((data = indata.readLine()) != null) {
-            names.add(data.trim());
-         }
+         sqlnames = indata.readLine();
+         sqlnames.trim();
       } catch (IOException e) {
          System.out.println("End of data in file");
          indata.close();
       }
    }
 
-   public int getSize() {
-     return (names.size());
-   }
-
-   public String getName(int pos) {
-      return (names.elementAt(pos).toString());
+   public String getNames() {
+      return (sqlnames);
    }
 }
 
