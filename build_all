@@ -5,10 +5,27 @@
 # setenv LOCAL $JLOCAL
 # setenv WINDS $JLOCAL
 
+# For a stand alone installation such as a groundstation or aircraft
+# server, JLOCAL will most likely be the same as LOCAL.  In-house
+# LOCAL points to the EOL wide installation area and JLOCAL points to
+# RAF specific installation area.
+
 if ( ! $?JLOCAL || ! $?LOCAL ) then
-    echo "Need to set LOCAL, JLOCAL."
+    echo "Need to set environment variables LOCAL, JLOCAL."
     exit 1
 endif
+
+# Check for netCDF installation.
+ls $LOCAL/libnetcdf* >& /dev/null
+set rc1 = $status
+ls $JLOCAL/libnetcdf* >& /dev/null
+set rc2 = $status
+
+if ($rc1 == 0 && $rc2 == 0) then
+    echo "netCDF appears to NOT be installed in either $LOCAL or $JLOCAL."
+    exit 1
+endif
+
 
 if ( ! $?WINDS ) then
     echo "WINDS not set, ADS2 and winds will NOT be built."
