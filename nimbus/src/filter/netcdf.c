@@ -1041,6 +1041,9 @@ std::string readLandmarks()
 
   for (int nMarks = 0; fgets(buffer, 256, fp) != NULL; ++nMarks)
     {
+    if (buffer[0] == '#')
+      continue;
+
     sscanf(buffer, "%f %f %s\n", &lat, &lon, label);
 
     if (nMarks > 0)
