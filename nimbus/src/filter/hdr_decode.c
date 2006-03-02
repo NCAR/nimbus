@@ -320,7 +320,13 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
   cfg.SetFlightDate(buffer);
   }
 
-cfg.SetProjectNumber("502");
+if (cfg.ProjectName() == "GV_test")
+  cfg.SetProjectNumber("501");
+if (cfg.ProjectName() == "ProgSci")
+  cfg.SetProjectNumber("502");
+if (cfg.ProjectName() == "TREX")
+  cfg.SetProjectNumber("503");
+
 printf("hdr_decode.c: <<< WARNING >>> ProjectNumber is hardcoded = %s\n", cfg.ProjectNumber().c_str());
 
   cfg.SetCoordLAT("GGLAT");

@@ -23,20 +23,25 @@ static const int N = 30;
 void stke(DERTBL *varp)
 {
   NR_TYPE ui, vi, ws, wi, TKE, VRMS;
-  static NR_TYPE v2bar = 0.0, ubar = 0.0, vbar = 0.0, wbar = 0.0;
+  static double v2bar = 0.0, ubar = 0.0, vbar = 0.0, wbar = 0.0;
 
   ui = GetSample(varp, 0);
   vi = GetSample(varp, 1);
   wi = GetSample(varp, 2);
   ws = GetSample(varp, 3);
 
-  v2bar = (v2bar * (N-1) + ws*ws + wi*wi) / N;
-  ubar = (ubar * (N-1) + ui) / N;
-  vbar = (vbar * (N-1) + vi) / N;
-  wbar = (wbar * (N-1) + wi) / N;
-  TKE = 0.5 * (v2bar - ubar*ubar - vbar*vbar - wbar*wbar);
+  if (isnan(ui) || isnan(vi) || isnan(wi))
+    TKE = MISSING_VALUE;
+  else
+  {
+    v2bar = (v2bar * (N-1) + ws*ws + wi*wi) / N;
+    ubar = (ubar * (N-1) + ui) / N;
+    vbar = (vbar * (N-1) + vi) / N;
+    wbar = (wbar * (N-1) + wi) / N;
+    TKE = 0.5 * (v2bar - ubar*ubar - vbar*vbar - wbar*wbar);
 
-  VRMS = sqrt(2.0 * TKE);
+    VRMS = sqrt(2.0 * TKE);
+  }
 
   PutSample(varp, TKE);
 
@@ -46,13 +51,18 @@ void stke(DERTBL *varp)
 void sacvar(DERTBL *varp)
 {
   NR_TYPE acins, ACVAR;
-  static NR_TYPE g2bar = 0.0, gbar = 0.0;
+  static double g2bar = 0.0, gbar = 0.0;
 
   acins = GetSample(varp, 0);
 
-  g2bar = (g2bar * (N-1) + acins*acins) / N;
-  gbar = (gbar * (N-1) + acins) / N;
-  ACVAR = g2bar - gbar*gbar;
+  if (isnan(acins))
+    ACVAR = floatNAN;
+  else
+  {
+    g2bar = (g2bar * (N-1) + acins*acins) / N;
+    gbar = (gbar * (N-1) + acins) / N;
+    ACVAR = g2bar - gbar*gbar;
+  }
 
   PutSample(varp, ACVAR);
 
