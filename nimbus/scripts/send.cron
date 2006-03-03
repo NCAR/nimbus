@@ -1,0 +1,20 @@
+#!/bin/csh
+#
+# Script to transmit AVAPS DropSonde data files to the ground.
+#
+# This is set up to run out of a cron job every 3 minutes
+# 0-59/3 * * * * /home/local/raf/nimbus/scripts/send.cron
+#
+
+cd /mnt/r2/send_to_grnd
+
+set file_list = `ls D2*`
+
+# Wait to make sure all data was transferred
+sleep 20
+
+# move file, and pqinsert.
+foreach file ($file_list)
+  mv $file inserted/
+  /home/local/bin/pqinsert -v inserted/$file
+end
