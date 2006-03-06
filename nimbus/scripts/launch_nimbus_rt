@@ -16,6 +16,15 @@ foreach file (${XMIT_DIR}/*sql*)
   /bin/rm $file
 end
 
-# Fire up nimbus in real-time with transmit on (-x to be replaced by
-# standalone program).
+# Remove AVAPS DropSonde files.
+/bin/rm -f /mnt/r2/send_to_grnd/D20*
+/bin/rm -f /tmp/avaps-rt
+
+# Start google map/earth updater onboard.
+/var/www/html/rt_flights/trex/update/update &
+
+# Fire up nimbus in real-time with transmit on.
 nimbus -rt3 -x
+
+# remove google updater.
+pkill update
