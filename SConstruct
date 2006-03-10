@@ -13,7 +13,11 @@ SConsignFile(File(file).abspath)
 # No RCS/SCCS checkout.
 env.SourceCode(['.', 'amlib', 'filter'], None)
 
-env['JLOCAL'] = os.environ['JLOCAL']
+# This is mostly for buildbot, which does not use the Jeffco login.
+try: env['JLOCAL'] = os.environ['JLOCAL']
+except KeyError:
+    print "\n$JLOCAL not found!  Defaulting to '/jnet/local'\n"
+    env['JLOCAL'] = '/jnet/local/'
 
 env['CC'] = ['g++']
 
