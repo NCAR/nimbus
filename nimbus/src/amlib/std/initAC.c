@@ -220,6 +220,19 @@ void InitAircraftDependencies()
       fprintf(stderr, "Unknown aircraft [%d] encountered.\n", (int)cfg.Aircraft());
       exit(1);
   }
+
+  NR_TYPE *tmp;
+  if ( (tmp = GetDefaultsValue("RECFRH", "INIT_AC")) )
+  {
+    LogMessage("initAC.c: RECFRH found in Defaults, using.");
+    recfrh = tmp[0];
+  }
+  if ( (tmp = GetDefaultsValue("RECFRN", "INIT_AC")) )
+  {
+    LogMessage("initAC.c: RECFRN found in Defaults, using.");
+    recfrn = tmp[0];
+  }
+
 }	/* END INITAIRCRAFTDEPENDANCIES */
 
 /* Electra ------------------------------------------------------------ */
