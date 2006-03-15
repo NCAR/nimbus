@@ -149,11 +149,7 @@ int main(int argc, char *argv[])
       hour = atoi(p);
       }
     else
-      {
-      hour = atoi(p);
-      minute = atoi(&p[3]);
-      second = atoi(&p[6]);
-      }
+      sscanf(p, "%d:%d:%d", &hour, &minute, &second);
 
     if (hour > 23)
       hour -= 24;
@@ -208,10 +204,6 @@ int main(int argc, char *argv[])
         else
           {
           dataValue = dataValue * scale[i] + offset[i];
-/* Special code to convert units of specific variables.  Delete.
-          if (i == 35) dataValue *= 0.514791;
-          if (i == 45) dataValue *= 0.3048;
-*/
           }
         }
 
@@ -221,15 +213,14 @@ int main(int argc, char *argv[])
     ++nRecords;
     }
 
+  fclose(inFP);
 
   sprintf(buffer, "%02d:%02d:%02d-%02d:%02d:%02d",
           startHour, startMinute, startSecond, hour, minute, second);
 
   nc_put_att_text(ncid, NC_GLOBAL, "TimeInterval", strlen(buffer)+1, buffer);
+  printf("Time interval completed = %s\n", buffer);
   nc_close(ncid);
-  chmod(argv[2], 0666);
-
-  fclose(inFP);
 
   return(0);
 
