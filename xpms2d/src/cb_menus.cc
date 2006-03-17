@@ -277,13 +277,13 @@ void ForkNetscape(Widget w, XtPointer client, XtPointer call)
     switch ((int)client)
       {
       case 1:
-        execlp("netscape", "netscape", "http://raf.atd.ucar.edu", NULL);
+        execlp("firefox", "firefox", "http://www.eol.ucar.edu/raf", NULL);
         break;
       case 2:
-        execlp("netscape", "netscape", "http://raf.atd.ucar.edu/Software", NULL);
+        execlp("firefox", "firefox", "http://www.eol.ucar.edu/raf/Software", NULL);
         break;
       case 3:
-        execlp("netscape", "netscape", "http://raf.atd.ucar.edu/Software/xpms2d.html", NULL);
+        execlp("firefox", "firefox", "http://www.eol.ucar.edu/raf/Software/xpms2d.html", NULL);
         break;
       }
 
