@@ -232,6 +232,11 @@ void InitAircraftDependencies()
     LogMessage("initAC.c: RECFRN found in Defaults, using.");
     recfrn = tmp[0];
   }
+  if ( (tmp = GetDefaultsValue("RECFB", "INIT_AC")) )
+  {
+    LogMessage("initAC.c: RECFB found in Defaults, using.");
+    recfrn = tmp[0];
+  }
 
 }	/* END INITAIRCRAFTDEPENDANCIES */
 
