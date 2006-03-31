@@ -28,3 +28,6 @@
 21, platform_pitch_angle
 22, platform_roll_angle
 23, platform_speed_wrt_ground
+24, humidity_mixing_ratio
+25, equivelent_potential_temperature
+26, height
