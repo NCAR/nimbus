@@ -714,7 +714,7 @@ int DecodeHeader(const char header_file[])
         }
 
       AddProbeToList(item_type, probeType);
-      add_file_to_RAWTBL(GPSHWNAMES);
+      add_raw_names(item_type);
 
       ++GPScount;
       }

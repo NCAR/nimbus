@@ -74,20 +74,9 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #define DERIVEDNAMES	"%s/defaults/DerivedNames"
 #define USERNAMES	"%s/%s/UserNames"
 
-#define TWODNAMES	"%s/defaults/2d.names"
-#define X200NAMES	"%s/defaults/200x.names"
-#define Y200NAMES	"%s/defaults/200y.names"
-#define X260NAMES	"%s/defaults/260x.names"
-#define ASASNAMES	"%s/defaults/asas.names"
-#define F300NAMES	"%s/defaults/f300.names"
-#define FSSPNAMES	"%s/defaults/fssp.names"
-#define FSSPV2NAMES	"%s/defaults/fsspv2.names"
-#define GPSHWNAMES	"%s/defaults/gpsHw.names"
 #define INSNAMES	"%s/defaults/ins.names"
 #define IRSNAMES	"%s/defaults/irs.names"
-#define PCASPNAMES	"%s/defaults/pcasp.names"
 #define OPHIR3NAMES	"%s/%s/ophir3.names"
-#define SERIALNAMES	"%s/%s/serial.names"
 
 
 #define HdrBlkTimeToSeconds(hdr) \
