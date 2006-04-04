@@ -994,8 +994,6 @@ static void addCommonVariableAttributes(var_base *var)
   if (p && strcmp(p, "None") != 0)
     ncattput(fd, var->varid, "standard_name", NC_CHAR, strlen(p)+1, p);
 
-  ncattput(fd, var->varid, "missing_value", NC_FLOAT, 1, &MISSING_VALUE);
-
 }	/* END ADDCOMMONVARIABLEATTRIBUTES */
 
 /* -------------------------------------------------------------------- */
