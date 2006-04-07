@@ -61,7 +61,7 @@ public class Sender extends java.lang.Object {
 
         groundvarsInfo = new GroundVarsInfo(groundvarsName);
         dataFile = new LdmData(outDirFile, plane);
-        dataDB = new DbAccess(dbHostName, dbName);
+        dataDB = new DbAccess(dbHostName, dbName, plane);
         dataDB.createRequestString(groundvarsInfo);
         while (true) {
            dataDB.openDB();

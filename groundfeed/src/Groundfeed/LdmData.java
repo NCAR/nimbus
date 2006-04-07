@@ -40,7 +40,7 @@ public class LdmData {
       while (sNumber.length() < 5) {
          sNumber = "0" + sNumber;
       }
-      currentFile = outfile + plane + "_" + sNumber;
+      currentFile = outfile + sNumber;
       try {
          outdata = new BufferedWriter(new FileWriter(currentFile));
          outdata.write(plane);

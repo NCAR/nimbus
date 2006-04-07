@@ -20,15 +20,17 @@ public class DbAccess {
     protected Connection connection;
     protected String dbHostName;
     protected String dbName;
+    protected String plane;
     protected String newTime;
     protected String oldTime = "2006-01-01 01:01:01";
     protected String sqlString = null;
     protected String sqlString2 = "select value from global_attributes where key='EndTime';";
     protected Vector dataResults = new Vector();
 
-    public DbAccess(String dbHostName, String dbName) {
+    public DbAccess(String dbHostName, String dbName, String plane) {
        this.dbHostName = dbHostName;
        this.dbName = dbName;
+       this.plane = plane;
     }
 
     public void openDB() throws Exception {
@@ -55,7 +57,7 @@ public class DbAccess {
 
        String datetimeData = new String("");
 
-       outDataFile.openLdmFile();
+
        try {
           Statement statement = connection.createStatement();
           ResultSet res = statement.executeQuery(sqlString2);
@@ -68,9 +70,11 @@ public class DbAccess {
              System.out.println("No new data.\n");
           } else {
 //             System.out.println(sqlString + oldTime + "';");
+             outDataFile.openLdmFile();
              res = statement.executeQuery(sqlString + oldTime + "';");
              ResultSetMetaData rsmd = res.getMetaData();
              int numVars = rsmd.getColumnCount();
+             int numrecs = 1;
              while (res.next()) {
                 datetimeData = res.getString(1);
                 if (datetimeData.substring(0,19).equals(oldTime))
@@ -80,14 +84,21 @@ public class DbAccess {
                       Double number = new Double(res.getDouble(i + 1));
                       dataResults.add(number);
                    }
-                   outDataFile.addSqlStatement(datetimeData, dataResults);
+                   if (plane.equals("GV")) {
+                      outDataFile.addSqlStatement(datetimeData, dataResults);
+                   }
+                   else if ((numrecs % 2) == 0) {
+                      outDataFile.addSqlStatement(datetimeData, dataResults);
+                   }
                    dataResults.clear();
                 }
+                numrecs++;
              }
              outDataFile.endSqlStatement(datetimeData);
              outDataFile.closeLdmFile();
              oldTime = newTime;
           }
+          res.close();
        } catch (java.lang.Exception ex) {
           System.out.println("Error in query statement.\n" + ex);
        }
