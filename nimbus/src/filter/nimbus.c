@@ -92,7 +92,25 @@ int main(int argc, char *argv[])
 
   if (cfg.Interactive())
   {
-    GetDataDirectory(buffer);
+    char *p;
+
+// This may still be applicable if .ads disk & .nc disk are the same.  But
+// we've run out of big enough disks at RAF, so try new method below.
+//    GetDataDirectory(buffer);
+
+    // Set this environment variable to over-ride hard code below
+    // (ground-stations, etc).
+    if ( (p = getenv("RAW_DATA_DIR")) )
+      strcpy(buffer, p);
+    else
+    {
+      const std::string DefaultRawDataDirectory = "/scr/raf2/Raw_Data/";
+
+      strcpy(buffer, DefaultRawDataDirectory.c_str());
+
+      fprintf(stderr, "Environment variable RAW_DATA_DIR not set, defaulting to %s.\n",
+	DefaultRawDataDirectory.c_str());
+    }
 
     strcat(buffer, "*.ads");
     QueryFile("Enter ADS file name:", buffer, Proceed);
