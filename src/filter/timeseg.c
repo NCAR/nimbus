@@ -275,6 +275,7 @@ int CheckForTimeGap(void *ADShdr, int initMode)
 
 
   LogMessage("CheckForTimeGap: you shouldn't receive this message.\n");
+  prevTime = newTime;
   return(GAP_FOUND);
 
 }	/* END CHECKFORTIMEGAP */
