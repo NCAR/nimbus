@@ -853,7 +853,7 @@ PostgreSQL::LaunchGroundFeed()
 
   if (pid == 0)
   {
-    execl(feedCommand, feedCommand, cfg.ProjectNumber().c_str(), 0);
+    execl(feedCommand, feedCommand, cfg.ProjectNumber().c_str(), (char*)0);
     fprintf(stderr, "nimbus: failed to exec %s\n", feedCommand);
     _exit(1);
   }
