@@ -43,7 +43,7 @@ void InitAircraftSpecs(char fileName[])
     }
 
   strcpy(ACbuffer, p);
-  strcat(ACbuffer, "/defaults/");
+  strcat(ACbuffer, "/Configuration/raf/");
   strcat(ACbuffer, fileName);
 
   if ((fp = fopen(ACbuffer, "r")) == NULL)
