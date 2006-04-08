@@ -13,7 +13,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2000
 #ifndef PMS_H
 #define	PMS_H
 
-#define PMS_SPEC_FILE	"%s/%s/PMSspecs"
+#define PMS_SPEC_FILE	"%s/%s/%s/PMSspecs"
 
 #ifdef __cplusplus
 extern "C" {
