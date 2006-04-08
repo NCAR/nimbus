@@ -62,7 +62,7 @@ void c260xInit(RAWTBL *varp)
   for (i = 0; i < MAX_260X; ++i)
     reff63[i] = reff62[i] = 0.0;
 
-  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, cfg.ProjectNumber().c_str());
+  MakeProjectFileName(buffer, PMS_SPEC_FILE);
   InitPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {

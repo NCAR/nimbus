@@ -173,7 +173,7 @@ static void CommonPreInitialization()
 
   ReadDefaultsFile();
 
-  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, cfg.ProjectNumber().c_str());
+  MakeProjectFileName(buffer, PMS_SPEC_FILE);
   InitPMSspecs(buffer);
 
 }	// END COMMONPREINITIALIZATION
@@ -271,7 +271,14 @@ int DecodeHeader3(const char header_file[])
 printf("DecodeHeader3: header_file=%s\n", header_file);
 
   extern dsm::SyncRecordReader* syncRecReader;
-
+/*
+  if ((ProjectDirectory = (char *)getenv("ADS3_CONFIG")) == NULL)
+  {
+    fprintf(stderr,
+      "Environment variable ADS3_CONFIG not defined, this is fatal.\n");
+    exit(1);
+  }
+*/
 
   if (cfg.ProcessingMode() == Config::PostProcessing)
   {
@@ -309,7 +316,7 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
 
   syncRecReader = new dsm::SyncRecordReader(iochan);
 
-  cfg.SetProjectName(syncRecReader->getProjectName());
+  cfg.SetProjectNumber(syncRecReader->getProjectName());
   cfg.SetPlatform(syncRecReader->getTailNumber());
   cfg.SetFlightNumber(syncRecReader->getFlightName());
 
@@ -319,7 +326,7 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
   sprintf(buffer, "%02d/%02d/%04d", flDate->tm_mon+1, flDate->tm_mday, flDate->tm_year+1900);
   cfg.SetFlightDate(buffer);
   }
-
+/*
 if (cfg.ProjectName() == "GV_test")
   cfg.SetProjectNumber("501");
 if (cfg.ProjectName() == "ProgSci")
@@ -328,7 +335,7 @@ if (cfg.ProjectName() == "TREX")
   cfg.SetProjectNumber("503");
 
 printf("hdr_decode.c: <<< WARNING >>> ProjectNumber is hardcoded = %s\n", cfg.ProjectNumber().c_str());
-
+*/
   cfg.SetCoordLAT("GGLAT");
   cfg.SetCoordLON("GGLON");
   cfg.SetCoordALT("GGALT");
@@ -1243,7 +1250,7 @@ static void initCLIMET(char vn[])
   strcpy(buffer, "ACLMT"); strcat(buffer, location);
   if ((indx = SearchTable(raw, buffer)) == ERR)
     {
-    fprintf(stderr, "ACLMT not found, fatal, update $PROJ_DIR/defaults/RawNames\n");
+    fprintf(stderr, "ACLMT not found, fatal, update $PROJ_DIR/Configuration/RawNames\n");
     exit(1);
     }
 
@@ -1254,7 +1261,7 @@ static void initCLIMET(char vn[])
   strcpy(buffer, "CCLMT"); strcat(buffer, location);
   if ((indx = SearchTable(derived, buffer)) == ERR)
     {
-    fprintf(stderr, "CCLMT not found, fatal, update $PROJ_DIR/defaults/DerivedNames\n");
+    fprintf(stderr, "CCLMT not found, fatal, update $PROJ_DIR/Configuration/DerivedNames\n");
     exit(1);
     }
 
@@ -1276,7 +1283,7 @@ static void initRDMA(char vn[])
   strcpy(buffer, "ARDMA"); strcat(buffer, location);
   if ((indx = SearchTable(raw, buffer)) == ERR)
     {
-    fprintf(stderr, "ARDMA not found, fatal, update $PROJ_DIR/defaults/RawNames\n");
+    fprintf(stderr, "ARDMA not found, fatal, update $PROJ_DIR/Configuration/RawNames\n");
     exit(1);
     }
 
@@ -1287,7 +1294,7 @@ static void initRDMA(char vn[])
   strcpy(buffer, "CRDMA"); strcat(buffer, location);
   if ((indx = SearchTable(derived, buffer)) == ERR)
     {
-    fprintf(stderr, "CRDMA not found, fatal, update $PROJ_DIR/defaults/DerivedNames\n");
+    fprintf(stderr, "CRDMA not found, fatal, update $PROJ_DIR/Configuration/DerivedNames\n");
     exit(1);
     }
 
@@ -2060,7 +2067,7 @@ static void ReadProjectName()
 
   /* Extract ProjectName
    */
-  if ((fp = OpenProjectFile("%s/%s/ProjectName", "r", RETURN)) != NULL)
+  if ((fp = OpenProjectFile(PROJ_NAME, "r", RETURN)) != NULL)
     {
     fgets(buffer, 512, fp);
     fclose(fp);
@@ -2166,12 +2173,12 @@ checkUnitsTitles()
 static void
 openVariableDatabase()
 {
-  sprintf(buffer, VARDB, ProjectDirectory, cfg.ProjectNumber().c_str());
+  MakeProjectFileName(buffer, VARDB);
   if (InitializeVarDB(buffer) == ERR)
   {
     LogMessage("InitializeVarDB for project specific failed, trying master file.\n");
 
-    sprintf(buffer, VARDB, ProjectDirectory, "defaults");
+    sprintf(buffer, VARDB, ProjectDirectory, "Configuration/", "raf/");
     if (InitializeVarDB(buffer) == ERR)
     {
       fprintf(stderr, "InitializeVarDB for master file failed, this is fatal.\n");

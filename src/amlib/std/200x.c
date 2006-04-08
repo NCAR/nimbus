@@ -57,8 +57,7 @@ void c200xInit(RAWTBL *varp)
   serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
 
-  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, cfg.ProjectNumber().c_str());
-  InitPMSspecs(buffer);
+  MakeProjectFileName(buffer, PMS_SPEC_FILE);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
     printf("%s: FIRST_BIN not found.\n", serialNumber); exit(1);
