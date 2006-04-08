@@ -90,7 +90,7 @@ void sTwodInit(RAWTBL *varp)
   for (i = 0; i < MAX_PMS2D; ++i)
     reff23[i] = reff22[i] = 0.0;
 
-  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, cfg.ProjectNumber().c_str());
+  MakeProjectFileName(buffer, PMS_SPEC_FILE);
   InitPMSspecs(buffer);
 
   /* Perform twice, once for 1DC, and again for 2DC.

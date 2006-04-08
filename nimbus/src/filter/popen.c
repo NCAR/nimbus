@@ -18,17 +18,41 @@ INPUT:		Filename, Mode, action
 
 OUTPUT:		FILE	*fp
 
-REFERENCES:	none
-
-REFERENCED BY:	Anyone
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 -------------------------------------------------------------------------
 */
 
 #include <sys/param.h>
 #include "nimbus.h"
 
+
+/* -------------------------------------------------------------------- */
+void MakeProjectFileName(char file[], const char format[])
+{
+  char *platform = 0;
+
+  if (cfg.Aircraft() == Config::C130)
+    platform = "C130";
+  if (cfg.Aircraft() == Config::HIAPER)
+    platform = "GV";
+  if (cfg.Aircraft() == Config::ELECTRA)
+    platform = "Electra";
+  if (cfg.Aircraft() == Config::NRL_P3)
+    platform = "NRL_P3";
+  if (cfg.Aircraft() == Config::KINGAIR)
+    platform = "KingAir";
+  if (cfg.Aircraft() == Config::TADS)
+    platform = "TADS";
+
+  if (platform == 0)
+  {
+    fprintf(stderr, "popen.c:MakeProjectFileName: No platform, fatal.\n");
+    exit(1);
+  }
+
+  (void)sprintf(file, format,
+	ProjectDirectory, cfg.ProjectNumber().c_str(), platform);
+}
 
 /* -------------------------------------------------------------------- */
 FILE *OpenProjectFile(const char filename[], const char mode[], int action)
@@ -39,16 +63,16 @@ FILE *OpenProjectFile(const char filename[], const char mode[], int action)
   if (filename == NULL || filename[0] == '\0')
     return(NULL);
 
-  (void)sprintf(file, filename, ProjectDirectory, cfg.ProjectNumber().c_str());
+  MakeProjectFileName(file, filename);
 
   if ((fp = fopen(file, mode)) == NULL && action == EXIT)
-    {
+  {
     char msg[MAXPATHLEN];
 
     sprintf(msg, "ProjectOpen: can't open %s", file);
     perror(msg);
     exit(ERROR);
-    }
+  }
 
   return(fp);
 
@@ -61,13 +85,13 @@ int AccessProjectFile(const char filename[], const char mode[])
   int	accessable = false;
   char	file[MAXPATHLEN];
 
-  (void)sprintf(file, filename, ProjectDirectory, cfg.ProjectNumber().c_str());
+  MakeProjectFileName(file, filename);
 
   if ((fp = fopen(file, mode)) != NULL)
-    {
+  {
     accessable = true;
     fclose(fp);
-    }
+  }
 
   return(accessable);
 
