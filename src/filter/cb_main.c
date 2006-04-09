@@ -661,13 +661,8 @@ void ToggleOutput(Widget w, XtPointer client, XtPointer call)
     else
       {
       RAWTBL	*rp = raw[indx];
-
-      if (strcmp(rp->name, "HOUR") != 0 && strcmp(rp->name, "MINUTE") != 0
-				&& strcmp(rp->name, "SECOND") != 0)
-        {
-        rp->Dirty = true;
-        rp->Output = 1 - rp->Output;
-        }
+      rp->Dirty = true;
+      rp->Output = 1 - rp->Output;
 
       item = CreateListLineItem(rp, RAW);
       }
