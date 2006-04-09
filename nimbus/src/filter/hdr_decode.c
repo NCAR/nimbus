@@ -919,6 +919,18 @@ static void initHDR(char vn[])
   {
   RAWTBL *rp;
 
+  rp = raw[SearchTable(raw, "YEAR")];
+  rp->DependedUpon = true;
+  rp->Output = false;
+
+  rp = raw[SearchTable(raw, "MONTH")];
+  rp->DependedUpon = true;
+  rp->Output = false;
+
+  rp = raw[SearchTable(raw, "DAY")];
+  rp->DependedUpon = true;
+  rp->Output = false;
+
   rp = raw[SearchTable(raw, "HOUR")];
   rp->DependedUpon = true;
   rp->Output = false;
