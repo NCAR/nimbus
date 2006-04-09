@@ -910,6 +910,27 @@ static void initHDR(char vn[])
   start = 0; rate = 1; length = 1;
   add_raw_names("TIME");
 
+  /* Long term we want to
+   * depracate TimeInterval in the global attributes and remove
+   * HOUR, MINUTE and SECOND from the netCDF file as they are just
+   * file bloat.  As of this writing, ncplot requires TimeInterval
+   * and HOUR, MINUTE & SECOND are used internally in nimbus. cjw 4/9/06
+   */
+  {
+  RAWTBL *rp;
+
+  rp = raw[SearchTable(raw, "HOUR")];
+  rp->DependedUpon = true;
+  rp->Output = false;
+
+  rp = raw[SearchTable(raw, "MINUTE")];
+  rp->DependedUpon = true;
+  rp->Output = false;
+
+  rp = raw[SearchTable(raw, "SECOND")];
+  rp->DependedUpon = true;
+  rp->Output = false;
+  }
 }	/* END INITHDR */
 
 /* -------------------------------------------------------------------- */
