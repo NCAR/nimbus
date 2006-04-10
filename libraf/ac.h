@@ -14,8 +14,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2005
 #ifdef __cplusplus
 extern "C" {
 #endif
-void	InitAircraftSpecs(char aircraft[]), ReleaseAircraftSpecs(void);
-char	*GetAircraftParameter(char tailNumber[], char parameter[]);
+void	InitAircraftSpecs(const char aircraft[]), ReleaseAircraftSpecs(void);
+char	*GetAircraftParameter(const char tailNumber[], char parameter[]);
 int	GetAircraftList(char *list[]);
 #ifdef __cplusplus
 }

@@ -27,7 +27,7 @@ static char	**ACfile = NULL;
 char	*GetMemory();
 
 /* -------------------------------------------------------------------- */
-void InitAircraftSpecs(char fileName[])
+void InitAircraftSpecs(const char fileName[])
 {
   int	i, cnt, len;
   char	*file[512], ACbuffer[512], *p;
@@ -108,7 +108,7 @@ void InitAircraftSpecs(char fileName[])
 }	/* END INITAIRCRAFT */
 
 /* -------------------------------------------------------------------- */
-char *GetAircraftParameter(char tailNumber[],  char parameter[])
+char *GetAircraftParameter(const char tailNumber[],  char parameter[])
 {
   int	i, j, k;
   char	*p;
