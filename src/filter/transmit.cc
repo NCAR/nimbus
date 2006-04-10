@@ -1,4 +1,5 @@
 #include "transmit.h"
+#include <ctime>
 #include <zlib.h>
 
 sqlTransmit::sqlTransmit(const std::string ac) : _aircraft(ac)
@@ -39,7 +40,14 @@ void sqlTransmit::sendString(const std::string& str)
     exit(1);
   }
 
-  sprintf(fName, "%s/nimbus_sql_%s_%05d.gz", dir, _aircraft.c_str(), _packetCounter++);
+  {
+  time_t t = time(0);
+  char timeStamp[64];
+  strftime(timeStamp, sizeof(timeStamp), "%Y-%m-%dT%H:%M:%S", gmtime(&t));
+
+  sprintf(fName, "%s/%s_nimbus_start_%s.gz", dir, _aircraft.c_str(), timeStamp);
+  }
+//  sprintf(fName, "%s/nimbus_sql_%s_%05d.gz", dir, _aircraft.c_str(), _packetCounter++);
 
   gzFile gzfd = gzopen(fName, "w+");
 
