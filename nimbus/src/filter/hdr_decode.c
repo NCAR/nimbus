@@ -119,7 +119,8 @@ static DERTBL	*add_name_to_DERTBL(const char []);
 static atdUtil::Socket* sock;
 static dsm::IOChannel* iochan;
 
-static void add_file_to_RAWTBL(const char []), add_file_to_DERTBL(const char []),
+static void	add_file_to_RAWTBL(const std::string),
+		add_file_to_DERTBL(const std::string),
 	initHDR(char vn[]), initSDI(char vn[]), initHoneywell(char vn[]),
 	initOphir3(char vn[]), initPMS1D(char vn[]), initPMS1Dv2(char vn[]),
 	initGustCorrected(char vn[]), initLitton51(char vn[]),
@@ -1933,7 +1934,7 @@ static void add_derived_names(const char name[])
 }	/* END ADD_DERIVED_NAMES */
 
 /* -------------------------------------------------------------------- */
-static void add_file_to_DERTBL(const char filename[])
+static void add_file_to_DERTBL(const std::string filename)
 {
   FILE	*fp;
 
@@ -1948,7 +1949,7 @@ static void add_file_to_DERTBL(const char filename[])
 }	/* END ADD_FILE_TO_DERTBL */
 
 /* -------------------------------------------------------------------- */
-static void add_file_to_RAWTBL(const char filename[])
+static void add_file_to_RAWTBL(const std::string filename)
 {
   FILE	*fp;
 
@@ -2211,7 +2212,7 @@ openVariableDatabase()
   {
     LogMessage("InitializeVarDB for project specific failed, trying master file.\n");
 
-    sprintf(buffer, VARDB, ProjectDirectory, "Configuration/", "raf/");
+    sprintf(buffer, VARDB.c_str(), ProjectDirectory, "Configuration/", "raf/");
     if (InitializeVarDB(buffer) == ERR)
     {
       fprintf(stderr, "InitializeVarDB for master file failed, this is fatal.\n");

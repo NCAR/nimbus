@@ -38,7 +38,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int ReadTextFile(const char filename[], char **list)
+int ReadTextFile(const std::string& filename, char **list)
 {
   FILE	*fp;
   int	cnt, len;

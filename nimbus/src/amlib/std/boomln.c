@@ -15,11 +15,7 @@ INPUT:		none
 
 OUTPUT:		float Boom_Length
 
-REFERENCES:	libaircraft.a
-
-REFERENCED BY:	irs.c, ins.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-96
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 -------------------------------------------------------------------------
 */
 
@@ -53,7 +49,7 @@ NR_TYPE GetBoomLength()
       sprintf(aircraft, "N%03dD", cfg.Aircraft());
     }
 
-  InitAircraftSpecs(AIRCRAFT);
+  InitAircraftSpecs(AIRCRAFT.c_str());
   boomln = atof(GetAircraftParameter(aircraft, "BOOM_LEN"));
   ReleaseAircraftSpecs();
 
