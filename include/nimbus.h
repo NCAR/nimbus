@@ -192,10 +192,10 @@ extern bool SDP;
 
 
 //      Function Prototypes
-FILE	*OpenProjectFile(const char filename[], const char mode[], int action);
+FILE	*OpenProjectFile(const std::string& filename, const char mode[], int action);
 
-int	AccessProjectFile(const char filename[], const char mode[]),
-	ReadTextFile(const char filename[], char **list),
+int	AccessProjectFile(const std::string& filename, const char mode[]),
+	ReadTextFile(const std::string& filename, char **list),
 	CheckForTimeGap(void *ADShdr, int initMode);
 
 
@@ -265,7 +265,7 @@ void	SortTable(char **table, int beg, int end),
 	FreeTextFile(char **list),
 	Initialize(),
 	ResetProbeList(),
-	MakeProjectFileName(char file[], const char format[]),
+	MakeProjectFileName(char file[], const std::string& format),
 	ProcessArgv(int argc, char **argv),
 	LogMessage(const char msg[]),
 	AddProbeToList(const char name[], unsigned long type),

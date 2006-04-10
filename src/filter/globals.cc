@@ -29,6 +29,33 @@ const int MAX_COF = 6;
 const std::string DSMSERVER = "localhost";
 const int DSMSERVERPORT = 30001;
 
+const std::string PROJ_NAME     = "%s/%s/%s/ProjectName";
+const std::string DEPENDTBL     = "%s/%s/%s/DependTable";
+const std::string DEFAULTS      = "%s/%s/%s/Defaults";
+const std::string GROUPS        = "%s/%s/%s/Production/FlightGroups";
+const std::string BLANKVARS     = "%s/%s/%s/Production/BlankOuts";
+const std::string LAGS          = "%s/%s/%s/Lags";
+const std::string BROADCAST     = "%s/%s/%s/ascii_parms";
+const std::string SPIKE         = "%s/%s/%s/Despike";
+const std::string DEFDEROR      = "%s/%s/%s/LowRateVars";
+const std::string VARDB         = "%s/%s/%s/VarDB";
+const std::string BROADCASTVARS = "%s/%s/%s/BcastVars";
+const std::string XMIT_VARS     = "%s/%s/%s/groundvars";
+
+const std::string AIRCRAFT      = "AircraftSpecs";
+const std::string MODVARS       = "%s/Configuration/raf/ModVars";
+const std::string SUMVARS       = "%s/Configuration/raf/SumVars";
+const std::string RAWNAMES      = "%s/Configuration/raf/RawNames";
+const std::string DERIVEDNAMES  = "%s/Configuration/raf/DerivedNames";
+const std::string INSNAMES      = "%s/Configuration/raf/ins.names";
+const std::string IRSNAMES      = "%s/Configuration/raf/irs.names";
+
+const std::string FILTERS       = "%s/Configuration/raf/filters/%s";
+
+const std::string USERNAMES     = "%s/%s/%s/UserNames";
+const std::string OPHIR3NAMES   = "%s/%s/%s/ophir3.names";
+
+
 char	buffer[8192];		// Generic, volatile string space
 char	*ProjectDirectory;
 

@@ -707,7 +707,7 @@ void BlankOutBadData()
   /* Come through as a second pass after all processing has been done, and
    * replace "bad" segments with MISSING_VALUE.
    */
-  sprintf(buffer, "%s.%s", BLANKVARS, cfg.FlightNumber().c_str());
+  sprintf(buffer, "%s.%s", BLANKVARS.c_str(), cfg.FlightNumber().c_str());
   ReadTextFile(buffer, blanks);
 
   /* Acquire file start & end times. */

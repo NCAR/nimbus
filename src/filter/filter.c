@@ -311,10 +311,10 @@ static void SingleStageFilter(CircularBuffer *PSCB, CircularBuffer *HSCB, mRFilt
 static filterPtr readAfilter(char file[])
 {
   char	*nimbus = getenv("PROJ_DIR");
-  char	*filter[1050];
+  char	*filter[2000];
   double	sum = 0.0;
 
-  sprintf(buffer, "%s/defaults/filters/%s", nimbus, file);
+  sprintf(buffer, FILTERS.c_str(), nimbus, file);
   ReadTextFile(buffer, filter);
 
   filterPtr daFilt = new filterData;

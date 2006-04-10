@@ -27,7 +27,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 
 
 /* -------------------------------------------------------------------- */
-void MakeProjectFileName(char file[], const char format[])
+void MakeProjectFileName(char file[], const std::string& format)
 {
   char *platform = 0;
 
@@ -50,17 +50,17 @@ void MakeProjectFileName(char file[], const char format[])
     exit(1);
   }
 
-  (void)sprintf(file, format,
+  (void)sprintf(file, format.c_str(),
 	ProjectDirectory, cfg.ProjectNumber().c_str(), platform);
 }
 
 /* -------------------------------------------------------------------- */
-FILE *OpenProjectFile(const char filename[], const char mode[], int action)
+FILE *OpenProjectFile(const std::string& filename, const char mode[], int action)
 {
   FILE	*fp;
   char	file[MAXPATHLEN];
 
-  if (filename == NULL || filename[0] == '\0')
+  if (filename.length() == 0)
     return(NULL);
 
   MakeProjectFileName(file, filename);
@@ -79,7 +79,7 @@ FILE *OpenProjectFile(const char filename[], const char mode[], int action)
 }	/* END OPENPROJECTFILE */
 
 /* -------------------------------------------------------------------- */
-int AccessProjectFile(const char filename[], const char mode[])
+int AccessProjectFile(const std::string& filename, const char mode[])
 {
   FILE	*fp;
   int	accessable = false;

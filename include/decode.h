@@ -54,30 +54,10 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 
 /* Input module config files
  */
-#define PROJ_NAME	"%s/%s/%s/ProjectName"
-#define DEPENDTBL	"%s/%s/%s/DependTable"
-#define DEFAULTS	"%s/%s/%s/Defaults"
-#define GROUPS		"%s/%s/%s/Production/FlightGroups"
-#define BLANKVARS	"%s/%s/%s/Production/BlankOuts"
-#define LAGS		"%s/%s/%s/Lags"
-#define BROADCAST	"%s/%s/%s/ascii_parms"
-#define SPIKE		"%s/%s/%s/Despike"
-#define DEFDEROR	"%s/%s/%s/LowRateVars"
-#define VARDB		"%s/%s/%s/VarDB"
-#define BROADCASTVARS	"%s/%s/%s/BcastVars"
-#define XMIT_VARS	"%s/%s/%s/groundvars"
-
-#define AIRCRAFT	"AircraftSpecs"
-#define MODVARS		"%s/Configuration/raf/ModVars"
-#define SUMVARS		"%s/Configuration/raf/SumVars"
-#define RAWNAMES	"%s/Configuration/raf/RawNames"
-#define DERIVEDNAMES	"%s/Configuration/raf/DerivedNames"
-#define INSNAMES	"%s/Configuration/raf/ins.names"
-#define IRSNAMES	"%s/Configuration/raf/irs.names"
-
-#define USERNAMES	"%s/%s/%s/UserNames"
-#define OPHIR3NAMES	"%s/%s/%s/ophir3.names"
-
+extern const std::string PROJ_NAME, DEPENDTBL, DEFAULTS, GROUPS, BLANKVARS,
+	LAGS, BROADCAST, SPIKE, DEFDEROR, VARDB, BROADCASTVARS, XMIT_VARS,
+	AIRCRAFT, MODVARS, SUMVARS, FILTERS, RAWNAMES, DERIVEDNAMES, INSNAMES,
+	IRSNAMES, USERNAMES, OPHIR3NAMES;
 
 #define HdrBlkTimeToSeconds(hdr) \
 	(ntohs( ((struct Hdr_blk *)hdr)->second ) + \
