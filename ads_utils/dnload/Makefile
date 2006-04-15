@@ -6,7 +6,7 @@ BINDIR=		${DESTDIR}/bin
 MANDIR=		${DESTDIR}/man/manl
 INCDIR=		${DESTDIR}/include
 
-LIBS=		-L${JLOCAL}/lib -lraf++
+LIBS=		-L${JLOCAL}/lib -lraf++ -lz
 INCLUDES=	-I$(INCDIR)
 
 CC=		g++
