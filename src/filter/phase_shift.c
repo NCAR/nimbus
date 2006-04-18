@@ -44,8 +44,6 @@ static void
   resample(var_base *vp, int lag, NR_TYPE *, NR_TYPE *),
   shift_vector(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out);
 
-static const int MaxLag = 2000;
-
 /* -------------------------------------------------------------------- */
 void AddVariableToRAWlagList(RAWTBL *varp)
 {

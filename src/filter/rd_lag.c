@@ -41,10 +41,10 @@ void ReadStaticLags()
     {
     sscanf(lags[i], "%s %d", target, &lag);
 
-    if (abs(lag) > MAX_LAG)
+    if (abs(lag) > MaxLag)
       {
       sprintf(buffer, "Lag may not exceed %d ms, igonoring lag for %s.\n",
-             MAX_LAG, target);
+             MaxLag, target);
       LogMessage(buffer);
       continue;
       }
