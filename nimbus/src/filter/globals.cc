@@ -40,6 +40,7 @@ const std::string SPIKE         = "%s/%s/%s/Despike";
 const std::string DEFDEROR      = "%s/%s/%s/LowRateVars";
 const std::string VARDB         = "%s/%s/%s/VarDB";
 const std::string BROADCASTVARS = "%s/%s/%s/BcastVars";
+const std::string LANDMARKS     = "%s/%s/%s/landmarks";
 const std::string XMIT_VARS     = "%s/%s/%s/groundvars";
 
 const std::string AIRCRAFT      = "AircraftSpecs";

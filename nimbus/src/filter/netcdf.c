@@ -1024,32 +1024,23 @@ void ProcessFlightDate()
 /* -------------------------------------------------------------------- */
 std::string readLandmarks()
 {
-  FILE *fp;
-  char *projDir, label[128];
+  char *marks[200], label[128];
   float lat, lon;
   std::stringstream landMarks;
   landMarks.str("");
 
-  if ((projDir = getenv("PROJ_DIR")) == NULL)
-    return landMarks.str();
+  ReadTextFile(LANDMARKS, marks);
 
-  sprintf(buffer, "%s/%s/landmarks", projDir, cfg.ProjectNumber().c_str());
-  if ((fp = fopen(buffer, "r")) == NULL)
-    return landMarks.str();
-
-  for (int nMarks = 0; fgets(buffer, 256, fp) != NULL; ++nMarks)
+  for (int i = 0; marks[i] != NULL; ++i)
     {
-    if (buffer[0] == '#')
-      continue;
+    sscanf(marks[i], "%f %f %s\n", &lat, &lon, label);
 
-    sscanf(buffer, "%f %f %s\n", &lat, &lon, label);
-
-    if (nMarks > 0)
+    if (i > 0)
       landMarks << ",";
     landMarks << lat << " " << lon << " " << label;
     }
 
-  fclose(fp);
+  FreeTextFile(marks);
   return landMarks.str();
 }
 
