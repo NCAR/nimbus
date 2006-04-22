@@ -898,7 +898,6 @@ static int writeBlank(int varid, long start[], long count[], int OutputRate)
   long		nValues;
   NR_TYPE	*p;
 
-
   count[1] = OutputRate;
   count[2] = 1;
 
@@ -914,8 +913,11 @@ static int writeBlank(int varid, long start[], long count[], int OutputRate)
 /* -------------------------------------------------------------------- */
 static void writeTimeUnits()
 {
-  strftime(buffer, 256, "seconds since %F %T +0000", &StartFlight);
+  const char *format = "seconds since %F %T %z";
+
+  strftime(buffer, 256, format, &StartFlight);
   ncattput(fd, timeVarID, "units", NC_CHAR, strlen(buffer)+1, buffer);
+  ncattput(fd, timeVarID, "strptime_format", NC_CHAR, strlen(format)+1, format);
   if (cfg.isADS2())
     ncattput(fd, timeOffsetID, "units", NC_CHAR, strlen(buffer)+1, buffer);
 }
