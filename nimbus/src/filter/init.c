@@ -41,6 +41,8 @@ void Initialize()
     exit(1);
     }
 
+  putenv("TZ=UTC");	// Perform all time calculations at UTC.
+
   LITTON51_present	= false;
   AVAPS			= false;
   PauseFlag		= false;
