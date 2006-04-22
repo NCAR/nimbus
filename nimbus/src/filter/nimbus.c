@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
       strcpy(buffer, p);
     else
     {
-      const std::string DefaultRawDataDirectory = "/scr/raf2/Raw_Data/";
+      const std::string DefaultRawDataDirectory = "/scr/raf2/Raw_Data";
 
       strcpy(buffer, DefaultRawDataDirectory.c_str());
 
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
 	DefaultRawDataDirectory.c_str());
     }
 
-    strcat(buffer, "*.ads");
+    strcat(buffer, "/*.ads");
     QueryFile("Enter ADS file name:", buffer, Proceed);
 
     XtAppMainLoop(context);
