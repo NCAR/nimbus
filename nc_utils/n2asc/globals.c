@@ -28,10 +28,12 @@ char	*Aircraft, *FlightNumber, *FlightDate, *Defaults;
 
 std::vector<VARTBL *> Variable, outputList;
 
-bool	PauseFlag, Interactive, AmesFormat, PrintUnits;
-int	InputFile, PauseWhatToDo, XaxisType;
+bool	PauseFlag, Interactive, AmesFormat, PrintUnits, OutputDate;
+int	InputFile, PauseWhatToDo, XaxisType, *time_data;
 FILE	*OutputFile;
 size_t	nRecords;
 long	CurrentInputRecordNumber;
+
+time_t	FileStartTime, UserStartTime, FileEndTime, UserEndTime;
 
 /* END GLOBALS.C */

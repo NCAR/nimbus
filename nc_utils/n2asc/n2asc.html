@@ -33,7 +33,7 @@ span.comment { background-color: #88FF88; font-style: italic; }
 
 <dl>
 <dt><h3>Synopsis</h3>
-<dd>n2asc [-f format] [-b batchFile] [-c] [-a] [-n]
+<dd>n2asc [-f format] [-b batchFile] [-c] [-a] [-n] [-dt]
 <p>
 <dt><h3>Description</h3>
 <dd><b>n2asc</b> is a program for converting a netCDF file (or subset of) to ASCII.  <b>n2asc</b> provides a GUI similar to <b>nimbus</b>, where you may choose which variables to output.  To change the "output" of a variable, just double click on the variable.  You may also select many and then use CTRL-O to toggle them all at once.
@@ -82,6 +82,13 @@ Ames Data Exchange Format.
 <p>
 The -n option tells n2asc to not place colons in the time stamp.  Format
 will be HHMMSS instead of HH:MM:SS.
+
+<p>
+The -u option tells n2asc to print variable units on the 2nd line.  This
+will not apply to NASA output formats.
+
+<p>
+The -dt option adds a date column as the first column.  Format is yyyy-mm-dd.
 
 <p>
 <dt><h3>Requirements</h3>

@@ -27,8 +27,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 
 static const int	NVARS_PER_LINE = 10;
 
-static long	timeVarID[3];
-static int	currentTime[3];
+static struct tm *currentTime;
 
 extern XtAppContext context;
 
@@ -38,7 +37,7 @@ static void PrintVariables();
 static int FindFirstRecordNumber(long starttime);
 static int FindNextRecordNumber(long endtime);
 
-void UpdateTime(int currentTime[]);
+void UpdateTime(struct tm *currentTime);
 void getNCattr(int ncid, char attr[], char **dest);
 bool isMissingValue(float target, float fillValue);
 
@@ -204,21 +203,25 @@ static void PrintVariables()
   {
     /* Print timestamp / rolling counter.
      */
+    if (OutputDate)
+      fprintf(OutputFile, "%04d-%02d-%02d ", currentTime->tm_year+1900,
+		currentTime->tm_mon+1, currentTime->tm_mday);
+
     if (XaxisType & TIME)
     {
-      static int	prevVal = 0, val;
-      val = currentTime[0] * 3600 + currentTime[1] * 60 + currentTime[2];
+      static int	prevVal = -1, val;
+      val = currentTime->tm_hour * 3600 + currentTime->tm_min * 60 + currentTime->tm_sec;
 
       if (XaxisType == COLONLESS)
         fprintf(OutputFile, "%02d%02d%02d",
-              currentTime[0], currentTime[1], currentTime[2]);
+              currentTime->tm_hour, currentTime->tm_min, currentTime->tm_sec);
       else
         fprintf(OutputFile, "%02d:%02d:%02d",
-              currentTime[0], currentTime[1], currentTime[2]);
+              currentTime->tm_hour, currentTime->tm_min, currentTime->tm_sec);
 
-      if (prevVal+1 != val)
+      if (prevVal != -1 && !(prevVal == 86399 && val == 0) && prevVal+1 != val)
         printf("Gap - %02d:%02d:%02d\n",
-		currentTime[0], currentTime[1],currentTime[2]);
+		currentTime->tm_hour, currentTime->tm_min,currentTime->tm_sec);
       prevVal = val;
 
       if (highestRate > 1)
@@ -229,14 +232,14 @@ static void PrintVariables()
     {
       static int	offset = 0;
 
-      if (currentTime[0] == 0 && prevHour == 23)	/* midnight wrap */
+      if (currentTime->tm_hour == 0 && prevHour == 23)	/* midnight wrap */
         offset = 86400;
 
-      fprintf(OutputFile, "%d", currentTime[0] * 3600 +
-		currentTime[1] * 60 + currentTime[2] + offset);
+      fprintf(OutputFile, "%d", currentTime->tm_hour * 3600 +
+		currentTime->tm_min * 60 + currentTime->tm_sec + offset);
 
 
-      prevHour = currentTime[0];
+      prevHour = currentTime->tm_hour;
     }
     else
       fprintf(OutputFile, "%ld", CurrentInputRecordNumber);
@@ -290,9 +293,6 @@ static void PrintVariables()
 /* -------------------------------------------------------------------- */
 static int FindFirstRecordNumber(long starttime)
 {
-  timeVarID[0] = Variable[SearchTable(Variable, Variable.size(), "HOUR")]->inVarID;
-  timeVarID[1] = Variable[SearchTable(Variable, Variable.size(), "MINUTE")]->inVarID;
-  timeVarID[2] = Variable[SearchTable(Variable, Variable.size(), "SECOND")]->inVarID;
 
   CurrentInputRecordNumber = -1;
 
@@ -309,40 +309,14 @@ static int FindFirstRecordNumber(long starttime)
 /* -------------------------------------------------------------------- */
 static int FindNextRecordNumber(long endtime)
 {
-  int		current_time;
-  size_t	mindex[1];
-  int		f;
-
-  static bool	rollOver = false;
-
   if (++CurrentInputRecordNumber >= (long)nRecords)	/* End of tape	*/
     return(ERR);
 
-  mindex[0] = CurrentInputRecordNumber;
+  time_t t = FileStartTime + time_data[CurrentInputRecordNumber];
+  currentTime = gmtime(&t);
 
-  nc_get_var1_int(InputFile, timeVarID[0], mindex, &f);
-  current_time = (int)f * 3600;
-  currentTime[0] = (int)f;
-
-  nc_get_var1_int(InputFile, timeVarID[1], mindex, &f);
-  current_time += (int)f * 60;
-  currentTime[1] = (int)f;
-
-  nc_get_var1_int(InputFile, timeVarID[2], mindex, &f);
-  current_time += (int)f;
-  currentTime[2] = (int)f;
-
-  if (endtime == END_OF_TAPE)
-    return(OK);
-
-
-  if (current_time == 0 && CurrentInputRecordNumber > 0)
-    rollOver = true;
-
-  if (rollOver)
-    current_time += 86400;
-
-  if (current_time < endtime)
+  if (	endtime == END_OF_TAPE ||
+	FileStartTime + time_data[CurrentInputRecordNumber] < endtime)
     return(OK);
   else
     return(ERR);

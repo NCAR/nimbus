@@ -19,8 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 */
 
 #include <algorithm>
-#include <errno.h>
-#include <time.h>
+#include <cerrno>
 
 #include "define.h"
 #include "netcdf.h"
@@ -46,6 +45,38 @@ int CreateOutputFile(char fileName[])
 }	/* END CREATEOUTPUTFILE */
 
 /* -------------------------------------------------------------------- */
+void processTime(int bt, int ncid, int varid)
+{
+  char units[128];
+
+  // base_time/time_offset pair.
+  if (bt != 0)
+  {
+    FileStartTime = bt;
+  }
+  else
+  // New 'Time' variable.
+  {
+    if (nc_get_att_text(ncid, varid, "units", units) != NC_NOERR)
+    {
+      fprintf(stderr, "No units for 'Time' variable!!! Fatal.\n");
+      exit(1);
+    }
+
+    struct tm tm;
+    strptime(units, "seconds since %F %T %z", &tm);
+    FileStartTime = mktime(&tm);
+  }
+
+  time_data = (int *)malloc(nRecords * sizeof(int));
+  nc_get_var_int(ncid, varid, time_data);
+  FileEndTime = FileStartTime + time_data[nRecords-1];
+
+  UserStartTime = FileStartTime;
+  UserEndTime = FileEndTime;
+}
+
+/* -------------------------------------------------------------------- */
 int ReadInputFile(char fileName[])
 {
   VARTBL	*vp;
@@ -57,11 +88,11 @@ int ReadInputFile(char fileName[])
   /* Open Input File
   */
   if (nc_open(fileName, NC_NOWRITE, &InputFile) != NC_NOERR)
-    {
+  {
     sprintf(buffer, "Can't open %s.\n", fileName);
     HandleError(buffer);
     return(ERR);
-    }
+  }
 
   nc_inq_nvars(InputFile, &nVars);
 
@@ -84,7 +115,17 @@ int ReadInputFile(char fileName[])
     nc_inq_var(InputFile, i, name, 0, &nDims, dimIDs, 0);
 
     if (strcmp(name, "base_time") == 0)
-      continue;
+    {
+      tmp = 0;
+      int bt;
+      nc_get_var1_int(InputFile, i, &tmp, &bt);
+      processTime(bt, InputFile, i+1);
+      continue;	// because this isn't a record variable, we can't output it.
+    }
+    if (strcmp(name, "Time") == 0)
+    {
+      processTime(0, InputFile, i);
+    }
 
     vp = new VARTBL;
     Variable.push_back(vp);

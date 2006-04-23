@@ -12,6 +12,7 @@ DESCRIPTION:	Header File for Nimbus Skeleton.
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <ctime>
 #include <sys/types.h>
 #include <Xm/Xm.h>
 
@@ -80,13 +81,14 @@ typedef struct
 extern char	*ProjectNumber, *ProjectName, DefaultFormat[];
 extern char	*Aircraft, *FlightNumber, *FlightDate, *Defaults;
 extern std::vector<VARTBL*> Variable, outputList;
-extern bool	PauseFlag, Interactive, AmesFormat, PrintUnits;
-extern int	InputFile, PauseWhatToDo, XaxisType;
+extern bool	PauseFlag, Interactive, AmesFormat, PrintUnits, OutputDate;
+extern int	InputFile, PauseWhatToDo, XaxisType, *time_data;
 extern FILE	*OutputFile;
 extern char	buffer[];
 extern size_t	nRecords;
 extern long	CurrentInputRecordNumber;
 
+extern time_t	FileStartTime, FileEndTime, UserStartTime, UserEndTime;
 
 /* Setup window widgets */
 extern Widget	Shell001;

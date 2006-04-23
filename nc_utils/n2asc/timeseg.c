@@ -87,30 +87,47 @@ bool NextTimeInterval(long *start, long *end)
   *start= UserBtim[currentTimeSegment];
   *end	= UserEtim[currentTimeSegment];
 
-
   BtimeInt[currentTimeSegment][0] = NEW_SEG;
+
+  if (*start != BEG_OF_TAPE)
+  {
+    struct tm *tm = gmtime(&FileStartTime);
+    int btim = (tm->tm_hour * 3600) + (tm->tm_min * 60) + tm->tm_sec;
+    tm->tm_sec += (*start - btim);
+    *start = mktime(tm);
+  }
+
+  if (*end != END_OF_TAPE)
+  {
+    struct tm *tm = gmtime(&FileEndTime);
+    int btim = (tm->tm_hour * 3600) + (tm->tm_min * 60) + tm->tm_sec;
+    if (*end > 86400)
+      *end -= 86400;
+    tm->tm_sec += (*end - btim);
+    *end = mktime(tm);
+  }
 
   return(true);
 
 }	/* END NEXTTIMEINTERVAL */
 
 /* -------------------------------------------------------------------- */
-void UpdateTime(int currentTime[])
+void UpdateTime(struct tm * currentTime)
 {
   if (BtimeInt[currentTimeSegment][0] == NEW_SEG)
     {
-    BtimeInt[currentTimeSegment][0] = currentTime[0];
-    BtimeInt[currentTimeSegment][1] = currentTime[1];
-    BtimeInt[currentTimeSegment][2] = currentTime[2];
+    BtimeInt[currentTimeSegment][0] = currentTime->tm_hour;
+    BtimeInt[currentTimeSegment][1] = currentTime->tm_min;
+    BtimeInt[currentTimeSegment][2] = currentTime->tm_sec;
     }
 
-  EtimeInt[currentTimeSegment][0] = currentTime[0];
-  EtimeInt[currentTimeSegment][1] = currentTime[1];
-  EtimeInt[currentTimeSegment][2] = currentTime[2];
+  EtimeInt[currentTimeSegment][0] = currentTime->tm_hour;
+  EtimeInt[currentTimeSegment][1] = currentTime->tm_min;
+  EtimeInt[currentTimeSegment][2] = currentTime->tm_sec;
 
-  if (Interactive && currentTime[2])
+  if (Interactive && currentTime->tm_sec == 0)
     {
-    sprintf(buffer, "%02d:%02d:00", currentTime[0], currentTime[1]);
+    sprintf(buffer, "%02d:%02d:00", currentTime->tm_hour, currentTime->tm_min);
     XmTextFieldSetString(timeDisplayText, buffer);
 
     FlushXEvents();

@@ -12,7 +12,7 @@ STATIC FNS:
 
 DESCRIPTION:	
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
 -------------------------------------------------------------------------
 */
 
@@ -29,9 +29,12 @@ void Initialize()
   int	pos;
   char	*p;
 
+  putenv("TZ=UTC");     // Perform all time calculations at UTC.
+
   XaxisType	= TIME;
   PauseFlag	= false;
   PrintUnits	= false;
+  OutputDate	= false;
   PauseWhatToDo	= P_CONTINUE;
 
   strcpy(DefaultFormat, " %g");
@@ -78,6 +81,10 @@ void ProcessArgv(int argc, char *argv[])
       case 'b':
         Interactive = false;
         ReadBatchFile(argv[++i]);
+        break;
+
+      case 'd':
+        OutputDate = true;
         break;
 
       case 'f':	/* Default Format	*/
