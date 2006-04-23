@@ -4,6 +4,7 @@
 CC=		g++
 BINDIR=		${LOCAL}/bin
 MANDIR=		${LOCAL}/man/man1
+WWWDIR=		/net/www/raf/Software
 
 # Solaris
 #
@@ -48,6 +49,7 @@ install: ${PROG}
 	cp ${PROG} ${BINDIR}
 	test -d $(MANDIR) || mkdir $(MANDIR)
 	cp ${PROG}.man ${MANDIR}/${PROG}.1
+	cp ${PROG}.html ${WWWDIR}
 
 publish: $(PROG)
 	scp ${PROG} ${IHOST}:${BINDIR}
