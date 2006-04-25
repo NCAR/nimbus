@@ -198,6 +198,8 @@ static void CommonPostInitialization()
 
   if (cfg.Aircraft() != Config::NOAA_G4)
     FreeTextFile(derivedlist);
+printf("%s\n", cfg.TailNumber().c_str());
+printf("%s\n", cfg.ProjectNumber().c_str());
 
   FreeTextFile(rawlist);
  
@@ -318,7 +320,7 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
   syncRecReader = new dsm::SyncRecordReader(iochan);
 
   cfg.SetProjectNumber(syncRecReader->getProjectName());
-  cfg.SetPlatform(syncRecReader->getTailNumber());
+  cfg.SetTailNumber(syncRecReader->getTailNumber());
   cfg.SetFlightNumber(syncRecReader->getFlightName());
 
   {
@@ -341,7 +343,7 @@ printf("hdr_decode.c: <<< WARNING >>> ProjectNumber is hardcoded = %s\n", cfg.Pr
   cfg.SetCoordLON("GGLON");
   cfg.SetCoordALT("GGALT");
 
-  char const *p = &cfg.Platform()[0];
+  char const *p = &cfg.TailNumber()[0];
 
   while (*p && !isdigit(*p))
     ++p;
@@ -481,7 +483,7 @@ int DecodeHeader(const char header_file[])
   HDRversion = atof(p);
 
   GetAircraft(&p);
-  cfg.SetPlatform(p);
+  cfg.SetTailNumber(p);
   while (*p && !isdigit(*p))
     ++p;
   cfg.SetAircraft(atoi(p));
