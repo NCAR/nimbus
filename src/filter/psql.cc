@@ -295,7 +295,7 @@ PostgreSQL::initializeGlobalAttributes()
   _sqlString << "INSERT INTO global_attributes VALUES ('Address', 'P.O. Box 3000, Boulder, CO 80307-3000');";
   _sqlString << "INSERT INTO global_attributes VALUES ('Phone', '(303) 497-1030');";
   _sqlString << "INSERT INTO global_attributes VALUES ('ProjectName', '" << cfg.ProjectName() << "');";
-  _sqlString << "INSERT INTO global_attributes VALUES ('Platform', '" << cfg.Platform() << "');";
+  _sqlString << "INSERT INTO global_attributes VALUES ('Platform', '" << cfg.TailNumber() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('ProjectNumber', '" << cfg.ProjectNumber() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('FlightNumber', '" << cfg.FlightNumber() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('DateProcessed', '" << dateProcessed << "');";

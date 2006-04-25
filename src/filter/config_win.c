@@ -700,8 +700,8 @@ void EditConfiguration(Widget w, XtPointer client, XtPointer call)
 
     strcpy(FlightInfo[1].originalValue, cfg.FlightNumber().c_str());
     strcpy(FlightInfo[2].originalValue, cfg.FlightDate().c_str());
-    strcpy(FlightInfo[3].originalValue, cfg.Platform().c_str());
-    if (cfg.Platform().size() > 0)
+    strcpy(FlightInfo[3].originalValue, cfg.TailNumber().c_str());
+    if (cfg.TailNumber().size() > 0)
       XtSetSensitive(flightText[3], false);
 
 /** @todo Time Slice should be saved in setup files.

@@ -72,13 +72,13 @@ public:
 
   const std::string& ProjectName() const { return _projectName; }
   const std::string& ProjectNumber() const { return _projectNumber; }
-  const std::string& Platform() const { return _platform; }
+  const std::string& TailNumber() const { return _tailNumber; }
   const std::string& FlightNumber() const { return _flightNumber; }
   const std::string& FlightDate() const { return _flightDate; }
 
   void SetProjectName(const std::string s)	{ _projectName = s; }
   void SetProjectNumber(const std::string s)	{ _projectNumber = s; }
-  void SetPlatform(const std::string s)	{ _platform = s; }
+  void SetTailNumber(const std::string s)	{ _tailNumber = s; }
   void SetFlightNumber(const std::string s)	{ _flightNumber = s; }
   void SetFlightDate(const std::string s)	{ _flightDate = s; }
 
@@ -113,7 +113,7 @@ private:
   // Some meta-data.
   std::string _projectName;
   std::string _projectNumber;
-  std::string _platform;
+  std::string _tailNumber;
   std::string _flightNumber;
   std::string _flightDate;
 

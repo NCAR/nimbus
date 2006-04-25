@@ -24,25 +24,18 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 
 #include <sys/param.h>
 #include "nimbus.h"
+#include "decode.h"
+#include "ac.h"
 
 
 /* -------------------------------------------------------------------- */
 void MakeProjectFileName(char file[], const std::string& format)
 {
-  char *platform = 0;
+  char platform[128];
 
-  if (cfg.Aircraft() == Config::C130)
-    platform = "C130";
-  if (cfg.Aircraft() == Config::HIAPER)
-    platform = "GV";
-  if (cfg.Aircraft() == Config::ELECTRA)
-    platform = "Electra";
-  if (cfg.Aircraft() == Config::NRL_P3)
-    platform = "NRL_P3";
-  if (cfg.Aircraft() == Config::KINGAIR)
-    platform = "KingAir";
-  if (cfg.Aircraft() == Config::TADS)
-    platform = "TADS";
+  InitAircraftSpecs(AIRCRAFT.c_str());
+  GetAircraftFullyQualifiedName(cfg.TailNumber().c_str(), platform);
+  ReleaseAircraftSpecs();
 
   if (platform == 0)
   {
