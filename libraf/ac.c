@@ -22,7 +22,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2005
 #include "constants.h"
 #include "ac.h"
 
-static char	**ACfile = NULL;
+static char	**ACfile = 0;
 
 char	*GetMemory();
 
@@ -103,7 +103,7 @@ void InitAircraftSpecs(const char fileName[])
   for (i = 0; i < cnt; ++i)
   ACfile[i] = file[i];
 
-  ACfile[i] = NULL;
+  ACfile[i] = 0;
 
 }	/* END INITAIRCRAFT */
 
@@ -112,6 +112,12 @@ char *GetAircraftParameter(const char tailNumber[],  char parameter[])
 {
   int	i, j, k;
   char	*p;
+
+  if (ACfile == 0)
+  {
+    fprintf(stderr, "AircraftSpecs not yet initialized!\n");
+    return 0;
+  }
 
   for (i = 0; ACfile[i]; ++i)
     {
@@ -127,7 +133,7 @@ char *GetAircraftParameter(const char tailNumber[],  char parameter[])
         for (; ACfile[i]; ++i)
           {
           if (strcmp(ACfile[i], "END") == 0)
-            return(NULL);
+            return 0;
 
           if (strncmp(ACfile[i], parameter, len) == 0)
             {
@@ -144,7 +150,7 @@ char *GetAircraftParameter(const char tailNumber[],  char parameter[])
       }
     }
 
-  return(NULL);
+  return 0;
 
 }	/* END GETAIRCRAFTPARAMETER */
 
@@ -160,7 +166,7 @@ void ReleaseAircraftSpecs()
 
     free(ACfile);
 
-    ACfile = NULL;
+    ACfile = 0;
     }
 
 }	/* END RELEASEAIRCRAFT */
@@ -171,7 +177,7 @@ int GetAircraftList(char *list[])
   int		i, cnt = 0;
   char	*p;
 
-  list[0] = NULL;
+  list[0] = 0;
 
   for (i = 0; ACfile[i]; ++i)
     if (strncmp(ACfile[i], "START", 5) == 0)
@@ -181,7 +187,7 @@ int GetAircraftList(char *list[])
 
       list[cnt] = GetMemory(strlen(p)+1);
       strcpy(list[cnt], p);
-      list[++cnt] = NULL;
+      list[++cnt] = 0;
       }
 
   return(cnt);
@@ -205,7 +211,7 @@ main()
     printf("%s\n", acList[i]);
 
   // Find something specific.
-  if ((p = GetAircraftParameter("N308D", "BOOM_LEN")) == NULL)
+  if ((p = GetAircraftParameter("N308D", "BOOM_LEN")) == 0)
   {
     printf("Not found.\n");
     exit(1);
