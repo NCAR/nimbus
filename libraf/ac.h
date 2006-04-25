@@ -17,6 +17,7 @@ extern "C" {
 void	InitAircraftSpecs(const char aircraft[]), ReleaseAircraftSpecs(void);
 char	*GetAircraftParameter(const char tailNumber[], char parameter[]);
 int	GetAircraftList(char *list[]);
+char	*GetAircraftFullyQualifiedName(const char tailNumber[], char * result);
 #ifdef __cplusplus
 }
 #endif

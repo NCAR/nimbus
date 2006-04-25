@@ -217,4 +217,22 @@ main()
 
 }
 */
+
+/* -------------------------------------------------------------------- */
+char *GetAircraftFullyQualifiedName(const char tailNumber[], char * result)
+{
+  char * model = GetAircraftParameter(tailNumber, "MODEL");
+  
+  if (model)
+  {
+    strcpy(result, model);
+    strcat(result, "_");
+    strcat(result, tailNumber);
+  }
+  else
+    strcpy(result, "");
+
+  return result;
+}
+
 /* END AC.C */
