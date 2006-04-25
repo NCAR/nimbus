@@ -27,7 +27,7 @@ printf("SetProject: new proj# = %s\n", flightInfo.prnum);
   ReleaseVarDB();
   ReleasePMSspecs();
 
-  sprintf(buffer, "%s/%s", ProjectDirectory, ProjectNumber);
+  MakeProjectFileName(buffer, "%s/%s/%s");
 
   if (access(buffer, R_OK) == (-1))
     {
@@ -36,10 +36,10 @@ printf("SetProject: new proj# = %s\n", flightInfo.prnum);
     }
 printf(">>>>SetProj needs work still.\n");
 //return;
-  sprintf(buffer, "%s/%s/PMSspecs", ProjectDirectory, ProjectNumber);
+  MakeProjectFileName(buffer, "%s/%s/%s/PMSspecs");
   InitPMSspecs(buffer);
 
-  sprintf(buffer, "%s/%s/VarDB", ProjectDirectory, ProjectNumber);
+  MakeProjectFileName(buffer, "%s/%s/%s/VarDB");
   InitializeVarDB(buffer);
 
 }

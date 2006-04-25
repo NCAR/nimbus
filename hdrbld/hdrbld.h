@@ -16,7 +16,6 @@ DESCRIPTION:	Main header file for hdrbld.c
 #include <Xm/Xm.h>
 
 #include "constants.h"
-//#undef NULL
 #include "header.h"
 
 #define NAMELEN			NAMLEN
@@ -26,7 +25,7 @@ DESCRIPTION:	Main header file for hdrbld.c
 #define MAX_DSM			6
 #define MAX_OTHER		12
 
-#define HEADER		"%s/%s/header"
+#define HEADER		"%s/%s/%s/header"
 
 /* Global Variables	*/
 extern char		buffer[], *aircraft[], FileName[], *DSM[];
@@ -54,6 +53,7 @@ extern Widget
 FILE	*OpenProjectFile(char filename[], char mode[], int action);
 
 int	AccessProjectFile(char filename[], char mode[]),
+	MakeProjectFileName(char result[], const char format[]),
 	LocatePMSlocn(char locn[]);
 
 char	*SearchList(char **list, char target[]),

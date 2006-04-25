@@ -28,6 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2004
 
 #include "hdrbld.h"
 #include "hardwire.h"
+#include "ac.h"
 #include <unistd.h>
 
 #include <Xm/Form.h>
@@ -45,6 +46,30 @@ static void PrintProjectFile(Widget w, XtPointer client, XtPointer call);
 static void SaveProjectFile(Widget w, XtPointer client, XtPointer call);
 
 extern Widget	Shell001;
+
+/* -------------------------------------------------------------------- */
+int MakeProjectFileName(char file[], const char format[])
+{
+  char platform[128];
+  file[0] = platform[0] = '\0';
+
+  if (strlen(flightInfo.acraft) == 0 || ProjectNumber == 0)
+  {
+    ShowError("No valid project opened.");
+    return ERR;
+  }
+
+  GetAircraftFullyQualifiedName(flightInfo.acraft, platform);
+
+  if (strlen(platform) == 0)
+  {
+    ShowError("No valid project opened.");
+    return ERR;
+  }
+
+  (void)sprintf(file, format, ProjectDirectory, ProjectNumber, platform);
+  return OK;
+}
 
 /* -------------------------------------------------------------------- */
 void CreateEditWindow(Widget parent)
@@ -100,19 +125,22 @@ void EditProjectFile(Widget w, XtPointer client, XtPointer call)
   if (strcmp((char *)client, "netconfig") == 0)
     sprintf(buffer, "%s/%s", ProjectDirectory, (char *)client);
   else
-    sprintf(buffer, "%s/%s/%s", ProjectDirectory,ProjectNumber,(char *)client);
+  {
+    char tmp[256];
+    strcpy(tmp, "%s/%s/%s/");
+    strcat(tmp, (char*)client);
+    MakeProjectFileName(buffer, tmp);
+  }
 
   EditProjFile();
-
 }
 
 /* -------------------------------------------------------------------- */
 void EditDefaultFile(Widget w, XtPointer client, XtPointer call)
 {
-  sprintf(buffer, "%s/defaults/%s", ProjectDirectory, (char *)client);
+  sprintf(buffer, "%s/Configuration/raf//%s", ProjectDirectory, (char *)client);
 
   EditProjFile();
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -122,7 +150,6 @@ return;
 //  sprintf(buffer, "%s/hosts/%s/%s", ProjectDirectory, host, (char *)client);
 
   EditProjFile();
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -134,12 +161,15 @@ void EditProjFile()
   Arg		args[2];
   Cardinal	n;
 
+  if (strlen(buffer) == 0)
+    return;
+
   if ((fp = fopen(buffer, "r")) == NULL)
-    {
+  {
     sprintf(&buffer[2000], "Can't open %s for reading.", buffer);
     ShowError(&buffer[2000]);
     return;
-    }
+  }
 
   strcpy(currentProjFile, buffer);
 

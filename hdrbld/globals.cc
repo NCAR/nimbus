@@ -18,7 +18,7 @@ char	buffer[8192];		/* Generic, volatile string space	*/
 char	*ProjectDirectory, *ProjectNumber, ProjectName[64];
 char	FileName[512], *DSM[MAX_DSM];
 
-char	*aircraft[8];
+char	*aircraft[16];
 
 Sh	*sdi[MX_SDI];		/* SDI (aka raw) variable list		*/
 Sh	currentSh;
@@ -26,7 +26,7 @@ Fl	flightInfo;
 int	nsdi, nPMS;
 
 
-int	Inertial[2], GPS[3];
+int	Inertial[4], GPS[4];
 
 bool	ChangesMade;
 

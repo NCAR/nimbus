@@ -60,7 +60,7 @@ void EditVarDB(Widget w, XtPointer client, XtPointer call)
   if (ProjectDirectory == NULL || ProjectNumber == NULL)
     return;
 
-  sprintf(buffer, "%s/%s/VarDB", ProjectDirectory, ProjectNumber);
+  MakeProjectFileName(buffer, "%s/%s/%s/VarDB");
 
   if (fork() == 0)
     {

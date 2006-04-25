@@ -44,7 +44,7 @@ static bool	Quiting = False, OutstandingWarnings = False;
 /* -------------------------------------------------------------------- */
 static void OpenNewFile_Q(Widget, XtPointer, XtPointer)
 {
-  sprintf(buffer, "%s/*/header", ProjectDirectory);
+  sprintf(buffer, "%s/*/*/header", ProjectDirectory);
   QueryFile("Enter file name to load:", buffer, OpenNewFile_OK);
 
 }
@@ -150,7 +150,7 @@ void OpenNewFile_OK(Widget w, XtPointer client, XtPointer call)
 
   /* Read ProjectName file.
    */
-  sprintf(buffer, "%s/%s/ProjectName", ProjectDirectory, ProjectNumber);
+  MakeProjectFileName(buffer, "%s/%s/%s/ProjectName");
   if ((fp1 = fopen(buffer, "r")) != NULL)
     {
     fgets(ProjectName, 64, fp1);
@@ -338,6 +338,7 @@ void OpenNewFile_OK(Widget w, XtPointer client, XtPointer call)
 void SaveFileAs(Widget w, XtPointer client, XtPointer call)
 {
   sprintf(buffer, HEADER, ProjectDirectory, ProjectNumber);
+  MakeProjectFileName(buffer, HEADER);
   QueryFile("Save as:", buffer, SaveFileAs_OK);
 
 }
@@ -411,7 +412,7 @@ static int WriteHeader(char file[])
   if (file)
     strcpy(FileName, file);
   else
-    sprintf(FileName, "%s/%s/header", ProjectDirectory, ProjectNumber);
+    MakeProjectFileName(FileName, HEADER);
 
 
   /* Save old header (1 level only).
@@ -945,7 +946,7 @@ static int WriteHeader(char file[])
 
   /* Read ProjectName file.
    */
-  sprintf(buffer, "%s/%s/ProjectName", ProjectDirectory, ProjectNumber);
+  MakeProjectFileName(buffer, "%s/%s/%s/ProjectName");
   if ((fp = fopen(buffer, "w+")) != NULL)
     {
     p = XmTextFieldGetString(projText[1]);

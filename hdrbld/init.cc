@@ -43,11 +43,14 @@ void PreWidgetInitialize()
     exit(1);
     }
 
+  InitAircraftSpecs("AircraftSpecs");
+  GetAircraftList(aircraft);
+
   if (ProjectNumber)
     {
     FILE	*fp;
 
-    sprintf(FileName, "%s/%s/header", ProjectDirectory, ProjectNumber);
+    MakeProjectFileName(FileName, HEADER);
     free(ProjectNumber);
 
     if ((fp = fopen(FileName, "rb")) == NULL)
@@ -69,23 +72,20 @@ void PreWidgetInitialize()
   Inertial[0] = Inertial[1] = 0;
   GPS[0] = GPS[1] = GPS[2] = 0;
 
-  InitAircraftSpecs("AircraftSpecs");
-  GetAircraftList(aircraft);
-
 
   if (ProjectNumber)
     {
-    sprintf(buffer, "%s/%s/PMSspecs", ProjectDirectory, ProjectNumber);
+    MakeProjectFileName(buffer, "%s/%s/%s/PMSspecs");
     InitPMSspecs(buffer);
-    sprintf(buffer, "%s/%s/VarDB", ProjectDirectory, ProjectNumber);
+    MakeProjectFileName(buffer, "%s/%s/%s/VarDB");
     InitializeVarDB(buffer);
     p = flightInfo.acraft;
     }
   else
     {
-    sprintf(buffer, "%s/defaults/PMSspecs", ProjectDirectory);
+    sprintf(buffer, "%s/Configuration/raf/PMSspecs", ProjectDirectory);
     InitPMSspecs(buffer);
-    sprintf(buffer, "%s/defaults/VarDB", ProjectDirectory);
+    sprintf(buffer, "%s/Configuration/raf/VarDB", ProjectDirectory);
     InitializeVarDB(buffer);
     p = aircraft[0];
     }
@@ -109,14 +109,15 @@ void ProcessArgv(int argc, char **argv)
 {
   int		i;
 
-  ProjectNumber = NULL;
+  ProjectNumber = 0;
 
   for (i = 1; i < argc; ++i)
     {
     if (argv[i][0] != '-')
       {
-      ProjectNumber = (char *)GetMemory(strlen(argv[i]+1));
-      strcpy(ProjectNumber, argv[i]);
+//      ProjectNumber = (char *)GetMemory(strlen(argv[i]+1));
+//      strcpy(ProjectNumber, argv[i]);
+      fprintf(stderr, "Project numbers may no longer be entered on the command line.\n");
       continue;
       }
 
