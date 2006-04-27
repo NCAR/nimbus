@@ -490,8 +490,10 @@ static void checkForProductionSetup()
       {
       if (atoi(group[i]) == FlightNumberInt)
         {
-        sprintf(buffer, "%s/%s/Production/Flight_%d", ProjectDirectory,
-		cfg.ProjectNumber().c_str(), atoi(strrchr(group[i], '=')+1));
+        char t[32];
+        MakeProjectFileName(buffer, "%s/%s/%s/Production/Flight_");
+        sprintf(t, "%d", atoi(strrchr(group[i], '=')+1));
+        strcat(buffer, t);
 
         LoadSetup_OK(NULL, NULL, NULL);
 
@@ -502,8 +504,10 @@ static void checkForProductionSetup()
       {
       if (strncmp(group[i], &cfg.FlightNumber()[0], 4) == 0)
         {
-        sprintf(buffer, "%s/%s/Production/Flight_%s", ProjectDirectory,
-		cfg.ProjectNumber().c_str(), strrchr(group[i], '=')+2);
+        char t[32];
+        MakeProjectFileName(buffer, "%s/%s/%s/Production/Flight_");
+        sprintf(t, "%d", atoi(strrchr(group[i], '=')+2));
+        strcat(buffer, t);
 
         LoadSetup_OK(NULL, NULL, NULL);
 
@@ -517,12 +521,15 @@ static void checkForProductionSetup()
 
   /* Check for Production File
    */
+  MakeProjectFileName(buffer, "%s/%s/%s/Production/Flight_");
   if (!revision2)
-    sprintf(buffer, "%s/%s/Production/Flight_%d",
-		ProjectDirectory, cfg.ProjectNumber().c_str(), FlightNumberInt);
+  {
+    char t[32];
+    sprintf(t, "%d", FlightNumberInt);
+    strcat(buffer, t);
+  }
   else
-    sprintf(buffer, "%s/%s/Production/Flight_%s",
-		ProjectDirectory, cfg.ProjectNumber().c_str(), cfg.FlightNumber().c_str());
+    strcat(buffer, cfg.FlightNumber().c_str());
 
   LoadSetup_OK(NULL, NULL, NULL);
 

@@ -61,7 +61,7 @@ void ReadGroundVarsFile()
   fileName += ".rt";
   if ((fp = OpenProjectFile(fileName, "w", RETURN)) == NULL)
   {
-    sprintf(buffer, fileName.c_str(), ProjectDirectory, cfg.ProjectNumber().c_str());
+    MakeProjectFileName(buffer, XMIT_VARS);
     fprintf(stderr, "ReadGroundVarsFile: can't open %s for writing.\n", buffer);
     exit(1);
   }
