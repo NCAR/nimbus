@@ -531,7 +531,6 @@ static void checkForProductionSetup()
 /* -------------------------------------------------------------------- */
 void SaveSetup(Widget w, XtPointer client, XtPointer call)
 {
-printf(">>>>>>>>>>>>> %d\n", cfg.ProductionRun());
   if (cfg.ProductionRun())
   {
     MakeProjectFileName(buffer, "%s/%s/%s/Production");

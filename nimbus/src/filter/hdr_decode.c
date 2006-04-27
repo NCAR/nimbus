@@ -198,8 +198,6 @@ static void CommonPostInitialization()
 
   if (cfg.Aircraft() != Config::NOAA_G4)
     FreeTextFile(derivedlist);
-printf("%s\n", cfg.TailNumber().c_str());
-printf("%s\n", cfg.ProjectNumber().c_str());
 
   FreeTextFile(rawlist);
  
