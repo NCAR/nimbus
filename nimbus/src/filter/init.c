@@ -60,7 +60,7 @@ void Initialize()
 
   /* Check to see if user is 'nimbus'.
    */
-  if (getuid() == 130)
+  if (getuid() == 20000)
     cfg.SetProductionRun(true);
 
   if (cfg.ProductionRun())
