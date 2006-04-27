@@ -531,23 +531,23 @@ static void checkForProductionSetup()
 /* -------------------------------------------------------------------- */
 void SaveSetup(Widget w, XtPointer client, XtPointer call)
 {
+printf(">>>>>>>>>>>>> %d\n", cfg.ProductionRun());
   if (cfg.ProductionRun())
-    {
-    sprintf(buffer, "%s/%s/Production", ProjectDirectory, cfg.ProjectNumber().c_str());
-
+  {
+    MakeProjectFileName(buffer, "%s/%s/%s/Production");
     mkdir(buffer, 0775);
 
-    sprintf(buffer, "%s/%s/Production/Flight_%s",
-		ProjectDirectory, cfg.ProjectNumber().c_str(), cfg.FlightNumber().c_str());
+    strcat(buffer, "/Flight_");
+    strcat(buffer, cfg.FlightNumber().c_str());
 
     SaveSetup_OK(NULL, NULL, NULL);
-    }
+  }
   else
-    {
+  {
     sprintf(buffer, "%s/nimbus/*", getenv("HOME"));
     QueryFile("Enter file name to save setup to:", buffer,
 		    (XtCallbackProc)SaveSetup_OK);
-    }
+  }
 
 }	/* END SAVESETUP */
 
