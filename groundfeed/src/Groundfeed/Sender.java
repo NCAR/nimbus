@@ -68,7 +68,7 @@ public class Sender extends java.lang.Object {
            dataDB.getNewData(dataFile);
            dataDB.closeDB();
            try {
-              Thread.sleep(15000);
+              Thread.sleep(5000);
            } catch (InterruptedException e) {
            }
         }
