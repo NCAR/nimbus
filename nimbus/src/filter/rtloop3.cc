@@ -84,10 +84,13 @@ void MultiCastStatus::sendStatus(const char timeStamp[])
   msock.sendto(statstr.c_str(), statstr.length()+1, 0, msaddr);
 }
 
+MultiCastStatus mcStat;
 
 /* -------------------------------------------------------------------- */
 void RTinit_ADS3()
 {
+    mcStat.sendStatus("----- started -----");
+
 printf("RTinit_ADS3, establishing connection....\n");
 
   cfg.SetADSVersion(Config::ADS_3);
@@ -115,8 +118,6 @@ void RealTimeLoop3()
 
   bcast = new Broadcast();	// ASCII feed.
   extern dsm::SyncRecordReader* syncRecReader;
-
-  MultiCastStatus mcStat;
 
   for (;;)
   {
