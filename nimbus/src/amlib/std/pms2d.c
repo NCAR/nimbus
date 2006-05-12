@@ -202,7 +202,7 @@ void sTwodInitH(RAWTBL *varp)
   serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
 
-  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, cfg.ProjectNumber().c_str());
+  MakeProjectFileName(buffer, PMS_SPEC_FILE);
   InitPMSspecs(buffer);
 
   /* Perform twice, once for 1DC, and again for 2DC.

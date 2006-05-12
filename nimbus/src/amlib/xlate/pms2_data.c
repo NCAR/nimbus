@@ -43,7 +43,7 @@ static Queue	*probes[MAX_PMS2];
 /* Data from the file is only marked as 'C1', 'C2', 'P1', 'P2', we'll
  * use this array to determine which records go with which Queue above.
  */
-static short	probeIDorder[MAX_PMS2D] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+static short	probeIDorder[MAX_PMS2] = { 0, 0, 0, 0 };
 static long	startTime[MAX_PMS2];
 static short	startMilliSec[MAX_PMS2];
 static NR_TYPE	twoD[MAX_PMS2][BINS_64];
@@ -59,7 +59,7 @@ RAWTBL	*cur_rp;
 
 /* Exported to amlib/std/pms2d.c */
 
-NR_TYPE	deadTime[MAX_PMS2D][2];	/* Probe down time (subtract from 1 second) */
+NR_TYPE	deadTime[MAX_PMS2][2];	/* Probe down time (subtract from 1 second) */
 size_t	overFlowCnt[MAX_PMS2];	/* Number of particles greater than 64 bins */
 
 
@@ -125,7 +125,7 @@ void Add2DtoList(RAWTBL *varp)	/* Called by hdr_decode.c */
 /* -------------------------------------------------------------------- */
 void xlTwodInit(RAWTBL *varp)
 {
-  size_t	probeCnt = varp->ProbeCount;
+  size_t	probeCnt = varp->ProbeCount >> 1;
   P2d_rec	rec;
 
 
