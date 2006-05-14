@@ -44,6 +44,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include "pms.h"
 #include "nimbus.h"
 #include "decode.h"
+#include "gui.h"
 #include "ctape.h"	// ADS header API
 #include "vardb.h"	// Variable DataBase
 #include "amlib.h"
@@ -898,6 +899,22 @@ int DecodeHeader(const char header_file[])
 
 
   CommonPostInitialization();
+
+  // For C130 check for AQRATIO.  No having produces bunk Pressure from the
+  // radome since Al Schanot changed the PCOR in 2005.
+  if (cfg.Aircraft() == Config::C130)
+  {
+    int indx = SearchTable(derived, "AQRATIO");
+    if (indx == ERR || derived[indx]->DependedUpon == false)
+    {
+      char *msg = "\nC130 QC & PS variables now require AQRATIO.  Please fix DependTable.\n  Use a newer project as an example.  Older projects were not retro-fitted.\n";
+      LogMessage(msg);
+      fprintf(stderr, msg);
+      XtSetSensitive(goButton, false);
+    }
+  }
+
+
   return(OK);
 
 }	/* END DECODEHEADER */
