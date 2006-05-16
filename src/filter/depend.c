@@ -178,6 +178,17 @@ int DependIndexLookup(DERTBL *dp, int which_dep)
 }	/* END DEPENDINDEXLOOKUP */
 
 /* -------------------------------------------------------------------- */
+bool isDependedUpon(DERTBL *dp)
+{
+  for (size_t i = 0; i < derived.size(); ++i)
+    for (size_t j = 0; j < derived[i]->ndep; ++j)
+      if (strcmp(dp->name, derived[i]->depend[j]) == 0)
+        return true;
+
+  return false;
+}
+
+/* -------------------------------------------------------------------- */
 static void doubleCheck(DERTBL *dp)	/* This function is recursive	*/
 {
   int indx;
@@ -193,7 +204,6 @@ static void doubleCheck(DERTBL *dp)	/* This function is recursive	*/
       doubleCheck(derived[indx]);
       }
     }
-
 }	/* END DOUBLECHECK */
 
 /* END DEPEND.C */

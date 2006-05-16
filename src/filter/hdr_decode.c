@@ -904,8 +904,10 @@ int DecodeHeader(const char header_file[])
   // radome since Al Schanot changed the PCOR in 2005.
   if (cfg.Aircraft() == Config::C130)
   {
+    bool isDependedUpon(DERTBL *dp);
+
     int indx = SearchTable(derived, "AQRATIO");
-    if (indx == ERR || derived[indx]->DependedUpon == false)
+    if (indx == ERR || isDependedUpon(derived[indx]) == false)
     {
       char *msg = "\nC130 QC & PS variables now require AQRATIO.  Please fix DependTable.\n  Use a newer project as an example.  Older projects were not retro-fitted.\n";
       LogMessage(msg);
