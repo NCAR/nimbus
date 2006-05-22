@@ -1,5 +1,6 @@
 /* Duplicate an ADS image.  Generally used to remove records at beginning
  * of file with bad time-stamps.
+ * "if" tests can be placed in the main loop to remove specific problems.
  */
 #include "adsIO.h"
 #include <cstdio>
@@ -12,6 +13,7 @@ int main(int argc, char *argv[])
   int	skipNrecords = 0;
   char	sourceFile[512], destFile[512];
   FILE	*outFP;
+  Hdr_blk * h = (Hdr_blk *)buffer;
 
   printf("Enter input ADS file : ");
   fgets(sourceFile, 500, stdin);
@@ -49,8 +51,18 @@ int main(int argc, char *argv[])
 
   /* Let 'er rip.
    */
-  while ((len = source.NextPhysicalRecord(buffer)) > 0)
+  for (int cntr = 0; (len = source.NextPhysicalRecord(buffer)) > 0; ++cntr)
+  {
+    // Place your 'if' tests here to skip records.
+//    if (cntr > 26000 && ntohs(h->hour) == 18)
+    if (false)
+    {
+      printf("Disposing of record #%d\n", cntr);
+      continue;
+    }
+
     fwrite(buffer, len, 1, outFP);
+  }
 
   fclose(outFP);
   return(0);
