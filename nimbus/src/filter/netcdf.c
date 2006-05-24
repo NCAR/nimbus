@@ -220,6 +220,7 @@ void CreateNetCDF(const char fileName[])
     fprintf(LogFile, "Flight Date: %s\n", buffer);
 
   putGlobalAttribute("coordinates", cfg.CoordinateVariables());
+  putGlobalAttribute("wind_field", cfg.WindFieldVariables());
   addLandmarks();
 
   /* Will be updated later.

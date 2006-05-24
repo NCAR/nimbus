@@ -653,6 +653,8 @@ int DecodeHeader(const char header_file[])
       AddProbeToList(item_type, probeType);
       add_raw_names(item_type);
       add_derived_names(item_type);
+      cfg.SetCoordLAT("GLAT");
+      cfg.SetCoordLON("GLON");
       cfg.SetCoordALT("GALT");
 
       /* Force Garmin TRK & SPD to be depended upon, because of the way
@@ -667,6 +669,8 @@ int DecodeHeader(const char header_file[])
         if ((indx = SearchTable(raw, "GGSPD")) != ERR)
           raw[indx]->DependedUpon = true;
 
+        cfg.SetCoordLAT("GGLAT");
+        cfg.SetCoordLON("GGLON");
         cfg.SetCoordALT("GGALT");
         }
 
