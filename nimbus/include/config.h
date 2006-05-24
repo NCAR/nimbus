@@ -85,10 +85,16 @@ public:
   std::string CoordinateVariables() const
   { return _coordLON + " " + _coordLAT + " " + _coordALT + " " + _coordTime; }
 
+  std::string WindFieldVariables() const
+  { return _windWS + " " + _windWD + " " + _windWI; }
+
   void SetCoordLAT(const std::string s)		{ _coordLAT = s; }
   void SetCoordLON(const std::string s)		{ _coordLON = s; }
   void SetCoordALT(const std::string s)		{ _coordALT = s; }
   void SetCoordTime(const std::string s)	{ _coordTime = s; }
+  void SetWindSpeed(const std::string s)	{ _windWS = s; }
+  void SetWindDirection(const std::string s)	{ _windWD = s; }
+  void SetWindVertical(const std::string s)	{ _windWI = s; }
 
 private:
   bool _interactive;
@@ -121,6 +127,9 @@ private:
   std::string _coordLON;
   std::string _coordALT;
   std::string _coordTime;
+  std::string _windWS;	// Wind Speed variable
+  std::string _windWD;	// Wind Direction variable
+  std::string _windWI;	// Vertical Wind variable
 };
 
 #endif
