@@ -74,7 +74,8 @@ static int	validateInputFile();
 
 static void	checkForProductionSetup(), displaySetupWindow(),
 		setOutputFileName(), readHeader(), stopProcessing(),
-		EngageSignals();
+		EngageSignals(), SetConfigGlobalAttributeVariables();
+
 
 void	OpenLogFile(), InitAsyncModule(char fileName[]), RealTimeLoop(),
 	CloseLogFile(), LogDespikeInfo(), InitAircraftDependencies(),
@@ -288,6 +289,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   ProcessFlightDate();
   InitAircraftDependencies();
   RunAMLIBinitializers();
+  SetConfigGlobalAttributeVariables();
   CreateNetCDF(OutputFileName);
   InitAsyncModule(OutputFileName);
   ConfigurationDump();
@@ -1091,6 +1093,56 @@ void sighandler(int s)
   Quit(NULL, NULL, NULL);
 
 }	/* END SIGHANDLER */
+
+/* -------------------------------------------------------------------- */
+static void SetConfigGlobalAttributeVariables()
+{
+  if (SearchTable(derived, "LATC") != ERR)
+    cfg.SetCoordLAT("LATC");
+  else
+  if (SearchTable(raw, "GGLAT") != ERR)
+    cfg.SetCoordLAT("GGLAT");
+  else
+  if (SearchTable(raw, "GLAT") != ERR)
+    cfg.SetCoordLAT("GLAT");
+  else
+  if (SearchTable(raw, "LAT") != ERR)
+    cfg.SetCoordLAT("LAT");
+
+
+  if (SearchTable(derived, "LONC") != ERR)
+    cfg.SetCoordLON("LONC");
+  else
+  if (SearchTable(raw, "GGLON") != ERR)
+    cfg.SetCoordLON("GGLON");
+  else
+  if (SearchTable(raw, "GLON") != ERR)
+    cfg.SetCoordLON("GLON");
+  else
+  if (SearchTable(raw, "LON") != ERR)
+    cfg.SetCoordLON("LON");
+
+
+  if (SearchTable(derived, "WSC") != ERR)
+    cfg.SetWindSpeed("WSC");
+  else
+  if (SearchTable(derived, "WS") != ERR)
+    cfg.SetWindSpeed("WS");
+
+
+  if (SearchTable(derived, "WDC") != ERR)
+    cfg.SetWindDirection("WDC");
+  else
+  if (SearchTable(derived, "WD") != ERR)
+    cfg.SetWindDirection("WD");
+
+
+  if (SearchTable(derived, "WIC") != ERR)
+    cfg.SetWindVertical("WIC");
+  else
+  if (SearchTable(derived, "WI") != ERR)
+    cfg.SetWindVertical("WI");
+}
 
 /* -------------------------------------------------------------------- */
 static void EngageSignals()

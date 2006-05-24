@@ -20,6 +20,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2003-06
 void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[]);
 
 const int PostgreSQL::RT_UDP_PORT = 58800;
+const std::string PostgreSQL::TIME_VARIABLE = "datetime";
 const std::string PostgreSQL::GLOBAL_ATTR_TABLE = "Global_Attributes";
 const std::string PostgreSQL::VARIABLE_LIST_TABLE = "Variable_List";
 const std::string PostgreSQL::CATEGORIES_TABLE = "Categories";
@@ -189,7 +190,7 @@ PostgreSQL::WriteSQL(const std::string timeStamp)
 fprintf(stderr, "Performing ANALYZE @ %s\n", timeStamp.c_str());
 
     _sqlString.str("");
-    _sqlString << "ANALYZE " << LRT_TABLE << " (datetime);";
+    _sqlString << "ANALYZE " << LRT_TABLE << " (" << TIME_VARIABLE << ");";
 
     submitCommand(_sqlString.str(), true);
   }
@@ -285,6 +286,8 @@ PostgreSQL::createTables()
 void
 PostgreSQL::initializeGlobalAttributes()
 {
+  std::string coords = cfg.CoordinateVariables();
+  coords.replace(coords.find("Time"), 4, TIME_VARIABLE);
   extern char dateProcessed[];	// From netcdf.c
 
   _sqlString.str("");
@@ -299,7 +302,8 @@ PostgreSQL::initializeGlobalAttributes()
   _sqlString << "INSERT INTO global_attributes VALUES ('ProjectNumber', '" << cfg.ProjectNumber() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('FlightNumber', '" << cfg.FlightNumber() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('DateProcessed', '" << dateProcessed << "');";
-  _sqlString << "INSERT INTO global_attributes VALUES ('coordinates', '" << cfg.CoordinateVariables() << "');";
+  _sqlString << "INSERT INTO global_attributes VALUES ('coordinates', '" << coords << "');";
+  _sqlString << "INSERT INTO global_attributes VALUES ('wind_field', '" << cfg.WindFieldVariables() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('landmarks', '" << readLandmarks() << "');";
 
   submitCommand(_sqlString.str(), true);
@@ -347,7 +351,7 @@ PostgreSQL::initializeVariableList()
       _sqlString << "INSERT INTO PMS2D_list VALUES ('" << name
 	<< "', '" << raw[i]->SerialNumber << "');";
       _sqlString << "CREATE TABLE " << name
-	<< " (datetime time (3) PRIMARY KEY, nSlices int, particle int[]);";
+	<< " (" << TIME_VARIABLE << " time (3) PRIMARY KEY, nSlices int, particle int[]);";
       submitCommand(_sqlString.str());
     }
 
@@ -651,7 +655,7 @@ PostgreSQL::addVariableToTables(rateTableMap &tableMap, const var_base *var,
 
     _ratesTables[rates[i]] = rt.str();
 
-    preamble << "CREATE TABLE " << rt.str() << " (datetime timestamp ";
+    preamble << "CREATE TABLE " << rt.str() << " (" << TIME_VARIABLE << " timestamp ";
 
     if (rates[i] > 1)
       preamble << "(3) ";
