@@ -21,6 +21,7 @@ geopot.c
 licor.c
 licor_wyo.c
 masp.c
+nclh.c
 ndvi.c
 ophir3.c
 prcltrk1.c
