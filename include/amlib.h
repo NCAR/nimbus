@@ -56,15 +56,15 @@ NR_TYPE GetSample(DERTBL *dp, int di);
 
 #define PutSample(dp, y)	\
 	if (FeedBack == LOW_RATE_FEEDBACK) \
-		AveragedData[dp->LRstart] = y; \
+		AveragedData[dp->LRstart] = (NR_TYPE)y; \
 	else \
-		HighRateData[dp->HRstart + SampleOffset] = y
+		HighRateData[dp->HRstart + SampleOffset] = (NR_TYPE)y
 
 #define PutStaticSample(dp, y)	\
 	if (FeedBack == LOW_RATE_FEEDBACK) \
-		AveragedData[dp->LRstart] = y[HIGH_RATE]; \
+		AveragedData[dp->LRstart] = (NR_TYPE)y[HIGH_RATE]; \
 	else \
-		HighRateData[dp->HRstart + SampleOffset] = y[SampleOffset]
+		HighRateData[dp->HRstart + SampleOffset] = (NR_TYPE)y[SampleOffset]
 
 struct _dnfn
 	{
