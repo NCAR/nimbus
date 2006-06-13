@@ -65,6 +65,7 @@ brdcast.cc
 rd_ddor.c
 rd_defs.c
 rd_lag.c
+rd_meta.c
 rd_mod.c
 rd_spike.c
 rd_sum.c

@@ -89,7 +89,7 @@ static void	markDependedByList(char target[]), writeTimeUnits();
 static void	clearDependedByList(), printDependedByList();
 static void	addCommonVariableAttributes(var_base *var), addLandmarks();
 
-void	AddPMS1dAttrs(int ncid, RAWTBL *rp),
+void	AddPMS1dAttrs(int ncid, RAWTBL *rp), ReadMetaData(int fd),
 	CheckAndAddAttrs(int fd, int varid, char name[]);
 
 //      Rate, DimID
@@ -458,6 +458,8 @@ void CreateNetCDF(const char fileName[])
     else
       data_p[indx++] = (void *)&HighRateData[dp->HRstart];
   }
+
+  ReadMetaData(fd);
 
 }	/* END CREATENETCDF */
 
