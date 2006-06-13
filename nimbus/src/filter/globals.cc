@@ -43,15 +43,16 @@ const std::string BROADCASTVARS = "%s/%s/%s/BcastVars";
 const std::string LANDMARKS     = "%s/%s/%s/landmarks";
 const std::string XMIT_VARS     = "%s/%s/%s/groundvars";
 
-const std::string AIRCRAFT      = "AircraftSpecs";
-const std::string MODVARS       = "%s/Configuration/raf/ModVars";
-const std::string SUMVARS       = "%s/Configuration/raf/SumVars";
-const std::string RAWNAMES      = "%s/Configuration/raf/RawNames";
-const std::string DERIVEDNAMES  = "%s/Configuration/raf/DerivedNames";
-const std::string INSNAMES      = "%s/Configuration/raf/ins.names";
-const std::string IRSNAMES      = "%s/Configuration/raf/irs.names";
+const std::string AIRCRAFT	= "AircraftSpecs";
+const std::string MODVARS	= "%s/Configuration/raf/ModVars";
+const std::string SUMVARS	= "%s/Configuration/raf/SumVars";
+const std::string RAWNAMES	= "%s/Configuration/raf/RawNames";
+const std::string DERIVEDNAMES	= "%s/Configuration/raf/DerivedNames";
+const std::string META_DATA	= "%s/Configuration/raf/MetaDataTable";
+const std::string INSNAMES	= "%s/Configuration/raf/ins.names";
+const std::string IRSNAMES	= "%s/Configuration/raf/irs.names";
 
-const std::string FILTERS       = "%s/Configuration/raf/filters/%s";
+const std::string FILTERS	= "%s/Configuration/raf/filters/%s";
 
 const std::string USERNAMES     = "%s/%s/%s/UserNames";
 const std::string OPHIR3NAMES   = "%s/%s/%s/ophir3.names";
