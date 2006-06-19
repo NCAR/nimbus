@@ -37,7 +37,7 @@ void MakeProjectFileName(char file[], const std::string& format)
   GetAircraftFullyQualifiedName(cfg.TailNumber().c_str(), platform);
   ReleaseAircraftSpecs();
 
-  if (platform == 0)
+  if (strlen(platform) == 0)
   {
     fprintf(stderr, "popen.c:MakeProjectFileName: No platform, fatal.\n");
     exit(1);
