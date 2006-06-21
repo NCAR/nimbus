@@ -701,10 +701,10 @@ void CloseNetCDF()
 /* -------------------------------------------------------------------- */
 void BlankOutBadData()
 {
-  char  *blanks[512], target[NAMELEN];
-  int	sTime[4], eTime[4], index;
+  char  *blanks[512];
+  int	sTime[4], eTime[4];	// Requested Start/End Time.
   long	start[3], count[3];
-  int	fsTime[4], feTime[4];
+  int	fsTime[4], feTime[4];	// File Start/End Time.
 
 
   /* Come through as a second pass after all processing has been done, and
@@ -764,6 +764,9 @@ void BlankOutBadData()
    */
   for (int i = 0; blanks[i]; ++i)
     {
+    int	index;
+    char target[NAMELEN];
+
     sscanf(blanks[i], "%s %d:%d:%d %d:%d:%d", target,
 	&sTime[0], &sTime[1], &sTime[2], &eTime[0], &eTime[1], &eTime[2]);
 
