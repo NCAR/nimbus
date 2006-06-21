@@ -113,7 +113,6 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
         break;
       }
 
-char tar[50];
   while (fgets(buffer, 2048, fp))
     {
     if (buffer[0] == COMMENT || buffer[0] == '\n')
@@ -124,7 +123,7 @@ char tar[50];
     if (strcmp(target, "SDI") == 0 || strcmp(target, "RAW") == 0)
       {
       target = strtok(NULL, " \t");
-strcpy(tar, target);
+
       if ((indx = SearchTable(raw, target)) == ERR)
         {
         char	tmp[64];
