@@ -275,6 +275,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   XtSetSensitive(menuBar, false);
 
   CleanOutUnwantedVariables();
+  ReadBlankOuts();
   AllocateDataArrays();
   GenerateComputeOrder();	/* for Derived variables		*/
   GetUserTimeIntervals();
@@ -393,7 +394,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   finishWALL = time(NULL);
   finishCPU  = clock();
 
-  BlankOutBadData();
+//  BlankOutBadData();
   stopProcessing();
 
 }	/* END STARTPROCESSING */

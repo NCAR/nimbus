@@ -711,6 +711,9 @@ void BlankOutBadData()
    * replace "bad" segments with MISSING_VALUE.
    */
   sprintf(buffer, "%s.%s", BLANKVARS.c_str(), cfg.FlightNumber().c_str());
+  if (AccessProjectFile(buffer, "r") == FALSE)
+    return;
+
   ReadTextFile(buffer, blanks);
 
   /* Acquire file start & end times. */
@@ -729,33 +732,7 @@ void BlankOutBadData()
   /* First do all variables where the DataQuality flag is bad:  whole flight.
    */
   start[0] = start[1] = start[2] = 0;
-  count[0] = feTime[3] - fsTime[3];
-
-  for (size_t i = 0; i < raw.size(); ++i)
-    {
-    if (strcmp(raw[i]->DataQuality, "Bad") == 0)
-      {
-      sprintf(buffer, "Blanking %s from %02d:%02d:%02d to %02d:%02d:%02d.\n",
-       raw[i]->name, fsTime[0], fsTime[1], fsTime[2], feTime[0],
-       feTime[1], feTime[2]);
-      LogMessage(buffer);
-
-      clearDependedByList();
-
-      if (raw[i]->DependedUpon)
-        {
-        markDependedByList(raw[i]->name);
-        printDependedByList();
-        }
-
-      if (writeBlank(raw[i]->varid, start, count, raw[i]->OutputRate) == ERR)
-        {
-        sprintf(buffer, "Failure writing BadData for variable %s.\n",
-                raw[i]->name);
-        LogMessage(buffer);
-        }
-      }
-    }
+  count[0] = feTime[3] - fsTime[3] + 1;
 
   for (size_t i = 0; i < derived.size(); ++i)
     {
@@ -837,32 +814,6 @@ void BlankOutBadData()
 
     clearDependedByList();
 
-    if ((index = SearchTableSansLocation(raw, target)) != ERR &&
-	raw[index]->Output)
-      {
-
-/*  See if measurement has already been blanked for whole flight  */
-      if (strcmp(raw[index]->DataQuality, "Bad") == 0)
-        {
-        sprintf(buffer, "%s has already been blanked because the DataQuality flag is Bad.\n",raw[index]->name);
-        LogMessage(buffer);
-        }
-      else
-        {
-        if (raw[index]->DependedUpon)
-          {
-          markDependedByList(raw[index]->name);
-          printDependedByList();
-          }
-        if (writeBlank(raw[index]->varid, start, count, raw[index]->OutputRate) == ERR)
-          {
-          sprintf(buffer, "Failure writing BadData for variable %s.\n",
-		  raw[index]->name);
-          LogMessage(buffer);
-          }
-        }
-      }
-    else
     if ((index = SearchTable(derived, target)) != ERR &&
 	derived[index]->Output)
       {

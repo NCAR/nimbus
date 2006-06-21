@@ -15,6 +15,7 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #include <cstdlib>
 #include <cstring>
 #include <string>
+#include <utility>
 #include <vector>
 #include <sys/types.h>
 #include "constants.h"
@@ -57,11 +58,7 @@ typedef struct
 	} DEFAULT;
 
 
-/* Next 3 structs are main structures for each variable.  3 of them for the
- * 3 variable catagories we have, Analog/Digital, Block probes, and Derived.
- */
-
-// Base for the rest.  Refactored Jan/05.
+// Base for the RAWTBL & DERTBL.  Refactored Jan/05.
 class var_base
 {
 public:
@@ -97,32 +94,14 @@ public:
   bool Transmit;
   size_t OutputRate;
   char *DataQuality;	// Prelim, QC'd, Bad, etc
+
+  std::vector<std::pair<int, int> > blank_out;
 };
 
 
-/* Struct for SDI analog variables, this variables only require polynomial cals
- * to be processed.
+/* Next 2 structs are main structures for each variable.  2 of them for the
+ * 2 variable catagories we have, Raw recorded data, and Derived.
  */
-/*
-class SDITBL : public var_base
-{
-public:
-  SDITBL(const char s[]);
-
-  long ADSstart;	// Start offset of variable in block
-  long ADSoffset;	// Offset between samples
-  char type[4];		// Analog, Digital or Counter
-
-  void (*Average)(...);	// Routine to use to average/sum data
-//  void (*Average)(NR_TYPE *, NR_TYPE *, void *); // Routine to use to average/sum data
-
-  long convertOffset;
-  float	convertFactor;
-  std::vector<float> cof;
-
-  SYNTHTYPE synthtype; 
-};
-*/
 
 /* Struct for raw variables (mostly block probes), some analog's come down
  * here for specialized processing (i.e. not polynomial cals).

@@ -10,18 +10,10 @@ DESCRIPTION:	Translates ADS data records into the internal format.
 		The internal format is all one data type for ease of
 		processing.
 
-INPUT:		ADS logical record
-
-OUTPUT:		New logical record, everything of type NR_TYPE.
-
-REFERENCES:	libxlate.a
-
-REFERENCED BY:	lrloop.c hrloop.c rtloop.c winputops.c
-
 NOTE:		If you chnage one, make sure the other does/doesn't need
 		the same change.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 -------------------------------------------------------------------------
 */
 
@@ -33,6 +25,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include <netinet/in.h>
 
 extern ushort	*bits;
+
+static bool blankOutThisValue(RAWTBL * var, short thisTime[]);
 
 /* -------------------------------------------------------------------- */
 void DecodeADSrecord(
@@ -62,16 +56,50 @@ void DecodeADSrecord(
     return;
   }
 
-
   /* Extract block variables into new record
    */
   for (size_t i = 0; i < raw.size(); ++i)
   {
-    if (raw[i]->xlate)
+    if (blankOutThisValue(raw[i], lr) == true)
+      for (size_t j = 0; j < raw[i]->SampleRate * raw[i]->Length; ++j)
+        nlr[raw[i]->SRstart+j] = floatNAN;
+    else
       (*raw[i]->xlate)(raw[i], &lr[raw[i]->ADSstart], &nlr[raw[i]->SRstart]);
   }
-
 }	/* END DECODEADSRECORD */
+
+/* -------------------------------------------------------------------- */
+static bool blankOutThisValue(RAWTBL * var, short r[])
+{
+  // If this var has no xlate() fn or DataQuality has been marked bad, blank.
+  if (var->xlate == 0 || strcmp(var->DataQuality, "Bad") == 0)
+    return true;
+
+  // Compute time for this record.
+  static int prevTime = -1;
+  static bool crossedMidNight = false;
+  int thisTime = ntohs(r[1]) * 3600 + ntohs(r[2]) * 60 + ntohs(r[3]);
+
+  if (thisTime < prevTime)
+    crossedMidNight = true;
+
+  prevTime = thisTime;
+
+  if (crossedMidNight)
+    thisTime += 86400;
+
+  /* Check to see if the time of this record falls into any of the blank
+   * out times for this variable.
+   */
+  for (size_t i = 0; i < var->blank_out.size(); ++i)
+  {
+    if (thisTime >= var->blank_out[i].first &&
+	thisTime <= var->blank_out[i].second)
+      return true;
+  }
+
+  return false;
+}
 
 /* -------------------------------------------------------------------- */
 void decodeADS2analog(RAWTBL *varp, void *input, NR_TYPE *output)
