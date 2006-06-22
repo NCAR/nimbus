@@ -37,6 +37,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include <cerrno>
 #include <ctime>
 #include <map>
+#include <sstream>
 
 #include "nimbus.h"
 #include "decode.h"
@@ -46,8 +47,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include "raf_queue.h"
 #include "vardb.h"
 #include "svnInfo.h"
-
-#include <SyncRecordReader.h>
 
 
 static const std::string NETCDF_FORMAT_VERSION = "1.3";
