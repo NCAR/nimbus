@@ -28,7 +28,7 @@ REFERENCES:	none
 
 REFERENCED BY:	rec_decode.c
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1999-2000
+COPYRIGHT:	University Corporation for Atmospheric Research, 1999-2006
 -------------------------------------------------------------------------
 */
 
@@ -36,7 +36,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999-2000
 #include "amlib.h"
 #include "raf_queue.h"
 
-#define OVERLOAD	(0xffffffff)
+const unsigned long OVERLOAD = 0xffffffff;
+const unsigned long StandardSyncWord = 0x55000000;
 
 static Queue	*probes[MAX_PMS2];
 
@@ -74,8 +75,6 @@ struct particle
   ushort	x1, x2;		/* for particles that touch both edges.	*/
   NR_TYPE	deltaTime;	/* Amount of time between prev & this particle*/
   NR_TYPE	liveTime;	/* Amount of time consumed by particle	*/
-  ulong		*p;		/* Pointer into P2d_rec			*/
-  size_t	nSlices;
   };
 
 typedef struct particle Particle;
@@ -456,15 +455,16 @@ static void AddMore2dData(Queue *probe, long thisTime, int probeCnt)
 /* -------------------------------------------------------------------- */
 void Process(Queue *probe, P2d_rec *rec, int probeCnt)
 {
-  size_t	i, j, h, partCnt;
+  size_t	partCnt;
   long		endTime, oload;
   bool		firstParticleAfter512;
-  ulong		*p, slice, pSlice, ppSlice, tBarElapsedtime, DASelapsedTime;
-  NR_TYPE	tas, frequency, overLap;
-  ushort	t;
+  ulong		*p, tBarElapsedtime, DASelapsedTime;
+  NR_TYPE	tas, frequency;
   Particle	*part[512], *cp; /* cp stands for "currentParticle" */
 
   static int	overLoad = 0;
+  static std::vector<unsigned long> particle;  // static to keep unfinished particle.
+
 
   /* If it's an HVPS record, process elsewhere, and return.
    */
@@ -481,13 +481,13 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
     {
     short       *sp = (short *)rec;
 
-    for (i = 1; i < 10; ++i, ++sp)
+    for (int i = 1; i < 10; ++i, ++sp)
       *sp = ntohs(*sp);
 
 
     p = (ulong *)rec->data;
 
-    for (i = 0; i < 1024; ++i, ++p)
+    for (int i = 0; i < 1024; ++i, ++p)
       *p = ntohl(*p);
     }
 
@@ -519,15 +519,27 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
 
   /* Locate each particle and characteristics (e.g. h & w, touched edge).
    */
-  for (i = 0; i < 1024; ++i, ++p)
+  for (int i = 0; i < 1024; )
     {
-    if ((slice = *p) == 0xffffffff)
+    unsigned long slice = *p;
+
+    if (slice == 0xffffffff)
       --tBarElapsedtime;
 
-    /* Ok, found start of particle.
-     */
-//    if (slice == 0xff000000 && ppSlice == 0xffffffff && pSlice != 0xffffffff)
-    if (slice == 0x55000000 && ppSlice == 0xffffffff && pSlice != 0xffffffff)
+    if (slice != StandardSyncWord)	// Load up particle.
+      {
+      particle.push_back(slice);
+      ++i; ++p;
+      continue;
+      }
+
+    unsigned long syncWord = particle[0];
+    unsigned long blankWord = particle[particle.size()-2];
+    unsigned long timeWord = particle[particle.size()-1];
+
+    // Validate particle.
+    if (syncWord == StandardSyncWord && blankWord == 0xffffffff &&
+	(timeWord | 0x55ffffff) == 0x55ffffff)
       {
       if (i > 512 && firstParticleAfter512 && overLoad > 0)
         {
@@ -537,7 +549,7 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
 
         cp->time = startTime[probeCnt];
         cp->msec = startMilliSec[probeCnt];
-        cp->deltaTime = (NR_TYPE)overLoad * 1000; /* microseconds */
+        cp->deltaTime = (NR_TYPE)overLoad * 1000; // microseconds
         cp->timeWord = OVERLOAD;
         cp->w = 0;
         cp->h = 0;
@@ -548,27 +560,24 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
       cp = part[partCnt++] = new Particle;
       cp->time = startTime[probeCnt];
       cp->msec = startMilliSec[probeCnt];
-      cp->timeWord = pSlice & 0x00ffffff;
+      cp->timeWord = timeWord & 0x00ffffff;
       cp->deltaTime = (NR_TYPE)cp->timeWord * frequency;
-      cp->w = 1;	/* first slice of particle is in sync word */
+      cp->w = 1;	// first slice of particle is in sync word
       cp->h = 1;
       cp->edge = false;
       cp->x1 = 0;
       cp->x2 = 0;
-      cp->p = p;
-      cp->nSlices = 0;
 
       if ((ulong)cp->deltaTime < DASelapsedTime)
         tBarElapsedtime += cp->timeWord;
 
       /* Determine height of particle.
        */
-      ++p; ++i; ++cp->nSlices;
-      for (; i < 1024 && *p != 0xffffffff; ++p, ++i)
+      for (int j = 1; particle[j] != 0xffffffff; ++j)
         {
         ++cp->w;
 
-        slice = ~(*p);
+        slice = ~(particle[j]);
 
         /* Potential problem/bug with computing of x1, x2.  Works good if all
          * edge touches are contigious (water), not so good for snow, where
@@ -587,12 +596,12 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
           cp->x2++;
           }
 
-        h = 32;
-        for (	j = 0, slice = *p;
-		j < 32 && (slice & 0x80000000); slice <<= 1, ++j)
+        size_t h = 32;
+        for (int k = 0, slice = particle[j];
+		k < 32 && (slice & 0x80000000); slice <<= 1, ++k)
           --h;
-        for (	j = 0, slice = *p;
-		j < 32 && (slice & 0x00000001); slice >>= 1, ++j)
+        for (int k = 0, slice = particle[j];
+		k < 32 && (slice & 0x00000001); slice >>= 1, ++k)
           --h;
 
         cp->h = MAX(cp->h, h);
@@ -604,14 +613,14 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
        */
       cp->liveTime = (NR_TYPE)((cp->w + 3) * frequency);
 
-      t = MAX(cp->x1, cp->x2);
+      ushort t = MAX(cp->x1, cp->x2);
       cp->x1 = MIN(cp->x1, cp->x2);
       cp->x2 = t;
-      cp->nSlices = p - cp->p;
       }
 
-    ppSlice = p[-1];
-    pSlice = p[0];
+    particle.clear();
+    particle.push_back(*p);
+    ++i; ++p;
     }
 
 
@@ -619,7 +628,7 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
    */
   tBarElapsedtime = (int)((float)tBarElapsedtime * frequency);	/* Convert to microseconds */
   tBarElapsedtime += overLoad * 1000;
-  overLap = (NR_TYPE)tBarElapsedtime / DASelapsedTime;
+  float overLap = (NR_TYPE)tBarElapsedtime / DASelapsedTime;
 
 
 //printf("DASeTime = %d, tBarEtime=%d, %f\n", DASelapsedTime, tBarElapsedtime, overLap);
@@ -672,7 +681,7 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
 //    fprintf(stderr, "2d particle cnt for 1 second = %d\n", partCnt);
 #endif
 
-  for (i = 0; i < partCnt; ++i)
+  for (size_t i = 0; i < partCnt; ++i)
     {
     cp = part[i];
 
