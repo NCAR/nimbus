@@ -199,9 +199,9 @@ int CheckForTimeGap(void *ADShdr, int initMode)
     }
 
 
-  /* Time gaps less than 1 hour, fill with records with MISS_VAL
+  /* Time gaps less than 2 hour, fill with records with MISS_VAL
    */
-  if (newTime - prevTime < 3600)	/* 3600 seconds.	*/
+  if (newTime - prevTime < 7200)	/* 7200 seconds.	*/
     {
     int		h, m, s;
 
