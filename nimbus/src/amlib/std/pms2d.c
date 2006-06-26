@@ -20,11 +20,7 @@ OUTPUT:		C2D?	- Concentrations
 		DBAR2
 		PLWC2	- Liquid Water Content
 
-REFERENCES:	none
-
-REFERENCED BY:	Compute()
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 2000
+COPYRIGHT:	University Corporation for Atmospheric Research, 2000-2006
 -------------------------------------------------------------------------
 */
 
@@ -34,7 +30,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 
 static const NR_TYPE shadowLevel = 0.55;
 
-static NR_TYPE DOF2dP[] = { 0.0, 145.203, 261.0, 261.0, 261.0,
+// Use a fixed DOF, not what the manual specifies, until such time that a "research
+// project" can be done.  Al Cooper, Jorgen Jenson 6/26/06
+
+//static NR_TYPE DOF2dP[] = { 0.0, 145.203, 261.0, 261.0, 261.0,
+static NR_TYPE DOF2dP[] = { 0.0, 261.0, 261.0, 261.0, 261.0,
 	261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0,
 	261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0,
 	261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0,
@@ -42,7 +42,8 @@ static NR_TYPE DOF2dP[] = { 0.0, 145.203, 261.0, 261.0, 261.0,
 	261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0,
 	261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0 };
 
-static NR_TYPE DOF2dC[] = { 0.0, 1.56, 6.25, 14.06, 25.0, 39.06, 56.25,
+//static NR_TYPE DOF2dC[] = { 0.0, 1.56, 6.25, 14.06, 25.0, 39.06, 56.25,
+static NR_TYPE DOF2dC[] = { 0.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
 	61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
 	61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
 	61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
