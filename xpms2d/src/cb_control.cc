@@ -22,11 +22,7 @@ STATIC FNS:
 
 DESCRIPTION:	
 
-REFERENCES:	
-
-REFERENCED BY:	XtAppMainLoop()
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2001
+COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2006
 -------------------------------------------------------------------------
 */
 
