@@ -8,13 +8,7 @@ ENTRY POINTS:
  
 DESCRIPTION:
  
-REFERENCES:
- 
-REFERENCED BY:
- 
-NOTES:
- 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2003
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2006
 -------------------------------------------------------------------------
 */
 
@@ -102,9 +96,9 @@ void MainCanvas::draw(P2d_rec *record, struct recStats &stats, float version, in
   static unsigned long  prevTime;
 
   if (version < 3.35)
-    syncWord = 0xff000000;
+    syncWord = SyncWordMask;
   else
-    syncWord = 0x55000000;
+    syncWord = StandardSyncWord;
 
 //  if (record->msec == 397) debug = true;
 
@@ -238,7 +232,7 @@ void MainCanvas::draw(P2d_rec *record, struct recStats &stats, float version, in
     y += 224 - (HVPS_MASKED<<1);
     }
   else
-  for (i = 0; i < 1024; ++p)		/* 2DC and/or 2DP	*/
+  for (i = 0; i < RecordLen; ++p)		/* 2DC and/or 2DP	*/
     {
     slice = *p;
 
@@ -304,7 +298,7 @@ if (debug) if (cp) printf("dq: %06x %d %d\n", cp->timeWord, cp->h, cp->w); else 
       else
         colorIsBlack = False;
 
-      for (++p; i < 1024 && *p != 0xffffffff; ++p)
+      for (++p; i < RecordLen && *p != 0xffffffff; ++p)
         {
         drawSlice(ps, i++, *p);
         }
@@ -526,7 +520,6 @@ void MainCanvas::enchiladaLineItem(PostScript *ps, int i, int cnt,
     ps->MoveTo(5, 750-(y+80+(cnt*15))); ps->ShowStr(buffer); }
   else
     pen->DrawText(Surface(), 5, 137+(cnt*15), buffer);
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -574,7 +567,6 @@ void MainCanvas::drawSlice(PostScript *ps, int i, unsigned long slice)
 
     pen->DrawPoints(Surface(), pts, cnt);
     }
-
 }
 
 /* END MAINCANVAS.CC */
