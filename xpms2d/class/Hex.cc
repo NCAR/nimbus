@@ -41,7 +41,7 @@ void Hex::Update(int nBuffs, P2d_rec sets[])
 
 
   /* Records */
-  for (i = 0; i < 1024; ++i)
+  for (i = 0; i < RecordLen; ++i)
     {
     sprintf(buffer, "%4d  ", i);
 

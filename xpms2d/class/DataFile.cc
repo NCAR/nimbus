@@ -661,7 +661,7 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
       for (int i = 0; i < 2048; ++i, ++sp)
         *sp = ntohs(*sp);
     else
-      for (int i = 0; i < 1024; ++i, ++p)
+      for (int i = 0; i < RecordLen; ++i, ++p)
         *p = ntohl(*p);
   }
 
@@ -674,12 +674,12 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
   {
     unsigned long *p = (unsigned long *)buff->data;
 
-    for (int i = 0; i < 1024; ++i, ++p)
+    for (int i = 0; i < RecordLen; ++i, ++p)
     {
       // It only matters to fix the sync & timing words.
       if (*p == 0xff800000)
       {
-        *p = 0xff000000;
+        *p = SyncWordMask;
         *(p-1) <<= *(p-1);
       }
     }
