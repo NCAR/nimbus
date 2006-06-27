@@ -15,17 +15,9 @@ DESCRIPTION:	This is the 2d record processor, generates a queue of
 		There is a corresponding function in class/MainWindow.cc
 		to actually draw the record and information.
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	
-
-REFERENCED BY:	
-
 NOTES:		
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1999-2003
+COPYRIGHT:	University Corporation for Atmospheric Research, 1999-2006
 -------------------------------------------------------------------------
 */
 
@@ -39,12 +31,12 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999-2003
 
 #include <algorithm>
 
-#define MAX_PROBES	4
+static const int maxDiodes = 128;
 
 static const float	TAS_COMPENSATE = 1.0;
-static const int	lower_mask = 215, upper_mask = 40;
+static const int	lower_mask = 215, upper_mask = 40;	// HVPS masks.
 
-static float	sampleAreaC[128], sampleAreaP[128];
+static float	sampleAreaC[maxDiodes], sampleAreaP[maxDiodes];
 
 static struct recStats	output;
 
@@ -60,7 +52,7 @@ struct recStats &ProcessRecord(P2d_rec *record, float version)
   int		i, j, thisTime, probeIdx, h, startTime, bin, nBins, overload;
   unsigned long		*p, slice, ppSlice, pSlice, syncWord, startMilliSec;
   bool		overloadAdded = false, debug = false;
-  double	sampleVolume[128], diameter, z, conc, totalLiveTime;
+  double	sampleVolume[maxDiodes], diameter, z, conc, totalLiveTime;
 
   Particle	*cp;
 
@@ -72,9 +64,9 @@ struct recStats &ProcessRecord(P2d_rec *record, float version)
     return(ProcessHVPSrecord(record, version));
 
   if (version < 3.35)
-    syncWord = 0xff000000;
+    syncWord = SyncWordMask;
   else
-    syncWord = 0x55000000;
+    syncWord = StandardSyncWord;
 
   probeIdx = ((char *)&record->id)[1] - '1';
   if (((char *)&record->id)[0] == 'C')
@@ -151,7 +143,7 @@ if (debug)
   startMilliSec = prevHdr[probeIdx].msec * 1000;
 
   // Loop through all slice in record.
-  for (i = 0; i < 1024; ++i, ++p)
+  for (i = 0; i < RecordLen; ++i, ++p)
     {
     slice = *p;
 
@@ -190,7 +182,7 @@ if (debug) printf("%08x %08x %08x\n", ppSlice, pSlice, slice);
       /* Determine height of particle.
        */
       ++p; ++i;
-      for (; i < 1024 && *p != 0xffffffff; ++p, ++i)
+      for (; i < RecordLen && *p != 0xffffffff; ++p, ++i)
         {
         ++cp->w;
 
@@ -325,7 +317,7 @@ if (debug)
 
         }
 
-      if (!cp->reject && bin < 128)
+      if (!cp->reject && bin < maxDiodes)
         {
         output.accum[bin]++;
         output.area += cp->area;
@@ -351,7 +343,7 @@ if (debug)
   if (output.nTimeBars > 0)
     output.meanBar = output.tBarElapsedtime / output.nTimeBars;
 
-output.tBarElapsedtime += (unsigned long)(1024 * output.frequency);
+output.tBarElapsedtime += (unsigned long)(RecordLen * output.frequency);
 
   output.tBarElapsedtime /= 1000;	// convert to milliseconds
   output.frequency /= 1000;
@@ -403,7 +395,8 @@ struct recStats &ProcessHVPSrecord(P2d_rec *record, float version)
 {
   int		i, j, thisTime, probeIdx, h, startTime, bin, nBins,
 		shaded, unshaded;
-  unsigned short	*p, slice, ppSlice, pSlice, startMilliSec;
+  unsigned short	*p, slice, ppSlice, pSlice;
+  unsigned long	startMilliSec;
   bool		overloadAdded = false, debug = false;
   double	sampleVolume[512], diameter, z, conc, totalLiveTime;
 
@@ -708,7 +701,7 @@ if (debug)
           break;
         }
 
-      if (!cp->reject && bin < 1024)
+      if (!cp->reject && bin < RecordLen)
         {
         output.accum[bin]++;
         output.area += cp->area;
@@ -812,7 +805,7 @@ void SetSampleArea()
   switch (controlWindow->GetConcentration())
     {
     case NONE:
-      for (i = 1; i < 128; ++i)
+      for (i = 1; i < maxDiodes; ++i)
         {
         sampleAreaC[i] = 61.0 * 0.8;
         sampleAreaP[i] = 261.0 * 6.4;
@@ -841,7 +834,7 @@ void SetSampleArea()
       break;
 
     case RECONSTRUCTION:
-      for (i = 1; i <= 128; ++i)
+      for (i = 1; i <= maxDiodes; ++i)
         {
         dia = (float)i * 25;
         eaw = ((32 * 25) + (2 * (dia / 2 - dia / 7.2414))) * 0.001;
