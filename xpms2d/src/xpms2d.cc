@@ -14,7 +14,7 @@ DESCRIPTION:	See man page.
 
 INPUT:		Command line options
 
-AUTHOR:		websterc@ncar.ucar.edu
+AUTHOR:		cjw@ucar.edu
 
 COPYRIGHT:      University Corporation for Atmospheric Research, 1997
 -------------------------------------------------------------------------

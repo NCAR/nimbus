@@ -10,10 +10,6 @@ ENTRY POINTS:	EditPrintParms()
 
 DESCRIPTION:	none
 
-REFERENCES:	none
-
-REFERENCED BY:	Menu button.
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8
 -------------------------------------------------------------------------
 */

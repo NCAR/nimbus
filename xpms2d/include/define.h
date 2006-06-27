@@ -3,8 +3,6 @@
 OBJECT NAME:	define.h
 
 FULL NAME:	Include File to Include the Include Files
-
-DESCRIPTION:	
 -------------------------------------------------------------------------
 */
 
@@ -37,10 +35,14 @@ DESCRIPTION:
 
 #define	SPACE		' '
 
-#define MAX_DATAFILES	2
-#define MAX_DATASETS	4
-#define MAX_PANELS	4
-#define MAX_PROBES	4
+const int MAX_DATAFILES = 2;
+const int MAX_DATASETS = 4;
+const int MAX_PANELS = 4;
+const int MAX_PROBES = 4;
+
+const unsigned long StandardSyncWord = 0x55000000;
+const unsigned long SyncWordMask = 0xff000000;
+const int RecordLen = 1024;
 
 #define TITLESIZE	80
 
@@ -62,7 +64,6 @@ struct particle
   ulong		timeWord;
   ulong		deltaTime;	// Amount of time between prev & this particle
   ulong		liveTime;	// Amount of time consumed by particle
-//  ulong	*p;
   };
 
 typedef struct particle Particle;

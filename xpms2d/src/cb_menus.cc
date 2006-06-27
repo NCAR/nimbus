@@ -18,10 +18,6 @@ STATIC FNS:	PrintPS()
 
 DESCRIPTION:	
 
-REFERENCES:	
-
-REFERENCED BY:	XtAppMainLoop()
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2001
 -------------------------------------------------------------------------
 */

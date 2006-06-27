@@ -6,10 +6,6 @@ FULL NAME:	ADS Data File Class
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2001
 -------------------------------------------------------------------------
 */
@@ -18,6 +14,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2001
 
 #include <unistd.h>
 #include <algorithm>
+#include <vector>
 
 static P2d_rec PtestRecord, CtestRecord, HtestRecord;
 
@@ -165,6 +162,12 @@ ADS_DataFile::ADS_DataFile(char fName[])
   buildIndices();
 
   currLR = -1; currPhys = 0;
+
+  if (strcmp(ProjectNumber(), "812") == 0)
+    fprintf(stderr, "DataFile.cc: Lake-ICE - Bit shift correction will be performed on all records.\n");
+
+  if (strcmp(ProjectNumber(), "135") == 0)
+    fprintf(stderr, "DataFile.cc: RICO - Stuck bit correction will be performed.\n");
 
 }	/* END CONSTRUCTOR */
 
@@ -684,6 +687,62 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
       }
     }
   }
+
+  /* RICO stuck bit cleanup.
+   */
+  if (strcmp(ProjectNumber(), "135") == 0)
+  {
+    std::vector<size_t> spectra, sorted_spectra;
+
+    for (size_t j = 0; j < 32; ++j)
+      spectra.push_back(0);
+
+    // Generate spectra.
+    unsigned long *p = (unsigned long *)buff->data;
+    for (size_t i = 0; i < RecordLen; ++i, ++p)
+    {
+      if ((*p & SyncWordMask) == 0x55000000 || *p == 0xffffffff)
+        continue;
+
+      for (size_t j = 0; j < 32; ++j)
+        if (((*p >> j) & 0x01) == 0x01)
+          ++spectra[j];
+    }
+
+    // Determine median.
+    sorted_spectra = spectra;
+    sort(sorted_spectra.begin(), sorted_spectra.end());
+    if (sorted_spectra[15] * 3 < sorted_spectra[31])
+    {
+      int stuck_bin = -1;
+      for (size_t j = 0; j < 32; ++j)
+        if (spectra[j] == sorted_spectra[31])
+          stuck_bin = j;
+
+      fprintf(stderr,
+	"DataFile.cc: %02d:%02d:%02d.%d - Performing stuck bit correction, bit %d.\n",
+	buff->hour, buff->minute, buff->second, buff->msec, stuck_bin);
+
+      if (stuck_bin == -1)
+      {
+        fprintf(stderr, "DataFile.cc:  Impossible.\n");
+        exit(1);
+      }
+
+      unsigned long mask1 = 0x01 << stuck_bin;
+      unsigned long mask2 = 0x07 << stuck_bin-1;
+      unsigned long *p = (unsigned long *)buff->data;
+      for (size_t i = 0; i < RecordLen; ++i, ++p)
+      {
+        if ((*p & SyncWordMask) == 0x55000000 || *p == 0xffffffff)
+          continue;
+
+        unsigned long slice = ~(*p);
+        if ((slice & mask2) == mask1)
+          *p = ~(slice & ~mask1);
+      }
+    }
+  }
 }
 
 /* -------------------------------------------------------------------- */
@@ -694,7 +753,6 @@ bool ADS_DataFile::isValidProbe(char *pr)
     return(true);
 
   return(false);
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -736,7 +794,6 @@ void ADS_DataFile::sort_the_table(int beg, int end)
 
   if (x < end)
     sort_the_table(x, end);
-
 }
 
 /* -------------------------------------------------------------------- */
