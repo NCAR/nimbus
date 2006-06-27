@@ -4,17 +4,7 @@ OBJECT NAME:	MainCanvas.h
 
 FULL NAME:	Main canvas
 
-ENTRY POINTS:	
-
-DESCRIPTION:	
-
-REFERENCES:	
-
-REFERENCED BY:	
-
-NOTES:		
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2006
 -------------------------------------------------------------------------
 */
 
