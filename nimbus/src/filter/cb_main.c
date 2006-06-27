@@ -394,7 +394,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   finishWALL = time(NULL);
   finishCPU  = clock();
 
-//  BlankOutBadData();
+  BlankOutBadData();
   stopProcessing();
 
 }	/* END STARTPROCESSING */
