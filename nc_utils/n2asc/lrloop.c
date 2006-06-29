@@ -120,6 +120,8 @@ int LowRateLoop(long starttime, long endtime)
   }
 
 
+  if (OutputDate)
+    fprintf(OutputFile, "DATE     ");
   fprintf(OutputFile, "UTC     ");
 
   highestRate = 1;
