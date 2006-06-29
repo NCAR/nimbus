@@ -156,6 +156,10 @@ resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 
   startTime = 2000.0 - lag;
 
+  // Don't interp past the edge of the earth.
+  if (x[goodPoints-1] < startTime || startTime < x[0])
+    return;
+
   if (goodPoints < 3)
   {
     if (goodPoints != 0)

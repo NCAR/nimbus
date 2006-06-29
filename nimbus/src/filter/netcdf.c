@@ -476,12 +476,11 @@ void replaceNANwithMissingValue()
     if (isnan(AveragedData[i]))
       AveragedData[i] = MISSING_VALUE;
 
-  for (size_t i = 0; i < raw.size(); ++i)
-    for (size_t j = 0; j < raw[i]->SampleRate; ++j)
-      if (isnan(SampledData[raw[i]->SRstart]+j))
-        SampledData[raw[i]->SRstart+j] = MISSING_VALUE;
+  for (size_t i = 0; i < nSRfloats; ++i)
+    if (isnan(SampledData[i]))
+      SampledData[i] = MISSING_VALUE;
 
-  if (cfg.ProcessingRate() == Config::HighRate)
+  if (HighRateData)
     for (size_t i = 0; i < nHRfloats; ++i)
       if (isnan(HighRateData[i]))
         HighRateData[i] = MISSING_VALUE;
