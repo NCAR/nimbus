@@ -38,6 +38,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include <ctime>
 #include <unistd.h>
 #include <sys/param.h>
+#include <sys/types.h>
 #include <sys/stat.h>
 
 #include <Xm/List.h>
@@ -737,7 +738,17 @@ static int validateInputFile()
   if (strlen(ADSfileName) == 0 || access(ADSfileName, R_OK) == ERR)
     {
     char msg[128];
-    sprintf(msg, "Non-existent input file [%s]\n", ADSfileName);
+    sprintf(msg, "Non-existent input file [%s].\n", ADSfileName);
+    HandleError(msg);
+    return(ERR);
+    }
+
+  struct stat st_buf;
+  stat(ADSfileName, &st_buf);
+  if ( S_ISDIR( st_buf.st_mode ) )
+    {
+    char msg[128];
+    sprintf(msg, "Input file [%s] is a directory.\n", ADSfileName);
     HandleError(msg);
     return(ERR);
     }
