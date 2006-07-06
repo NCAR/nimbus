@@ -49,9 +49,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include "vardb.h"	// Variable DataBase
 #include "amlib.h"
 
-#include <Socket.h>
-#include <SyncRecordReader.h>
-extern dsm::SyncRecordReader* syncRecReader;
+#include <nidas/core/Socket.h>
+#include <nidas/dynld/raf/SyncRecordReader.h>
+extern nidas::dynld::raf::SyncRecordReader* syncRecReader;
 
 typedef struct
   {
@@ -113,12 +113,12 @@ static char	*derivedlist[MAX_DEFAULTS*4],	/* DeriveNames file	*/
 		*rawlist[MAX_DEFAULTS*4];	/* RawNames file	*/
 
 
-static RAWTBL	*initSDI_ADS3(dsm::SyncRecordVariable* var);
+static RAWTBL	*initSDI_ADS3(nidas::dynld::raf::SyncRecordVariable* var);
 static RAWTBL	*add_name_to_RAWTBL(const char []);
 static DERTBL	*add_name_to_DERTBL(const char []);
 
-static atdUtil::Socket* sock;
-static dsm::IOChannel* iochan;
+static nidas::util::Socket* sock;
+static nidas::core::IOChannel* iochan;
 
 static void	add_file_to_RAWTBL(const std::string),
 		add_file_to_DERTBL(const std::string),
@@ -272,7 +272,7 @@ int DecodeHeader3(const char header_file[])
 {
 printf("DecodeHeader3: header_file=%s\n", header_file);
 
-  extern dsm::SyncRecordReader* syncRecReader;
+  extern nidas::dynld::raf::SyncRecordReader* syncRecReader;
 /*
   if ((ProjectDirectory = (char *)getenv("ADS3_CONFIG")) == NULL)
   {
@@ -313,14 +313,17 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
   else
     ; // sync_server is started elsewhere onboard.
 
-  sock = new atdUtil::Socket(DSMSERVER, DSMSERVERPORT);
-  iochan = new dsm::Socket(sock);
+  sock = new nidas::util::Socket(DSMSERVER, DSMSERVERPORT);
+  iochan = new nidas::core::Socket(sock);
 
-  syncRecReader = new dsm::SyncRecordReader(iochan);
+  syncRecReader = new nidas::dynld::raf::SyncRecordReader(iochan);
 
   cfg.SetProjectNumber(syncRecReader->getProjectName());
   cfg.SetTailNumber(syncRecReader->getTailNumber());
-  cfg.SetFlightNumber(syncRecReader->getFlightName());
+
+printf("ProjectName: %s\n", cfg.ProjectNumber().c_str());
+printf("TailNumber: %s\n", cfg.TailNumber().c_str());
+printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 
   {
   time_t t = syncRecReader->getStartTime();
@@ -355,12 +358,12 @@ printf("hdr_decode.c: <<< WARNING >>> ProjectNumber is hardcoded = %s\n", cfg.Pr
   // Add Time variables, hour, min, sec, year, mon, day.
   initHDR(0);
 
-  const std::list<const dsm::SyncRecordVariable*>& vars = syncRecReader->getVariables();
+  const std::list<const nidas::dynld::raf::SyncRecordVariable*>& vars = syncRecReader->getVariables();
 
-  std::list<const dsm::SyncRecordVariable*>::const_iterator vi;
+  std::list<const nidas::dynld::raf::SyncRecordVariable*>::const_iterator vi;
   for (vi = vars.begin(); vi != vars.end(); ++vi)
   {
-    dsm::SyncRecordVariable *var = const_cast<dsm::SyncRecordVariable*>(*vi);
+    nidas::dynld::raf::SyncRecordVariable *var = const_cast<nidas::dynld::raf::SyncRecordVariable*>(*vi);
 
     rate = (int)ceil(var->getSampleRate());
     length = var->getLength();
@@ -396,7 +399,7 @@ printf("hdr_decode.c: <<< WARNING >>> ProjectNumber is hardcoded = %s\n", cfg.Pr
 }
 
 /* -------------------------------------------------------------------- */
-static RAWTBL* initSDI_ADS3(dsm::SyncRecordVariable* var)
+static RAWTBL* initSDI_ADS3(nidas::dynld::raf::SyncRecordVariable* var)
 {
   RAWTBL *cp = new RAWTBL(var->getName().c_str());
   raw.push_back(cp);
@@ -411,10 +414,10 @@ static RAWTBL* initSDI_ADS3(dsm::SyncRecordVariable* var)
 
   switch (var->getType())
   {
-    case  dsm::Variable::CONTINUOUS:
+    case  nidas::core::Variable::CONTINUOUS:
       strcpy(cp->type, "A");
       break;
-    case  dsm::Variable::COUNTER:
+    case  nidas::core::Variable::COUNTER:
       strcpy(cp->type, "C");
       break;
     default:
@@ -423,18 +426,18 @@ static RAWTBL* initSDI_ADS3(dsm::SyncRecordVariable* var)
 
   cp->Average = (void (*) (...))(cp->type[0] == 'C' ? Sum : Average);
 
-  dsm::VariableConverter* converter =
-		const_cast<dsm::VariableConverter*>(var->getConverter());
+  nidas::core::VariableConverter* converter =
+		const_cast<nidas::core::VariableConverter*>(var->getConverter());
 
-  dsm::Polynomial* poly;
-  dsm::Linear* linear = dynamic_cast<dsm::Linear*>(converter);
+  nidas::core::Polynomial* poly;
+  nidas::core::Linear* linear = dynamic_cast<nidas::core::Linear*>(converter);
   if (linear)
   {
      cp->cof.push_back(linear->getIntercept());
      cp->cof.push_back(linear->getSlope());
   }
   else
-  if ((poly = dynamic_cast<dsm::Polynomial*>(converter)))
+  if ((poly = dynamic_cast<nidas::core::Polynomial*>(converter)))
   {
     const std::vector<float>& coefs = poly->getCoefficients();
     cp->cof = coefs;

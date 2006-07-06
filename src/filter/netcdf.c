@@ -337,7 +337,7 @@ void CreateNetCDF(const char fileName[])
       dims[2] = _vectorDimIDs[rp->Length];
     }
 
-
+//printf("RAW: %s\n", rp->name);
     rp->varid = ncvardef(fd, rp->name, NC_FLOAT, ndims, dims);
 
     addCommonVariableAttributes(rp);
@@ -424,7 +424,7 @@ void CreateNetCDF(const char fileName[])
       dims[2] = _vectorDimIDs[dp->Length];
     }
 
-//printf("DER:%s\n", dp->name); fflush(stdout);
+//printf("DER: %s\n", dp->name); fflush(stdout);
     dp->varid = ncvardef(fd, dp->name, NC_FLOAT, ndims, dims);
 
     addCommonVariableAttributes(dp);

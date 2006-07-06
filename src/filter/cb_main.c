@@ -722,8 +722,17 @@ static int determineInputFileVersion()
   fclose(fp);
   buffer[20] = '\0';
 
-  if ( strstr(buffer, "NCAR ADS3") )
+  if ( strstr(buffer, "NIDAS") )
+  {
     cfg.SetADSVersion(Config::ADS_3);
+    char *p = strrchr(ADSfileName, '/');
+    p = strtok(p+1, "_");
+//    cfg.SetProjectNumber(p);
+    p = strtok(NULL, "_");
+    p = strtok(NULL, "_.");
+    cfg.SetFlightNumber(p);
+    cfg.SetTailNumber("N677F");
+  }
 
   return OK;
 
