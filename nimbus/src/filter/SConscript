@@ -81,12 +81,12 @@ transmit.cc
 """)
 
 if int(env.realtime):
-  env.Append(CPPPATH=['/opt/ads3/x86/include'])
-  env.Append(CPPPATH=['/opt/ads3/arm/include'])
+  env.Append(CPPPATH=['/opt/nidas/x86/include'])
+  env.Append(CPPPATH=['/opt/nidas/arm/include'])
   sources = [sources, 'rtloop3.cc']
-  env.Append(LIBS=['Dsm', 'isa', 'XmlRpc', 'xerces-c'])
-  env.Append(LIBPATH=['/opt/ads3/x86/lib'])
-  env.Append(_LIBFLAGS=['-Wl,-R', '/opt/ads3/x86/lib'])
+  env.Append(LIBS=['nidas', 'nidas_dynld', 'XmlRpc', 'xerces-c'])
+  env.Append(LIBPATH=['/opt/nidas/x86/lib'])
+  env.Append(_LIBFLAGS=['-Wl,-R', '/opt/nidas/x86/lib'])
 
 
 nimbus = env.Program('nimbus', sources)

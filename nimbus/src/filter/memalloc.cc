@@ -20,8 +20,8 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1992-05
 #include "decode.h"
 #include "ctape.h"
 
-#include <SyncRecordReader.h>
-extern dsm::SyncRecordReader* syncRecReader;
+#include <nidas/dynld/raf/SyncRecordReader.h>
+extern nidas::dynld::raf::SyncRecordReader* syncRecReader;
 
 static bool	ArraysInitialized = false;
 
@@ -47,7 +47,7 @@ void AllocateDataArrays()
   if (cfg.isADS3())
     nSRfloats = syncRecReader->getNumFloats();
 
-  const dsm::SyncRecordVariable* var;
+  const nidas::dynld::raf::SyncRecordVariable* var;
 
   for (size_t i = 0; i < raw.size(); ++i)
   {

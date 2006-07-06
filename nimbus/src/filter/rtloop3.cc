@@ -22,9 +22,9 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2005
 
 #include <Xm/TextF.h>
 
-#include <SyncRecordReader.h>
-#include <atdUtil/Socket.h>
-#include <Datagrams.h>
+#include <nidas/dynld/raf/SyncRecordReader.h>
+#include <nidas/util/Socket.h>
+#include <nidas/core/Datagrams.h>
 
 #include <ctime>
 #include <unistd.h>
@@ -47,9 +47,9 @@ public:
   void sendStatus(const char ts[]);
 
 private:
-  atdUtil::MulticastSocket msock;
-  atdUtil::Inet4Address maddr;
-  atdUtil::Inet4SocketAddress msaddr;
+  nidas::util::MulticastSocket msock;
+  nidas::util::Inet4Address maddr;
+  nidas::util::Inet4SocketAddress msaddr;
 
   static const std::string DATA_NETWORK;
 };
@@ -59,12 +59,12 @@ const std::string MultiCastStatus::DATA_NETWORK = "192.168.184";
 
 MultiCastStatus::MultiCastStatus()
 {
-  maddr = atdUtil::Inet4Address::getByName(DSM_MULTICAST_ADDR);
-  msaddr = atdUtil::Inet4SocketAddress(maddr,DSM_MULTICAST_STATUS_PORT);
+  maddr = nidas::util::Inet4Address::getByName(DSM_MULTICAST_ADDR);
+  msaddr = nidas::util::Inet4SocketAddress(maddr,DSM_MULTICAST_STATUS_PORT);
 
   // Set to proper interface if this computer has more than one.
-  std::list<atdUtil::Inet4Address> itf = msock.getInterfaceAddresses();
-  std::list<atdUtil::Inet4Address>::iterator itfi;
+  std::list<nidas::util::Inet4Address> itf = msock.getInterfaceAddresses();
+  std::list<nidas::util::Inet4Address>::iterator itfi;
   for (itfi = itf.begin(); itfi != itf.end(); ++itfi)
     if ((*itfi).getHostAddress().compare(0, DATA_NETWORK.size(), DATA_NETWORK) == 0)
       msock.setInterface(*itfi);
@@ -108,7 +108,7 @@ printf("netCDF file = %s\n", buffer);
 void RealTimeLoop3()
 {
   char timeStamp[64];
-  dsm::dsm_time_t tt;
+  nidas::core::dsm_time_t tt;
 
   if (cfg.OutputSQL())
   {
@@ -117,7 +117,7 @@ void RealTimeLoop3()
   }
 
   bcast = new Broadcast();	// ASCII feed.
-  extern dsm::SyncRecordReader* syncRecReader;
+  extern nidas::dynld::raf::SyncRecordReader* syncRecReader;
 
   for (;;)
   {

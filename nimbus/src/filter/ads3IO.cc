@@ -24,13 +24,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005
 #include "nimbus.h"
 #include "decode.h"
 
-#include <SyncRecordReader.h>
-#include <atdUtil/EOFException.h>
+#include <nidas/dynld/raf/SyncRecordReader.h>
+#include <nidas/util/EOFException.h>
 
 #include <ctime>
 #include <iomanip>
 
-extern dsm::SyncRecordReader* syncRecReader;
+extern nidas::dynld::raf::SyncRecordReader* syncRecReader;
 
 /* -------------------------------------------------------------------- */
 long xlateToSecondsSinceMidnight(time_t ut)
@@ -53,7 +53,7 @@ long FindFirstLogicalADS3(
 	char	record[],	// First Data Record, for start time
 	long	startTime)	// User specified start time
 {
-  dsm::dsm_time_t tt;
+  nidas::core::dsm_time_t tt;
   time_t ut = 0;
   long recTime;
   int rc;
@@ -64,7 +64,7 @@ long FindFirstLogicalADS3(
     {
       rc = syncRecReader->read(&tt, (float *)record, nSRfloats);
     }
-    catch (const atdUtil::IOException& e)
+    catch (const nidas::util::IOException& e)
     {
       return 0;
     }
@@ -87,14 +87,14 @@ long FindFirstLogicalADS3(
 /* -------------------------------------------------------------------- */
 long FindNextLogicalADS3(char record[], long endTime)
 {
-  dsm::dsm_time_t tt;
+  nidas::core::dsm_time_t tt;
   int rc;
 
   try
   {
     rc = syncRecReader->read(&tt, (float *)record, nSRfloats);
   }
-  catch (const atdUtil::IOException& e)
+  catch (const nidas::util::IOException& e)
   {
     return 0;
   }
