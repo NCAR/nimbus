@@ -303,7 +303,7 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
 
       files[i] = 0;
 
-      execv("/opt/ads3/x86/bin/launch_ss.sh", files);
+      execv("/opt/nidas/x86/bin/launch_ss.sh", files);
       fprintf(stderr, "nimbus: failed to exec launch_ss.sh\n");
       _exit(1);
     }
