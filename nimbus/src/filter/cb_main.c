@@ -398,6 +398,9 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   BlankOutBadData();
   stopProcessing();
 
+  sprintf(buffer, "nc_sane %s", OutputFileName);
+  system(buffer);
+
 }	/* END STARTPROCESSING */
 
 /* -------------------------------------------------------------------- */
