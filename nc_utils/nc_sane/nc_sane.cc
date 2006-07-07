@@ -59,6 +59,8 @@ int main(int argc, char *argv[])
         fprintf(stderr, " %d records vs. %d computed.\n", length, deltaT);
       }
     }
+
+    nc_close(InputFile);
   }
   return 0;
 }
