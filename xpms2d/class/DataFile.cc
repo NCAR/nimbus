@@ -692,57 +692,10 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
    */
   if (strcmp(ProjectNumber(), "135") == 0)
   {
-    std::vector<size_t> spectra, sorted_spectra;
-
-    for (size_t j = 0; j < 32; ++j)
-      spectra.push_back(0);
-
-    // Generate spectra.
-    unsigned long *p = (unsigned long *)buff->data;
-    for (size_t i = 0; i < RecordLen; ++i, ++p)
-    {
-      if ((*p & SyncWordMask) == 0x55000000 || *p == 0xffffffff)
-        continue;
-
-      for (size_t j = 0; j < 32; ++j)
-        if (((*p >> j) & 0x01) == 0x01)
-          ++spectra[j];
-    }
-
-    // Determine median.
-    sorted_spectra = spectra;
-    sort(sorted_spectra.begin(), sorted_spectra.end());
-    if (sorted_spectra[15] * 3 < sorted_spectra[31])
-    {
-      int stuck_bin = -1;
-      for (size_t j = 0; j < 32; ++j)
-        if (spectra[j] == sorted_spectra[31])
-          stuck_bin = j;
-
-      fprintf(stderr,
-	"DataFile.cc: %02d:%02d:%02d.%d - Performing stuck bit correction, bit %d.\n",
-	buff->hour, buff->minute, buff->second, buff->msec, stuck_bin);
-
-      if (stuck_bin == -1)
-      {
-        fprintf(stderr, "DataFile.cc:  Impossible.\n");
-        exit(1);
-      }
-
-      unsigned long mask1 = 0x01 << stuck_bin;
-      unsigned long mask2 = 0x07 << stuck_bin-1;
-      unsigned long *p = (unsigned long *)buff->data;
-      for (size_t i = 0; i < RecordLen; ++i, ++p)
-      {
-        if ((*p & SyncWordMask) == 0x55000000 || *p == 0xffffffff)
-          continue;
-
-        unsigned long slice = ~(*p);
-        if ((slice & mask2) == mask1)
-          *p = ~(slice & ~mask1);
-      }
-    }
+    check_rico_half_buff(buff, 0, RecordLen/2);
+    check_rico_half_buff(buff, RecordLen/2, RecordLen);
   }
+
 }
 
 /* -------------------------------------------------------------------- */
@@ -794,6 +747,79 @@ void ADS_DataFile::sort_the_table(int beg, int end)
 
   if (x < end)
     sort_the_table(x, end);
+}
+
+/* -------------------------------------------------------------------- */
+void ADS_DataFile::check_rico_half_buff(P2d_rec *buff, int beg, int end)
+{
+  std::vector<size_t> spectra, sorted_spectra;
+
+  for (size_t j = 0; j < 32; ++j)
+    spectra.push_back(0);
+
+  // Generate spectra.
+  unsigned long *p = (unsigned long *)buff->data;
+  bool firstSyncWord = beg == 0 ? false : true;
+
+  for (size_t i = beg; i < end; ++i, ++p)
+  {
+    // There seemed to be lots of splatter at the start of the buffer,
+    // skip until first sync word appears.
+    if (!firstSyncWord)
+      if ((*p & SyncWordMask) == 0x55000000)
+        firstSyncWord = true;
+      else
+        continue;
+
+    if ((*p & SyncWordMask) == 0x55000000 || *p == 0xffffffff)
+      continue;
+
+    unsigned long slice = ~(*p);
+    for (size_t j = 0; j < 32; ++j)
+      if (((slice >> j) & 0x01) == 0x01)
+        ++spectra[j];
+  }
+
+  // Sort the spectra and compare the last bin to the one next too it and see
+  // if there is a large descrepency.  If so, probably a bad 1/2 buffer.
+  sorted_spectra = spectra;
+  sort(sorted_spectra.begin(), sorted_spectra.end());
+
+  if ((sorted_spectra[30] * 2 < sorted_spectra[31]))
+  {
+    int stuck_bin = -1;
+    for (size_t j = 0; j < 32; ++j)
+      if (spectra[j] == sorted_spectra[31])
+        stuck_bin = j;
+
+    fprintf(stderr,
+	"DataFile.cc: %02d:%02d:%02d.%d - Performing stuck bit correction, bit %d, ",
+	buff->hour, buff->minute, buff->second, buff->msec, stuck_bin);
+
+    if (beg == 0)
+      fprintf(stderr, "first half.\n");
+    else
+      fprintf(stderr, "second half.\n");
+
+    if (stuck_bin == -1)
+    {
+      fprintf(stderr, "DataFile.cc:  Impossible.\n");
+      exit(1);
+    }
+
+    unsigned long mask1 = 0x01 << stuck_bin;
+    unsigned long mask2 = 0x07 << stuck_bin-1;
+    unsigned long *p = (unsigned long *)buff->data;
+    for (size_t i = beg; i < end; ++i, ++p)
+    {
+      if ((*p & SyncWordMask) == 0x55000000 || *p == 0xffffffff)
+        continue;
+
+      unsigned long slice = ~(*p);
+      if ((slice & mask2) == mask1)
+        *p = ~(slice & ~mask1);
+    }
+  }
 }
 
 /* -------------------------------------------------------------------- */

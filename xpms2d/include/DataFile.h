@@ -86,6 +86,7 @@ private:
 
   void		buildIndices(), sort_the_table(int, int), SortIndices(int);
   void		SwapPMS2D(P2d_rec *);
+  void		check_rico_half_buff(P2d_rec *buff, int start, int end);
 
   char		fileName[PATH_LEN];
   Header	*hdr;
