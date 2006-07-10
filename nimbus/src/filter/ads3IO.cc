@@ -142,9 +142,9 @@ std::set<std::string> GetADSFileList(const char *adsFileName)
   char *file = basename(tmp_name);
   struct dirent *entry;
 
+  // Read directory entries & get all files with matching flight number.
   while ( (entry = readdir(dir)) )
-    if (strncmp(file, entry->d_name, 4) == 0 &&
-        strcmp(file, entry->d_name) <= 0)
+    if ( strstr(entry->d_name, cfg.FlightNumber().c_str()) )
     {
       std::string s(directory);
       s += "/";
@@ -152,9 +152,9 @@ std::set<std::string> GetADSFileList(const char *adsFileName)
       fileList.insert(s);
     }
 
-//  std::set<std::string>::iterator it;
-//  for (it = fileList.begin(); it != fileList.end(); ++it)
-//    printf("%s\n", (*it).c_str());
+  std::set<std::string>::iterator it;
+  for (it = fileList.begin(); it != fileList.end(); ++it)
+    printf("%s\n", (*it).c_str());
 
   return fileList;
 }
