@@ -1995,14 +1995,24 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
   int indx = SearchDERIVEFTNS(name);
 
   if (indx == ERR && (cfg.isADS2() || syncRecReader->getVariable(name) == 0))
-    {
+  {
     char msg[128];
 
     sprintf(msg, "Throwing away %s, has no decode function.\n", name);
     LogMessage(msg);
     return((RAWTBL *)ERR);
-    }
+  }
 
+  if (SearchTable(derived, name) != ERR)
+  {
+    char	msg[128];
+
+    sprintf(msg, "Will not add %s to raw table, it already exists in derived table.\n", name);
+    LogMessage(msg);
+    return((RAWTBL *)ERR);
+  }
+
+  if (SearchTable(derived, name) != ERR)
   RAWTBL *rp = new RAWTBL(name);
   raw.push_back(rp);
 
@@ -2055,6 +2065,15 @@ static DERTBL *add_name_to_DERTBL(const char name[])
     char	msg[128];
 
     sprintf(msg, "Throwing away %s, has no compute function.\n", name);
+    LogMessage(msg);
+    return((DERTBL *)ERR);
+  }
+
+  if (SearchTable(raw, name) != ERR)
+  {
+    char	msg[128];
+
+    sprintf(msg, "Will not add %s to derived table, it already exists in raw table.\n", name);
     LogMessage(msg);
     return((DERTBL *)ERR);
   }
