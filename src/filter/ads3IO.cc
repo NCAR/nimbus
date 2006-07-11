@@ -127,7 +127,7 @@ std::set<std::string> GetADSFileList(const char *adsFileName)
 {
   std::set<std::string> fileList;
   DIR *dir;
-  char tmp_dir[256], tmp_name[256];
+  char tmp_dir[256];
 
   strcpy(tmp_dir, adsFileName);
   char *directory = dirname(tmp_dir);
@@ -138,8 +138,6 @@ std::set<std::string> GetADSFileList(const char *adsFileName)
     return fileList;
   }
 
-  strcpy(tmp_name, adsFileName);
-  char *file = basename(tmp_name);
   struct dirent *entry;
 
   // Read directory entries & get all files with matching flight number.
@@ -153,6 +151,10 @@ std::set<std::string> GetADSFileList(const char *adsFileName)
     }
 
   std::set<std::string>::iterator it;
+  for (it = fileList.begin(); it != fileList.end(); ++it)
+    if ((*it).compare(adsFileName) < 0)
+      fileList.erase(*it);
+
   for (it = fileList.begin(); it != fileList.end(); ++it)
     printf("%s\n", (*it).c_str());
 
