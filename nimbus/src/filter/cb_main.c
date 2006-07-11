@@ -727,8 +727,11 @@ static int determineInputFileVersion()
 
   if ( strstr(buffer, "NIDAS") )
   {
+    char tmp[512], *p;
     cfg.SetADSVersion(Config::ADS_3);
-    char *p = strrchr(ADSfileName, '/');
+
+    strcpy(tmp, ADSfileName);
+    p = strrchr(tmp, '/');
     p = strtok(p+1, "_");
 //    cfg.SetProjectNumber(p);
     p = strtok(NULL, "_");
