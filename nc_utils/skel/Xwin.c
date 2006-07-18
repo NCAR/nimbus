@@ -14,14 +14,6 @@ STATIC FNS:
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	nimbus.c (main)
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 -------------------------------------------------------------------------
 */
@@ -114,15 +106,15 @@ Widget CreateMainWindow(Widget parent)
 	n = 0;
 	inputFileText = XmCreateTextField(form[0], "inputFileText", args, n);
 	XtAddCallback(	inputFileText, XmNactivateCallback,
-					(XtCallbackProc)XmProcessTraversal,
-					(XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
+				(XtCallbackProc)XmProcessTraversal,
+				(XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
 	XtManageChild(inputFileText);
 
 	n = 0;
 	outputFileText = XmCreateTextField(form[1], "outputFileText", args, n);
 	XtAddCallback(	outputFileText, XmNactivateCallback,
-					(XtCallbackProc)XmProcessTraversal,
-					(XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
+				(XtCallbackProc)XmProcessTraversal,
+				(XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
 	XtManageChild(outputFileText);
 
 	XtManageChildren(form, 2);

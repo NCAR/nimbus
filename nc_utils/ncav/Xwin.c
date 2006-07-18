@@ -14,14 +14,6 @@ STATIC FNS:
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	nimbus.c (main)
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 -------------------------------------------------------------------------
 */
@@ -114,13 +106,15 @@ Widget parent;
   n = 0;
   inputFileText = XmCreateTextField(form[0], "inputFileText", args, n);
   XtAddCallback(inputFileText, XmNactivateCallback,
-	XmProcessTraversal, (XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
+		(XtCallbackProc)XmProcessTraversal,
+		(XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
   XtManageChild(inputFileText);
 
   n = 0;
   outputFileText = XmCreateTextField(form[1], "outputFileText", args, n);
   XtAddCallback(outputFileText, XmNactivateCallback,
-	XmProcessTraversal, (XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
+		(XtCallbackProc)XmProcessTraversal,
+		(XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
   XtManageChild(outputFileText);
 
   XtManageChildren(form, 2);
@@ -314,15 +308,16 @@ Widget	parent;
 
 
   for (i = 0; i < MAX_TIME_SLICES * 2; ++i)
-    {
+  {
     n = 0;
     sprintf(buffer, "tsText%d", i);
     ts_text[i] = XmCreateTextField(tsRC, buffer, args, n);
 
     XtAddCallback(ts_text[i], XmNlosingFocusCallback, ValidateTime, NULL);
     XtAddCallback(ts_text[i], XmNactivateCallback,
-		XmProcessTraversal, (XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
-    }
+		(XtCallbackProc)XmProcessTraversal,
+		(XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
+  }
 
   XtManageChildren(ts_text, MAX_TIME_SLICES * 2);
 
