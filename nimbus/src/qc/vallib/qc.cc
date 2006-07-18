@@ -93,8 +93,7 @@ static ValRealtimeTestbatch rt_batches[RT_BATCHES_MAXNUM];
 static boolean global_enable;
 
 
-int     SearchTable(std::vector<SDITBL *> &table, const char target[]),
-        SearchTable(std::vector<RAWTBL *> &table, const char target[]),
+int     SearchTable(std::vector<RAWTBL *> &table, const char target[]),
         SearchTable(std::vector<DERTBL *> &table, const char target[]);
 
 
@@ -495,18 +494,7 @@ static boolean rt_parse_configfile(void)
             found = FALSE;
 
 
-	    // search for variable in each of the three WINPUT databases
-	    db_index = 0;
-	    while((!found) && (db_index < sdi.size()))
-	      if(strcmp(sdi[db_index]->name, varname) == 0)
-	      {
-		  found = TRUE;
-		  found_index = db_index;
-		  found_db = WINPUT_SDI;
-	      }
-	      else
-		++db_index;
-
+	    // search for variable in each of the two WINPUT databases
 	    db_index = 0;
 	    while((!found) && (db_index < raw.size()))
 	      if(strcmp(raw[db_index]->name, varname) == 0)

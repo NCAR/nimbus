@@ -243,9 +243,6 @@ char *ValVarref::get_name(void)
 {
     switch(type)
     {
-      case WINPUT_SDI:     
-	return sdi[index]->name;
-
       case WINPUT_RAW:	
 	return raw[index]->name;
 
@@ -267,7 +264,6 @@ WinputDatavalue ValVarref::get_winput_avg(void)
 {
     switch(type)
     {
-      case WINPUT_SDI:      return AveragedData[sdi[index]->LRstart];
       case WINPUT_RAW:      return AveragedData[raw[index]->LRstart];
       case WINPUT_DERIVED:  return AveragedData[derived[index]->LRstart];
       default:              return (WinputDatavalue) VALTEST_INVALID_TYPE;
@@ -288,9 +284,6 @@ WinputDatavalue ValVarref::get_winput_SR(WinputHRindex sample_index)
     // ... also, are all of these situations valid ???
     switch(type)
     {
-      case WINPUT_SDI:
-	return SampledData[sdi[index]->SRstart + sample_index];
-	
       case WINPUT_RAW:
 	return SampledData[raw[index]->SRstart + sample_index];
 	
@@ -322,10 +315,6 @@ boolean ValVarref::get_winput_SR_range(WinputDatavalue *dest,
     // ... are all of these situations valid ???
     switch(type)
     {
-      case WINPUT_SDI:
-	base_index = sdi[index]->SRstart + start_index;
-	break;
-	    
       case WINPUT_RAW:
 	base_index = raw[index]->SRstart + start_index;
 	break;
@@ -363,7 +352,6 @@ WinputSRfreq ValVarref::get_winput_SR_freq(void)
     // (I assume such a winput frequency parameter exists)
     switch(type)
     {
-      case WINPUT_SDI:     return (WinputSRfreq) sdi[index]->SampleRate;
       case WINPUT_RAW:     return (WinputSRfreq) raw[index]->SampleRate;
       //case WINPUT_DERIVED: return (WinputSRfreq) derived[index]->SampleRate;
       default:             return (WinputSRfreq) VALTEST_INVALID_TYPE;
@@ -384,9 +372,6 @@ WinputDatavalue ValVarref::get_winput_HR(WinputHRindex sample_index)
     // perhaps naively, we assume that 'sample_index' is correct
     switch(type)
     {
-      case WINPUT_SDI:
-	return HighRateData[sdi[index]->HRstart + sample_index];
-	
       case WINPUT_RAW:
 	return HighRateData[raw[index]->HRstart + sample_index];
 	
@@ -417,10 +402,6 @@ boolean ValVarref::get_winput_HR_range(WinputDatavalue *dest,
     // ... are all of these situations valid ???
     switch(type)
     {
-      case WINPUT_SDI:
-	base_index = sdi[index]->HRstart + start_index;
-	break;
-	
       case WINPUT_RAW:
 	base_index = raw[index]->HRstart + start_index;
 	break;

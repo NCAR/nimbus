@@ -115,7 +115,6 @@ struct ValErrorMsg
 //
 enum WinputVarType
 {
-    WINPUT_SDI,
     WINPUT_RAW,
     WINPUT_DERIVED
 };
