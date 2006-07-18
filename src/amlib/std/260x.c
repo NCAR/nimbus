@@ -10,16 +10,12 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-OUTPUT:		
-
 REFERENCES:	pms1d.c (ComputePMS1DParams(), ComputeDOF(),
 			ComputeConcentrations())
 
-REFERENCED BY:	Compute()
-
 NOTES:		Calculations taken from Bulletin 24 dated 1/89.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-8
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 -------------------------------------------------------------------------
 */
 

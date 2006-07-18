@@ -44,7 +44,7 @@ void swd(DERTBL *varp)
     wd = (NR_TYPE)atan2((double)ui, (double)vi) * RAD_DEG + 180.0;
 
     while (wd < 0.0)
-    wd += 360.0;
+      wd += 360.0;
     }
 
   PutSample(varp, wd);
