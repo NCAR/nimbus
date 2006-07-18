@@ -59,7 +59,7 @@ void LogMessage(const char msg[])
     XmTextPosition      position;
     extern Widget       logText;
 
-    position = XmTextGetInsertionPosition(logText);
+    position = XmTextGetLastPosition(logText);
     XmTextInsert(logText, position, (char*)messg.c_str());
 
     position += messg.length();
