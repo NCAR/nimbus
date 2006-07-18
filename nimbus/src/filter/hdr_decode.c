@@ -2012,7 +2012,6 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
     return((RAWTBL *)ERR);
   }
 
-  if (SearchTable(derived, name) != ERR)
   RAWTBL *rp = new RAWTBL(name);
   raw.push_back(rp);
 
