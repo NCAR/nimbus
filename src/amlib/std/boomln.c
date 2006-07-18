@@ -45,6 +45,10 @@ NR_TYPE GetBoomLength()
       sprintf(aircraft, "N%03dAR", cfg.Aircraft());
       break;
 
+    case Config::TADS:
+      strcpy(aircraft, "GONADS");
+      break;
+
     default:
       sprintf(aircraft, "N%03dD", cfg.Aircraft());
     }
