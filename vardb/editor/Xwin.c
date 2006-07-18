@@ -157,7 +157,8 @@ Widget CreateMainWindow(Widget parent)
     sprintf(buffer, "EFtext%d", i);
     EFtext[i] = XmCreateTextField(EFform[i], buffer, args, n);
     XtAddCallback(EFtext[i], XmNactivateCallback,
-	XmProcessTraversal, (XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
+		(XtCallbackProc)XmProcessTraversal,
+		(XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
     XtManageChild(EFtext[i]);
     }
 
@@ -193,7 +194,8 @@ Widget CreateMainWindow(Widget parent)
     sprintf(buffer, "EFtext%d", textCnt);
     EFtext[textCnt] = XmCreateTextField(EFform[i], buffer, args, n);
     XtAddCallback(EFtext[textCnt], XmNactivateCallback,
-    	XmProcessTraversal, (XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
+    		(XtCallbackProc)XmProcessTraversal,
+		(XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
     XtManageChild(EFtext[textCnt]);
     ++textCnt;
 
@@ -208,7 +210,8 @@ Widget CreateMainWindow(Widget parent)
       sprintf(buffer, "EFtext%d", textCnt);
       EFtext[textCnt] = XmCreateTextField(EFform[i], buffer, args, n);
       XtAddCallback(EFtext[textCnt], XmNactivateCallback,
-	XmProcessTraversal, (XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
+		(XtCallbackProc)XmProcessTraversal,
+		(XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
       XtManageChild(EFtext[textCnt]);
       ++textCnt;
       }
