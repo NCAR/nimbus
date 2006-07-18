@@ -7,13 +7,7 @@ FULL NAME:	ADS tape copier & downloader.
 DESCRIPTION:	Print time stamps from all records in an ADS file.
 		to individual disk files [ads|2d|MCR|AVAPS].
 
-INPUT:		
-
-OUTPUT:		
-
-NOTES:		
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 2003
+COPYRIGHT:	University Corporation for Atmospheric Research, 2003-06
 -------------------------------------------------------------------------
 */
 
@@ -76,12 +70,13 @@ main(int argc, char *argv[])
 /* -------------------------------------------------------------------- */
 int WriteDisk(char buff[], int nBytes)
 {
-  int	rc;
+  int	rc, thisTime;
   Hdr_blk *hdr;
   P2d_rec *p2d;
   Mcr_rec *mcr;
 
-  static int recCntr = 0;
+  static size_t recCntr = 0;
+  static size_t prevTime = 0;
 
   hdr = (Hdr_blk *)buffer;
   p2d = (P2d_rec *)buffer;
@@ -90,10 +85,18 @@ int WriteDisk(char buff[], int nBytes)
   switch (ntohs(*(unsigned short *)buff))
     {
     case 0x8681:
-      printf("[%d] Sync, nBytes=%d, %02d/%02d/%02d - %02d:%02d:%02d\n",
+      thisTime = ntohs(hdr->hour) * 3600 + ntohs(hdr->minute) * 60 + ntohs(hdr->second);
+
+      printf("[%d] Sync, nBytes=%d, %02d/%02d/%02d - %02d:%02d:%02d",
 	recCntr++, nBytes,
 	ntohs(hdr->year), ntohs(hdr->month), ntohs(hdr->day),
 	ntohs(hdr->hour), ntohs(hdr->minute), ntohs(hdr->second));
+
+      if (prevTime + 1 != thisTime)
+        printf(" gap?");
+
+      printf("\n");
+      prevTime = thisTime;
       break;
 
     case 0x4331:	// PMS2D types.
