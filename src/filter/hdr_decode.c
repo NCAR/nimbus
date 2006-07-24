@@ -37,7 +37,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 -------------------------------------------------------------------------
 */
 
-#include <ctype.h>
+#include <cctype>
 #include <unistd.h>
 #include <set>
 
@@ -124,7 +124,7 @@ static void	add_file_to_RAWTBL(const std::string),
 		add_file_to_DERTBL(const std::string),
 	initHDR(char vn[]), initSDI(char vn[]), initHoneywell(char vn[]),
 	initOphir3(char vn[]), initPMS1D(char vn[]), initPMS1Dv2(char vn[]),
-	initGustCorrected(char vn[]), initLitton51(char vn[]),
+	initGustCorrected(), initLitton51(char vn[]),
 	add_derived_names(const char vn[]), initPMS2D(char vn[], int n),
 	initPMS2Dhouse(char vn[]), add_raw_names(const char vn[]),
 	initGreyHouse(char vn[]), initMASP(char vn[]), initPMS1Dv3(char vn[]),
@@ -377,6 +377,7 @@ printf("hdr_decode.c: <<< WARNING >>> ProjectNumber is hardcoded = %s\n", cfg.Pr
       rp->LAGstart = var->getLagOffset();
       rp->Units = var->getUnits();
       rp->LongName = var->getLongName();
+      rp->dsmID = var->getSampleTag()->getDSMId();
 
       // Default real-time netCDF to SampleRate.
       if (cfg.ProcessingMode() == Config::RealTime)
@@ -394,7 +395,9 @@ printf("hdr_decode.c: <<< WARNING >>> ProjectNumber is hardcoded = %s\n", cfg.Pr
   }
 
   add_derived_names("GUST");
+  initGustCorrected();
   CommonPostInitialization();
+
   return OK;
 }
 
@@ -677,7 +680,7 @@ int DecodeHeader(const char header_file[])
         cfg.SetCoordALT("GGALT");
         }
 
-      initGustCorrected(vn);
+      initGustCorrected();
       ++GPScount;
       }
     else
@@ -1138,7 +1141,7 @@ static void initHoneywell(char vn[])
 }	/* END INITHONEYWELL */
 
 /* -------------------------------------------------------------------- */
-static void initGustCorrected(char vn[])
+static void initGustCorrected()
 {
   /* We can only have 1 corrected winds, bail if already initialized.
    */
@@ -1150,7 +1153,7 @@ static void initGustCorrected(char vn[])
     probeType = PROBE_GUSTC;
     AddProbeToList("Corrected Winds", (unsigned long)PROBE_GUSTC);
 
-    /* ProbeCnt here relies on the fact that xbuild puts inertials before
+    /* ProbeCnt here relies on the fact that hdrbld puts inertials before
      * GPSs.
      */
     probeCnt = InertialSystemCount;
