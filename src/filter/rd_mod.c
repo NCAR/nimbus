@@ -34,7 +34,7 @@ void ReadModuloVariables()
 
   ReadTextFile(MODVARS, modvars);
 
-  for (int i = 0; modvars[i]; ++i)
+  for (size_t i = 0; modvars[i]; ++i)
     {
     sscanf(modvars[i], "%s %d %d", target, &val[0], &val[1]);
     mp = new MOD;
@@ -52,7 +52,7 @@ void ReadModuloVariables()
 
     strcat(target, "_");
 
-    while (++index < raw.size() &&
+    while (++index < (int)raw.size() &&
 	strncmp((char *)raw[index]->name, target, strlen(target)) == 0)
       raw[index]->Modulo = mp;
     }
@@ -63,7 +63,7 @@ void ReadModuloVariables()
 
     strcat(target, "_");
 
-    while (++index < derived.size() &&
+    while (++index < (int)derived.size() &&
 	strncmp((char *)derived[index]->name,target,strlen(target)) == 0)
       derived[index]->Modulo = mp;
     }
