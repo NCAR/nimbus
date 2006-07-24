@@ -24,6 +24,7 @@ namespace dsm
 
 const NR_TYPE floatNAN = nanf("");
 const NR_TYPE MISSING_VALUE = -32767.0;
+const int MaxLag = 2000;
 const int MAX_COF = 6;
 
 const std::string DSMSERVER = "localhost";

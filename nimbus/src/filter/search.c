@@ -26,7 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 */
 
 #include "nimbus.h"
-#include <ctype.h>
+#include <cctype>
 
 /* -------------------------------------------------------------------- */
 char *SearchList(char **list, const char target[])
