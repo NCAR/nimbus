@@ -13,7 +13,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2003-06
 #include "vardb.h"
 
 #include <algorithm>
-#include <ctype.h>
+#include <cctype>
 #include <set>
 #include <iomanip>
 

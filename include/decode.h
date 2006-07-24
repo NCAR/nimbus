@@ -10,17 +10,13 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #ifndef DECODE_H
 #define DECODE_H
 
-#define GAP_FOUND	TRUE	/* For CheckForTimeGap()	*/
+#define ONE_WORD        sizeof(short)
+
+#define GAP_FOUND	true	/* For CheckForTimeGap()	*/
 
 /* Used for defining time segments that start/end at one end of the tape */
 #define BEG_OF_TAPE	(-1)
 #define END_OF_TAPE	(-1)
-
-
-/* QueryWhatToDo() answers	*/
-#define	Q_EXIT		0
-#define Q_CONTINUE	1
-#define Q_NEXTTAPE	2
 
 
 /* ProbeType field.  Bottom nibble is used for ProbeCount.  Top nibble is
@@ -74,6 +70,7 @@ extern size_t	nLRfloats, nSRfloats, nHRfloats, LITTON51_start;
 extern const std::string DSMSERVER;
 extern const int DSMSERVERPORT;
 
+extern const int MaxLag;
 
 /*      Function Prototypes
  */

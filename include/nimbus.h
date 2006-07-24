@@ -21,24 +21,20 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #include "constants.h"
 #include "config.h"
 
-
-#define NAMELEN		32
-
-#define MAX_VARIABLES	2000
-#define MAX_DEFAULTS	256
+const size_t NAMELEN = 32;
+const size_t MAX_VARIABLES = 2000;
+const size_t MAX_DEFAULTS = 256;
+const size_t MAXDEPEND = 12;
+const size_t MAX_TIME_SLICES = 1;
 
 
 /* Nimbus Record Info		*/
-#define NR_TYPE float
-#define NR_SIZE sizeof(NR_TYPE)
+typedef float NR_TYPE;
 
 
 // OpenProjectFile action values
 enum projOpenFailAction { RETURN, EXIT };
 
-#define MAXDEPEND	12
-#define MAX_TIME_SLICES	1
- 
 enum SYNTHTYPE {sy_file, sy_constant, sy_function, sy_none};
 
 typedef struct
@@ -115,12 +111,14 @@ public:
   long ADSoffset;	// Offset between samples
   char type[4];		// Analog, Digital or Counter
 
+  ushort dsmID;		// ADS3/nids A/D temp compensation.
+
   void (*Initializer)(void *); // Function to initialize xlate
   void (*xlate)(RAWTBL *, void *, float *); // Function to translate data
   void (*Average)(...);	// Routine to use to average/sum data
 
-  long convertOffset;	// These 4 fields are used by a few
-  float	convertFactor;	// variables only.
+  long convertOffset;	// A/D offset
+  float	convertFactor;	// A/D slope
   std::vector<float> cof;
 
   int StaticLag;	// Static lag in ms to shift data
