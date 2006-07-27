@@ -100,10 +100,13 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
   fgets(buffer, 128, fp);
 
   if (!ProductionSetup || cfg.ProductionRun())
-    switch (atoi(strchr(buffer, '=')+1))
+    {
+    int value = atoi(strchr(buffer, '=')+1);
+    switch (value)
       {
-      case Config::HighRate:
-        SetHighRate(NULL, NULL, NULL);
+      case 25:
+      case 50:
+        SetHighRate(NULL, (void *)value, NULL);
         break;
       case Config::SampleRate:
         SetSampleRate(NULL, NULL, NULL);
@@ -112,6 +115,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
         SetLowRate(NULL, NULL, NULL);
         break;
       }
+    }
 
   while (fgets(buffer, 2048, fp))
     {

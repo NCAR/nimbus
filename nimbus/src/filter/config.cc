@@ -26,6 +26,7 @@ Config::Config()
   SetInertialShift(true);
 
   SetProcessingRate(LowRate);
+  SetHRTRate(TwentyFive);
   SetInterpolationType(Linear);
 
   SetADSVersion(ADS_2);

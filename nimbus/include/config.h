@@ -4,6 +4,10 @@ OBJECT NAME:	config.h
 
 DESCRIPTION:	Header File declaring Variable and associated processing
 		functions.
+
+NOTE:		ProcessingRate vs. HRT_Rate, there used to only be 1 HRT,
+		25Hz.  I couldn't easily roll the new 50Hz into
+		ProcessingRate, hence the new member HRTRate().
 -------------------------------------------------------------------------
 */
 
@@ -25,6 +29,7 @@ public:
   enum ProcessingMode	{ PostProcessing, RealTime };
   enum interpolationType { Linear=0, CubicSpline, AkimaSpline };
   enum processingRate	{ SampleRate=0, LowRate=1, HighRate=25 };
+  enum hrtRate		{ TwentyFive=25, Fifty=50 };
 
   Config();
 
@@ -47,6 +52,7 @@ public:
 
   aircraft Aircraft()			{ return _aircraft; }
   processingRate ProcessingRate() const	{ return _processingRate; }
+  hrtRate HRTRate() const		{ return _hrtRate; }
   interpolationType InterpolationType() const	{ return _interpType; }
 
   void SetInteractive(bool state)	{ _interactive = state; }
@@ -66,6 +72,7 @@ public:
   void SetAircraft(aircraft ac)		{ _aircraft = ac; }
   void SetAircraft(int ac)		{ _aircraft = (aircraft)ac; }
   void SetProcessingRate(processingRate pr) { _processingRate = pr; }
+  void SetHRTRate(hrtRate rate) { _hrtRate = rate; }
   void SetInterpolationType(interpolationType it) { _interpType = it; }
 
   void SetADSVersion(ADSVersion nv) { _adsVersion = nv; }
@@ -114,6 +121,7 @@ private:
   aircraft _aircraft;
   ADSVersion _adsVersion;
   processingRate _processingRate;
+  hrtRate _hrtRate;
   interpolationType _interpType;
 
   // Some meta-data.

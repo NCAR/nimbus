@@ -41,7 +41,7 @@ void AverageSampledData()
     if (rp->SampleRate <= 1)
       memcpy( (char *)&AveragedData[rp->LRstart],
               (char *)&SampledData[rp->SRstart],
-              NR_SIZE * rp->Length);
+              sizeof(NR_TYPE) * rp->Length);
     else
       (*rp->Average)(	&SampledData[rp->SRstart],
               &AveragedData[rp->LRstart],

@@ -225,7 +225,7 @@ static void readHeader()
   else
     {
     if (cfg.ProcessingRate() == Config::HighRate)
-      SetHighRate(NULL, NULL, NULL);
+      SetHighRate(NULL, (void *)cfg.HRTRate(), NULL);
 
     LogMessage(buffer);
 
@@ -296,7 +296,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   InitAsyncModule(OutputFileName);
   ConfigurationDump();
 
-
+  // Do some clean-up/preperation.
   for (size_t i = 0; i < raw.size(); ++i)
   {
     if (!cfg.TimeShifting())
@@ -593,7 +593,7 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
             if ((dp->ProbeType & PROBE_PMS2D) || (dp->ProbeType & PROBE_PMS1D))
               dp->OutputRate = dp->Default_HR_OR;
             else
-              dp->OutputRate = Config::HighRate;
+              dp->OutputRate = cfg.HRTRate();
             break;
 
           default:
@@ -620,7 +620,7 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
               rp->OutputRate = rp->SampleRate;
             else
             if (cfg.ProcessingRate() == Config::HighRate)
-              rp->OutputRate = Config::HighRate;
+              rp->OutputRate = cfg.HRTRate();
             break;
 
           case Config::HighRate:
@@ -632,7 +632,7 @@ void ToggleRate(Widget w, XtPointer client, XtPointer call)
                (rp->ProbeType & PROBE_PMS2D) || (rp->ProbeType & PROBE_PMS1D))
               rp->OutputRate = Config::LowRate;
             else
-              rp->OutputRate = Config::HighRate;
+              rp->OutputRate = cfg.HRTRate();
           }
         }
 

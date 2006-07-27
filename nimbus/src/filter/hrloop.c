@@ -71,7 +71,7 @@ int HighRateLoop(long starttime, long endtime)
   if (endtime != END_OF_TAPE)
     endtime += NPSBUFFERS-1;
 
-  nBytes = nSRfloats * NR_SIZE;
+  nBytes = nSRfloats * sizeof(NR_TYPE);
   if ((LRCB = CreateCircularBuffer(NLRBUFFERS, nBytes)) == NULL ||
       (PSCB = CreateCircularBuffer(NPSBUFFERS, nBytes)) == NULL)
     {
@@ -79,7 +79,7 @@ int HighRateLoop(long starttime, long endtime)
     goto exit;
     }
 
-  nBytes = nHRfloats * NR_SIZE;
+  nBytes = nHRfloats * sizeof(NR_TYPE);
   if ((HSCB = CreateCircularBuffer(NPSBUFFERS, nBytes)) == NULL)
     {
     nBytes = ERR;

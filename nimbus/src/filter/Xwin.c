@@ -51,6 +51,9 @@ extern char *func[19];
 
 
 /* -------------------------------------------------------------------- */
+/* Not sure this is used anymore, other than maybe the widgets to store
+ * file name data. (i.e. this was the original first window the user saw).
+ */
 Widget CreateMainWindow(Widget parent)
 {
   Arg		args[32];
@@ -131,6 +134,8 @@ Widget CreateMainWindow(Widget parent)
 }	/* END CREATEMAINWINDOW */
 
 /* -------------------------------------------------------------------- */
+/* This is the main window with menus and list widet, status text, etc.
+ */
 Widget CreateSetupWindow(Widget parent)
 {
   Arg		args[16];
@@ -286,6 +291,9 @@ Widget CreateSetupWindow(Widget parent)
 }	/* END CREATESETUPWINDOW */
 
 /* -------------------------------------------------------------------- */
+/* This is the edit variable window.  User can edit cal coes, spike slopes
+ * output rate, etc.
+ */
 Widget CreateEditWindow(Widget parent)
 {
   Arg		args[16];
@@ -298,7 +306,7 @@ Widget CreateEditWindow(Widget parent)
   Widget	evRC[2];
   Widget	slPD, slButts[15],funcPD,funcButts[19];
   XmString	name;
-  int		i;
+  size_t	i;
 
   //**************Definition of FuncPD******************//
   func[0]="none";
@@ -601,7 +609,7 @@ Widget CreateEditWindow(Widget parent)
   XtManageChild(funcOpMenu);
   XmStringFree(name);
   
-  for(i=0;i<18;++i)
+  for (i = 0; i < 18; ++i)
   {
     name=XmStringCreateLocalized(func[i]);
 
