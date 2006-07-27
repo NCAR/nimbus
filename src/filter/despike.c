@@ -118,9 +118,9 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
   points[1] = prev_rec[vp->SRstart + vp->SampleRate - 2];
   points[2] = prev_rec[vp->SRstart + vp->SampleRate - 1];
   memcpy((char *)&points[nPrevPts], (char *)&this_rec[vp->SRstart],
-		NR_SIZE * vp->SampleRate);
+		sizeof(NR_TYPE) * vp->SampleRate);
   memcpy((char *)&points[vp->SampleRate+nPrevPts], (char *)&next_rec[vp->SRstart],
-		NR_SIZE * vp->SampleRate);
+		sizeof(NR_TYPE) * vp->SampleRate);
   nPoints = 2 * vp->SampleRate + nPrevPts;
 
   for (size_t i = nPrevPts; i < vp->SampleRate + nPrevPts; ++i)
@@ -153,9 +153,9 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
 
       if (ex < nPoints)
         {
-        sprintf(buffer, "Despike: %s, delta %g - slope=%g, point = %g, nPoints=%d\n",
-		vp->name, dir1, SpikeSlope, this_rec[sx+1], ex-sx-1);
-//        LogThisRecordMsg(this_rec, buffer);
+        sprintf(buffer, "Despike: %s, delta %g - slope=%g, point = %g, nPoints=%d, pos=%d\n",
+		vp->name, dir1, SpikeSlope, this_rec[sx+1], ex-sx-1, i);
+        LogThisRecordMsg(this_rec, buffer);
 
         for (int k = (int)xa[nPrevPts-1]+1; k < (int)xa[nPrevPts]; ++k)
           points[k] = floatNAN;
@@ -169,7 +169,7 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
   if (spikeCount > 0)
   {
     memcpy(	(char *)&this_rec[vp->SRstart], (char *)&points[nPrevPts],
-		NR_SIZE * vp->SampleRate);
+		sizeof(NR_TYPE) * vp->SampleRate);
 
     *counter += spikeCount;
   }

@@ -14,6 +14,7 @@ ENTRY POINTS:	ExtractHeaderIntoFile(char *ADSfileName)
 
 STATIC FNS:	GetNextADSfile()
 		GetNext2Dfile()
+		check_rico_half_buff()
 
 DESCRIPTION:	These routines locate data records that start with the
 		ID = 0x8681.  (i.e. skips all PMS2D records).
@@ -34,7 +35,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/uio.h>
-#include <ctype.h>
+#include <cctype>
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -66,6 +67,7 @@ extern size_t	LITTON51_start;
 
 static long	FindNextDataRecord(char buff[]);
 static bool	IsThisAnAsyncRecord(short buff[]);
+static void	check_rico_half_buff(P2d_rec *buff, size_t beg, size_t end);
 static int	GetNext2Dfile();
 
 char	*ExtractHeaderIntoFile(char *);
@@ -425,8 +427,6 @@ static int GetNextADSfile()
 }	/* END GETNEXTADSFILE */
 
 /* -------------------------------------------------------------------- */
-#define ONE_WORD	sizeof(short)
-
 static long FindNextDataRecord(char buff[])
 {
   long	nbytes = 0;
@@ -534,6 +534,10 @@ static bool IsThisAnAsyncRecord(short buff[])
 
 static int	twoDfd[] = { -1, -1, -1, -1, -1, -1 };
 static char	twoDfile[1024];
+
+static const unsigned long StandardSyncWord = 0x55000000;
+static const unsigned long SyncWordMask = 0xff000000;
+static const size_t RecordLen = 1024;
 
 /* -------------------------------------------------------------------- */
 bool Open2dFile(const char file[], int probeCnt)
@@ -657,9 +661,89 @@ bool Next2dRecord(P2d_rec *record, int probeCnt, short id)
   if (nbytes <= 0)
     return(false);
 
+  /* RICO stuck bit cleanup.
+   */
+  if (cfg.ProjectNumber() == "135")
+  {
+    check_rico_half_buff((P2d_rec *)buff, 0, RecordLen/2);
+    check_rico_half_buff((P2d_rec *)buff, RecordLen/2, RecordLen);
+  }
+
   memcpy((void *)record, (void *)buff, PMS2_SIZE);
   return(true);
 
 }	/* END NEXT2DRECORD */
 
+/* -------------------------------------------------------------------- */
+static void check_rico_half_buff(P2d_rec *buff, size_t beg, size_t end)
+{
+  std::vector<size_t> spectra, sorted_spectra;
+
+  for (size_t j = 0; j < 32; ++j)
+    spectra.push_back(0);
+
+  // Generate spectra.
+  unsigned long *p = (unsigned long *)buff->data;
+  bool firstSyncWord = beg == 0 ? false : true;
+
+  for (size_t i = beg; i < end; ++i, ++p)
+  {
+    // There seemed to be lots of splatter at the start of the buffer,
+    // skip until first sync word appears.
+    if (!firstSyncWord)
+      if ((*p & SyncWordMask) == 0x55000000)
+        firstSyncWord = true;
+      else
+        continue;
+
+    if ((*p & SyncWordMask) == 0x55000000 || *p == 0xffffffff)
+      continue;
+
+    unsigned long slice = ~(*p);
+    for (size_t j = 0; j < 32; ++j)
+      if (((slice >> j) & 0x01) == 0x01)
+        ++spectra[j];
+  }
+
+  // Sort the spectra and compare the last bin to the one next too it and see
+  // if there is a large descrepency.  If so, probably a bad 1/2 buffer.
+  sorted_spectra = spectra;
+  sort(sorted_spectra.begin(), sorted_spectra.end());
+
+  if ((sorted_spectra[30] * 2 < sorted_spectra[31]))
+  {
+    int stuck_bin = -1;
+    for (size_t j = 0; j < 32; ++j)
+      if (spectra[j] == sorted_spectra[31])
+        stuck_bin = j;
+
+    fprintf(stderr,
+	"DataFile.cc: %02d:%02d:%02d.%d - Performing stuck bit correction, bit %d, ",
+	buff->hour, buff->minute, buff->second, buff->msec, stuck_bin);
+
+    if (beg == 0)
+      fprintf(stderr, "first half.\n");
+    else
+      fprintf(stderr, "second half.\n");
+
+    if (stuck_bin == -1)
+    {
+      fprintf(stderr, "DataFile.cc:  Impossible.\n");
+      exit(1);
+    }
+
+    unsigned long mask1 = 0x01 << stuck_bin;
+    unsigned long mask2 = 0x07 << stuck_bin-1;
+    unsigned long *p = (unsigned long *)buff->data;
+    for (size_t i = beg; i < end; ++i, ++p)
+    {
+      if ((*p & SyncWordMask) == 0x55000000 || *p == 0xffffffff)
+        continue;
+
+      unsigned long slice = ~(*p);
+      if ((slice & mask2) == mask1)
+        *p = ~(slice & ~mask1);
+    }
+  }
+}
 /* END ADSIO.C */

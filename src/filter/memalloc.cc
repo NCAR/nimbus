@@ -62,7 +62,7 @@ void AllocateDataArrays()
     }
 
     nLRfloats += raw[i]->Length;
-    nHRfloats += (25 * raw[i]->Length);
+    nHRfloats += (cfg.HRTRate() * raw[i]->Length);
   }
 
   for (size_t i = 0; i < derived.size(); ++i)
@@ -70,7 +70,7 @@ void AllocateDataArrays()
     derived[i]->LRstart = nLRfloats;
     derived[i]->HRstart = nHRfloats;
     nLRfloats += derived[i]->Length;
-    nHRfloats += (25 * derived[i]->Length);
+    nHRfloats += (cfg.HRTRate() * derived[i]->Length);
   }
 
   /* Reset dependIndices.

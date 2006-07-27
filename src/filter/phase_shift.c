@@ -22,13 +22,14 @@ REFERENCES:	GetBuffer(), Interpolate()
 
 REFERENCED BY:	LowRateLoop(), HighRateLoop()
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 -------------------------------------------------------------------------
 */
 
+static bool _debug = false;
+
 #include "nimbus.h"
 #include "decode.h"
-#include "bounds.h"
 #include "circbuff.h"
 
 #include <gsl/gsl_spline.h>
@@ -76,7 +77,7 @@ void PhaseShift(
   next_next_rec	= (NR_TYPE *)GetBuffer(LRCB, index+2);
 
   // Copy current rec into srt output rec.
-  memcpy((char *)output, (char *)this_rec, NR_SIZE * nSRfloats);
+  memcpy((char *)output, (char *)this_rec, sizeof(NR_TYPE) * nSRfloats);
 
   for (size_t i = 0; i < raw.size(); ++i)
   {
@@ -84,12 +85,24 @@ void PhaseShift(
     int		lag;
     bool	noMissingData = true;
 
+//if (strcmp(rp->name, "VNS") == 0) _debug = true;
+
+if (_debug)
+  printf("%02d:%02d:%02d s_lag=%d d_lag=%d\n",
+	(int)this_rec[timeIndex[0]],
+	(int)this_rec[timeIndex[1]],
+	(int)this_rec[timeIndex[2]],
+	rp->StaticLag, rp->DynamicLag);
+
+if (_debug)
+  printf("  %d %d %d\n", (int)prev_rec[rp->LAGstart], (int)this_rec[rp->LAGstart], (int)next_rec[rp->LAGstart]);
+
     for (size_t j = 0; j < rp->SampleRate; ++j)
       if (isnan(this_rec[rp->SRstart + j]))
         noMissingData = false;
 
     if (abs((lag = rp->StaticLag + rp->DynamicLag)) > MaxLag)
-      {
+    {
       if (lag < 0)
         lag = -MaxLag;
       else
@@ -99,7 +112,7 @@ void PhaseShift(
         "Max lag of |%d| ms exceeded, setting to %d ms and continuing.\n",
         MaxLag, lag);
       LogMessage(buffer);
-      }
+    }
 
     /* Only resample data, if we have a lag or some 'missing values'.
      */
@@ -115,6 +128,7 @@ void PhaseShift(
       else
         resample(rp, lag, srt_out, houtput);
     }
+_debug = false;
   }
 }	/* END PHASESHIFT */
 
@@ -124,6 +138,10 @@ resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 {
   size_t	nPoints, goodPoints = 0, T = 0;
   size_t	gap_size = 1000 / vp->SampleRate;
+
+  // GV IRS position & ground speed data are at 12.5Hz.
+  if (vp->SampleRate == 13)
+    gap_size = 80;  // (1000.0 / 12.5);
 
   nPoints = vp->SampleRate * 5;	// 5 Seconds.
 
@@ -135,6 +153,14 @@ resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 	&this_rec[vp->SRstart],
 	&next_rec[vp->SRstart],
 	&next_next_rec[vp->SRstart],
+	0 } ;
+
+  NR_TYPE *lagPtrs[] = {
+	&prev_prev_rec[vp->LAGstart],
+	&prev_rec[vp->LAGstart],
+	&this_rec[vp->LAGstart],
+	&next_rec[vp->LAGstart],
+	&next_next_rec[vp->LAGstart],
 	0 } ;
 
   // Loop through all 5 records (above) and pull out all the valid data
@@ -223,8 +249,9 @@ resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
   if (hrt_out)
   {
     double rqst = startTime;
-    gap_size = 1000 / cfg.ProcessingRate();
-    for (size_t i = 0; i < (size_t)cfg.ProcessingRate(); ++i, rqst += gap_size)
+    gap_size = 1000 / cfg.HRTRate();
+
+    for (size_t i = 0; i < (size_t)cfg.HRTRate(); ++i, rqst += gap_size)
       if (cfg.InterpolationType() == Config::Linear)
         hrt_out[vp->HRstart+i] = gsl_interp_eval(linear, x, y, rqst, acc);
       else
@@ -251,7 +278,7 @@ resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
       }
 
     if (hrt_out)
-      for (size_t i = 0; i < (size_t)cfg.ProcessingRate(); ++i)
+      for (size_t i = 0; i < (size_t)cfg.HRTRate(); ++i)
       {
         if (hrt_out[vp->SRstart+i] < vp->Modulo->value[0])
           hrt_out[vp->SRstart+i] += vp->Modulo->diff;
@@ -277,7 +304,7 @@ shift_vector(RAWTBL *rp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
   /* Truncate lag.
    */
   int nIntervalsToMove = lag / sampleInterval;
-  int bytesPerVector = rp->Length * NR_SIZE;
+  int bytesPerVector = rp->Length * sizeof(NR_TYPE);
 
   if (lag < 0)
   {

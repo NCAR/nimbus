@@ -29,7 +29,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2000
 */
 
 #include <sys/param.h>
-#include <ctype.h>
+#include <cctype>
 
 #include <Xm/Form.h>
 #include <Xm/Frame.h>
@@ -401,7 +401,7 @@ void MapCalCof(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void CreateEditWindow()
 {
-  int	i;
+  size_t	i;
   Arg           args[16];
   Cardinal      n;
   Widget        frame[12];

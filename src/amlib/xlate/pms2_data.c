@@ -102,7 +102,6 @@ void Add2DtoList(RAWTBL *varp)	/* Called by hdr_decode.c */
 
   ++piCnt;
 
-
   /* Set up ordering and ID's so we now which 2D records go with which
    * probe index
    */
@@ -199,8 +198,8 @@ void xlOneD(RAWTBL *varp, void *in, NR_TYPE *np)
   overFlowCnt[probeCount] = 0;
   deadTime[probeCount][0] = 0.0;
   deadTime[probeCount][1] = 0.0;
-  memset((void *)np, 0, NR_SIZE * varp->Length);
-  memset((void *)twoD[probeCount], 0, NR_SIZE * BINS_64);
+  memset((void *)np, 0, sizeof(NR_TYPE) * varp->Length);
+  memset((void *)twoD[probeCount], 0, sizeof(NR_TYPE) * BINS_64);
 
   if (FeedBack == HIGH_RATE_FEEDBACK)	// Does not support high_rate
     return;
@@ -336,7 +335,7 @@ void xlHVPS(RAWTBL *varp, void *in, NR_TYPE *np)
   overFlowCnt[probeCount] = 0;
   deadTime[probeCount][0] = 0.0;
   deadTime[probeCount][1] = 0.0;
-  memset((void *)np, 0, NR_SIZE * varp->Length);
+  memset((void *)np, 0, sizeof(NR_TYPE) * varp->Length);
 
   if (FeedBack == HIGH_RATE_FEEDBACK)	// Hell no!
     return;

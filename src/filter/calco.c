@@ -44,6 +44,11 @@ void ApplyCalCoes(NR_TYPE *record)
 
     for (size_t j = 0; j < sp->SampleRate; ++j, ++pos)
     {
+if (strcmp(sp->name, "DPR") == 0 || strcmp(sp->name, "DPL") == 0)
+{
+  if (isnan(record[pos])) printf("%s pos=%d - nan\n", sp->name, j);
+}
+
       if (sp->type[0] == 'A')
         SRTvolts[pos] = record[pos] =
 		(record[pos] - sp->convertOffset) * sp->convertFactor;

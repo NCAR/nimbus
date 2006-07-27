@@ -15,7 +15,7 @@ DESCRIPTION:	The mrf filter has it's own circular buffer routines
 		with circbuff.[ch].  $PROJ_DIR/defaults/filters contains
 		the coefficients.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 -------------------------------------------------------------------------
 */
 
@@ -59,59 +59,92 @@ char *GetProcessedBuffer(CircularBuffer *, CircularBuffer *, int offset, var_bas
 void InitMRFilters()
 {
   MOD	*mv_p;
-  filterPtr	TwoFiftyTo25, FiftyTo25, OneTo25, FiveTo25, TenTo25,
-		ThousandTo25, TwentyFive, vspd, acins, gsf;
+  filterPtr	OneUp, FiveUp, EightUp, TenUp, ThirteenUp, SixteenUp, TwentyFiveUp,
+		FiftyDown, OneHundredDown, TwoFiftyDown, FiveHundredDown, ThousandDown,
+		vspd, acins, gsf;
 
-  OneTo25 = readAfilter("1to25");
-  FiveTo25 = readAfilter("5to25");
-  TenTo25 = readAfilter("10to25");
-  TwentyFive = readAfilter("25hz");
-  vspd = readAfilter("VSPD");
-  gsf = readAfilter("GSF");
-  acins = readAfilter("ACINS");
-  FiftyTo25 = readAfilter("50to25");
-  TwoFiftyTo25 = readAfilter("250to25");
-  ThousandTo25 = readAfilter("1000to25");
+  if (cfg.HRTRate() == Config::TwentyFive)
+  {
+    OneUp = readAfilter("1to25");
+    FiveUp = readAfilter("5to25");
+    EightUp = readAfilter("8to25");
+    TenUp = readAfilter("10to25");
+    ThirteenUp = readAfilter("13to25");	// Really 12.5hz
+    SixteenUp = readAfilter("16to25");
+    TwentyFiveUp = 0;
+    vspd = readAfilter("VSPD");
+    gsf = readAfilter("GSF");
+    acins = readAfilter("ACINS");
+    FiftyDown = readAfilter("50to25");
+    OneHundredDown = readAfilter("100to25");
+    TwoFiftyDown = readAfilter("250to25");
+    FiveHundredDown = readAfilter("500to25");
+    ThousandDown = readAfilter("1000to25");
+  }
+  else
+  {
+    OneUp = readAfilter("1to50");
+    FiveUp = readAfilter("5to50");
+    EightUp = readAfilter("8to50");
+    TenUp = readAfilter("10to50");
+    ThirteenUp = readAfilter("13to50");	// Really 12.5hz
+    SixteenUp = readAfilter("16to50");
+    TwentyFiveUp = readAfilter("25to50");
+    vspd = readAfilter("VSPD");
+    gsf = readAfilter("GSF");
+    acins = readAfilter("ACINS");
+    FiftyDown = 0;
+    OneHundredDown = readAfilter("100to50");
+    TwoFiftyDown = readAfilter("250to50");
+    FiveHundredDown = readAfilter("500to50");
+    ThousandDown = readAfilter("1000to50");
+  }
+
 
   /* Create filter Data for each variable
    */
   rawFilters.resize(raw.size());
   for (size_t i = 0; i < raw.size(); ++i)
-    {
-    /* Doesn't require filtering.
-     */
-    if (raw[i]->DependedUpon == false && raw[i]->OutputRate != Config::HighRate)
-      {
-      rawFilters[i] = (mRFilterPtr)ERR;
-      continue;
-      }
+  {
+    rawFilters[i] = 0;
 
-    /* Don't filter counters.
+    // All data being interped is linear interped before coming here, so L=1.
+    size_t L = 1; // cfg.HRTRate() / raw[i]->SampleRate;
+    size_t M = raw[i]->SampleRate / cfg.HRTRate();
+
+    if (L < 1) L = 1;
+    if (M < 1) M = 1;
+
+    /* Doesn't require filtering (as in not output or used).
+     */
+    if (raw[i]->DependedUpon == false && raw[i]->OutputRate != (size_t)cfg.HRTRate())
+      continue;
+
+    /* Don't filter counters.  @see filterCounter()
      */
     if (raw[i]->type[0] == 'C')
-      rawFilters[i] = NULL;
+      continue;
 
     /* Can't filter Vectors.  And we don't want to filter PMS1D scalars.
      * This data will just be memcpy() into HighRateData[].
      */
     if (raw[i]->Length > 1 || raw[i]->ProbeType & PROBE_PMS1D)
-      {
-      rawFilters[i] = NULL;
       continue;
-      }
 
     mv_p = raw[i]->Modulo;
 
     switch (raw[i]->SampleRate)
-      {
+    {
       case 1:			/* Interpolate	*/
-        rawFilters[i] = createMRFilter(1, 1, OneTo25, mv_p);
+//        rawFilters[i] = createMRFilter(L, M, OneUp, mv_p);
+        rawFilters[i] = 0;
         break;
-
       case 5:
-        rawFilters[i] = createMRFilter(1, 1, FiveTo25, mv_p);
+        rawFilters[i] = createMRFilter(L, M, FiveUp, mv_p);
         break;
-
+      case 8:
+        rawFilters[i] = createMRFilter(L, M, EightUp, mv_p);
+        break;
       case 10:
         /* At this time no filtering of groundspeeds from the IRS should be
          * performed, due to poor quantization from the instrument.  Filtering
@@ -121,41 +154,52 @@ void InitMRFilters()
         if (strncmp(raw[i]->name, "GSF", 3) == 0 ||
             strncmp(raw[i]->name, "VEW", 3) == 0 ||
             strncmp(raw[i]->name, "VNS", 3) == 0)
-//          rawFilters[i] = createMRFilter(1, 1, gsf, mv_p);
-          rawFilters[i] = NULL;
+//          rawFilters[i] = createMRFilter(L, M, gsf, mv_p);
+          rawFilters[i] = 0;
         else
-          rawFilters[i] = createMRFilter(1, 1, TenTo25, mv_p);
+          rawFilters[i] = createMRFilter(L, M, TenUp, mv_p);
         break;
-
+      case 13:	// Really 12.5hz
+        rawFilters[i] = createMRFilter(L, M, ThirteenUp, mv_p);
+//        rawFilters[i] = 0;
+        break;
+      case 16:
+        rawFilters[i] = createMRFilter(L, M, SixteenUp, mv_p);
+        break;
       case 25:		/* Just filter	*/
-        if (strncmp(raw[i]->name, "VSPD", 4) == 0)
-          rawFilters[i] = createMRFilter(1, 1, vspd, mv_p);
+        if (cfg.Aircraft() == Config::C130 && strncmp(raw[i]->name, "VSPD", 4) == 0)
+          rawFilters[i] = createMRFilter(L, M, vspd, mv_p);
         else
-          rawFilters[i] = NULL;
+          rawFilters[i] = createMRFilter(L, M, TwentyFiveUp, mv_p);
         break;
-
       case 50:		/* Decimate	*/
-        if (strncmp(raw[i]->name, "ACINS", 5) == 0)
-          rawFilters[i] = createMRFilter(1, 2, acins, mv_p);
+        if (cfg.Aircraft() == Config::C130 && strncmp(raw[i]->name, "ACINS", 5) == 0)
+          rawFilters[i] = createMRFilter(L, M, acins, mv_p);
         else
-          rawFilters[i] = createMRFilter(1, 2, FiftyTo25, mv_p);
+          rawFilters[i] = createMRFilter(L, M, FiftyDown, mv_p);
         break;
-
       case 250:
-        rawFilters[i] = createMRFilter(1, 10, TwoFiftyTo25, mv_p);
+        rawFilters[i] = createMRFilter(L, M, TwoFiftyDown, mv_p);
         break;
-
+      case 500:
+        rawFilters[i] = createMRFilter(L, M, FiveHundredDown, mv_p);
+        break;
       case 1000:
-        rawFilters[i] = createMRFilter(1, 40, ThousandTo25, mv_p);
+        rawFilters[i] = createMRFilter(L, M, ThousandDown, mv_p);
         break;
-
       default:
-        rawFilters[i] = (mRFilterPtr)ERR;
         fprintf(stderr, "mrfFilter: non-supported input rate, ");
         fprintf(stderr, "var=%s, rate=%d\n", raw[i]->name, raw[i]->SampleRate);
-      }
     }
 
+    if (rawFilters[i] == 0 && raw[i]->SampleRate != raw[i]->OutputRate)
+    {
+      char msg[128];
+      sprintf(msg, "%s [sr=%d] has no FIR filter, resampled data will be used.",
+              raw[i]->name, raw[i]->SampleRate);
+      LogMessage(msg);
+    }
+  }
 }	/* END INITMRFILTER */
 
 /* -------------------------------------------------------------------- */
@@ -168,72 +212,70 @@ void Filter(	CircularBuffer *PSCB,	/* SampleRate data. */
   /* Do raw variables
    */
   for (size_t i = 0; i < raw.size(); ++i)
-    {
+  {
     /* Counters shouldn't need to be filtered.  Applies averaging or
      * linear interpolation.
      */
     if (raw[i]->type[0] == 'C' && raw[i]->SampleRate != raw[i]->OutputRate)
-      {
+    {
       filterCounter(raw[i]);
       continue;
-      }
+    }
 
     if ((raw[i]->ProbeType & PROBE_PMS1D) || (raw[i]->ProbeType & PROBE_PMS2D))
       memcpy(	(char *)&HighRateData[raw[i]->HRstart],
 		(char *)&SampledData[raw[i]->SRstart],
-		NR_SIZE * raw[i]->SampleRate * raw[i]->Length);
+		sizeof(NR_TYPE) * raw[i]->SampleRate * raw[i]->Length);
     else
       ProcessVariable(PSCB, HSCB, raw[i], rawFilters[i]);
-    }
-
+  }
 }	/* FILTER */
 
 /* -------------------------------------------------------------------- */
 static void ProcessVariable(	CircularBuffer *PSCB, CircularBuffer *HSCB,
 				var_base *vp, mRFilterPtr vpFilter)
 {
-  if (vpFilter == (mRFilterPtr)ERR)	/* Filtering not needed	*/
-    return;
-
   /* Because data with SampleRate below 25 is interpolated first, we
    * can't use SampleRate, but must use 25.  Fake it with filterRate.
    */
-  filterRate = vp->SampleRate < (size_t)cfg.ProcessingRate()
-				? (size_t)cfg.ProcessingRate() : vp->SampleRate;
+  filterRate = vp->SampleRate < (size_t)cfg.HRTRate()
+				? (size_t)cfg.HRTRate() : vp->SampleRate;
 
   if (vpFilter == 0)	/* Filtering not needed/wanted	*/
-    {
-    if (vp->SampleRate == (size_t)cfg.ProcessingRate())
+  {
+    if (vp->SampleRate == (size_t)cfg.HRTRate())
+      // SampleRate is same as HRT rate, just copy.
       memcpy(	(char *)&HighRateData[vp->HRstart],
 		(char *)&SampledData[vp->SRstart],
-		NR_SIZE * vp->SampleRate * vp->Length);
+		sizeof(NR_TYPE) * vp->SampleRate * vp->Length);
     else
-    if (vp->SampleRate < (size_t)cfg.ProcessingRate())
+    if (vp->SampleRate < (size_t)cfg.HRTRate())
+      // Use interpolated data for vars below HRT rate.
       memcpy(	(char *)&HighRateData[vp->HRstart],
 		(char *)&interpdData[vp->HRstart],
-		NR_SIZE * filterRate * vp->Length);
+		sizeof(NR_TYPE) * filterRate * vp->Length);
     else
+      // zero out rates above HRT rate.  We could use the resampled data that's there?
       memset(	(char *)&HighRateData[vp->HRstart], 0,
-		NR_SIZE * vp->SampleRate * vp->Length);
-
+		sizeof(NR_TYPE) * vp->SampleRate * vp->Length);
     return;
-    }
+  }
 
   PSCBindex = -(PSCB->nbuffers - 1);
   setTimeDelay(filterRate, vpFilter->filter->order, &PSCBindex, &HzDelay);
   inputRec = (NR_TYPE *)GetProcessedBuffer(PSCB, HSCB, PSCBindex, vp);
 
   if (vpFilter->task == GET_INPUT)
-    {
+  {
     currentHz = HzDelay;
     ++PSCBindex;
-    }
+  }
   else
     if ((currentHz = filterRate - 1 + HzDelay) >= filterRate)
-      {
+    {
       ++PSCBindex;
       currentHz -= filterRate;
-      }
+    }
 
   SingleStageFilter(PSCB, HSCB, vpFilter, vp);
 
@@ -242,43 +284,41 @@ static void ProcessVariable(	CircularBuffer *PSCB, CircularBuffer *HSCB,
 /* -------------------------------------------------------------------- */
 static void filterCounter(RAWTBL *sp)
 {
-  NR_TYPE *sdp = &SampledData[sp->SRstart];
+  NR_TYPE	*sdp = &SampledData[sp->SRstart];
+  NR_TYPE	*hrt = &HighRateData[sp->HRstart];
   size_t	OUTindex;
+  size_t	outRate = (size_t)cfg.HRTRate();
 
-  switch (sp->SampleRate)
+  size_t L = outRate / sp->SampleRate;
+  size_t M = sp->SampleRate / outRate;
+/*
+  if (M != 0 && (float)M != (float)outRate / sp->SampleRate)
+  {
+    fprintf(stderr, "M not even decimation factor for %s, %d -> %d.\n",
+	sp->name, sp->SampleRate, outRate);
+    return;
+  }
+
+  if (L != 0 && (float)L != (float)sp->SampleRate / outRate)
+  {
+    fprintf(stderr, "L not even interpolation factor for %s, %d -> %d.\n",
+	sp->name, sp->SampleRate, outRate);
+    return;
+  }
+*/
+
+  if (L > 0)
+    for (OUTindex = 0; OUTindex < outRate; ++OUTindex)
+      hrt[OUTindex] = sdp[OUTindex / L] / L;
+
+  if (M > 0)
+    for (OUTindex = 0; OUTindex < outRate; ++OUTindex)
     {
-    case 50:
-      for (OUTindex = 0; OUTindex < (size_t)cfg.ProcessingRate(); ++OUTindex)
-        HighRateData[sp->HRstart + OUTindex] =
-			sdp[OUTindex * 2] + sdp[OUTindex * 2 + 1];
+      float sum = 0.0;
+      for (size_t idx = 0; idx < M; ++idx)
+        sum += sdp[(OUTindex*M)+idx];
 
-      break;
-
-    case 5:
-      for (OUTindex = 0; OUTindex < (size_t)cfg.ProcessingRate(); ++OUTindex)
-        HighRateData[sp->HRstart+OUTindex] = sdp[OUTindex / 5] / 5;
-
-      break;
-
-    case 1:
-      for (OUTindex = 0; OUTindex < (size_t)cfg.ProcessingRate(); ++OUTindex)
-        HighRateData[sp->HRstart+OUTindex] = sdp[0] / 25;
-
-      break;
-
-    case 250:
-      for (OUTindex = 0; OUTindex < (size_t)cfg.ProcessingRate(); ++OUTindex)
-        HighRateData[sp->HRstart + OUTindex] =
-			sdp[OUTindex * 2] + sdp[OUTindex * 2 + 1] +
-			sdp[OUTindex * 2 + 2] + sdp[OUTindex * 2 + 3] +
-			sdp[OUTindex * 2 + 4];
-
-      break;
-
-    default:
-      fprintf(stderr, "Rate [%s, %d] not supported for Counters, exiting.\n",
-	sp->name, sp->SampleRate);
-      exit(1);
+      hrt[OUTindex] = sum;
     }
 
 }	/* END FILTERCOUNTER */
@@ -289,22 +329,22 @@ static void SingleStageFilter(CircularBuffer *PSCB, CircularBuffer *HSCB, mRFilt
   int		task;
   NR_TYPE	output;
 
-  for (size_t OUTindex = 0; OUTindex < (size_t)cfg.ProcessingRate(); ++OUTindex)
-    {
+  for (size_t OUTindex = 0; OUTindex < (size_t)cfg.HRTRate(); ++OUTindex)
+  {
     do
-      {
+    {
       task = iterateMRFilter(thisMRF, inputRec[currentHz], &output);
 
       if (task == GET_INPUT && ++currentHz == filterRate)
-        {
+      {
         currentHz = 0;
         inputRec = (NR_TYPE *)GetProcessedBuffer(PSCB, HSCB, PSCBindex++, vp);
-        }
       }
+    }
     while (task == GET_INPUT);
 
     HighRateData[vp->HRstart + OUTindex] = output;
-    }
+  }
 }
 
 /* -------------------------------------------------------------------- */
@@ -316,6 +356,9 @@ static filterPtr readAfilter(char file[])
 
   sprintf(buffer, FILTERS.c_str(), nimbus, file);
   ReadTextFile(buffer, filter);
+
+  if (filter[0] == 0)
+    return 0;
 
   filterPtr daFilt = new filterData;
 
@@ -330,7 +373,7 @@ static filterPtr readAfilter(char file[])
 
   FreeTextFile(filter);
 
-  printf("filter.c: filter sum of %s\t= %15.8lf\n", file, sum);
+  printf("filter.c: filter sum of %s\t= %15.8lf, nTaps=%d\n", file, sum, daFilt->order);
 
   return(daFilt);
 
@@ -348,6 +391,9 @@ void ClearMRFilters()
 /* -------------------------------------------------------------------- */
 static mRFilterPtr createMRFilter(int L, int M, filterPtr filter, MOD *modvar)
 {
+  if (filter == 0)
+    return 0;
+
   mRFilterPtr	aMRFPtr;
 
   aMRFPtr		= new mRFilterData;
@@ -364,15 +410,16 @@ static mRFilterPtr createMRFilter(int L, int M, filterPtr filter, MOD *modvar)
 /* -------------------------------------------------------------------- */
 static void setTimeDelay(size_t rate, size_t nTaps, int *sec, size_t *msec)
 {
-  /* Set up time lags due to filtering.  nTaps should be a multiple of 25
-   * (odd # taps ok i.e. nTaps=101).
+  /* Set up time lags due to filtering.  Theory says delay at input is
+   * nTaps / (2 * L)
+   * nTaps should be a multiple of 25 and 50.
    */
   *msec = 0;
 
   int L = 1;	// No actual interp here.
   int samples = nTaps / (2 * L);
 
-  if (rate <= 25)
+  if (rate <= (size_t)cfg.HRTRate())
     *sec += (samples / rate);
   else
     // Why are the decimaters off by 1 sample?
@@ -385,7 +432,10 @@ static void setTimeDelay(size_t rate, size_t nTaps, int *sec, size_t *msec)
 
       case 250:		// nTaps / (2 * L), almost checks out.
         *sec += 0;
-        *msec = 240;
+        if (cfg.HRTRate() == Config::TwentyFive)
+          *msec = 240;
+        else
+          *msec = 120;
         break;
 
       case 1000:		// nTaps / (2 * L), ????
@@ -427,10 +477,10 @@ static circBuffPtr newCircBuff(int size)
 
   /* Check size  */
   if (size < 0)
-    {
+  {
     puts("newCircBuff: parameter 'size' < 0");
     exit(0);
-    }
+  }
 
   /* Allocate memory for structure.		*/
   aCBPtr = new circBuff;
@@ -539,11 +589,11 @@ static void initMultiRateFilter(mRFilterPtr aMRFPtr)
 */
 static int disposMultiRateFilter(mRFilterPtr aMRFPtr)
 {
-  if (aMRFPtr == NULL)
+  if (aMRFPtr == 0)
     return(false);
 
   disposCircBuff(aMRFPtr->inBuff);
-  aMRFPtr->inBuff = NULL;
+  aMRFPtr->inBuff = 0;
   delete aMRFPtr;
 
   return(true);
@@ -659,7 +709,7 @@ char *GetProcessedBuffer(
 	int offset, var_base *vp)
 {
 
-  if (vp->SampleRate >= (size_t)cfg.ProcessingRate())
+  if (vp->SampleRate >= (size_t)cfg.HRTRate())
   {
     NR_TYPE *thisBuff = (NR_TYPE *)GetBuffer(srt_cb, offset);
     return (char *)&thisBuff[vp->SRstart];
@@ -667,7 +717,7 @@ char *GetProcessedBuffer(
   else
   {
     NR_TYPE *thisBuff = (NR_TYPE *)GetBuffer(hrt_cb, offset);
-    memcpy(out, &thisBuff[vp->HRstart], (size_t)cfg.ProcessingRate()*NR_SIZE);
+    memcpy(out, &thisBuff[vp->HRstart], (size_t)cfg.HRTRate()*sizeof(NR_TYPE));
     return((char *)out);
   }
 }

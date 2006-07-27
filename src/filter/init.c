@@ -185,7 +185,24 @@ static void ReadBatchFile(char *fileName)
     else
     if (strcmp(p, "pr") == 0)
       {
-      cfg.SetProcessingRate((Config::processingRate)atoi(strtok(NULL, " \t\n")));
+      int value = atoi(strtok(NULL, " \t\n"));
+      switch (value)
+        {
+        case Config::SampleRate:
+          cfg.SetProcessingRate(Config::SampleRate);
+          break;
+        case Config::LowRate:
+          cfg.SetProcessingRate(Config::LowRate);
+          break;
+        case 25:
+        case 50:
+          cfg.SetProcessingRate(Config::HighRate);
+          cfg.SetHRTRate((Config::hrtRate)value);
+          break;
+        default:
+          fprintf(stderr, "ReadBatchFile: Unsupported processing rate specified, fatal.\n");
+          exit(1);
+        }
       }
     else
     if (strcmp(p, "ti") == 0)

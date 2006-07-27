@@ -50,14 +50,13 @@ void QueueMissingData(int h, int m, int s, int nRecords);
 /* -------------------------------------------------------------------- */
 void GetUserTimeIntervals() /* From TimeSliceWindow	*/
 {
-  int	i;
   int	hour, minute, second;
   char	*bp, *ep;
 
   nTimeIntervals = 0;
   currentTimeSegment = (-1);
 
-  for (i = 0; i < MAX_TIME_SLICES; ++i)
+  for (size_t i = 0; i < MAX_TIME_SLICES; ++i)
     {
     bp = XmTextFieldGetString(ts_text[i]);
     ep = XmTextFieldGetString(ts_text[i+MAX_TIME_SLICES]);
