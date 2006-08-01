@@ -29,9 +29,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include "amlib.h"
 #include "injectsd.h"
 
-#define NLRBUFFERS	5
-#define INDEX		-(NLRBUFFERS-2)
-
 extern SyntheticData sd;
 
 extern char		*ADSrecord;
@@ -56,7 +53,7 @@ int LowRateLoop(long starttime, long endtime)
     starttime -= NLRBUFFERS+1;
 
   if (endtime != END_OF_TAPE)
-    endtime += -(INDEX+1);
+    endtime += -(LRINDEX+1);
 
   /* Perform initialization before entering main loop.
    */
@@ -100,10 +97,10 @@ int LowRateLoop(long starttime, long endtime)
     DecodeADSrecord((short *)ADSrecord, BuffPtr);
     ApplyCalCoes(BuffPtr);
 
-    /* Despike 1 record ahead of what we will be working with (INDEX+1).
+    /* Despike 1 record ahead of what we will be working with (LRINDEX+1).
      */
-    DespikeData(LRCB, INDEX+1);
-    PhaseShift(LRCB, INDEX, SampledData, 0);
+    DespikeData(LRCB, LRINDEX+1);
+    PhaseShift(LRCB, LRINDEX, SampledData, 0);
 
     AverageSampledData();
    
