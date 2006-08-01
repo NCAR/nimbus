@@ -318,6 +318,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
       fprintf(LogFile,"%s has no entry in the VarDB.\n", derived[i]->name);
   }
 
+  FillListWidget();
   FlushXEvents();
 
   if (cfg.ProcessingRate() == Config::HighRate)
@@ -914,37 +915,28 @@ XmString CreateListLineItem(void *pp, int var_type)
 /* -------------------------------------------------------------------- */
 void FillListWidget()
 {
-  size_t	i, cnt;
+  static int	firstTime = true;
   XmString	items[MAX_VARIABLES];
 
-  static int	firstTime = true;
+  size_t cnt = 0;
 
-  if (firstTime)
-    XmListDeleteAllItems(list1);
-
-  cnt = 0;
-
-  for (i = 0; i < raw.size(); ++i)
+  for (size_t i = 0; i < raw.size(); ++i)
     items[cnt++] = CreateListLineItem(raw[i], RAW);
 
-  for (i = 0; i < derived.size(); ++i)
+  for (size_t i = 0; i < derived.size(); ++i)
     items[cnt++] = CreateListLineItem(derived[i], DERIVED);
 
+  XmListDeleteAllItems(list1);
+  XmListAddItems(list1, items, cnt, 1);
 
-  if (firstTime)
-    XmListAddItems(list1, items, cnt, 1);
-  else
-    XmListReplaceItemsPos(list1, items, cnt, 1);
-
-
-  for (i = 0; i < cnt; ++i)
+  for (size_t i = 0; i < cnt; ++i)
     XmStringFree(items[i]);
 
   if (firstTime)
-    {
+  {
     XmListSelectPos(list1, 1, false);
     firstTime = false;
-    }
+  }
 
 }	/* END FILLLISTWIDGET */
 
