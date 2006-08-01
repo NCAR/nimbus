@@ -32,6 +32,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 -------------------------------------------------------------------------
 */
 
+#include <sys/param.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/uio.h>
@@ -270,7 +271,7 @@ char *ExtractHeaderIntoFile(const char fileName[])
   int	nBytes, rc, outFD;
   int	iflag = 0, mode = 0, nWords = 4096, iconv = 0;
 
-  static char	tmpFile[256];
+  static char	tmpFile[MAXPATHLEN];
 
   adsFileName = (char *)fileName;
 
