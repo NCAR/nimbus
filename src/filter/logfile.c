@@ -8,41 +8,37 @@ ENTRY POINTS:	OpenLogFile()
 		CloseLogFile()
 		CloseRemoveLogFile()
 
-STATIC FNS:		
+STATIC FNS:	none
 
-DESCRIPTION:	Allow user to edit Flight Header Info (i.e. Date, Flight
-		number, etc...).
+DESCRIPTION:	Routines to support a logfile.
 
-INPUT:		none
-
-OUTPUT:			
-
-REFERENCES:	none
-
-REFERENCED BY:	cb_main.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2006
 -------------------------------------------------------------------------
 */
 
 #include "nimbus.h"
+#include "decode.h"
 #include <unistd.h>
-
+#include <sys/param.h>
 #include <Xm/Text.h>
 
 FILE	*LogFile = 0;
-static char	logFileName[256];
+static char	logFileName[MAXPATHLEN];
+
 
 /* -------------------------------------------------------------------- */
 void OpenLogFile()
 {
-  sprintf(logFileName, "%s/%s/Production/logFile.%d",
-          ProjectDirectory, cfg.ProjectNumber().c_str(), getpid());
+  char tmp[MAXPATHLEN];
 
-  if ((LogFile = fopen(logFileName, "w")) == NULL) {
+  MakeProjectFileName(tmp, LOGFILE);
+  sprintf(logFileName, "%s.%d", tmp, getpid());
+
+  if ((LogFile = fopen(logFileName, "w")) == NULL)
+  {
     sprintf(buffer, "Unable to create %s\n", logFileName);
     LogMessage(buffer);
-    }
+  }
 
 }	/* END OPENLOGFILE */
 
@@ -55,7 +51,7 @@ void LogMessage(const char msg[])
     messg.append("\n");
 
   if (cfg.Interactive())
-    {
+  {
     XmTextPosition      position;
     extern Widget       logText;
 
@@ -65,7 +61,7 @@ void LogMessage(const char msg[])
     position += messg.length();
     XmTextShowPosition(logText, position);
     XmTextSetInsertionPosition(logText, position);
-    }
+  }
   else
     fprintf(stderr, messg.c_str());
 
@@ -83,17 +79,22 @@ void CloseLogFile()
   fclose(LogFile);
   LogFile = NULL;
 
-  sprintf(buffer, "%s/%s/Production/logFile_%s.%s",
-          ProjectDirectory, cfg.ProjectNumber().c_str(),
+  strcpy(buffer, logFileName);
+  char tmp[MAXPATHLEN], *p = strrchr(buffer, '.');
+
+  sprintf(tmp, "_%s.%s",
           cfg.ProcessingRate() == Config::HighRate ? "HRT" : "LRT",
           cfg.FlightNumber().c_str());
+  strcat(p, tmp);
 
   if (rename(logFileName, buffer) == ERR)
-    {
-    strcpy(buffer, "\n>> Can't rename logFile.\n");
-    LogMessage(buffer);
-	fprintf(stderr, buffer);
-    }
+  {
+    char msg[512];
+    sprintf(msg,	"\n>> Can't rename logFile: %s to %s.\n",
+			logFileName, buffer);
+    LogMessage(msg);
+    fprintf(stderr, msg);
+  }
 
 }	/* END CLOSELOGFILE */
 
