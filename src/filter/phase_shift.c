@@ -35,9 +35,7 @@ static bool _debug = false;
 #include <gsl/gsl_spline.h>
 
 /* Global to ease parameter pushing in intensive loops.	*/
-static NR_TYPE	*prev_prev_rec, *prev_rec,
-		*this_rec,
-		*next_rec, *next_next_rec;
+static NR_TYPE *recPtrs[32], *prev_rec, *this_rec, *next_rec;
 
 void LogThisRecordMsg(NR_TYPE *record, const char msg[]);
 
@@ -65,19 +63,27 @@ void AddVariableToRAWlagList(RAWTBL *varp)
 /* -------------------------------------------------------------------- */
 void PhaseShift(
 	CircularBuffer	*LRCB,
-	int		index,		/* Index into CircBuff		*/
+	const int	index,		/* Index into CircBuff		*/
 	NR_TYPE		*output,	/* Place to put shifted record	*/
 	NR_TYPE		*houtput)	/* Place to put shifted record	*/
 {
   NR_TYPE *srt_out;
-  prev_prev_rec	= (NR_TYPE *)GetBuffer(LRCB, index-2);
+//  prev_prev_rec	= (NR_TYPE *)GetBuffer(LRCB, index-2);
   prev_rec	= (NR_TYPE *)GetBuffer(LRCB, index-1);
   this_rec	= (NR_TYPE *)GetBuffer(LRCB, index);
   next_rec	= (NR_TYPE *)GetBuffer(LRCB, index+1);
-  next_next_rec	= (NR_TYPE *)GetBuffer(LRCB, index+2);
+//  next_next_rec	= (NR_TYPE *)GetBuffer(LRCB, index+2);
+//printf("%d %d %d\n", prev_rec, this_rec, next_rec);
+  {
+  int i;
+  for (i = 0; i < NLRBUFFERS; ++i)
+    recPtrs[i] = (NR_TYPE *)GetBuffer(LRCB, index-3+i);
+  recPtrs[i] = 0;	// Terminate array.
+  }
 
   // Copy current rec into srt output rec.
   memcpy((char *)output, (char *)this_rec, sizeof(NR_TYPE) * nSRfloats);
+
 
   for (size_t i = 0; i < raw.size(); ++i)
   {
@@ -85,17 +91,20 @@ void PhaseShift(
     int		lag;
     bool	noMissingData = true;
 
-//if (strcmp(rp->name, "VNS") == 0) _debug = true;
+//if (strcmp(rp->name, "GGVNS") == 0) _debug = true;
 
 if (_debug)
+{
   printf("%02d:%02d:%02d s_lag=%d d_lag=%d\n",
 	(int)this_rec[timeIndex[0]],
 	(int)this_rec[timeIndex[1]],
 	(int)this_rec[timeIndex[2]],
 	rp->StaticLag, rp->DynamicLag);
 
-if (_debug)
-  printf("  %d %d %d\n", (int)prev_rec[rp->LAGstart], (int)this_rec[rp->LAGstart], (int)next_rec[rp->LAGstart]);
+  for (int i = 0; i < NLRBUFFERS; ++i)
+    printf(" %d", (int)recPtrs[i][rp->LAGstart]);
+  printf("\n");
+}
 
     for (size_t j = 0; j < rp->SampleRate; ++j)
       if (isnan(this_rec[rp->SRstart + j]))
@@ -143,31 +152,15 @@ resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
   if (vp->SampleRate == 13)
     gap_size = 80;  // (1000.0 / 12.5);
 
-  nPoints = vp->SampleRate * 5;	// 5 Seconds.
+  nPoints = vp->SampleRate * NLRBUFFERS;	// 5 (7?) Seconds.
 
   double	x[nPoints], y[nPoints], startTime;
 
-  NR_TYPE *recPtrs[] = {
-	&prev_prev_rec[vp->SRstart],
-	&prev_rec[vp->SRstart],
-	&this_rec[vp->SRstart],
-	&next_rec[vp->SRstart],
-	&next_next_rec[vp->SRstart],
-	0 } ;
-
-  NR_TYPE *lagPtrs[] = {
-	&prev_prev_rec[vp->LAGstart],
-	&prev_rec[vp->LAGstart],
-	&this_rec[vp->LAGstart],
-	&next_rec[vp->LAGstart],
-	&next_next_rec[vp->LAGstart],
-	0 } ;
-
-  // Loop through all 5 records (above) and pull out all the valid data
+  // Loop through all 5 (7?) records (above) and pull out all the valid data
   // points and make one big record.
   for (size_t ri = 0; recPtrs[ri] != 0; ++ri)
   {
-    NR_TYPE *curPtr = recPtrs[ri];
+    NR_TYPE *curPtr = &recPtrs[ri][vp->SRstart];
 
     for (size_t i = 0; i < vp->SampleRate; ++i, T += gap_size)
     {
@@ -175,12 +168,14 @@ resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
       {
         x[goodPoints] = T;
         y[goodPoints] = curPtr[i];
+if (_debug)
+  printf("%f %f\n", x[goodPoints], y[goodPoints]);
         ++goodPoints;
       }
     }
   }
 
-  startTime = 2000.0 - lag;
+  startTime = 3000.0 - lag;
 
   // Don't interp past the edge of the earth.
   if (x[goodPoints-1] < startTime || startTime < x[0])

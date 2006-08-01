@@ -28,10 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include "amlib.h"
 #include "injectsd.h"
 
-#define NLRBUFFERS	5	/* Number of LR Buffers			*/
 #define NPSBUFFERS	20
-
-#define LRINDEX		-(NLRBUFFERS-2)
 
 extern SyntheticData sd;
 
@@ -66,7 +63,7 @@ int HighRateLoop(long starttime, long endtime)
 
   /* Account for Circular Buffer slop	*/
   if (starttime != BEG_OF_TAPE)
-    starttime -= 4 + 10;
+    starttime -= 6 + 10;
 
   if (endtime != END_OF_TAPE)
     endtime += NPSBUFFERS-1;
