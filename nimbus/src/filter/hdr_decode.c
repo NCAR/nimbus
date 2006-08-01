@@ -144,7 +144,7 @@ extern long	INS_start;
 char	*ExtractHeaderIntoFile(const char fn[]);
 bool	Open2dFile(const char file[], int probeCnt);
 void	AddProbeToList(const char name[], int type), ReadDespikeFile();
-void	Add2DtoList(RAWTBL *varp);
+void	Add2DtoList(RAWTBL *varp), OpenLogFile();
 
 
 /* -------------------------------------------------------------------- */
@@ -158,6 +158,9 @@ static void CommonPreInitialization()
 {
   ReadProjectName();
   cfg.SetCoordTime("Time");
+
+  if (cfg.ProductionRun())
+    OpenLogFile();
 
   if (cfg.ProductionRun())
     defaultQuality = "Good";
@@ -273,14 +276,6 @@ int DecodeHeader3(const char header_file[])
 printf("DecodeHeader3: header_file=%s\n", header_file);
 
   extern nidas::dynld::raf::SyncRecordReader* syncRecReader;
-/*
-  if ((ProjectDirectory = (char *)getenv("ADS3_CONFIG")) == NULL)
-  {
-    fprintf(stderr,
-      "Environment variable ADS3_CONFIG not defined, this is fatal.\n");
-    exit(1);
-  }
-*/
 
   if (cfg.ProcessingMode() == Config::PostProcessing)
   {

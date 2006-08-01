@@ -78,7 +78,7 @@ static void	checkForProductionSetup(), displaySetupWindow(),
 		EngageSignals(), SetConfigGlobalAttributeVariables();
 
 
-void	OpenLogFile(), InitAsyncModule(char fileName[]), RealTimeLoop(),
+void	InitAsyncModule(char fileName[]), RealTimeLoop(),
 	CloseLogFile(), LogDespikeInfo(), InitAircraftDependencies(),
 	CloseRemoveLogFile(), LogIRSerrors(), RealTimeLoop3();
 
@@ -177,9 +177,6 @@ static void readHeader()
 
   XmUpdateDisplay(Shell001);
   LogMessage(SVNREVISION);
-
-  if (cfg.ProductionRun())
-    OpenLogFile();
 
   int rc = ERR;
 

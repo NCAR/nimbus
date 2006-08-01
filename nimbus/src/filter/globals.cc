@@ -35,6 +35,7 @@ const std::string DEPENDTBL     = "%s/%s/%s/DependTable";
 const std::string DEFAULTS      = "%s/%s/%s/Defaults";
 const std::string GROUPS        = "%s/%s/%s/Production/FlightGroups";
 const std::string BLANKVARS     = "%s/%s/%s/Production/BlankOuts";
+const std::string LOGFILE	= "%s/%s/%s/Production/logfile";
 const std::string LAGS          = "%s/%s/%s/Lags";
 const std::string BROADCAST     = "%s/%s/%s/ascii_parms";
 const std::string SPIKE         = "%s/%s/%s/Despike";
