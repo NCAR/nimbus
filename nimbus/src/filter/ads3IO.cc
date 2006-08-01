@@ -29,6 +29,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005
 
 #include <ctime>
 #include <iomanip>
+#include <sys/param.h>
 
 extern nidas::dynld::raf::SyncRecordReader* syncRecReader;
 
@@ -127,7 +128,7 @@ std::set<std::string> GetADSFileList(const char *adsFileName)
 {
   std::set<std::string> fileList;
   DIR *dir;
-  char tmp_dir[256];
+  char tmp_dir[MAXPATHLEN];
 
   strcpy(tmp_dir, adsFileName);
   char *directory = dirname(tmp_dir);

@@ -1,6 +1,7 @@
 #include "transmit.h"
 #include <ctime>
 #include <zlib.h>
+#include <sys/param.h>
 
 sqlTransmit::sqlTransmit(const std::string ac) : _aircraft(ac)
 {
@@ -32,7 +33,7 @@ void sqlTransmit::queueString(const std::string& str)
 
 void sqlTransmit::sendString(const std::string& str)
 {
-  char fName[256], *dir;
+  char fName[MAXPATHLEN], *dir;
 
   if ((dir = getenv("XMIT_DIR")) == 0)
   {
