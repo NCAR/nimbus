@@ -63,6 +63,7 @@ span.comment { background-color: #88FF88; font-style: italic; }
 
 <ul>
 <li class="toc">A &nbsp;<a href="#ref_app">References</a></li>
+<li class="toc">B &nbsp;<a href="#pms1d_app">PMS1D Probe Variables Description</a></li>
 </ul>
 
 
@@ -365,7 +366,7 @@ of purely derived variables.  I have included one example from each of the
 
 <h2>Appendices</h2>
 
-<h3><a name="ref_app">A &nbsp;References</a></h3
+<h3><a name="ref_app">A &nbsp;References</a></h3>
 <dl>
 <dt><a name="ref_nc">[NetCDF]</a></dt>
   <dd><a href="http://www.unidata.ucar.edu/packages/netcdf/index.html">NetCDF
@@ -380,6 +381,97 @@ of purely derived variables.  I have included one example from each of the
   </dd>
 
 </dl>
+
+<h3><a name="pms1d_app">B &nbsp;PMS1D Probe Variables Description</a></h3>
+
+<p>
+<h4>B.1 Variable names</h4>
+
+Each PMS probe has two vectors (histograms) stored in the netCDF file.  First is the raw
+counts and this variable always starts with the letter 'A' (for "Actual").  Second is the
+concentration array which always starts with the letter 'C'.  Below you will see the variable
+names for the orginal PMS probe and for the DMT converted electronics.
+<p>
+<table border=1>
+ <tr><th>PMS1D</th><th># bins</th><th>Counts name</th><th>Concentration name</th><th>DMT Converted</th><th># bins</th><th>Counts name</th><th>Concentration name</th></tr>
+ <tr><td>FSSP</td><td>16</td><td>AFSSP_xxx</td><td>CFSSP_xxx</td><td>S100</td><td>31</td><td>AS100_xxx</td><td>CS100_xxx</td></tr>
+ <tr><td>PCASP</td><td>16</td><td>APCAS_xxx</td><td>CPCAS_xxx</td><td>S200</td><td>31</td><td>AS200_xxx</td><td>CS200_xxx</td></tr>
+ <tr><td>F300</td><td>32</td><td>AF300_xxx</td><td>CF300_xxx</td><td>S300</td><td>31</td><td>AS300_xxx</td><td>CS300_xxx</td></tr>
+ <tr><td>260X</td><td>64</td><td>A260X_xxx</td><td>C260X_xxx</td><td>----</td><td>--</td><td></td><td></td></tr>
+ <tr><td>2D-C</td><td>32</td><td>A1DC_xxx1</td><td>C1DC_xxx1</td><td>----</td><td>--</td><td></td><td></td></tr>
+ <tr><td>2D-C</td><td>64</td><td>A2DC_xxx2</td><td>C2DC_xxx2</td><td>----</td><td>--</td><td></td><td></td></tr>
+</table>
+<p>
+Two sets of arrays are produced for each 2D probe.  The 1DC pair is the produced from the 2D
+probe data using an "entire-in" algorithm.  The 2DC pair is produced using a "center-in"
+algorithm.
+
+<p>
+<h4>B.2 Number of bins</h4>
+The original PMS probes always had the first (zeroth) bin set to zero or a value
+which was not part of the size-distribution histogram (e.g. the FSSP-100 recorded
+16 bins of which the last 15 contained data).  However we wanted all raw data
+available to an investigator.  For consistency this required the concentration
+array to be the same size, so it's first (zeroth) bin is also set to zero.
+<p>
+DMT converted probes can record either 10, 20, 30 or 40 bins of data.  To maintain
+backwards compatability, we pad the front of the array with a zero and increase the
+number of bins by one (11, 21, 31 or 41).
+<p>
+<b>NOTE: Always ignore the very first bin of any size-distribution histogram in
+our netCDF files.</b>
+
+<p>
+<h4>B.3 Cell sizes</h4>
+Cell sizes are stored as an attribute of the counts array.  They are <b>end-points</b>.
+In the example below, there are 31 cell sizes to go with the 30 used values of the size-
+distribution.  Also note the attributes <b>FirstBin</b> and <b>LastBin</b>, these should
+be used to determine which bins are considered valid, both are inclusive.
+
+<pre class="CDL">
+        float AS100_LPC(Time, sps1, Vector31) ;
+                AS100_LPC:_FillValue = -32767.f ;
+                AS100_LPC:units = "count" ;
+                AS100_LPC:long_name = "FSSP-100 Raw Accumulation (per cell) - DMT" ;
+                AS100_LPC:Category = "PMS Probe" ;
+                AS100_LPC:missing_value = -32767.f ;
+                AS100_LPC:SampledRate = 10 ;
+                AS100_LPC:DataQuality = "Preliminary" ;
+                AS100_LPC:SerialNumber = "FSSP122" ;
+                AS100_LPC:FirstBin = 3 ;
+                AS100_LPC:LastBin = 30 ;
+                AS100_LPC:CellSizes = 0.7f, 1.4f, 2.35f, 3.9f, 5.45f, 7.f, 8.55f, 10.1f, 11.65f, 13.2f, 14.75f, 16.3f, 17.85f, 19.4f, 20.95f, 22.5f, 24.05f, 25.6f, 27.15f, 28.7f, 30.25f, 31.8f, 33.35f, 34.9f, 36.45f, 38.f, 39.55f, 41.1f, 42.65f, 44.2f, 45.75f ;
+                AS100_LPC:CellSizeUnits = "micrometers" ;
+                AS100_LPC:DepthOfField = 2.3f ;
+                AS100_LPC:BeamDiameter = 0.2f ;
+                AS100_LPC:Density = 1.f ;
+                AS100_LPC:PLWfactor = 1.e-06f ;
+                AS100_LPC:DBZfactor = 1000000.f ;
+
+        float CS100_LPC(Time, sps1, Vector31) ;
+                CS100_LPC:_FillValue = -32767.f ;
+                CS100_LPC:units = "#/cm3" ;
+                CS100_LPC:long_name = "FSSP-100 Concentration (per cell) - DMT" ;
+                CS100_LPC:Category = "PMS Probe" ;
+                CS100_LPC:missing_value = -32767.f ;
+                CS100_LPC:DataQuality = "Preliminary" ;
+                CS100_LPC:Dependencies = "5 AS100_LPC TASX REJAT_LPC OVFLW_LPC FRNG_LPC" ;
+
+        float CONCF_LPC(Time) ;
+                CONCF_LPC:_FillValue = -32767.f ;
+                CONCF_LPC:units = "#/cm3" ;
+                CONCF_LPC:long_name = "FSSP-100 Concentration (all cells)" ;
+                CONCF_LPC:Category = "PMS Probe" ;
+                CONCF_LPC:missing_value = -32767.f ;
+                CONCF_LPC:DataQuality = "Preliminary" ;
+                CONCF_LPC:Dependencies = "1 CS100_LPC" ;
+</pre>
+<p>
+<table border=1>
+ <tr><th>bin#</th><th>0</th><th>1</th><th>2</th><th>3</th><th>....</th><th>29</th><th>30</th></tr>
+ <tr><td></td><td>n/a</td><td></td><td></td><td>FirstBin</td><td></td><td></td><td>LastBin</td></tr>
+</table>
+
 
 <!--------------------------------------------------------------------------- ABS -->
 <hr>
