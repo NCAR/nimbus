@@ -15,4 +15,5 @@ char *IsDirectory(char *);
 char *ReplaceStringWithChar(char *,char *,char);
 char *get_date_from_base(long);
 char *get_time_from_base(long);
+char * getAircraftName(int proj_num);
 }
