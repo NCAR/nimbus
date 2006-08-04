@@ -29,7 +29,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996
 
 #include "fbr.h"
 
-char	fileName[256], buffer[1024];
+char	fileName[512], buffer[1024];
 Widget	hdText, HDwindow;
 
 void	CreateHDwindow(Widget), CreateErrorBox(Widget),
@@ -44,6 +44,25 @@ int fd;
 
 
 /* -------------------------------------------------------------------- */
+static char *ac_names[] = {
+	"",
+	"C130_N130AR",
+	"KingAir_N312D",
+	"P3_NRL-P3",
+	"",
+	"",
+	"",
+	"Saberliner_N307D",
+	"Electra_N308D",
+	"Sailplane_N9929J"
+	};
+
+char * getAircraftName(int num)
+{
+  return ac_names[num/100];
+}
+
+/* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
   Widget	AppShell, Shell000;
@@ -52,11 +71,13 @@ int main(int argc, char *argv[])
   Cardinal	n;
   Atom		WM_DELETE_WINDOW;
 
+  int		pnum = atoi(argv[1]);
+
   if (argc < 2)
-    {
+  {
     printf("Usage: xhd proj_num | header_filename\n");
     return(1);
-    }
+  }
 
   n = 0;
   AppShell = XtAppInitialize(&context, APP_CLASS, NULL, 0, &argc, argv, fallback_resources, NULL, 0);
@@ -70,18 +91,18 @@ int main(int argc, char *argv[])
   WM_DELETE_WINDOW = XmInternAtom(XtDisplay(AppShell), "WM_DELETE_WINDOW", False);
   XmAddWMProtocolCallback(Shell000, WM_DELETE_WINDOW, Quit, NULL);
 
-  if (atoi(argv[1]) > 99)
-    {
-    char	*p = getenv("PROJ_DIR");
+  if (pnum > 99)
+  {
+    char * p = getenv("PROJ_DIR");
 
     if (p == NULL)
-      {
+    {
       fprintf(stderr, "xhd: environment variable PROJ_DIR undefined.\n");
       return(1);
-      }
-
-    sprintf(fileName, "%s/%d/header", p, atoi(argv[1]));
     }
+
+    sprintf(fileName, "%s/%d/%s/header", p, pnum, getAircraftName(pnum));
+  }
   else
     strcpy(fileName, argv[1]);
 
