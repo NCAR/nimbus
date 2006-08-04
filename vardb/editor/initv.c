@@ -10,15 +10,7 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-INPUT:		none
-
-OUTPUT:		none
-
-REFERENCES:	none
-
-REFERENCED BY:	setup.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
 -------------------------------------------------------------------------
 */
 
@@ -35,10 +27,13 @@ char	buffer[1024], FileName[1024], *catList[128], *ProjectDirectory,
 void ShowError(char msg[]);
 void WarnUser(char msg[], void (*okCB)(Widget, XtPointer, XtPointer), void (*cancelCB)(Widget, XtPointer, XtPointer));
 
+const char * getAircraftName(int num);
 
 /* -------------------------------------------------------------------- */
 void Initialize(int argc, char *argv[])
 {
+  int	pnum = atoi(argv[1]);
+
   ProjectDirectory = (char *)getenv("PROJ_DIR");
 
   if (argc < 2)
@@ -47,8 +42,8 @@ void Initialize(int argc, char *argv[])
     exit(1);
     }
 
-  if (atoi(argv[1]) > 100)
-    sprintf(FileName, "%s/%s/VarDB", ProjectDirectory, argv[1]);
+  if (pnum > 99)
+    sprintf(FileName, "%s/%d/%s/VarDB", ProjectDirectory, pnum, getAircraftName(pnum));
   else
     strcpy(FileName, argv[1]);
 
