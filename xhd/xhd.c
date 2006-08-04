@@ -4,18 +4,9 @@ OBJECT NAME:	xhd.c
 
 FULL NAME:	X Header Dump
 
-ENTRY POINTS:	main()
+DESCRIPTION:	X-Window utility to display ADS2 headers.
 
-
-STATIC FNS:	none
-
-DESCRIPTION:	
-
-REFERENCES:	
-
-REFERENCED BY:	
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1996
+COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2006
 -------------------------------------------------------------------------
 */
 
@@ -29,7 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996
 
 #include "fbr.h"
 
-char	fileName[512], buffer[1024];
+char	fileName[512], buffer[2048];
 Widget	hdText, HDwindow;
 
 void	CreateHDwindow(Widget), CreateErrorBox(Widget),
@@ -37,30 +28,8 @@ void	CreateHDwindow(Widget), CreateErrorBox(Widget),
 	Quit(Widget, XtPointer, XtPointer),
 	HeaderDump(Widget, XtPointer, XtPointer);
 
-int fd;
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 
-
-/* -------------------------------------------------------------------- */
-static char *ac_names[] = {
-	"",
-	"C130_N130AR",
-	"KingAir_N312D",
-	"P3_NRL-P3",
-	"",
-	"",
-	"",
-	"Saberliner_N307D",
-	"Electra_N308D",
-	"Sailplane_N9929J"
-	};
-
-char * getAircraftName(int num)
-{
-  return ac_names[num/100];
-}
+const char * getAircraftName(int num);
 
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
