@@ -47,6 +47,9 @@ public:
   bool HoneyWellCleanup() const		{ return _honeywellCleanup; }
   bool InertialShift() const		{ return _inertialShift; }
 
+  bool DespikeReporting() const		{ return _despikeReporting; }
+  bool LagReporting() const		{ return _lagReporting; }
+
   bool isADS2() const			{ return _adsVersion == ADS_2; }
   bool isADS3() const			{ return _adsVersion == ADS_3; }
 
@@ -74,6 +77,9 @@ public:
   void SetProcessingRate(processingRate pr) { _processingRate = pr; }
   void SetHRTRate(hrtRate rate) { _hrtRate = rate; }
   void SetInterpolationType(interpolationType it) { _interpType = it; }
+
+  void SetDespikeReporting(bool state)	{ _despikeReporting = state; }
+  void SetLagErrorReporting(bool state)	{ _lagReporting = state; }
 
   void SetADSVersion(ADSVersion nv) { _adsVersion = nv; }
 
@@ -117,6 +123,9 @@ private:
   bool _loadProductionSetup;
   bool _honeywellCleanup;
   bool _inertialShift;
+
+  bool _despikeReporting;
+  bool _lagReporting;
 
   aircraft _aircraft;
   ADSVersion _adsVersion;

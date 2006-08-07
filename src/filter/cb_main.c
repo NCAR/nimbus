@@ -24,6 +24,7 @@ STATIC FNS:	checkForProductionSetup()
 		setOutputFileName()
 		stopProcessing()
 		validateInputFile()
+		LogLagErrors()
 
 DESCRIPTION:	Contains callbacks for the nimbus GUI main window & setup
 		window.
@@ -75,7 +76,8 @@ static int	validateInputFile();
 
 static void	checkForProductionSetup(), displaySetupWindow(),
 		setOutputFileName(), readHeader(), stopProcessing(),
-		EngageSignals(), SetConfigGlobalAttributeVariables();
+		EngageSignals(), SetConfigGlobalAttributeVariables(),
+		LogLagErrors();
 
 
 void	InitAsyncModule(char fileName[]), RealTimeLoop(),
@@ -412,6 +414,8 @@ void stopProcessing()
 
   LogDespikeInfo();
   LogIRSerrors();
+  LogLagErrors();
+
 
   /* Log wall clock time.
    */
@@ -1158,6 +1162,22 @@ static void SetConfigGlobalAttributeVariables()
   else
   if (SearchTable(derived, "WI") != ERR)
     cfg.SetWindVertical("WI");
+}
+
+/* -------------------------------------------------------------------- */
+static void LogLagErrors()
+{
+  if (cfg.LagReporting() == false)
+    return;
+
+  for (size_t i = 0; i < raw.size(); ++i)
+  {
+    if (raw[i]->badLagCntr > 0)
+    {
+      sprintf(buffer, "%s: %d bad Lags.\n", raw[i]->name, raw[i]->badLagCntr);
+      LogMessage(buffer);
+    }
+  }
 }
 
 /* -------------------------------------------------------------------- */

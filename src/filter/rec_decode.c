@@ -5,12 +5,16 @@ OBJECT NAME:	rec_decode.c
 FULL NAME:	Decode ADS data Record
 
 ENTRY POINTS:	DecodeADSrecord()
+		decodeADS2analog()
+
+STATIC FNS:	blankOutThisValue()
+		setNIDASDynamicLags()
 
 DESCRIPTION:	Translates ADS data records into the internal format.
 		The internal format is all one data type for ease of
 		processing.
 
-NOTE:		If you chnage one, make sure the other does/doesn't need
+NOTE:		If you change one, make sure the other does/doesn't need
 		the same change.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
@@ -25,6 +29,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 extern ushort	*bits;
 
 static bool blankOutThisValue(RAWTBL * var, short thisTime[]);
+static void setNIDASDynamicLags(short lr[]);
 
 /* -------------------------------------------------------------------- */
 void DecodeADSrecord(
@@ -38,23 +43,12 @@ void DecodeADSrecord(
     memcpy((void *)nlr, (void *)lr, nSRfloats * sizeof(NR_TYPE));
 
     // Set dynamic lags.
-    float *rec_p = (float *)lr;
-    for (size_t i = 0; i < raw.size(); ++i)
-    {
-      raw[i]->DynamicLag = 0;  // reset.
-
-      if (raw[i]->LAGstart > 0)
-      {
-        float lag = rec_p[raw[i]->LAGstart];
-        if (!isnan(lag))
-          raw[i]->DynamicLag = (int)(lag / 1000.0);
-      }
-    }
-
+    if (cfg.TimeShifting())
+      setNIDASDynamicLags(lr);
     return;
   }
 
-  /* Extract block variables into new record
+  /* else ADS2.  Extract raw data into processed float/double.
    */
   for (size_t i = 0; i < raw.size(); ++i)
   {
@@ -65,6 +59,25 @@ void DecodeADSrecord(
       (*raw[i]->xlate)(raw[i], &lr[raw[i]->ADSstart], &nlr[raw[i]->SRstart]);
   }
 }	/* END DECODEADSRECORD */
+
+/* -------------------------------------------------------------------- */
+static void setNIDASDynamicLags(short lr[])
+{
+  float *rec_p = (float *)lr;
+  for (size_t i = 0; i < raw.size(); ++i)
+  {
+    raw[i]->DynamicLag = 0;  // reset.
+
+    if (raw[i]->LAGstart > 0)
+    {
+      float lag = rec_p[raw[i]->LAGstart];
+      if (!isnan(lag))
+        raw[i]->DynamicLag = (int)(lag / 1000.0);
+      else
+        raw[i]->badLagCntr++;
+    }
+  }
+}
 
 /* -------------------------------------------------------------------- */
 static bool blankOutThisValue(RAWTBL * var, short r[])
