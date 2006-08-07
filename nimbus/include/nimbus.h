@@ -92,6 +92,8 @@ public:
   char *DataQuality;	// Prelim, QC'd, Bad, etc
 
   std::vector<std::pair<int, int> > blank_out;
+
+  size_t badLagCntr;
 };
 
 

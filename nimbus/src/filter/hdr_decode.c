@@ -2285,6 +2285,8 @@ var_base::var_base(const char s[])
   Modulo = 0;
 
   DataQuality	= defaultQuality;
+
+  badLagCntr = 0;
 }
 
 RAWTBL::RAWTBL(const char s[]) : var_base(s)

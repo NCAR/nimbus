@@ -29,6 +29,9 @@ Config::Config()
   SetHRTRate(TwentyFive);
   SetInterpolationType(Linear);
 
+  SetDespikeReporting(true);
+  SetLagErrorReporting(false);
+
   SetADSVersion(ADS_2);
 }
 
