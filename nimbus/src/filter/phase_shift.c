@@ -12,21 +12,12 @@ STATIC FNS:	resample()		Does all except 1hz
 		resample1hz()		Optimized for 1hz variables
 
 DESCRIPTION:	Interpolate missing data (spikes) and phase shift data.
-		Also create HRT interpolated data.
-
-INPUT:		Logical Record, CircularBuffers, CircBuff index.
-
-OUTPUT:		phase shifted logical record (in place).
-
-REFERENCES:	GetBuffer(), Interpolate()
-
-REFERENCED BY:	LowRateLoop(), HighRateLoop()
+		Also create HRT interpolated data.  At some point this
+		should be renamed "resampler.c".
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 -------------------------------------------------------------------------
 */
-
-static bool _debug = false;
 
 #include "nimbus.h"
 #include "decode.h"
@@ -40,7 +31,7 @@ static NR_TYPE *recPtrs[32], *prev_rec, *this_rec, *next_rec;
 void LogThisRecordMsg(NR_TYPE *record, const char msg[]);
 
 static void
-  resample(var_base *vp, int lag, NR_TYPE *, NR_TYPE *),
+  resample(RAWTBL *vp, int lag, NR_TYPE *, NR_TYPE *),
   shift_vector(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out);
 
 /* -------------------------------------------------------------------- */
@@ -68,21 +59,21 @@ void PhaseShift(
 	NR_TYPE		*houtput)	/* Place to put shifted record	*/
 {
   NR_TYPE *srt_out;
-//  prev_prev_rec	= (NR_TYPE *)GetBuffer(LRCB, index-2);
+
   prev_rec	= (NR_TYPE *)GetBuffer(LRCB, index-1);
   this_rec	= (NR_TYPE *)GetBuffer(LRCB, index);
   next_rec	= (NR_TYPE *)GetBuffer(LRCB, index+1);
-//  next_next_rec	= (NR_TYPE *)GetBuffer(LRCB, index+2);
-//printf("%d %d %d\n", prev_rec, this_rec, next_rec);
-  {
+
+  // Copy current rec into srt output rec.
+  memcpy((char *)output, (char *)this_rec, sizeof(NR_TYPE) * nSRfloats);
+
+
+  {	// Get pointers into an array.
   int i;
   for (i = 0; i < NLRBUFFERS; ++i)
     recPtrs[i] = (NR_TYPE *)GetBuffer(LRCB, index-3+i);
   recPtrs[i] = 0;	// Terminate array.
   }
-
-  // Copy current rec into srt output rec.
-  memcpy((char *)output, (char *)this_rec, sizeof(NR_TYPE) * nSRfloats);
 
 
   for (size_t i = 0; i < raw.size(); ++i)
@@ -90,21 +81,6 @@ void PhaseShift(
     RAWTBL	*rp = raw[i];
     int		lag;
     bool	noMissingData = true;
-
-//if (strcmp(rp->name, "GGVNS") == 0) _debug = true;
-
-if (_debug)
-{
-  printf("%02d:%02d:%02d s_lag=%d d_lag=%d\n",
-	(int)this_rec[timeIndex[0]],
-	(int)this_rec[timeIndex[1]],
-	(int)this_rec[timeIndex[2]],
-	rp->StaticLag, rp->DynamicLag);
-
-  for (int i = 0; i < NLRBUFFERS; ++i)
-    printf(" %d", (int)recPtrs[i][rp->LAGstart]);
-  printf("\n");
-}
 
     for (size_t j = 0; j < rp->SampleRate; ++j)
       if (isnan(this_rec[rp->SRstart + j]))
@@ -137,15 +113,14 @@ if (_debug)
       else
         resample(rp, lag, srt_out, houtput);
     }
-_debug = false;
   }
 }	/* END PHASESHIFT */
 
 /* -------------------------------------------------------------------- */
 static void
-resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
+resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 {
-  size_t	nPoints, goodPoints = 0, T = 0;
+  size_t	nPoints, goodPoints = 0;
   size_t	gap_size = 1000 / vp->SampleRate;
 
   // GV IRS position & ground speed data are at 12.5Hz.
@@ -161,21 +136,31 @@ resample(var_base *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
   for (size_t ri = 0; recPtrs[ri] != 0; ++ri)
   {
     NR_TYPE *curPtr = &recPtrs[ri][vp->SRstart];
+    NR_TYPE dynLag = recPtrs[ri][vp->LAGstart] / 1000.0;
+    if (isnan(dynLag))
+    {
+      if (ri >= 2 && !isnan(recPtrs[ri-2][vp->LAGstart]))
+      {
+        recPtrs[ri][vp->LAGstart] = recPtrs[ri-2][vp->LAGstart];
+        dynLag = recPtrs[ri][vp->LAGstart] / 1000.0;
+      }
+      else
+        dynLag = 0;
+    }
 
-    for (size_t i = 0; i < vp->SampleRate; ++i, T += gap_size)
+    for (size_t i = 0; i < vp->SampleRate; ++i)
     {
       if (!isnan(curPtr[i]))
       {
-        x[goodPoints] = T;
+        x[goodPoints] = (ri * 1000) + (gap_size * i) + dynLag;
         y[goodPoints] = curPtr[i];
-if (_debug)
-  printf("%f %f\n", x[goodPoints], y[goodPoints]);
         ++goodPoints;
       }
     }
   }
 
-  startTime = 3000.0 - lag;
+//  startTime = 3000.0 - lag;
+  startTime = 3000.0 - vp->StaticLag;
 
   // Don't interp past the edge of the earth.
   if (x[goodPoints-1] < startTime || startTime < x[0])
