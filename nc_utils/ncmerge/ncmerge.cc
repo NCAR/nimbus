@@ -1,12 +1,8 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:	ncmerge.c
+OBJECT NAME:	ncmerge.cc
 
 FULL NAME:	Nimbus/netCDF merge program
-
-ENTRY POINTS:	main()
-
-STATIC FNS:		
 
 DESCRIPTION:	A merge may proceed IF:
 			- Conventions attributes are identical.
@@ -16,16 +12,15 @@ DESCRIPTION:	A merge may proceed IF:
 		vars that will get missing value if time intervals don't
 		match 100%.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-05
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-06
 -------------------------------------------------------------------------
 */
 
 #include <algorithm>
+#include <cctype>
 #include <cstdio>
 #include <cstring>
 #include <netcdf.h>
-
-#include "constants.h"
 
 #define NAMELEN		16
 #define MAX_IN_VARS	800
@@ -82,14 +77,14 @@ int main(int argc, char *argv[])
 
   /* Open files.
    */
-  if ((infd1 = ncopen(argv[argp++], NC_WRITE)) == ERR)
+  if ((infd1 = ncopen(argv[argp++], NC_WRITE)) == (-1))
     {
     fprintf(stderr, "Can't open primary file %s\n", argv[argp-1]);
     rc = 1;
     goto exit;
     }
 
-  if ((infd2 = ncopen(argv[argp++], NC_NOWRITE)) == ERR)
+  if ((infd2 = ncopen(argv[argp++], NC_NOWRITE)) == (-1))
     {
     fprintf(stderr, "Can't open secondary file %s\n", argv[argp-1]);
     rc = 1;
@@ -216,9 +211,9 @@ void CopyVariablesDefinitions()
 
     /* See if variable already exists in output file, if not then create it.
     */
-    if ((rc = ncvarid(infd1, name)) == ERR)
+    if ((rc = ncvarid(infd1, name)) == (-1))
       {
-      if ((rc = ncvardef(infd1, name, dataType, nDims, dimIDs)) == ERR)
+      if ((rc = ncvardef(infd1, name, dataType, nDims, dimIDs)) == (-1))
         {
         fprintf(stderr, "Error in creating variable %s, %s will not be in merged dataset.\n", name, name);
         continue;
@@ -284,4 +279,16 @@ void MoveData()
 
 }	/* END MOVEDATA */
 
-/* END NCMERGE.C */
+/* -------------------------------------------------------------------- */
+char *strupr(char s[])
+{
+  char  *p;
+
+  for (p = s; *p; ++p)
+    *p = toupper(*p);
+
+  return(s);
+
+}       /* END STRUPR */
+
+/* END NCMERGE.CC */
