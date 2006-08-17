@@ -6,20 +6,18 @@ FULL NAME:	Corrected IRS/GPS
 
 ENTRY POINTS:	slatc(), slonc(), svnsc(), svewc()
 
-STATIC FNS:	matrix_inversion()
-
 DESCRIPTION:	Create a corrected set of Reference variables by combining
-		the IRS and GPS data.
+		the IRS and GPS data.  Low Pass filter the GPS and High
+		Pass filter the INS, to remove the Schuler oscillation.
 
 INPUT:		LAT LON GLAT GLON VNS VEW GVNS GVEW ROLL GSTAT GMODE
 
 OUTPUT:		LATC LONC VNSC VEWC
 
-REFERENCES:	none
+REFERENCE:	Electra Measurements of Wind and Position in HaRP.
+		William Cooper.
 
-REFERENCED BY:	compute.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
 -------------------------------------------------------------------------
 */
 
@@ -474,7 +472,7 @@ static NR_TYPE filter(double x, double zf[])
 }	/* END FILTER */
 
 /* -------------------------------------------------------------------- */
-int ludcmp(double a[NCF][NCF], int N, int indx[], double *det)
+static int ludcmp(double a[NCF][NCF], int N, int indx[], double *det)
 {
   int		i, imax = 0, j, k;
   double	big, dum, sum, temp;
@@ -561,7 +559,7 @@ int ludcmp(double a[NCF][NCF], int N, int indx[], double *det)
 }	/* END LUDCMP */
 
 /* -------------------------------------------------------------------- */
-void lubksub(double a[NCF][NCF], int N, int indx[], double b[])
+static void lubksub(double a[NCF][NCF], int N, int indx[], double b[])
 {
   int		i, ii = -1, ip, j;
   double	sum;
@@ -591,7 +589,6 @@ void lubksub(double a[NCF][NCF], int N, int indx[], double b[])
 
     b[i] = sum / a[i][i];
     }
-
 }	/* END LUBKSUB */
 
 /* -------------------------------------------------------------------- */
@@ -619,9 +616,7 @@ static double invert(double array[NCF][NCF])
     }
 
   memcpy(array, y, sizeof(y));
-
   return(det);
-
 }
 
 /* END GPSC.C */
