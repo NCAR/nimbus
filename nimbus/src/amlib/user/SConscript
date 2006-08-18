@@ -8,6 +8,7 @@ ACEASIA.c
 DYCOMS.c
 RICO.c
 
+atc.c
 bits.c
 chemcal.c
 circles.c
