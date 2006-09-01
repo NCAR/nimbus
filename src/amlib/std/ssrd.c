@@ -57,7 +57,8 @@ void sssrd(DERTBL *varp)
         break;
 
       case Config::HIAPER:
-        ssrd = ((bdifr / qcxc) -0.0013) / 0.075;
+//        ssrd = ((bdifr / qcxc) -0.0013) / 0.075;
+        ssrd = ((bdifr / qcxc) -0.0025) / 0.04727;
         break;
 
       case Config::SABRELINER:
