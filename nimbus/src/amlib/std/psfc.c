@@ -24,8 +24,8 @@ void spsfc(DERTBL *varp)
 
   psfc = psf + (*pcorPSF)(qcx, psf);
 
-  if (qcx < 10.0)
-    psfc = psf;
+//  if (qcx < 10.0)
+//    psfc = psf;
 
   if (psfc < 50.0)
     psfc = 50.0;

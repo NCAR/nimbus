@@ -60,7 +60,7 @@ void initLATC(DERTBL *varp)
    */
   if ((tmp = GetDefaultsValue("GPS_ROLL_MAX", varp->name)) == NULL)
   {
-    sprintf(buffer, "Value set to %f in AMLIB function slatc.\n", ROLL_MAX);
+    sprintf(buffer, "GPS_ROLL_MAX set to %f in AMLIB function slatc.\n", ROLL_MAX);
     LogMessage(buffer);
   }
   else
@@ -68,7 +68,7 @@ void initLATC(DERTBL *varp)
 
   if ((tmp = GetDefaultsValue("GPS_TAUP", varp->name)) == NULL)
   {
-    sprintf(buffer, "Value set to %f in AMLIB function slatc.\n", TAUP);
+    sprintf(buffer, "GPS_TAUP set to %f in AMLIB function slatc.\n", TAUP);
     LogMessage(buffer);
   }
   else
@@ -76,7 +76,7 @@ void initLATC(DERTBL *varp)
 
   if ((tmp = GetDefaultsValue("GPS_TAU", varp->name)) == NULL)
   {
-    sprintf(buffer, "Value set to %f in AMLIB function slatc.\n", TAU);
+    sprintf(buffer, "GPS_TAU set to %f in AMLIB function slatc.\n", TAU);
     LogMessage(buffer);
   }
   else
@@ -84,7 +84,7 @@ void initLATC(DERTBL *varp)
 
   if ((tmp = GetDefaultsValue("GPS_UPFCTR", varp->name)) == NULL)
   {
-    sprintf(buffer, "Value set to %f in AMLIB function slatc.\n", UPFCTR);
+    sprintf(buffer, "GPS_UPFCTR set to %f in AMLIB function slatc.\n", UPFCTR);
     LogMessage(buffer);
   }
   else
@@ -92,7 +92,7 @@ void initLATC(DERTBL *varp)
 
   if ((tmp = GetDefaultsValue("GPS_FCTRF", varp->name)) == NULL)
   {
-    sprintf(buffer, "Value set to %f in AMLIB function slatc.\n", FCTRF);
+    sprintf(buffer, "GPS_FCTRF set to %f in AMLIB function slatc.\n", FCTRF);
     LogMessage(buffer);
   }
   else
