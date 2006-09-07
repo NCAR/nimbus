@@ -366,9 +366,10 @@ printf("hdr_decode.c: <<< WARNING >>> ProjectNumber is hardcoded = %s\n", cfg.Pr
 //printf("DecodeHeader3: adding %s, converter = %d, rate = %d\n",
 //  var->getName().c_str(), (int)var->getConverter(), (int)ceil(var->getSampleRate()));
 
+    RAWTBL *rp;
     if (var->getConverter() == 0)
     {
-      RAWTBL *rp = add_name_to_RAWTBL(var->getName().c_str());
+      rp = add_name_to_RAWTBL(var->getName().c_str());
       rp->LAGstart = var->getLagOffset();
       rp->Units = var->getUnits();
       rp->LongName = var->getLongName();
@@ -382,11 +383,25 @@ printf("hdr_decode.c: <<< WARNING >>> ProjectNumber is hardcoded = %s\n", cfg.Pr
     }
     else
     {
-      RAWTBL *sp = initSDI_ADS3(var);
+      rp = initSDI_ADS3(var);
       // Default real-time netCDF to SampleRate.
       if (cfg.ProcessingMode() == Config::RealTime)
-        sp->OutputRate = sp->SampleRate;
+        rp->OutputRate = rp->SampleRate;
     }
+
+    switch (var->getType())
+    {
+      case  nidas::core::Variable::CONTINUOUS:
+        strcpy(rp->type, "A");
+        break;
+      case  nidas::core::Variable::COUNTER:
+printf("!!!!!!!! %s - COUNTER !!!!!!!!\n", rp->name);
+        strcpy(rp->type, "C");
+        break;
+      default:
+        LogMessage("hdr_decode:initSDI_ADS3: Unsupported type from Variable->getType()\n");
+    }
+    rp->Average = (void (*) (...))(rp->type[0] == 'C' ? Sum : Average);
   }
 
   add_derived_names("GUST");
@@ -409,20 +424,6 @@ static RAWTBL* initSDI_ADS3(nidas::dynld::raf::SyncRecordVariable* var)
   cp->SampleRate   = rate;
 
   cp->LAGstart = var->getLagOffset();
-
-  switch (var->getType())
-  {
-    case  nidas::core::Variable::CONTINUOUS:
-      strcpy(cp->type, "A");
-      break;
-    case  nidas::core::Variable::COUNTER:
-      strcpy(cp->type, "C");
-      break;
-    default:
-      LogMessage("hdr_decode:initSDI_ADS3: Unsupported type from Variable->getType()\n");
-  }
-
-  cp->Average = (void (*) (...))(cp->type[0] == 'C' ? Sum : Average);
 
   nidas::core::VariableConverter* converter =
 		const_cast<nidas::core::VariableConverter*>(var->getConverter());
