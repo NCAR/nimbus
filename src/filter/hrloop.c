@@ -63,10 +63,10 @@ int HighRateLoop(long starttime, long endtime)
 
   /* Account for Circular Buffer slop	*/
   if (starttime != BEG_OF_TAPE)
-    starttime -= 6 + 10;
+    starttime -= ((NPSBUFFERS+NLRBUFFERS)/2) + 2;
 
   if (endtime != END_OF_TAPE)
-    endtime += NPSBUFFERS-1;
+    endtime += NPSBUFFERS;
 
   nBytes = nSRfloats * sizeof(NR_TYPE);
   if ((LRCB = CreateCircularBuffer(NLRBUFFERS, nBytes)) == NULL ||

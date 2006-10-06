@@ -50,7 +50,7 @@ int LowRateLoop(long starttime, long endtime)
 
   /* Account for Circular Buffer slop	*/
   if (starttime != BEG_OF_TAPE)
-    starttime -= NLRBUFFERS+1;
+    starttime -= NLRBUFFERS/2;
 
   if (endtime != END_OF_TAPE)
     endtime += -(LRINDEX+1);
