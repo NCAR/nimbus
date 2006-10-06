@@ -292,7 +292,8 @@ char *ExtractHeaderIntoFile(const char fileName[])
 
   if ((infd = open(adsFileName, O_RDONLY)) < 0)
     {
-    fprintf(stderr, "adsIO: Failure opening input file %s.\n", adsFileName);
+    sprintf(buffer, "adsIO: Failure opening input file %s.\n", adsFileName);
+    perror(buffer);
     exit(1);
     }
 
@@ -335,7 +336,8 @@ char *ExtractHeaderIntoFile(const char fileName[])
 
     if ((infd = open(adsFileName, O_RDONLY)) < 0)
       {
-      fprintf(stderr, "Failure opening input file %s.\n", adsFileName);
+      sprintf(buffer, "Failure opening input file %s.\n", adsFileName);
+      perror(buffer);
       exit(1);
       }
 
