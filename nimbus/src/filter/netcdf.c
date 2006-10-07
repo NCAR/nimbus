@@ -99,7 +99,10 @@ std::map<int, int> _vectorDimIDs;
 /* -------------------------------------------------------------------- */
 void SetBaseTime(const void *record)
 {
+  time_t BaseTime;
+
   StartFlight.tm_isdst	= -1;
+
   if (cfg.isADS2())
   {
     const Hdr_blk *hdr = (Hdr_blk *)record;
@@ -115,18 +118,22 @@ void SetBaseTime(const void *record)
     StartFlight.tm_sec	= (int)r[timeIndex[2]];
   }
 
+  BaseTime = timegm(&StartFlight);
+
   /* Account for circular buffer spin up in [lr|hr]loop.c
    */
   if (cfg.ProcessingMode() != Config::RealTime)
     if (cfg.ProcessingRate() == Config::HighRate)
-      StartFlight.tm_sec += 14;
+      BaseTime += 15;
     else
-      StartFlight.tm_sec += 2;
+      BaseTime += 3;
+
+  StartFlight = *(gmtime(&BaseTime));
 
   if (cfg.isADS3())	// We don't support BaseTime anymore.
     return;
 
-  time_t BaseTime = timegm(&StartFlight);
+  BaseTime = timegm(&StartFlight);
   ncvarput1(fd, baseTimeID, NULL, (void *)&BaseTime);
 
   if (BaseTime <= 0)
