@@ -719,6 +719,7 @@ static int determineInputFileVersion()
   {
     char msg[128];
     sprintf(msg, "Failed to open input file [%s], errno = %d.\n", ADSfileName, errno);
+    perror(msg);
     HandleError(msg);
     return ERR;
   }
