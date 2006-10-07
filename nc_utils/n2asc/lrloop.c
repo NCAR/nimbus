@@ -221,7 +221,8 @@ static void PrintVariables()
         fprintf(OutputFile, "%02d:%02d:%02d",
               currentTime->tm_hour, currentTime->tm_min, currentTime->tm_sec);
 
-      if (prevVal != -1 && !(prevVal == 86399 && val == 0) && prevVal+1 != val)
+      if (	prevVal != -1 && msec == 0 &&
+		!(prevVal == 86399 && val == 0) && prevVal+1 != val)
         printf("Gap - %02d:%02d:%02d\n",
 		currentTime->tm_hour, currentTime->tm_min,currentTime->tm_sec);
       prevVal = val;
