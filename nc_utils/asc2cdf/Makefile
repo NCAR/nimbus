@@ -8,12 +8,10 @@ INCLUDES=	-I$(JLOCAL)/include
 CFLAGS=		-Wall -g ${INCLUDES} -DVARDB
 
 # Solaris
-HOST=	mead
 LIBS=		-L/jnet/solaris/lib -lVarDB -lnetcdf
 ANONFTP=	/jnet/ftp/pub/src/bin.Solaris2.9
 
 # Linux
-HOST=	syrah
 LIBS=	-L${JLOCAL}/lib -lVarDB -lraf++ -lraf -lnetcdf 
 ANONFTP=/net/ftp/pub/archive/RAF-src/bin.RedHat9.0
 WWWDOC=	/net/www/raf/Software
@@ -36,8 +34,6 @@ install: ${PROG}
 	cp ${PROG}.man ${MANDIR}/${PROG}.1
 
 publish:
-	scp ${PROG} ${HOST}:${BINDIR}
-	scp ${PROG}.man ${HOST}:${MANDIR}/${PROG}.1
 	cp ${PROG} $(ANONFTP)
 	cp ${PROG}.html ${WWWDOC}
 	cp ${PROG}.man ${ANONFTP}

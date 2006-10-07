@@ -13,7 +13,6 @@ DEFINES = -DSVR4
 LIBS    = -R /usr/dt/lib -lXm -lXt -lX11 -lnetcdf
 LIB_DIRS= -L${JLOCAL}/lib
 ANONFTP = /net/ftp/pub/archive/RAF-src/bin.Solaris2.9
-IHOST	= mead
 
 # Linux
 #
@@ -22,7 +21,6 @@ DEFINES =
 LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib
 LIBS    = -lXm -lXp -lXt -lXext -lX11 -lnetcdf
 ANONFTP = /net/ftp/pub/archive/RAF-src/bin.RedHat9.0
-IHOST	= syrah
 
 CFLAGS=		-Wall -g -O2 ${INCLUDES} ${DEFINES}
 
@@ -52,8 +50,6 @@ install: ${PROG}
 	cp ${PROG}.html ${WWWDIR}
 
 publish: $(PROG)
-	scp ${PROG} ${IHOST}:${BINDIR}
-	scp ${PROG}.man ${IHOST}:${MANDIR}/${PROG}.1
 	cp ${PROG} $(ANONFTP)
 	cp ${PROG}.man ${ANONFTP}
 

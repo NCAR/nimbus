@@ -16,7 +16,6 @@ DEFINES	= -DPNG
 INCLUDES= -I${INC} -I/usr/X11R6/include -I${RAFINC}
 LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib
 LIBS   = -lraf++ -lXm -lXt -lXext -lX11 -lpng -lz
-IHOST	= syrah
 ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.RedHat9.0
 
 #       Mac OS X
@@ -34,7 +33,6 @@ ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.RedHat9.0
 #INCLUDES= -I${INC} -I${RAFINC} -I/usr/dt/include
 #LIB_DIRS= -L${JLOCAL}/lib
 #LIBS    = -lraf++ -Wl,-Bstatic -lpng -lz -Wl,-Bdynamic -R /usr/dt/lib -lXm -lXt -lX11
-#IHOST	= mead
 #ANONFTP	= /net/ftp/pub/src/bin.Solaris2.9
  
 
@@ -79,7 +77,6 @@ install: ${PROG}
 	cp ${PROG} ${BIN}
 
 publish:
-	scp ${PROG} ${IHOST}:${BIN}
 	cp ${PROG} ${ANONFTP}
 	cp ${PROG}.html ${WWW}
 
