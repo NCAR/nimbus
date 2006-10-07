@@ -50,7 +50,14 @@ int LowRateLoop(long starttime, long endtime)
 
   /* Account for Circular Buffer slop	*/
   if (starttime != BEG_OF_TAPE)
+  {
     starttime -= NLRBUFFERS/2;
+
+    // Hack until we build sync_record into nimbus,  since we can't rewind() a
+    // socket.
+    if (cfg.isADS3())
+      starttime -= 11;
+  }
 
   if (endtime != END_OF_TAPE)
     endtime += -(LRINDEX+1);
