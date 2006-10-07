@@ -292,7 +292,7 @@ char *ExtractHeaderIntoFile(const char fileName[])
 
   if ((infd = open(adsFileName, O_RDONLY)) < 0)
     {
-    sprintf(buffer, "adsIO: Failure opening input file %s.\n", adsFileName);
+    sprintf(buffer, "adsIO: Failure opening ADS2 input file %s.\n", adsFileName);
     perror(buffer);
     exit(1);
     }
@@ -336,7 +336,7 @@ char *ExtractHeaderIntoFile(const char fileName[])
 
     if ((infd = open(adsFileName, O_RDONLY)) < 0)
       {
-      sprintf(buffer, "Failure opening input file %s.\n", adsFileName);
+      sprintf(buffer, "adsIO: Failure opening ADS2 input file %s.\n", adsFileName);
       perror(buffer);
       exit(1);
       }
@@ -423,7 +423,7 @@ static int GetNextADSfile()
     return(false);
     }
 
-  fprintf(stderr, "Switching ADS file to %s.\n", adsFileName);
+  fprintf(stderr, "Switching ADS2 file to %s.\n", adsFileName);
   GetNext2Dfile();
   return(true);
 
@@ -721,7 +721,7 @@ static void check_rico_half_buff(P2d_rec *buff, size_t beg, size_t end)
         stuck_bin = j;
 
     fprintf(stderr,
-	"DataFile.cc: %02d:%02d:%02d.%d - Performing stuck bit correction, bit %d, ",
+	"adsIO: check_rico_half_buff: %02d:%02d:%02d.%d - Performing stuck bit correction, bit %d, ",
 	buff->hour, buff->minute, buff->second, buff->msec, stuck_bin);
 
     if (beg == 0)
@@ -731,7 +731,7 @@ static void check_rico_half_buff(P2d_rec *buff, size_t beg, size_t end)
 
     if (stuck_bin == -1)
     {
-      fprintf(stderr, "DataFile.cc:  Impossible.\n");
+      fprintf(stderr, "adsIO.c:  Impossible.\n");
       exit(1);
     }
 

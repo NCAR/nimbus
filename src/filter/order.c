@@ -72,6 +72,12 @@ void GenerateComputeOrder()
        */
       int index = SearchTable(ComputeOrder, i+1, derived.size(), ComputeOrder[i]->depend[j]);
 
+      if (index == -1)
+      {
+        fprintf(stderr, "order.c: There appears to be a dependency on a non-existant variable, %s, fix DependTable, fatal.\n", ComputeOrder[i]->depend[j]);
+        exit(1);
+      }
+
       DERTBL *ihold = ComputeOrder[i];
       ComputeOrder[i] = ComputeOrder[index];
       ComputeOrder[index] = ihold;

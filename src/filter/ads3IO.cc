@@ -4,20 +4,18 @@ OBJECT NAME:	ads3IO.cc
 
 FULL NAME:	ADS3 Record IO routines
 
-ENTRY POINTS:	ExtractHeaderIntoFile(char *ADSfileName)
-		FindFirstLogicalRecord(char *record, long starttime)
-		FindNextLogicalRecord(char *record, long endtime)
-		FindNextDataRecord(char *record)
+ENTRY POINTS:	FindFirstLogicalADS3(char *record, long starttime)
+		FindNextLogicalADS3(char *record, long endtime)
+		GetADSFileList(char *adsFileName)
 
-DESCRIPTION:	These routines locate data records that start with the
-		ID = 0x8681.  (i.e. skips all PMS2D records).
+DESCRIPTION:	
 
 INPUT:		Pointer to where to place the record
 		Time of first record desired / Time last record desired
 
 REFERENCED BY:	lrloop.c, hrloop.c
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2005
+COPYRIGHT:	University Corporation for Atmospheric Research, 2005-06
 -------------------------------------------------------------------------
 */
 
@@ -135,7 +133,8 @@ std::set<std::string> GetADSFileList(const char *adsFileName)
 
   if ((dir = opendir(directory)) == 0)
   {
-    fprintf(stderr, "Failed to open directory %s\n", tmp_dir);
+    sprintf(buffer, "Failed to open directory %s\n", directory);
+    perror(buffer);
     return fileList;
   }
 
