@@ -67,15 +67,6 @@ ${PROG}: ${OBJS} classDir
 classDir:
 	cd ${COD}; make "CXXFLAGS=${CXXFLAGS}"
 
-release:
-	(cd ..; tar cFFf - . | (cd ${RELEASE}; tar xfBp -))
-	sed s/-g/-O/g ../class/Makefile > ${RELEASE}/class/Makefile
-	sed s/-g/-O/g Makefile > ${RELEASE}/src/Makefile
-	(cd ..; tar cFFf - . | (cd /home/linux/ncpp; tar xfBp -))
-	sed s/-g/-O/g ../class/Makefile > /home/linux/ncpp/class/Makefile
-	sed s/-g/-O/g Makefile > /home/linux/ncpp/src/Makefile
-	rm -f ${RELEASE}/LOCK.make
-
 install: ${PROG}
 	test -d $(BIN) || mkdir $(BIN)
 	cp ${PROG} $(BIN)

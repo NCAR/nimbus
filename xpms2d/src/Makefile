@@ -63,15 +63,6 @@ ${PROG}: ${OBJS} classDir
 classDir:
 	cd ${O2D}; make "CXXFLAGS=${CXXFLAGS}"
 
-release:
-	(cd ..; tar cFFf - . | (cd ${RELEASE}; tar xfBp -))
-	sed s/-g/-O2/g ../class/Makefile > ${RELEASE}/class/Makefile
-	sed s/-g/-O2/g Makefile > ${RELEASE}/src/Makefile
-	(cd ..; tar cFFf - . | (cd /home/linux/xpms2d; tar xfBp -))
-	sed s/-g/-O/g ../class/Makefile > /home/linux/xpms2d/class/Makefile
-	sed s/-g/-O/g Makefile > /home/linux/xpms2d/src/Makefile
-	rm -f ${RELEASE}/LOCK.make
-
 install: ${PROG}
 	test -d ${BIN} || mkdir ${BIN}
 	cp ${PROG} ${BIN}
