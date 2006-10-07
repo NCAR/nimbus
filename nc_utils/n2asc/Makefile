@@ -44,14 +44,15 @@ ${PROG}: ${OBJS}
 	${CC} ${CFLAGS} ${OBJS} ${LIB_DIRS} ${LIBS} -o $@
 
 install: ${PROG}
+	test -d $(BINDIR) || mkdir $(BINDIR)
 	cp ${PROG} ${BINDIR}
 	test -d $(MANDIR) || mkdir $(MANDIR)
 	cp ${PROG}.man ${MANDIR}/${PROG}.1
-	cp ${PROG}.html ${WWWDIR}
 
 publish: $(PROG)
 	cp ${PROG} $(ANONFTP)
 	cp ${PROG}.man ${ANONFTP}
+	cp ${PROG}.html ${WWWDIR}
 
 clean:
 	rm -f ${OBJS} ${PROG}

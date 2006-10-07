@@ -31,6 +31,7 @@ ${PROG}: ${OBJS}
 install: ${PROG}
 	test -d $(BINDIR) || mkdir $(BINDIR)
 	cp ${PROG} ${BINDIR}
+	test -d $(MANDIR) || mkdir $(MANDIR)
 	cp ${PROG}.man ${MANDIR}/${PROG}.1
 
 publish:
