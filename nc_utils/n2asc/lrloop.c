@@ -226,9 +226,6 @@ static void PrintVariables()
         printf("Gap - %02d:%02d:%02d\n",
 		currentTime->tm_hour, currentTime->tm_min,currentTime->tm_sec);
       prevVal = val;
-
-      if (highestRate > 1)
-        fprintf(OutputFile, ".%03d", msec);
     }
     else
     if (XaxisType == UTS)
@@ -247,6 +244,8 @@ static void PrintVariables()
     else
       fprintf(OutputFile, "%ld", CurrentInputRecordNumber);
 
+    if (highestRate > 1)
+      fprintf(OutputFile, ".%03d", msec);
 
     for (i = 0; i < outputList.size(); ++i)
     {
