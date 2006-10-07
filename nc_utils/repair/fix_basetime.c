@@ -1,38 +1,40 @@
-/* gcc -I/home/local/include ncfixhdr.c -o ncfixhdr -lnetcdf
+/* gcc -I/jnet/local/include fix_basetime.c -o fix_basetime -L/jnet/local/lib -lnetcdf
  */
 
 #include <netcdf.h>
 #include <time.h>
 
-main(argc, argv)
-int	argc;
-char	*argv[];
+int main(int argc, char *argv[])
 {
-	int		fd, id, BaseTime;
-	char		buffer[128];
-	struct tm	StartFlight;
+  int		fd, id;
+  time_t	BaseTime;
+  char		buffer[128];
+  struct tm	StartFlight;
 
-	fd = ncopen(argv[1], NC_WRITE);
+  putenv("TZ=UTC");     // Perform all time calculations at UTC.
 
-	ncattget(fd, NC_GLOBAL, "FlightDate", (void *)buffer);
-	sscanf(buffer, "%d/%d/%d",	&StartFlight.tm_mon,
-					&StartFlight.tm_mday,
-					&StartFlight.tm_year);
+  fd = ncopen(argv[1], NC_WRITE);
 
-	ncattget(fd, NC_GLOBAL, "TimeInterval", (void *)buffer);
+  ncattget(fd, NC_GLOBAL, "FlightDate", (void *)buffer);
+  sscanf(buffer, "%d/%d/%d",	&StartFlight.tm_mon,
+				&StartFlight.tm_mday,
+				&StartFlight.tm_year);
 
-	sscanf(buffer, "%02d:%02d:%02d",&StartFlight.tm_hour,
-					&StartFlight.tm_min,
-					&StartFlight.tm_sec);
+  ncattget(fd, NC_GLOBAL, "TimeInterval", (void *)buffer);
 
-	StartFlight.tm_mon--;
-	StartFlight.tm_year -= 1900;
-	BaseTime = timegm(&StartFlight);
+  sscanf(buffer, "%02d:%02d:%02d",&StartFlight.tm_hour,
+				&StartFlight.tm_min,
+				&StartFlight.tm_sec);
 
-	printf ("New date/time is %s", asctime(gmtime(&BaseTime)));
+  StartFlight.tm_mon--;
+  StartFlight.tm_year -= 1900;
+  BaseTime = timegm(&StartFlight);
 
-	ncvarput1(fd, 0, 0, (void *)&BaseTime);
+  printf ("New date/time is %s", asctime(gmtime(&BaseTime)));
 
-	ncclose(fd);
+  ncvarput1(fd, 0, 0, (void *)&BaseTime);
 
+  ncclose(fd);
+
+  return 0;
 }

@@ -3,7 +3,7 @@
 
 #include <netcdf.h>
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   int	fd, id, rid, i, rDims[5];
   long  zero = 0, nRecs;
@@ -26,4 +26,5 @@ main(int argc, char *argv[])
 
   ncclose(fd);
 
+  return 0;
 }
