@@ -85,7 +85,7 @@ void CloseLogFile()
   sprintf(tmp, "_%s.%s",
           cfg.ProcessingRate() == Config::HighRate ? "HRT" : "LRT",
           cfg.FlightNumber().c_str());
-  strcat(p, tmp);
+  strcpy(p, tmp);
 
   if (rename(logFileName, buffer) == ERR)
   {
