@@ -10,15 +10,7 @@ STATIC FNS:
 
 DESCRIPTION:	Translate ASCII file to Nimbus Low Rate netCDF file
 
-INPUT:		ASCII file.
-
-OUTPUT:		Nimbus netCDF file.
-
-REFERENCES:		
-
-REFERENCED BY:	User
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1996-7
+COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2006
 -------------------------------------------------------------------------
 */
 
@@ -64,6 +56,8 @@ int main(int argc, char *argv[])
   int	startHour, startMinute, startSecond;
   char	*p;
   float	dataValue;
+
+  putenv("TZ=UTC");	// All time calcs in UTC.
 
   i = ProcessArgv(argc, argv);
 
