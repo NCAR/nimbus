@@ -216,7 +216,7 @@ void CreateNetCDF(const char fileName[])
   putGlobalAttribute("FlightNumber", cfg.FlightNumber());
 
   if (cfg.ProcessingMode() == Config::RealTime)
-    sprintf(buffer, "%02d/%02d/%04d", StartFlight.tm_mon, StartFlight.tm_mday, StartFlight.tm_year);
+    sprintf(buffer, "%02d/%02d/%04d", StartFlight.tm_mon, StartFlight.tm_mday, StartFlight.tm_year+1900);
   else
     strcpy(buffer, cfg.FlightDate().c_str());
 
