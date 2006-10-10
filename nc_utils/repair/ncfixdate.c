@@ -3,32 +3,44 @@
 
 #include <netcdf.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 int main(int argc, char *argv[])
 {
-  int		fd, id;
+  int		fd, id, edge[3];
   time_t	BaseTime;
   char		buffer[128];
   struct tm	StartFlight;
 
   putenv("TZ=UTC");     // Perform all time calculations at UTC.
 
-  printf("Enter new date [09/02/1994] : ");
+  if (nc_open(argv[1], NC_WRITE, &fd) != NC_NOERR)
+  {
+    fprintf(stderr, "Can't open [%s]\n", argv[1]);
+    exit(1);
+  }
+
+  nc_get_att_text(fd, NC_GLOBAL, "FlightDate", (void *)buffer);
+  printf("Current FlightDate is [%s]\n", buffer);
+
+  printf("Enter new date [e.g. 09/02/1994] : ");
   fgets(buffer, 128, stdin);
+  buffer[strlen(buffer)-1] = '\0';
 
-  fd = ncopen(argv[1], NC_WRITE);
-  ncredef(fd);
-  ncattput(fd, NC_GLOBAL, "FlightDate", NC_CHAR, strlen(buffer)+1,
-							(void *)buffer);
 
-  ncendef(fd);
+  nc_redef(fd);
+  nc_put_att_text(fd, NC_GLOBAL, "FlightDate", strlen(buffer)+1,
+						(void *)buffer);
+
+  nc_enddef(fd);
 
   sscanf(buffer, "%d/%d/%d",	&StartFlight.tm_mon,
 				&StartFlight.tm_mday,
 				&StartFlight.tm_year);
 
-  ncattget(fd, NC_GLOBAL, "TimeInterval", (void *)buffer);
+  nc_get_att_text(fd, NC_GLOBAL, "TimeInterval", (void *)buffer);
 
   sscanf(buffer, "%02d:%02d:%02d",&StartFlight.tm_hour,
 				&StartFlight.tm_min,
@@ -40,9 +52,11 @@ int main(int argc, char *argv[])
 
   printf ("New date/time is %s", asctime(gmtime(&BaseTime)));
 
-  ncvarput1(fd, 0, 0, (void *)&BaseTime);
+  edge[0] = edge[1] = edge[2] = 0;
+  if (nc_inq_varid(fd, "base_time", &id) == NC_NOERR)
+    nc_put_var1_int(fd, id, edge, (void *)&BaseTime);
 
-  ncclose(fd);
+  nc_close(fd);
 
   return 0;
 }
