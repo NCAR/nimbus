@@ -9,6 +9,7 @@ DYCOMS.c
 RICO.c
 
 atc.c
+ttc.c
 bits.c
 chemcal.c
 circles.c

@@ -1,15 +1,15 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:	atc.c
+OBJECT NAME:	ttc.c
 
-FULL NAME:	Corrected Ambient Temperature
+FULL NAME:	Corrected Total Temperature
 
 ENTRY POINTS:	satc()
 
 DESCRIPTION:	Create a corrected set of Reference variables by combining
-		the IRS and GPS data.
+		the ADC TT and Rosemount TT data.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
 -------------------------------------------------------------------------
 */
 
@@ -37,13 +37,13 @@ static NR_TYPE	filter(double, double *);
 static bool returnMissingValue = false;
 
 /* -------------------------------------------------------------------- */
-void initATC(DERTBL *varp)
+void initTTC(DERTBL *varp)
 {
   NR_TYPE  *tmp;
 
-  if ((tmp = GetDefaultsValue("AT_TAU", varp->name)) == NULL)
+  if ((tmp = GetDefaultsValue("TT_TAU", varp->name)) == NULL)
   {
-    sprintf(buffer, "AT_TAU set to %f in AMLIB function satc.\n", TAU);
+    sprintf(buffer, "TT_TAU set to %f in AMLIB function satc.\n", TAU);
     LogMessage(buffer);
   }
   else
@@ -67,7 +67,7 @@ void initATC(DERTBL *varp)
 }	/* END INITLATC */
 
 /* -------------------------------------------------------------------- */
-void satc(DERTBL *varp)
+void sttc(DERTBL *varp)
 {
   NR_TYPE	vns, gvns;
   NR_TYPE	omegat, sinwt, coswt, gvnsf, gvewf, vnsf, vewf;
