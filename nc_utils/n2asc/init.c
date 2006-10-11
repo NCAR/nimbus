@@ -210,7 +210,7 @@ void ReadFormatFile()
       strcpy(Variable[indx]->Format, " ");
       strcat(Variable[indx]->Format, format);
     }
-    while (strncmp((char *)Variable[++indx], target, strlen(target)) == 0);
+    while (strncmp(Variable[++indx]->name.c_str(), target, strlen(target)) == 0);
   }
 
   fclose(fp);
