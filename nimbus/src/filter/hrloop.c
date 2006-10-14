@@ -44,11 +44,11 @@ void	Filter(CircularBuffer *, CircularBuffer *),
 
 
 /* -------------------------------------------------------------------- */
-int HighRateLoop(long starttime, long endtime)
+int HighRateLoop(long startTime, long endTime)
 {
-  int			j = 0;
-  long			nBytes;
-  NR_TYPE		*ps_data, *hrt_data;
+  int		j = 0, cntr = 0;
+  long		nBytes, thisTime;
+  NR_TYPE	*ps_data, *hrt_data;
 
   /* Basic circ-buff of records going into despiking and resampler.
    */
@@ -60,20 +60,6 @@ int HighRateLoop(long starttime, long endtime)
    */
   CircularBuffer	*PSCB;	/* Phase Shifted Circular Buffers	*/
   CircularBuffer	*HSCB;	/* 25Hz resampled data (interped only).*/
-
-  /* Account for Circular Buffer slop	*/
-  if (starttime != BEG_OF_TAPE)
-  {
-    starttime -= ((NPSBUFFERS+NLRBUFFERS)/2) + 2;
-
-    // Hack until we build sync_record into nimbus,  since we can't rewind() a
-    // socket.
-    if (cfg.isADS3())
-      starttime -= 11;
-  }
-
-  if (endtime != END_OF_TAPE)
-    endtime += NPSBUFFERS;
 
   nBytes = nSRfloats * sizeof(NR_TYPE);
   if ((LRCB = CreateCircularBuffer(NLRBUFFERS, nBytes)) == NULL ||
@@ -92,7 +78,7 @@ int HighRateLoop(long starttime, long endtime)
 
   /* Perform initialization before entering main loop.
    */
-  if (LocateFirstRecord(starttime, endtime, NLRBUFFERS) == false)
+  if (LocateFirstRecord(startTime, endTime, NLRBUFFERS) == false)
     {
     nBytes = ERR;
     goto exit;
@@ -101,49 +87,9 @@ int HighRateLoop(long starttime, long endtime)
   ClearMRFilters();
 
 
-  /* Fill circular Buffers
-   */
-  SampledData = (NR_TYPE *)AddToCircularBuffer(LRCB);
-  DecodeADSrecord((short *)ADSrecord, SampledData);
-  ApplyCalCoes(SampledData);
-
-  for (int i = 0; i < NLRBUFFERS-1; ++i)
-    {
-    if ((nBytes = (*FindNextLogicalRecord)(ADSrecord, endtime)) <= 0)
-      goto exit;
-
-    if (CheckForTimeGap(ADSrecord, false) == GAP_FOUND)
-      goto exit;
-
-    SampledData = (NR_TYPE *)AddToCircularBuffer(LRCB);
-    DecodeADSrecord((short *)ADSrecord, SampledData);
-    ApplyCalCoes(SampledData);
-    }
-
-  /* Fill PhaseShifted Buffers for MultiRate
-   */
-  for (int i = 0; i < NPSBUFFERS-1; ++i)
-    {
-    if ((nBytes = (*FindNextLogicalRecord)(ADSrecord, endtime)) <= 0)
-      goto exit;
-
-    if (CheckForTimeGap(ADSrecord, false) == GAP_FOUND)
-      goto exit;
-
-    SampledData = (NR_TYPE *)AddToCircularBuffer(LRCB);
-    DecodeADSrecord((short *)ADSrecord, SampledData);
-    ApplyCalCoes(SampledData);
-    DespikeData(LRCB, LRINDEX+1);
-
-    ps_data = (NR_TYPE *)AddToCircularBuffer(PSCB);
-    hrt_data = (NR_TYPE *)AddToCircularBuffer(HSCB);
-    PhaseShift(LRCB, LRINDEX, ps_data, hrt_data);
-    }
-
-
   /* This is the main control loop.
    */
-  while ((nBytes = (*FindNextLogicalRecord)(ADSrecord, endtime)) > 0)
+  do
     {
     if (CheckForTimeGap(ADSrecord, false) == GAP_FOUND)
       break;
@@ -159,29 +105,22 @@ int HighRateLoop(long starttime, long endtime)
 
     Filter(PSCB, HSCB);
 
-    if (j++ < 10)	/* Skip 1st 10 passes, to help load things up. */
-      continue;
-
     AverageSampledData();
 
-   if (SynthData == true)
-      {
-      int	hr, mins, sec;
+    thisTime = SampledDataTimeToSeconds();
 
-      hr = (int)SampledData[timeIndex[0]];
-      mins = (int)SampledData[timeIndex[1]];
-      sec = (int)SampledData[timeIndex[2]];
-
-      float temptime=(hr*3600)+(mins*60)+sec;
-
-      sd.InjectSyntheticData(temptime); 
-      }
+    if (SynthData == true)
+      sd.InjectSyntheticData(thisTime); 
 
     ComputeLowRateDerived();
     ComputeHighRateDerived();
 
-    WriteNetCDF_MRF();
-    UpdateTime(SampledData);
+    if ((startTime == BEG_OF_TAPE && cntr++ > 30) ||
+        (startTime != BEG_OF_TAPE && thisTime >= startTime))
+      {
+      WriteNetCDF_MRF();
+      UpdateTime(SampledData);
+      }
 
     while (PauseFlag == true)
       XtAppProcessEvent(context, XtIMAll);
@@ -191,7 +130,10 @@ int HighRateLoop(long starttime, long endtime)
       nBytes = ERR;
       break;
       }
+
+    nBytes = (*FindNextLogicalRecord)(ADSrecord, END_OF_TAPE);
     }
+  while ( nBytes > 0 && (endTime == END_OF_TAPE || thisTime < endTime) );
 
 
 exit:

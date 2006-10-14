@@ -60,6 +60,11 @@ extern const std::string PROJ_NAME, DEPENDTBL, DEFAULTS, GROUPS, BLANKVARS,
 	ntohs( ((struct Hdr_blk *)hdr)->minute ) * 60 + \
 	ntohs( ((struct Hdr_blk *)hdr)->hour ) * 3600)
 
+#define SampledDataTimeToSeconds() \
+	((int)SampledData[timeIndex[0]] * 3600 + \
+	 (int)SampledData[timeIndex[1]] * 60 + \
+	 (int)SampledData[timeIndex[2]])
+
 #define SecondsSinceMidnite(t) (t[0] * 3600 + t[1] * 60 + t[2])
 
 /* External definitions
@@ -93,7 +98,7 @@ void	SetLookupSuffix(char *new_suffix),
 	ApplyCalCoes(NR_TYPE *record),
 	ComputeLowRateDerived(), ComputeHighRateDerived(),
 	WriteNetCDF(), WriteNetCDF_MRF(), SyncNetCDF(), CloseNetCDF(),
-	UpdateTime(NR_TYPE *record),
+	UpdateTime(const NR_TYPE *record),
 	FormatTimeSegmentsForOutputFile(char *buff);
 
 void	Sum(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l, MOD *mp),

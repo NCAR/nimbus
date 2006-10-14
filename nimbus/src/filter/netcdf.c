@@ -97,38 +97,17 @@ std::map<int, int> _rateDimIDs;
 std::map<int, int> _vectorDimIDs;
 
 /* -------------------------------------------------------------------- */
-void SetBaseTime(const void *record)
+void SetBaseTime(NR_TYPE *record)
 {
   time_t BaseTime;
 
   StartFlight.tm_isdst	= -1;
 
-  if (cfg.isADS2())
-  {
-    const Hdr_blk *hdr = (Hdr_blk *)record;
-    StartFlight.tm_hour	= ntohs(hdr->hour);
-    StartFlight.tm_min	= ntohs(hdr->minute);
-    StartFlight.tm_sec	= ntohs(hdr->second);
-  }
-  else
-  {
-    const NR_TYPE *r = (NR_TYPE *)record;
-    StartFlight.tm_hour	= (int)r[timeIndex[0]];
-    StartFlight.tm_min	= (int)r[timeIndex[1]];
-    StartFlight.tm_sec	= (int)r[timeIndex[2]];
-  }
+  StartFlight.tm_hour = (int)record[timeIndex[0]],
+  StartFlight.tm_min = (int)record[timeIndex[1]],
+  StartFlight.tm_sec = (int)record[timeIndex[2]];
 
   BaseTime = timegm(&StartFlight);
-
-  /* Account for circular buffer spin up in [lr|hr]loop.c
-   */
-  if (cfg.ProcessingMode() != Config::RealTime)
-    if (cfg.ProcessingRate() == Config::HighRate)
-      BaseTime += 15;
-    else
-      BaseTime += 3;
-
-  StartFlight = *(gmtime(&BaseTime));
 
   if (cfg.isADS3())	// We don't support BaseTime anymore.
     return;
@@ -498,6 +477,13 @@ void WriteNetCDF()
 {
   struct missDat	*dp;
   static int		errCnt = 0;
+  static bool		firstWrite = true;
+
+  if (firstWrite)
+  {
+    SetBaseTime(SampledData);
+    firstWrite = false;
+  }
 
   replaceNANwithMissingValue();
 
