@@ -42,60 +42,26 @@ void	DespikeData(CircularBuffer *LRCB, int index),
 
 
 /* -------------------------------------------------------------------- */
-int LowRateLoop(long starttime, long endtime)
+int LowRateLoop(long startTime, long endTime)
 {
-  long			nBytes;
+  long			nBytes, thisTime, cntr = 0;
   NR_TYPE		*BuffPtr;
   CircularBuffer	*LRCB;	/* Logical Record Circular Buffers	*/
-
-  /* Account for Circular Buffer slop	*/
-  if (starttime != BEG_OF_TAPE)
-  {
-    starttime -= NLRBUFFERS/2;
-
-    // Hack until we build sync_record into nimbus,  since we can't rewind() a
-    // socket.
-    if (cfg.isADS3())
-      starttime -= 11;
-  }
-
-  if (endtime != END_OF_TAPE)
-    endtime += -(LRINDEX+1);
 
   /* Perform initialization before entering main loop.
    */
   nBytes = nSRfloats * sizeof(NR_TYPE);
   if ((LRCB = CreateCircularBuffer(NLRBUFFERS, nBytes)) == NULL ||
-      LocateFirstRecord(starttime, endtime, NLRBUFFERS) == false)
+      LocateFirstRecord(startTime, endTime, NLRBUFFERS) == false)
     {
     nBytes = ERR;
     goto exit;
     }
 
 
-  /* Fill circular Buffers
-   */
-  BuffPtr = (NR_TYPE *)AddToCircularBuffer(LRCB);
-  DecodeADSrecord((short *)ADSrecord, BuffPtr);
-  ApplyCalCoes(BuffPtr);
-
-  for (int i = 1; i < NLRBUFFERS-1; ++i)
-    {
-    if ((nBytes = (*FindNextLogicalRecord)(ADSrecord, endtime)) <= 0)
-      goto exit;
-
-    if (CheckForTimeGap(ADSrecord, false) == GAP_FOUND)
-      goto exit;
-
-    BuffPtr = (NR_TYPE *)AddToCircularBuffer(LRCB);
-    DecodeADSrecord((short *)ADSrecord, BuffPtr);
-    ApplyCalCoes(BuffPtr);
-    }
- 
-
   /* This is the main loop.
    */
-  while ((nBytes = (*FindNextLogicalRecord)(ADSrecord, endtime)) > 0)
+  do
     {
     if (CheckForTimeGap(ADSrecord, false) == GAP_FOUND)
       break;
@@ -111,22 +77,19 @@ int LowRateLoop(long starttime, long endtime)
 
     AverageSampledData();
    
+    thisTime = SampledDataTimeToSeconds();
+
     if (SynthData == true)
-      {
-      int	hr, mins, sec;
-
-      hr = (int)SampledData[timeIndex[0]];
-      mins = (int)SampledData[timeIndex[1]];
-      sec = (int)SampledData[timeIndex[2]];
-      float temptime=(hr*3600)+(mins*60)+sec;
-
-      sd.InjectSyntheticData(temptime); 
-      }
+      sd.InjectSyntheticData(thisTime); 
     
     ComputeLowRateDerived();
 
-    WriteNetCDF();
-    UpdateTime(SampledData);
+    if ((startTime == BEG_OF_TAPE && cntr++ > 30) ||
+        (startTime != BEG_OF_TAPE && thisTime >= startTime))
+      {
+      WriteNetCDF();
+      UpdateTime(SampledData);
+      }
 
     while (PauseFlag == true)
       XtAppProcessEvent(context, XtIMAll);
@@ -135,8 +98,10 @@ int LowRateLoop(long starttime, long endtime)
       nBytes = ERR;
       break;
       }
-    }
 
+    nBytes = (*FindNextLogicalRecord)(ADSrecord, END_OF_TAPE);
+    }
+  while ( nBytes > 0 && (endTime == END_OF_TAPE || thisTime < endTime) );
 
 exit:
   ReleaseCircularBuffer(LRCB);
@@ -167,11 +132,22 @@ bool LocateFirstRecord(long starttime, long endtime, int nBuffers)
 {
   int i, nBytes, cntr = 0;
 
+  if (starttime != BEG_OF_TAPE)
+    {
+    // Start 1 minute before user requested start time.
+    if ((nBytes = (*FindFirstLogicalRecord)(ADSrecord, starttime-60)) <= 0)
+      return false;
+
+    return true;
+    }
+
+
   if ((nBytes = (*FindFirstLogicalRecord)(ADSrecord, starttime)) <= 0)
     return false;
 
   /* Now make sure we have at least N contiguous records.
    */
+/*
   for (i = 0, cntr = 0; i < nConsecutive; ++i, ++cntr)
   {
     displayTime(ADSrecord);
@@ -188,10 +164,7 @@ bool LocateFirstRecord(long starttime, long endtime, int nBuffers)
     nBytes = (*FindNextLogicalRecord)(ADSrecord, endtime);
 
   ResetTimeGapper();
-  displayTime(ADSrecord);
-
-  SetBaseTime(ADSrecord);		/* See netcdf.c	*/
-
+*/
   return true;
 
 }	/* END LOCATEFIRSTRECORD */

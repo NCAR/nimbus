@@ -175,7 +175,7 @@ FILE	*OpenProjectFile(const std::string& filename, const char mode[], int action
 
 int	AccessProjectFile(const std::string& filename, const char mode[]),
 	ReadTextFile(const std::string& filename, char **list),
-	CheckForTimeGap(void *ADShdr, int initMode);
+	CheckForTimeGap(const void *ADShdr, int initMode);
 
 
 struct var_match_name
@@ -248,7 +248,7 @@ void	SortTable(char **table, int beg, int end),
 	ProcessArgv(int argc, char **argv),
 	LogMessage(const char msg[]),
 	AddProbeToList(const char name[], unsigned long type),
-	SetBaseTime(const void *hdr),
+	SetBaseTime(const NR_TYPE *record),
 	BlankOutBadData(),
 	GetDataDirectory(char buff[]),
         FlushXEvents();

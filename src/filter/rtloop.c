@@ -90,10 +90,6 @@ void RealTimeLoop()
   file->FirstSyncRecord(ADSrecord);
   fprintf(stderr, "rtloop: entered ONBOARD_RT, going for 1st record in file, NOT last.\n");
 
-  /* wait for record and write base_time to netCDF file.
-   */
-  SetBaseTime(ADSrecord);
-
   if (cfg.OutputSQL())
   {
     std::string BuildPGspecString();

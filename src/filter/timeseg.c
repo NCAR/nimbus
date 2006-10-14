@@ -138,7 +138,7 @@ long UTCseconds(const void *record, int *h, int *m, int *s)
 }
 
 /* -------------------------------------------------------------------- */
-int CheckForTimeGap(void *ADShdr, int initMode)
+int CheckForTimeGap(const void *ADShdr, int initMode)
 {
   long	i, j;
   long	newTime;
@@ -280,7 +280,7 @@ int CheckForTimeGap(void *ADShdr, int initMode)
 }	/* END CHECKFORTIMEGAP */
 
 /* -------------------------------------------------------------------- */
-void UpdateTime(NR_TYPE *record)
+void UpdateTime(const NR_TYPE *record)
 {
   int	hour = (int)record[timeIndex[0]],
 	minute = (int)record[timeIndex[1]],
@@ -313,7 +313,7 @@ void UpdateTime(NR_TYPE *record)
 /* -------------------------------------------------------------------- */
 void FormatTimeSegmentsForOutputFile(char *buff)
 {
-  int		i;
+  int	i;
   char	temp[32];
 
   buff[0] = '\0';
