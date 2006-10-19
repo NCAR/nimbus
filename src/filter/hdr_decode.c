@@ -271,6 +271,22 @@ for (size_t i = 0; i < derived.size(); ++i)
 }	// END COMMONPOSTINITIALIZATION
 
 /* -------------------------------------------------------------------- */
+static void addSerialNumber(nidas::dynld::raf::SyncRecordVariable *var, var_base *rp)
+{
+  const std::list<const nidas::core::Parameter *> parms = var->getParameters();
+
+  std::list<const nidas::core::Parameter *>::const_iterator it;
+  for (it = parms.begin(); it != parms.end(); ++it)
+  {
+    if ((*it)->getName() == "SerialNumber")
+    {
+      rp->SerialNumber = (*it)->getStringValue(0);
+      printf("Setting serial number for [%s] to [%s]\n", rp->name, rp->SerialNumber.c_str());
+    }
+  }
+}
+
+/* -------------------------------------------------------------------- */
 int DecodeHeader3(const char header_file[])
 {
 printf("DecodeHeader3: header_file=%s\n", header_file);
@@ -326,16 +342,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
   sprintf(buffer, "%02d/%02d/%04d", flDate->tm_mon+1, flDate->tm_mday, flDate->tm_year+1900);
   cfg.SetFlightDate(buffer);
   }
-/*
-if (cfg.ProjectName() == "GV_test")
-  cfg.SetProjectNumber("501");
-if (cfg.ProjectName() == "ProgSci")
-  cfg.SetProjectNumber("502");
-if (cfg.ProjectName() == "TREX")
-  cfg.SetProjectNumber("503");
 
-printf("hdr_decode.c: <<< WARNING >>> ProjectNumber is hardcoded = %s\n", cfg.ProjectNumber().c_str());
-*/
   cfg.SetCoordLAT("GGLAT");
   cfg.SetCoordLON("GGLON");
   cfg.SetCoordALT("GGALT");
@@ -395,13 +402,14 @@ printf("hdr_decode.c: <<< WARNING >>> ProjectNumber is hardcoded = %s\n", cfg.Pr
         strcpy(rp->type, "A");
         break;
       case  nidas::core::Variable::COUNTER:
-printf("!!!!!!!! %s - COUNTER !!!!!!!!\n", rp->name);
         strcpy(rp->type, "C");
         break;
       default:
         LogMessage("hdr_decode:initSDI_ADS3: Unsupported type from Variable->getType()\n");
     }
     rp->Average = (void (*) (...))(rp->type[0] == 'C' ? Sum : Average);
+
+    addSerialNumber(var, rp);
   }
 
   add_derived_names("GUST");
