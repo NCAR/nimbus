@@ -25,14 +25,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-06
 #include <nidas/dynld/raf/SyncRecordReader.h>
 #include <nidas/util/EOFException.h>
 
-#include <ctime>
 #include <iomanip>
 #include <sys/param.h>
 
 extern nidas::dynld::raf::SyncRecordReader* syncRecReader;
 
 /* -------------------------------------------------------------------- */
-long xlateToSecondsSinceMidnight(time_t ut)
+time_t xlateToSecondsSinceMidnight(time_t ut) // Unused now.
 {
   struct tm tm;
   gmtime_r(&ut, &tm);
@@ -50,11 +49,10 @@ long xlateToSecondsSinceMidnight(time_t ut)
 /* -------------------------------------------------------------------- */
 long FindFirstLogicalADS3(
 	char	record[],	// First Data Record, for start time
-	long	startTime)	// User specified start time
+	time_t	startTime)	// User specified start time
 {
   nidas::core::dsm_time_t tt;
-  time_t ut = 0;
-  long recTime;
+  time_t recTime = 0;
   int rc;
 
   do
@@ -68,23 +66,17 @@ long FindFirstLogicalADS3(
       return 0;
     }
 
-    ut = tt / USECS_PER_SEC;
-    recTime = xlateToSecondsSinceMidnight(ut);
-
-    /// @todo get rid of this one mid-night rollover bullshit.  i.e. use date/time
-    //       12:00:00              23:59:59
-    if (recTime < 43200L && startTime > 86399L)
-      recTime += 86399L;
+    recTime = tt / USECS_PER_SEC;
   }
   while (!(startTime == BEG_OF_TAPE || recTime >= startTime));
 
-  processTimeADS3((float *)record, ut);
+  processTimeADS3((float *)record, recTime);
   return rc * sizeof(float);
 
 }	// END FINDFIRSTLOGICALADS3
 
 /* -------------------------------------------------------------------- */
-long FindNextLogicalADS3(char record[], long endTime)
+long FindNextLogicalADS3(char record[], time_t endTime)
 {
   nidas::core::dsm_time_t tt;
   int rc;
@@ -98,20 +90,15 @@ long FindNextLogicalADS3(char record[], long endTime)
     return 0;
   }
   
-  time_t ut = tt / USECS_PER_SEC;
-  long recTime = xlateToSecondsSinceMidnight(ut);
+  time_t recTime = tt / USECS_PER_SEC;
 
   if (endTime != END_OF_TAPE)
   {
-    /*       12:00:00            23:59:59       */
-    if (recTime < 43200L && endTime > 86399L)
-      recTime += 86399L;
-
     if (recTime > endTime)
       return 0;        /* End Of Time Segment  */
   }
 
-  processTimeADS3((float *)record, ut);
+  processTimeADS3((float *)record, recTime);
   return rc * sizeof(float);
 
 }	// END FINDNEXTLOGICALADS3

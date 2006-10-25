@@ -33,8 +33,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 #include <netinet/in.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <errno.h>
-#include <time.h>
+#include <cerrno>
 
 #include "nimbus.h"
 #include "decode.h"
@@ -55,7 +54,8 @@ static int locateAsyncVar(ushort record[]);
 
 static int ncid, recDim;
 
-int GetPreviousTime();
+time_t GetPreviousTime();
+time_t	HdrBlkTimeToSeconds(Hdr_blk * hdr);
 
 
 /* -------------------------------------------------------------------- */
@@ -115,10 +115,12 @@ void WriteAsyncData(char record[])
 {
   P2d_rec	*p2dp;
   void		*dp;
-  int		i, indx, p2d_time, syncTime;
+  int		i, indx, p2d_time;
+  time_t	syncTime;
 
   syncTime = GetPreviousTime();
-
+fprintf(stderr, "Async: p2d_time needs to be converted to time_t\n");
+exit(1);
   switch (*((ushort *)record))
     {
     case PMS2DC1: case PMS2DC2: /* PMS2D */
@@ -138,12 +140,12 @@ void WriteAsyncData(char record[])
 
         /* ok, lets see if we are ready to flush the data.
          */
-        p2d_time = (long)HdrBlkTimeToSeconds(p2dp);
+        p2d_time = HdrBlkTimeToSeconds((Hdr_blk *)p2dp);
 
         /* Add 2 sec in case of early data (2d clock can walk)
          */
         if ((p2d_time+2) < syncTime)
-        flush2dQueue(indx, syncTime);
+          flush2dQueue(indx, syncTime);
         }
 
       break;
@@ -175,7 +177,7 @@ static void flush2dQueue(int indx, int syncTime)
   if ((p2dp = (P2d_rec *)FrontQueue(q)) == NULL)
     return;
 
-  p2d_time = first_p2d_time = (long)HdrBlkTimeToSeconds(p2dp);
+  p2d_time = first_p2d_time = HdrBlkTimeToSeconds((Hdr_blk *)p2dp);
 
   diff = syncTime - p2d_time;
   start[0] = nRecords - diff + 1;
@@ -201,7 +203,7 @@ static void flush2dQueue(int indx, int syncTime)
     if ((p2dp = (P2d_rec *)FrontQueue(q)) == NULL)
       p2d_time = 0;
     else
-      p2d_time = (long)HdrBlkTimeToSeconds(p2dp);
+      p2d_time = HdrBlkTimeToSeconds((Hdr_blk *)p2dp);
     }
   while (first_p2d_time == p2d_time);
 
