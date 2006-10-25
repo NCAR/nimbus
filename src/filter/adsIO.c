@@ -73,6 +73,7 @@ static int	GetNext2Dfile();
 
 char	*ExtractHeaderIntoFile(char *);
 void	WriteAsyncData(char record[]);
+time_t	HdrBlkTimeToSeconds(Hdr_blk * hdr);
 
 #ifdef __cplusplus
 extern "C" {
@@ -88,60 +89,43 @@ int crayclose(int *index);
 /* -------------------------------------------------------------------- */
 long FindFirstLogicalADS2(
 	char	record[],	/* First Data Record, for start time	*/
-	long	startTime)	/* User specified start time		*/
+	time_t	startTime)	/* User specified start time		*/
 {
-  long		recTime, nbytes;
-  static int	firstTime = true;
+  long		nbytes;
+  time_t	recTime;
+  int		rc;
 
-  if (firstTime)
-    {
-    int		rc;
+  currentLR = 0;
+  get_lrlen(&lrlen);
+  get_lrppr(&lrppr);
 
-//    firstTime = false;
-
-    get_lrlen(&lrlen);
-    get_lrppr(&lrppr);
-
-    switch (DiskData)
-      {
-      case RAW_ADS:	rc = lseek(infd, 0L, SEEK_SET); break;
-      case COS_BLOCKED:	rc = 0; break;
-      default:		rc = TapeSeek(FIRST_DATA_RECORD);
-      }
+  switch (DiskData)
+  {
+    case RAW_ADS:	rc = lseek(infd, 0L, SEEK_SET); break;
+    case COS_BLOCKED:	rc = 0; break;
+    default:		rc = TapeSeek(FIRST_DATA_RECORD);
+  }
 
 //rc = lseek(infd, 133874376, SEEK_SET);
-    if (rc == ERR)
-      return(ERR);
+  if (rc == ERR)
+    return(ERR);
 
-    if ((nbytes = FindNextDataRecord(phys_rec)) <= 0)
-      return(nbytes);
+  if ((nbytes = FindNextDataRecord(phys_rec)) <= 0)
+    return(nbytes);
 
-    if (startTime == BEG_OF_TAPE)
-      return(FindNextLogicalADS2(record, startTime));
-    }
-  else
-    currentLR = 0;
+  if (startTime == BEG_OF_TAPE)
+    return(FindNextLogicalADS2(record, startTime));
 
-
-  recTime = (long)HdrBlkTimeToSeconds((struct Hdr_blk  *)phys_rec);
-
-  /*	     12:00:00		   23:59:59	*/
-  if (recTime < 43200L && startTime > 86399L)
-    recTime += 86399L;
+  recTime = HdrBlkTimeToSeconds((Hdr_blk *)phys_rec);
 
   while (startTime > (recTime + lrppr))
-    {
+  {
     if ((nbytes = FindNextDataRecord(phys_rec)) <= 0)
       return(nbytes);
 
-    recTime = HdrBlkTimeToSeconds((struct Hdr_blk  *)phys_rec);
-
-    /*	     12:00:00		   23:59:59	*/
-    if (recTime < 43200L && startTime > 86399L)
-      recTime += 86399L;
-
+    recTime = HdrBlkTimeToSeconds((Hdr_blk  *)phys_rec);
     FlushXEvents();
-    }
+  }
 
 
   /* Cover the case if start time is before first record on file
@@ -150,16 +134,12 @@ long FindFirstLogicalADS2(
     startTime = recTime;
 
   while ((nbytes = FindNextLogicalADS2(record, startTime)) > 0)
-    {
-    recTime = HdrBlkTimeToSeconds((struct Hdr_blk *)record);
-
-    /*	     12:00:00		   23:59:59	*/
-    if (recTime < 43200L && startTime > 86399L)
-      recTime += 86399L;
+  {
+    recTime = HdrBlkTimeToSeconds((Hdr_blk *)record);
 
     if (recTime >= startTime)
       break;
-    }
+  }
 
   return(nbytes);
 
@@ -170,16 +150,11 @@ long FindNextLogicalADS2(char record[], long endtime)
 {
   int	nbytes;
   long	TansStart, rectime;
-  Hdr_blk *ADShdr = (Hdr_blk *)record;
 
-  rectime = HdrBlkTimeToSeconds(&phys_rec[currentLR * lrlen]);
+  rectime = HdrBlkTimeToSeconds((Hdr_blk *)&phys_rec[currentLR * lrlen]);
 
   if (endtime != END_OF_TAPE)
     {
-    /*	     12:00:00		 23:59:59	*/
-    if (rectime < 43200L && endtime > 86399L)
-      rectime += 86399L;
-
     if (rectime > endtime)
       return(0);	/* End Of Time Segment	*/
     }
@@ -196,6 +171,7 @@ long FindNextLogicalADS2(char record[], long endtime)
 
 
   /* Indoex had some munged records, so let's remove trashed stuff. */
+/*  This won't work since we moved time_t.
   if (endtime == END_OF_TAPE && (rectime < 0 || rectime > 86399L || ntohs((ushort)((Hdr_blk*)record)->id) != SDI_WORD))
     {
 
@@ -205,7 +181,7 @@ long FindNextLogicalADS2(char record[], long endtime)
     LogMessage(buffer);
     FindNextLogicalADS2(record, endtime);
     }
-
+*/
 
   if (cfg.ProcessingMode() == Config::RealTime)
     return(lrlen);

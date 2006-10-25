@@ -44,7 +44,7 @@ void	Filter(CircularBuffer *, CircularBuffer *),
 
 
 /* -------------------------------------------------------------------- */
-int HighRateLoop(long startTime, long endTime)
+int HighRateLoop(time_t startTime, time_t endTime)
 {
   int		j = 0, cntr = 0;
   long		nBytes, thisTime;
@@ -115,8 +115,9 @@ int HighRateLoop(long startTime, long endTime)
     ComputeLowRateDerived();
     ComputeHighRateDerived();
 
-    if ((startTime == BEG_OF_TAPE && cntr++ > 30) ||
-        (startTime != BEG_OF_TAPE && thisTime >= startTime))
+    // cntr is to get us past buffer load-ups and goobery data at start of file.
+    if (cntr++ > 30 &&
+        (startTime == BEG_OF_TAPE || thisTime >= startTime))
       {
       WriteNetCDF_MRF();
       UpdateTime(SampledData);

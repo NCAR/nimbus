@@ -10,6 +10,8 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #ifndef DECODE_H
 #define DECODE_H
 
+#include <ctime>
+
 #define ONE_WORD        sizeof(short)
 
 #define GAP_FOUND	true	/* For CheckForTimeGap()	*/
@@ -54,16 +56,6 @@ extern const std::string PROJ_NAME, DEPENDTBL, DEFAULTS, GROUPS, BLANKVARS,
 	LAGS, BROADCAST, SPIKE, DEFDEROR, VARDB, BROADCASTVARS, XMIT_VARS,
 	AIRCRAFT, MODVARS, SUMVARS, FILTERS, RAWNAMES, DERIVEDNAMES, INSNAMES,
 	IRSNAMES, USERNAMES, OPHIR3NAMES, LANDMARKS, META_DATA, LOGFILE;
-
-#define HdrBlkTimeToSeconds(hdr) \
-	(ntohs( ((struct Hdr_blk *)hdr)->second ) + \
-	ntohs( ((struct Hdr_blk *)hdr)->minute ) * 60 + \
-	ntohs( ((struct Hdr_blk *)hdr)->hour ) * 3600)
-
-#define SampledDataTimeToSeconds() \
-	((int)SampledData[timeIndex[0]] * 3600 + \
-	 (int)SampledData[timeIndex[1]] * 60 + \
-	 (int)SampledData[timeIndex[2]])
 
 #define SecondsSinceMidnite(t) (t[0] * 3600 + t[1] * 60 + t[2])
 
@@ -113,15 +105,17 @@ int	SearchDERIVEFTNS(const char target[]),
 	DecodeHeader(const char header_file[]),
 	DecodeHeader3(const char header_file[]),
 	DependIndexLookup(DERTBL *dp, int which_dep),
-	NextTimeInterval(long *start, long *end),
+	NextTimeInterval(time_t *start, time_t *end),
 	CloseADSfile(),
-	LowRateLoop(long starttime, long endtime),
-	HighRateLoop(long starttime, long endtime);
+	LowRateLoop(time_t starttime, time_t endtime),
+	HighRateLoop(time_t starttime, time_t endtime);
 
 long	FindFirstLogicalADS2(char record[], long starttime),
 	FindNextLogicalADS2(char record[], long endtime),
 	FindFirstLogicalADS3(char record[], long starttime),
 	FindNextLogicalADS3(char record[], long endtime);
+
+time_t	SampledDataTimeToSeconds();
 
 extern long
 	(*FindFirstLogicalRecord)(char record[], long starttime),

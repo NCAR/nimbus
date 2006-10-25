@@ -59,6 +59,7 @@ int LowRateLoop(long startTime, long endTime)
     }
 
 
+printf("%ld %ld\n", startTime, endTime);
   /* This is the main loop.
    */
   do
@@ -84,8 +85,9 @@ int LowRateLoop(long startTime, long endTime)
     
     ComputeLowRateDerived();
 
-    if ((startTime == BEG_OF_TAPE && cntr++ > 30) ||
-        (startTime != BEG_OF_TAPE && thisTime >= startTime))
+    // cntr is to get us past buffer load-ups and goobery data at start of file.
+    if (cntr++ > 30 &&
+        (startTime == BEG_OF_TAPE || thisTime >= startTime))
       {
       WriteNetCDF();
       UpdateTime(SampledData);
@@ -145,26 +147,6 @@ bool LocateFirstRecord(long starttime, long endtime, int nBuffers)
   if ((nBytes = (*FindFirstLogicalRecord)(ADSrecord, starttime)) <= 0)
     return false;
 
-  /* Now make sure we have at least N contiguous records.
-   */
-/*
-  for (i = 0, cntr = 0; i < nConsecutive; ++i, ++cntr)
-  {
-    displayTime(ADSrecord);
-    if (CheckForTimeGap(ADSrecord, true) == GAP_FOUND)
-      { i = 0; printf("reset, cntr=%d\n", cntr); }
-
-    nBytes = (*FindNextLogicalRecord)(ADSrecord, endtime);
-  }
-
-  cntr -= nConsecutive;
-
-  nBytes = (*FindFirstLogicalRecord)(ADSrecord, starttime);
-  for (i = 0; i < cntr; ++i)
-    nBytes = (*FindNextLogicalRecord)(ADSrecord, endtime);
-
-  ResetTimeGapper();
-*/
   return true;
 
 }	/* END LOCATEFIRSTRECORD */
