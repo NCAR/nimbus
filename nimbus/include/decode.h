@@ -115,7 +115,7 @@ long	FindFirstLogicalADS2(char record[], long starttime),
 	FindFirstLogicalADS3(char record[], long starttime),
 	FindNextLogicalADS3(char record[], long endtime);
 
-time_t	SampledDataTimeToSeconds();
+time_t	SampledDataTimeToSeconds(NR_TYPE *);
 
 extern long
 	(*FindFirstLogicalRecord)(char record[], long starttime),

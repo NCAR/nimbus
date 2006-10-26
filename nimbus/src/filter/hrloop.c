@@ -107,7 +107,7 @@ int HighRateLoop(time_t startTime, time_t endTime)
 
     AverageSampledData();
 
-    thisTime = SampledDataTimeToSeconds();
+    thisTime = SampledDataTimeToSeconds(SampledData);
 
     if (SynthData == true)
       sd.InjectSyntheticData(thisTime); 
