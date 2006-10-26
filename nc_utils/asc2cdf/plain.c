@@ -127,7 +127,7 @@ void CreatePlainNetCDF(FILE *fp)
 
   /* Create Time variables.
    */
-  for (i = 0; i < 3; ++i)
+  for (i = 0; time_vars[i]; ++i)
     {
     nc_def_var(ncid, time_vars[i], NC_FLOAT, 1, dims, &varid[i]);
     nc_put_att_float(ncid, varid[i], "_FillValue", NC_FLOAT, 1, &missing_val);
@@ -145,7 +145,6 @@ void CreatePlainNetCDF(FILE *fp)
 #endif
 	(char *)noTitle;
     nc_put_att_text(ncid, varid[i], "long_name", strlen(p)+1, p);
-    nc_put_att_float(ncid, varid[i], "missing_value", NC_FLOAT, 1, &missing_val);
     }
 
 

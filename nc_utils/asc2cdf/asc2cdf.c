@@ -28,7 +28,8 @@ int	baseTimeID, timeOffsetID, timeVarID, varid[MAX_VARS],
 size_t	nRecords;
 time_t	BaseTime = 0;
 float	scale[MAX_VARS], offset[MAX_VARS], missingVals[MAX_VARS];
-char	*time_vars[] = {"HOUR", "MINUTE", "SECOND"};
+
+const char *time_vars[] = { "HOUR", "MINUTE", "SECOND", 0 };
 
 static char	*globalAttrFile = 0;
 

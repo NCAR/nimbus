@@ -162,9 +162,9 @@ void CreateNASAamesNetCDF(FILE *fp)
 
   /* Create Time variables.
    */
-  for (i = 0; i < 3; ++i)
+  for (i = 0; time_vars[i]; ++i)
     {
-    p = time_vars[i];
+    p = (char *)time_vars[i];
     nc_def_var(ncid, time_vars[i], NC_FLOAT, 1, dims, &varid[i]);
 
     nc_put_att_float(ncid, varid[i], "_FillValue", NC_FLOAT, 1, &missing_val);

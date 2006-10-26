@@ -26,7 +26,7 @@ typedef unsigned char   bool;
 extern char	buffer[];
 extern int	ncid, varid[], nVariables, timeOffsetID, timeVarID, baseTimeID;
 extern float	scale[], offset[], missingVals[];
-extern char	*time_vars[];
+extern const char	*time_vars[];
 extern const char	*noTitle, *noUnits;
 extern const int	rateOne;
 extern time_t	BaseTime;
