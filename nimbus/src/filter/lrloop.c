@@ -131,7 +131,7 @@ static const int nConsecutive = 10;
 
 bool LocateFirstRecord(long starttime, long endtime, int nBuffers)
 {
-  int i, nBytes, cntr = 0;
+  int nBytes;
 
   if (starttime != BEG_OF_TAPE)
     {
