@@ -86,6 +86,12 @@ bool NextTimeInterval(long *start, long *end)
 
   *start= UserBtim[currentTimeSegment];
   *end	= UserEtim[currentTimeSegment];
+  long delta = *end - *start;
+  if (delta < 0)
+  {
+    delta += 86400;
+    fprintf(stderr, "timeseg.c: NextTimeInterval: delta < 0, adding 86400.\n");
+  }
 
   BtimeInt[currentTimeSegment][0] = NEW_SEG;
 
@@ -99,12 +105,7 @@ bool NextTimeInterval(long *start, long *end)
 
   if (*end != END_OF_TAPE)
   {
-    struct tm *tm = gmtime(&FileEndTime);
-    int btim = (tm->tm_hour * 3600) + (tm->tm_min * 60) + tm->tm_sec;
-    if (*end > 86400)
-      *end -= 86400;
-    tm->tm_sec += (*end - btim);
-    *end = mktime(tm);
+    *end = *start + delta;
   }
 
   return(true);

@@ -26,7 +26,7 @@ static String fallback_resources[] =
  */
   "*topLevelShell.x:			75",
   "*topLevelShell.y:			75",
-  "*topLevelShell.title:		netCDF to ASCII 2.0.1",
+  "*topLevelShell.title:		netCDF to ASCII 2.0.2",
   "*topLevelShell.iconName:		n2asc",
   "*topLevelForm.resizePolicy:		RESIZE_GROW",
   "*topLevelForm*buttonRC.spacing:	244",
