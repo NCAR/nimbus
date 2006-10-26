@@ -25,7 +25,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-05
 #include "vardb.h"
 #endif
 
-char *baseTimeUnits = "seconds since 1970-01-01 00:00:00 +0000";
+const char *timeUnitsFormat = "seconds since %F %T %z";
+const char *baseTimeUnits = "seconds since 1970-01-01 00:00:00 +0000";
 
 
 /* -------------------------------------------------------------------- */
@@ -34,7 +35,7 @@ void SetPlainBaseTime()
   struct tm     *t;
 
   t = gmtime(&BaseTime);
-  strftime(buffer, 128, "seconds since %F %T %z", t);
+  strftime(buffer, 128, timeUnitsFormat, t);
 
   nc_put_att_text(ncid, timeVarID, "units", strlen(buffer)+1, buffer);
   nc_put_att_text(ncid, timeOffsetID, "units", strlen(buffer)+1, buffer);
@@ -222,6 +223,8 @@ void createTime(int dims[])
   nc_put_att_text(ncid, timeVarID, "standard_name", strlen(buffer)+1, buffer);
   strcpy(buffer, "time of measurement");
   nc_put_att_text(ncid, timeVarID, "long_name", strlen(buffer)+1, buffer);
+  nc_put_att_text(ncid, timeVarID, "strptime_format",
+		strlen(timeUnitsFormat)+1, timeUnitsFormat);
 
   nc_def_var(ncid, "time_offset", NC_FLOAT, 1, dims, &timeOffsetID);
   nc_put_att_text(ncid, timeOffsetID, "units",

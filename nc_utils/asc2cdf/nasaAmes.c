@@ -170,7 +170,6 @@ void CreateNASAamesNetCDF(FILE *fp)
     nc_put_att_float(ncid, varid[i], "_FillValue", NC_FLOAT, 1, &missing_val);
     nc_put_att_text(ncid, varid[i], "units", strlen(p)+1, p);
     nc_put_att_text(ncid, varid[i], "long_name", strlen(p)+1, p);
-    nc_put_att_float(ncid, varid[i], "missing_value", NC_FLOAT, 1, &missing_val);
     }
 
 
