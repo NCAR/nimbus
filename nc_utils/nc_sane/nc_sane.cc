@@ -132,7 +132,12 @@ void checkStarts(int fd, const char * fileName)
 
   edge[0] = edge[1] = edge[2] = 0;
 
-  nc_get_att_text(fd, NC_GLOBAL, "FlightDate", buffer);
+  if (nc_get_att_text(fd, NC_GLOBAL, "FlightDate", buffer) != NC_NOERR)
+  {
+    fprintf(stderr, "No FlightDate global atttibute, skipping checkStarts\n");
+    return;
+  }
+
   sscanf(buffer, "%d/%d/%d",    &StartFlight.tm_mon,
                                 &StartFlight.tm_mday,
                                 &StartFlight.tm_year);
@@ -153,7 +158,7 @@ void checkStarts(int fd, const char * fileName)
     printf("%s: has incorrect base_time\n", fileName);
     printf("  base_time is (%u) %s",
                 (unsigned)oldBaseTime, asctime(gmtime(&oldBaseTime)));
-    printf("  should be is (%u) %s",
+    printf("     should be (%u) %s",
                 (unsigned)BaseTime, asctime(gmtime(&BaseTime)));
 
     if (repairFile)
