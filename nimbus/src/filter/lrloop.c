@@ -112,23 +112,6 @@ exit:
 }	/* END LOWRATELOOP */
 
 /* -------------------------------------------------------------------- */
-static void displayTime(const void *record)
-{
-  if (cfg.isADS2())
-  {
-    const Hdr_blk *h = (Hdr_blk *)record;
-    printf("%02d:%02d:%02d\n", ntohs(h->hour), ntohs(h->minute), ntohs(h->second));
-  }
-  else
-  {
-    const NR_TYPE *r = (NR_TYPE *)record;
-    printf("%02d:%02d:%02d\n", (int)r[timeIndex[0]], (int)r[timeIndex[1]], (int)r[timeIndex[2]]);
-  }
-}
-
-/* -------------------------------------------------------------------- */
-static const int nConsecutive = 10;
-
 bool LocateFirstRecord(long starttime, long endtime, int nBuffers)
 {
   int nBytes;
@@ -138,13 +121,10 @@ bool LocateFirstRecord(long starttime, long endtime, int nBuffers)
     // Start 1 minute before user requested start time.
     if ((nBytes = (*FindFirstLogicalRecord)(ADSrecord, starttime-60)) <= 0)
       return false;
-
-    return true;
     }
-
-
-  if ((nBytes = (*FindFirstLogicalRecord)(ADSrecord, starttime)) <= 0)
-    return false;
+  else
+    if ((nBytes = (*FindFirstLogicalRecord)(ADSrecord, starttime)) <= 0)
+      return false;
 
   return true;
 

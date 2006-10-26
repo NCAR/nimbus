@@ -527,7 +527,6 @@ void WriteNetCDF()
     if (hour == dp->hour && min == dp->minute && sec == dp->second)
       WriteMissingRecords();
   }
-
 }	/* END WRITENETCDF */
 
 /* -------------------------------------------------------------------- */
