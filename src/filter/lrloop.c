@@ -59,7 +59,6 @@ int LowRateLoop(long startTime, long endTime)
     }
 
 
-printf("%ld %ld\n", startTime, endTime);
   /* This is the main loop.
    */
   do
@@ -78,7 +77,7 @@ printf("%ld %ld\n", startTime, endTime);
 
     AverageSampledData();
    
-    thisTime = SampledDataTimeToSeconds();
+    thisTime = SampledDataTimeToSeconds(SampledData);
 
     if (SynthData == true)
       sd.InjectSyntheticData(thisTime); 

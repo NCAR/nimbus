@@ -81,10 +81,6 @@ void GetUserTimeIntervals() /* From TimeSliceWindow	*/
       offset = 0;
     UserBtim[nTimeIntervals] = mktime(&ft) + offset;
 
-printf(	"GetUserTI: %d/%d/%d %d:%d:%d\n",
-	ft.tm_year, ft.tm_mon, ft.tm_mday,
-	ft.tm_hour, ft.tm_min, ft.tm_sec);
-
     sscanf(ep, "%02d:%02d:%02d", &ft.tm_hour, &ft.tm_min, &ft.tm_sec);
     if (ft.tm_hour > 23)
     {
@@ -95,11 +91,6 @@ printf(	"GetUserTI: %d/%d/%d %d:%d:%d\n",
       offset = 0;
     UserEtim[nTimeIntervals] = mktime(&ft) + offset;
 
-printf(	"GetUserTI: %d/%d/%d %d:%d:%d\n",
-	ft.tm_year, ft.tm_mon, ft.tm_mday,
-	ft.tm_hour, ft.tm_min, ft.tm_sec);
-
-printf("GetUserTimeIntervals: %ld %ld\n", UserBtim[nTimeIntervals],  UserEtim[nTimeIntervals]);
     ++nTimeIntervals;
   }
 
@@ -147,41 +138,62 @@ void ResetTimeGapper()
 }
 
 /* -------------------------------------------------------------------- */
-time_t UTCseconds(const void *record)
+time_t HdrBlkTimeToSeconds(Hdr_blk * hdr)
 {
   struct tm ft;
 
-  if (cfg.isADS2())
+  ft.tm_hour = ntohs(hdr->hour);
+  ft.tm_min = ntohs(hdr->minute);
+  ft.tm_sec = ntohs(hdr->second);
+  ft.tm_year = ntohs(hdr->year);
+  ft.tm_mon = ntohs(hdr->month)-1;
+  ft.tm_mday = ntohs(hdr->day);
+
+  if (ft.tm_year < 1000)   // We now have year 2070 problem.
   {
-    const Hdr_blk *r = (Hdr_blk *)record;
-    ft.tm_year = (int)ntohs(r->year)-1900;
-    ft.tm_mday = (int)ntohs(r->day);
-    ft.tm_mon = (int)ntohs(r->month)-1;
-    ft.tm_hour = (int)ntohs(r->hour);
-    ft.tm_min = (int)ntohs(r->minute);
-    ft.tm_sec = (int)ntohs(r->second);
+    if (ft.tm_year < 70)
+      ft.tm_year += 100;
   }
   else
-  {
-    const NR_TYPE *r = (NR_TYPE *)record;
-    ft.tm_year = (int)r[timeIndex[3]]-1900;
-    ft.tm_mon = (int)r[timeIndex[4]];
-    ft.tm_mday = (int)r[timeIndex[5]]-1;
-    ft.tm_hour = (int)r[timeIndex[0]];
-    ft.tm_min = (int)r[timeIndex[1]];
-    ft.tm_sec = (int)r[timeIndex[2]];
-  }
+    ft.tm_year -= 1900;
 
   return mktime(&ft);
+}
+
+/* -------------------------------------------------------------------- */
+time_t SampledDataTimeToSeconds(NR_TYPE * record)
+{
+  struct tm ft;
+
+  ft.tm_hour = (int)record[timeIndex[0]];
+  ft.tm_min = (int)record[timeIndex[1]];
+  ft.tm_sec = (int)record[timeIndex[2]];
+  ft.tm_year = (int)record[timeIndex[3]]-1900;
+  ft.tm_mon = (int)record[timeIndex[4]]-1;
+  ft.tm_mday = (int)record[timeIndex[5]];
+
+  return mktime(&ft);
+}
+
+/* -------------------------------------------------------------------- */
+time_t UTCseconds(const void *record)
+{
+  time_t t;
+
+  if (cfg.isADS2())
+    t = HdrBlkTimeToSeconds((Hdr_blk *)record);
+  else
+    t = SampledDataTimeToSeconds((NR_TYPE *)record);
+
+  return t;
 }
 
 /* -------------------------------------------------------------------- */
 int CheckForTimeGap(const void *ADShdr, int initMode)
 {
   long i, j;
-  time_t newTime;
 
-  newTime = UTCseconds(ADShdr);
+  time_t newTime = UTCseconds(ADShdr);
 
   /* If everthing is peachy, then bail out.
    */
@@ -367,46 +379,6 @@ void FormatTimeSegmentsForOutputFile(char *buff)
 time_t GetPreviousTime()
 {
   return prevTime;
-}
-
-/* -------------------------------------------------------------------- */
-time_t HdrBlkTimeToSeconds(Hdr_blk * hdr)
-{
-  struct tm ft;
-
-  ft.tm_hour = ntohs(hdr->hour);
-  ft.tm_min = ntohs(hdr->minute);
-  ft.tm_sec = ntohs(hdr->second);
-  ft.tm_year = ntohs(hdr->year);
-  ft.tm_mon = ntohs(hdr->month)-1;
-  ft.tm_mday = ntohs(hdr->day);
-
-  if (ft.tm_year < 1000)   // We now have year 2070 problem.
-  {
-    if (ft.tm_year < 70)
-      ft.tm_year += 100;
-  }
-  else
-    ft.tm_year -= 1900;
-
-  return mktime(&ft);
-}
-
-/* -------------------------------------------------------------------- */
-time_t SampledDataTimeToSeconds()
-{
-  struct tm ft;
-
-  extern NR_TYPE *SampledData;
-
-  ft.tm_hour = (int)SampledData[timeIndex[0]];
-  ft.tm_min = (int)SampledData[timeIndex[1]];
-  ft.tm_sec = (int)SampledData[timeIndex[2]];
-  ft.tm_year = (int)SampledData[timeIndex[3]]-1900;
-  ft.tm_mon = (int)SampledData[timeIndex[4]]-1;
-  ft.tm_mday = (int)SampledData[timeIndex[5]];
-
-  return mktime(&ft);
 }
 
 /* END TIMESEG.C */
