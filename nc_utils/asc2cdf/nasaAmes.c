@@ -302,7 +302,6 @@ printf("%s\n", titles[i]);
     nc_put_att_text(ncid, varid[i+3], "units", strlen(p)+1, p);
     p = titles[i];
     nc_put_att_text(ncid, varid[i+3], "long_name", strlen(p)+1, p);
-    nc_put_att_float(ncid,varid[i+3], "missing_value",NC_FLOAT, 1, &missing_val);
 
     free(units[i]);
     free(titles[i]);

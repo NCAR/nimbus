@@ -203,7 +203,6 @@ printf("Adding variable %s with units of %s\n", name, units);
     nc_put_att_float(ncid,varid[i+3], "_FillValue",NC_FLOAT, 1, &missingVal);
     nc_put_att_text(ncid, varid[i+3], "units", strlen(units)+1, units);
     nc_put_att_text(ncid, varid[i+3], "long_name", strlen(noTitle)+1, noTitle);
-    nc_put_att_float(ncid,varid[i+3], "missing_value",NC_FLOAT, 1, &missingVal);
     }
 
 }	/* END CREATENASALANGNETCDF */

@@ -189,7 +189,6 @@ void CreatePlainNetCDF(FILE *fp)
 #endif
 	(char *)noTitle;
     nc_put_att_text(ncid, varid[nVariables], "long_name", strlen(p1)+1, p1);
-    nc_put_att_float(ncid,varid[nVariables],"missing_value",NC_FLOAT,1,&missing_val);
 
     ++nVariables;
     }
