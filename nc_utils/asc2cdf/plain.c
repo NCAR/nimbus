@@ -37,6 +37,8 @@ void SetPlainBaseTime()
   t = gmtime(&BaseTime);
   strftime(buffer, 128, timeUnitsFormat, t);
 
+  printf("\nFlight start time = [%s]\nBaseTime = %d\n", buffer, BaseTime);
+
   nc_put_att_text(ncid, timeVarID, "units", strlen(buffer)+1, buffer);
   nc_put_att_text(ncid, timeOffsetID, "units", strlen(buffer)+1, buffer);
 
@@ -71,7 +73,7 @@ void CreatePlainNetCDF(FILE *fp)
       fprintf(stderr, "env variable PROJ_DIR undefined, trying /usr/local/proj.\n");
       }
 
-    strcat(buffer, "/defaults/VarDB");
+    strcat(buffer, "/Configuration/raf/VarDB");
 
     if (InitializeVarDB(buffer) == ERR)
       {
@@ -106,6 +108,10 @@ void CreatePlainNetCDF(FILE *fp)
                   strlen(buffer)+1, buffer);
   }
 
+
+  extern char FlightDate[];
+  if (strlen(FlightDate) > 0)
+    nc_put_att_text(ncid, NC_GLOBAL, "FlightDate", strlen(FlightDate)+1, FlightDate);
 
   /* Time segments.  Will be updated later.
    */

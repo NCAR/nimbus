@@ -4,7 +4,7 @@
 .SH NAME
 asc2cdf \- ASCII to netCDF converter
 .SH SYNOPSIS
-asc2cdf [-b time_t] [-g globalAttrFile] [-a] [-l] [-m] [-r n] [-s n] ASCII_file netCDF_file
+asc2cdf [-d yyyy-mm-dd] [-b time_t] [-g globalAttrFile] [-a] [-l] [-m] [-r n] [-s n] ASCII_file netCDF_file
 .SH DESCRIPTION
 .B asc2cdf 
 is program for uploading ASCII data into a netCDF file that follows the
@@ -39,6 +39,10 @@ The -b option defines a base_time in Unix seconds since January 1st 1970.
 This is useful when trying to merge data back into a netCDF file, where
 ncmerge(1) complains about no overlapping time segments.  The default value
 is 0.  This option has no affect when the -a or -l option is enabled.
+.PP
+The -d option lets the user specify a flight date.  This can be used in place
+of the -b option.  If both options are specified, the -d will take precedence.
+Date must be in ISO-8601 compliant format.
 .PP
 The -r option defines the data rate.  Where the rate must be less than 1 Hz.
 n = 5 means 1 sample every 5 seconds.  The default is 1.

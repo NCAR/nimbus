@@ -22,15 +22,16 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2006
 char	buffer[BUFFSIZE];
 
 int	ncid;
-FILE	*inFP;
 int	baseTimeID, timeOffsetID, timeVarID, varid[MAX_VARS],
 	nVariables;
-size_t	nRecords;
 time_t	BaseTime = 0;
 float	scale[MAX_VARS], offset[MAX_VARS], missingVals[MAX_VARS];
 
+char FlightDate[50];
 const char *time_vars[] = { "HOUR", "MINUTE", "SECOND", 0 };
 
+static FILE	*inFP;
+static size_t	nRecords;
 static char	*globalAttrFile = 0;
 
 /* Command line option flags.
@@ -53,12 +54,13 @@ static void WriteMissingData(int, int);
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
-  int	i, hour, minute, second, currSecond, lastSecond;
+  int	i, hour, minute, second, currSecond, lastSecond = -1;
   int	startHour, startMinute, startSecond;
   char	*p;
   float	dataValue;
 
   putenv("TZ=UTC");	// All time calcs in UTC.
+  FlightDate[0] = 0;
 
   i = ProcessArgv(argc, argv);
 
@@ -151,6 +153,9 @@ int main(int argc, char *argv[])
 
     currSecond = hour * 3600 + minute * 60 + second;
 
+    if (lastSecond == -1 && strlen(FlightDate) > 0) // 1st time through loop.
+      BaseTime += currSecond;
+
     if (nRecords == 0)
       {
       startHour = hour;
@@ -210,11 +215,20 @@ int main(int argc, char *argv[])
 
   fclose(inFP);
 
+  // If FlightDate was specified, we need to re-write the base_time & Time::units
+  // since we didn't know the start time of the first data record, just the date
+  // of the flight.
+  WriteBaseTime();
+
+  nc_redef(ncid);
+  SetPlainBaseTime();
+
   sprintf(buffer, "%02d:%02d:%02d-%02d:%02d:%02d",
           startHour, startMinute, startSecond, hour, minute, second);
 
   nc_put_att_text(ncid, NC_GLOBAL, "TimeInterval", strlen(buffer)+1, buffer);
   printf("Time interval completed = %s\n", buffer);
+  nc_enddef(ncid);
   nc_close(ncid);
 
   return(0);
@@ -261,7 +275,6 @@ static void WriteMissingData(int currSecond, int lastSecond)
         }
       }
     }
-
 }	/* END WRITEMISSINGDATA */
 
 /* -------------------------------------------------------------------- */
@@ -277,7 +290,20 @@ static int ProcessArgv(int argc, char **argv)
     switch (argv[i][1])
       {
       case 'b':
-        BaseTime = atoi(argv[++i]);
+        if (strlen(FlightDate) > 0)
+          fprintf(stderr, "-d option trumps -b option, BaseTime ignored.\n");
+        else
+          BaseTime = atoi(argv[++i]);
+        break;
+
+      case 'd':
+        {
+        struct tm tm;
+        strptime(argv[++i], "%F", &tm);
+        tm.tm_hour = tm.tm_min = tm.tm_sec = 0;
+        BaseTime = mktime(&tm);
+        sprintf(FlightDate, "%02d/%02d/%4d", tm.tm_mon+1, tm.tm_mday, tm.tm_year+1900);
+        }
         break;
 
       case 'm':
