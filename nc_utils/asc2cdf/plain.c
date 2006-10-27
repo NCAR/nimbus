@@ -37,7 +37,7 @@ void SetPlainBaseTime()
   t = gmtime(&BaseTime);
   strftime(buffer, 128, timeUnitsFormat, t);
 
-  printf("\nFlight start time = [%s]\nBaseTime = %d\n", buffer, BaseTime);
+  printf("\nFlight start time = [%s]\nBaseTime = %lu\n", buffer, BaseTime);
 
   nc_put_att_text(ncid, timeVarID, "units", strlen(buffer)+1, buffer);
   nc_put_att_text(ncid, timeOffsetID, "units", strlen(buffer)+1, buffer);
