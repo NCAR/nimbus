@@ -35,7 +35,6 @@ void	*inPtrs[MAX_IN_VARS], *outPtrs[MAX_OUT_VARS];
 int	infd1, infd2, VarCnt = 0, xFerCnt = 0;
 time_t	bt1, bt2;
 size_t	et1, et2;
-bool	ExactTimeSegments = true;
 
 void	CopyVariablesDefinitions(), MoveData();
 
@@ -98,7 +97,7 @@ void checkForOverlappingTimeSegments()
 
   int timeDimID1, timeDimID2;
   nc_inq_dimid(infd1, "Time", &timeDimID1);
-  nc_inq_dimid(infd2, "Time", &timeDimID1);
+  nc_inq_dimid(infd2, "Time", &timeDimID2);
 
   nc_inq_dimlen(infd1, timeDimID1, &et1);
   nc_inq_dimlen(infd2, timeDimID2, &et2);
@@ -138,7 +137,6 @@ void checkForOverlappingTimeSegments()
   if (bt1 != bt2 || et1 != et2)
   {
     printf("Time segments do not match exactly, this has potential to produce inconsistent results.\n");
-    ExactTimeSegments = false;
   }
 }
 
@@ -244,8 +242,6 @@ void CopyVariablesDefinitions()
     else
     {
       printf("Variable %s exists in primary file, it will be overwritten.\n", name);
-      if (!ExactTimeSegments)
-        printf("  Warning: beware of non-matching time segment.\n");
     }
 
     for (int j = 0; j < nAtts; ++j)
@@ -279,7 +275,14 @@ void MoveData()
   if (bt1 < bt2) outRec = bt2 - bt1;
   if (bt1 > bt2) inRec = bt1 - bt2;
 
-  nRecords = std::min(et1, et2) - std::max(bt1, bt2);
+  if ((nRecords = std::min(et1, et2) - std::max(bt1, bt2)) == 0)
+  {
+    fprintf(stderr, "Computed number of records to merge is zero.  Something is wrong.\n");
+    fprintf(stderr, "  begTimeMaster = %d, endTimeMaster = %d, nRecords=%d\n", bt1, et1, et1-bt1);
+    fprintf(stderr, "  begTimeSecond = %d, endTimeSecond = %d, nRecords=%d\n", bt2, et2, et2-bt2);
+    Exit(1);
+  }
+
   count[0] = nRecords;
   wr_start[0] = outRec; wr_start[1] = wr_start[2] = 0;
   rd_start[0] = inRec; rd_start[1] = rd_start[2] = 0;
