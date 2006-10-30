@@ -161,7 +161,7 @@ void CreateNetCDF(const char fileName[])
   putGlobalAttribute("Phone", "(303) 497-1030");
   putGlobalAttribute("Conventions", "NCAR-RAF/nimbus");
   putGlobalAttribute("ConventionsURL", "http://www.eol.ucar.edu/raf/Software/netCDF.html");
-  putGlobalAttribute("Version", NETCDF_FORMAT_VERSION.c_str());
+  putGlobalAttribute("ConventionsVersion", NETCDF_FORMAT_VERSION.c_str());
   putGlobalAttribute("ProcessorRevision", &SVNREVISION[10]);
 
   if (strstr(SVNURL, "http"))
