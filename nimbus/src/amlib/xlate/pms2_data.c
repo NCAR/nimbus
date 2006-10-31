@@ -532,6 +532,15 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
       continue;
       }
 
+    // In the rare case where a syncword is the first slice, get ride of it.
+    if (particle.size() < 2)
+      {
+      particle.clear();
+      ++i; ++p;
+      continue;
+      }
+
+
     unsigned long syncWord = particle[0];
     unsigned long blankWord = particle[particle.size()-2];
     unsigned long timeWord = particle[particle.size()-1];
