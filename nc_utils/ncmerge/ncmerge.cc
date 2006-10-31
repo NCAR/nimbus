@@ -107,8 +107,11 @@ void checkForOverlappingTimeSegments()
   nc_get_att_text(infd2, varID2, "units", units2);
 
   char unitsFormat1[60], unitsFormat2[60];
-  nc_get_att_text(infd1, varID1, "strptime_format", unitsFormat1);
-  nc_get_att_text(infd2, varID2, "strptime_format", unitsFormat2);
+  const char * defaultFormat = "seconds since %F %T %z";
+  if (nc_get_att_text(infd1, varID1, "strptime_format", unitsFormat1) != NC_NOERR)
+    strcpy(unitsFormat1, defaultFormat);
+  if (nc_get_att_text(infd2, varID2, "strptime_format", unitsFormat2) != NC_NOERR)
+    strcpy(unitsFormat2, defaultFormat);
 
   struct tm tm1, tm2;
   strptime(units1, unitsFormat1, &tm1);
@@ -278,8 +281,8 @@ void MoveData()
   if ((nRecords = std::min(et1, et2) - std::max(bt1, bt2)) == 0)
   {
     fprintf(stderr, "Computed number of records to merge is zero.  Something is wrong.\n");
-    fprintf(stderr, "  begTimeMaster = %d, endTimeMaster = %d, nRecords=%d\n", bt1, et1, et1-bt1);
-    fprintf(stderr, "  begTimeSecond = %d, endTimeSecond = %d, nRecords=%d\n", bt2, et2, et2-bt2);
+    fprintf(stderr, "  begTimeMaster = %ld, endTimeMaster = %d, nRecords=%lu\n", bt1, et1, et1-bt1);
+    fprintf(stderr, "  begTimeSecond = %ld, endTimeSecond = %d, nRecords=%lu\n", bt2, et2, et2-bt2);
     Exit(1);
   }
 
