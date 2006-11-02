@@ -23,10 +23,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2003-06
 #include "adsIO.h"
 
 
-char	buffer[0x8000];
+char	buffer[100000];
 char	sourceTape[200];
 
-int WriteDisk(char buff[], int nBytes);
+int Output(char buff[], int nBytes);
 
 
 /* -------------------------------------------------------------------- */
@@ -52,7 +52,7 @@ main(int argc, char *argv[])
   while ((nBytes = source->NextPhysicalRecord(buffer)) > 0)
     {
 //    if (strncmp(buffer, "MCR", 3) == 0)
-    WriteDisk(buffer, nBytes);
+    Output(buffer, nBytes);
     }
 
 
@@ -68,7 +68,7 @@ main(int argc, char *argv[])
 }	/* END MAIN */
 
 /* -------------------------------------------------------------------- */
-int WriteDisk(char buff[], int nBytes)
+int Output(char buff[], int nBytes)
 {
   int	rc, thisTime;
   Hdr_blk *hdr;
@@ -107,7 +107,7 @@ int WriteDisk(char buff[], int nBytes)
     case 0x4732:
     case 0x4831:
     case 0x4832:
-        printf("PMS 2d %c, nBytes=%d\n", buff[0], nBytes);
+      printf("PMS 2d %c, nBytes=%d\n", buff[0], nBytes);
       for (int i = 0; i < 7; ++i)
         printf("  %c %02d:%02d:%02d.%03d, tas=%d\n", ((char*)&p2d[i])[0], ntohs(p2d[i].hour), ntohs(p2d[i].minute), ntohs(p2d[i].second), ntohs(p2d[i].msec), ntohs(p2d[i].tas));
       break;
