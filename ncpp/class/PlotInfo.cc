@@ -546,7 +546,7 @@ void PlotInfo::printTitles(PostScript& pen)
 void PlotInfo::drawTitles(int sizeOffset)
 {
   int	offset, fontIdx;
-  static char *helpURL = "http://raf.atd.ucar.edu/Software/ncpp.html";
+  static char *helpURL = "http://www.eol.ucar.edu/raf/Software/ncpp.html";
 
 
   blackPen.DrawText(canvas.Surface(), 300, 15, helpURL);
