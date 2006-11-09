@@ -70,6 +70,7 @@ static long	FindNextDataRecord(char buff[]);
 static bool	IsThisAnAsyncRecord(short buff[]);
 static void	check_rico_half_buff(P2d_rec *buff, size_t beg, size_t end);
 static int	GetNext2Dfile();
+static void	checkForDayErrors(Hdr_blk * hdr);
 
 char	*ExtractHeaderIntoFile(char *);
 void	WriteAsyncData(char record[]);
@@ -160,6 +161,7 @@ long FindNextLogicalADS2(char record[], long endtime)
     }
 
   memcpy(record, &phys_rec[currentLR * lrlen], lrlen);
+  checkForDayErrors((Hdr_blk *)record);
 
   if (++currentLR >= lrppr)
     {
@@ -654,6 +656,38 @@ bool Next2dRecord(P2d_rec *record, int probeCnt, short id)
 }	/* END NEXT2DRECORD */
 
 /* -------------------------------------------------------------------- */
+void checkForDayErrors(Hdr_blk * hdr)
+{
+  static bool rollOver = false;
+  static int prevDay = -1;
+
+  int   y = ntohs(hdr->year),
+        mon = ntohs(hdr->month),
+        d = ntohs(hdr->day),
+        h = ntohs(hdr->hour),
+        m = ntohs(hdr->minute),
+        s = ntohs(hdr->second);
+
+  if (prevDay > 0)
+  {
+    // On some projects (e.g. DYCOMS) the date does not rollover at mightnight.
+    if ((rollOver && h == 0 && m == 0 && s == 0 && d == prevDay) ||
+        (rollOver && d < prevDay))
+      ++d;
+
+    if (h == 23 && m == 59 && s == 59)
+    {
+      if (d != prevDay) // On ADS2, the day rolls over 1 sec before midnight.
+        d = prevDay;
+      rollOver = true;
+    }
+  }
+
+  prevDay = d;
+  hdr->day = htons(d);
+}
+
+/* -------------------------------------------------------------------- */
 static void check_rico_half_buff(P2d_rec *buff, size_t beg, size_t end)
 {
   std::vector<size_t> spectra, sorted_spectra;
@@ -725,4 +759,5 @@ static void check_rico_half_buff(P2d_rec *buff, size_t beg, size_t end)
     }
   }
 }
+
 /* END ADSIO.C */
