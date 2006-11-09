@@ -1294,6 +1294,7 @@ static void initMASP(char vn[])
         continue;
 
       dp->Default_HR_OR = rate;
+      dp->SerialNumber = rp->SerialNumber;
 
       /* Make sure CMASP gets proper space alloc
        */
@@ -1366,6 +1367,7 @@ static void initRDMA(char vn[])
     }
 
   derived[indx]->Length = 64;
+  derived[indx]->SerialNumber = "RDMA1";
 
   for (size_t i = 0; i < derived.size(); ++i)
     if (derived[i]->ProbeType == PROBE_RDMA)
@@ -1458,6 +1460,7 @@ static void initPMS1D(char vn[])
         continue;
 
       dp->Default_HR_OR = rate;
+      dp->SerialNumber = rp->SerialNumber;
 
       /* Make sure CFSSP, C200X, etc, get proper space alloc
        */
@@ -1610,6 +1613,7 @@ static void initPMS1Dv2(char vn[])
         continue;
 
       dp->Default_HR_OR = rate;
+      dp->SerialNumber = rp->SerialNumber;
 
       /* Make sure CFSSP, C200X, etc, get proper space alloc
        */
@@ -1905,6 +1909,7 @@ static void initPMS2D(char vn[], int order)
           continue;
 
         dp->Default_HR_OR = rate;
+        dp->SerialNumber = rp->SerialNumber;
 
         /* Make sure CFSSP, C200X, etc, get proper space alloc
          */

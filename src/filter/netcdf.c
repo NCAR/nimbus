@@ -88,7 +88,7 @@ static void	markDependedByList(char target[]), writeTimeUnits();
 static void	clearDependedByList(), printDependedByList();
 static void	addCommonVariableAttributes(var_base *var), addLandmarks();
 
-void	AddPMS1dAttrs(int ncid, RAWTBL *rp), ReadMetaData(int fd),
+void	AddPMS1dAttrs(int ncid, var_base * rp), ReadMetaData(int fd),
 	CheckAndAddAttrs(int fd, int varid, char name[]);
 
 //      Rate, DimID
@@ -437,6 +437,11 @@ void CreateNetCDF(const char fileName[])
     }
 
     CheckAndAddAttrs(fd, dp->varid, dp->name);
+
+    if (dp->Length > 3 &&
+	(dp->ProbeType & PROBE_PMS2D || dp->ProbeType & PROBE_PMS1D ||
+	 dp->ProbeType & PROBE_RDMA || dp->ProbeType & PROBE_CLMT))
+      AddPMS1dAttrs(fd, dp);
 
     if (dp->OutputRate == Config::LowRate)
       data_p[indx++] = (void *)&AveragedData[dp->LRstart];
