@@ -56,6 +56,9 @@ void ReadGroundVarsFile()
 
   FreeTextFile(list);
 
+
+  // Reproduce above file in the order which nimbus will be placing them in
+  // the packet.
   FILE *fp;
   std::string fileName(XMIT_VARS);
   fileName += ".rt";

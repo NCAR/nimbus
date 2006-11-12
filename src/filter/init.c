@@ -254,7 +254,7 @@ static void usage()
 	Default all variables to sample rate output.\n\
   -rt:	Real-time for ADS2.\n\
   -rt3:	Real-time for ADS3.\n\
-  -x:	Transmit SQL statements to the ground via LDM.\n\
+  -x:	Produce and transmit SQL statements to ground (see groundvars file and LDM pqinsert(1)).\n\
   -n:	Do NOT load any existing production setup files.\n");
 
   exit(0);
