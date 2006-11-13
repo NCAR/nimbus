@@ -72,8 +72,8 @@ extern const int MaxLag;
 /*      Function Prototypes
  */
 void	SetLookupSuffix(char *new_suffix),
-	AddToPMS1DprobeList(char probe[], char location[], char serial_num[],
-								int type),
+	AddToPMS1DprobeList(	const char probe[], const char location[],
+				const char serial_num[], int type),
 	AddVariableToRAWlagList(RAWTBL *varp),
 	AddVariableToRAWdespikeList(RAWTBL *varp),
 	ReadDefaultDerivedOutputRate(), ReadSumVariables(),

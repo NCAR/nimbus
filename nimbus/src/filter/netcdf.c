@@ -948,6 +948,10 @@ static void addCommonVariableAttributes(var_base *var)
   if (p && strcmp(p, "None") != 0)
     ncattput(fd, var->varid, "standard_name", NC_CHAR, strlen(p)+1, p);
 
+  if (var->SerialNumber.length() > 0)
+    ncattput(fd, var->varid, "SerialNumber", NC_CHAR,
+	var->SerialNumber.length()+1, var->SerialNumber.c_str());
+
 }	/* END ADDCOMMONVARIABLEATTRIBUTES */
 
 /* -------------------------------------------------------------------- */

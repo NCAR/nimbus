@@ -101,7 +101,7 @@ void SetUpPMS1D_SHMEM()
 }	/* END SETUPPMS1D_SHMEM */
 
 /* -------------------------------------------------------------------- */
-void AddToPMS1DprobeList(char probe[], char location[], char serial_num[], int type)
+void AddToPMS1DprobeList(const char probe[], const char location[], const char serial_num[], int type)
 {
   strcpy((probe_name[pcnt] = new char[NAMELEN]), probe);
   strcat(probe_name[pcnt], location);

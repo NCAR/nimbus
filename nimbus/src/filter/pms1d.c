@@ -93,9 +93,6 @@ void AddPMS1dAttrs(int ncid, var_base * rp)
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
   InitPMSspecs(buffer);
 
-  ncattput(ncid, cvarid, "SerialNumber", NC_CHAR,
-           rp->SerialNumber.length()+1, rp->SerialNumber.c_str());
-
   if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "FIRST_BIN")) ) {
     int	value = atoi(p);
     ncattput(ncid, cvarid, "FirstBin", NC_INT, 1, &value);
@@ -205,6 +202,8 @@ static int getCellSizes(var_base * rp, float cellSize[])
   char	*p;
 
   if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "CELL_SIZE")) == NULL) {
+    fprintf(stderr, "Failed to acquire %s CELL_SIZE for serial number [%s].\n",
+		rp->name, rp->SerialNumber.c_str());
     sprintf(buffer, "CELL_SIZE_%d", rp->Length-1);
     p = GetPMSparameter(rp->SerialNumber.c_str(), buffer);
     }
@@ -247,7 +246,7 @@ static int getCellSizes(var_base * rp, float cellSize[])
 
   if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "RANGE_STEP")) )
     step = atof(p);
-
+printf("%f %f %f\n", min, max, step);
   for (i = 0; i < nBins; min += step)
     cellSize[i++] = min;
 
@@ -257,9 +256,9 @@ static int getCellSizes(var_base * rp, float cellSize[])
 
 /* -------------------------------------------------------------------- */
 void AddToPMS1DprobeList(
-	char    probe[],
-	char    location[],
-	char    serial_num[],
+	const char    probe[],
+	const char    location[],
+	const char    serial_num[],
 	int     type)
 {
 
