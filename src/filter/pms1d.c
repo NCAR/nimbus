@@ -244,7 +244,7 @@ static int getCellSizes(var_base * rp, float cellSize[])
 
   if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "RANGE_STEP")) )
     step = atof(p);
-printf("%f %f %f\n", min, max, step);
+
   for (i = 0; i < nBins; min += step)
     cellSize[i++] = min;
 

@@ -136,8 +136,8 @@ void InitMRFilters()
     switch (raw[i]->SampleRate)
     {
       case 1:			/* Interpolate	*/
-//        rawFilters[i] = createMRFilter(L, M, OneUp, mv_p);
-        rawFilters[i] = 0;
+        rawFilters[i] = createMRFilter(L, M, OneUp, mv_p);
+//        rawFilters[i] = 0;
         break;
       case 5:
         rawFilters[i] = createMRFilter(L, M, FiveUp, mv_p);
@@ -160,8 +160,8 @@ void InitMRFilters()
           rawFilters[i] = createMRFilter(L, M, TenUp, mv_p);
         break;
       case 13:	// Really 12.5hz
-        rawFilters[i] = createMRFilter(L, M, ThirteenUp, mv_p);
-//        rawFilters[i] = 0;
+//        rawFilters[i] = createMRFilter(L, M, ThirteenUp, mv_p);
+        rawFilters[i] = 0;
         break;
       case 16:
         rawFilters[i] = createMRFilter(L, M, SixteenUp, mv_p);
