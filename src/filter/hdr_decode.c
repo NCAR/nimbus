@@ -5,11 +5,15 @@ OBJECT NAME:	hdr_decode.c
 FULL NAME:	Decode Header
 
 ENTRY POINTS:	DecodeHeader()
+		DecodeHeader3()
+		closeSyncRecordReader()
 
-STATIC FNS:	initHDR(), initSDI(), initHoneywell(), initOphir3(),
+STATIC FNS:	CommonPreInitialization(), CommonPostInitialization(),
+		initHDR(), initSDI(), initSDI_ADS3(), initHoneywell(), initOphir3(),
 		initPMS1D(), initPMS1Dv2(), locatePMS(), initLitton51(),
 		add_file_to_???TBL(), add_name_to_???TBL(), add_derived_names(),
-		check_cal_coes(), initPMS2D(), initMASP()
+		check_cal_coes(), initPMS2D(), initMASP(), initPMS1Dv3(),
+		openVariableDatabase(), addUnitsAndLongName(), testUnitsTitles()
 
 DESCRIPTION:	Read header & add variables to appropriate table.  There
 		are 3 major tables here:
@@ -108,6 +112,7 @@ static size_t	InertialSystemCount, GPScount, twoDcnt, NephCnt;
 static size_t	probeCnt;
 static unsigned long	probeType;
 static long	start, rate, length;
+static std::string serialNumber;
 static char	*item_type, location[NAMELEN];
 static char	*derivedlist[MAX_DEFAULTS*4],	/* DeriveNames file	*/
 		*rawlist[MAX_DEFAULTS*4];	/* RawNames file	*/
@@ -360,8 +365,8 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
   // Add Time variables, hour, min, sec, year, mon, day.
   initHDR(0);
 
+  // Loop over all variables from sync_server/nidas.
   const std::list<const nidas::dynld::raf::SyncRecordVariable*>& vars = syncRecReader->getVariables();
-
   std::list<const nidas::dynld::raf::SyncRecordVariable*>::const_iterator vi;
   for (vi = vars.begin(); vi != vars.end(); ++vi)
   {
@@ -558,6 +563,7 @@ int DecodeHeader(const char header_file[])
       rate = 1;
 
     length = 1;
+    serialNumber.clear();
 
     if (rate == 5000)
       continue;
@@ -1267,14 +1273,14 @@ static void initMASP(char vn[])
   strcpy(temp, "A");	/* Actual	*/
   strcat(temp, vn);
 
+  serialNumber = vn;
+  serialNumber += "_DEF";
+
   if ((rp = add_name_to_RAWTBL(temp)) == (RAWTBL *)ERR)
     return;
 
   rp->Length	= nbins = BINS_32;
   rp->Average	= (void (*) (...))SumVector;
-
-  rp->SerialNumber = vn;
-  rp->SerialNumber += "_DEF";
 
 
 {	/* Perform add_derived_names manually	*/
@@ -1294,7 +1300,6 @@ static void initMASP(char vn[])
         continue;
 
       dp->Default_HR_OR = rate;
-      dp->SerialNumber = rp->SerialNumber;
 
       /* Make sure CMASP gets proper space alloc
        */
@@ -1312,6 +1317,7 @@ static void initCLIMET(char vn[])
 {
   int		indx;
 
+  serialNumber = "CLIMET1";
   add_raw_names(vn);
   add_derived_names(vn);
 
@@ -1323,8 +1329,6 @@ static void initCLIMET(char vn[])
     }
 
   raw[indx]->Length = 7;
-  raw[indx]->SerialNumber = "CLIMET1";
-
 
   strcpy(buffer, "CCLMT"); strcat(buffer, location);
   if ((indx = SearchTable(derived, buffer)) == ERR)
@@ -1345,6 +1349,7 @@ static void initRDMA(char vn[])
 {
   int		indx;
 
+  serialNumber = "RDMA1";
   add_raw_names(vn);
   add_derived_names(vn);
 
@@ -1356,8 +1361,6 @@ static void initRDMA(char vn[])
     }
 
   raw[indx]->Length = 64;
-  raw[indx]->SerialNumber = "RDMA1";
-
 
   strcpy(buffer, "CRDMA"); strcat(buffer, location);
   if ((indx = SearchTable(derived, buffer)) == ERR)
@@ -1367,7 +1370,6 @@ static void initRDMA(char vn[])
     }
 
   derived[indx]->Length = 64;
-  derived[indx]->SerialNumber = "RDMA1";
 
   for (size_t i = 0; i < derived.size(); ++i)
     if (derived[i]->ProbeType == PROBE_RDMA)
@@ -1420,6 +1422,8 @@ static void initPMS1D(char vn[])
 
   strcpy(temp, "A");	/* Actual	*/
   strcat(temp, probe);
+  serialNumber = probe;
+  serialNumber += "_DEF";
 
   if ( (p = SearchList(rawlist, probe)) )
     {
@@ -1436,9 +1440,6 @@ static void initPMS1D(char vn[])
         rp->Length	= pms1_probes[indx].VecLen;
         rp->Average	= (void (*) (...))SumVector;
         }
-
-      rp->SerialNumber = probe;
-      rp->SerialNumber += "_DEF";
       }
     }
 
@@ -1460,7 +1461,6 @@ static void initPMS1D(char vn[])
         continue;
 
       dp->Default_HR_OR = rate;
-      dp->SerialNumber = rp->SerialNumber;
 
       /* Make sure CFSSP, C200X, etc, get proper space alloc
        */
@@ -1505,8 +1505,15 @@ static void initPMS1Dv2(char vn[])
   strcat(buffer, location);
   AddProbeToList(buffer, pms1_probes[indx].pType | probeCnt);
 
-  GetSerialNumber(vn, &p);
-  AddToPMS1DprobeList(probe, location, p, pms1v2_probes[indx].type);
+  if (GetSerialNumber(vn, &p) != ERR)
+    serialNumber = p;
+  else
+    {
+    serialNumber = probe;
+    serialNumber += "_DEF";
+    }
+
+  AddToPMS1DprobeList(probe, location, serialNumber.c_str(), pms1v2_probes[indx].type);
 
 
   /* Add Housekeeping variables to RAWTBL
@@ -1555,14 +1562,6 @@ static void initPMS1Dv2(char vn[])
       strcpy(name, p);
       if ((rp = add_name_to_RAWTBL(name)) == (RAWTBL *)ERR)
         continue;
-
-      if (GetSerialNumber(vn, &p) != ERR)
-        rp->SerialNumber = p;
-      else
-        {
-        rp->SerialNumber = probe;
-        rp->SerialNumber += "_DEF";
-        }
 
       if (strcmp(name, temp) == 0)
         {
@@ -1613,7 +1612,6 @@ static void initPMS1Dv2(char vn[])
         continue;
 
       dp->Default_HR_OR = rate;
-      dp->SerialNumber = rp->SerialNumber;
 
       /* Make sure CFSSP, C200X, etc, get proper space alloc
        */
@@ -1633,7 +1631,7 @@ static void initPMS1Dv3(char vn[])
   long		nbins;
   RAWTBL	*rp;
   DERTBL	*dp;
-  char		*p, *probe, temp[NAMELEN], *serialNum;
+  char		*p, *probe, temp[NAMELEN];
 
 
   GetName(vn, &probe);
@@ -1653,13 +1651,20 @@ static void initPMS1Dv3(char vn[])
 
   strcpy(buffer, probe);
   strcat(buffer, location);
-  GetSerialNumber(vn, &p);
+
+  if (GetSerialNumber(vn, &p) != ERR)
+    serialNumber = p;
+  else
+    {
+    serialNumber = probe;
+    serialNumber += "_DEF";
+    }
+
   AddProbeToList(buffer, pms1_probes[indx].pType | probeCnt);
 
   /* For real-time WINDS.  Calls pms1d.c for nimbus.
    */
-  GetSerialNumber(vn, &serialNum);
-  AddToPMS1DprobeList(probe, location, serialNum, pms1_probes[indx].type);
+  AddToPMS1DprobeList(probe, location, serialNumber.c_str(), pms1_probes[indx].type);
 
 
   /* Get raw NAMES.
@@ -1675,7 +1680,6 @@ static void initPMS1Dv3(char vn[])
     rp->Average	= (void (*) (...))SumVector;
     }
 
-  rp->SerialNumber = serialNum;
   SetLookupSuffix("_V3");
 
   /* Housekeeping names and cals from PMSspecs */
@@ -1684,7 +1688,7 @@ static void initPMS1Dv3(char vn[])
     int j;
 
     sprintf(buffer, "HSKP%d", i);
-    p = GetPMSparameter(serialNum, buffer);
+    p = GetPMSparameter(serialNumber.c_str(), buffer);
     
     if (strncmp(p, "DUMMY", 5) == 0)
       continue;
@@ -1726,7 +1730,6 @@ static void initPMS1Dv3(char vn[])
         continue;
 
       dp->Default_HR_OR = rate;
-      dp->SerialNumber = serialNum;
 
       /* Make sure CFSSP, C200X, etc, get proper space alloc
        */
@@ -1876,17 +1879,17 @@ static void initPMS2D(char vn[], int order)
     AddProbeToList(buffer, pms2d_probes[indx].pType | probeCnt);
 //printf("initPMS2D: rp = %s %d\n", buffer, probeCnt);
 
+    if (GetSerialNumber(vn, &p) != ERR)
+      serialNumber = p;
+    else
+      {
+      serialNumber = buffer;
+      serialNumber += "_DEF";
+      }
+
     rp = add_name_to_RAWTBL(buffer);
     rp->Average	= (void (*) (...))SumVector;
     rp->Length	= nBins;
-
-    if (GetSerialNumber(vn, &p) != ERR)
-      rp->SerialNumber = p;
-    else
-      {
-      rp->SerialNumber = buffer;
-      rp->SerialNumber += "_DEF";
-      }
 
     if (order == 0)
       Add2DtoList(rp);
@@ -1909,7 +1912,6 @@ static void initPMS2D(char vn[], int order)
           continue;
 
         dp->Default_HR_OR = rate;
-        dp->SerialNumber = rp->SerialNumber;
 
         /* Make sure CFSSP, C200X, etc, get proper space alloc
          */
@@ -2059,6 +2061,7 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
   else
     rp->Average		= (void (*) (...))Average;
 
+  rp->SerialNumber	= serialNumber;
   rp->ProbeType		= probeType;
   rp->ProbeCount	= probeCnt;
 
@@ -2121,6 +2124,7 @@ static DERTBL *add_name_to_DERTBL(const char name[])
 
   dp->Default_HR_OR	= Config::HighRate;
   dp->Length		= length;
+  dp->SerialNumber	= serialNumber;
   dp->ProbeType		= probeType;
   dp->ProbeCount	= probeCnt;
 
