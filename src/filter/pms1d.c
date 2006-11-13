@@ -202,8 +202,6 @@ static int getCellSizes(var_base * rp, float cellSize[])
   char	*p;
 
   if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "CELL_SIZE")) == NULL) {
-    fprintf(stderr, "Failed to acquire %s CELL_SIZE for serial number [%s].\n",
-		rp->name, rp->SerialNumber.c_str());
     sprintf(buffer, "CELL_SIZE_%d", rp->Length-1);
     p = GetPMSparameter(rp->SerialNumber.c_str(), buffer);
     }
