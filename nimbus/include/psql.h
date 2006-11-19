@@ -213,7 +213,7 @@ protected:
    * transmission to the ground.
    */
   void
-  addVectorToAllStreams(const NR_TYPE *values, int nValues, bool xmitToGround);
+  addVectorToAllStreams(const NR_TYPE *values, size_t nValues, bool xmitToGround);
 
   /**
    * Remove any trailing spaces from the string @p target.

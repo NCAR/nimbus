@@ -48,14 +48,27 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
   lb = rp->Length-1;
 
   if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "FIRST_BIN")) )
+  {
     fb = atoi(p);
 
-  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "LAST_BIN")) ) {
+    /* We are dropping the unused 0th bin for SQL database.
+     * See 12 lines down and also PostgreSQL::addVectorToAllStreams().
+     */
+    --fb; // We are dropping the unused 0th bin for SQL database.
+  }
+
+  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "LAST_BIN")) )
+  {
     lb = atoi(p) - 1;
 
     if (strstr(rp->name, "2D"))	/* 2D's use 63 bins, instead of 1DC */
       lb += 32;
-    }
+
+    /* We are dropping the unused 0th bin for SQL database.
+     * See also PostgreSQL::addVectorToAllStreams().
+     */
+    --lb;
+  }
 
   nBins = getCellSizes(rp, cellSize);
   sprintf(sql_buff, ", %d, %d, '{", fb, lb);
