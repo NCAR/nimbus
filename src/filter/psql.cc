@@ -327,13 +327,13 @@ PostgreSQL::initializeVariableList()
 
   std::vector<float> noCals;
 
-  /* 3 big loops here for analog, raw and derived.  This is raw.
+  /* 2 big loops here for raw and derived.  This is raw.
    */
   for (size_t i = 0; i < raw.size(); ++i)
   {
     std::string        name;
 
-    if (isdigit(raw[i]->name[0]))       // Can't support vars starting with number.
+    if (isdigit(raw[i]->name[0])) // Can't support vars starting with number.
     {	// Use 'H' for Houskeeping..... ?
       name = "H" + std::string(raw[i]->name);
     }
@@ -375,7 +375,9 @@ PostgreSQL::initializeVariableList()
     if (raw[i]->Length > 1)
     {
       nDims = 2;
-      dims[1] = raw[i]->Length;
+      // Subtract 1, since we don't put 0th bin into SQL database.
+      // See addVectorToAllStreams() & pms1d.c:GetPMS1DAttrsForSQL()
+      dims[1] = raw[i]->Length-1;
     }
     else
       nDims = 1;
@@ -398,7 +400,9 @@ PostgreSQL::initializeVariableList()
     if (derived[i]->Length > 1)
     {
       nDims = 2;
-      dims[1] = derived[i]->Length;
+      // Subtract 1, since we don't put 0th bin into SQL database.
+      // See addVectorToAllStreams() & pms1d.c:GetPMS1DAttrsForSQL()
+      dims[1] = derived[i]->Length-1;
     }
     else
       nDims = 1;
@@ -544,7 +548,7 @@ PostgreSQL::addValueToAllStreams(NR_TYPE value, bool xmit, bool addComma)
 
 /* -------------------------------------------------------------------- */
 inline void
-PostgreSQL::addVectorToAllStreams(const NR_TYPE *value, int nValues, bool xmit)
+PostgreSQL::addVectorToAllStreams(const NR_TYPE *value, size_t nValues, bool xmit)
 {
   _sqlString << ",'{";
 #ifdef BCAST_DATA
@@ -553,9 +557,13 @@ PostgreSQL::addVectorToAllStreams(const NR_TYPE *value, int nValues, bool xmit)
   if (xmit)
     _transmitString << ",'{";
 
-  for (int j = 0; j < nValues; ++j)
+  /* Start at 1 to eliminate unused 0th bin.  See also GetPMS1DAttrsForSQL().
+   * and intializeVariableList().
+   */
+  size_t start = 1;
+  for (size_t j = start; j < nValues; ++j)
   {
-    if (j != 0)
+    if (j != start)
       addValueToAllStreams(value[j], xmit);
     else
       addValueToAllStreams(value[j], xmit, false);
