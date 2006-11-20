@@ -76,7 +76,7 @@ void PlotInfo::UpdateSubtitle(DataSet *set)
   temp += " - ";
   temp += set->EndTime().c_str();
 
-  char tmp[20];
+  char tmp[40];
 
   sprintf(tmp, ", %d second average", sets.AveragingRate());
   temp += tmp;
