@@ -70,7 +70,8 @@ struct particle
   long	msec;
 
   size_t	w, h;
-  bool		edge;		/* particle touched either edge		*/
+  size_t	area;		/* # shaded pixels.			*/
+  unsigned char	edge;		/* particle touched either edge		*/
   ulong		timeWord;
   ushort	x1, x2;		/* for particles that touch both edges.	*/
   NR_TYPE	deltaTime;	/* Amount of time between prev & this particle*/
@@ -290,13 +291,12 @@ return;
         if (!p->edge || (p->edge && p->w <= p->h * 2))
           n = MAX(p->w, p->h);
         else
-        if (p->edge && p->edge != 0xffff) // One edge, but not both.
+        if (p->edge && p->edge != 0xff) // One edge, but not both.
           n = (pow(p->w >> 1, 2.0) + pow(p->h, 2.0)) / p->h;
         else
-        if (p->edge == 0xffff)
+        if (p->edge == 0xff)
           n = sqrt(pow(p->h + ((pow(p->x2, 2.0) + pow(p->x1, 2.0)) / 4 * p->h),
 					2.0) + pow(p->x1, 2.0));
-
         else
           printf("amlib/xlate/pms2_data.c: Not all cases for particles covered.\n");
 
@@ -572,7 +572,8 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
       cp->deltaTime = (NR_TYPE)cp->timeWord * frequency;
       cp->w = 1;	// first slice of particle is in sync word
       cp->h = 1;
-      cp->edge = false;
+      cp->edge = 0;
+      cp->area = 1;	// assume at list 1 pixel hidden in sync-word.
       cp->x1 = 0;
       cp->x2 = 0;
 
@@ -604,11 +605,14 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
           cp->x2++;
           }
 
+        for (size_t k = 0; k < 32; ++k, slice >>= 1)
+          cp->area += slice & 0x0001;
+
         size_t h = 32;
-        for (int k = 0, slice = particle[j];
+        for (size_t k = 0, slice = particle[j];
 		k < 32 && (slice & 0x80000000); slice <<= 1, ++k)
           --h;
-        for (int k = 0, slice = particle[j];
+        for (size_t k = 0, slice = particle[j];
 		k < 32 && (slice & 0x00000001); slice >>= 1, ++k)
           --h;
 
@@ -857,7 +861,7 @@ void ProcessHVPS(Queue *probe, P2d_rec *rec, int probeCnt)
       cp->deltaTime = (NR_TYPE)cp->timeWord * frequency;
       cp->w = 0;
       cp->h = 0;
-      cp->edge = false;
+      cp->edge = 0;
       cp->x1 = 0;
       cp->x2 = 0;
 
