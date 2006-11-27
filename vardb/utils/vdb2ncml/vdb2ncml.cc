@@ -126,7 +126,8 @@ void checkDependencies(int ncid, int varID, char *varName)
 int main(int argc, char *argv[])
 {
   int	i = 1, ncid, timeDim, varID;
-  char	outFile[512], *p;
+  char	outFile[512];
+  const char *p;
 
   if (argc < 2)
   {
