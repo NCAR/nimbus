@@ -917,7 +917,7 @@ printDependedByList()
 /* -------------------------------------------------------------------- */
 static void addCommonVariableAttributes(var_base *var)
 {
-  char *p;
+  const char *p;
 
   ncattput(fd, var->varid, "_FillValue", NC_FLOAT, 1, &MISSING_VALUE);
 
