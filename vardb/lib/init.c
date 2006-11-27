@@ -60,13 +60,6 @@ int InitializeVarDB(const char fileName[])
     fprintf(stderr, "VarDB: NcML version not found, reverting to standard VarDB.\n");
     VarDB_NcML = -1;
   }
-  else
-  {
-    SetCategoryFileName(masterFileName);
-    SetStandardNameFileName(masterFileName);
-    return(OK);
-  }
-
 
   /* Try to open the master VarDB first, then we'll overlay the user
    * requested file.
@@ -80,13 +73,17 @@ int InitializeVarDB(const char fileName[])
 //    master_VarDB = readFile(masterFileName, &master_VarDB_Hdr);
   }
 
+
   SetCategoryFileName(masterFileName);
   SetStandardNameFileName(masterFileName);
 
-  VarDB = readFile(fileName, &VarDB_Hdr);
+  if (VarDB_NcML < 0)
+  {
+    VarDB = readFile(fileName, &VarDB_Hdr);
 
-  if (VarDB == 0 && master_VarDB == 0)
-    return(ERR);
+    if (VarDB == 0 && master_VarDB == 0)
+      return(ERR);
+  }
 
   return(OK);
 
