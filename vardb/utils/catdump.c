@@ -1,23 +1,12 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:	vdbdump.c
+OBJECT NAME:	catdump.c
 
-FULL NAME:	VarDB dump
+FULL NAME:	VarDB dump w/ Categories
 
-ENTRY POINTS:	main()
+DESCRIPTION:	Similar to vdbdump, but output iff category & standard_name
 
-STATIC FNS:	none
-
-DESCRIPTION:	This program does a basic text dump of a Variable DataBase
-		file.
-
-INPUT:		FileName
-
-OUTPUT:		Stuff
-
-REFERENCES:	libVarDB.a
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1999-2006
 -------------------------------------------------------------------------
 */
 
@@ -31,36 +20,36 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 extern long	VarDB_nRecords;
 
 /* -------------------------------------------------------------------- */
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   int		i;
 
   if (argc != 2)
-    {
-    fprintf(stderr, "Usage: vdbdump [proj_num | VarDB_filename]\n");
+  {
+    fprintf(stderr, "Usage: catdump [proj_num | VarDB_filename]\n");
     exit(1);
-    }
+  }
 
   if (InitializeVarDB(argv[1]) == ERR)
-    {
-    fprintf(stderr, "vdbdump: Initialize failure.\n");
+  {
+    fprintf(stderr, "catdump: Initialize failure.\n");
     exit(1);
-    }
+  }
 
 
   printf("Version %d, with %d records.\n", ntohl(VarDB_Hdr.Version),
 						VarDB_nRecords);
 
   for (i = 0; i < VarDB_nRecords; ++i)
-    {
-if (VarDB_GetStandardName(((struct var_v2 *)VarDB)[i].Name) != 0)
-    printf("%-12.12s %-40.40s %-15.15s %d %s\n",
+  {
+    if (VarDB_GetStandardName(((struct var_v2 *)VarDB)[i].Name) != 0)
+      printf("%-12.12s %-40.40s %-15.15s %d %s\n",
 		((struct var_v2 *)VarDB)[i].Name,
 		((struct var_v2 *)VarDB)[i].Title,
 		VarDB_GetCategoryName(((struct var_v2 *)VarDB)[i].Name),
 		VarDB_GetStandardName(((struct var_v2 *)VarDB)[i].Name),
 		VarDB_GetStandardNameName(((struct var_v2 *)VarDB)[i].Name));
-    }
+  }
 
   ReleaseVarDB();
 
@@ -68,4 +57,4 @@ if (VarDB_GetStandardName(((struct var_v2 *)VarDB)[i].Name) != 0)
 
 }	/* END MAIN */
 
-/* END VDBDUMP.C */
+/* END CATDUMP.C */
