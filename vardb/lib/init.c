@@ -8,7 +8,7 @@ ENTRY POINTS:	InitializeVarDB()
 		ReleaseVarDB()
 		VarDB_lookup()
 
-STATIC FNS:	none
+STATIC FNS:	readFile()
 
 DESCRIPTION:	
 
@@ -20,10 +20,12 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
 #include <stdlib.h>
 #include <string.h>
 
+#include <sys/param.h>
 #include <sys/types.h>
 #include <netinet/in.h>	// htonl macros.
 
 #include "vardb.h"
+#include "netcdf.h"
 #include "portable.h"
 
 const long	VarDB_MagicCookie	= 0x42756c6c;
@@ -35,15 +37,31 @@ void			*master_VarDB = NULL;
 struct vardb_hdr	VarDB_Hdr;
 void			*VarDB = NULL;
 
+int	VarDB_NcML = -1;
+char	VarDB_NcML_text_result[512];
+
 long	VarDB_RecLength, VarDB_nRecords;
 
-void	*readFile(const char fileName[], struct vardb_hdr *vdbHdr);
+static void *readFile(const char fileName[], struct vardb_hdr *vdbHdr);
 
 
 /* -------------------------------------------------------------------- */
 int InitializeVarDB(const char fileName[])
 {
-  char	*p, masterFileName[256];
+  char	*p, masterFileName[MAXPATHLEN];
+
+
+  /* Try to open new NcML version first.  If it opens we are done.
+   */
+  strcpy(masterFileName, fileName);
+  if (nc_open(masterFileName, 0, &VarDB_NcML) != NC_NOERR)
+  {
+    fprintf(stderr, "VarDB: NcML version not found, reverting to standard VarDB.\n");
+    VarDB_NcML = -1;
+  }
+  else
+    return(OK);
+
 
   /* Try to open the master VarDB first, then we'll overlay the user
    * requested file.
@@ -57,8 +75,8 @@ int InitializeVarDB(const char fileName[])
 //    master_VarDB = readFile(masterFileName, &master_VarDB_Hdr);
   }
 
-  SetCategoryFileName(fileName);
-  SetStandardNameFileName(fileName);
+  SetCategoryFileName(masterFileName);
+  SetStandardNameFileName(masterFileName);
 
   VarDB = readFile(fileName, &VarDB_Hdr);
 
@@ -70,12 +88,11 @@ int InitializeVarDB(const char fileName[])
 }	/* INITIALIZEVARDB */
 
 /* -------------------------------------------------------------------- */
-void *readFile(const char fileName[], struct vardb_hdr *vdbHdr)
+static void *readFile(const char fileName[], struct vardb_hdr *vdbHdr)
 {
   FILE	*fp;
   int	rc;
   void	*varDB;
-
 
   VarDB_nRecords = 0;
   VarDB_RecLength = 0;
@@ -128,10 +145,10 @@ void *readFile(const char fileName[], struct vardb_hdr *vdbHdr)
     fprintf(stderr, "VarDB: File has older version, converting to new version.\n");
 
     for (i = 0; i < VarDB_nRecords; ++i)
-      {
+    {
       ((struct var_v2 *)varDB)[i].standard_name = 0;
       ((struct var_v2 *)varDB)[i].reference = FALSE;;
-      }
+    }
 
     vdbHdr->Version = htonl(VarDB_CurrentVersion);
     vdbHdr->RecordLen = htonl(sizeof(struct var_v2));
@@ -140,10 +157,9 @@ void *readFile(const char fileName[], struct vardb_hdr *vdbHdr)
     SaveVarDB(fileName);
   }
 
-
   return(varDB);
 
-}	/* END _INIT */
+}	/* END READFILE */
 
 /* -------------------------------------------------------------------- */
 void ReleaseVarDB()
@@ -161,13 +177,23 @@ void ReleaseVarDB()
 /* -------------------------------------------------------------------- */
 int VarDB_lookup(const char vn[])
 {
-  int		i, masterNrecords;
-  char		tname[64];
+  int	i, masterNrecords;
+  char	tname[64];
 
+  // Strip off suffix for lookup.
   for (i = 0; vn[i] && vn[i] != '_'; ++i)
     tname[i] = vn[i];
 
   tname[i] = '\0';
+
+  if (VarDB_NcML > 0)
+  {
+    int varID;
+    if (nc_inq_varid(VarDB_NcML, vn, &varID) == NC_NOERR)
+      return(varID);
+    else
+      return(ERR);
+  }
 
   for (i = 0; i < VarDB_nRecords; ++i)
     if (strcmp(((struct var_v2 *)VarDB)[i].Name, tname) == 0)

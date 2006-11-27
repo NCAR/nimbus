@@ -19,14 +19,16 @@ INPUT:		Variable Name
 
 OUTPUT:		Category Name
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1994-7
+COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2006
 -------------------------------------------------------------------------
 */
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
 #include "vardb.h"
+#include "netcdf.h"
 
 #define MAX_CATEGORIES	128
 #define CAT_NAME_LEN	64
@@ -44,6 +46,7 @@ static int	nCategories = 0;
 static CATEGORY	*Category[MAX_CATEGORIES];
 
 extern long VarDB_RecLength, VarDB_nRecords;
+extern char VarDB_NcML_text_result[];
 
 char	*GetMemory();
 
@@ -66,7 +69,7 @@ void SetCategoryFileName(const char fn[])
 }	/* END SETCATEGORYFILENAME */
 
 /* -------------------------------------------------------------------- */
-ReadCategories()
+int ReadCategories()
 {
   char	line[128], *p;
   FILE	*fp;
@@ -110,7 +113,7 @@ ReadCategories()
 }	/* END READCATEGORIES */
 
 /* -------------------------------------------------------------------- */
-char *VarDB_GetCategoryName(const char vn[])
+const char *VarDB_GetCategoryName(const char vn[])
 {
   int	i, rc, indx;
   int	catNum;
@@ -126,6 +129,14 @@ char *VarDB_GetCategoryName(const char vn[])
 
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(Category[0]->Name);
+
+  if (VarDB_NcML > 0)
+  {
+    if (nc_get_att_text(VarDB_NcML, indx, "Category", VarDB_NcML_text_result) == NC_NOERR)
+      return VarDB_NcML_text_result;
+    else
+      return Category[0]->Name;
+  }
 
   catNum = ntohl(((struct var_v2 *)VarDB)[indx].Category);
 

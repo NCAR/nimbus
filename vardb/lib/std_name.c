@@ -15,14 +15,16 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2005
+COPYRIGHT:	University Corporation for Atmospheric Research, 2005-06
 -------------------------------------------------------------------------
 */
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
 #include "vardb.h"
+#include "netcdf.h"
 
 #define MAX_STD_NAMES	128
 #define STD_NAME_LEN	64
@@ -40,6 +42,7 @@ static int	nStdNames = 0;
 static STD_NAME	*StdName[MAX_STD_NAMES];
 
 extern long VarDB_RecLength, VarDB_nRecords;
+extern char VarDB_NcML_text_result[];
 
 char	*GetMemory();
 
@@ -106,7 +109,7 @@ ReadStandardNames()
 }	/* END READCATEGORIES */
 
 /* -------------------------------------------------------------------- */
-char *VarDB_GetStandardNameName(const char vn[])
+const char *VarDB_GetStandardNameName(const char vn[])
 {
   int i, rc, indx;
   int catNum;
@@ -122,6 +125,14 @@ char *VarDB_GetStandardNameName(const char vn[])
 
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(StdName[0]->Name);
+
+  if (VarDB_NcML > 0)
+  {
+    if (nc_get_att_text(VarDB_NcML, indx, "standard_name", VarDB_NcML_text_result) == NC_NOERR)
+      return VarDB_NcML_text_result;
+    else
+      return StdName[0]->Name;
+  }
 
   catNum = ntohl(((struct var_v2 *)VarDB)[indx].standard_name);
 

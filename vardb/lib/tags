@@ -21,7 +21,6 @@ ReleaseVarDB	init.c	/^void ReleaseVarDB()$/;"	f
 STD_NAME	std_name.c	/^  } STD_NAME;$/;"	t	file:
 STD_NAME_LEN	std_name.c	28;"	d	file:
 SaveVarDB	save.c	/^SaveVarDB(const char fileName[])$/;"	f
-SaveXML	save.c	/^SaveXML(FILE *out)$/;"	f
 SetCategoryFileName	category.c	/^void SetCategoryFileName(const char fn[])$/;"	f
 SetStandardNameFileName	std_name.c	/^void SetStandardNameFileName(const char fn[])$/;"	f
 SortVarDB	sort.c	/^void SortVarDB()$/;"	f
@@ -40,6 +39,7 @@ VarDB_GetFixedRangeUpper	get.c	/^float VarDB_GetFixedRangeUpper(const char vn[])
 VarDB_GetFloatRange	get.c	/^float VarDB_GetFloatRange(const char vn[])$/;"	f
 VarDB_GetMaxLimit	get.c	/^float VarDB_GetMaxLimit(const char vn[])$/;"	f
 VarDB_GetMinLimit	get.c	/^float VarDB_GetMinLimit(const char vn[])$/;"	f
+VarDB_GetStandardName	get.c	/^int VarDB_GetStandardName(const char vn[])$/;"	f
 VarDB_GetStandardNameList	std_name.c	/^int VarDB_GetStandardNameList(char *list[])$/;"	f
 VarDB_GetStandardNameName	std_name.c	/^char *VarDB_GetStandardNameName(const char vn[])$/;"	f
 VarDB_GetStandardNameNumber	std_name.c	/^int VarDB_GetStandardNameNumber(const char catagoryName[])$/;"	f

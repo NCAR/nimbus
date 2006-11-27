@@ -82,15 +82,19 @@ extern void		*master_VarDB;
 extern struct vardb_hdr	VarDB_Hdr;
 extern void		*VarDB;
 
+extern int	VarDB_NcML;
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-char	*VarDB_GetUnits(const char vn[]),
+const char
+	*VarDB_GetUnits(const char vn[]),
 	*VarDB_GetAlternateUnits(const char vn[]),
 	*VarDB_GetCategoryName(const char vn[]),
 	*VarDB_GetStandardNameName(const char vn[]),
-	*VarDB_GetTitle(const char vn[]),
-	**VarDB_GetVariablesInCategory(const int catNum);
+	*VarDB_GetTitle(const char vn[]);
+char	**VarDB_GetVariablesInCategory(const int catNum);
 
 int	InitializeVarDB(const char fileName[]),
 	VarDB_lookup(const char name[]),
