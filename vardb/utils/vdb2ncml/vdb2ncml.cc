@@ -30,7 +30,7 @@ static const float fill_value = -32767.0;
 extern long	VarDB_nRecords;
 
 /* -------------------------------------------------------------------- */
-void checkModVars(int ncid, int varID, char *varName)
+void checkModVars(int ncid, int varID, const char *varName)
 {
   char fileName[500], buffer[1000], name[100];
   strcpy(fileName, defaultProjDir);
@@ -59,7 +59,7 @@ void checkModVars(int ncid, int varID, char *varName)
 }
 
 /* -------------------------------------------------------------------- */
-void checkDerivedNames(int ncid, int varID, char *varName)
+void checkDerivedNames(int ncid, int varID, const char *varName)
 {
   char fileName[500], buffer[1000], *p;
   strcpy(fileName, defaultProjDir);
@@ -91,7 +91,7 @@ void checkDerivedNames(int ncid, int varID, char *varName)
 }
 
 /* -------------------------------------------------------------------- */
-void checkDependencies(int ncid, int varID, char *varName)
+void checkDependencies(int ncid, int varID, const char *varName)
 {
   char fileName[500], buffer[1000], *p;
   strcpy(fileName, projDir);
@@ -109,13 +109,17 @@ void checkDependencies(int ncid, int varID, char *varName)
     if (buffer[0] == COMMENT)
       continue;
 
-    p = strtok(buffer, " \t");
+    p = strtok(buffer, " \t\n");
 
-    if (strcmp(p, varName) == 0)
+    if (p && strcmp(p, varName) == 0)
     {
-      p = strtok(NULL, "\n");
-      while (isspace(*p)) ++p;
-      nc_put_att_text(ncid, varID, "Dependencies", strlen(p)+1, p);
+      if ( (p = strtok(NULL, "\n")) )
+      {
+        while (isspace(*p)) ++p;
+        nc_put_att_text(ncid, varID, "Dependencies", strlen(p)+1, p);
+      }
+      else
+        nc_put_att_text(ncid, varID, "Dependencies", 1, "");
     }
   }
 

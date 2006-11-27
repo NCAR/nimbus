@@ -6,7 +6,7 @@ BINDIR=		${JLOCAL}/bin
 MANDIR=		${JLOCAL}/man/manl
 LINTLIBS=	${LIBS}
 INCLUDES=	-I${JLOCAL}/include
-CFLAGS=		${INCLUDES}
+CFLAGS=		-g ${INCLUDES}
 
 LIBS=	-L${JLOCAL}/lib -lVarDB -lraf -lnetcdf
 
