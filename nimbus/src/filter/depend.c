@@ -26,6 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 #include "nimbus.h"
 #include "decode.h"
+#include "vardb.h"
 #include "amlibProto.h"
 
 char	*DependMsg =
@@ -45,87 +46,97 @@ void SetUpDependencies()
   ReadTextFile(DEPENDTBL, dependlist);
 
   for (size_t i = 0; i < derived.size(); ++i)
-    {
+  {
     DERTBL *dp = derived[i];
 
     strcpy(name, dp->name);
     location[0] = '\0';
 
-    if ((s = SearchList(dependlist, name)) == NULL)
+    // Retrieve dependency list.
+    if (cfg.isADS3())
+    {
+      sprintf(buffer, "%s\t%s", dp->name, VarDB_GetDependencies(dp->name));
+    }
+    else
+    {
+      if ((s = SearchList(dependlist, name)) == NULL)
       {
-      if ((s = strchr(name, '_')) != NULL)
+        if ((s = strchr(name, '_')) != NULL)
         {
-        strcpy(location, s);
-        *s = '\0';
+          strcpy(location, s);
+          *s = '\0';
         }
       }
 
-    if ((s = SearchList(dependlist, name)) == NULL)
+      if ((s = SearchList(dependlist, name)) == NULL)
       {
-      sprintf(buffer, "%s has no dependencies, turning off.\n", name);
-      LogMessage(buffer);
-      dp->Output = false;
-      dp->compute = (void(*)(void *))smissval;
-      continue;
+        sprintf(buffer, "%s has no dependencies, turning off.\n", name);
+        LogMessage(buffer);
+        dp->Output = false;
+        dp->compute = (void(*)(void *))smissval;
+        continue;
       }
 
-    strcpy(buffer, s);
+      strcpy(buffer, s);
+    }
+
     s = strtok(buffer, tokens);
 
+
+    // Process dependencies.
     for (j = 0; (s = strtok((char *)NULL, tokens)); ++j)
-      {
+    {
       strcpy(dp->depend[j], s);
 
-
       /* We need to check both cases of whether dependency needs the
-      * location tacked on.  (e.g. CFSSP depends on TASX, we do not
-      * want location tacked onto TASX.
-      */
+       * location tacked on.  (e.g. CFSSP depends on TASX, we do not
+       * want location tacked onto TASX.
+       */
       if (DependIndexLookup(dp, j) == ERR)
-        {
+      {
         strcat(dp->depend[j], location);
 
         if (DependIndexLookup(dp, j) == ERR)
-          {
-          /* Make one last check on the PMs1D stuff.  We want all the same
+        {
+          /* Make one last check on the PMS1D stuff.  We want all the same
            * derived names for the new DMT probes, but raw names have been
            * changed.
            */
           if (dp->ProbeType & PROBE_PMS1D)
-            {
+          {
             if (strncmp(dp->depend[j], "CFSSP", 5) == 0)
-              {
+            {
               strcpy(dp->depend[j], "CS100");
               strcat(dp->depend[j], location);
-              }
-
-            if (strncmp(dp->depend[j], "CPCAS", 5) == 0)
-              {
-              strcpy(dp->depend[j], "CS200");
-              strcat(dp->depend[j], location);
-              }
-
-            if (strncmp(dp->depend[j], "CF300", 5) == 0)
-              {
-              strcpy(dp->depend[j], "CS300");
-              strcat(dp->depend[j], location);
-              }
             }
 
-          if (DependIndexLookup(dp, j) == ERR)
+            if (strncmp(dp->depend[j], "CPCAS", 5) == 0)
             {
+              strcpy(dp->depend[j], "CS200");
+              strcat(dp->depend[j], location);
+            }
+
+            if (strncmp(dp->depend[j], "CF300", 5) == 0)
+            {
+              strcpy(dp->depend[j], "CS300");
+              strcat(dp->depend[j], location);
+            }
+          }
+
+          if (DependIndexLookup(dp, j) == ERR)
+          {
             sprintf(buffer, DependMsg, name, dp->depend[j]);
             LogMessage(buffer);
             dp->Output = false;
             dp->compute = (void(*)(void *))smissval;
             break;
-            }
           }
         }
       }
+    }
 
     dp->ndep = j;
-    }
+  }
 
   FreeTextFile(dependlist);
 
