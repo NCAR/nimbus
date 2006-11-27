@@ -23,6 +23,8 @@ static struct var_v2 defaults =
 	FLOATING, {0.0, 100.0}, 200.0, 0.0, 0.0, {0.0, 0.0}, 0, 0.0
 	};
 
+static const float default_FillValue = -32767.0;
+
 
 extern char VarDB_NcML_text_result[];
 
@@ -122,8 +124,6 @@ int VarDB_isRangeFloating(const char vn[])
 float VarDB_GetFixedRangeLower(const char vn[])
 {
   int	indx;
-  ulong	p;
-  float	*rc = (float *)&p;
 
   if ((indx = VarDB_lookup(vn)) == ERR || VarDB_NcML > 0)
     return(defaults.FixedRange[0]);
@@ -136,8 +136,6 @@ float VarDB_GetFixedRangeLower(const char vn[])
 float VarDB_GetFixedRangeUpper(const char vn[])
 {
   int	indx;
-  ulong	p;
-  float	*rc = (float *)&p;
 
   if ((indx = VarDB_lookup(vn)) == ERR || VarDB_NcML > 0)
     return(defaults.FixedRange[1]);
@@ -150,8 +148,6 @@ float VarDB_GetFixedRangeUpper(const char vn[])
 float VarDB_GetFloatRange(const char vn[])
 {
   int	indx;
-  ulong	p;
-  float	*rc = (float *)&p;
 
   if ((indx = VarDB_lookup(vn)) == ERR || VarDB_NcML > 0)
     return(defaults.FloatRange);
@@ -161,11 +157,30 @@ float VarDB_GetFloatRange(const char vn[])
 }	/* END VARDB_GETFLOATRANGE */
 
 /* -------------------------------------------------------------------- */
+float VarDB_GetFillValue(const char vn[])
+{
+  int	indx;
+
+  if ((indx = VarDB_lookup(vn)) == ERR)
+    return(default_FillValue);
+
+  if (VarDB_NcML > 0)
+  {
+    float fv;
+    if (nc_get_att_float(VarDB_NcML, indx, "_FillValue", &fv) == NC_NOERR)
+      return fv;
+    else
+      return 0;
+  }
+
+  return(default_FillValue);
+
+}	/* END VARDB_GETMINLIMIT */
+
+/* -------------------------------------------------------------------- */
 float VarDB_GetMinLimit(const char vn[])
 {
   int	indx;
-  ulong	p;
-  float	*rc = (float *)&p;
 
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(defaults.MinLimit);
@@ -187,8 +202,6 @@ float VarDB_GetMinLimit(const char vn[])
 float VarDB_GetMaxLimit(const char vn[])
 {
   int	indx;
-  ulong	p;
-  float	*rc = (float *)&p;
 
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(defaults.MaxLimit);
@@ -210,8 +223,6 @@ float VarDB_GetMaxLimit(const char vn[])
 float VarDB_GetCalRangeLower(const char vn[])
 {
   int	indx;
-  ulong	p;
-  float	*rc = (float *)&p;
 
   if ((indx = VarDB_lookup(vn)) == ERR || VarDB_NcML > 0)
     return(defaults.CalRange[0]);
@@ -224,8 +235,6 @@ float VarDB_GetCalRangeLower(const char vn[])
 float VarDB_GetCalRangeUpper(const char vn[])
 {
   int	indx;
-  ulong	p;
-  float	*rc = (float *)&p;
 
   if ((indx = VarDB_lookup(vn)) == ERR || VarDB_NcML > 0)
     return(defaults.CalRange[1]);

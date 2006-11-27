@@ -114,6 +114,7 @@ void	SortVarDB(), ReleaseVarDB(), SetCategoryFileName(const char fn[]);
 float	VarDB_GetFixedRangeLower(const char vn[]),
 	VarDB_GetFixedRangeUpper(const char vn[]),
 	VarDB_GetFloatRange(const char vn[]),
+	VarDB_GetFillValue(const char vn[]),
 	VarDB_GetMinLimit(const char vn[]),
 	VarDB_GetMaxLimit(const char vn[]),
 	VarDB_GetCalRangeLower(const char vn[]),
