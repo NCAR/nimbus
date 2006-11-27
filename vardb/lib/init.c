@@ -12,11 +12,7 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-INPUT:		FileName
-
-OUTPUT:		OK/ERR
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2004
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
 -------------------------------------------------------------------------
 */
 
@@ -55,7 +51,7 @@ int InitializeVarDB(const char fileName[])
   p = getenv("PROJ_DIR");
   if (p)
   {
-    sprintf(masterFileName, "%s/defaults/VarDB", p);
+    sprintf(masterFileName, "%s/Configuration/raf/VarDB", p);
 // We are not ready for a master file.  lookup returns a master, but then
 // the index always goes into the regular not master VarDB list.  Needs work.
 //    master_VarDB = readFile(masterFileName, &master_VarDB_Hdr);
