@@ -2219,7 +2219,7 @@ addUnitsAndLongName(var_base *var)
     if (var->LongName.size() == 0)
       var->LongName = VarDB_GetTitle(var->name);
 
-    char *p = VarDB_GetCategoryName(var->name);
+    const char *p = VarDB_GetCategoryName(var->name);
     if ( strcmp(p, "None") )
       var->CategoryList.push_back(p);
   }
