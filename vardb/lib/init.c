@@ -54,13 +54,18 @@ int InitializeVarDB(const char fileName[])
   /* Try to open new NcML version first.  If it opens we are done.
    */
   strcpy(masterFileName, fileName);
+  strcat(masterFileName, ".nc");
   if (nc_open(masterFileName, 0, &VarDB_NcML) != NC_NOERR)
   {
     fprintf(stderr, "VarDB: NcML version not found, reverting to standard VarDB.\n");
     VarDB_NcML = -1;
   }
   else
+  {
+    SetCategoryFileName(masterFileName);
+    SetStandardNameFileName(masterFileName);
     return(OK);
+  }
 
 
   /* Try to open the master VarDB first, then we'll overlay the user
@@ -189,7 +194,7 @@ int VarDB_lookup(const char vn[])
   if (VarDB_NcML > 0)
   {
     int varID;
-    if (nc_inq_varid(VarDB_NcML, vn, &varID) == NC_NOERR)
+    if (nc_inq_varid(VarDB_NcML, tname, &varID) == NC_NOERR)
       return(varID);
     else
       return(ERR);
