@@ -85,6 +85,24 @@ const char *VarDB_GetTitle(const char vn[])
 }	/* END VARDB_GETTITLE */
 
 /* -------------------------------------------------------------------- */
+const char *VarDB_GetDependencies(const char vn[])
+{
+  int	indx;
+
+  if ((indx = VarDB_lookup(vn)) == ERR)
+    return 0;
+
+  if (VarDB_NcML > 0)
+  {
+    if (nc_get_att_text(VarDB_NcML, indx, "Dependencies", VarDB_NcML_text_result) == NC_NOERR)
+      return VarDB_NcML_text_result;
+  }
+
+  return 0;
+
+}	/* END VARDB_GETDEPENDENCIES */
+
+/* -------------------------------------------------------------------- */
 int VarDB_isRangeFixed(const char vn[])
 {
   int	indx;

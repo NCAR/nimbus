@@ -93,7 +93,8 @@ const char
 	*VarDB_GetAlternateUnits(const char vn[]),
 	*VarDB_GetCategoryName(const char vn[]),
 	*VarDB_GetStandardNameName(const char vn[]),
-	*VarDB_GetTitle(const char vn[]);
+	*VarDB_GetTitle(const char vn[]),
+	*VarDB_GetDependencies(const char vn[]);
 char	**VarDB_GetVariablesInCategory(const int catNum);
 
 int	InitializeVarDB(const char fileName[]),
