@@ -129,7 +129,7 @@ void checkDependencies(int ncid, int varID, const char *varName)
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
-  int	i = 1, ncid, timeDim, varID;
+  int	i = 1, ncid, timeDim, varID, noDim;
   char	outFile[512];
   const char *p;
 
@@ -182,25 +182,25 @@ int main(int argc, char *argv[])
 
   // AircraftSpecs - boom_len.
   float boom_len = 5.18; // C-130
-  nc_def_var(ncid, "N130AR", NC_INT, 1, &timeDim, &varID);
+  nc_def_var(ncid, "N130AR", NC_INT, 0, 0, &varID);
   nc_put_att_float(ncid, varID, "boom_length", NC_FLOAT, 1, &boom_len);
   p = "TASHC MR THETA THETAE RHUM ATTACK SSLIP ATX DPXC EDPC PALT PSX PSXC QCX QCXC TASX TTX XMACH2 THETAV ZERO ONE PALTF IAS";
   nc_put_att_text(ncid, varID, "always_derive", strlen(p)+1, p);
 
   boom_len = 4.42; // GV
-  nc_def_var(ncid, "N677F", NC_INT, 1, &timeDim, &varID);
+  nc_def_var(ncid, "N677F", NC_INT, 0, 0, &varID);
   nc_put_att_float(ncid, varID, "boom_length", NC_FLOAT, 1, &boom_len);
   p = "TASHC MR THETA THETAE RHUM ATTACK SSLIP ATX DPXC EDPC PALT PSX PSXC QCX QCXC TASX TTX XMACH2 THETAV ZERO ONE PALTF IAS";
   nc_put_att_text(ncid, varID, "always_derive", strlen(p)+1, p);
 
   boom_len = 4.21; // NRL-P3
-  nc_def_var(ncid, "NRL-P3", NC_INT, 1, &timeDim, &varID);
+  nc_def_var(ncid, "NRL-P3", NC_INT, 0, 0, &varID);
   nc_put_att_float(ncid, varID, "boom_length", NC_FLOAT, 1, &boom_len);
   p = "TASHC MR THETA THETAE RHUM ATTACK SSLIP ATX DPXC EDPC PALT PSX PSXC QCX QCXC TASX TTX XMACH2 THETAV ZERO ONE PALTF";
   nc_put_att_text(ncid, varID, "always_derive", strlen(p)+1, p);
 
   boom_len = 4.52; // Electra
-  nc_def_var(ncid, "N308D", NC_INT, 1, &timeDim, &varID);
+  nc_def_var(ncid, "N308D", NC_INT, 0, 0, &varID);
   nc_put_att_float(ncid, varID, "boom_length", NC_FLOAT, 1, &boom_len);
   p = "TASHC MR THETA THETAE RHUM ATTACK SSLIP ATX DPXC EDPC PALT PSX PSXC QCX QCXC TASX TTX XMACH2 THETAV ZERO ONE PALTF";
   nc_put_att_text(ncid, varID, "always_derive", strlen(p)+1, p);
@@ -213,8 +213,12 @@ int main(int argc, char *argv[])
     nc_def_var(ncid, vp->Name, NC_FLOAT, 1, &timeDim, &varID);
 
     nc_put_att_float(ncid, varID, "_FillValue", NC_FLOAT, 1, &fill_value);
+
     p = vp->Units;
+    if (strcmp(p, "mb") == 0 || strcmp(p, "mbar") == 0)
+      p = "hPa";
     nc_put_att_text(ncid, varID, "units", strlen(p)+1, p);
+
     p = vp->Title;
     nc_put_att_text(ncid, varID, "long_name", strlen(p)+1, p);
 
