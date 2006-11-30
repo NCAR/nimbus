@@ -198,23 +198,6 @@ void DecodeHeader()
       add_raw_names(item_type);
       }
     else
-    if (!strcmp(hdr->ItemType(vn), PPS_GPS_STR))
-      {
-      rate = 1;
-      add_raw_names(item_type);
-      }
-    else
-    if (!strcmp(hdr->ItemType(vn), HW_GPS_STR))
-      {
-      if (hdr->AircraftLocation((Blk *)vn))
-        {
-        location[0] = '_';
-        strcpy(&location[1], hdr->AircraftLocation((Blk *)vn));
-        }
-
-      add_file_to_RAWTBL(GPSHWNAMES);
-      }
-    else
     if (!strcmp(hdr->ItemType(vn), DME_STR))
       {
       rate = 1;

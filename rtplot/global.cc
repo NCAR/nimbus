@@ -61,4 +61,10 @@ int	FlightDate[3];	// Dummy.  Here to shut linker up.
 
 std::string	title;
 
+const std::string AIRCRAFT      = "AircraftSpecs";
+const std::string DEFAULTS      = "%s/%s/%s/Defaults";
+const std::string IRSNAMES      = "%s/Configuration/raf/irs.names";
+const std::string OPHIR3NAMES   = "%s/%s/%s/ophir3.names";
+const std::string RAWNAMES      = "%s/Configuration/raf/RawNames";
+
 /* END GLOBAL.CC */

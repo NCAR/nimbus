@@ -40,6 +40,7 @@ DESCRIPTION:
 #define VOLTS		1
 #define ENGINEERING	2
 
+class QwtPlotCurve;
 
 typedef struct
 	{
@@ -47,7 +48,7 @@ typedef struct
 	size_t	SampleRate;
 	int     SRstart;
 	size_t	nPoints;
-	int	plotID;
+	QwtPlotCurve * 	curve;
 	} VARTBL;
 
 

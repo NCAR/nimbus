@@ -12,7 +12,7 @@ DataPlot::DataPlot(QWidget *parent, ADS_rtFile *f) : QwtPlot(parent)
   setAxisTitle(QwtPlot::xBottom, "Time");
   setAxisTitle(QwtPlot::yLeft, "Volts");
   setMargin(10);
-  setAutoLegend(true);
+//  setAutoLegend(true);
   setCanvasBackground(QColor("white"));
 
   file->LastSyncRecord(ADSrecord);

@@ -111,7 +111,7 @@ void CanvasWindow::Print()
 {
   QPrinter printer;
 
-  QString docName = plot->title();
+  QString docName = plot->title().text();
   if ( docName.isEmpty() )
   {
     docName.replace(QRegExp (QString::fromLatin1 ("\n")), tr (" -- "));

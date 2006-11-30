@@ -13,11 +13,7 @@ STATIC FNS:	free_data()
 
 DESCRIPTION:	Read data from shared memory and process it.
 
-INPUT:		none
-
-OUTPUT:		none
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 2003
+COPYRIGHT:	University Corporation for Atmospheric Research, 2003-06
 -------------------------------------------------------------------------
 */
 
@@ -31,6 +27,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2003
 
 #include "DataPlot.h"
 
+#include <qwt_plot_curve.h>
 #include <qwt_math.h>
 
 static char	*color[] = { "red", "blue", "green", "purple", "maroon" };
@@ -40,7 +37,9 @@ void AddDataToBuffer(NR_TYPE *newData)
 {
   for (size_t i = 0; i < nVariables; ++i)
   {
-    qwtShiftArray(plotData[i], Variable[i].nPoints, -Variable[i].SampleRate);
+    memcpy(	plotData[i],
+		&plotData[i][Variable[i].SampleRate],
+		sizeof(double) * Variable[i].nPoints);
 
     size_t idx = Variable[i].nPoints - Variable[i].SampleRate;
 
@@ -69,11 +68,13 @@ void AddVariable(size_t indx, DataPlot *plot)
 	-NumberSeconds + (double)i + (j*Variable[nVariables].SampleRate/1000);
     }
 
-  Variable[nVariables].plotID = plot->insertCurve(Variable[nVariables].name);
+//  Variable[nVariables].plotID = plot->insertCurve(Variable[nVariables].name);
+  QwtPlotCurve * curve = new QwtPlotCurve("");
+  curve->attach(plot);
+  Variable[nVariables].curve = curve;
 
-  plot->setCurvePen(Variable[nVariables].plotID, QPen(color[nVariables]));
-  plot->setCurveRawData(Variable[nVariables].plotID,
-      xData[nVariables], plotData[nVariables], Variable[nVariables].nPoints);
+  curve->setPen(QPen(color[nVariables]));
+  curve->setRawData(xData[nVariables], plotData[nVariables], Variable[nVariables].nPoints);
 
   ++NumberDataSets;
   ++nVariables;
@@ -83,10 +84,10 @@ void AddVariable(size_t indx, DataPlot *plot)
 /* -------------------------------------------------------------------- */
 void DeleteVariable(size_t indx, DataPlot *plot)
 {
+  Variable[indx].curve->detach();
+
   delete [] xData[indx];
   delete [] plotData[indx];
-
-  plot->removeCurve(Variable[indx].plotID);
 
   for (size_t i = indx+1; i < NumberDataSets; ++i)
   {

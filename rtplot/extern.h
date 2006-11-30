@@ -35,6 +35,8 @@ extern double	*plotData[], *xData[];
 
 extern std::string	title;
 
+extern const std::string AIRCRAFT, DEFAULTS, IRSNAMES, OPHIR3NAMES, RAWNAMES;
+
 void	AddDataToBuffer(NR_TYPE *newData), DecodeHeader(),
 	ApplyCalCoes(NR_TYPE *record), DecodeRecord();
 

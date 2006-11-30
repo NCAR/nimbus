@@ -1,12 +1,9 @@
 TARGET = rtplot
 TEMPLATE = app
 
-NIMBUS = $${JLOCAL}/raf/nimbus
-NOBJ = $$(NIMBUS)/src/filter/
-
 # Input
 CONFIG += debug
-HEADERS += CanvasWindow.h DataPlot.h define.h extern.h $$(NIMBUS)/include/xlatefns.h
+HEADERS += CanvasWindow.h DataPlot.h define.h extern.h ../nimbus/include/xlatefns.h
 SOURCES += amlibfn.cc \
            CanvasWindow.cc \
            dataIO.cc \
@@ -19,6 +16,6 @@ SOURCES += amlibfn.cc \
            misc.cc \
            rec_decode.cc \
            rtplot.cc
-INCLUDEPATH += $(JLOCAL)/include $(NIMBUS)/include $(JLOCAL)/src/qwt-4.2.0/include
-OBJECTS += $(NIMBUS)/src/filter/calco.o $(NIMBUS)/src/filter/search.o $(NIMBUS)/src/filter/textfile.o $(NIMBUS)/src/filter/popen.o $(NIMBUS)/src/filter/log.o $(NIMBUS)/src/filter/config.o $(NIMBUS)/src/filter/rd_defs.o
-LIBS += -L$(JLOCAL)/lib -lraf++ -L$(NIMBUS)/lib -lxlate -lraf -L$(JLOCAL)/src/qwt-4.2.0/lib -lqwt -lnetcdf
+INCLUDEPATH += $(JLOCAL)/include ../nimbus/include /opt/aeros/qwt/include
+OBJECTS += ../nimbus/src/filter/calco.o ../nimbus/src/filter/search.o ../nimbus/src/filter/textfile.o ../nimbus/src/filter/popen.o ../nimbus/src/filter/log.o ../nimbus/src/filter/config.o ../nimbus/src/filter/rd_defs.o
+LIBS += -L$(JLOCAL)/lib -lraf++ -L../nimbus/lib -lxlate -lraf -L/opt/aeros/qwt/lib -lqwt -lnetcdf
