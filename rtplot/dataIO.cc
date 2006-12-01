@@ -21,7 +21,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2003-06
 
 #include <algorithm>
 #include <cfloat>
-#include <cstring>
 
 #include <qpen.h>
 
