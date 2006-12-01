@@ -1,6 +1,9 @@
 #include "DataPlot.h"
 
+#include <qpen.h>
+
 #include <unistd.h>
+#include <qwt_plot_curve.h>
 #include <qwt_legend.h>
 
 P2d_rec	hvpsRecord;
@@ -15,15 +18,19 @@ DataPlot::DataPlot(QWidget *parent, ADS_rtFile *f) : QwtPlot(parent)
   setAxisTitle(QwtPlot::xBottom, "Diode #");
   setAxisTitle(QwtPlot::yLeft, "Volts");
   setMargin(10);
-  setAutoLegend(true);
+//  setAutoLegend(true);
   setCanvasBackground(QColor("white"));
 
-  crv1 = insertCurve("Masked");
-  crv2 = insertCurve("Valid");
-  setCurvePen(crv1, QPen(red));
-  setCurvePen(crv2, QPen(green));
-  setCurveStyle(crv1, QwtCurve::Sticks);
-  setCurveStyle(crv2, QwtCurve::Sticks);
+  crv1 = new QwtPlotCurve("Masked");
+  crv2 = new QwtPlotCurve("Valid");
+
+  crv1->setPen(QPen(red));
+  crv2->setPen(QPen(green));
+  crv1->setStyle(QwtPlotCurve::Sticks);
+  crv2->setStyle(QwtPlotCurve::Sticks);
+
+  crv1->attach(this);
+  crv2->attach(this);
 
   file->FirstPMS2dRecord(&hvpsRecord);
 
@@ -74,8 +81,8 @@ void DataPlot::timerEvent(QTimerEvent *)
     }
   }
 
-  setCurveData(crv1, xVal1, yVal1, rCnt);
-  setCurveData(crv2, xVal2, yVal2, gCnt);
+  crv1->setData(xVal1, yVal1, rCnt);
+  crv2->setData(xVal2, yVal2, gCnt);
 
   replot();
   sleep(1);

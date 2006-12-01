@@ -6,9 +6,9 @@ CONFIG += debug
 TEMPLATE = app
 INCLUDEPATH += .
 INCLUDEPATH += ${JLOCAL}/include
-INCLUDEPATH += ${JLOCAL}/src/qwt-4.2.0/include
+INCLUDEPATH += /opt/aeros/qwt/include
 
 # Input
 HEADERS += CanvasWindow.h DataPlot.h define.h extern.h
 SOURCES += CanvasWindow.cc DataPlot.cc error.cc global.cc hvpsdiag.cc init.cc
-LIBS += -L${JLOCAL}/lib -lraf++ -L${JLOCAL}/src/qwt-4.2.0/lib -lqwt
+LIBS += -L${JLOCAL}/lib -lraf++ -L/opt/aeros/qwt/lib -lqwt

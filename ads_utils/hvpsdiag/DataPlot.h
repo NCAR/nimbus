@@ -4,6 +4,8 @@
 #include "adsIOrt.h"
 
 
+class QwtPlotCurve;
+
 /* -------------------------------------------------------------------- */
 class DataPlot : public QwtPlot
 {
@@ -16,7 +18,7 @@ protected:
   virtual void timerEvent(QTimerEvent *e);
 
 private:
-  long		crv1, crv2;
+  QwtPlotCurve * crv1, * crv2;
   bool		freeze;
   ADS_rtFile	*file;
 
