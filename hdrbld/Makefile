@@ -10,14 +10,14 @@ MANDIR=		${JLOCAL}/man/manl
 DEFINES= -DSVR4
 INCLUDES= ${JLOCAL}/include -I/usr/openwin/include -I/usr/dt/include
 LIB_DIRS= -L${JLOCAL}/lib
-LIBS= -R /usr/dt/lib -lVarDB -lpms -lraf -lhdr_api -lXm -lXt -lX11
+LIBS= -R /usr/dt/lib -lVarDB -lnetcdf -lpms -lraf -lhdr_api -lXm -lXt -lX11
 
 # Linux
 #
 INCLUDES= ${JLOCAL}/include -I/usr/X11R6/include
 DEFINES = 
 LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib
-LIBS    = -lVarDB -lpms -lraf -lhdr_api -lXm -lXp -lXt -lXext -lX11
+LIBS    = -lVarDB -lnetcdf -lpms -lraf -lhdr_api -lXm -lXp -lXt -lXext -lX11
 
 CFLAGS=		-g ${DEFINES} -I${INCLUDES}
 
