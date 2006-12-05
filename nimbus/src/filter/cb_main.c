@@ -705,6 +705,9 @@ void Quit(Widget w, XtPointer client, XtPointer call)
   // kill sync_server or any other processes.
   kill(0, SIGTERM);
 
+  if (strlen(sync_server_pipe))
+    unlink(sync_server_pipe);
+
   CloseRemoveLogFile();
 
   exit(0);

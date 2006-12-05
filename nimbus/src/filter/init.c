@@ -48,6 +48,7 @@ void Initialize()
   PauseFlag		= false;
   PauseWhatToDo		= P_CONTINUE;
   FeedBack		= LOW_RATE_FEEDBACK;
+  sync_server_pipe[0]	= '\0';
 
   pos = XmTextFieldGetLastPosition(aDSdataText);
   XmTextFieldSetInsertionPosition(aDSdataText, pos);
