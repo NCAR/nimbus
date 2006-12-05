@@ -27,9 +27,6 @@ const NR_TYPE MISSING_VALUE = -32767.0;
 const int MaxLag = 2000;
 const int MAX_COF = 6;
 
-const std::string DSMSERVER = "localhost";
-const int DSMSERVERPORT = 30001;
-
 const std::string PROJ_NAME     = "%s/%s/%s/ProjectName";
 const std::string DEPENDTBL     = "%s/%s/%s/DependTable";
 const std::string DEFAULTS      = "%s/%s/%s/Defaults";
@@ -62,6 +59,7 @@ const std::string OPHIR3NAMES   = "%s/%s/%s/ophir3.names";
 
 char	buffer[8192];		// Generic, volatile string space
 char	*ProjectDirectory;
+char	sync_server_pipe[80];
 
 Config cfg;	// Global configuration.
 

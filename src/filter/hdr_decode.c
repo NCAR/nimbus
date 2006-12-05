@@ -44,6 +44,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include <cctype>
 #include <unistd.h>
 #include <set>
+#include <sys/types.h>
+#include <sys/stat.h>
+
 
 #include "pms.h"
 #include "nimbus.h"
@@ -122,11 +125,8 @@ static RAWTBL	*initSDI_ADS3(nidas::dynld::raf::SyncRecordVariable* var);
 static RAWTBL	*add_name_to_RAWTBL(const char []);
 static DERTBL	*add_name_to_DERTBL(const char []);
 
-static nidas::util::Socket* sock;
-static nidas::core::IOChannel* iochan;
-
-static void	add_file_to_RAWTBL(const std::string),
-		add_file_to_DERTBL(const std::string),
+static void	add_file_to_RAWTBL(const std::string&),
+		add_file_to_DERTBL(const std::string&),
 	initHDR(char vn[]), initSDI(char vn[]), initHoneywell(char vn[]),
 	initOphir3(char vn[]), initPMS1D(char vn[]), initPMS1Dv2(char vn[]),
 	initGustCorrected(), initLitton51(char vn[]),
@@ -294,9 +294,10 @@ static void addSerialNumber(nidas::dynld::raf::SyncRecordVariable *var, var_base
 /* -------------------------------------------------------------------- */
 int DecodeHeader3(const char header_file[])
 {
-printf("DecodeHeader3: header_file=%s\n", header_file);
+  strcpy(sync_server_pipe, "/tmp/sync_server_XXXXXX");
+  mktemp(sync_server_pipe);
 
-  extern nidas::dynld::raf::SyncRecordReader* syncRecReader;
+printf("DecodeHeader3: header_file=%s\n", header_file);
 
   if (cfg.ProcessingMode() == Config::PostProcessing)
   {
@@ -313,6 +314,8 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
 
       size_t i = 0;
       files[i++] = "launch_ss.sh";
+      files[i++] = "-p";
+      files[i++] = sync_server_pipe;
       std::set<std::string>::iterator it;
       for (it = fileList.begin(); it != fileList.end(); ++it)
         files[i++] = (char *)&(*it).c_str()[0];
@@ -329,8 +332,10 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
   else
     ; // sync_server is started elsewhere onboard.
 
-  sock = new nidas::util::Socket(DSMSERVER, DSMSERVERPORT);
-  iochan = new nidas::core::Socket(sock);
+
+  nidas::util::UnixSocketAddress usa(sync_server_pipe);
+  nidas::util::Socket * sock = new nidas::util::Socket(usa);
+  nidas::core::IOChannel * iochan = new nidas::core::Socket(sock);
 
   syncRecReader = new nidas::dynld::raf::SyncRecordReader(iochan);
 
@@ -1974,7 +1979,7 @@ static void add_derived_names(const char name[])
 }	/* END ADD_DERIVED_NAMES */
 
 /* -------------------------------------------------------------------- */
-static void add_file_to_DERTBL(const std::string filename)
+static void add_file_to_DERTBL(const std::string& filename)
 {
   FILE	*fp;
 
@@ -1989,7 +1994,7 @@ static void add_file_to_DERTBL(const std::string filename)
 }	/* END ADD_FILE_TO_DERTBL */
 
 /* -------------------------------------------------------------------- */
-static void add_file_to_RAWTBL(const std::string filename)
+static void add_file_to_RAWTBL(const std::string& filename)
 {
   FILE	*fp;
 
