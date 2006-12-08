@@ -294,13 +294,16 @@ static void addSerialNumber(nidas::dynld::raf::SyncRecordVariable *var, var_base
 /* -------------------------------------------------------------------- */
 int DecodeHeader3(const char header_file[])
 {
+  nidas::util::Socket * sock;
+
   strcpy(sync_server_pipe, "/tmp/sync_server_XXXXXX");
-  mktemp(sync_server_pipe);
 
 printf("DecodeHeader3: header_file=%s\n", header_file);
 
   if (cfg.ProcessingMode() == Config::PostProcessing)
   {
+    mktemp(sync_server_pipe);
+
     pid_t pid = fork();
 
     if (pid == 0)
@@ -328,13 +331,14 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
     }
 
     sleep(2);
+    nidas::util::UnixSocketAddress usa(sync_server_pipe);
+    sock = new nidas::util::Socket(usa);
   }
   else
+    sock = new nidas::util::Socket("localhost", 30001);
     ; // sync_server is started elsewhere onboard.
 
 
-  nidas::util::UnixSocketAddress usa(sync_server_pipe);
-  nidas::util::Socket * sock = new nidas::util::Socket(usa);
   nidas::core::IOChannel * iochan = new nidas::core::Socket(sock);
 
   syncRecReader = new nidas::dynld::raf::SyncRecordReader(iochan);
