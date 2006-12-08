@@ -31,7 +31,7 @@ extern NR_TYPE	*SampledData, *HighRateData;
 static std::vector<mRFilterPtr> rawFilters;
 
 static int	PSCBindex;
-static size_t	currentHz, HzDelay;
+static size_t	currentSampleOffset, sampleOffset;
 static size_t	filterRate;
 
 static NR_TYPE	*inputRec, *interpdData;
@@ -257,24 +257,24 @@ static void ProcessVariable(	CircularBuffer *PSCB, CircularBuffer *HSCB,
     else
       // zero out rates above HRT rate.  We could use the resampled data that's there?
       memset(	(char *)&HighRateData[vp->HRstart], 0,
-		sizeof(NR_TYPE) * vp->SampleRate * vp->Length);
+		sizeof(NR_TYPE) * (size_t)cfg.HRTRate() * vp->Length);
     return;
   }
 
   PSCBindex = -(PSCB->nbuffers - 1);
-  setTimeDelay(filterRate, vpFilter->filter->order, &PSCBindex, &HzDelay);
+  setTimeDelay(filterRate, vpFilter->filter->order, &PSCBindex, &sampleOffset);
   inputRec = (NR_TYPE *)GetProcessedBuffer(PSCB, HSCB, PSCBindex, vp);
 
   if (vpFilter->task == GET_INPUT)
   {
-    currentHz = HzDelay;
+    currentSampleOffset = sampleOffset;
     ++PSCBindex;
   }
   else
-    if ((currentHz = filterRate - 1 + HzDelay) >= filterRate)
+    if ((currentSampleOffset = filterRate - 1 + sampleOffset) >= filterRate)
     {
       ++PSCBindex;
-      currentHz -= filterRate;
+      currentSampleOffset -= filterRate;
     }
 
   SingleStageFilter(PSCB, HSCB, vpFilter, vp);
@@ -333,11 +333,11 @@ static void SingleStageFilter(CircularBuffer *PSCB, CircularBuffer *HSCB, mRFilt
   {
     do
     {
-      task = iterateMRFilter(thisMRF, inputRec[currentHz], &output);
+      task = iterateMRFilter(thisMRF, inputRec[currentSampleOffset], &output);
 
-      if (task == GET_INPUT && ++currentHz == filterRate)
+      if (task == GET_INPUT && ++currentSampleOffset == filterRate)
       {
-        currentHz = 0;
+        currentSampleOffset = 0;
         inputRec = (NR_TYPE *)GetProcessedBuffer(PSCB, HSCB, PSCBindex++, vp);
       }
     }
@@ -438,11 +438,18 @@ static void setTimeDelay(size_t rate, size_t nTaps, int *sec, size_t *msec)
           *msec = 120;
         break;
 
+      case 500:
+        break;
+
       case 1000:		// nTaps / (2 * L), ????
         *sec += 0;
         *msec = 0;
 //      *msec = 500;
         break;
+
+      default:
+        fprintf(stderr, "ERROR: filter.c:setTimeDelay: rate of %d not being handled.\n", rate);
+        exit(1);
       }
 }	/* END SETTIMEDELAY */
 
