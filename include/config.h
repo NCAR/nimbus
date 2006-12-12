@@ -29,7 +29,7 @@ public:
   enum ProcessingMode	{ PostProcessing, RealTime };
   enum interpolationType { Linear=0, CubicSpline, AkimaSpline };
   enum processingRate	{ SampleRate=0, LowRate=1, HighRate=25 };
-  enum hrtRate		{ TwentyFive=25, Fifty=50 };
+  enum hrtRate		{ TwentyFive=25, Fifty=50, OneHundred=100 };
 
   Config();
 

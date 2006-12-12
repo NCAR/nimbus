@@ -39,13 +39,14 @@ static NR_TYPE	*inputRec, *interpdData;
 static circBuffPtr	newCircBuff(int);
 
 static filterPtr readAfilter(char file[]);
+static const void* BadFilter = (void*)1;
+
 static int	disposMultiRateFilter(mRFilterPtr aMRFPtr);
 
 static NR_TYPE	getBuff(int offset, circBuffPtr aCBPtr);
 static void	initCircBuff(circBuffPtr aCBPtr),
 		disposCircBuff(circBuffPtr aCBPtr),
 		putBuff(NR_TYPE datum, circBuffPtr aCBPtr),
-		setTimeDelay(size_t, size_t, int *, size_t *),
 		filterCounter(RAWTBL *sp),
 		ProcessVariable(CircularBuffer *, CircularBuffer *,
 				var_base *vp, mRFilterPtr vpFilter),
@@ -59,47 +60,58 @@ char *GetProcessedBuffer(CircularBuffer *, CircularBuffer *, int offset, var_bas
 void InitMRFilters()
 {
   MOD	*mv_p;
-  filterPtr	OneUp, FiveUp, EightUp, TenUp, ThirteenUp, SixteenUp, TwentyFiveUp,
-		FiftyDown, OneHundredDown, TwoFiftyDown, FiveHundredDown, ThousandDown,
-		vspd, acins, gsf;
+  filterPtr fromOne, fromFive, fromEight, fromTen, fromThirteen, fromSixteen, 
+    fromTwentyFive, fromFifty, fromOneHundred, fromTwoFifty, fromFiveHundred, 
+    fromOneThousand, vspd, acins, gsf;
+  char filterSuffix[16];
+  char filterFileName[128];
 
-  if (cfg.HRTRate() == Config::TwentyFive)
-  {
-    OneUp = readAfilter("1to25");
-    FiveUp = readAfilter("5to25");
-    EightUp = readAfilter("8to25");
-    TenUp = readAfilter("10to25");
-    ThirteenUp = readAfilter("13to25");	// Really 12.5hz
-    SixteenUp = readAfilter("16to25");
-    TwentyFiveUp = 0;
-    vspd = readAfilter("VSPD");
-    gsf = readAfilter("GSF");
-    acins = readAfilter("ACINS");
-    FiftyDown = readAfilter("50to25");
-    OneHundredDown = readAfilter("100to25");
-    TwoFiftyDown = readAfilter("250to25");
-    FiveHundredDown = readAfilter("500to25");
-    ThousandDown = readAfilter("1000to25");
-  }
-  else
-  {
-    OneUp = readAfilter("1to50");
-    FiveUp = readAfilter("5to50");
-    EightUp = readAfilter("8to50");
-    TenUp = readAfilter("10to50");
-    ThirteenUp = readAfilter("13to50");	// Really 12.5hz
-    SixteenUp = readAfilter("16to50");
-    TwentyFiveUp = readAfilter("25to50");
-    vspd = readAfilter("VSPD");
-    gsf = readAfilter("GSF");
-    acins = readAfilter("ACINS");
-    FiftyDown = 0;
-    OneHundredDown = readAfilter("100to50");
-    TwoFiftyDown = readAfilter("250to50");
-    FiveHundredDown = readAfilter("500to50");
-    ThousandDown = readAfilter("1000to50");
-  }
+  vspd = readAfilter("VSPD");
+  gsf = readAfilter("GSF");
+  acins = readAfilter("ACINS");
 
+  int outRate = (int)cfg.HRTRate();
+
+  //
+  // Get filters for each in rate to the given out rate.  The filter files
+  // should be named <in_rate>to<out_rate>, e.g., 50to250 for the 50 Hz to
+  // 250 Hz upsampling filter.
+  //
+  sprintf(filterFileName, "1to%d", outRate);
+  fromOne = (outRate == 1) ? 0 : readAfilter(filterFileName);
+
+  sprintf(filterFileName, "5to%d", outRate);
+  fromFive = (outRate == 5) ? 0 : readAfilter(filterFileName);
+
+  sprintf(filterFileName, "8to%d", outRate);
+  fromEight = (outRate == 8) ? 0 : readAfilter(filterFileName);
+
+  sprintf(filterFileName, "10to%d", outRate);
+  fromTen = (outRate == 10) ? 0 : readAfilter(filterFileName);
+
+  sprintf(filterFileName, "13to%d", outRate);
+  fromThirteen = (outRate == 13) ? 0 : readAfilter(filterFileName);
+
+  sprintf(filterFileName, "16to%d", outRate);
+  fromSixteen = (outRate == 16) ? 0 : readAfilter(filterFileName);
+
+  sprintf(filterFileName, "25to%d", outRate);
+  fromTwentyFive = (outRate == 25) ? 0 : readAfilter(filterFileName);
+
+  sprintf(filterFileName, "50to%d", outRate);
+  fromFifty = (outRate == 50) ? 0 : readAfilter(filterFileName);
+
+  sprintf(filterFileName, "100to%d", outRate);
+  fromOneHundred = (outRate == 100) ? 0 : readAfilter(filterFileName);
+
+  sprintf(filterFileName, "250to%d", outRate);
+  fromTwoFifty = (outRate == 250) ? 0 : readAfilter(filterFileName);
+
+  sprintf(filterFileName, "500to%d", outRate);
+  fromFiveHundred = (outRate == 500) ? 0 : readAfilter(filterFileName);
+
+  sprintf(filterFileName, "1000to%d", outRate);
+  fromOneThousand = (outRate == 1000) ? 0 : readAfilter(filterFileName);
 
   /* Create filter Data for each variable
    */
@@ -110,14 +122,14 @@ void InitMRFilters()
 
     // All data being interped is linear interped before coming here, so L=1.
     size_t L = 1; // cfg.HRTRate() / raw[i]->SampleRate;
-    size_t M = raw[i]->SampleRate / cfg.HRTRate();
+    size_t M = raw[i]->SampleRate / outRate;
 
     if (L < 1) L = 1;
     if (M < 1) M = 1;
 
     /* Doesn't require filtering (as in not output or used).
      */
-    if (raw[i]->DependedUpon == false && raw[i]->OutputRate != (size_t)cfg.HRTRate())
+    if (raw[i]->DependedUpon == false && raw[i]->OutputRate != (size_t)outRate)
       continue;
 
     /* Don't filter counters.  @see filterCounter()
@@ -136,14 +148,14 @@ void InitMRFilters()
     switch (raw[i]->SampleRate)
     {
       case 1:			/* Interpolate	*/
-        rawFilters[i] = createMRFilter(L, M, OneUp, mv_p);
+        rawFilters[i] = createMRFilter(L, M, fromOne, mv_p);
 //        rawFilters[i] = 0;
         break;
       case 5:
-        rawFilters[i] = createMRFilter(L, M, FiveUp, mv_p);
+        rawFilters[i] = createMRFilter(L, M, fromFive, mv_p);
         break;
       case 8:
-        rawFilters[i] = createMRFilter(L, M, EightUp, mv_p);
+        rawFilters[i] = createMRFilter(L, M, fromEight, mv_p);
         break;
       case 10:
         /* At this time no filtering of groundspeeds from the IRS should be
@@ -157,35 +169,35 @@ void InitMRFilters()
 //          rawFilters[i] = createMRFilter(L, M, gsf, mv_p);
           rawFilters[i] = 0;
         else
-          rawFilters[i] = createMRFilter(L, M, TenUp, mv_p);
+          rawFilters[i] = createMRFilter(L, M, fromTen, mv_p);
         break;
       case 13:	// Really 12.5hz
-//        rawFilters[i] = createMRFilter(L, M, ThirteenUp, mv_p);
+//        rawFilters[i] = createMRFilter(L, M, fromThirteen, mv_p);
         rawFilters[i] = 0;
         break;
       case 16:
-        rawFilters[i] = createMRFilter(L, M, SixteenUp, mv_p);
+        rawFilters[i] = createMRFilter(L, M, fromSixteen, mv_p);
         break;
       case 25:		/* Just filter	*/
         if (cfg.Aircraft() == Config::C130 && strncmp(raw[i]->name, "VSPD", 4) == 0)
           rawFilters[i] = createMRFilter(L, M, vspd, mv_p);
         else
-          rawFilters[i] = createMRFilter(L, M, TwentyFiveUp, mv_p);
+          rawFilters[i] = createMRFilter(L, M, fromTwentyFive, mv_p);
         break;
       case 50:		/* Decimate	*/
         if (cfg.Aircraft() == Config::C130 && strncmp(raw[i]->name, "ACINS", 5) == 0)
           rawFilters[i] = createMRFilter(L, M, acins, mv_p);
         else
-          rawFilters[i] = createMRFilter(L, M, FiftyDown, mv_p);
+          rawFilters[i] = createMRFilter(L, M, fromFifty, mv_p);
         break;
       case 250:
-        rawFilters[i] = createMRFilter(L, M, TwoFiftyDown, mv_p);
+        rawFilters[i] = createMRFilter(L, M, fromTwoFifty, mv_p);
         break;
       case 500:
-        rawFilters[i] = createMRFilter(L, M, FiveHundredDown, mv_p);
+        rawFilters[i] = createMRFilter(L, M, fromFiveHundred, mv_p);
         break;
       case 1000:
-        rawFilters[i] = createMRFilter(L, M, ThousandDown, mv_p);
+        rawFilters[i] = createMRFilter(L, M, fromOneThousand, mv_p);
         break;
       default:
         fprintf(stderr, "mrfFilter: non-supported input rate, ");
@@ -238,31 +250,60 @@ static void ProcessVariable(	CircularBuffer *PSCB, CircularBuffer *HSCB,
   /* Because data with SampleRate below 25 is interpolated first, we
    * can't use SampleRate, but must use 25.  Fake it with filterRate.
    */
-  filterRate = vp->SampleRate < (size_t)cfg.HRTRate()
-				? (size_t)cfg.HRTRate() : vp->SampleRate;
+  bool downsampling = ((size_t)cfg.HRTRate() < vp->SampleRate);
+  filterRate = downsampling ? vp->SampleRate : (size_t)cfg.HRTRate();
 
   if (vpFilter == 0)	/* Filtering not needed/wanted	*/
   {
+    // how much space for one second of high-rate data?
+    int oneSecondSize = sizeof(NR_TYPE) * cfg.HRTRate() * vp->Length;
+    
     if (vp->SampleRate == (size_t)cfg.HRTRate())
       // SampleRate is same as HRT rate, just copy.
-      memcpy(	(char *)&HighRateData[vp->HRstart],
-		(char *)&SampledData[vp->SRstart],
-		sizeof(NR_TYPE) * vp->SampleRate * vp->Length);
+      memcpy((char *)&HighRateData[vp->HRstart],
+	     (char *)&SampledData[vp->SRstart], oneSecondSize);
     else
-    if (vp->SampleRate < (size_t)cfg.HRTRate())
-      // Use interpolated data for vars below HRT rate.
-      memcpy(	(char *)&HighRateData[vp->HRstart],
-		(char *)&interpdData[vp->HRstart],
-		sizeof(NR_TYPE) * filterRate * vp->Length);
-    else
-      // zero out rates above HRT rate.  We could use the resampled data that's there?
-      memset(	(char *)&HighRateData[vp->HRstart], 0,
-		sizeof(NR_TYPE) * (size_t)cfg.HRTRate() * vp->Length);
+    {
+      if (downsampling)
+	// zero out rates above HRT rate.  We could use the resampled data
+	// that's there?
+	memset((char *)&HighRateData[vp->HRstart], 0, oneSecondSize);
+      else
+	// Use interpolated data for vars below HRT rate.
+	memcpy((char *)&HighRateData[vp->HRstart],
+	       (char *)&interpdData[vp->HRstart], oneSecondSize);
+    }
+    return;
+  }
+  else if (vpFilter == (mRFilterPtr)BadFilter)
+  {
+    fprintf(stderr, "No good filter for %d Hz to %d Hz!\n", vp->SampleRate,
+	    cfg.HRTRate());
     return;
   }
 
-  PSCBindex = -(PSCB->nbuffers - 1);
-  setTimeDelay(filterRate, vpFilter->filter->order, &PSCBindex, &sampleOffset);
+  //
+  // Set the input buffer index and downsampling sample offset
+  //
+  PSCBindex = 1 - PSCB->nbuffers;
+
+  if (downsampling)
+  {
+    // When downsampling, grab the output sample (order/2) input samples
+    // after the output sample time.
+    sampleOffset = vpFilter->filter->order / 2;
+  }
+  else
+  {
+    sampleOffset = 0;
+    PSCBindex += vpFilter->filter->order / (2 * cfg.HRTRate());
+  }
+
+  // XXXX When downsampling, something down the line seems to put us off 
+  // by one full output sample period.  Correct here (for now?).
+  sampleOffset -= vp->SampleRate / cfg.HRTRate();
+
+
   inputRec = (NR_TYPE *)GetProcessedBuffer(PSCB, HSCB, PSCBindex, vp);
 
   if (vpFilter->task == GET_INPUT)
@@ -270,12 +311,11 @@ static void ProcessVariable(	CircularBuffer *PSCB, CircularBuffer *HSCB,
     currentSampleOffset = sampleOffset;
     ++PSCBindex;
   }
-  else
-    if ((currentSampleOffset = filterRate - 1 + sampleOffset) >= filterRate)
-    {
-      ++PSCBindex;
-      currentSampleOffset -= filterRate;
-    }
+  else if ((currentSampleOffset = filterRate - 1 + sampleOffset) >= filterRate)
+  {
+    ++PSCBindex;
+    currentSampleOffset -= filterRate;
+  }
 
   SingleStageFilter(PSCB, HSCB, vpFilter, vp);
 
@@ -348,6 +388,11 @@ static void SingleStageFilter(CircularBuffer *PSCB, CircularBuffer *HSCB, mRFilt
 }
 
 /* -------------------------------------------------------------------- */
+//
+// Return a pointer to a filter read from the given file, or 
+// (filterPtr)BadFilter if the file cannot be opened or is otherwise
+// bad.
+//
 static filterPtr readAfilter(char file[])
 {
   char	*nimbus = getenv("PROJ_DIR");
@@ -358,7 +403,7 @@ static filterPtr readAfilter(char file[])
   ReadTextFile(buffer, filter);
 
   if (filter[0] == 0)
-    return 0;
+    return (filterPtr)BadFilter;
 
   filterPtr daFilt = new filterData;
 
@@ -383,7 +428,7 @@ static filterPtr readAfilter(char file[])
 void ClearMRFilters()
 {
   for (size_t i = 0; i < raw.size(); ++i)
-    if ((int)rawFilters[i] > 0)
+    if (rawFilters[i] && rawFilters[i] != (mRFilterPtr)BadFilter)
       initMultiRateFilter(rawFilters[i]);
 
 }	/* END CLEARMRFILTER */
@@ -393,6 +438,8 @@ static mRFilterPtr createMRFilter(int L, int M, filterPtr filter, MOD *modvar)
 {
   if (filter == 0)
     return 0;
+  else if (filter == (filterPtr)BadFilter)
+    return (mRFilterPtr)BadFilter;
 
   mRFilterPtr	aMRFPtr;
 
@@ -406,52 +453,6 @@ static mRFilterPtr createMRFilter(int L, int M, filterPtr filter, MOD *modvar)
   return(aMRFPtr);
 
 }	/* END CREATEMRFILTER */
-
-/* -------------------------------------------------------------------- */
-static void setTimeDelay(size_t rate, size_t nTaps, int *sec, size_t *msec)
-{
-  /* Set up time lags due to filtering.  Theory says delay at input is
-   * nTaps / (2 * L)
-   * nTaps should be a multiple of 25 and 50.
-   */
-  *msec = 0;
-
-  int L = 1;	// No actual interp here.
-  int samples = nTaps / (2 * L);
-
-  if (rate <= (size_t)cfg.HRTRate())
-    *sec += (samples / rate);
-  else
-    // Why are the decimaters off by 1 sample?
-    switch (rate)
-      {
-      case 50:		// nTaps / (2 * L), almost checks out.
-        *sec += 0;
-        *msec = (nTaps / 2) - 1;
-        break;
-
-      case 250:		// nTaps / (2 * L), almost checks out.
-        *sec += 0;
-        if (cfg.HRTRate() == Config::TwentyFive)
-          *msec = 240;
-        else
-          *msec = 120;
-        break;
-
-      case 500:
-        break;
-
-      case 1000:		// nTaps / (2 * L), ????
-        *sec += 0;
-        *msec = 0;
-//      *msec = 500;
-        break;
-
-      default:
-        fprintf(stderr, "ERROR: filter.c:setTimeDelay: rate of %d not being handled.\n", rate);
-        exit(1);
-      }
-}	/* END SETTIMEDELAY */
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*\
 
