@@ -46,8 +46,8 @@ static const size_t nTimeSliceInfo = 2;
 
 static Widget	ConfigShell = 0, ConfigWindow = 0, flightText[nFlightInfo],
 		lowRateButton, sampleRateButton, highRate25Button,
-		highRate50Button, despikeButton, lagButton, irsCleanupButton,
-		inertialShiftButton, interpB[3];
+		highRate50Button, highRate100Button, despikeButton, 
+		lagButton, irsCleanupButton, inertialShiftButton, interpB[3];
 
 Widget ts_text[nTimeSliceInfo];
 
@@ -118,11 +118,26 @@ void SetConfigWinFromConfig()
       XmToggleButtonSetState(sampleRateButton, true, true);
       break;
     case Config::HighRate:
-      if (cfg.HRTRate() == 25)
+    {
+      switch (cfg.HRTRate())
+      {
+       case Config::TwentyFive:
         XmToggleButtonSetState(highRate25Button, true, true);
-      else
+	break;
+       case Config::Fifty:
         XmToggleButtonSetState(highRate50Button, true, true);
+	break;
+       case Config::OneHundred:
+        XmToggleButtonSetState(highRate100Button, true, true);
+	break;
+       default:
+	fprintf(stderr, 
+		"SetConfigWinFromConfig() does not handle %d Hz rate!\n",
+		cfg.HRTRate());
+	exit(1);
+      }
       break;
+    }
   }
 
   XmToggleButtonSetState(interpB[(int)cfg.InterpolationType()], true, true);
@@ -243,25 +258,46 @@ void SetSampleRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *cal
 void SetHighRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
 {
   size_t        i;
+  int rate = (int)client;
 
   if (w == 0)
+  {
+    switch (rate)
     {
-    if ((int)client == 25)
+     case 25:
       XmToggleButtonSetState(highRate25Button, true, true);
-    else
+      break;
+     case 50:
       XmToggleButtonSetState(highRate50Button, true, true);
-    return;
+      break;
+     case 100:
+      XmToggleButtonSetState(highRate100Button, true, true);
+      break;
     }
 
-  if (call->set == false)
     return;
+  }
 
+  if (! call->set)
+    return;
+  
   cfg.SetProcessingRate(Config::HighRate);
-  if ((int)client == 50)
-    cfg.SetHRTRate(Config::Fifty);
-  else
+  switch (rate)
+  {
+   case 25:
     cfg.SetHRTRate(Config::TwentyFive);
-printf("<<<<<<<<<<<<<< WARNING, All vars forced to 50Hz for HRT >>>>>>>>>>>>>>\n");
+    break;
+   case 50:
+    cfg.SetHRTRate(Config::Fifty);
+    break;
+   case 100:
+    cfg.SetHRTRate(Config::OneHundred);
+    break;
+  }
+
+  printf("<<<<<<<<<< WARNING, All vars forced to %d Hz for HRT >>>>>>>>>>\n",
+	 rate);
+
   for (i = 0; i < raw.size(); ++i)
     {
 //    if (raw[i]->SampleRate >= Config::HighRate)
@@ -437,6 +473,14 @@ void createProcessingRate(Widget parent)
   XtAddCallback(highRate50Button, XmNvalueChangedCallback,
 		(XtCallbackProc)SetHighRate, (void*)50);
   XtManageChild(highRate50Button);
+
+  n = 0;
+  highRate100Button = XmCreateToggleButton(rateRB, "highRate100Button", 
+					   args, n);
+  XtAddCallback(highRate100Button, XmNvalueChangedCallback,
+		(XtCallbackProc)SetHighRate, (void*)100);
+  XtManageChild(highRate100Button);
+
 
 }	/* END CREATEPROCESSINGRATE */
 
