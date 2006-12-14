@@ -300,8 +300,9 @@ static void ProcessVariable(	CircularBuffer *PSCB, CircularBuffer *HSCB,
   }
 
   // XXXX When downsampling, something down the line seems to put us off 
-  // by one full output sample period.  Correct here (for now?).
-  sampleOffset -= vp->SampleRate / cfg.HRTRate();
+  // by (one output sample period - one input sample period).  
+  // Correct here (for now?).
+  sampleOffset -= vp->SampleRate / cfg.HRTRate() - 1;
 
 
   inputRec = (NR_TYPE *)GetProcessedBuffer(PSCB, HSCB, PSCBindex, vp);
