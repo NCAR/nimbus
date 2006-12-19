@@ -260,10 +260,10 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
     if (hrt_out)
       for (size_t i = 0; i < (size_t)cfg.HRTRate(); ++i)
       {
-        if (hrt_out[vp->SRstart+i] < vp->Modulo->value[0])
-          hrt_out[vp->SRstart+i] += vp->Modulo->diff;
-        if (hrt_out[vp->SRstart+i] > vp->Modulo->value[1])
-          hrt_out[vp->SRstart+i] -= vp->Modulo->diff;
+        if (hrt_out[vp->HRstart+i] < vp->Modulo->value[0])
+          hrt_out[vp->HRstart+i] += vp->Modulo->diff;
+        if (hrt_out[vp->HRstart+i] > vp->Modulo->value[1])
+          hrt_out[vp->HRstart+i] -= vp->Modulo->diff;
       }
   }
 }	/* END RESAMPLE */
