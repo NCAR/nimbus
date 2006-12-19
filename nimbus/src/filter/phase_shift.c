@@ -79,14 +79,14 @@ void PhaseShift(
   for (size_t i = 0; i < raw.size(); ++i)
   {
     RAWTBL	*rp = raw[i];
-    int		lag;
+    int		lag = rp->StaticLag + rp->DynamicLag;
     bool	noMissingData = true;
 
     for (size_t j = 0; j < rp->SampleRate; ++j)
       if (isnan(this_rec[rp->SRstart + j]))
         noMissingData = false;
 
-    if (abs((lag = rp->StaticLag + rp->DynamicLag)) > MaxLag)
+    if (abs((lag)) > MaxLag)
     {
       if (lag < 0)
         lag = -MaxLag;
@@ -136,16 +136,22 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
   for (size_t ri = 0; recPtrs[ri] != 0; ++ri)
   {
     NR_TYPE *curPtr = &recPtrs[ri][vp->SRstart];
-    NR_TYPE dynLag = recPtrs[ri][vp->LAGstart] / 1000.0;
-    if (isnan(dynLag))
+    NR_TYPE dynLag = 0;
+
+    if (vp->LAGstart != -1)
     {
-      if (ri >= 2 && !isnan(recPtrs[ri-2][vp->LAGstart]))
+      dynLag = recPtrs[ri][vp->LAGstart] / 1000.0;
+
+      if (isnan(dynLag))
       {
-        recPtrs[ri][vp->LAGstart] = recPtrs[ri-2][vp->LAGstart];
-        dynLag = recPtrs[ri][vp->LAGstart] / 1000.0;
+        if (ri >= 2 && !isnan(recPtrs[ri-2][vp->LAGstart]))
+        {
+          recPtrs[ri][vp->LAGstart] = recPtrs[ri-2][vp->LAGstart];
+          dynLag = recPtrs[ri][vp->LAGstart] / 1000.0;
+        }
+        else
+          dynLag = 0;
       }
-      else
-        dynLag = 0;
     }
 
     for (size_t i = 0; i < vp->SampleRate; ++i)
@@ -162,15 +168,11 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 //  startTime = 3000.0 - lag;
   startTime = 3000.0 - vp->StaticLag;
 
-  // Don't interp past the edge of the earth.
-  if (x[goodPoints-1] < startTime || startTime < x[0])
-    return;
-
   if (goodPoints < 3)
   {
     if (goodPoints != 0)
     {
-      char msg[80];
+      char msg[256];
       sprintf(msg, "Not enough points for interp, var=%s, sr=%d, goodPoints=%d",
 		vp->name, vp->SampleRate, goodPoints);
       LogThisRecordMsg(this_rec, msg);
@@ -178,10 +180,13 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
     return;
   }
 
+  // Don't interp past the edge of the earth.
+  if (x[goodPoints-1] < startTime || startTime < x[0])
+    return;
+
   if (vp->Modulo)	// 0 - 360 stuff.
   {
     bool high_value = false, low_value = false;
-
     for (size_t i = 0; i < goodPoints; ++i)
     {
       if (y[i] < vp->Modulo->bound[0])

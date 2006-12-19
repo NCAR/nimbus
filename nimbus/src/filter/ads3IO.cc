@@ -59,7 +59,7 @@ long FindFirstLogicalADS3(
   {
     try
     {
-      rc = syncRecReader->read(&tt, (float *)record, nSRfloats);
+      rc = syncRecReader->read(&tt, (float *)record, syncRecReader->getNumFloats());
     }
     catch (const nidas::util::IOException& e)
     {
@@ -83,7 +83,7 @@ long FindNextLogicalADS3(char record[], time_t endTime)
 
   try
   {
-    rc = syncRecReader->read(&tt, (float *)record, nSRfloats);
+    rc = syncRecReader->read(&tt, (float *)record, syncRecReader->getNumFloats());
   }
   catch (const nidas::util::IOException& e)
   {
