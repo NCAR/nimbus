@@ -171,16 +171,16 @@ int DependIndexLookup(DERTBL *dp, int which_dep)
   int di;
 
   if ((di = SearchTable(raw, dp->depend[which_dep])) != ERR)
-    {
+  {
     dp->depend_LRindex[which_dep] = raw[di]->LRstart;
     dp->depend_HRindex[which_dep] = raw[di]->HRstart;
-    }
+  }
   else
   if ((di = SearchTable(derived, dp->depend[which_dep])) !=ERR)
-    {
+  {
     dp->depend_LRindex[which_dep] = derived[di]->LRstart;
     dp->depend_HRindex[which_dep] = derived[di]->HRstart;
-    }
+  }
   else
     return(ERR);
 
@@ -205,16 +205,16 @@ static void doubleCheck(DERTBL *dp)	/* This function is recursive	*/
   int indx;
 
   for (size_t i = 0; i < dp->ndep; ++i)
-    {
+  {
     if ((indx = SearchTable(raw, dp->depend[i])) != ERR)
       raw[indx]->DependedUpon = true;
     else
     if ((indx = SearchTable(derived, dp->depend[i])) != ERR)
-      {
+    {
       derived[indx]->DependedUpon = true;
       doubleCheck(derived[indx]);
-      }
     }
+  }
 }	/* END DOUBLECHECK */
 
 /* END DEPEND.C */
