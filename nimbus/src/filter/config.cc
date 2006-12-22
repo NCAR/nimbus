@@ -34,6 +34,7 @@ Config::Config()
 
   SetADSVersion(ADS_2);
 
+  SetTwoDProcessingMethod(Center_In);
   SetTwoDAreaRejectRatio(.5);	// 50%.
 }
 
