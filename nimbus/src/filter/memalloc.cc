@@ -61,6 +61,13 @@ void AllocateDataArrays()
       nSRfloats += (raw[i]->SampleRate * raw[i]->Length);
     }
 
+    if (raw[i]->Length < 1)	// Sanity check.
+    {
+      fprintf(stderr, "memalloc.c::AllocateDataArrays:: %s has Length of zero!  Fatal.\n",
+	raw[i]->name);
+      exit(1);
+    }
+
     nLRfloats += raw[i]->Length;
     nHRfloats += (cfg.HRTRate() * raw[i]->Length);
   }
