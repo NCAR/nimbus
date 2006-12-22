@@ -58,6 +58,8 @@ public:
   hrtRate HRTRate() const		{ return _hrtRate; }
   interpolationType InterpolationType() const	{ return _interpType; }
 
+  float TwoDAreaRejectRatio() const	{ return _twoDrejectRatio; }
+
   void SetInteractive(bool state)	{ _interactive = state; }
   void SetProductionRun(bool state)	{ _productionRun = state; }
   void SetDespiking(bool state)		{ _despiking = state; }
@@ -108,6 +110,7 @@ public:
   void SetWindSpeed(const std::string s)	{ _windWS = s; }
   void SetWindDirection(const std::string s)	{ _windWD = s; }
   void SetWindVertical(const std::string s)	{ _windWI = s; }
+  void SetTwoDAreaRejectRatio(float f)		{ _twoDrejectRatio = f; }
 
 private:
   bool _interactive;
@@ -147,6 +150,10 @@ private:
   std::string _windWS;	// Wind Speed variable
   std::string _windWD;	// Wind Direction variable
   std::string _windWI;	// Vertical Wind variable
+
+  /* % of pixels which must be shaded inside particle bounding box.
+   */
+  float _twoDrejectRatio;
 };
 
 #endif
