@@ -1,5 +1,5 @@
-//#define SQL
 /*
+>>>>>>>>>>   See line 280 for special RICO processing.
 -------------------------------------------------------------------------
 OBJECT NAME:	pms2_data.c
 
@@ -16,17 +16,9 @@ STATIC FNS:	AddMore2dData()
 
 DESCRIPTION:	This sums up the data bins from SampleRate to 1hz.
 
-INPUT:		
-
-OUTPUT:		
-
 NOTES:		Order of raw variables is determined alphabetically.  There
 		are some not so raw (more like derived) variables being
 		created here.  Watch out changing variable names (A1DC, etc).
-
-REFERENCES:	none
-
-REFERENCED BY:	rec_decode.c
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1999-2006
 -------------------------------------------------------------------------
@@ -47,7 +39,7 @@ static Queue	*probes[MAX_PMS2];
 static short	probeIDorder[MAX_PMS2] = { 0, 0, 0, 0 };
 static long	startTime[MAX_PMS2];
 static short	startMilliSec[MAX_PMS2];
-static NR_TYPE	twoD[MAX_PMS2][BINS_64];
+static int	twoD[MAX_PMS2][BINS_64];
 
 #ifdef SQL
 #include "psql.h"
@@ -181,7 +173,7 @@ void xlTwoD(RAWTBL *varp, void *in, NR_TYPE *np)
   size_t	probeCnt = varp->ProbeCount >> 1;
 
   for (size_t i = 0; i < varp->Length; ++i)
-    np[i] = twoD[probeCnt][i];
+    np[i] = (NR_TYPE)twoD[probeCnt][i];
 
 }	/* END XLTWOD */
 
@@ -200,7 +192,7 @@ void xlOneD(RAWTBL *varp, void *in, NR_TYPE *np)
   deadTime[probeCount][0] = 0.0;
   deadTime[probeCount][1] = 0.0;
   memset((void *)np, 0, sizeof(NR_TYPE) * varp->Length);
-  memset((void *)twoD[probeCount], 0, sizeof(NR_TYPE) * BINS_64);
+  memset((void *)twoD[probeCount], 0, sizeof(int) * BINS_64);
 
   if (FeedBack == HIGH_RATE_FEEDBACK)	// Does not support high_rate
     return;
@@ -287,7 +279,7 @@ return;
           n = MAX(p->w, p->h);
 
           if (n < BINS_64)
-            twoD[probeCount][n] += 1.0;
+            ++(twoD[probeCount][n]);
           else
             ++overFlowCnt[probeCount];
         }
@@ -310,7 +302,7 @@ return;
           printf("amlib/xlate/pms2_data.c: Not all cases for particles covered.\n");
 
         if (n < BINS_64)
-          twoD[probeCount][n] += 1.0;
+          ++(twoD[probeCount][n]);
         else
           ++overFlowCnt[probeCount];
       }
