@@ -26,10 +26,12 @@ public:
   };
 
   enum ADSVersion	{ ADS_2, ADS_3 };
-  enum ProcessingMode	{ PostProcessing, RealTime };
+  enum processingMode	{ PostProcessing, RealTime };
   enum interpolationType { Linear=0, CubicSpline, AkimaSpline };
   enum processingRate	{ SampleRate=0, LowRate=1, HighRate=25 };
   enum hrtRate		{ TwentyFive=25, Fifty=50, OneHundred=100 };
+
+  enum pms2Dprocessing	{ Entire_In, Center_In, Reconstruction };
 
   Config();
 
@@ -37,7 +39,6 @@ public:
   bool Despiking() const		{ return _despiking; }
   bool TimeShifting() const		{ return _timeShifting; }
   bool QCenabled() const		{ return _qcEnabled; }
-  bool ProcessingMode() const		{ return _mode; }
   bool ProductionRun() const		{ return _productionRun; }
   bool OutputNetCDF() const		{ return _outputNetCDF; }
   bool OutputSQL() const		{ return _outputSQL; }
@@ -54,10 +55,12 @@ public:
   bool isADS3() const			{ return _adsVersion == ADS_3; }
 
   aircraft Aircraft()			{ return _aircraft; }
+  processingMode ProcessingMode() const	{ return _mode; }
   processingRate ProcessingRate() const	{ return _processingRate; }
   hrtRate HRTRate() const		{ return _hrtRate; }
-  interpolationType InterpolationType() const	{ return _interpType; }
+  interpolationType InterpolationType() const { return _interpType; }
 
+  pms2Dprocessing TwoDProcessingMethod() const { return _pms2dProcessing; }
   float TwoDAreaRejectRatio() const	{ return _twoDrejectRatio; }
 
   void SetInteractive(bool state)	{ _interactive = state; }
@@ -65,7 +68,6 @@ public:
   void SetDespiking(bool state)		{ _despiking = state; }
   void SetTimeShifting(bool state)	{ _timeShifting = state; }
   void SetQCenabled(bool state)		{ _qcEnabled = state; }
-  void SetProcessingMode(bool state)	{ _mode = state; }
   void SetOutputNetCDF(bool state)	{ _outputNetCDF = state; }
   void SetOutputSQL(bool state)		{ _outputSQL = state; }
   void SetTransmitToGround(bool state)	{ _transmitToGround = state; }
@@ -76,6 +78,7 @@ public:
 
   void SetAircraft(aircraft ac)		{ _aircraft = ac; }
   void SetAircraft(int ac)		{ _aircraft = (aircraft)ac; }
+  void SetProcessingMode(processingMode state) { _mode = state; }
   void SetProcessingRate(processingRate pr) { _processingRate = pr; }
   void SetHRTRate(hrtRate rate) { _hrtRate = rate; }
   void SetInterpolationType(interpolationType it) { _interpType = it; }
@@ -110,6 +113,7 @@ public:
   void SetWindSpeed(const std::string s)	{ _windWS = s; }
   void SetWindDirection(const std::string s)	{ _windWD = s; }
   void SetWindVertical(const std::string s)	{ _windWI = s; }
+  void SetTwoDProcessingMethod(pms2Dprocessing p) { _pms2dProcessing = p; }
   void SetTwoDAreaRejectRatio(float f)		{ _twoDrejectRatio = f; }
 
 private:
@@ -118,7 +122,6 @@ private:
   bool _despiking;
   bool _timeShifting;
   bool _qcEnabled;
-  bool _mode;
   bool _outputNetCDF;
   bool _outputSQL;
   bool _transmitToGround;
@@ -132,6 +135,7 @@ private:
 
   aircraft _aircraft;
   ADSVersion _adsVersion;
+  processingMode _mode;
   processingRate _processingRate;
   hrtRate _hrtRate;
   interpolationType _interpType;
@@ -150,6 +154,9 @@ private:
   std::string _windWS;	// Wind Speed variable
   std::string _windWD;	// Wind Direction variable
   std::string _windWI;	// Vertical Wind variable
+
+
+  pms2Dprocessing _pms2dProcessing;
 
   /* % of pixels which must be shaded inside particle bounding box.
    */

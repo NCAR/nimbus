@@ -920,6 +920,10 @@ static void addCommonVariableAttributes(var_base *var)
   const char *p;
 
   ncattput(fd, var->varid, "_FillValue", NC_FLOAT, 1, &MISSING_VALUE);
+/* Once we support individual _FillValue in Q missing data routine, then use this line.
+  float fv = VarDB_GetFillValue(var->name);
+  ncattput(fd, var->varid, "_FillValue", NC_FLOAT, 1, &fv);
+*/
 
   strcpy(buffer, var->Units.c_str());
   ncattput(fd, var->varid, "units", NC_CHAR, strlen(buffer)+1, buffer);

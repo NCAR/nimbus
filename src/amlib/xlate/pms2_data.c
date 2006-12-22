@@ -230,18 +230,18 @@ return;
 
 
   if (FrontQueue(probe) == NULL)	/* No data left in 2d file? */
-{
+  {
 //printf(" Queue is empty, leaving.\n");
     return;
-}
+  }
 
   /* If first time available in Q is later, bail out
    */
   if (thisTime < ((Particle *)FrontQueue(probe))->time)
-{
+  {
 //printf(" Front Q has later time, leaving.  this=%d, Q=%d\n", thisTime, ((Particle *)FrontQueue(probe))->time);
     return;
-}
+  }
 
 
   /* Skip prior particles.  In theory this shouldn't happen.
@@ -251,20 +251,20 @@ return;
 
 
   while (FrontQueue(probe) && ((Particle *)FrontQueue(probe))->time == thisTime)
-    {
+  {
     p = (Particle *)DeQueue(probe);
 //printf("   %d.%d w=%d, h=%d, e=%d - %d\n", ((Particle *)p)->time,
 //  ((Particle *)p)->msec, ((Particle *)p)->w, ((Particle *)p)->h,
 //  ((Particle *)p)->edge, ((Particle *)FrontQueue(probe))->time);
 
     if (p->timeWord == OVERLOAD)
-      {
+    {
 //printf("OVERLOAD, incr deadTime by %d\n", p->deltaTime);
       deadTime[probeCount][0] += p->deltaTime;
       deadTime[probeCount][1] += p->deltaTime;
-      }
+    }
     else
-      {
+    {
       rejected = false;
 
       if (p->w > 121 ||
@@ -273,21 +273,30 @@ return;
          (p->edge && (float)p->h / p->w < 0.2))
         rejected = true;
 
-      /* A2DC */
-      if (!rejected && (!p->edge || (p->edge && p->w <= p->h * 2))) // Center-in
-        {
-        n = MAX(p->w, p->h);
+      /* Reject 2D data where ratio, of actual-area vs. bounding box area,
+       * is too great.
+       */
+      if ((float)p->area / (p->w * p->h) <= cfg.TwoDAreaRejectRatio())
+        rejected = true;
 
-        if (n < BINS_64)
-          twoD[probeCount][n] += 1.0;
-        else
-          ++overFlowCnt[probeCount];
+      /* A2D[C|P] */
+      if (cfg.TwoDProcessingMethod() == Config::Center_In)
+      {
+        if (!rejected && (!p->edge || (p->edge && p->w <= p->h * 2)))
+        {
+          n = MAX(p->w, p->h);
+
+          if (n < BINS_64)
+            twoD[probeCount][n] += 1.0;
+          else
+            ++overFlowCnt[probeCount];
         }
-      else
-        deadTime[probeCount][1] += p->liveTime;
+        else
+          deadTime[probeCount][1] += p->liveTime;
+      }
 
-/*    if (1) // Reconstruction
-        {
+      if (cfg.TwoDProcessingMethod() == Config::Reconstruction)
+      {
         if (!p->edge || (p->edge && p->w <= p->h * 2))
           n = MAX(p->w, p->h);
         else
@@ -304,21 +313,19 @@ return;
           twoD[probeCount][n] += 1.0;
         else
           ++overFlowCnt[probeCount];
-        }
+      }
       else
         deadTime[probeCount][1] += p->liveTime;
-*/
 
-      /* A1DC */
+      /* A1D[C|P] */
       if (p->h > 0 && p->h < 4 * p->w && !p->edge)
         np[p->h] += 1.0;
       else
         deadTime[probeCount][0] += p->liveTime;
-      }
-
-    delete p;
     }
 
+    delete p;
+  }
 }	/* END XLONED */
 
 /* -------------------------------------------------------------------- */
