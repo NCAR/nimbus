@@ -72,10 +72,10 @@ void SetFlightValue(char target[], char new_value[])
 {
   for (size_t i = 0; i < nFlightInfo; ++i)
     if (strcmp(FlightInfo[i].Name, target) == 0)
-      {
+    {
       FlightInfo[i].Dirty = true;
       return;
-      }
+    }
 
   sprintf(buffer, "Request to set non-existent default, %s.\n", target);
   LogMessage(buffer);
@@ -153,16 +153,16 @@ void SetConfigWinFromConfig()
 void ResetFlightInfo(Widget w, XtPointer client, XtPointer call)
 {
   for (size_t i = 0; i < nFlightInfo; ++i)
-    {
+  {
     FlightInfo[i].Dirty = false;
     XmTextFieldSetString(flightText[i], FlightInfo[i].originalValue);
-    }
+  }
 
   for (size_t i = 0; i < nTimeSliceInfo; ++i)
-    {
+  {
     TimeSliceInfo[i].Dirty = false;
     XmTextFieldSetString(ts_text[i], TimeSliceInfo[i].originalValue);
-    }
+  }
 
 /** @todo
  * We need a Set & Reset function.  Don't want reset being called when the
@@ -186,10 +186,10 @@ void SetLowRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
   size_t i;
 
   if (w == 0)
-    {
+  {
     XmToggleButtonSetState(lowRateButton, true, true);
     return;
-    }
+  }
 
   if (call->set == false)
     return;
@@ -206,15 +206,15 @@ void SetLowRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
   XtSetSensitive(outputHRbutton, false);
 
   if (cfg.ProductionRun())
-    {
+  {
     char *p = strstr(OutputFileName, "h.");
 
     if (p)
-      {
+    {
       strcpy(p, ".nc");
       XmTextFieldSetString(outputFileText, OutputFileName);
-      }
     }
+  }
 }       /* END SETLOWRATE */
 
 /* -------------------------------------------------------------------- */
@@ -243,15 +243,15 @@ void SetSampleRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *cal
   XtSetSensitive(outputHRbutton, false);
 
   if (cfg.ProductionRun())
-    {
+  {
     char *p = strstr(OutputFileName, "h.");
 
     if (p)
-      {
+    {
       strcpy(p, ".nc");
       XmTextFieldSetString(outputFileText, OutputFileName);
-      }
     }
+  }
 }       /* END SETSAMPLERATE */
 
 /* -------------------------------------------------------------------- */
@@ -299,13 +299,13 @@ void SetHighRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
 	 rate);
 
   for (i = 0; i < raw.size(); ++i)
-    {
-//    if (raw[i]->SampleRate >= Config::HighRate)
+  {
+    if (raw[i]->SampleRate >= Config::HighRate)
       raw[i]->OutputRate = cfg.HRTRate();
 
     if (raw[i]->ProbeType & PROBE_PMS1D)	// No interp of PMS1D.
       raw[i]->OutputRate = raw[i]->SampleRate;
-    }
+  }
 
   for (i = 0; i < derived.size(); ++i)
   {
@@ -313,22 +313,21 @@ void SetHighRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
       derived[i]->Default_HR_OR = cfg.HRTRate();
 
     derived[i]->OutputRate = derived[i]->Default_HR_OR;
-derived[i]->OutputRate = cfg.HRTRate();
   }
 
   FillListWidget();
   XtSetSensitive(outputHRbutton, true);
 
   if (cfg.ProductionRun())
-    {
+  {
     char *p = strchr(OutputFileName, '.');
 
     if (p)
-      {
+    {
       strcpy(p, "h.nc");
       XmTextFieldSetString(outputFileText, OutputFileName);
-      }
     }
+  }
 }       /* END SETHIGHRATE */
 
 /* -------------------------------------------------------------------- */
@@ -355,7 +354,7 @@ void createFlightInfo(Widget parent)
   XtManageChild(defRC);
 
   for (size_t i = 0; i < nFlightInfo; ++i)
-    {
+  {
     n = 0;
     form[i] = XmCreateRowColumn(defRC, "flightEntryRC", args, n);
 
@@ -376,7 +375,7 @@ void createFlightInfo(Widget parent)
     XtAddCallback(flightText[i], XmNvalueChangedCallback,
 		(XtCallbackProc)markFlightInfoDirty, (XtPointer)i);
     XtManageChild(flightText[i]);
-    }
+  }
 
   XtManageChildren(form, nFlightInfo);
 
@@ -407,7 +406,7 @@ void createTimeSlice(Widget parent)
   XtManageChild(tsRC);
 
   for (size_t i = 0; i < nTimeSliceInfo; ++i)
-    {
+  {
     labelString = XmStringCreate(TimeSliceInfo[i].Name, XmFONTLIST_DEFAULT_TAG);
 
     n = 0;
@@ -425,7 +424,7 @@ void createTimeSlice(Widget parent)
     XtAddCallback(ts_text[i], XmNvalueChangedCallback,
                 (XtCallbackProc)markTimeSliceDirty, (XtPointer)i);
     XtManageChild(ts_text[i]);
-    }
+  }
 }	/* END CREATETIMESLICE */
 
 /* -------------------------------------------------------------------- */
@@ -578,10 +577,10 @@ void createOptions(Widget parent)
 void DismissConfigWindow(Widget w, XtPointer client, XtPointer call)
 {
   if (ConfigWindow)
-    {
+  {
     XtPopdown(XtParent(ConfigWindow));
     XtUnmanageChild(ConfigWindow);
-    }
+  }
 }	/* END DISMISSCONFIGWINDOW */
 
 /* -------------------------------------------------------------------- */
@@ -643,7 +642,7 @@ static void VerifyFlightInfo(Widget w, int indx, XtPointer call)
   /* Verify values
    */
   switch (indx)
-    {
+  {
     case 0:	/* Proj #	*/
       i = atoi(p);
       sprintf(buffer, "%d", i);
@@ -686,7 +685,7 @@ static void VerifyFlightInfo(Widget w, int indx, XtPointer call)
 
       cfg.SetAircraft(atoi(p1));
       break;
-    }
+  }
 
   XtFree(p);
 
@@ -756,7 +755,7 @@ void EditConfiguration(Widget w, XtPointer client, XtPointer call)
   static int	firstTime = true;
 
   if (firstTime)
-    {
+  {
     strcpy(FlightInfo[0].originalValue, cfg.ProjectNumber().c_str());
     XtSetSensitive(flightText[0], false);
 
@@ -771,7 +770,7 @@ void EditConfiguration(Widget w, XtPointer client, XtPointer call)
     ResetFlightInfo(NULL, NULL, NULL);
 
     firstTime = false;
-    }
+  }
 
   SetConfigWinFromConfig();
   XtManageChild(ConfigWindow);
