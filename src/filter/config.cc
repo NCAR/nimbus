@@ -33,6 +33,8 @@ Config::Config()
   SetLagErrorReporting(false);
 
   SetADSVersion(ADS_2);
+
+  SetTwoDAreaRejectRatio(.5);	// 50%.
 }
 
 // END CONFIG.CC
