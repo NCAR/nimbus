@@ -17,11 +17,8 @@ STATIC FNS:	sMarkDirty()
 DESCRIPTION:	Allow user to edit Flight Header Info (i.e. Date, Flight
 		number, etc...).
 
-REFERENCES:	OpenProjectFile()
 
-REFERENCED BY:	hdr_decode.c, cb_main(), various AMLIB fn's.
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2005
+COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2006
 -------------------------------------------------------------------------
 */
 
@@ -47,7 +44,8 @@ static const size_t nTimeSliceInfo = 2;
 static Widget	ConfigShell = 0, ConfigWindow = 0, flightText[nFlightInfo],
 		lowRateButton, sampleRateButton, highRate25Button,
 		highRate50Button, highRate100Button, despikeButton, 
-		lagButton, irsCleanupButton, inertialShiftButton, interpB[3];
+		lagButton, irsCleanupButton, inertialShiftButton, interpB[3],
+		twoDpmB[3], twoDarrB[10];
 
 Widget ts_text[nTimeSliceInfo];
 
@@ -81,6 +79,36 @@ void SetFlightValue(char target[], char new_value[])
   LogMessage(buffer);
 
 }	/* END SETDEFAULTSVALUE */
+
+/* -------------------------------------------------------------------- */
+void SetInterpType(Widget w, XtPointer client, XtPointer call)
+{
+  if (((XmToggleButtonCallbackStruct *)call)->set)
+  {
+    int it = (int)client;
+    cfg.SetInterpolationType((Config::interpolationType)it);
+  }
+}
+
+/* -------------------------------------------------------------------- */
+void SetTwoDProcMethod(Widget w, XtPointer client, XtPointer call)
+{
+  if (((XmToggleButtonCallbackStruct *)call)->set)
+  {
+    int it = (int)client;
+    cfg.SetTwoDProcessingMethod((Config::pms2dProcessing)it);
+  }
+}
+
+/* -------------------------------------------------------------------- */
+void SetTwoDRejectRatio(Widget w, XtPointer client, XtPointer call)
+{
+  if (((XmToggleButtonCallbackStruct *)call)->set)
+  {
+    float it = (int)client;
+    cfg.SetTwoDAreaRejectRatio(it / 100);
+  }
+}
 
 /* -------------------------------------------------------------------- */
 void SetDespiking(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
@@ -141,12 +169,13 @@ void SetConfigWinFromConfig()
   }
 
   XmToggleButtonSetState(interpB[(int)cfg.InterpolationType()], true, true);
+  XmToggleButtonSetState(twoDpmB[(int)cfg.TwoDProcessingMethod()-1], true, true);
+  XmToggleButtonSetState(twoDarrB[(int)(cfg.TwoDAreaRejectRatio()*10.0)], true, true);
 
   XmToggleButtonSetState(despikeButton, cfg.Despiking(), false);
   XmToggleButtonSetState(lagButton, cfg.TimeShifting(), false);
-  XmToggleButtonSetState(despikeButton, cfg.HoneyWellCleanup(), false);
-  XmToggleButtonSetState(despikeButton, cfg.InertialShift(), false);
-
+  XmToggleButtonSetState(irsCleanupButton, cfg.HoneyWellCleanup(), false);
+  XmToggleButtonSetState(inertialShiftButton, cfg.InertialShift(), false);
 }
 
 /* -------------------------------------------------------------------- */
@@ -169,19 +198,10 @@ void ResetFlightInfo(Widget w, XtPointer client, XtPointer call)
  * user pops up this window after loading a setup.  Setup stuff gets whiped
  * out.
  */
-
 }	/* END RESETFLIGHTINFO */
 
 /* -------------------------------------------------------------------- */
-void SetInterpType(Widget w, XtPointer client, XtPointer call)
-{
-  int it = (int)client;
-
-  cfg.SetInterpolationType((Config::interpolationType)it);
-}
-
-/* -------------------------------------------------------------------- */
-void SetLowRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
+void SetLowRate(Widget w, XtPointer client, XtPointer call)
 {
   size_t i;
 
@@ -191,7 +211,7 @@ void SetLowRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
     return;
   }
 
-  if (call->set == false)
+  if (((XmToggleButtonCallbackStruct *)call)->set == false)
     return;
 
   cfg.SetProcessingRate(Config::LowRate);
@@ -218,7 +238,7 @@ void SetLowRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
 }       /* END SETLOWRATE */
 
 /* -------------------------------------------------------------------- */
-void SetSampleRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
+void SetSampleRate(Widget w, XtPointer client, XtPointer call)
 {
   size_t i;
 
@@ -228,7 +248,7 @@ void SetSampleRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *cal
     return;
     }
 
-  if (call->set == false)
+  if (((XmToggleButtonCallbackStruct *)call)->set == false)
     return;
 
   cfg.SetProcessingRate(Config::SampleRate);
@@ -255,7 +275,7 @@ void SetSampleRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *cal
 }       /* END SETSAMPLERATE */
 
 /* -------------------------------------------------------------------- */
-void SetHighRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
+void SetHighRate(Widget w, XtPointer client, XtPointer call)
 {
   size_t        i;
   int rate = (int)client;
@@ -278,7 +298,7 @@ void SetHighRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
     return;
   }
 
-  if (! call->set)
+  if (((XmToggleButtonCallbackStruct *)call)->set == false)
     return;
   
   cfg.SetProcessingRate(Config::HighRate);
@@ -295,8 +315,6 @@ void SetHighRate(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
     break;
   }
 
-  printf("<<<<<<<<<< WARNING, All vars forced to %d Hz for HRT >>>>>>>>>>\n",
-	 rate);
 
   for (i = 0; i < raw.size(); ++i)
   {
@@ -435,9 +453,6 @@ void createProcessingRate(Widget parent)
   Widget rateFrame, rateRB, label;
 
   n = 0;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_WIDGET); n++;
-  XtSetArg(args[n], XmNleftWidget, menuBar); n++;
   rateFrame = XmCreateFrame(parent, "rateFrame", args, n);
   XtManageChild(rateFrame);
 
@@ -491,9 +506,6 @@ void createInterpType(Widget parent)
   Widget interpFrame, interpRB, label;
 
   n = 0;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_WIDGET); n++;
-  XtSetArg(args[n], XmNleftWidget, menuBar); n++;
   interpFrame = XmCreateFrame(parent, "interpFrame", args, n);
   XtManageChild(interpFrame);
 
@@ -525,6 +537,74 @@ void createInterpType(Widget parent)
 }	/* END CREATEINTERPTYPE */
 
 /* -------------------------------------------------------------------- */
+void createTwoDProcMethod(Widget parent)
+{
+  Arg args[8];
+  Cardinal n;
+  Widget twoDpmFrame, twoDpmRB, label;
+
+  n = 0;
+  twoDpmFrame = XmCreateFrame(parent, "twoDpmFrame", args, n);
+  XtManageChild(twoDpmFrame);
+
+  n = 0;
+  label = XmCreateLabel(twoDpmFrame, "twoDpmTitle", args, n);
+  XtManageChild(label);
+
+  n = 0;
+  twoDpmRB = XmCreateRadioBox(twoDpmFrame, "interpRadioBox", args, n);
+  XtManageChild(twoDpmRB);
+
+  n = 0;
+  twoDpmB[0] = XmCreateToggleButton(twoDpmRB, "centerInButton", args,n);
+  XtAddCallback(twoDpmB[0], XmNvalueChangedCallback,
+		(XtCallbackProc)SetTwoDProcMethod, (XtPointer)Config::Center_In);
+
+  n = 0;
+  twoDpmB[1] = XmCreateToggleButton(twoDpmRB, "reconstructionButton", args,n);
+  XtAddCallback(twoDpmB[1], XmNvalueChangedCallback,
+		(XtCallbackProc)SetTwoDProcMethod, (XtPointer)Config::Reconstruction);
+
+  XtManageChildren(twoDpmB, 2);
+}
+
+/* -------------------------------------------------------------------- */
+void createTwoDRejectRatio(Widget parent)
+{
+  int i;
+  Arg args[8];
+  Cardinal n;
+  Widget twoDarrFrame, twoDarrRB, label;
+
+  n = 0;
+  twoDarrFrame = XmCreateFrame(parent, "twoDarrFrame", args, n);
+  XtManageChild(twoDarrFrame);
+
+  n = 0;
+  label = XmCreateLabel(twoDarrFrame, "twoDarrTitle", args, n);
+  XtManageChild(label);
+
+  n = 0;
+  twoDarrRB = XmCreateRadioBox(twoDarrFrame, "interpRadioBox", args, n);
+  XtManageChild(twoDarrRB);
+
+  for (i = 0; i < 8; ++i)
+  {
+    char s[16];
+    int value = i * 10;
+
+    sprintf(s, "%d%%", value);
+
+    n = 0;
+    twoDarrB[i] = XmCreateToggleButton(twoDarrRB, s, args,n);
+    XtAddCallback(twoDarrB[i], XmNvalueChangedCallback,
+		(XtCallbackProc)SetTwoDRejectRatio, (XtPointer)value);
+  }
+
+  XtManageChildren(twoDarrB, i);
+}
+
+/* -------------------------------------------------------------------- */
 void createOptions(Widget parent)
 {
   Arg args[8];
@@ -532,9 +612,6 @@ void createOptions(Widget parent)
   Widget optFrame, optRC, label;
 
   n = 0;
-  XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
-  XtSetArg(args[n], XmNleftAttachment, XmATTACH_WIDGET); n++;
-  XtSetArg(args[n], XmNleftWidget, menuBar); n++;
   optFrame = XmCreateFrame(parent, "optFrame", args, n);
   XtManageChild(optFrame);
 
@@ -587,15 +664,13 @@ void DismissConfigWindow(Widget w, XtPointer client, XtPointer call)
 static void markFlightInfoDirty(Widget w, int indx, XtPointer call)
 {
   FlightInfo[indx].Dirty = true;
-
-}	/* END MARKDIRTY */
+}
 
 /* -------------------------------------------------------------------- */
 static void markTimeSliceDirty(Widget w, int indx, XtPointer call)
 {
   TimeSliceInfo[indx].Dirty = true;
-
-}	/* END MARKDIRTY */
+}
 
 /* -------------------------------------------------------------------- */
 void ValidateTime(Widget w, XtPointer client, XtPointer call)
@@ -721,6 +796,8 @@ void CreateConfigWindow()
   createTimeSlice(ConfigWindow);
   createProcessingRate(ConfigWindow);
   createInterpType(ConfigWindow);
+  createTwoDProcMethod(ConfigWindow);
+  createTwoDRejectRatio(ConfigWindow);
   createOptions(ConfigWindow);
 
 
