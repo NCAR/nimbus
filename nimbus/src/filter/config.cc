@@ -8,6 +8,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005
 
 #include "config.h"
 
+const Config::interpolationType Config::_defaultInterp = Config::Linear;
+const Config::pms2dProcessing Config::_defaultPMS2DProcessingMethod = Center_In;
+const float Config::_defaultPMS2DAreaRatioReject = 0.5;
+
 /* -------------------------------------------------------------------- */
 Config::Config()
 {
@@ -27,15 +31,31 @@ Config::Config()
 
   SetProcessingRate(LowRate);
   SetHRTRate(TwentyFive);
-  SetInterpolationType(Linear);
 
   SetDespikeReporting(true);
   SetLagErrorReporting(false);
 
   SetADSVersion(ADS_2);
 
-  SetTwoDProcessingMethod(Center_In);
-  SetTwoDAreaRejectRatio(.5);	// 50%.
+  SetInterpolationType(_defaultInterp);
+  SetTwoDProcessingMethod(_defaultPMS2DProcessingMethod);
+  SetTwoDAreaRejectRatio(_defaultPMS2DAreaRatioReject);
 }
 
-// END CONFIG.CC
+Config::interpolationType
+Config::DefaultInterpolationType()
+{
+  return _defaultInterp;
+}
+
+Config::pms2dProcessing
+Config::DefaultPMS2DProcessingMethod()
+{
+  return _defaultPMS2DProcessingMethod;
+}
+
+float
+Config::DefaultPMS2DAreaRatioReject()
+{
+  return _defaultPMS2DAreaRatioReject;
+}

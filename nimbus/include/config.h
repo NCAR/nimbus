@@ -31,7 +31,7 @@ public:
   enum processingRate	{ SampleRate=0, LowRate=1, HighRate=25 };
   enum hrtRate		{ TwentyFive=25, Fifty=50, OneHundred=100 };
 
-  enum pms2Dprocessing	{ Entire_In, Center_In, Reconstruction };
+  enum pms2dProcessing	{ Entire_In=0, Center_In, Reconstruction };
 
   Config();
 
@@ -60,7 +60,7 @@ public:
   hrtRate HRTRate() const		{ return _hrtRate; }
   interpolationType InterpolationType() const { return _interpType; }
 
-  pms2Dprocessing TwoDProcessingMethod() const { return _pms2dProcessing; }
+  pms2dProcessing TwoDProcessingMethod() const { return _pms2dProcessing; }
   float TwoDAreaRejectRatio() const	{ return _twoDrejectRatio; }
 
   void SetInteractive(bool state)	{ _interactive = state; }
@@ -113,8 +113,14 @@ public:
   void SetWindSpeed(const std::string s)	{ _windWS = s; }
   void SetWindDirection(const std::string s)	{ _windWD = s; }
   void SetWindVertical(const std::string s)	{ _windWI = s; }
-  void SetTwoDProcessingMethod(pms2Dprocessing p) { _pms2dProcessing = p; }
+  void SetTwoDProcessingMethod(pms2dProcessing p) { _pms2dProcessing = p; }
   void SetTwoDAreaRejectRatio(float f)		{ _twoDrejectRatio = f; }
+
+
+  interpolationType DefaultInterpolationType();
+  pms2dProcessing DefaultPMS2DProcessingMethod();
+  float DefaultPMS2DAreaRatioReject();
+
 
 private:
   bool _interactive;
@@ -156,11 +162,15 @@ private:
   std::string _windWI;	// Vertical Wind variable
 
 
-  pms2Dprocessing _pms2dProcessing;
+  pms2dProcessing _pms2dProcessing;
 
   /* % of pixels which must be shaded inside particle bounding box.
    */
   float _twoDrejectRatio;
+
+  static const interpolationType _defaultInterp;
+  static const pms2dProcessing _defaultPMS2DProcessingMethod;
+  static const float _defaultPMS2DAreaRatioReject;
 };
 
 #endif
