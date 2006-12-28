@@ -190,7 +190,6 @@ void AddPMS1dAttrs(int ncid, var_base * rp)
 
   if (rp->ProbeType & PROBE_PMS2D)
   {
-    float f;
     strcpy(buffer, "2D buffers with more than 8 seconds elapsed time or fewer than 20 particles.");
     ncattput(ncid, cvarid, "Rejected", NC_CHAR, strlen(buffer), buffer);
 
@@ -203,15 +202,17 @@ void AddPMS1dAttrs(int ncid, var_base * rp)
     if (strstr(rp->name, "2D"))
     {
       char * s = "Error";
+      float f;
+
       if (cfg.TwoDProcessingMethod() == Config::Center_In)
         s = "Center In";
       if (cfg.TwoDProcessingMethod() == Config::Reconstruction)
         s = "Reconstruction";
       ncattput(ncid, cvarid, "ParticleAcceptMethod", NC_CHAR, strlen(s), s);
-    }
 
-    f = cfg.TwoDAreaRejectRatio();
-    ncattput(ncid, cvarid, "ParticleAreaRejectionRatio", NC_FLOAT, 1, &f);
+      f = cfg.TwoDAreaRejectRatio();
+      ncattput(ncid, cvarid, "ParticleAreaRejectionRatio", NC_FLOAT, 1, &f);
+    }
   }
 
   /* Older projects have a PMSspecs file with mid-points instead of end-points.

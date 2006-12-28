@@ -27,6 +27,17 @@ const NR_TYPE MISSING_VALUE = -32767.0;
 const int MaxLag = 2000;
 const int MAX_COF = 6;
 
+const std::string InterpKey = "InterpolationMethod";
+const std::string Interp_Linear = "Linear";
+const std::string Interp_Cubic = "CubicSpline";
+const std::string Interp_Akima = "AkimaSpline";
+
+const std::string TwoD_AreaRatioKey = "TwoD_AreaRatioReject";
+
+const std::string TwoD_MethodKey = "TwoD_ProcessMethod";
+const std::string TwoD_MethodCenterIn = "Center_In";
+const std::string TwoD_MethodRecon = "Reconstruction";
+
 const std::string PROJ_NAME     = "%s/%s/%s/ProjectName";
 const std::string DEPENDTBL     = "%s/%s/%s/DependTable";
 const std::string DEFAULTS      = "%s/%s/%s/Defaults";

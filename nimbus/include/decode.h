@@ -57,6 +57,11 @@ extern const std::string PROJ_NAME, DEPENDTBL, DEFAULTS, GROUPS, BLANKVARS,
 	AIRCRAFT, MODVARS, SUMVARS, FILTERS, RAWNAMES, DERIVEDNAMES, INSNAMES,
 	IRSNAMES, USERNAMES, OPHIR3NAMES, LANDMARKS, META_DATA, LOGFILE;
 
+extern const std::string
+	InterpKey, Interp_Linear, Interp_Cubic, Interp_Akima,
+	TwoD_AreaRatioKey,
+	TwoD_MethodKey, TwoD_MethodCenterIn, TwoD_MethodRecon;
+
 #define SecondsSinceMidnite(t) (t[0] * 3600 + t[1] * 60 + t[2])
 
 /* External definitions
