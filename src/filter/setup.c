@@ -25,16 +25,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2005
 #include "gui.h"
 #include "injectsd.h"
 
-static const std::string InterpKey = "InterpolationMethod";
-static const std::string TwoD_MethodKey = "TwoD_ProcessMethod";
-static const std::string TwoD_AreaRatioKey = "TwoD_AreaRatioReject";
-
-static const std::string Interp_Linear = "Linear";
-static const std::string Interp_Cubic = "CubicSpline";
-static const std::string Interp_Akima = "AkimaSpline";
-static const std::string TwoD_MethodCenterIn = "Center_In";
-static const std::string TwoD_MethodRecon = "Reconstruction";
-
 static char	SetupFileName[MAXPATHLEN];
 
 extern char *dataQuality[];
@@ -126,29 +116,29 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
     target = strtok(buffer, "=");
 
-    if (strcmp(target, InterpKey.c_str()) == 0)
+    if (InterpKey.compare(target) == 0)
     {
       target = strtok(NULL, " \t\n");
-      if (strcmp(target, Interp_Linear.c_str()) == 0)
+      if (Interp_Linear.compare(target) == 0)
         cfg.SetInterpolationType(Config::Linear);
-      if (strcmp(target, Interp_Cubic.c_str()) == 0)
+      if (Interp_Cubic.compare(target) == 0)
         cfg.SetInterpolationType(Config::CubicSpline);
-      if (strcmp(target, Interp_Akima.c_str()) == 0)
+      if (Interp_Akima.compare(target) == 0)
         cfg.SetInterpolationType(Config::AkimaSpline);
     }
     else
-    if (strcmp(target, TwoD_AreaRatioKey.c_str()) == 0)
+    if (TwoD_AreaRatioKey.compare(target) == 0)
     {
       target = strtok(NULL, " \t\n");
       cfg.SetTwoDAreaRejectRatio(atof(target));
     }
     else
-    if (strcmp(target, TwoD_MethodKey.c_str()) == 0)
+    if (TwoD_MethodKey.compare(target) == 0)
     {
       target = strtok(NULL, " \t\n");
-      if (strcmp(target, TwoD_MethodCenterIn.c_str()) == 0)
+      if (TwoD_MethodCenterIn.compare(target) == 0)
         cfg.SetTwoDProcessingMethod(Config::Center_In);
-      if (strcmp(target, TwoD_MethodRecon.c_str()) == 0)
+      if (TwoD_MethodRecon.compare(target) == 0)
         cfg.SetTwoDProcessingMethod(Config::Reconstruction);
     }
     else

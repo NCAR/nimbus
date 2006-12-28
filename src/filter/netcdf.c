@@ -48,8 +48,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include "vardb.h"
 #include "svnInfo.h"
 
-
+static const std::string Source = "NCAR Research Aviation Facility";
+static const std::string Address = "P.O. Box 3000, Boulder, CO 80307-3000";
+static const std::string Phone = "(303) 497-1030";
+static const std::string Conventions = "NCAR-RAF/nimbus";
+static const std::string ConventionsURL = "http://www.eol.ucar.edu/raf/Software/netCDF.html";
 static const std::string NETCDF_FORMAT_VERSION = "1.3";
+
 
 static const int DEFAULT_TI_LENGTH = 17;
 
@@ -156,11 +161,11 @@ void CreateNetCDF(const char fileName[])
 
   /* Global Attributes.
    */
-  putGlobalAttribute("Source", "NCAR Research Aviation Facility");
-  putGlobalAttribute("Address", "P.O. Box 3000, Boulder, CO 80307-3000");
-  putGlobalAttribute("Phone", "(303) 497-1030");
-  putGlobalAttribute("Conventions", "NCAR-RAF/nimbus");
-  putGlobalAttribute("ConventionsURL", "http://www.eol.ucar.edu/raf/Software/netCDF.html");
+  putGlobalAttribute("Source", Source);
+  putGlobalAttribute("Address", Address);
+  putGlobalAttribute("Phone", Phone);
+  putGlobalAttribute("Conventions", Conventions);
+  putGlobalAttribute("ConventionsURL", ConventionsURL);
   putGlobalAttribute("ConventionsVersion", NETCDF_FORMAT_VERSION.c_str());
   putGlobalAttribute("ProcessorRevision", &SVNREVISION[10]);
 
@@ -203,6 +208,15 @@ void CreateNetCDF(const char fileName[])
 
   if (LogFile)
     fprintf(LogFile, "Flight Date: %s\n", buffer);
+
+  if (cfg.InterpolationType() == Config::Linear)
+    putGlobalAttribute(InterpKey.c_str(), Interp_Linear);
+  else
+  if (cfg.InterpolationType() == Config::CubicSpline)
+    putGlobalAttribute(InterpKey.c_str(), Interp_Cubic);
+  else
+  if (cfg.InterpolationType() == Config::AkimaSpline)
+    putGlobalAttribute(InterpKey.c_str(), Interp_Akima);
 
   putGlobalAttribute("coordinates", cfg.CoordinateVariables());
   putGlobalAttribute("wind_field", cfg.WindFieldVariables());
