@@ -1,5 +1,4 @@
 /*
->>>>>>>>>>   See line 280 for special RICO processing.
 -------------------------------------------------------------------------
 OBJECT NAME:	pms2_data.c
 
@@ -14,7 +13,7 @@ ENTRY POINTS:	Add2DtoList()
 
 STATIC FNS:	AddMore2dData()
 
-DESCRIPTION:	This sums up the data bins from SampleRate to 1hz.
+DESCRIPTION:	
 
 NOTES:		Order of raw variables is determined alphabetically.  There
 		are some not so raw (more like derived) variables being
@@ -289,25 +288,34 @@ return;
 
       if (cfg.TwoDProcessingMethod() == Config::Reconstruction)
       {
-        if (!p->edge || (p->edge && p->w <= p->h * 2))
-          n = MAX(p->w, p->h);
-        else
-        if (p->edge && p->edge != 0xff) // One edge, but not both.
-          n = (pow(p->w >> 1, 2.0) + pow(p->h, 2.0)) / p->h;
-        else
-        if (p->edge == 0xff)
-          n = sqrt(pow(p->h + ((pow(p->x2, 2.0) + pow(p->x1, 2.0)) / 4 * p->h),
+        if (!rejected)
+        {
+          if (!p->edge || (p->edge && p->w <= p->h * 2))
+            n = MAX(p->w, p->h);
+          else
+          if (p->edge && p->edge != 0xff) // One edge, but not both.
+            n = (pow(p->w >> 1, 2.0) + pow(p->h, 2.0)) / p->h;
+          else
+          if (p->edge == 0xff)
+            n = sqrt(pow(p->h + ((pow(p->x2, 2.0) + pow(p->x1, 2.0)) / 4 * p->h),
 					2.0) + pow(p->x1, 2.0));
-        else
-          printf("amlib/xlate/pms2_data.c: Not all cases for particles covered.\n");
+          else
+          {
+            printf("amlib/xlate/pms2_data.c:Reconstruction: Not all cases for particles covered.\n");
+            rejected = true;
+          }
+        }
 
-        if (n < BINS_64)
-          ++(twoD[probeCount][n]);
+        if (!rejected)
+        {
+          if (n < BINS_64)
+            ++(twoD[probeCount][n]);
+          else
+            ++overFlowCnt[probeCount];
+        }
         else
-          ++overFlowCnt[probeCount];
+          deadTime[probeCount][1] += p->liveTime;
       }
-      else
-        deadTime[probeCount][1] += p->liveTime;
 
       /* A1D[C|P] */
       if (p->h > 0 && p->h < 4 * p->w && !p->edge)
@@ -453,6 +461,14 @@ static void AddMore2dData(Queue *probe, long thisTime, int probeCnt)
 /* -------------------------------------------------------------------- */
 void Process(Queue *probe, P2d_rec *rec, int probeCnt)
 {
+  /* If it's an HVPS record, process elsewhere, and return.
+   */
+  if (((char *)&rec->id)[0] == 'H')
+    {
+    ProcessHVPS(probe, rec, probeCnt);
+    return;
+    }
+
   size_t	partCnt;
   long		endTime, oload;
   bool		firstParticleAfter512;
@@ -462,15 +478,6 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
 
   static int	overLoad = 0;
   static std::vector<unsigned long> particle;  // static to keep unfinished particle.
-
-
-  /* If it's an HVPS record, process elsewhere, and return.
-   */
-  if (((char *)&rec->id)[0] == 'H')
-    {
-    ProcessHVPS(probe, rec, probeCnt);
-    return;
-    }
 
 
   /* Perform byte swapping on whole [data] record if required.
@@ -760,6 +767,35 @@ cleanup:
 
 
 }	/* END PROCESS */
+
+/* -------------------------------------------------------------------- */
+void ScanForStreakers(P2d_rec * rec)
+{
+  size_t cntrs[128];  // 128 to cover largest # diode probes.
+  unsigned int *p, slice;
+
+  p = (unsigned int *)rec->data;
+  memset((void *)cntrs, 0, sizeof(cntrs));
+
+  for (size_t i = 0; i < 1024; ++i, ++p)
+  {
+    slice = *p;
+
+    // Skip sync, timing and blank words.
+    if ((slice & 0x55000000) == 0x55000000 || slice == 0xffffffff)
+      continue;
+
+    for (size_t i = 0; i < 32; ++i)
+      if ((slice >> i) & 0x01)
+        ++cntrs[i];
+  }
+
+  for (size_t i = 0; i < 32; ++i)
+    printf("%d ", cntrs[i]);
+
+  printf("\n");
+
+}
 
 /* -------------------------------------------------------------------- */
 static const float	TAS_COMPENSATE = 2.5;
