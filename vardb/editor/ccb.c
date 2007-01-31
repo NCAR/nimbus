@@ -17,20 +17,12 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		none
-
-REFERENCES:	none
-
-REFERENCED BY:	XtAppMainLoop()
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 -------------------------------------------------------------------------
 */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <sys/types.h>
 #include <netinet/in.h> // htonl macros.
 
@@ -52,11 +44,12 @@ extern char	buffer[], FileName[], *catList[], *ProjectDirectory,
 		*stdNameList[];
 extern long	VarDB_nRecords, VarDB_RecLength;
 
+extern "C" {
 char *strupr(char *);
 void ShowError(char msg[]), FileCancel(Widget, XtPointer, XtPointer);
 void QueryFile(char *, char *, XtCallbackProc), ExtractFileName(XmString, char **);
 void WarnUser(char msg[], XtCallbackProc, XtCallbackProc);
-
+}
 
 /* -------------------------------------------------------------------- */
 void Quit(Widget w, XtPointer client, XtPointer call)

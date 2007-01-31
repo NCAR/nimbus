@@ -22,10 +22,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 
 Widget	Shell000, MainWindow;
 
+extern "C" {
 void CreateErrorBox(Widget);
 void CreateWarningBox(Widget);
 void CreateFileSelectionBox(Widget);
-
+}
 
 /* -------------------------------------------------------------------- */
 int main(int argc, char **argv)

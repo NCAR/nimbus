@@ -4,7 +4,7 @@
 LIBDIR=		${JLOCAL}/lib
 MANDIR=		${JLOCAL}/man/man3
 INCLUDEDIR=	${JLOCAL}/include
-CC=		gcc
+CC=		g++
 
 LIBNAME=	VarDB
 HEADER=		vardb.h

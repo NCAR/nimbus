@@ -16,19 +16,19 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-7
 -------------------------------------------------------------------------
 */
 
-#include <memory.h>
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include "vardb.h"
+
+#include <netinet/in.h> // htonl macros.
 
 extern const long	VarDB_MagicCookie, VarDB_CurrentVersion;
 extern long		VarDB_RecLength;
 
 
 /* -------------------------------------------------------------------- */
-CreateVarDB(Bull9_name, Pattr_name)
-char	Bull9_name[];
-char	Pattr_name[];
+int CreateVarDB(const char Bull9_name[], const char Pattr_name[])
 {
   int		i, j, cnt;
   float		f1, f2;

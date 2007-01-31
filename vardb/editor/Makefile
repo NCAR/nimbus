@@ -1,7 +1,7 @@
 #
 #    Makefile for calculator program
 #
-CC=		gcc
+CC=		g++
 BINDIR=		${JLOCAL}/bin
 MANDIR=		${JLOCAL}/man/manl
 LINTLIBS=	${LIBS}

@@ -23,12 +23,15 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2006
 -------------------------------------------------------------------------
 */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "vardb.h"
 #include "netcdf.h"
+
+#include <netinet/in.h> // htonl macros.
 
 #define MAX_CATEGORIES	128
 #define CAT_NAME_LEN	64
@@ -48,14 +51,13 @@ static CATEGORY	*Category[MAX_CATEGORIES];
 extern long VarDB_RecLength, VarDB_nRecords;
 extern char VarDB_NcML_text_result[];
 
-char	*GetMemory();
 
 /* -------------------------------------------------------------------- */
 void SetCategoryFileName(const char fn[])
 {
   char	*p;
 
-  fileName = GetMemory(strlen(fn) + 10);
+  fileName = (char *)malloc(strlen(fn) + 10);
   strcpy(fileName, fn);
   p = strrchr(fileName, '/');
 
@@ -95,7 +97,7 @@ int ReadCategories()
       return(OK);
       }
 
-    Category[nCategories] = (CATEGORY *)GetMemory(sizeof(CATEGORY));
+    Category[nCategories] = (CATEGORY *)malloc(sizeof(CATEGORY));
 
     Category[nCategories]->Number = atoi(line);
 
@@ -164,12 +166,12 @@ char **VarDB_GetVariablesInCategory(int catNum)
  
 
   cnt = 0;
-  p = (char **)GetMemory(sizeof(char *));
+  p = (char **)malloc(sizeof(char *));
 
   for (i = 0; i < VarDB_nRecords; ++i)
     if (ntohl(((struct var_v2 *)VarDB)[i].Category) == catNum)
       {
-      p = realloc(p, sizeof(char *) * (cnt+2));
+      p = (char **)realloc(p, sizeof(char *) * (cnt+2));
       p[cnt] = ((struct var_v2 *)VarDB)[i].Name;
 
       ++cnt;

@@ -31,7 +31,7 @@ extern void		*VarDB;
 extern long	VarDB_nRecords, VarDB_RecLength;
 
 /* -------------------------------------------------------------------- */
-VarDB_SetUnits(const char vn[], char units[])
+int VarDB_SetUnits(const char vn[], char units[])
 {
   int	indx;
 
@@ -44,7 +44,7 @@ VarDB_SetUnits(const char vn[], char units[])
 }	/* END VARDB_SETUNITS */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetAlternateUnits(const char vn[], char units[])
+int VarDB_SetAlternateUnits(const char vn[], char units[])
 {
   int	indx;
 
@@ -57,7 +57,7 @@ VarDB_SetAlternateUnits(const char vn[], char units[])
 }	/* END VARDB_SETALTERNATEUNITS */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetTitle(const char vn[], char title[])
+int VarDB_SetTitle(const char vn[], char title[])
 {
   int	indx;
 
@@ -70,7 +70,7 @@ VarDB_SetTitle(const char vn[], char title[])
 }	/* END VARDB_SETTITLE */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetRangeFixed(const char vn[])
+int VarDB_SetRangeFixed(const char vn[])
 {
   int	indx;
 
@@ -83,7 +83,7 @@ VarDB_SetRangeFixed(const char vn[])
 }	/* END VARDB_ISRANGEFIXED */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetRangeFloating(const char vn[])
+int VarDB_SetRangeFloating(const char vn[])
 {
   int	indx;
 
@@ -96,7 +96,7 @@ VarDB_SetRangeFloating(const char vn[])
 }	/* END VARDB_ISRANGEFIXED */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetFixedRangeLower(const char vn[], float value)
+int VarDB_SetFixedRangeLower(const char vn[], float value)
 {
   int	indx;
 
@@ -109,7 +109,7 @@ VarDB_SetFixedRangeLower(const char vn[], float value)
 }	/* END VARDB_SETFIXEDRANGELOWER */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetFixedRangeUpper(const char vn[], float value)
+int VarDB_SetFixedRangeUpper(const char vn[], float value)
 {
   int	indx;
 
@@ -122,7 +122,7 @@ VarDB_SetFixedRangeUpper(const char vn[], float value)
 }	/* END VARDB_SETFIXEDRANGEUPPER */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetFloatRange(const char vn[], float value)
+int VarDB_SetFloatRange(const char vn[], float value)
 {
   int	indx;
 
@@ -135,7 +135,7 @@ VarDB_SetFloatRange(const char vn[], float value)
 }	/* END VARDB_SETFLOATRANGE */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetMinLimit(const char vn[], float value)
+int VarDB_SetMinLimit(const char vn[], float value)
 {
   int	indx;
 
@@ -148,7 +148,7 @@ VarDB_SetMinLimit(const char vn[], float value)
 }	/* END VARDB_SETMINLIMIT */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetMaxLimit(const char vn[], float value)
+int VarDB_SetMaxLimit(const char vn[], float value)
 {
   int	indx;
 
@@ -161,7 +161,7 @@ VarDB_SetMaxLimit(const char vn[], float value)
 }	/* END VARDB_SETMINLIMIT */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetCalRangeLower(const char vn[], float value)
+int VarDB_SetCalRangeLower(const char vn[], float value)
 {
   int	indx;
 
@@ -174,7 +174,7 @@ VarDB_SetCalRangeLower(const char vn[], float value)
 }	/* END VARDB_SETCALRANGELOWER */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetCalRangeUpper(const char vn[], float value)
+int VarDB_SetCalRangeUpper(const char vn[], float value)
 {
   int	indx;
   ulong	*p = (ulong *)&value;
@@ -188,7 +188,7 @@ VarDB_SetCalRangeUpper(const char vn[], float value)
 }	/* END VARDB_SETCALRANGEUPPER */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetCategory(const char vn[], long value)
+int VarDB_SetCategory(const char vn[], long value)
 {
   int	indx;
 
@@ -201,7 +201,7 @@ VarDB_SetCategory(const char vn[], long value)
 }	/* END VARDB_SETCATEGORY */
 
 /* -------------------------------------------------------------------- */
-VarDB_SetStandardName(const char vn[], long value)
+int VarDB_SetStandardName(const char vn[], long value)
 {
   int	indx;
 

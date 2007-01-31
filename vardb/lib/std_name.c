@@ -26,6 +26,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-06
 #include "vardb.h"
 #include "netcdf.h"
 
+#include <netinet/in.h> // htonl macros.
+
 #define MAX_STD_NAMES	128
 #define STD_NAME_LEN	64
 
@@ -44,14 +46,13 @@ static STD_NAME	*StdName[MAX_STD_NAMES];
 extern long VarDB_RecLength, VarDB_nRecords;
 extern char VarDB_NcML_text_result[];
 
-char	*GetMemory();
 
 /* -------------------------------------------------------------------- */
 void SetStandardNameFileName(const char fn[])
 {
   char *p;
 
-  fileName = GetMemory(strlen(fn) + 10);
+  fileName = (char *)malloc(strlen(fn) + 10);
   strcpy(fileName, fn);
   p = strrchr(fileName, '/');
 
@@ -65,7 +66,7 @@ void SetStandardNameFileName(const char fn[])
 }	/* END SETCATEGORYFILENAME */
 
 /* -------------------------------------------------------------------- */
-ReadStandardNames()
+int ReadStandardNames()
 {
   char line[128], *p;
   FILE *fp;
@@ -91,7 +92,7 @@ ReadStandardNames()
       return(OK);
       }
 
-    StdName[nStdNames] = (STD_NAME *)GetMemory(sizeof(STD_NAME));
+    StdName[nStdNames] = (STD_NAME *)malloc(sizeof(STD_NAME));
 
     StdName[nStdNames]->Number = atoi(line);
 
@@ -160,12 +161,12 @@ char **VarDB_GetVariablesInStandardName(int catNum)
  
 
   cnt = 0;
-  p = (char **)GetMemory(sizeof(char *));
+  p = (char **)malloc(sizeof(char *));
 
   for (i = 0; i < VarDB_nRecords; ++i)
     if (ntohl(((struct var_v2 *)VarDB)[i].standard_name) == catNum)
       {
-      p = realloc(p, sizeof(char *) * (cnt+2));
+      p = (char **)realloc(p, sizeof(char *) * (cnt+2));
       p[cnt] = ((struct var_v2 *)VarDB)[i].Name;
 
       ++cnt;

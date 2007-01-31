@@ -85,9 +85,12 @@ extern void		*VarDB;
 extern int	VarDB_NcML;
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+//#ifdef __cplusplus
+//extern "C" {
+//#endif
+
+bool	VarDB_isNcML();
+
 const char
 	*VarDB_GetUnits(const char vn[]),
 	*VarDB_GetAlternateUnits(const char vn[]),
@@ -110,7 +113,8 @@ int	InitializeVarDB(const char fileName[]),
 	VarDB_isRangeFixed(const char vn[]),
 	VarDB_isRangeFloating(const char vn[]);
 
-void	SortVarDB(), ReleaseVarDB(), SetCategoryFileName(const char fn[]);
+void	SortVarDB(), ReleaseVarDB(), SetCategoryFileName(const char fn[]),
+	SetStandardNameFileName(const char fn[]);
 
 float	VarDB_GetFixedRangeLower(const char vn[]),
 	VarDB_GetFixedRangeUpper(const char vn[]),
@@ -138,8 +142,8 @@ int	VarDB_SetUnits(const char vn[], char units[]),
 	VarDB_SetStandardName(const char vn[], long value),
 	VarDB_SetReference(const char vn[], long value),
 	VarDB_SetSpikeSlope(const char vn[], float value);
-#ifdef __cplusplus
-	}
-#endif
+//#ifdef __cplusplus
+//	}
+//#endif
 
 #endif

@@ -16,12 +16,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
 -------------------------------------------------------------------------
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include <sys/param.h>
-#include <sys/types.h>
 #include <netinet/in.h>	// htonl macros.
 
 #include "vardb.h"
@@ -164,6 +163,15 @@ static void *readFile(const char fileName[], struct vardb_hdr *vdbHdr)
 }	/* END READFILE */
 
 /* -------------------------------------------------------------------- */
+bool VarDB_isNcML()
+{
+  if (VarDB_NcML == -1)
+    return false;	// Old style vardb, binary file.
+  else
+    return true;	// New, netCDF/NcML version.
+}
+
+/* -------------------------------------------------------------------- */
 void ReleaseVarDB()
 {
   if (VarDB)
@@ -173,7 +181,6 @@ void ReleaseVarDB()
     VarDB = NULL;
     master_VarDB = NULL;
   }
-
 }	/* END RELEASEVARDB */
 
 /* -------------------------------------------------------------------- */

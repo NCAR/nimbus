@@ -14,8 +14,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
 -------------------------------------------------------------------------
 */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <Xm/List.h>
 
 #include "define.h"
@@ -24,10 +24,12 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
 char	buffer[1024], FileName[1024], *catList[128], *ProjectDirectory,
 	*stdNameList[512];
 
+extern "C" {
 void ShowError(char msg[]);
 void WarnUser(char msg[], void (*okCB)(Widget, XtPointer, XtPointer), void (*cancelCB)(Widget, XtPointer, XtPointer));
 
 const char * getAircraftName(int num);
+}
 
 /* -------------------------------------------------------------------- */
 void Initialize(int argc, char *argv[])
