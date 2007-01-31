@@ -2288,6 +2288,14 @@ openVariableDatabase()
       exit(1);
     }
   }
+
+  // ADS3/nidas must use the netCDF/NcML version of VarDB.
+  if (cfg.isADS3() && VarDB_isNcML() == false)
+    {
+      fprintf(stderr, "\nnimbus:hdr_decode: You must be using the netCDF/NcML Version of VarDB.\n");
+      fprintf(stderr, "        use vdb2ncml on the project VarDB.\n\n");
+      exit(1);
+    }
 }
 
 /* -------------------------------------------------------------------- */
