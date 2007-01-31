@@ -85,10 +85,6 @@ extern void		*VarDB;
 extern int	VarDB_NcML;
 
 
-//#ifdef __cplusplus
-//extern "C" {
-//#endif
-
 bool	VarDB_isNcML();
 
 const char
@@ -142,8 +138,5 @@ int	VarDB_SetUnits(const char vn[], char units[]),
 	VarDB_SetStandardName(const char vn[], long value),
 	VarDB_SetReference(const char vn[], long value),
 	VarDB_SetSpikeSlope(const char vn[], float value);
-//#ifdef __cplusplus
-//	}
-//#endif
 
 #endif
