@@ -26,7 +26,7 @@ static struct tm	StartFlight;
 /* -------------------------------------------------------------------- */
 void CreateNASAlangNetCDF(FILE *fp)
 {
-  int	i, j, cnt;
+  size_t i, j, cnt;
   int	year, month, day;
   int	ndims, dims[3], TimeDim, RateDim;
   char	*p, name[16], units[16], tmp[32];
@@ -166,7 +166,7 @@ void CreateNASAlangNetCDF(FILE *fp)
   fgets(buffer, BUFFSIZE, fp);	/* Skip Julian day & seconds.	*/
   nVariables -= 2;
 
-  for (i = 0; i < nVariables; ++i)
+  for (i = 0; i < (size_t)nVariables; ++i)
     {
     fgets(buffer, BUFFSIZE, fp);
 

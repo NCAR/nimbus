@@ -1,7 +1,7 @@
 #
 #    Makefile for ASCII to netCDF translators.
 #
-CC=		gcc
+CC=		g++
 BINDIR=		${LOCAL}/bin
 MANDIR=		${LOCAL}/man/man1
 INCLUDES=	-I$(JLOCAL)/include

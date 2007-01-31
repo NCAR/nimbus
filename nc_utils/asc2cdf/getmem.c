@@ -20,8 +20,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------
 */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 
 /* -------------------------------------------------------------------- */
@@ -29,7 +29,7 @@ void *GetMemory(size_t nbytes)
 {
   char	*p;
 
-  if ((p = malloc(nbytes)) == NULL)
+  if ((p = (char *)malloc(nbytes)) == NULL)
     {
     fprintf(stderr, "Memory allocation failure, exiting.\n");
     exit(1);

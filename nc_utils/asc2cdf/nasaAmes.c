@@ -23,7 +23,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-7
 
 static struct tm	StartFlight;
 
-char *GetMemory();
+void *GetMemory(size_t nbytes);
 
 /* -------------------------------------------------------------------- */
 void SetNASABaseTime(int hour, int min, int sec)
@@ -212,7 +212,7 @@ void CreateNASAamesNetCDF(FILE *fp)
     {
     fgets(buffer, BUFFSIZE, fp);
     buffer[strlen(buffer)-1] = '\0';
-    titles[i] = GetMemory(strlen(buffer)+1);
+    titles[i] = (char *)GetMemory(strlen(buffer)+1);
     strcpy(titles[i], buffer);
     p = strrchr(titles[i], '(');
     if ( (p = strrchr(titles[i], '(')) )
@@ -220,13 +220,13 @@ void CreateNASAamesNetCDF(FILE *fp)
 
     if ( (p = strrchr(buffer, '(')) && (p1 = strchr(p, ')')))
       {
-      units[i] = GetMemory(p1 - p + 1);
+      units[i] = (char *)GetMemory(p1 - p + 1);
       *p1 = '\0';
       strcpy(units[i], p+1);
       }
     else
       {
-      units[i] = GetMemory(10);
+      units[i] = (char *)GetMemory(10);
       strcpy(units[i], "Unk");
       }
     }
@@ -265,18 +265,18 @@ void CreateNASAamesNetCDF(FILE *fp)
       {
       fgets(buffer, BUFFSIZE, fp);
       buffer[strlen(buffer)-1] = '\0';
-      titles[i] = GetMemory(strlen(buffer)+1);
+      titles[i] = (char *)GetMemory(strlen(buffer)+1);
       strcpy(titles[i], buffer);
 
       if ( (p = strchr(buffer, '(')) && (p1 = strchr(buffer, ')')))
         {
-        units[i] = GetMemory(p1 - p + 1);
+        units[i] = (char *)GetMemory(p1 - p + 1);
         *p1 = '\0';
         strcpy(units[i], p+1);
         }
       else
         {
-        units[i] = GetMemory(10);
+        units[i] = (char *)GetMemory(10);
         strcpy(units[i], "Unk");
         }
       }

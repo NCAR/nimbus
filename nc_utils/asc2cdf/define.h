@@ -1,18 +1,12 @@
 #define NO_NETCDF_2
 
-#include <netcdf.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <time.h>
+#include <cctype>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <ctime>
 
-#ifndef TRUE
-#define TRUE            1
-#define FALSE           0
-#endif
-
-typedef unsigned char   bool;
+#include "netcdf.h"
 
 #define BUFFSIZE            8192
 #define MAX_VARS            500

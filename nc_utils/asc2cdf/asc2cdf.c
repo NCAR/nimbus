@@ -36,7 +36,7 @@ static char	*globalAttrFile = 0;
 
 /* Command line option flags.
  */
-bool	fileType = PLAIN_FILE, sexSinceMidnight = FALSE, Colonless = FALSE;
+bool	fileType = PLAIN_FILE, sexSinceMidnight = false, Colonless = false;
 int	SkipNlines = 1;
 
 int		BaseDataRate = 1, dataRate = 1;
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
 
     if (sexSinceMidnight)
       {
-      currSecond = atof(p);
+      currSecond = atoi(p);
 
       hour = currSecond / 3600; currSecond -= hour * 3600;
       minute = currSecond / 60; currSecond -= minute * 60;
@@ -307,17 +307,17 @@ static int ProcessArgv(int argc, char **argv)
         break;
 
       case 'm':
-        sexSinceMidnight = TRUE;
+        sexSinceMidnight = true;
         break;
 
       case 'a':
         fileType = NASA_AMES;
-        sexSinceMidnight = TRUE;
+        sexSinceMidnight = true;
         break;
 
       case 'l':
         fileType = NASA_LANGLEY;
-        sexSinceMidnight = TRUE;
+        sexSinceMidnight = true;
         break;
 
       case 'g':
@@ -333,7 +333,7 @@ static int ProcessArgv(int argc, char **argv)
         break;
 
       case ':':
-        Colonless = TRUE;
+        Colonless = true;
         break;
 
       default:

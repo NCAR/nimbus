@@ -54,10 +54,10 @@ void WriteBaseTime()
 void CreatePlainNetCDF(FILE *fp)
 {
   int	i, ndims, dims[3], TimeDim, RateDim;
-  char	*p, *p1;
+  char	*p;
   float	missing_val = MISSING_VALUE;
 #ifdef VARDB
-  bool	varDB = TRUE;
+  bool	varDB = true;
 #endif
 
 #ifdef VARDB
@@ -78,7 +78,7 @@ void CreatePlainNetCDF(FILE *fp)
     if (InitializeVarDB(buffer) == ERR)
       {
       fprintf(stderr,"Can't open %s, continuing with no VarDB in use.\n", buffer);
-      varDB = FALSE;
+      varDB = false;
       }
     }
 #endif
@@ -138,19 +138,19 @@ void CreatePlainNetCDF(FILE *fp)
     nc_def_var(ncid, time_vars[i], NC_FLOAT, 1, dims, &varid[i]);
     nc_put_att_float(ncid, varid[i], "_FillValue", NC_FLOAT, 1, &missing_val);
 
-    p =
+    const char * s1 =
 #ifdef VARDB
 	varDB ? VarDB_GetUnits(time_vars[i]) :
 #endif
-	(char *)noUnits;
-    nc_put_att_text(ncid, varid[i], "units", strlen(p)+1, p);
+	noUnits;
+    nc_put_att_text(ncid, varid[i], "units", strlen(s1)+1, s1);
 
-    p =
+    s1 =
 #ifdef VARDB
 	varDB ? VarDB_GetTitle(time_vars[i]) :
 #endif
-	(char *)noTitle;
-    nc_put_att_text(ncid, varid[i], "long_name", strlen(p)+1, p);
+	noTitle;
+    nc_put_att_text(ncid, varid[i], "long_name", strlen(s1)+1, s1);
     }
 
 
@@ -182,19 +182,19 @@ void CreatePlainNetCDF(FILE *fp)
     nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[nVariables]);
     nc_put_att_float(ncid,varid[nVariables],"_FillValue",NC_FLOAT,1,&missing_val);
 
-    p1 =
+    const char * s1 =
 #ifdef VARDB
 	varDB ? VarDB_GetUnits(p) :
 #endif
-	(char *)noUnits;
-    nc_put_att_text(ncid, varid[nVariables], "units", strlen(p1)+1, p1);
+	noUnits;
+    nc_put_att_text(ncid, varid[nVariables], "units", strlen(s1)+1, s1);
 
-    p1 =
+    s1 =
 #ifdef VARDB
 	varDB ? VarDB_GetTitle(p) :
 #endif
-	(char *)noTitle;
-    nc_put_att_text(ncid, varid[nVariables], "long_name", strlen(p1)+1, p1);
+	noTitle;
+    nc_put_att_text(ncid, varid[nVariables], "long_name", strlen(s1)+1, s1);
 
     ++nVariables;
     }
