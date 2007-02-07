@@ -126,7 +126,7 @@ public class Sender extends java.lang.Object {
                    plane = "C130";
                    break;
                 case '5':
-                   plane = "G5";
+                   plane = "GV";
                    break;
                 default:
                    usage(1);
