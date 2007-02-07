@@ -12,11 +12,11 @@ read file_type
 
 case $aircraft in
   C130)
-    PGHOST=orion.atd.ucar.edu ; export PGHOST;
+    PGHOST=sloop.atd.ucar.edu ; export PGHOST;
     ;;
 
-  G5)
-    PGHOST=sloop.atd.ucar.edu ; export PGHOST;
+  GV)
+    PGHOST=lenado.atd.ucar.edu ; export PGHOST;
     ;;
 esac
 
