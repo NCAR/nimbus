@@ -51,12 +51,13 @@ void RTinit_ADS2()
   for (int j = 0; j < 60 && (fp = fopen(buffer, "r")) == NULL; ++j)
     sleep(1);
 
-  if (fp == NULL) {
+  if (fp == NULL)
+  {
     fprintf(stderr, "nimbus -rt: Unable to open %s after 60 seconds, quitting\n", buffer);
-    exit(0);
-    }
+    quit();
+  }
   else
-   fprintf(stderr, "nimbus -rt: opened %s for reading.\n", buffer);
+    fprintf(stderr, "nimbus -rt: opened %s for reading.\n", buffer);
 
   fgets(buffer, 1024, fp);
   fclose(fp);

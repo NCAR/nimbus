@@ -251,7 +251,8 @@ void	SortTable(char **table, int beg, int end),
 	SetBaseTime(const NR_TYPE *record),
 	BlankOutBadData(),
 	GetDataDirectory(char buff[]),
-        FlushXEvents();
+        FlushXEvents(),
+	quit();
 
 void	SaveDefaults(FILE *fp),
 	SetDefaultsValue(const char target[], NR_TYPE *new_value),

@@ -34,6 +34,8 @@ char	*DependMsg =
 
 static void	doubleCheck(DERTBL *dp);
 
+static std::vector<std::string> dcList;
+
 /* -------------------------------------------------------------------- */
 void SetUpDependencies()
 {
@@ -149,7 +151,10 @@ void CleanOutUnwantedVariables()
 
   for (i = 0; i < derived.size(); ++i)
     if (derived[i]->Output)
+    {
+      dcList.clear();
       doubleCheck(derived[i]);
+    }
 
   for (cnt = 0, i = 0; i < raw.size(); ++i)
     if (raw[i]->Output || raw[i]->DependedUpon)
@@ -203,6 +208,16 @@ bool isDependedUpon(DERTBL *dp)
 static void doubleCheck(DERTBL *dp)	/* This function is recursive	*/
 {
   int indx;
+
+  dcList.push_back(dp->name);
+  if (dcList.size() > 1000)
+  {
+    fprintf(stderr, "depend.c::doublCheck infinite loop, stack = \n\n");
+    for (size_t i = 0; i < dcList.size(); ++i)
+      fprintf(stderr, "%s ", dcList[i].c_str());
+    fprintf(stderr, "\n\n");
+    quit();
+  }
 
   for (size_t i = 0; i < dp->ndep; ++i)
   {
