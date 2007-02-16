@@ -368,7 +368,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
     else
       RealTimeLoop3();
 
-    exit(0);
+    quit();
     }
 
 
@@ -692,6 +692,12 @@ void ToggleOutput(Widget w, XtPointer client, XtPointer call)
   XtFree((char *)pos_list);
 
 }	/* END TOGGLEOUTPUT */
+
+/* -------------------------------------------------------------------- */
+void quit()
+{
+  Quit(NULL, NULL, NULL);
+}
 
 /* -------------------------------------------------------------------- */
 void Quit(Widget w, XtPointer client, XtPointer call)

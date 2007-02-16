@@ -526,8 +526,7 @@ void WriteNetCDF()
     {
       fprintf(stderr,
               "Too many write errors, closing file and exiting...\n");
-      CloseNetCDF();
-      exit(1);
+      quit();
     }
   }
 

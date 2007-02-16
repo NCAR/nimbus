@@ -75,7 +75,7 @@ void GenerateComputeOrder()
       if (index == -1)
       {
         fprintf(stderr, "order.c: There appears to be a dependency on a non-existant variable, %s, fix DependTable, fatal.\n", ComputeOrder[i]->depend[j]);
-        exit(1);
+        quit();
       }
 
       DERTBL *ihold = ComputeOrder[i];
