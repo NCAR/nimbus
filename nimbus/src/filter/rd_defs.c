@@ -13,15 +13,11 @@ STATIC FNS:	process_line()
 DESCRIPTION:	The Defaults file contains constants for various probe
 		calculations.
 
-INPUT:		none
-
-OUTPUT:      
-
 REFERENCES:	OpenProjectFile()
 
 REFERENCED BY:	cb_main.c, cb_defs.c various AMLIB fn's.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-8
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2007
 -------------------------------------------------------------------------
 */
 
@@ -46,22 +42,6 @@ void ReadDefaultsFile()
   FILE  *fp;
 
   nDefaults = 0;
-
-  /* Read proj/defaults/Defaults first.
-   */
-/* Removed since hardcoding of unfound values was added.
-  fp = OpenProjectFile("%s/defaults/Defaults", "r", EXIT);
-
-  while (fgets(buffer, BUFF_SIZE, fp) != NULL)
-    {
-    if (buffer[0] == COMMENT || strlen(buffer) < (size_t)3)
-      continue;
-
-    process_line(buffer, fp);
-    }
-
-  fclose(fp);
-*/
 
   /* Now process project specific one.
    */
@@ -156,13 +136,6 @@ static void process_line(char *line_p, FILE *fp)
 
   size_t nValues = 1;
 
-  if (is_array)
-  {
-    nValues = atoi(is_array+1);
-
-    *is_array = '[';
-  }
-
   strcpy(Defaults[whichOne]->Name, name);
   Defaults[whichOne]->var[0] = '\0';
   Defaults[whichOne]->Dirty = false;
@@ -170,6 +143,9 @@ static void process_line(char *line_p, FILE *fp)
 
   if (is_array)
   {
+    nValues = atoi(is_array+1);
+    *is_array = '[';
+
     for (size_t i = 0; i < nValues; ++i)
     {
       nxt = strtok((char *)NULL, ARRAY_TOKENS);
