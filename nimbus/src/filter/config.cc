@@ -29,6 +29,9 @@ Config::Config()
   SetHoneyWellCleanup(true);
   SetInertialShift(true);
 
+  SetCreateKMLFile(true);
+  SetCreateNavFile(false);
+
   SetProcessingRate(LowRate);
   SetHRTRate(TwentyFive);
 

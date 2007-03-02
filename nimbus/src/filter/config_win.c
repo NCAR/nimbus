@@ -45,7 +45,7 @@ static Widget	ConfigShell = 0, ConfigWindow = 0, flightText[nFlightInfo],
 		lowRateButton, sampleRateButton, highRate25Button,
 		highRate50Button, highRate100Button, despikeButton, 
 		lagButton, irsCleanupButton, inertialShiftButton, interpB[3],
-		twoDpmB[3], twoDarrB[10];
+		kmlButton, navButton, twoDpmB[3], twoDarrB[10];
 
 Widget ts_text[nTimeSliceInfo];
 
@@ -135,6 +135,18 @@ void SetInertialShift(Widget w, XtPointer client, XmToggleButtonCallbackStruct *
 }
 
 /* -------------------------------------------------------------------- */
+void SetGoogleEarth(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
+{
+  cfg.SetCreateKMLFile(call->set);
+}
+
+/* -------------------------------------------------------------------- */
+void SetNavFile(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
+{
+  cfg.SetCreateNavFile(call->set);
+}
+
+/* -------------------------------------------------------------------- */
 void SetConfigWinFromConfig()
 {
   switch (cfg.ProcessingRate())
@@ -171,6 +183,9 @@ void SetConfigWinFromConfig()
   XmToggleButtonSetState(interpB[(int)cfg.InterpolationType()], true, true);
   XmToggleButtonSetState(twoDpmB[(int)cfg.TwoDProcessingMethod()-1], true, true);
   XmToggleButtonSetState(twoDarrB[(int)(cfg.TwoDAreaRejectRatio()*10.0)], true, true);
+
+  XmToggleButtonSetState(kmlButton, cfg.CreateKMLFile(), false);
+  XmToggleButtonSetState(navButton, cfg.CreateNavFile(), false);
 
   XmToggleButtonSetState(despikeButton, cfg.Despiking(), false);
   XmToggleButtonSetState(lagButton, cfg.TimeShifting(), false);
@@ -453,7 +468,7 @@ void createProcessingRate(Widget parent)
   Widget rateFrame, rateRB, label;
 
   n = 0;
-  rateFrame = XmCreateFrame(parent, "rateFrame", args, n);
+  rateFrame = XmCreateFrame(parent, "radioFrame", args, n);
   XtManageChild(rateFrame);
 
   n = 0;
@@ -506,7 +521,7 @@ void createInterpType(Widget parent)
   Widget interpFrame, interpRB, label;
 
   n = 0;
-  interpFrame = XmCreateFrame(parent, "interpFrame", args, n);
+  interpFrame = XmCreateFrame(parent, "radioFrame", args, n);
   XtManageChild(interpFrame);
 
   n = 0;
@@ -544,7 +559,7 @@ void createTwoDProcMethod(Widget parent)
   Widget twoDpmFrame, twoDpmRB, label;
 
   n = 0;
-  twoDpmFrame = XmCreateFrame(parent, "twoDpmFrame", args, n);
+  twoDpmFrame = XmCreateFrame(parent, "radioFrame", args, n);
   XtManageChild(twoDpmFrame);
 
   n = 0;
@@ -577,7 +592,7 @@ void createTwoDRejectRatio(Widget parent)
   Widget twoDarrFrame, twoDarrRB, label;
 
   n = 0;
-  twoDarrFrame = XmCreateFrame(parent, "twoDarrFrame", args, n);
+  twoDarrFrame = XmCreateFrame(parent, "radioFrame", args, n);
   XtManageChild(twoDarrFrame);
 
   n = 0;
@@ -602,6 +617,39 @@ void createTwoDRejectRatio(Widget parent)
   }
 
   XtManageChildren(twoDarrB, i);
+}
+
+/* -------------------------------------------------------------------- */
+void createCreateFiles(Widget parent)
+{
+  Arg args[8];
+  Cardinal n;
+  Widget optFrame, optRC, label;
+
+  n = 0;
+  optFrame = XmCreateFrame(parent, "radioFrame", args, n);
+  XtManageChild(optFrame);
+
+  n = 0;
+  label = XmCreateLabel(optFrame, "createFilesTitle", args, n);
+  XtManageChild(label);
+
+  n = 0;
+  optRC = XmCreateRowColumn(optFrame, "createFilesCheckBox", args, n);
+  XtManageChild(optRC);
+
+  n = 0;
+  kmlButton = XmCreateToggleButton(optRC, "kmlButton", args,n);
+  XtAddCallback(kmlButton, XmNvalueChangedCallback,
+                (XtCallbackProc)SetGoogleEarth, NULL);
+
+  n = 0;
+  navButton = XmCreateToggleButton(optRC, "navButton", args,n);
+  XtAddCallback(navButton, XmNvalueChangedCallback,
+                (XtCallbackProc)SetNavFile, NULL);
+
+  XtManageChild(kmlButton);
+  XtManageChild(navButton);
 }
 
 /* -------------------------------------------------------------------- */
@@ -798,6 +846,7 @@ void CreateConfigWindow()
   createInterpType(ConfigWindow);
   createTwoDProcMethod(ConfigWindow);
   createTwoDRejectRatio(ConfigWindow);
+  createCreateFiles(ConfigWindow);
   createOptions(ConfigWindow);
 
 

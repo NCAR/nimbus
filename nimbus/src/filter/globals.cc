@@ -13,6 +13,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include "nimbus.h"
 #include "decode.h"
 #include "amlib.h"
+#include "GoogleEarth.h"
 #include <injectsd.h>
 
 class PostgreSQL;
@@ -69,7 +70,6 @@ const std::string OPHIR3NAMES   = "%s/%s/%s/ophir3.names";
 
 
 char	buffer[8192];		// Generic, volatile string space
-char	*ProjectDirectory;
 char	sync_server_pipe[80];
 
 Config cfg;	// Global configuration.
@@ -114,7 +114,9 @@ dsm::SyncRecordReader* syncRecReader = 0;
 long (*FindFirstLogicalRecord)(char lr[], long starttime);
 long (*FindNextLogicalRecord)(char lr[], long endtime);
 
-PostgreSQL *psql;
+PostgreSQL *psql = 0;
+
+GoogleEarthKML *googleEarth = 0;
 
 
 //***************************synthetic data varables*************************//

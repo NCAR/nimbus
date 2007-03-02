@@ -53,6 +53,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include "gui.h"
 #include "vardb.h"
 #include "psql.h"
+#include "GoogleEarth.h"
 #include "svnInfo.h"
 
 
@@ -69,6 +70,8 @@ static clock_t	startCPU, finishCPU;
 extern Widget	Shell001;
 extern size_t	nDefaults;
 extern DEFAULT	*Defaults[];
+
+extern GoogleEarthKML * googleEarth;
 
 void	CloseSQL(), ProcessFlightDate();
 void	ValidateOutputFile(Widget w, XtPointer client, XtPointer call);
@@ -295,6 +298,10 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   InitAsyncModule(OutputFileName);
   ConfigurationDump();
 
+  if (cfg.CreateKMLFile())
+    googleEarth = new GoogleEarthKML(OutputFileName);
+
+
   // Do some clean-up/preperation.
   for (size_t i = 0; i < raw.size(); ++i)
   {
@@ -412,10 +419,12 @@ void stopProcessing()
 
   CloseNetCDF();
 
+  if (cfg.CreateKMLFile())
+    delete googleEarth;
+
   LogDespikeInfo();
   LogIRSerrors();
   LogLagErrors();
-
 
   /* Log wall clock time.
    */
