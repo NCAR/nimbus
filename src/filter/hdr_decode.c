@@ -526,7 +526,7 @@ int DecodeHeader(const char header_file[])
   GetHeaderDate(&p);
   cfg.SetFlightDate(p);
 
-  sprintf(buffer, "%s/%s", ProjectDirectory, cfg.ProjectNumber().c_str());
+  sprintf(buffer, "%s/%s", cfg.ProjectDirectory().c_str(), cfg.ProjectNumber().c_str());
   if (access(buffer, R_OK) == ERR)
     {
     sprintf(buffer, "No project directory for %s.", cfg.ProjectNumber().c_str());
@@ -2281,7 +2281,7 @@ openVariableDatabase()
   {
     LogMessage("InitializeVarDB for project specific failed, trying master file.\n");
 
-    sprintf(buffer, VARDB.c_str(), ProjectDirectory, "Configuration/", "raf/");
+    sprintf(buffer, VARDB.c_str(), cfg.ProjectDirectory().c_str(), "Configuration/", "raf/");
     if (InitializeVarDB(buffer) == ERR)
     {
       fprintf(stderr, "InitializeVarDB for master file failed, this is fatal.\n");

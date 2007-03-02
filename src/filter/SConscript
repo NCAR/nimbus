@@ -79,7 +79,6 @@ setup.c
 textfile.c
 timeseg.c
 transmit.cc
-var_base.cc
 """)
 
 if int(env.realtime):

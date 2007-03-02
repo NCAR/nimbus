@@ -151,7 +151,7 @@ public:
 
 
 // Global Variables
-extern char	*ProjectDirectory, sync_server_pipe[];
+extern char sync_server_pipe[];
 
 extern const NR_TYPE MISSING_VALUE, floatNAN;
 extern const int MAX_COF;
