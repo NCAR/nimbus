@@ -44,7 +44,7 @@ void MakeProjectFileName(char file[], const std::string& format)
   }
 
   (void)sprintf(file, format.c_str(),
-	ProjectDirectory, cfg.ProjectNumber().c_str(), platform);
+	cfg.ProjectDirectory().c_str(), cfg.ProjectNumber().c_str(), platform);
 }
 
 /* -------------------------------------------------------------------- */

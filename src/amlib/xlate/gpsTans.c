@@ -24,10 +24,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "nimbus.h"
 #include "decode.h"
 #include "amlib.h"
+#include "GoogleEarth.h"
 
 static int	velLag, posLag;
 
-extern char *ADSrecord;
+extern char * ADSrecord;
+extern GoogleEarthKML * googleEarth;
+
 int calcDateTime(int week, int secs, int gps_off);
 int computeJulianDay(int year, int month, int day);
 void decodeJulianDay(int julian_day, int year, int *month, int *day);
@@ -71,6 +74,12 @@ void xlglat(RAWTBL *varp, void *input, NR_TYPE *output)
   else
     *output = lat;
 
+  if (googleEarth)
+  {
+    googleEarth->SetLatestLAT(lat);
+    googleEarth->SetLatestLON(lon);
+  }
+
   varp->DynamicLag = posLag;
 }
 
@@ -100,6 +109,9 @@ void xlgalt(RAWTBL *varp, void *input, NR_TYPE *output)
   posLag = (int)((posTime - 0.5) * 1000);
 
   *output = (NR_TYPE)ntohf(gps->galt);
+
+  if (googleEarth)
+    googleEarth->SetLatestALT(*output);
 
   varp->DynamicLag = posLag;
 }

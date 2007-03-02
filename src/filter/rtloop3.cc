@@ -18,6 +18,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2005
 #include "gui.h"
 #include "vardb.h"
 #include "psql.h"
+#include "GoogleEarth.h"
 #include "brdcast.h"
 
 #include <Xm/TextF.h>
@@ -33,7 +34,8 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2005
 
 static Broadcast * bcast;
 
-extern PostgreSQL *psql;
+extern PostgreSQL * psql;
+extern GoogleEarthKML * googleEarth;
 
 extern NR_TYPE	*SampledData, *AveragedData;
 
@@ -146,6 +148,9 @@ void RealTimeLoop3()
       bcast->broadcastData(timeStamp);
     if (cfg.OutputNetCDF())
       WriteNetCDF_MRF();
+
+    if (googleEarth)
+      googleEarth->update();
 
     UpdateTime(SampledData);
 

@@ -33,13 +33,16 @@ void	RTinit_ADS2(), RTinit_ADS3();
 void Initialize()
 {
   int	pos;
+  char    *proj_dir;
 
-  if ((ProjectDirectory = (char *)getenv("PROJ_DIR")) == NULL)
+  if ((proj_dir = (char *)getenv("PROJ_DIR")) == NULL)
     {
     fprintf(stderr,
       "Environment variable PROJ_DIR not defined, this is fatal.\n");
     exit(1);
     }
+
+  cfg.SetProjectDirectory(proj_dir);
 
   putenv("TZ=UTC");	// Perform all time calculations at UTC.
 

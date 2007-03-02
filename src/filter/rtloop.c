@@ -46,7 +46,7 @@ void RTinit_ADS2()
   gethostname(host, 80);
   if ((p = strchr(host, '.')) ) *p = '\0';
 
-  sprintf(buffer, "%s/hosts/%s/rtdata.filename", ProjectDirectory, host);
+  sprintf(buffer, "%s/hosts/%s/rtdata.filename", cfg.ProjectDirectory().c_str(), host);
 
   for (int j = 0; j < 60 && (fp = fopen(buffer, "r")) == NULL; ++j)
     sleep(1);

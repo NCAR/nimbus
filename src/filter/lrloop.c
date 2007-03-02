@@ -27,9 +27,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include "gui.h"
 #include "circbuff.h"
 #include "amlib.h"
+#include "GoogleEarth.h"
 #include "injectsd.h"
 
 extern SyntheticData sd;
+extern GoogleEarthKML * googleEarth;
 
 extern char		*ADSrecord;
 extern NR_TYPE		*SampledData, *AveragedData;
@@ -90,6 +92,8 @@ int LowRateLoop(long startTime, long endTime)
       {
       WriteNetCDF();
       UpdateTime(SampledData);
+      if (googleEarth)
+        googleEarth->update();
       }
 
     while (PauseFlag == true)

@@ -22,6 +22,7 @@ env['LIBS'] = Split("""
 """)
 
 sources = Split("""
+GoogleEarth.cc
 UdpSocket.cc
 Xwin.c
 adsIO.c
@@ -78,6 +79,7 @@ setup.c
 textfile.c
 timeseg.c
 transmit.cc
+var_base.cc
 """)
 
 if int(env.realtime):

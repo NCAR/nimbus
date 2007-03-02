@@ -46,7 +46,7 @@ void maspInit(RAWTBL *varp)
 serialNumber = "MASP_DEF";
   probeNum = varp->ProbeCount;
  
-  sprintf(buffer, PMS_SPEC_FILE, ProjectDirectory, cfg.ProjectNumber().c_str());
+  sprintf(buffer, PMS_SPEC_FILE, cfg.ProjectDirectory().c_str(), cfg.ProjectNumber().c_str());
   InitPMSspecs(buffer);
  
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {

@@ -48,6 +48,9 @@ public:
   bool HoneyWellCleanup() const		{ return _honeywellCleanup; }
   bool InertialShift() const		{ return _inertialShift; }
 
+  bool CreateKMLFile() const		{ return _googleEarth; }
+  bool CreateNavFile() const		{ return _iwgadts; }
+
   bool DespikeReporting() const		{ return _despikeReporting; }
   bool LagReporting() const		{ return _lagReporting; }
 
@@ -76,6 +79,9 @@ public:
   void SetHoneyWellCleanup(bool state)	{ _honeywellCleanup = state; }
   void SetInertialShift(bool state)	{ _inertialShift = state; }
 
+  void SetCreateKMLFile(bool state)	{ _googleEarth = state; }
+  void SetCreateNavFile(bool state)	{ _iwgadts = state; }
+
   void SetAircraft(aircraft ac)		{ _aircraft = ac; }
   void SetAircraft(int ac)		{ _aircraft = (aircraft)ac; }
   void SetProcessingMode(processingMode state) { _mode = state; }
@@ -88,12 +94,14 @@ public:
 
   void SetADSVersion(ADSVersion nv) { _adsVersion = nv; }
 
+  const std::string& ProjectDirectory() const { return _projectDirectory; }
   const std::string& ProjectName() const { return _projectName; }
   const std::string& ProjectNumber() const { return _projectNumber; }
   const std::string& TailNumber() const { return _tailNumber; }
   const std::string& FlightNumber() const { return _flightNumber; }
   const std::string& FlightDate() const { return _flightDate; }
 
+  void SetProjectDirectory(const std::string s)	{ _projectDirectory = s; }
   void SetProjectName(const std::string s)	{ _projectName = s; }
   void SetProjectNumber(const std::string s)	{ _projectNumber = s; }
   void SetTailNumber(const std::string s)	{ _tailNumber = s; }
@@ -136,6 +144,9 @@ private:
   bool _honeywellCleanup;
   bool _inertialShift;
 
+  bool _googleEarth;
+  bool _iwgadts;
+
   bool _despikeReporting;
   bool _lagReporting;
 
@@ -145,6 +156,8 @@ private:
   processingRate _processingRate;
   hrtRate _hrtRate;
   interpolationType _interpType;
+
+  std::string _projectDirectory;
 
   // Some meta-data.
   std::string _projectName;
