@@ -414,14 +414,15 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     {
       case  nidas::core::Variable::CONTINUOUS:
         strcpy(rp->type, "A");
+        rp->Average = rp->Length > 1 ? (void (*) (...))AverageVector : (void (*) (...))Average;
         break;
       case  nidas::core::Variable::COUNTER:
         strcpy(rp->type, "C");
+        rp->Average = rp->Length > 1 ? (void (*) (...))SumVector : (void (*) (...))Sum;
         break;
       default:
         LogMessage("hdr_decode:initSDI_ADS3: Unsupported type from Variable->getType()\n");
     }
-    rp->Average = (void (*) (...))(rp->type[0] == 'C' ? Sum : Average);
 
     addSerialNumber(var, rp);
   }
