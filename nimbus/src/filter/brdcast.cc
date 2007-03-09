@@ -21,8 +21,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005
 #include <sstream>
 
 const int Broadcast::RT_UDP_PORT = 2102;
-//const std::string Broadcast::RT_UDP_ADDR = "128.117.84.255";
-const std::string Broadcast::RT_UDP_ADDR = "192.168.84.255";
+const std::string Broadcast::RT_UDP_ADDR = "128.117.84.255";
+//const std::string Broadcast::RT_UDP_ADDR = "192.168.84.255";
 
 /* -------------------------------------------------------------------- */
 Broadcast::Broadcast()
@@ -65,18 +65,19 @@ Broadcast::Broadcast()
 void Broadcast::broadcastData(std::string timeStamp) const
 {
   std::stringstream bcast;
-  bcast << timeStamp;
+  bcast << "IWG1," << timeStamp;
 
   extern NR_TYPE * AveragedData;
 
   for (size_t i = 0; i < _varList.size(); ++i)
-    if (_varList[i] == 0)
-      bcast << " 0.0";
-    else
-      bcast << " " << AveragedData[_varList[i]->LRstart];
-
-  bcast << '\n';
+  {
+    bcast << ",";
+    if (_varList[i])
+      bcast << AveragedData[_varList[i]->LRstart];
+  }
+  bcast << "\r\n";
   _brdcst->writeSock(bcast.str().c_str(), bcast.str().length());
+printf(bcast.str().c_str());
 
 }	// END BROADCASTDATA
 
