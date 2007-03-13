@@ -44,12 +44,12 @@ public:
   /** 
    * Write LowRate (LRT) data into the database.
    */
-  void	WriteSQL(const std::string timeStamp);
+  void	WriteSQL(const std::string & timeStamp);
   /** 
    * Write SampleRate (SRT) data into the database.
    * @returns usec of last sample written.
    */
-  long	WriteSQLvolts(const std::string timeStamp);
+  long	WriteSQLvolts(const std::string & timeStamp);
 
   /**
    * Generic function to submit a query/command to the database.

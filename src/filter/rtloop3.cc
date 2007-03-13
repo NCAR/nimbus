@@ -129,7 +129,7 @@ void RealTimeLoop3()
     time_t ut = tt / USECS_PER_SEC;
     struct tm tm;
     gmtime_r(&ut, &tm);
-    strftime(timeStamp, sizeof(timeStamp), "%Y-%m-%dT%H:%M:%S", &tm);
+    strftime(timeStamp, sizeof(timeStamp), "%Y-%m-%d %H:%M:%S", &tm);
 //    std::cout << timeStamp << std::endl;
 
     mcStat.sendStatus(timeStamp);

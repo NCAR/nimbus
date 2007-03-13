@@ -62,7 +62,7 @@ Broadcast::Broadcast()
 }	// END CTOR
 
 /* -------------------------------------------------------------------- */
-void Broadcast::broadcastData(std::string timeStamp) const
+void Broadcast::broadcastData(const std::string & timeStamp) const
 {
   std::stringstream bcast;
   bcast << "IWG1," << timeStamp;
