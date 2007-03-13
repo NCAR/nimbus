@@ -28,7 +28,7 @@ public:
   /** 
    * Write LowRate (LRT) data into the database.
    */
-  void	broadcastData(std::string timeStamp) const;
+  void	broadcastData(const std::string & timeStamp) const;
 
 protected:
   UdpSocket* _brdcst;

@@ -98,7 +98,7 @@ PostgreSQL::updateEndTimeString(const std::string & timeStamp, long usec) const
 
 /* -------------------------------------------------------------------- */
 void
-PostgreSQL::WriteSQL(const std::string timeStamp)
+PostgreSQL::WriteSQL(const std::string & timeStamp)
 {
   static size_t	cntr = 0;
 
@@ -419,7 +419,7 @@ PostgreSQL::initializeVariableList()
 
 /* -------------------------------------------------------------------- */
 long
-PostgreSQL::WriteSQLvolts(const std::string timeStamp)
+PostgreSQL::WriteSQLvolts(const std::string & timeStamp)
 {
   rateTableList::iterator it;
   int	maxRate = 1;
