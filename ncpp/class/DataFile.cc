@@ -144,8 +144,7 @@ DataFile::~DataFile()
   while (--nProbes >= 0)
     delete probe[nProbes];
 
-printf("Warning: DataFile: Memory leak left in place to avoid netCDF bug.\n");
-//  delete file;
+  delete file;
 
 }	/* END DESTRUCTOR */
 
