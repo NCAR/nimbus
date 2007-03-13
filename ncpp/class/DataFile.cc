@@ -30,6 +30,8 @@ DataFile::DataFile(char fName[]) : fileName(fName)
   NcAtt		*attr;
   NcVar		*avar, *cvar;
 
+  NcError * err = new NcError(NcError::verbose_nonfatal);
+
   nProbes = 0;
 
   /* Open Input File
