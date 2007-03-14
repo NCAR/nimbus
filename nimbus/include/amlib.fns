@@ -116,6 +116,7 @@
 	"FTMP3_V3",	NULL,		xlS300cabin7,	NULL,
 #
 	"CS100",	NULL,		NULL,		scs100,
+	"CCDP",		NULL,		NULL,		scs100,
 	"CS200",	NULL,		NULL,		scs200,
 	"CS300",	NULL,		NULL,		scf300,
 #
@@ -153,6 +154,7 @@
 # PMS Total Counts
 	"TCNT3",	NULL,		NULL,		stcnt3,
 	"TCNT6",	NULL,		NULL,		stcnt6,
+	"TCNTD",	NULL,		NULL,		stcntf,
 	"TCNTF",	NULL,		NULL,		stcntf,
 	"TCNTP",	NULL,		NULL,		stcntp,
 	"TCNT2DC",	NULL,		NULL,		stcnt2,
@@ -166,6 +168,7 @@
 	"CONC3",	NULL,		NULL,		sconc3,
 	"CONC6",	NULL,		NULL,		sconc6,
 	"CONCA",	NULL,		NULL,		sconca,
+	"CONCD",	NULL,		NULL,		sconcf,
 	"CONCF",	NULL,		NULL,		sconcf,
 	"CONCP",	NULL,		NULL,		sconca,
 	"CONCX",	NULL,		NULL,		sconcx,
@@ -180,6 +183,7 @@
 	"DBAR3",	NULL,		NULL,		sdbar3,
 	"DBAR6",	NULL,		NULL,		sdbar6,
 	"DBARA",	NULL,		NULL,		sdbara,
+	"DBARD",	NULL,		NULL,		sdbarf,
 	"DBARF",	NULL,		NULL,		sdbarf,
 	"DBARP",	NULL,		NULL,		sdbara,
 	"DBARX",	NULL,		NULL,		sdbarx,
@@ -193,6 +197,7 @@
 # PMS DISP
 	"DISP6",	NULL,		NULL,		sdisp6,
 	"DISPA",	NULL,		NULL,		sdispa,
+	"DISPD",	NULL,		NULL,		sdispf,
 	"DISPF",	NULL,		NULL,		sdispf,
 	"DISPP",	NULL,		NULL,		sdispa,
 	"DISPX",	NULL,		NULL,		sdispx,
@@ -205,6 +210,7 @@
 
 # PMS Liquid Water Content
 	"PLWC6",	NULL,		NULL,		splwc6,
+	"PLWCD",	NULL,		NULL,		splwcf,
 	"PLWCF",	NULL,		NULL,		splwcf,
 	"PLWCX",	NULL,		NULL,		splwcx,
 	"PLWCY",	NULL,		NULL,		splwcy,
@@ -215,6 +221,7 @@
 	"PLWCHV",	NULL,		NULL,		splwc2,
 
 # PMS Effective Radius
+	"REFFD",	NULL,		NULL,		srefff,
 	"REFFF",	NULL,		NULL,		srefff,
 	"REFF3",	NULL,		NULL,		sreff3,
 	"REFF6",	NULL,		NULL,		sreff6,
@@ -244,6 +251,7 @@
 	"WVZO",		NULL,		xllh_yzero,	NULL,
 
 # Reflectivity
+	"DBZD",		NULL,		NULL,		sdbzf,
 	"DBZF",		NULL,		NULL,		sdbzf,
 	"DBZ6",		NULL,		NULL,		sdbz6,
 	"DBZ1DP",	NULL,		NULL,		sdbz2,
