@@ -50,9 +50,16 @@ void SetUpDependencies()
   for (size_t i = 0; i < derived.size(); ++i)
   {
     DERTBL *dp = derived[i];
-
+printf("%s\n", dp->name);
     strcpy(name, dp->name);
-    location[0] = '\0';
+
+    if ((s = strchr(name, '_')) != NULL)
+    {
+      strcpy(location, s);
+      *s = '\0';
+    }
+    else
+      location[0] = '\0';
 
     // Retrieve dependency list.
     if (cfg.isADS3())
@@ -61,25 +68,17 @@ void SetUpDependencies()
     }
     else
     {
-      if ((s = SearchList(dependlist, name)) == NULL)
-      {
-        if ((s = strchr(name, '_')) != NULL)
-        {
-          strcpy(location, s);
-          *s = '\0';
-        }
-      }
-
-      if ((s = SearchList(dependlist, name)) == NULL)
-      {
-        sprintf(buffer, "%s has no dependencies, turning off.\n", name);
-        LogMessage(buffer);
-        dp->Output = false;
-        dp->compute = (void(*)(void *))smissval;
-        continue;
-      }
-
+      s = SearchList(dependlist, name);
       strcpy(buffer, s);
+    }
+
+    if (strlen(buffer) == 0)
+    {
+      sprintf(buffer, "%s has no dependencies, turning off.\n", name);
+      LogMessage(buffer);
+      dp->Output = false;
+      dp->compute = (void(*)(void *))smissval;
+      continue;
     }
 
     s = strtok(buffer, tokens);
@@ -89,7 +88,7 @@ void SetUpDependencies()
     for (j = 0; (s = strtok((char *)NULL, tokens)); ++j)
     {
       strcpy(dp->depend[j], s);
-
+printf("  %s\n", dp->depend[j]);
       /* We need to check both cases of whether dependency needs the
        * location tacked on.  (e.g. CFSSP depends on TASX, we do not
        * want location tacked onto TASX.
@@ -97,6 +96,7 @@ void SetUpDependencies()
       if (DependIndexLookup(dp, j) == ERR)
       {
         strcat(dp->depend[j], location);
+printf("    %s\n", dp->depend[j]);
 
         if (DependIndexLookup(dp, j) == ERR)
         {
