@@ -50,7 +50,7 @@ void SetUpDependencies()
   for (size_t i = 0; i < derived.size(); ++i)
   {
     DERTBL *dp = derived[i];
-printf("%s\n", dp->name);
+
     strcpy(name, dp->name);
 
     if ((s = strchr(name, '_')) != NULL)
@@ -88,7 +88,7 @@ printf("%s\n", dp->name);
     for (j = 0; (s = strtok((char *)NULL, tokens)); ++j)
     {
       strcpy(dp->depend[j], s);
-printf("  %s\n", dp->depend[j]);
+
       /* We need to check both cases of whether dependency needs the
        * location tacked on.  (e.g. CFSSP depends on TASX, we do not
        * want location tacked onto TASX.
@@ -96,7 +96,6 @@ printf("  %s\n", dp->depend[j]);
       if (DependIndexLookup(dp, j) == ERR)
       {
         strcat(dp->depend[j], location);
-printf("    %s\n", dp->depend[j]);
 
         if (DependIndexLookup(dp, j) == ERR)
         {
