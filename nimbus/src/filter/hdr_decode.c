@@ -381,6 +381,16 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
   {
     nidas::dynld::raf::SyncRecordVariable *var = const_cast<nidas::dynld::raf::SyncRecordVariable*>(*vi);
 
+    char name[64];
+    strcpy(name, var->getName().c_str());
+    char * p = strchr(name, '_');
+    if (p)
+    {
+      strcpy(location, p);
+      *p = '\0';
+    }
+    else
+      location[0] = '\0';
     rate = (int)ceil(var->getSampleRate());
     length = var->getLength();
 
@@ -390,7 +400,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     RAWTBL *rp;
     if (var->getConverter() == 0)
     {
-      rp = add_name_to_RAWTBL(var->getName().c_str());
+      rp = add_name_to_RAWTBL(name);
       rp->LAGstart = var->getLagOffset();
       rp->Units = var->getUnits();
       rp->LongName = var->getLongName();
@@ -400,11 +410,12 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
       if (cfg.ProcessingMode() == Config::RealTime)
         rp->OutputRate = rp->SampleRate;
 
-      add_derived_names(rp->name);
+      add_derived_names(name);
     }
     else
     {
       rp = initSDI_ADS3(var);
+
       // Default real-time netCDF to SampleRate.
       if (cfg.ProcessingMode() == Config::RealTime)
         rp->OutputRate = rp->SampleRate;
@@ -430,6 +441,9 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
   add_derived_names("GUST");
   initGustCorrected();
   CommonPostInitialization();
+
+void PMS1D_SetupForADS3();
+PMS1D_SetupForADS3();   // in pms1d.c, temporary until we get sync_esrver merged in.
 
   return OK;
 }
@@ -2017,8 +2031,11 @@ static void add_file_to_RAWTBL(const std::string& filename)
 static RAWTBL *add_name_to_RAWTBL(const char name[])
 {
   int indx = SearchDERIVEFTNS(name);
+  char fullName[64];
+  strcpy(fullName, name);
+  strcat(fullName, location);
 
-  if (indx == ERR && (cfg.isADS2() || syncRecReader->getVariable(name) == 0))
+  if (indx == ERR && (cfg.isADS2() || syncRecReader->getVariable(fullName) == 0))
   {
     char msg[128];
 
@@ -2036,7 +2053,7 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
     return((RAWTBL *)ERR);
   }
 
-  RAWTBL *rp = new RAWTBL(name);
+  RAWTBL *rp = new RAWTBL(fullName);
   raw.push_back(rp);
 
   addUnitsAndLongName(rp);
@@ -2055,9 +2072,6 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
     rp->Initializer = 0;
     rp->xlate = 0;
     }
-
-  if (*location)
-    strcat(rp->name, location);
 
   rp->ADSstart		= start >> 1;
   rp->ADSoffset		= 1;
