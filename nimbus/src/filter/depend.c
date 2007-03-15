@@ -50,6 +50,7 @@ void SetUpDependencies()
   for (size_t i = 0; i < derived.size(); ++i)
   {
     DERTBL *dp = derived[i];
+    buffer[0] = '\0';
 
     strcpy(name, dp->name);
 
@@ -69,7 +70,8 @@ void SetUpDependencies()
     else
     {
       s = SearchList(dependlist, name);
-      strcpy(buffer, s);
+      if (s)
+        strcpy(buffer, s);
     }
 
     if (strlen(buffer) == 0)
