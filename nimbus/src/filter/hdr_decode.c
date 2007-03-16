@@ -435,6 +435,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
         LogMessage("hdr_decode:initSDI_ADS3: Unsupported type from Variable->getType()\n");
     }
 
+    location[0] = '\0';
     addSerialNumber(var, rp);
   }
 
