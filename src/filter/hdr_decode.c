@@ -410,6 +410,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
       if (cfg.ProcessingMode() == Config::RealTime)
         rp->OutputRate = rp->SampleRate;
 
+      length = 1;
       add_derived_names(name);
     }
     else
