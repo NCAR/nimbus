@@ -717,13 +717,13 @@ void Quit(Widget w, XtPointer client, XtPointer call)
   if (psql)
     psql->closeSQL();
 
+  CloseRemoveLogFile();
+
   // kill sync_server or any other processes.
   kill(0, SIGTERM);
 
   if (strlen(sync_server_pipe))
     unlink(sync_server_pipe);
-
-  CloseRemoveLogFile();
 
   exit(0);
 }
@@ -757,7 +757,12 @@ static int determineInputFileVersion()
 //    cfg.SetProjectNumber(p);
     p = strtok(NULL, "_");
     p = strtok(NULL, "_.");
-    cfg.SetFlightNumber(p);
+    if (p)
+      cfg.SetFlightNumber(p);
+    else
+      LogMessage("Unable to determine FlightNumber from file name.\n");
+
+// Needs to be retreived from "system_name".
     cfg.SetTailNumber("N677F");
   }
 
