@@ -34,13 +34,13 @@ void PMS1D_SetupForADS3()
   {
     raw[raw_indx]->SerialNumber	= "260X06";
     raw[raw_indx]->Average	= (void (*) (...))SumVector;
-    raw[raw_indx]->ProbeType	= PROBE_PMS1D & PROBE_260X;
+    raw[raw_indx]->ProbeType	= PROBE_PMS1D | PROBE_260X;
   }
   if ((der_indx = SearchTableSansLocation(derived, "C260X")) != ERR)
   {
     derived[der_indx]->SerialNumber	= "260X06";
     derived[der_indx]->Length		= raw[raw_indx]->Length;
-    derived[der_indx]->ProbeType	= PROBE_PMS1D & PROBE_260X;
+    derived[der_indx]->ProbeType	= PROBE_PMS1D | PROBE_260X;
   }
   else
     printf("Debug: No C260X found.\n");
@@ -50,13 +50,13 @@ void PMS1D_SetupForADS3()
   {
     raw[raw_indx]->SerialNumber	= "CDP001";
     raw[raw_indx]->Average	= (void (*) (...))SumVector;
-    raw[raw_indx]->ProbeType	= PROBE_PMS1D & PROBE_CDP;
+    raw[raw_indx]->ProbeType	= PROBE_PMS1D | PROBE_CDP;
   }
   if ((der_indx = SearchTableSansLocation(derived, "CCDP")) != ERR)
   {
     derived[der_indx]->SerialNumber	= "CDP001";
     derived[der_indx]->Length		= raw[raw_indx]->Length;
-    derived[der_indx]->ProbeType	= PROBE_PMS1D & PROBE_CDP;
+    derived[der_indx]->ProbeType	= PROBE_PMS1D | PROBE_CDP;
   }
   else
     printf("Debug: No CCDP found.\n");
@@ -66,13 +66,13 @@ void PMS1D_SetupForADS3()
   {
     raw[raw_indx]->SerialNumber	= "PCAS108";
     raw[raw_indx]->Average	= (void (*) (...))SumVector;
-    raw[raw_indx]->ProbeType	= PROBE_PMS1D & PROBE_PCASP;
+    raw[raw_indx]->ProbeType	= PROBE_PMS1D | PROBE_PCASP;
   }
   if ((der_indx = SearchTableSansLocation(derived, "CS200")) != ERR)
   {
     derived[der_indx]->SerialNumber	= "PCAS108";
     derived[der_indx]->Length		= raw[raw_indx]->Length;
-    derived[der_indx]->ProbeType	= PROBE_PMS1D & PROBE_PCASP;
+    derived[der_indx]->ProbeType	= PROBE_PMS1D | PROBE_PCASP;
   }
   else
     printf("Debug: No CS200 found.\n");
