@@ -70,7 +70,7 @@ static NR_TYPE
        CXY = -0.025;
 
 /* -------------------------------------------------------------------- */
-void EFinit(DERTBL *varp)
+void EFinit(var_base *varp)
 {
   NR_TYPE  *tmp;
   if ((tmp = GetDefaultsValue("VFT0", varp->name)) == NULL)

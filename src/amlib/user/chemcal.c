@@ -36,7 +36,7 @@ static NR_TYPE  Xnom_cal[2] = {-10.0, 43.0};
 static NR_TYPE  Xo3f1t_cal[2] = {40.0, 0.0184};
 
 /* -------------------------------------------------------------------- */
-void kokInit(DERTBL *varp)
+void kokInit(var_base *varp)
 {
   NR_TYPE  *tmp;
   if ((tmp = GetDefaultsValue("O3FSM_CAL", varp->name)) == NULL)

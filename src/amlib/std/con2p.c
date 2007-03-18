@@ -13,7 +13,7 @@
 static NR_TYPE  P1_EAW = 3.2, P2_EAW = 3.2;
 
 /* -------------------------------------------------------------------- */
-void conc2pInit(DERTBL *varp)
+void conc2pInit(var_base *varp)
 {
   NR_TYPE  *tmp;
   if ((tmp = GetDefaultsValue("P1_EAW", varp->name)) == NULL)

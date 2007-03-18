@@ -39,7 +39,7 @@ static NR_TYPE  heading,      /* Current heading shoud be    */
 static NR_TYPE  Minutes[MAX_CIRCLE] = {40, 50, 60};
 
 /* -------------------------------------------------------------------- */
-void initCircles(DERTBL *varp)
+void initCircles(var_base *varp)
 {
   int  i;
   NR_TYPE  *mins;

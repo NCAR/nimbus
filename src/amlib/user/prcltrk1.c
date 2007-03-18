@@ -50,7 +50,7 @@ void parcel_reset(int num)
 }	/* END PARCEL_RESET */
 
 /* -------------------------------------------------------------------- */
-void deadReckInit(DERTBL *varp)
+void deadReckInit(var_base *varp)
 {
   NR_TYPE  *tmp;
   if ((tmp = GetDefaultsValue("DECLINATION", varp->name)) == NULL)

@@ -37,7 +37,7 @@ static NR_TYPE	cell_size2[MAX_ASAS][BINS_40+1];
 static NR_TYPE	cell_size3[MAX_ASAS][BINS_40+1];
 
 /* -------------------------------------------------------------------- */
-void casasInit(RAWTBL *varp)
+void casasInit(var_base *varp)
 {
   size_t	i, probeNum;
   const char	*serialNumber;
@@ -59,8 +59,13 @@ void casasInit(RAWTBL *varp)
     }
   LAST_BIN[probeNum] = atoi(p);
 
-  if ((p = GetPMSparameter(serialNumber, "CELL_SIZE")) == NULL) {
-    sprintf(buffer, "CELL_SIZE_%d", varp->Length-1);
+  if ((p = GetPMSparameter(serialNumber, "CELL_SIZE")) == NULL)
+    {
+    /* ADS2 SPP probes mimiced old PMS1D interface and padded a useless
+     * 0th bin (so 31 bins instead of 30).  ADS3 will not do this.  PMSspecs
+     * files should now have FirstBin of 0 instead of 1.  Re: -1 vs. -0 below.
+     */
+    sprintf(buffer, "CELL_SIZE_%d", varp->Length - (cfg.isADS2() ? 1 : 0));
     if ((p = GetPMSparameter(serialNumber, buffer)) == NULL) {
       printf("%s: CELL_SIZE not found.\n", serialNumber); exit(1);
       }

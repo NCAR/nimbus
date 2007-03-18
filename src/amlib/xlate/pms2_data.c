@@ -73,8 +73,8 @@ typedef struct particle Particle;
 
 
 static void AddMore2dData(Queue *, long, int);
-void	Process(Queue *, P2d_rec *, int probeCnt), sTwodInit(RAWTBL *varp);
-void	ProcessHVPS(Queue *, P2d_rec *, int probeCnt), sTwodInitH(RAWTBL *varp);
+void	Process(Queue *, P2d_rec *, int probeCnt), sTwodInit(var_base *varp);
+void	ProcessHVPS(Queue *, P2d_rec *, int probeCnt), sTwodInitH(var_base *varp);
 
 bool	Next2dRecord(P2d_rec *, int, short);
 
@@ -113,7 +113,7 @@ void Add2DtoList(RAWTBL *varp)	/* Called by hdr_decode.c */
 }	/* END ADD2DTOLIST */
 
 /* -------------------------------------------------------------------- */
-void xlTwodInit(RAWTBL *varp)
+void xlTwodInit(var_base *varp)
 {
   size_t	probeCnt = varp->ProbeCount >> 1;
   P2d_rec	rec;

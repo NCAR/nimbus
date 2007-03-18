@@ -21,7 +21,7 @@ NR_TYPE kinglwcc(NR_TYPE plwc, NR_TYPE tasx, NR_TYPE atx, NR_TYPE psxc, NR_TYPE 
 
 
 /* -------------------------------------------------------------------- */
-void plwccInit(DERTBL *varp)
+void plwccInit(var_base *varp)
 {
   NR_TYPE	*tmp;
 
@@ -52,7 +52,7 @@ void plwccInit(DERTBL *varp)
 }	/* END PLWCCINIT */
 
 /* -------------------------------------------------------------------- */
-void plwcc1Init(DERTBL *varp)
+void plwcc1Init(var_base *varp)
 {
   NR_TYPE	*tmp;
 
@@ -83,7 +83,7 @@ void plwcc1Init(DERTBL *varp)
 }	/* END PLWCC1INIT */
 
 /* -------------------------------------------------------------------- */
-void plwcc2Init(DERTBL *varp)
+void plwcc2Init(var_base *varp)
 {
   NR_TYPE	*tmp;
 

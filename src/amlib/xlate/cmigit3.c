@@ -24,7 +24,7 @@ static const double	cm16 = 1.525879e-05;
 static NR_TYPE thdgCorr, pitchCorr;
 
 /* -------------------------------------------------------------------- */
-void cmigitsInit(RAWTBL *varp)
+void cmigitsInit(var_base *varp)
 {
   NR_TYPE  *tmp;
 

@@ -796,7 +796,7 @@ double BeersLawBilinearInterp(void);
 
 
 /* -------------------------------------------------------------------- */
-void nclhInit(DERTBL *varp)
+void nclhInit(var_base *varp)
 {
 // Assign grid arrays
   double stepP = (Pupper - Plower)/(double)(NPRESSURES-1);   // Pressure steps

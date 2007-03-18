@@ -43,7 +43,7 @@ static NR_TYPE  SWDIRF = 0.66;  /* Short-wave direct rad. fraction (none) */
 static NR_TYPE  radcf;  /* radiation correction factor (none) */
 
 /* -------------------------------------------------------------------- */
-void radcInit(DERTBL *varp)
+void radcInit(var_base *varp)
 {
   NR_TYPE  *tmp;
   if ((tmp = GetDefaultsValue("RAD_PITCH_MAX", varp->name)) == NULL)

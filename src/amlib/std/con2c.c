@@ -13,7 +13,7 @@
 static NR_TYPE  C1_EAW = 0.8, C2_EAW = 0.8; /* PMS-2D Effective Area Width (MM^2) */
 
 /* -------------------------------------------------------------------- */
-void conc2cInit(DERTBL *varp)
+void conc2cInit(var_base *varp)
 {
   NR_TYPE  *tmp;
 

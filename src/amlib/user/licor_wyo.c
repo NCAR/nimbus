@@ -39,7 +39,7 @@ static NR_TYPE  CAL_FACTOR = 1.475,
                 OFFSET = 0.7;  /*  CO2_OFFSET  */
 
 /* -------------------------------------------------------------------- */
-void UWO_LICORinit(DERTBL *varp)
+void UWO_LICORinit(var_base *varp)
 {
   NR_TYPE  *tmp;
 

@@ -71,7 +71,7 @@ void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
 
 
 /* -------------------------------------------------------------------- */
-void sTwodInit(RAWTBL *varp)
+void sTwodInit(var_base *varp)
 {
   size_t	i, j, length, probeNum, nDiodes, minRange;
   char		*p;
@@ -186,7 +186,7 @@ void sTwodInit(RAWTBL *varp)
 }	/* END STWODINIT */
 
 /* -------------------------------------------------------------------- */
-void sTwodInitH(RAWTBL *varp)
+void sTwodInitH(var_base *varp)
 {
   size_t	i, length, probeNum, nDiodes = 0, minRange;
   char		*p;

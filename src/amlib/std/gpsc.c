@@ -57,7 +57,7 @@ extern GoogleEarthKML * googleEarth;
 
 
 /* -------------------------------------------------------------------- */
-void initLATC(DERTBL *varp)
+void initLATC(var_base *varp)
 {
   NR_TYPE  *tmp;
 

@@ -47,7 +47,7 @@ void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
 		size_t FirstBin, size_t LastBin, float RES, NR_TYPE RESPONSE_TIME);
 
 /* -------------------------------------------------------------------- */
-void c200xInit(RAWTBL *varp)
+void c200xInit(var_base *varp)
 {
   size_t	i, probeNum, nDiodes;
   const char	*serialNumber;
