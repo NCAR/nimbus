@@ -287,26 +287,31 @@ static int getCellSizes(var_base * rp, float cellSize[])
   int	i, nBins;
   char	*p;
 
-  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "CELL_SIZE")) == NULL) {
-    sprintf(buffer, "CELL_SIZE_%d", rp->Length-1);
+  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "CELL_SIZE")) == NULL)
+  {
+    /* ADS2 SPP probes mimiced old PMS1D interface and padded a useless
+     * 0th bin (so 31 bins instead of 30).  ADS3 will not do this.  PMSspecs
+     * files should now have FirstBin of 0 instead of 1.  Re: -1 vs. -0 below.
+     */
+    sprintf(buffer, "CELL_SIZE_%d", rp->Length - (cfg.isADS2() ? 1 : 0));
     p = GetPMSparameter(rp->SerialNumber.c_str(), buffer);
-    }
+  }
 
   if (p)
-    {
+  {
     strcpy(buffer, p);
     p = strtok(buffer, " \t,");
  
     for (i = 0; p && i < 164; ++i)
-      {
+    {
       cellSize[i] = atof(p);
       p = strtok(NULL, " \t,");
       if (rp->SerialNumber.compare(0, 4, "RDMA") == 0)
         cellSize[i] /= 1000.0;
-      }
+    }
 
     return(i);
-    }
+  }
 
 
   if (rp->ProbeType & PROBE_260X || strstr(rp->name, "2D"))

@@ -34,7 +34,7 @@ static NR_TYPE SFCT = 288.15; /* Default mean surface temp setting (K)  */
 
 
 /* -------------------------------------------------------------------- */
-void initPalt(DERTBL *varp)
+void initPalt(var_base *varp)
 {
   NR_TYPE  *tmp;
 

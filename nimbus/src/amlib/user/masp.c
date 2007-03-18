@@ -37,7 +37,7 @@ static NR_TYPE	cell_size[MAX_MASP][BINS_32], disp[MAX_MASP],
 
 
 /* -------------------------------------------------------------------- */
-void maspInit(RAWTBL *varp)
+void maspInit(var_base *varp)
 {
   size_t   i, probeNum;
   char  *p, *serialNumber;

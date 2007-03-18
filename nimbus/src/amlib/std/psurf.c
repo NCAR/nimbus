@@ -19,7 +19,7 @@
 static NR_TYPE PSURF_ALT_MAX = 7000.0; /* Altitude cut-off (M)          */
 
 /* -------------------------------------------------------------------- */
-void initPsurf(DERTBL *varp)
+void initPsurf(var_base *varp)
 {
   NR_TYPE  *tmp;
   if ((tmp = GetDefaultsValue("PSURF_ALT_MAX", varp->name)) == NULL)

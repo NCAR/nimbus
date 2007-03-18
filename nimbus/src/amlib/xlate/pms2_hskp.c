@@ -27,7 +27,7 @@ static NR_TYPE mulFactor = 1.0;
 
 
 /* -------------------------------------------------------------------- */
-void initP2DH(RAWTBL *varp)
+void initP2DH(var_base *varp)
 {
   int pnum;
 

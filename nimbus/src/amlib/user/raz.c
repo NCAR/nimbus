@@ -37,7 +37,7 @@ static NR_TYPE	startLat = 28.5,  /*  fixed point was CP-2 radar 7/95  */
                 startLon = -80.5;
 
 /* -------------------------------------------------------------------- */
-void razInit(DERTBL *varp)
+void razInit(var_base *varp)
 {
   NR_TYPE  *tmp;
 

@@ -25,7 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2004
 static NR_TYPE	startLat = 39.913333, startLon = -105.118333;
 
 /* -------------------------------------------------------------------- */
-void deiInit(DERTBL *varp)
+void deiInit(var_base *varp)
 {
   NR_TYPE  *tmp;
   if ((tmp = GetDefaultsValue("DENI_START_LAT", varp->name)) == NULL)

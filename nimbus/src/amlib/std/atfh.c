@@ -20,7 +20,7 @@ extern NR_TYPE	tfher1,tfher2;	/* set in initAC.c */
 static NR_TYPE atfh[nFeedBackTypes] = { 0.0, 0.0 };
 
 /* -------------------------------------------------------------------- */
-void atfhInit(DERTBL *varp)
+void atfhInit(var_base *varp)
 {
   std::vector<NR_TYPE> values;
   values.push_back(recfrh);
@@ -29,7 +29,7 @@ void atfhInit(DERTBL *varp)
 }	/* END CONSTRUCTOR */
 
 /* -------------------------------------------------------------------- */
-void tthcInit(DERTBL *varp)
+void tthcInit(var_base *varp)
 {
   std::vector<NR_TYPE> values;
   values.push_back(tfher2);

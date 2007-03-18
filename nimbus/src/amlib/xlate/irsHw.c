@@ -51,7 +51,7 @@ static void	postProcessData(var_base *varp, long input[], NR_TYPE *out, int this
 static std::map<int, std::string> _labelMap;
 
 /* -------------------------------------------------------------------- */
-void irsInit(RAWTBL *varp)
+void irsInit(var_base *varp)
 {
   NR_TYPE  *tmp;
 

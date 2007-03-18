@@ -63,7 +63,7 @@ static NR_TYPE  CVTBL = 7.62,
                 CVDIV = 1.0;
 
 /* -------------------------------------------------------------------- */
-void cviInit(DERTBL *varp)
+void cviInit(var_base *varp)
 {
   NR_TYPE  *tmp;
   if ((tmp = GetDefaultsValue("CVTBL", varp->name)) == NULL)

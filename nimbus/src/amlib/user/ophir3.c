@@ -56,7 +56,7 @@ static double  planck_rad(double), planck_t(double), therm(double);
 static double  gain_factor, bbcrad, av_detofset, detem, detsig;
 
 /* -------------------------------------------------------------------- */
-void ophir3Init(DERTBL *varp)
+void ophir3Init(var_base *varp)
 {
   NR_TYPE  *tmp;
 

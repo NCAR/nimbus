@@ -57,7 +57,7 @@ static NR_TYPE  *w;  /* current vertical wind values  */
 static int  INTRVL = 10;    /* Number of samples in mean winds  */
 
 /* -------------------------------------------------------------------- */
-void parcelInit(DERTBL *varp)
+void parcelInit(var_base *varp)
 {
   NR_TYPE  *tmp;
 

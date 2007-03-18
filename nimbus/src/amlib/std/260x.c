@@ -45,7 +45,7 @@ void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
 
 
 /* -------------------------------------------------------------------- */
-void c260xInit(RAWTBL *varp)
+void c260xInit(var_base *varp)
 {
   size_t	i, probeNum, nDiodes;
   char		*p;

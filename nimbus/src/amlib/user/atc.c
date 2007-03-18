@@ -37,7 +37,7 @@ static NR_TYPE	filter(double, double *);
 static bool returnMissingValue = false;
 
 /* -------------------------------------------------------------------- */
-void initATC(DERTBL *varp)
+void initATC(var_base *varp)
 {
   NR_TYPE  *tmp;
 

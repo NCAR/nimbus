@@ -54,7 +54,7 @@ static NR_TYPE	total_concen[MAX_FSSP], dbar[MAX_FSSP], plwc[MAX_FSSP],
 NR_TYPE		refff3[MAX_FSSP], refff2[MAX_FSSP];  /* For export to reff.c */
 
 /* -------------------------------------------------------------------- */
-void cfsspInit(RAWTBL *varp)
+void cfsspInit(var_base *varp)
 {
   size_t	i, probeNum;
   char		*p;
@@ -105,7 +105,8 @@ void cfsspInit(RAWTBL *varp)
     }
   DBZFAC[probeNum] = atof(p);
 
-  if (varp->name[1] != 'S') /* DMT Mode probe */
+  // Don't acquire for SPP100 & CDP, FSSP100 only.
+  if (varp->name[1] == 'F')
     {
     if ((p = GetPMSparameter(serialNumber, "TAU1")) == NULL) {
       printf("%s: TAU1 not found.\n", serialNumber); exit(1);
@@ -119,8 +120,13 @@ void cfsspInit(RAWTBL *varp)
     }
 
 
-  if ((p = GetPMSparameter(serialNumber, "CELL_SIZE")) == NULL) {
-    sprintf(buffer, "CELL_SIZE_%d", varp->Length-1);
+  if ((p = GetPMSparameter(serialNumber, "CELL_SIZE")) == NULL)
+    {
+    /* ADS2 SPP probes mimiced old PMS1D interface and padded a useless
+     * 0th bin (so 31 bins instead of 30).  ADS3 will not do this.  PMSspecs
+     * files should now have FirstBin of 0 instead of 1.  Re: -1 vs. -0 below.
+     */
+    sprintf(buffer, "CELL_SIZE_%d", varp->Length - (cfg.isADS2() ? 1 : 0));
     if ((p = GetPMSparameter(serialNumber, buffer)) == NULL) {
       printf("%s: %s not found.\n", buffer, serialNumber); exit(1);
       }
@@ -231,7 +237,7 @@ void scs100(DERTBL *varp)
   oflow		= GetSample(varp, 3);
   frange	= GetSample(varp, 4);
   probeNum	= varp->ProbeCount;
-
+tas=50.0;
   if (varp->SerialNumber.compare("FSSP128") == 0)
     tas = -0.0466 + 0.95171 * tas;
 

@@ -44,7 +44,7 @@ static NR_TYPE  XC_1 = 0.50, XC_2 = 0.50, THRSH_1 = 900.0, THRSH_2 = 900.0;
 static NR_TYPE  *CX_1, *CX_2;
 
 /* -------------------------------------------------------------------- */
-void lymanInit(DERTBL *varp)
+void lymanInit(var_base *varp)
 {
   NR_TYPE	*tmp;
 
@@ -76,7 +76,7 @@ void lymanInit(DERTBL *varp)
 }  /* END LYMANINIT */
 
 /* -------------------------------------------------------------------- */
-void lyman1Init(DERTBL *varp)
+void lyman1Init(var_base *varp)
 {
   NR_TYPE	*tmp;
 

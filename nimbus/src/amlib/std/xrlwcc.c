@@ -18,7 +18,7 @@ static NR_TYPE twire = 155.0;
 NR_TYPE kinglwcc(NR_TYPE plwc, NR_TYPE tasx, NR_TYPE atx, NR_TYPE psxc, NR_TYPE twire, NR_TYPE diam);
 
 /* -------------------------------------------------------------------- */
-void xrlwccInit(DERTBL *varp)
+void xrlwccInit(var_base *varp)
 {
   NR_TYPE  *tmp;
   if ((tmp = GetDefaultsValue("TWIRE_RAF", varp->name)) == NULL)

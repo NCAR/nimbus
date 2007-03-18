@@ -44,7 +44,7 @@ static NR_TYPE	cell_size[MAX_F300][BINS_40+1], pvol[MAX_F300], SAMPLE_AREA[MAX_F
 		cell_size3[MAX_F300][BINS_40+1], reff2[MAX_F300], reff3[MAX_F300];
 
 /* -------------------------------------------------------------------- */
-void cf300Init(RAWTBL *varp)
+void cf300Init(var_base *varp)
 {
   size_t	i, probeNum;
   char		*p;
@@ -71,8 +71,13 @@ void cf300Init(RAWTBL *varp)
   else
     SAMPLE_AREA[probeNum] = atof(p);
 
-  if ((p = GetPMSparameter(serialNumber, "CELL_SIZE")) == NULL) {
-    sprintf(buffer, "CELL_SIZE_%d", varp->Length-1);
+  if ((p = GetPMSparameter(serialNumber, "CELL_SIZE")) == NULL)
+    {
+    /* ADS2 SPP probes mimiced old PMS1D interface and padded a useless
+     * 0th bin (so 31 bins instead of 30).  ADS3 will not do this.  PMSspecs
+     * files should now have FirstBin of 0 instead of 1.  Re: -1 vs. -0 below.
+     */
+    sprintf(buffer, "CELL_SIZE_%d", varp->Length - (cfg.isADS2() ? 1 : 0));
     if ((p = GetPMSparameter(serialNumber, buffer)) == NULL) {
       printf("%s: CELL_SIZE not found.\n", serialNumber); exit(1);
       }

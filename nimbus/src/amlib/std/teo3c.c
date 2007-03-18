@@ -31,7 +31,7 @@ static NR_TYPE	default_teo3_cals[] = { 0.0, 1.0, 0.0, 0.0 };
 
 
 /* -------------------------------------------------------------------- */
-void teo3cInit(DERTBL *varp)
+void teo3cInit(var_base *varp)
 {
   NR_TYPE       *tmp;
 
