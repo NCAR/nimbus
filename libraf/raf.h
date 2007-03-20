@@ -76,6 +76,16 @@ char *strupr(char s[]);
 int	TapeAssign(int fd), TapeOpen(char name[]), TapeRead(char *record),
 	TapeSeek(long start_rec), TapeClose(), TapeTell();
 
+/* nc_time.c */
+int	GetFlightRecordNumber(int ncid, const char userTime[]);
+time_t	InitFlightTime(int ncid);
+int	GetFlightYear(int currentTimeOffset),
+	GetFlightMonth(int currentTimeOffset),
+	GetFlightDay(int currentTimeOffset),
+	GetFlightHour(int currentTimeOffset),
+	GetFlightMinute(int currentTimeOffset),
+	GetFlightSecond(int currentTimeOffset);
+
 #ifdef __cplusplus
 }
 #endif
