@@ -17,18 +17,9 @@ ENTRY POINTS:	CancelSetup()
 STATIC FNS:	ValidateFileNames()
 		FillListWidget()
 
-DESCRIPTION:	Contains callbacks for the nimbus GUI main window & setup
-		window.
+DESCRIPTION:	Contains callbacks for the ncav GUI main window.
 
-INPUT:			
-
-OUTPUT:		
-
-REFERENCES:	Everything.
-
-REFERENCED BY:	XtAppMainLoop()
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 -------------------------------------------------------------------------
 */
 
@@ -59,15 +50,14 @@ extern XtAppContext context;
 
 
 /* -------------------------------------------------------------------- */
-/* ARGSUSED */
 void CancelSetup(Widget w, XtPointer client, XtPointer call)
 {
-  int		i;
+  int	i;
 
   close(InputFile);
 
   for (i = 0; i < nVariables; ++i)
-		free((char *)Variable[i]);
+    free((char *)Variable[i]);
 
   free(ProjectName);
 
@@ -88,7 +78,6 @@ void CancelSetup(Widget w, XtPointer client, XtPointer call)
 }	/* END CANCELSETUP */
 
 /* -------------------------------------------------------------------- */
-/* ARGSUSED */
 void Proceed(Widget w, XtPointer client, XtPointer call)
 {
   strcpy(InputFileName, XmTextFieldGetString(inputFileText));
@@ -100,96 +89,93 @@ void Proceed(Widget w, XtPointer client, XtPointer call)
 }	/* END PROCEED */
 
 /* -------------------------------------------------------------------- */
-/* ARGSUSED */
 void ReadHeader(Widget w, XtPointer client, XtPointer call)
 {
-	XtSetSensitive(readHeaderButton, FALSE);
-	XtSetSensitive(inputFileText, FALSE);
-	XtSetSensitive(outputFileText, FALSE);
+  XtSetSensitive(readHeaderButton, FALSE);
+  XtSetSensitive(inputFileText, FALSE);
+  XtSetSensitive(outputFileText, FALSE);
 
-	XmUpdateDisplay(Shell001);
+  XmUpdateDisplay(Shell001);
 
-	if (ReadInputFile(InputFileName) == ERR)
-		{
-		CancelSetup(NULL, NULL, NULL);
-		return;
-		}
+  if (ReadInputFile(InputFileName) == ERR)
+  {
+    CancelSetup(NULL, NULL, NULL);
+    return;
+  }
 
 
-	if (!Interactive)
-		{
-		sprintf(buffer, "%s - %s, Flight #%d\n",
-				ProjectName,
-				ProjectNumber,
-				atoi(FlightNumber));
+  if (!Interactive)
+  {
+    sprintf(buffer, "%s - %s, Flight #%d\n",
+			ProjectName,
+			ProjectNumber,
+			atoi(FlightNumber));
 
-		LogMessage(buffer);
-		}
-	else
-		{
-		Arg		args[1];
+    LogMessage(buffer);
+  }
+  else
+  {
+    Arg		args[1];
 
-		FillListWidget();
+    FillListWidget();
 
-		sprintf(buffer, "%s - %s, Flight #%d",
-				ProjectName,
-				ProjectNumber,
-				atoi(FlightNumber));
+    sprintf(buffer, "%s - %s, Flight #%d",
+			ProjectName,
+			ProjectNumber,
+			atoi(FlightNumber));
 
-		XtSetArg(args[0], XmNtitle, buffer);
-		XtSetValues(Shell001, args, 1);
+    XtSetArg(args[0], XmNtitle, buffer);
+    XtSetValues(Shell001, args, 1);
 
-		XtManageChild(SetupWindow);
-		XtPopup(XtParent(SetupWindow), XtGrabNone);
-		}
-
+    XtManageChild(SetupWindow);
+    XtPopup(XtParent(SetupWindow), XtGrabNone);
+  }
 }	/* END READHEADER */
 
 /* -------------------------------------------------------------------- */
-/* ARGSUSED */
 void StartProcessing(Widget w, XtPointer client, XtPointer call)
 {
-	XmString	label;
-	Arg		args[1];
-	long		*btim, *etim;
+  XmString	label;
+  Arg		args[1];
+  long		*btim, *etim;
 
-	DismissTimeSliceWindow(NULL, NULL, NULL);
-	XtSetSensitive(list1, FALSE);
-	XtSetSensitive(menuBar, FALSE);
+  DismissTimeSliceWindow(NULL, NULL, NULL);
+  XtSetSensitive(list1, FALSE);
+  XtSetSensitive(menuBar, FALSE);
 
-	GetUserTimeIntervals();
-	CreateNetCDF(OutputFileName);
-	SetBaseTime();
+  GetUserTimeIntervals();
+  CreateNetCDF(OutputFileName);
+  SetBaseTime();
 
-	FlushXEvents();
-
-
-	/* Turn "Go" button into "Pause" button.
-	 */
-	XtRemoveAllCallbacks(goButton, XmNactivateCallback);
-	label = XmStringCreate("Pause", XmFONTLIST_DEFAULT_TAG);
-	XtSetArg(args[0], XmNlabelString, label);
-	XtSetValues(goButton, args, 1);
-	XmStringFree(label);
-	XtAddCallback(goButton, XmNactivateCallback, PauseProcessing, NULL);
-
-	FlushXEvents();
+  FlushXEvents();
 
 
-	start = time(NULL);
+  /* Turn "Go" button into "Pause" button.
+   */
+  XtRemoveAllCallbacks(goButton, XmNactivateCallback);
+  label = XmStringCreate("Pause", XmFONTLIST_DEFAULT_TAG);
+  XtSetArg(args[0], XmNlabelString, label);
+  XtSetValues(goButton, args, 1);
+  XmStringFree(label);
+  XtAddCallback(goButton, XmNactivateCallback, PauseProcessing, NULL);
 
-	while (NextTimeInterval(&btim, &etim))
-		{
-		PassThroughData(btim, etim);
+  FlushXEvents();
 
-		while (PauseFlag == TRUE)
-			XtAppProcessEvent(context, XtIMAll);
 
-		if (PauseWhatToDo == P_QUIT)
-			break;
-		}
+  start = time(NULL);
 
-	StopProcessing();
+  while (NextTimeInterval(&btim, &etim))
+  {
+    PassThroughData(btim, etim);
+
+    while (PauseFlag == TRUE)
+      XtAppProcessEvent(context, XtIMAll);
+
+    if (PauseWhatToDo == P_QUIT)
+      break;
+  }
+
+  StopProcessing();
 
 }	/* END STARTPROCESSING */
 
@@ -231,7 +217,6 @@ void StopProcessing()
 }	/* END STOPPROCESSING */
 
 /* -------------------------------------------------------------------- */
-/* ARGSUSED */
 void Quit(Widget w, XtPointer client, XtPointer call)
 {
   exit(0);
@@ -241,43 +226,43 @@ void Quit(Widget w, XtPointer client, XtPointer call)
 static int ValidateFileNames()
 {
   if (strcmp(&InputFileName[strlen(InputFileName)-3], ".nc") != 0)
-    {
+  {
     strcat(InputFileName, ".nc");
     XmTextFieldSetString(inputFileText, InputFileName);
-    }
+  }
 
   if (access(InputFileName, R_OK) == ERR || strlen(InputFileName) == 0)
-    {
+  {
     HandleError("Non-existent input file.");
     return(ERR);
-    }
+  }
 
 
   if (strlen(OutputFileName) == 0)
-    {
+  {
     HandleError("No output file specified.");
     return(ERR);
-    }
+  }
 
   if (strcmp(&OutputFileName[strlen(OutputFileName)-3], ".nc") != 0)
-    {
+  {
     strcat(OutputFileName, ".nc");
     XmTextFieldSetString(outputFileText, OutputFileName);
-    }
+  }
 
   if (access(OutputFileName, R_OK) == ERR)
     if (errno == ENOENT)
       return(OK);
     else
-      {
+    {
       HandleError("Permission denied on output file.");
       return(ERR);
-      }
+    }
   else
-    {
+  {
     HandleWarning("Output file exists.", ReadHeader);
     return(ERR);
-    }
+  }
 
 }	/* END VALIDATEFILENAMES */
 
@@ -299,16 +284,13 @@ XmString CreateListLineItem(VARTBL *vp)
 /* -------------------------------------------------------------------- */
 static void FillListWidget()
 {
-  int		i, cnt;
+  int		i, cnt = 0;
   XmString	items[MAX_VARIABLES];
 
   XmListDeleteAllItems(list1);
 
-  cnt = 0;
-
   for (i = 0; i < nVariables; ++i)
     items[cnt++] = CreateListLineItem(Variable[i]);
-
 
   XmListAddItems(list1, items, cnt, 1);
 
@@ -318,7 +300,6 @@ static void FillListWidget()
 }	/* END FILLLISTWIDGET */
 
 /* -------------------------------------------------------------------- */
-/* ARGSUSED */
 void ToggleOutput(Widget w, XtPointer client, XtPointer call)
 {
   int		*pos_list, pos_cnt = 0;
@@ -328,7 +309,7 @@ void ToggleOutput(Widget w, XtPointer client, XtPointer call)
   XmListGetSelectedPos(list1, &pos_list, &pos_cnt);
 
   for (i = 0; i < pos_cnt; ++i)
-    {
+  {
     indx = pos_list[i] - 1;
 
     Variable[indx]->Output = 1 - Variable[indx]->Output;
@@ -337,8 +318,7 @@ void ToggleOutput(Widget w, XtPointer client, XtPointer call)
 
     XmListReplaceItemsPos(list1, &new, 1, pos_list[i]);
     XmStringFree(new);
-    }
-
+  }
 }	/* END TOGGLEOUTPUT */
 
 /* -------------------------------------------------------------------- */
@@ -348,14 +328,14 @@ void LogMessage(char msg[])
   extern Widget	logText;
 
   if (Interactive)
-    {
+  {
     position = XmTextGetInsertionPosition(logText);
     XmTextInsert(logText, position, msg);
 
     position += strlen(msg);
     XmTextShowPosition(logText, position);
     XmTextSetInsertionPosition(logText, position);
-    }
+  }
   else
     fprintf(stderr, msg);
 

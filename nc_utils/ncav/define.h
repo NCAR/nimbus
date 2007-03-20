@@ -6,8 +6,8 @@ DESCRIPTION:	Header File for Nimbus Skeleton.
 -------------------------------------------------------------------------
 */
 
-#ifndef DEFINE_H
-#define DEFINE_H
+#ifndef _ncav_define_h_
+#define _ncav_define_h_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,30 +16,16 @@ DESCRIPTION:	Header File for Nimbus Skeleton.
 #include <Xm/Xm.h>
 
 #include "constants.h"
+#include "raf.h"
 
-/* This is the number of records that you wish to have access to.  This is
- * used to determine the size of the circular buffer.  This number should
- * be odd.
- */
-#define NBUFFERS	1
-#define CURRENT_BUFFER	-((NBUFFERS >> 1) + 1))
-
-
-#define NAMELEN		NAMLEN
+#define NAMELEN		32
 #define MAX_VARIABLES	2000
 #define MAX_TIME_SLICES	5
-
-
-/* Values for "VariableType"	*/
-#define SDI		0
-#define RAW		1
-#define DERIVED		2
 
 
 /* PauseWhatToDo values.		*/
 #define P_QUIT		0
 #define P_CONTINUE	1
-
 
 #define BEG_OF_TAPE	(-1)
 #define END_OF_TAPE	(-1)
@@ -63,9 +49,9 @@ typedef struct
 	char	name[NAMELEN];
 	int	inVarID;
 	int	outVarID;
-	int	SampleRate;
-	int	OutputRate;
-	int	VectorLength;
+	size_t	SampleRate;
+	size_t	OutputRate;
+	size_t	VectorLength;
 	bool	Output;
 	} VARTBL;
 
@@ -73,13 +59,12 @@ typedef struct
 /*		Global Variables
  */
 extern char	*ProjectNumber, *ProjectName, *TimeInterval;
-extern char	*Aircraft, *FlightNumber, *FlightDate, *Defaults;
+extern char	*Aircraft, *FlightNumber, *FlightDate;
 extern VARTBL	*Variable[];
 extern bool	PauseFlag, Interactive;
 extern int	nVariables, InputFile, OutputFile, PauseWhatToDo, AverageRate,
 		mvThreshold;
 extern char	buffer[];
-extern long	nRecords, CurrentInputRecordNumber, CurrentOutputRecordNumber;
 
 
 /* Setup window widgets */
@@ -92,12 +77,8 @@ extern Widget	list1, goButton, menuBar, readHeaderButton;
 /* Edit Variable window widgets */
 extern Widget	ts_text[];
 
-
-double	atof();
-
 /*		Local Functions
  */
-char	*GetMemory();
 int	ReadTextFile(), AccessProjectFile(),
 	SearchTable(char *table[], int ntable, char target[]);
 void	FreeTextFile(), ReadBatchFile(char file[]),
@@ -114,7 +95,6 @@ void	CancelWarning(), ApplyVariableMods(), CancelSetup(), EditTimeSlices(),
 	StartProcessing(), ValidateTime(), Proceed(), ToggleOutput(),
 	PauseProcessing(), VerifyLagText(), ResetTimeSliceWindow(),
 	PauseStop(), PauseContinue(), DismissTimeSliceWindow();
-
 
 #endif
 

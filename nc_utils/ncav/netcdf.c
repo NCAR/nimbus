@@ -12,19 +12,9 @@ ENTRY POINTS:	ReadInputFile()
 
 STATIC FNS:	Average()
 
-DESCRIPTION:	This file has the routines necassary to Create and write
-		data for distribution of NCAR/RAF aircraft data in netCDF
-		format.
+DESCRIPTION:	
 
-INPUT:			
-
-OUTPUT:		none
-
-REFERENCES:	none
-
-REFERENCED BY:	LowRateLoop()
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 -------------------------------------------------------------------------
 */
 
@@ -42,15 +32,17 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 #define MISSING_DATA		(-32767.0)
 
 static int	baseTimeID, nOutRecords;
-char		*passThrough[] = { "HOUR", "MINUTE", "SECOND", NULL };
+char		*passThrough[] = { NULL };
 
-static void Average(NR_TYPE *data, long count[]);
+static void AverageInt(int * data, size_t count[]);
+static void AverageReal(NR_TYPE * data, size_t count[]);
 
 /* -------------------------------------------------------------------- */
 int ReadInputFile(char fileName[])
 {
   VARTBL	*vp;
-  int		i, indx, len, nVars, nDims, dimIDs[3], recDim;
+  int		i, indx, len, nVars, nDims, dimIDs[3];
+  int		startSortIndx = 0;
   char		name[NAMELEN];
 
   ncopts = 0;
@@ -59,53 +51,58 @@ int ReadInputFile(char fileName[])
 
   /* Open Input File
    */
-  if ((InputFile = ncopen(fileName, NC_NOWRITE)) == ERR)
-    {
+  if (nc_open(fileName, NC_NOWRITE, &InputFile) != NC_NOERR)
+  {
     sprintf(buffer, "Can't open %s.\n", fileName);
     HandleError(buffer);
     return(ERR);
-    }
+  }
 
-  ncinquire(InputFile, NULL, &nVars, NULL, &recDim);
-  ncdiminq(InputFile, recDim, (char *)NULL, &nRecords);
+  nc_inq(InputFile, NULL, &nVars, NULL, NULL);
 
+  nc_inq_att(InputFile, NC_GLOBAL, "ProjectName", (nc_type *)0, &len);
+  ProjectName = GetMemory(len+1);
+  nc_get_att_text(InputFile, NC_GLOBAL, "ProjectName", ProjectName);
+  ProjectName[len] = '\0';
 
-  ncattinq(InputFile, NC_GLOBAL, "ProjectName", (nc_type *)0, &len);
-  ProjectName = GetMemory(len);
-  ncattget(InputFile, NC_GLOBAL, "ProjectName", ProjectName);
+  nc_inq_att(InputFile, NC_GLOBAL, "ProjectNumber", (nc_type *)0, &len);
+  ProjectNumber = GetMemory(len+1);
+  nc_get_att_text(InputFile, NC_GLOBAL, "ProjectNumber", ProjectNumber);
+  ProjectName[len] = '\0';
 
-  ncattinq(InputFile, NC_GLOBAL, "ProjectNumber", (nc_type *)0, &len);
-  ProjectNumber = GetMemory(len);
-  ncattget(InputFile, NC_GLOBAL, "ProjectNumber", ProjectNumber);
+  nc_inq_att(InputFile, NC_GLOBAL, "FlightNumber", (nc_type *)0, &len);
+  FlightNumber = GetMemory(len+1);
+  nc_get_att_text(InputFile, NC_GLOBAL, "FlightNumber", FlightNumber);
+  ProjectName[len] = '\0';
 
-  ncattinq(InputFile, NC_GLOBAL, "FlightNumber", (nc_type *)0, &len);
-  FlightNumber = GetMemory(len);
-  ncattget(InputFile, NC_GLOBAL, "FlightNumber", FlightNumber);
-
-  ncattinq(InputFile, NC_GLOBAL, "TimeInterval", (nc_type *)0, &len);
-  TimeInterval = GetMemory(len);
-  ncattget(InputFile, NC_GLOBAL, "TimeInterval", TimeInterval);
+  nc_inq_att(InputFile, NC_GLOBAL, "TimeInterval", (nc_type *)0, &len);
+  TimeInterval = GetMemory(len+1);
+  nc_get_att_text(InputFile, NC_GLOBAL, "TimeInterval", TimeInterval);
+  ProjectName[len] = '\0';
 
 
   for (i = 0; i < nVars; ++i)
-    {
-    ncvarinq(InputFile, i, name, NULL, &nDims, dimIDs, NULL);
+  {
+    nc_inq_var(InputFile, i, name, NULL, &nDims, dimIDs, NULL);
 
-    if (strcmp(name, "base_time") == 0 || strcmp(name, "time_offset") == 0)
+    if (strcmp(name, "base_time") == 0 ||
+	strcmp(name, "time_offset") == 0 ||
+	strcmp(name, "Time") == 0)
       continue;
 
     vp = Variable[nVariables++] = (VARTBL *)GetMemory(sizeof(VARTBL));
 
     strcpy(vp->name, name);
-    ncattget(InputFile, i, "SampledRate", (void *)&vp->SampleRate);
-    ncattget(InputFile, i, "OutputRate", (void *)&vp->OutputRate);
+    nc_get_att_text(InputFile, i, "SampledRate", (void *)&vp->SampleRate);
+    nc_get_att_text(InputFile, i, "OutputRate", (void *)&vp->OutputRate);
 
-    vp->Output	= FALSE;
     vp->inVarID	= i;
-
-    if (ncattget(InputFile, i, "VectorLength",(void *)&vp->VectorLength) == ERR)
+    vp->Output	= FALSE;
     vp->VectorLength = 1;
-    }
+
+    if (nDims == 3)
+      nc_inq_dimlen(InputFile, i, &vp->VectorLength);
+  }
 
   SortTable((char **)Variable, 0, nVariables - 1);
 
@@ -114,7 +111,6 @@ int ReadInputFile(char fileName[])
   for (i = 0; passThrough[i]; ++i)
     if ((indx = SearchTable((char **)Variable, nVariables, passThrough[i])) != ERR)
       Variable[indx]->Output = TRUE;
-
 
   return(OK);
 
@@ -126,86 +122,83 @@ void SetBaseTime()
   static bool	first_time = TRUE;
 
   if (first_time)
-    {
+  {
     time_t	BaseTime;
+    int		id;
 
     first_time = FALSE;
 
-    ncvarget1(InputFile, baseTimeID, NULL, (void *)&BaseTime);
-    ncvarput1(OutputFile, baseTimeID, NULL, (void *)&BaseTime);
+    if (nc_inq_varid(InputFile, "base_time", &baseTimeID) == NC_NOERR)
+    {
+      nc_get_var1_float(InputFile, baseTimeID, NULL, (void *)&BaseTime);
+      nc_put_var1_float(OutputFile, baseTimeID, NULL, (void *)&BaseTime);
     }
-
+  }
 }	/* END SETBASETIME */
 
 /* -------------------------------------------------------------------- */
-void CreateNetCDF(char file_name[])
+void CreateNetCDF(const char file_name[])
 {
-  int		i, indx;
+  int		i, indx = 0, rc, in_id, out_id;
   long		One = 1;
   VARTBL	*vp;
+  char		name[100];
 
-  int	timeOffsetID;
-  int	ndims, dims[3], TimeDim,
-	LowRateDim, HighRateDim, Dim5Hz, Dim10Hz, Dim50Hz, Dim250Hz,
-	Dim2Hz, Dim1000Hz, Vector16Dim, Vector32Dim, Vector64Dim,
-	AsyncDim, Dim20Hz;
+  int	nDims, dims[3];
+  size_t	size, TimeDim, LowRateDim;
 
+  if (nc_create(file_name, NC_CLOBBER, &OutputFile) != NC_NOERR)
+  {
+    sprintf(buffer, "Can't create output file %s.\n", file_name);
+    HandleError(buffer);
+    return;
+  };
 
-  OutputFile = nccreate(file_name, NC_CLOBBER);
   chmod(file_name, 0666);
 
 
   /* Dimensions.
   */
-  TimeDim	= ncdimdef(OutputFile, "Time", NC_UNLIMITED);
+  nc_def_dim(OutputFile, "Time", NC_UNLIMITED, &TimeDim);
 
-  LowRateDim	= ncdimdef(OutputFile, "sps1", 1);
-  Dim2Hz	= ncdimdef(OutputFile, "sps2", 2);
-  Dim5Hz	= ncdimdef(OutputFile, "sps5", 5);
-  Dim10Hz	= ncdimdef(OutputFile, "sps10", 10);
-  Dim20Hz	= ncdimdef(OutputFile, "sps20", 20);
-  HighRateDim	= ncdimdef(OutputFile, "sps25", 25);
-  Dim50Hz	= ncdimdef(OutputFile, "sps50", 50);
-  Dim250Hz	= ncdimdef(OutputFile, "sps250", 250);
-  Dim1000Hz	= ncdimdef(OutputFile, "sps1000", 1000);
+  for (i = 1; nc_inq_dim(InputFile, i, name, &size) == NC_NOERR; ++i)
+    nc_def_dim(OutputFile, name, size, &dims[0]);
 
-  AsyncDim	= ncdimdef(OutputFile, "Async", 3);
-  Vector16Dim	= ncdimdef(OutputFile, "Vector16", 16);
-  Vector32Dim	= ncdimdef(OutputFile, "Vector32", 32);
-  Vector64Dim	= ncdimdef(OutputFile, "Vector64", 64);
+  LowRateDim = 1;
 
 
   /* Global Attributes.
    */
-  ncattcopy(InputFile, NC_GLOBAL, "Source", OutputFile, NC_GLOBAL);
-  ncattcopy(InputFile, NC_GLOBAL, "Address", OutputFile, NC_GLOBAL);
-  ncattcopy(InputFile, NC_GLOBAL, "Phone", OutputFile, NC_GLOBAL);
-  ncattcopy(InputFile, NC_GLOBAL, "Conventions", OutputFile, NC_GLOBAL);
-  ncattcopy(InputFile, NC_GLOBAL, "WARNING", OutputFile, NC_GLOBAL);
+  nc_copy_att(InputFile, NC_GLOBAL, "Source", OutputFile, NC_GLOBAL);
+  nc_copy_att(InputFile, NC_GLOBAL, "Address", OutputFile, NC_GLOBAL);
+  nc_copy_att(InputFile, NC_GLOBAL, "Phone", OutputFile, NC_GLOBAL);
+  nc_copy_att(InputFile, NC_GLOBAL, "Conventions", OutputFile, NC_GLOBAL);
+  nc_copy_att(InputFile, NC_GLOBAL, "WARNING", OutputFile, NC_GLOBAL);
 
   {
-  time_t		t;
+  time_t	t;
   struct tm	*tm;
 
   t = time(0);
   tm = gmtime(&t);
   strftime(buffer, 128, "%h %d %R GMT %Y", tm);
-  ncattput(OutputFile, NC_GLOBAL, "DateProcessed", NC_CHAR,
-				strlen(buffer)+1, (void *)buffer);
+  nc_put_att_text(OutputFile, NC_GLOBAL, "DateProcessed", 
+				strlen(buffer)+1, buffer);
   }
 
 
-  ncattcopy(InputFile, NC_GLOBAL, "ProjectName", OutputFile, NC_GLOBAL);
-  ncattcopy(InputFile, NC_GLOBAL, "Aircraft", OutputFile, NC_GLOBAL);
-  ncattcopy(InputFile, NC_GLOBAL, "ProjectNumber", OutputFile, NC_GLOBAL);
-  ncattcopy(InputFile, NC_GLOBAL, "FlightNumber", OutputFile, NC_GLOBAL);
-  ncattcopy(InputFile, NC_GLOBAL, "FlightDate", OutputFile, NC_GLOBAL);
-  ncattcopy(InputFile, NC_GLOBAL, "Defaults", OutputFile, NC_GLOBAL);
+  nc_copy_att(InputFile, NC_GLOBAL, "ProjectName", OutputFile, NC_GLOBAL);
+  nc_copy_att(InputFile, NC_GLOBAL, "Aircraft", OutputFile, NC_GLOBAL);
+  nc_copy_att(InputFile, NC_GLOBAL, "ProjectNumber", OutputFile, NC_GLOBAL);
+  nc_copy_att(InputFile, NC_GLOBAL, "FlightNumber", OutputFile, NC_GLOBAL);
+  nc_copy_att(InputFile, NC_GLOBAL, "FlightDate", OutputFile, NC_GLOBAL);
+  nc_copy_att(InputFile, NC_GLOBAL, "Defaults", OutputFile, NC_GLOBAL);
 
 
   /* Will be updated later.
    */
-  ncattput(OutputFile, NC_GLOBAL, "TimeInterval", NC_CHAR, DEFAULT_TI_LENGTH, (void *)"");
+  memset(buffer, ' ', DEFAULT_TI_LENGTH+1);
+  nc_put_att_text(OutputFile, NC_GLOBAL, "TimeInterval", DEFAULT_TI_LENGTH, buffer);
 
 
   /* First dimension is time dimension.
@@ -217,18 +210,36 @@ void CreateNetCDF(char file_name[])
 
   /* "Unix Time" Variables.
    */
-  baseTimeID = ncvardef(OutputFile, "base_time", NC_LONG, 0, 0);
-  strcpy(buffer, "Seconds since Jan 1, 1970.");
-  ncattput(OutputFile, baseTimeID, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
+  if (nc_inq_varid(InputFile, "base_time", &baseTimeID) == NC_NOERR)
+  {
+    int newBTID;
+    nc_def_var(OutputFile, "base_time", NC_LONG, 0, 0, &newBTID);
+    nc_copy_att(InputFile, baseTimeID, "units", OutputFile, newBTID);
+    nc_copy_att(InputFile, baseTimeID, "long_name", OutputFile, newBTID);
+    indx = 1;	/* Index for data_p	*/
+  }
+  else
+    baseTimeID = -1;
 
-  timeOffsetID = ncvardef(OutputFile, "time_offset", NC_FLOAT, 1, dims);
-  strcpy(buffer, "Seconds since base_time.");
-  ncattput(OutputFile, timeOffsetID, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
+  if (nc_inq_varid(InputFile, "Time", &in_id) == NC_NOERR)
+  {
+    nc_inq_var(InputFile, in_id, NULL, NULL, &nDims, dims, NULL);
+    nc_def_var(OutputFile, "Time", NC_INT, nDims, dims, &out_id);
+    nc_copy_att(InputFile, in_id, "long_name", OutputFile, out_id);
+    nc_copy_att(InputFile, in_id, "units", OutputFile, out_id);
+    nc_copy_att(InputFile, in_id, "standard_name", OutputFile, out_id);
+    nc_copy_att(InputFile, in_id, "strptime_format", OutputFile, out_id);
+  }
 
+  if (nc_inq_varid(InputFile, "time_offset", &in_id) == NC_NOERR)
+  {
+    nc_inq_var(InputFile, in_id, NULL, NULL, &nDims, dims, NULL);
+    nc_def_var(OutputFile, "time_offset", NC_INT, nDims, dims, &out_id);
+    nc_copy_att(InputFile, in_id, "long_name", OutputFile, out_id);
+    nc_copy_att(InputFile, in_id, "units", OutputFile, out_id);
+    nc_copy_att(InputFile, in_id, "standard_name", OutputFile, out_id);
+  }
 
-  /* ALL variables.
-   */
-  indx = 1;	/* Index for data_p	*/
 
   /* For each variable:
    *	- Set dimensions
@@ -236,29 +247,29 @@ void CreateNetCDF(char file_name[])
    *	- Set attributes
    *	- Set data_pointer
    */
-  for (i = 0; i < nVariables; ++i)
-    {
+  for (i = indx; i < nVariables; ++i)
+  {
     if ((vp = Variable[i])->Output == FALSE || vp->VectorLength > 1)
       continue;
 
     dims[1] = LowRateDim;
-    ndims = 1;
+    nDims = 1;
 
-    vp->outVarID = ncvardef(OutputFile, vp->name, NC_FLOAT, ndims, dims);
+    nc_def_var(OutputFile, vp->name, NC_FLOAT, nDims, dims, &vp->outVarID);
 
-    ncattcopy(InputFile,vp->inVarID,"units", OutputFile, vp->outVarID);
-    ncattcopy(InputFile,vp->inVarID,"long_name", OutputFile, vp->outVarID);
-    ncattcopy(InputFile,vp->inVarID,"SampledRate", OutputFile, vp->outVarID);
-    ncattput(OutputFile, vp->outVarID, "OutputRate", NC_LONG, 1, &One);
-    ncattcopy(InputFile,vp->inVarID,"MissingValue",OutputFile,vp->outVarID);
-    ncattcopy(InputFile,vp->inVarID,"VectorLength",OutputFile,vp->outVarID);
-    ncattcopy(InputFile,vp->inVarID,"Dependencies",OutputFile,vp->outVarID);
-    ncattcopy(InputFile,vp->inVarID,"CalibrationCoefficients",OutputFile,vp->outVarID);
-    }
+    nc_copy_att(InputFile,vp->inVarID,"_FillValue", OutputFile, vp->outVarID);
+    nc_copy_att(InputFile,vp->inVarID,"units", OutputFile, vp->outVarID);
+    nc_copy_att(InputFile,vp->inVarID,"long_name", OutputFile, vp->outVarID);
+    nc_copy_att(InputFile,vp->inVarID,"Category", OutputFile, vp->outVarID);
+    nc_copy_att(InputFile,vp->inVarID,"standard_name", OutputFile, vp->outVarID);
+    nc_copy_att(InputFile,vp->inVarID,"missing_value", OutputFile, vp->outVarID);
+    nc_copy_att(InputFile,vp->inVarID,"SampledRate", OutputFile, vp->outVarID);
+    nc_copy_att(InputFile,vp->inVarID,"DataQuality", OutputFile, vp->outVarID);
+    nc_copy_att(InputFile,vp->inVarID,"Dependencies",OutputFile,vp->outVarID);
+    nc_copy_att(InputFile,vp->inVarID,"CalibrationCoefficients",OutputFile,vp->outVarID);
+  }
 
-
-  ncendef(OutputFile);
-  ncsync(OutputFile);
+  nc_enddef(OutputFile);
 
 }	/* END CREATENETCDF */
 
@@ -270,11 +281,11 @@ void CloseNetCDF()
   FormatTimeSegmentsForOutputFile(buffer);
 
   if ((len = strlen(buffer) + 1) > DEFAULT_TI_LENGTH)
-    ncredef(OutputFile);
+    nc_redef(OutputFile);
 
-  ncattput(OutputFile, NC_GLOBAL, "TimeInterval", NC_CHAR, len, (void *)buffer);
-  ncclose(InputFile);
-  ncclose(OutputFile);
+  nc_put_att_text(OutputFile, NC_GLOBAL, "TimeInterval", len, buffer);
+  nc_close(InputFile);
+  nc_close(OutputFile);
 
   LogMessage("Time interval(s) completed : ");
   LogMessage(buffer);
@@ -283,212 +294,118 @@ void CloseNetCDF()
 }	/* END CLOSENETCDF */
 
 /* -------------------------------------------------------------------- */
-#define nBYTES	1000000
-
-void PassThroughData(start, end)
-long	*start;
-long	*end;
+void PassThroughData(long * start, long * end)
 {
-  int		i, j, cnt, nRecs;
-  int		nDims, dimID[3], bytesPerSec, nSec, nPasses, itoid, otoid;
-  long		inStart[3], outStart[3], count[3];
+  int		i, j, StartInputRecordNumber, EndInputRecordNumber, nInputRecords;
+  int		nDims, dimID[3], bytesPerSec, id;
+  size_t	inStart[3], outStart[3], count[3];
   VARTBL	*vp;
-  NR_TYPE	*data;
-  bool		turnOver = FALSE;
 
-  data = (NR_TYPE *)GetMemory(nBYTES);
+  int		* iData;
+  NR_TYPE	* data;
 
-
-  /* Locate start and stop records.
-   */
-  inStart[0] = 0;
-  count[0] = nRecords;
-  ncvarget(InputFile, ncvarid(InputFile, "HOUR"), inStart,count, (void *)data);
-
-  if (data[0] > 12)
-    turnOver = TRUE;
-
-  cnt = 0;
-  for (i = 0; i < nRecords; ++i, ++cnt)
-    if (turnOver && data[i] > 12 && start[0] < 12)
-      {
-      if (data[i] >= start[0] + 24)
-        break;
-      }
-    else
-      {
-      if (data[i] >= start[0])
-        break;
-      }
-
-  inStart[0] = cnt;
-  count[0] = MIN(3600, nRecords);
-  ncvarget(InputFile, ncvarid(InputFile,"MINUTE"), inStart,count,(void *)data);
-
-  for (i = 0; i < count[0]; ++i, ++cnt)
-    if (data[i] >= start[1])
-      break;
-
-  inStart[0] = cnt;
-  count[0] = MIN(60, nRecords);
-  ncvarget(InputFile, ncvarid(InputFile,"SECOND"), inStart,count,(void *)data);
-
-  for (i = 0; i < 60; ++i, ++cnt)
-    if (data[i] >= start[2])
-      break;
-
-  CurrentInputRecordNumber = cnt;
+  sprintf(buffer, "%02d:%02d:%02d", start[0], start[1], start[2]);
+  StartInputRecordNumber = GetFlightRecordNumber(InputFile, buffer);
 
   if (end[0] < start[0])
     end[0] += 24;
 
-  itoid = ncvarid(InputFile, "time_offset");
-  otoid = ncvarid(OutputFile, "time_offset");
+  sprintf(buffer, "%02d:%02d:%02d", end[0], end[1], end[2]);
+  EndInputRecordNumber = GetFlightRecordNumber(InputFile, buffer);
 
-  nRecs = ((end[0] * 3600) + (end[1] * 60) + end[2]) -
-	  ((start[0] * 3600) + (start[1] * 60) + start[2]);
+  nInputRecords = EndInputRecordNumber - StartInputRecordNumber;
+  nOutRecords = nInputRecords / AverageRate;
 
-  inStart[0] = 0; count[0] = 2;
-  ncvarget(InputFile, itoid, inStart, count, (void *)data);
-
-  nRecs /= (data[1] - data[0]);
-
-  /* Pass through time_offset
-   */
-  inStart[0] = CurrentInputRecordNumber;
+  inStart[0] = StartInputRecordNumber;
   inStart[1] = inStart[2] = 0;
   outStart[0] = outStart[1] = outStart[2] = 0;
   count[1] = count[2] = 0;
 
-  count[0] = nRecs;
-  bytesPerSec = NR_SIZE;
-  nSec = nBYTES / bytesPerSec;
-  nPasses = nRecs / nSec;
-  nOutRecords = nRecs / AverageRate;
+  /* Pass through any "time" variables.
+   */
+  if (nc_inq_varid(InputFile, "Time", &id) == NC_NOERR)
+  {
+    iData = (int *)GetMemory(sizeof(int) * nInputRecords);
 
-  if (count[0] % nSec != 0)
-    ++nPasses;
+    count[0] = nInputRecords;
+    nc_get_vara_int(InputFile, id, inStart, count, iData);
+    AverageInt(iData, count);
 
-  FlushXEvents();
-
-  if (nPasses <= 1)
-    {
-    ncvarget(InputFile, itoid, inStart, count, (void *)data);
-    Average(data, count);
-
+    nc_inq_varid(OutputFile, "Time", &id);
     count[0] = nOutRecords;
-    ncvarput(OutputFile, otoid, outStart, count, (void *)data);
-    }
-  else
-    {
+    nc_put_vara_int(OutputFile, id, outStart, count, iData);
+    free((char *)iData);
+  }
 
-    for (j = 0; j < nPasses; )
-      {
-      count[0] = nSec;
+  if (nc_inq_varid(InputFile, "time_offset", &id) == NC_NOERR)
+  {
+    iData = (int *)GetMemory(sizeof(int) * nInputRecords);
 
-      if (nSec * (j+1) > nRecs)
-        count[0] = nRecs % nSec;
+    count[0] = nInputRecords;
+    nc_get_vara_int(InputFile, id, inStart, count, iData);
+    AverageInt(iData, count);
 
-      ncvarget(InputFile, itoid, inStart, count, (void *)data);
-      Average(data, count);
-
-      count[0] = nOutRecords;
-      ncvarput(OutputFile, otoid, outStart, count, (void *)data);
-
-      inStart[0] += nSec;
-      outStart[0] += nSec / AverageRate;
-      }
-    }
+    nc_inq_varid(OutputFile, "time_offset", &id);
+    count[0] = nOutRecords;
+    nc_put_vara_int(OutputFile, id, outStart, count, iData);
+    free((char *)iData);
+  }
 
 
-
-  /* Pass through User requested variables
+  /* Pass through User requested variables.
    */
   for (i = 0; i < nVariables; ++i)
-    {
+  {
     if ((vp = Variable[i])->Output == FALSE)
       continue;
 
     XmTextFieldSetString(timeDisplayText, vp->name);
     FlushXEvents();
 
-    inStart[0] = CurrentInputRecordNumber;
-    inStart[1] = inStart[2] = 0;
-    outStart[0] = outStart[1] = outStart[2] = 0;
     count[1] = count[2] = 0;
 
-
-    ncvarinq(InputFile, vp->inVarID, NULL, NULL, &nDims, dimID, NULL);
+    nc_inq_var(InputFile, vp->inVarID, NULL, NULL, &nDims, dimID, NULL);
 
     bytesPerSec = NR_SIZE;
 
     switch (nDims)
-      {
+    {
       case 3:
-        ncdiminq(InputFile, dimID[2], NULL, &count[2]);
+        nc_inq_dim(InputFile, dimID[2], NULL, &count[2]);
         bytesPerSec *= count[2];
 
       case 2:
-        ncdiminq(InputFile, dimID[1], NULL, &count[1]);
+        nc_inq_dim(InputFile, dimID[1], NULL, &count[1]);
         bytesPerSec *= count[1];
 
       case 1:
-        count[0] = nRecs;
-      }
-
-    nSec = nBYTES / bytesPerSec;
-    nPasses = nRecs / nSec;
-
-    if (count[0] % nSec != 0)
-      ++nPasses;
-
-    if (nPasses <= 1)
-      {
-      ncvarget(InputFile, vp->inVarID, inStart, count, (void *)data);
-      Average(data, count);
-
-      count[0] = nOutRecords;
-      ncvarput(OutputFile, vp->outVarID, outStart, count, (void *)data);
-      }
-    else
-      {
-      for (j = 0; j < nPasses; ++j)
-        {
-        count[0] = nSec;
-
-        if (nSec * (j+1) > nRecs)
-          count[0] = nRecs % nSec;
-
-        ncvarget(InputFile, vp->inVarID, inStart, count, (void *)data);
-        Average(data, count);
-
-        count[0] = nOutRecords;
-        ncvarput(OutputFile, vp->outVarID,outStart,count,(void *)data);
-
-        inStart[0] += nSec;
-        outStart[0] += nOutRecords;
-        }
-      }
+        count[0] = nInputRecords;
     }
 
-  free((char *)data);
+    data = (NR_TYPE *)GetMemory(bytesPerSec * nInputRecords);
 
+    nc_get_vara_float(InputFile, vp->inVarID, inStart, count, data);
+    AverageReal(data, count);
+
+    count[0] = nOutRecords;
+    nc_put_vara_float(OutputFile, vp->outVarID, outStart, count, data);
+    free((char *)data);
+  }
 }	/* END PASSTHROUGHDATA */
 
 /* -------------------------------------------------------------------- */
-static void Average(NR_TYPE *data, long count[])
+static void AverageInt(int * data, size_t count[])
 {
-  int		i, j, missDataCnt, dataCnt;
-  NR_TYPE	sum;
+  int	i, j, missDataCnt, dataCnt;
+  long	sum;
 
   if (count[1] > 0)	/* High rate data	*/
     dataCnt = AverageRate * count[1];
   else
     dataCnt = AverageRate;
 
-
   for (i = 0; i < nOutRecords; ++i)
-    {
+  {
     sum = 0.0;
     missDataCnt = 0;
 
@@ -502,8 +419,36 @@ static void Average(NR_TYPE *data, long count[])
       data[i] = sum / (dataCnt - missDataCnt);
     else
       data[i] = MISSING_DATA;
-    }
+  }
+}	/* END AVERAGEINT */
 
-}	/* END AVERAGE */
+/* -------------------------------------------------------------------- */
+static void AverageReal(NR_TYPE * data, size_t count[])
+{
+  int		i, j, missDataCnt, dataCnt;
+  double	sum;
+
+  if (count[1] > 0)	/* High rate data	*/
+    dataCnt = AverageRate * count[1];
+  else
+    dataCnt = AverageRate;
+
+  for (i = 0; i < nOutRecords; ++i)
+  {
+    sum = 0.0;
+    missDataCnt = 0;
+
+    for (j = 0; j < dataCnt; ++j)
+      if (data[(i * dataCnt) + j] != MISSING_DATA)
+        sum += data[(i * dataCnt) + j];
+      else
+        ++missDataCnt;
+
+    if ((missDataCnt * 100 / AverageRate) < mvThreshold)
+      data[i] = sum / (dataCnt - missDataCnt);
+    else
+      data[i] = MISSING_DATA;
+  }
+}	/* END AVERAGEREAL */
 
 /* END NETCDF.C */

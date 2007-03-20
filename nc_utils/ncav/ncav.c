@@ -10,14 +10,6 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	Xwin.c, init.c then enters XtAppMainLoop()
-
-REFERENCED BY:	user
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1993-8
 -------------------------------------------------------------------------
 */
@@ -26,7 +18,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-8
 #include "fbr.h"
 
 #define APP_CLASS	"XmNCav"
-
 
 Widget	AppShell;			/* The Main Application Shell */
 Widget	Shell000, MainWindow;
@@ -51,9 +42,7 @@ void CreateFileSelectionBox(Widget);
 void ProcessArgv(int, char **);
 
 /* -------------------------------------------------------------------- */
-int main(argc, argv)
-int	argc;
-char	**argv;
+int main(int argc, char *argv[])
 {
   Arg		args[8];
   Cardinal	n;
@@ -89,21 +78,21 @@ char	**argv;
   ProcessArgv(argc, argv);
 
   if (Interactive)
-    {
+  {
     XtManageChild(MainWindow);
     XtPopup(XtParent(MainWindow), XtGrabNone);
 
     XtAppMainLoop(context);
-    }
+  }
   else
-    {
+  {
     ReadBatchFile(NULL);
     Proceed(NULL, NULL, NULL);
     ReadBatchFile(NULL);
     StartProcessing(NULL, NULL, NULL);
-    }
+  }
 
-  return(0);
+  return 0;
 
 }	/* END MAIN */
 

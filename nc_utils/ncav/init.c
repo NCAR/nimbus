@@ -11,15 +11,7 @@ STATIC FNS:
 
 DESCRIPTION:	
 
-INPUT:		none
-
-OUTPUT:		none
-
-REFERENCES:	none
-
-REFERENCED BY:	nimbus.c, cb_main.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-8
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 -------------------------------------------------------------------------
 */
 
@@ -42,12 +34,12 @@ void Initialize()
   mvThreshold	= 100;
 
   if ((p = getenv("DATA_DIR")))
-    {
+  {
     strcpy(buffer, p);
     strcat(buffer, "/");
     XmTextFieldSetString(inputFileText, buffer);
     XmTextFieldSetString(outputFileText, buffer);
-    }
+  }
 
   pos = XmTextFieldGetLastPosition(inputFileText);
   XmTextFieldSetInsertionPosition(inputFileText, pos);
@@ -62,20 +54,20 @@ void Initialize()
 /* -------------------------------------------------------------------- */
 void ProcessArgv(int argc, char **argv)
 {
-  int		i;
+  int	i;
 
   Interactive = TRUE;
 
   for (i = 1; i < argc; ++i)
-    {
+  {
     if (argv[i][0] != '-')
-      {
+    {
       fprintf(stderr, "Invalid option %s, ignoring.\n", argv[i]);
       continue;
-      }
+    }
 
     switch (argv[i][1])
-      {
+    {
       case 'r':
         AverageRate = atoi(argv[++i]);
         break;
@@ -91,9 +83,8 @@ void ProcessArgv(int argc, char **argv)
 
       default:
         fprintf(stderr, "Invalid option %s, ignoring.\n", argv[i]);
-      }
-
     }
+  }
 
   printf("Using average ratio of %d:1.\n", AverageRate);
   printf("Using missing_value threshold of %d%%.\n", mvThreshold);
@@ -116,20 +107,20 @@ void ReadBatchFile(char file[])
    * and variable names.
    */
   if (++entryCnt == 1)
-    {
+  {
     strcpy(fileName, file);
     return;
-    }
+  }
 
   if ((fp = fopen(fileName, "r")) == NULL)
-    {
+  {
     fprintf(stderr, "Can't open %s.\n", fileName);
     exit(1);
-    }
+  }
 
 
   while (fgets(buffer, 512, fp))
-    {
+  {
     if (buffer[0] == COMMENT)
       continue;
 
@@ -143,26 +134,26 @@ void ReadBatchFile(char file[])
       XmTextFieldSetString(outputFileText, strtok(NULL, " \t\n"));
     else
     if (strcmp(p, "ti") == 0 && entryCnt > 2)
-      {
+    {
       XmTextFieldSetString(ts_text[0], strtok(NULL, "- \t"));
       XmTextFieldSetString(ts_text[MAX_TIME_SLICES],strtok(NULL," \t\n"));
       ValidateTime(ts_text[0], NULL, NULL);
       ValidateTime(ts_text[MAX_TIME_SLICES], NULL, NULL);
-      }
+    }
     else
     if (strcmp(p, "var") == 0 && entryCnt > 2)
-      {
+    {
       p = strtok(NULL, " \t\n");
 
       if ((indx = SearchTable((char **)Variable, nVariables, p)) != ERR)
-        {
+      {
         varsFound = TRUE;
         Variable[indx]->Output = TRUE;
-        }
+      }
       else
         fprintf(stderr, "ncav: no such variable: %s.\n", p);
-      }
     }
+  }
 
   fclose(fp);
 

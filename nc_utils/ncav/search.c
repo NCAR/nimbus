@@ -14,10 +14,6 @@ INPUT:		An array of pointers and target pointer.
 
 OUTPUT:		pointer to located item or NULL
 
-REFERENCES:	none
-
-REFERENCED BY:	amlib.c lrloop.s netcdf.c
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992-8
 -------------------------------------------------------------------------
 */
@@ -37,7 +33,7 @@ int SearchTable(char *table[], int ntable, char target[])
   end = ntable - 1;
 
   do
-    {
+  {
     mid = (end + beg) >> 1;
 
     if ((rc = strcmp(target, table[mid])) == 0)
@@ -47,7 +43,7 @@ int SearchTable(char *table[], int ntable, char target[])
       end = mid - 1;
     else
       beg = mid + 1;
-    }
+  }
   while (beg <= end);
 
   return(ERR);
