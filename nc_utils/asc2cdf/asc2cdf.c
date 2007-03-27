@@ -6,11 +6,12 @@ FULL NAME:	ASCII to Nimbus-netCDF Low Rate
 
 ENTRY POINTS:	main()
 
-STATIC FNS:		
+STATIC FNS:	ProcessArgv()
+		WriteMissingData()
 
 DESCRIPTION:	Translate ASCII file to Nimbus Low Rate netCDF file
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2006
+COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2007
 -------------------------------------------------------------------------
 */
 
@@ -22,13 +23,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2006
 char	buffer[BUFFSIZE];
 
 int	ncid;
-int	baseTimeID, timeOffsetID, timeVarID, varid[MAX_VARS],
-	nVariables;
+int	baseTimeID, timeOffsetID, timeVarID, varid[MAX_VARS], nVariables;
 time_t	BaseTime = 0;
 float	scale[MAX_VARS], offset[MAX_VARS], missingVals[MAX_VARS];
 
 char FlightDate[50];
-const char *time_vars[] = { "HOUR", "MINUTE", "SECOND", 0 };
 
 static FILE	*inFP;
 static size_t	nRecords;
@@ -183,13 +182,6 @@ int main(int argc, char *argv[])
     nc_put_var1_float(ncid, timeVarID, &nRecords, &dataValue);
     nc_put_var1_float(ncid, timeOffsetID, &nRecords, &dataValue);
 
-    dataValue = (float)hour;
-    nc_put_var1_float(ncid, varid[0], &nRecords, &dataValue);
-    dataValue = (float)minute;
-    nc_put_var1_float(ncid, varid[1], &nRecords, &dataValue);
-    dataValue = (float)second;
-    nc_put_var1_float(ncid, varid[2], &nRecords, &dataValue);
-
     for (i = 0; i < nVariables; ++i)
       {
       if ((p = strtok(NULL, ", \t\n\r")) == NULL)
@@ -207,7 +199,7 @@ int main(int argc, char *argv[])
           }
         }
 
-      nc_put_var1_float(ncid, varid[i+3], &nRecords, &dataValue);
+      nc_put_var1_float(ncid, varid[i], &nRecords, &dataValue);
       }
 
     ++nRecords;
@@ -238,43 +230,18 @@ int main(int argc, char *argv[])
 /* -------------------------------------------------------------------- */
 static void WriteMissingData(int currSecond, int lastSecond)
 {
-  int	i, j, ts;
-  int	hour, minute, second;
   float	dataValue;
 
-  ts = (lastSecond += BaseDataRate);
-
-  hour = ts / 3600; ts -= hour * 3600;
-  minute = ts / 60; ts -= minute * 60;
-  second = ts;
-
-  for (i = lastSecond; i < currSecond; i += BaseDataRate, ++nRecords)
-    {
+  for (int i = lastSecond; i < currSecond; i += BaseDataRate, ++nRecords)
+  {
     dataValue = (float)(nRecords * BaseDataRate);
     nc_put_var1_float(ncid, timeOffsetID, &nRecords, &dataValue);
-    dataValue = (float)hour;
-    nc_put_var1_float(ncid, varid[0], &nRecords, &dataValue);
-    dataValue = (float)minute;
-    nc_put_var1_float(ncid, varid[1], &nRecords, &dataValue);
-    dataValue = (float)second;
-    nc_put_var1_float(ncid, varid[2], &nRecords, &dataValue);
 
     dataValue = MISSING_VALUE;
 
-    for (j = 0; j < nVariables; ++j)
-      nc_put_var1_float(ncid, varid[j+3], &nRecords, &dataValue);
-
-    if ((second += BaseDataRate) > 59)
-      {
-      second = 0;
-      if (++minute > 59)
-        {
-        minute = 0;
-        if (++hour > 23)
-          hour = 0;
-        }
-      }
-    }
+    for (int j = 0; j < nVariables; ++j)
+      nc_put_var1_float(ncid, varid[j], &nRecords, &dataValue);
+  }
 }	/* END WRITEMISSINGDATA */
 
 /* -------------------------------------------------------------------- */
@@ -283,12 +250,12 @@ static int ProcessArgv(int argc, char **argv)
   int	i;
 
   for (i = 1; i < argc; ++i)
-    {
+  {
     if (argv[i][0] != '-')
       break;
 
     switch (argv[i][1])
-      {
+    {
       case 'b':
         if (strlen(FlightDate) > 0)
           fprintf(stderr, "-d option trumps -b option, BaseTime ignored.\n");
@@ -338,9 +305,8 @@ static int ProcessArgv(int argc, char **argv)
 
       default:
         fprintf(stderr, "Invalid option %s, ignoring.\n", argv[i]);
-      }
-
     }
+  }
 
   return(i);
 

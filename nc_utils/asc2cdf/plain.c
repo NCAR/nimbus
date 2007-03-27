@@ -6,16 +6,13 @@ FULL NAME:	Plain ASCII files.
 
 ENTRY POINTS:	SetPlainBaseTime()
 		CreatePlainNetCDF()
-
-STATIC FNS:	none
+		WriteBaseTime()
+		createTime()
+		addGlobalAttrs()
 
 DESCRIPTION:	
 
-REFERENCES:	none
-
-REFERENCED BY:	main()
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1996-05
+COPYRIGHT:	University Corporation for Atmospheric Research, 1996-07
 -------------------------------------------------------------------------
 */
 
@@ -32,7 +29,7 @@ const char *baseTimeUnits = "seconds since 1970-01-01 00:00:00 +0000";
 /* -------------------------------------------------------------------- */
 void SetPlainBaseTime()
 {
-  struct tm     *t;
+  struct tm *t;
 
   t = gmtime(&BaseTime);
   strftime(buffer, 128, timeUnitsFormat, t);
@@ -53,7 +50,7 @@ void WriteBaseTime()
 /* -------------------------------------------------------------------- */
 void CreatePlainNetCDF(FILE *fp)
 {
-  int	i, ndims, dims[3], TimeDim, RateDim;
+  int	ndims, dims[3], TimeDim, RateDim;
   char	*p;
   float	missing_val = MISSING_VALUE;
 #ifdef VARDB
@@ -63,7 +60,7 @@ void CreatePlainNetCDF(FILE *fp)
 #ifdef VARDB
   if (InitializeVarDB("VarDB") == ERR)
     {
-    fprintf(stderr, "No VarDB in local directory, trying $PROJ_DIR/proj/defaults/VarDB.\n");
+    fprintf(stderr, "No VarDB in local directory, trying $PROJ_DIR/Configuration/raf/VarDB.\n");
 
     if (getenv("PROJ_DIR") > 0)
       strcpy(buffer, getenv("PROJ_DIR"));
@@ -130,31 +127,6 @@ void CreatePlainNetCDF(FILE *fp)
    */
   createTime(dims);
 
-
-  /* Create Time variables.
-   */
-  for (i = 0; time_vars[i]; ++i)
-    {
-    nc_def_var(ncid, time_vars[i], NC_FLOAT, 1, dims, &varid[i]);
-    nc_put_att_float(ncid, varid[i], "_FillValue", NC_FLOAT, 1, &missing_val);
-
-    const char * s1 =
-#ifdef VARDB
-	varDB ? VarDB_GetUnits(time_vars[i]) :
-#endif
-	noUnits;
-    nc_put_att_text(ncid, varid[i], "units", strlen(s1)+1, s1);
-
-    s1 =
-#ifdef VARDB
-	varDB ? VarDB_GetTitle(time_vars[i]) :
-#endif
-	noTitle;
-    nc_put_att_text(ncid, varid[i], "long_name", strlen(s1)+1, s1);
-    }
-
-
-
   /* For each variable:
    *	- Set dimensions
    *	- define variable
@@ -165,20 +137,20 @@ void CreatePlainNetCDF(FILE *fp)
     ;
 
   if (isdigit((int)buffer[0]))
-    {
+  {
     fprintf(stderr, "plain.c: no variable names, fatal.\n");
     exit(1);
-    }
+  }
 
   /* Attempt to skip title for 'time' column.
    */
   if ((p = strtok(buffer, " \t\n\r")) == buffer)
     p = strtok(NULL, " \t\n\r");
 
-  nVariables = 3;
+  nVariables = 0;
 
   do
-    {
+  {
     nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[nVariables]);
     nc_put_att_float(ncid,varid[nVariables],"_FillValue",NC_FLOAT,1,&missing_val);
 
@@ -197,16 +169,13 @@ void CreatePlainNetCDF(FILE *fp)
     nc_put_att_text(ncid, varid[nVariables], "long_name", strlen(s1)+1, s1);
 
     ++nVariables;
-    }
+  }
   while ((p = strtok(NULL, " \t\n\r")) );
-
-  nVariables -= 3;
 
 #ifdef VARDB
   if (varDB)
     ReleaseVarDB();
 #endif
-
 }	/* END CREATEPLAINNETCDF */
 
 /* -------------------------------------------------------------------- */

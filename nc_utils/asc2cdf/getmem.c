@@ -10,12 +10,6 @@ STATIC FNS:	none
 
 DESCRIPTION:	malloc data space, report error and exit if necassary
 
-INPUT:		unsigned	nbytes_to_malloc
-
-OUTPUT:		char *
-
-REFERENCES:	malloc
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------
 */
@@ -30,10 +24,10 @@ void *GetMemory(size_t nbytes)
   char	*p;
 
   if ((p = (char *)malloc(nbytes)) == NULL)
-    {
+  {
     fprintf(stderr, "Memory allocation failure, exiting.\n");
     exit(1);
-    }
+  }
 
   return(p);
 

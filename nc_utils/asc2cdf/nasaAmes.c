@@ -11,11 +11,7 @@ STATIC FNS:	none
 
 DESCRIPTION:	Translate NASA ASCII file to Nimbus Low Rate netCDF file
 
-REFERENCES:	none
-
-REFERENCED BY:	main()
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1996-7
+COPYRIGHT:	University Corporation for Atmospheric Research, 1996-07
 -------------------------------------------------------------------------
 */
 
@@ -87,10 +83,10 @@ void CreateNASAamesNetCDF(FILE *fp)
   sscanf(buffer, "%d %d", &SkipNlines, &FFI);
 
   if (FFI < 1000 || FFI > 1999)
-    {
+  {
     fprintf(stderr, "Can't handle more than one independant variable.\n");
     exit(1);
-    }
+  }
 
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
@@ -160,19 +156,6 @@ void CreateNASAamesNetCDF(FILE *fp)
   createTime(dims);
 
 
-  /* Create Time variables.
-   */
-  for (i = 0; time_vars[i]; ++i)
-    {
-    p = (char *)time_vars[i];
-    nc_def_var(ncid, time_vars[i], NC_FLOAT, 1, dims, &varid[i]);
-
-    nc_put_att_float(ncid, varid[i], "_FillValue", NC_FLOAT, 1, &missing_val);
-    nc_put_att_text(ncid, varid[i], "units", strlen(p)+1, p);
-    nc_put_att_text(ncid, varid[i], "long_name", strlen(p)+1, p);
-    }
-
-
   /* Skip XNAME */
   fgets(buffer, BUFFSIZE, fp);
 
@@ -191,25 +174,25 @@ void CreateNASAamesNetCDF(FILE *fp)
   fgets(buffer, BUFFSIZE, fp);
   p = strtok(buffer, " \t\n\r");
   for (i = 0; i < nVariables; ++i)
-    {
+  {
     scale[i] = atof(p);
     offset[i] = 0.0;
     p = strtok(NULL, " \t\n\r");
-    }
+  }
 
   /* Get missing values, these will be translated to nimbus MISSING_VALUES.
    */
   fgets(buffer, BUFFSIZE, fp);
   p = strtok(buffer, " \t\n\r");
   for (i = 0; i < nVariables; ++i)
-    {
+  {
     missingVals[i] = atof(p);
     p = strtok(NULL, " \t\n\r");
-    }
+  }
 
   /* Get Titles. */
   for (i = 0; i < nVariables; ++i)
-    {
+  {
     fgets(buffer, BUFFSIZE, fp);
     buffer[strlen(buffer)-1] = '\0';
     titles[i] = (char *)GetMemory(strlen(buffer)+1);
@@ -219,23 +202,23 @@ void CreateNASAamesNetCDF(FILE *fp)
       *(p-1) = '\0';
 
     if ( (p = strrchr(buffer, '(')) && (p1 = strchr(p, ')')))
-      {
+    {
       units[i] = (char *)GetMemory(p1 - p + 1);
       *p1 = '\0';
       strcpy(units[i], p+1);
-      }
+    }
     else
-      {
+    {
       units[i] = (char *)GetMemory(10);
       strcpy(units[i], "Unk");
-      }
     }
+  }
 
 
   /* Scan in Auxilary variables.
    */
   if (FFI == 1010)
-    {
+  {
     fgets(buffer, BUFFSIZE, fp);
     start = nVariables;
     nVariables += atoi(buffer);
@@ -244,43 +227,43 @@ void CreateNASAamesNetCDF(FILE *fp)
     fgets(buffer, BUFFSIZE, fp);
     p = strtok(buffer, " \t\n\r");
     for (i = start; i < nVariables; ++i)
-      {
+    {
       scale[i] = atof(p);
       offset[i] = 0.0;
       p = strtok(NULL, " \t\n\r");
-      }
+    }
 
     /* Get missing values, these will be xlated to nimbus MISSING_VALUES.
      */
     fgets(buffer, BUFFSIZE, fp);
     p = strtok(buffer, " \t\n\r");
     for (i = start; i < nVariables; ++i)
-      {
+    {
       missingVals[i] = atof(p);
       p = strtok(NULL, " \t\n\r");
-      }
+    }
 
     /* Get Titles. */
     for (i = start; i < nVariables; ++i)
-      {
+    {
       fgets(buffer, BUFFSIZE, fp);
       buffer[strlen(buffer)-1] = '\0';
       titles[i] = (char *)GetMemory(strlen(buffer)+1);
       strcpy(titles[i], buffer);
 
       if ( (p = strchr(buffer, '(')) && (p1 = strchr(buffer, ')')))
-        {
+      {
         units[i] = (char *)GetMemory(p1 - p + 1);
         *p1 = '\0';
         strcpy(units[i], p+1);
-        }
+      }
       else
-        {
+      {
         units[i] = (char *)GetMemory(10);
         strcpy(units[i], "Unk");
-        }
       }
     }
+  }
 
 
   rewind(fp);
@@ -290,23 +273,19 @@ void CreateNASAamesNetCDF(FILE *fp)
   p = strtok(buffer, " \t");
 
   for (i = 0; i < nVariables; ++i)
-    {
+  {
     p = strtok(NULL, " \t\n\r");
-    nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[i+3]);
-//*(strchr(titles[i], '(') -1) = '\0';
-//    nc_def_var(ncid, titles[i], NC_FLOAT, ndims, dims, &varid[i+3]);
+    nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[i]);
 
-printf("%s\n", titles[i]);
-    nc_put_att_float(ncid,varid[i+3], "_FillValue",NC_FLOAT, 1, &missing_val);
+    nc_put_att_float(ncid,varid[i], "_FillValue",NC_FLOAT, 1, &missing_val);
     p = units[i];
-    nc_put_att_text(ncid, varid[i+3], "units", strlen(p)+1, p);
+    nc_put_att_text(ncid, varid[i], "units", strlen(p)+1, p);
     p = titles[i];
-    nc_put_att_text(ncid, varid[i+3], "long_name", strlen(p)+1, p);
+    nc_put_att_text(ncid, varid[i], "long_name", strlen(p)+1, p);
 
     free(units[i]);
     free(titles[i]);
-    }
-
+  }
 }	/* END CREATENASAAMESNETCDF */
 
 /* END NASAAMES.C */

@@ -11,11 +11,7 @@ STATIC FNS:	none
 
 DESCRIPTION:	Translate NASA ASCII file to Nimbus Low Rate netCDF file
 
-REFERENCES:	none
-
-REFERENCED BY:	main()
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1996-7
+COPYRIGHT:	University Corporation for Atmospheric Research, 1996-07
 -------------------------------------------------------------------------
 */
 
@@ -130,32 +126,21 @@ void CreateNASAlangNetCDF(FILE *fp)
 
 
   if (dataRate > 1)
-    {
+  {
     ndims = 2;
     dims[0] = TimeDim;
     dims[1] = RateDim;
-    }
+  }
   else
-    {
+  {
     ndims = 1;
     dims[0] = TimeDim;
-    }
+  }
 
 
   /* Time Variables.
    */
   createTime(dims);
-
-  for (i = 0; time_vars[i]; ++i)
-    {
-    p = (char *)time_vars[i];
-    nc_def_var(ncid, time_vars[i], NC_FLOAT, 1, dims, &varid[i]);
-
-    nc_put_att_float(ncid, varid[i], "_FillValue", NC_FLOAT, 1, &missingVal);
-    nc_put_att_text(ncid, varid[i], "units", strlen(p)+1, p);
-    nc_put_att_text(ncid, varid[i], "long_name", strlen(p)+1, p);
-    }
-
 
   /* For each variable:
    *	- Set dimensions
@@ -167,7 +152,7 @@ void CreateNASAlangNetCDF(FILE *fp)
   nVariables -= 2;
 
   for (i = 0; i < (size_t)nVariables; ++i)
-    {
+  {
     fgets(buffer, BUFFSIZE, fp);
 
     p = strtok(buffer, "\t ,");
@@ -199,12 +184,11 @@ void CreateNASAlangNetCDF(FILE *fp)
 
 printf("Adding variable %s with units of %s\n", name, units);
 
-    nc_def_var(ncid, name, NC_FLOAT, ndims, dims, &varid[i+3]);
-    nc_put_att_float(ncid,varid[i+3], "_FillValue",NC_FLOAT, 1, &missingVal);
-    nc_put_att_text(ncid, varid[i+3], "units", strlen(units)+1, units);
-    nc_put_att_text(ncid, varid[i+3], "long_name", strlen(noTitle)+1, noTitle);
-    }
-
+    nc_def_var(ncid, name, NC_FLOAT, ndims, dims, &varid[i]);
+    nc_put_att_float(ncid,varid[i], "_FillValue",NC_FLOAT, 1, &missingVal);
+    nc_put_att_text(ncid, varid[i], "units", strlen(units)+1, units);
+    nc_put_att_text(ncid, varid[i], "long_name", strlen(noTitle)+1, noTitle);
+  }
 }	/* END CREATENASALANGNETCDF */
 
 /* END NASALANGLEY.C */
