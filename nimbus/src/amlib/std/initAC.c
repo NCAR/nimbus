@@ -8,17 +8,9 @@ ENTRY POINTS:	InitAircraftDependencies()
 
 STATIC FNS:	none
 
-DESCRIPTION:	
+DESCRIPTION:	p_corr functions for each aircraft.
 
-INPUT:		none
-
-OUTPUT:		Globals for AMLIB corrections
-
-REFERENCES:	none
-
-REFERENCED BY:	cb_main.c, ps*.c, qc*.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2004
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2007
 -------------------------------------------------------------------------
 */
 
@@ -38,10 +30,12 @@ NR_TYPE	(*pcorPSF)(NR_TYPE, NR_TYPE), (*pcorQCF)(NR_TYPE, NR_TYPE),
 	(*pcorQCFR)(NR_TYPE, NR_TYPE);
 
 NR_TYPE	pcorw8(NR_TYPE, NR_TYPE),pcorf8(NR_TYPE, NR_TYPE),pcorw2(NR_TYPE, NR_TYPE),
-	pcorr2(NR_TYPE, NR_TYPE), pcorb7(NR_TYPE, NR_TYPE),pcorf7(NR_TYPE, NR_TYPE),
+	pcorr2(NR_TYPE, NR_TYPE),pcorb7(NR_TYPE, NR_TYPE),pcorf7(NR_TYPE, NR_TYPE),
 	pcorr1(NR_TYPE, NR_TYPE),pcorf1(NR_TYPE, NR_TYPE), pcorf3(NR_TYPE, NR_TYPE),
-	pcorr3(NR_TYPE, NR_TYPE),pcorf1_2(NR_TYPE, NR_TYPE), pcorf1_3(NR_TYPE, NR_TYPE), pcorf1_4(NR_TYPE, NR_TYPE),
-	pcorr5(NR_TYPE, NR_TYPE), pcorf5(NR_TYPE, NR_TYPE), pcorq5(NR_TYPE, NR_TYPE);
+	pcorr3(NR_TYPE, NR_TYPE),pcorf1_2(NR_TYPE, NR_TYPE), pcorf1_3(NR_TYPE, NR_TYPE),
+	pcorf1_4(NR_TYPE, NR_TYPE),
+	pcorr5_2(NR_TYPE, NR_TYPE),pcorf5_2(NR_TYPE, NR_TYPE),pcorq5_2(NR_TYPE, NR_TYPE),
+	pcorr5(NR_TYPE, NR_TYPE),pcorf5(NR_TYPE, NR_TYPE),pcorq5(NR_TYPE, NR_TYPE);
 
 /* reference airspeed on J-W liquid water content converted from MPH
  * to m/s
@@ -183,12 +177,27 @@ void InitAircraftDependencies()
 
     case Config::HIAPER:
       LogMessage("NCAR G5 pcor's installed.");
+
+      sprintf(buffer, "%04d%02d", FlightDate[2], FlightDate[0]);
+//printf("[%s] == [%s]\n", buffer, "200607");
+      if (strcmp(buffer, "200607") > 0)
+      { // Post-TREX
+        LogMessage("PCORS:  Post-TREX pcors().");
+        pcorQCF	= pcorf5_2;
+        pcorQCR	= pcorq5_2;
+        pcorPSF	= pcorr5_2;
+      }
+      else
+      { // TREX and earlier.
+        LogMessage("PCORS:  TREX and ealier pcors().");
+        pcorQCF	= pcorf5;
+        pcorQCR	= pcorq5;
+        pcorPSF	= pcorr5;
+      }
+
       recfrh	= 1.00;
       tfher1	= -1.7244;
       tfher2	= -1.5989;
-      pcorQCF	= pcorf5;
-      pcorQCR	= pcorq5;	
-      pcorPSF	= pcorr5;
       break;
 
     case Config::SABRELINER:
@@ -237,13 +246,11 @@ void InitAircraftDependencies()
     LogMessage("initAC.c: RECFB found in Defaults, using.");
     recfrn = tmp[0];
   }
-
 }	/* END INITAIRCRAFTDEPENDANCIES */
 
 /* Electra ------------------------------------------------------------ */
 NR_TYPE pcorw8(NR_TYPE q, NR_TYPE q1)
 {
-/*  return(0.517 - 0.0202 * q); */
   return(1.23 - 0.0846 * q);	
 }
 
@@ -260,7 +267,6 @@ NR_TYPE pcorr3(NR_TYPE q, NR_TYPE q1)
 
 NR_TYPE pcorf3(NR_TYPE q, NR_TYPE q1)
 {
-/*  return(-0.134 - 0.0182 * q);			*/
   return(-0.046 + q * (-0.0265 + 0.000087 * q));
 }
 
@@ -302,14 +308,33 @@ NR_TYPE pcorf5(NR_TYPE q, NR_TYPE q1)
   return ((3.08 - 0.0894*q1) + q*(-0.007474 + q*4.0161e-06));
 }
 
+// --- GV Post TREX.
+NR_TYPE pcorr5_2(NR_TYPE q, NR_TYPE q1)
+{
+  NR_TYPE	pfax;
+
+  pfax = (-0.60 + 0.1565*q) + q1*(0.008 + q1*(7.1979e-09*q1 - 1.4072e-05));
+  return(pfax);
+}
+
+NR_TYPE pcorq5_2(NR_TYPE q, NR_TYPE q1)
+{
+  return (2.00 -q*(0.023809 + q*0.0001361));
+}
+
+NR_TYPE pcorf5_2(NR_TYPE q, NR_TYPE q1)
+{
+  NR_TYPE	pfix;
+
+  pfix = (-0.60 + 0.1565*q1) + q*(0.008 + q*(7.1979e-09*q - 1.4072e-05));
+
+  return(pfix);
+}
+
 /* C130 --------------------------------------------------------------- */
 NR_TYPE pcorf1(NR_TYPE q, NR_TYPE q1)		/* For PSFD */
 {
   NR_TYPE	pcor;
-
-/*	return(2.14);	From C130/Electra intercomp 6/95	*/
-/*	return(3.66 - q * 0.01882);		*/
-/*  test run from trailing cone data  9/19/2003	*/
  
   pcor = (4.66 + 11.4405 * q);
 
@@ -317,17 +342,11 @@ NR_TYPE pcorf1(NR_TYPE q, NR_TYPE q1)		/* For PSFD */
     pcor = 1.113;
 
   return(pcor);
-
 }
 
 NR_TYPE pcorr1(NR_TYPE q, NR_TYPE q1)		/* For QCR */
 {
   NR_TYPE	pcor;
-
-/*	return(1.80);	From C130/Electra intercomp 6/95	*/	
-/*	return(3.47 - q * 0.02865);	*/
-/* test run from trailing cone data	*/
-/*	return(2.17 - q * 0.01906);	*/
 
   pcor = (4.66 + 11.4405 * q);
 
@@ -335,40 +354,32 @@ NR_TYPE pcorr1(NR_TYPE q, NR_TYPE q1)		/* For QCR */
     pcor = 1.113;
 
   return(pcor);
-
 }
 
 NR_TYPE pcorf1_4(NR_TYPE q, NR_TYPE q1)	/* For new QCFR */
 {
   NR_TYPE	pcor, pfix;
-  
 
-   pcor = (4.26 + q * (0.000368 * q - 0.01464));
+  pcor = (4.26 + q * (0.000368 * q - 0.01464));
 
   if (q < 60.6)
     pcor = (7.75 - 0.05 * q);	
 
-   pfix = (-1.54 + 0.00154 * q1);
+  pfix = (-1.54 + 0.00154 * q1);
 
   if (q1 < 675.0)	
     pfix = -0.5;	
 
-   pcor = (pcor + pfix);
-
+  pcor = (pcor + pfix);
 
   return(pcor);
-
 }
 
 NR_TYPE pcorf1_3(NR_TYPE q, NR_TYPE q1)	/* For new PSF */
 {
   NR_TYPE	pcor, pfix;
 
-/*	return(1.26);	From C130/Electra intercomp 6/95	*/
-/*	return(3.66 - q * 0.01882);	*/
-/* test run from trailing cone data	9/19/2003	*/
-
-   pcor = (4.26 + q * (0.000368 * q - 0.01464));
+  pcor = (4.26 + q * (0.000368 * q - 0.01464));
 
   if (q < 60.6)
     pcor = (7.75 - 0.050 * q);
@@ -378,21 +389,14 @@ NR_TYPE pcorf1_3(NR_TYPE q, NR_TYPE q1)	/* For new PSF */
   if (q1 < 675.0)	
     pfix = -0.5;	
 
-   pcor = (pcor + pfix);
+  pcor = (pcor + pfix);
 
   return(pcor);
-
 }
 
 NR_TYPE pcorf1_2(NR_TYPE q, NR_TYPE q1)	/* For QCF */
 {
   NR_TYPE	pcor;
-
-/*	return(0.40 + 0.0229 * q);	From C130/Electra intercomp 6/95 */
-/*	return(2.59 - q * 0.01276);	*/
-/* test rnu from trailing cone data	*/
-/*	return(1.69 - q * 0.01276);	*/
-
 
   pcor = (4.66 + 11.4405 * q);
 
@@ -400,7 +404,6 @@ NR_TYPE pcorf1_2(NR_TYPE q, NR_TYPE q1)	/* For QCF */
     pcor = 1.113;
 
   return(pcor);
-
 }
 
 /* END INITAC.C */
