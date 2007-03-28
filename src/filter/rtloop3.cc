@@ -109,7 +109,7 @@ printf("netCDF file = %s\n", buffer);
 /* -------------------------------------------------------------------- */
 void RealTimeLoop3()
 {
-  char timeStamp[64];
+  char timeStamp[32];
   nidas::core::dsm_time_t tt;
 
   if (cfg.OutputSQL())
@@ -129,10 +129,8 @@ void RealTimeLoop3()
     time_t ut = tt / USECS_PER_SEC;
     struct tm tm;
     gmtime_r(&ut, &tm);
-    strftime(timeStamp, sizeof(timeStamp), "%Y-%m-%d %H:%M:%S", &tm);
+    strftime(timeStamp, sizeof(timeStamp), "%Y%m%dT%H%M%S", &tm);
 //    std::cout << timeStamp << std::endl;
-
-    mcStat.sendStatus(timeStamp);
 
 //    int msec = (tt % USECS_PER_SEC) / USECS_PER_MSEC;
 //    std::cout << timeStamp << '.' << std::setw(3) << std::setfill('0') << msec
@@ -153,9 +151,10 @@ void RealTimeLoop3()
       googleEarth->update();
 
     UpdateTime(SampledData);
+    mcStat.sendStatus(timeStamp);
 
-    if (cfg.OutputNetCDF())
-      SyncNetCDF();
+//    if (cfg.OutputNetCDF())
+//      SyncNetCDF();
   }
 
 }	// END REALTIMELOOP3

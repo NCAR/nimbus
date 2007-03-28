@@ -102,7 +102,7 @@ void RealTimeLoop()
   do
     {
     hdr = (Hdr_blk *)ADSrecord;
-    sprintf(timeStamp, "%04d-%02d-%02d %02d:%02d:%02d",
+    sprintf(timeStamp, "%04d%02d%02dT%02d%02d%02d",
 		ntohs(hdr->year)+2000, ntohs(hdr->month), ntohs(hdr->day),
 		ntohs(hdr->hour), ntohs(hdr->minute), ntohs(hdr->second));
 
@@ -121,8 +121,8 @@ pts = ts;
  
     if (cfg.OutputSQL())
       psql->WriteSQL(timeStamp);
-//    if (bcast)
-//      bcast->broadcastData(timeStamp);
+    if (bcast)
+      bcast->broadcastData(timeStamp);
     if (cfg.OutputNetCDF())
       WriteNetCDF();
 
