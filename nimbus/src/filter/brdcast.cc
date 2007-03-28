@@ -4,9 +4,11 @@ OBJECT NAME:	brdcst.cc
 
 FULL NAME:	UDP broadcast.
 
-ENTRY POINTS:	ReadBroadcastVariables()
+ENTRY POINTS:	
 
-DESCRIPTION:	
+DESCRIPTION:	Class to produce 1 per second ascii string to broadcast
+		around airplane.  At this time it produces the IWGADTS
+		string.
 
 INPUT:		${PROJ_DIR}/###/asciilist
 
