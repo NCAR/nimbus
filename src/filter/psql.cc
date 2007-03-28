@@ -19,7 +19,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2003-06
 
 void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[]);
 
-const int PostgreSQL::RT_UDP_PORT = 58800;
+const int PostgreSQL::RT_UDP_PORT = 58801;
 const std::string PostgreSQL::TIME_VARIABLE = "datetime";
 const std::string PostgreSQL::GLOBAL_ATTR_TABLE = "Global_Attributes";
 const std::string PostgreSQL::VARIABLE_LIST_TABLE = "Variable_List";

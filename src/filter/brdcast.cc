@@ -20,9 +20,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005
 
 #include <sstream>
 
-const int Broadcast::RT_UDP_PORT = 2102;
-const std::string Broadcast::RT_UDP_ADDR = "128.117.84.255";
-//const std::string Broadcast::RT_UDP_ADDR = "192.168.84.255";
+const int Broadcast::RT_UDP_PORT = 58800;
+//const std::string Broadcast::RT_UDP_ADDR = "128.117.84.255";
+const std::string Broadcast::RT_UDP_ADDR = "192.168.84.255";
 
 /* -------------------------------------------------------------------- */
 Broadcast::Broadcast()
