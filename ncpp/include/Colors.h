@@ -9,8 +9,6 @@ TYPE:
 DESCRIPTION:	Provide a series of Colors that are always the same for
 		both X & PostScript.
 
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2000
 -------------------------------------------------------------------------
 */
@@ -32,8 +30,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2000
 #endif
 
 /* -------------------------------------------------------------------- */
-class Colors {
-
+class Colors
+{
 public:
 	Colors(const Widget w);
 
@@ -64,6 +62,6 @@ private:
   int	colorIndex, numberColors;
   bool	Color;
 
-};	/* END COLORS.H */
+};	// END COLORS.H
 
 #endif

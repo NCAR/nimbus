@@ -4,10 +4,6 @@ OBJECT NAME:	Titles.cc
 
 FULL NAME:	
 
-ENTRY POINTS:	Update()
-
-STATIC FNS:	
-
 DESCRIPTION:	
 
 NOTES:		

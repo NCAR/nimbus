@@ -10,8 +10,6 @@ DESCRIPTION:	Contains everything needed to produce the plot (X & PS).
 		One of these exists for each plot type.  field plotType
 		will be a constant for each instantiation of this class.
 
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8
 -------------------------------------------------------------------------
 */
@@ -40,8 +38,8 @@ struct plotOffset
 
 
 /* -------------------------------------------------------------------- */
-class PlotInfo {
-
+class PlotInfo
+{
 public:
 	PlotInfo(PlotType, SetManager&, Canvas&,
 			XFonts&, Colors&, XPen&, XPen&);
@@ -76,7 +74,6 @@ public:
   void	Print(char *name);
   void	ResizeX(), ResizePS();
 
-
 private:
   void		drawHistograms(DataType, int),
 		printHistograms(PostScript&, DataType, int);
@@ -110,6 +107,6 @@ private:
   XPen&		blackPen;
   XPen&		colorPen;
 
-};	/* END PLOTINFO.H */
+};	// END PLOTINFO.H
 
 #endif

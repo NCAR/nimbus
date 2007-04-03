@@ -6,10 +6,6 @@ FULL NAME:	200X
 
 TYPE:		Derived class
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 -------------------------------------------------------------------------
 */
@@ -24,14 +20,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 
 
 /* -------------------------------------------------------------------- */
-class X200 : public Probe200 {
-
+class X200 : public Probe200
+{
 public:
 	X200(NcFile *file, NcVar *av);
 
-
 private:
 
-};	/* END X200.H */
+};	// END X200.H
 
 #endif

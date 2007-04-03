@@ -6,10 +6,6 @@ FULL NAME:	DMT ASAS/PCASP
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 2001
 -------------------------------------------------------------------------
 */

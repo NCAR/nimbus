@@ -6,10 +6,6 @@ FULL NAME:	Panel Information
 
 TYPE:		
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8
 -------------------------------------------------------------------------
 */
@@ -47,8 +43,8 @@ class PlotInfo;
 
 
 /* -------------------------------------------------------------------- */
-class Panel {
-
+class Panel
+{
 public:
 	Panel();
 
@@ -77,7 +73,6 @@ public:
 
   struct panelDims	dimsX, dimsPS;
 
-
 private:
   static const float	cosFactor, sinFactor;
 
@@ -89,6 +84,6 @@ private:
 	yTicsLabelsPS(PlotInfo& p, PostScript& pen, bool labels),
 	draw3dCube(Drawable surface, XPen& pen);
 
-};	/* END PANEL.H */
+};	// END PANEL.H
 
 #endif

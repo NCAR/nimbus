@@ -34,8 +34,7 @@ DataFile::DataFile(char fName[]) : fileName(fName)
 
   nProbes = 0;
 
-  /* Open Input File
-   */
+  // Open Input File
   file = new NcFile(fName);
 
   if (file->is_valid() == false)

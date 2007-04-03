@@ -6,10 +6,6 @@ FULL NAME:	View NetCDF Header
 
 TYPE:		
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 -------------------------------------------------------------------------
 */
@@ -23,8 +19,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 
 /* -------------------------------------------------------------------- */
-class Header : public TextWindow {
-
+class Header : public TextWindow
+{
 public:
 
 	Header(const Widget parent);
@@ -32,6 +28,6 @@ public:
 
 private:
 
-};	/* END HEADER.H */
+};	// END HEADER.H
 
 #endif

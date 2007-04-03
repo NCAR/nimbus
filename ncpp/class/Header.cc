@@ -4,10 +4,6 @@ OBJECT NAME:	Header.cc
 
 FULL NAME:	
 
-ENTRY POINTS:	Update()
-
-STATIC FNS:	
-
 DESCRIPTION:	
 
 NOTES:		

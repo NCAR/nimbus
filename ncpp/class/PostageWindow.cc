@@ -4,14 +4,6 @@ OBJECT NAME:	PostageWindow.cc
 
 FULL NAME:	Postage Window
 
-ENTRY POINTS:	PostageWindow()
-		PopUp()
-		AveragePeriod()
-		SetCurrentTime()
-		IncrementCurrentTime()
-
-STATIC FNS:	
-
 DESCRIPTION:	
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997

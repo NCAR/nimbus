@@ -6,10 +6,6 @@ FULL NAME:	DMT modified FSSP-100
 
 TYPE:		Derived class
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 -------------------------------------------------------------------------
 */
@@ -24,8 +20,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 
 
 /* -------------------------------------------------------------------- */
-class S100 : public Probe {
-
+class S100 : public Probe
+{
 public:
 	S100(NcFile *file, NcVar *av);
 
@@ -47,6 +43,6 @@ private:
   int	tasIdx, rejATIdx, oFlowIdx;			// Inputs
   int	concIdx, lwIdx, dbzIdx, dbarIdx, dispIdx;	// Outputs
 
-};	/* END S100.H */
+};	// END S100.H
 
 #endif

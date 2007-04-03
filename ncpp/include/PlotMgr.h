@@ -9,8 +9,6 @@ TYPE:		Interface class
 DESCRIPTION:	Intermediator between PlotInfo & GUI (EditParms & Control)
 		and PlotX
 
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997-9
 -------------------------------------------------------------------------
 */
@@ -33,8 +31,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-9
 
 
 /* -------------------------------------------------------------------- */
-class PlotManager : public WinForm, public DataSource {
-
+class PlotManager : public WinForm, public DataSource
+{
 public:
 	PlotManager(const Widget parent, const Widget drawA);
 
@@ -87,7 +85,6 @@ private:
   XFonts	fonts;
   XPen		blackPen, colorPen;
 
-
-};	/* END PLOTMGR.H */
+};	// END PLOTMGR.H
 
 #endif

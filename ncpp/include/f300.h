@@ -6,10 +6,6 @@ FULL NAME:	FSSP-300
 
 TYPE:		Derived class
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 -------------------------------------------------------------------------
 */
@@ -24,8 +20,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 
 
 /* -------------------------------------------------------------------- */
-class F300 : public Probe {
-
+class F300 : public Probe
+{
 public:
 	F300(NcFile *file, NcVar *av);
 
@@ -38,6 +34,6 @@ private:
   int	tasIdx;				// Inputs
   int	concIdx, dbarIdx, volIdx;	// Outputs
 
-};	/* END F300.H */
+};	// END F300.H
 
 #endif

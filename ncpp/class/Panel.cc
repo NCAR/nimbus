@@ -4,10 +4,6 @@ OBJECT NAME:	Panel.cc
 
 FULL NAME:	Panel Information/Parameters
 
-ENTRY POINTS:	Panel()
-
-STATIC FNS:	
-
 DESCRIPTION:	
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8

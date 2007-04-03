@@ -4,10 +4,6 @@ OBJECT NAME:	PlotMgr.cc
 
 FULL NAME:	Interface class
 
-ENTRY POINTS:	PlotManager()
-
-STATIC FNS:	
-
 DESCRIPTION:	
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997-9

@@ -6,10 +6,6 @@ FULL NAME:	View Variable Titles
 
 TYPE:		
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 -------------------------------------------------------------------------
 */
@@ -24,8 +20,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 
 /* -------------------------------------------------------------------- */
-class Titles : public TextWindow {
-
+class Titles : public TextWindow
+{
 public:
 
 	Titles(const Widget parent);
@@ -33,6 +29,6 @@ public:
 
 private:
 
-};	/* END TITLES.H */
+};	// END TITLES.H
 
 #endif

@@ -6,10 +6,6 @@ FULL NAME:	Create Postage Window
 
 TYPE:		
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 -------------------------------------------------------------------------
 */
@@ -31,8 +27,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #include <Xm/TextF.h>
 
 /* -------------------------------------------------------------------- */
-class PostageWindow : public WinForm {
-
+class PostageWindow : public WinForm
+{
 public:
 		PostageWindow(Widget parent);
   void		PopUp();
@@ -45,7 +41,6 @@ public:
   void		PageForward();
   void		PageBackward();
 
-
 private:
   Widget	timeText[2], averageText;
 
@@ -54,6 +49,6 @@ private:
 
   void		createXwindow(Widget parent);
 
-};	/* END POSTAGEWINDOW.H */
+};	// END POSTAGEWINDOW.H
 
 #endif

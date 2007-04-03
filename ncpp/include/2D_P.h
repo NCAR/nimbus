@@ -6,10 +6,6 @@ FULL NAME:	2D_P
 
 TYPE:		Derived class
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 -------------------------------------------------------------------------
 */
@@ -24,17 +20,16 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 
 
 /* -------------------------------------------------------------------- */
-class TwoDP : public Probe200 {
-
+class TwoDP : public Probe200
+{
 public:
 	TwoDP(NcFile *file, NcVar *av);
 
   void	ComputeConcentration(float *accum, float *conc, long countV[],
 		float *otherVarData[]);
 
-
 private:
 
-};	/* END 2D_P.H */
+};	// END 2D_P.H
 
 #endif

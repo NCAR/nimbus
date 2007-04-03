@@ -4,10 +4,6 @@ OBJECT NAME:	CanvasWindow.cc
 
 FULL NAME:	
 
-ENTRY POINTS:	CanvasWindow()
-
-STATIC FNS:	
-
 DESCRIPTION:	
 
 NOTES:		

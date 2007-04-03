@@ -4,18 +4,6 @@ OBJECT NAME:	MovieControl.cc
 
 FULL NAME:	Movie Control Window
 
-ENTRY POINTS:	MovieControl()
-		PopUp()
-		UpdateAveragePeriod()
-		UpdateTime()
-		PositionTime()
-		SetRowsCols()
-		StepForward()
-		StepBackward()
-		Start()
-		Stop()
-		createXwindow()
-
 DESCRIPTION:	
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8

@@ -4,13 +4,7 @@ OBJECT NAME:	DataSet.h
 
 FULL NAME:	Data set information
 
-TYPE:		
-
-DESCRIPTION:	
-
-NOTES:		
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2007
 -------------------------------------------------------------------------
 */
 
@@ -25,8 +19,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 
 /* -------------------------------------------------------------------- */
-class DataSet {
-
+class DataSet
+{
 public:
 	DataSet(DataFile *df, Probe *prb, FlightClock& start, int nRecs, DataType dt, NormType n);
 	~DataSet();
@@ -81,6 +75,6 @@ private:
 
   bool computeConc;
 
-};	/* END DATASET.H */
+};	// END DATASET.H
 
 #endif

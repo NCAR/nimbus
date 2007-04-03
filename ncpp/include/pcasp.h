@@ -6,10 +6,6 @@ FULL NAME:	ASAS/PCASP
 
 TYPE:		Derived class
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 -------------------------------------------------------------------------
 */
@@ -24,14 +20,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 
 
 /* -------------------------------------------------------------------- */
-class PCASP : public Probe {
-
+class PCASP : public Probe
+{
 public:
 	PCASP(NcFile *file, NcVar *av);
 
   void	ComputeConcentration(float *accum, float *conc, long countV[],
 		float *otherVarData[]);
-
 
 private:
   float	sampleVolume[16], totalConcen, dbar, pvol, disp;
@@ -39,6 +34,6 @@ private:
   int	actIdx, flowIdx;			// Inputs
   int	concIdx, dbarIdx, dispIdx, volIdx;	// Outputs
 
-};	/* END PCASP.H */
+};	// END PCASP.H
 
 #endif

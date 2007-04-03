@@ -6,10 +6,6 @@ FULL NAME:	200Y Class
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 -------------------------------------------------------------------------
 */

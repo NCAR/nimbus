@@ -4,13 +4,6 @@ OBJECT NAME:	DataSource.cc
  
 FULL NAME:	Data source & type widgets
  
-ENTRY POINTS:	CreateDataSourceWidgets()
-		SetFileNames()
-		SetProbeNames()
-		WhichDataTypes()
- 
-STATIC FNS:
- 
 DESCRIPTION:	X window part for selecting file, probe & type (counts vs.
 		concentrations).
  

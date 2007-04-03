@@ -6,10 +6,6 @@ FULL NAME:	2D P Class
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 -------------------------------------------------------------------------
 */

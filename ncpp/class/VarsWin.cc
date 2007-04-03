@@ -4,10 +4,6 @@ OBJECT NAME:	VarsWin.cc
 
 FULL NAME:	
 
-ENTRY POINTS:	Update()
-
-STATIC FNS:	
-
 DESCRIPTION:	
 
 NOTES:		

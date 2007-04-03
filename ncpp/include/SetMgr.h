@@ -6,10 +6,6 @@ FULL NAME:	Data Set Manager
 
 TYPE:		
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2001
 -------------------------------------------------------------------------
 */
@@ -26,8 +22,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2001
 class Panel; 
 
 /* -------------------------------------------------------------------- */
-class SetManager {
-
+class SetManager
+{
 public:
   friend void	AutoScaleAccum(SetManager&, Panel *),
 		AutoScaleConc(SetManager&, Panel *),
@@ -70,7 +66,6 @@ public:
   void	PageForward();
   void	PageBackward();
 
-
 private:
   int		avRate;		// Averaging rate.
   int		nRecords;	// Number records to display.
@@ -90,6 +85,6 @@ private:
 
   void		findMinMax(), setEndTime(int idx);
 
-};	/* END SETMGR.H */
+};	// END SETMGR.H
 
 #endif

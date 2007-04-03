@@ -4,10 +4,6 @@ OBJECT NAME:	EditPlotParms.cc
 
 FULL NAME:	Edit Plot Parameters
 
-ENTRY POINTS:	
-
-STATIC FNS:	
-
 DESCRIPTION:	
 
 NOTES:		

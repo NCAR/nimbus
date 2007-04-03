@@ -6,10 +6,6 @@ FULL NAME:	260X
 
 TYPE:		Derived class
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 -------------------------------------------------------------------------
 */
@@ -24,17 +20,16 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 
 
 /* -------------------------------------------------------------------- */
-class X260 : public Probe200 {
-
+class X260 : public Probe200
+{
 public:
 	X260(NcFile *file, NcVar *av);
 
   void	ComputeConcentration(float *accum, float *conc, long countV[],
 		float *otherVarData[]);
 
-
 private:
 
-};	/* END X260.H */
+};	// END X260.H
 
 #endif

@@ -4,13 +4,7 @@ OBJECT NAME:	DataFile.h
 
 FULL NAME:	Data File Class
 
-TYPE:		
-
-DESCRIPTION:	
-
-NOTES:		
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2007
 -------------------------------------------------------------------------
 */
 
@@ -58,7 +52,6 @@ public:
 
   Probe		*probe[MAX_PROBES];
 
-
 private:
   NcFile	*file;
 
@@ -75,6 +68,6 @@ private:
 
   bool  prelimData;
 
-};	/* END DATAFILE.H */
+};	// END DATAFILE.H
 
 #endif

@@ -6,16 +6,13 @@ FULL NAME:	Create Basic Edit Parameters window.
 
 TYPE:		Base class
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 -------------------------------------------------------------------------
 */
 
 #ifndef EDITWIN_H
 #define EDITWIN_H
+
 #include "define.h"
 
 #include <Xm/Frame.h>
@@ -31,8 +28,8 @@ struct ep_axisInfo  // This needs to match axisInfo in Panel.h
 	};
 
 /* -------------------------------------------------------------------- */
-class EditWindow : public WinForm {
-
+class EditWindow : public WinForm
+{
 public:
 	EditWindow(const Widget parent, PlotType plotType, char name[], int nPanels, bool zAxis);
 
@@ -49,7 +46,6 @@ public:
 
   bool	isZaxis()	{ return(zaxis); }
   bool	yRight()	{ return(yright); }
-
 
 private:
   int	nPanels, currentPanel;
@@ -74,6 +70,6 @@ private:
 
   ep_axisInfo	xAxis, yAxis[2], zAxis;
 
-};	/* END EDITWINDOW.H */
+};	// END EDITWINDOW.H
 
 #endif

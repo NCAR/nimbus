@@ -4,10 +4,6 @@ OBJECT NAME:	EditWindow.cc
 
 FULL NAME:	
 
-ENTRY POINTS:	
-
-STATIC FNS:	
-
 DESCRIPTION:	
 
 NOTES:		

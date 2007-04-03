@@ -6,10 +6,6 @@ FULL NAME:	FSSP-100
 
 TYPE:		Derived class
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 -------------------------------------------------------------------------
 */
@@ -24,8 +20,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 
 
 /* -------------------------------------------------------------------- */
-class FSSP : public Probe {
-
+class FSSP : public Probe
+{
 public:
 	FSSP(NcFile *file, NcVar *av);
 
@@ -47,6 +43,6 @@ private:
   int	tasIdx, actIdx, bmFrIdx;			// Inputs
   int	concIdx, lwIdx, dbzIdx, dbarIdx, dispIdx;	// Outputs
 
-};	/* END FSSP.H */
+};	// END FSSP.H
 
 #endif

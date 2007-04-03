@@ -6,10 +6,6 @@ FULL NAME:	HVPS
 
 TYPE:		Derived class
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 2003
 -------------------------------------------------------------------------
 */
@@ -24,8 +20,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2003
 
 
 /* -------------------------------------------------------------------- */
-class HVPS : public Probe {
-
+class HVPS : public Probe
+{
 public:
 	HVPS(NcFile *file, NcVar *av);
 
@@ -39,6 +35,6 @@ private:
   int	tasIdx;				// Inputs
   int	concIdx, dbarIdx, lwIdx, dispIdx, dbzIdx;	// Outputs
 
-};	/* END HVPS.H */
+};	// END HVPS.H
 
 #endif

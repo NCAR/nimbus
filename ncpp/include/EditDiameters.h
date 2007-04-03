@@ -6,10 +6,6 @@ FULL NAME:	Create Basic Edit Parameters window.
 
 TYPE:		Base class
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1998-9
 -------------------------------------------------------------------------
 */
@@ -29,8 +25,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998-9
 
 
 /* -------------------------------------------------------------------- */
-class EditDiameters : public WinForm {
-
+class EditDiameters : public WinForm
+{
 public:
 	EditDiameters(const Widget parent);
 
@@ -45,6 +41,6 @@ private:
 
   void		setSpex(char *, int, float);
 
-};	/* END EDITDIAMETERS.H */
+};	// END EDITDIAMETERS.H
 
 #endif

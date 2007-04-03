@@ -6,10 +6,6 @@ FULL NAME:	260x, 200x, 200y
 
 TYPE:		Base class
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 -------------------------------------------------------------------------
 */
@@ -24,8 +20,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 
 
 /* -------------------------------------------------------------------- */
-class Probe200 : public Probe {
-
+class Probe200 : public Probe
+{
 public:
 	Probe200(NcFile *file, NcVar *av);
 
@@ -38,7 +34,6 @@ public:
 
   virtual int   SetEditWindow(Widget txt[]);
   virtual int   ApplyEditWindow(Widget txt[]);
-
 
 protected:
   void		ComputeWidths(), ComputeDOF(float tasx);
@@ -53,6 +48,6 @@ protected:
   int	tasIdx;						// Inputs
   int	concIdx, lwIdx, dbarIdx, dispIdx, dbzIdx;	// Outputs
 
-};	/* END PROBE200.H */
+};	// END PROBE200.H
 
 #endif

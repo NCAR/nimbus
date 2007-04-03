@@ -6,11 +6,7 @@ FULL NAME:	Probe Information
 
 TYPE:		Base class
 
-DESCRIPTION:	
-
-NOTES:		
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997-9
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2007
 -------------------------------------------------------------------------
 */
 
@@ -23,8 +19,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-9
 #define MAX_O_VARS	40
 
 /* -------------------------------------------------------------------- */
-class Probe {
-
+class Probe
+{
 public:
 	Probe(NcFile *file, NcVar *av);
        ~Probe();
@@ -87,6 +83,6 @@ protected:
   int		firstBin, lastBin;
   float		diameter[256], midPointDiam[256], binWidth[256];
 
-};	/* END PROBE.H */
+};	// END PROBE.H
 
 #endif

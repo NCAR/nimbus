@@ -6,10 +6,6 @@ FULL NAME:	DMT ASAS/PCASP
 
 TYPE:		Derived class
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 2001
 -------------------------------------------------------------------------
 */
@@ -24,14 +20,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2001
 
 
 /* -------------------------------------------------------------------- */
-class S200 : public Probe {
-
+class S200 : public Probe
+{
 public:
 	S200(NcFile *file, NcVar *av);
 
   void	ComputeConcentration(float *accum, float *conc, long countV[],
 		float *otherVarData[]);
-
 
 private:
   float	sampleVolume[41], totalConcen, dbar, pvol, disp;
@@ -39,6 +34,6 @@ private:
   int	actIdx, flowIdx;			// Inputs
   int	concIdx, dbarIdx, dispIdx, volIdx;	// Outputs
 
-};	/* END S200.H */
+};	// END S200.H
 
 #endif

@@ -6,10 +6,6 @@ FULL NAME:	200Y
 
 TYPE:		Derived class
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 -------------------------------------------------------------------------
 */
@@ -24,14 +20,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 
 
 /* -------------------------------------------------------------------- */
-class Y200 : public Probe200 {
-
+class Y200 : public Probe200
+{
 public:
 	Y200(NcFile *file, NcVar *av);
 
-
 private:
 
-};	/* END Y200.H */
+};	// END Y200.H
 
 #endif

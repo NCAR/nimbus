@@ -9,8 +9,6 @@ TYPE:
 DESCRIPTION:	This is a seperate class, because postage stamps & movie need
 		seperate copies.
 
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 -------------------------------------------------------------------------
 */
@@ -22,8 +20,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 
 /* -------------------------------------------------------------------- */
-class DataSource {
-
+class DataSource
+{
 public:
   void	CreateDataSourceWidgets(const Widget, const Widget, const Widget,
 	const Widget);
@@ -32,10 +30,9 @@ public:
 
   int	ActiveDataTypes();
 
-
 protected:
   Widget	fileB[MAX_DATAFILES], probeB[MAX_PROBES], dataType[4];
 
-};	/* END DATASOURCE.H */
+};	// END DATASOURCE.H
 
 #endif

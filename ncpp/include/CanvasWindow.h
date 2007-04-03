@@ -6,10 +6,6 @@ FULL NAME:	Create Main Canvas Window
 
 TYPE:		
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 -------------------------------------------------------------------------
 */
@@ -29,17 +25,16 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 
 /* -------------------------------------------------------------------- */
-class CanvasWindow : public WinForm {
-
+class CanvasWindow : public WinForm
+{
 public:
 		CanvasWindow(const Widget parent);
 
   Widget	DrawingArea()	{ return(drawA); }
 
-
 private:
   Widget	drawA;
 
-};	/* END CANVASWINDOW.H */
+};	// END CANVASWINDOW.H
 
 #endif

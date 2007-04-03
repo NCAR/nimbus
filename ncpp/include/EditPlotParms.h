@@ -6,10 +6,6 @@ FULL NAME:	Edit Plot Parameters window.
 
 TYPE:		
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1998-9
 -------------------------------------------------------------------------
 */
@@ -32,8 +28,8 @@ struct ep_axisInfo  // This needs to match axisInfo in Panel.h
 	};
 
 /* -------------------------------------------------------------------- */
-class EditPlotParms : public WinForm {
-
+class EditPlotParms : public WinForm
+{
 public:
 	EditPlotParms(const Widget parent, PlotType plotType, char name[], int nPanels, bool zAxis);
 
@@ -50,7 +46,6 @@ public:
 
   bool	isZaxis()	{ return(zaxis); }
   bool	yRight()	{ return(yright); }
-
 
 private:
   int	nPanels, currentPanel;
@@ -75,6 +70,6 @@ private:
 
   ep_axisInfo	xAxis, yAxis[2], zAxis;
 
-};	/* END EDITPLOTPARMS.H */
+};	// END EDITPLOTPARMS.H
 
 #endif

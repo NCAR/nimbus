@@ -6,10 +6,6 @@ FULL NAME:	Data File Manager
 
 TYPE:		
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 -------------------------------------------------------------------------
 */
@@ -24,8 +20,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 
 /* -------------------------------------------------------------------- */
-class FileManager {
-
+class FileManager
+{
 public:
 	FileManager();
 
@@ -46,7 +42,6 @@ public:
   DataFile	*NextFile()
 	{ return(++nextCnt == numberFiles ? (DataFile *)NULL : dataFile[nextCnt]); }
 
-
 private:
   int	numberFiles;
   int	currentFile;
@@ -54,6 +49,6 @@ private:
 
   DataFile	*dataFile[MAX_DATAFILES];
 
-};	/* END FILEMGR.H */
+};	// END FILEMGR.H
 
 #endif

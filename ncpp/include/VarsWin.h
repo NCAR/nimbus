@@ -6,10 +6,6 @@ FULL NAME:	View Housekeeping & derived variables
 
 TYPE:		
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 -------------------------------------------------------------------------
 */
@@ -25,16 +21,15 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 
 
 /* -------------------------------------------------------------------- */
-class VarsWin : public TextWindow {
-
+class VarsWin : public TextWindow
+{
 public:
-
 	VarsWin(const Widget parent);
 
   void	Update(SetManager& sets, PlotManager *plotMgr);
 
 private:
 
-};	/* END VARSWIN.H */
+};	// END VARSWIN.H
 
 #endif

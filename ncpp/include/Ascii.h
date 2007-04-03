@@ -6,10 +6,6 @@ FULL NAME:	View ASCII cell data.
 
 TYPE:		
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 -------------------------------------------------------------------------
 */
@@ -25,16 +21,15 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 
 
 /* -------------------------------------------------------------------- */
-class Ascii : public TextWindow {
-
+class Ascii : public TextWindow
+{
 public:
-
 	Ascii(const Widget parent);
 
   void	Update(SetManager& sets, PlotManager *plotMgr);
 
 private:
 
-};	/* END ASCII.H */
+};	// END ASCII.H
 
 #endif

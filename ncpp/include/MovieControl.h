@@ -6,10 +6,6 @@ FULL NAME:	Create Movie Control Window
 
 TYPE:		
 
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8
 -------------------------------------------------------------------------
 */
@@ -35,8 +31,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8
 #include <Xm/TextF.h>
 
 /* -------------------------------------------------------------------- */
-class MovieControl : public WinForm {
-
+class MovieControl : public WinForm
+{
 public:
 		MovieControl(Widget parent);
 
@@ -60,7 +56,6 @@ public:
   void		StepForward();
   void		StepBackward();
 
-
 private:
   Widget	timeText, averageText, delayScale, timeScale, butt[4];
 
@@ -70,6 +65,6 @@ private:
 
   void		createXwindow(Widget parent);
 
-};	/* END MOVIECONTROL.H */
+};	// END MOVIECONTROL.H
 
 #endif
