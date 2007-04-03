@@ -4,16 +4,6 @@ OBJECT NAME:	PlotInfo.h
 
 FULL NAME:	Plot Information
 
-ENTRY POINTS:	
-
-DESCRIPTION:	
-
-REFERENCES:	
-
-REFERENCED BY:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 -------------------------------------------------------------------------
 */

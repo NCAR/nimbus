@@ -4,16 +4,6 @@ OBJECT NAME:	FileMgr.h
 
 FULL NAME:	Data File Manager
 
-ENTRY POINTS:	
-
-DESCRIPTION:	
-
-REFERENCES:	
-
-REFERENCED BY:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 -------------------------------------------------------------------------
 */

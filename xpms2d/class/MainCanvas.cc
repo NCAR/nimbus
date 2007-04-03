@@ -4,10 +4,6 @@ OBJECT NAME:    MainCanvas.cc
  
 FULL NAME:      Main canvas
  
-ENTRY POINTS:
- 
-DESCRIPTION:
- 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2006
 -------------------------------------------------------------------------
 */

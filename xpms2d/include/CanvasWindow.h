@@ -4,12 +4,6 @@ OBJECT NAME:	CanvasWindow.h
 
 FULL NAME:	Create Main Canvas Window
 
-TYPE:		
-
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 -------------------------------------------------------------------------
 */

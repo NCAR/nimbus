@@ -4,16 +4,6 @@ OBJECT NAME:	ControlWindow.h
 
 FULL NAME:	Create Main Control Window
 
-ENTRY POINTS:	
-
-DESCRIPTION:	
-
-REFERENCES:	
-
-REFERENCED BY:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 -------------------------------------------------------------------------
 */

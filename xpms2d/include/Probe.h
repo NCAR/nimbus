@@ -4,16 +4,6 @@ OBJECT NAME:	Probe.h
 
 FULL NAME:	Probe Information
 
-ENTRY POINTS:	
-
-DESCRIPTION:	
-
-REFERENCES:	
-
-REFERENCED BY:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 -------------------------------------------------------------------------
 */

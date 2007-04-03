@@ -4,12 +4,6 @@ OBJECT NAME:	Hex.h
 
 FULL NAME:	View Hex
 
-TYPE:		
-
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 -------------------------------------------------------------------------
 */

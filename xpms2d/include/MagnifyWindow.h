@@ -4,16 +4,6 @@ OBJECT NAME:	MagnifyWindow.h
 
 FULL NAME:	Magnify window and Zoom
 
-ENTRY POINTS:	
-
-DESCRIPTION:	
-
-REFERENCES:	
-
-REFERENCED BY:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 -------------------------------------------------------------------------
 */

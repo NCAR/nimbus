@@ -4,12 +4,6 @@ OBJECT NAME:	Enchilada.h
 
 FULL NAME:	View Enchilada
 
-TYPE:		
-
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 -------------------------------------------------------------------------
 */
