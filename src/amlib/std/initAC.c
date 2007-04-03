@@ -148,7 +148,7 @@ void InitAircraftDependencies()
 
     case Config::C130:
     case Config::TECHS:
-    case Config::TADS:	/* Ground systems....to become HIAPER??? */
+    case Config::TADS:	/* Ground systems */
       LogMessage("NCAR C-130 pcor's installed.");
       jwref	= 1 * XMPHMS;
       recfrn	= 0.65;
