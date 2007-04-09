@@ -195,7 +195,8 @@ void InitAircraftDependencies()
         pcorPSF	= pcorr5;
       }
 
-      recfrh	= 1.00;
+      recfb	= 0.863;
+      recfrh	= 0.85;
       tfher1	= -1.7244;
       tfher2	= -1.5989;
       break;
