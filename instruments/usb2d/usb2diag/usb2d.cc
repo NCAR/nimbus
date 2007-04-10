@@ -22,10 +22,8 @@ int main(int argc, char *argv[])
 
   app.setMainWidget(canvasWindow);
   canvasWindow->setCaption("usb2d");
-  canvasWindow->resize(900, 525);
+  canvasWindow->resize(1054, 800);
 
   app.exec();
-
-  return(0);
-
+  return 0;
 }

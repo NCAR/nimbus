@@ -46,14 +46,14 @@ void DataPlot::plot()
 
   size_t	y = 10;
 
-  fseek(_fp, 314, 0);
+  fseek(_fp, 310, 0);
 
   for (int i = 0; i < 7; ++i)
   {
     for (int j = 0; j < 2; ++j)
     {
       fread(&twod_rec, sizeof(usb2d_rec), 1, _fp);
-      printf("%ld %lu\n", twod_rec.timetag, twod_rec.length);
+      printf("%llu %lu %lu\n", twod_rec.timetag, twod_rec.length, twod_rec.id);
       displayRecord(10 + 512 * j, y, twod_rec);
     }
     y += 75;

@@ -1,13 +1,12 @@
 #include "define.h"
 #include <qwidget.h>
 
-#include <nidas/linux/usbtwod/usbtwod.h>
-
 // This needs to go in a more global include file, say nidas/usbtwod.h
 typedef struct
 {
-  dsm_sample_time_t timetag;
-  dsm_sample_length_t length;
+  unsigned long long timetag;
+  unsigned long length;
+  unsigned long id;
   unsigned char data[4096];
 } usb2d_rec;
 

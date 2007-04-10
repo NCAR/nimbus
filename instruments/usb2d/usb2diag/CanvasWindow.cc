@@ -44,7 +44,6 @@ CanvasWindow::CanvasWindow(QApplication *qApp) : QMainWindow(0, "canvas")
 
   _plot = new DataPlot(this, _fp);
   setCentralWidget(_plot);
-  _plot->resize(1054, 800);
   _plot->show();
 
   statusBar()->message( "Ready", 2000 );
