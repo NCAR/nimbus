@@ -11,7 +11,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2007
 #include <iostream>
 
 #include <qapplication.h>
-#include <qhbox.h>
 #include <qstatusbar.h>
 #include <qtoolbutton.h>
 
@@ -37,18 +36,16 @@ CanvasWindow::CanvasWindow(QApplication *qApp) : QMainWindow(0, "canvas")
   connect(p, SIGNAL(clicked()), SLOT(Print()));
 
 
-  QHBox *box = new QHBox(this);
-  setCentralWidget((QWidget *)box);
-
-  if ((_fp = fopen("/home/data/usb_data.2d", "r")) == 0)
+  if ((_fp = fopen("/scr/jdata/usb_data.2d", "r")) == 0)
   {
     std::cerr << "Can't open file " << std::endl;
     exit(1);
   }
 
   _plot = new DataPlot(this, _fp);
-  _plot->resize(535, 300);
-  _plot->plot();
+  setCentralWidget(_plot);
+  _plot->resize(1054, 800);
+  _plot->show();
 
   statusBar()->message( "Ready", 2000 );
 
