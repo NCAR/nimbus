@@ -59,7 +59,7 @@ end
 
 # Programs with "install" target.
 
-foreach file ( hdrbld ncplot ncpp/src vardb/editor xhd xpms2d/src nimbus/src/qc mcr/display/src mcr/processor/src rdma ads_utils/edADShdr)
+foreach file ( hdrbld ncplot ncpp/src vardb/editor xhd xpms2d/src nimbus/src/qc instruments/mcr/display/src instruments/mcr/processor/src instruments/rdma ads_utils/edADShdr)
   (cd $file; echo ""; make install)
 end
 
@@ -81,7 +81,7 @@ endif
 # Programs with Qt [and Qwt].
 # rtplot requires $NIMBUS to be set....
 setenv NIMBUS `pwd`/nimbus
-foreach file ( rtplot ads_utils/hvpsdiag )
+foreach file ( rtplot instruments/hvps/hvpsdiag instruments/usb2d/usb2diag )
   (cd $file; echo $file; qmake; make)
 end
 unsetenv NIMBUS

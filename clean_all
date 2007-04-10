@@ -1,6 +1,6 @@
 #!/bin/csh
 
-foreach file ( hdr_api lib* vardb/lib hdrbld ncplot ncpp/src vardb/editor xhd xpms2d/src nimbus/src/qc mcr/display/src mcr/processor/src rdma ads_utils/edADShdr rtplot ads_utils/hvpsdiag ads/disc/src ads/dsm/src )
+foreach file ( hdr_api lib* vardb/lib hdrbld ncplot ncpp/src vardb/editor xhd xpms2d/src nimbus/src/qc instruments/mcr/display/src instruments/mcr/processor/src instruments/rdma ads_utils/edADShdr rtplot instruments/hvps/hvpsdiag instruments/usb2d/usb2diag ads/disc/src ads/dsm/src )
   (cd $file; echo $file; make clean)
 end
 
