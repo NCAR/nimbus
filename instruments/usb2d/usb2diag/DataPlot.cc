@@ -45,10 +45,20 @@ void DataPlot::paintEvent(QPaintEvent * e)
 void DataPlot::plot()
 {
   usb2d_rec twod_rec;
-
+  static bool firstTime = true;
   size_t	y = 10;
 
-  fseek(_fp, 310, 0);
+  if (firstTime)
+  {
+    char buff[4096];
+
+    rewind(_fp);
+    fread(buff, sizeof(buff), 1, _fp);
+    char * p = strstr(buff, "end header\n");
+    fseek(_fp, (p - buff) + 11, 0);
+    firstTime = false;
+  }
+
 
   for (int i = 0; i < 7; ++i)
   {
