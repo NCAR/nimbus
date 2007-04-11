@@ -1,9 +1,7 @@
 #include "DataPlot.h"
 
 #include <qevent.h>
-#include <qpixmap.h>
 #include <qpainter.h>
-#include <qpaintdevice.h>
 
 #include <cstdio>
 #include <unistd.h>
@@ -28,6 +26,10 @@ void DataPlot::timerEvent(QTimerEvent *)
 {   
   if (_freeze)
     return;    
+
+  // Check data file for new data (real-time mode).
+
+
 
   plot();
 }
@@ -54,34 +56,30 @@ void DataPlot::plot()
     {
       fread(&twod_rec, sizeof(usb2d_rec), 1, _fp);
       printf("%llu %lu %lu\n", twod_rec.timetag, twod_rec.length, twod_rec.id);
-      displayRecord(10 + 512 * j, y, twod_rec);
+      displayRecord64(512 * j, y, (unsigned long long *)twod_rec.data);
     }
     y += 75;
   }
 }
 
 /* -------------------------------------------------------------------- */
-void DataPlot::displayRecord(int x, int y, usb2d_rec & rec)
+void DataPlot::displayRecord64(int start_x, int start_y, unsigned long long * data_p)
 {
-  unsigned long long * p = (unsigned long long *)rec.data;
-  unsigned long long slice;
-
   QPainter _painter(this);
   _painter.setPen(Qt::red);
-  _painter.setBrush(Qt::red);
 
   size_t cnt = 0;
   QPointArray pts(64*512);
 
   for (int i = 0; i < 512; ++i)
   {
-    slice = p[i];
+    unsigned long long slice = data_p[i];
 
     for (int j = 0; j < 64; ++j)
     {
       if ( !((slice >> j) & 0x00000001) )
       {
-        pts.setPoint(cnt, i + x + 10, y + (63-j));
+        pts.setPoint(cnt, start_x + i + 10, start_y + (63-j));
         ++cnt;
       }
     }

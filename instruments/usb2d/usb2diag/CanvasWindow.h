@@ -6,12 +6,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2007
 -------------------------------------------------------------------------
 */
 
-#ifndef CANWINDOW_H
-#define CANWINDOW_H
+#ifndef _CanvasWindow_h_
+#define _CanvasWindow_h_
 
 #include <qmainwindow.h>
-
-#include "define.h"
 
 class QApplication;
 class DataPlot;

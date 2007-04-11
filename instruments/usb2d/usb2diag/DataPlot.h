@@ -1,4 +1,6 @@
-#include "define.h"
+#ifndef _DataPlot_h_
+#define _DataPlot_h_
+
 #include <qwidget.h>
 
 // This needs to go in a more global include file, say nidas/usbtwod.h
@@ -12,6 +14,9 @@ typedef struct
 
 
 /* -------------------------------------------------------------------- */
+/**
+ * Class to plot/draw PMS-2D ercords on a Qt Widget.
+ */
 class DataPlot : public QWidget
 {
 public:
@@ -23,10 +28,20 @@ public:
 
 protected:
   virtual void timerEvent(QTimerEvent * e);
+
   virtual void paintEvent(QPaintEvent * e);
-  virtual void displayRecord(int x, int y, usb2d_rec & rec);
+
+  /**
+   * Display 1 64 bit 2D record.
+   * @param x is the starting x coordiante for the record (upper left).
+   * @param y is the starting y coordiante for the record (upper left).
+   * @param data_p is the pointer to the 2D data record (sans header).
+   */
+  virtual void displayRecord64(int x, int y, unsigned long long * data_p);
 
   FILE * _fp;
   bool _freeze;
 
 };
+
+#endif

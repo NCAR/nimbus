@@ -8,5 +8,5 @@ INCLUDEPATH += .
 INCLUDEPATH += /opt/nidas/x86/include
 
 # Input
-HEADERS += CanvasWindow.h DataPlot.h define.h extern.h
-SOURCES += CanvasWindow.cc DataPlot.cc global.cc usb2d.cc init.cc
+HEADERS += CanvasWindow.h DataPlot.h
+SOURCES += CanvasWindow.cc DataPlot.cc usb2d.cc

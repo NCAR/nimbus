@@ -10,14 +10,12 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2007
 
 #include <qapplication.h>
 
-CanvasWindow	*canvasWindow;
 
-/* --------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
 
-  canvasWindow = new CanvasWindow(&app);
+  CanvasWindow * canvasWindow = new CanvasWindow(&app);
   canvasWindow->show();
 
   app.setMainWidget(canvasWindow);

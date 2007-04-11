@@ -36,7 +36,7 @@ CanvasWindow::CanvasWindow(QApplication *qApp) : QMainWindow(0, "canvas")
   connect(p, SIGNAL(clicked()), SLOT(Print()));
 
 
-  if ((_fp = fopen("/scr/jdata/usb_data.2d", "r")) == 0)
+  if ((_fp = fopen("/home/data/usb_data.2d", "r")) == 0)
   {
     std::cerr << "Can't open file " << std::endl;
     exit(1);
