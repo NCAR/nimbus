@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
 
-  CanvasWindow * canvasWindow = new CanvasWindow(&app);
+  CanvasWindow * canvasWindow = new CanvasWindow(&app, argc > 1 ? argv[1] : 0);
   canvasWindow->show();
 
   app.setMainWidget(canvasWindow);

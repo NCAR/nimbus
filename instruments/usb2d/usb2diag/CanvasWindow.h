@@ -20,7 +20,7 @@ class CanvasWindow : public QMainWindow
   Q_OBJECT
 
 public:
-	CanvasWindow(QApplication *);
+	CanvasWindow(QApplication *, const char * file_name);
 
 protected slots:
   void	Print();

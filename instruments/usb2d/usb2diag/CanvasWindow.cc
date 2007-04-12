@@ -17,7 +17,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2007
 #include "DataPlot.h"
 
 /* -------------------------------------------------------------------- */
-CanvasWindow::CanvasWindow(QApplication *qApp) : QMainWindow(0, "canvas")
+CanvasWindow::CanvasWindow(QApplication *qApp, const char * file_name) : QMainWindow(0, "canvas")
 {
   QToolBar *toolBar = new QToolBar(this, "options");
   toolBar->setLabel( "File Operations" );
@@ -36,9 +36,9 @@ CanvasWindow::CanvasWindow(QApplication *qApp) : QMainWindow(0, "canvas")
   connect(p, SIGNAL(clicked()), SLOT(Print()));
 
 
-  if ((_fp = fopen("/home/data/usb_data.2d", "r")) == 0)
+  if ((_fp = fopen(file_name, "r")) == 0)
   {
-    std::cerr << "Can't open file " << std::endl;
+    std::cerr << "Can't open file " << file_name << std::endl;
     exit(1);
   }
 
