@@ -31,12 +31,12 @@ public:
   void	broadcastData(const std::string & timeStamp) const;
 
 protected:
-  UdpSocket* _brdcst;
+  UdpSocket * _brdcst1, * _brdcst2;
 
   std::vector<var_base *> _varList;
 
   static const int RT_UDP_PORT;
-  static const std::string RT_UDP_ADDR;
+  static const std::string RT_UDP_ADDR_1, RT_UDP_ADDR_2;
 };
 
 #endif
