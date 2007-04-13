@@ -24,7 +24,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005
 
 const int Broadcast::RT_UDP_PORT = 58800;
 //const std::string Broadcast::RT_UDP_ADDR = "128.117.84.255";
-const std::string Broadcast::RT_UDP_ADDR = "192.168.84.255";
+const std::string Broadcast::RT_UDP_ADDR_1 = "192.168.84.255";
+const std::string Broadcast::RT_UDP_ADDR_2 = "192.168.184.255";
 
 /* -------------------------------------------------------------------- */
 Broadcast::Broadcast()
@@ -58,8 +59,11 @@ Broadcast::Broadcast()
 
   FreeTextFile(bcast);
 
-  _brdcst = new UdpSocket(RT_UDP_PORT, RT_UDP_ADDR.c_str());
-  _brdcst->openSock(UDP_BROADCAST);
+  _brdcst1 = new UdpSocket(RT_UDP_PORT, RT_UDP_ADDR_1.c_str());
+  _brdcst1->openSock(UDP_BROADCAST);
+
+  _brdcst2 = new UdpSocket(RT_UDP_PORT, RT_UDP_ADDR_2.c_str());
+  _brdcst2->openSock(UDP_BROADCAST);
 
 }	// END CTOR
 
@@ -78,7 +82,8 @@ void Broadcast::broadcastData(const std::string & timeStamp) const
       bcast << AveragedData[_varList[i]->LRstart];
   }
   bcast << "\r\n";
-  _brdcst->writeSock(bcast.str().c_str(), bcast.str().length());
+  _brdcst1->writeSock(bcast.str().c_str(), bcast.str().length());
+  _brdcst2->writeSock(bcast.str().c_str(), bcast.str().length());
 printf(bcast.str().c_str());
 
 }	// END BROADCASTDATA

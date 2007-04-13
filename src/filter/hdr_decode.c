@@ -338,7 +338,6 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
     sock = new nidas::util::Socket("localhost", 30001);
     ; // sync_server is started elsewhere onboard.
 
-
   nidas::core::IOChannel * iochan = new nidas::core::Socket(sock);
 
   syncRecReader = new nidas::dynld::raf::SyncRecordReader(iochan);
