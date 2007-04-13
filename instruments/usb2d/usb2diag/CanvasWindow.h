@@ -20,14 +20,17 @@ class CanvasWindow : public QMainWindow
   Q_OBJECT
 
 public:
-	CanvasWindow(QApplication *, const char * file_name);
+  CanvasWindow(QApplication *, const char * file_name);
 
 protected slots:
-  void	Print();
+  void	_print();
+  void	_openf();
 
 private:
   FILE * _fp;
   DataPlot * _plot;
+  void _startplot();
+
 
 };
 

@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
   canvasWindow->show();
 
   app.setMainWidget(canvasWindow);
-  canvasWindow->setCaption("usb2d");
+  canvasWindow->setCaption("USB_2d");
   canvasWindow->resize(1054, 800);
 
   app.exec();

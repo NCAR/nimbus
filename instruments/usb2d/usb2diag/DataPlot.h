@@ -2,6 +2,14 @@
 #define _DataPlot_h_
 
 #include <qwidget.h>
+ 
+const unsigned  short  TBYTE    = 4096;
+const unsigned  short  BIT_N2D  = 64;
+const unsigned  short  BYTE_N2D = 8;
+const unsigned  short  SLIDE_N2D= TBYTE/BYTE_N2D;
+const unsigned  short  ROW_N2D  = 8;
+const unsigned  short  RCDPR_N2D= 2; 
+const unsigned  short  BYTE_USB2D_REC = 8 +TBYTE;
 
 // This needs to go in a more global include file, say nidas/usbtwod.h
 typedef struct
@@ -15,7 +23,7 @@ typedef struct		// Data, length = 4104
 {
   unsigned long id;	// Data or Housekeeping.
   unsigned long tas;
-  unsigned char data[4096];
+  unsigned char data[TBYTE];
 } usb2d_rec;
 
 typedef struct		// length = 8
@@ -37,6 +45,7 @@ public:
 
   virtual void plot();
   void	ToggleFreeze();
+  void	RstTimer(int s);
 
 protected:
   virtual void timerEvent(QTimerEvent * e);
@@ -47,10 +56,10 @@ inline long long flipLonglongIn(const void* p)
 {
     union {
       long long v;
-      char b[8];
+      char b[BYTE_N2D];
     } u;
     const char* cp = (const char*)p;
-    for (int i = 7; i >= 0; i--) u.b[i] = *cp++;
+    for (int i = BYTE_N2D-1; i >= 0; i--) u.b[i] = *cp++;
     return u.v;
 }
 inline long long flipLonglong(const long long& p)
@@ -65,11 +74,15 @@ inline long long flipLonglong(const long long& p)
    * @param data_p is the pointer to the 2D data record (sans header).
    */
   virtual void displayRecord64(int x, int y, unsigned long long * data_p);
-
-  FILE * _fp;
-  bool _freeze;
-
   static const unsigned long long _syncMask, _syncWord;
+
+private:
+  FILE * _fp;
+  bool   _freeze;
+  int    _fsize;
+
+  bool   _posfp();
+  
 
 };
 
