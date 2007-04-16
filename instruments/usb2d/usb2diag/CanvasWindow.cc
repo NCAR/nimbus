@@ -17,8 +17,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2007
 #include "DataPlot.h"
 
 /* -------------------------------------------------------------------- */
-CanvasWindow::CanvasWindow(QApplication *qApp, const char * file_name) : QMainWindow(0, "canvas")
+CanvasWindow::CanvasWindow(QApplication *qApp, const char * file_name) : QMainWindow(0, "canvas"), _app(qApp)
 {
+  
   QToolBar *toolBar = new QToolBar(this, "options");
   toolBar->setLabel( "" );
 
@@ -46,7 +47,7 @@ CanvasWindow::CanvasWindow(QApplication *qApp, const char * file_name) : QMainWi
 
   if ((_fp = fopen(file_name, "r")) == 0)
   {
-    std::cerr << "No file " << file_name << std::endl;
+    std::cerr << "No file " << file_name <<"\n"<< std::endl;
   } else{
     _startplot();   
   }
@@ -57,12 +58,38 @@ CanvasWindow::CanvasWindow(QApplication *qApp, const char * file_name) : QMainWi
 /* -------------------------------------------------------------------- */
 void CanvasWindow::_openf()
 {
+  std::cout<<_app->applicationDirPath().ascii()<<std::endl;
+  QString appdir= _app->applicationDirPath();
+  QFileDialog *dlg = new QFileDialog(_app->applicationDirPath().ascii(), 
+  QString::null, 0, 0, TRUE );
+  dlg->setCaption( QFileDialog::tr( "Open Data File" ) );
+  dlg->setMode( QFileDialog::ExistingFile );
+  
+  QString file_name;
+  if ( dlg->exec() == QDialog::Accepted ) {
+    file_name = dlg->selectedFile();
+    file_name = file_name.section('/',-1);
+    file_name = (appdir+"/"+file_name).ascii(); 
+    std::cout << "selected name:" << file_name <<"\n"<<std::endl;
+  }
+  delete dlg;
 
+  //std::cout << "selected name2:" << file_name <<"\n"<<std::endl;
+  //delete _fp;
+  if ((_fp = fopen(file_name, "r")) == 0)
+  {
+    std::cerr << "No file. " << file_name << std::endl;
+  } else{
+    std::cout << "Start Plotting. " << std::endl;
+    _startplot();   
+  }
 }	/* END file open */
 
 /* -------------------------------------------------------------------- */
 void CanvasWindow::_startplot()
 {
+  //if (_plot!=NULL) {delete _plot;}
+std::cout << "_StartPlotting. 1 _fp: " <<_fp<< std::endl;
   _plot = new DataPlot(this, _fp);
   setCentralWidget(_plot);
   _plot->show();

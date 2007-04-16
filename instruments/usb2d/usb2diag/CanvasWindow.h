@@ -10,6 +10,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2007
 #define _CanvasWindow_h_
 
 #include <qmainwindow.h>
+#include <qfiledialog.h>
 
 class QApplication;
 class DataPlot;
@@ -30,6 +31,7 @@ private:
   FILE * _fp;
   DataPlot * _plot;
   void _startplot();
+  QApplication*  _app;
 
 
 };

@@ -57,12 +57,12 @@ bool DataPlot::_posfp() {
   //get filesize
   fseek (_fp, 0, SEEK_END);
   int size=ftell(_fp);
-  //if (size==_fsize) {
+ // if (_fsize!=0 && size==_fsize) {
   //  printf("\n Same file size!");
-  //  return false;
-  //}
+   // return false;
+ // }
 
-  //_fsize = size;
+  _fsize = size;
   // get file pointer at end of nidas header.
   rewind(_fp);
   char buff[TBYTE];
