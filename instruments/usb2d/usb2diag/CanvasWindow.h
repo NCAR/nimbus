@@ -11,6 +11,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2007
 
 #include <qmainwindow.h>
 #include <qfiledialog.h>
+#include <qprinter.h>
+#include <qpainter.h>
 
 class QApplication;
 class DataPlot;
@@ -29,10 +31,11 @@ protected slots:
 
 private:
   FILE * _fp;
+  QApplication*  _app;
+  QPrinter     *printer;
+
   DataPlot * _plot;
   void _startplot();
-  QApplication*  _app;
-
 
 };
 

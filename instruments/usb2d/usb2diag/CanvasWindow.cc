@@ -13,6 +13,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2007
 #include <qapplication.h>
 #include <qstatusbar.h>
 #include <qtoolbutton.h>
+#include <qpaintdevicemetrics.h>
+#include <qwhatsthis.h>
+#include <qsimplerichtext.h>
+#include <qstylesheet.h>
 
 #include "DataPlot.h"
 
@@ -45,6 +49,13 @@ CanvasWindow::CanvasWindow(QApplication *qApp, const char * file_name) : QMainWi
   connect(q, SIGNAL(clicked()), qApp, SLOT(quit()));
 
 
+/* QPopupMenu * help = new QPopupMenu( this );
+        menuBar()->insertItem( "&Help", help );
+
+        help->insertItem( "&About", this, SLOT(about()), Key_F1 );
+
+*/
+
   if ((_fp = fopen(file_name, "r")) == 0)
   {
     std::cerr << "No file " << file_name <<"\n"<< std::endl;
@@ -58,7 +69,7 @@ CanvasWindow::CanvasWindow(QApplication *qApp, const char * file_name) : QMainWi
 /* -------------------------------------------------------------------- */
 void CanvasWindow::_openf()
 {
-  std::cout<<_app->applicationDirPath().ascii()<<std::endl;
+  //std::cout<<env(DATA_DIR)<<std::endl;
   QString appdir= _app->applicationDirPath();
   QFileDialog *dlg = new QFileDialog(_app->applicationDirPath().ascii(), 
   QString::null, 0, 0, TRUE );
@@ -89,7 +100,6 @@ void CanvasWindow::_openf()
 void CanvasWindow::_startplot()
 {
   //if (_plot!=NULL) {delete _plot;}
-std::cout << "_StartPlotting. 1 _fp: " <<_fp<< std::endl;
   _plot = new DataPlot(this, _fp);
   setCentralWidget(_plot);
   _plot->show();
@@ -98,9 +108,60 @@ std::cout << "_StartPlotting. 1 _fp: " <<_fp<< std::endl;
 
 
 /* -------------------------------------------------------------------- */
-void CanvasWindow::_print()
+/*void CanvasWindow::_print()
 {
 
-}	/* END PRINT */
+   if ( printer->setup( this ) ) {
+        QPainter paint;
+        if( !paint.begin( printer ) )
+            return;
+      //  drawIt( &pa/int );
+   }
+
+}*/	/* END PRINT */
+
+void CanvasWindow::_print()
+{
+   /*
+    printer->setFullPage( TRUE );
+    if ( printer->setup(this) ) {               // printer dialog
+        statusBar()->message( "Printing..." );
+        QPainter p;
+        if( !p.begin( printer ) ) {               // paint on printer
+            statusBar()->message( "Printing aborted", 2000 );
+            return;
+        }
+
+        QPaintDeviceMetrics metrics( p.device() );
+        int dpiy = metrics.logicalDpiY();
+        int margin = (int) ( (2/2.54)*dpiy ); // 2 cm margins
+        QRect view( margin, margin, metrics.width() - 2*margin, metrics.height() - 2*margin );
+        QSimpleRichText richText( QStyleSheet::convertFromPlainText(e->text()),
+                                  QFont(),
+                                  e->context(),
+                                  e->styleSheet(),
+                                  e->mimeSourceFactory(),
+                                  view.height() );
+        richText.setWidth( &p, view.width() );
+        int page = 1;
+        do {
+            richText.draw( &p, margin, margin, view, colorGroup() );
+            view.moveBy( 0, view.height() );
+            p.translate( 0 , -view.height() );
+            p.drawText( view.right() - p.fontMetrics().width( QString::number( page ) ),
+                        view.bottom() + p.fontMetrics().ascent() + 5, QString::number( page ) );
+            if ( view.top() - margin >= richText.height() )
+                break;
+            printer->newPage();
+            page++;
+        } while (TRUE);
+
+        statusBar()->message( "Printing completed", 2000 );
+    } else {
+        statusBar()->message( "Printing aborted", 2000 );
+    }*/
+}
+
+
 
 /* END CANVASWINDOW.CC */
