@@ -742,7 +742,7 @@ static void check_rico_half_buff(P2d_rec *buff, size_t beg, size_t end)
     if (stuck_bin == -1)
     {
       fprintf(stderr, "adsIO.c:  Impossible.\n");
-      exit(1);
+      quit();
     }
 
     unsigned long mask1 = 0x01 << stuck_bin;

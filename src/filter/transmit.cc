@@ -3,6 +3,8 @@
 #include <zlib.h>
 #include <sys/param.h>
 
+void quit();
+
 sqlTransmit::sqlTransmit(const std::string ac) : _aircraft(ac)
 {
   _timeInterval = 0;
@@ -38,7 +40,7 @@ void sqlTransmit::sendString(const std::string& str)
   if ((dir = getenv("XMIT_DIR")) == 0)
   {
     fprintf(stderr, "env XMIT_DIR undefined, fatal for '-x'\n");
-    exit(1);
+    quit();
   }
 
   {

@@ -309,6 +309,15 @@ void CreateNetCDF(const char fileName[])
     if ((rp = raw[i])->Output == false)
       continue;
 
+    if (rp->OutputRate == 0)
+    {
+      char msg[256];
+
+      sprintf(msg, "%s: Assertion `OutputRate > 0' failed.", rp->name);
+      LogMessage(msg);
+      quit();
+    }
+
     // Check to see if dimension exists.  If not, create it.
     if (_rateDimIDs.find(rp->OutputRate) == _rateDimIDs.end())
     {
@@ -395,6 +404,15 @@ void CreateNetCDF(const char fileName[])
     DERTBL *dp;
     if ((dp = derived[i])->Output == false)
       continue;
+
+    if (dp->OutputRate == 0)
+    {
+      char msg[256];
+
+      sprintf(msg, "%s: Assertion `OutputRate > 0' failed.", dp->name);
+      LogMessage(msg);
+      quit();
+    }
 
     // Check to see if dimension exists.  If not, create it.
     if (_rateDimIDs.find(dp->OutputRate) == _rateDimIDs.end())
