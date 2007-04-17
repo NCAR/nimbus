@@ -277,7 +277,7 @@ void AddPMS1dAttrs(int ncid, var_base * rp)
     fprintf(stderr, "PMSspecs file contains mid-point, not end-point cell diameters for %s %s.\n", rp->name, rp->SerialNumber.c_str());
     fprintf(stderr, "Nimbus was modified on 9/5/98 to use end-points.  Please fix.\n");
     ncclose(ncid);
-    exit(1);
+    quit();
   }
 }
 
