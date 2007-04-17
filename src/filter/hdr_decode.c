@@ -390,7 +390,18 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     }
     else
       location[0] = '\0';
+
     rate = (int)ceil(var->getSampleRate());
+
+    if (rate == 0)
+    {
+      char msg[256];
+
+      sprintf(msg, "hdr_decode.c: %s: Assertion `SampleRate > 0' failed.", name);
+      LogMessage(msg);
+      quit();
+    }
+
     length = var->getLength();
 
 //printf("DecodeHeader3: adding %s, converter = %d, rate = %d\n",
