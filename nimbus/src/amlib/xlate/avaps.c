@@ -35,6 +35,16 @@ extern char	*AVAPSrecord[];
 
 
 /* -------------------------------------------------------------------- */
+void xldsnum(RAWTBL *varp, void *input, NR_TYPE *output)
+{
+  int   avapsIndex;
+
+  avapsIndex = atoi(strchr(varp->name, '_') + 1);
+  *output = avapsIndex;
+
+}       /* END XLDSNUM */
+
+/* -------------------------------------------------------------------- */
 void xldsat(RAWTBL *varp, void *input, NR_TYPE *output)
 {
   int	avapsIndex;
