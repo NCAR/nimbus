@@ -17,6 +17,18 @@ DataMng::DataMng(FILE * fp, short b) : _fp(fp)
   _init(b);
 }
 
+DataMng::DataMng()
+{
+  _fsize=0;
+  _bit_n=0;
+  _fp=NULL;
+  _pts=NULL;
+}
+
+
+void DataMng::SetBt(short b) {
+  _init(b);
+}
 /* -------------------------------------------------------------------- */
 bool DataMng::Posfp() {
   if (!_chkInit()) {return false;}
@@ -39,7 +51,8 @@ bool DataMng::Posfp() {
 
   //check if the same file size
   if (_fsize!=0 && size==_fsize) {
-    printf("\n Same file size!");
+    QTime t =QTime::currentTime();
+    std::cout<<"\n Same file size! "<<t.hour()<<":"<<t.minute()<<":"<<t.second()<<std::endl;
     return false;
   }
   _fsize = size;
@@ -176,7 +189,7 @@ void DataMng::_init( short b)
 
 /* -------------------------------------------------------------------- */
 bool DataMng::_chkInit() {
-  if (_bit_n<=0) {std::cout << "Initialize class DataMng is required! \n"<< std::endl; return false;}
+  if (_bit_n<=0 ||_fp==NULL ) {std::cout << "Initialize class DataMng is required! \n"<< std::endl; return false;}
   return true;
 }
 

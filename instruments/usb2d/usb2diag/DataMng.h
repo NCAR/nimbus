@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <qwidget.h>
+#include <qdatetime.h>
  
 const unsigned  short  TBYTE    = 4096;
 
@@ -37,10 +38,12 @@ class DataMng
 {
 public:
   DataMng( FILE * fp,  short bitn);
+  DataMng();
   virtual ~DataMng()   { }
   virtual bool         Posfp();
   virtual QPointArray* GetPoints();
-  
+  void    Setfp(FILE* fp) {_fp=fp;}
+  void    SetBt(short b );
 protected:
 
   virtual void _getRecord(int x, int y, unsigned char* data_p);
