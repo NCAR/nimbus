@@ -21,7 +21,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2007
 #include "DataPlot.h"
 
 /* -------------------------------------------------------------------- */
-CanvasWindow::CanvasWindow(QApplication *qApp, const char * file_name) : QMainWindow(0, "canvas"), _app(qApp)
+CanvasWindow::CanvasWindow(QApplication *qApp, const char * file_name) : QMainWindow(0, "canvas"), _app(qApp), _fn((char*)file_name)
 {
   
   QToolBar *toolBar = new QToolBar(this, "options");
@@ -55,13 +55,7 @@ CanvasWindow::CanvasWindow(QApplication *qApp, const char * file_name) : QMainWi
         help->insertItem( "&About", this, SLOT(about()), Key_F1 );
 
 */
-
-  if ((_fp = fopen(file_name, "r")) == 0)
-  {
-    std::cerr << "No file " << file_name <<"\n"<< std::endl;
-  } else{
-    _startplot();   
-  }
+  _startplot();
   statusBar()->message( "Ready", 2000 );
 
 }	/* END CONSTRUCTOR */
@@ -70,8 +64,8 @@ CanvasWindow::CanvasWindow(QApplication *qApp, const char * file_name) : QMainWi
 void CanvasWindow::_openf()
 {
   //std::cout<<env(DATA_DIR)<<std::endl;
-  QString appdir= _app->applicationDirPath();
-  QFileDialog *dlg = new QFileDialog(_app->applicationDirPath().ascii(), 
+  //QString appdir= _app->applicationDirPath();
+  QFileDialog *dlg = new QFileDialog(getenv("DATA_DIR"), 
   QString::null, 0, 0, TRUE );
   dlg->setCaption( QFileDialog::tr( "Open Data File" ) );
   dlg->setMode( QFileDialog::ExistingFile );
@@ -79,27 +73,25 @@ void CanvasWindow::_openf()
   QString file_name;
   if ( dlg->exec() == QDialog::Accepted ) {
     file_name = dlg->selectedFile();
-    file_name = file_name.section('/',-1);
-    file_name = (appdir+"/"+file_name).ascii(); 
+    //file_name = file_name.section('/',-1);
+    //file_name = appdir+"/"+file_name; 
     std::cout << "selected name:" << file_name <<"\n"<<std::endl;
   }
   delete dlg;
 
-  //std::cout << "selected name2:" << file_name <<"\n"<<std::endl;
-  //delete _fp;
-  if ((_fp = fopen(file_name, "r")) == 0)
-  {
-    std::cerr << "No file. " << file_name << std::endl;
-  } else{
-    std::cout << "Start Plotting. " << std::endl;
-    _startplot();   
-  }
+  _fn = (char*)file_name.ascii();
+  _startplot();
+  
 }	/* END file open */
 
 /* -------------------------------------------------------------------- */
 void CanvasWindow::_startplot()
 {
-  //if (_plot!=NULL) {delete _plot;}
+  if ((_fp = fopen(_fn, "r")) == 0)
+  {
+    std::cerr << "No file " << _fn <<"\n"<< std::endl;
+    return;
+  } 
   _plot = new DataPlot(this, _fp);
   setCentralWidget(_plot);
   _plot->show();

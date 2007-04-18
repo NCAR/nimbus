@@ -11,10 +11,11 @@ const unsigned long long DataMng::_syncMask = 0xFFFFFFF000000000LL;
 
 
 /* -------------------------------------------------------------------- */
-DataMng::DataMng(FILE * fp) : _fp(fp)
+DataMng::DataMng(FILE * fp, short bitn) : _fp(fp)
 {
   _fsize=0;
-  _pts = new QPointArray(TBYTE*8*ROW_N2D*RCDPR_N2D);
+  _init(bitn);
+
 }
 
 
@@ -34,10 +35,10 @@ bool DataMng::posfp() {
   }
 
   //check if the record is more than we can display
-  int s    = ROW_N2D*RCDPR_N2D*(BYTE_USB2D_REC+sizeof(nidas_hdr));
+ // int s    = _row_n*_rcdpr_n*(_byte_usb2d_rcd+sizeof(nidas_hdr));
   int offs =(p - buff) + 11;
 
-  if ((size-offs)>s) {offs= size-s;}
+ // if ((size-offs)>s) {offs= size-s;}
   fseek(_fp, offs, 0);
 
   //check if the same file size
@@ -53,56 +54,118 @@ bool DataMng::posfp() {
 /* -------------------------------------------------------------------- */
 QPointArray* DataMng::getPoints()
 {
-  nidas_hdr	hdr;
-  usb2d_rec	twod_rec;
+  _get2drec(); 
   size_t	x, y = 10;
-
   _cnt = 0;
-  for (int i = 0; i < ROW_N2D; ++i)
+  for (int i = 0; i < _row_n; ++i)
   {
     x = 5;
-    for (int j = 0; j < RCDPR_N2D; ++j)
+    for (int j = 0; j < _rcdpr_n; ++j)
     {
-      fread(&hdr, sizeof(nidas_hdr), 1, _fp);
-      fread(&twod_rec, hdr.length, 1, _fp);
-      printf("%llu %lu %lu %lx %lx\n", hdr.timetag, hdr.length,
-		hdr.sample_id, twod_rec.tas, twod_rec.id);
-      getRecord64(x, y, (unsigned long long *)twod_rec.data);
-      x += SLIDE_N2D+1;
+      if (_bit_n ==64) {
+        _getRecord64(x, y, (unsigned long long *)_twod_rec[i*j+j].data);
+        x += _slide_n+1;
+      }
     }
-    y += 75;
+    y += _bit_n+10;
   }
   return _pts;
 }
 
 /* -------------------------------------------------------------------- */
-void DataMng::getRecord64(int start_x, int start_y, unsigned long long * data_p)
+void DataMng::_getRecord64(int start_x, int start_y, unsigned long long * data_p)
 {
-  //QPainter _painter(this);
-  //_painter.setPen(Qt::blue);
- 
-  for (int i = 0; i < SLIDE_N2D; ++i)
+  for (int i = 0; i < _slide_n; ++i)
   {
     unsigned long long slice = flipLonglong(data_p[i]);
 
 //    if ((slice & _syncMask) == _syncWord)
 //      printf("%llu\n", slice & ~_syncMask);	// Print timing word.
 
-    for (int j = 0; j < BIT_N2D; ++j)
+    for (int j = 0; j < _bit_n; ++j)
     {
       if ( !((slice >> j) & 0x00000001) )
       {
-        _pts->setPoint(_cnt, start_x + i, start_y + ((BIT_N2D-1)-j));
+        _pts->setPoint(_cnt, start_x + i, start_y + ((_bit_n-1)-j));
         ++_cnt;
       }
     }
   }
- 
- // _painter.drawPoints(pts, 0, cnt);
 }
 
 
-int DataMng::getP()
+void DataMng::_init( short b)
 {
-  return TBYTE*8*ROW_N2D*RCDPR_N2D;
+  _bit_n 	= b;
+  if (_bit_n==64) {
+    _byte_n= _bit_n/8; 
+    _slide_n= TBYTE/_byte_n;
+    _row_n= 8;
+    _rcdpr_n= 2; 
+    _byte_usb2d_rcd= 8 +TBYTE; //4104
+    _pts= new QPointArray(TBYTE*8*_row_n*_rcdpr_n); 
+  }
+
+  if (_bit_n==32) {
+    _byte_n= _bit_n/8; 
+    _slide_n= TBYTE/_byte_n;
+    _row_n= 16;
+    _rcdpr_n= 1; 
+    _byte_usb2d_rcd= 8 +TBYTE; //????32
+    _pts= new QPointArray(TBYTE*8*_row_n*_rcdpr_n); 
+  }
+
 }
+
+
+void DataMng::_get2drec() {
+   int trcd = _row_n*_rcdpr_n;
+   _hdr = new nidas_hdr[trcd];
+   _twod_rec = new usb2d_rec[trcd];
+   int c = 0;
+
+   //get the last few records
+   while (!feof(_fp)){
+     nidas_hdr	h;
+     usb2d_rec d;
+
+     fread(&h, sizeof(nidas_hdr), 1, _fp);
+     if (h.length==_byte_usb2d_rcd)
+     {
+       fread(&d, h.length, 1, _fp);
+       _hdr[c]=h;
+       _twod_rec[c]=d;
+       c++;
+       if (c>=trcd) {c=0;}
+
+     } else {
+       unsigned char dd[h.length];
+       fread(&dd, h.length, 1, _fp);
+     }
+   } 
+  
+   //put cycled buff back to the order
+   nidas_hdr	hdr[trcd];
+   usb2d_rec	twod_rec[trcd];
+  
+   if ((c> 0)&& (_hdr[c].length>0)) {
+     for (int i =0; i<trcd; i++) {
+       hdr[i]= _hdr[c];
+       twod_rec[i]= _twod_rec[c];
+       c++;
+       if (c>=trcd) {c=0;}
+     }
+     //back to _hdr and _twod_rec
+     for (int i =0; i<trcd; i++) {
+       _hdr[i]= hdr[i];
+       _twod_rec[i]= twod_rec[i];
+     }
+   } 
+
+   //print out data
+   for (int i=0; i<trcd; i++) {
+     printf("%llu %lu %lu %lx %lx\n", _hdr[i].timetag, _hdr[i].length,
+		_hdr[i].sample_id, _twod_rec[i].tas, _twod_rec[i].id);
+   }
+}
+

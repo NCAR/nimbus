@@ -10,7 +10,7 @@
 DataPlot::DataPlot(QWidget * parent, FILE * fp): QWidget(parent), _freeze(false)
 {
   //if find 64
-  dm= (DataMng*) new DataMng(fp);
+  dm= (DataMng*) new DataMng(fp, 64);
   dm->posfp();
   plot();
   startTimer(2000);
@@ -56,6 +56,6 @@ void DataPlot::plot()
   QPainter _painter(this);
   _painter.setPen(Qt::blue);
   QPointArray *pts=dm->getPoints();
-  _painter.drawPoints(*pts, 0, dm->getP());
+  _painter.drawPoints(*pts, 0, pts->count());
 }
 

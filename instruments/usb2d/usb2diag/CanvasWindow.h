@@ -33,6 +33,7 @@ private:
   FILE * _fp;
   QApplication*  _app;
   QPrinter     *printer;
+  char*  _fn;
 
   DataPlot * _plot;
   void _startplot();
