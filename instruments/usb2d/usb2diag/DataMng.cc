@@ -34,11 +34,7 @@ bool DataMng::posfp() {
     exit(-1);
   }
 
-  //check if the record is more than we can display
- // int s    = _row_n*_rcdpr_n*(_byte_usb2d_rcd+sizeof(nidas_hdr));
   int offs =(p - buff) + 11;
-
- // if ((size-offs)>s) {offs= size-s;}
   fseek(_fp, offs, 0);
 
   //check if the same file size
@@ -60,12 +56,10 @@ QPointArray* DataMng::getPoints()
   for (int i = 0; i < _row_n; ++i)
   {
     x = 5;
-    for (int j = 0; j < _rcdpr_n; ++j)
+    for (int j = 0; j< _rcdpr_n; ++j)
     {
-      if (_bit_n ==64) {
-        _getRecord64(x, y, (unsigned long long *)_twod_rec[i*j+j].data);
-        x += _slide_n+1;
-      }
+       _getRecord(x, y, (unsigned char*)_twod_rec[i*_rcdpr_n+j].data);
+       x += _slide_n+1;
     }
     y += _bit_n+10;
   }
@@ -73,24 +67,30 @@ QPointArray* DataMng::getPoints()
 }
 
 /* -------------------------------------------------------------------- */
-void DataMng::_getRecord64(int start_x, int start_y, unsigned long long * data_p)
+void DataMng::_getRecord(int start_x, int start_y, unsigned char * data_p)
 {
   for (int i = 0; i < _slide_n; ++i)
   {
-    unsigned long long slice = flipLonglong(data_p[i]);
-
+    //get  and flip slide
+    unsigned char slide[_byte_n];
+    for (int n=0; n<_byte_n; ++n) {
+      slide[_byte_n-1-n]=*data_p; data_p++;
+    }
 //    if ((slice & _syncMask) == _syncWord)
 //      printf("%llu\n", slice & ~_syncMask);	// Print timing word.
-
-    for (int j = 0; j < _bit_n; ++j)
-    {
-      if ( !((slice >> j) & 0x00000001) )
+  
+    //check every bit
+    for (int b=0; b<_byte_n; ++b) {
+      for (int j = 0; j < 8; ++j)
       {
-        _pts->setPoint(_cnt, start_x + i, start_y + ((_bit_n-1)-j));
-        ++_cnt;
-      }
-    }
-  }
+        if ( !((slide[b] >> j) & 0x00000001) )
+        {
+          _pts->setPoint(_cnt, start_x + i, start_y + _bit_n-(8*b+j));
+          ++_cnt;
+        }
+      }//j
+    }//b
+  }//i
 }
 
 
@@ -99,11 +99,9 @@ void DataMng::_init( short b)
   _bit_n 	= b;
   if (_bit_n==64) {
     _byte_n= _bit_n/8; 
-    _slide_n= TBYTE/_byte_n;
     _row_n= 8;
     _rcdpr_n= 2; 
     _byte_usb2d_rcd= 8 +TBYTE; //4104
-    _pts= new QPointArray(TBYTE*8*_row_n*_rcdpr_n); 
   }
 
   if (_bit_n==32) {
@@ -112,9 +110,11 @@ void DataMng::_init( short b)
     _row_n= 16;
     _rcdpr_n= 1; 
     _byte_usb2d_rcd= 8 +TBYTE; //????32
-    _pts= new QPointArray(TBYTE*8*_row_n*_rcdpr_n); 
   }
 
+  _slide_n= TBYTE/_byte_n;
+  _pts= new QPointArray(TBYTE*8*_row_n*_rcdpr_n); 
+ 
 }
 
 

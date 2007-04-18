@@ -50,7 +50,7 @@ protected:
    * @param y is the starting y coordiante for the record (upper left).
    * @param data_p is the pointer to the 2D data record (sans header).
    */
-  virtual void _getRecord64(int x, int y, unsigned long long * data_p);
+  virtual void _getRecord(int x, int y, unsigned char* data_p);
   static const unsigned long long _syncMask, _syncWord;
 
   short  _bit_n ;	// = 64 32;
@@ -67,28 +67,13 @@ protected:
   void          _init(short bitn);
 
 
-inline long long flipLonglongIn(const void* p)
-{
-    union {
-      long long v;
-      char b[8];
-    } u;
-    const char* cp = (const char*)p;
-    for (int i = 7; i >= 0; i--) u.b[i] = *cp++;
-    return u.v;
-}
-
-inline long long flipLonglong(const long long& p)
-{
-    return flipLonglongIn(&p);
-}
-
 
 private:
   FILE * _fp;
   int    _fsize;
   QPointArray *_pts;
   size_t _cnt;
+  
 };
 
 #endif

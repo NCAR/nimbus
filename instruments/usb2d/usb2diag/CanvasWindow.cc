@@ -72,8 +72,6 @@ void CanvasWindow::_openf()
   QString file_name;
   if ( dlg->exec() == QDialog::Accepted ) {
     file_name = dlg->selectedFile();
-    //file_name = file_name.section('/',-1);
-    //file_name = appdir+"/"+file_name; 
     std::cout << "selected name:" << file_name <<"\n"<<std::endl;
   }
   delete dlg;

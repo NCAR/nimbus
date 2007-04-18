@@ -55,6 +55,8 @@ void DataPlot::plot()
   QPainter _painter(this);
   _painter.setPen(Qt::blue);
   QPointArray *pts=dm->getPoints();
-  _painter.drawPoints(*pts, 0, pts->count());
+  if (pts->count() >0) {
+    _painter.drawPoints(*pts, 0, pts->count());
+  }
 }
 
