@@ -28,6 +28,7 @@ public:
 protected slots:
   void	_print();
   void	_openf();
+  void  _rstTimer();
 
 private:
   FILE * _fp;

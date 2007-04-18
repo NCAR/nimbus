@@ -17,6 +17,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2007
 #include <qwhatsthis.h>
 #include <qsimplerichtext.h>
 #include <qstylesheet.h>
+#include <qpopupmenu.h> 
+#include <qinputdialog.h> 
+#include <qmessagebox.h> 
 
 #include "DataPlot.h"
 
@@ -34,6 +37,12 @@ CanvasWindow::CanvasWindow(QApplication *qApp, const char * file_name) : QMainWi
   f->setUsesBigPixmap(false);
   connect(f, SIGNAL(clicked()), SLOT(_openf()));
 
+  //QPopupMenu *o = new QPopupMenu( toolBar, "Option");
+  QToolButton *t = new QToolButton(toolBar);
+  t->setTextLabel("TimeInterval");
+  t->setUsesTextLabel(true);
+  t->setUsesBigPixmap(false);
+  connect(t, SIGNAL(clicked()), SLOT(_rstTimer()));
 
   QToolButton *p = new QToolButton(toolBar);
   p->setTextLabel("Print");
@@ -48,13 +57,6 @@ CanvasWindow::CanvasWindow(QApplication *qApp, const char * file_name) : QMainWi
   q->setUsesBigPixmap(false);
   connect(q, SIGNAL(clicked()), qApp, SLOT(quit()));
 
-
-/* QPopupMenu * help = new QPopupMenu( this );
-        menuBar()->insertItem( "&Help", help );
-
-        help->insertItem( "&About", this, SLOT(about()), Key_F1 );
-
-*/
   _startplot();
   statusBar()->message( "Ready", 2000 );
 
@@ -63,10 +65,7 @@ CanvasWindow::CanvasWindow(QApplication *qApp, const char * file_name) : QMainWi
 /* -------------------------------------------------------------------- */
 void CanvasWindow::_openf()
 {
-  //std::cout<<env(DATA_DIR)<<std::endl;
-  //QString appdir= _app->applicationDirPath();
-  QFileDialog *dlg = new QFileDialog(getenv("DATA_DIR"), 
-  QString::null, 0, 0, TRUE );
+  QFileDialog *dlg = new QFileDialog(getenv("DATA_DIR"), QString::null, 0, 0, TRUE );
   dlg->setCaption( QFileDialog::tr( "Open Data File" ) );
   dlg->setMode( QFileDialog::ExistingFile );
   
@@ -89,7 +88,7 @@ void CanvasWindow::_startplot()
 {
   if ((_fp = fopen(_fn, "r")) == 0)
   {
-    std::cerr << "No file " << _fn <<"\n"<< std::endl;
+    std::cerr << "No file " << _fn << "\n" << std::endl;
     return;
   } 
   _plot = new DataPlot(this, _fp);
@@ -97,6 +96,29 @@ void CanvasWindow::_startplot()
   _plot->show();
 }
         /* END _startplot */
+
+/* -------------------------------------------------------------------- */
+void CanvasWindow::_rstTimer()
+{
+  if (_fp==NULL)
+  {
+    QMessageBox::warning( this, "Time Interval",
+        "Please open a data file first.\n"
+        "", 0, 0, 1 ) ;
+    return; 
+  } 
+
+  bool ok;
+  int res = QInputDialog::getInteger(
+        "Reset Timer", "Please enter a time interval (seconds):", 2, 0, 500, 2,
+            &ok, this );
+  if ( !ok ) {
+    std::cerr << "No Timer Interval entered. \n"<< std::endl;
+    return;
+  } 
+  std::cout << "Input t_interval:" << res <<"\n"<< std::endl;
+  _plot->RstTimer(res);
+}	/* END RstTimer */
 
 
 /* -------------------------------------------------------------------- */
@@ -111,6 +133,8 @@ void CanvasWindow::_startplot()
    }
 
 }*/	/* END PRINT */
+
+
 
 void CanvasWindow::_print()
 {

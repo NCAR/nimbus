@@ -38,7 +38,6 @@ void DataPlot::RstTimer(int s)
 {
   killTimers();
   startTimer(s*1000);
-
 }
 /* -------------------------------------------------------------------- */
 void DataPlot::paintEvent(QPaintEvent * e)

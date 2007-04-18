@@ -135,6 +135,8 @@ void DataMng::_get2drec() {
        fread(&d, h.length, 1, _fp);
        _hdr[c]=h;
        _twod_rec[c]=d;
+     //  printf("-----%llu %lu %lu %lx %lx\n", h.timetag, h.length,
+	//	h.sample_id, d.tas, d.id);
        c++;
        if (c>=trcd) {c=0;}
 
