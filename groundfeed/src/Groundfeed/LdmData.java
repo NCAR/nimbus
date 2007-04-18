@@ -89,7 +89,7 @@ public class LdmData {
       }
       try {
          Process child = Runtime.getRuntime().exec("gzip " + currentFile);
-         child = Runtime.getRuntime().exec("/home/local/bin/pqinsert " + currentFile + ".gz");
+         child = Runtime.getRuntime().exec("/usr/local/ldm/bin/pqinsert " + currentFile + ".gz");
       } catch (IOException e) {
          System.out.println("Could not execute command" + e);
       }

@@ -8,7 +8,7 @@ setenv XMIT_DIR /tmp/xmit
 /bin/mkdir -p $XMIT_DIR
 
 # Expire any existing stuff (or is this done on the ground side???)
-/home/local/bin/pqexpire -a 0.001 -i 0 -p "nimbus_sql"
+/usr/local/ldm/bin/pqexpire -a 0.001 -i 0 -p "nimbus_sql"
 
 # Remove any existing sql files.
 set nonomatch
