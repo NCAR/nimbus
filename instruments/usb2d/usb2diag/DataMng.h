@@ -38,8 +38,8 @@ class DataMng
 public:
   DataMng( FILE * fp,  short bitn);
   virtual ~DataMng()   { }
-  virtual bool         posfp();
-  virtual QPointArray* getPoints();
+  virtual bool         Posfp();
+  virtual QPointArray* GetPoints();
   
 protected:
 
@@ -65,7 +65,7 @@ protected:
   void           _get2drec();
   
   void          _init(short bitn);
-
+  bool          _chkInit();
 
 
 private:

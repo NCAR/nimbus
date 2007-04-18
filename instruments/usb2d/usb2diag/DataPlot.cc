@@ -11,8 +11,8 @@ DataPlot::DataPlot(QWidget * parent, FILE * fp): QWidget(parent), _freeze(false)
 {
   //if find 64
   dm= (DataMng*) new DataMng(fp, 64);
-  dm->posfp();
-  plot();
+  dm->Posfp();
+  Plot();
   startTimer(2000);
 }
 
@@ -28,8 +28,8 @@ void DataPlot::timerEvent(QTimerEvent *)
 {   
   if (_freeze)
     return;    
-  if (dm->posfp()){
-    plot();
+  if (dm->Posfp()){
+    Plot();
   }
 }
 
@@ -43,18 +43,18 @@ void DataPlot::RstTimer(int s)
 void DataPlot::paintEvent(QPaintEvent * e)
 {
   QWidget::paintEvent(e);
-  dm->posfp();
-  plot();
+  dm->Posfp();
+  Plot();
 }
 
 
 
-void DataPlot::plot() 
+void DataPlot::Plot() 
 {
   erase(rect());
   QPainter _painter(this);
   _painter.setPen(Qt::blue);
-  QPointArray *pts=dm->getPoints();
+  QPointArray *pts=dm->GetPoints();
   if (pts->count() >0) {
     _painter.drawPoints(*pts, 0, pts->count());
   }

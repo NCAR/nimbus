@@ -11,15 +11,15 @@ const unsigned long long DataMng::_syncMask = 0xFFFFFFF000000000LL;
 
 
 /* -------------------------------------------------------------------- */
-DataMng::DataMng(FILE * fp, short bitn) : _fp(fp)
+DataMng::DataMng(FILE * fp, short b) : _fp(fp)
 {
   _fsize=0;
-  _init(bitn);
-
+  _init(b);
 }
 
-
-bool DataMng::posfp() {
+/* -------------------------------------------------------------------- */
+bool DataMng::Posfp() {
+  if (!_chkInit()) {return false;}
   //get filesize
   fseek (_fp, 0, SEEK_END);
   int size=ftell(_fp);
@@ -48,8 +48,9 @@ bool DataMng::posfp() {
 }
 
 /* -------------------------------------------------------------------- */
-QPointArray* DataMng::getPoints()
-{
+QPointArray* DataMng::GetPoints()
+{ 
+  if (!_chkInit()) {return NULL;}
   _get2drec(); 
   size_t	x, y = 10;
   _cnt = 0;
@@ -94,30 +95,7 @@ void DataMng::_getRecord(int start_x, int start_y, unsigned char * data_p)
 }
 
 
-void DataMng::_init( short b)
-{
-  _bit_n 	= b;
-  if (_bit_n==64) {
-    _byte_n= _bit_n/8; 
-    _row_n= 8;
-    _rcdpr_n= 2; 
-    _byte_usb2d_rcd= 8 +TBYTE; //4104
-  }
-
-  if (_bit_n==32) {
-    _byte_n= _bit_n/8; 
-    _slide_n= TBYTE/_byte_n;
-    _row_n= 16;
-    _rcdpr_n= 1; 
-    _byte_usb2d_rcd= 8 +TBYTE; //????32
-  }
-
-  _slide_n= TBYTE/_byte_n;
-  _pts= new QPointArray(TBYTE*8*_row_n*_rcdpr_n); 
- 
-}
-
-
+/* -------------------------------------------------------------------- */
 void DataMng::_get2drec() {
    int trcd = _row_n*_rcdpr_n;
    _hdr = new nidas_hdr[trcd];
@@ -171,3 +149,33 @@ void DataMng::_get2drec() {
    }
 }
 
+
+/* -------------------------------------------------------------------- */
+void DataMng::_init( short b)
+{
+  _bit_n 	= b;
+  if (_bit_n==64) {
+    _byte_n= _bit_n/8; 
+    _row_n= 8;
+    _rcdpr_n= 2; 
+    _byte_usb2d_rcd= 8 +TBYTE; //4104
+  }
+
+  if (_bit_n==32) {
+    _byte_n= _bit_n/8; 
+    _slide_n= TBYTE/_byte_n;
+    _row_n= 16;
+    _rcdpr_n= 1; 
+    _byte_usb2d_rcd= 8 +TBYTE; //????32
+  }
+
+  _slide_n= TBYTE/_byte_n;
+  _pts= new QPointArray(TBYTE*8*_row_n*_rcdpr_n); 
+ 
+}
+
+/* -------------------------------------------------------------------- */
+bool DataMng::_chkInit() {
+  if (_bit_n<=0) {std::cout << "Initialize class DataMng is required! \n"<< std::endl; return false;}
+  return true;
+}
