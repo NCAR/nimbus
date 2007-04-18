@@ -3,6 +3,7 @@
 
 #include <qwidget.h>
 #include "DataMng.h"
+#include "DataUsb2d64.h"
  
 
 /* -------------------------------------------------------------------- */
@@ -27,7 +28,7 @@ protected:
 
 private:
   bool     _freeze;
-  DataMng* dm;
+  DataUsb2d64* dm;
 };
 
 #endif

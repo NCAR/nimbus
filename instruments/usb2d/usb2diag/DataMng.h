@@ -31,7 +31,7 @@ typedef struct		// length = 8
 
 /* -------------------------------------------------------------------- */
 /**
- * Class to plot/draw PMS-2D ercords on a Qt Widget.
+ * Class to manage usb-2d data.
  */
 class DataMng
 {
@@ -43,13 +43,6 @@ public:
   
 protected:
 
-
-  /**
-   * Display 1 64 bit 2D record.
-   * @param x is the starting x coordiante for the record (upper left).
-   * @param y is the starting y coordiante for the record (upper left).
-   * @param data_p is the pointer to the 2D data record (sans header).
-   */
   virtual void _getRecord(int x, int y, unsigned char* data_p);
   static const unsigned long long _syncMask, _syncWord;
 

@@ -6,8 +6,8 @@
 #include <cstdio>
 #include <unistd.h>
 
-const unsigned long long DataMng::_syncWord = 0xAAAAAAA000000000LL;
-const unsigned long long DataMng::_syncMask = 0xFFFFFFF000000000LL;
+//const unsigned long long DataMng::_syncWord = 0xAAAAAAA000000000LL;
+//const unsigned long long DataMng::_syncMask = 0xFFFFFFF000000000LL;
 
 
 /* -------------------------------------------------------------------- */
@@ -179,3 +179,5 @@ bool DataMng::_chkInit() {
   if (_bit_n<=0) {std::cout << "Initialize class DataMng is required! \n"<< std::endl; return false;}
   return true;
 }
+
+

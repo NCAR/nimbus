@@ -6,11 +6,12 @@
 #include <cstdio>
 #include <unistd.h>
 
+
 /* -------------------------------------------------------------------- */
 DataPlot::DataPlot(QWidget * parent, FILE * fp): QWidget(parent), _freeze(false)
 {
   //if find 64
-  dm= (DataMng*) new DataMng(fp, 64);
+  dm= new DataUsb2d64(fp);
   dm->Posfp();
   Plot();
   startTimer(2000);
