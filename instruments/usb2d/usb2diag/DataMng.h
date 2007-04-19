@@ -39,15 +39,13 @@ class DataMng
 public:
   DataMng( FILE * fp,  short bitn);
   DataMng();
-  virtual ~DataMng()   { }
-  virtual bool         Posfp();
-  virtual QPointArray* GetPoints();
+  virtual ~DataMng();
+  virtual bool         IsSameFSize();
+  virtual QPointArray* GetPArray() {return _pts;};
   void    Setfp(FILE* fp) {_fp=fp;}
-  void    SetBt(short b );
+  void    SetBt(short b ) {_bit_n=b;}
+  void    Init();
 protected:
-
-  virtual void _getRecord(int x, int y, unsigned char* data_p);
-  static const unsigned long long _syncMask, _syncWord;
 
   short  _bit_n ;	// = 64 32;
   short  _byte_n;	// = 8 4;
@@ -58,18 +56,14 @@ protected:
 
   nidas_hdr*	_hdr;
   usb2d_rec*	_twod_rec;
-  void           _get2drec();
+   
+  FILE * 	_fp;
+  fpos_t        _pp; 
+  int    	_fsize;
+  QPointArray*	_pts;
+  size_t 	_cnt;
   
-  void          _init(short bitn);
   bool          _chkInit();
-
-
-private:
-  FILE * _fp;
-  int    _fsize;
-  QPointArray *_pts;
-  size_t _cnt;
-  
 };
 
 #endif

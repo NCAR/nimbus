@@ -86,12 +86,13 @@ void CanvasWindow::_startplot()
 {
   if ((_fp = fopen(_fn, "r")) == 0)
   {
-    std::cerr << "No file " << _fn << "\n" << std::endl;
+    std::cerr << "No file \n\n" << _fn << "\n" << std::endl;
     return;
   } 
   _plot = new DataPlot(this, _fp);
   setCentralWidget(_plot);
   _plot->show();
+//this->setCursor(Qt::WaitCursor);
 }
         /* END _startplot */
 

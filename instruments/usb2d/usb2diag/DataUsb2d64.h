@@ -17,13 +17,14 @@ public:
   DataUsb2d64 ( FILE * fp);
   virtual ~DataUsb2d64() {}  
 
- 
+  virtual QPointArray* GetPoints();
   
-protected:
-
-
 private:
-  FILE * _fp;
+  virtual void _getRecord(int x, int y, unsigned char* data_p); 
+  virtual void _get2drec();
+
+  static const unsigned long long _syncMask, _syncWord;
+
 };
 
 #endif

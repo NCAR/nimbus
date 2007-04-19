@@ -14,7 +14,7 @@ class DataPlot: public QWidget
 {
 public:
   DataPlot(QWidget * parent, FILE * fp);
-  virtual ~DataPlot() { }
+  virtual ~DataPlot() { if (dm !=NULL) {delete dm;}}
 
   void  Plot();
   void	ToggleFreeze();
