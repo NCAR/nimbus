@@ -20,8 +20,7 @@ public:
   void  Plot(bool pnew=true);
   void	ToggleFreeze();
   void	RstTimer(int s);
-  void  Prt();
-
+ 
 protected:
   virtual void timerEvent(QTimerEvent * e);
 
@@ -30,7 +29,6 @@ protected:
 
 private:
   bool     _freeze;
-  QPrinter _printer;
   DataUsb2d64* dm;
 };
 

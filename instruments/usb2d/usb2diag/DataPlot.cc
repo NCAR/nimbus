@@ -88,14 +88,3 @@ void DataPlot::Plot(bool pnew)
   
 }
 
-void DataPlot::Prt() {
-
-  if ( _printer.setup( this ) ) {
-    QPainter paint;
-    if( !paint.begin( &_printer ) ){
-      std::cerr<<"\n  printer error. \n";
-      return;
-    }
-//    drawIt( &paint );
-  }
-}
