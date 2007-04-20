@@ -6,9 +6,6 @@
 #include <cstdio>
 #include <unistd.h>
 
-//const unsigned long long DataMng::_syncWord = 0xAAAAAAA000000000LL;
-//const unsigned long long DataMng::_syncMask = 0xFFFFFFF000000000LL;
-
 
 /* -------------------------------------------------------------------- */
 DataMng::DataMng(FILE * fp, short b) 
@@ -36,6 +33,8 @@ DataMng::~DataMng() {
  
   if (_fp) { delete _fp;}
   if (_pts) { delete _pts;} 
+  if (_ptstx) { delete _ptstx;} 
+  if (_ptsln) { delete _ptsln;} 
 }
 
 /* -------------------------------------------------------------------- */
@@ -64,7 +63,7 @@ void DataMng::Init()
   if (!_chkInit()){return;}
   if (_bit_n==64) {
     _byte_n= _bit_n/8; 
-    _row_n= 8;
+    _row_n= 7;
     _rcdpr_n= 2; 
     _byte_usb2d_rcd= 8 +TBYTE; //4104
   }

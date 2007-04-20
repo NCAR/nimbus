@@ -41,7 +41,10 @@ public:
   DataMng();
   virtual ~DataMng();
   virtual bool         IsSameFSize();
-  virtual QPointArray* GetPArray() {return _pts;};
+  virtual QPointArray* GetPArray() {return _pts;}
+  virtual QPointArray* GetPtx()    {return _ptstx;}
+  virtual QPointArray* GetPln()    {return _ptsln;}
+  virtual QString      GetTx()     {return _text;}
   void    Setfp(FILE* fp) {_fp=fp;}
   void    SetBt(short b ) {_bit_n=b;}
   void    Init();
@@ -61,6 +64,9 @@ protected:
   fpos_t        _pp; 
   int    	_fsize;
   QPointArray*	_pts;
+  QPointArray*	_ptstx;
+  QPointArray*	_ptsln;
+  QString       _text;
   size_t 	_cnt;
   
   bool          _chkInit();

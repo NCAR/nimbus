@@ -16,7 +16,7 @@ public:
   DataPlot(QWidget * parent, FILE * fp);
   virtual ~DataPlot() { if (dm !=NULL) {delete dm;}}
 
-  void  Plot();
+  void  Plot(bool pnew=true);
   void	ToggleFreeze();
   void	RstTimer(int s);
 

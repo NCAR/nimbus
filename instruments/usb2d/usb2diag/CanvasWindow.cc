@@ -89,10 +89,15 @@ void CanvasWindow::_startplot()
     std::cerr << "No file \n\n" << _fn << "\n" << std::endl;
     return;
   } 
+             
+ // QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
+  setCursor(QCursor(Qt::WaitCursor));
   _plot = new DataPlot(this, _fp);
   setCentralWidget(_plot);
   _plot->show();
-//this->setCursor(Qt::WaitCursor);
+  unsetCursor();
+ // QApplication::restoreOverrideCursor();
+
 }
         /* END _startplot */
 

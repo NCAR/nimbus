@@ -7,9 +7,8 @@
 #include <qgarray.h>
 
 
-//const unsigned long long DataMng::_syncWord = 0xAAAAAAA000000000LL;
-//const unsigned long long DataMng::_syncMask = 0xFFFFFFF000000000LL;
-
+const unsigned long long DataUsb2d64::_syncWord = 0xAAAAAAA000000000LL;
+const unsigned long long DataUsb2d64::_syncMask = 0xFFFFFFF000000000LL;
 
 /* -------------------------------------------------------------------- */
 DataUsb2d64::DataUsb2d64 (FILE * fp) :DataMng(fp, 64)
@@ -24,19 +23,26 @@ QPointArray* DataUsb2d64::GetPoints()
 { 
   if (!_chkInit()) {return NULL;}
   _pts= new QPointArray(TBYTE*8*_row_n*_rcdpr_n); 
-
+  _ptstx= new QPointArray(_row_n*_rcdpr_n); 
+  _ptsln= new QPointArray(_row_n); 
+  _text ="";
   _get2drec(); 
-  size_t	x, y = 10;
+
+  size_t       xleft =5, ytop =8, rheight=27;
+  size_t       x, y = ytop;
   _cnt = 0;
   for (int i = 0; i < _row_n; ++i)
   {
-    x = 5;
+    x = xleft;
     for (int j = 0; j< _rcdpr_n; ++j)
     {
        _getRecord(x, y, (unsigned char*)_twod_rec[i*_rcdpr_n+j].data);
        x += _slide_n;
+       _text =_text +"Time:" + _hdr[i*_rcdpr_n+j].timetag + "   Tas:"+_twod_rec[i*_rcdpr_n+j].tas+ "~";
+       _ptstx->setPoint(i*_rcdpr_n+j, xleft+j*_slide_n, y+_bit_n+14);
     }
-    y += _bit_n+10;
+    _ptsln->setPoint(i, xleft, y-1);
+    y += _bit_n+rheight;
   }
    
   _pts->resize(_cnt );
@@ -54,13 +60,11 @@ void DataUsb2d64::_getRecord(int start_x, int start_y, unsigned char * data_p)
       s1[7-n]=*data_p; data_p++;
     }
 
-    unsigned long long* s2 = (unsigned long long*)s1;
-    unsigned long long slide = *s2;
-    //std::cout<<"\nlonglongslide: "<<slide<<std::endl<<std::endl;
+    unsigned long long slide = *(unsigned long long*)s1;
+    //if ((slide & _syncMask) == _syncWord)
+    //  printf("\ntime_wd:%llu\n", slide & ~_syncMask);	// Print timing word.
+      
     slide = ~slide;
-//    if ((slice & _syncMask) == _syncWord)
-//      printf("%llu\n", slice & ~_syncMask);	// Print timing word.
-  
     //check every bit
     unsigned long long  mask =1;
     for (int b=0; b<_bit_n; ++b) { //_bit_n=64
@@ -94,8 +98,8 @@ void DataUsb2d64::_get2drec() {
        fread(&d, h.length, 1, _fp);
        _hdr[c]=h;
        _twod_rec[c]=d;
-       //  printf("-----%llu %lu %lu %lx %lx\n", h.timetag, h.length,
-       //	h.sample_id, d.tas, d.id);p
+       //printf("-----%llu %lu %lu %lx %lx\n", h.timetag, h.length,
+       // 	h.sample_id, d.tas, d.id);
        c++;
        if (c>=trcd) { 
          c=0;
@@ -133,5 +137,6 @@ void DataUsb2d64::_get2drec() {
      printf("%llu %lu %lu %lx %lx\n", _hdr[i].timetag, _hdr[i].length,
 		_hdr[i].sample_id, _twod_rec[i].tas, _twod_rec[i].id);
    }
+   printf("one-run\n\n");
 }
 

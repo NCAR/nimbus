@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <unistd.h>
 #include <qcursor.h>
+#include <qapplication.h>
 
 
 /* -------------------------------------------------------------------- */
@@ -45,29 +46,46 @@ void DataPlot::RstTimer(int s)
 void DataPlot::paintEvent(QPaintEvent * e)
 {
   QWidget::paintEvent(e);
-  
-  erase(rect());
-  QPainter _painter(this);
-  _painter.setPen(Qt::blue);
-  QPointArray *pts=dm->GetPArray();
-  if (pts->count() >0) {
-    _painter.drawPoints(*pts, 0, pts->count());
-  }
-  
-
+  Plot(false);
 }
 
 
 
-void DataPlot::Plot() 
+void DataPlot::Plot(bool pnew) 
 {
+  //QApplication::setOverrideCursor( QCursor(Qt::WaitCursor));
+  //setCursor(QCursor(Qt::WaitCursor));
   erase(rect());
   QPainter _painter(this);
   _painter.setPen(Qt::blue);
-  QPointArray *pts=dm->GetPoints();
+  
+  QPointArray *pts;
+  if (pnew) {
+    pts=dm->GetPoints();
+  } else {
+    pts=dm->GetPArray();
+  }
   if (pts->count() >0) {
     _painter.drawPoints(*pts, 0, pts->count());
   }
+
+  QPointArray *ptsln=dm->GetPln();
+  _painter.setPen(Qt::green);
+  for (int i=0; i<ptsln->count(); ++i) {
+    QPoint p = (QPoint)ptsln->at(i);
+    std::cout<<p.x()<<"  "<<p.y()<<"\n\n";
+    _painter.drawLine(p.x(), p.y(), p.x()+1024, p.y());
+  }
+
+  _painter.setPen(Qt::black);
+  QPointArray *ptstx=dm->GetPtx();
+  QString      tx   =dm->GetTx();
+
+  for (int i=0; i<ptstx->count(); ++i) {
+    _painter.drawText(ptstx->at(i), tx.section( '~', i, i ) );
+  }
+ // unsetCursor();
+  //QApplication::restoreOverrideCursor();
   
 }
 
