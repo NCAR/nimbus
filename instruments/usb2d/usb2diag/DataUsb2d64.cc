@@ -38,7 +38,7 @@ QPointArray* DataUsb2d64::GetPoints()
     {
        _getRecord(x, y, (unsigned char*)_twod_rec[i*_rcdpr_n+j].data);
        x += _slide_n;
-       _text =_text +"Time:" + _hdr[i*_rcdpr_n+j].timetag + "   Tas:"+_twod_rec[i*_rcdpr_n+j].tas+ "~";
+       _text =_text +"Time:" + _gettw(_hdr[i*_rcdpr_n+j].timetag) + "   Tas:"+_twod_rec[i*_rcdpr_n+j].tas+ "~";
        _ptstx->setPoint(i*_rcdpr_n+j, xleft+j*_slide_n, y+_bit_n+14);
     }
     _ptsln->setPoint(i, xleft, y-1);
@@ -140,3 +140,19 @@ void DataUsb2d64::_get2drec() {
    printf("one-run\n\n");
 }
 
+
+
+QString DataUsb2d64::_gettw(unsigned long long t) {
+  
+   time_t ut = t / USECS_PER_SEC;
+   struct tm *tm= gmtime( &ut);
+   char timeStamp[32];
+   strftime(timeStamp, sizeof(timeStamp), "%Y-%m-%d %H:%M:%S", tm);
+   QString tstr(timeStamp);
+   tstr.append(".");
+   //uint ms=QChar((uint)(t%USECS_PER_SEC)/1000);
+   QString n;
+   n.setNum((uint)(t%USECS_PER_SEC)/1000);
+   tstr.append(n);
+   return tstr;
+}

@@ -4,8 +4,9 @@
 #include <iostream>
 #include <qwidget.h>
 #include <qdatetime.h>
- 
+#include <ctime>
 const unsigned  short  TBYTE    = 4096;
+const int              USECS_PER_SEC = 1000000;
 
 
 // This needs to go in a more global include file, say nidas/usbtwod.h
@@ -48,6 +49,7 @@ public:
   void    Setfp(FILE* fp) {_fp=fp;}
   void    SetBt(short b ) {_bit_n=b;}
   void    Init();
+  void    Init(FILE* f, short b);
 protected:
 
   short  _bit_n ;	// = 64 32;
@@ -70,6 +72,7 @@ protected:
   size_t 	_cnt;
   
   bool          _chkInit();
+  
 };
 
 #endif

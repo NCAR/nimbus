@@ -73,7 +73,6 @@ void DataPlot::Plot(bool pnew)
   _painter.setPen(Qt::green);
   for (int i=0; i<ptsln->count(); ++i) {
     QPoint p = (QPoint)ptsln->at(i);
-    std::cout<<p.x()<<"  "<<p.y()<<"\n\n";
     _painter.drawLine(p.x(), p.y(), p.x()+1024, p.y());
   }
 

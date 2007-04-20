@@ -24,7 +24,7 @@ public:
 private:
   virtual void _getRecord(int x, int y, unsigned char* data_p); 
   virtual void _get2drec();
-
+  QString _gettw(unsigned long long t);
   static const unsigned long long _syncMask, _syncWord;
 
 };

@@ -57,6 +57,14 @@ bool DataMng::IsSameFSize() {
 }
 
 
+
+/* -------------------------------------------------------------------- */
+void DataMng::Init(FILE* fp, short b)
+{
+  _bit_n =b;
+  _fp=fp;
+  Init();
+}
 /* -------------------------------------------------------------------- */
 void DataMng::Init()
 {
@@ -103,5 +111,3 @@ bool DataMng::_chkInit() {
   if (_bit_n<=0 ||_fp==NULL ) {std::cout << "Initialize class DataMng is required! \n"<< std::endl; return false;}
   return true;
 }
-
-
