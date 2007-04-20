@@ -126,62 +126,10 @@ void CanvasWindow::_rstTimer()
 
 
 /* -------------------------------------------------------------------- */
-/*void CanvasWindow::_print()
-{
-
-   if ( printer->setup( this ) ) {
-        QPainter paint;
-        if( !paint.begin( printer ) )
-            return;
-      //  drawIt( &pa/int );
-   }
-
-}*/	/* END PRINT */
-
-
-
 void CanvasWindow::_print()
 {
-   /*
-    printer->setFullPage( TRUE );
-    if ( printer->setup(this) ) {               // printer dialog
-        statusBar()->message( "Printing..." );
-        QPainter p;
-        if( !p.begin( printer ) ) {               // paint on printer
-            statusBar()->message( "Printing aborted", 2000 );
-            return;
-        }
-
-        QPaintDeviceMetrics metrics( p.device() );
-        int dpiy = metrics.logicalDpiY();
-        int margin = (int) ( (2/2.54)*dpiy ); // 2 cm margins
-        QRect view( margin, margin, metrics.width() - 2*margin, metrics.height() - 2*margin );
-        QSimpleRichText richText( QStyleSheet::convertFromPlainText(e->text()),
-                                  QFont(),
-                                  e->context(),
-                                  e->styleSheet(),
-                                  e->mimeSourceFactory(),
-                                  view.height() );
-        richText.setWidth( &p, view.width() );
-        int page = 1;
-        do {
-            richText.draw( &p, margin, margin, view, colorGroup() );
-            view.moveBy( 0, view.height() );
-            p.translate( 0 , -view.height() );
-            p.drawText( view.right() - p.fontMetrics().width( QString::number( page ) ),
-                        view.bottom() + p.fontMetrics().ascent() + 5, QString::number( page ) );
-            if ( view.top() - margin >= richText.height() )
-                break;
-            printer->newPage();
-            page++;
-        } while (TRUE);
-
-        statusBar()->message( "Printing completed", 2000 );
-    } else {
-        statusBar()->message( "Printing aborted", 2000 );
-    }*/
-}
-
+  _plot->Prt();
+}	/* END PRINT */
 
 
 /* END CANVASWINDOW.CC */

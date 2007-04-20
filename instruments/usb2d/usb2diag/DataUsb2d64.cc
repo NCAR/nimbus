@@ -150,7 +150,7 @@ QString DataUsb2d64::_gettw(unsigned long long t) {
    strftime(timeStamp, sizeof(timeStamp), "%Y-%m-%d %H:%M:%S", tm);
    QString tstr(timeStamp);
    tstr.append(".");
-   //uint ms=QChar((uint)(t%USECS_PER_SEC)/1000);
+   
    QString n;
    n.setNum((uint)(t%USECS_PER_SEC)/1000);
    tstr.append(n);

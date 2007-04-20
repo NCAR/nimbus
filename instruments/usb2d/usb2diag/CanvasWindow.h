@@ -35,6 +35,7 @@ private:
   QApplication*  _app;
   QPrinter     *printer;
   char*  _fn;
+  QPrinter _printer;
 
   DataPlot * _plot;
   void _startplot();
