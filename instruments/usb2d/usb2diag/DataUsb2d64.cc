@@ -34,7 +34,7 @@ QPointArray* DataUsb2d64::GetPoints()
     for (int j = 0; j< _rcdpr_n; ++j)
     {
        _getRecord(x, y, (unsigned char*)_twod_rec[i*_rcdpr_n+j].data);
-       x += _slide_n+1;
+       x += _slide_n;
     }
     y += _bit_n+10;
   }
