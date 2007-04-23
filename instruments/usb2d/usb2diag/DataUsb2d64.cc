@@ -93,7 +93,7 @@ void DataUsb2d64::_get2drec() {
      usb2d_rec d;
 
      fread(&h, sizeof(nidas_hdr), 1, _fp);
-     if (h.length==_byte_usb2d_rcd)
+     if (h.length==(unsigned short)_byte_usb2d_rcd)
      {
        fread(&d, h.length, 1, _fp);
        _hdr[c]=h;

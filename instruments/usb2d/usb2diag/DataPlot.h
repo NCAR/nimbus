@@ -2,6 +2,7 @@
 #define _DataPlot_h_
 
 #include <qprinter.h>
+#include <qpainter.h>
 #include <qwidget.h>
 #include "DataMng.h"
 #include "DataUsb2d64.h"
@@ -20,6 +21,7 @@ public:
   void  Plot(bool pnew=true);
   void	ToggleFreeze();
   void	RstTimer(int s);
+  void  Prt();
  
 protected:
   virtual void timerEvent(QTimerEvent * e);
@@ -30,6 +32,11 @@ protected:
 private:
   bool     _freeze;
   DataUsb2d64* dm;
+  void _drawIt();
+
+  QPrinter _printer;
+  QPainter _painter;
+  
 };
 
 #endif

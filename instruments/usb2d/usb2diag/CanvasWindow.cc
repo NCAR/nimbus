@@ -44,6 +44,7 @@ CanvasWindow::CanvasWindow(QApplication *qApp, const char * file_name) : QMainWi
   t->setUsesBigPixmap(false);
   connect(t, SIGNAL(clicked()), SLOT(_rstTimer()));
 
+
   QToolButton *p = new QToolButton(toolBar);
   p->setTextLabel("Print");
   p->setUsesTextLabel(true);
@@ -128,16 +129,24 @@ void CanvasWindow::_rstTimer()
 /* -------------------------------------------------------------------- */
 void CanvasWindow::_print()
 {
+  if (_fp==NULL)
+  {
+    QMessageBox::warning( this, "  Print",
+        "Please open a data file first.\n"
+        "", 0, 0, 1 ) ;
+    return; 
+  } 
 
- if ( _printer.setup( this ) ) {
+ /*if ( _printer.setup( this ) ) {
     QPainter paint;
     if( !paint.begin( &_printer ) ){
       std::cerr<<"\n  printer error. \n";
       return;
     }
-  }
-  //_plot->Prt();
+  }*/
+  _plot->Prt();
 }	/* END PRINT */
+
 
 
 /* END CANVASWINDOW.CC */

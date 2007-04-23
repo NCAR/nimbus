@@ -53,25 +53,50 @@ void DataPlot::paintEvent(QPaintEvent * e)
 
 void DataPlot::Plot(bool pnew) 
 {
-  //QApplication::setOverrideCursor( QCursor(Qt::WaitCursor));
-  //setCursor(QCursor(Qt::WaitCursor));
   erase(rect());
-  QPainter _painter(this);
-  _painter.setPen(Qt::blue);
-  
-  QPointArray *pts;
+  _painter.begin(this);
+    
   if (pnew) {
-    pts=dm->GetPoints();
-  } else {
-    pts=dm->GetPArray();
+    dm->GetPoints();
   }
-  if (pts->count() >0) {
-    _painter.drawPoints(*pts, 0, pts->count());
+  _drawIt();
+  _painter.end();
+}
+
+void DataPlot::Prt() 
+{
+  _printer.setOrientation(QPrinter::Landscape);
+  _printer.setColorMode(QPrinter::Color);
+  _printer.printerSelectionOption ();
+  if (! _printer.setup( this ) ) {
+    std::cerr<< "\nprinter setup error!\n";
+    return;
   }
+ 
+  if( !_painter.begin( &_printer ) ){
+    std::cerr<<"\n  printer error. \n";
+    return;
+  }
+
+  _drawIt();
+  _painter.end();
+}
+
+void DataPlot::_drawIt()
+{
+  QPointArray *pts;
+  pts=dm->GetPArray();
+
+  if (pts->count() <= 0) {
+    std::cerr<<"\n  _drawIt-- get points error. \n";
+    return;
+  }
+  _painter.setPen(Qt::blue);
+  _painter.drawPoints(*pts, 0, pts->count());
 
   QPointArray *ptsln=dm->GetPln();
   _painter.setPen(Qt::green);
-  for (int i=0; i<ptsln->count(); ++i) {
+  for (unsigned int i=0; i<ptsln->count(); ++i) {
     QPoint p = (QPoint)ptsln->at(i);
     _painter.drawLine(p.x(), p.y(), p.x()+1024, p.y());
   }
@@ -80,11 +105,10 @@ void DataPlot::Plot(bool pnew)
   QPointArray *ptstx=dm->GetPtx();
   QString      tx   =dm->GetTx();
 
-  for (int i=0; i<ptstx->count(); ++i) {
+  for (unsigned int i=0; i<ptstx->count(); ++i) {
     _painter.drawText(ptstx->at(i), tx.section( '~', i, i ) );
   }
- // unsetCursor();
+  // unsetCursor();
   //QApplication::restoreOverrideCursor();
-  
 }
 
