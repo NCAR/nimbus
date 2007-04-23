@@ -67,7 +67,7 @@ PostgreSQL::PostgreSQL(std::string specifier, bool transmitToGround)
     initializeGlobalAttributes();
     initializeVariableList();
     submitCommand(
-    "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current", true);
+    "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current;", true);
     if (_ldm)
       _ldm->setTimeInterval(5);
   }
@@ -109,7 +109,7 @@ PostgreSQL::WriteSQL(const std::string & timeStamp)
   {
     _sqlString.str("");
     _sqlString << "INSERT INTO global_attributes VALUES ('StartTime', '"
-	<< timeStamp << "');\nINSERT INTO global_attributes VALUES ('EndTime', '"
+	<< timeStamp << "');INSERT INTO global_attributes VALUES ('EndTime', '"
 	<< timeStamp << "');";
     submitCommand(_sqlString.str(), true);
 
