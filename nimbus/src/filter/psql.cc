@@ -109,7 +109,7 @@ PostgreSQL::WriteSQL(const std::string & timeStamp)
   {
     _sqlString.str("");
     _sqlString << "INSERT INTO global_attributes VALUES ('StartTime', '"
-	<< timeStamp << "'); INSERT INTO global_attributes VALUES ('EndTime', '"
+	<< timeStamp << "');\nINSERT INTO global_attributes VALUES ('EndTime', '"
 	<< timeStamp << "');";
     submitCommand(_sqlString.str(), true);
 

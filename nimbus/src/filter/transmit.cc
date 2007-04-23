@@ -1,4 +1,5 @@
 #include "transmit.h"
+#include <cerrno>
 #include <ctime>
 #include <zlib.h>
 #include <sys/param.h>
@@ -50,14 +51,22 @@ void sqlTransmit::sendString(const std::string& str)
 
   sprintf(fName, "%s/%s_nimbus_start_%s.gz", dir, _aircraft.c_str(), timeStamp);
   }
-//  sprintf(fName, "%s/nimbus_sql_%s_%05d.gz", dir, _aircraft.c_str(), _packetCounter++);
 
   gzFile gzfd = gzopen(fName, "w+");
 
   gzwrite(gzfd, str.c_str(), str.length());
   gzclose(gzfd);
 
-  char command[256];
-  sprintf(command, "/home/local/bin/pqinsert %s", fName);
-  system(command);
+  pid_t pid = fork();
+
+  if (pid == 0)
+  {
+    char * command = "pqinsert";
+    if (execlp(command, command, fName, 0) == -1)
+    {
+      fprintf(stderr, "nimbus:transmit.cc: Failed to execute pqinsert, errno = %d\n", errno);
+      _exit(1);
+    }
+    _exit(0);
+  }
 }
