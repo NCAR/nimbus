@@ -1,7 +1,0 @@
-#!/bin/sh
-
-ifdown eth2
-
-sudo /usr/sbin/adsl-start
-
-tail -f /var/log/messages | grep ppp
