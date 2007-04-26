@@ -38,7 +38,7 @@ void PMS1D_SetupForADS3()
   }
   if ((der_indx = SearchTableSansLocation(derived, "C260X")) != ERR)
   {
-    derived[der_indx]->SerialNumber	= "260X06";
+    derived[der_indx]->SerialNumber	= raw[raw_indx]->SerialNumber;
     derived[der_indx]->Length		= raw[raw_indx]->Length;
     derived[der_indx]->ProbeType	= PROBE_PMS1D | PROBE_260X;
   }
@@ -54,7 +54,7 @@ void PMS1D_SetupForADS3()
   }
   if ((der_indx = SearchTableSansLocation(derived, "CCDP")) != ERR)
   {
-    derived[der_indx]->SerialNumber	= "CDP001";
+    derived[der_indx]->SerialNumber	= raw[raw_indx]->SerialNumber;
     derived[der_indx]->Length		= raw[raw_indx]->Length;
     derived[der_indx]->ProbeType	= PROBE_PMS1D | PROBE_CDP;
   }
@@ -70,7 +70,7 @@ void PMS1D_SetupForADS3()
   }
   if ((der_indx = SearchTableSansLocation(derived, "CS200")) != ERR)
   {
-    derived[der_indx]->SerialNumber	= "PCAS108";
+    derived[der_indx]->SerialNumber	= raw[raw_indx]->SerialNumber;
     derived[der_indx]->Length		= raw[raw_indx]->Length;
     derived[der_indx]->ProbeType	= PROBE_PMS1D | PROBE_PCASP;
   }
@@ -80,13 +80,13 @@ void PMS1D_SetupForADS3()
 
   if ((raw_indx = SearchTableSansLocation(raw, "AUHSAS")) != ERR)
   {
-    raw[raw_indx]->SerialNumber	= "PCAS108";
+    raw[raw_indx]->SerialNumber	= "UHSAS001";
     raw[raw_indx]->Average	= (void (*) (...))SumVector;
     raw[raw_indx]->ProbeType	= PROBE_PMS1D | PROBE_PCASP;
   }
   if ((der_indx = SearchTableSansLocation(derived, "CUHSAS")) != ERR)
   {
-    derived[der_indx]->SerialNumber	= "UHSAS001";
+    derived[der_indx]->SerialNumber	= raw[raw_indx]->SerialNumber;
     derived[der_indx]->Length		= raw[raw_indx]->Length;
     derived[der_indx]->ProbeType	= PROBE_PMS1D | PROBE_PCASP;
   }
@@ -290,7 +290,8 @@ void AddPMS1dAttrs(int ncid, var_base * rp)
    */
   if (warnMidPoints)
   {
-    fprintf(stderr, "PMSspecs file contains mid-point, not end-point cell diameters for %s %s.\n", rp->name, rp->SerialNumber.c_str());
+    fprintf(stderr, "PMSspecs file contains mid-point, not end-point cell diameters for %s %s.\n",
+	rp->name, rp->SerialNumber.c_str());
     fprintf(stderr, "Nimbus was modified on 9/5/98 to use end-points.  Please fix.\n");
     quit();
   }
