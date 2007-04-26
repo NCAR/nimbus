@@ -345,6 +345,11 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
   cfg.SetProjectNumber(syncRecReader->getProjectName());
   cfg.SetTailNumber(syncRecReader->getTailNumber());
 
+//  This is temporary until we get the netcdf VarDB.ncml file going.
+sprintf(buffer, "/h/9/cjw/bin/update_depend %s", cfg.ProjectNumber().c_str());
+system(buffer);
+
+
 printf("ProjectName: %s\n", cfg.ProjectNumber().c_str());
 printf("TailNumber: %s\n", cfg.TailNumber().c_str());
 printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
