@@ -304,6 +304,7 @@
 	"PFLW",		NULL,		xlpms16_hskp6,	NULL,
 	"PBRS",		NULL,		xlpms16_hskp7,	NULL,
 	"PFLWC",	NULL,		NULL,		spflwc,
+	"UFLWC",	NULL,		NULL,		spflwc,
 # For Proj 280.
 	"PCACTV",	NULL,		xlpms16_hskp0,	NULL,
 	"PCFLOW",	NULL,		xlpms16_hskp6,	NULL,
