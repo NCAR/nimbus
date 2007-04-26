@@ -304,9 +304,10 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
   {
     mktemp(sync_server_pipe);
 
-    pid_t pid = fork();
+    extern pid_t syncPID;
+    syncPID = fork();
 
-    if (pid == 0)
+    if (syncPID == 0)
     {
       // Acquire list of all files which match the first 4 chars of this one
       // plus are greater in time.  Pass this list of file names into
@@ -325,8 +326,8 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
 
       files[i] = 0;
 
-      execv("/opt/nidas/x86/bin/launch_ss.sh", files);
-      fprintf(stderr, "nimbus: failed to exec launch_ss.sh\n");
+      execv("/opt/nidas/x86/bin/sync_server", files);
+      fprintf(stderr, "nimbus: failed to exec sync_server\n");
       _exit(1);
     }
 
@@ -2056,7 +2057,7 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
   {
     char msg[128];
 
-    sprintf(msg, "Throwing away %s, has no decode function.\n", name);
+    sprintf(msg, "add_name_to_RAWTBL: Throwing away %s, has no decode function.\n", name);
     LogMessage(msg);
     return((RAWTBL *)ERR);
   }
@@ -2119,7 +2120,7 @@ static DERTBL *add_name_to_DERTBL(const char name[])
   {
     char	msg[128];
 
-    sprintf(msg, "Throwing away %s, has no compute function.\n", name);
+    sprintf(msg, "add_name_to_DERTBL: Throwing away %s, has no compute function.\n", name);
     LogMessage(msg);
     return((DERTBL *)ERR);
   }
