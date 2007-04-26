@@ -118,7 +118,7 @@
 	"CS100",	NULL,		NULL,		scs100,
 	"CCDP",		NULL,		NULL,		scs100,
 	"CS200",	NULL,		NULL,		scs200,
-	"CUHSAS",	NULL,		NULL,		scs200,
+	"CUHSAS",	(void(*)(void*))casasInit,	NULL,		scs200,
 	"CS300",	NULL,		NULL,		scf300,
 #
 # PMS actual data arrays
