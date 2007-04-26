@@ -723,7 +723,7 @@ void Quit(Widget w, XtPointer client, XtPointer call)
   extern pid_t syncPID;
   if (syncPID > 0)
   {
-    printf("kill = %d\n", kill(syncPID, SIGTERM));
+    kill(syncPID, SIGTERM);
   }
 
   if (strlen(sync_server_pipe))
