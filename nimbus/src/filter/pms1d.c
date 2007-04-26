@@ -42,7 +42,7 @@ void PMS1D_SetupForADS3()
     derived[der_indx]->Length		= raw[raw_indx]->Length;
     derived[der_indx]->ProbeType	= PROBE_PMS1D | PROBE_260X;
   }
-  else
+  if (raw_indx != ERR && der_indx == ERR)
     printf("Debug: No C260X found.\n");
 
 
@@ -58,7 +58,7 @@ void PMS1D_SetupForADS3()
     derived[der_indx]->Length		= raw[raw_indx]->Length;
     derived[der_indx]->ProbeType	= PROBE_PMS1D | PROBE_CDP;
   }
-  else
+  if (raw_indx != ERR && der_indx == ERR)
     printf("Debug: No CCDP found.\n");
 
 
@@ -74,8 +74,24 @@ void PMS1D_SetupForADS3()
     derived[der_indx]->Length		= raw[raw_indx]->Length;
     derived[der_indx]->ProbeType	= PROBE_PMS1D | PROBE_PCASP;
   }
-  else
+  if (raw_indx != ERR && der_indx == ERR)
     printf("Debug: No CS200 found.\n");
+
+
+  if ((raw_indx = SearchTableSansLocation(raw, "AUHSAS")) != ERR)
+  {
+    raw[raw_indx]->SerialNumber	= "PCAS108";
+    raw[raw_indx]->Average	= (void (*) (...))SumVector;
+    raw[raw_indx]->ProbeType	= PROBE_PMS1D | PROBE_PCASP;
+  }
+  if ((der_indx = SearchTableSansLocation(derived, "CUHSAS")) != ERR)
+  {
+    derived[der_indx]->SerialNumber	= "UHSAS001";
+    derived[der_indx]->Length		= raw[raw_indx]->Length;
+    derived[der_indx]->ProbeType	= PROBE_PMS1D | PROBE_PCASP;
+  }
+  if (raw_indx != ERR && der_indx == ERR)
+    printf("Debug: No CUHSAS found.\n");
 
 }
 
@@ -276,7 +292,6 @@ void AddPMS1dAttrs(int ncid, var_base * rp)
   {
     fprintf(stderr, "PMSspecs file contains mid-point, not end-point cell diameters for %s %s.\n", rp->name, rp->SerialNumber.c_str());
     fprintf(stderr, "Nimbus was modified on 9/5/98 to use end-points.  Please fix.\n");
-    ncclose(ncid);
     quit();
   }
 }

@@ -29,7 +29,7 @@ STATIC FNS:	checkForProductionSetup()
 DESCRIPTION:	Contains callbacks for the nimbus GUI main window & setup
 		window.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 -------------------------------------------------------------------------
 */
 
@@ -720,7 +720,11 @@ void Quit(Widget w, XtPointer client, XtPointer call)
   CloseRemoveLogFile();
 
   // kill sync_server or any other processes.
-  kill(0, SIGTERM);
+  extern pid_t syncPID;
+  if (syncPID > 0)
+  {
+    printf("kill = %d\n", kill(syncPID, SIGTERM));
+  }
 
   if (strlen(sync_server_pipe))
     unlink(sync_server_pipe);

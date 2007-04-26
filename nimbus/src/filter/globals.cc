@@ -93,6 +93,8 @@ RateFeedBack	FeedBack;
 
 int	PauseWhatToDo, FlightNumberInt;
 
+pid_t	syncPID = -1;
+
 /* Data record pointers
  */
 char	*ADSrecord = 0;		/* Raw ADS record as read from tape.	*/
