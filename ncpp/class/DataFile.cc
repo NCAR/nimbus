@@ -20,7 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-05
 static const char *validProbeNames[] = {
 	"AFSSP","AF300","APCAS","A260X","AASAS","A200X","A200Y","A300X",
 	"AMASP","A1DC","A2DC","A1DP","A2DP","AS100","AS200","AS300",
-	"ACDP", "ARDMA","ACLMT","ACMCA","AHVPS",NULL };
+	"ACDP", "ARDMA","ACLMT","ACMCA","AHVPS","AUHSAS",NULL };
 
 
 /* -------------------------------------------------------------------- */
@@ -106,7 +106,8 @@ DataFile::DataFile(char fName[]) : fileName(fName)
           strncmp("ACDP", avar->name(), 4) == 0)
         probe[nProbes++] = new S100(file, avar);
       else
-      if (strncmp("AS200", avar->name(), 5) == 0)
+      if (strncmp("AS200", avar->name(), 5) == 0 ||
+          strncmp("AUHSAS", avar->name(), 6) == 0)
         probe[nProbes++] = new S200(file, avar);
       else
       if (strncmp("A260X", avar->name(), 5) == 0)
