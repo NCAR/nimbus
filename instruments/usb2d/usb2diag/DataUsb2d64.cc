@@ -38,7 +38,8 @@ QPointArray* DataUsb2d64::GetPoints()
     {
        _getRecord(x, y, (unsigned char*)_twod_rec[i*_rcdpr_n+j].data);
        x += _slide_n;
-       _text =_text +"Time:" + _gettw(_hdr[i*_rcdpr_n+j].timetag) + "   Tas:"+_twod_rec[i*_rcdpr_n+j].tas+ "~";
+       _text =_text +"Time:" + _gettw(_hdr[i*_rcdpr_n+j].timetag) 
+       +"   Tas:" +QString().setNum(_twod_rec[i*_rcdpr_n+j].tas) + "~";
        _ptstx->setPoint(i*_rcdpr_n+j, xleft+j*_slide_n, y+_bit_n+14);
     }
     _ptsln->setPoint(i, xleft, y-1);
