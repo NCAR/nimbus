@@ -10,14 +10,6 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-DEPENDANCIES:	none
-
-OUTPUT:		
-
-REFERENCES:	pms1d.c (ComputeConcentrations())
-
-REFERENCED BY:	Compute()
-
 NOTES:		Calculations taken from Bulletin 24 dated 1/89.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
@@ -32,9 +24,9 @@ static size_t FIRST_BIN[MAX_ASAS], LAST_BIN[MAX_ASAS], SampleRate[MAX_ASAS];
 
 static NR_TYPE	total_concen[MAX_ASAS], disp[MAX_ASAS], dbar[MAX_ASAS];
 static NR_TYPE	aact[MAX_ASAS], pvol[MAX_ASAS], tact[MAX_ASAS];
-static NR_TYPE	cell_size[MAX_ASAS][BINS_40+1];
-static NR_TYPE	cell_size2[MAX_ASAS][BINS_40+1];
-static NR_TYPE	cell_size3[MAX_ASAS][BINS_40+1];
+static NR_TYPE	cell_size[MAX_ASAS][101];
+static NR_TYPE	cell_size2[MAX_ASAS][101];
+static NR_TYPE	cell_size3[MAX_ASAS][101];
 
 /* -------------------------------------------------------------------- */
 void casasInit(var_base *varp)
@@ -144,7 +136,7 @@ void scs200(DERTBL *varp)
   size_t	i, probeNum;
   NR_TYPE	*actual, *concentration, *dia, *dia2, *dia3;
   NR_TYPE	flow;
-  NR_TYPE	sampleVolume[BINS_40+1];
+  NR_TYPE	sampleVolume[101];
   NR_TYPE	tas;
 
   actual	= GetVector(varp, 0, varp->Length);
