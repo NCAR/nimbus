@@ -377,7 +377,7 @@ PostgreSQL::initializeVariableList()
       nDims = 2;
       // Subtract 1, since we don't put 0th bin into SQL database.
       // See addVectorToAllStreams() & pms1d.c:GetPMS1DAttrsForSQL()
-      dims[1] = raw[i]->Length-1;
+      dims[1] = raw[i]->Length - (cfg.isADS2() ? 1 : 0);
     }
     else
       nDims = 1;
@@ -402,7 +402,7 @@ PostgreSQL::initializeVariableList()
       nDims = 2;
       // Subtract 1, since we don't put 0th bin into SQL database.
       // See addVectorToAllStreams() & pms1d.c:GetPMS1DAttrsForSQL()
-      dims[1] = derived[i]->Length-1;
+      dims[1] = derived[i]->Length - (cfg.isADS2() ? 1 : 0);
     }
     else
       nDims = 1;
