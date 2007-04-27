@@ -7,8 +7,8 @@
 #include <qgarray.h>
 
 
-const unsigned long long DataUsb2d64::_syncWord = 0xAAAAAAA000000000LL;
-const unsigned long long DataUsb2d64::_syncMask = 0xFFFFFFF000000000LL;
+const unsigned long long DataUsb2d64::_syncWord = 0xAAAAAA0000000000LL;
+const unsigned long long DataUsb2d64::_syncMask = 0xFFFFFF0000000000LL;
 
 /* -------------------------------------------------------------------- */
 DataUsb2d64::DataUsb2d64 (FILE * fp) :DataMng(fp, 64)
