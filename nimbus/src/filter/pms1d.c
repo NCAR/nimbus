@@ -120,7 +120,7 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
     /* We are dropping the unused 0th bin for SQL database.
      * See 12 lines down and also PostgreSQL::addVectorToAllStreams().
      */
-    --fb; // We are dropping the unused 0th bin for SQL database.
+    if (cfg.isADS2()) --fb; // We are dropping the unused 0th bin for SQL database.
   }
 
   if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "LAST_BIN")) )
@@ -133,7 +133,7 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
     /* We are dropping the unused 0th bin for SQL database.
      * See also PostgreSQL::addVectorToAllStreams().
      */
-    --lb;
+    if (cfg.isADS2()) --lb;
   }
 
   nBins = getCellSizes(rp, cellSize);
