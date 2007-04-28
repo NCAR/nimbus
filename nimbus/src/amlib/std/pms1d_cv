@@ -23,6 +23,10 @@ NOTES:		Calculations taken from Bulletin 24 dated 1/89.
   NR_TYPE	dbar2, conc, TAS_LIMIT = 30.0;
   double	z;
 
+  // So we can see concentrations in the hanger.
+  if (cfg.ProcessingMode() == Config::RealTime)
+    TAS_LIMIT = 3.0;
+
   disp[probeNum] = dbar[probeNum] = dbar2 = z = total_concen[probeNum] = 0.0;
 
   if (FeedBack == HIGH_RATE_FEEDBACK)
