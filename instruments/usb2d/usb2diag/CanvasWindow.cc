@@ -77,8 +77,10 @@ void CanvasWindow::_openf()
   }
   delete dlg;
 
-  _fn = (char*)file_name.ascii();
-  _startplot();
+  if (!file_name.isEmpty()) {
+    _fn = (char*)file_name.ascii();
+    _startplot();
+  }
   
 }	/* END file open */
 
@@ -137,13 +139,6 @@ void CanvasWindow::_print()
     return; 
   } 
 
- /*if ( _printer.setup( this ) ) {
-    QPainter paint;
-    if( !paint.begin( &_printer ) ){
-      std::cerr<<"\n  printer error. \n";
-      return;
-    }
-  }*/
   _plot->Prt();
 }	/* END PRINT */
 
