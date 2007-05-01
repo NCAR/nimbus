@@ -1,0 +1,18 @@
+env = Environment()
+
+env.Append(CXXFLAGS='-g -Werror')
+env.Append(CPPPATH = '/jnet/local/include')
+env.Append(LIBPATH = '/jnet/local/lib')
+env.Append(LIBS = ['pq', 'netcdf_c++', 'netcdf'])
+
+conf = Configure(env)
+if not conf.CheckLibWithHeader('netcdf_c++', 'netcdf.hh', 'C++'):
+    print 'netCDF must be installed!'
+    Exit(1)
+
+if not conf.CheckLibWithHeader('pq', 'libpq-fe.h', 'C'):
+    print 'PostgreSQL must be installed!'
+    Exit(1)
+env = conf.Finish()
+
+env.Program('rt_kml.cc')
