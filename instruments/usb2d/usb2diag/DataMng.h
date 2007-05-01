@@ -2,6 +2,7 @@
 #define _DataMng_h_
 
 #include <iostream>
+#include <stdio.h> 
 #include <qwidget.h>
 #include <qdatetime.h>
 #include <ctime>

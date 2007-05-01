@@ -85,7 +85,7 @@ void CanvasWindow::_openf()
 /* -------------------------------------------------------------------- */
 void CanvasWindow::_startplot()
 {
-  if ((_fp = fopen(_fn, "r")) == 0)
+  if ((_fp = fopen64(_fn, "r")) == 0)
   {
     std::cerr << "No file \n\n" << _fn << "\n" << std::endl;
     return;
