@@ -6,7 +6,8 @@ DataPlot::DataPlot(QWidget * parent, FILE * fp): QWidget(parent), _freeze(false)
 {
   //if find 64
   dm= new DataUsb2d64(fp);
-  //dm->Posfp();
+  
+  _freeze = 1;
   Plot();
   startTimer(2000);
 }
@@ -21,9 +22,10 @@ void DataPlot::ToggleFreeze()
 /* -------------------------------------------------------------------- */
 void DataPlot::timerEvent(QTimerEvent *)
 {   
-  if (_freeze)
+  if (_freeze ||dm->GetFSize()==0)
     return;    
   if (dm->IsSameFSize()){
+    std::cout<<"\n timer plot...\n";
     Plot();
   }
 }
@@ -38,6 +40,8 @@ void DataPlot::RstTimer(int s)
 void DataPlot::paintEvent(QPaintEvent * e)
 {
   QWidget::paintEvent(e);
+ 
+  std::cout<<"\n repaint...\n";
   Plot(false);
 }
 
@@ -45,6 +49,11 @@ void DataPlot::paintEvent(QPaintEvent * e)
 
 void DataPlot::Plot(bool pnew) 
 {
+  
+  QTime t =QTime::currentTime();
+  std::cout<<"\n  Plot... "<<t.hour()<<":"<<t.minute()<<":"<<t.second()<<std::endl;
+  
+  _freeze=1;
   erase(rect());
   _painter.begin(this);
     
@@ -53,6 +62,10 @@ void DataPlot::Plot(bool pnew)
   }
   _drawIt();
   _painter.end();
+  _freeze=0;
+ 
+  t =QTime::currentTime();
+  std::cout<<"  Plot end at... "<<t.hour()<<":"<<t.minute()<<":"<<t.second()<<std::endl;
 }
 
 void DataPlot::Prt() 

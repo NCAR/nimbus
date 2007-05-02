@@ -48,6 +48,7 @@ public:
   virtual QPointArray* GetPtx()    {return _ptstx;}
   virtual QPointArray* GetPln()    {return _ptsln;}
   virtual QString      GetTx()     {return _text;}
+  int                  GetFSize()  {return _fsize;}
   void    Setfp(FILE* fp) {_fp=fp;}
   void    SetBt(short b ) {_bit_n=b;}
   void    Init();

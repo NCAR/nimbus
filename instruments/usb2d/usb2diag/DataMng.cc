@@ -38,8 +38,8 @@ bool DataMng::IsSameFSize() {
   if (!_chkInit()) {return false;}
   
   //get filesize
-  fseeko (_fp, 0, SEEK_END);
-  int size=ftello(_fp);
+  fseek(_fp, 0, SEEK_END);
+  int size=ftell(_fp);
  
   //check if the same file size
   if (_fsize!=0 && size==_fsize) {
@@ -94,7 +94,7 @@ void DataMng::Init()
     exit(-1);
   }
   int offs =(p - buff) + 11;
-  fseeko(_fp, offs, 0);
+  fseek(_fp, offs, 0);
   if (fgetpos(_fp, &_pp)!=0) {  
     std::cerr<<"\ngetpos error\n";
     _fp=NULL;

@@ -7,6 +7,7 @@
 #include <qprinter.h>
 #include <qpainter.h>
 #include <qevent.h>
+#include <qdatetime.h>
 
  
 
