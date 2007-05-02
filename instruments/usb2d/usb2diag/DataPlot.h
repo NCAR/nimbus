@@ -1,11 +1,13 @@
 #ifndef _DataPlot_h_
 #define _DataPlot_h_
 
+#include "DataUsb2d64.h"
+
+#include <qwidget.h>
 #include <qprinter.h>
 #include <qpainter.h>
-#include <qwidget.h>
-#include "DataMng.h"
-#include "DataUsb2d64.h"
+#include <qevent.h>
+
  
 
 /* -------------------------------------------------------------------- */

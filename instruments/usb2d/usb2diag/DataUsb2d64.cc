@@ -1,10 +1,6 @@
+
+
 #include "DataUsb2d64.h"
-
-#include <qevent.h>
-#include <qpainter.h>
-
-#include <cstdio>
-#include <qgarray.h>
 
 
 const unsigned long long DataUsb2d64::_syncWord = 0xAAAAAA0000000000LL;

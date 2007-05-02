@@ -1,10 +1,6 @@
+
+
 #include "DataMng.h"
-
-#include <qevent.h>
-#include <qpainter.h>
-
-#include <cstdio>
-#include <unistd.h>
 
 
 /* -------------------------------------------------------------------- */

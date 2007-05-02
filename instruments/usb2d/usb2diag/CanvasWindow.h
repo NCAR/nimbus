@@ -9,13 +9,18 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2007
 #ifndef _CanvasWindow_h_
 #define _CanvasWindow_h_
 
+#include "DataPlot.h"
+
+#include <qapplication.h>
 #include <qmainwindow.h>
 #include <qfiledialog.h>
-#include <qprinter.h>
-#include <qpainter.h>
+#include <qstatusbar.h>
+#include <qtoolbutton.h>
+#include <qinputdialog.h> 
+#include <qmessagebox.h> 
+#include <qcursor.h>
+#include <iostream>
 
-class QApplication;
-class DataPlot;
 
 /* -------------------------------------------------------------------- */
 class CanvasWindow : public QMainWindow

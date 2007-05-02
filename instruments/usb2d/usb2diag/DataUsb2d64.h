@@ -1,12 +1,8 @@
 #ifndef _DataUsb2d64_h_
 #define _DataUsb2d64_h_
 
-#include <iostream>
-#include <qwidget.h>
 #include "DataMng.h"
 
-//#define _LARGEFILE64_SOURCE
-#define _FILE_OFFSET_BITS 64
 
 /* -------------------------------------------------------------------- */
 /**

@@ -1,13 +1,5 @@
 #include "DataPlot.h"
 
-#include <qevent.h>
-#include <qpainter.h>
-
-#include <cstdio>
-#include <unistd.h>
-#include <qcursor.h>
-#include <qapplication.h>
-
 
 /* -------------------------------------------------------------------- */
 DataPlot::DataPlot(QWidget * parent, FILE * fp): QWidget(parent), _freeze(false)

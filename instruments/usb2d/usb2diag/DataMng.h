@@ -1,11 +1,15 @@
 #ifndef _DataMng_h_
 #define _DataMng_h_
 
+#define _LARGEFILE64_SOURCE
+#define _FILE_OFFSET_BITS 64
+
 #include <iostream>
 #include <stdio.h> 
-#include <qwidget.h>
+#include <qpointarray.h>
 #include <qdatetime.h>
-#include <ctime>
+
+
 const unsigned  short  TBYTE    = 4096;
 const int              USECS_PER_SEC = 1000000;
 

@@ -8,20 +8,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2007
 
 #include "CanvasWindow.h"
 
-#include <iostream>
-
-#include <qapplication.h>
-#include <qstatusbar.h>
-#include <qtoolbutton.h>
-#include <qpaintdevicemetrics.h>
-#include <qwhatsthis.h>
-#include <qsimplerichtext.h>
-#include <qstylesheet.h>
-#include <qpopupmenu.h> 
-#include <qinputdialog.h> 
-#include <qmessagebox.h> 
-
-#include "DataPlot.h"
 
 /* -------------------------------------------------------------------- */
 CanvasWindow::CanvasWindow(QApplication *qApp, const char * file_name) : QMainWindow(0, "canvas"), _app(qApp), _fn((char*)file_name)
