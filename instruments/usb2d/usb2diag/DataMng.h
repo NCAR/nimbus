@@ -1,9 +1,6 @@
 #ifndef _DataMng_h_
 #define _DataMng_h_
 
-#define _LARGEFILE64_SOURCE
-#define _FILE_OFFSET_BITS 64
-
 #include <iostream>
 #include <stdio.h> 
 #include <qpointarray.h>

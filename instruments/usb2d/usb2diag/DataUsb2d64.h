@@ -1,9 +1,11 @@
 #ifndef _DataUsb2d64_h_
 #define _DataUsb2d64_h_
 
+#define _LARGEFILE64_SOURCE
 #include "DataMng.h"
 
 
+#define _FILE_OFFSET_BITS 64
 /* -------------------------------------------------------------------- */
 /**
  * Class to mng PMS-2D 64 bit data.
