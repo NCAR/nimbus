@@ -13,8 +13,8 @@
 #include "boost/lexical_cast.hpp"
 
 // Output directories for .xml & .kml files.  Ground
-const std::string googleMapDataDir = "/var/www/html/rt_flights/pacdex/flights/";
-const std::string googleEarthDataDir = "/var/www/html/rt_flights/pacdex/flights/";
+const std::string googleMapDataDir = "/net/www/docs/flight_data/pacdex/flights/";
+const std::string googleEarthDataDir = "/net/www/docs/flight_data/pacdex/flights/";
 
 // Onboard location
 //const std::string googleMapDataDir = "/var/www/html/";
@@ -224,7 +224,7 @@ void WriteCurrentPositionKML(std::string& projName, std::string& flightNum)
 
   googleEarth
 	<< "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-	<< "<kml xmlns=\"http://earth.google.com/kml/2.0\">\n"
+	<< "<kml xmlns=\"http://earth.google.com/kml/2.1\">\n"
 	<< "<Document>\n"
 	<< " <name>" << projName << " " << flightNum << "</name>\n"
 	<< " <Style id=\"PM1\">\n"
