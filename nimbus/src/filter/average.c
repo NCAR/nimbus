@@ -6,23 +6,16 @@ FULL NAME:	Average Data
 
 ENTRY POINTS:	AverageSampledData()
 
-STATIC FNS:	AverageSDI()	These are not declared static, because they
-		Average()	are assigned to function pointers in
-		SumSDI()	hdr_decode.c, however, they are only called
-		Sum()		from this file.
-		SumVector()
+STATIC FNS:	Average()	These are not declared static, because they
+		Sum()		are assigned to function pointers in
+		SumVector()	hdr_decode.c, however, they are only called
+		AverageVector()	from this file.
 
 DESCRIPTION:	
 
-INPUT:		unaveraged_data, place_to_put_averaged_data
+REFERENCED BY:	lrloop.c, hrloop.c rtloop.c, rtloop3.cc
 
-OUTPUT:		Averaged value
-
-REFERENCES:	none
-
-REFERENCED BY:	LowRateLoop(), Filter(), winputops.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-05
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 -------------------------------------------------------------------------
 */
 
@@ -64,24 +57,29 @@ void Average(
   double	average;
 
   if (mp)		/* if (ModuloVariable)		*/
-    {
+  {
     bool low_value, high_value;
 
     low_value = high_value = false;
 
     for (size_t i = 0; i < n; ++i)
-      if ((int)in_data[i] < mp->bound[0])
+    {
+      if (!isnan(in_data[i]))
+      {
+        if ((int)in_data[i] < mp->bound[0])
         {
-        low_value = true;
-        sum += mp->diff;
+          low_value = true;
+          sum += mp->diff;
         }
-      else
-        if ((int)in_data[i] > mp->bound[1])
-          high_value = true;
+        else
+          if ((int)in_data[i] > mp->bound[1])
+            high_value = true;
+      }
+    }
 
     if (!(low_value && high_value))
       sum = 0.0;
-    }
+  }
 
   for (size_t i = 0; i < n; ++i)
     if (!isnan(in_data[i]))
@@ -116,14 +114,13 @@ void Sum(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l, MOD *mp)
       sum += in_data[i];
 
   out_data[0] = sum;
-
-}	/* END SUM */
+}
 
 /* -------------------------------------------------------------------- */
 void SumVector(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l)
 {
   for (size_t i = 0; i < l; ++i)
-    {
+  {
     double sum = 0.0;
 
     for (size_t j = 0; j < n; ++j)
@@ -131,14 +128,14 @@ void SumVector(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l)
         sum += in_data[(j * l) + i];
 
     out_data[i] = sum;
-    }
+  }
 }
 
 /* -------------------------------------------------------------------- */
 void AverageVector(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l)
 {
   for (size_t i = 0; i < l; ++i)
-    {
+  {
     double sum = 0.0;
 
     for (size_t j = 0; j < n; ++j)
@@ -146,7 +143,7 @@ void AverageVector(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l)
         sum += in_data[(j * l) + i];
 
     out_data[i] = sum / n;
-    }
-}	/* END AVERAGEVECTOR */
+  }
+}
 
 /* END AVERAGE.C */
