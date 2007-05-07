@@ -1,4 +1,4 @@
-#!/bin/csh
+#!/bin/csh -x
 #
 # this script creates a file svnInfo.h whch
 # contains lines from the svn info command.
@@ -44,16 +44,10 @@ EOF
 #
 # This setup is not smart enough to rebuild the files that include the
 # new svnInfo.h, remove them until we come up with something better.
-echo $oldRev
-echo $rev
 rm ../src/filter/nimbus.o
 rm ../src/filter/cb_main.o
 rm ../src/filter/netcdf.o
 rm ../src/filter/nimbus
+endif
 #
 echo "Current subversion revision is $rev"
-
-
-
-
-
