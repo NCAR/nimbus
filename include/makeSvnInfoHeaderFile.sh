@@ -25,7 +25,7 @@ set oldRev = "-1"
 if (-e svnInfo.h) then
    set oldRev = `grep Revision svnInfo.h`
    set oldRev = ($oldRev)
-   set oldRev = $oldRev[2]
+   set oldRev = `echo $oldRev[4] | sed 's/"$//'`
 endif
 #
 # IF the file is missing, or the old revision number
@@ -41,6 +41,15 @@ cat > svnInfo.h <<EOF
 #define SVNURL "$svnURL"
 #endif
 EOF
+#
+# This setup is not smart enough to rebuild the files that include the
+# new svnInfo.h, remove them until we come up with something better.
+echo $oldRev
+echo $rev
+rm ../src/filter/nimbus.o
+rm ../src/filter/cb_main.o
+rm ../src/filter/netcdf.o
+rm ../src/filter/nimbus
 #
 echo "Current subversion revision is $rev"
 
