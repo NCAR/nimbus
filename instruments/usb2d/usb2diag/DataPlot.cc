@@ -8,6 +8,7 @@ DataPlot::DataPlot(QWidget * parent, FILE * fp): QWidget(parent), _freeze(false)
   dm= new DataUsb2d64(fp);
   
   _freeze = 1;
+  _count=0;
   Plot();
   startTimer(2000);
 }
@@ -22,9 +23,11 @@ void DataPlot::ToggleFreeze()
 /* -------------------------------------------------------------------- */
 void DataPlot::timerEvent(QTimerEvent *)
 {   
-  if (_freeze ||dm->GetFSize()==0)
-    return;    
-  if (dm->IsSameFSize()){
+  if (_freeze ||_count==0){
+    _count=1;
+    return;   
+  } 
+  if (!dm->IsSameFSize()){
     std::cout<<"\n timer plot...\n";
     Plot();
   }
@@ -58,7 +61,7 @@ void DataPlot::Plot(bool pnew)
   _painter.begin(this);
     
   if (pnew) {
-    dm->GetPoints();
+    dm->GetPoints(); std::cout<<"\nCall-GetPoints...\n";
   }
   _drawIt();
   _painter.end();
