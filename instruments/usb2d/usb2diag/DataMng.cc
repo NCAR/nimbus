@@ -84,6 +84,7 @@ void DataMng::Init()
   _pts= new QPointArray(TBYTE*8*_row_n*_rcdpr_n); 
 
 
+  IsSameFSize();
   // get file pointer at end of nidas header.
   rewind(_fp);
   char buff[TBYTE];
