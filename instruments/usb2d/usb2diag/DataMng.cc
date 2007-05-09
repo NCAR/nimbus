@@ -44,7 +44,7 @@ bool DataMng::IsSameFSize() {
   //check if the same file size
   if (_fsize!=0 && size==_fsize) {
     QTime t =QTime::currentTime();
-    std::cout<<"\n Same file size! "<<t.hour()<<":"<<t.minute()<<":"<<t.second()<<std::endl;
+    std::cout<<"\n Same file size! "<<size<<" "<<t.hour()<<":"<<t.minute()<<":"<<t.second()<<std::endl;
     return true;
   } 
   _fsize = size;
@@ -100,6 +100,8 @@ void DataMng::Init()
     std::cerr<<"\ngetpos error\n";
     _fp=NULL;
   }
+  
+  _hdr=NULL; _twod_rec=NULL;
 }
 
 

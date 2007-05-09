@@ -40,6 +40,7 @@ private:
   QPrinter _printer;
   QPainter _painter;
   int      _count;
+  int      _c;
   
 };
 

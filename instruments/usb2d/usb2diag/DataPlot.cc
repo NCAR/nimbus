@@ -9,6 +9,8 @@ DataPlot::DataPlot(QWidget * parent, FILE * fp): QWidget(parent), _freeze(false)
   
   _freeze = 1;
   _count=0;
+  _c=1;
+  erase(rect());
   Plot();
   startTimer(2000);
 }
@@ -57,8 +59,9 @@ void DataPlot::Plot(bool pnew)
   std::cout<<"\n  Plot... "<<t.hour()<<":"<<t.minute()<<":"<<t.second()<<std::endl;
   
   _freeze=1;
-  erase(rect());
+  erase(0,0, 1000, 700);
   _painter.begin(this);
+  _painter.eraseRect(0,35, 1000, 700);
     
   if (pnew) {
     dm->GetPoints(); std::cout<<"\nCall-GetPoints...\n";
@@ -96,7 +99,12 @@ void DataPlot::_drawIt()
   pts=dm->GetPArray();
 
   if (pts->count() <= 0) {
-    std::cerr<<"\n  _drawIt-- get points error. \n";
+    std::cout<<"\n  _drawIt-- No plot points. \n";
+    _painter.setPen(Qt::black);
+    _painter.drawText(20*_c, _c*35,"-- No plot points. \n");
+    //statusBar()->message( "Ready", 2000 );
+    _c++;
+    if (_c>=10) {_c=1;}
     return;
   }
   _painter.setPen(Qt::blue);

@@ -24,6 +24,7 @@ QPointArray* DataUsb2d64::GetPoints()
   _text ="";
   _get2drec(); 
 
+  if (_hdr==NULL && _twod_rec==NULL) {_pts->resize(0); return _pts;}
   size_t       xleft =5, ytop =8, rheight=27;
   size_t       x, y = ytop;
   _cnt = 0;
@@ -83,7 +84,7 @@ void DataUsb2d64::_get2drec() {
  
    fsetpos(_fp, &_pp);
    fpos_t tmp=_pp;
-   int c = 0;
+   int c = 0, tc=0;
    //get the last few records
    while (!feof(_fp)){
      nidas_hdr	h;
@@ -97,7 +98,7 @@ void DataUsb2d64::_get2drec() {
        _twod_rec[c]=d;
        //printf("-----%llu %lu %lu %lx %lx\n", h.timetag, h.length,
        // 	h.sample_id, d.tas, d.id);
-       c++;
+       c++; tc++;
        if (c>=trcd) { 
          c=0;
          _pp=tmp;
@@ -111,6 +112,7 @@ void DataUsb2d64::_get2drec() {
      }
    } //while
   
+   if (tc==0) {_hdr=NULL; _twod_rec=NULL; return;}
    //put cycled buff back to the order
    nidas_hdr	hdr[trcd];
    usb2d_rec	twod_rec[trcd];
