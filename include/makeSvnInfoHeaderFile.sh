@@ -1,4 +1,4 @@
-#!/bin/csh -x
+#!/bin/csh
 #
 # this script creates a file svnInfo.h whch
 # contains lines from the svn info command.

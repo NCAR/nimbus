@@ -33,7 +33,7 @@ void PMS1D_SetupForADS3()
   if ((raw_indx = SearchTableSansLocation(raw, "A260X")) != ERR)
   {
     raw[raw_indx]->SerialNumber	= "260X06";
-    raw[raw_indx]->Average	= (void (*) (...))SumVector;
+//    raw[raw_indx]->Average	= (void (*) (...))SumVector;
     raw[raw_indx]->ProbeType	= PROBE_PMS1D | PROBE_260X;
   }
   if ((der_indx = SearchTableSansLocation(derived, "C260X")) != ERR)
@@ -49,7 +49,7 @@ void PMS1D_SetupForADS3()
   if ((raw_indx = SearchTableSansLocation(raw, "ACDP")) != ERR)
   {
     raw[raw_indx]->SerialNumber	= "CDP001";
-    raw[raw_indx]->Average	= (void (*) (...))SumVector;
+//    raw[raw_indx]->Average	= (void (*) (...))SumVector;
     raw[raw_indx]->ProbeType	= PROBE_PMS1D | PROBE_CDP;
   }
   if ((der_indx = SearchTableSansLocation(derived, "CCDP")) != ERR)
@@ -65,7 +65,7 @@ void PMS1D_SetupForADS3()
   if ((raw_indx = SearchTableSansLocation(raw, "AS200")) != ERR)
   {
     raw[raw_indx]->SerialNumber	= "PCAS108";
-    raw[raw_indx]->Average	= (void (*) (...))SumVector;
+//    raw[raw_indx]->Average	= (void (*) (...))SumVector;
     raw[raw_indx]->ProbeType	= PROBE_PMS1D | PROBE_PCASP;
   }
   if ((der_indx = SearchTableSansLocation(derived, "CS200")) != ERR)
@@ -81,7 +81,7 @@ void PMS1D_SetupForADS3()
   if ((raw_indx = SearchTableSansLocation(raw, "AUHSAS")) != ERR)
   {
     raw[raw_indx]->SerialNumber	= "UHSAS001";
-    raw[raw_indx]->Average	= (void (*) (...))SumVector;
+//    raw[raw_indx]->Average	= (void (*) (...))SumVector;
     raw[raw_indx]->ProbeType	= PROBE_PMS1D | PROBE_PCASP;
   }
   if ((der_indx = SearchTableSansLocation(derived, "CUHSAS")) != ERR)
