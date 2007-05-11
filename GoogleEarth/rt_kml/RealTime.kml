@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://earth.google.com/kml/2.1">
+<NetworkLink>
+  <name>Tracking the plane</name>
+  <Url>
+    <href>http://www.eol.ucar.edu/flight_data/flights/real-time.kml</href>
+<!--    <href>http://gv.gv.ucar.edu/real-time.kml</href> -->
+    <refreshMode>onInterval</refreshMode>
+    <refreshInterval>60</refreshInterval>
+  </Url>
+</NetworkLink>
+</kml>
