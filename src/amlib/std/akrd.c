@@ -23,6 +23,7 @@ void sakrd(DERTBL *varp)
 {
   NR_TYPE	qcxc, adifr;
   NR_TYPE	akrd, ratio;
+  NR_TYPE	akcor;
 
   adifr	= GetSample(varp, 0);
   qcxc	= GetSample(varp, 1);
@@ -72,7 +73,20 @@ void sakrd(DERTBL *varp)
         break;
 
       case Config::HIAPER:
-        akrd = ((adifr / qcxc) + 0.2571 ) / 0.04727;
+	{
+	double	xmach2;
+
+	xmach2 = GetSample(varp, 2);
+
+	akcor = (0.6195 - 1.02758*xmach2);
+
+	if  (akcor > 0.42)
+	{
+		akcor = 0.42;
+	}
+ 
+        akrd = (((adifr / qcxc) + 0.2571 ) / 0.04727) + akcor;
+	}
         break;
 
       case Config::SABRELINER:
