@@ -438,9 +438,13 @@ void WriteGoogleEarthKML(std::string& projName, std::string& flightNum, int stat
   if (status_id != 3)	// if !landed.
   {
     char buffer[1024];
-    std::string temp = googleEarthDataDir + "real-time.kmz";
-    sprintf(buffer, "rm %s; zip %s %s", file.c_str(), file.c_str(), temp.c_str());
+    std::string tmptmp(googleEarthDataDir); tmptmp += "tmp.kmz";
+
+    sprintf(buffer, "zip %s %s", tmptmp.c_str(), file.c_str());
     system(buffer);
+
+    std::string temp = googleEarthDataDir + "real-time.kmz";
+    rename(tmptmp.c_str(), temp.c_str());
   }
 }
 
