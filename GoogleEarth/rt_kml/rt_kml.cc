@@ -22,7 +22,10 @@ const std::string googleEarthDataDir = "/net/www/docs/flight_data/pacdex/flights
 
 // All datapoints are read from file, but only use every 'TimeStep' points.
 // e.g. 15 would mean use 1 data point for every 15 seconds of data.
-const int TimeStep = 15;
+const int TimeStep = 10;
+
+// True Airspeed cut-off.
+const float TAS_CutOff = 20.0;
 
 // Max out at this many points, don't want to swamp GoogleMap, though
 // Vincent said he broke them up into segments, so we shouldn't have the
@@ -33,7 +36,7 @@ const int maxGoogleMapPoints = 3000;
 // The order of this enum should match the order of the variables
 // being requested in the dataQuery string.
 enum VariablePos { TIME=0, LON, LAT, ALT, AT, TAS, WS, WD, WI };
-const std::string _dataQuerySuffix = ",at_a,tasx,wsc,wdc,wic FROM raf_lrt WHERE TASX > 15.0 ORDER BY datetime";
+const std::string _dataQuerySuffix = ",at_a,tasx,wsc,wdc,wic FROM raf_lrt WHERE TASX > 20.0 ORDER BY datetime";
 
 
 std::string projectName, flightNumber;
@@ -51,7 +54,8 @@ T
 extractPQvalue(const char* cpqstring)
 {
   if (! cpqstring)
-  {     std::cerr << "extractPQvalue: string is null!\n";
+  {
+    std::cerr << "extractPQvalue: string is null!\n";
     return T();
   }
   try
@@ -331,20 +335,18 @@ void WriteGoogleEarthKML(std::string& projName, std::string& flightNum, int stat
   if (status_id == 3)	// if landed.
     file = googleEarthDataDir + "flight_" + flightNum + ".kml";
   else
-    file = googleEarthDataDir + "real-time.kml";
+    file = googleEarthDataDir + "latest" + ".kml";
 
-  std::string temp = googleEarthDataDir + "latest" + ".kml";
-
-  googleEarth.open(temp.c_str());
+  googleEarth.open(file.c_str());
   if (googleEarth.is_open() == false)
   {
-    std::cerr << "Failed to open output file " << temp << std::endl;
+    std::cerr << "Failed to open output file " << file << std::endl;
     return;
   }
 
   googleEarth
 	<< "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-	<< "<kml xmlns=\"http://earth.google.com/kml/2.0\">\n"
+	<< "<kml xmlns=\"http://earth.google.com/kml/2.1\">\n"
 	<< "<Document>\n"
 	<< " <name>" << projName << " " << flightNum << "</name>\n"
 	<< " <Style id=\"PM1\">\n"
@@ -433,7 +435,13 @@ void WriteGoogleEarthKML(std::string& projName, std::string& flightNum, int stat
 		<< "</kml>\n";
 
   googleEarth.close();
-  rename(temp.c_str(), file.c_str());
+  if (status_id != 3)	// if !landed.
+  {
+    char buffer[1024];
+    std::string temp = googleEarthDataDir + "real-time.kmz";
+    sprintf(buffer, "rm %s; zip %s %s", file.c_str(), file.c_str(), temp.c_str());
+    system(buffer);
+  }
 }
 
 /* -------------------------------------------------------------------- */
@@ -518,7 +526,7 @@ int flightStatus()
   if (firstTAS == -1)
     status = 1;		// Pre flight.
   else
-  if (latestTAS < 25.0)
+  if (latestTAS < TAS_CutOff)
     status = 3;		// Landed.
 
   return status;
@@ -580,10 +588,13 @@ void ReadDataFromNetCDF(char *fileName)
   strptime(attr->as_string(0), "seconds since %F %T +0000", &tm);
   time_t t = mktime(&tm);
 
-  for (int i = 0; i < tim_vals->num(); ++i)
+  for (int i = 0; i < tim_vals->num(); i += TimeStep)
   {
-    if (tas_vals->as_float(i) < 20.0)
-      continue;
+    for (; tas_vals->as_float(i) < TAS_CutOff; ++i)
+      ;
+
+    if (i >= tim_vals->num())
+      break;
 
     char buffer[60];
     time_t thist = t + tim_vals->as_int(i);
