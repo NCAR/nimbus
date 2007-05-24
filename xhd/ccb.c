@@ -26,6 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2001
 #include "constants.h"
 #include "ctape.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #include <Xm/Text.h>

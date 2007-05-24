@@ -10,6 +10,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2006
 -------------------------------------------------------------------------
 */
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #include <Xm/Protocols.h>
