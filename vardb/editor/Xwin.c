@@ -14,6 +14,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 -------------------------------------------------------------------------
 */
 
+#include <stdio.h>
+
 #include <Xm/CascadeB.h>
 #include <Xm/Form.h>
 #include <Xm/Frame.h>
