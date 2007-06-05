@@ -7,6 +7,11 @@
 #	Name		Constructor	xlate fn	compute fn
 # ----------------------------------------------------------------------------
 #
+# PACDEX, maybe ongoing also.
+#
+	"CONCU100",	NULL,           NULL,		sconcu100,
+	"CONCU500",	NULL,           NULL,		sconcu500,
+#
 # AIRS-II
 #
 	"XICING",	NULL,           NULL,		sicing,
