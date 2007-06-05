@@ -22,7 +22,8 @@ public class DbAccess {
     protected String dbName;
     protected String plane;
     protected String newTime;
-    protected String oldTime = "2006-01-01 01:01:01";
+    protected String oldTime = "20060101T010101";
+    protected int timeLength = 15; // 19 if using delimited time.
     protected String sqlString = null;
     protected String sqlString2 = "select value from global_attributes where key='EndTime';";
     protected Vector dataResults = new Vector();
@@ -64,7 +65,7 @@ public class DbAccess {
 // Position at first record.
           res.next();
           newTime = res.getString(1);
-          newTime = newTime.substring(0, 19);
+          newTime = newTime.substring(0, timeLength);
 //          System.out.println("newTime: " + newTime + " oldTime: " + oldTime);
           if (newTime.equals(oldTime)) {
              System.out.println("No new data.\n");
@@ -77,17 +78,18 @@ public class DbAccess {
              int numrecs = 1;
              while (res.next()) {
                 datetimeData = res.getString(1);
-                if (datetimeData.substring(0,19).equals(oldTime))
+                if (datetimeData.substring(0,timeLength).equals(oldTime))
                    continue;
                 else {
                    for (int i = 1; i < numVars; i++) {
                       Double number = new Double(res.getDouble(i + 1));
                       dataResults.add(number);
                    }
-                   if (plane.equals("GV")) {
-                      outDataFile.addSqlStatement(datetimeData, dataResults);
-                   }
-                   else if ((numrecs % 2) == 0) {
+//                   if (plane.equals("GV")) {
+//                      outDataFile.addSqlStatement(datetimeData, dataResults);
+//                   }
+//                 else
+                   if ((numrecs % 2) == 0) {
                       outDataFile.addSqlStatement(datetimeData, dataResults);
                    }
                    dataResults.clear();
