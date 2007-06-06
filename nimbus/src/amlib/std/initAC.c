@@ -296,7 +296,7 @@ NR_TYPE pcorf7(NR_TYPE q, NR_TYPE q1)
 /* GV ---------------------------------------------------------------- */
 NR_TYPE pcorr5(NR_TYPE q, NR_TYPE q1)
 {
-  return(0.95+0.1207*q) + q1*(-0.00344 + q1*(3.4147e-06 - 1.0312e-09*q1));
+  return (-0.60 + 0.1565*q) + q1*(0.008 + q1*(7.1979e-09*q1 - 1.4072e-05))
 }
 
 NR_TYPE pcorq5(NR_TYPE q, NR_TYPE q1)
@@ -327,7 +327,10 @@ NR_TYPE pcorf5_2(NR_TYPE q, NR_TYPE q1)
 {
   NR_TYPE	pfix;
 
-  pfix = (-0.60 + 0.1565*q1) + q*(0.008 + q*(7.1979e-09*q - 1.4072e-05));
+  pfix = (1.02+q1*(0.215 - 0.04*q/1000.) + q*(-0.003266 + q*1.613e-06));
+
+  // Trailing Cone parameterization
+//  pfix = (-0.60 + 0.1565*q1) + q*(0.008 + q*(7.1979e-09*q - 1.4072e-05));
 
   return(pfix);
 }
