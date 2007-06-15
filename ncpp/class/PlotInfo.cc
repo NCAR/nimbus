@@ -4,7 +4,7 @@ OBJECT NAME:	PlotInfo.cc
 
 FULL NAME:	Plot Information/Parameters
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2005
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2007
 -------------------------------------------------------------------------
 */
 
@@ -190,7 +190,7 @@ void PlotInfo::SetDefaultLabels(int idx)
     if (cnt++ == idx)
       {
       panel[idx]->xAxis.label = "Diameter (um)";
-      panel[idx]->yAxis.label = "#/cm3";
+      panel[idx]->yAxis.label = MakeYAxisLabel(normalization, CONCENTRATION);
       panel[idx]->zAxis.label = "Time";
       }
     }
@@ -200,7 +200,7 @@ void PlotInfo::SetDefaultLabels(int idx)
     if (cnt++ == idx)
       {
       panel[idx]->xAxis.label = "Diameter (um)";
-      panel[idx]->yAxis.label = "um2/cm3";
+      panel[idx]->yAxis.label = MakeYAxisLabel(normalization, SURFACE);
       panel[idx]->zAxis.label = "Time";
       }
     }
@@ -210,16 +210,11 @@ void PlotInfo::SetDefaultLabels(int idx)
     if (cnt++ == idx)
       {
       panel[idx]->xAxis.label = "Diameter (um)";
-      panel[idx]->yAxis.label = "um3/cm3";
+      panel[idx]->yAxis.label = MakeYAxisLabel(normalization, VOLUME);
       panel[idx]->zAxis.label = "Time";
       }
     }
 
-  if (normalization == LINEAR)
-    panel[idx]->yAxis.label += "/um";
-
-  if (normalization == LOG)
-    panel[idx]->yAxis.label += "/log10(um)";
 
 
   // Convert the letter 'u' to the ASCII micron character

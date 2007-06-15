@@ -55,7 +55,7 @@ PlotManager::PlotManager(const Widget parent, const Widget drawA) :
 
   n = 0;
   title[0] = XmCreateLabel(frame[0], "Data Source", args, n);
-  title[1] = XmCreateLabel(frame[1], "Plot Type", args, n);
+  title[1] = XmCreateLabel(frame[1], "Plot Options", args, n);
   XtManageChild(title[0]); XtManageChild(title[1]);
 
   n = 0;

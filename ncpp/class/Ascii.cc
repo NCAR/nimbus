@@ -8,7 +8,7 @@ DESCRIPTION:
 
 NOTES:		
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2007
 -------------------------------------------------------------------------
 */
 
@@ -64,15 +64,9 @@ void Ascii::Update(SetManager& sets, PlotManager *plotMgr)
 
     if (sets.DataTypes() & CONCENTRATION)
       {
-      strcat(buffer, "\n  Concentrations dN");
-
-      if (sets.GetNormalization() == LINEAR)
-        strcat(buffer, "/dD (#/cm3/um)\n");
-      else
-      if (sets.GetNormalization() == LOG)
-        strcat(buffer, "/dlogD (#/cm3)\n");
-      else
-        strcat(buffer, " (#/cm3)\n");
+      strcat(buffer, "\n  Concentrations ");
+      strcat(buffer, MakeYAxisLabel(sets.GetNormalization(), sets.DataTypes()).c_str());
+      strcat(buffer, "\n");
 
       for (i = 0; i < sets.NumberRecords(); ++i)
         {
@@ -93,15 +87,9 @@ void Ascii::Update(SetManager& sets, PlotManager *plotMgr)
 
     if (sets.DataTypes() & SURFACE)
       {
-      strcat(buffer, "\n  Surface dS");
-
-      if (sets.GetNormalization() == LINEAR)
-        strcat(buffer, "/dD (um2/cm3/um)\n");
-      else
-      if (sets.GetNormalization() == LOG)
-        strcat(buffer, "/dlogD (um2/cm3)\n");
-      else
-        strcat(buffer, " (um2/cm3)\n");
+      strcat(buffer, "\n  Surface ");
+      strcat(buffer, MakeYAxisLabel(sets.GetNormalization(), sets.DataTypes()).c_str());
+      strcat(buffer, "\n");
 
       for (i = 0; i < sets.NumberRecords(); ++i)
         {
@@ -122,15 +110,9 @@ void Ascii::Update(SetManager& sets, PlotManager *plotMgr)
 
     if (sets.DataTypes() & VOLUME)
       {
-      strcat(buffer, "\n  Volume dV");
-
-      if (sets.GetNormalization() == LINEAR)
-        strcat(buffer, "/dD (um3/cm3/um)\n");
-      else
-      if (sets.GetNormalization() == LOG)
-        strcat(buffer, "/dlogD (um3/cm3)\n");
-      else
-        strcat(buffer, " (um3/cm3)\n");
+      strcat(buffer, "\n  Volume ");
+      strcat(buffer, MakeYAxisLabel(sets.GetNormalization(), sets.DataTypes()).c_str());
+      strcat(buffer, "\n");
 
       for (i = 0; i < sets.NumberRecords(); ++i)
         {

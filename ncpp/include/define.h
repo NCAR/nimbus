@@ -134,7 +134,8 @@ void	DismissWindow(Widget, XtPointer, XtPointer),
 
 std::string	MakeLogTicLabel(double value),
 	MakeTimeTicLabel(int indx, int nTics),
-	MakeTicLabel(float diff, int majorTics, double value);
+	MakeTicLabel(float diff, int majorTics, double value),
+	MakeYAxisLabel(NormType n, DataType dt);
 
 int	GetTextInt(const Widget w);
 float	GetTextFloat(const Widget w);
