@@ -114,7 +114,7 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
   dataRate = avar->get_dim(1)->size();
   vectorLength = avar->get_dim(2)->size();
 
-  units = avar->get_att("units")->as_string(0);
+  units = cvar->get_att("units")->as_string(0);
 
   if ((attr = avar->get_att("SerialNumber")))
     serialNum = attr->as_string(0);

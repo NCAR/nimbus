@@ -277,13 +277,9 @@ cout << "Count[] = " << countV[0] << ", "<< countV[1]<<", "<< countV[2] << "\n";
       if (conc && avCntr > 0)
         conc[dest] /= avCntr;
 
-// Convert 260X and 2D's to N/cm3.
-if (conc && probe->Name().find("260X") != probe->Name().npos ||
-    conc && probe->Name().find("200X") != probe->Name().npos ||
-    conc && probe->Name().find("1D") != probe->Name().npos ||
-    conc && probe->Name().find("2D") != probe->Name().npos ||
-    conc && probe->Name().find("HVPS") != probe->Name().npos)
-  conc[dest] /= 1000;
+      // Convert #/L data to #/cm3 so we have consistant data.
+      if (conc && probe->Units().find("/L") != probe->Units().npos)
+        conc[dest] /= 1000;
 
       if (surface)
         surface[dest] = conc[dest] * 4.0 * M_PI *
