@@ -11,5 +11,3 @@
 - Curve fits (log normal, exponential, weibull).
   - Display co-effiecients.
   - Be able to show curve on plot.
-
-- Convert 2d data to 1d data.

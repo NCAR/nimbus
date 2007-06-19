@@ -278,7 +278,8 @@ cout << "Count[] = " << countV[0] << ", "<< countV[1]<<", "<< countV[2] << "\n";
         conc[dest] /= avCntr;
 
       // Convert #/L data to #/cm3 so we have consistant data.
-      if (conc && probe->Units().find("/L") != probe->Units().npos)
+      if (conc && probe->Units().find("/L") != probe->Units().npos ||
+          conc && probe->Units().find("liter") != probe->Units().npos)
         conc[dest] /= 1000;
 
       if (surface)
