@@ -240,7 +240,7 @@ void sconcu500(DERTBL *varp)
   NR_TYPE concu500 = 0.0;
   NR_TYPE * concentration = GetVector(varp, 0, varp->Length);
 
-  for (size_t i = 56; i < 99; ++i)
+  for (size_t i = 73; i < 99; ++i)
     concu500 += concentration[i];
 
   PutSample(varp, concu500);
