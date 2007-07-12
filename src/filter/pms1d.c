@@ -30,6 +30,21 @@ void PMS1D_SetupForADS3()
 {
   int raw_indx, der_indx;
 
+  if ((raw_indx = SearchTableSansLocation(raw, "AS100")) != ERR)
+  {
+    raw[raw_indx]->SerialNumber	= "FSSP122";
+//    raw[raw_indx]->Average	= (void (*) (...))SumVector;
+    raw[raw_indx]->ProbeType	= PROBE_PMS1D | PROBE_260X;
+  }
+  if ((der_indx = SearchTableSansLocation(derived, "CS100")) != ERR)
+  {
+    derived[der_indx]->SerialNumber	= raw[raw_indx]->SerialNumber;
+    derived[der_indx]->Length		= raw[raw_indx]->Length;
+    derived[der_indx]->ProbeType	= PROBE_PMS1D | PROBE_260X;
+  }
+  if (raw_indx != ERR && der_indx == ERR)
+    printf("Debug: No CS100 found.\n");
+
   if ((raw_indx = SearchTableSansLocation(raw, "A260X")) != ERR)
   {
     raw[raw_indx]->SerialNumber	= "260X06";
@@ -76,6 +91,22 @@ void PMS1D_SetupForADS3()
   }
   if (raw_indx != ERR && der_indx == ERR)
     printf("Debug: No CS200 found.\n");
+
+
+  if ((raw_indx = SearchTableSansLocation(raw, "AS300")) != ERR)
+  {
+    raw[raw_indx]->SerialNumber	= "FSSP305";
+//    raw[raw_indx]->Average	= (void (*) (...))SumVector;
+    raw[raw_indx]->ProbeType	= PROBE_PMS1D | PROBE_PCASP;
+  }
+  if ((der_indx = SearchTableSansLocation(derived, "CS300")) != ERR)
+  {
+    derived[der_indx]->SerialNumber	= raw[raw_indx]->SerialNumber;
+    derived[der_indx]->Length		= raw[raw_indx]->Length;
+    derived[der_indx]->ProbeType	= PROBE_PMS1D | PROBE_F300;
+  }
+  if (raw_indx != ERR && der_indx == ERR)
+    printf("Debug: No CS300 found.\n");
 
 
   if ((raw_indx = SearchTableSansLocation(raw, "AUHSAS")) != ERR)
