@@ -23,7 +23,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2007
 
 #include "nimbus.h"
 #include "decode.h"
-#include "netcdf.h"
+#include <netcdf.h>
 
 #define BUFF_SIZE  256
 #define TOKENS    "\t "

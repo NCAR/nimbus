@@ -28,7 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-05
 #include "nimbus.h"
 #include "decode.h"
 #include "gui.h"
-#include "header.h"
+#include <raf/header.h>
 
 #define NEW_SEG		(-1)
 

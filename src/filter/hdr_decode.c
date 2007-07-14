@@ -48,12 +48,12 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include <sys/stat.h>
 
 
-#include "pms.h"
+#include <raf/pms.h>
 #include "nimbus.h"
 #include "decode.h"
 #include "gui.h"
-#include "ctape.h"	// ADS header API
-#include "vardb.h"	// Variable DataBase
+#include <raf/ctape.h>	// ADS header API
+#include <raf/vardb.h>	// Variable DataBase
 #include "amlib.h"
 
 #include <nidas/core/Socket.h>

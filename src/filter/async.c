@@ -37,10 +37,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 
 #include "nimbus.h"
 #include "decode.h"
-#include "netcdf.h"
-#include "header.h"
-#include "raf.h"
-#include "raf_queue.h"
+#include <netcdf.h>
+#include <raf/header.h>
+#include <raf/raf.h>
+#include <raf/raf_queue.h>
 
 #define MAX_ASYNC_VARS	32
 

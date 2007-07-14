@@ -20,8 +20,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2006
 
 #include "nimbus.h"
 #include "decode.h"
-#include "pms.h"
-#include "netcdf.h"
+#include <raf/pms.h>
+#include <raf/netcdf.h>
 
 static int getCellSizes(var_base * rp, float cellSizes[]);
 

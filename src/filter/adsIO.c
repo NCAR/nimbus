@@ -42,9 +42,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 
 #include "nimbus.h"
 #include "decode.h"
-#include "ctape.h"
-#include "raf.h"
-#include "portable.h"
+#include <raf/ctape.h>
+#include <raf/raf.h>
+#include <raf/portable.h>
 
 /* Values for DiskData, 1st one matches false.	*/
 enum FileType { TAPE_DATA, RAW_ADS, COS_BLOCKED };

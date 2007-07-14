@@ -10,7 +10,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2003-06
 
 #include "psql.h"
 #include "transmit.h"
-#include "vardb.h"
+#include <raf/vardb.h>
 
 #include <algorithm>
 #include <cctype>

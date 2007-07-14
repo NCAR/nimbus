@@ -9,7 +9,7 @@ DESCRIPTION:	Header File declaring amlib functions.
 #ifndef AMLIB_H
 #define AMLIB_H
 
-#include "header.h"
+#include <raf/header.h>
 #include <netinet/in.h>
 
 #include <vector>
