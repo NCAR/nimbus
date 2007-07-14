@@ -4,7 +4,7 @@
 LIBDIR=		${JLOCAL}/lib
 MANDIR=		${JLOCAL}/man/man3
 INCLUDEDIR=	${JLOCAL}/include
-CC=			gcc
+CC=		gcc
 
 LIBNAME=	pms
 HEADER=		pms.h
@@ -34,7 +34,7 @@ lib${LIBNAME}.a: ${OBJS}
 
 install: all
 	install -p --mode=664 lib${LIBNAME}.a ${LIBDIR}
-	install -p --mode=444 ${HEADER} ${JLOCAL}/include
+	install -p --mode=444 ${HEADER} ${JLOCAL}/include/raf
 
 clean:
 	rm -f *.o *.a *.ln

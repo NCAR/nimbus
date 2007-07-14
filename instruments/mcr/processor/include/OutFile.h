@@ -20,8 +20,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 #include "mcr.h"
 #include "DataBuffer.h"
 #include "Netcdf.h"
-#include "hdrAPI.h"
-#include "Time.h"
+#include <raf/hdrAPI.h>
+#include <raf/Time.h>
 
 #include <cerrno>
 #include <cfloat>

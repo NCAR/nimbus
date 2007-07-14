@@ -2,11 +2,11 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	cb_pause.c
 
-FULL NAME:		Command CallBacks
+FULL NAME:	Command CallBacks
 
 ENTRY POINTS:	PauseProcessing()
 
-STATIC FNS:		none
+STATIC FNS:	none
 
 DESCRIPTION:	Contains callbacks for the nimbus GUI pause related stuff.
 
@@ -14,11 +14,11 @@ INPUT:
 
 OUTPUT:		
 
-REFERENCES:		none
+REFERENCES:	none
 
 REFERENCED BY:	XtAppMainLoop()
 
-COPYRIGHT:		University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 -------------------------------------------------------------------------
 */
 

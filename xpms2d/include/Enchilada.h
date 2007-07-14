@@ -13,7 +13,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 
 #include "define.h"
 
-#include "TextWindow.h"
+#include <raf/TextWindow.h>
 
 
 /* -------------------------------------------------------------------- */

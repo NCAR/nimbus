@@ -48,7 +48,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-9
 #include "decode.h"
 #include "amlib.h"
 
-#include "adsIOrt.h"
+#include <raf/adsIOrt.h>
 
 ADS_rtFile	*file;
 

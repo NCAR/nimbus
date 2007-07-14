@@ -19,7 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 
 #include "mcrtd.h"
 
-#include "Window.h"
+#include <raf/Window.h>
 
 #include <Xm/CascadeB.h>
 #include <Xm/DrawingA.h>

@@ -6,7 +6,7 @@
 #include <cstring>
 #include <ctime>
 
-#include "netcdf.h"
+#include <netcdf.h>
 
 #define BUFFSIZE            8192
 #define MAX_VARS            500

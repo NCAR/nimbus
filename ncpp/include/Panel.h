@@ -14,12 +14,12 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8
 #define PANEL_H
 
 #include "define.h"
-#include "Canvas.h"
+#include <raf/Canvas.h>
 #include "DataSet.h"
-#include "PixMap.h"
-#include "PostScript.h"
-#include "XPen.h"
-#include "XFonts.h"
+#include <raf/PixMap.h>
+#include <raf/PostScript.h>
+#include <raf/XPen.h>
+#include <raf/XFonts.h>
 
 struct panelDims
         {

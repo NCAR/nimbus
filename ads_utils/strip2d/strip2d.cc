@@ -1,6 +1,6 @@
 /* strip 2d records from an ADS file and produce a 2d file (including headers).
  */
-#include <adsIO.h>
+#include <raf/adsIO.h>
 #include <errno.h>
 #include <stdio.h>
 

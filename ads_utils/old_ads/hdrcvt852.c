@@ -28,8 +28,8 @@ COPYRIGHT:		University Corporation for Atmospheric Research, 1992
 #include <stdio.h>
 #include <string.h>
 
-#include <ctape.h>
-#include "/home/chinook/chris/wrk/tape/hdr_api-1.1/header.h"
+#include <raf/ctape.h>
+#include "/h/9/cjw/wrk/tape/hdr_api-1.1/header.h"
 
 #define TAPE_BLK_SIZE   32767
 

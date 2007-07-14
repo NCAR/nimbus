@@ -1,6 +1,6 @@
 #include "hdrbld.h"
-#include "pms.h"
-#include "vardb.h"
+#include <raf/pms.h>
+#include <raf/vardb.h>
 #include <unistd.h>
 
 #include <Xm/TextF.h>

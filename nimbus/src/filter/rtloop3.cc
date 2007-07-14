@@ -16,7 +16,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2005
 #include "nimbus.h"
 #include "decode.h"
 #include "gui.h"
-#include "vardb.h"
+#include <raf/vardb.h>
 #include "psql.h"
 #include "GoogleEarth.h"
 #include "brdcast.h"

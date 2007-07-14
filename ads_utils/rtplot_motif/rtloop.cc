@@ -21,8 +21,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-9
 
 #include "define.h"
 #include "decode.h"
-#include "Application.h"
-#include "adsIOrt.h"
+#include "raf/Application.h"
+#include "raf/adsIOrt.h"
 
 #include <unistd.h>
 #include <Xm/Xm.h>

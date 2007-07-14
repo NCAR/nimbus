@@ -18,7 +18,7 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #include <utility>
 #include <vector>
 #include <sys/types.h>
-#include "constants.h"
+#include <raf/constants.h>
 #include "config.h"
 
 const size_t NAMELEN = 32;

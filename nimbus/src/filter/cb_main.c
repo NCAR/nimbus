@@ -49,7 +49,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 
 #include "nimbus.h"
 #include "decode.h"
-#include "ctape.h"
+#include <raf/ctape.h>
 #include "gui.h"
 #include "vardb.h"
 #include "psql.h"

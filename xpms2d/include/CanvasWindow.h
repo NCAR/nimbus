@@ -13,7 +13,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 #include "define.h"
 
-#include "Window.h"
+#include <raf/Window.h>
 
 #include <Xm/CascadeB.h>
 #include <Xm/DrawingA.h>

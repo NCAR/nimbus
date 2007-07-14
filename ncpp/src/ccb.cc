@@ -21,8 +21,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8
 
 #include "define.h"
 
-#include "Printer.h"
-#include "TextWindow.h"
+#include <raf/Printer.h>
+#include <raf/TextWindow.h>
 
 #include <Xm/Text.h>
 

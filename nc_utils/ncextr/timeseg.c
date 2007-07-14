@@ -2,28 +2,30 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	timeseg.c
 
-FULL NAME:		Time Segment Routines
+FULL NAME:	Time Segment Routines
 
-ENTRY POINTS:	GetUserTimeIntervals()		Used by StartProcesing()
-				NextTimeInterval()			Used by StartProcesing()
-				FormatTimeSegmentsForOutputFile()	netcdf.c
+ENTRY POINTS:	GetUserTimeIntervals()
+		Used by StartProcesing()
+		NextTimeInterval()
+		Used by StartProcesing()
+		FormatTimeSegmentsForOutputFile()	netcdf.c
 
-STATIC FNS:		none
+STATIC FNS:	none
 
 DESCRIPTION:	Functions should be used in the order shown above.
-				User specified time intervals may not correspond to
-				what is actually output (e.g. User requests 00:00:00 -
-				15:00:00, and ADS actually started recording at 13:00:00).
+		User specified time intervals may not correspond to
+		what is actually output (e.g. User requests 00:00:00 -
+		15:00:00, and ADS actually started recording at 13:00:00).
 
-INPUT:			struct Hdr_blk
+INPUT:		struct Hdr_blk
 
 OUTPUT:		
 
-REFERENCES:		none
+REFERENCES:	none
 
 REFERENCED BY:	cb_main.c, oppo.c, mrf.c
 
-COPYRIGHT:		University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 -------------------------------------------------------------------------
 */
 
@@ -38,7 +40,7 @@ static int	nTimeIntervals;
 /* Actual time intervals in output file.			*/
 static int	currentTimeSegment;
 static long	BtimeInt[MAX_TIME_SLICES*4][3],
-				EtimeInt[MAX_TIME_SLICES*4][3];
+		EtimeInt[MAX_TIME_SLICES*4][3];
 
 
 /* -------------------------------------------------------------------- */

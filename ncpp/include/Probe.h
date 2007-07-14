@@ -14,7 +14,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2007
 #define PROBE_H
 
 #include "define.h"
-#include "netcdf.hh"
+#include <netcdf.hh>
 
 #define MAX_O_VARS	40
 

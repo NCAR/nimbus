@@ -24,8 +24,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
 #include <netinet/in.h>	// htonl macros.
 
 #include "vardb.h"
-#include "netcdf.h"
-#include "portable.h"
+#include <netcdf.h>
+#include <raf/portable.h>
 
 const long	VarDB_MagicCookie	= 0x42756c6c;
 const long	VarDB_CurrentVersion	= 3;

@@ -25,7 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 */
 
 #include "define.h"
-#include "netcdf.h"
+#include <netcdf.h>
 
 static long	timeVarID[3];
 static int	currentTime[3];

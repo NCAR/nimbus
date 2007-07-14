@@ -15,10 +15,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 */
 
 #include "MagnifyCanvas.h"
-#include "Cursor.h"
+#include <raf/Cursor.h>
 #include "Magnify.h"
 #include "MainCanvas.h"
-#include "XPen.h"
+#include <raf/XPen.h>
 
 extern XCursor		cursor;
 extern Magnify		*mag;

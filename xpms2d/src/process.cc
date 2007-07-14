@@ -22,7 +22,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999-2006
 */
 
 #include "define.h"
-#include "header.h"
+#include <raf/header.h>
 
 #include "ControlWindow.h"
 
@@ -53,14 +53,15 @@ struct recStats &ProcessRecord(P2d_rec *record, float version)
   unsigned long		*p, slice, ppSlice, pSlice, syncWord, startMilliSec;
   bool		overloadAdded = false, debug = false;
   double	sampleVolume[maxDiodes], diameter, z, conc, totalLiveTime;
+  char		probeType = ((char *)&record->id)[0];
 
   Particle	*cp;
 
   static P2d_hdr	prevHdr[MAX_PROBES];
-  static unsigned long		prevTime[MAX_PROBES] = { 1,1,1,1 };
-  static unsigned long		prevSlice[MAX_PROBES][2];
+  static unsigned long	prevTime[MAX_PROBES] = { 1,1,1,1 };
+  static unsigned long	prevSlice[MAX_PROBES][2];
 
-  if (((char *)&record->id)[0] == 'H')
+  if (probeType == 'H')
     return(ProcessHVPSrecord(record, version));
 
   if (version < 3.35)
@@ -69,7 +70,7 @@ struct recStats &ProcessRecord(P2d_rec *record, float version)
     syncWord = StandardSyncWord;
 
   probeIdx = ((char *)&record->id)[1] - '1';
-  if (((char *)&record->id)[0] == 'C')
+  if (probeType == 'C')
     probeIdx += 2;
 
 
@@ -104,7 +105,7 @@ if (debug)
   // Compute frequency, which is used to convert timing words from TAS clock
   // pulses to milliseconds.  Most of sample volume is here, time comes in
   // later.
-  if (((char *)&record->id)[0] == 'P')
+  if (probeType == 'P')
     {
     output.resolution = 200;
     output.SampleVolume = 261.0 * 6.4;
@@ -164,8 +165,10 @@ if (debug) printf("%08x %08x %08x\n", ppSlice, pSlice, slice);
 
       cp->w = 1;        // first slice of particle is in sync word
       cp->h = 1;
-      cp->area = 0;
-      cp->edge = false;
+      cp->area = 1;	// assume at list 1 pixel hidden in sync-word.
+      cp->edge = 0;
+      cp->horiz_gap = false;
+      cp->vert_gap = false;
       cp->reject = false;
       cp->timeReject = false;
 
@@ -193,18 +196,17 @@ if (debug) printf("%08x %08x %08x\n", ppSlice, pSlice, slice);
          * it will all get bunched up.  Counts total number of contacts for
          * each edge.
          */
-        if (slice & 0x80000000) /* touched edge */
+        if (slice & 0x80000000)	// touched edge
           {
-          cp->edge |= 0xF0;
+          cp->edge |= 0x0F;
           cp->x1++;
           }
 
-        if (slice & 0x00000001) /* touched edge */
+        if (slice & 0x00000001) // touched edge
           {
-          cp->edge |= 0x0F;
+          cp->edge |= 0xF0;
           cp->x2++;
           }
-
 
         for (j = 0; j < 32; ++j, slice >>= 1)
           cp->area += slice & 0x0001;
@@ -237,6 +239,9 @@ if (debug)
         cp->reject = true;
         }
 
+      if ((float)cp->area / (cp->w * cp->h) <= controlWindow->GetAreaRatioReject())
+        cp->reject = true;
+
       switch (controlWindow->GetConcentration())
         {
         case NONE:
@@ -251,6 +256,16 @@ if (debug)
           break;
 
         case CENTER_IN:
+/*
+if (cp->w > cp->h*2 || cp->w*2 < cp->h)
+  cp->reject = true;
+if (probeType == 'P' && cp->edge == 0xff) // both edges.
+  cp->reject = true;
+
+if (probeType == 'P' && (cp->w > 20 || cp->h > 20))  // reject > 4mm.
+  cp->reject = true;
+*/
+
           if (cp->w > 121)
             {
             if (debug) printf("reject 121 rule #%d\n", output.nTimeBars);
@@ -303,13 +318,13 @@ if (debug)
             cp->reject = true;
             }
 
-          if (!cp->edge || (cp->edge && cp->w / cp->h < 0.2))
+          if (cp->edge == 0 || (cp->edge && cp->w / cp->h < 0.2))
             bin = std::max(cp->w, cp->h);
           else
-          if (cp->edge && cp->edge != 0xffff) // One edge, but not both.
+          if (cp->edge == 0xf0 || cp->edge == 0x0f) // One edge, but not both.
             bin = (int)((pow(cp->w >> 1, 2.0) + pow(cp->h, 2.0)) / cp->h);
           else
-          if (cp->edge == 0xffff)
+          if (cp->edge == 0xff)
             bin = (int)sqrt(pow(cp->h + ((pow(cp->x2, 2.0) + pow(cp->x1, 2.0))
 				/ 4 * cp->h), 2.0) + pow(cp->x1, 2.0));
 
@@ -525,7 +540,7 @@ if (debug) printf("%08x %08x %08x\n", ppSlice, pSlice, p[0]);
       cp->w = 0;        /* first slice of particle is in sync word */
       cp->h = 0;
       cp->area = 0;
-      cp->edge = false;
+      cp->edge = 0;
       cp->reject = false;
       cp->timeReject = false;
 
@@ -588,13 +603,13 @@ if (debug) printf("%08x %08x %08x\n", ppSlice, pSlice, p[0]);
          */
         if (unshaded <= upper_mask) /* touched edge */
           {
-          cp->edge |= 0xF0;
+          cp->edge |= 0xf0;
           cp->x1++;
           }
 
         if (shaded + unshaded >= lower_mask) /* touched lower edge (assuming 40 masked out) */
           {
-          cp->edge |= 0x0F;
+          cp->edge |= 0x0f;
           cp->x2++;
           }
 
@@ -689,13 +704,13 @@ if (debug)
             cp->reject = true;
             }
 
-          if (!cp->edge || (cp->edge && cp->w / cp->h < 0.2))
+          if (cp->edge == 0 || (cp->edge && cp->w / cp->h < 0.2))
             bin = std::max(cp->w, cp->h);
           else
-          if (cp->edge && cp->edge != 0xffff) // One edge, but not both.
+          if (cp->edge == 0xf0 || cp->edge == 0x0f) // One edge, but not both.
             bin = (int)((pow(cp->w >> 1, 2.0) + pow(cp->h, 2.0)) / cp->h);
           else
-          if (cp->edge == 0xffff)
+          if (cp->edge == 0xff)
             bin = (int)sqrt(pow(cp->h + ((pow(cp->x2, 2.0) + pow(cp->x1, 2.0))
 				/ 4 * cp->h), 2.0) + pow(cp->x1, 2.0));
           break;

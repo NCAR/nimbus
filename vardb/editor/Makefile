@@ -15,7 +15,7 @@ CFLAGS=		-Wall -g -O2 ${INCLUDES}
 LIBS=		-L../lib -L${JLOCAL}/lib -L/usr/X11R6/lib -lVarDB -lraf -lnetcdf -lXm -lXt -lX11 -lXext
 
 SRCS=	vared.c initv.c Xwin.c ccb.c
-HDRS=	define.h ${JLOCAL}/include/vardb.h fbr.h
+HDRS=	define.h ${JLOCAL}/include/raf/vardb.h fbr.h
 OBJS=	vared.o initv.o Xwin.o ccb.o
 PROG=	vared
 

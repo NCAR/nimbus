@@ -18,7 +18,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1992-05
 
 #include "nimbus.h"
 #include "decode.h"
-#include "ctape.h"
+#include <raf/ctape.h>
 
 #include <nidas/dynld/raf/SyncRecordReader.h>
 extern nidas::dynld::raf::SyncRecordReader* syncRecReader;

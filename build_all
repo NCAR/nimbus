@@ -1,8 +1,8 @@
 #!/bin/csh
 
 # Environment variables that are needed:
-# setenv JLOCAL /code/granger/jlocal
-# setenv LOCAL $JLOCAL
+# setenv JLOCAL /opt/local
+# setenv LOCAL /opt/local
 # setenv WINDS $JLOCAL
 
 # For a stand alone installation such as a groundstation or aircraft
@@ -46,14 +46,14 @@ endif
 # Make sure all the [obvious] directories exist
 test -d ${JLOCAL}/bin || mkdir ${JLOCAL}/bin
 test -d ${JLOCAL}/lib || mkdir ${JLOCAL}/lib
-test -d ${JLOCAL}/include || mkdir ${JLOCAL}/include
+test -d ${JLOCAL}/include/raf || mkdir -p ${JLOCAL}/include/raf
 test -d ${JLOCAL}/man || mkdir ${JLOCAL}/man
 test -d ${JLOCAL}/man/man1 || mkdir ${JLOCAL}/man/man1
 test -d ${JLOCAL}/man/man3 || mkdir ${JLOCAL}/man/man3
 
 # Build libraries first.  libraf++ needs to go first to install header.h.
 
-foreach file ( libraf++ hdr_api libraf libpms vardb/lib )
+foreach file ( libraf libraf++ hdr_api libpms vardb/lib )
   (cd $file; echo $file; make install)
 end
 

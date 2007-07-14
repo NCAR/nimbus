@@ -14,8 +14,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
 #include <sys/types.h>
 
 #include "vardb.h"
-#include "netcdf.h"
-#include "portable.h"
+#include <netcdf.h>
+#include <raf/portable.h>
 
 static struct var_v2 defaults =
 	{

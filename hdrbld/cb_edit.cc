@@ -28,7 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2004
 
 #include "hdrbld.h"
 #include "hardwire.h"
-#include "vardb.h"
+#include <raf/vardb.h>
 
 #include <Xm/List.h>
 #include <Xm/TextF.h>

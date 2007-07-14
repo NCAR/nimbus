@@ -18,8 +18,8 @@ all: ${OBJS}
 
 ${OBJS}: ${HDRS}
 
-CanvasWindow.o:		${I2D}/CanvasWindow.h ${JLOCAL}/include/Window.h
-DataBuffer.o:		${I2D}/DataBuffer.h ${JLOCAL}/include/hdrAPI.h
+CanvasWindow.o:		${I2D}/CanvasWindow.h ${JLOCAL}/include/raf/Window.h
+DataBuffer.o:		${I2D}/DataBuffer.h ${JLOCAL}/include/raf/hdrAPI.h
 XColorMap.o:		${I2D}/XColorMap.h
 
 clean:

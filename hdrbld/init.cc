@@ -24,9 +24,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996
 */
 
 #include "hdrbld.h"
-#include "ac.h"
-#include "pms.h"
-#include "vardb.h"
+#include <raf/ac.h>
+#include <raf/pms.h>
+#include <raf/vardb.h>
 
 
 char	*getenv();

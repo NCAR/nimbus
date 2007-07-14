@@ -20,7 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-7
 */
 
 #include "define.h"
-#include "constants.h"
+#include <raf/constants.h>
 
 /* -------------------------------------------------------------------- */
 void CreateNASAlangNetCDF(FILE *fp)

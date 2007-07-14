@@ -38,7 +38,7 @@ lib${LIBNAME}_p.a: ${OBJS}
 
 install: all
 	install -p --mode=664 lib${LIBNAME}.a ${LIBDIR}
-	install -p --mode=444 ${HEADER} ${INCLUDEDIR}
+	install -p --mode=444 ${HEADER} ${INCLUDEDIR}/raf
 	install -p --mode=664 vardb.3 ${MANDIR}
 
 clean:

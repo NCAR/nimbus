@@ -10,10 +10,6 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
 REFERENCES:	Xwin.c, init.c then enters XtAppMainLoop()
 
 REFERENCED BY:	user

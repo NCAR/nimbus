@@ -27,16 +27,16 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #include "define.h"
 #include <unistd.h>
 
-#include "Application.h"
-#include "Canvas.h"
-#include "Cursor.h"
+#include <raf/Application.h>
+#include <raf/Canvas.h>
+#include <raf/Cursor.h>
 #include "FileMgr.h"
 #include "MovieControl.h"
-#include "PostScript.h"
+#include <raf/PostScript.h>
 #include "PlotMgr.h"
 #include "SetMgr.h"
-#include "XmFile.h"
-#include "XmWarn.h"
+#include <raf/XmFile.h>
+#include <raf/XmWarn.h>
 
 extern Application	*application;
 extern FileManager	fileMgr;

@@ -2,21 +2,13 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	globals.c
 
-FULL NAME:		Global Variable Definitions
+FULL NAME:	Global Variable Definitions
 
 ENTRY POINTS:	none
 
 DESCRIPTION:	
 
-INPUT:			none
-
-OUTPUT:			none
-
-REFERENCES:		none
-
-REFERENCED BY:	none
-
-COPYRIGHT:		University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 -------------------------------------------------------------------------
 */
 

@@ -20,8 +20,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-7
 */
 
 #include "define.h"
-#include "constants.h"
-#include "vardb.h"
+#include <raf/constants.h>
+#include <raf/vardb.h>
 
 char *GetMemory();
 

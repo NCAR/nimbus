@@ -23,7 +23,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 #include "define.h"
 
-#include "Canvas.h"
+#include <raf/Canvas.h>
 #include "PlotMgr.h"
 
 extern Canvas		*mainCanvas;

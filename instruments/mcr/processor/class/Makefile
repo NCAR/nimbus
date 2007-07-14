@@ -19,7 +19,7 @@ all: ${OBJS}
 
 ${OBJS}: ${HDRS}
 
-DataBuffer.o:		${I2D}/DataBuffer.h ${I2D}/Netcdf.h ${LIBRAF}/hdrAPI.h
+DataBuffer.o:		${I2D}/DataBuffer.h ${I2D}/Netcdf.h ${LIBRAF}/raf/hdrAPI.h
 Netcdf.o:		${I2D}/Netcdf.h
 OutFile.o:		${I2D}/OutFile.h ${I2D}/Netcdf.h
 

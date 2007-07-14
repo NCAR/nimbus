@@ -18,8 +18,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 #define ACDATA_H
 
 #include "mcr.h"
-#include "netcdf.hh"
-#include "Time.h"
+#include <netcdf.hh>
+#include <raf/Time.h>
 
 #include <cfloat>
 #include <cmath>

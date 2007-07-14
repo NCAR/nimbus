@@ -15,7 +15,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 #include "define.h"
 
-#include "TextWindow.h"
+#include <raf/TextWindow.h>
 #include "DataFile.h"
 
 

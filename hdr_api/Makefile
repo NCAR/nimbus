@@ -25,7 +25,7 @@ SRCS=	init.c lookup.c getnext.c getvarlist.c gettype.c getitemlen.c	\
 	getdmeaddr.c getitemtype.c getpointer.c getps.c getintf.c	\
 	getsn.c getserial.c gethskp.c getgain.c getnbins.c
 
-HDRS=	ctape.h hdr_api.h ${INCLUDEDIR}/header.h
+HDRS=	ctape.h hdr_api.h ${INCLUDEDIR}/raf/header.h
 
 .SUFFIXES: .o .h .c
 
@@ -42,9 +42,9 @@ lib${LIBNAME}.a: ${OBJS}
 
 install: all
 	test -d ${LIBDIR} || mkdir ${LIBDIR}
-	test -d ${INCLUDEDIR} || mkdir ${INCLUDEDIR}
+	test -d ${INCLUDEDIR}/raf || mkdir ${INCLUDEDIR}/raf
 	install -p --mode=664  lib${LIBNAME}.a ${LIBDIR}
-	install -p --mode=444  ${HEADER} ${INCLUDEDIR}
+	install -p --mode=444  ${HEADER} ${INCLUDEDIR}/raf
 	test -d ${MANDIR} || mkdir ${MANDIR}
 	install -p --mode=664  ${LIBNAME}.3 ${MANDIR}
 

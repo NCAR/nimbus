@@ -26,7 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 #include "nimbus.h"
 #include "decode.h"
-#include "vardb.h"
+#include <raf/vardb.h>
 #include "amlibProto.h"
 
 char	*DependMsg =

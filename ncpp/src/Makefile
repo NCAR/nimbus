@@ -84,21 +84,21 @@ print:
 
 ${OBJS}:	${HDRS}
 
-ncpp.o:	${RAFINC}/Application.h ${INC}/CanvasWindow.h ${RAFINC}/Cursor.h ${INC}/FileMgr.h ${INC}/DataFile.h ${INC}/MovieControl.h ${INC}/PlotMgr.h ${RAFINC}/Printer.h ${INC}/SetMgr.h ${RAFINC}/XmFile.h ${RAFINC}/Canvas.h ${INC}/fbr.h
+ncpp.o:	${RAFINC}/raf/Application.h ${INC}/CanvasWindow.h ${RAFINC}/raf/Cursor.h ${INC}/FileMgr.h ${INC}/DataFile.h ${INC}/MovieControl.h ${INC}/PlotMgr.h ${RAFINC}/raf/Printer.h ${INC}/SetMgr.h ${RAFINC}/raf/XmFile.h ${RAFINC}/raf/Canvas.h ${INC}/fbr.h
 
 
 autoscale.o:	${INC}/SetMgr.h ${INC}/Panel.h
 
-cb_canvas.o:	${RAFINC}/Canvas.h ${INC}/PlotMgr.h
+cb_canvas.o:	${RAFINC}/raf/Canvas.h ${INC}/PlotMgr.h
 
-cb_control.o:	${RAFINC}/Canvas.h ${INC}/FileMgr.h ${INC}/MovieControl.h ${INC}/PlotMgr.h ${INC}/SetMgr.h
+cb_control.o:	${RAFINC}/raf/Canvas.h ${INC}/FileMgr.h ${INC}/MovieControl.h ${INC}/PlotMgr.h ${INC}/SetMgr.h
 
-cb_edit.o:	${RAFINC}/Application.h ${INC}/EditDiameters.h
+cb_edit.o:	${RAFINC}/raf/Application.h ${INC}/EditDiameters.h
 
-cb_menus.o:	${RAFINC}/Application.h ${INC}/PlotMgr.h ${RAFINC}/Cursor.h ${INC}/FileMgr.h ${RAFINC}/PostScript.h ${RAFINC}/XmFile.h ${INC}/SetMgr.h ${INC}/PlotMgr.h
+cb_menus.o:	${RAFINC}/raf/Application.h ${INC}/PlotMgr.h ${RAFINC}/raf/Cursor.h ${INC}/FileMgr.h ${RAFINC}/raf/PostScript.h ${RAFINC}/raf/XmFile.h ${INC}/SetMgr.h ${INC}/PlotMgr.h
 
 cb_movie.o:	${INC}/MovieControl.h
 
-cb_printer.o:	${RAFINC}/Printer.h
+cb_printer.o:	${RAFINC}/raf/Printer.h
 
-cb_text.o:	${RAFINC}/Application.h ${INC}/Ascii.h ${INC}/Header.h ${INC}/FileMgr.h ${INC}/SetMgr.h ${INC}/PlotMgr.h ${INC}/SetMgr.h ${RAFINC}/TextWindow.h ${RAFINC}/XmFile.h ${RAFINC}/XmError.h ${INC}/VarsWin.h
+cb_text.o:	${RAFINC}/raf/Application.h ${INC}/Ascii.h ${INC}/Header.h ${INC}/FileMgr.h ${INC}/SetMgr.h ${INC}/PlotMgr.h ${INC}/SetMgr.h ${RAFINC}/raf/TextWindow.h ${RAFINC}/raf/XmFile.h ${RAFINC}/raf/XmError.h ${INC}/VarsWin.h

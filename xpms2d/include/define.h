@@ -17,7 +17,7 @@ FULL NAME:	Include File to Include the Include Files
 
 #include <Xm/Xm.h>
 
-#include "Queue.h"
+#include <raf/Queue.h>
 
 #ifndef ERR
 #define OK		(0)
@@ -56,9 +56,11 @@ struct particle
 
   int	w, h;
   int	area;
+  bool	vert_gap;		// Was there a blank slice (i.e. multiple parts)
+  bool	horiz_gap;		//   and in the hozizontal dir?
   bool	reject;
-  bool	edge;		// particle touched either edge
-  bool	timeReject;	// Nimbus will reject (because of bad timing bar)
+  unsigned char	edge;		// particle touched either edge
+  bool	timeReject;		// Nimbus will reject (because of bad timing bar)
 
   ushort	x1, x2;		// for particles that touch both edges.
   ulong		timeWord;
@@ -130,6 +132,7 @@ void	ApplyTimeChange(Widget, XtPointer, XtPointer),
 	ViewHex(Widget, XtPointer, XtPointer),
 	ViewEnchilada(Widget, XtPointer, XtPointer),
 	SetDensity(Widget, XtPointer, XtPointer),
+	SetAreaRatioRej(Widget, XtPointer, XtPointer),
 	SetConcentration(Widget, XtPointer, XtPointer),
 	ForkNetscape(Widget, XtPointer, XtPointer),
 	SetScaleTime(Widget, XtPointer, XtPointer),

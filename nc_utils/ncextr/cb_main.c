@@ -2,34 +2,34 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	cb_main.c
 
-FULL NAME:		Command CallBacks
+FULL NAME:	Command CallBacks
 
 ENTRY POINTS:	
-				CancelSetup()
-				Proceed()
-				ReadHeader()
-				StartProcessing()
-				StopProcessing()
-				CreateListLineItem()
-				ToggleOutput()
-				LogMessage()
-				Quit()
+		CancelSetup()
+		Proceed()
+		ReadHeader()
+		StartProcessing()
+		StopProcessing()
+		CreateListLineItem()
+		ToggleOutput()
+		LogMessage()
+		Quit()
 
-STATIC FNS:		ValidateFileNames()
-				FillListWidget()
+STATIC FNS:	ValidateFileNames()
+		FillListWidget()
 
 DESCRIPTION:	Contains callbacks for the nimbus GUI main window & setup
-				window.
+		window.
 
 INPUT:			
 
 OUTPUT:		
 
-REFERENCES:		Everything.
+REFERENCES:	Everything.
 
 REFERENCED BY:	XtAppMainLoop()
 
-COPYRIGHT:		University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 -------------------------------------------------------------------------
 */
 

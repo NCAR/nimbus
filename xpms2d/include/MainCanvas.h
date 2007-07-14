@@ -12,11 +12,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2006
 #define MAINCANVAS_H
 
 #include "define.h"
-#include "header.h"
+#include <raf/header.h>
 
-#include "Canvas.h"
+#include <raf/Canvas.h>
 #include "DataFile.h"
-#include "PostScript.h"
+#include <raf/PostScript.h>
 
 #include <sys/types.h>
 #include <netinet/in.h>

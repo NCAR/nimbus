@@ -19,7 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
 #include <netinet/in.h> // htonl macros.
 
 #include "vardb.h"
-#include "portable.h"
+#include <raf/portable.h>
 
 extern long VarDB_RecLength, VarDB_nRecords;
 

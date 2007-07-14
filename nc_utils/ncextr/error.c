@@ -2,24 +2,16 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	error.c
 
-FULL NAME:		Error Handler
+FULL NAME:	Error Handler
 
 ENTRY POINTS:	HandleError()
-				HandleWarning()
+		HandleWarning()
 
-STATIC FNS:		none
+STATIC FNS:	none
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	
-
-REFERENCED BY:	
-
-COPYRIGHT:		University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 -------------------------------------------------------------------------
 */
 

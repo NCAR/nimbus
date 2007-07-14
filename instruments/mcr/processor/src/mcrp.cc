@@ -17,7 +17,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998-2001
 */
 
 #include "mcr.h"
-#include "adsIO.h"
+#include <raf/adsIO.h>
 #include "DataBuffer.h"
 #include "Netcdf.h"
 #include "OutFile.h"

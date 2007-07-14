@@ -19,7 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 #include <Xm/Label.h>
 #include <Xm/TextF.h>
 #include <Xm/ToggleB.h>
-#include "Window.h"
+#include <raf/Window.h>
 
 struct ep_axisInfo  // This needs to match axisInfo in Panel.h
 	{

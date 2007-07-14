@@ -22,7 +22,7 @@ COPYRIGHT:		University Corporation for Atmospheric Research, 1992
 #include <fcntl.h>
 #include <errno.h>
 
-#include "/home/local/include/header.h"
+#include "/opt/local/include/raf/header.h"
 
 #define STDERR(msg)		fprintf(stderr, msg)
 #define STDERRA(msg, arg)	fprintf(stderr, msg, arg)

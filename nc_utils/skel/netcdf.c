@@ -36,7 +36,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 #include <Xm/TextF.h>
 
 #include "define.h"
-#include "netcdf.h"
+#include <netcdf.h>
 
 #define DEFAULT_TI_LENGTH	(19 * MAX_TIME_SLICES)
 

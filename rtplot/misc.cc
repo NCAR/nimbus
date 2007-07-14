@@ -13,7 +13,7 @@ OUTPUT:
 */
 
 #include "define.h"
-#include "header.h"
+#include <raf/header.h>
 
 /* --------------------------------------------------------------------- */
 char *GetComputeHost()

@@ -13,7 +13,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 #include "define.h"
 
-#include "hdrAPI.h"
+#include <raf/hdrAPI.h>
 
 /* -------------------------------------------------------------------- */
 class Probe {

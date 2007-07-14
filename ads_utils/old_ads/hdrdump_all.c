@@ -19,7 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 */
 
 #include <stdio.h>
-#include "ctape.h"
+#include "raf/ctape.h"
 
 
 char	buffer[1024];

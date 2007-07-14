@@ -22,7 +22,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 #include <string.h>
 #include <stdlib.h>
 
-#include "constants.h"
+#include <raf/constants.h>
 #include "pms.h"
 
 static char	**PMSfile = NULL;

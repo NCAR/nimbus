@@ -26,7 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 -------------------------------------------------------------------------
 */
 
-#include "Application.h"
+#include <raf/Application.h>
 #include "EditDiameters.h"
 #include "FileMgr.h"
 #include "PlotMgr.h"

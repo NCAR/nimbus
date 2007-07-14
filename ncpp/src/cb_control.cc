@@ -38,12 +38,12 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #include "define.h"
 #include <unistd.h>
 
-#include "Canvas.h"
-#include "Cursor.h"
+#include <raf/Canvas.h>
+#include <raf/Cursor.h>
 #include "FileMgr.h"
 #include "MovieControl.h"
 #include "PlotMgr.h"
-#include "Printer.h"
+#include <raf/Printer.h>
 #include "SetMgr.h"
 
 

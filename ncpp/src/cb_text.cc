@@ -23,18 +23,18 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8
 -------------------------------------------------------------------------
 */
 
-#include "Application.h"
+#include <raf/Application.h>
 #include "Ascii.h"
-#include "Cursor.h"
+#include <raf/Cursor.h>
 #include "Header.h"
 #include "FileMgr.h"
 #include "PlotMgr.h"
-#include "Printer.h"
+#include <raf/Printer.h>
 #include "SetMgr.h"
-#include "TextWindow.h"
+#include <raf/TextWindow.h>
 #include "Titles.h"
 #include "VarsWin.h"
-#include "XmFile.h"
+#include <raf/XmFile.h>
 
 #include <Xm/Text.h>
 

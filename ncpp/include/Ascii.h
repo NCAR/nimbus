@@ -17,7 +17,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 
 #include "SetMgr.h"
 #include "PlotMgr.h"
-#include "TextWindow.h"
+#include <raf/TextWindow.h>
 
 
 /* -------------------------------------------------------------------- */

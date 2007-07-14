@@ -16,7 +16,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 #include <sys/types.h>
 #include <netinet/in.h> // htonl macros.
 
-#include "vardb.h"
+#include <raf/vardb.h>
 
 struct vardb_hdr	VarDB_Hdr1, VarDB_Hdr2;
 struct var_v2		VarDB1[1000], VarDB2;

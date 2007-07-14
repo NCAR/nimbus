@@ -18,16 +18,16 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-9
 
 #include "define.h"
 
-#include "Canvas.h"
+#include <raf/Canvas.h>
 #include "DataFile.h"
 #include "DataSource.h"
 #include "EditPlotParms.h"
 #include "PlotInfo.h"
 #include "SetMgr.h"
-#include "Window.h"
+#include <raf/Window.h>
 #include "Colors.h"
-#include "XFonts.h"
-#include "XPen.h"
+#include <raf/XFonts.h>
+#include <raf/XPen.h>
 
 
 /* -------------------------------------------------------------------- */

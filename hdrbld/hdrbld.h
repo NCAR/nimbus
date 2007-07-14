@@ -15,8 +15,8 @@ DESCRIPTION:	Main header file for hdrbld.c
 #include <sys/types.h>
 #include <Xm/Xm.h>
 
-#include "constants.h"
-#include "header.h"
+#include <raf/constants.h>
+#include <raf/header.h>
 
 #define NAMELEN			NAMLEN
 #define MAX_NAV			5

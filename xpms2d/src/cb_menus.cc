@@ -26,16 +26,16 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2001
 #include <errno.h>
 #include <unistd.h>
 
-#include "Application.h"
+#include <raf/Application.h>
 #include "ControlWindow.h"
 #include "Colors.h"
-#include "Cursor.h"
+#include <raf/Cursor.h>
 #include "FileMgr.h"
 #include "MainCanvas.h"
-#include "PostScript.h"
-#include "Printer.h"
-#include "XmFile.h"
-#include "XmWarn.h"
+#include <raf/PostScript.h>
+#include <raf/Printer.h>
+#include <raf/XmFile.h>
+#include <raf/XmWarn.h>
 
 static char	*PSoutFile = NULL, *pngOutFile = NULL;
 

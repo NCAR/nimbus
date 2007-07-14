@@ -17,7 +17,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2001
 
 #include "DataSet.h"
 #include "DataFile.h"
-#include "Time.h"
+#include <raf/Time.h>
 
 class Panel; 
 

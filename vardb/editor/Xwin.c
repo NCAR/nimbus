@@ -28,7 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include <Xm/ToggleB.h>
 
 #include "define.h"
-#include "vardb.h"
+#include <raf/vardb.h>
 
 
 static const int nForms = 13;

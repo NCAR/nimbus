@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "/home/local/include/netcdf.h"
+#include <netcdf.h>
 
 
 int GetFlightRecordNumber(int ncid, const char userTime[]);

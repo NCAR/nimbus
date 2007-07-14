@@ -12,9 +12,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 #define HEX_H
 
 #include "define.h"
-#include "header.h"
+#include <raf/header.h>
 
-#include "TextWindow.h"
+#include <raf/TextWindow.h>
 
 
 /* -------------------------------------------------------------------- */

@@ -16,6 +16,6 @@ SOURCES += amlibfn.cc \
            misc.cc \
            rec_decode.cc \
            rtplot.cc
-INCLUDEPATH += $(JLOCAL)/include ../nimbus/include /opt/aeros/qwt/include
+INCLUDEPATH += $(JLOCAL)/include ../nimbus/include /opt/aeros/qwt-5.0/include
 OBJECTS += ../nimbus/src/filter/calco.o ../nimbus/src/filter/search.o ../nimbus/src/filter/textfile.o ../nimbus/src/filter/popen.o ../nimbus/src/filter/log.o ../nimbus/src/filter/config.o ../nimbus/src/filter/rd_defs.o
 LIBS += -L$(JLOCAL)/lib -lraf++ -L../nimbus/lib -lxlate -lraf -L/opt/aeros/qwt/lib -lqwt -lnetcdf

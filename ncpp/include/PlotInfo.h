@@ -17,15 +17,15 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8
 #ifndef PLOTINFO_H
 #define PLOTINFO_H
 
-#include "Canvas.h"
+#include <raf/Canvas.h>
 #include "Panel.h"
-#include "PixMap.h"
-#include "PostScript.h"
-#include "Printer.h"
+#include <raf/PixMap.h>
+#include <raf/PostScript.h>
+#include <raf/Printer.h>
 #include "SetMgr.h"
 #include "Colors.h"
-#include "XFonts.h"
-#include "XPen.h"
+#include <raf/XFonts.h>
+#include <raf/XPen.h>
 
 struct plotOffset
         {

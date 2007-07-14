@@ -14,7 +14,7 @@ DESCRIPTION:	Header File for Nimbus Skeleton.
 #include <sys/types.h>
 #include <Xm/Xm.h>
 
-#include "constants.h"
+#include <raf/constants.h>
 
 /* This is the number of records that you wish to have access to.  This is
  * used to determine the size of the circular buffer.  This number should

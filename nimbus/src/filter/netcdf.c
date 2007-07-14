@@ -42,10 +42,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include "nimbus.h"
 #include "decode.h"
 #include "gui.h"
-#include "ctape.h"
-#include "netcdf.h"
-#include "raf_queue.h"
-#include "vardb.h"
+#include <raf/ctape.h>
+#include <raf/netcdf.h>
+#include <raf/raf_queue.h>
+#include <raf/vardb.h>
 #include "svnInfo.h"
 
 static const std::string Source = "NCAR Research Aviation Facility";

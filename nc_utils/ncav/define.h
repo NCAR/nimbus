@@ -15,8 +15,8 @@ DESCRIPTION:	Header File for Nimbus Skeleton.
 #include <sys/types.h>
 #include <Xm/Xm.h>
 
-#include "constants.h"
-#include "raf.h"
+#include <raf/constants.h>
+#include <raf/raf.h>
 
 #define NAMELEN		32
 #define MAX_VARIABLES	2000

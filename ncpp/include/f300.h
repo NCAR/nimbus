@@ -14,7 +14,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 #define F300_H
 
 #include "define.h"
-#include "netcdf.hh"
+#include <netcdf.hh>
 
 #include "Probe.h"
 

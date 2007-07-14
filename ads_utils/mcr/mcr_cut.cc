@@ -15,7 +15,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 -------------------------------------------------------------------------
 */
 
-#include "adsIO.h"
+#include "raf/adsIO.h"
 
 char		buffer[65000], mcrFileName[128];
 Mcr_rec		mcrRec;

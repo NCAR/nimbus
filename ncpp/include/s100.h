@@ -14,7 +14,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 #define S100_H
 
 #include "define.h"
-#include "netcdf.hh"
+#include <netcdf.hh>
 
 #include "Probe.h"
 

@@ -29,7 +29,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2006
 #include <cstring>
 
 #include "vardb.h"
-#include "netcdf.h"
+#include <netcdf.h>
 
 #include <netinet/in.h> // htonl macros.
 

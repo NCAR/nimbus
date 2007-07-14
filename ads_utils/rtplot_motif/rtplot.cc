@@ -17,10 +17,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1994-9
 #include "define.h"
 #include "decode.h"
 #include "fbr.h"
-#include "Application.h"
-#include "Canvas.h"
-#include "CanvasWindow.h"
-#include "XmError.h"
+#include <raf/Application.h>
+#include <raf/Canvas.h>
+#include <raf/CanvasWindow.h>
+#include <raf/XmError.h>
 
 Application     *application;
 Canvas          *canvas;

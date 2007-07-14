@@ -14,7 +14,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8
 -------------------------------------------------------------------------
 */
 
-#include "Printer.h"
+#include <raf/Printer.h>
 
 extern Printer		*printerSetup;
 

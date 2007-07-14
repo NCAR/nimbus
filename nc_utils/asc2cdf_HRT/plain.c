@@ -20,8 +20,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-7
 */
 
 #include "define.h"
-#include "constants.h"
-#include "vardb.h"
+#include <raf/constants.h>
+#include <raf/vardb.h>
 
 extern int dataRate;
 
@@ -90,16 +90,24 @@ void CreatePlainNetCDF(FILE *fp)
 
   /* Create Time variables.
    */
-  for (i = 0; i < 3; ++i)
+  for (i = 0; time_vars[i]; ++i)
     {
     nc_def_var(ncid, time_vars[i], NC_FLOAT, 1, dims, &varid[i]);
-
-    p = varDB ? VarDB_GetUnits(time_vars[i]) : (char *)noUnits;
-    nc_put_att_text(ncid, varid[i], "units", strlen(p)+1, p);
-    p = varDB ? VarDB_GetTitle(time_vars[i]) : (char *)noTitle;
-    nc_put_att_text(ncid, varid[i], "long_name", strlen(p)+1, p);
-    nc_put_att_int(ncid, varid[i], "OutputRate", NC_INT, 1, &rateOne);
     nc_put_att_float(ncid, varid[i], "_FillValue", NC_FLOAT, 1, &missing_val);
+
+    const char * s1 =
+#ifdef VARDB
+        varDB ? VarDB_GetUnits(time_vars[i]) :
+#endif
+        noUnits;
+    nc_put_att_text(ncid, varid[i], "units", strlen(s1)+1, s1);
+
+    s1 =
+#ifdef VARDB
+        varDB ? VarDB_GetTitle(time_vars[i]) :
+#endif
+        noTitle;
+    nc_put_att_text(ncid, varid[i], "long_name", strlen(s1)+1, s1);
     }
 
 
@@ -134,14 +142,20 @@ void CreatePlainNetCDF(FILE *fp)
     printf(" nc_def_var = %d\n",
 	nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[nVariables]));
 
-    p1 = varDB ? VarDB_GetUnits(p) : (char *)noUnits;
-    nc_put_att_text(ncid, varid[nVariables], "units", strlen(p1)+1, p1);
-printf("%s %s\n", p, VarDB_GetUnits(p));
-    p1 = varDB ? VarDB_GetTitle(p) : (char *)noTitle;
-    nc_put_att_text(ncid, varid[nVariables], "long_name", strlen(p1)+1, p1);
-printf("%s %s\n", p, p1);
-    nc_put_att_int(ncid,varid[nVariables], "OutputRate", NC_INT, 1, &dataRate);
-    nc_put_att_float(ncid,varid[nVariables],"_FillValue",NC_FLOAT,1,&missing_val);
+    nc_put_att_float(ncid,varid[nVariables],"_FillValue",NC_FLOAT,1,&missing_val); 
+    const char * s1 =
+#ifdef VARDB
+        varDB ? VarDB_GetUnits(p) :
+#endif
+        noUnits;
+    nc_put_att_text(ncid, varid[nVariables], "units", strlen(s1)+1, s1);
+
+    s1 =
+#ifdef VARDB
+        varDB ? VarDB_GetTitle(p) :
+#endif
+        noTitle;
+    nc_put_att_text(ncid, varid[nVariables], "long_name", strlen(s1)+1, s1);
 
     ++nVariables;
     }

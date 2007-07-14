@@ -2,26 +2,18 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	cb_time.c
 
-FULL NAME:		Callbacks for TimeSlice Window
+FULL NAME:	Callbacks for TimeSlice Window
 
 ENTRY POINTS:	EditTimeSlices()
-				ValidateTime()
-				DismissTimeSliceWindow()
-				ResetTimeSliceWindow()
+		ValidateTime()
+		DismissTimeSliceWindow()
+		ResetTimeSliceWindow()
 
 STATIC FNS:		
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	
-
-REFERENCED BY:	
-
-COPYRIGHT:		University Corporation for Atmospheric Research, 1994
+COPYRIGHT:	University Corporation for Atmospheric Research, 1994
 -------------------------------------------------------------------------
 */
 

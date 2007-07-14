@@ -19,7 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 
 #include "mcrtd.h"
 
-#include "hdrAPI.h"
+#include <raf/hdrAPI.h>
 #include "CanvasWindow.h"
 
 const int SampleRate = 5000;	// 5Khz

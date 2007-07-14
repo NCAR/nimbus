@@ -24,7 +24,7 @@ REFERENCED BY:	cb_main.c
 
 #include "define.h"
 #include "decode.h"
-#include "adsIOrt.h"
+#include <raf/adsIOrt.h>
 
 extern ADS_rtFile       *file;
 

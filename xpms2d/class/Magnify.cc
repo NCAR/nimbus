@@ -12,7 +12,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 #include "Magnify.h"
 #include "Colors.h"
-#include "XPen.h"
+#include <raf/XPen.h>
 #include "MainCanvas.h"
 #include "MagnifyWindow.h"
 #include "MagnifyCanvas.h"

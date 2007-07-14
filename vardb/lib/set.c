@@ -23,7 +23,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include <sys/types.h>
 
 #include "vardb.h"
-#include "portable.h"
+#include <raf/portable.h>
 
 extern struct vardb_hdr	VarDB_Hdr;
 extern void		*VarDB;

@@ -15,7 +15,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2006
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
-#include "netcdf.h"
+#include <netcdf.h>
 
 #define SecondsSinceMidnite(t) (t[0] * 3600 + t[1] * 60 + t[2])
 

@@ -2,23 +2,23 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	search.c
 
-FULL NAME:		Searches
+FULL NAME:	Searches
 
 ENTRY POINTS:	SearchTable()
 
 DESCRIPTION:	Search for target in list.  The last pointer in the list
-				array must be NULL.  It only compares the first word of
-				what the list items points to.
+		array must be NULL.  It only compares the first word of
+		what the list items points to.
 
-INPUT:			An array of pointers and target pointer.
+INPUT:		An array of pointers and target pointer.
 
-OUTPUT:			pointer to located item or NULL
+OUTPUT:		pointer to located item or NULL
 
-REFERENCES:		none
+REFERENCES:	none
 
 REFERENCED BY:	amlib.c lrloop.s netcdf.c
 
-COPYRIGHT:		University Corporation for Atmospheric Research, 1992
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------
 */
 
@@ -28,7 +28,7 @@ COPYRIGHT:		University Corporation for Atmospheric Research, 1992
 /* -------------------------------------------------------------------- */
 SearchTable(table, ntable, target)
 char	*table[];
-int		ntable;		/* Number in list	*/
+int	ntable;		/* Number in list	*/
 char	target[];
 {
 	register int	beg, mid, end, rc;

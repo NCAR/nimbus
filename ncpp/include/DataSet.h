@@ -15,7 +15,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2007
 
 #include "DataFile.h"
 #include "Probe.h"
-#include "Time.h"
+#include <raf/Time.h>
 
 
 /* -------------------------------------------------------------------- */

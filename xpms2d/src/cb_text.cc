@@ -15,13 +15,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8
 -------------------------------------------------------------------------
 */
 
-#include "Application.h"
-#include "Cursor.h"
+#include <raf/Application.h>
+#include <raf/Cursor.h>
 #include "FileMgr.h"
-#include "Printer.h"
+#include <raf/Printer.h>
 #include "Enchilada.h"
 #include "Hex.h"
-#include "XmFile.h"
+#include <raf/XmFile.h>
 
 #include <Xm/Text.h>
 

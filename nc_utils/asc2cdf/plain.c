@@ -19,7 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-07
 #include "define.h"
 
 #ifdef VARDB
-#include "vardb.h"
+#include <raf/vardb.h>
 #endif
 
 const char *timeUnitsFormat = "seconds since %F %T %z";

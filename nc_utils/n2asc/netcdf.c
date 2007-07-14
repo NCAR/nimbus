@@ -22,7 +22,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include <cerrno>
 
 #include "define.h"
-#include "netcdf.h"
+#include <netcdf.h>
 
 void FormatTimeSegmentsForOutputFile(char buff[]);
 void SortTable(std::vector<VARTBL*>, int beg, int end);

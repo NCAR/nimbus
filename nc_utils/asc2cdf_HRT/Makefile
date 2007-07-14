@@ -1,7 +1,7 @@
 #
 #    Makefile for ASCII to netCDF translators.
 #
-CC=		gcc
+CC=		g++
 DESTDIR=
 BINDIR=		/jnet/local/bin
 ANONFTP=	/net/ftp/pub/archive/RAF-src/bin.RedHat9.0
@@ -9,7 +9,7 @@ MANDIR=		/jnet/local/man/man1
 LIBS=		-L${JLOCAL}/lib -lVarDB -lnetcdf -lraf
 LINTLIBS=	${LIBS}
 INCLUDES=	-I$(JLOCAL)/include
-CFLAGS=		-Wall -g ${INCLUDES}
+CFLAGS=		-Wall -g ${INCLUDES} -DVARDB
 
 SRCS=   asc2cdf.c plain.c nasaAmes.c nasaLangley.c
 OBJS=   asc2cdf.o plain.o nasaAmes.o nasaLangley.o

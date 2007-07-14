@@ -22,7 +22,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 */
 
 #include <stdio.h>
-#include "vardb.h"
+#include <raf/vardb.h>
 
 main(argc, argv)
 int	argc;

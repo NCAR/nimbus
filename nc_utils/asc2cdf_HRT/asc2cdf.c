@@ -10,21 +10,13 @@ STATIC FNS:
 
 DESCRIPTION:	Translate ASCII file to Nimbus Low Rate netCDF file
 
-INPUT:		ASCII file.
-
-OUTPUT:		Nimbus netCDF file.
-
-REFERENCES:		
-
-REFERENCED BY:	User
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1996-7
 -------------------------------------------------------------------------
 */
 
 #define _XOPEN_SOURCE
 #include "define.h"
-#include "constants.h"
+#include <raf/constants.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -32,18 +24,21 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-7
 char	buffer[BUFFSIZE];
 
 int	ncid;
-FILE	*inFP;
 int	baseTimeID, timeOffsetID, timeVarID, varid[MAX_VARS],
-	nVariables, nRecords;
+	nVariables;
 time_t	BaseTime = 0;
 float	scale[MAX_VARS], offset[MAX_VARS], missingVals[MAX_VARS];
-char	*time_vars[] = {"HOUR", "MINUTE", "SECOND"};
+
+char	*time_vars[] = {"HOUR", "MINUTE", "SECOND", 0 };
 struct tm StartFlight;
 
+static FILE     *inFP;
+static size_t   nRecords;
+static char     *globalAttrFile = 0;
 
 /* Command line option flags.
  */
-bool	fileType = PLAIN_FILE, sexSinceMidnight = FALSE;
+bool	fileType = PLAIN_FILE, sexSinceMidnight = false;
 int	SkipNlines = 1;
 
 int		BaseDataRate = 1, dataRate = 10;
@@ -137,7 +132,7 @@ int main(int argc, char *argv[])
 //      currSecond = atof(p);
 
       if (nRecords == 0)	// Roll our own time, for non-uniform time.
-        currSecond = atof(p);
+        currSecond = atoi(p);
       else
         ++currSecond;
 
@@ -311,17 +306,17 @@ static int ProcessArgv(int argc, char **argv)
         break;
 
       case 'm':
-        sexSinceMidnight = TRUE;
+        sexSinceMidnight = true;
         break;
 
       case 'a':
         fileType = NASA_AMES;
-        sexSinceMidnight = TRUE;
+        sexSinceMidnight = true;
         break;
 
       case 'l':
         fileType = NASA_LANGLEY;
-        sexSinceMidnight = TRUE;
+        sexSinceMidnight = true;
         break;
 
       case 'r':

@@ -21,7 +21,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998-9
 #include <Xm/RowColumn.h>
 #include <Xm/TextF.h>
 #include "FileMgr.h"
-#include "Window.h"
+#include <raf/Window.h>
 
 
 /* -------------------------------------------------------------------- */

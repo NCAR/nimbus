@@ -20,9 +20,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-7
 */
 
 #include "define.h"
-#include "constants.h"
+#include <raf/constants.h>
 
-char *GetMemory();
+extern "C" {
+char *GetMemory(size_t nbytes);
+};
 
 /* -------------------------------------------------------------------- */
 void SetNASABaseTime()

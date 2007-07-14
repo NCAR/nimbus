@@ -1,6 +1,6 @@
 #include <Xm/Xm.h>
 #include <stdio.h>
-#include <header.h>
+#include <raf/header.h>
 
 Widget	CreateMainWindow(Widget Shell000);
 

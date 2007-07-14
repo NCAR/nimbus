@@ -13,8 +13,8 @@
 #include <cstdio>
 #include <string>
 
-#include "Time.h"
-#include "netcdf.hh"
+#include <raf/Time.h>
+#include <netcdf.hh>
 
 #define N_IN_BINS	62	// Number of RDMA bins from instrument.
 

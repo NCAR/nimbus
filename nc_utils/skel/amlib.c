@@ -26,7 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993,1994
 */
 
 #include "define.h"
-#include "netcdf.h"
+#include <netcdf.h>
 
 
 /* STEP 4: To appease the compiler, place all AMLIB function names here.

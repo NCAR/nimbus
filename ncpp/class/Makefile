@@ -40,28 +40,28 @@ all: ${OBJS}
 
 ${OBJS}: ${HDRS}
 
-Ascii.o:		${INC}/Ascii.h ${INC}/SetMgr.h ${RAFINC}/TextWindow.h ${INC}/DataSet.h ${INC}/PlotMgr.h ${INC}/PlotInfo.h
-CanvasWindow.o:		${INC}/CanvasWindow.h ${RAFINC}/Window.h
+Ascii.o:		${INC}/Ascii.h ${INC}/SetMgr.h ${RAFINC}/raf/TextWindow.h ${INC}/DataSet.h ${INC}/PlotMgr.h ${INC}/PlotInfo.h
+CanvasWindow.o:		${INC}/CanvasWindow.h ${RAFINC}/raf/Window.h
 
-DataFile.o:		${INC}/DataFile.h ${INC}/Probe.h ${RAFINC}/Time.h ${INC}/fssp.h ${INC}/f300.h ${INC}/pcasp.h ${INC}/x260.h ${INC}/x200.h ${INC}/y200.h ${INC}/s100.h ${INC}/hvps.h
+DataFile.o:		${INC}/DataFile.h ${INC}/Probe.h ${RAFINC}/raf/Time.h ${INC}/fssp.h ${INC}/f300.h ${INC}/pcasp.h ${INC}/x260.h ${INC}/x200.h ${INC}/y200.h ${INC}/s100.h ${INC}/hvps.h
 DataSet.o:		${INC}/DataSet.h ${INC}/Probe.h ${INC}/DataFile.h
 DataSource.o:		${INC}/DataSource.h ${INC}/FileMgr.h ${INC}/SetMgr.h ${INC}/Probe.h
 
-EditDiameters.o:	${INC}/EditDiameters.h ${RAFINC}/Window.h ${INC}/FileMgr.h
-EditPlotParms.o:	${INC}/EditPlotParms.h ${RAFINC}/Window.h
+EditDiameters.o:	${INC}/EditDiameters.h ${RAFINC}/raf/Window.h ${INC}/FileMgr.h
+EditPlotParms.o:	${INC}/EditPlotParms.h ${RAFINC}/raf/Window.h
 FileMgr.o:		${INC}/FileMgr.h ${INC}/DataFile.h
-Header.o:		${INC}/Header.h ${RAFINC}/TextWindow.h
-MovieControl.o:		${INC}/MovieControl.h ${RAFINC}/Window.h ${RAFINC}/Time.h ${INC}/PlotMgr.h ${RAFINC}/Application.h ${INC}/FileMgr.h ${INC}/PlotMgr.h ${INC}/SetMgr.h
+Header.o:		${INC}/Header.h ${RAFINC}/raf/TextWindow.h
+MovieControl.o:		${INC}/MovieControl.h ${RAFINC}/raf/Window.h ${RAFINC}/raf/Time.h ${INC}/PlotMgr.h ${RAFINC}/raf/Application.h ${INC}/FileMgr.h ${INC}/PlotMgr.h ${INC}/SetMgr.h
 
-Panel.o:		${INC}/Panel.h ${RAFINC}/Canvas.h ${INC}/DataSet.h ${INC}/PlotInfo.h ${RAFINC}/PostScript.h ${RAFINC}/PixMap.h ${RAFINC}/XFonts.h ${RAFINC}/XPen.h
+Panel.o:		${INC}/Panel.h ${RAFINC}/raf/Canvas.h ${INC}/DataSet.h ${INC}/PlotInfo.h ${RAFINC}/raf/PostScript.h ${RAFINC}/raf/PixMap.h ${RAFINC}/raf/XFonts.h ${RAFINC}/raf/XPen.h
 
-PlotInfo.o:		${INC}/PlotInfo.h ${RAFINC}/Canvas.h ${INC}/Panel.h ${RAFINC}/Printer.h ${INC}/SetMgr.h ${INC}/Colors.h ${RAFINC}/XFonts.h ${RAFINC}/XPen.h ${RAFINC}/PostScript.h
+PlotInfo.o:		${INC}/PlotInfo.h ${RAFINC}/raf/Canvas.h ${INC}/Panel.h ${RAFINC}/raf/Printer.h ${INC}/SetMgr.h ${INC}/Colors.h ${RAFINC}/raf/XFonts.h ${RAFINC}/raf/XPen.h ${RAFINC}/raf/PostScript.h
 
-PlotMgr.o:		${INC}/PlotMgr.h ${RAFINC}/Window.h ${INC}/DataSource.h ${RAFINC}/Canvas.h ${INC}/DataFile.h ${INC}/EditPlotParms.h ${INC}/PlotInfo.h ${INC}/SetMgr.h ${INC}/Colors.h ${RAFINC}/XFonts.h ${RAFINC}/XPen.h
+PlotMgr.o:		${INC}/PlotMgr.h ${RAFINC}/raf/Window.h ${INC}/DataSource.h ${RAFINC}/raf/Canvas.h ${INC}/DataFile.h ${INC}/EditPlotParms.h ${INC}/PlotInfo.h ${INC}/SetMgr.h ${INC}/Colors.h ${RAFINC}/raf/XFonts.h ${RAFINC}/raf/XPen.h
 
 SetMgr.o:		${INC}/SetMgr.h ${INC}/DataSet.h
 Titles.o:		${INC}/Titles.h
-VarsWin.o:		${INC}/VarsWin.h ${RAFINC}/TextWindow.h ${INC}/SetMgr.h ${INC}/PlotMgr.h ${INC}/PlotInfo.h
+VarsWin.o:		${INC}/VarsWin.h ${RAFINC}/raf/TextWindow.h ${INC}/SetMgr.h ${INC}/PlotMgr.h ${INC}/PlotInfo.h
 
 Colors.o:		${INC}/Colors.h
 

@@ -21,7 +21,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 #include <fcntl.h>
 #include <errno.h>
 
-#include "header.h"
+#include "raf/header.h"
 
 #define ERR	(-1)
 

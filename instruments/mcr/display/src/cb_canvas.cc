@@ -27,10 +27,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #include "mcrtd.h"
 #include <time.h>
 
-#include "Canvas.h"
+#include <raf/Canvas.h>
 #include "CanvasWindow.h"
 #include "DataBuffer.h"
-#include "XmFile.h"
+#include <raf/XmFile.h>
 
 extern Canvas		*mainCanvas;
 extern CanvasWindow	*canvasWindow;

@@ -11,8 +11,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2006
 #include "MainCanvas.h"
 #include "Enchilada.h"
 #include "Colors.h"
-#include "XFonts.h"
-#include "XPen.h"
+#include <raf/XFonts.h>
+#include <raf/XPen.h>
 
 extern Enchilada       *enchiladaWin; 
 extern Colors	*color;

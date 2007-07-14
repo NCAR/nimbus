@@ -22,7 +22,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2001
 */
 
 #include "hdrbld.h"
-#include "ac.h"
+#include <raf/ac.h>
 
 #include <sys/types.h>
 #include <errno.h>

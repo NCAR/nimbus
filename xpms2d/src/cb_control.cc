@@ -31,10 +31,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2006
 
 #include "ControlWindow.h"
 #include "Colors.h"
-#include "Cursor.h"
+#include <raf/Cursor.h>
 #include "Enchilada.h"
 #include "FileMgr.h"
-#include "XPen.h"
+#include <raf/XPen.h>
 #include "MainCanvas.h"
 
 extern Enchilada	*enchiladaWin;
@@ -212,7 +212,6 @@ void PageBackward(Widget w, XtPointer client, XtPointer call)
 void SetCurrentFile(Widget w, XtPointer client, XtPointer call)
 {
   fileMgr.SetCurrentFile((int)client);
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -220,15 +219,20 @@ void SetProbe(Widget w, XtPointer client, XtPointer call)
 {
   fileMgr.CurrentFile()->probe[(int)client]->setDisplay(((XmToggleButtonCallbackStruct *)call)->set);
   PageCurrent();
-
-}	/* END SETPROBE */
+}
 
 /* -------------------------------------------------------------------- */
 void SetDensity(Widget w, XtPointer client, XtPointer call)
 {
   controlWindow->SetWaterDensity((int)client);
   PageCurrent();
+}
 
+/* -------------------------------------------------------------------- */
+void SetAreaRatioRej(Widget w, XtPointer client, XtPointer call)
+{
+  controlWindow->SetAreaRatioReject((int)client);
+  PageCurrent();
 }
 
 /* -------------------------------------------------------------------- */
@@ -237,7 +241,6 @@ void SetConcentration(Widget w, XtPointer client, XtPointer call)
   controlWindow->SetConcentrationCalc((int)client);
   SetSampleArea();
   PageCurrent();
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -245,14 +248,12 @@ void StartMovie(Widget w, XtPointer client, XtPointer call)
 {
   controlWindow->Start();
   controlWindow->Stop();
-
-}       /* END START */
+}
 
 /* -------------------------------------------------------------------- */
 void StopMovie(Widget w, XtPointer client, XtPointer call)
 {
   controlWindow->Stop();
-
 }
 
 /* -------------------------------------------------------------------- */
@@ -260,14 +261,12 @@ void SetScaleTime(Widget w, XtPointer client, XtPointer call)
 {
   controlWindow->PositionTime(False);
   PageForward(NULL, NULL, NULL);
-
-}       /* END SETSCALETIME */
+}
 
 /* -------------------------------------------------------------------- */
 void SetScaleSpeed(Widget w, XtPointer client, XtPointer call)
 {
   controlWindow->SetDelay();
-
-}       /* END SETSCALESPEED */
+}
 
 /* END CB_CONTROL.CC */

@@ -21,18 +21,18 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998-9
 #include <string.h>
 #include <unistd.h>
 
-#include "header.h"
+#include <raf/header.h>
 
 // Class include files.
-#include "adsIO.h"
-#include "adsIOrt.h"
-#include "Application.h"
-#include "Canvas.h"
+#include <raf/adsIO.h>
+#include <raf/adsIOrt.h>
+#include <raf/Application.h>
+#include <raf/Canvas.h>
 #include "CanvasWindow.h"
 #include "DataBuffer.h"
 #include "XColorMap.h"
-#include "XFonts.h"
-#include "XPen.h"
+#include <raf/XFonts.h>
+#include <raf/XPen.h>
 
 #include "fbr.h"
 

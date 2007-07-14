@@ -33,8 +33,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 #include <Xm/ToggleB.h>
 
 #include "define.h"
-#include "portable.h"
-#include "vardb.h"
+#include <raf/portable.h>
+#include <raf/vardb.h>
 
 static int	ChangesMade = FALSE, currentCategory = 0, currentStdName = 0;
 

@@ -22,21 +22,21 @@ all: ${OBJS}
 
 ${OBJS}: ${HDRS}
 
-CanvasWindow.o:		${I2D}/CanvasWindow.h ${RAFINC}/Window.h
+CanvasWindow.o:		${I2D}/CanvasWindow.h ${RAFINC}/raf/Window.h
 
 ControlWindow.o:	${I2D}/ControlWindow.h ${I2D}/FileMgr.h ${I2D}/DataFile.h
 Colors.o:		${I2D}/Colors.h ${I2D}/MainCanvas.h
 
-DataFile.o:		${I2D}/DataFile.h ${RAFINC}/hdrAPI.h ${I2D}/Probe.h
+DataFile.o:		${I2D}/DataFile.h ${RAFINC}/raf/hdrAPI.h ${I2D}/Probe.h
 
 FileMgr.o:		${I2D}/FileMgr.h ${I2D}/DataFile.h
-Hex.o:			${I2D}/Hex.h ${RAFINC}/TextWindow.h
-Enchilada.o:		${I2D}/Enchilada.h ${RAFINC}/TextWindow.h
+Hex.o:			${I2D}/Hex.h ${RAFINC}/raf/TextWindow.h
+Enchilada.o:		${I2D}/Enchilada.h ${RAFINC}/raf/TextWindow.h
 Magnify.o:		${I2D}/Magnify.h ${I2D}/MainCanvas.h ${I2D}/MagnifyCanvas.h ${I2D}/Colors.h
-MagnifyCanvas.o:	${I2D}/MagnifyCanvas.h ${RAFINC}/Canvas.h ${RAFINC}/Cursor.h
-MagnifyWindow.o:	${I2D}/MagnifyWindow.h ${RAFINC}/Window.h
-MainCanvas.o:		${I2D}/MainCanvas.h ${I2D}/Colors.h ${RAFINC}/Canvas.h
-Probe.o:		${I2D}/Probe.h ${RAFINC}/hdrAPI.h
+MagnifyCanvas.o:	${I2D}/MagnifyCanvas.h ${RAFINC}/raf/Canvas.h ${RAFINC}/raf/Cursor.h
+MagnifyWindow.o:	${I2D}/MagnifyWindow.h ${RAFINC}/raf/Window.h
+MainCanvas.o:		${I2D}/MainCanvas.h ${I2D}/Colors.h ${RAFINC}/raf/Canvas.h
+Probe.o:		${I2D}/Probe.h ${RAFINC}/raf/hdrAPI.h
 
 
 clean:

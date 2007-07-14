@@ -80,12 +80,12 @@ print:
 
 ${OBJS}:	${HDRS}
 
-xpms2d.o:	${RAFINC}/Application.h ${INC}/CanvasWindow.h ${INC}/Colors.h ${INC}/ControlWindow.h ${RAFINC}/Cursor.h ${INC}/FileMgr.h ${INC}/DataFile.h ${RAFINC}/XFonts.h ${RAFINC}/XPen.h ${INC}/MagnifyWindow.h ${INC}/MainCanvas.h ${RAFINC}/Printer.h ${RAFINC}/XmError.h ${RAFINC}/XmFile.h ${RAFINC}/XmWarn.h ${INC}/fbr.h
+xpms2d.o:	${RAFINC}/raf/Application.h ${INC}/CanvasWindow.h ${INC}/Colors.h ${INC}/ControlWindow.h ${RAFINC}/raf/Cursor.h ${INC}/FileMgr.h ${INC}/DataFile.h ${RAFINC}/raf/XFonts.h ${RAFINC}/raf/XPen.h ${INC}/MagnifyWindow.h ${INC}/MainCanvas.h ${RAFINC}/raf/Printer.h ${RAFINC}/raf/XmError.h ${RAFINC}/raf/XmFile.h ${RAFINC}/raf/XmWarn.h ${INC}/fbr.h
 
 cb_canvas.o:	${INC}/MainCanvas.h ${INC}/Magnify.h
-cb_control.o:	${RAFINC}/Cursor.h ${INC}/FileMgr.h ${INC}/MainCanvas.h ${INC}/ControlWindow.h ${INC}/Colors.h
+cb_control.o:	${RAFINC}/raf/Cursor.h ${INC}/FileMgr.h ${INC}/MainCanvas.h ${INC}/ControlWindow.h ${INC}/Colors.h
 cb_mag.o:	${INC}/MagnifyCanvas.h
-cb_menus.o:	${RAFINC}/Application.h ${INC}/ControlWindow.h ${RAFINC}/Cursor.h ${INC}/FileMgr.h ${INC}/MainCanvas.h ${RAFINC}/PostScript.h ${RAFINC}/Printer.h ${RAFINC}/XmFile.h
-cb_printer.o:	${RAFINC}/Printer.h
-cb_text.o:	${RAFINC}/TextWindow.h
+cb_menus.o:	${RAFINC}/raf/Application.h ${INC}/ControlWindow.h ${RAFINC}/raf/Cursor.h ${INC}/FileMgr.h ${INC}/MainCanvas.h ${RAFINC}/raf/PostScript.h ${RAFINC}/raf/Printer.h ${RAFINC}/raf/XmFile.h
+cb_printer.o:	${RAFINC}/raf/Printer.h
+cb_text.o:	${RAFINC}/raf/TextWindow.h
 process.o:	${INC}/ControlWindow.h

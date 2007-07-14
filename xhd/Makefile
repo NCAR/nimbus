@@ -20,7 +20,7 @@ SRCS=	xhd.c Xwin.c ccb.c
 
 OBJS=	xhd.o Xwin.o ccb.o
 
-HDRS=	${JLOCAL}/include/header.h
+HDRS=	${JLOCAL}/include/raf/header.h
 
 PROG=	xhd
 

@@ -31,7 +31,7 @@ OBJS=	Xwin.o cb_ac.o cb_file.o cb_edit.o cb_proj.o dsm.o\
 	log.o menu.o opMenu.o projFile.o pms.o\
 	setNav.o setOther.o setSh.o setPMS.o sort.o
 
-HDRS=	hdrbld.h ${JLOCAL}/include/header.h ${JLOCAL}/include/vardb.h
+HDRS=	hdrbld.h ${JLOCAL}/include/raf/header.h ${JLOCAL}/include/raf/vardb.h
 
 HWOBJS=	Xwin.o cb_edit.o cb_file.o dsm.o hardwire.o projFile.o setNav.o \
 	setSh.o sort.o pms.o setPMS.o

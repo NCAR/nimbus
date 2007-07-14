@@ -24,7 +24,7 @@ COMPILE:	g++ -I/jnet/local/include fix_units.cc -L/jnet/local/lib -lVarDB -lraf 
 #include <sys/types.h>
 #include <netinet/in.h> // htonl macros.
 
-#include "vardb.h"
+#include <raf/vardb.h>
 
 extern long	VarDB_nRecords;
 

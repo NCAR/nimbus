@@ -11,12 +11,6 @@ STATIC FNS:
 
 DESCRIPTION:	
 
-INPUT:		none
-
-OUTPUT:		none
-
-REFERENCES:	none
-
 REFERENCED BY:	nimbus.c, cb_main.c
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2000

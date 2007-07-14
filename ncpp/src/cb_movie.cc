@@ -24,7 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8
 
 #include "define.h"
 
-#include "Cursor.h"
+#include <raf/Cursor.h>
 #include "MovieControl.h"
 #include "PlotMgr.h"
 

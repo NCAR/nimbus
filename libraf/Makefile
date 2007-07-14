@@ -47,7 +47,7 @@ lib${LIBNAME}.a: ${OBJS}
 
 install: all
 	install -p --mode=664 lib${LIBNAME}.a ${DESTDIR}/${LIBDIR}
-	install -p --mode=444 *.h ${DESTDIR}/${INCLUDEDIR}
+	install -p --mode=444 *.h ${DESTDIR}/${INCLUDEDIR}/raf
 
 include:
 	install -c -m 0444 ${LIBNAME}.h ${DESTDIR}/${INCLUDEDIR}

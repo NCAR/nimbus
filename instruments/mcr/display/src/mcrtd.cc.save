@@ -21,7 +21,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998-9
 #include <string.h>
 #include <unistd.h>
 
-#include "header.h"
+#include <raf/header.h>
 
 // Class include files.
 #include "adsIO.h"

@@ -29,8 +29,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 
 #include "hdrbld.h"
 #include "hardwire.h"
-#include "portable.h"
-#include "pms.h"
+#include <raf/portable.h>
+#include <raf/pms.h>
 
 #include <Xm/TextF.h>
 #include <Xm/ToggleB.h>

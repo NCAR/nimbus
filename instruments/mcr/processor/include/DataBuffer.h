@@ -19,7 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 
 #include "mcr.h"
 #include "Netcdf.h"
-#include "hdrAPI.h"
+#include <raf/hdrAPI.h>
 
 const int	SampleRate	= 5000;		// 5Khz
 const int	SamplesPerRev	= (int)(SampleRate / 3.47);

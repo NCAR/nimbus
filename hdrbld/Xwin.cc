@@ -44,8 +44,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2000
 
 #include "hdrbld.h"
 #include "hardwire.h"
-#include "ac.h"
-#include "pms.h"
+#include <raf/ac.h>
+#include <raf/pms.h>
 
 #define N_ADDRS	263
 

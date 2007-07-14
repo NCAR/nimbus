@@ -2,7 +2,7 @@
  * of file with bad time-stamps.
  * "if" tests can be placed in the main loop to remove specific problems.
  */
-#include "adsIO.h"
+#include "raf/adsIO.h"
 #include <cstdio>
 
 char    buffer[65999];
@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
   char	sourceFile[512], destFile[512];
   FILE	*outFP;
   Hdr_blk * h = (Hdr_blk *)buffer;
-
+/*
   printf("Enter input ADS file : ");
   fgets(sourceFile, 500, stdin);
   sourceFile[strlen(sourceFile)-1] = 0;
@@ -26,6 +26,11 @@ int main(int argc, char *argv[])
   printf("Enter number of records to skip : ");
   fgets(buffer, 10, stdin);
   skipNrecords = atoi(buffer);
+*/
+
+strcpy(sourceFile, argv[1]);
+strcpy(destFile, argv[2]);
+skipNrecords = 5;
 
   ADS_DataFile	source(sourceFile);
 

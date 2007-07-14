@@ -48,6 +48,7 @@ ControlWindow::ControlWindow(Widget parent) : WinForm(parent, "control", RowColu
   delay = 0;
   densIdx = 0;
   concIdx = 0;
+  ratioIdx = 0;
 
   /* Did anyone every mention that C++'s ability to have pre-initialized
    * stuff in a class sucks the big one.
@@ -61,31 +62,48 @@ ControlWindow::ControlWindow(Widget parent) : WinForm(parent, "control", RowColu
   density[2].density = 0.5;
   density[3].density = 0.12;
 
+  ratio[0].label = "30%";
+  ratio[1].label = "40%";
+  ratio[2].label = "50%";
+  ratio[3].label = "60%";
+  ratio[4].label = "70%";
+  ratio[0].density = 0.3;
+  ratio[1].density = 0.4;
+  ratio[2].density = 0.5;
+  ratio[3].density = 0.6;
+  ratio[4].density = 0.7;
+
   n = 0;
   frame[0] = XmCreateFrame(Window(), "timeFrame", args, 0);
   frame[1] = XmCreateFrame(Window(), "probeFrame", args, 0);
 trc = XmCreateRowColumn(Window(), "trc", args, 0);
   frame[2] = XmCreateFrame(trc, "cncFrame", args, 0);
   frame[3] = XmCreateFrame(trc, "denFrame", args, 0);
+  frame[4] = XmCreateFrame(trc, "ratioFrame", args, 0);
   XtManageChild(trc);
   XtManageChild(frame[0]); XtManageChild(frame[1]);
   XtManageChild(frame[2]); XtManageChild(frame[3]);
+  XtManageChild(frame[4]);
 
   n = 0;
   title[0] = XmCreateLabel(frame[0], "timeTitle", args, 0);
   title[1] = XmCreateLabel(frame[1], "probeTitle", args, 0);
   title[2] = XmCreateLabel(frame[2], "cncTitle", args, 0);
   title[3] = XmCreateLabel(frame[3], "denTitle", args, 0);
+  title[4] = XmCreateLabel(frame[4], "ratioTitle", args, 0);
   XtManageChild(title[0]); XtManageChild(title[1]);
   XtManageChild(title[2]); XtManageChild(title[3]);
+  XtManageChild(title[4]);
 
   n = 0;
   RC[0] = XmCreateRowColumn(frame[0], "movieRC", args, n);
   RC[1] = XmCreateRowColumn(frame[1], "probeRC", args, 0);
   RC[2] = XmCreateRadioBox(frame[2], "cncRC", args, 0);
   RC[3] = XmCreateRadioBox(frame[3], "denRC", args, 0);
+  RC[4] = XmCreateRadioBox(frame[4], "ratioRC", args, 0);
   XtManageChild(RC[0]); XtManageChild(RC[1]);
   XtManageChild(RC[2]); XtManageChild(RC[3]);
+  XtManageChild(RC[4]);
 
 
   n = 0;
@@ -187,6 +205,19 @@ trc = XmCreateRowColumn(Window(), "trc", args, 0);
 
   XtManageChildren(densB, i);
   XmToggleButtonSetState(densB[densIdx], True, False);
+
+  /* Area ratio reject
+   */
+  for (i = 0; i < 5; ++i)
+    {
+    n = 0;
+    ratioB[i] = XmCreateToggleButton(RC[4], ratio[i].label, NULL, 0);
+    XtAddCallback(ratioB[i], XmNvalueChangedCallback,
+                  (XtCallbackProc)SetAreaRatioRej, (XtPointer)i);
+    }
+
+  XtManageChildren(ratioB, i);
+  XmToggleButtonSetState(ratioB[ratioIdx], True, False);
 
 }	/* END CONTROLWINDOW */
 

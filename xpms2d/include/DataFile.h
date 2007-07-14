@@ -18,7 +18,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #include "define.h"
 
 #include "Probe.h"
-#include "hdrAPI.h"
+#include <raf/hdrAPI.h>
 
 /* ADS image record types */
 #define ADS_WORD	0x4144

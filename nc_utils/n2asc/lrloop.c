@@ -21,11 +21,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 */
 
 #include "define.h"
-#include "netcdf.h"
+#include <netcdf.h>
 
 #include <math.h>
 
-static const int	NVARS_PER_LINE = 10;
+static const int	NVARS_PER_LINE = 20;
 
 static struct tm *currentTime;
 

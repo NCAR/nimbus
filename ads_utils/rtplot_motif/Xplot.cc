@@ -22,12 +22,12 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1994-9
 */
 
 #include "define.h"
-#include "header.h"
-#include "Canvas.h"
-#include "Colors.h"
-#include "PixMap.h"
-#include "XPen.h"
-#include "XFonts.h"
+#include "raf/header.h"
+#include "raf/Canvas.h"
+#include "raf/Colors.h"
+#include "raf/PixMap.h"
+#include "raf/XPen.h"
+#include "raf/XFonts.h"
 
 #include <X11/Xutil.h>
 #include <Xm/DrawingA.h>

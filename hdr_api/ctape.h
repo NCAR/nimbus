@@ -59,7 +59,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-8
 #define READERR		204	/* fread failure			*/
 #define BADVER		205	/* field does not exist for this version*/
 
-#include <header.h>
+#include <raf/header.h>
 
 
 extern struct Fl	*HAPI_header;

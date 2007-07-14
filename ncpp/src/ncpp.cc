@@ -27,17 +27,17 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1997
 #include "define.h"
 #include "fbr.h"
 
-#include "Application.h"
-#include "Canvas.h"
+#include <raf/Application.h>
+#include <raf/Canvas.h>
 #include "CanvasWindow.h"
-#include "Cursor.h"
+#include <raf/Cursor.h>
 #include "FileMgr.h"
 #include "MovieControl.h"
 #include "PlotMgr.h"
-#include "Printer.h"
+#include <raf/Printer.h>
 #include "SetMgr.h"
-#include "XmError.h"
-#include "XmFile.h"
+#include <raf/XmError.h>
+#include <raf/XmFile.h>
 
 Application	*application;
 Canvas		*mainCanvas;

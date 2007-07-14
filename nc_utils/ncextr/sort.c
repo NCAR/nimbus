@@ -6,19 +6,19 @@ FULL NAME:
 
 ENTRY POINTS:	SortTable()
 
-STATIC FNS:		sort_the_table()
+STATIC FNS:	sort_the_table()
 
 DESCRIPTION:	
 
-INPUT:			table, start & position in table to sort
+INPUT:		table, start & position in table to sort
 
-OUTPUT:			none
+OUTPUT:		none
 
-REFERENCES:		none
+REFERENCES:	none
 
 REFERENCED BY:	hdr_decode.c
 
-COPYRIGHT:		University Corporation for Atmospheric Research, 1992
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------
 */
 
@@ -29,8 +29,8 @@ static void sort_the_table();
 /* -------------------------------------------------------------------- */
 void SortTable(table, beg, end)
 char	**table;
-int		beg;
-int		end;
+int	beg;
+int	end;
 {
 	sort_table = table;
 	sort_the_table(beg, end);
@@ -39,11 +39,11 @@ int		end;
 
 /* -------------------------------------------------------------------- */
 static void sort_the_table(beg, end)
-int		beg;		/* Beggining array index        */
-int		end;		/* Last array index             */
+int	beg;		/* Beggining array index        */
+int	end;		/* Last array index             */
 {
 	register	x = beg,
-				y = end;
+			y = end;
 
 	mid = sort_table[(x + y) / 2];
 

@@ -4,7 +4,7 @@
  */
 
 #include <Xm/Xm.h>
-#include "constants.h"
+#include <raf/constants.h>
 //#undef NULL
 
 struct bb

@@ -22,7 +22,7 @@ COMPILE:	gcc -I/home/local/include hdrdump.c -o hdrdump -lhdr_api
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctape.h>
+#include <raf/ctape.h>
 
 
 char	buffer[1024];

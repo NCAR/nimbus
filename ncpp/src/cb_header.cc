@@ -19,7 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 */
 
 #include "Header.h"
-#include "Application.h"
+#include <raf/Application.h>
 #include "FileMgr.h"
 
 extern Application	*application;

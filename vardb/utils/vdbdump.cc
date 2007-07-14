@@ -16,7 +16,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 #include <sys/types.h>
 #include <netinet/in.h> // htonl macros.
 
-#include "vardb.h"
+#include <raf/vardb.h>
 
 extern long	VarDB_nRecords;
 bool tracker = false;

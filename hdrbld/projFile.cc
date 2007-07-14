@@ -28,7 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2004
 
 #include "hdrbld.h"
 #include "hardwire.h"
-#include "ac.h"
+#include <raf/ac.h>
 #include <unistd.h>
 
 #include <Xm/Form.h>
