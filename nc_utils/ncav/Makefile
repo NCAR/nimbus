@@ -57,4 +57,4 @@ print:
 
 ${OBJS}:	define.h
 ncav.o:		fbr.h
-netcdf.o:	${LOCAL}/include/netcdf.h
+netcdf.o:	${JLOCAL}/include/netcdf.h

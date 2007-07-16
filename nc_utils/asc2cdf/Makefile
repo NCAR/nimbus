@@ -2,8 +2,8 @@
 #    Makefile for ASCII to netCDF translators.
 #
 CC=		g++
-BINDIR=		${LOCAL}/bin
-MANDIR=		${LOCAL}/man/man1
+BINDIR=		${JLOCAL}/bin
+MANDIR=		${JLOCAL}/man/man1
 INCLUDES=	-I$(JLOCAL)/include
 CFLAGS=		-Wall -g ${INCLUDES} -DVARDB
 

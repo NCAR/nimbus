@@ -2,8 +2,8 @@
 #    Makefile for n2asc program
 #
 CC=		g++
-BINDIR=		${LOCAL}/bin
-MANDIR=		${LOCAL}/man/man1
+BINDIR=		${JLOCAL}/bin
+MANDIR=		${JLOCAL}/man/man1
 WWWDIR=		/net/www/raf/Software
 
 # Solaris

@@ -30,4 +30,4 @@ print:
 	enscript -2Gr -b${PROG} ${HDRS} ${SRCS}
 
 ${OBJS}:	define.h
-netcdf.o:	${LOCAL}/include/netcdf.h
+netcdf.o:	${JLOCAL}/include/netcdf.h
