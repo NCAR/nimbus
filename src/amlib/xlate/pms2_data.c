@@ -25,7 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999-2006
 
 #include "nimbus.h"
 #include "amlib.h"
-#include "raf_queue.h"
+#include <raf/raf_queue.h>
 
 const unsigned long OVERLOAD = 0xffffffff;
 const unsigned long StandardSyncWord = 0x55000000;

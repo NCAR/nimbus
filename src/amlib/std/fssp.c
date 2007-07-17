@@ -39,7 +39,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2003
 
 #include "nimbus.h"
 #include "amlib.h"
-#include "pms.h"
+#include <raf/pms.h>
 
 static size_t	FIRST_BIN[MAX_FSSP], LAST_BIN[MAX_FSSP], SampleRate[MAX_FSSP];
 static double	PLWFAC[MAX_FSSP], DBZFAC[MAX_FSSP];

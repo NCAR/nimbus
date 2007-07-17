@@ -14,7 +14,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2007
 
 #include "nimbus.h"
 #include "amlib.h"
-#include "pms.h"
+#include <raf/pms.h>
 
 static const int MAX_BINS = 101;
 

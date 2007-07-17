@@ -51,7 +51,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 #include "decode.h"
 #include <raf/ctape.h>
 #include "gui.h"
-#include "vardb.h"
+#include <raf/vardb.h>
 #include "psql.h"
 #include "GoogleEarth.h"
 #include "svnInfo.h"
