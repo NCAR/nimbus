@@ -26,7 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000-2006
 
 #include "nimbus.h"
 #include "amlib.h"
-#include "pms.h"
+#include <raf/pms.h>
 
 static const NR_TYPE shadowLevel = 0.55;
 

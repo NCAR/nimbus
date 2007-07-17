@@ -25,7 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 
 #include "nimbus.h"
 #include "amlib.h"
-#include "pms.h"
+#include <raf/pms.h>
 
 static const size_t	MAX_MASP = 2;
 

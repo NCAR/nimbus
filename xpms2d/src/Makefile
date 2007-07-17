@@ -1,9 +1,9 @@
 #
 # Makefile for xpms2d
 #
-BIN	= ${LOCAL}/bin
+BIN	= ${JLOCAL}/bin
 WWW	= /net/www/docs/raf/Software
-RELEASE = ${LOCAL}/xpms2d
+RELEASE = ${JLOCAL}/xpms2d
 
 INC	= ../include
 RAFINC	= ${JLOCAL}/include

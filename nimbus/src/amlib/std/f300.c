@@ -34,7 +34,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 #include "nimbus.h"
 #include "amlib.h"
-#include "pms.h"
+#include <raf/pms.h>
 
 static size_t FIRST_BIN[MAX_F300], LAST_BIN[MAX_F300], SampleRate[MAX_F300];
 

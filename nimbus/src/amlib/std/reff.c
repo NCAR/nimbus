@@ -25,7 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2003
 
 #include "nimbus.h"
 #include "amlib.h"
-#include "pms.h"
+#include <raf/pms.h>
 
 extern NR_TYPE	refff3[], refff2[],	/* FSSP */
 		reff63[], reff62[],	/* 260X */

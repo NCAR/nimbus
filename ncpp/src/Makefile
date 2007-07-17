@@ -2,9 +2,9 @@
 # Makefile for ncpp
 #
 CXX	= g++
-BIN	= ${LOCAL}/bin
+BIN	= ${JLOCAL}/bin
 WWW	= /net/www/docs/raf/Software
-RELEASE = ${LOCAL}/ncpp
+RELEASE = ${JLOCAL}/ncpp
 
 INC	= ../include
 RAFINC	= ${JLOCAL}/include

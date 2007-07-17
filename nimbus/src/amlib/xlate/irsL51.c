@@ -13,21 +13,13 @@ STATIC FNS:	angle()
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	angcr.c
-
-REFERENCED BY:	rec_decode.c
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 -------------------------------------------------------------------------
 */
 
 #include "nimbus.h"
 #include "amlib.h"
-#include "ctape.h"
+#include <raf/ctape.h>
 
 #define	INS_MASK	0x0003ffff
 #define MASK		0x3ffff000

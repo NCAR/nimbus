@@ -43,7 +43,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include "decode.h"
 #include "gui.h"
 #include <raf/ctape.h>
-#include <raf/netcdf.h>
+#include <netcdf.h>
 #include <raf/raf_queue.h>
 #include <raf/vardb.h>
 #include "svnInfo.h"
