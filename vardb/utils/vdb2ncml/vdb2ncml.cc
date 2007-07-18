@@ -19,7 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2006
 #include <netcdf.h>
 #include <libgen.h>
 
-#include "vardb.h"
+#include <raf/vardb.h>
 
 static char defaultProjDir[1000];
 static char projDir[1000];

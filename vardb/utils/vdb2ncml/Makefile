@@ -12,7 +12,7 @@ LIBS=	-L${JLOCAL}/lib -lVarDB -lraf -lnetcdf
 
 SRCS=	vdb2ncml.cc
 OBJS=	vdb2ncml.o
-HDRS=	${JLOCAL}/include/vardb.h
+HDRS=	${JLOCAL}/include/raf/vardb.h
 PROG=	vdb2ncml
 
 .c.o:
