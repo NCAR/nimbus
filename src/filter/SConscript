@@ -6,6 +6,9 @@ env.Append(LIBPATH=['#/lib'])
 env.Append(LIBPATH=['$JLOCAL/lib'])
 env.Append(LIBPATH=['/usr/X11R6/lib'])
 
+# For Motif on FC6/7
+env.Append(_LIBFLAGS=['-Wl,-R', '/opt/local/lib'])
+
 # In order:
 #  AMLIB (Atmospheric Mathmatical Library) calculations.
 #  raf 'building blocks'.
