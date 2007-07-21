@@ -21,9 +21,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-05
 #include "amlib.h"
 #include "gui.h"
 
+#include <nidas/util/Process.h>
+
 static void ReadBatchFile(char *filename), usage();
-static const std::string NIMBUS_RUNNING_CMD =
-	"ps ax | grep \"nimbus -r\" | grep -v grep";
 
 void	Set_SetupFileName(char s[]);
 
@@ -75,17 +75,18 @@ void Initialize()
 /* -------------------------------------------------------------------- */
 bool nimbusIsAlreadyRunning()
 {
-  int runCnt = 0;
-  FILE *fp = popen(NIMBUS_RUNNING_CMD.c_str(), "r");
-
-  while (fgets(buffer, 256, fp) != 0)
-  {
-    printf(buffer);
-    runCnt++;
+  try {
+    pid_t pid = nidas::util::Process::checkPidFile("/tmp/nimbus.pid");
+    if (pid > 0) {
+      fprintf(stderr, "nimbus process, pid=%d is already running.\n",pid);
+      return true;
+    }
   }
-
-  pclose(fp);
-  return runCnt > 1 ? true : false;
+  catch(const nidas::util::IOException& e) {
+    fprintf(stderr, "nimbus: %s\n", e.what());
+    return true;
+  }
+  return false;
 }
 
 /* -------------------------------------------------------------------- */
