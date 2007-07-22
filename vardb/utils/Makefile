@@ -12,7 +12,7 @@ LIBS=	-L${JLOCAL}/lib -lVarDB -lraf -lnetcdf
 
 SRCS=	vdbdump.cc
 OBJS=	vdbdump.o
-HDRS=	${JLOCAL}/include/vardb.h
+HDRS=	${JLOCAL}/include/raf/vardb.h
 PROG=	vdbdump
 
 .c.o:
