@@ -38,6 +38,7 @@ xpsfdc.c
 cloudbase.c
 icing.c
 ultrafine.c
+uvhyg.c
 """)
 
 user = env.StaticLibrary('user' , sources)

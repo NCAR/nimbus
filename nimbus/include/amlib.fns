@@ -30,6 +30,10 @@
 	"XCCNSS",	NULL,           NULL,		sccns,
 	"XNASC",	NULL,           NULL,		stasr,
 #
+# New UV Hygrometer
+#
+	"XUVMR",	NULL,           NULL,		suvmr,
+#
 # Cooper UltraFine CN
 #
 	"XUFCN",	NULL,           NULL,		sxufcn,
