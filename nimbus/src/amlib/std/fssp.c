@@ -260,12 +260,14 @@ void scs100(DERTBL *varp)
 
   vol[probeNum] = tas * sa[probeNum];
 
-  if (tact[probeNum] > 0)
+  if (rejAT > 0 && tact[probeNum] > 0)
     vol[probeNum] *= (float)(tact[probeNum]) / (float)(tact[probeNum] + rejAT);
 
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
     sampleVolume[i] = vol[probeNum];
 
+  if (frange < 0 || frange > 3)
+    frange = 0;
   dia = &fssp_csiz[probeNum][(int)frange * varp->Length];
   dia2 = &fssp_csiz2[probeNum][(int)frange * varp->Length];
   dia3 = &fssp_csiz3[probeNum][(int)frange * varp->Length];
@@ -275,8 +277,8 @@ void scs100(DERTBL *varp)
 #define REFF
 
 #include "pms1d_cv"
-
-  if (oflow > 0 && tact[probeNum] > 0)
+/*
+  if (oflow > 0 && tact[probeNum] > 0 && oflow < 5000)
     {
     NR_TYPE ccc = (tact[probeNum]+oflow) / tact[probeNum];
 
@@ -285,7 +287,7 @@ void scs100(DERTBL *varp)
 
     total_concen[probeNum] *= ccc;
     }
-
+*/
 }       /* END SCS100 */
 
 /* -------------------------------------------------------------------- */
