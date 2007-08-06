@@ -7,6 +7,10 @@
 #	Name		Constructor	xlate fn	compute fn
 # ----------------------------------------------------------------------------
 #
+# PASE.
+#
+	"XNEPHC",	NULL,           NULL,		sScatter,
+#
 # PACDEX, maybe ongoing also.
 #
 	"CONCU100",	NULL,           NULL,		sconcu100,
