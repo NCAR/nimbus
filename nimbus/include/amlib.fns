@@ -10,6 +10,7 @@
 # PASE.
 #
 	"XNEPHC",	NULL,           NULL,		sScatter,
+	"XITAS",	NULL,		NULL,		ssteve,
 #
 # PACDEX, maybe ongoing also.
 #
@@ -84,7 +85,7 @@
 	"XRH10",	NULL,           xlNephRH10,	NULL,
 	"XTSG10",	NULL,           xlNephTSG10,	NULL,
 #
-# Steve Howell - PELTI?
+# Steve Howell - PELTI
 #
 #		"XNASFLW",      NULL,           NULL,           snasaFlow,
 #		"XISCAI",       NULL,           NULL,           ssteve,
