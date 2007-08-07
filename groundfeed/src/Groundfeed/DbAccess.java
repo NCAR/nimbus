@@ -15,6 +15,12 @@ import java.util.*;
 
 public class DbAccess {
 
+    /* How often generate a record (in seconds).
+     * Also see Sender.java for how often to generate a file
+     * for the LDM.
+     */
+    protected int timeStep = 5;	//seconds
+
     /** Connection to the database
      */
     protected Connection connection;
@@ -89,7 +95,7 @@ public class DbAccess {
 //                      outDataFile.addSqlStatement(datetimeData, dataResults);
 //                   }
 //                 else
-                   if ((numrecs % 2) == 0) {
+                   if ((numrecs % timeStep) == 0) {
                       outDataFile.addSqlStatement(datetimeData, dataResults);
                    }
                    dataResults.clear();

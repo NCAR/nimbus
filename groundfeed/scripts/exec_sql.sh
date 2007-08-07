@@ -1,8 +1,13 @@
 #!/bin/sh
 
-PGHOST=lenado.atd.ucar.edu ; export PGHOST
-PGUSER=ads ; export PGUSER
-PGDATABASE=real-time ; export PGDATABASE
+# This script is run from the LDM pqact.conf file on sql.gz files
+# sent down from the aircraft.
+
+# Host may change.  Over-ridden in parse_from_ac.sh
+#
+export PGHOST=lenado.atd.ucar.edu
+export PGUSER=ads
+export PGDATABASE=real-time
 
 # static_psql is just a statically linked version of the psql(1) command
 # distributed with PostGreSQL.  The exposed host does not have PostGreS

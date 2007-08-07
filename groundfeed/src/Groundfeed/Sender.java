@@ -20,6 +20,10 @@ import gnu.getopt.*;
  */
 public class Sender extends java.lang.Object {
 
+
+    /** How often to generate a file.  See timeStep in DbAccess.java
+     */
+    protected int sleepInterval = 30;
     /** GroundVars File name
      */
     protected String groundvarsName;
@@ -68,7 +72,7 @@ public class Sender extends java.lang.Object {
            dataDB.getNewData(dataFile);
            dataDB.closeDB();
            try {
-              Thread.sleep(15000);
+              Thread.sleep(sleepInterval);	// Generate files every 30 seconds.
            } catch (InterruptedException e) {
            }
         }
