@@ -86,7 +86,6 @@ transmit.cc
 
 if int(env.realtime):
   env.Append(CPPPATH=['/opt/nidas/x86/include'])
-  env.Append(CPPPATH=['/opt/nidas/arm/include'])
   sources = [sources, 'rtloop3.cc']
   env.Append(LIBS=['nidas', 'nidas_dynld', 'XmlRpc', 'xerces-c'])
   env.Append(LIBPATH=['/opt/nidas/x86/lib'])
