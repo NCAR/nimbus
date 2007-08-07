@@ -17,7 +17,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2007
 #include "nimbus.h"
 #include "amlib.h"
 
-static NR_TYPE d[3] = { 3.17, 6.17, 5.16 };
+static NR_TYPE d[3] = { 6.35, 6.17, 5.16 };
 
 /* -------------------------------------------------------------------- */
 void sScatter(DERTBL *varp)

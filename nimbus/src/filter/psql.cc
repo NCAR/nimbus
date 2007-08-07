@@ -560,7 +560,10 @@ PostgreSQL::addVectorToAllStreams(const NR_TYPE *value, size_t nValues, bool xmi
   /* Start at 1 to eliminate unused 0th bin.  See also GetPMS1DAttrsForSQL().
    * and intializeVariableList().
    */
-  size_t start = 1;
+  size_t start = 0;
+  if (cfg.isADS2())
+    start = 1;
+
   for (size_t j = start; j < nValues; ++j)
   {
     if (j != start)
