@@ -868,6 +868,7 @@
 	"QCWC",		NULL,		NULL,		sqcwc,
 	"QCX",		NULL,		NULL,		sRefer,
 	"QCXC",		NULL,		NULL,		sRefer,
+	"RHOUR",	(void(*)(void*))rhourInit,	NULL,		srhour,
 	"RHOCR",	NULL,		NULL,		srhocr,
 	"RHODR",	NULL,		NULL,		srhodt,
 	"RHODL",	NULL,		NULL,		srhodt,
