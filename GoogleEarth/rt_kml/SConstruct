@@ -1,4 +1,10 @@
-env = Environment()
+# -*- python -*-
+
+import os
+env = Environment(platform = 'posix',ENV= os.environ)
+env['JLOCAL'] = os.environ['JLOCAL']
+
+#env = Environment()
 
 env.Append(CXXFLAGS='-g -Werror')
 env.Append(CPPPATH = '/opt/local/include')
@@ -16,3 +22,5 @@ if not conf.CheckLibWithHeader('pq', 'libpq-fe.h', 'C'):
 env = conf.Finish()
 
 env.Program('rt_kml.cc')
+
+Alias('install', env.Install('$JLOCAL/bin', 'rt_kml'))

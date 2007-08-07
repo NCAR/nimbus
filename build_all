@@ -65,7 +65,7 @@ end
 
 # Programs using "scons".
 
-foreach file ( nimbus )
+foreach file ( nimbus GoogleEarth/rt_kml )
   (cd $file; echo $file; scons install)
 end
 
