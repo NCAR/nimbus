@@ -1,10 +1,10 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:	rhour.c
+OBJECT NAME:	rhouv.c
 
 FULL NAME:	Absolute humidity (RAF fast) (g/m3)
 
-ENTRY POINTS:	srhour()
+ENTRY POINTS:	srhouv()
 
 STATIC FNS:	none
 
@@ -22,14 +22,14 @@ static NR_TYPE cx_1[3] = { 0.1335, 16.272, -10.216 };
 static NR_TYPE  *CX_1;
 
 /* -------------------------------------------------------------------- */
-void rhourInit(var_base *varp)
+void rhouvInit(var_base *varp)
 {
   NR_TYPE	*tmp;
 
-  if ((tmp = GetDefaultsValue("RHOUR_CAL", varp->name)) == NULL)
+  if ((tmp = GetDefaultsValue("RHOUV_CAL", varp->name)) == NULL)
   {
     CX_1 = cx_1;
-    sprintf(buffer, "Values returned = %f, %f, %f in AMLIB function RHOUR_CAL.\n", CX_1[0], CX_1[1], CX_1[2]);
+    sprintf(buffer, "Values returned = %f, %f, %f in AMLIB function RHOUV_CAL.\n", CX_1[0], CX_1[1], CX_1[2]);
     LogMessage(buffer);
   }
   else
@@ -37,7 +37,7 @@ void rhourInit(var_base *varp)
 }
 
 /* -------------------------------------------------------------------- */
-void srhour(DERTBL *varp)
+void srhouv(DERTBL *varp)
 {
   NR_TYPE xuvi  = GetSample(varp, 0);
 
