@@ -1,5 +1,5 @@
 #
-#    Makefile for dnload
+#    Makefile for dmptime
 #
 DESTDIR=	${JLOCAL}
 BINDIR=		${DESTDIR}/bin
@@ -12,14 +12,14 @@ INCLUDES=	-I$(INCDIR)
 CC=		g++
 CFLAGS=		${INCLUDES}
 
-SRCS=	dnload.cc
-PROG=	dnload
+SRCS=	dmptime.cc
+PROG=	dmptime
 
 .c.o:
 	${CC} ${CFLAGS} -c $*.c
 
-${PROG}: dnload.cc ${JLOCAL}/lib/libraf++.a
-	${CC} ${CFLAGS} dnload.cc ${LIBS} -o $@
+${PROG}: dmptime.cc ${JLOCAL}/lib/libraf++.a
+	${CC} ${CFLAGS} dmptime.cc ${LIBS} -o $@
 
 install: ${PROG}
 	cp ${PROG} ${BINDIR}
@@ -28,4 +28,4 @@ clean:
 	rm -f core ${PROG}
 
 print:
-	enscript -2Gr -bdnload ${HDRS} ${SRCS}
+	enscript -2Gr -bdmptime ${HDRS} ${SRCS}

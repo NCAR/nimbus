@@ -71,6 +71,7 @@ main(int argc, char *argv[])
 int Output(char buff[], int nBytes)
 {
   int	rc, thisTime;
+  static int prev;
   Hdr_blk *hdr;
   P2d_rec *p2d;
   Mcr_rec *mcr;
@@ -107,9 +108,13 @@ int Output(char buff[], int nBytes)
     case 0x4732:
     case 0x4831:
     case 0x4832:
-      printf("PMS 2d %c, nBytes=%d\n", buff[0], nBytes);
-      for (int i = 0; i < 7; ++i)
-        printf("  %c %02d:%02d:%02d.%03d, tas=%d\n", ((char*)&p2d[i])[0], ntohs(p2d[i].hour), ntohs(p2d[i].minute), ntohs(p2d[i].second), ntohs(p2d[i].msec), ntohs(p2d[i].tas));
+//      printf("PMS 2d %c, nBytes=%d\n", buff[0], nBytes);
+      for (int i = 0; i < 7; ++i) {
+        if ( (((short*)p2d[i].data)[0] - prev) != 1)
+          printf("lost %d %d\n", prev, ((short*)p2d[i].data)[0]);
+//        printf("  %c %02d:%02d:%02d.%03d, tas=%d  %x\n", ((char*)&p2d[i])[0], ntohs(p2d[i].hour), ntohs(p2d[i].minute), ntohs(p2d[i].second), ntohs(p2d[i].msec), ntohs(p2d[i].tas), ((short*)p2d[i].data)[0]);
+        prev = ((short*)p2d[i].data)[0];
+      }
       break;
 
     case 0x4d43:	// MCR
