@@ -819,7 +819,7 @@ PostgreSQL::escape_string(const std::string & target) const
   int pos;
   std::string str;
   if ((pos = target.find_first_of("'")) > 0)
-    str = target.substr(0, pos) + "\\'" + target.substr(pos + 1);
+    str = target.substr(0, pos) + "''" + target.substr(pos + 1);
   else
     str = target;
 
