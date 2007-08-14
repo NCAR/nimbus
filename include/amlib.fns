@@ -858,6 +858,7 @@
 	"PSFDC",	NULL,		NULL,		spsfdc,
 	"XPSFDC",	NULL,		NULL,		sxpsfdc,
 	"PSURF",	(void(*)(void*))initPsurf,	NULL,		spsurf,
+	"TSURF",	(void(*)(void*))initTsurf,	NULL,		stsurf,
 	"PSWC",		NULL,		NULL,		spswc,
 	"PSX",		NULL,		NULL,		sRefer,
 	"PSXC",		NULL,		NULL,		sRefer,
