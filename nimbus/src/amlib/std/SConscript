@@ -84,6 +84,7 @@ theta.c
 thetae.c
 thetav.c
 thf.c
+tsurf.c
 tvir.c
 wd.c
 ws.c
