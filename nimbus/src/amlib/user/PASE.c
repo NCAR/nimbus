@@ -20,16 +20,18 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2007
 static NR_TYPE d[3] = { 6.35, 6.17, 5.16 };
 
 /* -------------------------------------------------------------------- */
+void spflow(DERTBL *varp)
+{
+  NR_TYPE psfd = GetSample(varp, 0);
+  PutSample(varp, -0.48 + 0.0013 * psfd);
+}
+
+/* -------------------------------------------------------------------- */
 void sScatter(DERTBL *varp)
 {
-  NR_TYPE  Vdc;
-
-  Vdc = GetSample(varp, 0);
-
+  NR_TYPE  Vdc = GetSample(varp, 0);
   PutSample(varp, pow(10.0, Vdc / 2.0));
-
-}  /* END SFUNC */
-
+}
 
 /* -------------------------------------------------------------------- */
 void ssteve(DERTBL *varp)
