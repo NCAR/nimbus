@@ -11,6 +11,7 @@
 #
 	"XNEPHC",	NULL,           NULL,		sScatter,
 	"XITAS",	NULL,		NULL,		ssteve,
+	"XPFLW",	NULL,		NULL,		spflow,
 #
 # PACDEX, maybe ongoing also.
 #
