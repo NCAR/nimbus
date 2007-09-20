@@ -22,8 +22,8 @@ void satrf(DERTBL *varp)
 	ttrf	= GetSample(varp, 0);
 	xmach2	= GetSample(varp, 1);
 	
-	if (ttrf < -273.15)
-		ttrf  = -273.15;
+	if (ttrf < -Kelvin)
+		ttrf  = -Kelvin;
 
 	PutSample(varp, AMBIENT(ttrf, recfrn, xmach2));
 

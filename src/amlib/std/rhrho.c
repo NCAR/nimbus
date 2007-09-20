@@ -50,7 +50,7 @@ void srhrho(DERTBL *varp)
     {
     if (rho < 0.001) rho = 0.001;
 /*  Calculate dew point first (via Teten's equation) */
-    ela = (atx+273.15)*rho/1322.3;
+    ela = (atx+Kelvin)*rho/1322.3;
     if (ela > 0.0)
       {
       z = log(ela);

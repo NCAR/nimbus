@@ -42,7 +42,7 @@ void sxisore(DERTBL *varp)
 	psx = GetSample(varp, 2);
 	tasx = GetSample(varp, 3);
 
-	isor =	(((F * m[0] + b[0]) * ( atx + 273.15 )) / ( 100. *psx * tasx)) *
+	isor =	(((F * m[0] + b[0]) * ( atx + Kelvin )) / ( 100. *psx * tasx)) *
 		((4.0 * p0) / (M_PI * t0 * d[0] * d[0]));
 
 	PutSample(varp, isor);
@@ -59,7 +59,7 @@ void sxisort(DERTBL *varp)
 	psx = GetSample(varp, 2);
 	tasx = GetSample(varp, 3);
 
-	isor =	(((F * m[1] + b[1]) * ( atx + 273.15 )) / ( 100. *psx * tasx)) *
+	isor =	(((F * m[1] + b[1]) * ( atx + Kelvin )) / ( 100. *psx * tasx)) *
 		((4.0 * p0) / (M_PI * t0 * d[1] * d[1]));
 
 	PutSample(varp, isor);

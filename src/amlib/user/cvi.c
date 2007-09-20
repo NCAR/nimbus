@@ -268,7 +268,7 @@ void scvs4(DERTBL *varp)
    * distance for a 4 um radius droplet (cm)
    */
   tascc  = tasx * 100.0;
-  rhoa  = (psxc + qcxc) / (2870.12 * (cvtt + 273.15));
+  rhoa  = (psxc + qcxc) / (2870.12 * (cvtt + Kelvin));
   gnu  = (0.0049 * cvtt + 1.718) * 0.0001;
   re4  = 2.0 * CVR4 * tascc * rhoa / gnu;
 
@@ -313,7 +313,7 @@ void srhcv(DERTBL *varp)
   if (cvdp < 0.0)
     cvdp = 0.0009 + cvdp * (1.134055 + cvdp * 0.001038);
 
-  PutSample(varp, 216.68 * esubt(cvdp, 0.0) / (cvtemp + 273.16));
+  PutSample(varp, 216.68 * esubt(cvdp, 0.0) / (cvtemp + Kelvin));
 
 }  /* END SRHCV */
 
@@ -323,7 +323,7 @@ static NR_TYPE TempCorrection(NR_TYPE cv, NR_TYPE pcn, NR_TYPE cvtemp)
   if (pcn <= 0.0)
     pcn = 0.0001;
 
-  return(cv * (1013.25 / pcn) * ((cvtemp + 273.15) / 294.26));
+  return(cv * (1013.25 / pcn) * ((cvtemp + Kelvin) / 294.26));
 
 }  /* END TEMPCORRECTION */
 

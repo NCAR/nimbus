@@ -45,7 +45,7 @@ void suwflow(DERTBL *varp)
     volts = 0.0;
 
   flow = M_PI / 4.0 * pow(2.54*0.875, 2) * sqrt(2 * (volts - 1) * 980.2 *
-      2.54 * 2.87e6 * (atx + 273.15) / ((psx + 50)*1e3)) * 60 * 1e-3;
+      2.54 * 2.87e6 * (atx + Kelvin) / ((psx + 50)*1e3)) * 60 * 1e-3;
 
   PutSample(varp, flow);
 

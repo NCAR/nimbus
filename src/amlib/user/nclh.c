@@ -849,7 +849,7 @@ void snclh_s(DERTBL *varp)	// Interpolates Hmatrix for volume mixing ratio
     return;
   }
 
-  TairK = Tair + 273.15F;   // Convert to K for Hmatrix
+  TairK = Tair + Kelvin;   // Convert to K for Hmatrix
 	
   if (Pair < Plower)
     Pair = P_default;     // Don't allow bad P/T numbers
@@ -859,12 +859,12 @@ void snclh_s(DERTBL *varp)	// Interpolates Hmatrix for volume mixing ratio
   if (TairK < Tlower)
     {
     Tair = T_default;
-    TairK = T_default + 273.15F;    // T-default = C !!
+    TairK = T_default + Kelvin;    // T-default = C !!
     }
   if (TairK > Tupper)
     {
     Tair = T_default;
-    TairK = T_default + 273.15F;
+    TairK = T_default + Kelvin;
     }
 
   for (int i = 0; i < NPRESSURES; i++)

@@ -48,7 +48,7 @@ void srhomr(DERTBL *varp)
 {
   NR_TYPE	rhomr, mr, atx, psxc;
   NR_TYPE	x1, x2;
-  static const double To = 273.16;
+  static const double To = Kelvin;
 
   mr   = GetSample(varp, 0);
   atx  = GetSample(varp, 1);

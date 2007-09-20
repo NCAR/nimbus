@@ -23,7 +23,7 @@ void sthetae(DERTBL *varp)
   edpc	= GetSample(varp, 2);
   mr	= GetSample(varp, 3);
 
-  if ((atx += 273.16) <= 0.0)
+  if ((atx += Kelvin) <= 0.0)
     atx = 0.0001;
 
   if (edpc <= 0.0)

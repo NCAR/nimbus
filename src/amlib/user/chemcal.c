@@ -113,7 +113,7 @@ void sxeco2c(DERTBL *varp)
   xecco2t  = GetSample(varp, 2);
 
   x = xecco2 * 1013.0 / xecco2p * 1000.0;
-  y = (xecco2t + 273.16) / 308.11;
+  y = (xecco2t + Kelvin) / 308.11;
 
   PutSample(varp, x * (0.1362 + 2.008e-5 * x + 2.029e-9 * x * x) * y);
 

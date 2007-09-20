@@ -12,14 +12,6 @@ STATIC FNS:	planck_rad()
 
 DESCRIPTION:  
 
-INPUT:    
-
-OUTPUT:    
-
-REFERENCES:	none
-
-REFERENCED BY:	ComputeDerived()
-
 NOTES:		See bottom of file for variable name descriptions.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1993
@@ -33,7 +25,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 #define h	6.62606876e-34	/* Planck's const, J-s    */
 #define k	1.3806503e-23	/* Boltzman's const, J/K  */
 #define lam	4.29e-6		/* Wavelength, um         */
-#define TZERO	273.16		/* 0C (K)                 */
 #define c	2.99792458e8	/* Speed of light, m/s    */
 #define PI	M_PI
 
@@ -240,13 +231,13 @@ void soat(DERTBL *varp)
       if (oat > 0.0) 
         oat = planck_t((double)oat);
       else 
-        oat = TZERO;
+        oat = Kelvin;
 
       sum_bbctem = sum_bbhtem = sum_bbcsig = sum_bbhsig = 0.0;
       break;
     }
 
-  PutSample(varp, oat - 273.16);
+  PutSample(varp, oat - Kelvin);
 
 }  /* END SOAT */
 
@@ -286,7 +277,7 @@ static double therm(double counts)
   else
     rt = 1.0;
 
-  tc = 1.0 / (TZERO-50.0) - log(rt / THERM_RZ) / THERM_COEFF;
+  tc = 1.0 / (Kelvin-50.0) - log(rt / THERM_RZ) / THERM_COEFF;
   tc = 1.0 / tc;
 
   return(tc);

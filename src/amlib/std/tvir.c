@@ -19,7 +19,7 @@ void stvir(DERTBL *varp)
   sphum	= GetSample(varp, 1);
 
   if ((otvir = 1.0 - 0.6e-3 * sphum) != 0.0)
-    otvir = (atx + 273.16) / tvir - 273.16;
+    otvir = (atx + Kelvin) / tvir - Kelvin;
 
   PutSample(varp, tvir);
 }

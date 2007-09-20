@@ -11,14 +11,6 @@ STATIC FNS:	none
 DESCRIPTION:	Functions for Radius and Distance from a fixed object.
 		Used initially for SCMS project, fixed point was CP-2 radar 7/95.
 
-INPUT:		lat, lon
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	compute.c
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 -------------------------------------------------------------------------
 */

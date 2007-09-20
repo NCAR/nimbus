@@ -21,6 +21,6 @@ void srhodt(DERTBL *varp)
   atx	= GetSample(varp, 0);
   edpc	= GetSample(varp, 1);
 
-  PutSample(varp, 216.68 * edpc / (atx + 273.16));
+  PutSample(varp, 216.68 * edpc / (atx + Kelvin));
 
 }

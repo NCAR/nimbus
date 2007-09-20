@@ -56,7 +56,7 @@ void steo3c(DERTBL *varp)
   tep	= GetSample(varp, 1);
   tet	= GetSample(varp, 2);
 
-  teo3 *= (1013.16 / tep) * ((tet + 273.15) / 273.15);
+  teo3 *= (1013.16 / tep) * ((tet + Kelvin) / Kelvin);
 
   int corder = nCals-1;
   teo3c = teo3c_cal[corder];

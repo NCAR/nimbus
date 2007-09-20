@@ -23,8 +23,8 @@ void satkp(DERTBL *varp)
 	ttkp	= GetSample(varp, 0);
 	xmach2	= GetSample(varp, 1);
 	
-	if (ttkp < -273.15)
-		ttkp  = -273.15;
+	if (ttkp < -Kelvin)
+		ttkp  = -Kelvin;
 
 	PutSample(varp, AMBIENT(ttkp, recfkp, xmach2));
 
