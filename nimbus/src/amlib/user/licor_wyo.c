@@ -12,12 +12,6 @@ STATIC FNS:	none
 
 DESCRIPTION:	Calculations for Chem folks
 
-INPUT:    
-
-REFERENCES:	none
-
-REFERENCED BY:	compute.c
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2002
 -------------------------------------------------------------------------
 */
@@ -100,7 +94,7 @@ void sxwco2c(DERTBL *varp)
 
   cpress = 1000.0 * co2s * 101.325 / co2p;
   co2ml = cpress * (CO2_CAL[0] + cpress * (CO2_CAL[1] + cpress * (CO2_CAL[2])));
-  co2ml *= (co2t + 273.15) / C2T;
+  co2ml *= (co2t + Kelvin) / C2T;
 
   PutSample(varp, co2ml);
 
@@ -117,7 +111,7 @@ void sxwlh2oc(DERTBL *varp)
 
   hpress = 1000.0 * h2os * 101.325 / co2p;
   h2oml = hpress * (H2O_CAL[0] + hpress * (H2O_CAL[1] + hpress * (H2O_CAL[2])));
-  h2oml *= (co2t + 273.15) / H2T;
+  h2oml *= (co2t + Kelvin) / H2T;
 
   PutSample(varp, h2oml);
 

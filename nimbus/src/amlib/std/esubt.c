@@ -29,7 +29,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "nimbus.h"
 #include "amlib.h"
 
-static const double	Ts = 373.16, To = 273.16;
+static const double	Ts = 373.16, To = Kelvin;
 
 /* -------------------------------------------------------------------- */
 double esubt(double temperature, double pressure)

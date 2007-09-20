@@ -31,7 +31,7 @@ void sxufcn(DERTBL *varp)
   xn9psx = GetSample(varp, 5);
 
 
-  xufcn = (xufct / xufflow) * (psxc/xn9psx) * (cntemp+273.15)/(atx+273.15);
+  xufcn = (xufct / xufflow) * (psxc/xn9psx) * (cntemp+Kelvin)/(atx+Kelvin);
 
   PutSample(varp, xufcn);
 

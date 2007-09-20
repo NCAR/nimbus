@@ -114,7 +114,7 @@ void sxco2c(DERTBL *varp)
 
   w = h2oc / 1000.0 * 0.5 + 1.0;
   x = co2s / w;
-  y = (co2t + 273.15) / C2T;
+  y = (co2t + Kelvin) / C2T;
 
   co2c = x*(CO2_CAL[0] + x*(CO2_CAL[1] + x*(CO2_CAL[2] + x*(CO2_CAL[3] + x*CO2_CAL[4]))));
 
@@ -134,7 +134,7 @@ void sxlh2oc(DERTBL *varp)
   h2os  = GetSample(varp, 2);
 
   x = h2os * 1.013e6 / co2p;
-  y = (co2t + 273.15) / H2T;
+  y = (co2t + Kelvin) / H2T;
   x2 = x * x;
 
   PutSample(varp, ((H2O_CAL[0] * x) + (H2O_CAL[1] * x2) + (H2O_CAL[2] * x2 * x)) * y);

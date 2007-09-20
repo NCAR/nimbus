@@ -25,10 +25,10 @@ void sthetav(DERTBL *varp)
   tvir = 1.0 - 0.6e-3 * sphum;
 
   if (tvir != 0.0)
-    tvir = (atx + 273.16) / tvir - 273.16;
+    tvir = (atx + Kelvin) / tvir - Kelvin;
 
   if (psxc != 0.0)
-    thetav = (tvir + 273.16) * pow( (double)(1000.0 / psxc), (double)0.28571);
+    thetav = (tvir + Kelvin) * pow( (double)(1000.0 / psxc), (double)0.28571);
 
   PutSample(varp, thetav);
 

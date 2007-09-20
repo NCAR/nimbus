@@ -54,13 +54,13 @@ void sttwhc(DERTBL *varp)
     atfh[FeedBack] = tth;
   }
 
-  if (tth < -273.15)
-    tth = -273.15;
+  if (tth < -Kelvin)
+    tth = -Kelvin;
 
   if (xmach2 <= 0.0 || isnan(xmach2))
     xmach2 = 0.0001;
 
-  zee = 0.269589 * psxc * sqrt((double)xmach2) / (atfh[FeedBack] + 273.16);
+  zee = 0.269589 * psxc * sqrt((double)xmach2) / (atfh[FeedBack] + Kelvin);
 
   if (zee < 0.18 || isnan(zee))
     zee = 0.18;
@@ -68,8 +68,8 @@ void sttwhc(DERTBL *varp)
   tth -= (NR_TYPE)pow(	(double)10.0,
 			(double)tfher1 * log10((double)zee) + tfher2);
 
-  if (tth < -273.15)
-    tth = -273.15;
+  if (tth < -Kelvin)
+    tth = -Kelvin;
 
   PutSample(varp, tth);
 }

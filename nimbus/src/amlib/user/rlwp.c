@@ -19,10 +19,6 @@ DESCRIPTION:	LWC = Koeff * V^2 / (R * S * U * (L + c * (Tprobe - Tair)))
 
 INPUT:		XLWC, TASX
 
-REFERENCES:	none
-
-REFERENCED BY:	compute.c
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 -------------------------------------------------------------------------
 */

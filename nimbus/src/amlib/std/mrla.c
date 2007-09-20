@@ -23,7 +23,7 @@ void smrla(DERTBL *varp)
   psxc	= GetSample(varp, 1);
   atx	= GetSample(varp, 2);
 
-  edla	= rhola * (atx + 273.16) / 216.68;
+  edla	= rhola * (atx + Kelvin) / 216.68;
 
   if (psxc != edla)
     mrla = 622.0 * edla / (psxc-edla);

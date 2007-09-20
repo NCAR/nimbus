@@ -15,14 +15,14 @@ STATIC FNS:	none
 DESCRIPTION:	Globals file containing misc constants used by multiple
 		routines.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1996-05
+COPYRIGHT:	University Corporation for Atmospheric Research, 1996-07
 -------------------------------------------------------------------------
 */
 
 #include "nimbus.h"
 #include "amlib.h"
 
-const double Kelvin = 273.16;
+const double Kelvin = 273.15;
 
 const double WH_GRAVITY = 9.7959;	/* Gravity in Woodland Hills */
 const double GRAVITY = 9.80621770635;	/* Gravity in Michigan	*/

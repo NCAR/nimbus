@@ -136,7 +136,7 @@ void sdpcrc(DERTBL *varp)
 	dpcrc = dewpt(e);
 
 	/* Absolute humidity	*/
-	rhocr = e * 100.0 / (461.51 * (atx + 273.15)) * 1.0E3;
+	rhocr = e * 100.0 / (461.51 * (atx + Kelvin)) * 1.0E3;
 
 	PutSample(varp, dpcrc);
 
@@ -175,13 +175,13 @@ static NR_TYPE vapi(NR_TYPE tfp)
 		return(vapi);
 		}
 
-	tfp += 273.16;
+	tfp += Kelvin;
 
 	/* This is ice saturation vapor pressure
 	 */
-	e =	-9.09718 * (273.16 / tfp - 1.0) -
-		3.56654 * log10(273.16 / tfp) +
-		0.876793 * (1.0 - tfp / 273.16);
+	e =	-9.09718 * (Kelvin / tfp - 1.0) -
+		3.56654 * log10(Kelvin / tfp) +
+		0.876793 * (1.0 - tfp / Kelvin);
 
 	vapi = 6.1071 * pow((double)10.0, e);
 
@@ -194,7 +194,7 @@ static NR_TYPE vapor(NR_TYPE tfp)
 {
   double	vapor, e;
 
-  tfp += 273.16;
+  tfp += Kelvin;
 
   e = -7.90298 * (373.16 / tfp - 1.0) + 5.02808 * log10(373.16 / tfp) -
 	1.3816E-7 * (pow((double)10.0, 11.344 * (1.0 - tfp / 373.16)) - 1.0) +

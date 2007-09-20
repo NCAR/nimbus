@@ -10,10 +10,6 @@ STATIC FNS:
 
 DESCRIPTION:    Template for AMLIB std & user directories.
 
-REFERENCES:  
-
-REFERENCED BY:  compute.c
-
 COPYRIGHT:  University Corporation for Atmospheric Research, 1995, 1998
 -------------------------------------------------------------------------
 */

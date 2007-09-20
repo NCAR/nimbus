@@ -43,7 +43,7 @@ void ssteve(DERTBL *varp)
   atx = GetSample(varp, 2);
   tasx = GetSample(varp, 3);
 
-  out = slpm * (1013.25 / psx) * ((atx+273.15) / 298) * 66.6666 / (M_PI * d[0] * d[0] * tasx);
+  out = slpm * (1013.25 / psx) * ((atx+Kelvin) / 298) * 66.6666 / (M_PI * d[0] * d[0] * tasx);
 
   PutSample(varp, out);
 }

@@ -180,7 +180,7 @@ void spflwc(DERTBL *varp)
   atx	= GetSample(varp, 2);
 
   // Changed from 294.15 C to 298.15 C on 9/13/01 per DCRogers.
-  flowc = flow * (1013.25 / psx) * (atx + 273.15) / 298.15;
+  flowc = flow * (1013.25 / psx) * (atx + Kelvin) / 298.15;
 
   PutSample(varp, flowc);
 

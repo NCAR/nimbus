@@ -40,12 +40,12 @@ void sirc(DERTBL *varp)
 	
   /* Pyrgeometer dome and sink temperature corrections        dscor
   */
-  dscor = XKB*SBC*(pow((double)(dt+273.16),(double)4.0) -
-		 pow((double)(st+273.16),(double)4.0));
+  dscor = XKB*SBC*(pow((double)(dt+Kelvin),(double)4.0) -
+		 pow((double)(st+Kelvin),(double)4.0));
 
   /* Pyrgeometer sink temperature compensation corrections    tcor
    */
-  tcor = E0*SBC*pow((double)(st+273.16),(double)4.0);
+  tcor = E0*SBC*pow((double)(st+Kelvin),(double)4.0);
 
   /* Corrected upward i. r. irradiance (watts/m2)             irc
    */

@@ -23,8 +23,8 @@ void satf(DERTBL *varp)
 	ttf	= GetSample(varp, 0);
 	xmach2	= GetSample(varp, 1);
 
-	if (ttf < -273.15)
-		ttf  = -273.15;
+	if (ttf < -Kelvin)
+		ttf  = -Kelvin;
 
 	PutSample(varp, AMBIENT(ttf,recff,xmach2));
 

@@ -10,14 +10,6 @@ STATIC FNS:
 
 DESCRIPTION:	Calculation for theoretical cloud base.
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	
-
-REFERENCED BY:	compute.c
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 2003
 -------------------------------------------------------------------------
 */

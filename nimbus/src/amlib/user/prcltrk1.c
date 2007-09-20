@@ -10,14 +10,6 @@ STATIC FNS:	none
 
 DESCRIPTION:	Parcel Tracking, Dead Reckoning.
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	compute.c
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 -------------------------------------------------------------------------
 */

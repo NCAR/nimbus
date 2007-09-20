@@ -13,12 +13,6 @@ DESCRIPTION:
 
 DEPENDANCIES:	none
 
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	Compute()
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 -------------------------------------------------------------------------
 */

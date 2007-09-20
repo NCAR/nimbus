@@ -148,7 +148,7 @@ static NR_TYPE compute_rhola(int indx, DERTBL *varp, NR_TYPE vla, NR_TYPE psxc, 
 
   /* Calculate oxygen correction to VLA
    */
-  vo2 = ((CKO2*CO2P*XC*STPT) / (STPP*CAMP)) * psxc / (atx+273.16) ;
+  vo2 = ((CKO2*CO2P*XC*STPT) / (STPP*CAMP)) * psxc / (atx+Kelvin) ;
   vh2o = vla - vo2;
 
   if (n1[indx] < 300)

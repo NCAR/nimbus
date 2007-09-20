@@ -10,14 +10,6 @@ STATIC FNS:
 
 DESCRIPTION:  Flux computations.
 
-INPUT:    
-
-OUTPUT:    
-
-REFERENCES:  
-
-REFERENCED BY:  compute.c
-
 COPYRIGHT:  University Corporation for Atmospheric Research, 1994
 -------------------------------------------------------------------------
 */

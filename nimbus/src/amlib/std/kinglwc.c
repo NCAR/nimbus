@@ -26,8 +26,8 @@ NR_TYPE kinglwcc(NR_TYPE plwc, NR_TYPE tasx, NR_TYPE atx, NR_TYPE psxc, NR_TYPE 
 		re1, prf1, prw1, dryp1, fact;
 
 
-	tk = atx+273.16; 
-	twk1 = twire+273.16;
+	tk = atx+Kelvin; 
+	twk1 = twire+Kelvin;
 	tflm1 = (twk1+tk)/2.;
 	if(tflm1 == 0.0) tflm1 = 0.001;
 

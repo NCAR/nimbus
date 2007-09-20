@@ -34,7 +34,7 @@ extern const double RESOLV14BIT, RESOLV16BIT;
 /* Values for 'FeedBack' variable	*/
 enum RateFeedBack { LOW_RATE_FEEDBACK, HIGH_RATE_FEEDBACK, nFeedBackTypes };
 
-#define AMBIENT(t, rf, xm2)	((t + 273.16) / (1.0 + 0.2 * rf * xm2) - 273.16)
+#define AMBIENT(t, rf, xm2)	((t + 273.15) / (1.0 + 0.2 * rf * xm2) - 273.15)
 
 NR_TYPE GetSample(DERTBL *dp, int di);
 

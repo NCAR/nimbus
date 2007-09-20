@@ -46,7 +46,7 @@ void sdprho(DERTBL *varp)
     else
       {
       if (rho < 0.001) rho = 0.001;
-      ela = (atx+273.15)*rho/1322.3;
+      ela = (atx+Kelvin)*rho/1322.3;
       if (ela > 0.0)
         {
         z = log(ela);

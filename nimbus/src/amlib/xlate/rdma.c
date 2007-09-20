@@ -142,7 +142,7 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
         ntohs(((short *)ADSrecord)[6]), ntohs(((short *)ADSrecord)[1]),
 	ntohs(((short *)ADSrecord)[2]), ntohs(((short *)ADSrecord)[3]));
 
-      fprintf(rdmapFP, "%f %f  ", temp+273.16, press);
+      fprintf(rdmapFP, "%f %f  ", temp+Kelvin, press);
 
       for (size_t i = 0; ntohf(rdma->scan[i]) != -99.0; ++i)
         {

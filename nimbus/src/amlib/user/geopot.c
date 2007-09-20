@@ -11,14 +11,6 @@ STATIC FNS:
 DESCRIPTION:	Convert Mean Sea Level (MSL) Altitude to Geopotential
 		Altitude.
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	compute.c
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1996
 -------------------------------------------------------------------------
 */

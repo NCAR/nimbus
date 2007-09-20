@@ -11,14 +11,6 @@ STATIC FNS:	none
 
 DESCRIPTION:	Sailplane stuff, AirSpeed, Alt.
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	compute.c
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 -------------------------------------------------------------------------
 */

@@ -107,7 +107,7 @@ DERTBL	*varp;
 	/* Compute airspeed in m/s from gust port on EGG. NOTE: not used for
 	 * laboratory tests.
 	 */
-	taseg2 = 2.0 * 1004.88 * (atrf + 273.15) * facteg;
+	taseg2 = 2.0 * 1004.88 * (atrf + Kelvin) * facteg;
 
 	if (taseg2 > 0.0)
 		xtas = sqrt(taseg2);
@@ -135,9 +135,9 @@ DERTBL	*varp;
 /*              & offset of 250 uA - 20k res  from nominal values   */
 /*              before RAF calibration was available).              */
 
-	tiso3c = (xrf3 * 10.0 + 250.0) - 273.15;    
-/*	tiso4c = (xrf4 * 10.0 + 250.0) - 273.15; 
-	tiso5c = (xrf5 * 10.0 + 250.0) - 273.15; 
+	tiso3c = (xrf3 * 10.0 + 250.0) - Kelvin;    
+/*	tiso4c = (xrf4 * 10.0 + 250.0) - Kelvin; 
+	tiso5c = (xrf5 * 10.0 + 250.0) - Kelvin; 
 */
 
 	/* *****NEXT: correct AD590 sensors per calibration in NCAR         */
@@ -207,9 +207,9 @@ DERTBL	*varp;
 
   
 	/*...... (f): Correct for dynamic heating; r=0.7 */
-	xthmp3 = (xthmp3 + 273.15) / (1.0 + 0.7 * factor) - 273.15; 
-	xthmp4 = (xthmp4 + 273.15) / (1.0 + 0.7 * factor) - 273.15;
-	xthmp5 = (xthmp5 + 273.15) / (1.0 + 0.7 * factor) - 273.15; 
+	xthmp3 = (xthmp3 + Kelvin) / (1.0 + 0.7 * factor) - Kelvin; 
+	xthmp4 = (xthmp4 + Kelvin) / (1.0 + 0.7 * factor) - Kelvin;
+	xthmp5 = (xthmp5 + Kelvin) / (1.0 + 0.7 * factor) - Kelvin; 
  
 
 	/*....End of Prototype II calculations, start computation of gust */

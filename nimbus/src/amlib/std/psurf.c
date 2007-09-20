@@ -28,10 +28,8 @@ void initPsurf(var_base *varp)
     LogMessage(buffer);
   }
   else
-/*  (Original threshold test was PSURF_ALT_MAX > 10.0)   */
     PSURF_ALT_MAX = tmp[0];
-
-}       /* END INITPSURF */
+}
 
 /* -------------------------------------------------------------------- */
 void spsurf(DERTBL *varp)
@@ -44,7 +42,7 @@ void spsurf(DERTBL *varp)
   mr  = GetSample(varp, 2);
   psxc  = GetSample(varp, 3);
 
-  tvir  = (atx + 273.16) * ((1.0 + 1.6078e-3 * mr) / (1.0 + 0.001 * mr));
+  tvir  = (atx + Kelvin) * ((1.0 + 1.6078e-3 * mr) / (1.0 + 0.001 * mr));
   tbarm = tvir + 0.5 * (hgm * 0.0098);
   psurf = psxc * exp((double)((hgm / tbarm) * 0.0341833194));
 
@@ -52,7 +50,4 @@ void spsurf(DERTBL *varp)
     psurf = 1000.0;
 
   PutSample(varp, psurf);
-
-}  /* END SPSURF */
-
-/* END PSURF.C */
+}

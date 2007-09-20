@@ -15,7 +15,7 @@ void ssteve(DERTBL *varp)
   atx = GetSample(varp, 2);
   tasx = GetSample(varp, 3);
 
-  out = slpm * (1013.25 / psx) * ((atx+273.15) / 298) * 66.6666 / (M_PI * d[varp->ProbeCount] * d[varp->ProbeCount] * tasx);
+  out = slpm * (1013.25 / psx) * ((atx+Kelvin) / 298) * 66.6666 / (M_PI * d[varp->ProbeCount] * d[varp->ProbeCount] * tasx);
 
   PutSample(varp, out);
 
@@ -30,7 +30,7 @@ void snasaFlow(DERTBL *varp)
   ps = GetSample(varp, 1);
   tt = GetSample(varp, 2);
 
-  flow = lfsspf * 1013.25 / ps * ((273.15 + tt) / 298) * 66.66666 / (M_PI * 5.5555*5.5555);
+  flow = lfsspf * 1013.25 / ps * ((Kelvin + tt) / 298) * 66.66666 / (M_PI * 5.5555*5.5555);
 
   PutSample(varp, flow);
 

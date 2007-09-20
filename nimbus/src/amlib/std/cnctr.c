@@ -11,14 +11,6 @@ STATIC FNS:	none
 DESCRIPTION:	Computation for the CN Counter, see Cindy Towhy for
 		in-depth information.
 
-INPUT:    
-
-OUTPUT:    
-
-REFERENCES:	none
-
-REFERENCED BY:	compute.c
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1993-95
 -------------------------------------------------------------------------
 */
@@ -81,7 +73,7 @@ void scFlow(DERTBL *varp)
 
   /* Corrected sample flow rate in vlpm
    */
-  flowc = flow * (1013.25 / pressure) * ((temperature + 273.15) / 294.26);
+  flowc = flow * (1013.25 / pressure) * ((temperature + Kelvin) / 294.26);
 
   if (flowc <= 0.0)
     flowc = 0.0001;
@@ -104,7 +96,7 @@ void scClarkCN(DERTBL *varp)
 
   /* Corrected sample flow rate in vlpm
    */
-  flowc = flow * (1013.25 / pressure) * ((30.0 + 273.15) / 294.26);
+  flowc = flow * (1013.25 / pressure) * ((30.0 + Kelvin) / 294.26);
 
   if (flowc <= 0.0)
     flowc = 0.0001;
