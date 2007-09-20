@@ -340,7 +340,9 @@ static int getCellSizes(var_base * rp, float cellSize[])
      * 0th bin (so 31 bins instead of 30).  ADS3 will not do this.  PMSspecs
      * files should now have FirstBin of 0 instead of 1.  Re: -1 vs. -0 below.
      */
-    sprintf(buffer, "CELL_SIZE_%d", rp->Length - (cfg.isADS2() ? 1 : 0));
+// Note: ADS3 is propogating the problem until netCDF file refactor.
+// Then we should remove all evidence of this 0th bin from ADS2 & ADS3.
+    sprintf(buffer, "CELL_SIZE_%d", rp->Length - 1);
     p = GetPMSparameter(rp->SerialNumber.c_str(), buffer);
   }
 

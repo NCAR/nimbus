@@ -126,7 +126,7 @@ void cfsspInit(var_base *varp)
      * 0th bin (so 31 bins instead of 30).  ADS3 will not do this.  PMSspecs
      * files should now have FirstBin of 0 instead of 1.  Re: -1 vs. -0 below.
      */
-    sprintf(buffer, "CELL_SIZE_%d", varp->Length - (cfg.isADS2() ? 1 : 0));
+    sprintf(buffer, "CELL_SIZE_%d", varp->Length - 1);
     if ((p = GetPMSparameter(serialNumber, buffer)) == NULL) {
       printf("%s: %s not found.\n", buffer, serialNumber); exit(1);
       }
