@@ -10,14 +10,6 @@ STATIC FNS:	none
 
 DESCRIPTION:	Routines for Community Inlet Parameters.
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	tas(), xmac2()
-
-REFERENCED BY:	compute.c
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 -------------------------------------------------------------------------
 */
@@ -25,7 +17,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 #include "nimbus.h"
 #include "amlib.h"
 
-extern NR_TYPE xmac2(NR_TYPE);
 extern NR_TYPE tas(NR_TYPE, NR_TYPE, NR_TYPE);
 extern NR_TYPE recfra;
 
@@ -43,7 +34,7 @@ void sCItas(DERTBL *varp)
 
   if (qc < 5.5) qc = 5.5;
 
-  PutSample(varp, tas(tt, recfra, xmac2(qc / ps)));
+  PutSample(varp, tas(tt, recfra, XMAC2(qc / ps)));
 
 }	/* END SCITAS */
 

@@ -12,8 +12,6 @@
 #include "nimbus.h"
 #include "amlib.h"
       
-extern NR_TYPE xmac2(NR_TYPE);
-
 /* -------------------------------------------------------------------- */
 void sxmach2(DERTBL *varp)
 {
@@ -22,6 +20,5 @@ void sxmach2(DERTBL *varp)
   qcxc = GetSample(varp, 0);
   psxc = GetSample(varp, 1);
 
-  PutSample(varp, xmac2(qcxc / psxc));
-
+  PutSample(varp, XMAC2(qcxc / psxc));
 }

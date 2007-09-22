@@ -88,7 +88,6 @@ tsurf.c
 tvir.c
 wd.c
 ws.c
-xmac2.c
 xmach2.c
 """)
 

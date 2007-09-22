@@ -26,6 +26,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2003
 #include "decode.h"
 #include "amlib.h"
 
+#include "GoogleEarth.h"
+
 /*   NOTE:  Any of following constants can be put into the project's
  *          defaults file and initialized below, if necessary.
  */
@@ -38,6 +40,8 @@ static const NR_TYPE AltThresh = 50.0;		/* ALT sample-to-sample error threshold 
 static const int SAVE = 10; /*  number of past calculations to save  */
 static const int WAIT = 10; /*  how long to wait after good GPS data return  */
 static const int DELAY = 2; /*  delay before walking substituted data back to GPS data */
+
+extern GoogleEarthKML * googleEarth;
 
 /*  WARNING:  WAIT > DELAY to avoid blowup  */
 
@@ -348,6 +352,9 @@ void sggaltc(DERTBL *varp)
   printf (" altc.c debug: ggalt = %f, alt = %f, altc = %f, dalt_sav[%i] = %f\n",
      ggalt, alt, altc, isav, dalt_sav[isav]);
  *  ###############    End  Debug Print   ############### */
+
+  if (googleEarth)
+    googleEarth->SetLatestALT(altc);
 
   PutSample(varp, altc);
 
