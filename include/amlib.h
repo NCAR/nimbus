@@ -34,7 +34,13 @@ extern const double RESOLV14BIT, RESOLV16BIT;
 /* Values for 'FeedBack' variable	*/
 enum RateFeedBack { LOW_RATE_FEEDBACK, HIGH_RATE_FEEDBACK, nFeedBackTypes };
 
-#define AMBIENT(t, rf, xm2)	((t + 273.15) / (1.0 + 0.2 * rf * xm2) - 273.15)
+// Changed from 273.16 to 273.15 on 09/20/07 per Al Cooper.
+#define AMBIENT(t, rf, xm2) \
+		((t + 273.15) / (1.0 + 0.2 * rf * xm2) - 273.15)
+
+#define XMAC2(a) \
+		(5.0 * (pow((double)((a)+1.0), (double)0.28571) - 1.0))
+
 
 NR_TYPE GetSample(DERTBL *dp, int di);
 

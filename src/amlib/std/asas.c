@@ -107,7 +107,8 @@ void scasas(DERTBL *varp)
     if (SampleOffset >= SampleRate[probeNum])
       return;
 
-    concentration = &HighRateData[varp->HRstart +(SampleOffset * varp->Length)];    flow /= SampleRate[probeNum];
+    concentration = &HighRateData[varp->HRstart +(SampleOffset * varp->Length)];
+    flow /= SampleRate[probeNum];
     activity *= SampleRate[probeNum];
     }
   else

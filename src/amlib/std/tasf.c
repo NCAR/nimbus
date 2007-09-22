@@ -15,7 +15,6 @@
 #include "nimbus.h"
 #include "amlib.h"
 
-extern NR_TYPE xmac2(NR_TYPE);
 extern NR_TYPE tas(NR_TYPE, NR_TYPE, NR_TYPE);
 extern NR_TYPE recff;
 
@@ -29,11 +28,8 @@ void stasf(DERTBL *varp)
   psfc	= GetSample(varp, 1);
   ttf	= GetSample(varp, 2);
 
-  fmach2	= xmac2(qcfc/psfc);
+  fmach2 = XMAC2(qcfc/psfc);
   tasf	= tas(ttf,recff,fmach2);
 
   PutSample(varp, tasf);
-
-}	/* END STASF */
-
-/* END TASF.C */
+}

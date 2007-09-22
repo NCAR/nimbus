@@ -13,7 +13,6 @@
 #include "nimbus.h"
 #include "amlib.h"
 
-extern NR_TYPE xmac2(NR_TYPE);
 extern NR_TYPE tas(NR_TYPE, NR_TYPE, NR_TYPE);
 extern NR_TYPE recfra;
 
@@ -27,11 +26,8 @@ void stasr(DERTBL *varp)
   psxc	= GetSample(varp, 1);
   ttrx	= GetSample(varp, 2);
 
-  rmach2	= xmac2(qcxc / psxc);
+  rmach2 = XMAC2(qcxc / psxc);
   tasr	= tas(ttrx, recfra, rmach2);
 
   PutSample(varp, tasr);
-
-}	/* END STASR */
-
-/* END TASR.C */
+}
