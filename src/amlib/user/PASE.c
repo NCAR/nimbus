@@ -23,7 +23,7 @@ static NR_TYPE d[3] = { 6.35, 6.17, 5.16 };
 void spflow(DERTBL *varp)
 {
   NR_TYPE psfd = GetSample(varp, 0);
-  PutSample(varp, -0.48 + 0.0013 * psfd);
+  PutSample(varp, -0.44 + 0.0013 * psfd);
 }
 
 /* -------------------------------------------------------------------- */
