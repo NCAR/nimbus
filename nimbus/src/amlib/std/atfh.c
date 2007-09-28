@@ -46,7 +46,6 @@ void sttwhc(DERTBL *varp)
 
   tth = GetSample(varp, 0);
   xmach2 = GetSample(varp, 1);
-  psxc = GetSample(varp, 2);
 
   if (firstTime[FeedBack])
   {
@@ -54,22 +53,37 @@ void sttwhc(DERTBL *varp)
     atfh[FeedBack] = tth;
   }
 
-  if (tth < -Kelvin)
-    tth = -Kelvin;
+  if (tth < -273.15)
+    tth = -273.15;
 
   if (xmach2 <= 0.0 || isnan(xmach2))
     xmach2 = 0.0001;
 
-  zee = 0.269589 * psxc * sqrt((double)xmach2) / (atfh[FeedBack] + Kelvin);
+  switch (cfg.Aircraft())
+  {
+    case Config::HIAPER:
+      if (xmach2 < 0.25)
+        zee = 1.00202; 
+      else
+        zee = (0.99355 + 0.0097071 * sqrt(xmach2) + 0.014429 * xmach2); 
 
-  if (zee < 0.18 || isnan(zee))
-    zee = 0.18;
+      tth = ((tth + Kelvin) * zee) - 273.15; 
+      break;
 
-  tth -= (NR_TYPE)pow(	(double)10.0,
+    default:
+      psxc = GetSample(varp, 2);
+
+      zee = 0.269589 * psxc * sqrt((double)xmach2) / (atfh[FeedBack] + 273.16);
+
+      if (zee < 0.18 || isnan(zee))
+        zee = 0.18;
+
+      tth -= (NR_TYPE)pow((double)10.0,
 			(double)tfher1 * log10((double)zee) + tfher2);
+    }
 
-  if (tth < -Kelvin)
-    tth = -Kelvin;
+  if (tth < -273.15)
+    tth = -273.15;
 
   PutSample(varp, tth);
 }
