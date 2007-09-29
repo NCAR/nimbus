@@ -20,10 +20,10 @@
 #include "valqueue.h"
 
 // WINDS/WINPUT include files:
-#include "nimbus.h"
-#include "header.h"
-#include "decode.h"
-#include "amlib.h"
+#include <nimbus.h>
+#include <raf/header.h>
+#include <decode.h>
+#include <amlib.h>
 
 // plus a little kludge to a couple more WINPUT routines
 #include "cint.h"
