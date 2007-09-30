@@ -90,7 +90,7 @@ unsetenv NIMBUS
 # Programs with "install" target.
 
 cd nc_utils
-foreach file ( asc2cdf n2asc ncReorder ncav ncextr ncmerge nc_sane )
+foreach file ( asc2cdf flt_time n2asc ncReorder ncav ncextr ncmerge nc_sane )
   (cd $file; echo $file; make install)
 end
 cd ..
