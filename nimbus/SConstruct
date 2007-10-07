@@ -16,8 +16,8 @@ env.SourceCode(['.', 'amlib', 'filter'], None)
 # This is mostly for buildbot, which does not use the Jeffco login.
 try: env['JLOCAL'] = os.environ['JLOCAL']
 except KeyError:
-    print "\n$JLOCAL not found!  Defaulting to '/jnet/local'\n"
-    env['JLOCAL'] = '/jnet/local/'
+    print "\n$JLOCAL not found!  Defaulting to '/opt/local'\n"
+    env['JLOCAL'] = '/opt/local/'
 
 env['CC'] = ['g++']
 
