@@ -540,6 +540,9 @@ static void checkForProductionSetup()
   /* Check for Production File
    */
   MakeProjectFileName(buffer, "%s/%s/%s/Production/Flight_");
+  if (cfg.isADS3())
+    revision2 = true;
+
   if (!revision2)
   {
     char t[32];

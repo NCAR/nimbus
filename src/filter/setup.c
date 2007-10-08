@@ -36,8 +36,6 @@ void Set_SetupFileName(char s[])
   strcpy(SetupFileName, s);
 }
  
-/* END SET_SETUPFILENAME */
-
 /* -------------------------------------------------------------------- */
 void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *call)
 {
