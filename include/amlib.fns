@@ -331,8 +331,6 @@
 	"H2DEE32",	NULL,		xl2d_hskp5,	NULL,
 	"H2DVN15",	NULL,		xl2d_hskp6,	NULL,
 	"H2DV5",	NULL,		xl2d_hskp7,	NULL,
-	"H2DV5",	NULL,		xl2d_hskp7,	NULL,
-	"H2DV5",	NULL,		xl2d_hskp7,	NULL,
 	"SHDORC",	(void(*)(void*))initP2DH,	xl2d_shadow,	NULL,
 	"SHDORP",	(void(*)(void*))initP2DH,	xl2d_shadow,	NULL,
 	"DT1DC",	NULL,		xl2dDeadTime1,	NULL,
