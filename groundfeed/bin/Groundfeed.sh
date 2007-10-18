@@ -35,7 +35,7 @@ fi
 
 cd ${JLOCAL}/raf/groundfeed/lib
 
-/usr/java/jre/bin/java \
+/usr/java/latest/bin/java \
   -cp groundfeed.jar:getopt.jar:postgresql.jar $app -g $groundvars \
   -h $dbhost -n $dbname -$ac -o $outname \
   >> /tmp/Groundfeed.out 2>&1 &
