@@ -23,7 +23,7 @@ public class Sender extends java.lang.Object {
 
     /** How often to generate a file.  See timeStep in DbAccess.java
      */
-    protected int sleepInterval = 30;
+    protected int sleepInterval = 30000; /* in milliseconds */
     /** GroundVars File name
      */
     protected String groundvarsName;
