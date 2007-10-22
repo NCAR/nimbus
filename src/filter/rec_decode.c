@@ -28,7 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 
 extern ushort	*bits;
 
-static bool blankOutThisValue(RAWTBL * var, short thisTime[]);
+static bool blankOutThisValue(RAWTBL * var, NR_TYPE nlr[]);
 static void setNIDASDynamicLags(short lr[]);
 
 /* -------------------------------------------------------------------- */
@@ -45,20 +45,30 @@ void DecodeADSrecord(
     // Set dynamic lags.
     if (cfg.TimeShifting())
       setNIDASDynamicLags(lr);
-    return;
+  }
+  else
+  {
+    /* else ADS2.  Extract raw data into processed float/double.
+     */
+    for (size_t i = 0; i < raw.size(); ++i)
+      if (raw[i]->xlate != 0)
+        (*raw[i]->xlate)(raw[i], &lr[raw[i]->ADSstart], &nlr[raw[i]->SRstart]);
   }
 
-  /* else ADS2.  Extract raw data into processed float/double.
+
+  /* Blank out any data from the BlankOuts File.  Do raw data here, then it will
+   * ripple through derived and make them all nan also.
    */
   for (size_t i = 0; i < raw.size(); ++i)
   {
-    if (blankOutThisValue(raw[i], lr) == true)
-      for (size_t j = 0; j < raw[i]->SampleRate * raw[i]->Length; ++j)
+    if (blankOutThisValue(raw[i], nlr) == true)
+    {
+      size_t n = raw[i]->SampleRate * raw[i]->Length;
+      for (size_t j = 0; j < n; ++j)
         nlr[raw[i]->SRstart+j] = floatNAN;
-    else
-      (*raw[i]->xlate)(raw[i], &lr[raw[i]->ADSstart], &nlr[raw[i]->SRstart]);
+    }
   }
-}	/* END DECODEADSRECORD */
+}
 
 /* -------------------------------------------------------------------- */
 static void setNIDASDynamicLags(short lr[])
@@ -80,16 +90,18 @@ static void setNIDASDynamicLags(short lr[])
 }
 
 /* -------------------------------------------------------------------- */
-static bool blankOutThisValue(RAWTBL * var, short r[])
+static bool blankOutThisValue(RAWTBL * var, NR_TYPE nlr[])
 {
   // If this var has no xlate() fn or DataQuality has been marked bad, blank.
-  if (var->xlate == 0 || strcmp(var->DataQuality, "Bad") == 0)
+  if ((cfg.isADS2() && var->xlate == 0) ||
+      strcmp(var->DataQuality, "Bad") == 0)
     return true;
 
   // Compute time for this record.
   static int prevTime = -1;
   static bool crossedMidNight = false;
-  int thisTime = ntohs(r[1]) * 3600 + ntohs(r[2]) * 60 + ntohs(r[3]);
+
+  int thisTime = (int)nlr[timeIndex[0]] * 3600 + (int)nlr[timeIndex[1]] * 60 + (int)nlr[timeIndex[2]];
 
   if (thisTime < prevTime)
     crossedMidNight = true;
@@ -151,5 +163,3 @@ void decodeADS2analog(RAWTBL *varp, void *input, NR_TYPE *output)
     }
   }
 }
-
-/* END REC_DECODE.C */
