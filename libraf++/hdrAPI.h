@@ -35,119 +35,119 @@ public:
 
   void 	readHeader(const char fName[]);
 
-  void 	*HeaderPointer()	{ return((void *)_header); }
+  const void 	*HeaderPointer()	{ return((void *)_header); }
 
-  char	*ProjectName();		// May not work if no PROJ_DIR
+  const char	*ProjectName();		// May not work if no PROJ_DIR
 
   // Struct Fl fields.
-  char	*Version()		{ return(_header->version); }
-  char	*ProjectNumber()	{ return(_header->prnum); }
-  char	*FlightNumber()		{ return(_header->fltnum); }
-  char	*TapeNumber()		{ return(_header->tpnum); }
-  char	*FlightDate()		{ return(_header->date); }
-  char	*FlightTime()		{ return(_header->time); }
-  char	*TimeZone()		{ return(_header->tzone); }
-  char	*Aircraft()		{ return(_header->acraft); }
+  const char	*Version()		{ return(_header->version); }
+  const char	*ProjectNumber()	{ return(_header->prnum); }
+  const char	*FlightNumber()		{ return(_header->fltnum); }
+  const char	*TapeNumber()		{ return(_header->tpnum); }
+  const char	*FlightDate()		{ return(_header->date); }
+  const char	*FlightTime()		{ return(_header->time); }
+  const char	*TimeZone()		{ return(_header->tzone); }
+  const char	*Aircraft()		{ return(_header->acraft); }
 
-  long	NumberItems()		{ return(ntohl(_header->n_items)); }
-  long	lrLength()		{ return(ntohl(_header->lrlen)); }
-  long	lrPpr()			{ return(ntohl(_header->lrppr)); }
-  long	HeaderLength()		{ return(ntohl(_header->thdrlen)); }
+  long	NumberItems()			{ return(ntohl(_header->n_items)); }
+  long	lrLength()			{ return(ntohl(_header->lrlen)); }
+  long	lrPpr()				{ return(ntohl(_header->lrppr)); }
+  long	HeaderLength()			{ return(ntohl(_header->thdrlen)); }
 
-  char	*ADStype()		{ return(_header->ads_type); }
-
-
-  void	*GetFirst(), *GetFirst(char blkName[]), *GetSDI(char varName[]);
-  void	*GetNext(), *GetNext(char blkName[]);
+  const char	*ADStype()		{ return(_header->ads_type); }
 
 
-  char	*ItemType(void *vp)	{ return(((Blk *)vp)->item_type); }
-  long	ItemLength(void *vp)	{ return(ntohl(((Blk *)vp)->item_len)); }
-  long	Start(void *vp)		{ return(ntohl(((Blk *)vp)->start)); }
-  long	SizeOf(void *vp)	{ return(ntohl(((Blk *)vp)->length)); }
+  const void	*GetFirst(), *GetFirst(const char blkName[]), *GetSDI(const char varName[]);
+  const void	*GetNext(), *GetNext(const char blkName[]);
 
-  long	SampleRate(Dme *vp)	{ return(ntohl(vp->rate)); }
-  long	SampleRate(Ins *vp)	{ return(ntohl(vp->rate)); }
-  long	SampleRate(Masp *vp)	{ return(ntohl(vp->rate)); }
-  long	SampleRate(Pms1 *vp)	{ return(ntohl(vp->rate)); }
-  long	SampleRate(Pms1v2 *vp)	{ return(ntohl(vp->rate)); }
-  long	SampleRate(Serial *vp)	{ return(ntohl(vp->rate)); }
-  long	SampleRate(Sh *vp)	{ return(ntohl(vp->rate)); }
+
+  const char	*ItemType(const void *vp)	{ return(((Blk *)vp)->item_type); }
+  long	ItemLength(const void *vp)	{ return(ntohl(((Blk *)vp)->item_len)); }
+  long	Start(const void *vp)		{ return(ntohl(((Blk *)vp)->start)); }
+  long	SizeOf(const void *vp)		{ return(ntohl(((Blk *)vp)->length)); }
+
+  long	SampleRate(const Dme *vp)	{ return(ntohl(vp->rate)); }
+  long	SampleRate(const Ins *vp)	{ return(ntohl(vp->rate)); }
+  long	SampleRate(const Masp *vp)	{ return(ntohl(vp->rate)); }
+  long	SampleRate(const Pms1 *vp)	{ return(ntohl(vp->rate)); }
+  long	SampleRate(const Pms1v2 *vp)	{ return(ntohl(vp->rate)); }
+  long	SampleRate(const Serial *vp)	{ return(ntohl(vp->rate)); }
+  long	SampleRate(const Sh *vp)	{ return(ntohl(vp->rate)); }
 
   // Which DSM is probe/sensor attached to.
-  char	*DSM(Asy *vp)		{ return(vp->dsm_locn); }
-  char	*DSM(Blk *vp)		{ return(vp->dsm_locn); }
-  char	*DSM(Dme *vp)		{ return(vp->dsm_locn); }
-  char	*DSM(Evt *vp)		{ return(vp->dsm_locn); }
-  char	*DSM(Ins *vp)		{ return(vp->dsm_locn); }
-  char	*DSM(Irs *vp)		{ return(vp->dsm_locn); }
-  char	*DSM(Masp *vp)		{ return(vp->dsm_locn); }
-  char	*DSM(Pms1 *vp)		{ return(vp->dsm_locn); }
-  char	*DSM(Pms1v2 *vp)	{ return(vp->dsm_locn); }
-  char	*DSM(Pms2 *vp)		{ return(vp->dsm_locn); }
-  char	*DSM(Pms2h *vp)		{ return(vp->dsm_locn); }
-  char	*DSM(Serial *vp)	{ return(vp->dsm_locn); }
-  char	*DSM(Sh *vp)		{ return(vp->dsm_locn); }
-  char	*DSM(Uvhyg *vp)		{ return(vp->dsm_locn); }
+  const char	*DSM(const Asy *vp)		{ return(vp->dsm_locn); }
+  const char	*DSM(const Blk *vp)		{ return(vp->dsm_locn); }
+  const char	*DSM(const Dme *vp)		{ return(vp->dsm_locn); }
+  const char	*DSM(const Evt *vp)		{ return(vp->dsm_locn); }
+  const char	*DSM(const Ins *vp)		{ return(vp->dsm_locn); }
+  const char	*DSM(const Irs *vp)		{ return(vp->dsm_locn); }
+  const char	*DSM(const Masp *vp)		{ return(vp->dsm_locn); }
+  const char	*DSM(const Pms1 *vp)		{ return(vp->dsm_locn); }
+  const char	*DSM(const Pms1v2 *vp)		{ return(vp->dsm_locn); }
+  const char	*DSM(const Pms2 *vp)		{ return(vp->dsm_locn); }
+  const char	*DSM(const Pms2h *vp)		{ return(vp->dsm_locn); }
+  const char	*DSM(const Serial *vp)		{ return(vp->dsm_locn); }
+  const char	*DSM(const Sh *vp)		{ return(vp->dsm_locn); }
+  const char	*DSM(const Uvhyg *vp)		{ return(vp->dsm_locn); }
 
   // Probe/sensor mounting location.
-  char	*AircraftLocation(Blk *vp)	{ return(vp->locn); }
-  char	*AircraftLocation(Evt *vp)	{ return(vp->locn); }
-  char	*AircraftLocation(Irs *vp)	{ return(vp->locn); }
-  char	*AircraftLocation(Masp *vp)	{ return(vp->locn); }
-  char	*AircraftLocation(Pms1 *vp)	{ return(vp->locn); }
-  char	*AircraftLocation(Pms1v2 *vp)	{ return(vp->locn); }
-  char	*AircraftLocation(Pms2 *vp)	{ return(vp->locn); }
-  char	*AircraftLocation(Pms2h *vp)	{ return(vp->locn); }
-  char	*AircraftLocation(Uvhyg *vp)	{ return(vp->locn); }
+  const char	*AircraftLocation(const Blk *vp)	{ return(vp->locn); }
+  const char	*AircraftLocation(const Evt *vp)	{ return(vp->locn); }
+  const char	*AircraftLocation(const Irs *vp)	{ return(vp->locn); }
+  const char	*AircraftLocation(const Masp *vp)	{ return(vp->locn); }
+  const char	*AircraftLocation(const Pms1 *vp)	{ return(vp->locn); }
+  const char	*AircraftLocation(const Pms1v2 *vp)	{ return(vp->locn); }
+  const char	*AircraftLocation(const Pms2 *vp)	{ return(vp->locn); }
+  const char	*AircraftLocation(const Pms2h *vp)	{ return(vp->locn); }
+  const char	*AircraftLocation(const Uvhyg *vp)	{ return(vp->locn); }
 
 
   // Struct Sh (SDI or Analog/Digital stuff).
-  long	DSMaddress(Sh *vp)		{ return(ntohl(vp->adsaddr)); }
-  char	*SDItype(Sh *vp)		{ return(vp->type); }
-  long	InterleaveOffset(Sh *vp)	{ return(ntohl(vp->offset)); }
+  long	DSMaddress(const Sh *vp)		{ return(ntohl(vp->adsaddr)); }
+  const char	*SDItype(const Sh *vp)		{ return(vp->type); }
+  long	InterleaveOffset(const Sh *vp)		{ return(ntohl(vp->offset)); }
 
-  float	AtoDconversionFactor(Sh *vp)	{ return(ntohf(vp->convert)); }
-  long  AtoDconversionOffset(Sh *vp)	{ return(ntohl(vp->convert_offset)); }
+  float	AtoDconversionFactor(const Sh *vp)	{ return(ntohf(vp->convert)); }
+  long  AtoDconversionOffset(const Sh *vp)	{ return(ntohl(vp->convert_offset)); }
 
-  long  ChannelGain(Sh *vp)	{ return(ntohl(vp->ch_gain)); }
-  long  ChannelOffset(Sh *vp)	{ return(ntohl(vp->ch_offset)); }
+  long  ChannelGain(const Sh *vp)		{ return(ntohl(vp->ch_gain)); }
+  long  ChannelOffset(const Sh *vp)		{ return(ntohl(vp->ch_offset)); }
 
 
-  char	*VariableName(Asy *vp)		{ return(vp->name); }
-  char	*VariableName(Masp *vp)		{ return(vp->item_type); }
-  char	*VariableName(Pms1 *vp)		{ return(vp->name); }
-  char	*VariableName(Pms1v2 *vp)	{ return(vp->name); }
-  char	*VariableName(Pms2 *vp)		{ return(vp->name); }
-  char	*VariableName(Pms2h *vp)	{ return(vp->name); }
-  char	*VariableName(Serial *vp)	{ return(vp->name); }
-  char	*VariableName(Sh *vp)		{ return(vp->name); }
+  const char	*VariableName(const Asy *vp)	{ return(vp->name); }
+  const char	*VariableName(const Masp *vp)	{ return(vp->item_type); }
+  const char	*VariableName(const Pms1 *vp)	{ return(vp->name); }
+  const char	*VariableName(const Pms1v2 *vp)	{ return(vp->name); }
+  const char	*VariableName(const Pms2 *vp)	{ return(vp->name); }
+  const char	*VariableName(const Pms2h *vp)	{ return(vp->name); }
+  const char	*VariableName(const Serial *vp)	{ return(vp->name); }
+  const char	*VariableName(const Sh *vp)	{ return(vp->name); }
 
-  long	CalibrationOrder(Sh *vp)	{ return(ntohl(vp->order)); }
-  float	CalibrationCoefficient(Sh *vp, int i)	{ return(ntohf(vp->cof[i])); }
+  long	CalibrationOrder(const Sh *vp)		{ return(ntohl(vp->order)); }
+  float	CalibrationCoefficient(const Sh *vp, int i)	{ return(ntohf(vp->cof[i])); }
 
-  char	*SerialNumber(Masp *vp)		{ return(vp->serial_num); }
-  char	*SerialNumber(Pms1v2 *vp)	{ return(vp->serial_num); }
-  char	*SerialNumber(Pms2 *vp)		{ return(vp->serial_num); }
-  char	*SerialNumber(Pms2h *vp)	{ return(vp->serial_num); }
-  char	*SerialNumber(Uvhyg *vp)	{ return(vp->serial_num); }
+  const char	*SerialNumber(const Masp *vp)	{ return(vp->serial_num); }
+  const char	*SerialNumber(const Pms1v2 *vp)	{ return(vp->serial_num); }
+  const char	*SerialNumber(const Pms2 *vp)	{ return(vp->serial_num); }
+  const char	*SerialNumber(const Pms2h *vp)	{ return(vp->serial_num); }
+  const char	*SerialNumber(const Uvhyg *vp)	{ return(vp->serial_num); }
 
-  long	InterfaceNumber(Pms1v2 *vp)	{ return(ntohl(vp->intf_num)); }
-  long	InterfaceChannel(Pms1v2 *vp)	{ return(ntohl(vp->intf_chan)); }
-  long	InterfaceChannel(Pms2 *vp)	{ return(ntohl(vp->intf_chan)); }
+  long	InterfaceNumber(const Pms1v2 *vp)	{ return(ntohl(vp->intf_num)); }
+  long	InterfaceChannel(const Pms1v2 *vp)	{ return(ntohl(vp->intf_chan)); }
+  long	InterfaceChannel(const Pms2 *vp)	{ return(ntohl(vp->intf_chan)); }
 
-  long	ParticleSpacingStart(Pms1v2 *vp)  { return(ntohl(vp->ps_start)); }
-  long	ParticleSpacingLength(Pms1v2 *vp) { return(ntohl(vp->ps_length)); }
-  float	ParticleSpacingGate(Pms1v2 *vp)   { return(ntohf(vp->ps_gate)); }
+  long	ParticleSpacingStart(const Pms1v2 *vp)  { return(ntohl(vp->ps_start)); }
+  long	ParticleSpacingLength(const Pms1v2 *vp) { return(ntohl(vp->ps_length)); }
+  float	ParticleSpacingGate(const Pms1v2 *vp)   { return(ntohf(vp->ps_gate)); }
 
-  long	lrLength(Pms2 *vp)	{ return(ntohl(vp->lrlen)); }
-  long	lrLength(Asy *vp)	{ return(ntohl(vp->lrlen)); }
-  short	lrPpr(Pms2 *vp)		{ return(ntohs(vp->lrppr)); }
-  long	lrPpr(Asy *vp)		{ return(ntohl(vp->lrppr)); }
+  long	lrLength(const Pms2 *vp)	{ return(ntohl(vp->lrlen)); }
+  long	lrLength(const Asy *vp)		{ return(ntohl(vp->lrlen)); }
+  short	lrPpr(const Pms2 *vp)		{ return(ntohs(vp->lrppr)); }
+  long	lrPpr(const Asy *vp)		{ return(ntohl(vp->lrppr)); }
 
-  short	Resolution(Pms2 *vp)	{ return(ntohs(vp->resolution)); }
+  short	Resolution(const Pms2 *vp)	{ return(ntohs(vp->resolution)); }
 
-  bool	isValid()		{ return(_valid); }
+  bool	isValid()			{ return(_valid); }
 
 private:
   Fl	*_header;

@@ -177,7 +177,7 @@ Header::Header(TapeDrive &drv)
 }	/* END CONSTRUCTOR */
 
 /* -------------------------------------------------------------------- */
-void *Header::GetFirst()
+const void *Header::GetFirst()
 {
   if (!_valid)
     return(0);
@@ -190,7 +190,7 @@ void *Header::GetFirst()
 }	/* END GETFIRST */
 
 /* -------------------------------------------------------------------- */
-void *Header::GetFirst(char blkName[])
+const void *Header::GetFirst(const char blkName[])
 {
   if (!_valid)
     return(0);
@@ -211,7 +211,7 @@ void *Header::GetFirst(char blkName[])
 }	/* END GETFIRST */
 
 /* -------------------------------------------------------------------- */
-void *Header::GetSDI(char varName[])
+const void *Header::GetSDI(const char varName[])
 {
   if (!_valid)
     return(0);
@@ -233,7 +233,7 @@ void *Header::GetSDI(char varName[])
 }	/* END GETFIRST */
 
 /* -------------------------------------------------------------------- */
-void *Header::GetNext()
+const void *Header::GetNext()
 {
   if (!_valid)
     return(0);
@@ -248,7 +248,7 @@ void *Header::GetNext()
 }	/* END GETNEXT */
 
 /* -------------------------------------------------------------------- */
-void *Header::GetNext(char blkName[])
+const void *Header::GetNext(const char blkName[])
 {
   if (!_valid)
     return(0);
@@ -271,7 +271,7 @@ void *Header::GetNext(char blkName[])
 }	/* END GETNEXT */
 
 /* -------------------------------------------------------------------- */
-char *Header::ProjectName()
+const char *Header::ProjectName()
 {
   if (!_valid)
     return(0);
