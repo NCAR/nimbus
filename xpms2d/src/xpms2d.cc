@@ -26,16 +26,16 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1997
 #include "fbr.h"
 
 #include <raf/Application.h>
-#include "CanvasWindow.h"
-#include "ControlWindow.h"
-#include "Colors.h"
+#include <CanvasWindow.h>
+#include <ControlWindow.h>
+#include <Colors.h>
 #include <raf/Cursor.h>
-#include "DataFile.h"
-#include "FileMgr.h"
-#include "Magnify.h"
-#include "MagnifyWindow.h"
-#include "MagnifyCanvas.h"
-#include "MainCanvas.h"
+#include <DataFile.h>
+#include <FileMgr.h>
+#include <Magnify.h>
+#include <MagnifyWindow.h>
+#include <MagnifyCanvas.h>
+#include <MainCanvas.h>
 #include <raf/Printer.h>
 #include <raf/XFonts.h>
 #include <raf/XPen.h>

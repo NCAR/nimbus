@@ -2,7 +2,7 @@
 # xpms2d C++ class makefile
 #
 RAFINC=	${JLOCAL}/include
-I2D=	../include
+I2D=	../src
 O2D=	../obj
 
 OBJS=	CanvasWindow.o Colors.o ControlWindow.o\
@@ -22,21 +22,21 @@ all: ${OBJS}
 
 ${OBJS}: ${HDRS}
 
-CanvasWindow.o:		${I2D}/CanvasWindow.h ${RAFINC}/raf/Window.h
+CanvasWindow.o:		CanvasWindow.h ${RAFINC}/raf/Window.h
 
-ControlWindow.o:	${I2D}/ControlWindow.h ${I2D}/FileMgr.h ${I2D}/DataFile.h
-Colors.o:		${I2D}/Colors.h ${I2D}/MainCanvas.h
+ControlWindow.o:	ControlWindow.h FileMgr.h DataFile.h
+Colors.o:		Colors.h MainCanvas.h
 
-DataFile.o:		${I2D}/DataFile.h ${RAFINC}/raf/hdrAPI.h ${I2D}/Probe.h
+DataFile.o:		DataFile.h ${RAFINC}/raf/hdrAPI.h Probe.h
 
-FileMgr.o:		${I2D}/FileMgr.h ${I2D}/DataFile.h
-Hex.o:			${I2D}/Hex.h ${RAFINC}/raf/TextWindow.h
-Enchilada.o:		${I2D}/Enchilada.h ${RAFINC}/raf/TextWindow.h
-Magnify.o:		${I2D}/Magnify.h ${I2D}/MainCanvas.h ${I2D}/MagnifyCanvas.h ${I2D}/Colors.h
-MagnifyCanvas.o:	${I2D}/MagnifyCanvas.h ${RAFINC}/raf/Canvas.h ${RAFINC}/raf/Cursor.h
-MagnifyWindow.o:	${I2D}/MagnifyWindow.h ${RAFINC}/raf/Window.h
-MainCanvas.o:		${I2D}/MainCanvas.h ${I2D}/Colors.h ${RAFINC}/raf/Canvas.h
-Probe.o:		${I2D}/Probe.h ${RAFINC}/raf/hdrAPI.h
+FileMgr.o:		FileMgr.h DataFile.h
+Hex.o:			Hex.h ${RAFINC}/raf/TextWindow.h
+Enchilada.o:		Enchilada.h ${RAFINC}/raf/TextWindow.h
+Magnify.o:		Magnify.h MainCanvas.h MagnifyCanvas.h Colors.h
+MagnifyCanvas.o:	MagnifyCanvas.h ${RAFINC}/raf/Canvas.h ${RAFINC}/raf/Cursor.h
+MagnifyWindow.o:	MagnifyWindow.h ${RAFINC}/raf/Window.h
+MainCanvas.o:		MainCanvas.h Colors.h ${RAFINC}/raf/Canvas.h
+Probe.o:		Probe.h ${RAFINC}/raf/hdrAPI.h
 
 
 clean:

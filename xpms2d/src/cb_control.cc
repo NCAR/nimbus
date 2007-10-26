@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	cb_control.cc
 
-FULL NAME:	Callback Wrappers (C++ is so cheezy sometimes).
+FULL NAME:	Callback Wrappers
 
 ENTRY POINTS:	ApplyTimeChange()
 		ModifyActiveVars()
@@ -29,13 +29,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2006
 #include "define.h"
 #include <unistd.h>
 
-#include "ControlWindow.h"
-#include "Colors.h"
+#include <ControlWindow.h>
+#include <Colors.h>
 #include <raf/Cursor.h>
-#include "Enchilada.h"
-#include "FileMgr.h"
+#include <Enchilada.h>
+#include <FileMgr.h>
 #include <raf/XPen.h>
-#include "MainCanvas.h"
+#include <MainCanvas.h>
 
 extern Enchilada	*enchiladaWin;
 extern FileManager	fileMgr;
@@ -132,7 +132,7 @@ void PageForward(Widget w, XtPointer client, XtPointer call)
 
     for (j = 0; j < fileMgr.CurrentFile()->NumberOfProbes(); ++j)
       {
-      if (!strncmp(fileMgr.CurrentFile()->probe[j]->Code, buff_p, 2)
+      if (!strncmp(fileMgr.CurrentFile()->probe[j]->Code(), buff_p, 2)
           && fileMgr.CurrentFile()->probe[j]->Display())
         {
         pen->SetColor(color->GetColor(j+1));
@@ -166,7 +166,7 @@ void PageCurrent()
               fileMgr.CurrentFile()->PrevPMS2dRecord(&pgBbuff); )
     {
     for (j = 0; j < fileMgr.CurrentFile()->NumberOfProbes(); ++j)
-      if (!strncmp(fileMgr.CurrentFile()->probe[j]->Code, (char *)&pgBbuff, 2)
+      if (!strncmp(fileMgr.CurrentFile()->probe[j]->Code(), (char *)&pgBbuff, 2)
           && fileMgr.CurrentFile()->probe[j]->Display())
         {
         ++i;
@@ -194,7 +194,7 @@ void PageBackward(Widget w, XtPointer client, XtPointer call)
               fileMgr.CurrentFile()->PrevPMS2dRecord(&pgBbuff); )
     {
     for (j = 0; j < fileMgr.CurrentFile()->NumberOfProbes(); ++j)
-      if (!strncmp(fileMgr.CurrentFile()->probe[j]->Code, (char *)&pgBbuff, 2)
+      if (!strncmp(fileMgr.CurrentFile()->probe[j]->Code(), (char *)&pgBbuff, 2)
           && fileMgr.CurrentFile()->probe[j]->Display())
         {
         ++i;

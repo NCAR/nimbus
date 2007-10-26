@@ -24,7 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999-2006
 #include "define.h"
 #include <raf/header.h>
 
-#include "ControlWindow.h"
+#include <ControlWindow.h>
 
 #include <sys/types.h>
 #include <netinet/in.h>

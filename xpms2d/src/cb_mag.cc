@@ -18,7 +18,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 #include "define.h"
 
-#include "MagnifyCanvas.h"
+#include <MagnifyCanvas.h>
 
 extern MagnifyCanvas	*magPlot;
 

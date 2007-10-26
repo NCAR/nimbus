@@ -27,11 +27,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2001
 #include <unistd.h>
 
 #include <raf/Application.h>
-#include "ControlWindow.h"
-#include "Colors.h"
+#include <ControlWindow.h>
+#include <Colors.h>
 #include <raf/Cursor.h>
-#include "FileMgr.h"
-#include "MainCanvas.h"
+#include <FileMgr.h>
+#include <MainCanvas.h>
 #include <raf/PostScript.h>
 #include <raf/Printer.h>
 #include <raf/XmFile.h>
@@ -129,7 +129,7 @@ static void PrintPS(Widget w, XtPointer client, XtPointer call)
   for (i = 0; i < nBuffs; ++i)
     for (j = 0; j < file->NumberOfProbes(); ++j)
       {
-      if (!strncmp(file->probe[j]->Code, (char*)&pgFbuff[i], 2)
+      if (!strncmp(file->probe[j]->Code(), (char*)&pgFbuff[i], 2)
           && file->probe[j]->Display())
         mainPlot->draw(&pgFbuff[i], ProcessRecord(&pgFbuff[i], version), version, j+1, &pen);
       }

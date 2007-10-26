@@ -14,45 +14,43 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 
 /* -------------------------------------------------------------------- */
-Probe::Probe(char name[], int recSize)
+Probe::Probe(const char name[], int recSize)
 {
-  strncpy(Name, name, 2); Name[2] = '\0';
-  strcpy(Code, Name);
-  strcpy(SerialNum, "");
+  _name.push_back(name[0]);
+  _name.push_back(name[1]);
+  _name.push_back('\0');
+  strcpy(_code, _name.c_str());
 
-  lrLen = recSize;
-  lrPpr = 1;
-  displayed = false;
+  _lrLen = recSize;
+  _lrPpr = 1;
+  _displayed = false;
 
-  if (Name[0] == 'C')
-    Resolution = 25;
+  if (_name[0] == 'C')
+    _resolution = 25;
 
-  if (Name[0] == 'P')
-    Resolution = 200;
+  if (_name[0] == 'P')
+    _resolution = 200;
 
-printf("Probe:: %s, resolution = %d\n", Name, Resolution);
-
+printf("Probe:: %s, resolution = %d\n", _name.c_str(), _resolution);
 }
 
 /* -------------------------------------------------------------------- */
-Probe::Probe(Header *hdr, Pms2 *p, int cnt)
+Probe::Probe(Header * hdr, const Pms2 * p, int cnt)
 {
-
   // Extract stuff from Header.
-  strcpy(Name, hdr->VariableName(p));
-  strcat(Name, "_");
-  strcat(Name, hdr->AircraftLocation(p));
-  strcpy(SerialNum, hdr->SerialNumber(p));
+  _name = hdr->VariableName(p);
+  _name += "_";
+  _name += hdr->AircraftLocation(p);
+  _serialNumber = hdr->SerialNumber(p);
 
-  Code[0] = Name[3]; Code[1] = cnt + '0'; Code[2] = '\0';
+  _code[0] = _name[3]; _code[1] = cnt + '0'; _code[2] = '\0';
 
-  lrLen = hdr->lrLength(p);
-  lrPpr = hdr->lrPpr(p);
-  Resolution = hdr->Resolution(p);
-  displayed = false;
+  _lrLen = hdr->lrLength(p);
+  _lrPpr = hdr->lrPpr(p);
+  _resolution = hdr->Resolution(p);
+  _displayed = false;
 
-printf("Probe:: %s - %s\n", Name, Code);
-
-}	/* END CONSTRUCTOR */
+printf("Probe:: %s - %s\n", _name.c_str(), _code);
+}
 
 /* END PROBE.CC */

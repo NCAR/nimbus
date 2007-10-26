@@ -14,7 +14,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2000
 #ifndef COLORS_H
 #define COLORS_H
 
-#include "define.h"
+#include <define.h>
 
 #define BLACK		0
 #define MAROON		1

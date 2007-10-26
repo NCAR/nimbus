@@ -5,7 +5,7 @@ BIN	= ${JLOCAL}/bin
 WWW	= /net/www/docs/raf/Software
 RELEASE = ${JLOCAL}/xpms2d
 
-INC	= ../include
+INC	= ../class
 RAFINC	= ${JLOCAL}/include
 C2D	= ../class
 O2D	= ../class
@@ -13,7 +13,7 @@ O2D	= ../class
 #       Linux
 #
 DEFINES	= -DPNG
-INCLUDES= -I${INC} -I/usr/X11R6/include -I${RAFINC}
+INCLUDES= -I. -I../class -I../src -I/usr/X11R6/include -I${RAFINC}
 LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib
 LIBS   = -lraf++ -lXm -lXt -lXext -lX11 -lpng -lz
 ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.RedHat9.0
@@ -41,7 +41,7 @@ CXX	= g++
 CXXFLAGS= -g -O ${INCLUDES} ${DEFINES}
 
 PROG	= xpms2d
-HDRS	= ${INC}/define.h
+HDRS	= define.h
 
 SRCS=	xpms2d.cc global.cc ccb.cc cb_canvas.cc cb_control.cc cb_mag.cc\
 	cb_menus.cc cb_printer.cc cb_text.cc process.cc
@@ -80,7 +80,7 @@ print:
 
 ${OBJS}:	${HDRS}
 
-xpms2d.o:	${RAFINC}/raf/Application.h ${INC}/CanvasWindow.h ${INC}/Colors.h ${INC}/ControlWindow.h ${RAFINC}/raf/Cursor.h ${INC}/FileMgr.h ${INC}/DataFile.h ${RAFINC}/raf/XFonts.h ${RAFINC}/raf/XPen.h ${INC}/MagnifyWindow.h ${INC}/MainCanvas.h ${RAFINC}/raf/Printer.h ${RAFINC}/raf/XmError.h ${RAFINC}/raf/XmFile.h ${RAFINC}/raf/XmWarn.h ${INC}/fbr.h
+xpms2d.o:	${RAFINC}/raf/Application.h ${INC}/CanvasWindow.h ${INC}/Colors.h ${INC}/ControlWindow.h ${RAFINC}/raf/Cursor.h ${INC}/FileMgr.h ${INC}/DataFile.h ${RAFINC}/raf/XFonts.h ${RAFINC}/raf/XPen.h ${INC}/MagnifyWindow.h ${INC}/MainCanvas.h ${RAFINC}/raf/Printer.h ${RAFINC}/raf/XmError.h ${RAFINC}/raf/XmFile.h ${RAFINC}/raf/XmWarn.h fbr.h
 
 cb_canvas.o:	${INC}/MainCanvas.h ${INC}/Magnify.h
 cb_control.o:	${RAFINC}/raf/Cursor.h ${INC}/FileMgr.h ${INC}/MainCanvas.h ${INC}/ControlWindow.h ${INC}/Colors.h

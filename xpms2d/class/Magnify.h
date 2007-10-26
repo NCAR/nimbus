@@ -11,7 +11,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #ifndef MAGNIFY_H
 #define MAGNIFY_H
 
-#include "define.h"
+#include <define.h>
 
 
 /* -------------------------------------------------------------------- */

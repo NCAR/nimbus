@@ -280,7 +280,7 @@ printf("In SetProbes()\n");
       {
       XtSetSensitive(probeB[i], True);
 
-      label = XmStringCreate(fileMgr.CurrentFile()->probe[i]->Name,
+      label = XmStringCreate((char *)fileMgr.CurrentFile()->probe[i]->Name().c_str(),
                              XmFONTLIST_DEFAULT_TAG);
       XtSetArg(args[0], XmNlabelString, label);
       XtSetValues(probeB[i], args, 1);

@@ -17,10 +17,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8
 
 #include <raf/Application.h>
 #include <raf/Cursor.h>
-#include "FileMgr.h"
+#include <FileMgr.h>
 #include <raf/Printer.h>
-#include "Enchilada.h"
-#include "Hex.h"
+#include <Enchilada.h>
+#include <Hex.h>
 #include <raf/XmFile.h>
 
 #include <Xm/Text.h>

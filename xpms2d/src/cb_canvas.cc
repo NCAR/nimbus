@@ -19,8 +19,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2006
 
 #include "define.h"
 
-#include "MainCanvas.h"
-#include "Magnify.h"
+#include <MainCanvas.h>
+#include <Magnify.h>
 
 extern MainCanvas	*mainPlot;
 extern Magnify		*mag;

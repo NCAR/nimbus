@@ -11,7 +11,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #ifndef MAGWINDOW_H
 #define MAGWINDOW_H
 
-#include "define.h"
+#include <define.h>
 
 #include <raf/Window.h>
 

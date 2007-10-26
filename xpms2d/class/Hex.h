@@ -11,7 +11,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 #ifndef HEX_H
 #define HEX_H
 
-#include "define.h"
+#include <define.h>
 #include <raf/header.h>
 
 #include <raf/TextWindow.h>

@@ -11,7 +11,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #ifndef MAGCANVAS_H
 #define MAGCANVAS_H
 
-#include "define.h"
+#include <define.h>
 #include <raf/header.h>
 
 #include <raf/Canvas.h>

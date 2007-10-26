@@ -15,7 +15,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #include <zlib.h>
 #endif
 
-#include "define.h"
+#include <define.h>
 
 #include "Probe.h"
 #include <raf/hdrAPI.h>
@@ -46,11 +46,11 @@ public:
   ADS_DataFile(char fName[]);
   ~ADS_DataFile();
 
-  char	*FileName()	 { return(fileName); }
-  char	*ProjectNumber() { return(hdr ? hdr->ProjectNumber() : (char *)""); }
-  char	*FlightNumber()	 { return(hdr ? hdr->FlightNumber() : (char *)""); }
-  char	*FlightDate()	 { return(hdr ? hdr->FlightDate() : (char *)""); }
-  char	*HeaderVersion() { return(hdr ? hdr->Version() : (char *)""); }
+  const char	*FileName()	 { return(fileName); }
+  const char	*ProjectNumber() { return(hdr ? hdr->ProjectNumber() : (char *)""); }
+  const char	*FlightNumber()	 { return(hdr ? hdr->FlightNumber() : (char *)""); }
+  const char	*FlightDate()	 { return(hdr ? hdr->FlightDate() : (char *)""); }
+  const char	*HeaderVersion() { return(hdr ? hdr->Version() : (char *)""); }
 
   int	NumberOfProbes()	{ return(nProbes); }
   void	SetPosition(int position);

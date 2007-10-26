@@ -84,8 +84,8 @@ static int P2dLRpPR = P2DLRPR;
 ADS_DataFile::ADS_DataFile(char fName[])
 {
   int	Ccnt, Pcnt, Hcnt;
-  char	*name;
-  void	*p;
+  const char * name;
+  const void * p;
 
   strcpy(fileName, fName);
 
@@ -570,7 +570,7 @@ void ADS_DataFile::buildIndices()
     if (hasRAFheader)
       {
       for (i = 0; i < nProbes; ++i)
-        if (strcmp(probe[i]->Code, buffer) == 0)
+        if (strcmp(probe[i]->Code(), buffer) == 0)
           break;
 
       if (i == nProbes)	// shouldn't get here?
@@ -579,7 +579,7 @@ void ADS_DataFile::buildIndices()
     else
       {
       for (i = 0; i < nProbes; ++i)
-        if (strcmp(probe[i]->Code, buffer) == 0)
+        if (strcmp(probe[i]->Code(), buffer) == 0)
           break;
 
       // Sanity check.

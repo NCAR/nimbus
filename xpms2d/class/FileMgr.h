@@ -11,9 +11,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #ifndef FILEMGR_H
 #define FILEMGR_H
 
-#include "define.h"
+#include <define.h>
 
-#include "DataFile.h"
+#include <DataFile.h>
 
 
 /* -------------------------------------------------------------------- */

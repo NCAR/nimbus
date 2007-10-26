@@ -11,7 +11,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #ifndef PLOTINFO_H
 #define PLOTINFO_H
 
-#include "define.h"
+#include <define.h>
 
 
 /* -------------------------------------------------------------------- */

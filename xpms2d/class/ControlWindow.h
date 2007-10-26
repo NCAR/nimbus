@@ -11,7 +11,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #ifndef CONWINDOW_H
 #define CONWINDOW_H
 
-#include "define.h"
+#include <define.h>
 #include <raf/header.h>
 
 #include <raf/Application.h>
