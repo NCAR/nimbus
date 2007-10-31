@@ -62,52 +62,52 @@ void c260xInit(var_base *varp)
   InitPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
-    printf("%s: FIRST_BIN not found.\n", serialNumber); exit(1);
+    fprintf(stderr, "260x: serial # = [%s]: FIRST_BIN not found.\n", serialNumber); exit(1);
     }
   FIRST_BIN[probeNum] = atoi(p);
 
   if ((p = GetPMSparameter(serialNumber, "LAST_BIN")) == NULL) {
-    printf("%s: LAST_BIN not found.\n", serialNumber); exit(1);
+    fprintf(stderr, "260x: serial # = [%s]: LAST_BIN not found.\n", serialNumber); exit(1);
     }
   LAST_BIN[probeNum] = atoi(p);
 
   if ((p = GetPMSparameter(serialNumber, "NDIODES")) == NULL) {
-    printf("%s: NDIODES not found.\n", serialNumber); exit(1);
+    fprintf(stderr, "260x: serial # = [%s]: NDIODES not found.\n", serialNumber); exit(1);
     }
   nDiodes = atoi(p);
 
   if ((p = GetPMSparameter(serialNumber, "MIN_RANGE")) == NULL) {
-    printf("%s: MIN_RANGE not found.\n", serialNumber); exit(1);
+    fprintf(stderr, "260x: serial # = [%s]: MIN_RANGE not found.\n", serialNumber); exit(1);
     }
   minRange = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "RANGE_STEP")) == NULL) {
-    printf("%s: RANGE_STEP not found.\n", serialNumber); exit(1);
+    fprintf(stderr, "260x: serial # = [%s]: RANGE_STEP not found.\n", serialNumber); exit(1);
     }
   resolution[probeNum] = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "RESPONSE_TIME")) == NULL) {
-    printf("%s: RESPONSE_TIME not found.\n", serialNumber); exit(1);
+    fprintf(stderr, "260x: serial # = [%s]: RESPONSE_TIME not found.\n", serialNumber); exit(1);
     }
   responseTime[probeNum] = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "ARM_DISTANCE")) == NULL) {
-    printf("%s: ARM_DISTANCE not found.\n", serialNumber); exit(1);
+    fprintf(stderr, "260x: serial # = [%s]: ARM_DISTANCE not found.\n", serialNumber); exit(1);
     }
   armDistance[probeNum] = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "DENS")) == NULL) {
-    printf("%s: DENS not found.\n", serialNumber); exit(1);
+    fprintf(stderr, "260x: serial # = [%s]: DENS not found.\n", serialNumber); exit(1);
     }
   DENS[probeNum] = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "PLWFAC")) == NULL) {
-    printf("%s: PLWFAC not found.\n", serialNumber); exit(1);
+    fprintf(stderr, "260x: serial # = [%s]: PLWFAC not found.\n", serialNumber); exit(1);
     }
   PLWFAC[probeNum] = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "DBZFAC")) == NULL) {
-    printf("%s: DBZFAC not found.\n", serialNumber); exit(1);
+    fprintf(stderr, "260x: serial # = [%s]: DBZFAC not found.\n", serialNumber); exit(1);
     }
   DBZFAC[probeNum] = atof(p);
 

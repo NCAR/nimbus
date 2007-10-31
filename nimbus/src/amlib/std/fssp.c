@@ -71,37 +71,37 @@ void cfsspInit(var_base *varp)
   InitPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
-    printf("%s: FIRST_BIN not found.\n", serialNumber); exit(1);
+    fprintf(stderr, "fssp: serial number = [%s]: FIRST_BIN not found.\n", serialNumber); exit(1);
     }
   FIRST_BIN[probeNum] = atoi(p);
 
   if ((p = GetPMSparameter(serialNumber, "LAST_BIN")) == NULL) {
-    printf("%s: LAST_BIN not found.\n", serialNumber); exit(1);
+    fprintf(stderr, "fssp: serial number = [%s]: LAST_BIN not found.\n", serialNumber); exit(1);
     }
   LAST_BIN[probeNum] = atoi(p);
 
   if ((p = GetPMSparameter(serialNumber, "DOF")) == NULL) {
-    printf("%s: DOF not found.\n", serialNumber); exit(1);
+    fprintf(stderr, "fssp: serial number = [%s]: DOF not found.\n", serialNumber); exit(1);
     }
   DOF = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "BEAM_DIAM")) == NULL) {
-    printf("%s: BEAM_DIAM not found.\n", serialNumber); exit(1);
+    fprintf(stderr, "fssp: serial number = [%s]: BEAM_DIAM not found.\n", serialNumber); exit(1);
     }
   beamDiameter = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "DENS")) == NULL) {
-    printf("%s: DENS not found.\n", serialNumber); exit(1);
+    fprintf(stderr, "fssp: serial number = [%s]: DENS not found.\n", serialNumber); exit(1);
     }
   DENS[probeNum] = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "PLWFAC")) == NULL) {
-    printf("%s: PLWFAC not found.\n", serialNumber); exit(1);
+    fprintf(stderr, "fssp: serial number = [%s]: PLWFAC not found.\n", serialNumber); exit(1);
     }
   PLWFAC[probeNum] = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "DBZFAC")) == NULL) {
-    printf("%s: DBZFAC not found.\n", serialNumber); exit(1);
+    fprintf(stderr, "fssp: serial number = [%s]: DBZFAC not found.\n", serialNumber); exit(1);
     }
   DBZFAC[probeNum] = atof(p);
 
@@ -109,12 +109,12 @@ void cfsspInit(var_base *varp)
   if (varp->name[1] == 'F')
     {
     if ((p = GetPMSparameter(serialNumber, "TAU1")) == NULL) {
-      printf("%s: TAU1 not found.\n", serialNumber); exit(1);
+      fprintf(stderr, "fssp: serial number = [%s]: TAU1 not found.\n", serialNumber); exit(1);
       }
     tau1[probeNum] = atof(p);
 
     if ((p = GetPMSparameter(serialNumber, "TAU2")) == NULL) {
-      printf("%s: TAU2 not found.\n", serialNumber); exit(1);
+      fprintf(stderr, "fssp: serial number = [%s]: TAU2 not found.\n", serialNumber); exit(1);
       }
     tau2[probeNum] = atof(p);
     }
@@ -128,7 +128,7 @@ void cfsspInit(var_base *varp)
      */
     sprintf(buffer, "CELL_SIZE_%d", varp->Length - 1);
     if ((p = GetPMSparameter(serialNumber, buffer)) == NULL) {
-      printf("%s: %s not found.\n", buffer, serialNumber); exit(1);
+      fprintf(stderr, "fssp: serial number = [%s]: %s not found.\n", serialNumber, buffer); exit(1);
       }
     }
 
