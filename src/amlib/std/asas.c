@@ -40,12 +40,12 @@ void casasInit(var_base *varp)
   InitPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
-    printf("%s: FIRST_BIN not found.\n", serialNumber); exit(1);
+    fprintf(stderr, "pcasp: serial number = [%s]: FIRST_BIN not found.\n", serialNumber); exit(1);
     }
   FIRST_BIN[probeNum] = atoi(p);
 
   if ((p = GetPMSparameter(serialNumber, "LAST_BIN")) == NULL) {
-    printf("%s: LAST_BIN not found.\n", serialNumber); exit(1);
+    fprintf(stderr, "pcasp: serial number = [%s]: LAST_BIN not found.\n", serialNumber); exit(1);
     }
   LAST_BIN[probeNum] = atoi(p);
 
@@ -57,7 +57,7 @@ void casasInit(var_base *varp)
      */
     sprintf(buffer, "CELL_SIZE_%d", varp->Length - 1);
     if ((p = GetPMSparameter(serialNumber, buffer)) == NULL) {
-      printf("%s: CELL_SIZE not found.\n", serialNumber); exit(1);
+      fprintf(stderr, "pcasp: serial number = [%s]: %s not found.\n", serialNumber, buffer); exit(1);
       }
     }
 

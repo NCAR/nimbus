@@ -99,52 +99,52 @@ void sTwodInit(var_base *varp)
   for (j = 0; j < 2; ++j, ++probeNum)
     {
     if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
-      printf("%s: FIRST_BIN not found.\n", serialNumber); exit(1);
+      fprintf(stderr, "pms2d: serial number = [%s]: FIRST_BIN not found.\n", serialNumber); exit(1);
       }
     FIRST_BIN[probeNum] = atoi(p);
 
     if ((p = GetPMSparameter(serialNumber, "LAST_BIN")) == NULL) {
-      printf("%s: LAST_BIN not found.\n", serialNumber); exit(1);
+      fprintf(stderr, "pms2d: serial number = [%s]: LAST_BIN not found.\n", serialNumber); exit(1);
       }
     LAST_BIN[probeNum] = atoi(p);
 
     if ((p = GetPMSparameter(serialNumber, "MIN_RANGE")) == NULL) {
-      printf("%s: MIN_RANGE not found.\n", serialNumber); exit(1);
+      fprintf(stderr, "pms2d: serial number = [%s]: MIN_RANGE not found.\n", serialNumber); exit(1);
       }
     minRange = atoi(p);
 
     if ((p = GetPMSparameter(serialNumber, "RANGE_STEP")) == NULL) {
-      printf("%s: RANGE_STEP not found.\n", serialNumber); exit(1);
+      fprintf(stderr, "pms2d: serial number = [%s]: RANGE_STEP not found.\n", serialNumber); exit(1);
       }
     resolution[probeNum] = atof(p);
 
     if ((p = GetPMSparameter(serialNumber, "NDIODES")) == NULL) {
-      printf("%s: NDIODES not found.\n", serialNumber); exit(1);
+      fprintf(stderr, "pms2d: serial number = [%s]: NDIODES not found.\n", serialNumber); exit(1);
       }
     nDiodes = atoi(p);
 
     if ((p = GetPMSparameter(serialNumber, "RESPONSE_TIME")) == NULL) {
-      printf("%s: RESPONSE_TIME not found.\n", serialNumber); exit(1);
+      fprintf(stderr, "pms2d: serial number = [%s]: RESPONSE_TIME not found.\n", serialNumber); exit(1);
       }
     responseTime[probeNum] = atof(p);
 
     if ((p = GetPMSparameter(serialNumber, "ARM_DISTANCE")) == NULL) {
-      printf("%s: ARM_DISTANCE not found.\n", serialNumber); exit(1);
+      fprintf(stderr, "pms2d: serial number = [%s]: ARM_DISTANCE not found.\n", serialNumber); exit(1);
       }
     armDistance[probeNum] = atof(p);
 
     if ((p = GetPMSparameter(serialNumber, "DENS")) == NULL) {
-      printf("%s: DENS not found.\n", serialNumber); exit(1);
+      fprintf(stderr, "pms2d: serial number = [%s]: DENS not found.\n", serialNumber); exit(1);
       }
     DENS[probeNum] = atof(p);
 
     if ((p = GetPMSparameter(serialNumber, "PLWFAC")) == NULL) {
-      printf("%s: PLWFAC not found.\n", serialNumber); exit(1);
+      fprintf(stderr, "pms2d: serial number = [%s]: PLWFAC not found.\n", serialNumber); exit(1);
       }
     PLWFAC[probeNum] = atof(p);
 
     if ((p = GetPMSparameter(serialNumber, "DBZFAC")) == NULL) {
-      printf("%s: DBZFAC not found.\n", serialNumber); exit(1);
+      fprintf(stderr, "pms2d: serial number = [%s]: DBZFAC not found.\n", serialNumber); exit(1);
       }
     DBZFAC[probeNum] = atof(p);
 
