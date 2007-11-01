@@ -11,14 +11,6 @@ STATIC FNS:	none
 
 DESCRIPTION:  
 
-INPUT:    
-
-OUTPUT:    
-
-REFERENCES:	none
-
-REFERENCED BY:	compute.c
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992-9
 -------------------------------------------------------------------------
 */
@@ -76,19 +68,18 @@ void spalt(DERTBL *varp)
       break;
 
     default:
-      palt = 153.77 * SFCT *
-      (1.0 - pow((double)psxc / ASTG, 0.190284));
+      palt = 153.77 * SFCT * (1.0 - pow((double)psxc / ASTG, 0.190284));
     }
 
   PutSample(varp, palt);
 
-}  /* END SPALT */
+}
 
 /* -------------------------------------------------------------------- */
 void spaltf(DERTBL *varp)
 {
   PutSample(varp, GetSample(varp, 0) * 3.2808399);
 
-}  /* END SPALTF */
+}
 
 /* END PALT.C */
