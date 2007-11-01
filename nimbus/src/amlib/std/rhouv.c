@@ -39,7 +39,12 @@ void rhouvInit(var_base *varp)
 /* -------------------------------------------------------------------- */
 void srhouv(DERTBL *varp)
 {
-  NR_TYPE xuvi  = GetSample(varp, 0);
+  NR_TYPE xuvi = GetSample(varp, 0);
 
-  PutSample(varp, CX_1[0] + CX_1[1] * exp(CX_1[2] * xuvi));
+  xuvi += CX_1[0];
+
+  if (xuvi <= 0.0)
+     xuvi = 0.001;
+
+  PutSample(varp,  CX_1[1] + CX_1[2] * log(xuvi / 0.263));
 }
