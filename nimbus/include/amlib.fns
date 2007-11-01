@@ -881,8 +881,8 @@
 	"MRLH",		NULL,		NULL,		stdlmr,
 #
 # NCAR Laser Hygrometer (GV).
-	"MRTDLW",	(void(*)(void*))nclhInit,	NULL,		snclh_s,
-	"MRTDLS",	NULL,		NULL,		snclh_h,
+	"MRTDLS",	(void(*)(void*))nclhInit,	NULL,		snclh_s,
+	"MRTDLL",	NULL,		NULL,		snclh_h,
 
 #
 #  Vapor Density for testing (from General Eastern's dew pointer)
