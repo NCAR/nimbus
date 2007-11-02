@@ -551,7 +551,7 @@ void ADS_DataFile::buildIndices()
 
   word = (short *)buffer;
 
-  if ((indices = (Index *)malloc(75000 * sizeof(Index))) == NULL)
+  if ((indices = (Index *)malloc(200000 * sizeof(Index))) == NULL)
     {
     fprintf(stderr, "buildIndices: Memory allocation error, fatal.\n");
     exit(1);
