@@ -81,7 +81,7 @@ void MainCanvas::reset(ADS_DataFile *file)
 /* -------------------------------------------------------------------- */
 void MainCanvas::draw(P2d_rec *record, struct recStats &stats, float version, int probeNum, PostScript *ps)
 {
-  int		i, j, nextColor, cntr = 0, y1, shaded, unshaded;
+  int		i, nextColor, cntr = 0, y1, shaded, unshaded;
   unsigned long	*p, slice, pSlice, ppSlice, timeWord, thisTime, syncWord;
   char		buffer[256];
   bool		debug = false, colorIsBlack = False;
@@ -118,7 +118,15 @@ void MainCanvas::draw(P2d_rec *record, struct recStats &stats, float version, in
   else pen->DrawLine(Surface(), 523, y-5, 523, y);
 
 
-  if (((char *)&record->id)[0] == 'H')
+  if (memcmp((char *)record, "C4", 2) == 0)	// 64 bit fast 2DC.
+  {
+    unsigned long long *p = (unsigned long long *)record->data;
+    for (i = 0; i < 512; ++i)
+      drawSlice(ps, i, *p++);
+    y += 32;
+  }
+  else
+  if (((char *)&record->id)[0] == 'H')	// HVPS
     {
     int		line = LEFT_MARGIN;
     unsigned short	*sp = (unsigned short *)record->data;
@@ -521,7 +529,7 @@ void MainCanvas::enchiladaLineItem(PostScript *ps, int i, int cnt,
 /* -------------------------------------------------------------------- */
 void MainCanvas::drawSlice(PostScript *ps, int i, unsigned long slice)
 {
-  int		j, cnt;
+  int		cnt = 0;
   XPoint	pts[32];
 
   if (slice == 0xffffffff)
@@ -537,7 +545,7 @@ void MainCanvas::drawSlice(PostScript *ps, int i, unsigned long slice)
       ps->rLineTo(0, 32);
     else
     if (slice != 0xffffffff)
-      for (cnt = j = 0; j < 32; )
+      for (int j = 0; j < 32; )
         {
         cnt = 1;
         first = (slice >> j) & 0x00000001;
@@ -553,11 +561,58 @@ void MainCanvas::drawSlice(PostScript *ps, int i, unsigned long slice)
     }
   else
     {
-    for (cnt = j = 0; j < 32; ++j)
+    for (int j = 0; j < 32; ++j)
       if ( !((slice >> j) & 0x00000001) )
         {
         pts[cnt].x = i + 12;
         pts[cnt].y = y + (31-j);
+        ++cnt;
+        }
+
+    pen->DrawPoints(Surface(), pts, cnt);
+    }
+}
+
+/* -------------------------------------------------------------------- */
+void MainCanvas::drawSlice(PostScript *ps, int i, unsigned long long slice)
+{
+  int		cnt = 0;
+  XPoint	pts[64];
+
+  if (slice == 0xffffffff)
+    return;
+
+  if (ps)
+    {
+    int       first;
+
+    ps->MoveTo(i+37, 750-y-64);
+
+    if (slice == 0x00000000)
+      ps->rLineTo(0, 64);
+    else
+    if (slice != 0xffffffff)
+      for (int j = 0; j < 64; )
+        {
+        cnt = 1;
+        first = (slice >> j) & 0x00000001;
+
+        while (((slice >> ++j) & 0x00000001) == first && j < 64)
+          ++cnt;
+
+        if (first)
+          ps->rMoveTo(0, cnt);
+        else
+          ps->rLineTo(0, cnt);
+        }
+    }
+  else
+    {
+    for (int j = 0; j < 64; ++j)
+      if ( !((slice >> j) & 0x00000001) )
+        {
+        pts[cnt].x = i + 12;
+        pts[cnt].y = y + (63-j);
         ++cnt;
         }
 

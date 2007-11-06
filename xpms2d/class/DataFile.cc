@@ -472,6 +472,7 @@ int ADS_DataFile::NextPhysicalRecord(char buff[])
     case PMS2DC1: case PMS2DC2: /* PMS2D */
     case PMS2DP1: case PMS2DP2:
     case PMS2DH1: case PMS2DH2: /* HVPS */
+    case 0x4334:	// 64 bit 2DC.
       size = (P2dLRpPR * sizeof(P2d_rec)) - sizeof(short);
       break;
 

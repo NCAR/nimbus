@@ -40,6 +40,7 @@ public:
 
 private:
   void	drawSlice(PostScript *ps, int i, unsigned long slice);
+  void	drawSlice(PostScript *ps, int i, unsigned long long slice);
   void	enchiladaLineItem(PostScript *ps, int i, int cnt, Particle *cp);
 
   int	y, maxRecs;
