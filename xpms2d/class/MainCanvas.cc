@@ -529,11 +529,11 @@ void MainCanvas::enchiladaLineItem(PostScript *ps, int i, int cnt,
 /* -------------------------------------------------------------------- */
 void MainCanvas::drawSlice(PostScript *ps, int i, unsigned long slice)
 {
-  int		cnt = 0;
-  XPoint	pts[32];
-
   if (slice == 0xffffffff)
     return;
+
+  int		cnt = 0;
+  XPoint	pts[32];
 
   if (ps)
     {
@@ -576,11 +576,16 @@ void MainCanvas::drawSlice(PostScript *ps, int i, unsigned long slice)
 /* -------------------------------------------------------------------- */
 void MainCanvas::drawSlice(PostScript *ps, int i, unsigned long long slice)
 {
+  if (slice == 0xffffffffffffffffLL)
+    return;
+
   int		cnt = 0;
   XPoint	pts[64];
 
-  if (slice == 0xffffffff)
-    return;
+  unsigned long long s1, s2;
+  s1 = slice & 0xffffffff;
+  s2 = (slice >> 32) & 0xffffffff;
+  slice = (s1 << 32) + s2;
 
   if (ps)
     {
