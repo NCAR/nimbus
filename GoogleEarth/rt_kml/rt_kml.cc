@@ -13,12 +13,12 @@
 #include "boost/lexical_cast.hpp"
 
 // Output directories for .xml & .kml files.  Ground
-const std::string googleMapDataDir = "/net/www/docs/flight_data/pacdex/flights/";
-const std::string googleEarthDataDir = "/net/www/docs/flight_data/pacdex/flights/";
+//const std::string googleMapDataDir = "/net/www/docs/flight_data/pacdex/flights/";
+//const std::string googleEarthDataDir = "/net/www/docs/flight_data/pacdex/flights/";
 
 // Onboard location
-//const std::string googleMapDataDir = "/var/www/html/";
-//const std::string googleEarthDataDir = "/var/www/html/";
+const std::string googleMapDataDir = "/var/www/html/";
+const std::string googleEarthDataDir = "/var/www/html/";
 
 // All datapoints are read from file, but only use every 'TimeStep' points.
 // e.g. 15 would mean use 1 data point for every 15 seconds of data.
@@ -36,7 +36,7 @@ const int maxGoogleMapPoints = 3000;
 // The order of this enum should match the order of the variables
 // being requested in the dataQuery string.
 enum VariablePos { TIME=0, LON, LAT, ALT, AT, TAS, WS, WD, WI };
-const std::string _dataQuerySuffix = ",at_a,tasx,wsc,wdc,wic FROM raf_lrt WHERE TASX > 20.0 ORDER BY datetime";
+const std::string _dataQuerySuffix = ",atx,tasx,wsc,wdc,wic FROM raf_lrt WHERE TASX > ";
 
 
 std::string projectName, flightNumber;
@@ -124,6 +124,10 @@ std::string buildDataQueryString(PGconn * conn)
   std::string alt = coords.substr(second_space+1, third_space - second_space - 1);
 
   dataQuery += lon + "," + lat + "," + alt + _dataQuerySuffix;
+
+  char tmp[100];
+  sprintf(tmp, "%f ORDER BY datetime", TAS_CutOff);
+  dataQuery += tmp;
 
   return dataQuery;
 }
@@ -488,6 +492,9 @@ _lat.clear(); _lon.clear(); _alt.clear(); _date.clear();
   if (_lat.size() == 0)	// First time.
   {
     res = PQexec(conn, query.c_str());
+
+    std::cerr << PQerrorMessage(conn);
+
     ntuples = PQntuples(res);
 
     firstAT = 0.0, firstTAS = -1.0, firstWS = 0.0, firstWD = 0.0, firstWI = 0.0;
@@ -513,10 +520,15 @@ _lat.clear(); _lon.clear(); _alt.clear(); _date.clear();
     res = PQexec(conn, query.c_str());
     ntuples = PQntuples(res);
 
-     if (newEndTime != prevEndTime && ntuples > 0)
-      updateData(res, 0);
+    if (PQresultStatus(res) == PGRES_COMMAND_OK)
+    {
+      if (newEndTime != prevEndTime && ntuples > 0)
+        updateData(res, 0);
 
-    prevEndTime = newEndTime;
+      prevEndTime = newEndTime;
+    }
+    else
+      fprintf(stderr, "Command failed: %s", PQerrorMessage(conn));
   }
 
   PQclear(res);
