@@ -89,7 +89,7 @@ MultiCastStatus mcStat;
 /* -------------------------------------------------------------------- */
 void RTinit_ADS3()
 {
-    mcStat.sendStatus("----- started -----");
+  mcStat.sendStatus("----- started -----");
 
 printf("RTinit_ADS3, establishing connection....\n");
 
@@ -97,6 +97,7 @@ printf("RTinit_ADS3, establishing connection....\n");
   cfg.SetProcessingMode(Config::RealTime);
   cfg.SetInteractive(false);
   cfg.SetLoadProductionSetup(false);
+  cfg.SetCreateKMLFile(false);
 
   GetDataDirectory(buffer);
   strcat(buffer, "/real-time.nc");
