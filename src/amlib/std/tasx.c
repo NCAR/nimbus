@@ -28,10 +28,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 #include "nimbus.h"
 #include "amlib.h"
 
-#include "GoogleEarth.h"
-
-extern GoogleEarthKML * googleEarth;
-
 
 /* -------------------------------------------------------------------- */
 void stasx(DERTBL *varp)
@@ -40,9 +36,6 @@ void stasx(DERTBL *varp)
 
   if (tas <= 0.0)
     tas = 0.001;
-
-  if (googleEarth)
-    googleEarth->SetLatestTAS(tas);
 
   PutSample(varp, tas);
 

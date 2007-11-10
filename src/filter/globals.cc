@@ -13,7 +13,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
 #include "nimbus.h"
 #include "decode.h"
 #include "amlib.h"
-#include "GoogleEarth.h"
 #include <injectsd.h>
 
 class PostgreSQL;
@@ -117,8 +116,6 @@ long (*FindFirstLogicalRecord)(char lr[], long starttime);
 long (*FindNextLogicalRecord)(char lr[], long endtime);
 
 PostgreSQL *psql = 0;
-
-GoogleEarthKML *googleEarth = 0;
 
 
 //***************************synthetic data varables*************************//
