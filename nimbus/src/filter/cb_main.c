@@ -21,6 +21,7 @@ ENTRY POINTS:	CancelSetup()
 STATIC FNS:	checkForProductionSetup()
 		displaySetupWindow()
 		readHeader()
+		runSecondPassPrograms()
 		setOutputFileName()
 		stopProcessing()
 		validateInputFile()
@@ -235,6 +236,21 @@ static void readHeader()
 }	/* END READHEADER */
 
 /* -------------------------------------------------------------------- */
+static void runSecondPassPrograms()
+{
+  LogMessage("Running netCDF file sanity checker (nc_sane)...\n");
+  sprintf(buffer, "nc_sane %s", OutputFileName);
+  system(buffer);
+
+  LogMessage("Producing KML file (rt_kml)...\n");
+  strcpy(buffer, OutputFileName);
+  strcpy(strrchr(buffer, '.'), ".kml");
+  sprintf(buffer, "rt_kml %s %s", OutputFileName, buffer);
+  system(buffer);
+
+}	/* END RUNSECONDPASSPROGRAMS */
+
+/* -------------------------------------------------------------------- */
 void ConfigurationDump()
 {
   LogMessage("\nConfiguration dump:");
@@ -398,9 +414,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
 
   BlankOutBadData();
   stopProcessing();
-
-  sprintf(buffer, "nc_sane %s", OutputFileName);
-  system(buffer);
+  runSecondPassPrograms();
 
 }	/* END STARTPROCESSING */
 

@@ -26,7 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2006
 static int getCellSizes(var_base * rp, float cellSizes[]);
 static int setProbeCount(const char * loc, int probeNum);
 
-// Temporary hack.
+// Temporary hack, until I finish consolidating suport files into VarDB.ncml.
 void PMS1D_SetupForADS3()
 {
   int raw_indx, der_indx;

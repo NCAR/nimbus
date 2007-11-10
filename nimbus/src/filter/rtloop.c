@@ -74,6 +74,7 @@ void RTinit_ADS2()
   cfg.SetProcessingMode(Config::RealTime);
   cfg.SetInteractive(false);
   cfg.SetLoadProductionSetup(false);
+  cfg.SetCreateKMLFile(false);
 
 }	/* END RTINIT_ADS2 */
 
