@@ -102,10 +102,13 @@ static void Initialize()
 {
   char	*p;
 
-  DataChanged		= TRUE;
-  UTCseconds		= FALSE;
+  DataChanged		= true;
+  UTCseconds		= false;
 
-  if ((p = (char *)getenv("DATA_DIR")) != NULL)
+  if ((p = (char *)getenv("RAW_DATA_DIR")) == NULL)
+    p = (char *)getenv("DATA_DIR");
+
+  if (p != NULL)
     {
     strcpy(DataPath, p);
     strcat(DataPath, "/*2d*");
