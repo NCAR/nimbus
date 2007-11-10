@@ -8,6 +8,9 @@
 #include <iostream>
 #include <fstream>
 
+#include <cstdio>
+#include <cstring>
+
 #include "netcdf.hh"
 
 #include "boost/lexical_cast.hpp"
@@ -24,7 +27,7 @@ const std::string googleEarthDataDir = "/var/www/html/";
 // e.g. 15 would mean use 1 data point for every 15 seconds of data.
 const int TimeStep = 10;
 
-// True Airspeed cut-off.
+// True Airspeed cut-off (take-off and landing speed).
 const float TAS_CutOff = 20.0;
 
 // Max out at this many points, don't want to swamp GoogleMap, though
@@ -39,7 +42,14 @@ enum VariablePos { TIME=0, LON, LAT, ALT, AT, TAS, WS, WD, WI };
 const std::string _dataQuerySuffix = ",atx,tasx,wsc,wdc,wic FROM raf_lrt WHERE TASX > ";
 
 
-std::string projectName, flightNumber;
+class _projInfo
+{
+public:
+  std::string projectName;
+  std::string flightNumber;
+  std::string landmarks;
+} projectInfo;
+
 const char *status[] = { "Pre-flight", "In-flight", "Landed" };
 
 std::vector<std::string> _date;
@@ -170,14 +180,14 @@ endBubbleCDATA(int status_id)
 
 /* -------------------------------------------------------------------- */
 void
-WriteGoogleMapXML(std::string& projName, std::string& flightNum, int status_id)
+WriteGoogleMapXML(const _projInfo& projInfo, int status_id)
 {
   // Open a temperary file, write to that, rename to what to want.
 
   std::ofstream googleMap;
-  int flightNumInt = atoi(&flightNum.c_str()[2]);
+  int flightNumInt = atoi(&projInfo.flightNumber.c_str()[2]);
 
-  std::string file = googleMapDataDir + "flight_" + flightNum + ".xml";
+  std::string file = googleMapDataDir + "flight_" + projInfo.flightNumber + ".xml";
   std::string temp = googleMapDataDir + "tmp_latest" + ".xml";
   googleMap.open(temp.c_str());
 
@@ -191,7 +201,7 @@ WriteGoogleMapXML(std::string& projName, std::string& flightNum, int status_id)
 	<< "<flight>\n  <id>" << flightNumInt << "</id>\n"
 	<< "  <status>" << status[status_id-1] << "</status>\n"
 	<< "  <status_id>" << status_id << "</status_id>\n"
-	<< "  <desc>Flight " << flightNum << "</desc>\n"
+	<< "  <desc>Flight " << projInfo.flightNumber << "</desc>\n"
 	<< "  <start lat=\"" << _lat[0] << "\" lng=\"" << _lon[0] << "\">"
 	<< startBubbleCDATA() << "</start>\n"
 	<< "  <end lat=\"" << _lat[_lat.size()-1] << "\" lng=\""
@@ -214,7 +224,7 @@ WriteGoogleMapXML(std::string& projName, std::string& flightNum, int status_id)
 }
 
 /* -------------------------------------------------------------------- */
-void WriteCurrentPositionKML(std::string& projName, std::string& flightNum)
+void WriteCurrentPositionKML(const _projInfo& projInfo)
 {
   std::ofstream googleEarth;
   std::string file;
@@ -234,7 +244,7 @@ void WriteCurrentPositionKML(std::string& projName, std::string& flightNum)
 	<< "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 	<< "<kml xmlns=\"http://earth.google.com/kml/2.1\">\n"
 	<< "<Document>\n"
-	<< " <name>" << projName << " " << flightNum << "</name>\n"
+	<< " <name>" << projInfo.projectName << " " << projInfo.flightNumber << "</name>\n"
 	<< " <Style id=\"PM1\">\n"
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
@@ -268,29 +278,25 @@ void WriteCurrentPositionKML(std::string& projName, std::string& flightNum)
 }
 
 /* -------------------------------------------------------------------- */
-void WriteLandmarksKML(std::ofstream & googleEarth)
+void WriteLandmarksKML(std::ofstream & googleEarth, const _projInfo& projInfo)
 {
-  std::ifstream landmarks;
-  std::string file("landmarks");
-
-  landmarks.open(file.c_str());
-  if (landmarks.is_open() == false)
-  {
-    std::cerr << "Failed to locate/open landmarks file " << file << std::endl;
+  if (projInfo.landmarks.size() == 0)
     return;
-  }
 
   googleEarth
     << " <Folder>\n"
     << "  <name>Landmarks</name>\n";
 
   char buff[1028];
-  while (!landmarks.eof())
+  strcpy(buff, projInfo.landmarks.c_str());
+  char * p = strtok(buff, ",");
+
+  while (p)
   {
     float lat, lon;
-    std::string label;
+    char label[256];
 
-    landmarks >> lat >> lon >> label;
+    sscanf(p, "%f %f %s", &lat, &lon, label);
 
     googleEarth
       << "  <Placemark>\n"
@@ -301,9 +307,9 @@ void WriteLandmarksKML(std::ofstream & googleEarth)
       << lon << ","  << lat << "</coordinates>\n"
       << "   </Point>\n"
       << "  </Placemark>\n";
-  }
 
-  landmarks.close();
+    p = strtok(0, ",");
+  }
 
   googleEarth << " </Folder>\n";
 }
@@ -331,15 +337,9 @@ void WriteSpecialInclude(std::ofstream & googleEarth)
 
 
 /* -------------------------------------------------------------------- */
-void WriteGoogleEarthKML(std::string& projName, std::string& flightNum, int status_id)
+void WriteGoogleEarthKML(std::string& file, const _projInfo& projInfo, int status_id)
 {
   std::ofstream googleEarth;
-  std::string file;
-
-  if (status_id == 3)	// if landed.
-    file = googleEarthDataDir + "flight_" + flightNum + ".kml";
-  else
-    file = googleEarthDataDir + "latest" + ".kml";
 
   googleEarth.open(file.c_str());
   if (googleEarth.is_open() == false)
@@ -352,7 +352,7 @@ void WriteGoogleEarthKML(std::string& projName, std::string& flightNum, int stat
 	<< "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 	<< "<kml xmlns=\"http://earth.google.com/kml/2.1\">\n"
 	<< "<Document>\n"
-	<< " <name>" << projName << " " << flightNum << "</name>\n"
+	<< " <name>" << projInfo.projectName << " " << projInfo.flightNumber << "</name>\n"
 	<< " <Style id=\"PM1\">\n"
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
@@ -390,7 +390,7 @@ void WriteGoogleEarthKML(std::string& projName, std::string& flightNum, int stat
 	<< "  <heading>0</heading>\n"
 	<< " </LookAt>\n"
 	<< " <Folder>\n"
-	<< "  <name>" << flightNum << "</name>\n"
+	<< "  <name>" << projInfo.flightNumber << "</name>\n"
 	<< "  <open>1</open>\n"
 	<< "  <Placemark>\n"
 	<< "   <name>Track</name>\n"
@@ -431,7 +431,7 @@ void WriteGoogleEarthKML(std::string& projName, std::string& flightNum, int stat
 	<< "   </Point>\n"
 	<< "  </Placemark>\n";
 
-  WriteLandmarksKML(googleEarth);
+  WriteLandmarksKML(googleEarth, projInfo);
 
   googleEarth
 		<< "</Folder>\n"
@@ -567,7 +567,7 @@ PGconn * openDataBase()
 }
 
 /* -------------------------------------------------------------------- */
-void ReadDataFromNetCDF(char *fileName)
+void ReadDataFromNetCDF(const char * fileName)
 {
   NcFile file(fileName);
 
@@ -576,10 +576,13 @@ void ReadDataFromNetCDF(char *fileName)
 
   NcAtt* attr;
   attr = file.get_att("FlightNumber");
-  flightNumber = attr->as_string(0);
+  projectInfo.flightNumber = attr->as_string(0);
 
   attr = file.get_att("ProjectName");
-  projectName = attr->as_string(0);
+  projectInfo.projectName = attr->as_string(0);
+
+  attr = file.get_att("landmarks");
+  projectInfo.landmarks = attr->as_string(0);
 
   attr = file.get_att("coordinates");
   char *coords = attr->as_string(0);
@@ -625,13 +628,29 @@ void ReadDataFromNetCDF(char *fileName)
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
+  if (argc > 1 && (strstr(argv[1], "usage") || strstr(argv[1], "help")))
+  {
+    std::cout
+	<< "Usage: has two forms, one for real-time use and the other to scan\n"
+	<< "	a netCDF file in post-processing mode.\n\n"
+	<< "Real-time form:\n"
+	<< "	rt_kml\n\n"
+	<< "Post-processing:\n"
+	<< "	rt_kml infile.nc outfile.kml\n";   
+  }
+
+
   if (argc > 1)
   {
     ReadDataFromNetCDF(argv[1]);
     if (_lat.size() > 0)
     {
-//      WriteGoogleMapXML(projectName, flightNumber, 3);
-      WriteGoogleEarthKML(projectName, flightNumber, 3);
+      std::string outFile;
+      if (argc > 2)
+        outFile = argv[2];
+
+//      WriteGoogleMapXML(projectInfo, 3);
+      WriteGoogleEarthKML(outFile, projectInfo, 3);
     }
     return 0;
   }
@@ -646,10 +665,11 @@ int main(int argc, char *argv[])
     while ((conn = openDataBase()) == 0)
       sleep(3);
 
-    flightNumber = getGlobalAttribute(conn, "FlightNumber");
-    projectName = getGlobalAttribute(conn, "ProjectName");
-    if (flightNumber.size() == 0)
-      flightNumber = "noflight";
+    projectInfo.flightNumber = getGlobalAttribute(conn, "FlightNumber");
+    projectInfo.projectName = getGlobalAttribute(conn, "ProjectName");
+    projectInfo.landmarks = getGlobalAttribute(conn, "landmarks");
+    if (projectInfo.flightNumber.size() == 0)
+      projectInfo.flightNumber = "noflight";
 
     std::string dataQuery = buildDataQueryString(conn);
 
@@ -659,9 +679,16 @@ int main(int argc, char *argv[])
 
     if (_lat.size() > 0)
     {
-//      WriteGoogleMapXML(projectName, flightNumber, flightStatus());
-      WriteGoogleEarthKML(projectName, flightNumber, flightStatus());
-      WriteCurrentPositionKML(projectName, flightNumber);
+      std::string outFile;
+
+      if (flightStatus() == 3)	// if landed.
+        outFile = googleEarthDataDir + "flight_" + projectInfo.flightNumber + ".kml";
+      else
+        outFile = googleEarthDataDir + "latest" + ".kml";
+
+//      WriteGoogleMapXML(projectInfo, flightStatus());
+      WriteGoogleEarthKML(outFile, projectInfo, flightStatus());
+      WriteCurrentPositionKML(projectInfo);
     }
     sleep(TimeStep*2);
   }
