@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 
@@ -35,6 +36,9 @@ const float TAS_CutOff = 20.0;
 // old 600 point max.
 const int maxGoogleMapPoints = 3000;
 
+
+const float missing_value = -32767.0;
+
 // Our raw data is coming from a PostGreSQL database.....
 // The order of this enum should match the order of the variables
 // being requested in the dataQuery string.
@@ -57,6 +61,16 @@ std::vector<float> _lat, _lon, _alt;
 float firstAT = 0.0, firstTAS = -1.0, firstWS = 0.0, firstWD = 0.0, firstWI = 0.0;
 float latestAT, latestTAS, latestWS, latestWD, latestWI;
 
+
+/* -------------------------------------------------------------------- */
+bool
+isMissingValue(float target)
+{
+  if (isnan(target) || target == missing_value)
+    return true;
+
+  return false;
+}
 
 /* -------------------------------------------------------------------- */
 template <typename T>
@@ -281,7 +295,10 @@ void WriteCurrentPositionKML(const _projInfo& projInfo)
 void WriteLandmarksKML(std::ofstream & googleEarth, const _projInfo& projInfo)
 {
   if (projInfo.landmarks.size() == 0)
+  {
+    std::cout << "No landmarks, skipping.\n";
     return;
+  }
 
   googleEarth
     << " <Folder>\n"
@@ -607,12 +624,19 @@ void ReadDataFromNetCDF(const char * fileName)
   strptime(attr->as_string(0), "seconds since %F %T +0000", &tm);
   time_t t = mktime(&tm);
 
-  for (int i = 0; i < tim_vals->num(); i += TimeStep)
+  size_t n = tim_vals->num();
+  for (size_t i = 0; i < n; i += TimeStep)
   {
-    for (; tas_vals->as_float(i) < TAS_CutOff; ++i)
+    for (; i < n && tas_vals->as_float(i) < TAS_CutOff; ++i)
       ;
 
-    if (i >= tim_vals->num())
+    for (; i < n &&
+		isMissingValue(lat_vals->as_float(i)) ||
+		isMissingValue(lon_vals->as_float(i)) ||
+		isMissingValue(alt_vals->as_float(i)); ++i)
+      ;
+
+    if (i >= n)
       break;
 
     char buffer[60];
