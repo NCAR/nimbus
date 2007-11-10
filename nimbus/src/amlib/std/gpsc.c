@@ -25,8 +25,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
 #include "nimbus.h"
 #include "amlib.h"
 
-#include "GoogleEarth.h"
-
 static NR_TYPE
 	UPFCTR	= 0.999444,
 	FCTRF	= 0.997,
@@ -52,8 +50,6 @@ static NR_TYPE	filter(double, double *);
 static double	invert(double a[][NCF]);
 
 static bool returnMissingValue = false;
-
-extern GoogleEarthKML * googleEarth;
 
 
 /* -------------------------------------------------------------------- */
@@ -394,12 +390,6 @@ label546:
   latc[FeedBack] += vnsc[FeedBack] / CDM;
   lonc[FeedBack] += factorp[FeedBack] * (alon+dlon[FeedBack]-lonc[FeedBack]);
   latc[FeedBack] += factorp[FeedBack] * (alat+dlat[FeedBack]-latc[FeedBack]);
-
-  if (googleEarth)
-  {
-    googleEarth->SetLatestLON(lonc[FeedBack]);
-    googleEarth->SetLatestLAT(latc[FeedBack]);
-  }
 
   PutSample(varp, latc[FeedBack]);
 

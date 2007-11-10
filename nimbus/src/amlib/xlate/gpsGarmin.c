@@ -17,10 +17,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2003-05
 #include "decode.h"
 #include "amlib.h"
 
-#include "GoogleEarth.h"
-
-extern GoogleEarthKML * googleEarth;
-
 
 /* -------------------------------------------------------------------- */
 void xlggstat(RAWTBL *varp, void *input, NR_TYPE *output)
@@ -47,9 +43,6 @@ void xlgglat(RAWTBL *varp, void *input, NR_TYPE *output)
     *output = floatNAN;
   else
     *output = lat;
-
-  if (googleEarth)
-    googleEarth->SetLatestLAT(lat);
 }
 
 /* -------------------------------------------------------------------- */
@@ -71,9 +64,6 @@ void xlgglon(RAWTBL *varp, void *input, NR_TYPE *output)
     *output = floatNAN;
   else
     *output = lon;
-
-  if (googleEarth)
-    googleEarth->SetLatestLON(lon);
 }
 
 /* -------------------------------------------------------------------- */
@@ -82,9 +72,6 @@ void xlggalt(RAWTBL *varp, void *input, NR_TYPE *output)
   Garmin_blk	*gps = (Garmin_blk *)input;
 
   *output = (NR_TYPE)ntohf(gps->height);
-
-  if (googleEarth)
-    googleEarth->SetLatestALT(*output);
 }
 
 /* -------------------------------------------------------------------- */
