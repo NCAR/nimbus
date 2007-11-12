@@ -17,6 +17,7 @@ atfh.c
 atkp.c
 atrf.c
 boomln.c
+cdp.c
 cnctr.c
 con2c.c
 con2p.c
