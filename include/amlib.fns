@@ -131,7 +131,7 @@
 	"FTMP3_V3",	NULL,		xlS300cabin7,	NULL,
 #
 	"CS100",	NULL,		NULL,		scs100,
-	"CCDP",		(void(*)(void*))cfsspInit,	NULL,		scs100,
+	"CCDP",		(void(*)(void*))ccdpInit,	NULL,		scdp,
 	"CS200",	NULL,		NULL,		scs200,
 	"CUHSAS",	(void(*)(void*))casasInit,	NULL,		scs200,
 	"CS300",	NULL,		NULL,		scf300,
@@ -170,7 +170,7 @@
 # PMS Total Counts
 	"TCNT3",	NULL,		NULL,		stcnt3,
 	"TCNT6",	NULL,		NULL,		stcnt6,
-	"TCNTD",	NULL,		NULL,		stcntf,
+	"TCNTD",	NULL,		NULL,		stcntd,
 	"TCNTF",	NULL,		NULL,		stcntf,
 	"TCNTP",	NULL,		NULL,		stcntp,
 	"TCNTU",	NULL,		NULL,		stcntp,
@@ -185,7 +185,7 @@
 	"CONC3",	NULL,		NULL,		sconc3,
 	"CONC6",	NULL,		NULL,		sconc6,
 	"CONCA",	NULL,		NULL,		sconca,
-	"CONCD",	NULL,		NULL,		sconcf,
+	"CONCD",	NULL,		NULL,		sconcd,
 	"CONCF",	NULL,		NULL,		sconcf,
 	"CONCP",	NULL,		NULL,		sconca,
 	"CONCU",	NULL,		NULL,		sconca,
@@ -201,7 +201,7 @@
 	"DBAR3",	NULL,		NULL,		sdbar3,
 	"DBAR6",	NULL,		NULL,		sdbar6,
 	"DBARA",	NULL,		NULL,		sdbara,
-	"DBARD",	NULL,		NULL,		sdbarf,
+	"DBARD",	NULL,		NULL,		sdbard,
 	"DBARF",	NULL,		NULL,		sdbarf,
 	"DBARP",	NULL,		NULL,		sdbara,
 	"DBARU",	NULL,		NULL,		sdbara,
@@ -216,7 +216,7 @@
 # PMS DISP
 	"DISP6",	NULL,		NULL,		sdisp6,
 	"DISPA",	NULL,		NULL,		sdispa,
-	"DISPD",	NULL,		NULL,		sdispf,
+	"DISPD",	NULL,		NULL,		sdispd,
 	"DISPF",	NULL,		NULL,		sdispf,
 	"DISPP",	NULL,		NULL,		sdispa,
 	"DISPU",	NULL,		NULL,		sdispa,
@@ -230,7 +230,7 @@
 
 # PMS Liquid Water Content
 	"PLWC6",	NULL,		NULL,		splwc6,
-	"PLWCD",	NULL,		NULL,		splwcf,
+	"PLWCD",	NULL,		NULL,		splwcd,
 	"PLWCF",	NULL,		NULL,		splwcf,
 	"PLWCX",	NULL,		NULL,		splwcx,
 	"PLWCY",	NULL,		NULL,		splwcy,
@@ -241,7 +241,7 @@
 	"PLWCHV",	NULL,		NULL,		splwc2,
 
 # PMS Effective Radius
-	"REFFD",	NULL,		NULL,		srefff,
+	"REFFD",	NULL,		NULL,		sreffd,
 	"REFFF",	NULL,		NULL,		srefff,
 	"REFF3",	NULL,		NULL,		sreff3,
 	"REFF6",	NULL,		NULL,		sreff6,
@@ -271,7 +271,7 @@
 	"WVZO",		NULL,		xllh_yzero,	NULL,
 
 # Reflectivity
-	"DBZD",		NULL,		NULL,		sdbzf,
+	"DBZD",		NULL,		NULL,		sdbzd,
 	"DBZF",		NULL,		NULL,		sdbzf,
 	"DBZ6",		NULL,		NULL,		sdbz6,
 	"DBZ1DP",	NULL,		NULL,		sdbz2,
