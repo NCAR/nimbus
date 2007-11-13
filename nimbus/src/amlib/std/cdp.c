@@ -41,9 +41,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2007
 static size_t	FIRST_BIN[MAX_FSSP], LAST_BIN[MAX_FSSP], SampleRate[MAX_FSSP];
 static double	PLWFAC[MAX_FSSP], DBZFAC[MAX_FSSP];
 static NR_TYPE	SAMPLE_AREA[MAX_FSSP], vol[MAX_FSSP],
-		fssp_csiz[MAX_FSSP][BINS_40+1], DENS[MAX_FSSP],
-		tact[MAX_FSSP], fssp_csiz2[MAX_FSSP][BINS_40+1],
-		fssp_csiz3[MAX_FSSP][BINS_40+1];
+		cell_size[MAX_FSSP][BINS_40+1], DENS[MAX_FSSP],
+		tact[MAX_FSSP], cell_size2[MAX_FSSP][BINS_40+1],
+		cell_size3[MAX_FSSP][BINS_40+1];
 
 static NR_TYPE	total_concen[MAX_FSSP], dbar[MAX_FSSP], plwc[MAX_FSSP],
 		disp[MAX_FSSP], dbz[MAX_FSSP], reff2[MAX_FSSP], reff3[MAX_FSSP];
@@ -56,6 +56,7 @@ void ccdpInit(var_base *varp)
   size_t	i, probeNum;
   char		*p;
   const char	*serialNumber;
+  NR_TYPE	dof, beam_dia;
 
   serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
@@ -76,10 +77,18 @@ void ccdpInit(var_base *varp)
     }
   LAST_BIN[probeNum] = atoi(p);
 
-  if ((p = GetPMSparameter(serialNumber, "SAMPLE_AREA")) == NULL) {
-    fprintf(stderr, "cdp: serial number = [%s]: SAMPLE_AREA not found.\n", serialNumber); exit(1);
+  if ((p = GetPMSparameter(serialNumber, "DOF")) == NULL) {
+    fprintf(stderr, "cdp: serial number = [%s]: DOF not found.\n", serialNumber); exit(1);
   }
-  SAMPLE_AREA[probeNum] = atof(p);
+  dof = atof(p);
+
+  if ((p = GetPMSparameter(serialNumber, "BEAM_DIAM")) == NULL) {
+    fprintf(stderr, "cdp: serial number = [%s]: BEAM_DIAM not found.\n", serialNumber); exit(1);
+  }
+  beam_dia = atof(p);
+
+  SAMPLE_AREA[probeNum] = dof * beam_dia;
+
 
   if ((p = GetPMSparameter(serialNumber, "DENS")) == NULL) {
     fprintf(stderr, "cdp: serial number = [%s]: DENS not found.\n", serialNumber); exit(1);
@@ -114,17 +123,17 @@ void ccdpInit(var_base *varp)
 
   for (i = 0; i < varp->Length; ++i)	/* 4 "ranges"	*/
   {       
-    fssp_csiz[probeNum][i] = p ? atof(p) : 0.0;
+    cell_size[probeNum][i] = p ? atof(p) : 0.0;
     p = strtok(NULL, ", \t\n");
   }       
 
   for (i = varp->Length-1; i > 0; --i)
   {
-    fssp_csiz[probeNum][i] =
-        (fssp_csiz[probeNum][i] + fssp_csiz[probeNum][i-1]) / 2;
+    cell_size[probeNum][i] =
+        (cell_size[probeNum][i] + cell_size[probeNum][i-1]) / 2;
 
-    fssp_csiz2[probeNum][i] = fssp_csiz[probeNum][i] * fssp_csiz[probeNum][i];
-    fssp_csiz3[probeNum][i] = fssp_csiz2[probeNum][i] * fssp_csiz[probeNum][i];
+    cell_size2[probeNum][i] = cell_size[probeNum][i] * cell_size[probeNum][i];
+    cell_size3[probeNum][i] = cell_size2[probeNum][i] * cell_size[probeNum][i];
   }
  
   ReleasePMSspecs();
@@ -147,13 +156,14 @@ void scdp(DERTBL *varp)
   size_t	i, probeNum;
   NR_TYPE       *actual, *concentration, *dia, *dia2, *dia3;
   NR_TYPE       tas;		/* True Air Speed		*/
-  NR_TYPE       rejAT;		/* Rejected, Avg Transit	*/
-  NR_TYPE       oflow;		/* Lost counts to overflow	*/
   NR_TYPE       sampleVolume[BINS_40+1];
 
   actual	= GetVector(varp, 0, varp->Length);
   tas		= GetSampleFor1D(varp, 1);
   probeNum	= varp->ProbeCount;
+  dia		= cell_size[probeNum];
+  dia2		= cell_size2[probeNum];
+  dia3		= cell_size3[probeNum];
 
   if (FeedBack == HIGH_RATE_FEEDBACK)
   {
@@ -176,10 +186,6 @@ void scdp(DERTBL *varp)
 
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
     sampleVolume[i] = vol[probeNum];
-
-  dia = &fssp_csiz[probeNum][varp->Length];
-  dia2 = &fssp_csiz2[probeNum][varp->Length];
-  dia3 = &fssp_csiz3[probeNum][varp->Length];
 
 #define PLWC
 #define DBZ

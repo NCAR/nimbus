@@ -76,20 +76,16 @@ void PMS1D_SetupForADS3()
 
     raw[raw_indx]->SerialNumber	= "CDP001";
 //    raw[raw_indx]->Average	= (void (*) (...))SumVector;
-    raw[raw_indx]->ProbeCount	= 1;
     raw[raw_indx]->ProbeType	= PROBE_PMS1D | PROBE_CDP;
   }
   if ((der_indx = SearchTableSansLocation(derived, "CCDP")) != ERR)
   {
     derived[der_indx]->SerialNumber	= raw[raw_indx]->SerialNumber;
     derived[der_indx]->Length		= raw[raw_indx]->Length;
-    derived[der_indx]->ProbeCount	= raw[raw_indx]->ProbeCount;
     derived[der_indx]->ProbeType	= raw[raw_indx]->ProbeType;
   }
   if (raw_indx != ERR && der_indx == ERR)
     printf("Debug: No CCDP found.\n");
-
-  setProbeCount(location, 1);
 
   if ((raw_indx = SearchTableSansLocation(raw, "AS200")) != ERR)
   {
