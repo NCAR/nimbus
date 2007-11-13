@@ -17,8 +17,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2007
 #include "nimbus.h"
 #include "amlib.h"
 
-/*  Values from /home/local/proj/Defaults on 23 April 1998           RLR */
-static NR_TYPE cx_1[3] = { 0.1335, 16.272, -10.216 };
+static NR_TYPE cx_1[4] = { 16.91, -196.13, 967.85, -1653.8 };
 static NR_TYPE  *CX_1;
 
 /* -------------------------------------------------------------------- */
@@ -40,11 +39,13 @@ void rhouvInit(var_base *varp)
 void srhouv(DERTBL *varp)
 {
   NR_TYPE xuvi = GetSample(varp, 0);
+  NR_TYPE rhouv;
 
-  xuvi += CX_1[0];
+   rhouv = (CX_1[0] + CX_1[1]*xuvi + CX_1[2]*xuvi*xuvi + CX_1[3]*xuvi*xuvi*xuvi);
 
-  if (xuvi <= 0.0)
-     xuvi = 0.001;
+   if (rhouv < 0.5)
+     rhouv = 0.5;
 
-  PutSample(varp,  CX_1[1] + CX_1[2] * log(xuvi / 0.263));
+  PutSample(varp, rhouv);
+
 }
