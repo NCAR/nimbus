@@ -37,9 +37,9 @@ void PMS1D_SetupForADS3()
     location = strrchr(raw[raw_indx]->name, '_');
 
     if (cfg.ProjectName() == "PASE")
-      raw[raw_indx]->SerialNumber	= "FSSP109";
-    else
       raw[raw_indx]->SerialNumber	= "FSSP122";
+    else
+      raw[raw_indx]->SerialNumber	= "FSSP109";
 //    raw[raw_indx]->Average	= (void (*) (...))SumVector;
     raw[raw_indx]->ProbeType	= PROBE_PMS1D | PROBE_FSSP;
   }
