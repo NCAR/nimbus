@@ -190,6 +190,9 @@ void InitMRFilters()
         else
           rawFilters[i] = createMRFilter(L, M, fromFifty, mv_p);
         break;
+      case 100:
+        rawFilters[i] = createMRFilter(L, M, fromOneHundred, mv_p);
+        break;
       case 250:
         rawFilters[i] = createMRFilter(L, M, fromTwoFifty, mv_p);
         break;
