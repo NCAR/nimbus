@@ -48,16 +48,16 @@ void LogDespikeInfo()
   size_t i;
 
   for (i = 0; i < raw_spike.size(); ++i)
-    {
+  {
     if (nSpikesRAW[i] > 0)
-      {
+    {
       sprintf(buffer, "%s: %d spikes removed with slope exceeding %f\n",
 	raw_spike[i]->name, nSpikesRAW[i], raw_spike[i]->SpikeSlope);
 
       LogMessage(buffer);
-      }
     }
-}	/* END LOGDESPIKEINFO */
+  }
+}
 
 /* -------------------------------------------------------------------- */
 static NR_TYPE	*prev_rec, *this_rec, *next_rec, *prev2_rec, *next2_rec;
@@ -76,7 +76,7 @@ void DespikeData(CircularBuffer *LRCB, int index)
     else
       checkVariable(raw_spike[i], raw_spike[i]->SpikeSlope, &nSpikesRAW[i]);
 
-}	/* END DESPIKEDATA */
+}
 
 /* -------------------------------------------------------------------- */
 static void check1Hz(var_base *varp, NR_TYPE SpikeSlope, size_t *counter)
@@ -94,14 +94,14 @@ static void check1Hz(var_base *varp, NR_TYPE SpikeSlope, size_t *counter)
 
   if (dir1 * dir2 < 0.0 &&
       fabs((double)dir1) > SpikeSlope && fabs((double)dir2) > SpikeSlope)
-    {
+  {
     this_rec[varp->SRstart] = floatNAN;
     (*counter)++;
     sprintf(buffer, "Despike: %s, deltas %g %g - slope=%g\n", varp->name,dir1,dir2,SpikeSlope);
     LogThisRecordMsg(this_rec, buffer);
-    }
+  }
 
-}	/* END CHECK1HZ */
+}
 
 /* -------------------------------------------------------------------- */
 static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
@@ -123,8 +123,38 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
 		sizeof(NR_TYPE) * vp->SampleRate);
   nPoints = 2 * vp->SampleRate + nPrevPts;
 
-  for (size_t i = nPrevPts; i < vp->SampleRate + nPrevPts; ++i)
+
+  /* During PASE & ICE-L the HGM232 radar altimeter had numerous spikes, the
+   * despiker was only able to detect about 3/4 of them, do a pre-screen here
+   * to remove any point that is "way out".
+   */
+//  if (cfg.HGM232_Cleanup() && strcmp(vp->name, "HGM232") == 0)
+  if (strcmp(vp->name, "HGM232") == 0)
+  {
+    NR_TYPE max = 0.0;
+
+    for (size_t i = nPrevPts; i < vp->SampleRate + nPrevPts; ++i)
     {
+      if (points[i] > 60000)	// Remove ground data.
+        points[i] = 0.0;
+
+      max = std::max(max, points[i]);	// Find max.
+    }
+
+    for (size_t i = nPrevPts; i < vp->SampleRate + nPrevPts; ++i)
+    {
+      // Remove any point that is more than 500 feet from the max.
+      if (!isnan(points[i]) && max - points[i] > 300.0)	// 500 feet is arbitrary.
+      {
+        points[i] = floatNAN;
+        ++spikeCount;
+      }
+    }
+  }
+
+
+  for (size_t i = nPrevPts; i < vp->SampleRate + nPrevPts; ++i)
+  {
     sx = ex = i;
 
     dir1 = points[sx-1] - points[sx];
@@ -138,21 +168,21 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
       int consecutiveCnt = 0;
 
       do
-        {
+      {
         if (fabs(points[sx-1] - points[++ex]) < SpikeSlope)
-          {
+        {
           xa[spCnt] = ex;
           ya[spCnt] = points[ex];
           ++consecutiveCnt;
           ++spCnt;
-          }
+        }
         else
           consecutiveCnt = 0;
-        }
+      }
       while (consecutiveCnt < 3 && ex < nPoints);
 
       if (ex < nPoints)
-        {
+      {
         sprintf(buffer, "Despike: %s, delta %g - slope=%g, point = %g, nPoints=%d, pos=%d\n",
 		vp->name, dir1, SpikeSlope, this_rec[sx+1], ex-sx-1, i);
         LogThisRecordMsg(this_rec, buffer);
@@ -162,9 +192,9 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
 
         i = ex-1;
         ++spikeCount;
-        }
       }
     }
+  }
 
   if (spikeCount > 0)
   {
@@ -173,7 +203,4 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
 
     *counter += spikeCount;
   }
-
-}	/* END CHECKVARIABLE */
-
-/* END DESPIKE.C */
+}
