@@ -242,12 +242,14 @@ static void runSecondPassPrograms()
   sprintf(buffer, "nc_sane %s", OutputFileName);
   system(buffer);
 
-  LogMessage("Producing KML file (rt_kml)...\n");
-  strcpy(buffer, OutputFileName);
-  strcpy(strrchr(buffer, '.'), ".kml");
-  sprintf(buffer, "rt_kml %s %s", OutputFileName, buffer);
-  system(buffer);
-
+  if (cfg.ProcessingRate() == Config::LowRate)
+  {
+    LogMessage("Producing KML file (rt_kml)...\n");
+    strcpy(buffer, OutputFileName);
+    strcpy(strrchr(buffer, '.'), ".kml");
+    sprintf(buffer, "rt_kml %s %s", OutputFileName, buffer);
+    system(buffer);
+  }
 }	/* END RUNSECONDPASSPROGRAMS */
 
 /* -------------------------------------------------------------------- */
