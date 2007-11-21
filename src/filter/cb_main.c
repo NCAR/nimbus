@@ -246,9 +246,10 @@ static void runSecondPassPrograms()
 
   {
     LogMessage("Producing KML file (rt_kml)...\n");
-    strcpy(buffer, OutputFileName);
-    strcpy(strrchr(buffer, '.'), ".kml");
-    sprintf(buffer, "rt_kml %s %s", OutputFileName, buffer);
+    char kml_file[1024];
+    strcpy(kml_file, OutputFileName);
+    strcpy(strrchr(kml_file, '.'), ".kml");
+    sprintf(buffer, "rt_kml %s %s", OutputFileName, kml_file);
     system(buffer);
   }
 }	/* END RUNSECONDPASSPROGRAMS */
