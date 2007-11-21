@@ -238,11 +238,12 @@ static void readHeader()
 /* -------------------------------------------------------------------- */
 static void runSecondPassPrograms()
 {
-  LogMessage("Running netCDF file sanity checker (nc_sane)...\n");
-  sprintf(buffer, "nc_sane %s", OutputFileName);
-  system(buffer);
+  {
+    LogMessage("Running netCDF file sanity checker (nc_sane)...\n");
+    sprintf(buffer, "nc_sane %s", OutputFileName);
+    system(buffer);
+  }
 
-  if (cfg.ProcessingRate() == Config::LowRate)
   {
     LogMessage("Producing KML file (rt_kml)...\n");
     strcpy(buffer, OutputFileName);

@@ -135,9 +135,16 @@ void SetInertialShift(Widget w, XtPointer client, XmToggleButtonCallbackStruct *
 }
 
 /* -------------------------------------------------------------------- */
+static void setGoogleEarth(bool b)
+{
+  cfg.SetCreateKMLFile(b);
+  XmToggleButtonSetState(kmlButton, cfg.CreateKMLFile(), false);
+}
+
+/* -------------------------------------------------------------------- */
 void SetGoogleEarth(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
 {
-  cfg.SetCreateKMLFile(call->set);
+  setGoogleEarth(call->set);
 }
 
 /* -------------------------------------------------------------------- */
@@ -231,6 +238,8 @@ void SetLowRate(Widget w, XtPointer client, XtPointer call)
 
   cfg.SetProcessingRate(Config::LowRate);
 
+  setGoogleEarth(true);
+
   for (i = 0; i < raw.size(); ++i)
     raw[i]->OutputRate = Config::LowRate;
 
@@ -267,6 +276,8 @@ void SetSampleRate(Widget w, XtPointer client, XtPointer call)
     return;
 
   cfg.SetProcessingRate(Config::SampleRate);
+
+  setGoogleEarth(false);
 
   for (i = 0; i < raw.size(); ++i)
     raw[i]->OutputRate = raw[i]->SampleRate;
@@ -316,6 +327,8 @@ void SetHighRate(Widget w, XtPointer client, XtPointer call)
   if (((XmToggleButtonCallbackStruct *)call)->set == false)
     return;
   
+  setGoogleEarth(false);
+
   cfg.SetProcessingRate(Config::HighRate);
   switch (rate)
   {
