@@ -55,6 +55,18 @@ void sconcn(DERTBL *varp)
    */
   concn *= (NR_TYPE)exp((double)(4.167e-6 * concn * fcnc));
 
+  /* Convert to ambient.  This is new as of 12/2007, older projects would
+   * need DependTable upgrade.
+   */
+  if (varp->ndep > 2)
+  {
+    NR_TYPE pcn = GetSample(varp, 2);
+    NR_TYPE cntmp = GetSample(varp, 3);
+    NR_TYPE psx = GetSample(varp, 4);
+    NR_TYPE atx = GetSample(varp, 5);
+    concn *= (psx / pcn) * (cntmp + 273.15) / (atx + 273.15);
+  }
+
   PutSample(varp, concn);
 
 }  /* END SCONCN */
@@ -74,6 +86,30 @@ void scFlow(DERTBL *varp)
   /* Corrected sample flow rate in vlpm
    */
   flowc = flow * (1013.25 / pressure) * ((temperature + Kelvin) / 294.26);
+
+  if (flowc <= 0.0)
+    flowc = 0.0001;
+
+  PutSample(varp, flowc);
+
+}  /* END SCFLOW */
+/* -------------------------------------------------------------------- */
+void scWFlow(DERTBL *varp)
+{
+  NR_TYPE  flowc, flow, pressure, wcn_ps, tcn, temperature;
+
+  flow = GetSample(varp, 0);
+  wcn_ps = GetSample(varp, 1);
+  tcn = GetSample(varp, 2);
+  pressure = GetSample(varp, 3);
+  temperature = GetSample(varp, 4);
+
+  if (pressure <= 0.0)
+    pressure = 0.0001;
+
+  /* Corrected sample flow rate in vlpm
+   */
+  flowc = flow * (wcn_ps / pressure) * ((temperature + Kelvin) / (tcn + Kelvin));
 
   if (flowc <= 0.0)
     flowc = 0.0001;
