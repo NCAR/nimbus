@@ -5,7 +5,7 @@ DESTDIR=	${JLOCAL}
 BINDIR=		${DESTDIR}/bin
 MANDIR=		${DESTDIR}/man/manl
 INCDIR=		${DESTDIR}/include
-ANONFTP=	/net/ftp/pub/archive/RAF-src/bin.RedHat9.0
+ANONFTP=	/net/ftp/pub/archive/RAF-src/bin.Fedora3
 
 
 LIBS=		-L${JLOCAL}/lib -lnetcdf_c++ -lnetcdf

@@ -20,7 +20,7 @@ INCLUDES= -I${JLOCAL}/include
 DEFINES = 
 LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib
 LIBS    = -lraf -lXm -lXp -lXt -lXext -lX11 -lnetcdf -lm
-ANONFTP = /net/ftp/pub/archive/RAF-src/bin.RedHat9.0
+ANONFTP = /net/ftp/pub/archive/RAF-src/bin.Fedora3
 
 
 CFLAGS=	-g ${INCLUDES} ${DEFINES}
