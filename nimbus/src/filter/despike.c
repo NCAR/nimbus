@@ -135,16 +135,13 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
 
     for (size_t i = nPrevPts; i < vp->SampleRate + nPrevPts; ++i)
     {
-      if (points[i] > 60000)	// Remove ground data.
-        points[i] = 0.0;
-
       max = std::max(max, points[i]);	// Find max.
     }
 
     for (size_t i = nPrevPts; i < vp->SampleRate + nPrevPts; ++i)
     {
-      // Remove any point that is more than 500 feet from the max.
-      if (!isnan(points[i]) && max - points[i] > 300.0)	// 500 feet is arbitrary.
+      // Remove any point that is more than 300 feet from the max.
+      if (!isnan(points[i]) && max - points[i] > 300.0)	// 300 feet is arbitrary.
       {
         points[i] = floatNAN;
         ++spikeCount;
