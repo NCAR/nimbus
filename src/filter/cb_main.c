@@ -529,12 +529,13 @@ static void checkForProductionSetup()
       }
     else
       {
-      if (strncmp(group[i], &cfg.FlightNumber()[0], 4) == 0)
+      if (cfg.FlightNumber().compare(0, 4, group[i], 4) == 0)
         {
-        char t[32];
+        char *src;
         MakeProjectFileName(buffer, "%s/%s/%s/Production/Flight_");
-        sprintf(t, "%d", atoi(strrchr(group[i], '=')+2));
-        strcat(buffer, t);
+        src = strtok(group[i], " \t\n:=");
+        src = strtok(NULL, " \t\n:=");
+        strcat(buffer, src);
 
         LoadSetup_OK(NULL, NULL, NULL);
 
