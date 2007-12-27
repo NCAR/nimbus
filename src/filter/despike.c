@@ -108,9 +108,12 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
 {
   static const int nPrevPts = 3;
 
-  size_t	sx, ex, spikeCount = 0, nPoints;
-  double	xa[vp->SampleRate+nPrevPts], ya[vp->SampleRate+nPrevPts];
-  NR_TYPE	points[vp->SampleRate*nPrevPts], dir1; /* Direction of data	*/
+  size_t	nFirstHalfPoints = vp->SampleRate + nPrevPts;
+  size_t	nPoints = 2 * vp->SampleRate + nPrevPts;
+
+  size_t	sx, ex, spikeCount = 0;
+  double	xa[nFirstHalfPoints], ya[nFirstHalfPoints];
+  NR_TYPE	points[nFirstHalfPoints], dir1; /* Direction of data	*/
 
   /* Copy all points to a seperate place for inspection.
    */
@@ -119,29 +122,46 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
   points[2] = prev_rec[vp->SRstart + vp->SampleRate - 1];
   memcpy((char *)&points[nPrevPts], (char *)&this_rec[vp->SRstart],
 		sizeof(NR_TYPE) * vp->SampleRate);
-  memcpy((char *)&points[vp->SampleRate+nPrevPts], (char *)&next_rec[vp->SRstart],
+  memcpy((char *)&points[nFirstHalfPoints], (char *)&next_rec[vp->SRstart],
 		sizeof(NR_TYPE) * vp->SampleRate);
-  nPoints = 2 * vp->SampleRate + nPrevPts;
 
 
   /* During PASE & ICE-L the HGM232 radar altimeter had numerous spikes, the
    * despiker was only able to detect about 3/4 of them, do a pre-screen here
    * to remove any point that is "way out".
+   * All spikes go to between 0 and about 300 feet.  So above 300 feet all spikes
+   * go down, this is easy to test by determining the max, and tossing anything
+   * more than say 300 drop from max for the second.  When flying low off the deck
+   * say below 500 feet, that test does not work so well.  Change threshold to 30
+   * feet and test that against the median for the second.
    */
-//  if (cfg.HGM232_Cleanup() && strcmp(vp->name, "HGM232") == 0)
-  if (strcmp(vp->name, "HGM232") == 0)
+  if (cfg.isADS3() && strcmp(vp->name, "HGM232") == 0)
   {
     NR_TYPE max = 0.0;
+    std::vector<NR_TYPE> v;
 
-    for (size_t i = nPrevPts; i < vp->SampleRate + nPrevPts; ++i)
+    for (size_t i = nPrevPts; i < nFirstHalfPoints; ++i)
     {
       max = std::max(max, points[i]);	// Find max.
+      v.push_back(points[i]);		// In case we want median instead of max.
     }
 
-    for (size_t i = nPrevPts; i < vp->SampleRate + nPrevPts; ++i)
+    NR_TYPE threshold = 300.0;	// 300 feet is arbitrary.
+    NR_TYPE test = max;
+
+    // The "max" test does not work below about 300-500 feet.  So change to median test.
+    if (max < 500.0)
     {
-      // Remove any point that is more than 300 feet from the max.
-      if (!isnan(points[i]) && max - points[i] > 300.0)	// 300 feet is arbitrary.
+      std::sort(v.begin(), v.end());
+      NR_TYPE median = v[(nFirstHalfPoints+nPrevPts)/2];
+      threshold = 30.0;
+      test = median;
+    }
+
+    // Remove any point that is more than 300 feet from the max.
+    for (size_t i = nPrevPts; i < nFirstHalfPoints; ++i)
+    {
+      if (!isnan(points[i]) && fabs(test - points[i]) > threshold)
       {
         points[i] = floatNAN;
         ++spikeCount;
@@ -150,7 +170,7 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
   }
 
 
-  for (size_t i = nPrevPts; i < vp->SampleRate + nPrevPts; ++i)
+  for (size_t i = nPrevPts; i < nFirstHalfPoints; ++i)
   {
     sx = ex = i;
 
