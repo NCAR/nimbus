@@ -142,19 +142,26 @@ static void checkVariable(var_base *vp, NR_TYPE SpikeSlope, size_t *counter)
 
     for (size_t i = nPrevPts; i < nFirstHalfPoints; ++i)
     {
+      if (points[i] == 296.0 || points[i] == 298.0)
+      {
+        points[i] = floatNAN;
+        ++spikeCount;
+      }
+
       max = std::max(max, points[i]);	// Find max.
-      v.push_back(points[i]);		// In case we want median instead of max.
+      if (!isnan(points[i]))
+        v.push_back(points[i]);		// In case we want median instead of max.
     }
 
-    NR_TYPE threshold = 300.0;	// 300 feet is arbitrary.
+    NR_TYPE threshold = 300.0;		// 300 feet is arbitrary.
     NR_TYPE test = max;
 
     // The "max" test does not work below about 300-500 feet.  So change to median test.
-    if (max < 500.0)
+    if (max < 500.0 && max > 0.0)
     {
       std::sort(v.begin(), v.end());
-      NR_TYPE median = v[(nFirstHalfPoints+nPrevPts)/2];
-      threshold = 30.0;
+      NR_TYPE median = v[v.size()/2];
+      threshold = 15.0;
       test = median;
     }
 
