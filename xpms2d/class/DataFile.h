@@ -72,6 +72,8 @@ public:
   Probe	*probe[MAX_PROBES];
 
 private:
+  enum HeaderType { NoHeader, ADS2, PMS2D };
+
   typedef struct { long index; short time[3]; } Index;
 
   void		buildIndices(), sort_the_table(int, int), SortIndices(int);
@@ -89,7 +91,8 @@ private:
   long		savePos;
 
   int		nProbes;
-  bool		diskData, gzipped, hasRAFheader, useTestRecord;
+  bool		gzipped, useTestRecord;
+  HeaderType	_fileHeaderType;
 
   Index		*indices;
   long		currPhys;

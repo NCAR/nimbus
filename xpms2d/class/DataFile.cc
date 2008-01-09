@@ -114,7 +114,6 @@ ADS_DataFile::ADS_DataFile(char fName[])
   nProbes = 0;
   Ccnt = Pcnt = Hcnt = 0;
   useTestRecord = false;
-  diskData = strncmp(fileName, "/dev/", 5) ? true : false;
 
 #ifdef PNG
   if (gzipped)
@@ -125,15 +124,33 @@ ADS_DataFile::ADS_DataFile(char fName[])
   else
 #endif
     {
-    fread(buffer, 2, 1, fp);
+    fread(buffer, 10, 1, fp);
     rewind(fp);
     }
 
+  if (strncmp(buffer, "PMS2D", 5) == 0)
+    {
+    _fileHeaderType = PMS2D;
+    char * p;
+
+    while (fgets(buffer, 512, fp))
+      {
+      if (strcmp(buffer, "end header\n") == 0)
+        break;
+      p = strtok(buffer, " \t=,");
+      if (strcmp(p, "probe") == 0)
+        {
+          p = strtok(NULL, " \t=,");
+          probe[nProbes++] = new Probe(p, PMS2_RECSIZE);
+        }
+      }
+    }
+  else
   if (isValidProbe(buffer))
     {
     hdr = 0;
     P2dLRpPR = 1;
-    hasRAFheader = false;
+    _fileHeaderType = NoHeader;
     printf("No RAF header found, assuming raw PMS2D file.\n");
     }
   else
@@ -142,7 +159,7 @@ ADS_DataFile::ADS_DataFile(char fName[])
     if (hdr->isValid() == false)
       return;
 
-    hasRAFheader = true;
+    _fileHeaderType = ADS2;
 
     for (p = hdr->GetFirst("PMS2D"); p; p = hdr->GetNext("PMS2D"))
       {
@@ -483,6 +500,7 @@ int ADS_DataFile::NextPhysicalRecord(char buff[])
     default:
       size = 0;
     }
+printf("4\n");
 
 #ifdef PNG
   if (gzipped)
@@ -558,17 +576,20 @@ void ADS_DataFile::buildIndices()
     exit(1);
     }
 
+  if (_fileHeaderType != PMS2D)
+    {
 #ifdef PNG
-  if (gzipped)
-    gzseek(gz_fd, 0, SEEK_SET);
-  else
+    if (gzipped)
+      gzseek(gz_fd, 0, SEEK_SET);
+    else
 #endif
-    rewind(fp);
+      rewind(fp);
+    }
 
 
   for (cnt = 0; rc = NextPhysicalRecord(buffer); )
     {
-    if (hasRAFheader)
+    if (_fileHeaderType != NoHeader)
       {
       for (i = 0; i < nProbes; ++i)
         if (strcmp(probe[i]->Code(), buffer) == 0)
@@ -599,12 +620,15 @@ void ADS_DataFile::buildIndices()
       }
     }
 
+  if (_fileHeaderType != PMS2D)
+    {
 #ifdef PNG
-  if (gzipped)
-    gzseek(gz_fd, 0, SEEK_SET);
-  else
+    if (gzipped)
+      gzseek(gz_fd, 0, SEEK_SET);
+    else
 #endif
-    rewind(fp);
+      rewind(fp);
+    }
 
   printf("\n%d 2d records were found.\n", cnt);
 
@@ -626,7 +650,7 @@ void ADS_DataFile::buildIndices()
 
 
   // Write indices to a file for future use.
-  if ( hasRAFheader && (fpI = fopen(tmpFile, "w+b")) )
+  if ( _fileHeaderType != NoHeader && (fpI = fopen(tmpFile, "w+b")) )
     {
     printf("Writing indices file, %s.\n", tmpFile);
 
