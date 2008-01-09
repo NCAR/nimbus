@@ -50,7 +50,7 @@ public:
   const char	*ProjectNumber() { return(hdr ? hdr->ProjectNumber() : (char *)""); }
   const char	*FlightNumber()	 { return(hdr ? hdr->FlightNumber() : (char *)""); }
   const char	*FlightDate()	 { return(hdr ? hdr->FlightDate() : (char *)""); }
-  const char	*HeaderVersion() { return(hdr ? hdr->Version() : (char *)""); }
+  const char	*HeaderVersion() { return(hdr ? hdr->Version() : (char *)"5"); }
 
   int	NumberOfProbes()	{ return(nProbes); }
   void	SetPosition(int position);
