@@ -25,15 +25,13 @@ Hex::Hex(const Widget parent) : TextWindow(parent, "hex")
 }	/* END CONSTRUCTOR */
 
 /* -------------------------------------------------------------------- */
-void Hex::Update(int nBuffs, P2d_rec sets[])
+void Hex::Update(size_t nBuffs, P2d_rec sets[])
 {
-  int	i, j;
-
   Clear();
 
   /* Title */
   strcpy(buffer, "      ");
-  for (j = 0; j < nBuffs; ++j)
+  for (size_t j = 0; j < nBuffs; ++j)
     sprintf(&buffer[strlen(buffer)], "   %s    ", (char *)&sets[j].id);
 
   strcat(buffer, "\n");
@@ -41,12 +39,12 @@ void Hex::Update(int nBuffs, P2d_rec sets[])
 
 
   /* Records */
-  for (i = 0; i < RecordLen; ++i)
+  for (size_t i = 0; i < RecordLen; ++i)
     {
     sprintf(buffer, "%4d  ", i);
 
-    for (j = 0; j < nBuffs; ++j)
-      sprintf(&buffer[strlen(buffer)], "%08X ", *(long *)(&sets[j].data[i<<2]));
+    for (size_t j = 0; j < nBuffs; ++j)
+      sprintf(&buffer[strlen(buffer)], "%08lX ", *(long *)(&sets[j].data[i<<2]));
 
     strcat(buffer, "\n");
     Append(buffer);

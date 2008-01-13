@@ -42,7 +42,12 @@ const int MAX_PROBES = 4;
 
 const unsigned long StandardSyncWord = 0x55000000;
 const unsigned long SyncWordMask = 0xff000000;
-const int RecordLen = 1024;
+
+const unsigned long long Fast2DC_Sync = 0xAAAAAA0000000000LL;
+const unsigned long long Fast2DC_Overld = 0xAAAA550000000000LL;
+const unsigned long long Fast2DC_Mask = 0xFFFFFF0000000000LL;
+
+const size_t RecordLen = 1024;
 
 #define TITLESIZE	80
 
@@ -51,11 +56,11 @@ const int RecordLen = 1024;
 
 struct particle
   {
-  long  time;           // Seconds since mid-night
-  long  msec;
+  long time;           // Seconds since mid-night
+  long msec;
 
-  int	w, h;
-  int	area;
+  size_t w, h;
+  size_t area;
   bool	vert_gap;		// Was there a blank slice (i.e. multiple parts)
   bool	horiz_gap;		//   and in the hozizontal dir?
   bool	reject;
@@ -73,6 +78,7 @@ typedef struct particle Particle;
 
 struct recStats
   {
+  ulong thisTime;		// Time of this record in secs since midnight.
   ulong	DASelapsedTime;		// milliseconds.
   ulong	tBarElapsedtime;	// milliseconds.
 
@@ -87,6 +93,10 @@ struct recStats
   int		resolution, area;
 
   Queue		particles;
+
+  // Return values in/for MainCanvas::draw()
+  bool		duplicate;
+  unsigned long	prevTime;
   };
 
 

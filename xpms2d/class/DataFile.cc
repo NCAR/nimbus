@@ -78,7 +78,7 @@ static unsigned short HtestParticle[] = {
   0x427e,
   };
 
-static int P2dLRpPR = P2DLRPR;
+static size_t P2dLRpPR = P2DLRPR;
 
 /* -------------------------------------------------------------------- */
 ADS_DataFile::ADS_DataFile(char fName[])
@@ -252,7 +252,7 @@ void ADS_DataFile::ToggleSyntheticData()
 /* -------------------------------------------------------------------- */
 void ADS_DataFile::SetPosition(int position)
 {
-  int		pos;
+  size_t	pos;
   P2d_rec	buff;
 
   pos = nIndices * position / 100;
@@ -522,7 +522,8 @@ printf("4\n");
 /* -------------------------------------------------------------------- */
 void ADS_DataFile::buildIndices()
 {
-  int	i, cnt, rc;
+  size_t	cnt;
+  int	rc;
   short	*word;
   FILE	*fpI;
   char	buffer[0x8000], *p, tmpFile[256];
@@ -557,7 +558,7 @@ void ADS_DataFile::buildIndices()
     fclose(fpI);
 
     if (5 != ntohl(5))		// If Intel architecture, swap bytes.
-      for (i = 0; i < len / sizeof(Index); ++i)
+      for (size_t i = 0; i < len / sizeof(Index); ++i)
         indices[i].index = ntohl(indices[i].index);
 
     nIndices = (len / sizeof(Index)) - 1;
@@ -587,8 +588,10 @@ void ADS_DataFile::buildIndices()
     }
 
 
-  for (cnt = 0; rc = NextPhysicalRecord(buffer); )
+  for (cnt = 0; (rc = NextPhysicalRecord(buffer)); )
     {
+    size_t i;
+
     if (_fileHeaderType != NoHeader)
       {
       for (i = 0; i < nProbes; ++i)
@@ -655,14 +658,14 @@ void ADS_DataFile::buildIndices()
     printf("Writing indices file, %s.\n", tmpFile);
 
     if (5 != ntohl(5))		// If Intel architecture, swap bytes.
-      for (i = 0; i < cnt+1; ++i)
+      for (size_t i = 0; i < cnt+1; ++i)
         indices[i].index = htonl(indices[i].index);
 
     fwrite(indices, (cnt+1) * sizeof(Index), 1, fpI);
     fclose(fpI);
 
     if (5 != ntohl(5))		// Swap em back for current run.
-      for (i = 0; i < cnt+1; ++i)
+      for (size_t i = 0; i < cnt+1; ++i)
         indices[i].index = ntohl(indices[i].index);
     }
 
@@ -682,15 +685,26 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
     for (int i = 1; i < 10; ++i)
       sp[i] = ntohs(sp[i]);
 
-    p = (unsigned long *)buff->data;
-    sp = (unsigned short *)buff->data;
 
-    if (((char *)&buff->id)[0] == 'H')
-      for (int i = 0; i < 2048; ++i, ++sp)
-        *sp = ntohs(*sp);
+    if (htons(buff->id) == PMS2DC4)	// Fast 2DC
+    {
+      long long *lp = (long long *)buff->data;
+      for (size_t i = 0; i < 512; ++i, ++lp)
+        *lp = ntohll(lp);
+    }
     else
-      for (int i = 0; i < RecordLen; ++i, ++p)
+    if (((char *)&buff->id)[0] == 'H')	// HVPS
+    {
+      sp = (unsigned short *)buff->data;
+      for (size_t i = 0; i < 2048; ++i, ++sp)
+        *sp = ntohs(*sp);
+    }
+    else
+    {
+      p = (unsigned long *)buff->data;
+      for (size_t i = 0; i < RecordLen; ++i, ++p)
         *p = ntohl(*p);
+    }
   }
 
   /* Code for Lake-ICE data, which was shifted 1 bit from overclocking
@@ -702,7 +716,7 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
   {
     unsigned long *p = (unsigned long *)buff->data;
 
-    for (int i = 0; i < RecordLen; ++i, ++p)
+    for (size_t i = 0; i < RecordLen; ++i, ++p)
     {
       // It only matters to fix the sync & timing words.
       if (*p == 0xff800000)
@@ -731,6 +745,18 @@ bool ADS_DataFile::isValidProbe(char *pr)
     return(true);
 
   return(false);
+}
+
+/* -------------------------------------------------------------------- */
+long long ADS_DataFile::ntohll(long long * p) const
+{
+    union {
+      long long v;
+      char b[8];
+    } u;
+    const char* cp = (const char*)p;
+    for (int i = 7; i >= 0; i--) u.b[i] = *cp++;
+    return u.v;
 }
 
 /* -------------------------------------------------------------------- */
@@ -775,7 +801,7 @@ void ADS_DataFile::sort_the_table(int beg, int end)
 }
 
 /* -------------------------------------------------------------------- */
-void ADS_DataFile::check_rico_half_buff(P2d_rec *buff, int beg, int end)
+void ADS_DataFile::check_rico_half_buff(P2d_rec *buff, size_t beg, size_t end)
 {
   std::vector<size_t> spectra, sorted_spectra;
 
@@ -851,6 +877,12 @@ void ADS_DataFile::check_rico_half_buff(P2d_rec *buff, int beg, int end)
 ADS_DataFile::~ADS_DataFile()
 {
   free(indices);
+
+  delete hdr;
+  hdr = 0;
+
+  for (size_t i = 0; i < nProbes; ++i)
+    delete probe[i];
 
 #ifdef PNG
   if (gzipped)

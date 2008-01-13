@@ -41,7 +41,7 @@ extern "C" { int usleep(unsigned int); }
 ControlWindow::ControlWindow(Widget parent) : WinForm(parent, "control", RowColumn)
 {
   Widget	pnRC[2], plRC[8], label, trc;
-  Widget	title[8], bkd, fwd, frame[6], RC[6];
+  Widget	title[8], frame[6], RC[6];
   Arg		args[8];
   int		i, n;
 
@@ -235,14 +235,13 @@ void ControlWindow::PopUp()
 /* -------------------------------------------------------------------- */
 void ControlWindow::SetFileNames()
 {
+printf("In SetFileNames()\n");
+return;
+/*
   int		i;
   XmString	label;
   Arg		args[2];
 
-printf("In SetFileNames()\n");
-return;
-
-/*
   for (i = 0; i < fileMgr.NumberOfFiles(); ++i)
     {
     XtSetSensitive(fileB[i], True);

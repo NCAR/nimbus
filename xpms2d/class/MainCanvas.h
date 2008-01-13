@@ -39,6 +39,10 @@ public:
 
 
 private:
+  void	drawPMS2D(P2d_rec *record, struct recStats &stats, float hdrVer, int probeNum, PostScript *ps);
+  void	drawHVPS(P2d_rec *record, struct recStats &stats, float hdrVer, int probeNum, PostScript *ps);
+  void	drawFast2DC(P2d_rec *record, struct recStats &stats, float hdrVer, int probeNum, PostScript *ps);
+
   void	drawSlice(PostScript *ps, int i, unsigned long slice);
   void	drawSlice(PostScript *ps, int i, unsigned long long slice);
   void	enchiladaLineItem(PostScript *ps, int i, int cnt, Particle *cp);

@@ -24,7 +24,7 @@ public:
 
 	Hex(const Widget parent);
 
-  void	Update(int nBuffs, P2d_rec sets[]);
+  void	Update(size_t nBuffs, P2d_rec sets[]);
 
 private:
 

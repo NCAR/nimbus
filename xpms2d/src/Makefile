@@ -38,7 +38,7 @@ ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.Fedora3
 
 # Don't use optimization with gcc (2.95.2 and earlier) and C++.
 CXX	= g++
-CXXFLAGS= -g -O ${INCLUDES} ${DEFINES}
+CXXFLAGS= -Wall -g -O ${INCLUDES} ${DEFINES}
 
 PROG	= xpms2d
 HDRS	= define.h

@@ -28,6 +28,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 #define PMS2DC1		0x4331
 #define PMS2DC2		0x4332
+// 64 bit Fast 2DC.
+#define PMS2DC4		0x4334
 #define PMS2DG1		0x4731
 #define PMS2DG2		0x4732
 #define PMS2DH1		0x4831
@@ -76,9 +78,11 @@ private:
 
   typedef struct { long index; short time[3]; } Index;
 
+  long long	ntohll(long long * p) const;
+
   void		buildIndices(), sort_the_table(int, int), SortIndices(int);
   void		SwapPMS2D(P2d_rec *);
-  void		check_rico_half_buff(P2d_rec *buff, int start, int end);
+  void		check_rico_half_buff(P2d_rec *buff, size_t start, size_t end);
 
   char		fileName[PATH_LEN];
   Header	*hdr;
@@ -88,15 +92,16 @@ private:
   int		gz_fd;
 #endif
   FILE		*fp;
-  long		savePos;
+  size_t	savePos;
 
-  int		nProbes;
+  size_t	nProbes;
   bool		gzipped, useTestRecord;
   HeaderType	_fileHeaderType;
 
   Index		*indices;
   long		currPhys;
-  int		currLR, nIndices;
+  int		currLR;
+  size_t	nIndices;
 
   P2d_rec	physRecord[P2DLRPR], *testRecP;
 

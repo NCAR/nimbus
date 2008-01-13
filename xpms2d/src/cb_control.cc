@@ -55,7 +55,7 @@ P2d_rec	pgFbuff[20];
 /* -------------------------------------------------------------------- */
 void ApplyTimeChange(Widget w, XtPointer client, XtPointer call)
 {
-  int		j, h, m, s;
+  int		h, m, s;
   char		*p;
   float		version;
 
