@@ -140,6 +140,42 @@ void PMS1D_SetupForADS3()
   if (raw_indx != ERR && der_indx == ERR)
     printf("Debug: No CUHSAS found.\n");
 
+
+  if ((raw_indx = SearchTableSansLocation(raw, "A1DC")) != ERR)
+  {
+    location = strrchr(raw[raw_indx]->name, '_');
+
+    raw[raw_indx]->SerialNumber	= "F2DC001";
+//    raw[raw_indx]->Average	= (void (*) (...))SumVector;
+    raw[raw_indx]->ProbeType	= PROBE_PMS2D | PROBE_2DC;
+  }
+  if ((der_indx = SearchTableSansLocation(derived, "C1DC")) != ERR)
+  {
+    derived[der_indx]->SerialNumber	= raw[raw_indx]->SerialNumber;
+    derived[der_indx]->Length		= raw[raw_indx]->Length;
+    derived[der_indx]->ProbeType	= raw[raw_indx]->ProbeType;
+  }
+  if (raw_indx != ERR && der_indx == ERR)
+    printf("Debug: No C1DC found.\n");
+
+
+  if ((raw_indx = SearchTableSansLocation(raw, "A2DC")) != ERR)
+  {
+    location = strrchr(raw[raw_indx]->name, '_');
+
+    raw[raw_indx]->SerialNumber	= "F2DC001";
+//    raw[raw_indx]->Average	= (void (*) (...))SumVector;
+    raw[raw_indx]->ProbeType	= PROBE_PMS2D | PROBE_2DC;
+  }
+  if ((der_indx = SearchTableSansLocation(derived, "C2DC")) != ERR)
+  {
+    derived[der_indx]->SerialNumber	= raw[raw_indx]->SerialNumber;
+    derived[der_indx]->Length		= raw[raw_indx]->Length;
+    derived[der_indx]->ProbeType	= raw[raw_indx]->ProbeType;
+  }
+  if (raw_indx != ERR && der_indx == ERR)
+    printf("Debug: No C2DC found.\n");
+
 }
 
 /* -------------------------------------------------------------------- */
