@@ -65,7 +65,7 @@ void ReadGroundVarsFile()
   if ((fp = OpenProjectFile(fileName, "w", RETURN)) == NULL)
   {
     MakeProjectFileName(buffer, XMIT_VARS);
-    fprintf(stderr, "ReadGroundVarsFile: can't open %s for writing.\n", buffer);
+    fprintf(stderr, "ReadGroundVarsFile: can't open %s for writing, exiting.  Permissions?\n", fileName.c_str());
     exit(1);
   }
 
