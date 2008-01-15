@@ -41,23 +41,7 @@ void sakrd(DERTBL *varp)
     switch (cfg.Aircraft())
       {
       case Config::C130:
-        if ( ratio >= -0.28)        
         akrd = (( ratio + 0.3843 ) / (0.06653));
-/*        akrd = (( ratio + 0.3898 ) / (0.06630));        */
-        else
-
-/*    Adjustment made 12/5/96 based on results of C130 - Electra
-      Intercomparison flight conducted on 11/18/96 - ajs     
-
-        akrd = -17.150 + ratio * (-201.5707 + ratio * (-673.6239 
-          -691.433565 * ratio));                 */
-
-/*    Modified 5/14/98 to eliminate inflection point         */
-
-        akrd = -69.9020453 + ratio * (-830.086276 + ratio * (-3497.34097
-          + ratio * (-6339.88129 - 4219.58508 * ratio)));     
-
-
         break;
 
       case Config::ELECTRA:
