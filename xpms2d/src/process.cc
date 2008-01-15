@@ -140,7 +140,6 @@ if (debug)
       sampleVolume[i] = output.tas * sampleAreaC[i] * 0.001;
     }
 
-
   output.frequency = output.resolution / output.tas;
   output.SampleVolume *= output.tas *
 			(output.DASelapsedTime - record->overld) * 0.001;
@@ -153,7 +152,7 @@ if (debug)
   startTime = prevTime[probeIdx] / 1000;
   startMilliSec = prevHdr[probeIdx].msec * 1000;
 
-  // Loop through all slice in record.
+  // Loop through all slices in record.
   for (size_t i = 0; i < RecordLen; ++i, ++p)
     {
     slice = *p;
@@ -491,7 +490,7 @@ if (debug)
   startTime = prevTime[probeIdx] / 1000;
   startMilliSec = prevHdr[probeIdx].msec * 1000;
 
-  // Loop through all slice in record.
+  // Loop through all slices in record.
   for (size_t i = 0; i < 2048; ++i, ++p)
     {
     slice = *p;
@@ -808,6 +807,7 @@ if (debug)
   overload = prevHdr[probeIdx].overld;
   output.DASelapsedTime = output.thisTime - prevTime[probeIdx];
   output.tas = (float)record->tas * 125 / 255;
+  output.frequency = output.resolution / output.tas;
 
   totalLiveTime = 0.0;
   memset(output.accum, 0, sizeof(output.accum));
@@ -818,12 +818,9 @@ if (debug)
     default:                    nBins = 64;
     }
 
-    
   for (size_t i = 0; i < nBins; ++i)
     sampleVolume[i] = output.tas * (sampleAreaC[i] * 2) * 0.001;
   
-  
-  output.frequency = output.resolution / output.tas;
   output.SampleVolume *= output.tas *
                         (output.DASelapsedTime - record->overld) * 0.001;
 
@@ -834,7 +831,7 @@ if (debug)
   startMilliSec = prevHdr[probeIdx].msec * 1000;
   firstTimeWord = 0;
 
-  // Loop through all slice in record.
+  // Loop through all slices in record.
   for (size_t i = 0; i < 512; )
     {
     slice = *p;
@@ -856,9 +853,9 @@ if (debug)
       cp->time = startTime;
       cp->msec = startMilliSec;
 
-      cp->w = 1;        // first slice of particle is in sync word
-      cp->h = 1;
-      cp->area = 1;     // assume at list 1 pixel hidden in sync-word.
+      cp->w = 0;
+      cp->h = 0;
+      cp->area = 0;
       cp->edge = 0;
       cp->horiz_gap = false;
       cp->vert_gap = false;
@@ -939,10 +936,7 @@ if (debug)
 
       if ((float)cp->area / (cp->w * cp->h) <= controlWindow->GetAreaRatioReject())
         cp->reject = true;
-printf("%d %d %d\n", cp->area, cp->w, cp->h);
-printf("%f %f\n", (float)cp->area / (cp->w * cp->h), controlWindow->GetAreaRatioReject() );
 
-printf("rej=%d\n", cp->reject);
       size_t bin = 0;
 
       switch (controlWindow->GetConcentration())
