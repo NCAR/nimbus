@@ -26,156 +26,48 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2006
 static int getCellSizes(var_base * rp, float cellSizes[]);
 static int setProbeCount(const char * loc, int probeNum);
 
+
+/* -------------------------------------------------------------------- */
+static void setSerialNumberAndProbeType(const char * name, const char * serialNum, int probeType)
+{
+  int raw_indx, der_indx;
+  char tmp[64];
+
+  if ((raw_indx = SearchTableSansLocation(raw, name)) != ERR)
+  {
+    raw[raw_indx]->SerialNumber	= serialNum;
+    raw[raw_indx]->ProbeType	= probeType;
+//    raw[raw_indx]->Average	= (void (*) (...))SumVector;
+  }
+
+  strcpy(tmp, name); tmp[0] = 'C';
+  if ((der_indx = SearchTableSansLocation(derived, tmp)) != ERR)
+  {
+    derived[der_indx]->SerialNumber	= raw[raw_indx]->SerialNumber;
+    derived[der_indx]->Length		= raw[raw_indx]->Length;
+    derived[der_indx]->ProbeType	= raw[raw_indx]->ProbeType;
+  }
+
+  if (raw_indx != ERR && der_indx == ERR)
+    printf("Debug: No %s found.\n", tmp);
+}
+
+
 // Temporary hack, until I finish consolidating suport files into VarDB.ncml.
 void PMS1D_SetupForADS3()
 {
-  int raw_indx, der_indx;
-  char * location;
-
-  if ((raw_indx = SearchTableSansLocation(raw, "AS100")) != ERR)
-  {
-    location = strrchr(raw[raw_indx]->name, '_');
-
-    if (cfg.ProjectName() == "PASE")
-      raw[raw_indx]->SerialNumber	= "FSSP122";
-    else
-      raw[raw_indx]->SerialNumber	= "FSSP109";
-//    raw[raw_indx]->Average	= (void (*) (...))SumVector;
-    raw[raw_indx]->ProbeType	= PROBE_PMS1D | PROBE_FSSP;
-  }
-  if ((der_indx = SearchTableSansLocation(derived, "CS100")) != ERR)
-  {
-    derived[der_indx]->SerialNumber	= raw[raw_indx]->SerialNumber;
-    derived[der_indx]->Length		= raw[raw_indx]->Length;
-    derived[der_indx]->ProbeType	= raw[raw_indx]->ProbeType;
-  }
-  if (raw_indx != ERR && der_indx == ERR)
-    printf("Debug: No CS100 found.\n");
-
-  if ((raw_indx = SearchTableSansLocation(raw, "A260X")) != ERR)
-  {
-    location = strrchr(raw[raw_indx]->name, '_');
-
-    raw[raw_indx]->SerialNumber	= "260X06";
-//    raw[raw_indx]->Average	= (void (*) (...))SumVector;
-    raw[raw_indx]->ProbeType	= PROBE_PMS1D | PROBE_260X;
-  }
-  if ((der_indx = SearchTableSansLocation(derived, "C260X")) != ERR)
-  {
-    derived[der_indx]->SerialNumber	= raw[raw_indx]->SerialNumber;
-    derived[der_indx]->Length		= raw[raw_indx]->Length;
-    derived[der_indx]->ProbeType	= raw[raw_indx]->ProbeType;
-  }
-  if (raw_indx != ERR && der_indx == ERR)
-    printf("Debug: No C260X found.\n");
-
-
-  if ((raw_indx = SearchTableSansLocation(raw, "ACDP")) != ERR)
-  {
-    location = strrchr(raw[raw_indx]->name, '_');
-
-    raw[raw_indx]->SerialNumber	= "CDP001";
-//    raw[raw_indx]->Average	= (void (*) (...))SumVector;
-    raw[raw_indx]->ProbeType	= PROBE_PMS1D | PROBE_CDP;
-  }
-  if ((der_indx = SearchTableSansLocation(derived, "CCDP")) != ERR)
-  {
-    derived[der_indx]->SerialNumber	= raw[raw_indx]->SerialNumber;
-    derived[der_indx]->Length		= raw[raw_indx]->Length;
-    derived[der_indx]->ProbeType	= raw[raw_indx]->ProbeType;
-  }
-  if (raw_indx != ERR && der_indx == ERR)
-    printf("Debug: No CCDP found.\n");
-
-  if ((raw_indx = SearchTableSansLocation(raw, "AS200")) != ERR)
-  {
-    location = strrchr(raw[raw_indx]->name, '_');
-
-    raw[raw_indx]->SerialNumber	= "PCAS108";
-//    raw[raw_indx]->Average	= (void (*) (...))SumVector;
-    raw[raw_indx]->ProbeType	= PROBE_PMS1D | PROBE_PCASP;
-  }
-  if ((der_indx = SearchTableSansLocation(derived, "CS200")) != ERR)
-  {
-    derived[der_indx]->SerialNumber	= raw[raw_indx]->SerialNumber;
-    derived[der_indx]->Length		= raw[raw_indx]->Length;
-    derived[der_indx]->ProbeType	= raw[raw_indx]->ProbeType;
-  }
-  if (raw_indx != ERR && der_indx == ERR)
-    printf("Debug: No CS200 found.\n");
-
-
-  if ((raw_indx = SearchTableSansLocation(raw, "AS300")) != ERR)
-  {
-    location = strrchr(raw[raw_indx]->name, '_');
-
-    raw[raw_indx]->SerialNumber	= "FSSP305";
-//    raw[raw_indx]->Average	= (void (*) (...))SumVector;
-    raw[raw_indx]->ProbeType	= PROBE_PMS1D | PROBE_F300;
-  }
-  if ((der_indx = SearchTableSansLocation(derived, "CS300")) != ERR)
-  {
-    derived[der_indx]->SerialNumber	= raw[raw_indx]->SerialNumber;
-    derived[der_indx]->Length		= raw[raw_indx]->Length;
-    derived[der_indx]->ProbeType	= raw[raw_indx]->ProbeType;
-  }
-  if (raw_indx != ERR && der_indx == ERR)
-    printf("Debug: No CS300 found.\n");
-
-
-  if ((raw_indx = SearchTableSansLocation(raw, "AUHSAS")) != ERR)
-  {
-    location = strrchr(raw[raw_indx]->name, '_');
-
-    raw[raw_indx]->SerialNumber	= "UHSAS001";
-//    raw[raw_indx]->Average	= (void (*) (...))SumVector;
-    raw[raw_indx]->ProbeType	= PROBE_PMS1D | PROBE_PCASP;
-  }
-  if ((der_indx = SearchTableSansLocation(derived, "CUHSAS")) != ERR)
-  {
-    derived[der_indx]->SerialNumber	= raw[raw_indx]->SerialNumber;
-    derived[der_indx]->Length		= raw[raw_indx]->Length;
-    derived[der_indx]->ProbeType	= raw[raw_indx]->ProbeType;
-  }
-  if (raw_indx != ERR && der_indx == ERR)
-    printf("Debug: No CUHSAS found.\n");
-
-
-  if ((raw_indx = SearchTableSansLocation(raw, "A1DC")) != ERR)
-  {
-    location = strrchr(raw[raw_indx]->name, '_');
-
-    raw[raw_indx]->SerialNumber	= "F2DC001";
-//    raw[raw_indx]->Average	= (void (*) (...))SumVector;
-    raw[raw_indx]->ProbeType	= PROBE_PMS2D | PROBE_2DC;
-  }
-  if ((der_indx = SearchTableSansLocation(derived, "C1DC")) != ERR)
-  {
-    derived[der_indx]->SerialNumber	= raw[raw_indx]->SerialNumber;
-    derived[der_indx]->Length		= raw[raw_indx]->Length;
-    derived[der_indx]->ProbeType	= raw[raw_indx]->ProbeType;
-  }
-  if (raw_indx != ERR && der_indx == ERR)
-    printf("Debug: No C1DC found.\n");
-
-
-  if ((raw_indx = SearchTableSansLocation(raw, "A2DC")) != ERR)
-  {
-    location = strrchr(raw[raw_indx]->name, '_');
-
-    raw[raw_indx]->SerialNumber	= "F2DC001";
-//    raw[raw_indx]->Average	= (void (*) (...))SumVector;
-    raw[raw_indx]->ProbeType	= PROBE_PMS2D | PROBE_2DC;
-  }
-  if ((der_indx = SearchTableSansLocation(derived, "C2DC")) != ERR)
-  {
-    derived[der_indx]->SerialNumber	= raw[raw_indx]->SerialNumber;
-    derived[der_indx]->Length		= raw[raw_indx]->Length;
-    derived[der_indx]->ProbeType	= raw[raw_indx]->ProbeType;
-  }
-  if (raw_indx != ERR && der_indx == ERR)
-    printf("Debug: No C2DC found.\n");
-
+  setSerialNumberAndProbeType("AS100", "FSSP109", PROBE_PMS1D | PROBE_FSSP);
+  if (cfg.ProjectName() == "PASE")
+    setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
+  setSerialNumberAndProbeType("A260X", "260X06", PROBE_PMS1D | PROBE_260X);
+  setSerialNumberAndProbeType("ACDP", "CDP001", PROBE_PMS1D | PROBE_CDP);
+  setSerialNumberAndProbeType("AS200", "PCAS108", PROBE_PMS1D | PROBE_PCASP);
+  setSerialNumberAndProbeType("AS300", "FSSP305", PROBE_PMS1D | PROBE_F300);
+  setSerialNumberAndProbeType("AUHSAS", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
+  setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+  setSerialNumberAndProbeType("A2DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+  setSerialNumberAndProbeType("A1DP", "2DP10", PROBE_PMS2D | PROBE_2DP);
+  setSerialNumberAndProbeType("A2DP", "2DP10", PROBE_PMS2D | PROBE_2DP);
 }
 
 /* -------------------------------------------------------------------- */
