@@ -30,6 +30,7 @@ static int setProbeCount(const char * loc, int probeNum);
 /* -------------------------------------------------------------------- */
 static void setSerialNumberAndProbeType(const char * name, const char * serialNum, int probeType)
 {
+  static int twod_probe_cnt = 0;
   int raw_indx, der_indx;
   char tmp[64];
 
@@ -50,12 +51,38 @@ static void setSerialNumberAndProbeType(const char * name, const char * serialNu
 
   if (raw_indx != ERR && der_indx == ERR)
     printf("Debug: No %s found.\n", tmp);
+
+
+  if (strstr(name, "1D") || strstr(name, "2D"))	// 2D data, we need probeCount setup.
+  {
+    char target[12];
+    strcpy(target, &name[1]);
+
+    for (size_t i = 0; i < raw.size(); ++i)
+      if (strstr(raw[i]->name, target))
+      {
+        raw[i]->SerialNumber = serialNum;
+        raw[i]->ProbeType = probeType;
+        raw[i]->ProbeCount = twod_probe_cnt;
+      }
+
+    for (size_t i = 0; i < derived.size(); ++i)
+      if (strstr(derived[i]->name, target))
+      {
+        derived[i]->SerialNumber = serialNum;
+        derived[i]->ProbeType = probeType;
+        derived[i]->ProbeCount = twod_probe_cnt;
+      }
+
+    ++twod_probe_cnt;
+  }
 }
 
 
 // Temporary hack, until I finish consolidating suport files into VarDB.ncml.
 void PMS1D_SetupForADS3()
 {
+
   setSerialNumberAndProbeType("AS100", "FSSP109", PROBE_PMS1D | PROBE_FSSP);
   if (cfg.ProjectName() == "PASE")
     setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
