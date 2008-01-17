@@ -33,23 +33,13 @@ static const NR_TYPE shadowLevel = 0.55;
 // Use a fixed DOF, not what the manual specifies, until such time that a "research
 // project" can be done.  Al Cooper, Jorgen Jenson 6/26/06
 
-//static NR_TYPE DOF2dP[] = { 0.0, 145.203, 261.0, 261.0, 261.0,
-static NR_TYPE DOF2dP[] = { 0.0, 261.0, 261.0, 261.0, 261.0,
-	261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0,
-	261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0,
-	261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0,
-	261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0,
-	261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0,
-	261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0 };
+//static const NR_TYPE DOF2dP[] = { 0.0, 145.203, 261.0, 261.0, 261.0,
+static const NR_TYPE DOF2dP = 261.0;
 
 //static NR_TYPE DOF2dC[] = { 0.0, 1.56, 6.25, 14.06, 25.0, 39.06, 56.25,
-static NR_TYPE DOF2dC[] = { 0.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
-	61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
-	61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
-	61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
-	61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
-	61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
-	61.0, 61.0, 61.0 };
+static const NR_TYPE DOF2dC = 61.0;
+
+static const size_t maxBins = 128;
 
 
 static size_t	FIRST_BIN[MAX_PMS2D], LAST_BIN[MAX_PMS2D];
@@ -60,9 +50,9 @@ static double   PLWFAC[MAX_PMS2D], DBZFAC[MAX_PMS2D];
 static NR_TYPE  total_concen[MAX_PMS2D], dbar[MAX_PMS2D], plwc[MAX_PMS2D],
                 disp[MAX_PMS2D], dbz[MAX_PMS2D], tact[MAX_PMS2D];
 
-static NR_TYPE  radius[MAX_PMS2D][BINS_64], cell_size[MAX_PMS2D][BINS_64],
-		cell_size2[MAX_PMS2D][BINS_64], cell_size3[MAX_PMS2D][BINS_64],
-                eaw[MAX_PMS2D][BINS_64], reff2[MAX_PMS2D], reff3[MAX_PMS2D];
+static NR_TYPE  radius[MAX_PMS2D][maxBins], cell_size[MAX_PMS2D][maxBins],
+		cell_size2[MAX_PMS2D][maxBins], cell_size3[MAX_PMS2D][maxBins],
+                eaw[MAX_PMS2D][maxBins], reff2[MAX_PMS2D], reff3[MAX_PMS2D];
                                                                                           
 NR_TYPE         reff23[MAX_PMS2D], reff22[MAX_PMS2D];  /* For export to reff.c */
 
@@ -154,9 +144,9 @@ void sTwodInit(var_base *varp)
 
     if (j > 0)
       {
-      LAST_BIN[probeNum] += 32;
-      length += 32;
-      nDiodes += 32;
+      LAST_BIN[probeNum] *= 2;
+      length *= 2;
+      nDiodes *= 2;
       }
 
     ComputePMS1DParams(radius[probeNum], eaw[probeNum], cell_size[probeNum],
@@ -172,8 +162,15 @@ void sTwodInit(var_base *varp)
     if (j > 0)  /* 2DC only (not 1DC). */
       {
       if (varp->name[3] == 'C')		/* EAW is fixed .8 for 2DC */
+        {
+        float value = 0.8;
+
+        if (varp->SerialNumber.compare("F2DC001") == 0)	// or 1.6 for 64 diode Fast2DC.
+          value *= 2;
+
         for (i = 0; i < length; ++i)
-          eaw[probeNum][i] = 0.8;
+          eaw[probeNum][i] = value;
+        }
       else
       if (varp->name[3] == 'P')		/* EAW is fixed 6.4 for 2DP */
         for (i = 0; i < length; ++i)
@@ -267,8 +264,8 @@ void sTwoD(DERTBL *varp)
   size_t	i, probeNum;
   NR_TYPE	*actual, *concentration, *dia, *dia2, *dia3;
   NR_TYPE	tas;		/* True Air Speed	*/
-  NR_TYPE	sampleVolume[BINS_64], sampleArea;
-  NR_TYPE	*dof, deadTime;
+  NR_TYPE	sampleVolume[maxBins], sampleArea;
+  NR_TYPE	dof, deadTime;
 
   actual	= GetVector(varp, 0, varp->Length);
   tas		= GetSampleFor1D(varp, 1);
@@ -296,7 +293,7 @@ void sTwoD(DERTBL *varp)
 
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
     {
-    sampleArea = dof[i] * eaw[probeNum][i];
+    sampleArea = dof * eaw[probeNum][i];
 /*
     if (varp->name[3] == 'C')
       if (dia[i] < 160)
@@ -315,7 +312,7 @@ void sTwoD(DERTBL *varp)
       }
 
 //if (tas > 100 && varp->name[3] == 'C')
-//  printf("%d %d %f %f\n", i, (int)dia[i], sampleArea, dof[i] * eaw[probeNum][i]);
+//  printf("%d %d %f %f\n", i, (int)dia[i], sampleArea, dof * eaw[probeNum][i]);
     }
 
 //if (tas > 100 && varp->name[3] == 'C') exit(1);
