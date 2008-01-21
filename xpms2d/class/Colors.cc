@@ -52,6 +52,7 @@ Colors::Colors(const Widget w)
   Window	win;
 
   Color = true;
+  colorIndex = 0;
 
   dpy = XtDisplay(w);
   screenNum = XScreenNumberOfScreen(XtScreen(w));

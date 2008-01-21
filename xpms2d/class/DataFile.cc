@@ -78,7 +78,7 @@ static unsigned short HtestParticle[] = {
   0x427e,
   };
 
-static size_t P2dLRpPR = P2DLRPR;
+static size_t P2dLRpPR = 1;
 
 /* -------------------------------------------------------------------- */
 ADS_DataFile::ADS_DataFile(char fName[])
@@ -87,6 +87,7 @@ ADS_DataFile::ADS_DataFile(char fName[])
   const char * name;
   const void * p;
 
+  hdr = 0;
   strcpy(fileName, fName);
 
   if (strstr(fileName, ".gz"))
@@ -148,8 +149,6 @@ ADS_DataFile::ADS_DataFile(char fName[])
   else
   if (isValidProbe(buffer))
     {
-    hdr = 0;
-    P2dLRpPR = 1;
     _fileHeaderType = NoHeader;
     printf("No RAF header found, assuming raw PMS2D file.\n");
     }

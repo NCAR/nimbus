@@ -624,7 +624,7 @@ void MainCanvas::enchiladaLineItem(PostScript *ps, int i, int cnt,
   s = cp->time - (h*3600) - (m*60);
 
   // Particle #, time stamp, timeword, reject, h, w, a
-  sprintf(buffer, "%03d %02d:%02d:%02d.%03d  %8ld %2d %3d %3d %3d %6ld %6ld",
+  sprintf(buffer, "%03d %02d:%02d:%02d.%03ld  %8ld %2d %3d %3d %3d %6ld %6ld",
 	cnt, h, m, s, cp->msec, cp->timeWord, cp->reject, cp->h, cp->w,
 	cp->area, cp->deltaTime, cp->liveTime);
 
