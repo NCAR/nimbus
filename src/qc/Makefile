@@ -75,5 +75,5 @@ release:
 install: all
 	cp vallib/qc.h ../../include
 	cp vallib/libval.a ../../lib
-	cp man/qc.l ${JLOCAL}/man/manl
-	cp gui/qc-gui $(WINDS)/bin
+	cp man/qc.3 ${JLOCAL}/man/man3
+#	cp gui/qc-gui $(WINDS)/bin
