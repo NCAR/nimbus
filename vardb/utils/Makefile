@@ -8,7 +8,7 @@ LINTLIBS=	${LIBS}
 INCLUDES=	-I${JLOCAL}/include
 CFLAGS=		${INCLUDES}
 
-LIBS=	-L${JLOCAL}/lib -lVarDB -lraf -lnetcdf
+LIBS=	-L${JLOCAL}/lib -lVarDB -lraf -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic
 
 SRCS=	vdbdump.cc
 OBJS=	vdbdump.o

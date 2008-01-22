@@ -10,7 +10,7 @@ WWWDIR=		/net/www/raf/Software
 #
 INCLUDES= -I${JLOCAL}/include
 DEFINES = -DSVR4
-LIBS    = -R /usr/dt/lib -lXm -lXt -lX11 -lnetcdf
+LIBS    = -R /usr/dt/lib -lXm -lXt -lX11 -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic
 LIB_DIRS= -L${JLOCAL}/lib
 ANONFTP = /net/ftp/pub/archive/RAF-src/bin.Solaris2.9
 
@@ -19,7 +19,7 @@ ANONFTP = /net/ftp/pub/archive/RAF-src/bin.Solaris2.9
 INCLUDES= -I${JLOCAL}/include -I/usr/X11R6/include
 DEFINES = 
 LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib
-LIBS    = -lXm -lXp -lXt -lXext -lX11 -lnetcdf
+LIBS    = -lXm -lXp -lXt -lXext -lX11 -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic
 ANONFTP = /net/ftp/pub/archive/RAF-src/bin.Fedora3
 
 CFLAGS=		-Wall -g -O2 ${INCLUDES} ${DEFINES}

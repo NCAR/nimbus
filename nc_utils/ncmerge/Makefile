@@ -5,7 +5,7 @@ DESTDIR=	${JLOCAL}/
 BINDIR=		bin
 ANONFTP=	/net/ftp/pub/archive/RAF-src/bin.Fedora3
 MANDIR=		man/man1
-LIBS=		-L${JLOCAL}/lib -lnetcdf 
+LIBS=		-L${JLOCAL}/lib -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic 
 INCLUDES=	-I${JLOCAL}/include
 CXXFLAGS=	-Wall -g ${INCLUDES}
 

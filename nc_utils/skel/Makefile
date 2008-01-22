@@ -3,7 +3,7 @@
 #
 CC=		gcc
 LIB_DIRS=	-L/usr/X11R6/lib -L${JLOCAL}/lib
-LIBS=		-lraf -lm -lnetcdf -lXm -lXt -lX11
+LIBS=		-lraf -lm -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic -lXm -lXt -lX11
 INCLUDES=	-I${JLOCAL}/include
 CFLAGS=		-Wall -g -O2 ${INCLUDES}
 

@@ -6,7 +6,7 @@ BINDIR=		${DESTDIR}/bin
 MANDIR=		${DESTDIR}/man/manl
 INCDIR=		${DESTDIR}/include
 
-LIBS=		-lraf++ -lnetcdf_c++ -lnetcdf
+LIBS=		-lraf++ -Wl,-Bstatic -lnetcdf_c++ -lnetcdf -Wl,-Bdynamic
 INCLUDES=	-I$(INCDIR)
 LIBDIR=		-L$(LOCAL)/lib -L$(JLOCAL)/lib
 LIBDIR=		-L$(JLOCAL)/lib

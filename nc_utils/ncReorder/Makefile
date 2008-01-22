@@ -8,7 +8,7 @@ INCDIR=		${DESTDIR}/include
 ANONFTP=	/net/ftp/pub/archive/RAF-src/bin.Fedora3
 
 
-LIBS=		-L${JLOCAL}/lib -lnetcdf_c++ -lnetcdf
+LIBS=		-L${JLOCAL}/lib -Wl,-Bstatic -lnetcdf_c++ -lnetcdf -Wl,-Bdynamic
 INCLUDES=	-I$(INCDIR)
 
 CC=		g++

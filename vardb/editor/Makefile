@@ -9,10 +9,10 @@ INCLUDES=	-I${JLOCAL}/include -I/usr/X11R6/include
 CFLAGS=		-Wall -g -O2 ${INCLUDES}
 
 # Solaris
-#LIBS=		-lVarDB -lraf -lnetcdf -lXm -lXt -lX11
+#LIBS=		-lVarDB -lraf -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic -lXm -lXt -lX11
 
 #Linux
-LIBS=		-L../lib -L${JLOCAL}/lib -L/usr/X11R6/lib -lVarDB -lraf -lnetcdf -lXm -lXt -lX11 -lXext
+LIBS=		-L../lib -L${JLOCAL}/lib -L/usr/X11R6/lib -lVarDB -lraf -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic -lXm -lXt -lX11 -lXext
 
 SRCS=	vared.c initv.c Xwin.c ccb.c
 HDRS=	define.h ${JLOCAL}/include/raf/vardb.h fbr.h

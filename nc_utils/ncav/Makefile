@@ -10,7 +10,7 @@ MANDIR=		${JLOCAL}/man/man1
 #
 INCLUDES= -I${JLOCAL}/include
 DEFINES = -DSVR4
-LIBS    = -R /usr/dt/lib -lraf -lXm -lXt -lX11 -lnetcdf -lm
+LIBS    = -R /usr/dt/lib -lraf -lXm -lXt -lX11 -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic -lm
 LIB_DIRS= -L${JLOCAL}/lib
 ANONFTP = /net/ftp/pub/archive/RAF-src/bin.Solaris2.9
 
@@ -19,7 +19,7 @@ ANONFTP = /net/ftp/pub/archive/RAF-src/bin.Solaris2.9
 INCLUDES= -I${JLOCAL}/include
 DEFINES = 
 LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib
-LIBS    = -lraf -lXm -lXp -lXt -lXext -lX11 -lnetcdf -lm
+LIBS    = -lraf -lXm -lXp -lXt -lXext -lX11 -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic -lm
 ANONFTP = /net/ftp/pub/archive/RAF-src/bin.Fedora3
 
 

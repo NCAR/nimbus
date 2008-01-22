@@ -15,7 +15,7 @@ COD	= ../class
 DEFINES	= -DPNG
 INCLUDES= -I${INC} -I/usr/X11R6/include -I${RAFINC}
 LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib
-LIBS	= -lraf++ -lXm -lXt -lX11 -lXext -lnetcdf_c++ -lnetcdf -lpng -lz
+LIBS	= -lraf++ -lXm -lXt -lX11 -lXext -Wl,-Bstatic -lnetcdf_c++ -lnetcdf -Wl,-Bdynamic -lpng -lz
 ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.Fedora3
 
 #	Mac OS X
@@ -23,14 +23,14 @@ ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.Fedora3
 #DEFINES	= -DPNG
 #INCLUDES= -I${INC} -I/sw/include -I/usr/X11R6/include -I${RAFINC}
 #LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib -L/sw/lib
-#LIBS	= -lraf++ -lXm -lXt -lX11 -lXext -lnetcdf_c++ -lnetcdf -lpng -lz
-#LIBS	= -lraf++ -lXm -lXt -lX11 -lXext -lnetcdf_c++ -lnetcdf
+#LIBS	= -lraf++ -lXm -lXt -lX11 -lXext -Wl,-Bstatic -lnetcdf_c++ -lnetcdf -Wl,-Bdynamic -lpng -lz
+#LIBS	= -lraf++ -lXm -lXt -lX11 -lXext -Wl,-Bstatic -lnetcdf_c++ -lnetcdf -Wl,-Bdynamic
 
 
 #	Solaris
 #
 #INCLUDES= -I${INC} -I${RAFINC} -I${LOCAL}/include -I/usr/dt/include
-#LIBS	= -lraf++ -Wl,-Bstatic -lpng -lz -Wl,-Bdynamic -R /usr/dt/lib -lXm -lXt -lX11 -lnetcdf_c++ -lnetcdf -lm
+#LIBS	= -lraf++ -Wl,-Bstatic -lpng -lz -Wl,-Bdynamic -R /usr/dt/lib -lXm -lXt -lX11 -Wl,-Bstatic -lnetcdf_c++ -lnetcdf -Wl,-Bdynamic -lm
 #DEFINES	= -DSVR4 -DPNG
 #ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.Solaris2.9
 

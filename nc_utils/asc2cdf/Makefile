@@ -8,11 +8,11 @@ INCLUDES=	-I$(JLOCAL)/include
 CFLAGS=		-Wall -g ${INCLUDES} -DVARDB
 
 # Solaris
-LIBS=		-L/jnet/solaris/lib -lVarDB -lnetcdf
+LIBS=		-L/jnet/solaris/lib -lVarDB -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic
 ANONFTP=	/jnet/ftp/pub/src/bin.Solaris2.9
 
 # Linux
-LIBS=	-L${JLOCAL}/lib -lVarDB -lraf++ -lraf -lnetcdf 
+LIBS=	-L${JLOCAL}/lib -lVarDB -lraf++ -lraf -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic 
 ANONFTP=/net/ftp/pub/archive/RAF-src/bin.Fedora3
 WWWDOC=	/net/www/raf/Software
 
