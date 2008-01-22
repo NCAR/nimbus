@@ -18,7 +18,7 @@ ADS3_INC = -I/opt/ads3/x86/include
 #
 INCLUDES = -I$(NINC) -I$(LOCAL_INC) -I/usr/X11R6/include
 LIB_DIRS = -L/usr/X11R6/lib -L${JLOCAL}/lib -L/usr/lib/pgsql -L../../lib
-CLIBS    = -lstd -luser -lxlate -lAircraft -lhdr_api -lpms -lVarDB -lraf -lncaru -lnetcdf -lraf++ -lXm -lXt -lX11 -lpq -lgsl -lgslcblas -lm
+CLIBS    = -lstd -luser -lxlate -lAircraft -lhdr_api -lpms -lVarDB -lraf -lncaru -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic -lraf++ -lXm -lXt -lX11 -lpq -lgsl -lgslcblas -lm
 
 CFLAGS	= -Wall -g -O2
 COFLAGS	= -Wall -g -O2 -c $(INCLUDES)
