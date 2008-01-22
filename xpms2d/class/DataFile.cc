@@ -119,29 +119,31 @@ ADS_DataFile::ADS_DataFile(char fName[])
 #ifdef PNG
   if (gzipped)
     {
-    gzread(gz_fd, buffer, 2);
+    gzread(gz_fd, buffer, 100);
     gzseek(gz_fd, 0, SEEK_SET);	// gzrewind does not seem to work on
     }
   else
 #endif
     {
-    fread(buffer, 10, 1, fp);
+    fread(buffer, 100, 1, fp);
     rewind(fp);
     }
 
-  if (strncmp(buffer, "PMS2D", 5) == 0)
+  if (strstr(buffer, "<PMS2D>") )
     {
     _fileHeaderType = PMS2D;
     char * p;
 
     while (fgets(buffer, 512, fp))
       {
-      if (strcmp(buffer, "end header\n") == 0)
+      if (strstr(buffer, "</PMS2D>\n") )
         break;
-      p = strtok(buffer, " \t=,");
-      if (strcmp(p, "probe") == 0)
+      if (strstr(buffer, "<probe") )
         {
-          p = strtok(NULL, " \t=,");
+          p = strstr(buffer, "id=");
+          p = strchr(p, '\"');
+          p = strtok(p, "\"");
+printf("p=%s\n", p);
           probe[nProbes++] = new Probe(p, PMS2_RECSIZE);
         }
       }
@@ -499,7 +501,6 @@ int ADS_DataFile::NextPhysicalRecord(char buff[])
     default:
       size = 0;
     }
-printf("4\n");
 
 #ifdef PNG
   if (gzipped)
