@@ -284,9 +284,14 @@ void sTwoD(DERTBL *varp)
 
   // Convert missing values to zero.  This will handle the asynchronous nature of
   // nidas::TwoD_USB only putting out histograms when there is data.
+  {
   for (i = 0; i < varp->Length; ++i)
     if (isnan(actual[i]))
       actual[i] = 0;
+
+  if (isnan(deadTime))
+    deadTime = 0;
+  }
 
 //if (tas > 100 && varp->name[3] == 'C')
 //  printf("%s %d %f %f -------\n", varp->name, varp->ProbeCount, deadTime, (float)((1000 - (int)deadTime) / 1000));
