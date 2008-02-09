@@ -28,6 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000-2006
 #include "amlib.h"
 #include <raf/pms.h>
 
+// % of a diode which must be shadowed for the diode to trigger.
 static const NR_TYPE shadowLevel = 0.55;
 
 // Use a fixed DOF, not what the manual specifies, until such time that a "research
@@ -293,19 +294,10 @@ void sTwoD(DERTBL *varp)
     deadTime = 0;
   }
 
-//if (tas > 100 && varp->name[3] == 'C')
-//  printf("%s %d %f %f -------\n", varp->name, varp->ProbeCount, deadTime, (float)((1000 - (int)deadTime) / 1000));
-
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
     {
     sampleArea = dof * eaw[probeNum][i];
-/*
-    if (varp->name[3] == 'C')
-      if (dia[i] < 160)
-        sampleArea = tas * (7.58e-7*resolution[probeNum]*dia[i]*dia[i]+1.71e-8*dia[i]*dia[i]*dia[i]);
-      else
-        sampleArea = tas * (1.94e-2*resolution[probeNum]+4.39e-4*dia[i]);
-*/
+
     sampleVolume[i] = tas * sampleArea * 0.001 *
 		(((float)1000 - deadTime) / 1000);
 
@@ -315,24 +307,17 @@ void sTwoD(DERTBL *varp)
       LogStdMsg(buffer);
       sampleVolume[i] = 0.0;
       }
-
-//if (tas > 100 && varp->name[3] == 'C')
-//  printf("%d %d %f %f\n", i, (int)dia[i], sampleArea, dof * eaw[probeNum][i]);
     }
 
-//if (tas > 100 && varp->name[3] == 'C') exit(1);
-
+#define TACT
 #define PLWC
 #define DBZ
 #define REFF
 
-//printf("tact=%f, deadTime=%f\n", tact[probeNum], deadTime);
+sprintf(buffer, "tact=%f, deadTime=%f\n", tact[probeNum], deadTime);
+LogStdMsg(buffer);
 
 #include "pms1d_cv"
-
-//printf("cnt: %f %f %f %f %f\n", actual[1], actual[2], actual[3], actual[4], actual[5]);
-//printf("sv: %f %f %f %f %f\n", sampleVolume[1], sampleVolume[2], sampleVolume[3], sampleVolume[4], sampleVolume[5]);
-//printf("cnc: %f %f %f %f %f\n", concentration[1], concentration[2], concentration[3], concentration[4], concentration[5]);
 
   if (strstr(varp->name, "1DC"))
     {
@@ -384,8 +369,6 @@ void sHVPS(DERTBL *varp)
 #define PLWC
 #define DBZ
 #define REFF
-
-//printf("tact=%f, deadTime=%f\n", tact[probeNum], deadTime);
 
 #include "pms1d_cv"
 
