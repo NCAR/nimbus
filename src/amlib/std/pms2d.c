@@ -314,9 +314,6 @@ void sTwoD(DERTBL *varp)
 #define DBZ
 #define REFF
 
-sprintf(buffer, "tact=%f, deadTime=%f\n", tact[probeNum], deadTime);
-LogStdMsg(buffer);
-
 #include "pms1d_cv"
 
   if (strstr(varp->name, "1DC"))
