@@ -245,11 +245,11 @@ static void runSecondPassPrograms()
   }
 
   {
-    LogMessage("Producing KML file (rt_kml)...\n");
+    LogMessage("Producing KML file (acTrack2kml)...\n");
     char kml_file[1024];
     strcpy(kml_file, OutputFileName);
     strcpy(strrchr(kml_file, '.'), ".kml");
-    sprintf(buffer, "rt_kml %s %s", OutputFileName, kml_file);
+    sprintf(buffer, "acTrack2kml %s %s", OutputFileName, kml_file);
     system(buffer);
   }
 }	/* END RUNSECONDPASSPROGRAMS */
