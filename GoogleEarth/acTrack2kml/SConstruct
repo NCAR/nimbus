@@ -58,6 +58,6 @@ if not conf.CheckLibWithHeader('pq', 'libpq-fe.h', 'C'):
 
 # print env.Dump()
 
-env.Program('rt_kml.cc')
+env.Program('acTrack2kml.cc')
 
-Alias('install', env.Install('$JLOCAL/bin', 'rt_kml'))
+Alias('install', env.Install('$JLOCAL/bin', 'acTrack2kml'))
