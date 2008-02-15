@@ -170,6 +170,7 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 
   if (goodPoints < 3)
   {
+/*  Removed due to flood of messages, drowning out the rest.
     if (goodPoints != 0)
     {
       char msg[256];
@@ -177,6 +178,7 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 		vp->name, vp->SampleRate, goodPoints);
       LogThisRecordMsg(this_rec, msg);
     }
+*/
     return;
   }
 
