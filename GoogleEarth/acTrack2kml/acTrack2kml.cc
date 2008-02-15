@@ -17,8 +17,8 @@
 #include "boost/lexical_cast.hpp"
 
 // Output directories for .xml & .kml files.  Ground
-//const std::string googleMapDataDir = "/net/www/docs/flight_data/pacdex/flights/";
-//const std::string googleEarthDataDir = "/net/www/docs/flight_data/pacdex/flights/";
+//const std::string googleMapDataDir = "/net/www/docs/flight_data/";
+//const std::string googleEarthDataDir = "/net/www/docs/flight_data/";
 
 // Onboard location
 const std::string googleMapDataDir = "/var/www/html/";
