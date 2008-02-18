@@ -4,19 +4,19 @@
  
 static String fallback_resources[] =
   {
-  "*defaultFontList:	-adobe-courier-bold-r-*-*-14-140-75-75-m-90-*-*",
+  "*defaultFontList:	-adobe-courier-bold-r-*-*-14-*-*-*-m-90-*-*",
   "*foreground:         black",
 
-  "*font24:		-adobe-courier-bold-r-*-*-24-240-75-75-*-*-*-*",
-  "*font18:		-adobe-courier-bold-r-*-*-18-180-75-75-*-*-*-*",
-  "*font14:		-adobe-courier-bold-r-*-*-14-140-75-75-*-*-*-*",
-  "*font12:		-adobe-courier-bold-r-*-*-12-120-75-75-*-*-*-*",
-  "*font10:		-adobe-courier-bold-r-*-*-10-100-75-75-*-*-*-*",
+  "*font24:		-adobe-courier-bold-r-*-*-24-*-*-*-*-*-*-*",
+  "*font18:		-adobe-courier-bold-r-*-*-18-*-*-*-*-*-*-*",
+  "*font14:		-adobe-courier-bold-r-*-*-14-*-*-*-*-*-*-*",
+  "*font12:		-adobe-courier-bold-r-*-*-12-*-*-*-*-*-*-*",
+  "*font10:		-adobe-courier-bold-r-*-*-10-*-*-*-*-*-*-*",
 
-  "*plRC*fontList:	-adobe-courier-bold-r-*-*-12-120-75-75-*-*-*-*",
-  "*controlRC*fontList:	-adobe-courier-bold-r-*-*-12-120-75-75-*-*-*-*",
-  "*printParmsRC*fontList:  -adobe-courier-bold-r-*-*-12-120-75-75-*-*-*-*",
-  "*editSpecShell*fontList: -adobe-courier-bold-r-*-*-12-120-75-75-*-*-*-*",
+  "*plRC*fontList:	-adobe-courier-bold-r-*-*-12-*-*-*-*-*-*-*",
+  "*controlRC*fontList:	-adobe-courier-bold-r-*-*-12-*-*-*-*-*-*-*",
+  "*printParmsRC*fontList:  -adobe-courier-bold-r-*-*-12-*-*-*-*-*-*-*",
+  "*editSpecShell*fontList: -adobe-courier-bold-r-*-*-12-*-*-*-*-*-*-*",
 
   "*XmPushButton.height:		32",
   "*XmTextField.background:		Burlywood",
@@ -92,7 +92,7 @@ static String fallback_resources[] =
   "*enchiladaText.columns:		80",
   "*enchiladaText.editable:		False",
   "*enchiladaText.editMode:		MULTI_LINE_EDIT",
-  "*enchiladaText.fontList:	-adobe-courier-bold-r-*-*-12-120-75-75-*-*-*-*",
+  "*enchiladaText.fontList:	-adobe-courier-bold-r-*-*-12-*-*-*-*-*-*-*",
   "*enchiladaText.rows:			42",
 
   "*hexShell.title:			Hex Output",
@@ -100,7 +100,7 @@ static String fallback_resources[] =
   "*hexText.columns:			96",
   "*hexText.editable:			False",
   "*hexText.editMode:			MULTI_LINE_EDIT",
-  "*hexText.fontList:	-adobe-courier-bold-r-*-*-12-120-75-75-*-*-*-*",
+  "*hexText.fontList:	-adobe-courier-bold-r-*-*-12-*-*-*-*-*-*-*",
   "*hexText.rows:			42",
 
   "*menuBar*newFile.labelString:	New Data File",
