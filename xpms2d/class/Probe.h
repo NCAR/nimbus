@@ -19,8 +19,19 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 class Probe {
 
 public:
+  /**
+   * Probe conctructor for ADS2 header.
+   */
   Probe(Header *hdr, const Pms2 *p, int cnt);
-  Probe(const char hdr[], int recSize);
+  /**
+   * Probe constructor for new PMS2D data files.  New means starting
+   * in 2007 with PACDEX project.
+   */
+  Probe(const char xml_string[], int recSize);
+  /**
+   * Probe constructor for no file header.  Univ Wyoming.
+   */
+  Probe(const char hdr[]);
 
   std::string Name() const	{ return _name; }
   std::string SerialNum() const	{ return _serialNumber; }
@@ -37,7 +48,9 @@ public:
   bool Display() const		{ return _displayed; }
   void setDisplay(bool b)	{ _displayed = b; }
 
-private:
+protected:
+  std::string getAttribute(const char s[], const char target[]) const;
+
   std::string	_name;
   std::string	_serialNumber;
 

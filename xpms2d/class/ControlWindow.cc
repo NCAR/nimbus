@@ -171,7 +171,7 @@ trc = XmCreateRowColumn(Window(), "trc", args, 0);
   for (i = 0; i < MAX_PROBES; ++i)
     {
     n = 0;
-    probeB[i] = XmCreateToggleButton(RC[1], "none     ", NULL, 0);
+    probeB[i] = XmCreateToggleButton(RC[1], "none       ", NULL, 0);
     XtAddCallback(probeB[i], XmNvalueChangedCallback,
                   (XtCallbackProc)SetProbe, (XtPointer)i);
     }

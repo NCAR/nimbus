@@ -132,20 +132,13 @@ ADS_DataFile::ADS_DataFile(char fName[])
   if (strstr(buffer, "<PMS2D>") )
     {
     _fileHeaderType = PMS2D;
-    char * p;
 
     while (fgets(buffer, 512, fp))
       {
-      if (strstr(buffer, "</PMS2D>\n") )
+      if ( strstr(buffer, "</PMS2D>\n") )
         break;
-      if (strstr(buffer, "<probe") )
-        {
-          p = strstr(buffer, "id=");
-          p = strchr(p, '\"');
-          p = strtok(p, "\"");
-printf("p=%s\n", p);
-          probe[nProbes++] = new Probe(p, PMS2_RECSIZE);
-        }
+      if ( strstr(buffer, "<probe") )
+        probe[nProbes++] = new Probe(buffer, PMS2_SIZE);
       }
     }
   else
@@ -612,7 +605,7 @@ void ADS_DataFile::buildIndices()
         continue;
 
       if (i == nProbes)
-        probe[nProbes++] = new Probe(buffer, PMS2_RECSIZE);
+        probe[nProbes++] = new Probe(buffer);
       }
 
     for (i = 0; i < 1; ++i)
