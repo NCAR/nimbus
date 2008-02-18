@@ -34,8 +34,8 @@ public:
 
   void	reset(ADS_DataFile *file);
   void	draw(P2d_rec *record, struct recStats &stats, float hdrVer, int probeNum, PostScript *ps);
-  int	maxRecords()		{ return(maxRecs); }
-  int	SpaceAvailable()	{ return(Height() - y); }
+  size_t maxRecords() const	{ return(maxRecs); }
+  int	SpaceAvailable() const	{ return(Height() - y); }
 
 
 private:

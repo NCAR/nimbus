@@ -26,9 +26,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 class CanvasWindow : public WinForm {
 
 public:
-		CanvasWindow(const Widget parent);
+	CanvasWindow(const Widget parent);
 
-  Widget	DrawingArea()	{ return(drawA); }
+  Widget DrawingArea() const
+  { return(drawA); }
 
 
 private:

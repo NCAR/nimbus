@@ -20,6 +20,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #include "Probe.h"
 #include <raf/hdrAPI.h>
 
+#include <vector>
+
 /* ADS image record types */
 #define ADS_WORD	0x4144
 #define HDR_WORD	0x5448
@@ -40,6 +42,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #define PMS2_SIZE	4116
 #define PMS2_RECSIZE	(0x8000 / PMS2_SIZE) * PMS2_SIZE
 
+typedef std::vector<Probe *> ProbeList;
+
 
 /* -------------------------------------------------------------------- */
 class ADS_DataFile {
@@ -48,16 +52,25 @@ public:
   ADS_DataFile(char fName[]);
   ~ADS_DataFile();
 
-  const char	*FileName()	 { return(fileName); }
-  const char	*ProjectNumber() { return(hdr ? hdr->ProjectNumber() : (char *)""); }
-  const char	*FlightNumber()	 { return(hdr ? hdr->FlightNumber() : (char *)""); }
-  const char	*FlightDate()	 { return(hdr ? hdr->FlightDate() : (char *)""); }
-  const char	*HeaderVersion() { return(hdr ? hdr->Version() : (char *)"5"); }
+  const std::string &
+  FileName() const	{ return _fileName; }
 
-  int	NumberOfProbes()	{ return(nProbes); }
+  const char *
+  HeaderVersion() const	{ return(_hdr ? _hdr->Version() : (char *)"5"); }
+
+  const std::string &
+  ProjectNumber() const	{ return _projectName; }
+
+  const std::string &
+  FlightNumber() const	{ return _flightNumber; }
+
+  const std::string &
+  FlightDate() const	{ return _flightDate; }
+
   void	SetPosition(int position);
-  int	GetPosition()
-	{ return(nIndices == 0 ? 0 : 100 * currPhys / nIndices); }
+
+  int
+  GetPosition() const { return(nIndices == 0 ? 0 : 100 * currPhys / nIndices); }
 
 //  int	NextSyncRecord(char buff[]);
   bool	LocatePMS2dRecord(P2d_rec *buff, int h, int m, int s);
@@ -71,12 +84,16 @@ public:
 
   bool	isValidProbe(char *pr);
 
-  Probe	*probe[MAX_PROBES];
+  const ProbeList&
+  Probes() const { return _probeList; }
 
-private:
+protected:
   enum HeaderType { NoHeader, ADS2, PMS2D };
 
   typedef struct { long index; short time[3]; } Index;
+
+  void		initADS2();
+  void		initADS3();
 
   long long	ntohll(long long * p) const;
 
@@ -84,8 +101,13 @@ private:
   void		SwapPMS2D(P2d_rec *);
   void		check_rico_half_buff(P2d_rec *buff, size_t start, size_t end);
 
-  char		fileName[PATH_LEN];
-  Header	*hdr;
+  std::string	_fileName;
+
+  std::string	_projectName;
+  std::string	_flightNumber;
+  std::string	_flightDate;
+
+  Header	* _hdr;
 #ifdef PNG
   gzFile	gz_fd;
 #else
@@ -94,7 +116,8 @@ private:
   FILE		*fp;
   size_t	savePos;
 
-  size_t	nProbes;
+  ProbeList	_probeList;
+
   bool		gzipped, useTestRecord;
   HeaderType	_fileHeaderType;
 

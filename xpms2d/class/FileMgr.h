@@ -27,7 +27,8 @@ public:
 
   void		SetCurrentFile(int newFile)	{ currentFile = newFile; }
 
-  int		NumberOfFiles()		{ return(numberFiles); }
+  size_t	NumberOfFiles() const		{ return(numberFiles); }
+
   ADS_DataFile	*CurrentFile()
 		{ return(numberFiles == 0 ? (ADS_DataFile *)NULL : dataFile[currentFile]); }
 

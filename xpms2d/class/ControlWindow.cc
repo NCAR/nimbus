@@ -43,7 +43,7 @@ ControlWindow::ControlWindow(Widget parent) : WinForm(parent, "control", RowColu
   Widget	pnRC[2], plRC[8], label, trc;
   Widget	title[8], frame[6], RC[6];
   Arg		args[8];
-  int		i, n;
+  size_t	i, n;
 
   delay = 0;
   densIdx = 0;
@@ -235,7 +235,6 @@ void ControlWindow::PopUp()
 /* -------------------------------------------------------------------- */
 void ControlWindow::SetFileNames()
 {
-printf("In SetFileNames()\n");
 return;
 /*
   int		i;
@@ -270,16 +269,18 @@ return;
 /* -------------------------------------------------------------------- */
 void ControlWindow::SetProbes()
 {
-  int		i = 0;
+  size_t	i = 0;
   XmString	label;
   Arg		args[2];
-printf("In SetProbes()\n");
+
   if (fileMgr.CurrentFile())
-    for (i = 0; i < fileMgr.CurrentFile()->NumberOfProbes(); ++i)
+    {
+    const ProbeList & probes = fileMgr.CurrentFile()->Probes();
+    for (i = 0; i < probes.size(); ++i)
       {
       XtSetSensitive(probeB[i], True);
 
-      label = XmStringCreate((char *)fileMgr.CurrentFile()->probe[i]->Name().c_str(),
+      label = XmStringCreate((char *)probes[i]->Name().c_str(),
                              XmFONTLIST_DEFAULT_TAG);
       XtSetArg(args[0], XmNlabelString, label);
       XtSetValues(probeB[i], args, 1);
@@ -287,7 +288,8 @@ printf("In SetProbes()\n");
 
       XmToggleButtonSetState(probeB[i], False, False);
       }
- 
+    }
+
   for (; i < MAX_PROBES; ++i)
     {
     XtSetSensitive(probeB[i], False);

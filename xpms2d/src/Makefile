@@ -44,10 +44,10 @@ PROG	= xpms2d
 HDRS	= define.h
 
 SRCS=	xpms2d.cc global.cc ccb.cc cb_canvas.cc cb_control.cc cb_mag.cc\
-	cb_menus.cc cb_printer.cc cb_text.cc process.cc
+	cb_menus.cc cb_printer.cc cb_text.cc process.cc xml.cc
 
 OBJS=	xpms2d.o global.o ccb.o cb_canvas.o cb_control.o cb_mag.o\
-	cb_menus.o cb_printer.o cb_text.o process.o
+	cb_menus.o cb_printer.o cb_text.o process.o xml.o
 
 
 O2DOB=	${O2D}/CanvasWindow.o\

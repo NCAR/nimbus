@@ -1058,7 +1058,7 @@ output.tBarElapsedtime = lastTimeWord - firstTimeWord;
 
 
   // Compute "science" data.
-  totalLiveTime /= 1000000;     // convert to seconds
+  totalLiveTime /= 1000;     // convert to seconds
 
   computeDerived(sampleVolume, nBins, totalLiveTime);
 

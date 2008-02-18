@@ -27,7 +27,7 @@ class MagnifyWindow  : public WinForm {
 public:
 	MagnifyWindow(Widget parent);
 
-  Widget        DrawingArea()   { return(drawA); }
+  Widget DrawingArea() const	{ return(drawA); }
  
  
 private:

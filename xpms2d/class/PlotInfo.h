@@ -21,8 +21,8 @@ public:
 	PlotInfo();
 	~PlotInfo();
 
-  char	*Title()	{ return(title); }
-  char	*SubTitle()	{ return(subTitle); }
+  const char * Title() const	{ return(title); }
+  const char * SubTitle() const	{ return(subTitle); }
 
   void	GenerateDefaultTitles();
 

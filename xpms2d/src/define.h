@@ -13,6 +13,7 @@ FULL NAME:	Include File to Include the Include Files
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
+#include <string>
 #include <iostream>
 
 #include <Xm/Xm.h>
@@ -35,10 +36,10 @@ FULL NAME:	Include File to Include the Include Files
 
 #define	SPACE		' '
 
-const int MAX_DATAFILES = 2;
-const int MAX_DATASETS = 4;
-const int MAX_PANELS = 4;
-const int MAX_PROBES = 4;
+const size_t MAX_DATAFILES = 2;
+const size_t MAX_DATASETS = 4;
+const size_t MAX_PANELS = 4;
+const size_t MAX_PROBES = 4;
 
 const unsigned long StandardSyncWord = 0x55000000;
 const unsigned long SyncWordMask = 0xff000000;

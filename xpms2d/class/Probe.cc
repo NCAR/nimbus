@@ -16,17 +16,19 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 /* -------------------------------------------------------------------- */
 Probe::Probe(const char xml_entry[], int recSize)
 {
+  std::string XMLgetAttributeValue(const char s[], const char target[]);
+
   _lrLen = recSize;
   _lrPpr = 1;
   _displayed = false;
 
-  std::string id = getAttribute(xml_entry, "id");
+  std::string id = XMLgetAttributeValue(xml_entry, "id");
   strcpy(_code, id.c_str());
 
-  _name = getAttribute(xml_entry, "type");
-  _name += getAttribute(xml_entry, "suffix");
+  _name = XMLgetAttributeValue(xml_entry, "type");
+  _name += XMLgetAttributeValue(xml_entry, "suffix");
 
-  _resolution = atoi(getAttribute(xml_entry, "resolution").c_str());
+  _resolution = atoi(XMLgetAttributeValue(xml_entry, "resolution").c_str());
 
 printf("Probe:: id=%s, name=%s, resolution=%d\n", _code, _name.c_str(), _resolution);
 }
@@ -69,23 +71,6 @@ Probe::Probe(Header * hdr, const Pms2 * p, int cnt)
   _displayed = false;
 
 printf("Probe:: %s - %s\n", _name.c_str(), _code);
-}
-
-/* -------------------------------------------------------------------- */
-std::string Probe::getAttribute(const char s[], const char target[]) const
-{
-  char *start, *end;
-  start = strstr(s, target);
-  start = strchr(start, '\"') + 1;
-  end = strchr(start, '\"') - 1;
-
-  int len = end-start+1;
-  char output[1024];
-  memcpy(output, start, len);
-  output[len] = '\0';
-
-  std::string result(output);
-  return result;
 }
 
 // END PROBE.CC

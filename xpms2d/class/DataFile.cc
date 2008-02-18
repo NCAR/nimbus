@@ -83,14 +83,10 @@ static size_t P2dLRpPR = 1;
 /* -------------------------------------------------------------------- */
 ADS_DataFile::ADS_DataFile(char fName[])
 {
-  int	Ccnt, Pcnt, Hcnt;
-  const char * name;
-  const void * p;
+  _hdr = 0;
+  _fileName = fName;
 
-  hdr = 0;
-  strcpy(fileName, fName);
-
-  if (strstr(fileName, ".gz"))
+  if (_fileName.find(".gz", 0) != std::string::npos)
     {
     gzipped = true;
     printf("We have gzipped file.\n");
@@ -100,20 +96,18 @@ ADS_DataFile::ADS_DataFile(char fName[])
 
 #ifdef PNG
   if (gzipped)
-    gz_fd = gzopen(fileName, "rb");
+    gz_fd = gzopen(_fileName.c_str(), "rb");
   else
 #endif
-    fp = fopen(fileName, "rb");
+    fp = fopen(_fileName.c_str(), "rb");
 
   if ((gzipped && gz_fd <= 0) || (!gzipped && fp == NULL))
     {
-    sprintf(buffer, "Can't open file %s", fileName);
+    sprintf(buffer, "Can't open file %s", _fileName.c_str());
     ErrorMsg(buffer);
     return;
     }
 
-  nProbes = 0;
-  Ccnt = Pcnt = Hcnt = 0;
   useTestRecord = false;
 
 #ifdef PNG
@@ -130,17 +124,7 @@ ADS_DataFile::ADS_DataFile(char fName[])
     }
 
   if (strstr(buffer, "<PMS2D>") )
-    {
-    _fileHeaderType = PMS2D;
-
-    while (fgets(buffer, 512, fp))
-      {
-      if ( strstr(buffer, "</PMS2D>\n") )
-        break;
-      if ( strstr(buffer, "<probe") )
-        probe[nProbes++] = new Probe(buffer, PMS2_SIZE);
-      }
-    }
+    initADS3();	// the XML header file.
   else
   if (isValidProbe(buffer))
     {
@@ -148,39 +132,75 @@ ADS_DataFile::ADS_DataFile(char fName[])
     printf("No RAF header found, assuming raw PMS2D file.\n");
     }
   else
-    {
-    hdr = new Header(fileName);
-    if (hdr->isValid() == false)
-      return;
-
-    _fileHeaderType = ADS2;
-
-    for (p = hdr->GetFirst("PMS2D"); p; p = hdr->GetNext("PMS2D"))
-      {
-      name = hdr->VariableName((Pms2 *)p);
-
-      if (name[3] == 'P')
-        probe[nProbes++] = new Probe(hdr, (Pms2 *)p, ++Pcnt);
-      else
-      if (name[3] == 'C')
-        probe[nProbes++] = new Probe(hdr, (Pms2 *)p, ++Ccnt);
-      else
-      if (name[3] == 'H')
-        probe[nProbes++] = new Probe(hdr, (Pms2 *)p, ++Hcnt);
-      }
-    }
+    initADS2();
 
   buildIndices();
 
   currLR = -1; currPhys = 0;
 
-  if (strcmp(ProjectNumber(), "812") == 0)
+  if (ProjectNumber().compare("812") == 0)
     fprintf(stderr, "DataFile.cc: Lake-ICE - Bit shift correction will be performed on all records.\n");
 
-  if (strcmp(ProjectNumber(), "135") == 0)
+  if (ProjectNumber().compare("135") == 0)
     fprintf(stderr, "DataFile.cc: RICO - Stuck bit correction will be performed.\n");
 
 }	/* END CONSTRUCTOR */
+
+/* -------------------------------------------------------------------- */
+void ADS_DataFile::initADS2()
+{
+  int	Ccnt, Pcnt, Hcnt;
+  Ccnt = Pcnt = Hcnt = 0;
+
+  _fileHeaderType = ADS2;
+
+  _hdr = new Header(_fileName.c_str());
+  _projectName = _hdr->ProjectNumber();
+  _flightNumber = _hdr->FlightNumber();
+  _flightDate = _hdr->FlightDate();
+
+  if (_hdr->isValid() == false)
+    return;
+
+  for (const void * p = _hdr->GetFirst("PMS2D"); p; p = _hdr->GetNext("PMS2D"))
+    {
+    const char * name = _hdr->VariableName((Pms2 *)p);
+
+    if (name[3] == 'P')
+      _probeList.push_back(new Probe(_hdr, (Pms2 *)p, ++Pcnt));
+    else
+    if (name[3] == 'C')
+      _probeList.push_back(new Probe(_hdr, (Pms2 *)p, ++Ccnt));
+    else
+    if (name[3] == 'H')
+      _probeList.push_back(new Probe(_hdr, (Pms2 *)p, ++Hcnt));
+    }
+}
+
+/* -------------------------------------------------------------------- */
+void ADS_DataFile::initADS3()
+{
+  std::string XMLgetElementValue(const char s[]);
+
+  _fileHeaderType = PMS2D;
+
+  while (fgets(buffer, 512, fp))
+    {
+    if ( strstr(buffer, "</PMS2D>\n") )
+      break;
+    if ( strstr(buffer, "<Project>") )
+      _projectName = XMLgetElementValue(buffer);
+    else
+    if ( strstr(buffer, "<FlightNumber>") )
+      _flightNumber = XMLgetElementValue(buffer);
+    else
+    if ( strstr(buffer, "<FlightDate>") )
+      _flightDate = XMLgetElementValue(buffer);
+    else
+    if ( strstr(buffer, "<probe") )
+      _probeList.push_back(new Probe(buffer, PMS2_SIZE));
+    }
+}
 
 /* -------------------------------------------------------------------- */
 void ADS_DataFile::ToggleSyntheticData()
@@ -465,7 +485,7 @@ int ADS_DataFile::NextPhysicalRecord(char buff[])
   switch (idWord)
     {
     case SDI_WORD:
-      size = (hdr->lrLength() * hdr->lrPpr()) - sizeof(short);
+      size = (_hdr->lrLength() * _hdr->lrPpr()) - sizeof(short);
       break;
 
     case ADS_WORD:
@@ -473,7 +493,7 @@ int ADS_DataFile::NextPhysicalRecord(char buff[])
       break;
 
     case HDR_WORD:
-      size = hdr->HeaderLength() - sizeof(short);
+      size = _hdr->HeaderLength() - sizeof(short);
       break;
 
     case 0x4d43:      // MCR
@@ -522,7 +542,7 @@ void ADS_DataFile::buildIndices()
   char	buffer[0x8000], *p, tmpFile[256];
 
 
-  strcpy(tmpFile, fileName);
+  strcpy(tmpFile, _fileName.c_str());
 
   if ((p = strstr(tmpFile, ".2d")) == NULL)
     strcat(tmpFile, ".2Didx");
@@ -587,25 +607,25 @@ void ADS_DataFile::buildIndices()
 
     if (_fileHeaderType != NoHeader)
       {
-      for (i = 0; i < nProbes; ++i)
-        if (strcmp(probe[i]->Code(), buffer) == 0)
+      for (i = 0; i < _probeList.size(); ++i)
+        if (strcmp(_probeList[i]->Code(), buffer) == 0)
           break;
 
-      if (i == nProbes)	// shouldn't get here?
+      if (i == _probeList.size())	// shouldn't get here?
         continue;
       }
     else
       {
-      for (i = 0; i < nProbes; ++i)
-        if (strcmp(probe[i]->Code(), buffer) == 0)
+      for (i = 0; i < _probeList.size(); ++i)
+        if (strcmp(_probeList[i]->Code(), buffer) == 0)
           break;
 
       // Sanity check.
       if (!isValidProbe(buffer))
         continue;
 
-      if (i == nProbes)
-        probe[nProbes++] = new Probe(buffer);
+      if (i == _probeList.size())
+        _probeList.push_back(new Probe(buffer));
       }
 
     for (i = 0; i < 1; ++i)
@@ -705,7 +725,7 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
    * wing tips was too long, so we had to cut in half.  This was the
    * first project with ADS2 PMS2D card.
    */
-  if (strcmp(ProjectNumber(), "812") == 0)
+  if (ProjectNumber().compare("812") == 0)
   {
     unsigned long *p = (unsigned long *)buff->data;
 
@@ -722,7 +742,7 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
 
   /* RICO stuck bit cleanup.
    */
-  if (strcmp(ProjectNumber(), "135") == 0)
+  if (ProjectNumber().compare("135") == 0)
   {
     check_rico_half_buff(buff, 0, RecordLen/2);
     check_rico_half_buff(buff, RecordLen/2, RecordLen);
@@ -871,11 +891,11 @@ ADS_DataFile::~ADS_DataFile()
 {
   free(indices);
 
-  delete hdr;
-  hdr = 0;
+  delete _hdr;
+  _hdr = 0;
 
-  for (size_t i = 0; i < nProbes; ++i)
-    delete probe[i];
+  for (size_t i = 0; i < _probeList.size(); ++i)
+    delete _probeList[i];
 
 #ifdef PNG
   if (gzipped)

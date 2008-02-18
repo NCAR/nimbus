@@ -23,8 +23,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2001
 */
 
 #include "define.h"
-#include <errno.h>
+#include <cerrno>
 #include <unistd.h>
+#include <sstream>
 
 #include <raf/Application.h>
 #include <ControlWindow.h>
@@ -51,7 +52,7 @@ extern XmFile		*fileSel;
 struct recStats &ProcessRecord(P2d_rec *, float);
 
 /* Contains current N 2d records (for re-use by things like ViewHex */
-extern int     nBuffs;
+extern size_t nBuffs;
 extern P2d_rec pgFbuff[];
 
 
@@ -79,7 +80,7 @@ void NewDataFile(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void AddDataFile(Widget w, XtPointer client, XtPointer call)
 {
-  char *dataFile;
+  char * dataFile;
 
   if (fileMgr.NumberOfFiles() >= MAX_DATAFILES)
     {
@@ -98,39 +99,38 @@ void AddDataFile(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 static void PrintPS(Widget w, XtPointer client, XtPointer call)
 {
-  int           i, j;
-  bool          probes = false;
+  bool          displayProbes = false;
   float         version;
-  char		title[200];
   ADS_DataFile	*file = fileMgr.CurrentFile();
 
-  for (j = 0; j < file->NumberOfProbes(); ++j)
-    if (file->probe[j]->Display())
-      probes = true;
+  const ProbeList& probes = fileMgr.CurrentFile()->Probes();
+  for (size_t j = 0; j < probes.size(); ++j)
+    if (probes[j]->Display())
+      displayProbes = true;
 
-  if (!probes)
+  if (!displayProbes)
     return;
 
   cursor.WaitCursor(mainPlot->Wdgt());
   mainPlot->reset(NULL);
   version = atof(file->HeaderVersion());
  
-  sprintf(title, "%s, %s - %s", file->ProjectNumber(), file->FlightNumber(),
-        file->FlightDate());
+  std::stringstream title;
+  title << file->ProjectNumber() << ", " << file->FlightNumber() << " - "
+        << file->FlightDate();
 
-  PostScript pen(PSoutFile, "xpms2d", title, 0.72);
+  PostScript pen(PSoutFile, "xpms2d", title.str().c_str(), 0.72);
   pen.SetFont(40);
   sprintf(buffer, "%d (%s) stringwidth pop 2 div sub %d moveto\n",
-                550, title, (int)(800 * printerSetup->HeightRatio()));
+                550, title.str().c_str(), (int)(800 * printerSetup->HeightRatio()));
   pen.Issue(buffer);
-  pen.ShowStr(title);
+  pen.ShowStr(title.str().c_str());
   pen.SetFont(16);
 
-  for (i = 0; i < nBuffs; ++i)
-    for (j = 0; j < file->NumberOfProbes(); ++j)
+  for (size_t i = 0; i < nBuffs; ++i)
+    for (size_t j = 0; j < probes.size(); ++j)
       {
-      if (!strncmp(file->probe[j]->Code(), (char*)&pgFbuff[i], 2)
-          && file->probe[j]->Display())
+      if (!strncmp(probes[j]->Code(), (char*)&pgFbuff[i], 2) && probes[j]->Display())
         mainPlot->draw(&pgFbuff[i], ProcessRecord(&pgFbuff[i], version), version, j+1, &pen);
       }
 

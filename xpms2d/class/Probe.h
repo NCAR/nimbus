@@ -33,8 +33,8 @@ public:
    */
   Probe(const char hdr[]);
 
-  std::string Name() const	{ return _name; }
-  std::string SerialNum() const	{ return _serialNumber; }
+  const std::string & Name() const	{ return _name; }
+  const std::string & SerialNum() const	{ return _serialNumber; }
 
   const char * Code() const		{ return _code; }
   /// @returns Logical-record length.  Exabyte hangover.
@@ -49,8 +49,6 @@ public:
   void setDisplay(bool b)	{ _displayed = b; }
 
 protected:
-  std::string getAttribute(const char s[], const char target[]) const;
-
   std::string	_name;
   std::string	_serialNumber;
 

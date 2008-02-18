@@ -37,22 +37,23 @@ public:
   void		SetFileNames();
   void		SetProbes();
 
-  Widget	StartTime()	{ return(timeText); }
+  Widget	StartTime() const	{ return(timeText); }
 
   void		UpdateStartTime(P2d_rec *buff);
   void		UpdateTimeScale();
 
-  float		GetDensity()	{ return(density[densIdx].density); }
-  float		GetAreaRatioReject()	{ return(ratio[ratioIdx].density); }
-  int		GetConcentration()	{ return(concIdx); }
+  float		GetDensity() const	{ return(density[densIdx].density); }
+  float		GetAreaRatioReject() const	{ return(ratio[ratioIdx].density); }
+  int		GetConcentration() const	{ return(concIdx); }
 
-  bool		RejectZeroAreaImage()	{ return(true); }
+  bool		RejectZeroAreaImage() const	{ return(true); }
 
   void		SetWaterDensity(int idx)	{ densIdx = idx; }
   void		SetAreaRatioReject(int idx)	{ ratioIdx = idx; }
   void		SetConcentrationCalc(int idx)	{ concIdx = idx; }
   void		SetUserDensity();
   void		SetDelay(), PositionTime(bool), Start(), Stop();
+
 
 private:
   Widget	timeText, fileB[MAX_DATAFILES], butt[8],

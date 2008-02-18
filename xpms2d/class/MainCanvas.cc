@@ -20,6 +20,7 @@ extern XFonts	*fonts;
 extern XPen	*pen;
 
 #include <algorithm>
+#include <sstream>
 
 static const int	TOP_OFFSET = 35;
 static const int	LEFT_MARGIN = 5;
@@ -64,18 +65,17 @@ void MainCanvas::SetDisplayMode(int mode)
 /* -------------------------------------------------------------------- */
 void MainCanvas::reset(ADS_DataFile *file)
 {
-  char		buffer[256];
-
   maxRecs = (Height() - TOP_OFFSET) / PIX_PER_Y;
   y = TOP_OFFSET;
 
   if (file)
     {
-    sprintf(buffer, "%s, %s - %s", file->ProjectNumber(), file->FlightNumber(),
-	file->FlightDate());
+    std::stringstream title;
+    title << file->ProjectNumber() << ", " << file->FlightNumber() << " - "
+	<< file->FlightDate();
 
     pen->SetFont(fonts->Font(0));
-    pen->DrawText(Surface(), 300, 25, buffer);
+    pen->DrawText(Surface(), 300, 25, title.str().c_str());
     }
 
 }	/* END RESET */
@@ -541,7 +541,7 @@ void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float ver
 
       // Draw timing & sync words in yellow (or some other color).
       if (cp && cp->reject) {
-        if (cp->h == 1 && cp->w == 1)
+        if (cp->h == 0 || cp->w == 0)
           if (ps) ps->SetColor(color->GetColorPS(YELLOW));
           else pen->SetColor(color->GetColor(YELLOW));
         else
@@ -589,9 +589,13 @@ void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float ver
       }
     }
 
+/*
 // For diagnostics, display record as is on 2nd half of screen/window.
-//  for (size_t i = 0; i < 512; ++i)
-//    drawSlice(ps, 512+i, ((unsigned long long *)record->data)[i]);
+  for (size_t i = 0; i < 512; ++i)
+{ if (((unsigned long long *)record->data)[i] == 0xffffffffffffffffLL) { pen->SetColor(color->GetColor(YELLOW)); ((unsigned long long *)record->data)[i] = 0; }
+    drawSlice(ps, 512+i, ((unsigned long long *)record->data)[i]);
+pen->SetColor(color->GetColor(0)); }
+*/
 
   y += 32;
   stats.prevTime = prevTime;
@@ -683,8 +687,8 @@ void MainCanvas::drawSlice(PostScript *ps, int i, unsigned long slice)
 /* -------------------------------------------------------------------- */
 void MainCanvas::drawSlice(PostScript *ps, int i, unsigned long long slice)
 {
-  if (slice == 0xffffffffffffffffLL)
-    return;
+//  if (slice == 0xffffffffffffffffLL)
+//    return;
 
   size_t	cnt = 0;
   XPoint	pts[64];

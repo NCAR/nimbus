@@ -48,7 +48,7 @@ extern XPen		*pen;
 struct recStats &ProcessRecord(P2d_rec *, float);
 
 /* Contains current N 2d records (for re-use by things like ViewHex */
-int	nBuffs = 0;
+size_t	nBuffs = 0;
 P2d_rec	pgFbuff[20];
 
 
@@ -60,7 +60,7 @@ void ApplyTimeChange(Widget w, XtPointer client, XtPointer call)
   float		version;
 
   if (fileMgr.CurrentFile() == NULL ||
-      fileMgr.CurrentFile()->NumberOfProbes() == 0)
+      fileMgr.CurrentFile()->Probes().size() == 0)
     return;
 
 
@@ -93,20 +93,20 @@ void ApplyTimeChange(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void PageForward(Widget w, XtPointer client, XtPointer call)
 {
-  int		j;
   char		*buff_p;
-  bool		probes = false;
+  bool		displayProbes = false;
   float		version;
   struct recStats p7;
 
   if (fileMgr.NumberOfFiles() == 0)
     return;
 
-  for (j = 0; j < fileMgr.CurrentFile()->NumberOfProbes(); ++j)
-    if (fileMgr.CurrentFile()->probe[j]->Display())
-      probes = true;
+  const ProbeList& probes = fileMgr.CurrentFile()->Probes();
+  for (size_t j = 0; j < probes.size(); ++j)
+    if (probes[j]->Display())
+      displayProbes = true;
 
-  if (!probes)
+  if (!displayProbes)
     return;
 
   cursor.WaitCursor(mainPlot->Wdgt());
@@ -130,10 +130,9 @@ void PageForward(Widget w, XtPointer client, XtPointer call)
     if (nBuffs == 0)
       controlWindow->UpdateStartTime(&pgFbuff[nBuffs]);
 
-    for (j = 0; j < fileMgr.CurrentFile()->NumberOfProbes(); ++j)
+    for (size_t j = 0; j < probes.size(); ++j)
       {
-      if (!strncmp(fileMgr.CurrentFile()->probe[j]->Code(), buff_p, 2)
-          && fileMgr.CurrentFile()->probe[j]->Display())
+      if (!strncmp(probes[j]->Code(), buff_p, 2) && probes[j]->Display())
         {
         pen->SetColor(color->GetColor(j+1));
         mainPlot->draw(&pgFbuff[nBuffs],
@@ -154,7 +153,6 @@ void PageForward(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void PageCurrent()
 {
-  int		i, j;
   P2d_rec	pgBbuff;
 
   if (fileMgr.NumberOfFiles() == 0)
@@ -162,12 +160,13 @@ void PageCurrent()
 
   cursor.WaitCursor(mainPlot->Wdgt());
 
-  for (i = 0; i < mainPlot->maxRecords() &&
+  for (size_t i = 0; i < mainPlot->maxRecords() &&
               fileMgr.CurrentFile()->PrevPMS2dRecord(&pgBbuff); )
     {
-    for (j = 0; j < fileMgr.CurrentFile()->NumberOfProbes(); ++j)
-      if (!strncmp(fileMgr.CurrentFile()->probe[j]->Code(), (char *)&pgBbuff, 2)
-          && fileMgr.CurrentFile()->probe[j]->Display())
+    const ProbeList& probes = fileMgr.CurrentFile()->Probes();
+    for (size_t j = 0; j < probes.size(); ++j)
+      if (!strncmp(probes[j]->Code(), (char *)&pgBbuff, 2)
+          && probes[j]->Display())
         {
         ++i;
         }
@@ -182,7 +181,6 @@ void PageCurrent()
 /* -------------------------------------------------------------------- */
 void PageBackward(Widget w, XtPointer client, XtPointer call)
 {
-  int		i, j;
   P2d_rec	pgBbuff;
 
   if (fileMgr.NumberOfFiles() == 0)
@@ -190,12 +188,13 @@ void PageBackward(Widget w, XtPointer client, XtPointer call)
 
   cursor.WaitCursor(mainPlot->Wdgt());
 
-  for (i = 0; i < (mainPlot->maxRecords() << 1) &&
+  for (size_t i = 0; i < (mainPlot->maxRecords() << 1) &&
               fileMgr.CurrentFile()->PrevPMS2dRecord(&pgBbuff); )
     {
-    for (j = 0; j < fileMgr.CurrentFile()->NumberOfProbes(); ++j)
-      if (!strncmp(fileMgr.CurrentFile()->probe[j]->Code(), (char *)&pgBbuff, 2)
-          && fileMgr.CurrentFile()->probe[j]->Display())
+    const ProbeList& probes = fileMgr.CurrentFile()->Probes();
+    for (size_t j = 0; j < probes.size(); ++j)
+      if (!strncmp(probes[j]->Code(), (char *)&pgBbuff, 2)
+          && probes[j]->Display())
         {
         ++i;
         }
@@ -217,7 +216,7 @@ void SetCurrentFile(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void SetProbe(Widget w, XtPointer client, XtPointer call)
 {
-  fileMgr.CurrentFile()->probe[(int)client]->setDisplay(((XmToggleButtonCallbackStruct *)call)->set);
+  fileMgr.CurrentFile()->Probes()[(int)client]->setDisplay(((XmToggleButtonCallbackStruct *)call)->set);
   PageCurrent();
 }
 
