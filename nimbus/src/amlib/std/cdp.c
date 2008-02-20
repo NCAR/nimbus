@@ -48,7 +48,7 @@ static NR_TYPE	SAMPLE_AREA[MAX_FSSP], vol[MAX_FSSP],
 static NR_TYPE	total_concen[MAX_FSSP], dbar[MAX_FSSP], plwc[MAX_FSSP],
 		disp[MAX_FSSP], dbz[MAX_FSSP], reff2[MAX_FSSP], reff3[MAX_FSSP];
 
-//NR_TYPE		refff3[MAX_FSSP], refff2[MAX_FSSP];  /* For export to reff.c */
+NR_TYPE		reffd3[MAX_FSSP], reffd2[MAX_FSSP];  /* For export to reff.c */
 
 /* -------------------------------------------------------------------- */
 void ccdpInit(var_base *varp)
@@ -61,8 +61,8 @@ void ccdpInit(var_base *varp)
   serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
 
-//  for (i = 0; i < MAX_FSSP; ++i)
-//    refff3[i] = refff2[i] = 0.0;
+  for (i = 0; i < MAX_FSSP; ++i)
+    reffd3[i] = reffd2[i] = 0.0;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
   InitPMSspecs(buffer);
@@ -190,6 +190,7 @@ void scdp(DERTBL *varp)
 #define PLWC
 #define DBZ
 #define REFF
+#define TACT
 
 #include "pms1d_cv"
 
@@ -240,13 +241,13 @@ void stcntd(DERTBL *varp)	/* Total raw counts	*/
 /* -------------------------------------------------------------------- */
 void sreffd(DERTBL *varp)	/* Effective Radius	*/
 {
-//  refff3[varp->ProbeCount] = reff3[varp->ProbeCount]; /* Export to reff.c */
-//  refff2[varp->ProbeCount] = reff2[varp->ProbeCount];
-//
-//  if (reff2[varp->ProbeCount] > 0.0)
-//    PutSample(varp, 0.5 * (reff3[varp->ProbeCount] / reff2[varp->ProbeCount]));
-//  else
-//    PutSample(varp, 0.0);
+  reffd3[varp->ProbeCount] = reff3[varp->ProbeCount]; /* Export to reff.c */
+  reffd2[varp->ProbeCount] = reff2[varp->ProbeCount];
+
+  if (reff2[varp->ProbeCount] > 0.0)
+    PutSample(varp, 0.5 * (reff3[varp->ProbeCount] / reff2[varp->ProbeCount]));
+  else
+    PutSample(varp, 0.0);
 }
 
-/* END FSSP.C */
+/* END CDP.C */
