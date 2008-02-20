@@ -247,6 +247,9 @@
 	"REFF6",	NULL,		NULL,		sreff6,
 	"REFFF6",	NULL,		NULL,		srefff6,
 	"REFF2DC",	NULL,		NULL,		sreff2,
+# CDP & 2DC combined.
+	"REFFD2DC",	NULL,		NULL,		sreffd2,
+# S100 & 2DC combined.
 	"REFFF2DC",	NULL,		NULL,		srefff2,
 
 # Laser Hygrometer
