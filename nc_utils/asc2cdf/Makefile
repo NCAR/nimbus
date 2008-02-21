@@ -13,7 +13,7 @@ ANONFTP=	/jnet/ftp/pub/src/bin.Solaris2.9
 
 # Linux
 LIBS=	-L${JLOCAL}/lib -lVarDB -lraf++ -lraf -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic 
-ANONFTP=/net/ftp/pub/archive/RAF-src/bin.Fedora3
+ANONFTP=/net/ftp/pub/archive/RAF-src/bin.RHEL5
 WWWDOC=	/net/www/raf/Software
 
 SRCS=   asc2cdf.c plain.c nasaAmes.c nasaLangley.c getmem.c

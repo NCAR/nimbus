@@ -3,7 +3,7 @@
 #
 DESTDIR=	${JLOCAL}/
 BINDIR=		bin
-ANONFTP=	/net/ftp/pub/archive/RAF-src/bin.RedHat9.0
+ANONFTP=	/net/ftp/pub/archive/RAF-src/bin.RHEL5
 MANDIR=		man/man1
 LIBS=		-L${JLOCAL}/lib -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic
 INCLUDES=	-I${JLOCAL}/include

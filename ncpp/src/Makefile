@@ -16,7 +16,7 @@ DEFINES	= -DPNG
 INCLUDES= -I${INC} -I/usr/X11R6/include -I${RAFINC}
 LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib
 LIBS	= -lraf++ -lXm -lXt -lX11 -lXext -Wl,-Bstatic -lnetcdf_c++ -lnetcdf -Wl,-Bdynamic -lpng -lz
-ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.Fedora3
+ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.RHEL5
 
 #	Mac OS X
 #
