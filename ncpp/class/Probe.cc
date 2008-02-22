@@ -58,6 +58,7 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
   if (cvar == NULL)
     std::cerr << "  Concentrations (" << tmp << ") not found.\n";
 
+  type = NoProbe;
 
   if (name.find("260X") != name.npos)
     type = X260;
@@ -95,7 +96,7 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
   if (name.find("S100") != name.npos)
     type = S100;
   else
-  if (name.find("S200") != name.npos)
+  if (name.find("S200") != name.npos || name.find("UHSAS") != name.npos)
     type = S200;
   else
   if (name.find("S300") != name.npos)
@@ -109,6 +110,10 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
   else
   if (name.find("MCA") != name.npos)
     type = CMCA;
+
+
+  if (type == NoProbe)
+    std::cerr << "Probe:: No probe type for [" << name.c_str() << "]\n";
 
 
   dataRate = avar->get_dim(1)->size();

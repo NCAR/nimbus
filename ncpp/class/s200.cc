@@ -26,7 +26,6 @@ S200::S200(NcFile *file, NcVar *av) : Probe(file, av)
     if (strncmp(otherVars[i]->name(), "PFLWC", 5) == 0)
       flowIdx = i;
 
-
     if (strncmp(otherVars[i]->name(), "CONCP", 5) == 0)
       concIdx = i;
 
@@ -39,7 +38,6 @@ S200::S200(NcFile *file, NcVar *av) : Probe(file, av)
     if (strncmp(otherVars[i]->name(), "PVOLP", 5) == 0)
       volIdx = i;
     }
-
 }	/* END CONSTRUCTOR */
 
 /* -------------------------------------------------------------------- */
