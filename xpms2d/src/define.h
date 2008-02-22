@@ -105,7 +105,7 @@ struct recStats
 enum { NONE, ENTIRE_IN, CENTER_IN, RECONSTRUCTION };
 
 /* Values for "displayLevel"		*/
-enum { NORMAL, DIAGNOSTIC, ENCHILADA };
+enum { NORMAL, DIAGNOSTIC, ENCHILADA, RAW_RECORD };
 
 /* Values for "HandleError"		*/
 enum { RETURN, EXIT, IRET };

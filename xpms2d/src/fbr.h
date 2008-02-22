@@ -136,6 +136,7 @@ static String fallback_resources[] =
 
   "*menuBar*viewData.labelString:	Normal",
   "*menuBar*viewDiag.labelString:	Diagnostic",
+  "*menuBar*viewRaw.labelString:	Raw Data Records",
   "*menuBar*viewAll.labelString:	Whole Enchilada",
   "*menuBar*synthetic.labelString:	Toggle Synthetic Data",
   "*menuBar*wrapDisplay.labelString:	Toggle Display Wrap",

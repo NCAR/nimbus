@@ -291,6 +291,16 @@ void MainCanvas::drawPMS2D(P2d_rec * record, struct recStats &stats, float versi
   else
     syncWord = StandardSyncWord;
 
+  if (displayMode == RAW_RECORD)
+    {
+    p = (unsigned long *)record->data;
+    for (size_t i = 0; i < RecordLen; ++i, ++p)		/* 2DC and/or 2DP	*/
+      drawSlice(ps, i, *p);
+
+    y += 34;
+    }
+
+  p = (unsigned long *)record->data;
   for (size_t i = 0; i < RecordLen; ++p)		/* 2DC and/or 2DP	*/
     {
     slice = *p;
@@ -357,10 +367,8 @@ if (debug) if (cp) printf("dq: %06lx %lu %lu\n", cp->timeWord, cp->h, cp->w); el
       else
         colorIsBlack = false;
 
-      for (++p; i < RecordLen && *p != 0xffffffff; ++p)
-        {
-        drawSlice(ps, i++, *p);
-        }
+      for (++p; i < RecordLen && *p != 0xffffffff; )
+        drawSlice(ps, i++, *p++);
 
       if (enchiladaWin)
         enchiladaWin->AddLineItem(cntr++, cp);

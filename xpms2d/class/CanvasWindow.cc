@@ -50,6 +50,7 @@ static struct menu	viewMenu[] = {
         { "separator", NULL, NULL, },
 	{ "viewData", ToggleDisplay, (XtPointer)NORMAL, },
 	{ "viewDiag", ToggleDisplay, (XtPointer)DIAGNOSTIC, },
+	{ "viewRaw", ToggleDisplay, (XtPointer)RAW_RECORD, },
 	{ NULL, NULL, NULL }};
 
 static struct menu	optMenu[] = {
