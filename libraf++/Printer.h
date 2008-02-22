@@ -27,7 +27,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #include <Xm/ToggleB.h>
 
 #define TOTAL_PARMS	3
-#define MAX_PRINTERS    20
+#define MAX_PRINTERS    30
 
 
 /* -------------------------------------------------------------------- */
