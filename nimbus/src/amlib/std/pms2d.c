@@ -294,6 +294,15 @@ void sTwoD(DERTBL *varp)
     deadTime = 0;
   }
 
+  if (cfg.ProjectName().compare("PACDEX") == 0
+	&& cfg.FlightNumber().compare(0, 3, "rf0") == 0
+	&& cfg.FlightNumber()[3] >= '1' && cfg.FlightNumber()[3] <= '6')
+    {
+    for (i = 1; i < varp->Length; ++i)
+      actual[i] *= std::max(1.0, (25 * (tas / 33.3)) / (i * 25));
+    }
+
+
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
     {
     sampleArea = dof * eaw[probeNum][i];
