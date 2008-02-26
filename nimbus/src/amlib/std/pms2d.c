@@ -298,8 +298,16 @@ void sTwoD(DERTBL *varp)
 	&& cfg.FlightNumber().compare(0, 3, "rf0") == 0
 	&& cfg.FlightNumber()[3] >= '1' && cfg.FlightNumber()[3] <= '6')
     {
-    for (i = 1; i < varp->Length; ++i)
-      actual[i] *= std::max(1.0, (25 * (tas / 33.3)) / (i * 25));
+    if (strstr(varp->name, "1DC"))
+      {
+      for (i = 1; i < varp->Length; ++i)
+        actual[i] *= std::max(1.0, (tas / 33.3) / i);
+      }
+    else	// 2DC is unusable due to incorrect airspeed, zero it out.
+      {
+      for (i = 1; i < varp->Length; ++i)
+        actual[i] = 0.0;
+      }
     }
 
 
