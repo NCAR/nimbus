@@ -296,7 +296,7 @@ NR_TYPE pcorf7(NR_TYPE q, NR_TYPE q1)
 /* GV ---------------------------------------------------------------- */
 NR_TYPE pcorr5(NR_TYPE q, NR_TYPE q1)
 {
-  return (-0.60 + 0.1565*q) + q1*(0.008 + q1*(7.1979e-09*q1 - 1.4072e-05));
+  return (-1.02 + 0.1565*q) + q1*(0.008 + q1*(7.1979e-09*q1 - 1.4072e-05));
 }
 
 NR_TYPE pcorq5(NR_TYPE q, NR_TYPE q1)
@@ -314,7 +314,7 @@ NR_TYPE pcorr5_2(NR_TYPE q, NR_TYPE q1)
 {
   NR_TYPE	pfax;
 
-  pfax = (-0.60 + 0.1565*q) + q1*(0.008 + q1*(7.1979e-09*q1 - 1.4072e-05));
+  pfax = (-1.02 + 0.1565*q) + q1*(0.008 + q1*(7.1979e-09*q1 - 1.4072e-05));
   return(pfax);
 }
 
