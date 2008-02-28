@@ -42,7 +42,7 @@ protected:
 
   int	nDiodes;
   float	responseTime, armDistance, PLWfac, DENS, DBZfac;
-  float	sampleVolume[64], radius[64], esw[64], dof[64], mag,
+  float	sampleVolume[128], radius[128], esw[128], dof[128], mag,
 		totalConcen, dbar, plwc, disp, dbz;
 
   int	tasIdx;						// Inputs
