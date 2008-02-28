@@ -301,7 +301,7 @@ void sTwoD(DERTBL *varp)
     if (strstr(varp->name, "1DC"))
       {
       for (i = 1; i < varp->Length; ++i)
-        actual[i] *= std::max(1.0, (tas / 33.3) / i);
+        actual[i] *= std::max(1.0, (tas / 50.0) / i);
       }
     else	// 2DC is unusable due to incorrect airspeed, zero it out.
       {
