@@ -433,4 +433,55 @@ void sreff2(DERTBL *varp)       /* Effective Radius     */
     PutSample(varp, 0.0);
 }
 
+/* -------------------------------------------------------------------- */
+void sconc2dc050(DERTBL *varp)
+{
+  NR_TYPE conc = 0.0;
+  NR_TYPE * concentration = GetVector(varp, 0, varp->Length);
+  int n = 128;
+
+  if (strstr(varp->name, "1DC"))
+    n = 64;
+    
+  // 50 micron and bigger.
+  for (size_t i = 2; i < n; ++i)
+    conc += concentration[i];
+
+  PutSample(varp, conc);
+}
+
+/* -------------------------------------------------------------------- */
+void sconc2dc100(DERTBL *varp)
+{
+  NR_TYPE conc = 0.0;
+  NR_TYPE * concentration = GetVector(varp, 0, varp->Length);
+  int n = 128;
+
+  if (strstr(varp->name, "1DC"))
+    n = 64;
+
+  // 100 micron and bigger.
+  for (size_t i = 4; i < n; ++i)
+    conc += concentration[i];
+
+  PutSample(varp, conc);
+}
+
+/* -------------------------------------------------------------------- */
+void sconc2dc150(DERTBL *varp)
+{
+  NR_TYPE conc = 0.0;
+  NR_TYPE * concentration = GetVector(varp, 0, varp->Length);
+  int n = 128;
+
+  if (strstr(varp->name, "1DC"))
+    n = 64;
+
+  // 150 micron and bigger.
+  for (size_t i = 6; i < n; ++i)
+    conc += concentration[i];
+
+  PutSample(varp, conc);
+}
+
 /* END PMS2D.C */
