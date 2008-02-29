@@ -1,8 +1,9 @@
 /* gcc -I/jnet/local/include fix_basetime.c -o fix_basetime -L/jnet/local/lib -lnetcdf
  */
 
-#include <netcdf.h>
+#include <stdio.h>
 #include <time.h>
+#include <netcdf.h>
 
 int main(int argc, char *argv[])
 {

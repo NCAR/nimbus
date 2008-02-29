@@ -3,12 +3,12 @@
  * This program should be custom tailored.
  */
 
+#include <string.h>
 #include <netcdf.h>
-#include <time.h>
 
 int main(int argc, char *argv[])
 {
-  int		fd, id;
+  int	fd, id;
   char *att = "seconds since 2005-01-07 13:55:00 ";
 
   fd = ncopen(argv[1], NC_WRITE);

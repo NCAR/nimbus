@@ -1,6 +1,7 @@
 /* gcc -I/jnet/local/include fix_time.c -o fix_time -L/jnet/local/lib -lnetcdf
  */
 
+#include <stdlib.h>
 #include <netcdf.h>
 
 int main(int argc, char *argv[])
