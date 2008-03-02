@@ -182,6 +182,7 @@ int main(int argc, char *argv[])
   CopyVariablesDefinitions();
   MoveData();
 
+  Exit(0);
   return rc;
 
 }	/* END MAIN */
@@ -290,7 +291,7 @@ void MoveData()
   wr_start[0] = outRec; wr_start[1] = wr_start[2] = 0;
   rd_start[0] = inRec; rd_start[1] = rd_start[2] = 0;
 
-  printf("Starting to move data...."); fflush(stdout);
+  printf("Starting to move data"); fflush(stdout);
 
   for (int i = 0; i < xFerCnt; ++i)
   {
@@ -326,6 +327,7 @@ void MoveData()
     }
 
     delete [] data_p;
+    printf("."); fflush(stdout);
   }
 
   printf("\n");
