@@ -77,13 +77,18 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
   /* Get Project Number.
    */
+  {
+  char name[256];
   fgets(buffer, 128, fp);
+  strcpy(name, strchr(buffer, '=')+1);
+  name[strlen(name)-1] = '\0';
 
-  if (cfg.ProjectNumber().compare(strchr(buffer, '=')+1));
+  if (cfg.ProjectNumber().compare(name))
   {
     fclose(fp);
     HandleError("Invalid file, project number does not match.");
     return;
+  }
   }
 
 
