@@ -190,10 +190,10 @@ static void readHeader()
     rc = DecodeHeader3(ADSfileName);
 
   if (rc == ERR)
-  {
+    {
     CancelSetup(NULL, NULL, NULL);
     return;
-  }
+    }
 
   sprintf(buffer, "%s - %s, Flight %s",
 	cfg.ProjectName().c_str(), cfg.ProjectNumber().c_str(),
@@ -232,7 +232,6 @@ static void readHeader()
     checkForProductionSetup();
     LoadSetup_OK(Shell001, NULL, NULL); /* Fake it with any widget name */
     }
-
 }	/* END READHEADER */
 
 /* -------------------------------------------------------------------- */
