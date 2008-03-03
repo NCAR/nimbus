@@ -60,16 +60,16 @@ FSSP::FSSP(NcFile *file, NcVar *av) : Probe(file, av)
     if (strncmp(otherVars[i]->name(), "CONC", 4) == 0)
       concIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "PLWCF", 5) == 0)
+    if (strncmp(otherVars[i]->name(), "PLWC", 4) == 0)
       lwIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "DBZF", 4) == 0)
+    if (strncmp(otherVars[i]->name(), "DBZ", 3) == 0)
       dbzIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "DBARF", 5) == 0)
+    if (strncmp(otherVars[i]->name(), "DBAR", 4) == 0)
       dbarIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "DISPF", 5) == 0)
+    if (strncmp(otherVars[i]->name(), "DISP", 4) == 0)
       dispIdx = i;
     }
 
@@ -77,7 +77,7 @@ FSSP::FSSP(NcFile *file, NcVar *av) : Probe(file, av)
 
 /* -------------------------------------------------------------------- */
 void FSSP::ComputeConcentration(float *accum, float *conc, long countV[],
-	float *otherVarData[])
+	const std::vector<float *> & otherVarData)
 {
   int	i, bin;
   float	*dia, *counts, *concentration;

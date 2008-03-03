@@ -26,12 +26,12 @@ public:
 	S200(NcFile *file, NcVar *av);
 
   void	ComputeConcentration(float *accum, float *conc, long countV[],
-		float *otherVarData[]);
+		const std::vector<float *> & otherVarData);
 
 private:
   float	totalConcen, dbar, pvol, disp;
 
-  int	actIdx, flowIdx;			// Inputs
+  int	flowIdx;			// Inputs
   int	concIdx, dbarIdx, dispIdx, volIdx;	// Outputs
 
 };	// END S200.H

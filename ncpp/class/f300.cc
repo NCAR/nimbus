@@ -23,13 +23,13 @@ F300::F300(NcFile *file, NcVar *av) : Probe(file, av)
     if (strcmp(otherVars[i]->name(), "TASX") == 0)
       tasIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "CONC3", 5) == 0)
+    if (strncmp(otherVars[i]->name(), "CONC", 4) == 0)
       concIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "DBAR3", 5) == 0)
+    if (strncmp(otherVars[i]->name(), "DBAR", 4) == 0)
       dbarIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "PVOL3", 5) == 0)
+    if (strncmp(otherVars[i]->name(), "PVOL", 4) == 0)
       volIdx = i;
     }
 
@@ -37,7 +37,7 @@ F300::F300(NcFile *file, NcVar *av) : Probe(file, av)
 
 /* -------------------------------------------------------------------- */
 void F300::ComputeConcentration(float *accum, float *conc, long countV[],
-	float *otherVarData[])
+	const std::vector<float *> & otherVarData)
 {
   int	i, bin;
   std::vector <float> dia;

@@ -24,6 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2007
 #include "2D_P.h"
 #include "2D_C.h"
 #include "hvps.h"
+#include "uhsas.h"
 
 #include <raf/Time.h>
 

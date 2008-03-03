@@ -39,7 +39,7 @@ X260::X260(NcFile *file, NcVar *av) : Probe200(file, av)
 
 /* -------------------------------------------------------------------- */
 void X260::ComputeConcentration(float *accum, float *conc, long countV[],
-	float *otherVarData[])
+	const std::vector<float *> & otherVarData)
 {
   int	time, bin;
   std::vector<float> dia;

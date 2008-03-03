@@ -25,7 +25,7 @@ public:
   friend class EditDiameters;
 
   virtual void	ComputeConcentration(float *accum, float *conc, long countV[],
-		float *otherVarData[]);
+		const std::vector<float *> & otherVarData);
 
   void	UpdateCellDiams(const int first, const int last, const float *newDiams);
 

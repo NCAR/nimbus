@@ -39,7 +39,7 @@ TwoDC::TwoDC(NcFile *file, NcVar *av) : Probe200(file, av)
 
 /* -------------------------------------------------------------------- */
 void TwoDC::ComputeConcentration(float *accum, float *conc, long countV[],
-	float *otherVarData[])
+	const std::vector<float *> & otherVarData)
 {
   int	time, bin;
   std::vector<float> dia;

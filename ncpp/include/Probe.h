@@ -25,7 +25,7 @@ public:
 	Probe(NcFile *file, NcVar *av);
        ~Probe();
 
-  enum	ProbeType	{ NoProbe, FSSP, F300, PCASP, X260, X200, Y200, MASP, X300, TWODC, TWODP, HVPS, S100, S200, S300, RDMA, CLIMET, CMCA, CDP };
+  enum	ProbeType	{ NoProbe, FSSP, F300, PCASP, X260, X200, Y200, MASP, X300, TWODC, TWODP, HVPS, S100, S200, S300, RDMA, CLIMET, CMCA, CDP, UHSAS };
 
   std::string	Name() const	{ return(name); }
   std::string	Units() const	{ return(units); }
@@ -50,7 +50,7 @@ public:
 		const float *newDiams);
 
   virtual void ComputeConcentration(float *accum, float *conc, long countV[],
-		std::vector<float *> otherVarData);
+		const std::vector<float *> & otherVarData);
 
   virtual void SetRange(int)	{}
 

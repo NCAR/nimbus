@@ -34,6 +34,10 @@ Probe200::Probe200(NcFile *file, NcVar *av) : Probe(file, av)
   else
     DENS = 1.0;
 
+  radius.resize(vectorLength);
+  esw.resize(vectorLength);
+  dof.resize(vectorLength);
+
   ComputeWidths();
 
   for (int i = 0; i < otherVars.size(); ++i)
@@ -62,7 +66,7 @@ Probe200::Probe200(NcFile *file, NcVar *av) : Probe(file, av)
 
 /* -------------------------------------------------------------------- */
 void Probe200::ComputeConcentration(float *accum, float *conc, long countV[],
-	float *otherVarData[])
+	const std::vector<float *> & otherVarData)
 {
   int	time, bin;
   std::vector<float> dia;

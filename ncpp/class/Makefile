@@ -18,20 +18,18 @@ O2D=	../obj
 #CXXFLAGS=	-O ${INCLUDES} ${DEFINES}
 
 OBJS=	Ascii.o CanvasWindow.o DataFile.o DataSet.o DataSource.o\
-	EditDiameters.o EditPlotParms.o FileMgr.o\
-	Header.o MovieControl.o Panel.o PlotInfo.o PlotMgr.o\
-	Probe.o Probe200.o SetMgr.o\
-	Titles.o VarsWin.o Colors.o\
+	EditDiameters.o EditPlotParms.o FileMgr.o Header.o\
+	MovieControl.o Panel.o PlotInfo.o PlotMgr.o Probe.o\
+	Probe200.o SetMgr.o Titles.o VarsWin.o Colors.o\
 	fssp.o s100.o s200.o f300.o pcasp.o x260.o x200.o y200.o\
-	2D_C.o 2D_P.o hvps.o
+	2D_C.o 2D_P.o hvps.o uhsas.o
 
 SRCS=	Ascii.cc CanvasWindow.cc DataFile.cc DataSet.cc DataSource.cc\
 	EditDiameters.cc EditPlotParms.cc FileMgr.cc Header.cc\
-	MovieControl.cc Panel.cc PlotInfo.cc PlotMgr.cc\
-	Probe.cc Probe200.cc SetMgr.cc Titles.cc\
-	VarsWin.cc Colors.cc\
+	MovieControl.cc Panel.cc PlotInfo.cc PlotMgr.cc Probe.cc\
+	Probe200.cc SetMgr.cc Titles.cc VarsWin.cc Colors.cc\
 	fssp.cc s100.cc s200.cc f300.cc pcasp.cc x260.cc x200.cc y200.cc\
-	2D_C.cc 2D_P.cc hvps.cc
+	2D_C.cc 2D_P.cc hvps.cc uhsas.cc
 
 HDRS=	${INC}/define.h
 
@@ -43,7 +41,7 @@ ${OBJS}: ${HDRS}
 Ascii.o:		${INC}/Ascii.h ${INC}/SetMgr.h ${RAFINC}/raf/TextWindow.h ${INC}/DataSet.h ${INC}/PlotMgr.h ${INC}/PlotInfo.h
 CanvasWindow.o:		${INC}/CanvasWindow.h ${RAFINC}/raf/Window.h
 
-DataFile.o:		${INC}/DataFile.h ${INC}/Probe.h ${RAFINC}/raf/Time.h ${INC}/fssp.h ${INC}/f300.h ${INC}/pcasp.h ${INC}/x260.h ${INC}/x200.h ${INC}/y200.h ${INC}/s100.h ${INC}/hvps.h
+DataFile.o:		${INC}/DataFile.h ${INC}/Probe.h ${RAFINC}/raf/Time.h ${INC}/fssp.h ${INC}/f300.h ${INC}/pcasp.h ${INC}/x260.h ${INC}/x200.h ${INC}/y200.h ${INC}/s100.h ${INC}/hvps.h ${INC}/uhsas.h
 DataSet.o:		${INC}/DataSet.h ${INC}/Probe.h ${INC}/DataFile.h
 DataSource.o:		${INC}/DataSource.h ${INC}/FileMgr.h ${INC}/SetMgr.h ${INC}/Probe.h
 
@@ -74,6 +72,7 @@ s200.o:			${INC}/s200.h ${INC}/Probe.h
 f300.o:			${INC}/f300.h ${INC}/Probe.h
 pcasp.o:		${INC}/pcasp.h ${INC}/Probe.h
 hvps.o:			${INC}/hvps.h ${INC}/Probe.h
+uhsas.o:		${INC}/uhsas.h ${INC}/Probe.h
 x260.o:			${INC}/x260.h ${INC}/Probe200.h ${INC}/Probe.h
 x200.o:			${INC}/x200.h ${INC}/Probe200.h ${INC}/Probe.h
 y200.o:			${INC}/y200.h ${INC}/Probe200.h ${INC}/Probe.h

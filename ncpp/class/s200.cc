@@ -20,37 +20,33 @@ S200::S200(NcFile *file, NcVar *av) : Probe(file, av)
 
   for (int i = 0; i < otherVars.size(); ++i)
     {
-    if (strncmp(otherVars[i]->name(), "PACT", 4) == 0)
-      actIdx = i;
-
     if (strncmp(otherVars[i]->name(), "PFLWC", 5) == 0)
       flowIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "CONCP", 5) == 0)
+    if (strncmp(otherVars[i]->name(), "CONC", 4) == 0)
       concIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "DISPP", 5) == 0)
+    if (strncmp(otherVars[i]->name(), "DISP", 4) == 0)
       dispIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "DBARP", 5) == 0)
+    if (strncmp(otherVars[i]->name(), "DBAR", 4) == 0)
       dbarIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "PVOLP", 5) == 0)
+    if (strncmp(otherVars[i]->name(), "PVOL", 4) == 0)
       volIdx = i;
     }
 }	/* END CONSTRUCTOR */
 
 /* -------------------------------------------------------------------- */
 void S200::ComputeConcentration(float *accum, float *conc, long countV[],
-	float *otherVarData[])
+	const std::vector<float *> & otherVarData)
 {
   int		i, bin;
   std::vector<float> dia;
   float		*counts, *concentration;
-  float		*flow, *activity;
+  float		*flow;
 
   flow = otherVarData[flowIdx];
-  activity = otherVarData[actIdx];
 
   for (i = 0; i < countV[0] * countV[1]; ++i)
     {

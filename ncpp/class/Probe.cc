@@ -96,8 +96,11 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
   if (name.find("S100") != name.npos || name.find("CDP") != name.npos)
     type = S100;
   else
-  if (name.find("S200") != name.npos || name.find("UHSAS") != name.npos)
+  if (name.find("S200") != name.npos)
     type = S200;
+  else
+  if (name.find("UHSAS") != name.npos)
+    type = UHSAS;
   else
   if (name.find("S300") != name.npos)
     type = S300;
@@ -248,7 +251,7 @@ bool Probe::ReadConcen(long start[], const long count[], float *data)
 
 /* -------------------------------------------------------------------- */
 void Probe::ComputeConcentration(float *accum, float *conc, long countV[],
-	std::vector<float *> otherVarData)
+	const std::vector<float *> & otherVarData)
 {
   std::cerr << "No Compute function at this time for " << cvar->name() << ".\n";
 

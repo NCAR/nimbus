@@ -28,7 +28,7 @@ public:
   friend class EditDiameters;
 
   void	ComputeConcentration(float *accum, float *conc, long countV[],
-		float *otherVarData[]);
+		const std::vector<float *> & otherVarData);
   float CellSize(int idx)       { return(diameter[idx + (range << 4)]); }
   float BinWidth(int idx)       { return(binWidth[idx + (range << 4)]); }
 

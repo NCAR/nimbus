@@ -57,7 +57,7 @@ COBS=	${COD}/Ascii.o ${COD}/CanvasWindow.o ${COD}/DataFile.o ${COD}/DataSet.o\
 	${COD}/VarsWin.o ${COD}/Colors.o\
 	${COD}/fssp.o ${COD}/f300.o ${COD}/pcasp.o ${COD}/x260.o\
 	${COD}/s100.o ${COD}/s200.o ${COD}/x200.o ${COD}/y200.o ${COD}/Probe200.o\
-	${COD}/2D_P.o ${COD}/2D_C.o
+	${COD}/2D_P.o ${COD}/2D_C.o ${COD}/hvps.o ${COD}/uhsas.o
 
 
 ${PROG}: ${OBJS} classDir

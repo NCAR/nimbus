@@ -106,9 +106,11 @@ DataFile::DataFile(char fName[]) : fileName(fName)
           strncmp("ACDP", avar->name(), 4) == 0)
         probe[nProbes++] = new S100(file, avar);
       else
-      if (strncmp("AS200", avar->name(), 5) == 0 ||
-          strncmp("AUHSAS", avar->name(), 6) == 0)
+      if (strncmp("AS200", avar->name(), 5) == 0)
         probe[nProbes++] = new S200(file, avar);
+      else
+      if (strncmp("AUHSAS", avar->name(), 6) == 0)
+        probe[nProbes++] = new UHSAS(file, avar);
       else
       if (strncmp("A260X", avar->name(), 5) == 0)
         probe[nProbes++] = new X260(file, avar);

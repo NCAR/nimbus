@@ -26,7 +26,7 @@ public:
 	F300(NcFile *file, NcVar *av);
 
   void	ComputeConcentration(float *accum, float *conc, long countV[],
-		float *otherVarData[]);
+		const std::vector<float *> & otherVarData);
 
 private:
   float	totalConcen, dbar, pvol, disp;

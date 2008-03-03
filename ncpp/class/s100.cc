@@ -56,14 +56,13 @@ S100::S100(NcFile *file, NcVar *av) : Probe(file, av)
     if (strncmp(otherVars[i]->name(), "OVFLW", 5) == 0)
       oFlowIdx = i;
 
-
     if (strncmp(otherVars[i]->name(), "CONC", 4) == 0)
       concIdx = i;
 
     if (strncmp(otherVars[i]->name(), "PLWC", 4) == 0)
       lwIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "DBZF", 4) == 0)
+    if (strncmp(otherVars[i]->name(), "DBZ", 3) == 0)
       dbzIdx = i;
 
     if (strncmp(otherVars[i]->name(), "DBAR", 4) == 0)
@@ -77,7 +76,7 @@ S100::S100(NcFile *file, NcVar *av) : Probe(file, av)
 
 /* -------------------------------------------------------------------- */
 void S100::ComputeConcentration(float *accum, float *conc, long countV[],
-	float *otherVarData[])
+	const std::vector<float *> & otherVarData)
 {
   int	i, bin;
   float	*dia, *counts, *concentration, total_cnts;

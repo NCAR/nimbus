@@ -26,17 +26,16 @@ PCASP::PCASP(NcFile *file, NcVar *av) : Probe(file, av)
     if (strncmp(otherVars[i]->name(), "PFLWC", 5) == 0)
       flowIdx = i;
 
-
-    if (strncmp(otherVars[i]->name(), "CONCP", 5) == 0)
+    if (strncmp(otherVars[i]->name(), "CONC", 4) == 0)
       concIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "DISPP", 5) == 0)
+    if (strncmp(otherVars[i]->name(), "DISP", 4) == 0)
       dispIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "DBARP", 5) == 0)
+    if (strncmp(otherVars[i]->name(), "DBAR", 4) == 0)
       dbarIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "PVOLP", 5) == 0)
+    if (strncmp(otherVars[i]->name(), "PVOL", 4) == 0)
       volIdx = i;
     }
 
@@ -44,7 +43,7 @@ PCASP::PCASP(NcFile *file, NcVar *av) : Probe(file, av)
 
 /* -------------------------------------------------------------------- */
 void PCASP::ComputeConcentration(float *accum, float *conc, long countV[],
-	float *otherVarData[])
+	const std::vector<float *> & otherVarData)
 {
   int		i, bin;
   std::vector<float> dia;
