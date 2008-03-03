@@ -27,7 +27,7 @@ public:
 	Probe(NcFile *file, NcVar *av);
        ~Probe();
 
-  enum	ProbeType	{ NoProbe, FSSP, F300, PCASP, X260, X200, Y200, MASP, X300, TWODC, TWODP, HVPS, S100, S200, S300, RDMA, CLIMET, CMCA };
+  enum	ProbeType	{ NoProbe, FSSP, F300, PCASP, X260, X200, Y200, MASP, X300, TWODC, TWODP, HVPS, S100, S200, S300, RDMA, CLIMET, CMCA, CDP };
 
   std::string	Name() const	{ return(name); }
   std::string	Units() const	{ return(units); }

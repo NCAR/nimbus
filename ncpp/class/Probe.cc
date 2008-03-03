@@ -93,7 +93,7 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
   if (name.find("HVPS") != name.npos)
     type = HVPS;
   else
-  if (name.find("S100") != name.npos)
+  if (name.find("S100") != name.npos || name.find("CDP") != name.npos)
     type = S100;
   else
   if (name.find("S200") != name.npos || name.find("UHSAS") != name.npos)
