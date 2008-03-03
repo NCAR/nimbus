@@ -94,7 +94,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
   fgets(buffer, 128, fp);
 
-  if (!ProductionSetup || cfg.ProductionRun())
+  if (!ProductionSetup)
   {
     int value = atoi(strchr(buffer, '=')+1);
     switch (value)
