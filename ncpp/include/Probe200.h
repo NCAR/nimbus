@@ -13,9 +13,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 #ifndef PROBE200_H
 #define PROBE200_H
 
-#include "define.h"
-#include <netcdf.hh>
-
 #include "Probe.h"
 
 
@@ -42,8 +39,8 @@ protected:
 
   int	nDiodes;
   float	responseTime, armDistance, PLWfac, DENS, DBZfac;
-  float	sampleVolume[128], radius[128], esw[128], dof[128], mag,
-		totalConcen, dbar, plwc, disp, dbz;
+  std::vector<float> radius, esw, dof;
+  float	mag, totalConcen, dbar, plwc, disp, dbz;
 
   int	tasIdx;						// Inputs
   int	concIdx, lwIdx, dbarIdx, dispIdx, dbzIdx;	// Outputs

@@ -18,7 +18,7 @@ PCASP::PCASP(NcFile *file, NcVar *av) : Probe(file, av)
 {
   concIdx = dispIdx = dbarIdx = volIdx = -1;
 
-  for (int i = 0; i < nOtherVars(); ++i)
+  for (int i = 0; i < otherVars.size(); ++i)
     {
     if (strncmp(otherVars[i]->name(), "PACT", 4) == 0)
       actIdx = i;
@@ -47,7 +47,8 @@ void PCASP::ComputeConcentration(float *accum, float *conc, long countV[],
 	float *otherVarData[])
 {
   int		i, bin;
-  float		*dia, *counts, *concentration;
+  std::vector<float> dia;
+  float		*counts, *concentration;
   float		*flow, *activity;
   double	vol;
 

@@ -38,7 +38,7 @@ private:
   int	range, rangeIdx;
 
   float	PLWfac, DBZfac, DENS, DOF, beamDiameter;
-  float	sampleVolume[16], totalConcen, dbar, plwc, disp, dbz;
+  float	totalConcen, dbar, plwc, disp, dbz;
 
   int	tasIdx, actIdx, bmFrIdx;			// Inputs
   int	concIdx, lwIdx, dbzIdx, dbarIdx, dispIdx;	// Outputs

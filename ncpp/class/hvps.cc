@@ -18,7 +18,7 @@ HVPS::HVPS(NcFile *file, NcVar *av) : Probe(file, av)
 {
   tasIdx = concIdx = dbarIdx = lwIdx = dispIdx = dbzIdx = -1;
 
-  for (int i = 0; i < nOtherVars(); ++i)
+  for (int i = 0; i < otherVars.size(); ++i)
     {
     if (strcmp(otherVars[i]->name(), "TASX") == 0)
       tasIdx = i;
@@ -46,7 +46,8 @@ void HVPS::ComputeConcentration(float *accum, float *conc, long countV[],
 	float *otherVarData[])
 {
   int	i, bin;
-  float	*dia, *counts, *concentration, *tas;
+  std::vector<float> dia;
+  float	*counts, *concentration, *tas;
   double vol;
 
   tas = otherVarData[tasIdx];

@@ -36,7 +36,7 @@ Probe200::Probe200(NcFile *file, NcVar *av) : Probe(file, av)
 
   ComputeWidths();
 
-  for (int i = 0; i < nOtherVars(); ++i)
+  for (int i = 0; i < otherVars.size(); ++i)
     {
     if (strcmp(otherVars[i]->name(), "TASX") == 0)
       tasIdx = i;
@@ -65,7 +65,8 @@ void Probe200::ComputeConcentration(float *accum, float *conc, long countV[],
 	float *otherVarData[])
 {
   int	time, bin;
-  float	*dia, *counts, *concentration;
+  std::vector<float> dia;
+  float	*counts, *concentration;
   float	*tas, tasx;
 
   tas = otherVarData[tasIdx];

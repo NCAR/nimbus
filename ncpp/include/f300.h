@@ -29,7 +29,7 @@ public:
 		float *otherVarData[]);
 
 private:
-  float	sampleVolume[41], totalConcen, dbar, pvol, disp;
+  float	totalConcen, dbar, pvol, disp;
 
   int	tasIdx;				// Inputs
   int	concIdx, dbarIdx, volIdx;	// Outputs

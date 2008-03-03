@@ -42,7 +42,8 @@ void TwoDC::ComputeConcentration(float *accum, float *conc, long countV[],
 	float *otherVarData[])
 {
   int	time, bin;
-  float	*dia, *counts, *concentration;
+  std::vector<float> dia;
+  float	*counts, *concentration;
   float	*tas, *fbmfr, *activity, tasx;
 
   tas = otherVarData[tasIdx];

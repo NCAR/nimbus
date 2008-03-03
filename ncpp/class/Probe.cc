@@ -119,6 +119,17 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
   dataRate = avar->get_dim(1)->size();
   vectorLength = avar->get_dim(2)->size();
 
+  sampleVolume.resize(VectorLength());
+  diameter.resize(VectorLength());
+  midPointDiam.resize(VectorLength());
+  binWidth.resize(VectorLength());
+
+  units = cvar->get_att("units")->as_string(0);
+
+  if ((attr = avar->get_att("SerialNumber")))
+    serialNum = attr->as_string(0);
+
+
   units = cvar->get_att("units")->as_string(0);
 
   if ((attr = avar->get_att("SerialNumber")))
@@ -188,7 +199,7 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
   location = strchr(name.c_str(), '_');
 
   // Find associated houskeeping & derived variables (using location)
-  for (i = 0, otherCnt = 0; i < file->num_vars(); ++i)
+  for (i = 0; i < file->num_vars(); ++i)
     {
     var = file->get_var(i);
 
@@ -196,11 +207,9 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
        (strstr(var->name(), location) && strncmp(var->name(), "EVENT_", 6)) ||
        strcmp(var->name(), "TASX") == 0)
       {
-      otherVars[otherCnt++] = var;
+      otherVars.push_back(var);
       }
     }
-
-  otherVars[otherCnt] = NULL;
 
   if (diameter[0] == 0.0)
     {
@@ -248,7 +257,7 @@ void Probe::ComputeConcentration(float *accum, float *conc, long countV[],
 /* -------------------------------------------------------------------- */
 bool Probe::ReadOtherVar(int idx, long start[], const long count[], float *data)
 {
-  if (otherVars[idx] == NULL)
+  if (idx >= otherVars.size())
     return(false);
 
   otherVars[idx]->set_cur(start);

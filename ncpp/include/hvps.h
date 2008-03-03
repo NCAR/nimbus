@@ -30,7 +30,7 @@ public:
 
 private:
   float	PLWfac, DBZfac, DENS;
-  float	sampleVolume[256], totalConcen, dbar, plwc, dbz, disp;
+  float	totalConcen, dbar, plwc, dbz, disp;
 
   int	tasIdx;				// Inputs
   int	concIdx, dbarIdx, lwIdx, dispIdx, dbzIdx;	// Outputs

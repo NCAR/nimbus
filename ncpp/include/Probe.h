@@ -16,6 +16,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2007
 #include "define.h"
 #include <netcdf.hh>
 
+#include <vector>
+
 #define MAX_O_VARS	40
 
 /* -------------------------------------------------------------------- */
@@ -54,7 +56,7 @@ public:
 
   virtual void SetRange(int)	{}
 
-  int	nOtherVars()			{ return(otherCnt); }
+  int	nOtherVars()			{ return(otherVars.size()); }
   const char	*OtherVarName(int idx)	{ return(otherVars[idx]->name()); }
 
   bool	ReadOtherVar(int idx, long start[], const long count[], float *data);
@@ -70,8 +72,7 @@ protected:
   virtual void	ComputeWidths();
 
   NcVar		*avar, 	*cvar;		// netCDF variable ID.
-  NcVar		*otherVars[MAX_O_VARS];	// Hskping & Derived Vars for action box
-  int		otherCnt;
+  std::vector<NcVar *> otherVars;	// Hskping & Derived Vars for action box
   
   ProbeType	type;
   std::string	name;
@@ -81,7 +82,8 @@ protected:
   unsigned int	vectorLength;
   unsigned int	dataRate;
   int		firstBin, lastBin;
-  float		diameter[256], midPointDiam[256], binWidth[256];
+
+  std::vector<float> diameter, midPointDiam, binWidth, sampleVolume;
 
 };	// END PROBE.H
 

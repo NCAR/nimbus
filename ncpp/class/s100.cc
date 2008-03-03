@@ -45,7 +45,7 @@ S100::S100(NcFile *file, NcVar *av) : Probe(file, av)
 
   range = 0;	// For FSSP, all other probes must be 0.
 
-  for (int i = 0; i < nOtherVars(); ++i)
+  for (int i = 0; i < otherVars.size(); ++i)
     {
     if (strcmp(otherVars[i]->name(), "TASX") == 0)
       tasIdx = i;
