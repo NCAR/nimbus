@@ -64,8 +64,8 @@ private:
   float	*conc, minConc, maxConc;
   float	*surface, minSurf, maxSurf;
   float	*volume, minVol, maxVol;
-  float	*otherVars[MAX_O_VARS];
-  float	normalization[256];
+  std::vector<float *> otherVars;
+  std::vector<float> normalization;
 
   FlightClock	startTime, endTime;
 

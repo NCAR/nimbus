@@ -248,7 +248,7 @@ bool Probe::ReadConcen(long start[], const long count[], float *data)
 
 /* -------------------------------------------------------------------- */
 void Probe::ComputeConcentration(float *accum, float *conc, long countV[],
-	float *otherVarData[])
+	std::vector<float *> otherVarData)
 {
   std::cerr << "No Compute function at this time for " << cvar->name() << ".\n";
 

@@ -19,8 +19,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2000
 /* -------------------------------------------------------------------- */
 DataSet::DataSet(DataFile *df, Probe *prb, FlightClock& start, int nRecs, DataType dt, NormType nt) : file(df), probe(prb), startTime(start)
 {
-  int	i;
-
   accum = NULL;
   conc = surface = volume = NULL;
 
@@ -30,10 +28,12 @@ DataSet::DataSet(DataFile *df, Probe *prb, FlightClock& start, int nRecs, DataTy
   nWords = probe->DataRate() * probe->VectorLength() * nRecs;
   SetDataTypes(dt);
 
-  for (i = 0; i < 256; ++i)
+  normalization.resize(probe->VectorLength());
+  for (size_t i = 0; i < probe->VectorLength(); ++i)
     normalization[i] = 1.0;
 
-  for (i = 0; i < probe->nOtherVars(); ++i)
+  otherVars.resize(probe->nOtherVars());
+  for (size_t i = 0; i < probe->nOtherVars(); ++i)
     otherVars[i] = new float[nRecs];
 
   SetNormalize(nt);
@@ -168,7 +168,7 @@ void DataSet::ReadData(int nRecs, int avRate)
   long	startV[3], countV[3], nPoints;
   float	*accumBuff = NULL;
   float	*concBuff = NULL;
-  float	*timeSeriesData[MAX_O_VARS];
+  std::vector<float *> timeSeriesData;
 
   nRecords = nRecs;
 
@@ -219,6 +219,7 @@ cout << "Count[] = " << countV[0] << ", "<< countV[1]<<", "<< countV[2] << "\n";
   if (volume)
     memset(volume, 0, nRecs * probe->VectorLength() * sizeof(float));
 
+  timeSeriesData.resize(probe->nOtherVars());
   for (i = 0; i < probe->nOtherVars(); ++i)
     timeSeriesData[i] = new float[avRate];
 

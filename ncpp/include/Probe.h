@@ -18,8 +18,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2007
 
 #include <vector>
 
-#define MAX_O_VARS	40
-
 /* -------------------------------------------------------------------- */
 class Probe
 {
@@ -34,8 +32,8 @@ public:
   std::string	Title() const	{ return(units); }
   ProbeType	Type()		{ return(type); }
 
-  int	VectorLength() const	{ return(vectorLength); }
-  int	DataRate() const	{ return(dataRate); }
+  size_t VectorLength() const	{ return(vectorLength); }
+  size_t DataRate() const	{ return(dataRate); }
 
   short	FirstBin() const	{ return(firstBin); }
   short	LastBin() const		{ return(lastBin); }
@@ -52,11 +50,11 @@ public:
 		const float *newDiams);
 
   virtual void ComputeConcentration(float *accum, float *conc, long countV[],
-		float *otherVarData[]);
+		std::vector<float *> otherVarData);
 
   virtual void SetRange(int)	{}
 
-  int	nOtherVars()			{ return(otherVars.size()); }
+  size_t	nOtherVars()		{ return(otherVars.size()); }
   const char	*OtherVarName(int idx)	{ return(otherVars[idx]->name()); }
 
   bool	ReadOtherVar(int idx, long start[], const long count[], float *data);
@@ -79,9 +77,9 @@ protected:
   std::string	serialNum;
   std::string	units;
 
-  unsigned int	vectorLength;
-  unsigned int	dataRate;
-  int		firstBin, lastBin;
+  size_t vectorLength;
+  size_t dataRate;
+  size_t firstBin, lastBin;
 
   std::vector<float> diameter, midPointDiam, binWidth, sampleVolume;
 
