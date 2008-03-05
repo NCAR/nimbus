@@ -47,6 +47,7 @@ static void setSerialNumberAndProbeType(const char * name, const char * serialNu
     derived[der_indx]->SerialNumber	= raw[raw_indx]->SerialNumber;
     derived[der_indx]->Length		= raw[raw_indx]->Length;
     derived[der_indx]->ProbeType	= raw[raw_indx]->ProbeType;
+    derived[der_indx]->Default_HR_OR	= raw[raw_indx]->SampleRate;
   }
 
   if (raw_indx != ERR && der_indx == ERR)
