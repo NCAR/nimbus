@@ -32,22 +32,36 @@ static void setSerialNumberAndProbeType(const char * name, const char * serialNu
 {
   static int twod_probe_cnt = 0;
   int raw_indx, der_indx;
-  char tmp[64];
+  char tmp[64], * location;
 
   if ((raw_indx = SearchTableSansLocation(raw, name)) != ERR)
   {
     raw[raw_indx]->SerialNumber	= serialNum;
     raw[raw_indx]->ProbeType	= probeType;
 //    raw[raw_indx]->Average	= (void (*) (...))SumVector;
+
+    if ((location = strstr(raw[raw_indx]->name, "_")) == 0)
+      printf("No location found for %s\n", raw[raw_indx]->name);
+
+    for (size_t i = 0; i < raw.size(); ++i)
+      if (strstr(raw[i]->name, location))
+      {
+        raw[i]->SerialNumber	= raw[raw_indx]->SerialNumber;
+        raw[i]->ProbeType	= raw[raw_indx]->ProbeType;
+      }
+    for (size_t i = 0; i < derived.size(); ++i)
+      if (strstr(derived[i]->name, location))
+      {
+        derived[i]->SerialNumber	= raw[raw_indx]->SerialNumber;
+        derived[i]->ProbeType		= raw[raw_indx]->ProbeType;
+        derived[i]->Default_HR_OR	= raw[raw_indx]->SampleRate;
+      }
   }
 
   strcpy(tmp, name); tmp[0] = 'C';
   if ((der_indx = SearchTableSansLocation(derived, tmp)) != ERR)
   {
-    derived[der_indx]->SerialNumber	= raw[raw_indx]->SerialNumber;
     derived[der_indx]->Length		= raw[raw_indx]->Length;
-    derived[der_indx]->ProbeType	= raw[raw_indx]->ProbeType;
-    derived[der_indx]->Default_HR_OR	= raw[raw_indx]->SampleRate;
   }
 
   if (raw_indx != ERR && der_indx == ERR)
