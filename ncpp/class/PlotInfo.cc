@@ -615,7 +615,7 @@ void PlotInfo::drawLegend(int sizeOffset)
       colorPen.SetColor(colors.NextColor());
 
     colorPen.DrawLine(canvas.Surface(), 12, ylegend-2, 50, ylegend-2);
-    blackPen.DrawText(canvas.Surface(), 55, ylegend+3, set->probe->Name());
+    blackPen.DrawText(canvas.Surface(), 55, ylegend+3, set->probe->Name().c_str());
 
     if (!color)
       colorPen.SetDash(idx);
