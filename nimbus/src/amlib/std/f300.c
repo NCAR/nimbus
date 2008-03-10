@@ -121,6 +121,8 @@ void scf300(DERTBL *varp)
   dia2		= cell_size2[probeNum];
   dia3		= cell_size3[probeNum];
 
+  if (tas < 0.0) tas = 0.0;
+
   if (FeedBack == HIGH_RATE_FEEDBACK)
     {
     if (SampleOffset >= SampleRate[probeNum])

@@ -102,6 +102,8 @@ void scasas(DERTBL *varp)
   dia2		= cell_size2[probeNum];
   dia3		= cell_size3[probeNum];
 
+  if (tas < 0.0) tas = 0.0;
+
   if (FeedBack == HIGH_RATE_FEEDBACK)
     {
     if (SampleOffset >= SampleRate[probeNum])
@@ -144,6 +146,8 @@ void scs200(DERTBL *varp)
   dia		= cell_size[probeNum];
   dia2		= cell_size2[probeNum];
   dia3		= cell_size3[probeNum];
+
+  if (tas < 0.0) tas = 0.0;
 
   if (FeedBack == HIGH_RATE_FEEDBACK)
     {
@@ -229,6 +233,9 @@ void sconcu100(DERTBL *varp)
   NR_TYPE concu100 = 0.0;
   NR_TYPE * concentration = GetVector(varp, 0, varp->Length);
 
+  if (SampleOffset >= SampleRate[0])
+    return;
+
   for (size_t i = 11; i < 100; ++i)
     concu100 += concentration[i];
 
@@ -240,6 +247,9 @@ void sconcu500(DERTBL *varp)
 {
   NR_TYPE concu500 = 0.0;
   NR_TYPE * concentration = GetVector(varp, 0, varp->Length);
+
+  if (SampleOffset >= SampleRate[0])
+    return;
 
   for (size_t i = 73; i < 100; ++i)
     concu500 += concentration[i];

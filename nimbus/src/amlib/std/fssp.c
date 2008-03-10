@@ -183,6 +183,8 @@ void scfssp(DERTBL *varp)
   frange	= GetSample(varp, 4);
   probeNum	= varp->ProbeCount;
 
+  if (tas < 0.0) tas = 0.0;
+
   if (FeedBack == HIGH_RATE_FEEDBACK)
     {
     if (SampleOffset >= SampleRate[probeNum])
@@ -237,6 +239,8 @@ void scs100(DERTBL *varp)
   oflow		= GetSample(varp, 3);
   frange	= GetSample(varp, 4);
   probeNum	= varp->ProbeCount;
+
+  if (tas < 0.0) tas = 0.0;
 
   if (varp->SerialNumber.compare("FSSP128") == 0)
     tas = -0.0466 + 0.95171 * tas;
