@@ -142,6 +142,8 @@ void sc260x(DERTBL *varp)
   dia2		= cell_size2[probeNum];
   dia3		= cell_size3[probeNum];
 
+  if (tas < 0.0) tas = 0.0;
+
   ComputeDOF(radius[probeNum], tas, dof, FIRST_BIN[probeNum],
 	LAST_BIN[probeNum], resolution[probeNum], responseTime[probeNum]);
 

@@ -140,15 +140,7 @@ void ccdpInit(var_base *varp)
 
   SampleRate[probeNum] = varp->SampleRate;
 
-  if (strncmp(varp->name, "AS100", 5) == 0 &&
-      varp->SerialNumber.compare("FSSP128") == 0)
-  {
-    char msg[200];
-    sprintf(msg, "fssp.c: <<< WARNING >>> %s: Serial # %s, TAS will be altered as follows:\n  tas = -0.0466 + 0.95171 * tas;", varp->name, varp->SerialNumber.c_str());
-    LogMessage(msg);
-  }
-
-}	/* END CFSSPINIT */
+}	/* END CCDPINIT */
 
 /* -------------------------------------------------------------------- */
 void scdp(DERTBL *varp)
@@ -164,6 +156,8 @@ void scdp(DERTBL *varp)
   dia		= cell_size[probeNum];
   dia2		= cell_size2[probeNum];
   dia3		= cell_size3[probeNum];
+
+  if (tas < 0.0) tas = 0.0;
 
   if (FeedBack == HIGH_RATE_FEEDBACK)
   {

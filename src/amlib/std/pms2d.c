@@ -278,6 +278,8 @@ void sTwoD(DERTBL *varp)
   dia3		= cell_size3[probeNum];
   concentration = &AveragedData[varp->LRstart];
 
+  if (tas < 0.0) tas = 0.0;
+
   if (varp->name[3] == 'P')
     dof = DOF2dP;
   else
