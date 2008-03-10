@@ -54,6 +54,9 @@ NR_TYPE GetSample(DERTBL *dp, int di);
 		? &AveragedData[dp->depend_LRindex[di]] \
 		: &HighRateData[dp->depend_HRindex[di] + (SampleOffset * vlen)])
 
+/* PMS1D sample rate is 10Hz.  We want to grab the closest true airspeed,
+ * or any 25Hz input value, so multiply SampleOffset by 2.5.
+ */
 #define GetSampleFor1D(dp, di)	\
 	(FeedBack == LOW_RATE_FEEDBACK \
 		? AveragedData[dp->depend_LRindex[di]] \
