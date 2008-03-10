@@ -55,6 +55,9 @@ static void setSerialNumberAndProbeType(const char * name, const char * serialNu
         derived[i]->SerialNumber	= raw[raw_indx]->SerialNumber;
         derived[i]->ProbeType		= raw[raw_indx]->ProbeType;
         derived[i]->Default_HR_OR	= raw[raw_indx]->SampleRate;
+	// This is needed by amlib initializers, since they are called
+	// via derived variables, not raw.
+        derived[i]->SampleRate		= raw[raw_indx]->SampleRate;
       }
   }
 
