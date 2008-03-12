@@ -88,7 +88,7 @@ NOTES:		Calculations taken from Bulletin 24 dated 1/89.
     plwc[probeNum] *= M_PI / 6.0 * DENS[probeNum] * PLWFAC[probeNum];
 #endif
 #ifdef VOLUME
-    pvol[probeNum] *= M_PI / 6.0;
+    pvol[probeNum] *= M_PI / 6.0 * 1.0e6;
 #endif
 #ifdef DBZ
     if (z > 0.0)
