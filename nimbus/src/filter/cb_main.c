@@ -767,19 +767,19 @@ static int determineInputFileVersion()
     char tmp[512], *p;
     cfg.SetADSVersion(Config::ADS_3);
 
+    // Attempt to determine flight number from filename.
     strcpy(tmp, ADSfileName);
-    p = strrchr(tmp, '/');
-    p = strtok(p+1, "_");
-//    cfg.SetProjectNumber(p);
-    p = strtok(NULL, "_");
-    p = strtok(NULL, "_.");
+    if ((p = strrchr(tmp, '/')) == 0)
+      p = tmp;
+
+    if ( (p = strtok(p+1, "_")) )
+      if ( (p = strtok(NULL, "_")) )
+        p = strtok(NULL, "_.");
+
     if (p)
       cfg.SetFlightNumber(p);
     else
       LogMessage("Unable to determine FlightNumber from file name.\n");
-
-// Needs to be retreived from "system_name".
-    cfg.SetTailNumber("N677F");
   }
 
   return OK;
