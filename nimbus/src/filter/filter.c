@@ -47,9 +47,8 @@ static NR_TYPE	getBuff(int offset, circBuffPtr aCBPtr);
 static void	initCircBuff(circBuffPtr aCBPtr),
 		disposCircBuff(circBuffPtr aCBPtr),
 		putBuff(NR_TYPE datum, circBuffPtr aCBPtr),
-		filterCounter(RAWTBL *sp),
 		ProcessVariable(CircularBuffer *, CircularBuffer *,
-				var_base *vp, mRFilterPtr vpFilter),
+				RAWTBL *vp, mRFilterPtr vpFilter),
 		SingleStageFilter(	CircularBuffer *, CircularBuffer *,
 					mRFilterPtr thisMRF, var_base *vp);
 
@@ -132,11 +131,6 @@ void InitMRFilters()
     if (raw[i]->DependedUpon == false && raw[i]->OutputRate != (size_t)outRate)
       continue;
 
-    /* Don't filter counters.  @see filterCounter()
-     */
-    if (raw[i]->type[0] == 'C')
-      continue;
-
     /* Can't filter Vectors.  And we don't want to filter PMS1D scalars.
      * This data will just be memcpy() into HighRateData[].
      */
@@ -149,7 +143,6 @@ void InitMRFilters()
     {
       case 1:			/* Interpolate	*/
         rawFilters[i] = createMRFilter(L, M, fromOne, mv_p);
-//        rawFilters[i] = 0;
         break;
       case 5:
         rawFilters[i] = createMRFilter(L, M, fromFive, mv_p);
@@ -228,15 +221,6 @@ void Filter(	CircularBuffer *PSCB,	/* SampleRate data. */
    */
   for (size_t i = 0; i < raw.size(); ++i)
   {
-    /* Counters shouldn't need to be filtered.  Applies averaging or
-     * linear interpolation.
-     */
-    if (raw[i]->type[0] == 'C' && raw[i]->SampleRate != raw[i]->OutputRate)
-    {
-      filterCounter(raw[i]);
-      continue;
-    }
-
     if ((raw[i]->ProbeType & PROBE_PMS1D) || (raw[i]->ProbeType & PROBE_PMS2D))
       memcpy(	(char *)&HighRateData[raw[i]->HRstart],
 		(char *)&SampledData[raw[i]->SRstart],
@@ -248,7 +232,7 @@ void Filter(	CircularBuffer *PSCB,	/* SampleRate data. */
 
 /* -------------------------------------------------------------------- */
 static void ProcessVariable(	CircularBuffer *PSCB, CircularBuffer *HSCB,
-				var_base *vp, mRFilterPtr vpFilter)
+				RAWTBL *vp, mRFilterPtr vpFilter)
 {
   /* Because data with SampleRate below 25 is interpolated first, we
    * can't use SampleRate, but must use 25.  Fake it with filterRate.
@@ -280,8 +264,8 @@ static void ProcessVariable(	CircularBuffer *PSCB, CircularBuffer *HSCB,
   }
   else if (vpFilter == (mRFilterPtr)BadFilter)
   {
-    fprintf(stderr, "No good filter for %d Hz to %d Hz!\n", vp->SampleRate,
-	    cfg.HRTRate());
+    fprintf(stderr, "No good filter for %d Hz to %d Hz, variable %s!\n", vp->SampleRate,
+	    cfg.HRTRate(), vp->name);
     return;
   }
 
@@ -323,49 +307,24 @@ static void ProcessVariable(	CircularBuffer *PSCB, CircularBuffer *HSCB,
 
   SingleStageFilter(PSCB, HSCB, vpFilter, vp);
 
-}	/* END PROCESSVARIABLE */
-
-/* -------------------------------------------------------------------- */
-static void filterCounter(RAWTBL *sp)
-{
-  NR_TYPE	*sdp = &SampledData[sp->SRstart];
-  NR_TYPE	*hrt = &HighRateData[sp->HRstart];
-  size_t	OUTindex;
-  size_t	outRate = (size_t)cfg.HRTRate();
-
-  size_t L = outRate / sp->SampleRate;
-  size_t M = sp->SampleRate / outRate;
-/*
-  if (M != 0 && (float)M != (float)outRate / sp->SampleRate)
+  if (vp->type[0] == 'C')
   {
-    fprintf(stderr, "M not even decimation factor for %s, %d -> %d.\n",
-	sp->name, sp->SampleRate, outRate);
-    return;
-  }
-
-  if (L != 0 && (float)L != (float)sp->SampleRate / outRate)
-  {
-    fprintf(stderr, "L not even interpolation factor for %s, %d -> %d.\n",
-	sp->name, sp->SampleRate, outRate);
-    return;
-  }
-*/
-
-  if (L > 0)
-    for (OUTindex = 0; OUTindex < outRate; ++OUTindex)
-      hrt[OUTindex] = sdp[OUTindex / L] / L;
-
-  if (M > 0)
-    for (OUTindex = 0; OUTindex < outRate; ++OUTindex)
+    if (vp->SampleRate < (size_t)cfg.HRTRate())
     {
-      float sum = 0.0;
-      for (size_t idx = 0; idx < M; ++idx)
-        sum += sdp[(OUTindex*M)+idx];
-
-      hrt[OUTindex] = sum;
+      float L = (float)cfg.HRTRate() / vp->SampleRate;
+      for (int i = 0; i < cfg.HRTRate(); ++i)
+        HighRateData[vp->HRstart+i] /= L;
     }
+    else
+    if (vp->SampleRate > (size_t)cfg.HRTRate())
+    {
+      float M = (float)vp->SampleRate / cfg.HRTRate();
+      for (int i = 0; i < cfg.HRTRate(); ++i)
+        HighRateData[vp->HRstart+i] *= M;
+    }
+  }
 
-}	/* END FILTERCOUNTER */
+}	/* END PROCESSVARIABLE */
 
 /* -------------------------------------------------------------------- */
 static void SingleStageFilter(CircularBuffer *PSCB, CircularBuffer *HSCB, mRFilterPtr thisMRF, var_base *vp)
