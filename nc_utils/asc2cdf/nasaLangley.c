@@ -182,7 +182,8 @@ void CreateNASAlangNetCDF(FILE *fp)
     missingVals[i] = atof(p);
 
 
-printf("Adding variable %s with units of %s\n", name, units);
+    if (verbose)
+      printf("Adding variable [%s] with units of [%s]\n", name, units);
 
     nc_def_var(ncid, name, NC_FLOAT, ndims, dims, &varid[i]);
     nc_put_att_float(ncid,varid[i], "_FillValue",NC_FLOAT, 1, &missingVal);

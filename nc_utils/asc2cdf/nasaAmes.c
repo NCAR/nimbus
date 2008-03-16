@@ -270,12 +270,18 @@ void CreateNASAamesNetCDF(FILE *fp)
   for (i = 0; i < SkipNlines; ++i)
     fgets(buffer, BUFFSIZE, fp);
 
-  p = strtok(buffer, " \t");
+  // skip any leading whitespace.
+  for (p = buffer; isspace(*p); ++p)
+    ;
+  p = strtok(p, " \t\n\r");
 
   for (i = 0; i < nVariables; ++i)
   {
     p = strtok(NULL, " \t\n\r");
     nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[i]);
+
+    if (verbose)
+      printf("Adding variable [%s] with units of [%s]\n", p, units[i]);
 
     nc_put_att_float(ncid,varid[i], "_FillValue",NC_FLOAT, 1, &missing_val);
     p = units[i];

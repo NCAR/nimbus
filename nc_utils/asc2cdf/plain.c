@@ -144,13 +144,17 @@ void CreatePlainNetCDF(FILE *fp)
 
   /* Attempt to skip title for 'time' column.
    */
-  if ((p = strtok(buffer, " \t\n\r")) == buffer)
-    p = strtok(NULL, " \t\n\r");
+  for (p = buffer; isspace(*p); ++p)
+    ;
+  p = strtok(p, " \t\n\r");
 
   nVariables = 0;
 
-  do
+  while ( (p = strtok(NULL, " \t\n\r")) )
   {
+    if (verbose)
+      printf("Creating variable [%s]\n", p);
+
     nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[nVariables]);
     nc_put_att_float(ncid,varid[nVariables],"_FillValue",NC_FLOAT,1,&missing_val);
 
@@ -170,7 +174,6 @@ void CreatePlainNetCDF(FILE *fp)
 
     ++nVariables;
   }
-  while ((p = strtok(NULL, " \t\n\r")) );
 
 #ifdef VARDB
   if (varDB)

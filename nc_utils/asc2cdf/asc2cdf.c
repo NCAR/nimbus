@@ -35,7 +35,7 @@ static char	*globalAttrFile = 0;
 
 /* Command line option flags.
  */
-bool	fileType = PLAIN_FILE, sexSinceMidnight = false, Colonless = false;
+bool	fileType = PLAIN_FILE, sexSinceMidnight = false, Colonless = false, verbose = false;
 int	SkipNlines = 1;
 
 int		BaseDataRate = 1, dataRate = 1;
@@ -297,6 +297,10 @@ static int ProcessArgv(int argc, char **argv)
 
       case 's':
         SkipNlines = atoi(argv[++i]);
+        break;
+
+      case 'v':
+        verbose = true;
         break;
 
       case ':':

@@ -25,6 +25,7 @@ extern const char	*noTitle, *noUnits;
 extern const int	rateOne;
 extern time_t	BaseTime;
 extern int	BaseDataRate, dataRate;
+extern bool	verbose;
 
 extern int	SkipNlines;
 

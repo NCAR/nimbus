@@ -4,7 +4,7 @@
 .SH NAME
 asc2cdf \- ASCII to netCDF converter
 .SH SYNOPSIS
-asc2cdf [-d yyyy-mm-dd] [-b time_t] [-g globalAttrFile] [-a] [-l] [-m] [-r n] [-s n] ASCII_file netCDF_file
+asc2cdf [-d yyyy-mm-dd] [-b time_t] [-g globalAttrFile] [-a] [-l] [-m] [-r n] [-s n] [-v] [-:] ASCII_file netCDF_file
 .SH DESCRIPTION
 .B asc2cdf 
 is program for uploading ASCII data into a netCDF file that follows the
@@ -53,6 +53,10 @@ This option is ignored if -a or -l option has been specified.  The default is 1.
 The -m option tells asc2cdf that time in the left column will be in
 seconds since midnight format (with rounding).  This is automatically
 turned on with the -a or -l option.
+.PP
+The -v option is for verbose, and outputs some debugging type information.
+.PP
+The -: option specifies that the left column stamp is in the format HHMMSS instead of HH:MM:SS.
 .PP
 .SH AUTHOR
 Chris Webster, National Center for Atmospheric Research
