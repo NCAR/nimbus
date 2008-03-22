@@ -135,7 +135,7 @@ void sc260x(DERTBL *varp)
   NR_TYPE	dof[BINS_64],	/* Depth Of Field	*/
 		sampleVolume[BINS_64];
 
-  actual	= GetVector(varp, 0, BINS_64);
+  actual	= GetVector(varp, 0);
   tas		= GetSampleFor1D(varp, 1);
   probeNum	= varp->ProbeCount;
   dia		= cell_size[probeNum];

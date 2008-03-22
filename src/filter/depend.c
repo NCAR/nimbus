@@ -178,14 +178,12 @@ int DependIndexLookup(DERTBL *dp, int which_dep)
 
   if ((di = SearchTable(raw, dp->depend[which_dep])) != ERR)
   {
-    dp->depend_LRindex[which_dep] = raw[di]->LRstart;
-    dp->depend_HRindex[which_dep] = raw[di]->HRstart;
+    dp->depends.push_back(raw[di]);
   }
   else
   if ((di = SearchTable(derived, dp->depend[which_dep])) !=ERR)
   {
-    dp->depend_LRindex[which_dep] = derived[di]->LRstart;
-    dp->depend_HRindex[which_dep] = derived[di]->HRstart;
+    dp->depends.push_back(derived[di]);
   }
   else
     return(ERR);

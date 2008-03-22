@@ -88,7 +88,7 @@ void scmasp(DERTBL *varp)
   NR_TYPE	*actual, *concentration, *dia, *dia2, *dia3;
   NR_TYPE	tas, vol, sampleVolume[BINS_32];
 
-  actual	= GetVector(varp, 0, BINS_32);
+  actual	= GetVector(varp, 0);
   tas		= GetSample(varp, 1);
   probeNum	= varp->ProbeCount;
   dia		= cell_size[probeNum];

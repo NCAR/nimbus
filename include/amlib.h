@@ -46,21 +46,21 @@ NR_TYPE GetSample(DERTBL *dp, int di);
 
 #define GetSample(dp, di)	\
 	(FeedBack == LOW_RATE_FEEDBACK \
-		? AveragedData[dp->depend_LRindex[di]] \
-		: HighRateData[dp->depend_HRindex[di] + SampleOffset])
+		? AveragedData[dp->depends[di]->LRstart] \
+		: HighRateData[dp->depends[di]->HRstart + SampleOffset])
 
-#define GetVector(dp, di, vlen)	\
+#define GetVector(dp, di)	\
 	(FeedBack == LOW_RATE_FEEDBACK \
-		? &AveragedData[dp->depend_LRindex[di]] \
-		: &HighRateData[dp->depend_HRindex[di] + (SampleOffset * vlen)])
+		? &AveragedData[dp->depends[di]->LRstart] \
+		: &HighRateData[dp->depends[di]->HRstart + (SampleOffset * dp->depends[di]->Length)])
 
 /* PMS1D sample rate is 10Hz.  We want to grab the closest true airspeed,
  * or any 25Hz input value, so multiply SampleOffset by 2.5.
  */
 #define GetSampleFor1D(dp, di)	\
 	(FeedBack == LOW_RATE_FEEDBACK \
-		? AveragedData[dp->depend_LRindex[di]] \
-		: HighRateData[dp->depend_HRindex[di] + (int)(2.5 * SampleOffset)])
+		? AveragedData[dp->depends[di]->LRstart] \
+		: HighRateData[dp->depends[di]->HRstart + (int)(2.5 * SampleOffset)])
 
 
 #define PutSample(dp, y)	\

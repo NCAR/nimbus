@@ -129,7 +129,7 @@ void sc200y(DERTBL *varp)
   NR_TYPE	dof[BINS_16],	/* Depth Of Field		*/
 		sampleVolume[BINS_16];
 
-  actual	= GetVector(varp, 0, BINS_16);
+  actual	= GetVector(varp, 0);
   tas		= GetSampleFor1D(varp, 1);
   probeNum	= varp->ProbeCount;
 

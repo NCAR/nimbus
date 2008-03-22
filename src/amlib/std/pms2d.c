@@ -268,7 +268,7 @@ void sTwoD(DERTBL *varp)
   NR_TYPE	sampleVolume[maxBins], sampleArea;
   NR_TYPE	dof, deadTime;
 
-  actual	= GetVector(varp, 0, varp->Length);
+  actual	= GetVector(varp, 0);
   tas		= GetSampleFor1D(varp, 1);
   deadTime	= GetSample(varp, 2);
 
@@ -358,7 +358,7 @@ void sHVPS(DERTBL *varp)
   NR_TYPE	sampleVolume[256], sampleArea;
   NR_TYPE	deadTime;
 
-  actual	= GetVector(varp, 0, varp->Length);
+  actual	= GetVector(varp, 0);
   tas		= GetSampleFor1D(varp, 1);
   deadTime	= GetSample(varp, 2);
 
@@ -439,7 +439,7 @@ void sreff2(DERTBL *varp)       /* Effective Radius     */
 void sconc2dc050(DERTBL *varp)
 {
   NR_TYPE conc = 0.0;
-  NR_TYPE * concentration = GetVector(varp, 0, varp->Length);
+  NR_TYPE * concentration = GetVector(varp, 0);
   int n = 128;
 
   if (strstr(varp->name, "1DC"))
@@ -456,7 +456,7 @@ void sconc2dc050(DERTBL *varp)
 void sconc2dc100(DERTBL *varp)
 {
   NR_TYPE conc = 0.0;
-  NR_TYPE * concentration = GetVector(varp, 0, varp->Length);
+  NR_TYPE * concentration = GetVector(varp, 0);
   int n = 128;
 
   if (strstr(varp->name, "1DC"))
@@ -473,7 +473,7 @@ void sconc2dc100(DERTBL *varp)
 void sconc2dc150(DERTBL *varp)
 {
   NR_TYPE conc = 0.0;
-  NR_TYPE * concentration = GetVector(varp, 0, varp->Length);
+  NR_TYPE * concentration = GetVector(varp, 0);
   int n = 128;
 
   if (strstr(varp->name, "1DC"))
