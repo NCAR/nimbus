@@ -143,10 +143,9 @@ public:
   void (*Initializer)(void *);	// amlib "constructor"
   void (*compute)(void *);	// Function to compute data
 
+  std::vector<var_base *> depends;
   size_t ndep;			// # dependancies
   char depend[MAXDEPEND][NAMELEN];	// Depandancies
-  int depend_LRindex[MAXDEPEND];
-  int depend_HRindex[MAXDEPEND];
 };
 
 

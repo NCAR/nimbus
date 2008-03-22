@@ -94,7 +94,7 @@ void scasas(DERTBL *varp)
   NR_TYPE	sampleVolume[MAX_BINS];
   NR_TYPE	tas;
 
-  actual	= GetVector(varp, 0, varp->Length);
+  actual	= GetVector(varp, 0);
   activity	= GetSample(varp, 1);
   flow		= GetSample(varp, 2);
   probeNum	= varp->ProbeCount;
@@ -140,7 +140,7 @@ void scs200(DERTBL *varp)
   NR_TYPE	sampleVolume[MAX_BINS];
   NR_TYPE	tas;
 
-  actual	= GetVector(varp, 0, varp->Length);
+  actual	= GetVector(varp, 0);
   flow		= GetSample(varp, 1);
   probeNum	= varp->ProbeCount;
   dia		= cell_size[probeNum];
@@ -231,7 +231,7 @@ void stcntp(DERTBL *varp)
 void sconcu100(DERTBL *varp)
 {
   NR_TYPE concu100 = 0.0;
-  NR_TYPE * concentration = GetVector(varp, 0, varp->Length);
+  NR_TYPE * concentration = GetVector(varp, 0);
 
   if (SampleOffset >= SampleRate[0])
     return;
@@ -246,7 +246,7 @@ void sconcu100(DERTBL *varp)
 void sconcu500(DERTBL *varp)
 {
   NR_TYPE concu500 = 0.0;
-  NR_TYPE * concentration = GetVector(varp, 0, varp->Length);
+  NR_TYPE * concentration = GetVector(varp, 0);
 
   if (SampleOffset >= SampleRate[0])
     return;

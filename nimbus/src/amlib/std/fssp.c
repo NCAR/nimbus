@@ -176,7 +176,7 @@ void scfssp(DERTBL *varp)
   NR_TYPE	frange;
   NR_TYPE	sampleVolume[BINS_16];
 
-  actual	= GetVector(varp, 0, varp->Length);
+  actual	= GetVector(varp, 0);
   tas		= GetSampleFor1D(varp, 1);
   activity	= GetSample(varp, 2);
   fbmfr		= GetSample(varp, 3);
@@ -233,7 +233,7 @@ void scs100(DERTBL *varp)
   NR_TYPE       frange;
   NR_TYPE       sampleVolume[BINS_40+1];
 
-  actual	= GetVector(varp, 0, varp->Length);
+  actual	= GetVector(varp, 0);
   tas		= GetSampleFor1D(varp, 1);
   rejAT		= GetSample(varp, 2);
   oflow		= GetSample(varp, 3);
@@ -325,7 +325,7 @@ void sfbmfr(DERTBL *varp)
   if (FeedBack == HIGH_RATE_FEEDBACK && SampleOffset >= varp->OutputRate)
     return;
 
-  afssp  = GetVector(varp, 0, 16);
+  afssp  = GetVector(varp, 0);
   fstrob = GetSample(varp, 1);
 
   for (i = FIRST_BIN[varp->ProbeCount]; i < LAST_BIN[varp->ProbeCount]; ++i)

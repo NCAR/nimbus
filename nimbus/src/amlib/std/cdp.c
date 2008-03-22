@@ -150,7 +150,7 @@ void scdp(DERTBL *varp)
   NR_TYPE       tas;		/* True Air Speed		*/
   NR_TYPE       sampleVolume[BINS_40+1];
 
-  actual	= GetVector(varp, 0, varp->Length);
+  actual	= GetVector(varp, 0);
   tas		= GetSampleFor1D(varp, 1);
   probeNum	= varp->ProbeCount;
   dia		= cell_size[probeNum];

@@ -26,8 +26,8 @@ void sicing(DERTBL *varp)
 
   atx = GetSample(varp, 0);
   plwcc = GetSample(varp, 1);
-  fssp = GetVector(varp, 2, 0);
-  x260 = GetVector(varp, 3, 0);
+  fssp = GetVector(varp, 2);
+  x260 = GetVector(varp, 3);
 
   y = sum = 0.0;
 

@@ -30,7 +30,7 @@ void sClimet(DERTBL *varp)
   /* These 'GetSample()'s must match the same order as the variables
    * are listed in the DependTable.
    */
-  actual = GetVector(varp, 0, varp->Length);
+  actual = GetVector(varp, 0);
   psx = GetSample(varp, 1);
   atx = GetSample(varp, 2);
 
