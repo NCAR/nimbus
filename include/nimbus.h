@@ -145,7 +145,7 @@ public:
 
   std::vector<var_base *> depends;
   size_t ndep;			// # dependancies
-  char depend[MAXDEPEND][NAMELEN];	// Depandancies
+  char depend[MAXDEPEND][NAMELEN];	// Dependancies
 };
 
 
