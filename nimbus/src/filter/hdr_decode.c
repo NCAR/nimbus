@@ -438,18 +438,16 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
         rp->OutputRate = rp->SampleRate;
     }
 
-    switch (var->getType())
+    if (rp->Units.compare("count") == 0)
     {
-      case  nidas::core::Variable::CONTINUOUS:
-        strcpy(rp->type, "A");
-        rp->Average = rp->Length > 1 ? (void (*) (...))AverageVector : (void (*) (...))Average;
-        break;
-      case  nidas::core::Variable::COUNTER:
+        printf("Treating %s as a counter\n", rp->name);
         strcpy(rp->type, "C");
         rp->Average = rp->Length > 1 ? (void (*) (...))SumVector : (void (*) (...))Sum;
-        break;
-      default:
-        LogMessage("hdr_decode:initSDI_ADS3: Unsupported type from Variable->getType()\n");
+    }
+    else
+    {
+        strcpy(rp->type, "A");
+        rp->Average = rp->Length > 1 ? (void (*) (...))AverageVector : (void (*) (...))Average;
     }
 
     location[0] = '\0';
