@@ -79,7 +79,10 @@ void Broadcast::broadcastData(const std::string & timeStamp) const
   {
     bcast << ",";
     if (_varList[i])
-      bcast << AveragedData[_varList[i]->LRstart];
+      if (i == 4 || i == 5)
+        bcast << AveragedData[_varList[i]->LRstart] * 3.2808;
+      else
+        bcast << AveragedData[_varList[i]->LRstart];
   }
   bcast << "\r\n";
   _brdcst1->writeSock(bcast.str().c_str(), bcast.str().length());
