@@ -37,6 +37,9 @@ protected:
 
   static const int RT_UDP_PORT;
   static const std::string RT_UDP_ADDR_1, RT_UDP_ADDR_2;
+
+  // We need to change units for these two from m to feet.
+  static const size_t PRESSURE_ALT_INDX, RADAR_ALT_INDX;
 };
 
 #endif
