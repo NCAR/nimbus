@@ -27,6 +27,9 @@ const int Broadcast::RT_UDP_PORT = 58800;
 const std::string Broadcast::RT_UDP_ADDR_1 = "192.168.84.255";
 const std::string Broadcast::RT_UDP_ADDR_2 = "192.168.184.255";
 
+const size_t Broadcast::PRESSURE_ALT_INDX = 4;
+const size_t Broadcast::RADAR_ALT_INDX = 5;
+
 /* -------------------------------------------------------------------- */
 Broadcast::Broadcast()
 {
@@ -79,7 +82,7 @@ void Broadcast::broadcastData(const std::string & timeStamp) const
   {
     bcast << ",";
     if (_varList[i])
-      if (i == 4 || i == 5)
+      if (i == PRESSURE_ALT_INDX || i == RADAR_ALT_INDX)
         bcast << AveragedData[_varList[i]->LRstart] * 3.2808;
       else
         bcast << AveragedData[_varList[i]->LRstart];
