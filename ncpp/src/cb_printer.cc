@@ -40,7 +40,7 @@ void ApplyPrintParms(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void SetPrinterName(Widget w, XtPointer client, XtPointer call)
 {
-  printerSetup->SetPrinter((char *)client);
+  printerSetup->SetPrinter((int)client);
 
 }	/* END SETPRINTERNAME */
 
