@@ -246,10 +246,10 @@ void Colors::checkByteSwap(XImage *image)
   bool	prog_byte_order;
   unsigned long pixel, x;
 
-  static bool firstTime = TRUE;
+  static bool firstTime = true;
 
   if (firstTime)        /* Only swap the colors on the first call. */
-    firstTime = FALSE;
+    firstTime = false;
   else
     return;
 
