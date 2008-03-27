@@ -17,6 +17,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #ifndef PRINTER_H
 #define PRINTER_H
 
+#include <string>
+#include <vector>
+
 #include "Window.h"
 
 #include <Xm/Frame.h>
@@ -27,7 +30,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #include <Xm/ToggleB.h>
 
 #define TOTAL_PARMS	3
-#define MAX_PRINTERS    30
 
 
 /* -------------------------------------------------------------------- */
@@ -52,7 +54,7 @@ public:
   float	FontRatio();
 
   void	SetShape(layout newShape);
-  void	SetPrinter(char newPrinter[]);
+  void	SetPrinter(int indx);
   void	SetColor(bool c)	{ color = c; }
   void	SetCommand(char s[])	{ strcpy(lp_command, s); }
   void	SetLineWidth(int w)	{ if (w > 0 && w < 10) lineWidth = w; }
@@ -62,7 +64,8 @@ private:
 
   Widget	parmsText[TOTAL_PARMS], shapeB[2], colorB[2];
 
-  char		lp_command[64], *printer_list[MAX_PRINTERS];
+  char		lp_command[64];
+  std::vector<std::string> printer_list;
   float		width, height;
   layout	shape;
   bool		color;

@@ -45,7 +45,7 @@ void	SetPrinterName(Widget w, XtPointer client, XtPointer call);
 Printer::Printer(Widget parent) : WinForm(parent, "print", RowColumn)
 {
   Widget	plRC[TOTAL_PARMS], label, b[3], frame[5], RC[5],
-		slPD, slOpMenu, slButts[MAX_PRINTERS];
+		slPD, slOpMenu, slButts[200];
   Arg		args[10];
   XmString	name;
   int		i, n, cnt;
@@ -81,15 +81,14 @@ Printer::Printer(Widget parent) : WinForm(parent, "print", RowColumn)
   XtManageChild(slOpMenu);
 
 
-  for (i = 0; printer_list[i]; ++i)
+  for (i = 0; i < printer_list.size(); ++i)
     {
-    name = XmStringCreateLocalized(printer_list[i]);
+    name = XmStringCreateLocalized((char *)printer_list[i].c_str());
 
     n = 0;
     XtSetArg(args[n], XmNlabelString, name); ++n;
     slButts[i] = XmCreatePushButton(slPD, "opMenB", args, n);
-    XtAddCallback(slButts[i], XmNactivateCallback, SetPrinterName,
-                  (XtPointer)printer_list[i]);
+    XtAddCallback(slButts[i], XmNactivateCallback, SetPrinterName, (XtPointer)i);
 
     XmStringFree(name);
     }
@@ -204,7 +203,7 @@ void Printer::PopUp()
 }	/* END POPUP */
 
 /* -------------------------------------------------------------------- */
-void Printer::SetPrinter(char *newPrinter)
+void Printer::SetPrinter(int printerIndex)
 {
   char  *p;
 
@@ -218,14 +217,14 @@ void Printer::SetPrinter(char *newPrinter)
   if (p)
     p[-1] = '\0';
 
-  if (strcmp(newPrinter, "Default"))
+  if (printerIndex > 0) // !"Default" printer.
     {
 #ifdef SVR4
     strcat(lp_command, " -d ");
 #else
     strcat(lp_command, " -P ");
 #endif
-    strcat(lp_command, newPrinter);
+    strcat(lp_command, printer_list[printerIndex].c_str());
     }
 
   setParms();
@@ -286,7 +285,7 @@ void Printer::GetPrinterList()
   int   i;
   char	buffer[256];
 
-  memset(printer_list, 0, sizeof(printer_list));
+  printer_list.clear();
 
   fprintf(stderr, "Detecting network printers....");
 
@@ -296,23 +295,15 @@ void Printer::GetPrinterList()
     return;
     }
 
-  printer_list[0] = new char [8];
-  strcpy(printer_list[0], "Default");
+  printer_list.push_back("Default");
 
   for (i = 1; fgets(buffer, 256, in) > 0; ++i)
     {
-    if (i >= MAX_PRINTERS-1)
-      {
-      fprintf(stderr, "\nGetPrinterList: Maximum number of printers reached, list will be incomplete.\n");
-      break;
-      }
-
     p = strtok(buffer, " ");
     p = strtok(NULL, " ");
     p = strtok(NULL, ":");
 
-    printer_list[i] = new char [strlen(p)+1];
-    strcpy(printer_list[i], p);
+    printer_list.push_back(p);
     }
 
   pclose(in);
