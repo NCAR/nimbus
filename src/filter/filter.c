@@ -278,18 +278,18 @@ static void ProcessVariable(	CircularBuffer *PSCB, CircularBuffer *HSCB,
   {
     // When downsampling, grab the output sample (order/2) input samples
     // after the output sample time.
-    sampleOffset = vpFilter->filter->order / 2;
+    sampleOffset = (vpFilter->filter->order - 1) / 2;
   }
   else
   {
     sampleOffset = 0;
-    PSCBindex += vpFilter->filter->order / (2 * cfg.HRTRate());
+    PSCBindex += (vpFilter->filter->order - 1) / (2 * cfg.HRTRate());
   }
 
   // XXXX When downsampling, something down the line seems to put us off 
   // by (one output sample period - one input sample period).  
   // Correct here (for now?).
-  sampleOffset -= vp->SampleRate / cfg.HRTRate() - 1;
+  sampleOffset -= vp->SampleRate / cfg.HRTRate();
 
 
   inputRec = (NR_TYPE *)GetProcessedBuffer(PSCB, HSCB, PSCBindex, vp);
@@ -381,7 +381,17 @@ static filterPtr readAfilter(char file[])
 
   FreeTextFile(filter);
 
-  printf("filter.c: filter sum of %s\t= %15.8lf, nTaps=%d\n", file, sum, daFilt->order);
+  printf("filter.c: filter sum of %s\t= %12.8lf, nTaps=%4d", file, sum, daFilt->order);
+
+  double scale = 1.0 / sum;
+  sum = 0.0;
+  for (int i = 0; i < daFilt->order; ++i)
+  {
+    daFilt->aCoef[i] *= scale;
+    sum += daFilt->aCoef[i];
+  }
+
+  printf(", scaled sum = %12.8lf\n", sum);
 
   return(daFilt);
 
