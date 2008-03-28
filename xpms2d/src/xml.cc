@@ -11,7 +11,7 @@
 std::string XMLgetElementValue(const char s[])
 {
   char *start, *end;
-  start = strchr(start, '>') + 1;
+  start = strchr(s, '>') + 1;
   end = strchr(start, '<') - 1;
 
   int len = end-start+1;
