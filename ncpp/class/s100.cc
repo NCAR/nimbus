@@ -78,7 +78,7 @@ S100::S100(NcFile *file, NcVar *av) : Probe(file, av)
 void S100::ComputeConcentration(float *accum, float *conc, long countV[],
 	const std::vector<float *> & otherVarData)
 {
-  int	i, bin;
+  int	i, j, bin;
   float	*dia, *counts, *concentration, total_cnts;
   float	*tas, *oFlow, *rejAT, sampleArea;
   double vol;
@@ -94,11 +94,13 @@ void S100::ComputeConcentration(float *accum, float *conc, long countV[],
     counts = &accum[i * VectorLength()];
     concentration = &conc[i * VectorLength()];
 
-    total_cnts = counts[0];
+    total_cnts = 0.0;
+    for (j = FirstBin(); j < LastBin(); ++j)
+      total_cnts += accum[j];
 
     vol = tas[i] / dataRate * sampleArea;
 
-    if (total_cnts > 0)
+    if (total_cnts > 0 && rejAT[i] > 0.0)
       vol *= total_cnts / (total_cnts + rejAT[i]);
 
     for (bin = FirstBin(); bin <= LastBin(); ++bin)
@@ -110,7 +112,7 @@ void S100::ComputeConcentration(float *accum, float *conc, long countV[],
 #define DBZ
 
 #include "pms1d_cv"
-
+/*
     if (total_cnts > 0)
       {
       float	ccc = (total_cnts + oFlow[i]) / total_cnts;
@@ -120,7 +122,7 @@ void S100::ComputeConcentration(float *accum, float *conc, long countV[],
 
       totalConcen *= ccc;
       }
-
+*/
     otherVarData[concIdx][i] = totalConcen;
     otherVarData[lwIdx][i] = plwc;
     otherVarData[dbarIdx][i] = dbar;
