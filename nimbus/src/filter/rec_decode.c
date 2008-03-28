@@ -48,8 +48,7 @@ void DecodeADSrecord(
   }
   else
   {
-    /* else ADS2.  Extract raw data into processed float/double.
-     */
+    // else ADS2.  Extract raw data into processed float/double.
     for (size_t i = 0; i < raw.size(); ++i)
       if (raw[i]->xlate != 0)
         (*raw[i]->xlate)(raw[i], &lr[raw[i]->ADSstart], &nlr[raw[i]->SRstart]);

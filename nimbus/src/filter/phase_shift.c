@@ -170,6 +170,10 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
 
   if (goodPoints < 3)
   {
+    if (hrt_out)
+      for (size_t i = 0; i < (size_t)cfg.HRTRate(); ++i)
+        hrt_out[vp->HRstart+i] = floatNAN;
+
 /*  Removed due to flood of messages, drowning out the rest.
     if (goodPoints != 0)
     {
