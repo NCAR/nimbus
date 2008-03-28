@@ -162,20 +162,16 @@ void sTwodInit(var_base *varp)
 
     if (j > 0)  /* 2DC only (not 1DC). */
       {
+      float resolution;
+
       if (varp->name[3] == 'C')		/* EAW is fixed .8 for 2DC */
-        {
-        float value = 0.8;
-
-        if (varp->SerialNumber.compare("F2DC001") == 0)	// or 1.6 for 64 diode Fast2DC.
-          value *= 2;
-
-        for (i = 0; i < length; ++i)
-          eaw[probeNum][i] = value;
-        }
+        resolution = 0.025;
       else
       if (varp->name[3] == 'P')		/* EAW is fixed 6.4 for 2DP */
-        for (i = 0; i < length; ++i)
-          eaw[probeNum][i] = 6.4;
+        resolution = 0.2;
+
+      for (i = 0; i < length; ++i)
+        eaw[probeNum][i] = resolution * nDiodes;
       }
     }
 
