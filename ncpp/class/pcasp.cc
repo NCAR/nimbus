@@ -60,7 +60,7 @@ void PCASP::ComputeConcentration(float *accum, float *conc, long countV[],
     concentration = &conc[i * VectorLength()];
 
     vol = (1.0 - activity[i] * dataRate) * (flow[i] / dataRate);
-printf("vol=%f\n", vol);
+
     for (bin = FirstBin(); bin <= LastBin(); ++bin)
       sampleVolume[bin] = (float)vol;
 

@@ -18,6 +18,8 @@ TwoDP::TwoDP(NcFile *file, NcVar *av) : Probe200(file, av)
 {
   NcAtt		*attr;
 
+  resolution = 0.2;
+
   if ((attr = avar->get_att("nDiodes")))
     nDiodes = attr->as_int(0);
   else
@@ -55,11 +57,9 @@ void TwoDP::ComputeConcentration(float *accum, float *conc, long countV[],
 
     tasx = tas[time] / dataRate;
 
-    ComputeDOF(tasx);
-
     // EAW is a hard 6.4 for all bins.  Al Cooper.
     for (bin = FirstBin(); bin <= LastBin(); ++bin)
-      sampleVolume[bin] = tasx * (dof[bin] * 6.4) * 0.001;
+      sampleVolume[bin] = tasx * (261.0 * EffectiveAreaWidth()) * 0.001;
 
     dia = midPointDiam;
 

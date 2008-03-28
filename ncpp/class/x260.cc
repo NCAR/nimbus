@@ -18,6 +18,8 @@ X260::X260(NcFile *file, NcVar *av) : Probe200(file, av)
 {
   NcAtt		*attr;
 
+  resolution = 0.01;
+
   if ((attr = avar->get_att("nDiodes")))
     nDiodes = attr->as_int(0);
   else

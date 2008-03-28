@@ -187,16 +187,16 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
         diameter[i] = fsspDefSize[i];
     else
     if (type == TWODC)
-      for (i = 0; i < 64; ++i)
-        diameter[i] = 17 + i * 25;
+      for (i = 0; i < 128; ++i)
+        diameter[i] = 12.5 + i * 25;
     else
     if (type == TWODP)
       for (i = 0; i < 64; ++i)
-        diameter[i] = 145 + i * 200;
+        diameter[i] = 100 + i * 200;
     else
     if (type == HVPS)
       for (i = 0; i < 256; ++i)
-        diameter[i] = 145 + i * 200;
+        diameter[i] = 100 + i * 200;
     }
 
   location = strchr(name.c_str(), '_');

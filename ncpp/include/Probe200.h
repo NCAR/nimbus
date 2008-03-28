@@ -32,12 +32,17 @@ public:
   virtual int   SetEditWindow(Widget txt[]);
   virtual int   ApplyEditWindow(Widget txt[]);
 
+  float EffectiveAreaWidth()	{ return resolution * nDiodes; }
+
+
 protected:
   void		ComputeWidths(), ComputeDOF(float tasx);
 
   static const float	diodeDiameter;
 
   int	nDiodes;
+  float resolution;	// in meters (0.025 or 0.2)
+
   float	responseTime, armDistance, PLWfac, DENS, DBZfac;
   std::vector<float> radius, esw, dof;
   float	mag, totalConcen, dbar, plwc, disp, dbz;

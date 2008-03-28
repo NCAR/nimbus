@@ -15,7 +15,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 const float Probe200::diodeDiameter = 0.2;
 
 /* -------------------------------------------------------------------- */
-Probe200::Probe200(NcFile *file, NcVar *av) : Probe(file, av)
+Probe200::Probe200(NcFile *file, NcVar *av) : Probe(file, av), nDiodes(0), resolution(0)
 {
   NcAtt		*attr;
 
