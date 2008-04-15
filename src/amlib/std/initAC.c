@@ -33,7 +33,6 @@ NR_TYPE	pcorw8(NR_TYPE, NR_TYPE),pcorf8(NR_TYPE, NR_TYPE),pcorw2(NR_TYPE, NR_TYP
 	pcorr2(NR_TYPE, NR_TYPE),pcorb7(NR_TYPE, NR_TYPE),pcorf7(NR_TYPE, NR_TYPE),
 	pcorr1(NR_TYPE, NR_TYPE),pcorf1(NR_TYPE, NR_TYPE), pcorf3(NR_TYPE, NR_TYPE),
 	pcorr3(NR_TYPE, NR_TYPE),pcorf1_2(NR_TYPE, NR_TYPE), pcorf1_3(NR_TYPE, NR_TYPE),
-	pcorf1_4(NR_TYPE, NR_TYPE),
 	pcorr5_2(NR_TYPE, NR_TYPE),pcorf5_2(NR_TYPE, NR_TYPE),pcorq5_2(NR_TYPE, NR_TYPE),
 	pcorr5(NR_TYPE, NR_TYPE),pcorf5(NR_TYPE, NR_TYPE),pcorq5(NR_TYPE, NR_TYPE);
 
@@ -78,7 +77,7 @@ void InitAircraftDependencies()
   recfkp = 0.80;
 
   // RECFRH= Rosemount 102E2AL (Heated) recovery factor
-  recfrh = 0.98;
+  recfrh = 0.985;
 
   // RECFW = Rosemount 102E2AL (wing) recovery factor
   recfw = 0.95;
@@ -159,7 +158,7 @@ void InitAircraftDependencies()
       { // AIRS-II & Later
         LogMessage("PCORS:  AIRS-II and later pcors().");
         pcorPSF	= pcorf1_3;
-        pcorQCFR = pcorf1_4;	
+        pcorQCFR = pcorf1_3;	
       }
       else
       { // Pre-AIRS-II
@@ -183,7 +182,7 @@ void InitAircraftDependencies()
       if (strcmp(buffer, "200607") > 0)
       { // Post-TREX
         LogMessage("PCORS:  Post-TREX pcors().");
-        pcorQCF	= pcorf5_2;
+        pcorQCF	= pcorf5_2;      
         pcorQCR	= pcorq5_2;
         pcorPSF	= pcorr5_2;
       }
@@ -195,8 +194,8 @@ void InitAircraftDependencies()
         pcorPSF	= pcorr5;
       }
 
-      recfb	= 0.863;
-      recfrh	= 0.85;
+      recfb	= 0.985;
+      recfrh	= 0.985;
       tfher1	= -1.7244;
       tfher2	= -1.5989;
       break;
@@ -314,7 +313,10 @@ NR_TYPE pcorr5_2(NR_TYPE q, NR_TYPE q1)
 {
   NR_TYPE	pfax;
 
-  pfax = (-1.02 + 0.1565*q) + q1*(0.008 + q1*(7.1979e-09*q1 - 1.4072e-05));
+  pfax = (-1.02 + 0.1565*q) + q1*(0.008 + q1*(7.1979e-09*q1 - 1.4072e-05));  
+
+/* Friehe pcor parameterization with q = adifr & q1 = mach_a   */
+/*   pfax = (-2.089 + q *(0.196 + 0.00138*q) + q1 *(9.609 - 8.307*q1));  */
   return(pfax);
 }
 
@@ -327,10 +329,10 @@ NR_TYPE pcorf5_2(NR_TYPE q, NR_TYPE q1)
 {
   NR_TYPE	pfix;
 
-  pfix = (1.02+q1*(0.215 - 0.04*q/1000.) + q*(-0.003266 + q*1.613e-06));
+  pfix = (1.02+q1*(0.215 - 0.04*q/1000.) + q*(-0.003266 + q*1.613e-06)); 
 
-  // Trailing Cone parameterization
-//  pfix = (-0.60 + 0.1565*q1) + q*(0.008 + q*(7.1979e-09*q - 1.4072e-05));
+  // Trailing Cone parameterization  
+/*  pfix = (-1.02 + 0.1565*q1) + q*(0.008 + q*(7.1979e-09*q - 1.4072e-05));  */
 
   return(pfix);
 }
@@ -360,40 +362,14 @@ NR_TYPE pcorr1(NR_TYPE q, NR_TYPE q1)		/* For QCR */
   return(pcor);
 }
 
-NR_TYPE pcorf1_4(NR_TYPE q, NR_TYPE q1)	/* For new QCFR */
-{
-  NR_TYPE	pcor, pfix;
-
-  pcor = (4.26 + q * (0.000368 * q - 0.01464));
-
-  if (q < 60.6)
-    pcor = (7.75 - 0.05 * q);	
-
-  pfix = (-1.54 + 0.00154 * q1);
-
-  if (q1 < 675.0)	
-    pfix = -0.5;	
-
-  pcor = (pcor + pfix);
-
-  return(pcor);
-}
-
 NR_TYPE pcorf1_3(NR_TYPE q, NR_TYPE q1)	/* For new PSF */
 {
   NR_TYPE	pcor, pfix;
 
-  pcor = (4.26 + q * (0.000368 * q - 0.01464));
+  pcor = (3.29 + q * 0.0273);
 
-  if (q < 60.6)
-    pcor = (7.75 - 0.050 * q);
-
-  pfix = (-1.54 + 0.00154 * q1);
-
-  if (q1 < 675.0)	
-    pfix = -0.5;	
-
-  pcor = (pcor + pfix);
+  if  (q < 55.0)
+    pcor = 4.7915;
 
   return(pcor);
 }
