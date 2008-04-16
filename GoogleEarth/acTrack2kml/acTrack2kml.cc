@@ -680,6 +680,9 @@ int main(int argc, char *argv[])
   }
 
 
+  std::cerr << "\nUsing database host : " << getenv("PGHOST") << "\n\n";
+
+
   // Real-time mode.
 
   PGconn * conn;
