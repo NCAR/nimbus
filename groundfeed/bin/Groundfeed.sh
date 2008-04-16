@@ -11,6 +11,12 @@ if [ -z ${AIRCRAFT} ]; then
   exit 1
 fi
 
+if [ -z ${XMIT_DIR} ]; then
+  echo Environment variable XMIT_DIR not set.
+  echo If you are running from command line, this is normally set in launch_nimbus_rt.
+  exit 1
+fi
+
 PATH=$PATH:/sbin:/usr/sbin:/usr/bin
 
 app=Groundfeed.Sender
