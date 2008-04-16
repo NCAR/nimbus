@@ -15,6 +15,7 @@ PATH=$PATH:/sbin:/usr/sbin:/usr/bin
 
 app=Groundfeed.Sender
 
+dbhost=acserver
 dbname=real-time
 groundvars=${PROJ_DIR}/$1/${AIRCRAFT}/groundvars.rt
 
@@ -23,13 +24,11 @@ groundvars=${PROJ_DIR}/$1/${AIRCRAFT}/groundvars.rt
 #
 if [ ${AIRCRAFT} == C130_N130AR ]; then
   outname=${XMIT_DIR}/${AIRCRAFT:+C130}_nimbus_sql_
-  dbhost=hercules
   ac=1
 fi
 
 if [ ${AIRCRAFT} == GV_N677F ]; then
   outname=${XMIT_DIR}/${AIRCRAFT:+GV}_nimbus_sql_
-  dbhost=hyper
   ac=5
 fi
 
