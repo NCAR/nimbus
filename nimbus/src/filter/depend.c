@@ -4,7 +4,7 @@ OBJECT NAME:	depend.c
 
 FULL NAME:	Setup Dependencies
 
-ENTRY POINTS:	SetUpDependencies()
+ENTRY POINTS:	SetupDependencies()
 		CleanOutUnwantedVariables()
 		DependIndexLookup()
 
@@ -37,13 +37,12 @@ static void	doubleCheck(DERTBL *dp);
 static std::vector<std::string> dcList;
 
 /* -------------------------------------------------------------------- */
-void SetUpDependencies()
+void ReadDependencies()
 {
   size_t	j;
   char		tokens[] = " \t";
   char		*dependlist[2000];
-  char		*s, name[NAMELEN], location[NAMELEN];
-
+  char		*s, name[NAMELEN];
 
   ReadTextFile(DEPENDTBL, dependlist);
 
@@ -53,14 +52,6 @@ void SetUpDependencies()
     buffer[0] = '\0';
 
     strcpy(name, dp->name);
-
-    if ((s = strchr(name, '_')) != NULL)
-    {
-      strcpy(location, s);
-      *s = '\0';
-    }
-    else
-      location[0] = '\0';
 
     // Retrieve dependency list.
     if (cfg.isADS3())
@@ -88,18 +79,46 @@ void SetUpDependencies()
 
     // Process dependencies.
     for (j = 0; (s = strtok((char *)NULL, tokens)); ++j)
-    {
       strcpy(dp->depend[j], s);
 
+    dp->ndep = j;
+  }
+
+  FreeTextFile(dependlist);
+}
+
+/* -------------------------------------------------------------------- */
+void SetupDependencies()
+{
+  size_t	j;
+  char		*s, name[NAMELEN], location[NAMELEN];
+
+  for (size_t i = 0; i < derived.size(); ++i)
+  {
+    DERTBL *dp = derived[i];
+    dp->depends.clear();
+
+    strcpy(name, dp->name);
+
+    if ((s = strchr(name, '_')) != NULL)
+    {
+      strcpy(location, s);
+      *s = '\0';
+    }
+    else
+      location[0] = '\0';
+
+    for (j = 0; j < dp->ndep; ++j)
+    {
       /* We need to check both cases of whether dependency needs the
        * location tacked on.  (e.g. CFSSP depends on TASX, we do not
        * want location tacked onto TASX.
        */
-      if (DependIndexLookup(dp, j) == ERR)
+      if (DependIndexLookup(dp, j, true) == ERR)
       {
         strcat(dp->depend[j], location);
 
-        if (DependIndexLookup(dp, j) == ERR)
+        if (DependIndexLookup(dp, j, true) == ERR)
         {
           /* Make one last check on the PMS1D stuff.  We want all the same
            * derived names for the new DMT probes, but raw names have been
@@ -126,7 +145,7 @@ void SetUpDependencies()
             }
           }
 
-          if (DependIndexLookup(dp, j) == ERR)
+          if (DependIndexLookup(dp, j, true) == ERR)
           {
             sprintf(buffer, DependMsg, name, dp->depend[j]);
             LogMessage(buffer);
@@ -137,11 +156,7 @@ void SetUpDependencies()
         }
       }
     }
-
-    dp->ndep = j;
   }
-
-  FreeTextFile(dependlist);
 
 }	/* END SETUPDEPENDANCIES */
 
@@ -172,18 +187,20 @@ void CleanOutUnwantedVariables()
 }	/* CLEANOUTUNWANTEDVARIABLES */
 
 /* -------------------------------------------------------------------- */
-int DependIndexLookup(DERTBL *dp, int which_dep)
+int DependIndexLookup(DERTBL *dp, int which_dep, bool init_depends)
 {
   int di;
 
   if ((di = SearchTable(raw, dp->depend[which_dep])) != ERR)
   {
-    dp->depends.push_back(raw[di]);
+    if (init_depends)
+      dp->depends.push_back(raw[di]);
   }
   else
   if ((di = SearchTable(derived, dp->depend[which_dep])) !=ERR)
   {
-    dp->depends.push_back(derived[di]);
+    if (init_depends)
+      dp->depends.push_back(derived[di]);
   }
   else
     return(ERR);

@@ -307,6 +307,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
    * netCDF attributes.
    */
   ProcessFlightDate();
+  SetupDependencies();
   InitAircraftDependencies();
   RunAMLIBinitializers();
   SetConfigGlobalAttributeVariables();

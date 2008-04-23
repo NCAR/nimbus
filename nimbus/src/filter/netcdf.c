@@ -35,7 +35,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <cerrno>
-#include <ctime>
 #include <map>
 #include <sstream>
 
@@ -845,6 +844,11 @@ void BlankOutBadData()
 
     clearDependedByList();
 
+    if ((index = SearchTableSansLocation(raw, target)) != ERR &&
+        raw[index]->Output)
+      {		// Do nothing, but avoid error message below if it was a raw variable.
+      }
+    else
     if ((index = SearchTable(derived, target)) != ERR &&
 	derived[index]->Output)
       {
