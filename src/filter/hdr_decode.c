@@ -271,7 +271,7 @@ for (size_t i = 0; i < derived.size(); ++i)
     ReadDespikeFile();
 
   ReadDefaultDerivedOutputRate();
-  SetUpDependencies();
+  ReadDependencies();
 
 }	// END COMMONPOSTINITIALIZATION
 

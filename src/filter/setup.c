@@ -228,7 +228,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
           for (size_t i = 0; i < derived[indx]->ndep; ++i)
           {
             strcpy(derived[indx]->depend[i], strtok(NULL, " \t\n"));
-            DependIndexLookup(derived[indx], i);
+            DependIndexLookup(derived[indx], i, false);
           }
         }
       }

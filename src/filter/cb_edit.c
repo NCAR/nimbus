@@ -247,7 +247,7 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
         {
         p = XmTextFieldGetString(ev_text[i]);
         strcpy(dp->depend[i], p);
-        DependIndexLookup(dp, i);
+        DependIndexLookup(dp, i, false);
         XtFree(p);
         }
 
