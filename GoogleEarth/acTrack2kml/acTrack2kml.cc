@@ -33,7 +33,7 @@ static const float TAS_CutOff = 20.0;
 // old 600 point max.
 static const int maxGoogleMapPoints = 3000;
 
-static std::string netCDFinputFile, outputKML;
+static std::string netCDFinputFile, outputKML, database_host;
 
 static const float missing_value = -32767.0;
 
@@ -566,15 +566,19 @@ int flightStatus()
 /* -------------------------------------------------------------------- */
 PGconn * openDataBase()
 {
-//  PGconn *conn = PQconnectdb("host = 'orion.atd.ucar.edu' dbname = 'real-time' user = 'ads'");
-  PGconn *conn = PQconnectdb("");	// Use environment variables.
+  char	conn_str[1024];
+
+  sprintf(conn_str, "host = '%s' dbname = 'real-time' user = 'ads'", database_host.c_str());
+  std::cout << "Connect string : [" << conn_str << "]\n";
+  PGconn *conn = PQconnectdb(conn_str);
+
 
   /* check to see that the backend connection was successfully made
    */
   if (PQstatus(conn) == CONNECTION_BAD)
   {
     PQfinish(conn);
-    std::cerr << "SourceSQL: Connection failed:\n";
+    std::cerr << "PQconnectdb: Connection failed.\n";
     return 0;
   }
 
@@ -676,9 +680,7 @@ int parseRunstring(int argc, char** argv)
     switch (opt_char)
     {
     case 'h':	// PGHOST over-ride.
-      char tmp[2048];
-      sprintf(tmp, "PGHOST=%s", optarg);
-      putenv(tmp);
+      database_host = optarg;
       break;
 
     case 's':	// Time-step, default is 10 seconds.
@@ -713,6 +715,8 @@ int main(int argc, char *argv[])
 {
   int rc;
 
+  database_host = getenv("PGHOST");
+
   if (argc > 1)
   {
     if ((strstr(argv[1], "usage") || strstr(argv[1], "help")))
@@ -734,7 +738,7 @@ int main(int argc, char *argv[])
   }
 
 
-  std::cout << "\n  Using database host : " << getenv("PGHOST") << "\n";
+  std::cout << "\n  Using database host : " << database_host << "\n";
   std::cout << "\n  Output directory : " << googleEarthDataDir << "\n\n";
 
 
