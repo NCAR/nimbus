@@ -701,7 +701,8 @@ int parseRunstring(int argc, char** argv)
     netCDFinputFile = argv[optind];
     outputKML = argv[optind+1];
   }
-  else
+
+  if ((optind+1) == argc)	// netCDF mode, but they left off output file.
     return usage(argv[0]);
 
   return 0;
@@ -712,11 +713,14 @@ int main(int argc, char *argv[])
 {
   int rc;
 
-  if (argc > 1 && (strstr(argv[1], "usage") || strstr(argv[1], "help")))
-    return usage(argv[0]);
+  if (argc > 1)
+  {
+    if ((strstr(argv[1], "usage") || strstr(argv[1], "help")))
+      return usage(argv[0]);
 
-  if ((rc = parseRunstring(argc,argv)) != 0)
-    return rc;
+    if ((rc = parseRunstring(argc,argv)) != 0)
+      return rc;
+  }
 
   if (netCDFinputFile.length() > 0)
   {
