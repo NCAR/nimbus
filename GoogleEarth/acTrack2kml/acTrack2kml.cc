@@ -17,33 +17,31 @@
 #include "boost/lexical_cast.hpp"
 
 // Output directories for .xml & .kml files.  Ground
-//const std::string googleMapDataDir = "/net/www/docs/flight_data/";
-//const std::string googleEarthDataDir = "/net/www/docs/flight_data/";
+static std::string googleMapDataDir = "/net/www/docs/flight_data/";
+static std::string googleEarthDataDir = "/net/www/docs/flight_data/";
 
-// Onboard location
-const std::string googleMapDataDir = "/var/www/html/";
-const std::string googleEarthDataDir = "/var/www/html/";
 
 // All datapoints are read from file, but only use every 'TimeStep' points.
 // e.g. 15 would mean use 1 data point for every 15 seconds of data.
-const int TimeStep = 10;
+static int TimeStep = 10;
 
 // True Airspeed cut-off (take-off and landing speed).
-const float TAS_CutOff = 20.0;
+static const float TAS_CutOff = 20.0;
 
 // Max out at this many points, don't want to swamp GoogleMap, though
 // Vincent said he broke them up into segments, so we shouldn't have the
 // old 600 point max.
-const int maxGoogleMapPoints = 3000;
+static const int maxGoogleMapPoints = 3000;
 
+static std::string netCDFinputFile, outputKML;
 
-const float missing_value = -32767.0;
+static const float missing_value = -32767.0;
 
 // Our raw data is coming from a PostGreSQL database.....
 // The order of this enum should match the order of the variables
 // being requested in the dataQuery string.
 enum VariablePos { TIME=0, LON, LAT, ALT, AT, TAS, WS, WD, WI };
-const std::string _dataQuerySuffix = ",atx,tasx,wsc,wdc,wic FROM raf_lrt WHERE TASX > ";
+static const std::string _dataQuerySuffix = ",atx,tasx,wsc,wdc,wic FROM raf_lrt WHERE TASX > ";
 
 
 class _projInfo
@@ -354,7 +352,7 @@ void WriteSpecialInclude(std::ofstream & googleEarth)
 
 
 /* -------------------------------------------------------------------- */
-void WriteGoogleEarthKML(std::string& file, const _projInfo& projInfo, int status_id)
+void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo, int status_id)
 {
   std::ofstream googleEarth;
 
@@ -584,12 +582,15 @@ PGconn * openDataBase()
 }
 
 /* -------------------------------------------------------------------- */
-void ReadDataFromNetCDF(const char * fileName)
+void ReadDataFromNetCDF(const std::string & fileName)
 {
-  NcFile file(fileName);
+  NcFile file(fileName.c_str());
 
   if (file.is_valid() == false)
+  {
+    std::cerr << "Failed to open, or invalid netCDF file.\n";
     return;
+  }
 
   NcAtt* attr;
   attr = file.get_att("FlightNumber");
@@ -650,37 +651,87 @@ void ReadDataFromNetCDF(const char * fileName)
 }
 
 /* -------------------------------------------------------------------- */
-int main(int argc, char *argv[])
+int usage(const char* argv0)
 {
-  if (argc > 1 && (strstr(argv[1], "usage") || strstr(argv[1], "help")))
-  {
-    std::cout
+  std::cerr
 	<< "Usage: has two forms, one for real-time use and the other to scan\n"
 	<< "	a netCDF file in post-processing mode.\n\n"
 	<< "Real-time form:\n"
-	<< "	rt_kml\n\n"
+	<< "	acTrack2kml [-o] [-h database_host]\n\n"
 	<< "Post-processing:\n"
-	<< "	rt_kml infile.nc outfile.kml\n";   
+	<< "	acTrack2kml infile.nc outfile.kml\n";   
+
+  return 1;
+}
+
+/* -------------------------------------------------------------------- */
+int parseRunstring(int argc, char** argv)
+{
+  extern char *optarg;       /* set by getopt() */
+  extern int optind;       /* "  "     "     */
+  int opt_char;     /* option character */
+
+  while ((opt_char = getopt(argc, argv, "h:s:o")) != -1)
+  {
+    switch (opt_char)
+    {
+    case 'h':	// PGHOST over-ride.
+      char tmp[2048];
+      sprintf(tmp, "PGHOST=%s", optarg);
+      putenv(tmp);
+      break;
+
+    case 's':	// Time-step, default is 10 seconds.
+      TimeStep = atoi(optarg);
+      break;
+
+    case 'o':	// onboard.  Modify some defaults if this is set.
+        googleMapDataDir = "/var/www/html/";
+        googleEarthDataDir = "/var/www/html/";
+      break;
+
+    case '?':
+      return usage(argv[0]);
+      break;
+    }
   }
 
-
-  if (argc > 1)
+  if ((optind+2) == argc)	// netCDF mode.
   {
-    ReadDataFromNetCDF(argv[1]);
+    netCDFinputFile = argv[optind];
+    outputKML = argv[optind+1];
+  }
+  else
+    return usage(argv[0]);
+
+  return 0;
+}
+
+/* -------------------------------------------------------------------- */
+int main(int argc, char *argv[])
+{
+  int rc;
+
+  if (argc > 1 && (strstr(argv[1], "usage") || strstr(argv[1], "help")))
+    return usage(argv[0]);
+
+  if ((rc = parseRunstring(argc,argv)) != 0)
+    return rc;
+
+  if (netCDFinputFile.length() > 0)
+  {
+    ReadDataFromNetCDF(netCDFinputFile);
     if (_lat.size() > 0)
     {
-      std::string outFile;
-      if (argc > 2)
-        outFile = argv[2];
-
 //      WriteGoogleMapXML(projectInfo, 3);
-      WriteGoogleEarthKML(outFile, projectInfo, 3);
+      WriteGoogleEarthKML(outputKML, projectInfo, 3);
     }
     return 0;
   }
 
 
-  std::cerr << "\nUsing database host : " << getenv("PGHOST") << "\n\n";
+  std::cout << "\n  Using database host : " << getenv("PGHOST") << "\n";
+  std::cout << "\n  Output directory : " << googleEarthDataDir << "\n\n";
 
 
   // Real-time mode.
