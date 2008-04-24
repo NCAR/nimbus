@@ -38,7 +38,7 @@ if [ ${AIRCRAFT} == GV_N677F ]; then
   ac=5
 fi
 
-cd ${JLOCAL}/raf/groundfeed/lib
+cd /home/local/raf/groundfeed/lib
 
 /usr/java/latest/bin/java \
   -cp groundfeed.jar:getopt.jar:postgresql.jar $app -g $groundvars \
