@@ -32,7 +32,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 char	*DependMsg =
 	"%s is depending on non-existent variable %s, turning off.\n";
 
-static void	doubleCheck(DERTBL *dp);
+static void	doubleCheck(DERTBL *dp), setupDependencies(bool set_depends);
 
 static std::vector<std::string> dcList;
 
@@ -85,10 +85,18 @@ void ReadDependencies()
   }
 
   FreeTextFile(dependlist);
+
+  setupDependencies(false);
 }
 
 /* -------------------------------------------------------------------- */
 void SetupDependencies()
+{
+  setupDependencies(true);
+}
+
+/* -------------------------------------------------------------------- */
+static void setupDependencies(bool set_depends)
 {
   size_t	j;
   char		*s, name[NAMELEN], location[NAMELEN];
@@ -114,11 +122,11 @@ void SetupDependencies()
        * location tacked on.  (e.g. CFSSP depends on TASX, we do not
        * want location tacked onto TASX.
        */
-      if (DependIndexLookup(dp, j, true) == ERR)
+      if (DependIndexLookup(dp, j, set_depends) == ERR)
       {
         strcat(dp->depend[j], location);
 
-        if (DependIndexLookup(dp, j, true) == ERR)
+        if (DependIndexLookup(dp, j, set_depends) == ERR)
         {
           /* Make one last check on the PMS1D stuff.  We want all the same
            * derived names for the new DMT probes, but raw names have been
@@ -145,7 +153,7 @@ void SetupDependencies()
             }
           }
 
-          if (DependIndexLookup(dp, j, true) == ERR)
+          if (DependIndexLookup(dp, j, set_depends) == ERR)
           {
             sprintf(buffer, DependMsg, name, dp->depend[j]);
             LogMessage(buffer);
@@ -157,7 +165,6 @@ void SetupDependencies()
       }
     }
   }
-
 }	/* END SETUPDEPENDANCIES */
 
 /* -------------------------------------------------------------------- */
