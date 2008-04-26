@@ -53,10 +53,11 @@ static void WriteMissingData(int, int);
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
-  int	i, hour, minute, second, currSecond, lastSecond = -1;
+  int	i, hz, hour, minute, second, currSecond, lastSecond = -1;
   int	startHour, startMinute, startSecond;
   char	*p;
   float	dataValue;
+  size_t index[3];
 
   putenv("TZ=UTC");	// All time calcs in UTC.
   FlightDate[0] = 0;
@@ -182,24 +183,29 @@ int main(int argc, char *argv[])
     nc_put_var1_float(ncid, timeVarID, &nRecords, &dataValue);
     nc_put_var1_float(ncid, timeOffsetID, &nRecords, &dataValue);
 
-    for (i = 0; i < nVariables; ++i)
+    for (hz = 0; hz < dataRate; ++hz)
       {
-      if ((p = strtok(NULL, ", \t\n\r")) == NULL)
-        break;
-
-      dataValue = atof(p);
-
-      if (fileType != PLAIN_FILE)
+      for (i = 0; i < nVariables; ++i)
         {
-        if (dataValue == missingVals[i])
-          dataValue = MISSING_VALUE;
-        else
+        if ((p = strtok(NULL, ", \t\n\r")) == NULL)
+          break;
+
+        dataValue = atof(p);
+
+        if (fileType != PLAIN_FILE)
           {
-          dataValue = dataValue * scale[i] + offset[i];
+          if (dataValue == missingVals[i])
+            dataValue = MISSING_VALUE;
+          else
+            {
+            dataValue = dataValue * scale[i] + offset[i];
+            }
           }
+
+        index[0] = nRecords; index[1] = hz;
+        nc_put_var1_float(ncid, varid[i], index, &dataValue);
         }
 
-      nc_put_var1_float(ncid, varid[i], &nRecords, &dataValue);
       }
 
     ++nRecords;

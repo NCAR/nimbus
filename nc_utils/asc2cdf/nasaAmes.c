@@ -149,6 +149,7 @@ void CreateNASAamesNetCDF(FILE *fp)
    */
   ndims = 1;
   dims[0] = TimeDim;
+  dims[1] = RateDim;
 
 
   /* Time Variables.
@@ -274,6 +275,9 @@ void CreateNASAamesNetCDF(FILE *fp)
   for (p = buffer; isspace(*p); ++p)
     ;
   p = strtok(p, " \t\n\r");
+
+  if (dataRate > 1)
+    ndims = 2;
 
   for (i = 0; i < nVariables; ++i)
   {

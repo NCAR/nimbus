@@ -124,18 +124,12 @@ void CreateNASAlangNetCDF(FILE *fp)
   sprintf(buffer, "sps%d", dataRate);
   nc_def_dim(ncid, buffer, dataRate, &RateDim);
 
+  ndims = 1;
+  dims[0] = TimeDim;
+  dims[1] = RateDim;
 
   if (dataRate > 1)
-  {
     ndims = 2;
-    dims[0] = TimeDim;
-    dims[1] = RateDim;
-  }
-  else
-  {
-    ndims = 1;
-    dims[0] = TimeDim;
-  }
 
 
   /* Time Variables.

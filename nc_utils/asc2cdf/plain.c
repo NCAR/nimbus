@@ -121,6 +121,7 @@ void CreatePlainNetCDF(FILE *fp)
    */
   ndims = 1;
   dims[0] = TimeDim;
+  dims[1] = RateDim;
 
 
   /* Time Variables, here to keep Gary/WINDS happy.
@@ -149,6 +150,9 @@ void CreatePlainNetCDF(FILE *fp)
   p = strtok(p, " \t\n\r");
 
   nVariables = 0;
+
+  if (dataRate > 1)
+    ndims = 2;
 
   while ( (p = strtok(NULL, " \t\n\r")) )
   {
