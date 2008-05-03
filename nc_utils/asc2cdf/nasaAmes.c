@@ -25,6 +25,7 @@ void *GetMemory(size_t nbytes);
 void SetNASABaseTime(int hour, int min, int sec)
 {
   struct tm	*gt;
+  char buff[512];
 
   StartFlight.tm_hour	= hour;
   StartFlight.tm_min	= min;
@@ -37,10 +38,10 @@ void SetNASABaseTime(int hour, int min, int sec)
 
   BaseTime = mktime(&StartFlight);
 
-  strftime(buffer, 128, "seconds since %F %T %z", &StartFlight);
+  strftime(buff, 128, "seconds since %F %T %z", &StartFlight);
 
-  nc_put_att_text(ncid, timeVarID, "units", strlen(buffer)+1, buffer);
-  nc_put_att_text(ncid, timeOffsetID, "units", strlen(buffer)+1, buffer);
+  nc_put_att_text(ncid, timeVarID, "units", strlen(buff)+1, buff);
+  nc_put_att_text(ncid, timeOffsetID, "units", strlen(buff)+1, buff);
 
 }	/* END SETNASABASETIME */
 
