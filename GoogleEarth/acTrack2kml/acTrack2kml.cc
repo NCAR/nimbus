@@ -462,6 +462,9 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo, int stat
     sprintf(buffer, "zip %s %s", tmptmp.c_str(), file.c_str());
     system(buffer);
 
+    sprintf(buffer, "chmod g+w %s", tmptmp.c_str());
+    system(buffer);
+
     std::string temp = googleEarthDataDir + "real-time.kmz";
     rename(tmptmp.c_str(), temp.c_str());
   }
