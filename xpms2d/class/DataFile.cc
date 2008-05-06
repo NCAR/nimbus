@@ -274,7 +274,12 @@ void ADS_DataFile::SetPosition(int position)
   if (pos == nIndices)
     --pos;
 
-  LocatePMS2dRecord(&buff, ntohs(indices[pos].time[0]),
+  int hour = ntohs(indices[pos].time[0]);
+
+  if (ntohs(indices[0].time[0]) > 12 && hour < 12)
+    hour += 24;
+
+  LocatePMS2dRecord(&buff, hour,
 	ntohs(indices[pos].time[1]), ntohs(indices[pos].time[2]));
 
 }	/* END SETPOSITION */
