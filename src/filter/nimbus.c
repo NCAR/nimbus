@@ -10,16 +10,16 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2008
 -------------------------------------------------------------------------
 */
-
-#include <signal.h>
 
 #include "nimbus.h"
 #include "gui.h"
 #include "fbr.h"
 #include "svnInfo.h"
+
+#include <signal.h>
 
 #define APP_CLASS	"XmNimbus"
 
@@ -90,13 +90,14 @@ int main(int argc, char *argv[])
 
   signal(SIGUSR2, (void (*) (int))Quit);
 
+  nidas::util::LogConfig lc;
+  logger = nidas::util::Logger::createInstance("nimbus", LOG_CONS, LOG_LOCAL5);
+  lc.level = nidas::util::LOGGER_INFO;
+  logger->setScheme(nidas::util::LogScheme().addConfig (lc));
+
   if (cfg.Interactive())
   {
     char *p;
-
-// This may still be applicable if .ads disk & .nc disk are the same.  But
-// we've run out of big enough disks at RAF, so try new method below.
-//    GetDataDirectory(buffer);
 
     // Set this environment variable to over-ride hard code below
     // (ground-stations, etc).
@@ -118,7 +119,9 @@ int main(int argc, char *argv[])
     XtAppMainLoop(context);
   }
   else
+  {
     Proceed(NULL, NULL, NULL);
+  }
 
   return(0);
 

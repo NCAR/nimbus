@@ -21,6 +21,8 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #include <raf/constants.h>
 #include "config.h"
 
+#include <nidas/util/Logger.h>
+
 const size_t NAMELEN = 32;
 const size_t MAX_VARIABLES = 2000;
 const size_t MAX_DEFAULTS = 256;
@@ -154,6 +156,9 @@ extern char sync_server_pipe[];
 
 extern const NR_TYPE MISSING_VALUE, floatNAN;
 extern const int MAX_COF;
+
+// Syslog.  Used for onboard / real-time.
+extern nidas::util::Logger * logger;
 
 extern std::vector<RAWTBL *> raw;
 extern std::vector<DERTBL *> derived;

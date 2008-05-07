@@ -73,6 +73,9 @@ char	sync_server_pipe[80];
 
 Config cfg;	// Global configuration.
 
+// Syslog.  Used for onboard / real-time.
+nidas::util::Logger * logger = 0;
+
 std::vector<RAWTBL *> raw;	// Alphabeticly sorted pointers
 std::vector<DERTBL *> derived;	// Alphabeticly sorted pointers
 std::vector<DERTBL *> ComputeOrder;	// Compute Order for derived

@@ -187,12 +187,17 @@ PostgreSQL::WriteSQL(const std::string & timeStamp)
 
   if (++cntr % 3600 == 0)     // every hour
   {
-fprintf(stderr, "Performing ANALYZE @ %s\n", timeStamp.c_str());
+    char msg[128];
+    sprintf(msg, "psql.cc: Performing ANALYZE @ %s.", timeStamp.c_str());
+
+    ILOG((msg));
+    fprintf(stderr, "%s\n", msg);
 
     _sqlString.str("");
     _sqlString << "ANALYZE " << LRT_TABLE << " (" << TIME_VARIABLE << ");";
 
     submitCommand(_sqlString.str(), true);
+    ILOG(("psql.cc: ANALYZE done."));
   }
 
 }	/* END WRITESQL */
