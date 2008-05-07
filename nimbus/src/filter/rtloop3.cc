@@ -111,6 +111,8 @@ void RealTimeLoop3()
   char timeStamp[32];
   nidas::core::dsm_time_t tt;
 
+  ILOG(("RealTimeLoop entered."));
+
   if (cfg.OutputSQL())
   {
     std::string BuildPGspecString();
