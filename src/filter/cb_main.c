@@ -1086,13 +1086,13 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
 void ToggleProbe(Widget w, XtPointer client, XtPointer call)
 {
   size_t i;
-  unsigned	cat  = (int)client & 0xf0000000,
-		type = (int)client & 0x0ffffff0,
-		cnt  = (int)client & 0x0000000f;
+  unsigned	cat  = (long)client & 0xf0000000,
+		type = (long)client & 0x0ffffff0,
+		cnt  = (long)client & 0x0000000f;
 
-  if ((unsigned)client == ALL_ON || (unsigned)client == ALL_OFF)
+  if ((unsigned long)client == ALL_ON || (unsigned long)client == ALL_OFF)
     {
-    bool	value = (unsigned)client == ALL_ON ? true : false;
+    bool value = (unsigned long)client == ALL_ON ? true : false;
 
     for (i = 0; i < raw.size(); ++i) {
       if (strcmp(raw[i]->name, "HOUR") == 0 ||
@@ -1215,7 +1215,7 @@ static void LogLagErrors()
   {
     if (raw[i]->badLagCntr > 0)
     {
-      sprintf(buffer, "%s: %d bad Lags.\n", raw[i]->name, raw[i]->badLagCntr);
+      sprintf(buffer, "%s: %ld bad Lags.\n", raw[i]->name, raw[i]->badLagCntr);
       LogMessage(buffer);
     }
   }

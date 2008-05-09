@@ -197,13 +197,13 @@ void InitMRFilters()
         break;
       default:
         fprintf(stderr, "mrfFilter: non-supported input rate, ");
-        fprintf(stderr, "var=%s, rate=%d\n", raw[i]->name, raw[i]->SampleRate);
+        fprintf(stderr, "var=%s, rate=%ld\n", raw[i]->name, raw[i]->SampleRate);
     }
 
     if (rawFilters[i] == 0 && raw[i]->SampleRate != raw[i]->OutputRate)
     {
       char msg[128];
-      sprintf(msg, "%s [sr=%d] has no FIR filter, resampled data will be used.",
+      sprintf(msg, "%s [sr=%ld] has no FIR filter, resampled data will be used.",
               raw[i]->name, raw[i]->SampleRate);
       LogMessage(msg);
     }
@@ -264,7 +264,7 @@ static void ProcessVariable(	CircularBuffer *PSCB, CircularBuffer *HSCB,
   }
   else if (vpFilter == (mRFilterPtr)BadFilter)
   {
-    fprintf(stderr, "No good filter for %d Hz to %d Hz, variable %s!\n", vp->SampleRate,
+    fprintf(stderr, "No good filter for %ld Hz to %ld Hz, variable %s!\n", vp->SampleRate,
 	    cfg.HRTRate(), vp->name);
     return;
   }

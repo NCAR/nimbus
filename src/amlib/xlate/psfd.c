@@ -58,7 +58,7 @@ void xlpsfd_ADS2(RAWTBL *varp, void *input, NR_TYPE *output)
     indx1 = SearchTable(raw, "PSFD1");
     indx2 = SearchTable(raw, "PSFD2");
 
-    if ((int)psfd1 == ERR || (int)psfd2 == ERR)
+    if (indx1 == ERR || indx2 == ERR)
       {
       LogMessage("PSFD: can't find PSFD1 or PSFD2, fatal.\n");
       sleep(2);

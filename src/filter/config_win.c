@@ -85,7 +85,7 @@ void SetInterpType(Widget w, XtPointer client, XtPointer call)
 {
   if (((XmToggleButtonCallbackStruct *)call)->set)
   {
-    int it = (int)client;
+    int it = (long)client;
     cfg.SetInterpolationType((Config::interpolationType)it);
   }
 }
@@ -95,7 +95,7 @@ void SetTwoDProcMethod(Widget w, XtPointer client, XtPointer call)
 {
   if (((XmToggleButtonCallbackStruct *)call)->set)
   {
-    int it = (int)client;
+    int it = (long)client;
     cfg.SetTwoDProcessingMethod((Config::pms2dProcessing)it);
   }
 }
@@ -105,7 +105,7 @@ void SetTwoDRejectRatio(Widget w, XtPointer client, XtPointer call)
 {
   if (((XmToggleButtonCallbackStruct *)call)->set)
   {
-    float it = (int)client;
+    float it = (long)client;
     cfg.SetTwoDAreaRejectRatio(it / 100);
   }
 }
@@ -304,7 +304,7 @@ void SetSampleRate(Widget w, XtPointer client, XtPointer call)
 void SetHighRate(Widget w, XtPointer client, XtPointer call)
 {
   size_t        i;
-  int rate = (int)client;
+  int rate = (long)client;
 
   if (w == 0)
   {
