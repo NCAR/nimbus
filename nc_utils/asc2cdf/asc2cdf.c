@@ -197,15 +197,21 @@ int main(int argc, char *argv[])
           if (dataValue == missingVals[i])
             dataValue = MISSING_VALUE;
           else
-            {
             dataValue = dataValue * scale[i] + offset[i];
-            }
           }
 
         index[0] = nRecords; index[1] = hz;
         nc_put_var1_float(ncid, varid[i], index, &dataValue);
         }
 
+      if (hz != dataRate-1)
+        if (fgets(buffer, BUFFSIZE, inFP) == NULL)
+          break;
+
+      p = strtok(buffer, ", \t");
+
+      if (fileType == NASA_LANGLEY)     /* Skip Julian day      */
+        p = strtok(NULL, ", \t");
       }
 
     ++nRecords;
