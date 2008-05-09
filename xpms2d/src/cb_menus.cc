@@ -252,7 +252,7 @@ void ToggleWrap(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void ToggleDisplay(Widget w, XtPointer client, XtPointer call)
 {
-  mainPlot->SetDisplayMode((int)client);
+  mainPlot->SetDisplayMode((long)client);
   PageCurrent();
 
 }       /* END TOGGLEDISPLAY */
@@ -270,7 +270,7 @@ void ForkNetscape(Widget w, XtPointer client, XtPointer call)
 {
   if (fork() == 0)
     {
-    switch ((int)client)
+    switch ((long)client)
       {
       case 1:
         execlp("firefox", "firefox", "http://www.eol.ucar.edu/raf", NULL);

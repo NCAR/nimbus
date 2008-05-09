@@ -73,9 +73,9 @@ void WarnUser(char str[], void (*okCB)(Widget, XtPointer, XtPointer), void (*can
 /* ARGSUSED */
 void CancelWarning(Widget w, XtPointer clientData, XtPointer callData)
 {
-  XtUnmanageChild(warnBox[(int)clientData]);
-  XtPopdown(XtParent(warnBox[(int)clientData]));
-  inUse[(int)clientData] = FALSE;
+  XtUnmanageChild(warnBox[(long)clientData]);
+  XtPopdown(XtParent(warnBox[(long)clientData]));
+  inUse[(long)clientData] = FALSE;
 
 }	/* END CANCELWARNING */
 

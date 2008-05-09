@@ -54,49 +54,49 @@ void EditDiams(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void EditParms(Widget w, XtPointer client, XtPointer call)
 {
-  plotMgr->EditParms(application->Shell(), (int)client);
+  plotMgr->EditParms(application->Shell(), (long)client);
 
 }	/* END EDITPARMS */
 
 /* -------------------------------------------------------------------- */
 void AutoTitle_CB(Widget w, XtPointer client, XtPointer call)
 {
-  plotMgr->ToggleAutoTitle((int)client);
+  plotMgr->ToggleAutoTitle((long)client);
 
 }
 
 /* -------------------------------------------------------------------- */
 void AutoLabel_CB(Widget w, XtPointer client, XtPointer call)
 {
-  plotMgr->ToggleAutoLabel((int)client);
+  plotMgr->ToggleAutoLabel((long)client);
 
 }
 
 /* -------------------------------------------------------------------- */
 void AutoScale_CB(Widget w, XtPointer client, XtPointer call)
 {
-  plotMgr->ToggleAutoScale((int)client);
+  plotMgr->ToggleAutoScale((long)client);
 
 }
 
 /* -------------------------------------------------------------------- */
 void AutoTic_CB(Widget w, XtPointer client, XtPointer call)
 {
-  plotMgr->ToggleAutoTics((int)client);
+  plotMgr->ToggleAutoTics((long)client);
 
 }
 
 /* -------------------------------------------------------------------- */
 void ApplyParmsWindow(Widget w, XtPointer client, XtPointer call)
 {
-  plotMgr->ApplyParms((int)client, *fileMgr.CurrentFile());
+  plotMgr->ApplyParms((long)client, *fileMgr.CurrentFile());
 
 }	/* END APPLYPARMSWINDOW */
 
 /* -------------------------------------------------------------------- */
 void SetParmsWindow(Widget w, XtPointer client, XtPointer call)
 {
-  plotMgr->SetParms((int)client);
+  plotMgr->SetParms((long)client);
 
 }	/* END SETPARMSWINDOW */
 
@@ -119,7 +119,7 @@ void SetDiams(Widget w, XtPointer client, XtPointer call)
 
   if (editDiams && fileMgr.CurrentFile())
     {
-    currentProbe = (int)client;
+    currentProbe = (long)client;
     editDiams->SetDiameters(fileMgr.CurrentFile()->probe[currentProbe]);
     }
 

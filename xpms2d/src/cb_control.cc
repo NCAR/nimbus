@@ -210,34 +210,34 @@ void PageBackward(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void SetCurrentFile(Widget w, XtPointer client, XtPointer call)
 {
-  fileMgr.SetCurrentFile((int)client);
+  fileMgr.SetCurrentFile((long)client);
 }
 
 /* -------------------------------------------------------------------- */
 void SetProbe(Widget w, XtPointer client, XtPointer call)
 {
-  fileMgr.CurrentFile()->Probes()[(int)client]->setDisplay(((XmToggleButtonCallbackStruct *)call)->set);
+  fileMgr.CurrentFile()->Probes()[(long)client]->setDisplay(((XmToggleButtonCallbackStruct *)call)->set);
   PageCurrent();
 }
 
 /* -------------------------------------------------------------------- */
 void SetDensity(Widget w, XtPointer client, XtPointer call)
 {
-  controlWindow->SetWaterDensity((int)client);
+  controlWindow->SetWaterDensity((long)client);
   PageCurrent();
 }
 
 /* -------------------------------------------------------------------- */
 void SetAreaRatioRej(Widget w, XtPointer client, XtPointer call)
 {
-  controlWindow->SetAreaRatioReject((int)client);
+  controlWindow->SetAreaRatioReject((long)client);
   PageCurrent();
 }
 
 /* -------------------------------------------------------------------- */
 void SetConcentration(Widget w, XtPointer client, XtPointer call)
 {
-  controlWindow->SetConcentrationCalc((int)client);
+  controlWindow->SetConcentrationCalc((long)client);
   SetSampleArea();
   PageCurrent();
 }

@@ -45,10 +45,10 @@ void ClearCurrentSh(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void SetSDI_DSM(Widget w, XtPointer client, XtPointer call)
 {
-  strcpy(currentSh.dsm_locn, DSM[(int)client]);
+  strcpy(currentSh.dsm_locn, DSM[(long)client]);
 
   if (!w) /* If this is being called from EditVariable()  */
-    SetMenu(SDIom[0], DSM[(int)client]);
+    SetMenu(SDIom[0], DSM[(long)client]);
 }
 
 /* -------------------------------------------------------------------- */
@@ -57,17 +57,17 @@ void SetSDI_Type(Widget w, XtPointer client, XtPointer call)
   Arg         args[2];
   XmString    name;
 
-  strcpy(currentSh.type, typeListChar[(int)client]);
+  strcpy(currentSh.type, typeListChar[(long)client]);
 
   if (!w) /* If this is being called from EditVariable()  */
     {
-    name = XmStringCreateLocalized(typeList[(int)client]);
+    name = XmStringCreateLocalized(typeList[(long)client]);
     XtSetArg(args[0], XmNlabelString, name);
     XtSetValues(XmOptionButtonGadget(SDIom[1]), args, 1);
     XmStringFree(name);
     }
 
-  switch ((int)client)
+  switch ((long)client)
     {
     case 0:		/* Analog		*/
       strcpy(currentSh.item_type, SDI_STR);
@@ -126,11 +126,11 @@ void SetSDI_SampleRate(Widget w, XtPointer client, XtPointer call)
   Arg         args[2];
   XmString    name;
 
-  currentSh.rate = atoi(sampleRates[(int)client]);
+  currentSh.rate = atoi(sampleRates[(long)client]);
 
   if (!w) /* If this is being called from EditVariable()  */
     {
-    name = XmStringCreateLocalized(sampleRates[(int)client]);
+    name = XmStringCreateLocalized(sampleRates[(long)client]);
     XtSetArg(args[0], XmNlabelString, name);
     XtSetValues(XmOptionButtonGadget(SDIom[2]), args, 1);
     XmStringFree(name);
@@ -143,11 +143,11 @@ void SetSDI_CardAddr(Widget w, XtPointer client, XtPointer call)
   Arg         args[2];
   XmString    name;
 
-  currentSh.adsaddr = (int)client;
+  currentSh.adsaddr = (long)client;
 
   if (!w) /* If this is being called from EditVariable()  */
     {
-    sprintf(buffer, "%x", (int)client);
+    sprintf(buffer, "%x", (long)client);
     name = XmStringCreateLocalized(buffer);
     XtSetArg(args[0], XmNlabelString, name);
     XtSetValues(XmOptionButtonGadget(SDIom[3]), args, 1);
@@ -161,11 +161,11 @@ void SetSDI_Gain(Widget w, XtPointer client, XtPointer call)
   Arg         args[2];
   XmString    name;
 
-  currentSh.ch_gain = atoi(gains[(int)client]);
+  currentSh.ch_gain = atoi(gains[(long)client]);
 
   if (!w) /* If this is being called from EditVariable()  */
     {
-    name = XmStringCreateLocalized(gains[(int)client]);
+    name = XmStringCreateLocalized(gains[(long)client]);
     XtSetArg(args[0], XmNlabelString, name);
     XtSetValues(XmOptionButtonGadget(SDIom[4]), args, 1);
     XmStringFree(name);
@@ -178,11 +178,11 @@ void SetSDI_Offset(Widget w, XtPointer client, XtPointer call)
   Arg         args[2];
   XmString    name;
 
-  currentSh.ch_offset = atoi(offsets[(int)client]);
+  currentSh.ch_offset = atoi(offsets[(long)client]);
 
   if (!w) /* If this is being called from EditVariable()  */
     {
-    name = XmStringCreateLocalized(offsets[(int)client]);
+    name = XmStringCreateLocalized(offsets[(long)client]);
     XtSetArg(args[0], XmNlabelString, name);
     XtSetValues(XmOptionButtonGadget(SDIom[5]), args, 1);
     XmStringFree(name);

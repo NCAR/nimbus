@@ -9,7 +9,7 @@ void SetAircraft(Widget w, XtPointer client, XtPointer call)
   Arg         args[2];
   XmString    name;
 
-  strcpy(flightInfo.acraft, aircraft[(int)client]);
+  strcpy(flightInfo.acraft, aircraft[(long)client]);
 
 printf("SetAircraft: new ac = %s\n", flightInfo.acraft);
 
@@ -18,7 +18,7 @@ printf("SetAircraft: new ac = %s\n", flightInfo.acraft);
 
   if (!w)
     {
-    name = XmStringCreateLocalized(aircraft[(int)client]);
+    name = XmStringCreateLocalized(aircraft[(long)client]);
     XtSetArg(args[0], XmNlabelString, name);
     XtSetValues(XmOptionButtonGadget(acOpMenu), args, 1);
     XmStringFree(name);

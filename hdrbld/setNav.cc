@@ -30,7 +30,7 @@ static XmString	name;
 /* -------------------------------------------------------------------- */
 void SetPrimaryInertial(Widget w, XtPointer client, XtPointer call)
 {
-  Inertial[0] = (int)client;
+  Inertial[0] = (long)client;
 
   if (Inertial[0])
     {
@@ -62,7 +62,7 @@ void SetPrimaryInertial(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void SetSecondaryInertial(Widget w, XtPointer client, XtPointer call)
 {
-  Inertial[1] = (int)client;
+  Inertial[1] = (long)client;
 
   if (!w) /* If this is being called from EditVariable()  */
     {
@@ -83,7 +83,7 @@ void SetSecondaryInertial(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void SetPrimaryGPS(Widget w, XtPointer client, XtPointer call)
 {
-  GPS[0] = (int)client;
+  GPS[0] = (long)client;
 
   if (GPS[0])
     {
@@ -117,7 +117,7 @@ void SetPrimaryGPS(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void SetSecondaryGPS(Widget w, XtPointer client, XtPointer call)
 {
-  GPS[1] = (int)client;
+  GPS[1] = (long)client;
 
   if (GPS[1])
     {
@@ -149,7 +149,7 @@ void SetSecondaryGPS(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void SetTertiaryGPS(Widget w, XtPointer client, XtPointer call)
 {
-  GPS[2] = (int)client;
+  GPS[2] = (long)client;
 
   if (!w) /* If this is being called from EditVariable()  */
     {

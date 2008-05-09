@@ -95,7 +95,7 @@ void SetCurrentFile(Widget w, XtPointer client, XtPointer call)
   if (!cb->set)
     return;
 
-  fileMgr.SetCurrentFile((int)client);
+  fileMgr.SetCurrentFile((long)client);
   SetProbeNames();
   plotMgr->GenerateAutoTitles(*fileMgr.CurrentFile());
 
@@ -115,12 +115,12 @@ void ModifyActiveProbes(Widget w, XtPointer client, XtPointer call)
   if (cb->set)
     {
     if (setMgr.Add(fileMgr.CurrentFile(),
-		fileMgr.CurrentFile()->probe[(int)client]) == false)
+		fileMgr.CurrentFile()->probe[(long)client]) == false)
       XmToggleButtonSetState(w, false, false);
     }
   else
     setMgr.Delete(fileMgr.CurrentFile(),
-		fileMgr.CurrentFile()->probe[(int)client]);
+		fileMgr.CurrentFile()->probe[(long)client]);
 
 
   // If High-rate, then force averaging period to one, and shut it down.

@@ -55,7 +55,7 @@ void SaveDefaults(FILE *fp)	/* Save modified defaults into "Setup" file */
   for (size_t i = 0; i < nDefaults; ++i)
     if (Defaults[i]->Dirty)
       {
-      fprintf(fp, "DEFAULT=%s %d", Defaults[i]->Name, Defaults[i]->Values.size());
+      fprintf(fp, "DEFAULT=%s %ld", Defaults[i]->Name, Defaults[i]->Values.size());
 
       for (size_t j = 0; j < Defaults[i]->Values.size(); ++j)
         fprintf(fp, " %e", Defaults[i]->Values[j]);
@@ -213,7 +213,7 @@ void DismissDefaultsWindow(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 static void MarkDirty(Widget w, XtPointer indx, XtPointer call)
 {
-  Defaults[(int)indx]->Dirty = true;
+  Defaults[(long)indx]->Dirty = true;
 
 }	/* END MARKDIRTY */
 

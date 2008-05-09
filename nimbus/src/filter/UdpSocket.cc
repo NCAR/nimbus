@@ -90,7 +90,7 @@ void UdpSocket::openSock (int binding)
 
       ifc.ifc_len = sizeof(buf);
       ifc.ifc_buf = buf;
-      if (ioctl(udp_sock, SIOCGIFCONF, (int)&ifc) < 0) {
+      if (ioctl(udp_sock, SIOCGIFCONF, (long)&ifc) < 0) {
         perror("UdpSocket: ioctl SIOCGIFCONF");
         exit (1);
       }
@@ -101,7 +101,7 @@ void UdpSocket::openSock (int binding)
         if (ifr->ifr_addr.sa_family != AF_INET)
           continue;
 
-        if (ioctl(udp_sock, SIOCGIFFLAGS, (int)ifr) < 0) {
+        if (ioctl(udp_sock, SIOCGIFFLAGS, (long)ifr) < 0) {
           perror("UdpSocket: ioctl SIOCGIFFLAGS");
           exit (1);
         }
@@ -111,7 +111,7 @@ void UdpSocket::openSock (int binding)
             (ifr->ifr_flags & (IFF_BROADCAST | IFF_POINTOPOINT)) == 0)
           continue;
 
-        if (ioctl(udp_sock, SIOCGIFBRDADDR, (int)ifr) < 0) {
+        if (ioctl(udp_sock, SIOCGIFBRDADDR, (long)ifr) < 0) {
           perror("ioctl SIOCGIFBRDADDR");
           exit (1);
         }

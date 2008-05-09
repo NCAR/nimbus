@@ -24,8 +24,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 /* -------------------------------------------------------------------- */
 void SetOther(Widget w, XtPointer client, XtPointer call)
 {
-  int	index = ((int)client & 0xff00) >> 8,
-	index1 = (int)client & 0xff;
+  int	index = ((long)client & 0xff00) >> 8,
+	index1 = (long)client & 0xff;
 
   XtSetSensitive(other[index].DSMom[index1], ((XmToggleButtonCallbackStruct *)call)->set);
 

@@ -25,7 +25,7 @@ extern Widget resButts[];
 void SetPMS(Widget w, XtPointer client, XtPointer call)
 {
   char	*p;
-  int	index = (int)client;
+  int	index = (long)client;
 
   /* Retreive probe serial number. */
   p = GetMenu(pmsInfo[index].probe);
