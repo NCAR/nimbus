@@ -304,7 +304,13 @@ static int ProcessArgv(int argc, char **argv)
         break;
 
       case 'r':
-        BaseDataRate = atoi(argv[++i]);
+        {
+        float rate = atof(argv[++i]);
+        if (rate < 1.0)
+          BaseDataRate = (int)(1.0 / rate + 0.5);
+        if (rate > 1.0)
+          dataRate = (int)rate;
+        }
         break;
 
       case 's':

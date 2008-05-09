@@ -44,8 +44,9 @@ The -d option lets the user specify a flight date.  This can be used in place
 of the -b option.  If both options are specified, the -d will take precedence.
 Date must be in ISO-8601 compliant format.
 .PP
-The -r option defines the data rate.  Where the rate must be less than 1 Hz.
-n = 5 means 1 sample every 5 seconds.  The default is 1.
+The -r option defines the data rate.  Values between 0 and 1 are for data which comes
+less frequently than once per second (e.g. .1 is 10 second data).  Values greater than
+1 are for samples per second (e.g. 50 is for 50Hz data).  The default is 1.
 .PP
 The -s option tells asc2cdf to skip 'n' lines before getting to the data.
 This option is ignored if -a or -l option has been specified.  The default is 1.
