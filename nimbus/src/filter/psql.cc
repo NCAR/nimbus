@@ -197,7 +197,6 @@ PostgreSQL::WriteSQL(const std::string & timeStamp)
     _sqlString << "ANALYZE " << LRT_TABLE << " (" << TIME_VARIABLE << ");";
 
     submitCommand(_sqlString.str(), true);
-    ILOG(("psql.cc: ANALYZE done."));
   }
 
 }	/* END WRITESQL */

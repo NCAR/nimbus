@@ -86,6 +86,9 @@ void MultiCastStatus::sendStatus(const char timeStamp[])
 
 MultiCastStatus mcStat;
 
+static const int chk_lag_interval = 20; // seconds
+static const int max_lag_delta = 10; // seconds
+
 /* -------------------------------------------------------------------- */
 void RTinit_ADS3()
 {
@@ -109,6 +112,7 @@ printf("netCDF file = %s\n", buffer);
 void RealTimeLoop3()
 {
   char timeStamp[32];
+  size_t cntr = 0;
   nidas::core::dsm_time_t tt;
 
   ILOG(("RealTimeLoop entered."));
@@ -154,8 +158,23 @@ void RealTimeLoop3()
     // This typically produces HRT netCDF in real-time.  Not used at this time.
 //    if (cfg.OutputNetCDF())
 //      SyncNetCDF();
-  }
 
+    /* Check every 20 seconds to see if we are lagging more than 10 seconds
+     * behind the system clock.
+     */
+    if ((++cntr % 20) == 0)
+    {
+      time_t sys_time = time(0);
+
+      if (abs(sys_time - ut) > max_lag_delta)
+      {
+        char msg[128];
+        sprintf(msg, "WARNING: Time lag > 10 seconds; sys_clock=%ld, dsm_time=%ld !!!", sys_time, ut);
+        WLOG((msg));
+        fprintf(stderr, "\n%s\n\n", msg);
+      }
+    }
+  }
 }	// END REALTIMELOOP3
 
 // END RTLOOP3.CC
