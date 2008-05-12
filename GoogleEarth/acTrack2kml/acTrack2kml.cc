@@ -123,7 +123,9 @@ std::string getGlobalAttribute(PGconn * conn, std::string attr)
     std::cerr << "No global attribute " << attr << "!\n";
     return "";
   }
-  return extractPQString(res, 0, 0);
+  std::string s = extractPQString(res, 0, 0);
+  PQclear(res);
+  return s;
 }
 
 /* -------------------------------------------------------------------- */
