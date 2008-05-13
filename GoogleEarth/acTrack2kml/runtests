@@ -1,0 +1,5 @@
+#!/bin/csh
+
+# valgrind memory test.
+
+valgrind --tool=memcheck --leak-check=yes acTrack2kml
