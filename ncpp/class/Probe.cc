@@ -122,16 +122,11 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
   dataRate = avar->get_dim(1)->size();
   vectorLength = avar->get_dim(2)->size();
 
-  sampleVolume.resize(VectorLength());
-  diameter.resize(VectorLength());
-  midPointDiam.resize(VectorLength());
-  binWidth.resize(VectorLength());
-
-  units = cvar->get_att("units")->as_string(0);
-
-  if ((attr = avar->get_att("SerialNumber")))
-    serialNum = attr->as_string(0);
-
+  int   nCells = type == FSSP ? 64 : VectorLength();
+  sampleVolume.resize(nCells);
+  diameter.resize(nCells);
+  midPointDiam.resize(nCells);
+  binWidth.resize(nCells);
 
   units = cvar->get_att("units")->as_string(0);
 
