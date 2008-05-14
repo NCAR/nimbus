@@ -720,7 +720,8 @@ int main(int argc, char *argv[])
 {
   int rc;
 
-  database_host = getenv("PGHOST");
+  char *p = getenv("PGHOST");
+  if (p) database_host = p;
 
   if (argc > 1)
   {
