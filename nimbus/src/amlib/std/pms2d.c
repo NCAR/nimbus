@@ -147,7 +147,6 @@ void sTwodInit(var_base *varp)
       {
       LAST_BIN[probeNum] *= 2;
       length *= 2;
-      nDiodes *= 2;
       }
 
     ComputePMS1DParams(radius[probeNum], eaw[probeNum], cell_size[probeNum],
