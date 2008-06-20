@@ -621,7 +621,7 @@ void ReadDataFromNetCDF(const std::string & fileName)
   NcVar* tas_v = file.get_var("TASX");
   NcVar* lat_v = file.get_var(lat);
   NcVar* lon_v = file.get_var(lon);
-  NcVar* alt_v = file.get_var(lat);
+  NcVar* alt_v = file.get_var(alt);
 
   NcValues *tim_vals = tim_v->values();
   NcValues *tas_vals = tas_v->values();
