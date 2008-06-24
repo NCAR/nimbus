@@ -195,13 +195,20 @@ static void CommonPostInitialization()
    */
   rate = 1;
 
+  if (cfg.ProjectName().compare("RAF_Lab") == 0)
+    {
+    add_derived_names("RAF_LAB");
+    }
+  else
   if (cfg.Aircraft() != Config::SAILPLANE)
     {
     add_derived_names("ALWAYS");
     AddProbeToList("Fluxes", (unsigned long)PROBE_FLUX);
     }
   else
+    {
     add_derived_names("SAIL");
+    }
 
   ReleasePMSspecs();
 
@@ -454,8 +461,11 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     addSerialNumber(var, rp);
   }
 
-  add_derived_names("GUST");
-  initGustCorrected();
+  if (cfg.ProjectName().compare("RAF_Lab"))
+    {
+    add_derived_names("GUST");
+    initGustCorrected();
+    }
   CommonPostInitialization();
 
 void PMS1D_SetupForADS3();
