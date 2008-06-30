@@ -16,10 +16,6 @@ INPUT:		YEAR MONTH DAY HOUR MINUTE SECOND LAT LON
 
 OUTPUT:		SOLZE SOLAZ SOLDE SOLEL
 
-REFERENCES:		
-
-REFERENCED BY:	compute.c
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 ORIG. AUTHOR:	Ron Ruth
@@ -91,13 +87,6 @@ void ssolze(DERTBL *varp)
 	double eps, sel, a1, a2, gha, sze, cze, sph, st;
 
 
-/*       * * * * * * * * * * * * * * *
-        *                             *
-       *  Executable code starts here  *
-        *                             *
-         * * * * * * * * * * * * * * *
- */
-
 	year = (int)GetSample(varp, 0);
 	mon  = (int)GetSample(varp, 1);
 	day  = (int)GetSample(varp, 2);
@@ -132,37 +121,37 @@ void ssolze(DERTBL *varp)
  *	zone = (int)(lon/15.);
  *	t += zone;
  */
-	time = (double)delyr*365. + (double)leap + (double)iday - 1. + t/24.;
-	if (delyr == leap*4) time -= 1.;
-	if ((delyr < 0) && (delyr != leap*4)) time -= 1.;
+	time = (double)delyr * 365.0 + (double)leap + (double)iday - 1. + t / 24.0;
+	if (delyr == leap * 4) time -= 1.0;
+	if ((delyr < 0) && (delyr != leap * 4)) time -= 1.0;
 	theta = (360.*time/365.25)*DEG_RAD;
-	g = -0.031271 -4.53963e-7*time + theta;
-	el = 4.900968 +3.67474e-7*time;
-	el += ((0.033434 -2.3e-9*time)*sin(g));
+	g = -0.031271 -4.53963e-7 * time + theta;
+	el = 4.900968 +3.67474e-7 * time;
+	el += ((0.033434 -2.3e-9 * time) * sin(g));
 	el += (0.000349*sin(2.*g) + theta);
-	eps = 0.409140 -6.2149e-9*time;
+	eps = 0.409140 -6.2149e-9 * time;
 	sel = sin(el);
-	a1 = sel*cos(eps);
+	a1 = sel * cos(eps);
 	a2 = cos(el);
 	gha = atan2(a1,a2);
 
 	if (gha < 0.) gha += TWO_PI;
 
-	solde = asin(sel*sin(eps));
-	st = 1.759335 + TWO_PI*(time/365.25 - delyr);
-	st += 3.694e-7*time;
+	solde = asin(sel * sin(eps));
+	st = 1.759335 + TWO_PI * (time / 365.25 - delyr);
+	st += 3.694e-7 * time;
 	if (st >= TWO_PI) st -= TWO_PI;
-	st += (-lonr + 15.0*DEG_RAD*t);
+	st += (-lonr + 15.0 * DEG_RAD * t);
 	if (st >= TWO_PI) st -= TWO_PI;
 	gha -= st;
-	sze = sin(phi)*sin(solde) + cos(phi)*cos(solde)*cos(gha);
+	sze = sin(phi) * sin(solde) + cos(phi) * cos(solde) * cos(gha);
 	solze = asin(sze);
 	cze = cos(solze);
 	if (cze == 0.0) cze = 0.00001;
-	solaz = cos(solde)*sin(gha)/cze;
-/*	if ((fabs)(solaz) > 1.0000) solaz = sign(1.00000000,solaz); <-- FORTRAN */
-	if (solaz >  1.0000) solaz =  1.;
-	if (solaz < -1.0000) solaz = -1.;
+	solaz = cos(solde) * sin(gha) / cze;
+
+	if (solaz >  1.0) solaz =  1.0;
+	if (solaz < -1.0) solaz = -1.0;
 	solaz = asin(solaz);
 	sph = sin(phi);
 	if (sph == 0.0) sph = 0.00001;
@@ -171,18 +160,18 @@ void ssolze(DERTBL *varp)
 		if (solaz < 0.) solaz += TWO_PI;
 		solaz = M_PI - solaz;
 	}
-	solze = M_PI_2 - solze;
+	solze = M_PI_2 - solze;	// M_PI_2 is PI/2.
 	gha = fmod((lonr-gha),TWO_PI);
 	if (gha < 0.0) gha += TWO_PI;
-	solel = M_PI_2 - solze;
-/*	printf ("Within zenith function\n");
+	solel = M_PI_2 - solze;	// M_PI_2 is PI/2.
+/*
+	printf ("Within zenith function\n");
 	printf (" solar azimuth (deg) = %f\n",solaz*RAD_DEG);
 	printf (" solar zenith (deg) = %f\n",solze*RAD_DEG);
 	printf (" solar elevation (deg) = %f\n",solel*RAD_DEG);
 	printf (" solar declination (deg) = %f\n",solde*RAD_DEG);
 	printf (" Greenwich hour angle (deg) = %f\n",gha*RAD_DEG);
  */
-
 	PutSample(varp, (NR_TYPE)solze);
 /*	printf (" PutSample solar zenith (deg) = %f\n",solze*RAD_DEG); */
 
@@ -192,7 +181,6 @@ void ssolze(DERTBL *varp)
 void ssolaz(DERTBL *varp)
 /*  Solar azimuth angle (radians) */
 {
-
 	PutSample(varp, solaz);
 /*	printf (" PutSample solar azimuth (deg) = %f\n",solaz*RAD_DEG); */
 
@@ -202,7 +190,6 @@ void ssolaz(DERTBL *varp)
 void ssolde(DERTBL *varp)
 /*  Solar declination angle (radians) */
 {
-
 	PutSample(varp, solde);
 /*	printf (" PutSample solar declination (deg) = %f\n",solde*RAD_DEG); */
 
@@ -212,7 +199,6 @@ void ssolde(DERTBL *varp)
 void ssolel(DERTBL *varp)
 /*  Solar elevation angle (radians) */
 {
-
 	PutSample(varp, solel);
 /*	printf (" PutSample solar elevation (deg) = %f\n",solel*RAD_DEG) */;
 
