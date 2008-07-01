@@ -77,7 +77,6 @@ void ssolze(DERTBL *varp)
  *     only UTC.  This would be equivalent to "zone=0."
  */
 {
-
 	double	solze;	/* solar zenith angle (radians) */
 	int	year, mon, day;
 	double	hr, min, sec, lat, lon;
@@ -172,34 +171,27 @@ void ssolze(DERTBL *varp)
 	printf (" solar declination (deg) = %f\n",solde*RAD_DEG);
 	printf (" Greenwich hour angle (deg) = %f\n",gha*RAD_DEG);
  */
-	PutSample(varp, (NR_TYPE)solze);
-/*	printf (" PutSample solar zenith (deg) = %f\n",solze*RAD_DEG); */
+	PutSample(varp, (NR_TYPE)solze * RAD_DEG);
 
 }	/* END SSOLZE */
 
 /* -------------------------------------------------------------------- */
 void ssolaz(DERTBL *varp)
-/*  Solar azimuth angle (radians) */
 {
-	PutSample(varp, solaz);
-/*	printf (" PutSample solar azimuth (deg) = %f\n",solaz*RAD_DEG); */
+	PutSample(varp, solaz * RAD_DEG);
 
 }	/* END SSOLAZ */
 
 /* -------------------------------------------------------------------- */
 void ssolde(DERTBL *varp)
-/*  Solar declination angle (radians) */
 {
-	PutSample(varp, solde);
-/*	printf (" PutSample solar declination (deg) = %f\n",solde*RAD_DEG); */
+	PutSample(varp, solde * RAD_DEG);
 
 }	/* END SSOLDE */
 
 /* -------------------------------------------------------------------- */
 void ssolel(DERTBL *varp)
-/*  Solar elevation angle (radians) */
 {
-	PutSample(varp, solel);
-/*	printf (" PutSample solar elevation (deg) = %f\n",solel*RAD_DEG) */;
+	PutSample(varp, solel * RAD_DEG);
 
 }	/* END SSOLEL */
