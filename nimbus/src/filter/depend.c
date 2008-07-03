@@ -60,6 +60,9 @@ void ReadDependencies()
     }
     else
     {
+      if ((s = strchr(name, '_')) != NULL)
+        *s = '\0';
+
       s = SearchList(dependlist, name);
       if (s)
         strcpy(buffer, s);
