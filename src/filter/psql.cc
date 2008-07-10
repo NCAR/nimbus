@@ -51,6 +51,8 @@ PostgreSQL::PostgreSQL(std::string specifier, bool transmitToGround)
   {
    if (cfg.Aircraft() == Config::HIAPER)
       _ldm = new sqlTransmit("GV");
+   if (cfg.Aircraft() == Config::NRL_P3)
+      _ldm = new sqlTransmit("NRLP3");
    if (cfg.Aircraft() == Config::C130)
       _ldm = new sqlTransmit("C130");
   }
