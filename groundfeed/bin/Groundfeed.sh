@@ -38,6 +38,11 @@ if [ ${AIRCRAFT} == GV_N677F ]; then
   ac=5
 fi
 
+if [ ${AIRCRAFT} == "P3_NRL-P3" ]; then
+  outname=${XMIT_DIR}/${AIRCRAFT:+NRLP3}_nimbus_sql_
+  ac=3
+fi
+
 cd /home/local/raf/groundfeed/lib
 
 /usr/java/latest/bin/java \
