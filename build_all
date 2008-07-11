@@ -53,13 +53,13 @@ test -d ${JLOCAL}/man/man3 || mkdir ${JLOCAL}/man/man3
 
 # Build libraries first.  libraf++ needs to go first to install header.h.
 
-foreach file ( libraf libraf++ hdr_api libpms vardb/lib )
+foreach file ( libraf libraf++ ads2/hdr_api libpms vardb/lib )
   (cd $file; echo $file; make install)
 end
 
 # Programs with "install" target.
 
-foreach file ( hdrbld ncplot ncpp/src vardb/editor xhd xpms2d/src nimbus/src/qc instruments/mcr/display/src instruments/mcr/processor/src instruments/rdma ads_utils/edADShdr)
+foreach file ( ads2/hdrbld ncplot ncpp/src vardb/editor ads2/xhd xpms2d/src nimbus/src/qc instruments/mcr/display/src instruments/mcr/processor/src instruments/rdma ads_utils/edADShdr)
   (cd $file; echo ""; make install)
 end
 
@@ -72,7 +72,7 @@ end
 # Programs withOUT install target.  WINDS requires xview toolkit.
 
 if ( $?WINDS ) then
-  foreach file ( ads/disc/src ads/dsm/src winds/src )
+  foreach file ( ads2/ads/disc/src ads2/ads/dsm/src ads2/winds/src )
     (cd $file; echo $file; make)
   end
 endif
