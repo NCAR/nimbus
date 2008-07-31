@@ -27,12 +27,12 @@ class NC2AUIDiag extends JDialog {
 	private final static String RHEAD2 = "RHEAD2";
 	private final static String RHEAD3 = "RHEAD3";
 	private final static String TMSETVAL = "99:99:99";
+	private final static String SEPDELIMIT =",";
 //	private final static int HMSMAX = 485959;
 
 	private DataFmt  dFormat = new DataFmt(); //data format chosen by author
 	private String[] cbDateTxt, cbTmTxt;
 	private String[] dDisp   = new String[10]; //make up data for display
-	private String[] dCp     = new String[10]; // a copy of display data during the format selection
 	private JPanel 			jpTm, jpDmtr, jpVal, jpTmSet, jpHead, jpSmpRate;
 	private JRadioButton 	rDmtr, rDmtr2, rVal, rVal2, rTmSet, rTmSet2, rHead, rHead2, rHead3;
 	private JComboBox    	cbDate, cbTm;
@@ -51,8 +51,8 @@ class NC2AUIDiag extends JDialog {
 		super(owner, modal);
 		JDialog.setDefaultLookAndFeelDecorated(true);
 		dDisp=initData;
+		
 		init();
-
 	}
 	public void setDispData(String[] dd){
 		dDisp=dd;
@@ -232,11 +232,13 @@ class NC2AUIDiag extends JDialog {
 	public JTextArea createPaneTxtArea() {
 
 		String disp="";
+	
 		//if the demo data is empty, set defaults.
 		if (dDisp[0]==null || dDisp[0].length()==0) {
+			nc2Asc.NC2Act.wrtMsg("input demo data is empty...");
 			dDisp[0]="Date,UTC,A1DC_LWO,A2DC_LWO";
 			String s1 = "2007-5-16,23:44:";
-			String s2 = ","+""+",0.0";
+			String s2 = SEPDELIMIT.toString() + "0.0" + ",0.0";
 			int sec = 17;
 			for (int i=1; i<10; i++) {
 				sec++;
@@ -244,11 +246,6 @@ class NC2AUIDiag extends JDialog {
 			}
 		}
 
-
-		//for (int i=0; i<dDisp.length; i++){
-		//disp += dDisp[i]+ "\n";
-		//dCp[i]= dDisp[i];
-		//}
 		disp= reFmtDisp(dDisp);
 		tfDisp = new JTextArea(disp);
 		tfDisp.setPreferredSize(new Dimension(500, 600));
@@ -260,6 +257,7 @@ class NC2AUIDiag extends JDialog {
 	}
 
 	private void init() {
+		
 		try {
 			this.setTitle("         Data Format Dialog          ");
 			this.setLayout(new GridBagLayout());
@@ -300,7 +298,7 @@ class NC2AUIDiag extends JDialog {
 			c.gridwidth= c.REMAINDER;
 			this.add(createPaneTxtArea(), c);
 		} catch (Exception e) {
-			nc2Asc.NC2Act.wrtMsg(e.getMessage());
+			nc2Asc.NC2Act.wrtMsg("Err in init_method: "+e.getMessage());
 		}
 	}
 
@@ -329,22 +327,24 @@ class NC2AUIDiag extends JDialog {
 		tfTmSet.addFocusListener ( new FocusListener() {
 			public void focusGained(FocusEvent e) {};
 			public void focusLost(FocusEvent e) {
-				chkTxtField(tfTmSet);
+				chkTxtField(tfTmSet, 0);
 			}
 		});
 	}
 
 	void addTmSet2FocusListener() {
 		tfTmSet2.addFocusListener ( new FocusListener() {
-			public void focusGained(FocusEvent e) {};
+			public void focusGained(FocusEvent e) {
+				//chkTxtField(tfTmSet, 0);
+			};
 			public void focusLost(FocusEvent e) {
 
 				//chk field
-				if (chkTxtField(tfTmSet2)<0) {
+				if (chkTxtField(tfTmSet2, 1)<0) {
 					return;
 				}
 				//chk end and start
-				if (tfTmSet2.getText().compareTo(tfTmSet.getText())<= 0) {
+				if (tfTmSet2.getText().compareTo(tfTmSet.getText())< 0) {
 					NC2Act.wrtMsg("TimeEnd should be bigger than TimeStart...");
 					tfTmSet2.setText(TMSETVAL.toString()); 	
 					return;
@@ -356,21 +356,25 @@ class NC2AUIDiag extends JDialog {
 	}
 
 
-	private int chkTxtField(JTextField tf) {
+	private int chkTxtField(JTextField tf, int fieldIdx) {
 		String[] tmset = tf.getText().split(":");
 		try {
-			String str = tmset[0]+tmset[1]+tmset[2];
-			int in = (new  Integer(str)).intValue();
-			if ((new  Integer(tmset[0])).intValue()>48){
-				return resetTmSetTf(tf, " Max hh= 48");
-			}
-			if ((new  Integer(tmset[1])).intValue()>59){
+			int hh =new  Integer(tmset[0]).intValue();
+			int mm =new  Integer(tmset[1]).intValue();
+			int ss =new  Integer(tmset[2]).intValue();
+			if (hh!=99 && hh >23 && fieldIdx ==0){
+				return resetTmSetTf(tf, " Max starting hh= 23");
+			} else if (hh!=99 && hh>47 && fieldIdx ==1){
+				return resetTmSetTf(tf, " Max ending hh= 47");
+			} else if (mm!=99 && mm>59){
 				return resetTmSetTf(tf," Max mm= 59");
-			}
-			if ((new  Integer(tmset[2])).intValue()>59){
-				NC2Act.wrtMsg(" Max ss= 59");
-			}
-			return in;
+			} else 	if (ss!=99 && ss>59){
+				return resetTmSetTf(tf, " Max ss= 59");
+			} 
+			//nc2Asc.NC2Act.wrtMsg("hhmmss:"+in);
+			String str = tmset[0]+tmset[1]+tmset[2];
+			return (new  Integer(str)).intValue(); 
+			//return in;
 		} catch (Exception ne) {
 			tf.setText(TMSETVAL.toString()); 
 			return -1;
@@ -401,7 +405,7 @@ class NC2AUIDiag extends JDialog {
 		if (RDMTR.equals(e.getActionCommand())) {	
 			if (rDmtr.isSelected()){
 				rDmtr2.setSelected(false);
-				dFormat.setDataFmt(",", DataFmt.DMTR_IDX);
+				dFormat.setDataFmt(SEPDELIMIT.toString(), DataFmt.DMTR_IDX);
 				tfDisp.setText(reFmtDisp(dDisp));
 			} else if (!rDmtr2.isSelected()) {
 				rDmtr.setSelected(true);
@@ -539,7 +543,7 @@ class NC2AUIDiag extends JDialog {
 		String tmp = ddata[0]; boolean hasDate=true;
 		for (int i =1; i< ddata.length; i++){
 			//nc2Asc.NC2Act.wrtMsg(dDisp[i]);
-			String[] d = ddata[i].split(",");
+			String[] d = ddata[i].split(SEPDELIMIT.toString());
 			try { 
 				d[0]=dFormat.fmtDate(d[0].split("-"));
 				d[1]=dFormat.fmtTm(d[1].split(":"));
@@ -568,9 +572,9 @@ class NC2AUIDiag extends JDialog {
 	private String resetAvgDisp(String[] ddata) {
 		String ret = ddata[0]+ "\n";
 		int startIdx =2;
-		if (ddata[0].split(",")[0].equals("UTC") ){
+		if (ddata[0].split(SEPDELIMIT.toString())[0].equals("UTC") ){
 			startIdx =1; 
-			nc2Asc.NC2Act.wrtMsg("noDate:");
+			//nc2Asc.NC2Act.wrtMsg("noDate:");
 		}
 		//nc2Asc.NC2Act.wrtMsg("noDate:"+noDate);
 		int avg = new Integer(tfSmpRate.getText()).intValue();
@@ -581,7 +585,7 @@ class NC2AUIDiag extends JDialog {
 		double[] tot = new double [2];//only vars in our demo
 		int count =0;
 		for (int i=1; i<ddata.length; i++ ) {
-			String[] data = ddata[i].split(",");
+			String[] data = ddata[i].split(SEPDELIMIT.toString());
 			if (count <div) {
 				//nc2Asc.NC2Act.wrtMsg("data len:"+ data.length+ data[0] + " " + data[1]+ " " +data[2]+ " "+data[3]+ " first: "+ data[data.length-2] + " second: "+ data[data.length-1]);
 				if (data[data.length-2]!=null && data[data.length-2].length()>0) {
@@ -590,7 +594,7 @@ class NC2AUIDiag extends JDialog {
 					tot[0] = -1;
 				}
 				if (data[data.length-1]!=null && data[data.length-1].length()>0) {
-				    tot[1]+= new Double(data[data.length-1]).doubleValue();
+					tot[1]+= new Double(data[data.length-1]).doubleValue();
 				}  else {
 					tot[1] = -1;
 				}
@@ -599,25 +603,25 @@ class NC2AUIDiag extends JDialog {
 				//reset count
 				count =0; 
 				String tmp = new String();
-				
+
 				//get time
 				try {
 					if (startIdx ==2){
-						tmp +=  dFormat.fmtDate(data[0].split("-")) + ",";
-						tmp += dFormat.fmtTm(data[1].split(":")) + ",";
+						tmp +=  dFormat.fmtDate(data[0].split("-")) + SEPDELIMIT.toString();
+						tmp += dFormat.fmtTm(data[1].split(":")) + SEPDELIMIT.toString();
 					} else {
-						tmp += dFormat.fmtTm(data[0].split(":"))+ ",";
+						tmp += dFormat.fmtTm(data[0].split(":"))+ SEPDELIMIT.toString();
 					}
 				} catch (DataFormatException e) {
 					nc2Asc.NC2Act.wrtMsg("data format catches exception...");
 				}
-				
+
 				//add data 1
 				if (tot[0]!=-1){
 					tot[0] /=tot[0]/div;
-					tmp += tot[0] + ",";
+					tmp += tot[0] + SEPDELIMIT.toString();
 				} else {
-					tmp +=",";
+					tmp +=SEPDELIMIT.toString();
 				}
 				//add data 2
 				if (tot[1]!=-1){
@@ -626,7 +630,7 @@ class NC2AUIDiag extends JDialog {
 				} else {
 					tmp+= "";
 				}
-				ret += dFormat.fmtDmtr(tmp.split(",")) + "\n";
+				ret += dFormat.fmtDmtr(tmp.split(SEPDELIMIT.toString())) + "\n";
 			}
 		}
 		return ret;
@@ -636,8 +640,8 @@ class NC2AUIDiag extends JDialog {
 		Calendar cl1 = Calendar.getInstance();
 		Calendar cl2 = Calendar.getInstance();
 
-		String[] dat = ddata[1].split(",")[0].split("-");
-		String[] tm1 = ddata[1].split(",")[1].split(":");
+		String[] dat = ddata[1].split(SEPDELIMIT.toString())[0].split("-");
+		String[] tm1 = ddata[1].split(SEPDELIMIT.toString())[1].split(":");
 		String[] tm2 = tfTmSet.getText().split(":");
 
 		int y = new Integer(dat[0]).intValue();
@@ -656,12 +660,12 @@ class NC2AUIDiag extends JDialog {
 		cl2.set(y,m,d,h2,m2,s2);
 		if (cl2.after(cl1)){
 			for (int i=1;i<ddata.length; i++){
-				String[] tmp = ddata[i].split(",");
+				String[] tmp = ddata[i].split(SEPDELIMIT.toString());
 				cl2.add(Calendar.SECOND, 1);
 				tmp[1]= cl2.get(Calendar.HOUR_OF_DAY)+":"+cl2.get(Calendar.MINUTE)+":"+cl2.get(Calendar.SECOND);
-				ddata[i]= tmp[0] +","+ tmp[1];
+				ddata[i]= tmp[0] +SEPDELIMIT.toString()+ tmp[1];
 				for (int j =2; j<tmp.length; j++) {
-					ddata[i] = ddata[i]+ ",";
+					ddata[i] = ddata[i]+ SEPDELIMIT.toString();
 					ddata[i] = ddata[i]+ tmp[j]; 
 				}
 			}

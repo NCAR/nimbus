@@ -1,6 +1,7 @@
 package nc2AscData;
 
 import java.lang.*;
+import java.lang.Exception.*;
 import java.io.*;
 import java.util.*;
 import ucar.nc2.*;
@@ -14,7 +15,12 @@ import ucar.ma2.*;
  *
  */
 
+
+
+
 public class NCData {
+
+	private final static String SEPDELIMIT =",";
 
 	//constructor
 	public NCData(String ifn, String ofn) {infn = ifn; outfn=ofn;}
@@ -26,6 +32,8 @@ public class NCData {
 	List<Variable> lvars=null;
 	String[] data, dataInf;
 
+	
+	public List<Variable> getVars(){return lvars;}
 	/**
 	 * Get the data from the selected variable names 
 	 * @return
@@ -105,20 +113,19 @@ public class NCData {
 				throw new NCDataException("readDataInf: Empty input file exception:");
 			}
 			if (lvars==null) { lvars =  new ArrayList<Variable>(); }
-			if (lvars.size()<=0) { 
-				lvars = fin.getVariables();
-			}
+			lvars = fin.getVariables();
+			
 
 			int len = lvars.size();
 			//if ((startIdx+num) >lvars.size()){ len = lvars.size()-startIdx;	} 
 			dataInf = new String[len];		
 			String disdata= "";
-			for (int i=0; i<len ; i++){ 
+			for (int i=0; i<len-1 ; i++){ 
 				String dat = "";
 				Variable v = lvars.get(i);
-				dat += v.getShortName() + "~";
-				dat += v.getUnitsString() + "~";
-				dat += getOR(v) + "~";
+				dat += v.getShortName() + SEPDELIMIT.toString();
+				dat += v.getUnitsString() + SEPDELIMIT.toString();
+				dat += getOR(v) + SEPDELIMIT.toString();
 				dat += v.getName();
 				if (i<10) {
 					disdata += dat; 
@@ -131,87 +138,99 @@ public class NCData {
 		} catch (ArrayIndexOutOfBoundsException r){
 			throw r; 
 		} 
-
 	}
 
-	private String[] readArrayData(Variable v, int startIdx, int len) throws IOException, ArrayIndexOutOfBoundsException {
-		String[] dat= new String[3]; // we handle 1-d to d-3 for now
+	/**
+	 * Read all the data from a Variable within the time-range
+	 * 
+	 * @param v - variable
+	 * @param startIdx - starttime 
+	 * @param len - number of seconds data
+	 * @return - array of string, each string contains one-data with delimeter, number of strings equals len.  
+	 * @throws IOException
+	 * @throws ArrayIndexOutOfBoundsException
+	 * @throws InvalidRangeException
+	 */
+	public String[] readVariableData(Variable v, int startIdx, int len) throws IOException, ArrayIndexOutOfBoundsException, InvalidRangeException {
+		String[] dat= new String[len]; // we handle 1-d to d-3 for now
 
 		try {
-			Array data = v.read();
-			int[] shape = data.getShape();
 
-			data=data.reduce();
+			//set orig and size
+			int[] shape = v.getShape();
+			int[] origin= new int[1], size=new int[1];
+			if (shape.length==1) {
+				origin = new int[] {startIdx};
+				size = new int[] {len};
+			}
+			if (shape.length==2) {
+				origin = new int[] {startIdx, 0};
+				size = new int[] {len, shape[1]};
+			}
+
+			if (shape.length==3){
+				origin = new int[] {startIdx, 0,0};
+				size = new int[] {len, shape[1], shape[2]};
+			}
+
+			//get data
+			Array data = v.read(origin, size).reduce();
+
 			shape = data.getShape();
 			Index index = data.getIndex();
-			double d1=0, d2=0, d3=0;
 
-			//read data for one, two, and three dimensions
+			//get double from Array
 			if (shape.length == 1) { 
-				//dat += "shape len:"+shape.length + "  dimensionlen:"+shape[0] + " ";
-				for (int i =startIdx; i<len; i++){
-					dat[0] += data.getDouble(index.set(i)) + " ";
+				for (int i =0; i<len; i++){
+					dat[i] = ""+data.getDouble(index.set(i+startIdx));
 				}		
 			}
 
 			//average data for 2d------not doing it
-			// 1d: 1d=all, 2d=0
-			// 2d: 1d=all 2d!=0
-			d1=0; d2=0; d3=0;
 			if (shape.length == 2){
-				//dat += "shape len:"+shape.length  + " dimensionlen:"+shape[0]+" "+ shape[1]+ " ";
-				for (int i=startIdx; i<len; i++) {
+				for (int i=0; i<len; i++) {
 					for (int j=0; j<shape[1]; j++) {
-						if (j==0) {
-							dat[0] += data.getDouble(index.set(i,j))+ " ";
-						} else {
-							dat[1] += data.getDouble(index.set(i,j))+ " ";
-						}
+						dat[i] += data.getDouble(index.set(i+startIdx,j))+ ",";
+
 					}
 				}
 			}
 
 			// average data for 3d
-			// 1d:  ld=all, 2d==0, 2d==0
-			// 2d:  1d=all, 2d!=0, 3d ==0
-			// 3d:  1d=all, 2d=all, 3d!=0
-			d1=0; d2=0; d3=0;
+			//d1=0; d2=0; d3=0;
 			if (shape.length == 3){ 
-				//dat += "shape len:"+shape.length + " demensionlen:"+shape[0]+ " "+shape[1]+ " "+shape[2]+ " ";
-				for (int i=startIdx; i<len; i++) {
+				for (int i=0; i<len; i++) {
 					for (int j=0; j<shape[1]; j++) {
 						for (int k=0; k<shape[2] ; k++){
-							if (j==0 && k==0) {
-								dat[0] += data.getDouble(index.set(i,j,k))+ " " ;
-							} else if (j!=0 && k==0) {
-								dat[1] += data.getDouble(index.set(i,j,k))+ " " ;
-							} else {
-								dat[2] += data.getDouble(index.set(i,j,k))+ " " ;
-							}
+							dat[i] += data.getDouble(index.set(i+startIdx,j,k))+ "," ;
 						}
 					}
 				}
 			}
-		} catch (IOException e){
-			throw e;//new IOException("get reading data IO-exception:"+e.getMessage());
 		} catch (ArrayIndexOutOfBoundsException ee) {
 			throw ee;//new IOException("get reading data index-exception:"+ee.getMessage());
+		}  catch (InvalidRangeException e) {
+			throw new InvalidRangeException("Variable read error:"+ e.getMessage());
+		} catch (IOException e){
+			throw e;//new IOException("get reading data IO-exception:"+e.getMessage());
 		}
 		return dat;
 	}
 
+	/**
+	 * 
+	 * @param variable
+	 * @return
+	 */
 	private int getOR(Variable v) {
 		int[] dims = v.getShape();
 		if (dims.length==1){
 			return 1;
 		}
-		if (dims[1]==1) {
-			return dims[2];
-		}
 		return dims[1];
 	}
 
-	public String[] getDemoData() throws IOException, NCDataException {
+	public String[] getDemoData() throws IOException, NCDataException, InvalidRangeException {
 		String[] demoData = new String[10];
 
 		if (lvars==null || lvars.size()==0) {
@@ -223,17 +242,19 @@ public class NCData {
 		demoData[0] ="Date,UTC,"+v1.getShortName() +","+v2.getShortName();
 		//nc2Asc.NC2Act.wrtMsg(demoData[0]);
 		long milSec;
-	    String[] vdata1, vdata2;
+		String[] vdata1, vdata2;
 		try {
 			milSec = getTimeMilSec();
-			vdata1= readArrayData(v1, 0, 10);
-			vdata2= readArrayData(v2, 0, 10);
+			vdata1= readVariableData(v1, 0, 10);
+			vdata2= readVariableData(v2, 0, 10);
+		} catch (InvalidRangeException er) {
+			throw er;
 		} catch (IOException e) {
 			throw e;// new IOException("getTimeSec encounts getTimeMilSec exception.");
 		} 
-		
+
 		String data1 = vdata1[0];
-		String[] d1 = data1.split(" ");
+		String[] d1 = data1.split(SEPDELIMIT.toString());
 
 		String data2 = vdata2[0];
 		//} else if (vdata2.length>1) {
@@ -281,12 +302,12 @@ public class NCData {
 		Calendar cl = Calendar.getInstance();
 		cl.setTimeInMillis(milSec);
 		cl.add(Calendar.SECOND, sec);
-		tm = cl.get(Calendar.YEAR) + "-"+cl.get(Calendar.MONTH)+ "-"+ cl.get(Calendar.DAY_OF_MONTH) + ","+ cl.get(Calendar.HOUR_OF_DAY)+ ":"+cl.get(Calendar.MINUTE)+":"+cl.get(Calendar.SECOND);
+		tm = cl.get(Calendar.YEAR) + "-"+cl.get(Calendar.MONTH)+ "-"+ cl.get(Calendar.DAY_OF_MONTH) + SEPDELIMIT.toString()+ cl.get(Calendar.HOUR_OF_DAY)+ ":"+cl.get(Calendar.MINUTE)+":"+cl.get(Calendar.SECOND);
 		return tm;
 	}
-	
-	
-	
+
+
+
 } //eofclass
 
 
