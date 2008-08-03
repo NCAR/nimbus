@@ -1,0 +1,7 @@
+# -*- python -*-
+
+env = Environment()
+
+env.Append(CXXFLAGS=['-g', '-Wall'])
+
+env.Program('hdob2kml.cpp')
