@@ -23,7 +23,8 @@ static std::string _kmzDir = "/net/www/docs/flight_data/";
 static std::string _inputFile, _outputKML;
 
 std::vector<ptime> _time;
-std::vector<float> _lat, _lon, _alt, _temp, _wspd, _wdir;
+std::vector<float> _lat, _lon, _alt, _temp, _wSpd, _wDir, _wMax;
+std::vector<float> _surfWMax, _rainRate;
 
 /* -------------------------------------------------------------------- */
 std::string
@@ -37,8 +38,8 @@ annotateLastPoint()
     e << lastTime << 
         "<br>Alt: " << _alt[lastPoint] << 
         "<br>Temp: " << _temp[lastPoint] << 
-        "<br>WS: " << _wspd[lastPoint] << 
-        "<br>WD: " << _wdir[lastPoint];
+        "<br>WS: " << _wSpd[lastPoint] << 
+        "<br>WD: " << _wDir[lastPoint];
     e << "]]>";
 
     return e.str();
@@ -272,16 +273,19 @@ void ReadDataFromHDOB(const std::string & fileName)
                 dp *= -1;
 
             unsigned wDir = dddsssWind / 1000;  // degrees
-            _wdir.push_back(wDir);
+            _wDir.push_back(wDir);
             
             float wSpd = (dddsssWind % 1000) * 0.514444444;  // knots -> m/s
-            _wspd.push_back(wSpd);
+            _wSpd.push_back(wSpd);
 
             float wMax = iWMax * 0.514444444;
+            _wMax.push_back(wMax);
 
             float surfWMax = iSurfWMax * 0.514444444;
+            _surfWMax.push_back(surfWMax);
 
             float rainRate = iRainRate;
+            _rainRate.push_back(rainRate);
 
             if (nread == 0 || nread == EOF)
                 break;
@@ -289,10 +293,6 @@ void ReadDataFromHDOB(const std::string & fileName)
                 std::cerr << "BARF on data line: " << nread << " " << line << std::endl;
                 exit(1);
             }
-            std::cout << lat << "/" << lon << ", pres: " << pres <<
-            ", alt: " << geoAlt << ", temp: " << temp << ", dp: " << dp << 
-            ", wind: " << wSpd << " from " << wDir << ", wmax: " << wMax <<
-            ", surf wmax: " << surfWMax << ", rr: " << rainRate << std::endl;
         }
 
         if (hdobFile.eof())
