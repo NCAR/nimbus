@@ -12,15 +12,11 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <ctime>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 using namespace boost::posix_time;
 using namespace boost::gregorian;
-
-// Output directory for KMZ files
-static std::string _kmzDir = "/net/www/docs/flight_data/";
-
-static std::string _inputFile, _outputKML;
 
 std::vector<ptime> _time;
 std::vector<float> _lat, _lon, _alt, _temp, _wSpd, _wDir, _wMax;
@@ -72,7 +68,9 @@ void WriteGoogleEarthKMZ(std::string & file)
 {
     std::ofstream kml;
 
-    kml.open(file.c_str());
+    std::stringstream tmpFileName;
+    tmpFileName << "/tmp/" << time(0) << ".kml";
+    kml.open(tmpFileName.str().c_str());
     if (kml.is_open() == false)
     {
         std::cerr << "Failed to open output file " << file << std::endl;
@@ -161,18 +159,12 @@ void WriteGoogleEarthKMZ(std::string & file)
         "</kml>\n";
 
     kml.close();
-    
+
     char buffer[1024];
-    std::string tmptmp = _kmzDir + "/tmp.kmz";
-
-    sprintf(buffer, "zip %s %s", tmptmp.c_str(), file.c_str());
+    sprintf(buffer, "zip -q %s %s", file.c_str(), tmpFileName.str().c_str());
     system(buffer);
-
-    sprintf(buffer, "chmod g+w %s", tmptmp.c_str());
-    system(buffer);
-
-    std::string temp = _kmzDir + "real-time.kmz";
-    rename(tmptmp.c_str(), temp.c_str());
+    
+    remove(tmpFileName.str().c_str());
 }
 
 /* -------------------------------------------------------------------- */
@@ -301,65 +293,19 @@ void ReadDataFromHDOB(const std::string & fileName)
 }
 
 /* -------------------------------------------------------------------- */
-int usage(const char* argv0)
-{
-    std::cerr << "Usage:" << argv0 << 
-        " [-o <dir>] <hdob_file> <kmz_file>\n" << std::endl;
-    return 1;
-}
-
-/* -------------------------------------------------------------------- */
-int parseRunstring(int argc, char** argv)
-{
-    extern char *optarg;    /* set by getopt() */
-    extern int optind;      /* "  "     "     */
-    int opt_char;           /* option character */
-
-    while ((opt_char = getopt(argc, argv, "o:")) != -1)
-    {
-        switch (opt_char)
-        {
-        case 'o':	// output directory
-            _kmzDir = optarg;
-            break;
-        case '?':
-            return usage(argv[0]);
-            break;
-        }
-    }
-
-    if ((optind + 2) != argc)
-        return usage(argv[0]);
-
-    _inputFile = argv[optind];
-    _outputKML = argv[optind+1];
-
-    return 0;
-}
-
-/* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
-    int rc;
-
-    if (argc > 1)
-    {
-        if ((strstr(argv[1], "usage") || strstr(argv[1], "help")))
-            return usage(argv[0]);
-
-        if ((rc = parseRunstring(argc,argv)) != 0)
-            return rc;
+    if (argc != 3) {
+        std::cerr << "Usage:" << argv[0] << " <hdob_file> <kmz_file>\n" << 
+            std::endl;
+        return 1;
     }
+
+    std::string inputFile(argv[1]);
+    std::string outputKmz(argv[2]);
     
-    std::cout << "\n  Output directory : " << _kmzDir << "\n\n";
-
-    if (_inputFile.length() > 0)
-    {
-        ReadDataFromHDOB(_inputFile);
-        if (_lat.size() > 0)
-            WriteGoogleEarthKMZ(_outputKML);
-        return 0;
-    } else {
-        return usage(argv[0]);
-    }
+    ReadDataFromHDOB(inputFile);
+    if (_lat.size() > 0)
+        WriteGoogleEarthKMZ(outputKmz);
+    return 0;
 }
