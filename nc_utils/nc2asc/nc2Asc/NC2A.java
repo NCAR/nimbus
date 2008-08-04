@@ -57,7 +57,7 @@ public class NC2A extends JPanel implements ActionListener {
 	 *  
 	 */
 	public static void main(String[] args) {
-						
+
 		if (args.length >0 && args[0].toString().equals("-b")) {
 			//NC2Act.wrtMsg(args[0].toString());
 		}	else {
@@ -70,7 +70,12 @@ public class NC2A extends JPanel implements ActionListener {
 		}
 	}
 
+	/**
+	 * This is a interface in order to inheritance ActionListener 
+	 * the real action implementation is in NC2AUI class
+	 */
 	public void actionPerformed(ActionEvent e) {}
+
 }//eof class NC2A
 
 

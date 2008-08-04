@@ -14,38 +14,51 @@ import java.awt.Insets;
 import java.awt.event.*;
 import java.awt.*; 
 import java.io.*;
+
 import javax.swing.*;
 import javax.swing.filechooser.*;
 import javax.swing.table.*; 
 
+import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Variable;
 
 import nc2AscData.*;
 
 public class NC2AUI {
 
+	//command name strings
 	private final static String  INFILE = "INFILE";
 	private final static String  OUTFILE = "OUTFILE";
 	private final static String  DATAFORMAT = "DATAFORMAT";
 	private final static String  PROCESS = "PROCESS";
 	private final static String  VARDATA = "VARDATA";
 	private final static String  SELALL = "SELALL";
-	//private final static String  DESELALL = "DESELALL";	
+	private final static String  DESELALL = "DESELALL";	
 
+	// component containers
 	private JPanel jp, jpTbl, jpBt; GridBagConstraints c1, c2;
+	private JScrollPane tblScrlPane;
+
+	//tbl
 	private JTable tbl;  MyTblModel model;
 
-	private JScrollPane tblScrlPane;
+	//button, textfield, chkbox. etc
 	private JButton bnFileIn, outButton, bnData, bnFmt, bnProc;
 	private JTextField tfFileIn, tfFileOut;
-	private JCheckBox  cbSel; //cbDesel;
+	private JCheckBox  cbSel, cbDesel;
 
-//	private JFrame     pfrm;
+	///class objs: data-fmt selection dialog, and netcdf-data, and data-format
 	private NC2AUIDiag dialog;	  
 	private NCData     ncdata;
+	private DataFmt    datafmt;
 	String[] dataInf; 
 
 
+	/**
+	 * Main method to create all the components:
+	 * buttons, tbl, check, display field, etc.
+	 * @param frm -- main frame where the UI components to be.
+	 */
 	public void createComponents ( JFrame frm) {
 
 		//save parent container
@@ -92,128 +105,138 @@ public class NC2AUI {
 
 	}
 
-	public JPanel createUIIOFields() throws Exception {
-		try{
-			jp  = new JPanel();
-			jp.setLayout(new GridBagLayout());
+	/**
+	 * Create a panel for input and output buttons. Put the tow buttons in the panel.
+	 * 
+	 * @return -- the panel... it will be added to the frame
+	 */
+	private JPanel createUIIOFields() {
 
-			bnFileIn  = new JButton("Select Input File");
-			outButton = new JButton("Select Output Path");
-			addButtonActCmd(bnFileIn, INFILE.toString());
-			addButtonActCmd(outButton, OUTFILE.toString());
+		jp  = new JPanel();
+		jp.setLayout(new GridBagLayout());
 
-			tfFileIn = new JTextField("/home/data/pac10.nc");
-			tfFileIn.setBackground(Color.LIGHT_GRAY);
-			tfFileIn.setEditable(false);
-			tfFileIn.setFont(new Font("System", Font.ITALIC,  16));
-			tfFileOut =new JTextField("/home/data/default.txt");
-			tfFileOut.setFont(new Font("System", Font.ITALIC,  16));
+		bnFileIn  = new JButton("Select Input File");
+		outButton = new JButton("Select Output Path");
+		addButtonActCmd(bnFileIn, INFILE.toString());
+		addButtonActCmd(outButton, OUTFILE.toString());
 
-			c1 = new GridBagConstraints();
-			c1.fill = GridBagConstraints.HORIZONTAL;
-			c1.weighty = 1.0; 
-			c1.weightx = 0.5;
+		tfFileIn = new JTextField("/home/data/pac10.nc");
+		tfFileIn.setBackground(Color.LIGHT_GRAY);
+		tfFileIn.setEditable(false);
+		tfFileIn.setFont(new Font("System", Font.ITALIC,  16));
+		tfFileOut =new JTextField("/home/data/default.txt");
+		tfFileOut.setFont(new Font("System", Font.ITALIC,  16));
 
-			//row-one   input-file
-			c1.gridx = 0;
-			c1.gridy = 0;
-			jp.add(bnFileIn,c1);
+		c1 = new GridBagConstraints();
+		c1.fill = GridBagConstraints.HORIZONTAL;
+		c1.weighty = 1.0; 
+		c1.weightx = 0.5;
 
-			c1.gridx = 1;
-			c1.gridy = 0;
-			c1.ipadx = 400;
-			c1.gridwidth = c1.REMAINDER;
-			jp.add(tfFileIn,c1);
+		//row-one   input-file
+		c1.gridx = 0;
+		c1.gridy = 0;
+		jp.add(bnFileIn,c1);
 
-			c1.gridx =0;
-			c1.gridy =1; 	
-			c1.ipadx=0;
-			c1.gridwidth=1;
-			jp.add(outButton,c1);
+		c1.gridx = 1;
+		c1.gridy = 0;
+		c1.ipadx = 400;
+		c1.gridwidth = c1.REMAINDER;
+		jp.add(tfFileIn,c1);
 
-			c1.gridx = 1;
-			c1.gridy = 1;
-			c1.gridwidth = c1.REMAINDER;
-			jp.add(tfFileOut, c1);
+		c1.gridx =0;
+		c1.gridy =1; 	
+		c1.ipadx=0;
+		c1.gridwidth=1;
+		jp.add(outButton,c1);
 
-		} catch (Exception e) {
-			throw e;
-		}
+		c1.gridx = 1;
+		c1.gridy = 1;
+		c1.gridwidth = c1.REMAINDER;
+		jp.add(tfFileOut, c1);
 
 		return jp;
 
 	}
 
-	JPanel createUITbl() throws Exception  {
-		try {
-			jpTbl  = new JPanel();
-			jpTbl.setLayout(new GridBagLayout());
+	/**
+	 * Create a panel for a button and a table Put the two in the panel.
+	 * 
+	 * @return -- the panel... it will be added to the frame
+	 */
+	private JPanel createUITbl()  {
+		jpTbl  = new JPanel();
+		jpTbl.setLayout(new GridBagLayout());
 
-			c2 = new GridBagConstraints();
-			c2.fill = GridBagConstraints.HORIZONTAL;
-			c2.weighty = 1.0; 
-			c2.weightx = 0.5;
+		c2 = new GridBagConstraints();
+		c2.fill = GridBagConstraints.HORIZONTAL;
+		c2.weighty = 1.0; 
+		c2.weightx = 0.5;
 
-			bnData = new JButton("Data Variables");
-			addButtonActCmd(bnData, VARDATA.toString());
-			c2.gridx = 1;
-			c2.gridy = 0;
-			c2.gridwidth = 2;//c2.REMAINDER;
-			c2.gridheight = 1;
-			c2.anchor = c2.CENTER;
-			jpTbl.add(bnData, c2); 
+		bnData = new JButton("Data Variables");
+		addButtonActCmd(bnData, VARDATA.toString());
+		c2.gridx = 1;
+		c2.gridy = 0;
+		c2.gridwidth = 2;//c2.REMAINDER;
+		c2.gridheight = 1;
+		c2.anchor = c2.CENTER;
+		jpTbl.add(bnData, c2); 
 
-			//createModelTbl();
-			//tbl = new JTable(100,4);
-			c2.insets = new Insets(1, 0, 0, 0); // top padding
-			createTbl();
-			tblScrlPane = new JScrollPane(tbl);
-			c2.gridx = 0;
-			c2.gridy = 1;
-			c2.gridwidth = c2.REMAINDER;
-			c2.gridheight = c2.REMAINDER;
-			c2.anchor = GridBagConstraints.PAGE_END; // bottom of space
-			jpTbl.add(tblScrlPane,c2);
+		//createModelTbl();
+		//tbl = new JTable(100,4);
+		c2.insets = new Insets(1, 0, 0, 0); // top padding
+		createTbl();
+		tblScrlPane = new JScrollPane(tbl);
+		c2.gridx = 0;
+		c2.gridy = 1;
+		c2.gridwidth = c2.REMAINDER;
+		c2.gridheight = c2.REMAINDER;
+		c2.anchor = GridBagConstraints.PAGE_END; // bottom of space
+		jpTbl.add(tblScrlPane,c2);
 
-		} catch (Exception e) {
-			throw e;
-		}
 		return jpTbl;  
 	}
 
 
-	JPanel createUIBtns() throws Exception  {
+	/**
+	 * Create a panel for format and process buttons, and sel-all dsel-all chkbox. Put all in the panel.
+	 * 
+	 * @return -- the panel... it will be added to the frame
+	 */
+	private JPanel createUIBtns()  {
 		bnFmt = new JButton("Select Data Format");
 		bnProc  = new JButton(" Process");
 		addButtonActCmd(bnFmt, DATAFORMAT.toString());
 		addButtonActCmd(bnProc, PROCESS.toString());
 
 		cbSel = new JCheckBox("Select All");
-		//cbDesel = new JCheckBox("Deselect All");
+		cbDesel = new JCheckBox("Clean All");
 		addButtonActCmd(cbSel, SELALL.toString());
-		//addButtonActCmd(cbDesel, DESELALL.toString());
+		addButtonActCmd(cbDesel, DESELALL.toString());
 
-		try{
-			jpBt = new JPanel();
-			jpBt.setLayout(new GridLayout(8, 1));
-			jpBt.add(bnFmt,0);
-			jpBt.add(bnProc,1);
-			jpBt.add(new JLabel(""), 2);
-			jpBt.add(new JLabel(""),3);
-			jpBt.add(new JLabel(""),4);
-			jpBt.add(cbSel, 5);
-			//jpBt.add(cbDesel, 3);
-			bnFmt.setEnabled(false);
-			bnProc.setEnabled(false);
-			cbSel.setEnabled(false);
-			//cbDesel.setEnabled(false);
-		} catch (Exception e) {
-			throw e;
-		}
+		jpBt = new JPanel();
+		jpBt.setLayout(new GridLayout(8, 1));
+		jpBt.add(bnFmt,0);
+		jpBt.add(bnProc,1);
+		jpBt.add(new JLabel(""), 2);
+		jpBt.add(new JLabel(""),3);
+		jpBt.add(new JLabel(""),4);
+		jpBt.add(cbSel, 5);
+		jpBt.add(cbDesel, 6);
+		bnFmt.setEnabled(false);
+		bnProc.setEnabled(false);
+		cbSel.setEnabled(false);
+		cbDesel.setEnabled(false);
 		return jpBt;
 	}
 
 
+	/**
+	 * This method provides the usage for all the components which have the abstractButton's characters
+	 * to easily add the action-listener and its action in teh code
+	 *   
+	 * @param jb  -- an abstractor-component
+	 * @param actStr -- action command
+	 */
 	void addButtonActCmd(AbstractButton jb, String actStr){
 		jb.setActionCommand(actStr);
 		jb.addActionListener(new ActionListener() {
@@ -224,13 +247,17 @@ public class NC2AUI {
 				selectDataFormat(e);
 				process(e);
 				selAll(e);
-				//deselAll(e);
+				deselAll(e);
 			}
 		});
 	}
 
+	/**
+	 * Implement the actions when the input-file is selected...
+	 * @param e -- ActionEvent to verify if this is this button's command.
+	 */
 	void selectInputFile(ActionEvent e) {
-		if (INFILE.equals(e.getActionCommand())) {	
+		if (INFILE.equals(e.getActionCommand())) {
 			String[] strs = {"nc"};
 			FileNameExtensionFilter filter = new FileNameExtensionFilter(null, strs);
 			JFileChooser fileChooser = new JFileChooser(tfFileIn.getText().trim().toString());
@@ -249,6 +276,11 @@ public class NC2AUI {
 		}
 	}  
 
+
+	/**
+	 * Implement the actions when the input-file is selected...
+	 * @param e -- ActionEvent to verify if this is this button's command.
+	 */
 	void selectOutputFile(ActionEvent e) {
 		if (OUTFILE.equals(e.getActionCommand())) {	
 			JFileChooser fileChooser = new JFileChooser(tfFileOut.getText().trim().toString());
@@ -281,6 +313,7 @@ public class NC2AUI {
 			bnFmt.setEnabled(true);
 			bnProc.setEnabled(true);
 			cbSel.setEnabled(true);
+			cbDesel.setEnabled(true);
 		} 
 	}
 
@@ -300,7 +333,7 @@ public class NC2AUI {
 			try {
 				demodata =ncdata.getDemoData();
 			} catch ( ArrayIndexOutOfBoundsException a){
-				//nc2Asc.NC2Act.wrtMsg("getDemoData Array index out of bound"+a.getMessage());
+				nc2Asc.NC2Act.wrtMsg("getDemoData Array index out of bound"+a.getMessage());
 			} catch (NCDataException ee) {
 				nc2Asc.NC2Act.wrtMsg("getDemoData NCData exception "+ee.getMessage());
 			} catch (IOException nce){
@@ -319,46 +352,47 @@ public class NC2AUI {
 		if (SELALL.equals(e.getActionCommand())) {
 			if (cbSel.isSelected()){
 				tbl.selectAll();
-				//cbDesel.setSelected(false);
+				cbDesel.setSelected(false);
+			} else {
+				tbl.clearSelection();
 			}
+		}
+	}
+
+	void deselAll(ActionEvent e){
+		if (DESELALL.equals(e.getActionCommand())) {
+			if (cbDesel.isSelected()){
+				tbl.clearSelection();
+				cbSel.setSelected(false);
+				cbDesel.setSelected(false);
+			} 
 		}
 	}
 
 
 	void process(ActionEvent e) {
 		if (PROCESS.equals(e.getActionCommand())) {
+			//chk out file
 			if (!validateOutFile(tfFileOut.getText())) {
 				NC2Act.wrtMsg("Invalid output file...");
 				return;
 			}
 
-			try {
-
-				List<Variable>  lvars = ncdata.getVars();
-				int size = 20;
-				String[] alldata = new String[size];
-				for (int i=0; i<10; i++){
-					String[] vdata = ncdata.readVariableData( lvars.get(i), 0, size );
-					for (int j=0; j<size; j++) {
-						alldata[j] += vdata[j];
-						if (j<(size-1)) {
-							alldata[j] += "~";
-						}
-					}
-				} 
-
-				//wrt to file
-				for (int i = 0; i<size; i++) {
-					ncdata.getOutFile().write(alldata[i]);
-				}
-
-			} catch (IOException ioe) {
-				NC2Act.wrtMsg(ioe.getMessage() );
+			//get selected rows from the tbl
+			int[] idxs = tbl.getSelectedRows();
+			String idxstr="";
+			for (int i=0; i<idxs.length; i++) {
+				idxstr += idxs[i] + " ";
 			}
-			catch (Exception ee) {
-				NC2Act.wrtMsg(ee.getMessage() );
+			if (idxs.length==0) {
+				NC2Act.wrtMsg("Please selecte variables from the table...");
+				return;
 			}
-		}
+
+			nc2Asc.NC2Act.startWaitCursor(bnFileIn);
+			writeOutVarData(idxs);
+			nc2Asc.NC2Act.stopWaitCursor(bnFileIn);
+		}  
 	}
 
 	void createTbl() {
@@ -367,7 +401,8 @@ public class NC2AUI {
 		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		tbl.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		tbl.setAutoscrolls(true);
-		String[] colHeaders = {"VarName","Units","OR","LongName"};
+		tbl.sizeColumnsToFit(4);
+		String[] colHeaders = {"VarName","Units","OR/Len","LongName"};
 		int i=0;
 		for (i=0; i<4;i++){
 			tbl.getColumnModel().getColumn(i).setHeaderValue(colHeaders[i]);
@@ -404,7 +439,7 @@ public class NC2AUI {
 		for (int i=1; i<dataInf.length; i++){
 			String data =dataInf[i];
 			if (data==null || data.length()<1) {return;}
-			String[] d = data.split(",");
+			String[] d = data.split(ncdata.SEPDELIMIT.toString());
 			if (tbl.getRowCount()<i-1){
 				nc2Asc.NC2Act.wrtMsg("Table is not long enough: "+ i);
 				break;
@@ -418,10 +453,10 @@ public class NC2AUI {
 		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		tbl.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		tbl.setAutoscrolls(true);
-		
+
 	}
 
-	boolean validateInputFile(String fn){
+	private boolean validateInputFile(String fn){
 		try {
 			FileInputStream f = new FileInputStream(fn);
 		} catch (Exception e) {
@@ -431,7 +466,7 @@ public class NC2AUI {
 		return true;
 	}
 
-	boolean validateOutFile(String fn){
+	private boolean validateOutFile(String fn){
 		try {
 			FileOutputStream f = new FileOutputStream(fn);
 		} catch (Exception e) {
@@ -442,10 +477,90 @@ public class NC2AUI {
 	}
 
 
+	private List<Variable>  getSubVarList(int[] idxs){
+		List<Variable> slvars= new ArrayList<Variable>();
+		List<Variable> allvars= ncdata.getVars();
+		for (int i=0; i<idxs.length; i++) {
+			slvars.add(i,allvars.get(idxs[i]+1)); //idxs[i]+1 to count the time var on the first line
+		}
+		return slvars;
+	}
+
+	private String genVarName(List<Variable> sublvars ){
+		String varname = "Date,UTC";
+
+		for (int i =0; i<sublvars.size(); i++) {
+			Variable v =sublvars.get(i);
+			varname += NCData.SEPDELIMIT.toString()+v.getName();
+
+			//check if the it has multi-data
+			int[] shape = v.getShape();
+			if (shape.length <3 || shape[2]<=1) {
+				continue;
+			}
+			// the var has multi-data. we need to add numbers as the varnames for the rest of the values
+			for (int j=1; j<shape[2]; j++) {
+				varname += NCData.SEPDELIMIT.toString()+j ;
+			}
+		}
+		//nc2Asc.NC2Act.wrtMsg("varname_len:"+varname.split(",").length+ " "+varname);
+		varname +="\n";
+		writeOut(varname);
+		return varname;
+	}
+
+
+	private void writeOut(String msg) {
+		try {
+			ncdata.getOutFile().write(msg);
+		} catch (IOException e ) {
+			nc2Asc.NC2Act.wrtMsg(e.getMessage());
+		}
+	}
+
+
+	public void writeOutVarData(int[] idxs){
+		//get and write the data out to the outfile
+		try {
+			List<Variable> sublvars = getSubVarList(idxs);
+			java.io.FileWriter outFile = ncdata.getOutFile();
+			int size = sublvars.size();
+
+			//write varname to the first line of out file
+			String out= genVarName(sublvars); 
+			
+			// all the time-range data  20-should be the seconds in the time range
+			for (int t=0 ; t < 5; t++) {  //todo: cal time in seconds
+				//write one-second data of ALL vars to the out file
+				for (int i=0; i<size; i++){
+					String data = ncdata.readOneVarData(sublvars.get(i), t);
+					if  (i<(size-1)) {
+						data += ncdata.SEPDELIMIT.toString();
+					}
+					outFile.write(data); out += data;
+				}
+				outFile.write("\n");
+				outFile.flush();
+				out +="\n";
+			}//time-for
+			nc2Asc.NC2Act.wrtMsg(out);
+		} catch (InvalidRangeException ie) {
+			nc2Asc.NC2Act.wrtMsg("InvalidRangeException..."+ ie.getMessage());
+		} catch (IOException ee) {
+			nc2Asc.NC2Act.wrtMsg("IOException..."+ee.getMessage());
+		}
+	} 
 
 }//eof class
 
 
+/**
+ * Make a Tbl class that extends DefaultModel, so that myTbl can have more desirable features
+ * to handle data and control tbl.
+ *  
+ * @author dongl
+ *
+ */
 class MyTblModel extends DefaultTableModel {
 	MyTblModel(int rows, int cols) {
 		super(rows, cols);
@@ -454,4 +569,5 @@ class MyTblModel extends DefaultTableModel {
 	public void addRow(Object[] rowData) {
 		super.addRow(rowData);
 	}
+
 }

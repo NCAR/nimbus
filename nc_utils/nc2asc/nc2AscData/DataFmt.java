@@ -99,9 +99,6 @@ public class DataFmt {
 		if (ss.length != 3){  		//
 			throw new DataFormatException("Invalid Date format: "+ss.length); 
 		} 
-//nc2Asc.NC2Act.wrtMsg(ss[0] + " " +ss[1]+ " "+ss[2]);
-//nc2Asc.NC2Act.wrtMsg("datafmt:"+dataFmt[DATE_IDX].toString());
-//nc2Asc.NC2Act.wrtMsg(DATESPACE.toString());
 
 		//check required output format
 		if (dataFmt[DATE_IDX].equals(DATESPACE.toString())){
@@ -141,7 +138,7 @@ public class DataFmt {
 
 	/**	return null;
 	 * it takes time strings, converts it into desired format
-	 * @param s
+	 * @param ss -- list of hh mm ss
 	 * @return
 	 * @throws DataFormatException
 	 */
@@ -173,12 +170,12 @@ public class DataFmt {
 	public String fmtDmtr(String[] data){
 		String tmp="";
 		for (int i=0; i<data.length-1; i++){
-			if (data[i]==null || data[i].length()==0||data[i]=="" || data[i]=="nan" || data[i].equals(MISSVAL)) {
-			  data[i]= dataFmt[MVAL_IDX];;	
+			if (data[i]==null || data[i].length()<1) {
+			  data[i]= dataFmt[MVAL_IDX];	
 			}
 			tmp = tmp+ data[i]+dataFmt[DMTR_IDX];
 		}
-		return (tmp+ data[data.length-1]);
+		return (tmp+ data[data.length-1]); //add last one 
 	}
 
 	public boolean chkTmSet ( int ms) throws DataFormatException{
@@ -225,22 +222,6 @@ public class DataFmt {
 
 	}
 
-	/*private String toStrMon(String mon){
-		if (mon.equals("1")) {	return "Jan";}
-		if (mon.equals("2")) {	return "Feb";}
-		if (mon.equals("3")) {	return "Mar";}
-		if (mon.equals("4")) {	return "Apr";}
-		if (mon.equals("5")) {	return "May";}
-		if (mon.equals("6")) {	return "Jun";}
-		if (mon.equals("7")) {	return "Jul";}
-		if (mon.equals("8")) {	return "Aug";}
-		if (mon.equals("9")) {	return "Sep";}
-		if (mon.equals("10")) {	return "Oct";}
-		if (mon.equals("11")) {	return "Nov";}
-		if (mon.equals("12")) {	return "Dec";}
-		return null;
-	}
 
-	 */
-	//public 	String toString(){return data.toString();}; 
+
 }

@@ -11,6 +11,14 @@ public class NC2Act {
 
 	NC2Act() {};
 	NC2Act(boolean bm) {_batchMood = bm;}
+	
+	private static FileWriter _log=null;
+	private static boolean    _batchMood= true;
+	private JComponent cmpt= null;
+
+	/**
+	 * close the log file, when the program exists 
+	 */
 	protected void finalize() {
 		if (_log !=null) {
 			try {
@@ -18,24 +26,20 @@ public class NC2Act {
 			} catch (IOException e) {}
 		} 
 	}
-
-	private static FileWriter _log=null;
-	private static boolean    _batchMood= true;
-	private JComponent cmpt= null;
-
+	
 	/**
 	 * allow user to setup JComponent that is used to control main UI display, cursor, etc.
 	 * @param c
 	 */
 	public void setComponent(JComponent c) {cmpt=c;}
-	
+
 	/**
 	 * Allow users to setup the program mood, either batch mood or UI mood
 	 * 
 	 * @param bm
 	 */
 	public static void setMood(boolean bm) {_batchMood = bm;}
-	
+
 	/**
 	 *  Display the messages to users
 	 * @param s
@@ -56,14 +60,13 @@ public class NC2Act {
 	public static void wrtMsg (String msg) {
 		//add time stamp
 		String t = Calendar.getInstance().getTime().toString();
-		//msg = "\n\n"+t+"\n" + msg;
 		
-		//check log file
 		if (_log ==null) {
 			try {
 				_log=new FileWriter("nc2AscLog.txt");
 			} catch (IOException e) {
-				prtMsgBox("Cannot create nc2AscLog");
+				if (!_batchMood ) 	prtMsgBox("Cannot create nc2AscLog");
+				return;
 			}			   
 		}
 
@@ -72,10 +75,12 @@ public class NC2Act {
 			String mg ="\n\n"+ t +"\n" + msg;
 			_log.write(mg);
 			_log.flush();
-		} catch (IOException ie) { 	 
-			prtMsgBox("IOException: Cannot write to log "+ie.toString());
+		} catch (IOException ie) {
+			if (!_batchMood) 	prtMsgBox("IOException: Cannot write to log "+ie.toString());
+			return;
 		} catch (NullPointerException ne) {
-		   prtMsgBox("NullPointerException: Cannot write to log "+ne.toString());	
+			if (!_batchMood) 	prtMsgBox("NullPointerException: Cannot write to log "+ne.toString());
+			return;
 		}
 
 		//display for user if UI mood
@@ -83,33 +88,34 @@ public class NC2Act {
 			prtMsgBox(msg);
 		}
 	}
-	
+
 	public boolean validataFile(String f) {
 		File fv = new File(f);
 		return fv.isFile();
-			
+
 	}
-	
+
+	/**
+	 * enable the wait cursor in the passed component's view
+	 * @param cmpt
+	 */
 	public static void startWaitCursor(JComponent cmpt) {
-		//if (cmpt == null) {wrtMsg("JCmpt in Util is null..."); return;}
-	    //RootPaneContainer root =
-	    //  (RootPaneContainer)cmpt.getTopLevelAncestor();
-	    cmpt.getTopLevelAncestor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	    //root.getGlassPane().setVisible(true);
-	  }
+		if (cmpt == null) {wrtMsg("startWaitCursor_cmpt  is null..."); return;}
+		cmpt.getTopLevelAncestor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+	}
 
-	  /** Sets cursor for specified component to normal cursor */
-	  public static void stopWaitCursor(JComponent cmpt) {
-		//if (cmpt == null) {wrtMsg("JCmpt in Util is null..."); return;}
-	    //RootPaneContainer root =
-	   //   (RootPaneContainer)cmpt.getTopLevelAncestor();
-		  cmpt.getTopLevelAncestor().setCursor(Cursor.getDefaultCursor());
-	   // root.getGlassPane().setVisible(false);
-	  }
+	/**
+	 * disable the wait cursor in the passed component's view
+	 * @param cmpt
+	 */
+	public static void stopWaitCursor(JComponent cmpt) {
+		if (cmpt == null) {wrtMsg("stopWaitCursor_cmpt  is null..."); return;}
+		cmpt.getTopLevelAncestor().setCursor(Cursor.getDefaultCursor());
+	}
 
-	
-	
-	
+
+
+
 } // eo class
 
 
