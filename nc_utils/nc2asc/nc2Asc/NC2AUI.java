@@ -419,12 +419,12 @@ public class NC2AUI {
 			ncdata.readDataInf();
 			dataInf = ncdata.getDataInf();
 
-		} catch ( ArrayIndexOutOfBoundsException a){
-			nc2Asc.NC2Act.wrtMsg("Array index out of bound"+a.getMessage());
-		} catch (NCDataException ee) {
-			nc2Asc.NC2Act.wrtMsg("NCdata exception "+ee.getMessage());
-		} catch (IOException nce){
-			nc2Asc.NC2Act.wrtMsg("IO exception "+nce.getMessage());
+		} catch ( ArrayIndexOutOfBoundsException ae) {
+			nc2Asc.NC2Act.wrtMsg("Array index out of bound"+ae.getMessage());
+		} catch (NCDataException n) {
+			nc2Asc.NC2Act.wrtMsg("NCdata exception "+n.getMessage());
+		} catch (IOException ioe){
+			nc2Asc.NC2Act.wrtMsg("IO exception "+ioe.getMessage());
 		} catch (Exception ex) {
 			nc2Asc.NC2Act.wrtMsg("Other exception "+ex.getMessage());
 		}
@@ -528,21 +528,23 @@ public class NC2AUI {
 
 			//write varname to the first line of out file
 			String out= genVarName(sublvars); 
+			long milSec = ncdata.getTimeMilSec();
 			
-			// all the time-range data  20-should be the seconds in the time range
+			// all the time-range data  5-should be the seconds in the time range
 			for (int t=0 ; t < 5; t++) {  //todo: cal time in seconds
+				String dt = ncdata.getNewTm(milSec, t);
+				outFile.write(dt); out+=dt; 
 				//write one-second data of ALL vars to the out file
 				for (int i=0; i<size; i++){
 					String data = ncdata.readOneVarData(sublvars.get(i), t);
-					if  (i<(size-1)) {
-						data += ncdata.SEPDELIMIT.toString();
-					}
+					data = ncdata.SEPDELIMIT.toString()+ data;
 					outFile.write(data); out += data;
 				}
 				outFile.write("\n");
 				outFile.flush();
 				out +="\n";
 			}//time-for
+			
 			nc2Asc.NC2Act.wrtMsg(out);
 		} catch (InvalidRangeException ie) {
 			nc2Asc.NC2Act.wrtMsg("InvalidRangeException..."+ ie.getMessage());
