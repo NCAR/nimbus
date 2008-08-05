@@ -18,8 +18,6 @@ import ucar.ma2.*;
 
 public class NCData {
 
-	public final static String SEPDELIMIT =",";
-
 	//constructor
 	public NCData(String ifn, String ofn) {infn = ifn; outfn=ofn;}
 
@@ -116,9 +114,9 @@ public class NCData {
 		for (int i=0; i<len-1 ; i++){ 
 			String dat = "";
 			Variable v = lvars.get(i);
-			dat += v.getShortName() + SEPDELIMIT.toString();
-			dat += v.getUnitsString() + SEPDELIMIT.toString();
-			dat += getOR(v)+"/"+getLen(v) + SEPDELIMIT.toString() ;
+			dat += v.getShortName() + DataFmt.SEPDELIMIT.toString();
+			dat += v.getUnitsString() + DataFmt.SEPDELIMIT.toString();
+			dat += getOR(v)+"/"+getLen(v) + DataFmt.SEPDELIMIT.toString() ;
 			dat += v.getName();
 			if (i<10) {
 				disdata += dat; 
@@ -189,7 +187,7 @@ public class NCData {
 					if (j==0) {
 						dat[i] = String.valueOf(d);
 					} else {
-						dat[i] = dat[i]+ SEPDELIMIT.toString()+ String.valueOf(d);
+						dat[i] = dat[i]+ DataFmt.SEPDELIMIT.toString()+ String.valueOf(d);
 					} 
 				}
 				dat[i] = subStr(dat[i]);
@@ -206,7 +204,7 @@ public class NCData {
 						if (j==0 && k==0) {
 							dat[i]= String.valueOf(d);
 						} else {
-							dat[i]= dat[i]+ SEPDELIMIT.toString()+ String.valueOf(d);
+							dat[i]= dat[i]+ DataFmt.SEPDELIMIT.toString()+ String.valueOf(d);
 						} 
 					}
 				}
@@ -248,7 +246,7 @@ public class NCData {
 			if (dat==null) {
 				dat = String.valueOf(f);
 			} else {
-				dat += SEPDELIMIT.toString()+f;
+				dat += DataFmt.SEPDELIMIT.toString()+f;
 			}
 		}
 		return dat;
@@ -297,9 +295,9 @@ public class NCData {
 		if (vdata1.length <len) {len = vdata1.length;}
 		if (vdata2.length <len) {len = vdata2.length;}
 		for (int i=1; i<len; i++) {
-			demoData[i]= getNewTm(milSec, i)+ SEPDELIMIT.toString() 
-			+ vdata1[i].split(SEPDELIMIT.toString())[0] + SEPDELIMIT.toString()
-			+ vdata2[i].split(SEPDELIMIT.toString())[0];
+			demoData[i]= getNewTm(milSec, i)+ DataFmt.SEPDELIMIT.toString() 
+			+ vdata1[i].split(DataFmt.SEPDELIMIT.toString())[0] + DataFmt.SEPDELIMIT.toString()
+			+ vdata2[i].split(DataFmt.SEPDELIMIT.toString())[0];
 		}
 		return demoData;
 	}
@@ -335,8 +333,8 @@ public class NCData {
 		//get 10 secons data
 		int len =10;
 		for (int i=1; i<len; i++) {
-			demoData[i]= getNewTm(milSec, i)+ SEPDELIMIT.toString(); 
-			demoData[i] += readOneVarData(v1, i) + SEPDELIMIT.toString();
+			demoData[i]= getNewTm(milSec, i)+ DataFmt.SEPDELIMIT.toString(); 
+			demoData[i] += readOneVarData(v1, i) + DataFmt.SEPDELIMIT.toString();
 			demoData[i] += readOneVarData(v2, i);
 			nc2Asc.NC2Act.wrtMsg(demoData[i]);
 
@@ -351,8 +349,8 @@ public class NCData {
 		}
 		nc2Asc.NC2Act.wrtMsg(dataInf[0]);
 		String tmVar= dataInf[0];
-		String date = tmVar.split(SEPDELIMIT.toString())[1].split(" ")[2];
-		String tm   = tmVar.split(SEPDELIMIT.toString())[1].split(" ")[3];
+		String date = tmVar.split(DataFmt.SEPDELIMIT.toString())[1].split(" ")[2];
+		String tm   = tmVar.split(DataFmt.SEPDELIMIT.toString())[1].split(" ")[3];
 		String[] dInf = date.split("-");
 		String[] tmInf   = tm.split(":");
 
@@ -374,7 +372,7 @@ public class NCData {
 		Calendar cl = Calendar.getInstance();
 		cl.setTimeInMillis(milSec);
 		cl.add(Calendar.SECOND, sec);
-		tm = cl.get(Calendar.YEAR) + "-"+cl.get(Calendar.MONTH)+ "-"+ cl.get(Calendar.DAY_OF_MONTH) + SEPDELIMIT.toString()+ cl.get(Calendar.HOUR_OF_DAY)+ ":"+cl.get(Calendar.MINUTE)+":"+cl.get(Calendar.SECOND);
+		tm = cl.get(Calendar.YEAR) + "-"+cl.get(Calendar.MONTH)+ "-"+ cl.get(Calendar.DAY_OF_MONTH) + DataFmt.SEPDELIMIT.toString()+ cl.get(Calendar.HOUR_OF_DAY)+ ":"+cl.get(Calendar.MINUTE)+":"+cl.get(Calendar.SECOND);
 		return tm;
 	}
 
@@ -390,6 +388,7 @@ public class NCData {
 		}
 		return ss;
 	}
+	
 
 } //eofclass
 

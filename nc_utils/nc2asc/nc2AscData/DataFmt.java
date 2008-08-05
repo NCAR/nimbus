@@ -24,7 +24,9 @@ public class DataFmt {
 	public final static String HEAD = "Head";
 	public final static String HEAD2 = "Head2";
 	public final static String HEAD3 = "Head3";
-
+ 
+	public final static String DATESTR ="Date";
+	
 	public final static int HEAD_IDX = 0;
 	public final static int AVG_IDX = 1;
 	public final static int DATE_IDX = 2;
@@ -32,9 +34,11 @@ public class DataFmt {
 	public final static int DMTR_IDX = 4;
 	public final static int MVAL_IDX = 5;
 	public final static int TMSET_IDX = 6;
+	
+	public final static String SEPDELIMIT =",";
+	public final static String SPACE =" ";
 
-
-	private String[] dataFmt = new String[7]; 
+	private static String[] dataFmt = new String[7]; 
 	//private StringBuffer data = new StringBuffer();
 
 	public DataFmt() {
@@ -53,7 +57,7 @@ public class DataFmt {
 	 * @param  s    -    selected data format
 	 * @param idx	-    position in data format string 
 	 */
-	public void setDataFmt(String s, int idx){
+	public static void setDataFmt(String s, int idx){
 		dataFmt[idx] = s;
 	}
 
@@ -65,6 +69,15 @@ public class DataFmt {
 		return dataFmt;
 	}
 
+	
+	public void showDataFmt() {
+		String str="";
+		for (int i=0; i<7; i++) {
+	       str += dataFmt[i]+"\n";
+		}
+		nc2Asc.NC2Act.wrtMsg(str);
+	}
+	
 	/**
 	 * It takes the time in milli-seconds since Jan.1,1970, then convert it's date
 	 * into desired date format
@@ -80,11 +93,7 @@ public class DataFmt {
 		s[0] = ""+d.get(Calendar.YEAR);
 		s[1] = ""+d.get(Calendar.MONTH);
 		s[2] = ""+d.get(Calendar.DAY_OF_MONTH); 
-		try {
-			return fmtDate(s);
-		} catch (DataFormatException e) {		
-			throw e;
-		} 		
+		return fmtDate(s);
 	};
 
 	/**     
@@ -143,7 +152,6 @@ public class DataFmt {
 	 * @throws DataFormatException
 	 */
 	public String fmtTm(String[] ss) throws DataFormatException {
-
 		//check input format -- 
 		if (ss.length!=3){  
 			throw new DataFormatException("Invalid time format: "+ss); 
@@ -166,10 +174,17 @@ public class DataFmt {
 			throw new DataFormatException("Invalid output time format: "+dataFmt[1]);	
 		}
 	}
+	
+	public String fmtDmtr(String data) throws NullPointerException {
+		return fmtDmtr(data.split(SEPDELIMIT.toString()));
+	}
 
-	public String fmtDmtr(String[] data){
+	public String fmtDmtr(String[] data) throws NullPointerException {
+		
 		String tmp="";
-		for (int i=0; i<data.length-1; i++){
+		int start =0;
+		if (dataFmt[DATE_IDX].equals(NODATE.toString())) {start=1;}
+		for (int i=start; i<data.length-1; i++){
 			if (data[i]==null || data[i].length()<1) {
 			  data[i]= dataFmt[MVAL_IDX];	
 			}
@@ -178,7 +193,27 @@ public class DataFmt {
 		return (tmp+ data[data.length-1]); //add last one 
 	}
 
-	public boolean chkTmSet ( int ms) throws DataFormatException{
+	public String fmtOneLineData(String data ) throws DataFormatException {
+		return fmtOneLineData(data.split(SEPDELIMIT.toString()));
+	}
+	
+	//assume --data contains date/yy-mm-dd
+	public String fmtOneLineData(String[] data ) throws DataFormatException {
+		String[] oneline=data; 
+	
+		//get date formated first
+		if (dataFmt[DATE_IDX].equals(NODATE.toString())) {
+			oneline[0]=NODATE.toString();
+		} else {
+			oneline[0] = fmtDate(data[0].split("-"));
+		}
+		//format time
+		oneline[1] = fmtTm(data[1].split(":"));
+		//add delimiter
+		return fmtDmtr(oneline);
+	}	
+	
+	private boolean chkTmSet ( int ms) throws DataFormatException{
 		if (dataFmt[TMSET_IDX].equals(FULLTM.toString())){
 			return true;   	
 		} 

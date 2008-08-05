@@ -4,6 +4,7 @@ import java.lang.*;
 import java.lang.Exception.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.DataFormatException;
 import java.awt.ComponentOrientation;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -50,7 +51,7 @@ public class NC2AUI {
 	///class objs: data-fmt selection dialog, and netcdf-data, and data-format
 	private NC2AUIDiag dialog;	  
 	private NCData     ncdata;
-	private DataFmt    datafmt;
+	private DataFmt    datafmt = new DataFmt();
 	String[] dataInf; 
 
 
@@ -412,7 +413,6 @@ public class NC2AUI {
 	void populateTbl()  {
 		if (ncdata==null) {
 			ncdata = new NCData(tfFileIn.getText(), tfFileOut.getText());
-			//	ncdata.openFile();
 		}
 		try {
 			ncdata.openFile();
@@ -420,13 +420,13 @@ public class NC2AUI {
 			dataInf = ncdata.getDataInf();
 
 		} catch ( ArrayIndexOutOfBoundsException ae) {
-			nc2Asc.NC2Act.wrtMsg("Array index out of bound"+ae.getMessage());
+			nc2Asc.NC2Act.wrtMsg("populateTbl_Array index out of bound"+ae.getMessage());
 		} catch (NCDataException n) {
-			nc2Asc.NC2Act.wrtMsg("NCdata exception "+n.getMessage());
+			nc2Asc.NC2Act.wrtMsg("populateTbl_NCdata exception "+n.getMessage());
 		} catch (IOException ioe){
-			nc2Asc.NC2Act.wrtMsg("IO exception "+ioe.getMessage());
+			nc2Asc.NC2Act.wrtMsg("populateTbl_IO exception "+ioe.getMessage());
 		} catch (Exception ex) {
-			nc2Asc.NC2Act.wrtMsg("Other exception "+ex.getMessage());
+			nc2Asc.NC2Act.wrtMsg("populateTbl_Other exception "+ex.getMessage());
 		}
 
 		//check data
@@ -439,7 +439,7 @@ public class NC2AUI {
 		for (int i=1; i<dataInf.length; i++){
 			String data =dataInf[i];
 			if (data==null || data.length()<1) {return;}
-			String[] d = data.split(ncdata.SEPDELIMIT.toString());
+			String[] d = data.split(DataFmt.SEPDELIMIT.toString());
 			if (tbl.getRowCount()<i-1){
 				nc2Asc.NC2Act.wrtMsg("Table is not long enough: "+ i);
 				break;
@@ -491,7 +491,7 @@ public class NC2AUI {
 
 		for (int i =0; i<sublvars.size(); i++) {
 			Variable v =sublvars.get(i);
-			varname += NCData.SEPDELIMIT.toString()+v.getName();
+			varname += DataFmt.SEPDELIMIT.toString()+v.getName();
 
 			//check if the it has multi-data
 			int[] shape = v.getShape();
@@ -500,12 +500,10 @@ public class NC2AUI {
 			}
 			// the var has multi-data. we need to add numbers as the varnames for the rest of the values
 			for (int j=1; j<shape[2]; j++) {
-				varname += NCData.SEPDELIMIT.toString()+j ;
+				varname += DataFmt.SEPDELIMIT.toString()+j ;
 			}
 		}
 		//nc2Asc.NC2Act.wrtMsg("varname_len:"+varname.split(",").length+ " "+varname);
-		varname +="\n";
-		writeOut(varname);
 		return varname;
 	}
 
@@ -514,7 +512,7 @@ public class NC2AUI {
 		try {
 			ncdata.getOutFile().write(msg);
 		} catch (IOException e ) {
-			nc2Asc.NC2Act.wrtMsg(e.getMessage());
+			nc2Asc.NC2Act.wrtMsg("writeOut_err:"+e.getMessage());
 		}
 	}
 
@@ -528,28 +526,35 @@ public class NC2AUI {
 
 			//write varname to the first line of out file
 			String out= genVarName(sublvars); 
+			out = datafmt.fmtDmtr(out)+"\n";
+			writeOut(out); 
 			long milSec = ncdata.getTimeMilSec();
 			
 			// all the time-range data  5-should be the seconds in the time range
 			for (int t=0 ; t < 5; t++) {  //todo: cal time in seconds
 				String dt = ncdata.getNewTm(milSec, t);
-				outFile.write(dt); out+=dt; 
+		
 				//write one-second data of ALL vars to the out file
 				for (int i=0; i<size; i++){
 					String data = ncdata.readOneVarData(sublvars.get(i), t);
-					data = ncdata.SEPDELIMIT.toString()+ data;
-					outFile.write(data); out += data;
+					data = DataFmt.SEPDELIMIT.toString()+ data;
+					dt += data; //out += data;
 				}
-				outFile.write("\n");
+				
+				dt =datafmt.fmtOneLineData(dt)+ "\n";
+				writeOut(dt);
 				outFile.flush();
-				out +="\n";
-			}//time-for
-			
+				out += dt;
+			}
 			nc2Asc.NC2Act.wrtMsg(out);
+		} catch (NullPointerException ne){
+			nc2Asc.NC2Act.wrtMsg("writeOutVarData_NullPointerException "+ne.getMessage());
+		} catch (DataFormatException de) {
+			nc2Asc.NC2Act.wrtMsg("writeOutVarData_DataFormatException "+de.getMessage());
 		} catch (InvalidRangeException ie) {
-			nc2Asc.NC2Act.wrtMsg("InvalidRangeException..."+ ie.getMessage());
+			nc2Asc.NC2Act.wrtMsg("writeOutVarData_InvalidRangeException..."+ ie.getMessage());
 		} catch (IOException ee) {
-			nc2Asc.NC2Act.wrtMsg("IOException..."+ee.getMessage());
+			nc2Asc.NC2Act.wrtMsg("writeOutVarData_IOException..."+ee.getMessage());
 		}
 	} 
 
