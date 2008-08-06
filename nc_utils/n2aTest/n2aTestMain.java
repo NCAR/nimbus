@@ -2,7 +2,7 @@ import junit.framework.Test;
 import junit.framework.*;
 import junit.framework.TestSuite;
 import junit.*;
-import Tnc2AscData.*;
+import tnc2AscData.*;
 
 public class n2aTestMain {
 	
@@ -13,9 +13,11 @@ public class n2aTestMain {
 	        //
 	        // test ncData
 	        //
-	       // suite.createTest(theClass, name)
-	        suite.addTestSuite(ncDataTest.class);
+	        //suite.createTest(theClass, name)
 	        //suite.addTest(ncDataTest.testReadVarData());
+	       
+	        suite.addTestSuite(ncDataTest.class);
+	        suite.addTestSuite(dataFmtTest.class);
 	        return suite;
 	    }
 

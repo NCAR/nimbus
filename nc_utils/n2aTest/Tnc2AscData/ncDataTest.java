@@ -1,4 +1,4 @@
-package Tnc2AscData;
+package tnc2AscData;
 
 import junit.framework.TestCase;
 import java.lang.*;
@@ -23,11 +23,11 @@ public class ncDataTest extends TestCase {
 
 	public void testReadVarData() {
 		ncd= new NCData("/home/data/pac10.nc","/home/data/nctest.txt");
-		try {ncd.openFile();} catch (IOException e) {}
+		try {ncd.openFile();} catch (IOException e) { TestCase.fail("NCData_openFile_IOException");}
 		TestCase.assertNotNull(ncd.getInFile());
 		TestCase.assertNotNull(ncd.getOutFile());
 
-		try {ncd.readDataInf();} catch (IOException e) {}
+		try {ncd.readDataInf();} catch (IOException e) { TestCase.fail("NCData_readDataInf_IOException");}
 		TestCase.assertNotNull(ncd.getDataInf());
 		TestCase.assertTrue(ncd.getDataInf().length>1);
 
@@ -49,19 +49,11 @@ public class ncDataTest extends TestCase {
 			data = ncd.readOneVarData(sublvars.get(2), 0);
 			TestCase.assertEquals("A2DTEMP_AEROSOL", sublvars.get(2).getName());
 			TestCase.assertEquals(1, data.split(",").length);
-			
-			
-			//nc2Asc.NC2Act.wrtMsg("data var "+ sublvars.get(0)+ " data: "+ data);
-			data = ncd.readOneVarData(sublvars.get(1), 0);
-			nc2Asc.NC2Act.wrtMsg("data var "+ sublvars.get(1)+ " data: "+ data);
-			data = ncd.readOneVarData(sublvars.get(2), 0);
-			nc2Asc.NC2Act.wrtMsg("data var "+ sublvars.get(2)+ " data: "+ data);
-			//data = ncd.readOneVarData(sublvars.get(4), 0);
-			//nc2Asc.NC2Act.wrtMsg("data var "+ sublvars.get(4)+ " data: "+ data);
+						
 		} catch (InvalidRangeException e) {
-			TestCase.fail("InvalidRangeException...");
+			TestCase.fail("readOneVarData_InvalidRangeException...");
 		} catch (IOException ee) {
-			TestCase.fail("IOException...");
+			TestCase.fail("readOneVarData_IOException...");
 		}
 		//return true;
 	}
