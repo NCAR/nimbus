@@ -171,7 +171,7 @@ class NC2AUIDiag extends JDialog {
 		jpVal  = new JPanel();
 		jpVal.setLayout(new GridLayout(0,1));
 
-		Border bdVal = BorderFactory.createTitledBorder("  Missing Value ");
+		Border bdVal = BorderFactory.createTitledBorder("  Fill Value ");
 		jpVal.setBorder(bdVal);
 
 		rVal = new JRadioButton("Fill Value");

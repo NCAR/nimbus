@@ -28,6 +28,8 @@ public class NCData {
 	List<Variable> lvars=null;
 	String[] data, dataInf;
 
+	public static final String TM_DELIMIT = "^";
+	public static final String  OR_DELIMIT   = "#";
 
 	public List<Variable> getVars(){return lvars;}
 	/**
@@ -236,13 +238,14 @@ public class NCData {
 			size[i]  =shape[i];
 		}		
 
-		//get one data -- size=1
 		Array data = v.read(origin, size);
-
+		data=data.reduce();
+		
 		IndexIterator ii = data.getIndexIterator();
-		int count =0;
+		int count=0;
 		while (ii.hasNext()){
 			float f =ii.getFloatNext();
+			count++;
 			if (dat==null) {
 				dat = String.valueOf(f);
 			} else {
@@ -251,6 +254,70 @@ public class NCData {
 		}
 		return dat;
 	}
+	public float[] read1DData (Variable v, int start, int len) throws InvalidRangeException, IOException {
+		//set orig and size
+		int[] shape = v.getShape();
+		int[] origin=new int[shape.length], size=new int[shape.length];
+
+		origin[0] =  start;
+		size[0] = len;
+		for (int i=1; i<shape.length; i++) {
+			origin[i]=0;
+			size[i]  =shape[i];
+		}		
+		
+		Array data = v.read(origin, size);
+		data=data.reduce();
+		float[] fd =  (float [])data.copyTo1DJavaArray();
+	//	nc2Asc.NC2Act.wrtMsg("df-len:"+ fd.length + "exp:   "+ getLen(v)*len);
+		return fd;
+	}
+	
+	public String readVarData (Variable v, int start, int len) throws InvalidRangeException, IOException {
+
+		String dat =null; // we handle 1-d to d-3 for now
+
+		//set orig and size
+		int[] shape = v.getShape();
+		int[] origin=new int[shape.length], size=new int[shape.length];
+
+		origin[0] =  start;
+		size[0] = len;
+		for (int i=1; i<shape.length; i++) {
+			origin[i]=0;
+			size[i]  =shape[i];
+		}		
+		
+		Array data = v.read(origin, size);
+		
+		int tmMax = (int)data.getSize()/len;
+		int orNum = getOR(v);
+		int lenNum= getLen(v);
+
+		data=data.reduce();
+		
+		IndexIterator ii = data.getIndexIterator();
+		int c1=0, c2=0;
+		while (ii.hasNext()){
+			float f =ii.getFloatNext();
+			c1++; c2++;
+			if (dat==null) {
+				dat = String.valueOf(f);
+			} else if (c1 == tmMax) {
+				c1=0;
+				dat += TM_DELIMIT.toString()+f;
+			} else if (orNum>1 && c2 ==lenNum) {
+				c2=0;
+				dat += OR_DELIMIT.toString()+f;
+			} else {
+				dat += DataFmt.SEPDELIMIT.toString()+f;	
+			}
+		}
+		
+		
+		return dat;
+	}
+
 
 
 	/**
@@ -284,7 +351,7 @@ public class NCData {
 		Variable v1 = lvars.get(1);
 		Variable v2 = lvars.get(2);
 		demoData[0] ="Date,UTC,"+v1.getShortName() +","+v2.getShortName();
-		nc2Asc.NC2Act.wrtMsg("getDemoData: "+demoData[0]);
+		//nc2Asc.NC2Act.wrtMsg("getDemoData: "+demoData[0]);
 		long milSec;
 		String[] vdata1, vdata2;
 		milSec = getTimeMilSec();
@@ -347,7 +414,7 @@ public class NCData {
 		if (dataInf[0]== null) {
 			throw new  NCDataException("getTimeMilSec: Variables are not read... Please get variables from the netcdf file.");
 		}
-		nc2Asc.NC2Act.wrtMsg(dataInf[0]);
+		//nc2Asc.NC2Act.wrtMsg(dataInf[0]);
 		String tmVar= dataInf[0];
 		String date = tmVar.split(DataFmt.SEPDELIMIT.toString())[1].split(" ")[2];
 		String tm   = tmVar.split(DataFmt.SEPDELIMIT.toString())[1].split(" ")[3];
@@ -355,18 +422,39 @@ public class NCData {
 		String[] tmInf   = tm.split(":");
 
 		Calendar cl = Calendar.getInstance();
-		int y= new Integer(dInf[0]).intValue();
-		int mm= new Integer(dInf[1]).intValue();
-		int d= new Integer(dInf[2]).intValue();
+		int y= Integer.parseInt(dInf[0]);//new Integer(dInf[0]).intValue();
+		int mm= Integer.parseInt(dInf[1]);//new Integer(dInf[1]).intValue();
+		int d= Integer.parseInt(dInf[2]);//new Integer(dInf[2]).intValue();
 
-		int h= new Integer(tmInf[0]).intValue();
-		int m= new Integer(tmInf[1]).intValue();
-		int s= new Integer(tmInf[2]).intValue();
+		int h= Integer.parseInt(tmInf[0]);//new Integer(tmInf[0]).intValue();
+		int m= Integer.parseInt(tmInf[1]);//new Integer(tmInf[1]).intValue();
+		int s= Integer.parseInt(tmInf[2]);//new Integer(tmInf[2]).intValue();
 
 		cl.set(y,mm,d,h,m,s);
 		return cl.getTimeInMillis();
 	}
 
+	
+	public long getNewTimeMilSec(String hms) throws NCDataException {
+		//long ms=0;
+		String[] tmInf = hms.split(":");
+		
+		Calendar cl = Calendar.getInstance();
+		cl.setTimeInMillis(getTimeMilSec());
+		int y =cl.get(Calendar.YEAR);
+		int mm =cl.get(Calendar.MONTH);
+		int d =cl.get(Calendar.DAY_OF_MONTH);
+		
+		int h= Integer.parseInt(tmInf[0]);
+		int m= Integer.parseInt(tmInf[1]);
+		int s= Integer.parseInt(tmInf[2]);
+		
+		Calendar c2 = Calendar.getInstance();
+		c2.set(y,mm,d,h,m,s);
+		
+		return c2.getTimeInMillis();
+	}
+		
 	public String  getNewTm( long milSec, int sec) {
 		String tm;
 		Calendar cl = Calendar.getInstance();

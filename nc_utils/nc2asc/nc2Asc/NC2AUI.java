@@ -3,6 +3,7 @@ package nc2Asc;
 import java.lang.*;
 import java.lang.Exception.*;
 import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 import java.util.zip.DataFormatException;
 import java.awt.ComponentOrientation;
@@ -480,7 +481,10 @@ public class NC2AUI {
 	private List<Variable>  getSubVarList(int[] idxs){
 		List<Variable> slvars= new ArrayList<Variable>();
 		List<Variable> allvars= ncdata.getVars();
-		for (int i=0; i<idxs.length; i++) {
+		int len = idxs.length;
+		if (len > (allvars.size()-1)) {len = allvars.size()-1;} //in case select all includes  extra empty rows
+		//allvars.size()-1, because the first one is time-var
+		for (int i=0; i<len; i++) {
 			slvars.add(i,allvars.get(idxs[i]+1)); //idxs[i]+1 to count the time var on the first line
 		}
 		return slvars;
@@ -522,41 +526,85 @@ public class NC2AUI {
 		try {
 			List<Variable> sublvars = getSubVarList(idxs);
 			java.io.FileWriter outFile = ncdata.getOutFile();
-			int size = sublvars.size();
 
-			//write varname to the first line of out file
+			//write le();
+			int size = sublvars.size(); //.varname to the first line of out file
 			String out= genVarName(sublvars); 
 			out = datafmt.fmtDmtr(out)+"\n";
 			writeOut(out); 
 			long milSec = ncdata.getTimeMilSec();
+
+			// all the time-range data  len-should be the seconds in the time range
+			int[] range = getTmRange();
+             
+			long t1 = Calendar.getInstance().getTimeInMillis();
+			for (int i=0; i<sublvars.size(); i++) {
+				ncdata.read1DData(sublvars.get(i) , 0, range[1]);
+			}
 			
-			// all the time-range data  5-should be the seconds in the time range
-			for (int t=0 ; t < 5; t++) {  //todo: cal time in seconds
+			nc2Asc.NC2Act.wrtMsg("tmdiffff :"+ (Calendar.getInstance().getTimeInMillis()-t1));
+			
+/*			long t1 = Calendar.getInstance().getTimeInMillis();
+			
+			for (int t=range[0] ; t <(range[1]-10); t++) {  //todo: cal time in seconds
 				String dt = ncdata.getNewTm(milSec, t);
-		
+
 				//write one-second data of ALL vars to the out file
 				for (int i=0; i<size; i++){
 					String data = ncdata.readOneVarData(sublvars.get(i), t);
 					data = DataFmt.SEPDELIMIT.toString()+ data;
 					dt += data; //out += data;
 				}
-				
+
 				dt =datafmt.fmtOneLineData(dt)+ "\n";
-				writeOut(dt);
+				//writeOut(dt);
 				outFile.flush();
-				out += dt;
+				out += dt;/
 			}
-			nc2Asc.NC2Act.wrtMsg(out);
+			nc2Asc.NC2Act.wrtMsg("tmdiffff :"+ (Calendar.getInstance().getTimeInMillis()-t1));
+			writeOut(out);
+			//nc2Asc.NC2Act.wrtMsg(out);
+	*/		
 		} catch (NullPointerException ne){
 			nc2Asc.NC2Act.wrtMsg("writeOutVarData_NullPointerException "+ne.getMessage());
-		} catch (DataFormatException de) {
-			nc2Asc.NC2Act.wrtMsg("writeOutVarData_DataFormatException "+de.getMessage());
+		//} catch (DataFormatException de) {
+			//nc2Asc.NC2Act.wrtMsg("writeOutVarData_DataFormatException "+de.getMessage());
 		} catch (InvalidRangeException ie) {
 			nc2Asc.NC2Act.wrtMsg("writeOutVarData_InvalidRangeException..."+ ie.getMessage());
 		} catch (IOException ee) {
 			nc2Asc.NC2Act.wrtMsg("writeOutVarData_IOException..."+ee.getMessage());
 		}
 	} 
+
+	private int[] getTmRange() {
+		int[] ii = new int[2];
+		try {
+			if (datafmt.getDataFmt()[DataFmt.TMSET_IDX]==DataFmt.FULLTM.toString()) { //all the data
+				ii[0]=0;
+				ii[1]=(int)ncdata.getVars().get(4).getSize(); // .getShape()[0];
+				return ii;
+			}
+			
+			//get selected  range---
+			//get start
+			String[] tm= datafmt.getDataFmt()[DataFmt.TM_IDX].split(DataFmt.TMSETDELIMIT); 
+			ii[0] = (int)(ncdata.getNewTimeMilSec(tm[0]) - ncdata.getTimeMilSec())/1000;
+			//get length
+			String[] t1 = tm[0].split(DataFmt.TMSETCOLON.toString());
+			String[] t2 = tm[1].split(DataFmt.TMSETCOLON.toString());
+			int h = Integer.parseInt(t1[0]);
+			int m = Integer.parseInt(t1[1]);
+			int s = Integer.parseInt(t1[2]);
+			int h2 = Integer.parseInt(t2[0]);
+			int m2 = Integer.parseInt(t2[0]);
+			int s2 = Integer.parseInt(t2[0]);
+			ii[1] = h2*3600+m2*60+s2 - h*3600+m*60+s ;
+
+		} catch (NCDataException ne) {
+			nc2Asc.NC2Act.wrtMsg("NC2AUI_getTmRange_NCDataException"+ne.getMessage());
+		}
+		return ii;
+	}
 
 }//eof class
 

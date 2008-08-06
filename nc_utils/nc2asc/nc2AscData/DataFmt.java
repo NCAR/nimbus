@@ -37,6 +37,9 @@ public class DataFmt {
 	
 	public final static String SEPDELIMIT =",";
 	public final static String SPACE =" ";
+	public final static String TMSETDELIMIT= "~";
+	public final static String TMSETCOLON= ":";
+	
 
 	private static String[] dataFmt = new String[7]; 
 	//private StringBuffer data = new StringBuffer();
@@ -111,7 +114,7 @@ public class DataFmt {
 
 		//check required output format
 		if (dataFmt[DATE_IDX].equals(DATESPACE.toString())){
-			return ss[0]+ " " + ss[1] + " " + ss[2];
+			return ss[0]+ SPACE.toString() + ss[1] + SPACE.toString() + ss[2];
 		} else 	if (dataFmt[DATE_IDX].equals(DATEDASH.toString())){
 			return ss[0]+ "-" + ss[1] + "-" + ss[2];
 		} else {
@@ -137,7 +140,7 @@ public class DataFmt {
 		s[0] +=h;
 		s[1] +=m;
 		s[2] +=ss;
-		//s += d.HOUR+ " "+ d.MINUTE + " "+ d.SECOND; 
+		
 		try {
 			return fmtTm(s);
 		} catch (DataFormatException e) {
@@ -159,9 +162,9 @@ public class DataFmt {
 	
 		//check required output format
 		if (dataFmt[TM_IDX].equals(TIMESPACE.toString())){
-			return ss[0] + " "+ ss[1]+" "+ss[2];
+			return ss[0] + SPACE.toString()+ ss[1]+SPACE.toString()+ss[2];
 		} else 	if (dataFmt[TM_IDX].equals(TIMECOLON.toString())){
-			return ss[0]+ ":" + ss[1] + ":" + ss[2];
+			return ss[0]+ TMSETCOLON.toString() + ss[1] + TMSETCOLON.toString() + ss[2];
 		} else 	if (dataFmt[TM_IDX].equals(TIMENOSPACE.toString())) {
 			return ss[0]+ ss[1] + ss[2];
 		} else 	if (dataFmt[TM_IDX].equals(TIMESEC.toString())) {
@@ -208,7 +211,7 @@ public class DataFmt {
 			oneline[0] = fmtDate(data[0].split("-"));
 		}
 		//format time
-		oneline[1] = fmtTm(data[1].split(":"));
+		oneline[1] = fmtTm(data[1].split(TMSETCOLON.toString()));
 		//add delimiter
 		return fmtDmtr(oneline);
 	}	
@@ -225,12 +228,12 @@ public class DataFmt {
 		int s = cd.get(Calendar.SECOND);
 
 		//get start and end time
-		String[] sl= dataFmt[TMSET_IDX].split("~");
+		String[] sl= dataFmt[TMSET_IDX].split(TMSETDELIMIT.toString());
 		if (sl.length!=2){
 			throw new DataFormatException("Invalid time-set format: "+dataFmt[TMSET_IDX].toString());	
 		}
-		String[] tmStart = sl[0].split(":");
-		String[] tmEnd = sl[1].split(":");
+		String[] tmStart = sl[0].split(TMSETCOLON.toString());
+		String[] tmEnd = sl[1].split(TMSETCOLON.toString());
 		if (tmStart.length!=3 || tmEnd.length!=3){
 			throw new DataFormatException("Invalid time-set format: "+dataFmt[TMSET_IDX].toString());	
 		}
@@ -242,10 +245,10 @@ public class DataFmt {
 		// build input time into hh:mm:ss
 		String tmp = new String().valueOf(h);
 		if (tmp.length() ==1) {tmp +="0";}
-		String tmStr = tmp + ":"; //add hour
+		String tmStr = tmp + TMSETCOLON.toString(); //add hour
 		tmp = new String().valueOf(m);
 		if (tmp.length() ==1) {tmp +="0";}
-		tmStr =tmStr + tmp + ":";        //add minute
+		tmStr =tmStr + tmp + TMSETCOLON.toString();        //add minute
 		tmp = new String().valueOf(s);
 		if (tmp.length() ==1) {tmp +="0";}
 		tmStr =tmStr + tmp;        //add sec
