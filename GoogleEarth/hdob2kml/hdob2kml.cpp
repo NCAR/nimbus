@@ -3,7 +3,7 @@
  * and create a KMZ for Google Earth.
  */
 #include <string>
-#include <vector>
+#include <map>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -18,24 +18,22 @@
 using namespace boost::posix_time;
 using namespace boost::gregorian;
 
-std::vector<ptime> _time;
-std::vector<float> _lat, _lon, _alt, _temp, _wSpd, _wDir, _wMax;
-std::vector<float> _surfWMax, _rainRate;
+std::map<ptime, float> _lat, _lon, _alt, _temp, _wSpd, _wDir, _wMax;
+std::map<ptime, float> _surfWMax, _rainRate;
 
 /* -------------------------------------------------------------------- */
 std::string
 annotateLastPoint()
 {
     std::stringstream e;
-    ptime lastTime = _time[_time.size()-1];
-    int lastPoint = _lat.size() - 1;
+    ptime lastTime = _lat.rbegin()->first;
 
     e << "<![CDATA[";
     e << lastTime << 
-        "<br>Alt: " << _alt[lastPoint] << 
-        "<br>Temp: " << _temp[lastPoint] << 
-        "<br>WS: " << _wSpd[lastPoint] << 
-        "<br>WD: " << _wDir[lastPoint];
+        "<br>Alt: " << _alt[lastTime] << 
+        "<br>Temp: " << _temp[lastTime] << 
+        "<br>WS: " << _wSpd[lastTime] << 
+        "<br>WD: " << _wDir[lastTime];
     e << "]]>";
 
     return e.str();
@@ -112,8 +110,8 @@ void WriteGoogleEarthKMZ(std::string & file)
         "  </PolyStyle>\n" <<
         " </Style>\n" <<
         " <LookAt>\n" <<
-        "  <longitude>" << _lon[_lon.size()-1] << "</longitude>\n" <<
-        "  <latitude>" << _lat[_lat.size()-1] << "</latitude>\n" <<
+        "  <longitude>" << _lon.rbegin()->second << "</longitude>\n" <<
+        "  <latitude>" << _lat.rbegin()->second << "</latitude>\n" <<
         "  <range>100000</range>\n" <<
         "  <tilt>55</tilt>\n" <<
         "  <heading>0</heading>\n" <<
@@ -132,8 +130,11 @@ void WriteGoogleEarthKMZ(std::string & file)
         "    <altitudeMode>absolute</altitudeMode>\n" <<
         "    <coordinates>\n";
 
-    for (size_t i = 0; i < _lat.size(); ++i)
-        kml << _lon[i] << "," << _lat[i] << "," << (int)_alt[i] << "\n";
+    std::map<ptime, float>::iterator it;
+    for (it = _lat.begin(); it != _lat.end(); it++) {
+        ptime t = it->first;
+        kml << _lon[t] << "," << _lat[t] << "," << (int)_alt[t] << "\n";
+    }
 
     kml << 
         "    </coordinates>\n" << 
@@ -147,8 +148,8 @@ void WriteGoogleEarthKMZ(std::string & file)
         "   <styleUrl>#PM1</styleUrl>\n" <<
         "   <Point>\n" << 
         "    <altitudeMode>absolute</altitudeMode>\n" <<
-        "    <coordinates>" << _lon[_lon.size()-1] << "," << 
-            _lat[_lat.size()-1] << "," << _alt[_alt.size()-1] << 
+        "    <coordinates>" << _lon.rbegin()->second << "," << 
+            _lat.rbegin()->second << "," << _alt.rbegin()->second << 
             "</coordinates>\n" <<
         "   </Point>\n" <<
         "  </Placemark>\n";
@@ -160,10 +161,15 @@ void WriteGoogleEarthKMZ(std::string & file)
 
     kml.close();
 
+    // Remove the destination kmz (if any)
+    remove(file.c_str());
+    
+    // Create the destination kmz
     char buffer[1024];
     sprintf(buffer, "zip -q %s %s", file.c_str(), tmpFileName.str().c_str());
     system(buffer);
-    
+
+    // remove the temporary kml
     remove(tmpFileName.str().c_str());
 }
 
@@ -191,24 +197,30 @@ void ReadDataFromHDOB(const std::string & fileName)
         // Get the HDOB header line
         getline(hdobFile, line);
 
+        char missionId[32];
         char str[80];
         unsigned int yyyymmdd;
         unsigned int obsNum;
-        nread = sscanf(line.c_str(), "%s%s%s%s%d%d", str, str, str, str, 
+        nread = sscanf(line.c_str(), "%31c%s%d%d", missionId, str, 
                 &obsNum, &yyyymmdd);
+        
+        if (nread != 4 || strcmp(str, "HDOB") != 0) {
+            std::cerr << "BARF on header line: " << line << std::endl;
+            exit(1);
+        }
+        
+        missionId[31] = '\0';
         
         date obDate(yyyymmdd / 10000, (yyyymmdd % 10000) / 100, 
                     yyyymmdd % 100);
         
 
-        if (nread != 6 || strcmp(str, "HDOB") != 0) {
-            std::cerr << "BARF on header line: " << nread << " " << str << std::endl;
-            exit(1);
-        }
-
         // Get the list of individual observations in this chunk
         while (1) {
             getline(hdobFile, line);
+            
+            if (line.substr(0, 2) == "$$")
+                return;
 
             unsigned int hhmmss;
             unsigned int ddmmLat;
@@ -232,59 +244,58 @@ void ReadDataFromHDOB(const std::string & fileName)
                     &iPres, &iGeoAlt, &xxxx, &tempSign, &iTemp, 
                     &dpSign, &iDP, &dddsssWind, &iWMax, &iSurfWMax,
                     &iRainRate, &ff);
-
-            ptime obTime(obDate, 
-                         time_duration(hhmmss / 10000, (hhmmss % 10000) / 100,
-                                       hhmmss %  100));
-            _time.push_back(obTime);
-                        
-            float lat = (ddmmLat / 100) + ((ddmmLat % 100) / 60.0);
-            if (latHem == 'S')
-                lat *= -1;
-            _lat.push_back(lat);
-
-            float lon = (ddmmLon / 100) + ((ddmmLon % 100) / 60.0);
-            if (lonHem == 'W')
-                lon *= -1;
-            _lon.push_back(lon);
-
-            float pres = iPres * 0.1;
-            if (pres < 100.0)
-                pres += 1000.0;
-
-            float geoAlt = iGeoAlt;
-            _alt.push_back(geoAlt);
-
-            float temp = iTemp * 0.1;
-            if (tempSign == '-')
-                temp *= -1;
-            _temp.push_back(temp);
-
-            float dp = iDP * 0.1;
-            if (dpSign == '-')
-                dp *= -1;
-
-            unsigned wDir = dddsssWind / 1000;  // degrees
-            _wDir.push_back(wDir);
             
-            float wSpd = (dddsssWind % 1000) * 0.514444444;  // knots -> m/s
-            _wSpd.push_back(wSpd);
-
-            float wMax = iWMax * 0.514444444;
-            _wMax.push_back(wMax);
-
-            float surfWMax = iSurfWMax * 0.514444444;
-            _surfWMax.push_back(surfWMax);
-
-            float rainRate = iRainRate;
-            _rainRate.push_back(rainRate);
-
             if (nread == 0 || nread == EOF)
                 break;
             if (nread != 17) {
                 std::cerr << "BARF on data line: " << nread << " " << line << std::endl;
                 exit(1);
             }
+
+            ptime obTime(obDate, 
+                         time_duration(hhmmss / 10000, (hhmmss % 10000) / 100,
+                                       hhmmss %  100));
+                        
+            float lat = (ddmmLat / 100) + ((ddmmLat % 100) / 60.0);
+            if (latHem == 'S')
+                lat *= -1;
+            _lat[obTime] = lat;
+
+            float lon = (ddmmLon / 100) + ((ddmmLon % 100) / 60.0);
+            if (lonHem == 'W')
+                lon *= -1;
+            _lon[obTime] = lon;
+
+            float pres = iPres * 0.1;
+            if (pres < 100.0)
+                pres += 1000.0;
+
+            float geoAlt = iGeoAlt;
+            _alt[obTime] = geoAlt;
+
+            float temp = iTemp * 0.1;
+            if (tempSign == '-')
+                temp *= -1;
+            _temp[obTime] = temp;
+
+            float dp = iDP * 0.1;
+            if (dpSign == '-')
+                dp *= -1;
+
+            unsigned wDir = dddsssWind / 1000;  // degrees
+            _wDir[obTime] = wDir;
+            
+            float wSpd = (dddsssWind % 1000) * 0.514444444;  // knots -> m/s
+            _wSpd[obTime] = wSpd;
+
+            float wMax = iWMax * 0.514444444;
+            _wMax[obTime] = wMax;
+
+            float surfWMax = iSurfWMax * 0.514444444;
+            _surfWMax[obTime] = surfWMax;
+
+            float rainRate = iRainRate;
+            _rainRate[obTime] = rainRate;
         }
 
         if (hdobFile.eof())
@@ -295,16 +306,17 @@ void ReadDataFromHDOB(const std::string & fileName)
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
-    if (argc != 3) {
-        std::cerr << "Usage:" << argv[0] << " <hdob_file> <kmz_file>\n" << 
+    if (argc < 3) {
+        std::cerr << "Usage:" << argv[0] << " <kmz_file> <hdob_file> [<hdob_file>  ...]\n" << 
             std::endl;
         return 1;
     }
 
-    std::string inputFile(argv[1]);
-    std::string outputKmz(argv[2]);
-    
-    ReadDataFromHDOB(inputFile);
+    std::string outputKmz(argv[1]);
+
+    for (int i = 2; i < argc; i++)
+        ReadDataFromHDOB(std::string(argv[i]));
+
     if (_lat.size() > 0)
         WriteGoogleEarthKMZ(outputKmz);
     return 0;
