@@ -16,8 +16,9 @@ public class DataFmt {
 	public final static String TIMENOSPACE = "hhmmss";
 	public final static String TIMESEC = "sec of day"; 
 
-	public final static String MISSVAL = "-32768";
-
+	public final static String MISSVAL = "-32767.0";
+	public final static String REPLATE = "REPLATE";
+	
 	public final static String FULLTM = "Full";
 
 	//public final static String 
@@ -168,7 +169,7 @@ public class DataFmt {
 		} else 	if (dataFmt[TM_IDX].equals(TIMENOSPACE.toString())) {
 			return ss[0]+ ss[1] + ss[2];
 		} else 	if (dataFmt[TM_IDX].equals(TIMESEC.toString())) {
-			int h= new Integer(ss[0]).intValue();
+			int h= Integer.parseInt(ss[0]);//  new Integer(ss[0]).intValue();
 			int m= new Integer(ss[1]).intValue();
 			int s= new Integer(ss[2]).intValue();
 			int sec = h*3600 +m*60+s;
@@ -215,6 +216,31 @@ public class DataFmt {
 		//add delimiter
 		return fmtDmtr(oneline);
 	}	
+	
+	public String formStr (float[] data, int start, int end) {
+		String ret=String.valueOf(data[start]);
+		for (int i =start+1; i<end; i++){
+			ret += DataFmt.SEPDELIMIT.toString()+ data[i];
+		}
+		return ret;
+	}
+	
+	public String formStr(String data) {
+		String[] d = data.split(DataFmt.SEPDELIMIT.toString());
+		return formStr(d,0, d.length);
+	}
+	
+	public String formStr(String data, int start, int end) {
+		return formStr(data.split(DataFmt.SEPDELIMIT.toString()), start, end);
+	}
+	
+	public String formStr (String[] data, int start, int end) {
+		String ret=data[start];
+		for (int i =start+1; i<end; i++){
+			ret += DataFmt.SEPDELIMIT.toString()+ data[i];
+		}
+		return ret;
+	}
 	
 	private boolean chkTmSet ( int ms) throws DataFormatException{
 		if (dataFmt[TMSET_IDX].equals(FULLTM.toString())){

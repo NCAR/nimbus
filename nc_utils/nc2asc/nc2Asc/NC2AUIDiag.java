@@ -15,13 +15,17 @@ import nc2AscData.*;
 
 class NC2AUIDiag extends JDialog {
 
-	private final static String MISSVAL = "-32768";
+	//assumed MISSVAL for all variables is -32768;
+	//assumed the time variable contains the start-time in seconds since1970
+	//and each record is 1 second apart from previous one
+
 	private final static String CBDATE = "CBDATE";
 	private final static String CBTM = "CBTM";
 	private final static String RDMTR = "RDMTR";
 	private final static String RDMTR2 = "RDMTR2";
 	private final static String RVAL = "RVAL";
 	private final static String RVAL2 = "RVAL2";
+	private final static String RVAL3 = "RVAL3";
 	private final static String RTMSET = "RTMSET";
 	private final static String RTMSET2 = "RTMSET2";
 	private final static String RHEAD = "RHEAD";
@@ -33,7 +37,7 @@ class NC2AUIDiag extends JDialog {
 	private String[] cbDateTxt, cbTmTxt;
 	private String[] dDisp   = new String[10]; //make up data for display
 	private JPanel 			jpTm, jpDmtr, jpVal, jpTmSet, jpHead, jpSmpRate;
-	private JRadioButton 	rDmtr, rDmtr2, rVal, rVal2, rTmSet, rTmSet2, rHead, rHead2, rHead3;
+	private JRadioButton 	rDmtr, rDmtr2, rVal, rVal2, rVal3, rTmSet, rTmSet2, rHead, rHead2, rHead3;
 	private JComboBox    	cbDate, cbTm;
 	private JTextField 		tfTmSet, tfTmSet2, tfSmpRate; 
 	private JTextArea 		tfDisp; //JScrollPane sp;	
@@ -182,6 +186,10 @@ class NC2AUIDiag extends JDialog {
 		rVal2 = new JRadioButton("Leave Blank"); 
 		jpVal.add(rVal2);
 		addButtonActCmd(rVal2, RVAL2.toString());
+		
+		rVal3 = new JRadioButton("Replate"); 
+		jpVal.add(rVal3);
+		addButtonActCmd(rVal3, RVAL3.toString());
 
 		return jpVal;
 	}
@@ -313,6 +321,7 @@ class NC2AUIDiag extends JDialog {
 				selectDmtrFrmt2(e);
 				selectValFrmt(e);
 				selectValFrmt2(e);
+				selectValFrmt3(e);
 				selectTmSetFrmt(e);
 				selectTmSetFrmt2(e);
 				selectHead(e);
@@ -405,6 +414,7 @@ class NC2AUIDiag extends JDialog {
 		if (RDMTR.equals(e.getActionCommand())) {	
 			if (rDmtr.isSelected()){
 				rDmtr2.setSelected(false);
+				rVal2.setEnabled(true);
 				DataFmt.setDataFmt(DataFmt.SEPDELIMIT.toString(), DataFmt.DMTR_IDX);
 				tfDisp.setText(reFmtDisp(dDisp));
 			} else if (!rDmtr2.isSelected()) {
@@ -418,7 +428,9 @@ class NC2AUIDiag extends JDialog {
 		if (RDMTR2.equals(e.getActionCommand())) {	
 			if (rDmtr2.isSelected()){
 				rDmtr.setSelected(false);
+				rVal2.setEnabled(false);
 				DataFmt.setDataFmt(" ", DataFmt.DMTR_IDX);
+				DataFmt.setDataFmt(DataFmt.MISSVAL.toString(), DataFmt.MVAL_IDX);
 				tfDisp.setText(reFmtDisp(dDisp));
 			}  else if (!rDmtr.isSelected()) {
 				rDmtr2.setSelected(true);
@@ -431,10 +443,11 @@ class NC2AUIDiag extends JDialog {
 		if (RVAL.equals(e.getActionCommand())) {
 			if (rVal.isSelected()){
 				rVal2.setSelected(false);
-				DataFmt.setDataFmt(MISSVAL.toString(), DataFmt.MVAL_IDX);
+				rVal3.setSelected(false);
+				DataFmt.setDataFmt(DataFmt.MISSVAL.toString(), DataFmt.MVAL_IDX);
 				//nc2Asc.NC2Act.wrtMsg("miss value:"+ MISSVAL.toString());
 				tfDisp.setText(reFmtDisp(dDisp));
-			}  else if (!rVal2.isSelected()) {
+			}  else if (!rVal2.isSelected()&& (!rVal3.isSelected())) {
 				rVal.setSelected(true);
 			}
 
@@ -446,15 +459,31 @@ class NC2AUIDiag extends JDialog {
 		if (RVAL2.equals(e.getActionCommand())) {	
 			if (rVal2.isSelected()){
 				rVal.setSelected(false);
+				rVal3.setSelected(false);
 				DataFmt.setDataFmt("", DataFmt.MVAL_IDX);
 				//nc2Asc.NC2Act.wrtMsg("miss value:"+ "");
 				tfDisp.setText(reFmtDisp(dDisp));
-			}	else if (!rVal.isSelected()) {
+			}	else if (!rVal.isSelected() && (!rVal3.isSelected())) {
 				rVal2.setSelected(true);
 			}	
 		}
 	}
 
+
+	void selectValFrmt3(ActionEvent e) {
+		if (RVAL3.equals(e.getActionCommand())) {	
+			if (rVal3.isSelected()){
+				rVal.setSelected(false);
+				rVal2.setSelected(false);
+				DataFmt.setDataFmt(DataFmt.REPLATE.toString(), DataFmt.MVAL_IDX);
+				//nc2Asc.NC2Act.wrtMsg("miss value:"+ "");
+				tfDisp.setText(reFmtDisp(dDisp));
+			}	else if (!rVal.isSelected() && (!rVal2.isSelected())) {
+				rVal3.setSelected(true);
+			}	
+		}
+	}
+	
 	void selectTmSetFrmt(ActionEvent e) {
 		if (RTMSET.equals(e.getActionCommand())) {	
 			if (rTmSet.isSelected()){
@@ -541,9 +570,13 @@ class NC2AUIDiag extends JDialog {
 	}
 
 	private String  reFmtDisp(String[] ddata) {
-		String tmp = ddata[0]; boolean hasDate=true;
+		//handle date/time
+		String tmp = ddata[0];
+		tmp = dFormat.fmtDmtr(tmp) + "\n";
+			
+		// handle date/time and two demo data-items
 		for (int i =1; i< ddata.length; i++){
-			//nc2Asc.NC2Act.wrtMsg(dDisp[i]);
+			
 			String[] d = ddata[i].split(DataFmt.SEPDELIMIT.toString());
 			try { 
 				d[0]=dFormat.fmtDate(d[0].split("-"));
@@ -551,22 +584,11 @@ class NC2AUIDiag extends JDialog {
 			} catch (DataFormatException de) {
 				return "Data Format Exception"+de.getMessage();
 			}
-
-			//check if the date=no-date
-			if (d[0]=="") { 
-				int len = d.length-1; // take d[0] out of the list
-				String[] s = new String[len];
-				for (int j=0; j<len; j++){
-					s[j]=d[j+1];
-				}
-				tmp =tmp+"\n"+ dFormat.fmtDmtr(s);
-				hasDate = false;
-			} else {
-				tmp =tmp+"\n"+ dFormat.fmtDmtr(d);
-			}
+			
+			String onedata = dFormat.fmtDmtr(d);
+			
+			tmp +=onedata+ "\n";
 		}
-
-		if (!hasDate) {	tmp=tmp.substring(5); }
 		return tmp;
 	}
 

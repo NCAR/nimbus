@@ -533,7 +533,8 @@ public class NC2AUI {
 			out = datafmt.fmtDmtr(out)+"\n";
 			writeOut(out); 
 			long milSec = ncdata.getTimeMilSec();
-
+			nc2Asc.NC2Act.wrtMsg("name"+sublvars.get(0).getName()+ "desc: "+ sublvars.get(0).getDescription()+ "attri: " +sublvars.get(0).getAttributes().get(0));
+			
 			// all the time-range data  len-should be the seconds in the time range
 			int[] range = getTmRange();
              
