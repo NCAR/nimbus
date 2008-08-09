@@ -187,7 +187,9 @@ void ReadDataFromHDOB(const std::string & fileName)
 
     std::string line;
     int nread;
-
+    
+    std::cout << "Reading " << fileName << std::endl;
+    
     while (1) {
         // Get (and skip) the WMO header line
         getline(hdobFile, line);
@@ -205,8 +207,9 @@ void ReadDataFromHDOB(const std::string & fileName)
                 &obsNum, &yyyymmdd);
         
         if (nread != 4 || strcmp(str, "HDOB") != 0) {
-            std::cerr << "BARF on header line: " << line << std::endl;
-            exit(1);
+            std::cerr << "Bad HDOB header line in file: " << fileName << "." <<
+                "  Skipping file." << std::endl;
+            break;
         }
         
         missionId[31] = '\0';
@@ -301,6 +304,8 @@ void ReadDataFromHDOB(const std::string & fileName)
         if (hdobFile.eof())
             break;
     }
+    
+    hdobFile.close();
 }
 
 /* -------------------------------------------------------------------- */
