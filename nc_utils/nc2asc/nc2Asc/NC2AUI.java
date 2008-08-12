@@ -104,7 +104,6 @@ public class NC2AUI {
 		} catch (Exception e) {
 			NC2Act.prtMsgBox(e.getMessage());
 		}
-
 	}
 
 	/**
@@ -344,8 +343,8 @@ public class NC2AUI {
 				nc2Asc.NC2Act.wrtMsg("getDemoData exception "+ex.getMessage());
 			}
 
-			dialog = new NC2AUIDiag(frm, true, demodata);
-			dialog.setBounds(250, 150, 650, 400);
+			dialog = new NC2AUIDiag(frm, true, demodata, ncdata.getGlobalDataInf());
+			dialog.setBounds(250, 150, 690, 400);
 			dialog.setVisible(true);
 		}
 	} 
@@ -387,7 +386,7 @@ public class NC2AUI {
 				idxstr += idxs[i] + " ";
 			}
 			if (idxs.length==0) {
-				NC2Act.wrtMsg("Please selecte variables from the table...");
+				NC2Act.wrtMsg("Please select variables from the table...");
 				return;
 			}
 
@@ -533,21 +532,18 @@ public class NC2AUI {
 			out = datafmt.fmtDmtr(out)+"\n";
 			writeOut(out); 
 			long milSec = ncdata.getTimeMilSec();
-			nc2Asc.NC2Act.wrtMsg("name"+sublvars.get(0).getName()+ "desc: "+ sublvars.get(0).getDescription()+ "attri: " +sublvars.get(0).getAttributes().get(0));
 			
 			// all the time-range data  len-should be the seconds in the time range
 			int[] range = getTmRange();
-             
+			nc2Asc.NC2Act.wrtMsg("tm_range:" +range[0]+ " size:"+range[1]);
 			long t1 = Calendar.getInstance().getTimeInMillis();
 			for (int i=0; i<sublvars.size(); i++) {
 				ncdata.read1DData(sublvars.get(i) , 0, range[1]);
 			}
 			
-			nc2Asc.NC2Act.wrtMsg("tmdiffff :"+ (Calendar.getInstance().getTimeInMillis()-t1));
+			nc2Asc.NC2Act.wrtMsg("Done.  Tm (milliSeconds) :"+ (Calendar.getInstance().getTimeInMillis()-t1));
 			
-/*			long t1 = Calendar.getInstance().getTimeInMillis();
-			
-			for (int t=range[0] ; t <(range[1]-10); t++) {  //todo: cal time in seconds
+/*			for (int t=range[0] ; t <(range[1]-10); t++) {  //todo: cal time in seconds
 				String dt = ncdata.getNewTm(milSec, t);
 
 				//write one-second data of ALL vars to the out file
@@ -582,7 +578,7 @@ public class NC2AUI {
 		try {
 			if (datafmt.getDataFmt()[DataFmt.TMSET_IDX]==DataFmt.FULLTM.toString()) { //all the data
 				ii[0]=0;
-				ii[1]=(int)ncdata.getVars().get(4).getSize(); // .getShape()[0];
+				ii[1]=(int)ncdata.getVars().get(0).getSize(); // .getShape()[0];
 				return ii;
 			}
 			

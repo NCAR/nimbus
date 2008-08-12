@@ -21,19 +21,58 @@ public class NCData {
 	//constructor
 	public NCData(String ifn, String ofn) {infn = ifn; outfn=ofn;}
 
-	//data
-	private String infn, outfn;
-	NetcdfFile  fin=null;
-	FileWriter  fout=null;
-	List<Variable> lvars=null;
-	String[] data, dataInf;
-
-	public static final String TM_DELIMIT = "^";
-	public static final String  OR_DELIMIT   = "#";
-
-	public List<Variable> getVars(){return lvars;}
 	/**
-	 * Get the data from the selected variable names 
+	 * Input file name and output file name
+	 */
+	private String infn, outfn;
+	
+	/**
+	 *  Netcdf file pointer
+	 */
+	private NetcdfFile  fin=null;
+	
+	/**
+	 * Ascii output file pointer
+	 */
+	private FileWriter  fout=null;
+	
+	/**
+	 * List of all the variable from the input netcdf file
+	 */
+	private List<Variable> lvars=null;
+	
+	/**
+	 *   All the data for a variable in the given range in 1D foramt
+	 */
+	private float[] oneDData;
+	
+	/**
+	 *  All the ascii data that go to the output file. the index means the line order
+	 */
+	private String[] data;
+	
+	/**
+	 *  All the variables' name, units, OR/Len displayed in the table for users
+	 */	
+	private String[] dataInf;
+
+	/**
+	 * 	Global information about the netcdf file
+	 *  idx 0--high rate data
+	 *  idx 1--start time in milli second
+	 *  idx 2--size of the records
+	 */
+	private String[] gDataInf = {String.valueOf(false),"0","0"};
+	
+	/**
+	 * Get the variables' list from the netcdf file
+	 * @return
+	 */
+	public List<Variable> getVars(){return lvars;}
+	
+		
+	/**
+	 * Get all the data from the selected variable names 
 	 * @return
 	 */
 	public String[] getData(String vn) {
@@ -44,27 +83,45 @@ public class NCData {
 	 * 
 	 * Get the data information such as variable name, units, OR, etc.
 	 * Usually, it is the all the variable in a netcdf file.
-	 * @return 
+	 * @return -- pointer to data information  
 	 *  
 	 */
 	public String[] getDataInf() {
 		return dataInf;
 	}
 
+	/**
+	 *  Get the global information of the netcdf file
+	 */
+	public String[] getGlobalDataInf() {
+		return gDataInf;
+	}
+	
+	/**
+	 * program calls this method to clean up 
+	 */
 	protected void finalize() {
 		if (fin!=null)  {try {fin.close();} catch (IOException e) {}}
 		if (fout!=null) {try {fout.close();} catch (IOException e) {}}
 	}
 
-
+	/**
+	 * 
+	 * @return -- file pointer to access the netcdf file
+	 */
 	public NetcdfFile getInFile() {
 		return fin;
 	}
+	
+	/**
+	 * 
+	 * @return -- file pointer to write output stream to the output file
+	 */
 	public FileWriter getOutFile() {
 		return fout;
 	}
 
-	//methods
+	
 	/**
 	 * setFileName provides the users with ability to set up netcdf read-only file name and 
 	 * an output file name
@@ -86,7 +143,22 @@ public class NCData {
 			}
 			throw e;
 		} 
-
+		
+		openOutFile(outfn);
+	}
+	
+	/**
+	 * Open a output file to write data
+	 * @param fn -- output file name 
+	 * @throws IOException
+	 */
+	public void openOutFile(String fn) throws IOException {
+		outfn = fn;
+		if (fout !=null) {
+			fout.close();
+			fout = null;
+		}
+		
 		//open a filewriter 
 		try {
 			fout = new FileWriter(outfn);		
@@ -98,10 +170,15 @@ public class NCData {
 			throw e;
 		}
 	}
+	
+	/**
+	 * Retrieve attribute information such as name, unit, OR/len, etc for the variables
+	 * 
+	 * @throws NCDataException
+	 * @throws ArrayIndexOutOfBoundsException
+	 */
+	public void readDataInf() throws NCDataException, ArrayIndexOutOfBoundsException, InvalidRangeException, IOException{			
 
-	public void readDataInf() throws NCDataException, ArrayIndexOutOfBoundsException {
-
-		//try {
 		if (fin == null) { 
 			throw new NCDataException("readDataInf: Empty input file exception:");
 		}
@@ -109,119 +186,27 @@ public class NCData {
 		if (lvars==null) { lvars =  new ArrayList<Variable>(); }
 		lvars = fin.getVariables();
 
-
 		int len = lvars.size();
 		dataInf = new String[len];		
-		String disdata= "";
 		for (int i=0; i<len-1 ; i++){ 
 			String dat = "";
 			Variable v = lvars.get(i);
 			dat += v.getShortName() + DataFmt.SEPDELIMIT.toString();
 			dat += v.getUnitsString() + DataFmt.SEPDELIMIT.toString();
-			dat += getOR(v)+"/"+getLen(v) + DataFmt.SEPDELIMIT.toString() ;
+			int or= getOR(v);
+			dat += or+"/"+getLen(v) + DataFmt.SEPDELIMIT.toString() ;
 			dat += v.getName();
-			if (i<10) {
-				disdata += dat; 
-				disdata += "\n ";
-			}
 			dataInf[i]=dat;
+			
+			if (or>1){ gDataInf[0] = String.valueOf(true);}
 		}
+		
+		//init global data info
+		gDataInf[1] = String.valueOf(getTimeMilSec()); 
+		gDataInf[2] = String.valueOf(lvars.get(0).getSize());
 	}
 
-	/**
-	 * Read all the data from a Variable within the time-range
-	 * 
-	 * @param v - variable
-	 * @param startIdx - starttime 
-	 * @param len - number of seconds data
-	 * @return - array of string, each string contains one-data with delimeter, number of strings equals len.  
-	 * @throws IOException
-	 * @throws ArrayIndexOutOfBoundsException
-	 * @throws InvalidRangeException
-	 */
-	public String[] readVariableData(Variable v, int startIdx, int len) throws  ArrayIndexOutOfBoundsException, InvalidRangeException, IOException{
-
-		String[] dat= new String[len]; // we handle 1-d to d-3 for now
-		//try {
-		//set orig and size
-		int[] shape = v.getShape();
-		int[] origin=new int[shape.length], size=new int[shape.length];
-		if (shape.length==1) {
-			origin[0] =  startIdx;
-			size[0] = len;
-		}
-		if (shape.length==2) {
-			origin[0] = startIdx;
-			origin[1] = 0;
-			size[0] = len;
-			size[1] = shape[1];
-		}
-
-		if (shape.length==3){
-			origin[0]=startIdx;
-			origin[1]=0;
-			origin[2]=0;
-			size[0]  =len;
-			size[1]  = shape[1];
-			size[2]  = shape[2];
-		}
-
-		//get data
-		Array data = v.read(origin, size);
-
-		shape = data.getShape();
-		Index index = data.getIndex();
-
-		//get double from Array
-		double d =0.0; String dStr;
-		if (shape.length == 1) { 
-			for (int i =0; i<len; i++){
-				d = data.getFloat(index.set(i+startIdx));
-				dat[i] = String.valueOf(d);
-			}	
-		}
-
-		//average data for 2d------not doing it
-		if (shape.length == 2){
-			for (int i=0; i<len; i++) {
-				for (int j=0; j<shape[1]; j++) {
-					d = data.getFloat(index.set(i+startIdx,j));
-					if (j==0) {
-						dat[i] = String.valueOf(d);
-					} else {
-						dat[i] = dat[i]+ DataFmt.SEPDELIMIT.toString()+ String.valueOf(d);
-					} 
-				}
-				dat[i] = subStr(dat[i]);
-			}
-		}
-
-		// average data for 3d
-		//d1=0; d2=0; d3=0;
-		if (shape.length == 3){ 
-			for (int i=0; i<len; i++) {
-				for (int j=0; j<shape[1]; j++) {
-					for (int k=0; k<shape[2] ; k++){ 
-						d = data.getFloat(index.set(i+startIdx,j,k));
-						if (j==0 && k==0) {
-							dat[i]= String.valueOf(d);
-						} else {
-							dat[i]= dat[i]+ DataFmt.SEPDELIMIT.toString()+ String.valueOf(d);
-						} 
-					}
-				}
-				dat[i] = subStr(dat[i]);
-			}
-		}
-		//} catch (ArrayIndexOutOfBoundsException ee) {
-		//	throw ee;//new IOException("get reading data index-exception:"+ee.getMessage());
-		//}  catch (InvalidRangeException e) {
-		//	throw new InvalidRangeException("Variable read error:"+ e.getMessage());
-		//	} catch (IOException e){
-		//	throw e;//new IOException("get reading data IO-exception:"+e.getMessage());
-		//}
-		return dat;
-	}
+	
 
 	public String readOneVarData (Variable v, int start) throws InvalidRangeException, IOException {
 
@@ -254,7 +239,16 @@ public class NCData {
 		}
 		return dat;
 	}
-	public float[] read1DData (Variable v, int start, int len) throws InvalidRangeException, IOException {
+	
+	/**
+	 * Retrieve all the data in the given range for a variable
+	 * @param v 	-- the variable to read data
+	 * @param start -- starting index to retrieve data
+	 * @param len	-- how many data records (representing time in seconds)  
+	 * @throws InvalidRangeException
+	 * @throws IOException
+	 */
+	public void read1DData (Variable v, int start, int len) throws InvalidRangeException, IOException {
 		//set orig and size
 		int[] shape = v.getShape();
 		int[] origin=new int[shape.length], size=new int[shape.length];
@@ -268,58 +262,9 @@ public class NCData {
 		
 		Array data = v.read(origin, size);
 		data=data.reduce();
-		float[] fd =  (float [])data.copyTo1DJavaArray();
-	//	nc2Asc.NC2Act.wrtMsg("df-len:"+ fd.length + "exp:   "+ getLen(v)*len);
-		return fd;
+		oneDData =  (float [])data.copyTo1DJavaArray();
 	}
 	
-	public String readVarData (Variable v, int start, int len) throws InvalidRangeException, IOException {
-
-		String dat =null; // we handle 1-d to d-3 for now
-
-		//set orig and size
-		int[] shape = v.getShape();
-		int[] origin=new int[shape.length], size=new int[shape.length];
-
-		origin[0] =  start;
-		size[0] = len;
-		for (int i=1; i<shape.length; i++) {
-			origin[i]=0;
-			size[i]  =shape[i];
-		}		
-		
-		Array data = v.read(origin, size);
-		
-		int tmMax = (int)data.getSize()/len;
-		int orNum = getOR(v);
-		int lenNum= getLen(v);
-
-		data=data.reduce();
-		
-		IndexIterator ii = data.getIndexIterator();
-		int c1=0, c2=0;
-		while (ii.hasNext()){
-			float f =ii.getFloatNext();
-			c1++; c2++;
-			if (dat==null) {
-				dat = String.valueOf(f);
-			} else if (c1 == tmMax) {
-				c1=0;
-				dat += TM_DELIMIT.toString()+f;
-			} else if (orNum>1 && c2 ==lenNum) {
-				c2=0;
-				dat += OR_DELIMIT.toString()+f;
-			} else {
-				dat += DataFmt.SEPDELIMIT.toString()+f;	
-			}
-		}
-		
-		
-		return dat;
-	}
-
-
-
 	/**
 	 * 
 	 * @param variable
@@ -351,20 +296,15 @@ public class NCData {
 		Variable v1 = lvars.get(1);
 		Variable v2 = lvars.get(2);
 		demoData[0] ="Date,UTC,"+v1.getShortName() +","+v2.getShortName();
-		//nc2Asc.NC2Act.wrtMsg("getDemoData: "+demoData[0]);
 		long milSec;
 		String[] vdata1, vdata2;
 		milSec = getTimeMilSec();
-		vdata1= readVariableData(v1, 0, 10);
-		vdata2= readVariableData(v2, 0, 10);
 
 		int len =10;
-		if (vdata1.length <len) {len = vdata1.length;}
-		if (vdata2.length <len) {len = vdata2.length;}
 		for (int i=1; i<len; i++) {
 			demoData[i]= getNewTm(milSec, i)+ DataFmt.SEPDELIMIT.toString() 
-			+ vdata1[i].split(DataFmt.SEPDELIMIT.toString())[0] + DataFmt.SEPDELIMIT.toString()
-			+ vdata2[i].split(DataFmt.SEPDELIMIT.toString())[0];
+			+ DataFmt.MISSVAL + DataFmt.SEPDELIMIT.toString()
+			+ "0.0";
 		}
 		return demoData;
 	}
@@ -393,7 +333,7 @@ public class NCData {
 		
 		demoData[0] ="Date,UTC,"+v1.getShortName() +","+v2.getShortName();
 
-		nc2Asc.NC2Act.wrtMsg(demoData[0]);
+		//nc2Asc.NC2Act.wrtMsg(demoData[0]);
 		long milSec;
 		milSec = getTimeMilSec();
 		

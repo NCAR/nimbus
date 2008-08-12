@@ -17,9 +17,10 @@ public class DataFmt {
 	public final static String TIMESEC = "sec of day"; 
 
 	public final static String MISSVAL = "-32767.0";
-	public final static String REPLATE = "REPLATE";
+	public final static String REPLICATE = "Replicate";
 	
 	public final static String FULLTM = "Full";
+	//public final static String PARTTM = "PartTm";
 
 	//public final static String 
 	public final static String HEAD = "Head";
@@ -189,7 +190,8 @@ public class DataFmt {
 		int start =0;
 		if (dataFmt[DATE_IDX].equals(NODATE.toString())) {start=1;}
 		for (int i=start; i<data.length-1; i++){
-			if (data[i]==null || data[i].length()<1) {
+		//	nc2Asc.NC2Act.wrtMsg("data[i]: "+ data[i]+ " DataFmt.Misval:" + DataFmt.MISSVAL + "DataFmt.Misval-toString:"+DataFmt.MISSVAL.toString() );
+			if (data[i]==null || data[i].length()<1 || data[i].equals(DataFmt.MISSVAL)) {
 			  data[i]= dataFmt[MVAL_IDX];	
 			}
 			tmp = tmp+ data[i]+dataFmt[DMTR_IDX];
