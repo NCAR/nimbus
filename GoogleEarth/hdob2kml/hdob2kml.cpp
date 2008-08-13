@@ -262,11 +262,16 @@ void ReadDataFromHDOB(const std::string & fileName)
             float lat = (ddmmLat / 100) + ((ddmmLat % 100) / 60.0);
             if (latHem == 'S')
                 lat *= -1;
-            _lat[obTime] = lat;
 
             float lon = (ddmmLon / 100) + ((ddmmLon % 100) / 60.0);
             if (lonHem == 'W')
                 lon *= -1;
+
+            // Skip the occasional bogus point
+            if (lat == 0.0 && lon == 0.0)
+                continue;
+            
+            _lat[obTime] = lat;
             _lon[obTime] = lon;
 
             float pres = iPres * 0.1;
@@ -274,7 +279,7 @@ void ReadDataFromHDOB(const std::string & fileName)
                 pres += 1000.0;
 
             float geoAlt = iGeoAlt;
-            _alt[obTime] = geoAlt;
+            _alt[obTime] = geoAlt * 3.2808;  // m to ft, to match acTrack2kml
 
             float temp = iTemp * 0.1;
             if (tempSign == '-')
