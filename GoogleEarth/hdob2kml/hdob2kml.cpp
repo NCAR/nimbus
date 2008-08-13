@@ -314,11 +314,15 @@ int main(int argc, char *argv[])
     if (argc < 3) {
         std::cerr << "Usage:" << argv[0] << " <kmz_file> <hdob_file> [<hdob_file>  ...]\n" << 
             std::endl;
-        return 1;
+        exit(1);
     }
 
     std::string outputKmz(argv[1]);
-
+    if (outputKmz.rfind(".kmz") != (outputKmz.length() - 4)) {
+        std::cerr << "Output file name must end in '.kmz'" << std::endl;
+        exit(1);
+    }
+    
     for (int i = 2; i < argc; i++)
         ReadDataFromHDOB(std::string(argv[i]));
 
