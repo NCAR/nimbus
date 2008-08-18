@@ -573,7 +573,7 @@ PGconn * openDataBase()
 {
   char	conn_str[1024];
 
-  sprintf(conn_str, "host='%s' dbname='real-time' user ='ads' connect_timeout=30", 
+  sprintf(conn_str, "host='%s' dbname='real-time' user ='ads'", 
           database_host.c_str());
   std::cout << "Connect string : [" << conn_str << "]" << std::endl;
   PGconn *conn = PQconnectdb(conn_str);
