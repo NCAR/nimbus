@@ -296,7 +296,7 @@ void WriteLandmarksKML(std::ofstream & googleEarth, const _projInfo& projInfo)
 {
   if (projInfo.landmarks.size() == 0)
   {
-    std::cout << "No landmarks, skipping.\n";
+    std::cout << "No landmarks, skipping." << std::endl;
     return;
   }
 
@@ -573,8 +573,9 @@ PGconn * openDataBase()
 {
   char	conn_str[1024];
 
-  sprintf(conn_str, "host = '%s' dbname = 'real-time' user = 'ads'", database_host.c_str());
-  std::cout << "Connect string : [" << conn_str << "]\n";
+  sprintf(conn_str, "host='%s' dbname='real-time' user ='ads' connect_timeout=30", 
+          database_host.c_str());
+  std::cout << "Connect string : [" << conn_str << "]" << std::endl;
   PGconn *conn = PQconnectdb(conn_str);
 
 
@@ -583,7 +584,7 @@ PGconn * openDataBase()
   if (PQstatus(conn) == CONNECTION_BAD)
   {
     PQfinish(conn);
-    std::cerr << "PQconnectdb: Connection failed.\n";
+    std::cerr << "PQconnectdb: Connection failed." << std::endl;
     return 0;
   }
 
@@ -744,8 +745,9 @@ int main(int argc, char *argv[])
   }
 
 
-  std::cout << "\n  Using database host : " << database_host << "\n";
-  std::cout << "\n  Output directory : " << googleEarthDataDir << "\n\n";
+  std::cout << "\n  Using database host : " << database_host << std::endl;
+  std::cout << "\n  Output directory : " << googleEarthDataDir << std::endl;
+  std::cout << std::endl;
 
 
   // Real-time mode.
