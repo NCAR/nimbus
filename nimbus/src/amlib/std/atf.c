@@ -1,33 +1,35 @@
-/*******       AMBIENT TEMPERATURE (FUSELAGE)       (C)                 ATF
-                  REQUIRES --- TTF, RECFF, XMACH2, AMBT FCN.
- 	Input:
- 		ttf - raw total temperature
- 		xmach2 - derived mach number
- 	Output:
- 		atf - derived ambient temperature (C)
- 	Include:
- 		recff - recovery factor 
- 		ambtf - ambient temperature function
+/*
+-------------------------------------------------------------------------
+OBJECT NAME:    atf.c
+
+FULL NAME:      Ambient Temperature Wrapper
+
+ENTRY POINTS:   satf()
+
+STATIC FNS:     none
+
+DESCRIPTION:    Ambient Temperature for Rosemount 102 Unheated:
+			Saberliner Fueselage
+
+COPYRIGHT:      University Corporation for Atmospheric Research, 1992-2008
+-------------------------------------------------------------------------
 */
 
 #include "nimbus.h"
 #include "amlib.h"
 
-extern NR_TYPE	recff;
+extern NR_TYPE	recff;	// Recovery Factor, see initAC.c
 
 /* -------------------------------------------------------------------- */
 void satf(DERTBL *varp)
 {
-	NR_TYPE	ttf, xmach2;
+  NR_TYPE ttf, xmach2;
 
-	ttf	= GetSample(varp, 0);
-	xmach2	= GetSample(varp, 1);
+  ttf = GetSample(varp, 0);
+  xmach2 = GetSample(varp, 1);
 
-	if (ttf < -Kelvin)
-		ttf  = -Kelvin;
+  if (ttf < -Kelvin)
+    ttf  = -Kelvin;
 
-	PutSample(varp, AMBIENT(ttf,recff,xmach2));
-
-}	/* END SATF */
-
-/* END ATF.C */
+  PutSample(varp, AMBIENT(ttf,recff,xmach2));
+}

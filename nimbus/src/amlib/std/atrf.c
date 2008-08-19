@@ -1,30 +1,37 @@
-/********************* ATRF *************************************  ATRF
- ** AMBIENT TEMPERATURE (REVERSE FLOW)(C)
- 	Input:
- 		ttrf = raw reverse flow temperature
- 		xmach2 - derived mach number
- 	Output:
- 		atrf = corrected ambient reverse flow temperature
- 	Include:
- 		recfrn = recovery factor
+/*
+-------------------------------------------------------------------------
+OBJECT NAME:    atrf.c
+
+FULL NAME:      Ambient Temperature Wrapper
+
+ENTRY POINTS:   satrf()
+
+STATIC FNS:     none
+
+DESCRIPTION:    Ambient Temperature for NCAR Reverse Flow
+			Queen Airs
+			King Airs
+			Sailplane
+
+COPYRIGHT:      University Corporation for Atmospheric Research, 1992-2008
+-------------------------------------------------------------------------
 */
 
 #include "nimbus.h"
 #include "amlib.h"
  
-extern NR_TYPE	recfrn;
+extern NR_TYPE	recfrn;	// Recovery Factor, see initAC.c
 
 /* -------------------------------------------------------------------- */
-void satrf(DERTBL *varp)
+void satrf(DERTBL * varp)
 {
-	NR_TYPE	ttrf, xmach2;
+  NR_TYPE ttrf, xmach2;
 
-	ttrf	= GetSample(varp, 0);
-	xmach2	= GetSample(varp, 1);
+  ttrf = GetSample(varp, 0);
+  xmach2 = GetSample(varp, 1);
 	
-	if (ttrf < -Kelvin)
-		ttrf  = -Kelvin;
+  if (ttrf < -Kelvin)
+    ttrf  = -Kelvin;
 
-	PutSample(varp, AMBIENT(ttrf, recfrn, xmach2));
-
+  PutSample(varp, AMBIENT(ttrf, recfrn, xmach2));
 }
