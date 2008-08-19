@@ -1,14 +1,19 @@
-/*******       AMBIENT TEMPERATURE (FUSELAGE Rosemount) (C)              ATFH
-                  REQUIRES --- TTFH, RECFRH, XMACH2, AMBT FCN.
- 	Input:
- 		ttfh - raw total temperature
- 		xmach2 - derived mach number squared
-		psxc - derived static pressure
- 	Output:
- 		atfh - derived ambient temperature (C)
- 	Include:
- 		recfrh - recovery factor 
- 		ambtf - ambient temperature function
+/*
+-------------------------------------------------------------------------
+OBJECT NAME:    atfh.c
+
+FULL NAME:      Ambient Temperature Wrapper
+
+ENTRY POINTS:   satfh()
+
+STATIC FNS:     none
+
+DESCRIPTION:    Ambient Temperature for anti-iced sensors:
+			GV	Harco anti-iced sensor
+			C130	Rosemount 102 heated
+
+COPYRIGHT:      University Corporation for Atmospheric Research, 1992-2008
+-------------------------------------------------------------------------
 */
 
 #include "nimbus.h"
@@ -17,20 +22,38 @@
 extern NR_TYPE	recfrh;
 extern NR_TYPE	tfher1,tfher2;	/* set in initAC.c */
 
-static NR_TYPE atfh[nFeedBackTypes] = { 0.0, 0.0 };
+static const int MAX_TT = 8;
+static int ProbeCount = 0;
+
+static NR_TYPE atfh[nFeedBackTypes][MAX_TT];
 
 /* -------------------------------------------------------------------- */
 void atfhInit(var_base *varp)
 {
+  if (ProbeCount > MAX_TT)
+  {
+    HandleError("\natfh.c: atfhInit: MAX_TT exceeded, get a programmer to fix.  Fatal.\n");
+    exit(1);
+  }
+
+
   std::vector<NR_TYPE> values;
   values.push_back(recfrh);
   AddToDefaults(varp->name, "RecoveryFactor", values);
+
+  /* Frequently ProbeCount gets set in hdr_decode.c, but we are doing it here for
+   * this instrument.
+   */
+  varp->ProbeCount = ProbeCount;
+  raw[SearchTable(raw, ((DERTBL *)varp)->depend[0])]->ProbeCount = ProbeCount;
+  ++ProbeCount;
 
 }	/* END CONSTRUCTOR */
 
 /* -------------------------------------------------------------------- */
 void tthcInit(var_base *varp)
 {
+  memset(atfh, 0, sizeof(atfh));
   std::vector<NR_TYPE> values;
   values.push_back(tfher2);
   values.push_back(tfher1);
@@ -50,7 +73,7 @@ void sttwhc(DERTBL *varp)
   if (firstTime[FeedBack])
   {
     firstTime[FeedBack] = false;
-    atfh[FeedBack] = tth;
+    atfh[FeedBack][varp->ProbeCount] = tth;
   }
 
   if (tth < -273.15)
@@ -73,7 +96,7 @@ void sttwhc(DERTBL *varp)
     default:
       psxc = GetSample(varp, 2);
 
-      zee = 0.269589 * psxc * sqrt((double)xmach2) / (atfh[FeedBack] + 273.16);
+      zee = 0.269589 * psxc * sqrt((double)xmach2) / (atfh[FeedBack][varp->ProbeCount] + 273.16);
 
       if (zee < 0.18 || isnan(zee))
         zee = 0.18;
@@ -96,9 +119,9 @@ void satfh(DERTBL *varp)
   ttfh = GetSample(varp, 0);
   xmach2 = GetSample(varp, 1);
 
-  atfh[FeedBack] = AMBIENT(ttfh, (NR_TYPE)recfrh, xmach2);
+  atfh[FeedBack][varp->ProbeCount] = AMBIENT(ttfh, (NR_TYPE)recfrh, xmach2);
 
-  PutSample(varp, atfh[FeedBack]);
+  PutSample(varp, atfh[FeedBack][varp->ProbeCount]);
 
 }	/* END SATFH */
 

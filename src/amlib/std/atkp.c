@@ -1,31 +1,35 @@
-/*******       AMBIENT TEMPERATURE (FAST RESPONSE)   (C)                ATKP
-                  REQUIRES --- TTKP,RECFKP,XMACH2,AMBT FCN.
- 	Input:
- 		ttkp - raw total temperature
- 		xmach2 - derived mach number
- 	Output:
- 		atkp - derived ambient temperature (C)
- 	Include:
- 		recfkp - recovery factor 
- 		ambtf - ambient temperature function
+/*
+-------------------------------------------------------------------------
+OBJECT NAME:    atkp.c
+
+FULL NAME:      Ambient Temperature Wrapper
+
+ENTRY POINTS:   satkp()
+
+STATIC FNS:     none
+
+DESCRIPTION:    Ambient Temperature for NCAR K-probe temp sensor
+			Queen Airs.
+
+COPYRIGHT:      University Corporation for Atmospheric Research, 1992-2008
+-------------------------------------------------------------------------
 */
 
 #include "nimbus.h"
 #include "amlib.h"
 
-extern NR_TYPE recfkp;
+extern NR_TYPE recfkp;	// Recovery Factor, see initAC.c
 
 /* -------------------------------------------------------------------- */
-void satkp(DERTBL *varp)
+void satkp(DERTBL * varp)
 {
-	NR_TYPE	ttkp, xmach2;
+  NR_TYPE ttkp, xmach2;
 
-	ttkp	= GetSample(varp, 0);
-	xmach2	= GetSample(varp, 1);
+  ttkp = GetSample(varp, 0);
+  xmach2 = GetSample(varp, 1);
 	
-	if (ttkp < -Kelvin)
-		ttkp  = -Kelvin;
+  if (ttkp < -Kelvin)
+    ttkp  = -Kelvin;
 
-	PutSample(varp, AMBIENT(ttkp, recfkp, xmach2));
-
+  PutSample(varp, AMBIENT(ttkp, recfkp, xmach2));
 }
