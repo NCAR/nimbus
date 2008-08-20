@@ -30,9 +30,11 @@ static NR_TYPE atfh[nFeedBackTypes][MAX_TT];
 /* -------------------------------------------------------------------- */
 void atfhInit(var_base *varp)
 {
+  int	indx;
+
   if (ProbeCount > MAX_TT)
   {
-    HandleError("\natfh.c: atfhInit: MAX_TT exceeded, get a programmer to fix.  Fatal.\n");
+    fprintf(stderr, "\natfh.c: atfhInit: MAX_TT exceeded, get a programmer to fix.  Fatal.\n");
     exit(1);
   }
 
@@ -44,8 +46,23 @@ void atfhInit(var_base *varp)
   /* Frequently ProbeCount gets set in hdr_decode.c, but we are doing it here for
    * this instrument.
    */
+  if ((indx = SearchTable(raw, ((DERTBL *)varp)->depend[0])) != -1)
+  {
+    raw[indx]->ProbeCount = ProbeCount;
+  }
+  else
+  if ((indx = SearchTable(derived, ((DERTBL *)varp)->depend[0])) != -1)
+  {
+    derived[indx]->ProbeCount = ProbeCount;
+  }
+  else
+  {
+    fprintf(stderr, "\natfh.c: atfhInit: Can't find %s, shouldn't happen.  Fatal.\n",
+		((DERTBL *)varp)->depend[0]);
+    exit(1);
+  }
+
   varp->ProbeCount = ProbeCount;
-  raw[SearchTable(raw, ((DERTBL *)varp)->depend[0])]->ProbeCount = ProbeCount;
   ++ProbeCount;
 
 }	/* END CONSTRUCTOR */
