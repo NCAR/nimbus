@@ -31,17 +31,15 @@ class NC2AUIDiag extends JDialog {
 	private final static String RHEAD = "RHEAD";
 	private final static String RHEAD2 = "RHEAD2";
 	private final static String RHEAD3 = "RHEAD3";
-	private final static String TMSETVAL = "99:99:99";
+	
+	private JRadioButton 	rDmtr, rDmtr2, rVal, rVal2, rVal3, rTmSet, rTmSet2, rHead, rHead2, rHead3;
+	private JComboBox    	cbDate, cbTm;
+	private JTextField 		tfTmSet, tfTmSet2, tfDateSet, tfDateSet2, tfSmpRate; 
+	private JTextArea 		tfDisp; 
 
 	private DataFmt  dFormat = new DataFmt(); //data format chosen by author
 	private String[] cbDateTxt, cbTmTxt;
 	private String[] dDisp   = new String[10]; //make up data for display
-	private JPanel 			jpTm, jpDmtr, jpVal, jpTmSet, jpHead, jpSmpRate;
-	private JRadioButton 	rDmtr, rDmtr2, rVal, rVal2, rVal3, rTmSet, rTmSet2, rHead, rHead2, rHead3;
-	private JComboBox    	cbDate, cbTm;
-	private JTextField 		tfTmSet, tfTmSet2, tfDateSet, tfDateSet2, tfSmpRate; 
-	private JTextArea 		tfDisp; //JScrollPane sp;	
-	//private JLabel       	lblStart, lblEnd;
 
 	private boolean  bHighRate;
 	private int  size;
@@ -87,7 +85,7 @@ class NC2AUIDiag extends JDialog {
 
 	public JPanel createPaneTm() {
 
-		jpTm  = new JPanel();
+		JPanel jpTm  = new JPanel();
 		jpTm.setLayout(new GridLayout(0,1));
 
 		Border bdTm = BorderFactory.createTitledBorder(" Date-Time Format  ");   
@@ -123,7 +121,7 @@ class NC2AUIDiag extends JDialog {
 	}
 
 	public JPanel createPaneHead() {
-		jpHead  = new JPanel();
+		JPanel jpHead  = new JPanel();
 		//	jpHead.setFont(Systems, 7);
 		jpHead.setLayout(new GridLayout(0,1));
 
@@ -148,7 +146,7 @@ class NC2AUIDiag extends JDialog {
 	}
 
 	public JPanel createPaneSR() {
-		jpSmpRate = new JPanel();
+		JPanel jpSmpRate = new JPanel();
 		jpSmpRate.setLayout(new GridLayout(0,2));
 		tfSmpRate = new JTextField("1");
 		JLabel l = new JLabel("Avg: ");
@@ -160,7 +158,7 @@ class NC2AUIDiag extends JDialog {
 	}
 
 	public JPanel createPaneDmtr() {
-		jpDmtr  = new JPanel();
+		JPanel jpDmtr  = new JPanel();
 		jpDmtr.setLayout(new GridLayout(0,1));
 		//tfDisp.insert(dDisp[i], i);
 
@@ -180,7 +178,7 @@ class NC2AUIDiag extends JDialog {
 	}
 
 	public JPanel createPaneVal() {
-		jpVal  = new JPanel();
+		JPanel jpVal  = new JPanel();
 		jpVal.setLayout(new GridLayout(0,1));
 
 		Border bdVal = BorderFactory.createTitledBorder("Fill Value");
@@ -204,7 +202,7 @@ class NC2AUIDiag extends JDialog {
 
 	public JPanel createPaneTmSet() {
 
-		jpTmSet  = new JPanel();
+		JPanel jpTmSet  = new JPanel();
 		jpTmSet.setLayout(new GridLayout(0,1));
 
 		rTmSet = new JRadioButton("Full"); 
@@ -444,12 +442,6 @@ class NC2AUIDiag extends JDialog {
 	}
 
 	
-	private int resetTmSetTf(JTextField tf, String msg){
-		NC2Act.wrtMsg(msg);
-		tf.setText(TMSETVAL.toString());
-		return -1;
-	}
-
 	void selectDateFrmt(ActionEvent e) {
 		if (CBDATE.equals(e.getActionCommand())) {
 			DataFmt.setDataFmt(cbDateTxt[cbDate.getSelectedIndex()],DataFmt.DATE_IDX);
@@ -624,9 +616,9 @@ class NC2AUIDiag extends JDialog {
 					tfSmpRate.setText("1");
 				}
 				DataFmt.setDataFmt(srStr, DataFmt.AVG_IDX);
-				if (Integer.parseInt(srStr)>1) {
-					tfDisp.setText(resetAvgDisp(dDisp));
-				}
+				//if (Integer.parseInt(srStr)>1) {
+					tfDisp.setText(reFmtDisp());
+				//}
 			}
 		});
 	}
@@ -656,7 +648,7 @@ class NC2AUIDiag extends JDialog {
 		}
 		
 		//check avg
-		if ( tfSmpRate.isEnabled() && Integer.parseInt(tfSmpRate.getText().trim())>1 ){
+		if ( tfSmpRate.isEnabled() && (Integer.parseInt(tfSmpRate.getText().trim())>1) ){
 			return resetAvgDisp(ddata);
 		}
 		
@@ -700,10 +692,16 @@ class NC2AUIDiag extends JDialog {
 			Calendar cl = Calendar.getInstance();
 			cl.setTimeInMillis(tot);
 			
-			//get new time
-			one[0]= cl.get(Calendar.YEAR)+ "-"+ cl.get(Calendar.MONTH) + "-"+cl.get(Calendar.DAY_OF_MONTH);
-			one[1]= cl.get(Calendar.HOUR_OF_DAY)+ ":"+ cl.get(Calendar.MINUTE) + ":"+cl.get(Calendar.SECOND)+"."+cl.get(Calendar.MILLISECOND);
+			//get new time 
+			one[0]=  cl.get(Calendar.YEAR)+ "-"+ cl.get(Calendar.MONTH) + "-"+cl.get(Calendar.DAY_OF_MONTH);
+			one[1]=  cl.get(Calendar.HOUR_OF_DAY)+ ":"+ cl.get(Calendar.MINUTE) + ":"+cl.get(Calendar.SECOND)+"."+cl.get(Calendar.MILLISECOND);
 			
+			try {
+				one[0] = dFormat.fmtDate(one[0]);
+				one[1] = dFormat.fmtTm(one[1]);
+			} catch (DataFormatException e) {
+				nc2Asc.NC2Act.wrtMsg("resetAvgDisp_fmtDate_fmtTm exception...");
+			}
 			ret += "\n" + dFormat.fmtDmtr(one);
 		}
 		
@@ -724,8 +722,6 @@ class NC2AUIDiag extends JDialog {
 		origTm[2] = cl.get(Calendar.YEAR)+ "-"+ cl.get(Calendar.MONTH)+"-"+cl.get(Calendar.DAY_OF_MONTH);
 		origTm[2] = origTm[2].substring(2);//chop off the first 2 chars 19 or 20
 		origTm[3] = cl.get(Calendar.HOUR_OF_DAY )+ ":"+ cl.get(Calendar.MINUTE)+":"+cl.get(Calendar.SECOND);
-		//fordebug
-		nc2Asc.NC2Act.wrtMsg("initTmSet: "+origTm[0]+ " "+ origTm[1]+ " "+ origTm[2]+ " "+origTm[3]);
 	}
 
 } //eof class

@@ -2,27 +2,29 @@
 
 package nc2Asc;
 
+
 import javax.swing.*;
 import java.io.*;
 import java.util.*;
 import java.awt.*;
+import nc2AscData.*;
 
 public class NC2Act {
 
 	NC2Act() {};
-	NC2Act(boolean bm) {_batchMood = bm;}
+	NC2Act(boolean bm) {batchMood = bm;}
 	
-	private static FileWriter _log=null;
-	private static boolean    _batchMood= true;
-	private JComponent cmpt= null;
+	private static FileWriter log=null;
+	private static boolean    batchMood= true;
+	private static StatusBar  sBar= null;
 
 	/**
 	 * close the log file, when the program exists 
 	 */
 	protected void finalize() {
-		if (_log !=null) {
+		if (log !=null) {
 			try {
-				_log.close();
+				log.close();
 			} catch (IOException e) {}
 		} 
 	}
@@ -31,14 +33,14 @@ public class NC2Act {
 	 * allow user to setup JComponent that is used to control main UI display, cursor, etc.
 	 * @param c
 	 */
-	public void setComponent(JComponent c) {cmpt=c;}
+	public static void setStatusBar(StatusBar c) {sBar=c;}
 
 	/**
 	 * Allow users to setup the program mood, either batch mood or UI mood
 	 * 
 	 * @param bm
 	 */
-	public static void setMood(boolean bm) {_batchMood = bm;}
+	public static void setMood(boolean bm) {batchMood = bm;}
 
 	/**
 	 *  Display the messages to users
@@ -61,11 +63,11 @@ public class NC2Act {
 		//add time stamp
 		String t = Calendar.getInstance().getTime().toString();
 		
-		if (_log ==null) {
+		if (log ==null) {
 			try {
-				_log=new FileWriter("nc2AscLog.txt");
+				log=new FileWriter("nc2AscLog.txt");
 			} catch (IOException e) {
-				if (!_batchMood ) 	prtMsgBox("Cannot create nc2AscLog");
+				if (!batchMood ) 	prtMsgBox("Cannot create nc2AscLog");
 				return;
 			}			   
 		}
@@ -73,22 +75,25 @@ public class NC2Act {
 		//write msg to the log
 		try {
 			String mg ="\n\n"+ t +"\n" + msg;
-			_log.write(mg);
-			_log.flush();
+			log.write(mg);
+			log.flush();
 		} catch (IOException ie) {
-			if (!_batchMood) 	prtMsgBox("IOException: Cannot write to log "+ie.toString());
+			if (!batchMood) 	prtMsgBox("IOException: Cannot write to log "+ie.toString());
 			return;
 		} catch (NullPointerException ne) {
-			if (!_batchMood) 	prtMsgBox("NullPointerException: Cannot write to log "+ne.toString());
-			return;
+			if (!batchMood) 	prtMsgBox("NullPointerException: Cannot write to log "+ne.toString());
+			return; 
 		}
-
-		//display for user if UI mood
-		if (!_batchMood) {
-			prtMsgBox(msg);
+		
+		if (!batchMood ) {
+			if (sBar!=null){
+				sBar.setText(msg);
+			} else {
+				prtMsgBox(msg);
+			}
 		}
+		
 	}
-
 	public boolean validataFile(String f) {
 		File fv = new File(f);
 		return fv.isFile();

@@ -20,6 +20,7 @@ public class NCData {
 
 	//constructor
 	public NCData(String ifn, String ofn) {infn = ifn; outfn=ofn;}
+	public NCData(String ifn) {infn = ifn;}
 
 	/**
 	 * Input file name and output file name
@@ -123,10 +124,12 @@ public class NCData {
 
 	
 	/**
-	 * setFileName provides the users with ability to set up netcdf read-only file name and 
-	 * an output file name
+	 * setFileName provides the users with ability to set up netcdf read-only input file name 
+	 * 
 	 */
-	public void setFileName(String ifn, String ofn){infn=ifn; outfn=ofn;}
+	public void setInputFileName(String ifn){infn=ifn;}
+	
+	
 
 	/**
 	 * openFile is to open a netcdf read-only file and a writable output file.
@@ -144,7 +147,9 @@ public class NCData {
 			throw e;
 		} 
 		
-		openOutFile(outfn);
+		if (outfn!=null){
+			openOutFile(outfn);
+		}
 	}
 	
 	/**
@@ -154,21 +159,10 @@ public class NCData {
 	 */
 	public void openOutFile(String fn) throws IOException {
 		outfn = fn;
-		if (fout !=null) {
-			fout.close();
-			fout = null;
-		}
-		
-		//open a filewriter 
-		try {
-			fout = new FileWriter(outfn);		
-		} catch (IOException e) {
-			if (fout !=null) {
-				fout.close();
-				fout = null;
-			}
-			throw e;
-		}
+
+		//check file exits
+		fout = new FileWriter(fn);
+
 	}
 	
 	/**
@@ -248,7 +242,7 @@ public class NCData {
 	 * @throws InvalidRangeException
 	 * @throws IOException
 	 */
-	public void read1DData (Variable v, int start, int len) throws InvalidRangeException, IOException {
+	public float[] read1DData (Variable v, int start, int len) throws InvalidRangeException, IOException {
 		//set orig and size
 		int[] shape = v.getShape();
 		int[] origin=new int[shape.length], size=new int[shape.length];
@@ -262,7 +256,7 @@ public class NCData {
 		
 		Array data = v.read(origin, size);
 		data=data.reduce();
-		oneDData =  (float [])data.copyTo1DJavaArray();
+		return  (float [])data.copyTo1DJavaArray();
 	}
 	
 	/**
@@ -278,7 +272,7 @@ public class NCData {
 		return dims[1];
 	}
 
-	private int getLen(Variable v) {
+	public int getLen(Variable v) {
 		int[] dims = v.getShape();
 		if (dims.length<3){
 			return 1;
@@ -298,7 +292,7 @@ public class NCData {
 		demoData[0] ="Date,UTC,"+v1.getShortName() +","+v2.getShortName();
 		long milSec;
 		String[] vdata1, vdata2;
-		milSec = getTimeMilSec();
+		milSec = getTimeMilSec();    
 
 		int len =10;
 		for (int i=1; i<len; i++) {
@@ -400,7 +394,7 @@ public class NCData {
 		Calendar cl = Calendar.getInstance();
 		cl.setTimeInMillis(milSec);
 		cl.add(Calendar.SECOND, sec);
-		tm = cl.get(Calendar.YEAR) + "-"+cl.get(Calendar.MONTH)+ "-"+ cl.get(Calendar.DAY_OF_MONTH) + DataFmt.SEPDELIMIT.toString()+ cl.get(Calendar.HOUR_OF_DAY)+ ":"+cl.get(Calendar.MINUTE)+":"+cl.get(Calendar.SECOND);
+		tm = cl.get(Calendar.YEAR) + "-"+cl.get(Calendar.MONTH)+ "-"+ cl.get(Calendar.DAY_OF_MONTH) + DataFmt.SEPDELIMIT+ cl.get(Calendar.HOUR_OF_DAY)+ ":"+cl.get(Calendar.MINUTE)+":"+cl.get(Calendar.SECOND);
 		return tm;
 	}
 

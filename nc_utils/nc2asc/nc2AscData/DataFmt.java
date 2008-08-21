@@ -20,9 +20,7 @@ public class DataFmt {
 	public final static String REPLICATE = "Replicate";
 	
 	public final static String FULLTM = "Full";
-	//public final static String PARTTM = "PartTm";
 
-	//public final static String 
 	public final static String HEAD = "Head";
 	public final static String HEAD2 = "Head2";
 	public final static String HEAD3 = "Head3";
@@ -41,7 +39,6 @@ public class DataFmt {
 	public final static String SPACE =" ";
 	public final static String TMSETDELIMIT= "~";
 	public final static String TMSETCOLON= ":";
-	
 
 	private static String[] dataFmt = new String[7]; 
 	//private StringBuffer data = new StringBuffer();
@@ -100,6 +97,17 @@ public class DataFmt {
 		s[2] = ""+d.get(Calendar.DAY_OF_MONTH); 
 		return fmtDate(s);
 	};
+	
+	/**
+	 *  
+	 * @param dt -- Date string in yyyy-mm-dd format
+	 * @return	 -- new date string in desirable format
+	 * @throws DataFormatException
+	 */
+	public String fmtDate(String dt) throws DataFormatException {
+		String[] dd = dt.split("-");
+		return fmtDate(dd);
+	}
 
 	/**     
 	 * It takes the date strings, and convert it into desired
@@ -143,13 +151,21 @@ public class DataFmt {
 		s[1] +=m;
 		s[2] +=ss;
 		
-		try {
-			return fmtTm(s);
-		} catch (DataFormatException e) {
-			throw e;
-		} 		
+		return fmtTm(s);
 	}
 
+	/**
+	 * 
+	 * @param tm -- time string in hh:mm:ss format
+	 * @return	 -- a new time string in desirable format
+	 * @throws DataFormatException
+	 */
+	public String fmtTm(String tm) throws DataFormatException {
+		String[] tt = tm.split(":");
+		return fmtTm(tt);
+	}
+	
+	
 	/**	return null;
 	 * it takes time strings, converts it into desired format
 	 * @param ss -- list of hh mm ss

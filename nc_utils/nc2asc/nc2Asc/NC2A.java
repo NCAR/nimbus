@@ -33,10 +33,11 @@ public class NC2A extends JPanel implements ActionListener {
 	private static void createAndShowGUI() {
 		// Create and set up the window.
 		JFrame frame = new JFrame("NetCDF To Ascii");
-		JFrame.setDefaultLookAndFeelDecorated(true);
+			
+		frame.setDefaultLookAndFeelDecorated(true);
 		JDialog.setDefaultLookAndFeelDecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLocation(200, 100);
+		frame.setLocation(250, 150);
 		aui.createComponents(frame);
 
 		// Display the window.
