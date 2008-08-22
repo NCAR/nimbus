@@ -45,26 +45,30 @@ public class NC2AUI {
 	private JButton    bnProc, bnFmt;
 	private JCheckBox  cbTog, cbSel, cbDesel; 
 	private JTextField tfRt;
-	private int[]      idxSearch;
-	private StatusBar statusBar;
-	
+	private StatusBar  statusBar;
+
 	///class objs: data-fmt selection dialog, and netcdf-data, and data-format
 	private NC2AUIDiag dialog;	  
 	private NCData     ncdata;
 	private DataFmt    datafmt = new DataFmt();
+
 	private String[]   dataInf; 
 	private String[]   fileName = new String[2];  // inputFileName and outputFileName
 	private FileWriter fw;
-
+	private int[]      idxSearch;
+	private int        idxCount;
+	private String[]   selStatus;
+	private JFrame     pfrm;
+	
 	/**
 	 * Main method to create all the components:
 	 * buttons, tbl, check, display field, etc.
 	 * @param frm -- main frame where the UI components to be.
 	 */
 	public void createComponents ( JFrame frm) {
+		pfrm=frm;
 		//save parent container
 		Container pane = frm.getContentPane();
-
 		//layout and constraints		
 		pane.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -112,7 +116,7 @@ public class NC2AUI {
 			statusBar = new StatusBar();
 			NC2Act.setStatusBar(statusBar);
 			pane.add(statusBar, c);
-			
+	
 		} catch (Exception e) {
 			NC2Act.wrtMsg(e.getMessage());
 		}
@@ -150,13 +154,13 @@ public class NC2AUI {
 		mBar.add(mFile);
 		mBar.add(mHelp);
 		mBar.setBackground(Color.LIGHT_GRAY);
-        mBar.setBorderPainted(true);
+		mBar.setBorderPainted(true);
 		mBar.setForeground(Color.BLUE);
 		JMenuBar m1 =new JMenuBar(); m1.setBackground(Color.LIGHT_GRAY);
 		JMenuBar m2 =new JMenuBar(); m2.setBackground(Color.LIGHT_GRAY);
 		JMenuBar m3 =new JMenuBar(); m3.setBackground(Color.LIGHT_GRAY);
 		JMenuBar m4 =new JMenuBar(); m4.setBackground(Color.LIGHT_GRAY);
- 		JPanel jp  = new JPanel(); 
+		JPanel jp  = new JPanel(); 
 		jp.setLayout(new GridLayout(1, 5));
 		jp.setBackground(Color.lightGray );
 		jp.add(mBar,0);
@@ -231,18 +235,19 @@ public class NC2AUI {
 		jpBt.add(new JLabel(""),i++);
 		jpBt.add(new JLabel(""),i++);
 		jpBt.add(new JLabel(""),i++);
+		jpBt.add(cbTog, i++);
 		jpBt.add(cbSel, i++);
 		jpBt.add(cbDesel, i++);
-		
+
 		jpBt.add(new JLabel(""),i++);
 		jpBt.add(new JLabel(""),i++);
 		jpBt.add(new JLabel(""),i++);
 		jpBt.add(new JLabel(""),i++);
 		jpBt.add(new JLabel(""),i++);
 		jpBt.add(new JLabel(""), i++);
-		jpBt.add(new JLabel(""), i++);
-		
-		tfRt = new JTextField("                ");
+		//jpBt.add(new JLabel(""), i++);
+
+		tfRt = new JTextField();
 		jpBt.add(new JLabel("Search..."),i++);
 		jpBt.add(tfRt, i++);
 
@@ -251,6 +256,7 @@ public class NC2AUI {
 		bnProc.setEnabled(false);
 		cbSel.setEnabled(false);
 		cbDesel.setEnabled(false);
+		cbTog.setEnabled(false);
 
 		tfRt.addKeyListener( new KeyListener() {
 			public void keyPressed(KeyEvent e) {};
@@ -382,6 +388,7 @@ public class NC2AUI {
 			tfRt.setVisible(true);
 			cbSel.setEnabled(true);
 			cbDesel.setEnabled(true);
+			cbTog.setEnabled(true);
 		} 
 	}
 
@@ -436,21 +443,52 @@ public class NC2AUI {
 	}
 
 	private void toggle(ActionEvent e) {
+
 		if (TOGGLE.equals(e.getActionCommand())) {
 			if (cbTog.isSelected()){
-				//todo 
-				// mark up all the selection
-			} 
-			cbTog.setSelected(false);
+				cbTog.setSelected(false);
+				if (idxCount >0) {
+					for (int i=0; i<idxCount; i++) {
+						if (!tbl.isRowSelected(i)) {continue;}
+						String v = (String)tbl.getValueAt(i, 4); 
+						if (v==null || !v.equals("Y")) {
+							tbl.setValueAt("Y", i, 4);
+							selStatus[idxSearch[i]]= "Y";
+						} else { 
+							tbl.setValueAt("", i, 4);
+							selStatus[idxSearch[i]]= "";
+						} 
+					}
+					return;
+				} // idxsearch
+				// default dataInf
+				for (int i=0; i<dataInf.length-1; i++) {
+					if (!tbl.isRowSelected(i)) {continue;}
+					String v = (String)tbl.getValueAt(i, 4); 
+					if (v==null || !v.equals("Y")) {
+						tbl.setValueAt("Y", i, 4);
+						selStatus[i]= "Y";
+					} else { 
+						tbl.setValueAt("", i, 4);
+						selStatus[i]= "";
+					} 
+				}
+			} //cbTog
+
 		}
 	}
 	private void selAll(ActionEvent e){
 		if (SELALL.equals(e.getActionCommand())) {
 			if (cbSel.isSelected()){
-				//for (int i=0; i<dataInf.length; i++) {
-					
-				//}
 				cbDesel.setSelected(false);
+				//tbl.selectAll();
+				int len = idxCount-1;
+				if (idxCount<1) {
+					len = dataInf.length-1;
+				}
+				tbl.clearSelection();
+				tbl.changeSelection(0, 0, false,false);
+				tbl.changeSelection(len, 4, true, true);
 			} else {
 				tbl.clearSelection();
 			}
@@ -471,29 +509,39 @@ public class NC2AUI {
 	private void process(ActionEvent e) {
 		if (PROCESS.equals(e.getActionCommand())) {
 
-			//get selected rows from the tbl
-			int[] idxs = tbl.getSelectedRows();
-			String idxstr="";
-			for (int i=0; i<idxs.length; i++) {
-				idxstr += idxs[i] + " ";
-			}
-			if (idxs.length==0) {
-				NC2Act.wrtMsg("Please select variables from the table...");
+			List<Variable> sublvars = getSubVarList();
+			if (sublvars.size()==0) {
+				NC2Act.wrtMsg("No variables selected.   Please select variables from the table...");
 				return;
 			}
 			
 			//chk out file
+			NC2Act.wrtMsg("Start Processing...");
 			if (!selectOutputFile()) {
+				NC2Act.wrtMsg("Ready");
 				return;
 			}
 			if ( !validateOutFile(fileName[1])) {
 				return;
 			}
 			fw = ncdata.getOutFile();
-
-			statusBar.setText("Start reading the netcdf data...");
-			long tm = writeOutVarData(idxs);
-		}  
+						
+			DispThread dth = new DispThread(this, sublvars);
+			dth.start();
+			
+			pfrm.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			long tm = 0;
+			while (!dth.getFinish()){
+				//statusBar.setText("Time passed "+ tm + " seconds");
+				try {Thread.sleep(2000);} catch (Exception ee) {
+					statusBar.setText("getException "+ ee.getMessage());
+					break;
+				}
+				tm+=2;
+			}
+			pfrm.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			
+		}
 	}
 
 	private void createTbl() {
@@ -514,8 +562,15 @@ public class NC2AUI {
 		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		tbl.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		tbl.setAutoscrolls(true);
-		tbl.sizeColumnsToFit(4);
-	
+		tbl.sizeColumnsToFit(4); 
+		tbl.addMouseListener( new java.awt.event.MouseListener() {
+			public void mousePressed(MouseEvent e) {};
+			public void mouseReleased(MouseEvent e) {};
+			public void mouseClicked(MouseEvent e) { cbSel.setSelected(false);};
+			public void mouseEntered(MouseEvent e) {};
+			public void mouseExited(MouseEvent e) {};
+		});
+
 	}
 
 	private void populateTbl()  {
@@ -530,6 +585,8 @@ public class NC2AUI {
 			ncdata.openFile();
 			ncdata.readDataInf();
 			dataInf = ncdata.getDataInf();
+			idxSearch = new int[dataInf.length];
+			selStatus = new String[dataInf.length];
 		} catch ( ArrayIndexOutOfBoundsException ae) {
 			NC2Act.wrtMsg("populateTbl_Array index out of bound"+ae.getMessage());
 		} catch (NCDataException n) {
@@ -589,40 +646,43 @@ public class NC2AUI {
 	}
 
 
-	private List<Variable>  getSubVarList(int[] idxs){
+	private List<Variable>  getSubVarList(){
 		List<Variable> slvars= new ArrayList<Variable>();
 		List<Variable> allvars= ncdata.getVars();
-		int len = idxs.length;
-		if (len > (allvars.size()-1)) {len = allvars.size()-1;} //in case select all includes  extra empty rows
-		//allvars.size()-1, because the first one is time-var
+		int len = allvars.size()-1; 
 		for (int i=0; i<len; i++) {
-			slvars.add(i,allvars.get(idxs[i]+1)); //idxs[i]+1 to count the time var on the first line
+			if (selStatus[i]==null || !selStatus[i].equals("Y")) {
+			} else {
+				slvars.add(allvars.get(i+1)); //[i]+1 to skip the time var on the first line
+			}
 		}
 		return slvars;
 	}
 
 	private void repopulateTbl(String pref){
-		int count =0; idxSearch = new int[dataInf.length]; 
-		String st = pref.trim().toUpperCase();
+		idxCount =0; idxSearch = new int[dataInf.length];
 
+		String st = pref.trim().toUpperCase();
 		for (int i=1; i<dataInf.length; i++){
 			String data =dataInf[i];
 			if (data==null || data.length()<1) {return;}
 			String[] d = data.split(DataFmt.SEPDELIMIT);
-			tbl.setValueAt("", i, 0);
-			tbl.setValueAt("", i, 1);
-			tbl.setValueAt("", i, 2);
-			tbl.setValueAt("", i, 3);
-			
+			tbl.setValueAt(" ", i, 0);
+			tbl.setValueAt(" ", i, 1);
+			tbl.setValueAt(" ", i, 2);
+			tbl.setValueAt(" ", i, 3);
+			tbl.setValueAt(" ", i, 4);
+
 			if (d[0].indexOf(st) >=0) {
-				tbl.setValueAt((Object)d[0], count, 0);
-				tbl.setValueAt((Object)d[1], count, 1);
-				tbl.setValueAt((Object)d[2], count, 2);
-				tbl.setValueAt((Object)d[3], count, 3);
-				idxSearch[count]=i;
-				count++;
+				tbl.setValueAt((Object)d[0], idxCount, 0);
+				tbl.setValueAt((Object)d[1], idxCount, 1);
+				tbl.setValueAt((Object)d[2], idxCount, 2);
+				tbl.setValueAt((Object)d[3], idxCount, 3);
+				tbl.setValueAt((Object)selStatus[i-1], idxCount, 4);
+				idxSearch[idxCount]=i-1;
+				idxCount++;
 			}
-		}
+		} //for
 	}
 
 	private String genVarName(List<Variable> sublvars ){
@@ -657,19 +717,12 @@ public class NC2AUI {
 	}
 
 
-	public long  writeOutVarData(int[] idxs){
-		//NC2Act.stopWaitCursor(tbl);
+	public long  writeOutVarData(List<Variable> sublvars){
 
-		bnProc.getTopLevelAncestor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-		
-		//NC2Act.startWaitCursor(tbl);
 
 		String line = "";
 		//get and write the data out 
-		try {
-			List<Variable> sublvars = getSubVarList(idxs);
-
-			//write le();
+		try{
 			int size = sublvars.size(); //.varname to the first line of out file
 			String out= genVarName(sublvars); 
 			writeOut(datafmt.fmtDmtr(out)+"\n");
@@ -686,12 +739,13 @@ public class NC2AUI {
 				data[i] = ncdata.read1DData(tmp , 0, range[1]);
 				oneDLen[i] =ncdata.getLen(tmp);
 				line = tmp.getName();
+				statusBar.setText(line);
 			}
 			//write out
 			String del = datafmt.getDataFmt()[DataFmt.DMTR_IDX];;
 			for (int i =0; i<range[1]; i++) {
 				line = ncdata.getNewTm(milSec,i);
-				
+
 				for (int j =0; j<size; j++) {
 					int count =0;
 					while (count<oneDLen[j]) {
@@ -701,11 +755,8 @@ public class NC2AUI {
 				}
 				writeOut(line+"\n");
 			}
-			
+
 			long ret = Calendar.getInstance().getTimeInMillis()-t1;
-			//NC2Act.stopWaitCursor(tbl);
-			
-			bnProc.getTopLevelAncestor().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 			NC2Act.wrtMsg("Done.     Total " +ret+ " miliSeconds");
 			return ret;
 
@@ -718,11 +769,10 @@ public class NC2AUI {
 		} catch (Exception e ) {
 			NC2Act.wrtMsg("writeOutVarData_Exception"+ line);
 		} 
-		
-		//NC2Act.stopWaitCursor(tbl);
-		bnProc.getTopLevelAncestor().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+
 		return 0;
 	} 
+
 
 	private int[] getTmRange() {
 		int[] ii = new int[2];
@@ -780,19 +830,37 @@ class MyTblModel extends DefaultTableModel {
  * 
  */
 
-class StatusBar extends JLabel {
-    /** Creates a new instance of StatusBar */
-    public StatusBar() {
-        super();
-        super.setPreferredSize(new Dimension(100, 16));
-        setMessage("Ready");
-    }
-    
-    public void setMessage(String message) {
-        setText(" "+message);        
-    }        
-    public void setBackground(Color c) {
-    	super.setBackground(c);
-    }
+class StatusBar extends JLabel   {
+	/** Creates a new instance of StatusBar */
+	public StatusBar() {
+		super();
+		super.setPreferredSize(new Dimension(100, 16));
+		setMessage("Ready");
+	}
+
+	public void setMessage(String message) {
+		setText(" "+message);        
+	}        
+	public void setBackground(Color c) {
+		super.setBackground(c);
+	}
 }
 
+
+
+class DispThread extends Thread {
+    DispThread(NC2AUI uiobj, List<Variable> vrs) {
+    	obj=uiobj;
+    	vars = vrs;
+    	bfinish = false;
+    }
+	public void run() {
+		obj.writeOutVarData(vars);
+		bfinish=true;
+	}
+	
+	public boolean  getFinish(){return bfinish;}
+	List<Variable> vars;
+	NC2AUI obj;
+	boolean bfinish;
+}

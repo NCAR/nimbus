@@ -21,6 +21,7 @@ import javax.swing.*;
  */
 public class NC2A extends JPanel implements ActionListener {
 
+	
 	/**
 	 * Important ui element class instance to add UI items
 	 */
@@ -45,6 +46,7 @@ public class NC2A extends JPanel implements ActionListener {
 		frame.setVisible(true);
 	}
 
+		
 	/**
 	 * 
 	 *  @param args
@@ -58,7 +60,7 @@ public class NC2A extends JPanel implements ActionListener {
 	 *  
 	 */
 	public static void main(String[] args) {
-
+        
 		if (args.length >0 && args[0].toString().equals("-b")) {
 			//NC2Act.wrtMsg(args[0].toString());
 		}	else {
