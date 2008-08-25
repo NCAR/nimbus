@@ -87,6 +87,13 @@ void sttwhc(DERTBL *varp)
   tth = GetSample(varp, 0);
   xmach2 = GetSample(varp, 1);
 
+  if (isnan(tth) || isnan(xmach2))
+  {
+    PutSample(varp, floatNAN);
+    return;
+  }
+
+
   if (firstTime[FeedBack])
   {
     firstTime[FeedBack] = false;
