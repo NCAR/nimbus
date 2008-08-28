@@ -12,10 +12,10 @@ import nc2AscData.*;
 public class NC2Act {
 
 	NC2Act() {};
-	NC2Act(boolean bm) {batchMood = bm;}
+	NC2Act(boolean bm) {batchMode = bm;}
 	
 	private static FileWriter log=null;
-	private static boolean    batchMood= true;
+	private static boolean    batchMode= true;
 	private static StatusBar  sBar= null;
 
 	/**
@@ -36,11 +36,11 @@ public class NC2Act {
 	public static void setStatusBar(StatusBar c) {sBar=c;}
 
 	/**
-	 * Allow users to setup the program mood, either batch mood or UI mood
+	 * Allow users to setup the program mode, either batch mode or UI mode
 	 * 
 	 * @param bm
 	 */
-	public static void setMood(boolean bm) {batchMood = bm;}
+	public static void setMode(boolean bm) {batchMode = bm;}
 
 	/**
 	 *  Display the messages to users
@@ -55,7 +55,7 @@ public class NC2Act {
 
 	/**
 	 * Write the message to the nc2AscLog file.
-	 * Display the same message to the users if the program is in UI mood
+	 * Display the same message to the users if the program is in UI mode
 	 * @param msg
 	 * 
 	 */ 
@@ -67,7 +67,7 @@ public class NC2Act {
 			try {
 				log=new FileWriter("nc2AscLog.txt");
 			} catch (IOException e) {
-				if (!batchMood ) 	prtMsgBox("Cannot create nc2AscLog");
+				if (!batchMode ) 	prtMsgBox("Cannot create nc2AscLog");
 				return;
 			}			   
 		}
@@ -78,14 +78,14 @@ public class NC2Act {
 			log.write(mg);
 			log.flush();
 		} catch (IOException ie) {
-			if (!batchMood) 	prtMsgBox("IOException: Cannot write to log "+ie.toString());
+			if (!batchMode) 	prtMsgBox("IOException: Cannot write to log "+ie.toString());
 			return;
 		} catch (NullPointerException ne) {
-			if (!batchMood) 	prtMsgBox("NullPointerException: Cannot write to log "+ne.toString());
+			if (!batchMode) 	prtMsgBox("NullPointerException: Cannot write to log "+ne.toString());
 			return; 
 		}
 		
-		if (!batchMood ) {
+		if (!batchMode ) {
 			if (sBar!=null){
 				sBar.setText(msg);
 			} else {
