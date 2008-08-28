@@ -16,6 +16,7 @@ import java.awt.Insets;
 import java.awt.event.*;
 import java.awt.*; 
 import java.io.*;
+import java.beans.*;
 
 import javax.swing.*;
 import javax.swing.filechooser.*;
@@ -24,10 +25,44 @@ import javax.swing.table.*;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Variable;
 
+import nc2Asc.NC2AUIProgBar.Task;
 import nc2AscData.*;
 
-public class NC2AUI {
+public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
+	//in class
+	class Task extends SwingWorker<Void, Void> {
+		/*
+		 * Main task. Executed in background thread.
+		 */
+		@Override
+		public Void doInBackground() {
+			int progress = ncdata.getProgIdx();
+			setProgress(0);
+			if (taskLen < 1) {nc2Asc.NC2Act.wrtMsg("Task Len = 0"); return null;}
+			while (!ncdata.getFinish()) {
+				//Sleep for up to one second.
+				setProgress(Math.min(100*progress/taskLen, 100));
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException ignore) {}
+				progress = ncdata.getProgIdx();
+			}
+			progress = taskLen;
+			setProgress(100);
+			return null;
+		}
+
+		/*
+		 * Executed in event dispatching thread
+		 */
+		@Override
+		public void done() {
+			Toolkit.getDefaultToolkit().beep();
+			//setCursor(Cursor.DEFAULT_CURSOR); //turn off the wait cursor
+			
+		}
+	}
 	//command name strings
 	private final static String  INFILE = "INFILE";
 	private final static String  OUTFILE = "OUTFILE";    
@@ -42,6 +77,9 @@ public class NC2AUI {
 	private final static String  N2AHELP = "N2AHELP";
 
 	// component containers
+	private JFrame     pfrm;
+	private Task       task;
+	
 	private JTable tbl; 
 	private JButton    bnProc, bnFmt;
 	private JCheckBox  cbTog, cbSel, cbDesel; 
@@ -49,18 +87,19 @@ public class NC2AUI {
 	private StatusBar  statusBar;
 
 	///class objs: data-fmt selection dialog, and netcdf-data, and data-format
-	private NC2AUIDiag dialog; NC2AUIProgBar dlgProgBar;	  
+	private NC2AUIDiag dialog; //NC2AUIProgBar dlgProgBar;	  
 	private NCData     ncdata;
 	private DataFmt    datafmt = new DataFmt();
 
 	private String[]   dataInf; 
 	private String[]   fileName = new String[2];  // inputFileName and outputFileName
 
+	private int 		taskLen; //max len of tasks     
 	private int[]      idxSearch;
 	private int        idxCount;
 	private String[]   selStatus;
-	private JFrame     pfrm;
-
+	
+	
 	/**
 	 * Main method to create all the components:
 	 * buttons, tbl, check, display field, etc.
@@ -69,14 +108,13 @@ public class NC2AUI {
 	public void createComponents ( JFrame frm) {
 		pfrm=frm;
 		//save parent container
-		Container pane = frm.getContentPane();
+		Container pane = frm.getContentPane(); 
 		//layout and constraints		
 		pane.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weighty = 1.0; 
 		c.weightx = 0.5;
-
 
 		try {
 			//add  menus
@@ -280,22 +318,47 @@ public class NC2AUI {
 	 * @param jb  -- an abstractor-component
 	 * @param actStr -- action command
 	 */
+
 	private void addButtonActCmd(AbstractButton jb, String actStr){
 		jb.setActionCommand(actStr);
-		jb.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e){
-				selectInputFile(e);
-				getDataVar(e);
-				selectDataFormat(e);
-				process(e);
-				toggle(e);
-				selAll(e);
-				deselAll(e);
-				saveBatch(e);
-				readBatch(e);
-				quitApp(e);
-			}
-		});
+		jb.addActionListener(this) ;
+
+	}
+
+	/**
+	 * Invoked when the user presses the start button.
+	 */
+	public void actionPerformed(ActionEvent e) {
+		selectInputFile(e);
+		getDataVar(e);
+		selectDataFormat(e);
+		process(e);
+		toggle(e);
+		selAll(e);
+		deselAll(e);
+		saveBatch(e);
+		readBatch(e);
+		cancelDataProgress(e);
+		quitApp(e);
+
+	}
+
+	/**
+	 * Invoked when task's progress property changes.
+	 */
+	public void propertyChange(PropertyChangeEvent evt) {
+		if ("progress" == evt.getPropertyName()) {
+			int progress = (Integer) evt.getNewValue();
+			statusBar.setText("Data Progress is "+progress + "% done.");
+		} 
+	}
+
+
+	private void cancelDataProgress(ActionEvent e) {
+		if ("cancel".equals(e.getActionCommand())) {
+			ncdata.setFinish(true);
+			statusBar.setText(" Canceled...");
+		} 
 	}
 
 	/**
@@ -381,9 +444,11 @@ public class NC2AUI {
 				return;
 			}
 
-			nc2Asc.NC2Act.startWaitCursor(tbl);
+			//nc2Asc.NC2Act.startWaitCursor(tbl);
+			pfrm.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			populateTbl();					
-			nc2Asc.NC2Act.stopWaitCursor(tbl);
+			pfrm.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			//nc2Asc.NC2Act.stopWaitCursor(tbl);
 			bnFmt.setEnabled(true);
 			bnProc.setEnabled(true);
 			tfRt.setVisible(true);
@@ -538,28 +603,20 @@ public class NC2AUI {
 			DataThread dth = new DataThread(ncdata, sublvars, range, datafmt.getDataFmt()); 
 			dth.start();
 
-			invokeProcDiag(sublvars.size()+range[1]);
-			if (dlgProgBar.getExitVal()==0) {
-				statusBar.setText("Done.    Time = "+ ncdata.getTmPassed()+ " mil seconds");
-			} else {
-				statusBar.setText("Canceled.");
-			}
-						
-			/*pfrm.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			int tm =0;
-			while (!ncdata.getFinish()){
-				//statusBar.setMessage("Time passed: "+ tm +" seconds.");
-				//statusBar.revalidate();
-				try {Thread.sleep(1000);} catch (Exception ee) {}
-				tm++;
-			}
-			pfrm.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			*/
-			//sth.setStop(true);
+			taskLen = sublvars.size()+ range[1];
+			task = new Task();
+			task.addPropertyChangeListener(this);
+			task.execute();
+
+			//pfrm.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			//while (!ncdata.getFinish()){
+			//	try {Thread.sleep(1000);} catch (Exception ee) {}
+			//}
+			//pfrm.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			//statusBar.setText("Done.    Time = "+ ncdata.getTmPassed()+ " mil seconds");
 		}
 	}
-	
+
 
 
 	private void createTbl() {
@@ -665,7 +722,7 @@ public class NC2AUI {
 
 
 	private List<Variable>  getSubVarList(){
-		List<Variable> slvars= new ArrayList<Variable>();
+		List<Variable> slvars= new ArrayList<Variable>(); 
 		List<Variable> allvars= ncdata.getVars();
 		int len = allvars.size()-1; 
 		for (int i=0; i<len; i++) {
@@ -816,101 +873,101 @@ public class NC2AUI {
 	}
 
 
-	private void invokeProcDiag(int len) {
+	/*private void invokeProcDiag(int len) {
 
 		JFrame frm = new JFrame("         Data Process Status  ");
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		JDialog.setDefaultLookAndFeelDecorated(true);
 		//frm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frm.setLocation(250, 150);
-	
+
 		dlgProgBar = new NC2AUIProgBar(frm, true, ncdata, len);
 		dlgProgBar.setBounds(350, 250, 250, 150);
 		dlgProgBar.setVisible(true);
-			
+
+	}*/
+
+
+}//eof class
+
+
+/**
+ * Make a Tbl class that extends DefaultModel, so that myTbl can have more desirable features
+ * to handle data and control tbl.
+ *  
+ * @author dongl
+ *
+ */
+class MyTblModel extends DefaultTableModel {
+	MyTblModel(int rows, int cols) {
+		super(rows, cols);
 	}
 
-
-	}//eof class
-
-
-	/**
-	 * Make a Tbl class that extends DefaultModel, so that myTbl can have more desirable features
-	 * to handle data and control tbl.
-	 *  
-	 * @author dongl
-	 *
-	 */
-	class MyTblModel extends DefaultTableModel {
-		MyTblModel(int rows, int cols) {
-			super(rows, cols);
-		}
-
-		public void addRow(Object[] rowData) {
-			super.addRow(rowData);
-		}
-
+	public void addRow(Object[] rowData) {
+		super.addRow(rowData);
 	}
 
+}
 
-	/**
-	 * 
-	 */
 
-	class StatusBar extends JLabel   {
-		/** Creates a new instance of StatusBar */
-		public StatusBar() {
-			super();
-			super.setPreferredSize(new Dimension(100, 16));
-			setMessage(" Ready");
-		}
+/**
+ * 
+ */
 
-		public void setMessage(String message) {
-			setText(" "+message);        
-		}        
-		public void setBackground(Color c) {
-			super.setBackground(c);
+class StatusBar extends JLabel   {
+	/** Creates a new instance of StatusBar */
+	public StatusBar() {
+		super();
+		super.setPreferredSize(new Dimension(100, 16));
+		setMessage(" Ready");
+	}
+
+	public void setMessage(String message) {
+		setText(" "+message);        
+	}        
+	public void setBackground(Color c) {
+		super.setBackground(c);
+	}
+}
+
+
+
+class DataThread extends Thread {
+	DataThread(NCData obj, List<Variable> vrs, int[] rg, String[] ft) {
+		ncdata=obj;
+		vars = vrs;
+		range = rg;
+		fmt = ft;
+	}
+	public void run() {
+		ncdata.writeDataToFile(vars, range, fmt);
+	}
+
+	private List<Variable> vars;
+	private NCData ncdata;
+	private int[] range;
+	private String[] fmt;
+}
+
+
+class StatusThread  extends Thread {
+	StatusThread(StatusBar obj) {
+		sb=obj;
+	}
+
+	public void run() {
+		while(!stop){
+			sb.setText("Time passed " + tm +" seconds" );
+			sb.repaint();
+			try {wait(2000);} catch (Exception e) {}
+			tm +=2;
 		}
 	}
 
+	public void setStop(boolean st){stop= st;}
 
-
-	class DataThread extends Thread {
-		DataThread(NCData obj, List<Variable> vrs, int[] rg, String[] ft) {
-			ncdata=obj;
-			vars = vrs;
-			range = rg;
-			fmt = ft;
-		}
-		public void run() {
-			ncdata.writeDataToFile(vars, range, fmt);
-		}
-
-		private List<Variable> vars;
-		private NCData ncdata;
-		private int[] range;
-		private String[] fmt;
-	}
-
-
-	class StatusThread  extends Thread {
-		StatusThread(StatusBar obj) {
-			sb=obj;
-		}
-
-		public void run() {
-			while(!stop){
-				sb.setText("Time passed " + tm +" seconds" );
-				sb.repaint();
-				try {wait(2000);} catch (Exception e) {}
-				tm +=2;
-			}
-		}
-
-		public void setStop(boolean st){stop= st;}
-
-		private long tm =0;
-		private boolean   stop= false;
-		private StatusBar sb;
-		private NCData    ncdata;
-	}
+	private long tm =0;
+	private boolean   stop= false;
+	private StatusBar sb;
+	private NCData    ncdata;
+}
