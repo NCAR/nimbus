@@ -22,6 +22,7 @@ public class NCData {
 	//constructor
 	public NCData(String ifn, String ofn) {infn = ifn; outfn=ofn;}
 	public NCData(String ifn) {infn = ifn;}
+	public NCData() {}
 
 	/**
 	 * Input file name and output file name
@@ -46,17 +47,17 @@ public class NCData {
 	/**
 	 *   All the data for a variable in the given range in 1D foramt
 	 */
-	private float[] oneDData;
+//	private float[] oneDData;
 
 	/**
 	 *  All the ascii data that go to the output file. the index means the line order
 	 */
-	private String[] data;
+	//private String[] data;
 
 	/**
 	 *  All the variables' name, units, OR/Len displayed in the table for users
 	 */	
-	private String[] dataInf;
+	private List<String> dataInf;
 
 	/**
 	 * 	Global information about the netcdf file
@@ -91,9 +92,9 @@ public class NCData {
 	 * Get all the data from the selected variable names 
 	 * @return
 	 */
-	public String[] getData(String vn) {
-		return data;
-	}
+	//public String[] getData(String vn) {
+	//	return data;
+	//}
 
 	/**
 	 * 
@@ -102,7 +103,7 @@ public class NCData {
 	 * @return -- pointer to data information  
 	 *  
 	 */
-	public String[] getDataInf() {
+	public List<String> getDataInf() {
 		return dataInf;
 	}
 
@@ -150,8 +151,9 @@ public class NCData {
 	 * openFile is to open a netcdf read-only file and a writable output file.
 	 * Since we need both files to operate, we open them at the same time.
 	 */	
-	public void openFile() throws IOException {
+	public void openFile(String fn) throws IOException {
 		//open netcdf readonly
+		infn = fn;
 		try{
 			fin = NetcdfFile.open(infn);
 		} catch (IOException e){
@@ -161,10 +163,7 @@ public class NCData {
 			}
 			throw e;
 		} 
-
-		if (outfn!=null){
-			openOutFile(outfn);
-		}
+	
 	}
 
 	/**
@@ -196,7 +195,7 @@ public class NCData {
 		lvars = fin.getVariables();
 
 		int len = lvars.size();
-		dataInf = new String[len];		
+		dataInf = new ArrayList<String>();	
 		for (int i=0; i<len-1 ; i++){ 
 			String dat = "";
 			Variable v = lvars.get(i);
@@ -205,7 +204,7 @@ public class NCData {
 			int or= getOR(v);
 			dat += or+"/"+getLen(v) + DataFmt.SEPDELIMIT.toString() ;
 			dat += v.getName();
-			dataInf[i]=dat;
+			dataInf.add(i,dat);
 
 			if (or>1){ gDataInf[0] = String.valueOf(true);}
 		}
@@ -360,11 +359,11 @@ public class NCData {
 	}
 
 	public long getTimeMilSec() throws NCDataException {
-		if (dataInf[0]== null) {
+		if (dataInf.get(0)== null) {
 			throw new  NCDataException("getTimeMilSec: Variables are not read... Please get variables from the netcdf file.");
 		}
 		//nc2Asc.NC2Act.wrtMsg(dataInf[0]);
-		String tmVar= dataInf[0];
+		String tmVar= dataInf.get(0);
 		String date = tmVar.split(DataFmt.SEPDELIMIT.toString())[1].split(" ")[2];
 		String tm   = tmVar.split(DataFmt.SEPDELIMIT.toString())[1].split(" ")[3];
 		String[] dInf = date.split("-");

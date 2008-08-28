@@ -60,7 +60,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		public void done() {
 			Toolkit.getDefaultToolkit().beep();
 			//setCursor(Cursor.DEFAULT_CURSOR); //turn off the wait cursor
-			
+
 		}
 	}
 	//command name strings
@@ -79,7 +79,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 	// component containers
 	private JFrame     pfrm;
 	private Task       task;
-	
+
 	private JTable tbl; 
 	private JButton    bnProc, bnFmt;
 	private JCheckBox  cbTog, cbSel, cbDesel; 
@@ -91,15 +91,15 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 	private NCData     ncdata;
 	private DataFmt    datafmt = new DataFmt();
 
-	private String[]   dataInf; 
+	private List<String>   dataInf; 
 	private String[]   fileName = new String[2];  // inputFileName and outputFileName
 
 	private int 		taskLen; //max len of tasks     
-	private int[]      idxSearch;
+	private List<Integer>      idxSearch;
 	private int        idxCount;
-	private String[]   selStatus;
-	
-	
+	private List<String>   selStatus;
+
+
 	/**
 	 * Main method to create all the components:
 	 * buttons, tbl, check, display field, etc.
@@ -520,24 +520,24 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 						String v = (String)tbl.getValueAt(i, 4); 
 						if (v==null || !v.equals("Y")) {
 							tbl.setValueAt("Y", i, 4);
-							selStatus[idxSearch[i]]= "Y";
+							selStatus.set(idxSearch.get(i),"Y");
 						} else { 
 							tbl.setValueAt("", i, 4);
-							selStatus[idxSearch[i]]= "";
+							selStatus.set(idxSearch.get(i), "");
 						} 
 					}
 					return;
 				} // idxsearch
 				// default dataInf
-				for (int i=0; i<dataInf.length-1; i++) {
+				for (int i=0; i<dataInf.size()-1; i++) {
 					if (!tbl.isRowSelected(i)) {continue;}
 					String v = (String)tbl.getValueAt(i, 4); 
 					if (v==null || !v.equals("Y")) {
 						tbl.setValueAt("Y", i, 4);
-						selStatus[i]= "Y";
+						selStatus.set(idxSearch.get(i),"Y");
 					} else { 
 						tbl.setValueAt("", i, 4);
-						selStatus[i]= "";
+						selStatus.set(idxSearch.get(i), "");
 					} 
 				}
 			} //cbTog
@@ -552,7 +552,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 				//tbl.selectAll();
 				int len = idxCount-1;
 				if (idxCount<1) {
-					len = dataInf.length-1;
+					len = dataInf.size()-1;
 				}
 				tbl.clearSelection();
 				tbl.changeSelection(len, 4, false,false);
@@ -654,14 +654,31 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			return;
 		}
 		if (ncdata==null) {
-			ncdata = new NCData(fileName[0]);
+			ncdata = new NCData();
 		}
 		try {
-			ncdata.openFile();
+			ncdata.openFile(fileName[0]);
 			ncdata.readDataInf();
-			dataInf = ncdata.getDataInf();
-			idxSearch = new int[dataInf.length];
-			selStatus = new String[dataInf.length];
+			//clean up tbl
+			if (dataInf!=null){
+				for (int i=1; i<dataInf.size(); i++){
+					tbl.setValueAt("", i-1, 0);
+					tbl.setValueAt("", i-1, 1);
+					tbl.setValueAt("", i-1, 2);
+					tbl.setValueAt("", i-1, 3);
+					tbl.setValueAt("", i-1, 4);
+				}
+			}
+
+			dataInf=ncdata.getDataInf();
+			idxSearch = new ArrayList<Integer>();
+			selStatus = new ArrayList<String>();
+			idxCount =0;
+			for (int i=0; i<dataInf.size(); i++){
+				idxSearch.add(i, 0);
+				selStatus.add(i,"");
+			}
+			statusBar.setText("datainf len "+ dataInf.size());
 		} catch ( ArrayIndexOutOfBoundsException ae) {
 			NC2Act.wrtMsg("populateTbl_Array index out of bound"+ae.getMessage());
 		} catch (NCDataException n) {
@@ -673,14 +690,14 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		}
 
 		//check data
-		if (dataInf==null || dataInf.length<1 ) {
+		if (dataInf==null || dataInf.size()<1 ) {
 			nc2Asc.NC2Act.wrtMsg("Information data is null... Use default data for format display");
 			return;
 		}
 		// set data
 
-		for (int i=1; i<dataInf.length; i++){
-			String data =dataInf[i];
+		for (int i=1; i<dataInf.size(); i++){
+			String data =dataInf.get(i);
 			if (data==null || data.length()<1) {return;}
 			String[] d = data.split(DataFmt.SEPDELIMIT);
 			if (tbl.getRowCount()<i-1){
@@ -726,7 +743,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		List<Variable> allvars= ncdata.getVars();
 		int len = allvars.size()-1; 
 		for (int i=0; i<len; i++) {
-			if (selStatus[i]==null || !selStatus[i].equals("Y")) {
+			if (selStatus.get(i)==null || !selStatus.get(i).equals("Y")) {
 			} else {
 				slvars.add(allvars.get(i+1)); //[i]+1 to skip the time var on the first line
 			}
@@ -736,12 +753,11 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
 	private void repopulateTbl(String pref){
 		statusBar.setText(" Ready");
-		idxCount =0; idxSearch = new int[dataInf.length];
-
+		idxCount =0; 
 		tbl.clearSelection(); cbSel.setSelected(false);
 		String st = pref.trim().toUpperCase();
-		for (int i=1; i<dataInf.length; i++){
-			String data =dataInf[i];
+		for (int i=1; i<dataInf.size(); i++){
+			String data =dataInf.get(i);
 			if (data==null || data.length()<1) {return;}
 			String[] d = data.split(DataFmt.SEPDELIMIT);
 			tbl.setValueAt(" ", i, 0);
@@ -755,8 +771,8 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 				tbl.setValueAt((Object)d[1], idxCount, 1);
 				tbl.setValueAt((Object)d[2], idxCount, 2);
 				tbl.setValueAt((Object)d[3], idxCount, 3);
-				tbl.setValueAt((Object)selStatus[i-1], idxCount, 4);
-				idxSearch[idxCount]=i-1;
+				tbl.setValueAt((Object)selStatus.get(i-1), idxCount, 4);
+				idxSearch.set(idxCount, i-1);
 				idxCount++;
 			}
 		} //for
