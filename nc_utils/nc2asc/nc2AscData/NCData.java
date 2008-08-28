@@ -5,6 +5,7 @@ import java.lang.Exception.*;
 import java.io.*;
 import java.io.FileWriter;
 import java.util.*;
+
 import ucar.nc2.*;
 import ucar.ma2.*;
 
@@ -26,32 +27,32 @@ public class NCData {
 	 * Input file name and output file name
 	 */
 	private String infn, outfn;
-	
+
 	/**
 	 *  Netcdf file pointer
 	 */
 	private NetcdfFile  fin=null;
-	
+
 	/**
 	 * Ascii output file pointer
 	 */
 	private FileWriter  fout=null;
-	
+
 	/**
 	 * List of all the variable from the input netcdf file
 	 */
 	private List<Variable> lvars=null;
-	
+
 	/**
 	 *   All the data for a variable in the given range in 1D foramt
 	 */
 	private float[] oneDData;
-	
+
 	/**
 	 *  All the ascii data that go to the output file. the index means the line order
 	 */
 	private String[] data;
-	
+
 	/**
 	 *  All the variables' name, units, OR/Len displayed in the table for users
 	 */	
@@ -64,14 +65,28 @@ public class NCData {
 	 *  idx 2--size of the records
 	 */
 	private String[] gDataInf = {String.valueOf(false),"0","0"};
+
+	private boolean bfinish;
+	
+	private long tmPassed;
+	
+	private int progIdx =0;
+	
+	public int getProgIdx() {return progIdx;}
+	
+    public boolean  getFinish(){return bfinish;}
+    
+    public void  setFinish(boolean finished){ bfinish = finished;}
+	
+	public long getTmPassed() {	return tmPassed; 	}
 	
 	/**
 	 * Get the variables' list from the netcdf file
 	 * @return
 	 */
 	public List<Variable> getVars(){return lvars;}
-	
-		
+
+
 	/**
 	 * Get all the data from the selected variable names 
 	 * @return
@@ -97,7 +112,7 @@ public class NCData {
 	public String[] getGlobalDataInf() {
 		return gDataInf;
 	}
-	
+
 	/**
 	 * program calls this method to clean up 
 	 */
@@ -113,7 +128,7 @@ public class NCData {
 	public NetcdfFile getInFile() {
 		return fin;
 	}
-	
+
 	/**
 	 * 
 	 * @return -- file pointer to write output stream to the output file
@@ -122,14 +137,14 @@ public class NCData {
 		return fout;
 	}
 
-	
+
 	/**
 	 * setFileName provides the users with ability to set up netcdf read-only input file name 
 	 * 
 	 */
 	public void setInputFileName(String ifn){infn=ifn;}
-	
-	
+
+
 
 	/**
 	 * openFile is to open a netcdf read-only file and a writable output file.
@@ -146,12 +161,12 @@ public class NCData {
 			}
 			throw e;
 		} 
-		
+
 		if (outfn!=null){
 			openOutFile(outfn);
 		}
 	}
-	
+
 	/**
 	 * Open a output file to write data
 	 * @param fn -- output file name 
@@ -164,7 +179,7 @@ public class NCData {
 		fout = new FileWriter(fn);
 
 	}
-	
+
 	/**
 	 * Retrieve attribute information such as name, unit, OR/len, etc for the variables
 	 * 
@@ -191,16 +206,16 @@ public class NCData {
 			dat += or+"/"+getLen(v) + DataFmt.SEPDELIMIT.toString() ;
 			dat += v.getName();
 			dataInf[i]=dat;
-			
+
 			if (or>1){ gDataInf[0] = String.valueOf(true);}
 		}
-		
+
 		//init global data info
 		gDataInf[1] = String.valueOf(getTimeMilSec()); 
 		gDataInf[2] = String.valueOf(lvars.get(0).getSize());
 	}
 
-	
+
 
 	public String readOneVarData (Variable v, int start) throws InvalidRangeException, IOException {
 
@@ -219,7 +234,7 @@ public class NCData {
 
 		Array data = v.read(origin, size);
 		data=data.reduce();
-		
+
 		IndexIterator ii = data.getIndexIterator();
 		int count=0;
 		while (ii.hasNext()){
@@ -233,7 +248,7 @@ public class NCData {
 		}
 		return dat;
 	}
-	
+
 	/**
 	 * Retrieve all the data in the given range for a variable
 	 * @param v 	-- the variable to read data
@@ -253,12 +268,12 @@ public class NCData {
 			origin[i]=0;
 			size[i]  =shape[i];
 		}		
-		
+
 		Array data = v.read(origin, size);
 		data=data.reduce();
 		return  (float [])data.copyTo1DJavaArray();
 	}
-	
+
 	/**
 	 * 
 	 * @param variable
@@ -324,13 +339,13 @@ public class NCData {
 				}
 			}
 		}
-		
+
 		demoData[0] ="Date,UTC,"+v1.getShortName() +","+v2.getShortName();
 
 		//nc2Asc.NC2Act.wrtMsg(demoData[0]);
 		long milSec;
 		milSec = getTimeMilSec();
-		
+
 		//get 10 secons data
 		int len =10;
 		for (int i=1; i<len; i++) {
@@ -368,27 +383,27 @@ public class NCData {
 		return cl.getTimeInMillis();
 	}
 
-	
+
 	public long getNewTimeMilSec(String hms) throws NCDataException {
 		//long ms=0;
 		String[] tmInf = hms.split(":");
-		
+
 		Calendar cl = Calendar.getInstance();
 		cl.setTimeInMillis(getTimeMilSec());
 		int y =cl.get(Calendar.YEAR);
 		int mm =cl.get(Calendar.MONTH);
 		int d =cl.get(Calendar.DAY_OF_MONTH);
-		
+
 		int h= Integer.parseInt(tmInf[0]);
 		int m= Integer.parseInt(tmInf[1]);
 		int s= Integer.parseInt(tmInf[2]);
-		
+
 		Calendar c2 = Calendar.getInstance();
 		c2.set(y,mm,d,h,m,s);
-		
+
 		return c2.getTimeInMillis();
 	}
-		
+
 	public String  getNewTm( long milSec, int sec) {
 		String tm;
 		Calendar cl = Calendar.getInstance();
@@ -398,20 +413,67 @@ public class NCData {
 		return tm;
 	}
 
-	private String subStr(String s){
-		String ss=s;
-		while (true) {
-			int idx =ss.indexOf("null,");
-			if (idx==-1) { 
-				break;
-			}
-			//assume "null," is always at beginning
-			ss = ss.substring(idx+"null.".length());
-		}
-		return ss;
-	}
 	
+	
+	
+	public void writeDataToFile(List<Variable> sublvars, int[] range, String[] fmt){
+		// all the time-range data len-should be the seconds in the time range
+		String line = ""; tmPassed=0; bfinish =false; 
+		int size = sublvars.size(); //.varname to the first line of out file
+		float[][] data = new float [size][];
+		long t1 = System.currentTimeMillis();
+		int[] oneDLen= new int[size];
+		long milSec=0;
+		try {
+			milSec = getTimeMilSec();
+
+			for (int i =0; i<size; i++){	
+				if (bfinish) return;
+				Variable tmp = sublvars.get(i);
+				data[i] = read1DData(tmp , 0, range[1]);
+				oneDLen[i] =getLen(tmp);
+				line = tmp.getName();
+				progIdx ++;
+			}
+		} catch (NCDataException e) {
+			nc2Asc.NC2Act.wrtMsg("wrtieDataToFile_NCDataException");
+		} catch (InvalidRangeException ee) {
+			nc2Asc.NC2Act.wrtMsg("wrtieDataToFile_InvalidRangeException");
+		} catch (IOException eee) {
+			nc2Asc.NC2Act.wrtMsg("wrtieDataToFile_IOException");
+		}
+
+		//
+		String del = fmt[DataFmt.DMTR_IDX];;
+		for (int i =0; i<range[1]; i++) {
+			if (bfinish) return;
+			line = getNewTm(milSec,i);
+			progIdx++; 
+			for (int j =0; j<size; j++) {
+				int count =0;
+				while (count<oneDLen[j]) {
+					line += del + data[j][oneDLen[j]*i+count];
+					count++;			
+				}
+			}
+			writeOut(line+"\n");
+		}
+		tmPassed =System.currentTimeMillis() - t1;
+		bfinish = true;
+	}
+
+
+	public void writeOut(String str) {
+		try {
+			fout.write(str);
+			fout.flush();
+		} catch (IOException e ) {
+			nc2Asc.NC2Act.wrtMsg("writeOut_err:"+e.getMessage());
+		}
+	}
+
 
 } //eofclass
+
 
 

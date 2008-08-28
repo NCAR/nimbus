@@ -106,7 +106,6 @@ public class NC2Act {
 	 */
 	public static void startWaitCursor(JComponent cmpt) {
 		if (cmpt == null) {wrtMsg("startWaitCursor_cmpt  is null..."); return;}
-		cmpt.getTopLevelAncestor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 	}
 
 	/**

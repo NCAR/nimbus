@@ -255,7 +255,7 @@ class NC2AUIDiag extends JDialog {
 
 		//if the demo data is empty, set defaults.
 		if (dDisp[0]==null || dDisp[0].length()==0) {
-			nc2Asc.NC2Act.wrtMsg("input demo data is empty...");
+			nc2Asc.NC2Act.wrtMsg("Input demo data is empty...");
 			dDisp[0]="Date,UTC,A1DC_LWO,A2DC_LWO";
 			String s1 = "2007-5-16,23:44:";
 			String s2 = DataFmt.SEPDELIMIT.toString() + DataFmt.MISSVAL + DataFmt.SEPDELIMIT.toString()+",0.0";
@@ -297,7 +297,6 @@ class NC2AUIDiag extends JDialog {
 			c.gridx = 1;
 			c.gridy = 0;
 			this.add(createPaneTm(), c); 
-
 
 			//add dlimiter
 			c.gridx = 2;
