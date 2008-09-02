@@ -10,9 +10,7 @@ import nc2AscData.NCData;
 import java.beans.*;
 import java.util.Random;
 
-public class NC2AUIProgBar extends Dialog
-implements ActionListener, 
-PropertyChangeListener {
+public class NC2AUIProgBar extends Dialog implements ActionListener, PropertyChangeListener {
 
 	private JProgressBar progressBar;
 	private JButton doneButton, cancelButton;

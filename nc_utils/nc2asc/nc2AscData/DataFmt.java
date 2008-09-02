@@ -44,15 +44,19 @@ public class DataFmt {
 	//private StringBuffer data = new StringBuffer();
 
 	public DataFmt() {
-		dataFmt[DATE_IDX]=DATEDASH.toString();
+		initDataFmt();
+	}
+
+    public void initDataFmt() {
+    	dataFmt[DATE_IDX]=DATEDASH.toString();
 		dataFmt[TM_IDX]=TIMECOLON.toString();
 		dataFmt[DMTR_IDX]=",";
 		dataFmt[MVAL_IDX]=MISSVAL.toString();
 		dataFmt[TMSET_IDX]=FULLTM.toString(); //timeset= 00:00:00~99:99:99[
 		dataFmt[HEAD_IDX]=HEAD.toString();
 		dataFmt[AVG_IDX]="1";
-	}
-
+    }
+	
 	/**
 	 * The method is for users to record the desired data format in the class
 	 * for further data formatting.
@@ -64,13 +68,58 @@ public class DataFmt {
 	}
 
 	/**
-	 * This is for users to retrieve the desired data format
+	 * This is for users to retrieve the desired data format in simple form
 	 * @return dataFmt
 	 */
 	public String[] getDataFmt(){
 		return dataFmt;
 	}
+	
+	/**
+	 * This is for users to retrieve the desired data format in simple form
+	 * @return dataFmt
+	 */
+	public String[] getNewDataFmt(){
+		//return dataFmt;
+		String[] dfmt = new String[7];
+		if (dataFmt[DATE_IDX]==DATEDASH) {
+			dfmt[DATE_IDX]="-";
+		}  else if (dataFmt[DATE_IDX]==DATESPACE) {
+			dfmt[DATE_IDX]=" ";
+		} else {
+			dfmt[DATE_IDX]= dataFmt[DATE_IDX];
+		}
+		
+		if (dataFmt[TM_IDX]==TIMECOLON) {
+			dfmt[TM_IDX]= ":";
+		} else if (dataFmt[TM_IDX]==TIMESPACE) {
+			dfmt[TM_IDX]= " ";
+		} else if (dataFmt[TM_IDX]==TIMENOSPACE) {
+			dfmt[TM_IDX]= "";
+		} else {
+			dfmt[TM_IDX]= dataFmt[TM_IDX];
+		}
+		
+		dfmt[DMTR_IDX]= dataFmt[DMTR_IDX];
+		dfmt[MVAL_IDX]=dataFmt[MVAL_IDX];
 
+		//time set
+		dfmt[TMSET_IDX]=dataFmt[TMSET_IDX];
+		
+		dfmt[HEAD_IDX]=dataFmt[HEAD_IDX];
+		dfmt[AVG_IDX]=dataFmt[AVG_IDX];
+		return dfmt;
+		
+	}
+
+	public void showNewDataFmt() {
+		String[] fstr = getNewDataFmt();
+		String str="";
+		for (int i=0; i<7; i++) {
+	       str += fstr[i]+"     ";
+		}
+		nc2Asc.NC2Act.wrtMsg(str);
+	}
 	
 	public void showDataFmt() {
 		String str="";
@@ -260,50 +309,5 @@ public class DataFmt {
 		return ret;
 	}
 	
-	private boolean chkTmSet ( int ms) throws DataFormatException{
-		if (dataFmt[TMSET_IDX].equals(FULLTM.toString())){
-			return true;   	
-		} 
-		//get calendar
-		Calendar cd = Calendar.getInstance();
-		cd.setTimeInMillis(ms);
-		int h = cd.get(Calendar.HOUR_OF_DAY);
-		int m = cd.get(Calendar.MINUTE);
-		int s = cd.get(Calendar.SECOND);
-
-		//get start and end time
-		String[] sl= dataFmt[TMSET_IDX].split(TMSETDELIMIT.toString());
-		if (sl.length!=2){
-			throw new DataFormatException("Invalid time-set format: "+dataFmt[TMSET_IDX].toString());	
-		}
-		String[] tmStart = sl[0].split(TMSETCOLON.toString());
-		String[] tmEnd = sl[1].split(TMSETCOLON.toString());
-		if (tmStart.length!=3 || tmEnd.length!=3){
-			throw new DataFormatException("Invalid time-set format: "+dataFmt[TMSET_IDX].toString());	
-		}
-		//check hour>24
-		if (tmEnd[0].compareTo("24")>=0) {
-			h +=24;	            	
-		}
-
-		// build input time into hh:mm:ss
-		String tmp = new String().valueOf(h);
-		if (tmp.length() ==1) {tmp +="0";}
-		String tmStr = tmp + TMSETCOLON.toString(); //add hour
-		tmp = new String().valueOf(m);
-		if (tmp.length() ==1) {tmp +="0";}
-		tmStr =tmStr + tmp + TMSETCOLON.toString();        //add minute
-		tmp = new String().valueOf(s);
-		if (tmp.length() ==1) {tmp +="0";}
-		tmStr =tmStr + tmp;        //add sec
-
-		if ((tmStr.compareTo(sl[0])>=0) && (tmStr.compareTo(sl[1])<=0)) {
-			return true;
-		}
-		return false;
-
-	}
-
-
-
+	
 }

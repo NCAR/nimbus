@@ -45,19 +45,23 @@ public class NCData {
 	private List<Variable> lvars=null;
 
 	/**
-	 *   All the data for a variable in the given range in 1D foramt
-	 */
-//	private float[] oneDData;
-
-	/**
-	 *  All the ascii data that go to the output file. the index means the line order
-	 */
-	//private String[] data;
-
-	/**
-	 *  All the variables' name, units, OR/Len displayed in the table for users
+	 *  All the variables' name, units, OR/Len displayed in the table for users--include time-var
 	 */	
 	private List<String> dataInf;
+
+	private boolean bfinish;
+
+	private long tmPassed;
+
+	private int progIdx =0; 
+
+	private int totVarLen;
+
+	private int topRate;
+
+	private float[][] data;
+	private float[] missVal;
+	private int[] oneDLen, hRate;
 
 	/**
 	 * 	Global information about the netcdf file
@@ -65,22 +69,16 @@ public class NCData {
 	 *  idx 1--start time in milli second
 	 *  idx 2--size of the records
 	 */
-	private String[] gDataInf = {String.valueOf(false),"0","0"};
+	public String[] gDataInf = {"false","0","0"};
 
-	private boolean bfinish;
-	
-	private long tmPassed;
-	
-	private int progIdx =0;
-	
 	public int getProgIdx() {return progIdx;}
-	
-    public boolean  getFinish(){return bfinish;}
-    
-    public void  setFinish(boolean finished){ bfinish = finished;}
-	
-	public long getTmPassed() {	return tmPassed; 	}
-	
+
+	public boolean  getFinish(){return bfinish;}
+
+	public void  setFinish(boolean finished){ bfinish = finished;}
+
+	public long getTmPassed() {	return tmPassed;}
+
 	/**
 	 * Get the variables' list from the netcdf file
 	 * @return
@@ -88,13 +86,6 @@ public class NCData {
 	public List<Variable> getVars(){return lvars;}
 
 
-	/**
-	 * Get all the data from the selected variable names 
-	 * @return
-	 */
-	//public String[] getData(String vn) {
-	//	return data;
-	//}
 
 	/**
 	 * 
@@ -163,7 +154,7 @@ public class NCData {
 			}
 			throw e;
 		} 
-	
+
 	}
 
 	/**
@@ -191,62 +182,37 @@ public class NCData {
 			throw new NCDataException("readDataInf: Empty input file exception:");
 		}
 
-		if (lvars==null) { lvars =  new ArrayList<Variable>(); }
+		lvars =  new ArrayList<Variable>(); 
 		lvars = fin.getVariables();
-
 		int len = lvars.size();
+
 		dataInf = new ArrayList<String>();	
-		for (int i=0; i<len-1 ; i++){ 
+		for (int i=0; i<len ; i++){ 
 			String dat = "";
 			Variable v = lvars.get(i);
+
 			dat += v.getShortName() + DataFmt.SEPDELIMIT.toString();
 			dat += v.getUnitsString() + DataFmt.SEPDELIMIT.toString();
-			int or= getOR(v);
-			dat += or+"/"+getLen(v) + DataFmt.SEPDELIMIT.toString() ;
-			dat += v.getName();
+			dat += getOR(v)+"/"+getLen(v) + DataFmt.SEPDELIMIT ;
+
+			String lname = ""+v.findAttribute("long_name");  //getStringValue()  -bugs
+			lname = lname.substring(lname.indexOf('\"')+1);  //take off the first "
+			int idx = lname.indexOf('\"');  //takeoff the second "
+			if (idx == 0 && lname.length()==1) {
+				dat += " ";
+			}
+			if (idx >0 ) {
+				dat += lname = lname.substring(0, idx);
+			}
 			dataInf.add(i,dat);
 
-			if (or>1){ gDataInf[0] = String.valueOf(true);}
+			if (!gDataInf[0].equals("true") && (getOR(v)>1) ){ gDataInf[0] = "true";}
 		}
-
 		//init global data info
 		gDataInf[1] = String.valueOf(getTimeMilSec()); 
 		gDataInf[2] = String.valueOf(lvars.get(0).getSize());
 	}
 
-
-
-	public String readOneVarData (Variable v, int start) throws InvalidRangeException, IOException {
-
-		String dat =null; // we handle 1-d to d-3 for now
-
-		//set orig and size
-		int[] shape = v.getShape();
-		int[] origin=new int[shape.length], size=new int[shape.length];
-
-		origin[0] =  start;
-		size[0] = 1;
-		for (int i=1; i<shape.length; i++) {
-			origin[i]=0;
-			size[i]  =shape[i];
-		}		
-
-		Array data = v.read(origin, size);
-		data=data.reduce();
-
-		IndexIterator ii = data.getIndexIterator();
-		int count=0;
-		while (ii.hasNext()){
-			float f =ii.getFloatNext();
-			count++;
-			if (dat==null) {
-				dat = String.valueOf(f);
-			} else {
-				dat += DataFmt.SEPDELIMIT.toString()+f;
-			}
-		}
-		return dat;
-	}
 
 	/**
 	 * Retrieve all the data in the given range for a variable
@@ -317,47 +283,6 @@ public class NCData {
 		return demoData;
 	}
 
-	public String[] mkDemoData() throws  NCDataException, InvalidRangeException, IOException {
-
-		String[] demoData = new String[10];
-
-		if (lvars==null || lvars.size()==0) {
-			throw new NCDataException("getDemoData encounts empty variable list.");
-		}
-
-		// get two vars which have single data value
-		Variable v1=null, v2=null;
-		for (int i=0; i< lvars.size(); i++) {
-			if (getLen(lvars.get(i))==1){
-				if (v1==null) {
-					v1=lvars.get(i);
-					continue;
-				} else if (v2==null) {
-					v1=lvars.get(i);
-					break;
-				}
-			}
-		}
-
-		demoData[0] ="Date,UTC,"+v1.getShortName() +","+v2.getShortName();
-
-		//nc2Asc.NC2Act.wrtMsg(demoData[0]);
-		long milSec;
-		milSec = getTimeMilSec();
-
-		//get 10 secons data
-		int len =10;
-		for (int i=1; i<len; i++) {
-			demoData[i]= getNewTm(milSec, i)+ DataFmt.SEPDELIMIT.toString(); 
-			demoData[i] += readOneVarData(v1, i) + DataFmt.SEPDELIMIT.toString();
-			demoData[i] += readOneVarData(v2, i);
-			nc2Asc.NC2Act.wrtMsg(demoData[i]);
-
-		}
-
-		return demoData;
-	}
-
 	public long getTimeMilSec() throws NCDataException {
 		if (dataInf.get(0)== null) {
 			throw new  NCDataException("getTimeMilSec: Variables are not read... Please get variables from the netcdf file.");
@@ -412,46 +337,90 @@ public class NCData {
 		return tm;
 	}
 
-	
-	
-	
+	public String getNewTm(long milSec, int sec, String[] fmt) {
+		String tm;
+		Calendar cl = Calendar.getInstance();
+		cl.setTimeInMillis(milSec);
+		cl.add(Calendar.SECOND, sec);
+
+		//check Date
+		String dtm = "", dateFmt = fmt[DataFmt.DATE_IDX], tmFmt = fmt[DataFmt.TM_IDX];
+		if (!dateFmt.equals(DataFmt.NODATE)) {
+			dtm = cl.get(Calendar.YEAR) + dateFmt +cl.get(Calendar.MONTH)+ dateFmt+ cl.get(Calendar.DAY_OF_MONTH)+ fmt[DataFmt.DMTR_IDX];
+		} 
+
+		//check tm
+		if (tmFmt.equals(DataFmt.TIMESEC)) {
+			dtm += cl.get(Calendar.HOUR_OF_DAY)* 3600 + cl.get(Calendar.MINUTE)*60 +cl.get(Calendar.SECOND);
+		} else {
+			dtm +=cl.get(Calendar.HOUR_OF_DAY)+ tmFmt +cl.get(Calendar.MINUTE)+ tmFmt +cl.get(Calendar.SECOND)+"."+cl.get(Calendar.MILLISECOND);
+		}
+
+		return dtm;
+	}
+
+
 	public void writeDataToFile(List<Variable> sublvars, int[] range, String[] fmt){
 		// all the time-range data len-should be the seconds in the time range
-		String line = ""; tmPassed=0; bfinish =false; 
-		int size = sublvars.size(); //.varname to the first line of out file
-		float[][] data = new float [size][];
-		long t1 = System.currentTimeMillis();
-		int[] oneDLen= new int[size];
-		long milSec=0;
-		try {
-			milSec = getTimeMilSec();
+		String line = ""; tmPassed=0; bfinish =false; progIdx =0; topRate=0;
 
+		int size = sublvars.size(); ///varname to the first line of out file
+		data = new float [size][];
+		oneDLen= new int[size];
+		missVal = new float[size];
+		hRate = new int[size];
+		long milSec= 0;
+		Variable tmp=sublvars.get(0);
+
+		long t1 = System.currentTimeMillis();
+		try {
+			milSec = getTimeMilSec(); 
 			for (int i =0; i<size; i++){	
 				if (bfinish) return;
-				Variable tmp = sublvars.get(i);
-				data[i] = read1DData(tmp , 0, range[1]);
-				oneDLen[i] =getLen(tmp);
-				line = tmp.getName();
+				tmp = sublvars.get(i);
+				oneDLen[i]= getLen(tmp);
+				totVarLen +=oneDLen[i];
+				missVal[i]= tmp.findAttribute("_FillValue").getNumericValue().floatValue();
+				if (gDataInf[0].equals("true"))  {
+					hRate[i]=getOR(tmp);
+					if (hRate[i]>topRate) topRate=hRate[i];
+				}
+				data[i] = read1DData(tmp , range[0], range[1]);
 				progIdx ++;
 			}
 		} catch (NCDataException e) {
-			nc2Asc.NC2Act.wrtMsg("wrtieDataToFile_NCDataException");
+			nc2Asc.NC2Act.wrtMsg("wrtieDataToFile_NCDataException "+ tmp.getName());
 		} catch (InvalidRangeException ee) {
-			nc2Asc.NC2Act.wrtMsg("wrtieDataToFile_InvalidRangeException");
+			nc2Asc.NC2Act.wrtMsg("wrtieDataToFile_InvalidRangeException "+ tmp.getName());
 		} catch (IOException eee) {
-			nc2Asc.NC2Act.wrtMsg("wrtieDataToFile_IOException");
+			nc2Asc.NC2Act.wrtMsg("wrtieDataToFile_IOException "+ tmp.getName());
 		}
 
-		//
-		String del = fmt[DataFmt.DMTR_IDX];;
+		//average low rate data
+		if (Integer.parseInt(fmt[DataFmt.AVG_IDX])>1) {
+			writeLowRateAvgData(range, fmt, milSec, t1, size);
+			return;
+		}
+
+		if (gDataInf[0].equals("true")) {
+			writeHighRateData(range, fmt, milSec, t1, size);
+			return;
+		}
+		//regular data - no average& no high rate
+		String dmtr = fmt[DataFmt.DMTR_IDX], mval = fmt[DataFmt.MVAL_IDX];
 		for (int i =0; i<range[1]; i++) {
 			if (bfinish) return;
-			line = getNewTm(milSec,i);
+			line = getNewTm(milSec,i+range[0], fmt);
 			progIdx++; 
 			for (int j =0; j<size; j++) {
 				int count =0;
 				while (count<oneDLen[j]) {
-					line += del + data[j][oneDLen[j]*i+count];
+					float f = data[j][oneDLen[j]*i+count];
+					if (f == missVal[j]) {
+						line += dmtr + mval;
+					} else {
+						line += dmtr + f;
+					}
 					count++;			
 				}
 			}
@@ -461,6 +430,93 @@ public class NCData {
 		bfinish = true;
 	}
 
+	private void writeLowRateAvgData(int[] range, String[] fmt, long milSec, long t1, int size) {
+		int avg = Integer.parseInt(fmt[DataFmt.AVG_IDX]); 
+		long tot = 0;
+		for (int j=0; j<avg; j++) {
+			tot +=  j;
+		}
+		tot = (long) 1000.0 * tot/avg;
+		String dmtr = fmt[DataFmt.DMTR_IDX], mval = fmt[DataFmt.MVAL_IDX]; 
+		float[] totVal= new float[totVarLen]; int totValIdx=0, avgCount =0; float mVal = -99999;
+
+		for (int i =0; i<range[1]; i++) { //data-in the time range
+			if (bfinish) return;
+			progIdx ++; totValIdx=0; String lineData="";
+			for (int j =0; j<size; j++) {
+				int count =0;
+				while (count<oneDLen[j]) {
+					float f = data[j][oneDLen[j]*i+count];
+					if (f == missVal[j] || totVal[totValIdx]==mVal) {
+						totVal[totValIdx]= mVal;
+					} else {
+						totVal[totValIdx]+= f/avg;
+					}
+
+					if (avgCount == avg-1) {
+						if (totVal[totValIdx] == mVal) {
+							lineData += dmtr + mval;;
+						} else {
+							lineData += dmtr + totVal[totValIdx];
+						}
+						totVal[totValIdx]=0;
+					}
+					count ++;		//one-var-len
+					totValIdx++;  	//total-varl-len
+				}
+			}
+			//write one averaged-line
+			if (avgCount<(avg-1)) {
+				avgCount++; 		// time-D
+			} else {  				//write avg-data-val to file and reset
+				String line = getNewTm(milSec +(range[0]+i-avg+1)*1000 +tot,0, fmt)+lineData;
+				writeOut(line+"\n");
+				avgCount=0;
+			}
+		}
+		tmPassed =System.currentTimeMillis() - t1;
+		bfinish = true;
+		return;
+	}
+
+
+	private void writeHighRateData(int[] range, String[] fmt, long milSec, long t1, int size) {
+		String dmtr = fmt[DataFmt.DMTR_IDX], mval = fmt[DataFmt.MVAL_IDX]; 
+		float[] valKp= new float[totVarLen];
+		
+		for (int i =0; i<range[1]; i++) { //data-in the time range
+			if (bfinish) return;
+			progIdx ++; 
+
+			float tmInt = 1/topRate;
+			for (int k=0; k<topRate; k++) {  //highest rate
+				int varIdx =0;
+				String line  = getNewTm(milSec + (long)(range[0]+i+k*tmInt)*1000, 0, fmt);
+				for (int j =0; j<size; j++) { //variables
+					int count =0; 
+					while (count<oneDLen[j]) { //length-of-each-variable
+						if (k % hRate[j]==0) {
+							int idx = k/hRate[j];
+							valKp[varIdx] = data[j][oneDLen[j]*i + count + idx];
+							line += dmtr + valKp[varIdx];
+						} else {
+							if (mval.equals(DataFmt.REPLICATE)) {
+								line += dmtr + valKp[varIdx];
+							} else {
+								line += dmtr + mval;
+							}
+						}
+						count ++;		//one-var-len
+						varIdx++;        //tot-var-len
+					}
+				} //variable
+				writeOut(line+"\n");
+			} //k-highest rate
+		} //time-for
+		tmPassed =System.currentTimeMillis() - t1;
+		bfinish = true;
+		return;
+	}
 
 	public void writeOut(String str) {
 		try {

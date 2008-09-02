@@ -48,8 +48,10 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 				} catch (InterruptedException ignore) {}
 				progress = ncdata.getProgIdx();
 			}
-			progress = taskLen;
-			setProgress(100);
+			progress = ncdata.getProgIdx();
+			setProgress(Math.min(100*progress/taskLen, 100));
+			bnCancel.setVisible(false);
+			bnProc.setEnabled(true);
 			return null;
 		}
 
@@ -58,8 +60,15 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		 */
 		@Override
 		public void done() {
+			//setProgress(100);
 			Toolkit.getDefaultToolkit().beep();
+			if (ncdata.getProgIdx()<taskLen) {
+				statusBar.setText("Canceled. taskLen= "+ taskLen + " finished= "+ ncdata.getProgIdx());
+			} else {
+				statusBar.setText("  Done.    Time is "+ ncdata.getTmPassed()+ " mil seconds." );
+			}
 			//setCursor(Cursor.DEFAULT_CURSOR); //turn off the wait cursor
+			pfrm.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 
 		}
 	}
@@ -81,7 +90,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 	private Task       task;
 
 	private JTable tbl; 
-	private JButton    bnProc, bnFmt;
+	private JButton    bnProc, bnFmt, bnCancel;
 	private JCheckBox  cbTog, cbSel, cbDesel; 
 	private JTextField tfRt;
 	private StatusBar  statusBar;
@@ -91,13 +100,13 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 	private NCData     ncdata;
 	private DataFmt    datafmt = new DataFmt();
 
-	private List<String>   dataInf; 
-	private String[]   fileName = new String[2];  // inputFileName and outputFileName
+	private List<String>   dataInf;   //dataInf contains all the variable data information = lvars-ncdata-- first one is the time var
+	private List<Integer>  idxSearch; //search result list  -- skip time var
+	private int            idxCount;  //search count		-- skip time var
+	private List<String>   selStatus; //select status 		-- skip the time var 
 
+	private String[]    fileName = new String[2];  // inputFileName and outputFileName
 	private int 		taskLen; //max len of tasks     
-	private List<Integer>      idxSearch;
-	private int        idxCount;
-	private List<String>   selStatus;
 
 
 	/**
@@ -271,6 +280,17 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		int i=0;
 		jpBt.add(bnFmt,i++);
 		jpBt.add(bnProc,i++);
+
+		JPanel jp = new JPanel();
+		jp.setLayout(new GridLayout(0, 3));
+		bnCancel= new JButton("Cancel");
+		bnCancel.setForeground(new Color( 150, 0,0));
+		addButtonActCmd(bnCancel, "cancel");
+		jp.add(new JLabel(""));
+		jp.add(new JLabel(""));
+		jp.add(bnCancel);
+		jpBt.add(jp, i++);
+
 		jpBt.add(new JLabel(""),i++);
 		jpBt.add(new JLabel(""),i++);
 		jpBt.add(new JLabel(""),i++);
@@ -283,8 +303,6 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		jpBt.add(new JLabel(""),i++);
 		jpBt.add(new JLabel(""),i++);
 		jpBt.add(new JLabel(""),i++);
-		jpBt.add(new JLabel(""), i++);
-		//jpBt.add(new JLabel(""), i++);
 
 		tfRt = new JTextField();
 		jpBt.add(new JLabel("Search..."),i++);
@@ -293,6 +311,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		tfRt.setVisible(false);
 		bnFmt.setEnabled(false);
 		bnProc.setEnabled(false);
+		bnCancel.setVisible(false);
 		cbSel.setEnabled(false);
 		cbDesel.setEnabled(false);
 		cbTog.setEnabled(false);
@@ -306,7 +325,6 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 				//repopulateTbl(tfRt.getText());
 			};
 		});
-
 		return jpBt; 
 	}
 
@@ -349,15 +367,16 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 	public void propertyChange(PropertyChangeEvent evt) {
 		if ("progress" == evt.getPropertyName()) {
 			int progress = (Integer) evt.getNewValue();
-			statusBar.setText("Data Progress is "+progress + "% done.");
+			statusBar.setText("    Data Progress is "+progress + "% done.");
 		} 
 	}
 
 
 	private void cancelDataProgress(ActionEvent e) {
 		if ("cancel".equals(e.getActionCommand())) {
-			ncdata.setFinish(true);
-			statusBar.setText(" Canceled...");
+			if (bnCancel.isVisible() && ncdata.getProgIdx() < taskLen ) {
+				ncdata.setFinish(true);
+			}
 		} 
 	}
 
@@ -467,7 +486,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			JFrame frm = new JFrame("Select Data Foramt");
 			JFrame.setDefaultLookAndFeelDecorated(true);
 			JDialog.setDefaultLookAndFeelDecorated(true);
-			//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			//frm.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);// .DO_NOTHING_ON_CLOSE);// .EXIT_ON_CLOSE);
 
 			frm.setLocation(250, 150);
 			String[] demodata = new String[10];
@@ -484,7 +503,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			}
 
 			dialog = new NC2AUIDiag(frm, true, demodata, ncdata.getGlobalDataInf());
-			dialog.setBounds(250, 150, 690, 400);
+			dialog.setBounds(250, 150, 690, 450);
 			dialog.setVisible(true);
 		}
 	} 
@@ -514,22 +533,11 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			if (cbTog.isSelected()){
 				cbTog.setSelected(false);
 				statusBar.setText(" Ready");
-				if (idxCount >0) {
-					for (int i=0; i<idxCount; i++) {
-						if (!tbl.isRowSelected(i)) {continue;}
-						String v = (String)tbl.getValueAt(i, 4); 
-						if (v==null || !v.equals("Y")) {
-							tbl.setValueAt("Y", i, 4);
-							selStatus.set(idxSearch.get(i),"Y");
-						} else { 
-							tbl.setValueAt("", i, 4);
-							selStatus.set(idxSearch.get(i), "");
-						} 
-					}
-					return;
-				} // idxsearch
-				// default dataInf
-				for (int i=0; i<dataInf.size()-1; i++) {
+				if (idxCount <1) {
+					statusBar.setText("toggle_idxCount < 1");
+				}
+
+				for (int i=0; i<idxCount; i++) {
 					if (!tbl.isRowSelected(i)) {continue;}
 					String v = (String)tbl.getValueAt(i, 4); 
 					if (v==null || !v.equals("Y")) {
@@ -540,9 +548,9 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 						selStatus.set(idxSearch.get(i), "");
 					} 
 				}
-			} //cbTog
-
-		}
+				return;
+			} //if_cbTog
+		}//if_cmd
 	}
 	private void selAll(ActionEvent e){
 		if (SELALL.equals(e.getActionCommand())) {
@@ -593,27 +601,24 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 				return;
 			}
 
+			//bnCancel.setVisible(true); 
+			bnProc.setEnabled(false);
 			//write out data
 			String out= genVarName(sublvars); 
-			//pfrm.getContentPane().
 			ncdata.writeOut(datafmt.fmtDmtr(out)+"\n");
 			int[] range = getTmRange();
 			long t1 = Calendar.getInstance().getTimeInMillis();
 
-			DataThread dth = new DataThread(ncdata, sublvars, range, datafmt.getDataFmt()); 
+			DataThread dth = new DataThread(ncdata, sublvars, range, datafmt.getNewDataFmt()); 
 			dth.start();
 
 			taskLen = sublvars.size()+ range[1];
 			task = new Task();
 			task.addPropertyChangeListener(this);
 			task.execute();
+			bnCancel.setVisible(true); 
+			pfrm.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-			//pfrm.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			//while (!ncdata.getFinish()){
-			//	try {Thread.sleep(1000);} catch (Exception ee) {}
-			//}
-			//pfrm.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			//statusBar.setText("Done.    Time = "+ ncdata.getTmPassed()+ " mil seconds");
 		}
 	}
 
@@ -673,9 +678,9 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			dataInf=ncdata.getDataInf();
 			idxSearch = new ArrayList<Integer>();
 			selStatus = new ArrayList<String>();
-			idxCount =0;
-			for (int i=0; i<dataInf.size(); i++){
-				idxSearch.add(i, 0);
+			idxCount =dataInf.size()-1;  //skip the first time data
+			for (int i=0; i<idxCount; i++){
+				idxSearch.add(i, i);
 				selStatus.add(i,"");
 			}
 			statusBar.setText("datainf len "+ dataInf.size());
@@ -760,11 +765,11 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			String data =dataInf.get(i);
 			if (data==null || data.length()<1) {return;}
 			String[] d = data.split(DataFmt.SEPDELIMIT);
-			tbl.setValueAt(" ", i, 0);
-			tbl.setValueAt(" ", i, 1);
-			tbl.setValueAt(" ", i, 2);
-			tbl.setValueAt(" ", i, 3);
-			tbl.setValueAt(" ", i, 4);
+			tbl.setValueAt(" ", i-1, 0);
+			tbl.setValueAt(" ", i-1, 1);
+			tbl.setValueAt(" ", i-1, 2);
+			tbl.setValueAt(" ", i-1, 3);
+			tbl.setValueAt(" ", i-1, 4);
 
 			if (d[0].indexOf(st) >=0) {
 				tbl.setValueAt((Object)d[0], idxCount, 0);
@@ -801,13 +806,10 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
 
 
-	public long  writeOutVarData(List<Variable> sublvars){
-
-
+	/*public long  writeOutVarData(List<Variable> sublvars){
 		String line = "";
 		//get and write the data out 
 		try{
-
 			String out= genVarName(sublvars); 
 			ncdata.writeOut(datafmt.fmtDmtr(out)+"\n");
 			long milSec = ncdata.getTimeMilSec();
@@ -821,14 +823,14 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
 			for (int i =0; i<size; i++){	
 				Variable tmp = sublvars.get(i); 
-				data[i] = ncdata.read1DData(tmp , 0, range[1]);
+				data[i] = ncdata.read1DData(tmp , range[0], range[1]);
 				oneDLen[i] =ncdata.getLen(tmp);
 				line = tmp.getName();
-				statusBar.setText(line);
+				//statusBar.setText(line);
 			}
 			//write out
 			String del = datafmt.getDataFmt()[DataFmt.DMTR_IDX];;
-			for (int i =0; i<range[1]; i++) {
+			for (int i =range[0]; i<range[1]; i++) {
 				line = ncdata.getNewTm(milSec,i);
 
 				for (int j =0; j<size; j++) {
@@ -857,52 +859,29 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
 		return 0;
 	} 
+*/
 
-
-	private int[] getTmRange() {
+	private int[] getTmRange()  {
 		int[] ii = new int[2];
-		try {
-			if (datafmt.getDataFmt()[DataFmt.TMSET_IDX]==DataFmt.FULLTM) { //all the data
-				ii[0]=0;
-				ii[1]=(int)ncdata.getVars().get(0).getSize(); // .getShape()[0];
-				return ii;
-			}
-
-			//get start
-			String[] tm= datafmt.getDataFmt()[DataFmt.TM_IDX].split(DataFmt.TMSETDELIMIT); 
-			ii[0] = (int)(ncdata.getNewTimeMilSec(tm[0]) - ncdata.getTimeMilSec())/1000;
-			//get length
-			String[] t1 = tm[0].split(DataFmt.TMSETCOLON);
-			String[] t2 = tm[1].split(DataFmt.TMSETCOLON);
-			int h = Integer.parseInt(t1[0]);
-			int m = Integer.parseInt(t1[1]);
-			int s = Integer.parseInt(t1[2]);
-			int h2 = Integer.parseInt(t2[0]);
-			int m2 = Integer.parseInt(t2[0]);
-			int s2 = Integer.parseInt(t2[0]);
-			ii[1] = h2*3600+m2*60+s2 - h*3600+m*60+s ;
-
-		} catch (NCDataException ne) {
-			nc2Asc.NC2Act.wrtMsg("NC2AUI_getTmRange_NCDataException"+ne.getMessage());
+		String tmset = datafmt.getNewDataFmt()[DataFmt.TMSET_IDX];
+	
+		if (tmset.equals(DataFmt.FULLTM)) { //all the data
+			ii[0]=0;
+			ii[1]=(int)ncdata.getVars().get(0).getSize(); // .getShape()[0];
+			return ii;
 		}
+		try {
+			String[] iiStr = tmset.split(DataFmt.TMSETDELIMIT);	
+			ii[0] =  (int)(Long.parseLong(iiStr[0]) - ncdata.getTimeMilSec())/1000 ;
+			ii[1] =  Integer.parseInt(iiStr[1]);
+		} catch (NullPointerException e) {
+			NC2Act.wrtMsg("getTmRange_nullPointerException"+ e.getStackTrace());
+		} catch (NCDataException ee) {
+			NC2Act.wrtMsg("getTmRange_NCDataException"+ ee.getStackTrace());
+		}
+	
 		return ii;
 	}
-
-
-	/*private void invokeProcDiag(int len) {
-
-		JFrame frm = new JFrame("         Data Process Status  ");
-		JFrame.setDefaultLookAndFeelDecorated(true);
-		JDialog.setDefaultLookAndFeelDecorated(true);
-		//frm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frm.setLocation(250, 150);
-
-		dlgProgBar = new NC2AUIProgBar(frm, true, ncdata, len);
-		dlgProgBar.setBounds(350, 250, 250, 150);
-		dlgProgBar.setVisible(true);
-
-	}*/
-
 
 }//eof class
 
@@ -927,9 +906,8 @@ class MyTblModel extends DefaultTableModel {
 
 
 /**
- * 
+ *   StatusBar extends JLabel and implements setMessage method 
  */
-
 class StatusBar extends JLabel   {
 	/** Creates a new instance of StatusBar */
 	public StatusBar() {
@@ -966,24 +944,3 @@ class DataThread extends Thread {
 }
 
 
-class StatusThread  extends Thread {
-	StatusThread(StatusBar obj) {
-		sb=obj;
-	}
-
-	public void run() {
-		while(!stop){
-			sb.setText("Time passed " + tm +" seconds" );
-			sb.repaint();
-			try {wait(2000);} catch (Exception e) {}
-			tm +=2;
-		}
-	}
-
-	public void setStop(boolean st){stop= st;}
-
-	private long tm =0;
-	private boolean   stop= false;
-	private StatusBar sb;
-	private NCData    ncdata;
-}
