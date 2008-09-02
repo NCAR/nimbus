@@ -51,7 +51,7 @@ public class NC2A extends JPanel implements ActionListener {
 	 * 
 	 *  @param args
 	 *  This program has two modes: 
-	 *  1> Schedulc e a job for the event-dispatching thread:
+	 *  1> Schedule a job for the event-dispatching thread:
 	 *	2> Creating and showing this application's GUI.
 	 *  
 	 *  UI mode:    to provide user graphic interface

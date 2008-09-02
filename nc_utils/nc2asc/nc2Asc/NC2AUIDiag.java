@@ -42,7 +42,7 @@ class NC2AUIDiag extends JDialog {
 	private String[] cbDateTxt, cbTmTxt;
 	private String[] dDisp   = new String[10]; //make up data for display
 
-	private boolean  bHighRate;
+	private int  highRate;
 	private int  size;
 	private long tmStart;
 	private String[] origTm= new String[4];
@@ -55,15 +55,15 @@ class NC2AUIDiag extends JDialog {
 		init();
 	}
 
-	public NC2AUIDiag(Frame owner, boolean modal, String[] initData, String[] gDataInf) {
+	public NC2AUIDiag(Frame owner, boolean modal, String[] initData, long[] gDataInf) {
 		super(owner, modal);
 		JDialog.setDefaultLookAndFeelDecorated(true);
 		this.setDefaultCloseOperation(this.DO_NOTHING_ON_CLOSE);
 
 		dDisp=initData;
-		bHighRate = Boolean.parseBoolean(gDataInf[0]);
-		tmStart = Long.parseLong(gDataInf[1]);
-		size   = Integer.parseInt(gDataInf[2]);
+		highRate = (int)gDataInf[0];
+		tmStart =   gDataInf[1];
+		size   = (int)gDataInf[2];
 		initTmSet();
 		init();
 	}
@@ -361,7 +361,7 @@ class NC2AUIDiag extends JDialog {
 		}
 
 		//chk high rate or low rate data to control options
-		if (bHighRate) {
+		if (highRate>1) {
 			tfSmpRate.setEnabled(false);
 		} else {
 			rVal3.setEnabled(false);
@@ -764,7 +764,11 @@ class NC2AUIDiag extends JDialog {
 			}
 			ret += "\n" + dFormat.fmtDmtr(one);
 		}
-
+		
+		//add extra empty lines
+		for (int i=0; i<loop-len; i++){
+			ret += " \n";
+		}
 		return ret;
 	}
 

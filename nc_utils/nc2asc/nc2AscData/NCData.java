@@ -45,22 +45,48 @@ public class NCData {
 	private List<Variable> lvars=null;
 
 	/**
-	 *  All the variables' name, units, OR/Len displayed in the table for users--include time-var
+	 * All the variables' name, units, OR/Len displayed in the table for users--include time-var
 	 */	
 	private List<String> dataInf;
 
+	/**
+	 * Status of the process to retrieve and write data to a file
+	 */
 	private boolean bfinish;
 
+	/**
+	 * Time needed to process the data (in mili seconds)
+	 */ 
 	private long tmPassed;
 
+	/**
+	 * Progress status displayed on the status bar for end users 
+	 */
 	private int progIdx =0; 
 
+	/**
+	 * All the selected variables' length. These are the variables on the output file 
+	 */ 
 	private int totVarLen;
 
-	private int topRate;
+	/**
+	 * the highest output rate in mixed high rate data
+	 */
+	//private int topRate;
 
+	/**
+	 * All selected variables' 1D array float data
+	 */
 	private float[][] data;
+	
+	/**
+	 * The represent of each variable's miss value
+	 */
 	private float[] missVal;
+	
+	/**
+	 * Each variable's length and rate from netcdf file.
+	 */
 	private int[] oneDLen, hRate;
 
 	/**
@@ -69,14 +95,33 @@ public class NCData {
 	 *  idx 1--start time in milli second
 	 *  idx 2--size of the records
 	 */
-	public String[] gDataInf = {"false","0","0"};
+	private long[] gDataInf = {1,0,0};  
 
+	/**
+	 * The index out of the total counts
+	 * The total counts are made of the number of all selected variables and total time range in seconds 
+	 * @return - The current index of total counts
+	 */
 	public int getProgIdx() {return progIdx;}
 
+	
+	/**
+	 * The status of the data retrieving and writing to an ascii file.
+	 * @return - finished or not
+	 */
 	public boolean  getFinish(){return bfinish;}
-
+	
+	
+	/**
+	 * 
+	 * @param finished - Set "true" to stop the data process, if a user chooses to cancel the data process from UI 
+	 */
 	public void  setFinish(boolean finished){ bfinish = finished;}
 
+	/**
+	 * This is the time used to retrieve and write to a file 
+	 * @return -- the total time passed in milseconds
+	 */
 	public long getTmPassed() {	return tmPassed;}
 
 	/**
@@ -101,7 +146,7 @@ public class NCData {
 	/**
 	 *  Get the global information of the netcdf file
 	 */
-	public String[] getGlobalDataInf() {
+	public long[] getGlobalDataInf() {
 		return gDataInf;
 	}
 
@@ -171,10 +216,10 @@ public class NCData {
 	}
 
 	/**
-	 * Retrieve attribute information such as name, unit, OR/len, etc for the variables
+	 * Retrieve attribute information such as name, unit, OR/len, etc for the variables-time var is the first one
 	 * 
-	 * @throws NCDataException
-	 * @throws ArrayIndexOutOfBoundsException
+	 * @throws NCDataException ArrayIndexOutOfBoundsException InvalidRangeException IOException
+	 * @throws 
 	 */
 	public void readDataInf() throws NCDataException, ArrayIndexOutOfBoundsException, InvalidRangeException, IOException{			
 
@@ -182,19 +227,22 @@ public class NCData {
 			throw new NCDataException("readDataInf: Empty input file exception:");
 		}
 
-		lvars =  new ArrayList<Variable>(); 
-		lvars = fin.getVariables();
+		lvars = new ArrayList<Variable>();
+		List<Variable> tmp =  new ArrayList<Variable>();
+		tmp = fin.getVariables();
+		checklvars(tmp, lvars); //check the time-base and time_offset && sign valid vars to lvars
 		int len = lvars.size();
-
+		gDataInf[0] =1;   
 		dataInf = new ArrayList<String>();	
 		for (int i=0; i<len ; i++){ 
 			String dat = "";
 			Variable v = lvars.get(i);
-
 			dat += v.getShortName() + DataFmt.SEPDELIMIT.toString();
 			dat += v.getUnitsString() + DataFmt.SEPDELIMIT.toString();
-			dat += getOR(v)+"/"+getLen(v) + DataFmt.SEPDELIMIT ;
 
+			int or = getOR(v); if (or>gDataInf[0]) { gDataInf[0]= or;}
+			dat += or+"/"+getLen(v) + DataFmt.SEPDELIMIT ;
+			
 			String lname = ""+v.findAttribute("long_name");  //getStringValue()  -bugs
 			lname = lname.substring(lname.indexOf('\"')+1);  //take off the first "
 			int idx = lname.indexOf('\"');  //takeoff the second "
@@ -206,11 +254,10 @@ public class NCData {
 			}
 			dataInf.add(i,dat);
 
-			if (!gDataInf[0].equals("true") && (getOR(v)>1) ){ gDataInf[0] = "true";}
 		}
 		//init global data info
-		gDataInf[1] = String.valueOf(getTimeMilSec()); 
-		gDataInf[2] = String.valueOf(lvars.get(0).getSize());
+		gDataInf[1] = getTimeMilSec(); 
+		gDataInf[2] = fin.getUnlimitedDimension().getLength();
 	}
 
 
@@ -362,7 +409,7 @@ public class NCData {
 
 	public void writeDataToFile(List<Variable> sublvars, int[] range, String[] fmt){
 		// all the time-range data len-should be the seconds in the time range
-		String line = ""; tmPassed=0; bfinish =false; progIdx =0; topRate=0;
+		String line = ""; tmPassed=0; bfinish =false; progIdx =0; 
 
 		int size = sublvars.size(); ///varname to the first line of out file
 		data = new float [size][];
@@ -370,7 +417,7 @@ public class NCData {
 		missVal = new float[size];
 		hRate = new int[size];
 		long milSec= 0;
-		Variable tmp=sublvars.get(0);
+		Variable tmp=null;
 
 		long t1 = System.currentTimeMillis();
 		try {
@@ -381,9 +428,8 @@ public class NCData {
 				oneDLen[i]= getLen(tmp);
 				totVarLen +=oneDLen[i];
 				missVal[i]= tmp.findAttribute("_FillValue").getNumericValue().floatValue();
-				if (gDataInf[0].equals("true"))  {
+				if (gDataInf[0]>1)  {
 					hRate[i]=getOR(tmp);
-					if (hRate[i]>topRate) topRate=hRate[i];
 				}
 				data[i] = read1DData(tmp , range[0], range[1]);
 				progIdx ++;
@@ -402,7 +448,7 @@ public class NCData {
 			return;
 		}
 
-		if (gDataInf[0].equals("true")) {
+		if (gDataInf[0]>1) {
 			writeHighRateData(range, fmt, milSec, t1, size);
 			return;
 		}
@@ -488,7 +534,8 @@ public class NCData {
 			if (bfinish) return;
 			progIdx ++; 
 
-			float tmInt = 1/topRate;
+			int topRate = (int)gDataInf[0];
+			float tmInt = (float)1.0/topRate;
 			for (int k=0; k<topRate; k++) {  //highest rate
 				int varIdx =0;
 				String line  = getNewTm(milSec + (long)(range[0]+i+k*tmInt)*1000, 0, fmt);
@@ -528,6 +575,16 @@ public class NCData {
 	}
 
 
+	private void checklvars(List<Variable> tmp, List<Variable> vars) {
+		int idx =0;
+		for (int i =0; i<tmp.size(); i++) {
+			Variable v = tmp.get(i);
+			if (v.getName().equals("base_time")||v.getName().equals("time_offset")) {
+				continue;
+			}
+			vars.add(v); idx ++;
+		}
+	}
 } //eofclass
 
 

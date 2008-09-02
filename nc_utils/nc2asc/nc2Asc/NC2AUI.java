@@ -867,7 +867,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 	
 		if (tmset.equals(DataFmt.FULLTM)) { //all the data
 			ii[0]=0;
-			ii[1]=(int)ncdata.getVars().get(0).getSize(); // .getShape()[0];
+			ii[1]=(int)ncdata.getGlobalDataInf()[2]; // .getShape()[0];
 			return ii;
 		}
 		try {
