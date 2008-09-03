@@ -540,10 +540,10 @@ public class NCData {
 				int varIdx =0;
 				String line  = getNewTm(milSec + (long)(range[0]+i+k*tmInt)*1000, 0, fmt);
 				for (int j =0; j<size; j++) { //variables
-					int count =0; 
+					int count =0; int dataInterval = topRate/hRate[j]; 
 					while (count<oneDLen[j]) { //length-of-each-variable
-						if (k % hRate[j]==0) {
-							int idx = k/hRate[j];
+						if (k % dataInterval==0) {
+							int idx = k/dataInterval;
 							valKp[varIdx] = data[j][oneDLen[j]*i + count + idx];
 							line += dmtr + valKp[varIdx];
 						} else {

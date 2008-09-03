@@ -683,7 +683,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 				idxSearch.add(i, i);
 				selStatus.add(i,"");
 			}
-			statusBar.setText("datainf len "+ dataInf.size());
+			//statusBar.setText("datainf len "+ dataInf.size());
 		} catch ( ArrayIndexOutOfBoundsException ae) {
 			NC2Act.wrtMsg("populateTbl_Array index out of bound"+ae.getMessage());
 		} catch (NCDataException n) {
