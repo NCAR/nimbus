@@ -237,11 +237,11 @@ public class NCData {
 		for (int i=0; i<len ; i++){ 
 			String dat = "";
 			Variable v = lvars.get(i);
-			dat += v.getShortName() + DataFmt.SEPDELIMIT.toString();
-			dat += v.getUnitsString() + DataFmt.SEPDELIMIT.toString();
+			dat += v.getShortName() + DataFmt.COMMAVAL.toString();
+			dat += v.getUnitsString() + DataFmt.COMMAVAL.toString();
 
 			int or = getOR(v); if (or>gDataInf[0]) { gDataInf[0]= or;}
-			dat += or+"/"+getLen(v) + DataFmt.SEPDELIMIT ;
+			dat += or+"/"+getLen(v) + DataFmt.COMMAVAL ;
 			
 			String lname = ""+v.findAttribute("long_name");  //getStringValue()  -bugs
 			lname = lname.substring(lname.indexOf('\"')+1);  //take off the first "
@@ -323,8 +323,8 @@ public class NCData {
 
 		int len =10;
 		for (int i=1; i<len; i++) {
-			demoData[i]= getNewTm(milSec, i)+ DataFmt.SEPDELIMIT.toString() 
-			+ DataFmt.MISSVAL + DataFmt.SEPDELIMIT.toString()
+			demoData[i]= getNewTm(milSec, i)+ DataFmt.COMMAVAL.toString() 
+			+ DataFmt.MISSVAL + DataFmt.COMMAVAL.toString()
 			+ "0.0";
 		}
 		return demoData;
@@ -336,8 +336,8 @@ public class NCData {
 		}
 		//nc2Asc.NC2Act.wrtMsg(dataInf[0]);
 		String tmVar= dataInf.get(0);
-		String date = tmVar.split(DataFmt.SEPDELIMIT.toString())[1].split(" ")[2];
-		String tm   = tmVar.split(DataFmt.SEPDELIMIT.toString())[1].split(" ")[3];
+		String date = tmVar.split(DataFmt.COMMAVAL.toString())[1].split(" ")[2];
+		String tm   = tmVar.split(DataFmt.COMMAVAL.toString())[1].split(" ")[3];
 		String[] dInf = date.split("-");
 		String[] tmInf   = tm.split(":");
 
@@ -380,7 +380,7 @@ public class NCData {
 		Calendar cl = Calendar.getInstance();
 		cl.setTimeInMillis(milSec);
 		cl.add(Calendar.SECOND, sec);
-		tm = cl.get(Calendar.YEAR) + "-"+cl.get(Calendar.MONTH)+ "-"+ cl.get(Calendar.DAY_OF_MONTH) + DataFmt.SEPDELIMIT+ cl.get(Calendar.HOUR_OF_DAY)+ ":"+cl.get(Calendar.MINUTE)+":"+cl.get(Calendar.SECOND);
+		tm = cl.get(Calendar.YEAR) + "-"+cl.get(Calendar.MONTH)+ "-"+ cl.get(Calendar.DAY_OF_MONTH) + DataFmt.COMMAVAL+ cl.get(Calendar.HOUR_OF_DAY)+ ":"+cl.get(Calendar.MINUTE)+":"+cl.get(Calendar.SECOND);
 		return tm;
 	}
 

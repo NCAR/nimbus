@@ -61,8 +61,8 @@ public class NC2A extends JPanel implements ActionListener {
 	 */
 	public static void main(String[] args) {
         
-		if (args.length >0 && args[0].toString().equals("-b")) {
-			//NC2Act.wrtMsg(args[0].toString());
+		if (args.length >0 && args[0].equals("-b")) {
+			NC2Act.setMode(true);
 		}	else {
 			NC2Act.setMode(false);
 			javax.swing.SwingUtilities.invokeLater(new Runnable() {

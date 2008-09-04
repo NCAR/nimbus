@@ -15,7 +15,7 @@ public class NC2Act {
 	NC2Act(boolean bm) {batchMode = bm;}
 	
 	private static FileWriter log=null;
-	private static boolean    batchMode= true;
+	private static boolean    batchMode= false;
 	private static StatusBar  sBar= null;
 
 	/**
@@ -42,6 +42,14 @@ public class NC2Act {
 	 */
 	public static void setMode(boolean bm) {batchMode = bm;}
 
+	/**
+	 * Allow users to retrieve the program mode, either batch mode or UI mode
+	 * 
+	 * @return batchMode
+	 */
+	public static boolean setMode() {return batchMode;}
+
+	
 	/**
 	 *  Display the messages to users
 	 * @param s

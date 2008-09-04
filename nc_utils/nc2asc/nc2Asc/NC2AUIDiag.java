@@ -131,16 +131,16 @@ class NC2AUIDiag extends JDialog {
 		Border bdHead = BorderFactory.createTitledBorder("  Head ");
 		jpHead.setBorder(bdHead);
 
-		rHead = new JRadioButton(" None");
+		rHead = new JRadioButton(DataFmt.HEAD);
 		jpHead.add(rHead);
 		rHead.setSelected(true);
 		addButtonActCmd(rHead, RHEAD.toString());
 
-		rHead2 = new JRadioButton(" Icartt    "); 
+		rHead2 = new JRadioButton(DataFmt.HEAD2); 
 		jpHead.add(rHead2);
 		addButtonActCmd(rHead2, RHEAD2.toString());
 
-		rHead3 = new JRadioButton(" Xml "); 
+		rHead3 = new JRadioButton(DataFmt.HEAD3); 
 		jpHead.add(rHead3);
 		addButtonActCmd(rHead3, RHEAD3.toString());
 
@@ -195,16 +195,16 @@ class NC2AUIDiag extends JDialog {
 		Border bdVal = BorderFactory.createTitledBorder("Fill Value");
 		jpVal.setBorder(bdVal);
 
-		rVal = new JRadioButton("Fill Value");
+		rVal = new JRadioButton(DataFmt.FILLVALUE.toString());
 		jpVal.add(rVal);
 		rVal.setSelected(true);
 		addButtonActCmd(rVal, RVAL.toString());
 
-		rVal2 = new JRadioButton("Leave Blank"); 
+		rVal2 = new JRadioButton(DataFmt.LEAVEBLANK.toString()); 
 		jpVal.add(rVal2);
 		addButtonActCmd(rVal2, RVAL2.toString());
 
-		rVal3 = new JRadioButton("Replicate"); 
+		rVal3 = new JRadioButton(DataFmt.REPLICATE); 
 		jpVal.add(rVal3);
 		addButtonActCmd(rVal3, RVAL3.toString());
 
@@ -269,7 +269,7 @@ class NC2AUIDiag extends JDialog {
 			nc2Asc.NC2Act.wrtMsg("Input demo data is empty...");
 			dDisp[0]="Date,UTC,A1DC_LWO,A2DC_LWO";
 			String s1 = "2007-5-16,23:44:";
-			String s2 = DataFmt.SEPDELIMIT.toString() + DataFmt.MISSVAL + DataFmt.SEPDELIMIT.toString()+",0.0";
+			String s2 = DataFmt.COMMAVAL.toString() + DataFmt.MISSVAL + DataFmt.COMMAVAL.toString()+",0.0";
 			int sec = 17;
 			for (int i=1; i<10; i++) {
 				sec++;
@@ -453,7 +453,7 @@ class NC2AUIDiag extends JDialog {
 			tfTmSet2.setText(origTm[3]);
 			return;
 		}
-		//start-time and range-seconds
+		//start-time(milsec) and range-seconds
 		DataFmt.setDataFmt(tmStart+ DataFmt.TMSETDELIMIT+(int)((tmEnd-tmStart)/1000), DataFmt.TMSET_IDX);
 	}
 
@@ -522,7 +522,7 @@ class NC2AUIDiag extends JDialog {
 			if (rDmtr.isSelected()){
 				rDmtr2.setSelected(false);
 				rVal2.setEnabled(true);
-				DataFmt.setDataFmt(DataFmt.SEPDELIMIT.toString(), DataFmt.DMTR_IDX);
+				DataFmt.setDataFmt(DataFmt.COMMAVAL.toString(), DataFmt.DMTR_IDX);
 				tfDisp.setText(reFmtDisp());
 			} else if (!rDmtr2.isSelected()) {
 				DataFmt.setDataFmt(" ", DataFmt.DMTR_IDX);
@@ -690,14 +690,14 @@ class NC2AUIDiag extends JDialog {
 		if (tfDateSet.isEnabled()) {
 			ddata[0]="Date,UTC,A1DC_LWO,A2DC_LWO";
 			String[] tt = tfTmSet.getText().split(":");
-			String s1 = tfDateSet.getText()+DataFmt.SEPDELIMIT.toString()+ tt[0]+":"+tt[1]+":";
+			String s1 = tfDateSet.getText()+DataFmt.COMMAVAL.toString()+ tt[0]+":"+tt[1]+":";
 			//add 19 0r 20
 			if (Integer.parseInt(s1.split("-")[0])< 50) {
 				s1="20"+s1;
 			} else {
 				s1 +="19"+s1;
 			}
-			String s2 = DataFmt.SEPDELIMIT.toString() + ",0.0";
+			String s2 = DataFmt.COMMAVAL.toString() + ",0.0";
 			int sec = Integer.parseInt(tt[2]);
 			for (int i=1; i<10; i++) {
 				ddata[i]=s1+sec+s2;
@@ -719,7 +719,7 @@ class NC2AUIDiag extends JDialog {
 		// handle date/time and two demo data-items
 		for (int i =1; i< ddata.length; i++){
 
-			String[] d = ddata[i].split(DataFmt.SEPDELIMIT.toString());
+			String[] d = ddata[i].split(DataFmt.COMMAVAL.toString());
 			try { 
 				d[0]=dFormat.fmtDate(d[0].split("-"));
 				d[1]=dFormat.fmtTm(d[1].split(":"));
@@ -740,7 +740,7 @@ class NC2AUIDiag extends JDialog {
 
 		String ret =   dFormat.fmtDmtr(ddata[0]);
 		for (int i =0; i<len; i++) {
-			String[] one = ddata[i*avg+1].split(DataFmt.SEPDELIMIT);
+			String[] one = ddata[i*avg+1].split(DataFmt.COMMAVAL);
 
 			//adjust time
 			long ms = getNewTmMilSec(one[0], one[1],0);

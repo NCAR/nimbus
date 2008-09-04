@@ -704,7 +704,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		for (int i=1; i<dataInf.size(); i++){
 			String data =dataInf.get(i);
 			if (data==null || data.length()<1) {return;}
-			String[] d = data.split(DataFmt.SEPDELIMIT);
+			String[] d = data.split(DataFmt.COMMAVAL);
 			if (tbl.getRowCount()<i-1){
 				nc2Asc.NC2Act.wrtMsg("Table is not long enough: "+ i);
 				break;
@@ -764,7 +764,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		for (int i=1; i<dataInf.size(); i++){
 			String data =dataInf.get(i);
 			if (data==null || data.length()<1) {return;}
-			String[] d = data.split(DataFmt.SEPDELIMIT);
+			String[] d = data.split(DataFmt.COMMAVAL);
 			tbl.setValueAt(" ", i-1, 0);
 			tbl.setValueAt(" ", i-1, 1);
 			tbl.setValueAt(" ", i-1, 2);
@@ -788,7 +788,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
 		for (int i =0; i<sublvars.size(); i++) {
 			Variable v =sublvars.get(i);
-			varname += DataFmt.SEPDELIMIT+v.getName();
+			varname += DataFmt.COMMAVAL+v.getName();
 
 			//check if the it has multi-data
 			int[] shape = v.getShape();
@@ -797,7 +797,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			}
 			// the var has multi-data. we need to add numbers as the varnames for the rest of the values
 			for (int j=1; j<shape[2]; j++) {
-				varname += DataFmt.SEPDELIMIT+j ;
+				varname += DataFmt.COMMAVAL+j ;
 			}
 		}
 		//nc2Asc.NC2Act.wrtMsg("varname_len:"+varname.split(",").length+ " "+varname);

@@ -7,26 +7,29 @@ import java.io.*;
 
 public class DataFmt {
 
-	public final static String NODATE = "No Date";
+	public final static String NODATE = "NoDate";
 	public final static String DATESPACE = "yyyy mm dd";
 	public final static String DATEDASH = "yyyy-mm-dd";
 
 	public final static String TIMESPACE = "hh mm ss";
 	public final static String TIMECOLON = "hh:mm:ss";
 	public final static String TIMENOSPACE = "hhmmss";
-	public final static String TIMESEC = "sec of day"; 
+	public final static String TIMESEC = "SecOfDay"; 
 
-	public final static String MISSVAL = "-32767.0";
+	public final static String FILLVALUE = "FillValue";
+	public final static String LEAVEBLANK = "Blank";
 	public final static String REPLICATE = "Replicate";
-	
-	public final static String FULLTM = "Full";
+	public final static String MISSVAL = "-32767.0";
+	public final static String PLANK ="";
 
-	public final static String HEAD = "Head";
-	public final static String HEAD2 = "Head2";
-	public final static String HEAD3 = "Head3";
- 
-	public final static String DATESTR ="Date";
-	
+	public final static String HEAD = "Plain";
+	public final static String HEAD2 = "Icartt";
+	public final static String HEAD3 = "Xml";
+
+	public final static String FULLTM = "Full";
+	public final static String SPACE = "Space";
+	public final static String COMMA = "Comma";
+
 	public final static int HEAD_IDX = 0;
 	public final static int AVG_IDX = 1;
 	public final static int DATE_IDX = 2;
@@ -34,29 +37,28 @@ public class DataFmt {
 	public final static int DMTR_IDX = 4;
 	public final static int MVAL_IDX = 5;
 	public final static int TMSET_IDX = 6;
-	
-	public final static String SEPDELIMIT =",";
-	public final static String SPACE =" ";
+
+	public final static String SPACEVAL =" ";
+	public final static String COMMAVAL =",";
 	public final static String TMSETDELIMIT= "~";
-	public final static String TMSETCOLON= ":";
+	public final static String COLONVAL= ":";
 
 	private static String[] dataFmt = new String[7]; 
-	//private StringBuffer data = new StringBuffer();
 
 	public DataFmt() {
 		initDataFmt();
 	}
 
-    public void initDataFmt() {
-    	dataFmt[DATE_IDX]=DATEDASH.toString();
-		dataFmt[TM_IDX]=TIMECOLON.toString();
+	public void initDataFmt() {
+		dataFmt[DATE_IDX]=DATEDASH;
+		dataFmt[TM_IDX]=TIMECOLON;
 		dataFmt[DMTR_IDX]=",";
-		dataFmt[MVAL_IDX]=MISSVAL.toString();
-		dataFmt[TMSET_IDX]=FULLTM.toString(); //timeset= 00:00:00~99:99:99[
-		dataFmt[HEAD_IDX]=HEAD.toString();
+		dataFmt[MVAL_IDX]=MISSVAL;
+		dataFmt[TMSET_IDX]=FULLTM; //timeset= 00:00:00~99:99:99[
+		dataFmt[HEAD_IDX]=HEAD;
 		dataFmt[AVG_IDX]="1";
-    }
-	
+	}
+
 	/**
 	 * The method is for users to record the desired data format in the class
 	 * for further data formatting.
@@ -74,7 +76,7 @@ public class DataFmt {
 	public String[] getDataFmt(){
 		return dataFmt;
 	}
-	
+
 	/**
 	 * This is for users to retrieve the desired data format in simple form
 	 * @return dataFmt
@@ -89,7 +91,7 @@ public class DataFmt {
 		} else {
 			dfmt[DATE_IDX]= dataFmt[DATE_IDX];
 		}
-		
+
 		if (dataFmt[TM_IDX]==TIMECOLON) {
 			dfmt[TM_IDX]= ":";
 		} else if (dataFmt[TM_IDX]==TIMESPACE) {
@@ -99,36 +101,36 @@ public class DataFmt {
 		} else {
 			dfmt[TM_IDX]= dataFmt[TM_IDX];
 		}
-		
+
 		dfmt[DMTR_IDX]= dataFmt[DMTR_IDX];
 		dfmt[MVAL_IDX]=dataFmt[MVAL_IDX];
 
 		//time set
 		dfmt[TMSET_IDX]=dataFmt[TMSET_IDX];
-		
+
 		dfmt[HEAD_IDX]=dataFmt[HEAD_IDX];
 		dfmt[AVG_IDX]=dataFmt[AVG_IDX];
 		return dfmt;
-		
+
 	}
 
 	public void showNewDataFmt() {
 		String[] fstr = getNewDataFmt();
 		String str="";
 		for (int i=0; i<7; i++) {
-	       str += fstr[i]+"     ";
+			str += fstr[i]+"     ";
 		}
 		nc2Asc.NC2Act.wrtMsg(str);
 	}
-	
+
 	public void showDataFmt() {
 		String str="";
 		for (int i=0; i<7; i++) {
-	       str += dataFmt[i]+"\n";
+			str += dataFmt[i]+"\n";
 		}
 		nc2Asc.NC2Act.wrtMsg(str);
 	}
-	
+
 	/**
 	 * It takes the time in milli-seconds since Jan.1,1970, then convert it's date
 	 * into desired date format
@@ -146,7 +148,7 @@ public class DataFmt {
 		s[2] = ""+d.get(Calendar.DAY_OF_MONTH); 
 		return fmtDate(s);
 	};
-	
+
 	/**
 	 *  
 	 * @param dt -- Date string in yyyy-mm-dd format
@@ -173,7 +175,7 @@ public class DataFmt {
 
 		//check required output format
 		if (dataFmt[DATE_IDX].equals(DATESPACE.toString())){
-			return ss[0]+ SPACE.toString() + ss[1] + SPACE.toString() + ss[2];
+			return ss[0]+ SPACEVAL + ss[1] + SPACEVAL + ss[2];
 		} else 	if (dataFmt[DATE_IDX].equals(DATEDASH.toString())){
 			return ss[0]+ "-" + ss[1] + "-" + ss[2];
 		} else {
@@ -199,7 +201,7 @@ public class DataFmt {
 		s[0] +=h;
 		s[1] +=m;
 		s[2] +=ss;
-		
+
 		return fmtTm(s);
 	}
 
@@ -213,8 +215,8 @@ public class DataFmt {
 		String[] tt = tm.split(":");
 		return fmtTm(tt);
 	}
-	
-	
+
+
 	/**	return null;
 	 * it takes time strings, converts it into desired format
 	 * @param ss -- list of hh mm ss
@@ -226,38 +228,37 @@ public class DataFmt {
 		if (ss.length!=3){  
 			throw new DataFormatException("Invalid time format: "+ss); 
 		} 
-	
-		//check required output format
-		if (dataFmt[TM_IDX].equals(TIMESPACE.toString())){
-			return ss[0] + SPACE.toString()+ ss[1]+SPACE.toString()+ss[2];
-		} else 	if (dataFmt[TM_IDX].equals(TIMECOLON.toString())){
-			return ss[0]+ TMSETCOLON.toString() + ss[1] + TMSETCOLON.toString() + ss[2];
-		} else 	if (dataFmt[TM_IDX].equals(TIMENOSPACE.toString())) {
+
+		if (dataFmt[TM_IDX].equals(TIMESPACE)){
+			return ss[0] + SPACEVAL+ ss[1]+SPACEVAL+ss[2];
+		} else  if (dataFmt[TM_IDX].equals(TIMECOLON)){
+			return ss[0]+ COLONVAL + ss[1] + COLONVAL + ss[2];
+		} else  if (dataFmt[TM_IDX].equals(TIMENOSPACE.toString())) {
 			return ss[0]+ ss[1] + ss[2];
-		} else 	if (dataFmt[TM_IDX].equals(TIMESEC.toString())) {
+		} else  if (dataFmt[TM_IDX].equals(TIMESEC.toString())) {
 			int h= Integer.parseInt(ss[0]);//  new Integer(ss[0]).intValue();
 			int m= new Integer(ss[1]).intValue();
 			int s= new Integer(ss[2]).intValue();
 			int sec = h*3600 +m*60+s;
-			return ""+sec; 			
+			return ""+sec;
 		} else {
-			throw new DataFormatException("Invalid output time format: "+dataFmt[1]);	
+			throw new DataFormatException("Invalid output time format: "+dataFmt[1]);
 		}
 	}
-	
+
 	public String fmtDmtr(String data) throws NullPointerException {
-		return fmtDmtr(data.split(SEPDELIMIT.toString()));
+		return fmtDmtr(data.split(COMMAVAL.toString()));
 	}
 
 	public String fmtDmtr(String[] data) throws NullPointerException {
-		
+
 		String tmp="";
 		int start =0;
 		if (dataFmt[DATE_IDX].equals(NODATE.toString())) {start=1;}
 		for (int i=start; i<data.length-1; i++){
-		//	nc2Asc.NC2Act.wrtMsg("data[i]: "+ data[i]+ " DataFmt.Misval:" + DataFmt.MISSVAL + "DataFmt.Misval-toString:"+DataFmt.MISSVAL.toString() );
+			//	nc2Asc.NC2Act.wrtMsg("data[i]: "+ data[i]+ " DataFmt.Misval:" + DataFmt.MISSVAL + "DataFmt.Misval-toString:"+DataFmt.MISSVAL.toString() );
 			if (data[i]==null || data[i].length()<1 || data[i].equals(DataFmt.MISSVAL)) {
-			  data[i]= dataFmt[MVAL_IDX];	
+				data[i]= dataFmt[MVAL_IDX];	
 			}
 			tmp = tmp+ data[i]+dataFmt[DMTR_IDX];
 		}
@@ -265,13 +266,13 @@ public class DataFmt {
 	}
 
 	public String fmtOneLineData(String data ) throws DataFormatException {
-		return fmtOneLineData(data.split(SEPDELIMIT.toString()));
+		return fmtOneLineData(data.split(COMMAVAL.toString()));
 	}
-	
+
 	//assume --data contains date/yy-mm-dd
 	public String fmtOneLineData(String[] data ) throws DataFormatException {
 		String[] oneline=data; 
-	
+
 		//get date formated first
 		if (dataFmt[DATE_IDX].equals(NODATE.toString())) {
 			oneline[0]=NODATE.toString();
@@ -279,35 +280,35 @@ public class DataFmt {
 			oneline[0] = fmtDate(data[0].split("-"));
 		}
 		//format time
-		oneline[1] = fmtTm(data[1].split(TMSETCOLON.toString()));
+		oneline[1] = fmtTm(data[1].split(COLONVAL.toString()));
 		//add delimiter
 		return fmtDmtr(oneline);
 	}	
-	
+
 	public String formStr (float[] data, int start, int end) {
 		String ret=String.valueOf(data[start]);
 		for (int i =start+1; i<end; i++){
-			ret += DataFmt.SEPDELIMIT.toString()+ data[i];
+			ret += DataFmt.COMMAVAL.toString()+ data[i];
 		}
 		return ret;
 	}
-	
+
 	public String formStr(String data) {
-		String[] d = data.split(DataFmt.SEPDELIMIT.toString());
+		String[] d = data.split(DataFmt.COMMAVAL.toString());
 		return formStr(d,0, d.length);
 	}
-	
+
 	public String formStr(String data, int start, int end) {
-		return formStr(data.split(DataFmt.SEPDELIMIT.toString()), start, end);
+		return formStr(data.split(DataFmt.COMMAVAL.toString()), start, end);
 	}
-	
+
 	public String formStr (String[] data, int start, int end) {
 		String ret=data[start];
 		for (int i =start+1; i<end; i++){
-			ret += DataFmt.SEPDELIMIT.toString()+ data[i];
+			ret += DataFmt.COMMAVAL.toString()+ data[i];
 		}
 		return ret;
 	}
-	
-	
+
+
 }
