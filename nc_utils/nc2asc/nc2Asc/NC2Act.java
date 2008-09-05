@@ -47,7 +47,7 @@ public class NC2Act {
 	 * 
 	 * @return batchMode
 	 */
-	public static boolean setMode() {return batchMode;}
+	public static boolean getMode() {return batchMode;}
 
 	
 	/**
@@ -114,6 +114,7 @@ public class NC2Act {
 	 */
 	public static void startWaitCursor(JComponent cmpt) {
 		if (cmpt == null) {wrtMsg("startWaitCursor_cmpt  is null..."); return;}
+		cmpt.getTopLevelAncestor().setCursor(new Cursor(Cursor.WAIT_CURSOR));
 	}
 
 	/**

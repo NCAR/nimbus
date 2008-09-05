@@ -61,8 +61,9 @@ public class NC2A extends JPanel implements ActionListener {
 	 */
 	public static void main(String[] args) {
         
-		if (args.length >0 && args[0].equals("-b")) {
+		if (args.length >0 && findBatch(args)) {
 			NC2Act.setMode(true);
+			aui.setArgs(args);
 		}	else {
 			NC2Act.setMode(false);
 			javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -78,6 +79,17 @@ public class NC2A extends JPanel implements ActionListener {
 	 * the real action implementation is in NC2AUI class
 	 */
 	public void actionPerformed(ActionEvent e) {
+	}
+	
+	/**
+	 * Search each input to find batch file. -b follows filename 
+	 * @return -- contains batch file or not
+	 */
+	private static boolean findBatch(String[] args) {
+		for (int i=0; i<args.length; i++ ) {
+			if (args[i]== "-b") return true;
+		}
+		return false;
 	}
 
 }//eof class NC2A

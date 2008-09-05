@@ -237,8 +237,8 @@ public class NCData {
 		for (int i=0; i<len ; i++){ 
 			String dat = "";
 			Variable v = lvars.get(i);
-			dat += v.getShortName() + DataFmt.COMMAVAL.toString();
-			dat += v.getUnitsString() + DataFmt.COMMAVAL.toString();
+			dat += v.getShortName() + DataFmt.COMMAVAL;
+			dat += v.getUnitsString() + DataFmt.COMMAVAL;
 
 			int or = getOR(v); if (or>gDataInf[0]) { gDataInf[0]= or;}
 			dat += or+"/"+getLen(v) + DataFmt.COMMAVAL ;
@@ -323,8 +323,8 @@ public class NCData {
 
 		int len =10;
 		for (int i=1; i<len; i++) {
-			demoData[i]= getNewTm(milSec, i)+ DataFmt.COMMAVAL.toString() 
-			+ DataFmt.MISSVAL + DataFmt.COMMAVAL.toString()
+			demoData[i]= getNewTm(milSec, i)+ DataFmt.COMMAVAL 
+			+ DataFmt.MISSVAL + DataFmt.COMMAVAL
 			+ "0.0";
 		}
 		return demoData;
@@ -336,19 +336,19 @@ public class NCData {
 		}
 		//nc2Asc.NC2Act.wrtMsg(dataInf[0]);
 		String tmVar= dataInf.get(0);
-		String date = tmVar.split(DataFmt.COMMAVAL.toString())[1].split(" ")[2];
-		String tm   = tmVar.split(DataFmt.COMMAVAL.toString())[1].split(" ")[3];
+		String date = tmVar.split(DataFmt.COMMAVAL)[1].split(" ")[2];
+		String tm   = tmVar.split(DataFmt.COMMAVAL)[1].split(" ")[3];
 		String[] dInf = date.split("-");
 		String[] tmInf   = tm.split(":");
 
 		Calendar cl = Calendar.getInstance();
-		int y= Integer.parseInt(dInf[0]);//new Integer(dInf[0]).intValue();
-		int mm= Integer.parseInt(dInf[1]);//new Integer(dInf[1]).intValue();
-		int d= Integer.parseInt(dInf[2]);//new Integer(dInf[2]).intValue();
+		int y= Integer.parseInt(dInf[0]);
+		int mm= Integer.parseInt(dInf[1]);
+		int d= Integer.parseInt(dInf[2]);
 
-		int h= Integer.parseInt(tmInf[0]);//new Integer(tmInf[0]).intValue();
-		int m= Integer.parseInt(tmInf[1]);//new Integer(tmInf[1]).intValue();
-		int s= Integer.parseInt(tmInf[2]);//new Integer(tmInf[2]).intValue();
+		int h= Integer.parseInt(tmInf[0]);
+		int m= Integer.parseInt(tmInf[1]);
+		int s= Integer.parseInt(tmInf[2]);
 
 		cl.set(y,mm,d,h,m,s);
 		return cl.getTimeInMillis();

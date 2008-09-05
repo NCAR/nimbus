@@ -97,7 +97,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
 	///class objs: data-fmt selection dialog, and netcdf-data, and data-format
 	private NC2AUIDiag dialog; //NC2AUIProgBar dlgProgBar;	  
-	private NCData     ncdata;
+	private NCData     ncdata  = new NCData();
 	private DataFmt    datafmt = new DataFmt();
 
 	private List<String>   dataInf;   //dataInf contains all the variable data information = lvars-ncdata-- first one is the time var
@@ -105,10 +105,35 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 	private int            idxCount;  //search count		-- skip time var
 	private List<String>   selStatus; //select status 		-- skip the time var 
 
-	private String[]    fileName = new String[2];  // inputFileName and outputFileName
+	private String[]    fileName = new String[3];  // batchFile, inputFileName and outputFileName
 	private int 		taskLen; //max len of tasks     
+	private String[]    batchArgs;
+	
+	/**
+	 * If the program is running in batch mode, the input arguments contains batch file, and/or input, and output.
+	 * This method signs the files into the NC2AUI local file name strings, 
+	 * start parsing the batch file to get i/o files, data format, and  
+	 * @param args  -b batchfile, -i input -o output
+	 */
+	public void setArgs(String[] args) {
+		batchArgs= args;
+		
+		BatchConfig bf = new BatchConfig(args);
+		String[] fmt = bf.getDataFmt();
+		bf.showFmt(); //fordebug
 
+		int[] range = bf.getTmRange();
 
+		//get Vals from variable names
+		List<Variable> sublvars= bf.getSubVars();
+		bf.showSelectedVars(); //fordebug
+
+		ncdata.writeDataToFile(sublvars, range, fmt);
+	}
+
+	public void setStatus(String msg) {
+		statusBar.setText(msg);
+	}
 	/**
 	 * Main method to create all the components:
 	 * buttons, tbl, check, display field, etc.
@@ -406,7 +431,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
 				File selectedFile = fileChooser.getSelectedFile();
 				if (selectedFile.isFile()) {
-					fileName[0] =selectedFile.getAbsolutePath();//(selectedFile.getName());
+					fileName[1] =selectedFile.getAbsolutePath();//(selectedFile.getName());
 					return true;
 				}
 				else {
@@ -424,8 +449,8 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 	private boolean selectOutputFile() {
 
 		String txt =System.getenv("DATA_DIR"); 
-		if (fileName[1]!=null && !fileName[1].isEmpty()) {
-			txt = fileName[1];
+		if (fileName[2]!=null && !fileName[2].isEmpty()) {
+			txt = fileName[2];
 		} else {
 			if ( txt==null || txt.isEmpty()){
 				File dir = new File(".");
@@ -443,9 +468,9 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			if (out.isEmpty()) {
 				nc2Asc.NC2Act.wrtMsg("Invalid Output File...");
 			} else {
-				fileName[1]= out;
+				fileName[2]= out;
 				try {
-					ncdata.openOutFile(fileName[1]);
+					ncdata.openOutFile(fileName[2]);
 					return true;
 				} catch (IOException e ) {
 					nc2Asc.NC2Act.wrtMsg("selectOutputFile_openOutFile_IOException...");
@@ -458,7 +483,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
 	private void getDataVar(ActionEvent e) {
 		if (INFILE.equals(e.getActionCommand())) {	
-			if (fileName[0]==null || !validateInputFile(fileName[0]) ) {
+			if (fileName[1]==null || !validateInputFile(fileName[1]) ) {
 				//nc2Asc.NC2Act.wrtMsg("Invalid input file: ");
 				return;
 			}
@@ -480,7 +505,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 	private void selectDataFormat(ActionEvent e) {
 
 		if (DATAFORMAT.equals(e.getActionCommand())) {
-			if (!validateInputFile(fileName[0]) ) {
+			if (!validateInputFile(fileName[1]) ) {
 				return;
 			}
 			JFrame frm = new JFrame("Select Data Foramt");
@@ -597,7 +622,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 				NC2Act.wrtMsg(" Ready");
 				return;
 			}
-			if ( !validateOutFile(fileName[1])) {
+			if ( !validateOutFile(fileName[2])) {
 				return;
 			}
 
@@ -654,15 +679,15 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 	}
 
 	private void populateTbl()  {
-		if (fileName[0]==null || fileName[0].isEmpty()) {
-			NC2Act.wrtMsg("Invalid Input File: "+ fileName[0]);
+		if (fileName[1]==null || fileName[1].isEmpty()) {
+			NC2Act.wrtMsg("Invalid Input File: "+ fileName[1]);
 			return;
 		}
-		if (ncdata==null) {
-			ncdata = new NCData();
-		}
+		//if (ncdata==null) {
+		//	ncdata = new NCData();
+		//}
 		try {
-			ncdata.openFile(fileName[0]);
+			ncdata.openFile(fileName[1]);
 			ncdata.readDataInf();
 			//clean up tbl
 			if (dataInf!=null){
@@ -805,61 +830,6 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 	}
 
 
-
-	/*public long  writeOutVarData(List<Variable> sublvars){
-		String line = "";
-		//get and write the data out 
-		try{
-			String out= genVarName(sublvars); 
-			ncdata.writeOut(datafmt.fmtDmtr(out)+"\n");
-			long milSec = ncdata.getTimeMilSec();
-
-			// all the time-range data len-should be the seconds in the time range
-			int[] range = getTmRange();
-			int size = sublvars.size(); //.varname to the first line of out file
-			float[][] data = new float [size][];
-			long t1 = Calendar.getInstance().getTimeInMillis();
-			int[] oneDLen= new int[size];
-
-			for (int i =0; i<size; i++){	
-				Variable tmp = sublvars.get(i); 
-				data[i] = ncdata.read1DData(tmp , range[0], range[1]);
-				oneDLen[i] =ncdata.getLen(tmp);
-				line = tmp.getName();
-				//statusBar.setText(line);
-			}
-			//write out
-			String del = datafmt.getDataFmt()[DataFmt.DMTR_IDX];;
-			for (int i =range[0]; i<range[1]; i++) {
-				line = ncdata.getNewTm(milSec,i);
-
-				for (int j =0; j<size; j++) {
-					int count =0;
-					while (count<oneDLen[j]) {
-						line += del + data[j][oneDLen[j]*i+count];
-						count++;			
-					}
-				}
-				ncdata.writeOut(line+"\n");
-			}
-
-			long ret = Calendar.getInstance().getTimeInMillis()-t1;
-			NC2Act.wrtMsg("Done.     Total " +ret+ " miliSeconds");
-			return ret;
-
-		} catch (NullPointerException ne){
-			NC2Act.wrtMsg("writeOutVarData_NullPointerException "+line);
-		} catch (InvalidRangeException ie) {
-			NC2Act.wrtMsg("writeOutVarData_InvalidRangeException..."+ line);
-		} catch (IOException ee) {
-			NC2Act.wrtMsg("writeOutVarData_IOException..."+ee.getMessage()+line);
-		} catch (Exception e ) {
-			NC2Act.wrtMsg("writeOutVarData_Exception"+ line);
-		} 
-
-		return 0;
-	} 
-*/
 
 	private int[] getTmRange()  {
 		int[] ii = new int[2];

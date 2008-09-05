@@ -42,6 +42,7 @@ public class DataFmt {
 	public final static String COMMAVAL =",";
 	public final static String TMSETDELIMIT= "~";
 	public final static String COLONVAL= ":";
+	public final static String DASHVAL= "-";
 
 	private static String[] dataFmt = new String[7]; 
 
