@@ -85,6 +85,7 @@ public class NC2Act {
 			String mg ="\n\n"+ t +"\n" + msg;
 			log.write(mg);
 			log.flush();
+			System.out.println(msg);
 		} catch (IOException ie) {
 			if (!batchMode) 	prtMsgBox("IOException: Cannot write to log "+ie.toString());
 			return;

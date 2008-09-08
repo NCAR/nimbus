@@ -43,13 +43,25 @@ public class BatchConfig {
 
 	/**
 	 * list of time range  -- 
-	 * tmRange[0] - beg. idx
-	 * tmRange[0] - range
+	 * tmRange[0] - beg-index
+	 * tmRange[1] - range
 	 */
 	private int[] tmRange = new int[2];  
 
+	/**
+	 * Constructor catches the command-line inputs, and sign the files to its storage.
+	 * The class users need to call start() to read and interpret the batch file to get ready for data writing.
+	 * @param args
+	 */
 	public BatchConfig(String[] args) {
 		parseArgs(args);
+	}
+
+	/**
+	 * This method ensures that the all the elements for data writing are read and ready.
+	 * Users need to call this method after the class constructor, to get ready for data-writing. 
+	 */
+	public void start() {	
 		try {
 			parseBatchFile();
 		} catch (Exception e) {
@@ -58,13 +70,12 @@ public class BatchConfig {
 		}
 	}
 
-	//public BatchConfig() {	}
-
 	/**
 	 * The beginning and ending indexes of the input time set
 	 * @return
 	 */
 	public int[] getTmRange() { return tmRange;}
+	
 	/**
 	 * File names from command line:
 	 * -b follows batchFile 	=> files[0]
@@ -95,6 +106,9 @@ public class BatchConfig {
 		dataFmt = fmt;
 	}
 
+	public List<String> getSelVars() {
+		return selVars;
+	}
 
 	/**
 	 * 
@@ -107,44 +121,27 @@ public class BatchConfig {
 	/**
 	 * Display the data format specified in the input batch file
 	 */
-	public void showFmt() {
+	public String showFmt() {
 		String display ="";
 		for (int i=0; i<dataFmt.length; i++) {
 			display += dataFmt[i]+ "\n";
 		}
 		System.out.println(display);
+		return display;
 	}
 
-	/**
-	 * Open the netcdf file, find each variable based on the variable names from the batch file, and
-	 * return the list of Variables
-	 * @return -- selected variables
-	 */
-	public List<Variable> getSubVars(){
-		NetcdfFile fin =null;
-		try{
-			fin = NetcdfFile.open(files[1]);
-		} catch (IOException e){
-			e.printStackTrace();
-			System.exit(-1);
-		} 
-		
-		List<Variable> lvars= new ArrayList();
-		for (int i =0; i<selVars.size(); i++) {
-			lvars.add(fin.findVariable(selVars.get(i)));
-		}
-		return lvars;
-	}
+	
 
 	/**
 	 * Display the variables specified in the input batch file
 	 */
-	public void showSelectedVars() {
+	public String showSelectedVars() {
 		String display ="";
 		for (int i=0; i<selVars.size(); i++) {
 			display += selVars.get(i)+ "\n";
 		}
 		System.out.println(display);
+		return display;
 	}
 
 
@@ -244,7 +241,7 @@ public class BatchConfig {
 			line = br.readLine();
 		} //while 
 		br.close();
-
+		fr.close();
 		// set tm range
 		calTmRange();
 
@@ -342,6 +339,8 @@ public class BatchConfig {
 		long selBegIdx = Long.parseLong(selectTm[0]);
 		tmRange[0]= (int)(selBegIdx - ncBegIdx)/1000;
 		tmRange[1]= Integer.parseInt(selectTm[1]);
+		
+		fin.close();
 	} 
 
 	private void checkBatchElements() {

@@ -96,6 +96,13 @@ public class NCData {
 	 *  idx 2--size of the records
 	 */
 	private long[] gDataInf = {1,0,0};  
+	
+	/**
+	 * batch mode 
+	 */
+	private boolean bMode = false;
+	
+	public void setMode (boolean b) { bMode = b;}
 
 	/**
 	 * The index out of the total counts
@@ -408,10 +415,10 @@ public class NCData {
 
 
 	public void writeDataToFile(List<Variable> sublvars, int[] range, String[] fmt){
-		// all the time-range data len-should be the seconds in the time range
-		String line = ""; tmPassed=0; bfinish =false; progIdx =0; 
+		// all the time-range data length-should be the seconds in the time range
+		tmPassed=0; bfinish =false; progIdx =0; 
 
-		int size = sublvars.size(); ///varname to the first line of out file
+		int size = sublvars.size(); ///variable name to the first line of out file
 		data = new float [size][];
 		oneDLen= new int[size];
 		missVal = new float[size];
@@ -433,6 +440,7 @@ public class NCData {
 				}
 				data[i] = read1DData(tmp , range[0], range[1]);
 				progIdx ++;
+				if (bMode) { System.out.println("Reading "+ progIdx);}
 			}
 		} catch (NCDataException e) {
 			nc2Asc.NC2Act.wrtMsg("wrtieDataToFile_NCDataException "+ tmp.getName());
@@ -442,21 +450,24 @@ public class NCData {
 			nc2Asc.NC2Act.wrtMsg("wrtieDataToFile_IOException "+ tmp.getName());
 		}
 
-		//average low rate data
-		if (Integer.parseInt(fmt[DataFmt.AVG_IDX])>1) {
-			writeLowRateAvgData(range, fmt, milSec, t1, size);
-			return;
-		}
-
 		if (gDataInf[0]>1) {
 			writeHighRateData(range, fmt, milSec, t1, size);
-			return;
+		} else if (Integer.parseInt(fmt[DataFmt.AVG_IDX])>1) {
+			writeLowRateAvgData(range, fmt, milSec, t1, size);
+		} else {
+			writeNormalData (range, fmt, milSec, t1, size) ;
 		}
+
+		tmPassed =System.currentTimeMillis() - t1;
+		bfinish = true;
+	}
+
+	private void writeNormalData(int[] range, String[] fmt, long milSec, long t1, int size) {
 		//regular data - no average& no high rate
 		String dmtr = fmt[DataFmt.DMTR_IDX], mval = fmt[DataFmt.MVAL_IDX];
 		for (int i =0; i<range[1]; i++) {
 			if (bfinish) return;
-			line = getNewTm(milSec,i+range[0], fmt);
+			String line = getNewTm(milSec,i+range[0], fmt);
 			progIdx++; 
 			for (int j =0; j<size; j++) {
 				int count =0;
@@ -472,10 +483,8 @@ public class NCData {
 			}
 			writeOut(line+"\n");
 		}
-		tmPassed =System.currentTimeMillis() - t1;
-		bfinish = true;
 	}
-
+	
 	private void writeLowRateAvgData(int[] range, String[] fmt, long milSec, long t1, int size) {
 		int avg = Integer.parseInt(fmt[DataFmt.AVG_IDX]); 
 		long tot = 0;
@@ -520,9 +529,7 @@ public class NCData {
 				avgCount=0;
 			}
 		}
-		tmPassed =System.currentTimeMillis() - t1;
-		bfinish = true;
-		return;
+		
 	}
 
 
@@ -560,15 +567,13 @@ public class NCData {
 				writeOut(line+"\n");
 			} //k-highest rate
 		} //time-for
-		tmPassed =System.currentTimeMillis() - t1;
-		bfinish = true;
-		return;
 	}
 
 	public void writeOut(String str) {
 		try {
 			fout.write(str);
 			fout.flush();
+			if (bMode) { System.out.println("Writing "+ progIdx);}
 		} catch (IOException e ) {
 			nc2Asc.NC2Act.wrtMsg("writeOut_err:"+e.getMessage());
 		}
@@ -585,6 +590,26 @@ public class NCData {
 			vars.add(v); idx ++;
 		}
 	}
+	
+	/**
+	 * Open the netcdf file, find each variable based on the variable names from the batch file, and
+	 * return the list of Variables
+	 * @return -- selected variables
+	 */
+	public List<Variable> getBatchSubVars(List<String> selVars){
+		
+		if (fin==null) {System.out.println("The netcdf file is not opened.");
+			System.exit(-1);
+		}
+		List<Variable> lvars= new ArrayList();
+		for (int i =0; i<selVars.size(); i++) {
+			lvars.add(fin.findVariable(selVars.get(i)));
+		}
+		return lvars;
+	}
+	
+	
+	
 } //eofclass
 
 

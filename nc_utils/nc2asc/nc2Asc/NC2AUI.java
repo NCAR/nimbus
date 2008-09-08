@@ -107,29 +107,6 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
 	private String[]    fileName = new String[3];  // batchFile, inputFileName and outputFileName
 	private int 		taskLen; //max len of tasks     
-	private String[]    batchArgs;
-	
-	/**
-	 * If the program is running in batch mode, the input arguments contains batch file, and/or input, and output.
-	 * This method signs the files into the NC2AUI local file name strings, 
-	 * start parsing the batch file to get i/o files, data format, and  
-	 * @param args  -b batchfile, -i input -o output
-	 */
-	public void setArgs(String[] args) {
-		batchArgs= args;
-		
-		BatchConfig bf = new BatchConfig(args);
-		String[] fmt = bf.getDataFmt();
-		bf.showFmt(); //fordebug
-
-		int[] range = bf.getTmRange();
-
-		//get Vals from variable names
-		List<Variable> sublvars= bf.getSubVars();
-		bf.showSelectedVars(); //fordebug
-
-		ncdata.writeDataToFile(sublvars, range, fmt);
-	}
 
 	public void setStatus(String msg) {
 		statusBar.setText(msg);
@@ -834,7 +811,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 	private int[] getTmRange()  {
 		int[] ii = new int[2];
 		String tmset = datafmt.getNewDataFmt()[DataFmt.TMSET_IDX];
-	
+
 		if (tmset.equals(DataFmt.FULLTM)) { //all the data
 			ii[0]=0;
 			ii[1]=(int)ncdata.getGlobalDataInf()[2]; // .getShape()[0];
@@ -849,7 +826,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		} catch (NCDataException ee) {
 			NC2Act.wrtMsg("getTmRange_NCDataException"+ ee.getStackTrace());
 		}
-	
+
 		return ii;
 	}
 

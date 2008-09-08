@@ -8,8 +8,12 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.io.IOException;
+import java.util.List;
 import javax.swing.*;
+
+import nc2AscData.NCData;
+import ucar.nc2.Variable;
 
 
 /** 
@@ -25,7 +29,7 @@ public class NC2A extends JPanel implements ActionListener {
 	/**
 	 * Important ui element class instance to add UI items
 	 */
-	private static NC2AUI aui  = new NC2AUI();
+	private static NC2AUI aui  =  null; 
 
 	/**
 	 * Create the GUI and show it. For thread safety, this method should be
@@ -63,9 +67,10 @@ public class NC2A extends JPanel implements ActionListener {
         
 		if (args.length >0 && findBatch(args)) {
 			NC2Act.setMode(true);
-			aui.setArgs(args);
+			setArgs(args);
 		}	else {
-			NC2Act.setMode(false);
+			//NC2Act.setMode(false);
+			aui = new NC2AUI();
 			javax.swing.SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					createAndShowGUI();
@@ -91,6 +96,42 @@ public class NC2A extends JPanel implements ActionListener {
 		}
 		return false;
 	}
+	
+	/**
+	 * If the program is running in batch mode, the input arguments contains batch file, and/or input, and output.
+	 * This method signs the files into the NC2AUI local file name strings, 
+	 * start parsing the batch file to get i/o files, data format, and  
+	 * @param args  -b batchfile, -i input -o output
+	 */
+	private static void setArgs(String[] args) {
+		//batchArgs= args;
+
+		BatchConfig bf = new BatchConfig(args);
+		bf.start();  //read and interpret the inputs
+
+		String[] fmt = bf.getDataFmt();
+//		bf.showFmt(); //fordebug
+
+		int[] range = bf.getTmRange();
+
+		//get Vals from variable names
+		NCData ncdata= new NCData();
+		ncdata.setMode(true);
+		try {
+			ncdata.openFile(bf.getFiles()[1]);
+			ncdata.openOutFile(bf.getFiles()[2]);
+		} catch (IOException e ) {
+			System.out.println("Batch-mode open i/o file fails..."+ e.getStackTrace());
+			return;
+		}
+		List<Variable> sublvars= ncdata.getBatchSubVars(bf.getSelVars());
+//		bf.showSelectedVars(); //fordebug
+
+		ncdata.writeDataToFile(sublvars, range, fmt);
+		
+	}
+
+
 
 }//eof class NC2A
 
