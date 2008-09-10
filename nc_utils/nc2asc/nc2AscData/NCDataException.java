@@ -1,8 +1,7 @@
-package nc2AscData;
+package edu.ucar.eol.nc2AscData;
 
-import java.util.*;
-import java.lang.*;
-import java.io.*;
+import java.io.IOException;
+import edu.ucar.eol.nc2Asc.*;
 
 public class NCDataException extends IOException{
 	private String msg="NCDataException: ";
@@ -17,7 +16,7 @@ public class NCDataException extends IOException{
 	}
 	
 	public void prtMsg() {
-		nc2Asc.NC2Act.wrtMsg(msg);
+		NC2Act.wrtMsg(msg);
 	}
 	
 	

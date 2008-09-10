@@ -1,13 +1,20 @@
-package nc2AscData;
+package edu.ucar.eol.nc2AscData;
 
-import java.lang.*;
-import java.lang.Exception.*;
-import java.io.*;
+import java.awt.Cursor;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
-import ucar.nc2.*;
-import ucar.ma2.*;
+import ucar.ma2.Array;
+import ucar.ma2.InvalidRangeException;
+import ucar.nc2.NetcdfFile;
+import ucar.nc2.Variable;
+import edu.ucar.eol.nc2Asc.NC2Act;
 
 /**
  * This class is to use netCDF APIs to read and write 
@@ -78,12 +85,12 @@ public class NCData {
 	 * All selected variables' 1D array float data
 	 */
 	private float[][] data;
-	
+
 	/**
 	 * The represent of each variable's miss value
 	 */
 	private float[] missVal;
-	
+
 	/**
 	 * Each variable's length and rate from netcdf file.
 	 */
@@ -96,12 +103,12 @@ public class NCData {
 	 *  idx 2--size of the records
 	 */
 	private long[] gDataInf = {1,0,0};  
-	
+
 	/**
 	 * batch mode 
 	 */
 	private boolean bMode = false;
-	
+
 	public void setMode (boolean b) { bMode = b;}
 
 	/**
@@ -111,14 +118,14 @@ public class NCData {
 	 */
 	public int getProgIdx() {return progIdx;}
 
-	
+
 	/**
 	 * The status of the data retrieving and writing to an ascii file.
 	 * @return - finished or not
 	 */
 	public boolean  getFinish(){return bfinish;}
-	
-	
+
+
 	/**
 	 * 
 	 * @param finished - Set "true" to stop the data process, if a user chooses to cancel the data process from UI 
@@ -219,7 +226,6 @@ public class NCData {
 
 		//check file exits
 		fout = new FileWriter(fn);
-
 	}
 
 	/**
@@ -249,7 +255,7 @@ public class NCData {
 
 			int or = getOR(v); if (or>gDataInf[0]) { gDataInf[0]= or;}
 			dat += or+"/"+getLen(v) + DataFmt.COMMAVAL ;
-			
+
 			String lname = ""+v.findAttribute("long_name");  //getStringValue()  -bugs
 			lname = lname.substring(lname.indexOf('\"')+1);  //take off the first "
 			int idx = lname.indexOf('\"');  //takeoff the second "
@@ -338,7 +344,7 @@ public class NCData {
 	}
 
 	public long getTimeMilSec() throws NCDataException {
-		if (dataInf.get(0)== null) {
+		if (dataInf== null || dataInf.get(0).isEmpty()) {
 			throw new  NCDataException("getTimeMilSec: Variables are not read... Please get variables from the netcdf file.");
 		}
 		//nc2Asc.NC2Act.wrtMsg(dataInf[0]);
@@ -443,11 +449,11 @@ public class NCData {
 				if (bMode) { System.out.println("Reading "+ progIdx);}
 			}
 		} catch (NCDataException e) {
-			nc2Asc.NC2Act.wrtMsg("wrtieDataToFile_NCDataException "+ tmp.getName());
+			NC2Act.wrtMsg("wrtieDataToFile_NCDataException "+ tmp.getName());
 		} catch (InvalidRangeException ee) {
-			nc2Asc.NC2Act.wrtMsg("wrtieDataToFile_InvalidRangeException "+ tmp.getName());
+			NC2Act.wrtMsg("wrtieDataToFile_InvalidRangeException "+ tmp.getName());
 		} catch (IOException eee) {
-			nc2Asc.NC2Act.wrtMsg("wrtieDataToFile_IOException "+ tmp.getName());
+			NC2Act.wrtMsg("wrtieDataToFile_IOException "+ tmp.getName());
 		}
 
 		if (gDataInf[0]>1) {
@@ -484,7 +490,7 @@ public class NCData {
 			writeOut(line+"\n");
 		}
 	}
-	
+
 	private void writeLowRateAvgData(int[] range, String[] fmt, long milSec, long t1, int size) {
 		int avg = Integer.parseInt(fmt[DataFmt.AVG_IDX]); 
 		long tot = 0;
@@ -529,14 +535,14 @@ public class NCData {
 				avgCount=0;
 			}
 		}
-		
+
 	}
 
 
 	private void writeHighRateData(int[] range, String[] fmt, long milSec, long t1, int size) {
 		String dmtr = fmt[DataFmt.DMTR_IDX], mval = fmt[DataFmt.MVAL_IDX]; 
 		float[] valKp= new float[totVarLen];
-		
+
 		for (int i =0; i<range[1]; i++) { //data-in the time range
 			if (bfinish) return;
 			progIdx ++; 
@@ -575,7 +581,7 @@ public class NCData {
 			fout.flush();
 			if (bMode) { System.out.println("Writing "+ progIdx);}
 		} catch (IOException e ) {
-			nc2Asc.NC2Act.wrtMsg("writeOut_err:"+e.getMessage());
+			NC2Act.wrtMsg("writeOut_err:"+e.getMessage());
 		}
 	}
 
@@ -590,16 +596,16 @@ public class NCData {
 			vars.add(v); idx ++;
 		}
 	}
-	
+
 	/**
 	 * Open the netcdf file, find each variable based on the variable names from the batch file, and
 	 * return the list of Variables
 	 * @return -- selected variables
 	 */
 	public List<Variable> getBatchSubVars(List<String> selVars){
-		
+
 		if (fin==null) {System.out.println("The netcdf file is not opened.");
-			System.exit(-1);
+		System.exit(-1);
 		}
 		List<Variable> lvars= new ArrayList();
 		for (int i =0; i<selVars.size(); i++) {
@@ -607,9 +613,50 @@ public class NCData {
 		}
 		return lvars;
 	}
-	
-	
-	
+
+	/**
+	 * Open the netcdf file, read the Time variable to get start-time==>startLong,
+	 * get the selected start time from dataFmt[TMSET_IDX]split(",")[0]==>selectedLong,
+	 * WARNING: if there is not ti-input, "Full" will be in dataFmt[TMSET_IDX]
+	 * tmRange[0] = (selectedLong-startLong)/1000;
+	 * tmRange[1] = dataFmt[FMT_IDX]split(",")[1];
+	 * @throws Exception
+	 */
+	public int[] calBatchTmRange(String[] fmt) throws NCDataException {
+		if (fin==null) {
+			System.out.println("The netcdf file is not opened.");
+			System.exit(-1);
+		}
+		//get time variable, 
+		Variable v = fin.findVariable("Time");
+		dataInf= new ArrayList<String>();
+		dataInf.add(0, v.getShortName()+ DataFmt.COMMAVAL+ v.getUnitsString());
+		long ncBegIdx = getTimeMilSec();
+
+		//selected tmset
+		int[] tmRange = new int[2];
+		String dfmt = fmt[DataFmt.TMSET_IDX];
+		if (dfmt==null || dfmt.isEmpty() || dfmt.equals(DataFmt.FULLTM)) {
+			tmRange[0]=0;
+			tmRange[1]= fin.getUnlimitedDimension().getLength();
+			return tmRange;
+		}
+		String[] selectTm = dfmt.split(DataFmt.TMSETDELIMIT);
+		if (selectTm[0]==null || selectTm[0].isEmpty()) {
+			tmRange[0]=0;
+		} else {
+			long selBegIdx = Long.parseLong(selectTm[0]);
+			tmRange[0]= (int)(selBegIdx - ncBegIdx)/1000;
+		}
+		if (selectTm[1]==null || selectTm[1].isEmpty()) {
+			tmRange[1]=fin.getUnlimitedDimension().getLength();
+		} else {
+			tmRange[1]= Integer.parseInt(selectTm[1]);
+		}
+		return tmRange;
+	} 
+
+
 } //eofclass
 
 

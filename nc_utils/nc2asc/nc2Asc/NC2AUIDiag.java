@@ -1,17 +1,37 @@
 
-package nc2Asc;
+package edu.ucar.eol.nc2Asc;
 
 
-import java.awt.*;
-import java.awt.event.*;
-
-import javax.swing.*;
-import javax.swing.border.Border;
-import java.io.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.Calendar;
 import java.util.zip.DataFormatException;
-import java.util.*;
 
-import nc2AscData.*;
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.border.Border;
+
+import edu.ucar.eol.nc2AscData.DataFmt;
 
 
 class NC2AUIDiag extends JDialog {
@@ -38,7 +58,7 @@ class NC2AUIDiag extends JDialog {
 	private JTextField 		tfTmSet, tfTmSet2, tfDateSet, tfDateSet2, tfSmpRate; 
 	private JTextArea 		tfDisp; 
 
-	private DataFmt  dFormat = new DataFmt(); //data format chosen by author
+	private DataFmt  dFormat = null; //data format chosen by author
 	private String[] cbDateTxt, cbTmTxt;
 	private String[] dDisp   = new String[10]; //make up data for display
 
@@ -47,7 +67,6 @@ class NC2AUIDiag extends JDialog {
 	private long tmStart;
 	private String[] origTm= new String[4];
 
-
 	public NC2AUIDiag(Frame owner, boolean modal) {
 		super(owner, modal);
 		JDialog.setDefaultLookAndFeelDecorated(true);
@@ -55,7 +74,7 @@ class NC2AUIDiag extends JDialog {
 		init();
 	}
 
-	public NC2AUIDiag(Frame owner, boolean modal, String[] initData, long[] gDataInf) {
+	public NC2AUIDiag(Frame owner, boolean modal, String[] initData, DataFmt df, long[] gDataInf) {
 		super(owner, modal);
 		JDialog.setDefaultLookAndFeelDecorated(true);
 		this.setDefaultCloseOperation(this.DO_NOTHING_ON_CLOSE);
@@ -64,14 +83,17 @@ class NC2AUIDiag extends JDialog {
 		highRate = (int)gDataInf[0];
 		tmStart =   gDataInf[1];
 		size   = (int)gDataInf[2];
+		dFormat = df;
 		initTmSet();
 		init();
+
+		displaySelFmt(); //display user selected format
 	}
 	public void setDispData(String[] dd){
 		dDisp=dd;
 
 		if (tfDisp==null){
-			nc2Asc.NC2Act.wrtMsg("Text field in the format dialog is not created");
+			NC2Act.wrtMsg("Text field in the format dialog is not created");
 			return;
 		}
 		int i=0;
@@ -94,11 +116,11 @@ class NC2AUIDiag extends JDialog {
 		Border bdTm = BorderFactory.createTitledBorder(" Date-Time Format  ");   
 		jpTm.setBorder(bdTm);
 		cbDateTxt = new String[3];
-		cbDateTxt[0]=DataFmt.DATEDASH.toString();
-		cbDateTxt[1]=DataFmt.DATESPACE.toString();
-		cbDateTxt[2]=DataFmt.NODATE.toString();
+		cbDateTxt[0]=DataFmt.DATEDASH;
+		cbDateTxt[1]=DataFmt.DATESPACE;
+		cbDateTxt[2]=DataFmt.NODATE;
 		cbDate = new JComboBox(cbDateTxt);
-		cbDate.setActionCommand(CBDATE.toString());
+		cbDate.setActionCommand(CBDATE);
 		cbDate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
 				selectDateFrmt(e);
@@ -107,13 +129,14 @@ class NC2AUIDiag extends JDialog {
 		jpTm.add(cbDate);
 
 		cbTmTxt = new String[4];
-		cbTmTxt[0]=DataFmt.TIMECOLON.toString();
-		cbTmTxt[1]=DataFmt.TIMESPACE.toString();
-		cbTmTxt[2]=DataFmt.TIMENOSPACE.toString();
-		cbTmTxt[3]=DataFmt.TIMESEC.toString();
+		cbTmTxt[0]=DataFmt.TIMECOLON;
+		cbTmTxt[1]=DataFmt.TIMESPACE;
+		cbTmTxt[2]=DataFmt.TIMENOSPACE;
+		cbTmTxt[3]=DataFmt.TIMESEC;
+
 		cbTm = new JComboBox(cbTmTxt);
 		jpTm.add(cbTm);
-		cbTm.setActionCommand(CBTM.toString());
+		cbTm.setActionCommand(CBTM);
 		cbTm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
 				selectTmFrmt(e);
@@ -134,15 +157,16 @@ class NC2AUIDiag extends JDialog {
 		rHead = new JRadioButton(DataFmt.HEAD);
 		jpHead.add(rHead);
 		rHead.setSelected(true);
-		addButtonActCmd(rHead, RHEAD.toString());
+		addButtonActCmd(rHead, RHEAD);
 
 		rHead2 = new JRadioButton(DataFmt.HEAD2); 
 		jpHead.add(rHead2);
-		addButtonActCmd(rHead2, RHEAD2.toString());
+		addButtonActCmd(rHead2, RHEAD2);
 
 		rHead3 = new JRadioButton(DataFmt.HEAD3); 
 		jpHead.add(rHead3);
-		addButtonActCmd(rHead3, RHEAD3.toString());
+		addButtonActCmd(rHead3, RHEAD3);
+		rHead3.setEnabled(false);
 
 		jpHead.add(createPaneSR());
 		return jpHead;
@@ -159,6 +183,7 @@ class NC2AUIDiag extends JDialog {
 			public void keyPressed(KeyEvent e) {};
 			public void keyReleased(KeyEvent e) {
 				String srStr= tfSmpRate.getText().trim();
+				if (srStr.isEmpty()) {return;}
 				DataFmt.setDataFmt(srStr, DataFmt.AVG_IDX);
 				tfDisp.setText(reFmtDisp());
 			};
@@ -179,11 +204,11 @@ class NC2AUIDiag extends JDialog {
 		rDmtr = new JRadioButton("Comma");
 		jpDmtr.add(rDmtr);
 		rDmtr.setSelected(true);
-		addButtonActCmd(rDmtr, RDMTR.toString());
+		addButtonActCmd(rDmtr, RDMTR);
 
 		rDmtr2 = new JRadioButton("Space"); 
 		jpDmtr.add(rDmtr2);
-		addButtonActCmd(rDmtr2, RDMTR2.toString());
+		addButtonActCmd(rDmtr2, RDMTR2);
 
 		return jpDmtr;
 	}
@@ -195,18 +220,18 @@ class NC2AUIDiag extends JDialog {
 		Border bdVal = BorderFactory.createTitledBorder("Fill Value");
 		jpVal.setBorder(bdVal);
 
-		rVal = new JRadioButton(DataFmt.FILLVALUE.toString());
+		rVal = new JRadioButton(DataFmt.FILLVALUE);
 		jpVal.add(rVal);
 		rVal.setSelected(true);
-		addButtonActCmd(rVal, RVAL.toString());
+		addButtonActCmd(rVal, RVAL);
 
-		rVal2 = new JRadioButton(DataFmt.LEAVEBLANK.toString()); 
+		rVal2 = new JRadioButton(DataFmt.LEAVEBLANK); 
 		jpVal.add(rVal2);
-		addButtonActCmd(rVal2, RVAL2.toString());
+		addButtonActCmd(rVal2, RVAL2);
 
 		rVal3 = new JRadioButton(DataFmt.REPLICATE); 
 		jpVal.add(rVal3);
-		addButtonActCmd(rVal3, RVAL3.toString());
+		addButtonActCmd(rVal3, RVAL3);
 
 		return jpVal;
 	}
@@ -225,10 +250,10 @@ class NC2AUIDiag extends JDialog {
 
 		JPanel jp = new JPanel();
 		jp.setLayout(new GridLayout(0,2));
-		tfDateSet = new JTextField(origTm[0].toString());
+		tfDateSet = new JTextField(origTm[0]);
 		tfDateSet.setSize(12,8);
 		tfDateSet.setEnabled(false); 
-		tfTmSet = new JTextField(origTm[1].toString());
+		tfTmSet = new JTextField(origTm[1]);
 		tfTmSet.setSize(12,8);
 		tfTmSet.setEnabled(false); 
 		jp.add(tfDateSet);
@@ -237,10 +262,10 @@ class NC2AUIDiag extends JDialog {
 
 		jp = new JPanel();
 		jp.setLayout(new GridLayout(0,2));
-		tfDateSet2 = new JTextField(origTm[2].toString());
+		tfDateSet2 = new JTextField(origTm[2]);
 		tfDateSet2.setSize(12,8);
 		tfDateSet2.setEnabled(false); 
-		tfTmSet2 = new JTextField(origTm[3].toString());		
+		tfTmSet2 = new JTextField(origTm[3]);		
 		tfTmSet2.setSize(12,8);
 		tfTmSet2.setEnabled(false);
 		//lblEnd = new JLabel("End"); lblEnd.setEnabled(false);
@@ -252,8 +277,8 @@ class NC2AUIDiag extends JDialog {
 		Border bdDmtr = BorderFactory.createTitledBorder(" Time Scope ");
 		jpTmSet.setBorder(bdDmtr);
 
-		addButtonActCmd(rTmSet, RTMSET.toString());
-		addButtonActCmd(rTmSet2, RTMSET2.toString());
+		addButtonActCmd(rTmSet, RTMSET);
+		addButtonActCmd(rTmSet2, RTMSET2);
 		addTmSetFocusListener();
 		addTmSet2FocusListener();
 		return jpTmSet;
@@ -266,10 +291,10 @@ class NC2AUIDiag extends JDialog {
 
 		//if the demo data is empty, set defaults.
 		if (dDisp[0]==null || dDisp[0].length()==0) {
-			nc2Asc.NC2Act.wrtMsg("Input demo data is empty...");
+			NC2Act.wrtMsg("Input demo data is empty...");
 			dDisp[0]="Date,UTC,A1DC_LWO,A2DC_LWO";
 			String s1 = "2007-5-16,23:44:";
-			String s2 = DataFmt.COMMAVAL.toString() + DataFmt.MISSVAL + DataFmt.COMMAVAL.toString()+",0.0";
+			String s2 = DataFmt.COMMAVAL + DataFmt.MISSVAL + DataFmt.COMMAVAL+",0.0";
 			int sec = 17;
 			for (int i=1; i<10; i++) {
 				sec++;
@@ -357,7 +382,7 @@ class NC2AUIDiag extends JDialog {
 			this.add(createButtons(),c);
 
 		} catch (Exception e) {
-			nc2Asc.NC2Act.wrtMsg("Err in init_method: "+e.getMessage());
+			NC2Act.wrtMsg("Err in init_method: "+e.getMessage());
 		}
 
 		//chk high rate or low rate data to control options
@@ -420,11 +445,14 @@ class NC2AUIDiag extends JDialog {
 		long tmms= getNewTmMilSec(dt,tm, 0);
 
 		if (tmms+1000 < tmStart){
-			nc2Asc.NC2Act.wrtMsg("This time is earlier than the start-time: " + origTm[0]+ " "+ origTm[1]);
+			NC2Act.wrtMsg("This time is earlier than the start-time: " + origTm[0]+ " "+ origTm[1]);
 			tfDateSet.setText(origTm[0]);
 			tfTmSet.setText(origTm[1]);
 			return;
 		}
+		long tmEnd = getNewTmMilSec(tfDateSet2.getText().trim(),tfTmSet2.getText().trim(), 1);
+		DataFmt.setDataFmt(tmms+ DataFmt.TMSETDELIMIT+(int)((tmEnd-tmms)/1000), DataFmt.TMSET_IDX);
+		DataFmt.setTmSet(tfDateSet.getText().trim()+ DataFmt.COMMAVAL + tfTmSet.getText().trim()+DataFmt.TMSETDELIMIT+ tfDateSet2.getText().trim()+ DataFmt.COMMAVAL + tfTmSet2.getText().trim()  );
 	}
 
 
@@ -435,7 +463,7 @@ class NC2AUIDiag extends JDialog {
 
 		long tmEnd = getNewTmMilSec(dt,tm, 1);
 		if ((int)tmEnd/1000 > (int)(tmStart+size*1000)/1000){
-			nc2Asc.NC2Act.wrtMsg("The time is later than the end-time: " + origTm[2]+ " "+ origTm[3]);
+			NC2Act.wrtMsg("The time is later than the end-time: " + origTm[2]+ " "+ origTm[3]);
 			tfDateSet2.setText(origTm[2]);
 			tfTmSet2.setText(origTm[3]);
 			return;
@@ -446,7 +474,7 @@ class NC2AUIDiag extends JDialog {
 		String tm0 = tfTmSet.getText();
 		long tmStart= getNewTmMilSec(dt0,tm0, 0);
 		if (tmStart > tmEnd){
-			nc2Asc.NC2Act.wrtMsg("The end-time is less than the start-time: " );
+			NC2Act.wrtMsg("The end-time is less than the start-time: " );
 			tfDateSet.setText(origTm[0]);
 			tfTmSet.setText(origTm[1]);
 			tfDateSet2.setText(origTm[2]);
@@ -455,6 +483,7 @@ class NC2AUIDiag extends JDialog {
 		}
 		//start-time(milsec) and range-seconds
 		DataFmt.setDataFmt(tmStart+ DataFmt.TMSETDELIMIT+(int)((tmEnd-tmStart)/1000), DataFmt.TMSET_IDX);
+		DataFmt.setTmSet(tfDateSet.getText().trim()+ DataFmt.COMMAVAL + tfTmSet.getText().trim()+DataFmt.TMSETDELIMIT+ tfDateSet2.getText().trim()+ DataFmt.COMMAVAL + tfTmSet2.getText().trim()  );
 	}
 
 
@@ -463,7 +492,7 @@ class NC2AUIDiag extends JDialog {
 		String[] dts = dt.split("-");
 		String[] tms = tm.split(":");
 		if (dts.length!=3 || tms.length !=3) {
-			nc2Asc.NC2Act.wrtMsg("Invalid Tm Data format...");
+			NC2Act.wrtMsg("Invalid Tm Data format...");
 			if (idx ==0){
 				tfDateSet.setText(origTm[0]);
 				tfTmSet.setText(origTm[1]);
@@ -498,22 +527,22 @@ class NC2AUIDiag extends JDialog {
 
 	void selectOk(ActionEvent e){
 		if ("ok".equals(e.getActionCommand())) {
-			chkEndTmField();
+			//chkEndTmField();
 			dispose();
 		}
 	}
 
 	void selectDateFrmt(ActionEvent e) {
 		if (CBDATE.equals(e.getActionCommand())) {
-			DataFmt.setDataFmt(cbDateTxt[cbDate.getSelectedIndex()],DataFmt.DATE_IDX);
-			tfDisp.setText(reFmtDisp());	
+				DataFmt.setDataFmt(cbDateTxt[cbDate.getSelectedIndex()],DataFmt.DATE_IDX);
+				tfDisp.setText(reFmtDisp());	
 		}
 	}
 
 	void selectTmFrmt(ActionEvent e) {
 		if (CBTM.equals(e.getActionCommand())) {
-			DataFmt.setDataFmt(cbTmTxt[cbTm.getSelectedIndex()], DataFmt.TM_IDX);
-			tfDisp.setText(reFmtDisp());	
+				DataFmt.setDataFmt(cbTmTxt[cbTm.getSelectedIndex()], DataFmt.TM_IDX);
+				tfDisp.setText(reFmtDisp());
 		}
 	}
 
@@ -522,7 +551,7 @@ class NC2AUIDiag extends JDialog {
 			if (rDmtr.isSelected()){
 				rDmtr2.setSelected(false);
 				rVal2.setEnabled(true);
-				DataFmt.setDataFmt(DataFmt.COMMAVAL.toString(), DataFmt.DMTR_IDX);
+				DataFmt.setDataFmt(DataFmt.COMMAVAL, DataFmt.DMTR_IDX);
 				tfDisp.setText(reFmtDisp());
 			} else if (!rDmtr2.isSelected()) {
 				DataFmt.setDataFmt(" ", DataFmt.DMTR_IDX);
@@ -539,7 +568,7 @@ class NC2AUIDiag extends JDialog {
 				rVal.setSelected(true);
 				rVal2.setSelected(false);
 				DataFmt.setDataFmt(" ", DataFmt.DMTR_IDX);
-				DataFmt.setDataFmt(DataFmt.MISSVAL.toString(), DataFmt.MVAL_IDX);
+				DataFmt.setDataFmt(DataFmt.MISSVAL, DataFmt.MVAL_IDX);
 				tfDisp.setText(reFmtDisp());
 			}  else if (!rDmtr.isSelected()) {
 				rDmtr2.setSelected(true);
@@ -629,8 +658,10 @@ class NC2AUIDiag extends JDialog {
 			if (rHead.isSelected()){
 				rHead2.setSelected(false);
 				rHead3.setSelected(false);
-				//dForamt[5]=RHEAD.toString();
-				DataFmt.setDataFmt(DataFmt.HEAD.toString(), DataFmt.HEAD_IDX);
+				cbTm.setEnabled(true);
+				cbDate.setEnabled(true);
+				//dForamt[5]=RHEAD;
+				DataFmt.setDataFmt(DataFmt.HEAD, DataFmt.HEAD_IDX);
 			} else if (!rHead2.isSelected() && !rHead3.isSelected()){
 				rHead.setSelected(true);
 			}
@@ -643,8 +674,17 @@ class NC2AUIDiag extends JDialog {
 			if (rHead2.isSelected()){
 				rHead.setSelected(false);
 				rHead3.setSelected(false);
-				//dForamt[5]=RHEAD.toString();
-				DataFmt.setDataFmt(DataFmt.HEAD2.toString(), DataFmt.HEAD_IDX);
+				//dForamt[5]=RHEAD;
+				DataFmt.setDataFmt(DataFmt.HEAD2, DataFmt.HEAD_IDX);
+				cbTm.setSelectedIndex(3); //display secofday
+				cbDate.setSelectedIndex(2);
+				DataFmt.setDataFmt(cbTmTxt[cbTm.getSelectedIndex()], DataFmt.TM_IDX);
+				DataFmt.setDataFmt(cbDateTxt[cbDate.getSelectedIndex()], DataFmt.DATE_IDX);
+				//NC2Act.prtMsgBox(" "+ cbTmTxt[cbTm.getSelectedIndex()]+ " "+cbTmTxt[cbTm.getSelectedIndex()])
+				cbTm.setEnabled(false);
+				cbDate.setEnabled(false);
+
+				tfDisp.setText(reFmtDisp());
 			} else if (!rHead.isSelected() && !rHead3.isSelected()){
 				rHead2.setSelected(true);
 			}
@@ -656,7 +696,7 @@ class NC2AUIDiag extends JDialog {
 			if (rHead3.isSelected()){
 				rHead.setSelected(false);
 				rHead2.setSelected(false);
-				DataFmt.setDataFmt(DataFmt.HEAD3.toString(), DataFmt.HEAD_IDX);
+				DataFmt.setDataFmt(DataFmt.HEAD3, DataFmt.HEAD_IDX);
 			} else if (!rHead.isSelected() && !rHead2.isSelected()){
 				rHead3.setSelected(true);
 			}
@@ -690,14 +730,14 @@ class NC2AUIDiag extends JDialog {
 		if (tfDateSet.isEnabled()) {
 			ddata[0]="Date,UTC,A1DC_LWO,A2DC_LWO";
 			String[] tt = tfTmSet.getText().split(":");
-			String s1 = tfDateSet.getText()+DataFmt.COMMAVAL.toString()+ tt[0]+":"+tt[1]+":";
+			String s1 = tfDateSet.getText()+DataFmt.COMMAVAL+ tt[0]+":"+tt[1]+":";
 			//add 19 0r 20
 			if (Integer.parseInt(s1.split("-")[0])< 50) {
 				s1="20"+s1;
 			} else {
 				s1 +="19"+s1;
 			}
-			String s2 = DataFmt.COMMAVAL.toString() + ",0.0";
+			String s2 = DataFmt.COMMAVAL + ",0.0";
 			int sec = Integer.parseInt(tt[2]);
 			for (int i=1; i<10; i++) {
 				ddata[i]=s1+sec+s2;
@@ -708,7 +748,7 @@ class NC2AUIDiag extends JDialog {
 		}
 
 		//check avg
-		if ( tfSmpRate.isEnabled() && (Integer.parseInt(tfSmpRate.getText().trim())>1) ){
+		if ( tfSmpRate.isEnabled() && (!tfSmpRate.getText().trim().isEmpty())&&(Integer.parseInt(tfSmpRate.getText().trim())>1) ){
 			return resetAvgDisp(ddata);
 		}
 
@@ -719,7 +759,7 @@ class NC2AUIDiag extends JDialog {
 		// handle date/time and two demo data-items
 		for (int i =1; i< ddata.length; i++){
 
-			String[] d = ddata[i].split(DataFmt.COMMAVAL.toString());
+			String[] d = ddata[i].split(DataFmt.COMMAVAL);
 			try { 
 				d[0]=dFormat.fmtDate(d[0].split("-"));
 				d[1]=dFormat.fmtTm(d[1].split(":"));
@@ -760,11 +800,11 @@ class NC2AUIDiag extends JDialog {
 				one[0] = dFormat.fmtDate(one[0]);
 				one[1] = dFormat.fmtTm(one[1]);
 			} catch (DataFormatException e) {
-				nc2Asc.NC2Act.wrtMsg("resetAvgDisp_fmtDate_fmtTm exception...");
+				NC2Act.wrtMsg("resetAvgDisp_fmtDate_fmtTm exception...");
 			}
 			ret += "\n" + dFormat.fmtDmtr(one);
 		}
-		
+
 		//add extra empty lines
 		for (int i=0; i<loop-len; i++){
 			ret += " \n";
@@ -786,6 +826,77 @@ class NC2AUIDiag extends JDialog {
 		origTm[2] = cl.get(Calendar.YEAR)+ "-"+ cl.get(Calendar.MONTH)+"-"+cl.get(Calendar.DAY_OF_MONTH);
 		origTm[2] = origTm[2].substring(2);//chop off the first 2 chars 19 or 20
 		origTm[3] = cl.get(Calendar.HOUR_OF_DAY )+ ":"+ cl.get(Calendar.MINUTE)+":"+cl.get(Calendar.SECOND);
+	}
+
+	void displaySelFmt() {
+		//get fmt re-display format
+		String[] dfmt = dFormat.getDataFmt();
+
+		//head
+		if (dfmt[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)) {
+			rHead2.setSelected(true);
+			rHead.setSelected(false);
+			cbTm.setSelectedIndex(3); // head 2 needs secOfDay
+			cbDate.setSelectedIndex(2); //noDate
+			cbTm.setEnabled(false);
+			cbDate.setEnabled(false);
+		}
+		if (dfmt[DataFmt.HEAD_IDX].equals(DataFmt.HEAD3)) {
+			rHead3.setSelected(true);
+			rHead.setSelected(false);
+		}
+
+		String item = dfmt[DataFmt.DATE_IDX];
+		if (item.equals(DataFmt.DATESPACE)) {
+			cbDate.setSelectedIndex(1);
+		}
+		if ( item.equals(DataFmt.NODATE)) {
+			cbDate.setSelectedIndex(2);
+		}
+
+		item = dfmt[DataFmt.TM_IDX];
+		if ( item.equals(DataFmt.TIMESPACE)) {
+			cbTm.setSelectedIndex(1);
+		}
+		if ( item.equals(DataFmt.TIMENOSPACE)) {
+			cbTm.setSelectedIndex(2);
+		}
+		if ( item.equals(DataFmt.TIMESEC)) {
+			cbTm.setSelectedIndex(3);
+		}
+
+		if (dfmt[DataFmt.DMTR_IDX].equals(DataFmt.SPACEVAL)) {
+			rDmtr.setSelected(false);
+			rDmtr2.setSelected(true);
+			rVal2.setEnabled(false); 
+		}
+
+		if (dfmt[DataFmt.MVAL_IDX]==null || dfmt[DataFmt.MVAL_IDX].isEmpty()) {
+			rVal2.setSelected(true);
+			rVal.setSelected(false);
+			rVal3.setSelected(false);
+		} else 	if (dfmt[DataFmt.MVAL_IDX].equals(DataFmt.REPLICATE)) {
+			rVal3.setSelected(true);
+			rVal.setSelected(false);
+			rVal2.setSelected(false);
+		}
+
+		if (!dfmt[DataFmt.TMSET_IDX].equals(DataFmt.FULLTM)) {
+			rTmSet2.setSelected(true);
+			rTmSet.setSelected(false);
+			tfDateSet.setEnabled(true);
+			tfTmSet.setEnabled(true);
+			tfDateSet2.setEnabled(true);
+			tfTmSet2.setEnabled(true);
+			//parse tmset
+			String[] tmset = dFormat.getTmSet().split(DataFmt.TMSETDELIMIT);
+			tfDateSet.setText(tmset[0].split(DataFmt.COMMAVAL)[0]);
+			tfTmSet.setText(tmset[0].split(DataFmt.COMMAVAL)[1]);
+			tfDateSet2.setText(tmset[1].split(DataFmt.COMMAVAL)[0]);
+			tfTmSet2.setText(tmset[1].split(DataFmt.COMMAVAL)[1]);
+		}
+
+
 	}
 
 } //eof class

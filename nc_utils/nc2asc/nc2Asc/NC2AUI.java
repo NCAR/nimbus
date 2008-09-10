@@ -1,11 +1,6 @@
-package nc2Asc;
+package edu.ucar.eol.nc2Asc;
 
-import java.lang.*;
-import java.lang.Exception.*;
-import java.util.*;
-import java.util.List;
-import java.util.zip.DataFormatException;
-import java.awt.ComponentOrientation;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -13,20 +8,47 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.*;
-import java.awt.*; 
-import java.io.*;
-import java.beans.*;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
-import javax.swing.*;
-import javax.swing.filechooser.*;
-import javax.swing.table.*; 
+import javax.swing.AbstractButton;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingWorker;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
+import java.io.FileWriter;
 
-import ucar.ma2.InvalidRangeException;
+import edu.ucar.eol.nc2AscData.DataFmt;
+import edu.ucar.eol.nc2AscData.NCData;
+import edu.ucar.eol.nc2AscData.NCDataException;
 import ucar.nc2.Variable;
-
-import nc2Asc.NC2AUIProgBar.Task;
-import nc2AscData.*;
 
 public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
@@ -39,7 +61,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		public Void doInBackground() {
 			int progress = ncdata.getProgIdx();
 			setProgress(0);
-			if (taskLen < 1) {nc2Asc.NC2Act.wrtMsg("Task Len = 0"); return null;}
+			if (taskLen < 1) {NC2Act.wrtMsg("Task Len = 0"); return null;}
 			while (!ncdata.getFinish()) {
 				//Sleep for up to one second.
 				setProgress(Math.min(100*progress/taskLen, 100));
@@ -392,12 +414,12 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			String[] strs = {"nc"};
 			FileNameExtensionFilter filter = new FileNameExtensionFilter(null, strs);
 			//default file
-			/*String txt =System.getenv("DATA_DIR"); 
+			String txt =System.getenv("DATA_DIR"); 
 			if ( txt==null || txt.isEmpty()){
 				File dir = new File(".");
 				txt =dir.getAbsolutePath();
-			}*/
-			String txt = "/home/data/pac10.nc";
+			}
+			//String txt = "/home/data/pac10.nc";
 			JFileChooser fileChooser = new JFileChooser(txt);
 			fileChooser.addChoosableFileFilter(filter);
 			fileChooser.setDialogTitle("                  Select Input File");
@@ -412,7 +434,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 					return true;
 				}
 				else {
-					nc2Asc.NC2Act.wrtMsg("Invalid Input File...");
+					NC2Act.wrtMsg("Invalid Input File...");
 				}
 			}
 		}
@@ -443,14 +465,14 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			String out =fileChooser.getSelectedFile().getAbsolutePath();
 
 			if (out.isEmpty()) {
-				nc2Asc.NC2Act.wrtMsg("Invalid Output File...");
+				NC2Act.wrtMsg("Invalid Output File...");
 			} else {
 				fileName[2]= out;
 				try {
 					ncdata.openOutFile(fileName[2]);
 					return true;
 				} catch (IOException e ) {
-					nc2Asc.NC2Act.wrtMsg("selectOutputFile_openOutFile_IOException...");
+					NC2Act.wrtMsg("selectOutputFile_openOutFile_IOException...");
 				}
 			}
 		}
@@ -495,16 +517,16 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			try {
 				demodata =ncdata.getDemoData();
 			} catch ( ArrayIndexOutOfBoundsException a){
-				nc2Asc.NC2Act.wrtMsg("getDemoData Array index out of bound"+a.getMessage());
+				NC2Act.wrtMsg("getDemoData Array index out of bound"+a.getMessage());
 			} catch (NCDataException ee) {
-				nc2Asc.NC2Act.wrtMsg("getDemoData NCData exception "+ee.getMessage());
+				NC2Act.wrtMsg("getDemoData NCData exception "+ee.getMessage());
 			} catch (IOException nce){
-				nc2Asc.NC2Act.wrtMsg("getDemoData IO exception "+nce.getMessage());
+				NC2Act.wrtMsg("getDemoData IO exception "+nce.getMessage());
 			} catch (Exception ex) {
-				nc2Asc.NC2Act.wrtMsg("getDemoData exception "+ex.getMessage());
+				NC2Act.wrtMsg("getDemoData exception "+ex.getMessage());
 			}
 
-			dialog = new NC2AUIDiag(frm, true, demodata, ncdata.getGlobalDataInf());
+			dialog = new NC2AUIDiag(frm, true, demodata, datafmt,  ncdata.getGlobalDataInf());
 			dialog.setBounds(250, 150, 690, 450);
 			dialog.setVisible(true);
 		}
@@ -518,7 +540,88 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
 	private void saveBatch (ActionEvent e) {
 		if (SVBATCH.equals(e.getActionCommand())) {
+			
+			//check input
+			if (fileName[1]==null ||fileName[1].isEmpty()) {
+				NC2Act.wrtMsg("SaveBatch: No netcdf input file found.");
+				return;
+			}
+			// get batch file 
+			NC2Act.wrtMsg("Saving batch arguments...");
+			String txt =System.getenv("DATA_DIR"); 
+			if (fileName[0]!=null && !fileName[0].isEmpty()) {
+				txt = fileName[0];
+			} else {
+				if ( txt==null || txt.isEmpty()){
+					File dir = new File(".");
+					txt =dir.getAbsolutePath();
+				}
+			}
+			JFileChooser fileChooser = new JFileChooser(txt);
+			fileChooser.setDialogTitle("            Select Batch File");
+			fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
+			int returnValue = fileChooser.showOpenDialog(null);
+			if (returnValue == JFileChooser.APPROVE_OPTION) {
+				String out =fileChooser.getSelectedFile().getAbsolutePath();
+
+				if (out.isEmpty()) {
+					NC2Act.wrtMsg("SaveBatch: Invalid batch output file...");
+					return;
+				} else {
+					fileName[0]= out;
+				}
+			}
+			FileWriter bout = null;
+			try {
+				bout = new FileWriter(fileName[0]);
+			} catch (IOException ee ) {
+				NC2Act.wrtMsg("saveBatch_openBatchFile_IOException...");
+				return;
+			}
+
+			String line = "if= "+fileName[1]+ "\n";
+			line +="of= "+fileName[2]+ "\n\n";
+			
+			//  data format 
+			if (datafmt==null) {
+				NC2Act.wrtMsg("No data format selected...");
+				return;
+			}
+			String[] tmp= datafmt.getDataFmt();
+			line += "hd= "+ tmp[DataFmt.HEAD_IDX]+"\n";
+			line += "avg= "+ tmp[DataFmt.AVG_IDX]+"\n";
+			line += "dt= "+ tmp[DataFmt.DATE_IDX]+"\n";
+			line += "tm= "+ tmp[DataFmt.TM_IDX]+"\n";
+			if (tmp[DataFmt.DMTR_IDX].equals(DataFmt.COMMAVAL)) {
+				line += "sp= "+ DataFmt.SPACE+"\n";
+			} else {
+				line += "sp= "+ DataFmt.COMMA+"\n";
+			}
+			
+			if (tmp[DataFmt.MVAL_IDX].isEmpty()) {
+				line += "fv= "+ DataFmt.LEAVEBLANK+"\n";
+			} else if (tmp[DataFmt.MVAL_IDX].equals(DataFmt.MISSVAL )) {
+				line += "fv= "+ DataFmt.FILLVALUE+"\n";
+			} else  {
+				line += "fv= "+ DataFmt.REPLICATE+"\n";
+			}
+	
+			line +="ti= "+ DataFmt.getTmSet()+"\n\n";
+	
+			//  variables 
+			List<Variable> subvars = getSubVarList();
+			for (int i=0; i<subvars.size(); i++) {
+				line +="var= "+ subvars.get(i).getName()+ "\n";
+			}
+			//   write out
+			try {
+				bout.write(line);
+				bout.close();
+			} catch (IOException ioe) {
+				NC2Act.wrtMsg("saveBatch_writeOut_exception...");
+			}
+			NC2Act.wrtMsg("  Done.");
 		}
 	}
 
@@ -698,7 +801,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
 		//check data
 		if (dataInf==null || dataInf.size()<1 ) {
-			nc2Asc.NC2Act.wrtMsg("Information data is null... Use default data for format display");
+			NC2Act.wrtMsg("Information data is null... Use default data for format display");
 			return;
 		}
 		// set data
@@ -708,7 +811,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			if (data==null || data.length()<1) {return;}
 			String[] d = data.split(DataFmt.COMMAVAL);
 			if (tbl.getRowCount()<i-1){
-				nc2Asc.NC2Act.wrtMsg("Table is not long enough: "+ i);
+				NC2Act.wrtMsg("Table is not long enough: "+ i);
 				break;
 			}
 
@@ -728,7 +831,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		try {
 			FileInputStream f = new FileInputStream(fn);
 		} catch (Exception e) {
-			nc2Asc.NC2Act.wrtMsg("validateInputFile: Invalid Input File: "+fn);
+			NC2Act.wrtMsg("validateInputFile: Invalid Input File: "+fn);
 			return false;
 		}
 		return true;
@@ -738,7 +841,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		try {
 			FileOutputStream f = new FileOutputStream(fn);
 		} catch (Exception e) {
-			nc2Asc.NC2Act.wrtMsg("validateOutputFile: Invalid Output File: "+fn);
+			NC2Act.wrtMsg("validateOutputFile: Invalid Output File: "+fn);
 			return false;
 		}
 		return true;

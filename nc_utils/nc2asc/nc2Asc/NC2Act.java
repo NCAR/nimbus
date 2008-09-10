@@ -1,13 +1,11 @@
-
-
-package nc2Asc;
+package edu.ucar.eol.nc2Asc;
 
 
 import javax.swing.*;
 import java.io.*;
 import java.util.*;
 import java.awt.*;
-import nc2AscData.*;
+import edu.ucar.eol.nc2AscData.*;
 
 public class NC2Act {
 

@@ -1,13 +1,16 @@
-package nc2Asc;
+package edu.ucar.eol.nc2Asc;
 
-import java.lang.*;
-import java.lang.Exception.*;
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
-import ucar.nc2.*;
-
-import nc2AscData.*;
+import ucar.nc2.NetcdfFile;
+import ucar.nc2.Variable;
+import edu.ucar.eol.nc2AscData.DataFmt;
 
 /**
  * Class to convert between the user desired choices and the program, regards i/o files, data formats,
@@ -41,13 +44,7 @@ public class BatchConfig {
 	 */
 	private List<String> selVars; 
 
-	/**
-	 * list of time range  -- 
-	 * tmRange[0] - beg-index
-	 * tmRange[1] - range
-	 */
-	private int[] tmRange = new int[2];  
-
+	
 	/**
 	 * Constructor catches the command-line inputs, and sign the files to its storage.
 	 * The class users need to call start() to read and interpret the batch file to get ready for data writing.
@@ -70,11 +67,6 @@ public class BatchConfig {
 		}
 	}
 
-	/**
-	 * The beginning and ending indexes of the input time set
-	 * @return
-	 */
-	public int[] getTmRange() { return tmRange;}
 	
 	/**
 	 * File names from command line:
@@ -130,7 +122,7 @@ public class BatchConfig {
 		return display;
 	}
 
-	
+
 
 	/**
 	 * Display the variables specified in the input batch file
@@ -237,13 +229,13 @@ public class BatchConfig {
 			if (line.indexOf("var")==0 ) {
 				selVars.add(val);
 			}
-			
+
 			line = br.readLine();
 		} //while 
 		br.close();
 		fr.close();
 		// set tm range
-		calTmRange();
+		//calTmRange();
 
 		//verify all the required batch elements
 		checkBatchElements();
@@ -274,7 +266,7 @@ public class BatchConfig {
 
 		Calendar cl = Calendar.getInstance();
 		cl.set(y,mm,d,h,m,s);
-		String ret = cl.getTimeInMillis()+ DataFmt.COMMAVAL;
+		String ret = cl.getTimeInMillis()+ DataFmt.TMSETDELIMIT;
 
 		//end time  
 		String[] end = tt[1].split(DataFmt.COMMAVAL); 
@@ -294,54 +286,14 @@ public class BatchConfig {
 
 		//time range in seconds
 		int range =(int)(cl2.getTimeInMillis() - cl.getTimeInMillis())/1000 ;
+		if (range<0){
+			System.out.println("The ending time is smaller than starting time...");
+			System.exit(-1);
+		}
 		return ret+range;
 	}
 
-	/**
-	 * Open the netcdf file, read the Time variable to get start-time==>startLong,
-	 * get the selected start time from dataFmt[FMT_IDX]split(",")[0]==>selectedLong,
-	 * tmRange[0] = (selectedLong-startLong)/1000;
-	 * tmRange[1] = dataFmt[FMT_IDX]split(",")[1];
-	 * @throws Exception
-	 */
-	private void calTmRange() throws Exception {
-		//open netcdf file to read our time
-		NetcdfFile fin=null;
-		try{
-			fin = NetcdfFile.open(files[1]);
-		} catch (IOException e){
-			e.printStackTrace();
-			System.exit(-1);
-		} 
-
-		//get time variable, 
-		Variable v = fin.findVariable("Time");
-		String tmVar = v.getUnitsString();
-		String date = tmVar.split(" ")[2];
-		String tm   = tmVar.split(" ")[3];
-		String[] dInf = date.split("-");
-		String[] tmInf   = tm.split(":");
-
-		Calendar cl = Calendar.getInstance();
-		int y= Integer.parseInt(dInf[0]);//new Integer(dInf[0]).intValue();
-		int mm= Integer.parseInt(dInf[1]);//new Integer(dInf[1]).intValue();
-		int d= Integer.parseInt(dInf[2]);//new Integer(dInf[2]).intValue();
-
-		int h= Integer.parseInt(tmInf[0]);//new Integer(tmInf[0]).intValue();
-		int m= Integer.parseInt(tmInf[1]);//new Integer(tmInf[1]).intValue();
-		int s= Integer.parseInt(tmInf[2]);//new Integer(tmInf[2]).intValue();
-
-		cl.set(y,mm,d,h,m,s);
-		long ncBegIdx = cl.getTimeInMillis();
-
-		//selected tmset
-		String[] selectTm = dataFmt[DataFmt.TMSET_IDX].split(DataFmt.COMMAVAL);
-		long selBegIdx = Long.parseLong(selectTm[0]);
-		tmRange[0]= (int)(selBegIdx - ncBegIdx)/1000;
-		tmRange[1]= Integer.parseInt(selectTm[1]);
-		
-		fin.close();
-	} 
+	
 
 	private void checkBatchElements() {
 		if (selVars.size()<1) {
@@ -349,25 +301,66 @@ public class BatchConfig {
 			System.exit(-1);
 		}
 
-		for (int i=0; i<dataFmt.length; i++)  {
-			if (dataFmt[i]==null || dataFmt[i].length()<1) {
-				System.out.println("No data format is read from the batch file. Index= "+i);
-				System.exit(-1);
-			}
-		}
-
 		for (int i=0; i<files.length; i++)  {
-			if (files[i]==null || files[i].length()<1) {
+			if (files[i].isEmpty() || files[1].isEmpty()) {
 				System.out.println("No I/O files are read from the batch file. Index= "+i);
 				System.exit(-1);
 			}
 		}
-		
-		if (tmRange[0]<=0 || tmRange[1]<= 0) {
-			System.out.println("No time range is calculated based on the batch file .");
-			System.exit(-1);
+
+		//format checking..........
+		//check date
+		String item = dataFmt[DataFmt.DATE_IDX];
+		if (item!=null && !item.isEmpty() &&( item.equals(DataFmt.DATEDASH) || item.equals(DataFmt.DATESPACE) ||item.equals(DataFmt.NODATE))) {
+		} else {
+			System.out.println("Cannot find a good date format. Use default date format..."+ item);
+			dataFmt[DataFmt.DATE_IDX]= DataFmt.DATEDASH;
 		}
-		
+		//check time
+		item = dataFmt[DataFmt.TM_IDX];
+		if (item!=null && !item.isEmpty() &&( item.equals( DataFmt.TIMECOLON) || item.equals(DataFmt.TIMENOSPACE) ||item.equals(DataFmt.TIMESPACE) || item.equals(DataFmt.TIMESEC))) {
+		} else {
+			System.out.println("Cannot find a good time format. Use default format..."+ item);
+			dataFmt[DataFmt.TM_IDX]= DataFmt.TIMECOLON;
+		}
+		//check delimiter
+		item = dataFmt[DataFmt.DMTR_IDX];
+		if (item!=null && !item.isEmpty() &&( item.equals(DataFmt.SPACEVAL) || item.equals(DataFmt.COMMAVAL))) {
+		} else {
+			System.out.println("Cannot find a good delimiter. Use default format..."+ item);
+			dataFmt[DataFmt.DMTR_IDX]= DataFmt.COMMAVAL;
+		}
+		//check miss value
+		item = dataFmt[DataFmt.MVAL_IDX];
+		if (item==null || item.isEmpty() || item.equals(DataFmt.REPLICATE) || item.equals(DataFmt.MISSVAL)) { //empty =""
+		} else {
+			System.out.println("Cannot find a good fill value. Use default format..."+ item);
+			dataFmt[DataFmt.MVAL_IDX]= DataFmt.MISSVAL;
+		}
+		//check time set
+		item = dataFmt[DataFmt.TMSET_IDX]; boolean tmErr = false;
+		if (item==null || item.isEmpty() ){
+			tmErr = true;
+		} else if (item.split(",").length !=2) {
+			tmErr = true;
+		}
+		if (tmErr) {
+			System.out.println("Invalide tmset. Use default format..."+ item);
+			dataFmt[DataFmt.TMSET_IDX]= DataFmt.FULLTM;
+		}
+
+		item = dataFmt[DataFmt.HEAD_IDX];
+		if (item!=null && !item.isEmpty() &&( item.toLowerCase().equals(DataFmt.HEAD.toLowerCase()) || item.toLowerCase().equals(DataFmt.HEAD2.toLowerCase()) || item.toLowerCase().equals(DataFmt.HEAD3.toLowerCase()))) {
+		} else {
+			System.out.println("Cannot find a good head title. Use default format..."+ item);
+			dataFmt[DataFmt.HEAD_IDX]= DataFmt.HEAD;
+		}
+		item = dataFmt[DataFmt.AVG_IDX];
+		if (item==null || item.isEmpty() || Integer.parseInt(item)<1) {
+			System.out.println("Cannot find a good average. Use default format..."+ item);
+			dataFmt[DataFmt.AVG_IDX]="1";
+		}
+
 	}
 
 }//eof class

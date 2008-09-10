@@ -1,19 +1,17 @@
-package nc2Asc;
+package edu.ucar.eol.nc2Asc;
 
-import java.awt.ComponentOrientation;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.List;
-import javax.swing.*;
 
-import nc2AscData.NCData;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
 import ucar.nc2.Variable;
+import edu.ucar.eol.nc2AscData.*;
+
 
 
 /** 
@@ -64,12 +62,11 @@ public class NC2A extends JPanel implements ActionListener {
 	 *  
 	 */
 	public static void main(String[] args) {
-        
+		
 		if (args.length >0 && findBatch(args)) {
 			NC2Act.setMode(true);
 			setArgs(args);
 		}	else {
-			//NC2Act.setMode(false);
 			aui = new NC2AUI();
 			javax.swing.SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
@@ -104,19 +101,18 @@ public class NC2A extends JPanel implements ActionListener {
 	 * @param args  -b batchfile, -i input -o output
 	 */
 	private static void setArgs(String[] args) {
-		//batchArgs= args;
-
+		
 		BatchConfig bf = new BatchConfig(args);
 		bf.start();  //read and interpret the inputs
-
+        
+		System.out.println(bf.getFiles()[0]+ " "+ bf.getFiles()[1]+ " "+bf.getFiles()[2]);
 		String[] fmt = bf.getDataFmt();
-//		bf.showFmt(); //fordebug
-
-		int[] range = bf.getTmRange();
-
+		System.out.println(bf.showFmt()); 
+		
 		//get Vals from variable names
 		NCData ncdata= new NCData();
 		ncdata.setMode(true);
+		
 		try {
 			ncdata.openFile(bf.getFiles()[1]);
 			ncdata.openOutFile(bf.getFiles()[2]);
@@ -124,10 +120,16 @@ public class NC2A extends JPanel implements ActionListener {
 			System.out.println("Batch-mode open i/o file fails..."+ e.getStackTrace());
 			return;
 		}
+		
+		int[] range = new int[2];
+		try {
+			range = ncdata.calBatchTmRange(fmt);
+		} catch (NCDataException ee) {}
+		System.out.println(bf.showSelectedVars()+ "range "+ range[0]+ "  "+ range[1]); 
+		
 		List<Variable> sublvars= ncdata.getBatchSubVars(bf.getSelVars());
-//		bf.showSelectedVars(); //fordebug
-
 		ncdata.writeDataToFile(sublvars, range, fmt);
+		System.out.println("Writing is completed.");
 		
 	}
 

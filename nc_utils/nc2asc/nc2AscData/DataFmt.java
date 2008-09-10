@@ -1,9 +1,9 @@
-package nc2AscData;
-import java.lang.*;
-import java.util.zip.*;
-import java.util.*;
-import java.text.*;
-import java.io.*;
+package edu.ucar.eol.nc2AscData;
+
+import java.util.Calendar;
+import java.util.zip.DataFormatException;
+
+import edu.ucar.eol.nc2Asc.NC2Act;
 
 public class DataFmt {
 
@@ -45,6 +45,7 @@ public class DataFmt {
 	public final static String DASHVAL= "-";
 
 	private static String[] dataFmt = new String[7]; 
+	private static String   tmSet =FULLTM;
 
 	public DataFmt() {
 		initDataFmt();
@@ -74,10 +75,26 @@ public class DataFmt {
 	 * This is for users to retrieve the desired data format in simple form
 	 * @return dataFmt
 	 */
-	public String[] getDataFmt(){
+	public static String[] getDataFmt(){
 		return dataFmt;
 	}
 
+	/**
+	 * keep to copy of time range from UI user
+	 * @param tm -- batch ti-format
+	 */
+	public static void setTmSet(String tm) {
+		tmSet = tm;
+	}
+	
+	/**
+	 * return the tm set from UI user
+	 * @return -- batch ti format
+	 */
+	
+	public static String getTmSet() {
+		return tmSet;
+	}
 	/**
 	 * This is for users to retrieve the desired data format in simple form
 	 * @return dataFmt
@@ -121,7 +138,7 @@ public class DataFmt {
 		for (int i=0; i<7; i++) {
 			str += fstr[i]+"     ";
 		}
-		nc2Asc.NC2Act.wrtMsg(str);
+		NC2Act.wrtMsg(str);
 	}
 
 	public void showDataFmt() {
@@ -129,7 +146,7 @@ public class DataFmt {
 		for (int i=0; i<7; i++) {
 			str += dataFmt[i]+"\n";
 		}
-		nc2Asc.NC2Act.wrtMsg(str);
+		NC2Act.wrtMsg(str);
 	}
 
 	/**
