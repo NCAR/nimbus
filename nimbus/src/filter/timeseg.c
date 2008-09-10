@@ -197,7 +197,8 @@ int CheckForTimeGap(const void *ADShdr, int initMode)
 
   /* If everthing is peachy, then bail out.
    */
-  if (prevTime+1 == newTime || prevTime == NEW_SEG)
+  if (prevTime+1 == newTime || prevTime == NEW_SEG ||
+        (cfg.isADS2() && newTime == 0 && prevTime == 86399L))
   {
     prevTime = newTime;
     return false;
