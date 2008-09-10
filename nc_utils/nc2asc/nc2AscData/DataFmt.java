@@ -44,8 +44,21 @@ public class DataFmt {
 	public final static String COLONVAL= ":";
 	public final static String DASHVAL= "-";
 
-	private static String[] dataFmt = new String[7]; 
-	private static String   tmSet =FULLTM;
+	/**
+	 *  dataFmt[DATE_IDX]
+	 *	dataFmt[TM_IDX]
+	 *	dataFmt[DMTR_IDX]
+	 *	dataFmt[MVAL_IDX]
+	 *	dataFmt[TMSET_IDX]
+	 *	dataFmt[HEAD_IDX]
+	 *	dataFmt[AVG_IDX]
+	 */
+	private static String[] dataFmt = new String[7];
+	
+	/**
+	 * = yyyy-mm-dd,hh:mm:ss~yyyy-mm-dd,hh:mm:ss   OR FULLTM
+	 */
+	private static String   tmSet =FULLTM; 
 
 	public DataFmt() {
 		initDataFmt();
@@ -70,7 +83,29 @@ public class DataFmt {
 	public static void setDataFmt(String s, int idx){
 		dataFmt[idx] = s;
 	}
-
+	/**
+	 * A overloaded function to copy all the data format 
+	 * ref@ dataFmt definition
+	 * @param fmt - all data formats  ;   tmset= yyyy-mm-dd,hh:mm:ss~yyyy-mm-dd,hh:mm:ss
+	 */
+	public static void setDataFmt(String[] fmt, String tmset) {
+		for (int i=0; i< fmt.length; i++) {
+			dataFmt[i]= fmt[i];
+			tmSet= tmset;
+		}
+	}
+	
+	/**
+	 * A overloaded function to copy all the data format 
+	 * ref@ dataFmt definition
+	 * @param fmt - all data formats  ;  
+	 */
+	public static void setDataFmt(String[] fmt) {
+		for (int i=0; i< fmt.length; i++) {
+			dataFmt[i]= fmt[i];
+		}
+	}
+	
 	/**
 	 * This is for users to retrieve the desired data format in simple form
 	 * @return dataFmt

@@ -44,7 +44,12 @@ public class BatchConfig {
 	 */
 	private List<String> selVars; 
 
+	/**
+	 * ti- format
+	 * ti= yyyy-mm-dd,hh:mm:ss~yyyy-mm-dd,hh:mm:ss
+	 */
 	
+	private String tmSetOrig = DataFmt.FULLTM;
 	/**
 	 * Constructor catches the command-line inputs, and sign the files to its storage.
 	 * The class users need to call start() to read and interpret the batch file to get ready for data writing.
@@ -54,6 +59,10 @@ public class BatchConfig {
 		parseArgs(args);
 	}
 
+	public String getTmSetOrig() {
+		return tmSetOrig;
+	}
+	
 	/**
 	 * This method ensures that the all the elements for data writing are read and ready.
 	 * Users need to call this method after the class constructor, to get ready for data-writing. 
@@ -218,11 +227,17 @@ public class BatchConfig {
 					dataFmt[DataFmt.MVAL_IDX]= val;
 				if (mval.toLowerCase().equals(DataFmt.FILLVALUE.toLowerCase())) 
 					dataFmt[DataFmt.MVAL_IDX]= DataFmt.MISSVAL;
-				if (mval.toLowerCase().equals(DataFmt.LEAVEBLANK.toLowerCase())) 
-					dataFmt[DataFmt.MVAL_IDX]= "";
+				if (mval.toLowerCase().equals(DataFmt.LEAVEBLANK.toLowerCase())) {
+					if (dataFmt[DataFmt.DMTR_IDX]== DataFmt.SPACEVAL) {  //if dmtr=space, fillval!=blank
+						dataFmt[DataFmt.MVAL_IDX]=DataFmt.MISSVAL;
+					} else {
+						dataFmt[DataFmt.MVAL_IDX]= "";
+					}
+				} 
 			}
 			if (line.indexOf("ti")==0) {
 				dataFmt[DataFmt.TMSET_IDX]= parseTmSet(val);
+				tmSetOrig = val;
 			}
 
 			//sign vars

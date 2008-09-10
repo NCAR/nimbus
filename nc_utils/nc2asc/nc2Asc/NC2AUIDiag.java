@@ -868,7 +868,11 @@ class NC2AUIDiag extends JDialog {
 		if (dfmt[DataFmt.DMTR_IDX].equals(DataFmt.SPACEVAL)) {
 			rDmtr.setSelected(false);
 			rDmtr2.setSelected(true);
-			rVal2.setEnabled(false); 
+			rVal2.setEnabled(false);
+			rVal2.setSelected(false);
+			rVal.setEnabled(true);
+			rVal.setSelected(true);
+			dFormat.setDataFmt(DataFmt.MISSVAL, DataFmt.MVAL_IDX);
 		}
 
 		if (dfmt[DataFmt.MVAL_IDX]==null || dfmt[DataFmt.MVAL_IDX].isEmpty()) {

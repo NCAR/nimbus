@@ -483,7 +483,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 	private void getDataVar(ActionEvent e) {
 		if (INFILE.equals(e.getActionCommand())) {	
 			if (fileName[1]==null || !validateInputFile(fileName[1]) ) {
-				//nc2Asc.NC2Act.wrtMsg("Invalid input file: ");
+				NC2Act.wrtMsg("Invalid input file: ");
 				return;
 			}
 
@@ -534,13 +534,69 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
 	private void readBatch (ActionEvent e) {
 		if (RDBATCH.equals(e.getActionCommand())) {
+			// get batch file 
+			NC2Act.wrtMsg("Read batch file...");
+			String txt =System.getenv("DATA_DIR"); 
+			if (fileName[0]!=null && !fileName[0].isEmpty()) {
+				txt = fileName[0];
+			} else {
+				if ( txt==null || txt.isEmpty()){
+					File dir = new File(".");
+					txt =dir.getAbsolutePath();
+				}
+			}
+			JFileChooser fileChooser = new JFileChooser(txt);
+			fileChooser.setDialogTitle("            Select Batch File");
+			fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-		}
+			int returnValue = fileChooser.showOpenDialog(null);
+			if (returnValue == JFileChooser.APPROVE_OPTION) {
+				String out =fileChooser.getSelectedFile().getAbsolutePath();
+
+				if (out.isEmpty()) {
+					NC2Act.wrtMsg("ReadBatch: Invalid input batch file...");
+					return;
+				} else {
+					fileName[0]= out;
+				}
+			}
+
+			//read batch
+			String[] arg ={"-b", fileName[0]};
+			BatchConfig bf = new BatchConfig(arg);
+			bf.start();
+
+			datafmt.setDataFmt(bf.getDataFmt(), bf.getTmSetOrig());
+			String[] files= bf.getFiles();
+			if (files[1]==null || files[1].isEmpty()) {
+				NC2Act.wrtMsg("Input file from the batch reading is empty. Uisng the original netcdf file");
+				return;
+			}
+			fileName[1]= files[1];
+			fileName[2]= files[2];
+			populateTbl();
+			List<String> vars= bf.getSelVars();
+
+			//set selStatus
+			for (int i=1; i<dataInf.size(); i++){ //skipp time
+				//Variable v= vars.get(i);
+				String line = dataInf.get(i);
+				for (int j=0; j<vars.size(); j++) {
+					String str= vars.get(j).trim() + DataFmt.COMMAVAL;
+					if (line.indexOf(str)==0) {
+						selStatus.set(i-1,"Y");
+						tbl.setValueAt("Y", i-1, 4);
+					}
+				}
+			} 
+			//set table
+			NC2Act.wrtMsg("  Reading batch file is done.");
+		} //if
 	}
 
 	private void saveBatch (ActionEvent e) {
 		if (SVBATCH.equals(e.getActionCommand())) {
-			
+
 			//check input
 			if (fileName[1]==null ||fileName[1].isEmpty()) {
 				NC2Act.wrtMsg("SaveBatch: No netcdf input file found.");
@@ -582,7 +638,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
 			String line = "if= "+fileName[1]+ "\n";
 			line +="of= "+fileName[2]+ "\n\n";
-			
+
 			//  data format 
 			if (datafmt==null) {
 				NC2Act.wrtMsg("No data format selected...");
@@ -598,7 +654,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			} else {
 				line += "sp= "+ DataFmt.COMMA+"\n";
 			}
-			
+
 			if (tmp[DataFmt.MVAL_IDX].isEmpty()) {
 				line += "fv= "+ DataFmt.LEAVEBLANK+"\n";
 			} else if (tmp[DataFmt.MVAL_IDX].equals(DataFmt.MISSVAL )) {
@@ -606,9 +662,9 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			} else  {
 				line += "fv= "+ DataFmt.REPLICATE+"\n";
 			}
-	
+
 			line +="ti= "+ DataFmt.getTmSet()+"\n\n";
-	
+
 			//  variables 
 			List<Variable> subvars = getSubVarList();
 			for (int i=0; i<subvars.size(); i++) {
@@ -932,6 +988,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
 		return ii;
 	}
+
 
 }//eof class
 
