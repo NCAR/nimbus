@@ -11,7 +11,7 @@
 #include <iomanip>
 #include <cstdlib>
 #include <cstdio>
-#include <string>
+#include <cstring>
 
 #include <raf/Time.h>
 #include <netcdf.hh>
