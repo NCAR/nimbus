@@ -1,4 +1,5 @@
 #include "transmit.h"
+#include <cstdlib>
 #include <cerrno>
 #include <ctime>
 #include <zlib.h>
