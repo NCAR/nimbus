@@ -12,7 +12,6 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2003-06
 #include "transmit.h"
 #include <raf/vardb.h>
 
-#include <algorithm>
 #include <cctype>
 #include <set>
 #include <iomanip>
