@@ -116,7 +116,7 @@ int LowRateLoop(long starttime, long endtime)
     }
 
     fprintf(OutputFile, "  0\n");
-    fprintf(OutputFile, "%3d\n", 0 + xTraLines);
+    fprintf(OutputFile, "%3d\n", 1 + xTraLines);
   }
 
 
