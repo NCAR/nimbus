@@ -45,6 +45,7 @@ public class DataFmt {
 	public final static String DASHVAL= "-";
 
 	/**
+	 * This is the definition for all the data formats
 	 *  dataFmt[DATE_IDX]
 	 *	dataFmt[TM_IDX]
 	 *	dataFmt[DMTR_IDX]
@@ -54,7 +55,7 @@ public class DataFmt {
 	 *	dataFmt[AVG_IDX]
 	 */
 	private static String[] dataFmt = new String[7];
-	
+
 	/**
 	 * = yyyy-mm-dd,hh:mm:ss~yyyy-mm-dd,hh:mm:ss   OR FULLTM
 	 */
@@ -91,10 +92,10 @@ public class DataFmt {
 	public static void setDataFmt(String[] fmt, String tmset) {
 		for (int i=0; i< fmt.length; i++) {
 			dataFmt[i]= fmt[i];
-			tmSet= tmset;
 		}
+		tmSet= tmset;
 	}
-	
+
 	/**
 	 * A overloaded function to copy all the data format 
 	 * ref@ dataFmt definition
@@ -105,7 +106,7 @@ public class DataFmt {
 			dataFmt[i]= fmt[i];
 		}
 	}
-	
+
 	/**
 	 * This is for users to retrieve the desired data format in simple form
 	 * @return dataFmt
@@ -121,12 +122,12 @@ public class DataFmt {
 	public static void setTmSet(String tm) {
 		tmSet = tm;
 	}
-	
+
 	/**
 	 * return the tm set from UI user
 	 * @return -- batch ti format
 	 */
-	
+
 	public static String getTmSet() {
 		return tmSet;
 	}
@@ -138,17 +139,17 @@ public class DataFmt {
 		//return dataFmt;
 		String[] dfmt = new String[7];
 		if (dataFmt[DATE_IDX]==DATEDASH) {
-			dfmt[DATE_IDX]="-";
+			dfmt[DATE_IDX]=DASHVAL;
 		}  else if (dataFmt[DATE_IDX]==DATESPACE) {
-			dfmt[DATE_IDX]=" ";
+			dfmt[DATE_IDX]=SPACEVAL;
 		} else {
 			dfmt[DATE_IDX]= dataFmt[DATE_IDX];
 		}
 
 		if (dataFmt[TM_IDX]==TIMECOLON) {
-			dfmt[TM_IDX]= ":";
+			dfmt[TM_IDX]= COLONVAL;
 		} else if (dataFmt[TM_IDX]==TIMESPACE) {
-			dfmt[TM_IDX]= " ";
+			dfmt[TM_IDX]= SPACEVAL;
 		} else if (dataFmt[TM_IDX]==TIMENOSPACE) {
 			dfmt[TM_IDX]= "";
 		} else {
@@ -291,11 +292,20 @@ public class DataFmt {
 		} else  if (dataFmt[TM_IDX].equals(TIMESEC.toString())) {
 			int h= Integer.parseInt(ss[0]);//  new Integer(ss[0]).intValue();
 			int m= new Integer(ss[1]).intValue();
-			int s= new Integer(ss[2]).intValue();
-			int sec = h*3600 +m*60+s;
-			return ""+sec;
+			//chk if the ss[2]= sec.milsec
+			String[] sec = ss[2].split(".");
+			if (sec.length==2) {
+				int s= new Integer(sec[0]).intValue();
+				int tmSec = h*3600 +m*60+s;
+				return ""+tmSec;
+			}
+			else {
+				int s= new Integer(ss[2]).intValue();
+				int tmSec = h*3600 +m*60+s;
+				return ""+tmSec;
+			} 
 		} else {
-			throw new DataFormatException("Invalid output time format: "+dataFmt[1]);
+			throw new DataFormatException("Invalid output time format: "+dataFmt[DataFmt.TM_IDX]+ss[0]+ " "+ss[1]+ " "+ss[2]);
 		}
 	}
 
@@ -310,7 +320,7 @@ public class DataFmt {
 		if (dataFmt[DATE_IDX].equals(NODATE.toString())) {start=1;}
 		for (int i=start; i<data.length-1; i++){
 			//	nc2Asc.NC2Act.wrtMsg("data[i]: "+ data[i]+ " DataFmt.Misval:" + DataFmt.MISSVAL + "DataFmt.Misval-toString:"+DataFmt.MISSVAL.toString() );
-			if (data[i]==null || data[i].length()<1 || data[i].equals(DataFmt.MISSVAL)) {
+			if (data[i]==null || data[i].length()<1 || data[i].equals("null") || data[i].equals(DataFmt.MISSVAL)) {
 				data[i]= dataFmt[MVAL_IDX];	
 			}
 			tmp = tmp+ data[i]+dataFmt[DMTR_IDX];

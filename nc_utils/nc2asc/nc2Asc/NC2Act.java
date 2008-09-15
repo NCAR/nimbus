@@ -53,12 +53,37 @@ public class NC2Act {
 	 * @param s
 	 */
 	public static  void prtMsgBox (String s) {
-
 		JFrame p = new JFrame();
 		JOptionPane.showMessageDialog(p, s);
-		//JOptionPane.showConfirmDialog(p,s);
+	}
+	
+	
+	/**
+	 *  Display the messages to users, and Confirm with users
+	 * @param s
+	 */
+	public static int confirmMsgBox (String s) {
+		JFrame p = new JFrame();
+		return JOptionPane.showConfirmDialog(p, s, "", JOptionPane.YES_NO_OPTION);
+		//JOptionPane.showm (p, s, "", JOptionPane.YES_NO_OPTION);
 	}
 
+	
+
+	/**
+	 * Write the message to the nc2AscLog file.
+	 * Display the same message to the users if the program is in UI mode
+	 * 
+	 * @param msg --text to display;  mboxFlag- flag to display in msgbox 
+	 * 
+	 */ 
+	public static void wrtMsg (String msg, boolean mboxFlag) {
+		if (mboxFlag && !batchMode) {
+			prtMsgBox(msg);
+		}
+		wrtMsg(msg);
+	}
+	
 	/**
 	 * Write the message to the nc2AscLog file.
 	 * Display the same message to the users if the program is in UI mode
@@ -99,12 +124,27 @@ public class NC2Act {
 				prtMsgBox(msg);
 			}
 		}
-		
+			
 	}
-	public boolean validataFile(String f) {
+	
+	/**
+	 * 
+	 * @param f --file name
+	 * @return  -- is file or dir
+	 */
+	public static boolean validataFile(String f) {
 		File fv = new File(f);
 		return fv.isFile();
+	}
 
+	/**
+	 * 
+	 * @param f  -- file name
+	 * @return file-exist or not
+	 */
+	public static boolean existFile(String f) {
+		File fv = new File(f);
+		return fv.exists();
 	}
 
 	/**

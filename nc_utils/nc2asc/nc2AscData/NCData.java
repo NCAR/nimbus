@@ -257,14 +257,7 @@ public class NCData {
 			dat += or+"/"+getLen(v) + DataFmt.COMMAVAL ;
 
 			String lname = ""+v.findAttribute("long_name");  //getStringValue()  -bugs
-			lname = lname.substring(lname.indexOf('\"')+1);  //take off the first "
-			int idx = lname.indexOf('\"');  //takeoff the second "
-			if (idx == 0 && lname.length()==1) {
-				dat += " ";
-			}
-			if (idx >0 ) {
-				dat += lname = lname.substring(0, idx);
-			}
+			dat += trimBegEndQuotes(lname);
 			dataInf.add(i,dat);
 
 		}
@@ -397,23 +390,34 @@ public class NCData {
 		return tm;
 	}
 
-	public String getNewTm(long milSec, int sec, String[] fmt) {
+	public String getNewTm(long milSec, int sec, String[] fmtIn, boolean milsec) {
 		String tm;
 		Calendar cl = Calendar.getInstance();
 		cl.setTimeInMillis(milSec);
 		cl.add(Calendar.SECOND, sec);
-
-		//check Date
+        String[] fmt = fmtIn;
+		
+        String m = String.format("%02d", cl.get(Calendar.MONTH));
+        String d = String.format("%02d", cl.get(Calendar.DAY_OF_MONTH));
+        String h = String.format("%02d", cl.get(Calendar.HOUR_OF_DAY));
+        String mm = String.format("%02d", cl.get(Calendar.MINUTE));
+        String s = String.format("%02d", cl.get(Calendar.SECOND));
+      
+    	//check Date
 		String dtm = "", dateFmt = fmt[DataFmt.DATE_IDX], tmFmt = fmt[DataFmt.TM_IDX];
 		if (!dateFmt.equals(DataFmt.NODATE)) {
-			dtm = cl.get(Calendar.YEAR) + dateFmt +cl.get(Calendar.MONTH)+ dateFmt+ cl.get(Calendar.DAY_OF_MONTH)+ fmt[DataFmt.DMTR_IDX];
+			dtm = cl.get(Calendar.YEAR) + dateFmt + m + dateFmt+ d + fmt[DataFmt.DMTR_IDX];
 		} 
 
 		//check tm
 		if (tmFmt.equals(DataFmt.TIMESEC)) {
 			dtm += cl.get(Calendar.HOUR_OF_DAY)* 3600 + cl.get(Calendar.MINUTE)*60 +cl.get(Calendar.SECOND);
 		} else {
-			dtm +=cl.get(Calendar.HOUR_OF_DAY)+ tmFmt +cl.get(Calendar.MINUTE)+ tmFmt +cl.get(Calendar.SECOND)+"."+cl.get(Calendar.MILLISECOND);
+			if (milsec) {
+				dtm += h+ tmFmt + mm + tmFmt + s +"."+ cl.get(Calendar.MILLISECOND);
+			} else {
+				dtm += h+ tmFmt + mm + tmFmt + s;
+			}
 		}
 
 		return dtm;
@@ -431,7 +435,8 @@ public class NCData {
 		hRate = new int[size];
 		long milSec= 0;
 		Variable tmp=null;
-
+		int topRateSubVar = 0; //get the  top rate for the sub-group
+		
 		long t1 = System.currentTimeMillis();
 		try {
 			milSec = getTimeMilSec(); 
@@ -441,8 +446,9 @@ public class NCData {
 				oneDLen[i]= getLen(tmp);
 				totVarLen +=oneDLen[i];
 				missVal[i]= tmp.findAttribute("_FillValue").getNumericValue().floatValue();
-				if (gDataInf[0]>1)  {
+				if (gDataInf[0]>1)  { //find highest rate in subvarlist
 					hRate[i]=getOR(tmp);
+					if (hRate[i] >topRateSubVar) {topRateSubVar= hRate[i];}
 				}
 				data[i] = read1DData(tmp , range[0], range[1]);
 				progIdx ++;
@@ -456,7 +462,9 @@ public class NCData {
 			NC2Act.wrtMsg("wrtieDataToFile_IOException "+ tmp.getName());
 		}
 
+		if (bMode) { fmt= checkBatchDateTmFmt(fmt);} 
 		if (gDataInf[0]>1) {
+			gDataInf[0]= topRateSubVar;
 			writeHighRateData(range, fmt, milSec, t1, size);
 		} else if (Integer.parseInt(fmt[DataFmt.AVG_IDX])>1) {
 			writeLowRateAvgData(range, fmt, milSec, t1, size);
@@ -473,7 +481,7 @@ public class NCData {
 		String dmtr = fmt[DataFmt.DMTR_IDX], mval = fmt[DataFmt.MVAL_IDX];
 		for (int i =0; i<range[1]; i++) {
 			if (bfinish) return;
-			String line = getNewTm(milSec,i+range[0], fmt);
+			String line = getNewTm(milSec,i+range[0], fmt, false);
 			progIdx++; 
 			for (int j =0; j<size; j++) {
 				int count =0;
@@ -530,7 +538,7 @@ public class NCData {
 			if (avgCount<(avg-1)) {
 				avgCount++; 		// time-D
 			} else {  				//write avg-data-val to file and reset
-				String line = getNewTm(milSec +(range[0]+i-avg+1)*1000 +tot,0, fmt)+lineData;
+				String line = getNewTm(milSec +(range[0]+i-avg+1)*1000 +tot,0, fmt, true)+lineData;
 				writeOut(line+"\n");
 				avgCount=0;
 			}
@@ -551,7 +559,7 @@ public class NCData {
 			float tmInt = (float)1.0/topRate;
 			for (int k=0; k<topRate; k++) {  //highest rate
 				int varIdx =0;
-				String line  = getNewTm(milSec + (long)(range[0]+i+k*tmInt)*1000, 0, fmt);
+				String line  = getNewTm(milSec + (long)(range[0]+i+k*tmInt)*1000, 0, fmt, false);
 				for (int j =0; j<size; j++) { //variables
 					int count =0; int dataInterval = topRate/hRate[j]; 
 					while (count<oneDLen[j]) { //length-of-each-variable
@@ -560,7 +568,7 @@ public class NCData {
 							valKp[varIdx] = data[j][oneDLen[j]*i + count + idx];
 							line += dmtr + valKp[varIdx];
 						} else {
-							if (mval.equals(DataFmt.REPLICATE)) {
+							if ( mval!=null && mval.equals(DataFmt.REPLICATE)) {
 								line += dmtr + valKp[varIdx];
 							} else {
 								line += dmtr + mval;
@@ -574,7 +582,11 @@ public class NCData {
 			} //k-highest rate
 		} //time-for
 	}
-
+ 
+	/**
+	 * A wrap method to write a string to the output fi.le, catches the exception and handle it
+	 * @param str
+	 */
 	public void writeOut(String str) {
 		try {
 			fout.write(str);
@@ -585,11 +597,16 @@ public class NCData {
 		}
 	}
 
-
-	private void checklvars(List<Variable> tmp, List<Variable> vars) {
+	/**
+	 * Scan all the variables from the netcdf file, skip the base_time and time_offset variables, 
+	 * because they are old data formats. 
+	 * @param allVars
+	 * @param vars
+	 */
+	private void checklvars(List<Variable> allVars, List<Variable> vars) {
 		int idx =0;
-		for (int i =0; i<tmp.size(); i++) {
-			Variable v = tmp.get(i);
+		for (int i =0; i<allVars.size(); i++) {
+			Variable v = allVars.get(i);
 			if (v.getName().equals("base_time")||v.getName().equals("time_offset")) {
 				continue;
 			}
@@ -609,8 +626,16 @@ public class NCData {
 		}
 		List<Variable> lvars= new ArrayList();
 		for (int i =0; i<selVars.size(); i++) {
-			lvars.add(fin.findVariable(selVars.get(i)));
+			Variable v = fin.findVariable(selVars.get(i));
+			lvars.add(v);
+			int or = getOR(v);
+			if (or > gDataInf[0]) gDataInf[0]= or;
 		}
+		
+		try {gDataInf[1] = getTimeMilSec();} catch (NCDataException e) {
+			NC2Act.wrtMsg("getBatchsubVar_ NCDataException"+ e.getStackTrace());
+		}
+		gDataInf[2] = fin.getUnlimitedDimension().getLength();
 		return lvars;
 	}
 
@@ -656,7 +681,108 @@ public class NCData {
 		return tmRange;
 	} 
 
+	/**
+	 * In the batch mode, the date and time formats are read from the input batch file in the display
+	 * format like yyyy-mm-dd, hh:mm:ss. This method converts it into the form that  will 
+	 * be attached to the output file, for example, "," or ":", etc.
+	 * @param fmt - entire formats -- ref to dataFmt in DataFmt class.
+	 * @return
+	 */
+    private String[] checkBatchDateTmFmt(String[] fmt){
+    	if (fmt[DataFmt.DATE_IDX].equals(DataFmt.DATEDASH) ) fmt[DataFmt.DATE_IDX]= DataFmt.DASHVAL;
+      	if (fmt[DataFmt.DATE_IDX].equals(DataFmt.DATESPACE)) fmt[DataFmt.DATE_IDX]= DataFmt.SPACEVAL;
+        
+      	if (fmt[DataFmt.TM_IDX].equals(DataFmt.TIMECOLON) ) fmt[DataFmt.TM_IDX]= DataFmt.COLONVAL;
+      	if (fmt[DataFmt.TM_IDX].equals(DataFmt.TIMESPACE) ) fmt[DataFmt.TM_IDX]= DataFmt.SPACEVAL;
+      	if (fmt[DataFmt.TM_IDX].equals(DataFmt.TIMENOSPACE) ) fmt[DataFmt.TM_IDX]= "";
+      	return fmt;
+     }
+    
+    /**
+     * 
+     */
+    private String trimBegEndQuotes(String str) {
+		str = str.substring(str.indexOf('\"')+1);  //take off the first "
+		int idx = str.indexOf('\"');  				//takeoff the second "
+		if (idx >0 ) {
+			return str.substring(0, idx);
+		} else {
+			return " ";
+		}
+    }
+    
+    /**
+     *  getAmesHead retrieves data needed from the netcdf in this class, and format into the required head. The 
+     *  definition is on http://badc.nerc.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html and look for 
+     *  FFI = 1001:
+     */
+    public String getAmesHead(List<Variable> sublvars) {
+    	String ret = "\nLastname Firstname";
+    	ret += "\n"+ trimBegEndQuotes(""+ fin.findGlobalAttribute("Source"));
+    	ret += "\n"+ trimBegEndQuotes(""+ fin.findGlobalAttribute("Aircraft"));
+    	ret += "\n"+ trimBegEndQuotes(""+ fin.findGlobalAttribute("ProjectName"));
+    	ret += "\n"+ "   1   1";
+    	ret += "\n"+getDates();
+    	ret += "\n"+"1.0 ";  //lowRate 
+    	ret += "\n"+"Time in seconds from 00Z";
+    	ret += "\n"+"  "+ sublvars.size();
+    	String fillVar=""; String varInf ="";
+    	for (int i= 0; i<sublvars.size(); i++) {
+    		Variable v = sublvars.get(i);
+    		String lname = trimBegEndQuotes(""+v.findAttribute("long_name"));
+    		if (lname==null || lname.isEmpty()|| lname.length()<=1) { lname = v.getName();}
+    		varInf += "\n" + lname + "   (";
+    		varInf += trimBegEndQuotes(""+v.findAttribute("units"))+")";
+    		fillVar += v.findAttribute("_FillValue").getNumericValue()+ "  ";
+    	}
+    	ret += "\n"+fillVar;
+    	ret += varInf;
+    	
+    	//at last add the first line  -- line number and 1001
+    	int lineNum = 10 + sublvars.size();
+    	ret = lineNum + "    1001" + ret;
+    	
+      	return ret;
+    }
+    
+    /**
+     * :DateProcessed = "2008-08-29 16:57:38 +0000" ;
+     * :FlightDate = "08/27/2008" ;
+     * @return -- yyyy mm dd     yyyy mm nn      (flight date    data processed date) 
+     */
+    private String getDates() {
+    	String ret="";
+    	String date = trimBegEndQuotes(""+fin.findGlobalAttribute("FlightDate"));
+    	ret += date.split("/")[0]+ "-" +date.split("/")[1] + "-"+ date.split("/")[2];
+    	ret += "      " +trimBegEndQuotes(""+fin.findGlobalAttribute("DateProcessed")).split(" ")[0];
+    	return ret;
+    }
+    
+    public String genVarName(List<Variable> sublvars, String[] fmt ){
+		String varname = "Date,UTC";
+		if (fmt[DataFmt.DATE_IDX].equals(DataFmt.NODATE)) {
+			varname = "UTC";
+		}
 
+		String dmtr = fmt[DataFmt.DMTR_IDX];
+		for (int i =0; i<sublvars.size(); i++) {
+			Variable v =sublvars.get(i);
+			varname += dmtr+v.getName();
+
+			//check if the it has multi-data
+			int[] shape = v.getShape();
+			if (shape.length <3 || shape[2]<=1) {
+				continue;
+			}
+			// the var has multi-data. we need to add numbers as the varnames for the rest of the values
+			for (int j=1; j<shape[2]; j++) {
+				varname += dmtr+j ;
+			}
+		}
+		//nc2Asc.NC2Act.wrtMsg("varname_len:"+varname.split(",").length+ " "+varname);
+		return varname;
+	}
+    
 } //eofclass
 
 

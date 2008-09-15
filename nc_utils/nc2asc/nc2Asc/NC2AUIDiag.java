@@ -3,6 +3,7 @@ package edu.ucar.eol.nc2Asc;
 
 
 import java.awt.Color;
+import java.awt.*;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
@@ -31,7 +32,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
-import edu.ucar.eol.nc2AscData.DataFmt;
+import edu.ucar.eol.nc2AscData.*;
 
 
 class NC2AUIDiag extends JDialog {
@@ -59,6 +60,7 @@ class NC2AUIDiag extends JDialog {
 	private JTextArea 		tfDisp; 
 
 	private DataFmt  dFormat = null; //data format chosen by author
+	private NCData   ncdata =null;
 	private String[] cbDateTxt, cbTmTxt;
 	private String[] dDisp   = new String[10]; //make up data for display
 
@@ -88,6 +90,7 @@ class NC2AUIDiag extends JDialog {
 		init();
 
 		displaySelFmt(); //display user selected format
+		tfDisp.setText(reFmtDisp());
 	}
 	public void setDispData(String[] dd){
 		dDisp=dd;
@@ -285,7 +288,7 @@ class NC2AUIDiag extends JDialog {
 	}
 
 
-	public JTextArea createPaneTxtArea() {
+	public ScrollPane createPaneTxtArea() {
 
 		String disp="";
 
@@ -303,6 +306,7 @@ class NC2AUIDiag extends JDialog {
 		}
 
 		disp= reFmtDisp();
+				
 		tfDisp = new JTextArea(disp);
 		tfDisp.setPreferredSize(new Dimension(500, 600));
 		tfDisp.setLineWrap(true);
@@ -310,7 +314,10 @@ class NC2AUIDiag extends JDialog {
 		tfDisp.setFont(new Font("System", Font.ITALIC,  16));
 		tfDisp.setVisible(true);
 		tfDisp.setBorder(BorderFactory.createLineBorder(Color.blue));
-		return tfDisp;
+		ScrollPane sp = new ScrollPane();
+		sp.setSize(300, 250);
+		sp.add(tfDisp);
+		return sp;
 	}
 
 
@@ -534,15 +541,15 @@ class NC2AUIDiag extends JDialog {
 
 	void selectDateFrmt(ActionEvent e) {
 		if (CBDATE.equals(e.getActionCommand())) {
-				DataFmt.setDataFmt(cbDateTxt[cbDate.getSelectedIndex()],DataFmt.DATE_IDX);
-				tfDisp.setText(reFmtDisp());	
+			DataFmt.setDataFmt(cbDateTxt[cbDate.getSelectedIndex()],DataFmt.DATE_IDX);
+			tfDisp.setText(reFmtDisp());	
 		}
 	}
 
 	void selectTmFrmt(ActionEvent e) {
 		if (CBTM.equals(e.getActionCommand())) {
-				DataFmt.setDataFmt(cbTmTxt[cbTm.getSelectedIndex()], DataFmt.TM_IDX);
-				tfDisp.setText(reFmtDisp());
+			DataFmt.setDataFmt(cbTmTxt[cbTm.getSelectedIndex()], DataFmt.TM_IDX);
+			tfDisp.setText(reFmtDisp());
 		}
 	}
 
@@ -564,12 +571,17 @@ class NC2AUIDiag extends JDialog {
 		if (RDMTR2.equals(e.getActionCommand())) {	
 			if (rDmtr2.isSelected()){
 				rDmtr.setSelected(false);
-				rVal2.setEnabled(false);
-				rVal.setSelected(true);
-				rVal2.setSelected(false);
 				DataFmt.setDataFmt(" ", DataFmt.DMTR_IDX);
-				DataFmt.setDataFmt(DataFmt.MISSVAL, DataFmt.MVAL_IDX);
+				
+				rVal2.setEnabled(false);
+				rVal2.setSelected(false);
+				String mval = dFormat.getDataFmt()[DataFmt.MVAL_IDX];
+				if (mval==null || mval.isEmpty()) {
+					rVal.setSelected(true);
+					DataFmt.setDataFmt(DataFmt.MISSVAL, DataFmt.MVAL_IDX);
+				}
 				tfDisp.setText(reFmtDisp());
+
 			}  else if (!rDmtr.isSelected()) {
 				rDmtr2.setSelected(true);
 			}
@@ -713,10 +725,12 @@ class NC2AUIDiag extends JDialog {
 				} catch (Exception en) {
 					tfSmpRate.setText("1");
 				}
-				DataFmt.setDataFmt(srStr, DataFmt.AVG_IDX);
-				//if (Integer.parseInt(srStr)>1) {
-				tfDisp.setText(reFmtDisp());
-				//}
+				if (srStr==null || srStr.isEmpty()) {
+					tfSmpRate.setText("1");
+				} else 	{
+					DataFmt.setDataFmt(srStr, DataFmt.AVG_IDX);
+					tfDisp.setText(reFmtDisp());
+				}				
 			}
 		});
 	}
@@ -748,8 +762,14 @@ class NC2AUIDiag extends JDialog {
 		}
 
 		//check avg
-		if ( tfSmpRate.isEnabled() && (!tfSmpRate.getText().trim().isEmpty())&&(Integer.parseInt(tfSmpRate.getText().trim())>1) ){
-			return resetAvgDisp(ddata);
+		if ( tfSmpRate.isEnabled() && tfSmpRate.getText()!=null ){
+			if (tfSmpRate.getText().isEmpty()){
+				tfSmpRate.setText("1");
+			}
+			int avg = Integer.parseInt(tfSmpRate.getText().trim());
+			if (avg>1)	{
+				return resetAvgDisp(ddata);
+			}
 		}
 
 		//handle date/time
@@ -775,6 +795,7 @@ class NC2AUIDiag extends JDialog {
 
 	private String resetAvgDisp(String[] ddata) {
 		int avg = Integer.parseInt(tfSmpRate.getText().trim());
+				
 		int loop = ddata.length;
 		int len =  (int)loop/avg;
 
@@ -794,13 +815,14 @@ class NC2AUIDiag extends JDialog {
 
 			//get new time 
 			one[0]=  cl.get(Calendar.YEAR)+ "-"+ cl.get(Calendar.MONTH) + "-"+cl.get(Calendar.DAY_OF_MONTH);
-			one[1]=  cl.get(Calendar.HOUR_OF_DAY)+ ":"+ cl.get(Calendar.MINUTE) + ":"+cl.get(Calendar.SECOND)+"."+cl.get(Calendar.MILLISECOND);
+			one[1]=  cl.get(Calendar.HOUR_OF_DAY)+ ":"+ cl.get(Calendar.MINUTE) + ":"+cl.get(Calendar.SECOND);
 
 			try {
 				one[0] = dFormat.fmtDate(one[0]);
 				one[1] = dFormat.fmtTm(one[1]);
+				one[1] += "."+cl.get(Calendar.MILLISECOND);
 			} catch (DataFormatException e) {
-				NC2Act.wrtMsg("resetAvgDisp_fmtDate_fmtTm exception...");
+				NC2Act.wrtMsg("resetAvgDisp_fmtDate_fmtTm exception..."+e.getStackTrace());
 			}
 			ret += "\n" + dFormat.fmtDmtr(one);
 		}
@@ -831,6 +853,18 @@ class NC2AUIDiag extends JDialog {
 	void displaySelFmt() {
 		//get fmt re-display format
 		String[] dfmt = dFormat.getDataFmt();
+		if (highRate>1 ) {
+			rHead2.setSelected(false);
+			rHead2.setEnabled(false);
+			rHead.setSelected(true);
+			cbTm.setEnabled(true);
+			cbDate.setEnabled(true);
+			
+			if ( dfmt[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)) {
+				NC2Act.wrtMsg(" Warning: High rate data netcdf file. ICARTT is nor supported.  ");
+				dFormat.setDataFmt(DataFmt.HEAD, DataFmt.HEAD_IDX);
+			}
+		}
 
 		//head
 		if (dfmt[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)) {
@@ -870,9 +904,11 @@ class NC2AUIDiag extends JDialog {
 			rDmtr2.setSelected(true);
 			rVal2.setEnabled(false);
 			rVal2.setSelected(false);
-			rVal.setEnabled(true);
-			rVal.setSelected(true);
-			dFormat.setDataFmt(DataFmt.MISSVAL, DataFmt.MVAL_IDX);
+			if (dfmt[DataFmt.MVAL_IDX]==null ||dfmt[DataFmt.MVAL_IDX].isEmpty() ){
+				rVal.setEnabled(true);
+				rVal.setSelected(true);
+				dFormat.setDataFmt(DataFmt.MISSVAL, DataFmt.MVAL_IDX);
+			}
 		}
 
 		if (dfmt[DataFmt.MVAL_IDX]==null || dfmt[DataFmt.MVAL_IDX].isEmpty()) {
@@ -899,7 +935,8 @@ class NC2AUIDiag extends JDialog {
 			tfDateSet2.setText(tmset[1].split(DataFmt.COMMAVAL)[0]);
 			tfTmSet2.setText(tmset[1].split(DataFmt.COMMAVAL)[1]);
 		}
-
+		
+		tfDisp.setText(reFmtDisp());
 
 	}
 

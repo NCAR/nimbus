@@ -43,6 +43,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.*;
+import javax.swing.border.*;
 import java.io.FileWriter;
 
 import edu.ucar.eol.nc2AscData.DataFmt;
@@ -112,8 +114,8 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 	private Task       task;
 
 	private JTable tbl; 
-	private JButton    bnProc, bnFmt, bnCancel;
-	private JCheckBox  cbTog, cbSel, cbDesel; 
+	private JButton    bnProc, bnFmt, bnCancel, bnTog;
+	private JCheckBox  cbSel, cbDesel; 
 	private JTextField tfRt;
 	private StatusBar  statusBar;
 
@@ -164,28 +166,29 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			c.gridx = 0;
 			c.gridy = 2;
 			c.gridheight=c.REMAINDER;
-			c.gridwidth=3;
+			c.gridwidth=5;
 			//c.anchor = GridBagConstraints.PAGE_END; // bottom of space
 			pane.add(createUITbl(), c);
 
 			// row -3 add buttons
 			c.ipadx=0;
-			c.gridwidth=1;//c.REMAINDER;
+			c.gridwidth=3;
 			c.gridheight=1;
 			c.anchor=c.NORTH;
-			c.gridx = 3; // aligned with col3
+			c.gridx = 5; // aligned with col3
 			c.gridy = 2;//2; // 2--4th row
 			c.insets = new Insets(55, 0, 0, 0); // top paddingreadData
 			pane.add(createUIBtns(), c);
 
 			c.ipadx=5;
-			c.gridwidth= 4;
+			c.gridwidth= c.REMAINDER;
 			c.gridheight=1;
 			//c.anchor=GridBagConstraints.SOUTH;
 			c.gridx = 0; // aligned with col3
 			c.gridy = 3;//2; // 2--4th row
 			c.insets = new Insets(15, 0, 0, 0); // top paddingreadData
 			statusBar = new StatusBar(); 
+			statusBar.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 			NC2Act.setStatusBar(statusBar);
 			pane.add(statusBar, c);
 
@@ -203,6 +206,8 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		mBar.add(Box.createHorizontalGlue());
 
 		JMenu 	  mFile  	= new JMenu("File   ");
+		Color c = new Color(200, 80, 0);
+		mFile.setForeground(c);
 		JMenuItem miInput 	= new JMenuItem("Select Input File"); 
 		addButtonActCmd(miInput,  INFILE);
 		JMenuItem miBatchSv	= new JMenuItem("Save Batch File");
@@ -212,7 +217,8 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		JMenuItem miQuit    = new JMenuItem("Quit"); 
 		addButtonActCmd(miQuit, QUIT);
 
-		JMenu mHelp = new JMenu("Help         ");
+		JMenu mHelp = new JMenu("Help            ");
+		mHelp.setForeground(c);
 		addButtonActCmd(mHelp, N2AHELP);
 
 		mFile.add(miInput);
@@ -292,35 +298,43 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		addButtonActCmd(bnFmt, DATAFORMAT);
 		addButtonActCmd(bnProc, PROCESS);
 
-		cbTog = new JCheckBox("Toggle ");
+		//cancel and toggle
+		bnCancel= new JButton("Cancel");
+		bnCancel.setForeground(new Color( 150, 0,0));
+		addButtonActCmd(bnCancel, "cancel");
+
+		bnTog = new JButton("Toggle "); bnTog.setForeground(new Color(50, 100,255));
 		cbSel = new JCheckBox("Select All");
 		cbDesel = new JCheckBox("Clean All");
-		addButtonActCmd(cbTog, TOGGLE);
+		addButtonActCmd(bnTog, TOGGLE);
 		addButtonActCmd(cbSel, SELALL);
 		addButtonActCmd(cbDesel, DESELALL);
+
+		JPanel jp = new JPanel();
+		jp.setLayout(new GridLayout(0, 2));
+		//jp.add(new JLabel(""));
+		jp.add(new JLabel(""));
+		jp.add(bnCancel);  
+
+		JPanel jpTog = new JPanel();
+		jpTog.setLayout(new GridLayout(0, 2));
+		bnTog.setSize(5,3);
+		jpTog.add(bnTog);
+
 
 		JPanel jpBt = new JPanel();
 		jpBt.setLayout(new GridLayout(16, 1));
 		int i=0;
 		jpBt.add(bnFmt,i++);
 		jpBt.add(bnProc,i++);
-
-		JPanel jp = new JPanel();
-		jp.setLayout(new GridLayout(0, 3));
-		bnCancel= new JButton("Cancel");
-		bnCancel.setForeground(new Color( 150, 0,0));
-		addButtonActCmd(bnCancel, "cancel");
-		jp.add(new JLabel(""));
-		jp.add(new JLabel(""));
-		jp.add(bnCancel);
-		jpBt.add(jp, i++);
-
+		jpBt.add(jp,i++);
 		jpBt.add(new JLabel(""),i++);
 		jpBt.add(new JLabel(""),i++);
-		jpBt.add(new JLabel(""),i++);
-		jpBt.add(cbTog, i++);
+		jpBt.add(new JLabel(""), i++);
+		jpBt.add(jpTog,i++);
 		jpBt.add(cbSel, i++);
 		jpBt.add(cbDesel, i++);
+
 
 		jpBt.add(new JLabel(""),i++);
 		jpBt.add(new JLabel(""),i++);
@@ -338,7 +352,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		bnCancel.setVisible(false);
 		cbSel.setEnabled(false);
 		cbDesel.setEnabled(false);
-		cbTog.setEnabled(false);
+		bnTog.setEnabled(false);
 
 		tfRt.addKeyListener( new KeyListener() {
 			public void keyPressed(KeyEvent e) {};
@@ -463,17 +477,22 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		int returnValue = fileChooser.showOpenDialog(null);
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
 			String out =fileChooser.getSelectedFile().getAbsolutePath();
-
-			if (out.isEmpty()) {
+			if (out == null || out.isEmpty()) {
 				NC2Act.wrtMsg("Invalid Output File...");
-			} else {
-				fileName[2]= out;
-				try {
-					ncdata.openOutFile(fileName[2]);
-					return true;
-				} catch (IOException e ) {
-					NC2Act.wrtMsg("selectOutputFile_openOutFile_IOException...");
+				return false;
+			}
+			if (NC2Act.existFile(out)) {
+				if (NC2Act.confirmMsgBox("File "+ out + " exists.         Overwrite? ")== JOptionPane.NO_OPTION) {
+					selectOutputFile();
 				}
+			}
+
+			fileName[2]= out;
+			try {
+				ncdata.openOutFile(fileName[2]); 
+				return true;
+			} catch (IOException e ) {
+				NC2Act.wrtMsg("selectOutputFile_openOutFile_IOException...");
 			}
 		}
 		return false;
@@ -489,15 +508,12 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
 			//nc2Asc.NC2Act.startWaitCursor(tbl);
 			pfrm.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			populateTbl();					
+			populateTbl();			
+			datafmt.initDataFmt();
 			pfrm.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			//nc2Asc.NC2Act.stopWaitCursor(tbl);
-			bnFmt.setEnabled(true);
-			bnProc.setEnabled(true);
-			tfRt.setVisible(true);
-			cbSel.setEnabled(true);
-			cbDesel.setEnabled(true);
-			cbTog.setEnabled(true);
+			
+			enableButtons();
+
 		} 
 	}
 
@@ -554,7 +570,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 				String out =fileChooser.getSelectedFile().getAbsolutePath();
 
 				if (out.isEmpty()) {
-					NC2Act.wrtMsg("ReadBatch: Invalid input batch file...");
+					NC2Act.wrtMsg("ReadBatch: Invalid input batch file. Discontinue.");
 					return;
 				} else {
 					fileName[0]= out;
@@ -566,29 +582,42 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			BatchConfig bf = new BatchConfig(arg);
 			bf.start();
 
+			//bf.getDataFmt(), bf.getTmSetOrig()
+			String[] ff = bf.getDataFmt();
 			datafmt.setDataFmt(bf.getDataFmt(), bf.getTmSetOrig());
+		
 			String[] files= bf.getFiles();
 			if (files[1]==null || files[1].isEmpty()) {
-				NC2Act.wrtMsg("Input file from the batch reading is empty. Uisng the original netcdf file");
+				NC2Act.wrtMsg("No input file from the batch reading.");
 				return;
 			}
 			fileName[1]= files[1];
 			fileName[2]= files[2];
 			populateTbl();
+			enableButtons();
 			List<String> vars= bf.getSelVars();
+
+			if (vars==null || vars.size()==0) {
+				NC2Act.wrtMsg("No input variables. ");
+				return;
+			}
 
 			//set selStatus
 			for (int i=1; i<dataInf.size(); i++){ //skipp time
 				//Variable v= vars.get(i);
 				String line = dataInf.get(i);
 				for (int j=0; j<vars.size(); j++) {
-					String str= vars.get(j).trim() + DataFmt.COMMAVAL;
+					String str= vars.get(j).trim();
 					if (line.indexOf(str)==0) {
 						selStatus.set(i-1,"Y");
 						tbl.setValueAt("Y", i-1, 4);
 					}
 				}
 			} 
+			
+			if (ncdata.getGlobalDataInf()[0]>1 && datafmt.getDataFmt()[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)) {
+				datafmt.setDataFmt(DataFmt.HEAD, DataFmt.HEAD_IDX);
+			}
 			//set table
 			NC2Act.wrtMsg("  Reading batch file is done.");
 		} //if
@@ -602,6 +631,13 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 				NC2Act.wrtMsg("SaveBatch: No netcdf input file found.");
 				return;
 			}
+
+			//  data format 
+			if (datafmt==null) {
+				NC2Act.wrtMsg("No data format selected...");
+				return;
+			}
+
 			// get batch file 
 			NC2Act.wrtMsg("Saving batch arguments...");
 			String txt =System.getenv("DATA_DIR"); 
@@ -621,38 +657,38 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
 				String out =fileChooser.getSelectedFile().getAbsolutePath();
 
-				if (out.isEmpty()) {
+				if (out == null || out.isEmpty()) {
 					NC2Act.wrtMsg("SaveBatch: Invalid batch output file...");
 					return;
-				} else {
-					fileName[0]= out;
 				}
+				if (NC2Act.existFile(out)) {
+					if (NC2Act.confirmMsgBox("File "+ out + " exists.         Overwrite? ")== JOptionPane.NO_OPTION) {
+						saveBatch(e);
+					}
+				}
+				fileName[0]= out;
 			}
+			
+			//NC2Act.prtMsgBox("new batch file="+fileName[0]); //fordebug
 			FileWriter bout = null;
 			try {
 				bout = new FileWriter(fileName[0]);
-			} catch (IOException ee ) {
-				NC2Act.wrtMsg("saveBatch_openBatchFile_IOException...");
+			} catch (Exception ee ) {
+				NC2Act.wrtMsg("saveBatch_openBatchFile_Exception...");
 				return;
 			}
 
 			String line = "if= "+fileName[1]+ "\n";
 			line +="of= "+fileName[2]+ "\n\n";
-
-			//  data format 
-			if (datafmt==null) {
-				NC2Act.wrtMsg("No data format selected...");
-				return;
-			}
-			String[] tmp= datafmt.getDataFmt();
+			String[] tmp= datafmt.getDataFmt();  //datafmt is not null
 			line += "hd= "+ tmp[DataFmt.HEAD_IDX]+"\n";
 			line += "avg= "+ tmp[DataFmt.AVG_IDX]+"\n";
 			line += "dt= "+ tmp[DataFmt.DATE_IDX]+"\n";
 			line += "tm= "+ tmp[DataFmt.TM_IDX]+"\n";
 			if (tmp[DataFmt.DMTR_IDX].equals(DataFmt.COMMAVAL)) {
-				line += "sp= "+ DataFmt.SPACE+"\n";
-			} else {
 				line += "sp= "+ DataFmt.COMMA+"\n";
+			} else {
+				line += "sp= "+ DataFmt.SPACE+"\n";
 			}
 
 			if (tmp[DataFmt.MVAL_IDX].isEmpty()) {
@@ -691,8 +727,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 	private void toggle(ActionEvent e) {
 
 		if (TOGGLE.equals(e.getActionCommand())) {
-			if (cbTog.isSelected()){
-				cbTog.setSelected(false);
+			if (TOGGLE.equals(e.getActionCommand())) {
 				statusBar.setText(" Ready");
 				if (idxCount <1) {
 					statusBar.setText("toggle_idxCount < 1");
@@ -748,7 +783,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
 			List<Variable> sublvars = getSubVarList();
 			if (sublvars.size()==0) {
-				NC2Act.wrtMsg("No variables selected.   Please select variables from the table...");
+				NC2Act.wrtMsg("No variables selected.   Please select variables from the table...", true);
 				return;
 			}
 
@@ -762,17 +797,20 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 				return;
 			}
 
-			//bnCancel.setVisible(true); 
 			bnProc.setEnabled(false);
+		
 			//write out data
-			String out= genVarName(sublvars); 
-			ncdata.writeOut(datafmt.fmtDmtr(out)+"\n");
+			String[] fmt =datafmt.getDataFmt();
+			if (fmt[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)) {
+				ncdata.writeOut(ncdata.getAmesHead(sublvars)+"\n");
+			}
+			String out= ncdata.genVarName(sublvars, fmt); 
+			ncdata.writeOut(out+"\n");
 			int[] range = getTmRange();
 			long t1 = Calendar.getInstance().getTimeInMillis();
 
 			DataThread dth = new DataThread(ncdata, sublvars, range, datafmt.getNewDataFmt()); 
 			dth.start();
-
 			taskLen = sublvars.size()+ range[1];
 			task = new Task();
 			task.addPropertyChangeListener(this);
@@ -819,12 +857,10 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			NC2Act.wrtMsg("Invalid Input File: "+ fileName[1]);
 			return;
 		}
-		//if (ncdata==null) {
-		//	ncdata = new NCData();
-		//}
 		try {
 			ncdata.openFile(fileName[1]);
 			ncdata.readDataInf();
+		
 			//clean up tbl
 			if (dataInf!=null){
 				for (int i=1; i<dataInf.size(); i++){
@@ -837,6 +873,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			}
 
 			dataInf=ncdata.getDataInf();
+			//NC2Act.wrtMsg("dataInf len="+dataInf.size(), true);
 			idxSearch = new ArrayList<Integer>();
 			selStatus = new ArrayList<String>();
 			idxCount =dataInf.size()-1;  //skip the first time data
@@ -944,28 +981,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		} //for
 	}
 
-	private String genVarName(List<Variable> sublvars ){
-		String varname = "Date,UTC";
-
-		for (int i =0; i<sublvars.size(); i++) {
-			Variable v =sublvars.get(i);
-			varname += DataFmt.COMMAVAL+v.getName();
-
-			//check if the it has multi-data
-			int[] shape = v.getShape();
-			if (shape.length <3 || shape[2]<=1) {
-				continue;
-			}
-			// the var has multi-data. we need to add numbers as the varnames for the rest of the values
-			for (int j=1; j<shape[2]; j++) {
-				varname += DataFmt.COMMAVAL+j ;
-			}
-		}
-		//nc2Asc.NC2Act.wrtMsg("varname_len:"+varname.split(",").length+ " "+varname);
-		return varname;
-	}
-
-
+	
 
 	private int[] getTmRange()  {
 		int[] ii = new int[2];
@@ -989,6 +1005,14 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		return ii;
 	}
 
+	private void enableButtons() {
+		bnFmt.setEnabled(true);
+		bnProc.setEnabled(true);
+		tfRt.setVisible(true);
+		cbSel.setEnabled(true);
+		cbDesel.setEnabled(true);
+		bnTog.setEnabled(true);
+	}
 
 }//eof class
 

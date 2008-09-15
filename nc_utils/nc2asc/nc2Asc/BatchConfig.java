@@ -48,7 +48,7 @@ public class BatchConfig {
 	 * ti- format
 	 * ti= yyyy-mm-dd,hh:mm:ss~yyyy-mm-dd,hh:mm:ss
 	 */
-	
+
 	private String tmSetOrig = DataFmt.FULLTM;
 	/**
 	 * Constructor catches the command-line inputs, and sign the files to its storage.
@@ -62,7 +62,7 @@ public class BatchConfig {
 	public String getTmSetOrig() {
 		return tmSetOrig;
 	}
-	
+
 	/**
 	 * This method ensures that the all the elements for data writing are read and ready.
 	 * Users need to call this method after the class constructor, to get ready for data-writing. 
@@ -72,11 +72,12 @@ public class BatchConfig {
 			parseBatchFile();
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.out.println(" Batchconfig_parseConfig_start_exception...  exits");
 			System.exit(-1);
 		}
 	}
 
-	
+
 	/**
 	 * File names from command line:
 	 * -b follows batchFile 	=> files[0]
@@ -104,7 +105,9 @@ public class BatchConfig {
 	 * @param fmt -- String[7]
 	 */
 	public void setDataFmt(String[] fmt){
-		dataFmt = fmt;
+		for (int i=0; i<fmt.length; i++) {
+			dataFmt[i]=fmt[i];
+		}
 	}
 
 	public List<String> getSelVars() {
@@ -188,9 +191,8 @@ public class BatchConfig {
 		BufferedReader br = new BufferedReader (fr);
 		selVars = new ArrayList<String>();
 
-		String line = br.readLine();
+		String line = br.readLine().trim();
 		while (line != null) {
-			line = line.trim();
 			String val  = line.substring(line.indexOf("=")+1).trim();
 			// sign i/o files
 			if (line.indexOf("if")==0) {
@@ -264,6 +266,10 @@ public class BatchConfig {
 	 * @throws Exception
 	 */
 	private String  parseTmSet(String dt) throws Exception  {
+		if (dt.trim().toLowerCase().equals(DataFmt.FULLTM.toLowerCase())) {
+			return dt.trim();
+		}
+
 		String[] tt = dt.split(DataFmt.TMSETDELIMIT);  //yyyy-mm-dd,hh:mm:ss~yyyy-mm-dd,hh:mm:ss
 
 		//start time 
@@ -302,26 +308,26 @@ public class BatchConfig {
 		//time range in seconds
 		int range =(int)(cl2.getTimeInMillis() - cl.getTimeInMillis())/1000 ;
 		if (range<0){
-			System.out.println("The ending time is smaller than starting time...");
-			System.exit(-1);
+			System.out.println("The ending time is smaller than starting time. Use default");
+			return DataFmt.FULLTM;
 		}
 		return ret+range;
 	}
 
-	
+
 
 	private void checkBatchElements() {
 		if (selVars.size()<1) {
-			System.out.println("No variables are read from the batch file.");
-			System.exit(-1);
+			System.out.println("No variables are read from the batch file. ");
+			//System.exit(-1);
 		}
 
-		for (int i=0; i<files.length; i++)  {
-			if (files[i].isEmpty() || files[1].isEmpty()) {
-				System.out.println("No I/O files are read from the batch file. Index= "+i);
-				System.exit(-1);
-			}
+		//for (int i=0; i<files.length; i++)  {
+		if (files[1]==null || files[1].isEmpty()) {
+			System.out.println("No Input file is read from the batch file. ");
+			//System.exit(-1);
 		}
+		//}
 
 		//format checking..........
 		//check date
@@ -333,14 +339,14 @@ public class BatchConfig {
 		}
 		//check time
 		item = dataFmt[DataFmt.TM_IDX];
-		if (item!=null && !item.isEmpty() &&( item.equals( DataFmt.TIMECOLON) || item.equals(DataFmt.TIMENOSPACE) ||item.equals(DataFmt.TIMESPACE) || item.equals(DataFmt.TIMESEC))) {
+		if (item!=null && !item.isEmpty() &&( item.equals( DataFmt.TIMECOLON)  ||item.equals(DataFmt.TIMENOSPACE) || item.equals(DataFmt.TIMESPACE)|| item.equals(DataFmt.TIMESEC))) {
 		} else {
 			System.out.println("Cannot find a good time format. Use default format..."+ item);
 			dataFmt[DataFmt.TM_IDX]= DataFmt.TIMECOLON;
 		}
 		//check delimiter
 		item = dataFmt[DataFmt.DMTR_IDX];
-		if (item!=null && !item.isEmpty() &&( item.equals(DataFmt.SPACEVAL) || item.equals(DataFmt.COMMAVAL))) {
+		if (item ==null && !item.isEmpty() &&( item.equals(DataFmt.SPACEVAL) || item.equals(DataFmt.COMMAVAL))) {
 		} else {
 			System.out.println("Cannot find a good delimiter. Use default format..."+ item);
 			dataFmt[DataFmt.DMTR_IDX]= DataFmt.COMMAVAL;
@@ -356,6 +362,7 @@ public class BatchConfig {
 		item = dataFmt[DataFmt.TMSET_IDX]; boolean tmErr = false;
 		if (item==null || item.isEmpty() ){
 			tmErr = true;
+		} else if (item.equals(DataFmt.FULLTM)) { 
 		} else if (item.split(",").length !=2) {
 			tmErr = true;
 		}
