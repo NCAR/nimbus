@@ -18,7 +18,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 -------------------------------------------------------------------------
 */
 
-#include <math.h>
+#include <cmath>
 #include "nimbus.h"
 #include "amlib.h"
 
@@ -26,7 +26,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 #define k	1.3806503e-23	/* Boltzman's const, J/K  */
 #define lam	4.29e-6		/* Wavelength, um         */
 #define c	2.99792458e8	/* Speed of light, m/s    */
-#define PI	M_PI
 
 /*  Values from /home/local/proj/defaults/Defaults on 30 April 1998  RLR  */
 static NR_TYPE  MAXCNT      = 62500,
@@ -35,10 +34,10 @@ static NR_TYPE  MAXCNT      = 62500,
                 THERM_COEFF = -2700.0,
                 DFLT_GAIN   = -4.4913167e-5,
                 DFLT_OFFSET = 31515.0,
-                A1          = -3.910e-5,
-                A2          = -4.285e-5,
-                A3          = 0.972,
-                A4          = 1.0,
+                A1          = -3.75e-5,
+                A2          = -7.5e-5,
+                A3          = 0.0,
+                A4          = 1.11,
                 A5          = 0.0;
 
 static double  planck_rad(double), planck_t(double), therm(double);
@@ -248,7 +247,7 @@ static double planck_rad(double tk)
 {
   double  rad;
 
-  rad = (2.0*h*c*c*PI)/(pow(lam,5.0)*(exp(h*c/lam/k/tk)-1.0));
+  rad = (2.0*h*c*c*M_PI)/(pow(lam,5.0)*(exp(h*c/lam/k/tk)-1.0));
 
   return(rad * 1.0e-10);
 }
@@ -259,7 +258,7 @@ static double planck_t(double rad)
 {
   double  t;
 
-  t = h*c/(lam*k*log(2.0*h*c*c*PI/(rad*1.0e10)/pow(lam,5.0)+1.0));
+  t = h*c/(lam*k*log(2.0*h*c*c*M_PI/(rad*1.0e10)/pow(lam,5.0)+1.0));
 
   return(t);
 }
