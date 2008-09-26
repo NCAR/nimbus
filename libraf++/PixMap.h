@@ -25,7 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 class PixMap {
 
 public:
-		PixMap(Widget w, int w, int h);
+		PixMap(Widget wdgt, int w, int h);
 		~PixMap();
 
   void		Clear() const;

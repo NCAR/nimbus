@@ -12,6 +12,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2004
 
 #include <cctype>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <iostream>
 
