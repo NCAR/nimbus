@@ -104,7 +104,8 @@ void MainCanvas::draw(P2d_rec *record, struct recStats &stats, float version, in
   else pen->DrawLine(Surface(), 523, y-5, 523, y);
 
 
-  if (memcmp((char *)record, "C4", 2) == 0)	// 64 bit fast 2DC.
+  char * p = (char *)record;
+  if (p[0] == 'C' && (p[1] == '4' || p[1] == '6'))	// 64 bit fast 2DC.
     drawFast2DC(record, stats, version, probeNum, ps);
   else
   if (((char *)&record->id)[0] == 'H')	// HVPS

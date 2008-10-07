@@ -505,10 +505,10 @@ int ADS_DataFile::NextPhysicalRecord(char buff[])
       size = sizeof(Mcr_rec) - sizeof(short);
       break;
 
-    case PMS2DC1: case PMS2DC2: /* PMS2D */
+    case PMS2DC1: case PMS2DC2: // PMS2D
     case PMS2DP1: case PMS2DP2:
-    case PMS2DH1: case PMS2DH2: /* HVPS */
-    case 0x4334:	// 64 bit 2DC.
+    case PMS2DH1: case PMS2DH2: // HVPS
+    case PMS2DC4: case PMS2DC6:	// 64 bit 2DC.
       size = (P2dLRpPR * sizeof(P2d_rec)) - sizeof(short);
       break;
 
@@ -589,7 +589,7 @@ void ADS_DataFile::buildIndices()
 
   word = (short *)buffer;
 
-  if ((indices = (Index *)malloc(500000 * sizeof(Index))) == NULL)
+  if ((indices = (Index *)malloc(8000000 * sizeof(Index))) == NULL)
     {
     fprintf(stderr, "buildIndices: Memory allocation error, fatal.\n");
     exit(1);
@@ -704,7 +704,7 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
       sp[i] = ntohs(sp[i]);
 
 
-    if (htons(buff->id) == PMS2DC4)	// Fast 2DC
+    if (htons(buff->id) == PMS2DC4 || htons(buff->id) == PMS2DC6)	// Fast 2DC
     {
       long long *lp = (long long *)buff->data;
       for (size_t i = 0; i < 512; ++i, ++lp)

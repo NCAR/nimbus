@@ -80,7 +80,7 @@ struct recStats &ProcessRecord(P2d_rec *record, float version)
   if (probeType == 'H')
     return(ProcessHVPSrecord(record, version));
 
-  if (htons(record->id) == PMS2DC4)	// 64 bit Fast 2DC
+  if (htons(record->id) == PMS2DC4 ||htons(record->id) == PMS2DC6)	// 64 bit Fast 2DC
     return(ProcessFast2DC(record, version));
 
   if (version < 3.35)

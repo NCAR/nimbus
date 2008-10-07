@@ -30,8 +30,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 #define PMS2DC1		0x4331
 #define PMS2DC2		0x4332
-// 64 bit Fast 2DC.
+// 64 bit Fast 2DC, 25um.
 #define PMS2DC4		0x4334
+// 64 bit Fast 2DC, 25um.
+#define PMS2DC6		0x4336
 #define PMS2DG1		0x4731
 #define PMS2DG2		0x4732
 #define PMS2DH1		0x4831
