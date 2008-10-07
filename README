@@ -66,6 +66,11 @@ nimbus
 
 proj
 
+
+psql2xml
+  A simple tool for converting lines from the psql calibrations database into xml.
+
+
 rdma
   RDMA processor (rdmap).  C++.
 
@@ -97,4 +102,3 @@ xhd
 
 xpms2d
   2D quick look program.  C++/Motif.
-
