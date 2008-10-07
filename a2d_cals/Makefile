@@ -37,4 +37,4 @@ install: ${PROG}
 	cp ${PROG} ${BINDIR}
 
 clean:
-	rm -f ${OBJS} ${PROG}
+	rm -f ${PROG}
