@@ -869,6 +869,9 @@ static const char feedCommand[] =
 void
 PostgreSQL::LaunchGroundFeed()
 {
+  if (cfg.GroundFeedType() == Config::UDP)
+    return;  // Means we are using UDP broadcast instead.
+
   pid_t pid = fork();
 
   if (pid == 0)
