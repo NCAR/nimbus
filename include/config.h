@@ -30,6 +30,7 @@ public:
   enum interpolationType { Linear=0, CubicSpline, AkimaSpline };
   enum processingRate	{ SampleRate=0, LowRate=1, HighRate=25 };
   enum hrtRate		{ TwentyFive=25, Fifty=50, OneHundred=100 };
+  enum groundFeedType	{ LDM, UDP };
 
   enum pms2dProcessing	{ Entire_In=0, Center_In, Reconstruction };
 
@@ -62,6 +63,7 @@ public:
   processingRate ProcessingRate() const	{ return _processingRate; }
   hrtRate HRTRate() const		{ return _hrtRate; }
   interpolationType InterpolationType() const { return _interpType; }
+  groundFeedType GroundFeedType()	const { return _groundFeedType; }
 
   pms2dProcessing TwoDProcessingMethod() const { return _pms2dProcessing; }
   float TwoDAreaRejectRatio() const	{ return _twoDrejectRatio; }
@@ -88,6 +90,7 @@ public:
   void SetProcessingRate(processingRate pr) { _processingRate = pr; }
   void SetHRTRate(hrtRate rate) { _hrtRate = rate; }
   void SetInterpolationType(interpolationType it) { _interpType = it; }
+  void SetGroundFeedType(groundFeedType type) { _groundFeedType = type; }
 
   void SetDespikeReporting(bool state)	{ _despikeReporting = state; }
   void SetLagErrorReporting(bool state)	{ _lagReporting = state; }
@@ -156,6 +159,7 @@ private:
   processingRate _processingRate;
   hrtRate _hrtRate;
   interpolationType _interpType;
+  groundFeedType _groundFeedType;
 
   std::string _projectDirectory;
 

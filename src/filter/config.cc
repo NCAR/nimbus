@@ -39,6 +39,7 @@ Config::Config()
   SetLagErrorReporting(false);
 
   SetADSVersion(ADS_2);
+  SetGroundFeedType(UDP);
 
   SetInterpolationType(_defaultInterp);
   SetTwoDProcessingMethod(_defaultPMS2DProcessingMethod);
