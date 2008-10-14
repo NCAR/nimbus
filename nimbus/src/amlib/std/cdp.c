@@ -2,33 +2,16 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	cdp.c
 
-FULL NAME:	Derived computations for the PMS1D FSSP-100 probe
+FULL NAME:	Derived computations for the Cloud Droplet Probe (CDP)
 
 ENTRY POINTS:	ccdpInit()
-		scdp()	DMT F100
+		scdp()	DMT CDP
 
 STATIC FNS:	none
 
 DESCRIPTION:	
 
-DEPENDANCIES:	AFSSP	- Actual FSSP data
-		TAS	- True Air Speed
-		ACT	- Activity
-		FBMFR	- Beam Fraction
-
-OUTPUT:		CFSSP	- Concentrations
-		CONCF	- Total concentration
-		DISPF
-		DBARF
-		PLWCF	- Liquid Water Content
-		TCNT	- Total raw counts
-		REFFF	- Effective Radius
-
 REFERENCES:	pms1d.c
-
-REFERENCED BY:	Compute()
-
-NOTES:		Calculations taken from Bulletin 24 dated 1/89.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2007
 -------------------------------------------------------------------------
@@ -50,6 +33,10 @@ static NR_TYPE	total_concen[MAX_FSSP], dbar[MAX_FSSP], plwc[MAX_FSSP],
 
 NR_TYPE		reffd3[MAX_FSSP], reffd2[MAX_FSSP];  /* For export to reff.c */
 
+// Probe Count.
+static int nProbes = 0;
+extern void setProbeCount(const char * location, int count);
+
 /* -------------------------------------------------------------------- */
 void ccdpInit(var_base *varp)
 {
@@ -57,6 +44,9 @@ void ccdpInit(var_base *varp)
   char		*p;
   const char	*serialNumber;
   NR_TYPE	dof, beam_dia;
+
+  p = strchr(varp->name, '_');
+  setProbeCount(p, nProbes++);
 
   serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
