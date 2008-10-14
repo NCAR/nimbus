@@ -31,18 +31,25 @@ public:
   void	broadcastData(const std::string & timeStamp) const;
 
 protected:
-  UdpSocket * _brdcst1, * _brdcst2;
+  std::vector<var_base *> readFile(const std::string & fileName) const;
 
-  std::vector<var_base *> _varList;
+  UdpSocket * _brdcst1, * _brdcst2, * _groundBrdcst;
+
+  std::vector<var_base *> _varList, _groundVarList;
 
   static const int RT_UDP_PORT;
-  static const std::string RT_UDP_ADDR_1, RT_UDP_ADDR_2;
+  static const std::string RT_UDP_ADDR_1, RT_UDP_ADDR_2, GRND_UDP_ADDR;
 
   /**
    * In order to conform to the IWGADTS IWG1 packet, radar altimeter needs to be
    * in feet, not meters.
    */
   static const size_t RADAR_ALT_INDX;
+
+  /**
+   * Send data to ground this often, in seconds.
+   */
+  static const size_t GroundFeedDataRate;
 };
 
 #endif

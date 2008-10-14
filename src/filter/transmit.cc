@@ -1,3 +1,4 @@
+#include "nimbus.h"
 #include "transmit.h"
 #include <cstdlib>
 #include <cerrno>
@@ -62,8 +63,13 @@ void sqlTransmit::sendString(const std::string& str)
 
   if (pid == 0)
   {
-    char * command = "pqinsert";
-    if (execlp(command, command, fName, 0) == -1)
+    char * command;
+    if (cfg.GroundFeedType() == Config::UDP)
+      command = "/home/ads/bin/sendSQL";
+    if (cfg.GroundFeedType() == Config::LDM)
+      command = "pqinsert";
+
+    if (execlp((const char *)command, (const char *)command, (const char *)fName, (const char *)0) == -1)
     {
       fprintf(stderr, "nimbus:transmit.cc: Failed to execute pqinsert, errno = %d\n", errno);
       _exit(1);
