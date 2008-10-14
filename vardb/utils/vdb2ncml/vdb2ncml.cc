@@ -210,6 +210,13 @@ int main(int argc, char *argv[])
   {
     struct var_v2 * vp = &((struct var_v2 *)VarDB)[i];
 
+    if (isdigit(vp->Name[0]))
+    {
+      printf("Variables in netCDF can not start with a digit, skipping [%s]\n", vp->Name);
+      continue;
+    }
+
+
     nc_def_var(ncid, vp->Name, NC_FLOAT, 1, &timeDim, &varID);
 
     nc_put_att_float(ncid, varID, "_FillValue", NC_FLOAT, 1, &fill_value);
