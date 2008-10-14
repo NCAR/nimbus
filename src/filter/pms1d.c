@@ -24,13 +24,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2006
 #include <netcdf.h>
 
 static int getCellSizes(var_base * rp, float cellSizes[]);
-static int setProbeCount(const char * loc, int probeNum);
 
 
 /* -------------------------------------------------------------------- */
 static void setSerialNumberAndProbeType(const char * name, const char * serialNum, int probeType)
 {
-  static int twod_probe_cnt = 0;
   int raw_indx, der_indx;
   char tmp[64], * location;
 
@@ -81,7 +79,6 @@ static void setSerialNumberAndProbeType(const char * name, const char * serialNu
       {
         raw[i]->SerialNumber = serialNum;
         raw[i]->ProbeType = probeType;
-        raw[i]->ProbeCount = twod_probe_cnt;
       }
 
     for (size_t i = 0; i < derived.size(); ++i)
@@ -89,10 +86,7 @@ static void setSerialNumberAndProbeType(const char * name, const char * serialNu
       {
         derived[i]->SerialNumber = serialNum;
         derived[i]->ProbeType = probeType;
-        derived[i]->ProbeCount = twod_probe_cnt;
       }
-
-    ++twod_probe_cnt;
   }
 }
 
@@ -111,6 +105,11 @@ void PMS1D_SetupForADS3()
   setSerialNumberAndProbeType("AUHSAS", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
   setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
   setSerialNumberAndProbeType("A2DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+  if (cfg.ProjectName() == "VOCALS")
+  {
+    setSerialNumberAndProbeType("A1DC_RPI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC_RPI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+  }
   setSerialNumberAndProbeType("A1DP", "2DP10", PROBE_PMS2D | PROBE_2DP);
   setSerialNumberAndProbeType("A2DP", "2DP10", PROBE_PMS2D | PROBE_2DP);
 }
@@ -382,7 +381,7 @@ static int getCellSizes(var_base * rp, float cellSize[])
 }	/* GETCELLSIZES */
 
 /* -------------------------------------------------------------------- */
-static int setProbeCount(const char * loc, int probeNum)
+void setProbeCount(const char * loc, int probeNum)
 {
   for (size_t i = 0; i < raw.size(); ++i)
     if (strstr(raw[i]->name, loc))

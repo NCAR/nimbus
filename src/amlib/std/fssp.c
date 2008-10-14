@@ -53,6 +53,10 @@ static NR_TYPE	total_concen[MAX_FSSP], dbar[MAX_FSSP], plwc[MAX_FSSP],
 
 NR_TYPE		refff3[MAX_FSSP], refff2[MAX_FSSP];  /* For export to reff.c */
 
+// Probe Count.
+static int nProbes = 0;
+extern void setProbeCount(const char * location, int count);
+
 /* -------------------------------------------------------------------- */
 void cfsspInit(var_base *varp)
 {
@@ -60,6 +64,9 @@ void cfsspInit(var_base *varp)
   char		*p;
   const char	*serialNumber;
   NR_TYPE	DOF, beamDiameter;
+
+  p = strchr(varp->name, '_');
+  setProbeCount(p, nProbes++);
 
   serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;

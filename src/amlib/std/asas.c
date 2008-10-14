@@ -26,12 +26,19 @@ static NR_TYPE	cell_size[MAX_ASAS][MAX_BINS];
 static NR_TYPE	cell_size2[MAX_ASAS][MAX_BINS];
 static NR_TYPE	cell_size3[MAX_ASAS][MAX_BINS];
 
+// Probe Count.
+static int nProbes = 0;
+extern void setProbeCount(const char * location, int count);
+
 /* -------------------------------------------------------------------- */
 void casasInit(var_base *varp)
 {
   size_t	i, probeNum;
   const char	*serialNumber;
   char		*p;
+
+  p = strchr(varp->name, '_');
+  setProbeCount(p, nProbes++);
 
   serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
@@ -92,7 +99,7 @@ void scasas(DERTBL *varp)
   NR_TYPE	*actual, *concentration, activity, *dia, *dia2, *dia3;
   NR_TYPE	flow;           /* PCAS Flow Rate       */
   NR_TYPE	sampleVolume[MAX_BINS];
-  NR_TYPE	tas;
+  NR_TYPE	tas = 0.0;
 
   actual	= GetVector(varp, 0);
   activity	= GetSample(varp, 1);
@@ -101,8 +108,6 @@ void scasas(DERTBL *varp)
   dia		= cell_size[probeNum];
   dia2		= cell_size2[probeNum];
   dia3		= cell_size3[probeNum];
-
-  if (tas < 0.0) tas = 0.0;
 
   if (FeedBack == HIGH_RATE_FEEDBACK)
     {

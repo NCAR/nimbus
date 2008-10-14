@@ -43,12 +43,19 @@ static NR_TYPE	cell_size[MAX_F300][BINS_40+1], pvol[MAX_F300], SAMPLE_AREA[MAX_F
 		tact[MAX_F300], cell_size2[MAX_F300][BINS_40+1],
 		cell_size3[MAX_F300][BINS_40+1], reff2[MAX_F300], reff3[MAX_F300];
 
+// Probe Count.
+static int nProbes = 0;
+extern void setProbeCount(const char * location, int count);
+
 /* -------------------------------------------------------------------- */
 void cf300Init(var_base *varp)
 {
   size_t	i, probeNum;
   char		*p;
   const char	*serialNumber;
+
+  p = strchr(varp->name, '_');
+  setProbeCount(p, nProbes++);
 
   serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;

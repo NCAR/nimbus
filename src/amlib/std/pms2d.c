@@ -60,6 +60,10 @@ NR_TYPE         reff23[MAX_PMS2D], reff22[MAX_PMS2D];  /* For export to reff.c *
 void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
 	float minRange, float resolution, size_t nDiodes, size_t length);
 
+// Probe Count.
+static int nProbes = 0;
+extern void setProbeCount(const char * location, int count);
+
 
 /* -------------------------------------------------------------------- */
 void sTwodInit(var_base *varp)
@@ -75,6 +79,9 @@ void sTwodInit(var_base *varp)
    * initialaize two probes (sort of) the 1D version and the 2D version.
    * This function is called from the A1D? xlTwodInit, not A2D?...
    */
+
+  p = strchr(varp->name, '_') - 3;
+  setProbeCount(p, nProbes++);
 
   serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;

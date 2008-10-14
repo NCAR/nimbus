@@ -43,6 +43,9 @@ void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
 	ComputeDOF(NR_TYPE radius[], NR_TYPE tas, NR_TYPE dof[],
 	size_t FirstBin, size_t LastBin, float RES, NR_TYPE RESPONSE_TIME);
 
+// Probe Count.
+static int nProbes = 0;
+extern void setProbeCount(const char * location, int count);
 
 /* -------------------------------------------------------------------- */
 void c260xInit(var_base *varp)
@@ -51,6 +54,9 @@ void c260xInit(var_base *varp)
   char		*p;
   const char	*serialNumber;
   float		minRange;
+
+  p = strchr(varp->name, '_');
+  setProbeCount(p, nProbes++);
 
   serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
