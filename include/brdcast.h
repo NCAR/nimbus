@@ -37,7 +37,7 @@ protected:
 
   std::vector<var_base *> _varList, _groundVarList;
 
-  static const int RT_UDP_PORT;
+  static const int RT_UDP_PORT, GRND_UDP_PORT;
   static const std::string RT_UDP_ADDR_1, RT_UDP_ADDR_2, GRND_UDP_ADDR;
 
   /**

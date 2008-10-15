@@ -10,11 +10,11 @@ DESCRIPTION:	Class to produce 1 per second ascii string to broadcast
 		around airplane.  At this time it produces the IWGADTS
 		string.
 
-INPUT:		${PROJ_DIR}/###/asciilist
+INPUT:		${PROJ_DIR}/###/asciilist, groundvars
 
-OUTPUT:		[sp|rp|dp]->Broadcast updated.
+OUTPUT:		[rp|dp]->Broadcast updated.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2005
+COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 -------------------------------------------------------------------------
 */
 
@@ -26,7 +26,9 @@ const int Broadcast::RT_UDP_PORT = 31000;
 //const std::string Broadcast::RT_UDP_ADDR = "128.117.84.255";
 const std::string Broadcast::RT_UDP_ADDR_1 = "192.168.84.255";
 const std::string Broadcast::RT_UDP_ADDR_2 = "192.168.184.255";
+
 // eol-rt-data.guest.ucar.edu
+const int Broadcast::GRND_UDP_PORT = 31007;
 const std::string Broadcast::GRND_UDP_ADDR = "128.117.188.122";
 
 const size_t Broadcast::RADAR_ALT_INDX = 5;
@@ -45,7 +47,7 @@ Broadcast::Broadcast()
   _brdcst2 = new UdpSocket(RT_UDP_PORT, RT_UDP_ADDR_2.c_str());
   _brdcst2->openSock(UDP_BROADCAST);
 
-  _groundBrdcst = new UdpSocket(RT_UDP_PORT, GRND_UDP_ADDR.c_str());
+  _groundBrdcst = new UdpSocket(GRND_UDP_PORT, GRND_UDP_ADDR.c_str());
   _groundBrdcst->openSock(UDP_BROADCAST);
 }
 
