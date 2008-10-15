@@ -48,7 +48,7 @@ Broadcast::Broadcast()
   _brdcst2->openSock(UDP_BROADCAST);
 
   _groundBrdcst = new UdpSocket(GRND_UDP_PORT, GRND_UDP_ADDR.c_str());
-  _groundBrdcst->openSock(UDP_BROADCAST);
+  _groundBrdcst->openSock(UDP_UNBOUND);
 }
 
 /* -------------------------------------------------------------------- */
