@@ -96,7 +96,7 @@ void PMS1D_SetupForADS3()
 {
 
   setSerialNumberAndProbeType("AS100", "FSSP109", PROBE_PMS1D | PROBE_FSSP);
-  if (cfg.ProjectName() == "PASE")
+  if (cfg.ProjectName().compare("PASE") == 0)
     setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
   setSerialNumberAndProbeType("A260X", "260X06", PROBE_PMS1D | PROBE_260X);
   setSerialNumberAndProbeType("ACDP", "CDP001", PROBE_PMS1D | PROBE_CDP);
@@ -105,7 +105,7 @@ void PMS1D_SetupForADS3()
   setSerialNumberAndProbeType("AUHSAS", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
   setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
   setSerialNumberAndProbeType("A2DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-  if (cfg.ProjectName() == "VOCALS")
+  if (cfg.ProjectName().compare("VOCALS") == 0)
   {
     setSerialNumberAndProbeType("A1DC_RPI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A2DC_RPI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
@@ -147,7 +147,7 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
     lb = atoi(p) - 1;
 
     if (strstr(rp->name, "2D"))	/* 2D's use 63 bins, instead of 1DC */
-      lb += 32;
+      lb += (rp->Length >> 1);
 
     /* We are dropping the unused 0th bin for SQL database.
      * See also PostgreSQL::addVectorToAllStreams().
@@ -202,7 +202,7 @@ void AddPMS1dAttrs(int ncid, var_base * rp)
     int	value = atoi(p) - 1;	/* Go from exclusive to inclusive */
 
     if (strstr(rp->name, "2D"))	/* 2D's use 63 bins, instead of 1DC */
-      value += 32;
+      value += (rp->Length >> 1);
 
     ncattput(ncid, cvarid, "LastBin", NC_INT, 1, &value);
   }
@@ -361,6 +361,10 @@ static int getCellSizes(var_base * rp, float cellSize[])
     nBins = 32;
   else
     nBins = 16;
+
+  // Double the nBins for the Fast2DC.
+  if (rp->SerialNumber.find("F2D", 0) != std::string::npos)
+    nBins <<= 1;
 
   float	min = 0.0, max = 0.0, step = 0.0;
 
