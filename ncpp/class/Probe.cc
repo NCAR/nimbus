@@ -147,7 +147,11 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
 
   if ((attr = avar->get_att("CellSizes")))
     {
-    for (i = 0; i < attr->num_vals(); ++i)
+    if (attr->num_vals() != nCells)
+      fprintf(stderr, "Warning: number of cell sizes in netCDF file does not match expected, variable: %s, file=%d, expected=%d.\n",
+		name.c_str(), attr->num_vals(), nCells);
+      
+    for (i = 0; i < nCells; ++i)
       diameter[i] = attr->as_float(i);
     }
   else
