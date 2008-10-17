@@ -32,41 +32,50 @@ static void setSerialNumberAndProbeType(const char * name, const char * serialNu
   int raw_indx, der_indx;
   char tmp[64], * location;
 
-  if ((raw_indx = SearchTableSansLocation(raw, name)) != ERR)
+  strcpy(tmp, name); tmp[0] = 'C';
+  if (strchr(name, '_'))	// If this is a specific probe & location.
   {
-    raw[raw_indx]->SerialNumber	= serialNum;
-    raw[raw_indx]->ProbeType	= probeType;
-//    raw[raw_indx]->Average	= (void (*) (...))SumVector;
+    raw_indx = SearchTable(raw, name);
+    der_indx = SearchTable(derived, tmp);
+  }
+  else
+  {
+    raw_indx = SearchTableSansLocation(raw, name);
+    der_indx = SearchTableSansLocation(derived, tmp);
+  }
 
-    if ((location = strstr(raw[raw_indx]->name, "_")) == 0)
-      printf("No location found for %s\n", raw[raw_indx]->name);
+  if (raw_indx == ERR)
+    return;
 
-    for (size_t i = 0; i < raw.size(); ++i)
-      if (strstr(raw[i]->name, location))
-      {
-        raw[i]->SerialNumber	= raw[raw_indx]->SerialNumber;
-        raw[i]->ProbeType	= raw[raw_indx]->ProbeType;
-      }
-    for (size_t i = 0; i < derived.size(); ++i)
-      if (strstr(derived[i]->name, location))
-      {
-        derived[i]->SerialNumber	= raw[raw_indx]->SerialNumber;
-        derived[i]->ProbeType		= raw[raw_indx]->ProbeType;
-        derived[i]->Default_HR_OR	= raw[raw_indx]->SampleRate;
+  raw[raw_indx]->SerialNumber	= serialNum;
+  raw[raw_indx]->ProbeType	= probeType;
+
+  if ((location = strstr(raw[raw_indx]->name, "_")) == 0)
+    printf("No location found for %s\n", raw[raw_indx]->name);
+
+  for (size_t i = 0; i < raw.size(); ++i)
+    if (strstr(raw[i]->name, location))
+    {
+      raw[i]->SerialNumber	= raw[raw_indx]->SerialNumber;
+      raw[i]->ProbeType	= raw[raw_indx]->ProbeType;
+    }
+  for (size_t i = 0; i < derived.size(); ++i)
+    if (strstr(derived[i]->name, location))
+    {
+      derived[i]->SerialNumber	= raw[raw_indx]->SerialNumber;
+      derived[i]->ProbeType	= raw[raw_indx]->ProbeType;
+      derived[i]->Default_HR_OR	= raw[raw_indx]->SampleRate;
 	// This is needed by amlib initializers, since they are called
 	// via derived variables, not raw.
-        derived[i]->SampleRate		= raw[raw_indx]->SampleRate;
-      }
-  }
+      derived[i]->SampleRate	= raw[raw_indx]->SampleRate;
+    }
 
-  strcpy(tmp, name); tmp[0] = 'C';
-  if ((der_indx = SearchTableSansLocation(derived, tmp)) != ERR)
+  if (der_indx != ERR)
   {
-    derived[der_indx]->Length		= raw[raw_indx]->Length;
+    derived[der_indx]->Length	= raw[raw_indx]->Length;
   }
-
-  if (raw_indx != ERR && der_indx == ERR)
-    printf("Debug: No %s found.\n", tmp);
+  else
+    printf("Debug: No concentration %s found for %s.\n", tmp, name);
 
 
   if (strstr(name, "1D") || strstr(name, "2D"))	// 2D data, we need probeCount setup.
@@ -103,12 +112,18 @@ void PMS1D_SetupForADS3()
   setSerialNumberAndProbeType("AS200", "PCAS108", PROBE_PMS1D | PROBE_PCASP);
   setSerialNumberAndProbeType("AS300", "FSSP305", PROBE_PMS1D | PROBE_F300);
   setSerialNumberAndProbeType("AUHSAS", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
-  setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-  setSerialNumberAndProbeType("A2DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
   if (cfg.ProjectName().compare("VOCALS") == 0)
   {
+    setSerialNumberAndProbeType("A1DC_RPC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC_RPC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A1DC_RPI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A2DC_RPI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+//    setSerialNumberAndProbeType("AUHSAS", "UHSAS002", PROBE_PMS1D | PROBE_PCASP);
+  }
+  else
+  {
+    setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
   }
   setSerialNumberAndProbeType("A1DP", "2DP10", PROBE_PMS2D | PROBE_2DP);
   setSerialNumberAndProbeType("A2DP", "2DP10", PROBE_PMS2D | PROBE_2DP);
