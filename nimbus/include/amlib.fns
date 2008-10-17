@@ -40,8 +40,10 @@
 	"XNASC",	NULL,           NULL,		stasr,
 #
 # New UV Hygrometer
-#
+# XUVMR was PASE only; MRUV subsequently.
 	"XUVMR",	NULL,           NULL,		suvmr,
+	"MRUV",		NULL,           NULL,		suvmr,
+	"DPUV",		NULL,           NULL,		sdprho,
 #
 # Cooper UltraFine CN
 #
