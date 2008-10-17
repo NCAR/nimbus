@@ -28,6 +28,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000-2006
 #include "amlib.h"
 #include <raf/pms.h>
 
+#include <cassert>
+
 // % of a diode which must be shadowed for the diode to trigger.
 static const NR_TYPE shadowLevel = 0.55;
 
@@ -40,12 +42,12 @@ static const NR_TYPE DOF2dP = 261.0;
 //static NR_TYPE DOF2dC[] = { 0.0, 1.56, 6.25, 14.06, 25.0, 39.06, 56.25,
 static const NR_TYPE DOF2dC = 61.0;
 
-static const size_t maxBins = 128;
+static const size_t maxBins = 130;
 
 
 static size_t	FIRST_BIN[MAX_PMS2D], LAST_BIN[MAX_PMS2D];
 static NR_TYPE  responseTime[MAX_PMS2D], armDistance[MAX_PMS2D],
-		DENS[MAX_PMS2D], resolution[MAX_PMS2D], SampleRate[MAX_PMS2D];
+		DENS[MAX_PMS2D], SampleRate[MAX_PMS2D];
 static double   PLWFAC[MAX_PMS2D], DBZFAC[MAX_PMS2D];
 
 static NR_TYPE  total_concen[MAX_PMS2D], dbar[MAX_PMS2D], plwc[MAX_PMS2D],
@@ -69,7 +71,8 @@ extern void setProbeCount(const char * location, int count);
 void sTwodInit(var_base *varp)
 {
   size_t	i, j, length, probeNum, nDiodes, minRange;
-  char		*p;
+  char		*p, name[32];
+  float		resolution;
   const char	*serialNumber;
 
   for (i = 0; i < MAX_PMS2D; ++i)
@@ -80,8 +83,14 @@ void sTwodInit(var_base *varp)
    * This function is called from the A1D? xlTwodInit, not A2D?...
    */
 
+  // 1DC gets first probecount.
   p = strchr(varp->name, '_') - 3;
   setProbeCount(p, nProbes++);
+
+  // 2DC requires seperate probeCount.
+  strcpy(name, p);
+  name[0] = '2';
+  setProbeCount(name, nProbes++);
 
   serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
@@ -114,7 +123,7 @@ void sTwodInit(var_base *varp)
     if ((p = GetPMSparameter(serialNumber, "RANGE_STEP")) == NULL) {
       fprintf(stderr, "pms2d: serial number = [%s]: RANGE_STEP not found.\n", serialNumber); exit(1);
       }
-    resolution[probeNum] = atof(p);
+    resolution = atof(p);
 
     if ((p = GetPMSparameter(serialNumber, "NDIODES")) == NULL) {
       fprintf(stderr, "pms2d: serial number = [%s]: NDIODES not found.\n", serialNumber); exit(1);
@@ -157,7 +166,7 @@ void sTwodInit(var_base *varp)
       }
 
     ComputePMS1DParams(radius[probeNum], eaw[probeNum], cell_size[probeNum],
-        minRange, resolution[probeNum], nDiodes, length);
+        minRange, resolution, nDiodes, length);
 
     /* Precompute dia squared and cubed. */
     for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
@@ -168,16 +177,8 @@ void sTwodInit(var_base *varp)
 
     if (j > 0)  /* 2DC only (not 1DC). */
       {
-      float resolution;
-
-      if (varp->name[3] == 'C')		/* EAW is fixed .8 for 2DC */
-        resolution = 0.025;
-      else
-      if (varp->name[3] == 'P')		/* EAW is fixed 6.4 for 2DP */
-        resolution = 0.2;
-
       for (i = 0; i < length; ++i)
-        eaw[probeNum][i] = resolution * nDiodes;
+        eaw[probeNum][i] = (resolution / 1000) * nDiodes;
       }
     }
 
@@ -190,6 +191,7 @@ void sTwodInitH(var_base *varp)
 {
   size_t	i, length, probeNum, nDiodes = 0, minRange;
   char		*p;
+  float		resolution;
   const char	*serialNumber;
 
   for (i = 0; i < MAX_PMS2D; ++i)
@@ -226,7 +228,7 @@ void sTwodInitH(var_base *varp)
   if ((p = GetPMSparameter(serialNumber, "RANGE_STEP")) == NULL) {
     printf("%s: RANGE_STEP not found.\n", serialNumber); exit(1);
     }
-  resolution[probeNum] = atof(p);
+  resolution = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "DENS")) == NULL) {
     printf("%s: DENS not found.\n", serialNumber); exit(1);
@@ -248,7 +250,7 @@ void sTwodInitH(var_base *varp)
   length = varp->Length;
                                                                                           
   ComputePMS1DParams(radius[probeNum], eaw[probeNum], cell_size[probeNum],
-      minRange, resolution[probeNum], nDiodes, length);
+      minRange, resolution, nDiodes, length);
 
   /* Precompute dia squared and cubed. */
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
@@ -269,6 +271,8 @@ void sTwoD(DERTBL *varp)
   NR_TYPE	tas;		/* True Air Speed	*/
   NR_TYPE	sampleVolume[maxBins], sampleArea;
   NR_TYPE	dof, deadTime;
+
+  assert(varp->Length > 1);
 
   actual	= GetVector(varp, 0);
   tas		= GetSampleFor1D(varp, 1);
@@ -442,7 +446,7 @@ void sconc2dc050(DERTBL *varp)
 {
   NR_TYPE conc = 0.0;
   NR_TYPE * concentration = GetVector(varp, 0);
-  int n = 128;
+  size_t n = 128;
 
   if (strstr(varp->name, "1DC"))
     n = 64;
@@ -459,7 +463,7 @@ void sconc2dc100(DERTBL *varp)
 {
   NR_TYPE conc = 0.0;
   NR_TYPE * concentration = GetVector(varp, 0);
-  int n = 128;
+  size_t n = 128;
 
   if (strstr(varp->name, "1DC"))
     n = 64;
@@ -476,7 +480,7 @@ void sconc2dc150(DERTBL *varp)
 {
   NR_TYPE conc = 0.0;
   NR_TYPE * concentration = GetVector(varp, 0);
-  int n = 128;
+  size_t n = 128;
 
   if (strstr(varp->name, "1DC"))
     n = 64;
