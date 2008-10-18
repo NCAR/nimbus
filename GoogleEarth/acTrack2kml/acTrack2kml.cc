@@ -23,7 +23,7 @@ static std::string googleEarthDataDir = "/net/www/docs/flight_data/";
 
 // All datapoints are read from file, but only use every 'TimeStep' points.
 // e.g. 15 would mean use 1 data point for every 15 seconds of data.
-static int TimeStep = 10;
+static int TimeStep = 2;
 
 // True Airspeed cut-off (take-off and landing speed).
 static const float TAS_CutOff = 20.0;
@@ -47,6 +47,7 @@ static const std::string _dataQuerySuffix = ",atx,tasx,wsc,wdc,wic FROM raf_lrt 
 class _projInfo
 {
 public:
+  std::string platform;
   std::string projectName;
   std::string flightNumber;
   std::string landmarks;
@@ -429,7 +430,7 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo, int stat
 	<< "   </LineString>\n"
 	<< "  </Placemark>\n"
 	<< "  <Placemark>\n"
-	<< "   <name>Plane</name>\n"
+	<< "   <name>" << projectInfo.platform << "</name>\n"
 	<< "   <description>" << endBubbleCDATA(status_id) << "</description>\n"
 	<< "   <styleUrl>#PM1</styleUrl>\n"
 	<< "   <Point>\n"
@@ -608,6 +609,9 @@ void ReadDataFromNetCDF(const std::string & fileName)
   attr = file.get_att("ProjectName");
   projectInfo.projectName = attr->as_string(0);
 
+  attr = file.get_att("Platform");
+  projectInfo.platform = attr->as_string(0);
+
   attr = file.get_att("landmarks");
   projectInfo.landmarks = attr->as_string(0);
 
@@ -760,6 +764,7 @@ int main(int argc, char *argv[])
 
     projectInfo.flightNumber = getGlobalAttribute(conn, "FlightNumber");
     projectInfo.projectName = getGlobalAttribute(conn, "ProjectName");
+    projectInfo.platform = getGlobalAttribute(conn, "Platform");
     projectInfo.landmarks = getGlobalAttribute(conn, "landmarks");
     if (projectInfo.flightNumber.size() == 0)
       projectInfo.flightNumber = "noflight";
@@ -783,7 +788,7 @@ int main(int argc, char *argv[])
       WriteGoogleEarthKML(outFile, projectInfo, flightStatus());
       WriteCurrentPositionKML(projectInfo);
     }
-    sleep(TimeStep*2);
+    sleep(30);
   }
 
   return 0;
