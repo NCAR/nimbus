@@ -33,6 +33,8 @@ public:
 protected:
   std::vector<var_base *> readFile(const std::string & fileName) const;
 
+  void setCoordinatesFrom(const std::vector<var_base *> & list) const;
+
   UdpSocket * _brdcst1, * _brdcst2, * _groundBrdcst;
 
   std::vector<var_base *> _varList, _groundVarList;
