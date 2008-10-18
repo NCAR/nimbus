@@ -39,7 +39,11 @@ const size_t Broadcast::GroundFeedDataRate = 5;	// in seconds.
 Broadcast::Broadcast()
 {
   _varList = readFile(BROADCAST);
-  _groundVarList = readFile(XMIT_VARS);
+  std::string fileName(XMIT_VARS);
+  fileName += ".rt";
+  _groundVarList = readFile(fileName);
+
+  setCoordinatesFrom(_groundVarList);
 
   _brdcst1 = new UdpSocket(RT_UDP_PORT, RT_UDP_ADDR_1.c_str());
   _brdcst1->openSock(UDP_BROADCAST);
@@ -49,6 +53,21 @@ Broadcast::Broadcast()
 
   _groundBrdcst = new UdpSocket(GRND_UDP_PORT, GRND_UDP_ADDR.c_str());
   _groundBrdcst->openSock(UDP_UNBOUND);
+}
+
+/* -------------------------------------------------------------------- */
+void Broadcast::setCoordinatesFrom(const std::vector<var_base *> & list) const
+{
+  std::vector<var_base *>::const_iterator it;
+  for (it = list.begin(); it != list.end(); ++it)
+  {
+    if (strstr((*it)->name, "LON"))
+      cfg.SetCoordLON((*it)->name);
+    if (strstr((*it)->name, "LAT"))
+      cfg.SetCoordLAT((*it)->name);
+    if (strstr((*it)->name, "ALT") && strstr((*it)->name, "ALTF") == 0)
+      cfg.SetCoordALT((*it)->name);
+  }
 }
 
 /* -------------------------------------------------------------------- */

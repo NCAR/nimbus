@@ -84,7 +84,7 @@ void MultiCastStatus::sendStatus(const char timeStamp[])
   msock.sendto(statstr.c_str(), statstr.length()+1, 0, msaddr);
 }
 
-MultiCastStatus mcStat;
+static MultiCastStatus * mcStat = 0;
 
 static const int chk_lag_interval = 20; // seconds
 static const int max_lag_delta = 10; // seconds
@@ -92,7 +92,16 @@ static const int max_lag_delta = 10; // seconds
 /* -------------------------------------------------------------------- */
 void RTinit_ADS3()
 {
-  mcStat.sendStatus("----- started -----");
+/*
+  try {
+    mcStat = new MultiCastStatus();
+  }
+  catch(const nidas::util::IOException& e) {
+    mcStat = 0;
+  }
+*/
+  if (mcStat)
+    mcStat->sendStatus("----- started -----");
 
 printf("RTinit_ADS3, establishing connection....\n");
 
@@ -117,13 +126,14 @@ void RealTimeLoop3()
 
   ILOG(("RealTimeLoop entered."));
 
+  bcast = new Broadcast();	// ASCII/IWG1 and ground feed.
+
   if (cfg.OutputSQL())
   {
     std::string BuildPGspecString();
     psql = new PostgreSQL(BuildPGspecString(), cfg.TransmitToGround());
   }
 
-  bcast = new Broadcast();	// ASCII feed.
   extern nidas::dynld::raf::SyncRecordReader* syncRecReader;
 
   for (;;)
@@ -153,7 +163,7 @@ void RealTimeLoop3()
       WriteNetCDF_MRF();
 
     UpdateTime(SampledData);
-    mcStat.sendStatus(timeStamp);
+    mcStat->sendStatus(timeStamp);
 
     // This typically produces HRT netCDF in real-time.  Not used at this time.
 //    if (cfg.OutputNetCDF())
