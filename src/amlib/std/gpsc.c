@@ -24,6 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
 #include <values.h>
 #include "nimbus.h"
 #include "amlib.h"
+#include <cassert>
 
 static NR_TYPE
 	UPFCTR	= 0.999444,
@@ -150,9 +151,16 @@ void slatc(DERTBL *varp)
   gstat	= (long)GetSample(varp, 9);	/* nSats for Tans & Garmin	*/
   gmode	= (long)GetSample(varp, 10);	/* GMODE or GGMODE		*/
 
-  if (isnan(alat) || isnan(alon) || isnan(glat) || isnan(glon) ||
-      isnan(vns) || isnan(vew) || isnan(gvns) || isnan(gvew))
+  if (isnan(glat) || isnan(glon)|| isnan(gvns) || isnan(gvew))
     {
+    sprintf(buffer, "gpsc: GPS isnan(), nsats=%d, mode=%d", (int)gstat, (int)gmode);
+//    LogStdMsg(buffer);
+    gmode = 0;
+    }
+
+  if (isnan(alat) || isnan(alon) || isnan(vns) || isnan(vew))
+    {
+//    LogStdMsg("gpsc: IRS isnan()");
     returnMissingValue = true;
     PutSample(varp, floatNAN);
     return;
@@ -333,6 +341,10 @@ void slatc(DERTBL *varp)
     {
     /* Good GPS comes here.
      */
+assert(!isnan(glat));
+assert(!isnan(glon));
+assert(!isnan(gvew));
+assert(!isnan(gvns));
     gvnsf	= filter((double)gvns, zf[FeedBack][0]);
     gvewf	= filter((double)gvew, zf[FeedBack][1]);
     vnsf	= filter((double)vns, zf[FeedBack][2]);
