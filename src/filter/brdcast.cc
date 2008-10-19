@@ -65,6 +65,7 @@ void Broadcast::setCoordinatesFrom(const std::vector<var_base *> & list) const
       cfg.SetCoordLON((*it)->name);
     if (strstr((*it)->name, "LAT"))
       cfg.SetCoordLAT((*it)->name);
+    //  Don't set it to PALTF, we don't want an altitude in feet as the ref.
     if (strstr((*it)->name, "ALT") && strstr((*it)->name, "ALTF") == 0)
       cfg.SetCoordALT((*it)->name);
   }
@@ -73,31 +74,38 @@ void Broadcast::setCoordinatesFrom(const std::vector<var_base *> & list) const
 /* -------------------------------------------------------------------- */
 std::vector<var_base *> Broadcast::readFile(const std::string & fileName) const
 {
-  int	index;
-  char	*varList[512], target[NAMELEN];
+  char	*varList[512];
   std::vector<var_base *> list;
 
   ReadTextFile(fileName, varList);
 
   for (int i = 0; varList[i]; ++i)
   {
+    char target[BUFSIZ], *p;
     strcpy(target, varList[i]);
 
-    if ((index = SearchTable(raw, target)) != ERR)
+    p = strtok(target, ", \t\n");
+    while (p)
     {
-      list.push_back(raw[index]);
-    }
-    else
-    if ((index = SearchTable(derived, target)) != ERR)
-    {
-      list.push_back(derived[index]);
-    }
-    else
-    {
-      char msg[100];
-      sprintf(msg, "brdcast.cc: Variable [%s] not found, substituting ZERO.\n", target);
-      LogMessage(msg);
-      list.push_back(0);
+      int index;
+
+      if ((index = SearchTable(raw, p)) != ERR)
+      {
+        list.push_back(raw[index]);
+      }
+      else
+      if ((index = SearchTable(derived, p)) != ERR)
+      {
+        list.push_back(derived[index]);
+      }
+      else
+      {
+        char msg[100];
+        sprintf(msg, "brdcast.cc: Variable [%s] not found, substituting ZERO.\n", p);
+        LogMessage(msg);
+        list.push_back(0);
+      }
+      p = strtok(NULL, ", \t\n");
     }
   }
 
