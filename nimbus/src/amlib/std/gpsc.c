@@ -21,10 +21,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
 -------------------------------------------------------------------------
 */
 
-#include <values.h>
 #include "nimbus.h"
 #include "amlib.h"
 #include <cassert>
+#include <values.h>
 
 static NR_TYPE
 	UPFCTR	= 0.999444,
@@ -341,10 +341,10 @@ void slatc(DERTBL *varp)
     {
     /* Good GPS comes here.
      */
-assert(!isnan(glat));
-assert(!isnan(glon));
-assert(!isnan(gvew));
-assert(!isnan(gvns));
+    assert(!isnan(glat));
+    assert(!isnan(glon));
+    assert(!isnan(gvew));
+    assert(!isnan(gvns));
     gvnsf	= filter((double)gvns, zf[FeedBack][0]);
     gvewf	= filter((double)gvew, zf[FeedBack][1]);
     vnsf	= filter((double)vns, zf[FeedBack][2]);
