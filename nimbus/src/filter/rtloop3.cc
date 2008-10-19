@@ -32,7 +32,6 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2005
 #include <iomanip>
 
 static Broadcast * bcast;
-
 extern PostgreSQL * psql;
 
 extern NR_TYPE	*SampledData, *AveragedData;
@@ -92,14 +91,13 @@ static const int max_lag_delta = 10; // seconds
 /* -------------------------------------------------------------------- */
 void RTinit_ADS3()
 {
-/*
   try {
     mcStat = new MultiCastStatus();
   }
   catch(const nidas::util::IOException& e) {
     mcStat = 0;
   }
-*/
+
   if (mcStat)
     mcStat->sendStatus("----- started -----");
 
@@ -107,6 +105,7 @@ printf("RTinit_ADS3, establishing connection....\n");
 
   cfg.SetADSVersion(Config::ADS_3);
   cfg.SetProcessingMode(Config::RealTime);
+  cfg.SetOutputNetCDF(false);
   cfg.SetInteractive(false);
   cfg.SetLoadProductionSetup(false);
   cfg.SetCreateKMLFile(false);
@@ -163,11 +162,12 @@ void RealTimeLoop3()
       WriteNetCDF_MRF();
 
     UpdateTime(SampledData);
-    mcStat->sendStatus(timeStamp);
+    if (mcStat)
+      mcStat->sendStatus(timeStamp);
 
     // This typically produces HRT netCDF in real-time.  Not used at this time.
-//    if (cfg.OutputNetCDF())
-//      SyncNetCDF();
+    if (cfg.OutputNetCDF())
+      SyncNetCDF();
 
     /* Check every 20 seconds to see if we are lagging more than 10 seconds
      * behind the system clock.
