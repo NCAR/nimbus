@@ -151,11 +151,15 @@ void slatc(DERTBL *varp)
   gstat	= (long)GetSample(varp, 9);	/* nSats for Tans & Garmin	*/
   gmode	= (long)GetSample(varp, 10);	/* GMODE or GGMODE		*/
 
+  if (isnan(gmode))
+    gmode = 0;
+
   if (isnan(glat) || isnan(glon)|| isnan(gvns) || isnan(gvew))
     {
-    sprintf(buffer, "gpsc: GPS isnan(), nsats=%d, mode=%d", (int)gstat, (int)gmode);
+//    sprintf(buffer, "gpsc: GPS isnan(), nsats=%d, mode=%d, LRT=%d, SampleOffset=%d, goodGPS=%d", (int)gstat, (int)gmode, FeedBack == LOW_RATE_FEEDBACK, SampleOffset, goodGPS);
 //    LogStdMsg(buffer);
     gmode = 0;
+    goodGPS = 0;
     }
 
   if (isnan(alat) || isnan(alon) || isnan(vns) || isnan(vew))
