@@ -164,9 +164,12 @@ startBubbleCDATA()
   std::stringstream s;
   std::string startTime = _date[0].substr(_date[0].find(' '));
 
-  s	<< "<![CDATA[Take off :" << startTime << "<br>Alt : " << _alt[0]
-	<< "<br>Temp : " << firstAT << "<br>WS : " << firstWS << "<br>WD : "
-	<< firstWD << "<br>WI : " << firstWI << "]]>";
+  s     << "<![CDATA[Take off :" << startTime
+        << "<br>Alt : " << _alt[0]
+        << " feet<br>Temp : " << firstAT
+        << " C<br>WS : " << firstWS
+        << " m/s<br>WD : " << firstWD
+        << " degree_T<br>WI : " << firstWI << " m/s]]>";
 
   return s.str();
 }
@@ -186,9 +189,12 @@ endBubbleCDATA(int status_id)
   else
     e << "Current :";
 
-  e	<< endTime << "<br>Alt : " << _alt[_alt.size()-1] << "<br>Temp : "
-	<< latestAT << "<br>WS : " << latestWS << "<br>WD : "
-	<< latestWD << "<br>WI : " << latestWI << "]]>";
+  e	<< endTime
+	<< "<br>Alt : " << _alt[0]
+	<< " feet<br>Temp : " << firstAT
+	<< " C<br>WS : " << firstWS
+	<< " m/s<br>WD : " << firstWD
+	<< " degree_T<br>WI : " << firstWI << " m/s]]>";
 
   return e.str();
 }
