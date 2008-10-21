@@ -28,6 +28,9 @@ static int TimeStep = 2;
 // True Airspeed cut-off (take-off and landing speed).
 static const float TAS_CutOff = 20.0;
 
+// Frequency of Time Stamps.
+static const int ts_Freq = 360;
+
 // Max out at this many points, don't want to swamp GoogleMap, though
 // Vincent said he broke them up into segments, so we shouldn't have the
 // old 600 point max.
@@ -339,6 +342,29 @@ void WriteLandmarksKML(std::ofstream & googleEarth, const _projInfo& projInfo)
 }
 
 /* -------------------------------------------------------------------- */
+void WriteTimeStampsKML(std::ofstream & googleEarth)
+{
+  googleEarth
+    << " <Folder>\n"
+    << "  <name>Time Stamps</name>\n";
+
+  for (size_t i = ts_Freq; i < _date.size(); i += ts_Freq)
+  {
+    googleEarth
+      << "  <Placemark>\n"
+      << "   <name>" << _date[i] << "</name>\n"
+      << "   <styleUrl>#PM1</styleUrl>\n"
+      << "   <Point>\n"
+      << "    <coordinates>"
+      << _lon[i] << ","  << _lat[i]<< "</coordinates>\n"
+      << "   </Point>\n"
+      << "  </Placemark>\n";
+  }
+
+  googleEarth << " </Folder>\n";
+}
+
+/* -------------------------------------------------------------------- */
 /* Copies verbatum from a text file called "include.kml", this allows for
  * user define stuff to be added.
  */
@@ -455,6 +481,7 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo, int stat
 	<< "  </Placemark>\n";
 
   WriteLandmarksKML(googleEarth, projInfo);
+  WriteTimeStampsKML(googleEarth);
 
   googleEarth
 		<< "</Folder>\n"
