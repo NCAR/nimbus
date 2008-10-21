@@ -350,9 +350,10 @@ void WriteTimeStampsKML(std::ofstream & googleEarth)
 
   for (size_t i = ts_Freq; i < _date.size(); i += ts_Freq)
   {
+    std::string tm = _date[i].substr(11, 5);
     googleEarth
       << "  <Placemark>\n"
-      << "   <name>" << _date[i] << "</name>\n"
+      << "   <name>" << tm << "</name>\n"
       << "   <styleUrl>#PM1</styleUrl>\n"
       << "   <Point>\n"
       << "    <coordinates>"
