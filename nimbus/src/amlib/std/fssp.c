@@ -288,7 +288,7 @@ void scs100(DERTBL *varp)
 #define REFF
 
 #include "pms1d_cv"
-/*
+
   if (oflow > 0 && tact[probeNum] > 0 && oflow < 5000)
     {
     NR_TYPE ccc = (tact[probeNum]+oflow) / tact[probeNum];
@@ -298,7 +298,7 @@ void scs100(DERTBL *varp)
 
     total_concen[probeNum] *= ccc;
     }
-*/
+
 }       /* END SCS100 */
 
 /* -------------------------------------------------------------------- */
