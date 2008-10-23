@@ -196,7 +196,7 @@ void CreateNetCDF(const char fileName[])
   }
 
   putGlobalAttribute("ProjectName", cfg.ProjectName());
-  putGlobalAttribute("Aircraft", cfg.TailNumber());
+  putGlobalAttribute("Platform", cfg.TailNumber());
   putGlobalAttribute("ProjectNumber", cfg.ProjectNumber());
   putGlobalAttribute("FlightNumber", cfg.FlightNumber());
 
