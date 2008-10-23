@@ -193,11 +193,13 @@ endBubbleCDATA(int status_id)
     e << "Current :";
 
   e	<< endTime
-	<< "<br>Alt : " << _alt[0]
-	<< " feet<br>Temp : " << firstAT
-	<< " C<br>WS : " << firstWS
-	<< " m/s<br>WD : " << firstWD
-	<< " degree_T<br>WI : " << firstWI << " m/s]]>";
+	<< "<br>Lat : " << _lat[_lat.size()-1]
+	<< " deg_N<br>Lon : " << _lon[_lon.size()-1]
+	<< " deg_E<br>Alt : " << _alt[_alt.size()-1]
+	<< " feet<br>Temp : " << latestAT
+	<< " C<br>WS : " << latestWS
+	<< " m/s<br>WD : " << latestWD
+	<< " degree_T<br>WI : " << latestWI << " m/s]]>";
 
   return e.str();
 }
