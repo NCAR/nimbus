@@ -39,10 +39,10 @@ static const int NCF = 3;
 static NR_TYPE	latc[nFeedBackTypes], lonc[nFeedBackTypes],
 		vnsc[nFeedBackTypes], vewc[nFeedBackTypes];
 
-static NR_TYPE	DELT[nFeedBackTypes], factorp[nFeedBackTypes],
+static NR_TYPE	deltaT[nFeedBackTypes], factorp[nFeedBackTypes],
 		dlat[nFeedBackTypes], dlon[nFeedBackTypes],
 		dvy[nFeedBackTypes], dvx[nFeedBackTypes],
-		time_duration[nFeedBackTypes];
+		time_duration[nFeedBackTypes], fctrf[nFeedBackTypes];
 
 static double	h[NCF][NCF], zf[nFeedBackTypes][4][6];
 static double	am[2][NCF], bm[2][NCF], c[2][NCF], cp[2][NCF];
@@ -110,11 +110,18 @@ void initLATC(var_base *varp)
   for (int i = 0; i < nFeedBackTypes; ++i)
     {
     if (i == LOW_RATE_FEEDBACK)
-      DELT[i] = 1.0;
+      {
+      deltaT[i] = 1.0;
+      fctrf[i] = FCTRF;
+      }
     else
-      DELT[i] = 1.0 / (float)cfg.ProcessingRate();
+      {
+      float r = (float)(cfg.ProcessingRate() - 1) / cfg.ProcessingRate();
+      fctrf[i] = FCTRF + ((1.0 - FCTRF) * r);
+      deltaT[i] = 1.0 / (float)cfg.ProcessingRate();
+      }
 
-    factorp[i] = 0.002 * (1000.0 / DELT[i]) * M_PI / TAUP;
+    factorp[i] = 0.002 * (1000.0 / deltaT[i]) * M_PI / TAUP;
 
     time_duration[i] = dvy[i] = dvx[i] = dlat[i] = dlon[i] = 0.0;
     }
@@ -191,7 +198,7 @@ void slatc(DERTBL *varp)
     }
 
 
-  time_duration[FeedBack] += DELT[FeedBack];
+  time_duration[FeedBack] += deltaT[FeedBack];
 
   /* Check GPS status, only do this on the Low-rate pass.
    */
@@ -270,7 +277,7 @@ void slatc(DERTBL *varp)
 
   if (goodGPS < 10)	/* < 10 seconds		*/
     {
-    if (countr[FeedBack] > 1800 / DELT[FeedBack])
+    if (countr[FeedBack] > 1800 / deltaT[FeedBack])
       { /* 30 minutes of operation.	*/
       if (FeedBack == LOW_RATE_FEEDBACK && matrix_updated[FeedBack])
         {
@@ -323,10 +330,10 @@ void slatc(DERTBL *varp)
        */
 /*      gpsflg = 1.0;
 */
-      dvy[FeedBack] = dvy[FeedBack]*FCTRF+(1-FCTRF)*(c[0][0]+c[0][1]*sinwt+c[0][2]*coswt);
-      dvx[FeedBack] = dvx[FeedBack]*FCTRF+(1-FCTRF)*(c[1][0]+c[1][1]*sinwt+c[1][2]*coswt);
-      dlat[FeedBack]= dlat[FeedBack]*FCTRF+(1-FCTRF)*(cp[0][0]+cp[0][1]*sinwt+cp[0][2]*coswt);
-      dlon[FeedBack]= dlon[FeedBack]*FCTRF+(1-FCTRF)*(cp[1][0]+cp[1][1]*sinwt+cp[1][2]*coswt);
+      dvy[FeedBack] = dvy[FeedBack]*fctrf[FeedBack]+(1.0-fctrf[FeedBack])*(c[0][0]+c[0][1]*sinwt+c[0][2]*coswt);
+      dvx[FeedBack] = dvx[FeedBack]*fctrf[FeedBack]+(1.0-fctrf[FeedBack])*(c[1][0]+c[1][1]*sinwt+c[1][2]*coswt);
+      dlat[FeedBack]= dlat[FeedBack]*fctrf[FeedBack]+(1.0-fctrf[FeedBack])*(cp[0][0]+cp[0][1]*sinwt+cp[0][2]*coswt);
+      dlon[FeedBack]= dlon[FeedBack]*fctrf[FeedBack]+(1.0-fctrf[FeedBack])*(cp[1][0]+cp[1][1]*sinwt+cp[1][2]*coswt);
       }
     else
       {
@@ -335,10 +342,10 @@ void slatc(DERTBL *varp)
        */
 /*      gpsflg = 0.001;
 */
-      dvy[FeedBack]	*= FCTRF;
-      dvx[FeedBack]	*= FCTRF;
-      dlat[FeedBack]	*= FCTRF;
-      dlon[FeedBack]	*= FCTRF;
+      dvy[FeedBack]	*= fctrf[FeedBack];
+      dvx[FeedBack]	*= fctrf[FeedBack];
+      dlat[FeedBack]	*= fctrf[FeedBack];
+      dlon[FeedBack]	*= fctrf[FeedBack];
       }
     }
   else
