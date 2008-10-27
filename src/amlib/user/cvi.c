@@ -105,6 +105,20 @@ void cviInit(var_base *varp)
 }  /* END CVIINIT */
 
 /* -------------------------------------------------------------------- */
+void sconcud(DERTBL *varp)
+{
+  // Routine for VOCALS.
+  NR_TYPE  cnts, flow, cvcfact;
+
+  cnts  = GetSample(varp, 0);
+  cvcfact  = GetSample(varp, 1);
+  flow  = GetSample(varp, 2);
+
+  PutSample(varp, 1.2 * cnts / (flow * cvcfact));
+
+}  /* END SCONCUD */
+
+/* -------------------------------------------------------------------- */
 void scvl(DERTBL *varp)
 {
   NR_TYPE  cvf1, cvf2, cvfcn, cvfh, cvfx;

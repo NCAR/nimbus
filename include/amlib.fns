@@ -9,7 +9,7 @@
 #
 # VOCALS.
 #
-	"CONCUD",	NULL,           NULL,		sratio,
+	"CONCUD",	NULL,           NULL,		sconcud,
 #
 # PASE.
 #
