@@ -16,10 +16,17 @@
 
 #include "boost/lexical_cast.hpp"
 
-// Output directories for .xml & .kml files.  Ground
-static std::string googleMapDataDir = "/net/www/docs/flight_data/";
-static std::string googleEarthDataDir = "/net/www/docs/flight_data/";
+// Output directories for .xml & .kml files.  Ground.
+static const std::string grnd_googleMapDataDir = "/net/www/docs/flight_data/";
+static const std::string grnd_googleEarthDataDir = "/net/www/docs/flight_data/";
+static const std::string grnd_webHost = "www.eol.ucar.edu";
 
+// Output directories for .xml & .kml files.  Onboard.
+static const std::string onboard_googleMapDataDir = "/var/www/html/";
+static const std::string onboard_googleEarthDataDir = "/var/www/html/";
+static const std::string onboard_webHost = "acserver.raf.ucar.edu";
+
+static std::string googleMapDataDir, googleEarthDataDir, webHost;
 
 // All datapoints are read from file, but only use every 'TimeStep' points.
 // e.g. 15 would mean use 1 data point for every 15 seconds of data.
@@ -275,7 +282,7 @@ void WriteCurrentPositionKML(const _projInfo& projInfo)
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
 	<< "   <Icon>\n"
-	<< "    <href>http://www.eol.ucar.edu/flight_data/images/red.png</href>\n"
+	<< "    <href>http://" << webHost << "/flight_data/images/red.png</href>\n"
 	<< "   </Icon>\n"
 	<< "  </IconStyle>\n"
 	<< " </Style>\n"
@@ -410,7 +417,7 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo, int stat
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
 	<< "   <Icon>\n"
-	<< "    <href>http://www.eol.ucar.edu/flight_data/images/red.png</href>\n"
+	<< "    <href>http://" << webHost << "/flight_data/images/red.png</href>\n"
 	<< "   </Icon>\n"
 	<< "  </IconStyle>\n"
 	<< " </Style>\n"
@@ -418,7 +425,7 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo, int stat
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
 	<< "   <Icon>\n"
-	<< "    <href>http://www.eol.ucar.edu/flight_data/images/white.png</href>\n"
+	<< "    <href>http://" << webHost << "/flight_data/images/white.png</href>\n"
 	<< "   </Icon>\n"
 	<< "  </IconStyle>\n"
 	<< " </Style>\n"
@@ -720,6 +727,10 @@ int parseRunstring(int argc, char** argv)
   extern int optind;       /* "  "     "     */
   int opt_char;     /* option character */
 
+  googleMapDataDir = googleMapDataDir;
+  googleEarthDataDir = googleEarthDataDir;
+  webHost = webHost;
+
   while ((opt_char = getopt(argc, argv, "h:s:o")) != -1)
   {
     switch (opt_char)
@@ -733,8 +744,9 @@ int parseRunstring(int argc, char** argv)
       break;
 
     case 'o':	// onboard.  Modify some defaults if this is set.
-        googleMapDataDir = "/var/www/html/";
-        googleEarthDataDir = "/var/www/html/";
+        googleMapDataDir = onboard_googleMapDataDir;
+        googleEarthDataDir = onboard_googleEarthDataDir;
+        webHost = onboard_webHost;
       break;
 
     case '?':
