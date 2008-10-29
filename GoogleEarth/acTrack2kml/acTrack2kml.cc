@@ -30,13 +30,13 @@ static std::string googleMapDataDir, googleEarthDataDir, webHost;
 
 // All datapoints are read from file, but only use every 'TimeStep' points.
 // e.g. 15 would mean use 1 data point for every 15 seconds of data.
-static int TimeStep = 2;
+static int TimeStep = 20;
 
 // True Airspeed cut-off (take-off and landing speed).
 static const float TAS_CutOff = 20.0;
 
 // Frequency of Time Stamps.
-static const int ts_Freq = 360;
+static const int ts_Freq = 3600;
 
 // Max out at this many points, don't want to swamp GoogleMap, though
 // Vincent said he broke them up into segments, so we shouldn't have the
@@ -359,10 +359,15 @@ void WriteTimeStampsKML(std::ofstream & googleEarth)
 
   for (size_t i = ts_Freq; i < _date.size(); i += ts_Freq)
   {
-    std::string tm = _date[i].substr(11, 5);
+    std::string label = _date[i].substr(11, 5);
+    std::string tm = _date[i];
+    tm.replace(10, 1, "T");
     googleEarth
       << "  <Placemark>\n"
-      << "   <name>" << tm << "</name>\n"
+      << "   <name>" << label << "</name>\n"
+      << "   <TimeStamp>\n"
+      << "    <when>" << tm << "Z</when>\n"
+      << "   </TimeStamp>\n"
       << "   <styleUrl>#PM1</styleUrl>\n"
       << "   <Point>\n"
       << "    <coordinates>"
@@ -462,7 +467,7 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo, int stat
 	<< "    <altitudeMode>absolute</altitudeMode>\n"
 	<< "    <coordinates>\n";
 
-  for (size_t i = 0; i < _lat.size(); ++i)
+  for (size_t i = 0; i < _lat.size(); i += TimeStep)
   {
     googleEarth << _lon[i] << "," << _lat[i] << "," << (int)_alt[i] << "\n";
   }
@@ -527,15 +532,24 @@ void updateData(PGresult * res, int indx)
     firstWI = extractPQvalue<float>(PQgetvalue(res, indx, WI));
   }
 
-  _date.push_back( extractPQString(res, indx, TIME) );
-  _lon.push_back( extractPQvalue<float>(PQgetvalue(res, indx, LON)) );
-  _lat.push_back( extractPQvalue<float>(PQgetvalue(res, indx, LAT)) );
-  _alt.push_back( extractPQvalue<float>(PQgetvalue(res, indx, ALT)) * 3.2808);
   latestTAS = extractPQvalue<float>(PQgetvalue(res, indx, TAS));
   latestAT = extractPQvalue<float>(PQgetvalue(res, indx, AT));
   latestWS = extractPQvalue<float>(PQgetvalue(res, indx, WS));
   latestWD = extractPQvalue<float>(PQgetvalue(res, indx, WD));
   latestWI = extractPQvalue<float>(PQgetvalue(res, indx, WI));
+
+  float lat, lon, alt;
+  lat = extractPQvalue<float>(PQgetvalue(res, indx, LAT));
+  lon = extractPQvalue<float>(PQgetvalue(res, indx, LON));
+  alt = extractPQvalue<float>(PQgetvalue(res, indx, ALT));
+
+  if (lat == -32767 || lon == -32767 || alt == -32767)
+    return;
+
+  _date.push_back( extractPQString(res, indx, TIME) );
+  _lon.push_back( extractPQvalue<float>(PQgetvalue(res, indx, LON)) );
+  _lat.push_back( extractPQvalue<float>(PQgetvalue(res, indx, LAT)) );
+  _alt.push_back( extractPQvalue<float>(PQgetvalue(res, indx, ALT)) * 3.2808);
 }
 
 /*-------------------------------------------------------------------- */
@@ -564,7 +578,7 @@ _lat.clear(); _lon.clear(); _alt.clear(); _date.clear();
 
     if (ntuples > 0)
     {
-      for (int i = 0; i < ntuples; i += TimeStep)
+      for (int i = 0; i < ntuples; ++i)
         updateData(res, i);
 
       updateData(res, ntuples-1);
@@ -682,7 +696,7 @@ void ReadDataFromNetCDF(const std::string & fileName)
   time_t t = mktime(&tm);
 
   size_t n = tim_vals->num();
-  for (size_t i = 0; i < n; i += TimeStep)
+  for (size_t i = 0; i < n; ++i)
   {
     for (; i < n && tas_vals->as_float(i) < TAS_CutOff; ++i)
       ;
@@ -729,7 +743,7 @@ int parseRunstring(int argc, char** argv)
 
   googleMapDataDir = googleMapDataDir;
   googleEarthDataDir = googleEarthDataDir;
-  webHost = webHost;
+  webHost = grnd_webHost;
 
   while ((opt_char = getopt(argc, argv, "h:s:o")) != -1)
   {
