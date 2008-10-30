@@ -23,8 +23,8 @@ public class DataFmt {
 	public final static String PLANK ="";
 
 	public final static String HEAD = "Plain";
-	public final static String HEAD2 = "Icartt";
-	public final static String HEAD3 = "Xml";
+	public final static String HEAD2 = "AmesDEF";
+	public final static String HEAD3 = "NcML";
 
 	public final static String FULLTM = "Full";
 	public final static String SPACE = "Space";
