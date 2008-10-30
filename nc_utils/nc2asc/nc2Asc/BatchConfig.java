@@ -173,7 +173,7 @@ public class BatchConfig {
 	 * 
 	 * if=	/home/data/231RF10.nc
 	 * of=	junk.asc
-	 * hd= 	Plain/Icartt/Xml
+	 * hd= 	Plain/AmesDEF/NcML
 	 * avg= 4
 	 * dt= 	yyyy-mm-dd/yyy mm dd/NoDate
 	 * tm= 	hh:mm:ss/hh mm ss/SecOfDay  
