@@ -173,7 +173,7 @@ public class BatchConfig {
 	 * 
 	 * if=	/home/data/231RF10.nc
 	 * of=	junk.asc
-	 * hd= 	Plain/AmesDEF/NcML
+	 * hd= 	Plain/Icartt/Xml
 	 * avg= 4
 	 * dt= 	yyyy-mm-dd/yyy mm dd/NoDate
 	 * tm= 	hh:mm:ss/hh mm ss/SecOfDay  
@@ -346,7 +346,7 @@ public class BatchConfig {
 		}
 		//check delimiter
 		item = dataFmt[DataFmt.DMTR_IDX];
-		if (item ==null && !item.isEmpty() &&( item.equals(DataFmt.SPACEVAL) || item.equals(DataFmt.COMMAVAL))) {
+		if (item !=null && !item.isEmpty() &&( item.equals(DataFmt.SPACEVAL) || item.equals(DataFmt.COMMAVAL))) {
 		} else {
 			System.out.println("Cannot find a good delimiter. Use default format..."+ item);
 			dataFmt[DataFmt.DMTR_IDX]= DataFmt.COMMAVAL;

@@ -259,11 +259,15 @@ public class NCData {
 			String lname = ""+v.findAttribute("long_name");  //getStringValue()  -bugs
 			dat += trimBegEndQuotes(lname);
 			dataInf.add(i,dat);
-
+			//get record len from t=Time variable
+			if (i==0) {
+				//if (v.isUnlimited())	gDataInf[2] = fin.getUnlimitedDimension().getLength();
+				gDataInf[2] = v.getSize();
+			}
 		}
 		//init global data info
 		gDataInf[1] = getTimeMilSec(); 
-		gDataInf[2] = fin.getUnlimitedDimension().getLength();
+		//gDataInf[2] = fin.getUnlimitedDimension().getLength();
 	}
 
 
@@ -395,15 +399,15 @@ public class NCData {
 		Calendar cl = Calendar.getInstance();
 		cl.setTimeInMillis(milSec);
 		cl.add(Calendar.SECOND, sec);
-        String[] fmt = fmtIn;
-		
-        String m = String.format("%02d", cl.get(Calendar.MONTH));
-        String d = String.format("%02d", cl.get(Calendar.DAY_OF_MONTH));
-        String h = String.format("%02d", cl.get(Calendar.HOUR_OF_DAY));
-        String mm = String.format("%02d", cl.get(Calendar.MINUTE));
-        String s = String.format("%02d", cl.get(Calendar.SECOND));
-      
-    	//check Date
+		String[] fmt = fmtIn;
+
+		String m = String.format("%02d", cl.get(Calendar.MONTH));
+		String d = String.format("%02d", cl.get(Calendar.DAY_OF_MONTH));
+		String h = String.format("%02d", cl.get(Calendar.HOUR_OF_DAY));
+		String mm = String.format("%02d", cl.get(Calendar.MINUTE));
+		String s = String.format("%02d", cl.get(Calendar.SECOND));
+
+		//check Date
 		String dtm = "", dateFmt = fmt[DataFmt.DATE_IDX], tmFmt = fmt[DataFmt.TM_IDX];
 		if (!dateFmt.equals(DataFmt.NODATE)) {
 			dtm = cl.get(Calendar.YEAR) + dateFmt + m + dateFmt+ d + fmt[DataFmt.DMTR_IDX];
@@ -436,7 +440,7 @@ public class NCData {
 		long milSec= 0;
 		Variable tmp=null;
 		int topRateSubVar = 0; //get the  top rate for the sub-group
-		
+
 		long t1 = System.currentTimeMillis();
 		try {
 			milSec = getTimeMilSec(); 
@@ -582,7 +586,7 @@ public class NCData {
 			} //k-highest rate
 		} //time-for
 	}
- 
+
 	/**
 	 * A wrap method to write a string to the output fi.le, catches the exception and handle it
 	 * @param str
@@ -630,12 +634,15 @@ public class NCData {
 			lvars.add(v);
 			int or = getOR(v);
 			if (or > gDataInf[0]) gDataInf[0]= or;
+			if (i==0) {
+				//if (v.isUnlimited())	gDataInf[2] = fin.getUnlimitedDimension().getLength();
+				gDataInf[2] = v.getSize();
+			}
 		}
-		
+
 		try {gDataInf[1] = getTimeMilSec();} catch (NCDataException e) {
 			NC2Act.wrtMsg("getBatchsubVar_ NCDataException"+ e.getStackTrace());
 		}
-		gDataInf[2] = fin.getUnlimitedDimension().getLength();
 		return lvars;
 	}
 
@@ -663,7 +670,9 @@ public class NCData {
 		String dfmt = fmt[DataFmt.TMSET_IDX];
 		if (dfmt==null || dfmt.isEmpty() || dfmt.equals(DataFmt.FULLTM)) {
 			tmRange[0]=0;
-			tmRange[1]= fin.getUnlimitedDimension().getLength();
+			//	if (v.isUnlimited())	tmRange[1] = fin.getUnlimitedDimension().getLength();
+				 tmRange[1] =(int) v.getSize();
+			//tmRange[1]= fin.getUnlimitedDimension().getLength();
 			return tmRange;
 		}
 		String[] selectTm = dfmt.split(DataFmt.TMSETDELIMIT);
@@ -674,7 +683,8 @@ public class NCData {
 			tmRange[0]= (int)(selBegIdx - ncBegIdx)/1000;
 		}
 		if (selectTm[1]==null || selectTm[1].isEmpty()) {
-			tmRange[1]=fin.getUnlimitedDimension().getLength();
+			//if (v.isUnlimited())	tmRange[1] = fin.getUnlimitedDimension().getLength();
+			tmRange[1] =(int) v.getSize();
 		} else {
 			tmRange[1]= Integer.parseInt(selectTm[1]);
 		}
@@ -688,20 +698,20 @@ public class NCData {
 	 * @param fmt - entire formats -- ref to dataFmt in DataFmt class.
 	 * @return
 	 */
-    private String[] checkBatchDateTmFmt(String[] fmt){
-    	if (fmt[DataFmt.DATE_IDX].equals(DataFmt.DATEDASH) ) fmt[DataFmt.DATE_IDX]= DataFmt.DASHVAL;
-      	if (fmt[DataFmt.DATE_IDX].equals(DataFmt.DATESPACE)) fmt[DataFmt.DATE_IDX]= DataFmt.SPACEVAL;
-        
-      	if (fmt[DataFmt.TM_IDX].equals(DataFmt.TIMECOLON) ) fmt[DataFmt.TM_IDX]= DataFmt.COLONVAL;
-      	if (fmt[DataFmt.TM_IDX].equals(DataFmt.TIMESPACE) ) fmt[DataFmt.TM_IDX]= DataFmt.SPACEVAL;
-      	if (fmt[DataFmt.TM_IDX].equals(DataFmt.TIMENOSPACE) ) fmt[DataFmt.TM_IDX]= "";
-      	return fmt;
-     }
-    
-    /**
-     * 
-     */
-    private String trimBegEndQuotes(String str) {
+	private String[] checkBatchDateTmFmt(String[] fmt){
+		if (fmt[DataFmt.DATE_IDX].equals(DataFmt.DATEDASH) ) fmt[DataFmt.DATE_IDX]= DataFmt.DASHVAL;
+		if (fmt[DataFmt.DATE_IDX].equals(DataFmt.DATESPACE)) fmt[DataFmt.DATE_IDX]= DataFmt.SPACEVAL;
+
+		if (fmt[DataFmt.TM_IDX].equals(DataFmt.TIMECOLON) ) fmt[DataFmt.TM_IDX]= DataFmt.COLONVAL;
+		if (fmt[DataFmt.TM_IDX].equals(DataFmt.TIMESPACE) ) fmt[DataFmt.TM_IDX]= DataFmt.SPACEVAL;
+		if (fmt[DataFmt.TM_IDX].equals(DataFmt.TIMENOSPACE) ) fmt[DataFmt.TM_IDX]= "";
+		return fmt;
+	}
+
+	/**
+	 * 
+	 */
+	private String trimBegEndQuotes(String str) {
 		str = str.substring(str.indexOf('\"')+1);  //take off the first "
 		int idx = str.indexOf('\"');  				//takeoff the second "
 		if (idx >0 ) {
@@ -709,56 +719,56 @@ public class NCData {
 		} else {
 			return " ";
 		}
-    }
-    
-    /**
-     *  getAmesHead retrieves data needed from the netcdf in this class, and format into the required head. The 
-     *  definition is on http://badc.nerc.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html and look for 
-     *  FFI = 1001:
-     */
-    public String getAmesHead(List<Variable> sublvars) {
-    	String ret = "\nLastname Firstname";
-    	ret += "\n"+ trimBegEndQuotes(""+ fin.findGlobalAttribute("Source"));
-    	ret += "\n"+ trimBegEndQuotes(""+ fin.findGlobalAttribute("Aircraft"));
-    	ret += "\n"+ trimBegEndQuotes(""+ fin.findGlobalAttribute("ProjectName"));
-    	ret += "\n"+ "   1   1";
-    	ret += "\n"+getDates();
-    	ret += "\n"+"1.0 ";  //lowRate 
-    	ret += "\n"+"Time in seconds from 00Z";
-    	ret += "\n"+"  "+ sublvars.size();
-    	String fillVar=""; String varInf ="";
-    	for (int i= 0; i<sublvars.size(); i++) {
-    		Variable v = sublvars.get(i);
-    		String lname = trimBegEndQuotes(""+v.findAttribute("long_name"));
-    		if (lname==null || lname.isEmpty()|| lname.length()<=1) { lname = v.getName();}
-    		varInf += "\n" + lname + "   (";
-    		varInf += trimBegEndQuotes(""+v.findAttribute("units"))+")";
-    		fillVar += v.findAttribute("_FillValue").getNumericValue()+ "  ";
-    	}
-    	ret += "\n"+fillVar;
-    	ret += varInf;
-    	
-    	//at last add the first line  -- line number and 1001
-    	int lineNum = 10 + sublvars.size();
-    	ret = lineNum + "    1001" + ret;
-    	
-      	return ret;
-    }
-    
-    /**
-     * :DateProcessed = "2008-08-29 16:57:38 +0000" ;
-     * :FlightDate = "08/27/2008" ;
-     * @return -- yyyy mm dd     yyyy mm nn      (flight date    data processed date) 
-     */
-    private String getDates() {
-    	String ret="";
-    	String date = trimBegEndQuotes(""+fin.findGlobalAttribute("FlightDate"));
-    	ret += date.split("/")[0]+ "-" +date.split("/")[1] + "-"+ date.split("/")[2];
-    	ret += "      " +trimBegEndQuotes(""+fin.findGlobalAttribute("DateProcessed")).split(" ")[0];
-    	return ret;
-    }
-    
-    public String genVarName(List<Variable> sublvars, String[] fmt ){
+	}
+
+	/**
+	 *  getAmesHead retrieves data needed from the netcdf in this class, and format into the required head. The 
+	 *  definition is on http://badc.nerc.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html and look for 
+	 *  FFI = 1001:
+	 */
+	public String getAmesHead(List<Variable> sublvars) {
+		String ret = "\nLastname Firstname";
+		ret += "\n"+ trimBegEndQuotes(""+ fin.findGlobalAttribute("Source"));
+		ret += "\n"+ trimBegEndQuotes(""+ fin.findGlobalAttribute("Aircraft"));
+		ret += "\n"+ trimBegEndQuotes(""+ fin.findGlobalAttribute("ProjectName"));
+		ret += "\n"+ "   1   1";
+		ret += "\n"+getDates();
+		ret += "\n"+"1.0 ";  //lowRate 
+		ret += "\n"+"Time in seconds from 00Z";
+		ret += "\n"+"  "+ sublvars.size();
+		String fillVar=""; String varInf ="";
+		for (int i= 0; i<sublvars.size(); i++) {
+			Variable v = sublvars.get(i);
+			String lname = trimBegEndQuotes(""+v.findAttribute("long_name"));
+			if (lname==null || lname.isEmpty()|| lname.length()<=1) { lname = v.getName();}
+			varInf += "\n" + lname + "   (";
+			varInf += trimBegEndQuotes(""+v.findAttribute("units"))+")";
+			fillVar += v.findAttribute("_FillValue").getNumericValue()+ "  ";
+		}
+		ret += "\n"+fillVar;
+		ret += varInf;
+
+		//at last add the first line  -- line number and 1001
+		int lineNum = 10 + sublvars.size();
+		ret = lineNum + "    1001" + ret;
+
+		return ret;
+	}
+
+	/**
+	 * :DateProcessed = "2008-08-29 16:57:38 +0000" ;
+	 * :FlightDate = "08/27/2008" ;
+	 * @return -- yyyy mm dd     yyyy mm nn      (flight date    data processed date) 
+	 */
+	private String getDates() {
+		String ret="";
+		String date = trimBegEndQuotes(""+fin.findGlobalAttribute("FlightDate"));
+		ret += date.split("/")[0]+ "-" +date.split("/")[1] + "-"+ date.split("/")[2];
+		ret += "      " +trimBegEndQuotes(""+fin.findGlobalAttribute("DateProcessed")).split(" ")[0];
+		return ret;
+	}
+
+	public String genVarName(List<Variable> sublvars, String[] fmt ){
 		String varname = "Date,UTC";
 		if (fmt[DataFmt.DATE_IDX].equals(DataFmt.NODATE)) {
 			varname = "UTC";
@@ -782,7 +792,7 @@ public class NCData {
 		//nc2Asc.NC2Act.wrtMsg("varname_len:"+varname.split(",").length+ " "+varname);
 		return varname;
 	}
-    
+
 } //eofclass
 
 
