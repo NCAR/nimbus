@@ -595,7 +595,7 @@ public class NCData {
 		try {
 			fout.write(str);
 			fout.flush();
-			if (bMode) { System.out.println("Writing "+ progIdx);}
+			//if (bMode) { System.out.println("Writing "+ progIdx);}
 		} catch (IOException e ) {
 			NC2Act.wrtMsg("writeOut_err:"+e.getMessage());
 		}
