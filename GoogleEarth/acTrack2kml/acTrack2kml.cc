@@ -741,10 +741,6 @@ int parseRunstring(int argc, char** argv)
   extern int optind;       /* "  "     "     */
   int opt_char;     /* option character */
 
-  googleMapDataDir = googleMapDataDir;
-  googleEarthDataDir = googleEarthDataDir;
-  webHost = grnd_webHost;
-
   while ((opt_char = getopt(argc, argv, "h:s:o")) != -1)
   {
     switch (opt_char)
@@ -788,6 +784,10 @@ int main(int argc, char *argv[])
 
   char *p = getenv("PGHOST");
   if (p) database_host = p;
+
+  googleMapDataDir = grnd_googleMapDataDir;
+  googleEarthDataDir = grnd_googleEarthDataDir;
+  webHost = grnd_webHost;
 
   if (argc > 1)
   {
