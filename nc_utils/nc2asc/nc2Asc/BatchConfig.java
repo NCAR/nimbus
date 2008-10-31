@@ -153,15 +153,19 @@ public class BatchConfig {
 	 * @param args -- see the string[] files and documents
 	 */
 	private void parseArgs(String[] args){
-		for (int i=0; i<args.length; i++) {
-			if (args[i].equals("-b")) {
-				files[0]=args[++i];
-			}
-			if (args[i].equals("-i")) {
-				files[1]=args[++i];
-			}
-			if (args[i].equals("-o")) {
-				files[2]=args[++i];
+		
+		int i, loop = args.length-1;
+	
+		for (i=0; i<loop; i++) {
+			System.out.println(" "+args[i]);
+			if (args[i].equals("-b") && i<loop) {
+				files[0]=args[i+1];
+			} 
+			if (args[i].equals("-i") && i<loop) {
+				files[1]=args[i+1];
+			} 
+			if (args[i].equals("-o") && i<loop) {
+				files[2]=args[i+1];
 			}
 		}
 	}
@@ -195,12 +199,10 @@ public class BatchConfig {
 		while (line != null) {
 			String val  = line.substring(line.indexOf("=")+1).trim();
 			// sign i/o files
-			if (line.indexOf("if")==0) {
-				if (files[1]!=null) continue; //got input file from cmd line
+			if (line.indexOf("if")==0 && files[1]==null) {
 				files[1] = val;
 			}
-			if (line.indexOf("of")==0) {
-				if (files[2]!=null) continue; //got output file from cmd line
+			if (line.indexOf("of")==0 && files[2]==null) {
 				files[2] = val;
 			}
 			//sign format
@@ -251,9 +253,7 @@ public class BatchConfig {
 		} //while 
 		br.close();
 		fr.close();
-		// set tm range
-		//calTmRange();
-
+		
 		//verify all the required batch elements
 		checkBatchElements();
 	}
@@ -319,16 +319,13 @@ public class BatchConfig {
 	private void checkBatchElements() {
 		if (selVars.size()<1) {
 			System.out.println("No variables are read from the batch file. ");
-			//System.exit(-1);
+			//System.exit(-1)
 		}
 
-		//for (int i=0; i<files.length; i++)  {
 		if (files[1]==null || files[1].isEmpty()) {
 			System.out.println("No Input file is read from the batch file. ");
-			//System.exit(-1);
-		}
-		//}
-
+		} 
+	 
 		//format checking..........
 		//check date
 		String item = dataFmt[DataFmt.DATE_IDX];
@@ -381,6 +378,13 @@ public class BatchConfig {
 		if (item==null || item.isEmpty() || Integer.parseInt(item)<1) {
 			System.out.println("Cannot find a good average. Use default format..."+ item);
 			dataFmt[DataFmt.AVG_IDX]="1";
+		}
+		
+		//check AmesDEF, if it is selected, date=NODATE and tm=00Z
+		item = dataFmt[DataFmt.HEAD_IDX];
+		if (item.equals(DataFmt.HEAD2)){
+			dataFmt[DataFmt.DATE_IDX]= DataFmt.NODATE;
+			dataFmt[DataFmt.TM_IDX]= DataFmt.TIMESEC;
 		}
 
 	}

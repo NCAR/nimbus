@@ -456,7 +456,7 @@ public class NCData {
 				}
 				data[i] = read1DData(tmp , range[0], range[1]);
 				progIdx ++;
-				if (bMode) { System.out.println("Reading "+ progIdx);}
+				//if (bMode) { System.out.println("Reading "+ progIdx);}
 			}
 		} catch (NCDataException e) {
 			NC2Act.wrtMsg("wrtieDataToFile_NCDataException "+ tmp.getName());
@@ -466,7 +466,10 @@ public class NCData {
 			NC2Act.wrtMsg("wrtieDataToFile_IOException "+ tmp.getName());
 		}
 
-		if (bMode) { fmt= checkBatchDateTmFmt(fmt);} 
+		if (bMode) { 
+			fmt= checkBatchDateTmFmt(fmt);
+			//System.out.println("bf_fmt_after_checkBatchDateTmformat= \n"+ fmt[0]+ "\n"+ fmt[1]+ "\n"+ fmt[2]+ "\n"+ fmt[3]+ "\n"+ fmt[4]+ "\n"+ fmt[5]+ "\n"+ fmt[6]+ "\n"); 
+		} 
 		if (gDataInf[0]>1) {
 			gDataInf[0]= topRateSubVar;
 			writeHighRateData(range, fmt, milSec, t1, size);

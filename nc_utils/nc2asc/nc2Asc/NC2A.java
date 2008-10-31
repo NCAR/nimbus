@@ -89,7 +89,7 @@ public class NC2A extends JPanel implements ActionListener {
 	 */
 	private static boolean findBatch(String[] args) {
 		for (int i=0; i<args.length; i++ ) {
-			if (args[i].equals("-b")) return true;
+			if (args[i].equals("-b")) return true; 
 		}
 		return false;
 	}
@@ -106,11 +106,10 @@ public class NC2A extends JPanel implements ActionListener {
 		bf.start();  //read and interpret the inputs
         
 		String[] fs = bf.getFiles();
-		System.out.println("Files= " +fs[0]+ " "+ fs[1]+ " "+fs[2]);
+		System.out.println("\nFiles= " +fs[0]+ " "+ fs[1]+ " "+fs[2]);
 		
 		String[] fmt = bf.getDataFmt();
-		System.out.println("bf-fmt= "+ bf.showFmt()); 
-		
+				
 		//get Vals from variable names
 		NCData ncdata= new NCData();
 		ncdata.setMode(true);
@@ -130,7 +129,7 @@ public class NC2A extends JPanel implements ActionListener {
 			System.out.println("Batch-mode calBatchTmRange fails..."+ ee.getStackTrace());
 			return;
 		}
-		System.out.println("bf-selectedVars= "+bf.showSelectedVars()+ "\nrange "+ range[0]+ "  "+ range[1]); 
+		System.out.println("bf-selectedVars= \n" +bf.showSelectedVars()+ "\nrange "+ range[0]+ "  "+ range[1]); 
 		
 		List<Variable> sublvars= ncdata.getBatchSubVars(bf.getSelVars());
 		if (sublvars.size()<=0) {
@@ -139,12 +138,13 @@ public class NC2A extends JPanel implements ActionListener {
 		}
 		if (ncdata.getGlobalDataInf()[0]>1 && fmt[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)) { //high rate data NO Ames
 			fmt[DataFmt.HEAD_IDX]=(DataFmt.HEAD);
-			System.out.println(" Warning: High rate data netcdf file. ICARTT is nor supported.  ");
+			System.out.println(" Warning: High rate data netcdf file. AmesDEF is not supported.  ");
 		}
 		if (fmt[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)) {ncdata.writeOut( ncdata.getAmesHead(sublvars)+ "\n"); }
+	
+		System.out.println("bf_fmt_at_printout= \n"+ fmt[0]+ "\n"+ fmt[1]+ "\n"+ fmt[2]+ "\n"+ fmt[3]+ "\n"+ fmt[4]+ "\n"+ fmt[5]+ "\n"+ fmt[6]+ "\n"); 
 		String out= ncdata.genVarName(sublvars, fmt);
 		ncdata.writeOut(out+"\n"); 
-
 		ncdata.writeDataToFile(sublvars, range, fmt);
 		System.out.println("Writing is completed.");
 		

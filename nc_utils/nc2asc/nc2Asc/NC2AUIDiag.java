@@ -33,7 +33,7 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 import edu.ucar.eol.nc2AscData.*;
-
+ 
 
 class NC2AUIDiag extends JDialog {
 
@@ -708,6 +708,8 @@ class NC2AUIDiag extends JDialog {
 			if (rHead3.isSelected()){
 				rHead.setSelected(false);
 				rHead2.setSelected(false);
+				cbTm.setEnabled(true);
+				cbDate.setEnabled(true);
 				DataFmt.setDataFmt(DataFmt.HEAD3, DataFmt.HEAD_IDX);
 			} else if (!rHead.isSelected() && !rHead2.isSelected()){
 				rHead3.setSelected(true);
