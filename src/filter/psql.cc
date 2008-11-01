@@ -200,6 +200,20 @@ PostgreSQL::WriteSQL(const std::string & timeStamp)
     submitCommand(_sqlString.str(), true);
   }
 
+  if (++cntr % 4000 == 0)     // every hour
+  {
+    char msg[128];
+    sprintf(msg, "psql.cc: Performing VACUUM @ %s.", timeStamp.c_str());
+
+    ILOG((msg));
+    fprintf(stderr, "%s\n", msg);
+
+    _sqlString.str("");
+    _sqlString << "VACUUM";
+
+    submitCommand(_sqlString.str(), true);
+  }
+
 }	/* END WRITESQL */
 
 /* -------------------------------------------------------------------- */
