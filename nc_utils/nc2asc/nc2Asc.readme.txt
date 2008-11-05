@@ -1,0 +1,29 @@
+
+Nc2ASc readme:
+
+nc2Asc program  is a software that abstracts the data of selected variables from a netcdf file and writes to an Ascii file with preferred data formats. 
+
+It provides users with two running modes: GUI and batch. In GUI mode, users select i/o files, data formats, and variables from graphic control. In batch mode, A user predefines preference in the batch file, and replaces input and output files with proper command line options.
+
+Command sets:
+nc2Asc							GUI mode
+nc2Asc -b batch-file						Batch mode 
+nc2Asc -b batch-file	-i input-nc  -o output-ascii		Batch mode
+nc2Asc -b batch-file	-i input-nc  				Batch mode
+nc2Asc -b batch-file	-o output-ascii				Batch mode
+
+Batch file definitions:
+if=	/home/data/231RF10.nc
+of=	junk.asc
+hd= 	Plain/AmesDEF/NcML
+avg= 4
+dt= 	yyyy-mm-dd/yyy mm dd/NoDate
+tm= 	hh:mm:ss/hh mm ss/SecOfDay  
+ti=	yyyy-mm-dd,hh:mm:ss ~ yyyy-mm-dd,hh:mm:ss
+sp= 	Space/Comma
+fv=	FillValue/Blank/Replicate
+var=	ADIFR
+var=	BDIFR
+
+Minimum request for a batch file is i/o files, and variables.
+
