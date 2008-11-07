@@ -672,6 +672,12 @@ class NC2AUIDiag extends JDialog {
 				rHead3.setSelected(false);
 				cbTm.setEnabled(true);
 				cbDate.setEnabled(true);
+				rDmtr.setEnabled(true);
+				rDmtr2.setEnabled(true);
+				rVal.setEnabled(true);
+				rVal2.setEnabled(true);
+				rVal3.setEnabled(true);
+				
 				//dForamt[5]=RHEAD;
 				DataFmt.setDataFmt(DataFmt.HEAD, DataFmt.HEAD_IDX);
 			} else if (!rHead2.isSelected() && !rHead3.isSelected()){
@@ -686,16 +692,32 @@ class NC2AUIDiag extends JDialog {
 			if (rHead2.isSelected()){
 				rHead.setSelected(false);
 				rHead3.setSelected(false);
-				//dForamt[5]=RHEAD;
 				DataFmt.setDataFmt(DataFmt.HEAD2, DataFmt.HEAD_IDX);
+
+				//noDate secofday
 				cbTm.setSelectedIndex(3); //display secofday
 				cbDate.setSelectedIndex(2);
 				DataFmt.setDataFmt(cbTmTxt[cbTm.getSelectedIndex()], DataFmt.TM_IDX);
 				DataFmt.setDataFmt(cbDateTxt[cbDate.getSelectedIndex()], DataFmt.DATE_IDX);
-				//NC2Act.prtMsgBox(" "+ cbTmTxt[cbTm.getSelectedIndex()]+ " "+cbTmTxt[cbTm.getSelectedIndex()])
 				cbTm.setEnabled(false);
 				cbDate.setEnabled(false);
 
+				//delimiter = space
+				rDmtr.setSelected(false);
+				rDmtr2.setSelected(true);
+				DataFmt.setDataFmt(DataFmt.SPACEVAL, DataFmt.DMTR_IDX);
+				rDmtr.setEnabled(false);
+				rDmtr2.setEnabled(false);
+				
+				//fill value =FILLVal
+				rVal.setSelected(true);
+				rVal2.setSelected(false);
+				rVal3.setSelected(false);
+				DataFmt.setDataFmt(DataFmt.MISSVAL, DataFmt.MVAL_IDX);
+				rVal.setEnabled(false);
+				rVal2.setEnabled(false);
+				rVal3.setEnabled(false);
+				
 				tfDisp.setText(reFmtDisp());
 			} else if (!rHead.isSelected() && !rHead3.isSelected()){
 				rHead2.setSelected(true);
@@ -710,6 +732,13 @@ class NC2AUIDiag extends JDialog {
 				rHead2.setSelected(false);
 				cbTm.setEnabled(true);
 				cbDate.setEnabled(true);
+				cbTm.setEnabled(true);
+				cbDate.setEnabled(true);
+				rDmtr.setEnabled(true);
+				rDmtr2.setEnabled(true);
+				rVal.setEnabled(true);
+				rVal2.setEnabled(true);
+				rVal3.setEnabled(true);
 				DataFmt.setDataFmt(DataFmt.HEAD3, DataFmt.HEAD_IDX);
 			} else if (!rHead.isSelected() && !rHead2.isSelected()){
 				rHead3.setSelected(true);

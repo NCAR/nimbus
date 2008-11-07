@@ -14,7 +14,7 @@ import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
-import edu.ucar.eol.nc2Asc.NC2Act;
+import edu.ucar.eol.nc2Asc.*;
 
 /**
  * This class is to use netCDF APIs to read and write 
@@ -415,7 +415,14 @@ public class NCData {
 
 		//check tm
 		if (tmFmt.equals(DataFmt.TIMESEC)) {
-			dtm += cl.get(Calendar.HOUR_OF_DAY)* 3600 + cl.get(Calendar.MINUTE)*60 +cl.get(Calendar.SECOND);
+			long seconds =cl.get(Calendar.HOUR_OF_DAY)* 3600 + cl.get(Calendar.MINUTE)*60 +cl.get(Calendar.SECOND);
+			if (seconds ==0) NC2A.overMidNight=true;
+			if (NC2A.overMidNight && fmt[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)){
+				seconds += 86400;
+				//NC2Act.wrtMsg("\n overMidNight and AmesDEF... ");
+			}
+
+			dtm += seconds;
 		} else {
 			if (milsec) {
 				dtm += h+ tmFmt + mm + tmFmt + s +"."+ cl.get(Calendar.MILLISECOND);
@@ -424,13 +431,15 @@ public class NCData {
 			}
 		}
 
-		return dtm;
+
+		return  dtm;
 	}
 
-
 	public void writeDataToFile(List<Variable> sublvars, int[] range, String[] fmt){
+		NC2Act.wrtMsg("\nStart writing ascii data...");
+
 		// all the time-range data length-should be the seconds in the time range
-		tmPassed=0; bfinish =false; progIdx =0; 
+		tmPassed=0; bfinish =false; progIdx =0; NC2A.overMidNight=false;
 
 		int size = sublvars.size(); ///variable name to the first line of out file
 		data = new float [size][];
@@ -674,7 +683,7 @@ public class NCData {
 		if (dfmt==null || dfmt.isEmpty() || dfmt.equals(DataFmt.FULLTM)) {
 			tmRange[0]=0;
 			//	if (v.isUnlimited())	tmRange[1] = fin.getUnlimitedDimension().getLength();
-				 tmRange[1] =(int) v.getSize();
+			tmRange[1] =(int) v.getSize();
 			//tmRange[1]= fin.getUnlimitedDimension().getLength();
 			return tmRange;
 		}

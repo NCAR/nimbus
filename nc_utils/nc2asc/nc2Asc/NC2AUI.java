@@ -809,8 +809,11 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			int[] range = getTmRange();
 			long t1 = Calendar.getInstance().getTimeInMillis();
 
+			//start thread one to write data
 			DataThread dth = new DataThread(ncdata, sublvars, range, datafmt.getNewDataFmt()); 
 			dth.start();
+			
+			//start thread two to display % of works
 			taskLen = sublvars.size()+ range[1];
 			task = new Task();
 			task.addPropertyChangeListener(this);

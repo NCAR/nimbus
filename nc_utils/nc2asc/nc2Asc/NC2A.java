@@ -23,7 +23,6 @@ import edu.ucar.eol.nc2AscData.*;
  */
 public class NC2A extends JPanel implements ActionListener {
 
-	
 	/**
 	 * Important ui element class instance to add UI items
 	 */
@@ -48,6 +47,10 @@ public class NC2A extends JPanel implements ActionListener {
 		frame.setVisible(true);
 	}
 
+	/**
+	 * overMidNight is a boolean to remember it happened, for AmesDEF format 
+	 */
+	static public boolean overMidNight = false;
 		
 	/**
 	 * 

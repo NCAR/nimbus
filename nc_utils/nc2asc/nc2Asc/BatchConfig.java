@@ -380,11 +380,13 @@ public class BatchConfig {
 			dataFmt[DataFmt.AVG_IDX]="1";
 		}
 		
-		//check AmesDEF, if it is selected, date=NODATE and tm=00Z
+		//check AmesDEF, if it is selected, date=NODATE and tm=00Z, seperator=space, missdata=fillvalue,
 		item = dataFmt[DataFmt.HEAD_IDX];
 		if (item.equals(DataFmt.HEAD2)){
 			dataFmt[DataFmt.DATE_IDX]= DataFmt.NODATE;
 			dataFmt[DataFmt.TM_IDX]= DataFmt.TIMESEC;
+			dataFmt[DataFmt.MVAL_IDX]= DataFmt.MISSVAL;
+			dataFmt[DataFmt.DMTR_IDX]= DataFmt.SPACEVAL;
 		}
 
 	}
