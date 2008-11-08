@@ -21,8 +21,8 @@
 static const float	fixed_atx = 293.0;
 static const float	fixed_psx = 0.75;
 
-void	ReadNetCDF(char fn[]),
-	processScan(char date[], char time[], float counts[]),
+void	ReadNetCDF(const char fn[]),
+	processScan(const char date[], const char time[], float counts[]),
 	readNewScan(char time[], float diam[]);
 
 void rdma_mat(void);
@@ -125,7 +125,7 @@ std::cout << "--------------------------\n" << date << " " << time << "\n";
 }	/* END MAIN */
 
 /* -------------------------------------------------------------------- */
-void processScan(char date[], char time[], float counts[])
+void processScan(const char date[], const char time[], float counts[])
 {
   int	i;
   char	*args[12];
@@ -157,8 +157,8 @@ void processScan(char date[], char time[], float counts[])
 
   // Compute new concentrations based on press & temp.
   args[1] = FlightNumber;
-  args[2] = date;
-  args[3] = time;
+  args[2] = (char *)date;
+  args[3] = (char *)time;
   args[4] = pressure;
   args[5] = temperature;
 
@@ -342,7 +342,7 @@ printf("%ld %f\n", start[0], newTotalConc);
  * Locate AND read ATX & PSXC for whole flight.
  * Leave file open for later re-writing of CRDMA & CONC_FCR.
  */
-void ReadNetCDF(char fileName[])
+void ReadNetCDF(const char fileName[])
 {
   int	i;
   NcVar	*var, *atxv = 0, *psxv = 0;

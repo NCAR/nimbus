@@ -36,7 +36,7 @@ XmFile::XmFile(Widget parent)
 }	/* END CONSTRUCTOR */
 
 /* -------------------------------------------------------------------- */
-void XmFile::QueryFile(char prompt[], char directory[], XtCallbackProc callBack)
+void XmFile::QueryFile(const char prompt[], const char directory[], XtCallbackProc callBack)
 {
   XmString	xmdir, xmprompt;
   Arg		args[4];
@@ -44,7 +44,7 @@ void XmFile::QueryFile(char prompt[], char directory[], XtCallbackProc callBack)
 
   if (prompt)
     {
-    xmprompt = XmStringCreate(prompt, XmSTRING_DEFAULT_CHARSET);
+    xmprompt = XmStringCreate((char *)prompt, XmSTRING_DEFAULT_CHARSET);
 
     XtSetArg(args[n], XmNselectionLabelString, xmprompt); ++n;
     XtSetValues(fileBox, args, n);
@@ -53,7 +53,7 @@ void XmFile::QueryFile(char prompt[], char directory[], XtCallbackProc callBack)
 
   if (directory)
     {
-    xmdir = XmStringCreate(directory, XmSTRING_DEFAULT_CHARSET);
+    xmdir = XmStringCreate((char *)directory, XmSTRING_DEFAULT_CHARSET);
     XmFileSelectionDoSearch(fileBox, xmdir);
     XmStringFree(xmdir);
     }

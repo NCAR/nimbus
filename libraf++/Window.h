@@ -28,7 +28,7 @@ class WinForm {
 public:
   enum winType { Form, RowColumn };
 
-		WinForm(const Widget parent, char name[], winType wt);
+		WinForm(const Widget parent, const char name[], winType wt);
   virtual	~WinForm();
 
   virtual void	PopUp() const;

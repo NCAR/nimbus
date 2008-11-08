@@ -20,7 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 
 /* -------------------------------------------------------------------- */
-WinForm::WinForm(Widget parent, char name[], winType wt)
+WinForm::WinForm(Widget parent, const char name[], winType wt)
 {
   char		buff[32];
 

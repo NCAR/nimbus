@@ -36,7 +36,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 #include <Xm/ToggleB.h>
 
 
-void		DumpToChangeLog(char FileName[]);
+void		DumpToChangeLog(const char FileName[]);
 static int	WriteHeader(char s[]), RateGroupSDI(int s);
 static bool	Quiting = False, OutstandingWarnings = False;
 

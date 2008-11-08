@@ -31,7 +31,7 @@ void    PrintText(Widget, XtPointer, XtPointer),
 class TextWindow : public WinForm {
 
 public:
-	TextWindow(const Widget parent, char name[]);
+	TextWindow(const Widget parent, const char name[]);
 	~TextWindow();
 
   void	Clear()	{ XmTextSetString(text, ""); }

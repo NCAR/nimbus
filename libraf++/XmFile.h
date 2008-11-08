@@ -26,7 +26,7 @@ class XmFile {
 
 public:
 	XmFile(Widget parent);
-  void	QueryFile(char prompt[], char dir[], XtCallbackProc callBack);
+  void	QueryFile(const char prompt[], const char dir[], XtCallbackProc callBack);
   void	ExtractFileName(XmString str, char **text);
 
 private:

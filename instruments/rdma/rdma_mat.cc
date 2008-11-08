@@ -103,7 +103,7 @@ static double	var[num_param];
 static void gcf(double *gammcf, double a, double x, double *gln);
 static void gser(double *gamser, double a, double x, double *gln);
 static double gammln(double xx);
-void	nrerror(char error_text[]);
+void	nrerror(const char error_text[]);
 
 using namespace std;
 

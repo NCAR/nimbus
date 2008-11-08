@@ -26,11 +26,11 @@ public:
 
 
 private:
-	typedef struct qnode
-		{
-		struct qnode	*next;
-		void		*data;
-		} QueueNode;
+  typedef struct qnode
+  {
+    struct qnode	*next;
+    void		*data;
+  } QueueNode;
 
 
   QueueNode	*head;

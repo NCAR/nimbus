@@ -24,7 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 class XmWarn {
 
 public:
-  XmWarn(Widget parent, char warning[], XtCallbackProc okCB, XtCallbackProc cancelCB);
+  XmWarn(Widget parent, const char warning[], XtCallbackProc okCB, XtCallbackProc cancelCB);
 
 private:
   Widget	warnBox;

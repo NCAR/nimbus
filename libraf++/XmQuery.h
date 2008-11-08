@@ -28,7 +28,7 @@ class XmQuery {
 
 public:
 	XmQuery(Widget parent);
-  void	QueryUser(char str[], int maxlen, void (*callBack)());
+  void	QueryUser(const char str[], int maxlen, void (*callBack)());
   void	ExtractAnswer(char *s);
 
 private:

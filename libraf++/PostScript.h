@@ -31,7 +31,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2005
 class PostScript
 {
 public:
-	PostScript(char *outFile, char progName[], const std::string& title, float scale);
+	PostScript(	const char *outFile, const char progName[],
+			const std::string& title, float scale);
 	~PostScript();
 
   void	MoveTo(int x, int y)	{ fprintf(fp,"%d %d m\n", x, y); }
@@ -39,7 +40,7 @@ public:
   void	rMoveTo(int x, int y)	{ fprintf(fp,"%d %d rm\n", x, y); }
   void	rLineTo(int x, int y)	{ fprintf(fp,"%d %d rl\n", x, y); }
   void	ShowStr(char str[])	{ fprintf(fp,"(%s) s\n", str); }
-  void	ShowStr(std::string str)	{ fprintf(fp,"(%s) s\n", str.c_str()); }
+  void	ShowStr(const std::string & str)	{ fprintf(fp,"(%s) s\n", str.c_str()); }
   void	SetLineWidth(int width)	{ fprintf(fp,"%d setlinewidth\n", width); }
 
   void	Rotate(int degrees)	{ fprintf(fp,"%d rotate\n", degrees); }
@@ -58,13 +59,13 @@ public:
   void	ClearDash()		{ fprintf(fp,"[] 0 setdash\n"); }
 
   // Issue generic command.
-  void	Issue(char str[])	{ fprintf(fp,str); }
+  void	Issue(const char str[])	{ fprintf(fp,str); }
 
 private:
   FILE	*fp;
   bool	file;
 
-  void	PSheader(char progName[], const std::string& title, float scale);
+  void	PSheader(const char progName[], const std::string& title, float scale);
 
 };	// END POSTSCRIPT.H
 

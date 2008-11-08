@@ -66,7 +66,7 @@ void	SortTable(char **table, int beg, int end),
 	SetDSMlist(char s[]), SetPMSlocns(char s[]),
 	FillListWidget(), SortSh(),
 	InitializeDSMmenu(Widget parent, char *dsmList[], void (*cb)(Widget, XtPointer, XtPointer)),
-	LogMessage(char msg[]), AddToChangeLog(char msg[]);
+	AddToChangeLog(const char msg[]);
 
 void	HandleError(), HandleWarning();
 

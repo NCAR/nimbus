@@ -26,13 +26,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2001
 
 #include "hdrbld.h"
 
-#include <time.h>
+#include <ctime>
 
 static int	logCnt = 0;
 static char	*changeLog[512];
 
 /* -------------------------------------------------------------------- */
-void AddToChangeLog(char newMsg[])
+void AddToChangeLog(const char newMsg[])
 {
   changeLog[logCnt] = (char *)GetMemory(strlen(newMsg)+1);
   strcpy(changeLog[logCnt], newMsg);
@@ -119,7 +119,7 @@ void DiffSDI(Sh *old, Sh *newS)
 }	/* END DIFFSDI */
 
 /* -------------------------------------------------------------------- */
-void DumpToChangeLog(char FileName[])
+void DumpToChangeLog(const char FileName[])
 {
   FILE		*fp;
   int		i;

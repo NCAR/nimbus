@@ -28,32 +28,33 @@ namespace libraf {
 class ACconfig
 {
 public:
-	ACconfig(std::string fName);
+	ACconfig(const std::string& fName);
 
   static const std::string NO_KEY, NO_TAILNUM, NO_SERVER;
 
   /**
    * @returns a list/vector of tail number strings.
    */
-  std::vector<std::string> GetTailNumberList()	{ return(_tailNumList); }
+  std::vector<std::string> GetTailNumberList() const
+  { return(_tailNumList); }
 
   /**
    * Locate a specific key for a specific aircraft/tail number.
    * @returns the value associated with the key or NO_KEY or NO_TAILNUMBER
    */
-  std::string	GetParameter(std::string tailNumber, std::string target);
+  std::string	GetParameter(const std::string& tailNumber, const std::string& target) const;
 
   /**
    * Given a computer hostname, locate the tail number associated with
    * it.
    * @returns string tail number or NO_SERVER if not located.
    */
-  std::string	LocateMyTailNumber(std::string server);
+  std::string	LocateMyTailNumber(const std::string& server);
 
 
 private:
-  std::vector<std::string>	_tailNumList;
-  std::map<std::string, std::string>  _attrs;
+  std::vector<std::string> _tailNumList;
+  std::map<std::string, std::string> _attrs;
 
 };
 

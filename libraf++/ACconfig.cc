@@ -25,7 +25,7 @@ const std::string ACconfig::NO_TAILNUM = "** Non-existent tail number **";
 const std::string ACconfig::NO_SERVER = "** No matching server **";
 
 /* -------------------------------------------------------------------- */
-ACconfig::ACconfig(std::string fileName)
+ACconfig::ACconfig(const std::string& fileName)
 {
   int	cnt;
   char	buffer[512], *p;
@@ -94,7 +94,7 @@ ACconfig::ACconfig(std::string fileName)
 }	/* END ACCONFIG */
 
 /* -------------------------------------------------------------------- */
-std::string ACconfig::GetParameter(std::string tailNumber, std::string target)
+std::string ACconfig::GetParameter(const std::string& tailNumber, const std::string& target) const
 {
   int	i;
 
@@ -113,7 +113,7 @@ std::string ACconfig::GetParameter(std::string tailNumber, std::string target)
 }	/* END GETPARAMETER */
 
 /* -------------------------------------------------------------------- */
-std::string ACconfig::LocateMyTailNumber(std::string serverName)
+std::string ACconfig::LocateMyTailNumber(const std::string& serverName)
 {
   for (std::map<std::string,std::string>::iterator i = _attrs.begin(); i != _attrs.end(); ++i)
   {

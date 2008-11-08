@@ -20,7 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 struct menu
 	{
-	char            *title;
+	const char	*title;
 	void            (*callback)(Widget, XtPointer, XtPointer);
 	XtPointer       callData;
 	} ;
@@ -46,7 +46,7 @@ static struct menu	channelMenu[] = {
  
 static struct
 	{
-	char		*title;
+	const char	*title;
 	struct menu	*sub;
 	} main_menu[] = {
 		{ "File", fileMenu, },
@@ -115,11 +115,11 @@ CanvasWindow::CanvasWindow(const Widget parent) : WinForm(parent, "canvas", Form
   for (i = 0; main_menu[i].title; ++i)
     {
     n = 0;
-    menu[i] = XmCreatePulldownMenu(menubar, main_menu[i].title, args, n);
+    menu[i] = XmCreatePulldownMenu(menubar, (char *)main_menu[i].title, args, n);
  
     n = 0;
     XtSetArg(args[n], XmNsubMenuId, menu[i]); ++n;
-    menu_button[i] = XmCreateCascadeButton(menubar, main_menu[i].title, args,n);
+    menu_button[i] = XmCreateCascadeButton(menubar, (char *)main_menu[i].title, args,n);
  
     for (j = 0; main_menu[i].sub[j].title; ++j)
       {
@@ -127,11 +127,11 @@ CanvasWindow::CanvasWindow(const Widget parent) : WinForm(parent, "canvas", Form
  
       if (main_menu[i].sub[j].callback == NULL)
         {
-        bttn[j] = XmCreateSeparator(menu[i], main_menu[i].sub[j].title, args,n);
+        bttn[j] = XmCreateSeparator(menu[i], (char *)main_menu[i].sub[j].title, args,n);
         continue;
         }
  
-      bttn[j] = XmCreatePushButton(menu[i], main_menu[i].sub[j].title, args, n);
+      bttn[j] = XmCreatePushButton(menu[i], (char *)main_menu[i].sub[j].title, args, n);
       XtAddCallback(bttn[j], XmNactivateCallback,
         main_menu[i].sub[j].callback, (void *)main_menu[i].sub[j].callData);
       }

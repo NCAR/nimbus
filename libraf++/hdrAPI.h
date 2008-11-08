@@ -57,11 +57,11 @@ public:
   const char	*ADStype()		{ return(_header->ads_type); }
 
 
-  const void	*GetFirst(), *GetFirst(const char blkName[]), *GetSDI(const char varName[]);
-  const void	*GetNext(), *GetNext(const char blkName[]);
+  const void *GetFirst(), *GetFirst(const char blkName[]), *GetSDI(const char varName[]);
+  const void *GetNext(), *GetNext(const char blkName[]);
 
 
-  const char	*ItemType(const void *vp)	{ return(((Blk *)vp)->item_type); }
+  const char *ItemType(const void *vp)	{ return(((Blk *)vp)->item_type); }
   long	ItemLength(const void *vp)	{ return(ntohl(((Blk *)vp)->item_len)); }
   long	Start(const void *vp)		{ return(ntohl(((Blk *)vp)->start)); }
   long	SizeOf(const void *vp)		{ return(ntohl(((Blk *)vp)->length)); }

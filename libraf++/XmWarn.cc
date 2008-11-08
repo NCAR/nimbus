@@ -19,7 +19,7 @@ AUTHOR:		websterc@ncar
 
 
 /* -------------------------------------------------------------------- */
-XmWarn::XmWarn(Widget parent, char warning[], XtCallbackProc okCB, XtCallbackProc cancelCB)
+XmWarn::XmWarn(Widget parent, const char warning[], XtCallbackProc okCB, XtCallbackProc cancelCB)
 {
   Widget	label;
   Arg		args[5];
@@ -29,7 +29,7 @@ XmWarn::XmWarn(Widget parent, char warning[], XtCallbackProc okCB, XtCallbackPro
   XtSetSensitive(XmMessageBoxGetChild(warnBox, XmDIALOG_HELP_BUTTON), false);
 
   label = XmMessageBoxGetChild(warnBox, XmDIALOG_MESSAGE_LABEL);
-  xStr = XmStringCreateLtoR(warning, XmSTRING_DEFAULT_CHARSET);
+  xStr = XmStringCreateLtoR((char *)warning, XmSTRING_DEFAULT_CHARSET);
   XtSetArg(args[0], XmNlabelString, xStr);
   XtSetValues(label, args, 1);
   XmStringFree(xStr);

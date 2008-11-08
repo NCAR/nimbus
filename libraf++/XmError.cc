@@ -19,7 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1991
 
 
 /* -------------------------------------------------------------------- */
-XmError::XmError(Widget parent, char str[])
+XmError::XmError(Widget parent, const char str[])
 {
   Widget	label;
   Arg		args[5];
@@ -32,7 +32,7 @@ XmError::XmError(Widget parent, char str[])
   XtAddCallback(errorBox, XmNokCallback, (XtCallbackProc)XtDestroyWidget, NULL);
 
   label = XmMessageBoxGetChild(errorBox, XmDIALOG_MESSAGE_LABEL);
-  xStr = XmStringCreateLtoR(str, XmSTRING_DEFAULT_CHARSET);
+  xStr = XmStringCreateLtoR((char *)str, XmSTRING_DEFAULT_CHARSET);
   XtSetArg(args[0], XmNlabelString, xStr);
   XtSetValues(label, args, 1);
   XmStringFree(xStr);

@@ -39,7 +39,7 @@ public:
   void	SetFunction(int mask)	{ XSetFunction(dpy, gc, mask); }
 
   
-  void	DrawText(Drawable canvas, int x, int y, char str[])
+  void	DrawText(Drawable canvas, int x, int y, const char str[])
 	{ XDrawString(dpy, canvas, gc, x, y, str, strlen(str)); }
 
   void	DrawText(Drawable canvas, int x, int y, const std::string& str)

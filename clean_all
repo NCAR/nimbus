@@ -17,6 +17,6 @@ end
 
 # Programs withOUT clean"" target.  WINDS requires xview toolkit.
 
-foreach file ( winds/src )
+foreach file ( ads2/winds/src )
   (cd $file; echo $file; rm *.o)
 end

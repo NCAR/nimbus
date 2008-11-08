@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <ctime>
+#include <cstring>
 
 #include <netcdfcpp.h>
 
@@ -80,7 +81,7 @@ main(int argc, char *argv[])
   // keep program from exiting, if netCDF API doesn't find something.
   NcError * ncErr = new NcError(NcError::silent_nonfatal);
 
-  putenv("TZ=UTC");     // Force all time routines to work in UTC.
+  putenv((char *)"TZ=UTC");     // Force all time routines to work in UTC.
 
   // Open NetCDF file
   NcFile * ncFile = new NcFile(argv[indx], NcFile::ReadOnly);

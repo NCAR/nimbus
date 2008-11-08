@@ -6,25 +6,12 @@ FULL NAME:
 
 ENTRY POINTS:	
 
-STATIC FNS:	
-
-DESCRIPTION:	
-
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	User Applications
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 -------------------------------------------------------------------------
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "raf_queue.h"
 
 

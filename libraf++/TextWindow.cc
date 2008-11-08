@@ -26,7 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998-2001
 
 
 /* -------------------------------------------------------------------- */
-TextWindow::TextWindow(const Widget parent, char name[]) : WinForm(parent, name, Form)
+TextWindow::TextWindow(const Widget parent, const char name[]) : WinForm(parent, name, Form)
 {
   int		i, j;
   Cardinal	n;

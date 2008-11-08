@@ -24,7 +24,7 @@ void		ErrorMsg(char msg[]);
 
 
 /* -------------------------------------------------------------------- */
-PostScript::PostScript(char *outFile, char progName[], const string& title, float scale)
+PostScript::PostScript(const char *outFile, const char progName[], const string& title, float scale)
 {
   if (outFile)
     {
@@ -55,7 +55,7 @@ PostScript::PostScript(char *outFile, char progName[], const string& title, floa
 }	/* END CONSTRUCTOR */
 
 /* -------------------------------------------------------------------- */
-void PostScript::PSheader(char progName[], const string& title, float scale)
+void PostScript::PSheader(const char progName[], const string& title, float scale)
 {
   char		*user, *date;
   time_t        printTime = time((time_t *)NULL);

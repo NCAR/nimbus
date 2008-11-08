@@ -25,8 +25,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2001
 #include <raf/ac.h>
 
 #include <sys/types.h>
-#include <errno.h>
-#include <stdlib.h>
+#include <cerrno>
+#include <cstdlib>
 #include <unistd.h>
 
 static char *opts[] = {

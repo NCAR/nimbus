@@ -25,7 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 class XmError {
 
 public:
-  XmError(Widget parent, char str[]);
+  XmError(Widget parent, const char str[]);
 
 private:
   Widget	errorBox;
