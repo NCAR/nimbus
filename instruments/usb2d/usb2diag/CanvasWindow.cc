@@ -8,6 +8,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2007
 
 #include "CanvasWindow.h"
 
+#include <cstdlib>
 
 /* -------------------------------------------------------------------- */
 CanvasWindow::CanvasWindow(QApplication *qApp, const char * file_name) : QMainWindow(0, "canvas"), _app(qApp), _fn((char*)file_name)
