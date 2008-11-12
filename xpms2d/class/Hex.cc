@@ -32,7 +32,10 @@ void Hex::Update(size_t nBuffs, P2d_rec sets[])
   /* Title */
   strcpy(buffer, "      ");
   for (size_t j = 0; j < nBuffs; ++j)
-    sprintf(&buffer[strlen(buffer)], "   %s    ", (char *)&sets[j].id);
+    if (((char *)&sets[j].id)[1] >= '4')
+      sprintf(&buffer[strlen(buffer)], "       %s        ", (char *)&sets[j].id);
+    else
+      sprintf(&buffer[strlen(buffer)], "   %s    ", (char *)&sets[j].id);
 
   strcat(buffer, "\n");
   Append(buffer);
@@ -44,7 +47,10 @@ void Hex::Update(size_t nBuffs, P2d_rec sets[])
     sprintf(buffer, "%4d  ", i);
 
     for (size_t j = 0; j < nBuffs; ++j)
-      sprintf(&buffer[strlen(buffer)], "%08lX ", *(long *)(&sets[j].data[i<<2]));
+      if (((char *)&sets[j].id)[1] >= '4')
+        sprintf(&buffer[strlen(buffer)], "%016llX ", *(long long *)(&sets[j].data[i<<4]));
+      else
+        sprintf(&buffer[strlen(buffer)], "%08lX ", *(long *)(&sets[j].data[i<<2]));
 
     strcat(buffer, "\n");
     Append(buffer);
