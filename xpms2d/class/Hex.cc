@@ -48,7 +48,10 @@ void Hex::Update(size_t nBuffs, P2d_rec sets[])
 
     for (size_t j = 0; j < nBuffs; ++j)
       if (((char *)&sets[j].id)[1] >= '4')
-        sprintf(&buffer[strlen(buffer)], "%016llX ", *(long long *)(&sets[j].data[i<<4]));
+        {
+          if (i < (RecordLen >> 1))
+          sprintf(&buffer[strlen(buffer)], "%016llX ", *(long long *)(&sets[j].data[i<<3]));
+        }
       else
         sprintf(&buffer[strlen(buffer)], "%08lX ", *(long *)(&sets[j].data[i<<2]));
 
