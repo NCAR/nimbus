@@ -2185,7 +2185,7 @@ static DERTBL *add_name_to_DERTBL(const char name[])
   if (strncmp(name, "FLX", 3) == 0)
     {
     dp->Output		= false;
-    dp->ProbeCount	= (int)deriveftns[indx].xlate;
+    dp->ProbeCount	= (size_t)deriveftns[indx].xlate;
     dp->ProbeType	= PROBE_FLUX;
     }
 
