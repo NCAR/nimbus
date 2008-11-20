@@ -139,7 +139,7 @@ void Broadcast::broadcastData(const std::string & timeStamp) const
 printf(bcast.str().c_str());
 
   // Send UDP Ground Feed.
-  if (cfg.GroundFeedType() != Config::UDP ||
+  if (_groundVarList.size() == 0 || cfg.GroundFeedType() != Config::UDP ||
       rate_cntr++ < 180 ||			// Don't send for first couple minutes.
       (rate_cntr % GroundFeedDataRate) != 0)
     return;
