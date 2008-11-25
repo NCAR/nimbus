@@ -245,7 +245,7 @@ if (debug) printf("%08lx %08lx %08lx\n", ppSlice, pSlice, slice);
 if (debug)
   printf("%06lx %d %d\n", cp->timeWord, cp->w, cp->h);
 
-      if (controlWindow->RejectZeroAreaImage() && cp->w ==1 && cp->h == 1)
+      if (controlWindow->RejectZeroAreaImage() && cp->w == 1 && cp->h == 1)
         {
 //        printf("reject 0 area #%d\n", output.nTimeBars);
         cp->reject = true;
@@ -877,7 +877,7 @@ if (debug)
       /* Determine height of particle.
        */
       ++p; ++i;
-      for (; i < 512 && (*p & Fast2DC_Mask) != Fast2DC_Sync; ++p, ++i)
+      for (; i < 512 && (*p & Fast2DC_Mask) != Fast2DC_Sync && *p != 0xffffffffffffffffLL; ++p, ++i)
         {
         ++cp->w;
 
@@ -921,14 +921,14 @@ if (debug)
        * particle consumed, so we can add it to the deadTime, so sampleVolume
        * can be reduced accordingly.
        */
-      cp->liveTime = (unsigned long)((float)(cp->w + 3) * output.frequency);
+      cp->liveTime = (unsigned long)((float)(cp->w) * output.frequency);
 
       cp->msec /= 1000;
 
 if (debug)
   printf("%06lx %d %d\n", cp->timeWord, cp->w, cp->h);
 
-      if (controlWindow->RejectZeroAreaImage() && cp->w == 1 && cp->h == 1)
+      if (controlWindow->RejectZeroAreaImage() && cp->w == 0 && cp->h == 0)
         {
 //        printf("reject 0 area #%d\n", output.nTimeBars);
         cp->reject = true;

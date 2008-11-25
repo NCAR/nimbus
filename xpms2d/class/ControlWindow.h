@@ -58,7 +58,7 @@ public:
 private:
   Widget	timeText, fileB[MAX_DATAFILES], butt[8],
 		panelB[MAX_PANELS], probeB[MAX_PROBES], densB[4], densTxt,
-		delayScale, timeScale, cncB[4], ratioB[5];
+		delayScale, timeScale, cncB[4], ratioB[7];
 
   int		concIdx, densIdx, delay, ratioIdx;
   bool		movieRunning;
@@ -68,7 +68,7 @@ struct _dens {
   float	density;
   } density[4];
 
-struct _dens ratio[5];
+struct _dens ratio[7];
 
 };	/* END CONTROLWINDOW.H */
 

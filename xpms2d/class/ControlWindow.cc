@@ -62,16 +62,20 @@ ControlWindow::ControlWindow(Widget parent) : WinForm(parent, "control", RowColu
   density[2].density = 0.5;
   density[3].density = 0.12;
 
-  ratio[0].label = "30%";
-  ratio[1].label = "40%";
-  ratio[2].label = "50%";
-  ratio[3].label = "60%";
-  ratio[4].label = "70%";
-  ratio[0].density = 0.3;
-  ratio[1].density = 0.4;
-  ratio[2].density = 0.5;
-  ratio[3].density = 0.6;
-  ratio[4].density = 0.7;
+  ratio[0].label = "10%";
+  ratio[1].label = "20%";
+  ratio[2].label = "30%";
+  ratio[3].label = "40%";
+  ratio[4].label = "50%";
+  ratio[5].label = "60%";
+  ratio[6].label = "70%";
+  ratio[0].density = 0.1;
+  ratio[1].density = 0.2;
+  ratio[2].density = 0.3;
+  ratio[3].density = 0.4;
+  ratio[4].density = 0.5;
+  ratio[5].density = 0.6;
+  ratio[6].density = 0.7;
 
   n = 0;
   frame[0] = XmCreateFrame(Window(), "timeFrame", args, 0);
@@ -208,7 +212,7 @@ trc = XmCreateRowColumn(Window(), "trc", args, 0);
 
   /* Area ratio reject
    */
-  for (i = 0; i < 5; ++i)
+  for (i = 0; i < 7; ++i)
     {
     n = 0;
     ratioB[i] = XmCreateToggleButton(RC[4], ratio[i].label, NULL, 0);
