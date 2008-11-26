@@ -21,6 +21,9 @@
 #
 	"CONCU100",	NULL,           NULL,		sconcu100,
 	"CONCU500",	NULL,           NULL,		sconcu500,
+	"CONC1DC050",	NULL,           NULL,		sconc2dc050,
+	"CONC1DC100",	NULL,           NULL,		sconc2dc100,
+	"CONC1DC150",	NULL,           NULL,		sconc2dc150,
 	"CONC2DC050",	NULL,           NULL,		sconc2dc050,
 	"CONC2DC100",	NULL,           NULL,		sconc2dc100,
 	"CONC2DC150",	NULL,           NULL,		sconc2dc150,
