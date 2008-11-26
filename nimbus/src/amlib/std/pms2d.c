@@ -448,7 +448,7 @@ void sconc2dc050(DERTBL *varp)
   NR_TYPE * concentration = GetVector(varp, 0);
   size_t n = 128;
 
-  if (strstr(varp->name, "1DC"))
+  if (strstr(varp->depend[0], "1DC"))
     n = 64;
     
   // 50 micron and bigger.
@@ -465,7 +465,7 @@ void sconc2dc100(DERTBL *varp)
   NR_TYPE * concentration = GetVector(varp, 0);
   size_t n = 128;
 
-  if (strstr(varp->name, "1DC"))
+  if (strstr(varp->depend[0], "1DC"))
     n = 64;
 
   // 100 micron and bigger.
@@ -482,7 +482,7 @@ void sconc2dc150(DERTBL *varp)
   NR_TYPE * concentration = GetVector(varp, 0);
   size_t n = 128;
 
-  if (strstr(varp->name, "1DC"))
+  if (strstr(varp->depend[0], "1DC"))
     n = 64;
 
   // 150 micron and bigger.
