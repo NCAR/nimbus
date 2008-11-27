@@ -25,13 +25,24 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "nimbus.h"
 #include "amlib.h"
 
-/* Honeywell Manual Time constants.  126 second time constants  	*/
-#define C1	0.15
-#define C2	0.0075
-#define C3	0.000125		
+/* Honeywell Manual Time constants.  126 second time constants */
+static NR_TYPE	C[3] = { 0.15, 0.0075, 0.000125 };
 
 static NR_TYPE	hi3[nFeedBackTypes] = { 0.0, 0.0 };
 
+
+/* -------------------------------------------------------------------- */
+void initWP3(var_base *varp)
+{
+  NR_TYPE * tmp;
+
+  if ((tmp = GetDefaultsValue("WP3_TIME_CONSTS", varp->name)) != NULL)
+  {
+    C[0] = tmp[0];
+    C[1] = tmp[1];
+    C[2] = tmp[2];
+  }
+}
 
 /* -------------------------------------------------------------------- */
 void swp3(DERTBL *varp)
@@ -39,7 +50,7 @@ void swp3(DERTBL *varp)
   NR_TYPE	lat, vew, vns, palt, acins, WP3;
   NR_TYPE	gfact, vcorac, acz;
 
-  static bool	firstTime[nFeedBackTypes] = { TRUE, TRUE };
+  static bool		firstTime[nFeedBackTypes] = { TRUE, TRUE };
   static NR_TYPE	hx[nFeedBackTypes], hxx[nFeedBackTypes],
 			wp3[nFeedBackTypes] = { 0.0, 0.0 },
 			deltaT[nFeedBackTypes];
@@ -86,14 +97,14 @@ void swp3(DERTBL *varp)
 
   acz		= acins + (GRAVITY - gfact) + vcorac;
   wp3[FeedBack]	= wp3[FeedBack] +
-		(acz - C2 * hx[FeedBack] - C3 * hxx[FeedBack]) *
+		(acz - C[1] * hx[FeedBack] - C[2] * hxx[FeedBack]) *
 		deltaT[FeedBack];
 
   WP3 += wp3[FeedBack];
 
   /* 3rd order vertical velocity damping using PALT as reference
    */
-  hi3[FeedBack]	= hi3[FeedBack] + (wp3[FeedBack] - C1 * hx[FeedBack])
+  hi3[FeedBack]	= hi3[FeedBack] + (wp3[FeedBack] - C[0] * hx[FeedBack])
 			* deltaT[FeedBack];
   hx[FeedBack]	= hi3[FeedBack] - palt;
   hxx[FeedBack]	= hxx[FeedBack] + hx[FeedBack] * deltaT[FeedBack];
