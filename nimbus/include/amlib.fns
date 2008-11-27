@@ -402,7 +402,7 @@
 	"BLONGA_IRS",	NULL,		xlblona,	NULL,
 	"BLATA_IRS",	NULL,		xlblata,	NULL,
 	"BNORMA_IRS",	NULL,		xlbnorma,	NULL,
-	"WP3",		NULL,		NULL,		swp3,
+	"WP3",		(void(*)(void*))initWP3,	NULL,		swp3,
 #
 #	INS probe (Litton 51)
 #
