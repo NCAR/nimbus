@@ -152,8 +152,6 @@ void scs200(DERTBL *varp)
   dia2		= cell_size2[probeNum];
   dia3		= cell_size3[probeNum];
 
-  if (tas < 0.0) tas = 0.0;
-
   if (FeedBack == HIGH_RATE_FEEDBACK)
     {
     if (SampleOffset >= SampleRate[probeNum])
@@ -171,10 +169,10 @@ void scs200(DERTBL *varp)
 #define VOLUME
 #define TACT
 
-/*   Following dummy tas added to keep system from complaining about
-       the code added to "pms1d_cv"
-         Ron Ruth 19 October 2001  */
-    tas = 50.;
+  /*   Following dummy tas added to keep system from complaining about
+   *   the code added to "pms1d_cv". Ron Ruth 19 October 2001.
+   */
+  tas = 50.0;
 
 #include "pms1d_cv"
 

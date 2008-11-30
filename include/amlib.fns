@@ -757,7 +757,7 @@
 #	Others
 #
 	"AKDF",		NULL,		NULL,		sakdf,
-	"AKRD",		NULL,		NULL,		sakrd,
+	"AKRD",		(void(*)(void*))initAKRD,	NULL,		sakrd,
 	"AQRATIO",	NULL,		NULL,		saqratio,
 	"ATTACK",	NULL,		NULL,		sRefer,
 	"ALTX",		NULL,		NULL,		sRefer,
@@ -910,7 +910,7 @@
 	"SERIAL",	NULL,		xlserial,	NULL,
 	"SSDF",		NULL,		NULL,		sssdf,
 	"SSLIP",	NULL,		NULL,		sRefer,
-	"SSRD",		NULL,		NULL,		sssrd,
+	"SSRD",		(void(*)(void*))initSSRD,	NULL,		sssrd,
 #
 #	True Air Speed
 #
