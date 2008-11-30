@@ -14,11 +14,7 @@ INPUT:		Variables from the decoded Honeywell IRS block.
 
 OUTPUT:		WP3, HI3
 
-REFERENCES:	none
-
-REFERENCED BY:	compute.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2008
 -------------------------------------------------------------------------
 */
 
@@ -41,6 +37,10 @@ void initWP3(var_base *varp)
     C[0] = tmp[0];
     C[1] = tmp[1];
     C[2] = tmp[2];
+    sprintf(buffer,
+	"initWP3: WP3_TIME_CONSTS set to %f, %f, %f from Defaults file.\n",
+	C[0], C[1], C[2]);
+    LogMessage(buffer);
   }
 }
 
@@ -62,12 +62,12 @@ void swp3(DERTBL *varp)
   acins	= GetSample(varp, 4);
 
   if (isnan(lat) || isnan(palt) || isnan(acins) || isnan(vew))
-    {
+  {
     return;
-    }
+  }
 
   if (firstTime[FeedBack])
-    {
+  {
     if (FeedBack == LOW_RATE_FEEDBACK)
       deltaT[FeedBack] = 1.0;
     else
@@ -77,7 +77,7 @@ void swp3(DERTBL *varp)
     hi3[FeedBack]	= palt;
 
     firstTime[FeedBack] = FALSE;
-    }
+  }
 
 
   WP3 = wp3[FeedBack];
