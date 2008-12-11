@@ -704,10 +704,12 @@ static void check_rico_half_buff(P2d_rec *buff, size_t beg, size_t end)
     // There seemed to be lots of splatter at the start of the buffer,
     // skip until first sync word appears.
     if (!firstSyncWord)
+    {
       if ((*p & SyncWordMask) == 0x55000000)
         firstSyncWord = true;
       else
         continue;
+    }
 
     if ((*p & SyncWordMask) == 0x55000000 || *p == 0xffffffff)
       continue;
@@ -746,7 +748,7 @@ static void check_rico_half_buff(P2d_rec *buff, size_t beg, size_t end)
     }
 
     unsigned long mask1 = 0x01 << stuck_bin;
-    unsigned long mask2 = 0x07 << stuck_bin-1;
+    unsigned long mask2 = 0x07 << (stuck_bin-1);
     unsigned long *p = (unsigned long *)buff->data;
     for (size_t i = beg; i < end; ++i, ++p)
     {

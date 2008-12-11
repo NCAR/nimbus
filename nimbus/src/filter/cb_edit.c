@@ -63,7 +63,7 @@ extern Widget slOpMenu, funcOpMenu;
 
 extern  vars tempvar;
 extern SyntheticData sd;
-extern char * func[19];
+extern const char * func[19];
 
 /* -------------------------------------------------------------------- */
 void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
@@ -336,7 +336,7 @@ static void set_edit_window_data(
   XtSetValues(XmOptionButtonGadget(slOpMenu), args, 1);
   XmStringFree(ns);
  
-  ns=XmStringCreateLocalized(func[0]);   //sets the function to none
+  ns=XmStringCreateLocalized((char *)func[0]);   //sets the function to none
   XtSetArg(sarg[0], XmNlabelString, ns);
   XtSetValues(XmOptionButtonGadget(funcOpMenu),sarg,1);
   XmStringFree(ns);
@@ -722,7 +722,7 @@ void CreateEditWindow()
 
   for (i = 0; i < 18; ++i)
   {
-    name=XmStringCreateLocalized(func[i]);
+    name=XmStringCreateLocalized((char *)func[i]);
 
     n=0;
     XtSetArg(args[n],XmNlabelString,name);++n;

@@ -94,11 +94,13 @@ void Average(
     average = sum / sampleCntr;
 
   if (mp)
+  {
     if (average > mp->value[1])
       average -= mp->diff;
     else
       if (average < mp->value[0])
         average += mp->diff;
+  }
 
   out_data[0] = average;
 

@@ -49,15 +49,18 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
   if (ProductionSetup)
     file = buffer;
   else
+  {
     if (cfg.Interactive())
       ExtractFileName(call->value, &file);
     else
       file = SetupFileName;
+  }
 
   if (strlen(file) < 2)
     return;
 
   if ((fp = fopen(file, "r")) == NULL)
+  {
     if (!ProductionSetup)
     {
       sprintf(buffer, "LoadSetup: Can't open %s.", file);
@@ -66,6 +69,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
     }
     else
       return;
+  }
 
   if (cfg.Interactive() && !ProductionSetup)
     FileCancel((Widget)NULL, (XtPointer)NULL, (XtPointer)NULL);

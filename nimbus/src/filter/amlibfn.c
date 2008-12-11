@@ -30,7 +30,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "amlib.h"
 #include "amlibfn.h"
 
-static char	*suffix;
+static const char *suffix;
 
 /* -------------------------------------------------------------------- */
 void RunAMLIBinitializers()
@@ -46,7 +46,7 @@ void RunAMLIBinitializers()
 }	/* END RUNAMLIBINITIALIZERS */
 
 /* -------------------------------------------------------------------- */
-void SetLookupSuffix(char *new_suffix)
+void SetLookupSuffix(const char *new_suffix)
 {
   suffix = new_suffix;
 }

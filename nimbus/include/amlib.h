@@ -77,7 +77,7 @@ NR_TYPE GetSample(DERTBL *dp, int di);
 
 struct _dnfn
 	{
-	char		*name;
+	const char	*name;
 	void		(*constructor)(void *);
 	void		(*xlate)(RAWTBL *, void *, float *);
 	void		(*compute)(DERTBL *);
