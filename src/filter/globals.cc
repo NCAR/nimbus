@@ -127,7 +127,7 @@ int	timeIndex[6];	// array of time
 float	temptime;	//temporary time  holder
 int	hr,sec,mins;	// store the hours, minutes and seconds 
 SyntheticData sd;
-char	*func[19];
+const char *func[19];
 
 bool    SynthData=false; // wheter or not synthetic data is being used.
 bool    SDF=false;      // wheter or not synthetic data is being inserted from a file

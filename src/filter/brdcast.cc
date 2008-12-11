@@ -128,10 +128,12 @@ void Broadcast::broadcastData(const std::string & timeStamp) const
   {
     bcast << ",";
     if (_varList[i])
+    {
       if (i == RADAR_ALT_INDX)
         bcast << AveragedData[_varList[i]->LRstart] * 3.2808;
       else
         bcast << AveragedData[_varList[i]->LRstart];
+    }
   }
   bcast << "\r\n";
   _brdcst1->writeSock(bcast.str().c_str(), bcast.str().length());

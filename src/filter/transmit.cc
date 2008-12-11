@@ -63,7 +63,7 @@ void sqlTransmit::sendString(const std::string& str)
 
   if (pid == 0)
   {
-    char * command;
+    const char * command = 0;
     if (cfg.GroundFeedType() == Config::UDP)
       command = "/home/ads/bin/sendSQL";
     if (cfg.GroundFeedType() == Config::LDM)

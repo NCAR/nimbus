@@ -138,7 +138,7 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
   float	cellSize[300];
 
   /* If not PMS1D, then bail out. */
-  if (rp->ProbeType & 0xff000000 != 0x80000000)
+  if ((rp->ProbeType & 0xff000000) != 0x80000000)
     return;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
@@ -200,7 +200,7 @@ void AddPMS1dAttrs(int ncid, var_base * rp)
   bool	warnMidPoints = false;
 
   /* If not PMS1D, then bail out. */
-  if (rp->ProbeType & 0xff000000 != 0x80000000)
+  if ((rp->ProbeType & 0xff000000) != 0x80000000)
     return;
 
   cvarid = rp->varid;
@@ -299,13 +299,13 @@ void AddPMS1dAttrs(int ncid, var_base * rp)
 
     if (strstr(rp->name, "1D"))
     {
-      char * s = "Entire In";
+      const char * s = "Entire In";
       ncattput(ncid, cvarid, "ParticleAcceptMethod", NC_CHAR, strlen(s), s);
     }
 
     if (strstr(rp->name, "2D"))
     {
-      char * s = "Error";
+      const char * s = "Error";
       float f;
 
       if (cfg.TwoDProcessingMethod() == Config::Center_In)
