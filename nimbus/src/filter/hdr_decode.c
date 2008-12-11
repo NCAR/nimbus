@@ -37,7 +37,7 @@ REFERENCES:	Header API (libhdr_api.a)
 
 REFERENCED BY:	winput.c, nimbus.c
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-05
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-08
 -------------------------------------------------------------------------
 */
 
@@ -62,7 +62,7 @@ extern nidas::dynld::raf::SyncRecordReader* syncRecReader;
 
 typedef struct
   {
-  char		*name;
+  const char	*name;
   int		type;	/* #defines used for switch's, in WINDS		*/
   size_t	VecLen;	/* VectorLength					*/
   unsigned long	pType;	/* probeType for 'ToggleProbe' menu, redundant	*/
