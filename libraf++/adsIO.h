@@ -55,7 +55,7 @@ class ADS_DataFile
 {
 
 public:
-	ADS_DataFile(char fName[]);
+	ADS_DataFile(const char fName[]);
 	~ADS_DataFile();
 
   Header	*hdr;

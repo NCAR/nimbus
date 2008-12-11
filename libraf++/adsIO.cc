@@ -20,7 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 #include <iostream>
 
 /* -------------------------------------------------------------------- */
-ADS_DataFile::ADS_DataFile(char fName[])
+ADS_DataFile::ADS_DataFile(const char fName[])
 {
   int	Ccnt, Pcnt;
 
