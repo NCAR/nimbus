@@ -364,7 +364,7 @@ NR_TYPE pcorr1(NR_TYPE q, NR_TYPE q1)		/* For QCR */
 
 NR_TYPE pcorf1_3(NR_TYPE q, NR_TYPE q1)	/* For new PSF */
 {
-  NR_TYPE	pcor, pfix;
+  NR_TYPE	pcor;
 
   pcor = (3.29 + q * 0.0273);
 
