@@ -26,6 +26,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996
 #include "nimbus.h"
 #include "amlib.h"
 
+#include <ctype.h>
+
 
 /* -------------------------------------------------------------------- */
 void xlhgm232(RAWTBL *varp, void *p, NR_TYPE *output)
@@ -41,7 +43,10 @@ void xlhgm232(RAWTBL *varp, void *p, NR_TYPE *output)
     sample = ntohs(input[i * varp->ADSoffset]) & 0xFFFE;
 //printf("%x\n", input[i * varp->ADSoffset]);
 //    sample = (sample - varp->convertOffset) * varp->convertFactor * FTMTR;
-    out = sample * FTMTR;
+    out = sample; 
+
+    if (toupper(varp->Units.c_str()[0]) == 'M') 
+      out *= FTMTR;
 
     if (status)
       output[i] = lastGood;
