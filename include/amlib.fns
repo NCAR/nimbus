@@ -773,6 +773,7 @@
 	"EDPC",		NULL,		NULL,		sedpc,
 #
 #   NRL P-3 stuff
+	"RALT",		NULL,		NULL,		feet2meters,
 	"RALTM",	NULL,		NULL,		sraltm,
 #
 #
@@ -863,7 +864,7 @@
 	"MRLA1",	NULL,		NULL,		smrla,
 	"NDVI",		NULL,		NULL,		sndvi,
 	"PALT",		(void(*)(void*))initPalt,	NULL,		spalt,
-	"PALTF",	NULL,		NULL,		spaltf,
+	"PALTF",	NULL,		NULL,		meters2feet,
 	"PSBC",		NULL,		NULL,		spsbc,
 	"PSFC",		NULL,		NULL,		spsfc,
 	"PSFD",		NULL,		xlpsfd,		NULL,

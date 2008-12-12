@@ -76,9 +76,15 @@ void spalt(DERTBL *varp)
 }
 
 /* -------------------------------------------------------------------- */
-void spaltf(DERTBL *varp)
+void meters2feet(DERTBL *varp)
 {
   PutSample(varp, GetSample(varp, 0) * 3.2808399);
+
+}
+/* -------------------------------------------------------------------- */
+void feet2meters(DERTBL *varp)
+{
+  PutSample(varp, GetSample(varp, 0) * 0.3048);
 
 }
 
