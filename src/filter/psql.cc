@@ -186,7 +186,7 @@ PostgreSQL::WriteSQL(const std::string & timeStamp)
   submitCommand(updateEndTimeString(timeStamp, usec), false);
 
 
-  if (++cntr % 3600 == 0)     // every hour
+  if (++cntr % 3000 == 0)     // every ~hour
   {
     char msg[128];
     sprintf(msg, "psql.cc: Performing ANALYZE @ %s.", timeStamp.c_str());
@@ -200,7 +200,7 @@ PostgreSQL::WriteSQL(const std::string & timeStamp)
     submitCommand(_sqlString.str(), true);
   }
 
-  if (++cntr % 4000 == 0)     // every hour
+  if (++cntr % 2000 == 0)     // every ~half-hour
   {
     char msg[128];
     sprintf(msg, "psql.cc: Performing VACUUM @ %s.", timeStamp.c_str());
@@ -383,7 +383,7 @@ PostgreSQL::initializeVariableList()
       _sqlString.str("");
       _sqlString << "INSERT INTO PMS1D_list VALUES ('" << name << "', '" <<
 	raw[i]->SerialNumber << "', '" << RATE_TABLE_PREFIX <<
-	raw[i]->SampleRate << '\'';
+	raw[i]->SampleRate << "\', ";
 
       GetPMS1DAttrsForSQL(raw[i], buffer);
       _sqlString << buffer;
@@ -611,6 +611,9 @@ PostgreSQL::addVariableToDataBase(
 {
   std::stringstream entry;
 
+  /* Names need to have standard case since, since column names in RAF_lrt
+   * will be lower case dictated by PostGreSQL.
+   */
   entry << "INSERT INTO Variable_List VALUES ('" <<
 	var->name	<< "', '" <<
 	escape_string(var->Units)	<< "', '" <<
