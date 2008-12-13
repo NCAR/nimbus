@@ -139,7 +139,11 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
 
   /* If not PMS1D, then bail out. */
   if ((rp->ProbeType & 0xff000000) != 0x80000000)
+  {
+    fprintf(stderr, "%s not a PMS1D probe?\n", rp->name);
+    sql_buff[0] = '\0';
     return;
+  }
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
   InitPMSspecs(buffer);
