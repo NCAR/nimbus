@@ -23,6 +23,14 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1992-2008
 extern NR_TYPE recfb;	// Recovery Factor, see initAC.c
 
 /* -------------------------------------------------------------------- */
+void atbInit(var_base *varp)
+{
+  std::vector<NR_TYPE> values;
+  values.push_back(recfb);
+  AddToDefaults(varp->name, "RecoveryFactor", values);
+}
+
+/* -------------------------------------------------------------------- */
 void satb(DERTBL * varp)
 {
   NR_TYPE ttb, xmach2;
