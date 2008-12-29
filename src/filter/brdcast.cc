@@ -147,7 +147,13 @@ printf(bcast.str().c_str());
     return;
 
   std::stringstream groundString;
-  groundString << "C130," << timeStamp;
+  if (cfg.Aircraft() == Config::HIAPER)
+    groundString << "GV";
+  if (cfg.Aircraft() == Config::NRL_P3)
+    groundString << "NRLP3";
+  if (cfg.Aircraft() == Config::C130)
+    groundString << "C130";
+  groundString << "," << timeStamp;
   for (size_t i = 0; i < _groundVarList.size(); ++i)
   {
     groundString << "," << AveragedData[_groundVarList[i]->LRstart];
