@@ -142,7 +142,7 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
       (rp->ProbeType & 0xff000000) != 0x10000000)
   {
     fprintf(stderr, "%s not a PMS1D probe?\n", rp->name);
-    sql_buff[0] = '\0';
+    strcpy(sql_buff, ", 0, 0, \'{}\'");
     return;
   }
 
