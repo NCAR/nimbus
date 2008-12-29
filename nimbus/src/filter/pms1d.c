@@ -137,8 +137,9 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
   char	*p, temp[32];
   float	cellSize[300];
 
-  /* If not PMS1D, then bail out. */
-  if ((rp->ProbeType & 0xff000000) != 0x80000000)
+  /* If not PMS1D or PMS2D, then bail out. */
+  if ((rp->ProbeType & 0xff000000) != 0x80000000 &&
+      (rp->ProbeType & 0xff000000) != 0x10000000)
   {
     fprintf(stderr, "%s not a PMS1D probe?\n", rp->name);
     sql_buff[0] = '\0';
