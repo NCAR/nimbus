@@ -143,7 +143,7 @@ void MainCanvas::draw(P2d_rec *record, struct recStats &stats, float version, in
     else pen->SetColor(color->GetColor(RED));
     }
 
-  sprintf(buffer, "%02d:%02d:%02d.%d",
+  sprintf(buffer, "%02d:%02d:%02d.%03d",
 	record->hour, record->minute, record->second, record->msec);
 
   if (ps) {
