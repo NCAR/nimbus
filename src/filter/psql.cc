@@ -383,7 +383,7 @@ PostgreSQL::initializeVariableList()
       _sqlString.str("");
       _sqlString << "INSERT INTO PMS1D_list VALUES ('" << name << "', '" <<
 	raw[i]->SerialNumber << "', '" << RATE_TABLE_PREFIX <<
-	raw[i]->SampleRate << "\', ";
+	raw[i]->SampleRate << '\'';
 
       GetPMS1DAttrsForSQL(raw[i], buffer);
       _sqlString << buffer;
