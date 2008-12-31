@@ -154,25 +154,26 @@ void Broadcast::broadcastData(const std::string & timeStamp)
   _brdcst2->writeSock(bcast.str().c_str(), bcast.str().length());
 printf(bcast.str().c_str());
 
-  // Send UDP Ground Feed.
-  if (_groundVarList.size() == 0 || cfg.GroundFeedType() != Config::UDP ||
-      rate_cntr++ < 180 ||			// Don't send for first couple minutes.
-      (rate_cntr % GroundFeedDataRate) != 0)
-  {
-    if (rate_cntr < 180)  // Don't average the first couple minutes either.
-      return;
 
-    // Sum the AveragedData
-    size_t counter = 0;
-    for (size_t i = 0; i < _groundVarList.size(); ++i)
-    {
-       for (size_t j = 0; j < _groundVarList[i]->Length; j++)
-       {
-         GroundSummedData[counter++] += AveragedData[(_groundVarList[i]->LRstart)+j];
-       }
-    }
+
+  // Send UDP Ground Feed.
+  if (cfg.GroundFeedType() != Config::UDP || rate_cntr++ < 180)  // Don't transmit the first couple minutes.
     return;
+
+
+  // Sum the AveragedData
+  size_t counter = 0;
+  for (size_t i = 0; i < _groundVarList.size(); ++i)
+  {
+    for (size_t j = 0; j < _groundVarList[i]->Length; j++)
+    {
+      GroundSummedData[counter++] += AveragedData[(_groundVarList[i]->LRstart)+j];
+    }
   }
+
+  // Only send every so often.
+  if ((rate_cntr % GroundFeedDataRate) != 0)
+    return;
  
   std::stringstream groundString;
   if (cfg.Aircraft() == Config::HIAPER)
@@ -181,8 +182,10 @@ printf(bcast.str().c_str());
     groundString << "NRLP3";
   if (cfg.Aircraft() == Config::C130)
     groundString << "C130";
+
   groundString << "," << timeStamp;
-  size_t counter = 0;
+
+  counter = 0;
   for (size_t i = 0; i < _groundVarList.size(); ++i)
   {
     if (_groundVarList[i]->Length > 1) 
