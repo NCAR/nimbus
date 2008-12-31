@@ -21,6 +21,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 #include "brdcast.h"
 
 #include <sstream>
+#include <bzlib.h>
 
 const int Broadcast::RT_UDP_PORT = 31000;
 //const std::string Broadcast::RT_UDP_ADDR = "128.117.84.255";
@@ -200,7 +201,28 @@ printf(bcast.str().c_str());
     }
   }
   groundString << "\n";
-  _groundBrdcst->writeSock(groundString.str().c_str(), groundString.str().length());
+
+  // compress the string before sending it to the ground
+  char buffer[65000];
+  memset(buffer, 0, 65000);
+  bz_stream bzip_info;
+  memset(&bzip_info, 0, sizeof(bz_stream));
+  if (BZ2_bzCompressInit(&bzip_info,9,0,0) < 0) { // compression_level=9 (0..9) (worst..best)
+    LogMessage("brdcast.cc: failed to setup compression stream\n");
+    return;
+  }
+  bzip_info.next_in  = (char *) groundString.str().c_str();
+  bzip_info.avail_in = groundString.str().length();
+  bzip_info.next_out = buffer;
+  bzip_info.avail_out = sizeof(buffer);
+
+  if (BZ2_bzCompress(&bzip_info, BZ_FINISH) < 0) {
+    LogMessage("brdcast.cc: failed to compress the stream\n");
+    return;
+  }
+  _groundBrdcst->writeSock(buffer, bzip_info.total_out_lo32);
+
+printf("compressed %d -> %d\n", groundString.str().length(), bzip_info.total_out_lo32);
 printf(groundString.str().c_str());
 
 }	// END BROADCASTDATA
