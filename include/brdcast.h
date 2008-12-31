@@ -28,7 +28,7 @@ public:
   /** 
    * Write LowRate (LRT) data into the database.
    */
-  void	broadcastData(const std::string & timeStamp) const;
+  void	broadcastData(const std::string & timeStamp);
 
 protected:
   std::vector<var_base *> readFile(const std::string & fileName) const;
@@ -52,6 +52,12 @@ protected:
    * Send data to ground this often, in seconds.
    */
   static const size_t GroundFeedDataRate;
+
+  /**
+   * Sum the AveragedData in preparation for sending average over GroundFeedDataRate
+   */
+  std::vector<NR_TYPE> GroundSummedData;
+  //NR_TYPE *GroundSummedData;
 };
 
 #endif

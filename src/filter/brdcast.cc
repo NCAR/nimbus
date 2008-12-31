@@ -53,6 +53,19 @@ Broadcast::Broadcast()
 
   _groundBrdcst = new UdpSocket(GRND_UDP_PORT, GRND_UDP_ADDR.c_str());
   _groundBrdcst->openSock(UDP_UNBOUND);
+
+  // Initialize GroundSummedData
+  //size_t counter = 0;
+  for (size_t i = 0; i < _groundVarList.size(); ++i)
+  {
+     for (size_t j = 0; j < _groundVarList[i]->Length; j++)
+     {
+       //counter++;
+       GroundSummedData.push_back(0.0);
+     }
+  }
+  //GroundSummedData = new NR_TYPE[counter];
+
 }
 
 /* -------------------------------------------------------------------- */
@@ -115,7 +128,7 @@ std::vector<var_base *> Broadcast::readFile(const std::string & fileName) const
 }
 
 /* -------------------------------------------------------------------- */
-void Broadcast::broadcastData(const std::string & timeStamp) const
+void Broadcast::broadcastData(const std::string & timeStamp) 
 {
   static int rate_cntr = 0;
 
@@ -144,8 +157,22 @@ printf(bcast.str().c_str());
   if (_groundVarList.size() == 0 || cfg.GroundFeedType() != Config::UDP ||
       rate_cntr++ < 180 ||			// Don't send for first couple minutes.
       (rate_cntr % GroundFeedDataRate) != 0)
-    return;
+  {
+    if (rate_cntr < 180)  // Don't average the first couple minutes either.
+      return;
 
+    // Sum the AveragedData
+    size_t counter = 0;
+    for (size_t i = 0; i < _groundVarList.size(); ++i)
+    {
+       for (size_t j = 0; j < _groundVarList[i]->Length; j++)
+       {
+         GroundSummedData[counter++] += AveragedData[(_groundVarList[i]->LRstart)+j];
+       }
+    }
+    return;
+  }
+ 
   std::stringstream groundString;
   if (cfg.Aircraft() == Config::HIAPER)
     groundString << "GV";
@@ -154,9 +181,23 @@ printf(bcast.str().c_str());
   if (cfg.Aircraft() == Config::C130)
     groundString << "C130";
   groundString << "," << timeStamp;
+  size_t counter = 0;
   for (size_t i = 0; i < _groundVarList.size(); ++i)
   {
-    groundString << "," << AveragedData[_groundVarList[i]->LRstart];
+    if (_groundVarList[i]->Length > 1) 
+    {
+      groundString << ",'{" << GroundSummedData[counter]/GroundFeedDataRate;
+      GroundSummedData[counter++] = 0.0;
+      for (size_t j = 1; j < _groundVarList[i]->Length; j++) 
+      {
+         groundString << "," << GroundSummedData[counter]/GroundFeedDataRate;
+         GroundSummedData[counter++] = 0.0;
+      }
+      groundString << "}'";
+    } else {
+      groundString << "," << GroundSummedData[counter]/GroundFeedDataRate;
+      GroundSummedData[counter++] = 0.0;
+    }
   }
   groundString << "\n";
   _groundBrdcst->writeSock(groundString.str().c_str(), groundString.str().length());
