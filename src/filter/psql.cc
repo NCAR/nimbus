@@ -208,9 +208,7 @@ PostgreSQL::WriteSQL(const std::string & timeStamp)
     ILOG((msg));
     fprintf(stderr, "%s\n", msg);
 
-    _sqlString.str("");
-    _sqlString << "VACUUM";
-
+    _sqlString.str("VACUUM; VACUUM FULL global_attributes;");
     submitCommand(_sqlString.str(), true);
   }
 
