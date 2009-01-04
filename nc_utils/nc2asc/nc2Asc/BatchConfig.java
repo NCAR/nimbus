@@ -29,12 +29,12 @@ public class BatchConfig {
 
 	/**
 	 * dataFmt 	0 -- hd-head
-	 * 			1 -- avg
-	 * 			2 -- dt-date
-	 * 			3 -- tm-time
-	 * 			4 -- sp-separator 
-	 * 			5 -- fv-fill value
-	 * 			6 -- time set
+	 * 		1 -- avg
+	 * 		2 -- dt-date
+	 * 		3 -- tm-time
+	 * 		4 -- sp-separator 
+	 * 		5 -- fv-fill value
+	 * 		6 -- time set
 	 */
 	private String[] dataFmt = new String[7]; 
 
@@ -177,7 +177,7 @@ public class BatchConfig {
 	 * 
 	 * if=	/home/data/231RF10.nc
 	 * of=	junk.asc
-	 * hd= 	Plain/Icartt/Xml
+	 * hd= 	Plain/AmesDEF/Xml
 	 * avg= 4
 	 * dt= 	yyyy-mm-dd/yyy mm dd/NoDate
 	 * tm= 	hh:mm:ss/hh mm ss/SecOfDay  
@@ -225,6 +225,7 @@ public class BatchConfig {
 					dataFmt[DataFmt.DMTR_IDX]= DataFmt.SPACEVAL;
 				}
 			}
+			dataFmt[DataFmt.MVAL_IDX]= DataFmt.MISSVAL;//init fv
 			if (line.indexOf("fv")==0) {
 				String mval = line.substring(line.indexOf("=")+1);
 				if (mval.toLowerCase().equals(DataFmt.REPLICATE.toLowerCase())) 
@@ -318,7 +319,7 @@ public class BatchConfig {
 
 	private void checkBatchElements() {
 		if (selVars.size()<1) {
-			System.out.println("No variables are read from the batch file. ");
+			System.out.println("No variables are read from the batch file, outputing all.");
 			//System.exit(-1)
 		}
 
@@ -331,28 +332,28 @@ public class BatchConfig {
 		String item = dataFmt[DataFmt.DATE_IDX];
 		if (item!=null && !item.isEmpty() &&( item.equals(DataFmt.DATEDASH) || item.equals(DataFmt.DATESPACE) ||item.equals(DataFmt.NODATE))) {
 		} else {
-			System.out.println("Cannot find a good date format. Use default date format..."+ item);
+			System.out.println("Can not find a good date format. Use default date format..."+ item);
 			dataFmt[DataFmt.DATE_IDX]= DataFmt.DATEDASH;
 		}
 		//check time
 		item = dataFmt[DataFmt.TM_IDX];
 		if (item!=null && !item.isEmpty() &&( item.equals( DataFmt.TIMECOLON)  ||item.equals(DataFmt.TIMENOSPACE) || item.equals(DataFmt.TIMESPACE)|| item.equals(DataFmt.TIMESEC))) {
 		} else {
-			System.out.println("Cannot find a good time format. Use default format..."+ item);
+			System.out.println("Can not find a good time format. Use default format..."+ item);
 			dataFmt[DataFmt.TM_IDX]= DataFmt.TIMECOLON;
 		}
 		//check delimiter
 		item = dataFmt[DataFmt.DMTR_IDX];
 		if (item !=null && !item.isEmpty() &&( item.equals(DataFmt.SPACEVAL) || item.equals(DataFmt.COMMAVAL))) {
 		} else {
-			System.out.println("Cannot find a good delimiter. Use default format..."+ item);
+			System.out.println("Can not find a good delimiter. Use default format..."+ item);
 			dataFmt[DataFmt.DMTR_IDX]= DataFmt.COMMAVAL;
 		}
 		//check miss value
 		item = dataFmt[DataFmt.MVAL_IDX];
 		if (item==null || item.isEmpty() || item.equals(DataFmt.REPLICATE) || item.equals(DataFmt.MISSVAL)) { //empty =""
 		} else {
-			System.out.println("Cannot find a good fill value. Use default format..."+ item);
+			System.out.println("Can not find a good fill value. Use default format..."+ item);
 			dataFmt[DataFmt.MVAL_IDX]= DataFmt.MISSVAL;
 		}
 		//check time set
@@ -364,19 +365,19 @@ public class BatchConfig {
 			tmErr = true;
 		}
 		if (tmErr) {
-			System.out.println("Invalide tmset. Use default format..."+ item);
+			System.out.println("Invalid tmset. Use default format..."+ item);
 			dataFmt[DataFmt.TMSET_IDX]= DataFmt.FULLTM;
 		}
 
 		item = dataFmt[DataFmt.HEAD_IDX];
 		if (item!=null && !item.isEmpty() &&( item.toLowerCase().equals(DataFmt.HEAD.toLowerCase()) || item.toLowerCase().equals(DataFmt.HEAD2.toLowerCase()) || item.toLowerCase().equals(DataFmt.HEAD3.toLowerCase()))) {
 		} else {
-			System.out.println("Cannot find a good head title. Use default format..."+ item);
+			System.out.println("Can not find a good head title. Use default format..."+ item);
 			dataFmt[DataFmt.HEAD_IDX]= DataFmt.HEAD;
 		}
 		item = dataFmt[DataFmt.AVG_IDX];
 		if (item==null || item.isEmpty() || Integer.parseInt(item)<1) {
-			System.out.println("Cannot find a good average. Use default format..."+ item);
+			System.out.println("Can not find a good average. Use default format..."+ item);
 			dataFmt[DataFmt.AVG_IDX]="1";
 		}
 		
