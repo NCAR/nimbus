@@ -152,9 +152,7 @@ void Broadcast::broadcastData(const std::string & timeStamp)
   bcast << "\r\n";
   _brdcst1->writeSock(bcast.str().c_str(), bcast.str().length());
   _brdcst2->writeSock(bcast.str().c_str(), bcast.str().length());
-printf(bcast.str().c_str());
-
-
+  printf(bcast.str().c_str());
 
   // Send UDP Ground Feed.
   if (cfg.GroundFeedType() != Config::UDP || rate_cntr++ < 180)  // Don't transmit the first couple minutes.
@@ -205,29 +203,34 @@ printf(bcast.str().c_str());
   }
   groundString << "\n";
 
-  // compress the string before sending it to the ground
-  char buffer[65000];
-  memset(buffer, 0, 65000);
-  bz_stream bzip_info;
-  memset(&bzip_info, 0, sizeof(bz_stream));
-  if (BZ2_bzCompressInit(&bzip_info,9,0,0) < 0) { // compression_level=9 (0..9) (worst..best)
-    LogMessage("brdcast.cc: failed to setup compression stream\n");
+  // compress the stream before sending it to the ground
+  char buffer[32000];
+  memset(buffer, 0, 32000);
+  unsigned int bufLen = sizeof(buffer);
+  int ret = BZ2_bzBuffToBuffCompress( buffer, &bufLen, (char *) groundString.str().c_str(),
+                                      groundString.str().length(),9,0,0);
+  if (ret < 0) {
+    typedef struct {     // copied from bzlib.c
+      FILE*     handle;
+      char      buf[BZ_MAX_UNUSED];
+      int       bufN;
+      bool      writing;
+      bz_stream strm;
+      int       lastErr;
+      bool      initialisedOk;
+    } bzFile;
+    bzFile b;
+    b.lastErr = ret;
+    int errnum;
+    char msg[100];
+    sprintf(msg, "Failed to compress the ground feed stream: %s\n", BZ2_bzerror(&b, &errnum) );
+    LogMessage(msg);
     return;
   }
-  bzip_info.next_in  = (char *) groundString.str().c_str();
-  bzip_info.avail_in = groundString.str().length();
-  bzip_info.next_out = buffer;
-  bzip_info.avail_out = sizeof(buffer);
+  _groundBrdcst->writeSock(buffer, bufLen);
 
-  if (BZ2_bzCompress(&bzip_info, BZ_FINISH) < 0) {
-    LogMessage("brdcast.cc: failed to compress the stream\n");
-    return;
-  }
-  _groundBrdcst->writeSock(buffer, bzip_info.total_out_lo32);
-
-printf("compressed %d -> %d\n", groundString.str().length(), bzip_info.total_out_lo32);
-printf(groundString.str().c_str());
-
+  printf("\ncompressed %d -> %d\n", groundString.str().length(), bufLen);
+  printf("to ground: %s\n", groundString.str().c_str());
 }	// END BROADCASTDATA
 
 // END BRDCAST.CC
