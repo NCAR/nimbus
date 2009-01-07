@@ -63,6 +63,4 @@ void Broadcast::BroadcastData(const std::string & timeStamp)
   _brdcst2->writeSock(bcast.str().c_str(), bcast.str().length());
   printf(bcast.str().c_str());
 
-}	// END BROADCASTDATA
-
-// END BRDCAST.CC
+}
