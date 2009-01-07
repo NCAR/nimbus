@@ -24,6 +24,7 @@ Config::Config()
   SetOutputNetCDF(true);
   SetOutputSQL(false);		// Currently real-time only.
   SetTransmitToGround(false);	// real-time only.
+  SetGroundFeedDataRate(5);	// 5 second default
   SetAsyncFileEnabled(false);
   SetLoadProductionSetup(true);
   SetHoneyWellCleanup(true);

@@ -44,6 +44,7 @@ public:
   bool OutputNetCDF() const		{ return _outputNetCDF; }
   bool OutputSQL() const		{ return _outputSQL; }
   bool TransmitToGround() const		{ return _transmitToGround; }
+  int GroundFeedDataRate() const	{ return _transmitRate; }
   bool AsyncFileEnabled() const		{ return _asyncFileEnabled; }
   bool LoadProductionSetup() const	{ return _loadProductionSetup; }
   bool HoneyWellCleanup() const		{ return _honeywellCleanup; }
@@ -76,6 +77,7 @@ public:
   void SetOutputNetCDF(bool state)	{ _outputNetCDF = state; }
   void SetOutputSQL(bool state)		{ _outputSQL = state; }
   void SetTransmitToGround(bool state)	{ _transmitToGround = state; }
+  void SetGroundFeedDataRate(int rate)	{ _transmitRate = rate; }
   void SetAsyncFileEnabled(bool state)	{ _asyncFileEnabled = state; }
   void SetLoadProductionSetup(bool state) { _loadProductionSetup = state; }
   void SetHoneyWellCleanup(bool state)	{ _honeywellCleanup = state; }
@@ -152,6 +154,8 @@ private:
 
   bool _despikeReporting;
   bool _lagReporting;
+
+  int _transmitRate;
 
   aircraft _aircraft;
   ADSVersion _adsVersion;
