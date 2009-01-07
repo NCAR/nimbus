@@ -43,6 +43,9 @@ protected:
    * Sum the AveragedData in preparation for sending average over GroundFeedDataRate
    */
   std::vector<NR_TYPE> _summedData;
+  std::vector<int> _summedDataCount;		// for averaging
+  std::vector<NR_TYPE> _lastGoodData;   	// expunge occasional NaNs in data
+  std::vector<int> _lastGoodDataIncrement;	// if NaN for a long time send NaN
 };
 
 #endif
