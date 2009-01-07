@@ -19,6 +19,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2005
 #include <raf/vardb.h>
 #include "psql.h"
 #include "brdcast.h"
+#include "grnd_feed.h"
 
 #include <Xm/TextF.h>
 
@@ -31,8 +32,9 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2005
 
 #include <iomanip>
 
-static Broadcast * bcast;
-extern PostgreSQL * psql;
+static Broadcast *bcast;
+static GroundFeed *grnd_feed;
+extern PostgreSQL *psql;
 
 extern NR_TYPE	*SampledData, *AveragedData;
 
@@ -126,6 +128,7 @@ void RealTimeLoop3()
   ILOG(("RealTimeLoop entered."));
 
   bcast = new Broadcast();	// ASCII/IWG1 and ground feed.
+  grnd_feed = new GroundFeed(cfg.GroundFeedDataRate());	// UDP ground feed.
 
   if (cfg.OutputSQL())
   {
@@ -156,8 +159,10 @@ void RealTimeLoop3()
  
     if (cfg.OutputSQL())
       psql->WriteSQL(timeStamp);
-    if (bcast)
-      bcast->broadcastData(timeStamp);
+
+    bcast->BroadcastData(timeStamp);
+    grnd_feed->BroadcastData(timeStamp);
+
     if (cfg.OutputNetCDF())
       WriteNetCDF_MRF();
 
