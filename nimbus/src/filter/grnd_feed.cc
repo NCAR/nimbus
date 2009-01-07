@@ -4,10 +4,8 @@ OBJECT NAME:	grnd_feed.cc
 
 FULL NAME:	UDP broadcast for Ground Feed.
 
-ENTRY POINTS:	
-
 DESCRIPTION:	Class to produce 1 per second ascii string to broadcast
-		to ground.
+		to ground, and send it to the dest host.
 
 INPUT:		${PROJ_DIR}/###/groundvars
 
@@ -155,6 +153,4 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
 //  printf("\ncompressed %d -> %d\n", groundString.str().length(), bufLen);
   printf("GroundFeed: %s\n", groundString.str().c_str());
 
-}	// END BROADCASTDATA
-
-// END BRDCAST.CC
+}

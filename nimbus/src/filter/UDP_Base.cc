@@ -4,11 +4,6 @@ OBJECT NAME:	UDP_Base.cc
 
 FULL NAME:	UDP base class for broadcast
 
-ENTRY POINTS:	
-
-DESCRIPTION:	Class to produce 1 per second ascii string to broadcast
-		to ground.
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 -------------------------------------------------------------------------
 */

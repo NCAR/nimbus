@@ -4,9 +4,10 @@ OBJECT NAME:	brdcast.h
 
 FULL NAME:	UDP Broadcast output.
 
-DESCRIPTION:	Produce RAF PostgreSQL flight file.
+DESCRIPTION:	Broadcast a real-time feed data feed around the aircraft
+		via UDP.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2005
+COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 -------------------------------------------------------------------------
 */
 
