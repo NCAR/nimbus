@@ -45,8 +45,8 @@ GroundFeed::GroundFeed(int rate) : UDP_Base(31007), _dataRate(rate)
      for (size_t j = 0; j < _varList[i]->Length; j++)
      {
        _summedData.push_back(0.0);
-       _lastGoodData.push_back(std::numeric_limits<NR_TYPE>::quiet_NaN());
-       _summedData.push_back(0);
+       _lastGoodData.push_back(-32767);
+       _summedDataCount.push_back(0);
        _lastGoodDataIncrement.push_back(0);
      }
   }
@@ -76,7 +76,7 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
   if (cfg.GroundFeedType() != Config::UDP)
     return;
 
-  if (rate_cntr++ < 120)  // Don't transmit the first couple minutes.
+  if (rate_cntr++ < 180)  // Don't transmit the first couple minutes.
     return;
 
   extern NR_TYPE * AveragedData;
@@ -88,9 +88,13 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
     for (size_t j = 0; j < _varList[i]->Length; j++)
     {
       if (!isnan(AveragedData[(_varList[i]->LRstart)+j]))
-      {
+      { 
         _summedData[counter] += AveragedData[(_varList[i]->LRstart)+j];
         _summedDataCount[counter]++;
+        counter++;
+      }
+      else
+      {
         counter++;
       }
     }
@@ -100,6 +104,7 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
   if ((rate_cntr % _dataRate) != 0)
     return;
  
+
   // Compose the string to send to the ground
   std::stringstream groundString;
   if (cfg.Aircraft() == Config::HIAPER)
@@ -115,7 +120,7 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
   for (size_t i = 0; i < _varList.size(); ++i)
   {
     if (_varList[i]->Length > 1) 
-    {
+    { 
       // Vector data
       for (size_t j = 0; j < _varList[i]->Length; j++) 
       {
@@ -129,8 +134,8 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
           _lastGoodDataIncrement[counter] = 0;
         } else
         {
-          // Ship last good value unless we've seen NaNs for quite a while (100 increments)
-          if (_lastGoodDataIncrement[counter] < 100)
+          // Ship last good value unless we've seen NaNs for quite a while (60 increments = 5 minutes if 5 second intervals)
+          if (_lastGoodDataIncrement[counter] < 60)
           {
             if (j == 0)
               groundString << ",'{" << _lastGoodData[counter];
@@ -141,9 +146,9 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
           else
           {
             if (j == 0)
-              groundString << ",'{" << std::numeric_limits<NR_TYPE>::quiet_NaN();
+              groundString << ",'{" << "-32767";
             else
-              groundString << "," << std::numeric_limits<NR_TYPE>::quiet_NaN();
+              groundString << "," << "-32767";
           }
         }
         _summedData[counter] = 0.0;
@@ -168,7 +173,7 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
         }
         else
         {
-          groundString << "," << std::numeric_limits<NR_TYPE>::quiet_NaN();
+          groundString << "," << "-32767";
         }
       }
       _summedData[counter] = 0.0;
