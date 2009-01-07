@@ -118,6 +118,8 @@ void PMS1D_SetupForADS3()
     setSerialNumberAndProbeType("A2DC_RPC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A1DC_RPI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A2DC_RPI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+    if (cfg.FlightNumber().compare("rf11") >= 0)
+      setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
 //    setSerialNumberAndProbeType("AUHSAS", "UHSAS002", PROBE_PMS1D | PROBE_PCASP);
   }
   else
