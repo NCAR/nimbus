@@ -39,14 +39,15 @@ GroundFeed::GroundFeed(int rate) : UDP_Base(31007), _dataRate(rate)
   _socket = new UdpSocket(UDP_PORT, DEST_HOST_ADDR.c_str());
   _socket->openSock(UDP_UNBOUND);
 
-  // Initialize GroundSummedData
-  //size_t counter = 0;
+  // Initialize vectors used for averaging
   for (size_t i = 0; i < _varList.size(); ++i)
   {
      for (size_t j = 0; j < _varList[i]->Length; j++)
      {
-       //counter++;
        _summedData.push_back(0.0);
+       _lastGoodData.push_back(std::numeric_limits<NR_TYPE>::quiet_NaN());
+       _summedData.push_back(0);
+       _lastGoodDataIncrement.push_back(0);
      }
   }
 }
@@ -86,7 +87,12 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
   {
     for (size_t j = 0; j < _varList[i]->Length; j++)
     {
-      _summedData[counter++] += AveragedData[(_varList[i]->LRstart)+j];
+      if (!isnan(AveragedData[(_varList[i]->LRstart)+j]))
+      {
+        _summedData[counter] += AveragedData[(_varList[i]->LRstart)+j];
+        _summedDataCount[counter]++;
+        counter++;
+      }
     }
   }
 
@@ -94,6 +100,7 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
   if ((rate_cntr % _dataRate) != 0)
     return;
  
+  // Compose the string to send to the ground
   std::stringstream groundString;
   if (cfg.Aircraft() == Config::HIAPER)
     groundString << "GV";
@@ -109,17 +116,64 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
   {
     if (_varList[i]->Length > 1) 
     {
-      groundString << ",'{" << _summedData[counter] / _dataRate;
-      _summedData[counter++] = 0.0;
-      for (size_t j = 1; j < _varList[i]->Length; j++) 
+      // Vector data
+      for (size_t j = 0; j < _varList[i]->Length; j++) 
       {
-         groundString << "," << _summedData[counter] / _dataRate;
-         _summedData[counter++] = 0.0;
+        if (_summedDataCount[counter] > 0)
+        {
+          _lastGoodData[counter] = _summedData[counter] / _summedDataCount[counter];
+          if (j == 0) 
+            groundString << ",'{" << _lastGoodData[counter];
+          else 
+            groundString << "," << _lastGoodData[counter];
+          _lastGoodDataIncrement[counter] = 0;
+        } else
+        {
+          // Ship last good value unless we've seen NaNs for quite a while (100 increments)
+          if (_lastGoodDataIncrement[counter] < 100)
+          {
+            if (j == 0)
+              groundString << ",'{" << _lastGoodData[counter];
+            else 
+              groundString << "," << _lastGoodData[counter];
+            _lastGoodDataIncrement[counter]++;
+          }
+          else
+          {
+            if (j == 0)
+              groundString << ",'{" << std::numeric_limits<NR_TYPE>::quiet_NaN();
+            else
+              groundString << "," << std::numeric_limits<NR_TYPE>::quiet_NaN();
+          }
+        }
+        _summedData[counter] = 0.0;
+        _summedDataCount[counter] = 0;
+        counter++;
       }
       groundString << "}'";
     } else {
-      groundString << "," << _summedData[counter] / _dataRate;
-      _summedData[counter++] = 0.0;
+      // Scalar data
+      if (_summedDataCount[counter] > 0)
+      {
+        _lastGoodData[counter] = _summedData[counter] / _summedDataCount[counter];
+        groundString << "," << _lastGoodData[counter];
+        _lastGoodDataIncrement[counter] = 0;
+      }
+      else
+      {
+        if (_lastGoodDataIncrement[counter] < 100)
+        {
+          groundString << "," << _lastGoodData[counter];
+          _lastGoodDataIncrement[counter]++;
+        }
+        else
+        {
+          groundString << "," << std::numeric_limits<NR_TYPE>::quiet_NaN();
+        }
+      }
+      _summedData[counter] = 0.0;
+      _summedDataCount[counter] = 0;
+      counter++;
     }
   }
   groundString << "\n";
