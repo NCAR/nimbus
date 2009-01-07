@@ -25,6 +25,7 @@ env['LIBS'] = Split("""
 """)
 
 sources = Split("""
+UDP_Base.cc
 UdpSocket.cc
 Xwin.c
 adsIO.c
@@ -47,6 +48,7 @@ dq.c
 error.c
 filter.c
 globals.cc
+grnd_feed.cc
 hdr_decode.c
 hrloop.c
 init.c
