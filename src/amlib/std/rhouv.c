@@ -42,23 +42,23 @@ void srhouv(DERTBL *varp)
   NR_TYPE rhodt = GetSample(varp, 1);
   NR_TYPE dpxc = GetSample(varp, 2);
   NR_TYPE atx = GetSample(varp, 3);
-  NR_TYPE rhouv, prev_uv, diff;
+  NR_TYPE rhouv, prev_uv;
 
   static const int nSeconds = 10;
   static int buffIndex = 0;
   static NR_TYPE uv_buffer[nSeconds], uv_sum;
 
   rhouv = xuvi;
-  diff = (rhodt - xuvi);
-  if (diff < -0.5)
-    diff = -0.5;
-  if (diff > 0.5)
-    diff = 0.25;
-
-  if (dpxc < atx)
+  if (dpxc < atx && !isnan(xuvi) && !isnan(rhodt))
   {
     if (++buffIndex >= nSeconds)
       buffIndex = 0;
+
+    NR_TYPE diff = (rhodt - xuvi);
+    if (diff < -0.5)
+      diff = -0.5;
+    if (diff > 0.5)
+      diff = 0.25;
 
     prev_uv = uv_buffer[buffIndex];
     uv_buffer[buffIndex] = diff;

@@ -83,37 +83,6 @@ void plwcc1Init(var_base *varp)
 }	/* END PLWCC1INIT */
 
 /* -------------------------------------------------------------------- */
-void plwcc2Init(var_base *varp)
-{
-  NR_TYPE	*tmp;
-
-  if ((tmp = GetDefaultsValue("TWIRE_PMS2", varp->name)) == NULL)
-  {
-    sprintf(buffer,"Value set to %f in AMLIB function plwccInit.\n", twire[2]);
-    LogMessage(buffer);
-  }
-  else
-    twire[2] = tmp[0];
-
-  if ((tmp = GetDefaultsValue("TWIRE_TASFAC2", varp->name)) == NULL)
-  {
-    sprintf(buffer,"Value set to %f in AMLIB function plwccInit.\n", tasFac[2]);
-    LogMessage(buffer);
-  }
-  else
-    tasFac[2] = tmp[0];
-
-  if ((tmp = GetDefaultsValue("TWIRE_DIAM2", varp->name)) == NULL)
-  {
-    sprintf(buffer,"Value set to %f in AMLIB function plwccInit.\n", twireDiam[2]);
-    LogMessage(buffer);
-  }
-  else
-    twireDiam[2] = tmp[0];
-
-}	/* END PLWCC2INIT */
-
-/* -------------------------------------------------------------------- */
 void splwcc(DERTBL *varp)
 {
   NR_TYPE plwc, tasx, atx, psxc, concf;
@@ -137,11 +106,11 @@ void splwcc(DERTBL *varp)
   tasx *= tasFac[0];
   plwcc = kinglwcc(plwc, tasx, atx, psxc, twire[0], twireDiam[0]);
 
-  if (varp->ndep >= 6)
+  if (varp->ndep >= 5)
   {
     concf = GetSample(varp, 4);
 
-    if (concf < 0.25)
+    if (concf < 0.25 && !isnan(plwcc))
     {
       if (++buffIndex >= nSeconds)
         buffIndex = 0;
@@ -180,54 +149,11 @@ void splwcc1(DERTBL *varp)
   tasx *= tasFac[1];
   plwcc = kinglwcc(plwc, tasx, atx, psxc, twire[1], twireDiam[1]);
 
-  if (varp->ndep >= 6)
+  if (varp->ndep >= 5)
   { 
     concf = GetSample(varp, 4);
     
-    if (concf < 0.25)
-    {
-      if (++buffIndex >= nSeconds)
-        buffIndex = 0;
-
-      prev_lwc = lwc_buffer[buffIndex];
-      lwc_buffer[buffIndex] = -plwcc;
-      lwc_sum -= prev_lwc;
-      lwc_sum += -plwcc;
-    }
-  }
-  
-  PutSample(varp, plwcc + lwc_sum / nSeconds);
-}
-
-/* -------------------------------------------------------------------- */
-void splwcc2(DERTBL *varp)
-{
-  NR_TYPE  plwc, tasx, atx, psxc, concf;
-  NR_TYPE prev_lwc, plwcc;
-
-  static const int nSeconds = 10;
-  static int buffIndex = 0;
-  static NR_TYPE lwc_buffer[nSeconds], lwc_sum;
-
-  plwc  = GetSample(varp, 0);
-  tasx  = GetSample(varp, 1);
-  atx   = GetSample(varp, 2);
-  psxc  = GetSample(varp, 3);
- 
-  if (tasx < 30.0)
-  {
-    PutSample(varp, 0.0);
-    return;
-  }
-  
-  tasx *= tasFac[2];
-  plwcc = kinglwcc(plwc, tasx, atx, psxc, twire[2], twireDiam[2]);
-
-  if (varp->ndep == 5)
-  { 
-    concf = GetSample(varp, 4);
-    
-    if (concf < 0.25)
+    if (concf < 0.25 && !isnan(plwcc))
     {
       if (++buffIndex >= nSeconds)
         buffIndex = 0;
