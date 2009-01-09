@@ -82,6 +82,7 @@ void CreateNASAamesNetCDF(FILE *fp)
 
   fgets(buffer, BUFFSIZE, fp);
   sscanf(buffer, "%d %d", &SkipNlines, &FFI);
+  printf("SkipNlines: %d  FFI:%d\n", SkipNlines, FFI);
 
   if (FFI < 1000 || FFI > 1999)
   {
@@ -92,24 +93,30 @@ void CreateNASAamesNetCDF(FILE *fp)
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
   nc_put_att_text(ncid, NC_GLOBAL, "PI", strlen(buffer)+1, buffer);
+  printf("PI: %s\n", buffer);
 
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
   nc_put_att_text(ncid, NC_GLOBAL, "Source", strlen(buffer)+1, buffer);
+  printf("Source: %s\n", buffer);
 
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
   nc_put_att_text(ncid, NC_GLOBAL, "SNAME", strlen(buffer)+1, buffer);
+  printf("SNAME: %s\n", buffer);
 
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
   nc_put_att_text(ncid, NC_GLOBAL, "ProjectName", strlen(buffer)+1, buffer);
+  printf("ProjectName: %s\n", buffer);
 
 
   /* Skip IVOL NVOL */
   fgets(buffer, BUFFSIZE, fp);
+  printf("skipping IVOL NVOL: %s", buffer);
 
   fgets(buffer, BUFFSIZE, fp);
+  printf("date span: %s", buffer);
   if (strchr(buffer, ','))
     sscanf(buffer, "%d , %d , %d", &year, &month, &day);
   else
@@ -135,6 +142,7 @@ void CreateNASAamesNetCDF(FILE *fp)
 
 
   fgets(buffer, BUFFSIZE, fp);
+  printf("uniformity %s", buffer);
   if (atof(buffer) != 1.0)
     fprintf(stderr, "Non-uniform time interval, results may be sketchy.\n");
 
@@ -160,6 +168,7 @@ void CreateNASAamesNetCDF(FILE *fp)
 
   /* Skip XNAME */
   fgets(buffer, BUFFSIZE, fp);
+  printf("skipping XNAME: %s", buffer);
 
 
   /* For each variable:
@@ -171,28 +180,34 @@ void CreateNASAamesNetCDF(FILE *fp)
    */
   fgets(buffer, BUFFSIZE, fp);
   nVariables = atoi(buffer);
+  printf("nVariables: %d\n", nVariables);
 
   /* Get Scale Factors. */
   fgets(buffer, BUFFSIZE, fp);
+  printf("Scale Factors: %s", buffer);
   p = strtok(buffer, " \t\n\r");
   for (i = 0; i < nVariables; ++i)
   {
     scale[i] = atof(p);
     offset[i] = 0.0;
+    printf("  scale[%d]: %f\n", i, scale[i]);
     p = strtok(NULL, " \t\n\r");
   }
 
   /* Get missing values, these will be translated to nimbus MISSING_VALUES.
    */
   fgets(buffer, BUFFSIZE, fp);
+  printf("Missing Values: %s", buffer);
   p = strtok(buffer, " \t\n\r");
   for (i = 0; i < nVariables; ++i)
   {
     missingVals[i] = atof(p);
+    printf("  missingVals[%d]: %f\n", i, missingVals[i]);
     p = strtok(NULL, " \t\n\r");
   }
 
   /* Get Titles. */
+  printf("Get Titles...\n");
   for (i = 0; i < nVariables; ++i)
   {
     fgets(buffer, BUFFSIZE, fp);
@@ -214,6 +229,7 @@ void CreateNASAamesNetCDF(FILE *fp)
       units[i] = (char *)GetMemory(10);
       strcpy(units[i], "Unk");
     }
+    printf("  titles[%d]: %s\n", i, titles[i]);
   }
 
 
@@ -224,34 +240,41 @@ void CreateNASAamesNetCDF(FILE *fp)
     fgets(buffer, BUFFSIZE, fp);
     start = nVariables;
     nVariables += atoi(buffer);
+    printf("nVariables: %d\n", nVariables);
 
     /* Get Scale Factors. */
     fgets(buffer, BUFFSIZE, fp);
+    printf("Auxilary Scale Factors: %s", buffer);
     p = strtok(buffer, " \t\n\r");
     for (i = start; i < nVariables; ++i)
     {
       scale[i] = atof(p);
       offset[i] = 0.0;
+      printf("  auxilary scale[%d]: %f\n", i, scale[i]);
       p = strtok(NULL, " \t\n\r");
     }
 
     /* Get missing values, these will be xlated to nimbus MISSING_VALUES.
      */
     fgets(buffer, BUFFSIZE, fp);
+    printf("Missing Values: %s", buffer);
     p = strtok(buffer, " \t\n\r");
     for (i = start; i < nVariables; ++i)
     {
       missingVals[i] = atof(p);
+      printf("  missingVals[%d]: %f\n", i, missingVals[i]);
       p = strtok(NULL, " \t\n\r");
     }
 
     /* Get Titles. */
+    printf("Auxilary Get Titles...\n");
     for (i = start; i < nVariables; ++i)
     {
       fgets(buffer, BUFFSIZE, fp);
       buffer[strlen(buffer)-1] = '\0';
       titles[i] = (char *)GetMemory(strlen(buffer)+1);
       strcpy(titles[i], buffer);
+      printf("  auxilary titles[%d]: %f\n", i, titles[i]);
 
       if ( (p = strchr(buffer, '(')) && (p1 = strchr(buffer, ')')))
       {
@@ -266,6 +289,7 @@ void CreateNASAamesNetCDF(FILE *fp)
       }
     }
   }
+  printf("Header parsed... rewinding to read data\n");
 
 
   rewind(fp);

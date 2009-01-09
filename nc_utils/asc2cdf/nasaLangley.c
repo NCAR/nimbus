@@ -48,22 +48,28 @@ void CreateNASAlangNetCDF(FILE *fp)
 
   fgets(buffer, BUFFSIZE, fp);
   SkipNlines = atoi(buffer);
+  printf("SkipNlines: %n\n", SkipNlines);
 
   fgets(buffer, BUFFSIZE, fp);	/* Skip file name	*/
+  printf("Skip file name: %s", buffer);
 
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
   nc_put_att_text(ncid, NC_GLOBAL, "PI", strlen(buffer)+1, buffer);
+  printf("PI: %s\n", buffer);
 
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
   nc_put_att_text(ncid, NC_GLOBAL, "Species", strlen(buffer)+1, buffer);
+  printf("Species: %s\n", buffer);
 
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
   nc_put_att_text(ncid, NC_GLOBAL, "ProjectName", strlen(buffer)+1, buffer);
+  printf("ProjectName: %s\n", buffer);
 
   fgets(buffer, BUFFSIZE, fp);
+  printf("date span: %s\n", buffer);
   if (strchr(buffer, ','))
     sscanf(buffer, "%d , %d , %d", &year, &month, &day);
   else
@@ -90,6 +96,7 @@ void CreateNASAlangNetCDF(FILE *fp)
   fgets(buffer, BUFFSIZE, fp);
   sprintf(tmp, "%d", atoi(buffer));
   nc_put_att_text(ncid, NC_GLOBAL, "FlightNumber", strlen(tmp)+1, tmp);
+  printf("FlightNumber: %s\n", tmp);
 
   /* Time segments.  Will be updated later.
    */
@@ -98,8 +105,10 @@ void CreateNASAlangNetCDF(FILE *fp)
 
   fgets(buffer, BUFFSIZE, fp);
   nVariables = atoi(buffer);
+  printf("nVariables: %d\n", nVariables);
 
   fgets(buffer, BUFFSIZE, fp);	/* Skip nComment lines.	*/
+  printf("Skip nComment lines: %s\n", buffer);
 
   /* File type, we support type = 1 */
   fgets(buffer, BUFFSIZE, fp);
