@@ -49,7 +49,7 @@
 # New UV Hygrometer
 # XUVMR was PASE only; MRUV subsequently.
 	"XUVMR",	NULL,           NULL,		suvmr,
-	"MRUV",		NULL,           NULL,		suvmr,
+	"MRUV",		NULL,           NULL,		smr,
 	"DPUV",		NULL,           NULL,		sdprho,
 #
 # Cooper UltraFine CN
@@ -771,6 +771,7 @@
 	"FXAZIM",	NULL,		NULL,		sazimuth,
 	"DVALU",	NULL,		NULL,		sdiff,
 	"EDPC",		NULL,		NULL,		sedpc,
+	"EDPUV",	NULL,		NULL,		sedpc,
 #
 #   NRL P-3 stuff
 	"RALT",		NULL,		NULL,		feet2meters,
