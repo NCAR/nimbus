@@ -166,7 +166,8 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
       }
       else
       {
-        if (_lastGoodDataIncrement[counter] < 100)
+        // Ship last good data so long as it's been less than 300 seconds (5 min) since last seen.
+        if (_lastGoodDataIncrement[counter] < (int) (300/_dataRate))  
         {
           groundString << "," << _lastGoodData[counter];
           _lastGoodDataIncrement[counter]++;
