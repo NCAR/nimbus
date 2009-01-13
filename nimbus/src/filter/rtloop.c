@@ -127,7 +127,9 @@ pts = ts;
       psql->WriteSQL(timeStamp);
 
     bcast->BroadcastData(timeStamp);
-    grnd_feed->BroadcastData(timeStamp);
+
+    if (cfg.TransmitToGround())
+      grnd_feed->BroadcastData(timeStamp);
 
     if (cfg.OutputNetCDF())
       WriteNetCDF();
