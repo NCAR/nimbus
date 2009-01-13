@@ -20,8 +20,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 
 #include <sstream>
 
-//const std::string Broadcast::RT_UDP_ADDR = "128.117.84.255";
-const std::string Broadcast::RT_UDP_ADDR_1 = "192.168.84.255";
+const std::string Broadcast::RT_UDP_ADDR_1 = "128.117.84.255";
+//const std::string Broadcast::RT_UDP_ADDR_1 = "192.168.84.255";
 const std::string Broadcast::RT_UDP_ADDR_2 = "192.168.184.255";
 
 const size_t Broadcast::RADAR_ALT_INDX = 5;
@@ -42,6 +42,12 @@ Broadcast::Broadcast() : UDP_Base(31000)
 /* -------------------------------------------------------------------- */
 void Broadcast::BroadcastData(const std::string & timeStamp) 
 {
+  if (_varList.size() == 0)
+  {
+    fprintf(stderr, "Broadcast.cc: No ascii_parms!\n");
+    return;
+  }
+
   std::stringstream bcast;
   bcast << "IWG1," << timeStamp;
 
