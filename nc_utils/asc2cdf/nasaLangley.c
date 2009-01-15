@@ -48,7 +48,7 @@ void CreateNASAlangNetCDF(FILE *fp)
 
   fgets(buffer, BUFFSIZE, fp);
   SkipNlines = atoi(buffer);
-  printf("SkipNlines: %n\n", SkipNlines);
+  printf("SkipNlines: %d\n", SkipNlines);
 
   fgets(buffer, BUFFSIZE, fp);	/* Skip file name	*/
   printf("Skip file name: %s", buffer);

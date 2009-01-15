@@ -274,7 +274,7 @@ void CreateNASAamesNetCDF(FILE *fp)
       buffer[strlen(buffer)-1] = '\0';
       titles[i] = (char *)GetMemory(strlen(buffer)+1);
       strcpy(titles[i], buffer);
-      printf("  auxilary titles[%d]: %f\n", i, titles[i]);
+      printf("  auxilary titles[%d]: %s\n", i, titles[i]);
 
       if ( (p = strchr(buffer, '(')) && (p1 = strchr(buffer, ')')))
       {
