@@ -35,8 +35,8 @@ static int TimeStep = 20;
 // True Airspeed cut-off (take-off and landing speed).
 static const float TAS_CutOff = 20.0;
 
-// Frequency of Time Stamps.
-static const int ts_Freq = 3600;
+// Frequency of Time Stamps (in minutes).
+static int ts_Freq = 10;
 
 // Max out at this many points, don't want to swamp GoogleMap, though
 // Vincent said he broke them up into segments, so we shouldn't have the
@@ -357,23 +357,34 @@ void WriteTimeStampsKML(std::ofstream & googleEarth)
     << " <Folder>\n"
     << "  <name>Time Stamps</name>\n";
 
-  for (size_t i = ts_Freq; i < _date.size(); i += ts_Freq)
+  int this_ts, curr_ts, last_ts = -1;
+  for (size_t i = 0; i < _date.size(); i++)
   {
-    std::string label = _date[i].substr(11, 5);
-    std::string tm = _date[i];
-    tm.replace(10, 1, "T");
-    googleEarth
-      << "  <Placemark>\n"
-      << "   <name>" << label << "</name>\n"
-      << "   <TimeStamp>\n"
-      << "    <when>" << tm << "Z</when>\n"
-      << "   </TimeStamp>\n"
-      << "   <styleUrl>#PM1</styleUrl>\n"
-      << "   <Point>\n"
-      << "    <coordinates>"
-      << _lon[i] << ","  << _lat[i]<< "</coordinates>\n"
-      << "   </Point>\n"
-      << "  </Placemark>\n";
+    std::string hour   = _date[i].substr(11, 2);
+    std::string minute = _date[i].substr(14, 2);
+    std::string second = _date[i].substr(17, 2);
+    this_ts = atoi(minute.c_str());
+    curr_ts = this_ts / ts_Freq;
+    if ( ( (this_ts == 0) || (curr_ts != 0) ) && (curr_ts != last_ts) ) {
+      last_ts = curr_ts;
+      std::cout << hour << ":" << minute << ":" << second << std::endl;
+      std::string label = _date[i].substr(11, 5);
+      std::string tm = _date[i];
+      tm.replace(10, 1, "T");
+      googleEarth
+        << "  <Placemark>\n"
+        << "   <name>" << label << "</name>\n"
+        << "   <TimeStamp>\n"
+        << "    <when>" << tm << "Z</when>\n"
+        << "   </TimeStamp>\n"
+        << "   <styleUrl>#PM1</styleUrl>\n"
+        << "   <Point>\n"
+	<< "    <altitudeMode>absolute</altitudeMode>\n"
+        << "    <coordinates>"
+        << _lon[i] << "," << _lat[i] << "," << (int)_alt[i] << "</coordinates>\n"
+        << "   </Point>\n"
+        << "  </Placemark>\n";
+    }
   }
 
   googleEarth << " </Folder>\n";
@@ -651,6 +662,7 @@ PGconn * openDataBase()
 /* -------------------------------------------------------------------- */
 void ReadDataFromNetCDF(const std::string & fileName)
 {
+  std::cout << "ReadDataFromNetCDF: " << fileName << std::endl;
   NcFile file(fileName.c_str());
 
   if (file.is_valid() == false)
@@ -741,7 +753,7 @@ int parseRunstring(int argc, char** argv)
   extern int optind;       /* "  "     "     */
   int opt_char;     /* option character */
 
-  while ((opt_char = getopt(argc, argv, "h:s:o")) != -1)
+  while ((opt_char = getopt(argc, argv, "h:s:t:o")) != -1)
   {
     switch (opt_char)
     {
@@ -749,8 +761,12 @@ int parseRunstring(int argc, char** argv)
       database_host = optarg;
       break;
 
-    case 's':	// Time-step, default is 10 seconds.
+    case 's':	// Time-step, default is 20 seconds.
       TimeStep = atoi(optarg);
+      break;
+
+    case 't':	// Time Stamp Frequency, default is 10 minutes.
+      ts_Freq = atoi(optarg);
       break;
 
     case 'o':	// onboard.  Modify some defaults if this is set.
@@ -804,6 +820,7 @@ int main(int argc, char *argv[])
     if (_lat.size() > 0)
     {
 //      WriteGoogleMapXML(projectInfo, 3);
+      std::cout << "WriteGoogleEarthKML(" << outputKML << ", projectInfo, 3);\n";
       WriteGoogleEarthKML(outputKML, projectInfo, 3);
     }
     return 0;
