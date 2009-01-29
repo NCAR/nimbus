@@ -363,7 +363,7 @@ void WriteTimeStampsKML(std::ofstream & googleEarth)
     std::string hour   = _date[i].substr(11, 2);
     std::string minute = _date[i].substr(14, 2);
     std::string second = _date[i].substr(17, 2);
-    this_ts = atoi(minute.c_str());
+    this_ts = atoi(hour.c_str())*60 + atoi(minute.c_str());
     curr_ts = this_ts / ts_Freq;
     if ( ( (this_ts == 0) || (curr_ts != 0) ) && (curr_ts != last_ts) ) {
       last_ts = curr_ts;
