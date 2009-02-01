@@ -21,7 +21,7 @@ env['LIBS'] = Split("""
   hdr_api pms VarDB raf raf++
   ncaru netcdf pq
   Xm Xt X11
-  gsl gslcblas m
+  gsl gslcblas cap m
 """)
 
 sources = Split("""

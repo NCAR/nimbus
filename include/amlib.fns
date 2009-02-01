@@ -10,6 +10,7 @@
 # VOCALS.
 #
 	"CONCUD",	NULL,           NULL,		sconcud,
+	"ALTVOC",	NULL,           NULL,		svocalt,
 #
 # PASE.
 #
