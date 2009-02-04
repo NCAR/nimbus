@@ -10,7 +10,7 @@ STATIC FNS:	none
 
 DESCRIPTION:	p_corr functions for each aircraft.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2007
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2009
 -------------------------------------------------------------------------
 */
 
@@ -18,6 +18,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2007
 #include "amlib.h"
 
 static const NR_TYPE XMPHMS = 0.44704; // conversion factor mph to meters/sec
+
+// P3 PCORS made available to Deafults file starting with TPARC.
+static NR_TYPE P3_RADOME_PCORS[2] = { 0.0, 0.02 };
+static NR_TYPE P3_FUSELAGE_PCORS[3] = { -0.046, -0.0265, 0.000087 };
 
 extern int	FlightDate[];
 
@@ -46,6 +50,8 @@ NR_TYPE	tfher1,tfher2;
 /* -------------------------------------------------------------------- */
 void InitAircraftDependencies()
 {
+  NR_TYPE *tmp;
+
   /* Set up default values first, then AC dependant.
    */
 
@@ -120,6 +126,27 @@ void InitAircraftDependencies()
       LogMessage("NRL P3 pcor's installed.");
       jwref	= 300 * XMPHMS;
       recfrn	= 0.65;
+
+      if ((tmp = GetDefaultsValue("P3_RADOME_PCORS", "INIT_AC")) != NULL)
+      {
+        P3_RADOME_PCORS[0] = tmp[0];
+        P3_RADOME_PCORS[1] = tmp[1];
+        sprintf(buffer,
+        "initAC: P3_RADOME_PCORS set to %f, %f from Defaults file.\n",
+          P3_RADOME_PCORS[0], P3_RADOME_PCORS[1]);
+        LogMessage(buffer);
+      }
+
+      if ((tmp = GetDefaultsValue("P3_FUSELAGE_PCORS", "INIT_AC")) != NULL)
+      {
+        P3_FUSELAGE_PCORS[0] = tmp[0];
+        P3_FUSELAGE_PCORS[1] = tmp[1];
+        P3_FUSELAGE_PCORS[2] = tmp[2];
+        sprintf(buffer,
+        "initAC: P3_FUSELAGE_PCORS set to %f, %f, %f from Defaults file.\n",
+          P3_RADOME_PCORS[0], P3_RADOME_PCORS[1], P3_FUSELAGE_PCORS[2]);
+        LogMessage(buffer);
+      }
 
       pcorQCF	= pcorf3;
       pcorPSF	= pcorf3;
@@ -230,7 +257,6 @@ void InitAircraftDependencies()
       exit(1);
   }
 
-  NR_TYPE *tmp;
   if ( (tmp = GetDefaultsValue("RECFRH", "INIT_AC")) )
   {
     LogMessage("initAC.c: RECFRH found in Defaults, using.");
@@ -262,12 +288,12 @@ NR_TYPE pcorf8(NR_TYPE q, NR_TYPE q1)
 /* NRL P-3 ------------------------------------------------------------ */
 NR_TYPE pcorr3(NR_TYPE q, NR_TYPE q1)
 {
-  return(0.0 - 0.02 * q);
+  return(P3_RADOME_PCORS[0] - P3_RADOME_PCORS[1] * q);
 }
 
 NR_TYPE pcorf3(NR_TYPE q, NR_TYPE q1)
 {
-  return(-0.046 + q * (-0.0265 + 0.000087 * q));
+  return(P3_FUSELAGE_PCORS[0] + q * (P3_FUSELAGE_PCORS[1] + P3_FUSELAGE_PCORS[2] * q));
 }
 
 /* KingAir ------------------------------------------------------------ */
