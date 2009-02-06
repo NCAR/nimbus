@@ -144,16 +144,35 @@ void Garmin::isr()
         date_rqst = FALSE;
         date_time = FALSE;
       }
-      sscanf (&datap[41], "%f,%f", &f1,&f2);
+
+      {
+      char * p = strtok(datap, ",\r");
+
+      char * p = strtok(NULL, ",\r");
+      char * p = strtok(NULL, ",\r");
+      char * p = strtok(NULL, ",\r");
+      char * p = strtok(NULL, ",\r");
+      char * p = strtok(NULL, ",\r");
+      char * p = strtok(NULL, ",\r");
+      char * p = strtok(NULL, ",\r");
+
+      f1 = atof(p);
+      char * p = strtok(NULL, ",\r");
+      f2 = atof(p);
+
+//      sscanf (&datap[41], "%f,%f", &f1,&f2);
       garmin_blk[ptog].ground_speed = f1;
       garmin_blk[ptog].course = f2;
+
+      char * p = strtok(NULL, ",\r");
       for (j = 0; j < 6; j++)
-        utctime[j] = datap[j + 53];
+        utctime[j] = p[j];
       utctime[6] = '\0';
       garmin_blk[ptog].utcdate = utctime;
       garmin_day = (utctime[0] - '0') * 10 + (utctime[1] - '0');
       garmin_month = (utctime[2] - '0') * 10 + (utctime[3] - '0');
       garmin_year = (utctime[4] - '0') * 10 + (utctime[5] - '0');
+      }
     }
 /*  
     else if (!strncmp (GPGLL, datap, strlen(GPGLL))) {
