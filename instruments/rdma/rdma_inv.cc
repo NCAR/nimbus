@@ -156,7 +156,7 @@ static void gcf(double *gammcf, double a, double x, double *gln)
 
 static double gammq(double a, double x)
 {
-  double gamser,gammcf,gln;
+  double gamser = 0.0, gammcf, gln;
 
   if (x < 0.0 || a <= 0.0)
     nrerror("Invalid arguments in routine gammq");
@@ -588,8 +588,7 @@ static void solve_for_n(double dia_from_inv[3][num_bins], double counts[num_bins
 	X[num_bins], alpha_max_check, alpha_max, new_alpha, total_conc,
 	total_vol, n_final[num_bins], dia_final[num_bins], dlogd[num_bins];
 
-  int	i, j, bin, loop, bins_summed, bins_averaged, bins_final,
-	hour, minute, second;
+  int	i, j, bin, loop, bins_summed, bins_averaged, bins_final;
 
   time_t	start, end, total_sec;
   struct tm	dat, *ndat;

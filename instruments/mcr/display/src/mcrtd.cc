@@ -40,7 +40,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998-9
 
 void	netMessage(int, char*, char*);	// network message handler
 void	DisplayTS(Mcr_rec *buf), DisplayData(), DisplayColorBar();
-void	RealTimeLoop(), PostProcLoop(char s[]);
+void	RealTimeLoop(), PostProcLoop(const char s[]);
 static bool NextMCRfile(), NextMCRfileRT();
 
 bool	Frozen = false, RealTimeMode = false;
@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
 }	/* END MAIN */
 
 /* -------------------------------------------------------------------- */
-void PostProcLoop(char fileName[])
+void PostProcLoop(const char fileName[])
 {
   strcpy(mcrFileName, fileName);
   file = new ADS_DataFile(fileName);

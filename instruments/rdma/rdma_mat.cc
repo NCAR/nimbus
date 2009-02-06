@@ -1429,7 +1429,7 @@ static void calc_inversion_matrices(double Zp_high_v_min, double Zp_low_v_max, i
 /* -------------------------------------------------------------------- */
 static double gammp(double a, double x)
 {
-  double gamser,gammcf,gln;
+  double gamser = 0.0, gammcf, gln;
 
   if (x < 0.0 || a <= 0.0)
     nrerror("Invalid arguments in routine gammp");
