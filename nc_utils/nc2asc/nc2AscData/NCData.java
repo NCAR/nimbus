@@ -643,6 +643,10 @@ public class NCData {
 		List<Variable> lvars= new ArrayList();
 		for (int i =0; i<selVars.size(); i++) {
 			Variable v = fin.findVariable(selVars.get(i));
+			if (v==null|| v.getSize()<=0) {  //skip the vars that can not found from the nc file
+				System.err.println("Variable "+selVars.get(i)+ " is not found in the nc file. \nSkipping it..." );
+				continue;  
+			}
 			lvars.add(v);
 			int or = getOR(v);
 			if (or > gDataInf[0]) gDataInf[0]= or;
