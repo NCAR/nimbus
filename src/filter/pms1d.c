@@ -207,7 +207,7 @@ void AddPMS1dAttrs(int ncid, var_base * rp)
   bool	warnMidPoints = false;
 
   /* If not PMS1D, then bail out. */
-  if ((rp->ProbeType & 0xff000000) != 0x80000000)
+  if ((rp->ProbeType & 0xff000000) != 0x80000000 && (rp->ProbeType & 0xff000000) != 0x10000000)
     return;
 
   cvarid = rp->varid;
