@@ -195,7 +195,7 @@ static void CommonPostInitialization()
    */
   rate = 1;
 
-  if (cfg.ProjectName().compare("RAF_Lab") == 0)
+  if ( (cfg.ProjectName().compare("RAF_Lab") == 0) || (cfg.Aircraft() == Config::TADS) )
     {
     add_derived_names("RAF_LAB");
     }
@@ -463,7 +463,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     addSerialNumber(var, rp);
   }
 
-  if (cfg.ProjectName().compare("RAF_Lab"))
+  if (cfg.ProjectName().compare("RAF_Lab") && (cfg.Aircraft() != Config::TADS) )
     {
     add_derived_names("GUST");
     initGustCorrected();
