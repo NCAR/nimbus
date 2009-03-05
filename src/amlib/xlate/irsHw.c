@@ -152,6 +152,9 @@ void xlilon(RAWTBL *varp, void *input, NR_TYPE *np)
   for (size_t i = 0; i < varp->SampleRate; ++i)
   {
     np[i] = (double)(p[i] >> 11) * arinc20bits;
+
+    // Technician entered 144deg West instead of 144deg East as the intial position.
+    // Correct it here.
     if (cfg.ProjectName() == "TPARC" && cfg.FlightNumber() == "rf10")
       np[i] += 289.87;
   }
