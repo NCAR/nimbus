@@ -94,8 +94,8 @@ void PhaseShift(
         lag = MaxLag;
 
       sprintf(buffer,
-        "Max lag of |%d| ms exceeded, setting to %d ms and continuing.\n",
-        MaxLag, lag);
+        "Max lag of |%d| ms exceeded, setting to %d ms and continuing; variable %s.\n",
+        MaxLag, lag, rp->name);
       LogMessage(buffer);
     }
 
