@@ -134,7 +134,8 @@ void xlilat(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_5hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_5hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
 } /* END XLILAT */
 
@@ -149,11 +150,16 @@ void xlilon(RAWTBL *varp, void *input, NR_TYPE *np)
   preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
+  {
     np[i] = (double)(p[i] >> 11) * arinc20bits;
+    if (cfg.ProjectName() == "TPARC" && cfg.FlightNumber() == "rf10")
+      np[i] += 289.87;
+  }
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_5hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_5hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
 } /* END XLILON */
 
@@ -178,7 +184,8 @@ void xlipitch(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
 } /* END XLIPITCH */
 
@@ -197,7 +204,8 @@ void xliroll(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
 }  /* END XLIROLL */
 
@@ -231,7 +239,8 @@ void xlithdg(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_25hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_25hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
 }  /* END XLITHDG */
 
@@ -250,7 +259,8 @@ void xlialt(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_25hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_25hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
 }  /* END XLIALT */
 
@@ -269,7 +279,8 @@ void xlivspd(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_25hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_25hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
 }  /* END XLIVSPD */
 
@@ -288,7 +299,8 @@ void xlvacc(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
 }  /* END XLVACC */
 
@@ -307,7 +319,8 @@ void xlivew(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_10hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_10hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
   if (groundSpeedIsAlternating)
     varp->DynamicLag += 100;
@@ -329,7 +342,8 @@ void xlivns(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_10hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_10hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
   if (groundSpeedIsAlternating)
     varp->DynamicLag += 100;
@@ -359,7 +373,8 @@ void xliwd(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_10hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_10hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
 } /* END XLIWD */
 
@@ -378,7 +393,8 @@ void xliws(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_10hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_10hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
 } /* END XLIWS */
 
@@ -397,7 +413,8 @@ void xligspd(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_10hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_10hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
   if (groundSpeedIsAlternating)
     varp->DynamicLag += 100;
@@ -448,7 +465,8 @@ void xlbrollr(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
 }  /* END XLBROLLR */
 
@@ -467,7 +485,8 @@ void xlbpitchr(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
 }  /* END XLBPITCHR */
 
@@ -486,7 +505,8 @@ void xlbyawr(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
 }  /* END XLBYAWR */
 
@@ -505,7 +525,8 @@ void xlblata(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
 }  /* END XLBLATA */
 
@@ -524,7 +545,8 @@ void xlblona(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
 }  /* END XLBLONA */
 
@@ -543,7 +565,8 @@ void xlbnorma(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
 }  /* END XLBNORMA */
 
@@ -562,7 +585,8 @@ void xlitrkart(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_50hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
 }  /* END XLITRKART */
 
@@ -593,7 +617,8 @@ void xlittrka(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_25hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_25hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
 }  /* END XLITTRKA */
 
@@ -612,7 +637,8 @@ void xlidrift(RAWTBL *varp, void *input, NR_TYPE *np)
 
   postProcessData(varp, p, np, label);
 
-  varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_25hz_frame);
+  if ((varp->DynamicLag = ntohl(((Irs_blk *)input)->lag_25hz_frame)) > 1000)
+    varp->DynamicLag = 0;
 
 }  /* END XLIDRIFT */
 
