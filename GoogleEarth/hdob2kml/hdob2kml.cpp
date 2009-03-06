@@ -191,28 +191,31 @@ void ReadDataFromHDOB(const std::string & fileName)
     std::cout << "Reading " << fileName << std::endl;
     
     while (1) {
-        // Get (and skip) the WMO header line
-        getline(hdobFile, line);
-        if (hdobFile.eof())
-            break;
-
-        // Get the HDOB header line
-        getline(hdobFile, line);
 
         char missionId[32];
-        char str[80];
         unsigned int yyyymmdd;
         unsigned int obsNum;
-        nread = sscanf(line.c_str(), "%31c%s%d%d", missionId, str, 
-                &obsNum, &yyyymmdd);
         
-        if (nread != 4 || strcmp(str, "HDOB") != 0) {
-            std::cerr << "Bad HDOB header line in file: " << fileName << "." <<
-                "  Skipping file." << std::endl;
-            break;
+	// Read until we get the HDOB header line
+        while (1) {
+            // Read the next line
+            getline(hdobFile, line);
+            if (hdobFile.eof())
+                break;
+    
+            char str[80];
+            nread = sscanf(line.c_str(), "%31c%s%d%d", missionId, str, 
+                    &obsNum, &yyyymmdd);
+
+            missionId[31] = '\0';
+            
+            // When we get a HDOB header line, we can move on to reading data
+            if (nread == 4 & strcmp(str, "HDOB") == 0)
+                break;  
         }
         
-        missionId[31] = '\0';
+        if (hdobFile.eof())
+            break;
         
         date obDate(yyyymmdd / 10000, (yyyymmdd % 10000) / 100, 
                     yyyymmdd % 100);
@@ -220,10 +223,9 @@ void ReadDataFromHDOB(const std::string & fileName)
 
         // Get the list of individual observations in this chunk
         while (1) {
-            getline(hdobFile, line);
-            
+            getline(hdobFile, line);           
             if (line.substr(0, 2) == "$$")
-                return;
+                break;
 
             unsigned int hhmmss;
             unsigned int ddmmLat;
