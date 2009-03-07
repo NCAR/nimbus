@@ -324,7 +324,9 @@ printf("DecodeHeader3: header_file=%s\n", header_file);
       char *files[128];
 
       size_t i = 0;
-      files[i++] = "launch_ss.sh";
+      files[i++] = "sync_server";
+      files[i++] = "-l";
+      files[i++] = "900";	// 900 second time-sorter.
       files[i++] = "-p";
       files[i++] = sync_server_pipe;
       std::set<std::string>::iterator it;
