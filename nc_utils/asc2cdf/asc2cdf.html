@@ -69,6 +69,40 @@ in place of the <kbd class="att">-b</kbd> option.  If both options are specified
 <dd>The <kbd class="att">-s</kbd> option tells asc2cdf to skip 'n' lines before getting to the data.  This option is ignored if -a or -l option has been specified.  The default is 1.
 <p>
 <dd>The <kbd class="att">-a</kbd> option tells asc2cdf that the input file will be following the NASA Data Exchange Format (Ames).
+Please note:
+<p>
+<ul>
+ <li>Units in parentheses at the end of the variable description line.</li>
+ <li>List of short variable names in the special comments section.</li>
+</ul>
+<p>
+Example:
+<blockquote>
+<pre class="CDL">
+ 19 1001
+Webster, Chris
+NCAR Research Aviation Facility
+
+HIPPO-Global
+  1  1
+2009 01 16  2009 03 25
+1.0
+Time in seconds from 00Z
+  4
+1.0 1.0 1.0 1.0
+99999 99999 99999 99999
+Vertical Differential Pressure, Radome (hPa)
+Attack Angle, Radome Diff. Pressure (degree)
+IRS Altitude (m)
+Avionics GPS Altitude (MSL) (m)
+  0
+  1
+UTC      ADIFR  AKRD  ALT  ALT_G
+66890 0.0071611 0 34.8615 72.3047
+66891 0.0185372 0 34.8279 72.5152
+66892 -0.00574668 0 34.8234 72.744
+</pre>
+</blockquote>
 <p>
 <dd>The <kbd class="att">-l</kbd> option tells asc2cdf that the input file will be following the NASA Data Exchange Format (Langley).
 <p>
@@ -82,7 +116,7 @@ Address=P.O. Box 3000, Boulder, CO 80307-3000
 Phone=(303) 497-1030
 Investigator=Teresa Campos
 ProjectName=RICO
-Aircraft=N130AR
+Platform=N130AR
 ProjectNumber=135
 FlightNumber=rf18
 coordinates=LONC LATC PALT Time
@@ -108,7 +142,7 @@ Research Aviation Facility.<br>
 <hr>
 <font size=2>
 Last update:
-Wed Feb  1 21:31:06 MST 2006
+Mon Mar 30 17:39:39 MDT 2009
 </font>
 
 </body>
