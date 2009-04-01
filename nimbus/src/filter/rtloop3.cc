@@ -68,7 +68,7 @@ MultiCastStatus::MultiCastStatus()
   std::list<nidas::util::Inet4NetworkInterface>::const_iterator itfi;
   for (itfi = itf.begin(); itfi != itf.end(); ++itfi)
     if (itfi->getAddress().getHostAddress().compare(0, DATA_NETWORK.size(), DATA_NETWORK) == 0)
-      msock.setInterface(msaddr,*itfi);
+      msock.setInterface(maddr,*itfi);
 }
 
 MultiCastStatus::~MultiCastStatus()
