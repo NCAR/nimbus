@@ -64,11 +64,11 @@ MultiCastStatus::MultiCastStatus()
   msaddr = nidas::util::Inet4SocketAddress(maddr,DSM_MULTICAST_STATUS_PORT);
 
   // Set to proper interface if this computer has more than one.
-  std::list<nidas::util::Inet4Address> itf = msock.getInterfaceAddresses();
-  std::list<nidas::util::Inet4Address>::iterator itfi;
+  std::list<nidas::util::Inet4NetworkInterface> itf = msock.getInterfaces();
+  std::list<nidas::util::Inet4NetworkInterface>::const_iterator itfi;
   for (itfi = itf.begin(); itfi != itf.end(); ++itfi)
-    if ((*itfi).getHostAddress().compare(0, DATA_NETWORK.size(), DATA_NETWORK) == 0)
-      msock.setInterface(*itfi);
+    if (itfi->getAddress().getHostAddress().compare(0, DATA_NETWORK.size(), DATA_NETWORK) == 0)
+      msock.setInterface(msaddr,*itfi);
 }
 
 MultiCastStatus::~MultiCastStatus()
