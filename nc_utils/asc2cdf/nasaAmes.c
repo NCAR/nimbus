@@ -289,7 +289,9 @@ void CreateNASAamesNetCDF(FILE *fp)
       }
     }
   }
-  printf("Header parsed... rewinding to read data\n");
+
+  if (verbose)
+    printf("Header parsed... rewinding to read data\n");
 
 
   rewind(fp);
