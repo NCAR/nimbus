@@ -211,7 +211,7 @@ void createTime(int dims[])
 		strlen(timeUnitsFormat)+1, timeUnitsFormat);
 
   nc_def_var(ncid, "time_offset", NC_FLOAT, 1, dims, &timeOffsetID);
-  nc_put_att_float(ncid, timeVarID, "_FillValue", NC_FLOAT, 1, &missing_val_f);
+  nc_put_att_float(ncid, timeOffsetID, "_FillValue", NC_FLOAT, 1, &missing_val_f);
   nc_put_att_text(ncid, timeOffsetID, "units",
                 strlen(baseTimeUnits)+1, baseTimeUnits);
   strcpy(buffer, "Seconds since base_time.");

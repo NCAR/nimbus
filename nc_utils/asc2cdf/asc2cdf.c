@@ -53,7 +53,7 @@ static void WriteMissingData(int, int);
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
-  int	i, hz, hour, minute, second, currSecond, lastSecond = -1;
+  int	i, hz, hour, minute, second, firstSecond, currSecond, prevSecond = -1;
   int	startHour, startMinute, startSecond;
   char	*p;
   float	dataValue;
@@ -104,7 +104,6 @@ int main(int argc, char *argv[])
   nc_enddef(ncid);
   WriteBaseTime();
 
-
   printf("Averaging Period = %d, Data Rate = %dHz\n", BaseDataRate, dataRate);
 
 
@@ -153,8 +152,12 @@ int main(int argc, char *argv[])
 
     currSecond = hour * 3600 + minute * 60 + second;
 
-    if (lastSecond == -1 && strlen(FlightDate) > 0) // 1st time through loop.
-      BaseTime += currSecond;
+    if (prevSecond == -1) // 1st time through loop.
+    {
+      firstSecond = currSecond;
+//      if (strlen(FlightDate) > 0)
+        BaseTime += currSecond;
+    }
 
     if (nRecords == 0)
       {
@@ -163,25 +166,29 @@ int main(int argc, char *argv[])
       startSecond = second;
       }
     else
-    if (currSecond == lastSecond)
+    if (currSecond == prevSecond)
       {
       printf("Duplicate time stamp, ignoring.\n");
-      lastSecond = currSecond;
+      prevSecond = currSecond;
       continue;
       }
     else
-    if (currSecond > lastSecond + BaseDataRate)
+    if (currSecond > prevSecond + BaseDataRate)
       {
-      if (currSecond - lastSecond > 2)
-        printf("last time = %d, new time = %d\n", lastSecond, currSecond);
-      WriteMissingData(currSecond, lastSecond);
+      if (currSecond - prevSecond > 2)
+        printf("last time = %d, new time = %d\n", prevSecond, currSecond);
+//      WriteMissingData(currSecond, prevSecond);
       }
 
-    lastSecond = currSecond;
+    prevSecond = currSecond;
 
-    dataValue = (float)(nRecords * BaseDataRate);
-    nc_put_var1_float(ncid, timeVarID, &nRecords, &dataValue);
-    nc_put_var1_float(ncid, timeOffsetID, &nRecords, &dataValue);
+    dataValue = currSecond - firstSecond;
+    size_t rec = dataValue;
+    nc_put_var1_float(ncid, timeVarID, &rec, &dataValue);
+    nc_put_var1_float(ncid, timeOffsetID, &rec, &dataValue);
+//    dataValue = (float)(nRecords * BaseDataRate);
+//    nc_put_var1_float(ncid, timeVarID, &nRecords, &dataValue);
+//    nc_put_var1_float(ncid, timeOffsetID, &nRecords, &dataValue);
 
     for (hz = 0; hz < dataRate; ++hz)
       {
@@ -200,7 +207,7 @@ int main(int argc, char *argv[])
             dataValue = dataValue * scale[i] + offset[i];
           }
 
-        index[0] = nRecords; index[1] = hz;
+        index[0] = rec; index[1] = hz;
         nc_put_var1_float(ncid, varid[i], index, &dataValue);
         }
 
