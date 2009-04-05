@@ -188,6 +188,9 @@ void CreatePlainNetCDF(FILE *fp)
 /* -------------------------------------------------------------------- */
 void createTime(int dims[])
 {
+  int	missing_val_i = MISSING_VALUE;
+  float	missing_val_f = MISSING_VALUE;
+
   /* Time Variables, base_time/time_offset being deprecated.  Feb05
    */
   nc_def_var(ncid, "base_time", NC_INT, 0, 0, &baseTimeID);
@@ -197,6 +200,7 @@ void createTime(int dims[])
   nc_put_att_text(ncid, baseTimeID, "long_name", strlen(buffer)+1, buffer);
 
   nc_def_var(ncid, "Time", NC_INT, 1, dims, &timeVarID);
+  nc_put_att_int(ncid, timeVarID, "_FillValue", NC_INT, 1, &missing_val_i);
   nc_put_att_text(ncid, timeVarID, "units",
                 strlen(baseTimeUnits)+1, baseTimeUnits);
   strcpy(buffer, "time");
@@ -207,6 +211,7 @@ void createTime(int dims[])
 		strlen(timeUnitsFormat)+1, timeUnitsFormat);
 
   nc_def_var(ncid, "time_offset", NC_FLOAT, 1, dims, &timeOffsetID);
+  nc_put_att_float(ncid, timeVarID, "_FillValue", NC_FLOAT, 1, &missing_val_f);
   nc_put_att_text(ncid, timeOffsetID, "units",
                 strlen(baseTimeUnits)+1, baseTimeUnits);
   strcpy(buffer, "Seconds since base_time.");
