@@ -16,27 +16,20 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 #include "decode.h"
 #include "brdcast.h"
 
-#include "UdpSocket.h"
-
 #include <sstream>
-
-const std::string Broadcast::RT_UDP_ADDR_1 = "128.117.84.255";
-//const std::string Broadcast::RT_UDP_ADDR_1 = "192.168.84.255";
-const std::string Broadcast::RT_UDP_ADDR_2 = "192.168.184.255";
 
 const size_t Broadcast::RADAR_ALT_INDX = 5;
 
+using namespace nidas::util;
 
 /* -------------------------------------------------------------------- */
 Broadcast::Broadcast() : UDP_Base(31000)
 {
   _varList = readFile(BROADCAST);
 
-  _brdcst1 = new UdpSocket(UDP_PORT, RT_UDP_ADDR_1.c_str());
-  _brdcst1->openSock(UDP_BROADCAST);
-
-  _brdcst2 = new UdpSocket(UDP_PORT, RT_UDP_ADDR_2.c_str());
-  _brdcst2->openSock(UDP_BROADCAST);
+  _socket = new DatagramSocket;
+  _socket->setBroadcastEnable(true);
+  _to = new Inet4SocketAddress(Inet4Address(INADDR_BROADCAST), UDP_PORT);
 }
 
 /* -------------------------------------------------------------------- */
@@ -65,8 +58,7 @@ void Broadcast::BroadcastData(const std::string & timeStamp)
     }
   }
   bcast << "\r\n";
-  _brdcst1->writeSock(bcast.str().c_str(), bcast.str().length());
-  _brdcst2->writeSock(bcast.str().c_str(), bcast.str().length());
+  _socket->sendto(bcast.str().c_str(), bcast.str().length(), 0, *_to);
   printf(bcast.str().c_str());
 
 }

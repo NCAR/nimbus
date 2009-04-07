@@ -101,7 +101,9 @@ void RealTimeLoop()
   }
 
   bcast = new Broadcast();
-  grnd_feed = new GroundFeed(cfg.GroundFeedDataRate());
+
+  if (cfg.TransmitToGround())
+    grnd_feed = new GroundFeed(cfg.GroundFeedDataRate());
 
   do
     {

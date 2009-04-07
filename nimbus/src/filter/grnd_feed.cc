@@ -17,8 +17,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 #include "decode.h"
 #include "grnd_feed.h"
 
-#include "UdpSocket.h"
-
 #include <sstream>
 #include <bzlib.h>
 
@@ -26,18 +24,23 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 // eol-rt-data.guest.ucar.edu
 const std::string GroundFeed::DEST_HOST_ADDR = "128.117.188.122";
 
+using namespace nidas::util;
+
 
 /* -------------------------------------------------------------------- */
 GroundFeed::GroundFeed(int rate) : UDP_Base(31007), _dataRate(rate)
 {
+  if (cfg.GroundFeedType() != Config::UDP)
+    return;
+
   std::string fileName(XMIT_VARS);
   fileName += ".rt";
   _varList = readFile(fileName);
 
   setCoordinatesFrom(_varList);
 
-  _socket = new UdpSocket(UDP_PORT, DEST_HOST_ADDR.c_str());
-  _socket->openSock(UDP_UNBOUND);
+  _socket = new nidas::util::DatagramSocket;
+  _to = new Inet4SocketAddress(Inet4Address::getByName(DEST_HOST_ADDR), UDP_PORT);
 
   // Initialize vectors used for averaging
   for (size_t i = 0; i < _varList.size(); ++i)
@@ -205,10 +208,10 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
     int errnum;
     char msg[100];
     sprintf(msg, "Failed to compress the ground feed stream: %s\n", BZ2_bzerror(&b, &errnum) );
-    LogMessage(msg);
+    ::LogMessage(msg);
     return;
   }
-  _socket->writeSock(buffer, bufLen);
+  _socket->sendto(buffer, bufLen, 0, *_to);
 
 //  printf("\ncompressed %d -> %d\n", groundString.str().length(), bufLen);
   printf("GroundFeed: %s\n", groundString.str().c_str());

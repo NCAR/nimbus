@@ -128,7 +128,9 @@ void RealTimeLoop3()
   ILOG(("RealTimeLoop entered."));
 
   bcast = new Broadcast();	// ASCII/IWG1 and ground feed.
-  grnd_feed = new GroundFeed(cfg.GroundFeedDataRate());	// UDP ground feed.
+
+  if (cfg.TransmitToGround())
+    grnd_feed = new GroundFeed(cfg.GroundFeedDataRate());	// UDP ground feed.
 
   if (cfg.OutputSQL())
   {
