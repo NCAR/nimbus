@@ -26,10 +26,6 @@ public:
   void	BroadcastData(const std::string & timeStamp);
 
 protected:
-  UdpSocket *_brdcst1, *_brdcst2;
-
-  static const std::string RT_UDP_ADDR_1, RT_UDP_ADDR_2;
-
   /**
    * In order to conform to the IWGADTS IWG1 packet, radar altimeter needs to be
    * in feet, not meters.

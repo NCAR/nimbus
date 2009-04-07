@@ -16,8 +16,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 #include <string>
 #include <vector>
 
+#include <nidas/util/Socket.h>
+
 class var_base;
-class UdpSocket;
 
 /* -------------------------------------------------------------------- */
 class UDP_Base
@@ -38,7 +39,10 @@ protected:
   virtual
   std::vector<var_base *> readFile(const std::string & fileName) const;
 
-  UdpSocket * _socket;
+  nidas::util::DatagramSocket * _socket;
+
+  /// Destination UDP.
+  nidas::util::Inet4SocketAddress * _to;
 
   std::vector<var_base *> _varList;
 
