@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.*;
 
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
@@ -45,6 +46,12 @@ public class BatchConfig {
 	private List<String> selVars; 
 
 	/**
+	 * List selected Variables' data format
+	 */
+	//private List<String> varDatFmt;
+    Map<String, String> tmpVdf; 
+    
+	/**
 	 * ti- format
 	 * ti= yyyy-mm-dd,hh:mm:ss~yyyy-mm-dd,hh:mm:ss
 	 */
@@ -55,6 +62,12 @@ public class BatchConfig {
 	 * The class users need to call start() to read and interpret the batch file to get ready for data writing.
 	 * @param args
 	 */
+	
+	/**
+	 * get the user preferred variable data formats
+	 */
+	public Map<String, String> getTmpVarDataFmt() {return tmpVdf;}
+
 	public BatchConfig(String[] args) {
 		parseArgs(args);
 	}
@@ -113,7 +126,7 @@ public class BatchConfig {
 	public List<String> getSelVars() {
 		return selVars;
 	}
-
+	
 	/**
 	 * 
 	 * @return fmt --ref to dataFmt definition
@@ -142,7 +155,7 @@ public class BatchConfig {
 	public String showSelectedVars() {
 		String display ="";
 		for (int i=0; i<selVars.size(); i++) {
-			display += selVars.get(i)+ "\n";
+			display += selVars.get(i)+ "   " + "\n";
 		}
 		System.out.println(display);
 		return display;
@@ -194,7 +207,8 @@ public class BatchConfig {
 		fr = new FileReader (new File(files[0]));
 		BufferedReader br = new BufferedReader (fr);
 		selVars = new ArrayList<String>();
-
+		tmpVdf = new HashMap<String, String>();
+		
 		String line = br.readLine().trim();
 		while (line != null) {
 			String val  = line.substring(line.indexOf("=")+1).trim();
@@ -250,6 +264,12 @@ public class BatchConfig {
 				selVars.add(val);
 			}
 
+			//sign var format
+			if (val.indexOf("%")==0 ) {
+				String var = line.substring(0, line.indexOf("=")).trim();
+				tmpVdf.put(var, val);
+			}
+					
 			line = br.readLine();
 		} //while 
 		br.close();
@@ -389,7 +409,7 @@ public class BatchConfig {
 			dataFmt[DataFmt.MVAL_IDX]= DataFmt.MISSVAL;
 			dataFmt[DataFmt.DMTR_IDX]= DataFmt.SPACEVAL;
 		}
-
+			
 	}
 
 }//eof class

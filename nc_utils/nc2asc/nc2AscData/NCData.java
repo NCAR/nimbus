@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
@@ -108,6 +110,21 @@ public class NCData {
 	 * batch mode 
 	 */
 	private boolean bMode = false;
+	
+	/**
+	 * the user selected variable formats , either batch mode or GUUI mode
+	 * the length should be the same as selected variable len.
+	 */
+	private List<String> varDatFmt;
+	
+	public List<String> getVarDatFmt() {
+		return varDatFmt;
+	}
+	
+	public void  setVarDatFmt(List<String> vfmt) {
+		//varDatFmt=  ArrayList<String>( vfmt.size());
+		varDatFmt= vfmt;
+	}
 
 	public void setMode (boolean b) { bMode = b;}
 
@@ -435,9 +452,18 @@ public class NCData {
 		return  dtm;
 	}
 
-	public void writeDataToFile(List<Variable> sublvars, int[] range, String[] fmt){
+	public void writeDataToFile(List<Variable> sublvars, int[] range, String[] fmt ){
 		NC2Act.wrtMsg("\nStart writing ascii data...");
-
+		if ( varDatFmt== null) {
+			NC2Act.wrtMsg("\n Variable formats have not initialized...");
+			return;
+		}
+		
+		if (sublvars.size()!= varDatFmt.size()) {
+			NC2Act.wrtMsg("\n MisMatched variables and the formats...");
+			return;
+		}
+		
 		// all the time-range data length-should be the seconds in the time range
 		tmPassed=0; bfinish =false; progIdx =0; NC2A.overMidNight=false;
 
@@ -481,18 +507,18 @@ public class NCData {
 		} 
 		if (gDataInf[0]>1) {
 			gDataInf[0]= topRateSubVar;
-			writeHighRateData(range, fmt, milSec, t1, size);
+			writeHighRateData(range, fmt, milSec, t1, size, varDatFmt);
 		} else if (Integer.parseInt(fmt[DataFmt.AVG_IDX])>1) {
-			writeLowRateAvgData(range, fmt, milSec, t1, size);
+			writeLowRateAvgData(range, fmt, milSec, t1, size, varDatFmt);
 		} else {
-			writeNormalData (range, fmt, milSec, t1, size) ;
+			writeNormalData (range, fmt, milSec, t1, size, varDatFmt) ;
 		}
 
 		tmPassed =System.currentTimeMillis() - t1;
 		bfinish = true;
 	}
 
-	private void writeNormalData(int[] range, String[] fmt, long milSec, long t1, int size) {
+	private void writeNormalData(int[] range, String[] fmt, long milSec, long t1, int size, List<String> vdf) {
 		//regular data - no average& no high rate
 		String dmtr = fmt[DataFmt.DMTR_IDX], mval = fmt[DataFmt.MVAL_IDX];
 		for (int i =0; i<range[1]; i++) {
@@ -500,13 +526,14 @@ public class NCData {
 			String line = getNewTm(milSec,i+range[0], fmt, false);
 			progIdx++; 
 			for (int j =0; j<size; j++) {
+				String varFmt= vdf.get(i);
 				int count =0;
 				while (count<oneDLen[j]) {
 					float f = data[j][oneDLen[j]*i+count];
 					if (f == missVal[j]) {
 						line += dmtr + mval;
 					} else {
-						line += dmtr + f;
+						line += dmtr + String.format(varFmt, f); 
 					}
 					count++;			
 				}
@@ -515,7 +542,7 @@ public class NCData {
 		}
 	}
 
-	private void writeLowRateAvgData(int[] range, String[] fmt, long milSec, long t1, int size) {
+	private void writeLowRateAvgData(int[] range, String[] fmt, long milSec, long t1, int size, List<String> vdf) {
 		int avg = Integer.parseInt(fmt[DataFmt.AVG_IDX]); 
 		long tot = 0;
 		for (int j=0; j<avg; j++) {
@@ -529,6 +556,7 @@ public class NCData {
 			if (bfinish) return;
 			progIdx ++; totValIdx=0; String lineData="";
 			for (int j =0; j<size; j++) {
+				String varFmt= vdf.get(i);
 				int count =0;
 				while (count<oneDLen[j]) {
 					float f = data[j][oneDLen[j]*i+count];
@@ -542,7 +570,7 @@ public class NCData {
 						if (totVal[totValIdx] == mVal) {
 							lineData += dmtr + mval;;
 						} else {
-							lineData += dmtr + totVal[totValIdx];
+							lineData += dmtr + String.format(varFmt,totVal[totValIdx]);
 						}
 						totVal[totValIdx]=0;
 					}
@@ -563,7 +591,7 @@ public class NCData {
 	}
 
 
-	private void writeHighRateData(int[] range, String[] fmt, long milSec, long t1, int size) {
+	private void writeHighRateData(int[] range, String[] fmt, long milSec, long t1, int size, List<String> vdf) {
 		String dmtr = fmt[DataFmt.DMTR_IDX], mval = fmt[DataFmt.MVAL_IDX]; 
 		float[] valKp= new float[totVarLen];
 
@@ -576,16 +604,18 @@ public class NCData {
 			for (int k=0; k<topRate; k++) {  //highest rate
 				int varIdx =0;
 				String line  = getNewTm(milSec + (long)(range[0]+i+k*tmInt)*1000, 0, fmt, false);
+			
 				for (int j =0; j<size; j++) { //variables
+					String varFmt= vdf.get(i);
 					int count =0; int dataInterval = topRate/hRate[j]; 
 					while (count<oneDLen[j]) { //length-of-each-variable
 						if (k % dataInterval==0) {
 							int idx = k/dataInterval;
 							valKp[varIdx] = data[j][oneDLen[j]*i + count + idx];
-							line += dmtr + valKp[varIdx];
+							line += dmtr + String.format(varFmt,valKp[varIdx]);
 						} else {
 							if ( mval!=null && mval.equals(DataFmt.REPLICATE)) {
-								line += dmtr + valKp[varIdx];
+								line += dmtr + String.format(varFmt,valKp[varIdx]);
 							} else {
 								line += dmtr + mval;
 							}
@@ -635,7 +665,7 @@ public class NCData {
 	 * return the list of Variables
 	 * @return -- selected variables
 	 */
-	public List<Variable> getBatchSubVars(List<String> selVars){
+	public List<Variable> getBatchSubVars(List<String> selVars ){
 
 		if (fin==null) {System.out.println("The netcdf file is not opened.");
 		System.exit(-1);
@@ -662,6 +692,23 @@ public class NCData {
 		return lvars;
 	}
 
+	
+	public void signBatchVarDataFmt(List <Variable> subVars, Map<String, String> tmpVarFmt) {
+		varDatFmt.clear();
+		for (int i=0; i<subVars.size(); i++) {
+			varDatFmt.add("%f");
+		}
+		
+		if (tmpVarFmt==null) return;
+		Set<String> ks= tmpVarFmt.keySet();
+		for (int i=0; i<subVars.size(); i++) {
+			String vn= subVars.get(i).getName().trim();
+			if (ks.contains(vn)) {
+				varDatFmt.set(i,tmpVarFmt.get(vn));
+			}
+		}
+	}
+	
 	/**
 	 * Open the netcdf file, read the Time variable to get start-time==>startLong,
 	 * get the selected start time from dataFmt[TMSET_IDX]split(",")[0]==>selectedLong,

@@ -25,5 +25,13 @@ fv=	FillValue/Blank/Replicate
 var=	ADIFR
 var=	BDIFR
 
+Variable data format:  std c style float format %f %.2f %7.2f %d %e, etc
+ADIFR=%.2f
+BDIFR=%d
+
+
+
+
+
 Minimum request for a batch file is i/o files, and variables.
 

@@ -135,6 +135,8 @@ public class NC2A extends JPanel implements ActionListener {
 		System.out.println("bf-selectedVars= \n" +bf.showSelectedVars()+ "\nrange "+ range[0]+ "  "+ range[1]); 
 		
 		List<Variable> sublvars= ncdata.getBatchSubVars(bf.getSelVars());
+		ncdata.signBatchVarDataFmt(sublvars,bf.getTmpVarDataFmt());
+		
 		if (sublvars.size()<=0) {
 			System.out.println("NO variables are selected...");
 			return;

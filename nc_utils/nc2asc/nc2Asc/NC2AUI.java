@@ -947,13 +947,16 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 	private List<Variable>  getSubVarList(){
 		List<Variable> slvars= new ArrayList<Variable>(); 
 		List<Variable> allvars= ncdata.getVars();
+		List<String>   varfmt = new ArrayList<String>();
 		int len = allvars.size()-1; 
 		for (int i=0; i<len; i++) {
 			if (selStatus.get(i)==null || !selStatus.get(i).equals("Y")) {
 			} else {
 				slvars.add(allvars.get(i+1)); //[i]+1 to skip the time var on the first line
+				varfmt.add("%f");
 			}
 		}
+		ncdata.setVarDatFmt(varfmt);
 		return slvars;
 	}
 
