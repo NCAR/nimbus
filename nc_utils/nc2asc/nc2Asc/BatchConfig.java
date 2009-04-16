@@ -4,9 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 import java.util.*;
 
 import ucar.nc2.NetcdfFile;
@@ -265,9 +262,11 @@ public class BatchConfig {
 			}
 
 			//sign var format
-			if (val.indexOf("%")==0 ) {
+			//System.out.printf("\nparse batch file: val= %s",val);
+			if (line.indexOf("%")> 0 ) {
 				String var = line.substring(0, line.indexOf("=")).trim();
 				tmpVdf.put(var, val);
+				System.out.printf("parse batch file: var = %s val= %s \n", var, val);
 			}
 					
 			line = br.readLine();

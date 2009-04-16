@@ -122,8 +122,8 @@ public class NCData {
 	}
 	
 	public void  setVarDatFmt(List<String> vfmt) {
-		//varDatFmt=  ArrayList<String>( vfmt.size());
-		varDatFmt= vfmt;
+		varDatFmt = vfmt;
+		
 	}
 
 	public void setMode (boolean b) { bMode = b;}
@@ -507,18 +507,19 @@ public class NCData {
 		} 
 		if (gDataInf[0]>1) {
 			gDataInf[0]= topRateSubVar;
-			writeHighRateData(range, fmt, milSec, t1, size, varDatFmt);
+			writeHighRateData(range, fmt, milSec, t1, size);
 		} else if (Integer.parseInt(fmt[DataFmt.AVG_IDX])>1) {
-			writeLowRateAvgData(range, fmt, milSec, t1, size, varDatFmt);
+			writeLowRateAvgData(range, fmt, milSec, t1, size);
 		} else {
-			writeNormalData (range, fmt, milSec, t1, size, varDatFmt) ;
+			writeNormalData (range, fmt, milSec, t1, size) ;
 		}
 
 		tmPassed =System.currentTimeMillis() - t1;
 		bfinish = true;
+		NC2Act.wrtMsg("\n Writing data is done.");
 	}
 
-	private void writeNormalData(int[] range, String[] fmt, long milSec, long t1, int size, List<String> vdf) {
+	private void writeNormalData(int[] range, String[] fmt, long milSec, long t1, int size) {
 		//regular data - no average& no high rate
 		String dmtr = fmt[DataFmt.DMTR_IDX], mval = fmt[DataFmt.MVAL_IDX];
 		for (int i =0; i<range[1]; i++) {
@@ -526,7 +527,7 @@ public class NCData {
 			String line = getNewTm(milSec,i+range[0], fmt, false);
 			progIdx++; 
 			for (int j =0; j<size; j++) {
-				String varFmt= vdf.get(i);
+				String varFmt= varDatFmt.get(j);
 				int count =0;
 				while (count<oneDLen[j]) {
 					float f = data[j][oneDLen[j]*i+count];
@@ -542,7 +543,7 @@ public class NCData {
 		}
 	}
 
-	private void writeLowRateAvgData(int[] range, String[] fmt, long milSec, long t1, int size, List<String> vdf) {
+	private void writeLowRateAvgData(int[] range, String[] fmt, long milSec, long t1, int size) {
 		int avg = Integer.parseInt(fmt[DataFmt.AVG_IDX]); 
 		long tot = 0;
 		for (int j=0; j<avg; j++) {
@@ -556,7 +557,7 @@ public class NCData {
 			if (bfinish) return;
 			progIdx ++; totValIdx=0; String lineData="";
 			for (int j =0; j<size; j++) {
-				String varFmt= vdf.get(i);
+				String varFmt= varDatFmt.get(j);
 				int count =0;
 				while (count<oneDLen[j]) {
 					float f = data[j][oneDLen[j]*i+count];
@@ -591,7 +592,7 @@ public class NCData {
 	}
 
 
-	private void writeHighRateData(int[] range, String[] fmt, long milSec, long t1, int size, List<String> vdf) {
+	private void writeHighRateData(int[] range, String[] fmt, long milSec, long t1, int size) {
 		String dmtr = fmt[DataFmt.DMTR_IDX], mval = fmt[DataFmt.MVAL_IDX]; 
 		float[] valKp= new float[totVarLen];
 
@@ -606,7 +607,7 @@ public class NCData {
 				String line  = getNewTm(milSec + (long)(range[0]+i+k*tmInt)*1000, 0, fmt, false);
 			
 				for (int j =0; j<size; j++) { //variables
-					String varFmt= vdf.get(i);
+					String varFmt= varDatFmt.get(j);
 					int count =0; int dataInterval = topRate/hRate[j]; 
 					while (count<oneDLen[j]) { //length-of-each-variable
 						if (k % dataInterval==0) {
@@ -694,7 +695,7 @@ public class NCData {
 
 	
 	public void signBatchVarDataFmt(List <Variable> subVars, Map<String, String> tmpVarFmt) {
-		varDatFmt.clear();
+		varDatFmt = new ArrayList<String>();
 		for (int i=0; i<subVars.size(); i++) {
 			varDatFmt.add("%f");
 		}
