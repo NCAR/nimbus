@@ -29,9 +29,9 @@ Variable data format:  std c style float format %f %.2f %7.2f  %e, etc
 ADIFR=%.2f
 BDIFR=%f
 
-
-
-
+Windows or Linux:
+nc2Asc.sh          to run in Linux
+nc2Asc.bat         to run in Windows
 
 Minimum request for a batch file is i/o files, and variables.
 
