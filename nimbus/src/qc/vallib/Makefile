@@ -30,11 +30,11 @@ ar-flags = cr
 
 # to compile
 compile-c++ = g++
-compile-c++-flags = -c -ansi -O -I$(inc) -I$(sock) $(intflags) \
+compile-c++-flags = -c -ansi -O -I$(inc) -I/opt/local/nidas/x86/include -I$(sock) $(intflags) \
 	$(extflags) 
 
 compile-c = gcc
-compile-c-flags = -c -ansi -O -I$(inc) -I$(sock) $(intflags) \
+compile-c-flags = -c -ansi -O -I$(inc) -I/opt/local/nidas/x86/include -I$(sock) $(intflags) \
 	$(extflags) 
 
 # to link
