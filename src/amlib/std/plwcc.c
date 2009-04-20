@@ -23,12 +23,12 @@ struct _running_average
  
 static const size_t baseline_lwc_seconds = 30;
 static const size_t baseline_conc_seconds = 2;
-static const NR_TYPE cloud_conc_threshold = 0.01;
 
 /*  Values from /home/local/proj/Defaults on 23 April 1998, RLR		*/
 static NR_TYPE  twire[3] = {155.0, 155.0, 155.0};	/* Wire temperature (K)	*/
 static NR_TYPE  tasFac[3] = {1.0, 1.0, 1.0};		/* True airspeed factor	*/
 static NR_TYPE  twireDiam[3] = {0.21, 0.21, 0.21};	/* Diameter	*/
+static NR_TYPE  cloud_conc_threshold = 0.01;		/* Cloud Concentration Baseline Threshold */
 
 // Four running averages.
 struct _running_average lwc1, lwc2, conc1, conc2;
@@ -97,6 +97,14 @@ void plwccInit(var_base *varp)
   else
     twireDiam[0] = tmp[0];
 
+  if ((tmp = GetDefaultsValue("CLOUD_CONC_THRESHOLD", varp->name)) == NULL)
+  {
+    sprintf(buffer,"Value set to %f in AMLIB function plwccInit.\n", cloud_conc_threshold);
+    LogMessage(buffer);
+  }
+  else
+    cloud_conc_threshold = tmp[0];
+
   memset(&lwc1, 0, sizeof(_running_average));
   memset(&conc1, 0, sizeof(_running_average));
   allocate(&lwc1, baseline_lwc_seconds);
@@ -132,6 +140,14 @@ void plwcc1Init(var_base *varp)
   }
   else
     twireDiam[1] = tmp[0];
+
+  if ((tmp = GetDefaultsValue("CLOUD_CONC_THRESHOLD", varp->name)) == NULL)
+  {
+    sprintf(buffer,"Value set to %f in AMLIB function plwccInit.\n", cloud_conc_threshold);
+    LogMessage(buffer);
+  }
+  else
+    cloud_conc_threshold = tmp[0];
 
   memset(&lwc2, 0, sizeof(_running_average));
   memset(&conc2, 0, sizeof(_running_average));
