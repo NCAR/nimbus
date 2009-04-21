@@ -9,7 +9,6 @@ ENTRY POINTS:   satfh()
 STATIC FNS:     none
 
 DESCRIPTION:    Ambient Temperature for anti-iced sensors:
-			GV	Harco anti-iced sensor
 			C130	Rosemount 102 heated
 
 COPYRIGHT:      University Corporation for Atmospheric Research, 1992-2008
@@ -22,48 +21,14 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 1992-2008
 extern NR_TYPE	recfrh;
 extern NR_TYPE	tfher1,tfher2;	/* set in initAC.c */
 
-static const int MAX_TT = 8;
-static int ProbeCount = 0;
-
-static NR_TYPE atfh[nFeedBackTypes][MAX_TT];
+static NR_TYPE atfh[nFeedBackTypes] = { 0.0, 0.0 };
 
 /* -------------------------------------------------------------------- */
 void atfhInit(var_base *varp)
 {
-  int	indx;
-
-  if (ProbeCount > MAX_TT)
-  {
-    fprintf(stderr, "\natfh.c: atfhInit: MAX_TT exceeded, get a programmer to fix.  Fatal.\n");
-    exit(1);
-  }
-
-
   std::vector<NR_TYPE> values;
   values.push_back(recfrh);
   AddToDefaults(varp->name, "RecoveryFactor", values);
-
-  /* Frequently ProbeCount gets set in hdr_decode.c, but we are doing it here for
-   * this instrument.
-   */
-  if ((indx = SearchTable(raw, ((DERTBL *)varp)->depend[0])) != -1)
-  {
-    raw[indx]->ProbeCount = ProbeCount;
-  }
-  else
-  if ((indx = SearchTable(derived, ((DERTBL *)varp)->depend[0])) != -1)
-  {
-    derived[indx]->ProbeCount = ProbeCount;
-  }
-  else
-  {
-    fprintf(stderr, "\natfh.c: atfhInit: Can't find %s, shouldn't happen.  Fatal.\n",
-		((DERTBL *)varp)->depend[0]);
-    exit(1);
-  }
-
-  varp->ProbeCount = ProbeCount;
-  ++ProbeCount;
 
 }	/* END CONSTRUCTOR */
 
@@ -86,6 +51,7 @@ void sttwhc(DERTBL *varp)
 
   tth = GetSample(varp, 0);
   xmach2 = GetSample(varp, 1);
+  psxc = GetSample(varp, 2);
 
   if (isnan(tth) || isnan(xmach2))
   {
@@ -93,44 +59,28 @@ void sttwhc(DERTBL *varp)
     return;
   }
 
-
   if (firstTime[FeedBack])
   {
     firstTime[FeedBack] = false;
-    atfh[FeedBack][varp->ProbeCount] = tth;
+    atfh[FeedBack] = tth;
   }
 
-  if (tth < -273.15)
-    tth = -273.15;
+  if (tth < -Kelvin)
+    tth = -Kelvin;
 
   if (xmach2 <= 0.0 || isnan(xmach2))
     xmach2 = 0.0001;
 
-  switch (cfg.Aircraft())
-  {
-    case Config::HIAPER:
-      if (xmach2 < 0.25)
-        zee = 1.00202; 
-      else
-        zee = (0.99355 + 0.0097071 * sqrt(xmach2) + 0.014429 * xmach2); 
+  zee = 0.269589 * psxc * sqrt((double)xmach2) / (atfh[FeedBack] + Kelvin);
 
-      tth = ((tth + Kelvin) * zee) - 273.15; 
-      break;
+  if (zee < 0.18 || isnan(zee))
+    zee = 0.18;
 
-    default:
-      psxc = GetSample(varp, 2);
+  tth -= (NR_TYPE)pow((double)10.0,
+		(double)tfher1 * log10((double)zee) + tfher2);
 
-      zee = 0.269589 * psxc * sqrt((double)xmach2) / (atfh[FeedBack][varp->ProbeCount] + 273.16);
-
-      if (zee < 0.18 || isnan(zee))
-        zee = 0.18;
-
-      tth -= (NR_TYPE)pow((double)10.0,
-			(double)tfher1 * log10((double)zee) + tfher2);
-    }
-
-  if (tth < -273.15)
-    tth = -273.15;
+  if (tth < -Kelvin)
+    tth = -Kelvin;
 
   PutSample(varp, tth);
 }
@@ -143,9 +93,9 @@ void satfh(DERTBL *varp)
   ttfh = GetSample(varp, 0);
   xmach2 = GetSample(varp, 1);
 
-  atfh[FeedBack][varp->ProbeCount] = AMBIENT(ttfh, (NR_TYPE)recfrh, xmach2);
+  atfh[FeedBack] = AMBIENT(ttfh, (NR_TYPE)recfrh, xmach2);
 
-  PutSample(varp, atfh[FeedBack][varp->ProbeCount]);
+  PutSample(varp, atfh[FeedBack]);
 
 }	/* END SATFH */
 

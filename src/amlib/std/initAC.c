@@ -25,7 +25,7 @@ static NR_TYPE P3_FUSELAGE_PCORS[3] = { -0.046, -0.0265, 0.000087 };
 
 extern int	FlightDate[];
 
-NR_TYPE	recfb, recff, recfkp, recfrh, recfrn, recfw, recfra;
+NR_TYPE	recfb, recff, recfkp, recfrh, recfrn, recfw, recfra, recfrhGV[2];
 
 NR_TYPE	(*pcorPSF)(NR_TYPE, NR_TYPE), (*pcorQCF)(NR_TYPE, NR_TYPE),
 	(*pcorPSFD)(NR_TYPE, NR_TYPE), (*pcorQCR)(NR_TYPE, NR_TYPE),
@@ -84,6 +84,8 @@ void InitAircraftDependencies()
 
   // RECFRH= Rosemount 102E2AL (Heated) recovery factor
   recfrh = 0.985;
+  recfrhGV[0] = 0.985;
+  recfrhGV[1] = 0.985;
 
   // RECFW = Rosemount 102E2AL (wing) recovery factor
   recfw = 0.95;
@@ -260,7 +262,8 @@ void InitAircraftDependencies()
   if ( (tmp = GetDefaultsValue("RECFRH", "INIT_AC")) )
   {
     LogMessage("initAC.c: RECFRH found in Defaults, using.");
-    recfrh = tmp[0];
+    recfrhGV[0] = tmp[0];
+    recfrhGV[1] = tmp[1];
   }
   if ( (tmp = GetDefaultsValue("RECFRN", "INIT_AC")) )
   {
