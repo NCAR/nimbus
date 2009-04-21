@@ -380,7 +380,7 @@ public class BatchConfig {
 		if (item==null || item.isEmpty() ){
 			tmErr = true;
 		} else if (item.equals(DataFmt.FULLTM)) { 
-		} else if (item.split(",").length !=2) {
+		} else if (item.split(DataFmt.TMSETDELIMIT).length !=2) {
 			tmErr = true;
 		}
 		if (tmErr) {
