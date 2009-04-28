@@ -73,11 +73,7 @@ void InitAsyncModule(char fileName[])
   for (size_t i = 0; i < raw.size(); ++i)
     {
     if (cnt == MAX_ASYNC_VARS)
-      {
-      fprintf(stderr,
-      "async.c: MAX_ASYNC_VARS exceeded, fix and recompile.\n");
-      exit(1);
-      }
+      HandleFatalError("async.c: MAX_ASYNC_VARS exceeded, fix and recompile.");
 
     if ((raw[i]->ProbeType & PROBE_PMS2D) && raw[i]->Output == true)
       {
@@ -119,8 +115,7 @@ void WriteAsyncData(char record[])
   time_t	syncTime;
 
   syncTime = GetPreviousTime();
-fprintf(stderr, "Async: p2d_time needs to be converted to time_t\n");
-exit(1);
+HandleFatalError("Async: p2d_time needs to be converted to time_t");
   switch (*((ushort *)record))
     {
     case PMS2DC1: case PMS2DC2: /* PMS2D */

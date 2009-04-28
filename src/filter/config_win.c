@@ -178,10 +178,13 @@ void SetConfigWinFromConfig()
         XmToggleButtonSetState(highRate100Button, true, true);
 	break;
        default:
-	fprintf(stderr, 
-		"SetConfigWinFromConfig() does not handle %d Hz rate!\n",
+        {
+        char msg[1000];
+	sprintf(msg, 
+		"SetConfigWinFromConfig() does not handle %d Hz rate!",
 		cfg.HRTRate());
-	exit(1);
+	HandleFatalError(msg);
+        }
       }
       break;
     }

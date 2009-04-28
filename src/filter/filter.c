@@ -459,10 +459,7 @@ static circBuffPtr newCircBuff(int size)
 
   /* Check size  */
   if (size < 0)
-  {
-    puts("newCircBuff: parameter 'size' < 0");
-    exit(0);
-  }
+    HandleFatalError("newCircBuff: parameter 'size' < 0");
 
   /* Allocate memory for structure.		*/
   aCBPtr = new circBuff;

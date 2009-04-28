@@ -18,6 +18,17 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 #include "nimbus.h"
 #include "gui.h"
 
+#include <csignal>
+
+
+/* -------------------------------------------------------------------- */
+void HandleFatalError(const char err_msg[])
+{
+  fprintf(stderr, "%s\n", err_msg);
+  kill(0, SIGTERM);
+  exit(1);
+
+}	/* END HANDLEFATALERROR */
 
 /* -------------------------------------------------------------------- */
 void HandleError(const char err_msg[])
@@ -25,10 +36,7 @@ void HandleError(const char err_msg[])
   if (cfg.Interactive())
     ShowError(err_msg);
   else
-    {
-    fprintf(stderr, "%s\n", err_msg);
-    exit(1);
-    }
+    HandleFatalError(err_msg);
 
 }	/* END HANDLEERROR */
 

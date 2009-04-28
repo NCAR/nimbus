@@ -36,11 +36,7 @@ void Initialize()
   char    *proj_dir;
 
   if ((proj_dir = (char *)getenv("PROJ_DIR")) == NULL)
-    {
-    fprintf(stderr,
-      "Environment variable PROJ_DIR not defined, this is fatal.\n");
-    exit(1);
-    }
+    HandleFatalError("Environment variable PROJ_DIR not defined, this is fatal.");
 
   cfg.SetProjectDirectory(proj_dir);
 

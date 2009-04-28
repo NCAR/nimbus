@@ -1377,19 +1377,13 @@ static void initCLIMET(char vn[])
 
   strcpy(buffer, "ACLMT"); strcat(buffer, location);
   if ((indx = SearchTable(raw, buffer)) == ERR)
-    {
-    fprintf(stderr, "ACLMT not found, fatal, update $PROJ_DIR/Configuration/RawNames\n");
-    exit(1);
-    }
+    HandleFatalError("ACLMT not found, fatal, update $PROJ_DIR/Configuration/RawNames");
 
   raw[indx]->Length = 7;
 
   strcpy(buffer, "CCLMT"); strcat(buffer, location);
   if ((indx = SearchTable(derived, buffer)) == ERR)
-    {
-    fprintf(stderr, "CCLMT not found, fatal, update $PROJ_DIR/Configuration/DerivedNames\n");
-    exit(1);
-    }
+    HandleFatalError("CCLMT not found, fatal, update $PROJ_DIR/Configuration/DerivedNames");
 
   derived[indx]->Length = 7;
 
@@ -1409,19 +1403,13 @@ static void initRDMA(char vn[])
 
   strcpy(buffer, "ARDMA"); strcat(buffer, location);
   if ((indx = SearchTable(raw, buffer)) == ERR)
-    {
-    fprintf(stderr, "ARDMA not found, fatal, update $PROJ_DIR/Configuration/RawNames\n");
-    exit(1);
-    }
+    HandleFatalError("ARDMA not found, fatal, update $PROJ_DIR/Configuration/RawNames");
 
   raw[indx]->Length = 64;
 
   strcpy(buffer, "CRDMA"); strcat(buffer, location);
   if ((indx = SearchTable(derived, buffer)) == ERR)
-    {
-    fprintf(stderr, "CRDMA not found, fatal, update $PROJ_DIR/Configuration/DerivedNames\n");
-    exit(1);
-    }
+    HandleFatalError("CRDMA not found, fatal, update $PROJ_DIR/Configuration/DerivedNames");
 
   derived[indx]->Length = 64;
 
@@ -2328,10 +2316,7 @@ openVariableDatabase()
 
     sprintf(buffer, VARDB.c_str(), cfg.ProjectDirectory().c_str(), "Configuration/", "raf/");
     if (InitializeVarDB(buffer) == ERR)
-    {
-      fprintf(stderr, "InitializeVarDB for master file failed, this is fatal.\n");
-      exit(1);
-    }
+      HandleFatalError("InitializeVarDB for master file failed, this is fatal.");
   }
 
   // ADS3/nidas must use the netCDF/NcML version of VarDB.
