@@ -38,10 +38,7 @@ void MakeProjectFileName(char file[], const std::string& format)
   ReleaseAircraftSpecs();
 
   if (strlen(platform) == 0)
-  {
-    fprintf(stderr, "popen.c:MakeProjectFileName: No platform, fatal.\n");
-    exit(1);
-  }
+    HandleFatalError("popen.c:MakeProjectFileName: No platform, fatal.");
 
   (void)sprintf(file, format.c_str(),
 	cfg.ProjectDirectory().c_str(), cfg.ProjectNumber().c_str(), platform);
@@ -63,8 +60,7 @@ FILE *OpenProjectFile(const std::string& filename, const char mode[], int action
     char msg[MAXPATHLEN];
 
     sprintf(msg, "ProjectOpen: can't open %s", file);
-    perror(msg);
-    exit(ERROR);
+    HandleFatalError(msg);
   }
 
   return(fp);

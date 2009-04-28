@@ -147,7 +147,10 @@ void CreateNetCDF(const char fileName[])
 {
   ncopts = NC_VERBOSE;
 
-  fd = nccreate(fileName, NC_CLOBBER);
+  if ((fd = nccreate(fileName, NC_CLOBBER)) == -1)
+  {
+    HandleError("Failed to create or open output file.");
+  }
 
   if (cfg.ProductionRun())
     chmod(fileName, 0644);

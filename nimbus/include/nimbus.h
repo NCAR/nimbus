@@ -263,7 +263,7 @@ void	SaveDefaults(FILE *fp),
 	SetDefaultsValue(const char target[], NR_TYPE *new_value),
 	CreateEditDefaultsWindow(), StopProcessing(), CreateFlightInfoWindow();
 
-void	HandleError(const char msg[]);
+void	HandleFatalError(const char msg[]), HandleError(const char msg[]);
 
 extern Config cfg;
 
