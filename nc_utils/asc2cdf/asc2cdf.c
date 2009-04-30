@@ -156,6 +156,7 @@ int main(int argc, char *argv[])
     {
       firstSecond = currSecond;
 //      if (strlen(FlightDate) > 0)
+      if (fileType != NASA_AMES)
         BaseTime += currSecond;
     }
 
