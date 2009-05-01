@@ -675,7 +675,7 @@ public class NCData {
 		for (int i =0; i<selVars.size(); i++) {
 			Variable v = fin.findVariable(selVars.get(i));
 			if (v==null|| v.getSize()<=0) {  //skip the vars that can not found from the nc file
-				System.err.println("Variable "+selVars.get(i)+ " is not found in the nc file. \nSkipping it..." );
+				System.err.println("Variable "+selVars.get(i)+ " is not found in the nc file. " );
 				continue;  
 			}
 			lvars.add(v);

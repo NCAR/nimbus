@@ -17,6 +17,7 @@ import edu.ucar.eol.nc2AscData.DataFmt;
  */
 public class BatchConfig {
 
+	boolean _dbg=false;
 	/**
 	 * File names from command line:
 	 * -b follows batchFile 	=> files[0]
@@ -82,7 +83,7 @@ public class BatchConfig {
 			parseBatchFile();
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(" Batchconfig_parseConfig_start_exception...  exits");
+			if (_dbg) System.out.println(" Batchconfig_parseConfig_start_exception...  exits");
 			System.exit(-1);
 		}
 	}
@@ -140,7 +141,7 @@ public class BatchConfig {
 		for (int i=0; i<dataFmt.length; i++) {
 			display += dataFmt[i]+ "\n";
 		}
-		System.out.println(display);
+		if (_dbg) System.out.println(display);
 		return display;
 	}
 
@@ -154,7 +155,7 @@ public class BatchConfig {
 		for (int i=0; i<selVars.size(); i++) {
 			display += selVars.get(i)+ "   " + "\n";
 		}
-		System.out.println(display);
+		if (_dbg) System.out.println(display);
 		return display;
 	}
 
@@ -164,10 +165,10 @@ public class BatchConfig {
 	 */
 	private void parseArgs(String[] args){
 		
-		int i, loop = args.length-1;
+		int i, loop = args.length;
 	
 		for (i=0; i<loop; i++) {
-			System.out.println(" "+args[i]);
+			if (_dbg) System.out.println(" "+args[i]);
 			if (args[i].equals("-b") && i<loop) {
 				files[0]=args[i+1];
 			} 
@@ -177,6 +178,7 @@ public class BatchConfig {
 			if (args[i].equals("-o") && i<loop) {
 				files[2]=args[i+1];
 			}
+			if (args[i].equals("-d")) _dbg =true;
 		}
 	}
 
@@ -266,7 +268,7 @@ public class BatchConfig {
 			if (line.indexOf("%")> 0 ) {
 				String var = line.substring(0, line.indexOf("=")).trim();
 				tmpVdf.put(var, val);
-				System.out.printf("parse batch file: var = %s val= %s \n", var, val);
+				if (_dbg) System.out.printf("parse batch file: var = %s val= %s \n", var, val);
 			}
 					
 			line = br.readLine();
@@ -291,7 +293,8 @@ public class BatchConfig {
 		}
 
 		String[] tt = dt.split(DataFmt.TMSETDELIMIT);  //yyyy-mm-dd,hh:mm:ss~yyyy-mm-dd,hh:mm:ss
-
+		tt[0]= tt[0].trim();
+		tt[1]=tt[1].trim();
 		//start time 
 		String[] start = tt[0].split(DataFmt.COMMAVAL); 
 		String[] dInf  = start[0].split(DataFmt.DASHVAL);
@@ -307,8 +310,8 @@ public class BatchConfig {
 
 		Calendar cl = Calendar.getInstance();
 		cl.set(y,mm,d,h,m,s);
-		String ret = cl.getTimeInMillis()+ DataFmt.TMSETDELIMIT;
-
+		
+		
 		//end time  
 		String[] end = tt[1].split(DataFmt.COMMAVAL); 
 		String[] dtm  = end[0].split(DataFmt.DASHVAL);
@@ -328,9 +331,11 @@ public class BatchConfig {
 		//time range in seconds
 		int range =(int)(cl2.getTimeInMillis() - cl.getTimeInMillis())/1000 ;
 		if (range<0){
-			System.out.println("The ending time is smaller than starting time. Use default");
+			if (_dbg) System.out.println("The ending time is smaller than starting time. Use default");
 			return DataFmt.FULLTM;
 		}
+		
+		String ret = (cl.getTimeInMillis()+500)+ DataFmt.TMSETDELIMIT;
 		return ret+range;
 	}
 
@@ -338,12 +343,12 @@ public class BatchConfig {
 
 	private void checkBatchElements() {
 		if (selVars.size()<1) {
-			System.out.println("No variables are read from the batch file, outputing all.");
+			if (_dbg) System.out.println("No variables are read from the batch file, outputing all.");
 			//System.exit(-1)
 		}
 
 		if (files[1]==null || files[1].isEmpty()) {
-			System.out.println("No Input file is read from the batch file. ");
+			if (_dbg) System.out.println("No Input file is read from the batch file. ");
 		} 
 	 
 		//format checking..........
@@ -351,28 +356,28 @@ public class BatchConfig {
 		String item = dataFmt[DataFmt.DATE_IDX];
 		if (item!=null && !item.isEmpty() &&( item.equals(DataFmt.DATEDASH) || item.equals(DataFmt.DATESPACE) ||item.equals(DataFmt.NODATE))) {
 		} else {
-			System.out.println("Can not find a good date format. Use default date format..."+ item);
+			if (_dbg) System.out.println("Can not find a good date format. Use default date format..."+ item);
 			dataFmt[DataFmt.DATE_IDX]= DataFmt.DATEDASH;
 		}
 		//check time
 		item = dataFmt[DataFmt.TM_IDX];
 		if (item!=null && !item.isEmpty() &&( item.equals( DataFmt.TIMECOLON)  ||item.equals(DataFmt.TIMENOSPACE) || item.equals(DataFmt.TIMESPACE)|| item.equals(DataFmt.TIMESEC))) {
 		} else {
-			System.out.println("Can not find a good time format. Use default format..."+ item);
+			if (_dbg) System.out.println("Can not find a good time format. Use default format..."+ item);
 			dataFmt[DataFmt.TM_IDX]= DataFmt.TIMECOLON;
 		}
 		//check delimiter
 		item = dataFmt[DataFmt.DMTR_IDX];
 		if (item !=null && !item.isEmpty() &&( item.equals(DataFmt.SPACEVAL) || item.equals(DataFmt.COMMAVAL))) {
 		} else {
-			System.out.println("Can not find a good delimiter. Use default format..."+ item);
+			if (_dbg) System.out.println("Can not find a good delimiter. Use default format..."+ item);
 			dataFmt[DataFmt.DMTR_IDX]= DataFmt.COMMAVAL;
 		}
 		//check miss value
 		item = dataFmt[DataFmt.MVAL_IDX];
 		if (item==null || item.isEmpty() || item.equals(DataFmt.REPLICATE) || item.equals(DataFmt.MISSVAL)) { //empty =""
 		} else {
-			System.out.println("Can not find a good fill value. Use default format..."+ item);
+			if (_dbg) System.out.println("Can not find a good fill value. Use default format..."+ item);
 			dataFmt[DataFmt.MVAL_IDX]= DataFmt.MISSVAL;
 		}
 		//check time set
@@ -384,19 +389,19 @@ public class BatchConfig {
 			tmErr = true;
 		}
 		if (tmErr) {
-			System.out.println("Invalid tmset. Use default format..."+ item);
+			if (_dbg) System.out.println("Invalid tmset. Use default format..."+ item);
 			dataFmt[DataFmt.TMSET_IDX]= DataFmt.FULLTM;
 		}
 
 		item = dataFmt[DataFmt.HEAD_IDX];
 		if (item!=null && !item.isEmpty() &&( item.toLowerCase().equals(DataFmt.HEAD.toLowerCase()) || item.toLowerCase().equals(DataFmt.HEAD2.toLowerCase()) || item.toLowerCase().equals(DataFmt.HEAD3.toLowerCase()))) {
 		} else {
-			System.out.println("Can not find a good head title. Use default format..."+ item);
+			if (_dbg) System.out.println("Can not find a good head title. Use default format..."+ item);
 			dataFmt[DataFmt.HEAD_IDX]= DataFmt.HEAD;
 		}
 		item = dataFmt[DataFmt.AVG_IDX];
 		if (item==null || item.isEmpty() || Integer.parseInt(item)<1) {
-			System.out.println("Can not find a good average. Use default format..."+ item);
+			if (_dbg) System.out.println("Can not find a good average. Use default format..."+ item);
 			dataFmt[DataFmt.AVG_IDX]="1";
 		}
 		

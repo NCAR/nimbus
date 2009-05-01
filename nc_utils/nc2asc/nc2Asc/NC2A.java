@@ -109,7 +109,7 @@ public class NC2A extends JPanel implements ActionListener {
 		bf.start();  //read and interpret the inputs
         
 		String[] fs = bf.getFiles();
-		System.out.println("\nFiles= " +fs[0]+ " "+ fs[1]+ " "+fs[2]);
+		//System.out.println("\nFiles= " +fs[0]+ " "+ fs[1]+ " "+fs[2]);
 		
 		String[] fmt = bf.getDataFmt();
 				
@@ -132,7 +132,7 @@ public class NC2A extends JPanel implements ActionListener {
 			System.out.println("Batch-mode calBatchTmRange fails..."+ ee.getStackTrace());
 			return;
 		}
-		System.out.println("bf-selectedVars= \n" +bf.showSelectedVars()+ "\nrange "+ range[0]+ "  "+ range[1]); 
+		//System.out.println("bf-selectedVars= \n" +bf.showSelectedVars()+ "\nrange "+ range[0]+ "  "+ range[1]); 
 		
 		List<Variable> sublvars= ncdata.getBatchSubVars(bf.getSelVars());
 		ncdata.signBatchVarDataFmt(sublvars,bf.getTmpVarDataFmt());
@@ -147,7 +147,7 @@ public class NC2A extends JPanel implements ActionListener {
 		}
 		if (fmt[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)) {ncdata.writeOut( ncdata.getAmesHead(sublvars)+ "\n"); }
 	
-		System.out.println("bf_fmt_at_printout= \n"+ fmt[0]+ "\n"+ fmt[1]+ "\n"+ fmt[2]+ "\n"+ fmt[3]+ "\n"+ fmt[4]+ "\n"+ fmt[5]+ "\n"+ fmt[6]+ "\n"); 
+		//System.out.println("bf_fmt_at_printout= \n"+ fmt[0]+ "\n"+ fmt[1]+ "\n"+ fmt[2]+ "\n"+ fmt[3]+ "\n"+ fmt[4]+ "\n"+ fmt[5]+ "\n"+ fmt[6]+ "\n"); 
 		String out= ncdata.genVarName(sublvars, fmt);
 		ncdata.writeOut(out+"\n"); 
 		ncdata.writeDataToFile(sublvars, range, fmt);
