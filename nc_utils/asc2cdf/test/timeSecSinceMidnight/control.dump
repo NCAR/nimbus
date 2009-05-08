@@ -1,0 +1,42 @@
+netcdf data.nc {
+dimensions:
+	Time = UNLIMITED ; // (26 currently)
+	sps1 = 1 ;
+variables:
+	int base_time ;
+		base_time:units = "seconds since 1970-01-01 00:00:00 +0000" ;
+		base_time:long_name = "Start time of data recording." ;
+	int Time(Time) ;
+		Time:_FillValue = -32767 ;
+		Time:units = "seconds since 2008-04-18 15:00:00 +0000" ;
+		Time:standard_name = "time" ;
+		Time:long_name = "time of measurement" ;
+		Time:strptime_format = "seconds since %F %T %z" ;
+	float time_offset(Time) ;
+		time_offset:_FillValue = -32767.f ;
+		time_offset:units = "seconds since 2008-04-18 15:00:00 +0000" ;
+		time_offset:long_name = "Seconds since base_time." ;
+	float CO_RAF(Time) ;
+		CO_RAF:_FillValue = -32767.f ;
+		CO_RAF:units = "ppb" ;
+		CO_RAF:long_name = "Raw Carbon Monoxide Concentration" ;
+
+// global attributes:
+		:Conventions = "NCAR-RAF/nimbus" ;
+		:DateConvertedFromASCII = "Apr 30 21:13 GMT 2009" ;
+		:FlightDate = "04/18/2008" ;
+		:TimeInterval = "15:00:00-15:00:25" ;
+data:
+
+ base_time = 1208530800 ;
+
+ Time = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, _, 16, 17, _, _, 
+    20, 21, 22, 23, 24, 25 ;
+
+ time_offset = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, _, 16, 17, 
+    _, _, 20, 21, 22, 23, 24, 25 ;
+
+ CO_RAF = _, _, _, _, _, _, _, _, _, _, 136.7167, 137.2288, 136.4844, 
+    137.8847, 137.4985, _, 137.9877, 134.9075, _, _, 135.7778, 137.1624, 
+    137.5835, 135.7046, 137.8556, 137.4747 ;
+}

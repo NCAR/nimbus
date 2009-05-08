@@ -1,0 +1,1 @@
+../../asc2cdf -r 100 -g TO05_MRLA3_100Hz.txt.globalatts -a MRLA3_RF05_20080728_010636_100.ames fred.nc

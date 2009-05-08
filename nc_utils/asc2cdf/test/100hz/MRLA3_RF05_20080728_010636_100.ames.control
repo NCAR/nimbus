@@ -1,0 +1,30 @@
+22 1001
+Beaton, Stuart, (NCAR)
+NCAR/RAF
+NCAR Lyman Alpha Hygrometer
+Physics Of Stratocumulus Tops (POST)
+1 1
+2008 07 28 2009 05 07
+100
+Time (seconds since 2008-07-28 00:00:00 +00:00)
+1
+1.0 
+-32767 
+Fast Lyman-Alpha UV hygrometer (g/kg)
+0
+6
+PLATFORM = CIRPAS Twin Otter
+LOCATION = mobile
+DATA VERSION = 1.0 (2009-May-04) FINAL
+REMARKS = National Center for Atmospheric Research (NCAR), POST
+REMARKS = Mission time in seconds
+REMARKS = H2O mixing ratio in g/kg dry air.
+Time MRLA3
+5269.13	9.489 
+5269.14	9.567 
+5269.15	9.569 
+5269.16	9.54 
+5269.17	9.56 
+5269.18	9.526 
+5269.19	9.571 
+5269.2	9.521 

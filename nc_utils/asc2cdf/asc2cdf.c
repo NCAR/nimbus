@@ -53,7 +53,9 @@ static void WriteMissingData(int, int);
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
-  int	i, hz, hour, minute, second, firstSecond, currSecond, prevSecond = -1;
+  int	i, hz, hour, minute, second, firstSecond, prevSecond = -1;
+  float currSecond;
+  int   subsec;
   int	startHour, startMinute, startSecond;
   char	*p;
   float	dataValue;
@@ -128,11 +130,24 @@ int main(int argc, char *argv[])
 
     if (sexSinceMidnight)
       {
-      currSecond = atoi(p);
+      currSecond = atof(p);
+    if (verbose)
+	printf("JAG orig time %f\n",atof(p));
+    if (verbose)
+	printf("JAG orig time %f\n",currSecond);
+      if (verbose)
+	  printf("JAG int time %d\n",atoi(p));
 
-      hour = currSecond / 3600; currSecond -= hour * 3600;
-      minute = currSecond / 60; currSecond -= minute * 60;
-      second = currSecond;
+      hour = int(currSecond) / 3600; currSecond -= hour * 3600;
+      minute = int(currSecond) / 60; currSecond -= minute * 60;
+      second = int(currSecond);
+      if (dataRate > 1) {
+	  currSecond -= second; subsec = int(currSecond*dataRate+.5);
+      } else {
+	  subsec = 0;
+      }
+      if (verbose)
+	  printf("JAG %d %d %d %d\n",hour,minute,second,subsec);
 
       if (nRecords == 0 && fileType != PLAIN_FILE)
         SetNASABaseTime(hour, minute, second);
@@ -191,7 +206,8 @@ int main(int argc, char *argv[])
 //    nc_put_var1_float(ncid, timeVarID, &nRecords, &dataValue);
 //    nc_put_var1_float(ncid, timeOffsetID, &nRecords, &dataValue);
 
-    for (hz = 0; hz < dataRate; ++hz)
+    //JAG If subseconds are given in the time column, offset here.
+    for (hz = subsec; hz < dataRate; ++hz)
       {
       for (i = 0; i < nVariables; ++i)
         {
