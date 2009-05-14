@@ -25,7 +25,7 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2005
 
 #include <nidas/dynld/raf/SyncRecordReader.h>
 #include <nidas/util/Socket.h>
-#include <nidas/core/Datagrams.h>
+#include <nidas/core/SocketAddrs.h>
 
 #include <ctime>
 #include <unistd.h>
@@ -60,8 +60,8 @@ const std::string MultiCastStatus::DATA_NETWORK = "192.168.184";
 
 MultiCastStatus::MultiCastStatus()
 {
-  maddr = nidas::util::Inet4Address::getByName(DSM_MULTICAST_ADDR);
-  msaddr = nidas::util::Inet4SocketAddress(maddr,DSM_MULTICAST_STATUS_PORT);
+  maddr = nidas::util::Inet4Address::getByName(NIDAS_MULTICAST_ADDR);
+  msaddr = nidas::util::Inet4SocketAddress(maddr,NIDAS_STATUS_PORT_UDP);
 
   // Set to proper interface if this computer has more than one.
   std::list<nidas::util::Inet4NetworkInterface> itf = msock.getInterfaces();
