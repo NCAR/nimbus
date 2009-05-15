@@ -1,4 +1,5 @@
 # -*- python -*-
+import os
 
 Import('env')
 
@@ -85,11 +86,15 @@ transmit.cc
 """)
 
 if int(env.realtime):
-  env.Append(CPPPATH=['/opt/local/nidas/x86/include'])
+  env.Append(CPPPATH=[os.path.join(env['NIDAS_PATH'],'include')])
   sources = [sources, 'rtloop3.cc']
   env.Append(LIBS=['nidas', 'nidas_dynld', 'XmlRpcpp', 'xerces-c', 'bz2'])
-  env.Append(LIBPATH=['/opt/local/nidas/x86/lib'])
-  env.Append(_LIBFLAGS=['-Wl,-R', '/opt/local/nidas/x86/lib'])
+  nlibpath = os.path.join(env['NIDAS_PATH'],'lib')
+  env.Append(LIBPATH=[nlibpath])
+  # This may be unnecessary and even undesirable with the introduction of
+  # the ld.so.conf file.  However, leave it in for now, especially for the
+  # case of building nimbus against the buildbot nidas.
+  env.Append(_LIBFLAGS=['-Wl,-R', nlibpath])
 
 
 nimbus = env.Program('nimbus', sources)
