@@ -13,7 +13,7 @@ output.  To change the "output" of a variable, just double click on the
 variable.  You may also select many and then use CTRL-O to toggle them
 all at once.
 .PP
-By default n2asc uses "%10.3f" as it's formating statement.  The default
+By default n2asc uses "%10.3f" as it's formatting statement.  The default
 may be changed in the command line with the -f option.  See printf(3)
 for a description of formats.  Formats may also be set for individual
 variables.  At startup, n2asc reads $HOME/nimbus/.n2asc and applies
