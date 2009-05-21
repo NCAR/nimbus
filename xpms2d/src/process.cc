@@ -877,8 +877,16 @@ if (debug)
       /* Determine height of particle.
        */
       ++p; ++i;
-      for (; i < 512 && (*p & Fast2DC_Mask) != Fast2DC_Sync && *p != 0xffffffffffffffffLL; ++p, ++i)
+      for (; i < 512 && (*p & Fast2DC_Mask) != Fast2DC_Sync; ++p, ++i)
         {
+        if (*p == 0xffffffffffffffffLL)
+          {
+          if (cp->w == 0)
+            continue;
+          else
+            break;
+          }
+
         ++cp->w;
 
         slice = ~(*p);
