@@ -1,0 +1,72 @@
+<html>
+<head>
+<title>Aeros Downloads</title>
+
+<style type="text/css">
+<!--
+body { background: white; color: black; margin: 2em; margin-left: 3em; }
+h1,h2 { font-size: 1.5em }
+h3 { font-size: 1.3em }
+h4 { font-size: 1.2em }
+h1, h2, h3, h4 { font-style: normal; font-weight: normal; color: #3860B0; }
+span.runin { font-size: 1.1em; font-weight: bold; color: #3860B0; }
+a:link { color:navy; }
+a:visited { color:#386090; }
+li.toc { list-style: none; padding: .1em; }
+kbd.att { font-weight: normal; color: blue; }
+div.example { margin-left: 3em; margin-right: 3em; }
+div.definition { margin-left: 1em; }
+pre.CDL { color: brown; }
+table { padding: .25em; }
+span.new { background-color: #FF6666; }
+span.old { background-color: #FFFF88; text-decoration: line-through; }
+span.comment { background-color: #88FF88; font-style: italic; }
+-->
+</style>
+
+</head>
+
+<body>
+
+<h1 align=CENTER>Aeros Downloads for Linux and Windows</h1>
+Here are downloads for Linux and MS Windows versions of the 
+<a href="http://www.atd.ucar.edu/raf/Software/hiaper/display/">Aeros</a>
+software.
+<p>
+Software and databases are also provided for the 
+<a href="http://gmt.soest.hawaii.edu/">GMT</a> 
+Generic Mapping Tools. These must be installed if you wish to have support for
+geo-political boundary displays in the Aeros track plot.  If you do not install
+GMT, Aeros will still work fine, but just not provide this feature. 
+<dl>
+
+<p><dt><h3>Fedora Core 3</h3>
+<p>
+<dd>Linux GMT (65MB): <a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/gmt.tar.gz">gmt.tar.gz</a> 
+<br>
+ <ul>
+  <li>Set $GMTHOME to where you installed the above tar file.
+ </ul>
+
+<p><dt><h3>RHEL 5</h3>
+<dd>Linux Aeros: <a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/aeros-4082.rhel5.tar.gz">aeros-4082.rhel5.tar.gz</a><br>
+
+<p><dt><h3>Fedora 8</h3>
+<dd>Linux Aeros: <a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/aeros-4082.f8.tar.gz">aeros-4082.f8.tar.gz</a><br>
+
+<p><dt><h3>Microsoft Windows XP</h3>
+<dd>Windows Aeros (9MB): <a href="ftp://ftp.eol.ucar.edu/pub/temp/users/martin/aeros/aeros-4480.msi">aeros-4480.msi</a> Qt4<br>
+<dd>Windows Aeros (9MB): <a href="ftp://ftp.eol.ucar.edu/pub/temp/users/martin/aeros/aeros-4428.msi">aeros-4428.msi</a> Qt4 beta<br>
+<dd>Windows Aeros (14MB): <a href="ftp://ftp.eol.ucar.edu/pub/temp/users/martin/aeros/aeros-4082.msi">aeros-4082.msi</a> Last Stable Qt3<br>
+<p>
+<dd>Windows GMT (48MB): <a href="ftp://ftp.eol.ucar.edu/pub/temp/users/martin/aeros/aeros-GMT.msi">aeros-GMT.msi</a><br>
+Note that this msi will set the GMTHOME environment variable to the target
+directory. If you already have GMT installed, and the GMTHOME variable is
+set, you do not need to install this msi; your existing GMT should work fine.
+<p>
+<p><dt><h3>Sample netCDF File</h3>
+<dd>Sample netCDF data file (33MB): <a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/Sample.nc">Sample.nc</a><br>
+</dl>
+
+</body>
+</html>
