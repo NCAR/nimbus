@@ -25,7 +25,7 @@ fv=	FillValue/Blank/Replicate
 var=	ADIFR
 var=	BDIFR
 
-Variable data format:  std c style float format %f %.2f %7.2f  %e, etc
+Variable data format:  std c style float format %f %d %i %e %E %g %G,etc. %d and %i are converted into %.0f  
 ADIFR=%.2f
 BDIFR=%f
 

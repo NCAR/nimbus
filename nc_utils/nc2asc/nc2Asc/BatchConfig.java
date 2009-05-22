@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
+
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 import edu.ucar.eol.nc2AscData.DataFmt;
@@ -264,11 +266,20 @@ public class BatchConfig {
 			}
 
 			//sign var format
-			//System.out.printf("\nparse batch file: val= %s",val);
 			if (line.indexOf("%")> 0 ) {
 				String var = line.substring(0, line.indexOf("=")).trim();
+				if (_dbg) System.out.printf("parse batch file: var = %s format= %s \n", var, val);
+				
+				//check var-format %f %d %i % e %E %G %g, %d or %i=>%.0f
+				if (val.endsWith("f")||val.endsWith("d")||val.endsWith("i")|| val.endsWith("e")|| val.endsWith("E")|| val.endsWith("g")|| val.endsWith("G") ){
+					if (val.endsWith("d")|| val.endsWith("i")) 
+						val= "%.0f";
+				} else {
+					Util.println("Warning: Invalid format-- var=" +var + " format="+val+ "   Using default" );
+					val= "%f";
+				}
 				tmpVdf.put(var, val);
-				if (_dbg) System.out.printf("parse batch file: var = %s val= %s \n", var, val);
+				
 			}
 					
 			line = br.readLine();
@@ -307,10 +318,10 @@ public class BatchConfig {
 		int h= Integer.parseInt(tmInf[0]);
 		int m= Integer.parseInt(tmInf[1]);
 		int s= Integer.parseInt(tmInf[2]);
+		int start_s =s; //keep a copy
 
 		Calendar cl = Calendar.getInstance();
 		cl.set(y,mm,d,h,m,s);
-		
 		
 		//end time  
 		String[] end = tt[1].split(DataFmt.COMMAVAL); 
@@ -334,8 +345,9 @@ public class BatchConfig {
 			if (_dbg) System.out.println("The ending time is smaller than starting time. Use default");
 			return DataFmt.FULLTM;
 		}
+				int aj=0;
 		
-		String ret = (cl.getTimeInMillis()+500)+ DataFmt.TMSETDELIMIT;
+		String ret = (cl.getTimeInMillis()+ 400  )+ DataFmt.TMSETDELIMIT;
 		return ret+range;
 	}
 
