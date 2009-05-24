@@ -50,24 +50,18 @@ Email to
 <hr>
 <h3 align="center">Program Descriptions</h3>
 <dl>
-  <dt><b><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/Sample.nc">Sample netCDF file</a></b></dt>
+  <dt>A sample <b><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/Sample.nc">netCDF file</a></b></dt>
 </dl>
 <dl>
   <dt><b>aeros</b> - <a href="aeros_dnld.html">Download</a>
   </dt>
-  <dd>This is our next generation real-time and post-processing display tool
-being developed for HIAPER.  It runs under both Windows XP and Linux.  It's
-under development, so not all display options or features are available.
-What is there should work.
+  <dd>This is our next generation real-time and post-processing display tool being developed for HIAPER.  It runs under both Windows XP and Linux.
     <p></p>
   </dd>
   <dt><b>ncplot</b> - <a href="ncplot.html">User's Manual</a> -
     <a href="ncplot_dnld.html">Download</a>
   </dt>
-  <dd>This is our primary tool for viewing data. ncplot will work with both
-low-rate and high-rate data files. Plots Time-series, XY and XYZ,
-ascii, spectral analysis, and more. Requires <b>netCDF 3.0</b> or
-later.
+  <dd>This is our primary tool for viewing data. ncplot will work with both low-rate and high-rate data files. Plots Time-series, XY and XYZ, ASCII, spectral analysis, and more. Requires <b>netCDF 3.0</b> or later.
     <p></p>
   </dd>
   <dt><b>ncpp</b> - <a href="ncpp.html">User's Manual</a> -
@@ -80,32 +74,26 @@ later.
   <dt><b>xpms2d</b> - <a href="xpms2d.html">User's Manual</a> -
     <a href="xpms2d_dnld.html">Download</a>
   </dt>
-  <dd>Display program for PMS2D data. PMS2D data are NOT contained in
-the
-netCDF file but must be requested from RAF separately. Building from
-source requires <b>libraf++</b>.
+  <dd>Display program for PMS2D data. PMS2D data are NOT contained in the netCDF file but must be requested from RAF separately. Building from source requires <b>libraf++</b>.
     <p></p>
   </dd>
   <dt><b>asc2cdf</b> - <a href="asc2cdf.html">User's Manual</a> -
     <a href="asc2cdf_dnld.html">Download</a>
   </dt>
-  <dd>ASCII to netCDF (LRT only, also does NASA DEF ASCII files). Has
-no GUI
-(i.e. Motif not required), includes <b>man</b> page.
+  <dd>ASCII to netCDF (LRT only, also does NASA Ames DEF ASCII files). Has no GUI (i.e. Motif not required), includes <b>man</b> page.
     <p></p>
   </dd>
   <dt><b>nc2asc</b> - <a href="nc2asc.html">User's Manual</a> -
     <a href="n2asc_dnld.html">Download</a>
   </dt>
-  <dd>Java netCDF to ASCII. Lets you select which variables, and time
-periods. Can also dump PMS histogram data.
+  <dd>Java netCDF to ASCII converter. Lets you select which variables, and time periods. Can also output PMS histogram data.
     <p></p>
   </dd>
   <dt><b>ncReorder</b> - 
     <a href="ncreorder_dnld.html">Download</a>
   </dt>
   <dd>netCDF reorder. Speeds up read access of netCDF files by a factor
-of 20-40. Accomplishes this by replacing the UNLIMITED record dimension
+of 20-40. Accomplishes this by converting the UNLIMITED record dimension
 to a fixed dimension.<br>
     <br>
   </dd>
@@ -128,49 +116,31 @@ The programs described below will require that you install the files
 <dl>
   <dt><b>include.tar.Z</b>
   </dt>
-  <dd>Contains RAF header files required by many of our programs.
-This is the only file that won't create its own directory.
-All the Makefile's look for these include files in the
-directory $LOCAL/include. So you may put them anywhere and
-'setenv LOCAL' correctly (or modify the Makefiles).
-No compilation neccessary.
+  <dd>Contains RAF header files required by many of our programs.  This is the only file that won't create its own directory.  All the Makefile's look for these include files in the directory $LOCAL/include. So you may put them anywhere and 'setenv LOCAL' correctly (or modify the Makefiles).  No compilation neccessary.
     <p></p>
   </dd>
   <dt><b>libraf.tar.Z</b>
   </dt>
-  <dd>Contains various routines used across many of our programs.
-Requires <b>include.tar.Z</b> to compile. This library should be
-installed in some directory where your compiler will find it.
-Our Makefiles do NOT have a -Ldir flag to locate this file.
+  <dd>Contains various routines used across many of our programs.  Requires <b>include.tar.Z</b> to compile. This library should be installed in some directory where your compiler will find it.  Our Makefiles do NOT have a -Ldir flag to locate this file.
     <p></p>
   </dd>
   <dt><b>libraf++.tar.Z</b>
   </dt>
-  <dd>C++ version of libraf. <b>ncpp</b> and <b>xpms2d</b> are
-currently the only
-two C++ programs. May require <b>include.tar.Z</b> to compile. This
-library
-should be installed in some directory where your compiler will find it.
-Our Makefiles do NOT have a -Ldir flag to locate this file.
+  <dd>C++ version of libraf. <b>ncpp</b> and <b>xpms2d</b> are currently the only two C++ programs. May require <b>include.tar.Z</b> to compile. This library should be installed in some directory where your compiler will find it.  Our Makefiles do NOT have a -Ldir flag to locate this file.
     <p></p>
   </dd>
   <dt><a href="g2n.html"><b>g2n</b></a>
   </dt>
   <dd>The program called <b>g2n</b> converts GENPRO-II data sets to
-the RAF
-netCDF format. A <b>man</b> page is available. It has no GUI (i.e.,
-Motif is
-not required). Building from the source requires <b>netCDF 3.0</b> or
-later.
-Questions regarding <b>g2n</b> should be directed to
+the RAF netCDF format. A <b>man</b> page is available. It has no GUI (i.e.,
+Motif is not required). Building from the source requires <b>netCDF 3.0</b> or
+later.  Questions regarding <b>g2n</b> should be directed to
     <a href="mail&#116;&#111;:raf&#064;ucar.edu?Subject=From_RAF_Web_Software_g2n_page">Ron Ruth</a>.
     <p></p>
   </dd>
   <dt><b>ncav.tar.Z</b>
   </dt>
-  <dd>Averages data down to rates less than 1 sample per second (e.g.
-10 second
-data). Reads one netCDF file (LRT only) and produces another.
+  <dd>Averages data down to rates less than 1 sample per second (e.g.  10 second data). Reads one netCDF file (LRT only) and produces another.
     <p></p>
   </dd>
   <dt><b>ncextr.tar.Z</b>
@@ -195,10 +165,7 @@ data). Reads one netCDF file (LRT only) and produces another.
   </dd>
 </dl>
 <p>
-LRT = Low RaTe. All data has been averaged to achieve 1 sample per
-second.<br>
-HRT = High RaTe. Variables at different rates, mostly at 25 samples per
-second. Rates achieved through FIR filtering.
+LRT = Low RaTe. All data has been averaged to achieve 1 sample per second.<br> HRT = High RaTe. Variables at different rates, mostly at 25 samples per second. Rates achieved through FIR filtering.
 </p>
 <a name="over"></a>
 <hr>
@@ -216,10 +183,7 @@ version 3.4.3).
       <p> </p>
     </dd>
     <dt><b>Other</b> </dt>
-    <dd><b>ncplot/ncpp</b> have been ported to a number of Unix
-platforms.
-All of the programs will require editing the Makefile to suit your
-environment. </dd>
+    <dd><b>ncplot, ncpp, and xpms2d</b> have been ported to a number of Unix platforms, including MacOS.  All of the programs will require editing the Makefile to suit your environment. </dd>
   </dl>
   <p></p>
   <dt><br>
@@ -237,18 +201,14 @@ from <a href="http://www.unidata.ucar.edu/">Unidata</a>
   <dt><br>
   </dt>
   <h4>Motif or Lesstif</h4>
-  <dd>For all the GUI-based programs, you will need Motif 1.2 (or
-greater)
-installed on your system. Motif is bundled with Solaris 2.4 and later
-in /usr/dt. Most commercial Unix boxes come with Motif.
+  <dd>For all the GUI-based programs, you will need Motif 1.2 (or greater) installed on your system. Motif is bundled with Solaris 2.4 and later in /usr/dt. Most commercial Unix boxes come with Motif.
     <a href="http://www.metrolink.com">Metro Link</a> sells Motif for
 Linux for $150; alternativly a group is working on a free version called
     <a href="http://www.lesstif.org">Lesstif</a>.  <b>ncplot</b> suffers
-numerous cosmetic problems when used with LEsstif.
+numerous cosmetic problems when used with Lesstif.
 
-    <p>01/2001: <a href="http://www.opengroup.org/openmotif">OpenMotif</a>
-is now available for free. It comes bundled with RH7.0 on the
-powertools CD. This is what we use now.
+    <p>05/2009: <a href="http://www.opengroup.org/openmotif">OpenMotif</a>
+is now available for free. It comes bundled with RHEL4 and RHEL5, but is not available with Fedora Core due to a license conflict.  I have been able to locate some RPMS from the Stanford Music School available at <a href="http://rpm.pbone.net">pbone.net</a>.
     </p>
   </dd>
 </dl>
@@ -259,19 +219,11 @@ powertools CD. This is what we use now.
 <dt><br>
 </dt>
 <h4>Making life easier (for those building from source)</h4>
-<dd>The simpliest way to set things up, especially if you have to build
-the
-libraries, is to create a <b>/home/local/raf</b> (or something/raf).
-Then
-under this, create directories called <b>include</b> and <b>lib</b>,
-then
-untar the source here. e.g.
+<dd>The simpliest way to set things up, especially if you have to build the libraries, is to create a <b>/home/local/raf</b> (or something/raf).  Then under this, create directories called <b>include</b> and <b>lib</b>, then untar the source here. e.g.
   <blockquote>
     <pre class="CDL">cd /home/local/<br>mkdir raf<br>setenv LOCAL /home/local/raf<br>setenv JLOCAL /home/local/raf<br>cd raf<br>mkdir lib include<br>uncompress ncplot.tar.Z<br>uncompress ncpp.tar.Z<br>uncompress xpms2d.tar.Z<br>uncompress libraf++.tar.Z<br>tar xf libraf++.tar<br>tar xf ncplot.tar<br>tar xf ncpp.tar<br>tar xf xpms2d.tar<br></pre>
   </blockquote>
-At this point you will need to edit Makefiles, and make sure they are
-correct for your installation (Solaris or Linux) by
-commenting/uncommenting the correct section near the top.
+At this point you will need to edit Makefiles, and make sure they are correct for your installation (Solaris or Linux) by commenting/uncommenting the correct section near the top.
   <blockquote>
     <pre class="CDL">cd libraf++<br>make install<br>cd ../ncplot<br>make<br>cd ../ncpp/src<br>make<br>cd ../../xpms2d/src<br>make<br></pre>
   </blockquote>
@@ -330,7 +282,7 @@ EOL/Computing, Data and Software Facility<br>
   </i></b></center>
   <hr>
   <font size="2">Last update:
-Tue Feb  27 10:40:04 MST 2007
+Sun May 24 16:30:52 MDT 2009
   </font></dd>
 </body>
 </html>
