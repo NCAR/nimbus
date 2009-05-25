@@ -1,4 +1,4 @@
-package edu.ucar.eol.nc2Asc;
+package edu.ucar.eol.nc2asc;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,7 +10,7 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
 
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
-import edu.ucar.eol.nc2AscData.DataFmt;
+import edu.ucar.eol.nc2ascData.DataFmt;
 
 /**
  * Class to convert between the user desired choices and the program, regards i/o files, data formats,

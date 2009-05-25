@@ -1,11 +1,11 @@
-package edu.ucar.eol.nc2Asc;
+package edu.ucar.eol.nc2asc;
 
 
 import javax.swing.*;
 import java.io.*;
 import java.util.*;
 import java.awt.*;
-import edu.ucar.eol.nc2AscData.*;
+import edu.ucar.eol.nc2ascData.*;
 
 public class NC2Act {
 
@@ -71,7 +71,7 @@ public class NC2Act {
 	
 
 	/**
-	 * Write the message to the nc2AscLog file.
+	 * Write the message to the nc2ascLog file.
 	 * Display the same message to the users if the program is in UI mode
 	 * 
 	 * @param msg --text to display;  mboxFlag- flag to display in msgbox 
@@ -85,7 +85,7 @@ public class NC2Act {
 	}
 	
 	/**
-	 * Write the message to the nc2AscLog file.
+	 * Write the message to the nc2ascLog file.
 	 * Display the same message to the users if the program is in UI mode
 	 * @param msg
 	 * 
@@ -96,9 +96,9 @@ public class NC2Act {
 		
 		if (log ==null) {
 			try {
-				log=new FileWriter("nc2AscLog.txt");
+				log=new FileWriter("nc2ascLog.txt");
 			} catch (IOException e) {
-				if (!batchMode ) 	prtMsgBox("Cannot create nc2AscLog");
+				if (!batchMode ) 	prtMsgBox("Cannot create nc2ascLog");
 				return;
 			}			   
 		}

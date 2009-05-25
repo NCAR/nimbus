@@ -1,5 +1,5 @@
 
-package edu.ucar.eol.nc2Asc;
+package edu.ucar.eol.nc2asc;
 
 
 import java.awt.Color;
@@ -32,7 +32,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
-import edu.ucar.eol.nc2AscData.*;
+import edu.ucar.eol.nc2ascData.*;
  
 
 class NC2AUIDiag extends JDialog {
@@ -101,7 +101,7 @@ class NC2AUIDiag extends JDialog {
 		}
 		int i=0;
 		for (i=0; i< dd.length; i++){
-			//nc2Asc.NC2Act.wrtMsg("tfdisp data:"+dd[i]);
+			//nc2asc.NC2Act.wrtMsg("tfdisp data:"+dd[i]);
 			tfDisp.insert(dd[i], i++);
 		}
 	}

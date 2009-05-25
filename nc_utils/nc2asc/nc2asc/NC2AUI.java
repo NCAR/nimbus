@@ -1,4 +1,4 @@
-package edu.ucar.eol.nc2Asc;
+package edu.ucar.eol.nc2asc;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -47,9 +47,9 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.io.FileWriter;
 
-import edu.ucar.eol.nc2AscData.DataFmt;
-import edu.ucar.eol.nc2AscData.NCData;
-import edu.ucar.eol.nc2AscData.NCDataException;
+import edu.ucar.eol.nc2ascData.DataFmt;
+import edu.ucar.eol.nc2ascData.NCData;
+import edu.ucar.eol.nc2ascData.NCDataException;
 import ucar.nc2.Variable;
 
 public class NC2AUI  implements ActionListener, PropertyChangeListener{
@@ -506,7 +506,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 				return;
 			}
 
-			//nc2Asc.NC2Act.startWaitCursor(tbl);
+			//nc2asc.NC2Act.startWaitCursor(tbl);
 			pfrm.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			populateTbl();			
 			datafmt.initDataFmt();

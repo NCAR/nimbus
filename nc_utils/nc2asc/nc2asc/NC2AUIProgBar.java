@@ -1,11 +1,11 @@
-package nc2Asc;
+package nc2asc;
 
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import nc2AscData.NCData;
+import nc2ascData.NCData;
 
 import java.beans.*;
 import java.util.Random;

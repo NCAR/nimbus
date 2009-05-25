@@ -1,9 +1,9 @@
-package edu.ucar.eol.nc2AscData;
+package edu.ucar.eol.nc2ascData;
 
 import java.util.Calendar;
 import java.util.zip.DataFormatException;
 
-import edu.ucar.eol.nc2Asc.NC2Act;
+import edu.ucar.eol.nc2asc.NC2Act;
 
 public class DataFmt {
 
@@ -319,7 +319,7 @@ public class DataFmt {
 		int start =0;
 		if (dataFmt[DATE_IDX].equals(NODATE.toString())) {start=1;}
 		for (int i=start; i<data.length-1; i++){
-			//	nc2Asc.NC2Act.wrtMsg("data[i]: "+ data[i]+ " DataFmt.Misval:" + DataFmt.MISSVAL + "DataFmt.Misval-toString:"+DataFmt.MISSVAL.toString() );
+			//	nc2asc.NC2Act.wrtMsg("data[i]: "+ data[i]+ " DataFmt.Misval:" + DataFmt.MISSVAL + "DataFmt.Misval-toString:"+DataFmt.MISSVAL.toString() );
 			if (data[i]==null || data[i].length()<1 || data[i].equals("null") || data[i].equals(DataFmt.MISSVAL)) {
 				data[i]= dataFmt[MVAL_IDX];	
 			}

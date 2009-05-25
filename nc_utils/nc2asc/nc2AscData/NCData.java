@@ -1,4 +1,4 @@
-package edu.ucar.eol.nc2AscData;
+package edu.ucar.eol.nc2ascData;
 
 import java.awt.Cursor;
 import java.io.BufferedReader;
@@ -16,7 +16,7 @@ import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
-import edu.ucar.eol.nc2Asc.*;
+import edu.ucar.eol.nc2asc.*;
 
 /**
  * This class is to use netCDF APIs to read and write 
@@ -44,7 +44,7 @@ public class NCData {
 	private NetcdfFile  fin=null;
 
 	/**
-	 * Ascii output file pointer
+	 * ASCII output file pointer
 	 */
 	private FileWriter  fout=null;
 
@@ -361,7 +361,7 @@ public class NCData {
 		if (dataInf== null || dataInf.get(0).isEmpty()) {
 			throw new  NCDataException("getTimeMilSec: Variables are not read... Please get variables from the netcdf file.");
 		}
-		//nc2Asc.NC2Act.wrtMsg(dataInf[0]);
+		//nc2asc.NC2Act.wrtMsg(dataInf[0]);
 		String tmVar= dataInf.get(0);
 		String date = tmVar.split(DataFmt.COMMAVAL)[1].split(" ")[2];
 		String tm   = tmVar.split(DataFmt.COMMAVAL)[1].split(" ")[3];
@@ -853,7 +853,7 @@ public class NCData {
 				varname += dmtr+j ;
 			}
 		}
-		//nc2Asc.NC2Act.wrtMsg("varname_len:"+varname.split(",").length+ " "+varname);
+		//nc2asc.NC2Act.wrtMsg("varname_len:"+varname.split(",").length+ " "+varname);
 		return varname;
 	}
 

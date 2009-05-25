@@ -1,4 +1,4 @@
-package edu.ucar.eol.nc2Asc;
+package edu.ucar.eol.nc2asc;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,13 +10,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import ucar.nc2.Variable;
-import edu.ucar.eol.nc2AscData.*;
+import edu.ucar.eol.nc2ascData.*;
 
 
 
 /** 
  * NC2ASCII is a program for users to convert some variables (data) from a netcdf file to  
- * Ascii format data. So that users can perform edition in the readable formats.
+ * ASCII format data. So that users can perform edition in the readable formats.
  *  
  * @author dongl
  *
@@ -34,7 +34,7 @@ public class NC2A extends JPanel implements ActionListener {
 	 */  
 	private static void createAndShowGUI() {
 		// Create and set up the window.
-		JFrame frame = new JFrame("NetCDF To Ascii");
+		JFrame frame = new JFrame("NetCDF To ASCII");
 			
 		frame.setDefaultLookAndFeelDecorated(true);
 		JDialog.setDefaultLookAndFeelDecorated(true);
