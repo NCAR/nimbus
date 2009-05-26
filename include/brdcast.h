@@ -26,11 +26,15 @@ public:
   void	BroadcastData(const std::string & timeStamp);
 
 protected:
+  std::vector<nidas::util::Inet4SocketAddress *> _toList;
+
   /**
    * In order to conform to the IWGADTS IWG1 packet, radar altimeter needs to be
    * in feet, not meters.
    */
   static const size_t RADAR_ALT_INDX;
+
+  static const std::string InterfacePrefix;
 };
 
 #endif

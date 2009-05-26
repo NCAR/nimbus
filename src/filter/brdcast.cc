@@ -19,6 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 #include <sstream>
 
 const size_t Broadcast::RADAR_ALT_INDX = 5;
+const std::string Broadcast::InterfacePrefix = "eth";
 
 using namespace nidas::util;
 
@@ -29,7 +30,19 @@ Broadcast::Broadcast() : UDP_Base(31000)
 
   _socket = new DatagramSocket;
   _socket->setBroadcastEnable(true);
-  _to = new Inet4SocketAddress(Inet4Address(INADDR_BROADCAST), UDP_PORT);
+
+  // We want to broadcast on all ethernet interfaces.
+  // Get list here.
+  std::list<Inet4NetworkInterface> if_list = _socket->getInterfaces();
+  std::list<Inet4NetworkInterface>::iterator it;
+  for (it = if_list.begin(); it != if_list.end(); ++it)
+  {
+    if ((*it).getName().compare(0, InterfacePrefix.length(), InterfacePrefix) == 0)
+    {
+      _toList.push_back(new
+	Inet4SocketAddress(Inet4Address((*it).getBroadcastAddress().getInAddrPtr()), UDP_PORT));
+    }
+  }
 }
 
 /* -------------------------------------------------------------------- */
@@ -57,8 +70,10 @@ void Broadcast::BroadcastData(const std::string & timeStamp)
         bcast << AveragedData[_varList[i]->LRstart];
     }
   }
-  bcast << "\r\n";
-  _socket->sendto(bcast.str().c_str(), bcast.str().length(), 0, *_to);
-  printf(bcast.str().c_str());
 
+  bcast << "\r\n";
+  for (size_t i = 0; i < _toList.size(); ++i)
+    _socket->sendto(bcast.str().c_str(), bcast.str().length(), 0, *_toList[i]);
+
+  printf(bcast.str().c_str());
 }

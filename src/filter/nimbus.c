@@ -19,7 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2008
 #include "fbr.h"
 #include "svnInfo.h"
 
-#include <signal.h>
+#include <csignal>
 
 #define APP_CLASS	"XmNimbus"
 
