@@ -36,7 +36,7 @@ public:
 	Colors(const Widget w);
 
   int	NumberOfColors()	{ return(numberColors); }
-  void	ResetColors()		{ colorIndex = 0; }
+  void	ResetColors()		{ colorIndex = 0; resetColors(); }
   void	SetColorNames(char str[]);
 
   unsigned long	GetColor(int indx);
@@ -54,11 +54,14 @@ public:
 
 
 private:
+  void	resetColors();
+
 #ifdef PNG
   void	checkByteSwap(XImage *image);
   int	getColorIndex(unsigned long pixel);
 #endif
 
+  Widget _w;
   int	colorIndex, numberColors;
   bool	Color;
 

@@ -41,7 +41,13 @@ struct {
         { "",         { 0.0, 0.0, 0.0 },      { 0, 0, 0}, 0, 0 } };
 
 /* -------------------------------------------------------------------- */
-Colors::Colors(const Widget w)
+Colors::Colors(const Widget w) : _w(w)
+{
+  resetColors();
+}
+
+/* -------------------------------------------------------------------- */
+void Colors::resetColors()
 {
   int		i = 5, defaultDepth;
   Colormap	defaultCMap;
@@ -53,8 +59,8 @@ Colors::Colors(const Widget w)
 
   Color = true;
 
-  dpy = XtDisplay(w);
-  screenNum = XScreenNumberOfScreen(XtScreen(w));
+  dpy = XtDisplay(_w);
+  screenNum = XScreenNumberOfScreen(XtScreen(_w));
   defaultDepth = DefaultDepth(dpy, screenNum);
 
   if (defaultDepth == 1)
@@ -72,11 +78,10 @@ Colors::Colors(const Widget w)
     return;
     }
 
-
   /* OK, we have a color screen, allocate colors.
    */
   defaultCMap = DefaultColormap(dpy, screenNum);
-  win = XCreatePixmap(dpy, XtWindow(w), 20, 1, defaultDepth);
+  win = XCreatePixmap(dpy, XtWindow(_w), 20, 1, defaultDepth);
 
   for (numberColors = 0; colorInfo[numberColors].name[0]; ++numberColors)
     {
@@ -364,7 +369,6 @@ void SetColorNames(char str[])
     if ((p = strtok(NULL, " \t,\n")) == NULL)
       break;
     }
-
-}       /* END SETCOLORNAMES */
+}
 
 /* END COLORS.CC */
