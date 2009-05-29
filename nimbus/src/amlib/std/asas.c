@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	asas.c
 
-FULL NAME:	Compute PMS1D ASAS/PCAS/UHSAS derived paramters
+FULL NAME:	Compute PMS1D ASAS/PCASP/UHSAS derived paramters
 
 DESCRIPTION:	
 
@@ -29,6 +29,8 @@ static NR_TYPE	cell_size3[MAX_ASAS][MAX_BINS];
 // Probe Count.
 static int nProbes = 0;
 extern void setProbeCount(const char * location, int count);
+
+static void uhsasBinConsolidation(NR_TYPE *actual);
 
 /* -------------------------------------------------------------------- */
 void casasInit(var_base *varp)
@@ -93,7 +95,7 @@ void casasInit(var_base *varp)
 }	/* END CASASINIT */
 
 /* -------------------------------------------------------------------- */
-void scasas(DERTBL *varp)
+void scasas(DERTBL *varp)	// Original PMS ASAS/PCASP probes.
 {
   size_t	i, probeNum;
   NR_TYPE	*actual, *concentration, activity, *dia, *dia2, *dia3;
@@ -137,7 +139,7 @@ void scasas(DERTBL *varp)
 }       /* END SCASAS */
 
 /* -------------------------------------------------------------------- */
-void scs200(DERTBL *varp)
+void scs200(DERTBL *varp)	// DMT Modified SPP200 & UHSAS.
 {
   size_t	i, probeNum;
   NR_TYPE	*actual, *concentration, *dia, *dia2, *dia3;
@@ -151,6 +153,14 @@ void scs200(DERTBL *varp)
   dia		= cell_size[probeNum];
   dia2		= cell_size2[probeNum];
   dia3		= cell_size3[probeNum];
+
+  /* Fix overlapping gain stages.  The probe should be dynamically configured,
+   * but there is no documentation to that at this time, so a fix gain stage
+   * setting is used.  There are four gain stages, combine 8 bins into one bin
+   * to smooth out discontinuities at each gain stage (at bin 19, bin 44, and 77).
+   */
+  if (cfg.ProjectName().compare(0, 5, "HIPPO") == 0)
+    uhsasBinConsolidation(actual);
 
   if (FeedBack == HIGH_RATE_FEEDBACK)
     {
@@ -258,6 +268,47 @@ void sconcu500(DERTBL *varp)
     concu500 += concentration[i];
 
   PutSample(varp, concu500);
+}
+
+/* -------------------------------------------------------------------- */
+static void uhsasBinConsolidation(NR_TYPE *actual)
+{
+  /* Fix overlapping gain stages.  The probe should be dynamically configured,
+   * but there is no documentation to that at this time, so a fix gain stage
+   * setting is used.  There are four gain stages, combine 8 bins into one bin
+   * to smooth out discontinuities at each gain stage (at bin 19, bin 44, and 77).
+   */
+  NR_TYPE uhsas_raw[MAX_BINS];	// Used only for correcting PACDEX-HIPPO.
+  int src = 0, dst = 0;
+  memset(uhsas_raw, 0, sizeof(uhsas_raw));
+
+  while (src < 16)
+    uhsas_raw[dst++] = actual[src++];
+
+  while (src < 24)
+    uhsas_raw[dst] += actual[src++];
+  ++dst;
+
+  while (src < 41)
+    uhsas_raw[dst++] = actual[src++];
+
+  while (src < 49)
+    uhsas_raw[dst] += actual[src++];
+  ++dst;
+
+  while (src < 74)
+    uhsas_raw[dst++] = actual[src++];
+
+  while (src < 81)
+    uhsas_raw[dst] += actual[src++];
+  ++dst;
+
+  while (src < 100)
+    uhsas_raw[dst++] = actual[src++];
+
+  while (dst < 100)
+    uhsas_raw[dst++] = 0.0;
+  memcpy(actual, uhsas_raw, 100 * 4);
 }
 
 /* END ASAS.C */
