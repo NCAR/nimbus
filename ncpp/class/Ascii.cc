@@ -49,11 +49,11 @@ void Ascii::Update(SetManager& sets, PlotManager *plotMgr)
 
     if (sets.DataTypes() & COUNTS)
       {
-      size_t sum = 0;
       strcat(buffer, "\n  Raw Counts\n");
 
       for (i = 0; i < sets.NumberRecords(); ++i)
         {
+        size_t sum = 0;
         for (j = 0; j < set->probe->VectorLength(); ++j)
           {
           sprintf(&buffer[strlen(buffer)], "%11.0f", set->Accumulation(i, j));
@@ -68,13 +68,13 @@ void Ascii::Update(SetManager& sets, PlotManager *plotMgr)
 
     if (sets.DataTypes() & CONCENTRATION)
       {
-      double sum = 0.0;
       strcat(buffer, "\n  Concentrations ");
       strcat(buffer, MakeYAxisLabel(sets.GetNormalization(), sets.DataTypes()).c_str());
       strcat(buffer, "\n");
 
       for (i = 0; i < sets.NumberRecords(); ++i)
         {
+        double sum = 0.0;
         for (j = 0; j < set->probe->FirstBin(); ++j)
           strcat(buffer, dashes);
 
