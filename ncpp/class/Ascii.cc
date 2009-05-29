@@ -14,7 +14,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2007
 
 #include "Ascii.h"
 
-static char	*dashes = "        ---";
+static const char *dashes = "        ---";
 
 /* -------------------------------------------------------------------- */
 Ascii::Ascii(const Widget parent) : TextWindow(parent, "ascii")
@@ -49,14 +49,18 @@ void Ascii::Update(SetManager& sets, PlotManager *plotMgr)
 
     if (sets.DataTypes() & COUNTS)
       {
+      size_t sum = 0;
       strcat(buffer, "\n  Raw Counts\n");
 
       for (i = 0; i < sets.NumberRecords(); ++i)
         {
         for (j = 0; j < set->probe->VectorLength(); ++j)
+          {
           sprintf(&buffer[strlen(buffer)], "%11.0f", set->Accumulation(i, j));
+          sum += set->Accumulation(i, j);
+          }
 
-        strcat(buffer, "\n");
+        sprintf(&buffer[strlen(buffer)], ", total=%7d\n", sum);
         Append(buffer);
         buffer[0] = '\0';
         }
@@ -64,6 +68,7 @@ void Ascii::Update(SetManager& sets, PlotManager *plotMgr)
 
     if (sets.DataTypes() & CONCENTRATION)
       {
+      double sum = 0.0;
       strcat(buffer, "\n  Concentrations ");
       strcat(buffer, MakeYAxisLabel(sets.GetNormalization(), sets.DataTypes()).c_str());
       strcat(buffer, "\n");
@@ -74,12 +79,15 @@ void Ascii::Update(SetManager& sets, PlotManager *plotMgr)
           strcat(buffer, dashes);
 
         for (; j <= set->probe->LastBin(); ++j)
+          {
           sprintf(&buffer[strlen(buffer)], "%11.3e", set->Concentration(i, j));
+          sum += set->Concentration(i, j);
+          }
 
         for (; j < set->probe->VectorLength(); ++j)
           strcat(buffer, dashes);
 
-        strcat(buffer, "\n");
+        sprintf(&buffer[strlen(buffer)], ", total=%9.1f\n", sum);
         Append(buffer);
         buffer[0] = '\0';
         }
