@@ -648,7 +648,7 @@ if (debug)
       if (cp)
       {
         cp->timeWord = Fast2DCTimeWord_Microseconds(slice);
-        unsigned long msec = startMilliSec + ((cp->timeWord - firstTimeWord) / 1000);
+        unsigned long msec = startMilliSec + ((Fast2DCTimeWord_Microseconds(slice) - firstTimeWord) / 1000);
         cp->time = startTime + (msec / 1000);
         cp->msec = msec % 1000;
         cp->deltaTime = cp->timeWord - prevTimeWord;
