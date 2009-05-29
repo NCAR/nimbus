@@ -8,7 +8,7 @@ DESCRIPTION:
 
 NOTES:		Calculations taken from Bulletin 24 dated 1/89.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2007
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2009
 -------------------------------------------------------------------------
 */
 
@@ -299,7 +299,7 @@ static void uhsasBinConsolidation(NR_TYPE *actual)
   while (src < 74)
     uhsas_raw[dst++] = actual[src++];
 
-  while (src < 81)
+  while (src < 82)
     uhsas_raw[dst] += actual[src++];
   ++dst;
 
@@ -308,6 +308,7 @@ static void uhsasBinConsolidation(NR_TYPE *actual)
 
   while (dst < 100)
     uhsas_raw[dst++] = 0.0;
+
   memcpy(actual, uhsas_raw, 100 * 4);
 }
 
