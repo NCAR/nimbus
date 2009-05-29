@@ -54,7 +54,7 @@ O2DOB=	${O2D}/CanvasWindow.o\
 	${O2D}/ControlWindow.o ${O2D}/Colors.o ${O2D}/Enchilada.o\
 	${O2D}/DataFile.o ${O2D}/FileMgr.o ${O2D}/Hex.o\
 	${O2D}/Magnify.o ${O2D}/MagnifyCanvas.o ${O2D}/MagnifyWindow.o\
-	${O2D}/MainCanvas.o ${O2D}/Probe.o
+	${O2D}/MainCanvas.o ${O2D}/Probe.o ${O2D}/Histogram.o
 
 
 ${PROG}: ${OBJS} classDir

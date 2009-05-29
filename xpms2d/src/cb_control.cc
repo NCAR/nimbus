@@ -33,11 +33,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2006
 #include <Colors.h>
 #include <raf/Cursor.h>
 #include <Enchilada.h>
+#include <Histogram.h>
 #include <FileMgr.h>
 #include <raf/XPen.h>
 #include <MainCanvas.h>
 
 extern Enchilada	*enchiladaWin;
+extern Histogram	*histogramWin;
 extern FileManager	fileMgr;
 extern ControlWindow	*controlWindow;
 extern MainCanvas	*mainPlot;
@@ -117,6 +119,9 @@ void PageForward(Widget w, XtPointer client, XtPointer call)
 
   if (enchiladaWin)
     enchiladaWin->Clear();
+
+  if (histogramWin)
+    histogramWin->Clear();
 
   for (nBuffs = 0; nBuffs < mainPlot->maxRecords() &&
               fileMgr.CurrentFile()->NextPMS2dRecord(&pgFbuff[nBuffs]); )

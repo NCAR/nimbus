@@ -55,8 +55,11 @@ const size_t RecordLen = 1024;
 #define ALL_SETS	(-1)
 
 
-struct particle
+class Particle
   {
+public:
+  Particle();	// in process.cc
+
   long time;           // Seconds since mid-night
   long msec;
 
@@ -73,8 +76,6 @@ struct particle
   ulong		deltaTime;	// Amount of time between prev & this particle
   ulong		liveTime;	// Amount of time consumed by particle
   };
-
-typedef struct particle Particle;
 
 
 struct recStats
@@ -142,6 +143,7 @@ void	ApplyTimeChange(Widget, XtPointer, XtPointer),
 	SetCurrentFile(Widget, XtPointer, XtPointer),
 	ViewHex(Widget, XtPointer, XtPointer),
 	ViewEnchilada(Widget, XtPointer, XtPointer),
+	ViewHistogram(Widget, XtPointer, XtPointer),
 	SetDensity(Widget, XtPointer, XtPointer),
 	SetAreaRatioRej(Widget, XtPointer, XtPointer),
 	SetConcentration(Widget, XtPointer, XtPointer),

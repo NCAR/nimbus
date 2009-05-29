@@ -20,6 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8
 #include <FileMgr.h>
 #include <raf/Printer.h>
 #include <Enchilada.h>
+#include <Histogram.h>
 #include <Hex.h>
 #include <raf/XmFile.h>
 
@@ -32,6 +33,7 @@ extern XmFile		*fileSel;
 
 static Hex	*hexWin = NULL;
 Enchilada	*enchiladaWin = NULL;
+Histogram	*histogramWin = NULL;
 
 extern int     nBuffs;
 extern P2d_rec pgFbuff[];
@@ -47,8 +49,20 @@ void ViewEnchilada(Widget w, XtPointer client, XtPointer call)
 
   enchiladaWin->PopUp();
   PageCurrent();
+}
 
-}       /* END VIEWTITLES */
+/* -------------------------------------------------------------------- */
+void ViewHistogram(Widget w, XtPointer client, XtPointer call)
+{ 
+  if (nBuffs == 0)
+    return;
+  
+  if (!histogramWin)
+    histogramWin = new Histogram(application->Shell());
+
+  histogramWin->PopUp();
+  PageCurrent();
+}
 
 /* -------------------------------------------------------------------- */
 void ViewHex(Widget w, XtPointer client, XtPointer call)
@@ -61,8 +75,7 @@ void ViewHex(Widget w, XtPointer client, XtPointer call)
 
   hexWin->Update(nBuffs, pgFbuff);
   hexWin->PopUp();
-
-}	/* END VIEWTITLES */
+}
 
 /* -------------------------------------------------------------------- */
 void DismissText(Widget w, XtPointer client, XtPointer call)
@@ -71,8 +84,7 @@ void DismissText(Widget w, XtPointer client, XtPointer call)
 
   obj->Clear();
   obj->PopDown();
-
-}	/* END DISMISSTEXT */
+}
 
 /* -------------------------------------------------------------------- */
 void PrintText(Widget w, XtPointer client, XtPointer call)
@@ -98,8 +110,7 @@ void PrintText(Widget w, XtPointer client, XtPointer call)
 
   cursor.PointerCursor((Widget)client);
 //  cursor.PointerCursor(application->Shell());
-
-}	/* END PRINTTEXT */
+}
 
 /* -------------------------------------------------------------------- */
 static Widget	tmpText;
@@ -124,15 +135,13 @@ void SaveText2(Widget w, XtPointer client, XtPointer call)
   XtFree(p);
 
   fclose(fp);
-
-}	/* END SAVETEXT2 */
+}
 
 /* -------------------------------------------------------------------- */
 void SearchText(Widget w, XtPointer client, XtPointer call)
 {
   ((TextWindow *)client)->Search();
-
-}       /* END SEARCH */
+}
 
 /* -------------------------------------------------------------------- */
 void SaveText(Widget w, XtPointer client, XtPointer call)
@@ -140,7 +149,4 @@ void SaveText(Widget w, XtPointer client, XtPointer call)
   tmpText = (Widget)client;
 
   fileSel->QueryFile("Enter file name to save as:", DataPath, (XtCallbackProc)SaveText2);
-
-}	/* END SAVETEXT */
-
-/* END CB_TEXT.CC */
+}

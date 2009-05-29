@@ -1,15 +1,15 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:	Hex.h
+OBJECT NAME:	Histogram.h
 
-FULL NAME:	View Hex
+FULL NAME:	View Histogram Data
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2000
+COPYRIGHT:	University Corporation for Atmospheric Research, 2000-2009
 -------------------------------------------------------------------------
 */
 
-#ifndef HEX_H
-#define HEX_H
+#ifndef HISTOGRAM_H
+#define HISTOGRAM_H
 
 #include <define.h>
 #include <raf/header.h>
@@ -17,12 +17,12 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 
 
 /* -------------------------------------------------------------------- */
-class Hex : public TextWindow
+class Histogram : public TextWindow
 {
 public:
-	Hex(const Widget parent);
+	Histogram(const Widget parent);
 
-  void	Update(size_t nBuffs, P2d_rec sets[]);
+  void	AddLineItem(P2d_rec * record, recStats & output);
 
 };
 

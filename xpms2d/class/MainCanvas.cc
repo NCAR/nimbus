@@ -10,11 +10,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2006
 
 #include "MainCanvas.h"
 #include "Enchilada.h"
+#include "Histogram.h"
 #include "Colors.h"
 #include <raf/XFonts.h>
 #include <raf/XPen.h>
 
-extern Enchilada       *enchiladaWin; 
+extern Enchilada	*enchiladaWin; 
+extern Histogram	*histogramWin; 
 extern Colors	*color;
 extern XFonts	*fonts;
 extern XPen	*pen;
@@ -264,6 +266,9 @@ colWidth = Width() / nCols;
 
   prevOverLoad = record->overld;
   y += PIX_PER_Y;
+
+  if (histogramWin)
+    histogramWin->AddLineItem(record, stats);
 
 }       /* END DRAW */
  
@@ -531,7 +536,7 @@ void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float ver
   Particle	*cp;
   int		nextColor, cntr = 0;
   bool		colorIsBlack = false;
-  unsigned long long slice, *p = (unsigned long long *)record->data;
+  unsigned long long *p = (unsigned long long *)record->data;
 
   static unsigned long prevTime;
   static P2d_rec prevRec;
@@ -539,15 +544,18 @@ void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float ver
   if (memcmp((void *)&record, (void *)&prevRec, sizeof(P2d_rec)) == 0)
     stats.duplicate = true;
 
+  if ((cp = (Particle *)stats.particles.Front()) == NULL)
+    return;
+
   for (size_t i = 0; i < 512; )
+  {
+    if (cp == 0 || cp->reject)
+      nextColor = 0;	// black.
+    else
+      nextColor = probeNum;
+
+    if ((*p & Fast2DC_Mask) == Fast2DC_Sync)
     {
-    slice = *p;
-
-    if ((slice & Fast2DC_Mask) == Fast2DC_Sync)
-      {
-      if ((cp = (Particle *)stats.particles.DeQueue()) == NULL)
-        break;
-
       // Draw timing & sync words in yellow (or some other color).
       if (cp && cp->reject) {
         if (cp->h == 0 || cp->w == 0)
@@ -556,18 +564,21 @@ void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float ver
         else
           if (ps) ps->SetColor(color->GetColorPS(RED));
           else pen->SetColor(color->GetColor(RED));
-
-        nextColor = 0;
-        }
+      }
       else {	// Green for good particle
         if (ps) ps->SetColor(color->GetColorPS(GREEN));
         else pen->SetColor(color->GetColor(GREEN));
+      }
 
-        nextColor = probeNum;
-        }
+      drawSlice(ps, i++, *p++);
 
-      drawSlice(ps, i++, slice);
-
+      // Get next particle.
+      cp = (Particle *)stats.particles.DeQueue();
+      delete cp;
+      cp = (Particle *)stats.particles.Front();
+    }
+    else
+    {
       if (ps) ps->SetColor(color->GetColorPS(nextColor));
       else pen->SetColor(color->GetColor(nextColor));
 
@@ -576,27 +587,13 @@ void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float ver
       else
         colorIsBlack = false;
 
-      for (++p; i < 512 && (*p & Fast2DC_Mask) != Fast2DC_Sync; ++p)
+      for (; i < 512 && (*p & Fast2DC_Mask) != Fast2DC_Sync; ++p)
         drawSlice(ps, i++, *p);
 
       if (enchiladaWin)
         enchiladaWin->AddLineItem(cntr++, cp);
-
-      delete cp;
-      }
-    else
-      {
-      if (!colorIsBlack)
-        {
-        if (ps) ps->SetColor(color->GetColorPS(BLACK));
-        else pen->SetColor(color->GetColor(BLACK));
-
-        colorIsBlack = true;
-        }
-
-      drawSlice(ps, i++, *p++);
-      }
     }
+  }
 
 /*
 // For diagnostics, display record as is on 2nd half of screen/window.

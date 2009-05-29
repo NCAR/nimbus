@@ -12,21 +12,17 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 #define ENCHILADA_H
 
 #include <define.h>
-
 #include <raf/TextWindow.h>
 
 
 /* -------------------------------------------------------------------- */
-class Enchilada : public TextWindow {
-
+class Enchilada : public TextWindow
+{
 public:
-
 	Enchilada(const Widget parent);
 
   void	AddLineItem(int cnt, Particle *cp);
 
-private:
-
-};	/* END ENCHILADA.H */
+};
 
 #endif

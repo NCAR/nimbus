@@ -32,6 +32,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999-2006
 
 #include <algorithm>
 
+#define Fast2DCTimeWord_Microseconds(slice)	((slice & 0x000000ffffffffffLL) / 12)
+
+static bool debug = false;
+
 static const size_t maxDiodes = 256;
 static size_t nDiodes = 32;
 
@@ -48,6 +52,7 @@ struct recStats &ProcessHVPSrecord(P2d_rec *record, float version);
 struct recStats &ProcessFast2DC(P2d_rec *record, float version);
 
 static void computeDerived(double sv[], size_t nBins, double liveTime);
+static size_t checkRejectionCriteria(Particle * cp, recStats & output);
 
 FILE *fout;
 
@@ -58,7 +63,7 @@ struct recStats &ProcessRecord(P2d_rec *record, float version)
   int		startTime, overload;
   size_t	nBins, probeIdx;
   unsigned long		*p, slice, ppSlice, pSlice, syncWord, startMilliSec;
-  bool		overloadAdded = false, debug = false;
+  bool		overloadAdded = false;
   double	sampleVolume[maxDiodes], totalLiveTime;
   char		probeType = ((char *)&record->id)[0];
 
@@ -175,11 +180,6 @@ if (debug) printf("%08lx %08lx %08lx\n", ppSlice, pSlice, slice);
       cp->w = 1;        // first slice of particle is in sync word
       cp->h = 1;
       cp->area = 1;	// assume at list 1 pixel hidden in sync-word.
-      cp->edge = 0;
-      cp->horiz_gap = false;
-      cp->vert_gap = false;
-      cp->reject = false;
-      cp->timeReject = false;
 
       cp->timeWord = pSlice & 0x00ffffff;
       cp->deltaTime = (unsigned long)((float)cp->timeWord * output.frequency);
@@ -245,114 +245,7 @@ if (debug) printf("%08lx %08lx %08lx\n", ppSlice, pSlice, slice);
 if (debug)
   printf("%06lx %d %d\n", cp->timeWord, cp->w, cp->h);
 
-      if (controlWindow->RejectZeroAreaImage() && cp->w == 1 && cp->h == 1)
-        {
-//        printf("reject 0 area #%d\n", output.nTimeBars);
-        cp->reject = true;
-        }
-
-      if ((float)cp->area / (cp->w * cp->h) <= controlWindow->GetAreaRatioReject())
-        cp->reject = true;
-
-      size_t bin = 0;
-
-      switch (controlWindow->GetConcentration())
-        {
-        case NONE:
-          bin = std::max(cp->w, cp->h);
-          break;
-
-        case ENTIRE_IN:
-          if (cp->edge)
-            cp->reject = true;
-
-          bin = cp->h;
-          break;
-
-        case CENTER_IN:
-/*
-if (cp->w > cp->h*2 || cp->w*2 < cp->h)
-  cp->reject = true;
-if (probeType == 'P' && cp->edge == 0xff) // both edges.
-  cp->reject = true;
-
-if (probeType == 'P' && (cp->w > 20 || cp->h > 20))  // reject > 4mm.
-  cp->reject = true;
-*/
-
-          if (cp->w > 121)
-            {
-            if (debug) printf("reject 121 rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-          else
-          if (cp->h < 24 && cp->w > 6 * cp->h)
-            {
-            if (debug) printf("reject 24 rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-          else
-          if (cp->h < 6 && cp->w > 3 * cp->h)
-            {
-            if (debug) printf("reject 6 rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-          else
-          if (cp->edge && cp->w >= cp->h * 2)
-            {
-            if (debug) printf("reject no-center rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-
-          bin = std::max(cp->w, cp->h);
-          break;
-
-        case RECONSTRUCTION:
-          if (cp->w > 121)
-            {
-            if (debug) printf("reject 121 rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-          else
-          if (cp->h < 24 && cp->w > 6 * cp->h)
-            {
-            if (debug) printf("reject 24 rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-          else
-          if (cp->h < 6 && cp->w > 3 * cp->h)
-            {
-            if (debug) printf("reject 6 rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-          else
-          if (cp->edge && (float)cp->h / cp->w < 0.2)
-            {
-            if (debug) printf("reject 20%% rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-
-          if (cp->edge == 0 || (cp->edge && cp->w / cp->h < 0.2))
-            bin = std::max(cp->w, cp->h);
-          else
-          if (cp->edge == 0xf0 || cp->edge == 0x0f) // One edge, but not both.
-            bin = (int)((pow(cp->w >> 1, 2.0) + pow(cp->h, 2.0)) / cp->h);
-          else
-          if (cp->edge == 0xff)
-            bin = (int)sqrt(pow(cp->h + ((pow(cp->x2, 2.0) + pow(cp->x1, 2.0))
-				/ 4 * cp->h), 2.0) + pow(cp->x1, 2.0));
-
-          break;
-
-        }
-
-      if (!cp->reject && bin < maxDiodes)
-        {
-        output.accum[bin]++;
-        output.area += cp->area;
-        output.nonRejectParticles++;
-        totalLiveTime += cp->liveTime + cp->deltaTime;
-        }
+      totalLiveTime += checkRejectionCriteria(cp, output);
 
       output.particles.EnQueue((void *)cp);
 
@@ -369,10 +262,10 @@ if (probeType == 'P' && (cp->w > 20 || cp->h > 20))  // reject > 4mm.
     pSlice = slice;
     }
 
+output.tBarElapsedtime += (unsigned long)(RecordLen * output.frequency);
+
   if (output.nTimeBars > 0)
     output.meanBar = output.tBarElapsedtime / output.nTimeBars;
-
-output.tBarElapsedtime += (unsigned long)(RecordLen * output.frequency);
 
   output.tBarElapsedtime /= 1000;	// convert to milliseconds
   output.frequency /= 1000;
@@ -402,7 +295,7 @@ struct recStats &ProcessHVPSrecord(P2d_rec *record, float version)
   size_t	nBins, probeIdx = 0, shaded, unshaded;
   unsigned short	*p, slice, ppSlice, pSlice;
   unsigned long	startMilliSec;
-  bool		overloadAdded = false, debug = false;
+  bool		overloadAdded = false;
   double	diameter, z, conc, totalLiveTime;
 
   Particle	*cp;
@@ -516,13 +409,6 @@ if (debug) printf("%08x %08x %08x\n", ppSlice, pSlice, p[0]);
       cp->time = startTime;
       cp->msec = startMilliSec;
 
-      cp->w = 0;        /* first slice of particle is in sync word */
-      cp->h = 0;
-      cp->area = 0;
-      cp->edge = 0;
-      cp->reject = false;
-      cp->timeReject = false;
-
 //printf("timing words %x %x %x\n", p[-1], p[0], p[1]);
 
       cp->timeWord = (((unsigned long)p[0] << 14) & 0x0fffc000);
@@ -611,99 +497,7 @@ if (debug) printf("%08x %08x %08x\n", ppSlice, pSlice, p[0]);
 if (debug)
   printf("%06lx %d %d\n", cp->timeWord, cp->w, cp->h);
 
-      if (controlWindow->RejectZeroAreaImage() && cp->w == 1 && cp->h == 1)
-        {
-//        printf("reject 0 area #%d\n", output.nTimeBars);
-        cp->reject = true;
-        }
-
-      size_t bin = 0;
-
-      switch (controlWindow->GetConcentration())
-        {
-        case NONE:
-          bin = std::max(cp->w, cp->h);
-          break;
-
-        case ENTIRE_IN:
-          if (cp->edge)
-            cp->reject = true;
-
-          bin = cp->h;
-          break;
-
-        case CENTER_IN:
-          if (cp->w > 121)
-            {
-            if (debug) printf("reject 121 rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-          else
-          if (cp->h < 24 && cp->w > 6 * cp->h)
-            {
-            if (debug) printf("reject 24 rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-          else
-          if (cp->h < 6 && cp->w > 3 * cp->h)
-            {
-            if (debug) printf("reject 6 rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-          else
-          if (cp->edge && cp->w >= cp->h * 2)
-            {
-            if (debug) printf("reject no-center rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-
-          bin = std::max(cp->w, cp->h);
-          break;
-
-        case RECONSTRUCTION:
-          if (cp->w > 121)
-            {
-            if (debug) printf("reject 121 rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-          else
-          if (cp->h < 24 && cp->w > 6 * cp->h)
-            {
-            if (debug) printf("reject 24 rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-          else
-          if (cp->h < 6 && cp->w > 3 * cp->h)
-            {
-            if (debug) printf("reject 6 rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-          else
-          if (cp->edge && (float)cp->h / cp->w < 0.2)
-            {
-            if (debug) printf("reject 20%% rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-
-          if (cp->edge == 0 || (cp->edge && cp->w / cp->h < 0.2))
-            bin = std::max(cp->w, cp->h);
-          else
-          if (cp->edge == 0xf0 || cp->edge == 0x0f) // One edge, but not both.
-            bin = (int)((pow(cp->w >> 1, 2.0) + pow(cp->h, 2.0)) / cp->h);
-          else
-          if (cp->edge == 0xff)
-            bin = (int)sqrt(pow(cp->h + ((pow(cp->x2, 2.0) + pow(cp->x1, 2.0))
-				/ 4 * cp->h), 2.0) + pow(cp->x1, 2.0));
-          break;
-        }
-
-      if (!cp->reject && bin < RecordLen)
-        {
-        output.accum[bin]++;
-        output.area += cp->area;
-        output.nonRejectParticles++;
-        totalLiveTime += cp->liveTime + cp->deltaTime;
-        }
+      totalLiveTime += checkRejectionCriteria(cp, output);
 
       output.particles.EnQueue((void *)cp);
 
@@ -720,12 +514,13 @@ if (debug)
     pSlice = slice;
     }
 
+  output.tBarElapsedtime /= 1000;	// convert to milliseconds
+
   if (output.nTimeBars > 0)
     output.meanBar = output.tBarElapsedtime / output.nTimeBars;
 
 //output.tBarElapsedtime += (unsigned long)(2048 * output.frequency);
 
-  output.tBarElapsedtime /= 1000;	// convert to milliseconds
   output.frequency /= 1000;
 
 
@@ -777,18 +572,18 @@ if (debug)
 /* -------------------------------------------------------------------- */
 struct recStats &ProcessFast2DC(P2d_rec *record, float version)
 {
-  int		startTime, overload;
+  int		startTime, overload = 0;
   size_t	nBins, probeIdx = 0;
   unsigned long long	*p, slice;
   unsigned long		startMilliSec;
-  bool		overloadAdded = false, debug = false;
   double	sampleVolume[maxDiodes], totalLiveTime;
 
-  Particle	*cp = 0;
+  static Particle	*cp = new Particle();
 
   static P2d_hdr	prevHdr[MAX_PROBES];
   static unsigned long	prevTime[MAX_PROBES] = { 1,1,1,1 };
-  unsigned long long	firstTimeWord, lastTimeWord;
+  unsigned long long	firstTimeWord = 0;
+  static unsigned long long prevTimeWord = 0;
 
   if (version == -1)    // This means set time stamp only
   {
@@ -802,9 +597,12 @@ struct recStats &ProcessFast2DC(P2d_rec *record, float version)
 if (debug)
   printf("C4 %02d:%02d:%02d.%d - ", record->hour, record->minute, record->second, record->msec);
 
-  output.resolution = 25;
+  if (htons(record->id) == PMS2DC4)
+    output.resolution = 25;
+  if (htons(record->id) == PMS2DC6)
+    output.resolution = 10;
+
   output.SampleVolume = 61.0 * 1.6;
-  overload = prevHdr[probeIdx].overld;
   output.DASelapsedTime = output.thisTime - prevTime[probeIdx];
   output.tas = (float)record->tas * 125 / 255;
   output.frequency = output.resolution / output.tas;
@@ -821,264 +619,232 @@ if (debug)
   for (size_t i = 0; i < nBins; ++i)
     sampleVolume[i] = output.tas * (sampleAreaC[i] * 2) * 0.001;
   
-  output.SampleVolume *= output.tas *
-                        (output.DASelapsedTime - record->overld) * 0.001;
-
   // Scan record, compute tBarElapsedtime and stats.
   p = (unsigned long long *)record->data;
 
   startTime = prevTime[probeIdx] / 1000;
-  startMilliSec = prevHdr[probeIdx].msec * 1000;
-  firstTimeWord = 0;
+  startMilliSec = prevHdr[probeIdx].msec;
 
   // Loop through all slices in record.
-  for (size_t i = 0; i < 512; )
-    {
+  for (size_t i = 0; i < 512; ++i, ++p)
+  {
     slice = *p;
   
-    if (i > 515 && overloadAdded == false)
-      {
-      startMilliSec += overload * 1000;
-      overloadAdded = true;
-      }
-    
     /* Have particle, will travel.
      */
     if ((slice & Fast2DC_Mask) == Fast2DC_Overld)
+    {
       printf(">>>>>>>>>> C4 Overload <<<<<<<<<<<<\n");
+      // Set 'overload' variable here.  this timeword - prevtimeword.
+      overload = Fast2DCTimeWord_Microseconds(slice) - prevTimeWord;
+    }
 
     if ((slice & Fast2DC_Mask) == Fast2DC_Sync)
-      {
-      cp = new Particle();
-      cp->time = startTime;
-      cp->msec = startMilliSec;
-
-      cp->w = 0;
-      cp->h = 0;
-      cp->area = 0;
-      cp->edge = 0;
-      cp->horiz_gap = false;
-      cp->vert_gap = false;
-      cp->reject = false;
-      cp->timeReject = false;
-
-      cp->timeWord = (slice & 0x000000ffffffffffLL) / 12000;	// 12MHz clock to milliseconds
-      output.minBar = std::min(output.minBar, cp->deltaTime);
-      output.maxBar = std::max(output.maxBar, cp->deltaTime);
-
+    {
       if (firstTimeWord == 0)
-        firstTimeWord = cp->timeWord;
+        firstTimeWord = Fast2DCTimeWord_Microseconds(slice);
 
-      if (!cp->timeReject)
-        output.tBarElapsedtime += cp->deltaTime;
+      // Close out particle.  Timeword belongs to previous particle.
+      if (cp)
+      {
+        cp->timeWord = Fast2DCTimeWord_Microseconds(slice);
+        unsigned long msec = startMilliSec + ((cp->timeWord - firstTimeWord) / 1000);
+        cp->time = startTime + (msec / 1000);
+        cp->msec = msec % 1000;
+        cp->deltaTime = cp->timeWord - prevTimeWord;
+        cp->timeWord /= 1000;	// Store as millseconds for this probe, since this is not a 48 bit word
+        totalLiveTime += checkRejectionCriteria(cp, output);
+        output.particles.EnQueue((void *)cp);
+      }
+
+      prevTimeWord = Fast2DCTimeWord_Microseconds(slice);
+
+      // Start new particle.
+      cp = new Particle();
 
       ++output.nTimeBars;
+      output.minBar = std::min(output.minBar, cp->deltaTime);
+      output.maxBar = std::max(output.maxBar, cp->deltaTime);
+      continue;
+    }
 
-      /* Determine height of particle.
-       */
-      ++p; ++i;
-      for (; i < 512 && (*p & Fast2DC_Mask) != Fast2DC_Sync; ++p, ++i)
-        {
-        if (*p == 0xffffffffffffffffLL)
-          {
-          if (cp->w == 0)
-            continue;
-          else
-            break;
-          }
 
-        ++cp->w;
+    if (*p == 0xffffffffffffffffLL)	// Skip blank slice.
+      continue;
 
-        slice = ~(*p);
+    ++cp->w;
 
-        /* Potential problem/bug with computing of x1, x2.  Works good if all
-         * edge touches are contigious (water), not so good for snow, where
-         * it will all get bunched up.  Counts total number of contacts for
-         * each edge.
-         */
-        if (slice & 0x8000000000000000LL) // touched edge
-          {
-          cp->edge |= 0x0F;
-          cp->x1++;
-          }
+    slice = ~(*p);
 
-        if (slice & 0x00000001LL) // touched edge
-          {
-          cp->edge |= 0xF0;
-          cp->x2++;
-          }
+    /* Potential problem/bug with computing of x1, x2.  Works good if all
+     * edge touches are contigious (water), not so good for snow, where
+     * it will all get bunched up.  Counts total number of contacts for
+     * each edge.
+     */
+    if (slice & 0x8000000000000000LL) // touched edge
+    {
+      cp->edge |= 0x0F;
+      cp->x1++;
+    }
 
-        for (size_t j = 0; j < nDiodes; ++j, slice >>= 1)
-          cp->area += slice & 0x0001;
+    if (slice & 0x00000001LL) // touched edge
+    {
+      cp->edge |= 0xF0;
+      cp->x2++;
+    }
 
-        slice = *p;
-        int h = nDiodes;
-        for (size_t j = 0;
-                j < nDiodes && (slice & 0x8000000000000000LL); slice <<= 1, ++j)
-          --h;
-        slice = *p;
-        for (size_t j = 0;
-                j < nDiodes && (slice & 0x00000001LL); slice >>= 1, ++j)
-          --h;
+    for (size_t j = 0; j < nDiodes; ++j, slice >>= 1)
+      cp->area += slice & 0x0001;
 
-        if (h > 0)
-          cp->h = std::max((size_t)h, cp->h);
-        }
+    slice = *p;
+    int h = nDiodes;
+    for (size_t j = 0; j < nDiodes && (slice & 0x8000000000000000LL); slice <<= 1, ++j)
+      --h;
+    slice = *p;
+    for (size_t j = 0; j < nDiodes && (slice & 0x00000001LL); slice >>= 1, ++j)
+      --h;
 
-      /* If the particle becomes rejected later, we need to now much time the
-       * particle consumed, so we can add it to the deadTime, so sampleVolume
-       * can be reduced accordingly.
-       */
-      cp->liveTime = (unsigned long)((float)(cp->w) * output.frequency);
+    if (h > 0)
+      cp->h = std::max((size_t)h, cp->h);
 
-      cp->msec /= 1000;
+
+    /* If the particle becomes rejected later, we need to now much time the
+     * particle consumed, so we can add it to the deadTime, so sampleVolume
+     * can be reduced accordingly.
+     */
+    cp->liveTime = (unsigned long)((float)(cp->w) * output.frequency);
 
 if (debug)
   printf("%06lx %d %d\n", cp->timeWord, cp->w, cp->h);
+  }
 
-      if (controlWindow->RejectZeroAreaImage() && cp->w == 0 && cp->h == 0)
-        {
-//        printf("reject 0 area #%d\n", output.nTimeBars);
-        cp->reject = true;
-        }
+  output.SampleVolume *= output.tas *
+                        (output.DASelapsedTime - overload) * 0.001;
 
-      if ((float)cp->area / (cp->w * cp->h) <= controlWindow->GetAreaRatioReject())
-        cp->reject = true;
-
-      size_t bin = 0;
-
-      switch (controlWindow->GetConcentration())
-        {
-        case NONE:
-          bin = std::max(cp->w, cp->h);
-          break;
-
-        case ENTIRE_IN:
-          if (cp->edge)
-            cp->reject = true;
-
-          bin = cp->h;
-          break;
-
-        case CENTER_IN:
-          if (cp->w > 121)
-            {
-            if (debug) printf("reject 121 rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-          else
-          if (cp->h < 24 && cp->w > 6 * cp->h)
-            {
-            if (debug) printf("reject 24 rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-          else
-          if (cp->h < 6 && cp->w > 3 * cp->h)
-            {
-            if (debug) printf("reject 6 rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-          else
-          if (cp->edge && cp->w >= cp->h * 2)
-            {
-            if (debug) printf("reject no-center rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-
-          bin = std::max(cp->w, cp->h);
-          break;
-
-        case RECONSTRUCTION:
-          if (cp->w > 121)
-            {
-            if (debug) printf("reject 121 rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-          else
-          if (cp->h < 24 && cp->w > 6 * cp->h)
-            {
-            if (debug) printf("reject 24 rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-          else
-          if (cp->h < 6 && cp->w > 3 * cp->h)
-            {
-            if (debug) printf("reject 6 rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-          else
-          if (cp->edge && (float)cp->h / cp->w < 0.2)
-            {
-            if (debug) printf("reject 20%% rule #%d\n", output.nTimeBars);
-            cp->reject = true;
-            }
-
-          if (cp->edge == 0 || (cp->edge && cp->w / cp->h < 0.2))
-            bin = std::max(cp->w, cp->h);
-          else
-          if (cp->edge == 0xf0 || cp->edge == 0x0f) // One edge, but not both.
-            bin = (int)((pow(cp->w >> 1, 2.0) + pow(cp->h, 2.0)) / cp->h);
-          else
-          if (cp->edge == 0xff)
-            bin = (int)sqrt(pow(cp->h + ((pow(cp->x2, 2.0) + pow(cp->x1, 2.0))
-                                / 4 * cp->h), 2.0) + pow(cp->x1, 2.0));
-
-          break;
-
-        }
-
-      if (!cp->reject && bin < (maxDiodes<<1))
-        {
-        output.accum[bin]++;
-        output.area += cp->area;
-        output.nonRejectParticles++;
-        totalLiveTime += cp->liveTime + cp->deltaTime;
-        }
-
-      output.particles.EnQueue((void *)cp);
-
-      startMilliSec += (cp->deltaTime + cp->liveTime);
-
-      if (startMilliSec >= 1000000)
-        {
-        startMilliSec -= 1000000;
-        ++startTime;
-        }
-      }
-    else
-      {
-      ++i;
-      ++p;
-      }
-    }
-
-  if (cp)
-    lastTimeWord = cp->timeWord;
-  else
-    lastTimeWord = -1;
+  output.tBarElapsedtime = (prevTimeWord - firstTimeWord) / 1000;
 
   if (output.nTimeBars > 0)
     output.meanBar = output.tBarElapsedtime / output.nTimeBars;
-
-output.tBarElapsedtime = lastTimeWord - firstTimeWord;
 
   output.frequency /= 1000;
 
 
   // Compute "science" data.
-  totalLiveTime /= 1000;     // convert to seconds
+  totalLiveTime /= 1000000;     // convert to seconds
 
   computeDerived(sampleVolume, nBins, totalLiveTime);
 
   // Save time for next round.
   prevTime[probeIdx] = output.thisTime;
+  memcpy((char *)&prevHdr[probeIdx], (char *)record, sizeof(P2d_hdr));
 
   return(output);
 
 }	// END PROCESSFAST2DC
 
 /* -------------------------------------------------------------------- */
-void computeDerived(double sampleVolume[], size_t nBins, double totalLiveTime)
+static size_t checkRejectionCriteria(Particle * cp, recStats & output)
+{
+  if (controlWindow->RejectZeroAreaImage() && cp->w == 0 && cp->h == 0)
+  {
+//      printf("reject 0 area #%d\n", output.nTimeBars);
+    cp->reject = true;
+  }
+
+  if ((float)cp->area / (cp->w * cp->h) <= controlWindow->GetAreaRatioReject())
+    cp->reject = true;
+
+  size_t bin = 0;
+  switch (controlWindow->GetConcentration())
+  {
+    case NONE:
+      bin = std::max(cp->w, cp->h);
+      break;
+
+    case ENTIRE_IN:
+      if (cp->edge)
+        cp->reject = true;
+
+      bin = cp->h;
+      break;
+
+    case CENTER_IN:
+      if (cp->w > 121)
+      {
+        if (debug) printf("reject 121 rule #%d\n", output.nTimeBars);
+        cp->reject = true;
+      }
+      else
+      if (cp->h < 24 && cp->w > 6 * cp->h)
+      {
+        if (debug) printf("reject 24 rule #%d\n", output.nTimeBars);
+        cp->reject = true;
+      }
+      else
+      if (cp->h < 6 && cp->w > 3 * cp->h)
+      {
+        if (debug) printf("reject 6 rule #%d\n", output.nTimeBars);
+        cp->reject = true;
+      }
+      else
+      if (cp->edge && cp->w >= cp->h * 2)
+      {
+        if (debug) printf("reject no-center rule #%d\n", output.nTimeBars);
+        cp->reject = true;
+      }
+
+      bin = std::max(cp->w, cp->h);
+      break;
+
+    case RECONSTRUCTION:
+      if (cp->w > 121)
+      {
+        if (debug) printf("reject 121 rule #%d\n", output.nTimeBars);
+        cp->reject = true;
+      }
+      else
+      if (cp->h < 24 && cp->w > 6 * cp->h)
+      {
+        if (debug) printf("reject 24 rule #%d\n", output.nTimeBars);
+        cp->reject = true;
+      }
+      else
+      if (cp->h < 6 && cp->w > 3 * cp->h)
+      {
+        if (debug) printf("reject 6 rule #%d\n", output.nTimeBars);
+        cp->reject = true;
+      }
+      else
+      if (cp->edge && (float)cp->h / cp->w < 0.2)
+      {
+        if (debug) printf("reject 20%% rule #%d\n", output.nTimeBars);
+        cp->reject = true;
+      }
+
+      if (cp->edge == 0 || (cp->edge && cp->w / cp->h < 0.2))
+        bin = std::max(cp->w, cp->h);
+      else
+      if (cp->edge == 0xf0 || cp->edge == 0x0f) // One edge, but not both.
+        bin = (int)((pow(cp->w >> 1, 2.0) + pow(cp->h, 2.0)) / cp->h);
+      else
+      if (cp->edge == 0xff)
+        bin = (int)sqrt(pow(cp->h + ((pow(cp->x2, 2.0) + pow(cp->x1, 2.0))
+                                / 4 * cp->h), 2.0) + pow(cp->x1, 2.0));
+      break;
+    }
+
+  if (!cp->reject && bin < maxDiodes)
+  {
+    output.accum[bin]++;
+    output.area += cp->area;
+    output.nonRejectParticles++;
+    return cp->liveTime + cp->deltaTime;
+  }
+  return 0;
+}
+
+/* -------------------------------------------------------------------- */
+static void computeDerived(double sampleVolume[], size_t nBins, double totalLiveTime)
 {
   double	diameter, z, conc;
   output.concentration = output.lwc = output.dbz = z = 0.0;
@@ -1192,5 +958,10 @@ void SetSampleArea()
     }
 
 }	/* END SETSAMPLEAREA */
+
+Particle::Particle() :	time(0), msec(0), w(0), h(0), area(0), vert_gap(false),
+			horiz_gap(false), reject(false), edge(0), timeReject(false)
+{
+}
 
 /* END PROCESS */

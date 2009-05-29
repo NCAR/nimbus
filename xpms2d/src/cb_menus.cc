@@ -286,7 +286,6 @@ void ForkNetscape(Widget w, XtPointer client, XtPointer call)
     printf("exec of netscape failed, errno = %d\n", errno);
     exit(0);
     }
-
 }       /* END FORKNETSCAPE */
 
 /* END CB_MENUS.CC */

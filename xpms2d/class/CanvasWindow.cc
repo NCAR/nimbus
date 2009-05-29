@@ -2,17 +2,7 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	CanvasWindow.cc
 
-FULL NAME:	
-
-ENTRY POINTS:	CanvasWindow()
-
-STATIC FNS:	
-
-DESCRIPTION:	
-
-NOTES:		
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2009
 -------------------------------------------------------------------------
 */
 
@@ -46,6 +36,7 @@ static struct menu	legendMenu[] = {
 
 static struct menu	viewMenu[] = {
 	{ "viewHex", ViewHex, NULL, },
+	{ "viewHisto", ViewHistogram, NULL, },
 	{ "viewAll", ViewEnchilada, NULL, },
         { "separator", NULL, NULL, },
 	{ "viewData", ToggleDisplay, (XtPointer)NORMAL, },
