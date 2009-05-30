@@ -319,7 +319,7 @@ void MainCanvas::drawPMS2D(P2d_rec * record, struct recStats &stats, float versi
       if ((cp = (Particle *)stats.particles.DeQueue()) == NULL)
         break;
 
-if (debug) if (cp) printf("dq: %06lx %lu %lu\n", cp->timeWord, cp->h, cp->w); else printf("NULL\n");
+if (debug) { if (cp) printf("dq: %06lx %lu %lu\n", cp->timeWord, cp->h, cp->w); else printf("NULL\n"); }
 
       unsigned long timeWord = (unsigned long)((float)cp->timeWord * stats.frequency);
 

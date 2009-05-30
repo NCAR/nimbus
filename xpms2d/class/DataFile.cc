@@ -78,7 +78,7 @@ static unsigned short HtestParticle[] = {
   0x427e,
   };
 
-static size_t P2dLRpPR = 1;
+static const size_t P2dLRpPR = 1;
 
 /* -------------------------------------------------------------------- */
 ADS_DataFile::ADS_DataFile(char fName[])
@@ -835,10 +835,12 @@ void ADS_DataFile::check_rico_half_buff(P2d_rec *buff, size_t beg, size_t end)
     // There seemed to be lots of splatter at the start of the buffer,
     // skip until first sync word appears.
     if (!firstSyncWord)
+    {
       if ((*p & SyncWordMask) == 0x55000000)
         firstSyncWord = true;
       else
         continue;
+    }
 
     if ((*p & SyncWordMask) == 0x55000000 || *p == 0xffffffff)
       continue;
@@ -876,8 +878,8 @@ void ADS_DataFile::check_rico_half_buff(P2d_rec *buff, size_t beg, size_t end)
       exit(1);
     }
 
-    unsigned long mask1 = 0x01 << stuck_bin;
-    unsigned long mask2 = 0x07 << stuck_bin-1;
+    unsigned long mask1 = (0x01 << stuck_bin);
+    unsigned long mask2 = (0x07 << stuck_bin-1);
     unsigned long *p = (unsigned long *)buff->data;
     for (size_t i = beg; i < end; ++i, ++p)
     {

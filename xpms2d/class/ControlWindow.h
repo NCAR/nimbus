@@ -64,7 +64,7 @@ private:
   bool		movieRunning;
 
 struct _dens {
-  char	*label;
+  const char *label;
   float	density;
   } density[4];
 

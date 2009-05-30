@@ -25,16 +25,16 @@ MagnifyWindow::MagnifyWindow(Widget parent) : WinForm(parent, "mag", Form)
   XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM); n++;
-  frame = XmCreateFrame(Window(), "buttonFrame", args, n);
+  frame = XmCreateFrame(Window(), (char *)"buttonFrame", args, n);
   XtManageChild(frame);
  
   n = 0;
-  rc = XmCreateRowColumn(frame, "buttonRC", args, n);
+  rc = XmCreateRowColumn(frame, (char *)"buttonRC", args, n);
   XtManageChild(rc);
  
   n = 0;
-  b[0] = XmCreatePushButton(rc, "dismissButton", args, n);
-  b[1] = XmCreatePushButton(rc, "printButton", args, n);
+  b[0] = XmCreatePushButton(rc, (char *)"dismissButton", args, n);
+  b[1] = XmCreatePushButton(rc, (char *)"printButton", args, n);
   XtManageChildren(b, 2);
   XtAddCallback(b[0], XmNactivateCallback, DismissWindow, Window());
 //  XtAddCallback(b[1], XmNactivateCallback, diffPostScript, NULL);
@@ -49,7 +49,7 @@ XtSetSensitive(b[1], false);
   XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
-  drawA = XmCreateDrawingArea(Window(), "magCanvas", args, n);
+  drawA = XmCreateDrawingArea(Window(), (char *)"magCanvas", args, n);
   XtManageChild(drawA);
 
   XtAddCallback(drawA, XmNexposeCallback, (XtCallbackProc)MagnifyExpose, NULL);

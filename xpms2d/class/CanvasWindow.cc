@@ -10,7 +10,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2009
 
 struct menu
 	{
-	char            *title;
+	const char	*title;
 	void            (*callback)(Widget, XtPointer, XtPointer);
 	XtPointer       callData;
 	} ;
@@ -58,7 +58,7 @@ static struct menu	helpMenu[] = {
 
 static struct
 	{
-	char		*title;
+	const char	*title;
 	struct menu	*sub;
 	} main_menu[] = {
 		{ "File", fileMenu, },
@@ -79,17 +79,17 @@ CanvasWindow::CanvasWindow(Widget parent) : WinForm(parent, "canvas", Form)
 
 
   n = 0;
-  menubar = XmCreateMenuBar(Window(), "menuBar", args, n);
+  menubar = XmCreateMenuBar(Window(), (char *)"menuBar", args, n);
   XtManageChild(menubar);
 
   for (i = 0; main_menu[i].title; ++i)
     {
     n = 0;
-    menu[i] = XmCreatePulldownMenu(menubar, main_menu[i].title, args, n);
+    menu[i] = XmCreatePulldownMenu(menubar, (char *)main_menu[i].title, args, n);
  
     n = 0;
     XtSetArg(args[n], XmNsubMenuId, menu[i]); ++n;
-    menu_button[i] = XmCreateCascadeButton(menubar, main_menu[i].title, args,n);
+    menu_button[i] = XmCreateCascadeButton(menubar, (char *)main_menu[i].title, args,n);
  
     for (j = 0; main_menu[i].sub[j].title; ++j)
       {
@@ -97,11 +97,11 @@ CanvasWindow::CanvasWindow(Widget parent) : WinForm(parent, "canvas", Form)
  
       if (main_menu[i].sub[j].callback == NULL)
         {
-        bttn[j] = XmCreateSeparator(menu[i], main_menu[i].sub[j].title, args,n);
+        bttn[j] = XmCreateSeparator(menu[i], (char *)main_menu[i].sub[j].title, args,n);
         continue;
         }
  
-      bttn[j] = XmCreatePushButton(menu[i], main_menu[i].sub[j].title, args, n);
+      bttn[j] = XmCreatePushButton(menu[i], (char *)main_menu[i].sub[j].title, args, n);
       XtAddCallback(bttn[j], XmNactivateCallback,
         main_menu[i].sub[j].callback, (void *)main_menu[i].sub[j].callData);
       }
@@ -120,7 +120,7 @@ CanvasWindow::CanvasWindow(Widget parent) : WinForm(parent, "canvas", Form)
   XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM); n++;
-  drawA = XmCreateDrawingArea(Window(), "canvas", args, n);
+  drawA = XmCreateDrawingArea(Window(), (char *)"canvas", args, n);
  
   XtAddCallback(drawA, XmNexposeCallback, (XtCallbackProc)CanvasExpose, NULL);
   XtAddCallback(drawA, XmNinputCallback, (XtCallbackProc)CanvasInput, NULL);

@@ -164,8 +164,8 @@ void	DismissWindow(Widget, XtPointer, XtPointer),
         ValidateFloat(Widget w, XtPointer client, XtPointer call),
         ValidateInteger(Widget w, XtPointer client, XtPointer call);
 
-void	ErrorMsg(char msg[]), FlushEvents(),
-	WarnMsg(char msg[], XtCallbackProc okCB, XtCallbackProc cancelCB);
+void	ErrorMsg(const char msg[]), FlushEvents(),
+	WarnMsg(const char msg[], XtCallbackProc okCB, XtCallbackProc cancelCB);
 
 #endif
 

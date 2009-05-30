@@ -124,8 +124,8 @@ protected:
   HeaderType	_fileHeaderType;
 
   Index		*indices;
-  long		currPhys;
-  int		currLR;
+  size_t	currPhys;
+  size_t	currLR;
   size_t	nIndices;
 
   P2d_rec	physRecord[P2DLRPR], *testRecP;

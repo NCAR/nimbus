@@ -78,62 +78,62 @@ ControlWindow::ControlWindow(Widget parent) : WinForm(parent, "control", RowColu
   ratio[6].density = 0.7;
 
   n = 0;
-  frame[0] = XmCreateFrame(Window(), "timeFrame", args, 0);
-  frame[1] = XmCreateFrame(Window(), "probeFrame", args, 0);
-trc = XmCreateRowColumn(Window(), "trc", args, 0);
-  frame[2] = XmCreateFrame(trc, "cncFrame", args, 0);
-  frame[3] = XmCreateFrame(trc, "denFrame", args, 0);
-  frame[4] = XmCreateFrame(trc, "ratioFrame", args, 0);
+  frame[0] = XmCreateFrame(Window(), (char *)"timeFrame", args, 0);
+  frame[1] = XmCreateFrame(Window(), (char *)"probeFrame", args, 0);
+trc = XmCreateRowColumn(Window(), (char *)"trc", args, 0);
+  frame[2] = XmCreateFrame(trc, (char *)"cncFrame", args, 0);
+  frame[3] = XmCreateFrame(trc, (char *)"denFrame", args, 0);
+  frame[4] = XmCreateFrame(trc, (char *)"ratioFrame", args, 0);
   XtManageChild(trc);
   XtManageChild(frame[0]); XtManageChild(frame[1]);
   XtManageChild(frame[2]); XtManageChild(frame[3]);
   XtManageChild(frame[4]);
 
   n = 0;
-  title[0] = XmCreateLabel(frame[0], "timeTitle", args, 0);
-  title[1] = XmCreateLabel(frame[1], "probeTitle", args, 0);
-  title[2] = XmCreateLabel(frame[2], "cncTitle", args, 0);
-  title[3] = XmCreateLabel(frame[3], "denTitle", args, 0);
-  title[4] = XmCreateLabel(frame[4], "ratioTitle", args, 0);
+  title[0] = XmCreateLabel(frame[0], (char *)"timeTitle", args, 0);
+  title[1] = XmCreateLabel(frame[1], (char *)"probeTitle", args, 0);
+  title[2] = XmCreateLabel(frame[2], (char *)"cncTitle", args, 0);
+  title[3] = XmCreateLabel(frame[3], (char *)"denTitle", args, 0);
+  title[4] = XmCreateLabel(frame[4], (char *)"ratioTitle", args, 0);
   XtManageChild(title[0]); XtManageChild(title[1]);
   XtManageChild(title[2]); XtManageChild(title[3]);
   XtManageChild(title[4]);
 
   n = 0;
-  RC[0] = XmCreateRowColumn(frame[0], "movieRC", args, n);
-  RC[1] = XmCreateRowColumn(frame[1], "probeRC", args, 0);
-  RC[2] = XmCreateRadioBox(frame[2], "cncRC", args, 0);
-  RC[3] = XmCreateRadioBox(frame[3], "denRC", args, 0);
-  RC[4] = XmCreateRadioBox(frame[4], "ratioRC", args, 0);
+  RC[0] = XmCreateRowColumn(frame[0], (char *)"movieRC", args, n);
+  RC[1] = XmCreateRowColumn(frame[1], (char *)"probeRC", args, 0);
+  RC[2] = XmCreateRadioBox(frame[2], (char *)"cncRC", args, 0);
+  RC[3] = XmCreateRadioBox(frame[3], (char *)"denRC", args, 0);
+  RC[4] = XmCreateRadioBox(frame[4], (char *)"ratioRC", args, 0);
   XtManageChild(RC[0]); XtManageChild(RC[1]);
   XtManageChild(RC[2]); XtManageChild(RC[3]);
   XtManageChild(RC[4]);
 
 
   n = 0;
-  frame[0] = XmCreateFrame(RC[0], "timeFrame", args, n);
-  frame[1] = XmCreateFrame(RC[0], "ctlFrame", args, n);
+  frame[0] = XmCreateFrame(RC[0], (char *)"timeFrame", args, n);
+  frame[1] = XmCreateFrame(RC[0], (char *)"ctlFrame", args, n);
   XtManageChildren(frame, 2);
 
   n = 0;
-  pnRC[0] = XmCreateRowColumn(frame[0], "timeRC", args, n);
-  pnRC[1] = XmCreateRowColumn(frame[1], "ctlRC", args, n);
+  pnRC[0] = XmCreateRowColumn(frame[0], (char *)"timeRC", args, n);
+  pnRC[1] = XmCreateRowColumn(frame[1], (char *)"ctlRC", args, n);
   XtManageChild(pnRC[0]); XtManageChild(pnRC[1]);
 
 
   /* Start & End Time widgets.
    */
   n = 0;
-  plRC[0] = XmCreateRowColumn(pnRC[0], "pnRC", args, n);
-  plRC[1] = XmCreateRowColumn(pnRC[0], "pnRC", args, n);
+  plRC[0] = XmCreateRowColumn(pnRC[0], (char *)"pnRC", args, n);
+  plRC[1] = XmCreateRowColumn(pnRC[0], (char *)"pnRC", args, n);
   XtManageChildren(plRC, 2);
 
   n = 0;
-  label = XmCreateLabel(plRC[0], "Start time", args, n);
+  label = XmCreateLabel(plRC[0], (char *)"Start time", args, n);
   XtManageChild(label);
 
   n = 0;
-  timeText = XmCreateTextField(plRC[0], "timeText", args, n);
+  timeText = XmCreateTextField(plRC[0], (char *)"timeText", args, n);
   XtManageChild(timeText);
   XtAddCallback(timeText, XmNlosingFocusCallback, ValidateTime, NULL);
   XtAddCallback(timeText, XmNlosingFocusCallback, ApplyTimeChange, NULL);
@@ -142,14 +142,14 @@ trc = XmCreateRowColumn(Window(), "trc", args, 0);
   /* Start, Stop, Reset, Step buttons.
    */
   n = 0;
-  plRC[0] = XmCreateRowColumn(pnRC[1], "pgButtRC", args, n);
+  plRC[0] = XmCreateRowColumn(pnRC[1], (char *)"pgButtRC", args, n);
   XtManageChild(plRC[0]);
 
   n = 0;
-  butt[0] = XmCreatePushButton(plRC[0], "Start", args, n);
-  butt[1] = XmCreatePushButton(plRC[0], "Stop", args, n);
-  butt[2] = XmCreatePushButton(plRC[0], "Step Bkd", args, n);
-  butt[3] = XmCreatePushButton(plRC[0], "Step Fwd", args, n);
+  butt[0] = XmCreatePushButton(plRC[0], (char *)"Start", args, n);
+  butt[1] = XmCreatePushButton(plRC[0], (char *)"Stop", args, n);
+  butt[2] = XmCreatePushButton(plRC[0], (char *)"Step Bkd", args, n);
+  butt[3] = XmCreatePushButton(plRC[0], (char *)"Step Fwd", args, n);
   XtManageChildren(butt, 4);
   XtAddCallback(butt[0], XmNactivateCallback, StartMovie, NULL);
   XtAddCallback(butt[1], XmNactivateCallback, StopMovie, NULL);
@@ -158,12 +158,12 @@ trc = XmCreateRowColumn(Window(), "trc", args, 0);
 
 
   n = 0;
-  timeScale = XmCreateScale(pnRC[0], "timeScale", args, n);
+  timeScale = XmCreateScale(pnRC[0], (char *)"timeScale", args, n);
   XtManageChild(timeScale);
   XtAddCallback(timeScale, XmNvalueChangedCallback, SetScaleTime, NULL);
 
   n = 0;
-  delayScale = XmCreateScale(pnRC[1], "delayScale", args, n);
+  delayScale = XmCreateScale(pnRC[1], (char *)"delayScale", args, n);
   XtManageChild(delayScale);
   XtAddCallback(delayScale, XmNdragCallback, SetScaleSpeed, NULL);
   XtAddCallback(delayScale, XmNvalueChangedCallback, SetScaleSpeed, NULL);
@@ -175,7 +175,7 @@ trc = XmCreateRowColumn(Window(), "trc", args, 0);
   for (i = 0; i < MAX_PROBES; ++i)
     {
     n = 0;
-    probeB[i] = XmCreateToggleButton(RC[1], "none       ", NULL, 0);
+    probeB[i] = XmCreateToggleButton(RC[1], (char *)"none       ", NULL, 0);
     XtAddCallback(probeB[i], XmNvalueChangedCallback,
                   (XtCallbackProc)SetProbe, (XtPointer)i);
     }
@@ -202,7 +202,7 @@ trc = XmCreateRowColumn(Window(), "trc", args, 0);
   for (i = 0; i < 4; ++i)
     {
     n = 0;
-    densB[i] = XmCreateToggleButton(RC[3], density[i].label, NULL, 0);
+    densB[i] = XmCreateToggleButton(RC[3], (char *)density[i].label, NULL, 0);
     XtAddCallback(densB[i], XmNvalueChangedCallback,
                   (XtCallbackProc)SetDensity, (XtPointer)i);
     }
@@ -215,7 +215,7 @@ trc = XmCreateRowColumn(Window(), "trc", args, 0);
   for (i = 0; i < 7; ++i)
     {
     n = 0;
-    ratioB[i] = XmCreateToggleButton(RC[4], ratio[i].label, NULL, 0);
+    ratioB[i] = XmCreateToggleButton(RC[4], (char *)ratio[i].label, NULL, 0);
     XtAddCallback(ratioB[i], XmNvalueChangedCallback,
                   (XtCallbackProc)SetAreaRatioRej, (XtPointer)i);
     }
@@ -298,7 +298,7 @@ void ControlWindow::SetProbes()
     {
     XtSetSensitive(probeB[i], False);
  
-    label = XmStringCreate("none", XmFONTLIST_DEFAULT_TAG);
+    label = XmStringCreate((char *)"none", XmFONTLIST_DEFAULT_TAG);
     XtSetArg(args[0], XmNlabelString, label);
     XtSetValues(probeB[i], args, 1);
     XmStringFree(label);

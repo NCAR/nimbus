@@ -138,14 +138,14 @@ static void ProcessArgs(char **argv)
 }	/* END PROCESSARGS */
 
 /* --------------------------------------------------------------------- */
-void ErrorMsg(char msg[])
+void ErrorMsg(const char msg[])
 {
   new XmError(application->Shell(), msg);
 
 }	/* END ERRORMSG */
 
 /* --------------------------------------------------------------------- */
-void WarnMsg(char msg[], XtCallbackProc okCB, XtCallbackProc cancelCB)
+void WarnMsg(const char msg[], XtCallbackProc okCB, XtCallbackProc cancelCB)
 {
   new XmWarn(application->Shell(), msg, okCB, cancelCB);
 
