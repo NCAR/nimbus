@@ -20,7 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2005
 using namespace std;
 
 extern Printer	*printerSetup;
-void		ErrorMsg(char msg[]);
+void		ErrorMsg(const char msg[]);
 
 
 /* -------------------------------------------------------------------- */
