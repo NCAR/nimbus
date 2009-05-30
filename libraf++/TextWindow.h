@@ -34,7 +34,7 @@ public:
 	TextWindow(const Widget parent, const char name[]);
 	~TextWindow();
 
-  void	Clear()	{ XmTextSetString(text, ""); }
+  void	Clear()	{ XmTextSetString(text, (char *)""); }
   void	Append(const char txt[])
 	{ XmTextInsert(text, XmTextGetLastPosition(text), (char *)txt); }
 
