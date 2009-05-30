@@ -29,10 +29,10 @@ static struct	// Initialization parameters for EditWindow.
         };
 
 
-static char *nNormalize[] =
+static const char *nNormalize[] =
         { "Log", "Linear", "None", NULL };
 
-static char *nPanel[] =
+static const char *nPanel[] =
         { "1x1", "2x3", "3x4", "4x6", "5x7", "6x8", "7x9", NULL };
 
 
@@ -49,41 +49,41 @@ PlotManager::PlotManager(const Widget parent, const Widget drawA) :
   extern SetManager	setMgr, movieSetMgr;
 
   n = 0;
-  frame[0] = XmCreateFrame(Window(), "plotFrame", args, n);
-  frame[1] = XmCreateFrame(Window(), "probeFrame", args, n);
+  frame[0] = XmCreateFrame(Window(), (char *)"plotFrame", args, n);
+  frame[1] = XmCreateFrame(Window(), (char *)"probeFrame", args, n);
   XtManageChild(frame[0]); XtManageChild(frame[1]);
 
   n = 0;
-  title[0] = XmCreateLabel(frame[0], "Data Source", args, n);
-  title[1] = XmCreateLabel(frame[1], "Plot Options", args, n);
+  title[0] = XmCreateLabel(frame[0], (char *)"Data Source", args, n);
+  title[1] = XmCreateLabel(frame[1], (char *)"Plot Options", args, n);
   XtManageChild(title[0]); XtManageChild(title[1]);
 
   n = 0;
-  RC[0] = XmCreateRowColumn(frame[0], "probeSelRC", args, n);
-  RC[5] = XmCreateRowColumn(frame[1], "plotRC", args, n);
+  RC[0] = XmCreateRowColumn(frame[0], (char *)"probeSelRC", args, n);
+  RC[5] = XmCreateRowColumn(frame[1], (char *)"plotRC", args, n);
   XtManageChild(RC[0]); XtManageChild(RC[5]);
 
 
   n = 0;
-  frame[0] = XmCreateFrame(RC[0], "fileFrame", args, n);
-  frame[1] = XmCreateFrame(RC[0], "probeFrame", args, n);
-  frame[2] = XmCreateFrame(RC[0], "dataFrame", args, n);
-  frame[3] = XmCreateFrame(RC[0], "computeFrame", args, n);
+  frame[0] = XmCreateFrame(RC[0], (char *)"fileFrame", args, n);
+  frame[1] = XmCreateFrame(RC[0], (char *)"probeFrame", args, n);
+  frame[2] = XmCreateFrame(RC[0], (char *)"dataFrame", args, n);
+  frame[3] = XmCreateFrame(RC[0], (char *)"computeFrame", args, n);
   XtManageChildren(frame, 4);
 
   n = 0;
-  title[0] = XmCreateLabel(frame[0], "Current File", args, n);
-  title[1] = XmCreateLabel(frame[1], "Probes", args, n);
-  title[2] = XmCreateLabel(frame[2], "Data Type", args, n);
-  title[3] = XmCreateLabel(frame[3], "Concentrations", args, n);
+  title[0] = XmCreateLabel(frame[0], (char *)"Current File", args, n);
+  title[1] = XmCreateLabel(frame[1], (char *)"Probes", args, n);
+  title[2] = XmCreateLabel(frame[2], (char *)"Data Type", args, n);
+  title[3] = XmCreateLabel(frame[3], (char *)"Concentrations", args, n);
   XtManageChild(title[0]); XtManageChild(title[1]);
   XtManageChild(title[2]); XtManageChild(title[3]);
 
   n = 0;
-  RC[1] = XmCreateRadioBox(frame[0], "fileRC", args, n);
-  RC[2] = XmCreateRowColumn(frame[1], "probeRC", args, n);
-  RC[3] = XmCreateRowColumn(frame[2], "dataRC", args, n);
-  RC[4] = XmCreateRadioBox(frame[3], "plRC", args, n);
+  RC[1] = XmCreateRadioBox(frame[0], (char *)"fileRC", args, n);
+  RC[2] = XmCreateRowColumn(frame[1], (char *)"probeRC", args, n);
+  RC[3] = XmCreateRowColumn(frame[2], (char *)"dataRC", args, n);
+  RC[4] = XmCreateRadioBox(frame[3], (char *)"plRC", args, n);
   XtManageChild(RC[1]); XtManageChild(RC[2]);
   XtManageChild(RC[3]); XtManageChild(RC[4]);
 
@@ -91,26 +91,9 @@ PlotManager::PlotManager(const Widget parent, const Widget drawA) :
   /* Plot Type Toggle Buttons.
    */
   n = 0;
-  plRC[0] = XmCreateRadioBox(RC[5], "plotRB", args, n);
-  plRC[1] = XmCreateRowColumn(RC[5], "panel", args, n);
+  plRC[0] = XmCreateRadioBox(RC[5], (char *)"plotRB", args, n);
+  plRC[1] = XmCreateRowColumn(RC[5], (char *)"panel", args, n);
   XtManageChildren(plRC, 2);
-/*
-  n = 0;
-  plotTypeB[0] = XmCreateToggleButton(plRC[0], "XY", NULL, n);
-  plotTypeB[1] = XmCreateToggleButton(plRC[0], "XYZ", NULL, n);
-  XtManageChildren(plotTypeB, N_PLOTTYPES);
-
-  XtAddCallback(plotTypeB[0], XmNvalueChangedCallback,
-		(XtCallbackProc)SetPlotTypeCB, (XtPointer)XY);
-  XtAddCallback(plotTypeB[1], XmNvalueChangedCallback,
-		(XtCallbackProc)SetPlotTypeCB, (XtPointer)XYZ);
- 
-  XmToggleButtonSetState(plotTypeB[0], True, False);
-  plotType = XY;
-
-XtSetSensitive(plotTypeB[0], false);
-XtSetSensitive(plotTypeB[1], false);
-*/
 
   /* nRows x nCols
    */
@@ -120,21 +103,21 @@ XtSetSensitive(plotTypeB[1], false);
 
 
   n = 0;
-  slPD = XmCreatePulldownMenu(plRC[1], "nPanPullDown", args, n);
+  slPD = XmCreatePulldownMenu(plRC[1], (char *)"nPanPullDown", args, n);
 
   n = 0;
   XtSetArg(args[n], XmNsubMenuId, slPD); ++n;
-  slOpMenu = XmCreateOptionMenu(plRC[1], "nPanMenu", args, n);
+  slOpMenu = XmCreateOptionMenu(plRC[1], (char *)"nPanMenu", args, n);
   XtManageChild(slOpMenu);
 
 
   for (i = 0; nPanel[i]; ++i)
     {
-    name = XmStringCreateLocalized(nPanel[i]);
+    name = XmStringCreateLocalized((char *)nPanel[i]);
 
     n = 0;
     XtSetArg(args[n], XmNlabelString, name); ++n;
-    slButts[i] = XmCreatePushButton(slPD, "opMenB", args, n);
+    slButts[i] = XmCreatePushButton(slPD, (char *)"opMenB", args, n);
     XtAddCallback(slButts[i], XmNactivateCallback, Set_nPanels,
                 (XtPointer)nPanel[i]);
 
@@ -151,20 +134,20 @@ XtSetSensitive(plotTypeB[1], false);
 
 
   n = 0;
-  nlPD = XmCreatePulldownMenu(plRC[1], "normPanPullDown", args, n);
+  nlPD = XmCreatePulldownMenu(plRC[1], (char *)"normPanPullDown", args, n);
 
   n = 0;
   XtSetArg(args[n], XmNsubMenuId, nlPD); ++n;
-  nlOpMenu = XmCreateOptionMenu(plRC[1], "normPanMenu", args, n);
+  nlOpMenu = XmCreateOptionMenu(plRC[1], (char *)"normPanMenu", args, n);
   XtManageChild(nlOpMenu);
 
   for (i = 0; nNormalize[i]; ++i)
     {
-    name = XmStringCreateLocalized(nNormalize[i]);
+    name = XmStringCreateLocalized((char *)nNormalize[i]);
 
     n = 0;
     XtSetArg(args[n], XmNlabelString, name); ++n;
-    nlButts[i] = XmCreatePushButton(nlPD, "opMenB", args, n);
+    nlButts[i] = XmCreatePushButton(nlPD, (char *)"opMenB", args, n);
     XtAddCallback(nlButts[i], XmNactivateCallback, SetNormalization,
                 (XtPointer)nNormalize[i]);
 
@@ -176,17 +159,17 @@ XtSetSensitive(plotTypeB[1], false);
 
 
   n = 0;
-  bandw = XmCreateToggleButton(plRC[1], "Black & White", args, n);
+  bandw = XmCreateToggleButton(plRC[1], (char *)"Black & White", args, n);
   XtManageChild(bandw);
   XtAddCallback(bandw, XmNvalueChangedCallback, ToggleColor_CB, NULL);
 
   n = 0;
-  grid = XmCreateToggleButton(plRC[1], "Grid", args, n);
+  grid = XmCreateToggleButton(plRC[1], (char *)"Grid", args, n);
   XtManageChild(grid);
   XtAddCallback(grid, XmNvalueChangedCallback, ToggleGrid_CB, NULL);
 
   n = 0;
-  ditc = XmCreateToggleButton(plRC[1], "Data in the corner", args, n);
+  ditc = XmCreateToggleButton(plRC[1], (char *)"Data in the corner", args, n);
   XtManageChild(ditc);
   XtAddCallback(ditc, XmNvalueChangedCallback, ToggleDITC_CB, NULL);
 

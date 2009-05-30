@@ -29,8 +29,8 @@ public:
 
   void	ComputeConcentration(float *accum, float *conc, long countV[],
 		const std::vector<float *> & otherVarData);
-  float CellSize(int idx)       { return(diameter[idx + (range << 4)]); }
-  float BinWidth(int idx)       { return(binWidth[idx + (range << 4)]); }
+  float CellSize(int idx) const	{ return(diameter[idx + (range << 4)]); }
+  float BinWidth(int idx) const	{ return(binWidth[idx + (range << 4)]); }
 
   void	SetRange(int newRange)	{ range = (newRange < 0 ? 0 : newRange); }
 

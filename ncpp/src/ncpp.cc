@@ -191,7 +191,7 @@ static void ReadConfigFile()
 }       /* END READCONFIGFILE */
 
 /* --------------------------------------------------------------------- */
-void ErrorMsg(char msg[])
+void ErrorMsg(const char msg[])
 {
   new XmError(application->Shell(), msg);
 

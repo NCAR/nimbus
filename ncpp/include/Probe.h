@@ -30,7 +30,7 @@ public:
   std::string	Name() const	{ return(name); }
   std::string	Units() const	{ return(units); }
   std::string	Title() const	{ return(units); }
-  ProbeType	Type()		{ return(type); }
+  ProbeType	Type() const	{ return(type); }
 
   size_t VectorLength() const	{ return(vectorLength); }
   size_t DataRate() const	{ return(dataRate); }
@@ -38,10 +38,10 @@ public:
   short	FirstBin() const	{ return(firstBin); }
   short	LastBin() const		{ return(lastBin); }
 
-  bool	HaveConcentrations()	{ return(cvar); }
+  bool	HaveConcentrations() const	{ return(cvar); }
 
-  virtual float CellSize(int idx)	{ return(diameter[idx]); }
-  virtual float BinWidth(int idx)	{ return(binWidth[idx]); }
+  virtual float CellSize(int idx) const	{ return(diameter[idx]); }
+  virtual float BinWidth(int idx) const	{ return(binWidth[idx]); }
 
   bool	ReadCounts(long start[], const long count[], float *data);
   bool	ReadConcen(long start[], const long count[], float *data);

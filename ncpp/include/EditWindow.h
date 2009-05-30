@@ -59,8 +59,8 @@ private:
   Widget createNtics(Widget parent);
   Widget createInvert(Widget parent);
 
-  Widget createLineItem(Widget parent, char lbl[], char txt[]);
-  Widget addToLineItem(char lbl[], char txt[]);
+  Widget createLineItem(Widget parent, const char lbl[], const char txt[]);
+  Widget addToLineItem(const char lbl[], const char txt[]);
   void   addPanelButtons(Widget parent);
 
   Widget RC[12], panelB[MAX_PANELS], tmpRC;

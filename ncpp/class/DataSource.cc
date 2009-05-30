@@ -30,7 +30,7 @@ void DataSource::CreateDataSourceWidgets(Widget fileParent, Widget probeParent, 
    */
   for (int i = 0; i < MAX_DATAFILES; ++i)
     {
-    fileB[i] = XmCreateToggleButton(fileParent, "none", NULL, 0);
+    fileB[i] = XmCreateToggleButton(fileParent, (char *)"none", NULL, 0);
     XtAddCallback(fileB[i], XmNvalueChangedCallback,
                   (XtCallbackProc)SetCurrentFile, (XtPointer)i);
     }
@@ -42,7 +42,7 @@ void DataSource::CreateDataSourceWidgets(Widget fileParent, Widget probeParent, 
    */
   for (int i = 0; i < MAX_PROBES; ++i)
     {
-    probeB[i] = XmCreateToggleButton(probeParent, "none        ", NULL, 0);
+    probeB[i] = XmCreateToggleButton(probeParent, (char *)"none        ", NULL, 0);
     XtAddCallback(probeB[i], XmNvalueChangedCallback,
                   (XtCallbackProc)ModifyActiveProbes, (XtPointer)i);
     }
@@ -52,10 +52,10 @@ void DataSource::CreateDataSourceWidgets(Widget fileParent, Widget probeParent, 
 
   /* Accum vs. Conc, etc
    */
-  dataType[0] = XmCreateToggleButton(typeParent, "Raw Counts", NULL, 0);
-  dataType[1] = XmCreateToggleButton(typeParent, "Concentrations", NULL, 0);
-  dataType[2] = XmCreateToggleButton(typeParent, "Surface area", NULL, 0);
-  dataType[3] = XmCreateToggleButton(typeParent, "Volume", NULL, 0);
+  dataType[0] = XmCreateToggleButton(typeParent, (char *)"Raw Counts", NULL, 0);
+  dataType[1] = XmCreateToggleButton(typeParent, (char *)"Concentrations", NULL, 0);
+  dataType[2] = XmCreateToggleButton(typeParent, (char *)"Surface area", NULL, 0);
+  dataType[3] = XmCreateToggleButton(typeParent, (char *)"Volume", NULL, 0);
   XtManageChildren(dataType, 4);
   XmToggleButtonSetState(dataType[1], True, True);
 
@@ -63,8 +63,8 @@ void DataSource::CreateDataSourceWidgets(Widget fileParent, Widget probeParent, 
     XtAddCallback(dataType[i], XmNvalueChangedCallback,
           (XtCallbackProc)ModifyActiveDataTypes, NULL);
  
-  compute[0] = XmCreateToggleButton(computeParent, "From file     ", NULL, 0);
-  compute[1] = XmCreateToggleButton(computeParent, "Computed", NULL, 0);
+  compute[0] = XmCreateToggleButton(computeParent, (char *)"From file     ", NULL, 0);
+  compute[1] = XmCreateToggleButton(computeParent, (char *)"Computed", NULL, 0);
   XtManageChildren(compute, 2);
 
   XtAddCallback(compute[0], XmNvalueChangedCallback,
@@ -101,7 +101,7 @@ void DataSource::SetFileNames()
     {
     XtSetSensitive(fileB[i], False);
  
-    label = XmStringCreate("none", XmFONTLIST_DEFAULT_TAG);
+    label = XmStringCreate((char *)"none", XmFONTLIST_DEFAULT_TAG);
     XtSetArg(args[0], XmNlabelString, label);
     XtSetValues(fileB[i], args, 1);
     XmStringFree(label);
@@ -143,7 +143,7 @@ void DataSource::SetProbeNames()
     {
     XtSetSensitive(probeB[i], False);
  
-    label = XmStringCreate("none", XmFONTLIST_DEFAULT_TAG);
+    label = XmStringCreate((char *)"none", XmFONTLIST_DEFAULT_TAG);
     XtSetArg(args[0], XmNlabelString, label);
     XtSetValues(probeB[i], args, 1);
     XmStringFree(label);

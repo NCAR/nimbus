@@ -24,7 +24,7 @@ static const char *validProbeNames[] = {
 
 
 /* -------------------------------------------------------------------- */
-DataFile::DataFile(char fName[]) : fileName(fName)
+DataFile::DataFile(const char fName[]) : fileName(fName)
 {
   int		i;
   NcAtt		*attr;

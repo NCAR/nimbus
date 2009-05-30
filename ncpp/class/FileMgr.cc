@@ -22,7 +22,7 @@ FileManager::FileManager()
 }	/* END CONTRUCTOR */
 
 /* -------------------------------------------------------------------- */
-void FileManager::NewFile(char fileName[])
+void FileManager::NewFile(const char fileName[])
 {
   extern PlotManager	*plotMgr;
 
@@ -39,7 +39,7 @@ void FileManager::NewFile(char fileName[])
 }	/* END NEWFILE */
 
 /* -------------------------------------------------------------------- */
-void FileManager::AddFile(char fileName[])
+void FileManager::AddFile(const char fileName[])
 {
   dataFile[numberFiles++] = new DataFile(fileName);
 

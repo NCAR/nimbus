@@ -28,20 +28,20 @@ EditDiameters::EditDiameters(const Widget parent) : WinForm(parent, "editDiams",
   txtCnt = 0;
 
   n = 0;
-  diamFrame = XmCreateFrame(Window(), "diamFrame", args, n);
+  diamFrame = XmCreateFrame(Window(), (char *)"diamFrame", args, n);
   XtManageChild(diamFrame);
 
   n = 0;
-  fileLabel = XmCreateLabel(diamFrame, "Select Probe", args, n);
+  fileLabel = XmCreateLabel(diamFrame, (char *)"Select Probe", args, n);
   XtManageChild(fileLabel);
 
   n = 0;
-  RC = XmCreateRowColumn(diamFrame, "diamRC", args, n);
+  RC = XmCreateRowColumn(diamFrame, (char *)"diamRC", args, n);
   XtManageChild(RC);
 
 
   n = 0;
-  probeRC = XmCreateRadioBox(RC, "probeRC", args, n);
+  probeRC = XmCreateRadioBox(RC, (char *)"probeRC", args, n);
   XtManageChild(probeRC);
 
 
@@ -50,7 +50,7 @@ EditDiameters::EditDiameters(const Widget parent) : WinForm(parent, "editDiams",
   for (int i = 0; i < MAX_PROBES; ++i)
     {
     n = 0;
-    probeB[i] = XmCreateToggleButton(probeRC, "none      ", NULL, 0);
+    probeB[i] = XmCreateToggleButton(probeRC, (char *)"none      ", NULL, 0);
     XtAddCallback(probeB[i], XmNvalueChangedCallback,
                   (XtCallbackProc)SetDiams, (XtPointer)i);
     }
@@ -60,62 +60,62 @@ EditDiameters::EditDiameters(const Widget parent) : WinForm(parent, "editDiams",
 
 
   n = 0;
-  drFrame = XmCreateFrame(RC, "drFrame", args, n);
+  drFrame = XmCreateFrame(RC, (char *)"drFrame", args, n);
   XtManageChild(drFrame);
-  innerRC = XmCreateRowColumn(drFrame, "innerRC", args, n);
+  innerRC = XmCreateRowColumn(drFrame, (char *)"innerRC", args, n);
   XtManageChild(innerRC);
-  plRC = XmCreateRowColumn(innerRC, "plRC", args, n);
+  plRC = XmCreateRowColumn(innerRC, (char *)"plRC", args, n);
   XtManageChild(plRC);
 
   n = 0;
-  probeLabel = XmCreateLabel(plRC, "test", args, n);
+  probeLabel = XmCreateLabel(plRC, (char *)"test", args, n);
   XtManageChild(probeLabel);
 
   n = 0;
-  XtManageChild(XmCreateLabel(plRC, "Starting bin #", args, n));
-  text[txtCnt] = XmCreateTextField(plRC, "startBin", args, n);
+  XtManageChild(XmCreateLabel(plRC, (char *)"Starting bin #", args, n));
+  text[txtCnt] = XmCreateTextField(plRC, (char *)"startBin", args, n);
   XtManageChild(text[txtCnt++]);
-  XtManageChild(XmCreateLabel(plRC, "Ending bin #", args, n));
-  text[txtCnt] = XmCreateTextField(plRC, "startBin", args, n);
+  XtManageChild(XmCreateLabel(plRC, (char *)"Ending bin #", args, n));
+  text[txtCnt] = XmCreateTextField(plRC, (char *)"startBin", args, n);
   XtManageChild(text[txtCnt++]);
 
   n = 0;
   for (; txtCnt < 6; ++txtCnt)
     {
-    text[txtCnt] = XmCreateTextField(innerRC, "diamTxt", args, n);
+    text[txtCnt] = XmCreateTextField(innerRC, (char *)"diamTxt", args, n);
     XtManageChild(text[txtCnt]);
     }
 
   n = 0;
   for (; txtCnt < 12; ++txtCnt)
     {
-    plRC = XmCreateRowColumn(innerRC, "plRC", args, n);
+    plRC = XmCreateRowColumn(innerRC, (char *)"plRC", args, n);
     XtManageChild(plRC);
 
-    miscLabel[txtCnt] = XmCreateLabel(plRC, "miscLabel", args, n);
+    miscLabel[txtCnt] = XmCreateLabel(plRC, (char *)"miscLabel", args, n);
     XtManageChild(miscLabel[txtCnt]);
 
-    text[txtCnt] = XmCreateTextField(plRC, "miscTxt", args, n);
+    text[txtCnt] = XmCreateTextField(plRC, (char *)"miscTxt", args, n);
     XtManageChild(text[txtCnt]);
     }
 
 
   n = 0;
-  drFrame = XmCreateFrame(Window(), "buttonFrame", args, n);
+  drFrame = XmCreateFrame(Window(), (char *)"buttonFrame", args, n);
   XtManageChild(drFrame);
 
   n = 0;
-  drRC = XmCreateRowColumn(drFrame, "buttonRC", args, n);
+  drRC = XmCreateRowColumn(drFrame, (char *)"buttonRC", args, n);
   XtManageChild(drRC);
  
   n = 0;
-  b[0] = XmCreatePushButton(drRC, "applyButton", args, n);
+  b[0] = XmCreatePushButton(drRC, (char *)"applyButton", args, n);
  
   n = 0;
-  b[1] = XmCreatePushButton(drRC, "resetButton", args, n);
+  b[1] = XmCreatePushButton(drRC, (char *)"resetButton", args, n);
  
   n = 0;
-  b[2] = XmCreatePushButton(drRC, "dismissButton", args, n);
+  b[2] = XmCreatePushButton(drRC, (char *)"dismissButton", args, n);
  
   XtManageChildren(b, 3);
  
@@ -149,7 +149,7 @@ void EditDiameters::SetProbeNames(DataFile *currFile)
     {
     XtSetSensitive(probeB[i], False);
 
-    label = XmStringCreate("none    ", XmFONTLIST_DEFAULT_TAG);
+    label = XmStringCreate((char *)"none    ", XmFONTLIST_DEFAULT_TAG);
     XtSetArg(args[0], XmNlabelString, label);
     XtSetValues(probeB[i], args, 1);
     XmStringFree(label);
@@ -199,7 +199,7 @@ void EditDiameters::SetDiameters(Probe *probe)
   for (; cnt < 6; ++cnt)
     {
     XtSetSensitive(text[cnt], False);
-    XmTextFieldSetString(text[cnt], "");
+    XmTextFieldSetString(text[cnt], (char *)"");
     }
 
   cnt = 6;
@@ -233,13 +233,13 @@ void EditDiameters::SetDiameters(Probe *probe)
 
   for (; cnt < 12; ++cnt)
     {
-    label = XmStringCreate("" , XmFONTLIST_DEFAULT_TAG);
+    label = XmStringCreate((char *)"" , XmFONTLIST_DEFAULT_TAG);
     XtSetArg(args[0], XmNlabelString, label);
     XtSetValues(miscLabel[cnt], args, 1);
     XmStringFree(label);
 
     XtSetSensitive(text[cnt], False);
-    XmTextFieldSetString(text[cnt], "");
+    XmTextFieldSetString(text[cnt], (char *)"");
     }
 
 
@@ -309,13 +309,13 @@ void EditDiameters::ApplyDiameters(Probe *probe)
 }	/* END APPLYDIAMETERS */
 
 /* -------------------------------------------------------------------- */
-void EditDiameters::setSpex(char *labelTxt, int cnt, float value)
+void EditDiameters::setSpex(const char *labelTxt, int cnt, float value)
 {
   XmString	label;
   Arg		args[2];
   char		buff[32];
 
-  label = XmStringCreate(labelTxt, XmFONTLIST_DEFAULT_TAG);
+  label = XmStringCreate((char *)labelTxt, XmFONTLIST_DEFAULT_TAG);
   XtSetArg(args[0], XmNlabelString, label);
   XtSetValues(miscLabel[cnt], args, 1);
   XmStringFree(label);

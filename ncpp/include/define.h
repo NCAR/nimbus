@@ -141,7 +141,7 @@ int	GetTextInt(const Widget w);
 float	GetTextFloat(const Widget w);
 void	GetTextString(const Widget w, std::string& s);
 
-void	ErrorMsg(char msg[]);
+void	ErrorMsg(const char msg[]);
 
 #endif
 

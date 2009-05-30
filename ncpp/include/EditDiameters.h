@@ -39,7 +39,7 @@ private:
   Widget	miscLabel[12], text[12];
   int		txtCnt;
 
-  void		setSpex(char *, int, float);
+  void		setSpex(const char *, int, float);
 
 };	// END EDITDIAMETERS.H
 

@@ -34,7 +34,7 @@ public:
 
   void		Clear();
 
-  int		NumberOfSets() const	{ return(numberSets); }
+  int		NumberOfSets() const		{ return(numberSets); }
 
   int		AveragingRate() const		{ return(avRate); }
   void		SetAverageRate(int newRate);
@@ -45,7 +45,7 @@ public:
   DataType	DataTypes() const		{ return(dataType); }
   void		SetDataTypes(DataType newDT);
   void		SetNormalize(NormType newN);
-  NormType	GetNormalization()		{ return(normType); }
+  NormType	GetNormalization() const	{ return(normType); }
   void		SetCompute(bool x);
 
   void		SetStartTime(FlightClock start);

@@ -33,7 +33,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2007
 class DataFile
 {
 public:
-	DataFile(char fName[]);
+	DataFile(const char fName[]);
 	~DataFile();
 
   const std::string&	FileName() const	{ return(fileName); }

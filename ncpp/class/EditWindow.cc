@@ -21,7 +21,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 
 
 /* -------------------------------------------------------------------- */
-EditWindow::EditWindow(const Widget parent, PlotType plotType, char name[], int np, bool za) : WinForm(parent, name, RowColumn)
+EditWindow::EditWindow(const Widget parent, PlotType plotType, const char name[], int np, bool za) : WinForm(parent, name, RowColumn)
 {
   Cardinal	n;
   Arg		args[8];
@@ -49,21 +49,21 @@ EditWindow::EditWindow(const Widget parent, PlotType plotType, char name[], int 
   XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM); n++;
-  drFrame = XmCreateFrame(Window(), "buttonFrame", args, n);
+  drFrame = XmCreateFrame(Window(), (char *)"buttonFrame", args, n);
   XtManageChild(drFrame);
  
   n = 0;
-  drRC = XmCreateRowColumn(drFrame, "buttonRC", args, n);
+  drRC = XmCreateRowColumn(drFrame, (char *)"buttonRC", args, n);
   XtManageChild(drRC);
  
   n = 0;
-  b[0] = XmCreatePushButton(drRC, "applyButton", args, n);
+  b[0] = XmCreatePushButton(drRC, (char *)"applyButton", args, n);
  
   n = 0;
-  b[1] = XmCreatePushButton(drRC, "resetButton", args, n);
+  b[1] = XmCreatePushButton(drRC, (char *)"resetButton", args, n);
  
   n = 0;
-  b[2] = XmCreatePushButton(drRC, "dismissButton", args, n);
+  b[2] = XmCreatePushButton(drRC, (char *)"dismissButton", args, n);
  
   XtManageChildren(b, 3);
  
@@ -120,13 +120,13 @@ void EditWindow::SetActiveNumberPanels(int n)
 }	/* END SETACTIVENUMBERPANELS */
 
 /* -------------------------------------------------------------------- */
-Widget EditWindow::createLineItem(Widget parent, char lbl[], char txt[])
+Widget EditWindow::createLineItem(Widget parent, const char lbl[], const char txt[])
 {
   Widget        label, text;
 
   tmpRC = XmCreateRowColumn(parent, "plRC", NULL, 0);
-  label = XmCreateLabel(tmpRC, lbl, NULL, 0);
-  text = XmCreateTextField(tmpRC, txt, NULL, 0);
+  label = XmCreateLabel(tmpRC, (char *)lbl, NULL, 0);
+  text = XmCreateTextField(tmpRC, (char *)txt, NULL, 0);
 
   XtManageChild(label);
   XtManageChild(text);
@@ -137,12 +137,12 @@ Widget EditWindow::createLineItem(Widget parent, char lbl[], char txt[])
 }	/* END CREATELINEITEM */
 
 /* -------------------------------------------------------------------- */
-Widget EditWindow::addToLineItem(char lbl[], char txt[])
+Widget EditWindow::addToLineItem(const char lbl[], const char txt[])
 {
   Widget        label, text;
 
-  label = XmCreateLabel(tmpRC, lbl, NULL, 0);
-  text = XmCreateTextField(tmpRC, txt, NULL, 0);
+  label = XmCreateLabel(tmpRC, (char *)lbl, NULL, 0);
+  text = XmCreateTextField(tmpRC, (char *)txt, NULL, 0);
 
   XtManageChild(label);
   XtManageChild(text);
@@ -385,25 +385,25 @@ Widget EditWindow::createInvert(Widget parent)
   Widget        RC, label;
 
   n = 0;
-  RC = XmCreateRowColumn(parent, "plRC", args, n);
+  RC = XmCreateRowColumn(parent, (char *)"plRC", args, n);
   XtManageChild(RC);
 
-  label = XmCreateLabel(RC, "Invert scale :", args, n);
-  xAxis.invertAxis = XmCreateToggleButton(RC, "X axis", args, n);
-  yAxis[0].invertAxis = XmCreateToggleButton(RC, "Y axis", args, n);
+  label = XmCreateLabel(RC, (char *)"Invert scale :", args, n);
+  xAxis.invertAxis = XmCreateToggleButton(RC, (char *)"X axis", args, n);
+  yAxis[0].invertAxis = XmCreateToggleButton(RC, (char *)"Y axis", args, n);
   XtManageChild(label);
   XtManageChild(xAxis.invertAxis);
   XtManageChild(yAxis[0].invertAxis);
 
   if (yRight())
     {
-    yAxis[1].invertAxis = XmCreateToggleButton(RC, "Y (right)", args, n);
+    yAxis[1].invertAxis = XmCreateToggleButton(RC, (char *)"Y (right)", args, n);
     XtManageChild(yAxis[1].invertAxis);
     }
 
   if (isZaxis())
     {
-    zAxis.invertAxis = XmCreateToggleButton(RC, "Z axis", args, n);
+    zAxis.invertAxis = XmCreateToggleButton(RC, (char *)"Z axis", args, n);
     XtManageChild(zAxis.invertAxis);
     }
 

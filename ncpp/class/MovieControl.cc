@@ -29,7 +29,7 @@ MovieControl::MovieControl(Widget parent) : WinForm(parent, "movie", RowColumn)
 
   XtSetSensitive(butt[1], False);	// Disable "stop" button.
 
-  XmTextFieldSetString(averageText, "10");
+  XmTextFieldSetString(averageText, (char *)"10");
   UpdateAveragePeriod();
 
   if (fileMgr.CurrentFile())
@@ -54,7 +54,7 @@ void MovieControl::UpdateAveragePeriod()
   if (avRate <= 0)
     {
     avRate = 1;
-    XmTextFieldSetString(averageText, "1");
+    XmTextFieldSetString(averageText, (char *)"1");
     }
 
   setMgr.SetAverageRate(avRate);
@@ -199,34 +199,34 @@ void MovieControl::createXwindow(Widget parent)
   Widget        frame[4], RC[4], title[4], plRC[4], label;
  
   n = 0;
-  frame[0] = XmCreateFrame(Window(), "timeFrame", args, n);
-  frame[1] = XmCreateFrame(Window(), "controlFrame", args, n);
+  frame[0] = XmCreateFrame(Window(), (char *)"timeFrame", args, n);
+  frame[1] = XmCreateFrame(Window(), (char *)"controlFrame", args, n);
   XtManageChildren(frame, 2);
  
   n = 0;
-  title[0] = XmCreateLabel(frame[0], "Time/Average Period", args, n);
-  title[1] = XmCreateLabel(frame[1], "Control", args, n);
+  title[0] = XmCreateLabel(frame[0], (char *)"Time/Average Period", args, n);
+  title[1] = XmCreateLabel(frame[1], (char *)"Control", args, n);
   XtManageChild(title[0]); XtManageChild(title[1]);
  
   n = 0;
-  RC[0] = XmCreateRowColumn(frame[0], "timeRC", args, n);
-  RC[1] = XmCreateRowColumn(frame[1], "controlRC", args, n);
+  RC[0] = XmCreateRowColumn(frame[0], (char *)"timeRC", args, n);
+  RC[1] = XmCreateRowColumn(frame[1], (char *)"controlRC", args, n);
   XtManageChild(RC[0]); XtManageChild(RC[1]);
  
 
   /* Start & End Time widgets.
    */
   n = 0;
-  plRC[0] = XmCreateRowColumn(RC[0], "pnRC", args, n);
-  plRC[1] = XmCreateRowColumn(RC[0], "pnRC", args, n);
+  plRC[0] = XmCreateRowColumn(RC[0], (char *)"pnRC", args, n);
+  plRC[1] = XmCreateRowColumn(RC[0], (char *)"pnRC", args, n);
   XtManageChildren(plRC, 2);
  
   n = 0;
-  label = XmCreateLabel(plRC[0], "Start time", args, n);
+  label = XmCreateLabel(plRC[0], (char *)"Start time", args, n);
   XtManageChild(label);
  
   n = 0;
-  timeText = XmCreateTextField(plRC[0], "timeText", args, n);
+  timeText = XmCreateTextField(plRC[0], (char *)"timeText", args, n);
   XtManageChild(timeText);
   XtAddCallback(timeText, XmNlosingFocusCallback, ValidateTime, NULL);
   XtAddCallback(timeText, XmNlosingFocusCallback, ApplyTimeChange, NULL);
@@ -234,17 +234,17 @@ void MovieControl::createXwindow(Widget parent)
  
 
   n = 0;
-  label = XmCreateLabel(plRC[1], "Averaging period :", args, n);
+  label = XmCreateLabel(plRC[1], (char *)"Averaging period :", args, n);
   XtManageChild(label);
  
   n = 0;
-  averageText = XmCreateTextField(plRC[1], "averageText", args, n);
+  averageText = XmCreateTextField(plRC[1], (char *)"averageText", args, n);
   XtAddCallback(averageText, XmNlosingFocusCallback, ValidateInteger, NULL);
   XtAddCallback(averageText, XmNlosingFocusCallback, ApplyAveragePeriod, NULL);
   XtManageChild(averageText);
  
   n = 0;
-  label = XmCreateLabel(plRC[1], "seconds", args, n);
+  label = XmCreateLabel(plRC[1], (char *)"seconds", args, n);
   XtManageChild(label);
  
  
@@ -252,14 +252,14 @@ void MovieControl::createXwindow(Widget parent)
   /* Start, Stop, Reset, Step buttons.
    */
   n = 0;
-  plRC[0] = XmCreateRowColumn(RC[1], "pgButtRC", args, n);
+  plRC[0] = XmCreateRowColumn(RC[1], (char *)"pgButtRC", args, n);
   XtManageChild(plRC[0]);
  
   n = 0;
-  butt[0] = XmCreatePushButton(plRC[0], "Start", args, n);
-  butt[1] = XmCreatePushButton(plRC[0], "Stop", args, n);
-  butt[2] = XmCreatePushButton(plRC[0], "Step Bkd", args, n);
-  butt[3] = XmCreatePushButton(plRC[0], "Step Fwd", args, n);
+  butt[0] = XmCreatePushButton(plRC[0], (char *)"Start", args, n);
+  butt[1] = XmCreatePushButton(plRC[0], (char *)"Stop", args, n);
+  butt[2] = XmCreatePushButton(plRC[0], (char *)"Step Bkd", args, n);
+  butt[3] = XmCreatePushButton(plRC[0], (char *)"Step Fwd", args, n);
   XtManageChildren(butt, 4);
   XtAddCallback(butt[0], XmNactivateCallback, StartMovie, NULL);
   XtAddCallback(butt[1], XmNactivateCallback, StopMovie, NULL);
@@ -268,12 +268,12 @@ void MovieControl::createXwindow(Widget parent)
 
 
   n = 0;
-  timeScale = XmCreateScale(RC[0], "timeScale", args, n);
+  timeScale = XmCreateScale(RC[0], (char *)"timeScale", args, n);
   XtManageChild(timeScale);
   XtAddCallback(timeScale, XmNvalueChangedCallback, SetScaleTime, NULL);
  
   n = 0;
-  delayScale = XmCreateScale(RC[1], "delayScale", args, n);
+  delayScale = XmCreateScale(RC[1], (char *)"delayScale", args, n);
   XtManageChild(delayScale);
   XtAddCallback(delayScale, XmNdragCallback, SetScaleSpeed, NULL);
   XtAddCallback(delayScale, XmNvalueChangedCallback, SetScaleSpeed, NULL);

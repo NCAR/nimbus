@@ -27,8 +27,8 @@ public:
 
   friend class DataSource;
 
-  void		NewFile(char fileName[]);
-  void		AddFile(char fileName[]);
+  void		NewFile(const char fileName[]);
+  void		AddFile(const char fileName[]);
 
   void		SetCurrentFile(int newFile)	{ currentFile = newFile; }
 

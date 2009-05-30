@@ -44,10 +44,10 @@ public:
 
   void	Resize()			{ plot[plotType]->ResizeX(); }
   void	DrawImage()			{ plot[plotType]->Draw(); }
-  void	Print(char *name)		{ plot[plotType]->Print(name); }
+  void	Print(const char *name)		{ plot[plotType]->Print(name); }
 
-  std::string	Title()			{ return(plot[plotType]->Title()); }
-  std::string	SubTitle()		{ return(plot[plotType]->SubTitle()); }
+  std::string	Title() const		{ return(plot[plotType]->Title()); }
+  std::string	SubTitle() const	{ return(plot[plotType]->SubTitle()); }
 
   void	EditParms(Widget shell, int idx);
   void	ApplyParms(int idx, DataFile& file);

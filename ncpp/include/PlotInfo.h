@@ -71,7 +71,7 @@ public:
   void	DeletePanel(DataType dt) {}
 
   void	Draw();
-  void	Print(char *name);
+  void	Print(const char *name);
   void	ResizeX(), ResizePS();
 
 private:

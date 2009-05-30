@@ -32,7 +32,7 @@ public:
   virtual int   SetEditWindow(Widget txt[]);
   virtual int   ApplyEditWindow(Widget txt[]);
 
-  float EffectiveAreaWidth()	{ return resolution * nDiodes; }
+  float EffectiveAreaWidth() const	{ return resolution * nDiodes; }
 
 
 protected:

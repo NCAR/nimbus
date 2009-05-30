@@ -30,7 +30,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 class PostageWindow : public WinForm
 {
 public:
-		PostageWindow(Widget parent);
+		PostageWindow(const Widget parent);
   void		PopUp();
 
   int		AveragePeriod();

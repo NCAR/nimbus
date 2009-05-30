@@ -21,7 +21,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998-9
 
 
 /* -------------------------------------------------------------------- */
-EditPlotParms::EditPlotParms(const Widget parent, PlotType plotType, char name[], int np, bool za) : WinForm(parent, name, RowColumn)
+EditPlotParms::EditPlotParms(const Widget parent, PlotType plotType, const char name[], int np, bool za) : WinForm(parent, name, RowColumn)
 {
   Cardinal	n;
   Arg		args[8];
@@ -49,21 +49,21 @@ EditPlotParms::EditPlotParms(const Widget parent, PlotType plotType, char name[]
   XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM); n++;
-  drFrame = XmCreateFrame(Window(), "buttonFrame", args, n);
+  drFrame = XmCreateFrame(Window(), (char*)"buttonFrame", args, n);
   XtManageChild(drFrame);
  
   n = 0;
-  drRC = XmCreateRowColumn(drFrame, "buttonRC", args, n);
+  drRC = XmCreateRowColumn(drFrame, (char*)"buttonRC", args, n);
   XtManageChild(drRC);
  
   n = 0;
-  b[0] = XmCreatePushButton(drRC, "applyButton", args, n);
+  b[0] = XmCreatePushButton(drRC, (char*)"applyButton", args, n);
  
   n = 0;
-  b[1] = XmCreatePushButton(drRC, "resetButton", args, n);
+  b[1] = XmCreatePushButton(drRC, (char*)"resetButton", args, n);
  
   n = 0;
-  b[2] = XmCreatePushButton(drRC, "dismissButton", args, n);
+  b[2] = XmCreatePushButton(drRC, (char*)"dismissButton", args, n);
  
   XtManageChildren(b, 3);
  
@@ -120,13 +120,13 @@ void EditPlotParms::SetActiveNumberPanels(int n)
 }	/* END SETACTIVENUMBERPANELS */
 
 /* -------------------------------------------------------------------- */
-Widget EditPlotParms::createLineItem(Widget parent, char lbl[], char txt[])
+Widget EditPlotParms::createLineItem(Widget parent, const char lbl[], const char txt[])
 {
   Widget        label, text;
 
-  tmpRC = XmCreateRowColumn(parent, "plRC", NULL, 0);
-  label = XmCreateLabel(tmpRC, lbl, NULL, 0);
-  text = XmCreateTextField(tmpRC, txt, NULL, 0);
+  tmpRC = XmCreateRowColumn(parent, (char *)"plRC", NULL, 0);
+  label = XmCreateLabel(tmpRC, (char *)lbl, NULL, 0);
+  text = XmCreateTextField(tmpRC, (char *)txt, NULL, 0);
 
   XtManageChild(label);
   XtManageChild(text);
@@ -137,12 +137,12 @@ Widget EditPlotParms::createLineItem(Widget parent, char lbl[], char txt[])
 }	/* END CREATELINEITEM */
 
 /* -------------------------------------------------------------------- */
-Widget EditPlotParms::addToLineItem(char lbl[], char txt[])
+Widget EditPlotParms::addToLineItem(const char lbl[], const char txt[])
 {
   Widget        label, text;
 
-  label = XmCreateLabel(tmpRC, lbl, NULL, 0);
-  text = XmCreateTextField(tmpRC, txt, NULL, 0);
+  label = XmCreateLabel(tmpRC, (char *)lbl, NULL, 0);
+  text = XmCreateTextField(tmpRC, (char *)txt, NULL, 0);
 
   XtManageChild(label);
   XtManageChild(text);
@@ -159,11 +159,11 @@ void EditPlotParms::addPanelButtons(Widget parent)
 
   /* Panel stuff.
    */
-  plRC = XmCreateRowColumn(parent, "plRC", NULL, 0);
+  plRC = XmCreateRowColumn(parent, (char*)"plRC", NULL, 0);
   XtManageChild(plRC);
 
-  label = XmCreateLabel(plRC, "Panel", NULL, 0);
-  plRC = XmCreateRadioBox(plRC, "pnRC", NULL, 0);
+  label = XmCreateLabel(plRC, (char*)"Panel", NULL, 0);
+  plRC = XmCreateRadioBox(plRC, (char*)"pnRC", NULL, 0);
   XtManageChild(label);
   XtManageChild(plRC);
 
@@ -186,13 +186,13 @@ Widget EditPlotParms::createTitles(Widget parent)
   Widget        frame, RC;
 
   n = 0;
-  frame = XmCreateFrame(parent, "titlesFrame", args, n);
+  frame = XmCreateFrame(parent, (char*)"titlesFrame", args, n);
   XtManageChild(frame);
 
   n = 0;
-  RC = XmCreateRowColumn(frame, "titlesRC", args, n);
+  RC = XmCreateRowColumn(frame, (char*)"titlesRC", args, n);
 
-  autoTitles = XmCreateToggleButton(RC, "Auto-titles", args, n);
+  autoTitles = XmCreateToggleButton(RC, (char*)"Auto-titles", args, n);
   XtManageChild(autoTitles);
   XmToggleButtonSetState(autoTitles, true, false);
 
@@ -214,13 +214,13 @@ Widget EditPlotParms::createLabels(Widget parent)
   Widget        frame, RC;
 
   n = 0;
-  frame = XmCreateFrame(parent, "labelsFrame", args, n);
+  frame = XmCreateFrame(parent, (char*)"labelsFrame", args, n);
   XtManageChild(frame);
 
   n = 0;
-  RC = XmCreateRowColumn(frame, "labelsRC", args, n);
+  RC = XmCreateRowColumn(frame, (char*)"labelsRC", args, n);
 
-  autoLabels = XmCreateToggleButton(RC, "Auto-labels", args, n);
+  autoLabels = XmCreateToggleButton(RC, (char*)"Auto-labels", args, n);
   XtManageChild(autoLabels);
 
   xAxis.label = createLineItem(RC, "X Label", "labelTxt");
@@ -253,13 +253,13 @@ Widget EditPlotParms::createMinMax(Widget parent)
   Widget        frame, RC;
 
   n = 0;
-  frame = XmCreateFrame(parent, "minMaxFrame", args, n);
+  frame = XmCreateFrame(parent, (char*)"minMaxFrame", args, n);
   XtManageChild(frame);
 
   n = 0;
-  RC = XmCreateRowColumn(frame, "minMaxRC", args, n);
+  RC = XmCreateRowColumn(frame, (char*)"minMaxRC", args, n);
 
-  autoScale = XmCreateToggleButton(RC, "Auto-scaling", args, n);
+  autoScale = XmCreateToggleButton(RC, (char*)"Auto-scaling", args, n);
   XtManageChild(autoScale);
 
   xAxis.min = createLineItem(RC, "X Min", "minMaxTxt");
@@ -268,7 +268,7 @@ Widget EditPlotParms::createMinMax(Widget parent)
   yAxis[0].max = addToLineItem("Y Max (left)", "minMaxTxt");
   XtManageChild(xAxis.min); XtManageChild(xAxis.max);
   XtManageChild(yAxis[0].min); XtManageChild(yAxis[0].max);
-printf("%d\n", yRight());
+
   if (yRight())
     {
     yAxis[1].min = createLineItem(RC, "Y Min (right)", "minMaxTxt");
@@ -295,13 +295,13 @@ Widget EditPlotParms::createNtics(Widget parent)
   Widget        frame, RC;
 
   n = 0;
-  frame = XmCreateFrame(parent, "ticsFrame", args, n);
+  frame = XmCreateFrame(parent, (char *)"ticsFrame", args, n);
   XtManageChild(frame);
 
   n = 0;
-  RC = XmCreateRowColumn(frame, "ticsRC", args, n);
+  RC = XmCreateRowColumn(frame, (char *)"ticsRC", args, n);
 
-  autoTics = XmCreateToggleButton(RC, "Auto-tic marks", args, n);
+  autoTics = XmCreateToggleButton(RC, (char *)"Auto-tic marks", args, n);
   XtManageChild(autoTics);
 
   xAxis.nMajorTics = createLineItem(RC, "# X tics", "ticTxt");
@@ -337,23 +337,23 @@ Widget EditPlotParms::createLogLin(Widget parent)
   Widget        frame, RC, llRC, label;
 
   n = 0;
-  frame = XmCreateFrame(parent, "logLinFrame", args, n);
+  frame = XmCreateFrame(parent, (char *)"logLinFrame", args, n);
   XtManageChild(frame);
 
   n = 0;
-  RC = XmCreateRowColumn(frame, "logLinRC", args, n);
+  RC = XmCreateRowColumn(frame, (char *)"logLinRC", args, n);
   XtManageChild(RC);
 
   n = 0;
-  llRC = XmCreateRowColumn(RC, "plRC", args, n);
+  llRC = XmCreateRowColumn(RC, (char *)"plRC", args, n);
   XtManageChild(llRC);
 
   n = 0;
-  label = XmCreateLabel(llRC, "Log scale :", args, n);
+  label = XmCreateLabel(llRC, (char *)"Log scale :", args, n);
   XtManageChild(label);
 
-  xAxis.logScale = XmCreateToggleButton(llRC, "X axis", args, n);
-  yAxis[0].logScale = XmCreateToggleButton(llRC, "Y axis", args, n);
+  xAxis.logScale = XmCreateToggleButton(llRC, (char *)"X axis", args, n);
+  yAxis[0].logScale = XmCreateToggleButton(llRC, (char *)"Y axis", args, n);
   XtManageChild(xAxis.logScale);
   XtManageChild(yAxis[0].logScale);
   XmToggleButtonSetState(xAxis.logScale, true, false);
@@ -361,14 +361,14 @@ Widget EditPlotParms::createLogLin(Widget parent)
 
   if (yRight())
     {
-    yAxis[1].logScale = XmCreateToggleButton(llRC, "Y (right)", args, n);
+    yAxis[1].logScale = XmCreateToggleButton(llRC, (char *)"Y (right)", args, n);
     XtManageChild(yAxis[1].logScale);
     XmToggleButtonSetState(yAxis[1].logScale, true, false);
     }
 
   if (isZaxis())
     {
-    zAxis.logScale = XmCreateToggleButton(llRC, "Z axis", args, n);
+    zAxis.logScale = XmCreateToggleButton(llRC, (char *)"Z axis", args, n);
     XtManageChild(zAxis.logScale);
     XmToggleButtonSetState(zAxis.logScale, true, false);
     }
@@ -385,25 +385,25 @@ Widget EditPlotParms::createInvert(Widget parent)
   Widget        RC, label;
 
   n = 0;
-  RC = XmCreateRowColumn(parent, "plRC", args, n);
+  RC = XmCreateRowColumn(parent, (char *)"plRC", args, n);
   XtManageChild(RC);
 
-  label = XmCreateLabel(RC, "Invert scale :", args, n);
-  xAxis.invertAxis = XmCreateToggleButton(RC, "X axis", args, n);
-  yAxis[0].invertAxis = XmCreateToggleButton(RC, "Y axis", args, n);
+  label = XmCreateLabel(RC, (char *)"Invert scale :", args, n);
+  xAxis.invertAxis = XmCreateToggleButton(RC, (char *)"X axis", args, n);
+  yAxis[0].invertAxis = XmCreateToggleButton(RC, (char *)"Y axis", args, n);
   XtManageChild(label);
   XtManageChild(xAxis.invertAxis);
   XtManageChild(yAxis[0].invertAxis);
 
   if (yRight())
     {
-    yAxis[1].invertAxis = XmCreateToggleButton(RC, "Y (right)", args, n);
+    yAxis[1].invertAxis = XmCreateToggleButton(RC, (char *)"Y (right)", args, n);
     XtManageChild(yAxis[1].invertAxis);
     }
 
   if (isZaxis())
     {
-    zAxis.invertAxis = XmCreateToggleButton(RC, "Z axis", args, n);
+    zAxis.invertAxis = XmCreateToggleButton(RC, (char *)"Z axis", args, n);
     XtManageChild(zAxis.invertAxis);
     }
 
