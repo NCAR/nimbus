@@ -88,11 +88,11 @@ char	dateProcessed[64];	// For export to psql.cc
 
 
 static int	writeBlank(int varid, long start[], long count[], int OutputRate);
-static void	markDependedByList(char target[]), writeTimeUnits();
+static void	markDependedByList(const char target[]), writeTimeUnits();
 static void	clearDependedByList(), printDependedByList();
-static void	addCommonVariableAttributes(var_base *var), addLandmarks();
+static void	addCommonVariableAttributes(const var_base *var), addLandmarks();
 
-void	AddPMS1dAttrs(int ncid, var_base * rp), ReadMetaData(int fd),
+void	AddPMS1dAttrs(int ncid, const var_base * rp), ReadMetaData(int fd),
 	CheckAndAddAttrs(int fd, int varid, char name[]);
 
 //      Rate, DimID
@@ -924,7 +924,7 @@ clearDependedByList()
 }
 
 static void
-markDependedByList(char target[])
+markDependedByList(const char target[])
 {
   for (size_t i = 0; i < derived.size(); ++i)
   {
@@ -955,7 +955,7 @@ printDependedByList()
 }
 
 /* -------------------------------------------------------------------- */
-static void addCommonVariableAttributes(var_base *var)
+static void addCommonVariableAttributes(const var_base *var)
 {
   const char *p;
 

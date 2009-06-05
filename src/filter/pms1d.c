@@ -23,7 +23,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2006
 #include <raf/pms.h>
 #include <netcdf.h>
 
-static int getCellSizes(var_base * rp, float cellSizes[]);
+static int getCellSizes(const var_base * rp, float cellSizes[]);
 
 
 /* -------------------------------------------------------------------- */
@@ -199,7 +199,7 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
 /* Add PMSspecs data and other meta-data to the netCDF file, attributes
  * for probe.
  */
-void AddPMS1dAttrs(int ncid, var_base * rp)
+void AddPMS1dAttrs(int ncid, const var_base * varp)
 {
   int	nBins, cvarid;
   char	*p;
@@ -207,124 +207,130 @@ void AddPMS1dAttrs(int ncid, var_base * rp)
   bool	warnMidPoints = false;
 
   /* If not PMS1D, then bail out. */
-  if ((rp->ProbeType & 0xff000000) != 0x80000000 && (rp->ProbeType & 0xff000000) != 0x10000000)
+  if ((varp->ProbeType & 0xff000000) != 0x80000000 && (varp->ProbeType & 0xff000000) != 0x10000000)
     return;
 
-  cvarid = rp->varid;
+  cvarid = varp->varid;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
   InitPMSspecs(buffer);
 
-  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "FIRST_BIN")) ) {
-    int	value = atoi(p);
-    ncattput(ncid, cvarid, "FirstBin", NC_INT, 1, &value);
+  // Really wish I could up dymamic_cast.  What I really want to check:
+  // if (varp == <RAWTBL*>)
+  if (varp->name[0] == 'A')
+  {
+    if (varp->ProbeType & PROBE_260X || varp->ProbeType & PROBE_200X ||
+        varp->ProbeType & PROBE_200Y || varp->ProbeType & PROBE_PMS2D)
+    {
+      if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "NDIODES")) ) {
+        int value = atoi(p);
+        ncattput(ncid, cvarid, "nDiodes", NC_INT, 1, &value);
+      }
+
+      if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "MAG")) ) {
+        float value = atof(p);
+        ncattput(ncid, cvarid, "Magnification", NC_FLOAT, 1, &value);
+      }
+
+      if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "RESPONSE_TIME")) ) {
+        float value = atof(p);
+        ncattput(ncid, cvarid, "ResponseTime", NC_FLOAT, 1, &value);
+      }
+
+      if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "ARM_DISTANCE")) ) {
+        float value = atof(p);
+        ncattput(ncid, cvarid, "ArmDistance", NC_FLOAT, 1, &value);
+      }
+    }
+
+    if (varp->ProbeType & PROBE_PMS2D)
+    {
+      if (varp->Length < 64)
+      {
+        strcpy(buffer, "2D buffers with more than 8 seconds elapsed time or fewer than 20 particles.");
+        ncattput(ncid, cvarid, "Rejected", NC_CHAR, strlen(buffer), buffer);
+      }
+
+      if (strstr(varp->name, "1D"))
+      {
+        const char * s = "Entire In";
+        ncattput(ncid, cvarid, "ParticleAcceptMethod", NC_CHAR, strlen(s), s);
+      }
+
+      if (strstr(varp->name, "2D"))
+      {
+        const char * s = "Error";
+        float f;
+
+        if (cfg.TwoDProcessingMethod() == Config::Center_In)
+          s = "Center In";
+        if (cfg.TwoDProcessingMethod() == Config::Reconstruction)
+          s = "Reconstruction";
+        ncattput(ncid, cvarid, "ParticleAcceptMethod", NC_CHAR, strlen(s), s);
+
+        f = cfg.TwoDAreaRejectRatio();
+        ncattput(ncid, cvarid, "ParticleAreaRejectionRatio", NC_FLOAT, 1, &f);
+      }
+    }
   }
+  else
+  {
+    if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "FIRST_BIN")) ) {
+      int	value = atoi(p);
+      ncattput(ncid, cvarid, "FirstBin", NC_INT, 1, &value);
+    }
 
-  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "LAST_BIN")) ) {
-    int	value = atoi(p) - 1;	/* Go from exclusive to inclusive */
+    if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "LAST_BIN")) ) {
+      int	value = atoi(p) - 1;	/* Go from exclusive to inclusive */
 
-    if (strstr(rp->name, "2D"))	/* 2D's use 63 bins, instead of 1DC */
-      value += (rp->Length >> 1);
+      if (strstr(varp->name, "2D"))	/* 2D's use 63 bins, instead of 1DC */
+        value += (varp->Length >> 1);
 
-    ncattput(ncid, cvarid, "LastBin", NC_INT, 1, &value);
-  }
+      ncattput(ncid, cvarid, "LastBin", NC_INT, 1, &value);
+    }
 
+    nBins = getCellSizes(varp, cellSize);
+    ncattput(ncid, cvarid, "CellSizes", NC_FLOAT, nBins, cellSize);
+    ncattput(ncid, cvarid, "CellSizeUnits", NC_CHAR, 12, "micrometers");
 
-  nBins = getCellSizes(rp, cellSize);
-  ncattput(ncid, cvarid, "CellSizes", NC_FLOAT, nBins, cellSize);
 
   if (cellSize[0] == 0.0)
     warnMidPoints = true;
 
-
-  if (rp->ProbeType & PROBE_260X || rp->ProbeType & PROBE_200X ||
-      rp->ProbeType & PROBE_200Y || rp->ProbeType & PROBE_PMS2D)
-  {
-    if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "NDIODES")) ) {
-      int value = atoi(p);
-      ncattput(ncid, cvarid, "nDiodes", NC_INT, 1, &value);
-    }
-
-    if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "MAG")) ) {
+    if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "DOF")) ) {
       float value = atof(p);
-      ncattput(ncid, cvarid, "Magnification", NC_FLOAT, 1, &value);
+      ncattput(ncid, cvarid, "DepthOfField", NC_FLOAT, 1, &value);
     }
 
-    if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "RESPONSE_TIME")) ) {
+    if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "BEAM_DIAM")) ) {
       float value = atof(p);
-      ncattput(ncid, cvarid, "ResponseTime", NC_FLOAT, 1, &value);
+      ncattput(ncid, cvarid, "BeamDiameter", NC_FLOAT, 1, &value);
     }
 
-    if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "ARM_DISTANCE")) ) {
+    if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "DENS")) ) {
       float value = atof(p);
-      ncattput(ncid, cvarid, "ArmDistance", NC_FLOAT, 1, &value);
+      ncattput(ncid, cvarid, "Density", NC_FLOAT, 1, &value);
     }
-  }
 
+    if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "PLWFAC")) ) {
+      float value = atof(p);
+      ncattput(ncid, cvarid, "PLWfactor", NC_FLOAT, 1, &value);
+    }
 
-  ncattput(ncid, cvarid, "CellSizeUnits", NC_CHAR, 12, "micrometers");
+    if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "DBZFAC")) ) {
+      float value = atof(p);
+      ncattput(ncid, cvarid, "DBZfactor", NC_FLOAT, 1, &value);
+    }
 
-
-  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "DOF")) ) {
-    float value = atof(p);
-    ncattput(ncid, cvarid, "DepthOfField", NC_FLOAT, 1, &value);
-  }
-
-  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "BEAM_DIAM")) ) {
-    float value = atof(p);
-    ncattput(ncid, cvarid, "BeamDiameter", NC_FLOAT, 1, &value);
-  }
-
-  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "DENS")) ) {
-    float value = atof(p);
-    ncattput(ncid, cvarid, "Density", NC_FLOAT, 1, &value);
-  }
-
-  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "PLWFAC")) ) {
-    float value = atof(p);
-    ncattput(ncid, cvarid, "PLWfactor", NC_FLOAT, 1, &value);
-  }
-
-  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "DBZFAC")) ) {
-    float value = atof(p);
-    ncattput(ncid, cvarid, "DBZfactor", NC_FLOAT, 1, &value);
-  }
-
-  if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "SAMPLE_AREA")) ) {
-    float value = atof(p);
-    ncattput(ncid, cvarid, "SampleArea", NC_FLOAT, 1, &value);
+    if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "SAMPLE_AREA")) ) {
+      float value = atof(p);
+      ncattput(ncid, cvarid, "SampleArea", NC_FLOAT, 1, &value);
+    }
   }
 
 
   ReleasePMSspecs();
 
-
-  if (rp->ProbeType & PROBE_PMS2D)
-  {
-    strcpy(buffer, "2D buffers with more than 8 seconds elapsed time or fewer than 20 particles.");
-    ncattput(ncid, cvarid, "Rejected", NC_CHAR, strlen(buffer), buffer);
-
-    if (strstr(rp->name, "1D"))
-    {
-      const char * s = "Entire In";
-      ncattput(ncid, cvarid, "ParticleAcceptMethod", NC_CHAR, strlen(s), s);
-    }
-
-    if (strstr(rp->name, "2D"))
-    {
-      const char * s = "Error";
-      float f;
-
-      if (cfg.TwoDProcessingMethod() == Config::Center_In)
-        s = "Center In";
-      if (cfg.TwoDProcessingMethod() == Config::Reconstruction)
-        s = "Reconstruction";
-      ncattput(ncid, cvarid, "ParticleAcceptMethod", NC_CHAR, strlen(s), s);
-
-      f = cfg.TwoDAreaRejectRatio();
-      ncattput(ncid, cvarid, "ParticleAreaRejectionRatio", NC_FLOAT, 1, &f);
-    }
-  }
 
   /* Older projects have a PMSspecs file with mid-points instead of end-points.
    * Warn the user about this, as it will produce incorrect PMS1D results.
@@ -332,14 +338,14 @@ void AddPMS1dAttrs(int ncid, var_base * rp)
   if (warnMidPoints)
   {
     fprintf(stderr, "PMSspecs file contains mid-point, not end-point cell diameters for %s %s.\n",
-	rp->name, rp->SerialNumber.c_str());
+	varp->name, varp->SerialNumber.c_str());
     fprintf(stderr, "Nimbus was modified on 9/5/98 to use end-points.  Please fix.\n");
     quit();
   }
 }
 
 /* -------------------------------------------------------------------- */
-static int getCellSizes(var_base * rp, float cellSize[])
+static int getCellSizes(const var_base * rp, float cellSize[])
 {
   int	i, nBins;
   char	*p;
