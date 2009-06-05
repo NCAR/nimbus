@@ -493,6 +493,7 @@ void CreateNetCDF(const char fileName[])
 void SwitchNetCDFtoDataMode()
 {
   ncendef(fd);
+  SyncNetCDF();
 
 }	/* END SWITCHNETCDFTODATAMODE */
 
