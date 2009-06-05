@@ -28,7 +28,7 @@ DataFile::DataFile(const char fName[]) : fileName(fName)
 {
   int		i;
   NcAtt		*attr;
-  NcVar		*avar, *cvar;
+  NcVar		*avar;
 
   NcError * err = new NcError(NcError::verbose_nonfatal);
 

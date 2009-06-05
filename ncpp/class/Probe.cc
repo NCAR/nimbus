@@ -133,24 +133,21 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
   if ((attr = avar->get_att("SerialNumber")))
     serialNum = attr->as_string(0);
 
-
-  if ((attr = avar->get_att("FirstBin")))
+  if ((attr = cvar->get_att("FirstBin")) || (attr = avar->get_att("FirstBin")))
     firstBin = attr->as_short(0);
   else
     firstBin = 1;
 
-  if ((attr = avar->get_att("LastBin")))
+  if ((attr = cvar->get_att("LastBin")) || (attr = avar->get_att("LastBin")))
     lastBin = attr->as_short(0);
   else
     lastBin = avar->get_dim(2)->size()-1;
 
-
-  if ((attr = avar->get_att("CellSizes")))
+  if ((attr = cvar->get_att("CellSizes")) || (attr = avar->get_att("CellSizes")))
     {
     if (attr->num_vals() != nCells)
-      fprintf(stderr, "Warning: number of cell sizes in netCDF file does not match expected, variable: %s, file=%d, expected=%d.\n",
-		name.c_str(), attr->num_vals(), nCells);
-      
+      fprintf(stderr, "Warning: number of cell sizes in netCDF file does not match expected, variable: %s, file=%d, expected=%d.\n", name.c_str(), attr->num_vals(), nCells);
+
     for (i = 0; i < nCells; ++i)
       diameter[i] = attr->as_float(i);
     }

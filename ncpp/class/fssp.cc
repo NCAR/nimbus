@@ -18,27 +18,27 @@ FSSP::FSSP(NcFile *file, NcVar *av) : Probe(file, av)
 {
   NcAtt		*attr;
 
-  if ((attr = avar->get_att("BeamDiameter")))
+  if ((attr = cvar->get_att("BeamDiameter")) || (attr = avar->get_att("BeamDiameter")))
     beamDiameter = attr->as_float(0);
   else
     beamDiameter = 0.19;
 
-  if ((attr = avar->get_att("DepthOfField")))
+  if ((attr = cvar->get_att("DepthOfField")) || (attr = avar->get_att("DepthOfField")))
     DOF = attr->as_float(0);
   else
     DOF = 2.81;
 
-  if ((attr = avar->get_att("Density")))
+  if ((attr = cvar->get_att("Density")) || (attr = avar->get_att("Density")))
     DENS = attr->as_float(0);
   else
     DENS = 1.0;
 
-  if ((attr = avar->get_att("PLWfactor")))
+  if ((attr = cvar->get_att("PLWfactor")) || (attr = avar->get_att("PLWfactor")))
     PLWfac = attr->as_float(0);
   else
     PLWfac = 1.0e-6;
 
-  if ((attr = avar->get_att("DBZfactor")))
+  if ((attr = cvar->get_att("DBZfactor")) || (attr = avar->get_att("DBZfactor")))
     DBZfac = attr->as_float(0);
   else
     DBZfac = 1.0e6;

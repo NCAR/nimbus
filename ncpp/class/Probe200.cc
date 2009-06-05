@@ -24,12 +24,12 @@ Probe200::Probe200(NcFile *file, NcVar *av) : Probe(file, av), nDiodes(0), resol
   else
     responseTime = 0.35;
 
-  if ((attr = avar->get_att("PLWfactor")))
+  if ((attr = cvar->get_att("PLWfactor")) || (attr = avar->get_att("PLWfactor")))
     PLWfac = attr->as_float(0);
   else
     PLWfac = 1.0e-9;
 
-  if ((attr = avar->get_att("Density")))
+  if ((attr = cvar->get_att("Density")) || (attr = avar->get_att("Density")))
     DENS = attr->as_float(0);
   else
     DENS = 1.0;

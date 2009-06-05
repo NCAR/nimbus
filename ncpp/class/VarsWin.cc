@@ -2,13 +2,7 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	VarsWin.cc
 
-FULL NAME:	
-
-DESCRIPTION:	
-
-NOTES:		
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2009
 -------------------------------------------------------------------------
 */
 

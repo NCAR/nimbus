@@ -30,7 +30,7 @@ X260::X260(NcFile *file, NcVar *av) : Probe200(file, av)
   else
     armDistance = 61.0;
 
-  if ((attr = avar->get_att("DBZfactor")))
+  if ((attr = cvar->get_att("DBZfactor")) || (attr = avar->get_att("DBZfactor")))
     DBZfac = attr->as_float(0);
   else
     DBZfac = 1.0e3;

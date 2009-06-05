@@ -2,12 +2,6 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	Header.cc
 
-FULL NAME:	
-
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8
 -------------------------------------------------------------------------
 */

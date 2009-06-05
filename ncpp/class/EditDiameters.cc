@@ -2,12 +2,6 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	EditDiameters.cc
 
-FULL NAME:	
-
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1998-9
 -------------------------------------------------------------------------
 */

@@ -2,12 +2,6 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	EditWindow.cc
 
-FULL NAME:	
-
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 -------------------------------------------------------------------------
 */

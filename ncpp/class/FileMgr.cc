@@ -2,10 +2,6 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	FileMgr.cc
 
-FULL NAME:	File Manager Class
-
-DESCRIPTION:	
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 -------------------------------------------------------------------------
 */

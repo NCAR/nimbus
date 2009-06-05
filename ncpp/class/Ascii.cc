@@ -2,13 +2,7 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	Ascii.cc
 
-FULL NAME:	
-
-DESCRIPTION:	
-
-NOTES:		
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2007
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2009
 -------------------------------------------------------------------------
 */
 

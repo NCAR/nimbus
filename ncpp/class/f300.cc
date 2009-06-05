@@ -32,7 +32,6 @@ F300::F300(NcFile *file, NcVar *av) : Probe(file, av)
     if (strncmp(otherVars[i]->name(), "PVOL", 4) == 0)
       volIdx = i;
     }
-
 }	/* END CONSTRUCTOR */
 
 /* -------------------------------------------------------------------- */

@@ -2,12 +2,6 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	EditPlotParms.cc
 
-FULL NAME:	Edit Plot Parameters
-
-DESCRIPTION:	
-
-NOTES:		
-
 COPYRIGHT:	University Corporation for Atmospheric Research, 1998-9
 -------------------------------------------------------------------------
 */
