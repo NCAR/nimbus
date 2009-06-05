@@ -36,11 +36,27 @@ static const NR_TYPE shadowLevel = 0.55;
 // Use a fixed DOF, not what the manual specifies, until such time that a "research
 // project" can be done.  Al Cooper, Jorgen Jenson 6/26/06
 
-//static const NR_TYPE DOF2dP[] = { 0.0, 145.203, 261.0, 261.0, 261.0,
-static const NR_TYPE DOF2dP = 261.0;
+static const NR_TYPE DOF2dP[] = { 0.0, 145.203, 261.0, 261.0, 261.0,
+    261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0,
+    261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0,
+    261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0,
+    261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0,
+    261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0,
+    261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0 };
 
-//static NR_TYPE DOF2dC[] = { 0.0, 1.56, 6.25, 14.06, 25.0, 39.06, 56.25,
-static const NR_TYPE DOF2dC = 61.0;
+static NR_TYPE DOF2dC[] = { 0.0, 1.56, 6.25, 14.06, 25.0, 39.06, 56.25,
+    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
+    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
+    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
+    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
+    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
+    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
+    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
+    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
+    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
+    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
+    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
+    61.0, 61.0, 61.0 };
 
 static const size_t maxBins = 130;
 
@@ -51,12 +67,12 @@ static NR_TYPE  responseTime[MAX_PMS2D], armDistance[MAX_PMS2D],
 static double   PLWFAC[MAX_PMS2D], DBZFAC[MAX_PMS2D];
 
 static NR_TYPE  total_concen[MAX_PMS2D], dbar[MAX_PMS2D], plwc[MAX_PMS2D],
-                disp[MAX_PMS2D], dbz[MAX_PMS2D], tact[MAX_PMS2D];
+		disp[MAX_PMS2D], dbz[MAX_PMS2D], tact[MAX_PMS2D];
 
 static NR_TYPE  radius[MAX_PMS2D][maxBins], cell_size[MAX_PMS2D][maxBins],
 		cell_size2[MAX_PMS2D][maxBins], cell_size3[MAX_PMS2D][maxBins],
-                eaw[MAX_PMS2D][maxBins], reff2[MAX_PMS2D], reff3[MAX_PMS2D];
-                                                                                          
+		eaw[MAX_PMS2D][maxBins], reff2[MAX_PMS2D], reff3[MAX_PMS2D];
+
 NR_TYPE         reff23[MAX_PMS2D], reff22[MAX_PMS2D];  /* For export to reff.c */
 
 void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
@@ -66,6 +82,25 @@ void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
 static int nProbes = 0;
 extern void setProbeCount(const char * location, int count);
 
+/* -------------------------------------------------------------------- */
+void addDOFtoAttrs(const var_base *varp)
+{
+  const NR_TYPE *dof;
+  std::vector<NR_TYPE> dof_v;
+  char name[128];
+  strcpy(name, varp->name);
+  name[0] = 'C';
+
+  // Add Depth of Field to NetCDF attributes.
+  if (varp->name[3] == 'P')
+    dof = DOF2dP;
+  else
+    dof = DOF2dC;
+
+  for (size_t i = 0; i < varp->Length; ++i)
+    dof_v.push_back(dof[i]);
+  AddToDefaults(name, "DepthOfField", dof_v);
+}
 
 /* -------------------------------------------------------------------- */
 void sTwodInit(var_base *varp)
@@ -97,6 +132,8 @@ void sTwodInit(var_base *varp)
 
   for (i = 0; i < MAX_PMS2D; ++i)
     reff23[i] = reff22[i] = 0.0;
+
+  addDOFtoAttrs(varp);
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
   InitPMSspecs(buffer);
@@ -270,7 +307,8 @@ void sTwoD(DERTBL *varp)
   NR_TYPE	*actual, *concentration, *dia, *dia2, *dia3;
   NR_TYPE	tas;		/* True Air Speed	*/
   NR_TYPE	sampleVolume[maxBins], sampleArea;
-  NR_TYPE	dof, deadTime;
+  NR_TYPE	deadTime;
+  const NR_TYPE	*dof;
 
   assert(varp->Length > 1);
 
@@ -321,7 +359,7 @@ void sTwoD(DERTBL *varp)
 
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
     {
-    sampleArea = dof * eaw[probeNum][i];
+    sampleArea = dof[i] * eaw[probeNum][i];
 
     sampleVolume[i] = tas * sampleArea * 0.001 *
 		(((float)1000 - deadTime) / 1000);

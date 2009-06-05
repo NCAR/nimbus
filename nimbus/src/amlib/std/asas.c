@@ -81,9 +81,11 @@ void casasInit(var_base *varp)
 
   for (i = varp->Length-1; i > 0; --i)
     {
+    // Compute mid-point.
     cell_size[probeNum][i] =
 	(cell_size[probeNum][i] + cell_size[probeNum][i-1]) / 2;
 
+    // Squared and cube'd.
     cell_size2[probeNum][i] = cell_size[probeNum][i] * cell_size[probeNum][i];
     cell_size3[probeNum][i] = cell_size2[probeNum][i] * cell_size[probeNum][i];
     }
