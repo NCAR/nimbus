@@ -255,7 +255,7 @@ cout << "Count[] = " << countV[0] << ", "<< countV[1]<<", "<< countV[2] << "\n";
 
 
     // Average data.
-    for (j = probe->FirstBin(); j <= probe->LastBin(); ++j)
+    for (j = 1; j <= probe->VectorLength(); ++j)
       {
       int dest = (i * probe->VectorLength()) + j, avCntr = 0;
 
