@@ -46,7 +46,7 @@ class PlotInfo;
 class Panel
 {
 public:
-	Panel();
+	Panel(DataType dt);
 
   void	DrawPlotFrames(PlotInfo& p),
 	PrintPlotFrames(PlotInfo& p, PostScript& pen);

@@ -98,7 +98,7 @@ void PlotInfo::SetDataTypes(DataType dt)
 
   if (dataTypes & COUNTS && !(oldTypes & COUNTS))	// Add
     {
-    insertPanel(idx);
+    insertPanel(idx, COUNTS);
     SetDefaultLabels(idx);
     }
   else
@@ -113,7 +113,7 @@ void PlotInfo::SetDataTypes(DataType dt)
 
   if (dataTypes & CONCENTRATION && !(oldTypes & CONCENTRATION))	// Add
     {
-    insertPanel(idx);
+    insertPanel(idx, CONCENTRATION);
     SetDefaultLabels(idx);
     }
   else
@@ -128,7 +128,7 @@ void PlotInfo::SetDataTypes(DataType dt)
 
   if (dataTypes & SURFACE && !(oldTypes & SURFACE))	// Add
     {
-    insertPanel(idx);
+    insertPanel(idx, SURFACE);
     SetDefaultLabels(idx);
     }
   else
@@ -143,7 +143,7 @@ void PlotInfo::SetDataTypes(DataType dt)
 
   if (dataTypes & VOLUME && !(oldTypes & VOLUME))	// Add
     {
-    insertPanel(idx);
+    insertPanel(idx, VOLUME);
     SetDefaultLabels(idx);
     }
   else
@@ -756,12 +756,12 @@ void PlotInfo::printHistograms(PostScript& pen, DataType dt, int idx)
 }	/* END PRINTHISTOGRAM */
 
 /* -------------------------------------------------------------------- */
-void PlotInfo::insertPanel(int pos)
+void PlotInfo::insertPanel(int pos, DataType dt)
 {
   for (int i = nPanels; i > pos; --i)
     panel[i] = panel[i-1];
  
-  panel[pos] = new Panel();
+  panel[pos] = new Panel(dt);
   ++nPanels;
 
 }

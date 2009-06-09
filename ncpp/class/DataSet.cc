@@ -330,7 +330,7 @@ void DataSet::findMinMax()
     maxAccum = -FLT_MAX;
 
     for (i = 0; i < nRecords; ++i)
-      for (j = probe->FirstBin(); j <= probe->LastBin(); ++j)
+      for (j = 1; j <= probe->VectorLength(); ++j)
         {
         c = Accumulation(i, j);
 

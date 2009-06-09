@@ -79,7 +79,7 @@ private:
 		printHistograms(PostScript&, DataType, int);
   void		drawTitles(int), printTitles(PostScript& pen);
   void		drawLegend(int), printLegend(PostScript& pen);
-  void		insertPanel(int pos), deletePanel(int pos);
+  void		insertPanel(int pos, DataType dt), deletePanel(int pos);
 
   bool		autoTitles;
   PlotType	plotType;	/* POSTAGE, MOVIE, or THREE_D	*/

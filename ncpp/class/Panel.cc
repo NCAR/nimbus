@@ -19,13 +19,15 @@ const float Panel::cosFactor = 0.866025;
 const float Panel::sinFactor = 0.5;
 
 /* -------------------------------------------------------------------- */
-Panel::Panel()
+Panel::Panel(DataType dt)
 {
   AutoLabels = true;
   AutoScale = true;
   AutoTics = true;
 
   xAxis.logScale = yAxis.logScale = zAxis.logScale = true;
+  if (dt & COUNTS)
+    xAxis.logScale = false;
   xAxis.invertAxis = yAxis.invertAxis = zAxis.invertAxis = false;
 
   xAxis.nMajorTics = yAxis.nMajorTics = zAxis.nMajorTics = 4;
@@ -745,7 +747,7 @@ void Panel::draw3dCube(Drawable surface, XPen& pen)
 /* -------------------------------------------------------------------- */
 void Panel::DrawHistogram(DataSet *set, int setNum, int idx, DataType dt, Drawable surface, XPen& pen)
 {
-  int		nPts = 0;
+  int		nPts = 0, startBin, endBin;
   XPoint	pts[600];
   double	datumX, datumY, xMin, xMax, yMin, yMax, total = 0.0;
 
@@ -757,7 +759,18 @@ void Panel::DrawHistogram(DataSet *set, int setNum, int idx, DataType dt, Drawab
   double xScale = (double)dimsX.HD / (xMax - xMin);
   double yScale = (double)dimsX.VD / (yMax - yMin);
 
-  for (int i = set->probe->FirstBin(); i <= set->probe->LastBin(); ++i)
+  if (dt == COUNTS)
+  {
+    startBin = 1;
+    endBin = set->probe->VectorLength();
+  }
+  else
+  {
+    startBin = set->probe->FirstBin();
+    endBin = set->probe->LastBin();
+  }
+
+  for (int i = startBin; i <= endBin; ++i)
     {
     datumX = set->probe->CellSize(i-1);
 
@@ -843,7 +856,7 @@ void Panel::DrawHistogram(DataSet *set, int setNum, int idx, DataType dt, Drawab
 /* -------------------------------------------------------------------- */
 void Panel::PrintHistogram(DataSet *set, int setNum, int idx, DataType dt, PostScript& pen)
 {
-  int		x, y;
+  int		x, y, startBin, endBin;
   double	datumX, datumY, xMin, xMax, yMin, yMax, total = 0.0;
 
   xMin = xAxis.logScale ? log10(xAxis.min) : xAxis.min;
@@ -857,7 +870,18 @@ void Panel::PrintHistogram(DataSet *set, int setNum, int idx, DataType dt, PostS
   pen.MoveOrigin(dimsPS.LV, dimsPS.BH);
   pen.SetClipping(dimsPS.VD, dimsPS.HD);
 
-  for (int i = set->probe->FirstBin(); i <= set->probe->LastBin(); ++i)
+  if (dt == COUNTS)
+  {
+    startBin = 1;
+    endBin = set->probe->VectorLength();
+  }
+  else
+  {
+    startBin = set->probe->FirstBin();
+    endBin = set->probe->LastBin();
+  }
+
+  for (int i = startBin; i <= endBin; ++i)
     {
     datumX = set->probe->CellSize(i-1);
 
@@ -904,7 +928,7 @@ void Panel::PrintHistogram(DataSet *set, int setNum, int idx, DataType dt, PostS
       if (y > dimsPS.VD) y = dimsPS.VD;
       }
 
-    if (i == set->probe->FirstBin())
+    if (i == startBin)
       pen.MoveTo(x, y);
     else
       pen.LineTo(x, y);
