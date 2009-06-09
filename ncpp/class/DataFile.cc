@@ -30,7 +30,7 @@ DataFile::DataFile(const char fName[]) : fileName(fName)
   NcAtt		*attr;
   NcVar		*avar;
 
-  NcError * err = new NcError(NcError::verbose_nonfatal);
+  NcError * err = new NcError(NcError::silent_nonfatal);
 
   nProbes = 0;
 
@@ -71,6 +71,10 @@ DataFile::DataFile(const char fName[]) : fileName(fName)
     {
     startTime = attr->as_string(0);
     endTime = strchr(attr->as_string(0), '-')+1;
+    }
+  else
+    {
+    ErrorMsg("netCDF attribute TimeInterval not found, this could be a problem.");
     }
   delete attr;
 

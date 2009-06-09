@@ -136,12 +136,18 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
   if ((attr = cvar->get_att("FirstBin")) || (attr = avar->get_att("FirstBin")))
     firstBin = attr->as_short(0);
   else
+    {
     firstBin = 1;
+    fprintf(stderr, "netCDF attribute FirstBin not found, defaulting to %d\n", firstBin);
+    }
 
   if ((attr = cvar->get_att("LastBin")) || (attr = avar->get_att("LastBin")))
     lastBin = attr->as_short(0);
   else
+    {
     lastBin = avar->get_dim(2)->size()-1;
+    fprintf(stderr, "netCDF attribute LastBin not found, defaulting to %d\n", lastBin);
+    }
 
   if ((attr = cvar->get_att("CellSizes")) || (attr = avar->get_att("CellSizes")))
     {

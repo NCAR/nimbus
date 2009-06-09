@@ -117,7 +117,7 @@ void DataSet::SetCompute(bool x)
   computeConc = x;
 
   if (computeConc && !accum)
-      accum = new float[nWords];
+    accum = new float[nWords];
 
 }	/* END SETCOMPUTE */
 
@@ -255,7 +255,7 @@ cout << "Count[] = " << countV[0] << ", "<< countV[1]<<", "<< countV[2] << "\n";
 
 
     // Average data.
-    for (j = 1; j <= probe->VectorLength(); ++j)
+    for (j = 1; j < probe->VectorLength(); ++j)
       {
       int dest = (i * probe->VectorLength()) + j, avCntr = 0;
 
@@ -330,7 +330,7 @@ void DataSet::findMinMax()
     maxAccum = -FLT_MAX;
 
     for (i = 0; i < nRecords; ++i)
-      for (j = 1; j <= probe->VectorLength(); ++j)
+      for (j = 1; j < probe->VectorLength(); ++j)
         {
         c = Accumulation(i, j);
 
@@ -406,7 +406,6 @@ DataSet::~DataSet()
   if (conc)	delete [] conc;
   if (surface)	delete [] surface;
   if (volume)	delete [] volume;
-
-}	/* END DESTRUCTOR */
+}
 
 /* END DATASET.CC */
