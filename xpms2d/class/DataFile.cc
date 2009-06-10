@@ -297,8 +297,15 @@ bool ADS_DataFile::LocatePMS2dRecord(P2d_rec *buff, int hour, int minute, int se
     if (startPreMidnight && ntohs(indices[i].time[0]) < 12 && hour > 12)
       hour -= 24;
 
-  for (; indices[i].index > 0 && ntohs(indices[i].time[1]) < minute; ++i)
-    ;
+  for (; indices[i].index > 0; ++i)
+    {
+    if (ntohs(indices[i].time[0]) < hour)
+      continue;
+    if (ntohs(indices[i].time[1]) < minute)
+      continue;
+
+    break;
+    }
 
   for (; indices[i].index > 0 && ntohs(indices[i].time[2]) < second; ++i)
     ;
