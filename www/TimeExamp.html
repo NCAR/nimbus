@@ -1,0 +1,278 @@
+<html>
+<head>
+
+<title>NCAR/RAF - netCDF Time Extraction</title>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<style type="text/css">
+<!--
+body { background: white; color: black; margin: 2em; margin-left: 3em; }
+h1,h2 { font-size: 1.5em }
+h3 { font-size: 1.3em }
+h4 { font-size: 1.2em }
+h1, h2, h3, h4 { font-style: normal; font-weight: normal; color: #3860B0; }
+span.runin { font-size: 1.1em; font-weight: bold; color: #3860B0; }
+a:link { color:navy; }
+a:visited { color:#386090; }
+li.toc { list-style: none; padding: .1em; }
+kbd.att { font-weight: normal; color: blue; }
+div.example { margin-left: 3em; margin-right: 3em; }
+div.definition { margin-left: 1em; }
+div.sidebar { margin-left: 50px; margin-right: 50px; padding: 20px; background-color: #f5deb4; }
+pre.CDL { color: brown; }
+table { padding: .25em; }
+span.new { background-color: #FF6666; }
+span.old { background-color: #FFFF88; text-decoration: line-through; }
+span.comment { background-color: #88FF88; font-style: italic; }
+-->
+</style>
+
+</head>
+
+<body>
+
+<h1 align=center>Examples for Extracting Time from RAF netCDF files</h1>
+
+<hr>
+This document provides routines and test programs for extracting time
+from the RAF netCDF data files (files starting in the year 2006).  There
+are both C examples and Fortran examples (under construction).
+<p>
+The C Standard Library contains a function called strptime(3).  This
+function can easily decode the "units" field below into a "struct tm" and
+the examples below demonstrate this.
+<p>
+For descriptions of strptime and "struct tm", see:<br>
+<ul>
+  <li>man strptime</li>
+  <li>man ctime</li>
+</ul>
+<p>
+<hr>
+<h3>Example netCDF Time variable declaration</h3>
+<pre class="CDL">
+        int Time(Time) ;
+                Time:long_name = "time of measurement" ;
+                Time:standard_name = "time" ;
+                Time:units = "seconds since 2001-09-20 14:38:33 +0000" ;
+                Time:strptime_format = "seconds since %F %T %z" ;
+</pre>
+
+<p>
+<hr>
+<h3>Test C Program</h3>
+
+<pre class="CDL">
+#include &lsaquo;netcdf.h&rsaquo;
+#include &lsaquo;time.h&rsaquo;
+
+int main(int argc, char *argv[])
+{
+  int	ncid, varID, nDims, dimids[3];
+  int	i, total, len;
+  int	*fp;
+  time_t  StartFlightUnixTime;
+
+  nc_open(argv[1], NC_NOWRITE, &amp;ncid);
+
+  StartFlightUnixTime = InitFlightTime(ncid);
+
+  nc_inq_varid(ncid, "Time", &amp;varID);
+  nc_inq_varndims(ncid, varID, &amp;nDims);
+  nc_inq_vardimid(ncid, varID, dimids);
+
+  total = 1;
+  for (i = 0; i &lsaquo; nDims; ++i)
+  {
+     nc_inq_dimlen(ncid, dimids[i], &amp;len);
+     total *= len;
+  }
+
+  fp = malloc(total * sizeof(int));
+  nc_get_var_int(ncid, varID, fp);
+
+  for (i = 0; i &lsaquo; total; ++i)
+  {
+    printf("%5d %04d/%02d/%02d %02d:%02d:%02d\n", fp[i],
+	GetFlightYear(fp[i]),
+	GetFlightMonth(fp[i]),
+	GetFlightDay(fp[i]),
+	GetFlightHour(fp[i]),
+	GetFlightMinute(fp[i]),
+	GetFlightSecond(fp[i]));
+  }
+
+  nc_close(ncid);
+}
+</pre>
+
+
+<h3>Example C Routines (raf-time.c)</h3>
+
+<pre class="CDL">
+#include &lsaquo;netcdf.h&rsaquo;
+#include &lsaquo;time.h&rsaquo;
+#include &lsaquo;stdlib.h&rsaquo;
+#include &lsaquo;stdio.h&rsaquo;
+
+/* Given an open netCDF file (ncid), return the Unix time (seconds since
+ * 01/01/1970) of Time::units.  Subsequent values from 'Time' should be added
+ * to this return value.
+ */
+
+static time_t start_t = 0;
+
+time_t InitFlightTime(int ncid)
+{
+  int id;
+
+  putenv("TZ=UTC");	// Force all time routines to work in UTC.
+
+  if (nc_inq_varid(ncid, "Time", &amp;id) == NC_NOERR)
+  {
+    struct tm StartFlight;
+    char t_units[128], units_frmt[128];
+
+    nc_get_att_text(ncid, id, "units", t_units);
+    nc_get_att_text(ncid, id, "strptime_format", units_frmt);
+
+    strptime(t_units, units_frmt, &amp;StartFlight);
+    start_t = mktime(&amp;StartFlight);
+  }
+  else
+  {
+    fprintf(stderr, "No 'Time' variable, this is fatal.\n");
+    exit(1);
+  }
+
+  return start_t;
+}
+
+int GetFlightYear(int currentTimeOffset)
+{
+  time_t x = start_t + currentTimeOffset;
+  struct tm * stm = gmtime(&amp;x);
+  return stm-&rsaquo;tm_year + 1900;
+}
+
+int GetFlightMonth(int currentTimeOffset)
+{
+  time_t x = start_t + currentTimeOffset;
+  struct tm * stm = gmtime(&amp;x);
+  return stm-&rsaquo;tm_mon + 1;
+}
+
+int GetFlightDay(int currentTimeOffset)
+{
+  time_t x = start_t + currentTimeOffset;
+  struct tm * stm = gmtime(&amp;x);
+  return stm-&rsaquo;tm_mday;
+}
+
+int GetFlightHour(int currentTimeOffset)
+{
+  time_t x = start_t + currentTimeOffset;
+  struct tm * stm = gmtime(&amp;x);
+  return stm-&rsaquo;tm_hour;
+}
+
+int GetFlightMinute(int currentTimeOffset)
+{
+  time_t x = start_t + currentTimeOffset;
+  struct tm * stm = gmtime(&amp;x);
+  return stm-&rsaquo;tm_min;
+}
+
+int GetFlightSecond(int currentTimeOffset)
+{
+  time_t x = start_t + currentTimeOffset;
+  struct tm * stm = gmtime(&amp;x);
+  return stm-&rsaquo;tm_sec;
+}
+</pre>
+<hr>
+<h3>C Routines to compile with Fortran Programs</h3>
+This is still under a little construction.  cjw 12/14/06
+<pre class="CDL">
+
+#include &lsaquo;stdio.h&rsaquo;
+#include &lsaquo;string.h&rsaquo;
+#include &lsaquo;time.h&rsaquo;
+
+static const char * default_format = "seconds since %F %T %z";
+
+static time_t start_t = 0;
+
+/*
+ * Call this function first with the flight start date and time.  This
+ * can be found as the "units" attribute in the "Time" variable.
+ */
+void init_flight_date__(char * start, char * format)
+{
+  struct tm start_tm;
+
+  putenv("TZ=UTC");	/* Perform all time calculations in/as UTC. */
+
+start[39] = '\0';
+format[22] = '\0';
+printf("[%s] [%s]\n", start, format);
+
+  if (format == 0 || strlen(format) == 0)
+    strptime(start, default_format, &amp;start_tm);
+  else
+    strptime(start, format, &amp;start_tm);
+
+  start_t = mktime(&amp;start_tm);
+}
+
+
+int get_flight_year__(int * currentTimeOffset)
+{
+  time_t x = start_t + *currentTimeOffset;
+  struct tm * stm = gmtime(&amp;x);
+  return stm-&rsaquo;tm_year + 1900;
+}
+
+int get_flight_month__(int * currentTimeOffset)
+{
+  time_t x = start_t + *currentTimeOffset;
+  struct tm * stm = gmtime(&amp;x);
+  return stm-&rsaquo;tm_mon + 1;
+}
+
+int get_flight_day__(int * currentTimeOffset)
+{
+  time_t x = start_t + *currentTimeOffset;
+  struct tm * stm = gmtime(&amp;x);
+  return stm-&rsaquo;tm_mday;
+}
+
+int get_flight_hour__(int * currentTimeOffset)
+{
+  time_t x = start_t + *currentTimeOffset;
+  struct tm * stm = gmtime(&amp;x);
+  return stm-&rsaquo;tm_hour;
+}
+
+int get_flight_minute__(int * currentTimeOffset)
+{
+  time_t x = start_t + *currentTimeOffset;
+  struct tm * stm = gmtime(&amp;x);
+  return stm-&rsaquo;tm_min;
+}
+
+int get_flight_second__(int * currentTimeOffset)
+{
+  time_t x = start_t + *currentTimeOffset;
+  struct tm * stm = gmtime(&amp;x);
+  return stm-&rsaquo;tm_sec;
+}
+</pre>
+<hr>
+
+<font size=2>
+Last update:
+Fri Jan  5 06:11:58 MST 2007
+</font>
+</body>
+</html>
