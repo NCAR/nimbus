@@ -36,28 +36,6 @@ static const NR_TYPE shadowLevel = 0.55;
 // Use a fixed DOF, not what the manual specifies, until such time that a "research
 // project" can be done.  Al Cooper, Jorgen Jenson 6/26/06
 
-static const NR_TYPE DOF2dP[] = { 0.0, 145.203, 261.0, 261.0, 261.0,
-    261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0,
-    261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0,
-    261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0,
-    261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0,
-    261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0,
-    261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0, 261.0 };
-
-static NR_TYPE DOF2dC[] = { 0.0, 1.56, 6.25, 14.06, 25.0, 39.06, 56.25,
-    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
-    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
-    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
-    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
-    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
-    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
-    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
-    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
-    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
-    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
-    61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0, 61.0,
-    61.0, 61.0, 61.0 };
-
 static const size_t maxBins = 130;
 
 
@@ -71,31 +49,30 @@ static NR_TYPE  total_concen[MAX_PMS2D], dbar[MAX_PMS2D], plwc[MAX_PMS2D],
 
 static NR_TYPE  radius[MAX_PMS2D][maxBins], cell_size[MAX_PMS2D][maxBins],
 		cell_size2[MAX_PMS2D][maxBins], cell_size3[MAX_PMS2D][maxBins],
-		eaw[MAX_PMS2D][maxBins], reff2[MAX_PMS2D], reff3[MAX_PMS2D];
+		sampleArea[MAX_PMS2D][maxBins], reff2[MAX_PMS2D], reff3[MAX_PMS2D];
 
 NR_TYPE         reff23[MAX_PMS2D], reff22[MAX_PMS2D];  /* For export to reff.c */
 
 void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
-	float minRange, float resolution, size_t nDiodes, size_t length);
+	NR_TYPE dof[], float minRange, float resolution, size_t nDiodes, size_t
+	length, size_t armDistance);
 
 // Probe Count.
 static int nProbes = 0;
 extern void setProbeCount(const char * location, int count);
 
+
 /* -------------------------------------------------------------------- */
-void addDOFtoAttrs(const var_base *varp)
+void addDOFtoAttrs(const var_base *varp, NR_TYPE eaw[], NR_TYPE dof[])
 {
-  const NR_TYPE *dof;
-  std::vector<NR_TYPE> dof_v;
-  char name[128];
+  std::vector<NR_TYPE> dof_v, eaw_v;
+  char name[64];
   strcpy(name, varp->name);
   name[0] = 'C';
 
-  // Add Depth of Field to NetCDF attributes.
-  if (varp->name[3] == 'P')
-    dof = DOF2dP;
-  else
-    dof = DOF2dC;
+  for (size_t i = 0; i < varp->Length; ++i)
+    eaw_v.push_back(eaw[i]);
+  AddToDefaults(name, "EffectiveAreaWidth", eaw_v);
 
   for (size_t i = 0; i < varp->Length; ++i)
     dof_v.push_back(dof[i]);
@@ -109,39 +86,22 @@ void sTwodInit(var_base *varp)
   char		*p, name[32];
   float		resolution;
   const char	*serialNumber;
+  NR_TYPE	eaw[maxBins], dof[maxBins];
 
   for (i = 0; i < MAX_PMS2D; ++i)
     SampleRate[i] = 1.0;
 
-  /* This function unfortunatly only gets called once, yet we need to
-   * initialaize two probes (sort of) the 1D version and the 2D version.
-   * This function is called from the A1D? xlTwodInit, not A2D?...
-   */
-
-  // 1DC gets first probecount.
-  p = strchr(varp->name, '_') - 3;
-  setProbeCount(p, nProbes++);
-
-  // 2DC requires seperate probeCount.
-  strcpy(name, p);
-  name[0] = '2';
-  setProbeCount(name, nProbes++);
+  setProbeCount(&varp->name[1], nProbes++);
 
   serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
-
+printf("%s, %d, %s\n", varp->name, probeNum, serialNumber);
   for (i = 0; i < MAX_PMS2D; ++i)
     reff23[i] = reff22[i] = 0.0;
-
-  addDOFtoAttrs(varp);
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
   InitPMSspecs(buffer);
 
-  /* Perform twice, once for 1DC, and again for 2DC.
-   */
-  for (j = 0; j < 2; ++j, ++probeNum)
-    {
     if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
       fprintf(stderr, "pms2d: serial number = [%s]: FIRST_BIN not found.\n", serialNumber); exit(1);
       }
@@ -192,34 +152,34 @@ void sTwodInit(var_base *varp)
       }
     DBZFAC[probeNum] = atof(p);
 
-    /* 1DC/P has length 32, 2DC/P has length 64.
-     */
-    length = varp->Length;
+  ReleasePMSspecs();
 
-    if (j > 0)
-      {
-      LAST_BIN[probeNum] *= 2;
-      length *= 2;
-      }
+  /* 1DC/P has length 32, 2DC/P has length 64.
+   */
+  length = varp->Length;
 
-    ComputePMS1DParams(radius[probeNum], eaw[probeNum], cell_size[probeNum],
-        minRange, resolution, nDiodes, length);
+  if (strstr(varp->name, "2D"))	// Reconstruction has twice as many bins.
+    LAST_BIN[probeNum] *= 2;
 
-    /* Precompute dia squared and cubed. */
-    for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
-      {
-      cell_size2[probeNum][i] = cell_size[probeNum][i] * cell_size[probeNum][i];
-      cell_size3[probeNum][i] = cell_size2[probeNum][i] * cell_size[probeNum][i];
-      }
+  ComputePMS1DParams(radius[probeNum], eaw, cell_size[probeNum], dof,
+	minRange, resolution, nDiodes, length, armDistance[probeNum]);
 
-    if (j > 0)  /* 2DC only (not 1DC). */
-      {
-      for (i = 0; i < length; ++i)
-        eaw[probeNum][i] = (resolution / 1000) * nDiodes;
-      }
+  /* Precompute dia squared and cubed. */
+  for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
+    {
+    cell_size2[probeNum][i] = cell_size[probeNum][i] * cell_size[probeNum][i];
+    cell_size3[probeNum][i] = cell_size2[probeNum][i] * cell_size[probeNum][i];
     }
 
-  ReleasePMSspecs();
+  if (strstr(varp->name, "2D"))  /* 2DC only (not 1DC). */
+    {
+    for (i = 0; i < length; ++i)
+      eaw[i] = (resolution / 1000) * nDiodes;
+    }
+
+  addDOFtoAttrs(varp, eaw, dof);
+  for (i = 0; i < length; ++i)
+    sampleArea[probeNum][i] = eaw[i] * dof[i];
 
 }	/* END STWODINIT */
 
@@ -230,6 +190,7 @@ void sTwodInitH(var_base *varp)
   char		*p;
   float		resolution;
   const char	*serialNumber;
+  NR_TYPE	eaw[maxBins], dof[maxBins];
 
   for (i = 0; i < MAX_PMS2D; ++i)
     SampleRate[i] = 1.0;
@@ -286,8 +247,8 @@ void sTwodInitH(var_base *varp)
    */
   length = varp->Length;
                                                                                           
-  ComputePMS1DParams(radius[probeNum], eaw[probeNum], cell_size[probeNum],
-      minRange, resolution, nDiodes, length);
+  ComputePMS1DParams(radius[probeNum], eaw, cell_size[probeNum], dof,
+      minRange, resolution, nDiodes, length, armDistance[probeNum]);
 
   /* Precompute dia squared and cubed. */
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
@@ -298,6 +259,13 @@ void sTwodInitH(var_base *varp)
 
   ReleasePMSspecs();
 
+  for (i = 0; i < length; ++i)
+    {
+    // 256 diodes, minus 80 we mask off.
+    sampleArea[probeNum][i] = 203.0 * 200.0 * (256-80) * 1.0e-6;
+    }
+  addDOFtoAttrs(varp, eaw, dof);
+
 }       /* END STWODINITH */
 
 /* -------------------------------------------------------------------- */
@@ -306,9 +274,8 @@ void sTwoD(DERTBL *varp)
   size_t	i, probeNum;
   NR_TYPE	*actual, *concentration, *dia, *dia2, *dia3;
   NR_TYPE	tas;		/* True Air Speed	*/
-  NR_TYPE	sampleVolume[maxBins], sampleArea;
+  NR_TYPE	sampleVolume[maxBins];
   NR_TYPE	deadTime;
-  const NR_TYPE	*dof;
 
   assert(varp->Length > 1);
 
@@ -323,11 +290,6 @@ void sTwoD(DERTBL *varp)
   concentration = &AveragedData[varp->LRstart];
 
   if (tas < 0.0) tas = 0.0;
-
-  if (varp->name[3] == 'P')
-    dof = DOF2dP;
-  else
-    dof = DOF2dC;
 
   // Convert missing values to zero.  This will handle the asynchronous nature of
   // nidas::TwoD_USB only putting out histograms when there is data.
@@ -359,9 +321,7 @@ void sTwoD(DERTBL *varp)
 
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
     {
-    sampleArea = dof[i] * eaw[probeNum][i];
-
-    sampleVolume[i] = tas * sampleArea * 0.001 *
+    sampleVolume[i] = tas * sampleArea[probeNum][i] * 0.001 *
 		(((float)1000 - deadTime) / 1000);
 
     if (sampleVolume[i] < 0.0)
@@ -399,7 +359,7 @@ void sHVPS(DERTBL *varp)
   size_t	i, probeNum;
   NR_TYPE	*actual, *concentration, *dia, *dia2, *dia3;
   NR_TYPE	tas;		/* True Air Speed	*/
-  NR_TYPE	sampleVolume[256], sampleArea;
+  NR_TYPE	sampleVolume[256];
   NR_TYPE	deadTime;
 
   actual	= GetVector(varp, 0);
@@ -412,12 +372,10 @@ void sHVPS(DERTBL *varp)
   dia3		= cell_size3[probeNum];
   concentration = &AveragedData[varp->LRstart];
 
-  // 256 diodes, minus 80 we mask off.
-  sampleArea = 203.0 * 200.0 * (256-80) * 1.0e-6;
 
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
     {
-    sampleVolume[i] = tas * sampleArea * (((float)1000 - deadTime) / 1000);
+    sampleVolume[i] = tas * sampleArea[probeNum][i] * (((float)1000 - deadTime) / 1000);
 
     if (sampleVolume[i] < 0.0)
       {

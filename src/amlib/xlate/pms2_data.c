@@ -137,11 +137,6 @@ printf("  %02d:%02d:%02d\n", ntohs(rec.hour), ntohs(rec.minute), ntohs(rec.secon
     }
   while (startTime[probeCnt] < 0 || startTime[probeCnt] > 86400);
 
-  if (strstr(varp->name, "HVPS") == 0)
-    sTwodInit(varp);
-  else
-    sTwodInitH(varp);
-
 }	/* END XLTWODINIT */
 
 /* -------------------------------------------------------------------- */
@@ -318,7 +313,7 @@ return;
       }
 
       /* A1D[C|P] */
-      if (p->h > 0 && p->h < 4 * p->w && !p->edge)
+      if (p->h > 0 && p->h * 4 >= p->w && !p->edge)
         np[p->h] += 1.0;
       else
         deadTime[probeCount][0] += p->liveTime;
