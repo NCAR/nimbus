@@ -41,7 +41,8 @@ static NR_TYPE	radius[BINS_16],
 		eaw[BINS_16];	/* Effective Sample Width	*/
 
 void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
-                float minRange, float resolution, size_t nDiodes, size_t length),
+                NR_TYPE dof[], float minRange, float resolution, size_t nDiodes,
+		size_t length, size_t armDistance),
 
 	ComputeDOF(NR_TYPE radius[], NR_TYPE tas, NR_TYPE dof[],
 		size_t FirstBin, size_t LastBin, float RES, NR_TYPE RESPONSE_TIME);
@@ -54,6 +55,7 @@ void c200yInit(var_base *varp)
   char		*p;
   const char	*serialNumber;
   NR_TYPE	minRange;
+  NR_TYPE	dof[BINS_16];	/* Depth Of Field		*/
 
   serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
@@ -110,7 +112,7 @@ void c200yInit(var_base *varp)
 
   SampleRate[probeNum] = varp->SampleRate;
 
-  ComputePMS1DParams(radius, eaw, dia, minRange, resolution, nDiodes, varp->Length);
+  ComputePMS1DParams(radius, eaw, dia, dof, minRange, resolution, nDiodes, varp->Length, armDistance);
 
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
     {
