@@ -215,5 +215,4 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
 
 //  printf("\ncompressed %d -> %d\n", groundString.str().length(), bufLen);
   printf("GroundFeed: %s\n", groundString.str().c_str());
-
 }
