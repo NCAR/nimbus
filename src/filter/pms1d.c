@@ -222,6 +222,11 @@ void AddPMS1dAttrs(int ncid, const var_base * varp)
     if (varp->ProbeType & PROBE_260X || varp->ProbeType & PROBE_200X ||
         varp->ProbeType & PROBE_200Y || varp->ProbeType & PROBE_PMS2D)
     {
+      if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "RANGE_STEP")) ) {
+        int value = atoi(p);
+        ncattput(ncid, cvarid, "Resolution", NC_INT, 1, &value);
+      }
+
       if ((p = GetPMSparameter(varp->SerialNumber.c_str(), "NDIODES")) ) {
         int value = atoi(p);
         ncattput(ncid, cvarid, "nDiodes", NC_INT, 1, &value);
