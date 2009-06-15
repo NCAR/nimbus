@@ -714,7 +714,7 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
     if (htons(buff->id) == PMS2DC4 || htons(buff->id) == PMS2DC6)	// Fast 2DC
     {
       long long *lp = (long long *)buff->data;
-      for (size_t i = 0; i < 512; ++i, ++lp)
+      for (size_t i = 0; i < nSlices_64bit; ++i, ++lp)
         *lp = ntohll(lp);
     }
     else
@@ -727,7 +727,7 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
     else
     {
       p = (unsigned long *)buff->data;
-      for (size_t i = 0; i < RecordLen; ++i, ++p)
+      for (size_t i = 0; i < nSlices_32bit; ++i, ++p)
         *p = ntohl(*p);
     }
   }
@@ -741,7 +741,7 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
   {
     unsigned long *p = (unsigned long *)buff->data;
 
-    for (size_t i = 0; i < RecordLen; ++i, ++p)
+    for (size_t i = 0; i < nSlices_32bit; ++i, ++p)
     {
       // It only matters to fix the sync & timing words.
       if (*p == 0xff800000)
@@ -756,8 +756,8 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
    */
   if (ProjectNumber().compare("135") == 0)
   {
-    check_rico_half_buff(buff, 0, RecordLen/2);
-    check_rico_half_buff(buff, RecordLen/2, RecordLen);
+    check_rico_half_buff(buff, 0, nSlices_32bit/2);
+    check_rico_half_buff(buff, nSlices_32bit/2, nSlices_32bit);
   }
 
 }

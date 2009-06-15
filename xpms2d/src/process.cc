@@ -158,7 +158,7 @@ if (debug)
   startMilliSec = prevHdr[probeIdx].msec * 1000;
 
   // Loop through all slices in record.
-  for (size_t i = 0; i < RecordLen; ++i, ++p)
+  for (size_t i = 0; i < nSlices_32bit; ++i, ++p)
     {
     slice = *p;
 
@@ -194,7 +194,7 @@ if (debug) printf("%08lx %08lx %08lx\n", ppSlice, pSlice, slice);
       /* Determine height of particle.
        */
       ++p; ++i;
-      for (; i < RecordLen && *p != 0xffffffff; ++p, ++i)
+      for (; i < nSlices_32bit && *p != 0xffffffff; ++p, ++i)
         {
         ++cp->w;
 
@@ -262,7 +262,7 @@ if (debug)
     pSlice = slice;
     }
 
-output.tBarElapsedtime += (unsigned long)(RecordLen * output.frequency);
+output.tBarElapsedtime += (unsigned long)(nSlices_32bit * output.frequency);
 
   if (output.nTimeBars > 0)
     output.meanBar = output.tBarElapsedtime / output.nTimeBars;
@@ -626,7 +626,7 @@ if (debug)
   startMilliSec = prevHdr[probeIdx].msec;
 
   // Loop through all slices in record.
-  for (size_t i = 0; i < 512; ++i, ++p)
+  for (size_t i = 0; i < nSlices_64bit; ++i, ++p)
   {
     slice = *p;
   

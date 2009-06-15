@@ -300,14 +300,14 @@ void MainCanvas::drawPMS2D(P2d_rec * record, struct recStats &stats, float versi
   if (displayMode == RAW_RECORD)
     {
     p = (unsigned long *)record->data;
-    for (size_t i = 0; i < RecordLen; ++i, ++p)		/* 2DC and/or 2DP	*/
+    for (size_t i = 0; i < nSlices_32bit; ++i, ++p)		/* 2DC and/or 2DP	*/
       drawSlice(ps, i, *p);
 
     y += 34;
     }
 
   p = (unsigned long *)record->data;
-  for (size_t i = 0; i < RecordLen; ++p)		/* 2DC and/or 2DP	*/
+  for (size_t i = 0; i < nSlices_32bit; ++p)		/* 2DC and/or 2DP	*/
     {
     slice = *p;
 
@@ -373,7 +373,7 @@ if (debug) { if (cp) printf("dq: %06lx %lu %lu\n", cp->timeWord, cp->h, cp->w); 
       else
         colorIsBlack = false;
 
-      for (++p; i < RecordLen && *p != 0xffffffff; )
+      for (++p; i < nSlices_32bit && *p != 0xffffffff; )
         drawSlice(ps, i++, *p++);
 
       if (enchiladaWin)
@@ -536,7 +536,7 @@ void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float ver
   Particle	*cp;
   int		nextColor, cntr = 0;
   bool		colorIsBlack = false;
-  unsigned long long *p = (unsigned long long *)record->data;
+  unsigned long long *p;
 
   static unsigned long prevTime;
   static P2d_rec prevRec;
@@ -547,7 +547,17 @@ void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float ver
   if ((cp = (Particle *)stats.particles.Front()) == NULL)
     return;
 
-  for (size_t i = 0; i < 512; )
+  if (displayMode == RAW_RECORD)
+    {
+    p = (unsigned long long *)record->data;
+    for (size_t i = 0; i < nSlices_64bit; ++i, ++p)         /* 2DC and/or 2DP       */
+      drawSlice(ps, i, *p);
+
+    y += 66;
+    }
+
+  p = (unsigned long long *)record->data;
+  for (size_t i = 0; i < nSlices_64bit; )
   {
     if (cp == 0 || cp->reject)
       nextColor = 0;	// black.
@@ -587,7 +597,7 @@ void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float ver
       else
         colorIsBlack = false;
 
-      for (; i < 512 && (*p & Fast2DC_Mask) != Fast2DC_Sync; ++p)
+      for (; i < nSlices_64bit && (*p & Fast2DC_Mask) != Fast2DC_Sync; ++p)
         drawSlice(ps, i++, *p);
 
       if (enchiladaWin)
@@ -597,9 +607,9 @@ void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float ver
 
 /*
 // For diagnostics, display record as is on 2nd half of screen/window.
-  for (size_t i = 0; i < 512; ++i)
+  for (size_t i = 0; i < nSlices_64bit; ++i)
 { if (((unsigned long long *)record->data)[i] == 0xffffffffffffffffLL) { pen->SetColor(color->GetColor(YELLOW)); ((unsigned long long *)record->data)[i] = 0; }
-    drawSlice(ps, 512+i, ((unsigned long long *)record->data)[i]);
+    drawSlice(ps, nSlices_64bit+i, ((unsigned long long *)record->data)[i]);
 pen->SetColor(color->GetColor(0)); }
 */
 

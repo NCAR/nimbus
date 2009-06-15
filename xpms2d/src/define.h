@@ -48,7 +48,8 @@ const unsigned long long Fast2DC_Sync = 0xAAAAAA0000000000LL;
 const unsigned long long Fast2DC_Overld = 0xAAAA550000000000LL;
 const unsigned long long Fast2DC_Mask = 0xFFFFFF0000000000LL;
 
-const size_t RecordLen = 1024;
+const size_t nSlices_32bit = 1024;
+const size_t nSlices_64bit = 512;
 
 #define TITLESIZE	80
 
