@@ -544,9 +544,6 @@ void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float ver
   if (memcmp((void *)&record, (void *)&prevRec, sizeof(P2d_rec)) == 0)
     stats.duplicate = true;
 
-  if ((cp = (Particle *)stats.particles.Front()) == NULL)
-    return;
-
   if (displayMode == RAW_RECORD)
     {
     p = (unsigned long long *)record->data;
@@ -555,6 +552,9 @@ void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float ver
 
     y += 66;
     }
+
+  if ((cp = (Particle *)stats.particles.Front()) == NULL)
+    return;
 
   p = (unsigned long long *)record->data;
   for (size_t i = 0; i < nSlices_64bit; )
