@@ -2,17 +2,7 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	Hex.cc
 
-FULL NAME:	
-
-ENTRY POINTS:	Update()
-
-STATIC FNS:	
-
-DESCRIPTION:	
-
-NOTES:		
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 2000
+COPYRIGHT:	University Corporation for Atmospheric Research, 2000-2009
 -------------------------------------------------------------------------
 */
 
@@ -32,10 +22,13 @@ void Hex::Update(size_t nBuffs, P2d_rec sets[])
   /* Title */
   strcpy(buffer, "      ");
   for (size_t j = 0; j < nBuffs; ++j)
-    if (((char *)&sets[j].id)[1] >= '4')
-      sprintf(&buffer[strlen(buffer)], "       %s        ", (char *)&sets[j].id);
-    else
-      sprintf(&buffer[strlen(buffer)], "   %s    ", (char *)&sets[j].id);
+    {
+    const char * p = (char *)&sets[j].id;
+    if (((char *)&sets[j].id)[1] >= '4')	// 64 diode data, hex long-long
+      sprintf(&buffer[strlen(buffer)], "       %c%c        ", p[0], p[1]);
+    else					// 32 diode data, hex long.
+      sprintf(&buffer[strlen(buffer)], "   %c%c    ", p[0], p[1]);
+    }
 
   strcat(buffer, "\n");
   Append(buffer);
