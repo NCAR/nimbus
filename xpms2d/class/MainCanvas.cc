@@ -87,6 +87,7 @@ void MainCanvas::draw(P2d_rec *record, struct recStats &stats, float version, in
 {
   char		buffer[256];
   Particle	*cp;
+  bool		old2d = false;
 
   static short  prevOverLoad = 0;
 
@@ -113,9 +114,14 @@ void MainCanvas::draw(P2d_rec *record, struct recStats &stats, float version, in
   if (((char *)&record->id)[0] == 'H')	// HVPS
     drawHVPS(record, stats, version, probeNum, ps);
   else
+    {
+    old2d = true;
     drawPMS2D(record, stats, version, probeNum, ps);
+    }
 
-
+  // In the old ADS2, overld gets stamped in the one record early,
+  // not in the actual record that was interupted.  Compensate here.
+  size_t overLoad = old2d ? prevOverLoad : record->overld;
  
   if (stats.duplicate)
     {
@@ -161,12 +167,12 @@ void MainCanvas::draw(P2d_rec *record, struct recStats &stats, float version, in
   if (ps) { ps->MoveTo(283, 750-(y+50)); ps->ShowStr(buffer); }
   else pen->DrawText(Surface(), 283, y+50, buffer);
 
-  if (prevOverLoad > 90) {
+  if (overLoad > 90) {
     if (ps) ps->SetColor(color->GetColorPS(RED));
     else pen->SetColor(color->GetColor(RED));
     }
 
-  sprintf(buffer, "%.3f,", (float)prevOverLoad / 1000);
+  sprintf(buffer, "%.3f,", (float)overLoad / 1000);
   if (ps) {
     ps->MoveTo(445, 750-(y+50)); ps->ShowStr(buffer);
     ps->SetColor(color->GetColorPS(BLACK));
@@ -205,8 +211,7 @@ void MainCanvas::draw(P2d_rec *record, struct recStats &stats, float version, in
     sprintf(buffer, "%.1f%% %.1f%%", 0.0, 0.0);
   else
     {
-//    float  olap =	(float)(stats.tBarElapsedtime+record->overld) /
-    float  olap =	(float)(stats.tBarElapsedtime+prevOverLoad) /
+    float olap = (float)(stats.tBarElapsedtime+overLoad) /
 			stats.DASelapsedTime * 100;
 
     if (olap < 75.0 || olap > 125.0) {
@@ -341,7 +346,7 @@ if (debug) { if (cp) printf("dq: %06lx %lu %lu\n", cp->timeWord, cp->h, cp->w); 
 
       // Draw timing & sync words in yellow (or some other color).
       if (cp && cp->reject) {
-        if (cp->h == 1 && cp->w == 1)
+        if (cp->h == 1 && cp->w == 1)	// zero area image.
           if (ps) ps->SetColor(color->GetColorPS(YELLOW));
           else pen->SetColor(color->GetColor(YELLOW));
         else
@@ -544,17 +549,43 @@ void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float ver
   if (memcmp((void *)&record, (void *)&prevRec, sizeof(P2d_rec)) == 0)
     stats.duplicate = true;
 
-  if (displayMode == RAW_RECORD)
-    {
+  /**
+   * If using the View->Raw Data menu item, or if no particles were detected
+   * in the record, then come in here and do a raw display of the record.
+   * Only color code timing (green) and overload (blue) words.
+   */
+  if (displayMode == RAW_RECORD || (cp = (Particle *)stats.particles.Front()) == NULL)
+  {
     p = (unsigned long long *)record->data;
     for (size_t i = 0; i < nSlices_64bit; ++i, ++p)         /* 2DC and/or 2DP       */
-      drawSlice(ps, i, *p);
+    {
+      if ((*p & Fast2DC_Mask) == Fast2DC_Sync)
+      {
+        if (ps) ps->SetColor(color->GetColorPS(GREEN));
+        else pen->SetColor(color->GetColor(GREEN));
+      }
+      if ((*p & Fast2DC_Mask) == Fast2DC_Overld)
+      {
+        if (ps) ps->SetColor(color->GetColorPS(BLUE));
+        else pen->SetColor(color->GetColor(BLUE));
+      }
 
-    y += 66;
+      drawSlice(ps, i, *p);
+      if (ps) ps->SetColor(color->GetColorPS(BLACK));
+      else pen->SetColor(color->GetColor(BLACK));
     }
 
-  if ((cp = (Particle *)stats.particles.Front()) == NULL)
-    return;
+    if (displayMode == RAW_RECORD)
+      y += 66;	// Add enough room for a second copy of this record.
+    else
+    {
+      y += 32;	// Bail out (no particles detected from process.cc).
+      return;
+    }
+  }
+
+//  if ((cp = (Particle *)stats.particles.Front()) == NULL)
+//    return;
 
   p = (unsigned long long *)record->data;
   for (size_t i = 0; i < nSlices_64bit; )
@@ -564,9 +595,21 @@ void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float ver
     else
       nextColor = probeNum;
 
-    if ((*p & Fast2DC_Mask) == Fast2DC_Sync)
+    if ((*p & Fast2DC_Mask) == Fast2DC_Sync || (*p & Fast2DC_Mask) == Fast2DC_Overld)
     {
-      // Draw timing & sync words in yellow (or some other color).
+      /**
+       * Color code timing words:
+       * 	Green = accepted.
+       * 	Yellow = zero area image (i.e. timing bar with no visible particle).
+       * 	Red = rejected.
+       * 	Blue = overload word, also rejected.
+       */
+      if ((*p & Fast2DC_Mask) == Fast2DC_Overld)
+      {
+        if (ps) ps->SetColor(color->GetColorPS(BLUE));
+        else pen->SetColor(color->GetColor(BLUE));
+      }
+      else
       if (cp && cp->reject) {
         if (cp->h == 0 || cp->w == 0)
           if (ps) ps->SetColor(color->GetColorPS(YELLOW));
@@ -597,7 +640,8 @@ void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float ver
       else
         colorIsBlack = false;
 
-      for (; i < nSlices_64bit && (*p & Fast2DC_Mask) != Fast2DC_Sync; ++p)
+      for (; i < nSlices_64bit && (*p & Fast2DC_Mask) != Fast2DC_Sync
+		&& (*p & Fast2DC_Mask) != Fast2DC_Overld; ++p)
         drawSlice(ps, i++, *p);
 
       if (enchiladaWin)

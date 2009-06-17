@@ -45,7 +45,7 @@ const unsigned long StandardSyncWord = 0x55000000;
 const unsigned long SyncWordMask = 0xff000000;
 
 const unsigned long long Fast2DC_Sync = 0xAAAAAA0000000000LL;
-const unsigned long long Fast2DC_Overld = 0xAAAA550000000000LL;
+const unsigned long long Fast2DC_Overld = 0x5555AA0000000000LL;
 const unsigned long long Fast2DC_Mask = 0xFFFFFF0000000000LL;
 
 const size_t nSlices_32bit = 1024;

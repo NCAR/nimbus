@@ -245,6 +245,11 @@ if (debug) printf("%08lx %08lx %08lx\n", ppSlice, pSlice, slice);
 if (debug)
   printf("%06lx %d %d\n", cp->timeWord, cp->w, cp->h);
 
+
+      // This will not get caught in checkRejectionCriteria(), so do it here.
+      if (controlWindow->RejectZeroAreaImage() && cp->w == 1 && cp->h == 1)
+        cp->reject = true;
+
       totalLiveTime += checkRejectionCriteria(cp, output);
 
       output.particles.EnQueue((void *)cp);
@@ -632,23 +637,30 @@ if (debug)
   
     /* Have particle, will travel.
      */
-    if ((slice & Fast2DC_Mask) == Fast2DC_Overld)
+    if ((slice & Fast2DC_Mask) == Fast2DC_Sync || (slice & Fast2DC_Mask) == Fast2DC_Overld)
     {
-      printf(">>>>>>>>>> C4 Overload <<<<<<<<<<<<\n");
-      // Set 'overload' variable here.  this timeword - prevtimeword.
-      overload = Fast2DCTimeWord_Microseconds(slice) - prevTimeWord;
-    }
+      unsigned long long thisTimeWord = Fast2DCTimeWord_Microseconds(slice);
 
-    if ((slice & Fast2DC_Mask) == Fast2DC_Sync)
-    {
       if (firstTimeWord == 0)
-        firstTimeWord = Fast2DCTimeWord_Microseconds(slice);
+        firstTimeWord = thisTimeWord;
+
+      if ((slice & Fast2DC_Mask) == Fast2DC_Overld)
+      {
+        // Set 'overload' variable here.
+        record->overld = overload = (thisTimeWord - prevTimeWord) / 1000;
+
+        printf(">>> Fast2DC overload @ %02d:%02d:%02d.%d for %d msec duration. <<<\n",
+		record->hour, record->minute, record->second, record->msec, record->overld);
+
+        if (cp)
+          cp->reject = true;
+      }
 
       // Close out particle.  Timeword belongs to previous particle.
       if (cp)
       {
-        cp->timeWord = Fast2DCTimeWord_Microseconds(slice);
-        unsigned long msec = startMilliSec + ((Fast2DCTimeWord_Microseconds(slice) - firstTimeWord) / 1000);
+        cp->timeWord = thisTimeWord;
+        unsigned long msec = startMilliSec + ((thisTimeWord - firstTimeWord) / 1000);
         cp->time = startTime + (msec / 1000);
         cp->msec = msec % 1000;
         cp->deltaTime = cp->timeWord - prevTimeWord;
@@ -657,7 +669,7 @@ if (debug)
         output.particles.EnQueue((void *)cp);
       }
 
-      prevTimeWord = Fast2DCTimeWord_Microseconds(slice);
+      prevTimeWord = thisTimeWord;
 
       // Start new particle.
       cp = new Particle();
@@ -747,7 +759,6 @@ static size_t checkRejectionCriteria(Particle * cp, recStats & output)
 {
   if (controlWindow->RejectZeroAreaImage() && cp->w == 0 && cp->h == 0)
   {
-//      printf("reject 0 area #%d\n", output.nTimeBars);
     cp->reject = true;
   }
 
