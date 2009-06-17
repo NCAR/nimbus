@@ -32,7 +32,7 @@ span.comment { background-color: #88FF88; font-style: italic; }
 
 
 <h1 align=CENTER>XPMS2D User's Guide</h1>
-<h1 align=CENTER>Version 2.4.2</h1>
+<h1 align=CENTER>Version 2.5.1</h1>
 <hr>
 <h1 align=CENTER>Table Of Contents</h1>
 <ol type=A>
@@ -162,11 +162,16 @@ Sync and timing word legend:
         <li><font color=green>Green</font> = accepted
         <li><font color=yellow>Yellow</font> = zero area image/rejected
         <li><font color=red>Red</font> = rejected
+        <li><font color=blue>Blue</font> = Overload word, Fast2D only.
         <li><font color=black>Black</font> = not detected by software
 </ul>
 <p>
 <img src="http://www.eol.ucar.edu/raf/Software/x2ddata.png">
-<p align=center>Figure 2.  Sample data from xpms2d.
+<p align=center>Figure 2.  Sample data from xpms2d of traditional 32 diode 2d data.
+
+<p>
+<img src="http://www.eol.ucar.edu/raf/Software/xf2ddata.png">
+<p align=center>Figure 3.  Sample data from xpms2d of new 64 diode Fast2D data.
 
 <h4>First line of text</h4>
 <ul>
@@ -300,15 +305,6 @@ black and white.
 can then be used in web pages, etc.  You can adjust the size of the image
 saved by first sizing the plot canvas.
 <p>
-<b>Why not GIF or JPEG?</b><br>
-<b>JPEG</b> was rejected because it is a lossy algorithm.  I would have chosen
-<b>GIF</b> except <b>Unisys</b> owns the patent on the LZW compression
-algorithm required to produce a <b>GIF</b> image.  A new freeware image
-compression standard has emerged:
-<a href="http://www.libpng.org/pub/png/">PNG</a>.  Both <b>Netscape</b> and
-<b>Internet Explorer</b> support <b>PNG</b>.
-Visit <a href="http://www.burnallgifs.org">http://www.burnallgifs.org</a> for more on the controversy.
-<p>
  </dl>
 
 <dt><h3>View Menu</h3>
@@ -317,6 +313,10 @@ Visit <a href="http://www.burnallgifs.org">http://www.burnallgifs.org</a> for mo
  <dd>Pops up a seperate window with an ASCII hex dump of each PMS2D record.
  <dt><h4>View Histograms</h4>
  <dd>Pops up a seperate window with ASCII sizing histogram data per 2D record.
+<p>
+<img src="http://www.eol.ucar.edu/raf/Software/x2dhisto.png">
+<p align=center>Figure 5.  Histogram for each record.  There are 64 columns for resolution(i) from 1 to 64.
+
  <dt><h4>View Particle Data</h4>
  <dd>Pops up a seperate window with particle by particle blow of the records being displayed.  Information includes particle height, width, area, time word, and whether the particle was rejected or accepted.  Printing, Saving, and Searching are available options.
 <p>
