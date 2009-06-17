@@ -9,6 +9,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000-2009
 #include "Histogram.h"
 #include <netinet/in.h>
 
+
 /* -------------------------------------------------------------------- */
 Histogram::Histogram(const Widget parent) : TextWindow(parent, "histogram")
 {
@@ -25,7 +26,7 @@ void Histogram::AddLineItem(P2d_rec * record, recStats & output)
 
   size_t n = ((char *)&record->id)[1] > 51 ? 64 : 32;
 
-  for (size_t i = 0; i < n; ++i)
+  for (size_t i = 1; i <= n; ++i)
   {
     sprintf(buffer, "%4d", output.accum[i]);
     Append(buffer);
