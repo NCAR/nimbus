@@ -81,10 +81,7 @@ span.comment { background-color: #88FF88; font-style: italic; }
 <a name="oview"></a>
 <hr>
 <h1 align=CENTER>Overview</h1>
-<b>xpms2d</b> is an interactive diagnostic and analysis plotting tool for
-workstations running X11/R6 and Motif 2.*.  <b>xpms2d</b> allows the user
-to view PMS-2D and HVPS images and computed quantitative information on a
-"per record" basis.
+<b>xpms2d</b> is an interactive diagnostic and analysis plotting tool for workstations running X11/R6 and Motif 2.*.  <b>xpms2d</b> allows the user to view PMS-2D, HVPS, and 64 bit Fast2DC images and computed quantitative information on a per record basis.
 <p>
 <p>
 <b>xpms2d</b> was written at the <a href="http://www.eol.ucar.edu/raf">Research
@@ -318,8 +315,10 @@ Visit <a href="http://www.burnallgifs.org">http://www.burnallgifs.org</a> for mo
  <dl>
  <dt><h4>View Hex</h4>
  <dd>Pops up a seperate window with an ASCII hex dump of each PMS2D record.
+ <dt><h4>View Histograms</h4>
+ <dd>Pops up a seperate window with ASCII sizing histogram data per 2D record.
  <dt><h4>View Particle Data</h4>
- <dd>Pops up a seperate window with particle by particle blow of the records being displayed.  Printing, Saving, and Searching are available options.
+ <dd>Pops up a seperate window with particle by particle blow of the records being displayed.  Information includes particle height, width, area, time word, and whether the particle was rejected or accepted.  Printing, Saving, and Searching are available options.
 <p>
  <dt><h4>Normal</h4>
  <dd>This is the default set of options being displayed.
@@ -328,7 +327,7 @@ Visit <a href="http://www.burnallgifs.org">http://www.burnallgifs.org</a> for mo
  <dd>Changes the ASCII output below each record to display information about timing words and probe frequency.
 <p>
  <dt><h4>Raw Data Records</h4>
- <dd>This will display the raw 2d record with now processing.  Just loop zero to 1023 slices and print draw them.  It will then display the processed record below the raw record.  Useful for debugging xpms2d.
+ <dd>This will display the raw 2d record with no processing.  Just loop through all slices and draw them.  It will then display the processed record below the raw record.  Useful for debugging xpms2d.
 <p>
  </dl>
 
