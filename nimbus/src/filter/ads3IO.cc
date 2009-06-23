@@ -129,7 +129,8 @@ std::set<std::string> GetADSFileList(const char *adsFileName)
 
   // Read directory entries & get all files with matching flight number.
   while ( (entry = readdir(dir)) )
-    if ( strstr(entry->d_name, cfg.FlightNumber().c_str()) )
+    if ( strstr(entry->d_name, cfg.FlightNumber().c_str()) &&
+         strstr(entry->d_name, cfg.ADSfileExtension().c_str()))
     {
       std::string s(directory);
       s += "/";

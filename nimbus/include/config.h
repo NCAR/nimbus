@@ -105,6 +105,7 @@ public:
   const std::string& TailNumber() const { return _tailNumber; }
   const std::string& FlightNumber() const { return _flightNumber; }
   const std::string& FlightDate() const { return _flightDate; }
+  const std::string& ADSfileExtension() const { return _adsFileExtension; }
 
   void SetProjectDirectory(const std::string s)	{ _projectDirectory = s; }
   void SetProjectName(const std::string s)	{ _projectName = s; }
@@ -173,6 +174,7 @@ private:
   std::string _tailNumber;
   std::string _flightNumber;
   std::string _flightDate;
+  std::string _adsFileExtension;
 
   std::string _coordLAT;
   std::string _coordLON;
