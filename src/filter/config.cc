@@ -13,7 +13,7 @@ const Config::pms2dProcessing Config::_defaultPMS2DProcessingMethod = Center_In;
 const float Config::_defaultPMS2DAreaRatioReject = 0.5;
 
 /* -------------------------------------------------------------------- */
-Config::Config()
+Config::Config() : _adsFileExtension(".ads")
 {
   SetInteractive(true);
   SetProductionRun(false);
