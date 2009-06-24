@@ -201,7 +201,7 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
         diameter[i] = 100 + i * 200;
     }
 
-  location = strchr(name.c_str(), '_');
+  location = strchr(const_cast<char *>(name.c_str()), '_');
 
   // Find associated houskeeping & derived variables (using location)
   for (i = 0; i < file->num_vars(); ++i)
