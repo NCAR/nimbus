@@ -11,12 +11,12 @@
 std::string XMLgetElementValue(const char s[])
 {
   char *start, *end;
-  start = strchr(s, '>') + 1;
-  end = strchr(start, '<') - 1;
+  start = std::strchr(const_cast<char *>(s), '>') + 1;
+  end = std::strchr(start, '<') - 1;
 
   int len = end-start+1;
   char output[1024];
-  memcpy(output, start, len);
+  std::memcpy(output, start, len);
   output[len] = '\0';
 
   std::string result(output);
@@ -29,13 +29,13 @@ std::string XMLgetElementValue(const char s[])
 std::string XMLgetAttributeValue(const char s[], const char target[])
 {
   char *start, *end;
-  start = strstr(s, target);
-  start = strchr(start, '\"') + 1;
-  end = strchr(start, '\"') - 1;
+  start = std::strstr(const_cast<char *>(s), target);
+  start = std::strchr(start, '\"') + 1;
+  end = std::strchr(start, '\"') - 1;
 
   int len = end-start+1;
   char output[1024];
-  memcpy(output, start, len);
+  std::memcpy(output, start, len);
   output[len] = '\0';
 
   std::string result(output);
