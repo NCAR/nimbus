@@ -25,11 +25,11 @@ XmWarn::XmWarn(Widget parent, const char warning[], XtCallbackProc okCB, XtCallb
   Arg		args[5];
   XmString	xStr;
 
-  warnBox = XmCreateWarningDialog(parent, "warnBox", NULL, 0);
+  warnBox = XmCreateWarningDialog(parent, const_cast<char *>("warnBox"), NULL, 0);
   XtSetSensitive(XmMessageBoxGetChild(warnBox, XmDIALOG_HELP_BUTTON), false);
 
   label = XmMessageBoxGetChild(warnBox, XmDIALOG_MESSAGE_LABEL);
-  xStr = XmStringCreateLtoR((char *)warning, XmSTRING_DEFAULT_CHARSET);
+  xStr = XmStringCreateLtoR(const_cast<char *>(warning), XmSTRING_DEFAULT_CHARSET);
   XtSetArg(args[0], XmNlabelString, xStr);
   XtSetValues(label, args, 1);
   XmStringFree(xStr);

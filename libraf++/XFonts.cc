@@ -20,24 +20,24 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 
 /* Values for reading Font Resources    */
-#define XtNfont24       "font24"
-#define XtCFont24       "Font24"
-#define XtNfont18       "font18"
-#define XtCFont18       "Font18"
-#define XtNfont14       "font14"
-#define XtCFont14       "Font14"
-#define XtNfont12       "font12"
-#define XtCFont12       "Font12"
-#define XtNfont10       "font10"
-#define XtCFont10       "Font10"
+char XtNfont24[] = "font24";
+char XtCFont24[] = "Font24";
+char XtNfont18[] = "font18";
+char XtCFont18[] = "Font18";
+char XtNfont14[] = "font14";
+char XtCFont14[] = "Font14";
+char XtNfont12[] = "font12";
+char XtCFont12[] = "Font12";
+char XtNfont10[] = "font10";
+char XtCFont10[] = "Font10";
  
 typedef struct _insRec
         {
-        char    *font24;
-        char    *font18;
-        char    *font14;
-        char    *font12;
-        char    *font10;
+        const char    *font24;
+        const char    *font18;
+        const char    *font14;
+        const char    *font12;
+        const char    *font10;
         } instanceRec;
 
 static XtResource resources[] = {

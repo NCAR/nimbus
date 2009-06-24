@@ -25,14 +25,14 @@ XmError::XmError(Widget parent, const char str[])
   Arg		args[5];
   XmString	xStr;
 
-  errorBox = XmCreateErrorDialog(parent, "errorBox", NULL, 0);
+  errorBox = XmCreateErrorDialog(parent, const_cast<char*>("errorBox"), NULL, 0);
   XtSetSensitive(XmMessageBoxGetChild(errorBox, XmDIALOG_CANCEL_BUTTON), false);
   XtSetSensitive(XmMessageBoxGetChild(errorBox, XmDIALOG_HELP_BUTTON), false);
 
   XtAddCallback(errorBox, XmNokCallback, (XtCallbackProc)XtDestroyWidget, NULL);
 
   label = XmMessageBoxGetChild(errorBox, XmDIALOG_MESSAGE_LABEL);
-  xStr = XmStringCreateLtoR((char *)str, XmSTRING_DEFAULT_CHARSET);
+  xStr = XmStringCreateLtoR(const_cast<char *>(str), XmSTRING_DEFAULT_CHARSET);
   XtSetArg(args[0], XmNlabelString, xStr);
   XtSetValues(label, args, 1);
   XmStringFree(xStr);

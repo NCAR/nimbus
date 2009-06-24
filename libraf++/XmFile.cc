@@ -28,7 +28,7 @@ static void DismissFile(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 XmFile::XmFile(Widget parent)
 {
-  fileBox = XmCreateFileSelectionDialog(parent, "fileBox", NULL, 0);
+  fileBox = XmCreateFileSelectionDialog(parent, const_cast<char *>("fileBox"), NULL, 0);
   XtSetSensitive(XmFileSelectionBoxGetChild(fileBox, XmDIALOG_HELP_BUTTON), false);
 
   XtAddCallback(fileBox,XmNcancelCallback,(XtCallbackProc)DismissFile, fileBox);
@@ -44,7 +44,7 @@ void XmFile::QueryFile(const char prompt[], const char directory[], XtCallbackPr
 
   if (prompt)
     {
-    xmprompt = XmStringCreate((char *)prompt, XmSTRING_DEFAULT_CHARSET);
+    xmprompt = XmStringCreate(const_cast<char *>(prompt), XmSTRING_DEFAULT_CHARSET);
 
     XtSetArg(args[n], XmNselectionLabelString, xmprompt); ++n;
     XtSetValues(fileBox, args, n);
@@ -53,7 +53,7 @@ void XmFile::QueryFile(const char prompt[], const char directory[], XtCallbackPr
 
   if (directory)
     {
-    xmdir = XmStringCreate((char *)directory, XmSTRING_DEFAULT_CHARSET);
+    xmdir = XmStringCreate(const_cast<char *>(directory), XmSTRING_DEFAULT_CHARSET);
     XmFileSelectionDoSearch(fileBox, xmdir);
     XmStringFree(xmdir);
     }

@@ -38,7 +38,7 @@ void XmQuery::QueryUser(const char str[], int maxlen, void (*callBack)())
 
   n = 0;
   w = XmSelectionBoxGetChild(queryBox, XmDIALOG_SELECTION_LABEL);
-  xStr = XmStringCreateLtoR((char *)str, XmSTRING_DEFAULT_CHARSET);
+  xStr = XmStringCreateLtoR(const_cast<char *>(str), XmSTRING_DEFAULT_CHARSET);
   XtSetArg(args[n], XmNlabelString, xStr); ++n;
   XtSetValues(w, args, n);
   XmStringFree(xStr);
@@ -50,7 +50,7 @@ void XmQuery::QueryUser(const char str[], int maxlen, void (*callBack)())
   XtSetArg(args[n], XmNwidth, 0); ++n;
   XtSetArg(args[n], XmNcolumns, maxlen); ++n;
   XtSetValues(w, args, n);
-  XmTextSetString(w, (char *)"");
+  XmTextSetString(w, const_cast<char *>(""));
 
   XtRemoveAllCallbacks(queryBox, XmNokCallback);
   XtAddCallback(queryBox, XmNokCallback, (XtCallbackProc)callBack, NULL);
@@ -63,7 +63,7 @@ void XmQuery::QueryUser(const char str[], int maxlen, void (*callBack)())
 /* -------------------------------------------------------------------- */
 XmQuery::XmQuery(Widget parent)
 {
-  queryBox = XmCreatePromptDialog(parent, "queryBox", NULL, 0);
+  queryBox = XmCreatePromptDialog(parent, const_cast<char *>("queryBox"), NULL, 0);
   XtSetSensitive(XmSelectionBoxGetChild(queryBox, XmDIALOG_HELP_BUTTON), false);
   XtAddCallback(queryBox, XmNcancelCallback, DismissQuery,(XtPointer)queryBox);
 
