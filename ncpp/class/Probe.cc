@@ -41,7 +41,7 @@ static float	fsspDefSize[] =
 /* -------------------------------------------------------------------- */
 Probe::Probe(NcFile *file, NcVar *av) : avar(av)
 {
-  std::string	tmp;
+  std::string	cname;
   int		i;
   char		*location;
   NcVar		*var;
@@ -49,14 +49,14 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
 
   name = &avar->name()[1];
 
-  tmp = "C"; tmp += name;
-  cvar = file->get_var(tmp.c_str());
+  cname = "C"; cname += name;
+  cvar = file->get_var(cname.c_str());
 
   if (cvar && !cvar->is_valid())
     cvar = NULL;
 
   if (cvar == NULL)
-    std::cerr << "  Concentrations (" << tmp << ") not found.\n";
+    std::cerr << "  Concentrations (" << cname << ") not found.\n";
 
   type = NoProbe;
 
@@ -138,7 +138,7 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
   else
     {
     firstBin = 1;
-    fprintf(stderr, "netCDF attribute FirstBin not found, defaulting to %d\n", firstBin);
+    fprintf(stderr, "netCDF attribute FirstBin not found for %s, defaulting to %d\n", cname.c_str(), firstBin);
     }
 
   if ((attr = cvar->get_att("LastBin")) || (attr = avar->get_att("LastBin")))
@@ -146,21 +146,21 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
   else
     {
     lastBin = avar->get_dim(2)->size()-1;
-    fprintf(stderr, "netCDF attribute LastBin not found, defaulting to %d\n", lastBin);
+    fprintf(stderr, "netCDF attribute LastBin not found for %s, defaulting to %d\n", cname.c_str(), lastBin);
     }
 
   if ((attr = cvar->get_att("CellSizes")) || (attr = avar->get_att("CellSizes")))
     {
     if (attr->num_vals() != nCells)
-      fprintf(stderr, "Warning: number of cell sizes in netCDF file does not match expected, variable: %s, file=%d, expected=%d.\n", name.c_str(), attr->num_vals(), nCells);
+      fprintf(stderr, "Warning: number of cell sizes in netCDF file does not match expected, variable: %s, file=%d, expected=%d.\n", cname.c_str(), attr->num_vals(), nCells);
 
     for (i = 0; i < nCells; ++i)
       diameter[i] = attr->as_float(i);
     }
   else
     {
-    std::cout << "Cell diameters for " << name << " not present in file, using defaults.\n";
-    sprintf(buffer, "Cell diameters for %s not present in file, using defaults.", name.c_str());
+    std::cout << "Cell diameters for " << cname << " not present in file, using defaults.\n";
+    sprintf(buffer, "Cell diameters for %s not present in file, using defaults.", cname.c_str());
 
     ErrorMsg(buffer);
 
@@ -218,7 +218,7 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
 
   if (diameter[0] == 0.0)
     {
-    std::cout << "Cell diameters for " << name <<
+    std::cout << "Cell diameters for " << cname <<
 		" appear to be mid-point not end-point values.\n";
     std::cout << "  This will cause mildly erroneous/amusing results.\n";
 
