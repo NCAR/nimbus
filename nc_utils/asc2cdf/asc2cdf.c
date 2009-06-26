@@ -35,7 +35,7 @@ static char	*globalAttrFile = 0;
 
 /* Command line option flags.
  */
-bool	fileType = PLAIN_FILE, sexSinceMidnight = false, Colonless = false, verbose = false;
+bool	fileType = PLAIN_FILE, secondsSinceMidnight = false, Colonless = false, verbose = false;
 int	SkipNlines = 1;
 
 int		BaseDataRate = 1, dataRate = 1;
@@ -128,26 +128,26 @@ int main(int argc, char *argv[])
       p = strtok(NULL, ", \t");
 
 
-    if (sexSinceMidnight)
+    if (secondsSinceMidnight)
       {
       currSecond = atof(p);
-    if (verbose)
-	printf("JAG orig time %f\n",atof(p));
-    if (verbose)
-	printf("JAG orig time %f\n",currSecond);
       if (verbose)
-	  printf("JAG int time %d\n",atoi(p));
+        printf("JAG orig time %f\n",atof(p));
+      if (verbose)
+        printf("JAG orig time %f\n",currSecond);
+      if (verbose)
+        printf("JAG int time %d\n",atoi(p));
 
       hour = int(currSecond) / 3600; currSecond -= hour * 3600;
       minute = int(currSecond) / 60; currSecond -= minute * 60;
       second = int(currSecond);
       if (dataRate > 1) {
-	  currSecond -= second; subsec = int(currSecond*dataRate+.5);
+        currSecond -= second; subsec = int(currSecond*dataRate+.5);
       } else {
-	  subsec = 0;
+        subsec = 0;
       }
       if (verbose)
-	  printf("JAG %d %d %d %d\n",hour,minute,second,subsec);
+        printf("JAG %d %d %d %d\n",hour,minute,second,subsec);
 
       if (nRecords == 0 && fileType != PLAIN_FILE)
         SetNASABaseTime(hour, minute, second);
@@ -166,6 +166,10 @@ int main(int argc, char *argv[])
       hour -= 24;
 
     currSecond = hour * 3600 + minute * 60 + second;
+
+    // Watch for midnight wrap around.
+    if (currSecond < firstSecond)
+      currSecond += 86400;
 
     if (prevSecond == -1) // 1st time through loop.
     {
@@ -310,17 +314,17 @@ static int ProcessArgv(int argc, char **argv)
         break;
 
       case 'm':
-        sexSinceMidnight = true;
+        secondsSinceMidnight = true;
         break;
 
       case 'a':
         fileType = NASA_AMES;
-        sexSinceMidnight = true;
+        secondsSinceMidnight = true;
         break;
 
       case 'l':
         fileType = NASA_LANGLEY;
-        sexSinceMidnight = true;
+        secondsSinceMidnight = true;
         break;
 
       case 'g':
