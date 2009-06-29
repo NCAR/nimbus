@@ -516,6 +516,7 @@ public class NCData {
 
 		tmPassed =System.currentTimeMillis() - t1;
 		bfinish = true;
+		try { fout.close();} catch (Exception e){}
 		NC2Act.wrtMsg("\n Writing data is done.");
 	}
 
