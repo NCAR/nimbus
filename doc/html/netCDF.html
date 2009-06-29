@@ -436,35 +436,34 @@ be used to determine which bins are considered valid, both are inclusive.
                 AS100_LPC:units = "count" ;
                 AS100_LPC:long_name = "FSSP-100 Raw Accumulation (per cell) - DMT" ;
                 AS100_LPC:Category = "PMS Probe" ;
-                AS100_LPC:missing_value = -32767.f ;
+                AS100_LPC:SerialNumber = "FSSP122" ;
                 AS100_LPC:SampledRate = 10 ;
                 AS100_LPC:DataQuality = "Preliminary" ;
-                AS100_LPC:SerialNumber = "FSSP122" ;
-                AS100_LPC:FirstBin = 3 ;
-                AS100_LPC:LastBin = 30 ;
-                AS100_LPC:CellSizes = 0.7f, 1.4f, 2.35f, 3.9f, 5.45f, 7.f, 8.55f, 10.1f, 11.65f, 13.2f, 14.75f, 16.3f, 17.85f, 19.4f, 20.95f, 22.5f, 24.05f, 25.6f, 27.15f, 28.7f, 30.25f, 31.8f, 33.35f, 34.9f, 36.45f, 38.f, 39.55f, 41.1f, 42.65f, 44.2f, 45.75f ;
-                AS100_LPC:CellSizeUnits = "micrometers" ;
-                AS100_LPC:DepthOfField = 2.3f ;
-                AS100_LPC:BeamDiameter = 0.2f ;
-                AS100_LPC:Density = 1.f ;
-                AS100_LPC:PLWfactor = 1.e-06f ;
-                AS100_LPC:DBZfactor = 1000000.f ;
 
         float CS100_LPC(Time, sps1, Vector31) ;
                 CS100_LPC:_FillValue = -32767.f ;
                 CS100_LPC:units = "#/cm3" ;
                 CS100_LPC:long_name = "FSSP-100 Concentration (per cell) - DMT" ;
                 CS100_LPC:Category = "PMS Probe" ;
-                CS100_LPC:missing_value = -32767.f ;
+                CS100_LPC:SerialNumber = "FSSP122" ;
                 CS100_LPC:DataQuality = "Preliminary" ;
                 CS100_LPC:Dependencies = "5 AS100_LPC TASX REJAT_LPC OVFLW_LPC FRNG_LPC" ;
+                CS100_LPC:FirstBin = 3 ;
+                CS100_LPC:LastBin = 30 ;
+                CS100_LPC:CellSizes = 0.7f, 1.4f, 2.35f, 3.9f, 5.45f, 7.f, 8.55f, 10.1f, 11.65f, 13.2f, 14.75f, 16.3f, 17.85f, 19.4f, 20.95f, 22.5f, 24.05f, 25.6f, 27.15f, 28.7f, 30.25f, 31.8f, 33.35f, 34.9f, 36.45f, 38.f, 39.55f, 41.1f, 42.65f, 44.2f, 45.75f ;
+                CS100_LPC:CellSizeUnits = "micrometers" ;
+                CS100_LPC:DepthOfField = 2.3f ;
+                CS100_LPC:BeamDiameter = 0.2f ;
+                CS100_LPC:Density = 1.f ;
+                CS100_LPC:PLWfactor = 1.e-06f ;
+                CS100_LPC:DBZfactor = 1000000.f ;
 
         float CONCF_LPC(Time) ;
                 CONCF_LPC:_FillValue = -32767.f ;
                 CONCF_LPC:units = "#/cm3" ;
                 CONCF_LPC:long_name = "FSSP-100 Concentration (all cells)" ;
                 CONCF_LPC:Category = "PMS Probe" ;
-                CONCF_LPC:missing_value = -32767.f ;
+                CONCF_LPC:SerialNumber = "FSSP122" ;
                 CONCF_LPC:DataQuality = "Preliminary" ;
                 CONCF_LPC:Dependencies = "1 CS100_LPC" ;
 </pre>
@@ -488,7 +487,7 @@ Research Aviation Facility<br>
 <hr>
 <font size=2>
 Last update:
-Sat Feb 18 15:06:44 MST 2006
+Mon Jun 29 03:43:37 MDT 2009
 </font>
 </body>
 </html>
