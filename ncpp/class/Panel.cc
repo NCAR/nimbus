@@ -762,17 +762,17 @@ void Panel::DrawHistogram(DataSet *set, int setNum, int idx, DataType dt, Drawab
   if (dt == COUNTS)
   {
     startBin = 1;
-    endBin = set->probe->VectorLength();
+    endBin = set->probe()->VectorLength();
   }
   else
   {
-    startBin = set->probe->FirstBin();
-    endBin = set->probe->LastBin();
+    startBin = set->probe()->FirstBin();
+    endBin = set->probe()->LastBin();
   }
 
   for (int i = startBin; i <= endBin; ++i)
     {
-    datumX = set->probe->CellSize(i-1);
+    datumX = set->probe()->CellSize(i-1);
 
     switch (dt)
       {
@@ -823,7 +823,7 @@ void Panel::DrawHistogram(DataSet *set, int setNum, int idx, DataType dt, Drawab
     if (dt == COUNTS)
       datumX = (double)i + 1;
     else
-      datumX = set->probe->CellSize(i);
+      datumX = set->probe()->CellSize(i);
 
     if (xAxis.logScale)
       datumX = log10(datumX);
@@ -873,17 +873,17 @@ void Panel::PrintHistogram(DataSet *set, int setNum, int idx, DataType dt, PostS
   if (dt == COUNTS)
   {
     startBin = 1;
-    endBin = set->probe->VectorLength();
+    endBin = set->probe()->VectorLength();
   }
   else
   {
-    startBin = set->probe->FirstBin();
-    endBin = set->probe->LastBin();
+    startBin = set->probe()->FirstBin();
+    endBin = set->probe()->LastBin();
   }
 
   for (int i = startBin; i <= endBin; ++i)
     {
-    datumX = set->probe->CellSize(i-1);
+    datumX = set->probe()->CellSize(i-1);
 
     switch (dt)
       {
@@ -936,7 +936,7 @@ void Panel::PrintHistogram(DataSet *set, int setNum, int idx, DataType dt, PostS
     if (dt == COUNTS)
       datumX = (double)i + 1;
     else
-      datumX = set->probe->CellSize(i);
+      datumX = set->probe()->CellSize(i);
 
     if (xAxis.logScale)
       datumX = log10(datumX);

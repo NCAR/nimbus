@@ -29,12 +29,12 @@ void Ascii::Update(SetManager& sets, PlotManager *plotMgr)
 
   for (set = sets.FirstSet(); set; set = sets.NextSet())
     {
-    strcpy(buffer, set->probe->Name().c_str());
+    strcpy(buffer, set->probe()->Name().c_str());
  
     strcat(buffer, "\n  Cell diameter end points (um)\n");
 
-    for (i = 0; i < set->probe->VectorLength(); ++i)
-      sprintf(&buffer[strlen(buffer)], "%11.3f", set->probe->CellSize(i));
+    for (i = 0; i < set->probe()->VectorLength(); ++i)
+      sprintf(&buffer[strlen(buffer)], "%11.3f", set->probe()->CellSize(i));
 
     strcat(buffer, "\n");
     Append(buffer);
@@ -47,11 +47,11 @@ void Ascii::Update(SetManager& sets, PlotManager *plotMgr)
 
       for (i = 0; i < sets.NumberRecords(); ++i)
         {
-        size_t sum = 0;
-        for (j = 0; j < set->probe->VectorLength(); ++j)
+        long sum = 0;
+        for (j = 0; j < set->probe()->VectorLength(); ++j)
           {
           sprintf(&buffer[strlen(buffer)], "%11.0f", set->Accumulation(i, j));
-          sum += set->Accumulation(i, j);
+          sum += (long)set->Accumulation(i, j);
           }
 
         sprintf(&buffer[strlen(buffer)], ", total=%7d\n", sum);
@@ -69,16 +69,16 @@ void Ascii::Update(SetManager& sets, PlotManager *plotMgr)
       for (i = 0; i < sets.NumberRecords(); ++i)
         {
         double sum = 0.0;
-        for (j = 0; j < set->probe->FirstBin(); ++j)
+        for (j = 0; j < set->probe()->FirstBin(); ++j)
           strcat(buffer, dashes);
 
-        for (; j <= set->probe->LastBin(); ++j)
+        for (; j <= set->probe()->LastBin(); ++j)
           {
           sprintf(&buffer[strlen(buffer)], "%11.3e", set->Concentration(i, j));
           sum += set->Concentration(i, j);
           }
 
-        for (; j < set->probe->VectorLength(); ++j)
+        for (; j < set->probe()->VectorLength(); ++j)
           strcat(buffer, dashes);
 
         sprintf(&buffer[strlen(buffer)], ", total=%9.1f\n", sum);
@@ -95,13 +95,13 @@ void Ascii::Update(SetManager& sets, PlotManager *plotMgr)
 
       for (i = 0; i < sets.NumberRecords(); ++i)
         {
-        for (j = 0; j < set->probe->FirstBin(); ++j)
+        for (j = 0; j < set->probe()->FirstBin(); ++j)
           strcat(buffer, dashes);
 
-        for (; j <= set->probe->LastBin(); ++j)
+        for (; j <= set->probe()->LastBin(); ++j)
           sprintf(&buffer[strlen(buffer)], "%11.3e", set->Surface(i, j));
 
-        for (; j < set->probe->VectorLength(); ++j)
+        for (; j < set->probe()->VectorLength(); ++j)
           strcat(buffer, dashes);
 
         strcat(buffer, "\n");
@@ -118,13 +118,13 @@ void Ascii::Update(SetManager& sets, PlotManager *plotMgr)
 
       for (i = 0; i < sets.NumberRecords(); ++i)
         {
-        for (j = 0; j < set->probe->FirstBin(); ++j)
+        for (j = 0; j < set->probe()->FirstBin(); ++j)
           strcat(buffer, dashes);
 
-        for (; j <= set->probe->LastBin(); ++j)
+        for (; j <= set->probe()->LastBin(); ++j)
           sprintf(&buffer[strlen(buffer)], "%11.3e", set->Volume(i, j));
 
-        for (; j < set->probe->VectorLength(); ++j)
+        for (; j < set->probe()->VectorLength(); ++j)
           strcat(buffer, dashes);
 
         strcat(buffer, "\n");

@@ -11,13 +11,15 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2000
 */
 
 #include "DataSet.h"
+#include "DataFile.h"
+#include "Probe.h"
 
 #include <cfloat>
 #include <algorithm>
 
 
 /* -------------------------------------------------------------------- */
-DataSet::DataSet(DataFile *df, Probe *prb, FlightClock& start, int nRecs, DataType dt, NormType nt) : file(df), probe(prb), startTime(start)
+DataSet::DataSet(DataFile *df, Probe *prb, FlightClock& start, int nRecs, DataType dt, NormType nt) : _file(df), _probe(prb), startTime(start)
 {
   accum = NULL;
   conc = surface = volume = NULL;
@@ -25,15 +27,15 @@ DataSet::DataSet(DataFile *df, Probe *prb, FlightClock& start, int nRecs, DataTy
   computeConc = False;
 
   nRecords = nRecs;
-  nWords = probe->DataRate() * probe->VectorLength() * nRecs;
+  nWords = _probe->DataRate() * _probe->VectorLength() * nRecs;
   SetDataTypes(dt);
 
-  normalization.resize(probe->VectorLength());
-  for (size_t i = 0; i < probe->VectorLength(); ++i)
+  normalization.resize(_probe->VectorLength());
+  for (size_t i = 0; i < _probe->VectorLength(); ++i)
     normalization[i] = 1.0;
 
-  otherVars.resize(probe->nOtherVars());
-  for (size_t i = 0; i < probe->nOtherVars(); ++i)
+  otherVars.resize(_probe->nOtherVars());
+  for (size_t i = 0; i < _probe->nOtherVars(); ++i)
     otherVars[i] = new float[nRecs];
 
   SetNormalize(nt);
@@ -53,7 +55,7 @@ void DataSet::SetDataTypes(DataType dt)
       accum = NULL;
       }
 
-  if (probe->HaveConcentrations() && dt & (CONCENTRATION | SURFACE | VOLUME)) {
+  if (_probe->HaveConcentrations() && dt & (CONCENTRATION | SURFACE | VOLUME)) {
     if (!conc)
       conc = new float[nWords];
     }
@@ -63,7 +65,7 @@ void DataSet::SetDataTypes(DataType dt)
       conc = NULL;
       }
 
-  if (probe->HaveConcentrations() && dt & SURFACE) {
+  if (_probe->HaveConcentrations() && dt & SURFACE) {
     if (!surface)
       surface = new float[nWords];
     }
@@ -73,7 +75,7 @@ void DataSet::SetDataTypes(DataType dt)
       surface = NULL;
       }
 
-  if (probe->HaveConcentrations() && dt & VOLUME) {
+  if (_probe->HaveConcentrations() && dt & VOLUME) {
     if (!volume)
       volume = new float[nWords];
     }
@@ -90,16 +92,16 @@ void DataSet::SetNormalize(NormType nt)
 {
   normType = nt;
 
-  for (int i = 1; i < probe->VectorLength(); ++i)
+  for (int i = 1; i < _probe->VectorLength(); ++i)
     {
     switch (normType)
       {
       case LINEAR:
-        normalization[i] = probe->BinWidth(i);
+        normalization[i] = _probe->BinWidth(i);
         break;
 
       case LOG:
-        normalization[i] = log10(probe->CellSize(i)) - log10(probe->CellSize(i-1));
+        normalization[i] = log10(_probe->CellSize(i)) - log10(_probe->CellSize(i-1));
         break;
 
       default:
@@ -127,7 +129,7 @@ void DataSet::ResizeData(int nRecs)
   int	i;
 
   nRecords = nRecs;
-  nWords = probe->DataRate() * probe->VectorLength() * nRecs;
+  nWords = _probe->DataRate() * _probe->VectorLength() * nRecs;
 
   if (accum)
     {
@@ -153,7 +155,7 @@ void DataSet::ResizeData(int nRecs)
     volume = new float[nWords];
     }
 
-  for (i = 0; i < probe->nOtherVars(); ++i)
+  for (i = 0; i < _probe->nOtherVars(); ++i)
     {
     delete [] otherVars[i];
     otherVars[i] = new float[nRecs];
@@ -172,17 +174,17 @@ void DataSet::ReadData(int nRecs, int avRate)
 
   nRecords = nRecs;
 
-  if (probe->DataRate() > 1)
+  if (_probe->DataRate() > 1)
     avRate = 1;
 
 
 // Setup for reading counts and/or concentrations.
-  startV[0] = startTime - file->StartTime();
+  startV[0] = startTime - _file->StartTime();
   startV[1] = startV[2] = 0;
 
   countV[0] = avRate;
   countV[1] = 1;
-  countV[2] = probe->VectorLength();
+  countV[2] = _probe->VectorLength();
 
   if (countV[1] == 0 || countV[2] == 0)
     {
@@ -200,47 +202,47 @@ cout << "Count[] = " << countV[0] << ", "<< countV[1]<<", "<< countV[2] << "\n";
   if (accum)
     {
     accumBuff = new float[nPoints];
-    memset(accum, 0, nRecs * probe->VectorLength() * sizeof(float));
+    memset(accum, 0, nRecs * _probe->VectorLength() * sizeof(float));
     }
 
   if (conc)
     {
     concBuff = new float[nPoints];
 
-    for (i = 0; i < nRecs * probe->VectorLength(); ++i)
-      conc[i] = -32767.0;
+    for (i = 0; i < nRecs * _probe->VectorLength(); ++i)
+      conc[i] = _probe->FillValue();
 
-//    memset(conc, 0, nRecs * probe->VectorLength() * sizeof(float));
+//    memset(conc, 0, nRecs * _probe->VectorLength() * sizeof(float));
     }
 
   if (surface)
-    memset(surface, 0, nRecs * probe->VectorLength() * sizeof(float));
+    memset(surface, 0, nRecs * _probe->VectorLength() * sizeof(float));
 
   if (volume)
-    memset(volume, 0, nRecs * probe->VectorLength() * sizeof(float));
+    memset(volume, 0, nRecs * _probe->VectorLength() * sizeof(float));
 
-  timeSeriesData.resize(probe->nOtherVars());
-  for (i = 0; i < probe->nOtherVars(); ++i)
+  timeSeriesData.resize(_probe->nOtherVars());
+  for (i = 0; i < _probe->nOtherVars(); ++i)
     timeSeriesData[i] = new float[avRate];
 
 
   for (i = 0; i < nRecs; ++i)
     {
     if (accum)
-      probe->ReadCounts(startV, (const long *)countV, accumBuff);
+      _probe->ReadCounts(startV, (const long *)countV, accumBuff);
 
-    for (j = 0; j < probe->nOtherVars(); ++j)
-      probe->ReadOtherVar(j, startV, countV, timeSeriesData[j]);
+    for (j = 0; j < _probe->nOtherVars(); ++j)
+      _probe->ReadOtherVar(j, startV, countV, timeSeriesData[j]);
 
     if (conc)
       if (computeConc)
-        probe->ComputeConcentration(accumBuff,concBuff, countV, timeSeriesData);
+        _probe->ComputeConcentration(accumBuff,concBuff, countV, timeSeriesData);
       else
-        probe->ReadConcen(startV, (const long *)countV, concBuff);
+        _probe->ReadConcen(startV, (const long *)countV, concBuff);
 
 
     // Average other vars;
-    for (j = 0; j < probe->nOtherVars(); ++j)
+    for (j = 0; j < _probe->nOtherVars(); ++j)
       {
       otherVars[j][i] = 0.0;
 
@@ -249,27 +251,27 @@ cout << "Count[] = " << countV[0] << ", "<< countV[1]<<", "<< countV[2] << "\n";
 
       otherVars[j][i] /= avRate;
 
-      if (strncmp(probe->OtherVarName(j), "FRNG", 4) == 0)
-        probe->SetRange((int)otherVars[j][0]);
+      if (strncmp(_probe->OtherVarName(j), "FRNG", 4) == 0)
+        _probe->SetRange((int)otherVars[j][0]);
       }
 
 
     // Average data.
-    for (j = 1; j < probe->VectorLength(); ++j)
+    for (j = 1; j < _probe->VectorLength(); ++j)
       {
-      int dest = (i * probe->VectorLength()) + j, avCntr = 0;
+      int dest = (i * _probe->VectorLength()) + j, avCntr = 0;
 
       for (k = 0; k < avRate; ++k)
         {
-        if (accum && accumBuff[(k * probe->VectorLength()) + j] != -32767.0)
-          accum[dest] += accumBuff[(k * probe->VectorLength()) + j];
+        if (accum && accumBuff[(k * _probe->VectorLength()) + j] != _probe->FillValue())
+          accum[dest] += accumBuff[(k * _probe->VectorLength()) + j];
 
-        if (conc && concBuff[(k * probe->VectorLength()) + j] != -32767.0)
+        if (conc && concBuff[(k * _probe->VectorLength()) + j] != _probe->FillValue())
           {
-          if (conc[dest] == -32767.0)
-            conc[dest] = concBuff[(k * probe->VectorLength()) + j];
+          if (conc[dest] == _probe->FillValue())
+            conc[dest] = concBuff[(k * _probe->VectorLength()) + j];
           else
-            conc[dest] += concBuff[(k * probe->VectorLength()) + j];
+            conc[dest] += concBuff[(k * _probe->VectorLength()) + j];
 
           ++avCntr;
           }
@@ -279,22 +281,23 @@ cout << "Count[] = " << countV[0] << ", "<< countV[1]<<", "<< countV[2] << "\n";
         conc[dest] /= avCntr;
 
       // Convert #/L data to #/cm3 so we have consistant data.
-      if (conc && probe->Units().find("/L") != probe->Units().npos ||
-          conc && probe->Units().find("liter") != probe->Units().npos)
+      if ((conc && conc[dest] != _probe->FillValue()) &&
+		_probe->Units().find("/L") != _probe->Units().npos ||
+		_probe->Units().find("liter") != _probe->Units().npos)
         conc[dest] /= 1000;
 
       if (surface)
         surface[dest] = conc[dest] * 4.0 * M_PI *
-		pow((probe->CellSize(j-1) + probe->CellSize(j)) / 4.0, 2.0);
+		pow((_probe->CellSize(j-1) + _probe->CellSize(j)) / 4.0, 2.0);
 
       if (volume)
         volume[dest] = conc[dest] * 4.0 / 3.0 * M_PI *
-		pow((probe->CellSize(j-1) + probe->CellSize(j)) / 4.0, 3.0);
+		pow((_probe->CellSize(j-1) + _probe->CellSize(j)) / 4.0, 3.0);
       }
 
-    if (probe->DataRate() > 1)
+    if (_probe->DataRate() > 1)
       {
-      if (++startV[1] >= probe->DataRate())
+      if (++startV[1] >= _probe->DataRate())
         {
         startV[1] = 0;
         ++startV[0];
@@ -311,12 +314,56 @@ cout << "Count[] = " << countV[0] << ", "<< countV[1]<<", "<< countV[2] << "\n";
   if (concBuff)
     delete [] concBuff;
 
-  for (i = 0; i < probe->nOtherVars(); ++i)
+  for (i = 0; i < _probe->nOtherVars(); ++i)
     delete [] timeSeriesData[i];
 
   findMinMax();
 
 }	/* END READDATA */
+
+/* -------------------------------------------------------------------- */
+float DataSet::Accumulation(int s, int cell) const
+{
+  float value = accum[(s * _probe->VectorLength()) + cell];
+
+  if (value == _probe->FillValue())
+    return _probe->FillValue();
+  else
+    return value;
+}
+
+/* -------------------------------------------------------------------- */
+float DataSet::Concentration(int s, int cell) const
+{
+  float value = conc[(s * _probe->VectorLength()) + cell];
+
+  if (value == _probe->FillValue())
+    return _probe->FillValue();
+  else
+    return value / normalization[cell];
+}
+
+/* -------------------------------------------------------------------- */
+float DataSet::Surface(int s, int cell) const
+{
+  float value = surface[(s * _probe->VectorLength()) + cell];
+
+  if (value == _probe->FillValue())
+    return _probe->FillValue();
+  else
+    return value / normalization[cell];
+}
+
+/* -------------------------------------------------------------------- */
+float DataSet::Volume(int s, int cell) const
+{
+  float value = volume[(s * _probe->VectorLength()) + cell];
+
+  if (value == _probe->FillValue())
+    return _probe->FillValue();
+  else
+    return value / normalization[cell];
+}
 
 /* -------------------------------------------------------------------- */
 void DataSet::findMinMax()
@@ -330,7 +377,7 @@ void DataSet::findMinMax()
     maxAccum = -FLT_MAX;
 
     for (i = 0; i < nRecords; ++i)
-      for (j = 1; j < probe->VectorLength(); ++j)
+      for (j = 1; j < _probe->VectorLength(); ++j)
         {
         c = Accumulation(i, j);
 
@@ -345,7 +392,7 @@ void DataSet::findMinMax()
     maxConc = -FLT_MAX;
 
     for (i = 0; i < nRecords; ++i)
-      for (j = probe->FirstBin(); j <= probe->LastBin(); ++j)
+      for (j = _probe->FirstBin(); j <= _probe->LastBin(); ++j)
         {
         c = Concentration(i, j);
 
@@ -365,7 +412,7 @@ void DataSet::findMinMax()
     maxSurf = -FLT_MAX;
 
     for (i = 0; i < nRecords; ++i)
-      for (j = probe->FirstBin(); j <= probe->LastBin(); ++j)
+      for (j = _probe->FirstBin(); j <= _probe->LastBin(); ++j)
         {
         c = Surface(i, j);
 
@@ -384,7 +431,7 @@ void DataSet::findMinMax()
     maxVol = -FLT_MAX;
 
     for (i = 0; i < nRecords; ++i)
-      for (j = probe->FirstBin(); j <= probe->LastBin(); ++j)
+      for (j = _probe->FirstBin(); j <= _probe->LastBin(); ++j)
         {
         c = Volume(i, j);
 

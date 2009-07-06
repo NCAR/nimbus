@@ -158,7 +158,7 @@ void MovieControl::SetDefaultStartEndTime()
 /* -------------------------------------------------------------------- */
 void MovieControl::StepForward()
 {
-  currTime += (avRate * nRows * nCols) / setMgr.FirstSet()->probe->DataRate();
+  currTime += (avRate * nRows * nCols) / setMgr.FirstSet()->probe()->DataRate();
 
   if (currTime + avRate > endTime.Seconds())
     {
@@ -176,7 +176,7 @@ void MovieControl::StepForward()
 /* -------------------------------------------------------------------- */
 void MovieControl::StepBackward()
 {
-  currTime -= (avRate * nRows * nCols) / setMgr.FirstSet()->probe->DataRate();
+  currTime -= (avRate * nRows * nCols) / setMgr.FirstSet()->probe()->DataRate();
 
   if (currTime <= startTime)
     {

@@ -134,7 +134,7 @@ void DataSource::SetProbeNames()
       XmToggleButtonSetState(probeB[i], False, False);
 
       for (set = setMgr.FirstSet(); set; set = setMgr.NextSet())
-        if (*(set->file) == *currFile && set->probe == currFile->probe[i])
+        if (*(set->file()) == *currFile && set->probe() == currFile->probe[i])
           XmToggleButtonSetState(probeB[i], True, False);
       }
     }

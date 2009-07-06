@@ -522,7 +522,7 @@ void PlotInfo::printTitles(PostScript& pen)
 
   bool warning = false;
   for (DataSet *set = sets.FirstSet(); set; set = sets.NextSet())
-    if (set->file->isPreliminaryData())
+    if (set->file()->isPreliminaryData())
       warning = true;
 
   if (warning)
@@ -573,7 +573,7 @@ void PlotInfo::drawTitles(int sizeOffset)
 
   bool warning = false;
   for (DataSet *set = sets.FirstSet(); set; set = sets.NextSet())
-    if (set->file->isPreliminaryData())
+    if (set->file()->isPreliminaryData())
       warning = true;
 
   if (warning)
@@ -615,7 +615,7 @@ void PlotInfo::drawLegend(int sizeOffset)
       colorPen.SetColor(colors.NextColor());
 
     colorPen.DrawLine(canvas.Surface(), 12, ylegend-2, 50, ylegend-2);
-    blackPen.DrawText(canvas.Surface(), 55, ylegend+3, set->probe->Name().c_str());
+    blackPen.DrawText(canvas.Surface(), 55, ylegend+3, set->probe()->Name().c_str());
 
     if (!color)
       colorPen.SetDash(idx);
@@ -646,7 +646,7 @@ void PlotInfo::printLegend(PostScript& pen)
     pen.MoveTo(50, ylegend+4);
     pen.LineTo(170, ylegend+4);
     pen.MoveTo(180, ylegend);
-    pen.ShowStr(set->probe->Name());
+    pen.ShowStr(set->probe()->Name());
 
     if (!printerSetup->Color())
       pen.SetDash(idx);

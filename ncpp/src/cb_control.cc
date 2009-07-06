@@ -128,7 +128,7 @@ void ModifyActiveProbes(Widget w, XtPointer client, XtPointer call)
     movieControlGUI->TurnOnAverage();
   else
     {
-    if (setMgr.FirstSet()->probe->DataRate() > 1)
+    if (setMgr.FirstSet()->probe()->DataRate() > 1)
       {
       movieControlGUI->SetAveragePeriod(1);
       movieControlGUI->TurnOffAverage();

@@ -12,11 +12,12 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2007
 #define DATASET_H
 
 #include "define.h"
+#include <vector>
 
-#include "DataFile.h"
-#include "Probe.h"
 #include <raf/Time.h>
 
+class DataFile;
+class Probe;
 
 /* -------------------------------------------------------------------- */
 class DataSet
@@ -25,8 +26,7 @@ public:
 	DataSet(DataFile *df, Probe *prb, FlightClock& start, int nRecs, DataType dt, NormType n);
 	~DataSet();
 
-  friend class SetManager;
-  friend class Panel;		// RO access to plot data.
+  friend class SetManager;	// Manipulate endTime.
 
   FlightClock   StartTime()     const   { return(startTime); }
   FlightClock   EndTime()       const   { return(endTime); }
@@ -38,25 +38,18 @@ public:
 
   void	ReadData(int nRecs, int avRate);
 
-  float	Accumulation(int s, int cell) const	
-		{ return(accum[(s * probe->VectorLength()) + cell]); }
-
-  float	Concentration(int s, int cell) const
-    { return(conc[(s * probe->VectorLength()) + cell] / normalization[cell]); }
-
-  float	Surface(int s, int cell) const
-    { return(surface[(s * probe->VectorLength()) + cell] / normalization[cell]); }
-
-  float	Volume(int s, int cell) const
-    { return(volume[(s * probe->VectorLength()) + cell] / normalization[cell]); }
+  float	Accumulation(int s, int cell) const;
+  float	Concentration(int s, int cell) const;
+  float	Surface(int s, int cell) const;
+  float	Volume(int s, int cell) const;
 
   float NormalizeFactor(int cell)	{ return(normalization[cell]); }
 
   float	OtherVar(int var, int idx)
 		{ return(otherVars[var][idx]); }
 
-  DataFile	*file;
-  Probe		*probe;
+  Probe *probe() const { return _probe; }
+  DataFile *file() const { return _file; }
 
 private:
   int	nWords, nRecords;
@@ -74,6 +67,9 @@ private:
   void	findMinMax();
 
   bool computeConc;
+
+  DataFile *_file;
+  Probe *_probe;
 
 };	// END DATASET.H
 

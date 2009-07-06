@@ -34,6 +34,7 @@ public:
 
   size_t VectorLength() const	{ return(vectorLength); }
   size_t DataRate() const	{ return(dataRate); }
+  float FillValue() const	{ return -32767.0; }
 
   short	FirstBin() const	{ return(firstBin); }
   short	LastBin() const		{ return(lastBin); }
