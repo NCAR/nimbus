@@ -95,7 +95,7 @@ void sTwodInit(var_base *varp)
 
   serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
-printf("%s, %d, %s\n", varp->name, probeNum, serialNumber);
+
   for (i = 0; i < MAX_PMS2D; ++i)
     reff23[i] = reff22[i] = 0.0;
 
@@ -341,7 +341,7 @@ void sTwoD(DERTBL *varp)
 
   if (strstr(varp->name, "1DC"))
     {
-    /* For mixing with FSSP, no channels below 47 micron.
+    /* For mixing with FSSP/CDP, no channels below 47 micron.
      */
     reff23[varp->ProbeCount] = reff22[varp->ProbeCount] = 0.0;
     for (i = 2; i < LAST_BIN[probeNum]; ++i)
