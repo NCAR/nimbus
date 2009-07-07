@@ -25,7 +25,7 @@ extern NR_TYPE	refff3[], refff2[],	/* FSSP */
 		reff23[], reff22[];	/* 1DC	*/
 
 /* -------------------------------------------------------------------- */
-void srefff6(DERTBL *varp)
+void srefff6(DERTBL *varp)	// 2DC + 260X
 {
   NR_TYPE	reff_num, reff_denom, reff;
 
@@ -46,7 +46,7 @@ void srefff6(DERTBL *varp)
 }
 
 /* -------------------------------------------------------------------- */
-void srefff2(DERTBL *varp)
+void srefff2(DERTBL *varp)	// 2DC + FSSP
 {
   NR_TYPE	reff_num, reff_denom, reff;
 
@@ -67,7 +67,7 @@ void srefff2(DERTBL *varp)
 }
 
 /* -------------------------------------------------------------------- */
-void sreffd2(DERTBL *varp)
+void sreffd2(DERTBL *varp)	// 2DC + CDP
 {
   NR_TYPE	reff_num, reff_denom, reff;
 
