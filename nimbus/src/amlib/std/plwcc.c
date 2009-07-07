@@ -25,7 +25,7 @@ static const size_t baseline_lwc_seconds = 30;
 static const size_t baseline_conc_seconds = 2;
 
 /*  Values from /home/local/proj/Defaults on 23 April 1998, RLR		*/
-static NR_TYPE  twire[3] = {155.0, 155.0, 155.0};	/* Wire temperature (K)	*/
+static NR_TYPE  twire[3] = {155.0, 155.0, 155.0};	/* Wire temperature (C)	*/
 static NR_TYPE  tasFac[3] = {1.0, 1.0, 1.0};		/* True airspeed factor	*/
 static NR_TYPE  twireDiam[3] = {0.21, 0.21, 0.21};	/* Diameter	*/
 static NR_TYPE  cloud_conc_threshold = 0.01;		/* Cloud Concentration Baseline Threshold */
