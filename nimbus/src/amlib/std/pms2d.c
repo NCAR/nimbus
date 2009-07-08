@@ -302,6 +302,8 @@ void sTwoD(DERTBL *varp)
     deadTime = 0;
   }
 
+  // During first 6 flights of PACDEX, 2DC probe was incorrectly decoding
+  // true airspeed.
   if (cfg.ProjectName().compare("PACDEX") == 0
 	&& cfg.FlightNumber().compare(0, 3, "rf0") == 0
 	&& cfg.FlightNumber()[3] >= '1' && cfg.FlightNumber()[3] <= '6')
