@@ -78,6 +78,9 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
   if (name.find("200Y") != name.npos)
     type = Y200;
   else
+  if (name.find("SID") != name.npos)
+    type = SIDII;
+  else
   if (name.find("MASP") != name.npos)
     type = MASP;
   else
