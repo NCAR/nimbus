@@ -1,4 +1,4 @@
-/* gcc -I/jnet/local/include ncfixdate.c -o ncfixdate -L/jnet/local/lib -lnetcdf
+/* gcc -I/opt/local/include ncfixdate.c -o ncfixdate -L/opt/local/lib -lnetcdf
  */
 
 #include <netcdf.h>
@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
+const char *timeUnitsFormat = "seconds since %F %T %z";
 
 int main(int argc, char *argv[])
 {
@@ -55,6 +57,18 @@ int main(int argc, char *argv[])
   edge[0] = edge[1] = edge[2] = 0;
   if (nc_inq_varid(fd, "base_time", &id) == NC_NOERR)
     nc_put_var1_int(fd, id, edge, (void *)&BaseTime);
+
+  if (nc_inq_varid(fd, "time_offset", &id) == NC_NOERR)
+  {
+    strftime(buffer, 128, timeUnitsFormat, &StartFlight);
+    nc_put_att_text(fd, id, "units", strlen(buffer)+1, (void *)buffer);
+  }
+
+  if (nc_inq_varid(fd, "Time", &id) == NC_NOERR)
+  {
+    strftime(buffer, 128, timeUnitsFormat, &StartFlight);
+    nc_put_att_text(fd, id, "units", strlen(buffer)+1, (void *)buffer);
+  }
 
   nc_close(fd);
 
