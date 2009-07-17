@@ -22,6 +22,7 @@ cvi.c
 efield.c
 flux.c
 geopot.c
+lams.c
 licor.c
 licor_wyo.c
 masp.c

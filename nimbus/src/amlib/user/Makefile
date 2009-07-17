@@ -13,13 +13,13 @@ OBJS=	bits.o chemcal.o circles.o climet.o co2c.o conccn.o cvi.o\
 	efield.o geopot.o licor.o licor_wyo.o masp.o ndvi.o ophir3.o\
 	prcltrk1.o prcltrk2.o raz.o rdma.o rlwp.o sail.o spefm.o\
 	xpsfdc.o IDEAS2.o ACEASIA.o DYCOMS.o cloudbase.o icing.o\
-	ultrafine.o RICO.o nclh.o
+	ultrafine.o RICO.o nclh.o lams.o
 
 SRCS=	bits.c chemcal.c circles.c climet.c co2c.c conccn.c cvi.c\
 	efield.c geopot.c licor.c licor_wyo.c masp.c ndvi.c ophir3.c\
 	prcltrk1.c prcltrk2.c raz.c rdma.c rlwp.c sail.c spefm.c\
 	xpsfdc.c IDEAS2.c ACEASIA.c DYCOMS.c cloudbase.c icing.c\
-	ultrafine.c RICO.c nclh.c
+	ultrafine.c RICO.c nclh.c lams.c
 
 HDRS=	${NIMBUS}/include/nimbus.h ${NIMBUS}/include/amlib.h \
 	${JLOCAL}/include/constants.h ${JLOCAL}/include/header.h
