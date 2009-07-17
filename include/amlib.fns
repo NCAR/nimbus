@@ -29,6 +29,10 @@
 	"CONC2DC100",	NULL,           NULL,		sconc2dc100,
 	"CONC2DC150",	NULL,           NULL,		sconc2dc150,
 #
+# LAMS
+#
+	"LAMSWS",	NULL,           NULL,		slamsws,
+#
 # AIRS-II
 #
 	"XICING",	NULL,           NULL,		sicing,
