@@ -31,7 +31,10 @@
 #
 # LAMS
 #
-	"LAMSWS",	NULL,           NULL,		slamsws,
+	"LAMSAVGFQZ",	NULL,           NULL,		slamsfqz,
+	"LAMSMAXFQZ",	NULL,           NULL,		slamsfqz,
+	"LAMSAVGWS",	NULL,           NULL,		slamsws,
+	"LAMSMAXWS",	NULL,           NULL,		slamsws,
 #
 # AIRS-II
 #
