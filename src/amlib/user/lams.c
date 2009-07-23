@@ -162,7 +162,7 @@ void slamsfqz(DERTBL *varp)
   NR_TYPE  fqz, width;
 
   spec = GetVector(varp, 0);
-  len  = MAX_BUFFER; //depends[0]->Length;
+  len  = MAX_BUFFER;  //varp->depends[0]->Length;
 
   compute_freq(len, spec, &fqz, &width);
 
@@ -173,11 +173,11 @@ void slamsfqz(DERTBL *varp)
 
 void slamsws(DERTBL *varp)
 {
-  static NR_TYPE fqz2 = -32768.0;
-  static NR_TYPE fqz1 = -32768.0;
-  static NR_TYPE fqz0 = -32768.0;
-  static NR_TYPE tas1 = -32768.0;
-  static NR_TYPE tas0 = -32768.0;
+  static NR_TYPE fqz2 = MISSING_VALUE;
+  static NR_TYPE fqz1 = MISSING_VALUE;
+  static NR_TYPE fqz0 = MISSING_VALUE;
+  static NR_TYPE tas1 = MISSING_VALUE;
+  static NR_TYPE tas0 = MISSING_VALUE;
   static enum {FREE, BACK, FRONT} bounce;
   static int nBounce = 0;
 
@@ -189,9 +189,9 @@ void slamsws(DERTBL *varp)
   tas0 = GetSample(varp, 1);
 
   // Start tracking changes in frequency and true air speed.
-  if (fqz2 == -32768.0) fqz2 = fqz1;
-  if (fqz1 == -32768.0) fqz1 = fqz0;
-  if (tas1 == -32768.0) tas1 = tas0;
+  if (fqz2 == MISSING_VALUE) fqz2 = fqz1;
+  if (fqz1 == MISSING_VALUE) fqz1 = fqz0;
+  if (tas1 == MISSING_VALUE) tas1 = tas0;
 
   // Count the number of bounces off of the spectral edges,
   // these occur at every 100 MHz.
