@@ -6,7 +6,7 @@ source classpath.sh
 
 javac -d classes -target 5 -source 5 \
     ../src/edu/ucar/eol/nc2asc/*.java \
-    ../src/edu.ucar.eol/nc2ascData/*.java \
+    ../src/edu/ucar/eol/nc2ascData/*.java \
 
 jar cvfm nc2asc.jar manifest.txt -C classes .
 
