@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- JNLP File for nc2asc -->
+
+<jnlp 
+    codebase="http://www.eol.ucar.edu/software/webstart/nc2asc"
+    href="nc2asc.jnlp"
+    version= 1.0 >
+    <information>
+        <title> nc2asc </title>
+        <vendor> National Center for Atomspheric Research (NCAR)</vendor>
+        <description>
+            A program to convert a netcdf file or sub-set of, to ASCII. 
+        </description>
+        <homepage href="http://www.eol.ucar.edu/Members/dongl/sw-products/nc2asc-main-page"/>
+        <description kind="short"> Netcdf to Ascii Program</description>
+    </information>
+    <offline-allowed/>
+    <security>
+	<all-permissions/>
+    </security>
+    <resources>     
+        <jar href="nc2asc.jar" download="eager"/>
+        <jar href="lib/commons-logging-1.1.jar" download="eager" />
+        <jar href="lib/netcdfUI-2.2.22.jar" download="eager"/>
+        <jar href="lib/nlog4j-1.2.25.jar" download="eager"/>
+        <java version="1.6+" />
+    </resources>
+
+   <application-desc main-class="edu.ucar.eol.nc2asc.NC2A">
+   </application-desc>
+</jnlp>
+

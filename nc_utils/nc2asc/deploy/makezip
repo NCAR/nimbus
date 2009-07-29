@@ -1,0 +1,29 @@
+#! /bin/sh
+
+
+### make cockpit jar file
+rm  nc2asc.jar
+rm  javazip/*.zip 
+svn revert lib/netcdfUI-2.2.22.jar  lib/nlog4j-1.2.25.jar  lib/commons-logging-1.1.jar  
+
+source makejar
+
+
+### sign keys
+jarsigner -keystore javazip/nc2asc.keystore nc2asc.jar n2a
+jarsigner -keystore javazip/nc2asc.keystore lib/netcdfUI-2.2.22.jar n2a
+jarsigner -keystore javazip/nc2asc.keystore lib/nlog4j-1.2.25.jar  n2a
+jarsigner -keystore javazip/nc2asc.keystore lib/nlog4j-1.2.25.jar  n2a
+
+
+### zip linux, win, and mac deployment files
+zip nc2asc.zip nc2asc.jar lib/netcdfUI-2.2.22.jar lib/nlog4j-1.2.25.jar lib/nlog4j-1.2.25.jar
+mv nc2asc.zip /javazip/.
+
+cp javaws/cockpit.jnlp .
+zip cockpit.zip cockpit.jar cockpit.jnlp lib/qtjambi-4.5.0_01.jar  lib/serializer.jar  lib/xercesImpl.jar lib/linux/qtjambi-linux32-gcc-4.5.0_01.jar lib/win/qtjambi-win32-msvc2005-4.5.0_01.jar lib/mac/qtjambi-macosx-gcc-4.5.0_01.jar image/nodata.png
+mv cockpit.zip javaws/.
+rm cockpit.jnlp
+
+#cleanup svn 
+svn revert lib/qtjambi-4.5.0_01.jar  lib/serializer.jar  lib/xercesImpl.jar  lib/linux/qtjambi-linux32-gcc-4.5.0_01.jar lib/mac/qtjambi-macosx-gcc-4.5.0_01.jar lib/win/qtjambi-win32-msvc2005-4.5.0_01.jar 
