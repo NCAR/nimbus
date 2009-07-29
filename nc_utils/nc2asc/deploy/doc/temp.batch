@@ -1,0 +1,16 @@
+if= /scr/raf/local_productiondata/VOCALSrf01.nc
+of= vocals_test.txt
+
+hd= Plain
+avg= 1
+dt= NoDate
+tm= hh:mm:ss
+sp= Space
+fv= FillValue
+ti= 2008-10-15,17:48:00 ~ 2008-10-15,17:49:00
+
+var= CONC3_LWI
+var= CONCU100_CVI
+
+CONC3_LWI=%e
+CONCU100_CVI = %6.2f
