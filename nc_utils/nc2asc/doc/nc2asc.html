@@ -97,7 +97,7 @@ The <b>-i</b> and <b>-o</b> options allow input and output file names to specifi
 #!/bin/csh
 
 foreach file (*.nc)
-  java -jar nc2asc.jar -b my_batch -i $file -o  `basename $file .nc`.asc
+  java -jar nc2asc.jar -b my_batch -i $file  -o `basename $file .nc`.asc
 end
 
 </pre>
