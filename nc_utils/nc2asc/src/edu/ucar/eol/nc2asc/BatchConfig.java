@@ -6,8 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
-
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 import edu.ucar.eol.nc2ascData.DataFmt;
@@ -275,7 +273,7 @@ public class BatchConfig {
 					if (val.endsWith("d")|| val.endsWith("i")) 
 						val= "%.0f";
 				} else {
-					Util.println("Warning: Invalid format-- var=" +var + " format="+val+ "   Using default" );
+					NC2Act.wrtMsg("Warning: Invalid format-- var=" +var + " format="+val+ "   Using default" );
 					val= "%f";
 				}
 				tmpVdf.put(var, val);
