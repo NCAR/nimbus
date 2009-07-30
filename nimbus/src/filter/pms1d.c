@@ -123,6 +123,14 @@ void PMS1D_SetupForADS3()
 //    setSerialNumberAndProbeType("AUHSAS", "UHSAS002", PROBE_PMS1D | PROBE_PCASP);
   }
   else
+  if (cfg.ProjectName().compare("ADELE/SPRITES") == 0)
+  {
+    setSerialNumberAndProbeType("A1DC_RIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC_RIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A1DC_RMI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC_RMI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+  }
+  else
   {
     setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A2DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
