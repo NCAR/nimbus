@@ -13,9 +13,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2009
 
 #define MAX_BUFFER 512
 
-#define MINFQZ   0.0
-#define MAXFQZ 100.0
-#define MARGIN   5.0
+static const float MINFQZ = 0.0;
+static const float MAXFQZ = 100.0;
+static const float MARGIN = 3.0;
+static const float MPS_PER_FOLD = 78.1;	// m/s per fold.
 
 /* Compute the mean frequency, and spectrum width.
  */
@@ -59,7 +60,7 @@ static void compute_freq(int     nsamples,
       maxMag = *mp;
     }
   }
-  if (kMax >= kCent) {
+  if (kMax >= nsamples) {
     kMax -= nsamples;
   }
 
@@ -154,7 +155,6 @@ static void compute_freq(int     nsamples,
 }
 
 /* -------------------------------------------------------------------- */
-
 void slamsfqz(DERTBL *varp)
 {
   NR_TYPE  *spec;
@@ -170,76 +170,33 @@ void slamsfqz(DERTBL *varp)
 }
 
 /* -------------------------------------------------------------------- */
-
 void slamsws(DERTBL *varp)
 {
-  static NR_TYPE fqz2 = MISSING_VALUE;
-  static NR_TYPE fqz1 = MISSING_VALUE;
-  static NR_TYPE fqz0 = MISSING_VALUE;
-  static NR_TYPE tas1 = MISSING_VALUE;
-  static NR_TYPE tas0 = MISSING_VALUE;
-  static enum {FREE, BACK, FRONT} bounce;
-  static int nBounce = 0;
+  NR_TYPE tas, fqz, ws;
 
-  NR_TYPE bfqz, ws;
+  fqz = GetSample(varp, 0);
+  tas = GetSample(varp, 1);
 
-  // These 'GetSample()'s must match the same order as the variables
-  // are listed in the DependTable.
-  fqz0 = GetSample(varp, 0);
-  tas0 = GetSample(varp, 1);
+  int nFolds = (int)(tas / MPS_PER_FOLD);
+  NR_TYPE residual = fqz * (MAXFQZ / MPS_PER_FOLD);	// convert to m/s
 
-  // Start tracking changes in frequency and true air speed.
-  if (fqz2 == MISSING_VALUE) fqz2 = fqz1;
-  if (fqz1 == MISSING_VALUE) fqz1 = fqz0;
-  if (tas1 == MISSING_VALUE) tas1 = tas0;
+  // If we are close to the fold, then we have to decide which side.
+  if (fqz > MAXFQZ - MARGIN)
+  {
+    NR_TYPE ws1, ws2;
+    ws = ws1 = (nFolds * MPS_PER_FOLD) + residual;
+    ws2 = (nFolds * MPS_PER_FOLD) + (MAXFQZ - residual);
 
-  // Count the number of bounces off of the spectral edges,
-  // these occur at every 100 MHz.
-  switch (bounce) {
-  case FREE:
-
-//  printf("nBounce: %2d |      FREE       | fqz: %5.1f -> %5.1f -> %5.1f", nBounce, fqz2, fqz1, fqz0);
-    if ( (fqz0 > MAXFQZ - MARGIN) && (fqz0 > fqz1) && (fqz1 > fqz2) ) {
-      bounce = FRONT;
-    }
-    if ( (fqz0 < MINFQZ + MARGIN) && (fqz0 < fqz1) && (fqz1 < fqz2) ) {
-      bounce = BACK;
-    }
-    break;
-
-  case FRONT:
-
-//  printf("nBounce: %2d |           FRONT | fqz: %5.1f -> %5.1f -> %5.1f", nBounce, fqz2, fqz1, fqz0);
-    if ( (fqz0 < fqz1) && (fqz1 > fqz2) ) {
-      if (tas0 > tas1) nBounce++;
-      if (tas0 < tas1) nBounce--;
-      bounce = FREE;
-    }
-    break;
-
-  case BACK:
-
-//  printf("nBounce: %2d | BACK            | fqz: %5.1f -> %5.1f -> %5.1f", nBounce, fqz2, fqz1, fqz0);
-    if ( (fqz0 > fqz1) && (fqz1 < fqz2) ) {
-      if (tas0 > tas1) nBounce++;
-      if (tas0 < tas1) nBounce--;
-      bounce = FREE;
-    }
-    break;
+    if (tas > ws2 || ws2 - tas < tas - ws1)
+      ws = ws2;
+  }
+  else	// We are well away from the fold, go with straight nFolds calc.
+  {
+    if (nFolds % 2 == 0)
+      ws = (nFolds * MPS_PER_FOLD) + residual;
+    else
+      ws = (nFolds * MPS_PER_FOLD) + (MAXFQZ - residual);
   }
 
-  // Update tracking changes in frequency and true air speed.
-  fqz2 = fqz1;
-  fqz1 = fqz0;
-  tas1 = tas0;
-
-  // Compute bouncing frequency.
-  if (nBounce % 2)  // odd
-    bfqz = 2 * nBounce * 100 - fqz0;
-  else              // even
-    bfqz =     nBounce * 100 + fqz0;
-
-  // Convert frequency to speed.
-  ws = bfqz * 0.775;
   PutSample(varp, ws);
 }
