@@ -98,7 +98,8 @@ public class NC2Act {
 			try {
 				log=new FileWriter("nc2ascLog.txt");
 			} catch (IOException e) {
-				if (!batchMode ) 	prtMsgBox("Cannot create nc2ascLog");
+				log=null;
+				//System.out.println("Cannot create nc2ascLog");
 				return;
 			}			   
 		}
