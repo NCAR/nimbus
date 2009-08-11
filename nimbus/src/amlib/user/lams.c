@@ -20,13 +20,13 @@ static const float MPS_PER_FOLD = 78.1;	// m/s per fold.
 
 /* Compute the mean frequency, and spectrum width.
  */
-static void compute_freq(int     nsamples,
-                         NR_TYPE *magnitude,
+static void compute_freq(const int nsamples,
+                         const NR_TYPE *magnitude,
                          NR_TYPE *mean_freq_mhz,
                          NR_TYPE *spec_width_mhz)
 {
   int ii;
-  int kCent = nsamples / 2;
+  const int kCent = nsamples / 2;
   int kMax;
   int kOffset;
   int kStart, kEnd;
@@ -60,8 +60,8 @@ static void compute_freq(int     nsamples,
       maxMag = *mp;
     }
   }
-  if (kMax >= nsamples) {
-    kMax -= nsamples;
+  if (kMax >= kCent) {
+    kMax -= kCent;
   }
 
   // Center power array on the max value.
