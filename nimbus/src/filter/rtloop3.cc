@@ -171,8 +171,10 @@ void RealTimeLoop3()
       WriteNetCDF_MRF();
 
     UpdateTime(SampledData);
-    if (mcStat)
+    if (mcStat) {
+      strftime(timeStamp, sizeof(timeStamp), "%Y-%m-%d %H:%M:%S", &tm);
       mcStat->sendStatus(timeStamp);
+    }
 
     // This typically produces HRT netCDF in real-time.  Not used at this time.
     if (cfg.OutputNetCDF())
