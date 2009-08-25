@@ -33,7 +33,8 @@ span.comment { background-color: #88FF88; font-style: italic; }
 
 <dl>
 <dt><h3>Synopsis</h3>
-<dd>asc2cdf [-d yyyy-mm-dd] [-b time_t] [-g globalAttrFile] [-a] [-l] [-m] [-r n] [-s n] [-:] [-v] ASCII_file netCDF_file
+<dd>asc2cdf [-d yyyy-mm-dd] [-b time_t] [-g globalAttrFile] [-a] [-l] [-m]
+[-r n] [-s n] [-:] [-v] [-h] ASCII_file netCDF_file
 <p>
 <dt><h3>Description</h3>
 <dd><b>asc2cdf</b> is a program for uploading ASCII data into a netCDF file that follow the
@@ -125,6 +126,15 @@ landmarks=17.1415 -61.7783 ANU,17.6075 -61.82395 SPol
 </blockquote>
 <p>
 <dd>The <kbd class="att">-v</kbd> flag is for verbose output.
+<p>
+<dd>The <kbd class="att">-h</kbd> flag
+is for histogram, and outputs NASA Ames formatted data that
+has all the variable names the same, and a comment line like "CELLSIZES =
+1.0f, ...", to be a vector in the netCDF file suitable for plotting with
+ncpp. Note that to plot with ncpp, the variable name and units must be
+something ncpp recognized and both counts and concentration must be present
+in the same file. This option doesn't deal with all that, just turns
+columnar histogram data from a nasa Ames file into a single netCDF var.
 
 <dt><h3>Requirements</h3>
 <dd><b>asc2cdf</b> should compile under any platform.

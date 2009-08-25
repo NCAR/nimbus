@@ -4,7 +4,8 @@
 .SH NAME
 asc2cdf \- ASCII to netCDF converter
 .SH SYNOPSIS
-asc2cdf [-d yyyy-mm-dd] [-b time_t] [-g globalAttrFile] [-a] [-l] [-m] [-r n] [-s n] [-v] [-:] ASCII_file netCDF_file
+asc2cdf [-d yyyy-mm-dd] [-b time_t] [-g globalAttrFile] [-a] [-l] [-m] [-r
+n] [-s n] [-v] [-h] [-:] ASCII_file netCDF_file
 .SH DESCRIPTION
 .B asc2cdf 
 is program for uploading ASCII data into a netCDF file that follows the
@@ -56,6 +57,14 @@ seconds since midnight format (with rounding).  This is automatically
 turned on with the -a or -l option.
 .PP
 The -v option is for verbose, and outputs some debugging type information.
+.PP
+The -h option is for histogram, and outputs NASA Ames formatted data that
+has all the variable names the same, and a comment line like "CELLSIZES =
+1.0f, ...", to be a vector in the netCDF file suitable for plotting with
+ncpp. Note that to plot with ncpp, the variable name and units must be
+something ncpp recognized and both counts and concentration must be present
+in the same file. This option doesn't deal with all that, just turns
+columnar histogram data from a nasa Ames file into a single netCDF var.
 .PP
 The -: option specifies that the left column stamp is in the format HHMMSS instead of HH:MM:SS.
 .PP
