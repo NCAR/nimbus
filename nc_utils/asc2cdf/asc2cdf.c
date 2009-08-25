@@ -35,7 +35,8 @@ static char	*globalAttrFile = 0;
 
 /* Command line option flags.
  */
-bool	fileType = PLAIN_FILE, secondsSinceMidnight = false, Colonless = false, verbose = false;
+bool	fileType = PLAIN_FILE, secondsSinceMidnight = false, Colonless = false;
+bool    verbose = false, histogram = false;
 int	SkipNlines = 1;
 
 int		BaseDataRate = 1, dataRate = 1;
@@ -104,6 +105,7 @@ int main(int argc, char *argv[])
 
   addGlobalAttrs(globalAttrFile);
   nc_enddef(ncid);
+
   WriteBaseTime();
 
   printf("Averaging Period = %d, Data Rate = %dHz\n", BaseDataRate, dataRate);
@@ -131,12 +133,6 @@ int main(int argc, char *argv[])
     if (secondsSinceMidnight)
       {
       currSecond = atof(p);
-      if (verbose)
-        printf("JAG orig time %f\n",atof(p));
-      if (verbose)
-        printf("JAG orig time %f\n",currSecond);
-      if (verbose)
-        printf("JAG int time %d\n",atoi(p));
 
       hour = int(currSecond) / 3600; currSecond -= hour * 3600;
       minute = int(currSecond) / 60; currSecond -= minute * 60;
@@ -146,8 +142,6 @@ int main(int argc, char *argv[])
       } else {
         subsec = 0;
       }
-      if (verbose)
-        printf("JAG %d %d %d %d\n",hour,minute,second,subsec);
 
       if (nRecords == 0 && fileType != PLAIN_FILE)
         SetNASABaseTime(hour, minute, second);
@@ -173,10 +167,10 @@ int main(int argc, char *argv[])
 
     if (prevSecond == -1) // 1st time through loop.
     {
-      firstSecond = currSecond;
+      firstSecond = int(currSecond);
 //      if (strlen(FlightDate) > 0)
       if (fileType != NASA_AMES)
-        BaseTime += currSecond;
+        BaseTime += int(currSecond);
     }
 
     if (nRecords == 0)
@@ -189,28 +183,28 @@ int main(int argc, char *argv[])
     if (currSecond == prevSecond)
       {
       printf("Duplicate time stamp, ignoring.\n");
-      prevSecond = currSecond;
+      prevSecond = int(currSecond);
       continue;
       }
     else
     if (currSecond > prevSecond + BaseDataRate)
       {
       if (currSecond - prevSecond > 2)
-        printf("last time = %d, new time = %d\n", prevSecond, currSecond);
+        printf("last time = %d, new time = %d\n", prevSecond, int(currSecond));
 //      WriteMissingData(currSecond, prevSecond);
       }
 
-    prevSecond = currSecond;
+    prevSecond = int(currSecond);
 
     dataValue = currSecond - firstSecond;
-    size_t rec = dataValue;
+    size_t rec = int(dataValue);
     nc_put_var1_float(ncid, timeVarID, &rec, &dataValue);
     nc_put_var1_float(ncid, timeOffsetID, &rec, &dataValue);
 //    dataValue = (float)(nRecords * BaseDataRate);
 //    nc_put_var1_float(ncid, timeVarID, &nRecords, &dataValue);
 //    nc_put_var1_float(ncid, timeOffsetID, &nRecords, &dataValue);
 
-    //JAG If subseconds are given in the time column, offset here.
+    //If subseconds are given in the time column, offset here.-JAG
     for (hz = subsec; hz < dataRate; ++hz)
       {
       for (i = 0; i < nVariables; ++i)
@@ -228,9 +222,16 @@ int main(int argc, char *argv[])
             dataValue = dataValue * scale[i] + offset[i];
           }
 
-        index[0] = rec; index[1] = hz;
-        nc_put_var1_float(ncid, varid[i], index, &dataValue);
+        if (histogram) {
+          index[0] = rec; index[1] = hz; index[2] = i;
+          nc_put_var1_float(ncid, varid[1], index, &dataValue);
         }
+        else
+        {
+          index[0] = rec; index[1] = hz;
+          nc_put_var1_float(ncid, varid[i], index, &dataValue);
+        }
+      }
 
       if (hz != dataRate-1)
         if (fgets(buffer, BUFFSIZE, inFP) == NULL)
@@ -321,6 +322,10 @@ static int ProcessArgv(int argc, char **argv)
         fileType = NASA_AMES;
         secondsSinceMidnight = true;
         break;
+
+      case 'h':
+	histogram = true;
+	break;
 
       case 'l':
         fileType = NASA_LANGLEY;

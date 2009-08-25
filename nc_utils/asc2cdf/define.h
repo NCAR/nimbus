@@ -26,6 +26,7 @@ extern const int	rateOne;
 extern time_t	BaseTime;
 extern int	BaseDataRate, dataRate;
 extern bool	verbose;
+extern bool	histogram;
 
 extern int	SkipNlines;
 

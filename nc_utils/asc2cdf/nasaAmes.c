@@ -50,9 +50,12 @@ void CreateNASAamesNetCDF(FILE *fp)
 {
   int	i, start;
   int	FFI, year, month, day;
-  int	ndims, dims[3], TimeDim, RateDim;
+  int	ndims, dims[3], TimeDim, RateDim, VectorDim;
   char	*p, *p1, *titles[MAX_VARS], *units[MAX_VARS], tmp[32];
+  char  *varName;
   float	missing_val = MISSING_VALUE;
+  float cellSizes[512];
+  int   nCells;
 
 
   /* Dimensions.
@@ -80,6 +83,7 @@ void CreateNASAamesNetCDF(FILE *fp)
   }
 
 
+  /* Get length of header and format type (FFI) */
   fgets(buffer, BUFFSIZE, fp);
   sscanf(buffer, "%d %d", &SkipNlines, &FFI);
   printf("SkipNlines: %d  FFI:%d\n", SkipNlines, FFI);
@@ -90,21 +94,25 @@ void CreateNASAamesNetCDF(FILE *fp)
     exit(1);
   }
 
+  /* Get PI */
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
   nc_put_att_text(ncid, NC_GLOBAL, "PI", strlen(buffer)+1, buffer);
   printf("PI: %s\n", buffer);
 
+  /* Get Data Source Institution */
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
   nc_put_att_text(ncid, NC_GLOBAL, "Source", strlen(buffer)+1, buffer);
   printf("Source: %s\n", buffer);
 
+  /* Get probe name */
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
   nc_put_att_text(ncid, NC_GLOBAL, "SNAME", strlen(buffer)+1, buffer);
   printf("SNAME: %s\n", buffer);
 
+  /* Get project name */
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
   nc_put_att_text(ncid, NC_GLOBAL, "ProjectName", strlen(buffer)+1, buffer);
@@ -115,13 +123,17 @@ void CreateNASAamesNetCDF(FILE *fp)
   fgets(buffer, BUFFSIZE, fp);
   printf("skipping IVOL NVOL: %s", buffer);
 
+
+  /* get data start date and processing date */
   fgets(buffer, BUFFSIZE, fp);
-  printf("date span: %s", buffer);
+  printf("start date, date processed: %s", buffer);
   if (strchr(buffer, ','))
     sscanf(buffer, "%d , %d , %d", &year, &month, &day);
   else
     sscanf(buffer, "%d %d %d", &year, &month, &day);
 
+
+  /* Calculate FlightDate and write it to netCDF file */
   if (year > 1900) year -= 1900;
   StartFlight.tm_year = year;
   StartFlight.tm_mon = month - 1;
@@ -131,6 +143,7 @@ void CreateNASAamesNetCDF(FILE *fp)
   nc_put_att_text(ncid, NC_GLOBAL, "FlightDate", strlen(tmp)+1, tmp);
 
 
+  /* Calculate DateProcessed and write it to netCDF file */
   if (strchr(buffer, ','))
     sscanf(buffer, "%*d , %*d , %*d , %d , %d , %d", &year, &month, &day);
   else
@@ -141,6 +154,7 @@ void CreateNASAamesNetCDF(FILE *fp)
   nc_put_att_text(ncid, NC_GLOBAL, "DateProcessed", strlen(tmp)+1, tmp);
 
 
+  /* Get uniformity */
   fgets(buffer, BUFFSIZE, fp);
   printf("uniformity %s", buffer);
   if (atof(buffer) != 1.0)
@@ -178,9 +192,19 @@ void CreateNASAamesNetCDF(FILE *fp)
    */
   /* Scan in Primary variables first.
    */
+  /* Get number of variables */
   fgets(buffer, BUFFSIZE, fp);
   nVariables = atoi(buffer);
   printf("nVariables: %d\n", nVariables);
+
+
+  if (histogram)
+  {
+    sprintf(buffer, "Vector%d", nVariables);
+    nc_def_dim(ncid, buffer, nVariables, &VectorDim);
+    dims[2] = VectorDim;
+  }
+
 
   /* Get Scale Factors. */
   fgets(buffer, BUFFSIZE, fp);
@@ -296,32 +320,115 @@ void CreateNASAamesNetCDF(FILE *fp)
 
   rewind(fp);
   for (i = 0; i < SkipNlines; ++i)
+  {
     fgets(buffer, BUFFSIZE, fp);
+    buffer[strlen(buffer)-1] = '\0';
+    if ((p = strchr(buffer, '=')) != 0)
+    {
+      *p = '\0';
+      printf("%s\n",buffer);
+      if (strcmp(buffer,"CELLSIZES ") == 0)
+      {
+	++p;
+        printf("%s\n",p);
+	int j = 0;
+        while ((p1 = strchr(p, ',')) != 0)
+	{
+	    *p1 = '\0';
+	    printf("index: %d %s\n",j,p);
+	    cellSizes[j++] = atof(p);
+	    p = ++p1;
+	}
+	printf("index: %d %s\n",j,p);
+	cellSizes[j++] = atof(p);
+	nCells = j;
 
-  // skip any leading whitespace.
+      }
+    }
+  }
+
+  // Buffer now contains the last line of the header
+  // which is the line with variable names
+
+  // skip any leading whitespace in variable name line.
   for (p = buffer; isspace(*p); ++p)
     ;
+
+  // split p into tokens and return pointer to first token
+  // in this case, time
   p = strtok(p, " \t\n\r");
 
   if (dataRate > 1)
     ndims = 2;
 
-  for (i = 0; i < nVariables; ++i)
+  if (histogram)
   {
+    // Histogram assumes that all columns in NASA Ames file (except time column)
+    // contain bins of data for a single variable, and that all variable names
+    // are the same to reflect this.
+    if (nVariables > 1)
+      ndims = 3;
+
+
+    i=1;
+
+    // return pointer to next variable in buffer
     p = strtok(NULL, " \t\n\r");
     nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[i]);
-
     if (verbose)
-      printf("Adding variable [%s] with units of [%s]\n", p, units[i]);
+      printf("Creating single 2D var [%s] from AMES file\n",p);
+
+
+    varName = p;
+    if (verbose)
+      printf("Adding variable [%s] with units of [%s]\n", p, units[0]);
+
 
     nc_put_att_float(ncid,varid[i], "_FillValue",NC_FLOAT, 1, &missing_val);
     p = units[i];
     nc_put_att_text(ncid, varid[i], "units", strlen(p)+1, p);
     p = titles[i];
     nc_put_att_text(ncid, varid[i], "long_name", strlen(p)+1, p);
+    nc_put_att_int(ncid, varid[i], "FirstBin",NC_INT, 1, &i);
+    nc_put_att_int(ncid, varid[i], "LastBin",NC_INT, 1, &nVariables);
+    nc_put_att_float(ncid, varid[i], "CellSizes",NC_FLOAT,nCells,cellSizes);
 
-    free(units[i]);
-    free(titles[i]);
+    for (i = 1; i < nVariables; ++i)
+    {
+      p = strtok(NULL, " \t\n\r");
+      //if( p != varName)
+      //{
+      //  printf("All variable names [%s] must be the same [as %s] in last line of header\n",p,varName);
+      //  printf("  when -h (histogram) option to asc2cdf -a is used.\n");
+      //}
+      free(units[i]);
+      free(titles[i]);
+    }
+  }
+  else
+  {
+    if (verbose)
+      printf("Creating %d 2D variables from AMES file\n",nVariables);
+
+    for (i = 0; i < nVariables; ++i)
+    {
+      // return pointer to next variable in buffer
+      p = strtok(NULL, " \t\n\r");
+      nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[i]);
+
+
+      if (verbose)
+        printf("Adding variable [%s] with units of [%s]\n", p, units[i]);
+
+      nc_put_att_float(ncid,varid[i], "_FillValue",NC_FLOAT, 1, &missing_val);
+      p = units[i];
+      nc_put_att_text(ncid, varid[i], "units", strlen(p)+1, p);
+      p = titles[i];
+      nc_put_att_text(ncid, varid[i], "long_name", strlen(p)+1, p);
+
+      free(units[i]);
+      free(titles[i]);
+    }
   }
 }	/* END CREATENASAAMESNETCDF */
 

@@ -188,7 +188,7 @@ void CreatePlainNetCDF(FILE *fp)
 /* -------------------------------------------------------------------- */
 void createTime(int dims[])
 {
-  int	missing_val_i = MISSING_VALUE;
+  int	missing_val_i = int(MISSING_VALUE);
   float	missing_val_f = MISSING_VALUE;
 
   /* Time Variables, base_time/time_offset being deprecated.  Feb05
