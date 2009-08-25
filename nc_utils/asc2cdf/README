@@ -1,1 +1,1 @@
-To deploy this code, copy it to bora:/net/local_lnx/bin
+To deploy this code, run make install (-:
