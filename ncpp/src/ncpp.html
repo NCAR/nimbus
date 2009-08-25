@@ -31,7 +31,7 @@ span.comment { background-color: #88FF88; font-style: italic; }
 <body bgcolor="ffffff">
 
 <h1 align=CENTER>NCPP User's Guide</h1>
-<h1 align=CENTER>Version 2.1.1</h1>
+<h1 align=CENTER>Version 2.1.4</h1>
 <hr>
 <h1 align=CENTER>Table Of Contents</h1>
 <ol type=A>
@@ -97,9 +97,9 @@ span.comment { background-color: #88FF88; font-style: italic; }
 <a name="oview"></a>
 <hr>
 <h1 align=CENTER>Overview</h1>
-<b>ncpp</b> is an interactive plotting tool for workstations running X11/R5,
-Motif 1.2.  <b>ncpp</b> allows the user to view histograms of PMS-1D probe
-data stored in
+<b>ncpp</b> is an interactive plotting tool for Unix/Linux workstations.
+<b>ncpp</b> allows the user to view histograms of PMS-1D
+and other size-distribution probe data stored in
 <a href="http://www.unidata.ucar.edu/packages/netcdf/index.html">netCDF</a>
 files that conform to the <a href="http://www.eol.ucar.edu/raf/Software/netCDF.html">NCAR-RAF/nimbus</a>
 conventions.  Both Low-rate and Mixed-rate files are supported, and
@@ -121,12 +121,17 @@ A few of its features are:
 </ul>
 <p>
 <b>ncpp</b> was written at the <a href="http://www.eol.ucar.edu/raf">Research
-Aviation Facility</a> of <a href="http://www.ncar.ucar.edu/">The National Center for Atmospheric Research</a> to view and analyze our
-aircraft data (and NOAA's GIV).  The
-<a href="ftp://ftp.unidata.ucar.edu/pub/netcdf/Conventions/NCAR-RAF/nimbus/">NCAR-RAF/nimbus</a>
+Aviation Facility</a> of <a href="http://www.ncar.ucar.edu/">The National Center for Atmospheric Research</a> to view and analyze our particle probe histogram data.  The
+<a href="http://www.eol.ucar.edu/raf/Software/netCDF.html">NCAR-RAF/nimbus</a>
 conventions were designed to store multi-rate data, i.e., variable A may be
 stored at 5sps and variable B at 25sps.  Every effort has been made to make
 it "what you see is what you get" between the screen and printouts.
+<p>
+Note on data files:
+<ul>
+<li>Both the raw counts histogram and the concentration histogram must be present in the file.
+<li><b>ncpp</b> only recognizes a fixed set of variable names for the histograms.  This is easily modified in DataFile.cc.
+</ul>
 
 <a name="gs"></a>
 <hr>
@@ -134,9 +139,7 @@ it "what you see is what you get" between the screen and printouts.
 
 <dl>
 <dt><h2>Acquiring</h2>
-<dd><b>ncpp</b> is available via anonymous ftp from <b>ftp.atd.ucar.edu</b>.
-For Solaris binaries, <b>cd pub/archive/RAF-src/bin.Solaris2.?</b> (or <b>bin.RedHat6.?</b>
-for linux), and retrieve <b>ncpp</b>, and <b>ncpp.html</b>.
+<dd><b>ncpp</b> from the EOL/CDS <a href="http://www.eol.ucar.edu/data/software/downloadcenter">downloads page</a>, or via anonymous ftp from <b>ftp.eol.ucar.edu</b>.
 
 <dt><h3>Installing</h3>
 <dd>For system use, the binary may be placed in something like
@@ -146,9 +149,9 @@ For single user, place the binary in ~/bin (Make sure ~/bin is in your
 <b>PATH</b>).
 
 <dt><h3>Environment</h3>
-<dd><b>ncpp</b> is written in C++, requiring X11/R5 and Motif 1.2 (or later),
-and the <b>netCDF</b> library 3.0 or later.  Specifically it was developed
-on Sun Microsystems, under Solaris 2.5.1, using the gcc compiler (ver 2.95.2).
+<dd><b>ncpp</b> is written in C++, requiring X11/R6 and Motif 2.0 (or later),
+and the <b>netCDF</b> library 3.0 or later.  Our current development platform
+Redhat and Fedora Linux.
 <p>
 <b>ncpp</b> uses, though it is not required, a shell environment variable
 called <b>DATA_DIR</b> as the default directory to locate data files.
@@ -410,7 +413,7 @@ the plot trace colors.
 <hr>
 <h1>Known Problems</h1>
 <ul>
-<li> Fedora Core 5 : setenv XKEYSYMDB /usr/share/X11/XKeysymDB
+<li>Fedora Core 5 (and above): setenv XKEYSYMDB /usr/share/X11/XKeysymDB
 <li>Invalid data files may cause a core dump.
 <li><b>ncpp</b> is expecting OAP probe concentration data to be in N/L and
 all others in N/cm3.
@@ -421,8 +424,6 @@ remaing panels).
 <li>When viewing high-rate data, you must have more panels displayed than there
 are samples in a given second (e.g. For 10hz data, you must have 3x4 or more
 panels), otherwise "PgFwd" and "PgBkd" will do nothing.
-<li>Performing "File/New datafile" a second time will cause a core dump on
-Redhat 7.*.  Bug in the gcc 2.96 compilers.
 </ul>
 <p>
 
@@ -445,6 +446,6 @@ Research Aviation Facility.<br>
 <hr>
 <font size=2>
 Last update:
-Wed Feb  1 21:37:17 MST 2006
+Tue Aug 25 07:26:43 MDT 2009
 </body>
 </html>
