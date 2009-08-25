@@ -1,0 +1,22 @@
+.na
+.nh
+.TH NCFILLVAR 1 "27 May 2009" "Local Command"
+.SH NAME
+ncfillvar \- netCDF utility to create a new var and fill with missing
+.SH SYNOPSIS
+.B ncfillvar -v var0,var1,...,varn primary_file
+.SH DESCRIPTION
+.B ncfillvar 
+is a program for creating a new variable within the primary netCDF file and
+filling that variable with missing values.  The -v option is required. It
+lists the variables that will be created in the primary file. The variable
+A1DCR_RPC must be the second variable in the primary file for the program to
+work.
+.PP
+.SH BUGS
+.PP
+The variable A1DCR_RPC must be the second variable in the primary file for 
+the program to work. This is a temporary kludge because it was expedient.
+.SH AUTHOR
+Janine Goldstein, National Center for Atmospheric Research
+(shamelessly stealing code from ncmerge written by Chris Webster)
