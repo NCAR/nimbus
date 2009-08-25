@@ -6,7 +6,7 @@ FULL NAME:	netCDF Data File Class
 
 DESCRIPTION:	
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997-05
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-09
 -------------------------------------------------------------------------
 */
 
@@ -20,7 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-05
 static const char *validProbeNames[] = {
 	"AFSSP","AF300","APCAS","A260X","AASAS","A200X","A200Y","A300X",
 	"AMASP","A1DC","A2DC","A1DP","A2DP","AS100","AS200","AS300",
-	"ACDP", "ARDMA","ACLMT","ACMCA","AHVPS","AUHSAS","ASID",NULL };
+	"ACDP", "ARDMA","ACLMT","ACMCA","AHVPS","AUHSAS","ASID","ACAPS",NULL };
 
 
 /* -------------------------------------------------------------------- */
