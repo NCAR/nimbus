@@ -13,9 +13,7 @@
 #define DEFAULT_TI_LENGTH   (20)
 #define MISSING_VALUE       (-32767.0)
 
-#define PLAIN_FILE	0
-#define NASA_AMES	1
-#define NASA_LANGLEY	2
+enum InputFileType { PLAIN_FILE, NASA_AMES, NASA_LANGLEY };
 
 extern char	buffer[];
 extern int	ncid, varid[], nVariables, timeOffsetID, timeVarID, baseTimeID;

@@ -35,7 +35,8 @@ static char	*globalAttrFile = 0;
 
 /* Command line option flags.
  */
-bool	fileType = PLAIN_FILE, secondsSinceMidnight = false, Colonless = false;
+InputFileType	fileType = PLAIN_FILE;
+bool	secondsSinceMidnight = false, Colonless = false;
 bool    verbose = false, histogram = false;
 int	SkipNlines = 1;
 
@@ -62,7 +63,7 @@ int main(int argc, char *argv[])
   float	dataValue;
   size_t index[3];
 
-  putenv("TZ=UTC");	// All time calcs in UTC.
+  putenv((char *)"TZ=UTC");	// All time calcs in UTC.
   FlightDate[0] = 0;
 
   i = ProcessArgv(argc, argv);
