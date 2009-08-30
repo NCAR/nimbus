@@ -108,7 +108,7 @@ void InitAircraftSpecs(const char fileName[])
 }	/* END INITAIRCRAFT */
 
 /* -------------------------------------------------------------------- */
-char *GetAircraftParameter(const char tailNumber[],  char parameter[])
+char *GetAircraftParameter(const char tailNumber[], const char parameter[])
 {
   int	i, j, k;
   char	*p;
