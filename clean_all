@@ -1,16 +1,30 @@
 #!/bin/csh
 
-foreach file ( a2d_cals hdr_api lib* vardb/lib hdrbld ncplot ncpp/src vardb/editor xhd xpms2d/src nimbus/src/qc instruments/mcr/display/src instruments/mcr/processor/src instruments/rdma ads_utils/edADShdr rtplot instruments/hvps/hvpsdiag instruments/usb2d/usb2diag ads/disc/src ads/dsm/src )
+# This could all be one big for loop, but I broke it down for readability.
+
+foreach file ( a2d_cals lib* vardb/lib ncplot ncpp/src vardb/editor xpms2d/src nimbus/src/qc ads_utils/edADShdr )
   (cd $file; echo $file; make clean)
 end
 
-cd nc_utils
-foreach file ( asc2cdf n2asc ncReorder ncav ncextr ncmerge )
+cd ads2
+foreach file ( ads/disc/src ads/dsm/src hdr_api hdrbld rtplot xhd )
   (cd $file; echo $file; make clean)
 end
 cd ..
 
-foreach file ( nimbus )
+cd instruments
+foreach file ( mcr/display/sr mcr/processor/src rdma hvps/hvpsdiag usb2d/usb2diag )
+  (cd $file; echo $file; make clean)
+end
+cd ..
+
+cd nc_utils
+foreach file ( asc2cdf flt_time n2asc ncReorder nc_sane ncav ncextr ncfillvar ncmerge )
+  (cd $file; echo $file; make clean)
+end
+cd ..
+
+foreach file ( nimbus GoogleEarth/acTrack2kml )
   (cd $file; echo $file; scons -c)
 end
 

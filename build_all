@@ -59,7 +59,7 @@ end
 
 # Programs with "install" target.
 
-foreach file ( psql2xml ads2/hdrbld ncplot ncpp/src vardb/editor ads2/xhd xpms2d/src nimbus/src/qc instruments/mcr/display/src instruments/mcr/processor/src instruments/rdma ads_utils/edADShdr)
+foreach file ( psql2xml ads2/hdrbld ncplot ncpp/src vardb/editor ads2/xhd xpms2d/src nimbus/src/qc instruments/rdma ads_utils/edADShdr)
   (cd $file; echo ""; make install)
 end
 
@@ -72,16 +72,18 @@ end
 # Programs withOUT install target.  WINDS requires xview toolkit.
 
 if ( $?WINDS ) then
-  foreach file ( ads2/ads/disc/src ads2/ads/dsm/src ads2/winds/src )
+  cd ad2
+  foreach file ( ads/disc/src ads/dsm/src winds/src )
     (cd $file; echo $file; make)
   end
+  cd ..
 endif
 
 
 # Programs with Qt [and Qwt].
 # rtplot requires $NIMBUS to be set....
 setenv NIMBUS `pwd`/nimbus
-foreach file ( rtplot instruments/hvps/hvpsdiag instruments/usb2d/usb2diag )
+foreach file ( instruments/hvps/hvpsdiag instruments/usb2d/usb2diag )
   (cd $file; echo $file; qmake; make)
 end
 unsetenv NIMBUS
@@ -90,7 +92,7 @@ unsetenv NIMBUS
 # Programs with "install" target.
 
 cd nc_utils
-foreach file ( asc2cdf flt_time n2asc ncReorder ncav ncextr ncmerge nc_sane )
+foreach file ( asc2cdf flt_time n2asc ncReorder ncav ncextr ncfillvar ncmerge nc_sane )
   (cd $file; echo $file; make install)
 end
 cd ..
