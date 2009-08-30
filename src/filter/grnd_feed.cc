@@ -72,7 +72,8 @@ void GroundFeed::setCoordinatesFrom(const std::vector<var_base *> & list) const
 }
 
 /* -------------------------------------------------------------------- */
-void GroundFeed::BroadcastData(const std::string & timeStamp) 
+void GroundFeed::BroadcastData(const std::string & timeStamp)
+	throw(IOException)
 {
   static int rate_cntr = 0;
 
@@ -211,7 +212,13 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
     ::LogMessage(msg);
     return;
   }
-  _socket->sendto(buffer, bufLen, 0, *_to);
+
+  try {
+    _socket->sendto(buffer, bufLen, 0, *_to);
+  }
+  catch (const nidas::util::IOException& e) {
+    fprintf(stderr, "nimbus::GroundFeed: %s\n", e.what());
+  }
 
 //  printf("\ncompressed %d -> %d\n", groundString.str().length(), bufLen);
   printf("GroundFeed: %s\n", groundString.str().c_str());

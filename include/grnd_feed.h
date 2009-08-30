@@ -22,7 +22,8 @@ class GroundFeed : public UDP_Base
 public:
   GroundFeed(int rate);
 
-  void	BroadcastData(const std::string & timeStamp);
+  void	BroadcastData(const std::string & timeStamp)
+	throw(nidas::util::IOException);
 
 protected:
   /**
