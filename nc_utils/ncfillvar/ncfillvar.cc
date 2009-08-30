@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
-  putenv("TZ=UTC");
+  putenv((char *)"TZ=UTC");
 
   /* Get variable list if it exists.
    */
