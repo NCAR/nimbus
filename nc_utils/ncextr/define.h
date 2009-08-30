@@ -10,6 +10,7 @@ DESCRIPTION:	Header File for Nimbus Skeleton.
 #define DEFINE_H
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <Xm/Xm.h>
