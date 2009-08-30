@@ -36,10 +36,12 @@ void xlhgm(RAWTBL *varp, void *p, NR_TYPE *output)
         hgm = 366.6667 - 333.3333 * hgmv;
 
       if (atoi(cfg.ProjectNumber().c_str()) == 201)
+        {
         if (hgmv < -7.3)
           hgm = -948.0 - 196.0 * hgmv;
         else
           hgm = 264.0 - 29.98 * hgmv;
+        }
 
       output[i] = hgm * 0.3048;
       }

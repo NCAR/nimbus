@@ -82,8 +82,8 @@ void addDOFtoAttrs(const var_base *varp, NR_TYPE eaw[], NR_TYPE dof[])
 /* -------------------------------------------------------------------- */
 void sTwodInit(var_base *varp)
 {
-  size_t	i, j, length, probeNum, nDiodes, minRange;
-  char		*p, name[32];
+  size_t	i, length, probeNum, nDiodes, minRange;
+  char		*p;
   float		resolution;
   const char	*serialNumber;
   NR_TYPE	eaw[maxBins], dof[maxBins];

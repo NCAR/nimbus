@@ -590,11 +590,12 @@ static int GetNext2Dfile()
 }	/* END GETNEXT2DFILE */
 
 /* -------------------------------------------------------------------- */
-bool Next2dRecord(P2d_rec *record, int probeCnt, short id)
+bool Next2dRecord(P2d_rec *record, int probeCnt, ushort id)
 {
   long	len;
   int	nbytes, size;
   char	buff[32000];
+  ushort *rec_id = (ushort *)buff;
 
   do
     {
@@ -606,7 +607,7 @@ bool Next2dRecord(P2d_rec *record, int probeCnt, short id)
     if (nbytes <= 0)
       break;
 
-    switch (ntohs(*((ushort *)buff)))
+    switch (ntohs(*rec_id))
       {
       case PMS2DC1: case PMS2DC2:	/* PMS2D */
       case PMS2DP1: case PMS2DP2:
@@ -637,7 +638,7 @@ bool Next2dRecord(P2d_rec *record, int probeCnt, short id)
 
     nbytes += read(twoDfd[probeCnt], &buff[ONE_WORD], size);
     }
-  while (ntohs(*((ushort *)buff)) != id);
+  while (ntohs(*rec_id) != id);
 
   if (nbytes <= 0)
     return(false);
@@ -661,8 +662,8 @@ void checkForDayErrors(Hdr_blk * hdr)
   static bool rollOver = false;
   static int prevDay = -1;
 
-  int   y = ntohs(hdr->year),
-        mon = ntohs(hdr->month),
+  int   // y = ntohs(hdr->year),
+        // mon = ntohs(hdr->month),
         d = ntohs(hdr->day),
         h = ntohs(hdr->hour),
         m = ntohs(hdr->minute),
