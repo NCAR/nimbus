@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     ++argvIdx;
   }
 
-  putenv("TZ=UTC");     // Perform all time calculations at UTC.
+  putenv((char *)"TZ=UTC");     // Perform all time calculations at UTC.
 
 
   for (; argvIdx < argc; ++argvIdx)
