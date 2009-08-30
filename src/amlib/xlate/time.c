@@ -51,10 +51,12 @@ void xlyear(RAWTBL *varp, void *input, NR_TYPE *output)
     *output = (NR_TYPE)ntohs(((Hdr_blk *)input)->year);
 
   if (*output < 1000)	// We now have year 2070 problem.
+    {
     if (*output < 70)
       *output += 2000;
     else
       *output += 1900;
+    }
 
 }	/* END XLYEAR */
 

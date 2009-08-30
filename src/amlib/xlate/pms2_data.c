@@ -76,7 +76,7 @@ static void AddMore2dData(Queue *, long, int);
 void	Process(Queue *, P2d_rec *, int probeCnt), sTwodInit(var_base *varp);
 void	ProcessHVPS(Queue *, P2d_rec *, int probeCnt), sTwodInitH(var_base *varp);
 
-bool	Next2dRecord(P2d_rec *, int, short);
+bool	Next2dRecord(P2d_rec *, int, ushort);
 
 
 /* -------------------------------------------------------------------- */

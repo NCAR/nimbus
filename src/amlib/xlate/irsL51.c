@@ -244,10 +244,12 @@ void xlvzi51(RAWTBL *varp, void *input, NR_TYPE *output)
 		vzi0	= vzi;
 
 		if (fabs((double)vzidif) > 600.0)
+			{
 			if (vzidif < 0.0)
 				ncvzi += 800;
 			else
 				ncvzi -= 800;
+			}
 
 		vzi += ncvzi;
 

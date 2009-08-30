@@ -37,10 +37,10 @@ void maspInit(var_base *varp)
   char  *p, *serialNumber;
  
 //  serialNumber = varp->SerialNumber;
-serialNumber = "MASP_DEF";
+serialNumber = (char *)"MASP_DEF";
   probeNum = varp->ProbeCount;
  
-  sprintf(buffer, PMS_SPEC_FILE, cfg.ProjectDirectory().c_str(), cfg.ProjectNumber().c_str());
+  MakeProjectFileName(buffer, PMS_SPEC_FILE);
   InitPMSspecs(buffer);
  
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
