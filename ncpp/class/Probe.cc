@@ -60,42 +60,6 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
 
   type = NoProbe;
 
-  if (name.find("260X") != name.npos)
-    type = X260;
-  else
-  if (name.find("FSSP") != name.npos)
-    type = FSSP;
-  else
-  if (name.find("F300") != name.npos)
-    type = F300;
-  else
-  if (name.find("PCAS") != name.npos || name.find("ASAS") != name.npos)
-    type = PCASP;
-  else
-  if (name.find("200X") != name.npos)
-    type = X200;
-  else
-  if (name.find("200Y") != name.npos)
-    type = Y200;
-  else
-  if (name.find("SID") != name.npos)
-    type = SIDII;
-  else
-  if (name.find("MASP") != name.npos)
-    type = MASP;
-  else
-  if (name.find("300X") != name.npos)
-    type = X300;
-  else
-  if (name.find("2DC") != name.npos || name.find("1DC") != name.npos)
-    type = TWODC;
-  else
-  if (name.find("2DP") != name.npos || name.find("1DP") != name.npos)
-    type = TWODP;
-  else
-  if (name.find("HVPS") != name.npos)
-    type = HVPS;
-  else
   if (name.find("S100") != name.npos || name.find("CDP") != name.npos)
     type = S100;
   else
@@ -108,11 +72,50 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
   if (name.find("S300") != name.npos)
     type = S300;
   else
+  if (name.find("260X") != name.npos)
+    type = X260;
+  else
+  if (name.find("FSSP") != name.npos)
+    type = FSSP;
+  else
+  if (name.find("F300") != name.npos)
+    type = F300;
+  else
+  if (name.find("PCAS") != name.npos || name.find("ASAS") != name.npos)
+    type = PCASP;
+  else
+  if (name.find("2DC") != name.npos || name.find("1DC") != name.npos)
+    type = TWODC;
+  else
+  if (name.find("2DP") != name.npos || name.find("1DP") != name.npos)
+    type = TWODP;
+  else
+  if (name.find("HVPS") != name.npos)
+    type = HVPS;
+  else
   if (name.find("RDMA") != name.npos)
     type = RDMA;
   else
   if (name.find("CLMT") != name.npos)
     type = CLIMET;
+  else
+  if (name.find("SID") != name.npos)
+    type = SIDII;
+  else
+  if (name.find("CAPS") != name.npos)
+    type = CAPS;
+  else
+  if (name.find("MASP") != name.npos)
+    type = MASP;
+  else
+  if (name.find("200X") != name.npos)
+    type = X200;
+  else
+  if (name.find("200Y") != name.npos)
+    type = Y200;
+  else
+  if (name.find("300X") != name.npos)
+    type = X300;
   else
   if (name.find("MCA") != name.npos)
     type = CMCA;
