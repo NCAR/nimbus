@@ -208,6 +208,13 @@ int main(int argc, char *argv[])
     //If subseconds are given in the time column, offset here.-JAG
     for (hz = subsec; hz < dataRate; ++hz)
       {
+      // If histogram data, zeroth data bin must be zero for legacy
+      // reasons.
+      if (histogram) {
+	dataValue = 0;
+        index[0] = rec; index[1] = hz; index[2] = 0;
+        nc_put_var1_float(ncid, varid[1], index, &dataValue);
+      }
       for (i = 0; i < nVariables; ++i)
         {
         if ((p = strtok(NULL, ", \t\n\r")) == NULL)
@@ -224,7 +231,7 @@ int main(int argc, char *argv[])
           }
 
         if (histogram) {
-          index[0] = rec; index[1] = hz; index[2] = i;
+          index[0] = rec; index[1] = hz; index[2] = i+1;
           nc_put_var1_float(ncid, varid[1], index, &dataValue);
         }
         else

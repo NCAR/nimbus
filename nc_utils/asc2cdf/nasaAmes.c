@@ -200,8 +200,8 @@ void CreateNASAamesNetCDF(FILE *fp)
 
   if (histogram)
   {
-    sprintf(buffer, "Vector%d", nVariables);
-    nc_def_dim(ncid, buffer, nVariables, &VectorDim);
+    sprintf(buffer, "Vector%d", nVariables+1);
+    nc_def_dim(ncid, buffer, nVariables+1, &VectorDim);
     dims[2] = VectorDim;
   }
 
