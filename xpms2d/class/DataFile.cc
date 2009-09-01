@@ -99,7 +99,7 @@ ADS_DataFile::ADS_DataFile(char fName[])
     gz_fd = gzopen(_fileName.c_str(), "rb");
   else
 #endif
-    fp = fopen(_fileName.c_str(), "rb");
+    fp = fopen64(_fileName.c_str(), "rb");
 
   if ((gzipped && gz_fd <= 0) || (!gzipped && fp == NULL))
     {
