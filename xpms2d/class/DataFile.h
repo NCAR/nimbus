@@ -51,7 +51,7 @@ typedef std::vector<Probe *> ProbeList;
 class ADS_DataFile {
 
 public:
-  ADS_DataFile(char fName[]);
+  ADS_DataFile(const char fName[]);
   ~ADS_DataFile();
 
   const std::string &
@@ -84,7 +84,7 @@ public:
 
   void	ToggleSyntheticData();
 
-  bool	isValidProbe(char *pr);
+  bool	isValidProbe(const char *pr) const;
 
   const ProbeList&
   Probes() const { return _probeList; }
@@ -95,7 +95,7 @@ protected:
   typedef struct { long index; short time[3]; } Index;
 
   void		initADS2();
-  void		initADS3();
+  void		initADS3(char *hdrString);
 
   long long	ntohll(long long * p) const;
 
@@ -120,7 +120,7 @@ protected:
 
   ProbeList	_probeList;
 
-  bool		gzipped, useTestRecord;
+  bool		_gzipped, _useTestRecord;
   HeaderType	_fileHeaderType;
 
   Index		*indices;

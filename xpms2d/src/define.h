@@ -30,7 +30,7 @@ FULL NAME:	Include File to Include the Include Files
 #define SecondsSinceMidnite(t)	(t[0] * 3600 + t[1] * 60 + t[2])
 
 
-#define BUFFSIZE	2048
+#define BUFFSIZE	4096
 #define PATH_LEN	256
 #define NAMELEN		16
 

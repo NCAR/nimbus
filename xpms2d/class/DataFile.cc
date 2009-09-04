@@ -81,50 +81,50 @@ static unsigned short HtestParticle[] = {
 static const size_t P2dLRpPR = 1;
 
 /* -------------------------------------------------------------------- */
-ADS_DataFile::ADS_DataFile(char fName[])
+ADS_DataFile::ADS_DataFile(const char fName[])
 {
   _hdr = 0;
   _fileName = fName;
 
   if (_fileName.find(".gz", 0) != std::string::npos)
     {
-    gzipped = true;
+    _gzipped = true;
     printf("We have gzipped file.\n");
     }
   else
-    gzipped = false;
+    _gzipped = false;
 
 #ifdef PNG
-  if (gzipped)
+  if (_gzipped)
     gz_fd = gzopen(_fileName.c_str(), "rb");
   else
 #endif
     fp = fopen64(_fileName.c_str(), "rb");
 
-  if ((gzipped && gz_fd <= 0) || (!gzipped && fp == NULL))
+  if ((_gzipped && gz_fd <= 0) || (!_gzipped && fp == NULL))
     {
     sprintf(buffer, "Can't open file %s", _fileName.c_str());
     ErrorMsg(buffer);
     return;
     }
 
-  useTestRecord = false;
+  _useTestRecord = false;
 
 #ifdef PNG
-  if (gzipped)
+  if (_gzipped)
     {
-    gzread(gz_fd, buffer, 100);
+    gzread(gz_fd, buffer, 4096);
     gzseek(gz_fd, 0, SEEK_SET);	// gzrewind does not seem to work on
     }
   else
 #endif
     {
-    fread(buffer, 100, 1, fp);
+    fread(buffer, 4096, 1, fp);
     rewind(fp);
     }
 
   if (strstr(buffer, "<PMS2D>") )
-    initADS3();	// the XML header file.
+    initADS3(buffer);	// the XML header file.
   else
   if (isValidProbe(buffer))
     {
@@ -178,27 +178,28 @@ void ADS_DataFile::initADS2()
 }
 
 /* -------------------------------------------------------------------- */
-void ADS_DataFile::initADS3()
+void ADS_DataFile::initADS3(char * hdrString)
 {
   std::string XMLgetElementValue(const char s[]);
 
   _fileHeaderType = PMS2D;
 
-  while (fgets(buffer, 512, fp))
+  char * p;
+  for (p = strtok(hdrString, "\n"); p; p = strtok(NULL, "\n"))
     {
-    if ( strstr(buffer, "</PMS2D>\n") )
+    if ( strstr(p, "</PMS2D>\n") )
       break;
-    if ( strstr(buffer, "<Project>") )
-      _projectName = XMLgetElementValue(buffer);
+    if ( strstr(p, "<Project>") )
+      _projectName = XMLgetElementValue(p);
     else
-    if ( strstr(buffer, "<FlightNumber>") )
-      _flightNumber = XMLgetElementValue(buffer);
+    if ( strstr(p, "<FlightNumber>") )
+      _flightNumber = XMLgetElementValue(p);
     else
-    if ( strstr(buffer, "<FlightDate>") )
-      _flightDate = XMLgetElementValue(buffer);
+    if ( strstr(p, "<FlightDate>") )
+      _flightDate = XMLgetElementValue(p);
     else
-    if ( strstr(buffer, "<probe") )
-      _probeList.push_back(new Probe(buffer, PMS2_SIZE));
+    if ( strstr(p, "<probe") )
+      _probeList.push_back(new Probe(p, PMS2_SIZE));
     }
 }
 
@@ -209,7 +210,7 @@ void ADS_DataFile::ToggleSyntheticData()
   unsigned long		*p;
   unsigned short	*s;
 
-  useTestRecord = 1 - useTestRecord;
+  _useTestRecord = 1 - _useTestRecord;
 
   strcpy((char *)&CtestRecord.id, "C1");
   CtestRecord.hour = 12;
@@ -330,7 +331,7 @@ bool ADS_DataFile::FirstPMS2dRecord(P2d_rec *buff)
 {
   currPhys = currLR = 0;
 
-  if (useTestRecord)
+  if (_useTestRecord)
     {
     memcpy((char *)buff, (char *)&CtestRecord, sizeof(P2d_rec));
     return(true);
@@ -340,7 +341,7 @@ bool ADS_DataFile::FirstPMS2dRecord(P2d_rec *buff)
     return(false);
 
 #ifdef PNG
-  if (gzipped)
+  if (_gzipped)
     {
     gzseek(gz_fd, indices[0].index, SEEK_SET);
     gzread(gz_fd, physRecord, sizeof(P2d_rec) * P2dLRpPR);
@@ -361,7 +362,7 @@ bool ADS_DataFile::FirstPMS2dRecord(P2d_rec *buff)
 /* -------------------------------------------------------------------- */
 bool ADS_DataFile::NextPMS2dRecord(P2d_rec *buff)
 {
-  if (useTestRecord)
+  if (_useTestRecord)
     {
     if (testRecP == &CtestRecord)
       testRecP = &PtestRecord;
@@ -397,7 +398,7 @@ bool ADS_DataFile::NextPMS2dRecord(P2d_rec *buff)
       }
 
 #ifdef PNG
-    if (gzipped)
+    if (_gzipped)
       {
       gzseek(gz_fd, indices[currPhys].index, SEEK_SET);
       gzread(gz_fd, physRecord, sizeof(P2d_rec) * P2dLRpPR);
@@ -419,7 +420,7 @@ bool ADS_DataFile::NextPMS2dRecord(P2d_rec *buff)
 /* -------------------------------------------------------------------- */
 bool ADS_DataFile::PrevPMS2dRecord(P2d_rec *buff)
 {
-  if (useTestRecord)
+  if (_useTestRecord)
     {
     if (testRecP == &CtestRecord)
       testRecP = &PtestRecord;
@@ -450,7 +451,7 @@ bool ADS_DataFile::PrevPMS2dRecord(P2d_rec *buff)
       }
 
 #ifdef PNG
-    if (gzipped)
+    if (_gzipped)
       {
       gzseek(gz_fd, indices[currPhys].index, SEEK_SET);
       gzread(gz_fd, physRecord, sizeof(P2d_rec) * P2dLRpPR);
@@ -476,7 +477,7 @@ int ADS_DataFile::NextPhysicalRecord(char buff[])
   int	size = sizeof(short);
 
 #ifdef PNG
-  if (gzipped)
+  if (_gzipped)
     {
     savePos = gztell(gz_fd);
     rc = gzread(gz_fd, buff, size) / size;
@@ -528,7 +529,7 @@ int ADS_DataFile::NextPhysicalRecord(char buff[])
     }
 
 #ifdef PNG
-  if (gzipped)
+  if (_gzipped)
     {
     if (gzread(gz_fd, &buff[sizeof(short)], size) != size)
       size = 0;
@@ -605,7 +606,7 @@ void ADS_DataFile::buildIndices()
   if (_fileHeaderType != PMS2D)
     {
 #ifdef PNG
-    if (gzipped)
+    if (_gzipped)
       gzseek(gz_fd, 0, SEEK_SET);
     else
 #endif
@@ -651,7 +652,7 @@ void ADS_DataFile::buildIndices()
   if (_fileHeaderType != PMS2D)
     {
 #ifdef PNG
-    if (gzipped)
+    if (_gzipped)
       gzseek(gz_fd, 0, SEEK_SET);
     else
 #endif
@@ -763,7 +764,7 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
 }
 
 /* -------------------------------------------------------------------- */
-bool ADS_DataFile::isValidProbe(char *pr)
+bool ADS_DataFile::isValidProbe(const char *pr) const
 {
   // Sanity check.
   if ((pr[0] == 'C' || pr[0] == 'P' || pr[0] == 'H') && isdigit(pr[1]))
@@ -912,7 +913,7 @@ ADS_DataFile::~ADS_DataFile()
     delete _probeList[i];
 
 #ifdef PNG
-  if (gzipped)
+  if (_gzipped)
     gzclose(gz_fd);
   else
 #endif
