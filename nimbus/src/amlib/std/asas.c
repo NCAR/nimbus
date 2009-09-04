@@ -100,12 +100,12 @@ void casasInit(var_base *varp)
 void scasas(DERTBL *varp)	// Original PMS ASAS/PCASP probes.
 {
   size_t	i, probeNum;
-  NR_TYPE	*actual, *concentration, activity, *dia, *dia2, *dia3;
+  NR_TYPE	*concentration, activity, *dia, *dia2, *dia3;
   NR_TYPE	flow;           /* PCAS Flow Rate       */
   NR_TYPE	sampleVolume[MAX_BINS];
   NR_TYPE	tas = 0.0;
 
-  actual	= GetVector(varp, 0);
+  const NR_TYPE * actual = GetVector(varp, 0);
   activity	= GetSample(varp, 1);
   flow		= GetSample(varp, 2);
   probeNum	= varp->ProbeCount;

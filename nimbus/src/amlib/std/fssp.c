@@ -176,14 +176,14 @@ void cfsspInit(var_base *varp)
 void scfssp(DERTBL *varp)
 {
   size_t	i, probeNum;
-  NR_TYPE	*actual, *concentration, *dia, *dia2, *dia3;
+  NR_TYPE	*concentration, *dia, *dia2, *dia3;
   NR_TYPE	tas;		/* True Air Speed	*/
   NR_TYPE	activity;	/* Activity		*/
   NR_TYPE	fbmfr;		/* Beam Fraction	*/
   NR_TYPE	frange;
   NR_TYPE	sampleVolume[BINS_16];
 
-  actual	= GetVector(varp, 0);
+  const NR_TYPE * actual = GetVector(varp, 0);
   tas		= GetSampleFor1D(varp, 1);
   activity	= GetSample(varp, 2);
   fbmfr		= GetSample(varp, 3);
@@ -233,14 +233,14 @@ void scfssp(DERTBL *varp)
 void scs100(DERTBL *varp)
 {
   size_t	i, probeNum;
-  NR_TYPE       *actual, *concentration, *dia, *dia2, *dia3;
+  NR_TYPE       *concentration, *dia, *dia2, *dia3;
   NR_TYPE       tas;		/* True Air Speed		*/
   NR_TYPE       rejAT;		/* Rejected, Avg Transit	*/
   NR_TYPE       oflow;		/* Lost counts to overflow	*/
   NR_TYPE       frange;
   NR_TYPE       sampleVolume[BINS_40+1];
 
-  actual	= GetVector(varp, 0);
+  const NR_TYPE * actual = GetVector(varp, 0);
   tas		= GetSampleFor1D(varp, 1);
   rejAT		= GetSample(varp, 2);
   oflow		= GetSample(varp, 3);

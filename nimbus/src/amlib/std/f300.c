@@ -118,10 +118,10 @@ void cf300Init(var_base *varp)
 void scf300(DERTBL *varp)
 {
   size_t	i, probeNum;
-  NR_TYPE	*actual, *concentration, *dia, *dia2, *dia3;
+  NR_TYPE	*concentration, *dia, *dia2, *dia3;
   NR_TYPE	tas, vol, sampleVolume[BINS_40+1];
 
-  actual	= GetVector(varp, 0);
+  const NR_TYPE * actual = GetVector(varp, 0);
   tas		= GetSampleFor1D(varp, 1);
   probeNum	= varp->ProbeCount;
   dia		= cell_size[probeNum];
