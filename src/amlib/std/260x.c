@@ -139,11 +139,11 @@ void c260xInit(var_base *varp)
 void sc260x(DERTBL *varp)
 {
   size_t	i, probeNum;
-  NR_TYPE	*actual, tas, *concentration, *dia, *dia2, *dia3;
+  NR_TYPE	tas, *concentration, *dia, *dia2, *dia3;
   NR_TYPE	dof[BINS_64],	/* Depth Of Field	*/
 		sampleVolume[BINS_64];
 
-  actual	= GetVector(varp, 0);
+  const NR_TYPE * actual = GetVector(varp, 0);
   tas		= GetSampleFor1D(varp, 1);
   probeNum	= varp->ProbeCount;
   dia		= cell_size[probeNum];
