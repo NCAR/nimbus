@@ -92,7 +92,7 @@ public:
 protected:
   enum HeaderType { NoHeader, ADS2, PMS2D };
 
-  typedef struct { long index; short time[3]; } Index;
+  typedef struct { long long index; short time[3]; } Index;
 
   void		initADS2();
   void		initADS3(char *hdrString);
@@ -116,7 +116,7 @@ protected:
   int		gz_fd;
 #endif
   FILE		*fp;
-  size_t	savePos;
+  long long	savePos;
 
   ProbeList	_probeList;
 

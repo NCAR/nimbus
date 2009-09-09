@@ -67,6 +67,7 @@ void NewDataFile(Widget w, XtPointer client, XtPointer call)
 {
   char *dataFile;
 
+  cursor.WaitCursor(mainPlot->Wdgt());
   fileSel->ExtractFileName(
          ((XmFileSelectionBoxCallbackStruct *)call)->value, &dataFile);
  
@@ -74,6 +75,7 @@ void NewDataFile(Widget w, XtPointer client, XtPointer call)
   controlWindow->SetFileNames();
   controlWindow->SetProbes();
   controlWindow->PositionTime(True);
+  cursor.PointerCursor(mainPlot->Wdgt());
 
 }	/* END NEWDATAFILE */
 
@@ -88,11 +90,13 @@ void AddDataFile(Widget w, XtPointer client, XtPointer call)
     return;
     }
  
+  cursor.WaitCursor(mainPlot->Wdgt());
   fileSel->ExtractFileName(
          ((XmFileSelectionBoxCallbackStruct *)call)->value, &dataFile);
  
   fileMgr.AddFile(dataFile);
   controlWindow->SetFileNames();
+  cursor.PointerCursor(mainPlot->Wdgt());
 
 }	/* END ADDDATAFILE */
 

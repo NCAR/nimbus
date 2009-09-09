@@ -10,6 +10,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2001
 -------------------------------------------------------------------------
 */
 
+#define _LARGEFILE64_SOURCE
+
+#define htonll	ntohll
+
+
 #include "DataFile.h"
 
 #include <unistd.h>
@@ -343,13 +348,13 @@ bool ADS_DataFile::FirstPMS2dRecord(P2d_rec *buff)
 #ifdef PNG
   if (_gzipped)
     {
-    gzseek(gz_fd, indices[0].index, SEEK_SET);
+    gzseek(gz_fd, (z_off_t)indices[0].index, SEEK_SET);
     gzread(gz_fd, physRecord, sizeof(P2d_rec) * P2dLRpPR);
     }
   else
 #endif
     {
-    fseek(fp, indices[0].index, SEEK_SET);
+    fseeko64(fp, indices[0].index, SEEK_SET);
     fread(physRecord, sizeof(P2d_rec), P2dLRpPR, fp);
     }
 
@@ -400,13 +405,13 @@ bool ADS_DataFile::NextPMS2dRecord(P2d_rec *buff)
 #ifdef PNG
     if (_gzipped)
       {
-      gzseek(gz_fd, indices[currPhys].index, SEEK_SET);
+      gzseek(gz_fd, (z_off_t)indices[currPhys].index, SEEK_SET);
       gzread(gz_fd, physRecord, sizeof(P2d_rec) * P2dLRpPR);
       }
     else
 #endif
       {
-      fseek(fp, indices[currPhys].index, SEEK_SET);
+      fseeko64(fp, indices[currPhys].index, SEEK_SET);
       fread(physRecord, sizeof(P2d_rec), P2dLRpPR, fp);
       }
     }
@@ -453,13 +458,13 @@ bool ADS_DataFile::PrevPMS2dRecord(P2d_rec *buff)
 #ifdef PNG
     if (_gzipped)
       {
-      gzseek(gz_fd, indices[currPhys].index, SEEK_SET);
+      gzseek(gz_fd, (z_off_t)indices[currPhys].index, SEEK_SET);
       gzread(gz_fd, physRecord, sizeof(P2d_rec) * P2dLRpPR);
       }
     else
 #endif
       {
-      fseek(fp, indices[currPhys].index, SEEK_SET);
+      fseeko64(fp, indices[currPhys].index, SEEK_SET);
       fread(physRecord, sizeof(P2d_rec), P2dLRpPR, fp);
       }
     }
@@ -485,7 +490,7 @@ int ADS_DataFile::NextPhysicalRecord(char buff[])
   else
 #endif
     {
-    savePos = ftell(fp);
+    savePos = ftello64(fp);
 //  if ((nBytes = read(fileno(fp), buff, size)) == 0 && GetNextADSfile())
     rc = fread(buff, size, 1, fp);
     }
@@ -585,7 +590,7 @@ void ADS_DataFile::buildIndices()
 
     if (5 != ntohl(5))		// If Intel architecture, swap bytes.
       for (size_t i = 0; i < len / sizeof(Index); ++i)
-        indices[i].index = ntohl(indices[i].index);
+        indices[i].index = ntohll(&indices[i].index);
 
     nIndices = (len / sizeof(Index)) - 1;
     return;
@@ -685,14 +690,14 @@ void ADS_DataFile::buildIndices()
 
     if (5 != ntohl(5))		// If Intel architecture, swap bytes.
       for (size_t i = 0; i < cnt+1; ++i)
-        indices[i].index = htonl(indices[i].index);
+        indices[i].index = htonll(&indices[i].index);
 
     fwrite(indices, (cnt+1) * sizeof(Index), 1, fpI);
     fclose(fpI);
 
     if (5 != ntohl(5))		// Swap em back for current run.
       for (size_t i = 0; i < cnt+1; ++i)
-        indices[i].index = ntohl(indices[i].index);
+        indices[i].index = ntohll(&indices[i].index);
     }
 
   nIndices = cnt;
@@ -776,13 +781,13 @@ bool ADS_DataFile::isValidProbe(const char *pr) const
 /* -------------------------------------------------------------------- */
 long long ADS_DataFile::ntohll(long long * p) const
 {
-    union {
-      long long v;
-      char b[8];
-    } u;
-    const char* cp = (const char*)p;
-    for (int i = 7; i >= 0; i--) u.b[i] = *cp++;
-    return u.v;
+  union {
+    long long v;
+    char b[8];
+  } u;
+  const char* cp = (const char*)p;
+  for (int i = 7; i >= 0; i--) u.b[i] = *cp++;
+  return u.v;
 }
 
 /* -------------------------------------------------------------------- */
