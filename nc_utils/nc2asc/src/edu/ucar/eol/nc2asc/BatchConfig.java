@@ -47,7 +47,7 @@ public class BatchConfig {
 	 * List selected Variables' data format
 	 */
 	//private List<String> varDatFmt;
-    Map<String, String> tmpVdf; 
+	Map<String, String> tmpVdf; 
     
 	/**
 	 * ti- format
@@ -200,7 +200,7 @@ public class BatchConfig {
 	 * var=	BDIFR
 	 */
 	public void parseBatchFile() throws Exception{
-		if(files[0]==null) { return;}
+		if (files[0] == null) { return; }
 
 		FileReader fr;
 		fr = new FileReader (new File(files[0]));
@@ -211,6 +211,11 @@ public class BatchConfig {
 		String line = br.readLine().trim();
 		while (line != null) {
 			String val  = line.substring(line.indexOf("=")+1).trim();
+
+			// Skip comments and blank lines.
+			if (line.length() < 3 || line.charAt(0) == '#')
+				continue;
+
 			// sign i/o files
 			if (line.indexOf("if")==0 && files[1]==null) {
 				files[1] = val;
