@@ -613,7 +613,7 @@ public class NCData {
 					while (count<oneDLen[j]) { //length-of-each-variable
 						if (k % dataInterval==0) {
 							int idx = k/dataInterval;
-							valKp[varIdx] = data[j][oneDLen[j]*i + count + idx];
+							valKp[varIdx] = data[j][oneDLen[j]*(i+idx) + count];
 							line += dmtr + String.format(varFmt,valKp[varIdx]);
 						} else {
 							if ( mval!=null && mval.equals(DataFmt.REPLICATE)) {
