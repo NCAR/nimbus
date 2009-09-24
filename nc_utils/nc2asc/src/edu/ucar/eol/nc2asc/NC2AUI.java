@@ -827,7 +827,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
 
 	private void createTbl() {
-		MyTblModel model = new MyTblModel(3000, 5); 
+		MyTblModel model = new MyTblModel(800, 5); 
 		tbl = new JTable(model);	
 
 		String[] colHeaders = {"  VarName        ","Units","OR/Len"," LongName            ", " "};
