@@ -494,11 +494,11 @@ public class NCData {
 				//if (bMode) { System.out.println("Reading "+ progIdx);}
 			}
 		} catch (NCDataException e) {
-			NC2Act.wrtMsg("wrtieDataToFile_NCDataException "+ tmp.getName());
+			NC2Act.wrtMsg("writeDataToFile_NCDataException "+ tmp.getName());
 		} catch (InvalidRangeException ee) {
-			NC2Act.wrtMsg("wrtieDataToFile_InvalidRangeException "+ tmp.getName());
+			NC2Act.wrtMsg("writeDataToFile_InvalidRangeException "+ tmp.getName());
 		} catch (IOException eee) {
-			NC2Act.wrtMsg("wrtieDataToFile_IOException "+ tmp.getName());
+			NC2Act.wrtMsg("writeDataToFile_IOException "+ tmp.getName());
 		}
 
 		if (bMode) { 
@@ -593,36 +593,35 @@ public class NCData {
 	}
 
 
-	private void writeHighRateData(int[] range, String[] fmt, long milSec, long t1, int size) {
+	private void writeHighRateData(int[] range, String[] fmt, long milSec, long t1, int nVariables) {
 		String dmtr = fmt[DataFmt.DMTR_IDX], mval = fmt[DataFmt.MVAL_IDX]; 
 		float[] valKp= new float[totVarLen];
 
-		for (int i =0; i<range[1]; i++) { //data-in the time range
+		for (int i = 0; i < range[1]; i++) { //data-in the time range
 			if (bfinish) return;
-			progIdx ++; 
+			progIdx++; 
 
 			int topRate = (int)gDataInf[0];
-			float tmInt = (float)1.0/topRate;
-			for (int k=0; k<topRate; k++) {  //highest rate
-				int varIdx =0;
-				String line  = getNewTm(milSec + (long)(range[0]+i+k*tmInt)*1000, 0, fmt, false);
+			float tmInt = (float)1.0 / topRate;
+			for (int k = 0; k < topRate; k++) {  //highest rate
+				int varIdx = 0;
+				String line  = getNewTm(milSec + (long)(range[0]+i+k*tmInt)*1000, 0, fmt, true);
 			
-				for (int j =0; j<size; j++) { //variables
-					String varFmt= varDatFmt.get(j);
-					int count =0; int dataInterval = topRate/hRate[j]; 
-					while (count<oneDLen[j]) { //length-of-each-variable
+				for (int j = 0; j < nVariables; j++) { //variables
+					String varFmt = varDatFmt.get(j);
+					int dataInterval = topRate / hRate[j]; 
+					for (int count = 0; count < oneDLen[j]; ++count) { //length-of-each-variable
 						if (k % dataInterval==0) {
 							int idx = k/dataInterval;
 							valKp[varIdx] = data[j][oneDLen[j]*(i+idx) + count];
 							line += dmtr + String.format(varFmt,valKp[varIdx]);
 						} else {
-							if ( mval!=null && mval.equals(DataFmt.REPLICATE)) {
+							if (mval != null && mval.equals(DataFmt.REPLICATE)) {
 								line += dmtr + String.format(varFmt,valKp[varIdx]);
 							} else {
 								line += dmtr + mval;
 							}
 						}
-						count ++;		//one-var-len
 						varIdx++;        //tot-var-len
 					}
 				} //variable
