@@ -378,31 +378,13 @@ public class NCData {
 		int s= Integer.parseInt(tmInf[2]);
 
 		cl.set(y,mm,d,h,m,s);
+		cl.set(Calendar.MILLISECOND, 0);
 		return cl.getTimeInMillis();
 	}
 
 
-	public long getNewTimeMilSec(String hms) throws NCDataException {
-		//long ms=0;
-		String[] tmInf = hms.split(":");
 
-		Calendar cl = Calendar.getInstance();
-		cl.setTimeInMillis(getTimeMilSec());
-		int y =cl.get(Calendar.YEAR);
-		int mm =cl.get(Calendar.MONTH);
-		int d =cl.get(Calendar.DAY_OF_MONTH);
-
-		int h= Integer.parseInt(tmInf[0]);
-		int m= Integer.parseInt(tmInf[1]);
-		int s= Integer.parseInt(tmInf[2]);
-
-		Calendar c2 = Calendar.getInstance();
-		c2.set(y,mm,d,h,m,s);
-
-		return c2.getTimeInMillis();
-	}
-
-	public String  getNewTm( long milSec, int sec) {
+	public String getNewTm(long milSec, int sec) {
 		String tm;
 		Calendar cl = Calendar.getInstance();
 		cl.setTimeInMillis(milSec);
@@ -423,6 +405,7 @@ public class NCData {
 		String h = String.format("%02d", cl.get(Calendar.HOUR_OF_DAY));
 		String mm = String.format("%02d", cl.get(Calendar.MINUTE));
 		String s = String.format("%02d", cl.get(Calendar.SECOND));
+		String msec = String.format("%03d", cl.get(Calendar.MILLISECOND));
 
 		//check Date
 		String dtm = "", dateFmt = fmt[DataFmt.DATE_IDX], tmFmt = fmt[DataFmt.TM_IDX];
@@ -442,7 +425,7 @@ public class NCData {
 			dtm += seconds;
 		} else {
 			if (milsec) {
-				dtm += h+ tmFmt + mm + tmFmt + s +"."+ cl.get(Calendar.MILLISECOND);
+				dtm += h+ tmFmt + mm + tmFmt + s +"."+ msec;
 			} else {
 				dtm += h+ tmFmt + mm + tmFmt + s;
 			}
