@@ -89,7 +89,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			if (ncdata.getProgIdx()<taskLen) {
 				statusBar.setText("Canceled. taskLen= "+ taskLen + " finished= "+ ncdata.getProgIdx());
 			} else {
-				statusBar.setText("  Done.    Time is "+ ncdata.getTmPassed()+ " mil seconds." );
+				statusBar.setText("  Done.    Elapsed time is " + (ncdata.getTmPassed() / 1000)+ " seconds." );
 			}
 			//setCursor(Cursor.DEFAULT_CURSOR); //turn off the wait cursor
 			pfrm.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
