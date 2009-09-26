@@ -366,7 +366,7 @@ public class NCData {
 		String date = tmVar.split(DataFmt.COMMAVAL)[1].split(" ")[2];
 		String tm   = tmVar.split(DataFmt.COMMAVAL)[1].split(" ")[3];
 		String[] dInf = date.split("-");
-		String[] tmInf   = tm.split(":");
+		String[] tmInf = tm.split(":");
 
 		Calendar cl = Calendar.getInstance();
 		int y= Integer.parseInt(dInf[0]);
@@ -381,7 +381,6 @@ public class NCData {
 		cl.set(Calendar.MILLISECOND, 0);
 		return cl.getTimeInMillis();
 	}
-
 
 
 	public String getNewTm(long milSec, int sec) {
@@ -425,7 +424,7 @@ public class NCData {
 			dtm += seconds;
 		} else {
 			if (milsec) {
-				dtm += h+ tmFmt + mm + tmFmt + s +"."+ msec;
+				dtm += h+ tmFmt + mm + tmFmt + s + "." + msec;
 			} else {
 				dtm += h+ tmFmt + mm + tmFmt + s;
 			}
@@ -450,11 +449,11 @@ public class NCData {
 		// all the time-range data length-should be the seconds in the time range
 		tmPassed=0; bfinish =false; progIdx =0; NC2A.overMidNight=false;
 
-		int size = sublvars.size(); ///variable name to the first line of out file
-		data = new float [size][];
-		oneDLen= new int[size];
-		missVal = new float[size];
-		hRate = new int[size];
+		int nVariables = sublvars.size(); ///variable name to the first line of out file
+		data = new float [nVariables][];
+		oneDLen= new int[nVariables];
+		missVal = new float[nVariables];
+		hRate = new int[nVariables];
 		long milSec= 0;
 		Variable tmp=null;
 		int topRateSubVar = 0; //get the  top rate for the sub-group
@@ -462,7 +461,7 @@ public class NCData {
 		long t1 = System.currentTimeMillis();
 		try {
 			milSec = getTimeMilSec(); 
-			for (int i =0; i<size; i++){	
+			for (int i = 0; i < nVariables; i++){
 				if (bfinish) return;
 				tmp = sublvars.get(i);
 				oneDLen[i]= getLen(tmp);
@@ -472,7 +471,7 @@ public class NCData {
 					hRate[i]=getOR(tmp);
 					if (hRate[i] >topRateSubVar) {topRateSubVar= hRate[i];}
 				}
-				data[i] = read1DData(tmp , range[0], range[1]);
+				data[i] = read1DData(tmp, range[0], range[1]);
 				progIdx ++;
 				//if (bMode) { System.out.println("Reading "+ progIdx);}
 			}
@@ -490,11 +489,11 @@ public class NCData {
 		} 
 		if (gDataInf[0]>1) {
 			gDataInf[0]= topRateSubVar;
-			writeHighRateData(range, fmt, milSec, t1, size);
+			writeHighRateData(range, fmt, milSec, t1, nVariables);
 		} else if (Integer.parseInt(fmt[DataFmt.AVG_IDX])>1) {
-			writeLowRateAvgData(range, fmt, milSec, t1, size);
+			writeLowRateAvgData(range, fmt, milSec, t1, nVariables);
 		} else {
-			writeNormalData (range, fmt, milSec, t1, size) ;
+			writeNormalData (range, fmt, milSec, t1, nVariables) ;
 		}
 
 		tmPassed =System.currentTimeMillis() - t1;
@@ -503,35 +502,33 @@ public class NCData {
 		NC2Act.wrtMsg("\n Writing data is done.");
 	}
 
-	private void writeNormalData(int[] range, String[] fmt, long milSec, long t1, int size) {
+	private void writeNormalData(int[] range, String[] fmt, long milSec, long t1, int nVariables) {
 		//regular data - no average& no high rate
 		String dmtr = fmt[DataFmt.DMTR_IDX], mval = fmt[DataFmt.MVAL_IDX];
 		for (int i =0; i<range[1]; i++) {
 			if (bfinish) return;
-			String line = getNewTm(milSec,i+range[0], fmt, false);
+			String line = getNewTm(milSec, i+range[0], fmt, false);
 			progIdx++; 
-			for (int j =0; j<size; j++) {
+			for (int j = 0; j < nVariables; j++) {
 				String varFmt= varDatFmt.get(j);
-				int count =0;
-				while (count<oneDLen[j]) {
+				for (int count = 0; count < oneDLen[j]; ++count) {
 					float f = data[j][oneDLen[j]*i+count];
 					if (f == missVal[j]) {
 						line += dmtr + mval;
 					} else {
 						line += dmtr + String.format(varFmt, f); 
 					}
-					count++;			
 				}
 			}
 			writeOut(line+"\n");
 		}
 	}
 
-	private void writeLowRateAvgData(int[] range, String[] fmt, long milSec, long t1, int size) {
+	private void writeLowRateAvgData(int[] range, String[] fmt, long milSec, long t1, int nVariables) {
 		int avg = Integer.parseInt(fmt[DataFmt.AVG_IDX]); 
 		long tot = 0;
 		for (int j=0; j<avg; j++) {
-			tot +=  j;
+			tot += j;
 		}
 		tot = (long) 1000.0 * tot/avg;
 		String dmtr = fmt[DataFmt.DMTR_IDX], mval = fmt[DataFmt.MVAL_IDX]; 
@@ -540,15 +537,14 @@ public class NCData {
 		for (int i =0; i<range[1]; i++) { //data-in the time range
 			if (bfinish) return;
 			progIdx ++; totValIdx=0; String lineData="";
-			for (int j =0; j<size; j++) {
+			for (int j = 0; j < nVariables; j++) {
 				String varFmt= varDatFmt.get(j);
-				int count =0;
-				while (count<oneDLen[j]) {
+				for (int count = 0; count<oneDLen[j]; ++count) {
 					float f = data[j][oneDLen[j]*i+count];
-					if (f == missVal[j] || totVal[totValIdx]==mVal) {
-						totVal[totValIdx]= mVal;
+					if (f == missVal[j] || totVal[totValIdx] == mVal) {
+						totVal[totValIdx] = mVal;
 					} else {
-						totVal[totValIdx]+= f/avg;
+						totVal[totValIdx] += f/avg;
 					}
 
 					if (avgCount == avg-1) {
@@ -559,14 +555,13 @@ public class NCData {
 						}
 						totVal[totValIdx]=0;
 					}
-					count ++;		//one-var-len
 					totValIdx++;  	//total-varl-len
 				}
 			}
 			//write one averaged-line
 			if (avgCount<(avg-1)) {
 				avgCount++; 		// time-D
-			} else {  				//write avg-data-val to file and reset
+			} else {  			//write avg-data-val to file and reset
 				String line = getNewTm(milSec +(range[0]+i-avg+1)*1000 +tot,0, fmt, true)+lineData;
 				writeOut(line+"\n");
 				avgCount=0;
@@ -585,18 +580,18 @@ public class NCData {
 			progIdx++; 
 
 			int topRate = (int)gDataInf[0];
-			float tmInt = (float)1.0 / topRate;
 			for (int k = 0; k < topRate; k++) {  //highest rate
 				int varIdx = 0;
-				String line  = getNewTm(milSec + (long)(range[0]+i+k*tmInt)*1000, 0, fmt, true);
+				String line = getNewTm(milSec + (long)(range[0]+i)*1000
+						+ (k * (1000/topRate)), 0, fmt, true);
 			
 				for (int j = 0; j < nVariables; j++) { //variables
 					String varFmt = varDatFmt.get(j);
 					int dataInterval = topRate / hRate[j]; 
 					for (int count = 0; count < oneDLen[j]; ++count) { //length-of-each-variable
 						if (k % dataInterval==0) {
-							int idx = k/dataInterval;
-							valKp[varIdx] = data[j][oneDLen[j]*(i+idx) + count];
+							int idx = (i * hRate[j]) + (k / dataInterval);
+							valKp[varIdx] = data[j][oneDLen[j]*idx + count];
 							line += dmtr + String.format(varFmt,valKp[varIdx]);
 						} else {
 							if (mval != null && mval.equals(DataFmt.REPLICATE)) {
