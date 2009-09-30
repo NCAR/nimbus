@@ -17,14 +17,17 @@ jarsigner -keystore javazip/nc2asc.keystore lib/commons-logging-1.1.jar n2a
 
 
 ### zip deployment files
-cp ../doc/nc2asc.html doc/.
-zip nc2asc.zip nc2asc.jar lib/netcdfUI-2.2.22.jar lib/nlog4j-1.2.25.jar lib/commons-logging-1.1.jar  doc/nc2asc.html doc/temp.batch
+cp -r ../doc .
+zip nc2asc.zip nc2asc.jar lib/netcdfUI-2.2.22.jar lib/nlog4j-1.2.25.jar lib/commons-logging-1.1.jar  doc/nc2asc.html doc/example.batch
+
 mv  nc2asc.zip javazip/.
 
 cp javazip/nc2asc.jnlp .
-zip nc2asc-ws.zip nc2asc.jar nc2asc.jnlp lib/netcdfUI-2.2.22.jar  lib/nlog4j-1.2.25.jar  lib/commons-logging-1.1.jar  doc/nc2asc.html  doc/temp.batch
+zip nc2asc-ws.zip nc2asc.jar nc2asc.jnlp lib/netcdfUI-2.2.22.jar  lib/nlog4j-1.2.25.jar  lib/commons-logging-1.1.jar  doc/nc2asc.html  doc/example.batch
+
 mv  nc2asc-ws.zip javazip/.
-rm  nc2asc.jnlp
+
+rm -rf doc nc2asc.jnlp
 
 
 ### cleanup svn 
