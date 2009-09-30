@@ -17,10 +17,10 @@ set web_dir = /net/www/raf/Software
 install nc2asc.sh ${bin_dir}/nc2asc
 
 mkdir -p $lib_dir
-install -m 664 *.jar $lib_dir
+install -m 664 lib/*.jar *.jar $lib_dir
 
 if (-e $web_dir) then
-  install doc/nc2asc.html $web_dir
+  install ../doc/nc2asc.html $web_dir
 else
   echo $web_dir does not exist, not installing nc2asc.html.
 endif
