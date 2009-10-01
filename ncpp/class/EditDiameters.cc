@@ -202,11 +202,13 @@ void EditDiameters::SetDiameters(Probe *probe)
   switch (probe->Type())
     {
     case Probe::FSSP:
-      setSpex("DBZ Factor", cnt++, ((FSSP *)probe)->DBZfac);
-      setSpex("Liquid Water Content Factor", cnt++, ((FSSP *)probe)->PLWfac);
-      setSpex("Density of Water", cnt++, ((FSSP *)probe)->DENS);
-      setSpex("Depth of Field", cnt++, ((FSSP *)probe)->DOF);
-      setSpex("Beam Diameter", cnt++, ((FSSP *)probe)->beamDiameter);
+    case Probe::S100:
+    case Probe::CDP:
+      setSpex("DBZ Factor", cnt++, ((Probe100 *)probe)->DBZfac);
+      setSpex("Liquid Water Content Factor", cnt++, ((Probe100 *)probe)->PLWfac);
+      setSpex("Density of Water", cnt++, ((Probe100 *)probe)->DENS);
+      setSpex("Depth of Field", cnt++, ((Probe100 *)probe)->DOF);
+      setSpex("Beam Diameter", cnt++, ((Probe100 *)probe)->beamDiameter);
       break;
 
     case Probe::X260:

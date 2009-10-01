@@ -13,9 +13,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 #ifndef PCASP_H
 #define PCASP_H
 
-#include "define.h"
-#include <netcdf.hh>
-
 #include "Probe.h"
 
 

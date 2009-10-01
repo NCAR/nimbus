@@ -60,8 +60,11 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
 
   type = NoProbe;
 
-  if (name.find("S100") != name.npos || name.find("CDP") != name.npos)
+  if (name.find("S100") != name.npos)
     type = S100;
+  else
+  if (name.find("CDP") != name.npos)
+    type = CDP;
   else
   if (name.find("S200") != name.npos)
     type = S200;

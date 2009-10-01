@@ -20,16 +20,16 @@ O2D=	../obj
 OBJS=	Ascii.o CanvasWindow.o DataFile.o DataSet.o DataSource.o\
 	EditDiameters.o EditPlotParms.o FileMgr.o Header.o\
 	MovieControl.o Panel.o PlotInfo.o PlotMgr.o Probe.o\
-	Probe200.o SetMgr.o Titles.o VarsWin.o Colors.o\
+	Probe100.o Probe200.o SetMgr.o Titles.o VarsWin.o Colors.o\
 	fssp.o s100.o s200.o f300.o pcasp.o x260.o x200.o y200.o\
-	2D_C.o 2D_P.o hvps.o uhsas.o
+	2D_C.o 2D_P.o hvps.o uhsas.o cdp.o
 
 SRCS=	Ascii.cc CanvasWindow.cc DataFile.cc DataSet.cc DataSource.cc\
 	EditDiameters.cc EditPlotParms.cc FileMgr.cc Header.cc\
 	MovieControl.cc Panel.cc PlotInfo.cc PlotMgr.cc Probe.cc\
-	Probe200.cc SetMgr.cc Titles.cc VarsWin.cc Colors.cc\
+	Probe100.cc Probe200.cc SetMgr.cc Titles.cc VarsWin.cc Colors.cc\
 	fssp.cc s100.cc s200.cc f300.cc pcasp.cc x260.cc x200.cc y200.cc\
-	2D_C.cc 2D_P.cc hvps.cc uhsas.cc
+	2D_C.cc 2D_P.cc hvps.cc uhsas.cc cdp.cc
 
 HDRS=	${INC}/define.h
 
@@ -66,8 +66,10 @@ Colors.o:		${INC}/Colors.h
 
 Probe.o:		${INC}/Probe.h
 Probe200.o:		${INC}/Probe200.h ${INC}/Probe.h
-fssp.o:			${INC}/fssp.h ${INC}/Probe.h
-s100.o:			${INC}/s100.h ${INC}/Probe.h
+Probe100.o:		${INC}/Probe100.h ${INC}/Probe.h
+fssp.o:			${INC}/fssp.h ${INC}/Probe100.h
+cdp.o:			${INC}/cdp.h ${INC}/Probe100.h
+s100.o:			${INC}/s100.h ${INC}/Probe100.h
 s200.o:			${INC}/s200.h ${INC}/Probe.h
 f300.o:			${INC}/f300.h ${INC}/Probe.h
 pcasp.o:		${INC}/pcasp.h ${INC}/Probe.h

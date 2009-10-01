@@ -16,7 +16,7 @@ DEFINES	= -DPNG
 INCLUDES= -I${INC} -I/usr/X11R6/include -I${RAFINC}
 LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib
 LIBS	= -lraf++ -lXm -lXt -lX11 -lXext -Wl,-Bstatic -lnetcdf_c++ -lnetcdf -Wl,-Bdynamic -lpng -lz
-ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.RHEL5
+ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.Fedora10
 
 #	Mac OS X
 #
@@ -55,9 +55,9 @@ COBS=	${COD}/Ascii.o ${COD}/CanvasWindow.o ${COD}/DataFile.o ${COD}/DataSet.o\
 	${COD}/Header.o ${COD}/MovieControl.o ${COD}/Panel.o ${COD}/PlotInfo.o\
 	${COD}/PlotMgr.o ${COD}/Probe.o ${COD}/SetMgr.o ${COD}/Titles.o\
 	${COD}/VarsWin.o ${COD}/Colors.o\
-	${COD}/fssp.o ${COD}/f300.o ${COD}/pcasp.o ${COD}/x260.o\
+	${COD}/fssp.o ${COD}/f300.o ${COD}/pcasp.o ${COD}/x260.o ${COD}/cdp.o\
 	${COD}/s100.o ${COD}/s200.o ${COD}/x200.o ${COD}/y200.o ${COD}/Probe200.o\
-	${COD}/2D_P.o ${COD}/2D_C.o ${COD}/hvps.o ${COD}/uhsas.o
+	${COD}/2D_P.o ${COD}/2D_C.o ${COD}/hvps.o ${COD}/uhsas.o ${COD}/Probe100.o
 
 
 ${PROG}: ${OBJS} classDir

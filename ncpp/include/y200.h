@@ -13,9 +13,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 #ifndef Y200_H
 #define Y200_H
 
-#include "define.h"
-#include <netcdf.hh>
-
 #include "Probe200.h"
 
 

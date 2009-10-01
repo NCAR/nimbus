@@ -13,9 +13,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 #ifndef TWODP_H
 #define TWODP_H
 
-#include "define.h"
-#include <netcdf.hh>
-
 #include "Probe200.h"
 
 

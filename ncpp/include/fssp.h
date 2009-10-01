@@ -13,14 +13,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 #ifndef FSSP_H
 #define FSSP_H
 
-#include "define.h"
-#include <netcdf.hh>
-
-#include "Probe.h"
+#include "Probe100.h"
 
 
 /* -------------------------------------------------------------------- */
-class FSSP : public Probe
+class FSSP : public Probe100
 {
 public:
 	FSSP(NcFile *file, NcVar *av);
@@ -37,11 +34,7 @@ public:
 private:
   int	range, rangeIdx;
 
-  float	PLWfac, DBZfac, DENS, DOF, beamDiameter;
-  float	totalConcen, dbar, plwc, disp, dbz;
-
-  int	tasIdx, actIdx, bmFrIdx;			// Inputs
-  int	concIdx, lwIdx, dbzIdx, dbarIdx, dispIdx;	// Outputs
+  int	actIdx, bmFrIdx;			// Inputs
 
 };	// END FSSP.H
 

@@ -106,9 +106,11 @@ DataFile::DataFile(const char fName[]) : fileName(fName)
           strncmp("APCAS", avar->name(), 5) == 0)
         probe[nProbes++] = new PCASP(file, avar);
       else
-      if (strncmp("AS100", avar->name(), 5) == 0 ||
-          strncmp("ACDP", avar->name(), 4) == 0)
+      if (strncmp("AS100", avar->name(), 5) == 0)
         probe[nProbes++] = new S100(file, avar);
+      else
+      if (strncmp("ACDP", avar->name(), 4) == 0)
+        probe[nProbes++] = new CDP(file, avar);
       else
       if (strncmp("AS200", avar->name(), 5) == 0)
         probe[nProbes++] = new S200(file, avar);

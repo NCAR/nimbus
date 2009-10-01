@@ -13,14 +13,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 #ifndef S100_H
 #define S100_H
 
-#include "define.h"
-#include <netcdf.hh>
-
-#include "Probe.h"
+#include "Probe100.h"
 
 
 /* -------------------------------------------------------------------- */
-class S100 : public Probe
+class S100 : public Probe100
 {
 public:
 	S100(NcFile *file, NcVar *av);
@@ -37,12 +34,8 @@ public:
 private:
   int	range, rangeIdx;
 
-  float	PLWfac, DBZfac, DENS, DOF, beamDiameter;
-  float	totalConcen, dbar, plwc, disp, dbz;
+  int	rejATIdx, oFlowIdx;			// Inputs
 
-  int	tasIdx, rejATIdx, oFlowIdx;			// Inputs
-  int	concIdx, lwIdx, dbzIdx, dbarIdx, dispIdx;	// Outputs
-
-};	// END S100.H
+};	// END PROBE100.H
 
 #endif

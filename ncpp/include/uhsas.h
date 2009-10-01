@@ -13,9 +13,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2001
 #ifndef UHSAS_H
 #define UHSAS_H
 
-#include "define.h"
-#include <netcdf.hh>
-
 #include "Probe.h"
 
 

@@ -14,6 +14,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2007
 #include "define.h"
 
 #include "fssp.h"
+#include "cdp.h"
 #include "s100.h"
 #include "s200.h"
 #include "f300.h"
