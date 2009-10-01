@@ -112,8 +112,8 @@ void S100::ComputeConcentration(float *accum, float *conc, long countV[],
 #define DBZ
 
 #include "pms1d_cv"
-/*
-    if (total_cnts > 0)
+
+    if (oFlow[i] > 0 && total_cnts > 0 && oFlow[i] < 5000)
       {
       float	ccc = (total_cnts + oFlow[i]) / total_cnts;
 
@@ -122,7 +122,7 @@ void S100::ComputeConcentration(float *accum, float *conc, long countV[],
 
       totalConcen *= ccc;
       }
-*/
+
     otherVarData[concIdx][i] = totalConcen;
     otherVarData[lwIdx][i] = plwc;
     otherVarData[dbarIdx][i] = dbar;
