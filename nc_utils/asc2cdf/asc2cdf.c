@@ -133,34 +133,47 @@ int main(int argc, char *argv[])
 
     if (secondsSinceMidnight)
       {
+      /* Save the seconds with any possible subsecond component */
       currSecond = atof(p);
 
       hour = int(currSecond) / 3600; currSecond -= hour * 3600;
       minute = int(currSecond) / 60; currSecond -= minute * 60;
       second = int(currSecond);
-      if (dataRate > 1) {
-        currSecond -= second; subsec = int(currSecond*dataRate+.5);
-      } else {
-        subsec = 0;
-      }
 
       if (nRecords == 0 && fileType != PLAIN_FILE)
         SetNASABaseTime(hour, minute, second);
       }
     else
-    if (Colonless)
       {
-      second = atoi(&p[4]); p[4] = '\0';
-      minute = atoi(&p[2]); p[2] = '\0';
-      hour = atoi(p);
+      if (Colonless)
+        {
+	/* Save the seconds with any possible subsecond component */
+	currSecond = atof(&p[4]);
+        second = atoi(&p[4]); p[4] = '\0';
+        minute = atoi(&p[2]); p[2] = '\0';
+        hour = atoi(p);
+        }
+      else
+        //sscanf(p, "%d:%d:%d", &hour, &minute, &second);
+        sscanf(p, "%d:%d:%f", &hour, &minute, &currSecond);
+        second = int(currSecond);
+      }
+
+    if (dataRate > 1) 
+      {
+      /* parse out the subsecond component */
+      currSecond -= second; subsec = int(currSecond*dataRate+.5);
       }
     else
-      sscanf(p, "%d:%d:%d", &hour, &minute, &second);
+      {
+      subsec = 0;
+      }
 
     if (hour > 23)
       hour -= 24;
 
     currSecond = hour * 3600 + minute * 60 + second;
+
 
     // Watch for midnight wrap around.
     if (currSecond < firstSecond)
@@ -201,6 +214,8 @@ int main(int argc, char *argv[])
     size_t rec = int(dataValue);
     nc_put_var1_float(ncid, timeVarID, &rec, &dataValue);
     nc_put_var1_float(ncid, timeOffsetID, &rec, &dataValue);
+    
+
 //    dataValue = (float)(nRecords * BaseDataRate);
 //    nc_put_var1_float(ncid, timeVarID, &nRecords, &dataValue);
 //    nc_put_var1_float(ncid, timeOffsetID, &nRecords, &dataValue);
