@@ -29,9 +29,6 @@ public:
 
   void	UpdateCellDiams(const int first, const int last, const float *newDiams);
 
-  virtual int   SetEditWindow(Widget txt[]);
-  virtual int   ApplyEditWindow(Widget txt[]);
-
   float EffectiveAreaWidth() const	{ return resolution * nDiodes; }
 
 

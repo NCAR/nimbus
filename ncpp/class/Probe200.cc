@@ -175,18 +175,4 @@ responseTime = 0.001;
 
 }	/* END COMPUTEDOF */
 
-/* -------------------------------------------------------------------- */
-int Probe200::SetEditWindow(Widget text[])
-{
-  return(Probe::SetEditWindow(text));
-
-}
-
-/* -------------------------------------------------------------------- */
-int Probe200::ApplyEditWindow(Widget text[])
-{
-  return(Probe::ApplyEditWindow(text));
-
-}
-
 /* END PROBE200.CC */
