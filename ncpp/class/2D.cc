@@ -45,6 +45,14 @@ TwoD::TwoD(NcFile *file, NcVar *av) : Probe200(file, av)
 
   ComputeWidths();
 
+  for (int i = 0; i < otherVars.size(); ++i)
+    {
+    // Search here.  Probe200 search turns up shado-or conc.
+    if (strncmp(otherVars[i]->name(), "CONC1D", 6) == 0 ||
+        strncmp(otherVars[i]->name(), "CONC2D", 6) == 0)
+      concIdx = i;
+    }
+
 }	/* END CONSTRUCTOR */
 
 /* -------------------------------------------------------------------- */
