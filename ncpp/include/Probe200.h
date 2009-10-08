@@ -33,7 +33,12 @@ public:
 
 
 protected:
-  void		ComputeWidths(), ComputeDOF(float tasx);
+  virtual void	ComputeWidths();
+
+  /**
+   * Compute depth of field for the 260x, 200x, and 200y probes.
+   */
+  virtual void	ComputeDOF200(float tasx);
 
   static const float	diodeDiameter;
 
@@ -44,7 +49,7 @@ protected:
   std::vector<float> radius, esw, dof;
   float	mag, totalConcen, dbar, plwc, disp, dbz;
 
-  int	tasIdx;						// Inputs
+  int	tasIdx, deadTimeIdx;				// Inputs
   int	concIdx, lwIdx, dbarIdx, dispIdx, dbzIdx;	// Outputs
 
 };	// END PROBE200.H

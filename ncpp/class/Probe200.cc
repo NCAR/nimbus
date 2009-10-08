@@ -24,6 +24,11 @@ Probe200::Probe200(NcFile *file, NcVar *av) : Probe(file, av), nDiodes(0), resol
   else
     responseTime = 0.35;
 
+  if ((attr = avar->get_att("nDiodes")))
+    nDiodes = attr->as_int(0);
+  else
+    nDiodes = 32;
+
   if ((attr = cvar->get_att("PLWfactor")) || (attr = avar->get_att("PLWfactor")))
     PLWfac = attr->as_float(0);
   else
@@ -34,12 +39,19 @@ Probe200::Probe200(NcFile *file, NcVar *av) : Probe(file, av), nDiodes(0), resol
   else
     DENS = 1.0;
 
+  if ((attr = cvar->get_att("DBZfactor")) || (attr = avar->get_att("DBZfactor")))
+    DBZfac = attr->as_float(0);
+  else
+    DBZfac = 1.0e3;
+
+
   radius.resize(vectorLength);
   esw.resize(vectorLength);
   dof.resize(vectorLength);
 
   ComputeWidths();
 
+  deadTimeIdx = -1;
   for (int i = 0; i < otherVars.size(); ++i)
     {
     if (strcmp(otherVars[i]->name(), "TASX") == 0)
@@ -60,6 +72,9 @@ Probe200::Probe200(NcFile *file, NcVar *av) : Probe(file, av), nDiodes(0), resol
 
     if (strncmp(otherVars[i]->name(), "DBZ", 3) == 0)
       dbzIdx = i;
+
+    if (strncmp(otherVars[i]->name(), "DT", 2) == 0)
+      deadTimeIdx = i;
     }
 
 }	/* END CONSTRUCTOR */
@@ -82,7 +97,7 @@ void Probe200::ComputeConcentration(float *accum, float *conc, long countV[],
 
     tasx = tas[time] / dataRate;
 
-    ComputeDOF(tasx);
+    ComputeDOF200(tasx);
 
     for (bin = FirstBin(); bin <= LastBin(); ++bin)
       sampleVolume[bin] = tasx * (dof[bin] * esw[bin]);
@@ -121,16 +136,19 @@ void Probe200::ComputeWidths()
     {
     radius[i]   = midPointDiam[i] / 2000;
     esw[i]      = diodeDiameter * (nDiodes - i - 1) / mag;
+    dof[i]      = 2.37 * midPointDiam[i] * midPointDiam[i] / 1000.0;
+    if (dof[i] > armDistance)
+      dof[i] = (float)armDistance;
     }
 
 }	/* END COMPUTEWIDTHS */
 
 /* -------------------------------------------------------------------- */
-void Probe200::ComputeDOF(float tasx)
+void Probe200::ComputeDOF200(float tasx)
 {
   int		i;
   double	szz, timex, frac, f, z;
-responseTime = 0.001;
+
   for (i = FirstBin(); i <= LastBin(); ++i)
     {
     /* Determine size in terms of # of array elements

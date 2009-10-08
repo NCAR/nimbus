@@ -22,8 +22,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2007
 #include "x260.h"
 #include "x200.h"
 #include "y200.h"
-#include "2D_P.h"
-#include "2D_C.h"
+#include "2D.h"
 #include "hvps.h"
 #include "uhsas.h"
 

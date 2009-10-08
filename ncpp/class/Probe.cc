@@ -208,11 +208,16 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
     if (type == HVPS)
       for (i = 0; i < 256; ++i)
         diameter[i] = 100 + i * 200;
+    else
+      {
+      std::cerr << "Probe.cc: No default CellSizes for probe " << cname.c_str()
+        << " available.  Requires programmer intervention.\n";
+      }
     }
 
-  location = strchr(const_cast<char *>(name.c_str()), '_');
 
   // Find associated houskeeping & derived variables (using location)
+  location = strchr(const_cast<char *>(name.c_str()), '_');
   for (i = 0; i < file->num_vars(); ++i)
     {
     var = file->get_var(i);

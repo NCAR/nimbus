@@ -30,11 +30,6 @@ X260::X260(NcFile *file, NcVar *av) : Probe200(file, av)
   else
     armDistance = 61.0;
 
-  if ((attr = cvar->get_att("DBZfactor")) || (attr = avar->get_att("DBZfactor")))
-    DBZfac = attr->as_float(0);
-  else
-    DBZfac = 1.0e3;
-
   ComputeWidths();
 
 }	/* END CONSTRUCTOR */
@@ -46,7 +41,7 @@ void X260::ComputeConcentration(float *accum, float *conc, long countV[],
   int	time, bin;
   std::vector<float> dia;
   float	*counts, *concentration;
-  float	*tas, *fbmfr, *activity, tasx;
+  float	*tas, tasx;
 
   tas = otherVarData[tasIdx];
 
@@ -57,7 +52,7 @@ void X260::ComputeConcentration(float *accum, float *conc, long countV[],
 
     tasx = tas[time] / dataRate;
 
-    ComputeDOF(tasx);
+    ComputeDOF200(tasx);
 
     for (bin = FirstBin(); bin <= LastBin(); ++bin)
       sampleVolume[bin] = tasx * (dof[bin] * esw[bin]) * 0.001;

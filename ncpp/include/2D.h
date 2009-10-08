@@ -1,8 +1,8 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:	2D_C.h
+OBJECT NAME:	2D.h
 
-FULL NAME:	2D_C
+FULL NAME:	2D
 
 TYPE:		Derived class
 
@@ -10,23 +10,33 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000
 -------------------------------------------------------------------------
 */
 
-#ifndef TWODC_H
-#define TWODC_H
+#ifndef TWOD_H
+#define TWOD_H
 
 #include "Probe200.h"
 
 
 /* -------------------------------------------------------------------- */
-class TwoDC : public Probe200
+class TwoD : public Probe200
 {
 public:
-	TwoDC(NcFile *file, NcVar *av);
+	TwoD(NcFile *file, NcVar *av);
 
   void	ComputeConcentration(float *accum, float *conc, long countV[],
 		const std::vector<float *> & otherVarData);
 
-private:
+};	// END 2D.H
 
-};	// END 2D_C.H
 
+class TwoDC : public TwoD
+{
+public:
+	TwoDC(NcFile *file, NcVar *av);
+};
+
+class TwoDP : public TwoD
+{
+public:
+	TwoDP(NcFile *file, NcVar *av);
+};
 #endif
