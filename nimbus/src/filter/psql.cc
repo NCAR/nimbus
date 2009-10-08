@@ -283,17 +283,15 @@ PostgreSQL::createTables()
   std::string lm = readLandmarks();
   _sqlString.str("");
 
-  int size = std::max((size_t)80, lm.size()+2);	// +2 cause I'm old fashioned.
-
-  _sqlString << "CREATE TABLE Global_Attributes (key char(20) PRIMARY KEY, value char(" << size << "));";
-  _sqlString << "CREATE TABLE Variable_List (Name char(20) PRIMARY KEY, Units char(16), Uncalibrated_Units char(16), long_name char(80), SampleRateTable char(16), nDims int, dims int[], nCals int, poly_cals float[], missing_value float, data_quality char(16));";
-  _sqlString << "CREATE TABLE Categories (variable char(20), category char(20));";
+  _sqlString << "CREATE TABLE Global_Attributes (key text PRIMARY KEY, value text);";
+  _sqlString << "CREATE TABLE Variable_List (Name text PRIMARY KEY, Units text, Uncalibrated_Units text, long_name text, SampleRateTable text, nDims int, dims int[], nCals int, poly_cals float[], missing_value float, data_quality text);";
+  _sqlString << "CREATE TABLE Categories (variable text, category text);";
 
   /*
    * PMS tables.
    */
-  _sqlString << "CREATE TABLE PMS1D_list (Name char(20), SerialNumber char(16), SampleRateTable char(16), FirstBin INT, LastBin INT, CellSizes FLOAT[]);";
-  _sqlString << "CREATE TABLE PMS2D_list (Name char(20), SerialNumber char(16));";
+  _sqlString << "CREATE TABLE PMS1D_list (Name text, SerialNumber text, SampleRateTable text, FirstBin INT, LastBin INT, CellSizes FLOAT[]);";
+  _sqlString << "CREATE TABLE PMS2D_list (Name text, SerialNumber text);";
 
   submitCommand(_sqlString.str(), true);
 
