@@ -618,7 +618,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			if (ncdata.getGlobalDataInf()[0]>1 && datafmt.getDataFmt()[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)) {
 				datafmt.setDataFmt(DataFmt.HEAD, DataFmt.HEAD_IDX);
 			}
-			//set table
+                        ncdata.setMode(true);
 			NC2Act.wrtMsg("  Reading batch file is done.");
 		} //if
 	}
