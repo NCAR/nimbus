@@ -45,6 +45,10 @@ void ccdpInit(var_base *varp)
   const char	*serialNumber;
   NR_TYPE	dof, beam_dia;
 
+  if (varp->SerialNumber.length() == 0) {
+    fprintf(stderr, "cdp.c: %s has no serial number, fatal.\n", varp->name); exit(1);
+    }
+
   p = strchr(varp->name, '_');
   setProbeCount(p, nProbes++);
 
