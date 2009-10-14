@@ -127,8 +127,16 @@ void PMS1D_SetupForADS3()
   {
     setSerialNumberAndProbeType("A1DC_RIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A2DC_RIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A1DC_RMI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC_RMI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+  }
+  else
+  if (cfg.ProjectName().compare("PLOWS") == 0)
+  {
+    setSerialNumberAndProbeType("A1DC_RPC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC_RPC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A1DC_LPC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC_LPC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("AS100_LWI", "FSSP109", PROBE_PMS1D | PROBE_FSSP);
+    setSerialNumberAndProbeType("AS100_LWO", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
   }
   else
   {
