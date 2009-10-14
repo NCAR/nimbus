@@ -65,7 +65,7 @@ void sqlTransmit::sendString(const std::string& str)
   {
     const char * command = 0;
     if (cfg.GroundFeedType() == Config::UDP)
-      command = "/home/ads/bin/sendSQL";
+      command = "/home/local/Systems/scripts/sendSQL";
     if (cfg.GroundFeedType() == Config::LDM)
       command = "pqinsert";
 
