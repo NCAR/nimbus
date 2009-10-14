@@ -54,6 +54,10 @@ void cf300Init(var_base *varp)
   char		*p;
   const char	*serialNumber;
 
+  if (varp->SerialNumber.length() == 0) {
+    fprintf(stderr, "f300.c: %s has no serial number, fatal.\n", varp->name); exit(1);
+    }
+
   p = strchr(varp->name, '_');
   setProbeCount(p, nProbes++);
 

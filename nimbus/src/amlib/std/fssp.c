@@ -65,6 +65,10 @@ void cfsspInit(var_base *varp)
   const char	*serialNumber;
   NR_TYPE	DOF, beamDiameter;
 
+  if (varp->SerialNumber.length() == 0) {
+    fprintf(stderr, "fssp.c: %s has no serial number, fatal.\n", varp->name); exit(1);
+    }
+
   p = strchr(varp->name, '_');
   setProbeCount(p, nProbes++);
 

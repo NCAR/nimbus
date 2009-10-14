@@ -57,6 +57,10 @@ void c260xInit(var_base *varp)
   float		minRange;
   NR_TYPE	dof[BINS_64];
 
+  if (varp->SerialNumber.length() == 0) {
+    fprintf(stderr, "260x.c: %s has no serial number, fatal.\n", varp->name); exit(1);
+    }
+
   p = strchr(varp->name, '_');
   setProbeCount(p, nProbes++);
 
