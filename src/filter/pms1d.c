@@ -128,6 +128,12 @@ void PMS1D_SetupForADS3()
     setSerialNumberAndProbeType("A1DC_RIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A2DC_RIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
   }
+  if (cfg.ProjectName().compare("HIPPO-2") == 0)
+  {
+    setSerialNumberAndProbeType("A1DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("ACDP", "CDP002", PROBE_PMS1D | PROBE_CDP);
+  }
   else
   if (cfg.ProjectName().compare("PLOWS") == 0)
   {
