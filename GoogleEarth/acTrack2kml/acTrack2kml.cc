@@ -17,13 +17,13 @@
 #include "boost/lexical_cast.hpp"
 
 // Output directories for .xml & .kml files.  Ground.
-static const std::string grnd_googleMapDataDir = "/net/www/docs/GE/";
-static const std::string grnd_googleEarthDataDir = "/net/www/docs/GE/";
+static const std::string grnd_googleMapDataDir = "/net/www/docs/flight_data/";
+static const std::string grnd_googleEarthDataDir = "/net/www/docs/flight_data/";
 static const std::string grnd_webHost = "www.eol.ucar.edu";
 
 // Output directories for .xml & .kml files.  Onboard.
-static const std::string onboard_googleMapDataDir = "/var/www/html/";
-static const std::string onboard_googleEarthDataDir = "/var/www/html/";
+static const std::string onboard_googleMapDataDir = "/var/www/html/flight_data/";
+static const std::string onboard_googleEarthDataDir = "/var/www/html/flight_data/";
 static const std::string onboard_webHost = "acserver.raf.ucar.edu";
 
 static std::string googleMapDataDir, googleEarthDataDir, webHost;
@@ -282,7 +282,7 @@ void WriteCurrentPositionKML(const _projInfo& projInfo)
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
 	<< "   <Icon>\n"
-	<< "    <href>http://" << webHost << "/GE/images/red.png</href>\n"
+	<< "    <href>http://" << webHost << "/display/GE/images/red.png</href>\n"
 	<< "   </Icon>\n"
 	<< "  </IconStyle>\n"
 	<< " </Style>\n"
@@ -433,7 +433,7 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo, int stat
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
 	<< "   <Icon>\n"
-	<< "    <href>http://" << webHost << "/GE/images/red.png</href>\n"
+	<< "    <href>http://" << webHost << "/display/GE/images/red.png</href>\n"
 	<< "   </Icon>\n"
 	<< "  </IconStyle>\n"
 	<< " </Style>\n"
@@ -441,7 +441,7 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo, int stat
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
 	<< "   <Icon>\n"
-	<< "    <href>http://" << webHost << "/GE/images/white.png</href>\n"
+	<< "    <href>http://" << webHost << "/display/GE/images/white.png</href>\n"
 	<< "   </Icon>\n"
 	<< "  </IconStyle>\n"
 	<< " </Style>\n"
