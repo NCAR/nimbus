@@ -43,7 +43,7 @@ static int ts_Freq = 10;
 // old 600 point max.
 static const int maxGoogleMapPoints = 3000;
 
-static std::string netCDFinputFile, outputKML, database_host, platform;
+static std::string netCDFinputFile, outputKML, database_host, platform, dbname;
 
 static const float missing_value = -32767.0;
 
@@ -643,8 +643,8 @@ PGconn * openDataBase()
 {
   char	conn_str[1024];
 
-  sprintf(conn_str, "host='%s' dbname='real-time-%s' user ='ads'", 
-          database_host.c_str(), platform.c_str());
+  sprintf(conn_str, "host='%s' dbname='%s' user ='ads'", 
+          database_host.c_str(), dbname.c_str());
   std::cout << "Connect string : [" << conn_str << "]" << std::endl;
   PGconn *conn = PQconnectdb(conn_str);
 
@@ -741,7 +741,7 @@ int usage(const char* argv0)
 	<< "Usage: has two forms, one for real-time use and the other to scan\n"
 	<< "	a netCDF file in post-processing mode.\n\n"
 	<< "Real-time form:\n"
-	<< "	acTrack2kml [-o] [-h database_host] -p platform\n\n"
+	<< "	acTrack2kml [-o] [-h database_host] [-p platform]\n\n"
 	<< "Post-processing:\n"
 	<< "	acTrack2kml infile.nc outfile.kml\n";   
 
@@ -755,12 +755,32 @@ int parseRunstring(int argc, char** argv)
   extern int optind;       /* "  "     "     */
   int opt_char;     /* option character */
 
+  enum {isnt, yes, no} ground_selected = isnt;
+
   while ((opt_char = getopt(argc, argv, "p:h:s:t:o")) != -1)
   {
     switch (opt_char)
     {
     case 'p':	// platform selection, used to select dbname on ground.
+      if ( ground_selected == no )
+      {
+        std::cerr << "\n\tDo not select a platform when running onboard (-o).\n\n";
+        return usage(argv[0]);
+      }
+      ground_selected = yes;
       platform = optarg;
+      // TODO query the platforms DB to get a list of these...
+      if ( platform.compare("GV") &&
+           platform.compare("P3") &&
+           platform.compare("C130") )
+      {
+        std::cerr << "\n\tplatform must be GV, C130, or P3\n\n";
+        return usage(argv[0]);
+      }
+      dbname = "real-time-"+platform;
+      googleMapDataDir   = grnd_googleMapDataDir;
+      googleEarthDataDir = grnd_googleEarthDataDir+platform+"/GE/";
+      webHost            = grnd_webHost;
       break;
 
     case 'h':	// PGHOST over-ride.
@@ -776,9 +796,16 @@ int parseRunstring(int argc, char** argv)
       break;
 
     case 'o':	// onboard.  Modify some defaults if this is set.
-        googleMapDataDir = onboard_googleMapDataDir;
-        googleEarthDataDir = onboard_googleEarthDataDir;
-        webHost = onboard_webHost;
+      if ( ground_selected == yes )
+      {
+        std::cerr << "\n\tDo not select a platform when running onboard (-o).\n\n";
+        return usage(argv[0]);
+      }
+      ground_selected = no;
+      dbname = "real-time";
+      googleMapDataDir   = onboard_googleMapDataDir;
+      googleEarthDataDir = onboard_googleEarthDataDir;
+      webHost            = onboard_webHost;
       break;
 
     case '?':
@@ -815,14 +842,6 @@ int main(int argc, char *argv[])
     if ((rc = parseRunstring(argc,argv)) != 0)
       return rc;
   }
-  if ( platform.compare("GV") && platform.compare("C130") ) {
-    std::cerr << "\n\tplatform must be GV or C130\n\n";
-    return usage(argv[0]);
-  }
-
-  googleMapDataDir = grnd_googleMapDataDir;
-  googleEarthDataDir = grnd_googleEarthDataDir+platform+"/GE/";
-  webHost = grnd_webHost;
 
   if (netCDFinputFile.length() > 0)
   {
