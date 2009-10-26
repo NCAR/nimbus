@@ -282,7 +282,7 @@ void WriteCurrentPositionKML(const _projInfo& projInfo)
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
 	<< "   <Icon>\n"
-	<< "    <href>http://" << webHost << "/display/GE/images/red.png</href>\n"
+	<< "    <href>http://" << webHost << "/flight_data/display/red.png</href>\n"
 	<< "   </Icon>\n"
 	<< "  </IconStyle>\n"
 	<< " </Style>\n"
@@ -433,7 +433,7 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo, int stat
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
 	<< "   <Icon>\n"
-	<< "    <href>http://" << webHost << "/display/GE/images/red.png</href>\n"
+	<< "    <href>http://" << webHost << "/flight_data/display/red.png</href>\n"
 	<< "   </Icon>\n"
 	<< "  </IconStyle>\n"
 	<< " </Style>\n"
@@ -441,7 +441,7 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo, int stat
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
 	<< "   <Icon>\n"
-	<< "    <href>http://" << webHost << "/display/GE/images/white.png</href>\n"
+	<< "    <href>http://" << webHost << "/flight_data/display/white.png</href>\n"
 	<< "   </Icon>\n"
 	<< "  </IconStyle>\n"
 	<< " </Style>\n"
@@ -804,7 +804,7 @@ int parseRunstring(int argc, char** argv)
       ground_selected = no;
       dbname = "real-time";
       googleMapDataDir   = onboard_googleMapDataDir;
-      googleEarthDataDir = onboard_googleEarthDataDir;
+      googleEarthDataDir = onboard_googleEarthDataDir + "/GE/";
       webHost            = onboard_webHost;
       break;
 
