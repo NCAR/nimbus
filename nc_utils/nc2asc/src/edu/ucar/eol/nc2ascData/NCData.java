@@ -778,6 +778,12 @@ public class NCData {
 		ret += "\n"+"1.0 ";  //lowRate 
 		ret += "\n"+"Time in seconds from 00Z";
 		ret += "\n"+"  "+ sublvars.size();
+		String scaleValues="";
+		for (int i= 0; i<sublvars.size(); i++) {
+			scaleValues += "1.0 ";
+		}
+		ret += "\n" + scaleValues;
+
 		String fillVar=""; String varInf ="";
 		for (int i= 0; i<sublvars.size(); i++) {
 			Variable v = sublvars.get(i);
@@ -791,8 +797,8 @@ public class NCData {
 		ret += varInf;
 
 		//at last add the first line  -- line number and 1001
-		int lineNum = 10 + sublvars.size();
-		ret = lineNum + "    1001" + ret;
+		int lineNum = 12 + sublvars.size() + 3;
+		ret = " " + lineNum + " 1001" + ret + "\n0\n2";
 
 		return ret;
 	}
@@ -805,8 +811,8 @@ public class NCData {
 	private String getDates() {
 		String ret="";
 		String date = trimBegEndQuotes(""+fin.findGlobalAttribute("FlightDate"));
-		ret += date.split("/")[0]+ "-" +date.split("/")[1] + "-"+ date.split("/")[2];
-		ret += "      " +trimBegEndQuotes(""+fin.findGlobalAttribute("DateProcessed")).split(" ")[0];
+		ret += date.split("/")[2]+ " " +date.split("/")[1] + " "+ date.split("/")[0];
+		ret += "  " +trimBegEndQuotes(""+fin.findGlobalAttribute("DateProcessed")).split(" ")[0];
 		return ret;
 	}
 
