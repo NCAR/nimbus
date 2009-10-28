@@ -177,7 +177,7 @@ int VarDB_SetCalRangeLower(const char vn[], float value)
 int VarDB_SetCalRangeUpper(const char vn[], float value)
 {
   int	indx;
-  ulong	*p = (ulong *)&value;
+  uint32_t	*p = (uint32_t *)&value;
 
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(ERR);
@@ -188,7 +188,7 @@ int VarDB_SetCalRangeUpper(const char vn[], float value)
 }	/* END VARDB_SETCALRANGEUPPER */
 
 /* -------------------------------------------------------------------- */
-int VarDB_SetCategory(const char vn[], long value)
+int VarDB_SetCategory(const char vn[], uint32_t value)
 {
   int	indx;
 
@@ -201,7 +201,7 @@ int VarDB_SetCategory(const char vn[], long value)
 }	/* END VARDB_SETCATEGORY */
 
 /* -------------------------------------------------------------------- */
-int VarDB_SetStandardName(const char vn[], long value)
+int VarDB_SetStandardName(const char vn[], uint32_t value)
 {
   int	indx;
 

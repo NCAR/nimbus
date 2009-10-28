@@ -13,6 +13,8 @@ COPYRIGHT:		University Corporation for Atmospheric Research, 1993-95
 #ifndef VARDB_H
 #define	VARDB_H
 
+#include <stdint.h>
+
 #define	FIXED		0
 #define FLOATING	1
 
@@ -32,10 +34,10 @@ COPYRIGHT:		University Corporation for Atmospheric Research, 1993-95
 
 struct vardb_hdr	/* This is the first struct in the file	*/
 	{
-	long	MagicCookie;
-	long	Version;
-	long	nRecords;
-	long	RecordLen;
+	int32_t	MagicCookie;
+	int32_t	Version;
+	int32_t	nRecords;
+	int32_t	RecordLen;
 	char	unused[8];
 	};
 
@@ -46,7 +48,7 @@ struct var_v1
 	char	AlternateUnits[VARDB_UL];
 	char	Title[VARDB_TL];
 
-	long	type;			/* FIXED or FLOATING	*/
+	int32_t	type;			/* FIXED or FLOATING	*/
 	float	FixedRange[2];
 	float	FloatRange;
 	float	MinLimit;
@@ -62,7 +64,7 @@ struct var_v2
 	char	AlternateUnits[VARDB_UL];
 	char	Title[VARDB_TL];
 
-	long	type;			/* FIXED or FLOATING	*/
+	int32_t	type;			/* FIXED or FLOATING	*/
 	float	FixedRange[2];
 	float	FloatRange;
 	float	MinLimit;
@@ -70,9 +72,9 @@ struct var_v2
 
 	float	CalRange[2];	/* Analog SDI's only	*/
 
-	long	Category;
-	long	standard_name;	/* V3, was "unused" space in V2	*/
-	long	reference;	/* V3 - bool, was "unused" space in V2	*/
+	int32_t	Category;
+	int32_t	standard_name;	/* V3, was "unused" space in V2	*/
+	int32_t	reference;	/* V3 - bool, was "unused" space in V2	*/
 	};
 
 
@@ -134,9 +136,9 @@ int	VarDB_SetUnits(const char vn[], char units[]),
 	VarDB_SetMaxLimit(const char vn[], float value),
 	VarDB_SetCalRangeLower(const char vn[], float value),
 	VarDB_SetCalRangeUpper(const char vn[], float value),
-	VarDB_SetCategory(const char vn[], long value),
-	VarDB_SetStandardName(const char vn[], long value),
-	VarDB_SetReference(const char vn[], long value),
+	VarDB_SetCategory(const char vn[], uint32_t value),
+	VarDB_SetStandardName(const char vn[], uint32_t value),
+	VarDB_SetReference(const char vn[], uint32_t value),
 	VarDB_SetSpikeSlope(const char vn[], float value);
 
 #endif

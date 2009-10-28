@@ -20,7 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
 static struct var_v2 defaults =
 	{
 	"", "Unk", "Unk", "No title",
-	FLOATING, {0.0, 100.0}, 200.0, 0.0, 0.0, {0.0, 0.0}, 0, 0.0
+	FLOATING, {0.0, 100.0}, 200.0, 0.0, 0.0, {0.0, 0.0}, 0, 0, 0
 	};
 
 static const float default_FillValue = -32767.0;
