@@ -1,0 +1,126 @@
+<head>
+<title>nc2asc User's Manual</title>
+
+<style type="text/css">
+<!--
+body { background: white; color: black; margin: 2em; margin-left: 3em; }
+h1,h2 { font-size: 1.5em }
+h3 { font-size: 1.3em }
+h4 { font-size: 1.2em }
+h1, h2, h3, h4 { font-style: normal; font-weight: normal; color: #3860B0; }
+span.runin { font-size: 1.1em; font-weight: bold; color: #3860B0; }
+a:link { color:navy; }
+a:visited { color:#386090; }
+li.toc { list-style: none; padding: .1em; }
+kbd.att { font-weight: normal; color: blue; }
+div.example { margin-left: 3em; margin-right: 3em; }
+div.definition { margin-left: 1em; }
+pre.CDL { color: brown; }
+table { padding: .25em; }
+span.new { background-color: #FF6666; }
+span.old { background-color: #FFFF88; text-decoration: line-through; }
+span.comment { background-color: #88FF88; font-style: italic; }
+-->
+</style>
+
+</head>
+
+<body>
+
+<h1 align=CENTER>nc2asc User's Guide</h1>
+<h3 align=CENTER>netCDF to ASCII converter</h3>
+<hr>
+
+<dl>
+<dt><h3>Synopsis</h3>
+<dd>java -jar nc2asc.jar [-b batchFile] [-i input_file.nc] [-o output_file.asc]
+<p>
+<dt><h3>Description</h3>
+<dd><b>nc2asc</b> is a program for converting a netCDF file, or subset of, to ASCII.  It operates with a GUI or in batch mode.  In GUI mode you may choose which variables to output and choose formatting options for output. In batch mode, you define the preferred data i/o files and formats in a batch file, and pass the batch file as arguments to the program to obtain the desired output. 
+
+<p>
+
+<dt><h3>Command Line Options</h3>
+
+<dd><b>nc2asc</b> supports batch files with the <b>-b</b> option.  This is useful if you want to run the same configuration on many netCDF files.  All options are optional, but input and output file names must be specified either in the batch file or in the command line.
+
+A sample batch file follows:
+
+<blockquote>
+<pre class="CDL">
+# Input file
+if=/home/data/231RF10.nc
+
+# Output file
+of=junk.asc
+
+# Time Interval
+ti=yyyy-mm-dd,hh:mm:ss ~ yyyy-mm-dd,hh:mm:ss
+
+# Output header format, default is 'Plain'
+hd=[Plain | AmesDEF | NcML]
+
+# Output date format, default is 'yyyy-mm-dd'
+dt=[yyyy-mm-dd | 'yyyy mm dd' | NoDate]
+
+# Output time format, default is hh::mm:ss
+tm=[hh:mm:ss | 'hh mm ss' | SecOfDay]
+
+# Optionally averaging may be performed; specifiy number of seconds to average.
+avg=10
+
+# Value separator, default is 'Comma'
+sp=[Space | Comma]
+
+# Fill value, default is 'FillValue'
+fv=[FillValue | Blank | Replicate]
+
+# List of variables to output.
+var=ALT
+var=ADIFR
+var=BDIFR
+
+# Optionally, you can specify the data output format for a variable. Program takes float format %f %d %i %e %E %g %G,etc. %d, and %i are converted into %.0f. For example:
+ALT=%7.2f
+ADIFR=%e
+BDIFR=%d 
+
+</pre>
+</blockquote>
+
+<p>
+The <b>-i</b> and <b>-o</b> options allow input and output file names to specified on the command line.  They may then be eliminated from the batch file.
+<p>
+
+<blockquote>
+<pre class="CDL">
+#!/bin/csh
+
+foreach file (*.nc)
+  java -jar nc2asc.jar -b my_batch -i $file  -o `basename $file .nc`.asc
+end
+
+</pre>
+</blockquote>
+
+<p>
+<dt><h3>Requirements</h3>
+<dd><b>nc2asc</b> is written in Java under Sun Microsystems JRE.
+</dl>
+
+<hr>
+<h3>Author</h3>
+Ling-Ling Dong<br>
+National Center for Atmospheric Research<br>
+EOL / CDS.<br>
+(303) 497-1014
+<p>
+<address><a href="mail&#116;&#111;:dongl&#064;ucar.edu?Subject=from_RAF_Web_Software_Page">email Chris Webster</a></address>
+<hr>
+<font size=2>
+Last update:
+Thu May 21 17:43:26 MDT 2009
+</font>
+
+</body>
+</html>
