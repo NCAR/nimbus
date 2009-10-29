@@ -741,6 +741,8 @@ public class NCData {
 	 * @return
 	 */
 	private String[] checkBatchDateTmFmt(String[] fmt){
+		if (fmt[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)) fmt[DataFmt.DATE_IDX]= DataFmt.SPACEVAL; //AmesDEF date yyyy mm dd
+		
 		if (fmt[DataFmt.DATE_IDX].equals(DataFmt.DATEDASH) ) fmt[DataFmt.DATE_IDX]= DataFmt.DASHVAL;
 		if (fmt[DataFmt.DATE_IDX].equals(DataFmt.DATESPACE)) fmt[DataFmt.DATE_IDX]= DataFmt.SPACEVAL;
 
