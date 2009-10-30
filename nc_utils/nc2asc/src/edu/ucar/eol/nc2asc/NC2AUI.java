@@ -19,12 +19,13 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -35,22 +36,21 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingWorker;
+import javax.swing.border.EtchedBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.*;
-import javax.swing.border.*;
-import java.io.FileWriter;
 
+import ucar.nc2.Variable;
 import edu.ucar.eol.nc2ascData.DataFmt;
 import edu.ucar.eol.nc2ascData.NCData;
 import edu.ucar.eol.nc2ascData.NCDataException;
-import ucar.nc2.Variable;
 
 public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
@@ -98,7 +98,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 	}
 	//command name strings
 	private final static String  INFILE = "INFILE";
-	private final static String  OUTFILE = "OUTFILE";    
+	//private final static String  OUTFILE = "OUTFILE";    
 	private final static String  RDBATCH = "RDBATCH";
 	private final static String  SVBATCH = "SVBATCH"; 
 	private final static String  QUIT= "QUIT";
@@ -117,7 +117,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 	private JButton    bnProc, bnFmt, bnCancel, bnTog;
 	private JCheckBox  cbSel, cbDesel; 
 	private JTextField tfRt;
-	private StatusBar  statusBar;
+	private StatusBarMsg  statusBar;
 
 	///class objs: data-fmt selection dialog, and netcdf-data, and data-format
 	private NC2AUIDiag dialog; //NC2AUIProgBar dlgProgBar;	  
@@ -158,14 +158,14 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			c.gridx = 0;
 			c.gridy = 0;
 			c.gridheight=2;
-			c.gridwidth=c.REMAINDER;
+			c.gridwidth=GridBagConstraints.REMAINDER;
 			pane.add( createFileMenu(), c);
 
 			//row-2 tbl-lable
 			c.insets = new Insets(20, 0, 0, 0); // top padding
 			c.gridx = 0;
 			c.gridy = 2;
-			c.gridheight=c.REMAINDER;
+			c.gridheight=GridBagConstraints.REMAINDER;
 			c.gridwidth=5;
 			//c.anchor = GridBagConstraints.PAGE_END; // bottom of space
 			pane.add(createUITbl(), c);
@@ -174,20 +174,20 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			c.ipadx=0;
 			c.gridwidth=3;
 			c.gridheight=1;
-			c.anchor=c.NORTH;
+			c.anchor=GridBagConstraints.NORTH;
 			c.gridx = 5; // aligned with col3
 			c.gridy = 2;//2; // 2--4th row
 			c.insets = new Insets(55, 0, 0, 0); // top paddingreadData
 			pane.add(createUIBtns(), c);
 
 			c.ipadx=5;
-			c.gridwidth= c.REMAINDER;
+			c.gridwidth= GridBagConstraints.REMAINDER;
 			c.gridheight=1;
 			//c.anchor=GridBagConstraints.SOUTH;
 			c.gridx = 0; // aligned with col3
 			c.gridy = 3;//2; // 2--4th row
 			c.insets = new Insets(15, 0, 0, 0); // top paddingreadData
-			statusBar = new StatusBar(); 
+			statusBar = new StatusBarMsg(); 
 			statusBar.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 			NC2Act.setStatusBar(statusBar);
 			pane.add(statusBar, c);
@@ -268,7 +268,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		c2.gridy = 0;
 		c2.gridwidth = 2;//c2.REMAINDER;
 		c2.gridheight = 1;
-		c2.anchor = c2.CENTER;
+		c2.anchor = GridBagConstraints.CENTER;
 		jpTbl.add(lVar, c2); 
 
 		//createModelTbl();
@@ -278,8 +278,8 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		JScrollPane tblScrlPane = new JScrollPane(tbl);
 		c2.gridx = 0;
 		c2.gridy = 1;
-		c2.gridwidth = c2.REMAINDER;
-		c2.gridheight = c2.REMAINDER;
+		c2.gridwidth = GridBagConstraints.REMAINDER;
+		c2.gridheight = GridBagConstraints.REMAINDER;
 		c2.anchor = GridBagConstraints.PAGE_END; // bottom of space
 		jpTbl.add(tblScrlPane,c2);
 
@@ -511,7 +511,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			populateTbl();			
 			datafmt.initDataFmt();
 			pfrm.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			
+
 			enableButtons();
 
 		} 
@@ -583,9 +583,9 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			bf.start();
 
 			//bf.getDataFmt(), bf.getTmSetOrig()
-			String[] ff = bf.getDataFmt();
+			//String[] ff = bf.getDataFmt();
 			datafmt.setDataFmt(bf.getDataFmt(), bf.getTmSetOrig());
-		
+
 			String[] files= bf.getFiles();
 			if (files[1]==null || files[1].isEmpty()) {
 				NC2Act.wrtMsg("No input file from the batch reading.");
@@ -614,11 +614,11 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 					}
 				}
 			} 
-			
+
 			if (ncdata.getGlobalDataInf()[0]>1 && datafmt.getDataFmt()[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)) {
 				datafmt.setDataFmt(DataFmt.HEAD, DataFmt.HEAD_IDX);
 			}
-                        ncdata.setMode(true);
+			ncdata.setMode(true);
 			NC2Act.wrtMsg("  Reading batch file is done.");
 		} //if
 	}
@@ -668,7 +668,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 				}
 				fileName[0]= out;
 			}
-			
+
 			//NC2Act.prtMsgBox("new batch file="+fileName[0]); //fordebug
 			FileWriter bout = null;
 			try {
@@ -699,7 +699,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 				line += "fv= "+ DataFmt.REPLICATE+"\n";
 			}
 
-			line +="ti= "+ DataFmt.getTmSet()+"\n\n";
+			line +="ti= "+ datafmt.getTmSet()+"\n\n";
 
 			//  variables 
 			List<Variable> subvars = getSubVarList();
@@ -798,7 +798,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			}
 
 			bnProc.setEnabled(false);
-		
+
 			//write out data
 			String[] fmt =datafmt.getDataFmt();
 			if (fmt[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)) {
@@ -807,12 +807,12 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			String out= ncdata.genVarName(sublvars, fmt); 
 			ncdata.writeOut(out+"\n");
 			int[] range = getTmRange();
-			long t1 = Calendar.getInstance().getTimeInMillis();
+			//long t1 = Calendar.getInstance().getTimeInMillis();
 
 			//start thread one to write data
 			DataThread dth = new DataThread(ncdata, sublvars, range, datafmt.getNewDataFmt()); 
 			dth.start();
-			
+
 			//start thread two to display % of works
 			taskLen = sublvars.size()+ range[1];
 			task = new Task();
@@ -863,7 +863,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		try {
 			ncdata.openFile(fileName[1]);
 			ncdata.readDataInf();
-		
+
 			//clean up tbl
 			if (dataInf!=null){
 				for (int i=1; i<dataInf.size(); i++){
@@ -925,7 +925,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
 	private boolean validateInputFile(String fn){
 		try {
-			FileInputStream f = new FileInputStream(fn);
+			new FileInputStream(fn);
 		} catch (Exception e) {
 			NC2Act.wrtMsg("validateInputFile: Invalid Input File: "+fn);
 			return false;
@@ -935,7 +935,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
 	private boolean validateOutFile(String   fn){
 		try {
-			FileOutputStream f = new FileOutputStream(fn);
+			new FileOutputStream(fn);
 		} catch (Exception e) {
 			NC2Act.wrtMsg("validateOutputFile: Invalid Output File: "+fn);
 			return false;
@@ -987,7 +987,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		} //for
 	}
 
-	
+
 
 	private int[] getTmRange()  {
 		int[] ii = new int[2];
@@ -1031,6 +1031,8 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
  *
  */
 class MyTblModel extends DefaultTableModel {
+	static final long serialVersionUID =0;
+	
 	MyTblModel(int rows, int cols) {
 		super(rows, cols);
 	}
@@ -1045,9 +1047,11 @@ class MyTblModel extends DefaultTableModel {
 /**
  *   StatusBar extends JLabel and implements setMessage method 
  */
-class StatusBar extends JLabel   {
+class StatusBarMsg extends JLabel   {
 	/** Creates a new instance of StatusBar */
-	public StatusBar() {
+	static final long serialVersionUID =0;
+
+	public StatusBarMsg() {
 		super();
 		super.setPreferredSize(new Dimension(100, 16));
 		setMessage(" Ready");

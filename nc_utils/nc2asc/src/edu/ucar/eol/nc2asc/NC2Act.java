@@ -1,20 +1,24 @@
 package edu.ucar.eol.nc2asc;
 
 
-import javax.swing.*;
-import java.io.*;
-import java.util.*;
-import java.awt.*;
-import edu.ucar.eol.nc2ascData.*;
+import java.awt.Cursor;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Calendar;
+
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class NC2Act {
 
 	NC2Act() {};
 	NC2Act(boolean bm) {batchMode = bm;}
-	
+
 	private static FileWriter log=null;
 	private static boolean    batchMode= false;
-	private static StatusBar  sBar= null;
+	private static StatusBarMsg  sBar= null;
 
 	/**
 	 * close the log file, when the program exists 
@@ -26,12 +30,12 @@ public class NC2Act {
 			} catch (IOException e) {}
 		} 
 	}
-	
+
 	/**
 	 * allow user to setup JComponent that is used to control main UI display, cursor, etc.
 	 * @param c
 	 */
-	public static void setStatusBar(StatusBar c) {sBar=c;}
+	public static void setStatusBar(StatusBarMsg c) {sBar=c;}
 
 	/**
 	 * Allow users to setup the program mode, either batch mode or UI mode
@@ -47,7 +51,7 @@ public class NC2Act {
 	 */
 	public static boolean getMode() {return batchMode;}
 
-	
+
 	/**
 	 *  Display the messages to users
 	 * @param s
@@ -56,8 +60,8 @@ public class NC2Act {
 		JFrame p = new JFrame();
 		JOptionPane.showMessageDialog(p, s);
 	}
-	
-	
+
+
 	/**
 	 *  Display the messages to users, and Confirm with users
 	 * @param s
@@ -68,7 +72,7 @@ public class NC2Act {
 		//JOptionPane.showm (p, s, "", JOptionPane.YES_NO_OPTION);
 	}
 
-	
+
 
 	/**
 	 * Write the message to the nc2ascLog file.
@@ -83,7 +87,7 @@ public class NC2Act {
 		}
 		wrtMsg(msg);
 	}
-	
+
 	/**
 	 * Write the message to the nc2ascLog file.
 	 * Display the same message to the users if the program is in UI mode
@@ -93,7 +97,7 @@ public class NC2Act {
 	public static void wrtMsg (String msg) {
 		//add time stamp
 		String t = Calendar.getInstance().getTime().toString();
-		
+
 		if (log ==null) {
 			try {
 				log=new FileWriter("nc2ascLog.txt");
@@ -117,7 +121,7 @@ public class NC2Act {
 			if (!batchMode) 	prtMsgBox("NullPointerException: Cannot write to log "+ne.toString());
 			return; 
 		}
-		
+
 		if (!batchMode ) {
 			if (sBar!=null){
 				sBar.setText(msg);
@@ -125,9 +129,9 @@ public class NC2Act {
 				prtMsgBox(msg);
 			}
 		}
-			
+
 	}
-	
+
 	/**
 	 * 
 	 * @param f --file name

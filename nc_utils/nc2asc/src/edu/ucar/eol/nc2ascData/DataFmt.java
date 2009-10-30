@@ -81,7 +81,7 @@ public class DataFmt {
 	 * @param  s    -    selected data format
 	 * @param idx	-    position in data format string 
 	 */
-	public static void setDataFmt(String s, int idx){
+	public void setDataFmt(String s, int idx){
 		dataFmt[idx] = s;
 	}
 	/**
@@ -89,7 +89,7 @@ public class DataFmt {
 	 * ref@ dataFmt definition
 	 * @param fmt - all data formats  ;   tmset= yyyy-mm-dd,hh:mm:ss~yyyy-mm-dd,hh:mm:ss
 	 */
-	public static void setDataFmt(String[] fmt, String tmset) {
+	public void setDataFmt(String[] fmt, String tmset) {
 		for (int i=0; i< fmt.length; i++) {
 			dataFmt[i]= fmt[i];
 		}
@@ -101,7 +101,7 @@ public class DataFmt {
 	 * ref@ dataFmt definition
 	 * @param fmt - all data formats  ;  
 	 */
-	public static void setDataFmt(String[] fmt) {
+	public void setDataFmt(String[] fmt) {
 		for (int i=0; i< fmt.length; i++) {
 			dataFmt[i]= fmt[i];
 		}
@@ -111,7 +111,7 @@ public class DataFmt {
 	 * This is for users to retrieve the desired data format in simple form
 	 * @return dataFmt
 	 */
-	public static String[] getDataFmt(){
+	public String[] getDataFmt(){
 		return dataFmt;
 	}
 
@@ -119,7 +119,7 @@ public class DataFmt {
 	 * keep to copy of time range from UI user
 	 * @param tm -- batch ti-format
 	 */
-	public static void setTmSet(String tm) {
+	public void setTmSet(String tm) {
 		tmSet = tm;
 	}
 
@@ -128,7 +128,7 @@ public class DataFmt {
 	 * @return -- batch ti format
 	 */
 
-	public static String getTmSet() {
+	public String getTmSet() {
 		return tmSet;
 	}
 	/**

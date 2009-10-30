@@ -2,7 +2,6 @@ package edu.ucar.eol.nc2asc;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.List;
 
 import javax.swing.JDialog;
@@ -10,7 +9,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import ucar.nc2.Variable;
-import edu.ucar.eol.nc2ascData.*;
+import edu.ucar.eol.nc2ascData.DataFmt;
+import edu.ucar.eol.nc2ascData.NCData;
 
 
 
@@ -22,6 +22,7 @@ import edu.ucar.eol.nc2ascData.*;
  *
  */
 public class NC2A extends JPanel implements ActionListener {
+	static final long serialVersionUID =0;
 
 	/**
 	 * Important ui element class instance to add UI items
@@ -35,8 +36,8 @@ public class NC2A extends JPanel implements ActionListener {
 	private static void createAndShowGUI() {
 		// Create and set up the window.
 		JFrame frame = new JFrame("NetCDF To ASCII");
-			
-		frame.setDefaultLookAndFeelDecorated(true);
+
+		JFrame.setDefaultLookAndFeelDecorated(true);
 		JDialog.setDefaultLookAndFeelDecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocation(250, 150);
@@ -51,7 +52,7 @@ public class NC2A extends JPanel implements ActionListener {
 	 * overMidNight is a boolean to remember it happened, for AmesDEF format 
 	 */
 	static public boolean overMidNight = false;
-		
+
 	/**
 	 * 
 	 *  @param args
@@ -85,24 +86,24 @@ public class NC2A extends JPanel implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 	}
-	
+
 	/**
 	 * Search each input to find batch file. -b follows filename 
 	 * @return -- contains batch file or not
 	 */
 	private static String[] findBatch(String[] args) {
 		if (args ==null || args.length<2) return null;
-		
+
 		String[] strs=args;
 		if (args[0].trim().equals("-open"))
 			strs = args[1].trim().split(" ");
-		
+
 		for (int i=0; i<strs.length; i++ ) {
 			if (strs[i].equals("-b")) return strs; 
 		}
 		return null;
 	}
-	
+
 	/**
 	 * If the program is running in batch mode, the input arguments contains batch file, and/or input, and output.
 	 * This method signs the files into the NC2AUI local file name strings, 
@@ -110,19 +111,19 @@ public class NC2A extends JPanel implements ActionListener {
 	 * @param args  -b batchfile, -i input -o output
 	 */
 	private static void setArgs(String[] args) {
-		
+
 		BatchConfig bf = new BatchConfig(args);
 		bf.start();  //read and interpret the inputs
-        
+
 		String[] fs = bf.getFiles();
 		//System.out.println("\nFiles= " +fs[0]+ " "+ fs[1]+ " "+fs[2]);
-		
+
 		String[] fmt = bf.getDataFmt();
-				
+
 		//get Vals from variable names
 		NCData ncdata= new NCData();
 		ncdata.setMode(true);
-		
+
 		try {
 			ncdata.openFile(fs[1]);
 			ncdata.openOutFile(fs[2]);
@@ -130,7 +131,7 @@ public class NC2A extends JPanel implements ActionListener {
 			System.out.println("Batch-mode open i/o file fails..."+ e.getStackTrace());
 			return;
 		}
-		
+
 		int[] range = new int[2];
 		try {
 			range = ncdata.calBatchTmRange(fmt);
@@ -139,10 +140,10 @@ public class NC2A extends JPanel implements ActionListener {
 			return;
 		}
 		//System.out.println("bf-selectedVars= \n" +bf.showSelectedVars()+ "\nrange "+ range[0]+ "  "+ range[1]); 
-		
+
 		List<Variable> sublvars= ncdata.getBatchSubVars(bf.getSelVars());
 		ncdata.signBatchVarDataFmt(sublvars,bf.getTmpVarDataFmt());
-		
+
 		if (sublvars.size()<=0) {
 			System.out.println("NO variables are selected...");
 			return;
@@ -152,13 +153,13 @@ public class NC2A extends JPanel implements ActionListener {
 			System.out.println(" Warning: High rate data netcdf file. AmesDEF is not supported.  ");
 		}
 		if (fmt[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)) {ncdata.writeOut( ncdata.getAmesHead(sublvars)+ "\n"); }
-	
+
 		//System.out.println("bf_fmt_at_printout= \n"+ fmt[0]+ "\n"+ fmt[1]+ "\n"+ fmt[2]+ "\n"+ fmt[3]+ "\n"+ fmt[4]+ "\n"+ fmt[5]+ "\n"+ fmt[6]+ "\n"); 
 		String out= ncdata.genVarName(sublvars, fmt);
 		ncdata.writeOut(out+"\n"); 
 		ncdata.writeDataToFile(sublvars, range, fmt);
 		System.out.println("Writing is completed.");
-		
+
 	}
 
 

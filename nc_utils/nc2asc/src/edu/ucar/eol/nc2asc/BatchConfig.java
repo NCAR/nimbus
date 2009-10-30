@@ -3,11 +3,12 @@ package edu.ucar.eol.nc2asc;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import ucar.nc2.NetcdfFile;
-import ucar.nc2.Variable;
 import edu.ucar.eol.nc2ascData.DataFmt;
 
 /**
@@ -47,8 +48,8 @@ public class BatchConfig {
 	 * List selected Variables' data format
 	 */
 	//private List<String> varDatFmt;
-    Map<String, String> tmpVdf; 
-    
+	Map<String, String> tmpVdf; 
+
 	/**
 	 * ti- format
 	 * ti= yyyy-mm-dd,hh:mm:ss~yyyy-mm-dd,hh:mm:ss
@@ -60,7 +61,7 @@ public class BatchConfig {
 	 * The class users need to call start() to read and interpret the batch file to get ready for data writing.
 	 * @param args
 	 */
-	
+
 	/**
 	 * get the user preferred variable data formats
 	 */
@@ -124,7 +125,7 @@ public class BatchConfig {
 	public List<String> getSelVars() {
 		return selVars;
 	}
-	
+
 	/**
 	 * 
 	 * @return fmt --ref to dataFmt definition
@@ -164,9 +165,9 @@ public class BatchConfig {
 	 * @param args -- see the string[] files and documents
 	 */
 	private void parseArgs(String[] args){
-		
+
 		int i, loop = args.length;
-	
+
 		for (i=0; i<loop; i++) {
 			if (_dbg) System.out.println(" "+args[i]);
 			if (args[i].equals("-b") && i<loop) {
@@ -207,7 +208,7 @@ public class BatchConfig {
 		BufferedReader br = new BufferedReader (fr);
 		selVars = new ArrayList<String>();
 		tmpVdf = new HashMap<String, String>();
-		
+
 		String line = br.readLine().trim();
 		while (line != null) {
 			String val  = line.substring(line.indexOf("=")+1).trim();
@@ -267,7 +268,7 @@ public class BatchConfig {
 			if (line.indexOf("%")> 0 ) {
 				String var = line.substring(0, line.indexOf("=")).trim();
 				if (_dbg) System.out.printf("parse batch file: var = %s format= %s \n", var, val);
-				
+
 				//check var-format %f %d %i % e %E %G %g, %d or %i=>%.0f
 				if (val.endsWith("f")||val.endsWith("d")||val.endsWith("i")|| val.endsWith("e")|| val.endsWith("E")|| val.endsWith("g")|| val.endsWith("G") ){
 					if (val.endsWith("d")|| val.endsWith("i")) 
@@ -277,14 +278,14 @@ public class BatchConfig {
 					val= "%f";
 				}
 				tmpVdf.put(var, val);
-				
+
 			}
-					
+
 			line = br.readLine();
 		} //while 
 		br.close();
 		fr.close();
-		
+
 		//verify all the required batch elements
 		checkBatchElements();
 	}
@@ -316,11 +317,11 @@ public class BatchConfig {
 		int h= Integer.parseInt(tmInf[0]);
 		int m= Integer.parseInt(tmInf[1]);
 		int s= Integer.parseInt(tmInf[2]);
-		int start_s =s; //keep a copy
+		//int start_s =s; //keep a copy
 
 		Calendar cl = Calendar.getInstance();
 		cl.set(y,mm,d,h,m,s);
-		
+
 		//end time  
 		String[] end = tt[1].split(DataFmt.COMMAVAL); 
 		String[] dtm  = end[0].split(DataFmt.DASHVAL);
@@ -343,8 +344,8 @@ public class BatchConfig {
 			if (_dbg) System.out.println("The ending time is smaller than starting time. Use default");
 			return DataFmt.FULLTM;
 		}
-				int aj=0;
-		
+		//int aj=0;
+
 		String ret = (cl.getTimeInMillis()+ 400  )+ DataFmt.TMSETDELIMIT;
 		return ret+range;
 	}
@@ -360,7 +361,7 @@ public class BatchConfig {
 		if (files[1]==null || files[1].isEmpty()) {
 			if (_dbg) System.out.println("No Input file is read from the batch file. ");
 		} 
-	 
+
 		//format checking..........
 		//check date
 		String item = dataFmt[DataFmt.DATE_IDX];
@@ -414,7 +415,7 @@ public class BatchConfig {
 			if (_dbg) System.out.println("Can not find a good average. Use default format..."+ item);
 			dataFmt[DataFmt.AVG_IDX]="1";
 		}
-		
+
 		//check AmesDEF, if it is selected, date=NODATE and tm=00Z, seperator=space, missdata=fillvalue,
 		item = dataFmt[DataFmt.HEAD_IDX];
 		if (item.equals(DataFmt.HEAD2)){
@@ -423,7 +424,7 @@ public class BatchConfig {
 			dataFmt[DataFmt.MVAL_IDX]= DataFmt.MISSVAL;
 			dataFmt[DataFmt.DMTR_IDX]= DataFmt.SPACEVAL;
 		}
-			
+
 	}
 
 }//eof class

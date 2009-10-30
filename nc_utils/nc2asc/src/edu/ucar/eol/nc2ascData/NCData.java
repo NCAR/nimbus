@@ -1,9 +1,6 @@
 package edu.ucar.eol.nc2ascData;
 
-import java.awt.Cursor;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -110,20 +107,20 @@ public class NCData {
 	 * batch mode 
 	 */
 	private boolean bMode = false;
-	
+
 	/**
 	 * the user selected variable formats , either batch mode or GUUI mode
 	 * the length should be the same as selected variable len.
 	 */
 	private List<String> varDatFmt;
-	
+
 	public List<String> getVarDatFmt() {
 		return varDatFmt;
 	}
-	
+
 	public void  setVarDatFmt(List<String> vfmt) {
 		varDatFmt = vfmt;
-		
+
 	}
 
 	public void setMode (boolean b) { bMode = b;}
@@ -345,7 +342,7 @@ public class NCData {
 		Variable v2 = lvars.get(2);
 		demoData[0] ="Date,UTC,"+v1.getShortName() +","+v2.getShortName();
 		long milSec;
-		String[] vdata1, vdata2;
+		//String[] vdata1, vdata2;
 		milSec = getTimeMilSec();    
 
 		int len =10;
@@ -393,7 +390,7 @@ public class NCData {
 	}
 
 	public String getNewTm(long milSec, int sec, String[] fmtIn, boolean milsec) {
-		String tm;
+		//String tm;
 		Calendar cl = Calendar.getInstance();
 		cl.setTimeInMillis(milSec);
 		cl.add(Calendar.SECOND, sec);
@@ -440,12 +437,12 @@ public class NCData {
 			NC2Act.wrtMsg("\n Variable formats have not initialized...");
 			return;
 		}
-		
+
 		if (sublvars.size()!= varDatFmt.size()) {
 			NC2Act.wrtMsg("\n MisMatched variables and the formats...");
 			return;
 		}
-		
+
 		// all the time-range data length-should be the seconds in the time range
 		tmPassed=0; bfinish =false; progIdx =0; NC2A.overMidNight=false;
 
@@ -584,7 +581,7 @@ public class NCData {
 				int varIdx = 0;
 				String line = getNewTm(milSec + (long)(range[0]+i)*1000
 						+ (k * (1000/topRate)), 0, fmt, true);
-			
+
 				for (int j = 0; j < nVariables; j++) { //variables
 					String varFmt = varDatFmt.get(j);
 					int dataInterval = topRate / hRate[j]; 
@@ -649,7 +646,7 @@ public class NCData {
 		if (fin==null) {System.out.println("The netcdf file is not opened.");
 		System.exit(-1);
 		}
-		List<Variable> lvars= new ArrayList();
+		List<Variable> lvars= new ArrayList<Variable>();
 		for (int i =0; i<selVars.size(); i++) {
 			Variable v = fin.findVariable(selVars.get(i));
 			if (v==null|| v.getSize()<=0) {  //skip the vars that can not found from the nc file
@@ -671,13 +668,13 @@ public class NCData {
 		return lvars;
 	}
 
-	
+
 	public void signBatchVarDataFmt(List <Variable> subVars, Map<String, String> tmpVarFmt) {
 		varDatFmt = new ArrayList<String>();
 		for (int i=0; i<subVars.size(); i++) {
 			varDatFmt.add("%f");
 		}
-		
+
 		if (tmpVarFmt==null) return;
 		Set<String> ks= tmpVarFmt.keySet();
 		for (int i=0; i<subVars.size(); i++) {
@@ -687,7 +684,7 @@ public class NCData {
 			}
 		}
 	}
-	
+
 	/**
 	 * Open the netcdf file, read the Time variable to get start-time==>startLong,
 	 * get the selected start time from dataFmt[TMSET_IDX]split(",")[0]==>selectedLong,
@@ -741,8 +738,8 @@ public class NCData {
 	 * @return
 	 */
 	private String[] checkBatchDateTmFmt(String[] fmt){
-		if (fmt[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)) fmt[DataFmt.DATE_IDX]= DataFmt.SPACEVAL; //AmesDEF date yyyy mm dd
-		
+		//if (fmt[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)) fmt[DataFmt.DATE_IDX]= DataFmt.SPACEVAL; //AmesDEF date yyyy mm dd
+
 		if (fmt[DataFmt.DATE_IDX].equals(DataFmt.DATEDASH) ) fmt[DataFmt.DATE_IDX]= DataFmt.DASHVAL;
 		if (fmt[DataFmt.DATE_IDX].equals(DataFmt.DATESPACE)) fmt[DataFmt.DATE_IDX]= DataFmt.SPACEVAL;
 
@@ -813,8 +810,9 @@ public class NCData {
 	private String getDates() {
 		String ret="";
 		String date = trimBegEndQuotes(""+fin.findGlobalAttribute("FlightDate"));
-		ret += date.split("/")[2]+ " " +date.split("/")[1] + " "+ date.split("/")[0];
-		ret += "  " +trimBegEndQuotes(""+fin.findGlobalAttribute("DateProcessed")).split(" ")[0];
+		ret += date.split("/")[0]+ " " +date.split("/")[1] + " "+ date.split("/")[2];
+		String[] dateProc = trimBegEndQuotes(""+fin.findGlobalAttribute("DateProcessed")).split(" ")[0].split("/");
+		ret += "      " + dateProc[2]+ " " + dateProc[0]+" "+dateProc[1];
 		return ret;
 	}
 
