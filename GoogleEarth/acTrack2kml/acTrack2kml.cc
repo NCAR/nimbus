@@ -1,6 +1,6 @@
 /*
  * Program to read real-time flight database periodically (say 60 seconds)
- * and create a KML for google earth, an XML for google maps.
+ * and create a KML for google earth.
  */
 #include <libpq-fe.h>
 #include <string>
@@ -209,51 +209,6 @@ endBubbleCDATA(int status_id)
 	<< " degree_T<br>WI : " << latestWI << " m/s]]>";
 
   return e.str();
-}
-
-/* -------------------------------------------------------------------- */
-void
-WriteGoogleMapXML(const _projInfo& projInfo, int status_id)
-{
-  // Open a temperary file, write to that, rename to what to want.
-
-  std::ofstream googleMap;
-  int flightNumInt = atoi(&projInfo.flightNumber.c_str()[2]);
-
-  std::string file = googleMapDataDir + "flight_" + projInfo.flightNumber + ".xml";
-  std::string temp = googleMapDataDir + "tmp_latest" + ".xml";
-  googleMap.open(temp.c_str());
-
-  if (googleMap.is_open() == false)
-  {
-    std::cerr << "Failed to open output file " << temp << std::endl;
-    return;
-  }
-
-  googleMap << "<?xml version='1.0' standalone='yes'?>\n"
-	<< "<flight>\n  <id>" << flightNumInt << "</id>\n"
-	<< "  <status>" << status[status_id-1] << "</status>\n"
-	<< "  <status_id>" << status_id << "</status_id>\n"
-	<< "  <desc>Flight " << projInfo.flightNumber << "</desc>\n"
-	<< "  <start lat=\"" << _lat[0] << "\" lng=\"" << _lon[0] << "\">"
-	<< startBubbleCDATA() << "</start>\n"
-	<< "  <end lat=\"" << _lat[_lat.size()-1] << "\" lng=\""
-	<< _lon[_lon.size()-1] << "\">";
-
-  googleMap << endBubbleCDATA(status_id) << "</end>\n  <points>\n";
-
-  size_t step = (_lat.size() / maxGoogleMapPoints) + 1;
-
-  for (size_t i = 0; i < _lat.size(); i += step)
-  {
-    googleMap	<< "    <point lat=\"" << _lat[i] << "\" lng=\"" << _lon[i]
-		<< "\" alt=\"" << (int)_alt[i] << "\"/>\n";
-//		<< "\" alt=\"" << (int)_alt[i] << "\" dt=\"" << _date[i] << "\"/>\n";
-  }
-
-  googleMap << "  </points>\n</flight>\n";
-  googleMap.close();
-  rename(temp.c_str(), file.c_str());
 }
 
 /* -------------------------------------------------------------------- */
@@ -848,7 +803,6 @@ int main(int argc, char *argv[])
     ReadDataFromNetCDF(netCDFinputFile);
     if (_lat.size() > 0)
     {
-//      WriteGoogleMapXML(projectInfo, 3);
       std::cout << "WriteGoogleEarthKML(" << outputKML << ", projectInfo, 3);\n";
       WriteGoogleEarthKML(outputKML, projectInfo, 3);
     }
@@ -892,7 +846,6 @@ int main(int argc, char *argv[])
       else
         outFile = googleEarthDataDir + "latest" + ".kml";
 
-//      WriteGoogleMapXML(projectInfo, flightStatus());
       WriteGoogleEarthKML(outFile, projectInfo, flightStatus());
       WriteCurrentPositionKML(projectInfo);
     }
