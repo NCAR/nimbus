@@ -47,6 +47,20 @@ Config::Config() : _adsFileExtension(".ads")
   SetTwoDAreaRejectRatio(_defaultPMS2DAreaRatioReject);
 }
 
+std::string
+Config::AircraftString()
+{
+   if (Aircraft() == Config::HIAPER)
+      return "GV";
+   if (Aircraft() == Config::NRL_P3)
+      return "NRLP3";
+   if (Aircraft() == Config::C130)
+      return "C130";
+
+  fprintf(stderr, "config.cc: No aircraft set for AircraftString()\n");
+  return "";
+}
+
 Config::interpolationType
 Config::DefaultInterpolationType()
 {

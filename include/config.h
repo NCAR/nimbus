@@ -60,6 +60,7 @@ public:
   bool isADS3() const			{ return _adsVersion == ADS_3; }
 
   aircraft Aircraft()			{ return _aircraft; }
+  std::string AircraftString();
   processingMode ProcessingMode() const	{ return _mode; }
   processingRate ProcessingRate() const	{ return _processingRate; }
   hrtRate HRTRate() const		{ return _hrtRate; }

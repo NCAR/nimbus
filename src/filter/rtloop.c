@@ -97,7 +97,7 @@ void RealTimeLoop()
   if (cfg.OutputSQL())
   {
     std::string BuildPGspecString();
-    psql = new PostgreSQL(BuildPGspecString(), cfg.TransmitToGround());
+    psql = new PostgreSQL(BuildPGspecString());
   }
 
   bcast = new Broadcast();
