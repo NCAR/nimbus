@@ -32,7 +32,7 @@ class sqlTransmit;
 class PostgreSQL
 {
 public:
-  PostgreSQL(std::string specifier, bool transmitToGround = false);
+  PostgreSQL(std::string specifier);
   ~PostgreSQL();
 
   /**

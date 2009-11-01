@@ -29,7 +29,7 @@ const std::string PostgreSQL::RATE_TABLE_PREFIX = "SampleRate";
 std::string readLandmarks();
 
 /* -------------------------------------------------------------------- */
-PostgreSQL::PostgreSQL(std::string specifier, bool transmitToGround)
+PostgreSQL::PostgreSQL(std::string specifier)
 {
   _conn = PQconnectdb(specifier.c_str());
 
