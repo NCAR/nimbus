@@ -9,12 +9,14 @@ COPYRIGHT:      University Corporation for Atmospheric Research, 2003-06
 */
 
 #include "psql.h"
-#include "transmit.h"
 #include <raf/vardb.h>
 
 #include <cctype>
+#include <ctime>
 #include <set>
 #include <iomanip>
+#include <zlib.h>
+#include <sys/param.h>
 
 void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[]);
 
@@ -48,15 +50,9 @@ PostgreSQL::PostgreSQL(std::string specifier)
 
   if (cfg.TransmitToGround())
   {
-   if (cfg.Aircraft() == Config::HIAPER)
-      _ldm = new sqlTransmit("GV");
-   if (cfg.Aircraft() == Config::NRL_P3)
-      _ldm = new sqlTransmit("NRLP3");
-   if (cfg.Aircraft() == Config::C130)
-      _ldm = new sqlTransmit("C130");
+   _groundDBinitString.str("");
+   _groundDBinitString << cfg.AircraftString() << '\n';
   }
-  else
-    _ldm = 0;
 
   // Don't recreate database if this is the same flight.
   if (isSameFlight() == false)
@@ -69,20 +65,7 @@ PostgreSQL::PostgreSQL(std::string specifier)
     initializeVariableList();
     submitCommand(
     "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current;", true);
-    if (_ldm)
-      _ldm->setTimeInterval(5);
   }
-
-#ifdef BCAST_DATA
-  if (cfg.ProcessingMode() == Config::RealTime)
-  {
-    _brdcst = new UdpSocket(RT_UDP_PORT, "192.168.84.255");
-    _brdcst->openSock(UDP_BROADCAST);
-  }
-#endif
-
-  if (cfg.TransmitToGround())
-    LaunchGroundFeed();
 
 }	/* END CTOR */
 
@@ -114,8 +97,7 @@ PostgreSQL::WriteSQL(const std::string & timeStamp)
 	<< timeStamp << "');";
     submitCommand(_sqlString.str(), true);
 
-    // transmit of 1 second data removed from nimbus...
-    _ldm = 0;
+    outputGroundDBInitPacket();
   }
 
 
@@ -127,25 +109,17 @@ PostgreSQL::WriteSQL(const std::string & timeStamp)
   _sqlString.str("");
   _sqlString << "INSERT INTO " << LRT_TABLE << " VALUES ('" << timeStamp << "'";
 
-#ifdef BCAST_DATA
-  _broadcastString.str("");
-  _broadcastString << "RAF-TS " << timeStamp << ' ';
-#endif
-
-  _transmitString.str("");
-  _transmitString << _sqlString.str();
 
   extern NR_TYPE	*AveragedData;
-
 
   /* Two loops again, raw and derived.  This is raw.
    */
   for (size_t i = 0; i < raw.size(); ++i)
   {
     if (raw[i]->Length > 1)	// PMS/vector data.
-      addVectorToAllStreams(&AveragedData[raw[i]->LRstart], raw[i]->Length, raw[i]->Transmit);
+      addVectorToAllStreams(&AveragedData[raw[i]->LRstart], raw[i]->Length);
     else
-      addValueToAllStreams(AveragedData[raw[i]->LRstart], raw[i]->Transmit);
+      addValueToAllStreams(AveragedData[raw[i]->LRstart]);
   }
 
 
@@ -154,34 +128,16 @@ PostgreSQL::WriteSQL(const std::string & timeStamp)
   for (size_t i = 0; i < derived.size(); ++i)
   {
     if (derived[i]->Length > 1)
-      addVectorToAllStreams(&AveragedData[derived[i]->LRstart], derived[i]->Length, derived[i]->Transmit);
+      addVectorToAllStreams(&AveragedData[derived[i]->LRstart], derived[i]->Length);
     else
-      addValueToAllStreams(AveragedData[derived[i]->LRstart], derived[i]->Transmit);
+      addValueToAllStreams(AveragedData[derived[i]->LRstart]);
   }
 
-
-#ifdef BCAST_DATA
-  if (cfg.ProcessingMode() == Config::RealTime)
-  {
-    _broadcastString << '\n';
-    _brdcst->writeSock(_broadcastString.str().c_str(), _broadcastString.str().length());
-  }
-#endif
 
   _sqlString << ");";
-  _transmitString << ");";
   submitCommand(_sqlString.str(), false);
 
-  if (_ldm)
-  {
-    if (_ldm->oneCommandLeft())
-      _transmitString << updateEndTimeString(timeStamp, 0);
-    _ldm->queueString(_transmitString.str());
-  }
-
-
   long usec = WriteSQLvolts(timeStamp);
-
 
   submitCommand(updateEndTimeString(timeStamp, usec), false);
 
@@ -332,9 +288,6 @@ PostgreSQL::initializeVariableList()
   int	nDims, dims[3];
 
   rateTableMap		rateTableMap;
-
-  // Use _transmitString to build the ground version of rateTableMap[1].
-  _transmitString.str("");
 
   nDims = 1;
   dims[0] = 1;
@@ -536,7 +489,7 @@ PostgreSQL::addValue(std::stringstream& sql, NR_TYPE value, bool addComma)
 
 /* -------------------------------------------------------------------- */
 inline void
-PostgreSQL::addValueToAllStreams(NR_TYPE value, bool xmit, bool addComma)
+PostgreSQL::addValueToAllStreams(NR_TYPE value, bool addComma)
 {
   static const char commaFormat[] = ",%e";
   static const char normalFormat[] = "%e";
@@ -553,24 +506,14 @@ PostgreSQL::addValueToAllStreams(NR_TYPE value, bool xmit, bool addComma)
   sprintf(value_ascii, format, value);
 
   _sqlString << value_ascii;
-#ifdef BCAST_DATA
-  _broadcastString << value_ascii;
-#endif
-  if (xmit)
-    _transmitString << value_ascii;
 
 }	// END ADDVALUE
 
 /* -------------------------------------------------------------------- */
 inline void
-PostgreSQL::addVectorToAllStreams(const NR_TYPE *value, size_t nValues, bool xmit)
+PostgreSQL::addVectorToAllStreams(const NR_TYPE *value, size_t nValues)
 {
   _sqlString << ",'{";
-#ifdef BCAST_DATA
-  _broadcastString << ",{";
-#endif
-  if (xmit)
-    _transmitString << ",'{";
 
   /* Start at 1 to eliminate unused 0th bin.  See also GetPMS1DAttrsForSQL().
    * and intializeVariableList().
@@ -582,17 +525,12 @@ PostgreSQL::addVectorToAllStreams(const NR_TYPE *value, size_t nValues, bool xmi
   for (size_t j = start; j < nValues; ++j)
   {
     if (j != start)
-      addValueToAllStreams(value[j], xmit);
+      addValueToAllStreams(value[j]);
     else
-      addValueToAllStreams(value[j], xmit, false);
+      addValueToAllStreams(value[j], false);
   }
 
   _sqlString << "}'";
-#ifdef BCAST_DATA
-  _broadcastString << '}';
-#endif
-  if (xmit)
-    _transmitString << "}'";
 
 }	// END ADDVECTOR
 
@@ -607,7 +545,7 @@ PostgreSQL::addVariableToDataBase(
 {
   std::stringstream entry;
 
-  /* Names need to have standard case since, since column names in RAF_lrt
+  /* Names need to have standard case since column names in RAF_lrt
    * will be lower case dictated by PostGreSQL.
    */
   entry << "INSERT INTO Variable_List VALUES ('" <<
@@ -692,14 +630,14 @@ PostgreSQL::addVariableToTables(rateTableMap &tableMap, const var_base *var,
     preamble << "PRIMARY KEY, ";
 
     /* We don't have a map entry for the ground transmit subset of
-     * variables.  Build it in _transmitString, initialize here.
+     * variables.  Build it in _groundDBinitString, initialize here.
      */
     if (i == 0 && var->Transmit) // Only do this for LRT table.
     {
-      if (_transmitString.str().length() == 0)
-        _transmitString << preamble.str();
+      if (_groundDBinitString.str().length() == 0)
+        _groundDBinitString << preamble.str();
       else
-        _transmitString << ',';
+        _groundDBinitString << ',';
     }
 
     if (tableMap[preamble.str()].length() > 0)
@@ -707,14 +645,13 @@ PostgreSQL::addVariableToTables(rateTableMap &tableMap, const var_base *var,
 
     std::string build = var->name;
     build += " FLOAT";
-    if (var->Length > 1)	// array.
+    if (var->Length > 1)    // array.
       build += "[]";
 
     tableMap[preamble.str()] += build;
     if (i == 0 && var->Transmit)
-      _transmitString << build;
+      _groundDBinitString << build;
   }
-
 }	// END ADDVARIABLETOTABLES
 
 /* -------------------------------------------------------------------- */
@@ -729,12 +666,8 @@ PostgreSQL::createSampleRateTables(const rateTableMap &tableMap)
 
   submitCommand(_sqlString.str());
 
-  // Send the subset'ed RAF_LRT table creation to ground.
-  if (_ldm)
-  {
-    _transmitString << ");";
-    _ldm->queueString(_transmitString.str());
-  }
+  _groundDBinitString << ");";
+
 }	// END CREATESAMPLERATETABLES
 
 /* -------------------------------------------------------------------- */
@@ -799,8 +732,8 @@ PostgreSQL::submitCommand(const std::string command, bool xmit)
   PQsendQuery(_conn, command.c_str());
   fprintf(stderr, "%s", PQerrorMessage(_conn));
 
-  if (_ldm && xmit)
-    _ldm->queueString(command);
+  if (xmit)
+    _groundDBinitString << command << '\n';
 
   while ( (res = PQgetResult(_conn)) )
     PQclear(res);
@@ -877,10 +810,33 @@ BuildPGspecString()
 }
 
 /* -------------------------------------------------------------------- */
+void
+PostgreSQL::outputGroundDBInitPacket()
+{
+  char fName[MAXPATHLEN], *dir;
+
+  if ((dir = getenv("XMIT_DIR")) == 0)
+  {
+    fprintf(stderr, "env XMIT_DIR undefined, fatal for '-x'\n");
+    quit();
+  }
+
+  time_t t = time(0);
+  char timeStamp[64];
+  strftime(timeStamp, sizeof(timeStamp), "%Y-%m-%dT%H:%M:%S", gmtime(&t));
+  sprintf(fName, "%s/%s_nimbus_start_%s.gz", dir, cfg.AircraftString().c_str(), timeStamp);
+
+  gzFile gzfd = gzopen(fName, "w+");
+
+  gzwrite(gzfd, _groundDBinitString.str().c_str(), _groundDBinitString.str().length());
+  gzclose(gzfd);
+}
+
+/* -------------------------------------------------------------------- */
 static const char feedCommand[] =
 		"/home/local/raf/groundfeed/bin/Groundfeed.sh";
 void
-PostgreSQL::LaunchGroundFeed()
+PostgreSQL::launchGroundFeed()
 {
   if (cfg.GroundFeedType() == Config::UDP)
     return;  // Means we are using UDP broadcast instead.

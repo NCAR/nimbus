@@ -91,8 +91,8 @@ public:
 //@}
 
   const std::stringstream&
-  transmitString() const
-    { return _transmitString; }
+  GroundDBInitString() const
+    { return _groundDBinitString; }
 
 protected:
   /**
@@ -104,11 +104,8 @@ protected:
 
   std::stringstream _sqlString;
 
-  /// Ethernet broadcasting.
-  std::stringstream _broadcastString;
-
   /// Ground transimission sub-set of _sqlString.
-  std::stringstream _transmitString;
+  std::stringstream _groundDBinitString;
 
   std::stringstream _sql2d_str;
 
@@ -194,12 +191,10 @@ protected:
    * SQL strings.  If the value is Nan or Inf, then MISSING_VALUE is
    * substituted.
    * @param value is the value to add.
-   * @param xmitToGround is whether this variable/value is marked for
-   * transmission to the ground.
    * @param addComma is whether to prepend a comma to the stream.
    */
   void
-  addValueToAllStreams(NR_TYPE value, bool xmitToGround, bool addComma = true);
+  addValueToAllStreams(NR_TYPE value, bool addComma = true);
   void
   addValue(std::stringstream& sqlStr, NR_TYPE value, bool addComma = true);
 
@@ -209,11 +204,9 @@ protected:
    * MISSING_VALUE is substituted.
    * @param values is a pointer to the values to add.
    * @param nValues is the vector length.
-   * @param xmitToGround is whether this variable/value is marked for
-   * transmission to the ground.
    */
   void
-  addVectorToAllStreams(const NR_TYPE *values, size_t nValues, bool xmitToGround);
+  addVectorToAllStreams(const NR_TYPE *values, size_t nValues);
 
   /**
    * Remove any trailing spaces from the string @p target.
@@ -237,9 +230,14 @@ protected:
   std::string
   updateEndTimeString(const std::string & timeStamp, long usec) const;
 
-  // Launch script/program which feeds data to the ground.
+  // Output ground database start packet to a file.
   void
-  LaunchGroundFeed();
+  outputGroundDBInitPacket();
+
+  // Launch script/program which feeds data to the ground (raf/groundfeed
+  // code).  Currently unused.  Was called at end of ctor.
+  void
+  launchGroundFeed();
 
 };	// END PGSQL.H
 
