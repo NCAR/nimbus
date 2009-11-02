@@ -82,7 +82,12 @@ void MultiCastStatus::sendStatus(const char timeStamp[])
   statstr = "<?xml version=\"1.0\"?><group><name>nimbus</name><clock>";
   statstr += timeStamp;
   statstr += "</clock></group>\n";
-  msock.sendto(statstr.c_str(), statstr.length()+1, 0, msaddr);
+  try {
+    msock.sendto(statstr.c_str(), statstr.length()+1, 0, msaddr);
+  }
+  catch (const nidas::util::IOException& ioe) {
+    fprintf(stderr, "rtloop3::sendStatus: Network unreachable.\n");
+  }
 }
 
 static MultiCastStatus * mcStat = 0;
