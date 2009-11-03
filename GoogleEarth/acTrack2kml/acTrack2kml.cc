@@ -30,7 +30,7 @@ static std::string googleMapDataDir, googleEarthDataDir, webHost;
 
 // All datapoints are read from file, but only use every 'TimeStep' points.
 // e.g. 15 would mean use 1 data point for every 15 seconds of data.
-static int TimeStep = 10;
+static int TimeStep = 6;
 
 // True Airspeed cut-off (take-off and landing speed).
 static const float TAS_CutOff = 20.0;
@@ -172,7 +172,7 @@ std::string
 startBubbleCDATA()
 {
   std::stringstream s;
-  std::string startTime = _date[0].substr(_date[0].find(' '));
+  std::string startTime = _date[0].substr(_date[0].find('T'));
 
   s     << "<![CDATA[Take off :" << startTime
         << "<br>Alt : " << _alt[0]
@@ -186,21 +186,16 @@ startBubbleCDATA()
 
 /* -------------------------------------------------------------------- */
 std::string
-endBubbleCDATA(int status_id)
+endBubbleCDATA()
 {
   std::stringstream e;
   std::string s = _date[_date.size()-1];
-  std::string endTime = s.substr(s.find(' '));
+  std::string endTime = s.substr(s.find('T'));
 
   e << "<![CDATA[";
 
-  if (status_id == 3)	// Landed.
-    e << "Landed :";
-  else
-    e << "Current :";
-
   e	<< endTime
-	<< "<br>Lat : " << _lat[_lat.size()-1]
+	<< " Lat : " << _lat[_lat.size()-1]
 	<< " deg_N<br>Lon : " << _lon[_lon.size()-1]
 	<< " deg_E<br>Alt : " << _alt[_alt.size()-1]
 	<< " feet<br>Temp : " << latestAT
@@ -230,7 +225,8 @@ void WriteCurrentPositionKML(const _projInfo& projInfo)
 
   googleEarth
 	<< "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-	<< "<kml xmlns=\"http://earth.google.com/kml/2.1\">\n"
+	<< "<kml xmlns=\"http://www.opengis.net/kml/2.2\"\n"
+	<< " xmlns:gx=\"http://www.google.com/kml/ext/2.2\">\n"
 	<< "<Document>\n"
 	<< " <name>" << projInfo.projectName << " " << projInfo.flightNumber << "</name>\n"
 	<< " <Style id=\"PM1\">\n"
@@ -324,13 +320,11 @@ void WriteTimeStampsKML(std::ofstream & googleEarth)
       last_ts = curr_ts;
       std::cout << hour << ":" << minute << ":" << second << std::endl;
       std::string label = _date[i].substr(11, 5);
-      std::string tm = _date[i];
-      tm.replace(10, 1, "T");
       googleEarth
         << "  <Placemark>\n"
         << "   <name>" << label << "</name>\n"
         << "   <TimeStamp>\n"
-        << "    <when>" << tm << "Z</when>\n"
+        << "    <when>" << _date[i] << "Z</when>\n"
         << "   </TimeStamp>\n"
         << "   <styleUrl>#PM1</styleUrl>\n"
         << "   <Point>\n"
@@ -366,9 +360,25 @@ void WriteSpecialInclude(std::ofstream & googleEarth)
   }
 }
 
+/* -------------------------------------------------------------------- */
+void
+renamefile(std::string file, std::string outFile)
+{
+  char buffer[1024];
+  std::string tmptmp(googleEarthDataDir); tmptmp += "tmp.kmz";
+
+  sprintf(buffer, "zip %s %s", tmptmp.c_str(), file.c_str());
+  system(buffer);
+
+  sprintf(buffer, "chmod g+w %s", tmptmp.c_str());
+  system(buffer);
+
+  std::string temp = googleEarthDataDir + outFile + ".kmz";
+  rename(tmptmp.c_str(), temp.c_str());
+}
 
 /* -------------------------------------------------------------------- */
-void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo, int status_id)
+void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo)
 {
   std::ofstream googleEarth;
 
@@ -381,7 +391,7 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo, int stat
 
   googleEarth
 	<< "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-	<< "<kml xmlns=\"http://earth.google.com/kml/2.1\">\n"
+	<< "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
 	<< "<Document>\n"
 	<< " <name>" << projInfo.projectName << " " << projInfo.flightNumber << "</name>\n"
 	<< " <Style id=\"PM1\">\n"
@@ -408,19 +418,18 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo, int stat
 	<< " </Style>\n"
 	<< " <Style id=\"TRACK\">\n"
 	<< "  <LineStyle>\n"
-	<< "   <color>ff00ffff</color>\n"
-	<< "   <width>1</width>\n"
+	<< "   <color>ff0000aa</color>\n"
+	<< "   <width>2</width>\n"
 	<< "  </LineStyle>\n"
 	<< "  <PolyStyle>\n"
 	<< "   <color>7f00ff00</color>\n"
 	<< "  </PolyStyle>\n"
 	<< " </Style>\n"
-	<< " <LookAt>\n"
-	<< "  <longitude>" << _lon[_lon.size()-1] << "</longitude>\n"
-	<< "  <latitude>" << _lat[_lat.size()-1] << "</latitude>\n"
-	<< "  <range>1000000</range>\n"
-	<< "  <heading>0</heading>\n"
-	<< " </LookAt>\n"
+	<< "   <LookAt>\n"
+	<< "     <range>1500000</range>\n"
+	<< "     <longitude>" << _lon[_lon.size()-1] << "</longitude>\n"
+	<< "     <latitude>" << _lat[_lat.size()-1] << "</latitude>\n"
+	<< "   </LookAt>\n"
 	<< " <Folder>\n"
 	<< "  <name>" << projInfo.flightNumber << "</name>\n"
 	<< "  <open>1</open>\n"
@@ -435,7 +444,7 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo, int stat
 	<< "    <altitudeMode>absolute</altitudeMode>\n"
 	<< "    <coordinates>\n";
 
-  for (size_t i = 0; i < _lat.size(); i += TimeStep)
+  for (size_t i = 0; i < _date.size(); i += TimeStep)
   {
     googleEarth << _lon[i] << "," << _lat[i] << "," << (int)_alt[i] << "\n";
   }
@@ -446,7 +455,7 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo, int stat
 	<< "  </Placemark>\n"
 	<< "  <Placemark>\n"
 	<< "   <name>" << projectInfo.platform << "</name>\n"
-	<< "   <description>" << endBubbleCDATA(status_id) << "</description>\n"
+	<< "   <description>" << endBubbleCDATA() << "</description>\n"
 	<< "   <styleUrl>#PM1</styleUrl>\n"
 	<< "   <Point>\n"
 	<< "    <altitudeMode>absolute</altitudeMode>\n"
@@ -471,21 +480,144 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo, int stat
 		<< "</Document>\n"
 		<< "</kml>\n";
 
+
   googleEarth.close();
-  if (status_id != 3)	// if !landed.
+  renamefile(file, "real-time");
+}
+
+/* -------------------------------------------------------------------- */
+void WriteGoogleEarthAnimatedKML(std::string & file, const _projInfo& projInfo)
+{
+  std::ofstream googleEarth;
+
+  googleEarth.open(file.c_str());
+  if (googleEarth.is_open() == false)
   {
-    char buffer[1024];
-    std::string tmptmp(googleEarthDataDir); tmptmp += "tmp.kmz";
-
-    sprintf(buffer, "zip %s %s", tmptmp.c_str(), file.c_str());
-    system(buffer);
-
-    sprintf(buffer, "chmod g+w %s", tmptmp.c_str());
-    system(buffer);
-
-    std::string temp = googleEarthDataDir + "real-time.kmz";
-    rename(tmptmp.c_str(), temp.c_str());
+    std::cerr << "Failed to open output file " << file << std::endl;
+    return;
   }
+
+  googleEarth
+	<< "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+	<< "<kml xmlns=\"http://www.opengis.net/kml/2.2\"\n"
+	<< " xmlns:gx=\"http://www.google.com/kml/ext/2.2\">\n"
+	<< "<Document>\n"
+	<< " <name>" << projInfo.projectName << " " << projInfo.flightNumber << "</name>\n"
+	<< " <Style id=\"PM1\">\n"
+	<< "  <IconStyle>\n"
+	<< "   <scale>0.5</scale>\n"
+	<< "   <Icon>\n"
+	<< "    <href>http://" << webHost << "/flight_data/display/red.png</href>\n"
+	<< "   </Icon>\n"
+	<< "  </IconStyle>\n"
+	<< " </Style>\n"
+	<< " <Style id=\"PM2\">\n"
+	<< "  <IconStyle>\n"
+	<< "   <scale>0.5</scale>\n"
+	<< "   <Icon>\n"
+	<< "    <href>http://" << webHost << "/flight_data/display/white.png</href>\n"
+	<< "   </Icon>\n"
+	<< "  </IconStyle>\n"
+	<< " </Style>\n"
+	<< " <Style id=\"BOUND\">\n"
+	<< "  <LineStyle>\n"
+	<< "   <color>ffff0000</color>\n"
+	<< "   <width>1</width>\n"
+	<< "  </LineStyle>\n"
+	<< " </Style>\n"
+	<< " <Style id=\"TRACK\">\n"
+	<< "  <LineStyle>\n"
+	<< "   <color>ff0000aa</color>\n"
+	<< "   <width>2</width>\n"
+	<< "  </LineStyle>\n"
+	<< "  <PolyStyle>\n"
+	<< "   <color>7f00ff00</color>\n"
+	<< "  </PolyStyle>\n"
+	<< " </Style>\n"
+
+	<< "   <LookAt>\n"
+	<< "     <gx:TimeStamp>\n"
+	<< "       <when>" << _date[_date.size()-1] << "Z</when>\n"
+	<< "     </gx:TimeStamp>\n"
+	<< "     <range>1500000</range>\n"
+	<< "     <longitude>" << _lon[_lon.size()-1] << "</longitude>\n"
+	<< "     <latitude>" << _lat[_lat.size()-1] << "</latitude>\n"
+	<< "   </LookAt>\n"
+
+	<< " <Folder>\n"
+	<< "  <name>" << projInfo.flightNumber << "</name>\n"
+	<< "  <open>1</open>\n";
+
+  for (size_t i = 0; i < _date.size(); )
+  {
+    googleEarth
+	<< "  <Placemark>\n"
+	<< "   <name>Track</name>\n"
+	<< "   <styleUrl>#TRACK</styleUrl>\n"
+	<< "   <visibility>1</visibility>\n"
+	<< "   <open>1</open>\n"
+	<< "   <LineString>\n"
+	<< "    <extrude>1</extrude>\n"
+	<< "    <tessellate>1</tessellate>\n"
+	<< "    <altitudeMode>absolute</altitudeMode>\n"
+	<< "    <coordinates>\n";
+
+    std::string start = _date[i];
+    for (size_t j = 0; i < _date.size() && j < 120; j += TimeStep, i += TimeStep)
+      googleEarth << _lon[i] << "," << _lat[i] << "," << (int)_alt[i] << "\n";
+
+    std::string end = _date[i >= _date.size() ? _date.size()-1 : i];
+    start.replace(10, 1, "T");
+    end.replace(10, 1, "T");
+
+    googleEarth
+	<< "    </coordinates>\n"
+	<< "   </LineString>\n"
+	<< "   <TimeSpan>\n"
+	<< "     <begin>" << start << "Z</begin><end>" << end << "Z</end>\n"
+	<< "   </TimeSpan>\n"
+	<< "  </Placemark>\n";
+
+     if (i < _date.size())
+       i -= TimeStep;
+  }
+
+  std::string st = _date[0];
+  st.replace(10, 1, "T");
+  std::string end = _date[_date.size()-1];
+  end.replace(10, 1, "T");
+
+  googleEarth
+	<< "  <Placemark>\n"
+	<< "   <name>" << projectInfo.platform << "</name>\n"
+	<< "   <description>" << endBubbleCDATA() << "</description>\n"
+	<< "   <styleUrl>#PM1</styleUrl>\n"
+	<< "   <Point>\n"
+	<< "    <altitudeMode>absolute</altitudeMode>\n"
+	<< "    <coordinates>" << _lon[_lon.size()-1] << "," << _lat[_lat.size()-1] << "," << _alt[_alt.size()-1] << "</coordinates>\n"
+	<< "   </Point>\n"
+	<< "  </Placemark>\n"
+	<< "  <Placemark>\n"
+	<< "   <name>Take off</name>\n"
+	<< "   <description>" << startBubbleCDATA() << "</description>\n"
+	<< "   <styleUrl>#PM2</styleUrl>\n"
+	<< "   <Point>\n"
+	<< "    <altitudeMode>absolute</altitudeMode>\n"
+	<< "    <coordinates>" << _lon[0] << "," << _lat[0] << "," << _alt[0] << "</coordinates>\n"
+	<< "   </Point>\n"
+	<< "  </Placemark>\n";
+
+  WriteLandmarksKML(googleEarth, projInfo);
+  WriteTimeStampsKML(googleEarth);
+
+  googleEarth
+		<< "</Folder>\n"
+		<< "</Document>\n"
+		<< "</kml>\n";
+
+
+  googleEarth.close();
+  renamefile(file, "animated-track");
 }
 
 /* -------------------------------------------------------------------- */
@@ -514,7 +646,9 @@ void updateData(PGresult * res, int indx)
   if (lat == -32767 || lon == -32767 || alt == -32767)
     return;
 
-  _date.push_back( extractPQString(res, indx, TIME) );
+  std::string tm(extractPQString(res, indx, TIME)); 
+  tm.replace(10, 1, "T");
+  _date.push_back(tm);
   _lon.push_back( extractPQvalue<float>(PQgetvalue(res, indx, LON)) );
   _lat.push_back( extractPQvalue<float>(PQgetvalue(res, indx, LAT)) );
   _alt.push_back( extractPQvalue<float>(PQgetvalue(res, indx, ALT)) * 3.2808);
@@ -577,20 +711,6 @@ _lat.clear(); _lon.clear(); _alt.clear(); _date.clear();
   }
 
   PQclear(res);
-}
-
-/* -------------------------------------------------------------------- */
-int flightStatus()
-{
-  int status = 2;	// Default to 'in-flight'.
-
-  if (firstTAS == -1)
-    status = 1;		// Pre flight.
-  else
-  if (latestTAS < TAS_CutOff)
-    status = 3;		// Landed.
-
-  return status;
 }
 
 /* -------------------------------------------------------------------- */
@@ -803,8 +923,8 @@ int main(int argc, char *argv[])
     ReadDataFromNetCDF(netCDFinputFile);
     if (_lat.size() > 0)
     {
-      std::cout << "WriteGoogleEarthKML(" << outputKML << ", projectInfo, 3);\n";
-      WriteGoogleEarthKML(outputKML, projectInfo, 3);
+      std::cout << "WriteGoogleEarthKML(" << outputKML << ", projectInfo);\n";
+      WriteGoogleEarthKML(outputKML, projectInfo);
     }
     return 0;
   }
@@ -841,12 +961,10 @@ int main(int argc, char *argv[])
     {
       std::string outFile;
 
-      if (flightStatus() == 3)	// if landed.
-        outFile = googleEarthDataDir + "flight_" + projectInfo.flightNumber + ".kml";
-      else
-        outFile = googleEarthDataDir + "latest" + ".kml";
+      outFile = googleEarthDataDir + "latest" + ".kml";
 
-      WriteGoogleEarthKML(outFile, projectInfo, flightStatus());
+      WriteGoogleEarthKML(outFile, projectInfo);
+      WriteGoogleEarthAnimatedKML(outFile, projectInfo);
       WriteCurrentPositionKML(projectInfo);
     }
     sleep(30);
