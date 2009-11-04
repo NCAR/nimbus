@@ -324,18 +324,17 @@ void sTwoD(DERTBL *varp)
       }
     }
 
+  if (deadTime > 1000.0)
+    {
+    sprintf(buffer, "%s: 2D Sample Volume negative, reason: deadTime == %d.", varp->name, deadTime);
+    LogStdMsg(buffer);
+    deadTime = 1000;
+    }
 
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
     {
     sampleVolume[i] = tas * sampleArea[probeNum][i] * 0.001 *
 		(((float)1000 - deadTime) / 1000);
-
-    if (sampleVolume[i] < 0.0)
-      {
-      sprintf(buffer, "2D Sample Volume went negative, %f", sampleVolume[i]);
-      LogStdMsg(buffer);
-      sampleVolume[i] = 0.0;
-      }
     }
 
 #define TACT
