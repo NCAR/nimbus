@@ -128,8 +128,19 @@ ADS_DataFile::ADS_DataFile(const char fName[])
     rewind(fp);
     }
 
-  if (strstr(buffer, "<PMS2D>") )
+  if (strstr(buffer, "<PMS2D>"))
+    {
+    char * endHdr = strstr(buffer, "</PMS2D>");
+    if (endHdr == 0)
+      {
+        fprintf(stderr, "No end of ADS3 header???\n");
+        exit(1);
+      }
+
+    fseeko64(fp, endHdr - buffer + 9, SEEK_SET);
+
     initADS3(buffer);	// the XML header file.
+    }
   else
   if (isValidProbe(buffer))
     {
@@ -503,7 +514,8 @@ int ADS_DataFile::NextPhysicalRecord(char buff[])
   switch (idWord)
     {
     case SDI_WORD:
-      size = (_hdr->lrLength() * _hdr->lrPpr()) - sizeof(short);
+      if (_hdr)
+        size = (_hdr->lrLength() * _hdr->lrPpr()) - sizeof(short);
       break;
 
     case ADS_WORD:
@@ -511,7 +523,8 @@ int ADS_DataFile::NextPhysicalRecord(char buff[])
       break;
 
     case HDR_WORD:
-      size = _hdr->HeaderLength() - sizeof(short);
+      if (_hdr)
+        size = _hdr->HeaderLength() - sizeof(short);
       break;
 
     case 0x4d43:      // MCR
@@ -892,7 +905,7 @@ void ADS_DataFile::check_rico_half_buff(P2d_rec *buff, size_t beg, size_t end)
     }
 
     unsigned long mask1 = (0x01 << stuck_bin);
-    unsigned long mask2 = (0x07 << stuck_bin-1);
+    unsigned long mask2 = (0x07 << (stuck_bin-1));
     unsigned long *p = (unsigned long *)buff->data;
     for (size_t i = beg; i < end; ++i, ++p)
     {
