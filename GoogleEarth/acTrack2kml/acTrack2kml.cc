@@ -17,8 +17,7 @@
 #include "boost/lexical_cast.hpp"
 
 // Output directories for .xml & .kml files.  Ground.
-//static const std::string grnd_googleEarthDataDir = "/net/www/docs/flight_data/";
-static const std::string grnd_googleEarthDataDir = "/home/ads/testAC/";
+static const std::string grnd_googleEarthDataDir = "/net/www/docs/flight_data/";
 static const std::string grnd_webHost = "www.eol.ucar.edu";
 
 // Output directories for .xml & .kml files.  Onboard.
