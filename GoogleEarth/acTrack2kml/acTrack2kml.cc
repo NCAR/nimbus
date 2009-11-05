@@ -17,31 +17,24 @@
 #include "boost/lexical_cast.hpp"
 
 // Output directories for .xml & .kml files.  Ground.
-static const std::string grnd_googleMapDataDir = "/net/www/docs/flight_data/";
 static const std::string grnd_googleEarthDataDir = "/net/www/docs/flight_data/";
 static const std::string grnd_webHost = "www.eol.ucar.edu";
 
 // Output directories for .xml & .kml files.  Onboard.
-static const std::string onboard_googleMapDataDir = "/var/www/html/flight_data/";
 static const std::string onboard_googleEarthDataDir = "/var/www/html/flight_data/";
 static const std::string onboard_webHost = "acserver.raf.ucar.edu";
 
-static std::string googleMapDataDir, googleEarthDataDir, webHost;
+static std::string	googleEarthDataDir, webHost;
 
 // All datapoints are read from file, but only use every 'TimeStep' points.
 // e.g. 15 would mean use 1 data point for every 15 seconds of data.
-static int TimeStep = 6;
+static int TimeStep = 30;
 
 // True Airspeed cut-off (take-off and landing speed).
 static const float TAS_CutOff = 20.0;
 
 // Frequency of Time Stamps (in minutes).
 static int ts_Freq = 10;
-
-// Max out at this many points, don't want to swamp GoogleMap, though
-// Vincent said he broke them up into segments, so we shouldn't have the
-// old 600 point max.
-static const int maxGoogleMapPoints = 3000;
 
 static std::string netCDFinputFile, outputKML, database_host, platform, dbname;
 
@@ -61,6 +54,7 @@ public:
   std::string projectName;
   std::string flightNumber;
   std::string landmarks;
+  int groundFeedDataRate;
 } projectInfo;
 
 const char *status[] = { "Pre-flight", "In-flight", "Landed" };
@@ -416,7 +410,8 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo)
 	<< "   <width>1</width>\n"
 	<< "  </LineStyle>\n"
 	<< " </Style>\n"
-	<< " <Style id=\"TRACK\">\n"
+
+	<< " <Style id=\"TRACK_RED\">\n"
 	<< "  <LineStyle>\n"
 	<< "   <color>ff0000aa</color>\n"
 	<< "   <width>2</width>\n"
@@ -425,29 +420,69 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo)
 	<< "   <color>7f00ff00</color>\n"
 	<< "  </PolyStyle>\n"
 	<< " </Style>\n"
-	<< "   <LookAt>\n"
-	<< "     <range>1500000</range>\n"
-	<< "     <longitude>" << _lon[_lon.size()-1] << "</longitude>\n"
-	<< "     <latitude>" << _lat[_lat.size()-1] << "</latitude>\n"
-	<< "   </LookAt>\n"
+
+	<< " <Style id=\"TRACK_YELLOW\">\n"
+	<< "  <LineStyle>\n"
+	<< "   <color>ff00ffff</color>\n"
+	<< "   <width>2</width>\n"
+	<< "  </LineStyle>\n"
+	<< "  <PolyStyle>\n"
+	<< "   <color>7f00ff00</color>\n"
+	<< "  </PolyStyle>\n"
+	<< " </Style>\n"
+
+	<< "<LookAt>\n"
+	<< "  <range>1500000</range>\n"
+	<< "  <longitude>" << _lon[_lon.size()-1] << "</longitude>\n"
+	<< "  <latitude>" << _lat[_lat.size()-1] << "</latitude>\n"
+	<< "</LookAt>\n"
+
 	<< " <Folder>\n"
 	<< "  <name>" << projInfo.flightNumber << "</name>\n"
 	<< "  <open>1</open>\n"
 	<< "  <Placemark>\n"
 	<< "   <name>Track</name>\n"
-	<< "   <styleUrl>#TRACK</styleUrl>\n"
 	<< "   <visibility>1</visibility>\n"
 	<< "   <open>1</open>\n"
+	<< "   <styleUrl>#TRACK_YELLOW</styleUrl>\n"
 	<< "   <LineString>\n"
 	<< "    <extrude>1</extrude>\n"
 	<< "    <tessellate>1</tessellate>\n"
 	<< "    <altitudeMode>absolute</altitudeMode>\n"
 	<< "    <coordinates>\n";
 
-  for (size_t i = 0; i < _date.size(); i += TimeStep)
+  int oneHour = 3600 / projectInfo.groundFeedDataRate;
+  int i, n = _date.size() - oneHour;
+  int step = TimeStep / projectInfo.groundFeedDataRate;
+  for (i = 0; i < n; i += step)
   {
     googleEarth << _lon[i] << "," << _lat[i] << "," << (int)_alt[i] << "\n";
   }
+
+  googleEarth
+	<< "    </coordinates>\n"
+	<< "   </LineString>\n"
+	<< "  </Placemark>\n"
+	<< "  <Placemark>\n"
+	<< "   <name>Track</name>\n"
+	<< "   <visibility>1</visibility>\n"
+	<< "   <open>1</open>\n"
+	<< "   <styleUrl>#TRACK_RED</styleUrl>\n"
+	<< "   <LineString>\n"
+	<< "    <extrude>1</extrude>\n"
+	<< "    <tessellate>1</tessellate>\n"
+	<< "    <altitudeMode>absolute</altitudeMode>\n"
+	<< "    <coordinates>\n";
+
+  // Output last hour of track, in red.
+  if ((i -= step) < 0) i = 0;
+  for (; i < _date.size(); i += step)
+  {
+    googleEarth << _lon[i] << "," << _lat[i] << "," << (int)_alt[i] << "\n";
+  }
+  googleEarth	<< _lon[_date.size()-1] << ","
+		<< _lat[_date.size()-1] << ","
+		<< (int)_alt[_date.size()-1] << "\n";
 
   googleEarth
 	<< "    </coordinates>\n"
@@ -853,7 +888,6 @@ int parseRunstring(int argc, char** argv)
         return usage(argv[0]);
       }
       dbname = "real-time-"+platform;
-      googleMapDataDir   = grnd_googleMapDataDir;
       googleEarthDataDir = grnd_googleEarthDataDir+platform+"/GE/";
       webHost            = grnd_webHost;
       break;
@@ -862,7 +896,7 @@ int parseRunstring(int argc, char** argv)
       database_host = optarg;
       break;
 
-    case 's':	// Time-step, default is 20 seconds.
+    case 's':	// Time-step, default is 30 seconds.
       TimeStep = atoi(optarg);
       break;
 
@@ -878,7 +912,6 @@ int parseRunstring(int argc, char** argv)
       }
       ground_selected = no;
       dbname = "real-time";
-      googleMapDataDir   = onboard_googleMapDataDir;
       googleEarthDataDir = onboard_googleEarthDataDir + "/GE/";
       webHost            = onboard_webHost;
       break;
@@ -899,6 +932,24 @@ int parseRunstring(int argc, char** argv)
     return usage(argv[0]);
 
   return 0;
+}
+
+/* -------------------------------------------------------------------- */
+void getGlobalAttrData(PGconn * conn)
+{
+  projectInfo.flightNumber = getGlobalAttribute(conn, "FlightNumber");
+  projectInfo.projectName = getGlobalAttribute(conn, "ProjectName");
+  projectInfo.platform = getGlobalAttribute(conn, "Platform");
+  projectInfo.landmarks = getGlobalAttribute(conn, "landmarks");
+  if (projectInfo.flightNumber.size() == 0)
+    projectInfo.flightNumber = "noflight";
+
+  // Get the data rate at which data is being shipped from platform to ground.
+  std::string dr = getGlobalAttribute(conn, "GroundFeedRate");
+  int dataRate = atoi(dr.c_str());
+  if (dataRate <= 0)
+    dataRate = 5;	// 5 second data is the default rate onboard.
+  projectInfo.groundFeedDataRate = dataRate;
 }
 
 /* -------------------------------------------------------------------- */
@@ -944,12 +995,7 @@ int main(int argc, char *argv[])
     while ((conn = openDataBase()) == 0)
       sleep(3);
 
-    projectInfo.flightNumber = getGlobalAttribute(conn, "FlightNumber");
-    projectInfo.projectName = getGlobalAttribute(conn, "ProjectName");
-    projectInfo.platform = getGlobalAttribute(conn, "Platform");
-    projectInfo.landmarks = getGlobalAttribute(conn, "landmarks");
-    if (projectInfo.flightNumber.size() == 0)
-      projectInfo.flightNumber = "noflight";
+    getGlobalAttrData(conn);
 
     std::string dataQuery = buildDataQueryString(conn);
 
