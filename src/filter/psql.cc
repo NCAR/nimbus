@@ -276,6 +276,7 @@ PostgreSQL::initializeGlobalAttributes()
   _sqlString << "INSERT INTO global_attributes VALUES ('coordinates', '" << coords << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('wind_field', '" << cfg.WindFieldVariables() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('landmarks', '" << readLandmarks() << "');";
+  _sqlString << "INSERT INTO global_attributes VALUES ('GroundFeedRate', '" << cfg.GroundFeedDataRate() << "');";
 
   submitCommand(_sqlString.str(), true);
 
