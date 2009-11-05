@@ -17,7 +17,8 @@
 #include "boost/lexical_cast.hpp"
 
 // Output directories for .xml & .kml files.  Ground.
-static const std::string grnd_googleEarthDataDir = "/net/www/docs/flight_data/";
+//static const std::string grnd_googleEarthDataDir = "/net/www/docs/flight_data/";
+static const std::string grnd_googleEarthDataDir = "/home/ads/testAC/";
 static const std::string grnd_webHost = "www.eol.ucar.edu";
 
 // Output directories for .xml & .kml files.  Onboard.
@@ -60,9 +61,9 @@ public:
 const char *status[] = { "Pre-flight", "In-flight", "Landed" };
 
 std::vector<std::string> _date;
-std::vector<float> _lat, _lon, _alt;
+std::vector<float> _lat, _lon, _alt, _at, _tas, _ws, _wd, _wi;
 float firstAT = 0.0, firstTAS = -1.0, firstWS = 0.0, firstWD = 0.0, firstWI = 0.0;
-float latestAT, latestTAS, latestWS, latestWD, latestWI;
+//float latestAT, latestTAS, latestWS, latestWD, latestWI;
 
 
 /* -------------------------------------------------------------------- */
@@ -184,18 +185,39 @@ endBubbleCDATA()
 {
   std::stringstream e;
   std::string s = _date[_date.size()-1];
-  std::string endTime = s.substr(s.find('T'));
+  std::string endTime = s.substr(s.find('T')+1);
 
   e << "<![CDATA[";
 
-  e	<< endTime
+  e	<< endTime << "<br>" 
 	<< " Lat : " << _lat[_lat.size()-1]
 	<< " deg_N<br>Lon : " << _lon[_lon.size()-1]
 	<< " deg_E<br>Alt : " << _alt[_alt.size()-1]
-	<< " feet<br>Temp : " << latestAT
-	<< " C<br>WS : " << latestWS
-	<< " m/s<br>WD : " << latestWD
-	<< " degree_T<br>WI : " << latestWI << " m/s]]>";
+	<< " feet<br>Temp : " << _at[_at.size()-1]
+	<< " C<br>WS : " << _ws[_ws.size()-1]
+	<< " m/s<br>WD : " << _wd[_wd.size()-1]
+	<< " degree_T<br>WI : " << _wi[_wi.size()-1] << " m/s]]>";
+
+  return e.str();
+}
+
+/* -------------------------------------------------------------------- */
+std::string
+midBubbleCDATA(int i)
+{
+  std::stringstream e;
+  std::string s = _date[i];
+  std::string endTime = s.substr(s.find('T')+1);
+
+  e << "<![CDATA[";
+
+  e	<< " Lat : " << _lat[i]
+	<< " deg_N<br>Lon : " << _lon[i]
+	<< " deg_E<br>Alt : " << _alt[i]
+	<< " feet<br>Temp : " << _at[i]
+	<< " C<br>WS : " << _ws[i]
+	<< " m/s<br>WD : " << _wd[i]
+	<< " degree_T<br>WI : " << _wi[i] << " m/s]]>";
 
   return e.str();
 }
@@ -317,6 +339,7 @@ void WriteTimeStampsKML(std::ofstream & googleEarth)
       googleEarth
         << "  <Placemark>\n"
         << "   <name>" << label << "</name>\n"
+	<< "   <description>" << midBubbleCDATA(i) << "</description>\n"
         << "   <TimeStamp>\n"
         << "    <when>" << _date[i] << "Z</when>\n"
         << "   </TimeStamp>\n"
@@ -440,6 +463,16 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo)
 	<< " <Folder>\n"
 	<< "  <name>" << projInfo.flightNumber << "</name>\n"
 	<< "  <open>1</open>\n"
+	<< "  <ScreenOverlay>\n"
+	<< "    <name>Last Camera Image</name>\n"
+	<< "    <Icon>\n"
+	<< "      <href>http://www.eol.ucar.edu/flight_data/" << platform << "/images/latest_camera.jpg</href>\n"
+	<< "    </Icon>\n"
+	<< "    <overlayXY x=\"0\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\" />\n"
+	<< "    <screenXY x=\"0\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\" />\n"
+	<< "    <rotationXY x=\"0\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\" />\n"
+	<< "    <size x=\"0\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\" />\n"
+	<< "  </ScreenOverlay>\n"
 	<< "  <Placemark>\n"
 	<< "   <name>Track</name>\n"
 	<< "   <visibility>1</visibility>\n"
@@ -667,11 +700,11 @@ void updateData(PGresult * res, int indx)
     firstWI = extractPQvalue<float>(PQgetvalue(res, indx, WI));
   }
 
-  latestTAS = extractPQvalue<float>(PQgetvalue(res, indx, TAS));
+  /*latestTAS = extractPQvalue<float>(PQgetvalue(res, indx, TAS));
   latestAT = extractPQvalue<float>(PQgetvalue(res, indx, AT));
   latestWS = extractPQvalue<float>(PQgetvalue(res, indx, WS));
   latestWD = extractPQvalue<float>(PQgetvalue(res, indx, WD));
-  latestWI = extractPQvalue<float>(PQgetvalue(res, indx, WI));
+  latestWI = extractPQvalue<float>(PQgetvalue(res, indx, WI));*/
 
   float lat, lon, alt;
   lat = extractPQvalue<float>(PQgetvalue(res, indx, LAT));
@@ -687,6 +720,13 @@ void updateData(PGresult * res, int indx)
   _lon.push_back( extractPQvalue<float>(PQgetvalue(res, indx, LON)) );
   _lat.push_back( extractPQvalue<float>(PQgetvalue(res, indx, LAT)) );
   _alt.push_back( extractPQvalue<float>(PQgetvalue(res, indx, ALT)) * 3.2808);
+
+  _at.push_back( extractPQvalue<float>(PQgetvalue(res, indx, AT)) );
+  _tas.push_back( extractPQvalue<float>(PQgetvalue(res, indx, TAS)) );
+  _ws.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WS)) );
+  _wi.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WD)) );
+  _wd.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WI)) );
+
 }
 
 /*-------------------------------------------------------------------- */
