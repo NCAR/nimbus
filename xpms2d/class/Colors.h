@@ -19,11 +19,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2000
 #define BLACK		0
 #define MAROON		1
 #define BLUE		2
-#define GREEN		3
-#define VIOLET		4
-#define PURPLE		5
-#define YELLOW		6
-#define RED		7
+#define RED		3
+#define GREEN		4
+#define VIOLET		5
+#define PURPLE		6
+#define YELLOW		7
 #define BACKGROUND	8
 
 #include <X11/Xlib.h>
