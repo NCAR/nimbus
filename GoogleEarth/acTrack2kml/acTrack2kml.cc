@@ -490,6 +490,8 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo)
   {
     googleEarth << _lon[i] << "," << _lat[i] << "," << (int)_alt[i] << "\n";
   }
+  //add at least one point to linestring so openlayers can parse it
+  if (n <= 0) googleEarth << _lon[0] << "," << _lat[0] << "," << (int)_alt[0] << "\n";
 
   googleEarth
 	<< "    </coordinates>\n"
