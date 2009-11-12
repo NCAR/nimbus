@@ -471,9 +471,17 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo)
 	<< "    <screenXY x=\"0\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\" />\n"
 	<< "    <rotationXY x=\"0\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\" />\n"
 	<< "    <size x=\"0\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\" />\n"
-	<< "  </ScreenOverlay>\n"
+	<< "  </ScreenOverlay>\n";
+
+  int oneHour = 3600 / projectInfo.groundFeedDataRate;
+  int i, n = _date.size() - oneHour;
+  int step = TimeStep / projectInfo.groundFeedDataRate;
+
+  if (n > 0)
+  {
+    googleEarth
 	<< "  <Placemark>\n"
-	<< "   <name>Track</name>\n"
+	<< "   <name>Track, yellow</name>\n"
 	<< "   <visibility>1</visibility>\n"
 	<< "   <open>1</open>\n"
 	<< "   <styleUrl>#TRACK_YELLOW</styleUrl>\n"
@@ -483,22 +491,20 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo)
 	<< "    <altitudeMode>absolute</altitudeMode>\n"
 	<< "    <coordinates>\n";
 
-  int oneHour = 3600 / projectInfo.groundFeedDataRate;
-  int i, n = _date.size() - oneHour;
-  int step = TimeStep / projectInfo.groundFeedDataRate;
-  for (i = 0; i < n; i += step)
-  {
-    googleEarth << _lon[i] << "," << _lat[i] << "," << (int)_alt[i] << "\n";
-  }
-  //add at least one point to linestring so openlayers can parse it
-  if (n <= 0) googleEarth << _lon[0] << "," << _lat[0] << "," << (int)_alt[0] << "\n";
+    for (i = 0; i < n; i += step)
+    {
+      googleEarth << _lon[i] << "," << _lat[i] << "," << (int)_alt[i] << "\n";
+    }
 
-  googleEarth
+    googleEarth
 	<< "    </coordinates>\n"
 	<< "   </LineString>\n"
-	<< "  </Placemark>\n"
+	<< "  </Placemark>\n";
+  }
+
+  googleEarth
 	<< "  <Placemark>\n"
-	<< "   <name>Track</name>\n"
+	<< "   <name>Track, last hour</name>\n"
 	<< "   <visibility>1</visibility>\n"
 	<< "   <open>1</open>\n"
 	<< "   <styleUrl>#TRACK_RED</styleUrl>\n"
