@@ -49,7 +49,7 @@ public:
    * Write SampleRate (SRT) data into the database.
    * @returns usec of last sample written.
    */
-  long	WriteSQLvolts(const std::string & timeStamp);
+  int32_t	WriteSQLvolts(const std::string & timeStamp);
 
   /**
    * Generic function to submit a query/command to the database.
@@ -81,7 +81,7 @@ public:
    * @param nSlices is how many slices make up this particle.
    * @see Submit2dSQL()
    */
-  void	Write2dSQL(RAWTBL *rp, long time, long msec, ulong *p, int nSlices);
+  void	Write2dSQL(RAWTBL *rp, int32_t time, int32_t msec, uint32_t *p, int nSlices);
 
   /**
    * End SQL block command and send.  For performance reasons, send
@@ -228,7 +228,7 @@ protected:
    * clients that new data is available.
    */
   std::string
-  updateEndTimeString(const std::string & timeStamp, long usec) const;
+  updateEndTimeString(const std::string & timeStamp, int32_t usec) const;
 
   // Output ground database start packet to a file.
   void

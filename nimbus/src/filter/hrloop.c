@@ -36,7 +36,7 @@ extern char		*ADSrecord;
 extern NR_TYPE		*SampledData, *AveragedData;
 extern XtAppContext	context;
 
-bool	LocateFirstRecord(long starttime, long endtime, int nBuffers);
+bool	LocateFirstRecord(time_t starttime, time_t endtime, int nBuffers);
 void	Filter(CircularBuffer *, CircularBuffer *),
         DespikeData(CircularBuffer *LRCB, int index),
         PhaseShift(	CircularBuffer  *LRCB, int index,
@@ -47,7 +47,7 @@ void	Filter(CircularBuffer *, CircularBuffer *),
 int HighRateLoop(time_t startTime, time_t endTime)
 {
   int		j = 0, cntr = 0;
-  long		nBytes, thisTime;
+  int32_t	nBytes, thisTime;
   NR_TYPE	*ps_data, *hrt_data;
 
   /* Basic circ-buff of records going into despiking and resampler.

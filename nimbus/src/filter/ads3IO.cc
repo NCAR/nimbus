@@ -47,7 +47,7 @@ time_t xlateToSecondsSinceMidnight(time_t ut) // Unused now.
 }	// END XLATETOSECONDSSINCEMIDNIGHT
 
 /* -------------------------------------------------------------------- */
-long FindFirstLogicalADS3(
+int32_t FindFirstLogicalADS3(
 	char	record[],	// First Data Record, for start time
 	time_t	startTime)	// User specified start time
 {
@@ -76,7 +76,7 @@ long FindFirstLogicalADS3(
 }	// END FINDFIRSTLOGICALADS3
 
 /* -------------------------------------------------------------------- */
-long FindNextLogicalADS3(char record[], time_t endTime)
+int32_t FindNextLogicalADS3(char record[], time_t endTime)
 {
   nidas::core::dsm_time_t tt;
   int rc;

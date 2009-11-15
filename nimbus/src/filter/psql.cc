@@ -71,7 +71,7 @@ PostgreSQL::PostgreSQL(std::string specifier)
 
 /* -------------------------------------------------------------------- */
 inline std::string
-PostgreSQL::updateEndTimeString(const std::string & timeStamp, long usec) const
+PostgreSQL::updateEndTimeString(const std::string & timeStamp, int32_t usec) const
 {
   std::stringstream temp;
   temp << "UPDATE global_attributes SET value='"
@@ -137,7 +137,7 @@ PostgreSQL::WriteSQL(const std::string & timeStamp)
   _sqlString << ");";
   submitCommand(_sqlString.str(), false);
 
-  long usec = WriteSQLvolts(timeStamp);
+  int32_t usec = WriteSQLvolts(timeStamp);
 
   submitCommand(updateEndTimeString(timeStamp, usec), false);
 
@@ -387,7 +387,7 @@ PostgreSQL::initializeVariableList()
 }	// END INITIALIZEVARIABLELIST
 
 /* -------------------------------------------------------------------- */
-long
+int32_t
 PostgreSQL::WriteSQLvolts(const std::string & timeStamp)
 {
   rateTableList::iterator it;
@@ -435,7 +435,7 @@ PostgreSQL::Start2dSQL()
 
 /* -------------------------------------------------------------------- */
 void
-PostgreSQL::Write2dSQL(RAWTBL *rp, long time, long msec, ulong *p, int nSlices)
+PostgreSQL::Write2dSQL(RAWTBL *rp, int32_t time, int32_t msec, uint32_t *p, int nSlices)
 {
   if (nSlices < 2)
     return;

@@ -65,7 +65,7 @@ typedef struct
   const char	*name;
   int		type;	/* #defines used for switch's, in WINDS		*/
   size_t	VecLen;	/* VectorLength					*/
-  unsigned long	pType;	/* probeType for 'ToggleProbe' menu, redundant	*/
+  size_t	pType;	/* probeType for 'ToggleProbe' menu, redundant	*/
   size_t	cnt;	/* Total # of these probes present.		*/
   } PMS;
 
@@ -113,8 +113,8 @@ static PMS	pms2d_probes[] =
 
 static size_t	InertialSystemCount, GPScount, twoDcnt, NephCnt;
 static size_t	probeCnt;
-static unsigned long	probeType;
-static long	start, rate, length;
+static size_t	probeType;
+static int32_t	start, rate, length;
 static std::string serialNumber;
 static char	*item_type, location[NAMELEN];
 static char	*derivedlist[MAX_DEFAULTS*4],	/* DeriveNames file	*/
@@ -144,11 +144,11 @@ static int	locatePMS(const char target[], PMS list[]);
 
 static char	*defaultQuality;
 
-extern long	INS_start;
+extern int32_t	INS_start;
 
 char	*ExtractHeaderIntoFile(const char fn[]);
 bool	Open2dFile(const char file[], int probeCnt);
-void	AddProbeToList(const char name[], int type), ReadDespikeFile();
+void	AddProbeToList(const char name[], size_t type), ReadDespikeFile();
 void	Add2DtoList(RAWTBL *varp), OpenLogFile();
 
 
@@ -203,7 +203,7 @@ static void CommonPostInitialization()
   if (cfg.Aircraft() != Config::SAILPLANE)
     {
     add_derived_names("ALWAYS");
-    AddProbeToList("Fluxes", (unsigned long)PROBE_FLUX);
+    AddProbeToList("Fluxes", (size_t)PROBE_FLUX);
     }
   else
     {
@@ -234,7 +234,7 @@ static void CommonPostInitialization()
     cnt += pms1v3_probes[i].cnt;
 
   if (cnt > 1)
-    AddProbeToList("All PMS1D's", (unsigned long)PROBE_PMS1D);
+    AddProbeToList("All PMS1D's", (size_t)PROBE_PMS1D);
 
   cnt = 0;
 
@@ -242,11 +242,11 @@ static void CommonPostInitialization()
     cnt += pms2d_probes[i].cnt;
 
   if (cnt > 1)
-    AddProbeToList("All PMS2D's", (unsigned long)PROBE_PMS2D);
+    AddProbeToList("All PMS2D's", (size_t)PROBE_PMS2D);
   }
 
-  AddProbeToList("All On", (unsigned long)ALL_ON);
-  AddProbeToList("All Off", (unsigned long)ALL_OFF);
+  AddProbeToList("All On", (size_t)ALL_ON);
+  AddProbeToList("All Off", (size_t)ALL_OFF);
 
   if (AccessProjectFile(USERNAMES, "r") == true)
     add_file_to_DERTBL(USERNAMES);
@@ -626,7 +626,6 @@ int DecodeHeader(const char header_file[])
     probeType = 0;
     location[0] = '\0';
     SetLookupSuffix((char *)0);
-
 
     /* Initialize variable/probe into appropriate table(s).
     */
@@ -1081,7 +1080,7 @@ static void initSDI(char vn[])
   if ((indx = SearchDERIVEFTNS(vn)) != ERR && deriveftns[indx].xlate)
     {
     RAWTBL	*rp;
-    long	offset;
+    int32_t	offset;
 
     rp = add_name_to_RAWTBL(vn);
 
@@ -1181,7 +1180,7 @@ static void initHoneywell(char vn[])
 
   for (int i = 0; names[i]; ++i)
     {
-    sscanf(names[i], "%s %ld", name, &rate);
+    sscanf(names[i], "%s %d", name, &rate);
 
     if ((rp = add_name_to_RAWTBL(name)) == (RAWTBL *)ERR)
       continue;
@@ -1215,7 +1214,7 @@ static void initGustCorrected()
   if (cfg.Aircraft() != Config::SAILPLANE)
     {
     probeType = PROBE_GUSTC;
-    AddProbeToList("Corrected Winds", (unsigned long)PROBE_GUSTC);
+    AddProbeToList("Corrected Winds", (size_t)PROBE_GUSTC);
 
     /* ProbeCnt here relies on the fact that hdrbld puts inertials before
      * GPSs.
@@ -1524,7 +1523,7 @@ static void initPMS1Dv2(char vn[])
   strnam	*hsk_name;
   char		*probe, temp[NAMELEN], *p, buff[128], name[32];
   float		*cals;
-  long		ps_start, ps_length;
+  int32_t	ps_start, ps_length;
 
   GetName(vn, &probe);
 
@@ -1670,7 +1669,7 @@ static void initPMS1Dv2(char vn[])
 static void initPMS1Dv3(char vn[])
 {
   int		indx;
-  long		nbins;
+  int		nbins;
   RAWTBL	*rp;
   DERTBL	*dp;
   char		*p, *probe, temp[NAMELEN];
@@ -2091,6 +2090,8 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
     rp->xlate = 0;
     }
 
+  assert(length > 0);
+
   rp->ADSstart		= start >> 1;
   rp->ADSoffset		= 1;
   rp->SampleRate	= rate;
@@ -2217,7 +2218,7 @@ static void ReadProjectName()
 /* -------------------------------------------------------------------- */
 static std::vector<float> getCalsForADS2(const char vn[])
 {
-  long order;
+  int32_t order;
   float *f;
 
   GetOrder(vn, &order);
@@ -2228,7 +2229,7 @@ static std::vector<float> getCalsForADS2(const char vn[])
 
   std::vector<float> cals;
 
-  for (long i = 0; i < order; ++i)
+  for (int32_t i = 0; i < order; ++i)
     cals.push_back(f[i]);
 
   return cals;

@@ -27,8 +27,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999-2006
 #include "amlib.h"
 #include <raf/raf_queue.h>
 
-const unsigned long OVERLOAD = 0xffffffff;
-const unsigned long StandardSyncWord = 0x55000000;
+const uint32_t OVERLOAD = 0xffffffff;
+const uint32_t StandardSyncWord = 0x55000000;
 
 static Queue	*probes[MAX_PMS2];
 
@@ -36,7 +36,7 @@ static Queue	*probes[MAX_PMS2];
  * use this array to determine which records go with which Queue above.
  */
 static short	probeIDorder[MAX_PMS2] = { 0, 0, 0, 0 };
-static long	startTime[MAX_PMS2];
+static int32_t	startTime[MAX_PMS2];
 static short	startMilliSec[MAX_PMS2];
 static int	twoD[MAX_PMS2][BINS_64];
 
@@ -57,13 +57,13 @@ size_t	overFlowCnt[MAX_PMS2];	/* Number of particles greater than 64 bins */
 
 struct particle
   {
-  long	time;		/* Seconds since mid-night	*/
-  long	msec;
+  int32_t	time;		/* Seconds since mid-night	*/
+  int32_t	msec;
 
   size_t	w, h;
   size_t	area;		/* # shaded pixels.			*/
   unsigned char	edge;		/* particle touched either edge		*/
-  ulong		timeWord;
+  uint32_t	timeWord;
   ushort	x1, x2;		/* for particles that touch both edges.	*/
   NR_TYPE	deltaTime;	/* Amount of time between prev & this particle*/
   NR_TYPE	liveTime;	/* Amount of time consumed by particle	*/
@@ -72,7 +72,7 @@ struct particle
 typedef struct particle Particle;
 
 
-static void AddMore2dData(Queue *, long, int);
+static void AddMore2dData(Queue *, int32_t, int);
 void	Process(Queue *, P2d_rec *, int probeCnt), sTwodInit(var_base *varp);
 void	ProcessHVPS(Queue *, P2d_rec *, int probeCnt), sTwodInitH(var_base *varp);
 
@@ -413,7 +413,7 @@ printf("------ %02d:%02d:%02d - %x -------------\n",
 }       /* END XLHVPS */
 
 /* -------------------------------------------------------------------- */
-static void AddMore2dData(Queue *probe, long thisTime, int probeCnt)
+static void AddMore2dData(Queue *probe, int32_t thisTime, int probeCnt)
 {
   P2d_rec	rec;
   bool		debug = false;
@@ -465,14 +465,14 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
     }
 
   size_t	partCnt;
-  long		endTime, oload;
+  int32_t	endTime, oload;
   bool		firstParticleAfter512;
-  ulong		*p, tBarElapsedtime, DASelapsedTime;
+  uint32_t	*p, tBarElapsedtime, DASelapsedTime;
   NR_TYPE	tas, frequency;
   Particle	*part[512], *cp; /* cp stands for "currentParticle" */
 
   static int	overLoad = 0;
-  static std::vector<unsigned long> particle;  // static to keep unfinished particle.
+  static std::vector<uint32_t> particle;  // static to keep unfinished particle.
 
 
   /* Perform byte swapping on whole [data] record if required.
@@ -485,7 +485,7 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
       *sp = ntohs(*sp);
 
 
-    p = (ulong *)rec->data;
+    p = (uint32_t *)rec->data;
 
     for (int i = 0; i < 1024; ++i, ++p)
       *p = ntohl(*p);
@@ -512,7 +512,7 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
     return;
 
 
-  p = (ulong *)rec->data;
+  p = (uint32_t *)rec->data;
   partCnt = 0;
   tBarElapsedtime = 1024;
   firstParticleAfter512 = true;
@@ -521,7 +521,7 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
    */
   for (int i = 0; i < 1024; )
     {
-    unsigned long slice = *p;
+    uint32_t slice = *p;
 
     if (slice == 0xffffffff)
       --tBarElapsedtime;
@@ -542,9 +542,9 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
       }
 
 
-    unsigned long syncWord = particle[0];
-    unsigned long blankWord = particle[particle.size()-2];
-    unsigned long timeWord = particle[particle.size()-1];
+    uint32_t syncWord = particle[0];
+    uint32_t blankWord = particle[particle.size()-2];
+    uint32_t timeWord = particle[particle.size()-1];
 
     // Validate particle.
     if (syncWord == StandardSyncWord && blankWord == 0xffffffff &&
@@ -578,7 +578,7 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
       cp->x1 = 0;
       cp->x2 = 0;
 
-      if ((ulong)cp->deltaTime < DASelapsedTime)
+      if ((uint32_t)cp->deltaTime < DASelapsedTime)
         tBarElapsedtime += cp->timeWord;
 
       /* Determine height of particle.
@@ -707,7 +707,7 @@ void Process(Queue *probe, P2d_rec *rec, int probeCnt)
       }
 
     cp->msec = startMilliSec[probeCnt] +
-	(long)((((float)tBarElapsedtime * frequency / 1000) + oload) * overLap);
+	(int32_t)((((float)tBarElapsedtime * frequency / 1000) + oload) * overLap);
 
     while (cp->msec < 0)
       {
@@ -799,9 +799,9 @@ static const size_t	lower_mask = 215, upper_mask = 40;
 void ProcessHVPS(Queue *probe, P2d_rec *rec, int probeCnt)
 {
   size_t	i, partCnt, shaded, unshaded;
-  long          endTime, oload;
+  int32_t	endTime, oload;
   bool          firstParticleAfter512;
-  ulong		tBarElapsedtime, DASelapsedTime;
+  uint32_t	tBarElapsedtime, DASelapsedTime;
   ushort	*p, slice, pSlice, ppSlice;
   NR_TYPE       tas, frequency, overLap;
   ushort        t;
@@ -886,8 +886,8 @@ void ProcessHVPS(Queue *probe, P2d_rec *rec, int probeCnt)
       cp = part[partCnt++] = new Particle;
       cp->time = startTime[probeCnt];
       cp->msec = startMilliSec[probeCnt];
-      cp->timeWord = (((ulong)p[0] << 14) & 0x0fffc000);
-      cp->timeWord += (ulong)(p[1] & 0x3fff);
+      cp->timeWord = (((uint32_t)p[0] << 14) & 0x0fffc000);
+      cp->timeWord += (uint32_t)(p[1] & 0x3fff);
       cp->deltaTime = (NR_TYPE)cp->timeWord * frequency;
       cp->w = 0;
       cp->h = 0;
@@ -895,7 +895,7 @@ void ProcessHVPS(Queue *probe, P2d_rec *rec, int probeCnt)
       cp->x1 = 0;
       cp->x2 = 0;
 
-      if ((ulong)cp->deltaTime < DASelapsedTime)
+      if ((uint32_t)cp->deltaTime < DASelapsedTime)
         tBarElapsedtime += cp->timeWord;
 //printf("Start particle = %04x %04x\n", slice, p[1]);
       /* Determine height of particle.
@@ -962,7 +962,7 @@ void ProcessHVPS(Queue *probe, P2d_rec *rec, int probeCnt)
        * particle consumed, so we can add it to the deadTime, so sampleVolume
        * can be reduced accordingly.
        */
-      cp->liveTime = (ulong)((float)(cp->w + 1) * frequency);
+      cp->liveTime = (uint32_t)((float)(cp->w + 1) * frequency);
       cp->w = (int)((float)cp->w * TAS_COMPENSATE);
 
       t = MAX(cp->x1, cp->x2);
@@ -1001,7 +1001,7 @@ void ProcessHVPS(Queue *probe, P2d_rec *rec, int probeCnt)
       }
 
     cp->msec = startMilliSec[probeCnt] +
-	(long)((((float)tBarElapsedtime * frequency / 1000) + oload) * overLap);
+	(int32_t)((((float)tBarElapsedtime * frequency / 1000) + oload) * overLap);
 
     while (cp->msec < 0)
       {
