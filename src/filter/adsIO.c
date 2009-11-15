@@ -5,8 +5,8 @@ OBJECT NAME:	adsIO.c
 FULL NAME:	ADS Record IO routines
 
 ENTRY POINTS:	ExtractHeaderIntoFile(char *ADSfileName)
-		FindFirstLogicalADS2(char *record, long starttime)
-		FindNextLogicalADS2(char *record, long endtime)
+		FindFirstLogicalADS2(char *record, int32_t starttime)
+		FindNextLogicalADS2(char *record, int32_t endtime)
 		FindNextDataRecord(char *record)
 		CloseADSfile()
 		Open2dFile()
@@ -55,18 +55,18 @@ enum FileType { TAPE_DATA, RAW_ADS, COS_BLOCKED };
 #define SDI_WORD	SDIWRD
 #define MCR_WORD	0x4d43
 
-#define FIRST_DATA_RECORD	((long)3)
+#define FIRST_DATA_RECORD	((int32_t)3)
 
 
 static FileType	DiskData = RAW_ADS;
 static char	phys_rec[MX_PHYS] = "";
 static char	*adsFileName;
-static long	lrlen, lrppr, currentLR;
+static int32_t	lrlen, lrppr, currentLR;
 static int	infd;
 
 extern size_t	LITTON51_start;
 
-static long	FindNextDataRecord(char buff[]);
+static int32_t	FindNextDataRecord(char buff[]);
 static bool	IsThisAnAsyncRecord(short buff[]);
 static void	check_rico_half_buff(P2d_rec *buff, size_t beg, size_t end);
 static int	GetNext2Dfile();
@@ -88,7 +88,7 @@ int crayclose(int *index);
 
 
 /* -------------------------------------------------------------------- */
-long FindFirstLogicalADS2(
+int32_t FindFirstLogicalADS2(
 	char	record[],	/* First Data Record, for start time	*/
 	time_t	startTime)	/* User specified start time		*/
 {
@@ -147,10 +147,10 @@ long FindFirstLogicalADS2(
 }	/* END FINDFIRSTLOGICALRECORD */
 
 /* -------------------------------------------------------------------- */
-long FindNextLogicalADS2(char record[], long endtime)
+int32_t FindNextLogicalADS2(char record[], time_t endtime)
 {
   int	nbytes;
-  long	TansStart, rectime;
+  int32_t	TansStart, rectime;
 
   rectime = HdrBlkTimeToSeconds((Hdr_blk *)&phys_rec[currentLR * lrlen]);
 
@@ -408,7 +408,7 @@ static int GetNextADSfile()
 }	/* END GETNEXTADSFILE */
 
 /* -------------------------------------------------------------------- */
-static long FindNextDataRecord(char buff[])
+static int32_t FindNextDataRecord(char buff[])
 {
   long	nbytes = 0;
 
@@ -416,7 +416,7 @@ static long FindNextDataRecord(char buff[])
     {
     if (DiskData == RAW_ADS)
       {
-      long	len;
+      int32_t	len;
       int	size = ONE_WORD;
 //Hdr_blk *p1 = (Hdr_blk *)buff;
 
@@ -516,8 +516,8 @@ static bool IsThisAnAsyncRecord(short buff[])
 static int	twoDfd[] = { -1, -1, -1, -1, -1, -1 };
 static char	twoDfile[1024];
 
-static const unsigned long StandardSyncWord = 0x55000000;
-static const unsigned long SyncWordMask = 0xff000000;
+static const uint32_t StandardSyncWord = 0x55000000;
+static const uint32_t SyncWordMask = 0xff000000;
 static const size_t RecordLen = 1024;
 
 /* -------------------------------------------------------------------- */
@@ -592,7 +592,7 @@ static int GetNext2Dfile()
 /* -------------------------------------------------------------------- */
 bool Next2dRecord(P2d_rec *record, int probeCnt, ushort id)
 {
-  long	len;
+  int32_t	len;
   int	nbytes, size;
   char	buff[32000];
   ushort *rec_id = (ushort *)buff;

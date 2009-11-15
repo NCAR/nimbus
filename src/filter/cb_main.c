@@ -286,7 +286,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   XmString	label;
   Arg		args[1];
   int		rc = 0;
-  long		btim, etim;
+  time_t	btim, etim;
 
   DismissEditWindow(NULL, NULL, NULL);
   DismissConfigWindow(NULL, NULL, NULL);
@@ -1086,13 +1086,13 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
 void ToggleProbe(Widget w, XtPointer client, XtPointer call)
 {
   size_t i;
-  unsigned	cat  = (long)client & 0xf0000000,
-		type = (long)client & 0x0ffffff0,
-		cnt  = (long)client & 0x0000000f;
+  size_t	cat  = (size_t)client & 0xf0000000,
+		type = (size_t)client & 0x0ffffff0,
+		cnt  = (size_t)client & 0x0000000f;
 
-  if ((unsigned long)client == ALL_ON || (unsigned long)client == ALL_OFF)
+  if ((size_t)client == ALL_ON || (size_t)client == ALL_OFF)
     {
-    bool value = (unsigned long)client == ALL_ON ? true : false;
+    bool value = (size_t)client == ALL_ON ? true : false;
 
     for (i = 0; i < raw.size(); ++i) {
       if (strcmp(raw[i]->name, "HOUR") == 0 ||

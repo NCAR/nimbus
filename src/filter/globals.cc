@@ -115,8 +115,8 @@ size_t	LITTON51_start;	// hdr_decode.c & adsIO.c
 
 dsm::SyncRecordReader* syncRecReader = 0;
 
-long (*FindFirstLogicalRecord)(char lr[], long starttime);
-long (*FindNextLogicalRecord)(char lr[], long endtime);
+int32_t (*FindFirstLogicalRecord)(char lr[], time_t starttime);
+int32_t (*FindNextLogicalRecord)(char lr[], time_t endtime);
 
 PostgreSQL *psql = 0;
 

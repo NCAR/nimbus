@@ -34,7 +34,7 @@ extern NR_TYPE	*SampledData, *AveragedData, *HighRateData;
 /* -------------------------------------------------------------------- */
 void AllocateDataArrays()
 {
-  long	lrlen;
+  int32_t lrlen;
 
   if (AVAPS)
     for (int i = 0; i < MAX_AVAPS; ++i)
@@ -64,8 +64,8 @@ void AllocateDataArrays()
     if (raw[i]->Length < 1)	// Sanity check.
     {
       char msg[1000];
-      sprintf(msg, "memalloc.c::AllocateDataArrays:: %s has Length of zero!  Fatal.\n",
-	raw[i]->name);
+      sprintf(msg, "memalloc.c::AllocateDataArrays:: %s has Length of %d!  Fatal.\n",
+	raw[i]->name, raw[i]->Length);
       HandleFatalError(msg);
     }
 

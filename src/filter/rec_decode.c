@@ -140,7 +140,7 @@ void decodeADS2analog(RAWTBL *varp, void *input, NR_TYPE *output)
     if (strcmp(varp->type, "C24") == 0)
     {
       for (size_t j = 0; j < varp->SampleRate; ++j, ++pos)
-        output[pos] = (NR_TYPE)ntohl(*((unsigned long *)&lrp[j * varp->ADSoffset]));
+        output[pos] = (NR_TYPE)ntohl(*((uint32_t *)&lrp[j * varp->ADSoffset]));
     }
     else
     {
@@ -153,7 +153,7 @@ void decodeADS2analog(RAWTBL *varp, void *input, NR_TYPE *output)
     if (strcmp(varp->type, "D20") == 0)
     {
       for (size_t j = 0; j < varp->SampleRate; ++j, ++pos)
-        output[pos] = (NR_TYPE)ntohl(*((long *)&lrp[j * varp->ADSoffset]));
+        output[pos] = (NR_TYPE)ntohl(*((int32_t *)&lrp[j * varp->ADSoffset]));
     }
     else
     {

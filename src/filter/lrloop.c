@@ -35,16 +35,16 @@ extern char		*ADSrecord;
 extern NR_TYPE		*SampledData, *AveragedData;
 extern XtAppContext	context;
 
-bool	LocateFirstRecord(long starttime, long endtime, int nBuffers);
+bool	LocateFirstRecord(time_t starttime, time_t endtime, int nBuffers);
 void	DespikeData(CircularBuffer *LRCB, int index),
 	PhaseShift(CircularBuffer  *LRCB, int index, NR_TYPE *output,
 		NR_TYPE *);
 
 
 /* -------------------------------------------------------------------- */
-int LowRateLoop(long startTime, long endTime)
+int LowRateLoop(time_t startTime, time_t endTime)
 {
-  long			nBytes, thisTime, cntr = 0;
+  int32_t		nBytes, thisTime, cntr = 0;
   NR_TYPE		*BuffPtr;
   CircularBuffer	*LRCB;	/* Logical Record Circular Buffers	*/
 
@@ -112,7 +112,7 @@ exit:
 }	/* END LOWRATELOOP */
 
 /* -------------------------------------------------------------------- */
-bool LocateFirstRecord(long starttime, long endtime, int nBuffers)
+bool LocateFirstRecord(time_t starttime, time_t endtime, int nBuffers)
 {
   int nBytes;
 

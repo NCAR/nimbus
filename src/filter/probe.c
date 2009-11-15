@@ -25,11 +25,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2005
 
 #include <map>
 
-std::map<std::string, unsigned long> probeMap;
+std::map<std::string, size_t> probeMap;
 
 
 /* -------------------------------------------------------------------- */
-void AddProbeToList(const char name[], unsigned long type)
+void AddProbeToList(const char name[], size_t type)
 {
   probeMap[name] = type;
 
@@ -46,7 +46,7 @@ void ResetProbeList()
 std::vector<std::string> GetProbeList()
 {
   std::vector<std::string> list;
-  std::map<std::string, unsigned long>::const_iterator it;
+  std::map<std::string, size_t>::const_iterator it;
 
   for (it = probeMap.begin(); it != probeMap.end(); ++it)
     list.push_back(it->first);
@@ -56,9 +56,9 @@ std::vector<std::string> GetProbeList()
 }	/* END GETPROBELIST */
 
 /* -------------------------------------------------------------------- */
-unsigned long GetProbeType(std::string& name)
+size_t GetProbeType(std::string& name)
 {
-  std::map<std::string, unsigned long>::const_iterator it;
+  std::map<std::string, size_t>::const_iterator it;
 
   it = probeMap.find(name);
 

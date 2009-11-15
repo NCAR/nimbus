@@ -116,16 +116,16 @@ int	SearchDERIVEFTNS(const char target[]),
 	LowRateLoop(time_t starttime, time_t endtime),
 	HighRateLoop(time_t starttime, time_t endtime);
 
-long	FindFirstLogicalADS2(char record[], long starttime),
-	FindNextLogicalADS2(char record[], long endtime),
-	FindFirstLogicalADS3(char record[], long starttime),
-	FindNextLogicalADS3(char record[], long endtime);
+int32_t	FindFirstLogicalADS2(char record[], time_t starttime),
+	FindNextLogicalADS2(char record[], time_t endtime),
+	FindFirstLogicalADS3(char record[], time_t starttime),
+	FindNextLogicalADS3(char record[], time_t endtime);
 
 time_t	SampledDataTimeToSeconds(NR_TYPE *);
 
-extern long
-	(*FindFirstLogicalRecord)(char record[], long starttime),
-	(*FindNextLogicalRecord)(char record[], long endtime);
+extern int32_t
+	(*FindFirstLogicalRecord)(char record[], time_t starttime),
+	(*FindNextLogicalRecord)(char record[], time_t endtime);
 
 #endif
 

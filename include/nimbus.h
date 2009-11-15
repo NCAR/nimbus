@@ -81,7 +81,7 @@ public:
   size_t SampleRate;	// Sampled rate
   size_t Length;	// Vector length (used by PMS1D)
 
-  int ProbeType;	// Is this a probe & which one
+  size_t ProbeType;	// Is this a probe & which one
   size_t ProbeCount;	// For mulitple identicle probes
 			// Used by AMLIB
   bool DependedUpon;	// Is this variable depended upon?
@@ -112,8 +112,8 @@ class RAWTBL : public var_base
 public:
   RAWTBL(const char s[]);
 
-  long ADSstart;
-  long ADSoffset;	// Offset between samples
+  int32_t ADSstart;
+  int32_t ADSoffset;	// Offset between samples
   char type[4];		// Analog, Digital or Counter
 
   ushort dsmID;		// ADS3/nids A/D temp compensation.
@@ -122,7 +122,7 @@ public:
   void (*xlate)(RAWTBL *, void *, float *); // Function to translate data
   void (*Average)(...);	// Routine to use to average/sum data
 
-  long convertOffset;	// A/D offset
+  int32_t convertOffset;	// A/D offset
   float	convertFactor;	// A/D slope
   std::vector<float> cof;
 
@@ -238,7 +238,7 @@ SearchTable(std::vector<T *> &list, int s, int e, const char target[])
 }
 
 
-unsigned long	GetProbeType(std::string&);
+size_t	GetProbeType(std::string&);
 
 char	*SearchList(char **list, const char target[]),
 	*SearchDataQuality(const char target[]);
@@ -252,7 +252,7 @@ void	SortTable(char **table, int beg, int end),
 	MakeProjectFileName(char file[], const std::string& format),
 	ProcessArgv(int argc, char **argv),
 	LogMessage(const char msg[]),
-	AddProbeToList(const char name[], unsigned long type),
+	AddProbeToList(const char name[], uint32_t type),
 	SetBaseTime(const NR_TYPE *record),
 	BlankOutBadData(),
 	GetDataDirectory(char buff[]),

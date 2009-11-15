@@ -191,7 +191,7 @@ time_t UTCseconds(const void *record)
 /* -------------------------------------------------------------------- */
 int CheckForTimeGap(const void *ADShdr, int initMode)
 {
-  long i, j;
+  int i, j;
 
   time_t newTime = UTCseconds(ADShdr);
 
