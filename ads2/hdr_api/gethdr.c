@@ -26,7 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 #include "hdr_api.h"
 
-static int GetHeaderLong(long *result, long value);
+static int GetHeaderLong(int32_t *result, int32_t value);
 static int GetHeaderString(char **result, char *value);
 
 
@@ -103,7 +103,7 @@ int GetAircraft(char **result)
 }
 
 /* -------------------------------------------------------------------- */
-int GetNumberItems(long *result)
+int GetNumberItems(int32_t *result)
 {
   if (HAPI_HeaderInitialized)
     return(GetHeaderLong(result, HAPI_header->n_items));
@@ -112,7 +112,7 @@ int GetNumberItems(long *result)
 }
 
 /* -------------------------------------------------------------------- */
-int get_lrlen(long *result)
+int get_lrlen(int32_t *result)
 {
   if (HAPI_HeaderInitialized)
     return(GetHeaderLong(result, HAPI_header->lrlen));
@@ -121,7 +121,7 @@ int get_lrlen(long *result)
 }
 
 /* -------------------------------------------------------------------- */
-int get_lrppr(long *result)
+int get_lrppr(int32_t *result)
 {
   if (HAPI_HeaderInitialized)
     return(GetHeaderLong(result, HAPI_header->lrppr));
@@ -130,7 +130,7 @@ int get_lrppr(long *result)
 }
 
 /* -------------------------------------------------------------------- */
-int get_thdrlen(long *result)
+int get_thdrlen(int32_t *result)
 {
   if (HAPI_HeaderInitialized)
     return(GetHeaderLong(result, HAPI_header->thdrlen));
@@ -154,7 +154,7 @@ static int GetHeaderString(char **result, char *value)
 }	/* END GETHEADERSTRING */
 
 /* -------------------------------------------------------------------- */
-static int GetHeaderLong(long *result, long value)
+static int GetHeaderLong(int32_t *result, int32_t value)
 {
   if (!HAPI_HeaderInitialized)
     {

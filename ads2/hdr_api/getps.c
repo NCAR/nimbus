@@ -24,7 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetParticleSpacingStart(const char vn[], long *result)
+int GetParticleSpacingStart(const char vn[], int32_t *result)
 {
   int	indx;
 
@@ -38,7 +38,7 @@ int GetParticleSpacingStart(const char vn[], long *result)
 }	/* END GETPARTSPACESTART */
 
 /* -------------------------------------------------------------------- */
-int GetParticleSpacingLength(const char vn[], long *result)
+int GetParticleSpacingLength(const char vn[], int32_t *result)
 {
   int	indx;
 
@@ -55,7 +55,7 @@ int GetParticleSpacingLength(const char vn[], long *result)
 int GetParticleSpacingGate(const char vn[], float *result)
 {
   int	indx;
-  long  value;
+  int32_t  value;
   float *p = (float *)&value;
 
   if ((indx = HAPI_lookupvar(vn, VALID_VARS)) == ERR)

@@ -52,6 +52,8 @@ Defines the new ads tape header.
 #ifndef HEADER_H
 #define HEADER_H
 
+#include <stdint.h>
+
 #define VERSION_STR	"3.5"
 
 #ifndef TRUE
@@ -274,7 +276,7 @@ typedef char strnam[LEN_8];             /* variable name string type */
  
 struct Fl {
   str8 thdr;          			/* I.D. "THDR" */
-  long item_len;      			/* Length of this struct in bytes */
+  int32_t item_len;			/* Length of this struct in bytes */
   str8 version;       			/* header version number */
   str8 prnum;         			/* project number */
   str8 fltnum;        			/* flight number */
@@ -283,10 +285,10 @@ struct Fl {
   str12 time;         			/* "hh:mm:ss" */
   str4 tzone;         			/* i.e. "MST" */
   str8 acraft;        			/* i.e. "N308D" */
-  long n_items;       			/* # of items excluding this one */
-  long lrlen;         			/* logical record length */
-  long lrppr;         			/* logical records per physical rec */
-  long thdrlen;       			/* length of this tape header */
+  int32_t n_items;			/* # of items excluding this one */
+  int32_t lrlen;			/* logical record length */
+  int32_t lrppr;			/* logical records per physical rec */
+  int32_t thdrlen;			/* length of this tape header */
   str8 ads_type;			/* data system type */
 };
 typedef struct Fl Fl;
@@ -303,12 +305,12 @@ typedef struct Fl Fl;
  
 struct Blk {
   str8 item_type;   			/* 'HDR','GPS','LRNC','JPLTDL','CLIMET' */
-  long item_len;      			/* Length of this struct in bytes */
-  long start;         			/* byte address in the data record */
-  long length;        			/* block length in bytes */
+  int32_t item_len;			/* Length of this struct in bytes */
+  int32_t start;			/* byte address in the data record */
+  int32_t length;			/* block length in bytes */
   str8 locn;    			/* sensor location */
   str8 dsm_locn;			/* sampling module location */
-  long rate;        			/* sample rate			*/
+  int32_t rate;        			/* sample rate			*/
 };
 typedef struct Blk Blk ;
 
@@ -316,13 +318,13 @@ typedef struct Blk Blk ;
 /* Dme sampling capability is not included in version 3.0 and above. */
 struct Dme {
   str8 item_type;   			/* block name 'DME' */
-  long item_len;      			/* Length of this struct in bytes */
-  long start;         			/* byte address in the data record */
-  long length;        			/* block length in bytes */
-  long rate;          			/* sample rate */
-  long rdadr1;        			/* 1st dme read channel address */
-  long rdadr2;        			/* 2nd dme read channel address */
-  long wradr;         			/* dme write channel address */
+  int32_t item_len;			/* Length of this struct in bytes */
+  int32_t start;			/* byte address in the data record */
+  int32_t length;			/* block length in bytes */
+  int32_t rate;				/* sample rate */
+  int32_t rdadr1;			/* 1st dme read channel address */
+  int32_t rdadr2;			/* 2nd dme read channel address */
+  int32_t wradr;			/* dme write channel address */
   str8 dsm_locn;			/* sampling module location */
 };
 typedef struct Dme Dme;
@@ -339,9 +341,9 @@ typedef struct Dme Dme;
 
 struct Evt	 {
   str8 item_type;   			/* block name 'EVNT' */
-  long item_len;      			/* Length of this struct in bytes */
-  long start;	       			/* byte address in the data record */
-  long length;        			/* block length in bytes */
+  int32_t item_len;			/* Length of this struct in bytes */
+  int32_t start;			/* byte address in the data record */
+  int32_t length;			/* block length in bytes */
   str8 locn;    			/*ckp,fwd,ctl,obl,ibl,obr,ibr*/ 
   str8 dsm_locn;			/* sampling module location */
 };
@@ -353,12 +355,12 @@ typedef struct Evt Evt;
 
 struct Ins {
   str8 item_type;   			/* block name 'INS' */
-  long item_len;      			/* Length of this struct in bytes */
-  long start;         			/* byte address in the data record */
-  long length;        			/* block length in bytes */
-  long rate;          			/* sample rate = 250 */
-  long adsadr1;       			/* 1st ins word channel address */
-  long adsadr2;       			/* 2nd ins word channel address */
+  int32_t item_len;			/* Length of this struct in bytes */
+  int32_t start;			/* byte address in the data record */
+  int32_t length;			/* block length in bytes */
+  int32_t rate;				/* sample rate = 250 */
+  int32_t adsadr1;			/* 1st ins word channel address */
+  int32_t adsadr2;			/* 2nd ins word channel address */
   str8 dsm_locn;			/* sampling module location */
 };
 typedef struct Ins Ins;
@@ -371,9 +373,9 @@ typedef struct Ins Ins;
 
 struct Irs {
   str8 item_type;   			/* block name 'IRS' */
-  long item_len;      			/* Length of this struct in bytes */
-  long start;	       			/* byte address in the data record */
-  long length;        			/* block length in bytes */
+  int32_t item_len;			/* Length of this struct in bytes */
+  int32_t start;			/* byte address in the data record */
+  int32_t length;			/* block length in bytes */
   str8 locn;	       			/* acrft locn, */
   str8 dsm_locn;			/* sampling module location */
 };
@@ -394,12 +396,12 @@ typedef struct Irs Irs;
    and above. */
 struct Pms1 {
   str8 item_type;   			/* block name 'PMS1D' */
-  long item_len;      			/* Length of this struct in bytes */
-  long start;         			/* byte address in the data record */
-  long length;        			/* block length in bytes */
-  long rate;          			/* sample rate */
-  long adsaddr;       			/* probe base channel address */
-  long auxaddr;       			/* aux channel address */
+  int32_t item_len;			/* Length of this struct in bytes */
+  int32_t start;			/* byte address in the data record */
+  int32_t length;			/* block length in bytes */
+  int32_t rate;				/* sample rate */
+  int32_t adsaddr;			/* probe base channel address */
+  int32_t auxaddr;			/* aux channel address */
   str8 name;        			/* probe name, FSSP, 200X,... */
   str8 locn;	       			/* probe location */
   str8 dsm_locn;			/* sampling module location */
@@ -413,15 +415,15 @@ typedef struct Pms1 Pms1;
 
 struct Pms1v2 {
   str8 item_type;                     	/* descriptor name 'PMS1V2' */
-  long item_len;                        /* Length of this struct in bytes */
-  long start;                           /* byte address in the data record */
-  long length;                          /* block length in bytes */
-  long rate;                            /* sample rate */
-  long ps_start;                        /* part spacing blk start, 0 = none */
-  long ps_length;                       /* part spacing blk length, 0 = none */
+  int32_t item_len;			/* Length of this struct in bytes */
+  int32_t start;			/* byte address in the data record */
+  int32_t length;			/* block length in bytes */
+  int32_t rate;				/* sample rate */
+  int32_t ps_start;			/* part spacing blk start, 0 = none */
+  int32_t ps_length;			/* part spacing blk length, 0 = none */
   float ps_gate;                        /* spacing gate size, 8 to .125 uS */
-  long intf_num;                        /* interface number, 0 or 1	*/
-  long intf_chan;                       /* interface channel 0, 1, or 2	*/
+  int32_t intf_num;			/* interface number, 0 or 1	*/
+  int32_t intf_chan;			/* interface channel 0, 1, or 2	*/
   str8 name;                         	/* probe name, FSSP, 200X,...	*/
   str8 hsk_name[P1DV2_AUX];           	/* housekeeping parameter names	*/
   float hsk_cof[P1DV2_AUX][P1DV2_COF];  /* houskeeping cal coefs array */
@@ -433,36 +435,36 @@ typedef struct Pms1v2 Pms1v2;
 
 struct Pms1v3 {
   str8 item_type;                       /* descriptor name 'PMS1V3' */
-  long item_len;                        /* Length of this struct in bytes */
-  long start;                           /* byte address in the data record */
-  long length;                          /* block length in bytes */
-  long rate;                            /* sample rate */
-  long intf_chan;                       /* interface channel 0, 1, or 2 */
+  int32_t item_len;			/* Length of this struct in bytes */
+  int32_t start;			/* byte address in the data record */
+  int32_t length;			/* block length in bytes */
+  int32_t rate;				/* sample rate */
+  int32_t intf_chan;			/* interface channel 0, 1, or 2 */
   str8 name;                            /* probe name, SPP100, SPP200X,...   */
-  long threshold;			/* trigger threshold */
-  long transRej;			/* Avg. Transit Reject Flag */
-  long bins;				/* 10, 20, 30, or 40 */
-  long dofRej;				/* DOF Reject flag */
-  long avgTransWt;			/* calc. avg. trans t0 -2 power */
-  long attAccept;			/* % trans. time avg. for accept */
-  long divisorFlag;			/* 0 = /2, 1 = /4 */
-  long ct_method;			/* 1 = sum/peak */ 
+  int32_t threshold;			/* trigger threshold */
+  int32_t transRej;			/* Avg. Transit Reject Flag */
+  int32_t bins;				/* 10, 20, 30, or 40 */
+  int32_t dofRej;			/* DOF Reject flag */
+  int32_t avgTransWt;			/* calc. avg. trans t0 -2 power */
+  int32_t attAccept;			/* % trans. time avg. for accept */
+  int32_t divisorFlag;			/* 0 = /2, 1 = /4 */
+  int32_t ct_method;			/* 1 = sum/peak */ 
   str8 locn;                            /* probe location */
   str8 serial_num;                      /* probe serial number */
   str8 dsm_locn;                        /* sampling module location */
-  long defaultRange;
-  unsigned short OPCthreshold[OPCCHAN];
-  long max_width;                       /* max width in A/D counts */
+  int32_t defaultRange;
+  uint16_t OPCthreshold[OPCCHAN];
+  int32_t max_width;			/* max width in A/D counts */
 };
 typedef struct Pms1v3 Pms1v3;
 
 
 struct Masp {
   str8 item_type;                     	/* descriptor name 'MASP' */
-  long item_len;                        /* Length of this struct in bytes */
-  long start;                           /* byte address in the data record */
-  long length;                          /* block length in bytes */
-  long rate;                            /* sample rate		*/
+  int32_t item_len;			/* Length of this struct in bytes */
+  int32_t start;			/* byte address in the data record */
+  int32_t length;			/* block length in bytes */
+  int32_t rate;				/* sample rate		*/
   str8 hsk_name[P1DV2_AUX];           	/* housekeeping parameter names	*/
   float hsk_cof[P1DV2_AUX][P1DV2_COF];  /* houskeeping cal coefs array */
   str8 locn;                          	/* probe location */
@@ -485,17 +487,17 @@ typedef struct Masp Masp;
 
 struct Serial {
   str8 item_type;                     	/* block name 'SER' */
-  long item_len;                        /* length of this struct in bytes */
-  long start;                           /* byte address in the data record */
-  long length;                          /* block length in bytes */
-  long rate;                            /* expected number of blocks per sec */
-  long data_type;                       /* BYTE_TYPE, SHORT_TYPE, etc */
+  int32_t item_len;                        /* length of this struct in bytes */
+  int32_t start;                           /* byte address in the data record */
+  int32_t length;                          /* block length in bytes */
+  int32_t rate;                            /* expected number of blocks per sec */
+  int32_t data_type;                       /* BYTE_TYPE, SHORT_TYPE, etc */
   str8 name;                          	/* data block name */
-  long port_num;                        /* serial port number, 1 - 8 */
-  long parity;                          /* SER_EVEN, SER_ODD, SER_NONE */
-  long flow_ctl;                        /* flow ctl enabled, TRUE or FALSE */
-  long baud_rate;                       /* baud rate */
-  long data_bits;                       /* 7 or 8 */
+  int32_t port_num;                        /* serial port number, 1 - 8 */
+  int32_t parity;                          /* SER_EVEN, SER_ODD, SER_NONE */
+  int32_t flow_ctl;                        /* flow ctl enabled, TRUE or FALSE */
+  int32_t baud_rate;                       /* baud rate */
+  int32_t data_bits;                       /* 7 or 8 */
   float stop_bits;                      /* 1.0 to 2.0 */
   str4 term_str;                        /* termination string, NULL = none */
   str4 align_str;                       /* alignment string, NULL = none */
@@ -528,21 +530,21 @@ typedef struct Serial Serial;
 
 struct Sh {
   str8 item_type;   			/* desc type, 'SDI' 'HSKP' 'DIGOUT' */
-  long item_len;      			/* Length of this struct in bytes */
-  long start;         			/* byte address in the data record */
-  long length;        			/* data item length in bytes */
-  long rate;          			/* sample rate */
-  long adsaddr;       			/* ADS channel address */
+  int32_t item_len;      			/* Length of this struct in bytes */
+  int32_t start;         			/* byte address in the data record */
+  int32_t length;        			/* data item length in bytes */
+  int32_t rate;          			/* sample rate */
+  int32_t adsaddr;       			/* ADS channel address */
   str8 name;        			/* name of variable */
   str4 type;          			/* "A", "D", or "C" */
-  long offset;        			/* offset between samples */
+  int32_t offset;        			/* offset between samples */
   float convert;      			/* conversion factor, bits to units */
-  long order;         			/* number of cal coefficients */
+  int32_t order;         			/* number of cal coefficients */
   float cof[MX_COF];  			/* cal coefficients array */
-  long ch_gain;				/* channel gain setting, 1, 5, 10, 20 */
-  long ch_offset;			/* channel offset, 0 or 10 volts */
+  int32_t ch_gain;				/* channel gain setting, 1, 5, 10, 20 */
+  int32_t ch_offset;			/* channel offset, 0 or 10 volts */
   str8 dsm_locn;			/* sampling module location */
-  long convert_offset;			/* conversion offset counts at 0 volts*/
+  int32_t convert_offset;			/* conversion offset counts at 0 volts*/
 };
 typedef struct Sh Sh;
  
@@ -550,9 +552,9 @@ typedef struct Sh Sh;
 
 struct Uvhyg {
   str8 item_type;   			/* 'UVHYG' */
-  long item_len;      			/* Length of this struct in bytes */
-  long start;         			/* byte address in the data record */
-  long length;        			/* block length in bytes */
+  int32_t item_len;      			/* Length of this struct in bytes */
+  int32_t start;         			/* byte address in the data record */
+  int32_t length;        			/* block length in bytes */
   float cof_p[MX_UV_COF];		/* pressure coefficients */
   float cof_t[MX_UV_COF];		/* temperature coefficients */
   float cof_mr[MX_UV_COF];		/* mixing ratio coefficients */
@@ -564,9 +566,9 @@ typedef struct Uvhyg Uvhyg;
 
 struct Mcrh {
   str8 item_type;                       /* block name 'MCR' */
-  long item_len;                        /* Length of this struct in bytes */
-  long lrlen;                           /* logical record length */
-  short lrppr;                          /* logical recs per physical record */
+  int32_t item_len;                        /* Length of this struct in bytes */
+  int32_t lrlen;                           /* logical record length */
+  int16_t lrppr;                          /* logical recs per physical record */
   str8 name;                            /* Probe name */
   str8 locn;                            /* Probe location */
   str8 dsm_locn;                        /* sampling module location */
@@ -581,15 +583,15 @@ typedef struct Mcrh Mcrh;
  
 struct Pms2 {
   str8 item_type;   			/* block name 'PMS2D' */
-  long item_len;      			/* Length of this struct in bytes */
-  long lrlen;         			/* logical record length */
-  short lrppr;        			/* logical recs per physical record */
-  short resolution;   			/* Probe resolution (microns) */
+  int32_t item_len;      			/* Length of this struct in bytes */
+  int32_t lrlen;         			/* logical record length */
+  int16_t lrppr;        			/* logical recs per physical record */
+  int16_t resolution;   			/* Probe resolution (microns) */
   str8 name;        			/* Probe name */
   str8 locn;        			/* Probe location */
   str8 serial_num;        		/* Probe serial number */
   str8 dsm_locn;			/* sampling module location */
-  long intf_chan;			/* interface channel no. */
+  int32_t intf_chan;			/* interface channel no. */
 };
 typedef struct Pms2 Pms2;
  
@@ -597,16 +599,16 @@ typedef struct Pms2 Pms2;
 */
 struct Pms2h {
   str8 item_type;			/* block name 'PMS2DH' */
-  long item_len;			/* Length of this struct in bytes */
-  long start;				/* byte address in the data record */
-  long length;				/* block length in bytes */
+  int32_t item_len;			/* Length of this struct in bytes */
+  int32_t start;				/* byte address in the data record */
+  int32_t length;				/* block length in bytes */
   str8 name;				/* Probe name */
   str8 hsk_name[P2D_HOUSE];           	/* housekeeping parameter names	*/
   float hsk_cof[P2D_HOUSE][P1DV2_COF];  /* houskeeping cal coefs array */
   str8 locn;                            /* Probe location */
   str8 serial_num;                      /* Probe serial number */
   str8 dsm_locn;                        /* sampling module location */
-  long intf_chan;			/* interface channel no. */
+  int32_t intf_chan;			/* interface channel no. */
 };
 typedef struct Pms2h Pms2h;
 
@@ -614,9 +616,9 @@ typedef struct Pms2h Pms2h;
 */
 struct Greyh {
   str8 item_type;                       /* block name 'PMS2DH' */
-  long item_len;                        /* Length of this struct in bytes */
-  long start;                           /* byte address in the data record */
-  long length;                          /* block length in bytes */
+  int32_t item_len;                        /* Length of this struct in bytes */
+  int32_t start;                           /* byte address in the data record */
+  int32_t length;                          /* block length in bytes */
   str8 name;                            /* Probe name */
   str8 hsk_name[GREY_HOUSE];             /* housekeeping parameter names */
   float hsk_cof[GREY_HOUSE][P1DV2_COF];  /* houskeeping cal coefs array */
@@ -628,10 +630,10 @@ typedef struct Greyh Greyh;
  
 struct Asy {
   str8 item_type;   			/* "ASYNC" */
-  long item_len;      			/* Length of this struct in bytes */
+  int32_t item_len;      			/* Length of this struct in bytes */
   str8 name;        			/* record name, 'AXBT', ...*/
-  long lrlen;         			/* logical record length */
-  long lrppr;         			/* logical records per physical rec */
+  int32_t lrlen;         			/* logical record length */
+  int32_t lrppr;         			/* logical records per physical rec */
   str8 dsm_locn;			/* sampling module location */
 };
 typedef struct Asy Asy;
@@ -650,44 +652,44 @@ typedef struct Asy Asy;
    hour minute and second fields are the same. */
  
 struct Hdr_blk {
-  short id;				/* block id pattern */
-  short hour;				/* time stamp */
-  short minute;
-  short second;
-  short year;
-  short month;
-  short day;
-  short rec_cnt;			/* record counter */
+  int16_t id;				/* block id pattern */
+  int16_t hour;				/* time stamp */
+  int16_t minute;
+  int16_t second;
+  int16_t year;
+  int16_t month;
+  int16_t day;
+  int16_t rec_cnt;			/* record counter */
   str8 dsm_locn;			/* sampling module location */
 };
 typedef struct Hdr_blk Hdr_blk;
 
 /* Pre version 3.0 Hdr_blk. */
 struct Hdr_blk_old {
-  short id;
-  short hour;
-  short minute;
-  short second;
-  short ads_stat;
-  short async_stat;
-  short ins_stat;
-  short tape_drv;
-  short tape_stat;
-  short sync_stat;
-  short spare1;
-  short spare2;
+  int16_t id;
+  int16_t hour;
+  int16_t minute;
+  int16_t second;
+  int16_t ads_stat;
+  int16_t async_stat;
+  int16_t ins_stat;
+  int16_t tape_drv;
+  int16_t tape_stat;
+  int16_t sync_stat;
+  int16_t spare1;
+  int16_t spare2;
 };
 typedef struct Hdr_blk_old Hdr_blk_old;
 
 
 struct Climet_blk {
-  unsigned short pof;
-  unsigned short counts[6]; 		/* particle counts histogram */
+  uint16_t pof;
+  uint16_t counts[6]; 		/* particle counts histogram */
 };
 typedef struct Climet_blk Climet_blk;
 
 struct Mca_blk {
-  unsigned short counts[256];		/* particle counts histogram */
+  uint16_t counts[256];		/* particle counts histogram */
 };
 typedef struct Mca_blk Mca_blk;
 
@@ -706,22 +708,22 @@ typedef struct Mca_status Mca_status;
 /* DME block structure */
  
 struct Dme_blk {
-  long freq;          			/* frequency in Bi-Quinary */
-  long dist;          			/* distance data in BCD */
+  int32_t freq;          			/* frequency in Bi-Quinary */
+  int32_t dist;          			/* distance data in BCD */
 };
 typedef struct Dme_blk Dme_blk;
 
 /* Event block structure. */
 
 struct Evt_blk {
-  long evt_data;		  	/* event data */
+  int32_t evt_data;		  	/* event data */
 };
 typedef struct Evt_blk Evt_blk;
 		   
 /* Trimble receiver GPS struct */
 
 struct Gps_blk {
-  long  ghealth;              		/* gps health */
+  int32_t  ghealth;			/* gps health */
   float glat;                 		/* latitude */
   float glon;                 		/* longitude */
   float galt;                 		/* altitude */
@@ -732,11 +734,11 @@ struct Gps_blk {
   float velup;                		/* vertical velocity */
   float biasrt;               		/* bias rate */
   float veltime;              		/* time of velocity data */
-  long addstat;               		/* additional stat. pkt 4b */
-  long gpsmode;               		/* mode of operation */
+  int32_t addstat;			/* additional stat. pkt 4b */
+  int32_t gpsmode;			/* mode of operation */
   unsigned char gpssats[GPS_SATS]; 	/* satellites being used */
   float gpstime;              		/* current gps time */
-  long gpsweek;               		/* current gps week */
+  int32_t gpsweek;			/* current gps week */
   float gpsutc;               		/* upc difference */
 };
 typedef struct Gps_blk Gps_blk;
@@ -744,42 +746,42 @@ typedef struct Gps_blk Gps_blk;
 /* Honeywell Arinc GPS struct */
  
 struct HwGps_blk {
-  long meas_status;                   /* measurement status */
-  long utc_time;                      /* UTC time */
-  long altitude;                      /* altitude (MSL) */
-  long hdop;                          /* HDOP */
-  long vdop;                          /* VDOP */
-  long latitude;                      /* latitude */
-  long longitude;                     /* longitude */
-  long ground_speed;                  /* ground speed */
-  long lat_fine;                      /* latitude fine */
-  long long_fine;                     /* longitude fine */
-  long vertical_fom;                  /* vertical FOM */
-  long vertical_velocity;             /* vertical velocity */
-  long velocity_ns;                   /* north/south velocity */
-  long velocity_ew;                   /* east/west velocity */
-  long horizontal_fom;                /* horizontal FOM */
-  long sensor_status;                 /* senstor status */
+  int32_t meas_status;                   /* measurement status */
+  int32_t utc_time;                      /* UTC time */
+  int32_t altitude;                      /* altitude (MSL) */
+  int32_t hdop;                          /* HDOP */
+  int32_t vdop;                          /* VDOP */
+  int32_t latitude;                      /* latitude */
+  int32_t longitude;                     /* longitude */
+  int32_t ground_speed;                  /* ground speed */
+  int32_t lat_fine;                      /* latitude fine */
+  int32_t long_fine;                     /* longitude fine */
+  int32_t vertical_fom;                  /* vertical FOM */
+  int32_t vertical_velocity;             /* vertical velocity */
+  int32_t velocity_ns;                   /* north/south velocity */
+  int32_t velocity_ew;                   /* east/west velocity */
+  int32_t horizontal_fom;                /* horizontal FOM */
+  int32_t sensor_status;                 /* senstor status */
 };
 typedef struct HwGps_blk HwGps_blk;
 
 /* Garmin receiver GPS struct */
 
 struct Garmin_blk {
-  char  utctime[8];                    /* gps UTC time */
-  char  utcdate[8];                    /* gps UTC date */
-  float glat;                           /* latitude */
-  float glon;                           /* longitude */
-  short quality;                        /* GPS quality */
-  short nsat;                           /* number of satellites in use */
-  float dilution;			/* dilution of horiz. pos. */
-  float height;				/* antenna height above sea */
-  float geoidal_height;			/* geoidal height */
-  float ground_speed;			/* ground speed */
-  float course;				/* course over ground */
-  char  north;                          /* north/south lat. */
-  char  east;                           /* east/west lon. */
-  char  status;				/* status */
+  char  utctime[8];		/* gps UTC time */
+  char  utcdate[8];		/* gps UTC date */
+  float glat;			/* latitude */
+  float glon;			/* longitude */
+  int16_t quality;		/* GPS quality */
+  int16_t nsat;			/* number of satellites in use */
+  float dilution;		/* dilution of horiz. pos. */
+  float height;			/* antenna height above sea */
+  float geoidal_height;		/* geoidal height */
+  float ground_speed;		/* ground speed */
+  float course;			/* course over ground */
+  char  north;			/* north/south lat. */
+  char  east;			/* east/west lon. */
+  char  status;			/* status */
 //  float mag_var;			/* magnetic variation */
 //  char mag_var_dir;			/* magnetic variation dir. */
 };
@@ -789,14 +791,14 @@ typedef struct Garmin_blk Garmin_blk;
 /* NOAA/AOC Air data computer aoa struct */
 
 struct AdcAoa_blk {
-  long aoa;                     /* angle-of-attack */
-  long adcpalt;                 /* pressure alt - feet */
-  long adcbcalt;                /* baro corrected alt - feet */
-  long adcmach;                 /* mach number */
-  long adccas;                  /* calib airspeed - knots */
-  long adctas;                  /* true airspeed - knots */
-  long adctat;                  /* total air temp - C */
-  long adcsat;                  /* static air temp - C */
+  int32_t aoa;                     /* angle-of-attack */
+  int32_t adcpalt;                 /* pressure alt - feet */
+  int32_t adcbcalt;                /* baro corrected alt - feet */
+  int32_t adcmach;                 /* mach number */
+  int32_t adccas;                  /* calib airspeed - knots */
+  int32_t adctas;                  /* true airspeed - knots */
+  int32_t adctat;                  /* total air temp - C */
+  int32_t adcsat;                  /* static air temp - C */
 };
 typedef struct AdcAoa_blk AdcAoa_blk;
 
@@ -810,50 +812,50 @@ struct GpsMag_blk {
   float geo_height;            		/* geoidal height */
   float veleast;              		/* east/west velocity */
   float velnrth;              		/* north/south velocity */
-  long gpsmode;               		/* mode of operation */
+  int32_t gpsmode;			/* mode of operation */
 };
 typedef struct GpsMag_blk GpsMag_blk;
  
 /* INS block structure */
  
 struct Ins_blk   {
-  short second;        			/* sample second */
-  short t250;         			/* 250th of a second */
-  long lat;           			/* latitude */
-  long vx1;           			/* x velocity #1 */
-  long vy1;           			/* y velocity #1 */
-  long alpha1;        			/* wander angle #1 */
-  long truehd1;       			/* true heading #1 */
-  long vx2;           			/* x velocity #2 */
-  long vy2;           			/* y velocity #2 */
-  long windang;       			/* wind angle, not valid */
-  long vx3;           			/* x velocity #3 */
-  long vy3;           			/* y velocity #3 */
-  long alpha2;        			/* wander angle #2 */
-  long truehd2;       			/* true heading #2 */
-  long vx4;           			/* x velocity #4 */
-  long vy4;           			/* y velocity #4 */
-  long track;         			/* track angle */
-  long vx5;           			/* x velocity #5 */
-  long vy5;           			/* y velocity #5 */
-  long alpha3;        			/* wander angle #3 */
-  long truehd3;       			/* true heading #3 */
-  long vx6;           			/* x velocity #6 */
-  long vy6;           			/* y velocity #6 */
-  long gndspd;        			/* ground speed */
-  long vx7;           			/* x velocity #7 */
-  long vy7;           			/* y velocity #7 */
-  long alpha4;        			/* wander angle #4 */
-  long truehd4;       			/* true heading #4 */
-  long vx8;           			/* x velocity #8 */
-  long vy8;           			/* y velocity #8 */
-  long lon;           			/* longitude */
-  long vx9;           			/* x velocity #9 */
-  long vy9;           			/* y velocity #9 */
-  long alpha5;        			/* wander angle #5 */
-  long truehd5;       			/* true heading #5 */
-  long vx10;          			/* x velocity #10 */
-  long vy10;          			/* y velocity #10 */
+  int16_t second;        			/* sample second */
+  int16_t t250;         			/* 250th of a second */
+  int32_t lat;           			/* latitude */
+  int32_t vx1;           			/* x velocity #1 */
+  int32_t vy1;           			/* y velocity #1 */
+  int32_t alpha1;        			/* wander angle #1 */
+  int32_t truehd1;       			/* true heading #1 */
+  int32_t vx2;           			/* x velocity #2 */
+  int32_t vy2;           			/* y velocity #2 */
+  int32_t windang;       			/* wind angle, not valid */
+  int32_t vx3;           			/* x velocity #3 */
+  int32_t vy3;           			/* y velocity #3 */
+  int32_t alpha2;        			/* wander angle #2 */
+  int32_t truehd2;       			/* true heading #2 */
+  int32_t vx4;           			/* x velocity #4 */
+  int32_t vy4;           			/* y velocity #4 */
+  int32_t track;         			/* track angle */
+  int32_t vx5;           			/* x velocity #5 */
+  int32_t vy5;           			/* y velocity #5 */
+  int32_t alpha3;        			/* wander angle #3 */
+  int32_t truehd3;       			/* true heading #3 */
+  int32_t vx6;           			/* x velocity #6 */
+  int32_t vy6;           			/* y velocity #6 */
+  int32_t gndspd;        			/* ground speed */
+  int32_t vx7;           			/* x velocity #7 */
+  int32_t vy7;           			/* y velocity #7 */
+  int32_t alpha4;        			/* wander angle #4 */
+  int32_t truehd4;       			/* true heading #4 */
+  int32_t vx8;           			/* x velocity #8 */
+  int32_t vy8;           			/* y velocity #8 */
+  int32_t lon;           			/* longitude */
+  int32_t vx9;           			/* x velocity #9 */
+  int32_t vy9;           			/* y velocity #9 */
+  int32_t alpha5;        			/* wander angle #5 */
+  int32_t truehd5;       			/* true heading #5 */
+  int32_t vx10;          			/* x velocity #10 */
+  int32_t vy10;          			/* y velocity #10 */
 };
 typedef struct Ins_blk Ins_blk;
 
@@ -862,54 +864,54 @@ typedef struct Ins_blk Ins_blk;
 struct Irs_blk{
  
 /* The 50 Hertz parameters */
-  long integ_vert_accel[RATE_50];   	/* Label 265 */
-  long pitch_angle[RATE_50];        	/* Label 324 */
-  long roll_angle[RATE_50];         	/* Label 325 */
-  long pitch_rate[RATE_50];         	/* Label 326 */
-  long roll_rate[RATE_50];          	/* Label 327 */
-  long yaw_rate[RATE_50];           	/* Label 330 */
-  long long_accel[RATE_50];         	/* Label 331 */
-  long lat_accel[RATE_50];          	/* Label 332 */
-  long normal_accel[RATE_50];       	/* Label 333 */
-  long pitch_att_rate[RATE_50];     	/* Label 336 */
-  long roll_att_rate[RATE_50];      	/* Label 337 */
-  long pot_vert_speed[RATE_50];     	/* Label 360 */
-  long vertical_accel[RATE_50];     	/* Label 364 */
+  int32_t integ_vert_accel[RATE_50];   	/* Label 265 */
+  int32_t pitch_angle[RATE_50];        	/* Label 324 */
+  int32_t roll_angle[RATE_50];         	/* Label 325 */
+  int32_t pitch_rate[RATE_50];         	/* Label 326 */
+  int32_t roll_rate[RATE_50];          	/* Label 327 */
+  int32_t yaw_rate[RATE_50];           	/* Label 330 */
+  int32_t long_accel[RATE_50];         	/* Label 331 */
+  int32_t lat_accel[RATE_50];          	/* Label 332 */
+  int32_t normal_accel[RATE_50];       	/* Label 333 */
+  int32_t pitch_att_rate[RATE_50];     	/* Label 336 */
+  int32_t roll_att_rate[RATE_50];      	/* Label 337 */
+  int32_t pot_vert_speed[RATE_50];     	/* Label 360 */
+  int32_t vertical_accel[RATE_50];     	/* Label 364 */
 
 /* The 25 Hertz parameters */
-  long true_heading[RATE_25];       	/* Label 314 */
-  long inertial_alt[RATE_25];       	/* Label 361 */
-  long inrt_vert_speed[RATE_25];    	/* Label 365 */
+  int32_t true_heading[RATE_25];       	/* Label 314 */
+  int32_t inertial_alt[RATE_25];       	/* Label 361 */
+  int32_t inrt_vert_speed[RATE_25];    	/* Label 365 */
 
 /* The 10 Hertz parameters */
-  long ground_speed[RATE_10];       	/* Label 312 */
-  long wind_speed[RATE_10];         	/* Label 315 */
-  long wind_dir_true[RATE_10];      	/* Label 316 */
-  long platform_hdg[RATE_10];       	/* Label 334 */
-  long velocity_ns[RATE_10];        	/* Label 366 */
-  long velocity_ew[RATE_10];        	/* Label 367 */
+  int32_t ground_speed[RATE_10];       	/* Label 312 */
+  int32_t wind_speed[RATE_10];         	/* Label 315 */
+  int32_t wind_dir_true[RATE_10];      	/* Label 316 */
+  int32_t platform_hdg[RATE_10];       	/* Label 334 */
+  int32_t velocity_ns[RATE_10];        	/* Label 366 */
+  int32_t velocity_ew[RATE_10];        	/* Label 367 */
  
 /* The 5 Hertz parameters */
-  long present_lat[RATE_5];         	/* Label 310 */
-  long present_lon[RATE_5];         	/* Label 311 */
-  long norm_accel[RATE_5]; 	  	/* Label 370 */
+  int32_t present_lat[RATE_5];         	/* Label 310 */
+  int32_t present_lon[RATE_5];         	/* Label 311 */
+  int32_t norm_accel[RATE_5]; 	  	/* Label 370 */
  
 /* The 2 Hertz parameters */
-  long irs_discretes[RATE_2];       	/* Label 270 */
-  long irs_maint_discretes[RATE_2]; 	/* Label 350 */
-  long time_to_nav_ready[RATE_2];   	/* Label 351 */
-  long equipment_id[RATE_2];        	/* Label 371 */
+  int32_t irs_discretes[RATE_2];       	/* Label 270 */
+  int32_t irs_maint_discretes[RATE_2]; 	/* Label 350 */
+  int32_t time_to_nav_ready[RATE_2];   	/* Label 351 */
+  int32_t equipment_id[RATE_2];        	/* Label 371 */
  
 /* The time lags to parameters (ms ADS time when first sample was received) */
-  long lag_50hz_frame;  		/* Time first 50 hz frame was rx */
-  long lag_25hz_frame; 			/* Time first 25 hz frame was rx */
-  long lag_10hz_frame; 			/* Time first 10 hz frame was rx */
-  long lag_5hz_frame;  			/* Time first 5 hz frame was rx */
+  int32_t lag_50hz_frame;  		/* Time first 50 hz frame was rx */
+  int32_t lag_25hz_frame; 			/* Time first 25 hz frame was rx */
+  int32_t lag_10hz_frame; 			/* Time first 10 hz frame was rx */
+  int32_t lag_5hz_frame;  			/* Time first 5 hz frame was rx */
 
 /* Additional variables should go at the bottom for backwards compatibilty. */
-  long track_ang_rate[RATE_50];		/* Label 335 */
-  long track_angle_true[RATE_25];	/* Label 313 */
-  long drift_angle[RATE_25];		/* Label 321 */
+  int32_t track_ang_rate[RATE_50];		/* Label 335 */
+  int32_t track_angle_true[RATE_25];	/* Label 313 */
+  int32_t drift_angle[RATE_25];		/* Label 321 */
 }; 
 typedef struct Irs_blk Irs_blk;
 
@@ -917,21 +919,21 @@ struct Cmigits3_blk{
 
 /* 10 Hz parameters */
 
-  long Clatitude[RATE_10];
-  long Clongitude[RATE_10];
-  long Caltitude[RATE_10];
-  long Cvelocity_north[RATE_10];
-  long Cvelocity_east[RATE_10];
-  long Cvelocity_up[RATE_10];
-  long Cpitch[RATE_10];
-  long Croll[RATE_10];
-  long Ctrue_heading[RATE_10];
+  int32_t Clatitude[RATE_10];
+  int32_t Clongitude[RATE_10];
+  int32_t Caltitude[RATE_10];
+  int32_t Cvelocity_north[RATE_10];
+  int32_t Cvelocity_east[RATE_10];
+  int32_t Cvelocity_up[RATE_10];
+  int32_t Cpitch[RATE_10];
+  int32_t Croll[RATE_10];
+  int32_t Ctrue_heading[RATE_10];
 
 /* 1 Hz parameters */
 
-  long Caccel_east;
-  long Caccel_north;
-  long Caccel_up;
+  int32_t Caccel_east;
+  int32_t Caccel_north;
+  int32_t Caccel_up;
 };
 typedef struct Cmigits3_blk Cmigits3_blk;
 
@@ -1025,8 +1027,8 @@ typedef struct LhTdl_blk LhTdl_blk;
 /* NOAA block structure */
 
 struct Noaa_blk {
-  short day;				/* day (0-366) */
-  short time;				/* time (sec from midnight) */
+  int16_t day;				/* day (0-366) */
+  int16_t time;				/* time (sec from midnight) */
   float press;				/* pressure */
   float lah2o;				/* Lyman Alpha H2O */
   float fph0;				/* Frost Point 0 */
@@ -1057,8 +1059,8 @@ typedef struct Mass_blk Mass_blk;
 
 /* NOAA Ozone block structure */
 struct Ozone_blk {
-  short day;				/* day (0-366) */
-  short time;				/* time (sec from midnight) */
+  int16_t day;				/* day (0-366) */
+  int16_t time;				/* time (sec from midnight) */
   float press;				/* pressure */
   float ozone;				/* ozone */
 };
@@ -1074,14 +1076,14 @@ typedef struct Dpres_blk Dpres_blk;
 /* NONOY block structure */
 struct Nonoy_blk {
   float analog[10];			/* analog data */
-  short pio;				/* vlave state */
-  short c0;				/* counter c0 */
-  short c1;				/* counter c1 */
-  short c2;				/* counter c2 */
-  short c3;				/* counter c3 */
-  short hour;				/* hours */
-  short minute;				/* minutes */
-  short second;				/* seconds */
+  int16_t pio;				/* vlave state */
+  int16_t c0;				/* counter c0 */
+  int16_t c1;				/* counter c1 */
+  int16_t c2;				/* counter c2 */
+  int16_t c3;				/* counter c3 */
+  int16_t hour;				/* hours */
+  int16_t minute;			/* minutes */
+  int16_t second;			/* seconds */
   char label;				/* block label */
   char state;				/* instrument state */
   char other;				/* other info. string */
@@ -1091,18 +1093,18 @@ typedef struct Nonoy_blk Nonoy_blk;
 /* Loran-C block structure */
  
 struct Lrn_blk   {
-  short stat;                   	/* status */
-  short second;                    	/* second of record */
-  short msec;                   	/* milliseconds of record */
+  int16_t stat;                   	/* status */
+  int16_t second;                    	/* second of record */
+  int16_t msec;                   	/* milliseconds of record */
   char rec1[LRN_REC];           	/* ascii "01" */
-  short data1[LRN_DATA];        	/* 1st record of data */
+  int16_t data1[LRN_DATA];        	/* 1st record of data */
   char rec2[LRN_REC];           	/* ascii "02" */
-  short data2[LRN_DATA];        	/* 2nd record of data */
+  int16_t data2[LRN_DATA];        	/* 2nd record of data */
   char rec3[LRN_REC];           	/* ascii "03" */
-  short data3[LRN_DATA];        	/* 3rd record of data */
+  int16_t data3[LRN_DATA];        	/* 3rd record of data */
   char rec4[LRN_REC];           	/* ascii "04" */
-  short data4[LRN_DATA];        	/* 4th record of data */
-  short spare;                  	/* long boundary */
+  int16_t data4[LRN_DATA];        	/* 4th record of data */
+  int16_t spare;                  	/* long boundary */
 };
 typedef struct Lrn_blk Lrn_blk;
 
@@ -1116,18 +1118,18 @@ typedef struct Lrn_blk Lrn_blk;
 */
  
 struct Oph3_blk {
-  short gain;                           /* electronic gain, 1, 2, or 3 */
-  str2 bb_pos;                          /* blackbody code, see above*/
-  unsigned short det_bias;              /* detector dc bias */
-  unsigned short snout_tmp;             /* optical snout temperature */
-  unsigned short bench_tmp;             /* optical bench temperature */
-  unsigned short det_tmp;               /* HgCdTe detector temperature */
-  unsigned short cool_tmp;              /* cooled blackbody temperature */
-  unsigned short float_tmp;             /* floating blackbody temperature */
-  unsigned short motor_spd;             /* motor speed */
-  unsigned short det_sig;               /* detector signal */
-  unsigned short box_tmp;               /* electronics box temperature */
-  unsigned short spare;			/* long word boundary */
+  int16_t gain;			/* electronic gain, 1, 2, or 3 */
+  str2 bb_pos;			/* blackbody code, see above*/
+  uint16_t det_bias;		/* detector dc bias */
+  uint16_t snout_tmp;		/* optical snout temperature */
+  uint16_t bench_tmp;		/* optical bench temperature */
+  uint16_t det_tmp;		/* HgCdTe detector temperature */
+  uint16_t cool_tmp;		/* cooled blackbody temperature */
+  uint16_t float_tmp;		/* floating blackbody temperature */
+  uint16_t motor_spd;		/* motor speed */
+  uint16_t det_sig;		/* detector signal */
+  uint16_t box_tmp;		/* electronics box temperature */
+  uint16_t spare;		/* long word boundary */
 };
 typedef struct Oph3_blk Oph3_blk;
 
@@ -1136,31 +1138,31 @@ typedef struct Oph3_blk Oph3_blk;
 /* PMS 1D 16 bin probe block structure */
  
 struct P16_blk {
-  short rng_flg;      			/* range or flag word */
-  short aux[P1D_AUX]; 			/* aux channel data */
-  unsigned short bins[P1D_16]; 			/* data bins */
-  short spare;        			/* long boundary */
+  int16_t rng_flg;      			/* range or flag word */
+  int16_t aux[P1D_AUX]; 			/* aux channel data */
+  uint16_t bins[P1D_16]; 			/* data bins */
+  int16_t spare;        			/* long boundary */
 };
 typedef struct P16_blk P16_blk;
 
 /* PMS 1D 260X probe block structure */
  
 struct P260_blk {
-  short flag;         			/* flag word */
-  short aux[P1D_AUX]; 			/* aux channel data */
-  unsigned short bins[P1D_260]; 			/* data bins */
-  short spare1;
-  short spare2;
+  int16_t flag;         			/* flag word */
+  int16_t aux[P1D_AUX]; 			/* aux channel data */
+  uint16_t bins[P1D_260]; 			/* data bins */
+  int16_t spare1;
+  int16_t spare2;
 };
 typedef struct P260_blk P260_blk;
  
 /* PMS 1D F300 probe block structure */
  
 struct P300_blk {
-  short flag;      			/* flag word */
-  short aux[P1D_AUX]; 			/* aux channel data */
-  unsigned short bins[P1D_300]; 			/* data bins */
-  short spare1;
+  int16_t flag;      			/* flag word */
+  int16_t aux[P1D_AUX]; 			/* aux channel data */
+  uint16_t bins[P1D_300]; 			/* data bins */
+  int16_t spare1;
 };
 typedef struct P300_blk P300_blk;
 
@@ -1171,35 +1173,35 @@ typedef struct P300_blk P300_blk;
 /* Vme bus interface pms 1d 16 bin probe block structure */
 
 struct P16v2_blk {
-  short rng_flg;                        /* range or flag word */
-  short dummy;
-  short aux[P1DV2_AUX];                 /* aux channel data */
-  unsigned short bins[BINS_16];                  /* data bins */
+  int16_t rng_flg;                        /* range or flag word */
+  int16_t dummy;
+  int16_t aux[P1DV2_AUX];                 /* aux channel data */
+  uint16_t bins[BINS_16];                  /* data bins */
 };
 typedef struct P16v2_blk P16v2_blk;
 
 /* Vme bus interface pms 1d 32 bin probe block structure */
 
 struct P32v2_blk {
-  short rng_flg;                        /* range or flag word */
-  short dummy;
-  short aux[P1DV2_AUX];                 /* aux channel data */
-  unsigned short bins[BINS_32];                  /* data bins */
+  int16_t rng_flg;                        /* range or flag word */
+  int16_t dummy;
+  int16_t aux[P1DV2_AUX];                 /* aux channel data */
+  uint16_t bins[BINS_32];                  /* data bins */
 };
 typedef struct P32v2_blk P32v2_blk;
 
 /* Serial port interface SPP-100 40 bin probe block structure */
 
 struct DMT100_blk {
-  unsigned short cabinChan[8];
-  unsigned long rejDOF;
-  unsigned long rejAvgTrans;
-  unsigned short range;
-  unsigned short AvgTransit;
-  unsigned short FIFOfull;
-  unsigned short resetFlag;
-  unsigned long ADCoverflow;
-  unsigned long OPCchan[OPCCHAN];	/* 40 channels max */
+  uint16_t cabinChan[8];
+  uint32_t rejDOF;
+  uint32_t rejAvgTrans;
+  uint16_t range;
+  uint16_t AvgTransit;
+  uint16_t FIFOfull;
+  uint16_t resetFlag;
+  uint32_t ADCoverflow;
+  uint32_t OPCchan[OPCCHAN];	/* 40 channels max */
 };
 typedef struct DMT100_blk DMT100_blk;
 
@@ -1211,17 +1213,17 @@ typedef struct Spp100_blk Spp100_blk;
 /* Serial port interface SPP-200 PCASP probe block structure */
 
 struct DMT200_blk {
-  unsigned short cabinChan[8];
-  unsigned short range;
-  unsigned short fill;
-  unsigned short AvgTransit;
-  unsigned short FIFOfull;
-  unsigned short resetFlag;
-  unsigned short SyncErrA;
-  unsigned short SyncErrB;
-  unsigned short SyncErrC;
-  unsigned long ADCoverflow;
-  unsigned long OPCchan[OPCCHAN];       /* 40 channels max */
+  uint16_t cabinChan[8];
+  uint16_t range;
+  uint16_t fill;
+  uint16_t AvgTransit;
+  uint16_t FIFOfull;
+  uint16_t resetFlag;
+  uint16_t SyncErrA;
+  uint16_t SyncErrB;
+  uint16_t SyncErrC;
+  uint32_t ADCoverflow;
+  uint32_t OPCchan[OPCCHAN];       /* 40 channels max */
 };
 typedef struct DMT200_blk DMT200_blk;
 
@@ -1233,16 +1235,16 @@ typedef struct Spp200_blk Spp200_blk;
 /* Serial port interface SPP-300 30 bin probe block structure */
 
 struct DMT300_blk {
-  unsigned short cabinChan[8];
-  unsigned long rejDOF;
-  unsigned short range;
-  unsigned short AvgTransit;
-  unsigned short FIFOfull;
-  unsigned short resetFlag;
-  unsigned short SyncErrA;
-  unsigned short SyncErrB;
-  unsigned long ADCoverflow;
-  unsigned long OPCchan[OPCCHAN];       /* 40 channels max */
+  uint16_t cabinChan[8];
+  uint32_t rejDOF;
+  uint16_t range;
+  uint16_t AvgTransit;
+  uint16_t FIFOfull;
+  uint16_t resetFlag;
+  uint16_t SyncErrA;
+  uint16_t SyncErrB;
+  uint32_t ADCoverflow;
+  uint32_t OPCchan[OPCCHAN];       /* 40 channels max */
 };
 typedef struct DMT300_blk DMT300_blk;
 
@@ -1254,17 +1256,17 @@ typedef struct Spp300_blk Spp300_blk;
 /* Vme bus interface pms 1d 64 bin probe block structure */
 
 struct P64v2_blk {
-  short rng_flg;       			/* range or flag word */
-  short dummy;
-  short aux[P1DV2_AUX];                 /* aux channel data */
-  unsigned short bins[BINS_64];                  /* data bins */
+  int16_t rng_flg;       			/* range or flag word */
+  int16_t dummy;
+  int16_t aux[P1DV2_AUX];                 /* aux channel data */
+  uint16_t bins[BINS_64];                  /* data bins */
 };
 typedef struct P64v2_blk P64v2_blk;
 
 /* Vme bus interface pms 1d particle spacing block structure. */
 
 struct P1dSpc_blk {
-  short bins[BINS_64];
+  int16_t bins[BINS_64];
 };
 typedef struct P1dSpc_blk P1dSpc_blk;
 
@@ -1276,8 +1278,8 @@ typedef struct P1dSpc_blk P1dSpc_blk;
 
 union Ser_blk_ptr {
   char  *char_ptr;
-  short *short_ptr;
-  long  *long_ptr;
+  int16_t *short_ptr;
+  int32_t *long_ptr;
   float *float_ptr;
 };
 typedef union Ser_blk_ptr Ser_blk_ptr;
@@ -1290,14 +1292,14 @@ typedef union Ser_blk_ptr Ser_blk_ptr;
 /* First define a sample structure. */
 
 struct Uv_smp {
-  short hydr_smp;                       /* hydrogen sample */
-  short hydr_ref;                       /* hydrogen reference */
-  short kryp_smp;                       /* krypton sample */
-  short kryp_ref;                       /* krypton reference */
-  short chop_smp;                       /* chopper sample */
-  short chop_ref;                       /* chopper reference */
-  short temp;                           /* sample volume temperature */
-  short pressure;                       /* sample volume pressure */
+  int16_t hydr_smp;                       /* hydrogen sample */
+  int16_t hydr_ref;                       /* hydrogen reference */
+  int16_t kryp_smp;                       /* krypton sample */
+  int16_t kryp_ref;                       /* krypton reference */
+  int16_t chop_smp;                       /* chopper sample */
+  int16_t chop_ref;                       /* chopper reference */
+  int16_t temp;                           /* sample volume temperature */
+  int16_t pressure;                       /* sample volume pressure */
   float humidity;                       /* calculated humidity */
 };
 typedef struct Uv_smp Uv_smp;
@@ -1315,12 +1317,12 @@ typedef struct Uv_blk Uv_blk;
 */
 
 struct Ppsgps_blk {
-  short flags;			/* flags */
-  short hdr_cksum;		/* header checksum */
+  int16_t flags;			/* flags */
+  int16_t hdr_cksum;		/* header checksum */
   float gps_time;		/* GSP time of data */
   float utc_time;		/* UTC time of data */
-  short  resv;			/* reserved */
-  short time_count;		/* time mark count */
+  int16_t  resv;			/* reserved */
+  int16_t time_count;		/* time mark count */
   float lat;			/* latitude */
   float lon;			/* longitude */
   float posx;			/* position X */
@@ -1338,24 +1340,24 @@ struct Ppsgps_blk {
   float roll;			/* roll */
   float heading;			/* true heading */
   float mag_var;			/* magnetic variation */
-  short  ch1_stat1;		/* channel 1 status 1 */
-  short  ch1_stat2;		/* channel 1 status 2 */
-  short  ch2_stat1;		/* channel 2 status 1 */
-  short  ch2_stat2;		/* channel 2 status 2 */
-  short  ch3_stat1;		/* channel 3 status 1 */
-  short  ch3_stat2;		/* channel 3 status 2 */
-  short  ch4_stat1;		/* channel 4 status 1 */
-  short  ch4_stat2;		/* channel 4 status 2 */
-  short  ch5_stat1;		/* channel 5 status 1 */
-  short  ch5_stat2;		/* channel 5 status 2 */
-  short  fom;			/* FOM word */
-  short  err_horiz;		/* expected horizontal error */
-  short  err_vert;		/* expected vertical error */
-  short  data_valid;		/* Aiding data valid word */
-  short  data_used;		/* Aiding data used word */
-  short  time_fom;		/* Time FOM */
-  short  day_of_year;		/* Day of year */
-  short  checksum;		/* Checksum */
+  int16_t  ch1_stat1;		/* channel 1 status 1 */
+  int16_t  ch1_stat2;		/* channel 1 status 2 */
+  int16_t  ch2_stat1;		/* channel 2 status 1 */
+  int16_t  ch2_stat2;		/* channel 2 status 2 */
+  int16_t  ch3_stat1;		/* channel 3 status 1 */
+  int16_t  ch3_stat2;		/* channel 3 status 2 */
+  int16_t  ch4_stat1;		/* channel 4 status 1 */
+  int16_t  ch4_stat2;		/* channel 4 status 2 */
+  int16_t  ch5_stat1;		/* channel 5 status 1 */
+  int16_t  ch5_stat2;		/* channel 5 status 2 */
+  int16_t  fom;			/* FOM word */
+  int16_t  err_horiz;		/* expected horizontal error */
+  int16_t  err_vert;		/* expected vertical error */
+  int16_t  data_valid;		/* Aiding data valid word */
+  int16_t  data_used;		/* Aiding data used word */
+  int16_t  time_fom;		/* Time FOM */
+  int16_t  day_of_year;		/* Day of year */
+  int16_t  checksum;		/* Checksum */
 };
   typedef struct Ppsgps_blk Ppsgps_blk; 
 /*****************************************************************************/
@@ -1366,10 +1368,10 @@ struct Ppsgps_blk {
  
 struct Mcr_rec {
   str8  id;				/* Mcr channel no. */
-  short hour;
-  short minute;
-  short second;
-  short data[MCR_CHAN_DATA];            /* high_rate buffer */
+  int16_t hour;
+  int16_t minute;
+  int16_t second;
+  int16_t data[MCR_CHAN_DATA];            /* high_rate buffer */
 };
 typedef struct Mcr_rec Mcr_rec;
  
@@ -1381,31 +1383,31 @@ typedef struct Mcr_rec Mcr_rec;
 /* PMS 2d logical and physical records structures */
  
 struct P2d_rec {
-  short id;                     	/* 'P1','C1','P2','C2', H1, H2 */
-  short hour;
-  short minute;
-  short second;
-  short spare1;
-  short spare2;
-  short spare3;
-  short tas;                    	/* true air speed */
-  short msec;                   	/* msec of this record */
-  short overld;                 	/* overload time, msec */
+  int16_t id;                     	/* 'P1','C1','P2','C2', H1, H2 */
+  int16_t hour;
+  int16_t minute;
+  int16_t second;
+  int16_t spare1;
+  int16_t spare2;
+  int16_t spare3;
+  int16_t tas;                    	/* true air speed */
+  int16_t msec;                   	/* msec of this record */
+  int16_t overld;                 	/* overload time, msec */
   unsigned char data[P2D_DATA]; 	/* image buffer */
 };
 typedef struct P2d_rec P2d_rec;
 
 struct P2d_hdr {
-  short id;                     	/* 'P1','C1','P2','C2', H1, H2 */
-  short hour;
-  short minute;
-  short second;
-  short spare1;
-  short spare2;
-  short spare3;
-  short tas;                    	/* true air speed */
-  short msec;                   	/* msec of this record */
-  short overld;                 	/* overload time, msec */
+  int16_t id;                     	/* 'P1','C1','P2','C2', H1, H2 */
+  int16_t hour;
+  int16_t minute;
+  int16_t second;
+  int16_t spare1;
+  int16_t spare2;
+  int16_t spare3;
+  int16_t tas;                    	/* true air speed */
+  int16_t msec;                   	/* msec of this record */
+  int16_t overld;                 	/* overload time, msec */
 };
 typedef struct P2d_hdr P2d_hdr;
 
@@ -1415,7 +1417,7 @@ struct P2d_data {
 typedef struct P2d_data P2d_data;
 
 struct P2d_house {
-  short hdata[P2D_HOUSE];
+  int16_t hdata[P2D_HOUSE];
 };
 typedef struct P2d_house P2d_house;
 
@@ -1438,24 +1440,24 @@ typedef struct P2d_Phys P2d_Phys;
 
 struct GreyParticle {
   str4 id;                              /* probe id 'G1', 'G2' */
-  short hour;                           /* particle time stamp, hour */
-  short minute;                         /* time stamp, minute */
-  short second;                         /* time stamp, second */
-  short msec;                           /* time stamp, millisecond */
-  long ena_sec;                         /* probe enabled second count */
-  long ena_usec;                        /* probe enable usec count */
-  long acq_sec;                         /* particle acquired second count */
-  long acq_usec;                        /* particle acquired usec count */
-  short tas;                            /* true air speed, m/sec */
-  short width;                          /* particle max width in pixels */
-  short length;                         /* particle max length in pixels */
-  short probe_ctl;                      /* probe control word */
-  short ovld_cnt;                       /* # particles while in overload */
-  short slice_cnt;                      /* # slices in the image data */
-  short chg_len;                        /* # 16-bit charge samples */
-  short spare1;
-  short spare2;
-  short spare3;
+  int16_t hour;                           /* particle time stamp, hour */
+  int16_t minute;                         /* time stamp, minute */
+  int16_t second;                         /* time stamp, second */
+  int16_t msec;                           /* time stamp, millisecond */
+  int32_t ena_sec;                         /* probe enabled second count */
+  int32_t ena_usec;                        /* probe enable usec count */
+  int32_t acq_sec;                         /* particle acquired second count */
+  int32_t acq_usec;                        /* particle acquired usec count */
+  int16_t tas;                            /* true air speed, m/sec */
+  int16_t width;                          /* particle max width in pixels */
+  int16_t length;                         /* particle max length in pixels */
+  int16_t probe_ctl;                      /* probe control word */
+  int16_t ovld_cnt;                       /* # particles while in overload */
+  int16_t slice_cnt;                      /* # slices in the image data */
+  int16_t chg_len;                        /* # 16-bit charge samples */
+  int16_t spare1;
+  int16_t spare2;
+  int16_t spare3;
 };
 typedef struct GreyParticle GreyParticle;
 
@@ -1463,20 +1465,20 @@ typedef struct GreyParticle GreyParticle;
      ok.
 struct GreyParticle {
   str4 id;
-  short hour;
-  short minute;
-  short second;
-  short msec;
-  short tas;
-  short min_cnt;
-  short mid_cnt;
-  short max_cnt;
-  short width;
-  short length;
-  short probe_ctl;
-  short slice_cnt;
-  short ovld_cnt;
-  short first_pix;
+  int16_t hour;
+  int16_t minute;
+  int16_t second;
+  int16_t msec;
+  int16_t tas;
+  int16_t min_cnt;
+  int16_t mid_cnt;
+  int16_t max_cnt;
+  int16_t width;
+  int16_t length;
+  int16_t probe_ctl;
+  int16_t slice_cnt;
+  int16_t ovld_cnt;
+  int16_t first_pix;
 };
 ***/
 
@@ -1488,7 +1490,7 @@ struct GreySlice {
 typedef struct GreySlice GreySlice;
 
 struct Grey_house {
-  short hdata[GREY_HOUSE];
+  int16_t hdata[GREY_HOUSE];
 };
 typedef struct Grey_house Grey_house;
 
@@ -1501,16 +1503,16 @@ typedef struct Grey_house Grey_house;
 /* LTN-51 INS NATS block structure */
 
 struct Ins_blk_nats {
-  short second;       			/* sample second */
-  short t250;         			/* 250th of a second */
-  long lat;           			/* latitude */
-  long lon;           			/* longitude */
-  long vx1;           			/* x velocity #1 */
-  long vy1;           			/* y velocity #1 */
-  long alpha1;        			/* wander angle #1 */
-  long truehd1;       			/* true heading #1 */
-  long track;         			/* track angle */
-  long gndspd;        			/* ground speed */
+  int16_t second;       			/* sample second */
+  int16_t t250;         			/* 250th of a second */
+  int32_t lat;           			/* latitude */
+  int32_t lon;           			/* longitude */
+  int32_t vx1;           			/* x velocity #1 */
+  int32_t vy1;           			/* y velocity #1 */
+  int32_t alpha1;        			/* wander angle #1 */
+  int32_t truehd1;       			/* true heading #1 */
+  int32_t track;         			/* track angle */
+  int32_t gndspd;        			/* ground speed */
 };
  
 /* Honeywell IRS NATS block structure */
@@ -1518,49 +1520,49 @@ struct Ins_blk_nats {
 struct Irs_blk_nats{
 
 /* The 50 Hertz parameters */
-  long integ_vert_accel;   		/* Label 265 */
-  long pitch_angle;        		/* Label 324 */
-  long roll_angle;         		/* Label 325 */
-  long pitch_rate;         		/* Label 326 */
-  long roll_rate;          		/* Label 327 */
-  long yaw_rate;           		/* Label 330 */
-  long long_accel;         		/* Label 331 */
-  long lat_accel;          		/* Label 332 */
-  long normal_accel;       		/* Label 333 */
-  long pitch_att_rate;     		/* Label 336 */
-  long roll_att_rate;      		/* Label 337 */
-  long pot_vert_speed;     		/* Label 360 */
-  long vertical_accel;     		/* Label 364 */
+  int32_t integ_vert_accel;   		/* Label 265 */
+  int32_t pitch_angle;        		/* Label 324 */
+  int32_t roll_angle;         		/* Label 325 */
+  int32_t pitch_rate;         		/* Label 326 */
+  int32_t roll_rate;          		/* Label 327 */
+  int32_t yaw_rate;           		/* Label 330 */
+  int32_t long_accel;         		/* Label 331 */
+  int32_t lat_accel;          		/* Label 332 */
+  int32_t normal_accel;       		/* Label 333 */
+  int32_t pitch_att_rate;     		/* Label 336 */
+  int32_t roll_att_rate;      		/* Label 337 */
+  int32_t pot_vert_speed;     		/* Label 360 */
+  int32_t vertical_accel;     		/* Label 364 */
  
 /* The 25 Hertz parameters */
-  long true_heading;       		/* Label 314 */
-  long inertial_alt;       		/* Label 361 */
-  long inrt_vert_speed;    		/* Label 365 */
+  int32_t true_heading;       		/* Label 314 */
+  int32_t inertial_alt;       		/* Label 361 */
+  int32_t inrt_vert_speed;    		/* Label 365 */
 
 /* The 10 Hertz parameters */                                     
-  long ground_speed;       		/* Label 312 */
-  long wind_speed;         		/* Label 315 */
-  long wind_dir_true;      		/* Label 316 */
-  long platform_hdg;       		/* Label 334 */
-  long velocity_ns;        		/* Label 366 */
-  long velocity_ew;        		/* Label 367 */
+  int32_t ground_speed;       		/* Label 312 */
+  int32_t wind_speed;         		/* Label 315 */
+  int32_t wind_dir_true;      		/* Label 316 */
+  int32_t platform_hdg;       		/* Label 334 */
+  int32_t velocity_ns;        		/* Label 366 */
+  int32_t velocity_ew;        		/* Label 367 */
  
 /* The 5 Hertz parameters */
-  long present_lat;         		/* Label 310 */
-  long present_lon;         		/* Label 311 */
-  long norm_accel;          		/* Label 370 */
+  int32_t present_lat;         		/* Label 310 */
+  int32_t present_lon;         		/* Label 311 */
+  int32_t norm_accel;          		/* Label 370 */
  
 /* The 2 Hertz parameters */                                      
-  long irs_discretes;       		/* Label 270 */
-  long irs_maint_discretes; 		/* Label 350 */
-  long time_to_nav_ready;   		/* Label 351 */
-  long equipment_id;        		/* Label 371 */
+  int32_t irs_discretes;       		/* Label 270 */
+  int32_t irs_maint_discretes; 		/* Label 350 */
+  int32_t time_to_nav_ready;   		/* Label 351 */
+  int32_t equipment_id;        		/* Label 371 */
  
 /* The time lags to parameters (ms ADS time when first sample was received) */
-  long lag_50hz_frame;    		/* Time first 50 hz frame was rx */
-  long lag_25hz_frame;    		/* Time first 25 hz frame was rx */
-  long lag_10hz_frame;    		/* Time first 10 hz frame was rx */
-  long lag_5hz_frame;     		/* Time first 5 hz frame was rx */
+  int32_t lag_50hz_frame;    		/* Time first 50 hz frame was rx */
+  int32_t lag_25hz_frame;    		/* Time first 25 hz frame was rx */
+  int32_t lag_10hz_frame;    		/* Time first 10 hz frame was rx */
+  int32_t lag_5hz_frame;     		/* Time first 5 hz frame was rx */
 }; 
  
 #endif

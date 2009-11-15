@@ -28,7 +28,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 int GetConversionFactor(const char vn[], float *result)
 {
   int	indx;
-  long	value;
+  int32_t	value;
   float	*p = (float *)&value;
 
   if ((indx = HAPI_lookupvar(vn, VALID_VARS)) == ERR)
@@ -42,7 +42,7 @@ int GetConversionFactor(const char vn[], float *result)
 }	/* END GETCONVERSIONFACTOR */
 
 /* -------------------------------------------------------------------- */
-int GetConversionOffset(const char vn[], long *result)
+int GetConversionOffset(const char vn[], int32_t *result)
 {
   int	indx;
 

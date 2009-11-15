@@ -27,7 +27,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetLRLength(const char vn[], long *result)
+int GetLRLength(const char vn[], int32_t *result)
 {
   int	indx;
 
@@ -55,7 +55,7 @@ int GetLRLength(const char vn[], long *result)
 }	/* END GETLRLENGTH */
 
 /* -------------------------------------------------------------------- */
-int GetLRPPR(const char vn[], long *result)
+int GetLRPPR(const char vn[], int32_t *result)
 {
   int	indx;
 
@@ -66,7 +66,7 @@ int GetLRPPR(const char vn[], long *result)
   switch (HAPI_var[indx].type)
     {
     case PMS2D:
-      *result = (long)ntohs(((Pms2 *)HAPI_var[indx].ptr)->lrppr);
+      *result = (int32_t)ntohs(((Pms2 *)HAPI_var[indx].ptr)->lrppr);
       break;
 
     case ASYNC:

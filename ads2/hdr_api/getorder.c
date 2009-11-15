@@ -24,7 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetOrder(const char vn[], long *result)
+int GetOrder(const char vn[], int32_t *result)
 {
   int	indx;
 

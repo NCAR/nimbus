@@ -36,7 +36,7 @@ extern bool		HAPI_HeaderInitialized;
 extern int		HAPI_name_ptr;
 extern float		HAPI_version;
 
-int	HAPI_lookupvar(const char vn[], const long valid_vars);
+int	HAPI_lookupvar(const char vn[], const int32_t valid_vars);
 
 #endif
 

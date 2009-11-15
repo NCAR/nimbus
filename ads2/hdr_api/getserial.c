@@ -32,7 +32,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetBaudRate(const char vn[], long *result)
+int GetBaudRate(const char vn[], int32_t *result)
 {
   int	indx;
 
@@ -46,7 +46,7 @@ int GetBaudRate(const char vn[], long *result)
 }	/* END GETBAUDRATE */
 
 /* -------------------------------------------------------------------- */
-int GetPortNumber(const char vn[], long *result)
+int GetPortNumber(const char vn[], int32_t *result)
 {
   int	indx;
 
@@ -60,7 +60,7 @@ int GetPortNumber(const char vn[], long *result)
 }	/* END GETPORTNUMBER */
 
 /* -------------------------------------------------------------------- */
-int GetParity(const char vn[], long *result)
+int GetParity(const char vn[], int32_t *result)
 {
   int	indx;
 
@@ -74,7 +74,7 @@ int GetParity(const char vn[], long *result)
 }	/* END GETPARITY */
 
 /* -------------------------------------------------------------------- */
-int GetFlowControl(const char vn[], long *result)
+int GetFlowControl(const char vn[], int32_t *result)
 {
   int	indx;
 
@@ -88,7 +88,7 @@ int GetFlowControl(const char vn[], long *result)
 }	/* END GETFLOWCONTROL */
 
 /* -------------------------------------------------------------------- */
-int GetNumberDataBits(const char vn[], long *result)
+int GetNumberDataBits(const char vn[], int32_t *result)
 {
   int	indx;
 
@@ -105,7 +105,7 @@ int GetNumberDataBits(const char vn[], long *result)
 int GetNumberStopBits(const char vn[], float *result)
 {
   int	indx;
-  long  value;
+  int32_t  value;
   float *p = (float *)&value;
 
   if ((indx = HAPI_lookupvar(vn, VALID_VARS)) == ERR)
@@ -119,7 +119,7 @@ int GetNumberStopBits(const char vn[], float *result)
 }	/* END GETNUMBERSTOPBITS */
 
 /* -------------------------------------------------------------------- */
-int GetDataType(const char vn[], long *result)
+int GetDataType(const char vn[], int32_t *result)
 {
   int	indx;
 

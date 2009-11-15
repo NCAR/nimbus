@@ -29,7 +29,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetRate(const char vn[], long *result)
+int GetRate(const char vn[], int32_t *result)
 {
   int	indx;
 

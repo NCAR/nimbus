@@ -24,7 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int HAPI_lookupvar(const char vn[], const long valid_vars)
+int HAPI_lookupvar(const char vn[], const int32_t valid_vars)
 {
   int	i;
 

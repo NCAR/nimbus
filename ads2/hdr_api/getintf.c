@@ -24,7 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetInterfaceNumber(const char vn[], long *result)
+int GetInterfaceNumber(const char vn[], int32_t *result)
 {
   int	indx;
 
@@ -41,7 +41,7 @@ int GetInterfaceNumber(const char vn[], long *result)
 }	/* END GETINTERFACENUMBER */
 
 /* -------------------------------------------------------------------- */
-int GetInterfaceChannel(const char vn[], long *result)
+int GetInterfaceChannel(const char vn[], int32_t *result)
 {
   int	indx;
 

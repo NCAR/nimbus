@@ -31,7 +31,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetPrimaryAddr(const char vn[], long *result)
+int GetPrimaryAddr(const char vn[], int32_t *result)
 {
   int	indx;
 
@@ -48,7 +48,7 @@ int GetPrimaryAddr(const char vn[], long *result)
 }	/* END GETADSADDRESS */
 
 /* -------------------------------------------------------------------- */
-int GetSecondaryAddr(const char vn[], long *result)
+int GetSecondaryAddr(const char vn[], int32_t *result)
 {
   int	indx;
 

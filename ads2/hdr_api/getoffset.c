@@ -24,7 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetSampleOffset(const char vn[], long *result)
+int GetSampleOffset(const char vn[], int32_t *result)
 {
   int	indx;
 

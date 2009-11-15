@@ -30,7 +30,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetChannelOffset(const char vn[], long *result)
+int GetChannelOffset(const char vn[], int32_t *result)
 {
   int	indx;
 
@@ -52,7 +52,7 @@ int GetChannelOffset(const char vn[], long *result)
 }	/* END GETCHANNELOFFSET */
 
 /* -------------------------------------------------------------------- */
-int GetChannelGain(const char vn[], long *result)
+int GetChannelGain(const char vn[], int32_t *result)
 {
   int	indx;
 

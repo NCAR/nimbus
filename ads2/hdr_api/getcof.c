@@ -27,7 +27,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 int GetCalCoeff(const char vn[], float **result)
 {
   int	i, j, indx;
-  long  value;
+  int32_t  value;
   float *p = (float *)&value;
   static float	sh_cofs[MX_COF];
   static float	cof1d[P1DV2_AUX][P1DV2_COF];

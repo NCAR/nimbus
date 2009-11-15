@@ -25,7 +25,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 
 
 /* -------------------------------------------------------------------- */
-int GetStart(const char vn[], long *result)
+int GetStart(const char vn[], int32_t *result)
 {
   int	indx;
 
@@ -39,7 +39,7 @@ int GetStart(const char vn[], long *result)
 }	/* END GETSTART */
 
 /* -------------------------------------------------------------------- */
-int GetLength(const char vn[], long *result)
+int GetLength(const char vn[], int32_t *result)
 {
   int	indx;
 
