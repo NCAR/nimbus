@@ -810,7 +810,7 @@ public class NCData {
 	private String getDates() {
 		String ret="";
 		String date = trimBegEndQuotes(""+fin.findGlobalAttribute("FlightDate"));
-		ret += date.split("/")[0]+ " " +date.split("/")[1] + " "+ date.split("/")[2];
+		ret += date.split("/")[2]+ " " +date.split("/")[0] + " "+ date.split("/")[1];
 		String dateProc[] = trimBegEndQuotes(""+fin.findGlobalAttribute("DateProcessed")).split(" ")[0].split("-");
 		ret += "      " + dateProc[0]+ " " + dateProc[1]+" "+dateProc[2];
 		return ret;
