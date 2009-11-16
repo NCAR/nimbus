@@ -48,6 +48,7 @@ int LowRateLoop(long starttime, long endtime)
   int	rc, Cntr = 0;
   char	*tmp, units[32], long_name[64];
   float	miss;
+  size_t len;
 
   if ((rc = FindFirstRecordNumber(starttime)) == ERR)
     goto exit;
@@ -111,6 +112,10 @@ int LowRateLoop(long starttime, long endtime)
     {
       nc_get_att_text(InputFile, outputList[i]->inVarID, "units", units);
       nc_get_att_text(InputFile, outputList[i]->inVarID, "long_name", long_name);
+      nc_inq_attlen(InputFile, outputList[i]->inVarID, "long_name", &len);
+      long_name[len] = '\0';
+      nc_inq_attlen(InputFile, outputList[i]->inVarID, "units", &len);
+      units[len] = '\0';
 
       fprintf(OutputFile, "%s (%s)\n", long_name, units);
     }
