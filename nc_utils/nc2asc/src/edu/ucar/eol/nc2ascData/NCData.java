@@ -772,7 +772,7 @@ public class NCData {
 		ret += "\n"+ trimBegEndQuotes(""+ fin.findGlobalAttribute("Source"));
 		ret += "\n"+ trimBegEndQuotes(""+ fin.findGlobalAttribute("Aircraft"));
 		ret += "\n"+ trimBegEndQuotes(""+ fin.findGlobalAttribute("ProjectName"));
-		ret += "\n"+ "   1   1";
+		ret += "\n"+ "1 1";
 		ret += "\n"+getDates();
 		ret += "\n"+"1.0 ";  //lowRate 
 		ret += "\n"+"Time in seconds from 00Z";
@@ -797,7 +797,7 @@ public class NCData {
 
 		//at last add the first line  -- line number and 1001
 		int lineNum = 12 + sublvars.size() + 3;
-		ret = " " + lineNum + " 1001" + ret + "\n0\n2";
+		ret = " " + lineNum + " 1001" + ret + "\n0\n1";
 
 		return ret;
 	}
@@ -812,7 +812,7 @@ public class NCData {
 		String date = trimBegEndQuotes(""+fin.findGlobalAttribute("FlightDate"));
 		ret += date.split("/")[2]+ " " +date.split("/")[0] + " "+ date.split("/")[1];
 		String dateProc[] = trimBegEndQuotes(""+fin.findGlobalAttribute("DateProcessed")).split(" ")[0].split("-");
-		ret += "      " + dateProc[0]+ " " + dateProc[1]+" "+dateProc[2];
+		ret += "  " + dateProc[0]+ " " + dateProc[1]+" "+dateProc[2];
 		return ret;
 	}
 
