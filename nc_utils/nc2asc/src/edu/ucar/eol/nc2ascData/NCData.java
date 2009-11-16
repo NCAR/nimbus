@@ -817,10 +817,11 @@ public class NCData {
 	}
 
 	public String genVarName(List<Variable> sublvars, String[] fmt ){
-		String varname = "Date,UTC";
-		if (fmt[DataFmt.DATE_IDX].equals(DataFmt.NODATE)) {
-			varname = "UTC";
+		String varname = "";
+		if (!fmt[DataFmt.DATE_IDX].equals(DataFmt.NODATE)) {
+			varname = "Date" + fmt[DataFmt.DMTR_IDX];
 		}
+		varname += "UTC";
 
 		String dmtr = fmt[DataFmt.DMTR_IDX];
 		for (int i =0; i<sublvars.size(); i++) {
