@@ -607,7 +607,9 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 				//Variable v= vars.get(i);
 				String line = dataInf.get(i);
 				for (int j=0; j<vars.size(); j++) {
-					String str= vars.get(j).trim();
+					int idx = vars.get(j).indexOf('=') + 1;
+					String s1 = vars.get(j).substring(idx);
+					String str = s1.trim();
 					if (line.indexOf(str)==0) {
 						selStatus.set(i-1,"Y");
 						tbl.setValueAt("Y", i-1, 4);
