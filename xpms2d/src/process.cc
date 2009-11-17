@@ -649,8 +649,8 @@ if (debug)
         // Set 'overload' variable here.
         record->overld = overload = (thisTimeWord - prevTimeWord) / 1000;
 
-        printf(">>> Fast2DC overload @ %02d:%02d:%02d.%d for %d msec duration. <<<\n",
-		record->hour, record->minute, record->second, record->msec, record->overld);
+        printf(">>> Fast2DC overload @ %02d:%02d:%02d.%3d for %10.3f usec duration. <<<\n",
+		record->hour, record->minute, record->second, record->msec, (float)(thisTimeWord - prevTimeWord) / 1000);
 
         if (cp)
           cp->reject = true;
