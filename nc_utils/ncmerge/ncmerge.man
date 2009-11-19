@@ -4,15 +4,16 @@
 .SH NAME
 ncmerge \- netCDF merge utility
 .SH SYNOPSIS
-.B ncmerge [-v var0,var1,...,varn] primary_file secondary_file
+.B ncmerge [-v var0,var1,...,varn] -a primary_file secondary_file
 .SH DESCRIPTION
 .B ncmerge 
 is a program for merging two netCDF files which both conform to
 the NCAR-RAF/nimbus conventions.  ncmerge will take the secondary_file
 and merge it into the primary_file.  If the -v option is used, then only
 variables in the variable list will be merged from the secondary file into
-the primary_file.  The two files must have some overlaping time segment
-in order for ncmerge to work.
+the primary_file. If -a is used then time variables will also be merged (by
+default they are not). The two files must have some overlaping time segment
+in order for ncmerge to work. 
 .PP
 .SH BUGS
 .PP

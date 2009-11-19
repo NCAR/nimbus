@@ -12,7 +12,7 @@ DESCRIPTION:	A merge may proceed IF:
 		vars that will get missing value if time intervals don't
 		match 100%.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-06
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-09
 -------------------------------------------------------------------------
 */
 
@@ -36,7 +36,7 @@ int	infd1, infd2, VarCnt = 0, xFerCnt = 0;
 time_t	bt1, bt2;
 size_t	et1, et2;
 
-void	CopyVariablesDefinitions(), MoveData();
+void	CopyVariablesDefinitions(int),MoveData();
 
 
 /* -------------------------------------------------------------------- */
@@ -147,10 +147,11 @@ void checkForOverlappingTimeSegments()
 int main(int argc, char *argv[])
 {
   int	rc = 0, argp = 1;
+  int	merge_all = 0;
 
   if (argc < 3)
   {
-    fprintf(stderr, "Usage: ncmerge [-v var0,var1,..,varn] primary_file secondary_file\n");
+    fprintf(stderr, "Usage: ncmerge [-v var0,var1,..,varn] [-a] primary_file secondary_file\n");
     exit(1);
   }
 
@@ -174,12 +175,18 @@ int main(int argc, char *argv[])
   else
     printf("All variables being merged.\n");
 
+  if (strcmp(argv[argp], "-a") == 0)
+  {
+    argp++;
+    merge_all = 1;
+  }
+
   ncopts = 0;
 
   openFiles(argc, argv, argp);
   checkForOverlappingTimeSegments();
 
-  CopyVariablesDefinitions();
+  CopyVariablesDefinitions(merge_all);
   MoveData();
 
   Exit(0);
@@ -188,13 +195,15 @@ int main(int argc, char *argv[])
 }	/* END MAIN */
 
 /* -------------------------------------------------------------------- */
-void CopyVariablesDefinitions()
+void CopyVariablesDefinitions(int merge_all)
 {
   int	rc;
   char	name[32];
+  char  dimname1[32], dimname2[32];
   nc_type	dataType;
-  int	nVars1, nVars2, nDims, nAtts, dimIDs[4];
+  int	nVars1, nVars2, nDims, nAtts, dimIDs[8];
   float	missing_value = -32767.0;
+  int	missing_value_int = -32767;
 
   nc_redef(infd1);
 
@@ -207,14 +216,18 @@ void CopyVariablesDefinitions()
   for (int i = 0; i < nVars2; ++i)
   {
     nc_inq_var(infd2, i, name, &dataType, &nDims, dimIDs, &nAtts); 
+
     inVarID[xFerCnt] = i;
     inPtrs[i] = NULL;
 
+    if (!merge_all) 
+    {
     // Non-valid variables.
     if (strcmp(name, "HOUR") == 0 || strcmp(name, "MINUTE") == 0 ||
         strcmp(name, "SECOND") == 0 || strcmp(name, "time_offset") == 0 ||
         strcmp(name, "Time") == 0 || strcmp(name, "base_time") == 0)
       continue;
+    }
 
 
     // If user has specified a var list, then only add those that qualify.
@@ -237,6 +250,29 @@ void CopyVariablesDefinitions()
     // See if variable already exists in output file, if not then create it.
     if (nc_inq_varid(infd1, name, &rc) != NC_NOERR)
     {
+
+      //printf("Creating variable %s with %d dimensions\n",name,nDims);
+      // Figure out the dimID from the primary file that matched the dim taken from 
+      // the secondary file.
+      int nDims1;
+      nc_inq_ndims(infd1,&nDims1);
+      for (int j = 0; j < nDims; ++j)
+      {
+        nc_inq_dimname(infd2, dimIDs[j], dimname2);
+	//printf("Found dimension %d:%d:%s in secondary file\n",j,dimIDs[j],dimname2); fflush(stdout);
+	for (int k = 0; k < nDims1; ++k)
+	{
+          nc_inq_dimname(infd1,k,dimname1);
+	  //printf("Found dimension %d:%s in base file\n",k,dimname1); fflush(stdout);
+          if (strcmp(dimname1,dimname2) == 0)
+          {
+	    //printf("Changing dimID %d from %d to %d\n",j,dimIDs[j],k);
+	    dimIDs[j] = k;
+	    break;
+          }
+        }
+      }
+
       if (nc_def_var(infd1, name, dataType, nDims, dimIDs, &rc) != NC_NOERR)
       {
         fprintf(stderr, "Error in creating variable %s, %s will not be in merged dataset.\n", name, name);
@@ -254,7 +290,14 @@ void CopyVariablesDefinitions()
       nc_copy_att(infd2, inVarID[xFerCnt], buffer, infd1, rc);
     }
 
-    nc_put_att_float(infd1, rc, "_FillValue", NC_FLOAT, 1, &missing_value);
+    if (dataType == NC_INT)
+    {
+      nc_put_att_int(infd1, rc, "_FillValue", NC_INT, 1, &missing_value_int);
+    }
+    else
+    {
+      nc_put_att_float(infd1, rc, "_FillValue", NC_FLOAT, 1, &missing_value);
+    }
 
     outVarID[xFerCnt++] = rc;
   }
@@ -291,7 +334,7 @@ void MoveData()
   wr_start[0] = outRec; wr_start[1] = wr_start[2] = 0;
   rd_start[0] = inRec; rd_start[1] = rd_start[2] = 0;
 
-  printf("Starting to move data"); fflush(stdout);
+  printf("Starting to move data...\n"); fflush(stdout);
 
   for (int i = 0; i < xFerCnt; ++i)
   {
@@ -307,26 +350,81 @@ void MoveData()
       size *= count[j];
     }
 
-    float *data_p = new float[size];
+    char name[32];
+    nc_type dataType;
+    nc_inq_varname(infd2, inVarID[i], name);
+    nc_inq_vartype(infd2, inVarID[i], &dataType);
 
-    // Read input file.
-    if (nc_get_vara_float(infd2, inVarID[i], rd_start, count, data_p) != NC_NOERR)
+    //printf("Moving data for variable %s of type %d with array of size %d\n",name,dataType,size); fflush(stdout);
+    //printf("Type if int is %d\n",NC_INT);fflush(stdout);
+
+    // If you get the error: "terminate called after throwing an instance of 'std::bad_alloc'
+    // what():  St9bad_alloc", then there is not enough memory left in the heap to perform the alloc.
+
+    if (dataType == NC_INT && strcmp(name,"Time")!=0)
     {
-      char name[32];
-      nc_inq_varname(infd2, inVarID[i], name);
-      fprintf(stderr, "MoveData: failed to read data for variable %s\n", name);
-      continue;
+      size = 1;
+      int *data_p_int;
+      try
+      {
+        data_p_int = new int[size];
+      }
+      catch (const std::bad_alloc)
+      {
+        fprintf(stderr, "\n***\nNot enough memory to perform alloc of data_p_int: exiting\n***\n");
+	fflush(stdout);
+        exit(1);
+      }
+
+      // Read input file.
+      if (nc_get_vara_int(infd2, inVarID[i], rd_start, count, data_p_int) != NC_NOERR)
+      {
+        nc_inq_varname(infd2, inVarID[i], name);
+        fprintf(stderr, "MoveData: failed to read data for variable %s\n", name);
+	fflush(stdout);
+        continue;
+      }
+
+      if (nc_put_vara_int(infd1, outVarID[i], wr_start, count, data_p_int) != NC_NOERR)
+      {
+        nc_inq_varname(infd1, outVarID[i], name);
+        fprintf(stderr, "MoveData: failed to write data for variable %s\n", name);
+	fflush(stdout);
+        continue;
+      }
+      delete [] data_p_int;
+    } else {
+      float *data_p;
+      try
+      {
+        data_p = new float[size];
+      }
+      catch (const std::bad_alloc)
+      {
+        fprintf(stderr, "\n***\nNot enough memory to perform alloc of data_p: exiting\n***\n");
+	fflush(stdout);
+        exit(1);
+      }
+
+      // Read input file.
+      if (nc_get_vara_float(infd2, inVarID[i], rd_start, count, data_p) != NC_NOERR)
+      {
+        nc_inq_varname(infd2, inVarID[i], name);
+        fprintf(stderr, "MoveData: failed to read data for variable %s\n", name);
+	fflush(stdout);
+        continue;
+      }
+
+      if (nc_put_vara_float(infd1, outVarID[i], wr_start, count, data_p) != NC_NOERR)
+      {
+        nc_inq_varname(infd1, outVarID[i], name);
+        fprintf(stderr, "MoveData: failed to write data for variable %s\n", name);
+	fflush(stdout);
+        continue;
+      }
+      delete [] data_p;
     }
 
-    if (nc_put_vara_float(infd1, outVarID[i], wr_start, count, data_p) != NC_NOERR)
-    {
-      char name[32];
-      nc_inq_varname(infd1, outVarID[i], name);
-      fprintf(stderr, "MoveData: failed to write data for variable %s\n", name);
-      continue;
-    }
-
-    delete [] data_p;
     printf("."); fflush(stdout);
   }
 
