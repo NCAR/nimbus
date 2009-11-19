@@ -9,46 +9,19 @@
 #  Written by Ron Ruth                                              21 Jul 2004
 #  Revision 1.0  (Check for successful reorder)                     26 May 2005
 #
-# List of files
-set files = ( \ 
-CASF_RF01_20080716_171728_1.nc \ 
-CASF_RF01_20080716_171728_10.nc \ 
-CASF_RF02_20080717_172727_1.nc \ 
-CASF_RF02_20080717_172727_10.nc \ 
-CASF_RF03_20080719_010728_1.nc \
-CASF_RF03_20080719_010728_10.nc \
-CASF_RF04_20080721_172735_1.nc \
-CASF_RF04_20080721_172735_10.nc \
-CASF_RF05_20080728_010620_1.nc \
-CASF_RF05_20080728_010620_10.nc \
-CASF_RF06_20080729_010224_1.nc \
-CASF_RF06_20080729_010224_10.nc \
-CASF_RF07_20080730_172453_1.nc \
-CASF_RF07_20080730_172453_10.nc \
-CASF_RF08_20080801_171018_1.nc \
-CASF_RF08_20080801_171018_10.nc \
-CASF_RF09_20080802_165743_1.nc \
-CASF_RF09_20080802_165743_10.nc \
-CASF_RF10_20080804_171348_1.nc \
-CASF_RF10_20080804_171348_10.nc \
-CASF_RF11_20080806_005732_1.nc \
-CASF_RF11_20080806_005732_10.nc \
-CASF_RF12_20080808_005707_1.nc \
-CASF_RF12_20080808_005707_10.nc \
-CASF_RF13_20080809_010004_1.nc \
-CASF_RF13_20080809_010004_10.nc \
-CASF_RF14_20080812_005822_1.nc \
-CASF_RF14_20080812_005822_10.nc \
-CASF_RF15_20080813_010000_1.nc \
-CASF_RF15_20080813_010000_10.nc \
-CASF_RF16_20080814_172928_1.nc \
-CASF_RF16_20080814_172928_10.nc \
-CASF_RF17_20080815_162807_1.nc \
-CASF_RF17_20080815_162807_10.nc \
-)
+#  Revision 2.0 (Accept list of nc files from command line
+#  rather than having to modify code each time)			    19 Nov 2009 JAA
 #
+
+# Usage: This version of reorder needs a wildcard list of files to reorder
+if ($#argv < 1) then
+    echo "Usage: reorder *nc"
+    echo "will reorder all files that match the *nc wildcard"
+    exit 0
+endif
+
 # Do the work
-foreach file ($files)
+foreach file ($argv)
  set sfile = "s$file"           # Set renamed source file name (original file)
  set ofile = "r$file"           # Set new output file name (temporary)"
  nice ncReorder $file $ofile    # Reorder
