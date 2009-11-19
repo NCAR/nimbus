@@ -18,25 +18,25 @@ S100::S100(NcFile *file, NcVar *av) : Probe100(file, av)
 {
   NcAtt		*attr;
 
-  if ((attr = cvar->get_att("BeamDiameter")) || (attr = avar->get_att("BeamDiameter")))
-    beamDiameter = attr->as_float(0);
+  if ((attr = _cvar->get_att("BeamDiameter")) || (attr = _avar->get_att("BeamDiameter")))
+    _beamDiameter = attr->as_float(0);
   else
-    beamDiameter = 0.19;
+    _beamDiameter = 0.19;
 
-  if ((attr = cvar->get_att("DepthOfField")) || (attr = avar->get_att("DepthOfField")))
-    DOF = attr->as_float(0);
+  if ((attr = _cvar->get_att("DepthOfField")) || (attr = _avar->get_att("DepthOfField")))
+    _DOF = attr->as_float(0);
   else
-    DOF = 3.05;
+    _DOF = 3.05;
 
-  range = 0;	// For FSSP, all other probes must be 0.
+  _range = 0;	// For FSSP, all other probes must be 0.
 
-  for (int i = 0; i < otherVars.size(); ++i)
+  for (int i = 0; i < _otherVars.size(); ++i)
     {
-    if (strncmp(otherVars[i]->name(), "REJAT", 5) == 0)
-      rejATIdx = i;
+    if (strncmp(_otherVars[i]->name(), "REJAT", 5) == 0)
+      _rejATIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "OVFLW", 5) == 0)
-      oFlowIdx = i;
+    if (strncmp(_otherVars[i]->name(), "OVFLW", 5) == 0)
+      _oFlowIdx = i;
     }
 
 }	/* END CONSTRUCTOR */
@@ -50,11 +50,11 @@ void S100::ComputeConcentration(float *accum, float *conc, long countV[],
   float	*tas, *oFlow, *rejAT, sampleArea;
   double vol;
 
-  tas = otherVarData[tasIdx];
-  rejAT = otherVarData[rejATIdx];
-  oFlow = otherVarData[oFlowIdx];
+  tas = otherVarData[_tasIdx];
+  rejAT = otherVarData[_rejATIdx];
+  oFlow = otherVarData[_oFlowIdx];
 
-  sampleArea = DOF * beamDiameter;
+  sampleArea = _DOF * _beamDiameter;
 
   for (i = 0; i < countV[0] * countV[1]; ++i)
     {
@@ -65,15 +65,15 @@ void S100::ComputeConcentration(float *accum, float *conc, long countV[],
     for (j = FirstBin(); j < LastBin(); ++j)
       total_cnts += accum[j];
 
-    vol = tas[i] / dataRate * sampleArea;
+    vol = tas[i] / DataRate() * sampleArea;
 
     if (total_cnts > 0 && rejAT[i] > 0.0)
       vol *= total_cnts / (total_cnts + rejAT[i]);
 
     for (bin = FirstBin(); bin <= LastBin(); ++bin)
-      sampleVolume[bin] = (float)vol;
+      _sampleVolume[bin] = (float)vol;
 
-    dia = &midPointDiam[range << 4];
+    dia = &_midPointDiam[_range << 4];
 
 #define PLWC
 #define DBZ
@@ -87,14 +87,14 @@ void S100::ComputeConcentration(float *accum, float *conc, long countV[],
       for (bin = FirstBin(); bin <= LastBin(); ++bin)
         concentration[bin] *= ccc;
 
-      totalConcen *= ccc;
+      _totalConcen *= ccc;
       }
 
-    otherVarData[concIdx][i] = totalConcen;
-    otherVarData[lwIdx][i] = plwc;
-    otherVarData[dbarIdx][i] = dbar;
-    otherVarData[dispIdx][i] = disp;
-    otherVarData[dbzIdx][i] = dbz;
+    otherVarData[_concIdx][i] = _totalConcen;
+    otherVarData[_lwIdx][i] = _plwc;
+    otherVarData[_dbarIdx][i] = _dbar;
+    otherVarData[_dispIdx][i] = _disp;
+    otherVarData[_dbzIdx][i] = _dbz;
     }
 
 }	/* END COMPUTECONCENTRATION */

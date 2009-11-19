@@ -18,17 +18,17 @@ X260::X260(NcFile *file, NcVar *av) : Probe200(file, av)
 {
   NcAtt		*attr;
 
-  resolution = 0.01;
+  _resolution = 0.01;
 
-  if ((attr = avar->get_att("nDiodes")))
-    nDiodes = attr->as_int(0);
+  if ((attr = _avar->get_att("nDiodes")))
+    _nDiodes = attr->as_int(0);
   else
-    nDiodes = 64;
+    _nDiodes = 64;
 
-  if ((attr = avar->get_att("ArmDistance")))
-    armDistance = attr->as_float(0);
+  if ((attr = _avar->get_att("ArmDistance")))
+    _armDistance = attr->as_float(0);
   else
-    armDistance = 61.0;
+    _armDistance = 61.0;
 
   ComputeWidths();
 
@@ -43,32 +43,32 @@ void X260::ComputeConcentration(float *accum, float *conc, long countV[],
   float	*counts, *concentration;
   float	*tas, tasx;
 
-  tas = otherVarData[tasIdx];
+  tas = otherVarData[_tasIdx];
 
   for (time = 0; time < countV[0] * countV[1]; ++time)
     {
     counts = &accum[time * VectorLength()];
     concentration = &conc[time * VectorLength()];
 
-    tasx = tas[time] / dataRate;
+    tasx = tas[time] / DataRate();
 
     ComputeDOF200(tasx);
 
     for (bin = FirstBin(); bin <= LastBin(); ++bin)
-      sampleVolume[bin] = tasx * (dof[bin] * esw[bin]) * 0.001;
+      _sampleVolume[bin] = tasx * (_dof[bin] * _esw[bin]) * 0.001;
 
-    dia = midPointDiam;
+    dia = _midPointDiam;
 
 #define PLWC
 #define DBZ
 
 #include "pms1d_cv"
 
-    otherVarData[concIdx][time] = totalConcen;
-    otherVarData[lwIdx][time] = plwc;
-    otherVarData[dbarIdx][time] = dbar;
-    otherVarData[dispIdx][time] = disp;
-    otherVarData[dbzIdx][time] = dbz;
+    otherVarData[_concIdx][time] = _totalConcen;
+    otherVarData[_lwIdx][time] = _plwc;
+    otherVarData[_dbarIdx][time] = _dbar;
+    otherVarData[_dispIdx][time] = _disp;
+    otherVarData[_dbzIdx][time] = _dbz;
     }
 
 }	/* END COMPUTECONCENTRATION */

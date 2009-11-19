@@ -16,27 +16,27 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2003
 /* -------------------------------------------------------------------- */
 HVPS::HVPS(NcFile *file, NcVar *av) : Probe(file, av)
 {
-  tasIdx = concIdx = dbarIdx = lwIdx = dispIdx = dbzIdx = -1;
+  _tasIdx = _concIdx = _dbarIdx = _lwIdx = _dispIdx = _dbzIdx = -1;
 
-  for (int i = 0; i < otherVars.size(); ++i)
+  for (int i = 0; i < _otherVars.size(); ++i)
     {
-    if (strcmp(otherVars[i]->name(), "TASX") == 0)
-      tasIdx = i;
+    if (strcmp(_otherVars[i]->name(), "TASX") == 0)
+      _tasIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "CONC", 4) == 0)
-      concIdx = i;
+    if (strncmp(_otherVars[i]->name(), "CONC", 4) == 0)
+      _concIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "PLWC", 4) == 0)
-      lwIdx = i;
+    if (strncmp(_otherVars[i]->name(), "PLWC", 4) == 0)
+      _lwIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "DBAR", 4) == 0)
-      dbarIdx = i;
+    if (strncmp(_otherVars[i]->name(), "DBAR", 4) == 0)
+      _dbarIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "DISP", 4) == 0)
-      dispIdx = i;
+    if (strncmp(_otherVars[i]->name(), "DISP", 4) == 0)
+      _dispIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "DBZ", 3) == 0)
-      dbzIdx = i;
+    if (strncmp(_otherVars[i]->name(), "DBZ", 3) == 0)
+      _dbzIdx = i;
     }
 
 }	/* END CONSTRUCTOR */
@@ -50,30 +50,30 @@ void HVPS::ComputeConcentration(float *accum, float *conc, long countV[],
   float	*counts, *concentration, *tas;
   double vol;
 
-  tas = otherVarData[tasIdx];
+  tas = otherVarData[_tasIdx];
 
   for (i = 0; i < countV[0] * countV[1]; ++i)
     {
     counts = &accum[i * VectorLength()];
     concentration = &conc[i * VectorLength()];
 
-    vol = tas[i] / dataRate * 200 * 203 * (256-80) * 1.0e-5;
+    vol = tas[i] / DataRate() * 200 * 203 * (256-80) * 1.0e-5;
 
     for (bin = FirstBin(); bin <= LastBin(); ++bin)
-      sampleVolume[bin] = vol;
+      _sampleVolume[bin] = vol;
 
-    dia = midPointDiam;
+    dia = _midPointDiam;
 
 #define PLWC
 #define DBZ
 
 #include "pms1d_cv"
 
-    otherVarData[concIdx][i] = totalConcen;
-    otherVarData[lwIdx][i] = plwc;
-    otherVarData[dbarIdx][i] = dbar;
-    otherVarData[dispIdx][i] = disp;
-    otherVarData[dbzIdx][i] = dbz;
+    otherVarData[_concIdx][i] = _totalConcen;
+    otherVarData[_lwIdx][i] = _plwc;
+    otherVarData[_dbarIdx][i] = _dbar;
+    otherVarData[_dispIdx][i] = _disp;
+    otherVarData[_dbzIdx][i] = _dbz;
     }
 
 }	/* END COMPUTECONCENTRATION */

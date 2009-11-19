@@ -16,17 +16,17 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999-2009
 /* -------------------------------------------------------------------- */
 CDP::CDP(NcFile *file, NcVar *av) : Probe100(file, av)
 {
-  NcAtt		*attr;
+  NcAtt *attr;
 
-  if ((attr = cvar->get_att("BeamDiameter")) || (attr = avar->get_att("BeamDiameter")))
-    beamDiameter = attr->as_float(0);
+  if ((attr = _cvar->get_att("BeamDiameter")) || (attr = _avar->get_att("BeamDiameter")))
+    _beamDiameter = attr->as_float(0);
   else
-    beamDiameter = 0.2;
+    _beamDiameter = 0.2;
 
-  if ((attr = cvar->get_att("DepthOfField")) || (attr = avar->get_att("DepthOfField")))
-    DOF = attr->as_float(0);
+  if ((attr = _cvar->get_att("DepthOfField")) || (attr = _avar->get_att("DepthOfField")))
+    _DOF = attr->as_float(0);
   else
-    DOF = 1.2;
+    _DOF = 1.2;
 
 }	/* END CONSTRUCTOR */
 
@@ -40,9 +40,9 @@ void CDP::ComputeConcentration(float *accum, float *conc, long countV[],
   float	*tas, *fbmfr, *activity, sampleArea;
   double vol;
 
-  tas = otherVarData[tasIdx];
+  tas = otherVarData[_tasIdx];
 
-  sampleArea = DOF * beamDiameter;
+  sampleArea = _DOF * _beamDiameter;
 
   for (i = 0; i < countV[0] * countV[1]; ++i)
     {
@@ -50,18 +50,18 @@ void CDP::ComputeConcentration(float *accum, float *conc, long countV[],
     concentration = &conc[i * VectorLength()];
 
     for (bin = FirstBin(); bin <= LastBin(); ++bin)
-      sampleVolume[bin] = (float)tas[i] * sampleArea;
+      _sampleVolume[bin] = (float)tas[i] * sampleArea;
 
-    dia = midPointDiam;
+    dia = _midPointDiam;
 
 #define PLWC
 #define DBZ
 
 #include "pms1d_cv"
 
-    otherVarData[concIdx][i] = totalConcen;
-    otherVarData[lwIdx][i] = plwc;
-    otherVarData[dbzIdx][i] = dbz;
+    otherVarData[_concIdx][i] = _totalConcen;
+    otherVarData[_lwIdx][i] = _plwc;
+    otherVarData[_dbzIdx][i] = _dbz;
     }
 
 }	// END COMPUTECONCENTRATION

@@ -26,15 +26,15 @@ public:
 
   void	ComputeConcentration(float *accum, float *conc, long countV[],
 		const std::vector<float *> & otherVarData);
-  float CellSize(int idx) const	{ return(diameter[idx + (range << 4)]); }
-  float BinWidth(int idx) const	{ return(binWidth[idx + (range << 4)]); }
+  float CellSize(int idx) const	{ return(_diameter[idx + (_range << 4)]); }
+  float BinWidth(int idx) const	{ return(_binWidth[idx + (_range << 4)]); }
 
-  void	SetRange(int newRange)	{ range = (newRange < 0 ? 0 : newRange); }
+  void	SetRange(int newRange)	{ _range = (newRange < 0 ? 0 : newRange); }
 
 private:
-  int	range, rangeIdx;
+  int	_range, _rangeIdx;
 
-  int	actIdx, bmFrIdx;			// Inputs
+  int	_actIdx, _bmFrIdx;			// Inputs
 
 };	// END FSSP.H
 

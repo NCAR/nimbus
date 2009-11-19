@@ -30,10 +30,10 @@ class CanvasWindow : public WinForm
 public:
 		CanvasWindow(const Widget parent);
 
-  Widget	DrawingArea()	{ return(drawA); }
+  Widget	DrawingArea()	{ return(_drawA); }
 
 private:
-  Widget	drawA;
+  Widget	_drawA;
 
 };	// END CANVASWINDOW.H
 

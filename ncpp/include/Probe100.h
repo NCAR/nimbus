@@ -24,11 +24,11 @@ public:
 
 
 protected:
-  float	PLWfac, DBZfac, DENS, DOF, beamDiameter;
-  float	totalConcen, dbar, plwc, disp, dbz;
+  float	_PLWfac, _DBZfac, _DENS, _DOF, _beamDiameter;
+  float	_totalConcen, _dbar, _plwc, _disp, _dbz;
 
-  int	tasIdx;						// Inputs
-  int	concIdx, lwIdx, dbzIdx, dbarIdx, dispIdx;	// Outputs
+  int	_tasIdx;					// Inputs
+  int	_concIdx, _lwIdx, _dbzIdx, _dbarIdx, _dispIdx;	// Outputs
 
 };	// END PROBE100.H
 

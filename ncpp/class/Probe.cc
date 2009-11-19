@@ -39,7 +39,7 @@ static float	fsspDefSize[] =
 
 
 /* -------------------------------------------------------------------- */
-Probe::Probe(NcFile *file, NcVar *av) : avar(av)
+Probe::Probe(NcFile *file, NcVar *av) : _avar(av)
 {
   std::string	cname;
   int		i;
@@ -47,124 +47,127 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
   NcVar		*var;
   NcAtt		*attr;
 
-  name = &avar->name()[1];
+  _name = &_avar->name()[1];
 
-  cname = "C"; cname += name;
-  cvar = file->get_var(cname.c_str());
+  cname = "C"; cname += _name;
+  _cvar = file->get_var(cname.c_str());
 
-  if (cvar && !cvar->is_valid())
-    cvar = NULL;
+  if (_cvar && !_cvar->is_valid())
+    _cvar = NULL;
 
-  if (cvar == NULL)
+  if (_cvar == NULL)
     std::cerr << "  Concentrations (" << cname << ") not found.\n";
 
-  type = NoProbe;
+  _type = NoProbe;
 
-  if (name.find("S100") != name.npos)
-    type = S100;
+  if (_name.find("S100") != _name.npos)
+    _type = S100;
   else
-  if (name.find("CDP") != name.npos)
-    type = CDP;
+  if (_name.find("CDP") != _name.npos)
+    _type = CDP;
   else
-  if (name.find("S200") != name.npos)
-    type = S200;
+  if (_name.find("S200") != _name.npos)
+    _type = S200;
   else
-  if (name.find("UHSAS") != name.npos)
-    type = UHSAS;
+  if (_name.find("UHSAS") != _name.npos)
+    _type = UHSAS;
   else
-  if (name.find("S300") != name.npos)
-    type = S300;
+  if (_name.find("S300") != _name.npos)
+    _type = S300;
   else
-  if (name.find("260X") != name.npos)
-    type = X260;
+  if (_name.find("260X") != _name.npos)
+    _type = X260;
   else
-  if (name.find("FSSP") != name.npos)
-    type = FSSP;
+  if (_name.find("FSSP") != _name.npos)
+    _type = FSSP;
   else
-  if (name.find("F300") != name.npos)
-    type = F300;
+  if (_name.find("F300") != _name.npos)
+    _type = F300;
   else
-  if (name.find("PCAS") != name.npos || name.find("ASAS") != name.npos)
-    type = PCASP;
+  if (_name.find("PCAS") != _name.npos || _name.find("ASAS") != _name.npos)
+    _type = PCASP;
   else
-  if (name.find("2DC") != name.npos || name.find("1DC") != name.npos)
-    type = TWODC;
+  if (_name.find("2DC") != _name.npos || _name.find("1DC") != _name.npos)
+    _type = TWODC;
   else
-  if (name.find("2DP") != name.npos || name.find("1DP") != name.npos)
-    type = TWODP;
+  if (_name.find("2DP") != _name.npos || _name.find("1DP") != _name.npos)
+    _type = TWODP;
   else
-  if (name.find("HVPS") != name.npos)
-    type = HVPS;
+  if (_name.find("HVPS") != _name.npos)
+    _type = HVPS;
   else
-  if (name.find("RDMA") != name.npos)
-    type = RDMA;
+  if (_name.find("RDMA") != _name.npos)
+    _type = RDMA;
   else
-  if (name.find("CLMT") != name.npos)
-    type = CLIMET;
+  if (_name.find("CLMT") != _name.npos)
+    _type = CLIMET;
   else
-  if (name.find("SID") != name.npos)
-    type = SIDII;
+  if (_name.find("SID") != _name.npos)
+    _type = SIDII;
   else
-  if (name.find("CAPS") != name.npos)
-    type = CAPS;
+  if (_name.find("CAPS") != _name.npos)
+    _type = CAPS;
   else
-  if (name.find("MASP") != name.npos)
-    type = MASP;
+  if (_name.find("MASP") != _name.npos)
+    _type = MASP;
   else
-  if (name.find("200X") != name.npos)
-    type = X200;
+  if (_name.find("200X") != _name.npos)
+    _type = X200;
   else
-  if (name.find("200Y") != name.npos)
-    type = Y200;
+  if (_name.find("200Y") != _name.npos)
+    _type = Y200;
   else
-  if (name.find("300X") != name.npos)
-    type = X300;
+  if (_name.find("300X") != _name.npos)
+    _type = X300;
   else
-  if (name.find("MCA") != name.npos)
-    type = CMCA;
+  if (_name.find("MCA") != _name.npos)
+    _type = CMCA;
+  else
+  if (_name.find("PDI") != _name.npos)
+    _type = PDI;
 
 
-  if (type == NoProbe)
-    std::cerr << "Probe:: No probe type for [" << name.c_str() << "]\n";
+  if (Type() == NoProbe)
+    std::cerr << "Probe:: No probe type for [" << _name << "]\n";
 
 
-  dataRate = avar->get_dim(1)->size();
-  vectorLength = avar->get_dim(2)->size();
+  _dataRate = _avar->get_dim(1)->size();
+  _vectorLength = _avar->get_dim(2)->size();
 
-  int   nCells = type == FSSP ? 64 : VectorLength();
-  sampleVolume.resize(nCells);
-  diameter.resize(nCells);
-  midPointDiam.resize(nCells);
-  binWidth.resize(nCells);
+  int   nCells = Type() == FSSP ? 64 : VectorLength();
+  _sampleVolume.resize(nCells);
+  _diameter.resize(nCells);
+  _midPointDiam.resize(nCells);
+  _binWidth.resize(nCells);
 
-  units = cvar->get_att("units")->as_string(0);
+  _units = _cvar->get_att("units")->as_string(0);
 
-  if ((attr = avar->get_att("SerialNumber")))
-    serialNum = attr->as_string(0);
+  if ((attr = _avar->get_att("SerialNumber")))
+    _serialNum = attr->as_string(0);
 
-  if ((attr = cvar->get_att("FirstBin")) || (attr = avar->get_att("FirstBin")))
-    firstBin = attr->as_short(0);
+  if ((attr = _cvar->get_att("FirstBin")) || (attr = _avar->get_att("FirstBin")))
+    _firstBin = attr->as_short(0);
   else
     {
-    firstBin = 1;
-    fprintf(stderr, "netCDF attribute FirstBin not found for %s, defaulting to %d\n", cname.c_str(), firstBin);
+    _firstBin = 1;
+    fprintf(stderr, "netCDF attribute FirstBin not found for %s, defaulting to %d\n", cname.c_str(), _firstBin);
     }
 
-  if ((attr = cvar->get_att("LastBin")) || (attr = avar->get_att("LastBin")))
-    lastBin = attr->as_short(0);
+  if ((attr = _cvar->get_att("LastBin")) || (attr = _avar->get_att("LastBin")))
+    _lastBin = attr->as_short(0);
   else
     {
-    lastBin = avar->get_dim(2)->size()-1;
-    fprintf(stderr, "netCDF attribute LastBin not found for %s, defaulting to %d\n", cname.c_str(), lastBin);
+    _lastBin = _avar->get_dim(2)->size()-1;
+    fprintf(stderr, "netCDF attribute LastBin not found for %s, defaulting to %d\n", cname.c_str(), _lastBin);
     }
 
-  if ((attr = cvar->get_att("CellSizes")) || (attr = avar->get_att("CellSizes")))
+  if ((attr = _cvar->get_att("CellSizes")) || (attr = _avar->get_att("CellSizes")))
     {
     if (attr->num_vals() != nCells)
       fprintf(stderr, "Warning: number of cell sizes in netCDF file does not match expected, variable: %s, file=%d, expected=%d.\n", cname.c_str(), attr->num_vals(), nCells);
 
     for (i = 0; i < nCells; ++i)
-      diameter[i] = attr->as_float(i);
+      _diameter[i] = attr->as_float(i);
     }
   else
     {
@@ -173,51 +176,56 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
 
     ErrorMsg(buffer);
 
-    if (type == X260)
+    if (Type() == X260)
       for (i = 0; i < 64; ++i)
-        diameter[i] = 5 + i * 10;
+        _diameter[i] = 5 + i * 10;
     else
-    if (type == X200)
+    if (Type() == X200)
       for (i = 0; i < 16; ++i)
-        diameter[i] = 10 + i * 20;
+        _diameter[i] = 10 + i * 20;
     else
-    if (type == Y200)
+    if (Type() == Y200)
       for (i = 0; i < 16; ++i)
-        diameter[i] = 150 + i * 300;
+        _diameter[i] = 150 + i * 300;
     else
-    if (type == PCASP)
+    if (Type() == PCASP)
       for (i = 0; i < 16; ++i)
-        diameter[i] = pcasDefSize[i];
+        _diameter[i] = pcasDefSize[i];
     else
-    if (type == F300)
+    if (Type() == F300)
       for (i = 0; i < 32; ++i)
-        diameter[i] = f300DefSize[i];
+        _diameter[i] = f300DefSize[i];
     else
-    if (type == FSSP)
+    if (Type() == FSSP)
       for (i = 0; i < 64; ++i)
-        diameter[i] = fsspDefSize[i];
+        _diameter[i] = fsspDefSize[i];
     else
-    if (type == TWODC)
+    if (Type() == TWODC)
       for (i = 0; i < 128; ++i)
-        diameter[i] = 12.5 + i * 25;
+        _diameter[i] = 12.5 + i * 25;
     else
-    if (type == TWODP)
+    if (Type() == TWODP)
       for (i = 0; i < 64; ++i)
-        diameter[i] = 100 + i * 200;
+        _diameter[i] = 100 + i * 200;
     else
-    if (type == HVPS)
+    if (Type() == HVPS)
       for (i = 0; i < 256; ++i)
-        diameter[i] = 100 + i * 200;
+        _diameter[i] = 100 + i * 200;
     else
       {
-      std::cerr << "Probe.cc: No default CellSizes for probe " << cname.c_str()
+      std::cerr << "Probe.cc: No default CellSizes for probe " << cname
         << " available.  Requires programmer intervention.\n";
       }
     }
 
 
   // Find associated houskeeping & derived variables (using location)
-  location = strchr(const_cast<char *>(name.c_str()), '_');
+  location = strchr(const_cast<char *>(_name.c_str()), '_');
+  if (location == 0)
+    {
+    std::cerr << "Probe.cc: variable " << _name << " has no location!\n";
+    }
+
   for (i = 0; i < file->num_vars(); ++i)
     {
     var = file->get_var(i);
@@ -226,17 +234,17 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
        (strstr(var->name(), location) && strncmp(var->name(), "EVENT_", 6)) ||
        strcmp(var->name(), "TASX") == 0)
       {
-      otherVars.push_back(var);
+      _otherVars.push_back(var);
       }
     }
 
-  if (diameter[0] == 0.0)
+  if (_diameter[0] == 0.0)
     {
     std::cout << "Cell diameters for " << cname <<
 		" appear to be mid-point not end-point values.\n";
     std::cout << "  This will cause mildly erroneous/amusing results.\n";
 
-    diameter[0] = diameter[1] - (diameter[2] - diameter[1]);
+    _diameter[0] = _diameter[1] - (_diameter[2] - _diameter[1]);
     }
 
   ComputeWidths();
@@ -246,22 +254,22 @@ Probe::Probe(NcFile *file, NcVar *av) : avar(av)
 /* -------------------------------------------------------------------- */
 bool Probe::ReadCounts(long start[], const long count[], float *data)
 {
-  if (avar == NULL)
+  if (_avar == NULL)
     return(false);
 
-  avar->set_cur(start);
-  return(avar->get(data, count));
+  _avar->set_cur(start);
+  return(_avar->get(data, count));
 
 }	/* END READCOUNTS */
 
 /* -------------------------------------------------------------------- */
 bool Probe::ReadConcen(long start[], const long count[], float *data)
 {
-  if (cvar == NULL)
+  if (_cvar == NULL)
     return(false);
 
-  cvar->set_cur(start);
-  return(cvar->get(data, count));
+  _cvar->set_cur(start);
+  return(_cvar->get(data, count));
 
 }	/* END READCONCEN */
 
@@ -269,31 +277,31 @@ bool Probe::ReadConcen(long start[], const long count[], float *data)
 void Probe::ComputeConcentration(float *accum, float *conc, long countV[],
 	const std::vector<float *> & otherVarData)
 {
-  std::cerr << "No Compute function at this time for " << cvar->name() << ".\n";
+  std::cerr << "No Compute function at this time for " << _cvar->name() << ".\n";
 
 }	/* END COMPUTECONCENTRATION */
 
 /* -------------------------------------------------------------------- */
 bool Probe::ReadOtherVar(int idx, long start[], const long count[], float *data)
 {
-  if (idx >= otherVars.size())
+  if (idx >= _otherVars.size())
     return(false);
 
-  otherVars[idx]->set_cur(start);
-  return(otherVars[idx]->get(data, count));
+  _otherVars[idx]->set_cur(start);
+  return(_otherVars[idx]->get(data, count));
 
 }	/* END READOTHERVAR */
 
 /* -------------------------------------------------------------------- */
 void Probe::UpdateCellDiams(const int first, const int last, const float *newDiams)
 {
-  int	nCells = type == FSSP ? 64 : VectorLength();
+  int	nCells = Type() == FSSP ? 64 : VectorLength();
 
-  firstBin = first;
-  lastBin = last;
+  _firstBin = first;
+  _lastBin = last;
 
   for (int i = 0; i < nCells; ++i)
-    diameter[i] = newDiams[i];
+    _diameter[i] = newDiams[i];
 
   ComputeWidths();
 
@@ -302,14 +310,14 @@ void Probe::UpdateCellDiams(const int first, const int last, const float *newDia
 /* -------------------------------------------------------------------- */
 void Probe::ComputeWidths()
 {
-  int	nCells = type == FSSP ? 64 : VectorLength();
+  int	nCells = Type() == FSSP ? 64 : VectorLength();
 
-  midPointDiam[0] = binWidth[0] = 0.0;
+  _midPointDiam[0] = _binWidth[0] = 0.0;
 
   for (int i = 1; i < nCells; ++i)
     {
-    midPointDiam[i] = (diameter[i] + diameter[i-1]) / 2;
-    binWidth[i] = diameter[i] - diameter[i-1];
+    _midPointDiam[i] = (_diameter[i] + _diameter[i-1]) / 2;
+    _binWidth[i] = _diameter[i] - _diameter[i-1];
     }
 
 }	/* END COMPUTEWIDTHS */
@@ -358,13 +366,13 @@ int Probe::ApplyEditWindow(Widget text[])
   p = XmTextFieldGetString(text[cnt++]);
   i = atoi(p);
   if (i > 0 && i < VectorLength())
-    firstBin = i;
+    _firstBin = i;
   XtFree(p);
 
   p = XmTextFieldGetString(text[cnt++]);
   i = atoi(p);
-  if (i > firstBin && i < VectorLength())
-    lastBin = i;
+  if (i > FirstBin() && i < VectorLength())
+    _lastBin = i;
   XtFree(p);
 
 

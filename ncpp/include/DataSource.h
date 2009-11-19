@@ -31,7 +31,7 @@ public:
   int	ActiveDataTypes();
 
 protected:
-  Widget	fileB[MAX_DATAFILES], probeB[MAX_PROBES], dataType[4];
+  Widget	_fileB[MAX_DATAFILES], _probeB[MAX_PROBES], _dataType[4];
 
 };	// END DATASOURCE.H
 

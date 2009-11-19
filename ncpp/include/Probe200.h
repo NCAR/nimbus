@@ -29,7 +29,7 @@ public:
 
   void	UpdateCellDiams(const int first, const int last, const float *newDiams);
 
-  float EffectiveAreaWidth() const	{ return resolution * nDiodes; }
+  float EffectiveAreaWidth() const	{ return _resolution * _nDiodes; }
 
 
 protected:
@@ -40,17 +40,17 @@ protected:
    */
   virtual void	ComputeDOF200(float tasx);
 
-  static const float	diodeDiameter;
+  static const float	DiodeDiameter;
 
-  int	nDiodes;
-  float resolution;	// in meters (0.025 or 0.2)
+  int	_nDiodes;
+  float _resolution;	// in meters (0.025 or 0.2)
 
-  float	responseTime, armDistance, PLWfac, DENS, DBZfac;
-  std::vector<float> radius, esw, dof;
-  float	mag, totalConcen, dbar, plwc, disp, dbz;
+  float	_responseTime, _armDistance, _PLWfac, _DENS, _DBZfac;
+  std::vector<float> _radius, _esw, _dof;
+  float	_mag, _totalConcen, _dbar, _plwc, _disp, _dbz;
 
-  int	tasIdx, deadTimeIdx;				// Inputs
-  int	concIdx, lwIdx, dbarIdx, dispIdx, dbzIdx;	// Outputs
+  int	_tasIdx, _deadTimeIdx;				// Inputs
+  int	_concIdx, _lwIdx, _dbarIdx, _dispIdx, _dbzIdx;	// Outputs
 
 };	// END PROBE200.H
 

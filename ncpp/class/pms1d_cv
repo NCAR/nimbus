@@ -22,13 +22,13 @@ NOTES:		Calculations taken from Bulletin 24 dated 1/89.
   {
   double	dbar2, conc, z;
 
-  disp = dbar = dbar2 = z = totalConcen = 0.0;
+  _disp = _dbar = dbar2 = z = _totalConcen = 0.0;
 
 #ifdef PLWC
-  plwc = 0.0;
+  _plwc = 0.0;
 #endif
 #ifdef P_VOLUME
-  pvol = 0.0;
+  _pvol = 0.0;
 #endif
 
   for (bin = 0; bin < FirstBin(); ++bin)
@@ -39,43 +39,43 @@ NOTES:		Calculations taken from Bulletin 24 dated 1/89.
 
 
   for (bin = FirstBin(); bin <= LastBin(); ++bin)
-    if (sampleVolume[bin] == 0.0)
+    if (_sampleVolume[bin] == 0.0)
       concentration[bin] = 0.0;
     else
       {
-      concentration[bin] = conc = counts[bin] / sampleVolume[bin];
-      dbar	+= dia[bin] * conc;
+      concentration[bin] = conc = counts[bin] / _sampleVolume[bin];
+      _dbar	+= dia[bin] * conc;
       dbar2	+= dia[bin] * dia[bin] * conc;
 #ifdef PLWC
-      plwc	+= dia[bin] * dia[bin] * dia[bin] * conc;
+      _plwc	+= dia[bin] * dia[bin] * dia[bin] * conc;
 #endif
 #ifdef P_VOLUME
-      pvol	+= dia[bin] * dia[bin] * dia[bin] * conc;
+      _pvol	+= dia[bin] * dia[bin] * dia[bin] * conc;
 #endif
 #ifdef DBZ
       z += conc * pow((double)dia[bin] / 1000.0, 6.0);
 #endif
-      totalConcen += conc;
+      _totalConcen += conc;
       }
 
 #ifdef PLWC
-  plwc *= M_PI / 6.0 * DENS * PLWfac;
+  _plwc *= M_PI / 6.0 * _DENS * _PLWfac;
 #endif
 #ifdef P_VOLUME
-  pvol *= M_PI / 6.0;
+  _pvol *= M_PI / 6.0;
 #endif
 #ifdef DBZ
   if (z > 0.0)
-    dbz = 10.0 * log10((double)(z * DBZfac));
+    _dbz = 10.0 * log10((double)(z * _DBZfac));
   else
-    dbz = -100.0;
+    _dbz = -100.0;
 #endif
 
-  if (totalConcen > 0.0001)
+  if (_totalConcen > 0.0001)
     {
-    dbar /= totalConcen;
+    _dbar /= _totalConcen;
 
-    disp = sqrt(fabs((dbar2 / totalConcen - dbar * dbar))) / dbar;
+    _disp = sqrt(fabs((dbar2 / _totalConcen - _dbar * _dbar))) / _dbar;
     }
   }
 

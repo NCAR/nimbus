@@ -112,13 +112,13 @@ CanvasWindow::CanvasWindow(const Widget parent) : WinForm(parent, "canvas", Form
   XtSetArg(args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM); n++;
-  drawA = XmCreateDrawingArea(Window(), (char *)"canvas", args, n);
+  _drawA = XmCreateDrawingArea(Window(), (char *)"canvas", args, n);
  
-  XtAddCallback(drawA, XmNexposeCallback, (XtCallbackProc)CanvasExpose, NULL);
-  XtAddCallback(drawA, XmNinputCallback, (XtCallbackProc)CanvasInput, NULL);
-  XtAddCallback(drawA, XmNresizeCallback, (XtCallbackProc)CanvasResize, NULL);
+  XtAddCallback(_drawA, XmNexposeCallback, (XtCallbackProc)CanvasExpose, NULL);
+  XtAddCallback(_drawA, XmNinputCallback, (XtCallbackProc)CanvasInput, NULL);
+  XtAddCallback(_drawA, XmNresizeCallback, (XtCallbackProc)CanvasResize, NULL);
 
-  XtManageChild(drawA);
+  XtManageChild(_drawA);
 
 }	/* END CONSTRUCTOR */
 

@@ -16,24 +16,24 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2001
 /* -------------------------------------------------------------------- */
 S200::S200(NcFile *file, NcVar *av) : Probe(file, av)
 {
-  concIdx = dispIdx = dbarIdx = volIdx = -1;
+  _concIdx = _dispIdx = _dbarIdx = _volIdx = -1;
 
-  for (int i = 0; i < otherVars.size(); ++i)
+  for (int i = 0; i < _otherVars.size(); ++i)
     {
-    if (strncmp(otherVars[i]->name(), "PFLWC", 5) == 0)
-      flowIdx = i;
+    if (strncmp(_otherVars[i]->name(), "PFLWC", 5) == 0)
+      _flowIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "CONC", 4) == 0)
-      concIdx = i;
+    if (strncmp(_otherVars[i]->name(), "CONC", 4) == 0)
+      _concIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "DISP", 4) == 0)
-      dispIdx = i;
+    if (strncmp(_otherVars[i]->name(), "DISP", 4) == 0)
+      _dispIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "DBAR", 4) == 0)
-      dbarIdx = i;
+    if (strncmp(_otherVars[i]->name(), "DBAR", 4) == 0)
+      _dbarIdx = i;
 
-    if (strncmp(otherVars[i]->name(), "PVOL", 4) == 0)
-      volIdx = i;
+    if (strncmp(_otherVars[i]->name(), "PVOL", 4) == 0)
+      _volIdx = i;
     }
 }	/* END CONSTRUCTOR */
 
@@ -46,7 +46,7 @@ void S200::ComputeConcentration(float *accum, float *conc, long countV[],
   float		*counts, *concentration;
   float		*flow;
 
-  flow = otherVarData[flowIdx];
+  flow = otherVarData[_flowIdx];
 
   for (i = 0; i < countV[0] * countV[1]; ++i)
     {
@@ -54,20 +54,20 @@ void S200::ComputeConcentration(float *accum, float *conc, long countV[],
     concentration = &conc[i * VectorLength()];
 
     for (bin = FirstBin(); bin <= LastBin(); ++bin)
-      sampleVolume[bin] = flow[i];
+      _sampleVolume[bin] = flow[i];
 
-    dia = midPointDiam;
+    dia = _midPointDiam;
 
 #define P_VOLUME
 
 #include "pms1d_cv"
 
-    otherVarData[concIdx][i] = totalConcen;
-    otherVarData[dispIdx][i] = disp;
-    otherVarData[dbarIdx][i] = dbar;
+    otherVarData[_concIdx][i] = _totalConcen;
+    otherVarData[_dispIdx][i] = _disp;
+    otherVarData[_dbarIdx][i] = _dbar;
 
-    if (volIdx >= 0)
-      otherVarData[volIdx][i] = pvol;
+    if (_volIdx >= 0)
+      otherVarData[_volIdx][i] = _pvol;
     }
 
 }	/* END COMPUTECONCENTRATION */

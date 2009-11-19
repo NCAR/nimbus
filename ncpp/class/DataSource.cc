@@ -30,37 +30,37 @@ void DataSource::CreateDataSourceWidgets(Widget fileParent, Widget probeParent, 
    */
   for (int i = 0; i < MAX_DATAFILES; ++i)
     {
-    fileB[i] = XmCreateToggleButton(fileParent, (char *)"none", NULL, 0);
-    XtAddCallback(fileB[i], XmNvalueChangedCallback,
+    _fileB[i] = XmCreateToggleButton(fileParent, (char *)"none", NULL, 0);
+    XtAddCallback(_fileB[i], XmNvalueChangedCallback,
                   (XtCallbackProc)SetCurrentFile, (XtPointer)i);
     }
  
-  XtManageChildren(fileB, MAX_DATAFILES);
+  XtManageChildren(_fileB, MAX_DATAFILES);
  
  
   /* Probe Toggle Buttons.
    */
   for (int i = 0; i < MAX_PROBES; ++i)
     {
-    probeB[i] = XmCreateToggleButton(probeParent, (char *)"none        ", NULL, 0);
-    XtAddCallback(probeB[i], XmNvalueChangedCallback,
+    _probeB[i] = XmCreateToggleButton(probeParent, (char *)"none        ", NULL, 0);
+    XtAddCallback(_probeB[i], XmNvalueChangedCallback,
                   (XtCallbackProc)ModifyActiveProbes, (XtPointer)i);
     }
  
-  XtManageChildren(probeB, MAX_PROBES);
+  XtManageChildren(_probeB, MAX_PROBES);
 
 
   /* Accum vs. Conc, etc
    */
-  dataType[0] = XmCreateToggleButton(typeParent, (char *)"Raw Counts", NULL, 0);
-  dataType[1] = XmCreateToggleButton(typeParent, (char *)"Concentrations", NULL, 0);
-  dataType[2] = XmCreateToggleButton(typeParent, (char *)"Surface area", NULL, 0);
-  dataType[3] = XmCreateToggleButton(typeParent, (char *)"Volume", NULL, 0);
-  XtManageChildren(dataType, 4);
-  XmToggleButtonSetState(dataType[1], True, True);
+  _dataType[0] = XmCreateToggleButton(typeParent, (char *)"Raw Counts", NULL, 0);
+  _dataType[1] = XmCreateToggleButton(typeParent, (char *)"Concentrations", NULL, 0);
+  _dataType[2] = XmCreateToggleButton(typeParent, (char *)"Surface area", NULL, 0);
+  _dataType[3] = XmCreateToggleButton(typeParent, (char *)"Volume", NULL, 0);
+  XtManageChildren(_dataType, 4);
+  XmToggleButtonSetState(_dataType[1], True, True);
 
   for (int i = 0; i < 4; ++i)
-    XtAddCallback(dataType[i], XmNvalueChangedCallback,
+    XtAddCallback(_dataType[i], XmNvalueChangedCallback,
           (XtCallbackProc)ModifyActiveDataTypes, NULL);
  
   compute[0] = XmCreateToggleButton(computeParent, (char *)"From file     ", NULL, 0);
@@ -85,25 +85,25 @@ void DataSource::SetFileNames()
 
   for (i = 0; i < fileMgr.NumberOfFiles(); ++i)
     {
-    XtSetSensitive(fileB[i], True);
+    XtSetSensitive(_fileB[i], True);
  
-    label = XmStringCreate((char *)fileMgr.dataFile[i]->FileName().c_str(),
+    label = XmStringCreate((char *)fileMgr._dataFile[i]->FileName().c_str(),
                            XmFONTLIST_DEFAULT_TAG);
     XtSetArg(args[0], XmNlabelString, label);
-    XtSetValues(fileB[i], args, 1);
+    XtSetValues(_fileB[i], args, 1);
     XmStringFree(label);
  
-    if (fileMgr.dataFile[i] == fileMgr.CurrentFile())
-      XmToggleButtonSetState(fileB[i], True, True);
+    if (fileMgr._dataFile[i] == fileMgr.CurrentFile())
+      XmToggleButtonSetState(_fileB[i], True, True);
     }
  
   for (; i < MAX_DATAFILES; ++i)
     {
-    XtSetSensitive(fileB[i], False);
+    XtSetSensitive(_fileB[i], False);
  
     label = XmStringCreate((char *)"none", XmFONTLIST_DEFAULT_TAG);
     XtSetArg(args[0], XmNlabelString, label);
-    XtSetValues(fileB[i], args, 1);
+    XtSetValues(_fileB[i], args, 1);
     XmStringFree(label);
     }
 
@@ -123,32 +123,32 @@ void DataSource::SetProbeNames()
 
     for (i = 0; i < currFile->NumberOfProbes(); ++i)
       {
-      XtSetSensitive(probeB[i], True);
+      XtSetSensitive(_probeB[i], True);
 
       label = XmStringCreate((char *)currFile->probe[i]->Name().c_str(),
                              XmFONTLIST_DEFAULT_TAG);
       XtSetArg(args[0], XmNlabelString, label);
-      XtSetValues(probeB[i], args, 1);
+      XtSetValues(_probeB[i], args, 1);
       XmStringFree(label);
 
-      XmToggleButtonSetState(probeB[i], False, False);
+      XmToggleButtonSetState(_probeB[i], False, False);
 
       for (set = setMgr.FirstSet(); set; set = setMgr.NextSet())
         if (*(set->file()) == *currFile && set->probe() == currFile->probe[i])
-          XmToggleButtonSetState(probeB[i], True, False);
+          XmToggleButtonSetState(_probeB[i], True, False);
       }
     }
  
   for (; i < MAX_PROBES; ++i)
     {
-    XtSetSensitive(probeB[i], False);
+    XtSetSensitive(_probeB[i], False);
  
     label = XmStringCreate((char *)"none", XmFONTLIST_DEFAULT_TAG);
     XtSetArg(args[0], XmNlabelString, label);
-    XtSetValues(probeB[i], args, 1);
+    XtSetValues(_probeB[i], args, 1);
     XmStringFree(label);
 
-    XmToggleButtonSetState(probeB[i], False, False);
+    XmToggleButtonSetState(_probeB[i], False, False);
     }
 
 }	/* END SETPROBENAMES */
@@ -160,7 +160,7 @@ DataType DataSource::ActiveDataTypes()
   DataType dt = 0;
 
   for (i = 0; i < 4; ++i)
-    if (XmToggleButtonGetState(dataType[i]))
+    if (XmToggleButtonGetState(_dataType[i]))
       dt |= (DataType)(0x01 << i);
 
   return(dt);

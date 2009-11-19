@@ -204,25 +204,25 @@ void EditDiameters::SetDiameters(Probe *probe)
     case Probe::FSSP:
     case Probe::S100:
     case Probe::CDP:
-      setSpex("DBZ Factor", cnt++, ((Probe100 *)probe)->DBZfac);
-      setSpex("Liquid Water Content Factor", cnt++, ((Probe100 *)probe)->PLWfac);
-      setSpex("Density of Water", cnt++, ((Probe100 *)probe)->DENS);
-      setSpex("Depth of Field", cnt++, ((Probe100 *)probe)->DOF);
-      setSpex("Beam Diameter", cnt++, ((Probe100 *)probe)->beamDiameter);
+      setSpex("DBZ Factor", cnt++, ((Probe100 *)probe)->_DBZfac);
+      setSpex("Liquid Water Content Factor", cnt++, ((Probe100 *)probe)->_PLWfac);
+      setSpex("Density of Water", cnt++, ((Probe100 *)probe)->_DENS);
+      setSpex("Depth of Field", cnt++, ((Probe100 *)probe)->_DOF);
+      setSpex("Beam Diameter", cnt++, ((Probe100 *)probe)->_beamDiameter);
       break;
 
     case Probe::X260:
     case Probe::TWODP:
     case Probe::TWODC:
-      setSpex("DBZ Factor", cnt++, ((Probe200 *)probe)->DBZfac);
+      setSpex("DBZ Factor", cnt++, ((Probe200 *)probe)->_DBZfac);
 
     case Probe::X200:
     case Probe::Y200:
-      setSpex("Liquid Water Content Factor", cnt++,((Probe200 *)probe)->PLWfac);
-      setSpex("Density of Water", cnt++, ((Probe200 *)probe)->DENS);
-      setSpex("Number of Diodes", cnt++, (float)((Probe200 *)probe)->nDiodes);
-      setSpex("Arm Distance", cnt++, ((Probe200 *)probe)->armDistance);
-      setSpex("Response Time", cnt++, ((Probe200 *)probe)->responseTime);
+      setSpex("Liquid Water Content Factor", cnt++,((Probe200 *)probe)->_PLWfac);
+      setSpex("Density of Water", cnt++, ((Probe200 *)probe)->_DENS);
+      setSpex("Number of Diodes", cnt++, (float)((Probe200 *)probe)->_nDiodes);
+      setSpex("Arm Distance", cnt++, ((Probe200 *)probe)->_armDistance);
+      setSpex("Response Time", cnt++, ((Probe200 *)probe)->_responseTime);
 
       break;
     }
@@ -282,23 +282,23 @@ void EditDiameters::ApplyDiameters(Probe *probe)
   switch (probe->Type())
     {
     case Probe::FSSP:
-      ((FSSP *)probe)->DBZfac = GetTextFloat(text[cnt++]);
-      ((FSSP *)probe)->PLWfac = GetTextFloat(text[cnt++]);
-      ((FSSP *)probe)->DENS = GetTextFloat(text[cnt++]);
-      ((FSSP *)probe)->DOF = GetTextFloat(text[cnt++]);
-      ((FSSP *)probe)->beamDiameter = GetTextFloat(text[cnt++]);
+      ((FSSP *)probe)->_DBZfac = GetTextFloat(text[cnt++]);
+      ((FSSP *)probe)->_PLWfac = GetTextFloat(text[cnt++]);
+      ((FSSP *)probe)->_DENS = GetTextFloat(text[cnt++]);
+      ((FSSP *)probe)->_DOF = GetTextFloat(text[cnt++]);
+      ((FSSP *)probe)->_beamDiameter = GetTextFloat(text[cnt++]);
       break;
 
     case Probe::X260:
-      ((Probe200 *)probe)->DBZfac = GetTextFloat(text[cnt++]);
+      ((Probe200 *)probe)->_DBZfac = GetTextFloat(text[cnt++]);
 
     case Probe::X200:
     case Probe::Y200:
-      ((Probe200 *)probe)->PLWfac = GetTextFloat(text[cnt++]);
-      ((Probe200 *)probe)->DENS = GetTextFloat(text[cnt++]);
-      ((Probe200 *)probe)->nDiodes = GetTextInt(text[cnt++]);
-      ((Probe200 *)probe)->armDistance = GetTextFloat(text[cnt++]);
-      ((Probe200 *)probe)->responseTime = GetTextFloat(text[cnt++]);
+      ((Probe200 *)probe)->_PLWfac = GetTextFloat(text[cnt++]);
+      ((Probe200 *)probe)->_DENS = GetTextFloat(text[cnt++]);
+      ((Probe200 *)probe)->_nDiodes = GetTextInt(text[cnt++]);
+      ((Probe200 *)probe)->_armDistance = GetTextFloat(text[cnt++]);
+      ((Probe200 *)probe)->_responseTime = GetTextFloat(text[cnt++]);
       break;
     }
 

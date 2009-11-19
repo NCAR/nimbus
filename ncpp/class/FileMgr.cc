@@ -10,10 +10,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 
 /* -------------------------------------------------------------------- */
-FileManager::FileManager()
+FileManager::FileManager() : _numberFiles(0), _currentFile(0)
 {
-  numberFiles = 0;
-  currentFile = 0;
 
 }	/* END CONTRUCTOR */
 
@@ -22,22 +20,22 @@ void FileManager::NewFile(const char fileName[])
 {
   extern PlotManager	*plotMgr;
 
-  while (--numberFiles >= 0)
-    delete dataFile[numberFiles];
+  while (--_numberFiles >= 0)
+    delete _dataFile[_numberFiles];
 
-  numberFiles = 1;
-  currentFile = 0;
+  _numberFiles = 1;
+  _currentFile = 0;
 
-  dataFile[0] = new DataFile(fileName);
+  _dataFile[0] = new DataFile(fileName);
 
-  plotMgr->GenerateAutoTitles(*dataFile[0]);
+  plotMgr->GenerateAutoTitles(*_dataFile[0]);
 
 }	/* END NEWFILE */
 
 /* -------------------------------------------------------------------- */
 void FileManager::AddFile(const char fileName[])
 {
-  dataFile[numberFiles++] = new DataFile(fileName);
+  _dataFile[_numberFiles++] = new DataFile(fileName);
 
 }	/* END ADDFILE */
 

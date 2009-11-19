@@ -26,10 +26,10 @@ public:
 		const std::vector<float *> & otherVarData);
 
 private:
-  float	totalConcen, dbar, pvol, disp;
+  float	_totalConcen, _dbar, _pvol, _disp;
 
-  int	actIdx, flowIdx;			// Inputs
-  int	concIdx, dbarIdx, dispIdx, volIdx;	// Outputs
+  int	_actIdx, _flowIdx;			// Inputs
+  int	_concIdx, _dbarIdx, _dispIdx, _volIdx;	// Outputs
 
 };	// END PCASP.H
 

@@ -29,11 +29,11 @@ public:
 		const std::vector<float *> & otherVarData);
 
 private:
-  float	PLWfac, DBZfac, DENS;
-  float	totalConcen, dbar, plwc, dbz, disp;
+  float	_PLWfac, _DBZfac, _DENS;
+  float	_totalConcen, _dbar, _plwc, _dbz, _disp;
 
-  int	tasIdx;				// Inputs
-  int	concIdx, dbarIdx, lwIdx, dispIdx, dbzIdx;	// Outputs
+  int	_tasIdx;				// Inputs
+  int	_concIdx, _dbarIdx, _lwIdx, _dispIdx, _dbzIdx;	// Outputs
 
 };	// END HVPS.H
 

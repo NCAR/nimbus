@@ -18,15 +18,15 @@ X200::X200(NcFile *file, NcVar *av) : Probe200(file, av)
 {
   NcAtt		*attr;
 
-  if ((attr = avar->get_att("nDiodes")))
-    nDiodes = attr->as_int(0);
+  if ((attr = _avar->get_att("nDiodes")))
+    _nDiodes = attr->as_int(0);
   else
-    nDiodes = 15;
+    _nDiodes = 15;
 
-  if ((attr = avar->get_att("ArmDistance")))
-    armDistance = attr->as_float(0);
+  if ((attr = _avar->get_att("ArmDistance")))
+    _armDistance = attr->as_float(0);
   else
-    armDistance = 61.0;
+    _armDistance = 61.0;
 
   ComputeWidths();
 

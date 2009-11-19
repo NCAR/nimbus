@@ -29,10 +29,10 @@ public:
 		const std::vector<float *> & otherVarData);
 
 private:
-  float	totalConcen, dbar, pvol, disp;
+  float	_totalConcen, _dbar, _pvol, _disp;
 
-  int	tasIdx;				// Inputs
-  int	concIdx, dbarIdx, volIdx;	// Outputs
+  int	_tasIdx;			// Inputs
+  int	_concIdx, _dbarIdx, _volIdx;	// Outputs
 
 };	// END F300.H
 

@@ -30,24 +30,24 @@ public:
   void		NewFile(const char fileName[]);
   void		AddFile(const char fileName[]);
 
-  void		SetCurrentFile(int newFile)	{ currentFile = newFile; }
+  void		SetCurrentFile(int newFile)	{ _currentFile = newFile; }
 
-  int		NumberOfFiles()	const	{ return(numberFiles); }
+  int		NumberOfFiles()	const	{ return(_numberFiles); }
   DataFile	*CurrentFile() const
-	{ return(numberFiles == 0 ? (DataFile *)NULL : dataFile[currentFile]); }
+	{ return(_numberFiles == 0 ? (DataFile *)NULL : _dataFile[_currentFile]); }
 
   DataFile	*FirstFile()
-	{ return(numberFiles == 0 ? (DataFile *)NULL : dataFile[nextCnt = 0]); }
+	{ return(_numberFiles == 0 ? (DataFile *)NULL : _dataFile[_nextCnt = 0]); }
 
   DataFile	*NextFile()
-	{ return(++nextCnt == numberFiles ? (DataFile *)NULL : dataFile[nextCnt]); }
+	{ return(++_nextCnt == _numberFiles ? (DataFile *)NULL : _dataFile[_nextCnt]); }
 
 private:
-  int	numberFiles;
-  int	currentFile;
-  int	nextCnt;
+  int	_numberFiles;
+  int	_currentFile;
+  int	_nextCnt;
 
-  DataFile	*dataFile[MAX_DATAFILES];
+  DataFile	*_dataFile[MAX_DATAFILES];
 
 };	// END FILEMGR.H
 
