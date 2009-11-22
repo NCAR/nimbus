@@ -89,7 +89,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			if (ncdata.getProgIdx()<taskLen) {
 				statusBar.setText("Canceled. taskLen= "+ taskLen + " finished= "+ ncdata.getProgIdx());
 			} else {
-				statusBar.setText("  Done.    Elapsed time is " + (ncdata.getTmPassed() / 1000)+ " seconds." );
+				statusBar.setText("  Done.    Elapsed time is " + ncdata.getTmPassed()/1000.0 + " seconds." );
 			}
 			//setCursor(Cursor.DEFAULT_CURSOR); //turn off the wait cursor
 			pfrm.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -167,7 +167,6 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			c.gridy = 2;
 			c.gridheight=GridBagConstraints.REMAINDER;
 			c.gridwidth=5;
-			//c.anchor = GridBagConstraints.PAGE_END; // bottom of space
 			pane.add(createUITbl(), c);
 
 			// row -3 add buttons
@@ -180,13 +179,15 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			c.insets = new Insets(55, 0, 0, 0); // top paddingreadData
 			pane.add(createUIBtns(), c);
 
+			//c.insets = new Insets(60, 0, 0, 0); // top padding
 			c.ipadx=5;
 			c.gridwidth= GridBagConstraints.REMAINDER;
-			c.gridheight=1;
+			c.gridheight=1;//GridBagConstraints.REMAINDER;
 			//c.anchor=GridBagConstraints.SOUTH;
 			c.gridx = 0; // aligned with col3
 			c.gridy = 3;//2; // 2--4th row
-			c.insets = new Insets(15, 0, 0, 0); // top paddingreadData
+			c.anchor = GridBagConstraints.PAGE_END; // bottom of space
+			c.insets = new Insets(25, 0, 0, 0); // top paddingreadData
 			statusBar = new StatusBarMsg(); 
 			statusBar.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 			NC2Act.setStatusBar(statusBar);
