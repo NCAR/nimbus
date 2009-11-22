@@ -646,11 +646,12 @@ if (debug)
 
       if ((slice & Fast2DC_Mask) == Fast2DC_Overld)
       {
-        // Set 'overload' variable here.
-        record->overld = overload = (thisTimeWord - prevTimeWord) / 1000;
+        // Set 'overload' variable here.  There is no way to determine overload.
+        // Leave zero, they are less than a milli-second anyways.
+        record->overld = overload = 0;
 
-        printf(">>> Fast2DC overload @ %02d:%02d:%02d.%-3d for %10.3f usec duration. <<<\n",
-		record->hour, record->minute, record->second, record->msec, (float)(thisTimeWord - prevTimeWord) / 1000);
+        printf(">>> Fast2DC overload @ %02d:%02d:%02d.%-3d. <<<\n",
+		record->hour, record->minute, record->second, record->msec);
 
         if (cp)
           cp->reject = true;
