@@ -10,5 +10,6 @@ IFS=:
 CLASSPATH="${cp[*]}"
 IFS=$OLDIFS
 
+echo $CLASSPATH
 export CLASSPATH
 

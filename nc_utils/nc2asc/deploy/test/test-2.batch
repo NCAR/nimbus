@@ -1,0 +1,12 @@
+if= lrt.nc
+of= lrt-test-2.asc
+
+hd= AmesDEF
+avg= 1
+dt= yyy-mm-dd
+tm= hh:mm:ss
+sp= Space
+fv= FillValue
+
+var= VAR1
+var= VAR4

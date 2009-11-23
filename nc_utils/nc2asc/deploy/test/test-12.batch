@@ -1,0 +1,12 @@
+if= lrt.nc
+of= lrt-test-12.asc
+
+hd= Plain
+avg= 1
+dt= yyy-mm-dd
+tm= hh:mm:ss
+sp= Space
+fv= FillValue
+ti= 2001-9-20,16:00:00 ~ 2001-9-20,16:00:30
+var= VAR1
+var= VAR4

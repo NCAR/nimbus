@@ -1,6 +1,16 @@
 #!/bin/sh
 
-source classpath.sh
+cp=(lib/*.jar )
+OLDIFS=$IFS
+IFS=:
+# This syntax for expanding an array expands to a single word
+# with each member separated by the first character in IFS
+CLASSPATH="${cp[*]}"
+IFS=$OLDIFS
+
+echo $CLASSPATH
+export CLASSPATH
+
 
 [ -d classes ] || mkdir classes
 
