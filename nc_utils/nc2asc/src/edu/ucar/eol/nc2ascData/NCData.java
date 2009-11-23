@@ -709,23 +709,20 @@ public class NCData {
 		String dfmt = fmt[DataFmt.TMSET_IDX];
 		if (dfmt==null || dfmt.isEmpty() || dfmt.equals(DataFmt.FULLTM)) {
 			tmRange[0]=0;
-			//	if (v.isUnlimited())	tmRange[1] = fin.getUnlimitedDimension().getLength();
 			tmRange[1] =(int) v.getSize();
-			//tmRange[1]= fin.getUnlimitedDimension().getLength();
 			return tmRange;
 		}
 		String[] selectTm = dfmt.split(DataFmt.TMSETDELIMIT);
 		if (selectTm[0]==null || selectTm[0].isEmpty()) {
 			tmRange[0]=0;
 		} else {
-			long selBegIdx = Long.parseLong(selectTm[0]);
-			tmRange[0]= (int)(selBegIdx - ncBegIdx)/1000;
+			long selBegIdx = Long.parseLong(selectTm[0].trim());
+			tmRange[0]= (int)((selBegIdx - ncBegIdx)/1000);
 		}
 		if (selectTm[1]==null || selectTm[1].isEmpty()) {
-			//if (v.isUnlimited())	tmRange[1] = fin.getUnlimitedDimension().getLength();
 			tmRange[1] =(int) v.getSize();
 		} else {
-			tmRange[1]= Integer.parseInt(selectTm[1]);
+			tmRange[1]= Integer.parseInt(selectTm[1].trim());
 		}
 		return tmRange;
 	} 

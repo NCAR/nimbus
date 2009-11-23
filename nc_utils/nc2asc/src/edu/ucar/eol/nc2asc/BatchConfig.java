@@ -321,6 +321,7 @@ public class BatchConfig {
 
 		Calendar cl = Calendar.getInstance();
 		cl.set(y,mm,d,h,m,s);
+		cl.set(Calendar.MILLISECOND, 0);
 
 		//end time  
 		String[] end = tt[1].split(DataFmt.COMMAVAL); 
@@ -337,16 +338,17 @@ public class BatchConfig {
 
 		Calendar cl2 = Calendar.getInstance();
 		cl2.set(y,mm,d,h,m,s);
+		cl2.set(Calendar.MILLISECOND, 0);
 
 		//time range in seconds
-		int range =(int)(cl2.getTimeInMillis() - cl.getTimeInMillis())/1000 ;
+		int range =(int)(cl2.getTimeInMillis()/1000 - cl.getTimeInMillis()/1000) ;
 		if (range<0){
 			if (_dbg) System.out.println("The ending time is smaller than starting time. Use default");
 			return DataFmt.FULLTM;
 		}
 		//int aj=0;
 
-		String ret = (cl.getTimeInMillis()+ 400  )+ DataFmt.TMSETDELIMIT;
+		String ret = cl.getTimeInMillis()+ DataFmt.TMSETDELIMIT;
 		return ret+range;
 	}
 
@@ -373,6 +375,7 @@ public class BatchConfig {
 		//check time
 		item = dataFmt[DataFmt.TM_IDX];
 		if (item!=null && !item.isEmpty() &&( item.equals( DataFmt.TIMECOLON)  ||item.equals(DataFmt.TIMENOSPACE) || item.equals(DataFmt.TIMESPACE)|| item.equals(DataFmt.TIMESEC))) {
+			if (item.equals(DataFmt.TIMESEC)) dataFmt[DataFmt.DATE_IDX]= DataFmt.NODATE; //if tm=SecOfDay set date=none
 		} else {
 			if (_dbg) System.out.println("Can not find a good time format. Use default format..."+ item);
 			dataFmt[DataFmt.TM_IDX]= DataFmt.TIMECOLON;

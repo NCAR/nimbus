@@ -135,6 +135,7 @@ public class NC2A extends JPanel implements ActionListener {
 		int[] range = new int[2];
 		try {
 			range = ncdata.calBatchTmRange(fmt);
+			
 		} catch (Exception ee) {
 			System.out.println("Batch-mode calBatchTmRange fails..."+ ee.getStackTrace());
 			return;
@@ -158,7 +159,7 @@ public class NC2A extends JPanel implements ActionListener {
 		String out= ncdata.genVarName(sublvars, fmt);
 		ncdata.writeOut(out+"\n"); 
 		ncdata.writeDataToFile(sublvars, range, fmt);
-		System.out.println("Writing is completed.");
+		//System.out.println("Writing is completed.");
 
 	}
 
