@@ -107,6 +107,7 @@ public:
   const std::string& FlightNumber() const { return _flightNumber; }
   const std::string& FlightDate() const { return _flightDate; }
   const std::string& ADSfileExtension() const { return _adsFileExtension; }
+  const std::string& Checksum() const { return _checksum; }
 
   void SetProjectDirectory(const std::string s)	{ _projectDirectory = s; }
   void SetProjectName(const std::string s)	{ _projectName = s; }
@@ -114,6 +115,7 @@ public:
   void SetTailNumber(const std::string s)	{ _tailNumber = s; }
   void SetFlightNumber(const std::string s)	{ _flightNumber = s; }
   void SetFlightDate(const std::string s)	{ _flightDate = s; }
+  void SetChecksum(const std::string s)		{ _checksum = s; }
 
   std::string CoordinateVariables() const
   { return _coordLON + " " + _coordLAT + " " + _coordALT + " " + _coordTime; }
@@ -176,6 +178,7 @@ private:
   std::string _flightNumber;
   std::string _flightDate;
   std::string _adsFileExtension;
+  std::string _checksum;
 
   std::string _coordLAT;
   std::string _coordLON;

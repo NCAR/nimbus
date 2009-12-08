@@ -16,9 +16,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 #include "nimbus.h"
 #include "decode.h"
 #include "grnd_feed.h"
+#include "md5.h"
 
 #include <sstream>
 #include <bzlib.h>
+#include <sys/stat.h>
 
 //const int GroundFeed::GRND_UDP_PORT = 31007;
 // eol-rt-data.guest.ucar.edu
@@ -53,6 +55,9 @@ GroundFeed::GroundFeed(int rate) : UDP_Base(31007), _dataRate(rate)
        _lastGoodDataIncrement.push_back(0);
      }
   }
+
+  // compute checksum for this flight, store in cfg
+  cfg.SetChecksum(calculateChecksum());
 }
 
 /* -------------------------------------------------------------------- */
@@ -76,12 +81,12 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
 	throw(IOException)
 {
   static int rate_cntr = 0;
+  static bool valid_ground_conn = false;
 
   if (cfg.GroundFeedType() != Config::UDP)
     return;
-
-  if (rate_cntr++ < 180)  // Don't transmit the first couple minutes.
-    return;
+    
+  rate_cntr++;
 
   extern NR_TYPE * AveragedData;
 
@@ -108,6 +113,11 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
   if ((rate_cntr % _dataRate) != 0)
     return;
  
+  struct stat stFileInfo;
+  if ( !valid_ground_conn  ) {
+    valid_ground_conn = stat("/tmp/xmit/noconn", &stFileInfo) != 0;
+    return; // Don't transmit until noconn file is removed 
+  }
 
   // Compose the string to send to the ground
   std::stringstream groundString;
@@ -223,3 +233,19 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
 //  printf("\ncompressed %d -> %d\n", groundString.str().length(), bufLen);
   printf("GroundFeed: %s\n", groundString.str().c_str());
 }
+
+/* -------------------------------------------------------------------- */
+std::string GroundFeed::calculateChecksum() {
+
+  if (_varList.size() == 0) return "0";
+
+  //calculate current md5 using proj, platform, flight# and var list.
+  std::string md5_instring = cfg.ProjectName() + cfg.TailNumber() 
+    + cfg.FlightNumber();
+
+  for (unsigned int i=0; i<_varList.size(); i++)
+    md5_instring += _varList[i]->name;
+
+  return md5(md5_instring);
+}
+
