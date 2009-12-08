@@ -844,8 +844,7 @@ PostgreSQL::outputGroundDBInitPacket()
 
   if (pid == 0)
   {
-//    const char * command = "/home/local/Systems/scripts/sendSQL";
-    const char * command = "/tmp/checksumNimbus/sendSQL";
+    const char * command = "/home/local/Systems/scripts/sendSQL";
 
     if ( execlp(command, command, (const char *)fName, (const char *)0) == -1 ) {
 
