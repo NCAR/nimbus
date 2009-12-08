@@ -25,6 +25,8 @@ public:
   void	BroadcastData(const std::string & timeStamp)
 	throw(nidas::util::IOException);
 
+  std::string calculateChecksum();
+
 protected:
   /**
    * Determine coordinates attribute for real-time database.  Use ground

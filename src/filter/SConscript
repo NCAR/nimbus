@@ -57,6 +57,7 @@ interp.c
 log.c
 logfile.c
 lrloop.c
+md5.cc
 memalloc.cc
 netcdf.c
 nimbus.c

@@ -65,6 +65,9 @@ PostgreSQL::PostgreSQL(std::string specifier)
     initializeVariableList();
     submitCommand(
     "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current;", true);
+
+    submitCommand("INSERT INTO global_attributes VALUES ('checksum', '" + cfg.Checksum() + "');", cfg.TransmitToGround());
+
   }
 
 }	/* END CTOR */
@@ -97,7 +100,8 @@ PostgreSQL::WriteSQL(const std::string & timeStamp)
 	<< timeStamp << "');";
     submitCommand(_sqlString.str(), true);
 
-    outputGroundDBInitPacket();
+    if (cfg.TransmitToGround())
+      outputGroundDBInitPacket();
   }
 
 
@@ -289,6 +293,7 @@ PostgreSQL::initializeVariableList()
   int	nDims, dims[3];
 
   rateTableMap		rateTableMap;
+  std::stringstream groundLrtTable;
 
   nDims = 1;
   dims[0] = 1;
@@ -356,9 +361,9 @@ PostgreSQL::initializeVariableList()
     /* Don't add/duplicate rate 1. Don't add vectors for the time being.
      */
     if (raw[i]->SampleRate > 1 && raw[i]->Length == 1)
-      addVariableToTables(rateTableMap, raw[i], true);
+      addVariableToTables(rateTableMap, groundLrtTable, raw[i], true);
     else
-      addVariableToTables(rateTableMap, raw[i], false);
+      addVariableToTables(rateTableMap, groundLrtTable, raw[i], false);
   }
 
 
@@ -377,9 +382,10 @@ PostgreSQL::initializeVariableList()
       nDims = 1;
 
     addVariableToDataBase(derived[i], nDims, dims, noCals, MISSING_VALUE);
-    addVariableToTables(rateTableMap, derived[i], false);
+    addVariableToTables(rateTableMap, groundLrtTable, derived[i], false);
   }
 
+  _groundDBinitString << groundLrtTable.str();
   /* Send commands to create the "SampleRate*" tables.
    */
   createSampleRateTables(rateTableMap);
@@ -599,7 +605,7 @@ PostgreSQL::addCategory(std::stringstream& entry, const var_base * var) const
 
 /* -------------------------------------------------------------------- */
 void
-PostgreSQL::addVariableToTables(rateTableMap &tableMap, const var_base *var,
+PostgreSQL::addVariableToTables(rateTableMap &tableMap, std::stringstream &groundLrtTable, const var_base *var,
   bool addToSRTtable)
 {
   std::vector<int> rates;
@@ -635,10 +641,10 @@ PostgreSQL::addVariableToTables(rateTableMap &tableMap, const var_base *var,
      */
     if (i == 0 && var->Transmit) // Only do this for LRT table.
     {
-      if (_groundDBinitString.str().length() == 0)
-        _groundDBinitString << preamble.str();
+      if (groundLrtTable.str().length() == 0)
+        groundLrtTable << preamble.str();
       else
-        _groundDBinitString << ',';
+        groundLrtTable << ',';
     }
 
     if (tableMap[preamble.str()].length() > 0)
@@ -651,7 +657,7 @@ PostgreSQL::addVariableToTables(rateTableMap &tableMap, const var_base *var,
 
     tableMap[preamble.str()] += build;
     if (i == 0 && var->Transmit)
-      _groundDBinitString << build;
+      groundLrtTable << build;
   }
 }	// END ADDVARIABLETOTABLES
 
@@ -695,6 +701,7 @@ PostgreSQL::getGlobalAttribute(const char key[]) const
 bool
 PostgreSQL::isSameFlight() const
 {
+
   // Anything not starting with pre-ordained prefix is not the same flight.
   // FlightNumber="hangar" being the most obvious.
   if (cfg.FlightNumber().compare(0, 2, "rf") != 0 &&
@@ -831,6 +838,23 @@ PostgreSQL::outputGroundDBInitPacket()
 
   gzwrite(gzfd, _groundDBinitString.str().c_str(), _groundDBinitString.str().length());
   gzclose(gzfd);
+
+  //launch sendSQL script - will send init packet until checksums match.
+  pid_t pid = fork();
+
+  if (pid == 0)
+  {
+//    const char * command = "/home/local/Systems/scripts/sendSQL";
+    const char * command = "/tmp/checksumNimbus/sendSQL";
+
+    if ( execlp(command, command, (const char *)fName, (const char *)0) == -1 ) {
+
+      fprintf(stderr, "nimbus:psql.cc: Failed to execute '%s', errno = %d\n",
+        command, errno);
+      _exit(1);
+    }
+    _exit(0);
+  }
 }
 
 /* -------------------------------------------------------------------- */

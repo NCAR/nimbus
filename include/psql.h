@@ -174,7 +174,7 @@ protected:
    * the DB.
    */
   void
-  addVariableToTables(rateTableMap &tableMap, const var_base *var, bool addToSRTtable);
+  addVariableToTables(rateTableMap &tableMap, std::stringstream &groundLrtTable, const var_base *var, bool addToSRTtable);
 
 
   /**
