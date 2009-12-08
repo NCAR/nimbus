@@ -1,5 +1,10 @@
 #!/bin/csh
 
+@ num = 0
+if ($#argv > 0) then
+  @ num = $1
+endif
+
 # Environment variables that are needed:
 # setenv JLOCAL /opt/local
 # setenv LOCAL /opt/local
@@ -55,18 +60,33 @@ test -d ${JLOCAL}/man/man3 || mkdir ${JLOCAL}/man/man3
 
 foreach file ( libraf libraf++ ads2/hdr_api libpms vardb/lib )
   (cd $file; echo $file; make install)
+  if ($num > 0) then
+    echo "$file BUILT"
+    sleep $num
+    reset
+  endif
 end
 
 # Programs with "install" target.
 
 foreach file ( psql2xml ads2/hdrbld ncplot ncpp/src vardb/editor ads2/xhd xpms2d/src nimbus/src/qc instruments/rdma ads_utils/edADShdr)
   (cd $file; echo ""; make install)
+  if ($num > 0) then
+    echo "$file BUILT"
+    sleep $num
+    reset
+  endif
 end
 
 # Programs using "scons".
 
 foreach file ( nimbus GoogleEarth/acTrack2kml )
   (cd $file; echo $file; scons install)
+  if ($num > 0) then
+    echo "$file BUILT"
+    sleep $num
+    reset
+  endif
 end
 
 # Programs withOUT install target.  WINDS requires xview toolkit.
@@ -75,6 +95,11 @@ if ( $?WINDS ) then
   cd ad2
   foreach file ( ads/disc/src ads/dsm/src winds/src )
     (cd $file; echo $file; make)
+    if ($num > 0) then
+      echo "$file BUILT"
+      sleep $num
+      reset
+    endif
   end
   cd ..
 endif
@@ -85,6 +110,11 @@ endif
 setenv NIMBUS `pwd`/nimbus
 foreach file ( instruments/hvps/hvpsdiag instruments/usb2d/usb2diag )
   (cd $file; echo $file; qmake; make)
+  if ($num > 0) then
+    echo "$file BUILT"
+    sleep $num
+    reset
+  endif
 end
 unsetenv NIMBUS
 
@@ -94,5 +124,10 @@ unsetenv NIMBUS
 cd nc_utils
 foreach file ( asc2cdf flt_time n2asc ncReorder ncav ncextr ncfillvar ncmerge nc_sane )
   (cd $file; echo $file; make install)
+  if ($num > 0) then
+    echo "$file BUILT"
+    sleep $num
+    reset
+  endif
 end
 cd ..
