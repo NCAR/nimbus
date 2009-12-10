@@ -34,6 +34,12 @@ protected:
    */
   static const size_t RADAR_ALT_INDX;
 
+  /**
+   * We only put out mach number squared, so we will convert it to mach number
+   * before sending in IWG1 packet.
+   */
+  static const size_t MACH_NUMBER_INDX;
+
   static const std::string InterfacePrefix;
 };
 
