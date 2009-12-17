@@ -27,14 +27,14 @@ without express or implied warranty of any kind.
 
 These notices must be retained in any copies of any part of this
 documentation and/or software.
-
 */
 
 /* interface header */
 #include "md5.h"
 
 /* system implementation headers */
-#include <stdio.h>
+#include <cstdio>
+#include <cstring>
 
 
 // Constants for MD5Transform routine.
