@@ -50,6 +50,8 @@ static const std::string _dataQuerySuffix = ",atx,tasx,wsc,wdc,wic FROM raf_lrt 
 class _projInfo
 {
 public:
+  _projInfo() : groundFeedDataRate(1) { };
+
   std::string platform;
   std::string projectName;
   std::string flightNumber;
@@ -166,9 +168,9 @@ std::string
 startBubbleCDATA()
 {
   std::stringstream s;
-  std::string startTime = _date[0].substr(_date[0].find('T'));
+  std::string startTime = _date[0].substr(_date[0].find('T')+1);
 
-  s     << "<![CDATA[Take off :" << startTime
+  s     << "<![CDATA[" << startTime
         << "<br>Alt : " << _alt[0]
         << " feet<br>Temp : " << firstAT
         << " C<br>WS : " << firstWS
@@ -333,7 +335,6 @@ void WriteTimeStampsKML(std::ofstream & googleEarth)
     curr_ts = this_ts / ts_Freq;
     if ( (i == 0) || (curr_ts != last_ts) || (i == _date.size()-1) ) {
       last_ts = curr_ts;
-      std::cout << hour << ":" << minute << ":" << second << std::endl;
       std::string label = _date[i].substr(11, 5);
       googleEarth
         << "  <Placemark>\n"
@@ -854,12 +855,20 @@ void ReadDataFromNetCDF(const std::string & fileName)
   NcVar* lat_v = file.get_var(lat);
   NcVar* lon_v = file.get_var(lon);
   NcVar* alt_v = file.get_var(alt);
+  NcVar* atx_v = file.get_var("ATX");
+  NcVar* ws_v = file.get_var("WSC");
+  NcVar* wi_v = file.get_var("WIC");
+  NcVar* wd_v = file.get_var("WDC");
 
   NcValues *tim_vals = tim_v->values();
   NcValues *tas_vals = tas_v->values();
   NcValues *lat_vals = lat_v->values();
   NcValues *lon_vals = lon_v->values();
   NcValues *alt_vals = alt_v->values();
+  NcValues *atx_vals = atx_v->values();
+  NcValues *ws_vals = ws_v->values();
+  NcValues *wi_vals = wi_v->values();
+  NcValues *wd_vals = wd_v->values();
 
   attr = tim_v->get_att("units");
   struct tm tm;
@@ -883,12 +892,21 @@ void ReadDataFromNetCDF(const std::string & fileName)
 
     char buffer[60];
     time_t thist = t + tim_vals->as_int(i);
-    strftime(buffer, 60, "%F %T", gmtime(&thist));
+    strftime(buffer, 60, "%FT%T", gmtime(&thist));
     _date.push_back( buffer );
     _lon.push_back( lon_vals->as_float(i) );
     _lat.push_back( lat_vals->as_float(i) );
     _alt.push_back( alt_vals->as_float(i) * 3.2808 );
+    _at.push_back( atx_vals->as_float(i) );
+    _ws.push_back( ws_vals->as_float(i) );
+    _wi.push_back( wi_vals->as_float(i) );
+    _wd.push_back( wd_vals->as_float(i) );
   }
+
+  firstAT = _at[0];
+  firstWS = _ws[0];
+  firstWD = _wd[0];
+  firstWI = _wi[0];
 }
 
 /* -------------------------------------------------------------------- */
