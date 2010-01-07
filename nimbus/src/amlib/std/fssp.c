@@ -184,14 +184,14 @@ void scfssp(DERTBL *varp)
   NR_TYPE	tas;		/* True Air Speed	*/
   NR_TYPE	activity;	/* Activity		*/
   NR_TYPE	fbmfr;		/* Beam Fraction	*/
-  NR_TYPE	frange;
+  int		frange;
   NR_TYPE	sampleVolume[BINS_16];
 
   const NR_TYPE * actual = GetVector(varp, 0);
   tas		= GetSampleFor1D(varp, 1);
   activity	= GetSample(varp, 2);
   fbmfr		= GetSample(varp, 3);
-  frange	= GetSample(varp, 4);
+  frange	= (int)GetSample(varp, 4);
   probeNum	= varp->ProbeCount;
 
   if (tas < 0.0) tas = 0.0;
@@ -215,9 +215,9 @@ void scfssp(DERTBL *varp)
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
     sampleVolume[i] = vol[probeNum];
 
-  dia = &fssp_csiz[probeNum][(int)frange * varp->Length];
-  dia2 = &fssp_csiz2[probeNum][(int)frange * varp->Length];
-  dia3 = &fssp_csiz3[probeNum][(int)frange * varp->Length];
+  dia = &fssp_csiz[probeNum][frange * varp->Length];
+  dia2 = &fssp_csiz2[probeNum][frange * varp->Length];
+  dia3 = &fssp_csiz3[probeNum][frange * varp->Length];
 
 #define PLWC
 #define DBZ
@@ -241,14 +241,14 @@ void scs100(DERTBL *varp)
   NR_TYPE       tas;		/* True Air Speed		*/
   NR_TYPE       rejAT;		/* Rejected, Avg Transit	*/
   NR_TYPE       oflow;		/* Lost counts to overflow	*/
-  NR_TYPE       frange;
+  int	       frange;
   NR_TYPE       sampleVolume[BINS_40+1];
 
   const NR_TYPE * actual = GetVector(varp, 0);
   tas		= GetSampleFor1D(varp, 1);
   rejAT		= GetSample(varp, 2);
   oflow		= GetSample(varp, 3);
-  frange	= GetSample(varp, 4);
+  frange	= (int)GetSample(varp, 4);
   probeNum	= varp->ProbeCount;
 
   if (tas < 0.0) tas = 0.0;
@@ -283,9 +283,9 @@ void scs100(DERTBL *varp)
 
   if (frange < 0 || frange > 3)
     frange = 0;
-  dia = &fssp_csiz[probeNum][(int)frange * varp->Length];
-  dia2 = &fssp_csiz2[probeNum][(int)frange * varp->Length];
-  dia3 = &fssp_csiz3[probeNum][(int)frange * varp->Length];
+  dia = &fssp_csiz[probeNum][frange * varp->Length];
+  dia2 = &fssp_csiz2[probeNum][frange * varp->Length];
+  dia3 = &fssp_csiz3[probeNum][frange * varp->Length];
 
 #define PLWC
 #define DBZ
