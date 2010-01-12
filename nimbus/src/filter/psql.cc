@@ -33,6 +33,8 @@ std::string readLandmarks();
 /* -------------------------------------------------------------------- */
 PostgreSQL::PostgreSQL(std::string specifier)
 {
+  ILOG(("PostgreSQL ctor, spec = %s", specifier.c_str()));
+
   _conn = PQconnectdb(specifier.c_str());
 
   /* check to see that the backend connection was successfully made
