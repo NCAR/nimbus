@@ -59,7 +59,9 @@ int ReadTextFile(const std::string& filename, char **list)
 
     *list = new char[(len = strlen(buffer))];
 
-    buffer[len-1] = '\0';
+    if (buffer[len-1] == '\n')
+      buffer[len-1] = '\0';
+
     strcpy(*list++, buffer);
     ++cnt;
     }

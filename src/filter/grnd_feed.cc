@@ -32,6 +32,8 @@ using namespace nidas::util;
 /* -------------------------------------------------------------------- */
 GroundFeed::GroundFeed(int rate) : UDP_Base(31007), _dataRate(rate)
 {
+  ILOG(("GroundFeed ctor"));
+
   if (cfg.GroundFeedType() != Config::UDP)
     return;
 
