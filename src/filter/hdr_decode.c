@@ -305,7 +305,7 @@ int DecodeHeader3(const char header_file[])
 
   strcpy(sync_server_pipe, "/tmp/sync_server_XXXXXX");
 
-printf("DecodeHeader3: header_file=%s\n", header_file);
+  ILOG(("DecodeHeader3: header_file=%s", header_file));
 
   if (cfg.ProcessingMode() == Config::PostProcessing)
   {

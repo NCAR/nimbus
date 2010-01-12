@@ -108,7 +108,7 @@ void RTinit_ADS3()
   if (mcStat)
     mcStat->sendStatus("----- started -----");
 
-printf("RTinit_ADS3, establishing connection....\n");
+  ILOG(("RTinit_ADS3, establishing connection."));
 
   cfg.SetADSVersion(Config::ADS_3);
   cfg.SetProcessingMode(Config::RealTime);
@@ -120,7 +120,9 @@ printf("RTinit_ADS3, establishing connection....\n");
   GetDataDirectory(buffer);
   strcat(buffer, "/real-time.nc");
   XmTextFieldSetString(outputFileText, buffer);
-printf("netCDF file = %s\n", buffer);
+
+  ILOG(("  netCDF file = %s", buffer));
+
 }	/* END RTINIT_ADS3 */
 
 /* -------------------------------------------------------------------- */
@@ -130,7 +132,7 @@ void RealTimeLoop3()
   size_t cntr = 0;
   nidas::core::dsm_time_t tt;
 
-  ILOG(("RealTimeLoop entered."));
+  ILOG(("RealTimeLoop3 entered."));
 
   bcast = new Broadcast();	// ASCII/IWG1 and ground feed.
 

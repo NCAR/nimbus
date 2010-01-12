@@ -95,6 +95,7 @@ void ReadDependencies()
 /* -------------------------------------------------------------------- */
 void SetupDependencies()
 {
+  ILOG(("SetupDependencies"));
   setupDependencies(true);
 }
 

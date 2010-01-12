@@ -145,6 +145,8 @@ static void putGlobalAttribute(const char attrName[], const std::string value)
 /* -------------------------------------------------------------------- */
 void CreateNetCDF(const char fileName[])
 {
+  ILOG(("CreatingNetCDF, file = %s", fileName));
+
   ncopts = NC_VERBOSE;
 
   if ((fd = nccreate(fileName, NC_CLOBBER)) == -1)
