@@ -52,6 +52,8 @@ void InitAircraftDependencies()
 {
   NR_TYPE *tmp;
 
+  ILOG(("InitAircraftDependencies"));
+
   /* Set up default values first, then AC dependant.
    */
 

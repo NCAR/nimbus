@@ -35,6 +35,8 @@ static const char *suffix;
 /* -------------------------------------------------------------------- */
 void RunAMLIBinitializers()
 {
+  ILOG(("RunAMLIBinitializers"));
+
   for (size_t i = 0; i < raw.size(); ++i)
     if (raw[i]->Initializer)
       (*raw[i]->Initializer)(raw[i]);

@@ -288,6 +288,8 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   int		rc = 0;
   time_t	btim, etim;
 
+  ILOG(("StartProcessing"));
+
   DismissEditWindow(NULL, NULL, NULL);
   DismissConfigWindow(NULL, NULL, NULL);
   XtSetSensitive(list1, false);
@@ -1224,6 +1226,7 @@ static void LogLagErrors()
 /* -------------------------------------------------------------------- */
 static void EngageSignals()
 {
+  ILOG(("EngageSignals"));
   signal(SIGINT, sighandler);
   signal(SIGKILL, sighandler);
   signal(SIGFPE, sighandler);

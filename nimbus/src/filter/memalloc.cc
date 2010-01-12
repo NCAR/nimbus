@@ -36,6 +36,8 @@ void AllocateDataArrays()
 {
   int32_t lrlen;
 
+  ILOG(("AllocateDataArrays"));
+
   if (AVAPS)
     for (int i = 0; i < MAX_AVAPS; ++i)
       AVAPSrecord[i] = new char[256];

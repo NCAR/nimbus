@@ -18,7 +18,7 @@ REFERENCES:	bsearch.c
 
 REFERENCED BY:	cb_main.c
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2010
 -------------------------------------------------------------------------
 */
 
@@ -30,6 +30,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 void GenerateComputeOrder()
 {
   size_t i, j;
+
+  ILOG(("GenerateComputeOrder"));
 {
   /* Copy over the list of Derived variables, placing the
    * ones with 0 dependencies at the beginning and the rest
