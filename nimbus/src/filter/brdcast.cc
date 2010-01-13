@@ -77,7 +77,14 @@ void Broadcast::BroadcastData(const std::string & timeStamp)
 
   bcast << "\r\n";
   for (size_t i = 0; i < _toList.size(); ++i)
-    _socket->sendto(bcast.str().c_str(), bcast.str().length(), 0, *_toList[i]);
+  {
+    try {
+      _socket->sendto(bcast.str().c_str(), bcast.str().length(), 0, *_toList[i]);
+    }
+    catch (const nidas::util::IOException& e) {
+      fprintf(stderr, "nimbus::Broadcast: %s\n", e.what());
+    }
+  }
 
   printf(bcast.str().c_str());
 }
