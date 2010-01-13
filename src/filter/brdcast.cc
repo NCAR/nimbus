@@ -20,7 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 
 const size_t Broadcast::RADAR_ALT_INDX = 5;
 const size_t Broadcast::MACH_NUMBER_INDX = 9;
-const std::string Broadcast::InterfacePrefix = "eth";
+const std::string Broadcast::InterfacePrefix = "192.168";
 
 using namespace nidas::util;
 
@@ -38,7 +38,7 @@ Broadcast::Broadcast() : UDP_Base(31000)
   std::list<Inet4NetworkInterface>::iterator it;
   for (it = if_list.begin(); it != if_list.end(); ++it)
   {
-    if ((*it).getName().compare(0, InterfacePrefix.length(), InterfacePrefix) == 0)
+    if ((*it).getAddress().getHostAddress().compare(0, InterfacePrefix.length(), InterfacePrefix) == 0)
     {
       _toList.push_back(new
 	Inet4SocketAddress(Inet4Address((*it).getBroadcastAddress().getInAddrPtr()), UDP_PORT));
