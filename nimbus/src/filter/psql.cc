@@ -282,9 +282,13 @@ PostgreSQL::initializeGlobalAttributes()
   _sqlString << "INSERT INTO global_attributes VALUES ('coordinates', '" << coords << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('wind_field', '" << cfg.WindFieldVariables() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('landmarks', '" << readLandmarks() << "');";
-  _sqlString << "INSERT INTO global_attributes VALUES ('GroundFeedRate', '" << cfg.GroundFeedDataRate() << "');";
+  _sqlString << "INSERT INTO global_attributes VALUES ('DataRate', '" << cfg.GroundFeedDataRate() << "');";
 
   submitCommand(_sqlString.str(), true);
+
+  // Update data rate onboard to be 1, not the ground feed data rate.
+  _sqlString.str("UPDATE global_atributes SET value='1' WHERE key='DataRate'");
+  submitCommand(_sqlString.str());
 
 }	// END INITIALIZEGLOBALATTRIBUTES
 
