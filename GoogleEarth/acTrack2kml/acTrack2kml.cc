@@ -1010,7 +1010,7 @@ void getGlobalAttrData(PGconn * conn)
     projectInfo.flightNumber = "noflight";
 
   // Get the data rate at which data is being shipped from platform to ground.
-  std::string dr = getGlobalAttribute(conn, "GroundFeedRate");
+  std::string dr = getGlobalAttribute(conn, "DataRate");
   int dataRate = atoi(dr.c_str());
   if (dataRate <= 0)
     dataRate = 5;	// 5 second data is the default rate onboard.
