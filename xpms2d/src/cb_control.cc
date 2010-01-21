@@ -143,7 +143,11 @@ void PageForward(Widget w, XtPointer client, XtPointer call)
         mainPlot->draw(&pgFbuff[nBuffs],
 		ProcessRecord(&pgFbuff[nBuffs], version), version, j+1, NULL);
         pen->SetColor(color->GetColor(0));
-        ++nBuffs;
+        if (++nBuffs >= 20)
+          {
+          fprintf(stderr, "cb_control.ccL::PageForward: nBuffs exceeds max of 20.\n");
+          exit(1);
+          }
         break;
         }
       }

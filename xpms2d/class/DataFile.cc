@@ -23,7 +23,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2001
 
 static P2d_rec PtestRecord, CtestRecord, HtestRecord;
 
-static unsigned long PtestParticle[] = {
+static uint32_t PtestParticle[] = {
 0xffffffff,
 0xff000134,
 0x55000000,
@@ -42,7 +42,7 @@ static unsigned long PtestParticle[] = {
 0xffffffff
  };
 
-static unsigned long CtestParticle[] = {
+static uint32_t CtestParticle[] = {
 0xffffffff,
 0xff000e00,
 0x55000000,
@@ -223,7 +223,7 @@ void ADS_DataFile::initADS3(char * hdrString)
 void ADS_DataFile::ToggleSyntheticData()
 {
   int		i, j;
-  unsigned long		*p;
+  uint32_t		*p;
   unsigned short	*s;
 
   _useTestRecord = 1 - _useTestRecord;
@@ -236,7 +236,7 @@ void ADS_DataFile::ToggleSyntheticData()
   CtestRecord.msec = 100;
   CtestRecord.overld = 36;
 
-  p = (unsigned long *)CtestRecord.data;
+  p = (uint32_t *)CtestRecord.data;
   for (i = 0; i < 48; ++i)
     for (j = 0; j < 21; ++j)
       *p++ = CtestParticle[j];
@@ -253,7 +253,7 @@ void ADS_DataFile::ToggleSyntheticData()
   PtestRecord.msec = 100;
   PtestRecord.overld = 30;
 
-  p = (unsigned long *)PtestRecord.data;
+  p = (uint32_t *)PtestRecord.data;
   for (i = 0; i < 78; ++i)
     for (j = 0; j < 13; ++j)
       *p++ = PtestParticle[j];
@@ -723,12 +723,11 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
   // Perform byte swapping on whole [data] record if required.
   if (1 != ntohs(1))
   {
-    unsigned long       *p;
-    unsigned short       *sp = (unsigned short *)buff;
+    uint32_t		*p;
+    unsigned short	*sp = (unsigned short *)buff;
 
     for (int i = 1; i < 10; ++i)
       sp[i] = ntohs(sp[i]);
-
 
     if (htons(buff->id) == PMS2DC4 || htons(buff->id) == PMS2DC6)	// Fast 2DC
     {
@@ -745,7 +744,7 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
     }
     else
     {
-      p = (unsigned long *)buff->data;
+      p = (uint32_t *)buff->data;
       for (size_t i = 0; i < nSlices_32bit; ++i, ++p)
         *p = ntohl(*p);
     }
@@ -758,7 +757,7 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
    */
   if (ProjectNumber().compare("812") == 0)
   {
-    unsigned long *p = (unsigned long *)buff->data;
+    uint32_t *p = (uint32_t *)buff->data;
 
     for (size_t i = 0; i < nSlices_32bit; ++i, ++p)
     {
@@ -853,7 +852,7 @@ void ADS_DataFile::check_rico_half_buff(P2d_rec *buff, size_t beg, size_t end)
     spectra.push_back(0);
 
   // Generate spectra.
-  unsigned long *p = (unsigned long *)buff->data;
+  uint32_t *p = (uint32_t *)buff->data;
   bool firstSyncWord = beg == 0 ? false : true;
 
   for (size_t i = beg; i < end; ++i, ++p)
@@ -871,7 +870,7 @@ void ADS_DataFile::check_rico_half_buff(P2d_rec *buff, size_t beg, size_t end)
     if ((*p & SyncWordMask) == 0x55000000 || *p == 0xffffffff)
       continue;
 
-    unsigned long slice = ~(*p);
+    uint32_t slice = ~(*p);
     for (size_t j = 0; j < 32; ++j)
       if (((slice >> j) & 0x01) == 0x01)
         ++spectra[j];
@@ -904,15 +903,15 @@ void ADS_DataFile::check_rico_half_buff(P2d_rec *buff, size_t beg, size_t end)
       exit(1);
     }
 
-    unsigned long mask1 = (0x01 << stuck_bin);
-    unsigned long mask2 = (0x07 << (stuck_bin-1));
-    unsigned long *p = (unsigned long *)buff->data;
+    uint32_t mask1 = (0x01 << stuck_bin);
+    uint32_t mask2 = (0x07 << (stuck_bin-1));
+    uint32_t *p = (uint32_t *)buff->data;
     for (size_t i = beg; i < end; ++i, ++p)
     {
       if ((*p & SyncWordMask) == 0x55000000 || *p == 0xffffffff)
         continue;
 
-      unsigned long slice = ~(*p);
+      uint32_t slice = ~(*p);
       if ((slice & mask2) == mask1)
         *p = ~(slice & ~mask1);
     }

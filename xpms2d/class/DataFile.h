@@ -21,6 +21,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #include <raf/hdrAPI.h>
 
 #include <vector>
+#include <stdint.h>
 
 /* ADS image record types */
 #define ADS_WORD	0x4144
@@ -97,6 +98,10 @@ protected:
   void		initADS2();
   void		initADS3(char *hdrString);
 
+  long long	posOfPhysicalRecord(size_t i) {
+	if (i > nIndices) fprintf(stderr, "currPhys exceeds nInices\n");
+	return indices[i].index;
+	}
   long long	ntohll(long long * p) const;
 
   void		buildIndices(), sort_the_table(int, int), SortIndices(int);
@@ -109,7 +114,7 @@ protected:
   std::string	_flightNumber;
   std::string	_flightDate;
 
-  Header	* _hdr;
+  Header	*_hdr;
 #ifdef PNG
   gzFile	gz_fd;
 #else

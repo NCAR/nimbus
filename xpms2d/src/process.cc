@@ -62,14 +62,14 @@ struct recStats &ProcessRecord(P2d_rec *record, float version)
 {
   int		startTime, overload;
   size_t	nBins, probeIdx;
-  unsigned long		*p, slice, ppSlice, pSlice, syncWord, startMilliSec;
+  uint32_t		*p, slice, ppSlice, pSlice, syncWord, startMilliSec;
   bool		overloadAdded = false;
   double	sampleVolume[maxDiodes], totalLiveTime;
   char		probeType = ((char *)&record->id)[0];
 
   static P2d_hdr	prevHdr[MAX_PROBES];
-  static unsigned long	prevTime[MAX_PROBES] = { 1,1,1,1 };
-  static unsigned long	prevSlice[MAX_PROBES][2];
+  static uint32_t	prevTime[MAX_PROBES] = { 1,1,1,1 };
+  static uint32_t	prevSlice[MAX_PROBES][2];
 
   output.tBarElapsedtime = 0;
   output.nTimeBars = 0;
@@ -150,7 +150,7 @@ if (debug)
 			(output.DASelapsedTime - record->overld) * 0.001;
 
   // Scan record, compute tBarElapsedtime and stats.
-  p = (unsigned long *)record->data;
+  p = (uint32_t *)record->data;
   ppSlice = prevSlice[probeIdx][0];
   pSlice = prevSlice[probeIdx][1];
 
@@ -182,7 +182,7 @@ if (debug) printf("%08lx %08lx %08lx\n", ppSlice, pSlice, slice);
       cp->area = 1;	// assume at list 1 pixel hidden in sync-word.
 
       cp->timeWord = pSlice & 0x00ffffff;
-      cp->deltaTime = (unsigned long)((float)cp->timeWord * output.frequency);
+      cp->deltaTime = (uint32_t)((float)cp->timeWord * output.frequency);
       output.minBar = std::min(output.minBar, cp->deltaTime);
       output.maxBar = std::max(output.maxBar, cp->deltaTime);
 
@@ -238,7 +238,7 @@ if (debug) printf("%08lx %08lx %08lx\n", ppSlice, pSlice, slice);
        * particle consumed, so we can add it to the deadTime, so sampleVolume
        * can be reduced accordingly.
        */
-      cp->liveTime = (unsigned long)((float)(cp->w + 3) * output.frequency);
+      cp->liveTime = (uint32_t)((float)(cp->w + 3) * output.frequency);
 
       cp->msec /= 1000;
 
@@ -267,7 +267,7 @@ if (debug)
     pSlice = slice;
     }
 
-output.tBarElapsedtime += (unsigned long)(nSlices_32bit * output.frequency);
+output.tBarElapsedtime += (uint32_t)(nSlices_32bit * output.frequency);
 
   if (output.nTimeBars > 0)
     output.meanBar = output.tBarElapsedtime / output.nTimeBars;
@@ -285,7 +285,7 @@ output.tBarElapsedtime += (unsigned long)(nSlices_32bit * output.frequency);
   prevTime[probeIdx] = output.thisTime;
   memcpy((char *)&prevHdr[probeIdx], (char *)record, sizeof(P2d_hdr));
 
-  p = (unsigned long *)record->data;
+  p = (uint32_t *)record->data;
   prevSlice[probeIdx][0] = p[1022];
   prevSlice[probeIdx][1] = p[1023];
 
@@ -299,14 +299,14 @@ struct recStats &ProcessHVPSrecord(P2d_rec *record, float version)
   int		startTime;
   size_t	nBins, probeIdx = 0, shaded, unshaded;
   unsigned short	*p, slice, ppSlice, pSlice;
-  unsigned long	startMilliSec;
+  uint32_t	startMilliSec;
   bool		overloadAdded = false;
   double	diameter, z, conc, totalLiveTime;
 
   Particle	*cp;
 
   static P2d_hdr	prevHdr[MAX_PROBES];
-  static unsigned long	prevTime[MAX_PROBES] = { 1,1,1,1 };
+  static uint32_t	prevTime[MAX_PROBES] = { 1,1,1,1 };
   static unsigned short	prevSlice[MAX_PROBES][2];
 
   p = (unsigned short *)record->data;
@@ -416,10 +416,10 @@ if (debug) printf("%08x %08x %08x\n", ppSlice, pSlice, p[0]);
 
 //printf("timing words %x %x %x\n", p[-1], p[0], p[1]);
 
-      cp->timeWord = (((unsigned long)p[0] << 14) & 0x0fffc000);
-      cp->timeWord += (unsigned long)(p[1] & 0x3fff);
+      cp->timeWord = (((uint32_t)p[0] << 14) & 0x0fffc000);
+      cp->timeWord += (uint32_t)(p[1] & 0x3fff);
 //printf("  time out = %x\n", cp->timeWord);
-      cp->deltaTime = (unsigned long)((float)cp->timeWord * output.frequency);
+      cp->deltaTime = (uint32_t)((float)cp->timeWord * output.frequency);
       output.minBar = std::min(output.minBar, cp->deltaTime);
       output.maxBar = std::max(output.maxBar, cp->deltaTime);
 
@@ -494,7 +494,7 @@ if (debug) printf("%08x %08x %08x\n", ppSlice, pSlice, p[0]);
        * particle consumed, so we can add it to the deadTime, so sampleVolume
        * can be reduced accordingly.
        */
-      cp->liveTime = (unsigned long)((float)(cp->w) * output.frequency);
+      cp->liveTime = (uint32_t)((float)(cp->w) * output.frequency);
       cp->w = (size_t)((float)cp->w * TAS_COMPENSATE);
 
       cp->msec /= 1000;
@@ -524,7 +524,7 @@ if (debug)
   if (output.nTimeBars > 0)
     output.meanBar = output.tBarElapsedtime / output.nTimeBars;
 
-//output.tBarElapsedtime += (unsigned long)(2048 * output.frequency);
+//output.tBarElapsedtime += (uint32_t)(2048 * output.frequency);
 
   output.frequency /= 1000;
 

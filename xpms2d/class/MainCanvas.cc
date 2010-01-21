@@ -281,16 +281,16 @@ colWidth = Width() / nCols;
 void MainCanvas::drawPMS2D(P2d_rec * record, struct recStats &stats, float version, int probeNum, PostScript *ps)
 {
   int		nextColor, cntr = 0;
-  unsigned long *p, slice, pSlice, ppSlice, syncWord;
+  uint32_t	*p, slice, pSlice, ppSlice, syncWord;
   bool		colorIsBlack = false;
   Particle	*cp;
   char		buffer[256];
 
-  static unsigned long  prevSlice[2];
-  static unsigned long  prevTime;
+  static uint32_t	prevSlice[2];
+  static uint32_t	prevTime;
   static P2d_rec	prevRec;
 
-  p = (unsigned long *)record->data;
+  p = (uint32_t *)record->data;
   ppSlice = prevSlice[0];
   pSlice = prevSlice[1];
 
@@ -304,14 +304,14 @@ void MainCanvas::drawPMS2D(P2d_rec * record, struct recStats &stats, float versi
 
   if (displayMode == RAW_RECORD)
     {
-    p = (unsigned long *)record->data;
+    p = (uint32_t *)record->data;
     for (size_t i = 0; i < nSlices_32bit; ++i, ++p)		/* 2DC and/or 2DP	*/
       drawSlice(ps, i, *p);
 
     y += 34;
     }
 
-  p = (unsigned long *)record->data;
+  p = (uint32_t *)record->data;
   for (size_t i = 0; i < nSlices_32bit; ++p)		/* 2DC and/or 2DP	*/
     {
     slice = *p;
@@ -326,7 +326,7 @@ void MainCanvas::drawPMS2D(P2d_rec * record, struct recStats &stats, float versi
 
 if (debug) { if (cp) printf("dq: %06lx %lu %lu\n", cp->timeWord, cp->h, cp->w); else printf("NULL\n"); }
 
-      unsigned long timeWord = (unsigned long)((float)cp->timeWord * stats.frequency);
+      uint32_t timeWord = (uint32_t)((float)cp->timeWord * stats.frequency);
 
       if (timeWord >= stats.DASelapsedTime)
         {
@@ -406,7 +406,7 @@ if (debug) { if (cp) printf("dq: %06lx %lu %lu\n", cp->timeWord, cp->h, cp->w); 
     pSlice = slice;
     }
 
-  p = (unsigned long *)record->data;
+  p = (uint32_t *)record->data;
   prevSlice[0] = p[1022];
   prevSlice[1] = p[1023];
   stats.prevTime = prevTime;
@@ -421,7 +421,7 @@ void MainCanvas::drawHVPS(P2d_rec * record, struct recStats &stats, float versio
   unsigned short	*sp = (unsigned short *)record->data;
   Particle	*cp;
 
-  static unsigned long prevTime;
+  static uint32_t	prevTime;
   static P2d_rec	prevRec;
 
   if (memcmp((void *)&record, (void *)&prevRec, sizeof(P2d_rec)) == 0)
@@ -483,7 +483,7 @@ void MainCanvas::drawHVPS(P2d_rec * record, struct recStats &stats, float versio
       if (ps) ps->SetColor(color->GetColorPS(BLUE));
       else pen->SetColor(color->GetColor(BLUE));
 
-//printf("\ntiming: %d, ovrld=%x - %x", (((unsigned long)sp[i] << 15) & 0x3fff0000)+(unsigned long)(sp[i+1] & 0x3fff), sp[i] & 0xc000, sp[i+1] & 0xc000);
+//printf("\ntiming: %d, ovrld=%x - %x", (((uint32_t)sp[i] << 15) & 0x3fff0000)+(uint32_t)(sp[i+1] & 0x3fff), sp[i] & 0xc000, sp[i+1] & 0xc000);
 
       i += 2;
 
@@ -664,8 +664,7 @@ pen->SetColor(color->GetColor(0)); }
 }
 
 /* -------------------------------------------------------------------- */
-void MainCanvas::enchiladaLineItem(PostScript *ps, int i, int cnt,
-	Particle *cp)
+void MainCanvas::enchiladaLineItem(PostScript *ps, int i, int cnt, Particle *cp)
 {
   int	h, m, s;
 
@@ -699,7 +698,7 @@ void MainCanvas::enchiladaLineItem(PostScript *ps, int i, int cnt,
 }
 
 /* -------------------------------------------------------------------- */
-void MainCanvas::drawSlice(PostScript *ps, int i, unsigned long slice)
+void MainCanvas::drawSlice(PostScript *ps, int i, uint32_t slice)
 {
   if (slice == 0xffffffff)
     return;

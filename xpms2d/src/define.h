@@ -41,8 +41,8 @@ const size_t MAX_DATASETS = 4;
 const size_t MAX_PANELS = 4;
 const size_t MAX_PROBES = 4;
 
-const unsigned long StandardSyncWord = 0x55000000;
-const unsigned long SyncWordMask = 0xff000000;
+const uint32_t StandardSyncWord = 0x55000000;
+const uint32_t SyncWordMask = 0xff000000;
 
 const unsigned long long Fast2DC_Sync = 0xAAAAAA0000000000LL;
 const unsigned long long Fast2DC_Overld = 0x5555AA0000000000LL;
