@@ -28,16 +28,21 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 /* -------------------------------------------------------------------- */
 void sconc2dc(DERTBL *varp)
 {
-  NR_TYPE	shador, tasx;
+  NR_TYPE	shador, tasx,
+		eaw = 0.8;	// Set old 32 diode 25um probes.
 
   shador = GetSample(varp, 0);
   tasx = GetSample(varp, 1);
 
+  if (varp->SerialNumber.compare(0, 4, "F2DC") == 0)
+    eaw = 1.6;
+  if (varp->SerialNumber.compare("F2DC002") == 0)	// 10 um
+    eaw = 0.64;
+
   if (isnan(tasx))	/* Lab setting, for spinning disk */
     tasx = 34.0;
 
-  /* 0.8 is a hardwire "EAW" that needs to be pulled out of PMSspecs */
-  PutSample(varp, shador / (tasx * 61.0 * 0.8) * 1000.0);
+  PutSample(varp, shador / (tasx * 61.0 * eaw) * 1000.0);
 
 }	/* END SCONC2DC */
 
