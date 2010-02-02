@@ -181,9 +181,10 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
     fb = atoi(p);
 
     /* We are dropping the unused 0th bin for SQL database.
-     * See 12 lines down and also PostgreSQL::addVectorToAllStreams().
+     * See 12 lines down and also psql.cc PostgreSQL::addVectorToAllStreams().
+     * Remove when we FIRST_BIN/LAST_BIN no longer compensate for the legacy 0th bin.
      */
-    if (cfg.isADS2()) --fb; // We are dropping the unused 0th bin for SQL database.
+    --fb;
   }
 
   if ((p = GetPMSparameter(rp->SerialNumber.c_str(), "LAST_BIN")) )
@@ -194,9 +195,10 @@ void GetPMS1DAttrsForSQL(RAWTBL *rp, char sql_buff[])
       lb += (rp->Length >> 1);
 
     /* We are dropping the unused 0th bin for SQL database.
-     * See also PostgreSQL::addVectorToAllStreams().
+     * See also psql.cc PostgreSQL::addVectorToAllStreams().
+     * Remove when we FIRST_BIN/LAST_BIN no longer compensate for the legacy 0th bin.
      */
-    if (cfg.isADS2()) --lb;
+    --lb;
   }
 
   nBins = getCellSizes(rp, cellSize);
