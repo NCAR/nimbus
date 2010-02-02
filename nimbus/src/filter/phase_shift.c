@@ -160,7 +160,10 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
       {
         x[goodPoints] = (ri * 1000) + (gap_size * i) + dynLag;
         y[goodPoints] = curPtr[i];
-        ++goodPoints;
+	if (goodPoints > 0 && x[goodPoints] == x[goodPoints-1])
+          LogThisRecordMsg(this_rec, "phase_shift: Duplicate timestamp");
+	else
+          ++goodPoints;
       }
     }
   }
