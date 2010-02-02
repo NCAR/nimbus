@@ -139,12 +139,16 @@ void AverageVector(NR_TYPE *in_data, NR_TYPE *out_data, size_t n, size_t l)
   for (size_t i = 0; i < l; ++i)
   {
     double sum = 0.0;
+    int cntr = 0;
 
     for (size_t j = 0; j < n; ++j)
       if (!isnan(in_data[(j*l)+i]))
+      {
         sum += in_data[(j * l) + i];
+        ++cntr;
+      }
 
-    out_data[i] = sum / n;
+    out_data[i] = sum / cntr;
   }
 }
 
