@@ -357,7 +357,8 @@ PostgreSQL::initializeVariableList()
       nDims = 2;
       // Subtract 1, since we don't put 0th bin into SQL database.
       // See addVectorToAllStreams() & pms1d.c:GetPMS1DAttrsForSQL()
-      dims[1] = raw[i]->Length - (cfg.isADS2() ? 1 : 0);
+      // Remove the '-1' when we compensate for in FIRST_BIN/LAST_BIN.
+      dims[1] = raw[i]->Length - 1;
     }
     else
       nDims = 1;
@@ -382,7 +383,8 @@ PostgreSQL::initializeVariableList()
       nDims = 2;
       // Subtract 1, since we don't put 0th bin into SQL database.
       // See addVectorToAllStreams() & pms1d.c:GetPMS1DAttrsForSQL()
-      dims[1] = derived[i]->Length - (cfg.isADS2() ? 1 : 0);
+      // Remove the '-1' when we compensate for in FIRST_BIN/LAST_BIN.
+      dims[1] = derived[i]->Length - 1;
     }
     else
       nDims = 1;
@@ -529,11 +531,9 @@ PostgreSQL::addVectorToAllStreams(const NR_TYPE *value, size_t nValues)
   _sqlString << ",'{";
 
   /* Start at 1 to eliminate unused 0th bin.  See also GetPMS1DAttrsForSQL().
-   * and intializeVariableList().
+   * and intializeVariableList().  Change to '= 0' when we remove legacy 0th bin.
    */
-  size_t start = 0;
-  if (cfg.isADS2())
-    start = 1;
+  size_t start = 1;
 
   for (size_t j = start; j < nValues; ++j)
   {
@@ -852,8 +852,8 @@ PostgreSQL::outputGroundDBInitPacket()
   {
     const char * command = "/home/local/Systems/scripts/sendSQL";
 
-    if ( execlp(command, command, (const char *)fName, (const char *)0) == -1 ) {
-
+    if ( execlp(command, command, (const char *)fName, (const char *)0) == -1 )
+    {
       fprintf(stderr, "nimbus:psql.cc: Failed to execute '%s', errno = %d\n",
         command, errno);
       _exit(1);
