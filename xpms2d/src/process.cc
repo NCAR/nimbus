@@ -763,7 +763,7 @@ static size_t checkRejectionCriteria(Particle * cp, recStats & output)
     cp->reject = true;
   }
 
-  if ((float)cp->area / (cp->w * cp->h) <= controlWindow->GetAreaRatioReject())
+  if ((float)cp->area / (std::pow(std::max(cp->w, cp->h), 2.0) * M_PI / 4.0) <= controlWindow->GetAreaRatioReject())
     cp->reject = true;
 
   size_t bin = 0;
