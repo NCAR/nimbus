@@ -233,9 +233,12 @@ int main(int argc, char *argv[])
       for (i = 0; i < nVariables; ++i)
         {
         if ((p = strtok(NULL, ", \t\n\r")) == NULL)
-          break;
+          fprintf(stderr, "Not enough data points in row # %d, check your formating;\n   are there spaces in a variable name on the title line?\n", nRecords);
 
-        dataValue = atof(p);
+        if (p)
+          dataValue = atof(p);
+        else
+          dataValue = MISSING_VALUE;
 
         if (fileType != PLAIN_FILE)
           {
