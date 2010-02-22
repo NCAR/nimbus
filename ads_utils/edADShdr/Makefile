@@ -5,14 +5,14 @@ CC=		gcc
 BINDIR=		${JLOCAL}/bin
 MANDIR=		${JLOCAL}/man/manl
 LINTLIBS=	${LIBS}
-INCLUDES=	-I/usr/X11R6/include -I${JLOCAL}/include
+INCLUDES=	-I${JLOCAL}/include
 CFLAGS=		-O2 ${INCLUDES}
 
 # Solaris
 LIBS=		-lraf -lXm -lXt -lX11
 
 #Linux
-LIBS=		-L${JLOCAL}/lib -L/usr/X11R6/lib -lraf -lXm -lXt -lX11 -lXp -lXext
+LIBS=		-L${JLOCAL}/lib -lraf -lXm -lXt -lX11 -lXp -lXext
 
 SRCS=	edADShdr.c init.c Xwin.c ccb.c
 HDRS=	define.h

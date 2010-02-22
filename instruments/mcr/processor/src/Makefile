@@ -7,7 +7,7 @@ I2D	= ../include
 C2D	= ../class
 O2D	= ../class
 
-INCLUDES= -I${I2D} -I${JLOCAL}/include -I../../include
+INCLUDES= -I${I2D} -I${JLOCAL}/include -I../../include -I/usr/include/netcdf
 #INCLUDES= -I${I2D} -I/usr/openwin/include -I/usr/dt/include -I../../include -I/jnet/shared/include
 
 DEFINES	=
@@ -15,7 +15,7 @@ CXX	= g++
 CXXFLAGS= -g -O ${INCLUDES} ${DEFINES} -L${DISC}/lib
 CXXFLAGS= -g -O ${INCLUDES} ${DEFINES}
 
-LIBS	= -L${JLOCAL}/lib -lraf++ -Wl,-Bstatic -lnetcdf_c++ -lnetcdf -Wl,-Bdynamic -lz
+LIBS	= -L${JLOCAL}/lib -lraf++ -lnetcdf_c++ -lnetcdf -lz
 
 PROG	= mcrp
 HDRS	= ../../include/mcr.h

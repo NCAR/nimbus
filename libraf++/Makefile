@@ -11,7 +11,7 @@ DEFINES=	-DPNG
 # Solaris & Mac OS X.
 #DEFINES=	-DSVR4
 
-INCLUDES=	-I${I2D} -I/usr/X11R6/include
+INCLUDES=	-I${I2D}
 CXXFLAGS=	-g -O2 ${INCLUDES} ${DEFINES}
 
 OBJS=	ACconfig.o adsIO.o adsIOrt.o Application.o Canvas.o Cursor.o\

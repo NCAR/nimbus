@@ -10,7 +10,7 @@ FF=		f77
 
 LIBNAME=	raf
 
-INCLUDES=	-I/usr/X11R6/include -I${JLOCAL}/include
+INCLUDES=	-I${JLOCAL}/include -I/usr/include/netcdf
 CFLAGS=		-g -O2 ${INCLUDES} 
 FFLAGS=		-O
 
@@ -40,6 +40,7 @@ HDRS=	ac.h
 all: lib${LIBNAME}.a
 
 ac.o: ac.h
+nc_time.o: /usr/include/netcdf/netcdf.h
 
 lib${LIBNAME}.a: ${OBJS}
 	rm -f lib${LIBNAME}.a

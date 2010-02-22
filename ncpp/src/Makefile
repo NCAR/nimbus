@@ -13,8 +13,8 @@ COD	= ../class
 #	Linux
 #
 DEFINES	= -DPNG
-INCLUDES= -I${INC} -I/usr/X11R6/include -I${RAFINC}
-LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib
+INCLUDES= -I${INC} -I${RAFINC} -I/usr/include/netcdf
+LIB_DIRS= -L${JLOCAL}/lib
 LIBS	= -lraf++ -lXm -lXt -lX11 -lXext -Wl,-Bstatic -lnetcdf_c++ -lnetcdf -Wl,-Bdynamic -lpng -lz
 ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.Fedora10
 

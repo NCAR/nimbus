@@ -6,10 +6,9 @@ BINDIR=		${DESTDIR}/bin
 MANDIR=		${DESTDIR}/man/manl
 INCDIR=		${DESTDIR}/include
 
-LIBS=		-lraf++ -Wl,-Bstatic -lnetcdf_c++ -lnetcdf -Wl,-Bdynamic
-INCLUDES=	-I$(INCDIR)
-LIBDIR=		-L$(LOCAL)/lib -L$(JLOCAL)/lib
-LIBDIR=		-L$(JLOCAL)/lib
+LIBS=		-lraf++ -lnetcdf_c++ -lnetcdf
+INCLUDES=	-I${INCDIR} -I/usr/include/netcdf
+LIBDIR=		-L${LOCAL}/lib
 
 CC=		g++
 CFLAGS=		-Wall -g -O2 ${INCLUDES}
