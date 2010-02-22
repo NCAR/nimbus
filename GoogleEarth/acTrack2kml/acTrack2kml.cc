@@ -12,7 +12,7 @@
 #include <cstdio>
 #include <cstring>
 
-#include "netcdf.hh"
+#include <netcdf.hh>
 
 #include "boost/lexical_cast.hpp"
 

@@ -5,8 +5,7 @@ env = Environment(platform = 'posix',ENV= os.environ)
 env['JLOCAL'] = os.environ['JLOCAL']
 
 env.Append(CXXFLAGS='-g -Werror')
-env.Append(CPPPATH = '/opt/local/include')
-env.Append(LIBPATH = '/opt/local/lib')
+env.Append(CPPPATH = '/usr/include/netcdf')
 env.Append(LIBS = ['pq'])
 
 # To get netcdf libraries on the link command line with static linking,
