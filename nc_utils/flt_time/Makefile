@@ -7,7 +7,7 @@ BINDIR=		bin
 ANONFTP=	/net/ftp/pub/archive/RAF-src/bin.RHEL5
 MANDIR=		man/man1
 LIBS=		-L${JLOCAL}/lib -Wl,-Bstatic -lnetcdf_c++ -lnetcdf -Wl,-Bdynamic 
-INCLUDES=	-I${JLOCAL}/include
+INCLUDES=	-I${JLOCAL}/include -I/usr/include/netcdf
 CXXFLAGS=	-Wall -g ${INCLUDES}
 
 SRCS=	flt_time.cc

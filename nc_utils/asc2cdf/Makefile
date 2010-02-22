@@ -4,7 +4,7 @@
 CC=		g++
 BINDIR=		${JLOCAL}/bin
 MANDIR=		${JLOCAL}/man/man1
-INCLUDES=	-I$(JLOCAL)/include
+INCLUDES=	-I$(JLOCAL)/include -I/usr/include/netcdf
 CFLAGS=		-Wall -g ${INCLUDES} -DVARDB
 
 # Solaris

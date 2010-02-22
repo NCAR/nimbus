@@ -15,9 +15,9 @@ ANONFTP = /jnet/ftp/pub/src/bin.Solaris2.9
 
 # Linux
 #
-INCLUDES= -I${JLOCAL}/include -I/usr/X11R6/include
+INCLUDES= -I${JLOCAL}/include -I/usr/include/netcdf
 DEFINES =
-LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib
+LIB_DIRS= -L${JLOCAL}/lib
 LIBS    = -lraf -lXm -lXp -lXt -lXext -lX11 -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic
 ANONFTP = /net/ftp/pub/archive/RAF-src/bin.RHEL5
 
@@ -53,5 +53,5 @@ print:
 	enscript -2Gr -b${PROG} ${HDRS} ${SRCS}
 
 ${OBJS}:	define.h
-netcdf.o:	${JLOCAL}/include/netcdf.h
+netcdf.o:	/usr/include/netcdf/netcdf.h
 ncextr.o:	fbr.h

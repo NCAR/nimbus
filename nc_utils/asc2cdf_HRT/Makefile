@@ -8,7 +8,7 @@ ANONFTP=	/net/ftp/pub/archive/RAF-src/bin.RHEL5
 MANDIR=		/jnet/local/man/man1
 LIBS=		-L${JLOCAL}/lib -lVarDB -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic -lraf
 LINTLIBS=	${LIBS}
-INCLUDES=	-I$(JLOCAL)/include
+INCLUDES=	-I$(JLOCAL)/include -I/usr/include/netcdf
 CFLAGS=		-Wall -g ${INCLUDES} -DVARDB
 
 SRCS=   asc2cdf.c plain.c nasaAmes.c nasaLangley.c

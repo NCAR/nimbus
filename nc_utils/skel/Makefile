@@ -2,9 +2,9 @@
 #    Makefile for Skeleton program
 #
 CC=		gcc
-LIB_DIRS=	-L/usr/X11R6/lib -L${JLOCAL}/lib
+LIB_DIRS=	-L${JLOCAL}/lib
 LIBS=		-lraf -lm -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic -lXm -lXt -lX11
-INCLUDES=	-I${JLOCAL}/include
+INCLUDES=	-I${JLOCAL}/include -I/usr/include/netcdf
 CFLAGS=		-Wall -g -O2 ${INCLUDES}
 
 SRCS=	skel.c globals.c init.c timeseg.c sort.c amlib.c search.c lrloop.c\
@@ -30,4 +30,4 @@ print:
 	enscript -2Gr -b${PROG} ${HDRS} ${SRCS}
 
 ${OBJS}:	define.h
-netcdf.o:	${JLOCAL}/include/netcdf.h
+netcdf.o:	/usr/include/netcdf/netcdf.h

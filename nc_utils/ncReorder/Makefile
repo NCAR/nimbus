@@ -8,8 +8,8 @@ INCDIR=		${DESTDIR}/include
 ANONFTP=	/net/ftp/pub/archive/RAF-src/bin.RHEL5
 
 
-LIBS=		-L${JLOCAL}/lib -Wl,-Bstatic -lnetcdf_c++ -lnetcdf -Wl,-Bdynamic
-INCLUDES=	-I$(INCDIR)
+LIBS=		-Wl,-Bstatic -lnetcdf_c++ -lnetcdf -Wl,-Bdynamic
+INCLUDES=	-I$(INCDIR) -I/usr/include/netcdf
 
 CC=		g++
 CFLAGS=		${INCLUDES}
@@ -20,7 +20,7 @@ PROG=	ncReorder
 .c.o:
 	${CC} ${CFLAGS} -c $*.c
 
-${PROG}: ncReorder.cc ${JLOCAL}/lib/libnetcdf_c++.a
+${PROG}: ncReorder.cc
 	${CC} ${CFLAGS} ncReorder.cc ${LIBS} -o $@
 
 install: ${PROG}
