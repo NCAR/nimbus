@@ -5,10 +5,10 @@ CC=		g++
 BINDIR=		${JLOCAL}/bin
 MANDIR=		${JLOCAL}/man/manl
 LINTLIBS=	${LIBS}
-INCLUDES=	-I${JLOCAL}/include
+INCLUDES=	-I${JLOCAL}/include -I/usr/include/netcdf
 CFLAGS=		-g ${INCLUDES}
 
-LIBS=	-L${JLOCAL}/lib -lVarDB -lpms -lraf -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic
+LIBS=	-L${JLOCAL}/lib -lVarDB -lpms -lraf -lnetcdf
 
 SRCS=	vdb2ncml.cc
 OBJS=	vdb2ncml.o
