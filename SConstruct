@@ -28,6 +28,7 @@ env['CC'] = ['g++']
 env['CPPPATH'] = Split("""
     #/include
     $JLOCAL/include
+    /usr/include/netcdf
 """)
 
 env['CCFLAGS'] = Split("""
