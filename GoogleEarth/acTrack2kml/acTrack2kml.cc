@@ -40,6 +40,8 @@ static std::string netCDFinputFile, outputKML, database_host, platform, dbname;
 
 static const float missing_value = -32767.0;
 
+static bool PostProcessMode = false;
+
 // Our raw data is coming from a PostGreSQL database.....
 // The order of this enum should match the order of the variables
 // being requested in the dataQuery string.
@@ -381,6 +383,9 @@ void WriteSpecialInclude(std::ofstream & googleEarth)
 void
 renamefile(std::string file, std::string outFile)
 {
+  if (PostProcessMode)	// Don't compress files for netCDF post-processing.
+    return;
+
   char buffer[1024];
   std::string tmptmp(googleEarthDataDir); tmptmp += "tmp.kmz";
 
@@ -915,8 +920,10 @@ int usage(const char* argv0)
   std::cerr
 	<< "Usage: has two forms, one for real-time use and the other to scan\n"
 	<< "	a netCDF file in post-processing mode.\n\n"
-	<< "Real-time form:\n"
-	<< "	acTrack2kml [-o] [-h database_host] [-p platform]\n\n"
+	<< "Real-time onboard form:\n"
+	<< "	acTrack2kml -o [-h database_host]\n\n"
+	<< "Real-time ground form:\n"
+	<< "	acTrack2kml [-h database_host] -p platform\n\n"
 	<< "Post-processing:\n"
 	<< "	acTrack2kml infile.nc outfile.kml\n";   
 
@@ -1025,17 +1032,18 @@ int main(int argc, char *argv[])
   char *p = getenv("PGHOST");
   if (p) database_host = p;
 
+  if (argc == 1 || strstr(argv[1], "usage") || strstr(argv[1], "help"))
+    return usage(argv[0]);
+
   if (argc > 1)
   {
-    if ((strstr(argv[1], "usage") || strstr(argv[1], "help")))
-      return usage(argv[0]);
-
     if ((rc = parseRunstring(argc,argv)) != 0)
       return rc;
   }
 
   if (netCDFinputFile.length() > 0)
   {
+    PostProcessMode = true;
     ReadDataFromNetCDF(netCDFinputFile);
     if (_lat.size() > 0)
     {
