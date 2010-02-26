@@ -21,7 +21,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #include <raf/hdrAPI.h>
 
 #include <vector>
-#include <stdint.h>
 
 /* ADS image record types */
 #define ADS_WORD	0x4144

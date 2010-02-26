@@ -14,6 +14,7 @@ FULL NAME:	Include File to Include the Include Files
 #include <cstdio>
 #include <cstring>
 #include <string>
+#include <stdint.h>
 #include <iostream>
 
 #include <Xm/Xm.h>
