@@ -993,13 +993,13 @@ void snclh_s(DERTBL *varp)	// Interpolates Hmatrix for volume mixing ratio
   if (pcounts < 400.0)		// If Laser power is too low
     H2O_vmr_h = 0.01;		//   ...default to 0.01 ppmv
 
-  PutSample(varp, H2O_vmr_s / 1608.0);
+  PutSample(varp, H2O_vmr_s / 1608.0);	// Short
 }
 
 /* -------------------------------------------------------------------- */
 void snclh_h(DERTBL *varp)
 {
-  PutSample(varp, H2O_vmr_h / 1608.0);
+  PutSample(varp, H2O_vmr_h / 1608.0);	// Long
 }
 
 /* -------------------------------------------------------------------- */
