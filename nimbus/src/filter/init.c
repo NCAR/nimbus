@@ -141,6 +141,9 @@ void ProcessArgv(int argc, char **argv)
           cfg.SetTransmitToGround(true);
         else
           fprintf(stderr, "Must be in RealTime mode to TransmitToGround, ignoring -x.\n");
+
+        if (i+1 < argc && isdigit(argv[i+1][0]))
+          cfg.SetGroundFeedDataRate(atoi(argv[++i]));
         break;
       case 'n':
         cfg.SetLoadProductionSetup(false);
@@ -243,7 +246,7 @@ void GetDataDirectory(char buff[])
 /* -------------------------------------------------------------------- */
 static void usage()
 {
-  fprintf(stderr, "Usage: nimbus [-b batch_file] [[-r[t[3]] -x] [-n]\n\n\
+  fprintf(stderr, "Usage: nimbus [-b batch_file] [[-r[t[3]] -x [rate]] [-n]\n\n\
   -b:	Loads a batch_file instead of going interactive.  File options\n\
 	are (last 3 are optional):\n\
 	if=input_file.ads\n\
@@ -255,7 +258,8 @@ static void usage()
 	Default all variables to sample rate output.\n\
   -rt:	Real-time for ADS2.\n\
   -rt3:	Real-time for ADS3.\n\
-  -x:	Produce and transmit SQL statements to ground (see groundvars file and LDM pqinsert(1)).\n\
+  -x:	Produce and transmit SQL statements to ground (see groundvars file), add an\n\
+        optional frequency which to transmit the data.  Default is every 5 seconds.\n\
   -n:	Do NOT load any existing production setup files.\n");
 
   exit(0);
