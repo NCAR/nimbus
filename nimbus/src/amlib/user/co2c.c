@@ -5,6 +5,7 @@ OBJECT NAME:	co2c.c
 FULL NAME:	CO2 concentrations
 
 ENTRY POINTS:	sco2c()
+                xco_al()
 
 STATIC FNS:	none
 
@@ -50,5 +51,39 @@ void sco2c(DERTBL *varp)
 	PutSample(varp, fx * (xco2t + 273.0) / 308.11);
 
 }	/* END SCO2C */
+
+/*
+-------------------------------------------------------------------------
+OBJECT NAME:	co_al.c
+
+FULL NAME:	CO Mixing Ratio
+
+ENTRY POINTS:	sco_al()
+
+STATIC FNS:	none
+
+DESCRIPTION:	Calculate CO mixing ration of the AL instrument.
+
+COPYRIGHT:	University Corporation for Atmospheric Research, 2010.
+-------------------------------------------------------------------------
+*/
+
+
+/* -------------------------------------------------------------------- */
+void sco_al(DERTBL *varp)
+{
+
+	NR_TYPE	xcoraw_al, xco_al;
+
+	xcoraw_al = GetSample(varp, 0);
+
+        /* CO mixing ratio according to Teresa Campos */
+        xco_al = (xcoraw_al - 8000.0) * 200/36000;
+
+
+	/* co2 concentration calculation - 308.11 is licor std. cal. temp. */
+	PutSample(varp, xco_al);
+
+}	/* END SCO_AL */
 
 /* END CO2C.C */

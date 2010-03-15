@@ -660,6 +660,7 @@
 	"H2O2",		NULL,		NULL,		smissval,
 	"ROOH",		NULL,		NULL,		smissval,
 	"MHPEQ",	NULL,		NULL,		smissval,
+	"XCOMR",	NULL,		NULL,		sco_al,
 #
 #
 #	Solar Angle Calculations
@@ -876,6 +877,7 @@
 	"NDVI",		NULL,		NULL,		sndvi,
 	"PALT",		(void(*)(void*))initPalt,	NULL,		spalt,
 	"PALTF",	NULL,		NULL,		meters2feet,
+	"GALTF",	NULL,		NULL,		meters2feet,
 	"PSBC",		NULL,		NULL,		spsbc,
 	"PSFC",		NULL,		NULL,		spsfc,
 	"PSFD",		NULL,		xlpsfd,		NULL,
