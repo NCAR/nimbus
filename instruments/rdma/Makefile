@@ -8,7 +8,7 @@ INCDIR=		${DESTDIR}/include
 
 LIBS=		-lraf++ -lnetcdf_c++ -lnetcdf
 INCLUDES=	-I${INCDIR} -I/usr/include/netcdf
-LIBDIR=		-L${LOCAL}/lib
+LIBDIR=		-L${JLOCAL}/lib
 
 CC=		g++
 CFLAGS=		-Wall -g -O2 ${INCLUDES}
