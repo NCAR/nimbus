@@ -6,7 +6,10 @@ if ($#argv > 0) then
 endif
 
 # Environment variables that are needed:
-# setenv JLOCAL /opt/local
+if ( ! $?JLOCAL ) then
+    setenv JLOCAL /opt/local
+    echo "Environment variable JLOCAL not set, setting to $JLOCAL."
+endif
 # setenv LOCAL /opt/local
 # setenv WINDS $JLOCAL
 
@@ -15,22 +18,21 @@ endif
 # LOCAL points to the EOL wide installation area and JLOCAL points to
 # RAF specific installation area.
 
-if ( ! $?JLOCAL || ! $?LOCAL ) then
-    echo "Need to set environment variables LOCAL, JLOCAL."
+if ( ! $?LOCAL ) then
+    echo "Need to set environment variables LOCAL."
     exit 1
 endif
 
 # Check for netCDF installation.
-ls $LOCAL/libnetcdf* >& /dev/null
+ls /usr/lib/libnetcdf* >& /dev/null
 set rc1 = $status
-ls $JLOCAL/libnetcdf* >& /dev/null
+ls $JLOCAL/lib/libnetcdf* >& /dev/null
 set rc2 = $status
 
-if ($rc1 == 0 && $rc2 == 0) then
-    echo "netCDF appears to NOT be installed in either $LOCAL or $JLOCAL."
+if ($rc1 == 1 && $rc2 == 1) then
+    echo "netCDF appears to NOT be installed in either /usr/lib or $JLOCAL."
     exit 1
 endif
-
 
 if ( ! $?WINDS ) then
     echo "WINDS not set, ADS2 and winds will NOT be built."
