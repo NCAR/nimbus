@@ -24,7 +24,13 @@ if ( ! $?LOCAL ) then
 endif
 
 # Check for netCDF installation.
-ls /usr/lib/libnetcdf* >& /dev/null
+if (`uname -i` == x86_64) then
+    set libdir=/usr/lib64
+else
+    set libdir=/usr/lib
+endif
+
+ls $libdir/libnetcdf* >& /dev/null
 set rc1 = $status
 ls $JLOCAL/lib/libnetcdf* >& /dev/null
 set rc2 = $status
