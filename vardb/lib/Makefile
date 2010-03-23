@@ -9,7 +9,7 @@ CC=		g++
 LIBNAME=	VarDB
 HEADER=		vardb.h
 
-INCLUDES=	-I${INCLUDEDIR}
+INCLUDES=	-I${INCLUDEDIR} -I/usr/include/netcdf
 DEFINES=
 CFLAGS=		-g -O2 ${INCLUDES} ${DEFINES}
 
