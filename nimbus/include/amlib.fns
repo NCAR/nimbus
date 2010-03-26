@@ -987,6 +987,7 @@
 # King & PMS Liquid Water Probes
 	"PLWCC",	(void(*)(void*))plwccInit,	NULL,		splwcc,
 	"PLWCC1",	(void(*)(void*))plwcc1Init,	NULL,		splwcc1,
+	"PLWCG",	(void(*)(void*))plwcgInit,	NULL,		splwcg,
 #
 # Russian liquid water.
 	"XLWCR",	NULL,		NULL,		srlwc,
