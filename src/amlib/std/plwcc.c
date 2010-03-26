@@ -31,7 +31,7 @@ static NR_TYPE  twireDiam[3] = {0.21, 0.21, 0.21};	/* Diameter	*/
 static NR_TYPE  cloud_conc_threshold = 0.01;		/* Cloud Concentration Baseline Threshold */
 
 // Four running averages.
-struct _running_average lwc1, lwc2, conc1, conc2;
+struct _running_average lwc1, lwc2, conc1, conc2, lwcg, concg;
 
 
 NR_TYPE kinglwcc(NR_TYPE plwc, NR_TYPE tasx, NR_TYPE atx, NR_TYPE psxc, NR_TYPE twire, NR_TYPE diam);
@@ -157,6 +157,16 @@ void plwcc1Init(var_base *varp)
 }	/* END PLWCC1INIT */
 
 /* -------------------------------------------------------------------- */
+void plwcgInit(var_base *varp)
+{
+  memset(&lwcg, 0, sizeof(_running_average));
+  memset(&concg, 0, sizeof(_running_average));
+  allocate(&lwcg, baseline_conc_seconds);
+  allocate(&concg, baseline_conc_seconds);
+
+}	/* END PLWCCGINIT */
+
+/* -------------------------------------------------------------------- */
 void splwcc(DERTBL *varp)
 {
   NR_TYPE plwc, tasx, atx, psxc, concf;
@@ -230,4 +240,25 @@ void splwcc1(DERTBL *varp)
   }
   
   PutSample(varp, plwcc);
+}
+
+/* -------------------------------------------------------------------- */
+void splwcg(DERTBL *varp)
+{
+  NR_TYPE plwc, concf;
+
+  plwc  = GetSample(varp, 0);
+  concf = GetSample(varp, 1);
+ 
+  /* Baseline to a another cloud instrument to remove drift.
+   */
+  if (!isnan(concf))
+    add_sample(&concg, concf);
+
+  if (concg.average[FeedBack] < cloud_conc_threshold && !isnan(plwc))
+    add_sample(&lwcg, -plwc);
+
+  plwc += lwcg.average[FeedBack];
+  
+  PutSample(varp, plwc);
 }
