@@ -144,6 +144,12 @@ void PMS1D_SetupForADS3()
     setSerialNumberAndProbeType("AS100_LWI", "FSSP109", PROBE_PMS1D | PROBE_FSSP);
     setSerialNumberAndProbeType("AS100_LWO", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
   }
+  if (cfg.ProjectName().compare("HIPPO-3") == 0)
+  {
+    setSerialNumberAndProbeType("A1DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+//    setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
+  }
   else
   {
     setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
