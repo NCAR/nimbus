@@ -164,8 +164,10 @@ void scs200(DERTBL *varp)	// DMT Modified SPP200 & UHSAS.
    * but there is no documentation to that at this time, so a fix gain stage
    * setting is used.  There are four gain stages, combine 8 bins into one bin
    * to smooth out discontinuities at each gain stage (at bin 19, bin 44, and 77).
+   * HIPPO phase 1 & 2 only.
    */
-  if (cfg.ProjectName().compare(0, 5, "HIPPO") == 0)
+  if (cfg.ProjectName().compare("HIPPO") == 0 ||
+      cfg.ProjectName().compare("HIPPO-2") == 0)
     uhsasBinConsolidation(actual);
 
   if (FeedBack == HIGH_RATE_FEEDBACK)
