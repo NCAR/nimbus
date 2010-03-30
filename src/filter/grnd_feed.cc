@@ -144,12 +144,13 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
     { 
       // Vector data
       // @todo when legacy zeroth bin goes away, then start with j = 0.
-      for (size_t j = 1; j < _varList[i]->Length; j++) 
+      size_t s = 1;
+      for (size_t j = s; j < _varList[i]->Length; j++) 
       {
         if (_summedDataCount[counter] > 0)
         {
           _lastGoodData[counter] = _summedData[counter] / _summedDataCount[counter];
-          if (j == 0) 
+          if (j == s) 
             groundString << ",'{" << _lastGoodData[counter];
           else 
             groundString << "," << _lastGoodData[counter];
@@ -159,7 +160,7 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
           // Ship last good value unless we've seen NaNs for quite a while (60 increments = 5 minutes if 5 second intervals)
           if (_lastGoodDataIncrement[counter] < 60)
           {
-            if (j == 0)
+            if (j == s)
               groundString << ",'{" << _lastGoodData[counter];
             else 
               groundString << "," << _lastGoodData[counter];
@@ -167,7 +168,7 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
           }
           else
           {
-            if (j == 0)
+            if (j == s)
               groundString << ",'{" << "-32767";
             else
               groundString << "," << "-32767";
