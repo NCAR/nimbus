@@ -96,7 +96,9 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
   size_t counter = 0;
   for (size_t i = 0; i < _varList.size(); ++i)
   {
-    for (size_t j = 0; j < _varList[i]->Length; j++)
+    // @todo when legacy zeroth bin goes away, then start with j = 0.
+    size_t s = _varList[i]->Length > 1 ? 1 : 0;
+    for (size_t j = s; j < _varList[i]->Length; j++)
     {
       if (!isnan(AveragedData[(_varList[i]->LRstart)+j]))
       { 
@@ -114,11 +116,14 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
   // Only send every so often.
   if ((rate_cntr % _dataRate) != 0)
     return;
- 
+
+  // Only send data if ground connection is verified
   struct stat stFileInfo;
+  std::string noconnFile("");
   if ( !valid_ground_conn  ) {
-    valid_ground_conn = stat("/tmp/xmit/noconn", &stFileInfo) != 0;
-    return; // Don't transmit until noconn file is removed 
+    noconnFile += getenv("XMIT_DIR");
+    noconnFile += "/noconn";
+    valid_ground_conn = stat(noconnFile.c_str(), &stFileInfo) != 0;
   }
 
   // Compose the string to send to the ground
@@ -138,7 +143,8 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
     if (_varList[i]->Length > 1) 
     { 
       // Vector data
-      for (size_t j = 0; j < _varList[i]->Length; j++) 
+      // @todo when legacy zeroth bin goes away, then start with j = 0.
+      for (size_t j = 1; j < _varList[i]->Length; j++) 
       {
         if (_summedDataCount[counter] > 0)
         {
