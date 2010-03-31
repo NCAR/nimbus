@@ -10,44 +10,49 @@ STATIC FNS:	none
 
 DESCRIPTION:	Concentrations from 2d probes with NEW housekeeping block.
 
-INPUT:		True airspeed, shadow or
+INPUT:		True airspeed, shadow counts
 
-OUTPUT:		
+OUTPUT:		Concentration
 
-REFERENCES:	none
-
-REFERENCED BY:	compute.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2010
 -------------------------------------------------------------------------
 */
 
 #include "nimbus.h"
 #include "amlib.h"
+#include <raf/pms.h>
+
+#include <map>
+
+static std::map<std::string, float> SampleArea;
 
 /* -------------------------------------------------------------------- */
-void sconc2dc(DERTBL *varp)
-{
-  NR_TYPE	shador, tasx,
-		eaw = 0.8;	// Set old 32 diode 25um probes.
+void conc2Init(var_base *varp)
+{ 
+  if (varp->SerialNumber.length() == 0) {
+    fprintf(stderr, "conc2d.c: %s has no serial number, fatal.\n", varp->name); exit(1);
+  }
 
-  shador = GetSample(varp, 0);
-  tasx = GetSample(varp, 1);
+  const char *serialNumber = varp->SerialNumber.c_str();
 
-  if (varp->SerialNumber.compare(0, 4, "F2DC") == 0)
-    eaw = 1.6;
-  if (varp->SerialNumber.compare("F2DC002") == 0)	// 10 um
-    eaw = 0.64;
+  MakeProjectFileName(buffer, PMS_SPEC_FILE);
+  InitPMSspecs(buffer);
 
-  if (isnan(tasx))	/* Lab setting, for spinning disk */
-    tasx = 34.0;
+  char *eaw, *arm_dist;
+  if ((eaw = GetPMSparameter(serialNumber, "EAW")) == NULL) {
+    fprintf(stderr, "conc2d.c: serial number = [%s]: EAW not found.\n",
+		serialNumber); exit(1);
+  }
+  if ((arm_dist = GetPMSparameter(serialNumber, "ARM_DISTANCE")) == NULL) {
+    fprintf(stderr, "conc2d.c: serial number = [%s]: ARM_DISTANCE not found.\n",
+		serialNumber); exit(1);
+  }
 
-  PutSample(varp, shador / (tasx * 61.0 * eaw) * 1000.0);
-
-}	/* END SCONC2DC */
+  SampleArea[varp->SerialNumber] = atof(eaw) * atof(arm_dist);
+}
 
 /* -------------------------------------------------------------------- */
-void sconc2dp(DERTBL *varp)
+void sconc2d(DERTBL *varp)
 {
   NR_TYPE	shador, tasx;
 
@@ -55,23 +60,10 @@ void sconc2dp(DERTBL *varp)
   tasx = GetSample(varp, 1);
 
   if (isnan(tasx))	/* Lab setting, for spinning disk */
-    {
     tasx = 34.0;
-    }
 
-  /* Blow-up protection:  output zero while on ground (TASX < 30.0 m/s)
-       installed by Ron Ruth  18 October 2001 */
+  PutSample(varp, shador / (tasx * SampleArea[varp->SerialNumber]) * 1000.0);
 
-  else if (tasx < 30.0)
-    {
-    shador = 0.0;
-    tasx  = 30.0;
-    }
-
-
-  /* 6.4 is a hardwire "EAW" that needs to be pulled out of PMSspecs */
-  PutSample(varp, shador / (tasx * 261.0 * 6.4) * 1000.0);
-
-}	/* END SCONC2DP */
+}	/* END SCONC2D */
 
 /* END CONC2D.C */
