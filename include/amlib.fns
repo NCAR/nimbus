@@ -678,8 +678,8 @@
 #
 #	PMS2D concentrations.
 #
-	"CONC2C",	NULL,		NULL,		sconc2dc,
-	"CONC2P",	NULL,		NULL,		sconc2dp,
+	"CONC2C",	(void(*)(void*))conc2Init,	NULL,		sconc2d,
+	"CONC2P",	(void(*)(void*))conc2Init,	NULL,		sconc2d,
 	"CON2C1",	(void(*)(void*))conc2cInit,	NULL,		scon2c,
 	"CON2C2",	NULL,		NULL,		scon2c,
 	"CON2P1",	(void(*)(void*))conc2pInit,	NULL,		scon2p,
