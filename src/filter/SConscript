@@ -20,7 +20,7 @@ env.Append(_LIBFLAGS=['-Wl,-R', '/opt/local/lib'])
 env['LIBS'] = Split("""
   std user xlate
   hdr_api pms VarDB raf raf++
-  ncaru netcdf pq
+  ncaru netcdf hdf5_hl hdf5 pq
   Xm Xt X11
   gsl gslcblas m
 """)
