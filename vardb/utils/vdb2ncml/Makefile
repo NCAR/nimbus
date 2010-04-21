@@ -8,7 +8,7 @@ LINTLIBS=	${LIBS}
 INCLUDES=	-I${JLOCAL}/include -I/usr/include/netcdf
 CFLAGS=		-g ${INCLUDES}
 
-LIBS=	-L${JLOCAL}/lib -lVarDB -lpms -lraf -lnetcdf
+LIBS=	-L${JLOCAL}/lib -lVarDB -lpms -lraf -lnetcdf -lhdf5_hl -lhdf5
 
 SRCS=	vdb2ncml.cc
 OBJS=	vdb2ncml.o
