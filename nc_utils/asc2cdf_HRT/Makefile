@@ -6,9 +6,9 @@ DESTDIR=
 BINDIR=		/jnet/local/bin
 ANONFTP=	/net/ftp/pub/archive/RAF-src/bin.RHEL5
 MANDIR=		/jnet/local/man/man1
-LIBS=		-L${JLOCAL}/lib -lVarDB -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic -lraf
+LIBS=		-L${JLOCAL}/lib -lVarDB -lnetcdf -lhdf5 -lhdf5_hl -lraf
 LINTLIBS=	${LIBS}
-INCLUDES=	-I$(JLOCAL)/include -I/usr/include/netcdf
+INCLUDES=	-I$(JLOCAL)/include 
 CFLAGS=		-Wall -g ${INCLUDES} -DVARDB
 
 SRCS=   asc2cdf.c plain.c nasaAmes.c nasaLangley.c

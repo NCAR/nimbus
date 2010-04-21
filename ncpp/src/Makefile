@@ -13,10 +13,10 @@ COD	= ../class
 #	Linux
 #
 DEFINES	= -DPNG
-INCLUDES= -I${INC} -I${RAFINC} -I/usr/include/netcdf
+INCLUDES= -I${INC} -I${RAFINC}
 LIB_DIRS= -L${JLOCAL}/lib
-LIBS	= -lraf++ -lXm -lXt -lX11 -lXext -Wl,-Bstatic -lnetcdf_c++ -lnetcdf -Wl,-Bdynamic -lpng -lz
-ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.Fedora10
+LIBS	= -lraf++ -lXm -lXt -lX11 -lXext -lnetcdf_c++ -lnetcdf -lhdf5 -lhdf5_hl -lpng -lz
+ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.RHEL5
 
 #	Mac OS X
 #

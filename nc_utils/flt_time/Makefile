@@ -6,8 +6,8 @@ DESTDIR=	${JLOCAL}/
 BINDIR=		bin
 ANONFTP=	/net/ftp/pub/archive/RAF-src/bin.RHEL5
 MANDIR=		man/man1
-LIBS=		-L${JLOCAL}/lib -Wl,-Bstatic -lnetcdf_c++ -lnetcdf -Wl,-Bdynamic 
-INCLUDES=	-I${JLOCAL}/include -I/usr/include/netcdf
+LIBS=		-L${JLOCAL}/lib -lnetcdf_c++ -lnetcdf -lhdf5 -lhdf_hl
+INCLUDES=	-I${JLOCAL}/include
 CXXFLAGS=	-Wall -g ${INCLUDES}
 
 SRCS=	flt_time.cc

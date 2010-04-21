@@ -8,8 +8,8 @@ INCDIR=		${DESTDIR}/include
 ANONFTP=	/net/ftp/pub/archive/RAF-src/bin.RHEL5
 
 
-LIBS=		-Wl,-Bstatic -lnetcdf_c++ -lnetcdf -Wl,-Bdynamic
-INCLUDES=	-I$(INCDIR) -I/usr/include/netcdf
+LIBS=		-lnetcdf_c++ -lnetcdf -lhdf5 -lhdf5_hl
+INCLUDES=	-I$(INCDIR)
 
 CC=		g++
 CFLAGS=		${INCLUDES}

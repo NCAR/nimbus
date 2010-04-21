@@ -4,7 +4,7 @@
 CC=		g++
 BINDIR=		${JLOCAL}/bin
 MANDIR=		${JLOCAL}/man/man1
-INCLUDES=	-I$(JLOCAL)/include -I/usr/include/netcdf
+INCLUDES=	-I$(JLOCAL)/include
 CFLAGS=		-Wall -g ${INCLUDES} -DVARDB
 
 # Solaris
@@ -12,7 +12,7 @@ LIBS=		-L/jnet/solaris/lib -lVarDB -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic
 ANONFTP=	/jnet/ftp/pub/src/bin.Solaris2.9
 
 # Linux
-LIBS=	-L${JLOCAL}/lib -lVarDB -lraf++ -lraf -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic 
+LIBS=	-L${JLOCAL}/lib -lVarDB -lraf++ -lraf -Wl,-Bstatic -lnetcdf -lhdf5 -lhdf5_hl -Wl,-Bdynamic 
 ANONFTP=/net/ftp/pub/archive/RAF-src/bin.RHEL5
 WWWDOC=	/net/www/raf/Software
 

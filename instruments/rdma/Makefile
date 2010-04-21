@@ -6,8 +6,8 @@ BINDIR=		${DESTDIR}/bin
 MANDIR=		${DESTDIR}/man/manl
 INCDIR=		${DESTDIR}/include
 
-LIBS=		-lraf++ -lnetcdf_c++ -lnetcdf
-INCLUDES=	-I${INCDIR} -I/usr/include/netcdf
+LIBS=		-lraf++ -lnetcdf_c++ -lnetcdf -lhdf5 -lhdf5_hl
+INCLUDES=	-I${INCDIR}
 LIBDIR=		-L${JLOCAL}/lib
 
 CC=		g++
