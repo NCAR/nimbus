@@ -205,6 +205,15 @@ void spflwc(DERTBL *varp)
   psx	= GetSample(varp, 1);
   atx	= GetSample(varp, 2);
 
+  /* In HIPPO-3 the UHSAS flow readout would periodically double to about 1.5
+   * even though the flow was actually correct.  Hold flow to average corerect
+   * value when this happens.  DC Rogers says average is 0.72623 with std dev
+   * of +-0.00023 sccs.  May 17 2010.
+   */
+  if (cfg.ProjectName().compare("HIPPO-3") == 0)
+    if (flow > 1.0)
+      flow = 0.72623;
+
   // Changed from 294.15 C to 298.15 C on 9/13/01 per DCRogers.
   flowc = flow * (1013.25 / psx) * (atx + Kelvin) / 298.15;
 
