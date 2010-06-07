@@ -54,7 +54,7 @@ void openFiles(int argc, char *argv[], int argp)
    */
   if (nc_open(argv[argp], NC_WRITE, &infd1) != NC_NOERR)
   {
-    fprintf(stderr, "Can't open primary file %s\n", argv[argp]);
+    fprintf(stderr, "Can't open primary file %s. Do you have write permission?\n", argv[argp]);
     Exit(1);
   }
 
