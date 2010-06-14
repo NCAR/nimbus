@@ -14,6 +14,7 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <stdint.h>
 #include <algorithm>
 #include <string>
 #include <utility>
