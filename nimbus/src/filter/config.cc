@@ -8,6 +8,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005
 
 #include "config.h"
 
+#include <cstdio>
+
 const Config::interpolationType Config::_defaultInterp = Config::Linear;
 const Config::pms2dProcessing Config::_defaultPMS2DProcessingMethod = Center_In;
 const float Config::_defaultPMS2DAreaRatioReject = 0.5;
