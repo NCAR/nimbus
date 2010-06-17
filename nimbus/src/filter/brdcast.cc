@@ -25,7 +25,7 @@ const std::string Broadcast::InterfacePrefix = "192.168";
 using namespace nidas::util;
 
 /* -------------------------------------------------------------------- */
-Broadcast::Broadcast() : UDP_Base(31000)
+Broadcast::Broadcast() : UDP_Base(7071)
 {
   _varList = readFile(BROADCAST);
 
