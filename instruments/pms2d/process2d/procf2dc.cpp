@@ -4,7 +4,7 @@
     Fast 2DC processing package, NCAR/RAF
 
     COMPILER COMMAND:
-    c++ soda.cpp -o procf2dc -I/usr/local/netcdf-3.6.0-p1/include 
+    c++ procf2dc.cpp -o procf2dc -I/usr/local/netcdf-3.6.0-p1/include 
         -L/usr/local/netcdf-3.6.0-p1/lib -lnetcdf_c++ -lnetcdf
 
     Last changed: ARB, 6/2010
@@ -502,7 +502,7 @@ unsigned short endianswap_s(unsigned short x){
 // ------------PROCESS 2D-----------------------
 //================================================================================================
 int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2process, float pixel_res, 
-    string suffix, float armwidth, bool recon, char smethod, bool verbose, bool debug){
+    string suffix, float armwidth, bool recon, bool shattercorrect, char smethod, bool verbose, bool debug){
 
   /*-----Processing options-------------------------------------------------------
       start/stop time: In UTC seconds
@@ -665,9 +665,18 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
                  cpoisson2[itime]=(float)bestfit[1];
                  cpoisson3[itime]=(float)bestfit[2];
                  
-                 pcutoff[itime]=(float)(1.0/bestfit[1]*0.05);  //Compute cutoff time
-                 corrfac[itime]=(float)(1.0/(2*exp(-pcutoff[itime]*bestfit[1])-1));  //Compute correction factor
+                 //Compute shattering corrections if flagged
+                 if (shattercorrect) {
+                   pcutoff[itime]=(float)(1.0/bestfit[1]*0.05);  //Compute cutoff time
+                   corrfac[itime]=(float)(1.0/(2*exp(-pcutoff[itime]*bestfit[1])-1));  //Compute correction factor
+                 } else {
+                   pcutoff[itime]=0;   //No rejection or corrections
+                   corrfac[itime]=1.0;
+                 }
+                 
                  if (verbose) cout<<itime+starttime<<" "<<time1hz<<" "<<istack<<" "<<bestfit[0]<<" "<<bestfit[1]<<" "<<bestfit[2]<<endl;
+                 
+                 //Sort through all particles in this stack
                  for (int i=0; i<istack; i++){                                  
                     //Find water size correction
                     wc=poisson_spot_correction(particle_stack[i].area,particle_stack[i].holearea);
@@ -692,13 +701,13 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
                        count_round[itime][wsize+1]++;   //Add 1 to wsize for RAF convention
                        n_accepted_round[itime]++;
                     } else n_rejected_round[itime]++;                                                      
-                 }
-              } //End particle sorting
+                 } //End sorting through particle stack
+              } //End of time check
 
               //Restart particle stack
               istack=0;
               last_time1hz=time1hz;
-           }
+           } //End crossed into new time period
            
            //Add this particle to vector
            particle_stack[istack]=particle;
@@ -708,7 +717,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
            particle_count++;
            lasttimeline=timeline;
            slice_count=0;
-        } 
+        } // end of image processing after detection of sync line 
         else {
            //Found an image slice, make the next slice part of binary image
            for (int idiode=0; idiode<ndiodes; idiode++)
@@ -716,13 +725,15 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
            slice_count=min(slice_count+1,511);  //Increment slice_count, limit to 511
         }
      
-      }
+     } //end slice loop
      buffcount++;  //Update buffer counter
      if ((!verbose) && (buffcount % 100==0)) cout<<"."<<flush; //User feedback
-   }
+  } //end buffer loop
  
   // Close raw data file
   input_file.close();
+  
+  
   
   //=========Compute sample volume, concentration, total number, and LWC======
   float bin_midpoints[numbins], sa[numbins], sv, mass;
@@ -1058,6 +1069,8 @@ int main(int argc, char *argv[]){
     cout<<"         Use y-sizing (with the airflow)"<<endl;
     cout<<"   -allin"<<endl;
     cout<<"         Require particles to be fully imaged"<<endl;
+    cout<<"   -noshattercorrect"<<endl;
+    cout<<"         Turn off shattering rejection and corrections"<<endl;
     cout<<"   -verbose"<<endl;
     cout<<"         Send extra output to console"<<endl<<endl;;
     cout<<"Example:  procf2dc myfile.2d -start 123000 -stop 140000 -xsize -allin"<<endl<<endl;
@@ -1118,12 +1131,13 @@ int main(int argc, char *argv[]){
 
    
   //Parse command line arguments
-  bool recon=1, verbose=0, debug=0;  //Default values
+  bool recon=1, verbose=0, debug=0, shattercorrect=1;  //Default values
   char smethod='c';
   for (int i=2; i<(argc); i++){
      string arg=argv[i];
      if ((arg.find("-sta")!=string::npos) && (i<(argc-1))) starttime=atoi(argv[i+1]);
      if ((arg.find("-sto")!=string::npos) && (i<(argc-1))) stoptime=atoi(argv[i+1]);
+     if (arg.find("-n")!=string::npos) shattercorrect=0;
      if (arg.find("-a")!=string::npos) recon=0;
      if (arg.find("-x")!=string::npos) smethod='x';
      if (arg.find("-y")!=string::npos) smethod='y';
@@ -1140,7 +1154,7 @@ int main(int argc, char *argv[]){
      if (probeid[i].compare("C4")) armwidth=6.1;
      cout<<"Processing: "<<probeid[i]<<" res:"<<res[i]<<" suffix:"<<suffix[i]<<" armwidth:"<<armwidth<<endl;
      cout<<"    Start:"<<starttime<<"  Stop:"<<stoptime<<endl;
-     errorcode=process2d(argv[1], starttime, stoptime, probeid[i], res[i], suffix[i], armwidth, recon, smethod, verbose, debug); 
+     errorcode=process2d(argv[1], starttime, stoptime, probeid[i], res[i], suffix[i], armwidth, recon, shattercorrect, smethod, verbose, debug); 
      if (!errorcode) cout<<"Sucessfully processed probe "<<i<<endl; else cout<<"Error on probe "<<i<<endl;
   }
 }
