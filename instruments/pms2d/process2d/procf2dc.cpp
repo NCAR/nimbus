@@ -366,7 +366,7 @@ short fillholes2(short img_original[][ndiodes], short nslices){
 }  
 
 // ----------------POISSON SPOT CORRECTION FOR WATER----------------
-float poisson_spot_correction(float area_img, float area_hole){
+float poisson_spot_correction(float area_img, float area_hole, bool allin){
    //Based on Korolev JTECH #24 2007 p. 376
    float Dspot_Dedge[]={0.003,0.008,0.017,0.024,0.033,0.04,0.047,0.054,0.062,0.072,0.076,0.088,0.093,0.096,
       0.101,0.119,0.123,0.127,0.13,0.134,0.139,0.148,0.175,0.18,0.184,0.188,0.192,0.195,0.199,0.202,0.206,0.209, 
@@ -402,7 +402,7 @@ float poisson_spot_correction(float area_img, float area_hole){
 
    float ratio, correction=1;
    
-   if((area_img>0) && (area_hole>0)){
+   if((area_img>0) && (area_hole>0) && (allin==1)){
      //Use the area option in paper: sqrt(Sspot/Sedge)
      ratio = sqrt(area_hole/(area_img+area_hole));
      int ip=1;
@@ -679,7 +679,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
                  //Sort through all particles in this stack
                  for (int i=0; i<istack; i++){                                  
                     //Find water size correction
-                    wc=poisson_spot_correction(particle_stack[i].area,particle_stack[i].holearea);
+                    wc=poisson_spot_correction(particle_stack[i].area,particle_stack[i].holearea,particle_stack[i].allin);
                     
                     //Rejection
                     if(i==istack-1) nextit=particle.inttime;  //This particle is for next time period, but use its inttime
