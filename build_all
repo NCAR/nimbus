@@ -116,7 +116,7 @@ endif
 # Programs with Qt [and Qwt].
 # rtplot requires $NIMBUS to be set....
 setenv NIMBUS `pwd`/nimbus
-foreach file ( instruments/hvps/hvpsdiag instruments/usb2d/usb2diag )
+foreach file ( instruments/hvps/hvpsdiag )
   (cd $file; echo $file; qmake; make)
   if ($num > 0) then
     echo "$file BUILT"
