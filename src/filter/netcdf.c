@@ -27,7 +27,7 @@ DESCRIPTION:	This file has the routines necessary to Create and write
 		data for distribution of NCAR/RAF aircraft data in netCDF
 		format.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2010
 -------------------------------------------------------------------------
 */
 
@@ -54,6 +54,7 @@ static const std::string Conventions = "NCAR-RAF/nimbus";
 static const std::string ConventionsURL = "http://www.eol.ucar.edu/raf/Software/netCDF.html";
 static const std::string NETCDF_FORMAT_VERSION = "1.3";
 
+static const char *ISO8601_Z = "%FT%T %z";
 
 static const int DEFAULT_TI_LENGTH = 17;
 
@@ -110,8 +111,6 @@ void SetBaseTime(NR_TYPE *record)
   StartFlight.tm_hour = (int)record[timeIndex[0]],
   StartFlight.tm_min = (int)record[timeIndex[1]],
   StartFlight.tm_sec = (int)record[timeIndex[2]];
-
-  BaseTime = timegm(&StartFlight);
 
   if (cfg.isADS3())	// We don't support BaseTime anymore.
     return;
@@ -193,7 +192,7 @@ void CreateNetCDF(const char fileName[])
 
   t = time(0);
   tm = *localtime(&t);
-  strftime(dateProcessed, 64, "%F %T %z", &tm);
+  strftime(dateProcessed, 64, ISO8601_Z, &tm);
   putGlobalAttribute("DateProcessed", dateProcessed);
 
   if (LogFile)
@@ -910,11 +909,24 @@ static void writeTimeUnits()
 {
   const char *format = "seconds since %F %T %z";
 
+  StartFlight.tm_isdst = 0;
   strftime(buffer, 256, format, &StartFlight);
   ncattput(fd, timeVarID, "units", NC_CHAR, strlen(buffer)+1, buffer);
   ncattput(fd, timeVarID, "strptime_format", NC_CHAR, strlen(format)+1, format);
   if (cfg.isADS2())
     ncattput(fd, timeOffsetID, "units", NC_CHAR, strlen(buffer)+1, buffer);
+
+
+  strftime(buffer, 256, ISO8601_Z, &StartFlight);
+  putGlobalAttribute("time_coverage_start", buffer);
+
+  time_t endTime = timegm(&StartFlight);
+  endTime += (TimeVar - 1);
+  struct tm EndFlight;
+  gmtime_r(&endTime, &EndFlight);
+  EndFlight.tm_isdst = 0;
+  strftime(buffer, 256, ISO8601_Z, &EndFlight);
+  putGlobalAttribute("time_coverage_end", buffer);
 }
 
 /* -------------------------------------------------------------------- */
