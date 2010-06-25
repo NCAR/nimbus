@@ -263,8 +263,6 @@ PostgreSQL::createTables()
 void
 PostgreSQL::initializeGlobalAttributes()
 {
-  std::string coords = cfg.CoordinateVariables();
-  coords.replace(coords.find("Time"), 4, TIME_VARIABLE);
   extern char dateProcessed[];	// From netcdf.c
 
   _sqlString.str("");
@@ -279,7 +277,10 @@ PostgreSQL::initializeGlobalAttributes()
   _sqlString << "INSERT INTO global_attributes VALUES ('ProjectNumber', '" << cfg.ProjectNumber() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('FlightNumber', '" << cfg.FlightNumber() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('DateProcessed', '" << dateProcessed << "');";
-  _sqlString << "INSERT INTO global_attributes VALUES ('coordinates', '" << coords << "');";
+  _sqlString << "INSERT INTO global_attributes VALUES ('latitude_coordinate', '" << cfg.CoordinateLatitude() << "');";
+  _sqlString << "INSERT INTO global_attributes VALUES ('longitude_coordinate', '" << cfg.CoordinateLongitude() << "');";
+  _sqlString << "INSERT INTO global_attributes VALUES ('zaxis_coordinate', '" << cfg.CoordinateAltitude() << "');";
+  _sqlString << "INSERT INTO global_attributes VALUES ('time_coordinate', '" << TIME_VARIABLE << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('wind_field', '" << cfg.WindFieldVariables() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('landmarks', '" << readLandmarks() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('DataRate', '" << cfg.GroundFeedDataRate() << "');";

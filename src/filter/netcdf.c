@@ -214,6 +214,12 @@ void CreateNetCDF(const char fileName[])
   if (LogFile)
     fprintf(LogFile, "Flight Date: %s\n", buffer);
 
+  /* Will be updated later.
+   */
+  memset(buffer, ' ', DEFAULT_TI_LENGTH);
+  buffer[DEFAULT_TI_LENGTH] = '\0';
+  putGlobalAttribute("TimeInterval", buffer);
+
   if (cfg.InterpolationType() == Config::Linear)
     putGlobalAttribute(InterpKey.c_str(), Interp_Linear);
   else
@@ -223,15 +229,12 @@ void CreateNetCDF(const char fileName[])
   if (cfg.InterpolationType() == Config::AkimaSpline)
     putGlobalAttribute(InterpKey.c_str(), Interp_Akima);
 
-  putGlobalAttribute("coordinates", cfg.CoordinateVariables());
+  putGlobalAttribute("latitude_coordinate", cfg.CoordinateLatitude());
+  putGlobalAttribute("longitude_coordinate", cfg.CoordinateLongitude());
+  putGlobalAttribute("zaxis_coordinate", cfg.CoordinateAltitude());
+  putGlobalAttribute("time_coordinate", cfg.CoordinateTime());
   putGlobalAttribute("wind_field", cfg.WindFieldVariables());
   addLandmarks();
-
-  /* Will be updated later.
-   */
-  memset(buffer, ' ', DEFAULT_TI_LENGTH);
-  buffer[DEFAULT_TI_LENGTH] = '\0';
-  putGlobalAttribute("TimeInterval", buffer);
 
 
   /* Write out Categories.
