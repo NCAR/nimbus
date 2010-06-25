@@ -27,6 +27,8 @@ const NR_TYPE MISSING_VALUE = -32767.0;
 const int MaxLag = 2000;
 const int MAX_COF = 6;
 
+const char *ISO8601_T = "%FT%T";
+
 const std::string InterpKey = "InterpolationMethod";
 const std::string Interp_Linear = "Linear";
 const std::string Interp_Cubic = "CubicSpline";

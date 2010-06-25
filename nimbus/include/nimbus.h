@@ -175,6 +175,8 @@ extern bool SDF;
 extern bool SDC;
 extern bool SDP;
 
+extern const char *ISO8601_T;
+
 
 //      Function Prototypes
 FILE	*OpenProjectFile(const std::string& filename, const char mode[], int action);

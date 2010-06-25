@@ -49,7 +49,7 @@ void sqlTransmit::sendString(const std::string& str)
   {
   time_t t = time(0);
   char timeStamp[64];
-  strftime(timeStamp, sizeof(timeStamp), "%Y-%m-%dT%H:%M:%S", gmtime(&t));
+  strftime(timeStamp, sizeof(timeStamp), ISO8601_T, gmtime(&t));
 
   sprintf(fName, "%s/%s_nimbus_start_%s.gz", dir, _aircraft.c_str(), timeStamp);
   }
