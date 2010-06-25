@@ -23,7 +23,7 @@
 
 using namespace std;
    
-const short ndiodes=64;
+const short ndiodes = 64;
 
 struct struct_particle {
    long time1hz; 
@@ -32,6 +32,8 @@ struct struct_particle {
    bool allin, wreject, ireject;
 };
 
+/* Standard RAF record format for 2D records.
+ */
 struct type_buffer { 
     char probetype;
     char probenumber;
@@ -41,8 +43,8 @@ struct type_buffer {
     short year;
     short month;
     short day;
-    short tas;
-    unsigned short ms;
+    short tas;			// True airspeed.
+    unsigned short msec;	// millisecond of data timestamp.
     short overload;
     unsigned long long image[512];
  }; 
@@ -593,7 +595,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
      lastbuffertime=buffertime;
      buffertime=(endianswap_s(buffer.day)-firstday)*86400.0 + 
                 endianswap_s(buffer.hours)*3600.0 + endianswap_s(buffer.minutes)*60.0 + 
-                endianswap_s(buffer.seconds) + endianswap_s(buffer.ms)/1000.0;
+                endianswap_s(buffer.seconds) + endianswap_s(buffer.msec)/1000.0;
      firsttimeflag=1;
      //Scroll through each slice, look for sync/time slices
      for (int islice=0; islice<512; islice++){
@@ -1042,12 +1044,37 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   return 0;  //No errors
 }
 
+int usage(const char* argv0)
+{
+  cerr << endl << "USAGE:  procf2dc [filename.2d] <options>" << endl << endl;
+  cerr << "OPTIONS:" << endl;
+  cerr << "   -starttime [hhmmss]"<<endl;
+  cerr << "         Specify start time in format hhmmss, default is first available time"<<endl;
+  cerr << "   -stoptime [hhmmss]"<<endl;
+  cerr << "         Specify stop time in format hhmmss, default is last available time"<<endl;
+  cerr << "   -xsize"<<endl;
+  cerr << "         Use x-sizing (across the array), use of -allin highly recommended"<<endl;
+  cerr << "   -ysize"<<endl;
+  cerr << "         Use y-sizing (with the airflow)"<<endl;
+  cerr << "   -allin"<<endl;
+  cerr << "         Require particles to be fully imaged"<<endl;
+  cerr << "   -noshattercorrect"<<endl;
+  cerr << "         Turn off shattering rejection and corrections"<<endl;
+  cerr << "   -verbose"<<endl;
+  cerr << "         Send extra output to console"<<endl<<endl;;
+  cerr << "Example:  procf2dc myfile.2d -start 123000 -stop 140000 -xsize -allin"<<endl<<endl;
+
+  return 1;
+} 
+  
+
 //================================================================================================
 // ------------MAIN-----------------------
 //================================================================================================
 
-int main(int argc, char *argv[]){
-  int errorcode, starttime, stoptime, numprobes=0; 
+int main(int argc, char *argv[])
+{
+  int errorcode, starttime, stoptime, numprobes=0;
   ifstream input_file;
   string line, subline;
   string markerline = "</PMS2D>";  //Marks end of XML header
@@ -1055,36 +1082,19 @@ int main(int argc, char *argv[]){
   string probeid[5], suffix[5];  //Store up to 5 probes characteristics
   float res[5];
   
-  //Check for correct number of arguments
-  if (argc < 2) {   
-    cout<<endl<<"USAGE:  procf2dc [filename.2d] <options>"<<endl<<endl;
-    cout<<"OPTIONS:"<<endl;
-    cout<<"   -starttime [hhmmss]"<<endl;
-    cout<<"         Specify start time in format hhmmss, default is first available time"<<endl;
-    cout<<"   -stoptime [hhmmss]"<<endl;
-    cout<<"         Specify stop time in format hhmmss, default is last available time"<<endl;
-    cout<<"   -xsize"<<endl;
-    cout<<"         Use x-sizing (across the array), use of -allin highly recommended"<<endl;
-    cout<<"   -ysize"<<endl;
-    cout<<"         Use y-sizing (with the airflow)"<<endl;
-    cout<<"   -allin"<<endl;
-    cout<<"         Require particles to be fully imaged"<<endl;
-    cout<<"   -noshattercorrect"<<endl;
-    cout<<"         Turn off shattering rejection and corrections"<<endl;
-    cout<<"   -verbose"<<endl;
-    cout<<"         Send extra output to console"<<endl<<endl;;
-    cout<<"Example:  procf2dc myfile.2d -start 123000 -stop 140000 -xsize -allin"<<endl<<endl;
-    return 0;
-  } 
-  
-  //Open raw file, test for existence
+  // Check for correct number of arguments
+  if (argc < 2)
+    return usage(argv[0]);
+
+
+  // Open raw file, test for existence
   input_file.open(argv[1], ios::binary);
   if (!input_file.good()) {
-    cout<<"Unable to open "<<argv[1]<<endl;
-    return 0;
+    cerr << "Unable to open " << argv[1] << endl;
+    return 1;
   }  
   
-  //Parse XML header
+  // Parse XML header
   size_t tagpos, q1, q2;
   do {    
     getline(input_file, line);
@@ -1113,10 +1123,10 @@ int main(int argc, char *argv[]){
     }
   } while ((line.compare(markerline)!=0) && (!input_file.eof()));  
     
-  //Return if unreadable file
-  if (input_file.eof()){
-     cout<<"Unable to find XML header"<<endl;
-     return 0;
+  // Return if unreadable file
+  if (input_file.eof()) {
+     cerr << "Unable to find XML header" << endl;
+     return 1;
   }
 
   //Read first buffer, get start time
@@ -1147,14 +1157,23 @@ int main(int argc, char *argv[]){
 
   if (starttime > stoptime) stoptime = stoptime + 240000;  //Midnight crossing
   
-  //Process all probes found in the file
-  for (int i=0; i<numprobes; i++){
-     float armwidth=6.1;
-     if (probeid[i].compare("C6")) armwidth=6.1;   //Add new probes here as they become available
-     if (probeid[i].compare("C4")) armwidth=6.1;
-     cout<<"Processing: "<<probeid[i]<<" res:"<<res[i]<<" suffix:"<<suffix[i]<<" armwidth:"<<armwidth<<endl;
-     cout<<"    Start:"<<starttime<<"  Stop:"<<stoptime<<endl;
-     errorcode=process2d(argv[1], starttime, stoptime, probeid[i], res[i], suffix[i], armwidth, recon, shattercorrect, smethod, verbose, debug); 
-     if (!errorcode) cout<<"Sucessfully processed probe "<<i<<endl; else cout<<"Error on probe "<<i<<endl;
+  // Process all probes found in the file
+  for (int i=0; i<numprobes; i++)
+  {
+    float armwidth=6.1;
+    if (probeid[i].compare("C6")) armwidth=6.1;   //Add new probes here as they become available
+    if (probeid[i].compare("C4")) armwidth=6.1;
+
+    cout << "Processing: "<<probeid[i]<<" res:"<<res[i]<<" suffix:"<<suffix[i]<<" armwidth:"<<armwidth<<endl;
+    cout << "    Start:" << starttime << "  Stop:" << stoptime << endl;
+
+    errorcode = process2d(argv[1], starttime, stoptime, probeid[i], res[i], suffix[i], armwidth, recon, shattercorrect, smethod, verbose, debug); 
+
+    if (!errorcode)
+      cout<<"Sucessfully processed probe " << i << endl;
+    else
+      cout << "Error on probe " << i << endl;
   }
+
+  return 0;
 }
