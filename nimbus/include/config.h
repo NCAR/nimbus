@@ -117,8 +117,10 @@ public:
   void SetFlightDate(const std::string s)	{ _flightDate = s; }
   void SetChecksum(const std::string s)		{ _checksum = s; }
 
-  std::string CoordinateVariables() const
-  { return _coordLON + " " + _coordLAT + " " + _coordALT + " " + _coordTime; }
+  std::string CoordinateLatitude() const        { return _coordLAT; }
+  std::string CoordinateLongitude() const       { return _coordLON; }
+  std::string CoordinateAltitude() const        { return _coordALT; }
+  std::string CoordinateTime() const            { return _coordTime; }
 
   std::string WindFieldVariables() const
   { return _windWS + " " + _windWD + " " + _windWI; }
