@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	ncReorder
 
-FULL NAME:	
+FULL NAME:	netCDF file re-order
 
 ENTRY POINTS:	main
 
@@ -12,26 +12,24 @@ DESCRIPTION:	Reorder an existing netCDF file, changing the UNLIMITED
 		dimension to a fixed dimension.  This has the affect of
 		making all the data for given variable contiguous on disk.
 
-INPUT:		netCDF file
-
-OUTPUT:		netCDF file
-
-REFERENCES:	libnetcdf_c++.a
-
-REFERENCED BY:	Command line
-
-NOTES:		
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 2004-05
+COPYRIGHT:	University Corporation for Atmospheric Research, 2004-10
 -------------------------------------------------------------------------
 */
 
 #include <netcdf.hh>
 
-#include <cstdio>
 #include <cstring>
 
+using namespace std;
+
 bool	verbose = false;
+
+/* -------------------------------------------------------------------- */
+int usage(char *argv0)
+{
+  cerr << "Usage: ncReorder [-v] infile.nc outfile.nc\n";
+  return 1;
+}
 
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
@@ -39,10 +37,7 @@ int main(int argc, char *argv[])
   int		argIndx = 1;
 
   if (argc < 3)
-  {
-    fprintf(stderr, "Usage: ncReorder [-v] infile.nc outfile.nc\n");
-    return(1);
-  }
+    return usage(argv[0]);
 
   if (strcmp(argv[argIndx], "-v") == 0)
   {
@@ -54,15 +49,14 @@ int main(int argc, char *argv[])
 
   if (!inFile.is_valid())
   {
-    fprintf(stderr, "ncReorder: Invalid input file, exiting.\n");
-    return(1);
+    cerr << "ncReorder: Invalid input file, exiting.\n";
+    return 1;
   }
 
   if (!inFile.get_dim("Time")->is_unlimited())
   {
-    fprintf(stderr,
-	"ncReorder: 'Time' dimension is not UNLIMITED, reorder unnecessary...\n");
-    return(1);
+    cerr << "ncReorder: 'Time' dimension is not UNLIMITED, reorder unnecessary...\n";
+    return 1;
   }
 
 
@@ -72,8 +66,8 @@ int main(int argc, char *argv[])
 
   if (!outFile.is_valid())
   {
-    fprintf(stderr, "ncReorder: Unable to create/destroy output file, exiting.\n");
-    return(1);
+    cerr << "ncReorder: Unable to create/destroy output file, exiting.\n";
+    return 1;
   }
 
   // Transfer dimensions.
@@ -93,7 +87,7 @@ int main(int argc, char *argv[])
   for (int i = 0; i < inFile.num_vars(); ++i)
   {
     var = inFile.get_var(i);
-//printf("%s\n", var->name());
+//cerr << var->name()<<endl;
 
     // Transfer dims for the var.
     for (int j = 0; j < var->num_dims(); ++j)
@@ -130,7 +124,7 @@ int main(int argc, char *argv[])
           break;
 
         default:
-          fprintf(stderr, "Currently unsupported data type in var attr transfer.\n");
+          cerr << "Currently unsupported data type in var attr transfer.\n";
       }
     }
   }
@@ -142,11 +136,11 @@ int main(int argc, char *argv[])
   for (int i = 0; i < nVars; ++i)
   {
     if (verbose)
-      printf("%s , nDims = %d\n", inFile.get_var(i)->name(), inFile.get_var(i)->num_dims());
+      cout << inFile.get_var(i)->name() << ", nDims = " << inFile.get_var(i)->num_dims() << endl;
     else
     {
-      printf("\r%d%%", (int)(100 * ((float)i / nVars)));
-      fflush(stdout);
+      cout << '\r' << (int)(100 * ((float)i / nVars)) << '%';
+      flush(cout);
     }
 
     if (inFile.get_var(i)->num_dims() == 0)
@@ -182,7 +176,7 @@ int main(int argc, char *argv[])
     }
   }
 
-  printf("\n");
+  cout << endl;
   inFile.close();
   outFile.close();
 
