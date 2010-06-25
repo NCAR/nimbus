@@ -146,15 +146,9 @@ std::string buildDataQueryString(PGconn * conn)
 {
   std::string dataQuery = "SELECT datetime,";
 
-  std::string coords = getGlobalAttribute(conn, "coordinates");
-
-  int first_space = coords.find_first_of(' ');
-  int second_space = coords.find_first_of(' ', first_space+1);
-  int third_space = coords.find_first_of(' ', second_space+1);
-
-  std::string lon = coords.substr(0, first_space);
-  std::string lat = coords.substr(first_space+1, second_space - first_space - 1);
-  std::string alt = coords.substr(second_space+1, third_space - second_space - 1);
+  std::string lat = getGlobalAttribute(conn, "latitude_coordinate");
+  std::string lon = getGlobalAttribute(conn, "longitude_coordinate");
+  std::string alt = getGlobalAttribute(conn, "zaxis_coordinate");
 
   dataQuery += lon + "," + lat + "," + alt + _dataQuerySuffix;
 
@@ -480,7 +474,7 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo)
 	<< "  </ScreenOverlay>\n";
 
   int oneHour = 3600 / projectInfo.groundFeedDataRate;
-  int i, n = _date.size() - oneHour;
+  int i = 0, n = _date.size() - oneHour;
   int step = TimeStep / projectInfo.groundFeedDataRate;
 
   if (n > 0)
@@ -849,11 +843,17 @@ void ReadDataFromNetCDF(const std::string & fileName)
   attr = file.get_att("landmarks");
   projectInfo.landmarks = attr->as_string(0);
 
-  attr = file.get_att("coordinates");
-  char *coords = attr->as_string(0);
+  attr = file.get_att("longitude_coordinate");
+  char *lon = attr->as_string(0);
 
-  char lon[32], lat[32], alt[32], tim[32];
-  sscanf(coords, "%s %s %s %s", lon, lat, alt, tim);
+  attr = file.get_att("latitude_coordinate");
+  char *lat = attr->as_string(0);
+
+  attr = file.get_att("zaxis_coordinate");
+  char *alt = attr->as_string(0);
+
+  attr = file.get_att("time_coordinate");
+  char *tim = attr->as_string(0);
 
   NcVar* tim_v = file.get_var(tim);
   NcVar* tas_v = file.get_var("TASX");
