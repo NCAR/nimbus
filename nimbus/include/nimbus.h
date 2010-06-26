@@ -91,11 +91,13 @@ public:
 
   bool Dirty;		// Was variable modified by user
   bool Output;		// Is this going into the output file?
-  bool Transmit;
-  size_t OutputRate;
+  bool Transmit;	// Is this variable going to the ground, real-time only.
+  size_t OutputRate;	// Rate of data in the output [netCDF] file.
   char *DataQuality;	// Prelim, QC'd, Bad, etc
 
   std::vector<std::pair<int, int> > blank_out;
+
+  float	min, max;	// Min and max for this variable over course run.
 
   size_t badLagCntr;
 };

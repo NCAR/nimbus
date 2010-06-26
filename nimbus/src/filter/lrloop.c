@@ -36,7 +36,7 @@ extern NR_TYPE		*SampledData, *AveragedData;
 extern XtAppContext	context;
 
 bool	LocateFirstRecord(time_t starttime, time_t endtime, int nBuffers);
-void	DespikeData(CircularBuffer *LRCB, int index),
+void	DespikeData(CircularBuffer *LRCB, int index), FindMinMax(),
 	PhaseShift(CircularBuffer  *LRCB, int index, NR_TYPE *output,
 		NR_TYPE *);
 
@@ -88,6 +88,7 @@ int LowRateLoop(time_t startTime, time_t endTime)
     if (cntr++ > 30 &&
         (startTime == BEG_OF_TAPE || thisTime >= startTime))
       {
+      FindMinMax();
       WriteNetCDF();
       UpdateTime(SampledData);
       }

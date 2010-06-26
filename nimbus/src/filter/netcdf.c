@@ -90,7 +90,7 @@ char	dateProcessed[64];	// For export to psql.cc
 
 static int	writeBlank(int varid, long start[], long count[], int OutputRate);
 static void	markDependedByList(const char target[]), writeTimeUnits();
-static void	clearDependedByList(), printDependedByList();
+static void	clearDependedByList(), printDependedByList(), writeMinMax();
 static void	addCommonVariableAttributes(const var_base *var), addLandmarks();
 
 void	AddPMS1dAttrs(int ncid, const var_base * rp), ReadMetaData(int fd),
@@ -128,6 +128,12 @@ void SetBaseTime(NR_TYPE *record)
 
 static int	timeOffsetID, timeVarID;
 
+
+/* -------------------------------------------------------------------- */
+static void putGlobalAttribute(const char attrName[], NR_TYPE *value)
+{
+  ncattput(fd, NC_GLOBAL, attrName, NC_FLOAT, 1, (void *)value);
+}
 
 /* -------------------------------------------------------------------- */
 static void putGlobalAttribute(const char attrName[], const char *value)
@@ -233,7 +239,17 @@ void CreateNetCDF(const char fileName[])
   putGlobalAttribute("longitude_coordinate", cfg.CoordinateLongitude());
   putGlobalAttribute("zaxis_coordinate", cfg.CoordinateAltitude());
   putGlobalAttribute("time_coordinate", cfg.CoordinateTime());
+
+  NR_TYPE x = -32767.0;
+  putGlobalAttribute("geospatial_lat_min", &x);
+  putGlobalAttribute("geospatial_lat_max", &x);
+  putGlobalAttribute("geospatial_lon_min", &x);
+  putGlobalAttribute("geospatial_lon_max", &x);
+  putGlobalAttribute("geospatial_vertical_min", &x);
+  putGlobalAttribute("geospatial_vertical_max", &x);
+  putGlobalAttribute("geospatial_vertical_units", "m");
   putGlobalAttribute("wind_field", cfg.WindFieldVariables());
+
   addLandmarks();
 
 
@@ -719,6 +735,7 @@ void CloseNetCDF()
     return;
 
   ncredef(fd);
+  writeMinMax();
   writeTimeUnits();
   ncendef(fd);
 
@@ -908,6 +925,53 @@ static int writeBlank(int varid, long start[], long count[], int OutputRate)
 }
 
 /* -------------------------------------------------------------------- */
+static void writeMinMax()
+{
+  for (size_t i = 0; i < raw.size(); ++i)
+  {
+    RAWTBL * rp = raw[i];
+    if (!rp->Output)
+      continue;
+
+    ncattput(fd, rp->varid, "actual_min", NC_FLOAT, 1, &rp->min);
+    ncattput(fd, rp->varid, "actual_max", NC_FLOAT, 1, &rp->max);
+    if (cfg.CoordinateLatitude().compare(rp->name) == 0) {
+      putGlobalAttribute("geospatial_lat_min", &rp->min);
+      putGlobalAttribute("geospatial_lat_max", &rp->max);
+    }
+    if (cfg.CoordinateLongitude().compare(rp->name) == 0) {
+      putGlobalAttribute("geospatial_lon_min", &rp->min);
+      putGlobalAttribute("geospatial_lon_max", &rp->max);
+    }
+    if (cfg.CoordinateAltitude().compare(rp->name) == 0) {
+      putGlobalAttribute("geospatial_vertical_min", &rp->min);
+      putGlobalAttribute("geospatial_vertical_max", &rp->max);
+    }
+  }
+  for (size_t i = 0; i < derived.size(); ++i)
+  {
+    DERTBL * dp = derived[i];
+    if (!dp->Output)
+      continue;
+
+    ncattput(fd, dp->varid, "actual_min", NC_FLOAT, 1, &dp->min);
+    ncattput(fd, dp->varid, "actual_max", NC_FLOAT, 1, &dp->max);
+    if (cfg.CoordinateLatitude().compare(dp->name) == 0) {
+      putGlobalAttribute("geospatial_lat_min", &dp->min);
+      putGlobalAttribute("geospatial_lat_max", &dp->max);
+    }
+    if (cfg.CoordinateLongitude().compare(dp->name) == 0) {
+      putGlobalAttribute("geospatial_lon_min", &dp->min);
+      putGlobalAttribute("geospatial_lon_max", &dp->max);
+    }
+    if (cfg.CoordinateAltitude().compare(dp->name) == 0) {
+      putGlobalAttribute("geospatial_vertical_min", &dp->min);
+      putGlobalAttribute("geospatial_vertical_max", &dp->max);
+    }
+  }
+}
+
+/* -------------------------------------------------------------------- */
 static void writeTimeUnits()
 {
   const char *format = "seconds since %F %T %z";
@@ -989,6 +1053,10 @@ static void addCommonVariableAttributes(const var_base *var)
   strcpy(buffer, var->LongName.c_str());
   ncattput(fd, var->varid, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
 
+  p = VarDB_GetStandardNameName(var->name);
+  if (p && strcmp(p, "None") != 0)
+    ncattput(fd, var->varid, "standard_name", NC_CHAR, strlen(p)+1, p);
+
   if (fabs(VarDB_GetMinLimit(var->name)) + fabs(VarDB_GetMaxLimit(var->name)) > 0.0001)
   {
     NR_TYPE   range[2];
@@ -998,6 +1066,10 @@ static void addCommonVariableAttributes(const var_base *var)
     ncattput(fd, var->varid, "valid_range", NC_FLOAT, 2, range);
   }
 
+  NR_TYPE zero = 0.0;
+  ncattput(fd, var->varid, "actual_min", NC_FLOAT, 1, &zero);
+  ncattput(fd, var->varid, "actual_max", NC_FLOAT, 1, &zero);
+
   if (var->CategoryList.size() > 0)
   {
     char temp[32];
@@ -1005,10 +1077,6 @@ static void addCommonVariableAttributes(const var_base *var)
     if ( strcmp(temp, "None") )
       ncattput(fd, var->varid, "Category", NC_CHAR, strlen(temp)+1, temp);
   }
-
-  p = VarDB_GetStandardNameName(var->name);
-  if (p && strcmp(p, "None") != 0)
-    ncattput(fd, var->varid, "standard_name", NC_CHAR, strlen(p)+1, p);
 
   if (var->SerialNumber.length() > 0)
     ncattput(fd, var->varid, "SerialNumber", NC_CHAR,
