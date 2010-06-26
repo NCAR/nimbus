@@ -59,6 +59,7 @@ logfile.c
 lrloop.c
 md5.cc
 memalloc.cc
+minmax.cc
 netcdf.c
 nimbus.c
 order.c

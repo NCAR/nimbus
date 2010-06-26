@@ -37,7 +37,7 @@ extern NR_TYPE		*SampledData, *AveragedData;
 extern XtAppContext	context;
 
 bool	LocateFirstRecord(time_t starttime, time_t endtime, int nBuffers);
-void	Filter(CircularBuffer *, CircularBuffer *),
+void	Filter(CircularBuffer *, CircularBuffer *), FindMinMax(),
         DespikeData(CircularBuffer *LRCB, int index),
         PhaseShift(	CircularBuffer  *LRCB, int index,
 			NR_TYPE *output, NR_TYPE *hout);
@@ -46,7 +46,7 @@ void	Filter(CircularBuffer *, CircularBuffer *),
 /* -------------------------------------------------------------------- */
 int HighRateLoop(time_t startTime, time_t endTime)
 {
-  int		j = 0, cntr = 0;
+  int		cntr = 0;
   int32_t	nBytes, thisTime;
   NR_TYPE	*ps_data, *hrt_data;
 
@@ -119,6 +119,7 @@ int HighRateLoop(time_t startTime, time_t endTime)
     if (cntr++ > 30 &&
         (startTime == BEG_OF_TAPE || thisTime >= startTime))
       {
+      FindMinMax();
       WriteNetCDF_MRF();
       UpdateTime(SampledData);
       }

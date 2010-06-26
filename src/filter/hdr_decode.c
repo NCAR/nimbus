@@ -46,6 +46,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-08
 #include <set>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <float.h>
 
 
 #include <raf/pms.h>
@@ -2351,6 +2352,9 @@ var_base::var_base(const char s[])
   Modulo = 0;
 
   DataQuality	= defaultQuality;
+
+  min = FLT_MAX;
+  max = -FLT_MAX;
 
   badLagCntr = 0;
 }
