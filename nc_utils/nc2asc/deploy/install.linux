@@ -8,8 +8,7 @@ set web_dir = /net/www/raf/Software
 #
 # Compile and create jar file
 
-#javac */*.java
-#jar cf nc2asc.jar edu/ucar/eol/*.class
+# Use makejar for testing, then makezip for Webstart .zip file.
 
 #
 # Copy to destination.
