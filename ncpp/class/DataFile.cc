@@ -46,7 +46,8 @@ DataFile::DataFile(const char fName[]) : fileName(fName)
     return;
     }
 
-  attr = file->get_att("ProjectName");
+  if ((attr = file->get_att("project")) == 0)
+    attr = file->get_att("ProjectName");
   if (attr && attr->is_valid())
     projName = attr->as_string(0);
   delete attr;
