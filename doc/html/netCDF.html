@@ -265,24 +265,42 @@ value.  <kbd class="att">missing_value</kbd> (pre 1998 spelled <kbd class="att">
 <p>
 <pre class="CDL">
 // global attributes:
-                :Source = "NCAR Research Aviation Facility" ;
+                :institution = "NCAR Research Aviation Facility" ;
                 :Address = "P.O. Box 3000, Boulder, CO 80307-3000" ;
                 :Phone = "(303) 497-1030" ;
+                :creator_url = "http://www.eol.ucar.edu" ;
                 :Conventions = "NCAR-RAF/nimbus" ;
                 :ConventionsURL = "http://www.eol.ucar.edu/raf/Software/netCDF.html" ;
                 :ConventionsVersion = "1.3" ;
-                :ProcessorRevision = "3213" ;
+                :Metadata_Conventions = "Unidata Dataset Discovery v1.0" ;
+                :standard_name_vocabulary = "CF-1.0" ;
+                :ProcessorRevision = "4927" ;
                 :ProcessorURL = "http://svn/svn/raf/trunk/nimbus" ;
-                :DateProcessed = "2006-02-17 16:57:57 -0700" ;
-                :ProjectName = "TREX" ;
+                :date_created = "2010-06-28T20:27:34 +0000" ;
+                :ProjectName = "HIPPO-3" ;
                 :Platform = "N677F" ;
-                :ProjectNumber = "503" ;
-                :FlightNumber = "tf01" ;
-                :FlightDate = "02/17/2006" ;
-                :coordinates = "LONC LATC GGALT Time" ;
+                :ProjectNumber = "HIPPO-3" ;
+                :FlightNumber = "rf08" ;
+                :FlightDate = "04/10/2010" ;
+                :TimeInterval = "19:27:23-03:36:43" ;
+                :InterpolationMethod = "Linear" ;
+                :latitude_coordinate = "LATC" ;
+                :longitude_coordinate = "LONC" ;
+                :zaxis_coordinate = "GGALT" ;
+                :time_coordinate = "Time" ;
+                :geospatial_lat_min = -14.33873f ;
+                :geospatial_lat_max = 20.13709f ;
+                :geospatial_lon_min = -170.7218f ;
+                :geospatial_lon_max = -154.5442f ;
+                :geospatial_vertical_min = 3.815f ;
+                :geospatial_vertical_max = 13780.87f ;
+                :geospatial_vertical_positive = "up" ;
+                :geospatial_vertical_units = "m" ;
                 :wind_field = "WSC WDC WIC" ;
-                :landmarks = "39.9083 -105.116 BJC,40.25 -103.799 FtMrg,43.5838 -96.7346 FSD,46.8392 -92.1897 DLH,32.9048 -97.0459 DFW,36.0847 -115.151 LAS,40.7858 -111.979 SLC,33.4358 -112.013 PHX,45.5894 -122.592 PDX,33.9436 -118.403 LAX" ;
-                :TimeInterval = "00:03:16-01:29:43" ;
+                :landmarks = "39.9083 -105.116 BJC,61.1741 -149.996 ANC,19.6475 -156.013 KOA,-43.4893 172.532 NZCH" ;
+                :Categories = "Position,Thermodynamic,Aircraft State,Atmos. State,Liquid Water,Uncorr\'d Raw,Wind,PMS Probe,Housekeeping,Chemistry,Radiation,Non-Standard" ;
+                :time_coverage_start = "2010-04-10T19:27:23 +0000" ;
+                :time_coverage_end = "2010-04-11T03:36:43 +0000" ;
 </pre>
 <p>
 <kbd class="att">coordinates</kbd> is required starting with version 1.3.  These
@@ -327,39 +345,49 @@ few from group 1 that need special processing).  The third group consists
 of purely derived variables.  I have included one example from each of the
 3 groups (which also show different dimension schemes):
 <pre class="CDL">
-        float ADIFR(Time) ;
-                ADIFR:units = "mbar" ;
-                ADIFR:long_name = "Vertical Differential Pressure, Radome" ;
-                ADIFR:Category = "Uncorr\'d Raw" ;
-                ADIFR:_FillValue = -32767.f ;
-                ADIFR:SampledRate = 25 ;
-                ADIFR:DataQuality = "Preliminary" ;
-                ADIFR:CalibrationCoefficients = -0.0115f, 5.1637f, 0.001f ;
+        float PITCH(Time) ;
+                PITCH:_FillValue = -32767.f ;
+                PITCH:units = "degree" ;
+                PITCH:long_name = "IRS Aircraft Pitch Angle" ;
+                PITCH:standard_name = "platform_pitch_angle" ;
+                PITCH:valid_range = -180.f, 180.f ;
+                PITCH:actual_min = -3.31724f ;
+                PITCH:actual_max = 15.88532f ;
+                PITCH:Category = "Analog" ;
+                PITCH:SampledRate = 50 ;
+                PITCH:TimeLag = -180 ;
+                PITCH:TimeLagUnits = "milliseconds" ;
+                PITCH:DataQuality = "Preliminary" ;
+                PITCH:CalibrationCoefficients = 0.26f, 1.f ;
 
-        float AFSSP_RPC(Time, sps1, Vector16) ;
-                AFSSP_RPC:units = "count" ;
-                AFSSP_RPC:long_name = "FSSP-100 Raw Accumulation (per cell)" ;
-                AFSSP_RPC:Category = "PMS Probe" ;
-                AFSSP_RPC:_FillValue = -32767.f ;
-                AFSSP_RPC:SampledRate = 10 ;
-                AFSSP_RPC:DataQuality = "Preliminary" ;
-                AFSSP_RPC:SerialNumber = "FSSP076" ;
-                AFSSP_RPC:FirstBin = 1 ;
-                AFSSP_RPC:LastBin = 15 ;
-                AFSSP_RPC:CellSizes = 2.f, 5.f, 8.f, 11.f, 14.f, 17.f, 20.f, 23.f, 26.f, 29.f, 32.f, 35.f, 38.f, 41.f, 44.f, 47.f, 2.f, 4.f, 6.f, 8.f, 10.f, 12.f, 14.f, 16.f, 18.f, 20.f, 22.f, 24.f, 26.f, 28.f, 30.f, 32.f, 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f, 9.f, 10.f, 11.f, 12.f, 13.f, 14.f, 15.f, 16.f, 0.5f, 1.f, 1.5f, 2.f, 2.5f, 3.f, 3.5f, 4.f, 4.5f, 5.f, 5.5f, 6.f, 6.5f, 7.f, 7.5f, 8.f ;
-                AFSSP_RPC:CellSizeUnits = "micrometers" ;
-                AFSSP_RPC:DepthOfField = 2.7f ;
-                AFSSP_RPC:BeamDiameter = 0.18f ;
-                AFSSP_RPC:Density = 1.f ;
-                AFSSP_RPC:PLWfactor = 1.e-06f ;
-                AFSSP_RPC:DBZfactor = 1000000.f ;
+        float CFSSP_RPC(Time, sps1, Vector16) ;
+                CFSSP_RPC:_FillValue = -32767.f ;
+                CFSSP_RPC:units = "#/cm3" ;
+                CFSSP_RPC:long_name = "FSSP-100 Concentration (per cell)" ;
+                CFSSP_RPC:Category = "PMS Probe" ;
+                CFSSP_RPC:SerialNumber = "FSSP076" ;
+                CFSSP_RPC:DataQuality = "Preliminary" ;
+                CFSSP_RPC:Dependencies = "2 AFSSP_RPC TASX" ;
+                CFSSP_RPC:FirstBin = 1 ;
+                CFSSP_RPC:LastBin = 15 ;
+                CFSSP_RPC:CellSizes = 2.f, 5.f, 8.f, 11.f, 14.f, 17.f, 20.f, 23.f, 26.f, 29.f, 32.f, 35.f, 38.f, 41.f, 44.f, 47.f, 2.f, 4.f, 6.f, 8.f, 10.f, 12.f, 14.f, 16.f, 18.f, 20.f, 22.f, 24.f, 26.f, 28.f, 30.f, 32.f, 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f, 9.f, 10.f, 11.f, 12.f, 13.f, 14.f, 15.f, 16.f, 0.5f, 1.f, 1.5f, 2.f, 2.5f, 3.f, 3.5f, 4.f, 4.5f, 5.f, 5.5f, 6.f, 6.5f, 7.f, 7.5f, 8.f ;
+                CFSSP_RPC:CellSizeUnits = "micrometers" ;
+                CFSSP_RPC:CellSizeNote = "CellSizes are end points." ;
+                CFSSP_RPC:HistogramNote = "Zeroth data bin is an unused legacy placeholder." ;
+                CFSSP_RPC:DepthOfField = 2.7f ;
+                CFSSP_RPC:BeamDiameter = 0.18f ;
+                CFSSP_RPC:Density = 1.f ;
+                CFSSP_RPC:PLWfactor = 1.e-06f ;
+                CFSSP_RPC:DBZfactor = 1000000.f ;
 
         float WIC(Time, sps25) ;
+                WIC:_FillValue = -32767.f ;
                 WIC:units = "m/s" ;
                 WIC:long_name = "GPS-Corrected Wind Vector, Vertical Gust Component" ;
-                WIC:standard_name = "wind_from_direction" ;
+                WIC:standard_name = "upward_air_velocity" ;
+                WIC:actual_min = -3.393437f ;
+                WIC:actual_max = 5.762867f ;
                 WIC:Category = "Wind" ;
-                WIC:_FillValue = -32767.f ;
                 WIC:DataQuality = "Good" ;
                 WIC:Dependencies = "9 TASX VEWC VNSC PITCH ROLL THDG ATTACK SSLIP VSPD" ;
 </pre>
@@ -438,10 +466,12 @@ be used to determine which bins are considered valid, both are inclusive.
                 AS100_LPC:_FillValue = -32767.f ;
                 AS100_LPC:units = "count" ;
                 AS100_LPC:long_name = "FSSP-100 Raw Accumulation (per cell) - DMT" ;
+                AS100_LPC:actual_min = 0.f ;
+                AS100_LPC:actual_max = 1328.f ;
                 AS100_LPC:Category = "PMS Probe" ;
                 AS100_LPC:SerialNumber = "FSSP122" ;
                 AS100_LPC:SampledRate = 10 ;
-                AS100_LPC:DataQuality = "Preliminary" ;
+                AS100_LPC:DataQuality = "Good" ;
 
         float CS100_LPC(Time, sps1, Vector31) ;
                 CS100_LPC:_FillValue = -32767.f ;
@@ -449,12 +479,14 @@ be used to determine which bins are considered valid, both are inclusive.
                 CS100_LPC:long_name = "FSSP-100 Concentration (per cell) - DMT" ;
                 CS100_LPC:Category = "PMS Probe" ;
                 CS100_LPC:SerialNumber = "FSSP122" ;
-                CS100_LPC:DataQuality = "Preliminary" ;
+                CS100_LPC:DataQuality = "Good" ;
                 CS100_LPC:Dependencies = "5 AS100_LPC TASX REJAT_LPC OVFLW_LPC FRNG_LPC" ;
                 CS100_LPC:FirstBin = 3 ;
                 CS100_LPC:LastBin = 30 ;
                 CS100_LPC:CellSizes = 0.7f, 1.4f, 2.35f, 3.9f, 5.45f, 7.f, 8.55f, 10.1f, 11.65f, 13.2f, 14.75f, 16.3f, 17.85f, 19.4f, 20.95f, 22.5f, 24.05f, 25.6f, 27.15f, 28.7f, 30.25f, 31.8f, 33.35f, 34.9f, 36.45f, 38.f, 39.55f, 41.1f, 42.65f, 44.2f, 45.75f ;
                 CS100_LPC:CellSizeUnits = "micrometers" ;
+                CS100_LPC:CellSizeNote = "CellSizes are end points." ;
+                CS100_LPC:HistogramNote = "Zeroth data bin is an unused legacy placeholder." ;
                 CS100_LPC:DepthOfField = 2.3f ;
                 CS100_LPC:BeamDiameter = 0.2f ;
                 CS100_LPC:Density = 1.f ;
@@ -465,9 +497,11 @@ be used to determine which bins are considered valid, both are inclusive.
                 CONCF_LPC:_FillValue = -32767.f ;
                 CONCF_LPC:units = "#/cm3" ;
                 CONCF_LPC:long_name = "FSSP-100 Concentration (all cells)" ;
+                CONCF_LPC:actual_min = 0.0f ;
+                CONCF_LPC:actual_max = 134.28f ;
                 CONCF_LPC:Category = "PMS Probe" ;
                 CONCF_LPC:SerialNumber = "FSSP122" ;
-                CONCF_LPC:DataQuality = "Preliminary" ;
+                CONCF_LPC:DataQuality = "Good" ;
                 CONCF_LPC:Dependencies = "1 CS100_LPC" ;
 </pre>
 <p>
