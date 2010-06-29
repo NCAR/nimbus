@@ -452,7 +452,7 @@ public class NCData {
 		missVal = new float[nVariables];
 		hRate = new int[nVariables];
 		long milSec= 0;
-		Variable tmp=null;
+		Variable var = null;
 		int topRateSubVar = 0; //get the  top rate for the sub-group
 
 		long t1 = System.currentTimeMillis();
@@ -460,24 +460,27 @@ public class NCData {
 			milSec = getTimeMilSec(); 
 			for (int i = 0; i < nVariables; i++){
 				if (bfinish) return;
-				tmp = sublvars.get(i);
-				oneDLen[i]= getLen(tmp);
+				var = sublvars.get(i);
+				oneDLen[i]= getLen(var);
 				totVarLen +=oneDLen[i];
-				missVal[i]= tmp.findAttribute("_FillValue").getNumericValue().floatValue();
+				if (var.findAttribute("_FillValue") == null)
+					missVal[i] = -32767.0f;
+				else
+					missVal[i]= var.findAttribute("_FillValue").getNumericValue().floatValue();
 				if (gDataInf[0]>1)  { //find highest rate in subvarlist
-					hRate[i]=getOR(tmp);
+					hRate[i]=getOR(var);
 					if (hRate[i] >topRateSubVar) {topRateSubVar= hRate[i];}
 				}
-				data[i] = read1DData(tmp, range[0], range[1]);
+				data[i] = read1DData(var, range[0], range[1]);
 				progIdx ++;
 				//if (bMode) { System.out.println("Reading "+ progIdx);}
 			}
 		} catch (NCDataException e) {
-			NC2Act.wrtMsg("writeDataToFile_NCDataException "+ tmp.getName());
+			NC2Act.wrtMsg("writeDataToFile_NCDataException "+ var.getName());
 		} catch (InvalidRangeException ee) {
-			NC2Act.wrtMsg("writeDataToFile_InvalidRangeException "+ tmp.getName());
+			NC2Act.wrtMsg("writeDataToFile_InvalidRangeException "+ var.getName());
 		} catch (IOException eee) {
-			NC2Act.wrtMsg("writeDataToFile_IOException "+ tmp.getName());
+			NC2Act.wrtMsg("writeDataToFile_IOException "+ var.getName());
 		}
 
 		if (bMode) { 
