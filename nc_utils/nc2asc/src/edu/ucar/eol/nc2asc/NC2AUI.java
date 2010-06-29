@@ -604,14 +604,16 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			}
 
 			//set selStatus
-			for (int i=1; i<dataInf.size(); i++){ //skipp time
+			for (int i=1; i<dataInf.size(); i++) { //start at 1 to skip time variable
 				//Variable v= vars.get(i);
 				String line = dataInf.get(i);
 				for (int j=0; j<vars.size(); j++) {
 					int idx = vars.get(j).indexOf('=') + 1;
 					String s1 = vars.get(j).substring(idx);
-					String str = s1.trim();
-					if (line.indexOf(str)==0) {
+					String target = s1.trim();
+                                        idx = line.indexOf(',');
+                                        String str = line.substring(0, idx);
+					if (str.equals(target)) {
 						selStatus.set(i-1,"Y");
 						tbl.setValueAt("Y", i-1, 4);
 					}
