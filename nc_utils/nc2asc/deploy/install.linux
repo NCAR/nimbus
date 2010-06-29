@@ -1,7 +1,8 @@
 #!/bin/csh
 
-set root_dir = /opt/local/nc2asc
-set lib_dir = ${root_dir}/lib
+set root_dir = /opt/local/
+set bin_dir = ${root_dir}/bin
+set lib_dir = ${root_dir}/lib/nc2asc
 set web_dir = /net/www/raf/Software
 
 #
@@ -12,12 +13,11 @@ set web_dir = /net/www/raf/Software
 #
 # Copy to destination.
 
-mkdir -p $root_dir
-install -m 771 nc2asc.sh ${root_dir}
-install -m 664 nc2asc.jar ${root_dir}
+mkdir -p $bin_dir
+install -m 771 nc2asc.sh ${bin_dir}/nc2asc
 
 mkdir -p $lib_dir
-install -m 664 lib/*.jar $lib_dir
+install -m 664 lib/*.jar nc2asc.jar $lib_dir
 
 if (-e $web_dir) then
   install ../doc/nc2asc.html $web_dir
