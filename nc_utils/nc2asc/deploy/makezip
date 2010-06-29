@@ -27,8 +27,8 @@ zip nc2asc-ws.zip nc2asc.jar nc2asc.jnlp lib/netcdfUI-2.2.22.jar  lib/nlog4j-1.2
 
 mv  nc2asc-ws.zip javazip/.
 
-rm -rf doc nc2asc.jnlp
-
+rm -rf doc 
+rm -rf nc2asc.jnlp
 
 ### cleanup svn 
 svn revert lib/netcdfUI-2.2.22.jar  lib/nlog4j-1.2.25.jar  lib/commons-logging-1.1.jar
