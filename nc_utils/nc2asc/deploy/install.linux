@@ -12,6 +12,7 @@ set web_dir = /net/www/raf/Software
 #
 # Copy to destination.
 
+mkdir -p $root_dir
 install -m 771 nc2asc.sh ${root_dir}
 install -m 664 nc2asc.jar ${root_dir}
 
