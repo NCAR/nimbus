@@ -21,7 +21,7 @@
     <resources>     
         <jar href="nc2asc.jar" download="eager"/>
         <jar href="lib/commons-logging-1.1.jar" download="eager" />
-        <jar href="lib/netcdfUI-2.2.22.jar" download="eager"/>
+        <jar href="lib/netcdfUI-4.1.jar" download="eager"/>
         <jar href="lib/nlog4j-1.2.25.jar" download="eager"/>
         <java version="1.6+" />
     </resources>

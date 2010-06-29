@@ -28,8 +28,8 @@ endif
 #
 # Test for third party jar files.
 
-if ( ! -e ${lib_dir}/netcdfUI-2.2.22.jar ) then
-  echo Third party ${lib_dir}/netcdfUI-2.2.22.jar not installed.
+if ( ! -e ${lib_dir}/netcdfUI-4.1.jar ) then
+  echo Third party ${lib_dir}/netcdfUI-4.1.jar not installed.
 endif
 
 if ( ! -e ${lib_dir}/nlog4j-1.2.25.jar ) then

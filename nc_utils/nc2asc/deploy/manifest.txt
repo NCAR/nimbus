@@ -1,5 +1,5 @@
 Main-Class: edu.ucar.eol.nc2asc.NC2A
-Class-Path: lib/netcdfUI-2.2.22.jar  lib/nlog4j-1.2.25.jar  lib/commons-logging-1.1.jar 
+Class-Path: lib/netcdfUI-4.1.jar  lib/nlog4j-1.2.25.jar  lib/commons-logging-1.1.jar 
 
 
 
