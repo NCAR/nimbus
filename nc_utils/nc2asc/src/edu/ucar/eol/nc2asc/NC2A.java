@@ -67,10 +67,10 @@ public class NC2A extends JPanel implements ActionListener {
 	 */
 	public static void main(String[] args) {
 		String[] strs = findBatch(args);
-		if (args.length >0 && strs!=null && strs.length>=2){
+		if (args.length > 0 && strs != null && strs.length >= 2) {
 			NC2Act.setMode(true);
 			setArgs(strs);
-		}	else {
+		} else {
 			aui = new NC2AUI();
 			javax.swing.SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
@@ -92,7 +92,7 @@ public class NC2A extends JPanel implements ActionListener {
 	 * @return -- contains batch file or not
 	 */
 	private static String[] findBatch(String[] args) {
-		if (args ==null || args.length<2) return null;
+		if (args == null || args.length < 2) return null;
 
 		String[] strs=args;
 		if (args[0].trim().equals("-open"))
@@ -121,7 +121,7 @@ public class NC2A extends JPanel implements ActionListener {
 		String[] fmt = bf.getDataFmt();
 
 		//get Vals from variable names
-		NCData ncdata= new NCData();
+		NCData ncdata = new NCData();
 		ncdata.setMode(true);
 
 		try {
@@ -135,7 +135,6 @@ public class NC2A extends JPanel implements ActionListener {
 		int[] range = new int[2];
 		try {
 			range = ncdata.calBatchTmRange(fmt);
-			
 		} catch (Exception ee) {
 			System.out.println("Batch-mode calBatchTmRange fails..."+ ee.getStackTrace());
 			return;
@@ -160,12 +159,6 @@ public class NC2A extends JPanel implements ActionListener {
 		ncdata.writeOut(out+"\n"); 
 		ncdata.writeDataToFile(sublvars, range, fmt);
 		//System.out.println("Writing is completed.");
-
 	}
 
-
-
-}//eof class NC2A
-
-
-
+} //eof class NC2A
