@@ -320,7 +320,7 @@ public class BatchConfig {
 		//int start_s =s; //keep a copy
 
 		Calendar cl = Calendar.getInstance();
-		cl.set(y,mm,d,h,m,s);
+		cl.set(y,mm-1,d,h,m,s);
 		cl.set(Calendar.MILLISECOND, 0);
 
 		//end time  
@@ -337,7 +337,7 @@ public class BatchConfig {
 		s= Integer.parseInt(tm[2]);
 
 		Calendar cl2 = Calendar.getInstance();
-		cl2.set(y,mm,d,h,m,s);
+		cl2.set(y,mm-1,d,h,m,s);
 		cl2.set(Calendar.MILLISECOND, 0);
 
 		//time range in seconds

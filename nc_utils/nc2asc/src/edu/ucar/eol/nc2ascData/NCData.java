@@ -374,8 +374,9 @@ public class NCData {
 		int m= Integer.parseInt(tmInf[1]);
 		int s= Integer.parseInt(tmInf[2]);
 
-		cl.set(y,mm,d,h,m,s);
-		cl.set(Calendar.MILLISECOND, 0);
+		cl.clear();
+		cl.set(y,mm-1,d,h,m,s);
+
 		return cl.getTimeInMillis();
 	}
 
@@ -383,20 +384,22 @@ public class NCData {
 	public String getNewTm(long milSec, int sec) {
 		String tm;
 		Calendar cl = Calendar.getInstance();
+		cl.clear();
 		cl.setTimeInMillis(milSec);
 		cl.add(Calendar.SECOND, sec);
-		tm = cl.get(Calendar.YEAR) + "-"+cl.get(Calendar.MONTH)+ "-"+ cl.get(Calendar.DAY_OF_MONTH) + DataFmt.COMMAVAL+ cl.get(Calendar.HOUR_OF_DAY)+ ":"+cl.get(Calendar.MINUTE)+":"+cl.get(Calendar.SECOND);
+		tm = cl.get(Calendar.YEAR) + "-"+(cl.get(Calendar.MONTH)+1)+ "-"+ cl.get(Calendar.DAY_OF_MONTH) + DataFmt.COMMAVAL+ cl.get(Calendar.HOUR_OF_DAY)+ ":"+cl.get(Calendar.MINUTE)+":"+cl.get(Calendar.SECOND);
 		return tm;
 	}
 
 	public String getNewTm(long milSec, int sec, String[] fmtIn, boolean milsec) {
 		//String tm;
 		Calendar cl = Calendar.getInstance();
+		cl.clear();
 		cl.setTimeInMillis(milSec);
 		cl.add(Calendar.SECOND, sec);
 		String[] fmt = fmtIn;
 
-		String m = String.format("%02d", cl.get(Calendar.MONTH));
+		String m = String.format("%02d", cl.get(Calendar.MONTH)+1);
 		String d = String.format("%02d", cl.get(Calendar.DAY_OF_MONTH));
 		String h = String.format("%02d", cl.get(Calendar.HOUR_OF_DAY));
 		String mm = String.format("%02d", cl.get(Calendar.MINUTE));
