@@ -108,7 +108,7 @@ void PMS1D_SetupForADS3()
   if (cfg.ProjectName().compare("PASE") == 0)
     setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
   setSerialNumberAndProbeType("A260X", "260X06", PROBE_PMS1D | PROBE_260X);
-  setSerialNumberAndProbeType("ACDP", "CDP001", PROBE_PMS1D | PROBE_CDP);
+  setSerialNumberAndProbeType("ACDP", "CDP016", PROBE_PMS1D | PROBE_CDP);
   setSerialNumberAndProbeType("AS200", "PCAS108", PROBE_PMS1D | PROBE_PCASP);
   setSerialNumberAndProbeType("AS300", "FSSP305", PROBE_PMS1D | PROBE_F300);
   setSerialNumberAndProbeType("AUHSAS", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
