@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
       strcpy(buffer, p);
     else
     {
-      const std::string DefaultRawDataDirectory = "/scr/raf2/Raw_Data";
+      const std::string DefaultRawDataDirectory = "/scr/raf/Raw_Data";
 
       strcpy(buffer, DefaultRawDataDirectory.c_str());
 
