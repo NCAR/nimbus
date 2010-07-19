@@ -49,6 +49,11 @@ void casasInit(var_base *varp)
   serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
 
+  if (probeNum >= MAX_ASAS) {
+    fprintf(stderr, "probeNum=%d for serial number=%s exceeds array size, MAX_ASAS=%d\n", probeNum,serialNumber,MAX_ASAS);
+    exit(1);
+  }
+
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
   InitPMSspecs(buffer);
 
