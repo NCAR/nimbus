@@ -42,6 +42,7 @@ Broadcast::Broadcast() : UDP_Base(7071)
     {
       _toList.push_back(new
 	Inet4SocketAddress(Inet4Address((*it).getBroadcastAddress().getInAddrPtr()), UDP_PORT));
+	std::cerr << "broadcast to " << _toList.back()->toString() << std::endl;
     }
   }
 }
