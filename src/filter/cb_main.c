@@ -1156,7 +1156,7 @@ void QueryOutputFile(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void sighandler(int s)
 {
-  printf("SigHandler: cleaning up netCDF file.\n");
+  printf("SigHandler: signal=%d cleaning up netCDF file.\n",s);
   Quit(NULL, NULL, NULL);
 
 }	/* END SIGHANDLER */
