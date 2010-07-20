@@ -42,6 +42,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 
 #include <Xm/List.h>
 #include <Xm/Text.h>
@@ -85,6 +86,42 @@ void	InitAsyncModule(char fileName[]), RealTimeLoop(),
 	CloseLogFile(), LogDespikeInfo(), InitAircraftDependencies(),
 	CloseRemoveLogFile(), LogIRSerrors(), RealTimeLoop3();
 
+/* Check if sync_server has exited or died, report status */
+void CheckSyncServer()
+{
+  extern pid_t syncPID;
+  if (syncPID > 0) {
+    int status;
+    int res = waitpid(syncPID,&status,WNOHANG);
+    if (res < 0) WLOG(("error waiting on sync_server, pid=%d: %m",syncPID));
+    else if (res > 0) {
+      if (WIFEXITED(status))
+        ILOG(("sync_server finished, status=%d",WEXITSTATUS(status)));
+      else if (WIFSIGNALED(status)) {
+        int sig = WTERMSIG(status);
+        PLOG(("sync_server terminated on signal %s(%d)",strsignal(sig),sig));
+      }
+      syncPID = -1;
+    }
+  }
+}
+
+void ShutdownSyncServer()
+{
+  extern pid_t syncPID;
+  CheckSyncServer();
+  // send SIGTERM to sync_server. If it doesn't shutdown send SIGKILL.
+  for (int i = 0; syncPID > 0 && i < 5; i++) {
+    kill(syncPID, SIGTERM);
+    sleep(1);
+    CheckSyncServer();
+  }
+  if (syncPID > 0) {
+    kill(syncPID, SIGKILL);
+    sleep(1);
+    CheckSyncServer();
+  }
+}
 
 /* -------------------------------------------------------------------- */
 void CancelSetup(Widget w, XtPointer client, XtPointer call)
@@ -105,6 +142,7 @@ void CancelSetup(Widget w, XtPointer client, XtPointer call)
   FreeDataArrays();
   ReleaseFlightHeader();
 
+  ShutdownSyncServer();
 
   DismissEditWindow(NULL, NULL, NULL);
   DismissConfigWindow(NULL, NULL, NULL);
@@ -121,6 +159,7 @@ void CancelSetup(Widget w, XtPointer client, XtPointer call)
   Initialize();
 
 }	/* END CANCELSETUP */
+
 
 /* -------------------------------------------------------------------- */
 void Proceed(Widget w, XtPointer client, XtPointer call)
@@ -745,6 +784,8 @@ void Quit(Widget w, XtPointer client, XtPointer call)
     kill(syncPID, SIGTERM);
   }
 
+  ShutdownSyncServer();
+
   if (strlen(sync_server_pipe))
     unlink(sync_server_pipe);
 
@@ -1156,7 +1197,7 @@ void QueryOutputFile(Widget w, XtPointer client, XtPointer call)
 /* -------------------------------------------------------------------- */
 void sighandler(int s)
 {
-  printf("SigHandler: signal=%d cleaning up netCDF file.\n",s);
+  printf("SigHandler: signal=%s cleaning up netCDF file.\n",strsignal(s));
   Quit(NULL, NULL, NULL);
 
 }	/* END SIGHANDLER */
