@@ -346,12 +346,24 @@ int DecodeHeader3(const char header_file[])
     sock = new nidas::util::Socket(usa);
   }
   else
+    // establish socket to dsm_server
     sock = new nidas::util::Socket("localhost", 30001);
-    ; // sync_server is started elsewhere onboard.
 
   nidas::core::IOChannel * iochan = new nidas::core::Socket(sock);
 
   syncRecReader = new nidas::dynld::raf::SyncRecordReader(iochan);
+
+  // the SyncRecordReader::getVariables() throws Exception if
+  // something is wrong with the header.
+  std::list<const nidas::dynld::raf::SyncRecordVariable*> vars;
+  try {
+      // Loop over all variables from sync_server/nidas.
+      vars = syncRecReader->getVariables();
+  }
+  catch(const nidas::util::Exception& e) {
+    PLOG(("Error reading sync record:") << e.what());
+    return ERR;
+  }
 
   cfg.SetProjectNumber(syncRecReader->getProjectName());
   cfg.SetTailNumber(syncRecReader->getTailNumber());
@@ -391,8 +403,6 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
   // Add Time variables, hour, min, sec, year, mon, day.
   initHDR(0);
 
-  // Loop over all variables from sync_server/nidas.
-  const std::list<const nidas::dynld::raf::SyncRecordVariable*>& vars = syncRecReader->getVariables();
   std::list<const nidas::dynld::raf::SyncRecordVariable*>::const_iterator vi;
   for (vi = vars.begin(); vi != vars.end(); ++vi)
   {
