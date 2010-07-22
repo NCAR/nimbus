@@ -161,10 +161,6 @@ void RealTimeLoop3()
         PLOG(("syncRecReader error: %s",e.what()));
         break;
     }
-    if (n != nSRfloats) {
-        WLOG(("short record of ") << n << " floats instead of " << nSRfloats);
-        for (int i = n; i < nSRfloats; i++) SampledData[i] = floatNAN;
-    }
     processTimeADS3(SampledData, tt / USECS_PER_SEC);
 
     time_t ut = tt / USECS_PER_SEC;
