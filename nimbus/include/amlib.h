@@ -15,9 +15,9 @@ DESCRIPTION:	Header File declaring amlib functions.
 #include <vector>
 
 const size_t MAX_FSSP = 4;
-const size_t MAX_260X = 2;
-const size_t MAX_ASAS = 2;
-const size_t MAX_F300 = 2;
+const size_t MAX_260X = 1;
+const size_t MAX_ASAS = 3;
+const size_t MAX_F300 = 1;
 const size_t MAX_PMS2D = (MAX_PMS2 * 2);
 
 /* See amlib/xlate/const.c
