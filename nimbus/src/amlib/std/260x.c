@@ -45,7 +45,7 @@ void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
 	size_t FirstBin, size_t LastBin, float RES, NR_TYPE RESPONSE_TIME);
 
 // Probe Count.
-static int nProbes = 0;
+static size_t nProbes = 0;
 extern void setProbeCount(const char * location, int count);
 
 /* -------------------------------------------------------------------- */
@@ -59,6 +59,10 @@ void c260xInit(var_base *varp)
 
   if (varp->SerialNumber.length() == 0) {
     fprintf(stderr, "260x.c: %s has no serial number, fatal.\n", varp->name); exit(1);
+    }
+
+  if (nProbes == MAX_260X) {
+    fprintf(stderr, "260X.c: Exceeded maximum number of 260X probes, change amlib.h.\n"); exit(1);
     }
 
   p = strchr(varp->name, '_');

@@ -27,7 +27,7 @@ static NR_TYPE	cell_size2[MAX_ASAS][MAX_BINS];
 static NR_TYPE	cell_size3[MAX_ASAS][MAX_BINS];
 
 // Probe Count.
-static int nProbes = 0;
+static size_t nProbes = 0;
 extern void setProbeCount(const char * location, int count);
 
 static void uhsasBinConsolidation(NR_TYPE *actual);
@@ -43,16 +43,15 @@ void casasInit(var_base *varp)
     fprintf(stderr, "asas.c: %s has no serial number, fatal.\n", varp->name); exit(1);
     }
 
+  if (nProbes == MAX_ASAS) {
+    fprintf(stderr, "asas.c: Exceeded maximum number of ASAS/PCASP/UHSAS probes, change amlib.h.\n"); exit(1);
+    }
+
   p = strchr(varp->name, '_');
   setProbeCount(p, nProbes++);
 
   serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
-
-  if (probeNum >= MAX_ASAS) {
-    fprintf(stderr, "probeNum=%d for serial number=%s exceeds array size, MAX_ASAS=%d\n", probeNum,serialNumber,MAX_ASAS);
-    exit(1);
-  }
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);
   InitPMSspecs(buffer);
