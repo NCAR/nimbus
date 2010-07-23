@@ -147,19 +147,25 @@ void RealTimeLoop3()
 
   extern nidas::dynld::raf::SyncRecordReader* syncRecReader;
 
+  int nExpected = syncRecReader->getNumFloats();
+
   for (;;)
   {
-    int n;
+    int nRead;
     try {
-        n = syncRecReader->read(&tt, SampledData, nSRfloats);
+        nRead = syncRecReader->read(&tt, SampledData, nSRfloats);
     }
     catch(const nidas::util::EOFException& e) {
-        ILOG(("syncRecReader EOF"));
-        break;
+      ILOG(("syncRecReader EOF"));
+      break;
     }
     catch(const nidas::util::IOException& e) {
-        PLOG(("syncRecReader error: %s",e.what()));
-        break;
+      PLOG(("syncRecReader error: %s",e.what()));
+      break;
+    }
+    if (nRead != nExpected) {
+      WLOG(("short record of ") << nRead << " floats instead of " << nExpected);
+      for (int i = nRead; i < nExpected; i++) SampledData[i] = floatNAN;
     }
     processTimeADS3(SampledData, tt / USECS_PER_SEC);
 
