@@ -54,7 +54,7 @@ static NR_TYPE	total_concen[MAX_FSSP], dbar[MAX_FSSP], plwc[MAX_FSSP],
 NR_TYPE		refff3[MAX_FSSP], refff2[MAX_FSSP];  /* For export to reff.c */
 
 // Probe Count.
-static int nProbes = 0;
+static size_t nProbes = 0;
 extern void setProbeCount(const char * location, int count);
 
 /* -------------------------------------------------------------------- */
@@ -67,6 +67,10 @@ void cfsspInit(var_base *varp)
 
   if (varp->SerialNumber.length() == 0) {
     fprintf(stderr, "fssp.c: %s has no serial number, fatal.\n", varp->name); exit(1);
+    }
+
+  if (nProbes == MAX_FSSP) {
+    fprintf(stderr, "fssp.c: Exceeded maximum number of FSSP probes, change amlib.h.\n"); exit(1);
     }
 
   p = strchr(varp->name, '_');

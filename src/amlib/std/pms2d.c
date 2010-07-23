@@ -58,7 +58,7 @@ void    ComputePMS1DParams(NR_TYPE radius[], NR_TYPE eaw[], NR_TYPE cell_size[],
 	length, size_t armDistance);
 
 // Probe Count.
-static int nProbes = 0;
+static size_t nProbes = 0;
 extern void setProbeCount(const char * location, int count);
 
 
@@ -90,6 +90,10 @@ void sTwodInit(var_base *varp)
 
   if (varp->SerialNumber.length() == 0) {
     fprintf(stderr, "pms2d.c: %s has no serial number, fatal.\n", varp->name); exit(1);
+    }
+
+  if (nProbes == MAX_PMS2D) {
+    fprintf(stderr, "pms2d.c: Exceeded maximum number of PMS2D probes, change amlib.h.\n"); exit(1);
     }
 
   for (i = 0; i < MAX_PMS2D; ++i)
@@ -326,7 +330,7 @@ void sTwoD(DERTBL *varp)
 
   if (deadTime > 1000.0)
     {
-    sprintf(buffer, "%s: 2D Sample Volume negative, reason: deadTime == %d.", varp->name, deadTime);
+    sprintf(buffer, "%s: 2D Sample Volume negative, reason: deadTime == %f.", varp->name, deadTime);
     LogStdMsg(buffer);
     deadTime = 1000;
     }

@@ -44,7 +44,7 @@ static NR_TYPE	cell_size[MAX_F300][BINS_40+1], pvol[MAX_F300], SAMPLE_AREA[MAX_F
 		cell_size3[MAX_F300][BINS_40+1], reff2[MAX_F300], reff3[MAX_F300];
 
 // Probe Count.
-static int nProbes = 0;
+static size_t nProbes = 0;
 extern void setProbeCount(const char * location, int count);
 
 /* -------------------------------------------------------------------- */
@@ -56,6 +56,10 @@ void cf300Init(var_base *varp)
 
   if (varp->SerialNumber.length() == 0) {
     fprintf(stderr, "f300.c: %s has no serial number, fatal.\n", varp->name); exit(1);
+    }
+
+  if (nProbes == MAX_F300) {
+    fprintf(stderr, "f300.c: Exceeded maximum number of F300 probes, change amlib.h.\n"); exit(1);
     }
 
   p = strchr(varp->name, '_');
