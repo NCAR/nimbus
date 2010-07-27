@@ -71,6 +71,8 @@ static clock_t	startCPU, finishCPU;
 extern Widget	Shell001;
 extern size_t	nDefaults;
 extern DEFAULT	*Defaults[];
+extern pid_t	syncPID;
+
 
 void	CloseSQL(), ProcessFlightDate();
 void	ValidateOutputFile(Widget w, XtPointer client, XtPointer call);
@@ -86,6 +88,8 @@ void	InitAsyncModule(char fileName[]), RealTimeLoop(),
 	CloseLogFile(), LogDespikeInfo(), InitAircraftDependencies(),
 	CloseRemoveLogFile(), LogIRSerrors(), RealTimeLoop3();
 
+
+/* -------------------------------------------------------------------- */
 /* Check if sync_server has exited or died, report status */
 void CheckSyncServer()
 {
@@ -776,14 +780,6 @@ void Quit(Widget w, XtPointer client, XtPointer call)
     psql->closeSQL();
 
   CloseRemoveLogFile();
-
-  // kill sync_server or any other processes.
-  extern pid_t syncPID;
-  if (syncPID > 0)
-  {
-    kill(syncPID, SIGTERM);
-  }
-
   ShutdownSyncServer();
 
   if (strlen(sync_server_pipe))
