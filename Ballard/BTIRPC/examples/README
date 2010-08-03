@@ -1,0 +1,83 @@
+
+
+                          BTIDriver RPC Libraries
+                     USING THE DRIVER API AND EXAMPLES
+
+              Copyright 2004-2009 by Ballard Technology, Inc.
+
+
+                                ------------
+
+
+          This folder contains the following files:
+
+          Folder Name               Description
+
+          <BTI1553>     MIL-STD-1553 Driver Examples
+          <BTI422>      RS-422 Driver Examples
+          <BTI429>      ARINC 429 Driver Examples
+          <BTI708>      ARINC 708 Driver Examples
+          <BTI717>      ARINC 717 Driver Examples
+          <BTICard>     Card Level Driver Examples
+          <BTICSDB>     CSDB Driver Examples
+          <BTIDIO>      Discrete IO Driver Examples
+
+          README        This document
+
+          Refer to the end of this document for corrections,
+          warnings, and additional information.
+
+
+
+     INTRODUCTION
+
+          The BTIDriver RPC libraries are the Remote Procedure
+          Call libraries that work with Ballard Technology's
+          universal driver API.  The RPC libraries will operate
+          remotely controlled devices such as the OmniBusBox device.
+          The folders listed above contain the various protocols
+          supported by the BTIDriver RPC Libraries.  In the folder
+          for each protocol are several example programs.  See
+          the README in each folder for a full description of
+          these example programs.
+
+          For multi-protocol BTIDriver devices, simply
+          combine the concepts from the included example
+          programs to build your own custom application.
+
+
+
+     CORRECTIONS, WARNINGS, AND ADDITIONAL INFORMATION
+
+          There is no additional information.
+
+
+                                ------------
+
+
+          SAFETY WARNING:  Ballard products are of commercial
+          grade and therefore are neither designed,
+          manufactured, nor tested to standards required for
+          use in critical applications where a failure or
+          deficiency of the product may lead to injury,
+          death, or damage to property.  Without prior
+          specific approval in writing by the president of
+          Ballard Technology, Inc., Ballard products are not
+          authorized for use in such critical applications.
+
+          This software is provided as a laboratory tool.
+          For any application it is the responsibility of the
+          user to verify the suitability, correctness, and
+          safety of using this software or data derived
+          therefrom.
+
+
+                                ------------
+
+
+     Ballard Technology would appreciate hearing your questions,
+     comments, and suggestions concerning this product.
+
+     Ballard Technology, Inc.
+     www.ballardtech.com
+     support@ballardtech.com

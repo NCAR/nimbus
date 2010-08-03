@@ -1,0 +1,148 @@
+
+
+                            BTIDriver RPC Libraries
+                  USING THE BTI1553 DRIVER API AND EXAMPLES
+
+              Copyright 2004-2009 by Ballard Technology, Inc.
+
+
+                                ------------
+
+
+          This folder contains the following files:
+
+          File Name                 Description
+
+          examp1.c     Example 1:  Simulating the BC - Unscheduled Messages
+          examp2.c     Example 2:  Simulating the BC - Scheduled Messages
+          examp3.c     Example 3:  Simulating an RT
+          examp4.c     Example 4:  Monitoring the bus
+          examp5.c     Example 5:  Simultaneous BC, RT, and monitor simulation
+          examp6.c     Example 6:  Errors in BC Transmissions - Unscheduled Messages
+          examp7.c     Example 7:  Errors in BC Transmissions - Scheduled Messages
+          examp8.c     Example 8:  Errors in RT Transmissions
+          examp9.c     Example 9:  Event Log using Interrupts
+          examp10.c    Example 10: Polling the Event Log List
+          examp11.c    Example 11: BC Transmission of Ramping Data Using a Circular Buffer
+          examp12.c    Example 12: BC Transmission of Ramping Data Using a FIFO
+          examp13.c    Example 13: BC Transmission of Data Using a Ping-Pong Buffer
+          examp14.c    Example 14: Multiple Cores
+          examp15.c    Example 15: IRIG Timer
+          examp16.c    Example 16: RT Response Time
+          examp17.c    Example 17: Parametrics
+          examp18.c    Example 18: Engineering Unit
+          examp19.c    Example 19: BC message skipping and single-shot
+          examp20.c    Example 20: RT with illegalized subaddresses
+          examp21.c    Example 21: RT with subaddress wrapping
+          examp22.c    Example 22: Wrapping subaddresses across different RTs
+          examp23.c    Example 23: Asynchronous BC messages while running
+          examp24.c    Example 24: Controlling RT status word bits
+          examp25.c    Example 25: Accessing other info in RT message structures
+          examp26.c    Example 26: BC scheduling DIO
+          examp27.c    Example 27: BC retries
+          examp28.c    Example 28: Discovering illegal subaddresses and word counts on an RT
+          examp29.c    Example 29: Conditional BC schedule branching
+          examp30.c    Example 30: Changing BC or RT data when a message is serviced
+          examp31.c    Example 31: BC schedule startup frame
+          examp32.c    Example 32: Alternating BC schedules on a status word bit
+          examp33.c    Example 33: Skipping a scheduled BC subroutine
+
+          Makefile     GNU Makefile for examples
+
+          README       This document
+
+          Refer to the end of this document for corrections,
+          warnings, and additional information.
+
+
+
+     INTRODUCTION
+
+          The BTI1553.H and libbti1553.so files are the C
+          language header and shared library for the BTI1553
+          Driver API.  The BTI1553 API library is dependent
+          upon the BTICard API library.  Additionally, the RPC
+          mode driver is dependent on the BTIRPC library.
+          With these files, the user can write applications
+          that operate a BTIDriver compliant MIL-STD-1553 device.
+
+          The Driver API has been tested using GCC 3.3.1.
+
+          The examples files are written in C and have been
+          tested using GCC 3.3.1.
+
+
+
+     MAKEFILE
+
+          All the example programs can be made by simply
+          running the 'make' command.
+
+          To remove the built example programs, run the
+          'make clean' command.
+
+
+
+     BTI1553.H
+
+          Applications written in the C language
+          that use the BTI1553 Driver API library must
+          incorporate the header file BTI1553.H using the
+          #include preprocessor directive.  Assuming the
+          header file is in the current working directory or
+          in the INCLUDE path, the following line must be
+          added to the top of the application's source file:
+
+          #include "BTI1553.H"
+
+
+
+     EXAMPLE PROGRAMS
+
+          Examples are provided both in C source code files
+          and the resultant executable format for the different
+          architectures.
+
+
+
+     FUNCTION OVERVIEW
+
+          All functions are described in detail in the
+          Ballard Technology MIL-STD-1553 API Reference Manual.
+
+
+
+     CORRECTIONS, WARNINGS, AND ADDITIONAL INFORMATION
+
+          There is no additional information.
+
+
+                                ------------
+
+
+          SAFETY WARNING:  Ballard products are of commercial
+          grade and therefore are neither designed,
+          manufactured, nor tested to standards required for
+          use in critical applications where a failure or
+          deficiency of the product may lead to injury,
+          death, or damage to property.  Without prior
+          specific approval in writing by the president of
+          Ballard Technology, Inc., Ballard products are not
+          authorized for use in such critical applications.
+
+          This software is provided as a laboratory tool.
+          For any application it is the responsibility of the
+          user to verify the suitability, correctness, and
+          safety of using this software or data derived
+          therefrom.
+
+
+                                ------------
+
+
+     Ballard Technology would appreciate hearing your questions,
+     comments, and suggestions concerning this product.
+
+     Ballard Technology, Inc.
+     www.ballardtech.com
+     support@ballardtech.com

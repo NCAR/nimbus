@@ -1,0 +1,120 @@
+
+
+                    Software License Agreement	
+                    for Linux Driver Interfaces
+
+This document is a legal agreement between you, the end user
+(LICENSEE), and Ballard Technology, Inc.  (BALLARD) for the BALLARD
+software product identified above (SOFTWARE), which includes associated
+media, printed materials, and any online or electronic documentation. 
+By installing, copying, or otherwise using the SOFTWARE you are
+agreeing to become bound by the terms of this agreement, which includes
+the software license, the Safety Warning, and the version of BALLARD's
+Limited Warranty (AD195, unless otherwise mutually agreed by written
+contract) in effect when the product was obtained from BALLARD (e.g.,
+at the time of purchase).
+
+If you do not agree to the terms of this agreement, promptly return the
+product to BALLARD.  The amount you paid for an unused product will be
+refunded.
+
+The term "Source file" shall mean any human-readable files (e.g., with
+extension .c or .h), and the term "Object files" shall apply to any
+compiled files (e.g., with extension .o or .so).  The term "SOFTWARE"
+shall apply both individually and collectively to Source and Object
+files provided by BALLARD.
+
+OWNERSHIP OF THE SOFTWARE: The SOFTWARE and accompanying documentation
+are owned by BALLARD (or its third party suppliers) and are protected
+by United States copyright laws.  BALLARD (or its third party
+suppliers) owns all copyright, trade secret, and other proprietary
+rights in the SOFTWARE.  This license confers no title or ownership in
+the SOFTWARE and is not a sale of any rights in the SOFTWARE.
+
+LICENSE GRANT: BALLARD grants the LICENSEE a non-exclusive license to
+Use the SOFTWARE as prescribed below.  The term "Use" shall mean
+installing, loading, executing, copying, or otherwise using the
+SOFTWARE.  Applications developed using the SOFTWARE and incorporating
+any part of the Source or Object code from the SOFTWARE are considered
+Use of the SOFTWARE.  LICENSEE agrees to Use the SOFTWARE only in
+conjunction with or the development of an application for the
+associated BALLARD hardware product.
+
+	SINGLE SYSTEM LICENSE: BALLARD grants the LICENSEE a license to Use
+	the SOFTWARE on one computer at a time.  In addition, the LICENSEE
+	may Use the SOFTWARE to develop custom software applications and
+	may freely redistribute the Object files with the custom
+	application.
+
+	DEVELOPER SITE LICENSE: BALLARD grants the LICENSEE a license to
+	Use the SOFTWARE at a single site on not more than a specified
+	number of computers at a time.  Unless otherwise agreed in writing,
+	a single site shall mean a single building or group of connected
+	buildings sharing a common postal address, and the specified number
+	of computers shall be ten (10).  In addition, the LICENSEE may Use
+	the SOFTWARE to develop custom software applications and may freely
+	redistribute the Object files with the custom application.
+
+REDISTRIBUTION: LICENSEE agrees (a) to distribute only the Object
+files; (b) to only distribute the Object files in conjunction with a
+custom application for a BALLARD hardware product; (c) to include with
+the distributed SOFTWARE (i) a valid copyright notice, and (ii) a
+notice restricting the Use and redistribution of the SOFTWARE to Use
+and redistribution with the LICENSEE's custom application; (d) to
+indemnify, hold harmless, and defend BALLARD and its suppliers from and
+against any claims or lawsuits, including attorneys' fees, that arise
+or result from the Use or distribution of LICENSEE's software
+application; and (e) to assure that any export of the SOFTWARE and the
+associated BALLARD hardware and LICENSEE's custom application is not in
+violation of any applicable U.S.  regulation or statute.
+
+LIMITATIONS: LICENSEE may not reverse engineer, decompile, or
+disassemble the SOFTWARE.  LICENSEE agrees to only Use the SOFTWARE in
+conjunction with a BALLARD hardware product.
+
+COPIES: LICENSEE may make copies of the SOFTWARE as required for
+archival or back-up purposes.  The LICENSEE shall furnish such copies
+with proprietary marks and symbols identical to those affixed to the
+SOFTWARE.  All archival and back-up copies of the SOFTWARE are subject
+to the provisions of this Agreement.
+
+SAFETY WARNING: BALLARD products are of commercial grade and therefore
+are neither designed, manufactured, nor tested to standards required
+for use in critical applications where a failure or deficiency of the
+product may lead to injury, death, or damage to property.  Without
+prior, specific approval in writing by the president of Ballard
+Technology, Inc., BALLARD products are not authorized for use in such
+critical applications.
+
+U.S.  GOVERNMENT RESTRICTED RIGHTS: The SOFTWARE and documentation are
+provided with restricted rights.  Use, duplication, or disclosure by
+the Government is subject to restrictions as set forth in subparagraph
+(c)(1)(ii) of the Rights in Technical Data and Computer Software clause
+at DFARS 252.227-7013 or subparagraphs (c)(1) and (2) of the Commercial
+Computer Software-Restricted Rights at 48 CFR 52.227-19, as applicable. 
+Manufacturer is Ballard Technology, Inc., 3229A Pine Street, Everett,
+WA, 98201.
+
+CONFIDENTIAL INFORMATION: All information, whether in printable or
+computer readable form, marked as confidential or proprietary to
+BALLARD (e.g., BALLARD TECHNOLOGY CONFIDENTIAL) is excluded from this
+license and may only be used as authorized by BALLARD in a separate
+written document.
+
+TERMINATION: Without prejudice to any other rights, BALLARD may
+terminate this Agreement if LICENSEE fails to comply with the terms and
+conditions set forth herein.  In such event, LICENSEE agrees to destroy
+all copies of the SOFTWARE and all its component parts.
+
+MISCELLANEOUS: This agreement is governed by the laws of the State of
+Washington.
+
+
+
+Ballard Technology, Inc. 
+www.ballardtech.com
+support@ballardtech.com
+
+
+Document Ref: AD186-20080107
+Date: January 7, 2008

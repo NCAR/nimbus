@@ -1,0 +1,118 @@
+
+
+                            BTIDriver RPC Libraries
+                  USING THE BTI422 DRIVER API AND EXAMPLES
+
+              Copyright 2004-2009 by Ballard Technology, Inc.
+
+
+                                ------------
+
+
+          This folder contains the following files:
+
+          File Name                 Description
+
+          examp1.c     Example 1: Transmit / Receive example
+          examp2.c     Example 2: Polling the event log list
+          examp3.c     Example 3: Event log using interrupts
+
+          Makefile     GNU Makefile for examples
+
+          README       This document
+
+          Refer to the end of this document for corrections,
+          warnings, and additional information.
+
+
+
+     INTRODUCTION
+
+          The BTI422.H and libbti422.so files are the C
+          language header and shared library for the BTI422
+          Driver API.  The BTI422 API library is dependent
+          upon the BTICard API library.  Additionally, the RPC
+          mode driver is dependent on the BTIRPC library.
+          With these files, the user can write applications
+          that operate a BTIDriver compliant RS-422 device.
+
+          The Driver API has been tested using GCC 3.3.1.
+
+          The examples files are written in C and have been
+          tested using GCC 3.3.1.
+
+
+
+     MAKEFILE
+
+          All the example programs can be made by simply
+          running the 'make' command.
+
+          To remove the built example programs, run the
+          'make clean' command.
+
+
+
+     BTI422.H
+
+          Applications written in the C language
+          that use the BTI422 Driver API library must
+          incorporate the header file BTI422.H using the
+          #include preprocessor directive.  Assuming the
+          header file is in the current working directory or
+          in the INCLUDE path, the following line must be
+          added to the top of the application's source file:
+
+          #include "BTI422.H"
+
+
+
+     EXAMPLE PROGRAMS
+
+          Examples are provided both in C source code files
+          and the resultant executable format for the different
+          architectures.
+
+
+
+     FUNCTION OVERVIEW
+
+          All functions are described in detail in the
+          Ballard Technology Serial RS-422 API Reference Manual.
+
+
+
+     CORRECTIONS, WARNINGS, AND ADDITIONAL INFORMATION
+
+          There is no additional information.
+
+
+                                ------------
+
+
+          SAFETY WARNING:  Ballard products are of commercial
+          grade and therefore are neither designed,
+          manufactured, nor tested to standards required for
+          use in critical applications where a failure or
+          deficiency of the product may lead to injury,
+          death, or damage to property.  Without prior
+          specific approval in writing by the president of
+          Ballard Technology, Inc., Ballard products are not
+          authorized for use in such critical applications.
+
+          This software is provided as a laboratory tool.
+          For any application it is the responsibility of the
+          user to verify the suitability, correctness, and
+          safety of using this software or data derived
+          therefrom.
+
+
+                                ------------
+
+
+     Ballard Technology would appreciate hearing your questions,
+     comments, and suggestions concerning this product.
+
+     Ballard Technology, Inc.
+     www.ballardtech.com
+     support@ballardtech.com

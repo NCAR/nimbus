@@ -1,0 +1,129 @@
+
+
+                            BTIDriver RPC Libraries
+                                  for Linux
+
+                               October 23, 2009
+
+                Copyright 2004-2009 by Ballard Technology, Inc.
+
+
+                                ------------
+
+
+          This folder contains the following subfolders:
+
+          Folder Name               Description
+
+          <API>         Library and header files
+          <examples>    Example programs
+
+          LICENSEL.TXT        License agreement for Linux driver software
+          README              This document
+
+          Refer to the end of this document for corrections,
+          warnings, and additional information.
+
+
+
+     INTRODUCTION
+
+          The BTIDriver RPC libraries are the Remote
+          Procedure Call libraries that work with Ballard
+          Technology's universal driver API.  The RPC
+          libraries will operate remotely controlled devices
+          such as the OmniBusBox device.  These RPC
+          controlled devices are intelligent network
+          interfaces that allow users to communicate with
+          multiple avionics databuses.  These avionics
+          databus interfaces include MIL-STD-1553, ARINC 429,
+          ARINC 717, ARINC 708, RS-422, CSDB, Discrete IO and
+          others.  The folders listed above contain the
+          necessary components for building applications to
+          operate an RPC controlled Ballard avionics device.
+
+
+
+     USAGE
+
+          To use the Linux drivers for an RPC device (e.g.
+          OmniBusBox) you will first need to install the API
+          libraries.  Copy the following 32-bit shared object
+          libraries to the /usr/lib directory of your
+          computer (as root):
+
+          API/libbtirpc-rpc-x86.so
+          API/libbtiCard-rpc-x86.so
+          API/libbti1553-rpc-x86.so
+          API/libbti422-rpc-x86.so
+          API/libbti429-rpc-x86.so
+          API/libbti708-rpc-x86.so
+          API/libbti717-rpc-x86.so
+          API/libbtiCSDB-rpc-x86.so
+          API/libbtiDIO-rpc-x86.so
+
+          If you are running a 64-bit system, then both
+          32-bit and 64-bit applications can use the API
+          libraries.  Copy the following shared object
+          libraries to the /usr/lib64 directory of your
+          computer (as root):
+
+          API/libbtirpc-rpc-x64.so
+          API/libbtiCard-rpc-x64.so
+          API/libbti1553-rpc-x64.so
+          API/libbti422-rpc-x64.so
+          API/libbti429-rpc-x64.so
+          API/libbti708-rpc-x64.so
+          API/libbti717-rpc-x64.so
+          API/libbtiCSDB-rpc-x64.so
+          API/libbtiDIO-rpc-x64.so
+
+          Additionally, you will need to assign a card number
+          to your device.  Card numbers allow the BTIDriver
+          library to distinguish between BTIDriver compliant
+          devices.  Please copy the example ballard.conf file
+          (located in the API directory) to your computer's
+          /etc directory.  To obtain the unique
+          information needed to add your device to the
+          ballard.conf file, run the bticard_find example
+          program located in the EXAMPLES directory.
+
+          You are now ready to build and run the example
+          programs in the examples folder.
+
+
+
+     CORRECTIONS, WARNINGS, AND ADDITIONAL INFORMATION
+
+          There is no additional information.
+
+
+                                ------------
+
+
+          SAFETY WARNING:  Ballard products are of commercial
+          grade and therefore are neither designed,
+          manufactured, nor tested to standards required for
+          use in critical applications where a failure or
+          deficiency of the product may lead to injury,
+          death, or damage to property.  Without prior
+          specific approval in writing by the president of
+          Ballard Technology, Inc., Ballard products are not
+          authorized for use in such critical applications.
+
+          This software is provided as a laboratory tool.
+          For any application it is the responsibility of the
+          user to verify the suitability, correctness, and
+          safety of using this software or data derived
+          therefrom.
+
+
+                                ------------
+
+
+     Ballard Technology would appreciate hearing your questions,
+     comments, and suggestions concerning this product.
+
+     Ballard Technology, Inc.
+     www.ballardtech.com
+     support@ballardtech.com
