@@ -731,8 +731,8 @@ void updateData(PGresult * res, int indx)
   _at.push_back( extractPQvalue<float>(PQgetvalue(res, indx, AT)) );
   _tas.push_back( extractPQvalue<float>(PQgetvalue(res, indx, TAS)) );
   _ws.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WS)) );
-  _wi.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WD)) );
-  _wd.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WI)) );
+  _wd.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WD)) );
+  _wi.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WI)) );
 
 }
 
