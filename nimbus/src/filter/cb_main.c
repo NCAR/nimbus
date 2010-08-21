@@ -399,7 +399,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   /* Turn "Go" button into "Pause" button.
    */
   XtRemoveAllCallbacks(goButton, XmNactivateCallback);
-  label = XmStringCreate("Pause", XmFONTLIST_DEFAULT_TAG);
+  label = XmStringCreate((char *)"Pause", XmFONTLIST_DEFAULT_TAG);
   XtSetArg(args[0], XmNlabelString, label);
   XtSetValues(goButton, args, 1);
   XmStringFree(label);
@@ -508,7 +508,7 @@ void stopProcessing()
 
   /* Turn "Pause" button back into "Go" button.
    */
-  label = XmStringCreate("Quit", XmFONTLIST_DEFAULT_TAG);
+  label = XmStringCreate((char *)"Quit", XmFONTLIST_DEFAULT_TAG);
   XtSetArg(args[0], XmNlabelString, label);
   XtSetValues(goButton, args, 1);
   XmStringFree(label);
@@ -1258,7 +1258,7 @@ static void LogLagErrors()
   {
     if (raw[i]->badLagCntr > 0)
     {
-      sprintf(buffer, "%s: %ld bad Lags.\n", raw[i]->name, raw[i]->badLagCntr);
+      sprintf(buffer, "%s: %u bad Lags.\n", raw[i]->name, raw[i]->badLagCntr);
       LogMessage(buffer);
     }
   }
