@@ -288,7 +288,7 @@ PostgreSQL::initializeGlobalAttributes()
   submitCommand(_sqlString.str(), true);
 
   // Update data rate onboard to be 1, not the ground feed data rate.
-  _sqlString.str("UPDATE global_atributes SET value='1' WHERE key='DataRate'");
+  _sqlString.str("UPDATE global_atributes SET value='1' WHERE key='DataRate';");
   submitCommand(_sqlString.str());
 
 }	// END INITIALIZEGLOBALATTRIBUTES
