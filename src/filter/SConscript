@@ -1,5 +1,6 @@
 # -*- python -*-
 import os
+import platform
 
 Import('env')
 
@@ -90,7 +91,10 @@ if int(env.realtime):
   env.Append(CPPPATH=[os.path.join(env['NIDAS_PATH'],'include')])
   sources = [sources, 'rtloop3.cc']
   env.Append(LIBS=['nidas', 'nidas_dynld', 'XmlRpcpp', 'xerces-c', 'bz2'])
-  nlibpath = os.path.join(env['NIDAS_PATH'],'lib')
+  if (platform.machine() == 'x86_64'):
+    nlibpath = os.path.join(env['NIDAS_PATH'],'lib64')
+  else:
+    nlibpath = os.path.join(env['NIDAS_PATH'],'lib')
   env.Append(LIBPATH=[nlibpath])
   # This may be unnecessary and even undesirable with the introduction of
   # the ld.so.conf file.  However, leave it in for now, especially for the
