@@ -80,7 +80,7 @@ void atfhGV_Init(var_base *varp)
 }	/* END CONSTRUCTOR */
 
 /* -------------------------------------------------------------------- */
-void stthcGV(DERTBL *varp)
+void stthcGV(DERTBL *varp)	// HARCO
 {
   NR_TYPE zee, tth, xmach2, psxc;
   static bool firstTime[nFeedBackTypes] = { true, true };
@@ -122,9 +122,9 @@ void stthcGV(DERTBL *varp)
 }
 
 /* -------------------------------------------------------------------- */
-void satfhGV(DERTBL *varp)
+void satfhGVharco(DERTBL *varp)
 {
-  NR_TYPE ttfh, xmach2, recovory;
+  NR_TYPE ttfh, xmach2, recovory, atfh;
 
   ttfh = GetSample(varp, 0);
   xmach2 = GetSample(varp, 1);
@@ -134,9 +134,26 @@ void satfhGV(DERTBL *varp)
   else
     recovory = recfrhGV[1];	// TTH?2
 
-  atfh[FeedBack][varp->ProbeCount] = AMBIENT(ttfh, recovory, xmach2);
+  atfh = AMBIENT(ttfh, recovory, xmach2);
 
-  PutSample(varp, atfh[FeedBack][varp->ProbeCount]);
+  PutSample(varp, atfh);
+
+}	/* END SATFH */
+
+/* END ATFH.C */
+/* -------------------------------------------------------------------- */
+void satfhGVrose(DERTBL *varp)
+{
+  NR_TYPE ttfh, xmach2, recovory, atfh;
+
+  ttfh = GetSample(varp, 0);
+  xmach2 = GetSample(varp, 1);
+
+  recovory = 0.988 + 0.036 * (log10(xmach2) / 2);
+
+  atfh = AMBIENT(ttfh, recovory, xmach2);
+
+  PutSample(varp, atfh);
 
 }	/* END SATFH */
 

@@ -77,6 +77,14 @@
 	"XWLCO2C",	(void(*)(void*))UWO_LICORinit,	NULL,		sxwco2c,
 	"XWLH2OC",	NULL,		NULL,		sxwlh2oc,
 #
+# Gust Pod
+#
+#	"PSC",		NULL,		NULL,		spsc_gp,
+#	"QCC",		NULL,		NULL,		sqcc_gp,
+#	"AK",		NULL,		NULL,		sak_gp,
+#	"SS",		NULL,		NULL,		sss_gp,
+#	"TAS",		NULL,		NULL,		stas_gp,
+#
 # Climet
 #
 	"ACLMT",	NULL,		xlClimet,	NULL,
@@ -719,10 +727,12 @@
 	"TTHR2C",	NULL,		NULL,		stthcGV,
 	"TTHL1C",	NULL,		NULL,		stthcGV,
 	"TTHL2C",	NULL,		NULL,		stthcGV,
-	"ATHR1",	(void(*)(void*))atfhGV_Init,	NULL,		satfhGV,
-	"ATHR2",	(void(*)(void*))atfhGV_Init,	NULL,		satfhGV,
-	"ATHL1",	(void(*)(void*))atfhGV_Init,	NULL,		satfhGV,
-	"ATHL2",	(void(*)(void*))atfhGV_Init,	NULL,		satfhGV,
+	"ATFH1",	(void(*)(void*))atfhGV_Init,	NULL,	satfhGVrose,
+	"ATFH2",	(void(*)(void*))atfhGV_Init,	NULL,	satfhGVrose,
+	"ATHR1",	(void(*)(void*))atfhGV_Init,	NULL,	satfhGVharco,
+	"ATHR2",	(void(*)(void*))atfhGV_Init,	NULL,	satfhGVharco,
+	"ATHL1",	(void(*)(void*))atfhGV_Init,	NULL,	satfhGVharco,
+	"ATHL2",	(void(*)(void*))atfhGV_Init,	NULL,	satfhGVharco,
 #
 #	Derived temperatues
 #
