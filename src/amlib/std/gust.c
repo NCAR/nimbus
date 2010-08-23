@@ -6,19 +6,9 @@ FULL NAME:	Gust calculations
 
 ENTRY POINTS:	swi(), sui(), svi(), sux(), svy()
 
-STATIC FNS:	
+DESCRIPTION:	3D wind field calculations.
 
-DESCRIPTION:	Template for AMLIB std & user directories.
-
-INPUT:		
-
-OUTPUT:		WI, UI, VI, UX, VY
-
-REFERENCES:	
-
-REFERENCED BY:	compute.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2010
 -------------------------------------------------------------------------
 */
 
