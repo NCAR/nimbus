@@ -220,15 +220,21 @@ PostgreSQL::dropAllTables()
   PQclear(res);
 
 
-  /* Loop & DROP.
+  /* DROP tables.  
    */
+  _sqlString.str("DROP TABLE ");
   std::set<std::string>::iterator it;
   for (it = tablesToDelete.begin(); it != tablesToDelete.end(); ++it)
   {
-    _sqlString.str("");
-    _sqlString << "DROP TABLE " << *it << ';';
-    submitCommand(_sqlString.str(), true);
+    _sqlString << *it;
+    if (++it != tablesToDelete.end())
+      _sqlString << ", ";
   }
+  _sqlString << ';';
+  submitCommand(_sqlString.str(), true);
+
+  // Clear the lightning table.
+  submitCommand("TRUNCATE TABLE lightning;");
 
   /*
    * Database seems to slow down after a number of runs without VACUUMing.
