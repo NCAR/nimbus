@@ -220,18 +220,15 @@ PostgreSQL::dropAllTables()
   PQclear(res);
 
 
-  /* DROP tables.  
+  /* DROP tables.  Do NOT try to make this one DROP TABLE statement.
    */
-  _sqlString.str("DROP TABLE ");
   std::set<std::string>::iterator it;
   for (it = tablesToDelete.begin(); it != tablesToDelete.end(); ++it)
   {
-    _sqlString << *it;
-    if (++it != tablesToDelete.end())
-      _sqlString << ", ";
+    _sqlString.str("");
+    _sqlString << "DROP TABLE " << *it << ';';
+    submitCommand(_sqlString.str(), true);
   }
-  _sqlString << ';';
-  submitCommand(_sqlString.str(), true);
 
   // Clear the lightning table.
   submitCommand("TRUNCATE TABLE lightning;");
