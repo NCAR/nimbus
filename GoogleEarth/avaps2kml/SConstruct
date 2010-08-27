@@ -1,0 +1,15 @@
+# -*- python -*-
+
+import os
+env = Environment(platform = 'posix',ENV= os.environ)
+env['JLOCAL'] = os.environ['JLOCAL']
+
+env.Append(CXXFLAGS='-g -Werror')
+
+
+conf = Configure(env.Clone())
+
+env.Program('drop2kml.c')
+
+Alias('install', env.Install('$JLOCAL/bin', 'drop2kml'))
+Alias('install', env.Install('$JLOCAL/bin', 'avaps2kml'))
