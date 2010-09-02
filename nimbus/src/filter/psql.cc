@@ -221,6 +221,8 @@ PostgreSQL::dropAllTables()
 
 
   /* DROP tables.  Do NOT try to make this one DROP TABLE statement.
+   * If one of the tables does not exist, then the whole statement fails
+   * and none of them get dropped.
    */
   std::set<std::string>::iterator it;
   for (it = tablesToDelete.begin(); it != tablesToDelete.end(); ++it)
@@ -436,7 +438,12 @@ PostgreSQL::WriteSQLvolts(const std::string & timeStamp)
     }
   }
 
-  submitCommand(_sqlString.str());
+  /* Do not write srt during research flights.  The db VACUUM starts causing
+   * delays after several hours of flight.  Avoiding the addition of sample
+   * rate data helps keep the db smaller.
+   */
+  if (!flying)
+    submitCommand(_sqlString.str());
 
   // Return lastest timestamp written in usec.
   return (1000 / maxRate) * (maxRate-1);
@@ -709,15 +716,18 @@ PostgreSQL::getGlobalAttribute(const char key[]) const
 
 /* -------------------------------------------------------------------- */
 bool
-PostgreSQL::isSameFlight() const
+PostgreSQL::isSameFlight()
 {
+  flying = false;
 
   // Anything not starting with pre-ordained prefix is not the same flight.
-  // FlightNumber="hangar" being the most obvious.
+  // FlightNumber="hanger" being the most obvious.
   if (cfg.FlightNumber().compare(0, 2, "rf") != 0 &&
       cfg.FlightNumber().compare(0, 2, "tf") != 0 &&
       cfg.FlightNumber().compare(0, 2, "ff") != 0)
     return false;
+
+  flying = true;
 
   // Lab test flight is 161 rf09.  Restarting is considered new flight.
   if (cfg.ProjectNumber().compare("161") == 0 &&

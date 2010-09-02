@@ -141,7 +141,7 @@ protected:
    * Desired real-time operation to determine whether nimbus has been
    * restarted therefore database should not be 'dropped' and re-created.
    */
-  bool isSameFlight() const;
+  bool isSameFlight();
 
   /**
    * Low level add a variable with given params.
@@ -238,6 +238,12 @@ protected:
   // code).  Currently unused.  Was called at end of ctor.
   void
   launchGroundFeed();
+
+  /**
+   * Set based on flight number.  Used to mark hanger day vs. real flight.
+   * @see isSameFlight()
+   */
+  bool flying;
 
 };	// END PGSQL.H
 
