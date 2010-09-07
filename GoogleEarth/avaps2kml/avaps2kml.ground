@@ -1,12 +1,33 @@
 #!/bin/csh
 
-# Designed in PREDICT this script outputs 4 KML documents for onboard
-# mission coordinater display.  Line items should be added to
-# /var/www/html/flight_data/GE/osm.kml to make available on menu.
+# Designed in PREDICT this script outputs 4 KML documents for ground
+# based mission coordinater display.  Line items should be added to
+# /net/www/docs/flight_data/##/GE/osm.kml to make available on menu.
 # Also uses windbarb gif's we found.  Calls drop2kml which creates
 # the windbarb placemark for each pressure.
 
-set out='/var/www/html/flight_data/GE/dwf500.kml'
+mkdir -p /tmp/avaps
+cd /tmp/avaps/
+rm D*
+
+# Fetch latest D files.
+set d=`date +%Y%m%d`
+/bin/cp /net/iftp/pub/incoming/predict/gv/D`date +%Y%m%d`* .
+foreach file (D*.bz2)
+  bunzip2 $file
+end
+
+# Rename files, removing .?
+foreach file (D*)
+  mv $file `echo $file | cut --bytes=1-18`
+end
+
+# Overwrite with any existing QC'd files.
+foreach file (D*)
+  /bin/cp /net/iftp/pub/download/predict/gv/${file}QC.eol $file
+end
+
+set out='/net/www/docs/flight_data/GV/GE/dwf500.kml'
 echo '<?xml version="1.0" encoding="UTF-8"?>' > $out
 echo '<kml xmlns="http://www.opengis.net/kml/2.2">' >> $out
 echo '<Document>' >> $out
@@ -30,7 +51,7 @@ echo '</kml>' >> $out
 
 
 
-set out='/var/www/html/flight_data/GE/dwf700.kml'
+set out='/net/www/docs/flight_data/GV/GE/dwf700.kml'
 echo '<?xml version="1.0" encoding="UTF-8"?>' > $out
 echo '<kml xmlns="http://www.opengis.net/kml/2.2">' >> $out
 echo '<Document>' >> $out
@@ -54,7 +75,7 @@ echo '</kml>' >> $out
 
 
 
-set out='/var/www/html/flight_data/GE/dwf850.kml'
+set out='/net/www/docs/flight_data/GV/GE/dwf850.kml'
 echo '<?xml version="1.0" encoding="UTF-8"?>' > $out
 echo '<kml xmlns="http://www.opengis.net/kml/2.2">' >> $out
 echo '<Document>' >> $out
@@ -78,7 +99,7 @@ echo '</kml>' >> $out
 
 
 
-set out='/var/www/html/flight_data/GE/dwf925.kml'
+set out='/net/www/docs/flight_data/GV/GE/dwf925.kml'
 echo '<?xml version="1.0" encoding="UTF-8"?>' > $out
 echo '<kml xmlns="http://www.opengis.net/kml/2.2">' >> $out
 echo '<Document>' >> $out
@@ -99,4 +120,5 @@ end
 
 echo '</Document>' >> $out
 echo '</kml>' >> $out
+
 
