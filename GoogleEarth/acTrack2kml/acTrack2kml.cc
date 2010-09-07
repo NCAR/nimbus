@@ -36,6 +36,9 @@ static const float TAS_CutOff = 20.0;
 // Frequency of Time Stamps (in minutes).
 static int ts_Freq = 10;
 
+// Frequency of Wind Barbs (in minutes).
+static int barb_Freq = 5;
+
 static std::string netCDFinputFile, outputKML, database_host, platform, dbname;
 
 static const float missing_value = -32767.0;
@@ -220,6 +223,36 @@ midBubbleCDATA(int i)
 }
 
 /* -------------------------------------------------------------------- */
+int barbSpeed(float ws)
+{
+  int iws = 0;
+
+  if (ws > 2.5 && ws < 7.5) iws = 5;
+  if (ws >= 7.5 && ws < 12.5) iws = 10;
+  if (ws >= 12.5 && ws < 17.5) iws = 15;
+  if (ws >= 17.5 && ws < 22.5) iws = 20;
+  if (ws >= 22.5 && ws < 27.5) iws = 25;
+  if (ws >= 27.5 && ws < 32.5) iws = 30;
+  if (ws >= 32.5 && ws < 37.5) iws = 35;
+  if (ws >= 37.5 && ws < 42.5) iws = 40;
+  if (ws >= 42.5 && ws < 47.5) iws = 45;
+  if (ws >= 47.5 && ws < 52.5) iws = 50;
+  if (ws >= 52.5 && ws < 57.5) iws = 55;
+  if (ws >= 57.5 && ws < 62.5) iws = 60;
+  if (ws >= 62.5 && ws < 67.5) iws = 65;
+  if (ws >= 67.5 && ws < 72.5) iws = 70;
+  if (ws >= 72.5 && ws < 77.5) iws = 75;
+  if (ws >= 77.5 && ws < 82.5) iws = 80;
+  if (ws >= 82.5 && ws < 87.5) iws = 85;
+  if (ws >= 87.5 && ws < 92.5) iws = 90;
+  if (ws >= 92.5 && ws < 97.5) iws = 95;
+  if (ws >= 97.5 && ws < 102.5) iws = 100;
+  if (ws >= 102.5 && ws < 105.5) iws = 105;
+
+  return iws;
+}
+
+/* -------------------------------------------------------------------- */
 void WriteCurrentPositionKML(const _projInfo& projInfo)
 {
   std::ofstream googleEarth;
@@ -275,13 +308,10 @@ void WriteCurrentPositionKML(const _projInfo& projInfo)
 }
 
 /* -------------------------------------------------------------------- */
-void WriteLandmarksKML(std::ofstream & googleEarth, const _projInfo& projInfo)
+void WriteLandmarksKML_Folder(std::ofstream & googleEarth, const _projInfo& projInfo)
 {
   if (projInfo.landmarks.size() == 0)
-  {
-    std::cout << "No landmarks, skipping." << std::endl;
     return;
-  }
 
   googleEarth
     << " <Folder>\n"
@@ -315,7 +345,7 @@ void WriteLandmarksKML(std::ofstream & googleEarth, const _projInfo& projInfo)
 }
 
 /* -------------------------------------------------------------------- */
-void WriteTimeStampsKML(std::ofstream & googleEarth)
+void WriteTimeStampsKML_Folder(std::ofstream & googleEarth)
 {
   googleEarth
     << " <Folder>\n"
@@ -340,6 +370,50 @@ void WriteTimeStampsKML(std::ofstream & googleEarth)
         << "    <when>" << _date[i] << "Z</when>\n"
         << "   </TimeStamp>\n"
         << "   <styleUrl>#PM1</styleUrl>\n"
+        << "   <Point>\n"
+	<< "    <altitudeMode>absolute</altitudeMode>\n"
+        << "    <coordinates>"
+        << _lon[i] << "," << _lat[i] << "," << (int)_alt[i] << "</coordinates>\n"
+        << "   </Point>\n"
+        << "  </Placemark>\n";
+    }
+  }
+
+  googleEarth << " </Folder>\n";
+}
+
+/* -------------------------------------------------------------------- */
+void WriteWindBarbsKML_Folder(std::ofstream & googleEarth)
+{
+  googleEarth
+    << " <Folder>\n"
+    << "  <name>Wind Barbs</name>\n";
+
+  int this_ts, curr_ts, last_ts = -1;
+  for (size_t i = 0; i < _date.size(); i++)
+  {
+    std::string hour   = _date[i].substr(11, 2);
+    std::string minute = _date[i].substr(14, 2);
+    std::string second = _date[i].substr(17, 2);
+    this_ts = atoi(hour.c_str())*60 + atoi(minute.c_str());
+    curr_ts = this_ts / barb_Freq;
+    if ( (i == 0) || (curr_ts != last_ts) || (i == _date.size()-1) ) {
+      last_ts = curr_ts;
+      int iws = barbSpeed(_ws[i]);
+      int iwd = (int)_wd[i];
+      char url[512];
+
+      sprintf(url, "<href>http://www.eol.ucar.edu/flight_data/display/windbarbs/%03d/wb_%03d_%03d.png</href>\n", iws, iws, iwd);
+
+      googleEarth
+        << "  <Placemark>\n"
+	<< "   <description><![CDATA[WD: " << _wd[i] << "<br>WS: " << _ws[i] << "]]></description>\n"
+        << "   <Style>\n"
+        << "    <IconStyle>\n"
+        << "     <scale>3</scale>\n"
+        << "     <Icon>" << url << "</Icon>\n"
+        << "    </IconStyle>\n"
+        << "   </Style>\n"
         << "   <Point>\n"
 	<< "    <altitudeMode>absolute</altitudeMode>\n"
         << "    <coordinates>"
@@ -547,8 +621,9 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo)
 	<< "   </Point>\n"
 	<< "  </Placemark>\n";
 
-  WriteLandmarksKML(googleEarth, projInfo);
-  WriteTimeStampsKML(googleEarth);
+  WriteLandmarksKML_Folder(googleEarth, projInfo);
+  WriteTimeStampsKML_Folder(googleEarth);
+  WriteWindBarbsKML_Folder(googleEarth);
 
   googleEarth
 		<< "</Folder>\n"
@@ -682,8 +757,9 @@ void WriteGoogleEarthAnimatedKML(std::string & file, const _projInfo& projInfo)
 	<< "   </Point>\n"
 	<< "  </Placemark>\n";
 
-  WriteLandmarksKML(googleEarth, projInfo);
-  WriteTimeStampsKML(googleEarth);
+  WriteLandmarksKML_Folder(googleEarth, projInfo);
+  WriteTimeStampsKML_Folder(googleEarth);
+  WriteWindBarbsKML_Folder(googleEarth);
 
   googleEarth
 		<< "</Folder>\n"
