@@ -399,7 +399,7 @@ void WriteWindBarbsKML_Folder(std::ofstream & googleEarth)
     curr_ts = this_ts / barb_Freq;
     if ( (i == 0) || (curr_ts != last_ts) || (i == _date.size()-1) ) {
       last_ts = curr_ts;
-      int iws = barbSpeed(_ws[i]);
+      int iws = barbSpeed(_ws[i] * 1.9438);	// Knots.
       int iwd = (int)_wd[i];
       char url[512];
 
