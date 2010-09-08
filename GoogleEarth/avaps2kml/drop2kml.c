@@ -8,6 +8,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+static char *ground = "www.eol.ucar.edu";
+static char *onboard = "acserver.raf.ucar.edu";
+static char *webHost = 0;
+
 void outputKML(float lat, float lon, float wd, float ws)
 {
   int iws = 0;
@@ -42,7 +46,7 @@ void outputKML(float lat, float lon, float wd, float ws)
   printf("        <scale>3</scale>\n");
 //  printf("        <heading>0</heading>\n");
   printf("        <Icon>\n");
-  printf("          <href>http://acserver.raf.ucar.edu/flight_data/display/windbarbs/%03d/wb_%03d_%03d.png</href>\n", iws, iws, (int)wd);
+  printf("          <href>http://%s/flight_data/display/windbarbs/%03d/wb_%03d_%03d.png</href>\n", webHost, iws, iws, (int)wd);
   printf("        </Icon>\n");
 //  printf("        <gx:headingMode>worldNorth</gx:headingMode>\n");
   printf("      </IconStyle>\n");
@@ -60,6 +64,12 @@ int main(int argc, char *argv[])
   char *p;
   float wd, ws, lat, lon;
   float ps_cutoff = 850.0;
+
+  gethostname(buffer, 1000);
+  if (strncmp(buffer, "acserver", 8) == 0)
+    webHost = onboard;
+  else
+    webHost = ground;
 
   if (argc > 1)
     ps_cutoff = atof(argv[1]);
@@ -89,14 +99,14 @@ int main(int argc, char *argv[])
       p = strtok(NULL, " ");
       wd = atof(p);
       p = strtok(NULL, " ");
-      ws = atof(p);
+      ws = atof(p) * 1.9438;	// Convert to knots.
       p = strtok(NULL, " ");
       p = strtok(NULL, " ");
       lon = atof(p);
       p = strtok(NULL, " ");
       lat = atof(p);
 
-      if (lon > 200 || lat > 90 || wd > 360 || ws > 300)
+      if (lon > 200 || lat > 90 || wd > 360 || ws > 600)
         continue;
 
       outputKML(lat, lon, wd, ws);
@@ -104,5 +114,6 @@ int main(int argc, char *argv[])
     }
   }
 
+  fprintf(stderr, "drop2kml: mbar %d not found, no output.\n", (int)ps_cutoff);
   return 1;
 }
