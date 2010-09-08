@@ -18,14 +18,12 @@ if $host == 'acserver' then
   set outputdir='/var/www/html/flight_data/GE/'
 else
   echo 'Ground'
-  set inputdir='/mnt/r1/dropsondes/'
   set inputdir='/net/iftp/pub/incoming/predict/gv/'
   set outputdir='/net/www/docs/flight_data/GV/GE/'
 endif
 
 # Fetch latest D files.
 /bin/cp ${inputdir}/D`date +%Y%m%d`* .
-/bin/cp ${inputdir}/D20100907* .
 foreach file (D*.bz2)
   bunzip2 $file
 end
