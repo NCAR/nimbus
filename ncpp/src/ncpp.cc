@@ -188,6 +188,8 @@ static void ReadConfigFile()
 
     }
 
+  fclose(fp);
+
 }       /* END READCONFIGFILE */
 
 /* --------------------------------------------------------------------- */
