@@ -6,8 +6,8 @@
 # Also uses windbarb gif's we found.  Calls drop2kml which creates
 # the windbarb placemark for each pressure.
 
-mkdir -p /tmp/avaps
-cd /tmp/avaps/
+mkdir -p /tmp/avaps-rt
+cd /tmp/avaps-rt
 rm D*
 
 set host=`hostname -s`
