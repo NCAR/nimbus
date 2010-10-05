@@ -104,6 +104,7 @@ public:
   const std::string& ProjectName() const { return _projectName; }
   const std::string& ProjectNumber() const { return _projectNumber; }
   const std::string& TailNumber() const { return _tailNumber; }
+  const std::string& NIDASrevision() const { return _nidasRevision; }
   const std::string& FlightNumber() const { return _flightNumber; }
   const std::string& FlightDate() const { return _flightDate; }
   const std::string& ADSfileExtension() const { return _adsFileExtension; }
@@ -115,6 +116,7 @@ public:
   void SetTailNumber(const std::string s)	{ _tailNumber = s; }
   void SetFlightNumber(const std::string s)	{ _flightNumber = s; }
   void SetFlightDate(const std::string s)	{ _flightDate = s; }
+  void SetNIDASrevision(const std::string s)	{ _nidasRevision = s; }
   void SetChecksum(const std::string s)		{ _checksum = s; }
 
   std::string CoordinateLatitude() const        { return _coordLAT; }
@@ -179,6 +181,7 @@ private:
   std::string _tailNumber;
   std::string _flightNumber;
   std::string _flightDate;
+  std::string _nidasRevision;
   std::string _adsFileExtension;
   std::string _checksum;
 
