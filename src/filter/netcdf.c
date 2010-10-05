@@ -179,6 +179,7 @@ void CreateNetCDF(const char fileName[])
   putGlobalAttribute("ConventionsURL", ConventionsURL);
   putGlobalAttribute("ConventionsVersion", NETCDF_FORMAT_VERSION.c_str());
   putGlobalAttribute("ProcessorRevision", &SVNREVISION[10]);
+  putGlobalAttribute("NIDASrevision", cfg.NIDASrevision().c_str());
 
   if (strstr(SVNURL, "http"))
     strcpy(buffer, strstr(SVNURL, "http"));
