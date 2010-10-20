@@ -19,7 +19,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 #include <sstream>
 
 const size_t Broadcast::RADAR_ALT_INDX = 5;
-const size_t Broadcast::MACH_NUMBER_INDX = 9;
 const std::string Broadcast::InterfacePrefix = "192.168";
 
 using namespace nidas::util;
@@ -68,9 +67,6 @@ void Broadcast::BroadcastData(const std::string & timeStamp)
     {
       if (i == RADAR_ALT_INDX) // Our radar alt is in m, convert to ft as required by IWG1
         bcast << AveragedData[_varList[i]->LRstart] * 3.2808;
-      else
-      if (i == MACH_NUMBER_INDX) // Convert mach squared to mach number.
-        bcast << sqrt(AveragedData[_varList[i]->LRstart]);
       else
         bcast << AveragedData[_varList[i]->LRstart];
     }
