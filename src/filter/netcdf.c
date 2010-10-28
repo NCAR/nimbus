@@ -172,7 +172,7 @@ void CreateNetCDF(const char fileName[])
 
   /* Global Attributes.
    */
-  putGlobalAttribute("Source", Source);
+  putGlobalAttribute("institution", Source);
   putGlobalAttribute("Address", Address);
   putGlobalAttribute("Phone", Phone);
   putGlobalAttribute("Conventions", Conventions);
@@ -200,7 +200,7 @@ void CreateNetCDF(const char fileName[])
   t = time(0);
   tm = *localtime(&t);
   strftime(dateProcessed, 64, ISO8601_Z, &tm);
-  putGlobalAttribute("DateProcessed", dateProcessed);
+  putGlobalAttribute("date_created", dateProcessed);
 
   if (LogFile)
     fprintf(LogFile, "Processed on: %s\n", dateProcessed);
