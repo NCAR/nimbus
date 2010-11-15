@@ -48,7 +48,8 @@ Printer::Printer(Widget parent) : WinForm(parent, "print", RowColumn)
 		slPD, slOpMenu, slButts[200];
   Arg		args[10];
   XmString	name;
-  int		i, n, cnt;
+  size_t	i;
+  int		n, cnt;
   char		buffer[128];
 
 

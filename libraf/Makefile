@@ -11,7 +11,7 @@ FF=		f77
 LIBNAME=	raf
 
 INCLUDES=	-I${JLOCAL}/include
-CFLAGS=		-g -O2 ${INCLUDES} 
+CFLAGS=		-Wall -g -O2 ${INCLUDES} 
 FFLAGS=		-O
 
 OBJS=	strupr.o tapeIO.o getmem.o Xerror.o Xquery.o Xfile.o Xwarn.o \

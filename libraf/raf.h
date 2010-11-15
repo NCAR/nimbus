@@ -71,7 +71,7 @@ extern "C" {
 #endif
 
 void *GetMemory(unsigned nbytes);
-char *strupr(char s[]);
+char *strupr(char s[]), TrimTrailingBlanks(char s[]);
 
 int	TapeAssign(int fd), TapeOpen(char name[]), TapeRead(char *record),
 	TapeSeek(long start_rec), TapeClose(), TapeTell();

@@ -66,7 +66,7 @@ ACconfig::ACconfig(const std::string& fileName)
   fclose(fp);
 
 
-  for (int i = 0; i < _file.size(); ++i)
+  for (size_t i = 0; i < _file.size(); ++i)
   {
     if (_file[i].compare(0, 5, "START") == 0)
     {
@@ -96,7 +96,7 @@ ACconfig::ACconfig(const std::string& fileName)
 /* -------------------------------------------------------------------- */
 std::string ACconfig::GetParameter(const std::string& tailNumber, const std::string& target) const
 {
-  int	i;
+  size_t i;
 
   for (i = 0; i < _tailNumList.size(); ++i)
     if (_tailNumList[i] == tailNumber)

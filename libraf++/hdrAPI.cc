@@ -144,7 +144,7 @@ Header::Header(TapeDrive &drv)
 
   if ((nBytes = drv.Read(buff)) < len)
     {
-    std::cerr << stderr, "Header: read problem.\n";
+    std::cerr << "Header: read problem.\n";
     return;
     }
 

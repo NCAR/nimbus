@@ -155,7 +155,7 @@ PMSspex::~PMSspex()
 /* -------------------------------------------------------------------- */
 int PMSspex::GetSerialNumList(char *list[]) /* returns list of serial numbers */
 {
-  int     i, len, cnt = 0;
+  int     i, cnt = 0;
   char    *p;
 
   list[0] = NULL;
@@ -166,7 +166,7 @@ int PMSspex::GetSerialNumList(char *list[]) /* returns list of serial numbers */
       for (p = &PMSfile[i][5]; *p == ' ' || *p == '\t'; ++p)
         ;
 
-      list[cnt] = new char [len];
+      list[cnt] = new char [strlen(p)+1];
       strcpy(list[cnt], p);
       list[++cnt] = NULL;
       }

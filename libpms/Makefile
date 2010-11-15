@@ -11,7 +11,7 @@ HEADER=		pms.h
 
 INCLUDES=	-I${INCLUDEDIR}
 DEFINES=	
-CFLAGS=		-g ${INCLUDES} ${DEFINES}
+CFLAGS=		-Wall -g ${INCLUDES} ${DEFINES}
 
 OBJS=		init.o
 

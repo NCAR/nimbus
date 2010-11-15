@@ -118,7 +118,7 @@ char *StripLeadingBlanks(char *s)
 }
 
 /***********************  TrimTrailingBlanks()  **************************/
-char *TrimTrailingBlanks(char *s)
+char *TrimTrailingBlanks(char s[])
 /* remove trailing blanks from character string 
 */ 
 { 

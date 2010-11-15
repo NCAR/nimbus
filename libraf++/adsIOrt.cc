@@ -333,7 +333,6 @@ int ADS_rtFile::NextPhysicalRecord(char buff[], FILE *fp, int lrLen)
   long	cp, ep;
   int	rc, idWord;
   int	size = sizeof(short);
-  GreyParticle	gp;
 
   // Check for new data, if not enough has been written bail out.
   cp = ftell(fp);

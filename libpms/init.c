@@ -32,7 +32,7 @@ char	*GetMemory();
 /* -------------------------------------------------------------------- */
 void InitPMSspecs(const char fileName[])
 {
-  int	i, cnt, len, fCnt = 0;
+  int	i, cnt, fCnt = 0;
   char	*file[2048], PMSbuffer[512], *p;
   FILE	*fp[5];
 
@@ -132,7 +132,7 @@ void InitPMSspecs(const char fileName[])
 /* -------------------------------------------------------------------- */
 char *GetPMSparameter(const char serialNumber[], const char parameter[])
 {
-  int	i, j, k;
+  int	i;
   char	*p;
 
   for (i = 0; PMSfile[i]; ++i)

@@ -12,7 +12,7 @@ DEFINES=	-DPNG
 #DEFINES=	-DSVR4
 
 INCLUDES=	-I${I2D}
-CXXFLAGS=	-g -O2 ${INCLUDES} ${DEFINES}
+CXXFLAGS=	-Wall -g -O2 ${INCLUDES} ${DEFINES}
 
 OBJS=	ACconfig.o adsIO.o adsIOrt.o Application.o Canvas.o Cursor.o\
 	hdrAPI.o gettext.o ntohf.o PixMap.o PMSspex.o PostScript.o\
