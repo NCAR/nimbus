@@ -22,8 +22,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2006
 -------------------------------------------------------------------------
 */
 
-#include "nimbus.h"
-#include "decode.h"
+#include <nimbus.h>
+#include <decode.h>
+#include <raf.h>
 
 
 /* -------------------------------------------------------------------- */
@@ -40,6 +41,8 @@ void ReadGroundVarsFile()
   {
     int r_idx, d_idx;
 
+    TrimTrailingBlanks(list[i]);
+
     if ((r_idx = SearchTable(raw, list[i])) != ERR)
       raw[r_idx]->Transmit = true;
 
@@ -55,7 +58,6 @@ void ReadGroundVarsFile()
   }
 
   FreeTextFile(list);
-
 
   // Reproduce above file in the order which nimbus will be placing them in
   // the packet.
