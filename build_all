@@ -113,20 +113,6 @@ if ( $?WINDS ) then
 endif
 
 
-# Programs with Qt [and Qwt].
-# rtplot requires $NIMBUS to be set....
-setenv NIMBUS `pwd`/nimbus
-foreach file ( instruments/hvps/hvpsdiag )
-  (cd $file; echo $file; qmake; make)
-  if ($num > 0) then
-    echo "$file BUILT"
-    sleep $num
-    reset
-  endif
-end
-unsetenv NIMBUS
-
-
 # Programs with "install" target.
 
 cd nc_utils
