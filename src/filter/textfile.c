@@ -57,7 +57,7 @@ int ReadTextFile(const std::string& filename, char **list)
     if (buffer[0] == COMMENT)
       continue;
 
-    *list = new char[(len = strlen(buffer))];
+    *list = new char[(len = strlen(buffer))+1];
 
     if (buffer[len-1] == '\n')
       buffer[len-1] = '\0';
