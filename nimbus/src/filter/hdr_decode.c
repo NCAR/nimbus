@@ -8,13 +8,6 @@ ENTRY POINTS:	DecodeHeader()
 		DecodeHeader3()
 		closeSyncRecordReader()
 
-STATIC FNS:	CommonPreInitialization(), CommonPostInitialization(),
-		initHDR(), initSDI(), initSDI_ADS3(), initHoneywell(), initOphir3(),
-		initPMS1D(), initPMS1Dv2(), locatePMS(), initLitton51(),
-		add_file_to_???TBL(), add_name_to_???TBL(), add_derived_names(),
-		check_cal_coes(), initPMS2D(), initMASP(), initPMS1Dv3(),
-		openVariableDatabase(), addUnitsAndLongName(), testUnitsTitles()
-
 DESCRIPTION:	Read header & add variables to appropriate table.  There
 		are 3 major tables here:
 			- SDI table
@@ -29,15 +22,7 @@ INPUT:		Header filename.
 OUTPUT:		sdi, raw, derived
 		(These globals are initialized in this file)
 
-REFERENCES:	Header API (libhdr_api.a)
-		OpenProjectFile(), AccessProjectFile()
-		ReadTextFile(), FreeTextFile()
-		SearchList(), SearchDERIVEFTNS()
-		ReadStaticLags(), SetUpDependencies(), ReadDefaultsFile()
-
-REFERENCED BY:	winput.c, nimbus.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-08
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2010
 -------------------------------------------------------------------------
 */
 
@@ -169,9 +154,9 @@ static void CommonPreInitialization()
     OpenLogFile();
 
   if (cfg.ProductionRun())
-    defaultQuality = "Good";
+    defaultQuality = (char *)"Good";
   else
-    defaultQuality = "Preliminary";
+    defaultQuality = (char *)"Preliminary";
 
   openVariableDatabase();
 
@@ -325,10 +310,10 @@ int DecodeHeader3(const char header_file[])
       char *files[128];
 
       size_t i = 0;
-      files[i++] = "sync_server";
-      files[i++] = "-l";
-      files[i++] = "900";	// 900 second time-sorter.
-      files[i++] = "-p";
+      files[i++] = (char*)"sync_server";
+      files[i++] = (char*)"-l";
+      files[i++] = (char*)"900";	// 900 second time-sorter.
+      files[i++] = (char*)"-p";
       files[i++] = sync_server_pipe;
       std::set<std::string>::iterator it;
       for (it = fileList.begin(); it != fileList.end(); ++it)
@@ -484,8 +469,9 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     }
   CommonPostInitialization();
 
+// in pms1d.c, temporary until we get sync_esrver merged in.
 void PMS1D_SetupForADS3();
-PMS1D_SetupForADS3();   // in pms1d.c, temporary until we get sync_esrver merged in.
+PMS1D_SetupForADS3();
 
   return OK;
 }
