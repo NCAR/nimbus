@@ -24,7 +24,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2006
 
 #include <nimbus.h>
 #include <decode.h>
-#include <raf.h>
+#include <raf/raf.h>
 
 
 /* -------------------------------------------------------------------- */
