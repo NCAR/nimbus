@@ -22,8 +22,35 @@ static const NR_TYPE	PITCH_TEST	= 22.5 * M_PI / 180.0;
 
 static NR_TYPE	ui[MAX_PROBES], vi[MAX_PROBES], ux[MAX_PROBES], vy[MAX_PROBES];
 
-NR_TYPE GetBoomLength();
 
+static float		boomln[MAX_PROBES];
+static NR_TYPE		pitch0[MAX_PROBES][nFeedBackTypes],
+			thdg0[MAX_PROBES][nFeedBackTypes],
+			DELT[nFeedBackTypes];
+static bool		firstTime[MAX_PROBES][nFeedBackTypes];
+
+/* -------------------------------------------------------------------- */
+void initGust(var_base *varp)
+{
+  NR_TYPE GetBoomLength();
+  int		probeCnt = varp->ProbeCount;
+
+  DELT[LOW_RATE_FEEDBACK] = 1.0;
+  DELT[HIGH_RATE_FEEDBACK] = 1.0/(float)cfg.ProcessingRate();
+
+  for (int i = 0; i < MAX_PROBES; i++)
+    {
+    firstTime[i][LOW_RATE_FEEDBACK] = firstTime[i][HIGH_RATE_FEEDBACK] = true;
+    }
+
+  memset(pitch0, 0, sizeof(pitch0));
+  memset(thdg0, 0, sizeof(thdg0));
+
+  boomln[probeCnt] = GetBoomLength();
+
+  if (strstr(varp->name, "_GP"))
+    boomln[probeCnt] = 0.67;
+}
 
 /* -------------------------------------------------------------------- */
 void swi(DERTBL *varp)
@@ -33,12 +60,6 @@ void swi(DERTBL *varp)
   NR_TYPE	tas_dab, delph, thedot, delth,
 		e, f, h, ab, p, r, s, t, psidot, bvns, bvew,
 		cs, ss, ch, sh, cr, sr, ta, tb;
-
-  static bool		firstTime[nFeedBackTypes] = { TRUE, TRUE };
-  static float		boomln;
-  static NR_TYPE	pitch0[MAX_PROBES][nFeedBackTypes],
-			thdg0[MAX_PROBES][nFeedBackTypes],
-			DELT[nFeedBackTypes];
 
   tas	= GetSample(varp, 0);
   vew	= GetSample(varp, 1);
@@ -60,23 +81,16 @@ void swi(DERTBL *varp)
     return;
     }
 
-  if (firstTime[FeedBack])
+  if (firstTime[probeCnt][FeedBack])
     {
-    DELT[FeedBack] = 1.0;
-
-    if (FeedBack != LOW_RATE_FEEDBACK)
-      DELT[FeedBack] /= (float)cfg.ProcessingRate();
-
-    pitch0[probeCnt][FeedBack] = thdg0[probeCnt][FeedBack] = 0;
     if (!isnan(pitch))
       pitch0[probeCnt][FeedBack] = pitch;
     if (!isnan(thdg))
       thdg0[probeCnt][FeedBack] = thdg;
 
-    boomln = GetBoomLength();
-
-    firstTime[FeedBack] = FALSE;
+    firstTime[probeCnt][FeedBack] = FALSE;
     }
+
 
   /* Coordinate transformation
    */
@@ -127,8 +141,8 @@ void swi(DERTBL *varp)
   psidot = (thdg - thdg0[probeCnt][FeedBack]) / DELT[FeedBack];
 
 
-  bvns	= boomln * (psidot * ss * ch + thedot * cs * sh);
-  bvew	= boomln * (thedot * sh * ss - psidot * cs * ch);
+  bvns	= boomln[probeCnt] * (psidot * ss * ch + thedot * cs * sh);
+  bvew	= boomln[probeCnt] * (thedot * sh * ss - psidot * cs * ch);
 
   pitch0[probeCnt][FeedBack]	= pitch;
   thdg0[probeCnt][FeedBack]	= thdg;
@@ -138,7 +152,7 @@ void swi(DERTBL *varp)
    */
   r  = ss * ch + h + ta * p;
   s  = cs * ch + e + ta * f;
-  t  = wp3 + boomln * thedot * ch;
+  t  = wp3 + boomln[probeCnt] * thedot * ch;
 
   ui[probeCnt] = tas_dab * r + (vew - bvew);
   vi[probeCnt] = tas_dab * s + (vns - bvns);

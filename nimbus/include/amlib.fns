@@ -451,20 +451,20 @@
 #
 #	Gust Variables
 #
-	"UI",		NULL,		NULL,		sui,
-	"VI",		NULL,		NULL,		svi,
-	"UX",		NULL,		NULL,		sux,
-	"VY",		NULL,		NULL,		svy,
-	"WI",		NULL,		NULL,		swi,
-	"WD",		NULL,		NULL,		swd,
-	"WS",		NULL,		NULL,		sws,
-	"VIC",		NULL,		NULL,		svi,
-	"UIC",		NULL,		NULL,		sui,
-	"WIC",		NULL,		NULL,		swi,
-	"VYC",		NULL,		NULL,		svy,
-	"UXC",		NULL,		NULL,		sux,
-	"WSC",		NULL,		NULL,		sws,
-	"WDC",		NULL,		NULL,		swd,
+	"UI",		NULL,				NULL,		sui,
+	"VI",		NULL,				NULL,		svi,
+	"UX",		NULL,				NULL,		sux,
+	"VY",		NULL,				NULL,		svy,
+	"WI",		(void(*)(void*))initGust,	NULL,		swi,
+	"WD",		NULL,				NULL,		swd,
+	"WS",		NULL,				NULL,		sws,
+	"VIC",		NULL,				NULL,		svi,
+	"UIC",		NULL,				NULL,		sui,
+	"WIC",		(void(*)(void*))initGust,	NULL,		swi,
+	"VYC",		NULL,				NULL,		svy,
+	"UXC",		NULL,				NULL,		sux,
+	"WSC",		NULL,				NULL,		sws,
+	"WDC",		NULL,				NULL,		swd,
 #
 #	Fluxes
 #						ProbeCount field.
