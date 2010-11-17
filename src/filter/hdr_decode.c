@@ -94,7 +94,7 @@ static PMS	pms2d_probes[] =
   };
 
 
-static size_t	InertialSystemCount, GPScount, twoDcnt, NephCnt, gustCnt;
+static size_t	InertialSystemCount, GPScount, twoDcnt, NephCnt, GustCnt;
 static size_t	probeCnt;
 static size_t	probeType;
 static int32_t	start, rate, length;
@@ -144,6 +144,8 @@ bool VarCompareLT(const var_base *x, const var_base *y)
 /* -------------------------------------------------------------------- */
 static void CommonPreInitialization()
 {
+  InertialSystemCount = GPScount = twoDcnt = NephCnt = GustCnt = 0;
+
   ReadProjectName();
   cfg.SetCoordTime("Time");
 
@@ -423,7 +425,9 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     // Add Gust Pod derived (once).  This can be cleaned up after sync_server merge.
     if (!gustPodAdded && strcmp(location, "_GP") == 0)
     {
+      probeCnt = GustCnt++;
       add_derived_names("GUSTPOD");
+      probeCnt = 0;
       gustPodAdded = true;
     }
 
@@ -471,8 +475,10 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 
   if (cfg.ProjectName().compare("RAF_Lab") && (cfg.Aircraft() != Config::TADS) )
     {
+    probeCnt = GustCnt++;
     add_derived_names("GUST");
     initGustCorrected();
+    probeCnt = 0;
     }
   CommonPostInitialization();
 
@@ -529,8 +535,6 @@ int DecodeHeader(const char header_file[])
 {
   char	*vn;
   char	*loc, *p;
-
-  InertialSystemCount = GPScount = twoDcnt = NephCnt = gustCnt = 0;
 
   for (probeCnt = 0; pms1_probes[probeCnt].name; ++probeCnt)
     {
@@ -1202,6 +1206,7 @@ static void initHoneywell(char vn[])
     add_derived_names(item_type);
     SetLookupSuffix((char *)0);
     add_derived_names("GUST");
+    ++GustCnt;
     }
   else
     SetLookupSuffix((char *)0);
@@ -1224,7 +1229,7 @@ static void initGustCorrected()
     /* ProbeCnt here relies on the fact that hdrbld puts inertials before
      * GPSs.
      */
-    probeCnt = InertialSystemCount;
+    probeCnt = GustCnt++;
     add_derived_names("POSNC");
     add_derived_names("GUSTC");
     cfg.SetCoordLAT("LATC");
@@ -1263,6 +1268,7 @@ static void initLitton51(char vn[])
     add_derived_names(item_type);
     SetLookupSuffix((char *)0);
     add_derived_names("GUST");
+    ++GustCnt;
     }
   else
     SetLookupSuffix((char *)0);
