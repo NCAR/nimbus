@@ -9,17 +9,14 @@ ENTRY POINTS:	DecodeHeader()
 		closeSyncRecordReader()
 
 DESCRIPTION:	Read header & add variables to appropriate table.  There
-		are 3 major tables here:
-			- SDI table
-			- Raw table (From block probes)
-			- Derived table
+		are 2 major tables here:
+			- Raw table (From analog & block probes)
+			- Derived table for the derived variables.
 
 		This module is the brunt end interface between an ADS tape
 		and the rest of nimbus.
 
-INPUT:		Header filename.
-
-OUTPUT:		sdi, raw, derived
+OUTPUT:		Variable vectors raw, derived
 		(These globals are initialized in this file)
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2010
@@ -389,6 +386,8 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
   // Add Time variables, hour, min, sec, year, mon, day.
   initHDR(0);
 
+  bool gustPodAdded = false;
+
   std::list<const nidas::dynld::raf::SyncRecordVariable*>::const_iterator vi;
   for (vi = vars.begin(); vi != vars.end(); ++vi)
   {
@@ -420,6 +419,14 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 
 //printf("DecodeHeader3: adding %s, converter = %d, rate = %d\n",
 //  var->getName().c_str(), (int)var->getConverter(), (int)ceil(var->getSampleRate()));
+
+    // Add Gust Pod derived (once).  This can be cleaned up after sync_server merge.
+    if (!gustPodAdded && strcmp(location, "_GP") == 0)
+    {
+      add_derived_names("GUSTPOD");
+      gustPodAdded = true;
+    }
+
 
     RAWTBL *rp;
     if (var->getConverter() == 0)
