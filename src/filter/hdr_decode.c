@@ -94,7 +94,7 @@ static PMS	pms2d_probes[] =
   };
 
 
-static size_t	InertialSystemCount, GPScount, twoDcnt, NephCnt;
+static size_t	InertialSystemCount, GPScount, twoDcnt, NephCnt, gustCnt;
 static size_t	probeCnt;
 static size_t	probeType;
 static int32_t	start, rate, length;
@@ -530,7 +530,7 @@ int DecodeHeader(const char header_file[])
   char	*vn;
   char	*loc, *p;
 
-  InertialSystemCount = GPScount = twoDcnt = NephCnt = 0;
+  InertialSystemCount = GPScount = twoDcnt = NephCnt = gustCnt = 0;
 
   for (probeCnt = 0; pms1_probes[probeCnt].name; ++probeCnt)
     {
