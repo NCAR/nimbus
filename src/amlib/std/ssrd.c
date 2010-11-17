@@ -101,14 +101,6 @@ void sssrd(DERTBL *varp)
     NR_TYPE ratio = bdifr / qcxc;
     switch (cfg.Aircraft())
     {
-      case Config::ELECTRA:
-      case Config::NRL_P3:
-      case Config::C130:
-      case Config::KINGAIR:
-      case Config::HIAPER:
-        ssrd = (ratio + coeff[0]) / coeff[1];
-        break;
-
       case Config::SABRELINER:
       case Config::B57:
       {
@@ -120,7 +112,7 @@ void sssrd(DERTBL *varp)
         break;
 
       default:
-        ssrd = 0.0;
+        ssrd = (ratio + coeff[0]) / coeff[1];
     }
   }
 
