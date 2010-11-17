@@ -79,11 +79,11 @@
 #
 # Gust Pod
 #
-#	"PSC",		NULL,		NULL,		spsc_gp,
-#	"QCC",		NULL,		NULL,		sqcc_gp,
-#	"AK",		NULL,		NULL,		sak_gp,
-#	"SS",		NULL,		NULL,		sss_gp,
-#	"TAS",		NULL,		NULL,		stas_gp,
+	"PSC",		NULL,		NULL,		spsc_gp,
+	"QCC",		NULL,		NULL,		sqcc_gp,
+	"AK",		NULL,		NULL,		sak_gp,
+	"SS",		NULL,		NULL,		sss_gp,
+	"TAS",		NULL,		NULL,		stas_gp,
 #
 # Climet
 #

@@ -35,6 +35,7 @@ ggps.c
 gpsc.c
 gsf.c
 gust.c
+gustpod.c
 ias.c
 initAC.c
 inlet.c
