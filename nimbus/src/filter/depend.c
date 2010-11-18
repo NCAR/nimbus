@@ -124,11 +124,16 @@ static void setupDependencies(bool set_depends)
     {
       /* We need to check both cases of whether dependency needs the
        * location tacked on.  (e.g. CFSSP depends on TASX, we do not
-       * want location tacked onto TASX.
+       * want location tacked onto TASX.  Start with location.
        */
+      strcat(dp->depend[j], location);
       if (DependIndexLookup(dp, j, set_depends) == ERR)
       {
-        strcat(dp->depend[j], location);
+        /* Did not find variable with location, try without.
+         */
+        char *p = strrchr(dp->depend[j], '_');
+        if (p)
+          *p = '\0';
 
         if (DependIndexLookup(dp, j, set_depends) == ERR)
         {
