@@ -198,7 +198,8 @@ int VarDB_lookup(const char vn[])
   if (VarDB_NcML > 0)
   {
     int varID;
-    if (nc_inq_varid(VarDB_NcML, tname, &varID) == NC_NOERR)
+    if (nc_inq_varid(VarDB_NcML, vn, &varID) == NC_NOERR ||
+        nc_inq_varid(VarDB_NcML, tname, &varID) == NC_NOERR)
       return(varID);
     else
       return(ERR);
