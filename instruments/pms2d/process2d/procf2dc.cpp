@@ -549,18 +549,16 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   float count_round[numtimes][numbins], conc_round[numtimes][numbins];
   float tas[numtimes];
   float n_accepted_all[numtimes], n_accepted_round[numtimes], n_rejected_all[numtimes], n_rejected_round[numtimes];
-  //Initialize all these to zero
-  for (int i=0; i<numtimes; i++) {
-     tas[i]=0;
-     n_accepted_all[i]=0;
-     n_accepted_round[i]=0;
-     n_rejected_all[i]=0;
-     n_rejected_round[i]=0;
-     for (int j=0; j<numbins; j++){ 
-        count_all[i][j]=0; conc_all[i][j]=0; 
-        count_round[i][j]=0; conc_round[i][j]=0;
-     }
-  }
+
+  memset(tas, 0, sizeof(tas));
+  memset(n_accepted_all, 0, sizeof(n_accepted_all));
+  memset(n_rejected_all, 0, sizeof(n_rejected_all));
+  memset(count_all, 0, sizeof(count_all));
+  memset(conc_all, 0, sizeof(conc_all));
+  memset(n_accepted_round, 0, sizeof(n_accepted_round));
+  memset(n_rejected_round, 0, sizeof(n_rejected_round));
+  memset(count_round, 0, sizeof(count_round));
+  memset(conc_round, 0, sizeof(conc_round));
 
   //Shattering correction and interarrival setup
   const int nitq=400; //number of interarrival times to keep for fitting
