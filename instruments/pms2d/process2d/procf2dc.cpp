@@ -18,14 +18,13 @@
 #include <vector>
 #include <stack>
 #include <cmath>
-#include <cstring>
 #include <iomanip>
 #include <netcdfcpp.h>
 
 using namespace std;
    
-static const int ndiodes = 64;
-static const string markerline = "</PMS2D>";  // Marks end of XML header
+const short ndiodes = 64;
+const string markerline = "</PMS2D>";  // Marks end of XML header
 
 struct struct_particle {
    long time1hz; 
@@ -154,9 +153,7 @@ double dpoisson_fit(double x[], double y[], double a[3], int n){
          J[2][i]=(1.0-a[0])*x[i]*exp(-a[2]*x[i])*kc-(1.0-a[0])*a[2]*x[i]*x[i]*exp(-a[2]*x[i])*kc; 
       }
       //Multiply Jacobian by its transpose and invert
-      double det, JJt[3][3], JJti[3][3];
-      memset(JJt, 0, sizeof(JJt));
-      memset(JJti, 0, sizeof(JJti));
+      double det, JJt[3][3]={{0}}, JJti[3][3]={{0}};
       for (int i=0; i<3; i++){
          for (int j=0; j<3; j++){
             for (int k=0; k<n; k++){
@@ -246,7 +243,7 @@ struct_particle findsize(short img[][ndiodes], short nslices, float res){
    //FIRST PASS: find 6 minima/maxima points 
    xmin.x=ymin.y= 1000; // initialize for min/max compare 
    xmax.x=ymax.y= -1000;
-   for (size_t i = 0; i < x.size(); i++) {
+   for (size_t i=0;i<x.size();i++){
       if (x[i]<xmin.x) {xmin.x=x[i]; xmin.y=y[i];} // New xminimum point 
       if (x[i]>xmax.x) {xmax.x=x[i]; xmax.y=y[i];}
       if (y[i]<ymin.y) {ymin.x=x[i]; ymin.y=y[i];}
@@ -282,7 +279,7 @@ struct_particle findsize(short img[][ndiodes], short nslices, float res){
    rad = sqrt(rad_sq);
 
    // SECOND PASS: increment current sphere 
-   for (size_t i = 0; i < x.size(); i++) {
+   for (size_t i=0;i<x.size();i++){
       dx = x[i]-cen.x;
       dy = y[i]-cen.y;
       old_to_p_sq = dx*dx + dy*dy;
@@ -323,7 +320,7 @@ short fillholes2(short img_original[][ndiodes], short nslices){
   bool edgetouch;
   
   //Make blank image
-  memset (img, 0, sizeof(img));
+  for (int i=0; i<nslices; i++) for (int j=0; j<ndiodes; j++) {img[i][j]=0;} 
   
   //Check pixels for background values (to be filled)
   for (int i=0; i<nslices; i++){
@@ -368,6 +365,7 @@ short fillholes2(short img_original[][ndiodes], short nslices){
      }
   }  
   return area_added;
+
 }  
 
 // ----------------POISSON SPOT CORRECTION FOR WATER----------------
@@ -507,8 +505,8 @@ unsigned short endianswap_s(unsigned short x){
 // ------------PROCESS 2D-----------------------
 //================================================================================================
 int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2process, float pixel_res, 
-    string suffix, float armwidth, bool recon, bool shattercorrect, char smethod, bool verbose, bool debug)
-{
+    string suffix, float armwidth, bool recon, bool shattercorrect, char smethod, bool verbose, bool debug){
+
   /*-----Processing options-------------------------------------------------------
       start/stop time: In UTC seconds
       probe2process:   Indicates which probenumber to process C4, C6, etc.
@@ -528,8 +526,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   bool firsttimeflag;
   float wc;
   long last_time1hz=0, itime, isize, wsize, iit;
-  struct_particle particle;
-  struct_particle *particle_stack = new struct_particle[10000];
+  struct_particle particle, particle_stack[10000];
   char probetype=probe2process[0];  
   char probenumber=probe2process[1];
  
@@ -547,48 +544,29 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   int stoptime=hms2sfm(stoptimehms);
   int numtimes=stoptime-starttime+1;
   
-  if (numtimes <= 0)
-  {
-    cerr << "Something amiss: Stop time is less than Start time.\n";
-    exit(1);
-  }
-
-  cout << "numtimes = " << numtimes << endl;
-
   //Count and concentration arrays setup
-  float *tas = new float[numtimes];
-  float *n_accepted_all = new float[numtimes];
-  float *n_accepted_round = new float[numtimes];
-  float *n_rejected_all = new float[numtimes];
-  float *n_rejected_round = new float[numtimes];
-  memset(tas, 0, sizeof(tas));
-  memset(n_accepted_all, 0, sizeof(n_accepted_all));
-  memset(n_rejected_all, 0, sizeof(n_rejected_all));
-  memset(n_accepted_round, 0, sizeof(n_accepted_round));
-  memset(n_rejected_round, 0, sizeof(n_rejected_round));
-
-  float *count_all[numtimes], *conc_all[numtimes];
-  float *count_round[numtimes], *conc_round[numtimes];
-  for (int i = 0; i < numtimes; ++i)
-  {
-    count_all[i] = new float[numbins];
-    conc_all[i] = new float[numbins];
-    count_round[i] = new float[numbins];
-    conc_round[i] = new float[numbins];
-    memset(count_all[i], 0, sizeof(float) * numbins);
-    memset(conc_all[i], 0, sizeof(float) * numbins);
-    memset(count_round[i], 0, sizeof(float) * numbins);
-    memset(conc_round[i], 0, sizeof(float) * numbins);
+  float count_all[numtimes][numbins], conc_all[numtimes][numbins];
+  float count_round[numtimes][numbins], conc_round[numtimes][numbins];
+  float tas[numtimes];
+  float n_accepted_all[numtimes], n_accepted_round[numtimes], n_rejected_all[numtimes], n_rejected_round[numtimes];
+  //Initialize all these to zero
+  for (int i=0; i<numtimes; i++) {
+     tas[i]=0;
+     n_accepted_all[i]=0;
+     n_accepted_round[i]=0;
+     n_rejected_all[i]=0;
+     n_rejected_round[i]=0;
+     for (int j=0; j<numbins; j++){ 
+        count_all[i][j]=0; conc_all[i][j]=0; 
+        count_round[i][j]=0; conc_round[i][j]=0;
+     }
   }
 
   //Shattering correction and interarrival setup
   const int nitq=400; //number of interarrival times to keep for fitting
   int iitq=0;   //current index of itq
-  float *cpoisson1 = new float[numtimes];
-  float *cpoisson2 = new float[numtimes];
-  float *cpoisson3 = new float[numtimes];  //Fit coefficients
-  float *pcutoff = new float[numtimes];
-  float *corrfac = new float[numtimes];
+  float cpoisson1[numtimes], cpoisson2[numtimes], cpoisson3[numtimes];  //Fit coefficients
+  float pcutoff[numtimes], corrfac[numtimes];
   double bestfit[3]={0};
   double itq[nitq]={1};
   short numintbins=40;
@@ -760,19 +738,14 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   
   
   //=========Compute sample volume, concentration, total number, and LWC======
-  float sv, mass;
-  float *bin_midpoints = new float[numbins];
-  float *sa = new float[numbins];
-  float *nt_all = new float[numtimes];
-  float *nt_round = new float[numtimes];
-  float *lwc_round = new float[numtimes];
-
+  float bin_midpoints[numbins], sa[numbins], sv, mass;
+  float nt_all[numtimes], nt_round[numtimes], lwc_round[numtimes];
   //Initialize to zero
-  memset(sa, 0, sizeof(sa));
-  memset(nt_all, 0, sizeof(nt_all));
-  memset(nt_round, 0, sizeof(nt_round));
-  memset(lwc_round, 0, sizeof(lwc_round));
-
+  sa[0]=0.0;
+  for (int j=0; j<numtimes; j++) {
+     nt_all[j]=0;  nt_round[j]=0;  lwc_round[j]=0; 
+  }
+  
   //Compute
   for (int i=1; i<numbins; i++) {   //Note: starting at second bin per RAF convention
      bin_midpoints[i]=(bin_endpoints[i-1]+bin_endpoints[i])/2.0;
@@ -1067,27 +1040,6 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   if (!midbinvar->add_att("units", "microns")) return NC_ERR;
   if (!midbinvar->add_att("long_name", "Size Channel Midpoints")) return NC_ERR;
   if (!midbinvar->put(bin_midpoints, numbins)) return NC_ERR;
-
-
-  for (int i = 0; i < numbins; ++i)
-  {
-    delete [] count_all[i];
-    delete [] conc_all[i];
-    delete [] count_round[i];
-    delete [] conc_round[i];
-  }
-
-  delete [] cpoisson1;
-  delete [] cpoisson2;
-  delete [] cpoisson3;
-  delete [] pcutoff;
-  delete [] corrfac;
-  delete [] tas;
-  delete [] n_accepted_all;
-  delete [] n_accepted_round;
-  delete [] n_rejected_all;
-  delete [] n_rejected_round;
-  delete [] particle_stack;
 
   return 0;  //No errors
 }
