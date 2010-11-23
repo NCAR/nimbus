@@ -23,7 +23,7 @@
 
 using namespace std;
    
-const short ndiodes = 64;
+const int ndiodes = 64;
 const string markerline = "</PMS2D>";  // Marks end of XML header
 
 struct struct_particle {
@@ -851,8 +851,8 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   if (!ctallvar->add_att("Category", "PMS Probe")) return NC_ERR;
   if (!ctallvar->add_att("SerialNumber", "TBD")) return NC_ERR;
   if (!ctallvar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!ctallvar->add_att("FirstBin", (short)binoffset)) return NC_ERR;
-  if (!ctallvar->add_att("LastBin", (short)(numbins+binoffset-1))) return NC_ERR;
+  if (!ctallvar->add_att("FirstBin", binoffset)) return NC_ERR;
+  if (!ctallvar->add_att("LastBin", numbins+binoffset-1)) return NC_ERR;
   if (!ctallvar->add_att("CellSizes", numbins+1, bin_endpoints)) return NC_ERR;
   if (!ctallvar->add_att("nDiodes", ndiodes)) return NC_ERR;
   if (!ctallvar->add_att("ResponseTime", 0.4)) return NC_ERR;
@@ -871,8 +871,8 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   if (!ctwatvar->add_att("Category", "PMS Probe")) return NC_ERR;
   if (!ctwatvar->add_att("SerialNumber", "TBD")) return NC_ERR;
   if (!ctwatvar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!ctwatvar->add_att("FirstBin", (short)binoffset)) return NC_ERR;
-  if (!ctwatvar->add_att("LastBin", (short)(numbins+binoffset-1))) return NC_ERR;
+  if (!ctwatvar->add_att("FirstBin", binoffset)) return NC_ERR;
+  if (!ctwatvar->add_att("LastBin", numbins+binoffset-1)) return NC_ERR;
   if (!ctwatvar->add_att("CellSizes", numbins+1, bin_endpoints)) return NC_ERR;
   if (!ctwatvar->add_att("nDiodes", ndiodes)) return NC_ERR;
   if (!ctwatvar->add_att("ResponseTime", 0.4)) return NC_ERR;
@@ -900,8 +900,8 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   if (!cnallvar->add_att("Category", "PMS Probe")) return NC_ERR;
   if (!cnallvar->add_att("SerialNumber", "TBD")) return NC_ERR;
   if (!cnallvar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!cnallvar->add_att("FirstBin", (short)binoffset)) return NC_ERR;
-  if (!cnallvar->add_att("LastBin", (short)(numbins+binoffset-1))) return NC_ERR;
+  if (!cnallvar->add_att("FirstBin", binoffset)) return NC_ERR;
+  if (!cnallvar->add_att("LastBin", numbins+binoffset-1)) return NC_ERR;
   if (!cnallvar->add_att("CellSizes", numbins+1, bin_endpoints)) return NC_ERR;
   if (!cnallvar->add_att("nDiodes", ndiodes)) return NC_ERR;
   if (!cnallvar->add_att("ResponseTime", 0.4)) return NC_ERR;
@@ -920,8 +920,8 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   if (!cnwatvar->add_att("Category", "PMS Probe")) return NC_ERR;
   if (!cnwatvar->add_att("SerialNumber", "TBD")) return NC_ERR;
   if (!cnwatvar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!cnwatvar->add_att("FirstBin", (short)binoffset)) return NC_ERR;
-  if (!cnwatvar->add_att("LastBin", (short)(numbins+binoffset-1))) return NC_ERR;
+  if (!cnwatvar->add_att("FirstBin", binoffset)) return NC_ERR;
+  if (!cnwatvar->add_att("LastBin", numbins+binoffset-1)) return NC_ERR;
   if (!cnwatvar->add_att("CellSizes", numbins+1, bin_endpoints)) return NC_ERR;
   if (!cnwatvar->add_att("nDiodes", ndiodes)) return NC_ERR;
   if (!cnwatvar->add_att("ResponseTime", 0.4)) return NC_ERR;
