@@ -18,12 +18,15 @@
 #include <vector>
 #include <stack>
 #include <cmath>
+#include <cstring>
 #include <iomanip>
 #include <netcdfcpp.h>
 
 using namespace std;
    
 const int ndiodes = 64;
+const int numbins = 128;
+const int slicesPerRecord = 512;
 const string markerline = "</PMS2D>";  // Marks end of XML header
 
 struct struct_particle {
@@ -47,7 +50,7 @@ struct type_buffer {
     short tas;			// True airspeed.
     unsigned short msec;	// millisecond of data timestamp.
     short overload;
-    unsigned long long image[512];
+    unsigned long long image[slicesPerRecord];
  }; 
 
 
@@ -320,7 +323,7 @@ short fillholes2(short img_original[][ndiodes], short nslices){
   bool edgetouch;
   
   //Make blank image
-  for (int i=0; i<nslices; i++) for (int j=0; j<ndiodes; j++) {img[i][j]=0;} 
+  memset(img, 0, sizeof(img));
   
   //Check pixels for background values (to be filled)
   for (int i=0; i<nslices; i++){
@@ -519,7 +522,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   type_buffer buffer;  
   ifstream input_file;
   string line;
-  short roi[512][ndiodes];
+  short roi[slicesPerRecord][ndiodes];
   short slice_count=0, istack=0, firstday;
   unsigned long long slice, firsttimeline, lasttimeline=0, timeline, difftimeline, particle_count=0;
   double lastbuffertime, buffertime=0, nextit=0;
@@ -535,8 +538,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   for (int i=0; i<64; i++) {powerof2[i]=1ULL; for (int j=0; j<i;j++) powerof2[i]=powerof2[i]*2ULL;} 
 
   //Bin setup
-  short numbins=128;   
-  short binoffset=1;  //Offset for RAF conventions, number of empty bins before counting begins 
+  int binoffset=1;  //Offset for RAF conventions, number of empty bins before counting begins 
   float bin_endpoints[numbins+1];  
   //Simple bin limit sizes, each bin has width of pixel resolution. Could make coarser if desired.
   for (int i=0; i<(numbins+1); i++) bin_endpoints[i]=(i+0.5)*pixel_res;  
@@ -600,7 +602,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
                 endianswap_s(buffer.seconds) + endianswap_s(buffer.msec)/1000.0;
      firsttimeflag=1;
      //Scroll through each slice, look for sync/time slices
-     for (int islice=0; islice<512; islice++){
+     for (int islice=0; islice<slicesPerRecord; islice++){
         slice=endianswap_ull(buffer.image[islice]);
 
         if ((slice & 0xffffff0000000000ULL) == 0xaaaaaa0000000000ULL) {           
