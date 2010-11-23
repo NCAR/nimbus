@@ -535,9 +535,11 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   for (int i=0; i<64; i++) {powerof2[i]=1ULL; for (int j=0; j<i;j++) powerof2[i]=powerof2[i]*2ULL;} 
 
   //Bin setup
-  short numbins=ndiodes;   
+  short numbins=128;   
+  short binoffset=1;  //Offset for RAF conventions, number of empty bins before counting begins 
   float bin_endpoints[numbins+1];  
-  for (int i=0; i<=numbins; i++) bin_endpoints[i]=(i+0.5)*pixel_res;  
+  //Simple bin limit sizes, each bin has width of pixel resolution. Could make coarser if desired.
+  for (int i=0; i<(numbins+1); i++) bin_endpoints[i]=(i+0.5)*pixel_res;  
   
   //Time setup
   int starttime=hms2sfm(starttimehms);
@@ -545,8 +547,8 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   int numtimes=stoptime-starttime+1;
   
   //Count and concentration arrays setup
-  float count_all[numtimes][numbins], conc_all[numtimes][numbins];
-  float count_round[numtimes][numbins], conc_round[numtimes][numbins];
+  float count_all[numtimes][numbins+binoffset], conc_all[numtimes][numbins+binoffset];
+  float count_round[numtimes][numbins+binoffset], conc_round[numtimes][numbins+binoffset];
   float tas[numtimes];
   float n_accepted_all[numtimes], n_accepted_round[numtimes], n_rejected_all[numtimes], n_rejected_round[numtimes];
   //Initialize all these to zero
@@ -556,7 +558,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
      n_accepted_round[i]=0;
      n_rejected_all[i]=0;
      n_rejected_round[i]=0;
-     for (int j=0; j<numbins; j++){ 
+     for (int j=0; j<(numbins+binoffset); j++){ 
         count_all[i][j]=0; conc_all[i][j]=0; 
         count_round[i][j]=0; conc_round[i][j]=0;
      }
@@ -571,7 +573,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   double itq[nitq]={1};
   short numintbins=40;
   double it_endpoints[numintbins+1], it_midpoints[numintbins], fitspec[numintbins];
-  int count_it[numtimes][numintbins+1];
+  int count_it[numtimes][numintbins+binoffset];
   for (int i=0; i<=numintbins; i++) it_endpoints[i]=pow(10, ((float)i-35)/5.0);  
   for (int i=0; i<numintbins; i++) it_midpoints[i]=pow(10, ((float)i-34.5)/5.0);  
 
@@ -659,10 +661,10 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
                  for (int i=0; i<nitq; i++){                    
                     iit=0;
                     while((itq[i])>it_endpoints[iit+1]) iit++;
-                    count_it[itime][iit+1]++;   //Add 1 to iit for RAF convention
+                    count_it[itime][iit+binoffset]++;   //Add offset to iit for RAF convention
                  }   
                                
-                 for (int i=0; i<numintbins; i++) fitspec[i]=count_it[itime][i+1];
+                 for (int i=0; i<numintbins; i++) fitspec[i]=count_it[itime][i+binoffset];
                  dpoisson_fit(it_midpoints, fitspec, bestfit, numintbins);
                  cpoisson1[itime]=(float)bestfit[0];  //Save factors
                  cpoisson2[itime]=(float)bestfit[1];
@@ -695,13 +697,13 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
                     if (!particle_stack[i].ireject){
                        isize=0; 
                        while((particle_stack[i].size)>bin_endpoints[isize+1]) isize++;
-                       count_all[itime][isize+1]++;   //Add 1 to isize for RAF convention
+                       count_all[itime][isize+binoffset]++;   //Add offset to isize for RAF convention
                        n_accepted_all[itime]++;
                     } else n_rejected_all[itime]++;
                     if (!particle_stack[i].wreject){
                        wsize=0; 
                        while((particle_stack[i].size/wc)>bin_endpoints[wsize+1]) wsize++;
-                       count_round[itime][wsize+1]++;   //Add 1 to wsize for RAF convention
+                       count_round[itime][wsize+binoffset]++;   //Add offset to wsize for RAF convention
                        n_accepted_round[itime]++;
                     } else n_rejected_round[itime]++;                                                      
                  } //End sorting through particle stack
@@ -748,23 +750,24 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   }
   
   //Compute
-  for (int i=1; i<numbins; i++) {   //Note: starting at second bin per RAF convention
-     bin_midpoints[i]=(bin_endpoints[i-1]+bin_endpoints[i])/2.0;
+  for (int i=0; i<numbins; i++) {  
+     bin_midpoints[i]=(bin_endpoints[i]+bin_endpoints[i+1])/2.0;
      sa[i]=samplearea(bin_midpoints[i], pixel_res, armwidth, ndiodes, recon);
      mass=3.1416/6.0*pow(bin_midpoints[i]/1e4,3);  //grams
      for (int j=0; j<numtimes; j++){
         if (tas[j] > 0){
            sv=sa[i]*tas[j];  //Sample volume (m3)
            //Correct counts for the poisson fitting
-           count_all[j][i]=count_all[j][i]*corrfac[j];
-           count_round[j][i]=count_round[j][i]*corrfac[j];
-           conc_all[j][i]=count_all[j][i]/sv/1000.0;      // #/L
-           conc_round[j][i]=count_round[j][i]/sv/1000.0;  // #/L
+           if (std::isnan(corrfac[j])) corrfac[j]=1.0;  //Filter out bad correction factors
+           count_all[j][i+binoffset]=count_all[j][i+binoffset]*corrfac[j];
+           count_round[j][i+binoffset]=count_round[j][i+binoffset]*corrfac[j];
+           conc_all[j][i+binoffset]=count_all[j][i+binoffset]/sv/1000.0;      // #/L
+           conc_round[j][i+binoffset]=count_round[j][i+binoffset]/sv/1000.0;  // #/L
            
            //if (i > 3) {      //Compute Nt and LWC only for particles larger than 3 pixels
-           nt_all[j]=nt_all[j]+conc_all[j][i];
-           nt_round[j]=nt_round[j]+conc_round[j][i];
-           lwc_round[j]=lwc_round[j] + mass*conc_round[j][i]*1000.0; // g/m3
+           nt_all[j]=nt_all[j]+conc_all[j][i+binoffset];
+           nt_round[j]=nt_round[j]+conc_round[j][i+binoffset];
+           lwc_round[j]=lwc_round[j] + mass*conc_round[j][i+binoffset]*1000.0; // g/m3
            //}
         }
      }
@@ -789,10 +792,11 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   NcFile dataFile(ncfilename.c_str(), NcFile::Replace);
  
   // Define the dimensions.
-  NcDim *timedim, *bindim, *intbindim, *spsdim;
+  NcDim *timedim, *bindim, *bindim_plusone, *intbindim, *spsdim;
   if (!(timedim = dataFile.add_dim("Time", numtimes))) return NC_ERR;
   if (!(spsdim = dataFile.add_dim("sps1", 1))) return NC_ERR;
   if (!(bindim = dataFile.add_dim("Vector64", numbins))) return NC_ERR;
+  if (!(bindim_plusone = dataFile.add_dim("Vector65", numbins+1))) return NC_ERR;
   if (!(intbindim = dataFile.add_dim("interarrival_endpoints", numintbins+1))) return NC_ERR;
 
   
@@ -831,24 +835,24 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   
   //Bins  
   varname="bin_endpoints"+suffix;
-  if (!(binvar = dataFile.add_var(varname.c_str(), ncFloat, bindim))) return NC_ERR;
+  if (!(binvar = dataFile.add_var(varname.c_str(), ncFloat, bindim_plusone))) return NC_ERR;
   if (!binvar->add_att("units", "microns")) return NC_ERR;
-  if (!binvar->put(bin_endpoints, numbins)) return NC_ERR; 
+  if (!binvar->put(bin_endpoints, numbins+1)) return NC_ERR; 
 
   if (!(intbinvar = dataFile.add_var("interarrival_endpoints", ncDouble, intbindim))) return NC_ERR;
   if (!intbinvar->put(it_endpoints, numintbins+1)) return NC_ERR; 
   
   //Counts
   varname="A1DCA"+suffix;
-  if (!(ctallvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim))) return NC_ERR;
+  if (!(ctallvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return NC_ERR;
   if (!ctallvar->add_att("_FillValue", (float)(-32767))) return NC_ERR;
   if (!ctallvar->add_att("units", "count")) return NC_ERR;
   if (!ctallvar->add_att("long_name", "Fast 2DC Corrected Accumulation per Channel, All Particles")) return NC_ERR;
   if (!ctallvar->add_att("Category", "PMS Probe")) return NC_ERR;
   if (!ctallvar->add_att("SerialNumber", "TBD")) return NC_ERR;
   if (!ctallvar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!ctallvar->add_att("FirstBin", (short)1)) return NC_ERR;
-  if (!ctallvar->add_att("LastBin", (short)(ndiodes-1))) return NC_ERR;
+  if (!ctallvar->add_att("FirstBin", (short)binoffset)) return NC_ERR;
+  if (!ctallvar->add_att("LastBin", (short)(numbins+binoffset-1))) return NC_ERR;
   if (!ctallvar->add_att("CellSizes", numbins+1, bin_endpoints)) return NC_ERR;
   if (!ctallvar->add_att("nDiodes", ndiodes)) return NC_ERR;
   if (!ctallvar->add_att("ResponseTime", 0.4)) return NC_ERR;
@@ -857,18 +861,18 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   if (!ctallvar->add_att("Density", 1.0)) return NC_ERR;
   if (!ctallvar->add_att("Rejected", "Roundness below 0.1, interarrival time below 1/20th of distribution peak")) return NC_ERR;
   if (!ctallvar->add_att("ParticleAcceptMethod", "Reconstruction")) return NC_ERR;
-  if (!ctallvar->put(&count_all[0][0], numtimes, 1, numbins)) return NC_ERR; 
+  if (!ctallvar->put(&count_all[0][0], numtimes, 1, numbins+binoffset)) return NC_ERR; 
 
   varname="A1DCR"+suffix;
-  if (!(ctwatvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim))) return NC_ERR;
+  if (!(ctwatvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return NC_ERR;
   if (!ctwatvar->add_att("_FillValue", (float)(-32767.0))) return NC_ERR;
   if (!ctwatvar->add_att("units", "count")) return NC_ERR;
   if (!ctwatvar->add_att("long_name", "Fast 2DC Corrected Accumulation per Channel, Round Particles")) return NC_ERR;
   if (!ctwatvar->add_att("Category", "PMS Probe")) return NC_ERR;
   if (!ctwatvar->add_att("SerialNumber", "TBD")) return NC_ERR;
   if (!ctwatvar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!ctwatvar->add_att("FirstBin", (short)1)) return NC_ERR;
-  if (!ctwatvar->add_att("LastBin", (short)(ndiodes-1))) return NC_ERR;
+  if (!ctwatvar->add_att("FirstBin", (short)binoffset)) return NC_ERR;
+  if (!ctwatvar->add_att("LastBin", (short)(numbins+binoffset-1))) return NC_ERR;
   if (!ctwatvar->add_att("CellSizes", numbins+1, bin_endpoints)) return NC_ERR;
   if (!ctwatvar->add_att("nDiodes", ndiodes)) return NC_ERR;
   if (!ctwatvar->add_att("ResponseTime", 0.4)) return NC_ERR;
@@ -877,7 +881,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   if (!ctwatvar->add_att("Density", 1.0)) return NC_ERR;
   if (!ctwatvar->add_att("Rejected", "Roundness below 0.5, interarrival time below 1/20th of distribution peak")) return NC_ERR;
   if (!ctwatvar->add_att("ParticleAcceptMethod", "Reconstruction")) return NC_ERR;
-  if (!ctwatvar->put(&count_round[0][0], numtimes, 1, numbins)) return NC_ERR; 
+  if (!ctwatvar->put(&count_round[0][0], numtimes, 1, numbins+binoffset)) return NC_ERR; 
 
   varname="I1DCA"+suffix;
   if (!(ctinttimevar = dataFile.add_var(varname.c_str(), ncInt, timedim, spsdim, intbindim))) return NC_ERR;
@@ -889,15 +893,15 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
  
   //Concentration
   varname="C1DCA"+suffix;
-  if (!(cnallvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim))) return NC_ERR;
+  if (!(cnallvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return NC_ERR;
   if (!cnallvar->add_att("_FillValue", (float)(-32767.0))) return NC_ERR;
   if (!cnallvar->add_att("units", "#/L")) return NC_ERR;
   if (!cnallvar->add_att("long_name", "Fast 2DC Concentration per Channel, All Particles")) return NC_ERR;
   if (!cnallvar->add_att("Category", "PMS Probe")) return NC_ERR;
   if (!cnallvar->add_att("SerialNumber", "TBD")) return NC_ERR;
   if (!cnallvar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!cnallvar->add_att("FirstBin", (short)1)) return NC_ERR;
-  if (!cnallvar->add_att("LastBin", (short)(ndiodes-1))) return NC_ERR;
+  if (!cnallvar->add_att("FirstBin", (short)binoffset)) return NC_ERR;
+  if (!cnallvar->add_att("LastBin", (short)(numbins+binoffset-1))) return NC_ERR;
   if (!cnallvar->add_att("CellSizes", numbins+1, bin_endpoints)) return NC_ERR;
   if (!cnallvar->add_att("nDiodes", ndiodes)) return NC_ERR;
   if (!cnallvar->add_att("ResponseTime", 0.4)) return NC_ERR;
@@ -906,18 +910,18 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   if (!cnallvar->add_att("Density", 1.0)) return NC_ERR;
   if (!cnallvar->add_att("Rejected", "Roundness below 0.1, interarrival time below 1/20th of distribution peak")) return NC_ERR;
   if (!cnallvar->add_att("ParticleAcceptMethod", "Reconstruction")) return NC_ERR;
-  if (!cnallvar->put(&conc_all[0][0], numtimes, 1, numbins)) return NC_ERR; 
+  if (!cnallvar->put(&conc_all[0][0], numtimes, 1, numbins+binoffset)) return NC_ERR; 
 
   varname="C1DCR"+suffix;
-  if (!(cnwatvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim))) return NC_ERR;
+  if (!(cnwatvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return NC_ERR;
   if (!cnwatvar->add_att("_FillValue", (float)(-32767.0))) return NC_ERR;
   if (!cnwatvar->add_att("units", "#/L")) return NC_ERR;
   if (!cnwatvar->add_att("long_name", "Fast 2DC Concentration per Channel, Round Particles")) return NC_ERR;
   if (!cnwatvar->add_att("Category", "PMS Probe")) return NC_ERR;
   if (!cnwatvar->add_att("SerialNumber", "TBD")) return NC_ERR;
   if (!cnwatvar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!cnwatvar->add_att("FirstBin", (short)1)) return NC_ERR;
-  if (!cnwatvar->add_att("LastBin", (short)(ndiodes-1))) return NC_ERR;
+  if (!cnwatvar->add_att("FirstBin", (short)binoffset)) return NC_ERR;
+  if (!cnwatvar->add_att("LastBin", (short)(numbins+binoffset-1))) return NC_ERR;
   if (!cnwatvar->add_att("CellSizes", numbins+1, bin_endpoints)) return NC_ERR;
   if (!cnwatvar->add_att("nDiodes", ndiodes)) return NC_ERR;
   if (!cnwatvar->add_att("ResponseTime", 0.4)) return NC_ERR;
@@ -926,7 +930,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   if (!cnwatvar->add_att("Density", 1.0)) return NC_ERR;
   if (!cnwatvar->add_att("Rejected", "Roundness below 0.5, interarrival time below 1/20th of distribution peak")) return NC_ERR;
   if (!cnwatvar->add_att("ParticleAcceptMethod", "Reconstruction")) return NC_ERR;
-  if (!cnwatvar->put(&conc_round[0][0], numtimes, 1, numbins)) return NC_ERR; 
+  if (!cnwatvar->put(&conc_round[0][0], numtimes, 1, numbins+binoffset)) return NC_ERR; 
    
   //Total counts and LWC
   varname="CONC1DCA"+suffix;
