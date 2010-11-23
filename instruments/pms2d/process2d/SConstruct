@@ -4,7 +4,7 @@ import os
 env = Environment(platform = 'posix',ENV= os.environ)
 env['JLOCAL'] = os.environ['JLOCAL']
 
-env.Append(CXXFLAGS='-g -Werror')
+env.Append(CXXFLAGS='-g -Wall -Werror')
 env.Append(CPPPATH = '/usr/include/netcdf')
 
 # To get netcdf libraries on the link command line with static linking,
