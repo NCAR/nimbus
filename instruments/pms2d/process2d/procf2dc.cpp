@@ -521,7 +521,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   string line;
   short roi[512][ndiodes];
   short slice_count=0, istack=0, firstday;
-  unsigned long long slice, firsttimeline, lasttimeline=0, timeline, particle_count=0;
+  unsigned long long slice, firsttimeline, lasttimeline=0, timeline, difftimeline, particle_count=0;
   double lastbuffertime, buffertime=0, nextit=0;
   bool firsttimeflag;
   float wc;
@@ -610,14 +610,15 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
            }
            
            //Look for negative interarrival time, set to zero instead
-           if (timeline < lasttimeline) timeline=lasttimeline;
+           if (timeline < lasttimeline) difftimeline=0;
+           else difftimeline=timeline-firsttimeline;
              
            //Process the roi
-           long time1hz=(long) (lastbuffertime+(timeline-firsttimeline)/(12.0e6));
+           long time1hz=(long) (lastbuffertime+difftimeline/(12.0e6));
            if (time1hz >= starttime){
               particle=findsize(roi,slice_count,pixel_res);
               particle.holearea=fillholes2(roi,slice_count);           
-              particle.inttime=(timeline-lasttimeline)/12.0e6;
+              particle.inttime=difftimeline/12.0e6;
               particle.time1hz=time1hz;
              
               //Decide which size to use
