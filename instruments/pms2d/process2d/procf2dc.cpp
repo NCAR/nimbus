@@ -26,6 +26,7 @@ using namespace std;
    
 const int ndiodes = 64;
 const int numbins = 128;
+const int binoffset = 1;  // Offset for RAF conventions, number of empty bins before counting begins 
 const int slicesPerRecord = 512;
 const string markerline = "</PMS2D>";  // Marks end of XML header
 
@@ -532,13 +533,12 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   struct_particle particle, particle_stack[10000];
   char probetype=probe2process[0];  
   char probenumber=probe2process[1];
- 
+
   //Set up array of powers of 2, starting with 1
   unsigned long long powerof2[64];
   for (int i=0; i<64; i++) {powerof2[i]=1ULL; for (int j=0; j<i;j++) powerof2[i]=powerof2[i]*2ULL;} 
 
   //Bin setup
-  int binoffset=1;  //Offset for RAF conventions, number of empty bins before counting begins 
   float bin_endpoints[numbins+1];  
   //Simple bin limit sizes, each bin has width of pixel resolution. Could make coarser if desired.
   for (int i=0; i<(numbins+1); i++) bin_endpoints[i]=(i+0.5)*pixel_res;  
@@ -549,10 +549,11 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   int numtimes=stoptime-starttime+1;
   
   //Count and concentration arrays setup
-  float count_all[numtimes][numbins+binoffset], conc_all[numtimes][numbins+binoffset];
-  float count_round[numtimes][numbins+binoffset], conc_round[numtimes][numbins+binoffset];
+  float *count_all[numtimes], *conc_all[numtimes];
+  float *count_round[numtimes], *conc_round[numtimes];
   float tas[numtimes];
   float n_accepted_all[numtimes], n_accepted_round[numtimes], n_rejected_all[numtimes], n_rejected_round[numtimes];
+
   //Initialize all these to zero
   for (int i=0; i<numtimes; i++) {
      tas[i]=0;
@@ -560,6 +561,12 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
      n_accepted_round[i]=0;
      n_rejected_all[i]=0;
      n_rejected_round[i]=0;
+
+     count_all[i] = new float[numbins+binoffset];
+     count_round[i] = new float[numbins+binoffset];
+     conc_all[i] = new float[numbins+binoffset];
+     conc_round[i] = new float[numbins+binoffset];
+
      for (int j=0; j<(numbins+binoffset); j++){ 
         count_all[i][j]=0; conc_all[i][j]=0; 
         count_round[i][j]=0; conc_round[i][j]=0;
