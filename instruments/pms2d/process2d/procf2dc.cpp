@@ -20,6 +20,7 @@
 #include <cmath>
 #include <cstring>
 #include <iomanip>
+
 #include <netcdfcpp.h>
 
 using namespace std;
@@ -29,6 +30,15 @@ const int numbins = 128;
 const int binoffset = 1;  // Offset for RAF conventions, number of empty bins before counting begins 
 const int slicesPerRecord = 512;
 const string markerline = "</PMS2D>";  // Marks end of XML header
+
+/* Probe information.
+ */
+struct probe_info {
+  string id;
+  string suffix;
+  string serialnumber;
+  float resolution;
+};
 
 struct struct_particle {
    long time1hz; 
@@ -508,8 +518,8 @@ unsigned short endianswap_s(unsigned short x){
 //================================================================================================
 // ------------PROCESS 2D-----------------------
 //================================================================================================
-int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2process, float pixel_res, 
-    string suffix, float armwidth, bool recon, bool shattercorrect, char smethod, bool verbose, bool debug){
+int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_info & probe,
+    float armwidth, bool recon, bool shattercorrect, char smethod, bool verbose, bool debug){
 
   /*-----Processing options-------------------------------------------------------
       start/stop time: In UTC seconds
@@ -531,8 +541,8 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   float wc;
   long last_time1hz=0, itime, isize, wsize, iit;
   struct_particle particle, particle_stack[10000];
-  char probetype=probe2process[0];  
-  char probenumber=probe2process[1];
+  char probetype=probe.id[0];  
+  char probenumber=probe.id[1];
 
   //Set up array of powers of 2, starting with 1
   unsigned long long powerof2[64];
@@ -541,7 +551,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   //Bin setup
   float bin_endpoints[numbins+1];  
   //Simple bin limit sizes, each bin has width of pixel resolution. Could make coarser if desired.
-  for (int i=0; i<(numbins+1); i++) bin_endpoints[i]=(i+0.5)*pixel_res;  
+  for (int i=0; i<(numbins+1); i++) bin_endpoints[i]=(i+0.5)*probe.resolution;  
   
   //Time setup
   int starttime=hms2sfm(starttimehms);
@@ -607,6 +617,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
      buffertime=(endianswap_s(buffer.day)-firstday)*86400.0 + 
                 endianswap_s(buffer.hours)*3600.0 + endianswap_s(buffer.minutes)*60.0 + 
                 endianswap_s(buffer.seconds) + endianswap_s(buffer.msec)/1000.0;
+
      firsttimeflag=1;
      //Scroll through each slice, look for sync/time slices
      for (int islice=0; islice<slicesPerRecord; islice++){
@@ -627,7 +638,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
            //Process the roi
            long time1hz=(long) (lastbuffertime+difftimeline/(12.0e6));
            if (time1hz >= starttime){
-              particle=findsize(roi,slice_count,pixel_res);
+              particle=findsize(roi,slice_count,probe.resolution);
               particle.holearea=fillholes2(roi,slice_count);           
               particle.inttime=difftimeline/12.0e6;
               particle.time1hz=time1hz;
@@ -698,7 +709,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
                     //Rejection
                     if(i==istack-1) nextit=particle.inttime;  //This particle is for next time period, but use its inttime
                     else nextit=particle_stack[i+1].inttime;
-                    reject_particle(particle_stack[i], pcutoff[itime], nextit, pixel_res,
+                    reject_particle(particle_stack[i], pcutoff[itime], nextit, probe.resolution,
                                     bin_endpoints[0], bin_endpoints[numbins],wc,recon);
                     if (debug) showparticle(particle_stack[i]);                    
                     
@@ -761,7 +772,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   //Compute
   for (int i=0; i<numbins; i++) {  
      bin_midpoints[i]=(bin_endpoints[i]+bin_endpoints[i+1])/2.0;
-     sa[i]=samplearea(bin_midpoints[i], pixel_res, armwidth, ndiodes, recon);
+     sa[i]=samplearea(bin_midpoints[i], probe.resolution, armwidth, ndiodes, recon);
      mass=3.1416/6.0*pow(bin_midpoints[i]/1e4,3);  //grams
      for (int j=0; j<numtimes; j++){
         if (tas[j] > 0){
@@ -789,7 +800,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   
   static const int NC_ERR = 2;
   string varname;
-  //suffix="_"+probe2process; 
+  //suffix="_"+probe.id; 
 
   //Create the file.  Base .nc name on the raw file name. 
   string ncfilename;
@@ -797,7 +808,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   pos=rawfile.find_last_of("/\\");
   ncfilename=rawfile.substr(pos+1);
   pos=ncfilename.find_last_of(".");
-  ncfilename=ncfilename.substr(0,pos)+"_"+probe2process+".nc";
+  ncfilename=ncfilename.substr(0,pos)+"_"+probe.id+".nc";
   NcFile dataFile(ncfilename.c_str(), NcFile::Replace);
  
   // Define the dimensions.
@@ -843,7 +854,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   if (!timevar->put(time, numtimes)) return NC_ERR;
   
   //Bins  
-  varname="bin_endpoints"+suffix;
+  varname="bin_endpoints"+probe.suffix;
   if (!(binvar = dataFile.add_var(varname.c_str(), ncFloat, bindim_plusone))) return NC_ERR;
   if (!binvar->add_att("units", "microns")) return NC_ERR;
   if (!binvar->put(bin_endpoints, numbins+1)) return NC_ERR; 
@@ -852,47 +863,39 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   if (!intbinvar->put(it_endpoints, numintbins+1)) return NC_ERR; 
   
   //Counts
-  varname="A1DCA"+suffix;
+  varname="A1DCA"+probe.suffix;
   if (!(ctallvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return NC_ERR;
   if (!ctallvar->add_att("_FillValue", (float)(-32767))) return NC_ERR;
   if (!ctallvar->add_att("units", "count")) return NC_ERR;
   if (!ctallvar->add_att("long_name", "Fast 2DC Corrected Accumulation per Channel, All Particles")) return NC_ERR;
   if (!ctallvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!ctallvar->add_att("SerialNumber", "TBD")) return NC_ERR;
+  if (!ctallvar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
   if (!ctallvar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!ctallvar->add_att("FirstBin", binoffset)) return NC_ERR;
-  if (!ctallvar->add_att("LastBin", numbins+binoffset-1)) return NC_ERR;
-  if (!ctallvar->add_att("CellSizes", numbins+1, bin_endpoints)) return NC_ERR;
+  if (!ctallvar->add_att("Resolution", (int)probe.resolution)) return NC_ERR;
   if (!ctallvar->add_att("nDiodes", ndiodes)) return NC_ERR;
   if (!ctallvar->add_att("ResponseTime", 0.4)) return NC_ERR;
-  if (!ctallvar->add_att("ArmDistance", "TBD")) return NC_ERR;
-  if (!ctallvar->add_att("CellSizeUnits", "micrometers")) return NC_ERR;
-  if (!ctallvar->add_att("Density", 1.0)) return NC_ERR;
+  if (!ctallvar->add_att("ArmDistance", armwidth * 10)) return NC_ERR;
   if (!ctallvar->add_att("Rejected", "Roundness below 0.1, interarrival time below 1/20th of distribution peak")) return NC_ERR;
   if (!ctallvar->add_att("ParticleAcceptMethod", "Reconstruction")) return NC_ERR;
   if (!ctallvar->put(&count_all[0][0], numtimes, 1, numbins+binoffset)) return NC_ERR; 
 
-  varname="A1DCR"+suffix;
+  varname="A1DCR"+probe.suffix;
   if (!(ctwatvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return NC_ERR;
   if (!ctwatvar->add_att("_FillValue", (float)(-32767.0))) return NC_ERR;
   if (!ctwatvar->add_att("units", "count")) return NC_ERR;
   if (!ctwatvar->add_att("long_name", "Fast 2DC Corrected Accumulation per Channel, Round Particles")) return NC_ERR;
   if (!ctwatvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!ctwatvar->add_att("SerialNumber", "TBD")) return NC_ERR;
+  if (!ctwatvar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
   if (!ctwatvar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!ctwatvar->add_att("FirstBin", binoffset)) return NC_ERR;
-  if (!ctwatvar->add_att("LastBin", numbins+binoffset-1)) return NC_ERR;
-  if (!ctwatvar->add_att("CellSizes", numbins+1, bin_endpoints)) return NC_ERR;
+  if (!ctallvar->add_att("Resolution", (int)probe.resolution)) return NC_ERR;
   if (!ctwatvar->add_att("nDiodes", ndiodes)) return NC_ERR;
   if (!ctwatvar->add_att("ResponseTime", 0.4)) return NC_ERR;
-  if (!ctwatvar->add_att("ArmDistance", "TBD")) return NC_ERR;
-  if (!ctwatvar->add_att("CellSizeUnits", "micrometers")) return NC_ERR;
-  if (!ctwatvar->add_att("Density", 1.0)) return NC_ERR;
+  if (!ctwatvar->add_att("ArmDistance", armwidth * 10)) return NC_ERR;
   if (!ctwatvar->add_att("Rejected", "Roundness below 0.5, interarrival time below 1/20th of distribution peak")) return NC_ERR;
   if (!ctwatvar->add_att("ParticleAcceptMethod", "Reconstruction")) return NC_ERR;
   if (!ctwatvar->put(&count_round[0][0], numtimes, 1, numbins+binoffset)) return NC_ERR; 
 
-  varname="I1DCA"+suffix;
+  varname="I1DCA"+probe.suffix;
   if (!(ctinttimevar = dataFile.add_var(varname.c_str(), ncInt, timedim, spsdim, intbindim))) return NC_ERR;
   if (!ctinttimevar->add_att("_FillValue", -32767)) return NC_ERR;
   if (!ctinttimevar->add_att("units", "count")) return NC_ERR;
@@ -901,161 +904,208 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, string probe2pr
   if (!ctinttimevar->put(&count_it[0][0], numtimes, 1, numintbins+1)) return NC_ERR; 
  
   //Concentration
-  varname="C1DCA"+suffix;
+  varname="C1DCA"+probe.suffix;
   if (!(cnallvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return NC_ERR;
   if (!cnallvar->add_att("_FillValue", (float)(-32767.0))) return NC_ERR;
   if (!cnallvar->add_att("units", "#/L")) return NC_ERR;
   if (!cnallvar->add_att("long_name", "Fast 2DC Concentration per Channel, All Particles")) return NC_ERR;
   if (!cnallvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!cnallvar->add_att("SerialNumber", "TBD")) return NC_ERR;
+  if (!cnallvar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
   if (!cnallvar->add_att("DataQuality", "Good")) return NC_ERR;
+// Add EAW
+// Add DOF
   if (!cnallvar->add_att("FirstBin", binoffset)) return NC_ERR;
   if (!cnallvar->add_att("LastBin", numbins+binoffset-1)) return NC_ERR;
   if (!cnallvar->add_att("CellSizes", numbins+1, bin_endpoints)) return NC_ERR;
-  if (!cnallvar->add_att("nDiodes", ndiodes)) return NC_ERR;
-  if (!cnallvar->add_att("ResponseTime", 0.4)) return NC_ERR;
-  if (!cnallvar->add_att("ArmDistance", "TBD")) return NC_ERR;
   if (!cnallvar->add_att("CellSizeUnits", "micrometers")) return NC_ERR;
   if (!cnallvar->add_att("Density", 1.0)) return NC_ERR;
-  if (!cnallvar->add_att("Rejected", "Roundness below 0.1, interarrival time below 1/20th of distribution peak")) return NC_ERR;
-  if (!cnallvar->add_att("ParticleAcceptMethod", "Reconstruction")) return NC_ERR;
   if (!cnallvar->put(&conc_all[0][0], numtimes, 1, numbins+binoffset)) return NC_ERR; 
 
-  varname="C1DCR"+suffix;
+  varname="C1DCR"+probe.suffix;
   if (!(cnwatvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return NC_ERR;
   if (!cnwatvar->add_att("_FillValue", (float)(-32767.0))) return NC_ERR;
   if (!cnwatvar->add_att("units", "#/L")) return NC_ERR;
   if (!cnwatvar->add_att("long_name", "Fast 2DC Concentration per Channel, Round Particles")) return NC_ERR;
   if (!cnwatvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!cnwatvar->add_att("SerialNumber", "TBD")) return NC_ERR;
+  if (!cnwatvar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
   if (!cnwatvar->add_att("DataQuality", "Good")) return NC_ERR;
+// Add EAW
+// Add DOF
   if (!cnwatvar->add_att("FirstBin", binoffset)) return NC_ERR;
   if (!cnwatvar->add_att("LastBin", numbins+binoffset-1)) return NC_ERR;
   if (!cnwatvar->add_att("CellSizes", numbins+1, bin_endpoints)) return NC_ERR;
-  if (!cnwatvar->add_att("nDiodes", ndiodes)) return NC_ERR;
-  if (!cnwatvar->add_att("ResponseTime", 0.4)) return NC_ERR;
-  if (!cnwatvar->add_att("ArmDistance", "TBD")) return NC_ERR;
   if (!cnwatvar->add_att("CellSizeUnits", "micrometers")) return NC_ERR;
   if (!cnwatvar->add_att("Density", 1.0)) return NC_ERR;
-  if (!cnwatvar->add_att("Rejected", "Roundness below 0.5, interarrival time below 1/20th of distribution peak")) return NC_ERR;
-  if (!cnwatvar->add_att("ParticleAcceptMethod", "Reconstruction")) return NC_ERR;
   if (!cnwatvar->put(&conc_round[0][0], numtimes, 1, numbins+binoffset)) return NC_ERR; 
    
   //Total counts and LWC
-  varname="CONC1DCA"+suffix;
+  varname="CONC1DCA"+probe.suffix;
   if (!(ntallvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;
   if (!ntallvar->add_att("units", "#/L")) return NC_ERR;
   if (!ntallvar->add_att("long_name", "Total Fast 2DC Concentration, All Particles")) return NC_ERR;
   if (!ntallvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!ntallvar->add_att("SerialNumber", "TBD")) return NC_ERR;
+  if (!ntallvar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
   if (!ntallvar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!ntallvar->put(nt_all, numtimes)) return NC_ERR;
 
-  varname="CONC1DCR"+suffix;
+  varname="CONC1DCR"+probe.suffix;
   if (!(ntwatvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;
   if (!ntwatvar->add_att("units", "#/L")) return NC_ERR;
   if (!ntwatvar->add_att("long_name", "Total Fast 2DC Concentration, Round Particles")) return NC_ERR;
   if (!ntwatvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!ntwatvar->add_att("SerialNumber", "TBD")) return NC_ERR;
+  if (!ntwatvar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
   if (!ntwatvar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!ntwatvar->put(nt_round, numtimes)) return NC_ERR;
   
-  varname="PLWC1DCR"+suffix;
+  varname="PLWC1DCR"+probe.suffix;
   if (!(lwcvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;  
   if (!lwcvar->add_att("units", "g/m3")) return NC_ERR;
   if (!lwcvar->add_att("long_name", "Fast 2DC Liquid Water Content, Round Particles")) return NC_ERR;
   if (!lwcvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!lwcvar->add_att("SerialNumber", "TBD")) return NC_ERR;
+  if (!lwcvar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
   if (!lwcvar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!lwcvar->put(lwc_round, numtimes)) return NC_ERR;
 
-  varname="NACCEPT1DCR"+suffix;
+  varname="NACCEPT1DCR"+probe.suffix;
   if (!(naccwvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;  
   if (!naccwvar->add_att("units", "count")) return NC_ERR;
   if (!naccwvar->add_att("long_name", "Number of Particles Accepted, Round Particles")) return NC_ERR;
   if (!naccwvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!naccwvar->add_att("SerialNumber", "TBD")) return NC_ERR;
+  if (!naccwvar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
   if (!naccwvar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!naccwvar->put(n_accepted_round, numtimes)) return NC_ERR;
 
-  varname="NACCEPT1DCA"+suffix;
+  varname="NACCEPT1DCA"+probe.suffix;
   if (!(naccavar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;  
   if (!naccavar->add_att("units", "count")) return NC_ERR;
   if (!naccavar->add_att("long_name", "Number of Particles Accepted, All Particles")) return NC_ERR;
   if (!naccavar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!naccavar->add_att("SerialNumber", "TBD")) return NC_ERR;
+  if (!naccavar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
   if (!naccavar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!naccavar->put(n_accepted_all, numtimes)) return NC_ERR;
 
-  varname="NREJECT1DCR"+suffix;
+  varname="NREJECT1DCR"+probe.suffix;
   if (!(nrejwvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;  
   if (!nrejwvar->add_att("units", "count")) return NC_ERR;
   if (!nrejwvar->add_att("long_name", "Number of Particles Rejected, Round Particles")) return NC_ERR;
   if (!nrejwvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!nrejwvar->add_att("SerialNumber", "TBD")) return NC_ERR;
+  if (!nrejwvar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
   if (!nrejwvar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!nrejwvar->put(n_rejected_round, numtimes)) return NC_ERR;
 
-  varname="NREJECT1DCA"+suffix;
+  varname="NREJECT1DCA"+probe.suffix;
   if (!(nrejavar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;  
   if (!nrejavar->add_att("units", "count")) return NC_ERR;
   if (!nrejavar->add_att("long_name", "Number of Particles Rejected, All Particles")) return NC_ERR;
   if (!nrejavar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!nrejavar->add_att("SerialNumber", "TBD")) return NC_ERR;
+  if (!nrejavar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
   if (!nrejavar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!nrejavar->put(n_rejected_all, numtimes)) return NC_ERR;
 
 
   //Misc
-  varname="poisson_coeff1"+suffix;
+  varname="poisson_coeff1"+probe.suffix;
   if (!(pois1var = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;
   if (!pois1var->add_att("units", "unitless")) return NC_ERR;
   if (!pois1var->add_att("long_name", "Interarrival Time Fit Coefficient 1")) return NC_ERR;
   if (!pois1var->put(cpoisson1, numtimes)) return NC_ERR;
   
-  varname="poisson_coeff2"+suffix;
+  varname="poisson_coeff2"+probe.suffix;
   if (!(pois2var = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;
   if (!pois2var->add_att("units", "1/seconds")) return NC_ERR;
   if (!pois2var->add_att("long_name", "Interarrival Time Fit Coefficient 2")) return NC_ERR;
   if (!pois2var->put(cpoisson2, numtimes)) return NC_ERR;
   
-  varname="poisson_coeff3"+suffix;
+  varname="poisson_coeff3"+probe.suffix;
   if (!(pois3var = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;
   if (!pois3var->add_att("units", "1/seconds")) return NC_ERR;
   if (!pois3var->add_att("long_name", "Interarrival Time Fit Coefficient 3")) return NC_ERR;
   if (!pois3var->put(cpoisson3, numtimes)) return NC_ERR;
   
-  varname="poisson_cutoff"+suffix;
+  varname="poisson_cutoff"+probe.suffix;
   if (!(pcutoffvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;
   if (!pcutoffvar->add_att("units", "seconds")) return NC_ERR;
   if (!pcutoffvar->add_att("long_name", "Interarrival Time Lower Limit")) return NC_ERR;
   if (!pcutoffvar->put(pcutoff, numtimes)) return NC_ERR;
   
-  varname="poisson_correction"+suffix;
+  varname="poisson_correction"+probe.suffix;
   if (!(corrfacvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;
   if (!corrfacvar->add_att("units", "unitless")) return NC_ERR;
   if (!corrfacvar->add_att("long_name", "Count/Concentration Correction Factor for Interarrival Rejection")) return NC_ERR;
   if (!corrfacvar->put(corrfac, numtimes)) return NC_ERR;
   
-  varname="TAS"+suffix;
+  varname="TAS"+probe.suffix;
   if (!(tasvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;
   if (!tasvar->add_att("units", "meters per second")) return NC_ERR;
   if (!tasvar->add_att("long_name", "True Air Speed")) return NC_ERR;
   if (!tasvar->put(tas, numtimes)) return NC_ERR;
 
-  varname="SA"+suffix;
+  varname="SA"+probe.suffix;
   if (!(savar = dataFile.add_var(varname.c_str(), ncFloat, bindim))) return NC_ERR;
   if (!savar->add_att("units", "m2")) return NC_ERR;
   if (!savar->add_att("long_name", "Sample area per channel")) return NC_ERR;
   if (!savar->put(sa, numbins)) return NC_ERR;
 
-  varname="bin_midpoints"+suffix;
+  varname="bin_midpoints"+probe.suffix;
   if (!(midbinvar = dataFile.add_var(varname.c_str(), ncFloat, bindim))) return NC_ERR;
   if (!midbinvar->add_att("units", "microns")) return NC_ERR;
   if (!midbinvar->add_att("long_name", "Size Channel Midpoints")) return NC_ERR;
   if (!midbinvar->put(bin_midpoints, numbins)) return NC_ERR;
 
+  for (int i = 0; i < numtimes; i++) {
+     delete [] count_all[i];
+     delete [] count_round[i];
+     delete [] conc_all[i];
+     delete [] conc_round[i];
+  }
+
   return 0;  //No errors
+}
+
+
+void ParseHeader(ifstream & input_file, vector<struct probe_info> & probe_list)
+{
+  string line;
+
+  // Parse XML header
+  do
+  {    
+    getline(input_file, line);
+    size_t tagpos=line.find("Fast2DC");
+
+    if (tagpos != string::npos)	//found a line describing a FAST2D probe
+    {
+      struct probe_info thisProbe;
+      size_t q1, q2;
+
+      //Find probe id
+      tagpos=line.find("probe id");
+      q1=line.find("\"",tagpos);
+      q2=line.find("\"",q1+1);
+      thisProbe.id = line.substr(q1+1,q2-q1-1);
+
+      //Find resolution
+      tagpos=line.find("resolution");
+      q1=line.find("\"",tagpos);
+      q2=line.find("\"",q1+1);
+      string subline=line.substr(q1+1,q2-q1-1);
+      thisProbe.resolution = atof(subline.c_str());
+      
+      //Find suffix
+      tagpos=line.find("suffix");
+      q1=line.find("\"",tagpos);
+      q2=line.find("\"",q1+1);
+      thisProbe.suffix = line.substr(q1+1,q2-q1-1);
+      
+      //Find serial number
+      tagpos=line.find("serialnumber");
+      q1=line.find("\"",tagpos);
+      q2=line.find("\"",q1+1);
+      thisProbe.serialnumber = line.substr(q1+1,q2-q1-1);
+      
+      probe_list.push_back(thisProbe);
+    }
+  } while ((line.compare(markerline)!=0) && (!input_file.eof()));  
 }
 
 int usage(const char* argv0)
@@ -1088,12 +1138,10 @@ int usage(const char* argv0)
 
 int main(int argc, char *argv[])
 {
-  int errorcode, starttime, stoptime, numprobes=0;
+  int errorcode, starttime, stoptime;
   ifstream input_file;
-  string line, subline;
   type_buffer buffer;
-  string probeid[5], suffix[5];  //Store up to 5 probes characteristics
-  float res[5];
+  vector<struct probe_info> probes;
   
   // Check for correct number of arguments
   if (argc < 2)
@@ -1107,35 +1155,9 @@ int main(int argc, char *argv[])
     return 1;
   }  
   
-  // Parse XML header
-  size_t tagpos, q1, q2;
-  do {    
-    getline(input_file, line);
-    tagpos=line.find("Fast2DC");
-    if (tagpos!=string::npos) {  //found a line describing a FAST2D probe
-      //Find probe id
-      tagpos=line.find("probe id");
-      q1=line.find("\"",tagpos);
-      q2=line.find("\"",q1+1);
-      probeid[numprobes]=line.substr(q1+1,q2-q1-1);
+  // Parse the XML header and get list of probes.
+  ParseHeader(input_file, probes);
 
-      //Find resolution
-      tagpos=line.find("resolution");
-      q1=line.find("\"",tagpos);
-      q2=line.find("\"",q1+1);
-      subline=line.substr(q1+1,q2-q1-1);
-      res[numprobes]=atof(subline.c_str());
-      
-      //Find suffix
-      tagpos=line.find("suffix");
-      q1=line.find("\"",tagpos);
-      q2=line.find("\"",q1+1);
-      suffix[numprobes]=line.substr(q1+1,q2-q1-1);
-      
-      numprobes++;
-    }
-  } while ((line.compare(markerline)!=0) && (!input_file.eof()));  
-    
   // Return if unreadable file
   if (input_file.eof()) {
      cerr << "Unable to find XML header" << endl;
@@ -1156,7 +1178,8 @@ int main(int argc, char *argv[])
   //Parse command line arguments
   bool recon=1, verbose=0, debug=0, shattercorrect=1;  //Default values
   char smethod='c';
-  for (int i=2; i<(argc); i++){
+  for (int i = 2; i < argc; i++)
+  {
      string arg=argv[i];
      if ((arg.find("-sta")!=string::npos) && (i<(argc-1))) starttime=atoi(argv[i+1]);
      if ((arg.find("-sto")!=string::npos) && (i<(argc-1))) stoptime=atoi(argv[i+1]);
@@ -1171,21 +1194,21 @@ int main(int argc, char *argv[])
   if (starttime > stoptime) stoptime = stoptime + 240000;  //Midnight crossing
   
   // Process all probes found in the file
-  for (int i=0; i<numprobes; i++)
+  for (size_t i = 0; i < probes.size(); i++)
   {
     float armwidth=6.1;
-    if (probeid[i].compare("C6")) armwidth=6.1;   //Add new probes here as they become available
-    if (probeid[i].compare("C4")) armwidth=6.1;
+    if (probes[i].id.compare("C6")) armwidth=6.1;   //Add new probes here as they become available
+    if (probes[i].id.compare("C4")) armwidth=6.1;
 
-    cout << "Processing: "<<probeid[i]<<" res:"<<res[i]<<" suffix:"<<suffix[i]<<" armwidth:"<<armwidth<<endl;
+    cout << "Processing: "<<probes[i].id<<" res:"<<probes[i].resolution<<" suffix:"<<probes[i].suffix<<" armwidth:"<<armwidth<<endl;
     cout << "    Start:" << starttime << "  Stop:" << stoptime << endl;
 
-    errorcode = process2d(argv[1], starttime, stoptime, probeid[i], res[i], suffix[i], armwidth, recon, shattercorrect, smethod, verbose, debug); 
+    errorcode = process2d(argv[1], starttime, stoptime, probes[i], armwidth, recon, shattercorrect, smethod, verbose, debug); 
 
     if (!errorcode)
-      cout<<"Sucessfully processed probe " << i << endl;
+      cout << endl << "Sucessfully processed probe " << i << endl;
     else
-      cout << "Error on probe " << i << endl;
+      cout << endl << "Error on probe " << i << endl;
   }
 
   return 0;
