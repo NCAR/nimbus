@@ -564,23 +564,34 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   float tas[numtimes];
   float n_accepted_all[numtimes], n_accepted_round[numtimes], n_rejected_all[numtimes], n_rejected_round[numtimes];
 
+
+  // Allocate contiguos data block.
+  count_all[0] = new float[numtimes*(numbins+binoffset)];
+  count_round[0] = new float[numtimes*(numbins+binoffset)];
+  conc_all[0] = new float[numtimes*(numbins+binoffset)];
+  conc_round[0] = new float[numtimes*(numbins+binoffset)];
+
   //Initialize all these to zero
   for (int i=0; i<numtimes; i++) {
-     tas[i]=0;
-     n_accepted_all[i]=0;
-     n_accepted_round[i]=0;
-     n_rejected_all[i]=0;
-     n_rejected_round[i]=0;
+    tas[i]=0;
+    n_accepted_all[i]=0;
+    n_accepted_round[i]=0;
+    n_rejected_all[i]=0;
+    n_rejected_round[i]=0;
 
-     count_all[i] = new float[numbins+binoffset];
-     count_round[i] = new float[numbins+binoffset];
-     conc_all[i] = new float[numbins+binoffset];
-     conc_round[i] = new float[numbins+binoffset];
+    if (i > 0) {	// Set up pointers into contiguous data block.
+      int offset = i * (numbins+binoffset);
 
-     for (int j=0; j<(numbins+binoffset); j++){ 
-        count_all[i][j]=0; conc_all[i][j]=0; 
-        count_round[i][j]=0; conc_round[i][j]=0;
-     }
+      count_all[i] = count_all[0] + offset;
+      count_round[i] = count_round[0] + offset;
+      conc_all[i] = conc_all[0] + offset;
+      conc_round[i] = conc_round[0] + offset;
+    }
+
+    for (int j = 0; j < (numbins+binoffset); j++) {
+      count_all[i][j]=0; conc_all[i][j]=0; 
+      count_round[i][j]=0; conc_round[i][j]=0;
+    }
   }
 
   //Shattering correction and interarrival setup
@@ -1052,12 +1063,10 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!midbinvar->add_att("long_name", "Size Channel Midpoints")) return NC_ERR;
   if (!midbinvar->put(bin_midpoints, numbins)) return NC_ERR;
 
-  for (int i = 0; i < numtimes; i++) {
-     delete [] count_all[i];
-     delete [] count_round[i];
-     delete [] conc_all[i];
-     delete [] conc_round[i];
-  }
+  delete [] count_all[0];
+  delete [] count_round[0];
+  delete [] conc_all[0];
+  delete [] conc_round[0];
 
   return 0;  //No errors
 }
