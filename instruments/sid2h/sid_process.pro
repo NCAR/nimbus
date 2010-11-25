@@ -1,8 +1,5 @@
 PRO sid_process, op, statuswidgetid=statuswidgetid
 
-;Testbed version, adding transit time-based (tb) size spectra, and increasing main sizing
-;range to 200um.   July 2009 
-
    ;PRO to process SID2 raw files and put it in SODA format.
    ;Made for HIAPER
    ;Input option structure 'op' should have tags of 'fn_orig','autolevel',
@@ -181,7 +178,6 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
    aftotal=fltarr(num)            ;for computing the mean Af
    branch_count=lonarr(num,8)     ;count for number of 'branches' on a particle
    cispec=fltarr(num,numcibins)   ;circular index
-testmatrix=fltarr(num,8,numcibins)
    firstblock=lonarr(num)-1       ;index of the first block used in this time period
    firsti=lonarr(num)             ;the index of the first particle in the datablock
    blockpointer=lonarr(nfiles*1000);Pointers to all the data blocks
@@ -363,7 +359,6 @@ testmatrix=fltarr(num,8,numcibins)
                   totalscatter[s,*]=totalscatter[s,*]+scatter_adjusted             
                   transittime[index]=transittime[index]+b.tof[i]                  
                   branch_count[index,a.branches]=branch_count[index,a.branches]+1
-testmatrix[index,a.branches,ici]=testmatrix[index,a.branches,ici]+1
                ENDIF ELSE reject_count[index]=reject_count[index]+1
             ENDIF ELSE BEGIN ;end 'forced particle' if
                ;The forced particles are background values that can be used as calibrations
@@ -456,8 +451,7 @@ testmatrix[index,a.branches,ici]=testmatrix[index,a.branches,ici]+1
          afmidbins:afmidbins, afspec:afspec, meanaf:aftotal/(accept_count>1), transittime:transittime, speed:speed, missed:missed, missedhist:missedhist, $
          accept_count:accept_count, reject_count:reject_count, reject_reason:reject_reason, tas:tas, sa:sa, activetime:activetime,$
          totalscatter:totalscatter, tofmidbins:tofmidbins, tofspec:tofspec, cispec:cispec, cimidbins:cimidbins,$
-         pmtgain:pmtgain, detoffset:detoffset, detgain:detgain,    testmatrix:testmatrix, $
-         dethist:dethist,lasercal:lasercal.value, $
+         pmtgain:pmtgain, detoffset:detoffset, detgain:detgain, dethist:dethist,lasercal:lasercal.value, $
          firsti:firsti, firstblock:firstblock, blockpointer:blockpointer, filenum:filenum, largetrigger:largetrigger, $
          smalltrigger:smalltrigger,ntdead:ntdead,eventindex:eventindex,eventtype:eventtype,eventstring:eventstring, $
          tbspec1d:tbspec1d, tbconc1d:tbconc1d, tbendbins:tbendbins, tbmidbins:tbmidbins}
