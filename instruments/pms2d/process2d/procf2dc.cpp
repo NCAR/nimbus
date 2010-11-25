@@ -874,7 +874,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!intbinvar->put(it_endpoints, numintbins+1)) return NC_ERR; 
   
   //Counts
-  varname="A1DCA"+probe.suffix;
+  varname="A2DCA"+probe.suffix;
   if (!(ctallvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return NC_ERR;
   if (!ctallvar->add_att("_FillValue", (float)(-32767))) return NC_ERR;
   if (!ctallvar->add_att("units", "count")) return NC_ERR;
@@ -890,7 +890,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!ctallvar->add_att("ParticleAcceptMethod", "Reconstruction")) return NC_ERR;
   if (!ctallvar->put(&count_all[0][0], numtimes, 1, numbins+binoffset)) return NC_ERR; 
 
-  varname="A1DCR"+probe.suffix;
+  varname="A2DCR"+probe.suffix;
   if (!(ctwatvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return NC_ERR;
   if (!ctwatvar->add_att("_FillValue", (float)(-32767.0))) return NC_ERR;
   if (!ctwatvar->add_att("units", "count")) return NC_ERR;
@@ -906,7 +906,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!ctwatvar->add_att("ParticleAcceptMethod", "Reconstruction")) return NC_ERR;
   if (!ctwatvar->put(&count_round[0][0], numtimes, 1, numbins+binoffset)) return NC_ERR; 
 
-  varname="I1DCA"+probe.suffix;
+  varname="I2DCA"+probe.suffix;
   if (!(ctinttimevar = dataFile.add_var(varname.c_str(), ncInt, timedim, spsdim, intbindim))) return NC_ERR;
   if (!ctinttimevar->add_att("_FillValue", -32767)) return NC_ERR;
   if (!ctinttimevar->add_att("units", "count")) return NC_ERR;
@@ -915,7 +915,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!ctinttimevar->put(&count_it[0][0], numtimes, 1, numintbins+1)) return NC_ERR; 
  
   //Concentration
-  varname="C1DCA"+probe.suffix;
+  varname="C2DCA"+probe.suffix;
   if (!(cnallvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return NC_ERR;
   if (!cnallvar->add_att("_FillValue", (float)(-32767.0))) return NC_ERR;
   if (!cnallvar->add_att("units", "#/L")) return NC_ERR;
@@ -932,7 +932,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!cnallvar->add_att("Density", 1.0)) return NC_ERR;
   if (!cnallvar->put(&conc_all[0][0], numtimes, 1, numbins+binoffset)) return NC_ERR; 
 
-  varname="C1DCR"+probe.suffix;
+  varname="C2DCR"+probe.suffix;
   if (!(cnwatvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return NC_ERR;
   if (!cnwatvar->add_att("_FillValue", (float)(-32767.0))) return NC_ERR;
   if (!cnwatvar->add_att("units", "#/L")) return NC_ERR;
@@ -950,7 +950,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!cnwatvar->put(&conc_round[0][0], numtimes, 1, numbins+binoffset)) return NC_ERR; 
    
   //Total counts and LWC
-  varname="CONC1DCA"+probe.suffix;
+  varname="CONC2DCA"+probe.suffix;
   if (!(ntallvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;
   if (!ntallvar->add_att("units", "#/L")) return NC_ERR;
   if (!ntallvar->add_att("long_name", "Total Fast 2DC Concentration, All Particles")) return NC_ERR;
@@ -959,7 +959,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!ntallvar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!ntallvar->put(nt_all, numtimes)) return NC_ERR;
 
-  varname="CONC1DCR"+probe.suffix;
+  varname="CONC2DCR"+probe.suffix;
   if (!(ntwatvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;
   if (!ntwatvar->add_att("units", "#/L")) return NC_ERR;
   if (!ntwatvar->add_att("long_name", "Total Fast 2DC Concentration, Round Particles")) return NC_ERR;
@@ -968,7 +968,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!ntwatvar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!ntwatvar->put(nt_round, numtimes)) return NC_ERR;
   
-  varname="PLWC1DCR"+probe.suffix;
+  varname="PLWC2DCR"+probe.suffix;
   if (!(lwcvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;  
   if (!lwcvar->add_att("units", "g/m3")) return NC_ERR;
   if (!lwcvar->add_att("long_name", "Fast 2DC Liquid Water Content, Round Particles")) return NC_ERR;
@@ -977,7 +977,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!lwcvar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!lwcvar->put(lwc_round, numtimes)) return NC_ERR;
 
-  varname="NACCEPT1DCR"+probe.suffix;
+  varname="NACCEPT2DCR"+probe.suffix;
   if (!(naccwvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;  
   if (!naccwvar->add_att("units", "count")) return NC_ERR;
   if (!naccwvar->add_att("long_name", "Number of Particles Accepted, Round Particles")) return NC_ERR;
@@ -986,7 +986,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!naccwvar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!naccwvar->put(n_accepted_round, numtimes)) return NC_ERR;
 
-  varname="NACCEPT1DCA"+probe.suffix;
+  varname="NACCEPT2DCA"+probe.suffix;
   if (!(naccavar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;  
   if (!naccavar->add_att("units", "count")) return NC_ERR;
   if (!naccavar->add_att("long_name", "Number of Particles Accepted, All Particles")) return NC_ERR;
@@ -995,7 +995,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!naccavar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!naccavar->put(n_accepted_all, numtimes)) return NC_ERR;
 
-  varname="NREJECT1DCR"+probe.suffix;
+  varname="NREJECT2DCR"+probe.suffix;
   if (!(nrejwvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;  
   if (!nrejwvar->add_att("units", "count")) return NC_ERR;
   if (!nrejwvar->add_att("long_name", "Number of Particles Rejected, Round Particles")) return NC_ERR;
@@ -1004,7 +1004,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!nrejwvar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!nrejwvar->put(n_rejected_round, numtimes)) return NC_ERR;
 
-  varname="NREJECT1DCA"+probe.suffix;
+  varname="NREJECT2DCA"+probe.suffix;
   if (!(nrejavar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;  
   if (!nrejavar->add_att("units", "count")) return NC_ERR;
   if (!nrejavar->add_att("long_name", "Number of Particles Rejected, All Particles")) return NC_ERR;
