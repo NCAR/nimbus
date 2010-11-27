@@ -12,17 +12,9 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	User level applications (xbuild, WINDS).
-
 NOTES:		
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1995
+COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2010
 -------------------------------------------------------------------------
 */
 
@@ -36,13 +28,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 
 
 /* -------------------------------------------------------------------- */
-PMSspex::PMSspex(const char fileName[])
+PMSspex::PMSspex(const std::string fileName)
 {
   int	i, cnt;
   char	*file[2048], PMSbuffer[512], *p;
   FILE	*fp;
 
-  if ((fp = fopen(fileName, "r")) == NULL)
+  if ((fp = fopen(fileName.c_str(), "r")) == NULL)
     {
     std::cerr << "PMSspex: Can't open " << fileName << ".\n";
     exit(1);
@@ -97,7 +89,7 @@ PMSspex::PMSspex(const char fileName[])
 }	/* END INITPMSSPECS */
 
 /* -------------------------------------------------------------------- */
-char *PMSspex::GetParameter(const char serialNumber[],  const char parameter[])
+std::string PMSspex::GetParameter(const std::string serialNumber, const char parameter[])
 {
   int	i;
   char	*p;
@@ -109,14 +101,14 @@ char *PMSspex::GetParameter(const char serialNumber[],  const char parameter[])
       for (p = &PMSfile[i][5]; *p == ' ' || *p == '\t'; ++p)
         ;
 
-      if (strcmp(serialNumber, p) == 0)
+      if (strcmp(serialNumber.c_str(), p) == 0)
         {
         int	len = strlen(parameter);
 
         for (; PMSfile[i]; ++i)
           {
           if (strcmp(PMSfile[i], "END") == 0)
-            return(NULL);
+            return std::string("");
 
           if (strncmp(PMSfile[i], parameter, len) == 0)
             {
@@ -126,14 +118,14 @@ char *PMSspex::GetParameter(const char serialNumber[],  const char parameter[])
             for (p = &PMSfile[i][len]; *p == ' ' || *p == '\t'; ++p)
               ;
 
-            return(p);
+            return std::string(p);
             }
           }
         }
       }
     }
 
-  return(NULL);
+  return std::string("");
 
 }	/* END GETPMSPARAMETER */
 

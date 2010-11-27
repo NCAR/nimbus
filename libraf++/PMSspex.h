@@ -11,6 +11,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 #ifndef PMSSPEX_H
 #define PMSSPEX_H
 
+#include <string>
+
 #define COMMENT		'#'
 
 
@@ -24,17 +26,18 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 class PMSspex
 {
 public:
-	PMSspex(const char fName[]);
+	PMSspex(const std::string fName);
 	~PMSspex();
 
   /**
    * Given a probe serial number and a key name, return the value.
    */
-  char 	*GetParameter(const char serialNumber[],  const char parameter[]);
+  std::string GetParameter(const std::string serialNumber, const char parameter[]);
+
   /**
    * Return list of serial numbers that were found in the file.
    */
-  int 	GetSerialNumList(char *list[]);
+  int GetSerialNumList(char *list[]);
 
 
 private:
