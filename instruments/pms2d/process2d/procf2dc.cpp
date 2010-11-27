@@ -11,7 +11,7 @@
 
  ******************************************************************
 */
-//
+
 #include <iostream>
 #include <fstream>
 #include <algorithm>
@@ -22,10 +22,11 @@
 #include <iomanip>
 
 #include <netcdfcpp.h>
+#include <raf/PMSspex.h>
 
 using namespace std;
    
-const int ndiodes = 64;
+const int nDiodes = 64;
 const int numbins = 128;
 const int binoffset = 1;  // Offset for RAF conventions, number of empty bins before counting begins 
 const int slicesPerRecord = 512;
@@ -34,10 +35,13 @@ const string markerline = "</PMS2D>";  // Marks end of XML header
 /* Probe information.
  */
 struct probe_info {
-  string id;
+  string id;		// Two byte ID at the front of the data-record.
+  string serialNumber;
   string suffix;
-  string serialnumber;
-  float resolution;
+  int nDiodes;		// 32 or 64 at this time).
+  int firstBin, lastBin;
+  float resolution;	// micometers
+  float armWidth;	// cm
 };
 
 struct struct_particle {
@@ -66,36 +70,43 @@ struct type_buffer {
 
 
 
-//--------Sample area of a probe for given diameter---------
-float samplearea(float diam, float res, float armwidth, short numdiodes, bool reconstruct){
-   //  Return the sample area for a variety of probes.
-   // The sample area unit should be meter^2 for all probes.
-   // Allin/reconstruct option, for computing sa when particle must be all-in.
+/**
+ * Compute sample area of a probe for given diameter.
+ * The sample area unit should be meter^2 for all probes.
+ * @param probe
+ * @param diam diameter to generate sample volume.
+ * @param reconstruct Are doing particle reconstruction, or all-in.
+ * @returns sample area
+ */
+float samplearea(struct probe_info & probe, float diam, bool reconstruct)
+{
+  float sa, prht, dof, eff_wid;
    
-   float sa, prht, dof, eff_wid;
+  prht = probe.armWidth * 1.0e4;  //convert cm to microns
+  dof = min((2.37f * diam*diam), prht);  // in microns, limit on dof is physical distance between arms
+  if (reconstruct)
+    eff_wid = probe.resolution*probe.nDiodes+0.72*diam;  //from eq 17 in Heymsfield & Parrish 1978
+  else
+    eff_wid = probe.resolution * (probe.nDiodes-1)-diam;   //from eq 6 in HP78
+
+  sa = dof * eff_wid * 1e-12;  //compute sa and convert to m^2 
    
-   prht=armwidth * 1.0e4;  //convert cm to microns
-   dof=min((2.37f * diam*diam), prht);  // in microns, limit on dof is physical distance between arms
-   eff_wid=res*numdiodes+0.72*diam;  //from eq 17 in Heymsfield & Parrish 1978
-   if (reconstruct == 0) eff_wid=res*(numdiodes-1)-diam;   //from eq 6 in HP78
-   sa=dof*eff_wid * 1e-12;  //compute sa and convert to m^2 
-   
-   return sa;
+  return sa;
 }
    
 
-
 //--------Find index for maximum element of an array---------
-int maxindex(double x[],int n){
-   int ixmax=0;
-   double xmax=0;
-   for (int i=0; i<n; i++){
-      if (x[i]>xmax){
-         xmax=x[i];
-         ixmax=i;
-      }
-   }
-   return ixmax;
+int maxindex(double x[],int n)
+{
+  int ixmax=0;
+  double xmax=0;
+  for (int i=0; i<n; i++){
+    if (x[i]>xmax){
+      xmax=x[i];
+      ixmax=i;
+    }
+  }
+  return ixmax;
 }
 
 
@@ -214,7 +225,7 @@ double dpoisson_fit(double x[], double y[], double a[3], int n){
 
 
 // ----------------CIRCLE SIZE ROUTINE----------------
-struct_particle findsize(short img[][ndiodes], short nslices, float res){
+struct_particle findsize(short img[][nDiodes], short nslices, float res){
    // Based on http://tog.acm.org/resources/GraphicsGems/gems/BoundSphere.c 
    // Graphics Gems I, Article by Ritter
 
@@ -226,15 +237,15 @@ struct_particle findsize(short img[][ndiodes], short nslices, float res){
    struct_particle particle;
    bool allin=1;
    float area=0, theta, phi;
-   int mindiode=ndiodes, maxdiode=0, minslice=nslices, maxslice=0;
+   int mindiode=nDiodes, maxdiode=0, minslice=nslices, maxslice=0;
    
    //Stuff x and y vectors, find x and y size, area, check for edge touching
    //May want to erode image to outline to increase performance.
-   for (int i=0; i<nslices; i++) for(int j=0; j<ndiodes; j++) {
+   for (int i=0; i<nslices; i++) for(int j=0; j<nDiodes; j++) {
       if(img[i][j]==foreval) {
          y.push_back(i); 
          x.push_back(j);
-         if((j==0) || (j==ndiodes-1)) allin=0;
+         if((j==0) || (j==nDiodes-1)) allin=0;
          area++;
          if(j<mindiode) mindiode=j;
          if(j>maxdiode) maxdiode=j;
@@ -313,9 +324,9 @@ struct_particle findsize(short img[][ndiodes], short nslices, float res){
    
    //Find area of enclosing circle (in the array)
    theta=acos(min((cen.x/rad),1.0));            //angle
-   phi=acos(min((ndiodes-1-cen.x)/rad,1.0));
+   phi=acos(min((nDiodes-1-cen.x)/rad,1.0));
    // find area= triangles(left) + triangles(right) + (remaining wedges)
-   particle.circlearea=(cen.x*rad*sin(theta) + (ndiodes-1-cen.x)*rad*sin(phi) + 
+   particle.circlearea=(cen.x*rad*sin(theta) + (nDiodes-1-cen.x)*rad*sin(phi) + 
                        3.14*rad*rad*((3.14-phi-theta)/3.14));
    particle.csize=(rad*2.0)*res; 
 
@@ -325,8 +336,8 @@ struct_particle findsize(short img[][ndiodes], short nslices, float res){
 
 
 // ----------------HOLE FILL ROUTINE----------------
-short fillholes2(short img_original[][ndiodes], short nslices){
-  short img[nslices][ndiodes]; //create a new image for processing 
+short fillholes2(short img_original[][nDiodes], short nslices){
+  short img[nslices][nDiodes]; //create a new image for processing 
   short backval=1, foreval=0;  //values that indicate background and foreground 
   short label=1, area_added=0;
   stack<int> sx, sy;
@@ -337,18 +348,18 @@ short fillholes2(short img_original[][ndiodes], short nslices){
   memset(img, 0, sizeof(img));
   
   //Check pixels for background values (to be filled)
-  for (int i=0; i<nslices; i++){
-     for (int j=0; j<ndiodes; j++){
-        if ((img_original[i][j]==backval) && (img[i][j]==0)){
+  for (int i = 0; i < nslices; i++) {
+     for (int j = 0; j < nDiodes; j++) {
+        if ((img_original[i][j]==backval) && (img[i][j]==0)) {
            sx.push(i);
            sy.push(j);
            img[i][j]=label;
-           while (!sx.empty()){
+           while (!sx.empty()) {
               //Define neighborhood to test
               itest[0]=max(sx.top()-1,0);         jtest[0]=sy.top();
               itest[1]=min(sx.top()+1,nslices-1); jtest[1]=sy.top();
               itest[2]=sx.top();                  jtest[2]=max(sy.top()-1,0);
-              itest[3]=sx.top();                  jtest[3]=min(sy.top()+1,ndiodes-1);
+              itest[3]=sx.top();                  jtest[3]=min(sy.top()+1,nDiodes-1);
               sx.pop();  //Element has been used, erase
               sy.pop();
               for (int k=0; k<4; k++){
@@ -369,11 +380,11 @@ short fillholes2(short img_original[][ndiodes], short nslices){
      //Check edges for this value
      edgetouch=0;
      for (int i=0; i<nslices; i++) if (img[i][0]==ic) edgetouch=1;
-     if (edgetouch==0) for (int i=0; i<nslices; i++) if (img[i][ndiodes-1]==ic) edgetouch=1;
-     if (edgetouch==0) for (int j=0; j<ndiodes; j++) if (img[0][j]==ic) edgetouch=1;
-     if (edgetouch==0) for (int j=0; j<ndiodes; j++) if (img[nslices-1][j]==ic) edgetouch=1;
+     if (edgetouch==0) for (int i=0; i<nslices; i++) if (img[i][nDiodes-1]==ic) edgetouch=1;
+     if (edgetouch==0) for (int j=0; j<nDiodes; j++) if (img[0][j]==ic) edgetouch=1;
+     if (edgetouch==0) for (int j=0; j<nDiodes; j++) if (img[nslices-1][j]==ic) edgetouch=1;
      if (edgetouch==0){
-        for (int i=0; i<nslices; i++) for (int j=0; j<ndiodes; j++) {
+        for (int i=0; i<nslices; i++) for (int j=0; j<nDiodes; j++) {
            if (img[i][j]==ic) {img_original[i][j]=foreval; area_added++;}
         }
      }
@@ -487,16 +498,18 @@ void showparticle(struct_particle& x){
 } 
 
 //----------------Display particle image to screen--------
-void showroi(short img[][ndiodes], short nslices){
-   for (int i=0; i<nslices;i++){
-      for (int j=0; j<ndiodes; j++) cout<<img[i][j]; 
-      cout<<endl;
-   }
-   cout<<endl;
+void showroi(short img[][nDiodes], short nslices)
+{
+  for (int i = 0; i < nslices;i++){
+    for (int j = 0; j < nDiodes; j++) cout<<img[i][j]; 
+    cout<<endl;
+  }
+  cout<<endl;
 }
 
 // ----------------A FEW BYTE SWAPPING ROUTINES----------------
-unsigned long long endianswap_ull(unsigned long long x){
+unsigned long long endianswap_ull(unsigned long long x)
+{
    x = (x>>56) | 
         ((x<<40) & 0x00FF000000000000ULL) |
         ((x<<24) & 0x0000FF0000000000ULL) |
@@ -508,10 +521,9 @@ unsigned long long endianswap_ull(unsigned long long x){
         return x;
 }
 
-unsigned short endianswap_s(unsigned short x){
-    x = (x>>8) | 
-        (x<<8);
-    return x;
+unsigned short endianswap_s(unsigned short x)
+{
+  return (x>>8) | (x<<8);
 }
 
 
@@ -519,8 +531,8 @@ unsigned short endianswap_s(unsigned short x){
 // ------------PROCESS 2D-----------------------
 //================================================================================================
 int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_info & probe,
-    float armwidth, bool recon, bool shattercorrect, char smethod, bool verbose, bool debug){
-
+    bool recon, bool shattercorrect, char smethod, bool verbose, bool debug)
+{
   /*-----Processing options-------------------------------------------------------
       start/stop time: In UTC seconds
       probe2process:   Indicates which probenumber to process C4, C6, etc.
@@ -533,14 +545,15 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   type_buffer buffer;  
   ifstream input_file;
   string line;
-  short roi[slicesPerRecord][ndiodes];
-  short slice_count=0, istack=0, firstday;
+  short roi[slicesPerRecord][nDiodes];
+  short slice_count=0, firstday;
   unsigned long long slice, firsttimeline, lasttimeline=0, timeline, difftimeline, particle_count=0;
   double lastbuffertime, buffertime=0, nextit=0;
   bool firsttimeflag;
   float wc;
   long last_time1hz=0, itime, isize, wsize, iit;
-  struct_particle particle, particle_stack[10000];
+  struct_particle particle;
+  vector<struct_particle> particle_stack;
   char probetype=probe.id[0];  
   char probenumber=probe.id[1];
 
@@ -676,13 +689,13 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
            //If so, place all particles in count matrix
            if (time1hz != last_time1hz){
               itime=last_time1hz-starttime;  //time index
-             
+if (itime > 500000) printf(" ITIME =%ld\n", itime);
               //Make sure particles are in correct time range
               if (itime>=0){
                  tas[itime]=((float)endianswap_s(buffer.tas))*125.0/255.0;
                  
                  //Fill interarrival time array with all particles
-//                 for (int i=0; i<istack; i++){                    
+//                 for (int i=0; i<particle_stack.size(); i++){                    
 //                    iit=0;
 //                    while((particle_stack[i].inttime)>it_endpoints[iit+1]) iit++;
 //                    count_it[itime][iit+1]++;   //Add 1 to iit for RAF convention
@@ -701,30 +714,30 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
                  cpoisson2[itime]=(float)bestfit[1];
                  cpoisson3[itime]=(float)bestfit[2];
                  
-                 //Compute shattering corrections if flagged
+                 // Compute shattering corrections if flagged
                  if (shattercorrect) {
-                   pcutoff[itime]=(float)(1.0/bestfit[1]*0.05);  //Compute cutoff time
+                   pcutoff[itime]=(float)(1.0/bestfit[1]*0.05);  // Compute cutoff time
                    corrfac[itime]=(float)(1.0/(2*exp(-pcutoff[itime]*bestfit[1])-1));  //Compute correction factor
                  } else {
-                   pcutoff[itime]=0;   //No rejection or corrections
+                   pcutoff[itime]=0;   // No rejection or corrections
                    corrfac[itime]=1.0;
                  }
                  
-                 if (verbose) cout<<itime+starttime<<" "<<time1hz<<" "<<istack<<" "<<bestfit[0]<<" "<<bestfit[1]<<" "<<bestfit[2]<<endl;
+                 if (verbose) cout<<itime+starttime<<" "<<time1hz<<" "<<particle_stack.size()<<" "<<bestfit[0]<<" "<<bestfit[1]<<" "<<bestfit[2]<<endl;
                  
-                 //Sort through all particles in this stack
-                 for (int i=0; i<istack; i++){                                  
+                 // Sort through all particles in this stack
+                 for (size_t i = 0; i < particle_stack.size(); i++) {
                     //Find water size correction
                     wc=poisson_spot_correction(particle_stack[i].area,particle_stack[i].holearea,particle_stack[i].allin);
-                    
-                    //Rejection
-                    if(i==istack-1) nextit=particle.inttime;  //This particle is for next time period, but use its inttime
+
+                    // Rejection
+                    if(i==particle_stack.size()-1) nextit=particle.inttime;  //This particle is for next time period, but use its inttime
                     else nextit=particle_stack[i+1].inttime;
                     reject_particle(particle_stack[i], pcutoff[itime], nextit, probe.resolution,
                                     bin_endpoints[0], bin_endpoints[numbins],wc,recon);
                     if (debug) showparticle(particle_stack[i]);                    
                     
-                    //Fill count arrays with accepted particles
+                    // Fill count arrays with accepted particles
                     if (!particle_stack[i].ireject){
                        isize=0; 
                        while((particle_stack[i].size)>bin_endpoints[isize+1]) isize++;
@@ -737,26 +750,25 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
                        count_round[itime][wsize+binoffset]++;   //Add offset to wsize for RAF convention
                        n_accepted_round[itime]++;
                     } else n_rejected_round[itime]++;                                                      
-                 } //End sorting through particle stack
-              } //End of time check
+                 } // End sorting through particle stack
+              } // End of time check
 
-              //Restart particle stack
-              istack=0;
+              // Restart particle stack
+              particle_stack.clear();
               last_time1hz=time1hz;
-           } //End crossed into new time period
+           } // End crossed into new time period
            
-           //Add this particle to vector
-           particle_stack[istack]=particle;
-           istack=min(istack+1,9999);
+           // Add this particle to vector
+           particle_stack.push_back(particle);
 
-           //Start a new particle
+           // Start a new particle
            particle_count++;
            lasttimeline=timeline;
            slice_count=0;
         } // end of image processing after detection of sync line 
         else {
-           //Found an image slice, make the next slice part of binary image
-           for (int idiode=0; idiode<ndiodes; idiode++)
+           // Found an image slice, make the next slice part of binary image
+           for (int idiode = 0; idiode < nDiodes; idiode++)
                roi[slice_count][idiode]=((slice & powerof2[63-idiode])/powerof2[63-idiode]);
            slice_count=min(slice_count+1,511);  //Increment slice_count, limit to 511
         }
@@ -775,31 +787,31 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   float bin_midpoints[numbins], sa[numbins], sv, mass;
   float nt_all[numtimes], nt_round[numtimes], lwc_round[numtimes];
   //Initialize to zero
-  sa[0]=0.0;
-  for (int j=0; j<numtimes; j++) {
-     nt_all[j]=0;  nt_round[j]=0;  lwc_round[j]=0; 
-  }
+  sa[0] = 0.0;
+  for (int j = 0; j < numtimes; j++)
+     nt_all[j] = nt_round[j] = lwc_round[j] = 0.0; 
   
-  //Compute
-  for (int i=0; i<numbins; i++) {  
+  // Compute
+  for (int i = 0; i < numbins; i++) {  
      bin_midpoints[i]=(bin_endpoints[i]+bin_endpoints[i+1])/2.0;
-     sa[i]=samplearea(bin_midpoints[i], probe.resolution, armwidth, ndiodes, recon);
+     sa[i]=samplearea(probe, bin_midpoints[i], recon);
      mass=3.1416/6.0*pow(bin_midpoints[i]/1e4,3);  //grams
-     for (int j=0; j<numtimes; j++){
-        if (tas[j] > 0){
-           sv=sa[i]*tas[j];  //Sample volume (m3)
-           //Correct counts for the poisson fitting
+     for (int j = 0; j < numtimes; j++) {
+        if (tas[j] > 0.0) {
+           sv = sa[i] * tas[j];  //Sample volume (m3)
+
+           // Correct counts for the poisson fitting
            if (std::isnan(corrfac[j])) corrfac[j]=1.0;  //Filter out bad correction factors
            count_all[j][i+binoffset]=count_all[j][i+binoffset]*corrfac[j];
            count_round[j][i+binoffset]=count_round[j][i+binoffset]*corrfac[j];
            conc_all[j][i+binoffset]=count_all[j][i+binoffset]/sv/1000.0;      // #/L
            conc_round[j][i+binoffset]=count_round[j][i+binoffset]/sv/1000.0;  // #/L
            
-           //if (i > 3) {      //Compute Nt and LWC only for particles larger than 3 pixels
-           nt_all[j]=nt_all[j]+conc_all[j][i+binoffset];
-           nt_round[j]=nt_round[j]+conc_round[j][i+binoffset];
-           lwc_round[j]=lwc_round[j] + mass*conc_round[j][i+binoffset]*1000.0; // g/m3
-           //}
+           if (i >= probe.firstBin) {
+             nt_all[j] += conc_all[j][i+binoffset];
+             nt_round[j] += conc_round[j][i+binoffset];
+             lwc_round[j] += mass*conc_round[j][i+binoffset]*1000.0; // g/m3
+           }
         }
      }
   }
@@ -880,12 +892,12 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!ctallvar->add_att("units", "count")) return NC_ERR;
   if (!ctallvar->add_att("long_name", "Fast 2DC Corrected Accumulation per Channel, All Particles")) return NC_ERR;
   if (!ctallvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!ctallvar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
+  if (!ctallvar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
   if (!ctallvar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!ctallvar->add_att("Resolution", (int)probe.resolution)) return NC_ERR;
-  if (!ctallvar->add_att("nDiodes", ndiodes)) return NC_ERR;
+  if (!ctallvar->add_att("nDiodes", probe.nDiodes)) return NC_ERR;
   if (!ctallvar->add_att("ResponseTime", 0.4)) return NC_ERR;
-  if (!ctallvar->add_att("ArmDistance", armwidth * 10)) return NC_ERR;
+  if (!ctallvar->add_att("ArmDistance", probe.armWidth * 10)) return NC_ERR;
   if (!ctallvar->add_att("Rejected", "Roundness below 0.1, interarrival time below 1/20th of distribution peak")) return NC_ERR;
   if (!ctallvar->add_att("ParticleAcceptMethod", "Reconstruction")) return NC_ERR;
   if (!ctallvar->put(&count_all[0][0], numtimes, 1, numbins+binoffset)) return NC_ERR; 
@@ -896,12 +908,12 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!ctwatvar->add_att("units", "count")) return NC_ERR;
   if (!ctwatvar->add_att("long_name", "Fast 2DC Corrected Accumulation per Channel, Round Particles")) return NC_ERR;
   if (!ctwatvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!ctwatvar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
+  if (!ctwatvar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
   if (!ctwatvar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!ctallvar->add_att("Resolution", (int)probe.resolution)) return NC_ERR;
-  if (!ctwatvar->add_att("nDiodes", ndiodes)) return NC_ERR;
+  if (!ctwatvar->add_att("nDiodes", probe.nDiodes)) return NC_ERR;
   if (!ctwatvar->add_att("ResponseTime", 0.4)) return NC_ERR;
-  if (!ctwatvar->add_att("ArmDistance", armwidth * 10)) return NC_ERR;
+  if (!ctwatvar->add_att("ArmDistance", probe.armWidth * 10)) return NC_ERR;
   if (!ctwatvar->add_att("Rejected", "Roundness below 0.5, interarrival time below 1/20th of distribution peak")) return NC_ERR;
   if (!ctwatvar->add_att("ParticleAcceptMethod", "Reconstruction")) return NC_ERR;
   if (!ctwatvar->put(&count_round[0][0], numtimes, 1, numbins+binoffset)) return NC_ERR; 
@@ -921,7 +933,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!cnallvar->add_att("units", "#/L")) return NC_ERR;
   if (!cnallvar->add_att("long_name", "Fast 2DC Concentration per Channel, All Particles")) return NC_ERR;
   if (!cnallvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!cnallvar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
+  if (!cnallvar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
   if (!cnallvar->add_att("DataQuality", "Good")) return NC_ERR;
 // Add EAW
 // Add DOF
@@ -938,7 +950,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!cnwatvar->add_att("units", "#/L")) return NC_ERR;
   if (!cnwatvar->add_att("long_name", "Fast 2DC Concentration per Channel, Round Particles")) return NC_ERR;
   if (!cnwatvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!cnwatvar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
+  if (!cnwatvar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
   if (!cnwatvar->add_att("DataQuality", "Good")) return NC_ERR;
 // Add EAW
 // Add DOF
@@ -955,7 +967,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!ntallvar->add_att("units", "#/L")) return NC_ERR;
   if (!ntallvar->add_att("long_name", "Total Fast 2DC Concentration, All Particles")) return NC_ERR;
   if (!ntallvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!ntallvar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
+  if (!ntallvar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
   if (!ntallvar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!ntallvar->put(nt_all, numtimes)) return NC_ERR;
 
@@ -964,7 +976,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!ntwatvar->add_att("units", "#/L")) return NC_ERR;
   if (!ntwatvar->add_att("long_name", "Total Fast 2DC Concentration, Round Particles")) return NC_ERR;
   if (!ntwatvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!ntwatvar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
+  if (!ntwatvar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
   if (!ntwatvar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!ntwatvar->put(nt_round, numtimes)) return NC_ERR;
   
@@ -973,7 +985,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!lwcvar->add_att("units", "g/m3")) return NC_ERR;
   if (!lwcvar->add_att("long_name", "Fast 2DC Liquid Water Content, Round Particles")) return NC_ERR;
   if (!lwcvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!lwcvar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
+  if (!lwcvar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
   if (!lwcvar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!lwcvar->put(lwc_round, numtimes)) return NC_ERR;
 
@@ -982,7 +994,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!naccwvar->add_att("units", "count")) return NC_ERR;
   if (!naccwvar->add_att("long_name", "Number of Particles Accepted, Round Particles")) return NC_ERR;
   if (!naccwvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!naccwvar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
+  if (!naccwvar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
   if (!naccwvar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!naccwvar->put(n_accepted_round, numtimes)) return NC_ERR;
 
@@ -991,7 +1003,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!naccavar->add_att("units", "count")) return NC_ERR;
   if (!naccavar->add_att("long_name", "Number of Particles Accepted, All Particles")) return NC_ERR;
   if (!naccavar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!naccavar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
+  if (!naccavar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
   if (!naccavar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!naccavar->put(n_accepted_all, numtimes)) return NC_ERR;
 
@@ -1000,7 +1012,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!nrejwvar->add_att("units", "count")) return NC_ERR;
   if (!nrejwvar->add_att("long_name", "Number of Particles Rejected, Round Particles")) return NC_ERR;
   if (!nrejwvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!nrejwvar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
+  if (!nrejwvar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
   if (!nrejwvar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!nrejwvar->put(n_rejected_round, numtimes)) return NC_ERR;
 
@@ -1009,7 +1021,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   if (!nrejavar->add_att("units", "count")) return NC_ERR;
   if (!nrejavar->add_att("long_name", "Number of Particles Rejected, All Particles")) return NC_ERR;
   if (!nrejavar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!nrejavar->add_att("SerialNumber", probe.serialnumber.c_str())) return NC_ERR;
+  if (!nrejavar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
   if (!nrejavar->add_att("DataQuality", "Good")) return NC_ERR;
   if (!nrejavar->put(n_rejected_all, numtimes)) return NC_ERR;
 
@@ -1072,46 +1084,69 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
 }
 
 
+string extractElement(const string & line, string name)
+{
+  size_t tagpos = line.find(name);
+  size_t q1=line.find(">", tagpos);
+  size_t q2=line.find("<", q1+1);
+  return line.substr(q1+1, q2-q1-1);
+}
+
+string extractAttribute(const string & line, string name)
+{
+  size_t tagpos = line.find(name);
+  size_t q1=line.find("\"", tagpos);
+  size_t q2=line.find("\"", q1+1);
+  return line.substr(q1+1, q2-q1-1);
+}
+
 void ParseHeader(ifstream & input_file, vector<struct probe_info> & probe_list)
 {
-  string line;
+  string line, project, platform;
 
   // Parse XML header
   do
   {    
     getline(input_file, line);
-    size_t tagpos=line.find("Fast2DC");
 
-    if (tagpos != string::npos)	//found a line describing a FAST2D probe
+    if (line.find("Project") != string::npos)
+      project = extractElement(line, "Project");
+
+    if (line.find("Platform") != string::npos)
+      platform = extractElement(line, "Platform");
+
+    if (line.find("Fast2DC") != string::npos)	//found a line describing a FAST2D probe
     {
       struct probe_info thisProbe;
-      size_t q1, q2;
 
-      //Find probe id
-      tagpos=line.find("probe id");
-      q1=line.find("\"",tagpos);
-      q2=line.find("\"",q1+1);
-      thisProbe.id = line.substr(q1+1,q2-q1-1);
+      thisProbe.id = extractAttribute(line, "probe id");
+      thisProbe.resolution = atof(extractAttribute(line, "resolution").c_str());
+      thisProbe.suffix = extractAttribute(line, "suffix");
+      thisProbe.serialNumber = extractAttribute(line, "serialnumber");
 
-      //Find resolution
-      tagpos=line.find("resolution");
-      q1=line.find("\"",tagpos);
-      q2=line.find("\"",q1+1);
-      string subline=line.substr(q1+1,q2-q1-1);
-      thisProbe.resolution = atof(subline.c_str());
-      
-      //Find suffix
-      tagpos=line.find("suffix");
-      q1=line.find("\"",tagpos);
-      q2=line.find("\"",q1+1);
-      thisProbe.suffix = line.substr(q1+1,q2-q1-1);
-      
-      //Find serial number
-      tagpos=line.find("serialnumber");
-      q1=line.find("\"",tagpos);
-      q2=line.find("\"",q1+1);
-      thisProbe.serialnumber = line.substr(q1+1,q2-q1-1);
-      
+      // Set some defaults / best guesses.
+      thisProbe.nDiodes = 64;
+      thisProbe.firstBin = binoffset;
+      thisProbe.firstBin = thisProbe.nDiodes;
+
+      thisProbe.armWidth = 6.1;
+      if (thisProbe.id[0] == 'P')
+        thisProbe.armWidth = 26.1;
+
+      // Attempt to read RAF PMSspecs file.
+      char *proj_dir = getenv("PROJ_DIR");
+      if (proj_dir) {
+        string s, file(proj_dir);
+        file += "/" + project + "/" + platform + "/PMSspecs";
+        PMSspex pms_specs(file);
+
+        s = pms_specs.GetParameter(thisProbe.serialNumber.c_str(), "FIRST_BIN");
+        thisProbe.firstBin = atoi(s.c_str());
+
+        s = pms_specs.GetParameter(thisProbe.serialNumber.c_str(), "LAST_BIN");
+        thisProbe.lastBin = atoi(s.c_str());
+      }
+
       probe_list.push_back(thisProbe);
     }
   } while ((line.compare(markerline)!=0) && (!input_file.eof()));  
@@ -1173,19 +1208,19 @@ int main(int argc, char *argv[])
      return 1;
   }
 
-  //Read first buffer, get start time
+  // Read first buffer, get start time
   input_file.read((char*)(&buffer), sizeof(buffer));
   starttime=endianswap_s(buffer.hours)*10000+endianswap_s(buffer.minutes*100)+endianswap_s(buffer.seconds);
    
-  //Read last buffer, get stop time
+  // Read last buffer, get stop time
   do input_file.read((char*)(&buffer), sizeof(buffer)); while (!input_file.eof());
   stoptime=endianswap_s(buffer.hours)*10000+endianswap_s(buffer.minutes)*100+endianswap_s(buffer.seconds);
   
   input_file.close();
 
    
-  //Parse command line arguments
-  bool recon=1, verbose=0, debug=0, shattercorrect=1;  //Default values
+  // Parse command line arguments
+  bool recon=1, verbose=0, debug=0, shattercorrect=1;  // Default values
   char smethod='c';
   for (int i = 2; i < argc; i++)
   {
@@ -1200,19 +1235,18 @@ int main(int argc, char *argv[])
      if (arg.find("-d")!=string::npos) debug=1;
   }
 
-  if (starttime > stoptime) stoptime = stoptime + 240000;  //Midnight crossing
+  if (starttime > stoptime) stoptime = stoptime + 240000;  // Midnight crossing
   
+  cout << "File start time:" << starttime << "  end time:" << stoptime << endl;
+
   // Process all probes found in the file
   for (size_t i = 0; i < probes.size(); i++)
   {
-    float armwidth=6.1;
-    if (probes[i].id.compare("C6")) armwidth=6.1;   //Add new probes here as they become available
-    if (probes[i].id.compare("C4")) armwidth=6.1;
+    cout	<< "Processing: " << probes[i].serialNumber << probes[i].suffix
+		<< " res:" << probes[i].resolution
+		<< " armwidth:" << probes[i].armWidth << endl;
 
-    cout << "Processing: "<<probes[i].id<<" res:"<<probes[i].resolution<<" suffix:"<<probes[i].suffix<<" armwidth:"<<armwidth<<endl;
-    cout << "    Start:" << starttime << "  Stop:" << stoptime << endl;
-
-    errorcode = process2d(argv[1], starttime, stoptime, probes[i], armwidth, recon, shattercorrect, smethod, verbose, debug); 
+    errorcode = process2d(argv[1], starttime, stoptime, probes[i], recon, shattercorrect, smethod, verbose, debug); 
 
     if (!errorcode)
       cout << endl << "Sucessfully processed probe " << i << endl;

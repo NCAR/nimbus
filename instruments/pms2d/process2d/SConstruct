@@ -5,7 +5,9 @@ env = Environment(platform = 'posix',ENV= os.environ)
 env['JLOCAL'] = os.environ['JLOCAL']
 
 env.Append(CXXFLAGS='-g -Wall -Werror')
-env.Append(CPPPATH = '/usr/include/netcdf')
+env.Append(CPPPATH = ['/usr/include/netcdf', '$JLOCAL/include'])
+env.Append(LIBPATH = ['$JLOCAL/lib'])
+env.Append(LIBS = ['libraf++'])
 
 # To get netcdf libraries on the link command line with static linking,
 # they need to be added to the end of the link command.  Adding them to
