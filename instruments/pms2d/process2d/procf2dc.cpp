@@ -42,6 +42,12 @@ struct probe_info {
   int firstBin, lastBin;
   float resolution;	// micometers
   float armWidth;	// cm
+
+  vector<float> bin_endpoints;
+  vector<float> bin_midpoints;
+  vector<float> dof;	// Depth Of Field
+  vector<float> eaw;	// Effective Area Width
+  vector<float> samplearea;
 };
 
 struct struct_particle {
@@ -78,20 +84,31 @@ struct type_buffer {
  * @param reconstruct Are doing particle reconstruction, or all-in.
  * @returns sample area
  */
-float samplearea(struct probe_info & probe, float diam, bool reconstruct)
+void samplearea(struct probe_info & probe, bool reconstruct)
 {
-  float sa, prht, dof, eff_wid;
-   
-  prht = probe.armWidth * 1.0e4;  //convert cm to microns
-  dof = min((2.37f * diam*diam), prht);  // in microns, limit on dof is physical distance between arms
-  if (reconstruct)
-    eff_wid = probe.resolution*probe.nDiodes+0.72*diam;  //from eq 17 in Heymsfield & Parrish 1978
-  else
-    eff_wid = probe.resolution * (probe.nDiodes-1)-diam;   //from eq 6 in HP78
+  for (int i = 0; i < numbins+1; ++i)
+    probe.bin_endpoints.push_back((i+0.5) * probe.resolution);
 
-  sa = dof * eff_wid * 1e-12;  //compute sa and convert to m^2 
-   
-  return sa;
+  for (int i = 0; i < numbins; ++i)
+  {
+    float sa, prht, dof, eff_wid, diam;
+
+    diam = (probe.bin_endpoints[i] + probe.bin_endpoints[i+1]) / 2.0;
+
+    prht = probe.armWidth * 1.0e4;  //convert cm to microns
+    dof = min((2.37f * diam*diam), prht);  // in microns, limit on dof is physical distance between arms
+    if (reconstruct)
+      eff_wid = probe.resolution*probe.nDiodes+0.72*diam;  //from eq 17 in Heymsfield & Parrish 1978
+    else
+      eff_wid = probe.resolution * (probe.nDiodes-1)-diam;   //from eq 6 in HP78
+
+    sa = dof * eff_wid * 1e-12;  //compute sa and convert to m^2 
+
+    probe.bin_midpoints.push_back(diam);
+    probe.dof.push_back(dof);
+    probe.eaw.push_back(eff_wid);
+    probe.samplearea.push_back(sa);
+  }
 }
    
 
@@ -561,11 +578,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   unsigned long long powerof2[64];
   for (int i=0; i<64; i++) {powerof2[i]=1ULL; for (int j=0; j<i;j++) powerof2[i]=powerof2[i]*2ULL;} 
 
-  //Bin setup
-  float bin_endpoints[numbins+1];  
-  //Simple bin limit sizes, each bin has width of pixel resolution. Could make coarser if desired.
-  for (int i=0; i<(numbins+1); i++) bin_endpoints[i]=(i+0.5)*probe.resolution;  
-  
+  samplearea(probe, recon);
   //Time setup
   int starttime=hms2sfm(starttimehms);
   int stoptime=hms2sfm(stoptimehms);
@@ -689,7 +702,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
            //If so, place all particles in count matrix
            if (time1hz != last_time1hz){
               itime=last_time1hz-starttime;  //time index
-if (itime > 500000) printf(" ITIME =%ld\n", itime);
+
               //Make sure particles are in correct time range
               if (itime>=0){
                  tas[itime]=((float)endianswap_s(buffer.tas))*125.0/255.0;
@@ -734,19 +747,19 @@ if (itime > 500000) printf(" ITIME =%ld\n", itime);
                     if(i==particle_stack.size()-1) nextit=particle.inttime;  //This particle is for next time period, but use its inttime
                     else nextit=particle_stack[i+1].inttime;
                     reject_particle(particle_stack[i], pcutoff[itime], nextit, probe.resolution,
-                                    bin_endpoints[0], bin_endpoints[numbins],wc,recon);
+                                    probe.bin_endpoints[0], probe.bin_endpoints[numbins],wc,recon);
                     if (debug) showparticle(particle_stack[i]);                    
                     
                     // Fill count arrays with accepted particles
                     if (!particle_stack[i].ireject){
                        isize=0; 
-                       while((particle_stack[i].size)>bin_endpoints[isize+1]) isize++;
+                       while((particle_stack[i].size)>probe.bin_endpoints[isize+1]) isize++;
                        count_all[itime][isize+binoffset]++;   //Add offset to isize for RAF convention
                        n_accepted_all[itime]++;
                     } else n_rejected_all[itime]++;
                     if (!particle_stack[i].wreject){
                        wsize=0; 
-                       while((particle_stack[i].size/wc)>bin_endpoints[wsize+1]) wsize++;
+                       while((particle_stack[i].size/wc)>probe.bin_endpoints[wsize+1]) wsize++;
                        count_round[itime][wsize+binoffset]++;   //Add offset to wsize for RAF convention
                        n_accepted_round[itime]++;
                     } else n_rejected_round[itime]++;                                                      
@@ -784,28 +797,24 @@ if (itime > 500000) printf(" ITIME =%ld\n", itime);
   
   
   //=========Compute sample volume, concentration, total number, and LWC======
-  float bin_midpoints[numbins], sa[numbins], sv, mass;
   float nt_all[numtimes], nt_round[numtimes], lwc_round[numtimes];
-  //Initialize to zero
-  sa[0] = 0.0;
+  // Initialize to zero
   for (int j = 0; j < numtimes; j++)
      nt_all[j] = nt_round[j] = lwc_round[j] = 0.0; 
   
   // Compute
   for (int i = 0; i < numbins; i++) {  
-     bin_midpoints[i]=(bin_endpoints[i]+bin_endpoints[i+1])/2.0;
-     sa[i]=samplearea(probe, bin_midpoints[i], recon);
-     mass=3.1416/6.0*pow(bin_midpoints[i]/1e4,3);  //grams
+     float mass = 3.1416/6.0 * pow(probe.bin_midpoints[i]/1e4,3);  //grams
      for (int j = 0; j < numtimes; j++) {
         if (tas[j] > 0.0) {
-           sv = sa[i] * tas[j];  //Sample volume (m3)
+           float sv = probe.samplearea[i] * tas[j];  // Sample volume (m3)
 
            // Correct counts for the poisson fitting
            if (std::isnan(corrfac[j])) corrfac[j]=1.0;  //Filter out bad correction factors
-           count_all[j][i+binoffset]=count_all[j][i+binoffset]*corrfac[j];
-           count_round[j][i+binoffset]=count_round[j][i+binoffset]*corrfac[j];
-           conc_all[j][i+binoffset]=count_all[j][i+binoffset]/sv/1000.0;      // #/L
-           conc_round[j][i+binoffset]=count_round[j][i+binoffset]/sv/1000.0;  // #/L
+           count_all[j][i+binoffset] *= corrfac[j];
+           count_round[j][i+binoffset] *= corrfac[j];
+           conc_all[j][i+binoffset] = count_all[j][i+binoffset] / sv / 1000.0;	// #/L
+           conc_round[j][i+binoffset] = count_round[j][i+binoffset] / sv / 1000.0;	// #/L
            
            if (i >= probe.firstBin) {
              nt_all[j] += conc_all[j][i+binoffset];
@@ -880,7 +889,7 @@ if (itime > 500000) printf(" ITIME =%ld\n", itime);
   varname="bin_endpoints"+probe.suffix;
   if (!(binvar = dataFile.add_var(varname.c_str(), ncFloat, bindim_plusone))) return NC_ERR;
   if (!binvar->add_att("units", "microns")) return NC_ERR;
-  if (!binvar->put(bin_endpoints, numbins+1)) return NC_ERR; 
+  if (!binvar->put(&probe.bin_endpoints[0], numbins+1)) return NC_ERR; 
 
   if (!(intbinvar = dataFile.add_var("interarrival_endpoints", ncDouble, intbindim))) return NC_ERR;
   if (!intbinvar->put(it_endpoints, numintbins+1)) return NC_ERR; 
@@ -935,11 +944,11 @@ if (itime > 500000) printf(" ITIME =%ld\n", itime);
   if (!cnallvar->add_att("Category", "PMS Probe")) return NC_ERR;
   if (!cnallvar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
   if (!cnallvar->add_att("DataQuality", "Good")) return NC_ERR;
-// Add EAW
-// Add DOF
-  if (!cnallvar->add_att("FirstBin", binoffset)) return NC_ERR;
+  if (!cnallvar->add_att("FirstBin", probe.firstBin)) return NC_ERR;
   if (!cnallvar->add_att("LastBin", numbins+binoffset-1)) return NC_ERR;
-  if (!cnallvar->add_att("CellSizes", numbins+1, bin_endpoints)) return NC_ERR;
+  if (!cnallvar->add_att("DepthOfField", numbins, &probe.dof[0])) return NC_ERR;
+  if (!cnallvar->add_att("EffectiveAreaWidth", numbins, &probe.eaw[0])) return NC_ERR;
+  if (!cnallvar->add_att("CellSizes", numbins+1, &probe.bin_endpoints[0])) return NC_ERR;
   if (!cnallvar->add_att("CellSizeUnits", "micrometers")) return NC_ERR;
   if (!cnallvar->add_att("Density", 1.0)) return NC_ERR;
   if (!cnallvar->put(&conc_all[0][0], numtimes, 1, numbins+binoffset)) return NC_ERR; 
@@ -952,11 +961,11 @@ if (itime > 500000) printf(" ITIME =%ld\n", itime);
   if (!cnwatvar->add_att("Category", "PMS Probe")) return NC_ERR;
   if (!cnwatvar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
   if (!cnwatvar->add_att("DataQuality", "Good")) return NC_ERR;
-// Add EAW
-// Add DOF
-  if (!cnwatvar->add_att("FirstBin", binoffset)) return NC_ERR;
+  if (!cnwatvar->add_att("FirstBin", probe.firstBin)) return NC_ERR;
   if (!cnwatvar->add_att("LastBin", numbins+binoffset-1)) return NC_ERR;
-  if (!cnwatvar->add_att("CellSizes", numbins+1, bin_endpoints)) return NC_ERR;
+  if (!cnallvar->add_att("DepthOfField", numbins, &probe.dof[0])) return NC_ERR;
+  if (!cnallvar->add_att("EffectiveAreaWidth", numbins, &probe.eaw[0])) return NC_ERR;
+  if (!cnwatvar->add_att("CellSizes", numbins+1, &probe.bin_endpoints[0])) return NC_ERR;
   if (!cnwatvar->add_att("CellSizeUnits", "micrometers")) return NC_ERR;
   if (!cnwatvar->add_att("Density", 1.0)) return NC_ERR;
   if (!cnwatvar->put(&conc_round[0][0], numtimes, 1, numbins+binoffset)) return NC_ERR; 
@@ -1067,13 +1076,13 @@ if (itime > 500000) printf(" ITIME =%ld\n", itime);
   if (!(savar = dataFile.add_var(varname.c_str(), ncFloat, bindim))) return NC_ERR;
   if (!savar->add_att("units", "m2")) return NC_ERR;
   if (!savar->add_att("long_name", "Sample area per channel")) return NC_ERR;
-  if (!savar->put(sa, numbins)) return NC_ERR;
+  if (!savar->put(&probe.samplearea[0], numbins)) return NC_ERR;
 
   varname="bin_midpoints"+probe.suffix;
   if (!(midbinvar = dataFile.add_var(varname.c_str(), ncFloat, bindim))) return NC_ERR;
   if (!midbinvar->add_att("units", "microns")) return NC_ERR;
   if (!midbinvar->add_att("long_name", "Size Channel Midpoints")) return NC_ERR;
-  if (!midbinvar->put(bin_midpoints, numbins)) return NC_ERR;
+  if (!midbinvar->put(&probe.bin_midpoints[0], numbins)) return NC_ERR;
 
   delete [] count_all[0];
   delete [] count_round[0];
