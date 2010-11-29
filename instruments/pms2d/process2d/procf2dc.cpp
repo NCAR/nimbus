@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <vector>
 #include <stack>
+#include <cassert>
 #include <cmath>
 #include <cstring>
 #include <iomanip>
@@ -38,7 +39,7 @@ struct probe_info {
   string id;		// Two byte ID at the front of the data-record.
   string serialNumber;
   string suffix;
-  int nDiodes;		// 32 or 64 at this time).
+  int nDiodes;		// 32 or 64 at this time.
   int firstBin, lastBin;
   float resolution;	// micometers
   float armWidth;	// cm
@@ -48,6 +49,26 @@ struct probe_info {
   vector<float> dof;	// Depth Of Field
   vector<float> eaw;	// Effective Area Width
   vector<float> samplearea;
+};
+
+
+/* Command line options / program configuration
+ */
+class Config {
+public:
+  Config() : shattercorrect(true), recon(true), smethod('c'), verbose(false), debug(false) {}
+
+  string inputFile;
+  string outputFile;
+
+  int starttime;
+  int stoptime;
+
+  bool shattercorrect;
+  bool recon;		// Particle reconstruction
+  char smethod;
+  bool verbose;
+  bool debug;
 };
 
 struct struct_particle {
@@ -547,8 +568,7 @@ unsigned short endianswap_s(unsigned short x)
 //================================================================================================
 // ------------PROCESS 2D-----------------------
 //================================================================================================
-int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_info & probe,
-    bool recon, bool shattercorrect, char smethod, bool verbose, bool debug)
+int process2d(Config & cfg, struct probe_info & probe)
 {
   /*-----Processing options-------------------------------------------------------
       start/stop time: In UTC seconds
@@ -571,19 +591,21 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   long last_time1hz=0, itime, isize, wsize, iit;
   struct_particle particle;
   vector<struct_particle> particle_stack;
-  char probetype=probe.id[0];  
-  char probenumber=probe.id[1];
+  char probetype = probe.id[0];  
+  char probenumber = probe.id[1];
 
   //Set up array of powers of 2, starting with 1
   unsigned long long powerof2[64];
   for (int i=0; i<64; i++) {powerof2[i]=1ULL; for (int j=0; j<i;j++) powerof2[i]=powerof2[i]*2ULL;} 
 
-  samplearea(probe, recon);
+  samplearea(probe, cfg.recon);
   //Time setup
-  int starttime=hms2sfm(starttimehms);
-  int stoptime=hms2sfm(stoptimehms);
+  int starttime=hms2sfm(cfg.starttime);
+  int stoptime=hms2sfm(cfg.stoptime);
   int numtimes=stoptime-starttime+1;
   
+  assert(numtimes >= 0);
+
   //Count and concentration arrays setup
   float *count_all[numtimes], *conc_all[numtimes];
   float *count_round[numtimes], *conc_round[numtimes];
@@ -598,7 +620,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   conc_round[0] = new float[numtimes*(numbins+binoffset)];
 
   //Initialize all these to zero
-  for (int i=0; i<numtimes; i++) {
+  for (int i = 0; i < numtimes; i++) {
     tas[i]=0;
     n_accepted_all[i]=0;
     n_accepted_round[i]=0;
@@ -636,7 +658,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
 
   //=============Process Particles============================================================
   
-  input_file.open(rawfile.c_str(), ios::binary);
+  input_file.open(cfg.inputFile.c_str(), ios::binary);
  
   //Skip the XML header
   do getline(input_file, line); while (line.compare(markerline)!=0);
@@ -682,8 +704,8 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
              
               //Decide which size to use
               particle.size=particle.csize;  //Default
-              if (smethod=='x') particle.size=particle.xsize;
-              if (smethod=='y') particle.size=particle.ysize;           
+              if (cfg.smethod=='x') particle.size=particle.xsize;
+              if (cfg.smethod=='y') particle.size=particle.ysize;           
         
               //Update interarrival queue
               itq[iitq]=particle.inttime;
@@ -728,7 +750,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
                  cpoisson3[itime]=(float)bestfit[2];
                  
                  // Compute shattering corrections if flagged
-                 if (shattercorrect) {
+                 if (cfg.shattercorrect) {
                    pcutoff[itime]=(float)(1.0/bestfit[1]*0.05);  // Compute cutoff time
                    corrfac[itime]=(float)(1.0/(2*exp(-pcutoff[itime]*bestfit[1])-1));  //Compute correction factor
                  } else {
@@ -736,7 +758,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
                    corrfac[itime]=1.0;
                  }
                  
-                 if (verbose) cout<<itime+starttime<<" "<<time1hz<<" "<<particle_stack.size()<<" "<<bestfit[0]<<" "<<bestfit[1]<<" "<<bestfit[2]<<endl;
+                 if (cfg.verbose) cout<<itime+starttime<<" "<<time1hz<<" "<<particle_stack.size()<<" "<<bestfit[0]<<" "<<bestfit[1]<<" "<<bestfit[2]<<endl;
                  
                  // Sort through all particles in this stack
                  for (size_t i = 0; i < particle_stack.size(); i++) {
@@ -747,8 +769,8 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
                     if(i==particle_stack.size()-1) nextit=particle.inttime;  //This particle is for next time period, but use its inttime
                     else nextit=particle_stack[i+1].inttime;
                     reject_particle(particle_stack[i], pcutoff[itime], nextit, probe.resolution,
-                                    probe.bin_endpoints[0], probe.bin_endpoints[numbins],wc,recon);
-                    if (debug) showparticle(particle_stack[i]);                    
+                                    probe.bin_endpoints[0], probe.bin_endpoints[numbins],wc, cfg.recon);
+                    if (cfg.debug) showparticle(particle_stack[i]);                    
                     
                     // Fill count arrays with accepted particles
                     if (!particle_stack[i].ireject){
@@ -788,7 +810,7 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
      
      } //end slice loop
      buffcount++;  //Update buffer counter
-     if ((!verbose) && (buffcount % 100==0)) cout<<"."<<flush; //User feedback
+     if ((!cfg.verbose) && (buffcount % 100==0)) cout<<"."<<flush; //User feedback
   } //end buffer loop
  
   // Close raw data file
@@ -830,19 +852,25 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   //=============Write to netCDF==============================================
   if (buffcount <= 1) return 1;  //Don't write empty files
   
+  NcFile::FileMode mode;
   static const int NC_ERR = 2;
   string varname;
   //suffix="_"+probe.id; 
 
-  //Create the file.  Base .nc name on the raw file name. 
-  string ncfilename;
-  size_t pos;  
-  pos=rawfile.find_last_of("/\\");
-  ncfilename=rawfile.substr(pos+1);
-  pos=ncfilename.find_last_of(".");
-  ncfilename=ncfilename.substr(0,pos)+"_"+probe.id+".nc";
-  NcFile dataFile(ncfilename.c_str(), NcFile::Replace);
+  // If user did not specify output file, then create base + .nc of input file.
+  if (cfg.outputFile.size() == 0) {
+    string ncfilename;
+    size_t pos = cfg.inputFile.find_last_of("/\\");
+    ncfilename = cfg.inputFile.substr(pos+1);
+    pos = ncfilename.find_last_of(".");
+    cfg.outputFile = ncfilename.substr(0,pos) + "_" + probe.id + ".nc";
+    mode = NcFile::Replace;
+  }
+  else {
+  }
  
+  NcFile dataFile(cfg.outputFile.c_str(), mode);
+
   // Define the dimensions.
   NcDim *timedim, *bindim, *bindim_plusone, *intbindim, *spsdim;
   if (!(timedim = dataFile.add_dim("Time", numtimes))) return NC_ERR;
@@ -859,20 +887,20 @@ int process2d(string rawfile, int starttimehms, int stoptimehms, struct probe_in
   
   //Write data
   char timeinterval[50];
-  int h1=starttimehms/10000;
-  int m1=(starttimehms-h1*10000l)/100;
-  int s1=(long(starttimehms)-h1*10000l-m1*100l);
-  int h2=stoptimehms/10000;
-  int m2=(stoptimehms-h2*10000l)/100;
-  int s2=(long(stoptimehms)-h2*10000l-m2*100l);
+  int h1=cfg.starttime/10000;
+  int m1=(cfg.starttime-h1*10000l)/100;
+  int s1=(long(cfg.starttime)-h1*10000l-m1*100l);
+  int h2=cfg.stoptime/10000;
+  int m2=(cfg.stoptime-h2*10000l)/100;
+  int s2=(long(cfg.stoptime)-h2*10000l-m2*100l);
   sprintf(timeinterval,"%02d:%02d:%02d-%02d:%02d:%02d", h1,m1,s1,h2,m2,s2);
   if (!dataFile.add_att("Source", "NCAR/RAF Fast-2DC Processing Software")) return NC_ERR;
   if (!dataFile.add_att("Conventions", "NCAR-RAF/nimbus")) return NC_ERR;
   if (!dataFile.add_att("FlightDate", "01/01/2010")) return NC_ERR;
   if (!dataFile.add_att("TimeInterval", timeinterval)) return NC_ERR;
-  if (!dataFile.add_att("Reconstruction", recon)) return NC_ERR;
-  if (!dataFile.add_att("SizeMethod", smethod)) return NC_ERR;
-  if (!dataFile.add_att("Raw_2D_Data_File", rawfile.c_str())) return NC_ERR;
+  if (!dataFile.add_att("Reconstruction", cfg.recon)) return NC_ERR;
+  if (!dataFile.add_att("SizeMethod", cfg.smethod)) return NC_ERR;
+  if (!dataFile.add_att("Raw_2D_Data_File", cfg.inputFile.c_str())) return NC_ERR;
   
   //Time
   char timeunits[70];
@@ -1161,6 +1189,26 @@ void ParseHeader(ifstream & input_file, vector<struct probe_info> & probe_list)
   } while ((line.compare(markerline)!=0) && (!input_file.eof()));  
 }
 
+void processArgs(int argc, char *argv[], Config & config)
+{
+  // Parse command line arguments
+  for (int i = 1; i < argc; i++)
+  {
+     string arg=argv[i];
+     if ((arg.find("-sta")!=string::npos) && (i<(argc-1))) config.starttime=atoi(argv[i+1]); else
+     if ((arg.find("-sto")!=string::npos) && (i<(argc-1))) config.stoptime=atoi(argv[i+1]); else
+     if (arg.find("-n")!=string::npos) config.shattercorrect=0; else
+     if (arg.find("-a")!=string::npos) config.recon=0; else
+     if (arg.find("-x")!=string::npos) config.smethod='x'; else
+     if (arg.find("-y")!=string::npos) config.smethod='y'; else
+     if (arg.find("-v")!=string::npos) config.verbose=1; else
+     if (arg.find("-d")!=string::npos) config.debug=1; else
+     config.inputFile = arg;
+  }
+
+  cout << "Input file: " << config.inputFile << endl;
+}
+
 int usage(const char* argv0)
 {
   cerr << endl << "USAGE:  procf2dc [filename.2d] <options>" << endl << endl;
@@ -1191,20 +1239,22 @@ int usage(const char* argv0)
 
 int main(int argc, char *argv[])
 {
-  int errorcode, starttime, stoptime;
+  int errorcode;
   ifstream input_file;
   type_buffer buffer;
   vector<struct probe_info> probes;
+  Config config;
   
   // Check for correct number of arguments
   if (argc < 2)
     return usage(argv[0]);
 
+  processArgs(argc, argv, config);
 
   // Open raw file, test for existence
-  input_file.open(argv[1], ios::binary);
+  input_file.open(config.inputFile.c_str(), ios::binary);
   if (!input_file.good()) {
-    cerr << "Unable to open " << argv[1] << endl;
+    cerr << "Unable to open " << config.inputFile << endl;
     return 1;
   }  
   
@@ -1219,34 +1269,18 @@ int main(int argc, char *argv[])
 
   // Read first buffer, get start time
   input_file.read((char*)(&buffer), sizeof(buffer));
-  starttime=endianswap_s(buffer.hours)*10000+endianswap_s(buffer.minutes*100)+endianswap_s(buffer.seconds);
+  config.starttime=endianswap_s(buffer.hours)*10000+endianswap_s(buffer.minutes*100)+endianswap_s(buffer.seconds);
    
   // Read last buffer, get stop time
   do input_file.read((char*)(&buffer), sizeof(buffer)); while (!input_file.eof());
-  stoptime=endianswap_s(buffer.hours)*10000+endianswap_s(buffer.minutes)*100+endianswap_s(buffer.seconds);
+  config.stoptime=endianswap_s(buffer.hours)*10000+endianswap_s(buffer.minutes)*100+endianswap_s(buffer.seconds);
   
   input_file.close();
 
    
-  // Parse command line arguments
-  bool recon=1, verbose=0, debug=0, shattercorrect=1;  // Default values
-  char smethod='c';
-  for (int i = 2; i < argc; i++)
-  {
-     string arg=argv[i];
-     if ((arg.find("-sta")!=string::npos) && (i<(argc-1))) starttime=atoi(argv[i+1]);
-     if ((arg.find("-sto")!=string::npos) && (i<(argc-1))) stoptime=atoi(argv[i+1]);
-     if (arg.find("-n")!=string::npos) shattercorrect=0;
-     if (arg.find("-a")!=string::npos) recon=0;
-     if (arg.find("-x")!=string::npos) smethod='x';
-     if (arg.find("-y")!=string::npos) smethod='y';
-     if (arg.find("-v")!=string::npos) verbose=1;
-     if (arg.find("-d")!=string::npos) debug=1;
-  }
-
-  if (starttime > stoptime) stoptime = stoptime + 240000;  // Midnight crossing
+  if (config.starttime > config.stoptime) config.stoptime = config.stoptime + 240000;  // Midnight crossing
   
-  cout << "File start time:" << starttime << "  end time:" << stoptime << endl;
+  cout << "File start time:" << config.starttime << "  end time:" << config.stoptime << endl;
 
   // Process all probes found in the file
   for (size_t i = 0; i < probes.size(); i++)
@@ -1255,7 +1289,7 @@ int main(int argc, char *argv[])
 		<< " res:" << probes[i].resolution
 		<< " armwidth:" << probes[i].armWidth << endl;
 
-    errorcode = process2d(argv[1], starttime, stoptime, probes[i], recon, shattercorrect, smethod, verbose, debug); 
+    errorcode = process2d(config, probes[i]); 
 
     if (!errorcode)
       cout << endl << "Sucessfully processed probe " << i << endl;
