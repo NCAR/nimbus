@@ -691,7 +691,7 @@ int process2d(Config & cfg, struct probe_info & probe)
            }
            
            //Look for negative interarrival time, set to zero instead
-           if (timeline < lasttimeline) difftimeline=0;
+           if (timeline < firsttimeline) difftimeline=0;
            else difftimeline=timeline-firsttimeline;
              
            //Process the roi
@@ -699,7 +699,7 @@ int process2d(Config & cfg, struct probe_info & probe)
            if (time1hz >= starttime){
               particle=findsize(roi,slice_count,probe.resolution);
               particle.holearea=fillholes2(roi,slice_count);           
-              particle.inttime=difftimeline/12.0e6;
+              particle.inttime=(timeline-lasttimeline)/12.0e6;
               particle.time1hz=time1hz;
              
               //Decide which size to use
