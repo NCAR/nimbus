@@ -852,10 +852,10 @@ int process2d(Config & cfg, struct probe_info & probe)
   //=============Write to netCDF==============================================
   if (buffcount <= 1) return 1;  //Don't write empty files
   
-  NcFile::FileMode mode;
+  NcFile::FileMode mode = NcFile::Write;
   static const int NC_ERR = 2;
   string varname;
-  //suffix="_"+probe.id; 
+  char tmp[1024];
 
   // If user did not specify output file, then create base + .nc of input file.
   if (cfg.outputFile.size() == 0) {
@@ -867,6 +867,11 @@ int process2d(Config & cfg, struct probe_info & probe)
     mode = NcFile::Replace;
   }
   else {
+    // See if file exists.
+    NcFile test(cfg.outputFile.c_str(), NcFile::Write);
+    if (!test.is_valid())
+      mode = NcFile::New;
+
   }
  
   NcFile dataFile(cfg.outputFile.c_str(), mode);
@@ -875,8 +880,10 @@ int process2d(Config & cfg, struct probe_info & probe)
   NcDim *timedim, *bindim, *bindim_plusone, *intbindim, *spsdim;
   if (!(timedim = dataFile.add_dim("Time", numtimes))) return NC_ERR;
   if (!(spsdim = dataFile.add_dim("sps1", 1))) return NC_ERR;
-  if (!(bindim = dataFile.add_dim("Vector64", numbins))) return NC_ERR;
-  if (!(bindim_plusone = dataFile.add_dim("Vector65", numbins+1))) return NC_ERR;
+  sprintf(tmp, "Vector%d", numbins);
+  if (!(bindim = dataFile.add_dim(tmp, numbins))) return NC_ERR;
+  sprintf(tmp, "Vector%d", numbins+1);
+  if (!(bindim_plusone = dataFile.add_dim(tmp, numbins+1))) return NC_ERR;
   if (!(intbindim = dataFile.add_dim("interarrival_endpoints", numintbins+1))) return NC_ERR;
 
   
@@ -886,18 +893,17 @@ int process2d(Config & cfg, struct probe_info & probe)
   NcVar *naccwvar, *nrejwvar, *naccavar, *nrejavar; 
   
   //Write data
-  char timeinterval[50];
   int h1=cfg.starttime/10000;
   int m1=(cfg.starttime-h1*10000l)/100;
   int s1=(long(cfg.starttime)-h1*10000l-m1*100l);
   int h2=cfg.stoptime/10000;
   int m2=(cfg.stoptime-h2*10000l)/100;
   int s2=(long(cfg.stoptime)-h2*10000l-m2*100l);
-  sprintf(timeinterval,"%02d:%02d:%02d-%02d:%02d:%02d", h1,m1,s1,h2,m2,s2);
   if (!dataFile.add_att("Source", "NCAR/RAF Fast-2DC Processing Software")) return NC_ERR;
   if (!dataFile.add_att("Conventions", "NCAR-RAF/nimbus")) return NC_ERR;
   if (!dataFile.add_att("FlightDate", "01/01/2010")) return NC_ERR;
-  if (!dataFile.add_att("TimeInterval", timeinterval)) return NC_ERR;
+  sprintf(tmp, "%02d:%02d:%02d-%02d:%02d:%02d", h1,m1,s1,h2,m2,s2);
+  if (!dataFile.add_att("TimeInterval", tmp)) return NC_ERR;
   if (!dataFile.add_att("Reconstruction", cfg.recon)) return NC_ERR;
   if (!dataFile.add_att("SizeMethod", cfg.smethod)) return NC_ERR;
   if (!dataFile.add_att("Raw_2D_Data_File", cfg.inputFile.c_str())) return NC_ERR;
@@ -1194,19 +1200,18 @@ void processArgs(int argc, char *argv[], Config & config)
   // Parse command line arguments
   for (int i = 1; i < argc; i++)
   {
-     string arg=argv[i];
-     if ((arg.find("-sta")!=string::npos) && (i<(argc-1))) config.starttime=atoi(argv[i+1]); else
-     if ((arg.find("-sto")!=string::npos) && (i<(argc-1))) config.stoptime=atoi(argv[i+1]); else
+     string arg = argv[i];
+     if ((arg.find("-sta")!=string::npos) && (i<(argc-1))) config.starttime=atoi(argv[++i]); else
+     if ((arg.find("-sto")!=string::npos) && (i<(argc-1))) config.stoptime=atoi(argv[++i]); else
      if (arg.find("-n")!=string::npos) config.shattercorrect=0; else
      if (arg.find("-a")!=string::npos) config.recon=0; else
      if (arg.find("-x")!=string::npos) config.smethod='x'; else
      if (arg.find("-y")!=string::npos) config.smethod='y'; else
      if (arg.find("-v")!=string::npos) config.verbose=1; else
      if (arg.find("-d")!=string::npos) config.debug=1; else
+     if (arg.find("-o")!=string::npos) config.outputFile=argv[++i]; else
      config.inputFile = arg;
   }
-
-  cout << "Input file: " << config.inputFile << endl;
 }
 
 int usage(const char* argv0)
@@ -1226,7 +1231,9 @@ int usage(const char* argv0)
   cerr << "   -noshattercorrect"<<endl;
   cerr << "         Turn off shattering rejection and corrections"<<endl;
   cerr << "   -verbose"<<endl;
-  cerr << "         Send extra output to console"<<endl<<endl;;
+  cerr << "         Send extra output to console"<<endl;;
+  cerr << "   -o file_name"<<endl;
+  cerr << "         Specify output file, instead of default output name"<<endl<<endl;;
   cerr << "Example:  procf2dc myfile.2d -start 123000 -stop 140000 -xsize -allin"<<endl<<endl;
 
   return 1;
