@@ -920,7 +920,8 @@ int process2d(Config & cfg, struct probe_info & probe)
   
   //Time
   char timeunits[70];
-  int year=2000, month=1, day=1;   //default year, month, day
+  int year, month, day;
+  sscanf(cfg.flightDate.c_str(), "%d/%d/%d", &month, &day, &year);
   sprintf(timeunits,"seconds since %04d-%02d-%02d %02d:%02d:%02d +0000", year,month,day,h1,m1,s1);
   if (!(timevar = dataFile.add_var("Time", ncInt, timedim))) return NC_ERR;
   if (!timevar->add_att("long_name", "Time")) return NC_ERR;
