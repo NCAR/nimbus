@@ -61,6 +61,11 @@ public:
   string inputFile;
   string outputFile;
 
+  string platform;
+  string project;
+  string flightDate;
+  string flightNumber;
+
   int starttime;
   int stoptime;
 
@@ -888,9 +893,10 @@ int process2d(Config & cfg, struct probe_info & probe)
 
   
   // Define the variables. 
-  NcVar *timevar, *binvar, *intbinvar, *ctallvar, *ctwatvar, *ctinttimevar, *pois1var, *pois2var, *pois3var;
-  NcVar *pcutoffvar, *corrfacvar, *tasvar, *savar, *midbinvar, *cnallvar, *cnwatvar, *lwcvar, *ntallvar, *ntwatvar;
-  NcVar *naccwvar, *nrejwvar, *naccavar, *nrejavar; 
+  NcVar *timevar, *binvar, *intbinvar, *ctallvar, *ctwatvar, *ctinttimevar, *pois1var,
+	*pois2var, *pois3var, *pcutoffvar, *corrfacvar, *tasvar, *savar, *midbinvar,
+	*cnallvar, *cnwatvar, *lwcvar, *ntallvar, *ntwatvar, *naccwvar, *nrejwvar,
+	*naccavar, *nrejavar; 
   
   //Write data
   int h1=cfg.starttime/10000;
@@ -899,9 +905,13 @@ int process2d(Config & cfg, struct probe_info & probe)
   int h2=cfg.stoptime/10000;
   int m2=(cfg.stoptime-h2*10000l)/100;
   int s2=(long(cfg.stoptime)-h2*10000l-m2*100l);
+  if (!dataFile.add_att("institution", "NCAR Research Aviation Facility")) return NC_ERR;
   if (!dataFile.add_att("Source", "NCAR/RAF Fast-2DC Processing Software")) return NC_ERR;
   if (!dataFile.add_att("Conventions", "NCAR-RAF/nimbus")) return NC_ERR;
-  if (!dataFile.add_att("FlightDate", "01/01/2010")) return NC_ERR;
+  if (!dataFile.add_att("ConventionsURL", "http://www.eol.ucar.edu/raf/Software/netCDF.html")) return NC_ERR;
+  if (!dataFile.add_att("ProjectName", cfg.project.c_str())) return NC_ERR;
+  if (!dataFile.add_att("FlightNumber", cfg.flightNumber.c_str())) return NC_ERR;
+  if (!dataFile.add_att("FlightDate", cfg.flightDate.c_str())) return NC_ERR;
   sprintf(tmp, "%02d:%02d:%02d-%02d:%02d:%02d", h1,m1,s1,h2,m2,s2);
   if (!dataFile.add_att("TimeInterval", tmp)) return NC_ERR;
   if (!dataFile.add_att("Reconstruction", cfg.recon)) return NC_ERR;
@@ -1143,9 +1153,9 @@ string extractAttribute(const string & line, string name)
   return line.substr(q1+1, q2-q1-1);
 }
 
-void ParseHeader(ifstream & input_file, vector<struct probe_info> & probe_list)
+void ParseHeader(ifstream & input_file, Config & cfg, vector<struct probe_info> & probe_list)
 {
-  string line, project, platform;
+  string line;
 
   // Parse XML header
   do
@@ -1153,10 +1163,16 @@ void ParseHeader(ifstream & input_file, vector<struct probe_info> & probe_list)
     getline(input_file, line);
 
     if (line.find("Project") != string::npos)
-      project = extractElement(line, "Project");
+      cfg.project = extractElement(line, "Project");
 
     if (line.find("Platform") != string::npos)
-      platform = extractElement(line, "Platform");
+      cfg.platform = extractElement(line, "Platform");
+
+    if (line.find("FlightNumber") != string::npos)
+      cfg.flightNumber = extractElement(line, "FlightNumber");
+
+    if (line.find("FlightDate") != string::npos)
+      cfg.flightDate = extractElement(line, "FlightDate");
 
     if (line.find("Fast2DC") != string::npos)	//found a line describing a FAST2D probe
     {
@@ -1180,7 +1196,7 @@ void ParseHeader(ifstream & input_file, vector<struct probe_info> & probe_list)
       char *proj_dir = getenv("PROJ_DIR");
       if (proj_dir) {
         string s, file(proj_dir);
-        file += "/" + project + "/" + platform + "/PMSspecs";
+        file += "/" + cfg.project + "/" + cfg.platform + "/PMSspecs";
         PMSspex pms_specs(file);
 
         s = pms_specs.GetParameter(thisProbe.serialNumber.c_str(), "FIRST_BIN");
@@ -1266,7 +1282,7 @@ int main(int argc, char *argv[])
   }  
   
   // Parse the XML header and get list of probes.
-  ParseHeader(input_file, probes);
+  ParseHeader(input_file, config, probes);
 
   // Return if unreadable file
   if (input_file.eof()) {
