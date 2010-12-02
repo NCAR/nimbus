@@ -885,7 +885,7 @@
 	"MRLA",		NULL,		NULL,		smrla,
 	"MRLA1",	NULL,		NULL,		smrla,
 	"NDVI",		NULL,		NULL,		sndvi,
-	"PALT",		(void(*)(void*))initPalt,	NULL,		spalt,
+	"PALT",		NULL,		NULL,		spalt,
 	"PALTF",	NULL,		NULL,		meters2feet,
 	"GALTF",	NULL,		NULL,		meters2feet,
 	"PSBC",		NULL,		NULL,		spsbc,
