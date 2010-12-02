@@ -5,48 +5,58 @@ OBJECT NAME:	palt.c
 FULL NAME:	NACA pressure altitude (M)
 
 ENTRY POINTS:	spalt()
-		spaltf()
 
 STATIC FNS:	none
 
-DESCRIPTION:  
+DESCRIPTION:    Source documents:
+                U.S. Standard Atmosphere 1976 (NASA-TM-X-74335)
+                N77-16482, 241 pages.
+                ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19770009539_1977009539.pdf
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-9
+                RAF science wiki:
+                wiki.eol.ucar.edu/rafscience/ProcessingAlgorithms?action=AttachFile&do=view&target=PressureAltitude.pdf
+                File: PressureAltitude.pdf
+                8 Nov 2010
+
+                The US Standard Atmosphere is defined as
+                having a pressure of 1013.25 hPa and temperature 15 degC
+                at an altitude of 0 m.
+                The lapse rate is lambda=-0.0065degC/m (z<11000 m)
+                and lapse rate lambda=0 (z>1100m).
+
+                There is a further lapse rate change at
+                z=20000 m, but that is not included here due to the lower
+                flight altitudes of NCAR aircraft.
+
+                The US Standard Atmosphere is an avionics
+                standard, and it does therefore not follow common science
+                standards for the values of several constants.
+                In particular:
+                    gravity g=9.80665
+                    gas constant  R=287.0531 J/(kg K)
+                Note that the gas constant given here is a
+                derived value based on the US Standard Atmosphere's
+                values for R* and Mw.
+
+                Current coding and comments were completed on 22 Nov 2010.
+                Prior versions allowed for different surface
+                temperatures and used somewhat different constants;
+                prior versions should no longer be used.
+
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2010
 -------------------------------------------------------------------------
 */
 
 #include "nimbus.h"
 #include "amlib.h"
 
-/*  Value from /home/local/proj/Defaults on 23 April 1998           RLR */
-static NR_TYPE ASTG = 1013.246; /* Default altimeter setting (mbar)     */
+/*  Reference pressure for US standard atmosphere (hPa)			*/
+static NR_TYPE ASTG = 1013.25;
 
-/*  Value to be used when this part of code is implemented              */
-static NR_TYPE SFCT = 288.15; /* Default mean surface temp setting (K)  */
+/*  Transition pressure at the assumed ISA tropopause (hPa)		*/
+/*  This value can be calculated by upwards integration			*/
+static NR_TYPE ISAP1 = 226.3206;
 
-
-/* -------------------------------------------------------------------- */
-void initPalt(var_base *varp)
-{
-  NR_TYPE  *tmp;
-
-  if ((tmp = GetDefaultsValue("ASTG", varp->name)) == NULL)
-  {
-    sprintf(buffer, "ASTG set to %f in AMLIB function initPalt.\n", ASTG);
-    LogMessage(buffer);
-  }
-  else
-    ASTG = tmp[0];
-
-  if ((tmp = GetDefaultsValue("SFCT", varp->name)) == NULL)
-  {
-    sprintf(buffer, "SFCT set to %f in AMLIB function initPalt.\n", SFCT);
-    LogMessage(buffer);
-  }
-  else
-    SFCT = tmp[0];
-
-}  /* END INITPALT */
 
 /* -------------------------------------------------------------------- */
 void spalt(DERTBL *varp)
@@ -55,37 +65,27 @@ void spalt(DERTBL *varp)
 
   psxc = GetSample(varp, 0);
 
-  switch (cfg.Aircraft())
-    {
-    case Config::B57:
-    case Config::HIAPER:
-      palt = psxc / ASTG;
-
-      if (palt >= 0.223198605)
-        palt = 44308.0 * (1.0 - pow(palt, 0.190284));
-      else
-        palt = 11000.0 + 14600.0 * log10(0.223198605 / palt);
-      break;
-
-    default:
-      palt = 153.77 * SFCT * (1.0 - pow((double)psxc / ASTG, 0.190284));
-    }
+  if (palt > ISAP1)
+    /*  Branch for upper altitude lapse rate.				*/
+    palt = 44330.77 * (1.0 - pow(psxc / ASTG, 0.1902632));
+  else
+    /*  Branch for lower altitude lapse rate.				*/
+    palt = 11000.0 + 14602.12 * log10(ISAP1 / psxc);
 
   PutSample(varp, palt);
-
 }
 
 /* -------------------------------------------------------------------- */
 void meters2feet(DERTBL *varp)
 {
   PutSample(varp, GetSample(varp, 0) * 3.2808399);
-
 }
+
 /* -------------------------------------------------------------------- */
 void feet2meters(DERTBL *varp)
 {
+  /* Exact definition, as also per US Standards Atmosphere document	*/
   PutSample(varp, GetSample(varp, 0) * 0.3048);
-
 }
 
 /* END PALT.C */
