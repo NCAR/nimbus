@@ -49,6 +49,6 @@ env['LINKCOM'] = env['LINKCOM'] + " $NETCDFLIBS"
 
 # print env.Dump()
 
-env.Program('procf2dc.cpp')
+procf2dc = env.Program('procf2dc', ['procf2dc.cpp', 'netcdf.cpp', 'probe.cpp'])
 
-Alias('install', env.Install('$JLOCAL/bin', 'procf2dc'))
+Alias('install', env.Install('$JLOCAL/bin', procf2dc))

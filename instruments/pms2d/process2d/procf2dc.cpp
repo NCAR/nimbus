@@ -22,8 +22,11 @@
 #include <cstring>
 #include <iomanip>
 
-#include <netcdfcpp.h>
 #include <raf/PMSspex.h>
+
+#include "config.h"
+#include "probe.h"
+#include "netcdf.h"
 
 using namespace std;
    
@@ -33,48 +36,6 @@ const int binoffset = 1;  // Offset for RAF conventions, number of empty bins be
 const int slicesPerRecord = 512;
 const string markerline = "</PMS2D>";  // Marks end of XML header
 
-/* Probe information.
- */
-struct probe_info {
-  string id;		// Two byte ID at the front of the data-record.
-  string serialNumber;
-  string suffix;
-  int nDiodes;		// 32 or 64 at this time.
-  int firstBin, lastBin;
-  float resolution;	// micometers
-  float armWidth;	// cm
-
-  vector<float> bin_endpoints;
-  vector<float> bin_midpoints;
-  vector<float> dof;	// Depth Of Field
-  vector<float> eaw;	// Effective Area Width
-  vector<float> samplearea;
-};
-
-
-/* Command line options / program configuration
- */
-class Config {
-public:
-  Config() : shattercorrect(true), recon(true), smethod('c'), verbose(false), debug(false) {}
-
-  string inputFile;
-  string outputFile;
-
-  string platform;
-  string project;
-  string flightDate;
-  string flightNumber;
-
-  int starttime;
-  int stoptime;
-
-  bool shattercorrect;
-  bool recon;		// Particle reconstruction
-  char smethod;
-  bool verbose;
-  bool debug;
-};
 
 struct struct_particle {
    long time1hz; 
@@ -101,42 +62,6 @@ struct type_buffer {
  }; 
 
 
-
-/**
- * Compute sample area of a probe for given diameter.
- * The sample area unit should be meter^2 for all probes.
- * @param probe
- * @param diam diameter to generate sample volume.
- * @param reconstruct Are doing particle reconstruction, or all-in.
- * @returns sample area
- */
-void samplearea(struct probe_info & probe, bool reconstruct)
-{
-  for (int i = 0; i < numbins+1; ++i)
-    probe.bin_endpoints.push_back((i+0.5) * probe.resolution);
-
-  for (int i = 0; i < numbins; ++i)
-  {
-    float sa, prht, dof, eff_wid, diam;
-
-    diam = (probe.bin_endpoints[i] + probe.bin_endpoints[i+1]) / 2.0;
-
-    prht = probe.armWidth * 1.0e4;  //convert cm to microns
-    dof = min((2.37f * diam*diam), prht);  // in microns, limit on dof is physical distance between arms
-    if (reconstruct)
-      eff_wid = probe.resolution*probe.nDiodes+0.72*diam;  //from eq 17 in Heymsfield & Parrish 1978
-    else
-      eff_wid = probe.resolution * (probe.nDiodes-1)-diam;   //from eq 6 in HP78
-
-    sa = dof * eff_wid * 1e-12;  //compute sa and convert to m^2 
-
-    probe.bin_midpoints.push_back(diam);
-    probe.dof.push_back(dof);
-    probe.eaw.push_back(eff_wid);
-    probe.samplearea.push_back(sa);
-  }
-}
-   
 
 //--------Find index for maximum element of an array---------
 int maxindex(double x[],int n)
@@ -573,7 +498,7 @@ unsigned short endianswap_s(unsigned short x)
 //================================================================================================
 // ------------PROCESS 2D-----------------------
 //================================================================================================
-int process2d(Config & cfg, struct probe_info & probe)
+int process2d(Config & cfg, ProbeInfo & probe)
 {
   /*-----Processing options-------------------------------------------------------
       start/stop time: In UTC seconds
@@ -603,7 +528,8 @@ int process2d(Config & cfg, struct probe_info & probe)
   unsigned long long powerof2[64];
   for (int i=0; i<64; i++) {powerof2[i]=1ULL; for (int j=0; j<i;j++) powerof2[i]=powerof2[i]*2ULL;} 
 
-  samplearea(probe, cfg.recon);
+  probe.ComputeSamplearea(cfg.recon);
+
   //Time setup
   int starttime=hms2sfm(cfg.starttime);
   int stoptime=hms2sfm(cfg.stoptime);
@@ -619,10 +545,10 @@ int process2d(Config & cfg, struct probe_info & probe)
 
 
   // Allocate contiguos data block.
-  count_all[0] = new float[numtimes*(numbins+binoffset)];
-  count_round[0] = new float[numtimes*(numbins+binoffset)];
-  conc_all[0] = new float[numtimes*(numbins+binoffset)];
-  conc_round[0] = new float[numtimes*(numbins+binoffset)];
+  count_all[0] = new float[numtimes*(probe.numBins+binoffset)];
+  count_round[0] = new float[numtimes*(probe.numBins+binoffset)];
+  conc_all[0] = new float[numtimes*(probe.numBins+binoffset)];
+  conc_round[0] = new float[numtimes*(probe.numBins+binoffset)];
 
   //Initialize all these to zero
   for (int i = 0; i < numtimes; i++) {
@@ -633,7 +559,7 @@ int process2d(Config & cfg, struct probe_info & probe)
     n_rejected_round[i]=0;
 
     if (i > 0) {	// Set up pointers into contiguous data block.
-      int offset = i * (numbins+binoffset);
+      int offset = i * (probe.numBins+binoffset);
 
       count_all[i] = count_all[0] + offset;
       count_round[i] = count_round[0] + offset;
@@ -641,7 +567,7 @@ int process2d(Config & cfg, struct probe_info & probe)
       conc_round[i] = conc_round[0] + offset;
     }
 
-    for (int j = 0; j < (numbins+binoffset); j++) {
+    for (int j = 0; j < (probe.numBins+binoffset); j++) {
       count_all[i][j]=0; conc_all[i][j]=0; 
       count_round[i][j]=0; conc_round[i][j]=0;
     }
@@ -654,11 +580,10 @@ int process2d(Config & cfg, struct probe_info & probe)
   float pcutoff[numtimes], corrfac[numtimes];
   double bestfit[3]={0};
   double itq[nitq]={1};
-  short numintbins=40;
-  double it_endpoints[numintbins+1], it_midpoints[numintbins], fitspec[numintbins];
-  int count_it[numtimes][numintbins+binoffset];
-  for (int i=0; i<=numintbins; i++) it_endpoints[i]=pow(10, ((float)i-35)/5.0);  
-  for (int i=0; i<numintbins; i++) it_midpoints[i]=pow(10, ((float)i-34.5)/5.0);  
+  double it_endpoints[cfg.nInterarrivalBins+1], it_midpoints[cfg.nInterarrivalBins], fitspec[cfg.nInterarrivalBins];
+  int count_it[numtimes][cfg.nInterarrivalBins+binoffset];
+  for (int i=0; i<=cfg.nInterarrivalBins; i++) it_endpoints[i]=pow(10, ((float)i-35)/5.0);  
+  for (int i=0; i<cfg.nInterarrivalBins; i++) it_midpoints[i]=pow(10, ((float)i-34.5)/5.0);  
 
 
   //=============Process Particles============================================================
@@ -748,8 +673,8 @@ int process2d(Config & cfg, struct probe_info & probe)
                     count_it[itime][iit+binoffset]++;   //Add offset to iit for RAF convention
                  }   
                                
-                 for (int i=0; i<numintbins; i++) fitspec[i]=count_it[itime][i+binoffset];
-                 dpoisson_fit(it_midpoints, fitspec, bestfit, numintbins);
+                 for (int i=0; i<cfg.nInterarrivalBins; i++) fitspec[i]=count_it[itime][i+binoffset];
+                 dpoisson_fit(it_midpoints, fitspec, bestfit, cfg.nInterarrivalBins);
                  cpoisson1[itime]=(float)bestfit[0];  //Save factors
                  cpoisson2[itime]=(float)bestfit[1];
                  cpoisson3[itime]=(float)bestfit[2];
@@ -774,7 +699,7 @@ int process2d(Config & cfg, struct probe_info & probe)
                     if(i==particle_stack.size()-1) nextit=particle.inttime;  //This particle is for next time period, but use its inttime
                     else nextit=particle_stack[i+1].inttime;
                     reject_particle(particle_stack[i], pcutoff[itime], nextit, probe.resolution,
-                                    probe.bin_endpoints[0], probe.bin_endpoints[numbins],wc, cfg.recon);
+                                    probe.bin_endpoints[0], probe.bin_endpoints[probe.numBins],wc, cfg.recon);
                     if (cfg.debug) showparticle(particle_stack[i]);                    
                     
                     // Fill count arrays with accepted particles
@@ -830,7 +755,7 @@ int process2d(Config & cfg, struct probe_info & probe)
      nt_all[j] = nt_round[j] = lwc_round[j] = 0.0; 
   
   // Compute
-  for (int i = 0; i < numbins; i++) {  
+  for (int i = 0; i < probe.numBins; i++) {  
      float mass = 3.1416/6.0 * pow(probe.bin_midpoints[i]/1e4,3);  //grams
      for (int j = 0; j < numtimes; j++) {
         if (tas[j] > 0.0) {
@@ -842,12 +767,12 @@ int process2d(Config & cfg, struct probe_info & probe)
            count_round[j][i+binoffset] *= corrfac[j];
            conc_all[j][i+binoffset] = count_all[j][i+binoffset] / sv / 1000.0;	// #/L
            conc_round[j][i+binoffset] = count_round[j][i+binoffset] / sv / 1000.0;	// #/L
-           
-           if (i >= probe.firstBin) {
+
+//           if (i >= probe.firstBin) {
              nt_all[j] += conc_all[j][i+binoffset];
              nt_round[j] += conc_round[j][i+binoffset];
              lwc_round[j] += mass*conc_round[j][i+binoffset]*1000.0; // g/m3
-           }
+//           }
         }
      }
   }
@@ -856,281 +781,272 @@ int process2d(Config & cfg, struct probe_info & probe)
   
   //=============Write to netCDF==============================================
   if (buffcount <= 1) return 1;  //Don't write empty files
-  
-  NcFile::FileMode mode = NcFile::Write;
-  static const int NC_ERR = 2;
-  string varname;
+
+  netCDF ncfile(cfg);
+  NcFile *dataFile = ncfile.ncid();
   char tmp[1024];
 
-  // If user did not specify output file, then create base + .nc of input file.
-  if (cfg.outputFile.size() == 0) {
-    string ncfilename;
-    size_t pos = cfg.inputFile.find_last_of("/\\");
-    ncfilename = cfg.inputFile.substr(pos+1);
-    pos = ncfilename.find_last_of(".");
-    cfg.outputFile = ncfilename.substr(0,pos) + "_" + probe.id + ".nc";
-    mode = NcFile::Replace;
-  }
-  else {
-    // See if file exists.
-    NcFile test(cfg.outputFile.c_str(), NcFile::Write);
-    if (!test.is_valid())
-      mode = NcFile::New;
-
-  }
- 
-  NcFile dataFile(cfg.outputFile.c_str(), mode);
-
   // Define the dimensions.
-  NcDim *timedim, *bindim, *bindim_plusone, *intbindim, *spsdim;
-  if (!(timedim = dataFile.add_dim("Time", numtimes))) return NC_ERR;
-  if (!(spsdim = dataFile.add_dim("sps1", 1))) return NC_ERR;
-  sprintf(tmp, "Vector%d", numbins);
-  if (!(bindim = dataFile.add_dim(tmp, numbins))) return NC_ERR;
-  sprintf(tmp, "Vector%d", numbins+1);
-  if (!(bindim_plusone = dataFile.add_dim(tmp, numbins+1))) return NC_ERR;
-  if (!(intbindim = dataFile.add_dim("interarrival_endpoints", numintbins+1))) return NC_ERR;
-
+  NcDim *timedim = ncfile.addDimension("Time", numtimes);
+  NcDim *spsdim = ncfile.addDimension("sps1", 1);
+  sprintf(tmp, "Vector%d", probe.numBins);
+  NcDim *bindim = ncfile.addDimension(tmp, probe.numBins);
+  sprintf(tmp, "Vector%d", probe.numBins+1);
+  NcDim *bindim_plusone = ncfile.addDimension(tmp, probe.numBins+1);
+  NcDim *intbindim = ncfile.addDimension("interarrival_endpoints", cfg.nInterarrivalBins+1);
   
   // Define the variables. 
-  NcVar *timevar, *binvar, *intbinvar, *ctallvar, *ctwatvar, *ctinttimevar, *pois1var,
-	*pois2var, *pois3var, *pcutoffvar, *corrfacvar, *tasvar, *savar, *midbinvar,
-	*cnallvar, *cnwatvar, *lwcvar, *ntallvar, *ntwatvar, *naccwvar, *nrejwvar,
-	*naccavar, *nrejavar; 
-  
-  //Write data
-  int h1=cfg.starttime/10000;
-  int m1=(cfg.starttime-h1*10000l)/100;
-  int s1=(long(cfg.starttime)-h1*10000l-m1*100l);
-  int h2=cfg.stoptime/10000;
-  int m2=(cfg.stoptime-h2*10000l)/100;
-  int s2=(long(cfg.stoptime)-h2*10000l-m2*100l);
-  if (!dataFile.add_att("institution", "NCAR Research Aviation Facility")) return NC_ERR;
-  if (!dataFile.add_att("Source", "NCAR/RAF Fast-2DC Processing Software")) return NC_ERR;
-  if (!dataFile.add_att("Conventions", "NCAR-RAF/nimbus")) return NC_ERR;
-  if (!dataFile.add_att("ConventionsURL", "http://www.eol.ucar.edu/raf/Software/netCDF.html")) return NC_ERR;
-  if (!dataFile.add_att("ProjectName", cfg.project.c_str())) return NC_ERR;
-  if (!dataFile.add_att("FlightNumber", cfg.flightNumber.c_str())) return NC_ERR;
-  if (!dataFile.add_att("FlightDate", cfg.flightDate.c_str())) return NC_ERR;
-  sprintf(tmp, "%02d:%02d:%02d-%02d:%02d:%02d", h1,m1,s1,h2,m2,s2);
-  if (!dataFile.add_att("TimeInterval", tmp)) return NC_ERR;
-  if (!dataFile.add_att("Reconstruction", cfg.recon)) return NC_ERR;
-  if (!dataFile.add_att("SizeMethod", cfg.smethod)) return NC_ERR;
-  if (!dataFile.add_att("Raw_2D_Data_File", cfg.inputFile.c_str())) return NC_ERR;
-  
-  //Time
-  char timeunits[70];
-  int year, month, day;
-  sscanf(cfg.flightDate.c_str(), "%d/%d/%d", &month, &day, &year);
-  sprintf(timeunits,"seconds since %04d-%02d-%02d %02d:%02d:%02d +0000", year,month,day,h1,m1,s1);
-  if (!(timevar = dataFile.add_var("Time", ncInt, timedim))) return NC_ERR;
-  if (!timevar->add_att("long_name", "Time")) return NC_ERR;
-  if (!timevar->add_att("units", timeunits)) return NC_ERR;
-  int time[numtimes];
-  for (int i = 0; i < numtimes; i++) time[i] = i;
-  if (!timevar->put(time, numtimes)) return NC_ERR;
-  
-  //Bins  
-  varname="bin_endpoints"+probe.suffix;
-  if (!(binvar = dataFile.add_var(varname.c_str(), ncFloat, bindim_plusone))) return NC_ERR;
-  if (!binvar->add_att("units", "microns")) return NC_ERR;
-  if (!binvar->put(&probe.bin_endpoints[0], numbins+1)) return NC_ERR; 
+  NcVar *timevar, *var;
 
-  if (!(intbinvar = dataFile.add_var("interarrival_endpoints", ncDouble, intbindim))) return NC_ERR;
-  if (!intbinvar->put(it_endpoints, numintbins+1)) return NC_ERR; 
+  if ((timevar = ncfile.addTimeVariable(cfg, numtimes)) == 0)
+    return netCDF::NC_ERR;
+
+  //Bins  
+  std::string varname="bin_endpoints"+probe.suffix;
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, bindim_plusone))) return netCDF::NC_ERR;
+    if (!var->add_att("units", "microns")) return netCDF::NC_ERR;
+    if (!var->put(&probe.bin_endpoints[0], probe.numBins+1)) return netCDF::NC_ERR; 
+  }
+
+  varname = "interarrival_endpoints";
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncDouble, intbindim))) return netCDF::NC_ERR;
+    if (!var->put(it_endpoints, cfg.nInterarrivalBins+1)) return netCDF::NC_ERR; 
+  }
   
   //Counts
   varname="A2DCA"+probe.suffix;
-  if (!(ctallvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return NC_ERR;
-  if (!ctallvar->add_att("_FillValue", (float)(-32767.0))) return NC_ERR;
-  if (!ctallvar->add_att("units", "count")) return NC_ERR;
-  if (!ctallvar->add_att("long_name", "Fast 2DC Corrected Accumulation per Channel, All Particles")) return NC_ERR;
-  if (!ctallvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!ctallvar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
-  if (!ctallvar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!ctallvar->add_att("Resolution", (int)probe.resolution)) return NC_ERR;
-  if (!ctallvar->add_att("nDiodes", probe.nDiodes)) return NC_ERR;
-  if (!ctallvar->add_att("ResponseTime", 0.4)) return NC_ERR;
-  if (!ctallvar->add_att("ArmDistance", probe.armWidth * 10)) return NC_ERR;
-  if (!ctallvar->add_att("Rejected", "Roundness below 0.1, interarrival time below 1/20th of distribution peak")) return NC_ERR;
-  if (!ctallvar->add_att("ParticleAcceptMethod", "Reconstruction")) return NC_ERR;
-  if (!ctallvar->put(&count_all[0][0], numtimes, 1, numbins+binoffset)) return NC_ERR; 
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return netCDF::NC_ERR;
+    if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
+    if (!var->add_att("units", "count")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Fast 2DC Corrected Accumulation per Channel, All Particles")) return netCDF::NC_ERR;
+    if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
+    if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
+    if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
+    if (!var->add_att("Resolution", (int)probe.resolution)) return netCDF::NC_ERR;
+    if (!var->add_att("nDiodes", probe.nDiodes)) return netCDF::NC_ERR;
+    if (!var->add_att("ResponseTime", 0.4)) return netCDF::NC_ERR;
+    if (!var->add_att("ArmDistance", probe.armWidth * 10)) return netCDF::NC_ERR;
+    if (!var->add_att("Rejected", "Roundness below 0.1, interarrival time below 1/20th of distribution peak")) return netCDF::NC_ERR;
+    if (!var->add_att("ParticleAcceptMethod", "Reconstruction")) return netCDF::NC_ERR;
+    if (!var->put(&count_all[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
+  }
 
   varname="A2DCR"+probe.suffix;
-  if (!(ctwatvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return NC_ERR;
-  if (!ctwatvar->add_att("_FillValue", (float)(-32767.0))) return NC_ERR;
-  if (!ctwatvar->add_att("units", "count")) return NC_ERR;
-  if (!ctwatvar->add_att("long_name", "Fast 2DC Corrected Accumulation per Channel, Round Particles")) return NC_ERR;
-  if (!ctwatvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!ctwatvar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
-  if (!ctwatvar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!ctallvar->add_att("Resolution", (int)probe.resolution)) return NC_ERR;
-  if (!ctwatvar->add_att("nDiodes", probe.nDiodes)) return NC_ERR;
-  if (!ctwatvar->add_att("ResponseTime", 0.4)) return NC_ERR;
-  if (!ctwatvar->add_att("ArmDistance", probe.armWidth * 10)) return NC_ERR;
-  if (!ctwatvar->add_att("Rejected", "Roundness below 0.5, interarrival time below 1/20th of distribution peak")) return NC_ERR;
-  if (!ctwatvar->add_att("ParticleAcceptMethod", "Reconstruction")) return NC_ERR;
-  if (!ctwatvar->put(&count_round[0][0], numtimes, 1, numbins+binoffset)) return NC_ERR; 
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return netCDF::NC_ERR;
+    if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
+    if (!var->add_att("units", "count")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Fast 2DC Corrected Accumulation per Channel, Round Particles")) return netCDF::NC_ERR;
+    if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
+    if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
+    if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
+    if (!var->add_att("Resolution", (int)probe.resolution)) return netCDF::NC_ERR;
+    if (!var->add_att("nDiodes", probe.nDiodes)) return netCDF::NC_ERR;
+    if (!var->add_att("ResponseTime", 0.4)) return netCDF::NC_ERR;
+    if (!var->add_att("ArmDistance", probe.armWidth * 10)) return netCDF::NC_ERR;
+    if (!var->add_att("Rejected", "Roundness below 0.5, interarrival time below 1/20th of distribution peak")) return netCDF::NC_ERR;
+    if (!var->add_att("ParticleAcceptMethod", "Reconstruction")) return netCDF::NC_ERR;
+    if (!var->put(&count_round[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
+  }
 
   varname="I2DCA"+probe.suffix;
-  if (!(ctinttimevar = dataFile.add_var(varname.c_str(), ncInt, timedim, spsdim, intbindim))) return NC_ERR;
-  if (!ctinttimevar->add_att("_FillValue", -32767)) return NC_ERR;
-  if (!ctinttimevar->add_att("units", "count")) return NC_ERR;
-  if (!ctinttimevar->add_att("long_name", "Interarrival Time Accumulation, All Particles Including Rejections")) return NC_ERR;
-  if (!ctinttimevar->add_att("CellSizes", numintbins, it_endpoints)) return NC_ERR;
-  if (!ctinttimevar->put(&count_it[0][0], numtimes, 1, numintbins+1)) return NC_ERR; 
- 
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncInt, timedim, spsdim, intbindim))) return netCDF::NC_ERR;
+    if (!var->add_att("_FillValue", -32767)) return netCDF::NC_ERR;
+    if (!var->add_att("units", "count")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Interarrival Time Accumulation, All Particles Including Rejections")) return netCDF::NC_ERR;
+    if (!var->add_att("CellSizes", cfg.nInterarrivalBins, it_endpoints)) return netCDF::NC_ERR;
+    if (!var->put(&count_it[0][0], numtimes, 1, cfg.nInterarrivalBins+1)) return netCDF::NC_ERR;
+  }
+
   //Concentration
   varname="C2DCA"+probe.suffix;
-  if (!(cnallvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return NC_ERR;
-  if (!cnallvar->add_att("_FillValue", (float)(-32767.0))) return NC_ERR;
-  if (!cnallvar->add_att("units", "#/L")) return NC_ERR;
-  if (!cnallvar->add_att("long_name", "Fast 2DC Concentration per Channel, All Particles")) return NC_ERR;
-  if (!cnallvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!cnallvar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
-  if (!cnallvar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!cnallvar->add_att("FirstBin", probe.firstBin)) return NC_ERR;
-  if (!cnallvar->add_att("LastBin", numbins+binoffset-1)) return NC_ERR;
-  if (!cnallvar->add_att("DepthOfField", numbins, &probe.dof[0])) return NC_ERR;
-  if (!cnallvar->add_att("EffectiveAreaWidth", numbins, &probe.eaw[0])) return NC_ERR;
-  if (!cnallvar->add_att("CellSizes", numbins+1, &probe.bin_endpoints[0])) return NC_ERR;
-  if (!cnallvar->add_att("CellSizeUnits", "micrometers")) return NC_ERR;
-  if (!cnallvar->add_att("Density", 1.0)) return NC_ERR;
-  if (!cnallvar->put(&conc_all[0][0], numtimes, 1, numbins+binoffset)) return NC_ERR; 
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return netCDF::NC_ERR;
+    if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
+    if (!var->add_att("units", "#/L")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Fast 2DC Concentration per Channel, All Particles")) return netCDF::NC_ERR;
+    if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
+    if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
+    if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
+    if (!var->add_att("FirstBin", probe.firstBin)) return netCDF::NC_ERR;
+    if (!var->add_att("LastBin", probe.numBins+binoffset-1)) return netCDF::NC_ERR;
+    if (!var->add_att("DepthOfField", probe.numBins, &probe.dof[0])) return netCDF::NC_ERR;
+    if (!var->add_att("EffectiveAreaWidth", probe.numBins, &probe.eaw[0])) return netCDF::NC_ERR;
+    if (!var->add_att("CellSizes", probe.numBins+1, &probe.bin_endpoints[0])) return netCDF::NC_ERR;
+    if (!var->add_att("CellSizeUnits", "micrometers")) return netCDF::NC_ERR;
+    if (!var->add_att("Density", 1.0)) return netCDF::NC_ERR;
+    if (!var->put(&conc_all[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
+  }
 
   varname="C2DCR"+probe.suffix;
-  if (!(cnwatvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return NC_ERR;
-  if (!cnwatvar->add_att("_FillValue", (float)(-32767.0))) return NC_ERR;
-  if (!cnwatvar->add_att("units", "#/L")) return NC_ERR;
-  if (!cnwatvar->add_att("long_name", "Fast 2DC Concentration per Channel, Round Particles")) return NC_ERR;
-  if (!cnwatvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!cnwatvar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
-  if (!cnwatvar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!cnwatvar->add_att("FirstBin", probe.firstBin)) return NC_ERR;
-  if (!cnwatvar->add_att("LastBin", numbins+binoffset-1)) return NC_ERR;
-  if (!cnallvar->add_att("DepthOfField", numbins, &probe.dof[0])) return NC_ERR;
-  if (!cnallvar->add_att("EffectiveAreaWidth", numbins, &probe.eaw[0])) return NC_ERR;
-  if (!cnwatvar->add_att("CellSizes", numbins+1, &probe.bin_endpoints[0])) return NC_ERR;
-  if (!cnwatvar->add_att("CellSizeUnits", "micrometers")) return NC_ERR;
-  if (!cnwatvar->add_att("Density", 1.0)) return NC_ERR;
-  if (!cnwatvar->put(&conc_round[0][0], numtimes, 1, numbins+binoffset)) return NC_ERR; 
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return netCDF::NC_ERR;
+    if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
+    if (!var->add_att("units", "#/L")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Fast 2DC Concentration per Channel, Round Particles")) return netCDF::NC_ERR;
+    if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
+    if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
+    if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
+    if (!var->add_att("FirstBin", probe.firstBin)) return netCDF::NC_ERR;
+    if (!var->add_att("LastBin", probe.numBins+binoffset-1)) return netCDF::NC_ERR;
+    if (!var->add_att("DepthOfField", probe.numBins, &probe.dof[0])) return netCDF::NC_ERR;
+    if (!var->add_att("EffectiveAreaWidth", probe.numBins, &probe.eaw[0])) return netCDF::NC_ERR;
+    if (!var->add_att("CellSizes", probe.numBins+1, &probe.bin_endpoints[0])) return netCDF::NC_ERR;
+    if (!var->add_att("CellSizeUnits", "micrometers")) return netCDF::NC_ERR;
+    if (!var->add_att("Density", 1.0)) return netCDF::NC_ERR;
+    if (!var->put(&conc_round[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
+  }
    
   //Total counts and LWC
   varname="CONC2DCA"+probe.suffix;
-  if (!(ntallvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;
-  if (!ntallvar->add_att("_FillValue", (float)(-32767.0))) return NC_ERR;
-  if (!ntallvar->add_att("units", "#/L")) return NC_ERR;
-  if (!ntallvar->add_att("long_name", "Total Fast 2DC Concentration, All Particles")) return NC_ERR;
-  if (!ntallvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!ntallvar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
-  if (!ntallvar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!ntallvar->put(nt_all, numtimes)) return NC_ERR;
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim))) return netCDF::NC_ERR;
+    if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
+    if (!var->add_att("units", "#/L")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Total Fast 2DC Concentration, All Particles")) return netCDF::NC_ERR;
+    if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
+    if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
+    if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
+    if (!var->put(nt_all, numtimes)) return netCDF::NC_ERR;
+  }
 
   varname="CONC2DCR"+probe.suffix;
-  if (!(ntwatvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;
-  if (!ntwatvar->add_att("_FillValue", (float)(-32767.0))) return NC_ERR;
-  if (!ntwatvar->add_att("units", "#/L")) return NC_ERR;
-  if (!ntwatvar->add_att("long_name", "Total Fast 2DC Concentration, Round Particles")) return NC_ERR;
-  if (!ntwatvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!ntwatvar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
-  if (!ntwatvar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!ntwatvar->put(nt_round, numtimes)) return NC_ERR;
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim))) return netCDF::NC_ERR;
+    if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
+    if (!var->add_att("units", "#/L")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Total Fast 2DC Concentration, Round Particles")) return netCDF::NC_ERR;
+    if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
+    if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
+    if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
+    if (!var->put(nt_round, numtimes)) return netCDF::NC_ERR;
+  }
   
   varname="PLWC2DCR"+probe.suffix;
-  if (!(lwcvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;  
-  if (!lwcval->add_att("_FillValue", (float)(-32767.0))) return NC_ERR;
-  if (!lwcvar->add_att("units", "g/m3")) return NC_ERR;
-  if (!lwcvar->add_att("long_name", "Fast 2DC Liquid Water Content, Round Particles")) return NC_ERR;
-  if (!lwcvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!lwcvar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
-  if (!lwcvar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!lwcvar->put(lwc_round, numtimes)) return NC_ERR;
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim))) return netCDF::NC_ERR;  
+    if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
+    if (!var->add_att("units", "g/m3")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Fast 2DC Liquid Water Content, Round Particles")) return netCDF::NC_ERR;
+    if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
+    if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
+    if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
+    if (!var->put(lwc_round, numtimes)) return netCDF::NC_ERR;
+  }
 
   varname="NACCEPT2DCR"+probe.suffix;
-  if (!(naccwvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;  
-  if (!naccwvar->add_att("units", "count")) return NC_ERR;
-  if (!naccwvar->add_att("long_name", "Number of Particles Accepted, Round Particles")) return NC_ERR;
-  if (!naccwvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!naccwvar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
-  if (!naccwvar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!naccwvar->put(n_accepted_round, numtimes)) return NC_ERR;
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim))) return netCDF::NC_ERR;  
+    if (!var->add_att("units", "count")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Number of Particles Accepted, Round Particles")) return netCDF::NC_ERR;
+    if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
+    if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
+    if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
+    if (!var->put(n_accepted_round, numtimes)) return netCDF::NC_ERR;
+  }
 
   varname="NACCEPT2DCA"+probe.suffix;
-  if (!(naccavar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;  
-  if (!naccavar->add_att("units", "count")) return NC_ERR;
-  if (!naccavar->add_att("long_name", "Number of Particles Accepted, All Particles")) return NC_ERR;
-  if (!naccavar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!naccavar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
-  if (!naccavar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!naccavar->put(n_accepted_all, numtimes)) return NC_ERR;
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim))) return netCDF::NC_ERR;  
+    if (!var->add_att("units", "count")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Number of Particles Accepted, All Particles")) return netCDF::NC_ERR;
+    if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
+    if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
+    if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
+    if (!var->put(n_accepted_all, numtimes)) return netCDF::NC_ERR;
+  }
 
   varname="NREJECT2DCR"+probe.suffix;
-  if (!(nrejwvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;  
-  if (!nrejwvar->add_att("units", "count")) return NC_ERR;
-  if (!nrejwvar->add_att("long_name", "Number of Particles Rejected, Round Particles")) return NC_ERR;
-  if (!nrejwvar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!nrejwvar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
-  if (!nrejwvar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!nrejwvar->put(n_rejected_round, numtimes)) return NC_ERR;
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim))) return netCDF::NC_ERR;  
+    if (!var->add_att("units", "count")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Number of Particles Rejected, Round Particles")) return netCDF::NC_ERR;
+    if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
+    if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
+    if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
+    if (!var->put(n_rejected_round, numtimes)) return netCDF::NC_ERR;
+  }
 
   varname="NREJECT2DCA"+probe.suffix;
-  if (!(nrejavar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;  
-  if (!nrejavar->add_att("units", "count")) return NC_ERR;
-  if (!nrejavar->add_att("long_name", "Number of Particles Rejected, All Particles")) return NC_ERR;
-  if (!nrejavar->add_att("Category", "PMS Probe")) return NC_ERR;
-  if (!nrejavar->add_att("SerialNumber", probe.serialNumber.c_str())) return NC_ERR;
-  if (!nrejavar->add_att("DataQuality", "Good")) return NC_ERR;
-  if (!nrejavar->put(n_rejected_all, numtimes)) return NC_ERR;
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim))) return netCDF::NC_ERR;  
+    if (!var->add_att("units", "count")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Number of Particles Rejected, All Particles")) return netCDF::NC_ERR;
+    if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
+    if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
+    if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
+    if (!var->put(n_rejected_all, numtimes)) return netCDF::NC_ERR;
+  }
 
 
   //Misc
   varname="poisson_coeff1"+probe.suffix;
-  if (!(pois1var = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;
-  if (!pois1var->add_att("units", "unitless")) return NC_ERR;
-  if (!pois1var->add_att("long_name", "Interarrival Time Fit Coefficient 1")) return NC_ERR;
-  if (!pois1var->put(cpoisson1, numtimes)) return NC_ERR;
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim))) return netCDF::NC_ERR;
+    if (!var->add_att("units", "unitless")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Interarrival Time Fit Coefficient 1")) return netCDF::NC_ERR;
+    if (!var->put(cpoisson1, numtimes)) return netCDF::NC_ERR;
+  }
   
   varname="poisson_coeff2"+probe.suffix;
-  if (!(pois2var = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;
-  if (!pois2var->add_att("units", "1/seconds")) return NC_ERR;
-  if (!pois2var->add_att("long_name", "Interarrival Time Fit Coefficient 2")) return NC_ERR;
-  if (!pois2var->put(cpoisson2, numtimes)) return NC_ERR;
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim))) return netCDF::NC_ERR;
+    if (!var->add_att("units", "1/seconds")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Interarrival Time Fit Coefficient 2")) return netCDF::NC_ERR;
+    if (!var->put(cpoisson2, numtimes)) return netCDF::NC_ERR;
+  }
   
   varname="poisson_coeff3"+probe.suffix;
-  if (!(pois3var = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;
-  if (!pois3var->add_att("units", "1/seconds")) return NC_ERR;
-  if (!pois3var->add_att("long_name", "Interarrival Time Fit Coefficient 3")) return NC_ERR;
-  if (!pois3var->put(cpoisson3, numtimes)) return NC_ERR;
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim))) return netCDF::NC_ERR;
+    if (!var->add_att("units", "1/seconds")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Interarrival Time Fit Coefficient 3")) return netCDF::NC_ERR;
+    if (!var->put(cpoisson3, numtimes)) return netCDF::NC_ERR;
+  }
   
   varname="poisson_cutoff"+probe.suffix;
-  if (!(pcutoffvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;
-  if (!pcutoffvar->add_att("units", "seconds")) return NC_ERR;
-  if (!pcutoffvar->add_att("long_name", "Interarrival Time Lower Limit")) return NC_ERR;
-  if (!pcutoffvar->put(pcutoff, numtimes)) return NC_ERR;
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim))) return netCDF::NC_ERR;
+    if (!var->add_att("units", "seconds")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Interarrival Time Lower Limit")) return netCDF::NC_ERR;
+    if (!var->put(pcutoff, numtimes)) return netCDF::NC_ERR;
+  }
   
   varname="poisson_correction"+probe.suffix;
-  if (!(corrfacvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;
-  if (!corrfacvar->add_att("units", "unitless")) return NC_ERR;
-  if (!corrfacvar->add_att("long_name", "Count/Concentration Correction Factor for Interarrival Rejection")) return NC_ERR;
-  if (!corrfacvar->put(corrfac, numtimes)) return NC_ERR;
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim))) return netCDF::NC_ERR;
+    if (!var->add_att("units", "unitless")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Count/Concentration Correction Factor for Interarrival Rejection")) return netCDF::NC_ERR;
+    if (!var->put(corrfac, numtimes)) return netCDF::NC_ERR;
+  }
   
   varname="TAS"+probe.suffix;
-  if (!(tasvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;
-  if (!tasvar->add_att("units", "meters per second")) return NC_ERR;
-  if (!tasvar->add_att("long_name", "True Air Speed")) return NC_ERR;
-  if (!tasvar->put(tas, numtimes)) return NC_ERR;
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim))) return netCDF::NC_ERR;
+    if (!var->add_att("units", "m/s")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "True Air Speed")) return netCDF::NC_ERR;
+    if (!var->put(tas, numtimes)) return netCDF::NC_ERR;
+  }
 
   varname="SA"+probe.suffix;
-  if (!(savar = dataFile.add_var(varname.c_str(), ncFloat, bindim))) return NC_ERR;
-  if (!savar->add_att("units", "m2")) return NC_ERR;
-  if (!savar->add_att("long_name", "Sample area per channel")) return NC_ERR;
-  if (!savar->put(&probe.samplearea[0], numbins)) return NC_ERR;
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, bindim))) return netCDF::NC_ERR;
+    if (!var->add_att("units", "m2")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Sample area per channel")) return netCDF::NC_ERR;
+    if (!var->put(&probe.samplearea[0], probe.numBins)) return netCDF::NC_ERR;
+  }
 
   varname="bin_midpoints"+probe.suffix;
-  if (!(midbinvar = dataFile.add_var(varname.c_str(), ncFloat, bindim))) return NC_ERR;
-  if (!midbinvar->add_att("units", "microns")) return NC_ERR;
-  if (!midbinvar->add_att("long_name", "Size Channel Midpoints")) return NC_ERR;
-  if (!midbinvar->put(&probe.bin_midpoints[0], numbins)) return NC_ERR;
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, bindim))) return netCDF::NC_ERR;
+    if (!var->add_att("units", "microns")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Size Channel Midpoints")) return netCDF::NC_ERR;
+    if (!var->put(&probe.bin_midpoints[0], probe.numBins)) return netCDF::NC_ERR;
+  }
 
   delete [] count_all[0];
   delete [] count_round[0];
@@ -1157,7 +1073,7 @@ string extractAttribute(const string & line, string name)
   return line.substr(q1+1, q2-q1-1);
 }
 
-void ParseHeader(ifstream & input_file, Config & cfg, vector<struct probe_info> & probe_list)
+void ParseHeader(ifstream & input_file, Config & cfg, vector<ProbeInfo> & probe_list)
 {
   string line;
 
@@ -1180,21 +1096,11 @@ void ParseHeader(ifstream & input_file, Config & cfg, vector<struct probe_info> 
 
     if (line.find("Fast2DC") != string::npos)	//found a line describing a FAST2D probe
     {
-      struct probe_info thisProbe;
+      ProbeInfo thisProbe(extractAttribute(line, "probe id"), nDiodes, numbins, binoffset);
 
-      thisProbe.id = extractAttribute(line, "probe id");
       thisProbe.resolution = atof(extractAttribute(line, "resolution").c_str());
       thisProbe.suffix = extractAttribute(line, "suffix");
       thisProbe.serialNumber = extractAttribute(line, "serialnumber");
-
-      // Set some defaults / best guesses.
-      thisProbe.nDiodes = 64;
-      thisProbe.firstBin = binoffset;
-      thisProbe.firstBin = thisProbe.nDiodes;
-
-      thisProbe.armWidth = 6.1;
-      if (thisProbe.id[0] == 'P')
-        thisProbe.armWidth = 26.1;
 
       // Attempt to read RAF PMSspecs file.
       char *proj_dir = getenv("PROJ_DIR");
@@ -1269,7 +1175,7 @@ int main(int argc, char *argv[])
   int errorcode;
   ifstream input_file;
   type_buffer buffer;
-  vector<struct probe_info> probes;
+  vector<ProbeInfo> probes;
   Config config;
   
   // Check for correct number of arguments
@@ -1312,9 +1218,11 @@ int main(int argc, char *argv[])
   // Process all probes found in the file
   for (size_t i = 0; i < probes.size(); i++)
   {
-    cout	<< "Processing: " << probes[i].serialNumber << probes[i].suffix
-		<< " res:" << probes[i].resolution
-		<< " armwidth:" << probes[i].armWidth << endl;
+    cout	<< "Processing: " << probes[i].serialNumber << probes[i].suffix << endl
+		<< "  nDiodes : " << probes[i].nDiodes << endl
+		<< "  numBins : " << probes[i].numBins << endl
+		<< "      res : " << probes[i].resolution << endl
+		<< " armwidth : " << probes[i].armWidth << endl;
 
     errorcode = process2d(config, probes[i]); 
 
