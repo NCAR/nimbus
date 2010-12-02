@@ -21,12 +21,15 @@ DESCRIPTION:    Source documents:
                 The US Standard Atmosphere is defined as
                 having a pressure of 1013.25 hPa and temperature 15 degC
                 at an altitude of 0 m.
-                The lapse rate is lambda=-0.0065degC/m (z<11000 m)
-                and lapse rate lambda=0 (z>1100m).
+                The lapse rate is lambda=-0.0065degC/m (z<11000m)
+                and lapse rate lambda=0 (z>11000m).
 
                 There is a further lapse rate change at
                 z=20000 m, but that is not included here due to the lower
                 flight altitudes of NCAR aircraft.
+
+                The US Standard Atmosphere is identical to the ICAO standard
+		1964 up to 32 km and the ISO standard 1973 up to 50km.
 
                 The US Standard Atmosphere is an avionics
                 standard, and it does therefore not follow common science
@@ -36,7 +39,7 @@ DESCRIPTION:    Source documents:
                     gas constant  R=287.0531 J/(kg K)
                 Note that the gas constant given here is a
                 derived value based on the US Standard Atmosphere's
-                values for R* and Mw.
+                values for R* (US standard, table 2) and Md.
 
                 Current coding and comments were completed on 22 Nov 2010.
                 Prior versions allowed for different surface
