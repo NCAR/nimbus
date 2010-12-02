@@ -927,7 +927,7 @@ int process2d(Config & cfg, struct probe_info & probe)
   if (!timevar->add_att("long_name", "Time")) return NC_ERR;
   if (!timevar->add_att("units", timeunits)) return NC_ERR;
   int time[numtimes];
-  for (int i=0; i<numtimes; i++) time[i]=starttime+i;
+  for (int i = 0; i < numtimes; i++) time[i] = i;
   if (!timevar->put(time, numtimes)) return NC_ERR;
   
   //Bins  
