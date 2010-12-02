@@ -974,7 +974,7 @@ int process2d(Config & cfg, struct probe_info & probe)
 
   varname="I2DCA"+probe.suffix;
   if (!(ctinttimevar = dataFile.add_var(varname.c_str(), ncInt, timedim, spsdim, intbindim))) return NC_ERR;
-  if (!ctinttimevar->add_att("_FillValue", 0.0)) return NC_ERR;
+  if (!ctinttimevar->add_att("_FillValue", 0)) return NC_ERR;
   if (!ctinttimevar->add_att("units", "count")) return NC_ERR;
   if (!ctinttimevar->add_att("long_name", "Interarrival Time Accumulation, All Particles Including Rejections")) return NC_ERR;
   if (!ctinttimevar->add_att("CellSizes", numintbins, it_endpoints)) return NC_ERR;
