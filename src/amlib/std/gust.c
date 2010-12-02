@@ -32,8 +32,7 @@ static bool		firstTime[MAX_PROBES][nFeedBackTypes];
 /* -------------------------------------------------------------------- */
 void initGust(var_base *varp)
 {
-  NR_TYPE GetBoomLength();
-  int		probeCnt = varp->ProbeCount;
+  NR_TYPE	GetBoomLength();
 
   DELT[LOW_RATE_FEEDBACK] = 1.0;
   DELT[HIGH_RATE_FEEDBACK] = 1.0/(float)cfg.ProcessingRate();
@@ -46,10 +45,16 @@ void initGust(var_base *varp)
   memset(pitch0, 0, sizeof(pitch0));
   memset(thdg0, 0, sizeof(thdg0));
 
-  boomln[probeCnt] = GetBoomLength();
+  boomln[varp->ProbeCount] = GetBoomLength();
 
+  /* Since each aircraft traditionally only had one gust system, the boomlength is
+   * stored as a aircraft parameter.  The gustpod is a standalone system and can't
+   * be identified as a specific aircraft.  So hack the boomlength here for the
+   * time being.
+   * @todo  This could be fetched from the nidas XML file after the sync_server/nimbus merge.
+   */
   if (strstr(varp->name, "_GP"))
-    boomln[probeCnt] = 0.67;
+    boomln[varp->ProbeCount] = 0.67;
 }
 
 /* -------------------------------------------------------------------- */
