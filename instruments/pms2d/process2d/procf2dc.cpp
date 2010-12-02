@@ -1293,7 +1293,7 @@ int main(int argc, char *argv[])
 
   // Read first buffer, get start time
   input_file.read((char*)(&buffer), sizeof(buffer));
-  config.starttime=endianswap_s(buffer.hours)*10000+endianswap_s(buffer.minutes*100)+endianswap_s(buffer.seconds);
+  config.starttime=endianswap_s(buffer.hours)*10000+endianswap_s(buffer.minutes)*100+endianswap_s(buffer.seconds);
    
   // Read last buffer, get stop time
   do input_file.read((char*)(&buffer), sizeof(buffer)); while (!input_file.eof());
