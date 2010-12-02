@@ -942,7 +942,7 @@ int process2d(Config & cfg, struct probe_info & probe)
   //Counts
   varname="A2DCA"+probe.suffix;
   if (!(ctallvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return NC_ERR;
-  if (!ctallvar->add_att("_FillValue", (float)(-32767))) return NC_ERR;
+  if (!ctallvar->add_att("_FillValue", (float)(0.0))) return NC_ERR;
   if (!ctallvar->add_att("units", "count")) return NC_ERR;
   if (!ctallvar->add_att("long_name", "Fast 2DC Corrected Accumulation per Channel, All Particles")) return NC_ERR;
   if (!ctallvar->add_att("Category", "PMS Probe")) return NC_ERR;
@@ -958,7 +958,7 @@ int process2d(Config & cfg, struct probe_info & probe)
 
   varname="A2DCR"+probe.suffix;
   if (!(ctwatvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return NC_ERR;
-  if (!ctwatvar->add_att("_FillValue", (float)(-32767.0))) return NC_ERR;
+  if (!ctwatvar->add_att("_FillValue", (float)(0.0))) return NC_ERR;
   if (!ctwatvar->add_att("units", "count")) return NC_ERR;
   if (!ctwatvar->add_att("long_name", "Fast 2DC Corrected Accumulation per Channel, Round Particles")) return NC_ERR;
   if (!ctwatvar->add_att("Category", "PMS Probe")) return NC_ERR;
@@ -974,7 +974,7 @@ int process2d(Config & cfg, struct probe_info & probe)
 
   varname="I2DCA"+probe.suffix;
   if (!(ctinttimevar = dataFile.add_var(varname.c_str(), ncInt, timedim, spsdim, intbindim))) return NC_ERR;
-  if (!ctinttimevar->add_att("_FillValue", -32767)) return NC_ERR;
+  if (!ctinttimevar->add_att("_FillValue", 0.0)) return NC_ERR;
   if (!ctinttimevar->add_att("units", "count")) return NC_ERR;
   if (!ctinttimevar->add_att("long_name", "Interarrival Time Accumulation, All Particles Including Rejections")) return NC_ERR;
   if (!ctinttimevar->add_att("CellSizes", numintbins, it_endpoints)) return NC_ERR;
@@ -983,7 +983,7 @@ int process2d(Config & cfg, struct probe_info & probe)
   //Concentration
   varname="C2DCA"+probe.suffix;
   if (!(cnallvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return NC_ERR;
-  if (!cnallvar->add_att("_FillValue", (float)(-32767.0))) return NC_ERR;
+  if (!cnallvar->add_att("_FillValue", (float)(0.0))) return NC_ERR;
   if (!cnallvar->add_att("units", "#/L")) return NC_ERR;
   if (!cnallvar->add_att("long_name", "Fast 2DC Concentration per Channel, All Particles")) return NC_ERR;
   if (!cnallvar->add_att("Category", "PMS Probe")) return NC_ERR;
@@ -1000,7 +1000,7 @@ int process2d(Config & cfg, struct probe_info & probe)
 
   varname="C2DCR"+probe.suffix;
   if (!(cnwatvar = dataFile.add_var(varname.c_str(), ncFloat, timedim, spsdim, bindim_plusone))) return NC_ERR;
-  if (!cnwatvar->add_att("_FillValue", (float)(-32767.0))) return NC_ERR;
+  if (!cnwatvar->add_att("_FillValue", (float)(0.0))) return NC_ERR;
   if (!cnwatvar->add_att("units", "#/L")) return NC_ERR;
   if (!cnwatvar->add_att("long_name", "Fast 2DC Concentration per Channel, Round Particles")) return NC_ERR;
   if (!cnwatvar->add_att("Category", "PMS Probe")) return NC_ERR;
@@ -1018,6 +1018,7 @@ int process2d(Config & cfg, struct probe_info & probe)
   //Total counts and LWC
   varname="CONC2DCA"+probe.suffix;
   if (!(ntallvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;
+  if (!ntallvar->add_att("_FillValue", (float)(0.0))) return NC_ERR;
   if (!ntallvar->add_att("units", "#/L")) return NC_ERR;
   if (!ntallvar->add_att("long_name", "Total Fast 2DC Concentration, All Particles")) return NC_ERR;
   if (!ntallvar->add_att("Category", "PMS Probe")) return NC_ERR;
@@ -1027,6 +1028,7 @@ int process2d(Config & cfg, struct probe_info & probe)
 
   varname="CONC2DCR"+probe.suffix;
   if (!(ntwatvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;
+  if (!ntwatvar->add_att("_FillValue", (float)(0.0))) return NC_ERR;
   if (!ntwatvar->add_att("units", "#/L")) return NC_ERR;
   if (!ntwatvar->add_att("long_name", "Total Fast 2DC Concentration, Round Particles")) return NC_ERR;
   if (!ntwatvar->add_att("Category", "PMS Probe")) return NC_ERR;
@@ -1036,6 +1038,7 @@ int process2d(Config & cfg, struct probe_info & probe)
   
   varname="PLWC2DCR"+probe.suffix;
   if (!(lwcvar = dataFile.add_var(varname.c_str(), ncFloat, timedim))) return NC_ERR;  
+  if (!lwcval->add_att("_FillValue", (float)(0.0))) return NC_ERR;
   if (!lwcvar->add_att("units", "g/m3")) return NC_ERR;
   if (!lwcvar->add_att("long_name", "Fast 2DC Liquid Water Content, Round Particles")) return NC_ERR;
   if (!lwcvar->add_att("Category", "PMS Probe")) return NC_ERR;
