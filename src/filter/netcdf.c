@@ -208,7 +208,7 @@ void CreateNetCDF(const char fileName[])
 
   putGlobalAttribute("ProjectName", cfg.ProjectName());
   putGlobalAttribute("Platform", cfg.TailNumber());
-  putGlobalAttribute("ProjectNumber", cfg.ProjectNumber());
+  if (cfg.isADS2()) putGlobalAttribute("ProjectNumber", cfg.ProjectNumber());
   putGlobalAttribute("FlightNumber", cfg.FlightNumber());
 
   if (cfg.ProcessingMode() == Config::RealTime)
