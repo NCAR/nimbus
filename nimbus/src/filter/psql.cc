@@ -69,9 +69,7 @@ PostgreSQL::PostgreSQL(std::string specifier)
     "CREATE RULE update AS ON UPDATE TO global_attributes DO NOTIFY current;", true);
 
     submitCommand("INSERT INTO global_attributes VALUES ('checksum', '" + cfg.Checksum() + "');", cfg.TransmitToGround());
-
   }
-
 }	/* END CTOR */
 
 /* -------------------------------------------------------------------- */
