@@ -160,7 +160,7 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   /* Turn "Go" button into "Pause" button.
   */
   XtRemoveAllCallbacks(goButton, XmNactivateCallback);
-  label = XmStringCreate("Pause", XmFONTLIST_DEFAULT_TAG);
+  label = XmStringCreate((char *)"Pause", XmFONTLIST_DEFAULT_TAG);
   XtSetArg(args[0], XmNlabelString, label);
   XtSetValues(goButton, args, 1);
   XmStringFree(label);
@@ -207,7 +207,7 @@ void StopProcessing()
 
   /* Turn "Pause" button back into "Go" button.
   */
-  label = XmStringCreate("Go", XmFONTLIST_DEFAULT_TAG);
+  label = XmStringCreate((char *)"Go", XmFONTLIST_DEFAULT_TAG);
   XtSetArg(args[0], XmNlabelString, label);
   XtSetValues(goButton, args, 1);
   XmStringFree(label);
@@ -274,7 +274,7 @@ static int ValidateFileNames()
 /* -------------------------------------------------------------------- */
 XmString CreateListLineItem(VARTBL *vp)
 {
-  static char	*list1lineFrmt = "%-13s  %c   %4d    %4d";
+  static const char *list1lineFrmt = "%-13s  %c   %4d    %4d";
 
   sprintf(buffer, list1lineFrmt,
 		vp->name.c_str(),
@@ -331,7 +331,7 @@ void ToggleOutput(Widget w, XtPointer client, XtPointer call)
 }	/* END TOGGLEOUTPUT */
 
 /* -------------------------------------------------------------------- */
-void LogMessage(char msg[])
+void LogMessage(const char msg[])
 {
   XmTextPosition	position;
   extern Widget	logText;
@@ -339,7 +339,7 @@ void LogMessage(char msg[])
   if (Interactive)
     {
     position = XmTextGetInsertionPosition(logText);
-    XmTextInsert(logText, position, msg);
+    XmTextInsert(logText, position, (char *)msg);
 
     position += strlen(msg);
     XmTextShowPosition(logText, position);

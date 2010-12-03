@@ -26,7 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 
 void FormatTimeSegmentsForOutputFile(char buff[]);
 void SortTable(std::vector<VARTBL*>, int beg, int end);
-void getNCattr(int ncid, char attr[], char **dest);
+void getNCattr(int ncid, const char attr[], char **dest);
 static bool VarCompareLT(const VARTBL *x, const VARTBL *y);
 
 
@@ -167,7 +167,7 @@ int ReadInputFile(char fileName[])
 }	/* END READINPUTFILE */
 
 /* -------------------------------------------------------------------- */
-void getNCattr(int ncid, char attr[], char **dest)
+void getNCattr(int ncid, const char attr[], char **dest)
 {
   size_t len;
 

@@ -59,7 +59,7 @@ void ResetTimeSliceWindow(Widget w, XtPointer client, XtPointer call)
   int     i;
  
   for (i = 0; i < MAX_TIME_SLICES*2; ++i)
-    XmTextFieldSetString(ts_text[i], "");
+    XmTextFieldSetString(ts_text[i], (char *)"");
  
 }   /* END RESETTIMESLICEWINDOW */
  

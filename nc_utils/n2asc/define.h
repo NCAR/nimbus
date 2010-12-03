@@ -107,9 +107,9 @@ int	SearchTable(std::vector<VARTBL*>&, int n, char target[]);
 int	SearchTableSansLocation(std::vector<VARTBL*>&, int n, char target[]);
 
 void	CloseNetCDF(), FlushXEvents(), GetUserTimeIntervals(), Initialize(),
-	LogMessage(char msg[]), HandleError(char msg[]),
-	HandleWarning(char msg[], void (*callBack)(Widget, XtPointer, XtPointer)),
-	ReadBatchFile(char fileName[]);
+	LogMessage(const char msg[]), HandleError(const char msg[]),
+	HandleWarning(const char msg[], void (*callBack)(Widget, XtPointer, XtPointer)),
+	ReadBatchFile(const char fileName[]);
 
 /* Callbacks	*/
 void	CancelWarning(Widget w, XtPointer client, XtPointer call),

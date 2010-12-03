@@ -61,7 +61,7 @@ int SearchTableSansLocation(std::vector<VARTBL*>& table, int ntable, char target
  
   for (i = 0; i < ntable; ++i)
     {
-    if ( (p = strchr(table[i]->name.c_str(), '_')) )
+    if ( (p = strchr((char *)table[i]->name.c_str(), '_')) )
       {
       c = *p;
       *p = '\0';

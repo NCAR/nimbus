@@ -29,7 +29,7 @@ void Initialize()
   int	pos;
   char	*p;
 
-  putenv("TZ=UTC");     // Perform all time calculations at UTC.
+  putenv((char *)"TZ=UTC");     // Perform all time calculations at UTC.
 
   XaxisType	= TIME;
   PauseFlag	= false;

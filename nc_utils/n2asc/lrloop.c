@@ -38,7 +38,7 @@ static int FindFirstRecordNumber(long starttime);
 static int FindNextRecordNumber(long endtime);
 
 void UpdateTime(struct tm *currentTime);
-void getNCattr(int ncid, char attr[], char **dest);
+void getNCattr(int ncid, const char attr[], char **dest);
 bool isMissingValue(float target, float fillValue);
 
 /* -------------------------------------------------------------------- */

@@ -48,7 +48,7 @@ void QueryUser(char str[], int maxlen, void (*callBack)())
   XtSetArg(args[n], XmNwidth, 0); ++n;
   XtSetArg(args[n], XmNcolumns, maxlen); ++n;
   XtSetValues(w, args, n);
-  XmTextSetString(w, "");
+  XmTextSetString(w, (char *)"");
 
   XtRemoveAllCallbacks(queryBox, XmNokCallback);
   XtAddCallback(queryBox, XmNokCallback, (XtCallbackProc)callBack,
@@ -74,7 +74,7 @@ void QueryCancel(
 /* -------------------------------------------------------------------- */
 void CreateQueryBox(Widget parent)
 {
-  queryBox = XmCreatePromptDialog(parent, "queryBox", NULL, 0);
+  queryBox = XmCreatePromptDialog(parent, (char *)"queryBox", NULL, 0);
   XtSetSensitive(XmSelectionBoxGetChild(queryBox, XmDIALOG_HELP_BUTTON),
 					FALSE);
 
