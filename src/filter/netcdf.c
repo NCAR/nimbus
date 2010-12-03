@@ -50,6 +50,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2010
 static const std::string Source = "NCAR Research Aviation Facility";
 static const std::string Address = "P.O. Box 3000, Boulder, CO 80307-3000";
 static const std::string Phone = "(303) 497-1030";
+static const std::string URL = "http://www.eol.ucar.edu";
+static const std::string EMail = "codiac at ucar.edu";
 static const std::string Conventions = "NCAR-RAF/nimbus";
 static const std::string ConventionsURL = "http://www.eol.ucar.edu/raf/Software/netCDF.html";
 static const std::string NETCDF_FORMAT_VERSION = "1.3";
@@ -175,9 +177,13 @@ void CreateNetCDF(const char fileName[])
   putGlobalAttribute("institution", Source);
   putGlobalAttribute("Address", Address);
   putGlobalAttribute("Phone", Phone);
+  putGlobalAttribute("creator_url", URL);
+  putGlobalAttribute("creator_email", EMail);
   putGlobalAttribute("Conventions", Conventions);
   putGlobalAttribute("ConventionsURL", ConventionsURL);
+  putGlobalAttribute("Metadata_Conventions", "Unidata Dataset Discovery v1.0"); 
   putGlobalAttribute("ConventionsVersion", NETCDF_FORMAT_VERSION.c_str());
+  putGlobalAttribute("standard_name_vocabulary", "CF-1.0");
   putGlobalAttribute("ProcessorRevision", &SVNREVISION[10]);
   putGlobalAttribute("NIDASrevision", cfg.NIDASrevision().c_str());
 
@@ -206,7 +212,8 @@ void CreateNetCDF(const char fileName[])
     fprintf(LogFile, "Processed on: %s\n", dateProcessed);
   }
 
-  putGlobalAttribute("ProjectName", cfg.ProjectName());
+  putGlobalAttribute("ProjectName", cfg.ProjectName());	// Deprecate this sometime after 2011.  cjw
+  putGlobalAttribute("project", cfg.ProjectName());
   putGlobalAttribute("Platform", cfg.TailNumber());
   if (cfg.isADS2()) putGlobalAttribute("ProjectNumber", cfg.ProjectNumber());
   putGlobalAttribute("FlightNumber", cfg.FlightNumber());
@@ -248,6 +255,7 @@ void CreateNetCDF(const char fileName[])
   putGlobalAttribute("geospatial_lon_max", &x);
   putGlobalAttribute("geospatial_vertical_min", &x);
   putGlobalAttribute("geospatial_vertical_max", &x);
+  putGlobalAttribute("geospatial_vertical_positive", "up");
   putGlobalAttribute("geospatial_vertical_units", "m");
   putGlobalAttribute("wind_field", cfg.WindFieldVariables());
 
