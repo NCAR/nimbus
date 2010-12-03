@@ -759,9 +759,10 @@ if (debug)
 static size_t checkRejectionCriteria(Particle * cp, recStats & output)
 {
   if (controlWindow->RejectZeroAreaImage() && cp->w == 0 && cp->h == 0)
-  {
     cp->reject = true;
-  }
+
+  if (cp->h == 1 && cp->w > 3)	// Stuck bit detection.
+    cp->reject = true;
 
   if ((float)cp->area / (std::pow(std::max(cp->w, cp->h), 2.0) * M_PI / 4.0) <= controlWindow->GetAreaRatioReject())
     cp->reject = true;
@@ -781,24 +782,6 @@ static size_t checkRejectionCriteria(Particle * cp, recStats & output)
       break;
 
     case CENTER_IN:
-      if (cp->w > 121)
-      {
-        if (debug) printf("reject 121 rule #%d\n", output.nTimeBars);
-        cp->reject = true;
-      }
-      else
-      if (cp->h < 24 && cp->w > 6 * cp->h)
-      {
-        if (debug) printf("reject 24 rule #%d\n", output.nTimeBars);
-        cp->reject = true;
-      }
-      else
-      if (cp->h < 6 && cp->w > 3 * cp->h)
-      {
-        if (debug) printf("reject 6 rule #%d\n", output.nTimeBars);
-        cp->reject = true;
-      }
-      else
       if (cp->edge && cp->w >= cp->h * 2)
       {
         if (debug) printf("reject no-center rule #%d\n", output.nTimeBars);
@@ -809,24 +792,6 @@ static size_t checkRejectionCriteria(Particle * cp, recStats & output)
       break;
 
     case RECONSTRUCTION:
-      if (cp->w > 121)
-      {
-        if (debug) printf("reject 121 rule #%d\n", output.nTimeBars);
-        cp->reject = true;
-      }
-      else
-      if (cp->h < 24 && cp->w > 6 * cp->h)
-      {
-        if (debug) printf("reject 24 rule #%d\n", output.nTimeBars);
-        cp->reject = true;
-      }
-      else
-      if (cp->h < 6 && cp->w > 3 * cp->h)
-      {
-        if (debug) printf("reject 6 rule #%d\n", output.nTimeBars);
-        cp->reject = true;
-      }
-      else
       if (cp->edge && (float)cp->h / cp->w < 0.2)
       {
         if (debug) printf("reject 20%% rule #%d\n", output.nTimeBars);
