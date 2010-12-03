@@ -39,7 +39,7 @@ DESCRIPTION:    Source documents:
                     gas constant  R=287.0531 J/(kg K)
                 Note that the gas constant given here is a
                 derived value based on the US Standard Atmosphere's
-                values for R* (US standard, table 2) and Md.
+                values for R* (US standard, table 2) and M_d.
 
                 Current coding and comments were completed on 22 Nov 2010.
                 Prior versions allowed for different surface
@@ -68,7 +68,7 @@ void spalt(DERTBL *varp)
 
   psxc = GetSample(varp, 0);
 
-  if (palt > ISAP1)
+  if (psxc > ISAP1)
     /*  Branch for upper altitude lapse rate.				*/
     palt = 44330.77 * (1.0 - pow(psxc / ASTG, 0.1902632));
   else
@@ -81,7 +81,7 @@ void spalt(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void meters2feet(DERTBL *varp)
 {
-  PutSample(varp, GetSample(varp, 0) * 3.2808399);
+  PutSample(varp, GetSample(varp, 0) / 0.3048);
 }
 
 /* -------------------------------------------------------------------- */
