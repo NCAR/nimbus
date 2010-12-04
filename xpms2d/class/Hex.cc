@@ -42,7 +42,7 @@ void Hex::Update(size_t nBuffs, P2d_rec sets[])
     for (size_t j = 0; j < nBuffs; ++j)
       if (((char *)&sets[j].id)[1] >= '4')
         {
-          if (i < (nSlices_64bit >> 1))
+          if (i < nSlices_64bit)
           sprintf(&buffer[strlen(buffer)], "%016llX ", *(long long *)(&sets[j].data[i<<3]));
         }
       else
