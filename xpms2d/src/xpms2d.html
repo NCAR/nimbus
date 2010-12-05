@@ -32,7 +32,7 @@ span.comment { background-color: #88FF88; font-style: italic; }
 
 
 <h1 align=CENTER>XPMS2D User's Guide</h1>
-<h1 align=CENTER>Version 2.5.3</h1>
+<h1 align=CENTER>Version 2.5.5</h1>
 <hr>
 <h1 align=CENTER>Table Of Contents</h1>
 <ol type=A>
@@ -209,27 +209,23 @@ words in the record, in seconds.
 <dt><b>None</b>
 <dd>Actual sample volume which passed through the probe, with no particles
 being rejected.
-
+<p>
 <dt><b>Entire-in</b>
-<dd>This emulates the 260X.  Any particle which touches an end diode as well
-as zero area images are rejected.  Particle height (<b>iy</b>) is used for
-sizing.
-
+<dd>This emulates the 260X.  Any particle which touches an end diode is rejected.
+Particle height (<b>iy</b>) is used for sizing.
+<p>
 <dt><b>Center-in</b>
 <dd>Any particle who's center is within the diode array is kept, with the
-size being the greater of <b>ix</b> or <b>iy</b>.  Zero area particles are
-rejected.
-
+size being the greater of <b>ix</b> or <b>iy</b>.
+<p>
 <dt><b>Reconstruction</b>
 <dd>Particles where <b>iy</b> is at least 20% of <b>ix</b> are kept.
-
 <p>
-For both <b>Center-in</b> and <b>Reconstruction</b>, the following rejection
-criteria are also used:
+Rejection criteria for <b>Entire-in</b>, <b>Center-in</b> and <b>Reconstruction</b> are:
 <ul>
-<li><b>ix</b> > 121.
-<li><b>iy</b> < 24 and <b>ix</b> > 6 x <b>iy</b>.
-<li><b>iy</b> < 6 and <b>ix</b> > 3 x <b>iy</b>.
+<li>Zero-area-images are rejected.
+<li>Stuck bit rejection, where <b>iy</b> equals 1 and <b>ix</b> is greater than 3.
+<li>Area ratio rejection is applied.  That is total number of shadowed pixels divided by computed area based on diameter (max x, y).
 </ul>
 
 </dl>

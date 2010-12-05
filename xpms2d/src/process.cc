@@ -772,6 +772,7 @@ static size_t checkRejectionCriteria(Particle * cp, recStats & output)
   {
     case NONE:
       bin = std::max(cp->w, cp->h);
+      cp->reject = false;	// No rejection.
       break;
 
     case ENTIRE_IN:
