@@ -47,7 +47,11 @@ const uint32_t SyncWordMask = 0xff000000;
 
 const unsigned long long Fast2DC_Sync = 0xAAAAAA0000000000LL;
 const unsigned long long Fast2DC_Overld = 0x5555AA0000000000LL;
-const unsigned long long Fast2DC_Mask = 0xFFFFFF0000000000LL;
+
+/* Mask should be all 'F's, but there appears to be an occasional flipped bit
+ * at the end.  So use 'E' for the last nibble.
+ */
+const unsigned long long Fast2DC_Mask = 0xFFFFFE0000000000LL;
 
 const size_t nSlices_32bit = 1024;
 const size_t nSlices_64bit = 512;
