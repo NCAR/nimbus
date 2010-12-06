@@ -206,26 +206,29 @@ words in the record, in seconds.
 <h3>Method</h3>
 <blockquote>
 <dl>
-<dt><b>None</b>
-<dd>Actual sample volume which passed through the probe, with no particles
-being rejected.
+<dt><b>Basic</b>
+<dd>Actual sample volume which passed through the probe, with no additional rejection
+other than listed below.   Particle size is the greater of <b>ix</b> and <b>iy</b>.
+ <b>ix</b> is along the flight path.
 <p>
 <dt><b>Entire-in</b>
 <dd>This emulates the 260X.  Any particle which touches an end diode is rejected.
 Particle height (<b>iy</b>) is used for sizing.
 <p>
 <dt><b>Center-in</b>
-<dd>Any particle who's center is within the diode array is kept, with the
-size being the greater of <b>ix</b> or <b>iy</b>.
+<dd>Any particle who's center is within the diode array is kept, with the size being the
+greater of <b>ix</b> and <b>iy</b>.
 <p>
 <dt><b>Reconstruction</b>
 <dd>Particles where <b>iy</b> is at least 20% of <b>ix</b> are kept.
 <p>
-Rejection criteria for <b>Entire-in</b>, <b>Center-in</b> and <b>Reconstruction</b> are:
+Basic rejection criteria for all methods above:
 <ul>
 <li>Zero-area-images are rejected.
 <li>Stuck bit rejection, where <b>iy</b> equals 1 and <b>ix</b> is greater than 3.
-<li>Area ratio rejection is applied.  That is total number of shadowed pixels divided by computed area based on diameter (max x, y).
+ <b>ix</b> is along the flight path.
+<li>Area ratio rejection is applied.  That is total number of shadowed pixels divided
+by computed area based on diameter (max x, y).
 </ul>
 
 </dl>
@@ -237,7 +240,7 @@ Rejection criteria for <b>Entire-in</b>, <b>Center-in</b> and <b>Reconstruction<
         <font color=blue>Blue</font> = Center-in,
         <font color=red>Red</font> = Entire-in
 
-<p align=center>Figure 3.  2D sample volumes.
+<p align=center>Figure 3.  2D sample volumes for 32 diode probes.
 
 <p>
 Algorithms are outlined in:

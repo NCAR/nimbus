@@ -170,7 +170,7 @@ static String fallback_resources[] =
   "*denTitle.labelString:		Density",
   "*ratioTitle.labelString:		Reject Ratio",
 
-  "*conc0.labelString:			None",
+  "*conc0.labelString:			Basic",
   "*conc1.labelString:			Entire-in",
   "*conc2.labelString:			Center-in",
   "*conc3.labelString:			Reconstruct",

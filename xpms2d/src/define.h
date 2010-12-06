@@ -105,7 +105,7 @@ struct recStats
 
 
 /* Values for rejection/concentration stuff*/
-enum { NONE, ENTIRE_IN, CENTER_IN, RECONSTRUCTION };
+enum { BASIC, ENTIRE_IN, CENTER_IN, RECONSTRUCTION };
 
 /* Values for "displayLevel"		*/
 enum { NORMAL, DIAGNOSTIC, ENCHILADA, RAW_RECORD };

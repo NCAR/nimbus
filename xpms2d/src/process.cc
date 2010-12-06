@@ -770,9 +770,8 @@ static size_t checkRejectionCriteria(Particle * cp, recStats & output)
   size_t bin = 0;
   switch (controlWindow->GetConcentration())
   {
-    case NONE:
+    case BASIC:
       bin = std::max(cp->w, cp->h);
-      cp->reject = false;	// No rejection.
       break;
 
     case ENTIRE_IN:
@@ -877,7 +876,7 @@ void SetSampleArea()
 
   switch (controlWindow->GetConcentration())
     {
-    case NONE:
+    case BASIC:
       for (size_t i = 1; i < maxDiodes; ++i)
         {
         sampleAreaC[i] = 61.0 * 0.8;

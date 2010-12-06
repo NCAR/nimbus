@@ -29,7 +29,7 @@ void Enchilada::AddLineItem(int cnt, Particle *cp)
     Append(" #     Time       timeWord  rj  iy  ix  ia    dt  ");
     switch (controlWindow->GetConcentration())
     {
-      case NONE:
+      case BASIC:
 	Append("theoretical");
 	break;
 
