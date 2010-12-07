@@ -57,8 +57,6 @@ static void set_edit_window_data(
 		int	lag,
 		NR_TYPE	spike);
 
-extern char *dataQuality[];
-
 extern Widget slOpMenu, funcOpMenu;
 
 extern  vars tempvar;
@@ -101,7 +99,7 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
 
       for (; i < MAXDEPEND; ++i)
         {
-        XmTextFieldSetString(ev_text[i], "");
+        XmTextFieldSetString(ev_text[i], (char *)"");
         XtSetSensitive(ev_text[i], true);
         }
 
@@ -118,7 +116,7 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
 
       for (; i < MAXDEPEND; ++i)
         {
-        XmTextFieldSetString(ev_text[i], "");
+        XmTextFieldSetString(ev_text[i], (char *)"");
         XtSetSensitive(ev_text[i], false);
         }
       break;
@@ -135,7 +133,8 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
 {
   bool		output;
   int		outputRate = Config::LowRate, lag;
-  char		*p, *dq;
+  char		*p;
+  const char	*dq;
   float		f;
   float		constsynthval;
   NR_TYPE	spike;
@@ -300,8 +299,6 @@ static void set_edit_window_data(
   XmStringFree(ns);
  
 
-
-
   XmToggleButtonSetState(outputVarYes, var->Output, false);
   XmToggleButtonSetState(outputVarNo, !var->Output, false);
 
@@ -331,7 +328,7 @@ static void set_edit_window_data(
     }
 
 
-  ns = XmStringCreateLocalized(SearchDataQuality(var->DataQuality));
+  ns = XmStringCreateLocalized((char *)SearchDataQuality(var->DataQuality));
   XtSetArg(args[0], XmNlabelString, ns);
   XtSetValues(XmOptionButtonGadget(slOpMenu), args, 1);
   XmStringFree(ns);
@@ -341,17 +338,17 @@ static void set_edit_window_data(
   XtSetValues(XmOptionButtonGadget(funcOpMenu),sarg,1);
   XmStringFree(ns);
 
-  XmTextFieldSetString(synthConstText, "");     //display nothing in this field each time editvariable is clicked
+  XmTextFieldSetString(synthConstText, (char *)"");     //display nothing in this field each time editvariable is clicked
 
 
   if (VariableType == DERIVED)
     {
-    XmTextFieldSetString(lagText, "NA");
-    XmTextFieldSetString(spikeText, "NA");
+    XmTextFieldSetString(lagText, (char *)"NA");
+    XmTextFieldSetString(spikeText, (char *)"NA");
     XtSetSensitive(lagText, false);
     XtSetSensitive(spikeText, false);
     XtSetSensitive(outputSRbutton, false);
-    XmTextFieldSetString(synthConstText,"NA");
+    XmTextFieldSetString(synthConstText, (char *)"NA");
     XtSetSensitive(synthConstText,false);
     XtSetSensitive(funcOpMenu,false);
     }
@@ -692,7 +689,7 @@ void CreateEditWindow()
 
   for (i = 0; dataQuality[i]; ++i)
     {
-    name = XmStringCreateLocalized(dataQuality[i]);
+    name = XmStringCreateLocalized((char *)dataQuality[i]);
 
     n = 0;
     XtSetArg(args[n], XmNlabelString, name); ++n;

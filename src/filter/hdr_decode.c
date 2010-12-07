@@ -125,7 +125,7 @@ static int	check_cal_coes(int order, float *coef);
 static int	locatePMS(const char target[], PMS list[]);
 
 
-static char	*defaultQuality;
+static const char *defaultQuality;
 
 extern int32_t	INS_start;
 
@@ -153,9 +153,9 @@ static void CommonPreInitialization()
     OpenLogFile();
 
   if (cfg.ProductionRun())
-    defaultQuality = (char *)"Good";
+    defaultQuality = dataQuality[GOOD];
   else
-    defaultQuality = (char *)"Preliminary";
+    defaultQuality = dataQuality[PRELIMINARY];
 
   openVariableDatabase();
 

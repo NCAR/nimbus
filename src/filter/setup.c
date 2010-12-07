@@ -27,7 +27,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2005
 
 static char	SetupFileName[MAXPATHLEN];
 
-extern char *dataQuality[];
 extern SyntheticData sd;
 
 /* -------------------------------------------------------------------- */

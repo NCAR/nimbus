@@ -6,7 +6,8 @@ FULL NAME:	Create X window GUI
 
 ENTRY POINTS:	CreateMainWindow()
 		CreateSetupWindow()
-		CreateProbeMenu()
+		CreateProbeOutputMenu()
+		CreateProbeDataQualityMenu()
 		FlushXEvents()
 		NextWidget()
 
@@ -38,14 +39,14 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 Widget	readHeaderButton;
 Widget	aDSdataText, outputFileText;
 
-Widget	menuBar, timeDisplayText, list1, goButton, logText, pullRight;
+Widget	menuBar, timeDisplayText, list1, goButton, logText, toggleProbeMenu,
+	toggleDQMenu;
 Widget	varNameLabel;
 Widget	outputVarYes, outputVarNo;
 Widget	outputLRbutton, outputSRbutton, outputHRbutton;
 Widget	lagText, spikeText, synthConstText;
 Widget	ev_text[16], slOpMenu,funcOpMenu;
 
-extern char *dataQuality[];
 extern void LoadSynthetic(Widget w, XtPointer client, XtPointer call);  //this may belong somewhere else
 extern char *func[19];
 
@@ -193,20 +194,23 @@ Widget CreateSetupWindow(Widget parent)
 
   n = 0;
   XtSetArg(args[n], XmNtearOffModel, XmTEAR_OFF_ENABLED); ++n;
-  pullRight = XmCreatePulldownMenu(pullDown[1], "editPR_CB", args, n);
+  toggleProbeMenu = XmCreatePulldownMenu(pullDown[1], "editPR_CB", args, n);
+  toggleDQMenu = XmCreatePulldownMenu(pullDown[1], "editDQ_CB", args, n);
 
   n = 0;
   b[0] = XmCreatePushButton(pullDown[1], "editConfiguration", args, n);
   b[1] = XmCreatePushButton(pullDown[1], "editDefaultsButton", args, n);
   b[2] = XmCreatePushButton(pullDown[1], "toggleOutput", args, n);
   b[3] = XmCreatePushButton(pullDown[1], "toggleRate", args, n);
-  XtSetArg(args[n], XmNsubMenuId, pullRight); ++n;
+  XtSetArg(args[n], XmNsubMenuId, toggleProbeMenu); ++n;
   b[4] = XmCreateCascadeButton(pullDown[1], "Toggle Probe", args, n);
+  XtSetArg(args[n], XmNsubMenuId, toggleDQMenu); ++n;
+  b[5] = XmCreateCascadeButton(pullDown[1], "Toggle Probe Data Quality", args, n);
   XtAddCallback(b[0], XmNactivateCallback, EditConfiguration, NULL);
   XtAddCallback(b[1], XmNactivateCallback, EditDefaultsFile, NULL);
   XtAddCallback(b[2], XmNactivateCallback, ToggleOutput, NULL);
   XtAddCallback(b[3], XmNactivateCallback, ToggleRate, NULL);
-  XtManageChildren(b, 5);
+  XtManageChildren(b, 6);
 
 
   /* Go Button
@@ -581,7 +585,7 @@ Widget CreateEditWindow(Widget parent)
 
   for (i = 0; dataQuality[i]; ++i)
     {
-    name = XmStringCreateLocalized(dataQuality[i]);
+    name = XmStringCreateLocalized((char *)dataQuality[i]);
 
     n = 0;
     XtSetArg(args[n], XmNlabelString, name); ++n;
@@ -629,27 +633,27 @@ Widget CreateEditWindow(Widget parent)
 }	/* END CREATEEDITWINDOW */
 
 /* -------------------------------------------------------------------- */
-void CreateProbeMenu()
+void CreateProbeOutputMenu()
 {
   Widget b;
   std::vector<Widget>	btts;
   extern std::vector<struct probelist> probeList;
 
-  b = XmCreatePushButton(pullRight, (char *)"All Variables Off", NULL, 0);
+  b = XmCreatePushButton(toggleProbeMenu, (char *)"All Variables Off", NULL, 0);
   XtAddCallback(b, XmNactivateCallback, ToggleAllOff, NULL);
   btts.push_back(b);
 
-  b = XmCreatePushButton(pullRight, (char *)"All Variables On", NULL, 0);
+  b = XmCreatePushButton(toggleProbeMenu, (char *)"All Variables On", NULL, 0);
   XtAddCallback(b, XmNactivateCallback, ToggleAllOn, NULL);
   btts.push_back(b);
 
-  b = XmCreatePushButton(pullRight, (char *)"All Derived Off", NULL, 0);
+  b = XmCreatePushButton(toggleProbeMenu, (char *)"All Derived Off", NULL, 0);
   XtAddCallback(b, XmNactivateCallback, ToggleAllDerivedOff, NULL);
   btts.push_back(b);
 
   for (size_t i = 0; i < probeList.size(); ++i)
     {
-    b = XmCreatePushButton(pullRight, probeList[i].label, NULL, 0);
+    b = XmCreatePushButton(toggleProbeMenu, probeList[i].label, NULL, 0);
     XtAddCallback(b, XmNactivateCallback, ToggleProbeOutput,
 			(XtPointer)probeList[i].suffix);
     btts.push_back(b);
@@ -657,7 +661,26 @@ void CreateProbeMenu()
 
   XtManageChildren(&btts[0], btts.size());
 
-}	/* END CREATEPROBEMENU */
+}	/* END CREATEPROBEOUTPUTMENU */
+
+/* -------------------------------------------------------------------- */
+void CreateProbeDataQualityMenu()
+{
+  Widget b;
+  std::vector<Widget>	btts;
+  extern std::vector<struct probelist> probeList;
+
+  for (size_t i = 0; i < probeList.size(); ++i)
+    {
+    b = XmCreatePushButton(toggleDQMenu, probeList[i].label, NULL, 0);
+    XtAddCallback(b, XmNactivateCallback, ToggleProbeDataQuality,
+			(XtPointer)probeList[i].suffix);
+    btts.push_back(b);
+    }
+
+  XtManageChildren(&btts[0], btts.size());
+
+}	/* END CREATEPROBEDATAQUALLLITYMENU */
 
 /* -------------------------------------------------------------------- */
 void FlushXEvents()

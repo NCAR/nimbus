@@ -261,7 +261,8 @@ static void readHeader()
       XtFree(p);
       }
 
-    CreateProbeMenu();
+    CreateProbeOutputMenu();
+    CreateProbeDataQualityMenu();
     FillListWidget();
     checkForProductionSetup();
     }
@@ -1183,12 +1184,44 @@ void ToggleProbeOutput(Widget w, XtPointer client, XtPointer call)
   for (size_t i = 0; i < derived.size(); ++i)
     if (strstr(derived[i]->name, suffix)) {
       derived[i]->Dirty = true;
-      derived[i]->Output = !raw[i]->Output;
+      derived[i]->Output = !derived[i]->Output;
     }
 
   FillListWidget();
 
-}	/* END TOGGLEPROBE */
+}	/* END TOGGLEPROBEOUTPUT */
+
+/* -------------------------------------------------------------------- */
+void ToggleProbeDataQuality(Widget w, XtPointer client, XtPointer call)
+{
+  const char *suffix = (char *)client;
+  const char *good = dataQuality[PRELIMINARY];
+
+  if (cfg.ProductionRun())
+    good = dataQuality[GOOD];
+
+    
+  for (size_t i = 0; i < raw.size(); ++i)
+    if (strstr(raw[i]->name, suffix)) {
+      raw[i]->Dirty = true;
+      if (strcmp(raw[i]->DataQuality, dataQuality[BAD]))
+        raw[i]->DataQuality = dataQuality[BAD];
+      else
+        raw[i]->DataQuality = good;
+    }
+
+  for (size_t i = 0; i < derived.size(); ++i)
+    if (strstr(derived[i]->name, suffix)) {
+      derived[i]->Dirty = true;
+      if (strcmp(derived[i]->DataQuality, dataQuality[BAD]))
+        derived[i]->DataQuality = dataQuality[BAD];
+      else
+        derived[i]->DataQuality = good;
+    }
+
+  FillListWidget();
+
+}	/* END TOGGLEPROBEDATAQUALITY */
 
 /* -------------------------------------------------------------------- */
 void QueryOutputFile(Widget w, XtPointer client, XtPointer call)

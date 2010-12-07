@@ -40,7 +40,7 @@ void Initialize()
 
   cfg.SetProjectDirectory(proj_dir);
 
-  putenv("TZ=UTC");	// Perform all time calculations at UTC.
+  putenv((char *)"TZ=UTC");	// Perform all time calculations at UTC.
 
   LITTON51_present	= false;
   AVAPS			= false;
