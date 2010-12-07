@@ -15,18 +15,20 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2010
 
 
 /* These probes have a known/fixed suffix.  We will be able to search and
- * use this list directly.
+ * use this list directly.  This list is here strictly so we can provide
+ * readable labels.
  */
 static const struct probelist knownProbes[] = {
 	{ "IRIG Hskp",	"IRIG" },
 	{ "A2D Temps",	"A2DTEMP" },
-	{ "Second IRS",	"_IRS2" },
-	{ "VCSEL",	"_VXL" },
 	{ "ADC",	"_A" },
-	{ "Avionics GPS", "_G" },
-	{ "Water CN",	"_WCN" },
+	{ "GPS Avionics", "_G" },
+	{ "GPS Garmin",	"_GMN" },
 	{ "Gust Pod",	"_GP" },
-	{ "Garmin",	"_GMN" },
+	{ "IRS (2nd)",	"_IRS2" },
+	{ "VCSEL",	"_VXL" },
+	{ "TDL",	"_MC" },
+	{ "Water CN",	"_WCN" },
 	{ NULL,		NULL } };
 
 /* The PMS probes will have unique suffixes (locations).  We will search
