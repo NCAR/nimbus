@@ -22,6 +22,8 @@ DESCRIPTION:	Header File declaring Variable and associated user
 #define P_CONTINUE	1
 #define P_XTV		2	/* Not used	*/
 
+enum dqenum { PRELIMINARY=0, GOOD, BAD, SYNTHETIC };
+
 // Used by probe.c, cb_main.c, and Xwin.c for Toggle Probe menus.
 struct probelist
 {
@@ -42,11 +44,14 @@ extern Widget	outputVarYes, outputVarNo;
 extern Widget	outputLRbutton, outputSRbutton, outputHRbutton;
 extern Widget	lagText, spikeText, synthConstText, ev_text[], ts_text[];
 
+extern const char *dataQuality[];
 
 /*	Callback prototypes
  */
 void    NextWidget(Widget w, int client, XtPointer call);
 void    FillListWidget();
+
+const char *SearchDataQuality(const char target[]);
 
 void	ApplyVariableMods(Widget w, XtPointer client, XtPointer call),
 	CancelSetup(Widget w, XtPointer client, XtPointer call),
@@ -83,6 +88,7 @@ void	ApplyVariableMods(Widget w, XtPointer client, XtPointer call),
 	ToggleAllOff(Widget w, XtPointer client, XtPointer call),
 	ToggleAllDerivedOff(Widget w, XtPointer client, XtPointer call),
 	ToggleProbeOutput(Widget w, XtPointer client, XtPointer call),
+	ToggleProbeDataQuality(Widget w, XtPointer client, XtPointer call),
 	ToggleOutput(Widget w, XtPointer client, XtPointer call),
 	ToggleRate(Widget w, XtPointer client, XtPointer call),
 	ValidateTime(Widget w, XtPointer client, XtPointer call),
@@ -90,7 +96,7 @@ void	ApplyVariableMods(Widget w, XtPointer client, XtPointer call),
 
 XmString	CreateListLineItem(void *pp, int var_type);
 
-void	CreateProbeMenu(),
+void	CreateProbeOutputMenu(), CreateProbeDataQualityMenu(),
 	HandleWarning(const char msg[], XtCallbackProc, XtCallbackProc);
 
 #ifdef __cplusplus

@@ -19,11 +19,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000-05
 #include "nimbus.h"
 
 
-char *dataQuality[] = { "Preliminary", "Good", "Bad", "Synthetic", NULL };
+const char *dataQuality[] = { "Preliminary", "Good", "Bad", "Synthetic", NULL };
 
 
 /* -------------------------------------------------------------------- */
-char *SearchDataQuality(const char target[])
+const char *SearchDataQuality(const char target[])
 {
   int	i;
 

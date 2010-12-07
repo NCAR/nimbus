@@ -93,7 +93,7 @@ public:
   bool Output;		// Is this going into the output file?
   bool Transmit;	// Is this variable going to the ground, real-time only.
   size_t OutputRate;	// Rate of data in the output [netCDF] file.
-  char *DataQuality;	// Prelim, QC'd, Bad, etc
+  const char *DataQuality;	// Prelim, QC'd, Bad, etc
 
   std::vector<std::pair<int, int> > blank_out;
 
@@ -245,8 +245,7 @@ SearchTable(std::vector<T *> &list, int s, int e, const char target[])
 
 size_t	GetProbeType(std::string&);
 
-char	*SearchList(char **list, const char target[]),
-	*SearchDataQuality(const char target[]);
+char	*SearchList(char **list, const char target[]);
 
 void	SortTable(char **table, int beg, int end),
 	FreeTextFile(char **list),

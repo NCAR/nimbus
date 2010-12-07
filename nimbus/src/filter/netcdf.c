@@ -797,7 +797,7 @@ void BlankOutBadData()
 
   for (size_t i = 0; i < derived.size(); ++i)
     {
-    if (strcmp(derived[i]->DataQuality, "Bad") == 0)
+    if (strcmp(derived[i]->DataQuality, dataQuality[BAD]) == 0)
       {
       sprintf(buffer, "Blanking %s from %02d:%02d:%02d to %02d:%02d:%02d.\n",
        derived[i]->name, fsTime[0], fsTime[1], fsTime[2], feTime[0],
@@ -887,7 +887,7 @@ void BlankOutBadData()
 	derived[index]->Output)
       {
 /*  See if measurement has already been blanked for whole flight  */
-      if (strcmp(derived[index]->DataQuality, "Bad") == 0)
+      if (strcmp(derived[index]->DataQuality, dataQuality[BAD]) == 0)
         {
         sprintf(buffer, "%s has already been blanked because the DataQuality flag is Bad.\n",derived[index]->name);
         LogMessage(buffer);
