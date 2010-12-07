@@ -4,69 +4,86 @@ OBJECT NAME:	probe.c
 
 FULL NAME:	Probe List
 
-ENTRY POINTS:	AddProbeToList()
-		ResetProbeList()
-		GetProbeList()
-		GetProbeType()
-
-STATIC FNS:	none
-
 DESCRIPTION:	Routines for the Toggle Probe Menu item.
 
-REFERENCES:	none
-
-REFERENCED BY:	
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2005
+COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2010
 -------------------------------------------------------------------------
 */
 
 #include "nimbus.h"
+#include "gui.h"
 
-#include <map>
 
-std::map<std::string, size_t> probeMap;
+/* These probes have a known/fixed suffix.  We will be able to search and
+ * use this list directly.
+ */
+static const struct probelist knownProbes[] = {
+	{ "IRIG Hskp",	"IRIG" },
+	{ "A2D Temps",	"A2DTEMP" },
+	{ "Second IRS",	"_IRS2" },
+	{ "VCSEL",	"_VXL" },
+	{ "ADC",	"_A" },
+	{ "Avionics GPS", "_G" },
+	{ "Water CN",	"_WCN" },
+	{ "Gust Pod",	"_GP" },
+	{ "Garmin",	"_GMN" },
+	{ NULL,		NULL } };
+
+/* The PMS probes will have unique suffixes (locations).  We will search
+ * based on the second string below, and replace that with the suffix of
+ * the discovered parameter.  We will add the suffix to the label before
+ * pushing it on the vector.
+ */
+static const struct probelist pmsList[] = {
+	{ "CDP",	"ACDP" },
+	{ "S100",	"AS100" },
+	{ "S200",	"AS200" },
+	{ "S300",	"AS300" },
+	{ "UHSAS",	"AUHSAS" },
+	{ "Fast2DC",	"A1DC" },
+	{ "2D-P",	"A1DP" },
+	{ NULL,		NULL } };
+
+std::vector<struct probelist> probeList;
 
 
 /* -------------------------------------------------------------------- */
-void AddProbeToList(const char name[], size_t type)
+void GenerateProbeListADS3()
 {
-  probeMap[name] = type;
+  for (size_t i = 0; knownProbes[i].label; ++i) {
+    for (size_t j = 0; j < raw.size(); ++j) {
+      if (strstr(raw[j]->name, knownProbes[i].suffix)) {
+        probeList.push_back(knownProbes[i]);
+        break;	// Don't keep looking for this suffix.
+      }
+    }
+  }
 
-}	/* END ADDPROBETOLIST */
+  for (size_t i = 0; pmsList[i].label; ++i) {
+    for (size_t j = 0; j < raw.size(); ++j) {
+      if (strstr(raw[j]->name, pmsList[i].suffix)) {
+        char *p = strchr(raw[j]->name, '_');
+
+        if (p) {
+          struct probelist t;
+          t.label = new char [strlen(pmsList[i].label)+strlen(p)+1];
+          strcpy(t.label, pmsList[i].label);
+          strcat(t.label, p);
+          t.suffix = new char [strlen(p)+1];
+          strcpy(t.suffix, p);
+          probeList.push_back(t);
+        }
+      }
+    }
+  }
+
+  // We could a search for all remaining probes/locations.....
+}
 
 /* -------------------------------------------------------------------- */
 void ResetProbeList()
 {
-  probeMap.clear();
-
-}	/* END RESETPROBELIST */
-
-/* -------------------------------------------------------------------- */
-std::vector<std::string> GetProbeList()
-{
-  std::vector<std::string> list;
-  std::map<std::string, size_t>::const_iterator it;
-
-  for (it = probeMap.begin(); it != probeMap.end(); ++it)
-    list.push_back(it->first);
-
-  return(list);
-
-}	/* END GETPROBELIST */
-
-/* -------------------------------------------------------------------- */
-size_t GetProbeType(std::string& name)
-{
-  std::map<std::string, size_t>::const_iterator it;
-
-  it = probeMap.find(name);
-
-  if (it == probeMap.end())
-    return(0);
-  else
-    return(it->second);
-
-}	/* END GETPROBETYPE */
+  probeList.clear();
+}
 
 /* END PROBE.C */

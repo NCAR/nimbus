@@ -22,9 +22,14 @@ DESCRIPTION:	Header File declaring Variable and associated user
 #define P_CONTINUE	1
 #define P_XTV		2	/* Not used	*/
 
+// Used by probe.c, cb_main.c, and Xwin.c for Toggle Probe menus.
+struct probelist
+{
+  char *label;
+  char *suffix;
+};
 
 extern bool	Interactive;
-
 
 /* Setup window widgets */
 extern Widget	SetupWindow;
@@ -74,7 +79,10 @@ void	ApplyVariableMods(Widget w, XtPointer client, XtPointer call),
 	SaveSetup(Widget w, XtPointer client, XtPointer call),
 	SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *call),
 	StartProcessing(Widget w, XtPointer client, XtPointer call),
-	ToggleProbe(Widget w, XtPointer client, XtPointer call),
+	ToggleAllOn(Widget w, XtPointer client, XtPointer call),
+	ToggleAllOff(Widget w, XtPointer client, XtPointer call),
+	ToggleAllDerivedOff(Widget w, XtPointer client, XtPointer call),
+	ToggleProbeOutput(Widget w, XtPointer client, XtPointer call),
 	ToggleOutput(Widget w, XtPointer client, XtPointer call),
 	ToggleRate(Widget w, XtPointer client, XtPointer call),
 	ValidateTime(Widget w, XtPointer client, XtPointer call),

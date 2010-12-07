@@ -248,8 +248,6 @@ size_t	GetProbeType(std::string&);
 char	*SearchList(char **list, const char target[]),
 	*SearchDataQuality(const char target[]);
 
-std::vector<std::string> GetProbeList(void);
-
 void	SortTable(char **table, int beg, int end),
 	FreeTextFile(char **list),
 	Initialize(),
@@ -257,7 +255,6 @@ void	SortTable(char **table, int beg, int end),
 	MakeProjectFileName(char file[], const std::string& format),
 	ProcessArgv(int argc, char **argv),
 	LogMessage(const char msg[]),
-	AddProbeToList(const char name[], uint32_t type),
 	SetBaseTime(const NR_TYPE *record),
 	BlankOutBadData(),
 	GetDataDirectory(char buff[]),

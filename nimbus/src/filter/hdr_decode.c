@@ -131,8 +131,8 @@ extern int32_t	INS_start;
 
 char	*ExtractHeaderIntoFile(const char fn[]);
 bool	Open2dFile(const char file[], int probeCnt);
-void	AddProbeToList(const char name[], size_t type), ReadDespikeFile();
-void	Add2DtoList(RAWTBL *varp), OpenLogFile();
+void	ReadDespikeFile();
+void	Add2DtoList(RAWTBL *varp), OpenLogFile(), GenerateProbeListADS3();
 
 
 /* -------------------------------------------------------------------- */
@@ -172,6 +172,12 @@ static void CommonPreInitialization()
   InitPMSspecs(buffer);
 
 }	// END COMMONPREINITIALIZATION
+
+/* -------------------------------------------------------------------- */
+void AddProbeToList(const char name[], size_t type)
+{
+	// Stub function.  Previously in probe.c.  Refactored for ADS3.
+}
 
 /* -------------------------------------------------------------------- */
 static void CommonPostInitialization()
@@ -480,7 +486,9 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     initGustCorrected();
     probeCnt = 0;
     }
+
   CommonPostInitialization();
+  GenerateProbeListADS3();
 
 // in pms1d.c, temporary until we get sync_esrver merged in.
 void PMS1D_SetupForADS3();
