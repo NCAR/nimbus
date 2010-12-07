@@ -63,7 +63,7 @@ Widget CreateMainWindow(Widget parent)
   Widget	FNframe, fileNameRC, form[3];
 
   n = 0;
-  topLevelForm = XmCreateForm(parent, "topLevelForm", args, n);
+  topLevelForm = XmCreateForm(parent, (char *)"topLevelForm", args, n);
 
   /* Create Quit & Proceed buttons.
    */
@@ -71,20 +71,20 @@ Widget CreateMainWindow(Widget parent)
   XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM); n++;
-  buttonFrame = XmCreateFrame(topLevelForm, "buttonFrame", args, n);
+  buttonFrame = XmCreateFrame(topLevelForm, (char *)"buttonFrame", args, n);
   XtManageChild(buttonFrame);
 
   n = 0;
-  buttonRC = XmCreateRowColumn(buttonFrame, "buttonRC", args, n);
+  buttonRC = XmCreateRowColumn(buttonFrame, (char *)"buttonRC", args, n);
   XtManageChild(buttonRC);
 
   n = 0;
-  quitButton = XmCreatePushButton(buttonRC, "quitButton", args, n);
+  quitButton = XmCreatePushButton(buttonRC, (char *)"quitButton", args, n);
   XtAddCallback(quitButton, XmNactivateCallback, Quit, NULL);
   XtManageChild(quitButton);
 
   n = 0;
-  readHeaderButton = XmCreatePushButton(buttonRC, "proceedButton", args, n);
+  readHeaderButton = XmCreatePushButton(buttonRC, (char *)"proceedButton", args, n);
   XtAddCallback(readHeaderButton, XmNactivateCallback, Proceed, NULL);
   XtManageChild(readHeaderButton);
 
@@ -97,30 +97,30 @@ Widget CreateMainWindow(Widget parent)
   XtSetArg(args[n], XmNrightAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET); n++;
   XtSetArg(args[n], XmNtopWidget, buttonFrame); n++;
-  FNframe = XmCreateFrame(topLevelForm, "fileNameFrame", args, n);
+  FNframe = XmCreateFrame(topLevelForm, (char *)"fileNameFrame", args, n);
   XtManageChild(FNframe);
 
   n = 0;
-  fileNameRC = XmCreateRowColumn(FNframe, "fileNameRC", args, n);
+  fileNameRC = XmCreateRowColumn(FNframe, (char *)"fileNameRC", args, n);
   XtManageChild(fileNameRC);
 
   n = 0;
-  form[0] = XmCreateRowColumn(fileNameRC, "fnRC", args, n);
-  form[1] = XmCreateRowColumn(fileNameRC, "fnRC", args, n);
+  form[0] = XmCreateRowColumn(fileNameRC, (char *)"fnRC", args, n);
+  form[1] = XmCreateRowColumn(fileNameRC, (char *)"fnRC", args, n);
 
   n = 0;
-  XtManageChild(XmCreateLabel(form[0], "FNlabel0", args, n));
-  XtManageChild(XmCreateLabel(form[1], "FNlabel1", args, n));
+  XtManageChild(XmCreateLabel(form[0], (char *)"FNlabel0", args, n));
+  XtManageChild(XmCreateLabel(form[1], (char *)"FNlabel1", args, n));
 
   n = 0;
-  aDSdataText = XmCreateTextField(form[0], "aDSdataText", args, n);
+  aDSdataText = XmCreateTextField(form[0], (char *)"aDSdataText", args, n);
   XtAddCallback(aDSdataText, XmNactivateCallback,
                 (XtCallbackProc)XmProcessTraversal,
                 (XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
   XtManageChild(aDSdataText);
 
   n = 0;
-  outputFileText = XmCreateTextField(form[1], "outputFileText", args, n);
+  outputFileText = XmCreateTextField(form[1], (char *)"outputFileText", args, n);
   XtAddCallback(outputFileText, XmNactivateCallback,
                 (XtCallbackProc)XmProcessTraversal,
                 (XtPointer)XmTRAVERSE_NEXT_TAB_GROUP);
@@ -147,7 +147,7 @@ Widget CreateSetupWindow(Widget parent)
 
 
   n = 0;
-  setupForm = XmCreateForm(parent, "setupForm", args, n);
+  setupForm = XmCreateForm(parent, (char *)"setupForm", args, n);
 
 
   /* Create Menus
@@ -155,20 +155,20 @@ Widget CreateSetupWindow(Widget parent)
   n = 0;
   XtSetArg(args[n], XmNtopAttachment, XmATTACH_FORM); n++;
   XtSetArg(args[n], XmNleftAttachment, XmATTACH_FORM); n++;
-  menuBar = XmCreateMenuBar(setupForm, "menuBar", args, n);
+  menuBar = XmCreateMenuBar(setupForm, (char *)"menuBar", args, n);
   XtManageChild(menuBar);
 
   n = 0;
-  pullDown[0] = XmCreatePulldownMenu(menuBar, "setupPullDown", args, n);
-  pullDown[1] = XmCreatePulldownMenu(menuBar, "editPullDown", args, n);
+  pullDown[0] = XmCreatePulldownMenu(menuBar, (char *)"setupPullDown", args, n);
+  pullDown[1] = XmCreatePulldownMenu(menuBar, (char *)"editPullDown", args, n);
 
   n = 0;
   XtSetArg(args[n], XmNsubMenuId, pullDown[0]); ++n;
-  cascadeButton[0] = XmCreateCascadeButton(menuBar, "File", args, n);
+  cascadeButton[0] = XmCreateCascadeButton(menuBar, (char *)"File", args, n);
 
   n = 0;
   XtSetArg(args[n], XmNsubMenuId, pullDown[1]); ++n;
-  cascadeButton[1] = XmCreateCascadeButton(menuBar, "Edit", args, n);
+  cascadeButton[1] = XmCreateCascadeButton(menuBar, (char *)"Edit", args, n);
 
   XtManageChildren(cascadeButton, 2);
   XtManageChildren(pullDown, 2);
@@ -615,7 +615,7 @@ Widget CreateEditWindow(Widget parent)
 
     n=0;
     XtSetArg(args[n],XmNlabelString,name);++n;
-    funcButts[i]=XmCreatePushButton(funcPD,"Function Menu",args,n);
+    funcButts[i]=XmCreatePushButton(funcPD,(char *)"Function Menu",args,n);
 
     XmStringFree(name);
   }
@@ -631,14 +631,27 @@ Widget CreateEditWindow(Widget parent)
 /* -------------------------------------------------------------------- */
 void CreateProbeMenu()
 {
+  Widget b;
   std::vector<Widget>	btts;
-  std::vector<std::string> probeNames = GetProbeList();
+  extern std::vector<struct probelist> probeList;
 
-  for (size_t i = 0; i < probeNames.size(); ++i)
+  b = XmCreatePushButton(pullRight, (char *)"All Variables Off", NULL, 0);
+  XtAddCallback(b, XmNactivateCallback, ToggleAllOff, NULL);
+  btts.push_back(b);
+
+  b = XmCreatePushButton(pullRight, (char *)"All Variables On", NULL, 0);
+  XtAddCallback(b, XmNactivateCallback, ToggleAllOn, NULL);
+  btts.push_back(b);
+
+  b = XmCreatePushButton(pullRight, (char *)"All Derived Off", NULL, 0);
+  XtAddCallback(b, XmNactivateCallback, ToggleAllDerivedOff, NULL);
+  btts.push_back(b);
+
+  for (size_t i = 0; i < probeList.size(); ++i)
     {
-    Widget b = XmCreatePushButton(pullRight, (char*)probeNames[i].c_str(), NULL, 0);
-    XtAddCallback(b, XmNactivateCallback, ToggleProbe,
-			(XtPointer)GetProbeType(probeNames[i]));
+    b = XmCreatePushButton(pullRight, probeList[i].label, NULL, 0);
+    XtAddCallback(b, XmNactivateCallback, ToggleProbeOutput,
+			(XtPointer)probeList[i].suffix);
     btts.push_back(b);
     }
 

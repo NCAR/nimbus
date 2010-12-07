@@ -15,7 +15,7 @@ ENTRY POINTS:	CancelSetup()
 		StartProcessing()
 		ToggleOutput()
 		ToggleRate()
-		ToggleProbe()
+		ToggleProbeOutput()
 		ValidateOutputFile()
 
 STATIC FNS:	checkForProductionSetup()
@@ -1126,49 +1126,64 @@ void PrintSetup(Widget w, XtPointer client, XtPointer call)
 }	/* END PRINTSETUP */
 
 /* -------------------------------------------------------------------- */
-void ToggleProbe(Widget w, XtPointer client, XtPointer call)
+void ToggleAllOn(Widget w, XtPointer client, XtPointer call)
 {
-  size_t i;
-  size_t	cat  = (size_t)client & 0xf0000000,
-		type = (size_t)client & 0x0ffffff0,
-		cnt  = (size_t)client & 0x0000000f;
+  for (size_t i = 0; i < raw.size(); ++i)
+    raw[i]->Output = true;
 
-  if ((size_t)client == ALL_ON || (size_t)client == ALL_OFF)
-    {
-    bool value = (size_t)client == ALL_ON ? true : false;
+  for (size_t i = 0; i < derived.size(); ++i)
+    derived[i]->Output = true;
 
-    for (i = 0; i < raw.size(); ++i) {
-      if (strcmp(raw[i]->name, "HOUR") == 0 ||
-	  strcmp(raw[i]->name, "MINUTE") == 0 ||
-	  strcmp(raw[i]->name, "SECOND") == 0)
-        continue;
+  FillListWidget();
+}
 
+/* -------------------------------------------------------------------- */
+void ToggleAllOff(Widget w, XtPointer client, XtPointer call)
+{
+  for (size_t i = 0; i < raw.size(); ++i) {
+    if (strcmp(raw[i]->name, "HOUR") == 0 ||
+        strcmp(raw[i]->name, "MINUTE") == 0 ||
+        strcmp(raw[i]->name, "SECOND") == 0)
+      continue;
+
+    raw[i]->Dirty = true;
+    raw[i]->Output = false;
+  }
+
+  for (size_t i = 0; i < derived.size(); ++i) {
+    derived[i]->Dirty = true;
+    derived[i]->Output = false;
+  }
+
+  FillListWidget();
+}
+
+/* -------------------------------------------------------------------- */
+void ToggleAllDerivedOff(Widget w, XtPointer client, XtPointer call)
+{
+  for (size_t i = 0; i < derived.size(); ++i) {
+    derived[i]->Dirty = true;
+    derived[i]->Output = false;
+  }
+
+  FillListWidget();
+}
+
+/* -------------------------------------------------------------------- */
+void ToggleProbeOutput(Widget w, XtPointer client, XtPointer call)
+{
+  const char *suffix = (char *)client;
+
+  for (size_t i = 0; i < raw.size(); ++i)
+    if (strstr(raw[i]->name, suffix)) {
       raw[i]->Dirty = true;
-      raw[i]->Output = value;
-      }
-
-    for (i = 0; i < derived.size(); ++i) {
-      derived[i]->Dirty = true;
-      derived[i]->Output = value;
-      }
+      raw[i]->Output = !raw[i]->Output;
     }
-  else
-    {
-    for (i = 0; i < raw.size(); ++i)
-      if ((cat && raw[i]->ProbeType & cat) || (raw[i]->ProbeType & type &&
-		raw[i]->ProbeCount == cnt))
-        {
-        raw[i]->Dirty = true;
-        raw[i]->Output = 1 - raw[i]->Output;
-        }
 
-    for (i = 0; i < derived.size(); ++i)
-      if ((cat && derived[i]->ProbeType & cat) ||
-	(derived[i]->ProbeType & type && derived[i]->ProbeCount == cnt))
-        {
-        derived[i]->Dirty = true;
-        derived[i]->Output = 1 - derived[i]->Output;
-        }
+  for (size_t i = 0; i < derived.size(); ++i)
+    if (strstr(derived[i]->name, suffix)) {
+      derived[i]->Dirty = true;
+      derived[i]->Output = !raw[i]->Output;
     }
 
   FillListWidget();
