@@ -34,13 +34,9 @@ void Header::readHeader(const char fileName[])
 {
   int		nBytes;
   char		buff[65535];
-  bool		tape = false;
   bool		gzipped = false;
 
   _projName[0] = '\0';
-
-  if (strncmp(fileName, "/dev", 4) == 0)
-    tape = true;
 
   if (strstr(fileName, ".gz"))
     {
@@ -55,27 +51,6 @@ void Header::readHeader(const char fileName[])
 
   _header = (Fl *)buff;
 
-  if (tape)
-    {
-    TapeDrive *drv = new TapeDrive(fileName);
-    int	len = strlen(FIRST_REC_STRING);
-
-    if (drv->Read(buff) < len)
-      {
-      std::cerr << "hdrAPI: read problem.\n";
-      return;
-      }
-
-    if (strncmp(FIRST_REC_STRING, buff, len) != 0)
-      {
-      std::cerr << "hdrAPI: not an ADS tape.\n";
-      return;
-      }
-
-    nBytes = drv->Read(buff);
-    delete drv;
-    }
-  else
 #ifdef PNG
   if (gzipped)
     {
@@ -133,48 +108,6 @@ void Header::readHeader(const char fileName[])
   _valid = true;
 
 }	/* END READHEADER */
-
-/* -------------------------------------------------------------------- */
-Header::Header(TapeDrive &drv)
-{
-  char	buff[65535];
-  long	nBytes, len;
-
-  len = strlen(FIRST_REC_STRING);
-
-  if ((nBytes = drv.Read(buff)) < len)
-    {
-    std::cerr << "Header: read problem.\n";
-    return;
-    }
-
-  if (strncmp(FIRST_REC_STRING, buff, len) !=0)
-    {
-    std::cerr << "Header: not an ADS tape, fatal.\n";
-    return;
-    }
-
-  if ((nBytes = drv.Read(buff)) == 0)
-    {
-    std::cerr << "Header: empty tape.\n";
-    return;
-    }
-
-  _hdr = new char [nBytes];
-  memcpy((void *)_hdr, (void *)buff, (unsigned)nBytes);
-  _header = (Fl *)_hdr;
-
-  /* Check if valid file
-   */
-  if (strcmp(TAPEHDR_STR, _header->thdr) != 0)
-    {
-    std::cerr << "Header: Bad header, fatal.\n";
-    return;
-    }
-
-  _valid = true;
-
-}	/* END CONSTRUCTOR */
 
 /* -------------------------------------------------------------------- */
 const void *Header::GetFirst()

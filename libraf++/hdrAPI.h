@@ -12,12 +12,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998-2005
 #define HDRAPI_H
 
 #include "header.h"
-#include "tapeIO.h"
 #include "ntohf.h"
 
 #include <string>
 #include <sys/types.h>
 #include <netinet/in.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 
 /* -------------------------------------------------------------------- */
@@ -29,8 +30,6 @@ class Header
 public:
 	Header(const char fName[]);
 	Header(const std::string fName);
-	Header(TapeDrive &drv);	// tapes are slow, provide access
-				// for already open drive.
 	~Header();
 
   void 	readHeader(const char fName[]);

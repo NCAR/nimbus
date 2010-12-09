@@ -25,22 +25,11 @@ ADS_DataFile::ADS_DataFile(const char fName[])
   int	Ccnt, Pcnt;
 
   Ccnt = Pcnt = 0;
-  diskData = strncmp(fName, "/dev", 4) ? true : false;
 
-  if (diskData)
-    {
-    if ((fp = fopen(fName, "rb")) == NULL)
-      std::cerr << "adsIO: Can't open input file " << fName << ".\n";
-    else
-      hdr = new Header(fName);
-    }
+  if ((fp = fopen(fName, "rb")) == NULL)
+    std::cerr << "adsIO: Can't open input file " << fName << ".\n";
   else
-    {
-    fp = (FILE *)(-1);
-    tape = new TapeDrive(fName);
-    hdr = new Header(*tape);
-    tape->Seek(0);
-    }
+    hdr = new Header(fName);
 
   currSyncLR = curr2dLR = 1000;
 
@@ -162,54 +151,49 @@ int ADS_DataFile::NextPhysicalRecord(char buff[])
   int	rc, idWord;
   int	size = sizeof(short);
 
-  if (diskData == FALSE)
-    size = tape->Read(buff);
-  else
+  rc = fread(buff, size, 1, fp);
+
+  if (rc != 1)
+    return(0);
+
+  idWord = ntohs(*((ushort *)buff));
+
+  switch (idWord)
     {
-    rc = fread(buff, size, 1, fp);
+    case SDI_WORD:
+      size = (hdr->lrLength() * hdr->lrPpr()) - sizeof(short);
+      break;
 
-    if (rc != 1)
-      return(0);
+    case ADS_WORD:
+      size = 18;
+      break;
 
-    idWord = ntohs(*((ushort *)buff));
+    case HDR_WORD:
+      size = hdr->HeaderLength() - sizeof(short);
+      break;
 
-    switch (idWord)
-      {
-      case SDI_WORD:
-        size = (hdr->lrLength() * hdr->lrPpr()) - sizeof(short);
-        break;
+    case PMS2DC1: case PMS2DC2:	// PMS 2D
+    case PMS2DP1: case PMS2DP2:
+    case PMS2DH1: case PMS2DH2:	// HVPS
+      size = PMS2_RECSIZE - sizeof(short);
+      break;
 
-      case ADS_WORD:
-        size = 18;
-        break;
+    case 0x4d43:	// MCR
+      size = sizeof(Mcr_rec) - sizeof(short);
+      break;
 
-      case HDR_WORD:
-        size = hdr->HeaderLength() - sizeof(short);
-        break;
+    case PMS2DG1: case PMS2DG2:	// GrayScale
+      size = 32000 - sizeof(short);
+      break;
 
-      case PMS2DC1: case PMS2DC2:	// PMS 2D
-      case PMS2DP1: case PMS2DP2:
-      case PMS2DH1: case PMS2DH2:	// HVPS
-        size = PMS2_RECSIZE - sizeof(short);
-        break;
-
-      case 0x4d43:	// MCR
-        size = sizeof(Mcr_rec) - sizeof(short);
-        break;
-
-      case PMS2DG1: case PMS2DG2:	// GrayScale
-        size = 32000 - sizeof(short);
-        break;
-
-      default:
-        size = 0;
-      }
-
-    if (fread(&buff[sizeof(short)], size, 1, fp) != 1)
+    default:
       size = 0;
-
-    size += sizeof(short);
     }
+
+  if (fread(&buff[sizeof(short)], size, 1, fp) != 1)
+    size = 0;
+
+  size += sizeof(short);
 
   return(size);
 
@@ -221,10 +205,7 @@ ADS_DataFile::~ADS_DataFile()
   if (fp == NULL)
     return;
 
-  if (diskData)
-    fclose(fp);
-  else
-    delete tape;
+  fclose(fp);
 
   if (syncPhysRecord)
     delete [] syncPhysRecord;
@@ -241,11 +222,7 @@ void ADS_DataFile::resetFile()
     return;
 
   currSyncLR = curr2dLR = 1000;
-
-  if (diskData)
-    rewind(fp);
-  else
-    tape->Seek(3);
+  rewind(fp);
 
 }	/* END RESETFILE */
 

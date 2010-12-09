@@ -18,7 +18,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 #include <cstdio>
 #include <cstring>
 
-#include "tapeIO.h"
 #include "hdrAPI.h"
 
 /* ADS image physical record types */
@@ -95,9 +94,6 @@ public:
 
 private:
   FILE	*fp;
-
-  bool		diskData;
-  TapeDrive	*tape;
 
   void	resetFile();
   int	curr2dLR, currSyncLR;

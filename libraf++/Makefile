@@ -16,12 +16,12 @@ CXXFLAGS=	-Wall -g -O2 ${INCLUDES} ${DEFINES}
 
 OBJS=	ACconfig.o adsIO.o adsIOrt.o Application.o Canvas.o Cursor.o\
 	hdrAPI.o gettext.o ntohf.o PixMap.o PMSspex.o PostScript.o\
-	Printer.o Queue.o tapeIO.o TextWindow.o Time.o validate.o\
+	Printer.o Queue.o TextWindow.o Time.o validate.o\
 	Window.o XFonts.o XPen.o XmError.o XmFile.o XmQuery.o XmWarn.o
 
 SRCS=	ACconfig.cc adsIO.cc adsIOrt.cc Application.cc Canvas.cc Cursor.cc\
 	hdrAPI.cc gettext.cc ntohf.cc PixMap.cc PMSspex.cc PostScript.o\
-	Printer.cc Queue.cc tapeIO.cc TextWindow.o Time.cc validate.cc\
+	Printer.cc Queue.cc TextWindow.o Time.cc validate.cc\
 	Window.cc XFonts.cc XPen.cc XmError.cc XmFile.cc XmQuery.cc XmWarn.cc
 
 all: ${OBJS}
@@ -37,9 +37,8 @@ install: all
 
 
 # IO classes.
-tapeIO.o:	tapeIO.h
-hdrAPI.o:	hdrAPI.h tapeIO.h ntohf.h
-adsIO.o:	adsIO.h hdrAPI.h tapeIO.h
+hdrAPI.o:	hdrAPI.h ntohf.h
+adsIO.o:	adsIO.h hdrAPI.h
 adsIOrt.o:	adsIOrt.h hdrAPI.h
 PMSspex.o:	PMSspex.h
 ntohf.o:	ntohf.h
