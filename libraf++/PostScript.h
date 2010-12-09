@@ -59,7 +59,7 @@ public:
   void	ClearDash()		{ fprintf(fp,"[] 0 setdash\n"); }
 
   // Issue generic command.
-  void	Issue(const char str[])	{ fprintf(fp,str); }
+  void	Issue(const char str[])	{ fprintf(fp, "%s", str); }
 
 private:
   FILE	*fp;
