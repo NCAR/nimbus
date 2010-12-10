@@ -878,7 +878,7 @@ void BlankOutBadData()
 
     clearDependedByList();
 
-    if ((index = SearchTableSansLocation(raw, target)) != ERR &&
+    if ((index = SearchTable(raw, target)) != ERR &&
         raw[index]->Output)
       {		// Do nothing, but avoid error message below if it was a raw variable.
       }
