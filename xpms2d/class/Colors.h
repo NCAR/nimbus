@@ -30,6 +30,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2000
 #include <X11/Xutil.h>
 #include <X11/Xos.h>
 
+#include <stdint.h>
+
 #ifdef PNG
 #include <png.h>
 #endif
@@ -43,9 +45,9 @@ public:
   int	NumberOfColors()	{ return(numberColors); }
   void	ResetColors()		{ colorIndex = 0; }
 
-  unsigned long	GetColor(int indx);
-  unsigned long	NextColor();
-  unsigned long	CurrentColor();
+  uint32_t	GetColor(int indx);
+  uint32_t	NextColor();
+  uint32_t	CurrentColor();
 
   float	*GetColorPS(int indx);
   float	*NextColorPS();
@@ -53,14 +55,14 @@ public:
 
 #ifdef PNG
   void	SavePNG(const char outFile[], XImage *image);
-  unsigned short	*GetColorRGB_X(int idx);
+  uint16_t	*GetColorRGB_X(int idx);
 #endif
 
 
 private:
 #ifdef PNG
   void	checkByteSwap(XImage *image);
-  int	getColorIndex(unsigned long pixel);
+  int	getColorIndex(uint32_t pixel);
 #endif
 
   int	colorIndex, numberColors;
