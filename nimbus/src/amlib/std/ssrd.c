@@ -18,14 +18,10 @@ extern int	FlightDate[];
 /* -------------------------------------------------------------------- */
 void initSSRD(var_base *varp)
 {
-  NR_TYPE  *tmp;
-  bool valid_aircraft = false;
-
   /* Set default values per aircraft. */
   switch (cfg.Aircraft())
   {
     case Config::C130:
-      valid_aircraft = true;
       if (FlightDate[2] < 1998)
       {
         coeff[0] = -0.07;
@@ -42,46 +38,28 @@ void initSSRD(var_base *varp)
       break;
 
     case Config::ELECTRA:
-      valid_aircraft = true;
       coeff[0] = 0.0375;
       coeff[1] = 0.06577;
       break;
 
     case Config::NRL_P3:
-      valid_aircraft = true;
       coeff[0] = 0.0025;
       coeff[1] = 0.06577;
       break;
 
     case Config::KINGAIR:
-      valid_aircraft = true;
       coeff[0] = -0.002825;
       coeff[1] = 0.07448;
       break;
 
     case Config::HIAPER:
-      valid_aircraft = true;
-//      coeff[0] = -0.0013;
-//      coeff[1] = 0.075;
       coeff[0] = -0.0025;
       coeff[1] = 0.04727;
       break;
 
     default:
-      valid_aircraft = false;
-  }
-
-  if (valid_aircraft)
-  {
-    if ((tmp = GetDefaultsValue("SSRD_COEF", varp->name)) != NULL)
-    {
-      coeff[0] = tmp[0];
-      coeff[1] = tmp[1];
-      sprintf(buffer,
-        "initSSRD: SSRD_COEF set to %f, %f from Defaults file.\n",
-        coeff[0], coeff[1]);
-      LogMessage(buffer);
-    }
+      LogMessage("ssrd.c: No valid aircraft, no coefficients, exiting.");
+      exit(1);
   }
 }
 

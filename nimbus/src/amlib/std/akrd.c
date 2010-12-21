@@ -22,57 +22,37 @@ static NR_TYPE coeff[2];
 /* -------------------------------------------------------------------- */
 void initAKRD(var_base *varp)
 {
-  NR_TYPE  * tmp;
-  bool valid_aircraft = false;
-
   /* Set default values per aircraft. */
   switch (cfg.Aircraft())
   {
     case Config::C130:
-      valid_aircraft = true;
       coeff[0] = 0.3843;
       coeff[1] = 0.06653;
       break;
 
     case Config::ELECTRA:
-      valid_aircraft = true;
       coeff[0] = 0.4095;
       coeff[1] = 0.07155;
       break;
 
     case Config::NRL_P3:
-      valid_aircraft = true;
       coeff[0] = 0.3472;
       coeff[1] = 0.071442;
       break;
 
     case Config::KINGAIR:
-      valid_aircraft = true;
       coeff[0] = 0.01414;
       coeff[1] = 0.08485;
       break;
 
     case Config::HIAPER:
-      valid_aircraft = true;
       coeff[0] = 0.2571;
       coeff[1] = 0.04727;
       break;
 
     default:
-      valid_aircraft = false;
-  }
-
-  if (valid_aircraft)
-  {
-    if ((tmp = GetDefaultsValue("AKRD_COEF", varp->name)) != NULL)
-    {
-      coeff[0] = tmp[0];
-      coeff[1] = tmp[1];
-      sprintf(buffer,
-	"initAKRD: AKRD_COEF set to %f, %f from Defaults file.\n",
-	coeff[0], coeff[1]);
-      LogMessage(buffer);
-    }
+      LogMessage("akrd.c: No valid aircraft, no coefficients, exiting.");
+      exit(1);
   }
 }
 
