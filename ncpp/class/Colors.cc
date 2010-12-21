@@ -20,25 +20,25 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 
 struct {
         char            name[20];
-        float           ps_rgb[3];      /* For PostScript       */
-        unsigned short  x_rgb[3];       /* For X (save PNG)     */
-        unsigned long   pixel;
-        unsigned long   cpixel;         /* Xserver byte order of 'pixel' */
+        float           ps_rgb[3];	/* For PostScript       */
+        uint16_t	x_rgb[3];	/* For X (save PNG)     */
+        uint32_t	pixel;
+        uint32_t	cpixel;		/* Xserver byte order of 'pixel' */
 } colorInfo[] = {
-        { "Black",      { 0.0, 0.0, 0.0 },      { 0, 0, 0}, 0, 0 },
-        { "red",        { 1.0, 0.0, 0.0 },      { 0, 0, 0}, 0, 0 },
-        { "blue",       { 0.0, 0.0, 1.0 },      { 0, 0, 0}, 0, 0 },
-        { "green",      { 0.0, 1.0, 0.0 },      { 0, 0, 0}, 0, 0 },
-        { "yellow",     { 1.0, 1.0, 0.0 },      { 0, 0, 0}, 0, 0 },
-        { "maroon",     { 0.69, 0.1882, 0.3765 },       { 0, 0, 0}, 0, 0 },
-        { "violet",     { 0.9333, 0.5098, 0.9333 },     { 0, 0, 0}, 0, 0 },
-        { "orange",     { 1.0, 0.6471, 0.0 },   { 0, 0, 0}, 0, 0 },
-        { "purple",     { 0.6275, 0.1255, 0.9412 }, { 0, 0, 0}, 0, 0 },
-        { "light blue", { 0.6784, 0.8471, 0.902 },      { 0, 0, 0}, 0, 0 },
-        { "bisque",     { 1.0, 0.8941, 0.7686 },        { 0, 0, 0}, 0, 0 },
-        { "dark green", { 0.0, 0.3922, 0.0 },   { 0, 0, 0}, 0, 0 },
-        { "grey",       { 0.0, 0.0, 0.0 },      { 0, 0, 0}, 0, 0 },
-        { "",         { 0.0, 0.0, 0.0 },      { 0, 0, 0}, 0, 0 } };
+        { "Black",	{ 0.0, 0.0, 0.0 },	{ 0, 0, 0}, 0, 0 },
+        { "red",	{ 1.0, 0.0, 0.0 },	{ 0, 0, 0}, 0, 0 },
+        { "blue",	{ 0.0, 0.0, 1.0 },	{ 0, 0, 0}, 0, 0 },
+        { "green",	{ 0.0, 1.0, 0.0 },	{ 0, 0, 0}, 0, 0 },
+        { "yellow",	{ 1.0, 1.0, 0.0 },	{ 0, 0, 0}, 0, 0 },
+        { "maroon",	{ 0.69, 0.1882, 0.3765 },	{ 0, 0, 0}, 0, 0 },
+        { "violet",	{ 0.9333, 0.5098, 0.9333 },	{ 0, 0, 0}, 0, 0 },
+        { "orange",	{ 1.0, 0.6471, 0.0 },	{ 0, 0, 0}, 0, 0 },
+        { "purple",	{ 0.6275, 0.1255, 0.9412 },	{ 0, 0, 0}, 0, 0 },
+        { "light blue",	{ 0.6784, 0.8471, 0.902 },	{ 0, 0, 0}, 0, 0 },
+        { "bisque",	{ 1.0, 0.8941, 0.7686 },	{ 0, 0, 0}, 0, 0 },
+        { "dark green",	{ 0.0, 0.3922, 0.0 },	{ 0, 0, 0}, 0, 0 },
+        { "grey",	{ 0.0, 0.0, 0.0 },	{ 0, 0, 0}, 0, 0 },
+        { "",		{ 0.0, 0.0, 0.0 },	{ 0, 0, 0}, 0, 0 } };
 
 /* -------------------------------------------------------------------- */
 Colors::Colors(const Widget w) : _w(w)
@@ -121,9 +121,9 @@ void Colors::resetColors()
   for (i = 0; i < numberColors; ++i)
     {
     if (image->depth == 16)
-      colorInfo[i].cpixel = ((unsigned short *)image->data)[i];
+      colorInfo[i].cpixel = ((uint16_t *)image->data)[i];
     if (image->depth > 16)
-      colorInfo[i].cpixel = ((unsigned long *)image->data)[i];
+      colorInfo[i].cpixel = ((uint32_t *)image->data)[i];
     }
 
 }
@@ -139,7 +139,7 @@ void Colors::SavePNG(const char file_name[], XImage *image)
 {
   int           i, j;
   FILE          *outFP;
-  unsigned short        *s;
+  uint16_t	*s;
   png_structp   png_ptr;
   png_infop     info_ptr;
   png_bytep     row_pointers[2000];
@@ -203,7 +203,7 @@ void Colors::SavePNG(const char file_name[], XImage *image)
 
   for (i = 0; i < image->height; ++i)
     {
-    char        *p = &(image->data[i * image->bytes_per_line]);
+    char *p = &(image->data[i * image->bytes_per_line]);
 
     row_pointers[i] = new png_byte[image->width];
 
@@ -217,13 +217,13 @@ void Colors::SavePNG(const char file_name[], XImage *image)
 
       case 16:
         for (j = 0; j < image->width; ++j)
-          row_pointers[i][j] = getColorIndex(((unsigned short *)p)[j]);
+          row_pointers[i][j] = getColorIndex(((uint16_t *)p)[j]);
 
         break;
 
       case 24: case 32:
         for (j = 0; j < image->width; ++j)
-          row_pointers[i][j] = getColorIndex(((unsigned long *)p)[j]);
+          row_pointers[i][j] = getColorIndex(((uint32_t *)p)[j]);
 
         break;
       }
@@ -248,7 +248,7 @@ void Colors::checkByteSwap(XImage *image)
 {
   int   i;
   bool	prog_byte_order;
-  unsigned long pixel, x;
+  uint32_t pixel, x;
 
   static bool firstTime = TRUE;
 
@@ -261,10 +261,10 @@ void Colors::checkByteSwap(XImage *image)
   prog_byte_order = (1 == ntohl(1)) ? MSBFirst : LSBFirst;
 
   if (image->depth == 16)
-    pixel = ((unsigned short *)image->data)[0];
+    pixel = ((uint16_t *)image->data)[0];
 
   if (image->depth > 16)
-    pixel = ((unsigned long *)image->data)[0];
+    pixel = ((uint32_t *)image->data)[0];
 
   for (i = 0; i < numberColors; ++i)
     {
@@ -293,7 +293,7 @@ void Colors::checkByteSwap(XImage *image)
 }
 
 /* -------------------------------------------------------------------- */
-int Colors::getColorIndex(unsigned long pixel)
+int Colors::getColorIndex(uint32_t pixel)
 {
   int   i;
 
@@ -311,7 +311,7 @@ int Colors::getColorIndex(unsigned long pixel)
 }
 
 /* -------------------------------------------------------------------- */
-unsigned short *Colors::GetColorRGB_X(int indx)
+uint16_t *Colors::GetColorRGB_X(int indx)
 {
   return(colorInfo[indx].x_rgb);
 }
@@ -319,19 +319,19 @@ unsigned short *Colors::GetColorRGB_X(int indx)
 #endif
 
 /* -------------------------------------------------------------------- */
-unsigned long Colors::GetColor(int indx)
+uint32_t Colors::GetColor(int indx)
 {
   return(colorInfo[indx].pixel);
 }
 
 /* -------------------------------------------------------------------- */
-unsigned long Colors::NextColor()
+uint32_t Colors::NextColor()
 {
   return(colorInfo[++colorIndex].pixel);
 }
 
 /* -------------------------------------------------------------------- */
-unsigned long Colors::CurrentColor()
+uint32_t Colors::CurrentColor()
 {
   return(GetColor(colorIndex));
 }
