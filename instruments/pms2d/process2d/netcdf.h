@@ -11,7 +11,7 @@ class netCDF
 public:
   netCDF(Config & cfg);
 
-  NcFile *ncid() { return _file; }
+  NcFile *ncid() const { return _file; }
 
   /**
    * Add dimension to netCDF file.  If dimension already exists,
