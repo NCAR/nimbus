@@ -34,21 +34,31 @@ span.comment { background-color: #88FF88; font-style: italic; }
 <dt><h3>System Requirements</h3>
 <dd>To build <b>xpms2d</b> from source requires an X-Windows based operating system using the Motif toolkit.  Most commercial Unices have Motif installed.
 <p>
-<dd><b>OpenMotif</b> is available for RHEL via yum(1) ("yum install openmotif").  For Fedora, visit
-the <a href="http://rpm.pbone.net">PBone repository</a> and retreive the ccrma openmotif RPM.
+<dd><b>OpenMotif</b> is available for RHEL via yum(1) ("yum install openmotif openmotif-devel").  For Fedora, visit <a href="http://rpmfind.net">RPM find</a> and download the openmotif and openmotif-devel RPMs.
 
+<hr>
 <p><dt><h3>Linux binaries</h3>
 <dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/bin.RHEL4/xpms2d">RHEL 4</a><br>
 <dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/bin.RHEL5/xpms2d">RHEL 5</a><br>
-<dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/bin.Fedora8/xpms2d">Fedora 8</a><br>
 <dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/bin.Fedora10/xpms2d">Fedora 10</a><br>
+<dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/bin.Fedora12/xpms2d">Fedora 12</a><br>
 <p>
 
+<hr>
 <p><dt><h3>Source code</h3>
-<dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/xpms2d-2.5.0.tar.gz">xpms2d-2.5.0.tar.gz (64 bit 2DC support)</a><br>
-<dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/xpms2d-2.4.3.tar.gz">xpms2d-2.4.3.tar.gz (64 bit 2DC support)</a><br>
+<dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/xpms2d-2.5.5.tar.gz">xpms2d-2.5.5.tar.gz</a><br>
+<dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/xpms2d-2.5.4.tar.gz">xpms2d-2.5.4.tar.gz</a><br>
+<dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/xpms2d-2.5.2.tar.gz">xpms2d-2.5.2.tar.gz</a><br>
 <dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/libraf++.tar.gz">libraf++.tar.gz</a><br>
 
+<hr>
+<p><dt><h3>Change log</h3>
+<ul>
+<li>12/05/2010, 2.5.5: Change in particle rejection criteria, removed obsolete streaker detection.  Added simple stuck bit detection.  Fix bug in output of Fast2DC hex, only half record was being displayed.  Support for "Save PNG" on 64 bit computers.
+<li>02/05/2010, 2.5.4: Modify area-ratio-rejection to use circle fit.  x64 bit compatibility.
+<li>09/09/2009, 2.5.2: Support for files greater than 2GB.  Support for gzipped ADS3 files.
+<li>06/15/2009, 2.5.1: Ongoing fixes and improvements for Fast2DC.  Added "View Histogram" to view text of counts histogram.
+</ul>
 </dl>
 
 </body>

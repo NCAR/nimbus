@@ -31,27 +31,38 @@ span.comment { background-color: #88FF88; font-style: italic; }
 <h1 align=CENTER>ncpp Download Page</h1>
 
 <dl>
+<hr>
 <dt><h3>System Requirements</h3>
 <dd>To build <b>ncpp</b> from source requires that <a href="http://www.unidata.ucar.edu/packages/netcdf/">netCDF</a> 3.0 or later be installed, <b>ncpp</b> is X-Windows based using the Motif toolkit.  Most commercial Unices have Motif installed.
 <p>
-<dd><b>OpenMotif</b> is available for RHEL via yum(1) ("yum install openmotif").  For Fedora, visit
-the <a href="http://rpm.pbone.net">PBone repository</a> and retreive the ccrma openmotif RPM.
+<dd><b>OpenMotif</b> is available for RHEL via yum(1) ("yum install openmotif openmotif-devel").  For Fedora, visit <a href="http://rpmfind.net">RPM Find</a> openmotif openmotif-devel RPM.
 
+<hr>
 <p><dt><h3>Linux binaries</h3>
 <dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/bin.RHEL4/ncpp">RHEL 4</a><br>
 <dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/bin.RHEL5/ncpp">RHEL 5</a><br>
-<dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/bin.Fedora8/ncpp">Fedora 8</a><br>
 <dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/bin.Fedora10/ncpp">Fedora 10</a><br>
+<dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/bin.Fedora12/ncpp">Fedora 12</a><br>
 <p>
 
+<hr>
 <p><dt><h3>Source code</h3>
-<dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/ncpp-2.1.2.tar.gz">ncpp-2.1.2.tar.gz</a><br>
+<dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/ncpp-2.1.5.tar.gz">ncpp-2.1.5.tar.gz</a><br>
+<dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/ncpp-2.1.4.tar.gz">ncpp-2.1.4.tar.gz</a><br>
 <dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/ncpp-2.1.0.tar.gz">ncpp-2.1.0.tar.gz</a><br>
 <dd><a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/libraf++.tar.gz">libraf++.tar.gz</a><br>
 
+<hr>
 <p><dt><h3>Sample netCDF File</h3>
 <dd>Sample netCDF data file (33MB): <a href="ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/Sample.nc">Sample.nc</a><br>
 
+<hr>
+<p><dt><h3>Change log</h3>
+<ul>
+<li>10/07/2009, 2.1.5: Overhaul 2DC processing, support for 64 diode probe, replace fixed sample area with same computed values used in nimbus processing.  Split CDP processing away from S100 as the are slightly different.  Support for "Save PNG" on 64 bit computers.
+<li>07/14/2009, 2.1.4: Add support for SID-II.
+<li>07/06/2009, 2.1.3: Fixed issues when data equaled _FillValue.
+</ul>
 </dl>
 
 </body>
