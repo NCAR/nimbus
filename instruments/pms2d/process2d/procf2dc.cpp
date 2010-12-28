@@ -436,10 +436,10 @@ void reject_particle(struct_particle& x, float cutoff, float nextinttime, float 
 // ----------------TIME CONVERSION ---------------------------
 int hms2sfm(int hms){
    //Convert hhmmss to seconds from midnight
-   int hour=hms/10000;
-   int minute=(hms-hour*10000l)/100;
-   int second=(long(hms)-hour*10000l-minute*100l);
-   int sfm=hour*3600l+minute*60l+second;      
+   int hour = hms / 10000;
+   int minute = (hms-hour*10000) / 100;
+   int second = hms - hour*10000 - minute*100;
+   int sfm = hour*3600 + minute*60 + second;      
    return sfm;
 }
 
@@ -507,7 +507,7 @@ int process2d(Config & cfg, ProbeInfo & probe)
       armwidth:        Arm separation in cm
       recon:           Turn on/off particle reconstruction
   */
-  
+
   //-----------Various declarations-----------------------------------------------
   type_buffer buffer;  
   ifstream input_file;
@@ -534,7 +534,7 @@ int process2d(Config & cfg, ProbeInfo & probe)
   int starttime=hms2sfm(cfg.starttime);
   int stoptime=hms2sfm(cfg.stoptime);
   int numtimes=stoptime-starttime+1;
-  
+
   assert(numtimes >= 0);
 
   //Count and concentration arrays setup
@@ -601,7 +601,7 @@ int process2d(Config & cfg, ProbeInfo & probe)
 
      //Record first buffer day for midnight crossings
      if(buffcount==0) firstday=endianswap_s(buffer.day); 
-     
+
      lastbuffertime=buffertime;
      buffertime=(endianswap_s(buffer.day)-firstday)*86400.0 + 
                 endianswap_s(buffer.hours)*3600.0 + endianswap_s(buffer.minutes)*60.0 + 
@@ -619,11 +619,11 @@ int process2d(Config & cfg, ProbeInfo & probe)
               firsttimeline=timeline; 
               firsttimeflag=0;
            }
-           
+
            //Look for negative interarrival time, set to zero instead
            if (timeline < firsttimeline) difftimeline=0;
            else difftimeline=timeline-firsttimeline;
-             
+
            //Process the roi
            long time1hz=(long) (lastbuffertime+difftimeline/(12.0e6));
            if (time1hz >= starttime){
@@ -631,25 +631,25 @@ int process2d(Config & cfg, ProbeInfo & probe)
               particle.holearea=fillholes2(roi,slice_count);           
               particle.inttime=(timeline-lasttimeline)/12.0e6;
               particle.time1hz=time1hz;
-             
+
               //Decide which size to use
               particle.size=particle.csize;  //Default
               if (cfg.smethod=='x') particle.size=particle.xsize;
               if (cfg.smethod=='y') particle.size=particle.ysize;           
-        
+
               //Update interarrival queue
               itq[iitq]=particle.inttime;
               iitq++;
               if (iitq > (nitq-1)) iitq=0;
            }
-           
+
            //Debugging output
            if ((buffcount==-100)) {
               cout<<islice<<endl;
               showparticle(particle);
               showroi(roi,slice_count);
            }
-               
+
            //Check the particle time to see if a new 1-s period has been crossed.
            //If so, place all particles in count matrix
            if (time1hz != last_time1hz){
@@ -658,27 +658,27 @@ int process2d(Config & cfg, ProbeInfo & probe)
               //Make sure particles are in correct time range
               if (itime>=0){
                  tas[itime]=((float)endianswap_s(buffer.tas))*125.0/255.0;
-                 
+
                  //Fill interarrival time array with all particles
 //                 for (int i=0; i<particle_stack.size(); i++){                    
 //                    iit=0;
 //                    while((particle_stack[i].inttime)>it_endpoints[iit+1]) iit++;
 //                    count_it[itime][iit+1]++;   //Add 1 to iit for RAF convention
 //                 }   
-                 
+
                  //Interarrival time array, queue version
                  for (int i=0; i<nitq; i++){                    
                     iit=0;
                     while((itq[i])>it_endpoints[iit+1]) iit++;
                     count_it[itime][iit+binoffset]++;   //Add offset to iit for RAF convention
                  }   
-                               
+
                  for (int i=0; i<cfg.nInterarrivalBins; i++) fitspec[i]=count_it[itime][i+binoffset];
                  dpoisson_fit(it_midpoints, fitspec, bestfit, cfg.nInterarrivalBins);
                  cpoisson1[itime]=(float)bestfit[0];  //Save factors
                  cpoisson2[itime]=(float)bestfit[1];
                  cpoisson3[itime]=(float)bestfit[2];
-                 
+
                  // Compute shattering corrections if flagged
                  if (cfg.shattercorrect) {
                    pcutoff[itime]=(float)(1.0/bestfit[1]*0.05);  // Compute cutoff time
@@ -687,9 +687,9 @@ int process2d(Config & cfg, ProbeInfo & probe)
                    pcutoff[itime]=0;   // No rejection or corrections
                    corrfac[itime]=1.0;
                  }
-                 
+
                  if (cfg.verbose) cout<<itime+starttime<<" "<<time1hz<<" "<<particle_stack.size()<<" "<<bestfit[0]<<" "<<bestfit[1]<<" "<<bestfit[2]<<endl;
-                 
+
                  // Sort through all particles in this stack
                  for (size_t i = 0; i < particle_stack.size(); i++) {
                     //Find water size correction
@@ -701,7 +701,7 @@ int process2d(Config & cfg, ProbeInfo & probe)
                     reject_particle(particle_stack[i], pcutoff[itime], nextit, probe.resolution,
                                     probe.bin_endpoints[0], probe.bin_endpoints[probe.numBins],wc, cfg.recon);
                     if (cfg.debug) showparticle(particle_stack[i]);                    
-                    
+
                     // Fill count arrays with accepted particles
                     if (!particle_stack[i].ireject){
                        isize=0; 
@@ -714,7 +714,7 @@ int process2d(Config & cfg, ProbeInfo & probe)
                        while((particle_stack[i].size/wc)>probe.bin_endpoints[wsize+1]) wsize++;
                        count_round[itime][wsize+binoffset]++;   //Add offset to wsize for RAF convention
                        n_accepted_round[itime]++;
-                    } else n_rejected_round[itime]++;                                                      
+                    } else n_rejected_round[itime]++;
                  } // End sorting through particle stack
               } // End of time check
 
@@ -722,7 +722,7 @@ int process2d(Config & cfg, ProbeInfo & probe)
               particle_stack.clear();
               last_time1hz=time1hz;
            } // End crossed into new time period
-           
+
            // Add this particle to vector
            particle_stack.push_back(particle);
 
@@ -737,7 +737,7 @@ int process2d(Config & cfg, ProbeInfo & probe)
                roi[slice_count][idiode]=((slice & powerof2[63-idiode])/powerof2[63-idiode]);
            slice_count=min(slice_count+1,511);  //Increment slice_count, limit to 511
         }
-     
+
      } //end slice loop
      buffcount++;  //Update buffer counter
      if ((!cfg.verbose) && (buffcount % 100==0)) cout<<"."<<flush; //User feedback
@@ -745,15 +745,15 @@ int process2d(Config & cfg, ProbeInfo & probe)
  
   // Close raw data file
   input_file.close();
-  
-  
+
+
   
   //=========Compute sample volume, concentration, total number, and LWC======
   float nt_all[numtimes], nt_round[numtimes], lwc_round[numtimes];
   // Initialize to zero
   for (int j = 0; j < numtimes; j++)
      nt_all[j] = nt_round[j] = lwc_round[j] = 0.0; 
-  
+
   // Compute
   for (int i = 0; i < probe.numBins; i++) {  
      float mass = 3.1416/6.0 * pow(probe.bin_midpoints[i]/1e4,3);  //grams
@@ -776,9 +776,9 @@ int process2d(Config & cfg, ProbeInfo & probe)
         }
      }
   }
-  
-   
-  
+
+
+
   //=============Write to netCDF==============================================
   if (buffcount <= 1) return 1;  //Don't write empty files
 
@@ -794,7 +794,7 @@ int process2d(Config & cfg, ProbeInfo & probe)
   sprintf(tmp, "Vector%d", probe.numBins+1);
   NcDim *bindim_plusone = ncfile.addDimension(tmp, probe.numBins+1);
   NcDim *intbindim = ncfile.addDimension("interarrival_endpoints", cfg.nInterarrivalBins+1);
-  
+
   // Define the variables. 
   NcVar *timevar, *var;
 
@@ -1172,7 +1172,6 @@ int usage(const char* argv0)
 
 int main(int argc, char *argv[])
 {
-  int errorcode;
   ifstream input_file;
   type_buffer buffer;
   vector<ProbeInfo> probes;
@@ -1196,7 +1195,7 @@ int main(int argc, char *argv[])
 
   // Return if unreadable file
   if (input_file.eof()) {
-     cerr << "Unable to find XML header" << endl;
+     cerr << "Unable to find XML header.  Valid 2D file?" << endl;
      return 1;
   }
 
@@ -1224,7 +1223,7 @@ int main(int argc, char *argv[])
 		<< "      res : " << probes[i].resolution << endl
 		<< " armwidth : " << probes[i].armWidth << endl;
 
-    errorcode = process2d(config, probes[i]); 
+    int errorcode = process2d(config, probes[i]); 
 
     if (!errorcode)
       cout << endl << "Sucessfully processed probe " << i << endl;
