@@ -21,6 +21,7 @@
 #include <cmath>
 #include <cstring>
 #include <iomanip>
+#include <arpa/inet.h>
 
 #include <raf/PMSspex.h>
 
@@ -489,11 +490,6 @@ unsigned long long endianswap_ull(unsigned long long x)
         return x;
 }
 
-unsigned short endianswap_s(unsigned short x)
-{
-  return (x>>8) | (x<<8);
-}
-
 
 //================================================================================================
 // ------------PROCESS 2D-----------------------
@@ -600,12 +596,12 @@ int process2d(Config & cfg, ProbeInfo & probe)
      while (((buffer.probetype!=probetype)||(buffer.probenumber!=probenumber)) && (!input_file.eof()));
 
      //Record first buffer day for midnight crossings
-     if(buffcount==0) firstday=endianswap_s(buffer.day); 
+     if(buffcount==0) firstday=ntohs(buffer.day); 
 
      lastbuffertime=buffertime;
-     buffertime=(endianswap_s(buffer.day)-firstday)*86400.0 + 
-                endianswap_s(buffer.hours)*3600.0 + endianswap_s(buffer.minutes)*60.0 + 
-                endianswap_s(buffer.seconds) + endianswap_s(buffer.msec)/1000.0;
+     buffertime=(ntohs(buffer.day)-firstday)*86400.0 + 
+                ntohs(buffer.hours)*3600.0 + ntohs(buffer.minutes)*60.0 + 
+                ntohs(buffer.seconds) + ntohs(buffer.msec)/1000.0;
 
      firsttimeflag=1;
      //Scroll through each slice, look for sync/time slices
@@ -657,7 +653,7 @@ int process2d(Config & cfg, ProbeInfo & probe)
 
               //Make sure particles are in correct time range
               if (itime>=0){
-                 tas[itime]=((float)endianswap_s(buffer.tas))*125.0/255.0;
+                 tas[itime]=((float)ntohs(buffer.tas))*125.0/255.0;
 
                  //Fill interarrival time array with all particles
 //                 for (int i=0; i<particle_stack.size(); i++){                    
@@ -1201,11 +1197,11 @@ int main(int argc, char *argv[])
 
   // Read first buffer, get start time
   input_file.read((char*)(&buffer), sizeof(buffer));
-  config.starttime=endianswap_s(buffer.hours)*10000+endianswap_s(buffer.minutes)*100+endianswap_s(buffer.seconds);
+  config.starttime=ntohs(buffer.hours)*10000+ntohs(buffer.minutes)*100+ntohs(buffer.seconds);
    
   // Read last buffer, get stop time
   do input_file.read((char*)(&buffer), sizeof(buffer)); while (!input_file.eof());
-  config.stoptime=endianswap_s(buffer.hours)*10000+endianswap_s(buffer.minutes)*100+endianswap_s(buffer.seconds);
+  config.stoptime=ntohs(buffer.hours)*10000+ntohs(buffer.minutes)*100+ntohs(buffer.seconds);
   
   input_file.close();
 
