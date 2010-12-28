@@ -1,0 +1,509 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\input colordvi
+\usepackage{color}
+\fancyhead{}
+\fancyfoot[CE,CO]{}
+\newtoks{\topicofnote} \global\topicofnote={}
+\newdimen\longindent \longindent=3.5truein
+\fancyhead[L]{Note re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\renewcommand{\headrulewidth}{0.0pt}
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+\setlength{\leftmargin}{\labelwidth}
+\addtolength{\leftmargin}{\labelsep}
+\renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+\newcommand{\datetoday}{\number\day\space
+     \ifcase\month\or January\or February\or March\or April\or May\or
+     June\or July\or August\or September\or October\or November\or
+     December\fi
+     \space\number\year}
+\newcommand{\ASPmemo}{\null \vskip-1.5truein
+{\raggedright \textsf{\textsc{\large \textcolor{blue}{Advanced Study Program}}}}\par
+{\raggedright \textsf{\textsl{\textcolor{blue}{Memorandum:}}}} \par \vskip6pt
+{\color{blue}{\hrule}}\par
+\vskip0.3truein \leftline{\hskip \longindent \datetoday} \vskip0.2truein
+\thispagestyle{empty}}
+\newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachments:] {#1}
+\end{lyxlist}}
+\newcommand{\cc}[1]{\begin{lyxlist}{Attachments:00}
+\item [cc:] {#1}
+\end{lyxlist}}
+\newcommand{\attach}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachment:] {#1}
+\end{lyxlist}}
+%usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
+\end_preamble
+\use_default_options false
+\language english
+\inputencoding default
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\leftmargin 2.54cm
+\topmargin 3.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 1cm
+\headsep 2cm
+\footskip 0.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+set topicofnote to topic of note
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+topicofnote={Honeywell Laseref IRS}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+Note goes here:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Notes from the document obtained by Dick Friesen from Honeywell:
+\end_layout
+
+\begin_layout Enumerate
+calculate accelerometer wieghting, scale factor, and bias (p.
+ 98)
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+UZ=(1+LZZ) where LZZ is calculated from calibration and temperature-dependent
+ coefficients.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Bias coefficients LZB LZBD and LZBD are calculated here
+\end_layout
+
+\begin_layout Enumerate
+Various other weight factors needed for transformations are calculated here.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Calculate 
+\begin_inset Quotes eld
+\end_inset
+
+incremental velocities
+\begin_inset Quotes erd
+\end_inset
+
+ including V3(p.
+ 42):
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+use pulses from accelerometer, multiply by weight factors, adjust for bias
+ (LXBD)
+\end_layout
+
+\begin_layout Enumerate
+calculate 
+\begin_inset Quotes eld
+\end_inset
+
+residual velocity
+\begin_inset Quotes erd
+\end_inset
+
+ RV3 from integrated residuals with scale factor
+\end_layout
+
+\begin_layout Enumerate
+correct V3 by subtracting (ressidual - previous residual)
+\end_layout
+
+\begin_layout Enumerate
+--- don't understand this
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+calculate accelerometer incremental velocities: V3C (with correction for
+ rotation) (p.
+ 43)
+\end_layout
+
+\begin_layout Enumerate
+Compute vertical component of gravity with compensation for latitude (p.
+ 90)
+\end_layout
+
+\begin_layout Enumerate
+Increment vert vel and average over 10 Hz (p.
+ 48) -- don't see how this is accomplished
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+VZ += DVZ+CDVZ [former is from p.
+ 47 rotation of V3C etc; latter is correction for Coriolis, g, altitude]
+\end_layout
+
+\begin_layout Enumerate
+set DVZP to be DVZP+VZ-VZP; i.e., subtract previous, add present value
+\end_layout
+
+\begin_layout Enumerate
+also saves VZPP=Vz
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+\begin_inset Quotes eld
+\end_inset
+
+Compensate Butterworth Filtered Accelerations
+\begin_inset Quotes erd
+\end_inset
+
+ (p.
+ 45)
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+calculate ABW(3) from ABWI3 (called compensated in the document but must
+ be uncompensated?) via adjustment for gravity, centripetal accel., cal LXBCA,
+ bias ZBIAS, and scale factor RUZNACC (which is an adjusted scale fctor)
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Incremental velocities resolved to local frame: (p.
+ 47)
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+calculate DVZ wrt local normal (i.e., I think, aircraft normal)
+\end_layout
+
+\begin_layout Enumerate
+integrate DVZ to get IVRTACL, integrated vertical acceleration and so a
+ vertical velocity
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Calculate body accelerations (p.
+ 57)
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+AWW = (50/3)*(V+VP+VPP) -- i.e., average last 3 measurements but weight by
+ 50
+\end_layout
+
+\begin_layout Enumerate
+apply GD offset to AWW(3)
+\end_layout
+
+\begin_layout Enumerate
+for acceleration, BWS2=BWS2*CS4-BWS1*CS1 where CS4=0.972, CS1=0.002
+\end_layout
+
+\begin_layout Enumerate
+for velocity, BWS1 += BWS2/50.
+ (i.e., straight integration of filtered value)
+\end_layout
+
+\begin_layout Enumerate
+defines A(3)=ABW(3)+BWS2(3) i.e., sum of Butterworth-filtered acceleration
+ and compensated Butterworth-filtered acceleration
+\end_layout
+
+\begin_layout Enumerate
+WWS2(3)=A(3)-AWW(3) i.e., difference between above sum and walking-window
+ value
+\end_layout
+
+\begin_layout Enumerate
+WWS1(3)=-CS3*WWS2 above; i.e., difference multiplied by -1.4
+\end_layout
+
+\begin_layout Enumerate
+*** how are BWS1,2(3) and ABW(3) used? This defines them; what now? ABW(3)
+ is set (p.
+ 45) from cal coefficients
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Calculate AVERT, the vertical component of the acceleration (p.
+ 60)
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+includes baro-loop coefficient 0.0075 used with altitude error, to produce
+ VSDO from VSD (which has gravity, Coriolis, and altitude corrections)
+\end_layout
+
+\begin_layout Enumerate
+calculates CDVZO by averaging VSDO and previous value, then multiplying
+ by DELT=0.02 s.
+ CDVZO is thus an integrated value of acceleration, and so a velocity.
+\end_layout
+
+\begin_layout Enumerate
+AVERT is then calculated from accelerations rotated into earth-relative
+ frame, with updating using the feedback coefficient CA which is 50, the
+ computation frequency.
+ (i.e., CA*DELT =1.) Note that BG{1,2,3}C are listed as 0.0075 s
+\begin_inset Formula $^{-2}$
+\end_inset
+
+, 0.000125 s
+\begin_inset Formula $^{-3}$
+\end_inset
+
+, and 0.15 s
+\begin_inset Formula $^{-1}$
+\end_inset
+
+, and so are equal to our baro-inertial loop coefficients, but in a different
+ order.
+ Ours are C[0]=0.15, C[1]=0.0075, C[2]=0.000125.
+ A comment in irs.c notes that these values are for a characteristic time
+ of 126 s.
+ That code also shows that C[1] (0.0075) multiplies the altitude error, while
+ in the Honeywell code BG1 (0.0075) is the corresponding factor, so these
+ correspond.
+ The BGx coefficients have a different order than ours; BG{3,1,2} correspond
+ to C[0,1,2].
+ Elsewhere (in ins.c), I found coefficients of 0.3141592, 0.03289866, 0.00114838,
+ presumably for a 60-s loop.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Calculate AVERTO, same as AVERT but converted to output units (p.
+ 62)
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Converts VZ to output units (ft/min) from VZM (ft/s)
+\end_layout
+
+\begin_layout Enumerate
+Also applies filtering to VZM to obtain VZF:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+VZF += KT50*((VZM-VZF)+(VZMP-VZF)) where VZMP is the previous value of VZM
+\end_layout
+
+\begin_layout Enumerate
+in effect, I think this updates to a value 1.5 cycles in the past, but with
+ weight factor 2, so the effective time constant is about 1/(2*KT50).
+ With KT50=0.35474 this gives a time constant of about 1.4 s.
+ Simulation might clarify this.
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Enumerate
+altitude and altitude stabilization (p.
+ 66)
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+set HERR=H-HO (HO is a reference altitude, perhaps pressure altitude?)
+\end_layout
+
+\begin_layout Enumerate
+calculate H by integration of dh/dt
+\end_layout
+
+\begin_layout Enumerate
+calculate U by integration of HERR multiplied by BG2=0.000125 s^-3, usual
+ baro-loop coefficient.
+ This has units of acceleration
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Buffer 10 Hz inputs: sets VZB=VZ (vertical velocity of the aircraft) (p.
+ 70)
+\end_layout
+
+\begin_layout Enumerate
+It appears that the vertical wind variable (VZM=60*VZ) is subjected to three
+ separate filtering steps:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+VZF is filtered with an exponential filter, time constant about 1.4 s.
+ I can't determine if this is the output variable or if it is only used
+ in the baro-inertial loop for feedback but VZM is the output variable without
+ this final filtering step.
+ Can't see what use VZF has unless for this filtering step prior to output.
+\end_layout
+
+\begin_layout Enumerate
+The baro-inertial loop, with coefficients characterizing a 126-s period.
+ This loop adjusts for offsets and so can introduce variance at the response
+ frequency, but they don't filter the vertical wind, so lack of high-frequency
+ response cannot be caused by this.
+\end_layout
+
+\begin_layout Enumerate
+A butterworth filter step, implemented on p.
+ 57, where the acceleration (BWS2) and vertical wind (BWS1) are accumulated.
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attach{attachment}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attachm{first
+\backslash
+
+\backslash
+second}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+cc{first attachment
+\backslash
+
+\backslash
+second
+\backslash
+
+\backslash
+3rd att}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

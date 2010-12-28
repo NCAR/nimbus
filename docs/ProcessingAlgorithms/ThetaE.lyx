@@ -1,0 +1,1417 @@
+#LyX 2.0.0beta2 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\input colordvi
+\usepackage{color}
+\fancyhead{}
+\fancyfoot[CE,CO]{}
+\newtoks{\topicofnote} \global\topicofnote={}
+\newdimen\longindent \longindent=3.5truein
+\fancyhead[L]{Aircraft Algorithm Note re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\renewcommand{\headrulewidth}{0.0pt}
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+\setlength{\leftmargin}{\labelwidth}
+\addtolength{\leftmargin}{\labelsep}
+\renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+\newcommand{\datetoday}{\number\day\space
+     \ifcase\month\or January\or February\or March\or April\or May\or
+     June\or July\or August\or September\or October\or November\or
+     December\fi
+     \space\number\year}
+\newcommand{\RAFAlgorithmMemo}{\null \vskip-1.5truein
+{\raggedright \textsf{\textsc{\large \textcolor{blue}{Research Aviation Facility}}}}\par
+{\raggedright \textsf{\textsl{\textcolor{blue}{Algorithm Memorandum:}}}} \par \vskip6pt
+{\color{blue}{\hrule}}\par
+\vskip0.2truein \leftline{\hskip\longindent Al Cooper}
+\leftline{\hskip \longindent \datetoday} \vskip0.2truein
+\thispagestyle{empty}}
+\newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachments:] {#1}
+\end{lyxlist}}
+\newcommand{\cc}[1]{\begin{lyxlist}{Attachments:00}
+\item [cc:] {#1}
+\end{lyxlist}}
+\newcommand{\attach}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachment:] {#1}
+\end{lyxlist}}
+%usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
+\end_preamble
+\use_default_options false
+\language english
+\inputencoding default
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\leftmargin 2.54cm
+\topmargin 3.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 1cm
+\headsep 2cm
+\footskip 0.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+set topicofnote to topic of note
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+topicofnote={Equivalent Potential Temperature}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+RAFAlgorithmMemo
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Background
+\end_layout
+
+\begin_layout Standard
+A quantity often called the equivalent potential temperature is used to
+ represent stability for adiabatic wet processes and to correspond to wet
+ adiabats on thermodynamic diagrams.
+ Potential temperatures are generally defined to correspond to specific
+ entropy (i.e., entropy per mass of dry air) via the relationship 
+\begin_inset Formula $c_{px}d\ln\Theta_{x}=ds$
+\end_inset
+
+ where 
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset Formula $x$
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+ indicates that various kinds of potential temperatures can be defined that
+ satisfy this relationship for different processes.
+ The AMS glossary restricts the term equivalent potential temperature to
+ true adiabatic processes, where any condensed water remains in the parcel,
+ but the term is often used (and has been used in Bulletin 9 Appendix B)
+ to refer instead to the modified pseudoadiabatic form (sometimes called
+ pseudo-equivalent potential temperature or pseudoadiabatic equivalent potential
+ temperature) in which the specific heat capacity of any condensed water
+ is neglected in the adiabatic process.
+ This is equivalent to assuming that any condensed water falls from or is
+ otherwise removed from the parcel as it condenses.
+ In this memo, I will refer to the former potential temperature as the wet-equiv
+alent potential temperature (symbol 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+) and the latter as the pseudo-adiabatic equivalent potential temperature
+ (symbol 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+).
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Pseudoequivalent potential temperature seems to me to be a poor term because
+ the compromise is in the degree to which the process is adiabatic, not
+ the degree to which it is equivalent via a moist process.
+ The term pseudoadiabatic equivalent potential temperature, as used by e.g.
+\begin_inset space ~
+\end_inset
+
+Davis-Jones (2009), although lengthy, is unambiguous and so is the choice
+ I have made.
+ This memo uses the symbol 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+ instead of 
+\begin_inset Formula $\Theta_{e}$
+\end_inset
+
+ to avoid ambiguity with the definition in the AMS Glossary.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The wet-equivalent potential temperature is actually easier to derive and
+ calculate because it is related to true adiabatic processes.
+ It is defined as that temperature that would be reached if the parcel is
+ lifted adiabatically until all water vapor is condensed, then the dry air
+ only is returned adiabatically to a reference pressure (conventionally
+ 1000 hPa).
+ For a saturated parcel, it is defined (Emanuel, 1994, p.
+\begin_inset space ~
+\end_inset
+
+120, but with some changes in terminology) as:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+\Theta_{q}=T\left(\frac{p_{0}}{p_{d}}\right)^{R_{d}/c_{pt}}\exp\left(\frac{L_{v}r}{c_{pt}T}\right)\label{eq:ThetaQ}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $p_{d}$
+\end_inset
+
+ is the pressure of dry air in the parcel (i.e., 
+\begin_inset Formula $p-e$
+\end_inset
+
+ where 
+\begin_inset Formula $e$
+\end_inset
+
+ is the water-vapor pressure), 
+\begin_inset Formula $R_{d}$
+\end_inset
+
+ the gas constant for dry air, 
+\begin_inset Formula $L_{v}$
+\end_inset
+
+ the latent heat of vaporization of liquid water, 
+\begin_inset Formula $r$
+\end_inset
+
+ the mixing ratio of water vapor, 
+\begin_inset Formula $T$
+\end_inset
+
+ the (absolute) temperature, and 
+\begin_inset Formula $c_{pt}=c_{pd}+r_{t}c_{w}$
+\end_inset
+
+ where 
+\begin_inset Formula $c_{pd}$
+\end_inset
+
+ is the specific heat of dry air at constant pressure, 
+\begin_inset Formula $c_{w}$
+\end_inset
+
+ the specific heat of liquid water, and 
+\begin_inset Formula $r_{t}=r+r_{w}$
+\end_inset
+
+ is the total water mixing ratio and includes the contribution from the
+ liquid water mixing ratio 
+\begin_inset Formula $r_{w}$
+\end_inset
+
+.
+ The assumption made is that no ice is present or forms so that all condensation
+ is to liquid water and remains liquid water.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+A similar potential temperature that applies to the condensate being ice
+ can be constructed readily by straightforward replacements, including the
+ latent heat of sublimation, the specific heat of ice, and the vapor pressure
+ in equilibrium with an ice surface.
+\end_layout
+
+\end_inset
+
+ If the parcel is not saturated, one can lift the parcel adiabatically to
+ its condensation point and use the values of 
+\begin_inset Formula $T$
+\end_inset
+
+ and 
+\begin_inset Formula $p_{d}$
+\end_inset
+
+ at that point, or alternately include another term in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ThetaQ"
+
+\end_inset
+
+) that includes a correction dependent on the relative humidity (cf.
+\begin_inset space ~
+\end_inset
+
+Emanuel 1994 Eq.
+\begin_inset space ~
+\end_inset
+
+4.5.11).
+\end_layout
+
+\begin_layout Standard
+A complication in the application of (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ThetaQ"
+
+\end_inset
+
+) is that some of the material properties involved, including 
+\begin_inset Formula $c_{pt}$
+\end_inset
+
+, 
+\begin_inset Formula $c_{w}$
+\end_inset
+
+, and 
+\begin_inset Formula $L_{v}$
+\end_inset
+
+, are not constant but vary with temperature.
+ An accurate integration along the adiabat, as needed to maintain the equivalenc
+e to entropy, would take into account that variation.
+ Some generalized equations have been developed that avoid this need yet
+ are sufficiently accurate; see esp.
+\begin_inset space ~
+\end_inset
+
+Bolton (1980) and Davies-Jones (2009).
+ Emanuel (1994) the the preceding two references present derivations of
+ the pseudo-adiabatic equivalent potential temperature.
+\end_layout
+
+\begin_layout Standard
+Because I want to perform integrations that include representations of the
+ temperature dependence of the specific heats and latent heat as well as
+ the Murphy and Koop (2006) representation of equilibrium water vapor pressure,
+ I will develop the appropriate differential form of the entropy to use
+ in such integrations.
+ For an adiabatic process where all changes occur in equilibrium, the molar
+ entropy 
+\begin_inset Formula $s^{\prime}$
+\end_inset
+
+ is related to temperature 
+\begin_inset Formula $T$
+\end_inset
+
+ and pressure 
+\begin_inset Formula $p$
+\end_inset
+
+ (for a perfect gas) via
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+Tds^{\prime}=c_{p}^{\prime}dT-v^{\prime}dp\label{eq:2ndLaw}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where primed quantities refer to molar quantities, such that 
+\begin_inset Formula $c_{p}^{\prime}$
+\end_inset
+
+ and 
+\begin_inset Formula $v^{\prime}$
+\end_inset
+
+are the molar heat capacity at constant pressure and the molar volume, respectiv
+ely.
+ There are three contributions to the entropy to consider for a moist air
+ parcel: the entropy of the (i) dry air; (ii) water vapor; and (iii) liquid
+ water.
+ If the respective mole numbers of these three components are 
+\begin_inset Formula $n_{d}^{\prime}$
+\end_inset
+
+, 
+\begin_inset Formula $n_{v}^{\prime}$
+\end_inset
+
+, and 
+\begin_inset Formula $n_{w}^{\prime}$
+\end_inset
+
+, then
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+Tds^{\prime}=(n_{d}^{\prime}c_{pd}^{\prime}+n_{v}^{\prime}c_{pv}^{\prime}+n_{w}^{\prime}c_{w}^{\prime})dT-n_{d}^{\prime}v_{d}^{\prime}dp_{d}-n_{v}^{\prime}v_{v}^{\prime}de+L_{v}^{\prime}dn_{v}^{\prime}\label{eq:EntropySum}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $p_{d}$
+\end_inset
+
+ is the pressure of dry air, 
+\begin_inset Formula $e$
+\end_inset
+
+ is the water vapor pressure, and 
+\begin_inset Formula $L_{v}^{\prime}$
+\end_inset
+
+ is the molar latent heat of vaporization of liquid water.
+ The last term in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:EntropySum"
+
+\end_inset
+
+) arises because there is an entropy change associated with the phase change
+ from liquid water to water vapor, and this last term is the heat released
+ by that phase change.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+An additional contribution arises from the entropy increase associated with
+ mixing of the water vapor and the dry air, but this is insignificant and
+ will be neglected.
+\end_layout
+
+\end_inset
+
+ The other terms arise from summing (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:2ndLaw"
+
+\end_inset
+
+) for the three individual components.
+\end_layout
+
+\begin_layout Standard
+The mixing ratios 
+\begin_inset Formula $r$
+\end_inset
+
+ and
+\begin_inset Formula $r_{w}$
+\end_inset
+
+ are, respectively, the masses of water vapor and liquid water per unit
+ mass of dry air:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{eqnarray}
+r & = & \frac{n_{v}^{\prime}M_{w}}{n_{d}^{\prime}M_{d}}\nonumber \\
+r_{w} & = & \frac{n_{w}^{\prime}M_{w}}{n_{d}^{\prime}M_{d}}\label{eq:MixingRatioDefs}
+\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $M_{w}$
+\end_inset
+
+ is the molecular weight of water (mass of water per mole) and 
+\begin_inset Formula $M_{d}$
+\end_inset
+
+ that of dry air.
+ Dividing (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:EntropySum"
+
+\end_inset
+
+) by 
+\begin_inset Formula $n_{d}^{\prime}M_{d}T$
+\end_inset
+
+ and setting 
+\begin_inset Formula $ds^{\prime}$
+\end_inset
+
+ to zero for an isentropic process leads to
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+(c_{pd}+rc_{pv}+r_{w}c_{w})\frac{dT}{T}-\frac{v_{d}}{T}dp_{d}-r\frac{v_{v}}{T}de+\frac{L_{v}}{T}dr=0\label{eq:DiffForm1}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where unprimed quantities 
+\begin_inset Formula $c_{pd}$
+\end_inset
+
+, 
+\begin_inset Formula $c_{pv}$
+\end_inset
+
+, 
+\begin_inset Formula $c_{w}$
+\end_inset
+
+, 
+\begin_inset Formula $v_{d}$
+\end_inset
+
+, 
+\begin_inset Formula $v_{v}$
+\end_inset
+
+, and 
+\begin_inset Formula $L_{v}$
+\end_inset
+
+ are specific quantities (i.e., per unit mass of dry air for 
+\begin_inset Formula $c_{pd}$
+\end_inset
+
+ and 
+\begin_inset Formula $v_{d}$
+\end_inset
+
+ and per unit mass of water for 
+\begin_inset Formula $c_{pv}$
+\end_inset
+
+, 
+\begin_inset Formula $c_{w}$
+\end_inset
+
+, 
+\begin_inset Formula $v_{v}$
+\end_inset
+
+and 
+\begin_inset Formula $L_{v}$
+\end_inset
+
+; e.g., 
+\begin_inset Formula $c_{pd}=c_{pd}^{\prime}/M_{d}$
+\end_inset
+
+ and 
+\begin_inset Formula $c_{pv}=c_{pv}^{\prime}/M_{w}$
+\end_inset
+
+).
+ For perfect gases, 
+\begin_inset Formula $v_{d}/T=R_{d}/p_{d}$
+\end_inset
+
+ and 
+\begin_inset Formula $v_{v}/T=R_{w}/e$
+\end_inset
+
+ where 
+\begin_inset Formula $R_{d}$
+\end_inset
+
+ and 
+\begin_inset Formula $R_{w}$
+\end_inset
+
+ are the gas constants for dry air and water vapor, respectively.
+ Also, the ideal-gas form of the Clausius-Clapeyron equation is 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+\frac{de_{s}}{e_{s}}=\frac{L_{v}dT}{R_{w}T^{2}}\label{eq:Clausius-Clapeyron}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and Kirchhoff's equation (cf., e.g., Emanuel 1994, Eq.
+\begin_inset space ~
+\end_inset
+
+4,4,3) is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+dL_{V}=(p_{pv}-c_{w})\, dT\,\,.\label{eq:Kirchhoff}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+With 
+\begin_inset Formula $e=e_{s}(T)$
+\end_inset
+
+ and 
+\begin_inset Formula $r=r_{s}(T)=\frac{M_{w}}{M_{d}}e_{s}(T)/p_{d}$
+\end_inset
+
+ as corresponds to a saturated parcel, and with some additional transformations
+ as follow, all terms in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:DiffForm1"
+
+\end_inset
+
+) can be transformed into differential relationships that only involve derivativ
+es of T and p:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+\frac{L_{v}dr}{T}=\frac{d(L_{v}r)}{T}-r\frac{dL_{v}}{dT}\frac{dT}{T}=\frac{d(L_{v}r)}{T}-r(c_{pv}-c_{w})\frac{dT}{T}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+rR_{w}\frac{de_{s}}{e_{s}}=rR_{w}\frac{L_{vdT}}{R_{w}T^{2}}=\frac{L_{v}r}{T}\frac{dT}{T}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+\frac{d(L_{v}r)}{T}=d\left(\frac{L_{v}r}{T}\right)+\frac{L_{v}r}{T}\frac{dT}{T}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+d\left(\frac{L_{v}r}{T}\right)=\left(\frac{\partial\left(\frac{L_{v}r}{T}\right)}{\partial T}\right)_{p_{d}}dT+\left(\frac{\partial\left(\frac{L_{v}r}{T}\right)}{\partial p_{d}}\right)_{T}dp_{d}=\frac{\epsilon T\, d\left(\frac{L_{v}e_{s}(T)}{T}\right)}{p_{d}dT}\frac{dT}{T}-\frac{L_{v}r}{T}\frac{dp_{d}}{p_{d}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where the transformation to dependence on 
+\begin_inset Formula $T$
+\end_inset
+
+ is a consequence of assuming that the parcel remains saturated, and where
+ the temperature dependence of 
+\begin_inset Formula $L_{v}$
+\end_inset
+
+ and the specific heats is implicit.
+ Gathering terms in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:DiffForm1"
+
+\end_inset
+
+) after these transformations leads to
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+\left[(c_{pd}+r_{t}c_{w})+\frac{T\epsilon}{p_{d}}\left(\frac{\partial\left(\frac{L_{v}e_{s}(T)}{T}\right)}{\partial T}\right)_{p_{d}}\right]\frac{dT}{T}=\left[R_{d}+\frac{L_{v}r}{T}\right]\frac{dp_{d}}{p_{d}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $r_{t}=r+r_{w}$
+\end_inset
+
+ is the total water mixing ratio and where 
+\begin_inset Formula $\epsilon=M_{w}/M_{d}$
+\end_inset
+
+.
+ The result then gives a relationship between 
+\begin_inset Formula $T$
+\end_inset
+
+ and 
+\begin_inset Formula $p_{d}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+\frac{dT}{dp_{d}}=\frac{T(R_{d}+L_{v}r)}{p_{d}}\,\left[(c_{pd}+r_{t}c_{w})+\frac{T\epsilon}{p_{d}}\left(\frac{\partial\left(\frac{L_{v}e_{s}(T)}{T}\right)}{\partial T}\right)_{p_{d}}\right]^{-1}\label{eq:dTdp}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The result is a derivative that can be used for numerical integrations that
+ take into account the temperature dependence of the specific heats and
+ the latent heat of vaporization and improved representation of the equilibrium
+ vapor pressure 
+\begin_inset Formula $e_{s}(T)$
+\end_inset
+
+, as in Murphy and Koop (2006).
+ This is used below to evaluate the accuracy of simpler representations
+ of the equivalent potential temperatures.
+ 
+\end_layout
+
+\begin_layout Standard
+Equation (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:dTdp"
+
+\end_inset
+
+) is appropriate for the adiabatic process and so can lead to the wet-equivalent
+ potential temperature 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+.
+ The similar formula for the pseudo-adiabatic equivalent potential temperature
+ 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+ can be obtained by neglecting the heat capacity of the liquid water, and
+ so would be the same as (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:dTdp"
+
+\end_inset
+
+) but with 
+\begin_inset Formula $r_{t}$
+\end_inset
+
+ replaced by 
+\begin_inset Formula $r$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Section*
+Present Processing Code
+\end_layout
+
+\begin_layout Standard
+The code from subroutine thetae.c includes the following code (where atx
+ is converted to units of kelvin earlier in the code):
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout LyX-Code
+  tlcl = (2840.0 / (3.5 * log((double)atx) - log((double)edpc) - 4.805)) +
+ 55.0;
+\end_layout
+
+\begin_layout LyX-Code
+  ...
+\end_layout
+
+\begin_layout LyX-Code
+  theta = atx * pow((double)1000.0 / psxc, (double)0.28571);
+\end_layout
+
+\begin_layout LyX-Code
+  exparg = ((3.376 / tlcl) - 0.00254) * (mr * (1.0 + (0.00081 * mr)));
+\end_layout
+
+\begin_layout LyX-Code
+  ...
+\end_layout
+
+\begin_layout LyX-Code
+  PutSample(varp, theta * exp((double)exparg)); 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This is based on equation (38) from Bolton (1980):
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+\Theta_{E}=\Theta\exp\left\{ \left(\frac{3.376}{T_{L}}-0.00254\right)r(1+0.81\times10^{-3}r)\right\} \label{eq:Bolton38}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where
+\begin_inset Formula \begin{equation}
+T_{L}=\frac{2840}{3.5\ln T_{K}-\ln e-4.805}+55\label{eq:Bolton21}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+is the temperature at the LCL (Bolton 1980, Eq.
+\begin_inset space ~
+\end_inset
+
+(21)).
+ 
+\end_layout
+
+\begin_layout Section*
+Reasons For Proposing Changes
+\end_layout
+
+\begin_layout Enumerate
+The equation selected from Bolton (1980) is the less accurate of several
+ alteernatives presented there.
+ Davies-Jones (2009) has pointed out that the form given as equation (39)
+ in Bolton is more accurate, and Bolton also notes that.
+\end_layout
+
+\begin_layout Enumerate
+Bolton (1980) recommends a different form for 
+\begin_inset Formula $\Theta$
+\end_inset
+
+ that the one now in use.
+ His recommendation is
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \[
+\Theta=T_{k}\left(\frac{1000}{p}\right)^{0.2854(1-0.28\times10^{-3}r}
+\]
+
+\end_inset
+
+which takes into account the effect of humidity on the ratio of specific
+ heats of the water-saturated air parcel.
+ Because he used fits to adjust coefficients in this formula and in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Bolton38"
+
+\end_inset
+
+), departure from his recommendations will introduce errors.
+\end_layout
+
+\begin_layout Enumerate
+The Bolton fits were based on a representation of the equilibrium water
+ vapor pressure that is different from the one now in use in the RAF processing
+ code.
+ Bolton determined a fit to the data of Wexler (1976), all of which was
+ for temperature higher than 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ He used extrapolation of the measurements to lower temperature, but did
+ not test his new fit for temperatures below -35
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ Because there are now more reliable representations of the water vapor
+ pressure (esp.
+\begin_inset space ~
+\end_inset
+
+Murphy and Koop 2006), it is important to check if the Bolton formula (Bolton,
+ 1980, equation (10)) is an adequate representation of equivalent potential
+ temperatures calculated with the new data.
+\end_layout
+
+\begin_layout Enumerate
+Davies-Jones (2009) presents a new formula that appears to be slightly more
+ accurate than the formulas of Bolton.
+ However, he has again used an approximate equation from Bolton (1980) to
+ represent the vapor pressure.
+ His formula is
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \begin{equation}
+\Theta_{p}^{[DJ\}}=\Theta_{DL}\exp\left\{ \frac{(L_{0}-L_{1}(T_{L}-T_{0})+Kr)\, r}{c_{pd}T_{L}}\right\} \label{eq:DJThetaP}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $L_{0}=2.56313\times10^{6}J\, kg^{-1}$
+\end_inset
+
+, 
+\begin_inset Formula $L_{1}=1754$
+\end_inset
+
+ J
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}\, K\mbox{\ensuremath{^{-1}}}$
+\end_inset
+
+, and 
+\begin_inset Formula $K=1.137\times10^{6}$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+J
+\begin_inset space \thinspace{}
+\end_inset
+
+kg
+\begin_inset Formula $^{-1}$
+\end_inset
+
+.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+The name of the variable should be changed to be consistent with usage recommend
+ations of the AMS Glossary.
+ 
+\end_layout
+
+\begin_layout Enumerate
+It may be useful to include a new variable, the wet-equivalent potential
+ temperaature 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+, in the data files.
+ This is easier to calculate and less controversial than 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Perhaps arguing against change is that, as long as we state clearly what
+ the basis for the calculation is, users are always able to calculate a
+ different variable from the basic measurements that are in the data set,
+ so the variable in the data files does not constrain users.
+ It may be preferable to retain the current equation or make small changes
+ to represent the best values in the Bolton (1980) paper, rather than make
+ a change, because use of the Bolton formulas has become the common convention.
+\end_layout
+
+\begin_layout Section*
+Analysis
+\end_layout
+
+\begin_layout Standard
+To determine what should be reported for the equivalent potential temperature,
+ it is necessary to consider the process that is to be represented.
+ In the case of pseudo-adiabatic equivalent potential temperature 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+, the process can be as follows:
+\end_layout
+
+\begin_layout Enumerate
+If the parcel is subsaturated, expand the parcel adiabatically until condensatio
+n first occurs, at a level characterized by 
+\begin_inset Formula $T_{LCL}$
+\end_inset
+
+ and 
+\begin_inset Formula $p_{d,LCL}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Continue expansion until all water is removed.
+ Remove all condensed water from the parcel immediately.
+\end_layout
+
+\begin_layout Enumerate
+Compress the dry air to the reference pressure, conventionally 1000 hPa.
+ The final temperature is the value of 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The problem is conceptually more difficult for the wet-equivalent potential
+ temperature.
+ The steps might be thought to be:
+\end_layout
+
+\begin_layout Enumerate
+(as above, expand to the condensation point)
+\end_layout
+
+\begin_layout Enumerate
+Continue expansion until all water is in the liquid phase.
+ Carry the water along with the parcel, so its specific heat affects the
+ temperature after expansion.
+\end_layout
+
+\begin_layout Enumerate
+Label the result as the value of potential temperature for dry air having
+ the same temperature and pressure as the final parcel.
+ This is equivalent to compressing the dry air only to the reference pressure
+ and equating the final temperature to 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+The error with this second approach is that the water, having been carried
+ along with the parcel, affects the final entropy, and neglecting that water
+ then does not result in a temperature that is a measure of entropy.
+ The desired relationship between entropy and 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+ is 
+\begin_inset Formula $ds=c_{pt}d\ln\Theta_{q}$
+\end_inset
+
+ where 
+\begin_inset Formula $c_{pt}=c_{pd}+r_{t}c_{w}$
+\end_inset
+
+.
+ The integral of this relationship involves an integration constant, which
+ can be selected so that 
+\begin_inset Formula $s$
+\end_inset
+
+ is relative to a state with 
+\begin_inset Formula $T=1\,$
+\end_inset
+
+K, 
+\begin_inset Formula $r=0$
+\end_inset
+
+, 
+\begin_inset Formula $r_{w}=0$
+\end_inset
+
+, and 
+\begin_inset Formula $p_{d}=p_{0}$
+\end_inset
+
+where 
+\begin_inset Formula $p_{0}$
+\end_inset
+
+ is the reference pressure, 1000 hPa.
+ In the case where the specific heats are constant (but 
+\begin_inset Formula $L_{V}$
+\end_inset
+
+ still varies in accord with the Kirchhoff equation), the equation for the
+ wet-equivalent potential temperature is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+\Theta_{q}=T(\frac{p_{0}}{p_{d}})^{R_{d/c_{pt}}}\exp\left\{ \frac{L_{v}r}{c_{pt}T}\right\} \left(\frac{e}{e_{s}(T)}\right)^{-rRw/c_{pt}}\label{eq:ThetaQEquation}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where the last term arises in case of a subsaturated parcel (below its LCL).
+ (See the derivation in Emanuel, 1994, leading to his equation (4.5.11).) In
+ the case of 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+, the result is not integrable even with constant specific heats because,
+ with neglect of the heat capacity of the water carried with the parcel,
+ the replacement for 
+\begin_inset Formula $c_{pt}$
+\end_inset
+
+ is 
+\begin_inset Formula $c_{pt}^{\dagger}=c_{pd}+rc_{w}$
+\end_inset
+
+ and this depends on 
+\begin_inset Formula $r$
+\end_inset
+
+, unlike 
+\begin_inset Formula $c_{pt}$
+\end_inset
+
+ which is a constant.
+ This is the reason that various approximate formulas have been developed
+ to represent 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+, including those of Bolton (1980) and Davies-Jones (2009).
+ The desired relationship of 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+ to entropy is 
+\begin_inset Formula $ds_{d}=C_{pd}d\ln\Theta_{p}$
+\end_inset
+
+ for the dry air only.
+\end_layout
+
+\begin_layout Standard
+Despite this advantage of 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+, it has the disadvantage that it cannot be plotted on a thermodynamic diagram
+ because it does not depend uniquely on 
+\begin_inset Formula $T$
+\end_inset
+
+ and 
+\begin_inset Formula $p$
+\end_inset
+
+ as do the conventional definition of potential temperature (
+\begin_inset Formula $\Theta)$
+\end_inset
+
+ and pseudoadiabatic equivalent potential temperature (which is a unique
+ function of 
+\begin_inset Formula $T$
+\end_inset
+
+ and 
+\begin_inset Formula $p$
+\end_inset
+
+ along saturated adiabats because the condensed water is removed so the
+ dependence on history, which would lead to variable liquid water content
+ in the case of 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+, is lost).
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+ the Rossby form
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+The Rossby form is 
+\begin_inset Formula $\Theta_{p}^{[Rossby]}=\Theta_{D}\exp\left\{ \frac{L_{v}r}{c_{pd}T}\right\} $
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ of 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+, on which thermodynamic diagrams are usually based.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The question to be addressed here is this: To what extent do relationships
+ based on various equations for 
+\begin_inset Formula $\Theta_{p}$
+\end_inset
+
+ and 
+\begin_inset Formula $\Theta_{q}$
+\end_inset
+
+ depart from the representation of the entropy that arises from direct integrati
+on of (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:EntropySum"
+
+\end_inset
+
+) relative to the reference state? Davies-Jones (2009) has addressed this
+ question for the Bolton formulas, a new alternative he proposed, and some
+ others.
+ Two considerations not discussed there are relevant to RAF applications:
+\end_layout
+
+\begin_layout Itemize
+What is the effect of introduction of the Murphy and Koop (2006) representation
+ of equilibrium water vapor pressure? This will result in small shifts in
+ results but should not affect the analysis of accuracy as presented by
+ Davies-Jones (2009) because the formulas have vapor pressure as an input.
+ The analysis considers adjustment of coefficients in the formulas to compensate
+ for factors like the variation in latent heat with temperature, and those
+ coefficients have been minimized by comparison to numerical integrations
+ that use old representations of vapor pressure, but this does not seem
+ likely to have much effect on the results because the formulas are quite
+ close to the revised form presented by Murphy and Koop (2006) and then
+ enter both the parameterized formula and the exact integration.
+\end_layout
+
+\begin_layout Itemize
+The temperature dependence of the specific heats is neglected, both in the
+ parameterized formulas and in the exact integration.
+ Again, the effects are probably compensating in the evaluation of accuracy,
+ but there will be an inaccuracy in both caused by erroneous specific heats,
+ and it seems worthwhile to evaluate that inaccuracy.
+ This also applies to the wet-equivalent potential temperature.
+\end_layout
+
+\begin_layout Section*
+
+\emph on
+Recommendations
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centerline{
+\backslash
+textcolor{blue}{---- END ----}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attach{attachment}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attachm{first
+\backslash
+
+\backslash
+second}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+cc{first attachment
+\backslash
+
+\backslash
+second
+\backslash
+
+\backslash
+3rd att}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

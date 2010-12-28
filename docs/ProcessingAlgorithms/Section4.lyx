@@ -1,0 +1,742 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\begin_modules
+hanging
+\end_modules
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Section
+VARIABLES OBTAINED FROM A GLOBAL POSITIONING SYSTEM (GPS)
+\end_layout
+
+\begin_layout Standard
+GPS variables aboard RAF aircraft are provided by a Trimble TANS-III GPS
+ receiver.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+update this
+\end_layout
+
+\end_inset
+
+It has the ability to track up to 6 satellites at a time but needs only
+ 4 to provide 3-dimensional position and velocity data (3 satellites for
+ 2-dimensions).
+ The accuracy of the position measurements is stated to be 25 meters (horizontal
+) and 35 meters (vertical) under 
+\begin_inset Quotes eld
+\end_inset
+
+steady-state conditions.
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Note: The GPS signals at one time suffered from 
+\begin_inset Quotes eld
+\end_inset
+
+selective availability,
+\begin_inset Quotes erd
+\end_inset
+
+ a US DOD term for a dithered signal that degrades GPS absolute accuracy
+ to 100 meters.
+ This was especially noticeable in the altitude measurement, so GALT normally
+ was not useful.
+ As of 1 May 2000, selective availability was deactivated to allow everyone
+ to obtain better position measurements.
+ (See the Interagency GPS Executive Board web site for more information.)
+ 
+\end_layout
+
+\end_inset
+
+ Likewise, velocity measurements are within 0.2 m/s for all axes.
+ Measurement resolution is that of 4-byte IEEE format (about 6 significant
+ digits).
+ All variables are output at a sample rate of 1 Hz.
+\end_layout
+
+\begin_layout Standard
+Some of the following variables are also available from a second unit and
+ are qualified by the name of that unit; e.g., GGLAT_GMN for GGLAT as measured
+ by a Garmin GPS unit.
+\begin_inset Newline newline
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Latitude (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+GGLAT
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+GGLAT
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+\bar under
+LAT_G
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+LAT_G
+\end_layout
+
+\end_inset
+
+
+\series default
+\bar default
+; also formerly 
+\series bold
+\bar under
+GLAT 
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+GLAT
+\end_layout
+
+\end_inset
+
+
+\series default
+\bar default
+
+\begin_inset Newline newline
+\end_inset
+
+The aircraft latitude output from the GPS.
+ Positive values are north of the equator;negative are south.
+ GGLAT is provided by the data-system GPS; LAT_G and LATF_G are from the
+ avionics system GPS.
+ LATF_G is a fine-resolution measurement.
+ 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Longitude (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+GGLON
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+GGLON
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+\bar under
+LON_G
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+LON_G
+\end_layout
+
+\end_inset
+
+
+\series default
+\bar default
+; also formerly 
+\series bold
+\bar under
+GLON
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+GLON
+\end_layout
+
+\end_inset
+
+
+\series default
+\bar default
+
+\begin_inset Newline newline
+\end_inset
+
+The aircraft longitude output from the GPS.
+ Positive values are east of the prime meridian; negative are west.
+ GGLON is provided by the data-system GPS;LON_G and LONF_G are from the
+ avionics system GPS.
+ LONF_G is a fine-resolution measurement.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+need to explain how these are used together...
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Ground Speed (m/s): 
+\bar under
+GSF
+\bar default
+_G
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+GSF_G
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+GGSPD
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+GGSPD
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The aircraft ground speed output from the GPS.
+ GSF_G originates from the avionics-system GPS; GGSPD originates from the
+ data-system GPS.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Ground Speed Vector East Component (m/s): 
+\bar under
+GGVEW
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+GGVEW
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+\bar under
+VEW_G
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+VEW_G
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The east component of ground speed as measured by the GPS .
+ VEW_G originates from the avionics-system GPS; GGVEW originates from the
+ data-system GPS.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Ground Speed Vector North Component (m/s): 
+\bar under
+GGVNS
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+GGVNS
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+\bar under
+VNS_G
+\series default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+VNS_G
+\end_layout
+
+\end_inset
+
+
+\bar default
+
+\begin_inset Newline newline
+\end_inset
+
+The GPS output of the aircraft north component of ground speed.
+ VNS_G originates from the avionics-system GPS; GGVNS originates from the
+ data-system GPS.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS-Computed Aircraft Vertical Velocity (m/s): 
+\bar under
+VSPD_G
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+VSPD_G
+\end_layout
+
+\end_inset
+
+
+\bar default
+, 
+\series default
+(obsolete) 
+\series bold
+\bar under
+GVZI
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+GVZI
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The aircraft vertical velocity output from the GPS.
+ Positive values are up.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Altitude (m): 
+\bar under
+GGALT
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+GGALT
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+\bar under
+ALT_G
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+ALT_G
+\end_layout
+
+\end_inset
+
+
+\series default
+\bar default
+
+\begin_inset Newline newline
+\end_inset
+
+The aircraft altitude output from the GPS.
+ The measurement is with respect to a geopotential surface (MSL) defined
+ by the GPS's built-in earth model.
+ Positive values are up.
+ GGALT originates from the data-system GPS; ALT_G originates from the avionics-s
+ystem GPS.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Aircraft Track Angle (
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+): 
+\bar under
+GGTRK
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+GGTRK
+\end_layout
+
+\end_inset
+
+
+\bar default
+,
+\bar under
+ TKAT_G
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+TKAT_G
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\bar default
+The direction of the aircraft track (degrees clockwise from true north),
+ as measured by the data-system GPS (GGTRK) or the avionics-system GPS (TKAT_G).
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Height of the Geoid (m): 
+\bar under
+GGEOIDHT
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+GGEOIDHT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\bar default
+Height of geoid (MSL) above WGS84 ellipsoid.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Check on this terminology; seems confusing to me
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Satellites Tracked: 
+\bar under
+GGNSAT
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+GGNSAT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+The number of satellites tracked by the GPS unit.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Mode (none): 
+\bar under
+GGQUAL
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+GGQUAL
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Quality flag: 0, 1, 2 for invalid, normal GPS, and differential GPS, respectivel
+y.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Mode: 
+\bar under
+GMODE
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+GMODE
+\end_layout
+
+\end_inset
+
+ 
+\series default
+\bar default
+(obsolete)
+\begin_inset Newline newline
+\end_inset
+
+This is the former output from the GPS indicating itss mode of operation.
+ The normal value is 4, indicating automatic (not manual) mode and that
+ the receiver is operating in 4-satellite (as opposed to fewer) mode.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+add meaning of other modes here
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS Status (none): 
+\bar under
+GGSTATUS
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+GGSTATUS
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+\bar under
+GSTAT_G
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+GSTAT_G
+\end_layout
+
+\end_inset
+
+
+\series default
+\bar default
+, (obsolete) 
+\series bold
+\bar under
+GSTAT
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+GSTAT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The status of the GPS receiver.
+ A value of 1 indicates that the receiver is operating normally; a value
+ of 0 indicates a warning regarding data quality.
+ GGSTATUS indicates the status of the data-system GPS; GSTAT_G indicates
+ the status of the avionics-system GPS.
+ The obsolete variable GSTAT, formerly used for the same purpose, has the
+ reverse meaning: A value of 0 indicates normal operation and any other
+ code indicates a malfunction or warning regarding poor data accuracy.
+ 
+\end_layout
+
+\end_body
+\end_document

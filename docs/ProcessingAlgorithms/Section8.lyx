@@ -1,0 +1,2036 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\begin_modules
+hanging
+\end_modules
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Section
+THERMODYNAMIC VARIABLES
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:THERMODYNAMIC-VARIABLES"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Ambient Temperature (
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C): 
+\bar under
+ATx
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+ATx
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+ATxH
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+ATxH
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The name of the variable used for ambient temperature, ATx conveys the same
+ information regarding sensor type and location as the variable name used
+ with total (recovery) temperature.
+ See the discussion in Aircraft and Meteorological State Variables (Section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:AIRCRAFT-AND-METEOROLOGICAL"
+
+\end_inset
+
+) above.
+ The ambient temperature (also known as the static air temperature) is calculate
+d from the measured recovery temperature, which includes dynamic heating
+ effects caused by the airspeed of the aircraft.
+ The calculated temperature therefore depends on the recovery temperature
+ TTx as well as the dynamic and static pressure, usually respectively QCXC
+ and PSXC.
+ The pressures are first corrected from the raw measurements QCX and PSX
+ to account for deviations caused by airflow around the aircraft and/or
+ position-dependent systematic errors.
+ The basic equations use conservation of energy for a perfect gas undergoing
+ an adiabatic compression.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The following section combines discussion of the calculations of temperature
+ and airspeed, to reflect the linkage between these derived measurements.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Aircraft temperature sensors do not measure the total temperature, but measure
+ the temperature of the air immediately in contact with the sensing element.
+ This air will not have undergone an adiabatic deceleration to zero velocity
+ and hence will have a temperature 
+\begin_inset Formula $T_{r}$
+\end_inset
+
+ somewhat less than 
+\begin_inset Formula $T_{t}$
+\end_inset
+
+.
+ This temperature is the measured or 
+\begin_inset Quotes eld
+\end_inset
+
+recovery
+\begin_inset Quotes erd
+\end_inset
+
+ temperature.
+ The ratio of the actual temperature difference attained to the temperature
+ difference relative to the total temperature is defined to be the recovery
+ factor 
+\begin_inset Formula $\alpha:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+\begin_inset Formula \begin{equation}
+\alpha=\frac{T_{r}-T_{a}}{T_{t}-T_{a}}\label{eq:8.2}\end{equation}
+
+\end_inset
+
+From conservation of energy:
+\end_layout
+
+\begin_layout Hanging
+\begin_inset Formula \begin{equation}
+\frac{U_{a}^{2}}{2}+c_{p}T_{a}=\frac{U_{r}^{2}}{2}+c_{p}T_{r}=\frac{U_{t}^{2}}{2}+c_{p}T_{t}\label{eq:8.1}\end{equation}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+where 
+\begin_inset Formula $\{U_{a},\, U_{r},\, U_{t}\}$
+\end_inset
+
+ are respectively the aircraft true airspeed, the airspeed relative to the
+ aircraft of the air in thermal contact with the sensor, and the airspeed
+ of air relative to the aircraft when fully brought to the motion of the
+ sensor (i.e., zero).
+ The corresponding absolute temperatures (expressed in kelvin) for the same
+ conditions are 
+\begin_inset Formula $\{T_{a},\, T_{r},\, T_{t}\}$
+\end_inset
+
+, the ambient, recovery, and total temperatures.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Then, from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:8.1"
+
+\end_inset
+
+), 
+\begin_inset Formula \begin{equation}
+T_{a}=T_{r}-\alpha\frac{U_{a}^{2}}{2c_{p}}\label{eq:8.3}\end{equation}
+
+\end_inset
+
+The temperature sensors used on RAF aircraft are designed to decelerate
+ the air adiabatically to near zero velocity.
+ Recovery factors determined from wind tunnel testing for the Rosemount
+ sensors are 0.95 (non-deiced model) and 0.98 (deiced model).
+ The recovery factor determined for the NCAR reverse-flow sensor is 0.6.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+ The recovery factor for the now retired NCAR fast-response (K-probe) temperatur
+e sensor was 0.8.
+ 
+\end_layout
+
+\end_inset
+
+Recovery factors have also been determined from flight maneuvers, often
+ from 
+\begin_inset Quotes eld
+\end_inset
+
+speed runs
+\begin_inset Quotes erd
+\end_inset
+
+ where the aircraft is flown level through its speed range and the variation
+ of recovery temperature with airspeed is used with (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:8.3"
+
+\end_inset
+
+), with the assumption that 
+\begin_inset Formula $T_{a}$
+\end_inset
+
+ remains constant, to determine the recovery factor.
+ Data files and project summaries normally document what recovery factor
+ was used for processing a particular project.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+As can be seen in the above equation, the true airspeed 
+\begin_inset Formula $U_{a}$
+\end_inset
+
+ is used to calculate the ambient temperature 
+\begin_inset Formula $T_{a}$
+\end_inset
+
+.
+ However, the ambient temperature is also needed to calculate the true airspeed.
+ Therefore the constraints imposed on ambient temperature and true airspeed
+ by the measurements of recovery temperature, dynamic pressure (the pressure
+ measured by a pitot tube pointed into the airstream and assumed to be that
+ obtained when the incoming air is brought to rest relative to the aircraft),
+ and ambient (or 
+\begin_inset Quotes eld
+\end_inset
+
+static
+\begin_inset Quotes erd
+\end_inset
+
+) pressure must be used to solve simultaneously for the two unknowns, temperatur
+e and airspeed.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The relationship is conveniently derived by first calculating the dimensionless
+ Mach number (
+\begin_inset Formula $M$
+\end_inset
+
+), which is the ratio of the airspeed to the speed of sound (
+\begin_inset Formula $U_{s}=\sqrt{\gamma RT_{a}}$
+\end_inset
+
+ where 
+\begin_inset Formula $\gamma$
+\end_inset
+
+ is the ratio of specific heats of air, 
+\begin_inset Formula $c_{p}/c_{v}$
+\end_inset
+
+), because the Mach number is a function of air temperature only.
+ It can be determined as follows: 
+\begin_inset Newline newline
+\end_inset
+
+a).
+ Express energy conservation, as in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:8.1"
+
+\end_inset
+
+), in the form
+\end_layout
+
+\begin_layout Hanging
+\begin_inset Formula \begin{equation}
+d\left(\frac{U_{a}^{2}}{2}\right)+c_{t}dT=0\label{eq:8.1a}\end{equation}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+b).
+ Use the perfect gas law to replace 
+\begin_inset Formula $dT$
+\end_inset
+
+ with 
+\begin_inset Formula $\frac{pV}{nR}(\frac{dV}{V}+\frac{dp}{p})$
+\end_inset
+
+, and use the expression for adiabatic compression in the form 
+\begin_inset Formula $pV^{\gamma}=constant$
+\end_inset
+
+ to replace the derivative 
+\begin_inset Formula $dV$
+\end_inset
+
+ with 
+\begin_inset Formula $-\frac{-1}{\gamma}\frac{dp}{p}$
+\end_inset
+
+, leading to the equation:
+\end_layout
+
+\begin_layout Hanging
+\begin_inset Formula \begin{equation}
+\frac{U_{a}^{2}}{2}+c_{p}T_{a}=c_{p}T_{a}\left(\frac{p_{s}}{p_{a}}\right)^{\frac{R}{c_{p}}}\label{eq:8.4}\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $p_{s}$
+\end_inset
+
+ is the total pressure (i.e., PSXC+QCXC) and 
+\begin_inset Formula $p_{a}$
+\end_inset
+
+ is the ambient pressure (PSXC).
+\begin_inset Newline newline
+\end_inset
+
+c).
+ Use the above definition of the Mach number 
+\begin_inset Formula $M$
+\end_inset
+
+ (
+\begin_inset Formula $M=U_{a}/U_{s}$
+\end_inset
+
+) in the form 
+\begin_inset Formula $U_{a}^{2}=\gamma M^{2}RT_{a}$
+\end_inset
+
+ to obtain:
+\end_layout
+
+\begin_layout Hanging
+\begin_inset Formula \begin{equation}
+M^{2}=\left(\frac{2c_{v}}{R}\right)\left[\left(\frac{p_{s}}{p_{a}}\right)^{\frac{R}{c_{p}}}-1\right]\label{eq:8.5}\end{equation}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+d).
+ Use the expression for ambient temperature in terms of recovery temperature
+ and airspeed, (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:8.3"
+
+\end_inset
+
+), to obtain the temperature in terms of the Mach number and the recovery
+ temperature:
+\end_layout
+
+\begin_layout Hanging
+\begin_inset Formula \begin{eqnarray}
+T_{a} & = & T_{r}-\alpha\frac{U_{a}^{2}}{2c_{p}}=T_{r}-\alpha\frac{M^{2}\gamma RT_{a}}{2c_{p}}\nonumber \\
+ & = & \frac{T_{r}}{1+\dfrac{\alpha M^{2}(\gamma-1)}{2}}\label{eq:8.6}\end{eqnarray}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+e).
+ Express the true airspeed (
+\begin_inset Formula $U_{a}$
+\end_inset
+
+) as
+\end_layout
+
+\begin_layout Hanging
+\begin_inset Formula \begin{equation}
+U_{a}=M\sqrt{\gamma RT_{a}}\label{eq:8.7}\end{equation}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Then the temperature is found as described in the following box:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+ 
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "95text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+TTX = measured recovery temperature (
+\begin_inset Formula $T_{r})$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+QCxC = measured difference between the dynamic and static pressures
+\begin_inset Newline newline
+\end_inset
+
+PSXC = measured ambient pressure, after airflow/location correction (
+\begin_inset Formula $p_{a}$
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+MACHx = Mach number based on QCxC and PSXC
+\begin_inset Newline newline
+\end_inset
+
+MACHX = Mach number based on QCXC and PSXC
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\alpha$
+\end_inset
+
+ = recovery factor for the particular temperature sensor
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+From (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:8.5"
+
+\end_inset
+
+),
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \begin{equation}
+\mathrm{MACHx}=\left\{ \left(\frac{2c_{v}}{R}\right)\left[\left(\frac{\mathrm{\{PSXC\}+\{QCxC\}}}{\mathrm{\{PSXC\}}}\right)^{\frac{R}{c_{p}}}-1\right]\right\} ^{1/2}\label{eq:8.8}\end{equation}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+From (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:8.6"
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \begin{equation}
+\mathrm{ATx}=\frac{\mathrm{\left(\{TTx\}+T_{0}\right)}}{\left(1+\dfrac{\alpha\mathrm{(\{MACHX\})}^{2}(\gamma-1)}{2}\right)}-T_{0}\label{eq:8.9}\end{equation}
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+note B9 uses 273.16 here; check if otherwise consisstent...
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Aircraft True Airspeed (m/s): 
+\bar under
+TASx
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+TASx
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This derived measurement of the flight speed of the aircraft relative to
+ the atmosphere is based on the Mach number calculated from both the dynamic
+ pressure at location x and the static pressure.
+ See the derivation above for ATx.
+ The different variables for TASx (TASF, TASR, etc) use different measurements
+ of QCxC in the calculation of Mach number.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "95text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+(see above box for ATx and MACHx)
+\begin_inset Newline newline
+\end_inset
+
+Note dependence of M on choices for QCxC and PSXC
+\begin_inset Newline newline
+\end_inset
+
+TASx depends on QCxC, PSXC, ATX
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+where PSXC and ATX are the preferred choices
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \begin{equation}
+\mathrm{TASx}=\mathrm{\{MACHx\}}\sqrt{\gamma R_{d}\mathrm{\,(\{ATX\}}+T_{0})}\label{eq:8.10}\end{equation}
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+note that there is complex dependence here on choices for QCXC, TTX, and
+ PSXC)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Aircraft True Airspeed (Humidity Corrected) (m/s): 
+\bar under
+TASHC
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+TASHC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+ This derived measurement of true airspeed takes into account the deviations
+ the specific heats of moist air from those of air without water vapor.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+I reworded this; I think this is correct, because it is not a departure
+ from perfect-gas behavior but a departure in (both) specific heats.
+ -- CHECK
+\end_layout
+
+\end_inset
+
+ See List, 1971, pp 295, 331-339, and Khelif, et al., 1999.
+ The present form of this equation, from Khelif et al.
+\begin_inset space ~
+\end_inset
+
+1999), adds a moisture correction to a true airspeed derived for dry air:
+\begin_inset Newline newline
+\end_inset
+
+ 
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "95col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+SPHUM = specific humidity, g/kg
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\end_layout
+
+\begin_layout LyX-Code
+TASHC = TASX * (1.0 + 0.000304 * SPHUM)
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+this was TASx in B9
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Water Vapor Pressure (mb): 
+\bar under
+EDPC
+\series default
+\bar default
+
+\begin_inset Newline newline
+\end_inset
+
+EDPC is the ambient vapor pressure of water, used in the calculation of
+ several derived variables.
+ It is usually obtained from a measurement of dew point, DPXC, which includes
+ correction for the enhancement factor that influences dew point or frost
+ point measurements.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+prior to 2011, this variable was calculated using the Goff-Gratch formula.
+ See the discussion of DPXC for more information on previous calculations.
+\end_layout
+
+\end_inset
+
+ ) The formula for obtaining the equilibrium water vapor pressure as a function
+ of dew point is given in the discussion of DPxC in Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:AIRCRAFT-AND-METEOROLOGICAL"
+
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+this is a description of the old Bulletin-9 section, saved here for reference.
+ It did not correspond to the code in use prior to the 2011 change, however;
+ only the >0 form of 
+\begin_inset Formula $f$
+\end_inset
+
+ was used, and there was a small error in coefficients, as described in
+ a 2010 Note that documented the change made in 2011 and the reasons for
+ it.
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status collapsed
+
+\begin_layout Plain Layout
+DPX = measured dew point (
+\begin_inset Formula $\geq0^{\circ}$
+\end_inset
+
+) or frost point (
+\begin_inset Formula $<0^{\circ})$
+\end_inset
+
+ in 
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $D_{K}$
+\end_inset
+
+ = DPX + 273.15
+\begin_inset space \thinspace{}
+\end_inset
+
+K = measured dew point in kelvin
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $f$
+\end_inset
+
+= enhancement factor (Appendix C)
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+note discontinuity at 0; need better documentation of this.
+ Also note violation of no-units-in-log rule
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+if DPX
+\begin_inset Formula $\geq0^{\circ}C:$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \[
+A=23.832241-5.02808\,\log\left(D_{K}\right)-1.3816\times10^{-7}(10^{11.334-0.0303998(D_{K}})\]
+
+\end_inset
+
+
+\begin_inset Formula \[
+f=1.0007+(3.46\times10^{-6}\mathrm{PSXC})\]
+
+\end_inset
+
+if DPX 
+\begin_inset Formula $<0^{\circ}C$
+\end_inset
+
+:
+\begin_inset Formula \[
+A=3.56654\log_{10}(D_{K})-0.0032098(D_{K})-\frac{2484.956}{D_{K}}+2.0702294\]
+
+\end_inset
+
+
+\begin_inset Formula \[
+f=1.0003+(4.18\times10^{-6}\mathrm{PSXC})\]
+
+\end_inset
+
+vapor pressure:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \begin{equation}
+\mathrm{EDPC}=f\,10^{A}\label{eq:8.11GoffG}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Potential Temperature (K): 
+\bar under
+THETA
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+THETA
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The potential temperature in the output data files is the temperature reached
+ if a dry parcel at the measured pressure and temperature would be compressed
+ or expanded adiabatically to a pressure of 1000 mb.
+ It does not take into account the difference in specific heats caused by
+ the presence of water vapor.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "95col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+ATX = ambient temperature, 
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+PSXC = ambient pressure (mb)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $p_{0}$
+\end_inset
+
+ = reference pressure = 1000 mb
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\begin_inset Formula \begin{equation}
+\mathrm{THETA}=\left(\mathrm{\{ATX\}}+T_{0}\right)\left(\frac{p_{0}}{\mathrm{\{PSXC\}}}\right)^{R/c_{p}}\label{eq:8.13THETA}\end{equation}
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Equivalent Potential Temperature (K): 
+\bar under
+THETAE
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+THETAE
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+ The equivalent potential temperature in the output data files is that obtained
+ using the method of Bolton (1980), which uses an approximate fit to obtain
+ the temperature at the lifted condensation level (
+\begin_inset Formula $T_{LCL}$
+\end_inset
+
+) and then uses that temperature to find the value of potential temperature
+ that would result if the parcel were lifted from that point until all water
+ vapor condensed and was removed from the air parcel.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+check, and fix problem with taking exponent of a quantity with units
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{lcl}$
+\end_inset
+
+= temperature at the lifted condensation level, K
+\begin_inset Newline newline
+\end_inset
+
+ATX = ambient temperature (
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+EDPX = water vapor pressure (mb)
+\begin_inset Newline newline
+\end_inset
+
+MR = mixing ratio (g/kg)
+\begin_inset Newline newline
+\end_inset
+
+THETA = potential temperature (K)
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\begin_inset Formula \[
+T_{lcl}=\frac{2840.}{3.5\ln(\mathrm{\{ATX\}+T_{0}})-\ln(\mathrm{\{EDPX\}})-4.805}+55.\]
+
+\end_inset
+
+
+\begin_inset Formula \begin{equation}
+\mathrm{THETAE}=\mathrm{\{THETA\}\left(\frac{3.376}{T_{lcl}}-0.00254\right)(\{MR\})(1+0.00081(\{MR\}))}\label{eq:8.13THETAE}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+need to check this; this is what was in B9, but looks wrong...
+ and maybe needs updating
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Virtual Temperature (
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C): 
+\bar under
+TVIR
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+TVIR
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The virtual temperature is the temperature of dry air having the same pressure
+ and density as the air being sampled, and so adjusts for the buoyancy added
+ by water vapor.
+ The calculation of virtual temperature in RAF output products is taken
+ from page 295 of the Smithsonian Meteorological Tables (1958).
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+note that q is defined here as specific humidity, g/g but in previous section
+ as mixing ratio and g/kg; make these consistent and use whatever is used
+ for MR.
+ Also check attribution of error (273.16) to Smithsonian Tables
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+ATX = ambient temperature, 
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+MR = mixing ratio of water vapor, g/kg
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $q$
+\end_inset
+
+= specific humidity, g/g
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \[
+q=\frac{\mathrm{\{MR\}}/1000}{\mathrm{1+\{MR\}/1000}}\]
+
+\end_inset
+
+
+\begin_inset Formula \begin{equation}
+\mathrm{TVIR}=(\mathrm{\{ATX\}}+T_{0})\left(\frac{1+\frac{M_{a}}{M_{w}}q}{1+q}\right)-T_{0}\label{eq:814TVIR}\end{equation}
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Virtual Potential Temperature (K): 
+\bar under
+THETAV
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+THETAV
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The virtual potential temperature is analogous to the potential temperature
+ except that it is based on the virtual temperature (TVIR) instead of the
+ ambient temperature (ATX).
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+TVIR = virtual temperature, 
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+PSXC = ambient pressure, mb
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\begin_inset Formula \begin{equation}
+\mathrm{THETAV}=\left(\mathrm{\{TVIR\}}+T_{0}\right)\left(\frac{1000}{\mathrm{\{PSXC\}}}\right)^{R/c_{p}}\label{eq:8.15THETAV}\end{equation}
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Relative Humidity (per cent or Pa/hPa): 
+\bar under
+RHUM
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+RHUM
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The relative humidity is the ratio of the water vapor pressure to the saturation
+ water vapor pressure in equilibrium over a plane liquid-water surface,
+ scaled to express the result in units of per cent.:
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+check the following in code...
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+ 
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+EDPX = atmospheric water vapor pressure (mb)
+\begin_inset Newline newline
+\end_inset
+
+ATX = ambient air temperature (
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $e_{s}(\mathrm{ATX})$
+\end_inset
+
+ = saturation water vapor pressure at 
+\emph on
+dewpoint
+\emph default
+ ATX (mb)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+(see (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:8.11GoffG"
+
+\end_inset
+
+) for the equation used)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+(see eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:8.11GoffG"
+
+\end_inset
+
+) for the formula used;
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+however, the branch for DPX
+\begin_inset Formula $\geq0$
+\end_inset
+
+ is used always)
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \begin{equation}
+\mathrm{RHUM}=100\%\,\times\,\frac{\mathrm{\{EDPX\}}}{e_{s}(\mathrm{\{ATX\}})}\label{eq:8.16RHUM}\end{equation}
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Absolute Humidity (Vapor Density) (g/m
+\begin_inset Formula $^{3}$
+\end_inset
+
+): 
+\bar under
+RHOx
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+RHOx
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The absolute humidity is the water vapor density computed from various measureme
+nts of humidity.
+ The different sources of humidity information are indicated by the 'x'
+ suffix, as usual.
+ The calculation is based on the equation of state for a perfect gas.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+check units here; need conversion to Pa also..; have changed from 10^6 to
+ 10^3...
+ check.
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+ATX = ambient temperature (
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+EDPX = water vapor pressure, converted to consistent units
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space \hspace*{}
+\length 0.8cm
+\end_inset
+
+(e.g., multiplied by 100 Pa/mb if MKS units are used otherwise)
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\begin_inset Formula \begin{equation}
+\mathrm{RHOx}=\left(10^{3}\frac{g}{kg}\right)\frac{(\mathrm{\{EDPX\}})M_{w}}{R_{0}\mathrm{(\{ATX\}+\mbox{\ensuremath{T_{0}}})}}\label{eq:8.17RHO}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Specific Humidity (g/kg): 
+\bar under
+SPHUM
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+SPHUM
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The specific humidity is the mass of water vapor per unit mass of (moist)
+ air, onventionally measured in g/kg.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+PSXC = ambient pressure 
+\begin_inset Newline newline
+\end_inset
+
+EDPX = ambient water vapor pressure
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\begin_inset Formula \begin{equation}
+\mathrm{SPHUM}=\left(10^{3}\frac{g}{kg}\right)\frac{M_{w}}{M_{a}}(\mathrm{\frac{\{EDPX\}}{\mathrm{\{PSXC\}}-(1-\frac{M_{w}}{M_{d}})\mathrm{\{EDPX\}}}})\label{eq:8.18SPHUM}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Mixing Ratio (g/kg): 
+\bar under
+MR
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+MR
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+MRCR
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+MRCR
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+MRLA
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+MRLA
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+MRLA1
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+MRLA1
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+MRLH
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+MRLH
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+the mixing ratio is the ratio of the mass of water to the mass of dry air,
+ normally expressed in g/kg.
+ It is related to specific humidity as follows: SPHUM=MR/(1+MR).
+ Mixing ratios may be calculated for the various instruments measuring humidity
+ on the aircraft, and the variable names reflect the source: MR from the
+ dewpoint hygrometers, MRCR from the cryogenic hygrometer, MRLA from the
+ Lyman-alpha snsor, MRLA1 if there is a second Lyman-alpha sensor, and MRLH
+ from a laser hygrometer.
+ The example in the box below is for the case of the dewpoint hygrometers;
+ others are analogous.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+EDPX = water vapor pressure (mb)
+\begin_inset Newline newline
+\end_inset
+
+PSXC = ambient total pressure
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\begin_inset Formula \begin{equation}
+\mathrm{MR=\left(10^{3}\frac{g}{kg}\right)\frac{M_{w}}{M_{a}}\frac{\mathrm{\{EDPX\}}}{(\mathrm{\{PSXC\}-\{EDPX\})}}}\label{eq:8.19MR}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Calculated Surface Pressure (mb): 
+\bar under
+PSURF
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+PSURF
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The estimated surface pressure is calculated from HGM, TVIR, PSXC
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+was PSFDC
+\end_layout
+
+\end_inset
+
+, and MR using the thickness equation.
+ The average temperature for the layer is obtained by using HGM and assuming
+ a dry-adiabatic lapse rate from the flight level to the surface.
+ Because of this assumption, the result is only valid for flight in a well-mixed
+ surface layer or in other conditions in which the temperature lapse rate
+ matches the dry-adiabatic lapse rate.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+PSXC = ambient pressure (mb)
+\begin_inset Newline newline
+\end_inset
+
+HGM = altitude above the surface (m)
+\begin_inset Newline newline
+\end_inset
+
+TVIR = virtual temperature (
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \[
+T_{m}=(\mathrm{\{TVIR\}}+T_{0})+0.5\mathrm{\{HGM\}}\frac{g}{c_{p}}\]
+
+\end_inset
+
+
+\begin_inset Formula \[
+\mathrm{PSURF}=\mathrm{\{PSXC\}}\, e^{\frac{g\, T_{m}}{R\,(\mathrm{\{HGM\}})}}\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

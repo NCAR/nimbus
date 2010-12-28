@@ -1,0 +1,530 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\input colordvi
+\usepackage{color}
+\fancyhead{}
+\fancyfoot[CE,CO]{}
+\newtoks{\topicofnote} \global\topicofnote={}
+\newdimen\longindent \longindent=3.5truein
+\fancyhead[L]{Note re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\renewcommand{\headrulewidth}{0.0pt}
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+\setlength{\leftmargin}{\labelwidth}
+\addtolength{\leftmargin}{\labelsep}
+\renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+\newcommand{\datetoday}{\number\day\space
+     \ifcase\month\or January\or February\or March\or April\or May\or
+     June\or July\or August\or September\or October\or November\or
+     December\fi
+     \space\number\year}
+\newcommand{\ASPmemo}{\null \vskip-1.5truein
+{\raggedright \textsf{\textsc{\large \textcolor{blue}{Advanced Study Program}}}}\par
+{\raggedright \textsf{\textsl{\textcolor{blue}{Memorandum:}}}} \par \vskip6pt
+{\color{blue}{\hrule}}\par
+\vskip0.3truein \leftline{\hskip \longindent \datetoday} \vskip0.2truein
+\thispagestyle{empty}}
+\newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachments:] {#1}
+\end{lyxlist}}
+\newcommand{\cc}[1]{\begin{lyxlist}{Attachments:00}
+\item [cc:] {#1}
+\end{lyxlist}}
+\newcommand{\attach}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachment:] {#1}
+\end{lyxlist}}
+%usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
+\end_preamble
+\use_default_options false
+\language english
+\inputencoding default
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\leftmargin 2.54cm
+\topmargin 3.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 1cm
+\headsep 2cm
+\footskip 0.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+set topicofnote to topic of note
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+topicofnote={Actions re Bulletin 9 review}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+Note goes here:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+get the data-system history (p.
+ 5)
+\end_layout
+
+\begin_layout Enumerate
+check table of constants against values used in nimbus
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+change conversion factor, CKTMS and KTS2MS, to be exactly 1852./3600.
+\end_layout
+
+\begin_layout Enumerate
+change Stefan-Boltzmann constant to 5.670400x
+\begin_inset Formula $10^{-8}$
+\end_inset
+
+: ref: http://physics.nist.gov
+\end_layout
+
+\begin_layout Enumerate
+change constant used for calculation of THETA to be exactly 2./7.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+how are cal coefficients documented?
+\end_layout
+
+\begin_layout Enumerate
+change IRU to IRS consistently -- DONE
+\end_layout
+
+\begin_layout Enumerate
+fix offset in paragraph on LAT -- DONE
+\end_layout
+
+\begin_layout Enumerate
+Is the description OK for the current C-130 IRSs?
+\end_layout
+
+\begin_layout Enumerate
+what are response characteristics of VSPD? Is it OK to use for vertical
+ wind?
+\end_layout
+
+\begin_layout Enumerate
+fix table for WP3, now split on p.
+ 13
+\end_layout
+
+\begin_layout Enumerate
+should there be a variable ALTC analogous to LATC and LONC, based on compl-f
+ combination of ALT and GALT? Also, should GVZI be combined with VSPD in
+ the same way to use for wind measurement?
+\end_layout
+
+\begin_layout Enumerate
+is GSF provided directly by the IRS or calculated from VEW/VNS?
+\end_layout
+
+\begin_layout Enumerate
+update info on GPS units in use
+\end_layout
+
+\begin_layout Enumerate
+what is the difference between GGSF and GGSPD?
+\end_layout
+
+\begin_layout Enumerate
+get meanings of GMODE and GSTAT from manuals
+\end_layout
+
+\begin_layout Enumerate
+decay of comp-filter fit back to IRS values? Would it be better to just
+ continue to apply the correction?
+\end_layout
+
+\begin_layout Enumerate
+comple-filter: when GPS is again valid, how are corrections re-introduced?
+ Is it just the build-up in response of the digital filter? Describe how
+ this occurs.
+\end_layout
+
+\begin_layout Enumerate
+p.
+ 19: revise how ALTX / GALTC are calculated, considering the complementary-filte
+r? At least, reword the description and remove the 
+\begin_inset Quotes eld
+\end_inset
+
+step back
+\begin_inset Quotes erd
+\end_inset
+
+ feature...
+\end_layout
+
+\begin_layout Enumerate
+need a reference for the radome technique and additional discussion of this
+\end_layout
+
+\begin_layout Enumerate
+should we change 
+\begin_inset Quotes eld
+\end_inset
+
+Total
+\begin_inset Quotes erd
+\end_inset
+
+ temperature to 
+\begin_inset Quotes eld
+\end_inset
+
+Recovery
+\begin_inset Quotes erd
+\end_inset
+
+ temperature to be rigorous?
+\end_layout
+
+\begin_layout Enumerate
+p.
+ 22: need to add HARCO temperature sensors to description of recovery temperatur
+e
+\end_layout
+
+\begin_layout Enumerate
+p.
+ 23: look at accuracy of the conversion and possibility of doing it better
+\end_layout
+
+\begin_layout Enumerate
+need to look at representations of vapor pressure in light of modern formulation
+s
+\end_layout
+
+\begin_layout Enumerate
+p.
+ 29: check if TAS as calculated is consistent with what this says
+\end_layout
+
+\begin_layout Enumerate
+p.
+ 30: revise to isolate coefficients and make equations dimensionless
+\end_layout
+
+\begin_layout Enumerate
+change from Goff-Gratch to Murphy-Koop formula, and update inversion processes:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+\begin_inset Formula $\ln(\frac{p_{s,i}}{p_{R}})=b_{0}+b_{1}/T+b_{2}\ln(\frac{T}{T_{R}})+b_{3}T$
+\end_inset
+
+ where 
+\begin_inset Formula $p_{R}=1\, Pa$
+\end_inset
+
+, 
+\begin_inset Formula $T_{R}=$
+\end_inset
+
+1
+\begin_inset space \thinspace{}
+\end_inset
+
+K, 
+\begin_inset Formula $b_{0}=$
+\end_inset
+
+9.550426, 
+\begin_inset Formula $b_{1}=-$
+\end_inset
+
+5723.265 K, 
+\begin_inset Formula $b_{2}=3.53068$
+\end_inset
+
+, and 
+\begin_inset Formula $b_{3}=$
+\end_inset
+
+ -0.00728332
+\begin_inset space \thinspace{}
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Enumerate
+if 
+\begin_inset Formula $p_{R}^{\prime}=1$
+\end_inset
+
+hPa, 
+\begin_inset Formula $b_{0}\rightarrow b_{0}^{\prime}=9.550426-\ln(100.)=4.945256$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+either invert numerically or use Murphy Eq.
+\begin_inset space ~
+\end_inset
+
+8, with 
+\begin_inset Formula $b_{4}=$
+\end_inset
+
+1.8146
+\begin_inset space ~
+\end_inset
+
+K, 
+\begin_inset Formula $b_{5}=6190.134\,$
+\end_inset
+
+K, and 
+\begin_inset Formula $b_{6}=29.120$
+\end_inset
+
+ with 
+\begin_inset Formula $e_{R}=1$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+Pa:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \[
+T_{FP}≈T_{0}+(1.814625ln(e/e_{R})+6190.134)/(29.120−ln(e/e_{R}))\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+for water (including supercooled water), use Murphy and Koop Eq.
+\begin_inset space ~
+\end_inset
+
+(10), with 
+\begin_inset Formula $b_{7}=54.842763$
+\end_inset
+
+, 
+\begin_inset Formula $b_{8}=\text{−}6763.22\,$
+\end_inset
+
+K, 
+\begin_inset Formula $b_{9}=\text{−}4.210$
+\end_inset
+
+, 
+\begin_inset Formula $b_{10}=0.000367\,$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+, 
+\begin_inset Formula $b_{11}=0.0415\,$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+, 
+\begin_inset Formula $T_{R2}=218.8\,$
+\end_inset
+
+K, 
+\begin_inset Formula $b_{12}=53.878$
+\end_inset
+
+, 
+\begin_inset Formula $b_{13}=-1331.22\,$
+\end_inset
+
+K, 
+\begin_inset Formula $b_{14}=-9.44523$
+\end_inset
+
+, and 
+\begin_inset Formula $b_{15}=0.014025\,$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+,:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \[
+ln(p_{s,w}/p_{R})≈b_{7}+b_{8}/T+b_{9}\ln(T/T_{R})+b_{10}T+tanh{b_{11}(T−T_{R2})}(b_{12}+b_{13}/T+b_{14}\ln(T/T_{R})+b_{15}T);\]
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attach{attachment}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attachm{first
+\backslash
+
+\backslash
+second}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+cc{first attachment
+\backslash
+
+\backslash
+second
+\backslash
+
+\backslash
+3rd att}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

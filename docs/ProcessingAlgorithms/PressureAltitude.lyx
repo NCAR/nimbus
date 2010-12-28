@@ -1,0 +1,980 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\input colordvi
+\usepackage{color}
+\fancyhead{}
+\fancyfoot[CE,CO]{}
+\newtoks{\topicofnote} \global\topicofnote={}
+\newdimen\longindent \longindent=3.5truein
+\fancyhead[L]{Note re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\renewcommand{\headrulewidth}{0.0pt}
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+\setlength{\leftmargin}{\labelwidth}
+\addtolength{\leftmargin}{\labelsep}
+\renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+\newcommand{\datetoday}{\number\day\space
+     \ifcase\month\or January\or February\or March\or April\or May\or
+     June\or July\or August\or September\or October\or November\or
+     December\fi
+     \space\number\year}
+\newcommand{\ASPmemo}{\null \vskip-1.5truein
+{\raggedright \textsf{\textsc{\large \textcolor{blue}{Advanced Study Program}}}}\par
+{\raggedright \textsf{\textsl{\textcolor{blue}{Memorandum:}}}} \par \vskip6pt
+{\color{blue}{\hrule}}\par
+\vskip0.3truein \leftline{\hskip \longindent \datetoday} \vskip0.2truein
+\thispagestyle{empty}}
+\newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachments:] {#1}
+\end{lyxlist}}
+\newcommand{\cc}[1]{\begin{lyxlist}{Attachments:00}
+\item [cc:] {#1}
+\end{lyxlist}}
+\newcommand{\attach}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachment:] {#1}
+\end{lyxlist}}
+%usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
+\end_preamble
+\use_default_options false
+\language english
+\inputencoding default
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\leftmargin 2.54cm
+\topmargin 3.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 1cm
+\headsep 2cm
+\footskip 0.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+set topicofnote to topic of note
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+topicofnote={calculation of pressure altitude}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+Note goes here:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Basic Formulas:
+\end_layout
+
+\begin_layout Standard
+To be consistent with the altitude reported by the aircraft altimeters,
+ we should use the International Standard Atmosphere or the equivalent U.S.
+ Standard Atmosphere.
+ In our altitude range, it is define as follows:
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+see 
+\begin_inset Quotes eld
+\end_inset
+
+U.S.
+ Standard Atmosphere, 1976
+\begin_inset Quotes erd
+\end_inset
+
+, NASA-TM-A-74335, available for download at http://ntrs.nasa.gov/archive/nasa/cas
+i.ntrs.nasa.gov/19770009539_1977009539.pdf
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+reference level z=0 at 
+\begin_inset Formula $p_{0}$
+\end_inset
+
+=1013.25 mb and 
+\begin_inset Formula $T_{0}=$
+\end_inset
+
+15
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ 
+\end_layout
+
+\begin_layout Itemize
+lapse rate of -6.5
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C/km or 
+\begin_inset Formula $\lambda=-0.0065^{\circ}C/m$
+\end_inset
+
+ below 11,000 m; lapse rate 0 above 11,000 m
+\end_layout
+
+\begin_layout Standard
+The fundamental equation that gives pressure change with height (
+\begin_inset Formula $h$
+\end_inset
+
+) is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+\frac{dp}{p}=-\left(\frac{g}{RT}\right)dh\label{eq:1}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where g=9.80665 m/s
+\begin_inset Formula $^{2}$
+\end_inset
+
+ and R=287.0531 J/(kg K).
+ The values of g, R* = 8.31432x10
+\begin_inset Formula $^{3}$
+\end_inset
+
+, M
+\begin_inset Formula $_{d}$
+\end_inset
+
+=28.9644, as well as 
+\begin_inset Formula $p_{0}$
+\end_inset
+
+, 
+\begin_inset Formula $T_{0}$
+\end_inset
+
+, and 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ as given above, are specified as part of the standard atmosphere so should
+ be taken as exact
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+The quoted value of R* is not exactly equal to the currently accepted values
+ of the more fundamental quantities 
+\begin_inset Formula $k$
+\end_inset
+
+ and 
+\begin_inset Formula $N_{A},$
+\end_inset
+
+respectively the Boltzmann constant and Avogadro's Number, the product of
+ which should give R*.
+ The difference is in the 5th significant digit.
+ However, the value as quoted should still be used for pressure altitude
+ calculations because it is adopted as part of the standard.
+\end_layout
+
+\end_inset
+
+; R=R*/M
+\begin_inset Formula $_{d}$
+\end_inset
+
+=287.0531 is then accurate to seven significant figures.
+ (This note will give numerical results with seven significant figures,
+ to preserve six-figure accuracy in results.) With a lapse rate of 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ defined as 
+\begin_inset Formula $dT/dh$
+\end_inset
+
+ where 
+\begin_inset Formula $h$
+\end_inset
+
+ is altitude, the equation becomes
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+\frac{dp}{p}=-\left(\frac{g}{\lambda R}\right)\frac{dT}{T}\label{eq:2}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which integrates to
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+p=p_{0}\Bigl(\frac{T_{0}}{T_{0}+\lambda h}\Bigr)^{\frac{g}{\lambda R}}\label{eq:3}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+or, after rearranging to obtain h as a function of p,
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+h=\frac{T_{0}}{\lambda}\left[\left(\frac{p}{p_{0}}\right)^{-\lambda R/g}-1\right]=a_{z}\left[1-\left(\frac{p}{p_{0}}\right)^{b_{p}}\right]\label{eq:4}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $a_{z}=-T_{0}/\lambda$
+\end_inset
+
+ is 44330.77 m and 
+\begin_inset Formula $b_{p}=-\lambda R/g$
+\end_inset
+
+ is 0.1902632 (dimensionless).
+ 
+\end_layout
+
+\begin_layout Standard
+Above 11,000 m, the temperature in the standard atmosphere becomes constant
+ (at 
+\begin_inset Formula $T_{1}$
+\end_inset
+
+=288.15-11*6.5=216.65K=-56.5
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.).
+ Then (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:1"
+
+\end_inset
+
+) integrates to
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+\ln\left(\frac{p}{p_{1}}\right)=-\frac{g(h-h_{1})}{RT_{1}}\label{eq:5}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $p_{1}$
+\end_inset
+
+ at 
+\begin_inset Formula $h_{1}$
+\end_inset
+
+=11,000 m can be found from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:3"
+
+\end_inset
+
+): 
+\begin_inset Formula $p_{1}=226.3206$
+\end_inset
+
+ mb.
+ Then, solving (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:5"
+
+\end_inset
+
+) for 
+\begin_inset Formula $h$
+\end_inset
+
+ gives
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+h=h_{1}-\frac{RT_{1}}{g}\ln\left(\frac{p}{p_{1}}\right)=h_{1}-c_{z}\ln\left(\frac{p}{p_{1}}\right)\label{eq:6}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $c_{z}=(RT_{1}/g)=6341.620$
+\end_inset
+
+ m.
+ 
+\end_layout
+
+\begin_layout Subsection*
+Comparison to existing code:
+\end_layout
+
+\begin_layout Standard
+The formula in use for the C-130 is:
+\end_layout
+
+\begin_layout LyX-Code
+palt = 153.77 * SFCT * (1.0 - pow((double)psxc / ASTG, 0.190284)); 
+\end_layout
+
+\begin_layout Standard
+where SFCT is 288.15 and ASTG is 1013.248.
+ The product 153.77*SFCT gives 44,308.8 m, while I think this should be 44,330.77
+ as derived above.
+ I suspect the lower number was obtained by using a reference temperature
+ of 288K, rather than the correct value of 288.15K.
+ The exponent, 0.190284, is also slightly different from the value of 
+\begin_inset Formula $b_{p}$
+\end_inset
+
+ derived above, 0.1902632.
+ This difference is not significant, and the use of ASTG=1013.248 is also
+ insignificantly different from the correct value of 1013.25 mb, but there
+ is no reason to use the wrong value because the reference pressure altitude
+ includes 1013.25 as the exact reference pressure for the standard atmosphere.
+\end_layout
+
+\begin_layout Standard
+The formula in use for the GV is
+\end_layout
+
+\begin_layout LyX-Code
+  palt = psxc / ASTG;
+\end_layout
+
+\begin_layout LyX-Code
+      if (palt >= 0.223198605)
+\end_layout
+
+\begin_layout LyX-Code
+          palt = 44308.0 * (1.0 - pow(palt, 0.190284));       
+\end_layout
+
+\begin_layout LyX-Code
+      else         
+\end_layout
+
+\begin_layout LyX-Code
+          palt = 11000.0 + 14600.0 * log10(0.223198605 / palt); 
+\end_layout
+
+\begin_layout Standard
+The pressure ratio for the break corresponds to a pressure of 0.2231986*1013.248=2
+26.156 vs the value 
+\begin_inset Formula $p_{1}$
+\end_inset
+
+=226.3206 mb derived above -- an insignificant difference.
+ The constant 44308.0 should be changed to 44330.77, and the exponent to 0.1902632,
+ as developed above.
+ For the high-altitude branch, the formula for the additional altitude above
+ 11000 m gives the result in terms of the ratio of pressure to the sea-level
+ reference pressure rather than the transition pressure as used in the above
+ derivation, and uses a base-10 logarithm.
+ In terms of a base-10 logarithm, the value 14600 would become 14600/ln
+\begin_inset Formula $_{e}$
+\end_inset
+
+(10)=6340.70 m if the logarithm were expressed in natural logarithms.
+ The factor 0.223198605 converts the pressure ratio relative to the sea-level
+ reference pressure to a ratio relative to the transition pressure: the
+ correct value 
+\begin_inset Formula $p_{1}/p_{0}=0.2233611$
+\end_inset
+
+ is insignificantly different from the conversion factor used.
+ The value 6340.70 is only slightly different from the value derived above,
+ 6341.620 m.
+ To use the log10() function, the constant should be 14602.12 m [6341.620*ln(10)]
+ according to the derivation in the first section.
+\end_layout
+
+\begin_layout Subsection*
+
+\emph on
+\bar under
+Recommendation:
+\end_layout
+
+\begin_layout Standard
+Use only one formula for all aircraft.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+This formula will need further modification if it is ever used above 20
+ km, where the lapse rate again changes in the standard atmosphere; that
+ change is not incorporated here.
+\end_layout
+
+\end_inset
+
+ (The reference atmosphere for all is the same; it is only the pressure
+ range that is different for different aircraft.) The recommended formula
+ is the current HIAPER branch modified as follows (with some changes made
+ just for clarity, to help whoever looks at this next):
+\end_layout
+
+\begin_layout LyX-Code
+          // transition pressure at the assumed ISA tropopause:
+\end_layout
+
+\begin_layout LyX-Code
+#define ISAP1 226.3206
+\end_layout
+
+\begin_layout LyX-Code
+          // reference pressure for standard atmosphere:
+\end_layout
+
+\begin_layout LyX-Code
+#define ISAP0 1013.25
+\end_layout
+
+\begin_layout LyX-Code
+if (psxc > ISAP1)
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+palt = 44330.77 * (1.0 - pow(psxc/ISAP0, 0.1902632));
+\end_layout
+
+\end_deeper
+\begin_layout LyX-Code
+else
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+palt = 11000.0 + 14602.12 * log10(ISAP1/psxc);
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+The effects of the changes are small but not entirely negligible, and this
+ change will make us consistent with the adopted standards for aviation.
+ The differences are as follows:
+\end_layout
+
+\begin_layout Enumerate
+The change in the constant for the low-altitude branch, to 44330.77 m, causes
+ about a 5 m maximum change in results, with the maximum at 11000 m.
+\end_layout
+
+\begin_layout Enumerate
+The change in the exponents for the low-altitude branch, to 0.1902632, causes
+ at most a change of about 1 m in the results.
+\end_layout
+
+\begin_layout Enumerate
+The change in the high-altitude branch increases with altitude, but at 120
+ mb (about 15 km) the change is about +5 m.
+\end_layout
+
+\begin_layout Standard
+The recommended change to Bulletin 9 is then as follows:
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+ISA Pressure Altitude (m): 
+\bar under
+PALT
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+PALT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The derived altitude obtained from the reference barometric (static) pressure
+ measurement using the International Standard Atmosphere (ISA), equivalent
+ to the reference atmosphere for aviation operations worldwide.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+see 
+\begin_inset Quotes eld
+\end_inset
+
+U.S.
+ Standard Atmosphere, 1976
+\begin_inset Quotes erd
+\end_inset
+
+, NASA-TM-A-74335, available for download at http://ntrs.nasa.gov/archive/nasa/cas
+i.ntrs.nasa.gov/19770009539_1977009539.pdf
+\end_layout
+
+\end_inset
+
+ The pressure altitude is best interpreted as a variable equivalent to the
+ measured pressure, not as a geometric altitude.
+ In the following description of the algorithm, some constants (identified
+ by the symbol 
+\begin_inset Formula $\dagger$
+\end_inset
+
+) are specified as part of the ISA and so should not be 
+\begin_inset Quotes eld
+\end_inset
+
+improved
+\begin_inset Quotes erd
+\end_inset
+
+ to more modern values (e.g., 
+\begin_inset Formula $R_{0}^{\prime}).$
+\end_inset
+
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Prior to and including some projects in 2010, processing used slightly different
+ coefficient (perhaps this should be documented here?)
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{0}$
+\end_inset
+
+= 288.15 K, reference temperature
+\begin_inset Formula $\dagger$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\lambda$
+\end_inset
+
+ = -0.0065 K/m = the lapse rate for the troposphere
+\begin_inset Formula $\dagger$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $P_{s}$
+\end_inset
+
+ = measured static pressure, hPa, usually from PSXC
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $P_{0}$
+\end_inset
+
+ = 1013.25 hPa, reference pressure for PALT=0
+\begin_inset Formula $\dagger$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $M_{d}$
+\end_inset
+
+ = 28.9644 
+\begin_inset Formula $kg/kmol$
+\end_inset
+
+= molecular weight of dry air, ISA definition
+\begin_inset Formula $\dagger$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $g$
+\end_inset
+
+ = 9.80665 m
+\begin_inset space \thinspace{}
+\end_inset
+
+s
+\begin_inset Formula $^{-2}$
+\end_inset
+
+, acceleration of gravity
+\begin_inset Formula $\dagger$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $R_{0}^{\prime}$
+\end_inset
+
+ = universal gas constant, defined as 8.31432
+\begin_inset Formula $\times10^{3}$
+\end_inset
+
+ 
+\begin_inset Formula $J\,\mathrm{kmol}^{-1}\,\mathrm{K}^{-1}$
+\end_inset
+
+
+\begin_inset Formula $\dagger$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $z_{T}$
+\end_inset
+
+ = altitude of the assumed tropopause = 11,000 m
+\begin_inset Formula $\dagger$
+\end_inset
+
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $x=R_{0}^{\prime}\lambda/(M_{d}g)$
+\end_inset
+
+ 
+\begin_inset Formula $\approx$
+\end_inset
+
+ 0.1902632 (dimensionless)
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+This is the rounded value used for data processing.
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+For pressure > 226.3206 hPa (equivalent to a pressure altitude < 
+\begin_inset Formula $z_{T}$
+\end_inset
+
+):
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \[
+\mathrm{PALT}=-\left(\frac{T_{0}}{\lambda}\right)\left(1-\left(\frac{P_{s}}{P_{0}}\right)^{x}\right)\]
+
+\end_inset
+
+otherwise, if 
+\begin_inset Formula $T_{T}$
+\end_inset
+
+ and 
+\begin_inset Formula $p_{T}$
+\end_inset
+
+ are respectively the temperature and pressure at the altitude 
+\begin_inset Formula $z_{T}$
+\end_inset
+
+:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \[
+T_{T}=T_{0}+\lambda z_{T}=216.65\,\mathrm{K}\]
+
+\end_inset
+
+
+\begin_inset Formula \[
+p_{T}=p_{0}\Bigl(\frac{T_{0}}{T_{T}}\Bigr)^{\frac{gM_{d}}{\lambda R_{0}^{\prime}}}=226.3206\,\mathrm{hPa}\]
+
+\end_inset
+
+
+\begin_inset Formula \[
+\mathrm{PALT}=z_{T}+\frac{R_{0}^{\prime}T_{T}}{gM_{d}}\ln\left(\frac{p_{T}}{p_{s}}\right)\]
+
+\end_inset
+
+which is coded as follows (with conversion between natural and base-10 logarithm
+):
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout LyX-Code
+// transition pressure at the assumed ISA tropopause:
+\end_layout
+
+\begin_layout LyX-Code
+#define ISAP1 226.3206
+\end_layout
+
+\begin_layout LyX-Code
+          // reference pressure for standard atmosphere:
+\end_layout
+
+\begin_layout LyX-Code
+#define ISAP0 1013.25
+\end_layout
+
+\begin_layout LyX-Code
+if (psxc > ISAP1)
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+palt = 44330.77 * (1.0 - pow(psxc/ISAP0, 0.1902632));
+\end_layout
+
+\end_deeper
+\begin_layout LyX-Code
+else
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+palt = 11000.0 + 14602.12 * log10(ISAP1/psxc);
+\end_layout
+
+\end_deeper
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attach{attachment}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attachm{first
+\backslash
+
+\backslash
+second}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+cc{first attachment
+\backslash
+
+\backslash
+second
+\backslash
+
+\backslash
+3rd att}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

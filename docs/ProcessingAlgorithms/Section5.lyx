@@ -1,0 +1,672 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\begin_modules
+hanging
+\end_modules
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Section
+COMBINED OUTPUT FROM AN INERTIAL REFERENCE SYSTEM (IRS) AND A GLOBAL POSITIONING
+ SYSTEM (GPS)
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:IRS/GPS"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In some cases, measurements from the global positioning and inertial reference
+ systems are combined to produce new variables that take advantage of the
+ strengths of each, the long-term stability of the GPS and the short-term
+ resolution of the IRS.
+ This section describes some variables that result from this blending of
+ variables.
+ These corrected variables are usually the best available when the GPS and
+ IRS are both functioning.
+ The GPS can suffer from noise spikes and missing data during aircraft maneuveri
+ng or poor satellite geometry.
+ When the GPS data are lost, the algorithm in use slowly reverts from the
+ last 
+\begin_inset Quotes eld
+\end_inset
+
+best
+\begin_inset Quotes erd
+\end_inset
+
+ measurements to the pure IRS measurements.
+\end_layout
+
+\begin_layout Standard
+One can determine if the GPS is functioning by examining the GPS status
+ variables described in the previous section or by looking for spikes or
+ 
+\begin_inset Quotes eld
+\end_inset
+
+flat-lines
+\begin_inset Quotes erd
+\end_inset
+
+ in the data.
+ If the GPS data are missing for a short time (a few seconds to a minute),
+ accuracy is not affected.
+ However, longer dropouts will result in accuracies approaching those of
+ the IRS.
+ Without the GPS or another ground reference, the IRS error cannot be determined
+ empirically, and one should assume that it is within the manufacturer's
+ specification (1 nautical mile of error per hour of flight, 90% CEP).
+ When the GPS is active, RAF estimates that the correction algorithm produces
+ a position with an error less than 100 meters.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+I think it's probably better than this; what evidence is there for this?
+\end_layout
+
+\end_inset
+
+ Due to the nature of the algorithm, the error will increase from the 100
+ meters to the IRS specification in about one-half hour.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+In other words, if there is a continuous GPS dropout that lasts one-half
+ hour or longer, the corrected position will revert to the full IRS position
+\begin_inset Quotes erd
+\end_inset
+
+ -- This is what B9 says, but it appears to me that the Schuler-oscillation
+ fit remains in effect as long as the GPS is lost, provided a good fit was
+ obtained.
+ This means that the fit to the Schuler oscillation should increase the
+ accuracy of the result to be better than the pure IRS result even when
+ the GPS is lost for extended periods, provided a good initial fit was obtained.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS-Corrected Inertial Ground Speed Vector, (m/s): 
+\bar under
+VEWC
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+VEWC
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+VNSC
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+VNSC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+These variables result from combining GPS and IRS output of the east and
+ north components of ground speed from the complementary-filter algorithm.
+ Positive values are toward the east and north, respectively.
+ The smooth, high-resolution, continuous measurements from the inertial
+ navigation system, {VNS, VEW}, which can slowly accumulate errors over
+ time, are combined with the highly accurate but occasionally noisy or discontin
+uous measurements from the GPS, {GVNS, GVEW}, via an approach based on a
+ complementary filter.
+ A low-pass filter, 
+\begin_inset Formula $F_{L}(\{\mathrm{GVNS,GVEW\}})$
+\end_inset
+
+, is applied to the GPS measurements of groundspeed, which are assumed to
+ be valid for frequencies at or lower than the cutoff frequency 
+\begin_inset Formula $f_{c}$
+\end_inset
+
+ of the filter.
+ Then the complementary high-pass filter, denoted (
+\begin_inset Formula $1-F_{L}$
+\end_inset
+
+)(
+\begin_inset Formula $\{\mathrm{VNS,VEW\}}$
+\end_inset
+
+), is applied to the IRS measurements of groundspeed, which are assumed
+ valid for frequencies at or higher than 
+\begin_inset Formula $f_{c}$
+\end_inset
+
+.
+ Ideally, the transition frequency would be selected where the GPS errors
+ (increasing with frequency) are equal to the IRS errors (decreasing with
+ frequency).
+ The filter used is a three-pole Butterworth lowpass filter, coded following
+ the algorithm described in Bosic, S.
+\begin_inset space ~
+\end_inset
+
+M., 1980: 
+\emph on
+Digital and Kalman filtering : An Introduction to Discrete-Time Filtering
+ and Optimum Linear Estimation, 
+\emph default
+p.
+ 49.
+ The digital filter used is recursive, not centered, to permit calculation
+ during a single pass through the data.
+ If the cutoff frequency lies where both the GPS and INS measurements are
+ valid and almost the same, then the detailed characteristics of the filter
+ in the transition region (e.g., phase shift) do not matter because the complement
+ary filters have cancelling effects when applied to the same signal.
+ The transition frequency 
+\begin_inset Formula $f_{c}$
+\end_inset
+
+ was chosen to be (1/600) Hz.
+ The Butterworth filter was chosen because it provides flat response away
+ from the transition.
+ The net result then is the sum of these two filtered signals, calculated
+ as described in the following box:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "95text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+VEW = IRS-measured east component of the aircraft ground speed
+\begin_inset Newline newline
+\end_inset
+
+VNS = IRS-measured north component of the aircraft ground speed
+\begin_inset Newline newline
+\end_inset
+
+GVEW = GPS-measured east component of the aircraft ground speed
+\begin_inset Newline newline
+\end_inset
+
+GVNS = GPS-measured north component of the aircraft ground speed
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $F_{L}()$
+\end_inset
+
+ = three-pole Butterworth lowpass recursive digital filter
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \[
+\{\mathrm{VNSC}\}=F_{L}(\mathrm{\{GVNS\})}+(1-F_{L})(\{\mathrm{VNS\}})\]
+
+\end_inset
+
+
+\begin_inset Formula \[
+\{\mathrm{VEWC}\}=F_{L}(\mathrm{\{GVEW\})}+(1-F_{L})(\{\mathrm{VEW\}})\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This result is used as long as the GPS signals are continuous and flagged
+ as being valid.
+ When that is not the case, some means is needed to avoid sudden discontinuities
+ in velocity (and hence windspeed), which would introduce spurious effects
+ into variance spectra and other properties dependent on a continuously
+ valid measurement of wind.
+ To extrapolate measurements through periods when the GPS signals are lost
+ (as sometimes occurs, for example, in turns) a fit is determined to the
+ difference between the best-estimate variables {VNSC,VEWC} and the IRS
+ variables {VNS,VEW} for the period before GPS reception was lost, and that
+ fit is used to extrapolate through periods when GPS reception is not available.
+ The procedure is as follows:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Enumerate
+If GPS reception has never been valid earlier in the flight, the IRS values
+ are used without correction.
+ 
+\end_layout
+
+\begin_layout Enumerate
+If GPS reception is lost after a valid complementary-filter correction has
+ been obtained earlier using the procedure described above, but no valid
+ Schuler-oscillation fit has been accumulated as described in [3.] below,
+ the correction factors from the complementary filter are reduced by a factor
+ of 0.997 each second, producing an exponential decay back toward the IRS
+ values with decay time constant of about 5.6 min.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+I wonder if, with present reliability, it is better to suppress this decay?
+ This would mean suppressing the section in gpsc.c with lines like dvy[]*=fctrf[]
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+When GPS reception is good, update a least-squares fit to the difference
+ between the GPS and INS groundspeeds, for each component.
+ The errors are assumed to result primarily from a Schuler oscillation,
+ so the three-term fit is of the form 
+\begin_inset Formula $\Delta=a_{1}+a_{2}\sin(\Omega_{Sch}t)+a_{3}\cos(\Omega_{Sch}t)$
+\end_inset
+
+ , where 
+\begin_inset Formula $\Omega_{Sch}$
+\end_inset
+
+ is the angular frequency of the Schuler oscillation (taken to be 
+\begin_inset Formula $2\pi/(5067\, s))$
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+recommended to be consistent with constants in section 1.
+ 5040s in use now -- insignificant difference
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Formula $t$
+\end_inset
+
+ is the time since the start of the flight.
+ A sseparate fit is used for each component of the velocity and each component
+ of the position (discussed below under LATC and LONC).
+ The fit matrix used to determine these coefficients is updated each time
+ step but the accumulated fit factors decay exponentially with a 30-min
+ decay constant, so the terms used to determine the fit are exponentially
+ weighted over the period of valid data with a time constant that decays
+ exponentially into the past with a characteristic time of 30 min.
+ This is long enough to determine a significant portion of the Schuler oscillati
+on but short enough to emphasize recent measurements of the correction.
+\end_layout
+
+\begin_layout Enumerate
+When GPS data become invalid, if sufficient data (spanning 30 min) have
+ been accumulated, invert the accumulated fit matrices to determine the
+ coefficients 
+\begin_inset Formula $\{a_{1},a_{2},a_{3}\}$
+\end_inset
+
+ and then use the formula for 
+\begin_inset Formula $\Delta$
+\end_inset
+
+ in the preceding step to extrapolate the correction to the IRS measurements
+ while the GPS measurements remain invalid.
+ Doing so immediately would introduce a discontinuity in {VNSC,VEWC}, however,
+ so the correction 
+\begin_inset Formula $\Delta$
+\end_inset
+
+ is introduced smoothly by adjusting {VNSC,VEWC} smoothly as follows: 
+\begin_inset Formula $\Delta^{\prime}$
+\end_inset
+
+=
+\begin_inset Formula $(1-\eta)$
+\end_inset
+
+(VNSC
+\begin_inset Formula $_{0}$
+\end_inset
+
+-GVNS
+\begin_inset Formula $_{0}$
+\end_inset
+
+)
+\begin_inset Formula $+\eta\Delta$
+\end_inset
+
+ where 
+\begin_inset Formula $\Delta^{\prime}$
+\end_inset
+
+ is the sequentially adjusted correction, (VNSC
+\begin_inset Formula $_{0}$
+\end_inset
+
+-GVNS
+\begin_inset Formula $_{0}$
+\end_inset
+
+) is the difference preserved from the last time the GPS groundspeed was
+ valid, and 
+\begin_inset Formula $\eta=0.997\, s^{-1}$
+\end_inset
+
+ is chosen to give a decaying transition with a time constant of about 5.5
+ min.
+ This has the potential to introduce some artificial variance at this scale
+ and so should be considered in cases where variance spectra are analyzed
+ in detail, but it has much less influence on such spectra than would introducin
+g a discontinuous transition.
+ Ideally, the current fit and the last filtered discrepancy (VNSC
+\begin_inset Formula $_{0}$
+\end_inset
+
+-GVNS
+\begin_inset Formula $_{0}$
+\end_inset
+
+) should be about equal, so this should not introduce a significant change.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+it would be desirable to use a gradual transition back to the complementary-filt
+ered solution, but this apparently isn't done now; instead, there is a hard
+ switch back to use of the complementary-filter solution, without adjustment
+ or re-initialization of the past accumulated filters (carried in zf).
+ Specifically, if GPS becomes again good while the fit is being used, dvy
+ should be moved toward the complementary-filter solution gradually, with
+ the same exponential filter used to initiate the use of the fit.
+ This would be implemented by replacing the dvy first expression for goodGPS
+ .
+ Note that there is no need to filter gvns and vns separately, only their
+ difference, because the filter is linear.
+ Could save two filter steps and arrays: dvy[]=filter(()gvns-vns, zf[]).
+ But, if a fit was calculated previously, want to move from that previous
+ fit to this result, via something like dvy[] = dvy[]*fctrf[]+(1-fctrf[])*filter
+(()gvns-vns, zf[])).
+ This introduces another time constant (5.6 min) into the filter that is
+ otherwise 10-min, but avoids the sharp transition.
+ It compromises the otherwise favorable characteristic of the complementary
+ filter that it has no or little effect on the variance spectrum, but dvy
+ can be regarded as a correction to vns to correct for long-term drift in
+ the IRS, and to the extent that this is true and all variance remains in
+ vns then any filtering applied to dvy won't have much effect.
+ It may be acceptable to apply this correction always, instead of switching
+ it on and off when transitions occur.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS-Corrected Inertial Latitude and Longitude (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+LATC
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+LATC
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+LONC
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+LONC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Combined GPS and IRS output of latitude and longitude from the complementary-fil
+ter algorithm.
+ Positive values are north and east, respectively.
+ These variables are the best estimate of position, obtained by the following
+ approach:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "95text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+LAT = latitude measured by the IRS
+\begin_inset Newline newline
+\end_inset
+
+LON = longitude measured by the IRS
+\begin_inset Newline newline
+\end_inset
+
+GLAT = latitude measured by the GPS
+\begin_inset Newline newline
+\end_inset
+
+GLON = longitude measured by the GPS
+\begin_inset Newline newline
+\end_inset
+
+VNSC = aircraft ground speed, north component, corrected 
+\begin_inset Newline newline
+\end_inset
+
+VEWC = aircraft ground speed, east component, corrected
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\end_layout
+
+\begin_layout Enumerate
+Initialize the corrected position at the IRS position at the start of the
+ flight or after any large change (>5
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+) in the IRS position.
+\end_layout
+
+\begin_layout Enumerate
+Integrate forward from that position using the aircraft groundspeed with
+ components {VNSC,VEWC}.
+ Note that in the absence of GPS information this will introduce long-term
+ errors because it does not account for the Earth's spherical geometry.
+ It provides good short-term accuracy, but the GPS updating in the next
+ step is needed to compensate for the difference between a rectilinear frame
+ and the Earth's spherical coordinate frame and provides a smooth yet accurate
+ track.
+\end_layout
+
+\begin_layout Enumerate
+Use an exponential adjustment to the GPS position, with time constant that
+ is typically about 100 s.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+specifically, LATC += 
+\begin_inset Formula $\eta$
+\end_inset
+
+(GLAT-LATC) with 
+\begin_inset Formula $\eta=2\pi/(600\,\mathrm{s})$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+To handle periods when the GPS becomes invalid, use an approach analogous
+ to that for groundspeed, whereby a Schuler-oscillation fit to the difference
+ between the GPS and IRS measurements is developed and used to extrapolate
+ through periods when the GPS is invalid.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

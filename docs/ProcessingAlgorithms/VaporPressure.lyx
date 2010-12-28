@@ -1,0 +1,2182 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\input colordvi
+\usepackage{color}
+\fancyhead{}
+\fancyfoot[CE,CO]{}
+\newtoks{\topicofnote} \global\topicofnote={}
+\newdimen\longindent \longindent=3.5truein
+\fancyhead[L]{Note re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\renewcommand{\headrulewidth}{0.0pt}
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+\setlength{\leftmargin}{\labelwidth}
+\addtolength{\leftmargin}{\labelsep}
+\renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+\newcommand{\datetoday}{\number\day\space
+     \ifcase\month\or January\or February\or March\or April\or May\or
+     June\or July\or August\or September\or October\or November\or
+     December\fi
+     \space\number\year}
+\newcommand{\ASPmemo}{\null \vskip-1.5truein
+{\raggedright \textsf{\textsc{\large \textcolor{blue}{Advanced Study Program}}}}\par
+{\raggedright \textsf{\textsl{\textcolor{blue}{Memorandum:}}}} \par \vskip6pt
+{\color{blue}{\hrule}}\par
+\vskip0.3truein \leftline{\hskip \longindent \datetoday} \vskip0.2truein
+\thispagestyle{empty}}
+\newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachments:] {#1}
+\end{lyxlist}}
+\newcommand{\cc}[1]{\begin{lyxlist}{Attachments:00}
+\item [cc:] {#1}
+\end{lyxlist}}
+\newcommand{\attach}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachment:] {#1}
+\end{lyxlist}}
+%usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
+\end_preamble
+\use_default_options false
+\language english
+\inputencoding auto
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\leftmargin 2.54cm
+\topmargin 3.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 1cm
+\headsep 2cm
+\footskip 0.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+set topicofnote to topic of note
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+topicofnote={vapor pressure calculations}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+Note goes here:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Title
+Suggested Changes to the Algorithms for the Calculation of Vapor Pressure
+\end_layout
+
+\begin_layout Section*
+Code Now In Use:
+\end_layout
+
+\begin_layout Standard
+The equilibrium vapor pressure with respect to a water surface or an ice
+ surface is used for some of the derived-variable calculations.
+ At present the Goff-Gratch formulation is used, in the following form:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+For measurements from dew-point hygrometers where the reading is below 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C, the measurement is assumed to be the frost point and is converted to
+ dewpoint using the following formula:
+\end_layout
+
+\begin_layout LyX-Code
+if (dp < 0.0) {dp = 0.009109+dp*(1.134055+dp*0.001038);}
+\end_layout
+
+\begin_layout Plain Layout
+The conversion to vapor pressure from dewpoint is then implemented in the
+ function esubt (where 
+\begin_inset Quotes eld
+\end_inset
+
+Kelvin
+\begin_inset Quotes erd
+\end_inset
+
+ is 273.15):
+\end_layout
+
+\begin_layout LyX-Code
+static const double     Ts = 373.16, To = Kelvin;
+\end_layout
+
+\begin_layout LyX-Code
+/* --------------------------------------------------------------------
+ */ 
+\end_layout
+
+\begin_layout LyX-Code
+double esubt(double temperature, double pressure) 
+\end_layout
+
+\begin_layout LyX-Code
+{   
+\end_layout
+
+\begin_layout LyX-Code
+  double Tk = temperature + To;  
+\end_layout
+
+\begin_layout LyX-Code
+  double fw, ew;
+\end_layout
+
+\begin_layout LyX-Code
+  if (Tk < 1.0) {Tk = 1.0;}
+\end_layout
+
+\begin_layout LyX-Code
+  ew = pow(10.0, 
+\end_layout
+
+\begin_layout LyX-Code
+      (-7.90298 * ((Ts / Tk) - 1.0)
+\end_layout
+
+\begin_layout LyX-Code
+       +5.02808 * log10(Ts / Tk)
+\end_layout
+
+\begin_layout LyX-Code
+       -1.3816e-7 * (pow(10.0, 11.334 * (1.0 - Tk / Ts)) - 1.0)
+\end_layout
+
+\begin_layout LyX-Code
+       +8.1328e-3 * (pow(10.0, -3.49149 * (Ts / Tk - 1.0)) - 1.0))
+\end_layout
+
+\begin_layout LyX-Code
+       +log10(1013.246) );
+\end_layout
+
+\begin_layout LyX-Code
+  /* Arden Buck's pressure enhancement factor.
+   */
+\end_layout
+
+\begin_layout LyX-Code
+  fw = 1.0007 + (3.46e-6 * pressure);
+\end_layout
+
+\begin_layout LyX-Code
+  return(ew * fw); 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The procedure is thus to convert all measurements to equivalent-dew-point
+ measurements and then to perform all subsequent calculations with the dew-point
+ values.
+ There are some small errors in this code and one possible improvement to
+ be made:
+\end_layout
+
+\begin_layout Enumerate
+The coefficient 11.334 should be 11.344
+\end_layout
+
+\begin_layout Enumerate
+The conversion to standard atmosphere changed since the publication of the
+ Goff-Gratch (1946) formulation, and the reference pressure should be 1013.25
+ instead of 1013.246.
+ Furthermore, revised formulas were published by Goff in 1957 and 1965,
+ although the change is not significant; see either Murphy and Koop or the
+ web document of Voemel (http://cires.colorado.edu/
+\begin_inset Formula $\sim$
+\end_inset
+
+voemel/vp.html).
+\end_layout
+
+\begin_layout Enumerate
+The correction for atmospheric pressure that enters through fw would be
+ better represented (according to Murphy and Koop, 2005) by:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \begin{equation}
+f=1+10^{-5}p(4.923-0.0325T+5.84\times10^{-5}T^{2})\label{eq:ReplacementForBuckEnhancementFw}\end{equation}
+
+\end_inset
+
+where T is the temperature in kelvin.
+ At a pressure of 1000 mb, the Buck enhancement factor fw is 1.00415 while
+ (for T=273.15) 
+\begin_inset Formula $f$
+\end_inset
+
+ is 1.00403, so the difference is insignificant at that point.
+ However, the dependence on pressure is significantly different, and no
+ temperature dependence is included in the Buck formula.
+ Because the formula from Buck was based on the Hyland (1975) formula that
+ Murphy and Koop also used to obtain a better fit, it seems appropriate
+ to change to their new formula for 
+\begin_inset Formula $f$
+\end_inset
+
+.
+ A more significant error is that the procedure being used first converts
+ all frost-point measurements to dew-point and then uses the water enhancement
+ factor fw applicable for water, while even Appendix C of RAF Bulletin 9
+ indicates that a different correction should be used for ice.
+ Consider the effect at T=273.15-80=193.15
+\begin_inset space \thinspace{}
+\end_inset
+
+K: The above formula gives an enhancement factor of about 1+.008(p/(1000
+ mb)) while the Buck formula gives 1+0.003(p/(1000 mb)).
+ While this is a small difference in terms of values obtained for the vapor
+ pressure, applying the wrong formula (even inconsistent with Appendix C)
+ is an error that should be corrected.
+ Murphy and Koop (2005) suggest using the above formula for any temperature
+ from 180 to 330
+\begin_inset space \thinspace{}
+\end_inset
+
+K, where it applies to vapor pressure calculated from the frost point below
+ T=273.15 but vapor pressure calculated from the dew point above T=273.15.
+ 
+\end_layout
+
+\begin_layout Standard
+The net effect of the above changes is insignificant for dewpoints above
+ -50
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C, and is a maximum of about 0.1% at -80
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ However, there are some more important reasons for considering a change
+ to the formulas used for vapor pressure, as discussed in the next sections.
+\end_layout
+
+\begin_layout Section*
+Reasons For Recommending Revision:
+\end_layout
+
+\begin_layout Itemize
+New measurements of the equilibium vapor pressure over water and ice were
+ made after the Goff-Gratch representation was developed, and there were
+ various small revisions to the temperature scales and reference values
+ on which that representation was based.
+ For example, the publications by Wexler (1976)
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Wexler, A., 1976: Vapor pressure formulation for water in range 0 to 100
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ A revision.
+ J.
+ Res.
+ Natl.
+ Bur.
+ Stand.
+ Sect.
+ A., 80, 775 
+\end_layout
+
+\end_inset
+
+ and Wexler (1977)
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+A Wexler, A., 1977: Vapor presure formulation for ice.
+ J.
+ Res.
+ Natl.
+ Bur.
+ Stand.
+ A., 81, 5–20 
+\end_layout
+
+\end_inset
+
+ presented fits that differ significantly from the Goff-Gratch formula,
+ giving e.g.
+ the equilibrium vapor pressure over water at 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C (
+\begin_inset Formula $e_{s,w}(0^{\circ}$
+\end_inset
+
+C)) of 6.112 mb vs 6.103 mb obtained from the Goff-Gratch formula.
+ Flatau et al.\SpecialChar \-
+(1992)
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+J.
+\begin_inset space ~
+\end_inset
+
+Appl.
+\begin_inset space ~
+\end_inset
+
+Meteorol., 31, 1507--1513
+\end_layout
+
+\end_inset
+
+ emphasized the need for revision of the standard convention in use in meteorolo
+gy and developed alternative fits to the modern data.
+ See also Wagner et al., 1994.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Wagner, W., A.
+ Saul and A.
+ Pruss, 1994: International equations for the pressure along the melting
+ and along the sublimation curve of ordinary water substance.
+ J.
+ Phys.
+ Chem.
+ Ref.
+ Data, 23, 515-527.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Murphy and Koop (2005)
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Q.
+ J.
+ R.
+ Meteorol.
+ Soc.
+ (2005), 131, pp.
+ 1539–1565
+\end_layout
+
+\end_inset
+
+ developed a new fit to experimental data, with the significant addition
+ that they used modern information on the specific heat and latent heat
+ of supercooled water to extend the fits for water into the supercooled
+ region.
+ Earlier formulas, including that of Goff and Gratch, specifically warned
+ against extrapolation to supercooled water because of the lack of data.
+ This work presents a justified extrapolation and a single formula valid
+ both above and below the freezing point, as well as offering a new and
+ simplified fit to the data for equilibrium vapor pressure over ice.
+ Their fit in the supercooled region is significantly different from Goff
+ and Gratch, especially for temperature around -70
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C, where their equation gives an equilibrium vapor pressure of 0.479 mb vs
+ 0.491 mb from Goff and Gratch (1946) and 0.492 mb from Goff (1965).
+ The Murphy and Koop paper is summarized in the next section.
+\end_layout
+
+\begin_layout Section*
+Murphy and Koop (2005):
+\end_layout
+
+\begin_layout Standard
+Murphy and Koop (2005) presents an analysis based on integration of the
+ Clausius-Clapeyron equation with modern data for the specific heat of supercool
+ed water, from which one can obtain the latent heat of vaporization needed
+ for the integration, and they extend the analysis into the supercooled-water
+ region.
+ They note that previous extrapolations for supercooled water were not intended
+ for such use or justified.
+ On the basis of fits to existing data, they present new equations for the
+ equilibrium vapor pressure over a plane water surface and over a plane
+ ice surface.
+ 
+\end_layout
+
+\begin_layout Subsection*
+Frost Point
+\end_layout
+
+\begin_layout Standard
+For equilibrium relative to ice, their new and relatively simple formula,
+ plotted in Fig.
+\begin_inset space ~
+\end_inset
+
+1, agrees with Goff-Gratch to within 0.2% for temperatures from -100 to 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C, with theirs 0.2% higher at the low limit.
+ The formula is equivalent to the following equation for the equilibrium
+ vapor pressure with respect to a plane ice surface (
+\begin_inset Formula $e_{s,i}^{\prime}$
+\end_inset
+
+) in terms of the absolute temperature 
+\begin_inset Formula $T$
+\end_inset
+
+ of the frost point:
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+this form differs from that of Murphy and Koop (2005) only to present it
+ in a form that is independent of dimensions, except that absolute temperature,
+ conventionally in kelvin, is needed
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{eqnarray}
+e_{s,i} & = & b_{0}^{\prime}\exp(b_{1}\frac{(T_{0}-T)}{T_{0}T}+b_{2}\ln(\frac{T}{T_{0}})+b_{3}(T-T_{0}))\label{eq:MK1-1}\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $T_{0}=273.15$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+K, 
+\begin_inset Formula $b_{0}=9.550426,$
+\end_inset
+
+ 
+\begin_inset Formula $b_{1}=-5723.265\, K,$
+\end_inset
+
+ 
+\begin_inset Formula $b_{2}=3.53068$
+\end_inset
+
+, 
+\begin_inset Formula $b_{3}=-0.00728332\,$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+, and 
+\begin_inset Formula $b_{0}^{\prime}=(\frac{1\, hPa}{100\, Pa})\exp(b_{0}+b_{1}T_{0}^{-1}+b_{2}\ln(T_{0})+b_{3}T_{0})=6.111536$
+\end_inset
+
+ hPa.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename FP.png
+	width 8.5cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Vapor pressure as a function of frost point from the Murphy and Koop (2005)
+ formula.
+ The Goff-Gratch formula is superimposed but is not distinguishable in this
+ plot.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The difference between the Goff-Gratch formula and the Murphy-Koop formula,
+ in percent, is shown in Fig.
+\begin_inset space ~
+\end_inset
+
+2:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename diffFP.png
+	width 8.5cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+The percentage difference between the Goff-Gratch and Murphy-Koop formulas
+ for frost-point vapor pressure.
+ The plotted value at -100
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C indicates that the Murphy-Koop value is about 0.22% higher than the Goff-Gratch
+ value.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Dew Point:
+\end_layout
+
+\begin_layout Standard
+Murphy and Koop (2005) present a single formula that they suggest is valid
+ for the equilibrium vapor pressure over water from 123 K to 332 K, and
+ thus for all temperatures normally present in the atmosphere.
+ The formula is a splice of two fits, using a hyperbolic tangent function
+ to merge the two.
+ The tanh() function changes from -1 to 1 as the argument changes from large
+ negative to large positive, so it is used to combine the coefficients from
+ the two fits:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+\ln(e_{s,w})=d_{1}+d_{2}\frac{(T_{0}-T)}{TT_{0}}+d_{3}\ln(\frac{T}{T_{0}})+d_{4}(T-T_{0})\label{eq:MKwater}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+or 
+\begin_inset Formula \begin{equation}
+e_{s,w}=e_{0}\exp\left((\alpha-1)e_{6}+d_{2}(\frac{T_{0}-T}{TT_{0}}\right)+d_{3}\ln(\frac{T}{T_{0}})+d_{4}(T-T_{0})\label{eq:proposedNewWater}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $T_{0}$
+\end_inset
+
+=273.15
+\begin_inset space \thinspace{}
+\end_inset
+
+K, and if 
+\begin_inset Formula $\alpha=\tanh(e_{5}(T-T_{x}))$
+\end_inset
+
+ with 
+\begin_inset Formula $e_{5}$
+\end_inset
+
+ as in the table below and 
+\begin_inset Formula $T_{x}=218.8$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+K, 
+\begin_inset Formula $d_{i}=e_{i}+\alpha e_{i+5}$
+\end_inset
+
+, with 
+\begin_inset Formula $e_{0}=\exp(e_{1}+e_{6})=6.091888$
+\end_inset
+
+ hPa.
+ The values of 
+\begin_inset Formula $e_{i}$
+\end_inset
+
+ are given in the following table:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="10" columns="2">
+<features>
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+coefficient
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+value
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $e_{1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6.564725
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $e_{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-6763.22
+\begin_inset space \thinspace{}
+\end_inset
+
+K
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $e_{3}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-4.210
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $e_{4}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.000367
+\begin_inset space \thinspace{}
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $e_{5}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0415
+\begin_inset space \thinspace{}
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $e_{6}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.1525967
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $e_{7}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-1331.22
+\begin_inset space \thinspace{}
+\end_inset
+
+K
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $e_{8}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-9.44523
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $e_{9}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.014025
+\begin_inset space \thinspace{}
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 3 shows the vapor pressure as a function of dewpoint from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:proposedNewWater"
+
+\end_inset
+
+).
+ The Goff-Gratch formula is also plotted here, but within the resolution
+ of the plot it is hard to distinguish from the Murphy and Koop equation.
+ However, when the difference is plotted as in Fig.
+\begin_inset space ~
+\end_inset
+
+4, it is evident that the departures at low temperature are significant.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename DP.png
+	width 8.5cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Water vapor pressure as a function of dewpoint for the equation of Murphy
+ and Koop (2005, black line) and also for the Goff-Gratch formula (orange
+ line).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename diffDP.png
+	width 8.5cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Difference in percent between the Murphy and Koop formula and the Goff-Gratch
+ formula for water vapor pressure as a function of dewpoint.
+ The orange line shows the difference between the Goff (1965) formula and
+ the Goff-Gratch (1946) formula.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Inverting the Equations:
+\end_layout
+
+\begin_layout Standard
+The Goff-Gratch equation and the Murphy-Koop equation provide vapor pressure
+ as a function of frost point or dewpoint, but it is sometimes useful to
+ be able to calculate the inverse, the frost or dew point given the vapor
+ pressure.
+ For example, this must be done in normal processing to obtain the dewpoint
+ from the measured frostpoint.
+ The equation used for this purpose was given in the first section:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+T_{d}=0.009109+T_{f}(1.134055+0.001038T_{f})\label{eq:DPfromFP}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where both 
+\begin_inset Formula $T_{d}$
+\end_inset
+
+ and 
+\begin_inset Formula $T_{f}$
+\end_inset
+
+ are given in units of 
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ To evaluate the accuracy of this formula, the equation from Murphy and
+ Koop for water vapor pressure was inverted numerically to generate a plot
+ of dewpoint as a function of frostpoint, and the result was compared to
+ (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:DPfromFP"
+
+\end_inset
+
+).
+ The result, shown in Figs.
+\begin_inset space ~
+\end_inset
+
+5 and 6, was that (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:DPfromFP"
+
+\end_inset
+
+) produced errors that were typically about 0.2
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C for frostpoints near about -60 to -70
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C and increasing errors below -90
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C that approached 0.8
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ Because of the complexity of the fit at these low frostpoints, it was necessary
+ to use a 4th-order fit to achieve reasonable accuracy, as shown also in
+ Fig.
+\begin_inset space ~
+\end_inset
+
+5.
+ The best-fit coefficients were the following:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{eqnarray}
+T_{d} & = & 4.953828\times10^{-3}+T_{f}(1.132468+T_{f}(8.865794\times10^{-4}\label{eq:TDfromTFrevised}\\
+ & + & T_{f}(-5.273161\times10^{-6}+T_{f}(-4.492316\times10^{-8}))))\nonumber \end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This polynomial is still not as accurate as would be desirable, producing
+ a difference of about 0.2
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C at the extreme low temperature of -100
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C frost point (the lowest temperature included in the fit).
+ It may be preferable to use a Newton's-method solution of the Murphy-Koop
+ equation because that converges with only a few iterations, typically about
+ 5 for 0.00001
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C tolerance in the answer.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename DPfromFP.png
+	width 8.5cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Calculation of frost point from dew point, using the Murphy and Koop (2005)
+ formulas (black line) and using the quadratic formula from nimbus code
+ (orange line).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename ErrorDPFP.png
+	width 8.5cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Difference between dewpoint calculated from frost point using the Murphy
+ and Koop (2005) equations vs the nimbus code (black line) or vs the fourth-orde
+r polynomial given in the text (orange line).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Recommendations:
+\end_layout
+
+\begin_layout Enumerate
+Replace the Goff-Gratch formulas for vapor pressure in equilibrium over
+ ice or water surfaces with the formulas (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:MK1-1"
+
+\end_inset
+
+) and (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:proposedNewWater"
+
+\end_inset
+
+), respectively.
+ This is not a significant change that would require any reprocessing, but
+ it brings us into line with current best equations, especially in the region
+ that pertains to supercooled water.
+\end_layout
+
+\begin_layout Enumerate
+Replace calculation of the dewpoint from the frostpoint with a Newton's-method
+ solution of the above equations, which provides an accurate solution throughout
+ the applicable temperature ranges, provided that tests demonstrate that
+ the time required for such solution is negligible.
+ (If not, the fourth-order polynomial fit given in the preceding section
+ may be preferable.) This procedure can also be used to find the equivalent
+ dew-point temperature corresponding to other measurements, such as those
+ derived from the measurement of vapor density directly, provided that the
+ results are first converted to a measurement of vapor pressure such as
+ provided in the first step below.
+ The solution procedure is as follows:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Given the frost-point temperature 
+\begin_inset Formula $T_{FP}$
+\end_inset
+
+, use (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:MK1-1"
+
+\end_inset
+
+) to find the corresponding vapor pressure, set to 
+\begin_inset Quotes eld
+\end_inset
+
+ess
+\begin_inset Quotes erd
+\end_inset
+
+ before using the following code examples.
+\end_layout
+
+\begin_layout Enumerate
+Use a Newton's-method (or other numerical) solution to find the dew-point
+ temperature 
+\begin_inset Formula $T_{DP}$
+\end_inset
+
+ that gives the same vapor pressure:
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+the following code was used to generate the figures in the preceding section
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+define a function like the following to define the desired zero for Newton's
+ method.
+ To use this, before the function is called, 
+\begin_inset Quotes eld
+\end_inset
+
+ess
+\begin_inset Quotes erd
+\end_inset
+
+ should be set to the vapor pressure corresponding to the frost point for
+ which the dewpoint is to be calculated, in units of hPa or mb:
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+the equation and coefficients in the following are as given by Murphy and
+ Koop (2005) and differ from those of (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:proposedNewWater"
+
+\end_inset
+
+) only as a result of consolidation of coefficients and reformulation to
+ avoid dimensional specificity in the original formula
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout LyX-Code
+float vapMK(float *tc) 
+\end_layout
+
+\begin_layout LyX-Code
+{ 
+\end_layout
+
+\begin_layout LyX-Code
+// this uses the global reference pressure ess, obtained 
+\end_layout
+
+\begin_layout LyX-Code
+// from the Murphy and Koop formula for ice vapor pressure 
+\end_layout
+
+\begin_layout LyX-Code
+// and set before this function is called  
+\end_layout
+
+\begin_layout LyX-Code
+  double tk, yp; 
+\end_layout
+
+\begin_layout LyX-Code
+  const double tz = 273.15; 
+\end_layout
+
+\begin_layout LyX-Code
+  const double b7=54.842763, b8=-6763.22, b9=-4.210, 
+\end_layout
+
+\begin_layout LyX-Code
+        b10=0.000367, b11=0.0415, TR2=218.8, b12=53.878, 
+\end_layout
+
+\begin_layout LyX-Code
+        b13=-1331.22, b14=-9.44523, b15=0.014025;
+\end_layout
+
+\begin_layout LyX-Code
+// convert to kelvin
+\end_layout
+
+\begin_layout LyX-Code
+  tk = *tc + tz;   
+\end_layout
+
+\begin_layout LyX-Code
+  yp = exp(b7 + b8 / tk + b9 * log(tk) + b10 * tk            
+\end_layout
+
+\begin_layout LyX-Code
+     + tanh(b11*(tk-TR2)) * (b12 + b13 / tk 
+\end_layout
+
+\begin_layout LyX-Code
+                 + b14 * log(tk) + b15 * tk))/100.;         
+\end_layout
+
+\begin_layout LyX-Code
+  yp -= ess;       
+\end_layout
+
+\begin_layout LyX-Code
+  return(yp); 
+\end_layout
+
+\begin_layout LyX-Code
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+use some code similar to the (decades-old) FORTRAN code in the next box
+ to find the zero of the preceding function:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "95text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout LyX-Code
+      SUBROUTINE NEWTN(FUNC,X0,EPS,XC) 
+\end_layout
+
+\begin_layout LyX-Code
+C.....SOLUTION OF EQUATION FUNC=0 BY NEWTON'S METHOD  
+\end_layout
+
+\begin_layout LyX-Code
+C  
+\end_layout
+
+\begin_layout LyX-Code
+C.....INPUT: 
+\end_layout
+
+\begin_layout LyX-Code
+C            FUNC = FUNCTION IN FORM F(X)=0.
+  EITHER IMPLICIT 
+\end_layout
+
+\begin_layout LyX-Code
+C            IN CALLING PROGRAM OR DECLARED EXTERNAL.
+  
+\end_layout
+
+\begin_layout LyX-Code
+C            X0   = STARTING GUESS AT ROOT.
+  
+\end_layout
+
+\begin_layout LyX-Code
+C            EPS  = DESIRED TOLERANCE IN ANSWER.
+ 
+\end_layout
+
+\begin_layout LyX-Code
+C.....RESULT:  
+\end_layout
+
+\begin_layout LyX-Code
+C            XC   = ROOT OF EQUATION.
+  
+\end_layout
+
+\begin_layout LyX-Code
+      LOOP=1
+\end_layout
+
+\begin_layout LyX-Code
+      XB=X0*1.01  
+\end_layout
+
+\begin_layout LyX-Code
+      XA=X0
+\end_layout
+
+\begin_layout LyX-Code
+      DELTA=XB-XA
+\end_layout
+
+\begin_layout LyX-Code
+      FA=FUNC(XA) 
+\end_layout
+
+\begin_layout LyX-Code
+1     FB=FUNC(XB) 
+\end_layout
+
+\begin_layout LyX-Code
+      FPRIME=(FB-FA)/DELTA
+\end_layout
+
+\begin_layout LyX-Code
+      XC=XB-FB/FPRIME
+\end_layout
+
+\begin_layout LyX-Code
+      DELTA=XC-XB
+\end_layout
+
+\begin_layout LyX-Code
+      XB=XC
+\end_layout
+
+\begin_layout LyX-Code
+      XA=XB
+\end_layout
+
+\begin_layout LyX-Code
+      FA=FB
+\end_layout
+
+\begin_layout LyX-Code
+      IF(LOOP.GT.500) RETURN
+\end_layout
+
+\begin_layout LyX-Code
+      LOOP=LOOP+1 
+\end_layout
+
+\begin_layout LyX-Code
+      IF(ABS(DELTA).GT.EPS*0.1) GO TO 1
+\end_layout
+
+\begin_layout LyX-Code
+      RETURN
+\end_layout
+
+\begin_layout LyX-Code
+      END 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+ancient FORTRAN example of one way to implement Newton's method
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+use a subroutine call similar to the following C code to find the dewpoint
+ (
+\begin_inset Quotes eld
+\end_inset
+
+td
+\begin_inset Quotes erd
+\end_inset
+
+) from the frost point (
+\begin_inset Quotes eld
+\end_inset
+
+tf
+\begin_inset Quotes erd
+\end_inset
+
+):
+\begin_inset Newline newline
+\end_inset
+
+newtn_(&vapMK, &tf, &eps, &td);
+\begin_inset Newline newline
+\end_inset
+
+where 
+\begin_inset Quotes eld
+\end_inset
+
+const float eps = 0.00001
+\begin_inset Quotes erd
+\end_inset
+
+ specifies an (overly strict) accuracy limit on the result, which could
+ be made larger if it proves necessary to limit the number of iterations.
+ The variable 
+\begin_inset Quotes eld
+\end_inset
+
+tf
+\begin_inset Quotes erd
+\end_inset
+
+ is only passed to the subroutine to provide an initial value for the iteration;
+ the vapor pressure 
+\begin_inset Quotes eld
+\end_inset
+
+ess
+\begin_inset Quotes erd
+\end_inset
+
+ must be set to correspond to this frost point prior to calling the subroutine.
+ Both 
+\begin_inset Quotes eld
+\end_inset
+
+tf
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+td
+\begin_inset Quotes erd
+\end_inset
+
+ are in units of 
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Enumerate
+Modify the correction for atmospheric pressure, now described in RAF Bulletin
+ 9 Appendix C, to have the form given by (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ReplacementForBuckEnhancementFw"
+
+\end_inset
+
+), duplicated here:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \[
+f=1+10^{-5}p(4.923+T(-0.0325+T(5.84\times10^{-5}))\]
+
+\end_inset
+
+where 
+\begin_inset Formula $p$
+\end_inset
+
+ is the total pressure in hPa or mb and 
+\begin_inset Formula $T$
+\end_inset
+
+ is the temperature in kelvin.
+ There is a subtlety in application of this formula that should be observed,
+ however.
+ The dewpoint has two definitions that are usually considered identical,
+ but they are not, although both of the following quotes are taken from
+ the AMS Glossary:
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Enumerate
+\begin_inset Quotes eld
+\end_inset
+
+The temperature to which a given air parcel must be cooled at constant pressure
+ and constant water vapor content in order for saturation to occur.
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Quotes eld
+\end_inset
+
+...
+ the temperature at which the saturation vapor pressure of the parcel is
+ equal to the actual vapor pressure of the contained water vapor.
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The equation for 
+\begin_inset Formula $f$
+\end_inset
+
+ shows that there is an excess vapor pressure at equilibrium as a result
+ of the total pressure, so a parcel cooled to saturation will condense at
+ a temperature that differs from the saturation vapor pressure as that term
+ is usually understood, i.e., the saturation vapor pressure in the absence
+ of air.
+ Definition (b) is only equivalent to (a) if 
+\begin_inset Quotes eld
+\end_inset
+
+the saturation vapor pressure of the parcel
+\begin_inset Quotes erd
+\end_inset
+
+ is considered to be pressure-dependent, which I think is not the usual
+ assumption.
+ I suggest that the resolution to this is to consider dewpoint temperature
+ or frostpoint temperature to be the temperature at which the vapor in the
+ parcel
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+not 
+\begin_inset Quotes eld
+\end_inset
+
+the vapor 
+\emph on
+contained
+\emph default
+ in the parcel
+\begin_inset Quotes erd
+\end_inset
+
+: the AMS glossary perpetuates the misconception that the air contains the
+ water vapor, as in the often-mistated claim that warm air 
+\begin_inset Quotes eld
+\end_inset
+
+holds
+\begin_inset Quotes erd
+\end_inset
+
+ more water vapor than cold air.
+ This is also an argument against using the term 
+\begin_inset Quotes eld
+\end_inset
+
+saturation
+\begin_inset Quotes erd
+\end_inset
+
+ vapor pressure; the vapor is not 
+\begin_inset Quotes eld
+\end_inset
+
+saturating
+\begin_inset Quotes erd
+\end_inset
+
+ anything, and it would be better to use the term 
+\begin_inset Quotes eld
+\end_inset
+
+equilibrium vapor pressure
+\begin_inset Quotes erd
+\end_inset
+
+ instead, although I haven't followed that convention in this note as consistent
+ly as I should
+\end_layout
+
+\end_inset
+
+ has partial pressure equal to the equilibrium vapor pressure at that temperatur
+e but in the absence of air.
+ That leads to a unique correspondence between frost or dew point and vapor
+ pressure, whereas definition (a) above would mean that at a given frost
+ or dew point the vapor pressure would vary depending on the pressure.
+ If we follow this convention, it has consequences for how we use the enhancemen
+t factor 
+\begin_inset Formula $f$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Enumerate
+Regarding performance of the dew-point hygrometers, we should assume that
+ they measure a frost- or dew-point temperature that 
+\emph on
+has already been enhanced
+\emph default
+ by 
+\begin_inset Formula $f$
+\end_inset
+
+, so that the measurement should be corrected by adjusting the frost- or
+ dewpoint to be the value that would give equilibrium vapor pressure 
+\emph on
+in the absence of air.
+
+\emph default
+ Suppose the instrument measures a frost-point temperature 
+\begin_inset Formula $T_{FP}^{\prime}$
+\end_inset
+
+.
+ That means that the vapor pressure is 
+\emph on
+higher
+\emph default
+ that the equilibrium vapor pressure at 
+\begin_inset Formula $T_{FP}^{\prime}$
+\end_inset
+
+ by the factor 
+\begin_inset Formula $f$
+\end_inset
+
+, such that 
+\begin_inset Formula $e=e_{s,i}(T_{FP})=fe_{s,i}(T_{FP}^{\prime})$
+\end_inset
+
+, so the true frost-point temperature 
+\begin_inset Formula $T_{FP}$
+\end_inset
+
+ is higher than 
+\begin_inset Formula $T_{FP}$
+\end_inset
+
+ 
+\emph on
+and the measured value should be corrected upward to obtain a true frostpoint
+ in the sense defined above.
+ 
+\emph default
+Two alternatives are the following.
+ (I think the first is most straightforward.)
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+One can calculate the vapor pressure from the measured frost-point temperature,
+ using (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:MK1-1"
+
+\end_inset
+
+), and then apply the enhancement factor 
+\begin_inset Formula $f$
+\end_inset
+
+ to get a value for the vapor pressure, in analogy to what is done now (but
+ using the correct enhancement factor that applies to the ice region).
+ Then use that enhanced value of the vapor pressure to calculate the dewpoint
+ temperature according to the procedure above.
+ This is simpler than the approach of the next paragraph and is equivalent
+ as long as the process is applied to 
+\emph on
+all
+\emph default
+ measurements, including those where the measured temperature is above 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+\end_layout
+
+\begin_layout Enumerate
+One can adjust the frost point to be the frost-point temperature that would
+ be measured in the absence of air at the same vapor pressure.
+ The following correction based on linear extrapolation will be adequate:
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+i.e., the frost point measured by the frost-point hygrometer should be corrected
+ by the addition of 
+\begin_inset Formula $\delta T_{FP}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \begin{equation}
+\delta T_{FP}=\frac{e_{s}(T_{FP})(f-1)}{de_{s}(T_{FP})/dT_{FP}}\label{eq:enhancementCorrection}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Then, to use that frost-point measurement to determine vapor pressure, one
+ should use the equilibrium vapor-pressure formula (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:MK1-1"
+
+\end_inset
+
+) without correction, and calculation of the dew-point temperature from
+ that frost-point temperature similarly should not involve any consideration
+ of enhancement factors.
+ This results in the same vapor pressure as that obtained by applying the
+ correction as an enhancement to the vapor pressure, as is now done, but
+ it restores the unique correspondence between frost-point temperature and
+ vapor pressure.
+ The required adjustment can typically amount to 0.5% in vapor pressure or,
+ correspondingly, about 0.07
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C difference in dew-point temperature.
+ 
+\emph on
+The significant change would be that the corrected dewpoint temperature
+ will be that applicable in the absence of air, independent of total pressure,
+ with unique correspondence to vapor pressure.
+\end_layout
+
+\begin_layout Enumerate
+When using humidity measurements from devices that measure water-vapor density
+ directly, those measurements should not have any correction applied for
+ the enhancement factor.
+ After determining the water vapor pressure from the measurement, one should
+ use the procedure described above to invert (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:proposedNewWater"
+
+\end_inset
+
+) to obtain an equivalent dewpoint, without any adjustment for enhancement
+ factor.
+ This and the above changes in calculation of the dewpoint will make the
+ measurement equivalent to that obtained from the dew-point hygrometers,
+ but only if the adjustment above is applied to the latter; otherwise, the
+ instruments would be reporting different quantities (as is the case now,
+ because the chilled-mirror devices produce a corrected dewpoint that differs
+ from the dewpoint equivalent to the measured vapor pressure, while the
+ instruments measuring vapor density are translated into equivalent dewpoint
+ that is equivalent to the measured vapor pressure without enhancement).
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attach{attachment}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attachm{first
+\backslash
+
+\backslash
+second}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+cc{first attachment
+\backslash
+
+\backslash
+second
+\backslash
+
+\backslash
+3rd att}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

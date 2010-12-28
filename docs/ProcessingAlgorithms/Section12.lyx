@@ -1,0 +1,727 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Section
+AEROSOL PARTICLE MEASUREMENTS
+\end_layout
+
+\begin_layout Standard
+RAF uses a modified TSI, Inc.
+ Model 3760 condensation nucleus counter to measure the concentration of
+ particulates in the atmosphere larger than about 0.01 
+\begin_inset Formula $\mu m$
+\end_inset
+
+ diameter.
+ Individual inlets have been designed for each research aircraft that provide
+ approximately isokinetic flow at research airspeeds.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+can we claim this for the HIMIL?
+\end_layout
+
+\end_inset
+
+ The CN counter is often used as a stand-alone instrument, but it also can
+ be placed downstream of various instruments, such as a counterflow virtual
+ impactor or differential mobility analyzer.
+ It is useful at altitudes up to about 11km.
+ It operates by condensing n-butyl alcohol on the particles as they pass
+ through a cooling/condenser tube where supersaturation of a few hundred
+ percent is produced.
+ The particles grow large enough to be seen by a laser-diode optical detector,
+ and the pulses from tat detector are counted to obtain an estimate of the
+ total concentration of aerosol particles.
+ The counter does not resolve particle concentration by size; the lower
+ size limit of the TSI 3760 is about XXX 
+\begin_inset Formula $\mu m$
+\end_inset
+
+, and all particles above that size enter the measurement of the total concentra
+tion.
+\end_layout
+
+\begin_layout Standard
+If large concentrations are encountered, two or more particles may be present
+ in the viewing volume at once and will produce only a single pulse from
+ the photodetector.
+ This 
+\begin_inset Quotes eld
+\end_inset
+
+coincidence
+\begin_inset Quotes erd
+\end_inset
+
+ error, which increases from about 0.6% at a total concentration of 
+\begin_inset Formula $10^{3}/cm^{3}$
+\end_inset
+
+to about 6% at 
+\begin_inset Formula $10^{4}/cm^{3}$
+\end_inset
+
+; a correction for these effects of coincidence is applied, but for concentratio
+ns above about 
+\begin_inset Formula $2\times10^{4}/cm^{3}$
+\end_inset
+
+ effects of coincidence become large enough that the correction introduces
+ significant uncertainty in the measurements.
+ 
+\end_layout
+
+\begin_layout Standard
+The variables associated with these measurements of condensation-nucleus
+ concentrations are discussed in the remainder of this section.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+should add here information on other counters, like WCN?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+CN Counter Inlet Pressure (mbar): 
+\bar under
+PCN
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+PCN
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+PCN is the absolute pressure inside the inlet tube of the instrument, as
+ measured by a Heise Model 623 pressure sensor.
+ The measurement is used to correct the sample flow rates (FCN and XICN)
+ that are used to obtain measurements of concentration.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+CN Counter Inlet Temperature (
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+): 
+\bar under
+TEMP1
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+TEMP1
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+TEMP2
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+TEMP2
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+CNTEMP
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+CNTEMP
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TEMP1, TEMP2 or CNTEMP is the output from a temperature sensor mounted on
+ the outside of the sampling tube immediately ahead of the counter.
+ The measurement, an approximation to the temperature of the air passing
+ through the tube, is used to correct the sample flow rates (FCN and XICN).
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Raw CN Counter Sample Flow Rate (slpm): 
+\bar under
+FCN
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+FCN
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+Corrected CN Counter Sample Flow Rate (vlpm): 
+\bar under
+FCNC
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+FCNC
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+FCN is the raw sample flow rate in standard liters per minute (slpm) measured
+ with a Sierra 830 Mass Flow meter.
+ The flow meter measures the flow rate that would apply under 
+\begin_inset Quotes eld
+\end_inset
+
+standard
+\begin_inset Quotes erd
+\end_inset
+
+ conditions; i.e., pressure of 1013.25 and temperature of 
+\begin_inset Formula $0^{\circ}C$
+\end_inset
+
+.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+why is this calculated in terms of the instrument P and T instead of ambient
+ P and T -- or should it be left in terms of SLPM? I left it as it was for
+ now but need to check the processing code.
+ Why is the reference T 21.11 C?
+\end_layout
+
+\end_inset
+
+FCNC is the sample flow rate in vlpm (volumetric liters per minute) corrected
+ for pressure and temperature.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+PCN = pressure at the inlet to the CN counter (mb)
+\begin_inset Newline newline
+\end_inset
+
+TEMP1 = temperature at the inlet of the sample tube (
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $P_{ref}$
+\end_inset
+
+ = standard reference pressure, 1013.25 mb
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $T_{ref}$
+\end_inset
+
+ = standard reference temperature, 293.26 K 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+??
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\begin_inset Formula \[
+\mathrm{FCNC=\{FCN\}}\frac{P_{ref}}{\mathrm{\{PCN\}}}\frac{(\{\mathrm{TEMP1\}}+T_{0})}{T_{ref}}\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Raw CN Isokinetic Side Flow Rate (slpm): 
+\bar under
+XICN
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+XICN
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+Corrected CN Isokinetic Side Flow Rate (vlpm): 
+\bar under
+XICNC
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+XICNC
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+XICN is the raw isokinetic side flow rate in standard liters per minute
+ (slpm) measured with a Sierra 830 Mass Flow meter, and XICNC is that flow
+ corrected for pressure and temperature to be the true volumetric flow.
+ For isokinetic sampling, the flow rate at the inlet entrance needs to equal
+ the true airspeed, and for proper operation the flow rate through the CN
+ counter should be at least 1.2 vlpm.
+ A side flow of filtered air 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+check this: filtered? Wasn't in B9, seems necessary
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+is added so both of these conditions can be met.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+PCN = pressure at the inlet to the CN counter (mb)
+\begin_inset Newline newline
+\end_inset
+
+TEMP1 = temperature at the inlet of the sample tube (
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $P_{ref}$
+\end_inset
+
+ = standard reference pressure, 1013.25 mb
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $T_{ref}$
+\end_inset
+
+ = 293.26 K 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+??
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\begin_inset Formula \[
+\mathrm{XICNC=\{XICN\}}\frac{P_{ref}}{\mathrm{\{PCN\}}}\frac{(\{\mathrm{TEMP1\}}+T_{0})}{T_{ref}}\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+TSI CN Counter Output (counts per sample interval); 
+\bar under
+CNTS
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+CNTS
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+CNTS is the raw output count from the TSI, Inc.
+ 3760 condensation cncleus counter.
+ The project-dependent sample rate may be chosen in the range from 1--50
+ Hz.
+ In some unusual cases the counts are divided by a selected power of two
+ to keep the counter from overflowing; see the project documentation.
+ 
+\end_layout
+
+\begin_layout Hanging
+.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Condensation Nucleus (CN) Concentration (
+\begin_inset Formula $cm^{-3}$
+\end_inset
+
+): 
+\bar under
+CONCN
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+CONCN
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+CONCN is the corrected concentration of condensation nuclei, calculated
+ with consideration of the sample rate and corrected for losses caused by
+ coincidence: 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+it seems to me that this says the result is neither SLPM nor ambient concentrati
+on but concentration at the arbitrary T and P of the instrument? Check on
+ this...
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+CNTS = counts per second from the CN counter
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\Delta T$
+\end_inset
+
+ = interval between recorded samples
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $D$
+\end_inset
+
+ = scale factor (normally 1)
+\begin_inset Newline newline
+\end_inset
+
+FCNC = corrected sample flow rate (
+\begin_inset Formula $cm^{3}/s)$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $T_{vv}$
+\end_inset
+
+ = time each particle is in the view volume = 4.167
+\begin_inset Formula $\times10-6$
+\end_inset
+
+ s
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\begin_inset Formula \[
+\mathrm{A=\frac{\{CNTS\}}{\mathrm{\{FCNC\}}\Delta T}\, D}\]
+
+\end_inset
+
+
+\begin_inset Formula \begin{equation}
+\mathrm{CONCN=A}\, e^{AT_{vv}\mathrm{\{FCNC\}}}\label{eq:12.1}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+See the introduction to this section for comments regarding the range of
+ validity of the coincidence correction in Eq.
+\begin_inset space ~
+\end_inset
+
+ (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:12.1"
+
+\end_inset
+
+).
+\end_layout
+
+\end_body
+\end_document

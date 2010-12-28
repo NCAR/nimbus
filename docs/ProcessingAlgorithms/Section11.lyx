@@ -1,0 +1,4187 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\begin_modules
+hanging
+\end_modules
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Section
+CLOUD PHYSICS VARIABLES
+\end_layout
+
+\begin_layout Subsection
+Measurements of Liquid Water Content
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Raw Output PMS/CSIRO (KING) Liquid Water Content (W): 
+\bar under
+PLWC
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+PLWC
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+PLWC1
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+PLWC1
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the output of a PMS/CSIRO (KING) liquid water probe (in Watts).
+ It measures the power required to maintain a constant temperature through
+ a heated element as that element is cooled by convection and evaporation
+ of impinging liquid water.
+ The convective heat losses are determined by calibration in dry air over
+ a range of airspeeds and temperatures.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+add reference
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Corrected PMS/CSIRO (KING) Liquid Water Content (g/m
+\begin_inset Formula $^{3}$
+\end_inset
+
+): 
+\bar under
+PLWCC
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+PLWCC
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+PLWCC1
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+PLWCC1
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the corrected liquid water content obtained from relating the power
+ consumption (required to maintain a constant temperature) to liquid water
+ content, taking into account the effect of convective heat losses.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+PLWC = total power dissipated by the probe
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $P_{D}$
+\end_inset
+
+ = power dissipated by the cooling effect of dry air alone
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $P_{W}$
+\end_inset
+
+ = power needed to heat and vaporize the liquid water that hits the probe
+ element
+\begin_inset Newline newline
+\end_inset
+
+Nu = Nusselt Number (relating conduction heat loss to the total heat loss
+ for dry air)
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+formula?
+\end_layout
+
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $L$
+\end_inset
+
+ = length of the probe sensitive element, m
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $d$
+\end_inset
+
+= diameter of the probe sensitive element, m
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\lambda$
+\end_inset
+
+ = thermal conductivity of dry air ()
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $T_{s}$
+\end_inset
+
+= sensor temperature (K)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $T_{a}$
+\end_inset
+
+= ambient temperature (K) = ATX+273.15
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $L_{v}$
+\end_inset
+
+ = latent heat of vaporization of water
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $C_{w}$
+\end_inset
+
+ = specific heat of water
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $U_{a}$
+\end_inset
+
+ = true airspeed (m/s) = TASX
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\chi$
+\end_inset
+
+ = liquid water content (g/m
+\begin_inset Formula $^{3}$
+\end_inset
+
+) = PLWCC
+\end_layout
+
+\begin_layout Plain Layout
+
+\lyxline
+
+\begin_inset Formula \[
+\mathrm{PLWC}=P_{D}+P_{W}\]
+
+\end_inset
+
+where
+\begin_inset Formula \[
+P_{D}=\pi\mathrm{Nu}\, L\lambda(T_{s}-T_{a})\]
+
+\end_inset
+
+
+\begin_inset Formula \[
+P_{W}=L\, d[L_{v}+c_{w}(T_{s}-T_{a})]\, U_{a}\chi\]
+
+\end_inset
+
+Result:
+\begin_inset Formula \[
+\mathrm{PLWCC}=\chi=\frac{\mathrm{\{PLWC\}}-P_{D}}{L\, d\, U_{a}[L_{v}+c_{w}(T_{s}-T_{a})]}\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Raw Output Rosemount Icing Detector (V): 
+\bar under
+RICE
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+RICE
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+A Rosemount 871F ice-accretion probe consists of a rod set in vibration
+ by a piezoelectric crystal.
+ The oscillation frequency of the probe changes with ice loading, so in
+ supercooled cloud ice accumulates on the sensor, and the change in oscillation
+ frequency is transmitted as a DC voltage..
+ When the probe loads to a trigger point, the probe heats the rod to remove
+ the ice.
+ Its output voltage is a measure of the mass of the accreted ice.
+ The rate of voltage change is converted to an estimate of the supercooled
+ liquid water content, as described in the next paragraph.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Derived Supercooled Liquid Water Content (g/m
+\begin_inset Formula $^{3}$
+\end_inset
+
+): 
+\bar under
+SCLWC
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+SCLWC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This variable is the supercooled liquid water content obtained from the
+ change in accreted mass on the Rosemount 871F ice-accretion probe over
+ one second.
+ Note that the output is not valid during the probe deicing cycle.
+ This cycle is apparent in the RICE output (a peak followed by a decrease
+ to near zero).
+ Supercooled liquid water content is determined by first calculating a water
+ drop impingement rate which is a function of the effective surface area,
+ the collection efficiency, the true airspeed, and the supercooled liquid
+ water content.
+ The impingement rate obtained is equated to the accreted mass of ice collected
+ by the probe in one second (empirical voltage/mass relationship).
+ The resulting equation is solved for supercooled water content.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+this is missing crucial information like how accreted mass is obtained from
+ voltage
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+A = effective surface area of the probe (m
+\begin_inset Formula $^{2}$
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\Delta t$
+\end_inset
+
+ = time interval during which an increment of mass accretes (s)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\Delta m$
+\end_inset
+
+ = mass of ice accreted on the probe in the time interval 
+\begin_inset Formula $\Delta t$
+\end_inset
+
+ (g)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $U_{a}$
+\end_inset
+
+ = true airspeed (m/s)
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \[
+\mathrm{SCLWC}=AU_{a}\frac{\Delta m}{\Delta t}\]
+
+\end_inset
+
+SCLWC = A (Dm/Dt)/Ua.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Sensors of Individual Particles (1-D Probes)
+\end_layout
+
+\begin_layout Standard
+The RAF operates a set of hydrometeor detectors that provide single-dimension
+ measurements (i.e., not images) of individual particle sizes.
+ RAF Bulletin No.
+\begin_inset space ~
+\end_inset
+
+24 contains extensive information on the operating principles and characteristic
+s of these instruments.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+this needs updating with recent info, esp Korolev, Strapp, etc.
+\end_layout
+
+\end_inset
+
+ Here the focus will be on the meanings of the variables in the archived
+ data files.
+\end_layout
+
+\begin_layout Standard
+Four- and five-character variable names shown in this section are generic.
+ The actual names appearing in NIMBUS-generated production output data sets
+ have appended to them an underscore (_) and three more characters which
+ indicate a probe's specific aircraft mounting location.
+ For example, AFSSP_RPI is the Total Accumulation from an FSSP-100 probe
+ mounted on the inboard, right-side pod.
+ The codes presently in use are given in the following table.
+ For the GV, there are 12 locations available, characterized by three letters.
+ The first is the wing ({L,R} for {port,starboard}), the second is the pylon
+ ({I,M,O} for inboard, middle, outboard}), the third is which canister at
+ the pylon is used ({I,O} for {inboard, outboard}).
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="18" columns="3">
+<features>
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+Code
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+Location
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+Aircraft
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+OBL 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Outboard Left 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+C-130Q 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+IBL 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Inboard Left 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+C-130Q 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+OBR 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Outboard Right 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+C-130Q 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+IBR 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Inboard Right 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+C-130Q 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+LPO 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Left Pod Outboard 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+C-130Q 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+LPI 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Left Pod Inboard 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+C-130Q 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+LPC 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Left Pod Center 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+C-130Q 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+RPO 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Right Pod Outboard 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+C-130Q 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+RPI 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Right Pod Inboard 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+C-130Q 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+RPC 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Right Pod Center 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+C-130Q 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+OBL 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Left Wing 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Electra 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+IBL 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Left Pylon 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Electra 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+WDL 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Window Left 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Electra 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+OBR 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Right Wing 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Electra 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+IBR 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Right Pylon 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Electra 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+WDR 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Window Right 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+Electra 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+{L,R}{I,M,O}{I,O}
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+see discussion above
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+GV
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The probe type also is coded into each variable's name, sometimes using
+ four characters, sometimes only one: FSSP-100 (FSSP or F), FSSP-300 (F300
+ or 3), PCAS (PCAS or P), OAP-200X (200X or X), OAP-260X (260X or 6) and
+ OAP-200Y (200Y or Y).
+ Prefix letters are used to identify the type of measurement (A=accumulated
+ particle counts per time interval per channel, C = concentration per channel,
+ CONC = Concentration from all channels, DBAR = Mean Diameter, DISP = Dispersion
+, PLWC =Liquid Water Content, DBZ = Radar Reflectivity Factor).
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+need modification for recent probes: CDP, UHSAS, etc.
+ Also, eliminate 
+\begin_inset Quotes eld
+\end_inset
+
+PMS probe
+\begin_inset Quotes erd
+\end_inset
+
+ from discussion
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="7" columns="7">
+<features>
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size small
+Generic Name
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size small
+Probe
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size small
+Channels
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size small
+Usable
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size small
+Diameter Range
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size small
+Bin Width
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+FSSP
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+F
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+FSSP-100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+0-15
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+1-16
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+(See FRNG below)
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+F300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+FSSP-300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+0-31
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+1-31
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+0.3--20.0 
+\begin_inset Formula $\mu m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+variable
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+PCAS
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+P
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+PCAS
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+0-15
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+1-15
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+0.1--3.0 
+\begin_inset Formula $\mu m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+variable
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+200X
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+X
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+OAP-200X
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+0-15
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+1-15
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+40--280 
+\begin_inset Formula $\mu m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+10 
+\begin_inset Formula $\mu m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+260X
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+6
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+OAP-260X
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+0-63
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+3-62
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+40-620 
+\begin_inset Formula $\mu m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+10 
+\begin_inset Formula $\mu m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+200Y
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+Y
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+OAP-200Y
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+0-15
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+1-15
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+300--4500 
+\begin_inset Formula $\mu m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+300 
+\begin_inset Formula $\mu m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Total Accumulation (counts per time interval): 
+\bar under
+
+\begin_inset Newline newline
+\end_inset
+
+AFSSP
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+AFSSP
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+AF300
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+AF300
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+APCAS
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+APCAS
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+A200X
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+A200X
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+A260X
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+A260X
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+A200Y
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+A200Y
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This measurement is the total number of particles detected by a PMS-1D probe
+ per unit time.
+ These measurements have 
+\begin_inset Quotes eld
+\end_inset
+
+vector
+\begin_inset Quotes erd
+\end_inset
+
+ character in the NETCDF output files, with dimension equal to the number
+ of usable channels in the table above and one entry per channel.
+ 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Concentration (per channel) (
+\begin_inset Formula $cm^{-3}$
+\end_inset
+
+): 
+\bar under
+CFSSP
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+CFSSP
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+CF300
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+CF300
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+CPCAS
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+CPCAS
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\bar default
+Concentration (per channel) (
+\begin_inset Formula $liter^{-1}$
+\end_inset
+
+): 
+\bar under
+C200X
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+C200X
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+C260X
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+C260X
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+C200Y
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+C200Y
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+These measurements give the particle concentrations in each usable bin of
+ the probe.
+ They have 
+\begin_inset Quotes eld
+\end_inset
+
+vector
+\begin_inset Quotes erd
+\end_inset
+
+ character is the NETCDF output files, with dimension equal to the number
+ of usable channels in the table above and with one entry per channel.
+ For the scattering spectrometer probes (FSSP-100, FSSP-300, PCAS) the concentra
+tion value is modified by the probe activity (FACT, PACT) as described below.
+ The concentration is obtained from the total number of particles detected
+ and a calculated, probe-dependent sample volume.
+ For details, see RAF Bulletin No.
+\begin_inset space ~
+\end_inset
+
+24.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Concentration, sum over all channels (
+\begin_inset Formula $cm^{-3}$
+\end_inset
+
+): 
+\bar under
+CONCF
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+CONCF
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+CONC3
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+CONC3
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+CONCP
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+CONCP
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\bar default
+Concentration, sum over all channels (
+\begin_inset Formula $liter^{-1}$
+\end_inset
+
+): 
+\bar under
+CONCX
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+CONCX
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+CONC6
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+CONC6
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+CONCY
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+CONCY
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+These measurements are the particle concentrations summed over all channels
+ to give the total particle concentration in the size range of the probe.
+ For details, see RAF Bulletin No.
+\begin_inset space ~
+\end_inset
+
+24.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Mean Diameter (
+\begin_inset Formula $\mu m$
+\end_inset
+
+): 
+\bar under
+DBARF
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+DBARF
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+DBAR3
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+DBAR3
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+DBARP
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+DBARP
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+DBARX
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+DBARX
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+DBAR6
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+DBAR6
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+DBARY
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+DBARY
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The mean diameter is the arithmetic average of all particle diameters.
+ It is calculated as follows: 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+I changed this to concentration instead of counts because there are cases
+ where the sample volume varies with size (esp for the 1D probes like the
+ 260X) and for that case using the counts gives the wrong weighting -- need
+ to check how this is done and if this is a problem
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+{Cy
+\begin_inset Formula $_{i}$
+\end_inset
+
+} = concentration from probe y in channel i
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space \hspace*{}
+\length 0.6cm
+\end_inset
+
+(e.g., y=FSSP to calculate DBARx for x=F)
+\begin_inset Newline newline
+\end_inset
+
+i1 = lowest usable channel for the probe
+\begin_inset Newline newline
+\end_inset
+
+i2 = highest usable channel for the probe
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $d_{i}$
+\end_inset
+
+ = mean diameter of particles in channel i for this probe (
+\begin_inset Formula $\mu m$
+\end_inset
+
+)
+\lyxline
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \[
+\mathrm{DBARx}=\frac{{\textstyle \sum_{i=i1}^{i2}}{\displaystyle {\displaystyle \left\{ \mathrm{Cy}_{i}\right\} d_{i}}}}{\sum_{i=i1}^{i2}\left\{ \mathrm{Cy}_{i}\right\} }\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Dispersion (dimensionless): 
+\bar under
+DISPF
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+DISPF
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+DISP3
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+DISP3
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+DISPP
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+DISPP
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+DISPX
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+DISPX
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+DISP6
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+DISP6
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+DISPY
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+DISPY
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The dispersion is the ratio of the standard deviation of particle diameters
+ to the mean particle diameter.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+here also, check to see if the calculations properly use concentrations
+ instead of counts for 1D probes
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+{DBARx} = mean particle diameter (
+\begin_inset Formula $\mu m$
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+{Cy
+\begin_inset Formula $_{i}$
+\end_inset
+
+} = concentration from probe y in channel i
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space \hspace*{}
+\length 0.6cm
+\end_inset
+
+(e.g., y=FSSP to calculate DISPx for x=F)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $d_{i}$
+\end_inset
+
+ = diameter measured in channel 
+\begin_inset Formula $i$
+\end_inset
+
+ of probe y
+\begin_inset Newline newline
+\end_inset
+
+i1 = lowest usable channel for the probe
+\begin_inset Newline newline
+\end_inset
+
+i2 = highest usable channel for the probe
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \[
+\mathrm{DISPx}==\frac{1}{\{\mathrm{DBARx}\}}\,\left\{ \frac{{\textstyle \sum_{i=i1}^{i2}}{\displaystyle {\displaystyle \left\{ \mathrm{Cy}_{i}\right\} d_{i}^{2}}}}{\sum_{i=i1}^{i2}\left\{ \mathrm{Cy}_{i}\right\} }-\{\mathrm{DBARx}\}^{2}\right\} ^{1/2}\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Liquid/Ice Water Content (
+\begin_inset Formula $g/m{}^{3}$
+\end_inset
+
+): 
+\bar under
+PLWCF
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+PLWCF
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+PLWCX
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+PLWCX
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+PLWC6
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+PLWC6
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+PLWCY
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+PLWCY
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This variable is a derived calculation of the liquid or ice water content
+ obtained from the measured concentration (CONCx) and the third moment of
+ the equivalent droplet diameter.
+ The equivalent droplet diameter is the diameter that represents the equivalent
+ mass in the detected particle.
+ For water, the equivalent droplet diameter is the normally the measured
+ diameter, but some processing has used other assumptions and this is a
+ choice that can be made differently based on project needs.
+ Using this definition allows for the approximate estimation of ice water
+ content in cases where it is known that all hydrometeors are ice.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $d_{e,i}$
+\end_inset
+
+ = equivalent melted diameter for channel 
+\begin_inset Formula $i$
+\end_inset
+
+ of probe x
+\begin_inset Newline newline
+\end_inset
+
+{Cy
+\begin_inset Formula $_{i}$
+\end_inset
+
+} = concentration from probe y in channel i
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space \hspace*{}
+\length 0.6cm
+\end_inset
+
+(e.g., y=FSSP to calculate DISPx for x=F)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\varrho_{w}$
+\end_inset
+
+ = density of water ( 
+\begin_inset Formula $10{}^{3}kg/m^{3}$
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+i1 = lowest usable channel for the probe
+\begin_inset Newline newline
+\end_inset
+
+i2 = highest usable channel for the probe
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\begin_inset Formula \[
+\mathrm{PLWCx}=\frac{\pi\varrho_{w}}{6}{\textstyle \sum_{i=i1}^{i2}}{\displaystyle {\displaystyle \left\{ \mathrm{Cy}_{i}\right\} d_{e,i}^{3}}}\]
+
+\end_inset
+
+(units and a scale factor are selected so that the output variable is in
+ units of 
+\begin_inset Formula $g/m^{3}$
+\end_inset
+
+)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Radar Reflectivity Factor (dbZ): 
+\bar under
+DBZF
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+DBZF
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+DBZX
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+DBZX
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+DBZ6
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+DBZ6
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+DBZY
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+DBZY
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The radar reflectivity factor for water is a measure of the product of the
+ concentration and the sixth moment of the dropleet diameter.
+ An equivalent radar reflectivity factor can be calculated from the hydrometeor
+ size distribution if an assumption about composition of the particles is
+ made, but this variable is not part of normal data files.
+ The radar reflectivity factor is a characteristic only of the hydrometeor
+ size distribution; it is 
+\emph on
+not 
+\emph default
+a measure of radar reflectivity, because the latter also depends on wavelength,
+ dielectric constant, and other characteristics of the hydrometeors.
+ The radar reflectivity factor is measured on a logarithmic scale that depends
+ on a particular choice of units, so (although it is not conventionally
+ included) an appropriate scale factor 
+\begin_inset Formula $Z_{r}$
+\end_inset
+
+ is included in the following equation to satisfy the convention that arguments
+ of logarithms should be dimensionless.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+the previous definition was incorrect in this aspect, and that discussion
+ said the result depends on the wavelength of the radar but did not include
+ radar wavelength in the equation.
+ Furthermore, I didn't include an option to calculate equivalent radar reflectiv
+iity, although that could be added, because it seemed unnecessary.
+ A further error in this description is that the diameter to use for equivalent
+ radar reflectivity is not the melted-equivalent diameter.
+\end_layout
+
+\end_inset
+
+/
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $d_{i}$
+\end_inset
+
+ = diameter for channel 
+\begin_inset Formula $i$
+\end_inset
+
+ of probe x
+\begin_inset Newline newline
+\end_inset
+
+{Cy
+\begin_inset Formula $_{i}$
+\end_inset
+
+} = concentration from probe y in channel i
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space \hspace*{}
+\length 0.6cm
+\end_inset
+
+(e.g., y=FSSP to calculate DISPx for x=F)
+\begin_inset Newline newline
+\end_inset
+
+i1 = lowest usable channel for the probe
+\begin_inset Newline newline
+\end_inset
+
+i2 = highest usable channel for the probe
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $Z_{r}$
+\end_inset
+
+ = reference factor for units = 
+\begin_inset Formula $1\, mm^{6}/m^{3}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \[
+\mathrm{DBZx}=10\log_{10}\left({\textstyle \frac{1}{Z_{r}}\sum_{i=i1}^{i2}}{\displaystyle {\displaystyle \left\{ \mathrm{Cy}_{i}\right\} d_{i}^{6}}}\right)\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+FSSP-100 Range (dimensionless): 
+\bar under
+FRNG
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+FRNG
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+FRANGE
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+FRANGE
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This variable records the size range in use for the FSSP-100 probe
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+\noindent
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\begin_inset space \hspace*{}
+\length 0.7in
+\end_inset
+
+
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="3">
+<features>
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Range
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+Nominal Size Range
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+Nominal Bin Width
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2--47 
+\begin_inset Formula $\mu m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3 
+\begin_inset Formula $\mu m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2--32 
+\begin_inset Formula $\mu m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2 
+\begin_inset Formula $\mu m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1--15 
+\begin_inset Formula $\mu m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1 
+\begin_inset Formula $\mu m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.5--7.5 
+\begin_inset Formula $\mu m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.5 
+\begin_inset Formula $\mu m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+In recent NETCDF data files, the actual bin boundaries used for processing
+ are recorded in the header.
+ That header should be consulted because processing often uses non-standard
+ sizes selected to adjust for Mie scattering, which causes departures from
+ the nominal linear bins.
+ 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+FSSP-100 Fast Resets (number per sample interval): 
+\bar under
+FRST
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+FRST
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+FRESET
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+FRESET
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+The FSSP records events called 
+\begin_inset Quotes eld
+\end_inset
+
+fast resets
+\begin_inset Quotes erd
+\end_inset
+
+ that occur when a particle traverses the beam outside the depth-of-field
+ and is therefore not accepted for sizing.
+ To avoid the processing time associated with sizing, the probe resets quickly
+ in this case, but there is still some dead time when the probe cannot record
+ another event.
+ Fast resets consume a time determined by circuit characteristics, so that
+ time is determined in laboratory tests of the FSSP circuitry.
+ This variable is needed in addition to the 
+\begin_inset Quotes eld
+\end_inset
+
+Total Stobes
+\begin_inset Quotes erd
+\end_inset
+
+ to determine what fraction of the time the probe is unable to accept another
+ particle, and this 
+\begin_inset Quotes eld
+\end_inset
+
+dead time
+\begin_inset Quotes erd
+\end_inset
+
+ enters calculation of the concentration.
+ 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+FSSP-100 Total Strobes (number per sample interval): 
+\bar under
+FSTB
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+FSTB
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+FSTROB
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+FSTROB
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+A 
+\begin_inset Quotes eld
+\end_inset
+
+strobe
+\begin_inset Quotes erd
+\end_inset
+
+ is generated in the FSSP whenever a particle is detected within its depth-of-fi
+eld.
+ Not all such particles are accepted for inclusion in the size distribution,
+ however, because some pass through the outer regions of the illuminating
+ laser beam and therefore produce shorter and smaller-amplitude pulses than
+ those passing through the center of the beam.
+ The probe maintains a running estimate of the average transit time and
+ rejects particles with transit times shorter than this average.
+ The total number of strobes recorded is therefore more than the number
+ of sized particles, but the ratio of strobes to accepted particles can
+ indicate quality of opeeration of the probe.
+ Also, the strobes require processing and so contribute to the dead time
+ of the probe, affecting the concentration unless a correction is made.
+ See RAF Bulletin No.
+\begin_inset space ~
+\end_inset
+
+24 for more discussion of the operation of the FSSP.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+FSSP-100 Beam Fraction (dimensionless): 
+\bar under
+FBMFR
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+FBMFR
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This variable records the ratio of the number of velocity-accepted particles
+ (particles that pass through the effective beam diameter) to the total
+ number of particles detected in the depth-of-field of the beam (the total
+ strobes).
+ See the discussion of Total Strobes for more information.
+\begin_inset Newline newline
+\end_inset
+
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+check this: previous B9 has FSSP/FSTROB -- what is FSSP?
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+AFSSP = valid particles sized per sample interval
+\begin_inset Newline newline
+\end_inset
+
+FSTROB = strobes generated by particles in the depth-of-field, 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space \hspace*{}
+\length 0.7in
+\end_inset
+
+per sample interval
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\begin_inset Formula \[
+\mathrm{FBMFR=\{AFSSP\}/\{FSTROB\}}\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+FSSP-100 Calculated Activity Fraction (dimensionless): 
+\bar under
+FACT
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+FACT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This variable represents the fraction of the time that the FSSP is unable
+ to count and size particles (its 
+\begin_inset Quotes eld
+\end_inset
+
+dead time
+\begin_inset Quotes erd
+\end_inset
+
+).
+ The activity fraction is not measured directly but is estimated from fast
+ resets and total strobes along with measurements of the dead times associated
+ with each (as determined in laboratory tests).
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+This is perhaps a little confusing as to dimensions, although 
+\begin_inset Quotes eld
+\end_inset
+
+per sample intereval
+\begin_inset Quotes erd
+\end_inset
+
+ appropriately takes care of dimensions.
+ is it possible to provide representative values? Are they recorded in the
+ header?
+\end_layout
+
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+FSTROB = strobes generated by particles in the depth-of-field, 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space \hspace*{}
+\length 0.7in
+\end_inset
+
+per sample interval
+\begin_inset Newline newline
+\end_inset
+
+FRESET = 
+\begin_inset Quotes eld
+\end_inset
+
+fast resets
+\begin_inset Quotes erd
+\end_inset
+
+ generated per sample interval
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $t_{1}$
+\end_inset
+
+ = slow reset time (for each strobe)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $t_{2}$
+\end_inset
+
+ - fast reset time (for each fast reset)
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \[
+\backslash\mathrm{FACT=\{FSTROB\}\,}t_{1}+\mathrm{\{FRESET\}}\, t_{2}\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+PCAS Raw Activity (dimensionless); 
+\bar under
+AACT
+\series default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\bar no
+AACT
+\end_layout
+
+\end_inset
+
+, 
+\series bold
+PACT
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+PACT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The PCAS probe provides this measure of dead time, the time that the probe
+ is unable to sample particles because the electronics are occupied with
+ processing particles.
+ The manufacturer suggests that the actual dead time (
+\begin_inset Formula $f_{PCAS}$
+\end_inset
+
+) is given by the following formula, which is used in determining concentrations
+ for the PCAS:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \[
+f_{PCAS}=0.52\frac{\mathrm{\{PACT\}}}{F_{PCAS}}\]
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+where 
+\begin_inset Formula $F_{PCAS}=1024\, s^{-1}$
+\end_inset
+
+.
+ However, PACT (or AACT) is the variable archived in the data files.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+there was inconsistency in the explanation because it was claimed that 1024
+ corresponds to 100% dead time but the formula gives 52% dead time for that
+ raw activity -- check processing to see if this is really done this way.
+ The original was also confusing as to sample rate, with sample rate in
+ the numerator -- I kept this, but need to check if it is right
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+PMS-2D Cloud Probe Particle Concentration (
+\begin_inset Formula $cm^{-3}$
+\end_inset
+
+): 
+\bar under
+CON2C1
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+CON2C1
+\end_layout
+
+\end_inset
+
+
+\series default
+\bar default
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+this has other names now...
+ check
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This concentration of all particles sensed by the PMS-2D Cloud Probe is
+ based on the 
+\begin_inset Quotes eld
+\end_inset
+
+shadow-or
+\begin_inset Quotes erd
+\end_inset
+
+ count (SDWC1,SHDORC) from the probe.
+ This counter is triggered each time a particle passes through the laser
+ beam, so the rate at which these counts are produced can be used with the
+ sample volume of the probe and the flight speed to determine this upper
+ estimate of the particle concentration.
+ 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+PMS-2D Precip Probe Particle Concentration (
+\begin_inset Formula $cm^{-3}$
+\end_inset
+
+): 
+\bar under
+CON2P1
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+CON2P1
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This measurement is based on SDWP1 or SHDORP and is analogous to CON2C1
+ but for the PMS-2D Precip Probe.
+ 
+\end_layout
+
+\end_body
+\end_document

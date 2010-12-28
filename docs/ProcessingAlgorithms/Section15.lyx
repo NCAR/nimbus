@@ -1,0 +1,1549 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Section
+OBSOLETE VARIABLES
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:OBSOLETE-VARIABLES"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+RAF retired the 
+\begin_inset Quotes eld
+\end_inset
+
+GENPRO
+\begin_inset Quotes erd
+\end_inset
+
+ processor, the software program previously used to produce data sets, in
+ 1993, but data files produced by that processor are still retained and
+ available for use.
+ Also, there are some instruments that are now retired but provided measurements
+ in some archived data files.
+ Obsolete variable names that are associated only with GENPRO or a retired
+ instrument are discussed below, for reference and to facilitate use of
+ old data files.
+ 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Unaltered Tape Time (s): TPTIME
+\series default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+TPTIME
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This variable is derived by converting the HOUR, MINUTE and SECOND to elapsed
+ seconds after midnight of the current day.
+ If time increments to the next day, its value is not reset to zero, but
+ 86400 seconds are added to produce ever-increasing values for the data
+ set.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Processor Time (s): PTIME
+\series default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+PTIME
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is an internal time variable created by the GENPRO processor.
+ It represents elapsed seconds after midnight.
+ It differs from TPTIME in that, after it has been set at the beginning
+ of the data set, it is incremented internally for each second of data processed.
+ If duplicate or missing raw data records exist, it can differ from TPTIME.
+ It is guaranteed to be a monotonically increasing and continuous series
+ of values.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+INS: Data System Time Lag (s): TMLAG
+\series default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+TMLAG
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TMLAG is the amount of time between the reference time of a Litton LTN-5l
+ Inertial Navigation System (INS) and the data system clock, in seconds.
+ TMLAG will always be greater than zero and less than 2.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+LORAN-C Latitude (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+CLAT
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+CLAT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+LORAN-C Longitude (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+CLON
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+CLON
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+LORAN-C Circular Error of Probability (n mi): 
+\bar under
+CCEP
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+CCEP
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+LORAN-C Ground Speed (m/s): 
+\bar under
+CGS
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+CGS
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+LORAN-C Time (s): 
+\bar under
+CSEC
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+CSEC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+LORAN-C Fractional Time (s): 
+\bar under
+CFSEC
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+CFSEC
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Before the advent of GPS, NCAR/RAF operated a LORAN-C receiver that provided
+ information on the position and groundspeed of the aircraft.
+ The measurements of latitude and longitude from this system are CLAT and
+ CLON, measured at 1 Hz and with positive values of longitude to the east
+ and positive values of latitude to the north.
+ and CCEP provides an estimate of the uncertainty in those measurements
+ (in units of nautical miles).
+ A status word, CSTAT, was used to record a value of 15 when the system
+ was operational.
+ The ground speed and reference times were also recorded in the above correspond
+ing variables.
+ The sum of CSEC and CFSEC represented the time of the measurement, which
+ was not always the time in the data file when the measurements were recorded,
+ 
+\end_layout
+
+\begin_layout Hanging
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+INS Latitude (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+ALAT
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+ALAT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+INS Longitude (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+ALON
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+ALON
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Raw INS Ground Speed X Component (m/s): 
+\bar under
+XVI
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+XVI
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Raw INS Ground Speed Y Component (m/s): 
+\bar under
+YVI
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+YVI
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Raw INS True Heading (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+THI
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+THI
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+INS Wander Angle (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+ALPHA
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+ALPHA
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+INS Platform Heading (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+PHDG
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+PHDG
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+These variables from the Litton LTN-51 Inertial Navigation System (INS)
+ are analogous to the modern variables discussed in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:INS"
+
+\end_inset
+
+.
+ The measurements of latitude and longitude were provided with 1-Hz frequency
+ and had a resolution of 0.0014
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+, while the ground speed components were provided at 10 Hz and had resolution
+ equal to 0.012 m/s.
+ The X component of the ground speed was along the longitudinal axis of
+ the aircraft 
+\emph on
+at the time of alignment,
+\emph default
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+check this: did it stay with this orientation, or was it converted to new
+ aircraft longitudinal axis?
+\end_layout
+
+\end_inset
+
+ and the Y axis was in the starboard direction at the time of alignment.
+ PHDG recorded the orientation of the platform relative to true north, with
+ resolution 0.0028
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+.
+ THI was the true heading of the aircraft, produced at 5 Hz with resolution
+ of 0.0014
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+.
+ The 
+\begin_inset Quotes eld
+\end_inset
+
+wander angle
+\begin_inset Quotes erd
+\end_inset
+
+ is an INS-only variable that recorded the angle of the INS platform x-axis
+ relative to its original orientation; it 
+\begin_inset Quotes eld
+\end_inset
+
+wandered
+\begin_inset Quotes erd
+\end_inset
+
+ in response to east-west motion of the aircraft on a spherical Earth.
+ 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Raw Aircraft Vertical Velocity (m/s): 
+\bar under
+VZI
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+VZI
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is an integrated output from an up/down binary counter connected to
+ the INS vertical accelerometer.
+ Resolution is 0.012 m/s.
+ Due to changes in local gravity and accumulated errors, this often develops
+ a significant offset during flight.
+ 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Aircraft True Heading (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+THF
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+THF
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This measurement of aircraft heading was derived from the angle between
+ the horizontal projection of the aircraft center and true north: THF =
+ PHDG + ALPHA.
+ Resolution is 0.0028
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Hanging
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Aircraft Ground Speed (m/s): 
+\bar under
+GSF
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+GSF
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Aircraft Ground Speed East Component (m/s): 
+\bar under
+VEW
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+VEW
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Aircraft Ground Speed North Component (m/s): 
+\bar under
+VNS
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+VNS
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+These variables have the same names as the modern variables for ground speed.
+ (Cf.
+\begin_inset space ~
+\end_inset
+
+section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:INS"
+
+\end_inset
+
+.) GSF is the magnitude of the ground speed determined by the INS, as derived
+ from XVI and YVI: 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \[
+\mathrm{GSF=\sqrt{\{XVI\}^{2}+\{YVI\}^{2}}}\]
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+VEW and VNS are the east and north projections of this ground speed, derived
+ using THF for the aircraft heading.
+\end_layout
+
+\begin_layout Hanging
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Wind Speed (m/s): 
+\bar under
+WSPD
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+WSPD
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Wind Direction (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+WDRCTN
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+WDRCTN
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+These variables are calculated from UI and VI, the east and north components
+ of the wind determined as described in RAF Bulletin No.
+\begin_inset space ~
+\end_inset
+
+23 and summarized in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:WIND"
+
+\end_inset
+
+:
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+check signs here; this differs from the section-9 equation ...
+ ??
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+\begin_inset Formula \begin{eqnarray*}
+\mathrm{WS} & = & \sqrt{\mathrm{\{UI\}^{2}+\{VI\}^{2}}}\\
+\mathrm{WD} & = & \mathrm{\frac{180^{\circ}}{\pi}atan2(-\{UI\},}-\{VI\})+180^{\circ}\end{eqnarray*}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Raw Attack Force (Fixed Vane) (g): 
+\bar under
+AFIXx
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+AFIXx
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+AFIXx is an amplified output from a strain-gage, fixed-vane sensor mounted
+ in the horizontal plane of the aircraft at the end of a gust boom.
+ The 
+\begin_inset Quotes eld
+\end_inset
+
+force
+\begin_inset Quotes erd
+\end_inset
+
+ on the vane (calibrated in 
+\begin_inset Quotes eld
+\end_inset
+
+equivalent grams
+\begin_inset Quotes erd
+\end_inset
+
+ at Jefferson County Airport gravity) varies as a function of the aircraft
+ attack angle and dynamic pressure.
+ Here x refers to left or right.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Raw Sideslip Force(Fixed Vane) (g): 
+\bar under
+BFIXx
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+BFIXx
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+BFIXx is an amplified output from a strain-gage, fixed-vane sensor mounted
+ in the vertical plane of the aircraft at the end of a gust boom.
+ The 
+\begin_inset Quotes eld
+\end_inset
+
+force
+\begin_inset Quotes erd
+\end_inset
+
+ on the vane (calibrated in 
+\begin_inset Quotes eld
+\end_inset
+
+equivalent grams
+\begin_inset Quotes erd
+\end_inset
+
+ at Jefferson County Airport gravity) varies as a function of the aircraft
+ sideslip angle and dynamic pressure.
+ Here x refers to top or bottom.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Attack Angle (Fixed Vane) (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+AKFXx
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+AKFXx
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+AKFXx is the angle of attack, computed from AFIXx and QCx (either boom or
+ gust dynamic pressure).
+ An empirically derived function, HSSATK,
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+can I find this?
+\end_layout
+
+\end_inset
+
+ is used to determine the attack angle based upon wind tunnel test data.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Sideslip Angle (Fixed Vane) (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+SSFXx
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+SSFXx
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+SSFXx is the sideslip angle, computed from BFIXx, and QCx (either boom or
+ gust dynamic pressure).
+ An empirically derived function, HSSATK, is used to determine the sideslip
+ angle based upon wind tunnel test data.
+\end_layout
+
+\begin_layout Hanging
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Dynamic Pressure (Boom) (mb): 
+\bar under
+QCB
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+QCB
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+QCBC
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+QCBC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Dynamic Pressure (Gust Probe) (mb): 
+\bar under
+QCG
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+QCG
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+QCGC
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+QCGC
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+These variables, measured by a differential pressure gauge, record the differenc
+e between a pitot (total) pressure and a static pressure.
+ The QCBC and QCGC values are corrected for local flow-field distortion.
+ The boom and gust probe measurements referred to the same aircraft structure.
+ The different designations used for those measurements specified the transducer
+ used and its location.
+ In the gust probe dynamic pressure measurement (QCG), a Rosemount Model
+ 1332 differential pressure transducer was located closer to the sensor
+ in the gust probe itself, whereas in the boom measurement (QCB), a Rosemount
+ Model 1221 pressure transducer was typically located in the aircraft nose.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Total Temperature, Reverse Flow (
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+): 
+\bar under
+TTRF
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+TTRF
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+TTRF is the recovery temperature from a calibrated NCAR reverse-flow temperature
+ sensor, for which the housing was designed to separate water droplets and
+ protect the element from wetting in cloud.
+ 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Total Temperature (Fast Response) (
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+): 
+\bar under
+TTKP
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+TTKP
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the output of recovery temperature from the NCAR fast-response temperatu
+re probe, originally designed by Karl Danninger.
+ (See discussion of total temperature in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:THERMODYNAMIC-VARIABLES"
+
+\end_inset
+
+ above.)
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Ambient Temperature (
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+): 
+\bar under
+ATRF
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+ATRF
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The ambient temperature computed using the NCAR reverse-flow temperature
+ sensor.
+ (See discussion in Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:THERMODYNAMIC-VARIABLES"
+
+\end_inset
+
+ above.)
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Ambient Temperature (Fast Response) (
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+): 
+\bar under
+ATKP
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+ATKP
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The ambient temperature computed using the fast-response temperature probe.
+ (See discussion of ambient temperature in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:THERMODYNAMIC-VARIABLES"
+
+\end_inset
+
+.)
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Raw Cloud Technology (Johnson-Williams) 
+\begin_inset Newline newline
+\end_inset
+
+Liquid Water Content (
+\begin_inset Formula $g/m^{3}$
+\end_inset
+
+): 
+\bar under
+LWC
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+LWC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the raw output of a Johnson-Williams liquid water content sensor
+ converted to units of grams per cubic meter.
+ The Johnson-Williams indicator measures the evaporative cooling caused
+ by the latent heat of vaporization of droplets contacting the heated sensing
+ element by sensing changes in its resistance as it cools.
+ Through calibration this resistance is converted to a liquid water content.
+ A 
+\begin_inset Quotes eld
+\end_inset
+
+compensation
+\begin_inset Quotes erd
+\end_inset
+
+ wire is also mounted in the J-W sensor, parallel to the droplet stream,
+ to compensate for cooling effects of the airstream.
+ Typically the instrument is set for a true airspeed of 200 knots.
+ The instrument must be zeroed in 
+\begin_inset Quotes eld
+\end_inset
+
+cloud-free air.
+\begin_inset Quotes erd
+\end_inset
+
+ The Johnson-Williams liquid water content sensor is designed for the cloud
+ droplet spectrum.
+ There is some evidence to indicate that droplets larger than 30 
+\begin_inset Formula $\mu m$
+\end_inset
+
+ are shed before completely vaporizing on the sensor element.
+ This tends to underestimate the liquid water content.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Corrected Cloud Technology (Johnson-Williams) 
+\begin_inset Newline newline
+\end_inset
+
+Liquid Water Content (g/M3): 
+\bar under
+LWCC
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+LWCC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the corrected liquid water content obtained by using the aircraft's
+ true airspeed after removing the zero offset: LWCC=LWC
+\begin_inset Formula $U_{a}/U_{ref}$
+\end_inset
+
+ where 
+\begin_inset Formula $U_{a}$
+\end_inset
+
+ is the true airspeed of the aircraft and 
+\begin_inset Formula $U_{ref}$
+\end_inset
+
+ is the true airspeed set on the dial of the instrument.
+ 
+\begin_inset Formula $U_{ref}$
+\end_inset
+
+ was normally 200 kts = 102.88889 m/s.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Water Vapor Pressure (mb): 
+\bar under
+EDPC
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+EDPC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is a derived intermediate variable used in the calculation of several
+ derived thermodynamic variables.
+ The vapor pressure over a plane water surface is obtained by the method
+ of Paul R.
+ Lowe (1977), a derived, sixth-order, Chebyshev polynomial fit to the Goff-Gratc
+h Formulation (1946) as a function of temperature expressed in 
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+.
+ The error is much less than 1% over the range -50
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C to +50
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+ EDPC was calculated using this method for most RAF research projects between
+ 1993 and 1996.
+ This variable does not have the enhancement factor applied that is discussed
+ in Appendix C.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+check this; is -50 branch really right?
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+A.
+ T 
+\begin_inset Formula $<$
+\end_inset
+
+ -50 C:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \begin{eqnarray*}
+\mathrm{EDPC} & = & 4.4685+T(0.27347+T\{6.83811\times10^{-3}\\
+ & + & T[8.7094x10^{-5}+T(5.63513x10^{-7}+T\,1.47796\times10^{\mbox{-9}})]\})\end{eqnarray*}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+B.
+ T 
+\begin_inset Formula $>$
+\end_inset
+
+= -50
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \begin{eqnarray*}
+\mathrm{EDPC} & = & 6.107799961+T\,[0.4436518521+T(0.01428945805\\
+ & + & T\{2.650648471\times10^{-4}+T\,[3.031240396\times10^{-6}\\
+ & + & T(2.034080948\times10^{-8}+T\,6.136820929\times10^{-11})]\})]\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\end_body
+\end_document

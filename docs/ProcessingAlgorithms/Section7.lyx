@@ -1,0 +1,3207 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+% Added by lyx2lyx
+%  for proper underlining
+\PassOptionsToPackage{normalem}{ulem}
+\usepackage{ulem}
+\let\cite@rig\cite
+\newcommand{\b@xcite}[2][\%]{\def\def@pt{\%}\def\pas@pt{#1}
+  \mbox{\ifx\def@pt\pas@pt\cite@rig{#2}\else\cite@rig[#1]{#2}\fi}}
+\renewcommand{\underbar}[1]{{\let\cite\b@xcite\uline{#1}}}
+% Added by lyx2lyx
+%  for proper underlining
+\PassOptionsToPackage{normalem}{ulem}
+\usepackage{ulem}
+\let\cite@rig\cite
+\newcommand{\b@xcite}[2][\%]{\def\def@pt{\%}\def\pas@pt{#1}
+  \mbox{\ifx\def@pt\pas@pt\cite@rig{#2}\else\cite@rig[#1]{#2}\fi}}
+\renewcommand{\underbar}[1]{{\let\cite\b@xcite\uline{#1}}}
+\end_preamble
+\use_default_options true
+\begin_modules
+hanging
+\end_modules
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Section
+AIRCRAFT AND METEOROLOGICAL STATE VARIABLES
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:AIRCRAFT-AND-METEOROLOGICAL"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Measurements of meteorological state variables often are made at various
+ locations on an aircraft.
+ To distinguish among similar measurements, many variable names incorporate
+ an indication of where the measurement was made.
+ In this document, locations in variable names are represented by 
+\begin_inset Quotes eld
+\end_inset
+
+x
+\begin_inset Quotes erd
+\end_inset
+
+, where 
+\begin_inset Quotes eld
+\end_inset
+
+x
+\begin_inset Quotes erd
+\end_inset
+
+ may represent the following:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="8" columns="2">
+<features>
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Character
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Location
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+B
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+bottom (or bottom-most)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+B
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(obsolete) boom
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+F
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+fuselage
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+G
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(obsolete) gust probe
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+R
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+radome
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+T
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+top (or top-most)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+W
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+wing
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+In addition, a true letter 'X' (not replaced by the above letters) may be
+ appended to a measurement to indicate that it is the preferred choice used
+ for derived calculations.
+ Other suffixes sometimes used to distinguish among measurements are these:
+ 'D' for a digital sensor; 'H' for a heated (usually, deiced) sensor, 'L'
+ for port side, and 'R' for starboard side.
+\end_layout
+
+\begin_layout Standard
+RAF uses the radome gust-sensing technique (Friehe XXXX)
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+need Friehe et al reference, radome technique
+\end_layout
+
+\end_inset
+
+ as the reference system to measure incidence angles (angles of attack and
+ sideslip).
+ The pressure difference between sensing ports above and below the center
+ line of the radome is used, along with the dynamic pressure measured at
+ a port on the centerline and referenced to the static pressure, to determine
+ the angle of attack, and similarly for the sideslip angle.
+ A Rosemount Model 858AJ gust probe is occasionally used for specialized
+ measurements.
+ The radome measurements are made by differential pressure sensors located
+ in the nose area of the aircraft and connected to the radome by semi-rigid
+ tubing.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Static Pressure (mb): 
+\bar under
+PSx
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+PSx
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+PSxC
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+PSxC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The atmospheric pressure at the flight level of the aircraft, measured by
+ a calibrated absolute (barometric) transducer at location x.
+ PSx is the measured static pressure, and may be affected by local flow-field
+ distortion.
+ PSxC is corrected for local flow-field distortion.
+ (See Bulletin No.
+ 21.) For output variables PSFD and PSFDC, the letter 
+\begin_inset Quotes eld
+\end_inset
+
+D
+\begin_inset Quotes erd
+\end_inset
+
+ indicates that the transducer used was a Rosemount Model 1501 digital absolute
+ pressure transducer.
+ For output variable PSFRD, the letters 
+\begin_inset Quotes eld
+\end_inset
+
+RD
+\begin_inset Quotes erd
+\end_inset
+
+ indicate that the pressure transducer used was a Ruska Model 7885-1B digital
+ absolute pressure transducer.
+ Other static pressure measurements are made by a Rosemount Model 1201 absolute
+ pressure transducer, an analog transducer used with appropriate calibration
+ coefficients.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Dynamic Pressure (mb): 
+\bar under
+QCx
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+QCx
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+QCxC
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+QCxC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Dynamic pressure is the difference between the pitot (total) pressure resulting
+ from the flight speed of the aircraft and the static pressure that would
+ be present in the absence of motion.
+ The QCxC value is corrected for local flow-field distortion, as described
+ in RAF Bulletin 21.
+ A Rosemount Model 1221 differential pressure transducer is used for all
+ measurements of dynamic pressure.
+ This measurement enters the calculation of true airspeed and Mach Number
+ and so is needed to calculate many derived variables.
+ 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Total Temperature (
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C): 
+\bar under
+TTx
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+TTx
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+TTxH
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+TTxH
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The recovery temperature is the temperature sensed by a temperature probe
+ that is exposed to the atmosphere.
+ In flight, the temperature is heated above the ambient temperature because
+ it senses the temperature of air near the sensor that has been heated adiabatic
+ally during compression as it is brought near the airspeed of the aircraft.
+ These variables are the measurements of that recovery temperature from
+ calibrated temperature sensors at location x.
+ (The name is misleading, but is kept to comply with long-standing practice.
+ These are not true total temperature measurements, for which the air would
+ be at the same speed as the aircraft.) For Rosemount temperature probes,
+ the recovery temperature is near the total temperature, but all probes
+ must be corrected to obtain either true total temperature or true ambient
+ temperature.
+ In the standard output, the 
+\begin_inset Quotes eld
+\end_inset
+
+total
+\begin_inset Quotes erd
+\end_inset
+
+ temperature (and ambient temperature) variable name also conveys the sensor
+ type.
+ TTx is the measurement from a Rosemount Model 102 non-deiced temperature
+ sensor, while TTxH is the measurement from a Rosemount Model 102 deiced
+ (heated) temperature sensor.
+ 
+\emph on
+Some past experiments used a reverse-flow temperature housing; the associated
+ variable name for this probe is TTRF.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Dew/Frost Point (
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C): 
+\bar under
+DPx
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+DPx
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The dew point or frost point measured by either an EG&G Model 137, a General
+ Eastern Model 1011B or a Buck Model 1011C dew-point hygrometer.
+ Below 0
+\series bold
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C
+\series default
+ the instrument is assumed to be measuring the frost point, although occasionall
+y in climbs there is a short transition near the freezing level before the
+ condensate on the mirror of the instrument freezes.
+ These are the uncorrected values, so they represent directly what the instrumen
+t senses.
+ The dew point is a measure of water vapor pressure, and so is dependent
+ on the vapor pressure in the housing being equal to that in the ambient
+ air.
+ This is achieved by appropriate orientation of the sensor housing.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Corrected Dew Point (C): DPxC
+\series default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+DPxC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The corrected dew point is the dew point estimated from the original measurement
+, referenced to the equilibrium vapor pressure over a plane water surface
+ in the absence of other gases.
+ Dew/frost point hygrometers measure the equilibrium point in the presence
+ of air, and this affects the measurement in a minor way.
+ Calculation of this variable removes this dependence, so the vapor pressure
+ obtained from the corrected dew or frost point is that vapor pressure correspon
+ding to equilibrium in the absence of air.
+ In addition, if the measurement is below 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C, it is assumed to be a measurement of frost point and a corresponding
+ dew point is calculated from the measurement (with correction for the influence
+ of the total pressure on the measurement.
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+changed 2011
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The relationship between water vapor pressure and dew or frost point is
+ based on the Murphy and Koop (2005) equations.
+ They express the equilibrium vapor pressure as a function of frost point
+ or dew point 
+\emph on
+and at a total air pressure 
+\begin_inset Formula $p$
+\end_inset
+
+
+\emph default
+ in relationships that are equivalent to the following equations:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \begin{eqnarray}
+e=e_{s,i}(T_{FP})= & b_{0}^{\prime}\exp(b_{1}\frac{(T_{0}-T_{FP})}{T_{0}T_{FP}}+b_{2}\ln(\frac{T_{FP}}{T_{0}})+b_{3}(T_{FP}-T_{0}))\label{eq:MK1-1}\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+e=e_{s,w}(T_{DP})=e_{0}\exp\left((\alpha-1)e_{6}+d_{2}(\frac{T_{0}-T_{DP}}{T_{DP}T_{0}}\right)+d_{3}\ln(\frac{T_{DP}}{T_{0}})+d_{4}(T_{DP}-T_{0})\label{eq:proposedNewWater}\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{equation}
+f(p,T_{P})=1+p(f_{1}+f_{2}T_{p}+f_{3}T_{P}^{2}))\label{eq:EnhancementFactor}\end{equation}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+where 
+\begin_inset Formula $e$
+\end_inset
+
+ is the water vapor pressure, 
+\begin_inset Formula $T_{FP}$
+\end_inset
+
+ or 
+\begin_inset Formula $T_{DP}$
+\end_inset
+
+ is the frost or dew point, respectively, expressed in kelvin, 
+\begin_inset Formula $T_{0}$
+\end_inset
+
+=273.15
+\begin_inset space \thinspace{}
+\end_inset
+
+K, 
+\begin_inset Formula $e_{s,i}(T_{FP})$
+\end_inset
+
+ is the equilibrium vapor pressure over a plane ice surface at the temperature
+ 
+\begin_inset Formula $T_{FP}$
+\end_inset
+
+, 
+\begin_inset Formula $e_{s,w}(T_{DP})$
+\end_inset
+
+ is the equilibrium vapor pressure over a plane water surface at the temperature
+ 
+\begin_inset Formula $T_{DP}$
+\end_inset
+
+ (above or below 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C), and 
+\begin_inset Formula $f(p,T_{P})$
+\end_inset
+
+is the enhancement factor at total air pressure 
+\begin_inset Formula $p$
+\end_inset
+
+ and temperature 
+\begin_inset Formula $T_{p}$
+\end_inset
+
+, with 
+\begin_inset Formula $T_{P}$
+\end_inset
+
+ equal to 
+\begin_inset Formula $T_{DP}$
+\end_inset
+
+ when above 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C and 
+\begin_inset Formula $T_{FP}$
+\end_inset
+
+ when below 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C .
+ The coefficients used in the above formulas are given in the following
+ tables, with the additional definitions that 
+\begin_inset Formula $\alpha=\tanh(e_{5}(T-T_{x}))$
+\end_inset
+
+, 
+\begin_inset Formula $T_{X}$
+\end_inset
+
+ = 218.8
+\begin_inset space ~
+\end_inset
+
+K, and 
+\begin_inset Formula $d_{i}=e_{i}+\alpha e_{i+5}$
+\end_inset
+
+ for i = {2,3,4}:
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "95text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\series default
+
+\begin_inset Tabular
+<lyxtabular version="3" rows="8" columns="2">
+<features>
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+Coefficient
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+Value
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $b_{0}^{\prime}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6.11536
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $b_{1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $-5723.265\, K,$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $b_{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.53068
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $b_{3}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.00728332
+\begin_inset space \thinspace{}
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $f_{1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4.923
+\begin_inset Formula $\times10^{-5}$
+\end_inset
+
+ hPa
+\begin_inset Formula $^{-1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $f_{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-3.25
+\begin_inset Formula $\times10^{-7}$
+\end_inset
+
+hPa
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $f_{3}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5.84
+\begin_inset Formula $\times10^{-10}$
+\end_inset
+
+hPa
+\begin_inset Formula $^{-1}$
+\end_inset
+
+K
+\begin_inset Formula $^{-2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\series bold
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\series default
+
+\begin_inset Tabular
+<lyxtabular version="3" rows="11" columns="2">
+<features>
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+coefficient
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+value
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $e_{0}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6.091886 hPa
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $e_{1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6.564725
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $e_{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-6763.22
+\begin_inset space \thinspace{}
+\end_inset
+
+K
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $e_{3}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-4.210
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $e_{4}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.000367
+\begin_inset space \thinspace{}
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $e_{5}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.0415
+\begin_inset space \thinspace{}
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $e_{6}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.1525967
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $e_{7}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-1331.22
+\begin_inset space \thinspace{}
+\end_inset
+
+K
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $e_{8}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-9.44523
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $e_{9}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.014025
+\begin_inset space \thinspace{}
+\end_inset
+
+K
+\begin_inset Formula $^{-1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Because processing to obtain the corrected dew point from the vapor pressure
+ would require inversion of the above formulas, interpolation is used instead.
+ A table constructed from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:MK1-1"
+
+\end_inset
+
+) and another constructed from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:proposedNewWater"
+
+\end_inset
+
+), giving vapor pressure as a function of dew point temperature in 1
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C increments from -100 to +50
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C, is then used for three-point Lagrange interpolation (via a function described
+ below as 
+\begin_inset Formula $T_{DP}=F_{D}(e)$
+\end_inset
+
+) to find dew point temperature from vapor pressure.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+prior to 2011 the conversion was made using the formula 
+\begin_inset Formula $\mathrm{DPxC=0.009109+DPx(1.134055+0.001038DPx)}$
+\end_inset
+
+.
+ For instruments producing measurements of vapor density (RHO), the previous
+ Bulletin 9 section incorrectly gave the conversion formula as 
+\begin_inset Formula $DPxC=273.0Z/(22.51-Z)$
+\end_inset
+
+, a conversion that would apply to frost point, not dew point.
+ However, the code in use shows that the conversion was instead 
+\begin_inset Formula $237.3Z/(17.27-Z)$
+\end_inset
+
+, where Z in both cases is 
+\begin_inset Formula $Z=\ln((\mathrm{ATX}+273.15)\mathrm{RHO/1322.3)}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\end_inset
+
+ Tests of these interpolation formulas against high-accuracy numerical inversion
+ of formulas (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:MK1-1"
+
+\end_inset
+
+) and (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:proposedNewWater"
+
+\end_inset
+
+) showed that the maximum error introduced by the interpolation formula
+ was about 0.004
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C and the standard error about 0.001
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+For other instruments that measure vapor density, such as Lyman-alpha or
+ tunable diode laser hygrometers, a similar conversion is made from vapor
+ density to dew point, as documented below:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "95col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+DPx = uncorrected dew/ point measurement directly from an instrument, 
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+RHO = vapor density measurement directly from the instrument, 
+\begin_inset Formula $g/m^{3}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+ATX = reference ambient temperature (
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $T$
+\end_inset
+
+ = temperature in kelvin = ATX+
+\begin_inset Formula $T_{0}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+PSXC = reference ambient pressure (hPa) = 
+\begin_inset Formula $p$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $e_{t}$
+\end_inset
+
+ = intermediate vapor pressure used for calculation only
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $M_{w}$
+\end_inset
+
+= molecular weight of water
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $R*$
+\end_inset
+
+ = universal gas constant
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+
+\lyxline
+
+\end_layout
+
+\begin_layout Plain Layout
+for dew/frost point hygrometers, producing the measurement DPx:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+if DPx < 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+obtain 
+\begin_inset Formula $e_{t}$
+\end_inset
+
+ from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:MK1-1"
+
+\end_inset
+
+) using 
+\begin_inset Formula $T_{FP}$
+\end_inset
+
+=DPx + 
+\begin_inset Formula $T_{0}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+else (i.e., DPx 
+\begin_inset Formula $\geq$
+\end_inset
+
+ 0
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C):
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+obtain 
+\begin_inset Formula $e_{t}$
+\end_inset
+
+ from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:proposedNewWater"
+
+\end_inset
+
+) using 
+\begin_inset Formula $T_{DP}=DPx+T_{0}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+correct 
+\begin_inset Formula $e_{t}$
+\end_inset
+
+ for enhancement factor to get actual vapor pressure 
+\begin_inset Formula $e$
+\end_inset
+
+:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Formula $e=f(p,T)\, e_{t}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+obtain DPxC by finding the dew point corresponding to the vapor pressure
+ 
+\begin_inset Formula $e$
+\end_inset
+
+:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+DPxC=
+\begin_inset Formula $F_{DP}(e)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+for other instruments producing measurements of vapor density (RHO, g/m
+\begin_inset Formula $^{3}$
+\end_inset
+
+):
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+prior to 2011 the following formula was used: 
+\begin_inset Formula \[
+Z=\frac{\ln((\mathrm{ATX}+273.15)\,\mathrm{RHO}}{1322.3}\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \[
+\mathrm{DPxC}=\frac{273.0\, Z}{(22.51-Z)}\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+find the water vapor pressure in units of hPa:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Formula $e=$
+\end_inset
+
+({RHO}
+\begin_inset space ~
+\end_inset
+
+R*
+\begin_inset space ~
+\end_inset
+
+T/
+\begin_inset Formula $M_{w}$
+\end_inset
+
+)
+\begin_inset Formula $\times10^{-5}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+find the equivalent dew point:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+DPxC=
+\begin_inset Formula $F_{DP}(e)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Attack Differential Pressure (mb): 
+\bar under
+ADIFR
+\series default
+\bar default
+
+\begin_inset Foot
+status collapsed
+
+\begin_layout Hanging
+
+\series bold
+Obsolete variable 
+\bar under
+ADIF
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+ADIF
+\end_layout
+
+\end_inset
+
+ is a similar variable used for old gust-boom systems or for Rosemount Model
+ 858AJ flow-angle sensors.
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+ADIFR
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This variable records the pressure difference between the top and bottom
+ pressure ports of the radome gust-sensing system.
+ 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Sideslip Differential Pressure (mb): 
+\bar under
+BDIFR
+\series default
+\bar default
+
+\begin_inset Foot
+status open
+
+\begin_layout Hanging
+
+\series bold
+Obsolete variable 
+\bar under
+BDIF
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+BDIF
+\end_layout
+
+\end_inset
+
+ is a similar variable used for old gust-boom systems or for Rosemount Model
+ 858AJ flow-angle sensors.
+\end_layout
+
+\end_inset
+
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+BDIFR
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This variable records the pressure difference between starboard and port
+ pressure inlets of the radome gust-sensing system, in the horizontal plane
+ of the aircraft's flow-angle sensor system.
+ 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Attack Angle, Radome (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+AKRD
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+AKRD
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This derived output represents the angle of attack of the aircraft.
+ It is obtained from ADIFR and a dynamic pressure using a sensitivity function
+ that has been determined empirically for each aircraft.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "95text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+ADIFR = attack differential pressure, radome
+\begin_inset Newline newline
+\end_inset
+
+QCXC = reference dynamic pressure
+\begin_inset Newline newline
+\end_inset
+
+XMACH2 = square of the Mach number
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $c_{0},\, c_{1}$
+\end_inset
+
+ = sensitivity coefficients determined empirically
+\begin_inset Newline newline
+\end_inset
+
+\SpecialChar \-
+\SpecialChar \-
+\SpecialChar \-
+\SpecialChar \-
+\SpecialChar \-
+\SpecialChar \-
+\SpecialChar \-
+\SpecialChar \-
+\SpecialChar \-
+ = {0.3843, (1/0.06653) 
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+} for the C-130
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ = {0.2571, (1/0.04724) 
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+} for the GV
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $c_{3},\, c_{4}$
+\end_inset
+
+ = additional coefficients for the GV 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ = {0.6195
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+, -1.02758
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+} for XMACH2 > 0.194
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ = {0.42
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+, 0} for XMACH2 
+\begin_inset Formula $\leq$
+\end_inset
+
+ 0.194
+\end_layout
+
+\begin_layout Plain Layout
+
+\lyxline
+
+\end_layout
+
+\begin_layout Plain Layout
+For the C-130:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \[
+\mathrm{AKRD}=c_{1}\left(\frac{\{\mathrm{ADIFR}\}}{\{\mathrm{QCXC}\}}+c_{0}\right)\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+For the GV:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \[
+\mathrm{AKRD}=c_{1}\left(\frac{\{\mathrm{ADIFR}\}}{\{\mathrm{QCXC}\}}+c_{0}\right)+c_{3}+c_{4}\{\mathrm{XMACH2}\}\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+Old Bulletin-9 code: omitted now
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Attack Angle, 858 (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+AKDF
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+AKDF
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is a derived output of the aircraft's angle of attack obtained from
+ ADIF (the vertical differential pressure measured by a Rosemount 858AJ
+ flow-angle sensor) and a dynamic pressure (Qc) using an empirically determined
+ sensitivity function.
+ For the Rosemount 858AJ, the sensitivity function (GR) is a constant 0.079
+ for Mach numbers less than 0.515.
+ For larger Mach numbers the sensitivity decreases as a function of Mach
+ number.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+there is a problem with GR: these formulas are discontinuous as 0.515, giving
+ 0.068...
+ for 0.515+eps
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status collapsed
+
+\begin_layout Plain Layout
+MACH = Aircraft Mach Number
+\begin_inset Newline newline
+\end_inset
+
+GR = sensitivity function (given below)
+\begin_inset Newline newline
+\end_inset
+
+Qc = dynamic pressure, mb
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \begin{eqnarray*}
+\mathrm{for\, MACH} & \leq & 0.515:\\
+ &  & \mathrm{GR}=0.079\\
+\mathrm{otherwise}:\\
+ & \mathrm{GR} & =0.086577797-0.03560256\, MACH\\
+ &  & +0.00006143\, MACH^{2}\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\lyxline
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\begin_inset Formula \[
+\mathrm{AKDF=\frac{ADIF}{GR\, Qc}}\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Reference Attack Angle (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+ATTACK
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+ATTACK
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This variable is the reference selected from other measurements of angle
+ of attack in the data set.
+ In most projects, it is equal to AKRD.
+ It is used where attack angle is needed for other derived calculations
+ (e.g., wind measurements).
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Sideslip Angle (Differential Pressure) (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+SSRD
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+SSRD
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This variable is derived from BDIFR and a dynamic pressure using a sensitivity
+ function that has been determined empirically for each aircraft.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $M$
+\end_inset
+
+ = Aircraft Mach Number
+\begin_inset Newline newline
+\end_inset
+
+BDIFR = differential pressure between sideslip pressure ports, radome (mb)
+\begin_inset Newline newline
+\end_inset
+
+QCXC = dynamic pressure (mb)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $c_{0},\, c_{1}$
+\end_inset
+
+ = empirical coefficients dependent on the aircraft and radome configuration
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ = {-0.000983, (1/0.09189)
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ } for the C-130
+\begin_inset Newline newline
+\end_inset
+
+______ = {-0.0023, (1/0.04727)
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+} for the GV
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+
+\lyxline
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \[
+\mathrm{SSRD=}c_{1}(\frac{\{BDIFR\}}{\{\mathrm{QCXC}\}}-c_{0})\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+The following is from old Bulletin 9:
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+Sideslip Angle (Differential Pressure) (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+SSDF
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+SSDF
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This variable is derived from BDIF and a dynamic pressure using an empirically
+ determined sensitivity function, as expressed in the following:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $M$
+\end_inset
+
+ = Aircraft Mach Number
+\begin_inset Newline newline
+\end_inset
+
+BDIF = differential pressure between sideslip pressure ports, 858 probe
+ (mb)
+\begin_inset Newline newline
+\end_inset
+
+QC = dynamic pressure from the 858 probe (mb)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $g_{r}$
+\end_inset
+
+ = dimensionless sensitivity function (given below)
+\begin_inset Formula \begin{eqnarray*}
+\mathrm{for\, M} & \leq & 0.515:\\
+ & g_{r} & =0.079\\
+\mathrm{otherwise}:\\
+ & g_{r} & =0.086577797-0.03560256\, M\\
+ &  & +0.00006143\, M^{2}\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+
+\lyxline
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \[
+\mathrm{SSDF=}\frac{\mathrm{\{BDIF\}}}{g_{r}\mathrm{\{QC\}}}\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Reference Sideslip Angle (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+SSLIP
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+SSLIP
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This variable is the reference selected from other measurements of angle
+ of attack in the data set.
+ In most projects, it is equal to SSRD.
+ It is used where attack angle is needed for other derived calculations
+ (e.g., wind measurements).
+ 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Cabin Pressure (mb): 
+\bar under
+PCAB
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+PCAB
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The pressure in the interior of the aircraft cabin, measured by a Rosemount
+ Model 1201 absolute pressure transducer.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Cryogenic Hygrometer Inlet Pressure (mb) and Frost Point Temperature (
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+): 
+\bar under
+CRHP
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+CRHP
+\end_layout
+
+\end_inset
+
+
+\series default
+\bar default
+ 
+\series bold
+and 
+\bar under
+VCRH
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+VCRH
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+These are measurements made directly in the chamber of the cryogenic hygrometer,
+ a cabin-mounted instrument connected to outside air by an inlet line.
+ CRHP is the pressure and VCRH is the frost-point temperature inside that
+ chamber.
+ VCRH is determined from a third-order calibration equation applied to the
+ voltage measured by the instrument.
+ 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Corrected Cryogenic Frost Point Temperature and Dew Point Temperature (
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C) - 
+\bar under
+FPCRC
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+FPCRC
+\end_layout
+
+\end_inset
+
+
+\bar default
+ and 
+\bar under
+DPCRC
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+DPCRC
+\end_layout
+
+\end_inset
+
+ [obsolete]
+\begin_inset Newline newline
+\end_inset
+
+To obtain estimates of the ambient frost point and dew point, the measurements
+ made inside the chamber of the cryogenic hygrometer (CVRH and CRHP) must
+ be corrected for the difference in water vapor pressure between that chamber
+ and ambient conditions.
+ The ratio of the chamber pressure to the ambient pressure is assumed to
+ be the same as the ratio of the chamber vapor pressure to the ambient vapor
+ pressure.
+ The vapor pressure in the chamber is determined from the Goff-Gratch (1946)
+ equation for saturation vapor pressure with respect to a plane ice surface.
+ This vapor pressure is then used with CRHP and a measure of the ambient
+ pressure (PSXC) to determine the vapor pressure in the outside air, after
+ which the Goff-Gratch equation is again used to convert that vapor pressure
+ to an equivalent frost point and an equivalent dew point.
+ The instrument is only used for measurements of frost point less than -15
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+ because it does not function well above that frost point.
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+check G-G formulas; there was some ambiguity in what was in B9
+\end_layout
+
+\end_inset
+
+The steps are documented below:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status collapsed
+
+\begin_layout Plain Layout
+VCRH = frost point inside the cryogenic hygrometer (
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+CRHP = pressure inside the chamber of the cryogenic hygrometer (mb)
+\begin_inset Newline newline
+\end_inset
+
+PSXC = reference ambient pressure (mb)
+\begin_inset Newline newline
+\end_inset
+
+f
+\begin_inset Formula $_{i}$
+\end_inset
+
+ = enhancement factor (see Appendix C of Bulletin 9)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $F_{1}$
+\end_inset
+
+(
+\begin_inset Formula $T_{d}$
+\end_inset
+
+) =Goff-Gratch formula for vapor pressure at dew point 
+\begin_inset Formula $T_{d}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $F_{2}(T_{f})$
+\end_inset
+
+ = Goff-Gratch formula for vapor pressure at frost point 
+\begin_inset Formula $T_{f}$
+\end_inset
+
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $T_{3}$
+\end_inset
+
+ = temperature at the triple point of water = 273.16 K
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\end_layout
+
+\begin_layout Plain Layout
+chamber vapor pressure 
+\begin_inset Formula $e_{ic}$
+\end_inset
+
+ (mb):
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \[
+e_{ic}=(6.1071\,\mathrm{mb})\times10^{A}\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \begin{eqnarray*}
+\mathrm{where}\,\,\, A & = & -9.09718\left(\frac{T_{3}}{\mathrm{VCRH}+T_{3}}-1\right)\\
+ & + & 3.56654\log_{10}\left(\frac{T_{3}}{\mathrm{VCRH}+T_{3}}\right)\\
+ & + & 0.876793\left(1-\frac{\mathrm{VCRH}+T_{3}}{T_{3}}\right)\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+ambient vapor pressure 
+\begin_inset Formula $e_{a}$
+\end_inset
+
+ (mb):
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \[
+e_{a}=e_{ic}\left(\frac{\mathrm{PSXC}}{\mathrm{CRHP}}\right)f_{i}\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+ambient dew and frost point DPCRC and FPCRC: (iterative solution)
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \begin{eqnarray*}
+e_{a} & = & F_{1}\left(\mathrm{DPCRC}\right)\\
+ & = & F_{2}\left(\mathrm{FPCRC}\right)\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Voltage Output From the Lyman-alpha Sensor (V): 
+\bar under
+VLA
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+VLA
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+VLA1
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+VLA1
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The voltage output from the Lyman-alpha absorption hygrometer, which provides
+ fast-response, high-resolution water vapor density measurements.
+ (If a second sensor is used, a 1 is added to its name.) 
+\end_layout
+
+\end_body
+\end_document

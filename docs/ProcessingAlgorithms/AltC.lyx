@@ -1,0 +1,1077 @@
+#LyX 1.6.7 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\input colordvi
+\usepackage{color}
+\fancyhead{}
+\fancyfoot[CE,CO]{}
+\newtoks{\topicofnote} \global\topicofnote={}
+\newdimen\longindent \longindent=3.5truein
+\fancyhead[L]{Note re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\renewcommand{\headrulewidth}{0.0pt}
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+\setlength{\leftmargin}{\labelwidth}
+\addtolength{\leftmargin}{\labelsep}
+\renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+\newcommand{\datetoday}{\number\day\space
+     \ifcase\month\or January\or February\or March\or April\or May\or
+     June\or July\or August\or September\or October\or November\or
+     December\fi
+     \space\number\year}
+\newcommand{\ASPmemo}{\null \vskip-1.5truein
+{\raggedright \textsf{\textsc{\large \textcolor{blue}{Advanced Study Program}}}}\par
+{\raggedright \textsf{\textsl{\textcolor{blue}{Memorandum:}}}} \par \vskip6pt
+{\color{blue}{\hrule}}\par
+\vskip0.3truein \leftline{\hskip \longindent \datetoday} \vskip0.2truein
+\thispagestyle{empty}}
+\newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachments:] {#1}
+\end{lyxlist}}
+\newcommand{\cc}[1]{\begin{lyxlist}{Attachments:00}
+\item [cc:] {#1}
+\end{lyxlist}}
+\newcommand{\attach}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachment:] {#1}
+\end{lyxlist}}
+%usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
+\end_preamble
+\use_default_options false
+\language english
+\inputencoding default
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\leftmargin 2.54cm
+\topmargin 3.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 1cm
+\headsep 2cm
+\footskip 0.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+set topicofnote to topic of note
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+topicofnote={calculation of GGALTC (formerly, GALTC)}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+Note goes here:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Background
+\end_layout
+
+\begin_layout Standard
+The variable GGALTC is described as the 
+\begin_inset Quotes eld
+\end_inset
+
+Corrected GPS Altitude
+\begin_inset Quotes erd
+\end_inset
+
+ in the headers, and Bulletin 9 says it is obtained by reference to another
+ altitude, typically the inertial altitude.
+ Comments in the code (altc.c) say that this routine creates a corrected
+ altitude variable by combining the GPS altitude with the IRS altitude when
+ needed.
+ However, a check of the current code and dependence table shows that the
+ reference is to the pressure altitude.
+ The approach taken is to determine a for-all-time regression fit between
+ pressure altitude and GPS altitude, then use that fit while the GPS is
+ good to determine an offset between the GPS and pressure altitude.
+ That offset is saved, and when GPS is lost that offset is used to adjust
+ the pressure altitude to obtain a replacement for the GPS altitude.
+ When the GPS returns, the value is gradually stepped back to the GPS value
+ over several (typically 10) seconds to avoid an abrupt transition.
+\end_layout
+
+\begin_layout Subsection*
+Reasons for considering a change:
+\end_layout
+
+\begin_layout Enumerate
+Using pressure altitude in this way is clearly unjustified, especially given
+ a specific regression between GPS and pressure altitude; any such relationship
+ will be highly variable.
+ Furthermore, it doesn't take into account the change in slope that occurs
+ at the tropopause, which almost surely leads to significant errors at GV
+ altitude.
+ A simple linear fit cannot give a good representation of the conversion
+ from pressure altitude to geometric altitude, even if the fit were adjusted
+ for each flight (which it is not).
+\end_layout
+
+\begin_layout Enumerate
+The routine is an ad hoc approach that isn't documented or justified, and
+ it has arbitrary switches and branches.
+ I don't see a reason for 
+\begin_inset Quotes eld
+\end_inset
+
+walking
+\begin_inset Quotes erd
+\end_inset
+
+ back to the right answer except to make plots obscure the fact that there
+ is a gap in the measurements.
+ 
+\end_layout
+
+\begin_layout Enumerate
+The alternate branch in the routines, to use 
+\begin_inset Quotes eld
+\end_inset
+
+ALT
+\begin_inset Quotes erd
+\end_inset
+
+ from the IRS, is subject to the same criticism.
+ ALT is adjusted internally in the IRS to match the pressure altitude, not
+ the GPS altitude.
+ A check of GV PREDICT flights showed that the difference between GPS and
+ IRS altitude is often 500 m or more, showing that ALT is also not a good
+ representation of the geometric altitude.
+\end_layout
+
+\begin_layout Enumerate
+Improvements can be achieved readily.
+ Two options are explored in the remainder of this note.
+\end_layout
+
+\begin_layout Enumerate
+It would be desirable to have the altitude from the GPS treated, to the
+ extent possible, in the same or a similar way to the horizontal positions,
+ with short-term changes obtained from the IRS but long-term stability achieved
+ by reference to the GPS.
+ The algorithms suggested below, particularly 
+\begin_inset Quotes eld
+\end_inset
+
+B
+\begin_inset Quotes erd
+\end_inset
+
+, achieve this.
+\end_layout
+
+\begin_layout Subsection*
+Suggestions for consideration:
+\end_layout
+
+\begin_layout Subsubsection*
+Valid reference altitudes to use for adjustment can be obtained in these
+ alternate ways:
+\end_layout
+
+\begin_layout Enumerate
+Integrate the vertical speed from the IRS to obtain the change in altitude.
+ A baro-inertial loop in the IRS keeps this from undergoing unstable oscillation
+s in accuracy but also tends to suppress some of the real altitude changes.
+ However, this is not as compromised as the direct altitude output from
+ the IRS and so should provide a better short-term signal than either PALT
+ or ALT.
+\end_layout
+
+\begin_layout Enumerate
+Integrate the hydrostatic equation, using the temperature measured along
+ the flight path as well as the pressure, to obtain the new altitude.
+ Unlike pressure altitude, this uses the actual temperature encountered
+ instead of the temperature in the standard atmosphere, and so will be more
+ accurate, although there will be some error arising from mixing horizontal
+ and vertical gradients.
+ The result will still need updating to the GPS altitude when available
+ to remove these errors.
+\end_layout
+
+\begin_layout Subsubsection*
+Two replacement algorithms I tried:
+\end_layout
+
+\begin_layout Paragraph*
+
+\noun on
+A.
+ Feedback to VSPD:
+\end_layout
+
+\begin_layout Enumerate
+Integrate VSPD from the IRS to obtain an altitude reference (here called
+ ALTVC).
+ Also calculate ALTH by integration of the hydrostatic equation, to use
+ as a reference to use for adjustment of the bias in VSPD, as in step 3
+ below.
+ 
+\end_layout
+
+\begin_layout Enumerate
+When there is valid GPS information, correct for the error in ALTVC via
+ the application of an exponential filter referenced to the GPS information,
+ and apply the same filter to ALTH to adjust it toward the GPS value.
+\end_layout
+
+\begin_layout Enumerate
+Adjust the VSPD used by a 
+\begin_inset Quotes eld
+\end_inset
+
+BIAS
+\begin_inset Quotes erd
+\end_inset
+
+ term, determined from a PID feedback loop, but with the respective terms
+ for the components proportional to the error, integrated error, and derivative
+ of the error determined from average values over some short period of time
+ to avoid noise.
+ Use the resulting BIAS as a correction term to VSPD in subsequent steps
+ for calculation of ALTVC from integration of VSPD.
+ Then use (VSPD-Bias) for subsequent iterations in Step 1.
+\end_layout
+
+\begin_layout Enumerate
+When GPS information is lost, continue integration to calculate new values
+ of ALTV and ALTVC (including application of the PID feedback referenced
+ to ALTH), but suppress updating of either ALTV or ALTH to the invalid GPS
+ information.
+\end_layout
+
+\begin_layout Paragraph*
+B.
+ Low-pass filtering to determine offset
+\end_layout
+
+\begin_layout Standard
+(This is the same approach as applied to the horizontal wind via the complementa
+ry-filter approach, except for step 4.)
+\end_layout
+
+\begin_layout Enumerate
+Integrate the VSPD output from the IRS, with PID feedback as above.
+\end_layout
+
+\begin_layout Enumerate
+Filter the difference dH=GGALT-ALTV to obtain the mean offset between the
+ GPS altitude and the altitude obtained by integration of the IRS velocity.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Add this offset to ALTV via an exponential filter.
+ 
+\end_layout
+
+\begin_layout Enumerate
+When GPS is lost, switch to the reference altitude ALTH determined as in
+ method A above, and continue use of this to update the mean offset.
+\end_layout
+
+\begin_layout Enumerate
+When the GPS returns, exponentially update to the new offset by switching
+ back to GGALT as the reference for the filter.
+\end_layout
+
+\begin_layout Standard
+I also tested an exact analogy to the horizontal-wind treatment: Simply
+ integrate VSPD and use exponential filtering to adjust the result to the
+ GPS position.
+ However, it is well known that the vertical integration is unstable and
+ leads to larger errors than the horizontal integration, as explained in
+ Lenschow's original documents on wind measurements.
+ When I tried this, I found that the result of the integration without updating
+ (as required when the GPS is absent) led to unacceptable errors in periods
+ of 5-10 min, so I added step B.4 above.
+\end_layout
+
+\begin_layout Section*
+Results
+\end_layout
+
+\begin_layout Standard
+Before discussion the choices of filter time constants, feedback coefficients,
+ coding, etc., I'll first show the results in this section.
+ Figure 1 shows that both of the above methods worked well:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename tracyA2.png
+	lyxscale 50
+	width 6.5in
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The data used for this plot come from a TREX flight, chosen because high-rate
+ data are available.
+ The top panel shows three values of the altitude (in m) plotted in yellow
+ (GGALT), cyan (ALTV), and green (ALTH).
+ With the line width used, all three overlap.
+ To test performance through periods when the GPS is not available, GPS
+ information was not used for updating during the period between the orange
+ lines, as discussed in the next paragraph.
+ GGALT is the usual altitude measurement from the GPS; ALTH is the altitude
+ determined from integration of the hydrostatic equation with updating to
+ the GPS altitude, and ALTV is the altitude determined from the IRS with
+ updating to the GPS altitude.
+ The bottom panel shows the difference (in m) between the GPS altitude and
+ that determined according to Method B above (yellow thin line, GGALT-ALTV),
+ by Method A (green thicker line, GGALT-ALTVC), and by integration of the
+ hydrostatic equation with updating to the GPS altitude (cyan line, GGALT-ALTH).
+ The standard deviations in these variables over the period of the plot
+ are, respectively, 7.9 m, 7.8 m, and 6.65 m.
+\end_layout
+
+\begin_layout Standard
+To test performance when the GPS information is not available, updating
+ to the GPS altitude was suppressed for the 10-min period between the orange
+ lines.
+ The GPS altitude actually was available, as shown in the plot, so the resulting
+ altitude can be compared to the actual altitude.
+ A period was chosen when there is rapid change in the altitude during a
+ climb and transition from slow to fast climb; results for other tested
+ periods are similar.
+ There is a small excursion in altitude for the test period relative to
+ the reference altitude (GGALT), but it is not outside the limits of other
+ variability observed while the GPS was valid (e.g., at about 1456) and is
+ only about 25 m.
+ The period of simulated drop-out, 10 min, is long compared to the periods
+ of normal signal loss for the current GV GPS system, which is often available
+ continuously and seldom is lost for more than a minute.
+\end_layout
+
+\begin_layout Standard
+The good performance of both algorithms is in contrast to the performance
+ without incorporation of information from ALTH, the altitude obtained by
+ integration of the hydrostatic equation.
+ Without this, the information obtained solely by integrating the IRS-provided
+ variable VSPD causes the error to grow rapidly, exceeding 50 m by the end
+ of the plotted period.
+ It therefore is valuable to calculate ALTH and use it as a substitute reference
+ altitude when GGALT is not available.
+\end_layout
+
+\begin_layout Standard
+Despite the slightly better performance of ALTH during the simulated drop-out
+ period, I don't think this is the best choice for a new variable, for two
+ reasons.
+ First, the resulting signal from integration of the hydrostatic equation
+ is noisy, mostly because of high sensitivity to the measured pressure (typicall
+y 10-40 m per mb), so the resulting signal is noisy in comparison to altitude
+ determined from either the GPS or IRS.
+ Second, false signals can appear that are caused by temperature fluctuations
+ (as might occur during passage through a cloud), so there is an advantage
+ to use of one of the measurements that is based solely on position measurement,
+ as provided by either the GPS or IRS.
+\end_layout
+
+\begin_layout Standard
+Another example, from processing a PREDICT flight at low rate, is shown
+ in the following figure.
+ (The error scales are 
+\begin_inset Formula $\pm50$
+\end_inset
+
+m.) Again, a simulated GPS drop-out was included between the times denoted
+ by the orange lines.
+ There is a true drop-out from 135036-135535, and throgh this gap the new
+ variables look reasonable (but are not shown here).
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename tracyA4.png
+	lyxscale 50
+	width 6.5in
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+My recommendation is Method B.
+
+\emph default
+ This is parallel to the result for the horizontal position, except for
+ the addition of reference to ALTH when the GPS is unavailable.
+ The result is less noisy than the altitude obtained from Method A, as shown
+ by the thin yellow line in the bottom panel of the above figure.
+ Method B also performs better than Method A during the simulated drop-out
+ period.
+ The new variable incorporates the best of information from the GPS and
+ IRS into a new variable that should be an improvement over either of the
+ original measurements because it combines the short-term smoothness, resolution
+, and high-frequency response of the IRS with the long-term stability of
+ the GPS.
+\end_layout
+
+\begin_layout Standard
+Some additional lessons learned and useful follow-up steps:
+\end_layout
+
+\begin_layout Enumerate
+The variable VSPD from the IRS is biased enough that its integral, following
+ the procedures outlined above, leads to large departures from the GPS reference
+ altitude unless that bias is removed.
+ This is a problem that extends beyond the immediate topic of this note,
+ because it means that the vertical speed of the aircraft has an error that
+ will enter our vertical-wind calculation.
+ The magnitude of this was significant during the climbs and descents of
+ the PREDICT flights, leading to altitude errors of 120--200 m before correction
+ for the VSPD bias.
+ This is being investigated as part of a separate study of the vertical-wind
+ measurement.
+ My speculation is that the internal updating of VSPD by the IRS, set to
+ match the standard atmosphere, caused VSPD to be in error in PREDICT because
+ the tropical atmosphere was substantially warmer than the standard atmosphere,
+ and this led to significant errors in VSPD.
+\end_layout
+
+\begin_layout Enumerate
+Integration of the hydrostatic equation along the flight path produces a
+ usable estimate of the true geometric altitude, although with some potential
+ errors that arise from horizontal gradients in either temperature or pressure.
+ It was necessary to use this to constrain the integration of VSPD during
+ GPS gaps; otherwise the integration developed unacceptable errors in only
+ 5-10 min, for the reason explained in comment #1.
+\end_layout
+
+\begin_layout Enumerate
+The accuracy of the integration of the hydrostatic equation is sufficient
+ to consider using this as an indicator of the accuracy of measurements
+ of temperature.
+ The relationship can be expressed as follows:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \begin{eqnarray*}
+\frac{dp}{p} & = & -\frac{g}{RT}dz\\
+\ln(\frac{p_{2}}{p_{1}}) & = & -\frac{g}{R}\intop_{z_{1}}^{z_{2}}\frac{1}{T(z)}dz\end{eqnarray*}
+
+\end_inset
+
+If pressure can be measured to 
+\emph on
+relative
+\emph default
+ accuracy of about 0.5 mb, the pressure ratio can be determined (for an example
+ layer from 300 to 200 mb) to about 0.5% accuracy, and the altitude difference
+ can be measured better than this, so this constrains the temperature of
+ the layer to about 0.4% accuracy or, for a typical temperature of about
+ 225K, about 1K.
+ The test is still better at low altitude.
+ This may be worth pursuing in connection with the study of temperature
+ measurement on the GV.
+\end_layout
+
+\begin_layout Enumerate
+I determined the coefficients used for the PID feedback loop by trial and
+ (mostly) error.
+ (I did use the Ziegler–Nichols method as a starting point.) It may be helpful
+ to get someone who understands how to tune a PID feedback loop to see if
+ better coefficients can be found.
+ Also, it may be preferable to implement a different feedback loop instead.
+ Our standard baro-inertial loop is not a candidate because there is only
+ one integration involved, not two, so only one place to inject feedback.
+\end_layout
+
+\begin_layout Enumerate
+It will be important in processing this way to have resolved any time lags
+ between the GPS and IRS measurements.
+ Otherwise, in steep ascents or descents, there can be significant offsets
+ that result just from the time delays.
+ For example, in PREDICT there were occasions where descent rates exceeded
+ 25 m/s, so an offset of as much as 25 m can result from a time difference
+ of about 1 s.
+\end_layout
+
+\begin_layout Enumerate
+There are many time constants in the algorithm described in detail in the
+ next section.
+ Those all interact and must be adjusted together to keep the calculation
+ stable.
+ For example, one might consider lowering the time constant 
+\begin_inset Quotes eld
+\end_inset
+
+tau4
+\begin_inset Quotes erd
+\end_inset
+
+ of the feedback loop that updates the integrated-VSPD altitude to the GPS
+ altitude, in the last step.
+ However, lowering this below about the setting given here will result in
+ an unstable oscillation that produces very large errors, because the time
+ constant used to determine the coefficients in the PID feedback loop will
+ become comparable to the time constant of the final-filter adjustment to
+ the GPS altitude.
+ At this time, I haven't explored the limits of stability very much, but
+ I know that tuning these coefficients and time constants can easily cause
+ the errors in the results to become unacceptable.
+ The below values seem to work for the cases I studied, all pertaining to
+ the GV in either PREDICT or TREX.
+\end_layout
+
+\begin_layout Section*
+Details of the Algorithm
+\end_layout
+
+\begin_layout Standard
+The following explains in detail how I implemented the 
+\begin_inset Quotes eld
+\end_inset
+
+Method B
+\begin_inset Quotes erd
+\end_inset
+
+ algorithm for testing:
+\end_layout
+
+\begin_layout Standard
+For each time step:
+\end_layout
+
+\begin_layout Itemize
+initialize at the time of first valid GPS signal
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+initialize the variable ALTV to the initial value of GGALT.
+ Also set the working variables altvc and alth to the same value.
+ The variable altvc is used to determine the bias in the IRS measurement
+ of vertical motion; althr is the result of integration of the hydrostatic
+ equation.
+\end_layout
+
+\begin_layout Itemize
+zero the 6-element array 
+\begin_inset Quotes eld
+\end_inset
+
+zf
+\begin_inset Quotes erd
+\end_inset
+
+ used for the Butterworth filter and the three PID coefficients {dap,dai,dad},
+ as well as the variables 
+\begin_inset Quotes eld
+\end_inset
+
+bias
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+daplast
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+dhf
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Save the pressure as 
+\begin_inset Quotes eld
+\end_inset
+
+plast
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+if pressure (PSXC) and temperature (ATX) are not MISSING_VALUE:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+increment the hydrostatic-equation altitude:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula \begin{eqnarray*}
+\mathrm{alth}+ & = & (R/g)(\{\mathrm{ATX}\}+273.15)\ln(\frac{p_{last}}{\{\mathrm{PSXC}\}})\\
+p_{last} & = & \{\mathrm{PSXC}\}\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+if IRS vertical aircraft velocity (VSPD) is greater than -100 [which avoids
+ missing_value and other errors]:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+increment 
+\begin_inset Quotes eld
+\end_inset
+
+ALTV
+\begin_inset Quotes erd
+\end_inset
+
+ and altvc using 
+\begin_inset Quotes eld
+\end_inset
+
+VSPD
+\begin_inset Quotes erd
+\end_inset
+
+ and bias (updated in later steps):
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula \[
+\mathrm{altv}+=(\{\mathrm{VSPD}\}-bias)/srate\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+where 
+\begin_inset Quotes eld
+\end_inset
+
+srate
+\begin_inset Quotes erd
+\end_inset
+
+ is the sample rate, e.g.
+ 25 for high-rate data.
+\end_layout
+
+\begin_layout Itemize
+if GGALT is also valid (i.e., GGALT>0.) then update the Butterworth-filtered
+ value of the difference between GGALT and ALTV, via a call to the function
+ 
+\begin_inset Quotes eld
+\end_inset
+
+bwfltr(x,z)
+\begin_inset Quotes erd
+\end_inset
+
+.
+ This is the same function now in use for calculation of the variables VNSC
+ and VEWC, and called there 
+\begin_inset Quotes eld
+\end_inset
+
+filter()
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\emph on
+but with a different time constant.
+
+\emph default
+ The time constant is 200 s as implemented here; for high-rate data, the
+ time constant must be changed to 200*srate.
+ The function call is:
+\begin_inset Newline newline
+\end_inset
+
+      dhf = bwfltr((GGALT-ALTV), zf)
+\end_layout
+
+\begin_layout Itemize
+else (i.e., GGALT is invalid) update dhf instead to the altitude obtained
+ from integration of the hydrostatic equation:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+dhf = bwfltr((alth-ALTV), zf)
+\end_layout
+
+\begin_layout Itemize
+update the PID coefficients and the 
+\begin_inset Quotes eld
+\end_inset
+
+bias
+\begin_inset Quotes erd
+\end_inset
+
+.
+ This does not require valid GGALT, only valid VSPD:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout LyX-Code
+    static float tau2 = 300., tau3 = 20.;
+\end_layout
+
+\begin_layout LyX-Code
+    static float akp = 10., akt = 80.;
+\end_layout
+
+\begin_layout LyX-Code
+    dap += ((altvc-alth)-dap)/(tau3*srate);
+\end_layout
+
+\begin_layout LyX-Code
+    dai += (altvc-alth)/(tau2*srate);
+\end_layout
+
+\begin_layout LyX-Code
+// srate not in equation for derivative because the 
+\end_layout
+
+\begin_layout LyX-Code
+// increment used to determine the derivative involves 
+\end_layout
+
+\begin_layout LyX-Code
+// delta-t between samples which is the inverse of srate
+\end_layout
+
+\begin_layout LyX-Code
+    dad += ((altvc-alth)-daplast)/tau3;
+\end_layout
+
+\begin_layout LyX-Code
+    daplast = altvc-alth;
+\end_layout
+
+\begin_layout LyX-Code
+    bias = akp*dap/tau3 + 2.*akp/akt*dai/tau2
+\end_layout
+
+\begin_layout LyX-Code
+         + akp*akt*dad/(5000.*tau3);
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+(This is not a pure PID feedback loop because the proportional and derivative
+ components are each averaged using an exponential filter with time constant
+ of 20 s, while the integral component is averaged over 300 s.
+ This is done to avoid noise.)
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+If GGALT is valid, then whether VSPD is valid or not, update both altvc
+ and ALTH (but not ALTV) toward GGALT:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout LyX-Code
+    static float tau = 60.;
+\end_layout
+
+\begin_layout LyX-Code
+    altvc += (GGALT-altvc)/(tau*srate);
+\end_layout
+
+\begin_layout LyX-Code
+    alth +=  (GGALT-alth) /(tau*srate)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+in all cases, update ALTV toward the offset dhf determined by low-pass filtering
+ the difference between the reference altitude (GGALT when available, ALTH
+ otherwise) and VSPD:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout LyX-Code
+    static float tau4 = 100.;
+\end_layout
+
+\begin_layout LyX-Code
+    ALTV += dhf/(tau4*srate);
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+----- END OF THIS NOTE -----
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attach{attachment}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attachm{first
+\backslash
+
+\backslash
+second}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+cc{first attachment
+\backslash
+
+\backslash
+second
+\backslash
+
+\backslash
+3rd att}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

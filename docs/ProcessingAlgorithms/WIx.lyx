@@ -1,0 +1,703 @@
+#LyX 2.0.0beta1 created this file. For more info see http://www.lyx.org/
+\lyxformat 407
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\input colordvi
+\usepackage{color}
+\fancyhead{}
+\fancyfoot[CE,CO]{}
+\newtoks{\topicofnote} \global\topicofnote={}
+\newdimen\longindent \longindent=3.5truein
+\fancyhead[L]{Note re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\renewcommand{\headrulewidth}{0.0pt}
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+\setlength{\leftmargin}{\labelwidth}
+\addtolength{\leftmargin}{\labelsep}
+\renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+\newcommand{\datetoday}{\number\day\space
+     \ifcase\month\or January\or February\or March\or April\or May\or
+     June\or July\or August\or September\or October\or November\or
+     December\fi
+     \space\number\year}
+\newcommand{\ASPmemo}{\null \vskip-1.5truein
+{\raggedright \textsf{\textsc{\large \textcolor{blue}{Advanced Study Program}}}}\par
+{\raggedright \textsf{\textsl{\textcolor{blue}{Memorandum:}}}} \par \vskip6pt
+{\color{blue}{\hrule}}\par
+\vskip0.3truein \leftline{\hskip \longindent \datetoday} \vskip0.2truein
+\thispagestyle{empty}}
+\newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachments:] {#1}
+\end{lyxlist}}
+\newcommand{\cc}[1]{\begin{lyxlist}{Attachments:00}
+\item [cc:] {#1}
+\end{lyxlist}}
+\newcommand{\attach}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachment:] {#1}
+\end{lyxlist}}
+%usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\inputencoding default
+\fontencoding global
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_xetex false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.54cm
+\topmargin 3.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 1cm
+\headsep 2cm
+\footskip 0.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+set topicofnote to topic of note
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+topicofnote={Vertical Wind Calculation}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+Note goes here:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Background
+\end_layout
+
+\begin_layout Standard
+All wind calculations from aircraft are based on measuring the velocity
+ of the air relative to the aircraft and the velocity of the aircraft relative
+ to the ground, then finding the wind from the sum of these two vectors.
+ Modern measurements of the velocity of the aircraft relative to the ground
+ are made using IRS (INS) or GPS systems.
+ The Litton LTN-51 was the INS used some time ago, and much of the code
+ was developed for that system including the WP3 algorithm, about which
+ I wrote a separate note.
+ This note explores the consequences of changing the vertical-wind calculation
+ to use the variable VSPD instead of WP3.
+\end_layout
+
+\begin_layout Standard
+The current preferred variable for vertical wind is WIC.
+ WI was a previously used name, but this was (usually) based on WP3 and
+ has mostly been superceded by WIC.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+There has been some inconsistency in names.
+ For example, in TREX, WI was based on VSPD_G even though WP3 was calculated
+ and included in the output data files.
+ WIC was called GPS-corrected, but it was based on VSPD instead and so did
+ not have any correction based on GPS measurements.
+\end_layout
+
+\end_inset
+
+ The name of this variable in the netCDF headers is 
+\begin_inset Quotes eld
+\end_inset
+
+GPS-Corrected Wind Vector, Vertical Gust Component
+\begin_inset Quotes erd
+\end_inset
+
+ but that is misleading because the algorithm in use has no dependence on
+ measurements from the GPS.
+ The dependence arises from using the horizontal velocity components VEWC
+ and VNSC in 
+\begin_inset Quotes eld
+\end_inset
+
+gust.c
+\begin_inset Quotes erd
+\end_inset
+
+, where the horizontal wind indeed depends on the GPS measurements, but
+ the code in gust.c shows that WIC does not depend on those variables (even
+ through coordinate transformations).
+ The name implies that this is updated to match the GPS vertical wind, but
+ that is incorrect; as calculated from VSPD, it only depends on IRS measurements
+ and radome gust measurements.
+ For reference, the equations used to calculate vertical wind in gust.c are
+ reproduced here:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $\alpha$
+\end_inset
+
+ = angle of attack
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\beta$
+\end_inset
+
+ = sideslip angle
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\phi$
+\end_inset
+
+ = pitch angle
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\gamma$
+\end_inset
+
+ = roll angle
+\begin_inset Newline newline
+\end_inset
+
+TAS = true airspeed
+\begin_inset Newline newline
+\end_inset
+
+WP = vertical motion component of the aircraft in an inertial frame
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $B_{c}$
+\end_inset
+
+ = boom correction (not reproduced here, dependent on rotation rate of the
+ aircraft)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $w$
+\end_inset
+
+ = vertical wind
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100line%"
+height "1pt"
+
+\end_inset
+
+
+\begin_inset Formula \[
+w=-\frac{TAS(\sin\phi-\tan\beta\cos\phi\sin\gamma-\tan\alpha\cos\phi\cos\gamma)}{\sqrt{1+\tan^{2}\alpha+\tan^{2}\beta}}+WP+B_{C}\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+An issue that has arisen from the change from the Litton LTN-51 to the Honeywell
+ Laseref systems is that the acceleration and vertical aircraft velocity
+ are already filtered as received from the Honeywell system, and furthermore
+ both are already modified by updating via a baro-inertial loop similar
+ to that used in conjunction with WP3 in code for the older Litton systems.
+ 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Older documentation (e.g., Bulletin 23) states that the baro-inertial loop
+ has a 60-s time constant, and the coefficients in subroutine ins.c (no longer
+ used) indeed are {0.314159..., 0.03289866, 0.00114838} as would be appropriate
+ for this time constant.
+ In irs.c, however, the coefficients are {0.15, 0.0085, 0.000125} and a comment
+ in the code says that this represents a 126-s time constant.
+ These values are also those listed in a document on algorithms for the
+ Laserref IRS that was provided by Honeywell.
+\end_layout
+
+\end_inset
+
+ This has two consequences.
+ First, we should not apply such a loop again, especially if it involves
+ correction for local gravitational effects of latitude, altitude, and centripet
+al effects, because those corrections have already been applied before the
+ acceleration is transmitted from the Honeywell IRS.
+ Indeed, examination of PREDICT flights shows that the mean acceleration
+ over entire flights is close to zero, closer than would be expected if
+ there had been no updating during the flight.
+ Second, because filtering is applied to the outputs (including VSPD) before
+ they are transmitted from the IRS, we may lose important information that
+ we need to measure the full spectrum of the vertical wind.
+ This note is an exploration of that second issue.
+\end_layout
+
+\begin_layout Standard
+There are three processing steps internal to the Laseref IRS that may affect
+ the resulting outputs for acceleration and velocity:
+\end_layout
+
+\begin_layout Enumerate
+A baro-inertial loop is implemented, with updating to pressure altitude,
+ that affects both vertical wind and vertical acceleration as outlined in
+ Bulletin 23, but with different coefficients.
+ The intent of this loop is to adjust for offsets in the acceleration and
+ hence in the vertical velocity of the aircraft, rather than to filter the
+ outputs, so this step should have little effect on the variance spectrum
+ of those variables except perhaps to introduce a small amount of additional
+ variance around the frequency of the loop.
+ 
+\end_layout
+
+\begin_layout Enumerate
+At the output stage, the vertical wind (and measurements of pitch and roll)
+ are filtered with an exponential filter
+\begin_inset Foot
+status collapsed
+
+\begin_layout LyX-Code
+by 
+\begin_inset Quotes eld
+\end_inset
+
+exponential filter
+\begin_inset Quotes erd
+\end_inset
+
+ I mean application of this algorithm, where the measurements are wMeasured,
+ the sample rate is SampleRate, and the time constant is tau: 
+\begin_inset Newline newline
+\end_inset
+
+wFiltered += (wMeasured-wFiltered)/(SampleRate*tau)
+\end_layout
+
+\end_inset
+
+ having a time constant of about 1.4 s.
+ The accelerations are not similarly filtered.
+\end_layout
+
+\begin_layout Enumerate
+A Butterworth filter is applied to the acceleration, and the filtered result
+ is integrated to get a filtered vertical velocity.
+ I have not been able to understand the section that describes this (on
+ p.
+ 57) or to find where the resulting velocity might enter the output, so
+ it isn't clear to me what effect this filter has.
+ The coefficients used are {-0.02, 0.028, 1.4, and 0.972} for factors that multiply,
+ respectively, the velocity feedback to the acceleration, ??, ?? (affecting
+ only the walking-window average as far as I can tell), and the attenuation
+ of the acceleration upon filtering.
+ The latter seems to point to a time constant of about 36 cycles or 0.72s
+ at 50 Hz.
+\end_layout
+
+\begin_layout Standard
+I am therefore unable to determine the filtered characteristics of VSPD
+ from the document that describes the Laseref IRS algorithms, except to
+ expect that the results are filtered with a time response that is at least
+ more than about 1.4 s.
+ The acceleration may be subject to less filtering; at least, it does not
+ appear to be subject to the final-stage 1.4-s filter that may limit the
+ response of VSPD.
+\end_layout
+
+\begin_layout Standard
+Changes in vertical wind with short wavelength will be seen as changes in
+ measurements from the gust probe, changes with intermediate wavelength
+ will be seen as changes in the vertical motion of the aircraft, and changes
+ with long wavelength will again be seen as changes in the gust measurements
+ because the pilots or autopilot will correct for them.
+ These transitions must occur seamlessly if the measurement of vertical
+ wind is to cover the full spectrum of motions.
+ Introduction of a filter into one of the key measurements, the measurement
+ of vertical motion of the aircraft, has the potential to affect the part
+ of the spectrum removed by that filter.
+\end_layout
+
+\begin_layout Standard
+The documentation we have from Honeywell indicates that the vertical wind
+ is filtered by a simple first-order running-average exponential filter,
+ via a constant called 
+\begin_inset Quotes eld
+\end_inset
+
+KT50
+\begin_inset Quotes erd
+\end_inset
+
+ (because it is applied to signals at a 50-Hz rate).
+ The value is KT50=0.35474, and the equation where this is used is on p.
+ 62 of the Honeywell document.
+ The following shows a plot of the variance spectrum of VSPD from a GV flight:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename ottoF3.png
+	lyxscale 50
+	width 5in
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Beginning at about 0.1 Hz, there is a pronounced decrease in variance compared
+ to the slope expected for a -5/3 spectrum (the dashed lines that decrease
+ with frequency).
+ To see if this is consistent with an exponential filter, I simulated a
+ time series with an approximately realistic spectrum (via a long-time-constant
+ exponental filter applied to a random series, then filtered it with exponential
+ filters having various time constants.
+ The next figure shows the result for a 1.5-s time constant:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename ottoF5.png
+	lyxscale 50
+	width 5in
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The effect of such a filter produces a roll-off with frequency that is similar
+ to but even more extreme than that in the measurements of VSPD.
+ There is expected effective filtering of VSPD by the response of the aircraft
+ that will cause some reduction like that shown in Fig.
+\begin_inset space ~
+\end_inset
+
+1, but Fig.
+\begin_inset space ~
+\end_inset
+
+2 suggests that the roll-off can be explained by the effect of the internal
+ filter in the IRS.
+ 
+\end_layout
+
+\begin_layout Standard
+One check on this is to consider if the integration of ACINS can provide
+ a vertical-wind measurement with more high-frequency variance.
+ The baro-inertial loop is designed to remove the long-term drift, not the
+ high-frequency response, so there may still be higher frequency in this
+ measurement.
+ Indeed, the variance spectra from ACINS do appear to have more high-frequency,
+ although in a complex spectrum that may have components from noise (above
+ 1 Hz), electronic filtering (above 10 Hz), and maybe the auto-throttle
+ loop (at around 0.5 Hz):
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename ottoF4.png
+	lyxscale 50
+	width 5in
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To explore if integration of this signal can retrieve information lost to
+ the VSPD filter, the variable ACINS was integrated over the course of one
+ TREX flight to obtain an alternate measurement of vertical wind (called
+ NEWW in these plots).
+ The result was in most regards the same as VSPD, except for pronounced
+ drift that the filter has removed from VSPD.
+ The variance spectra calculated over 6 hours of flight in TREX (rf06) are
+ shown in the following figure:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename ottoF7.png
+	lyxscale 50
+	width 5in
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The reason for the offset at higher frequency may be that the acceleration
+ as used to produce VSPD is adjusted to maintain a velocity consistent with
+ the measured pressure, while the acceleration output as ACINS does not
+ have this same adjustment.
+ (Over the course of six hours, NEWW accumulated an offset of about 80 m/s
+ and the trend leading to this had to be removed when the above variance
+ spectrum for NEWW was calculated.) 
+\end_layout
+
+\begin_layout Standard
+Several conclusions are suggested by Fig.
+\begin_inset space ~
+\end_inset
+
+4 (which shows variance spectra from some additional variables discussed
+ below):
+\end_layout
+
+\begin_layout Enumerate
+There is no additional information in NEWW (from integrated ACINS) that
+ is not in VSPD.
+ The small difference that exists is in the high-frequency region that has
+ negligible influence on WIC.scale-factor 
+\end_layout
+
+\begin_layout Enumerate
+The information from the GPS variable VSPD_G is essentially identical (in
+ regard to variance spectrum) to that from VSPD, except for an apparent
+ influence of noise (perhaps produced by brief drop-outs in signal reception)
+ at frequency higher than about 0.7 Hz.
+ In regard to the overall shape of the variance contribution to WIC, there
+ seems to be little difference between VSPD aand VSPD_G.
+\end_layout
+
+\begin_layout Enumerate
+The vertical-wind variance spectrum (WIC, violet line), perhaps may have
+ a deficiency in variance at frequency around 0.1 Hz.
+ Other spectra from regions of more intense turbulence appear better, so
+ this is not conclusive evidence of a problem.
+ The low-frequency peak may be real because this was a TREX flight over
+ the mountains in stable conditions.
+\end_layout
+
+\begin_layout Enumerate
+The variable GUSTW (orange line in Fig.
+\begin_inset space ~
+\end_inset
+
+4) was calculated from the gust component of the vertical wind, using the
+ part of the formula at the top of this note that depends on gust measurements.
+ This dominates the contribution to WIC at frequency above about 0.3 Hz.
+ Below that frequency, both spectra from both GUSTW and VSPD show more variance
+ than WIC, showing that proper measurement of the vertical wind at these
+ frequencies depends on correct cancellation of opposing contributions from
+ these two signals.
+\end_layout
+
+\begin_layout Standard
+I think the conclusion from this comparison is that the final exponential
+ filter applied to VSPD (which is not applied to ACINS) has a negligible
+ effect.
+ This still leaves unresolved the effect of the Butterworth filter, which
+ I think is applied to both, but in different ways.
+\end_layout
+
+\begin_layout Standard
+Another relevant measurement that might help resolve this question is the
+ measurement of vertical aircraft velocity from the CMIGITS system in the
+ gust pod.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+The recorded values do not include accelerations from the CMIGITS
+\end_layout
+
+\end_inset
+
+ This was available during PREDICT flights.
+ (should try to get HR data for this)
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attach{attachment}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attachm{first
+\backslash
+
+\backslash
+second}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+cc{first attachment
+\backslash
+
+\backslash
+second
+\backslash
+
+\backslash
+3rd att}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

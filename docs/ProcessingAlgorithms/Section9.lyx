@@ -1,0 +1,707 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\begin_modules
+hanging
+\end_modules
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Section
+WIND
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:WIND"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Bulletin No.
+\begin_inset space ~
+\end_inset
+
+23 documents the calculation of wind components, both with respect to the
+ earth (UI, VI, WI, WS and WD) and with respect to the aircraft (UX and
+ VY).
+ In the data processing, a separate function (GUSTO in GENPRO, gust in NIMBUS)
+ is used to derive these wind components.
+ That function uses the Inertial Reference System measurements as well as
+ aircraft true airspeed, aircraft angle of attack, and aircraft sideslip
+ angle.
+ The wind components calculated in GUSTO/gust are used to derive two additional
+ components: wind direction (WD and wind speed (WS).
+  
+\end_layout
+
+\begin_layout Standard
+The details contained in Bulletin No.
+\begin_inset space ~
+\end_inset
+
+23 will not be repeated here; please consult that bulletin for the processing
+ algorithms.
+ Instead, the output variables are only described briefly here, along with
+ some additional detail in some cases where procedures are not documented
+ in that bulletin.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Hanging
+
+\series bold
+Wind Vector East Component (m/s): 
+\bar under
+UI
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+UI
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Wind Vector North Component (m/s): 
+\bar under
+VI
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+VI
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Wind Vector Vertical Gust Component (m/s): 
+\bar under
+WI
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+WI
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\bar under
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\bar default
+These measurements comprise the three-dimensional wind vector with respect
+ to the earth.
+ UI is the east-west component with positive values toward the east.
+ VI is the north-south component with positive values toward the north.
+ WI is the vertical component with positive values toward the zenith.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Wind Speed (m/s): WS
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+WS
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Wind Direction (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): WD
+\series default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+WD
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+These variables are obtained in a straightforward manner from UI and VI.
+ The resulting wind direction is relative to true north.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+check the angle algorithm actually used -- this doesn't look right.
+ Also, check on and describe angle convention: wind from or toward?
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+UI = easterly component of the horizontal wind
+\begin_inset Newline newline
+\end_inset
+
+VI = northerly component of the horizontal wind
+\begin_inset Newline newline
+\end_inset
+
+atan2 = 4-quadrant arc-tangent function producing output in radians from
+ -
+\begin_inset Formula $\pi$
+\end_inset
+
+ to 
+\begin_inset Formula $\pi$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $C_{rd}$
+\end_inset
+
+ = conversion factor, radians to degrees, = 180/
+\begin_inset Formula $\pi$
+\end_inset
+
+ {units 
+\begin_inset Formula $^{\circ}/radian$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\begin_inset Formula \begin{eqnarray}
+\mathrm{WS} & = & \sqrt{\mathrm{\{UI\}}^{2}+\{\mathrm{VI\}}^{2}}\nonumber \\
+\mathrm{WD} & = & C_{rd}\mathrm{\, atan2(\{UI\},\,\{VI\})}+180^{\circ}\label{eq:9.1}\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Hanging
+
+\series bold
+Wind Vector Longitudinal Component (m/s): 
+\bar under
+UX
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+UX
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\bar default
+Wind Vector Lateral Component (m/s): 
+\bar under
+VY
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+VY
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+These measurements describe the horizontal wind vector relative to the frame
+ of reference attached to the aircraft (and moving with the aircraft).
+ UX is parallel to the longitudinal axis, and positive is toward the nose.
+ The variable VY is the component normal to the longitudinal axis; positive
+ is toward the port (or left) wing.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Hanging
+
+\series bold
+GPS-Corrected Wind Vector, East Component (m/s): 
+\bar under
+UIC
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+UIC
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS-Corrected Wind Vector, North Component (m/s): 
+\bar under
+VIC
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+VIC
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Horizontal wind components respectively toward the east and toward the north.
+ The components combine measurements from an inertial reference system (IRS)
+ and a Global Positioning System (GPS), as described in the discussion of
+ VEW and VNS above.
+ They are calculated just as for UX and VY except that the GPS-corrected
+ values for the aircraft groundspeed are used in place of the IRS-based
+ values.
+ They are considered 
+\begin_inset Quotes eld
+\end_inset
+
+corrected
+\begin_inset Quotes erd
+\end_inset
+
+ from the original measurements from the INS or GPS.
+ 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+GPS-Corrected Wind Vector, Vertical Component (m/s): 
+\bar under
+WIC
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+WIC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This variable is actually misnamed.
+ The GPS-correction algorithm does no vertical corrections, so this measurement
+ does the same calculation as WI with the option of using a different vertical
+ airplane velocity.
+ Positive values are toward the zenith.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+should we change to use the same kind of complementary filter?
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Hanging
+
+\series bold
+GPS-Corrected Wind Speed (m/s): 
+\bar under
+WSC
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+WSC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\bar default
+GPS-Corrected Wind Direction (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+WDC
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+WDC
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+These variables are obtained in a straightforward manner from UIC and VIC,
+ using equations analogous to (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:9.1"
+
+\end_inset
+
+) but with UIC and VIC as input measurements..
+ They are expected to be the best measurements of wind because they combine
+ the best features of the IRS and GPS measurements.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+confusion here in B9: 
+\begin_inset Quotes eld
+\end_inset
+
+easterly
+\begin_inset Quotes erd
+\end_inset
+
+ vs 
+\begin_inset Quotes eld
+\end_inset
+
+component toward the east
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Hanging
+
+\series bold
+GPS-Corrected Wind Vector, Longitudinal Component (m/s): 
+\bar under
+UXC
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+UXC
+\end_layout
+
+\end_inset
+
+
+\bar default
+
+\begin_inset Newline newline
+\end_inset
+
+GPS-Corrected Wind Vector, Lateral Component (m/s): 
+\bar under
+VYC
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+VYC
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+Longitudinal and lateral components of the three-dimensional wind, similar
+ to UX and VY, but corrected by the complementary-filter algorithm that
+ combines IRS and GPS measurements.
+ The components UXC and VYC are toward the front of the aircraft and toward
+ the port (left) wing, respectively.
+ 
+\end_layout
+
+\end_body
+\end_document

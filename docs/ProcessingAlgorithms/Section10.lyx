@@ -1,0 +1,878 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\begin_modules
+hanging
+\end_modules
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Section
+RADIATION VARIABLES
+\end_layout
+
+\begin_layout Subsection
+Measurements of Irradiance and Radiometric Temperature
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Radiometric (Surface or Sky/Cloud-Base) Temperature (
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+): 
+\bar under
+RSTx
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+RSTx
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Radiomatric temperature is the equivalent black body temperature measured
+ by one of two infrared radiometers.
+ The x denotes either that the instrument is mounted on the bottom (B) or
+ top (T) of the aircraft.
+ Both of these instruments are calibrated using a black-body source manufactured
+ by Eppley.
+ The measurements may come from either of the following two instruments:
+\begin_inset Newline newline
+\end_inset
+
+* a narrow bandwidth, narrow field-of-view (2
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+) Heimann Model KT-19.85 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space \hspace{}
+\length 0.4cm
+\end_inset
+
+precision radiation thermometer.
+ The wavelength range is 9.6 to 11.5 
+\begin_inset Formula $\mu m$
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+* a narrow bandwidth, narrow field-of-view (2
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+) Barnes Engineering Model 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space \hspace{}
+\length 0.4cm
+\end_inset
+
+PRT-5 precision radiation thermometer.
+ This instrument is now retired.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space \hspace{}
+\length 0.4cm
+\end_inset
+
+The spectral bandwidth available was either 8 to 14 
+\begin_inset Formula $\mu m$
+\end_inset
+
+ or 9.5 to 11.5 
+\begin_inset Formula $\mu m$
+\end_inset
+
+.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space \hspace{}
+\length 0.4cm
+\end_inset
+
+Its cavity temperature was monitored and recorded as either TCAVB or TCAVT.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Radiometer Sensor Head Temperature (
+\begin_inset Formula $^{\circ}C$
+\end_inset
+
+): 
+\bar under
+TRSTB
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+TRSTB
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+ This is the temperature of the Heimann radiometer's sensing head, usually
+ from RSTB, the primary down-looking instrument.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Raw Pyrgeometer Output (W/m
+\begin_inset Formula $^{2}$
+\end_inset
+
+): 
+\bar under
+IRx
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+IRx
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The pyrgeometer, manufactured by Eppley Laboratory, Inc., measures long-wave
+ irradiance using a calibrated thermopile.
+ It has a coated glass hemisphere that transmits radiation in a bandwidth
+ between 3.5 
+\begin_inset Formula $\mu m$
+\end_inset
+
+ and 50 
+\begin_inset Formula $\mu m$
+\end_inset
+
+.
+ It is calibrated at RAF according to procedures specified by Albrecht and
+ Cox (1977).
+ The pyrgeometers are usually flown in pairs, one up-looking and one down-lookin
+g.
+ The x denotes either bottom (B) or top (T).
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Corrected Infrared Irradiance (W/m
+\begin_inset Formula $^{2}$
+\end_inset
+
+): 
+\bar under
+IRxC
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+IRxC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Because the pyrgeometer measures net radiation, IRx must be corrected for
+ emission from the dome covering the sensor and for emission from the thermopile
+ itself.
+ The corrected value
+\begin_inset Newline newline
+\end_inset
+
+This is the output of , determined following procedures of Albrecht and
+ Cox (1977), is the corrected infrared irradiance.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+I think these references to the Boltzmann constant should be to the Stephan-Bolt
+zmann constant, conventionally 
+\backslash
+sigma.Also, need values for the emissivity and empiracal constant
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+IRx = raw pyrgeometer output (W/m
+\begin_inset Formula $^{2}$
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $T_{D}$
+\end_inset
+
+ = dome temperature
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $T_{S}$
+\end_inset
+
+ = 
+\begin_inset Quotes eld
+\end_inset
+
+sink
+\begin_inset Quotes erd
+\end_inset
+
+ temperature (approx.
+\begin_inset space ~
+\end_inset
+
+the thermopile temperature)
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ = emissivity of the thermopile (dimensionless)
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+give value
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\beta$
+\end_inset
+
+ = empirical constant dependent on the dome type
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+give value
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\begin_inset Formula \[
+\mathrm{IRxC}=\mathrm{IRx}-\beta\sigma(T_{D}^{4}-T_{S}^{4})+\epsilon\sigma T_{S}^{4}\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Shortwave Irradiance (W/m
+\begin_inset Formula $^{2}$
+\end_inset
+
+): 
+\bar under
+SWx
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+SWx
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+An Eppley Laboratory, Inc., pyranometer measures short-wave irradiance.
+ The dome normally used is UG295 glass, which gives wide coverage of the
+ solar spectrum (from 0.285 
+\begin_inset Formula $\mu m$
+\end_inset
+
+ to 2.8 
+\begin_inset Formula $\mu m$
+\end_inset
+
+).
+ Different bandwidths can be obtained by use of different glass domes, available
+ from RAF upon request.
+ (See Bulletin No.
+ 25.) The pyranometers are usually flown in pairs, one up-looking and one
+ down-looking.
+ They are calibrated periodically at the NOAA Solar Radiation Facility in
+ Boulder, Colorado.
+ The x denotes either bottom (B) or top (T).
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Corrected Incoming Shortwave Irradiance (W/m
+\begin_inset Formula $^{2}$
+\end_inset
+
+): 
+\bar under
+SWTC
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+SWTC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The down-welling shortwave irradiance measured by the difference between
+ SWT and SWB) is corrected to take into account the sun angle and small
+ variations in the aircraft attitude angles (pitch and roll).
+ The correction is limited to 
+\begin_inset Formula $\pm6^{\circ}$
+\end_inset
+
+ in either angle.
+ This is the derived output of incoming (down-welling) shortwave irradiance,
+ taking into account both solar position (sun angle) and modest variations
+ in aircraft attitude (at present, restricted to less than 6
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ in pitch and/or roll).
+ (For more information, refer to Bulletin No.
+ 25.)
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+should include basic equation here
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Ultraviolet Irradiance (W/m
+\begin_inset Formula $^{2}$
+\end_inset
+
+): UVx
+\series default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+UVx
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+A pair of UV radiometer/photometers measure either down-welling (x=T) or
+ up-welling (x=B) irradiance in the ultraviolet, approximately from 0.295
+ 
+\begin_inset Formula $\mu m$
+\end_inset
+
+ to 0.385 
+\begin_inset Formula $\mu m$
+\end_inset
+
+.
+ These units are periodically returned to the Eppley Laboratories for recalibrat
+ion.
+ 
+\end_layout
+
+\begin_layout Subsection
+SOLAR ANGLES
+\end_layout
+
+\begin_layout Standard
+The calculations described in this group are used primarily for deriving
+ the Corrected Short Wave irradiance (SWTC) but can be used by themselves
+ or in conjunction with other measurements that need them.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Solar Declination Angle (radians): 
+\bar under
+SOLDE
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+SOLDE
+\end_layout
+
+\end_inset
+
+
+\series default
+\bar default
+ 
+\begin_inset Newline newline
+\end_inset
+
+This is a complex calculation of the astronomical measurement of solar declinati
+on angle, the angular distance of the sun north or south of the earth's
+ equator.
+ (Positive values are north.) It also makes a complex calculation of solar
+ hour angle that takes leap year into account.
+ The calculations were adapted by Ron Ruth from a FORTRAN program used by
+ Lutz Bannehr.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+time = day number (corrected for leap year) since 1 January 1980
+\begin_inset Newline newline
+\end_inset
+
+theta = coarse solar time (radians)
+\begin_inset Newline newline
+\end_inset
+
+g = equation-of-time term for calculating declination (radians)
+\begin_inset Newline newline
+\end_inset
+
+el = equation-of-time term for calculating declination (radians)
+\begin_inset Newline newline
+\end_inset
+
+eps = equation-of-time term for calculating declination (radians)
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\end_layout
+
+\begin_layout LyX-Code
+g = -0.031271 - (4.53963e-7 time) + theta
+\end_layout
+
+\begin_layout LyX-Code
+el = 4.900968 + (3.67474e-7 time) +
+\end_layout
+
+\begin_layout LyX-Code
+{[0.033434 - (2.3e-9 time)] sin(g)} +
+\end_layout
+
+\begin_layout LyX-Code
+[0.000349 sin(2 g) + theta]
+\end_layout
+
+\begin_layout LyX-Code
+sel = sin(el);
+\end_layout
+
+\begin_layout LyX-Code
+eps = 0.409140 - (6.2149e-9 time)
+\end_layout
+
+\begin_layout LyX-Code
+SOLDE = asin {sel sin(eps)}
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Solar Zenith Angle (radians): 
+\bar under
+SOLZE
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+SOLZE
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the astronomical measurement of solar zenith angle, the angle from
+ zenith to the sun, complementary to the sun's elevation angle:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+lat = latitude (radians)
+\begin_inset Newline newline
+\end_inset
+
+lha = local hour angle (radians)
+\begin_inset Newline newline
+\end_inset
+
+SOLDE = solar declination angle (radians)
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\end_layout
+
+\begin_layout LyX-Code
+SOLZE = asin {sin(lat) sin(SOLDE) 
+\end_layout
+
+\begin_layout LyX-Code
+      + cos(lat) cos(SOLDE) cos(lha)}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Solar Azimuth Angle (radians): 
+\bar under
+SOLAZ
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+SOLAZ
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the astronomical measurement of solar azimuth angle, the angular
+ distance between due south and the projection of the line of sight to the
+ sun on the ground.
+ A positive solar azimuth angle indicates a position east of south (i.e.,
+ morning).
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "95text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+lha = local hour angle (radians)
+\begin_inset Newline newline
+\end_inset
+
+SOLDE = solar declination angle (radians)
+\begin_inset Newline newline
+\end_inset
+
+SOLZE = solar zenith angle (radians)
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\end_layout
+
+\begin_layout LyX-Code
+SOLAZ = asin {cos(SOLDE) sin(lha) / cos(SOLZE)}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Solar Elevation Angle (radians): 
+\bar under
+SOLEL
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+SOLEL
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the astronomical measurement of solar elevation angle, describing
+ how high the sun appears in the sky.
+ The angle is measured between an imaginary line between the observer and
+ the sun and the horizontal plane on which the observer is standing.
+ The altitude angle is negative when the sun drops below the horizon.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "95text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+SOLZE = solar zenith angle (radians)
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\end_layout
+
+\begin_layout LyX-Code
+SOLEL = Pi/2 - SOLZE
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

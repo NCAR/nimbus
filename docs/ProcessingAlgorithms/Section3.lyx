@@ -1,0 +1,1246 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\begin_modules
+hanging
+\end_modules
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Section
+VARIABLES OBTAINED FROM AN INERTIAL REFERENCE SYSTEM
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:INS"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+An Inertial Reference System (IRS) provides measurements of aircraft position,
+ orientation, velocity, acceleration and attitude.
+ For the GV, the system is a Honeywell Laseref III/IV Inertial Reference
+ System.
+ Data from the IRS come via a serial digital bit stream (the ARINC digital
+ bus) to the ADS (Aircraft Data System).
+ Because there is some delay in transmission and recording of these variables,
+ adjustments for this delay are made when the measurements are merged into
+ the processed data files, as documented in the NETCDF header files.
+ Some of the variables are recorded only on the original 
+\begin_inset Quotes eld
+\end_inset
+
+raw
+\begin_inset Quotes erd
+\end_inset
+
+ data tapes and are not usually included on final archived data files; these
+ are discussed at the end of this section.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+need identification of what the C-130 system is
+\end_layout
+
+\end_inset
+
+ See also Section XXX for information on results from inertial systems that
+ were used prior to installation of the present Honeywell systems.
+\end_layout
+
+\begin_layout Standard
+An Inertial Reference System 
+\begin_inset Quotes eld
+\end_inset
+
+aligns
+\begin_inset Quotes erd
+\end_inset
+
+ while the aircraft is stationary by measurement of the variations in its
+ reference frame caused by the rotation of the Earth.
+ Small inaccuracy in that alignment lead to a 
+\begin_inset Quotes eld
+\end_inset
+
+Schuler oscillation
+\begin_inset Quotes erd
+\end_inset
+
+ that produces oscillatory errors in position and other measurements, with
+ a period 
+\begin_inset Formula $\tau_{Sch}$
+\end_inset
+
+ of about 84 minutes (
+\begin_inset Formula $\tau_{Sch}=2\pi\sqrt{R_{e}/g}$
+\end_inset
+
+).
+ Position errors of less than 1.0 n mi/hr are within normal operating specificati
+ons.
+ See Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:IRS/GPS"
+
+\end_inset
+
+ for discussion of additional variables, similar to the following, for which
+ corrections are made for these errors via reference to data from a Global
+ Positioning System.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Latitude (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+LAT
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+LAT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the aircraft latitude, output from the IRS at 10 Hz.
+ Positive values are north of the equator; negative values are south.
+ The resolution is 0.00017
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ and the accuracy is reported by the manufacturer to be 0.164
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ after 6 h of flight.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Longitude (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+LON
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+\bar no
+LON
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series default
+\bar default
+This is the aircraft longitude, output from the IRS at 10 Hz.
+ Positive values are east of the prime meridian; negative values are west.
+ The resolution is 0.00017
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ and the accuracy is reported by the manufacturer to be 0.164
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ after 6 h of flight.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Aircraft True Heading (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+THDG
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+THDG
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the aircraft's true heading, output from the IRS at 25 Hz.
+ The resolution is 0.00017
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ and the accuracy is quoted by the manufacturer as 0.2
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ after 6 h of flight.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+True
+\begin_inset Quotes erd
+\end_inset
+
+ distinguishes the heading from the magnetic heading, the heading that would
+ be measured by a magnetic-compass needle.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Aircraft Pitch Attitude Angle (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+PITCH
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+PITCH
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the aircraft's pitch angle, provided from the IRS at 50 Hz.
+ Positive values correspond to the nose of the aircraft pointing above the
+ horizon.
+ The resolution is 0.00017
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ and the accuracy is quoted by the manufacturer as 0.05
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ after 6 h of flight.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Aircraft Roll Attitude Angle (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+): 
+\bar under
+ROLL
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+ROLL
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the aircraft's roll angle, output from the IRS at 50 Hz.
+ Positive angles occur with the starboard (right) wing down ((i.e., a clockwise
+ rotation from level when facing forward in the aircraft).
+ The resolution is 0.00017
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ and the accuracy is quoted by the manufacturer as 0.05
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ after 6 h of flight..
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Aircraft Vertical Acceleration (m
+\begin_inset space \thinspace{}
+\end_inset
+
+s
+\begin_inset Formula $^{-2}$
+\end_inset
+
+): 
+\bar under
+ACINS
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+ACINS
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the output from the IRS vertical accelerometer with its internal
+ drift removed via pressure damping.
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+For earlier projects using the Litton LTN-51 INS, this is a direct measurement
+ without adjustment for changes in gravity during flight and without pressure-da
+mping.
+ Previous use employed a baro-inertial loop to compensate for drift in the
+ integrated measurement.
+ See the discussion of WP3 below.
+\end_layout
+
+\end_inset
+
+ The sample rate is 50 Hz and the resolution is 0.0024 m
+\begin_inset space \thinspace{}
+\end_inset
+
+s
+\begin_inset Formula $^{-2}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Computed Aircraft Vertical Velocity (m/s): 
+\bar under
+VSPD
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+VSPD
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the upward velocity of the aircraft provided directly by the IRS.
+ It is determined in the IRS by integration of the vertical acceleration,
+ with damping based on measured pressure to correct for accumulated errors
+ in the integration of acceleration.
+ The sample rate is 50 Hz with a resolution of 0.00016 m/s.
+ The Honeywell Laseref IRS employs a baro-inertial loop, similar to that
+ described below for WP3 and the Litton LTN-51, to update the value of the
+ acceleration.
+ It is also filtered within the IRS so that there is little variance with
+ frequency higher than 0.1 Hz.
+ 
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Pressure-Damped Aircraft Vertical Velocity (m/s): 
+\bar under
+WP3
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+WP3
+\end_layout
+
+\end_inset
+
+ (obsolete)
+\begin_inset Newline newline
+\end_inset
+
+This was a derived output incorporating a third-order damping feedback loop
+ to remove the drift from the inertial system's vertical accelerometer (ACINS
+ or VZI) using pressure altitude (PALT) as a long-term, stable reference.
+ Positive values are up.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+PALT is a measure of pressure, not altitude, so this gives false updating
+ to pressure fluctuations.
+ It would be better to use GALT.
+ 
+\end_layout
+
+\end_inset
+
+ The Honeywell IRS now in use provides its own version of this measurement,
+ VSPD, and WP3 is now considered obsolete (and in any case should not be
+ calculated from ACINS as provided by the Honeywell Laseref IRS because
+ ACINS already incorporates pressure damping).
+ Documentation is included here because many old data files include this
+ variable.
+ WP3 was calculated by the data-processing software, as follows:
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Regarding signs, note that ACINS is a number near zero, not near g, and
+ so already has the estimated acceleration of gravity removed.
+ It appears that the assumption made in the following is that the INS will
+ report values adjusted for the gravitational acceleration at the point
+ of alignment, which would be 
+\begin_inset Formula $G_{L}$
+\end_inset
+
+.
+ If 
+\begin_inset Formula $g_{F}$
+\end_inset
+
+, the estimate for gravity at the flight altitude (palt) and latitude (lat),
+ is 
+\emph on
+smaller
+\emph default
+ than 
+\begin_inset Formula $G_{L}$
+\end_inset
+
+ then the difference (
+\begin_inset Formula $G_{L}-g_{f}$
+\end_inset
+
+) will be positive; this will correct for the value ACINS being the sensed
+ gravity - 
+\begin_inset Formula $G_{L}$
+\end_inset
+
+ when it should actually be the sensed gravity - 
+\begin_inset Formula $g_{f}$
+\end_inset
+
+, so to obtain (sensed gravity - 
+\begin_inset Formula $g_{f}$
+\end_inset
+
+) it is necessary to add (
+\begin_inset Formula $G_{L}-g_{f}$
+\end_inset
+
+) to ACINS, 
+\emph on
+increasing 
+\emph default
+acz in this case.
+ Howeer, the situation with 
+\begin_inset Quotes eld
+\end_inset
+
+vcorac
+\begin_inset Quotes erd
+\end_inset
+
+ is apparently reversed.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+vcorac
+\begin_inset Quotes erd
+\end_inset
+
+ is a positive term for all eastward flight, for example, but in that case
+ the motion of the aircraft makes objects seem lighter (i.e., they experience
+ less acceleration of gravity) than without such flight.
+ ACINS is positive upward so represents a net acceleration of the aircraft
+ upward (as imposed by the combination of gravity and the lift force of
+ the aircraft).
+ To accomplish level flight in these circumstances, the aircraft must actually
+ accelerate downward so the accelerometer will experience a negative excursion
+ relative to slower flight.
+ To compensate, 
+\begin_inset Quotes eld
+\end_inset
+
+vcorac
+\begin_inset Quotes erd
+\end_inset
+
+ must make a positive contribution to remove that negative excursion from
+ 
+\begin_inset Quotes eld
+\end_inset
+
+acz
+\begin_inset Quotes erd
+\end_inset
+
+.
+ In the extreme that the aircraft flew fast enough for the interior to appear
+ weightless, ACINS would reduce to -1*
+\begin_inset Formula $G_{L}$
+\end_inset
+
+and vcorac would increase to +
+\begin_inset Formula $G_{L}$
+\end_inset
+
+, leaving acz near zero as required if the aircraft were to remain in level
+ flight in the rotating frame
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "95text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $g_{1}$
+\end_inset
+
+ = 9.780356 m
+\begin_inset space \thinspace{}
+\end_inset
+
+s
+\begin_inset Formula $^{-2}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $a_{1}$
+\end_inset
+
+ = 0.31391116
+\begin_inset Formula $\times$
+\end_inset
+
+10
+\begin_inset Formula $^{-6}$
+\end_inset
+
+ s
+\begin_inset Formula $^{-2}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $a_{2}$
+\end_inset
+
+ = .0052885 (dimensionless)
+\begin_inset Newline newline
+\end_inset
+
+VEW = eastward groundspeed of the aircraft
+\begin_inset Newline newline
+\end_inset
+
+VNS = northward groundspeed of the aircraft
+\begin_inset Newline newline
+\end_inset
+
+LAT = latitude measured by the IRS [
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+]
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $C_{dr}=2\pi/180^{\circ}$
+\end_inset
+
+ = conversion factor, degrees to radians
+\begin_inset Newline newline
+\end_inset
+
+PALT = pressure altitude of the aircraft
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\Omega$
+\end_inset
+
+ = angular rotation of the earth = 7.292116
+\begin_inset Formula $\times10^{6}$
+\end_inset
+
+ radians/s
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $R_{E}$
+\end_inset
+
+ = radius of the Earth = 6.371229
+\begin_inset Formula $\times10^{6}$
+\end_inset
+
+ m
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $g_{f}$
+\end_inset
+
+ = local gravity corrected for latitude and altitude
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $V_{c}$
+\end_inset
+
+ = correction to gravity for the motion of the aircraft
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $G_{L}$
+\end_inset
+
+ = local gravity at the location of INS alignment, corrected to zero altitude
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\{C[0],C[1],C[2]\}$
+\end_inset
+
+ = feedback coefficients, {0.15, 0.0075, 0.000125} for 125-s response
+\end_layout
+
+\begin_layout Plain Layout
+
+\lyxline
+
+\end_layout
+
+\begin_layout Enumerate
+From the pressure altitude PALT (in m) and the latitude LAT (converted to
+ radians), estimate the acceleration of gravity:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \[
+g_{f}=g_{1}\left(1+a_{2}\sin^{2}(\mathrm{C_{dr}\{LAT\})}+a_{1}\mathrm{\{PALT\}}\right)\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Determine corrections for Coriolis acceleration and centrifugal acceleration,
+ based on motion of the aircraft:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \[
+V_{c}=2\Omega\mathrm{\{VEW\}}\cos(C_{r}\mathrm{\{LAT\}})+\frac{\mathrm{\{VEW\}}^{2}+\mathrm{\{VNS\}}^{2}}{R_{E}}\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Estimate the acceleration experienced by the aircraft as follows:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \[
+a_{z}=\mathrm{\{ACINS\}}+G_{L}-g_{f}+V_{c}\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Use a feedback loop to update the integrated value of the acceleration to
+ obtain a new value of the vertical motion of the aircraft.
+ The following code segment uses acz=
+\begin_inset Formula $a_{z}$
+\end_inset
+
+, deltaT[] to represent the time between updates, and hi3, hx, and hxx to
+ store the feedback terms:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout LyX-Code
+wp3[FeedBack] += (acz - C[1] * hx[FeedBack] 
+\begin_inset Newline newline
+\end_inset
+
+   - C[2] * hxx[FeedBack]) * deltaT[FeedBack];
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Update the feedback terms:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout LyX-Code
+hi3[FeedBack] = hi3[FeedBack] + (wp3[FeedBack] 
+\begin_inset Newline newline
+\end_inset
+
+    - C[0] * hx[FeedBack]) * deltaT[FeedBack];
+\begin_inset Newline newline
+\end_inset
+
+hx[FeedBack]  = hi3[FeedBack] - palt;
+\begin_inset Newline newline
+\end_inset
+
+hxx[FeedBack] = hxx[FeedBack] 
+\begin_inset Newline newline
+\end_inset
+
+              + hx[FeedBack] * deltaT[FeedBack]; 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Set WP3 to the average of the last wp3 result and the current wp3 result.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Inertial Altitude (m): 
+\bar under
+ALT
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+ALT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the aircraft altitude as provided by the IRS, with pressure damping
+ applied within the IRS to the integrated aircraft vertical velocity to
+ avoid the accumulation of errors.
+ The sample rate is 25 Hz with a resolution of 0.038 m.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Aircraft Ground Speed (m/s): 
+\bar under
+GSF
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+GSF
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the aircraft's ground speed as provided by the IRS (at 10 Hz).
+ The resolution is 0.0020 m/s.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Aircraft Ground Speed East Component (m/s): 
+\bar under
+VEW
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+VEW
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the output from the IRS (10 Hz) of the east component of ground
+ speed.
+ The resolution is 0.0020 m/s.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Aircraft Ground Speed North Component (m/s) 
+\bar under
+VNS
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+VNS
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the output from the IRS (10 Hz) of the north component of ground
+ speed.
+ The resolution is 0.0020 m/s.
+ 
+\end_layout
+
+\begin_layout Subsubsection*
+
+\noun on
+--Raw IRS Variables Not Included In Normal Data Files
+\noun default
+:--
+\end_layout
+
+\begin_layout Standard
+The following IRS variables are not normally included in archived data files,
+ but their values are recorded by the ADS and can be obtained from the original
+ 
+\begin_inset Quotes eld
+\end_inset
+
+raw
+\begin_inset Quotes erd
+\end_inset
+
+ data files: 
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Raw Lateral Body Acceleration (m/s
+\begin_inset Formula $^{2}$
+\end_inset
+
+): 
+\bar under
+BLATA
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+BLATA
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the raw output from the IRS lateral accelerometer.
+ Positive values are toward the front, parallel to the aircraft center line.
+ The sample rate is 50 Hz with a resolution of 0.0024 m/s2.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Raw Longitudinal Body Acceleration (m/s
+\begin_inset Formula $^{2}$
+\end_inset
+
+): 
+\bar under
+BLONA
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+BLONA
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the raw output from the IRS longitudinal accelerometer.
+ Positive values are toward the right, normal to the aircraft center line.
+ The sample rate is 50 Hz with a resolution of 0.0024 m/s2.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Raw Normal Body Acceleration (m/s
+\begin_inset Formula $^{2}$
+\end_inset
+
+): 
+\bar under
+BNORMA
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+BNORMA
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the raw output from the IRS vertical accelerometer.
+ Positive values are up, normal to the aircraft center line.
+ The sample rate is 50 Hz with a resolution of 0.0024 m/s2
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Raw Body Pitch Rate (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+/s): 
+\bar under
+BPITCHR
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+BPITCHR
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the raw output of the IRS pitch rate gyro.
+ Positive values are up, normal to the aircraft's lateral axis.
+ The sample rate is 50 Hz with a resolution of 0.0039
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+/s.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Raw Body Roll Rate (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+/s): 
+\bar under
+BROLLR
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+BROLLR
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the raw output of the IRS roll rate gyro.
+ Positive values are right wing down, normal to the aircraft center line.
+ The sample rate is 50 Hz with a resolution of 0.0039
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+/s.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Raw Body Yaw Rate (
+\series default
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\series bold
+/s): 
+\bar under
+BYAWR
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+BYAWR
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the raw output of the IRS yaw rate gyro.
+ Positive values are nose turning to the right, normal to the aircraft's
+ vertical axis.
+ The sample rate is 50 Hz with a resolution of 0.0039
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+/s.
+ 
+\end_layout
+
+\end_body
+\end_document

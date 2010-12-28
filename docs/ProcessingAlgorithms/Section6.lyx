@@ -1,0 +1,837 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+% Added by lyx2lyx
+%  for proper underlining
+\PassOptionsToPackage{normalem}{ulem}
+\usepackage{ulem}
+\let\cite@rig\cite
+\newcommand{\b@xcite}[2][\%]{\def\def@pt{\%}\def\pas@pt{#1}
+  \mbox{\ifx\def@pt\pas@pt\cite@rig{#2}\else\cite@rig[#1]{#2}\fi}}
+\renewcommand{\underbar}[1]{{\let\cite\b@xcite\uline{#1}}}
+\end_preamble
+\use_default_options true
+\begin_modules
+hanging
+\end_modules
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Section
+ALTITUDE AND POSITION VARIABLES
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Altitude, Reference (MSL): 
+\bar under
+ALTX
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+ALTX
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+GALTC
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+GALTC
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+this needs revision and perhaps a new algorithm
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Marginal
+status collapsed
+
+\begin_layout Plain Layout
+revise this as described in the GGALTC algorithm note of 10 Dec
+\end_layout
+
+\end_inset
+
+This is the derived altitude above the geopotential surface obtained primarily
+ from GALT, the GPS Altitude, with help from another Reference altitude,
+ typically ALT, the Inertial Altitude.
+ The GPS signals, at times, are degraded, most often during aircraft turns.
+ Two GPS status measurements are used to detect this, but sometimes the
+ information comes too late.
+ A 10-second running average is calculated of the difference between the
+ GPS altitude and the Reference altitude.
+ When the sample-to-sample altitude difference changes more than 50 meters
+ or when the GPS status detects a degraded signal, the altitude from this
+ measurement changes from GPS altitude to an adjusted Reference altitude
+ (Reference altitude plus the running difference average).
+ When the GPS altitude is again 
+\begin_inset Quotes eld
+\end_inset
+
+good
+\begin_inset Quotes erd
+\end_inset
+
+ and to avoid a sudden altitude transition, the output linearly steps back
+ to the GPS altitude over the next 10 seconds.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+ISA Pressure Altitude (m): 
+\bar under
+PALT
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+PALT
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Revised Nov 2010
+\end_layout
+
+\end_inset
+
+The derived altitude obtained from the reference barometric (static) pressure
+ measurement using the International Standard Atmosphere (ISA), equivalent
+ to the reference atmosphere for aviation operations worldwide.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+see 
+\begin_inset Quotes eld
+\end_inset
+
+U.S.
+ Standard Atmosphere, 1976
+\begin_inset Quotes erd
+\end_inset
+
+, NASA-TM-A-74335, available for download at http://ntrs.nasa.gov/archive/nasa/cas
+i.ntrs.nasa.gov/19770009539_1977009539.pdf
+\end_layout
+
+\end_inset
+
+ The pressure altitude is best interpreted as a variable equivalent to the
+ measured pressure, not as a geometric altitude.
+ In the following description of the algorithm, some constants (identified
+ by the symbol 
+\begin_inset Formula $\dagger$
+\end_inset
+
+) are specified as part of the ISA and so should not be 
+\begin_inset Quotes eld
+\end_inset
+
+improved
+\begin_inset Quotes erd
+\end_inset
+
+ to more modern values (e.g., 
+\begin_inset Formula $R_{0}^{\prime}).$
+\end_inset
+
+
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Prior to and including some projects in 2010, processing used slightly different
+ coefficients: for aircraft other than the GV, 
+\begin_inset Formula $T_{0}/\lambda$
+\end_inset
+
+ was represented by -43308.83, the reference pressure 
+\begin_inset Formula $p_{0}$
+\end_inset
+
+ was taken to be 1013.246, and the exponent 
+\begin_inset Formula $x$
+\end_inset
+
+ was represented numerically by 0.190284.
+ For the GV, the value of 
+\begin_inset Formula $T_{0}/\lambda$
+\end_inset
+
+ was taken to be 44308.0, the transition pressure 
+\begin_inset Formula $p_{T}$
+\end_inset
+
+ was 226.1551 hPa, 
+\begin_inset Formula $x$
+\end_inset
+
+ = 0.190284, and coefficient 
+\begin_inset Formula $\frac{R_{0}^{\prime}T_{T}}{gM_{d}}$
+\end_inset
+
+ was taken to be 6340.70 m instead of 6341.620 m as obtained below.
+ The difference between these older values and the ones recommended below
+ is everywhere less than 10 m and so is small compared to the expected uncertain
+ty in pressure measurements, because 1 hPa change in pressure leads to a
+ change in pressure altitude that varies from about 8--40 m over the altitude
+ range of the GV .)
+\end_layout
+
+\end_inset
+
+ A note at 
+\begin_inset CommandInset href
+LatexCommand href
+name "this URL"
+target "http://wiki.eol.ucar.edu/rafscience/ProcessingAlgorithms?action=AttachFile&do=view&target=PressureAltitude.pdf"
+
+\end_inset
+
+ describes the pressure altitude in more detail and documents the change
+ that was implemented in November 2010.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{0}$
+\end_inset
+
+= 288.15 K, reference temperature
+\begin_inset Formula $\dagger$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\lambda$
+\end_inset
+
+ = -0.0065 K/m = the lapse rate for the troposphere
+\begin_inset Formula $\dagger$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $P_{s}$
+\end_inset
+
+ = measured static pressure, hPa, usually from PSXC
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $P_{0}$
+\end_inset
+
+ = 1013.25 hPa, reference pressure for PALT=0
+\begin_inset Formula $\dagger$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $M_{d}$
+\end_inset
+
+ = 28.9644 
+\begin_inset Formula $kg/kmol$
+\end_inset
+
+= molecular weight of dry air, ISA definition
+\begin_inset Formula $\dagger$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $g$
+\end_inset
+
+ = 9.80665 m
+\begin_inset space \thinspace{}
+\end_inset
+
+s
+\begin_inset Formula $^{-2}$
+\end_inset
+
+, acceleration of gravity
+\begin_inset Formula $\dagger$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $R_{0}^{\prime}$
+\end_inset
+
+ = universal gas constant, defined
+\begin_inset Formula $\dagger$
+\end_inset
+
+ as 8.31432
+\begin_inset Formula $\times10^{3}$
+\end_inset
+
+ 
+\begin_inset Formula $J\,\mathrm{kmol}^{-1}\,\mathrm{K}^{-1}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $z_{T}$
+\end_inset
+
+ = altitude of the assumed tropopause = 11,000 m
+\begin_inset Formula $\dagger$
+\end_inset
+
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $x=R_{0}^{\prime}\lambda/(M_{d}g)$
+\end_inset
+
+ 
+\begin_inset Formula $\approx$
+\end_inset
+
+ 0.1902632 (dimensionless)
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+This is the value, rounded to seven significant figures, that is used for
+ data processing.
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\end_layout
+
+\begin_layout Plain Layout
+For pressure > 226.3206 hPa (equivalent to a pressure altitude < 
+\begin_inset Formula $z_{T}$
+\end_inset
+
+):
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \[
+\mathrm{PALT}=-\left(\frac{T_{0}}{\lambda}\right)\left(1-\left(\frac{P_{s}}{P_{0}}\right)^{x}\right)\]
+
+\end_inset
+
+otherwise, if 
+\begin_inset Formula $T_{T}$
+\end_inset
+
+ and 
+\begin_inset Formula $p_{T}$
+\end_inset
+
+ are respectively the temperature and pressure at the altitude 
+\begin_inset Formula $z_{T}$
+\end_inset
+
+:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula \[
+T_{T}=T_{0}+\lambda z_{T}=216.65\,\mathrm{K}\]
+
+\end_inset
+
+
+\begin_inset Formula \[
+p_{T}=p_{0}\Bigl(\frac{T_{0}}{T_{T}}\Bigr)^{\frac{gM_{d}}{\lambda R_{0}^{\prime}}}=226.3206\,\mathrm{hPa}\]
+
+\end_inset
+
+
+\begin_inset Formula \[
+\mathrm{PALT}=z_{T}+\frac{R_{0}^{\prime}T_{T}}{gM_{d}}\ln\left(\frac{p_{T}}{p_{s}}\right)\]
+
+\end_inset
+
+which, after conversion from natural to base-10 logarithm, is coded to be
+ equivalent to the following:
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout LyX-Code
+          // transition pressure at the assumed ISA tropopause:
+\end_layout
+
+\begin_layout LyX-Code
+#define ISAP1 226.3206
+\end_layout
+
+\begin_layout LyX-Code
+          // reference pressure for standard atmosphere:
+\end_layout
+
+\begin_layout LyX-Code
+#define ISAP0 1013.25
+\end_layout
+
+\begin_layout LyX-Code
+if (psxc > ISAP1)
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+palt = 44330.77 * (1.0 - pow(psxc/ISAP0, 0.1902632));
+\end_layout
+
+\end_deeper
+\begin_layout LyX-Code
+else
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+palt = 11000.0 + 14602.12 * log10(ISAP1/psxc);
+\end_layout
+
+\end_deeper
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Geometric Radio Altitude (m): 
+\bar under
+HGM
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+HGM
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+This is the distance to the surface below the aircraft, measured by a radio
+ altimeter.
+ The maximum range is 762m (2,500 ft).
+ The instrument changes in accuracy at an altitude of 152 m: The estimated
+ error from 152 m to 762 m is 7%, while the estimated error for altitudes
+ below 152 m is 1.5 m or 5%, whichever is greater.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Geometric Radar Altitude (Extended Range) (APN-159) (m): 
+\bar under
+HGME
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+HGME
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+There are two outputs from an APN-159 radar altimeter, one with coarse resolutio
+n (CHGME) and one with fine resolution (HGME).
+ Both raw outputs cycle through the range 0-360 degrees, where one cycle
+ corresponds to 4,000 feet for HGME and to 100,000 feet for CHGME.
+ To resolve the ambiguity arising from these cycles, 4,000-foot increments
+ are added to HGME to maintain agreement with CHGME.
+ This preserves the fine resolution of HGME (1.86 m) throughout the altitude
+ range of the APN-159.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Geometric Radar Altitude (Extended Range) (APN-232) (m): 
+\bar under
+HGM232
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+HGM232
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Altitude above ground as measured by an APN-232 radar altimeter.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Pressure-Damped Inertial Altitude (m): 
+\bar under
+HI3
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+HI3
+\end_layout
+
+\end_inset
+
+ (obsolete)
+\begin_inset Newline newline
+\end_inset
+
+The aircraft altitude obtained from the twice-integrated INS acceleration
+ (ACINS), pressure-adjusted to obtain long-term agreement with PALT.
+ Note that this variable has mixed character, producing short-term variations
+ that accurately track the altitude but with adjustment to the pressure
+ altitude, which is not a true altitude.
+ The variable is not appropriate for estimates of true altitude, but proves
+ useful in the updating algorithm used with the LTN-51 INS for vertical
+ wind.
+ See the discussion of WP3.
+ This variable is now obsolete.
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Distance East/North of a Reference (km): 
+\bar under
+DEI
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+DE
+\series bold
+I
+\end_layout
+
+\end_inset
+
+/
+\bar under
+DNI
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+DNI
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+These are derived outputs obtained by subtracting a fixed reference position
+ from the current position, determined from measurements of latitude and
+ longitude and converted from degrees to distance in a rectilinear coordinate
+ system.
+ The reference position can be either the starting location of the flight
+ or a user-defined reference point (e.g., the location of a project radar).
+ The accuracy of these values is dependent on the accuracy of the source
+ latitude and longitude measurements, and the calculations are only appropriate
+ for short distances because they do not take into account the spherical
+ geometry of the Earth..
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "90text%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+LON
+\begin_inset Formula $_{ref}$
+\end_inset
+
+ = reference longitude (
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+LAT
+\begin_inset Formula $_{ref}$
+\end_inset
+
+ = reference latitude (
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+SF
+\begin_inset Formula $_{ref}$
+\end_inset
+
+ = reference scale factor = 111.12 km /
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+B9 says 111.17; 111.12 is correct and exact
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\lyxline
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula \[
+\mathrm{DEI}=(\mathrm{\{LON\}}-\{\mathrm{LON}_{ref}\})\mathrm{SF}_{ref}\cos(\mathrm{\{LAT\}})\]
+
+\end_inset
+
+
+\begin_inset Formula \[
+\mathrm{DNI=(\mathrm{\{LAT\}}=\{\mathrm{LAT}_{ref}\})\mathrm{SF}_{ref}}\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Hanging
+
+\series bold
+Radial Azimuth/Distance from Fixed Reference: 
+\bar under
+FXAZIM
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+
+\series medium
+FXAZIM
+\end_layout
+
+\end_inset
+
+, 
+\bar under
+FXDIST
+\series default
+\bar default
+
+\begin_inset Index
+status open
+
+\begin_layout Plain Layout
+FXDIST
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Derived calculations of the radial azimuth (
+\begin_inset Formula $^{\circ})$
+\end_inset
+
+ and distance (km) from a fixed reference position (a user-specified reference
+ latitude and longitude) to the aircraft's location.
+ It is calculated by rectangular-to-polar conversion of DEI/DNI.
+ 
+\end_layout
+
+\end_body
+\end_document
