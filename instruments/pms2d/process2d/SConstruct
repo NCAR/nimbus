@@ -30,14 +30,14 @@ env['LINKCOM'] = env['LINKCOM'] + " $NETCDFLIBS"
 # will still fail.  However it's left here in case someday someone wants to
 # really make it work.
 
-#conf = Configure(env.Clone())
-#if not conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'C'):
-#    print 'netCDF must be installed!'
-#    Exit(1)
+conf = Configure(env.Clone())
+if not conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'C'):
+    print 'netCDF must be installed!'
+    Exit(1)
 
 # As mentioned above, we need to ignore the alterations Configure
 # makes to the environment.
-# env = conf.Finish()
+env = conf.Finish()
 
 # If you rely on Configure to add libraries, you have to check for them in
 # reverse order of their dependencies, ie, check for netcdf before
