@@ -21,6 +21,7 @@
 #include <cmath>
 #include <cstring>
 #include <iomanip>
+#include <unistd.h>
 #include <arpa/inet.h>
 
 #include <raf/PMSspex.h>
@@ -45,22 +46,21 @@ struct struct_particle {
    bool allin, wreject, ireject;
 };
 
-/* Standard RAF record format for 2D records.
- */
-struct type_buffer { 
+// Standard RAF record format for 2D records.
+   typedef struct type_buffer {
     char probetype;
     char probenumber;
-    short hours;
-    short minutes;
-    short seconds;
+    short hour;
+    short minute;
+    short second;
     short year;
     short month;
     short day;
-    short tas;			// True airspeed.
-    unsigned short msec;	// millisecond of data timestamp.
+    short tas;                  // True airspeed.
+    unsigned short msec;        // millisecond of data timestamp.
     short overload;
-    unsigned long long image[slicesPerRecord];
- }; 
+    unsigned char image[4096];
+} P2d_rec;
 
 
 
@@ -444,6 +444,20 @@ int hms2sfm(int hms){
    return sfm;
 }
 
+time_t TwoDtime(const P2d_rec *rec)
+{
+  struct tm tm;
+
+  tm.tm_mday = ntohs(rec->day);
+  tm.tm_mon = ntohs(rec->month) - 1;
+  tm.tm_year = ntohs(rec->year) - 1900;
+  tm.tm_hour = ntohs(rec->hour);
+  tm.tm_min = ntohs(rec->minute);
+  tm.tm_sec = ntohs(rec->second);
+
+  return mktime(&tm);
+}
+
 
 //----------------Display particle properties to screen--------
 void showparticle(struct_particle& x){
@@ -494,7 +508,7 @@ unsigned long long endianswap_ull(unsigned long long x)
 //================================================================================================
 // ------------PROCESS 2D-----------------------
 //================================================================================================
-int process2d(Config & cfg, ProbeInfo & probe)
+int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
 {
   /*-----Processing options-------------------------------------------------------
       start/stop time: In UTC seconds
@@ -511,8 +525,8 @@ int process2d(Config & cfg, ProbeInfo & probe)
   short roi[slicesPerRecord][nDiodes];
   short slice_count=0, firstday;
   unsigned long long slice, firsttimeline, lasttimeline=0, timeline, difftimeline, particle_count=0;
-  double lastbuffertime, buffertime=0, nextit=0;
-  bool firsttimeflag;
+  double lastbuffertime, buffertime = 0, nextit = 0;
+  bool firsttimeflag = true;
   float wc;
   long last_time1hz=0, itime, isize, wsize, iit;
   struct_particle particle;
@@ -527,9 +541,7 @@ int process2d(Config & cfg, ProbeInfo & probe)
   probe.ComputeSamplearea(cfg.recon);
 
   //Time setup
-  int starttime=hms2sfm(cfg.starttime);
-  int stoptime=hms2sfm(cfg.stoptime);
-  int numtimes=stoptime-starttime+1;
+  int numtimes = cfg.stoptime - cfg.starttime + 1;
 
   assert(numtimes >= 0);
 
@@ -590,7 +602,7 @@ int process2d(Config & cfg, ProbeInfo & probe)
   do getline(input_file, line); while (line.compare(markerline)!=0);
 
   int buffcount=0;
-  while ((buffertime<stoptime) && (!input_file.eof())){
+  while ((buffertime < cfg.stoptime) && !input_file.eof()) {
      //Read next buffer, compute buffer times
      do input_file.read((char*)(&buffer), sizeof(buffer));
      while (((buffer.probetype!=probetype)||(buffer.probenumber!=probenumber)) && (!input_file.eof()));
@@ -598,22 +610,20 @@ int process2d(Config & cfg, ProbeInfo & probe)
      //Record first buffer day for midnight crossings
      if(buffcount==0) firstday=ntohs(buffer.day); 
 
-     lastbuffertime=buffertime;
-     buffertime=(ntohs(buffer.day)-firstday)*86400.0 + 
-                ntohs(buffer.hours)*3600.0 + ntohs(buffer.minutes)*60.0 + 
-                ntohs(buffer.seconds) + ntohs(buffer.msec)/1000.0;
+     lastbuffertime = buffertime;
+     buffertime = TwoDtime(&buffer) + ((double)ntohs(buffer.msec) / 1000);
 
-     firsttimeflag=1;
+     firsttimeflag = true;
      //Scroll through each slice, look for sync/time slices
      for (int islice=0; islice<slicesPerRecord; islice++){
-        slice=endianswap_ull(buffer.image[islice]);
+        slice=endianswap_ull(((unsigned long long *)buffer.image)[islice]);
 
         if ((slice & 0xffffff0000000000ULL) == 0xaaaaaa0000000000ULL) {           
            //Found a sync line
            timeline = slice & 0x000000ffffffffffULL;
-           if (firsttimeflag==1) {
-              firsttimeline=timeline; 
-              firsttimeflag=0;
+           if (firsttimeflag) {
+              firsttimeline = timeline; 
+              firsttimeflag = false;
            }
 
            //Look for negative interarrival time, set to zero instead
@@ -622,7 +632,7 @@ int process2d(Config & cfg, ProbeInfo & probe)
 
            //Process the roi
            long time1hz=(long) (lastbuffertime+difftimeline/(12.0e6));
-           if (time1hz >= starttime){
+           if (time1hz >= cfg.starttime){
               particle=findsize(roi,slice_count,probe.resolution);
               particle.holearea=fillholes2(roi,slice_count);           
               particle.inttime=(timeline-lasttimeline)/12.0e6;
@@ -649,7 +659,7 @@ int process2d(Config & cfg, ProbeInfo & probe)
            //Check the particle time to see if a new 1-s period has been crossed.
            //If so, place all particles in count matrix
            if (time1hz != last_time1hz){
-              itime=last_time1hz-starttime;  //time index
+              itime = last_time1hz - cfg.starttime;  //time index
 
               //Make sure particles are in correct time range
               if (itime>=0){
@@ -684,7 +694,7 @@ int process2d(Config & cfg, ProbeInfo & probe)
                    corrfac[itime]=1.0;
                  }
 
-                 if (cfg.verbose) cout<<itime+starttime<<" "<<time1hz<<" "<<particle_stack.size()<<" "<<bestfit[0]<<" "<<bestfit[1]<<" "<<bestfit[2]<<endl;
+                 if (cfg.verbose) cout<<itime+cfg.starttime<<" "<<time1hz<<" "<<particle_stack.size()<<" "<<bestfit[0]<<" "<<bestfit[1]<<" "<<bestfit[2]<<endl;
 
                  // Sort through all particles in this stack
                  for (size_t i = 0; i < particle_stack.size(); i++) {
@@ -778,7 +788,7 @@ int process2d(Config & cfg, ProbeInfo & probe)
   //=============Write to netCDF==============================================
   if (buffcount <= 1) return 1;  //Don't write empty files
 
-  netCDF ncfile(cfg);
+  ncfile.CreateNetCDFfile(cfg);	// Create as necessary.
   NcFile *dataFile = ncfile.ncid();
   char tmp[1024];
 
@@ -798,7 +808,7 @@ int process2d(Config & cfg, ProbeInfo & probe)
     return netCDF::NC_ERR;
 
   //Bins  
-  std::string varname="bin_endpoints"+probe.suffix;
+  string varname="bin_endpoints"+probe.suffix;
   if ((var = dataFile->get_var(varname.c_str())) == 0) {
     if (!(var = dataFile->add_var(varname.c_str(), ncFloat, bindim_plusone))) return netCDF::NC_ERR;
     if (!var->add_att("units", "microns")) return netCDF::NC_ERR;
@@ -1052,7 +1062,7 @@ int process2d(Config & cfg, ProbeInfo & probe)
   return 0;  //No errors
 }
 
-
+/* -------------------------------------------------------------------------- */
 string extractElement(const string & line, string name)
 {
   size_t tagpos = line.find(name);
@@ -1069,6 +1079,30 @@ string extractAttribute(const string & line, string name)
   return line.substr(q1+1, q2-q1-1);
 }
 
+/* -------------------------------------------------------------------------- */
+void Read2dStartEndTime(Config & config, ifstream & input_file)
+{
+  P2d_rec buffer;
+
+  // Read first buffer, get start time
+  input_file.read((char*)(&buffer), sizeof(buffer));
+  config.starttime = TwoDtime(&buffer);
+
+  // Read last buffer, get stop time
+  do input_file.read((char*)(&buffer), sizeof(buffer)); while (!input_file.eof());
+  config.stoptime = TwoDtime(&buffer);
+
+  cout << "2D file start time: " << ctime(&config.starttime);
+  cout << "          end time: " << ctime(&config.stoptime);
+
+  if (config.starttime > config.stoptime)
+  {
+    cerr << "Date/time of first record is greater than date/time of last record!\n";
+    config.stoptime += 240000;  // Midnight crossing
+  }
+}
+
+/* -------------------------------------------------------------------------- */
 void ParseHeader(ifstream & input_file, Config & cfg, vector<ProbeInfo> & probe_list)
 {
   string line;
@@ -1117,6 +1151,7 @@ void ParseHeader(ifstream & input_file, Config & cfg, vector<ProbeInfo> & probe_
   } while ((line.compare(markerline)!=0) && (!input_file.eof()));  
 }
 
+/* -------------------------------------------------------------------------- */
 void processArgs(int argc, char *argv[], Config & config)
 {
   // Parse command line arguments
@@ -1136,6 +1171,7 @@ void processArgs(int argc, char *argv[], Config & config)
   }
 }
 
+/* -------------------------------------------------------------------------- */
 int usage(const char* argv0)
 {
   cerr << endl << "USAGE:  procf2dc [filename.2d] <options>" << endl << endl;
@@ -1169,13 +1205,15 @@ int usage(const char* argv0)
 int main(int argc, char *argv[])
 {
   ifstream input_file;
-  type_buffer buffer;
   vector<ProbeInfo> probes;
   Config config;
   
   // Check for correct number of arguments
   if (argc < 2)
     return usage(argv[0]);
+
+  putenv((char *)"TZ=UTC");
+  new NcError(NcError::verbose_nonfatal);
 
   processArgs(argc, argv, config);
 
@@ -1186,7 +1224,7 @@ int main(int argc, char *argv[])
     return 1;
   }  
   
-  // Parse the XML header and get list of probes.
+  // Parse the XML header in the 2d file and get list of probes.
   ParseHeader(input_file, config, probes);
 
   // Return if unreadable file
@@ -1195,20 +1233,11 @@ int main(int argc, char *argv[])
      return 1;
   }
 
-  // Read first buffer, get start time
-  input_file.read((char*)(&buffer), sizeof(buffer));
-  config.starttime=ntohs(buffer.hours)*10000+ntohs(buffer.minutes)*100+ntohs(buffer.seconds);
-   
-  // Read last buffer, get stop time
-  do input_file.read((char*)(&buffer), sizeof(buffer)); while (!input_file.eof());
-  config.stoptime=ntohs(buffer.hours)*10000+ntohs(buffer.minutes)*100+ntohs(buffer.seconds);
+  Read2dStartEndTime(config, input_file);
   
   input_file.close();
 
-   
-  if (config.starttime > config.stoptime) config.stoptime = config.stoptime + 240000;  // Midnight crossing
-  
-  cout << "File start time:" << config.starttime << "  end time:" << config.stoptime << endl;
+  netCDF ncFile(config);
 
   // Process all probes found in the file
   for (size_t i = 0; i < probes.size(); i++)
@@ -1219,7 +1248,7 @@ int main(int argc, char *argv[])
 		<< "      res : " << probes[i].resolution << endl
 		<< " armwidth : " << probes[i].armWidth << endl;
 
-    int errorcode = process2d(config, probes[i]); 
+    int errorcode = process2d(config, ncFile, probes[i]); 
 
     if (!errorcode)
       cout << endl << "Sucessfully processed probe " << i << endl;

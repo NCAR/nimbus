@@ -2,6 +2,7 @@
 #define _config_h_
 
 #include <string>
+#include <ctime>
 
 /**
  * Command line options / program configuration
@@ -19,8 +20,8 @@ public:
   std::string flightDate;
   std::string flightNumber;
 
-  int starttime;
-  int stoptime;
+  time_t starttime;
+  time_t stoptime;
 
   int nOutputBins;
   int nInterarrivalBins;
