@@ -3,6 +3,7 @@
 
 #include <cstring>
 #include <cstdlib>
+#include <cstdio>
 
 netCDF::netCDF(Config & cfg) : _file(0), _mode(NcFile::Write)
 {
