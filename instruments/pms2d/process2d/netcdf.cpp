@@ -1,11 +1,12 @@
 #include "config.h"
 #include "netcdf.h"
 
+#include <cassert>
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
 
-netCDF::netCDF(Config & cfg) : _file(0), _mode(NcFile::Write)
+netCDF::netCDF(Config & cfg) : _file(0), _mode(NcFile::Write), _tas(0)
 {
   // No file to pre-open or file does not exist.  Bail out.
   if (cfg.outputFile.size() == 0 || access(cfg.outputFile.c_str(), F_OK))
@@ -31,6 +32,12 @@ netCDF::netCDF(Config & cfg) : _file(0), _mode(NcFile::Write)
   }
 
   readStartEndTime(cfg);
+
+  // Check for existence of TASX variable.
+  _tas = _file->get_var("TASX");
+
+  if (_tas)
+    std::cout << "TASX variable found, will use instead of tas in 2D records.\n";
 }
 
 void netCDF::CreateNetCDFfile(Config & cfg)
@@ -82,6 +89,18 @@ void netCDF::CreateNetCDFfile(Config & cfg)
     _file->add_att("Raw_2D_Data_File", cfg.inputFile.c_str());
   }
 }
+
+void netCDF::readTrueAirspeed(float tas[], size_t n)
+{
+  assert ((int)n == _tas->num_vals());
+
+  NcValues *data = _tas->values();
+  for (size_t i = 0; i < n; ++i)
+    tas[i] = data->as_float(i);
+
+  delete data;
+}
+
 
 void netCDF::readStartEndTime(Config & cfg)
 {

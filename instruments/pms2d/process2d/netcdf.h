@@ -23,6 +23,14 @@ public:
 
   NcVar *addTimeVariable(Config & cfg, int size);
 
+  bool hasTASX()
+  { return _tas ? true : false; }
+
+  /**
+   * Check for the existence of TASX.  Read it into provided space.
+   */
+  void readTrueAirspeed(float tas[], size_t n);
+
 
   static const int NC_ERR = 2;
 
@@ -34,4 +42,5 @@ private:
 
   NcDim *_timedim;
   NcVar *_timevar;
+  NcVar *_tas;
 };

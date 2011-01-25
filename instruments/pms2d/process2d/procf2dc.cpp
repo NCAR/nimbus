@@ -593,6 +593,9 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   for (int i=0; i<=cfg.nInterarrivalBins; i++) it_endpoints[i]=pow(10, ((float)i-35)/5.0);  
   for (int i=0; i<cfg.nInterarrivalBins; i++) it_midpoints[i]=pow(10, ((float)i-34.5)/5.0);  
 
+  if (ncfile.hasTASX())
+    ncfile.readTrueAirspeed(tas, numtimes);
+
 
   //=============Process Particles============================================================
   
@@ -602,9 +605,14 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   do getline(input_file, line); while (line.compare(markerline)!=0);
 
   int buffcount=0;
-  while (!input_file.eof()) {
+
+  while (!input_file.eof())
+  {
      //Read next buffer, compute buffer times
-     do input_file.read((char*)(&buffer), sizeof(buffer));
+     do
+     {
+       input_file.read((char*)(&buffer), sizeof(buffer));
+     }
      while (((buffer.probetype!=probetype)||(buffer.probenumber!=probenumber)) && (!input_file.eof()));
 
      //Record first buffer day for midnight crossings
@@ -666,7 +674,8 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
 
               //Make sure particles are in correct time range
               if (itime>=0){
-                 tas[itime]=((float)ntohs(buffer.tas))*125.0/255.0;
+                 if (ncfile.hasTASX() == false)
+                   tas[itime]=((float)ntohs(buffer.tas))*125.0/255.0;
 
                  //Fill interarrival time array with all particles
 //                 for (int i=0; i<particle_stack.size(); i++){                    
