@@ -764,28 +764,31 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   //=========Compute sample volume, concentration, total number, and LWC======
   cout << "\nComputing derived parameters...";
 
+  float mass[probe.numBins];
+  for (int i = 0; i < probe.numBins; i++)
+     mass[i] = 3.1416/6.0 * pow(probe.bin_midpoints[i]/1e4,3);  //grams
+
   // Compute
-  for (int i = 0; i < probe.numBins; i++) {  
-     float mass = 3.1416/6.0 * pow(probe.bin_midpoints[i]/1e4,3);  //grams
-     for (int j = 0; j < numtimes; j++) {
-        if (data.tas[j] > 0.0) {
-           float sv = probe.samplearea[i] * data.tas[j];  // Sample volume (m3)
+  for (int i = 0; i < numtimes; i++) {
+     for (int bin = 0; bin < probe.numBins; bin++) {  
+        if (data.tas[i] > 0.0) {
+           float sv = probe.samplearea[bin] * data.tas[i];  // Sample volume (m3)
 
            // Correct counts for the poisson fitting
-           if (std::isnan(data.corrfac[j])) data.corrfac[j]=1.0;  //Filter out bad correction factors
-           count_all[j][i+binoffset] *= data.corrfac[j];
-           count_round[j][i+binoffset] *= data.corrfac[j];
-           conc_all[j][i+binoffset] = count_all[j][i+binoffset] / sv / 1000.0;	// #/L
-           conc_round[j][i+binoffset] = count_round[j][i+binoffset] / sv / 1000.0;	// #/L
+           if (std::isnan(data.corrfac[i])) data.corrfac[i]=1.0;  //Filter out bad correction factors
+           count_all[i][bin+binoffset] *= data.corrfac[i];
+           count_round[i][bin+binoffset] *= data.corrfac[i];
+           conc_all[i][bin+binoffset] = count_all[i][bin+binoffset] / sv / 1000.0;	// #/L
+           conc_round[i][bin+binoffset] = count_round[i][bin+binoffset] / sv / 1000.0;	// #/L
 
-           if (i >= probe.firstBin) {
-             data.all.total_conc[j] += conc_all[j][i+binoffset];
-             data.all.lwc[j] += mass*conc_all[j][i+binoffset]*1000.0; // g/m3
-//             data.all.dbar[j] += conc_all[j][i+binoffset] * probe.bin_midpoints[i];
+           if (bin >= probe.firstBin) {
+             data.all.total_conc[i] += conc_all[i][bin+binoffset];
+             data.all.lwc[i] += mass[bin] * conc_all[i][bin+binoffset]*1000.0; // g/m3
+//             data.all.dbar[i] += conc_all[i][bin+binoffset] * probe.bin_midpoints[bin];
 
-             data.round.total_conc[j] += conc_round[j][i+binoffset];
-             data.round.lwc[j] += mass*conc_round[j][i+binoffset]*1000.0; // g/m3
-//             data.round.dbar[j] += mass*conc_round[j][i+binoffset] * probe.bin_midpoints[i];
+             data.round.total_conc[i] += conc_round[i][bin+binoffset];
+             data.round.lwc[i] += mass[bin] * conc_round[i][bin+binoffset]*1000.0; // g/m3
+//             data.round.dbar[i] += conc_round[i][bin+binoffset] * probe.bin_midpoints[bin];
            }
         }
      }
