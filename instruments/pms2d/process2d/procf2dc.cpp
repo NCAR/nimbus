@@ -758,7 +758,11 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
 
      } //end slice loop
      buffcount++;  //Update buffer counter
-     if ((!cfg.verbose) && (buffcount % 100==0)) cout<<"."<<flush; //User feedback
+     if (!cfg.verbose && (buffcount % 100==0))
+       cout	<< ntohs(buffer.hour) << ':' << ntohs(buffer.minute)
+		<< ':' << ntohs(buffer.second) << " - " << buffcount
+		<< " records  \r" << flush;
+
   } //end buffer loop
  
   // Close raw data file
@@ -767,6 +771,8 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
 
   
   //=========Compute sample volume, concentration, total number, and LWC======
+  cout << "\nComputing derived parameters...";
+
   float nt_all[numtimes], nt_round[numtimes], lwc_round[numtimes];
   // Initialize to zero
   for (int j = 0; j < numtimes; j++)
@@ -800,6 +806,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   //=============Write to netCDF==============================================
   if (buffcount <= 1) return 1;  //Don't write empty files
 
+  cout << "\nWriting to netCDF file...";
   ncfile.CreateNetCDFfile(cfg);	// Create as necessary.
   NcFile *dataFile = ncfile.ncid();
   char tmp[1024];
@@ -1225,7 +1232,7 @@ int main(int argc, char *argv[])
     return usage(argv[0]);
 
   putenv((char *)"TZ=UTC");
-  new NcError(NcError::verbose_nonfatal);
+  new NcError(NcError::silent_nonfatal);
 
   processArgs(argc, argv, config);
 
@@ -1258,7 +1265,9 @@ int main(int argc, char *argv[])
 		<< "  nDiodes : " << probes[i].nDiodes << endl
 		<< "  numBins : " << probes[i].numBins << endl
 		<< "      res : " << probes[i].resolution << endl
-		<< " armwidth : " << probes[i].armWidth << endl;
+		<< " armwidth : " << probes[i].armWidth << endl
+		<< " FirstBin : " << probes[i].firstBin << endl;
+
 
     int errorcode = process2d(config, ncFile, probes[i]); 
 
