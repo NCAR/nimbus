@@ -786,11 +786,11 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
            conc_all[j][i+binoffset] = count_all[j][i+binoffset] / sv / 1000.0;	// #/L
            conc_round[j][i+binoffset] = count_round[j][i+binoffset] / sv / 1000.0;	// #/L
 
-//           if (i >= probe.firstBin) {
+           if (i >= probe.firstBin) {
              nt_all[j] += conc_all[j][i+binoffset];
              nt_round[j] += conc_round[j][i+binoffset];
              lwc_round[j] += mass*conc_round[j][i+binoffset]*1000.0; // g/m3
-//           }
+           }
         }
      }
   }
