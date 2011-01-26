@@ -28,6 +28,7 @@
 
 #include "config.h"
 #include "probe.h"
+#include "ProbeData.h"
 #include "netcdf.h"
 
 using namespace std;
@@ -47,7 +48,7 @@ struct struct_particle {
 };
 
 // Standard RAF record format for 2D records.
-   typedef struct type_buffer {
+typedef struct type_buffer {
     char probetype;
     char probenumber;
     short hour;
@@ -548,9 +549,6 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   //Count and concentration arrays setup
   float *count_all[numtimes], *conc_all[numtimes];
   float *count_round[numtimes], *conc_round[numtimes];
-  float tas[numtimes];
-  float n_accepted_all[numtimes], n_accepted_round[numtimes], n_rejected_all[numtimes], n_rejected_round[numtimes];
-
 
   // Allocate contiguos data block.
   count_all[0] = new float[numtimes*(probe.numBins+binoffset)];
@@ -560,12 +558,6 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
 
   //Initialize all these to zero
   for (int i = 0; i < numtimes; i++) {
-    tas[i]=0;
-    n_accepted_all[i]=0;
-    n_accepted_round[i]=0;
-    n_rejected_all[i]=0;
-    n_rejected_round[i]=0;
-
     if (i > 0) {	// Set up pointers into contiguous data block.
       int offset = i * (probe.numBins+binoffset);
 
@@ -581,11 +573,11 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     }
   }
 
+  ProbeData data(numtimes);
+
   //Shattering correction and interarrival setup
   const int nitq=400; //number of interarrival times to keep for fitting
   int iitq=0;   //current index of itq
-  float cpoisson1[numtimes], cpoisson2[numtimes], cpoisson3[numtimes];  //Fit coefficients
-  float pcutoff[numtimes], corrfac[numtimes];
   double bestfit[3]={0};
   double itq[nitq]={1};
   double it_endpoints[cfg.nInterarrivalBins+1], it_midpoints[cfg.nInterarrivalBins], fitspec[cfg.nInterarrivalBins];
@@ -594,7 +586,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   for (int i=0; i<cfg.nInterarrivalBins; i++) it_midpoints[i]=pow(10, ((float)i-34.5)/5.0);  
 
   if (ncfile.hasTASX())
-    ncfile.readTrueAirspeed(tas, numtimes);
+    ncfile.readTrueAirspeed(&data.tas[0], numtimes);
 
 
   //=============Process Particles============================================================
@@ -604,7 +596,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   //Skip the XML header
   do getline(input_file, line); while (line.compare(markerline)!=0);
 
-  int buffcount=0;
+  int buffcount = 0;
 
   while (!input_file.eof())
   {
@@ -616,7 +608,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
      while (((buffer.probetype!=probetype)||(buffer.probenumber!=probenumber)) && (!input_file.eof()));
 
      //Record first buffer day for midnight crossings
-     if(buffcount==0) firstday=ntohs(buffer.day); 
+     if(buffcount == 0) firstday=ntohs(buffer.day); 
 
      lastbuffertime = buffertime;
      buffertime = TwoDtime(&buffer) + ((double)ntohs(buffer.msec) / 1000);
@@ -661,7 +653,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
            }
 
            //Debugging output
-           if ((buffcount==-100)) {
+           if ((buffcount == -100)) {
               cout<<islice<<endl;
               showparticle(particle);
               showroi(roi,slice_count);
@@ -675,7 +667,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
               //Make sure particles are in correct time range
               if (itime>=0){
                  if (ncfile.hasTASX() == false)
-                   tas[itime]=((float)ntohs(buffer.tas))*125.0/255.0;
+                   data.tas[itime]=((float)ntohs(buffer.tas))*125.0/255.0;
 
                  //Fill interarrival time array with all particles
 //                 for (int i=0; i<particle_stack.size(); i++){                    
@@ -693,17 +685,17 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
 
                  for (int i=0; i<cfg.nInterarrivalBins; i++) fitspec[i]=count_it[itime][i+binoffset];
                  dpoisson_fit(it_midpoints, fitspec, bestfit, cfg.nInterarrivalBins);
-                 cpoisson1[itime]=(float)bestfit[0];  //Save factors
-                 cpoisson2[itime]=(float)bestfit[1];
-                 cpoisson3[itime]=(float)bestfit[2];
+                 data.cpoisson1[itime]=(float)bestfit[0];  //Save factors
+                 data.cpoisson2[itime]=(float)bestfit[1];
+                 data.cpoisson3[itime]=(float)bestfit[2];
 
                  // Compute shattering corrections if flagged
                  if (cfg.shattercorrect) {
-                   pcutoff[itime]=(float)(1.0/bestfit[1]*0.05);  // Compute cutoff time
-                   corrfac[itime]=(float)(1.0/(2*exp(-pcutoff[itime]*bestfit[1])-1));  //Compute correction factor
+                   data.pcutoff[itime]=(float)(1.0/bestfit[1]*0.05);  // Compute cutoff time
+                   data.corrfac[itime]=(float)(1.0/(2*exp(-data.pcutoff[itime]*bestfit[1])-1));  //Compute correction factor
                  } else {
-                   pcutoff[itime]=0;   // No rejection or corrections
-                   corrfac[itime]=1.0;
+                   data.pcutoff[itime]=0;   // No rejection or corrections
+                   data.corrfac[itime]=1.0;
                  }
 
                  if (cfg.verbose) cout<<itime+cfg.starttime<<" "<<time1hz<<" "<<particle_stack.size()<<" "<<bestfit[0]<<" "<<bestfit[1]<<" "<<bestfit[2]<<endl;
@@ -716,7 +708,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
                     // Rejection
                     if(i==particle_stack.size()-1) nextit=particle.inttime;  //This particle is for next time period, but use its inttime
                     else nextit=particle_stack[i+1].inttime;
-                    reject_particle(particle_stack[i], pcutoff[itime], nextit, probe.resolution,
+                    reject_particle(particle_stack[i], data.pcutoff[itime], nextit, probe.resolution,
                                     probe.bin_endpoints[0], probe.bin_endpoints[probe.numBins],wc, cfg.recon);
                     if (cfg.debug) showparticle(particle_stack[i]);                    
 
@@ -725,14 +717,14 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
                        isize=0; 
                        while((particle_stack[i].size)>probe.bin_endpoints[isize+1]) isize++;
                        count_all[itime][isize+binoffset]++;   //Add offset to isize for RAF convention
-                       n_accepted_all[itime]++;
-                    } else n_rejected_all[itime]++;
+                       data.all.accepted[itime]++;
+                    } else data.all.rejected[itime]++;
                     if (!particle_stack[i].wreject){
                        wsize=0; 
                        while((particle_stack[i].size/wc)>probe.bin_endpoints[wsize+1]) wsize++;
                        count_round[itime][wsize+binoffset]++;   //Add offset to wsize for RAF convention
-                       n_accepted_round[itime]++;
-                    } else n_rejected_round[itime]++;
+                       data.round.accepted[itime]++;
+                    } else data.round.rejected[itime]++;
                  } // End sorting through particle stack
               } // End of time check
 
@@ -762,7 +754,6 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
        cout	<< ntohs(buffer.hour) << ':' << ntohs(buffer.minute)
 		<< ':' << ntohs(buffer.second) << " - " << buffcount
 		<< " records  \r" << flush;
-
   } //end buffer loop
  
   // Close raw data file
@@ -773,29 +764,28 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   //=========Compute sample volume, concentration, total number, and LWC======
   cout << "\nComputing derived parameters...";
 
-  float nt_all[numtimes], nt_round[numtimes], lwc_round[numtimes];
-  // Initialize to zero
-  for (int j = 0; j < numtimes; j++)
-     nt_all[j] = nt_round[j] = lwc_round[j] = 0.0; 
-
   // Compute
   for (int i = 0; i < probe.numBins; i++) {  
      float mass = 3.1416/6.0 * pow(probe.bin_midpoints[i]/1e4,3);  //grams
      for (int j = 0; j < numtimes; j++) {
-        if (tas[j] > 0.0) {
-           float sv = probe.samplearea[i] * tas[j];  // Sample volume (m3)
+        if (data.tas[j] > 0.0) {
+           float sv = probe.samplearea[i] * data.tas[j];  // Sample volume (m3)
 
            // Correct counts for the poisson fitting
-           if (std::isnan(corrfac[j])) corrfac[j]=1.0;  //Filter out bad correction factors
-           count_all[j][i+binoffset] *= corrfac[j];
-           count_round[j][i+binoffset] *= corrfac[j];
+           if (std::isnan(data.corrfac[j])) data.corrfac[j]=1.0;  //Filter out bad correction factors
+           count_all[j][i+binoffset] *= data.corrfac[j];
+           count_round[j][i+binoffset] *= data.corrfac[j];
            conc_all[j][i+binoffset] = count_all[j][i+binoffset] / sv / 1000.0;	// #/L
            conc_round[j][i+binoffset] = count_round[j][i+binoffset] / sv / 1000.0;	// #/L
 
            if (i >= probe.firstBin) {
-             nt_all[j] += conc_all[j][i+binoffset];
-             nt_round[j] += conc_round[j][i+binoffset];
-             lwc_round[j] += mass*conc_round[j][i+binoffset]*1000.0; // g/m3
+             data.all.total_conc[j] += conc_all[j][i+binoffset];
+             data.all.lwc[j] += mass*conc_all[j][i+binoffset]*1000.0; // g/m3
+//             data.all.dbar[j] += conc_all[j][i+binoffset] * probe.bin_midpoints[i];
+
+             data.round.total_conc[j] += conc_round[j][i+binoffset];
+             data.round.lwc[j] += mass*conc_round[j][i+binoffset]*1000.0; // g/m3
+//             data.round.dbar[j] += mass*conc_round[j][i+binoffset] * probe.bin_midpoints[i];
            }
         }
      }
@@ -936,7 +926,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(nt_all, numtimes)) return netCDF::NC_ERR;
+    if (!var->put(&data.all.total_conc[0], numtimes)) return netCDF::NC_ERR;
   }
 
   varname="CONC2DCR"+probe.suffix;
@@ -948,7 +938,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(nt_round, numtimes)) return netCDF::NC_ERR;
+    if (!var->put(&data.round.total_conc[0], numtimes)) return netCDF::NC_ERR;
   }
   
   varname="PLWC2DCR"+probe.suffix;
@@ -960,7 +950,19 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(lwc_round, numtimes)) return netCDF::NC_ERR;
+    if (!var->put(&data.round.lwc[0], numtimes)) return netCDF::NC_ERR;
+  }
+
+  varname="PLWC2DCA"+probe.suffix;
+  if ((var = dataFile->get_var(varname.c_str())) == 0) {
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim))) return netCDF::NC_ERR;  
+    if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
+    if (!var->add_att("units", "g/m3")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Fast 2DC Liquid Water Content, All Particles")) return netCDF::NC_ERR;
+    if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
+    if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
+    if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
+    if (!var->put(&data.all.lwc[0], numtimes)) return netCDF::NC_ERR;
   }
 
   varname="NACCEPT2DCR"+probe.suffix;
@@ -971,7 +973,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(n_accepted_round, numtimes)) return netCDF::NC_ERR;
+    if (!var->put(&data.round.accepted[0], numtimes)) return netCDF::NC_ERR;
   }
 
   varname="NACCEPT2DCA"+probe.suffix;
@@ -982,7 +984,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(n_accepted_all, numtimes)) return netCDF::NC_ERR;
+    if (!var->put(&data.all.accepted[0], numtimes)) return netCDF::NC_ERR;
   }
 
   varname="NREJECT2DCR"+probe.suffix;
@@ -993,7 +995,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(n_rejected_round, numtimes)) return netCDF::NC_ERR;
+    if (!var->put(&data.round.rejected[0], numtimes)) return netCDF::NC_ERR;
   }
 
   varname="NREJECT2DCA"+probe.suffix;
@@ -1004,7 +1006,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(n_rejected_all, numtimes)) return netCDF::NC_ERR;
+    if (!var->put(&data.all.rejected[0], numtimes)) return netCDF::NC_ERR;
   }
 
 
@@ -1014,7 +1016,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim))) return netCDF::NC_ERR;
     if (!var->add_att("units", "unitless")) return netCDF::NC_ERR;
     if (!var->add_att("long_name", "Interarrival Time Fit Coefficient 1")) return netCDF::NC_ERR;
-    if (!var->put(cpoisson1, numtimes)) return netCDF::NC_ERR;
+    if (!var->put(&data.cpoisson1[0], numtimes)) return netCDF::NC_ERR;
   }
   
   varname="poisson_coeff2"+probe.suffix;
@@ -1022,7 +1024,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim))) return netCDF::NC_ERR;
     if (!var->add_att("units", "1/seconds")) return netCDF::NC_ERR;
     if (!var->add_att("long_name", "Interarrival Time Fit Coefficient 2")) return netCDF::NC_ERR;
-    if (!var->put(cpoisson2, numtimes)) return netCDF::NC_ERR;
+    if (!var->put(&data.cpoisson2[0], numtimes)) return netCDF::NC_ERR;
   }
   
   varname="poisson_coeff3"+probe.suffix;
@@ -1030,7 +1032,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim))) return netCDF::NC_ERR;
     if (!var->add_att("units", "1/seconds")) return netCDF::NC_ERR;
     if (!var->add_att("long_name", "Interarrival Time Fit Coefficient 3")) return netCDF::NC_ERR;
-    if (!var->put(cpoisson3, numtimes)) return netCDF::NC_ERR;
+    if (!var->put(&data.cpoisson3[0], numtimes)) return netCDF::NC_ERR;
   }
   
   varname="poisson_cutoff"+probe.suffix;
@@ -1038,7 +1040,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim))) return netCDF::NC_ERR;
     if (!var->add_att("units", "seconds")) return netCDF::NC_ERR;
     if (!var->add_att("long_name", "Interarrival Time Lower Limit")) return netCDF::NC_ERR;
-    if (!var->put(pcutoff, numtimes)) return netCDF::NC_ERR;
+    if (!var->put(&data.pcutoff[0], numtimes)) return netCDF::NC_ERR;
   }
   
   varname="poisson_correction"+probe.suffix;
@@ -1046,7 +1048,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim))) return netCDF::NC_ERR;
     if (!var->add_att("units", "unitless")) return netCDF::NC_ERR;
     if (!var->add_att("long_name", "Count/Concentration Correction Factor for Interarrival Rejection")) return netCDF::NC_ERR;
-    if (!var->put(corrfac, numtimes)) return netCDF::NC_ERR;
+    if (!var->put(&data.corrfac[0], numtimes)) return netCDF::NC_ERR;
   }
   
   varname="TAS"+probe.suffix;
@@ -1054,7 +1056,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!(var = dataFile->add_var(varname.c_str(), ncFloat, timedim))) return netCDF::NC_ERR;
     if (!var->add_att("units", "m/s")) return netCDF::NC_ERR;
     if (!var->add_att("long_name", "True Air Speed")) return netCDF::NC_ERR;
-    if (!var->put(tas, numtimes)) return netCDF::NC_ERR;
+    if (!var->put(&data.tas[0], numtimes)) return netCDF::NC_ERR;
   }
 
   varname="SA"+probe.suffix;
@@ -1072,6 +1074,8 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!var->add_att("long_name", "Size Channel Midpoints")) return netCDF::NC_ERR;
     if (!var->put(&probe.bin_midpoints[0], probe.numBins)) return netCDF::NC_ERR;
   }
+
+  cout << endl;
 
   delete [] count_all[0];
   delete [] count_round[0];
@@ -1253,7 +1257,7 @@ int main(int argc, char *argv[])
   }
 
   Read2dStartEndTime(config, input_file);
-  
+
   input_file.close();
 
   netCDF ncFile(config);
@@ -1267,7 +1271,6 @@ int main(int argc, char *argv[])
 		<< "      res : " << probes[i].resolution << endl
 		<< " armwidth : " << probes[i].armWidth << endl
 		<< " FirstBin : " << probes[i].firstBin << endl;
-
 
     int errorcode = process2d(config, ncFile, probes[i]); 
 
