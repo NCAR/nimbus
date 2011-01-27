@@ -358,6 +358,30 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!var->put(&data.all.dbz[0], data.size())) return netCDF::NC_ERR;
   }
 
+  varname="REFF2DCR"+probe.suffix;
+  if ((var = _file->get_var(varname.c_str())) == 0) {
+    if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
+    if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
+    if (!var->add_att("units", "um")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Fast 2DC Effective Radius, Round Particles")) return netCDF::NC_ERR;
+    if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
+    if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
+    if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
+    if (!var->put(&data.round.dbz[0], data.size())) return netCDF::NC_ERR;
+  }
+
+  varname="REFF2DCA"+probe.suffix;
+  if ((var = _file->get_var(varname.c_str())) == 0) {
+    if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
+    if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
+    if (!var->add_att("units", "um")) return netCDF::NC_ERR;
+    if (!var->add_att("long_name", "Fast 2DC Effective Radius, All Particles")) return netCDF::NC_ERR;
+    if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
+    if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
+    if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
+    if (!var->put(&data.all.dbz[0], data.size())) return netCDF::NC_ERR;
+  }
+
   varname="NACCEPT2DCR"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;

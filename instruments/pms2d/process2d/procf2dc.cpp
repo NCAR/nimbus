@@ -827,6 +827,11 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
                         data.round.dbar[i]))) / data.round.dbar[i];
     }
 
+    if (dbar2_all > 0.0)
+      data.all.eff_rad[i] = 0.5 * (data.all.lwc[i] / dbar2_all);
+
+    if (dbar2_round > 0.0)
+      data.round.eff_rad[i] = 0.5 * (data.round.lwc[i] / dbar2_round);
   }
 
 
@@ -1099,7 +1104,9 @@ int main(int argc, char *argv[])
   if (argc < 2)
     return usage(argv[0]);
 
+  // Make sure all time calculations are in UTC.
   putenv((char *)"TZ=UTC");
+
   new NcError(NcError::silent_nonfatal);
 
   processArgs(argc, argv, config);
