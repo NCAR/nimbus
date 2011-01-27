@@ -37,7 +37,7 @@ ProbeData::ProbeData(size_t size) : _size(size)
     all.rejected[i] = round.rejected[i] = 0.0;
     all.total_conc[i] = round.total_conc[i] = 0.0;
     all.disp[i] = round.disp[i] = 0.0;
-    all.dbz[i] = round.dbz[i] = 0.0;
+    all.dbz[i] = round.dbz[i] = -100.0;
     all.dbar[i] = round.dbar[i] = 0.0;
     all.lwc[i] = round.lwc[i] = 0.0;
     all.eff_rad[i] = round.eff_rad[i] = 0.0;
