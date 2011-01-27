@@ -1,6 +1,6 @@
 #include "ProbeData.h"
 
-ProbeData::ProbeData(size_t size)
+ProbeData::ProbeData(size_t size) : _size(size)
 {
   tas.reserve(size);
   cpoisson1.reserve(size);

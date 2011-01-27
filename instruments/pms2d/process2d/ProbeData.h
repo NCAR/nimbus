@@ -17,10 +17,14 @@ public:
 
   ProbeData(size_t size);
 
+  int size() const { return _size; }
 
   std::vector<float> tas;
   std::vector<float> cpoisson1, cpoisson2, cpoisson3;
   std::vector<float> pcutoff, corrfac;
 
   struct derived all, round;
+
+protected:
+  int _size;
 };
