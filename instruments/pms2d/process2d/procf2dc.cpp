@@ -764,10 +764,11 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   //=========Compute sample volume, concentration, total number, and LWC======
   cout << "\nComputing derived parameters...";
 
-  float mass[probe.numBins], zFac[probe.numBins];
+  float zFac[probe.numBins], dia2[probe.numBins], dia3[probe.numBins];
   for (int i = 0; i < probe.numBins; i++) {
-    mass[i] = M_PI / 6.0 * pow(probe.bin_midpoints[i]/1.0e4, 3.0);  //grams
     zFac[i] = pow((double)probe.bin_midpoints[i] / 1000.0, 6.0);
+    dia2[i] = probe.bin_midpoints[i] * probe.bin_midpoints[i];
+    dia3[i] = pow(probe.bin_midpoints[i], 3.0);
   }
 
   // Compute
@@ -780,7 +781,6 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     {
       if (data.tas[i] > 0.0) {
         float sv = probe.samplearea[bin] * data.tas[i];  // Sample volume (m3)
-        float dia2 = probe.bin_midpoints[bin] * probe.bin_midpoints[bin];
 
         // Correct counts for the poisson fitting
         if (std::isnan(data.corrfac[i])) data.corrfac[i]=1.0;  //Filter out bad correction factors
@@ -791,15 +791,15 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
 
         if (bin >= probe.firstBin) {
           data.all.total_conc[i] += conc_all[i][bin+binoffset];
-          data.all.lwc[i]	+= conc_all[i][bin+binoffset] * mass[bin] * 1000.0; // g/m3
           data.all.dbar[i]	+= conc_all[i][bin+binoffset] * probe.bin_midpoints[bin];
-          dbar2_all		+= conc_all[i][bin+binoffset] * dia2;
+          dbar2_all		+= conc_all[i][bin+binoffset] * dia2[bin];
+          data.all.lwc[i]	+= conc_all[i][bin+binoffset] * dia3[bin];
           z_all			+= conc_all[i][bin+binoffset] * zFac[bin];
 
           data.round.total_conc[i] += conc_round[i][bin+binoffset];
-          data.round.lwc[i]	+= conc_round[i][bin+binoffset] * mass[bin] * 1000.0; // g/m3
           data.round.dbar[i]	+= conc_round[i][bin+binoffset] * probe.bin_midpoints[bin];
-          dbar2_round		+= conc_round[i][bin+binoffset] * dia2;
+          dbar2_round		+= conc_round[i][bin+binoffset] * dia2[bin];
+          data.round.lwc[i]	+= conc_round[i][bin+binoffset] * dia3[bin];
           z_round		+= conc_round[i][bin+binoffset] * zFac[bin];
         }
       }
@@ -832,6 +832,9 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
 
     if (dbar2_round > 0.0)
       data.round.eff_rad[i] = 0.5 * (data.round.lwc[i] / dbar2_round);
+
+    data.all.lwc[i] *= M_PI / 6.0 * 1.0e-9;
+    data.round.lwc[i] *= M_PI / 6.0 * 1.0e-9;
   }
 
 

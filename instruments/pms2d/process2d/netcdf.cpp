@@ -367,7 +367,7 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(&data.round.dbz[0], data.size())) return netCDF::NC_ERR;
+    if (!var->put(&data.round.eff_rad[0], data.size())) return netCDF::NC_ERR;
   }
 
   varname="REFF2DCA"+probe.suffix;
@@ -379,7 +379,7 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(&data.all.dbz[0], data.size())) return netCDF::NC_ERR;
+    if (!var->put(&data.all.eff_rad[0], data.size())) return netCDF::NC_ERR;
   }
 
   varname="NACCEPT2DCR"+probe.suffix;
