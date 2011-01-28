@@ -768,7 +768,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   for (int i = 0; i < probe.numBins; i++) {
     zFac[i] = pow((double)probe.bin_midpoints[i] / 1000.0, 6.0);
     dia2[i] = probe.bin_midpoints[i] * probe.bin_midpoints[i];
-    dia3[i] = pow(probe.bin_midpoints[i], 3.0);
+    dia3[i] = pow((double)probe.bin_midpoints[i], 3.0);
   }
 
   // Compute
