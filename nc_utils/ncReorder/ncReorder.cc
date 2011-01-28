@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
 
         case ncInt:
           outFile.get_var(i)->add_att(att->name(), att->num_vals(),
-		(const long *)att->values()->base());
+		(const int *)att->values()->base());
           break;
 
         default:
