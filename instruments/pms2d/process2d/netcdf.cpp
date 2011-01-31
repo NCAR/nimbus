@@ -233,8 +233,8 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _bindim_plusone))) return netCDF::NC_ERR;
     if (!var->add_att("units", "microns")) return netCDF::NC_ERR;
-    if (!var->put(&probe.bin_endpoints[0], probe.numBins+1)) return netCDF::NC_ERR; 
   }
+  if (!var->put(&probe.bin_endpoints[0], probe.numBins+1)) return netCDF::NC_ERR; 
 
 
   //Total counts and LWC
@@ -247,8 +247,8 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(&data.all.total_conc[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.all.total_conc[0], data.size())) return netCDF::NC_ERR;
 
   varname="CONC2DCR"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
@@ -259,8 +259,8 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(&data.round.total_conc[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.round.total_conc[0], data.size())) return netCDF::NC_ERR;
 
   varname="PLWC2DCR"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
@@ -271,8 +271,8 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(&data.round.lwc[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.round.lwc[0], data.size())) return netCDF::NC_ERR;
 
   varname="PLWC2DCA"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
@@ -283,8 +283,8 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(&data.all.lwc[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.all.lwc[0], data.size())) return netCDF::NC_ERR;
 
   varname="DBAR2DCR"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
@@ -295,8 +295,8 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(&data.round.dbar[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.round.dbar[0], data.size())) return netCDF::NC_ERR;
 
   varname="DBAR2DCA"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
@@ -307,8 +307,8 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(&data.all.dbar[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.all.dbar[0], data.size())) return netCDF::NC_ERR;
 
   varname="DISP2DCR"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
@@ -319,8 +319,8 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(&data.round.disp[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.round.disp[0], data.size())) return netCDF::NC_ERR;
 
   varname="DISP2DCA"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
@@ -331,8 +331,8 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(&data.all.disp[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.all.disp[0], data.size())) return netCDF::NC_ERR;
 
   varname="DBZ2DCR"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
@@ -343,8 +343,8 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(&data.round.dbz[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.round.dbz[0], data.size())) return netCDF::NC_ERR;
 
   varname="DBZ2DCA"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
@@ -355,8 +355,8 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(&data.all.dbz[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.all.dbz[0], data.size())) return netCDF::NC_ERR;
 
   varname="REFF2DCR"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
@@ -367,8 +367,8 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(&data.round.eff_rad[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.round.eff_rad[0], data.size())) return netCDF::NC_ERR;
 
   varname="REFF2DCA"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
@@ -379,8 +379,8 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(&data.all.eff_rad[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.all.eff_rad[0], data.size())) return netCDF::NC_ERR;
 
   varname="NACCEPT2DCR"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
@@ -390,8 +390,8 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(&data.round.accepted[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.round.accepted[0], data.size())) return netCDF::NC_ERR;
 
   varname="NACCEPT2DCA"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
@@ -401,8 +401,8 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(&data.all.accepted[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.all.accepted[0], data.size())) return netCDF::NC_ERR;
 
   varname="NREJECT2DCR"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
@@ -412,8 +412,8 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(&data.round.rejected[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.round.rejected[0], data.size())) return netCDF::NC_ERR;
 
   varname="NREJECT2DCA"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
@@ -423,8 +423,8 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
     if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
-    if (!var->put(&data.all.rejected[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.all.rejected[0], data.size())) return netCDF::NC_ERR;
 
 
 
@@ -434,46 +434,48 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("units", "unitless")) return netCDF::NC_ERR;
     if (!var->add_att("long_name", "Interarrival Time Fit Coefficient 1")) return netCDF::NC_ERR;
-    if (!var->put(&data.cpoisson1[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.cpoisson1[0], data.size())) return netCDF::NC_ERR;
 
   varname="poisson_coeff2"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("units", "1/seconds")) return netCDF::NC_ERR;
     if (!var->add_att("long_name", "Interarrival Time Fit Coefficient 2")) return netCDF::NC_ERR;
-    if (!var->put(&data.cpoisson2[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.cpoisson2[0], data.size())) return netCDF::NC_ERR;
 
   varname="poisson_coeff3"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("units", "1/seconds")) return netCDF::NC_ERR;
     if (!var->add_att("long_name", "Interarrival Time Fit Coefficient 3")) return netCDF::NC_ERR;
-    if (!var->put(&data.cpoisson3[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.cpoisson3[0], data.size())) return netCDF::NC_ERR;
 
   varname="poisson_cutoff"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("units", "seconds")) return netCDF::NC_ERR;
     if (!var->add_att("long_name", "Interarrival Time Lower Limit")) return netCDF::NC_ERR;
-    if (!var->put(&data.pcutoff[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.pcutoff[0], data.size())) return netCDF::NC_ERR;
 
   varname="poisson_correction"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("units", "unitless")) return netCDF::NC_ERR;
     if (!var->add_att("long_name", "Count/Concentration Correction Factor for Interarrival Rejection")) return netCDF::NC_ERR;
-    if (!var->put(&data.corrfac[0], data.size())) return netCDF::NC_ERR;
   }
+  if (!var->put(&data.corrfac[0], data.size())) return netCDF::NC_ERR;
 
-  varname="TAS"+probe.suffix;
-  if ((var = _file->get_var(varname.c_str())) == 0) {
-    if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
-    if (!var->add_att("units", "m/s")) return netCDF::NC_ERR;
-    if (!var->add_att("long_name", "True Air Speed")) return netCDF::NC_ERR;
+  if (_tas == 0) {
+    varname="TAS"+probe.suffix;
+    if ((var = _file->get_var(varname.c_str())) == 0) {
+      if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
+      if (!var->add_att("units", "m/s")) return netCDF::NC_ERR;
+      if (!var->add_att("long_name", "True Air Speed")) return netCDF::NC_ERR;
+    }
     if (!var->put(&data.tas[0], data.size())) return netCDF::NC_ERR;
   }
 
@@ -482,16 +484,16 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _bindim))) return netCDF::NC_ERR;
     if (!var->add_att("units", "m2")) return netCDF::NC_ERR;
     if (!var->add_att("long_name", "Sample area per channel")) return netCDF::NC_ERR;
-    if (!var->put(&probe.samplearea[0], probe.numBins)) return netCDF::NC_ERR;
   }
+  if (!var->put(&probe.samplearea[0], probe.numBins)) return netCDF::NC_ERR;
 
   varname="bin_midpoints"+probe.suffix;
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _bindim))) return netCDF::NC_ERR;
     if (!var->add_att("units", "microns")) return netCDF::NC_ERR;
     if (!var->add_att("long_name", "Size Channel Midpoints")) return netCDF::NC_ERR;
-    if (!var->put(&probe.bin_midpoints[0], probe.numBins)) return netCDF::NC_ERR;
   }
+  if (!var->put(&probe.bin_midpoints[0], probe.numBins)) return netCDF::NC_ERR;
 
   return 0;
 }

@@ -782,6 +782,8 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
       if (data.tas[i] > 0.0) {
         float sv = probe.samplearea[bin] * data.tas[i];  // Sample volume (m3)
 
+if (count_round[i][bin+binoffset] < 0)
+  printf("count < 0: %f\n", count_round[i][bin+binoffset]);
         // Correct counts for the poisson fitting
         if (std::isnan(data.corrfac[i])) data.corrfac[i]=1.0;  //Filter out bad correction factors
         count_all[i][bin+binoffset] *= data.corrfac[i];
@@ -789,6 +791,8 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
         conc_all[i][bin+binoffset] = count_all[i][bin+binoffset] / sv / 1000.0;	// #/L
         conc_round[i][bin+binoffset] = count_round[i][bin+binoffset] / sv / 1000.0;	// #/L
 
+if (conc_round[i][bin+binoffset] < 0)
+  printf("conc negative: %f %f\n", count_round[i][bin+binoffset], sv);
         if (bin >= probe.firstBin) {
           data.all.total_conc[i] += conc_all[i][bin+binoffset];
           data.all.dbar[i]	+= conc_all[i][bin+binoffset] * probe.bin_midpoints[bin];
@@ -877,8 +881,8 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!var->add_att("ArmDistance", probe.armWidth * 10)) return netCDF::NC_ERR;
     if (!var->add_att("Rejected", "Roundness below 0.1, interarrival time below 1/20th of distribution peak")) return netCDF::NC_ERR;
     if (!var->add_att("ParticleAcceptMethod", "Reconstruction")) return netCDF::NC_ERR;
-    if (!var->put(&count_all[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
   }
+  if (!var->put(&count_all[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
 
   varname="A2DCR"+probe.suffix;
   if ((var = dataFile->get_var(varname.c_str())) == 0) {
@@ -895,8 +899,8 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!var->add_att("ArmDistance", probe.armWidth * 10)) return netCDF::NC_ERR;
     if (!var->add_att("Rejected", "Roundness below 0.5, interarrival time below 1/20th of distribution peak")) return netCDF::NC_ERR;
     if (!var->add_att("ParticleAcceptMethod", "Reconstruction")) return netCDF::NC_ERR;
-    if (!var->put(&count_round[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
   }
+  if (!var->put(&count_round[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
 
   varname="I2DCA"+probe.suffix;
   if ((var = dataFile->get_var(varname.c_str())) == 0) {
@@ -905,8 +909,8 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!var->add_att("units", "count")) return netCDF::NC_ERR;
     if (!var->add_att("long_name", "Interarrival Time Accumulation, All Particles Including Rejections")) return netCDF::NC_ERR;
     if (!var->add_att("CellSizes", cfg.nInterarrivalBins, it_endpoints)) return netCDF::NC_ERR;
-    if (!var->put(&count_it[0][0], numtimes, 1, cfg.nInterarrivalBins+1)) return netCDF::NC_ERR;
   }
+  if (!var->put(&count_it[0][0], numtimes, 1, cfg.nInterarrivalBins+1)) return netCDF::NC_ERR;
 
   //Concentration
   varname="C2DCA"+probe.suffix;
@@ -925,8 +929,8 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!var->add_att("CellSizes", probe.numBins+1, &probe.bin_endpoints[0])) return netCDF::NC_ERR;
     if (!var->add_att("CellSizeUnits", "micrometers")) return netCDF::NC_ERR;
     if (!var->add_att("Density", 1.0)) return netCDF::NC_ERR;
-    if (!var->put(&conc_all[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
   }
+  if (!var->put(&conc_all[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
 
   varname="C2DCR"+probe.suffix;
   if ((var = dataFile->get_var(varname.c_str())) == 0) {
@@ -944,8 +948,8 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!var->add_att("CellSizes", probe.numBins+1, &probe.bin_endpoints[0])) return netCDF::NC_ERR;
     if (!var->add_att("CellSizeUnits", "micrometers")) return netCDF::NC_ERR;
     if (!var->add_att("Density", 1.0)) return netCDF::NC_ERR;
-    if (!var->put(&conc_round[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
   }
+  if (!var->put(&conc_round[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
 
   cout << endl;
 
@@ -1111,6 +1115,7 @@ int main(int argc, char *argv[])
   putenv((char *)"TZ=UTC");
 
   new NcError(NcError::silent_nonfatal);
+  new NcError(NcError::verbose_nonfatal);
 
   processArgs(argc, argv, config);
 
