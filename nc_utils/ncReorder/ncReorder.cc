@@ -77,8 +77,21 @@ int main(int argc, char *argv[])
 
   // Transfer global attributes.
   for (int i = 0; i < inFile.num_atts(); ++i)
-    outFile.add_att(inFile.get_att(i)->name(), inFile.get_att(i)->num_vals(),
-	(const char *)inFile.get_att(i)->values()->base());
+  {
+    NcAtt *att = inFile.get_att(i);
+    switch (att->type())
+    {
+      case ncChar:
+        outFile.add_att(att->name(), att->num_vals(), (const char *)att->values()->base());
+        break;
+      case ncFloat:
+        outFile.add_att(att->name(), att->num_vals(), (const float *)att->values()->base());
+        break;
+      case ncInt:
+        outFile.add_att(att->name(), att->num_vals(), (const int *)att->values()->base());
+        break;
+    }
+  }
 
 
   // Transfer Variables.
