@@ -607,6 +607,9 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
      }
      while (((buffer.probetype!=probetype)||(buffer.probenumber!=probenumber)) && (!input_file.eof()));
 
+     if (input_file.gcount() < (int)sizeof(buffer))
+       break;
+
      //Record first buffer day for midnight crossings
      if(buffcount == 0) firstday=ntohs(buffer.day); 
 
@@ -1115,7 +1118,6 @@ int main(int argc, char *argv[])
   putenv((char *)"TZ=UTC");
 
   new NcError(NcError::silent_nonfatal);
-  new NcError(NcError::verbose_nonfatal);
 
   processArgs(argc, argv, config);
 
