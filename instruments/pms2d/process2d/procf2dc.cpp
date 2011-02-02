@@ -682,9 +682,11 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
                  //Interarrival time array, queue version
                  for (int i=0; i<nitq; i++){                    
                     iit=0;
-                    while((itq[i])>it_endpoints[iit+1]) iit++;
-                    count_it[itime][iit+binoffset]++;   //Add offset to iit for RAF convention
-                 }   
+                    if (itq[i] < it_endpoints[cfg.nInterarrivalBins]) {  // This should be the largest time allowable 
+                       while((itq[i])>it_endpoints[iit+1]) iit++;
+                       count_it[itime][iit+binoffset]++;   //Add offset to iit for RAF convention
+                    }
+                 }
 
                  for (int i=0; i<cfg.nInterarrivalBins; i++) fitspec[i]=count_it[itime][i+binoffset];
                  dpoisson_fit(it_midpoints, fitspec, bestfit, cfg.nInterarrivalBins);
@@ -785,8 +787,6 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
       if (data.tas[i] > 0.0) {
         float sv = probe.samplearea[bin] * data.tas[i];  // Sample volume (m3)
 
-if (count_round[i][bin+binoffset] < 0)
-  printf("count < 0: %f\n", count_round[i][bin+binoffset]);
         // Correct counts for the poisson fitting
         if (std::isnan(data.corrfac[i])) data.corrfac[i]=1.0;  //Filter out bad correction factors
         count_all[i][bin+binoffset] *= data.corrfac[i];
@@ -794,8 +794,6 @@ if (count_round[i][bin+binoffset] < 0)
         conc_all[i][bin+binoffset] = count_all[i][bin+binoffset] / sv / 1000.0;	// #/L
         conc_round[i][bin+binoffset] = count_round[i][bin+binoffset] / sv / 1000.0;	// #/L
 
-if (conc_round[i][bin+binoffset] < 0)
-  printf("conc negative: %f %f\n", count_round[i][bin+binoffset], sv);
         if (bin >= probe.firstBin) {
           data.all.total_conc[i] += conc_all[i][bin+binoffset];
           data.all.dbar[i]	+= conc_all[i][bin+binoffset] * probe.bin_midpoints[bin];
