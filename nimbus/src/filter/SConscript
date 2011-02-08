@@ -90,7 +90,7 @@ timeseg.c
 if int(env.realtime):
   env.Append(CPPPATH=[os.path.join(env['NIDAS_PATH'],'include')])
   sources = [sources, 'rtloop3.cc']
-  env.Append(LIBS=['nidas', 'nidas_dynld', 'XmlRpcpp', 'xerces-c', 'bz2'])
+  env.Append(LIBS=['nidas', 'nidas_dynld', 'nidas_util', 'XmlRpcpp', 'xerces-c', 'bz2', 'z'])
   if (platform.machine() == 'x86_64'):
     nlibpath = os.path.join(env['NIDAS_PATH'],'lib64')
   else:
