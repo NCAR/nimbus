@@ -43,9 +43,9 @@ double esubt(double temperature, double pressure)
   ew = pow(10.0, (
 	-7.90298 * ((Ts / Tk) - 1.0)
 	+5.02808 * log10(Ts / Tk)
-	-1.3816e-7 * (pow(10.0, 11.334 * (1.0 - Tk / Ts)) - 1.0)
+	-1.3816e-7 * (pow(10.0, 11.344 * (1.0 - Tk / Ts)) - 1.0)
 	+8.1328e-3 * (pow(10.0, -3.49149 * (Ts / Tk - 1.0)) - 1.0))
-	+log10(1013.246) );
+	+log10(1013.25) );
 
   /* Arden Buck's pressure enhancement factor.
   */
