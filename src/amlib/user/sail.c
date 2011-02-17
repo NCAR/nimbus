@@ -39,7 +39,7 @@ void sspalt(DERTBL *varp)
 
 	psx = GetSample(varp, 0);
 
-	p = 0.1903 * log(psx / 1013.25);
+	p = 0.1903 * log(psx / StdPress);
 	palt = 44.287 * (1.0 - exp(p));
 
 	PutSample(varp, palt);

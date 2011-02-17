@@ -37,7 +37,7 @@ void sClimet(DERTBL *varp)
   concentration = &AveragedData[varp->LRstart];
 
   sampleVolume = 4.7195e-5;
-  sampleVolume *= (1013.25 / psx) * (atx + Kelvin) / 294.26;
+  sampleVolume *= (StdPress / psx) * (atx + Kelvin) / 294.26;
 
   conc = 0.0;
 

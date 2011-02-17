@@ -59,7 +59,7 @@ void sdprho(DERTBL *varp)
           }
         else
           {
-          dprho = 273.0*z/(22.51-z);
+          dprho = Kelvin*z/(22.51-z);
           }
  *  Use commented code above if frost point is desired below 0C.  */
         }

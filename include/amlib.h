@@ -22,7 +22,7 @@ const size_t MAX_PMS2D = (MAX_PMS2 * 2);
 
 /* See amlib/xlate/const.c
  */
-extern const double FTMTR, MPS2, KTS2MS, FTMIN, Kelvin, WH_GRAVITY;
+extern const double FTMTR, MPS2, KTS2MS, FTMIN, Kelvin, WH_GRAVITY, StdPress;
 extern const double EARTH_RADIUS, OMEGAE, CKTMS, GRAVITY;
 extern const double RAD_DEG, DEG_RAD;
 
@@ -34,9 +34,8 @@ extern const double RESOLV14BIT, RESOLV16BIT;
 /* Values for 'FeedBack' variable	*/
 enum RateFeedBack { LOW_RATE_FEEDBACK, HIGH_RATE_FEEDBACK, nFeedBackTypes };
 
-// Changed from 273.16 to 273.15 on 09/20/07 per Al Cooper.
 #define AMBIENT(t, rf, xm2) \
-		((t + 273.15) / (1.0 + 0.2 * rf * xm2) - 273.15)
+		((t + Kelvin) / (1.0 + 0.2 * rf * xm2) - Kelvin)
 
 #define XMAC2(a) \
 		(5.0 * (pow((double)((a)+1.0), (double)0.28571) - 1.0))

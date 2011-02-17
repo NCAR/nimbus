@@ -53,9 +53,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2010
 #include "nimbus.h"
 #include "amlib.h"
 
-/*  Reference pressure for US standard atmosphere (hPa)			*/
-static NR_TYPE ASTG = 1013.25;
-
 /*  Transition pressure at the assumed ISA tropopause (hPa)		*/
 /*  This value can be calculated by upwards integration			*/
 static NR_TYPE ISAP1 = 226.3206;
@@ -70,7 +67,7 @@ void spalt(DERTBL *varp)
 
   if (psxc > ISAP1)
     /*  Branch for upper altitude lapse rate.				*/
-    palt = 44330.77 * (1.0 - pow(psxc / ASTG, 0.1902632));
+    palt = 44330.77 * (1.0 - pow(psxc / StdPress, 0.1902632));
   else
     /*  Branch for lower altitude lapse rate.				*/
     palt = 11000.0 + 14602.12 * log10(ISAP1 / psxc);

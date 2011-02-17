@@ -32,12 +32,12 @@ NR_TYPE kinglwcc(NR_TYPE plwc, NR_TYPE tasx, NR_TYPE atx, NR_TYPE psxc, NR_TYPE 
 	if(tflm1 == 0.0) tflm1 = 0.001;
 
 	/* Calculate the thermal conductivity  */
-	cnd1 = 5.8e-5*(398./(125.+tflm1))*pow(tflm1/273.,1.5);
-	cndw1 = 5.8e-5*(398./(125.+twk1))*pow(twk1/273.,1.5); 
+	cnd1 = 5.8e-5*(398./(125.+tflm1))*pow(tflm1/Kelvin, 1.5);
+	cndw1 = 5.8e-5*(398./(125.+twk1))*pow(twk1/Kelvin, 1.5); 
 
 	/* Calculate the viscosity  */
-	visc1 = 1.718e-4*(393./(120.+tflm1))*pow(tflm1/273.,1.5);
-	vscw1 = 1.718e-4*(393./(120.+twk1))*pow(twk1/273.,1.5);
+	visc1 = 1.718e-4*(393./(120.+tflm1))*pow(tflm1/Kelvin, 1.5);
+	vscw1 = 1.718e-4*(393./(120.+twk1))*pow(twk1/Kelvin, 1.5);
 
 	/* Calculate the density  */
 	dens1 = psxc/(2870.5*tflm1);
