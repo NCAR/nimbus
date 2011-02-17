@@ -9,9 +9,12 @@ ENTRY POINTS:	esubt()
 
 DESCRIPTION:	ESUBT function implements the Goff-Gratch formula ("Trans. Am.
 		Soc. Heat. Vent. Eng.," Vol. 52, pp. 95-121, 1946) for
-		computing vapor pressure over a plane wather surface and also
-		includes the enhancement factor of Buck ("J. Appl. Meteorol.,"
-		Vol. 20, pp. 1527-1532, 1981).
+		computing vapor pressure over a plane wather surface.
+		
+		Prior to 2011, the code included the enhancement factor of Buck
+		("J. Appl. Meteorol.," Vol. 20, pp. 1527-1532, 1981).
+		After Feb 18, the code includes the enhancement factor of
+		Murphy and Koop ("Q. J. Roy. Met. Soc.", Vol. 131, pp. 1539-1565, 2005).
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2011
 -------------------------------------------------------------------------
@@ -39,11 +42,11 @@ double esubt(double temperature, double pressure)
 	+log10(StdPress) );
 
   /* Arden Buck's pressure enhancement factor.  Used prior to 2011.
+   * fw = 1.0007 + (3.46e-6 * pressure);
    */
-  fw = 1.0007 + (3.46e-6 * pressure);
 
   // From Murphy and Koop, 2005.
-//  fw = 1.0 + 1.0e-5 * pressure * (4.923 - 0.0325 * Tk + 5.84e-5 * Tk * Tk);
+  fw = 1.0 + 1.0e-5 * pressure * (4.923 - 0.0325 * Tk + 5.84e-5 * Tk * Tk);
 
   return ew * fw;
 }
