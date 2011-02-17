@@ -10,11 +10,7 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-REFERENCES:	none
-
-REFERENCED BY:	compute.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1996
+COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2011
 -------------------------------------------------------------------------
 */
 
@@ -29,8 +25,7 @@ void sias(DERTBL *varp)
 
   qcxc = GetSample(varp, 0);
 
-  ias = 760.9166 *
-	sqrt(fabs(pow(((1013.246 + qcxc) / 1013.246), 0.28571) - 1.0));
+  ias = 760.9166 * sqrt(fabs(pow(((StdPress + qcxc) / StdPress), 0.28571) - 1.0));
 
   PutSample(varp, ias * 1.94253479);	/* Convert to Knots	*/
 

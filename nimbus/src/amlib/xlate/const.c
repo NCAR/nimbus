@@ -24,6 +24,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-07
 
 const double Kelvin = 273.15;
 
+// Reference pressure for US standard atmosphere (hPa)
+const double StdPress = 1013.25;
+
 const double WH_GRAVITY = 9.7959;	/* Gravity in Woodland Hills */
 const double GRAVITY = 9.80621770635;	/* Gravity in Michigan	*/
 

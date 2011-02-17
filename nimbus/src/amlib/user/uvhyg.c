@@ -30,5 +30,5 @@ void suvmr(DERTBL * varp)
   if (cfg.isADS2())	// Old UV Hygrometer
     PutSample(varp, (log((xuvi + 0.125) / 1.33) + 0.35 * psx / atx) / -0.1);
   else	// VOCALS and later.
-    PutSample(varp, -37.95 * ((atx + 273.15) / psx) * (log((xuvi - 0.076) / 12.25) + 0.00045 * psx));
+    PutSample(varp, -37.95 * ((atx + Kelvin) / psx) * (log((xuvi - 0.076) / 12.25) + 0.00045 * psx));
 }

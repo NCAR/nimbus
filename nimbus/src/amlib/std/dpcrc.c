@@ -200,7 +200,7 @@ static NR_TYPE vapor(NR_TYPE tfp)
 	1.3816E-7 * (pow((double)10.0, 11.344 * (1.0 - tfp / 373.16)) - 1.0) +
 	8.1328E-3 * (pow((double)10.0, 3.49149 * (1.0 - 373.16 / tfp)) - 1.0);
 
-  vapor = 1013.246 * pow((double)10.0, e);
+  vapor = StdPress * pow((double)10.0, e);
 
   return(vapor);
 }

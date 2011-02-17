@@ -219,7 +219,7 @@ void spflwc(DERTBL *varp)
       flow = 0.72623;
 
   // Changed from 294.15 C to 298.15 C on 9/13/01 per DCRogers.
-  flowc = flow * (1013.25 / psx) * (atx + Kelvin) / 298.15;
+  flowc = flow * (StdPress / psx) * (atx + Kelvin) / 298.15;
 
   PutSample(varp, flowc);
 

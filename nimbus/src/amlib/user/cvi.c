@@ -337,7 +337,7 @@ static NR_TYPE TempCorrection(NR_TYPE cv, NR_TYPE pcn, NR_TYPE cvtemp)
   if (pcn <= 0.0)
     pcn = 0.0001;
 
-  return(cv * (1013.25 / pcn) * ((cvtemp + Kelvin) / 294.26));
+  return(cv * (StdPress / pcn) * ((cvtemp + Kelvin) / 294.26));
 
 }  /* END TEMPCORRECTION */
 

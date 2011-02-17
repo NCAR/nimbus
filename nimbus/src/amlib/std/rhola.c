@@ -10,15 +10,7 @@ STATIC FNS:	none
 
 DESCRIPTION:  
 
-INPUT:    
-
-OUTPUT:    
-
-REFERENCES:	lyalf.c
-
-REFERENCED BY:	compute.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2011
 -------------------------------------------------------------------------
 */
 
@@ -26,10 +18,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2005
 #include "amlib.h"
 
 #define GL1  0.05
-#define STPT  273.0	/* STP temperature reference (K)    */
 #define CKO2  0.34	/* Absorption coefficient for oxygen    */
 #define CAMP  0.4630	/* LOG amplification factor      */
-#define STPP  1013.0	/* STP pressure reference (mbar)  */
 #define CO2P  0.2315	/* Percentage of oxygen in dry air    */
 
 static NR_TYPE  rholap[2], corc1[2] = {0.0, 0.0};
@@ -148,7 +138,7 @@ static NR_TYPE compute_rhola(int indx, DERTBL *varp, NR_TYPE vla, NR_TYPE psxc, 
 
   /* Calculate oxygen correction to VLA
    */
-  vo2 = ((CKO2*CO2P*XC*STPT) / (STPP*CAMP)) * psxc / (atx+Kelvin) ;
+  vo2 = ((CKO2*CO2P*XC*Kelvin) / (StdPress*CAMP)) * psxc / (atx+Kelvin) ;
   vh2o = vla - vo2;
 
   if (n1[indx] < 300)
