@@ -23,13 +23,20 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2011
 #include "nimbus.h"
 #include "amlib.h"
 
-static const double	Ts = 373.16, To = Kelvin;
+static const double	Ts = 373.16;
+
+/* -------------------------------------------------------------------- */
+double fw(double Tk, double pressure)
+{
+  // From Murphy and Koop, 2005.  Enhancement factor.
+  return 1.0 + 1.0e-5 * pressure * (4.923 - 0.0325 * Tk + 5.84e-5 * Tk * Tk);
+}
 
 /* -------------------------------------------------------------------- */
 double esubt(double temperature, double pressure)
 {
-  double Tk = temperature + To;
-  double fw, ew;
+  double Tk = temperature + Kelvin;
+  double ew;
 
   if (Tk < 1.0)
     Tk = 1.0;
@@ -42,13 +49,11 @@ double esubt(double temperature, double pressure)
 	+log10(StdPress) );
 
   /* Arden Buck's pressure enhancement factor.  Used prior to 2011.
-   * fw = 1.0007 + (3.46e-6 * pressure);
+   * double fw = 1.0007 + (3.46e-6 * pressure);
    */
 
-  // From Murphy and Koop, 2005.
-  fw = 1.0 + 1.0e-5 * pressure * (4.923 - 0.0325 * Tk + 5.84e-5 * Tk * Tk);
 
-  return ew * fw;
+  return ew * fw(Tk, pressure);
 }
 
 /* -------------------------------------------------------------------- */
