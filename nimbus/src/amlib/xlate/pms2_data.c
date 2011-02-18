@@ -253,16 +253,13 @@ return;
     {
       rejected = false;
 
-      if (p->w > 121 ||
-         (p->h < 24 && p->w > 6 * p->h) ||
-         (p->h < 6 && p->w > 3 * p->h) ||
-         (p->edge && (float)p->h / p->w < 0.2))
+      if (p->h == 1 && p->w > 3)	// Stuck bit.
         rejected = true;
 
       /* Reject 2D data where ratio, of actual-area vs. bounding box area,
        * is too great.
        */
-      if ((float)p->area / (p->w * p->h) <= cfg.TwoDAreaRejectRatio())
+      if ((float)p->area / (pow(std::max(p->w, p->h), 2.0) * M_PI / 4.0) <= cfg.TwoDAreaRejectRatio())
         rejected = true;
 
       /* A2D[C|P] */
@@ -277,8 +274,6 @@ return;
           else
             ++overFlowCnt[probeCount];
         }
-        else
-          deadTime[probeCount][1] += p->liveTime;
       }
 
       if (cfg.TwoDProcessingMethod() == Config::Reconstruction)
@@ -308,15 +303,11 @@ return;
           else
             ++overFlowCnt[probeCount];
         }
-        else
-          deadTime[probeCount][1] += p->liveTime;
       }
 
       /* A1D[C|P] */
-      if (p->h > 0 && p->h * 4 >= p->w && !p->edge)
+      if (p->h > 0 && !p->edge)
         np[p->h] += 1.0;
-      else
-        deadTime[probeCount][0] += p->liveTime;
     }
 
     delete p;
