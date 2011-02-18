@@ -28,6 +28,8 @@ void cmigitsInit(var_base *varp)
 {
   NR_TYPE  *tmp;
 
+  if (cfg.isADS3()) return;
+
   if ((tmp = GetDefaultsValue("CM_HEADING_BIAS_1", varp->name)) == NULL)
     {
     sprintf(buffer,"Values set to %f, in AMLIB function cmigitInit.\n", thdgCorr);
