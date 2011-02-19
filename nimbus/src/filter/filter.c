@@ -24,8 +24,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 #include "filters.h"
 #include "circbuff.h"
 
-#include <gsl/gsl_spline.h>
-
 extern NR_TYPE	*SampledData, *HighRateData;
 
 static std::vector<mRFilterPtr> rawFilters;
@@ -38,7 +36,7 @@ static NR_TYPE	*inputRec, *interpdData;
 
 static circBuffPtr	newCircBuff(int);
 
-static filterPtr readAfilter(char file[]);
+static filterPtr readAfilter(const char file[]);
 static const void* BadFilter = (void*)1;
 
 static int	disposMultiRateFilter(mRFilterPtr aMRFPtr);
@@ -62,7 +60,6 @@ void InitMRFilters()
   filterPtr fromOne, fromFive, fromEight, fromTen, fromThirteen, fromSixteen, 
     fromTwentyFive, fromFifty, fromOneHundred, fromTwoFifty, fromFiveHundred, 
     fromOneThousand, vspd, acins, gsf;
-  char filterSuffix[16];
   char filterFileName[128];
 
   vspd = readAfilter("VSPD");
@@ -357,7 +354,7 @@ static void SingleStageFilter(CircularBuffer *PSCB, CircularBuffer *HSCB, mRFilt
 // (filterPtr)BadFilter if the file cannot be opened or is otherwise
 // bad.
 //
-static filterPtr readAfilter(char file[])
+static filterPtr readAfilter(const char file[])
 {
   char	*nimbus = getenv("PROJ_DIR");
   char	*filter[2000];
