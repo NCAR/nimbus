@@ -30,7 +30,17 @@ static std::map<std::string, float> SampleArea;
 void conc2Init(var_base *varp)
 { 
   if (varp->SerialNumber.length() == 0) {
-    fprintf(stderr, "conc2d.c: %s has no serial number, fatal.\n", varp->name); exit(1);
+    if (cfg.isADS3()) {
+      fprintf(stderr, "conc2d.c: %s has no serial number, fatal.\n", varp->name);
+      exit(1);
+    }
+
+    /* The code used to have fixed EAW and arm distance, so there was no serial number.
+     * My last refactor of this code broke it for ADS2 files.  Values are the same for
+     * all probes, fake it here.
+     */
+    if (strstr(varp->name, "2C")) varp->SerialNumber = "2DC18";
+    if (strstr(varp->name, "2P")) varp->SerialNumber = "2DP10";
   }
 
   const char *serialNumber = varp->SerialNumber.c_str();
