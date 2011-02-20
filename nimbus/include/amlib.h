@@ -23,8 +23,8 @@ const size_t MAX_PMS2D = (MAX_PMS2 * 2);
 /* See amlib/xlate/const.c
  */
 extern const double FTMTR, MPS2, KTS2MS, FTMIN, Kelvin, WH_GRAVITY, StdPress;
-extern const double EARTH_RADIUS, OMEGAE, CKTMS, GRAVITY;
-extern const double RAD_DEG, DEG_RAD;
+extern const double EARTH_RADIUS, OMEGAE, CKTMS, GRAVITY, MolecularWeightWater;
+extern const double RAD_DEG, DEG_RAD, MolecularWeightDryAir;
 
 /* Resolver/synchro conversion equation.  See amlib/xlate/const.c
  */

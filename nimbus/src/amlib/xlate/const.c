@@ -15,7 +15,7 @@ STATIC FNS:	none
 DESCRIPTION:	Globals file containing misc constants used by multiple
 		routines.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1996-07
+COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2011
 -------------------------------------------------------------------------
 */
 
@@ -27,13 +27,16 @@ const double Kelvin = 273.15;
 // Reference pressure for US standard atmosphere (hPa)
 const double StdPress = 1013.25;
 
-const double WH_GRAVITY = 9.7959;	/* Gravity in Woodland Hills */
-const double GRAVITY = 9.80621770635;	/* Gravity in Michigan	*/
+const double WH_GRAVITY = 9.7959;	// Gravity in Woodland Hills
+const double GRAVITY = 9.80621770635;	// Gravity in Michigan
 
-const double PI = M_PI;			/* defined in math.h    */
+const double MolecularWeightDryAir = 28.9644;
+const double MolecularWeightWater = 18.01526;
 
-const double EARTH_RADIUS = 6.371229e06;    /* Mean Earth radius (m)        */
-const double OMEGAE = 7.292116e-5;	/* Angular vel of the Earth (rad/sec) */
+const double PI = M_PI;			// defined in math.h 
+
+const double EARTH_RADIUS = 6.371229e06;	// Mean Earth radius (m)
+const double OMEGAE = 7.292116e-5;	// Angular vel of the Earth (rad/sec)
 const double CKTMS = 0.51479;
 
 const double FTMTR  = 0.3048;
