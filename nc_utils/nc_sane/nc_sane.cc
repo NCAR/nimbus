@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 
     if (rc != NC_NOERR)
     {
-      fprintf(stderr, "Can't nc_open file %s.", argv[argvIdx]);
+      fprintf(stderr, "Can't nc_open file %s.\n", argv[argvIdx]);
       continue;
     }
 
@@ -136,7 +136,7 @@ void checkStarts(int fd, const char * fileName)
 
   if (nc_get_att_text(fd, NC_GLOBAL, "FlightDate", buffer) != NC_NOERR)
   {
-    fprintf(stderr, "No FlightDate global atttibute, skipping checkStarts\n");
+    fprintf(stderr, "No FlightDate global atttibute, skipping checkStarts.\n");
     return;
   }
 
