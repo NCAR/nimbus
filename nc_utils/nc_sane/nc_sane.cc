@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
 /* -------------------------------------------------------------------- */
 void checkNumberRecords(int InputFile, const char * fileName)
 {
-  size_t FileStartTime[4], FileEndTime[4];
+  int FileStartTime[4], FileEndTime[4];
 
   sscanf(tiAttr, "%02d:%02d:%02d-%02d:%02d:%02d",
 	&FileStartTime[0], &FileStartTime[1], &FileStartTime[2],
@@ -107,12 +107,14 @@ void checkNumberRecords(int InputFile, const char * fileName)
   if (nc_inq_dimid(InputFile, "Time", &id) == NC_NOERR)
   {
     size_t length;
-    size_t deltaT = (size_t)(FileEndTime[3] - FileStartTime[3]) + 1;
+    size_t deltaT = (FileEndTime[3] - FileStartTime[3]) + 1;
+    if (FileEndTime[3] < FileStartTime[3])
+      deltaT -= 86400;
 
     nc_inq_dimlen(InputFile, id, &length);
     if (length != deltaT)
     {
-      printf("%s: record count mis-match:", fileName);
+      printf("%s: record count mismatch:", fileName);
       printf(" %d records vs. %d computed.\n", length, deltaT);
     }
   }
