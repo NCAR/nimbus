@@ -1,10 +1,10 @@
 /*******       VIRTUAL TEMPERATURE (C)                                  TVIR
-                  REQUIRES --- ATX, SPHUM
+                  REQUIRES --- ATX, MR
  	Input:
  		atx - derived ambient temperature
- 		sphum - derived specific humidity
+ 		mr - mixing ratio
  	Output:
- 		tvir - derived virtual temperature
+ 		tvir - derived virtual temperature - DegC
 */
  
 #include "nimbus.h"
@@ -13,13 +13,15 @@
 /* -------------------------------------------------------------------- */
 void stvir(DERTBL *varp)
 {
-  NR_TYPE	tvir = 0.0, sphum, atx, otvir;
+  NR_TYPE	tvir, atx, mr;
 
-  atx	= GetSample(varp, 0);
-  sphum	= GetSample(varp, 1);
+  atx	= GetSample(varp, 0) + Kelvin;
+  mr	= GetSample(varp, 1);
 
-  if ((otvir = 1.0 - 0.6e-3 * sphum) != 0.0)
-    otvir = (atx + Kelvin) / tvir - Kelvin;
+  // factors of 0.001 are conversion factors to obtain dimensionless mixing ratios [kg/kg]
+  tvir = (atx + Kelvin)
+	* (1.0 + 0.001 * mr * MolecularWeightDryAir / MolecularWeightWater)
+	/ (1.0 + 0.001 * mr) - Kelvin;
 
   PutSample(varp, tvir);
 }
