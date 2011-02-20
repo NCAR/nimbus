@@ -15,7 +15,7 @@ void stvir(DERTBL *varp)
 {
   NR_TYPE	tvir, atx, mr;
 
-  atx	= GetSample(varp, 0) + Kelvin;
+  atx	= GetSample(varp, 0);
   mr	= GetSample(varp, 1);
 
   // factors of 0.001 are conversion factors to obtain dimensionless mixing ratios [kg/kg]
