@@ -258,7 +258,7 @@ void xlialt(RAWTBL *varp, void *input, NR_TYPE *np)
   preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
-    np[i] = (double)(p[i] >> 11) * 0.125 * FTMTR;
+    np[i] = (double)(p[i] >> 11) * 0.125 * FeetToMeters;
 
   postProcessData(varp, p, np, label);
 
