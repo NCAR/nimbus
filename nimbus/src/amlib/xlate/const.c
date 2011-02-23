@@ -39,7 +39,7 @@ const double EARTH_RADIUS = 6.371229e06;	// Mean Earth radius (m)
 const double OMEGAE = 7.292116e-5;	// Angular vel of the Earth (rad/sec)
 const double CKTMS = 0.51479;
 
-const double Feet2Meters = 0.3048;
+const double FeetToMeters = 0.3048;
 const double MPS2   = 9.7959;
 const double KTS2MS = 0.514791;
 const double FTMIN  = 0.00508;

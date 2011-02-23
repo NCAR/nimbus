@@ -34,7 +34,7 @@ void xlhgm232(RAWTBL *varp, void *p, NR_TYPE *output)
     out = sample; 
 
     if (toupper(varp->Units.c_str()[0]) == 'M') 
-      out *= Feet2Meters;
+      out *= FeetToMeters;
 
     if (status)
       output[i] = lastGood;
