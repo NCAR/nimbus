@@ -4,10 +4,6 @@ OBJECT NAME:	palt.c
 
 FULL NAME:	NACA pressure altitude (M)
 
-ENTRY POINTS:	spalt()
-
-STATIC FNS:	none
-
 DESCRIPTION:    Source documents:
                 U.S. Standard Atmosphere 1976 (NASA-TM-X-74335)
                 N77-16482, 241 pages.
@@ -46,7 +42,11 @@ DESCRIPTION:    Source documents:
                 temperatures and used somewhat different constants;
                 prior versions should no longer be used.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2010
+INPUT:		PS
+
+OUTPUT:		PALT m
+
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2011
 -------------------------------------------------------------------------
 */
 
@@ -78,14 +78,14 @@ void spalt(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void meters2feet(DERTBL *varp)
 {
-  PutSample(varp, GetSample(varp, 0) / 0.3048);
+  PutSample(varp, GetSample(varp, 0) / FeetToMeters);
 }
 
 /* -------------------------------------------------------------------- */
 void feet2meters(DERTBL *varp)
 {
   /* Exact definition, as also per US Standards Atmosphere document	*/
-  PutSample(varp, GetSample(varp, 0) * 0.3048);
+  PutSample(varp, GetSample(varp, 0) * FeetToMeters);
 }
 
 /* END PALT.C */
