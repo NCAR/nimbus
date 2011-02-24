@@ -12,7 +12,7 @@ CFLAGS=		-Wall -g -O2 ${INCLUDES}
 #LIBS=		-lVarDB -lraf -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic -lXm -lXt -lX11
 
 #Linux
-LIBS=		-L../lib -L${JLOCAL}/lib -L/usr/X11R6/lib -lVarDB -lraf -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic -lXm -lXt -lX11 -lXext
+LIBS=		-L../lib -L${JLOCAL}/lib -L/usr/X11R6/lib -lVarDB -lraf -lnetcdf -lXm -lXt -lX11 -lXext
 
 SRCS=	vared.c initv.c Xwin.c ccb.c
 HDRS=	define.h ${JLOCAL}/include/raf/vardb.h fbr.h
