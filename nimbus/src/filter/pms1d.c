@@ -103,13 +103,17 @@ static void setSerialNumberAndProbeType(const char * name, const char * serialNu
 // Temporary hack, until I finish consolidating suport files into VarDB.ncml.
 void PMS1D_SetupForADS3()
 {
-
+  // Start with these serial numbers as defaults.
   setSerialNumberAndProbeType("AS100", "FSSP109", PROBE_PMS1D | PROBE_FSSP);
-  setSerialNumberAndProbeType("A260X", "260X06", PROBE_PMS1D | PROBE_260X);
-  setSerialNumberAndProbeType("ACDP", "CDP016", PROBE_PMS1D | PROBE_CDP);
   setSerialNumberAndProbeType("AS200", "PCAS108", PROBE_PMS1D | PROBE_PCASP);
   setSerialNumberAndProbeType("AS300", "FSSP305", PROBE_PMS1D | PROBE_F300);
+  setSerialNumberAndProbeType("A260X", "260X06", PROBE_PMS1D | PROBE_260X);
+  setSerialNumberAndProbeType("ACDP", "CDP016", PROBE_PMS1D | PROBE_CDP);
   setSerialNumberAndProbeType("AUHSAS", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
+  setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+  setSerialNumberAndProbeType("A2DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+  setSerialNumberAndProbeType("A1DP", "2DP10", PROBE_PMS2D | PROBE_2DP);
+  setSerialNumberAndProbeType("A2DP", "2DP10", PROBE_PMS2D | PROBE_2DP);
 
   if (cfg.ProjectName().compare("PASE") == 0)
     setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
@@ -158,7 +162,6 @@ void PMS1D_SetupForADS3()
   {
     setSerialNumberAndProbeType("A1DC_LMI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A2DC_LMI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
     setSerialNumberAndProbeType("AS200", "OPC001", PROBE_PMS1D | PROBE_PCASP);
     setSerialNumberAndProbeType("AUHSAS_LMO", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
     setSerialNumberAndProbeType("AUHSAS_CVI", "UHSAS002", PROBE_PMS1D | PROBE_PCASP);
@@ -168,13 +171,6 @@ void PMS1D_SetupForADS3()
   {
     setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
   }
-  else
-  {
-    setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-  }
-  setSerialNumberAndProbeType("A1DP", "2DP10", PROBE_PMS2D | PROBE_2DP);
-  setSerialNumberAndProbeType("A2DP", "2DP10", PROBE_PMS2D | PROBE_2DP);
 }
 
 /* -------------------------------------------------------------------- */
