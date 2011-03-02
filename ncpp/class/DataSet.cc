@@ -335,6 +335,9 @@ float DataSet::Accumulation(int s, int cell) const
 /* -------------------------------------------------------------------- */
 float DataSet::Concentration(int s, int cell) const
 {
+  if (conc == 0)
+    return _probe->FillValue();
+
   float value = conc[(s * _probe->VectorLength()) + cell];
 
   if (value == _probe->FillValue())
@@ -346,6 +349,9 @@ float DataSet::Concentration(int s, int cell) const
 /* -------------------------------------------------------------------- */
 float DataSet::Surface(int s, int cell) const
 {
+  if (surface == 0)
+    return _probe->FillValue();
+
   float value = surface[(s * _probe->VectorLength()) + cell];
 
   if (value == _probe->FillValue())
@@ -357,6 +363,9 @@ float DataSet::Surface(int s, int cell) const
 /* -------------------------------------------------------------------- */
 float DataSet::Volume(int s, int cell) const
 {
+  if (volume == 0)
+    return _probe->FillValue();
+
   float value = volume[(s * _probe->VectorLength()) + cell];
 
   if (value == _probe->FillValue())

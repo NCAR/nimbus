@@ -39,7 +39,7 @@ static float	fsspDefSize[] =
 
 
 /* -------------------------------------------------------------------- */
-Probe::Probe(NcFile *file, NcVar *av) : _avar(av)
+Probe::Probe(NcFile *file, NcVar *av) : _avar(av), _firstBin(0), _lastBin(VectorLength())
 {
   std::string	cname;
   int		i;
@@ -139,6 +139,9 @@ Probe::Probe(NcFile *file, NcVar *av) : _avar(av)
   _diameter.resize(nCells);
   _midPointDiam.resize(nCells);
   _binWidth.resize(nCells);
+
+  if (_cvar == 0)
+    return;
 
   _units = _cvar->get_att("units")->as_string(0);
 
