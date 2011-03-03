@@ -27,6 +27,15 @@ const double Kelvin = 273.15;
 // Reference pressure for US standard atmosphere (hPa)
 const double StdPress = 1013.25;
 
+// The specific gas constant for dry air (J/(kg*K))
+const double Rd = 287.05832;
+
+// Specific heat capacity of dry air (J/(kg*K))
+const double Cpd = 1003.5;
+
+// Gamma for an ideal gas (do not change this to actually divide Rd/Cpd).
+const double Rd_DIV_Cpd = 2.0 / 7.0;
+
 const double WH_GRAVITY = 9.7959;	// Gravity in Woodland Hills
 const double GRAVITY = 9.80621770635;	// Gravity in Michigan
 
