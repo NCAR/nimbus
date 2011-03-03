@@ -19,7 +19,7 @@ void stheta(DERTBL *varp)
   psxc	= GetSample(varp, 1);
 
   if (psxc != 0.0)
-    PutSample(varp, (atx + Kelvin) * pow(1000.0 / psxc, 0.28571));
+    PutSample(varp, (atx + Kelvin) * pow(1000.0 / psxc, Rd_DIV_Cpd));
   else
     PutSample(varp, 0.0);
 }

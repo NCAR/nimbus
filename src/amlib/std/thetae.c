@@ -33,7 +33,7 @@ void sthetae(DERTBL *varp)
   if (tlcl <= 0.0)
     tlcl = 0.0001;
 
-  theta = atx * pow((double)1000.0 / psxc, (double)0.28571);
+  theta = atx * pow((double)1000.0 / psxc, Rd_DIV_Cpd);
 
   exparg = ((3.376 / tlcl) - 0.00254) * (mr * (1.0 + (0.00081 * mr)));
   if (exparg > 741.0)
