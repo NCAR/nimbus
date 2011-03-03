@@ -6,15 +6,16 @@ FULL NAME:	PMS 2d concentrations
 
 ENTRY POINTS:	sconc2dc(), sconc2dp()
 
-STATIC FNS:	none
+DESCRIPTION:	Concentrations computed from from 2d probe shadow-or counts.
+		With NEW housekeeping block.  This is a crude concentration
+		based on total particle triggers from the probe and a fixed
+		sample area based on Effective Area Width and Arm Distance.
 
-DESCRIPTION:	Concentrations from 2d probes with NEW housekeeping block.
+INPUT:		SHADOR, TASX
 
-INPUT:		True airspeed, shadow counts
+OUTPUT:		CONC2[C|P] #/L
 
-OUTPUT:		Concentration
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2010
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2011
 -------------------------------------------------------------------------
 */
 
