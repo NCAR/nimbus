@@ -1,12 +1,21 @@
-/*******       VIRTUAL TEMPERATURE (C)                                  TVIR
-                  REQUIRES --- ATX, MR
- 	Input:
- 		atx - derived ambient temperature
- 		mr - mixing ratio
- 	Output:
- 		tvir - derived virtual temperature - DegC
+/*
+-------------------------------------------------------------------------
+OBJECT NAME:	tvir.c
+
+FULL NAME:	Virtual Temperature
+
+DESCRIPTION:	
+
+INPUT:		ATX, MR
+
+OUTPUT:		TVIR deg_C
+
+REFERENCES:	Introduction to Theoretical Meteorology, Seymour Hess, 1959, p 60.
+
+COPYRIGHT:	University Corporation for Atmospheric Research, 2011
+-------------------------------------------------------------------------
 */
- 
+
 #include "nimbus.h"
 #include "amlib.h"
 
