@@ -62,7 +62,7 @@ void xlalon(RAWTBL *varp, void *input, NR_TYPE *output)
 /* -------------------------------------------------------------------- */
 void xlgsi(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-	*output = (NR_TYPE)((((Ins_blk *)input)->gndspd >> 12) & INS_MASK) * CKTMS;
+	*output = (NR_TYPE)((((Ins_blk *)input)->gndspd >> 12) & INS_MASK) * KTS2MS;
 	
 }	/* END XLGSI */
 
