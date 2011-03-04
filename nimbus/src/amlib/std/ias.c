@@ -25,7 +25,7 @@ void sias(DERTBL *varp)
 
   qcxc = GetSample(varp, 0);
 
-  ias = 760.9166 * sqrt(fabs(pow(((StdPress + qcxc) / StdPress), Rd_DIV_Cpd) - 1.0));
+  ias = StdSpeedOfSound * sqrt(fabs(pow(((StdPress + qcxc) / StdPress), Rd_DIV_Cpd) - 1.0));
 
-  PutSample(varp, ias * 1.94253479);	/* Convert to Knots	*/
+  PutSample(varp, ias * 1.9438444);	/* Convert to Knots	*/
 }
