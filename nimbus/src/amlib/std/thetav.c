@@ -4,7 +4,8 @@ OBJECT NAME:	thetav.c
 
 FULL NAME:	Virtual Potential Temperature
 
-DESCRIPTION:	
+DESCRIPTION:	The potential temperature of dry air having the same density
+		of the moist-air parcel.  Omits the weight of condensed water.
 
 INPUT:		TVIR, PSXC
 
