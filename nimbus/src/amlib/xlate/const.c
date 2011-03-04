@@ -39,6 +39,8 @@ const double Rd_DIV_Cpd = 2.0 / 7.0;
 const double WH_GRAVITY = 9.7959;	// Gravity in Woodland Hills
 const double GRAVITY = 9.80621770635;	// Gravity in Michigan
 
+const double StdSpeedOfSound = 340.3 * 2.23693629;
+
 const double MolecularWeightDryAir = 28.9644;
 const double MolecularWeightWater = 18.01526;
 
@@ -46,11 +48,10 @@ const double PI = M_PI;			// defined in math.h
 
 const double EARTH_RADIUS = 6.371229e06;	// Mean Earth radius (m)
 const double OMEGAE = 7.292116e-5;	// Angular vel of the Earth (rad/sec)
-const double CKTMS = 0.51479;
 
 const double FeetToMeters = 0.3048;
 const double MPS2   = 9.7959;
-const double KTS2MS = 0.514791;
+const double KTS2MS = 0.5144444444;
 const double FTMIN  = 0.00508;
 
 const double RAD_DEG = 180.0 / M_PI;
