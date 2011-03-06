@@ -150,7 +150,7 @@ void xlghgspd(RAWTBL *varp, void *p, NR_TYPE *np)
 	/* (M/s) 15 bits, 0 to 4095 kts, label 112
 	 */
 	x = (((HwGps_blk *)p)->ground_speed & 0x7fffffff) >> 16;
-	*np = x * 0.125 * KTS2MS;
+	*np = x * 0.125 * KNOTS_TO_MPS;
 
 	varp->DynamicLag = transportDelay;
 
@@ -178,7 +178,7 @@ void xlghvew(RAWTBL *varp, void *p, NR_TYPE *np)
 	/* (M/s) 15 bits, +-4096 kts, label 167
 	 */
 	x = (((HwGps_blk *)p)->velocity_ew & 0x7fffffff) >> 16;
-	*np = x * 0.125 * KTS2MS;
+	*np = x * 0.125 * KNOTS_TO_MPS;
 
 	varp->DynamicLag = transportDelay;
 
@@ -192,7 +192,7 @@ void xlghvns(RAWTBL *varp, void *p, NR_TYPE *np)
 	/* (M/s) 15 bits, +-4096 kts, label 166
 	 */
 	x = (((HwGps_blk *)p)->velocity_ns & 0x7fffffff) >> 16;
-	*np = x * 0.125 * KTS2MS;
+	*np = x * 0.125 * KNOTS_TO_MPS;
 
 	varp->DynamicLag = transportDelay;
 

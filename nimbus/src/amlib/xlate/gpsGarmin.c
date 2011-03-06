@@ -85,7 +85,7 @@ static NR_TYPE	gspd, trk;
 
 void xlggspd(RAWTBL *varp, void *input, NR_TYPE *output)
 {
-  gspd = *output = (NR_TYPE)ntohf(((Garmin_blk *)input)->ground_speed) * KTS2MS;
+  gspd = *output = (NR_TYPE)ntohf(((Garmin_blk *)input)->ground_speed) * KNOTS_TO_MPS;
 }
 
 /* -------------------------------------------------------------------- */
