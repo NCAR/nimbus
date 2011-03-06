@@ -27,11 +27,16 @@ const double Kelvin = 273.15;
 // Reference pressure for US standard atmosphere (hPa)
 const double StdPress = 1013.25;
 
+// Reference temperature in a standard atmosphere at sea level..
+const double Tr = 15.0 + Kelvin;
+
 // The specific gas constant for dry air (J/(kg*K))
 const double Rd = 287.05832;
 
-// Specific heat capacity of dry air (J/(kg*K))
-const double Cpd = 1003.5;
+/* Specific heat capacity of dry air (J/(kg*K))
+ * Computed as: (7/2) * Rd
+ */
+const double Cp = 1004.7;
 
 // Gamma for an ideal gas (do not change this to actually divide Rd/Cpd).
 const double Rd_DIV_Cpd = 2.0 / 7.0;
@@ -39,7 +44,7 @@ const double Rd_DIV_Cpd = 2.0 / 7.0;
 const double WH_GRAVITY = 9.7959;	// Gravity in Woodland Hills
 const double GRAVITY = 9.80621770635;	// Gravity in Michigan
 
-const double StdSpeedOfSound = 340.3 * 2.23693629;
+const double StdSpeedOfSound = sqrt(2.0 * Cp * Tr);
 
 const double MolecularWeightDryAir = 28.9644;
 const double MolecularWeightWater = 18.01526;
@@ -51,7 +56,8 @@ const double OMEGAE = 7.292116e-5;	// Angular vel of the Earth (rad/sec)
 
 const double FeetToMeters = 0.3048;
 const double MPS2   = 9.7959;
-const double KTS2MS = 0.5144444444;
+const double KNOTS_TO_MPS = 1852.0 / 3600.0;
+const double MPS_TO_KNOTS = 3600.0 / 1852.0;
 const double FTMIN  = 0.00508;
 
 const double RAD_DEG = 180.0 / M_PI;

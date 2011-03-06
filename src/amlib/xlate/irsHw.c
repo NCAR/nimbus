@@ -318,7 +318,7 @@ void xlivew(RAWTBL *varp, void *input, NR_TYPE *np)
   preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
-    np[i] = (double)(p[i] >> 11) * arinc8bits * KTS2MS;
+    np[i] = (double)(p[i] >> 11) * arinc8bits * KNOTS_TO_MPS;
 
   postProcessData(varp, p, np, label);
 
@@ -341,7 +341,7 @@ void xlivns(RAWTBL *varp, void *input, NR_TYPE *np)
   preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
-    np[i] = (double)(p[i] >> 11) * arinc8bits * KTS2MS;
+    np[i] = (double)(p[i] >> 11) * arinc8bits * KNOTS_TO_MPS;
 
   postProcessData(varp, p, np, label);
 
@@ -392,7 +392,7 @@ void xliws(RAWTBL *varp, void *input, NR_TYPE *np)
   preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
-    np[i] = (double)(p[i] >> 10) * arinc13bits * KTS2MS;
+    np[i] = (double)(p[i] >> 10) * arinc13bits * KNOTS_TO_MPS;
 
   postProcessData(varp, p, np, label);
 
@@ -412,7 +412,7 @@ void xligspd(RAWTBL *varp, void *input, NR_TYPE *np)
   preProcessData(varp, p, label);
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
-    np[i] = (double)(p[i] >> 11) * arinc8bits * KTS2MS;
+    np[i] = (double)(p[i] >> 11) * arinc8bits * KNOTS_TO_MPS;
 
   postProcessData(varp, p, np, label);
 
