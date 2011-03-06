@@ -21,17 +21,19 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2007
 #include "amlib.h"
 #include <raf/pms.h>
 
-static size_t	FIRST_BIN[MAX_FSSP], LAST_BIN[MAX_FSSP], SampleRate[MAX_FSSP];
-static double	PLWFAC[MAX_FSSP], DBZFAC[MAX_FSSP];
-static NR_TYPE	SAMPLE_AREA[MAX_FSSP], vol[MAX_FSSP],
-		cell_size[MAX_FSSP][BINS_40+1], DENS[MAX_FSSP],
-		tact[MAX_FSSP], cell_size2[MAX_FSSP][BINS_40+1],
-		cell_size3[MAX_FSSP][BINS_40+1];
+static const size_t MAX_CDP = 2;
 
-static NR_TYPE	total_concen[MAX_FSSP], dbar[MAX_FSSP], plwc[MAX_FSSP],
-		disp[MAX_FSSP], dbz[MAX_FSSP], reff2[MAX_FSSP], reff3[MAX_FSSP];
+static size_t	FIRST_BIN[MAX_CDP], LAST_BIN[MAX_CDP], SampleRate[MAX_CDP];
+static double	PLWFAC[MAX_CDP], DBZFAC[MAX_CDP];
+static NR_TYPE	SAMPLE_AREA[MAX_CDP], vol[MAX_CDP],
+		cell_size[MAX_CDP][BINS_40+1], DENS[MAX_CDP],
+		tact[MAX_CDP], cell_size2[MAX_CDP][BINS_40+1],
+		cell_size3[MAX_CDP][BINS_40+1];
 
-NR_TYPE		reffd3[MAX_FSSP], reffd2[MAX_FSSP];  /* For export to reff.c */
+static NR_TYPE	total_concen[MAX_CDP], dbar[MAX_CDP], plwc[MAX_CDP],
+		disp[MAX_CDP], dbz[MAX_CDP], reff2[MAX_CDP], reff3[MAX_CDP];
+
+NR_TYPE		reffd3[MAX_CDP], reffd2[MAX_CDP];  /* For export to reff.c */
 
 // Probe Count.
 static int nProbes = 0;
@@ -55,7 +57,7 @@ void ccdpInit(var_base *varp)
   serialNumber = varp->SerialNumber.c_str();
   probeNum = varp->ProbeCount;
 
-  for (i = 0; i < MAX_FSSP; ++i)
+  for (i = 0; i < MAX_CDP; ++i)
     reffd3[i] = reffd2[i] = 0.0;
 
   MakeProjectFileName(buffer, PMS_SPEC_FILE);

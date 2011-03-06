@@ -16,6 +16,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2009
 #include "amlib.h"
 #include <raf/pms.h>
 
+static const size_t MAX_ASAS = 3;
 static const int MAX_BINS = 101;
 
 static size_t FIRST_BIN[MAX_ASAS], LAST_BIN[MAX_ASAS], SampleRate[MAX_ASAS];
