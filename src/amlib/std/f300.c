@@ -22,10 +22,6 @@ OUTPUT:		CF300	- Concentrations
 		CONCF	- Total concentration
 		DBARF
 
-REFERENCES:	pms1d.c
-
-REFERENCED BY:	Compute()
-
 NOTES:		Calculations taken from Bulletin 24 dated 1/89.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
@@ -35,6 +31,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #include "nimbus.h"
 #include "amlib.h"
 #include <raf/pms.h>
+
+static const size_t MAX_F300 = 1;
 
 static size_t FIRST_BIN[MAX_F300], LAST_BIN[MAX_F300], SampleRate[MAX_F300];
 

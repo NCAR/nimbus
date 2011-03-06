@@ -23,6 +23,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 #include "amlib.h"
 #include <raf/pms.h>
 
+static const size_t MAX_260X = 1;
+
 static size_t	FIRST_BIN[MAX_260X], LAST_BIN[MAX_260X], SampleRate[MAX_260X];
 static NR_TYPE	responseTime[MAX_260X], armDistance[MAX_260X], DENS[MAX_260X],
 		resolution[MAX_260X], tact[MAX_260X];

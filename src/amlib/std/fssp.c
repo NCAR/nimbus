@@ -41,6 +41,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2003
 #include "amlib.h"
 #include <raf/pms.h>
 
+static const size_t MAX_FSSP = 4;
+
 static size_t	FIRST_BIN[MAX_FSSP], LAST_BIN[MAX_FSSP], SampleRate[MAX_FSSP];
 static double	PLWFAC[MAX_FSSP], DBZFAC[MAX_FSSP];
 static NR_TYPE	sa[MAX_FSSP], tau1[MAX_FSSP], tau2[MAX_FSSP], vol[MAX_FSSP],

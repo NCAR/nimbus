@@ -30,6 +30,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000-2006
 
 #include <cassert>
 
+static const size_t MAX_PMS2D = 4;
+
 // % of a diode which must be shadowed for the diode to trigger.
 static const NR_TYPE shadowLevel = 0.55;
 

@@ -25,11 +25,11 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 
 #include <nidas/util/Logger.h>
 
-const size_t NAMELEN = 32;
-const size_t MAX_VARIABLES = 2000;
-const size_t MAX_DEFAULTS = 256;
-const size_t MAXDEPEND = 12;
-const size_t MAX_TIME_SLICES = 1;
+#define NAMELEN		32
+#define MAX_VARIABLES	2000
+#define MAX_DEFAULTS	256
+#define MAXDEPEND	12
+#define MAX_TIME_SLICES	1
 
 
 /* Nimbus Record Info		*/

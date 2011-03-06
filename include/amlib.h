@@ -14,12 +14,6 @@ DESCRIPTION:	Header File declaring amlib functions.
 
 #include <vector>
 
-const size_t MAX_FSSP = 4;
-const size_t MAX_260X = 1;
-const size_t MAX_ASAS = 3;
-const size_t MAX_F300 = 1;
-const size_t MAX_PMS2D = (MAX_PMS2 * 2);
-
 /* See amlib/xlate/const.c
  */
 extern const double FeetToMeters, MPS2, KNOTS_TO_MPS, MPS_TO_KNOTS, FTMIN,
@@ -39,7 +33,7 @@ enum RateFeedBack { LOW_RATE_FEEDBACK, HIGH_RATE_FEEDBACK, nFeedBackTypes };
 		((t + Kelvin) / (1.0 + 0.2 * rf * xm2) - Kelvin)
 
 #define XMAC2(a) \
-		(5.0 * (pow((double)((a)+1.0), (double)0.28571) - 1.0))
+		(5.0 * (pow((double)((a)+1.0), Rd_DIV_Cpd) - 1.0))
 
 
 NR_TYPE GetSample(DERTBL *dp, int di);
