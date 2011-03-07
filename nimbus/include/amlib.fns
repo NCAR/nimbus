@@ -770,11 +770,11 @@
 #
 #	Dew Pointers.
 #
-	"DPBC",		NULL,		NULL,		sdpc,
-	"DPRC",		NULL,		NULL,		sdpc,
-	"DPLC",		NULL,		NULL,		sdpc,
+	"DPBC",		(void(*)(void*))dpInit,		NULL,		sdpc,
+	"DPRC",		(void(*)(void*))dpInit,		NULL,		sdpc,
+	"DPLC",		(void(*)(void*))dpInit,		NULL,		sdpc,
+	"DPTC",		(void(*)(void*))dpInit,		NULL,		sdpc,
 	"DPCRC",	NULL,		NULL,		sdpcrc,
-	"DPTC",		NULL,		NULL,		sdpc,
 	"DPXC",		NULL,		NULL,		sRefer,
 #
 #	Others
