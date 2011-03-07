@@ -738,6 +738,7 @@
 #
 	"THETA",	NULL,		NULL,		stheta,
 	"THETAE",	NULL,		NULL,		sthetae,
+	"THETAP",	NULL,		NULL,		sthetap,
 	"TVIR",		NULL,		NULL,		stvir,
 	"THETAV",	NULL,		NULL,		sthetav,
 #
