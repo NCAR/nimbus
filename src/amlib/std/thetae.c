@@ -12,33 +12,38 @@
 #include "nimbus.h"
 #include "amlib.h"
 
+double theta(double Tk, double psxc);
+
+
+/* -------------------------------------------------------------------- */
+// Temperature at LCL.  Bolton 1980, Eq 21.
+double Tlcl(double Tk, double edpc)
+{
+  double tl = (2840.0 / (3.5 * log(Tk) - log(edpc) - 4.805)) + 55.0;
+
+  if (tl <= 0.0)
+    return 0.0001;
+
+  return tl;
+}
+
 /* -------------------------------------------------------------------- */
 void sthetae(DERTBL *varp)
 {
-  NR_TYPE	psxc, atx, edpc, mr;
-  NR_TYPE	theta, tlcl, exparg;
+  double Tk	= GetSample(varp, 0) + Kelvin;	// ATX
+  double psxc	= GetSample(varp, 1);
+  double edpc	= GetSample(varp, 2);
+  double mr	= GetSample(varp, 3);
 
-  atx	= GetSample(varp, 0);
-  psxc	= GetSample(varp, 1);
-  edpc	= GetSample(varp, 2);
-  mr	= GetSample(varp, 3);
-
-  if ((atx += Kelvin) <= 0.0)
-    atx = 0.0001;
-
+  if (Tk <= 0.0)
+    Tk = 0.0001;
   if (edpc <= 0.0)
     edpc = 0.0001;
 
-  tlcl = (2840.0 / (3.5 * log((double)atx) - log((double)edpc) - 4.805)) + 55.0;
-  if (tlcl <= 0.0)
-    tlcl = 0.0001;
-
-  theta = atx * pow((double)1000.0 / psxc, Rd_DIV_Cpd);
-
-  exparg = ((3.376 / tlcl) - 0.00254) * (mr * (1.0 + (0.00081 * mr)));
+  double exparg = ((3.376 / Tlcl(Tk, edpc)) - 0.00254) * (mr * (1.0 + (0.00081 * mr)));
   if (exparg > 741.0)
     exparg = 0.0001;
 
-  PutSample(varp, theta * exp((double)exparg));
-
+  double thetae = theta(Tk, psxc) * exp((double)exparg);
+  PutSample(varp, (NR_TYPE)thetae);
 }

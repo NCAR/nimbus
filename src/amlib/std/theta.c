@@ -10,16 +10,19 @@
 #include "nimbus.h"
 #include "amlib.h"
 
+double theta(double Tk, double psxc)
+{
+  if (psxc == 0.0)
+    return 0.0;
+
+  return Tk * pow((double)1000.0 / psxc, Rd_DIV_Cpd);
+}
+
 /* -------------------------------------------------------------------- */
 void stheta(DERTBL *varp)
 {
-  NR_TYPE atx, psxc;
+  double atx	= GetSample(varp, 0);
+  double psxc	= GetSample(varp, 1);
 
-  atx	= GetSample(varp, 0);
-  psxc	= GetSample(varp, 1);
-
-  if (psxc != 0.0)
-    PutSample(varp, (atx + Kelvin) * pow(1000.0 / psxc, Rd_DIV_Cpd));
-  else
-    PutSample(varp, 0.0);
+  PutSample(varp, (NR_TYPE)theta(atx + Kelvin, psxc));
 }
