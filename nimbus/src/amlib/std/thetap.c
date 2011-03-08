@@ -24,6 +24,9 @@ static const double L0 = 2.56313e+6;	// Jkg-1
 static const double L1 = 1754.0;	// Jkg-1K-1
 static const double K2 = 1.137e+6;	// Jkg-1
 
+double theta(double Tk, double psxc);
+double Tlcl(double Tk, double edpc);
+
 
 /* -------------------------------------------------------------------- */
 void sthetap(DERTBL *varp)
@@ -39,13 +42,10 @@ void sthetap(DERTBL *varp)
     edpc = 0.0001;
 
   // Temperature at LCL.  Bolton 1980, Eq 21.
-  double Tl = 2840.0 / (3.5 * log(Tk) - log(edpc) - 4.805) + 55.0;
-
-  if (Tl <= 0.0)
-    Tl = 0.0001;
+  double Tl = Tlcl(Tk, edpc);
 
   // Potential Temperature of dry air at the LCL.
-  double thetaDL = Tk * pow((1000.0 / (psxc-edpc)), Rd_DIV_Cpd) * pow((Tk / Tl), 0.28e-3 * r);
+  double thetaDL = theta(Tk, psxc-edpc) * pow((Tk / Tl), 0.28e-3 * r);
 
   // Davies-Jones 2009.
   double thetap = thetaDL * exp( ((L0-L1 * (Tl - Kelvin) + K2 * r) * r) / (Cp * Tl) );

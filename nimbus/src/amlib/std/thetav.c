@@ -20,16 +20,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2011
 #include "nimbus.h"
 #include "amlib.h"
 
+double theta(double Tk, double psxc);
+
 /* -------------------------------------------------------------------- */
 void sthetav(DERTBL *varp)
 {
-  NR_TYPE	thetav = 0.0, tvir, psxc;
+  double tvir	= GetSample(varp, 0);
+  double psxc	= GetSample(varp, 1);
 
-  tvir	= GetSample(varp, 0);
-  psxc	= GetSample(varp, 1);
-
-  if (psxc != 0.0)
-    thetav = (tvir + Kelvin) * pow((double)(1000.0 / psxc), Rd_DIV_Cpd);
-
-  PutSample(varp, thetav);
+  PutSample(varp, (NR_TYPE)theta(tvir + Kelvin, psxc));
 }
