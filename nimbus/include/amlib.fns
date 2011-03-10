@@ -947,6 +947,7 @@
 	"TASX",		NULL,		NULL,		stasx,
 	"TASHC",	NULL,		NULL,		stash,
 	"IAS",		NULL,		NULL,		sias,
+	"CAS",		NULL,		NULL,		sias,
 	"XMACH2",	NULL,		NULL,		sxmach2,
 #
 #	Ozone

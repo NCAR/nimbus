@@ -6,9 +6,10 @@ FULL NAME:	Indicated Air Speed
 
 DESCRIPTION:	
 
-INPUT:		Uncorrected QC
+INPUT:		Uncorrected QC for Indicated Airpseed
+		Corrected QC for Calibrated Airspeed.
 
-OUTPUT:		IAS knots
+OUTPUT:		IAS or CAS knots
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2011
 -------------------------------------------------------------------------
