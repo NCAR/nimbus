@@ -80,6 +80,11 @@ void GetUserTimeIntervals() /* From TimeSliceWindow	*/
     else
       offset = 0;
     UserBtim[nTimeIntervals] = mktime(&ft) + offset;
+    struct tm *start = gmtime(&UserBtim[nTimeIntervals]);
+
+    // Reset the FlightDate in case we moved the start time past midnight.
+    sprintf(buffer, "%02d/%02d/%d", start->tm_mon+1, start->tm_mday, start->tm_year+1900);
+    cfg.SetFlightDate(buffer);
 
     sscanf(ep, "%02d:%02d:%02d", &ft.tm_hour, &ft.tm_min, &ft.tm_sec);
     if (ft.tm_hour > 23)
