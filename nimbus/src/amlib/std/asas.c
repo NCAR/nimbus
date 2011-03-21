@@ -171,7 +171,7 @@ void scs200(DERTBL *varp)	// DMT Modified SPP200 & UHSAS.
    * to smooth out discontinuities at each gain stage (at bin 19, bin 44, and 77).
    * HIPPO phase 1 & 2 only.
    */
-  if (cfg.ProjectName().compare("HIPPO") == 0 ||
+  if (cfg.ProjectName().compare("HIPPO-1") == 0 ||
       cfg.ProjectName().compare("HIPPO-2") == 0)
     uhsasBinConsolidation(actual);
 
