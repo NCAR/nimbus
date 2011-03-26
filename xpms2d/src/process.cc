@@ -609,7 +609,7 @@ if (debug)
 
   output.SampleVolume = 61.0 * 1.6;
   output.DASelapsedTime = output.thisTime - prevTime[probeIdx];
-  output.tas = (float)record->tas * 125 / 255;
+  output.tas = (float)record->tas;
   output.frequency = output.resolution / output.tas;
 
   totalLiveTime = 0.0;

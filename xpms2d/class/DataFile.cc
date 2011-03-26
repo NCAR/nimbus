@@ -128,14 +128,21 @@ ADS_DataFile::ADS_DataFile(const char fName[])
     rewind(fp);
     }
 
-  if (strstr(buffer, "<PMS2D>"))
+  if (strstr(buffer, "<OAP"))
     {
-    char * endHdr = strstr(buffer, "</PMS2D>");
+    char * endHdr = strstr(buffer, "</OAP>");
     if (endHdr == 0)
       {
         fprintf(stderr, "No end of ADS3 header???\n");
         exit(1);
       }
+
+    /* I am not using this at this time, but this is where/how to extract the
+     * OAP file version #.
+     */
+    int version = 1;
+    if (strstr(buffer, "<OAP version"))
+      version = atoi(strstr(buffer, "<OAP version")+14);
 
     fseeko64(fp, endHdr - buffer + 9, SEEK_SET);
 
@@ -203,7 +210,7 @@ void ADS_DataFile::initADS3(char * hdrString)
   char * p;
   for (p = strtok(hdrString, "\n"); p; p = strtok(NULL, "\n"))
     {
-    if ( strstr(p, "</PMS2D>\n") )
+    if ( strstr(p, "</OAP>\n") )
       break;
     if ( strstr(p, "<Project>") )
       _projectName = XMLgetElementValue(p);
