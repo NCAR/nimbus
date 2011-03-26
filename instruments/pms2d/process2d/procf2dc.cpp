@@ -670,7 +670,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
               //Make sure particles are in correct time range
               if (itime>=0){
                  if (ncfile.hasTASX() == false)
-                   data.tas[itime]=((float)ntohs(buffer.tas))*125.0/255.0;
+                   data.tas[itime]=((float)ntohs(buffer.tas));
 
                  //Fill interarrival time array with all particles
 //                 for (int i=0; i<particle_stack.size(); i++){                    
