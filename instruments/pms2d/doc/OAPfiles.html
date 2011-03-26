@@ -1,0 +1,159 @@
+<html>
+<head>
+
+<title>NCAR-RAF OAP File Format</title>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<style type="text/css">
+<!--
+body { background: white; color: black; margin: 2em; margin-left: 3em; }
+h1,h2 { font-size: 1.5em }
+h3 { font-size: 1.3em }
+h4 { font-size: 1.2em }
+h1, h2, h3, h4 { font-style: normal; font-weight: normal; color: #3860B0; }
+span.runin { font-size: 1.1em; font-weight: bold; color: #3860B0; }
+a:link { color:navy; }
+a:visited { color:#386090; }
+li.toc { list-style: none; padding: .1em; }
+kbd.att { font-weight: normal; color: blue; }
+div.example { margin-left: 3em; margin-right: 3em; }
+div.definition { margin-left: 1em; }
+div.sidebar { margin-left: 50px; margin-right: 50px; padding: 20px; background-color: #f5deb4; }
+pre.CDL { color: brown; }
+table { padding: .25em; }
+span.new { background-color: #FF6666; }
+span.old { background-color: #FFFF88; text-decoration: line-through; }
+span.comment { background-color: #88FF88; font-style: italic; }
+-->
+</style>
+
+</head>
+
+<body>
+
+<h1 align=center>OAP File Format</h1>
+<h3 align=center>Version 1</h3>
+<hr>
+<h4 align=center>National Center for Atmospheric Research</h4>
+<h4 align=center>Research Aviation Facility</h4>
+
+<!--------------------------------------------------------------------------- ABS -->
+
+<hr>
+<h2><a name="toc">Table of Contents</a></h2>
+
+<ul>
+<li class="toc"><a href="#intro">Introduction</a></li>
+  <ul>
+  </ul>
+<li class="toc"><a href="#file">File Components</a></li>
+  <ul>
+  <li class="toc">1 &nbsp;<a href="#filehedaer">File header</a></li>
+  <li class="toc">2 &nbsp;<a href="#recordheader">Record header</a></li>
+  </ul>
+<li class="toc"><a href="#raf">RAF 2D Formats</a></li>
+</ul>
+
+
+<hr>
+<h2 align=center><a name="intro">Introduction</a></h2>
+The goal of this file format is to provide a common packaging for PMS2D, HVPS, 2DS, Greyscale, and other OAP probes that produce a 4,096 byte data record, regardless of the format of the contents of the 4KB record.
+<p>
+
+<p>
+Work may continue on a particle frame or record in the future.
+<p>
+<a href="http://www.eol.ucar.edu/data/software/pms2d/pms2d-data_format">NCAR-RAF OAP Format Page</a>  Contains more information on historical data, and formats of some of the internal 4KB buffers.
+<!--------------------------------------------------------------------------- ABS -->
+
+<hr>
+<h2 align=center><a name="file">File Component Descriptions</a></h2>
+
+
+<!--------------------------------------------------------------------------- ABS -->
+
+<h3><a name="fileheader">1 File header</a></h3>
+
+<p>The file header is in ASCII XML.  Example:
+
+<pre class="CDL">
+  &lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+  &lt;OAP version="1"&gt;
+   &lt;Source&gt;ncar.ucar.edu&lt;/Source&gt;
+   &lt;FormatURL&gt;http://www.eol.ucar.edu/raf/Software/OAPfiles.html&lt;/FormatURL&gt;
+   &lt;Project&gt;PLOWS&lt;/Project&gt;
+   &lt;Platform&gt;C130_N130AR&lt;/Platform&gt;
+   &lt;FlightNumber&gt;rf03&lt;/FlightNumber&gt;
+   &lt;FlightDate&gt;12/02/2009&lt;/FlightDate&gt;
+    &lt;probe id="C6" type="Fast2DC" resolution="10" nDiodes="64" serialnumber="F2DC002" suffix="_LPC"/&gt;
+    &lt;probe id="C4" type="Fast2DC" resolution="25" nDiodes="64" serialnumber="F2DC001" suffix="_RPC"/&gt;
+    &lt;probe id="P1" type="TwoDP" resolution="200" nDiodes="32" serialnumber="2DP10" suffix="_RWI"/&gt;
+  &lt;/OAP&gt;
+</pre>
+
+<p>
+Additional meta-data may present.  Each line is ended with a new-line character ('\n').
+
+<!--------------------------------------------------------------------------- ABS -->
+
+<h3><a name="dtype">2 Record Format</a></h3>
+
+<p>The PMS-2D raw data comes in 4 kilo-byte records of 32 bit slices from the probe (1024 slices). The interface card then wraps a record header around that with time stamp and other pertinent information.
+
+The data is stored in big-endian format, so all data will need to be swapped when used on Intel architecture (Linux or MS Windows).
+
+ 
+<h5>OAP Logical Record Format</h5>
+<pre class="CDL">
+/* Values currently in use for the 'id' field. */
+#define PMS2D_C1         0x4331		// First PMS-2DC
+#define PMS2D_C2         0x4332		// Second PMS-2DC
+#define PMS2D_C4         0x4334         // RAF 64 diode 25 um Fast 2DC
+#define PMS2D_C6         0x4336         // RAF 64 diode 10 um Fast 2DC
+#define PMS2D_G1         0x4731		// First 2D Greyscale; unused to date
+#define PMS2D_H1         0x4831		// SPEC HVPS
+#define PMS2D_P1         0x5031		// First PMS-2DP
+#define PMS2D_P2         0x5032		// Second PMS-2DP
+
+struct P2d_rec {
+  short id;                             /* 'P1','C1','P2','C2', H1, etc */
+  short hour;
+  short minute;
+  short second;
+  short year;                           /* starting in 2007 w/ PACDEX */
+  short month;                          /* starting in 2007 w/ PACDEX */
+  short day;                            /* starting in 2007 w/ PACDEX */
+  short tas;                            /* true air speed	*/
+  short msec;                           /* msec of this record	*/
+  short overld;                         /* overload time, msec	*/
+  unsigned char data[4096];		/* image buffer		*/
+  };
+typedef struct P2d_rec P2d_rec;
+</pre>
+<p>
+<h5>id</h5> The id word tells whether it is a 2d-C, 2d-P or an HVPS. The 1 or 2 signifies first or second probe. Hex values are 'C1' = 0x4331, 'P1' = 0x5031 etc.
+<p>
+<h5>Time stamp</h5> The hour, minute, second, and msec belong to the LAST slice of the record.  This is traditionally stamped by the data system after it is interrupted by the probe that it is ready to download data.
+<p>
+<h5>True Air Speed</h5> The true air speed (tas) truncated or rounded to the nearest meter per second.
+<p>
+<h5>Overload</h5> The overld value is the amount of time in milliseconds the probe was shut off while the interface card was unloading data.
+
+
+<!--------------------------------------------------------------------------- ABS -->
+<hr>
+For further information contact:
+<p>
+Chris Webster<br>
+National Center for Atmospheric Research<br>
+Research Aviation Facility<br>
+(303) 497-1044
+<p>
+<address><a href="mail&#116;&#111;:cjw&#064;ucar.edu?Subject=from_RAF_Web_Software_Page_OAP">email</a></address>
+<hr>
+<font size=2>
+Last update:
+Sat Mar 26 11:24:11 MDT 2011
+</font>
+</body>
+</html>
