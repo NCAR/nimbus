@@ -623,7 +623,9 @@ void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float ver
         else pen->SetColor(color->GetColor(GREEN));
       }
 
-      drawSlice(ps, i++, *p++);
+      if (timingWord)
+        drawSlice(ps, i, *p);
+      ++i; ++p;
 
       // Get next particle.
       cp = (Particle *)stats.particles.DeQueue();
