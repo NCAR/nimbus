@@ -37,7 +37,7 @@ const int nDiodes = 64;
 const int numbins = 128;
 const int binoffset = 1;  // Offset for RAF conventions, number of empty bins before counting begins 
 const int slicesPerRecord = 512;
-const string markerline = "</PMS2D>";  // Marks end of XML header
+const string markerline = "</OAP>";  // Marks end of XML header
 
 
 struct struct_particle {
