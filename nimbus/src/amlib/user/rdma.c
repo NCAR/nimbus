@@ -17,7 +17,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2002
 #include "nimbus.h"
 #include "amlib.h"
 
-extern float crdma_cnc[];	// From amlib/xlate/rdma.c
+extern NR_TYPE crdma_cnc[];	// From amlib/xlate/rdma.c
 
 /* -------------------------------------------------------------------- */
 void scrdma(DERTBL *varp)
