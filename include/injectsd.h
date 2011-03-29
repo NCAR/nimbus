@@ -18,7 +18,7 @@ struct v
   std::string name;
   char type;
   int index;
-  float value;
+  NR_TYPE value;
   std::string function;
 };
 
@@ -44,8 +44,8 @@ class SyntheticData
   char temp;
  std::string tf;                   //temporary string
   vars tempv;                       //temporary value that is constatly changing
-  float temptally;                  //used with highrate data, this value is stored in averaged data if data is modified by a constant or a function
-  float *temptallyfunc;     //used with highrate data, this value is stored in averaged data if data is modified from a file
+  NR_TYPE temptally;                  //used with highrate data, this value is stored in averaged data if data is modified by a constant or a function
+  NR_TYPE *temptallyfunc;     //used with highrate data, this value is stored in averaged data if data is modified from a file
  protected:
    void ReadLine();                 //reads a line of values  from the file opened with InitSynth and stores the values in values[] 
    void Inject();                   // checks to see if time stamps match if they do then replace the info with the synthetic data
@@ -54,13 +54,13 @@ class SyntheticData
    void InjectFunctions();          //modifies the current value with a function
    void Injecthr(int);
    void ReadhrLine();
-   void SetHighData(char t,int ind,int offset,float val);  
-   void SetSampleData(char t,int ind,int offset,float val);
-   void SetAverageData(char t,int ind,float val);
-   float GetValue(char k,char t,int ind,int offset);
+   void SetHighData(char t,int ind,int offset,NR_TYPE val);  
+   void SetSampleData(char t,int ind,int offset,NR_TYPE val);
+   void SetAverageData(char t,int ind,NR_TYPE val);
+   NR_TYPE GetValue(char k,char t,int ind,int offset);
  public:
    SyntheticData();                 //default constructor, it initializes counters etc.
-   bool InjectSyntheticData(float);   //called by lrloop and hrloop to inject data
+   bool InjectSyntheticData(NR_TYPE);   //called by lrloop and hrloop to inject data
    int InitSynth(std::string );     //  function is passed the filename to be opened as a string it calls InitSynth(char *)
    int InitSynth(char*);            //function is passed the filename that contains synthetic data and returns -1 if the file doesn't exits and 1 if it does and is opened
    void registervar(struct v);      // a variable is to be modified by a constanst, make a note of the variable and it's constant value

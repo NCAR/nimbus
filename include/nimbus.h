@@ -33,7 +33,7 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 
 
 /* Nimbus Record Info		*/
-typedef float NR_TYPE;
+typedef double NR_TYPE;
 
 
 // OpenProjectFile action values
@@ -97,7 +97,7 @@ public:
 
   std::vector<std::pair<int, int> > blank_out;
 
-  float	min, max;	// Min and max for this variable over course run.
+  NR_TYPE min, max;	// Min and max for this variable over course run.
 
   size_t badLagCntr;
 };
@@ -122,12 +122,12 @@ public:
   ushort dsmID;		// ADS3/nids A/D temp compensation.
 
   void (*Initializer)(void *); // Function to initialize xlate
-  void (*xlate)(RAWTBL *, void *, float *); // Function to translate data
+  void (*xlate)(RAWTBL *, void *, NR_TYPE *); // Function to translate data
   void (*Average)(...);	// Routine to use to average/sum data
 
   int32_t convertOffset;	// A/D offset
   float	convertFactor;	// A/D slope
-  std::vector<float> cof;
+  std::vector<NR_TYPE> cof;
 
   int StaticLag;	// Static lag in ms to shift data
   int DynamicLag;	// Dynamic lag

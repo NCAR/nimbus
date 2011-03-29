@@ -20,13 +20,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2001-07
 #include "amlib.h"
 
 static int	timeCounter = 0;
-static float	temp, press;
+static NR_TYPE	temp, press;
 static RAWTBL	*ardma_varp;
 
 extern char	*ADSrecord;
-extern float	*SampledData;
+extern NR_TYPE	*SampledData;
 
-float	crdma_cnc[128];
+NR_TYPE	crdma_cnc[128];
 
 /* -------------------------------------------------------------------- */
 void xlardma(RAWTBL *varp, void *input, NR_TYPE *np)
@@ -51,7 +51,7 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
   for (size_t i = 0; i < 64; ++i)
     crdma_cnc[i] = floatNAN;
 
-  float *ardma = &SampledData[ardma_varp->SRstart];
+  NR_TYPE *ardma = &SampledData[ardma_varp->SRstart];
 
   /* Two ASCII files will be written.  .rdma will be the raw data, cnts and
    * concentrations, for archival to the MASS Store.  .cnts.rdma is counts

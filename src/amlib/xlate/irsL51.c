@@ -26,7 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992
 #define MSIGN		0x40000000
 
 static double	angle(long), velocity(long);
-NR_TYPE	angcr(float,float,float,float);
+NR_TYPE	angcr(NR_TYPE, NR_TYPE, float, float);
 
 
 /* -------------------------------------------------------------------- */

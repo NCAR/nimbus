@@ -73,12 +73,12 @@ struct _dnfn
 	{
 	const char	*name;
 	void		(*constructor)(void *);
-	void		(*xlate)(RAWTBL *, void *, float *);
+	void		(*xlate)(RAWTBL *, void *, NR_TYPE *);
 	void		(*compute)(DERTBL *);
 	} ;
 
-NR_TYPE	FirstPoly(NR_TYPE x, std::vector<float>& cof);
-NR_TYPE	SecondPoly(NR_TYPE x, std::vector<float>& cof);
+NR_TYPE	FirstPoly(NR_TYPE x, std::vector<NR_TYPE>& cof);
+NR_TYPE	SecondPoly(NR_TYPE x, std::vector<NR_TYPE>& cof);
 
 int	SearchDERIVFTNS(const char target[]);
 void	RunAMLIBinitializers(), LogXlateMsg(const char msg[]),

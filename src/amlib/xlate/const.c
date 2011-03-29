@@ -67,7 +67,7 @@ const double RESOLV14BIT = 180.0 / 8192.0;
 const double RESOLV16BIT = 360.0 / 65536.0;
 
 /* -------------------------------------------------------------------- */
-NR_TYPE FirstPoly(NR_TYPE x, std::vector<float>& c)
+NR_TYPE FirstPoly(NR_TYPE x, std::vector<NR_TYPE>& c)
 {
   if (x == MISSING_VALUE)
     return(floatNAN);
@@ -76,7 +76,7 @@ NR_TYPE FirstPoly(NR_TYPE x, std::vector<float>& c)
 }
 
 /* -------------------------------------------------------------------- */
-NR_TYPE SecondPoly(NR_TYPE x, std::vector<float>& c)
+NR_TYPE SecondPoly(NR_TYPE x, std::vector<NR_TYPE>& c)
 {
   if (x == MISSING_VALUE)
     return(floatNAN);

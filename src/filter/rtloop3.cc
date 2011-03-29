@@ -147,7 +147,7 @@ void RealTimeLoop3()
 
   extern nidas::dynld::raf::SyncRecordReader* syncRecReader;
 
-  int nExpected = syncRecReader->getNumFloats();
+  int nExpected = syncRecReader->getNumValues();
 
   for (;;)
   {

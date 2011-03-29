@@ -37,7 +37,7 @@ void xletorq(RAWTBL *varp, void *input, NR_TYPE *output)
 {
   short		etorq;
   NR_TYPE	*cc;
-  std::vector<float> ccv;
+  std::vector<NR_TYPE> ccv;
 
   for (size_t i = 0; i < varp->SampleRate; ++i)
     {

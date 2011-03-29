@@ -120,8 +120,7 @@ static void	add_file_to_RAWTBL(const std::string&),
 	openVariableDatabase(), addUnitsAndLongName(var_base *var),
 	checkUnitsTitles();
 
-static std::vector<float> getCalsForADS2(const char vn[]);
-static int	check_cal_coes(int order, float *coef);
+static std::vector<NR_TYPE> getCalsForADS2(const char vn[]);
 static int	locatePMS(const char target[], PMS list[]);
 
 
@@ -525,7 +524,9 @@ static RAWTBL* initSDI_ADS3(nidas::dynld::raf::SyncRecordVariable* var)
   if ((poly = dynamic_cast<nidas::core::Polynomial*>(converter)))
   {
     const std::vector<float>& coefs = poly->getCoefficients();
-    cp->cof = coefs;
+//    cp->cof = coefs;
+    for (size_t i = 0; i < coefs.size(); ++i)
+      cp->cof.push_back((NR_TYPE)coefs[i]);
   } 
 
   if (converter)
@@ -1301,7 +1302,7 @@ static void initOphir3(char vn[])
 
     size_t order = atoi(strtok((char *)NULL, " \t"));
     for (size_t j = 0; j < order; ++j)
-      rp->cof.push_back((float)atof(strtok((char *)NULL, " \t")));
+      rp->cof.push_back((NR_TYPE)atof(strtok((char *)NULL, " \t")));
     }
 
   FreeTextFile(list);
@@ -2235,26 +2236,6 @@ static void ReadProjectName()
 }
 
 /* -------------------------------------------------------------------- */
-static std::vector<float> getCalsForADS2(const char vn[])
-{
-  int32_t order;
-  float *f;
-
-  GetOrder(vn, &order);
-  GetCalCoeff(vn, &f);
-
-  // Remove trailing zeroes.
-  order = check_cal_coes(order, f);
-
-  std::vector<float> cals;
-
-  for (int32_t i = 0; i < order; ++i)
-    cals.push_back(f[i]);
-
-  return cals;
-}
-
-/* -------------------------------------------------------------------- */
 /* Strip out trailing 0 cal coe's
  */
 static int
@@ -2269,6 +2250,26 @@ check_cal_coes(int order, float *coef)
   return(order + 1);
 
 }	/* END CHECK_CAL_COES */
+
+/* -------------------------------------------------------------------- */
+static std::vector<NR_TYPE> getCalsForADS2(const char vn[])
+{
+  int32_t order;
+  float *f;
+
+  GetOrder(vn, &order);
+  GetCalCoeff(vn, &f);
+
+  // Remove trailing zeroes.
+  order = check_cal_coes(order, f);
+
+  std::vector<NR_TYPE> cals;
+
+  for (int32_t i = 0; i < order; ++i)
+    cals.push_back((NR_TYPE)f[i]);
+
+  return cals;
+}
 
 /* -------------------------------------------------------------------- */
 static void

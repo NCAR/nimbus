@@ -380,7 +380,7 @@ void CreateNetCDF(const char fileName[])
     }
 
 //printf("RAW: %s\n", rp->name);
-    rp->varid = ncvardef(fd, rp->name, NC_FLOAT, ndims, dims);
+    rp->varid = ncvardef(fd, rp->name, NC_DOUBLE, ndims, dims);
 
     addCommonVariableAttributes(rp);
 
@@ -399,7 +399,7 @@ void CreateNetCDF(const char fileName[])
 		rp->DataQuality);
 
     if (rp->cof.size() > 0)
-      ncattput(fd, rp->varid, "CalibrationCoefficients", NC_FLOAT,
+      ncattput(fd, rp->varid, "CalibrationCoefficients", NC_DOUBLE,
                rp->cof.size(), &rp->cof[0]);
 
     if (rp->Modulo)
@@ -476,7 +476,7 @@ void CreateNetCDF(const char fileName[])
     }
 
 //printf("DER: %s\n", dp->name); fflush(stdout);
-    dp->varid = ncvardef(fd, dp->name, NC_FLOAT, ndims, dims);
+    dp->varid = ncvardef(fd, dp->name, NC_DOUBLE, ndims, dims);
 
     addCommonVariableAttributes(dp);
 
@@ -658,7 +658,7 @@ static void WriteMissingRecords()
   struct missDat	*dp;
 
   dp = (struct missDat *)FrontQueue(missingRecords);
-  d = new float[5000];
+  d = new double[5000];
   /* 5000 is fastest sampling rate */
 
   for (i = 0; i < 5000; ++i)
@@ -1050,10 +1050,10 @@ static void addCommonVariableAttributes(const var_base *var)
 {
   const char *p;
 
-  ncattput(fd, var->varid, "_FillValue", NC_FLOAT, 1, &MISSING_VALUE);
+  ncattput(fd, var->varid, "_FillValue", NC_DOUBLE, 1, &MISSING_VALUE);
 /* Once we support individual _FillValue in Q missing data routine, then use this line.
   float fv = VarDB_GetFillValue(var->name);
-  ncattput(fd, var->varid, "_FillValue", NC_FLOAT, 1, &fv);
+  ncattput(fd, var->varid, "_FillValue", NC_DOUBLE, 1, &fv);
 */
 
   strcpy(buffer, var->Units.c_str());
