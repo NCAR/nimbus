@@ -90,6 +90,7 @@ ADS_DataFile::ADS_DataFile(const char fName[])
 {
   _hdr = 0;
   _fileName = fName;
+  _version[0] = '\0';
 
   if (_fileName.find(".gz", 0) != std::string::npos)
     {
@@ -128,9 +129,21 @@ ADS_DataFile::ADS_DataFile(const char fName[])
     rewind(fp);
     }
 
-  if (strstr(buffer, "<OAP"))
+  if (strstr(buffer, "<OAP") || strstr(buffer, "<PMS2D>"))
     {
+    strcpy(_version, "5");
     char * endHdr = strstr(buffer, "</OAP>");
+    if (endHdr == 0)
+      endHdr = strstr(buffer, "</PMS2D>");
+    else
+    {
+      char *p = strstr(buffer, "<OAP version");
+      int version = 1;
+      if (p)
+        version = atoi(strstr(buffer, "<OAP version")+14);
+      sprintf(_version, "5.%d", version);
+    }
+
     if (endHdr == 0)
       {
         fprintf(stderr, "No end of ADS3 header???\n");
@@ -140,9 +153,6 @@ ADS_DataFile::ADS_DataFile(const char fName[])
     /* I am not using this at this time, but this is where/how to extract the
      * OAP file version #.
      */
-    int version = 1;
-    if (strstr(buffer, "<OAP version"))
-      version = atoi(strstr(buffer, "<OAP version")+14);
 
     fseeko64(fp, endHdr - buffer + 9, SEEK_SET);
 
@@ -155,7 +165,10 @@ ADS_DataFile::ADS_DataFile(const char fName[])
     printf("No RAF header found, assuming raw PMS2D file.\n");
     }
   else
+    {
     initADS2();
+    if (_hdr) strcpy(_version, _hdr->Version());
+    }
 
   buildIndices();
 
@@ -210,7 +223,7 @@ void ADS_DataFile::initADS3(char * hdrString)
   char * p;
   for (p = strtok(hdrString, "\n"); p; p = strtok(NULL, "\n"))
     {
-    if ( strstr(p, "</OAP>\n") )
+    if ( strstr(p, "</OAP>\n") || strstr(p, "</PMS2D>\n") )
       break;
     if ( strstr(p, "<Project>") )
       _projectName = XMLgetElementValue(p);

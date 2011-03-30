@@ -57,8 +57,13 @@ public:
   const std::string &
   FileName() const	{ return _fileName; }
 
+  /**
+   * For ADS2, this will be the ADS2 header version number; up to 3.5.
+   * For ADS3 and the new OAP file format we force this to start at 5.
+   *   add the OAP version to 5.
+   */
   const char *
-  HeaderVersion() const	{ return(_hdr ? _hdr->Version() : (char *)"5"); }
+  HeaderVersion() const	{ return _version; }
 
   const std::string &
   ProjectNumber() const	{ return _projectName; }
@@ -126,6 +131,13 @@ protected:
 
   bool		_gzipped, _useTestRecord;
   HeaderType	_fileHeaderType;
+
+  /**
+   * For ADS2, this will be the ADS2 header version number; up to 3.5.
+   * For ADS3 and the new OAP file format we force this to start at 5.
+   *   add the OAP version to 5.
+   */
+  char		_version[16];
 
   Index		*indices;
   int		currPhys;
