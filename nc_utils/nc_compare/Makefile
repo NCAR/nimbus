@@ -5,8 +5,7 @@ DESTDIR=	${JLOCAL}/
 BINDIR=		bin
 ANONFTP=	/net/ftp/pub/archive/RAF-src/bin.RHEL5
 MANDIR=		man/man1
-LIBS=		-L${JLOCAL}/lib -lnetcdf -lhdf5 -lhdf5_hl
-LIBS=		-L${JLOCAL}/lib -lnetcdf -lgsl -lgslcblas
+LIBS=		-L${JLOCAL}/lib -lgsl -lgslcblas -lnetcdf -lhdf5 -lhdf5_hl
 INCLUDES=	-I${JLOCAL}/include
 CXXFLAGS=	-Wall -g ${INCLUDES}
 
