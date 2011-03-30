@@ -14,6 +14,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2011
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <cmath>
 #include <ctime>
 #include <netcdf.h>
 
@@ -22,11 +23,20 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2011
 #define NAMELEN		32
 #define MAX_VARS	1000
 
+struct _var
+{
+  char	name[NAMELEN];
+  int	varID1;
+  int	varID2;
+
+  double	mean1;
+  double	mean2;
+  double	diff;
+  
+} file_vars[MAX_VARS];
+
 char	buffer[2048];
-char	VarList[MAX_VARS][NAMELEN];
-int	inVarID1[MAX_VARS], inVarID2[MAX_VARS];
-void	*inPtrs1[MAX_VARS], *inPtrs2[MAX_VARS];
-int	infd1, infd2, VarCnt = 0, xFerCnt = 0;
+int	infd1, infd2;
 int	timeDimID1, timeDimID2;
 
 void	CompareVariables(), CompareData();
@@ -106,7 +116,7 @@ void checkForOverlappingTimeSegments()
 
   if (et1 != et2)
   {
-    printf("Time dimensions are of differeing length, %d vs. %d\n", et1, et2);
+    printf("Time dimensions are of differeing length, %u vs. %u\n", et1, et2);
   }
 
   char units1[60], units2[60];
@@ -153,12 +163,11 @@ void checkForOverlappingTimeSegments()
 /* -------------------------------------------------------------------- */
 void CompareVariables()
 {
-  int	rc, varID1, varID2;
   char	name[32];
-  char  dimname1[32], dimname2[32];
   nc_type	dataType;
-  int	nVars1, nVars2, nDims, nAtts, dimIDs[8];
-  size_t nPts1, nPts2;
+  int	compare_cnt = 0;
+  int	nVars1, nVars2, nDims, dimIDs[8];
+  size_t	nPts1, nPts2;
 
   nc_inq_nvars(infd1, &nVars1);
   nc_inq_nvars(infd2, &nVars2);
@@ -168,28 +177,55 @@ void CompareVariables()
 
   for (int i = 0; i < nVars1; ++i)
   {
-    nc_inq_var(infd1, i, name, &dataType, &nDims, dimIDs, &nAtts); 
-    nc_inq_varid(infd1, name, &varID1);
+    nc_inq_var(infd1, i, name, &dataType, &nDims, dimIDs, 0); 
+    nc_inq_varid(infd1, name, &file_vars[compare_cnt].varID1);
 
-    if (nc_inq_varid(infd2, name, &varID2) != NC_NOERR)
+    if (nDims > 1)
+      continue;
+
+    if (nc_inq_varid(infd2, name, &file_vars[compare_cnt].varID2) != NC_NOERR)
     {
       printf("Variable %s in first file does not exist in second file.\n", name);
       continue;
     }
 
-    float data1[1000000], data2[1000000];
-    nc_get_var_float(infd1, varID1, data1);
-    nc_get_var_float(infd2, varID2, data2);
+    strcpy(file_vars[compare_cnt].name, name);
+    float data1[nPts1], data2[nPts2];
+    nc_get_var_float(infd1, file_vars[compare_cnt].varID1, data1);
+    nc_get_var_float(infd2, file_vars[compare_cnt].varID2, data2);
 
     // Do statistics.
-    double mean1 = gsl_stats_float_mean(data1, 1, nPts1);
-    double mean2 = gsl_stats_float_mean(data2, 1, nPts2);
+    file_vars[compare_cnt].mean1 = gsl_stats_float_mean(data1, 1, nPts1);
+    file_vars[compare_cnt].mean2 = gsl_stats_float_mean(data2, 1, nPts2);
+    file_vars[compare_cnt].diff = fabs(file_vars[compare_cnt].mean2 - file_vars[compare_cnt].mean1);
 
-    double var1 = gsl_stats_float_variance_with_fixed_mean(data1, 1, nPts1, mean1);
-    double var2 = gsl_stats_float_variance_with_fixed_mean(data2, 1, nPts2, mean2);
+    ++compare_cnt;
+  }
 
-    printf("%s; mean %f %f; var = %f %f\n", name, mean1, mean2, var1, var2);
+  printf("\nGross errors; differences >= 1.0\n");
+  printf("                                 Mean\n");
+  printf("Variable                  File1         File2     Diff\n");
+  for (int i = 0; i < compare_cnt; ++i)
+  {
+    if (file_vars[i].diff >= 1.0)
+      printf("%-16s %14.6f %14.6f %10.6f\n",
+	file_vars[i].name, file_vars[i].mean1, file_vars[i].mean2, file_vars[i].diff);
+  }
 
+  printf("\nMedium errors; differences >= 0.1 && < 1.0\n");
+  for (int i = 0; i < compare_cnt; ++i)
+  {
+    if (file_vars[i].diff >= 0.1 && file_vars[i].diff < 1.0)
+      printf("%-16s %14.6f %14.6f %10.6f\n",
+	file_vars[i].name, file_vars[i].mean1, file_vars[i].mean2, file_vars[i].diff);
+  }
+
+  printf("\nFine errors; differences > 0.00001 && < 0.1\n");
+  for (int i = 0; i < compare_cnt; ++i)
+  {
+    if (file_vars[i].diff > 0.00001 && file_vars[i].diff < 0.1)
+      printf("%-16s %14.6f %14.6f %10.6f\n",
+	file_vars[i].name, file_vars[i].mean1, file_vars[i].mean2, file_vars[i].diff);
   }
 }
 
@@ -200,7 +236,7 @@ int main(int argc, char *argv[])
 
   if (argc < 3)
   {
-    fprintf(stderr, "Usage: ncmerge [-v var0,var1,..,varn] [-a] primary_file secondary_file\n");
+    fprintf(stderr, "Usage: nc_compare primary_file secondary_file\n");
     exit(1);
   }
 
