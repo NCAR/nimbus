@@ -42,8 +42,8 @@ void	CopyVariablesDefinitions(int),MoveData();
 /* -------------------------------------------------------------------- */
 void Exit(int rc)
 {
-  ncclose(infd1);
-  ncclose(infd2);
+  nc_close(infd1);
+  nc_close(infd2);
   exit(rc);
 }
 
