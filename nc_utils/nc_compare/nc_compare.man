@@ -1,0 +1,16 @@
+.na
+.nh
+.TH NC_COMPARE 1 "29 March 2011" "Local Command"
+.SH NAME
+nc_compare \- netCDF compare utility
+.SH SYNOPSIS
+.B nc_compare primary_file secondary_file
+.SH DESCRIPTION
+.B nc_compare 
+is a program for comparing two netCDF files which both conform to
+the NCAR-RAF/nimbus conventions.
+.PP
+.SH BUGS
+.PP
+.SH AUTHOR
+Chris Webster, National Center for Atmospheric Research
