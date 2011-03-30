@@ -25,25 +25,23 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-06
 
 #define NAMELEN		32
 #define MAX_IN_VARS	800
-#define MAX_OUT_VARS	1000
 
 char	buffer[2048];
 char	VarList[MAX_IN_VARS][NAMELEN];
 char    RefVar[NAMELEN];
-int	inVarID[MAX_IN_VARS], outVarID[MAX_OUT_VARS];
-void	*inPtrs[MAX_IN_VARS], *outPtrs[MAX_OUT_VARS];
-int	infd1, infd2, VarCnt = 0, xFerCnt = 0;
+int	inVarID[MAX_IN_VARS];
+void	*inPtrs[MAX_IN_VARS];
+int	infd1, VarCnt = 0, xFerCnt = 0;
 time_t	bt1;
 size_t	et1;
 
-void	CopyVariablesDefinitions();
+void	FillVariable();
 
 
 /* -------------------------------------------------------------------- */
 void Exit(int rc)
 {
-  ncclose(infd1);
-  ncclose(infd2);
+  nc_close(infd1);
   exit(rc);
 }
 
@@ -58,8 +56,6 @@ void openFiles(int argc, char *argv[], int argp)
     Exit(1);
   }
 
-  /* Make sure files are similar.
-   */
   nc_get_att_text(infd1, NC_GLOBAL, "Conventions", buffer);
 
   if (strcmp(buffer,"NCAR-RAF/nimbus") != 0)
@@ -164,7 +160,7 @@ int main(int argc, char *argv[])
   openFiles(argc, argv, argp);
   determineTimeSegment();
 
-  CopyVariablesDefinitions();
+  FillVariable();
 
   Exit(0);
   return rc;
@@ -172,7 +168,7 @@ int main(int argc, char *argv[])
 }	/* END MAIN */
 
 /* -------------------------------------------------------------------- */
-void CopyVariablesDefinitions()
+void FillVariable()
 {
   int	rc;
   char name[32];
@@ -224,6 +220,4 @@ void CopyVariablesDefinitions()
 
   nc_enddef(infd1);
 
-}	/* END COPYVARIABLES */
-
-/* -------------------------------------------------------------------- */
+}	/* END FILLVARIABLE */
