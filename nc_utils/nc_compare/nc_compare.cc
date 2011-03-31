@@ -160,9 +160,13 @@ void checkForOverlappingTimeSegments()
     Exit(1);
   }
 
-  if (bt1 != bt2 || et1 != et2)
-  {
-    printf("Time segments do not match exactly, this has potential to produce inconsistent results.\n");
+  if (bt1 != bt2) {
+    printf("Start time does not match exactly, this has potential to produce inconsistent results.\n");
+    printf("  %d vs. %d\n", bt1, bt2);
+  }
+  if (et1 != et2) {
+    printf("End time does not match exactly, this has potential to produce inconsistent results.\n");
+    printf("  %d vs. %d\n", et1, et2);
   }
 }
 
@@ -268,6 +272,7 @@ int main(int argc, char *argv[])
   }
 
   ncopts = 0;
+  putenv((char *)"TZ=UTC");	// All time calcs in UTC.
 
   openFiles(argc, argv, argp);
   checkForOverlappingTimeSegments();
