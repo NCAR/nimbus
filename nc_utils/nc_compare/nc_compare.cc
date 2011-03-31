@@ -16,6 +16,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2011
 #include <cstring>
 #include <cmath>
 #include <ctime>
+#include <vector>
 #include <netcdf.h>
 
 #include <gsl/gsl_statistics_float.h>
@@ -23,17 +24,22 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2011
 #define NAMELEN		32
 #define MAX_VARS	1000
 
-struct _var
+class Var
 {
+public:
   char	name[NAMELEN];
   int	varID1;
   int	varID2;
 
+  float	missing_value1;
+  float	missing_value2;
+
   double	mean1;
   double	mean2;
   double	diff;
-  
-} file_vars[MAX_VARS];
+};
+
+std::vector<Var> file_vars;
 
 char	buffer[2048];
 int	infd1, infd2;
@@ -163,10 +169,10 @@ void checkForOverlappingTimeSegments()
 /* -------------------------------------------------------------------- */
 void CompareVariables()
 {
-  char	name[32];
+  char		name[32];
+  Var		var;
   nc_type	dataType;
-  int	compare_cnt = 0;
-  int	nVars1, nVars2, nDims, dimIDs[8];
+  int		nVars1, nVars2, nDims, dimIDs[8];
   size_t	nPts1, nPts2;
 
   nc_inq_nvars(infd1, &nVars1);
@@ -177,51 +183,72 @@ void CompareVariables()
 
   for (int i = 0; i < nVars1; ++i)
   {
+    // Get next variable in first file.
     nc_inq_var(infd1, i, name, &dataType, &nDims, dimIDs, 0); 
-    nc_inq_varid(infd1, name, &file_vars[compare_cnt].varID1);
+    nc_inq_varid(infd1, name, &var.varID1);
 
     if (nDims > 1)
       continue;
 
-    if (nc_inq_varid(infd2, name, &file_vars[compare_cnt].varID2) != NC_NOERR)
-    {
+    if (nc_inq_varid(infd2, name, &var.varID2) != NC_NOERR) {
       printf("Variable %s in first file does not exist in second file.\n", name);
       continue;
     }
 
-    strcpy(file_vars[compare_cnt].name, name);
+    // OK, variable exists in both files, read data.
+    strcpy(var.name, name);
     float data1[nPts1], data2[nPts2];
-    nc_get_var_float(infd1, file_vars[compare_cnt].varID1, data1);
-    nc_get_var_float(infd2, file_vars[compare_cnt].varID2, data2);
+    nc_get_var_float(infd1, var.varID1, data1);
+    nc_get_var_float(infd2, var.varID2, data2);
 
-    // Do statistics.
-    file_vars[compare_cnt].mean1 = gsl_stats_float_mean(data1, 1, nPts1);
-    file_vars[compare_cnt].mean2 = gsl_stats_float_mean(data2, 1, nPts2);
-    file_vars[compare_cnt].diff = fabs(file_vars[compare_cnt].mean2 - file_vars[compare_cnt].mean1);
+    // Remove Missing values.
+    std::vector<float> cleaned_data1;
+    std::vector<float> cleaned_data2;
+    nc_get_att_float(infd1, var.varID1, "_FillValue", &var.missing_value1);
+    nc_get_att_float(infd2, var.varID2, "_FillValue", &var.missing_value2);
 
-    ++compare_cnt;
+    for (size_t i = 0; i < nPts1; ++i) {
+      if (data1[i] != var.missing_value1)
+        cleaned_data1.push_back(data1[i]);
+    }
+
+    for (size_t i = 0; i < nPts2; ++i) {
+      if (data2[i] != var.missing_value2)
+        cleaned_data2.push_back(data2[i]);
+    }
+
+    // Compute means.
+    var.mean1 = gsl_stats_float_mean(&cleaned_data1[0], 1, cleaned_data1.size());
+    var.mean2 = gsl_stats_float_mean(&cleaned_data2[0], 1, cleaned_data2.size());
+    var.diff = fabs(var.mean2 - var.mean1);
+
+    file_vars.push_back(var);
   }
+}
 
-  printf("\nGross errors; differences >= 1.0\n");
-  printf("                                 Mean\n");
-  printf("Variable                  File1         File2     Diff\n");
-  for (int i = 0; i < compare_cnt; ++i)
+/* -------------------------------------------------------------------- */
+void Output()
+{
+  printf("\nGross differences; >= 1.0\n");
+  printf("                                Mean\n");
+  printf("Variable                File1          File2      Diff\n");
+  for (size_t i = 0; i < file_vars.size(); ++i)
   {
     if (file_vars[i].diff >= 1.0)
       printf("%-16s %14.6f %14.6f %10.6f\n",
 	file_vars[i].name, file_vars[i].mean1, file_vars[i].mean2, file_vars[i].diff);
   }
 
-  printf("\nMedium errors; differences >= 0.1 && < 1.0\n");
-  for (int i = 0; i < compare_cnt; ++i)
+  printf("\nMedium differences; >= 0.1 && < 1.0\n");
+  for (size_t i = 0; i < file_vars.size(); ++i)
   {
     if (file_vars[i].diff >= 0.1 && file_vars[i].diff < 1.0)
       printf("%-16s %14.6f %14.6f %10.6f\n",
 	file_vars[i].name, file_vars[i].mean1, file_vars[i].mean2, file_vars[i].diff);
   }
 
-  printf("\nFine errors; differences > 0.00001 && < 0.1\n");
-  for (int i = 0; i < compare_cnt; ++i)
+  printf("\nFine differences; > 0.00001 && < 0.1\n");
+  for (size_t i = 0; i < file_vars.size(); ++i)
   {
     if (file_vars[i].diff > 0.00001 && file_vars[i].diff < 0.1)
       printf("%-16s %14.6f %14.6f %10.6f\n",
@@ -246,6 +273,7 @@ int main(int argc, char *argv[])
   checkForOverlappingTimeSegments();
 
   CompareVariables();
+  Output();
 
   Exit(0);
   return rc;
