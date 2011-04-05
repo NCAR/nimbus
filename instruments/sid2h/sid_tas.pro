@@ -41,7 +41,7 @@ FUNCTION sid_tas, op, tag=tag   ;fn, starttime,stoptime,rate
 
    bad=where(tas_in eq -32767) & IF bad[0] ne -1 THEN tas_in[bad]=!values.f_nan
    tas=fltarr(num)
-   FOR i=0,n_elements(time)-1 DO BEGIN
+   FOR i=0L,n_elements(time)-1 DO BEGIN
       j=where(time_in ge time[i] AND time_in lt (time[i]+rate),count)
       IF count gt 0 THEN tas[i] = mean(tas_in[j],/nan)
    ENDFOR
