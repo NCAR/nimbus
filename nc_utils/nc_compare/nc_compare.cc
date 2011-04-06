@@ -6,6 +6,12 @@ FULL NAME:	netCDF compare program
 
 DESCRIPTION:	Compare two netCDF files and output the differnces.
 
+NOT IMPLEMENTED:
+		Does NOT compare histogram variables.
+
+		Expects time segments to match exactly.  Not smart enough
+		at this time to only compare overlapping time segments.
+
 COPYRIGHT:	University Corporation for Atmospheric Research, 2011
 -------------------------------------------------------------------------
 */
@@ -191,6 +197,7 @@ void CompareVariables()
     nc_inq_var(infd1, i, name, &dataType, &nDims, dimIDs, 0); 
     nc_inq_varid(infd1, name, &var.varID1);
 
+    // Ignore histogram data, we can add this at some later date.
     if (nDims > 1)
       continue;
 
