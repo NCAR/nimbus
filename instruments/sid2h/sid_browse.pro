@@ -29,7 +29,7 @@ PRO sid_browse_event, ev
             wid=[w1,w2,w3,w4,w5]
 
             outdir=file_dirname(fn)+path_sep()           
-            info={i:0,i1:0,i2:0,b1i:-1,fn:fn,gotfile:0,timeformat:1,wid:wid,wt:wt,wp:wp,$
+            info={i:0L,i1:0L,i2:0L,b1i:-1L,fn:fn,gotfile:0,timeformat:1,wid:wid,wt:wt,wp:wp,$
                bmp:bytarr(float(screen_x),50),outdir:outdir,rawdir:'',show_correction:1} ; Reset pinfo
             
             ;Restore files, set pointers to the restored data           
@@ -289,6 +289,7 @@ PRO sid_browse
     device,decompose=0,get_screen_size=screen_size     ;Set to 8-bit color
     IF !version.os_family eq 'windows' THEN widget_control,default_font='Helvetica*fixed*12'
     IF !version.os_family eq 'unix' THEN widget_control,default_font='-adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1'
+    !except=0  ;Suppress floating point error messages
     
     ;Make sure GUI will fit on the screen
     screen_x=(screen_size[0]-50)  <900
