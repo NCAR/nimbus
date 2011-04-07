@@ -519,7 +519,8 @@ void SwitchNetCDFtoDataMode()
 /* -------------------------------------------------------------------- */
 void WriteNetCDF()
 {
-  float data[5000];
+  float *data;
+  int status;
 
   struct missDat	*dp;
   static int		errCnt = 0;
@@ -549,6 +550,8 @@ void WriteNetCDF()
     count[1] = rp->OutputRate;
     count[2] = rp->Length;
 
+    data = new float[N];
+
     if (rp->OutputRate == Config::LowRate)
     {
       for (size_t j = 0; j < N; ++j)
@@ -572,10 +575,16 @@ void WriteNetCDF()
       if (isnan(data[j]))
         data[j] = (float)MISSING_VALUE;
 
-    if (nc_put_vara_float(fd, rp->varid, start, count, data) != NC_NOERR)
+    status = nc_put_vara_float(fd, rp->varid, start, count, data);
+    if (status != NC_NOERR)
+    {
       fprintf(stderr,
-            "WriteNetCDF: write failure, variable %s, RecordNumber = %ld, errno = %d\n",
-            rp->name, recordNumber, errno);
+            "WriteNetCDF: write failure, variable %s, RecordNumber = %ld, status = %d\n",
+            rp->name, recordNumber, status);
+      fprintf(stderr, "%s\n", nc_strerror(status));
+      ++errCnt;
+    }
+    delete [] data;
   }
 
 
@@ -588,6 +597,8 @@ void WriteNetCDF()
     size_t N = dp->Length * dp->OutputRate;
     count[1] = dp->OutputRate;
     count[2] = dp->Length;
+
+    data = new float[N];
 
     if (dp->OutputRate == Config::LowRate)
     {
@@ -604,37 +615,24 @@ void WriteNetCDF()
       if (isnan(data[j]))
         data[j] = (float)MISSING_VALUE;
 
-    if (nc_put_vara_float(fd, dp->varid, start, count, data) != NC_NOERR)
+    status = nc_put_vara_float(fd, dp->varid, start, count, data);
+    if (status != NC_NOERR)
+    {
       fprintf(stderr,
-            "WriteNetCDF: write failure, variable %s, RecordNumber = %ld, errno = %d\n",
-            dp->name, recordNumber, errno);
+            "WriteNetCDF: write failure, variable %s, RecordNumber = %ld, status = %d\n",
+            dp->name, recordNumber, status);
+      fprintf(stderr, "%s\n", nc_strerror(status));
+      ++errCnt;
+    }
+    delete [] data;
   }
 
-/*
-  if (ncrecput(fd, recordNumber, data_p) == ERR)
+  if (errCnt > 10)
   {
-    if (errno == ENOSPC)
-    {
-      LogMessage("Disk full, closing file.\n");
-      CloseNetCDF();
-      PauseFlag = true;
-      PauseWhatToDo = P_QUIT;
-
-      return;
-    }
-
-    fprintf(stderr,
-            "WriteNetCDF: ncrecput failure, RecordNumber = %ld, errno = %d\n",
-            recordNumber, errno);
-
-    if (++errCnt > 8)
-    {
-      fprintf(stderr,
-              "Too many write errors, closing file and exiting...\n");
-      quit();
-    }
+    fprintf(stderr, "Too many write errors, closing file and exiting...\n");
+    quit();
   }
-*/
+
   TimeOffset += 1.0;
   ++TimeVar;
   ++recordNumber;
