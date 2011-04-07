@@ -192,7 +192,7 @@ void RealTimeLoop3()
       grnd_feed->BroadcastData(timeStamp);
 
     if (cfg.OutputNetCDF())
-      WriteNetCDF_MRF();
+      WriteNetCDF();
 
     UpdateTime(SampledData);
     if (mcStat) {

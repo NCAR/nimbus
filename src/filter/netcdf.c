@@ -6,7 +6,6 @@ FULL NAME:	NetCDF IO
 
 ENTRY POINTS:	CreateNetCDF()
 		WriteNetCDF()
-		WriteNetCDF_MRF()
 		SyncNetCDF()
 		CloseNetCDF()
 		SetBaseTime()
@@ -546,8 +545,8 @@ void WriteNetCDF()
     if ((rp = raw[i])->Output == false)
       continue;
 
-    size_t N = rp->Length;
-    count[1] = 1;
+    size_t N = rp->Length * rp->OutputRate;
+    count[1] = rp->OutputRate;
     count[2] = rp->Length;
 
     if (rp->OutputRate == Config::LowRate)
@@ -559,15 +558,11 @@ void WriteNetCDF()
     {
       if (rp->OutputRate == rp->SampleRate && rp->OutputRate != (size_t)cfg.ProcessingRate())
       {
-        N *= rp->SampleRate;
-        count[1] = rp->SampleRate;
         for (size_t j = 0; j < N; ++j)
           data[j] = (float)SampledData[rp->SRstart + j];
       }
       else
       {
-        N *= (size_t)cfg.ProcessingRate();
-        count[1] = (size_t)cfg.ProcessingRate();
         for (size_t j = 0; j < N; ++j)
           data[j] = (float)HighRateData[rp->HRstart + j];
       }
@@ -579,8 +574,8 @@ void WriteNetCDF()
 
     if (nc_put_vara_float(fd, rp->varid, start, count, data) != NC_NOERR)
       fprintf(stderr,
-            "WriteNetCDF: ncrecput failure, RecordNumber = %ld, errno = %d\n",
-            recordNumber, errno);
+            "WriteNetCDF: write failure, variable %s, RecordNumber = %ld, errno = %d\n",
+            rp->name, recordNumber, errno);
   }
 
 
@@ -590,8 +585,8 @@ void WriteNetCDF()
     if ((dp = derived[i])->Output == false)
       continue;
 
-    size_t N = dp->Length;
-    count[1] = 1;
+    size_t N = dp->Length * dp->OutputRate;
+    count[1] = dp->OutputRate;
     count[2] = dp->Length;
 
     if (dp->OutputRate == Config::LowRate)
@@ -601,9 +596,6 @@ void WriteNetCDF()
     }
     else
     {
-      N *= (size_t)cfg.ProcessingRate();
-      count[1] = (size_t)cfg.ProcessingRate();
-
       for (size_t j = 0; j < N; ++j)
         data[j] = (float)HighRateData[dp->HRstart + j];
     }
@@ -614,8 +606,8 @@ void WriteNetCDF()
 
     if (nc_put_vara_float(fd, dp->varid, start, count, data) != NC_NOERR)
       fprintf(stderr,
-            "WriteNetCDF: ncrecput failure, RecordNumber = %ld, errno = %d\n",
-            recordNumber, errno);
+            "WriteNetCDF: write failure, variable %s, RecordNumber = %ld, errno = %d\n",
+            dp->name, recordNumber, errno);
   }
 
 /*
@@ -659,30 +651,6 @@ void WriteNetCDF()
       WriteMissingRecords();
   }
 }	/* END WRITENETCDF */
-
-/* -------------------------------------------------------------------- */
-void WriteNetCDF_MRF()
-{
-//  int		indx = startVarIndx;
-  RAWTBL	*rp;
-
-  /* We need to reset SampleRate indices, because for HighRate, SampleData
-   * is from a circular buffer.
-  for (size_t i = 0; i < raw.size(); ++i)
-    if ((rp = raw[i])->Output)
-    {
-      // The 2nd part of this if test if for PMS1D, where highrate is still not
-      // 25Hz, but rather it's own 10hz.
-      if (rp->OutputRate == rp->SampleRate && rp->OutputRate != (size_t)cfg.ProcessingRate())
-        data_p[indx] = (void *)&SampledData[rp->SRstart];
-
-      ++indx;
-    }
-
-  WriteNetCDF();
-   */
-
-}	/* END WRITENETCDF_MRF */
 
 /* -------------------------------------------------------------------- */
 void QueueMissingData(int h, int m, int s, int nRecords)
