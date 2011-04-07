@@ -4,24 +4,15 @@ OBJECT NAME:	search.c
 
 FULL NAME:	Searches
 
-ENTRY POINTS:	SearchTable()
-		SearchTableSansLocation()
-		SearchList()
-		LinearSearchTable()
+ENTRY POINTS:	SearchList()
 
 DESCRIPTION:	Search for target in list.  The last pointer in the list
 		array must be NULL.  It only compares the first word of
 		what the list items points to.
 
-INPUT:		An array of pointers and target pointer.
+NOTES:		See nimbus.h for other searches.
 
-OUTPUT:		pointer to located item or NULL
-
-REFERENCES:	none
-
-REFERENCED BY:	hdr_decode.c, order.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2011
 -------------------------------------------------------------------------
 */
 
