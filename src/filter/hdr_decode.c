@@ -193,6 +193,7 @@ static void CommonPostInitialization()
   if (cfg.Aircraft() != Config::SAILPLANE)
     {
     add_derived_names("ALWAYS");
+    add_derived_names("HUMIDITY");
     AddProbeToList("Fluxes", (size_t)PROBE_FLUX);
     }
   else
