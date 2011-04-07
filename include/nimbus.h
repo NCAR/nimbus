@@ -80,7 +80,7 @@ public:
   int LAGstart;		// ads3 only, @see dsm::SyncRecordVariable
 
   size_t SampleRate;	// Sampled rate
-  size_t Length;	// Vector length (used by PMS1D)
+  size_t Length;	// Histogram length, if histogram
 
   size_t ProbeType;	// Is this a probe & which one
   size_t ProbeCount;	// For mulitple identicle probes
@@ -97,7 +97,7 @@ public:
 
   std::vector<std::pair<int, int> > blank_out;
 
-  NR_TYPE min, max;	// Min and max for this variable over course run.
+  float min, max;	// Min and max for this variable over course run.
 
   size_t badLagCntr;
 };
@@ -131,7 +131,7 @@ public:
 
   int StaticLag;	// Static lag in ms to shift data
   int DynamicLag;	// Dynamic lag
-  NR_TYPE SpikeSlope;	// Slope for spike detection
+  float SpikeSlope;	// Slope for spike detection
 
   SYNTHTYPE synthtype;
 };
