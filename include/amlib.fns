@@ -770,10 +770,10 @@
 #
 #	Dew Pointers.
 #
-	"DPBC",		(void(*)(void*))dpInit,		NULL,		sdpc,
-	"DPRC",		(void(*)(void*))dpInit,		NULL,		sdpc,
-	"DPLC",		(void(*)(void*))dpInit,		NULL,		sdpc,
-	"DPTC",		(void(*)(void*))dpInit,		NULL,		sdpc,
+	"DPBC",		(void(*)(void*))dpInit,		NULL,		sdpc_MK,
+	"DPRC",		(void(*)(void*))dpInit,		NULL,		sdpc_MK,
+	"DPLC",		(void(*)(void*))dpInit,		NULL,		sdpc_MK,
+	"DPTC",		(void(*)(void*))dpInit,		NULL,		sdpc_MK,
 	"DPCRC",	NULL,		NULL,		sdpcrc,
 	"DPXC",		NULL,		NULL,		sRefer,
 #
@@ -793,7 +793,7 @@
 	"FXDIST",	(void(*)(void*))razInit,	NULL,		srange,
 	"FXAZIM",	NULL,		NULL,		sazimuth,
 	"DVALU",	NULL,		NULL,		sdiff,
-	"EDPC",		NULL,		NULL,		sedpc,
+	"EDPC",		(void(*)(void*))edpcInit,	NULL,		sedpc,
 	"EDPUV",	NULL,		NULL,		sedpc,
 #
 #   NRL P-3 stuff
