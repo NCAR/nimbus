@@ -94,6 +94,8 @@ extern float	HDRversion;
 NR_TYPE *GetDefaultsValue(const char target[], const char var[]);
 void AddToDefaults(const char varName[], const char attrName[],
 	const std::vector<NR_TYPE>& values);
+void AddToAttributes(const char varName[], const char attrName[],
+	const std::string & text);
 
 #if defined(__LITTLE_ENDIAN) || defined(_LITTLE_ENDIAN) || defined(LITTLE_ENDIAN)
 float	ntohf(float);

@@ -55,6 +55,7 @@ typedef struct
 	bool	Used;		// Was it requested by amlib
 	bool	Dirty;		// value changed via GUI
 	std::vector<NR_TYPE> Values;
+	std::string text;
 	} DEFAULT;
 
 
