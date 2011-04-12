@@ -42,7 +42,8 @@ public:
 
   double	mean1;
   double	mean2;
-  double	diff;
+  double	diff;	// Absolute error
+  double	rel;	// Relative error
 };
 
 std::vector<Var> file_vars;
@@ -60,6 +61,11 @@ void Exit(int rc)
   nc_close(infd1);
   nc_close(infd2);
   exit(rc);
+}
+
+bool compareVar(const Var & x, const Var & y)
+{
+  return x.rel > y.rel;
 }
 
 /* -------------------------------------------------------------------- */
@@ -231,10 +237,18 @@ void CompareVariables()
     // Compute means.
     var.mean1 = gsl_stats_float_mean(&cleaned_data1[0], 1, cleaned_data1.size());
     var.mean2 = gsl_stats_float_mean(&cleaned_data2[0], 1, cleaned_data2.size());
-    var.diff = fabs(var.mean2 - var.mean1);
+    var.diff = fabs(var.mean1 - var.mean2);
+    if (fabs(var.mean2) > fabs(var.mean1))
+      var.rel = fabs(var.diff / var.mean2);
+    else
+      var.rel = fabs(var.diff / var.mean1);
+
+    var.rel *= 100;	// %
 
     file_vars.push_back(var);
   }
+
+  std::sort(file_vars.begin(), file_vars.end(), compareVar);
 }
 
 /* -------------------------------------------------------------------- */
@@ -242,28 +256,28 @@ void Output()
 {
   printf("\nGross differences; >= 1.0\n");
   printf("                                Mean\n");
-  printf("Variable                File1          File2      Diff\n");
+  printf("Variable                File1          File2      Diff      Rel (%%)\n");
   for (size_t i = 0; i < file_vars.size(); ++i)
   {
     if (file_vars[i].diff >= 1.0)
-      printf("%-16s %14.6f %14.6f %10.6f\n",
-	file_vars[i].name, file_vars[i].mean1, file_vars[i].mean2, file_vars[i].diff);
+      printf("%-16s %14.6f %14.6f %10.6f %8.2f\n",
+	file_vars[i].name, file_vars[i].mean1, file_vars[i].mean2, file_vars[i].diff, file_vars[i].rel);
   }
 
   printf("\nMedium differences; >= 0.1 && < 1.0\n");
   for (size_t i = 0; i < file_vars.size(); ++i)
   {
     if (file_vars[i].diff >= 0.1 && file_vars[i].diff < 1.0)
-      printf("%-16s %14.6f %14.6f %10.6f\n",
-	file_vars[i].name, file_vars[i].mean1, file_vars[i].mean2, file_vars[i].diff);
+      printf("%-16s %14.6f %14.6f %10.6f %8.2f\n",
+	file_vars[i].name, file_vars[i].mean1, file_vars[i].mean2, file_vars[i].diff, file_vars[i].rel);
   }
 
   printf("\nFine differences; > 0.00001 && < 0.1\n");
   for (size_t i = 0; i < file_vars.size(); ++i)
   {
     if (file_vars[i].diff > 0.00001 && file_vars[i].diff < 0.1)
-      printf("%-16s %14.6f %14.6f %10.6f\n",
-	file_vars[i].name, file_vars[i].mean1, file_vars[i].mean2, file_vars[i].diff);
+      printf("%-16s %14.6f %14.6f %10.6f %8.2f\n",
+	file_vars[i].name, file_vars[i].mean1, file_vars[i].mean2, file_vars[i].diff, file_vars[i].rel);
   }
 }
 
