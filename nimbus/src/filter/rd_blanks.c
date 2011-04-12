@@ -28,6 +28,8 @@ void ReadBlankOuts()
   int	sTime[4], eTime[4];
   char	*bo[512], target[NAMELEN];
 
+  struct tm st, et;
+
   sprintf(buffer, "%s.%s", BLANKVARS.c_str(), cfg.FlightNumber().c_str());
   if (AccessProjectFile(buffer, "r") == FALSE)
     return;
@@ -36,10 +38,22 @@ void ReadBlankOuts()
 
   for (int i = 0; bo[i]; ++i)
   {
+    if (cfg.FlightDate().size() > 0)
+    {
+      strcpy(buffer, cfg.FlightDate().c_str());
+      sscanf(buffer, "%d/%d/%d", &st.tm_mon, &st.tm_mday, &st.tm_year);
+      sscanf(buffer, "%d/%d/%d", &et.tm_mon, &et.tm_mday, &et.tm_year);
+      st.tm_year -= 1900;
+      et.tm_year -= 1900;
+      st.tm_mon -= 1;
+      et.tm_mon -= 1;
+    }
+
     sscanf(bo[i], "%s %d:%d:%d %d:%d:%d", target,
-        &sTime[0], &sTime[1], &sTime[2], &eTime[0], &eTime[1], &eTime[2]);
+	&st.tm_hour, &st.tm_min, &st.tm_sec, &et.tm_hour, &et.tm_min, &et.tm_sec);
 
     /* Turn time period into record numbers. */
+/*
     sTime[3] = SecondsSinceMidnite(sTime);
     eTime[3] = SecondsSinceMidnite(eTime);
 
@@ -50,15 +64,14 @@ void ReadBlankOuts()
       eTime[3] += 86400;
 
     std::pair<int, int> tm(sTime[3], eTime[3]);
+*/
+    std::pair<int, int> tm(mktime(&st), mktime(&et));
 
     if (strcmp(target, "ALL") == 0)
     {
       printf("Blanking out all raw variables for %d %d\n", sTime[3], eTime[3]);
       for (size_t j = 0; j < raw.size(); ++j)
         raw[j]->blank_out.push_back(tm);
-
-//      for (size_t j = 0; j < derived.size(); ++j)
-//        derived[j]->blank_out.push_back(tm);
     }
     else
     {

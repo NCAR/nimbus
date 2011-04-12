@@ -28,8 +28,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2006
 
 extern ushort	*bits;
 
-static bool blankOutThisValue(RAWTBL * var, NR_TYPE nlr[]);
 static void setNIDASDynamicLags(short lr[]);
+static void BlankOutRawData(NR_TYPE nlr[]);
+
 
 /* -------------------------------------------------------------------- */
 void DecodeADSrecord(
@@ -54,19 +55,7 @@ void DecodeADSrecord(
         (*raw[i]->xlate)(raw[i], &lr[raw[i]->ADSstart], &nlr[raw[i]->SRstart]);
   }
 
-
-  /* Blank out any data from the BlankOuts File.  Do raw data here, then it will
-   * ripple through derived and make them all nan also.
-   */
-  for (size_t i = 0; i < raw.size(); ++i)
-  {
-    if (blankOutThisValue(raw[i], nlr) == true)
-    {
-      size_t n = raw[i]->SampleRate * raw[i]->Length;
-      for (size_t j = 0; j < n; ++j)
-        nlr[raw[i]->SRstart+j] = floatNAN;
-    }
-  }
+  BlankOutRawData(nlr);
 }
 
 /* -------------------------------------------------------------------- */
@@ -77,7 +66,7 @@ static void setNIDASDynamicLags(short lr[])
   {
     raw[i]->DynamicLag = 0;  // reset.
 
-    if (raw[i]->LAGstart > 0)
+    if (raw[i]->LAGstart > 0);
     {
       float lag = rec_p[raw[i]->LAGstart];
       if (!isnan(lag))
@@ -89,26 +78,11 @@ static void setNIDASDynamicLags(short lr[])
 }
 
 /* -------------------------------------------------------------------- */
-static bool blankOutThisValue(RAWTBL * var, NR_TYPE nlr[])
+bool blankOutThisValue(var_base * var, time_t thisTime)
 {
-  // If this var has no xlate() fn or DataQuality has been marked bad, blank.
-  if ((cfg.isADS2() && var->xlate == 0) ||
-      strcmp(var->DataQuality, "Bad") == 0)
+  // If DataQuality has been marked bad, blank.
+  if (strcmp(var->DataQuality, "Bad") == 0)
     return true;
-
-  // Compute time for this record.
-  static int prevTime = -1;
-  static bool crossedMidNight = false;
-
-  int thisTime = (int)nlr[timeIndex[0]] * 3600 + (int)nlr[timeIndex[1]] * 60 + (int)nlr[timeIndex[2]];
-
-  if (thisTime < prevTime)
-    crossedMidNight = true;
-
-  prevTime = thisTime;
-
-  if (crossedMidNight)
-    thisTime += 86400;
 
   /* Check to see if the time of this record falls into any of the blank
    * out times for this variable.
@@ -116,11 +90,32 @@ static bool blankOutThisValue(RAWTBL * var, NR_TYPE nlr[])
   for (size_t i = 0; i < var->blank_out.size(); ++i)
   {
     if (thisTime >= var->blank_out[i].first &&
-	thisTime <= var->blank_out[i].second)
-      return true;
+      thisTime <= var->blank_out[i].second)
+    return true;
   }
 
   return false;
+}
+
+/* -------------------------------------------------------------------- */
+static void BlankOutRawData(NR_TYPE nlr[])
+{
+  /* Blank out any data from the BlankOuts File.  Do raw data here, then it will
+   * ripple through derived and make them all nan also.
+   */
+  int thisTime = SampledDataTimeToSeconds(nlr);
+
+  for (size_t i = 0; i < raw.size(); ++i)
+  {
+    RAWTBL *rp = raw[i];
+
+    if (blankOutThisValue(rp, thisTime) == true || (cfg.isADS2() && rp->xlate == 0))
+    {
+      size_t n = rp->SampleRate * rp->Length;
+      for (size_t j = 0; j < n; ++j)
+        nlr[rp->SRstart+j] = floatNAN;
+    }
+  }
 }
 
 /* -------------------------------------------------------------------- */

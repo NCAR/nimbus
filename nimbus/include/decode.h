@@ -94,7 +94,7 @@ void	SetLookupSuffix(const char *new_suffix),
 	DecodeADSrecord(short lr[], NR_TYPE nlr[]),
 	AverageSampledData(),
 	ApplyCalCoes(NR_TYPE *record),
-	ComputeLowRateDerived(), ComputeHighRateDerived(),
+	ComputeLowRateDerived(time_t), ComputeHighRateDerived(time_t),
 	WriteNetCDF(), WriteNetCDF_MRF(), SyncNetCDF(), CloseNetCDF(),
 	UpdateTime(const NR_TYPE *record),
 	FormatTimeSegmentsForOutputFile(char *buff);

@@ -344,10 +344,10 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   XtSetSensitive(menuBar, false);
 
   CleanOutUnwantedVariables();
-  ReadBlankOuts();
   AllocateDataArrays();
   GenerateComputeOrder();	/* for Derived variables		*/
   GetUserTimeIntervals();
+  ReadBlankOuts();
 
   if (cfg.ProductionRun())	/* Do it again in case Flight# changed	*/
     setOutputFileName();
@@ -466,7 +466,6 @@ void StartProcessing(Widget w, XtPointer client, XtPointer call)
   finishWALL = time(NULL);
   finishCPU  = clock();
 
-  BlankOutBadData();
   stopProcessing();
   runSecondPassPrograms();
 
