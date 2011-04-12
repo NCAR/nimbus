@@ -181,7 +181,7 @@ void RealTimeLoop3()
 
     ApplyCalCoes(SampledData);
     AverageSampledData();
-    ComputeLowRateDerived();
+    ComputeLowRateDerived(SampledDataTimeToSeconds(SampledData));
  
     if (cfg.OutputSQL())
       psql->WriteSQL(timeStamp);

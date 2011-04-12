@@ -82,7 +82,7 @@ int LowRateLoop(time_t startTime, time_t endTime)
     if (SynthData == true)
       sd.InjectSyntheticData(thisTime); 
     
-    ComputeLowRateDerived();
+    ComputeLowRateDerived(thisTime);
 
     // cntr is to get us past buffer load-ups and goobery data at start of file.
     if (cntr++ > 30 &&

@@ -123,7 +123,7 @@ pts = ts;
     DecodeADSrecord((short *)ADSrecord, SampledData);
     ApplyCalCoes(SampledData);
     AverageSampledData();
-    ComputeLowRateDerived();
+    ComputeLowRateDerived(SampledDataTimeToSeconds(SampledData));
  
     if (cfg.OutputSQL())
       psql->WriteSQL(timeStamp);
