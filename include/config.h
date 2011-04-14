@@ -39,6 +39,7 @@ public:
   bool Interactive() const		{ return _interactive; }
   bool Despiking() const		{ return _despiking; }
   bool TimeShifting() const		{ return _timeShifting; }
+  bool BlankoutVariables() const	{ return _blankout; }
   bool QCenabled() const		{ return _qcEnabled; }
   bool ProductionRun() const		{ return _productionRun; }
   bool OutputNetCDF() const		{ return _outputNetCDF; }
@@ -74,6 +75,7 @@ public:
   void SetProductionRun(bool state)	{ _productionRun = state; }
   void SetDespiking(bool state)		{ _despiking = state; }
   void SetTimeShifting(bool state)	{ _timeShifting = state; }
+  void SetBlankoutVariables(bool state)	{ _blankout = state; }
   void SetQCenabled(bool state)		{ _qcEnabled = state; }
   void SetOutputNetCDF(bool state)	{ _outputNetCDF = state; }
   void SetOutputSQL(bool state)		{ _outputSQL = state; }
@@ -148,6 +150,7 @@ private:
   bool _productionRun;
   bool _despiking;
   bool _timeShifting;
+  bool _blankout;
   bool _qcEnabled;
   bool _outputNetCDF;
   bool _outputSQL;
