@@ -878,7 +878,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
     if (!var->add_att("Resolution", (int)probe.resolution)) return netCDF::NC_ERR;
     if (!var->add_att("nDiodes", probe.nDiodes)) return netCDF::NC_ERR;
-    if (!var->add_att("ResponseTime", 0.4)) return netCDF::NC_ERR;
+    if (!var->add_att("ResponseTime", (float)0.4)) return netCDF::NC_ERR;
     if (!var->add_att("ArmDistance", probe.armWidth * 10)) return netCDF::NC_ERR;
     if (!var->add_att("Rejected", "Roundness below 0.1, interarrival time below 1/20th of distribution peak")) return netCDF::NC_ERR;
     if (!var->add_att("ParticleAcceptMethod", "Reconstruction")) return netCDF::NC_ERR;
@@ -896,7 +896,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
     if (!var->add_att("Resolution", (int)probe.resolution)) return netCDF::NC_ERR;
     if (!var->add_att("nDiodes", probe.nDiodes)) return netCDF::NC_ERR;
-    if (!var->add_att("ResponseTime", 0.4)) return netCDF::NC_ERR;
+    if (!var->add_att("ResponseTime", (float)0.4)) return netCDF::NC_ERR;
     if (!var->add_att("ArmDistance", probe.armWidth * 10)) return netCDF::NC_ERR;
     if (!var->add_att("Rejected", "Roundness below 0.5, interarrival time below 1/20th of distribution peak")) return netCDF::NC_ERR;
     if (!var->add_att("ParticleAcceptMethod", "Reconstruction")) return netCDF::NC_ERR;
@@ -929,7 +929,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!var->add_att("EffectiveAreaWidth", probe.numBins, &probe.eaw[0])) return netCDF::NC_ERR;
     if (!var->add_att("CellSizes", probe.numBins+1, &probe.bin_endpoints[0])) return netCDF::NC_ERR;
     if (!var->add_att("CellSizeUnits", "micrometers")) return netCDF::NC_ERR;
-    if (!var->add_att("Density", 1.0)) return netCDF::NC_ERR;
+    if (!var->add_att("Density", (float)1.0)) return netCDF::NC_ERR;
   }
   if (!var->put(&conc_all[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
 
@@ -948,7 +948,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!var->add_att("EffectiveAreaWidth", probe.numBins, &probe.eaw[0])) return netCDF::NC_ERR;
     if (!var->add_att("CellSizes", probe.numBins+1, &probe.bin_endpoints[0])) return netCDF::NC_ERR;
     if (!var->add_att("CellSizeUnits", "micrometers")) return netCDF::NC_ERR;
-    if (!var->add_att("Density", 1.0)) return netCDF::NC_ERR;
+    if (!var->add_att("Density", (float)1.0)) return netCDF::NC_ERR;
   }
   if (!var->put(&conc_round[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
 
