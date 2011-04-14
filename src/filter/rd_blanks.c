@@ -52,19 +52,6 @@ void ReadBlankOuts()
     sscanf(bo[i], "%s %d:%d:%d %d:%d:%d", target,
 	&st.tm_hour, &st.tm_min, &st.tm_sec, &et.tm_hour, &et.tm_min, &et.tm_sec);
 
-    /* Turn time period into record numbers. */
-/*
-    sTime[3] = SecondsSinceMidnite(sTime);
-    eTime[3] = SecondsSinceMidnite(eTime);
-
-    if (eTime[3] == sTime[3])
-      eTime[3] = sTime[3] + 1;
-
-    if (eTime[3] < sTime[3])
-      eTime[3] += 86400;
-
-    std::pair<int, int> tm(sTime[3], eTime[3]);
-*/
     std::pair<int, int> tm(mktime(&st), mktime(&et));
 
     if (strcmp(target, "ALL") == 0)
