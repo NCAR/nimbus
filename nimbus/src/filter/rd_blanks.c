@@ -12,7 +12,7 @@ DESCRIPTION:	Read proj/###/Production/BlanksOuts file, which contains
 
 INPUT:		${PROJ_DIR}/###/Production/BlankOuts
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2006
+COPYRIGHT:	University Corporation for Atmospheric Research, 2006-2011
 -------------------------------------------------------------------------
 */
 
@@ -24,11 +24,12 @@ static void clear_sacred_variables();
 /* -------------------------------------------------------------------- */
 void ReadBlankOuts()
 {
-  int	index;
-  int	sTime[4], eTime[4];
   char	*bo[512], target[NAMELEN];
 
   struct tm st, et;
+
+  if (cfg.BlankoutVariables() == false)
+    return;
 
   sprintf(buffer, "%s.%s", BLANKVARS.c_str(), cfg.FlightNumber().c_str());
   if (AccessProjectFile(buffer, "r") == FALSE)
@@ -56,12 +57,13 @@ void ReadBlankOuts()
 
     if (strcmp(target, "ALL") == 0)
     {
-      printf("Blanking out all raw variables for %d %d\n", sTime[3], eTime[3]);
+      printf("Blanking out all raw variables for %s\n", bo[i]);
       for (size_t j = 0; j < raw.size(); ++j)
         raw[j]->blank_out.push_back(tm);
     }
     else
     {
+      int index;
       if ((index = SearchTable(raw, target)) != ERR)
         raw[index]->blank_out.push_back(tm);
 

@@ -312,6 +312,8 @@ void ConfigurationDump()
 	cfg.Despiking() ? "enabled" : "disabled"); LogMessage(buffer);
   sprintf(buffer, "  Time-shifting %s.",
 	cfg.TimeShifting() ? "enabled" : "disabled"); LogMessage(buffer);
+  sprintf(buffer, "  Blankouts %s.",
+	cfg.BlankoutVariables() ? "enabled" : "disabled"); LogMessage(buffer);
   sprintf(buffer, "  Honeywell IRS cleanup %s.",
 	cfg.HoneyWellCleanup() ? "enabled" : "disabled"); LogMessage(buffer);
   sprintf(buffer, "  Intertial time-shift %s.",

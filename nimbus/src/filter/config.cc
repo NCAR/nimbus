@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	config.cc
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2005
+COPYRIGHT:	University Corporation for Atmospheric Research, 2005-2011
 -------------------------------------------------------------------------
 */
 
@@ -21,6 +21,7 @@ Config::Config() : _adsFileExtension(".ads")
   SetProductionRun(false);
   SetDespiking(true);
   SetTimeShifting(true);
+  SetBlankoutVariables(true);
   SetQCenabled(false);		// Currently not implemented.
   SetProcessingMode(PostProcessing);
   SetOutputNetCDF(true);

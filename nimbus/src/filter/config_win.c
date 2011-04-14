@@ -17,8 +17,7 @@ STATIC FNS:	sMarkDirty()
 DESCRIPTION:	Allow user to edit Flight Header Info (i.e. Date, Flight
 		number, etc...).
 
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2006
+COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2011
 -------------------------------------------------------------------------
 */
 
@@ -43,7 +42,7 @@ static const size_t nTimeSliceInfo = 2;
 
 static Widget	ConfigShell = 0, ConfigWindow = 0, flightText[nFlightInfo],
 		lowRateButton, sampleRateButton, highRate25Button,
-		highRate50Button, highRate100Button, despikeButton, 
+		highRate50Button, highRate100Button, despikeButton, blankButton,
 		lagButton, irsCleanupButton, inertialShiftButton, interpB[3],
 		kmlButton, navButton, twoDpmB[3], twoDarrB[10];
 
@@ -123,6 +122,12 @@ void SetTimeShifting(Widget w, XtPointer client, XmToggleButtonCallbackStruct *c
 }
 
 /* -------------------------------------------------------------------- */
+void SetBlankouts(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
+{
+  cfg.SetBlankoutVariables(call->set);
+}
+
+/* -------------------------------------------------------------------- */
 void SetHWcleanup(Widget w, XtPointer client, XmToggleButtonCallbackStruct *call)
 {
   cfg.SetHoneyWellCleanup(call->set);
@@ -199,6 +204,7 @@ void SetConfigWinFromConfig()
 
   XmToggleButtonSetState(despikeButton, cfg.Despiking(), false);
   XmToggleButtonSetState(lagButton, cfg.TimeShifting(), false);
+  XmToggleButtonSetState(blankButton, cfg.BlankoutVariables(), false);
   XmToggleButtonSetState(irsCleanupButton, cfg.HoneyWellCleanup(), false);
   XmToggleButtonSetState(inertialShiftButton, cfg.InertialShift(), false);
 }
@@ -698,6 +704,11 @@ void createOptions(Widget parent)
 		(XtCallbackProc)SetTimeShifting, NULL);
 
   n = 0;
+  blankButton = XmCreateToggleButton(optRC, "blankButton", args, n);
+  XtAddCallback(blankButton, XmNvalueChangedCallback,
+		(XtCallbackProc)SetBlankouts, NULL);
+
+  n = 0;
   irsCleanupButton = XmCreateToggleButton(optRC, "hwCleanButton", args, n);
   XtAddCallback(irsCleanupButton, XmNvalueChangedCallback,
 		(XtCallbackProc)SetHWcleanup, NULL);
@@ -709,6 +720,7 @@ void createOptions(Widget parent)
 
   XtManageChild(despikeButton);
   XtManageChild(lagButton);
+  XtManageChild(blankButton);
   XtManageChild(irsCleanupButton);
   XtManageChild(inertialShiftButton);
 

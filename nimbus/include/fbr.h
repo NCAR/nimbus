@@ -211,6 +211,8 @@ static String fallback_resources[] =
   "*despikeButton.traversalOn:			False",
   "*lagButton.labelString:			Time shifting",
   "*lagButton.traversalOn:			False",
+  "*blankButton.labelString:			Blankout Variables",
+  "*blankButton.traversalOn:			False",
   "*hwCleanButton.labelString:			Honeywell IRS cleanup (ADS2 only)",
   "*hwCleanButton.traversalOn:			False",
   "*inertialShift.labelString:			1 second GPS/CMIGITS shift (ADS2 only)",

@@ -8,7 +8,7 @@ ENTRY POINTS:	Initialize()
 		ProcessArgv()
 		ReadBatchFile()
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-05
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2011
 -------------------------------------------------------------------------
 */
 
@@ -123,6 +123,7 @@ void ProcessArgv(int argc, char **argv)
         cfg.SetProcessingRate(Config::SampleRate);
         cfg.SetTimeShifting(false);
         cfg.SetDespiking(false);
+        cfg.SetBlankoutVariables(false);
         cfg.SetOutputSQL(true);
         if (strcmp(argv[i], "-rt") == 0)	/* RealTime ADS2 */
           RTinit_ADS2();
