@@ -12,6 +12,7 @@ class netCDF
 {
 public:
   netCDF(Config & cfg);
+  ~netCDF();
 
   NcFile *ncid() const { return _file; }
 

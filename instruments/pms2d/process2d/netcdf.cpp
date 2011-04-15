@@ -44,6 +44,11 @@ netCDF::netCDF(Config & cfg) : _file(0), _mode(NcFile::Write), _tas(0)
     cout << "TASX variable found, will use instead of tas in 2D records.\n";
 }
 
+netCDF::~netCDF()
+{
+  _file->close();
+}
+
 void netCDF::CreateNetCDFfile(Config & cfg)
 {
   if (_file && _file->is_valid())	// Was successfully opened in ctor, leave.
@@ -420,7 +425,7 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
   
   
   
-    //Misc
+  //Misc
   if (_tas == 0)
   {
     varname="poisson_coeff1"+probe.suffix;
