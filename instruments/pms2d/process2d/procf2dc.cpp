@@ -66,7 +66,7 @@ typedef struct type_buffer {
 
 
 //--------Find index for maximum element of an array---------
-int maxindex(double x[],int n)
+int maxindex(float x[],int n)
 {
   int ixmax=0;
   double xmax=0;
@@ -107,7 +107,7 @@ double invert3(double m[3][3], double n[3][3]) {
 
 
 // ----------------DOUBLE POISSON FIT ROUTINE----------------
-double dpoisson_fit(double x[], double y[], double a[3], int n){
+double dpoisson_fit(float x[], float y[], double a[3], int n){
    //update the "a" fit matrix for a double-poisson fit.
    //Sum of squares of residual values is returned.
    //Uses the Gauss-Newton nonlinear least squares regression method.
@@ -580,10 +580,10 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   int iitq=0;   //current index of itq
   double bestfit[3]={0};
   double itq[nitq]={1};
-  double it_endpoints[cfg.nInterarrivalBins+1], it_midpoints[cfg.nInterarrivalBins], fitspec[cfg.nInterarrivalBins];
+  float it_endpoints[cfg.nInterarrivalBins+1], it_midpoints[cfg.nInterarrivalBins], fitspec[cfg.nInterarrivalBins];
   int count_it[numtimes][cfg.nInterarrivalBins+binoffset];
-  for (int i=0; i<=cfg.nInterarrivalBins; i++) it_endpoints[i]=pow(10, ((float)i-35)/5.0);  
-  for (int i=0; i<cfg.nInterarrivalBins; i++) it_midpoints[i]=pow(10, ((float)i-34.5)/5.0);  
+  for (int i=0; i <= cfg.nInterarrivalBins; i++) it_endpoints[i] = pow(10, ((float)i-35)/5.0);
+  for (int i=0; i < cfg.nInterarrivalBins; i++) it_midpoints[i] = pow(10, ((float)i-34.5)/5.0);
 
   if (ncfile.hasTASX())
     ncfile.readTrueAirspeed(&data.tas[0], numtimes);
@@ -688,7 +688,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
                     }
                  }
 
-                 for (int i=0; i<cfg.nInterarrivalBins; i++) fitspec[i]=count_it[itime][i+binoffset];
+                 for (int i = 0; i < cfg.nInterarrivalBins; i++) fitspec[i] = count_it[itime][i+binoffset];
                  dpoisson_fit(it_midpoints, fitspec, bestfit, cfg.nInterarrivalBins);
                  data.cpoisson1[itime]=(float)bestfit[0];  //Save factors
                  data.cpoisson2[itime]=(float)bestfit[1];
@@ -862,7 +862,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
 
   varname = "interarrival_endpoints";
   if ((var = dataFile->get_var(varname.c_str())) == 0) {
-    if (!(var = dataFile->add_var(varname.c_str(), ncDouble, ncfile.intbindim()))) return netCDF::NC_ERR;
+    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, ncfile.intbindim()))) return netCDF::NC_ERR;
     if (!var->put(it_endpoints, cfg.nInterarrivalBins+1)) return netCDF::NC_ERR; 
   }
 
