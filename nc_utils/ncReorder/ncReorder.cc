@@ -12,7 +12,7 @@ DESCRIPTION:	Reorder an existing netCDF file, changing the UNLIMITED
 		dimension to a fixed dimension.  This has the affect of
 		making all the data for given variable contiguous on disk.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2004-10
+COPYRIGHT:	University Corporation for Atmospheric Research, 2004-11
 -------------------------------------------------------------------------
 */
 
@@ -129,6 +129,11 @@ int main(int argc, char *argv[])
         case ncFloat:
           outFile.get_var(i)->add_att(att->name(), att->num_vals(),
 		(const float *)att->values()->base());
+          break;
+
+        case ncDouble:
+          outFile.get_var(i)->add_att(att->name(), att->num_vals(),
+		(const double *)att->values()->base());
           break;
 
         case ncInt:
