@@ -19,7 +19,7 @@ DESCRIPTION:	Header File declaring amlib functions.
 extern const double FeetToMeters, MPS2, KNOTS_TO_MPS, MPS_TO_KNOTS, FTMIN,
 	Kelvin, WH_GRAVITY, StdPress, EARTH_RADIUS, OMEGAE, CKTMS, GRAVITY,
 	MolecularWeightWater, RAD_DEG, DEG_RAD, MolecularWeightDryAir,
-	Rd_DIV_Cpd, StdSpeedOfSound, Tr, Cp, Rd;
+	Rd_DIV_Cpd, StdSpeedOfSound, Tr, Cp, Rd, Cw, Lv;
 
 /* Resolver/synchro conversion equation.  See amlib/xlate/const.c
  */
