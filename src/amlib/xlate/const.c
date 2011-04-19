@@ -31,12 +31,24 @@ const double StdPress = 1013.25;
 const double Tr = 15.0 + Kelvin;
 
 // The specific gas constant for dry air (J/(kg*K))
-const double Rd = 287.05832;
+const double Rd = 8314.472 / 28.96194;
 
 /* Specific heat capacity of dry air (J/(kg*K))
  * Computed as: (7/2) * Rd
  */
-const double Cp = 1004.7;
+const double Cp = 7.0 / 2.0 * Rd;
+
+/* Specific heat of water vapor (J/(kg*K))
+ */
+const double Cpv = 1875.0;
+
+/* Specific heat of liquid water (J/(kg/K))
+ */
+const double Cw = 4218.0;
+
+/* Latent heat of vaporizattion of water (J/(kg/K))
+ */
+const double Lv = -2370.0;
 
 // Gamma for an ideal gas (do not change this to actually divide Rd/Cpd).
 const double Rd_DIV_Cpd = 2.0 / 7.0;
