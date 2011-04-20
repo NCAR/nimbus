@@ -44,7 +44,7 @@ void parcel_reset(int num)
 /* -------------------------------------------------------------------- */
 void deadReckInit(var_base *varp)
 {
-  NR_TYPE  *tmp;
+  float *tmp;
   if ((tmp = GetDefaultsValue("DECLINATION", varp->name)) == NULL)
   {
     sprintf(buffer, "Value set to %f in AMLIB function deadReckInit.\n", decl);

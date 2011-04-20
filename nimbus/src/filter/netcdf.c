@@ -6,7 +6,6 @@ FULL NAME:	NetCDF IO
 
 ENTRY POINTS:	CreateNetCDF()
 		WriteNetCDF()
-		WriteNetCDF_MRF()
 		SyncNetCDF()
 		CloseNetCDF()
 		SetBaseTime()
@@ -27,7 +26,7 @@ DESCRIPTION:	This file has the routines necessary to Create and write
 		data for distribution of NCAR/RAF aircraft data in netCDF
 		format.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2010
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2011
 -------------------------------------------------------------------------
 */
 
@@ -70,10 +69,8 @@ struct missDat	/* (Time gap) / (missing data) information */
 
 static int	fd = -1;
 static struct tm StartFlight;
-static void	*data_p[MAX_VARIABLES];	// Data pointers to pass into ncrecput()
 static long	recordNumber = 0;
 static long	TimeVar = 0;
-static int	startVarIndx = 0;
 
 // To be depracated.
 static int	baseTimeID;
@@ -90,7 +87,7 @@ int	FlightDate[3];		// HACK: for amlib
 char	dateProcessed[64];	// For export to psql.cc
 
 
-static int	writeBlank(int varid, long start[], long count[], int OutputRate);
+static int	writeBlank(int varid, size_t start[], size_t count[], int OutputRate);
 static void	markDependedByList(const char target[]), writeTimeUnits();
 static void	clearDependedByList(), printDependedByList(), writeMinMax();
 static void	addCommonVariableAttributes(const var_base *var), addLandmarks();
@@ -118,7 +115,7 @@ void SetBaseTime(NR_TYPE *record)
     return;
 
   BaseTime = timegm(&StartFlight);
-  ncvarput1(fd, baseTimeID, NULL, (void *)&BaseTime);
+  nc_put_var1_long(fd, baseTimeID, NULL, &BaseTime);
 
   if (BaseTime <= 0)
   {
@@ -132,15 +129,15 @@ static int	timeOffsetID, timeVarID;
 
 
 /* -------------------------------------------------------------------- */
-static void putGlobalAttribute(const char attrName[], NR_TYPE *value)
+static void putGlobalAttribute(const char attrName[], const float *value)
 {
-  ncattput(fd, NC_GLOBAL, attrName, NC_FLOAT, 1, (void *)value);
+  nc_put_att_float(fd, NC_GLOBAL, attrName, NC_FLOAT, 1, value);
 }
 
 /* -------------------------------------------------------------------- */
 static void putGlobalAttribute(const char attrName[], const char *value)
 {
-  ncattput(fd, NC_GLOBAL, attrName, NC_CHAR, strlen(value)+1, (void *)value);
+  nc_put_att_text(fd, NC_GLOBAL, attrName, strlen(value)+1, value);
 }
 
 /* -------------------------------------------------------------------- */
@@ -156,9 +153,9 @@ void CreateNetCDF(const char fileName[])
 
   ncopts = NC_VERBOSE;
 
-  if ((fd = nccreate(fileName, NC_CLOBBER)) == -1)
+  if (nc_create(fileName, NC_CLOBBER, &fd) != NC_NOERR)
   {
-    HandleError("Failed to create or open output file.");
+    HandleError("netcdf.c: Failed to create or open output file.");
   }
 
   if (cfg.ProductionRun())
@@ -169,8 +166,9 @@ void CreateNetCDF(const char fileName[])
 
   /* Dimensions.
    */
-  int TimeDim = ncdimdef(fd, "Time", NC_UNLIMITED);
-  _rateDimIDs[1] = ncdimdef(fd, "sps1", 1);
+  int TimeDim;
+  nc_def_dim(fd, "Time", NC_UNLIMITED, &TimeDim);
+  nc_def_dim(fd, "sps1", 1, &_rateDimIDs[1]);
 
   /* Global Attributes.
    */
@@ -248,7 +246,7 @@ void CreateNetCDF(const char fileName[])
   putGlobalAttribute("zaxis_coordinate", cfg.CoordinateAltitude());
   putGlobalAttribute("time_coordinate", cfg.CoordinateTime());
 
-  NR_TYPE x = -32767.0;
+  float x = -32767.0;
   putGlobalAttribute("geospatial_lat_min", &x);
   putGlobalAttribute("geospatial_lat_max", &x);
   putGlobalAttribute("geospatial_lon_min", &x);
@@ -289,36 +287,32 @@ void CreateNetCDF(const char fileName[])
    */
   int ndims, dims[3];
   dims[0] = TimeDim;
-  int indx = 0;	// Index for data_p
 
 
   /* Time Variables.
    */
   if (cfg.isADS2())  // When you remove these 2, look TimeOffset and make sure everything Jives.
   {
-    baseTimeID = ncvardef(fd, "base_time", NC_LONG, 0, 0);
+    nc_def_var(fd, "base_time", NC_LONG, 0, 0, &baseTimeID);
     strcpy(buffer, "seconds since 1970-01-01 00:00:00 +0000");
-    ncattput(fd, baseTimeID, "units", NC_CHAR, strlen(buffer)+1, buffer);
+    nc_put_att_text(fd, baseTimeID, "units", strlen(buffer)+1, buffer);
     strcpy(buffer, "Start time of data recording.");
-    ncattput(fd, baseTimeID, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
+    nc_put_att_text(fd, baseTimeID, "long_name", strlen(buffer)+1, buffer);
   }
 
-  timeVarID = ncvardef(fd, "Time", NC_LONG, 1, dims);
+  nc_def_var(fd, "Time", NC_LONG, 1, dims, &timeVarID);
   strcpy(buffer, "time of measurement");
-  ncattput(fd, timeVarID, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
+  nc_put_att_text(fd, timeVarID, "long_name", strlen(buffer)+1, buffer);
   strcpy(buffer, "time");
-  ncattput(fd, timeVarID, "standard_name", NC_CHAR, strlen(buffer)+1, buffer);
-  data_p[indx++] = (void *)&TimeVar;
+  nc_put_att_text(fd, timeVarID, "standard_name", strlen(buffer)+1, buffer);
 
   if (cfg.isADS2())
   {
-    timeOffsetID = ncvardef(fd, "time_offset", NC_FLOAT, 1, dims);
+    nc_def_var(fd, "time_offset", NC_FLOAT, 1, dims, &timeOffsetID);
     strcpy(buffer, "Seconds since base_time.");
-    ncattput(fd, timeOffsetID, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
-    data_p[indx++] = (void *)&TimeOffset;
+    nc_put_att_text(fd, timeOffsetID, "long_name", strlen(buffer)+1, buffer);
   }
 
-  startVarIndx = indx;
 
   // Write units for both Time & time_offset.
   writeTimeUnits();
@@ -356,7 +350,7 @@ void CreateNetCDF(const char fileName[])
     {
       char tmp[32];
       sprintf(tmp, "sps%d", rp->OutputRate);
-      _rateDimIDs[rp->OutputRate] = ncdimdef(fd, tmp, rp->OutputRate);
+      nc_def_dim(fd, tmp, rp->OutputRate, &_rateDimIDs[rp->OutputRate]);
     }
 
     dims[1] = _rateDimIDs[rp->OutputRate];
@@ -372,7 +366,7 @@ void CreateNetCDF(const char fileName[])
       {
         char tmp[32];
         sprintf(tmp, "Vector%d", rp->Length);
-        _vectorDimIDs[rp->Length] = ncdimdef(fd, tmp, rp->Length);
+        nc_def_dim(fd, tmp, rp->Length, &_vectorDimIDs[rp->Length]);
       }
 
       ndims = 3;
@@ -380,27 +374,33 @@ void CreateNetCDF(const char fileName[])
     }
 
 //printf("RAW: %s\n", rp->name);
-    rp->varid = ncvardef(fd, rp->name, NC_FLOAT, ndims, dims);
+    nc_def_var(fd, rp->name, NC_FLOAT, ndims, dims, &rp->varid);
 
     addCommonVariableAttributes(rp);
 
-    ncattput(fd, rp->varid, "SampledRate", NC_LONG, 1, &rp->SampleRate);
+    nc_put_att_long(fd, rp->varid, "SampledRate", NC_LONG, 1, (long *)&rp->SampleRate);
 
     if (cfg.TimeShifting() && rp->StaticLag != 0)
     {
-      ncattput(fd, rp->varid, "TimeLag", NC_LONG, 1, &rp->StaticLag);
-      ncattput(fd, rp->varid, "TimeLagUnits", NC_CHAR, 13, "milliseconds");
+      nc_put_att_int(fd, rp->varid, "TimeLag", NC_INT, 1, &rp->StaticLag);
+      nc_put_att_text(fd, rp->varid, "TimeLagUnits", 13, "milliseconds");
     }
 
     if (cfg.Despiking() && rp->SpikeSlope != 0.0)
-      ncattput(fd, rp->varid, "DespikeSlope", NC_FLOAT, 1, &rp->SpikeSlope);
+      nc_put_att_float(fd, rp->varid, "DespikeSlope", NC_FLOAT, 1, &rp->SpikeSlope);
 
-    ncattput(fd, rp->varid, "DataQuality", NC_CHAR, strlen(rp->DataQuality)+1,
+    nc_put_att_text(fd, rp->varid, "DataQuality", strlen(rp->DataQuality)+1,
 		rp->DataQuality);
 
     if (rp->cof.size() > 0)
-      ncattput(fd, rp->varid, "CalibrationCoefficients", NC_FLOAT,
-               rp->cof.size(), &rp->cof[0]);
+    {
+      std::vector<float> cof;
+      for (size_t j = 0; j < rp->cof.size(); ++j)
+        cof.push_back((float)rp->cof[i]);
+
+      nc_put_att_float(fd, rp->varid, "CalibrationCoefficients", NC_FLOAT,
+               cof.size(), &cof[0]);
+    }
 
     if (rp->Modulo)
     {
@@ -418,14 +418,6 @@ void CreateNetCDF(const char fileName[])
       AddPMS1dAttrs(fd, rp);
 
     CheckAndAddAttrs(fd, rp->varid, rp->name);
-
-    if (rp->OutputRate == Config::LowRate)
-      data_p[indx++] = (void *)&AveragedData[rp->LRstart];
-    else
-    if (rp->OutputRate == rp->SampleRate && rp->OutputRate != (size_t)cfg.ProcessingRate())
-      data_p[indx++] = (void *)&SampledData[rp->SRstart];
-    else
-      data_p[indx++] = (void *)&HighRateData[rp->HRstart];
   }
 
 
@@ -452,7 +444,7 @@ void CreateNetCDF(const char fileName[])
     {
       char tmp[32];
       sprintf(tmp, "sps%d", dp->OutputRate);
-      _rateDimIDs[dp->OutputRate] = ncdimdef(fd, tmp, dp->OutputRate);
+      nc_def_dim(fd, tmp, dp->OutputRate, &_rateDimIDs[dp->OutputRate]);
     }
 
     dims[1] = _rateDimIDs[dp->OutputRate];
@@ -468,7 +460,7 @@ void CreateNetCDF(const char fileName[])
         {
         char tmp[32];
         sprintf(tmp, "Vector%d", dp->Length);
-        _vectorDimIDs[dp->Length] = ncdimdef(fd, tmp, dp->Length);
+        nc_def_dim(fd, tmp, dp->Length, &_vectorDimIDs[dp->Length]);
         }
 
       ndims = 3;
@@ -476,11 +468,11 @@ void CreateNetCDF(const char fileName[])
     }
 
 //printf("DER: %s\n", dp->name); fflush(stdout);
-    dp->varid = ncvardef(fd, dp->name, NC_FLOAT, ndims, dims);
+    nc_def_var(fd, dp->name, NC_FLOAT, ndims, dims, &dp->varid);
 
     addCommonVariableAttributes(dp);
 
-    ncattput(fd, dp->varid, "DataQuality", NC_CHAR, strlen(dp->DataQuality)+1,
+    nc_put_att_text(fd, dp->varid, "DataQuality", strlen(dp->DataQuality)+1,
 		dp->DataQuality);
 
     sprintf(buffer, "%d", dp->ndep);
@@ -490,7 +482,7 @@ void CreateNetCDF(const char fileName[])
       strcat(buffer, dp->depend[j]);
     }
 
-    ncattput(fd, dp->varid, "Dependencies",NC_CHAR,strlen(buffer)+1,buffer);
+    nc_put_att_text(fd, dp->varid, "Dependencies", strlen(buffer)+1,buffer);
 
     if (dp->Modulo)
     {
@@ -498,7 +490,7 @@ void CreateNetCDF(const char fileName[])
 
       mod[0] = (float)dp->Modulo->value[0];
       mod[1] = (float)dp->Modulo->value[1];
-      ncattput(fd, dp->varid, "modulus_range", NC_FLOAT, 2, mod);
+      nc_put_att_float(fd, dp->varid, "modulus_range", NC_FLOAT, 2, mod);
     }
 
     CheckAndAddAttrs(fd, dp->varid, dp->name);
@@ -507,45 +499,29 @@ void CreateNetCDF(const char fileName[])
 	(dp->ProbeType & PROBE_PMS2D || dp->ProbeType & PROBE_PMS1D ||
 	 dp->ProbeType & PROBE_RDMA || dp->ProbeType & PROBE_CLMT))
       AddPMS1dAttrs(fd, dp);
-
-    if (dp->OutputRate == Config::LowRate)
-      data_p[indx++] = (void *)&AveragedData[dp->LRstart];
-    else
-      data_p[indx++] = (void *)&HighRateData[dp->HRstart];
   }
 
   ReadMetaData(fd);
+
+int old_fill_mode;
+nc_set_fill(fd, NC_NOFILL, &old_fill_mode); /* set nofill */
 
 }	/* END CREATENETCDF */
 
 /* -------------------------------------------------------------------- */
 void SwitchNetCDFtoDataMode()
 {
-  ncendef(fd);
-  ncsync(fd);
+  nc_enddef(fd);
+  nc_sync(fd);
 
 }	/* END SWITCHNETCDFTODATAMODE */
 
 /* -------------------------------------------------------------------- */
-void replaceNANwithMissingValue()
-{
-  for (size_t i = 0; i < nLRfloats; ++i)
-    if (isnan(AveragedData[i]))
-      AveragedData[i] = MISSING_VALUE;
-
-  for (size_t i = 0; i < nSRfloats; ++i)
-    if (isnan(SampledData[i]))
-      SampledData[i] = MISSING_VALUE;
-
-  if (HighRateData)
-    for (size_t i = 0; i < nHRfloats; ++i)
-      if (isnan(HighRateData[i]))
-        HighRateData[i] = MISSING_VALUE;
-}
-
-/* -------------------------------------------------------------------- */
 void WriteNetCDF()
 {
+  float *data;
+  int status;
+
   struct missDat	*dp;
   static int		errCnt = 0;
   static bool		firstWrite = true;
@@ -556,30 +532,105 @@ void WriteNetCDF()
     firstWrite = false;
   }
 
-  replaceNANwithMissingValue();
+  size_t start[3], count[3];
+  start[0] = recordNumber; start[1] = start[2] = 0;
+  count[0] = 1;
 
-  if (ncrecput(fd, recordNumber, data_p) == ERR)
+  nc_put_var1_long(fd, timeVarID, start, &TimeVar);
+  if (cfg.isADS2())
+    nc_put_var1_float(fd, timeOffsetID, start, &TimeOffset);
+
+  for (size_t i = 0; i < raw.size(); ++i)
   {
-    if (errno == ENOSPC)
-    {
-      LogMessage("Disk full, closing file.\n");
-      CloseNetCDF();
-      PauseFlag = true;
-      PauseWhatToDo = P_QUIT;
+    RAWTBL *rp;
+    if ((rp = raw[i])->Output == false)
+      continue;
 
-      return;
+    size_t N = rp->Length * rp->OutputRate;
+    count[1] = rp->OutputRate;
+    count[2] = rp->Length;
+
+    data = new float[N];
+
+    if (rp->OutputRate == Config::LowRate)
+    {
+      for (size_t j = 0; j < N; ++j)
+        data[j] = (float)AveragedData[rp->LRstart + j];
+    }
+    else
+    {
+      if (rp->OutputRate == rp->SampleRate && rp->OutputRate != (size_t)cfg.ProcessingRate())
+      {
+        for (size_t j = 0; j < N; ++j)
+          data[j] = (float)SampledData[rp->SRstart + j];
+      }
+      else
+      {
+        for (size_t j = 0; j < N; ++j)
+          data[j] = (float)HighRateData[rp->HRstart + j];
+      }
     }
 
-    fprintf(stderr,
-            "WriteNetCDF: ncrecput failure, RecordNumber = %ld, errno = %d\n",
-            recordNumber, errno);
+    for (size_t j = 0; j < N; ++j)
+      if (isnan(data[j]))
+        data[j] = (float)MISSING_VALUE;
 
-    if (++errCnt > 8)
+    status = nc_put_vara_float(fd, rp->varid, start, count, data);
+    if (status != NC_NOERR)
     {
       fprintf(stderr,
-              "Too many write errors, closing file and exiting...\n");
-      quit();
+            "WriteNetCDF: write failure, variable %s, RecordNumber = %ld, status = %d\n",
+            rp->name, recordNumber, status);
+      fprintf(stderr, "%s\n", nc_strerror(status));
+      ++errCnt;
     }
+    delete [] data;
+  }
+
+
+  for (size_t i = 0; i < derived.size(); ++i)
+  {
+    DERTBL *dp;
+    if ((dp = derived[i])->Output == false)
+      continue;
+
+    size_t N = dp->Length * dp->OutputRate;
+    count[1] = dp->OutputRate;
+    count[2] = dp->Length;
+
+    data = new float[N];
+
+    if (dp->OutputRate == Config::LowRate)
+    {
+      for (size_t j = 0; j < N; ++j)
+        data[j] = (float)AveragedData[dp->LRstart + j];
+    }
+    else
+    {
+      for (size_t j = 0; j < N; ++j)
+        data[j] = (float)HighRateData[dp->HRstart + j];
+    }
+
+    for (size_t j = 0; j < N; ++j)
+      if (isnan(data[j]))
+        data[j] = (float)MISSING_VALUE;
+
+    status = nc_put_vara_float(fd, dp->varid, start, count, data);
+    if (status != NC_NOERR)
+    {
+      fprintf(stderr,
+            "WriteNetCDF: write failure, variable %s, RecordNumber = %ld, status = %d\n",
+            dp->name, recordNumber, status);
+      fprintf(stderr, "%s\n", nc_strerror(status));
+      ++errCnt;
+    }
+    delete [] data;
+  }
+
+  if (errCnt > 10)
+  {
+    fprintf(stderr, "Too many write errors, closing file and exiting...\n");
+    quit();
   }
 
   TimeOffset += 1.0;
@@ -598,30 +649,6 @@ void WriteNetCDF()
       WriteMissingRecords();
   }
 }	/* END WRITENETCDF */
-
-/* -------------------------------------------------------------------- */
-void WriteNetCDF_MRF()
-{
-  int		indx = startVarIndx;
-  RAWTBL	*rp;
-
-  /* We need to reset SampleRate indices, because for HighRate, SampleData
-   * is from a circular buffer.
-   */
-  for (size_t i = 0; i < raw.size(); ++i)
-    if ((rp = raw[i])->Output)
-    {
-      // The 2nd part of this if test if for PMS1D, where highrate is still not
-      // 25Hz, but rather it's own 10hz.
-      if (rp->OutputRate == rp->SampleRate && rp->OutputRate != (size_t)cfg.ProcessingRate())
-        data_p[indx] = (void *)&SampledData[rp->SRstart];
-
-      ++indx;
-    }
-
-  WriteNetCDF();
-
-}	/* END WRITENETCDF_MRF */
 
 /* -------------------------------------------------------------------- */
 void QueueMissingData(int h, int m, int s, int nRecords)
@@ -653,7 +680,7 @@ void QueueMissingData(int h, int m, int s, int nRecords)
 static void WriteMissingRecords()
 {
   size_t	i;
-  NR_TYPE	*d, hour, minute, second;
+  float		*d, hour, minute, second;
   void		*ldp[MAX_VARIABLES];
   struct missDat	*dp;
 
@@ -662,7 +689,7 @@ static void WriteMissingRecords()
   /* 5000 is fastest sampling rate */
 
   for (i = 0; i < 5000; ++i)
-    d[i] = MISSING_VALUE;
+    d[i] = (float)MISSING_VALUE;
 
   int indx = 0;
   ldp[indx++] = (void *)&TimeVar;
@@ -729,11 +756,11 @@ void SyncNetCDF()
 {
   FormatTimeSegmentsForOutputFile(buffer);
 
-  ncredef(fd);
+  nc_redef(fd);
   putGlobalAttribute("TimeInterval", buffer);
-  ncendef(fd);
+  nc_enddef(fd);
 
-  ncsync(fd);
+  nc_sync(fd);
 
 }	/* END SYNCNETCDF */
 
@@ -743,14 +770,14 @@ void CloseNetCDF()
   if (fd == ERR)
     return;
 
-  ncredef(fd);
+  nc_redef(fd);
   writeMinMax();
   writeTimeUnits();
-  ncendef(fd);
+  nc_enddef(fd);
 
   SyncNetCDF();
 
-  ncclose(fd);
+  nc_close(fd);
   fd = ERR;
 
   LogMessage("Time interval(s) completed : ");
@@ -764,7 +791,7 @@ void BlankOutBadData()
 {
   char  *blanks[512];
   int	sTime[4], eTime[4];	// Requested Start/End Time.
-  long	start[3], count[3];
+  size_t start[3], count[3];
   int	fsTime[4], feTime[4];	// File Start/End Time.
 
 
@@ -811,7 +838,7 @@ void BlankOutBadData()
         markDependedByList(derived[i]->name);
         printDependedByList();
         }
-      if (writeBlank(derived[i]->varid, start, count, derived[i]->OutputRate) == ERR)
+      if (writeBlank(derived[i]->varid, start, count, derived[i]->OutputRate) != NC_NOERR)
         {
         sprintf(buffer, "Failure writing BadData for variable %s.\n",
                 derived[i]->name);
@@ -899,7 +926,7 @@ void BlankOutBadData()
           markDependedByList(derived[index]->name);
           printDependedByList();
           }
-        if (writeBlank(derived[index]->varid, start, count, derived[index]->OutputRate) == ERR)
+        if (writeBlank(derived[index]->varid, start, count, derived[index]->OutputRate) != NC_NOERR)
           {
           sprintf(buffer, "Failure writing BadData for variable %s.\n",
 		  derived[index]->name);
@@ -916,21 +943,21 @@ void BlankOutBadData()
 }       /* END BLANKOUTBADDATA */
 
 /* -------------------------------------------------------------------- */
-static int writeBlank(int varid, long start[], long count[], int OutputRate)
+static int writeBlank(int varid, size_t start[], size_t count[], int OutputRate)
 {
-  long		nValues;
-  NR_TYPE	*p;
+  long	nValues;
+  float	*p;
 
   count[1] = OutputRate;
   count[2] = 1;
 
   nValues = count[0] * count[1] * count[2];
-  p = new NR_TYPE[nValues];
+  p = new float[nValues];
 
   for (int i = 0; i < nValues; ++i)
-    p[i] = MISSING_VALUE;
+    p[i] = (float)MISSING_VALUE;
 
-  return(ncvarput(fd, varid, start, count, (void *)p));
+  return(nc_put_vara_float(fd, varid, start, count, p));
 }
 
 /* -------------------------------------------------------------------- */
@@ -942,8 +969,8 @@ static void writeMinMax()
     if (!rp->Output)
       continue;
 
-    ncattput(fd, rp->varid, "actual_min", NC_FLOAT, 1, &rp->min);
-    ncattput(fd, rp->varid, "actual_max", NC_FLOAT, 1, &rp->max);
+    nc_put_att_float(fd, rp->varid, "actual_min", NC_FLOAT, 1, &rp->min);
+    nc_put_att_float(fd, rp->varid, "actual_max", NC_FLOAT, 1, &rp->max);
     if (cfg.CoordinateLatitude().compare(rp->name) == 0) {
       putGlobalAttribute("geospatial_lat_min", &rp->min);
       putGlobalAttribute("geospatial_lat_max", &rp->max);
@@ -963,8 +990,8 @@ static void writeMinMax()
     if (!dp->Output)
       continue;
 
-    ncattput(fd, dp->varid, "actual_min", NC_FLOAT, 1, &dp->min);
-    ncattput(fd, dp->varid, "actual_max", NC_FLOAT, 1, &dp->max);
+    nc_put_att_float(fd, dp->varid, "actual_min", NC_FLOAT, 1, &dp->min);
+    nc_put_att_float(fd, dp->varid, "actual_max", NC_FLOAT, 1, &dp->max);
     if (cfg.CoordinateLatitude().compare(dp->name) == 0) {
       putGlobalAttribute("geospatial_lat_min", &dp->min);
       putGlobalAttribute("geospatial_lat_max", &dp->max);
@@ -987,10 +1014,10 @@ static void writeTimeUnits()
 
   StartFlight.tm_isdst = 0;
   strftime(buffer, 256, format, &StartFlight);
-  ncattput(fd, timeVarID, "units", NC_CHAR, strlen(buffer)+1, buffer);
-  ncattput(fd, timeVarID, "strptime_format", NC_CHAR, strlen(format)+1, format);
+  nc_put_att_text(fd, timeVarID, "units", strlen(buffer)+1, buffer);
+  nc_put_att_text(fd, timeVarID, "strptime_format", strlen(format)+1, format);
   if (cfg.isADS2())
-    ncattput(fd, timeOffsetID, "units", NC_CHAR, strlen(buffer)+1, buffer);
+    nc_put_att_text(fd, timeOffsetID, "units", strlen(buffer)+1, buffer);
 
 
   strftime(buffer, 256, ISO8601_Z, &StartFlight);
@@ -1050,45 +1077,47 @@ static void addCommonVariableAttributes(const var_base *var)
 {
   const char *p;
 
-  ncattput(fd, var->varid, "_FillValue", NC_FLOAT, 1, &MISSING_VALUE);
+  float miss_val = (float)MISSING_VALUE;
+  nc_put_att_float(fd, var->varid, "_FillValue", NC_FLOAT, 1, &miss_val);
+
 /* Once we support individual _FillValue in Q missing data routine, then use this line.
   float fv = VarDB_GetFillValue(var->name);
   ncattput(fd, var->varid, "_FillValue", NC_FLOAT, 1, &fv);
 */
 
   strcpy(buffer, var->Units.c_str());
-  ncattput(fd, var->varid, "units", NC_CHAR, strlen(buffer)+1, buffer);
+  nc_put_att_text(fd, var->varid, "units", strlen(buffer)+1, buffer);
 
   strcpy(buffer, var->LongName.c_str());
-  ncattput(fd, var->varid, "long_name", NC_CHAR, strlen(buffer)+1, buffer);
+  nc_put_att_text(fd, var->varid, "long_name", strlen(buffer)+1, buffer);
 
   p = VarDB_GetStandardNameName(var->name);
   if (p && strcmp(p, "None") != 0)
-    ncattput(fd, var->varid, "standard_name", NC_CHAR, strlen(p)+1, p);
+    nc_put_att_text(fd, var->varid, "standard_name", strlen(p)+1, p);
 
   if (fabs(VarDB_GetMinLimit(var->name)) + fabs(VarDB_GetMaxLimit(var->name)) > 0.0001)
   {
-    NR_TYPE   range[2];
+    float   range[2];
 
     range[0] = VarDB_GetMinLimit(var->name);
     range[1] = VarDB_GetMaxLimit(var->name);
-    ncattput(fd, var->varid, "valid_range", NC_FLOAT, 2, range);
+    nc_put_att_float(fd, var->varid, "valid_range", NC_FLOAT, 2, range);
   }
 
-  NR_TYPE zero = 0.0;
-  ncattput(fd, var->varid, "actual_min", NC_FLOAT, 1, &zero);
-  ncattput(fd, var->varid, "actual_max", NC_FLOAT, 1, &zero);
+  float zero = 0.0;
+  nc_put_att_float(fd, var->varid, "actual_min", NC_FLOAT, 1, &zero);
+  nc_put_att_float(fd, var->varid, "actual_max", NC_FLOAT, 1, &zero);
 
   if (var->CategoryList.size() > 0)
   {
     char temp[32];
     strcpy(temp, var->CategoryList[0].c_str());
     if ( strcmp(temp, "None") )
-      ncattput(fd, var->varid, "Category", NC_CHAR, strlen(temp)+1, temp);
+      nc_put_att_text(fd, var->varid, "Category", strlen(temp)+1, temp);
   }
 
   if (var->SerialNumber.length() > 0)
-    ncattput(fd, var->varid, "SerialNumber", NC_CHAR,
+    nc_put_att_text(fd, var->varid, "SerialNumber",
 	var->SerialNumber.length()+1, var->SerialNumber.c_str());
 
 }	/* END ADDCOMMONVARIABLEATTRIBUTES */

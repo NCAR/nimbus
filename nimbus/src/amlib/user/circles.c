@@ -26,7 +26,7 @@ COPYRIGHT:  University Corporation for Atmospheric Research, 1995,1998
 #include "nimbus.h"
 #include "amlib.h"
 
-#define MAX_CIRCLE  3
+static const int nCircles = 3;
 
 static int  reset = TRUE;
 
@@ -34,16 +34,15 @@ static NR_TYPE  heading,      /* Current heading shoud be    */
                 neg_heading,  /* Opposite direction      */
                 distance,     /* Distance of circumference covered  */
                 thdgAccum,     /* Distance of circumference covered  */
-                Circles[MAX_CIRCLE], circleSize;
+                Circles[nCircles], circleSize;
+
 /*  Values from /home/local/proj/defaults/Defaults on 29 April 1998  RLR  */
-static NR_TYPE  Minutes[MAX_CIRCLE] = {40, 50, 60};
+static float  Minutes[] = {40, 50, 60};
 
 /* -------------------------------------------------------------------- */
 void initCircles(var_base *varp)
 {
-  int  i;
-  NR_TYPE  *mins;
-  NR_TYPE  *tmp;
+  float *mins, *tmp;
 
   if ((tmp = GetDefaultsValue("CIRCLES", varp->name)) == NULL)
   {
@@ -54,7 +53,7 @@ void initCircles(var_base *varp)
   else
     mins = tmp;
 
-  for (i = 0; i < MAX_CIRCLE; ++i)
+  for (int i = 0; i < nCircles; ++i)
     Circles[i] = 360.0 / (mins[i] * 60.0);
 
 }  /* END INITCIRCLES */

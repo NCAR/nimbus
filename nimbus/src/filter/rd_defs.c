@@ -60,7 +60,7 @@ void ReadDefaultsFile()
 }  /* END READDEFAULTSFILE */
 
 /* -------------------------------------------------------------------- */
-NR_TYPE *GetDefaultsValue(const char target[], const char var[])
+float *GetDefaultsValue(const char target[], const char var[])
 {
   for (size_t i = 0; i < nDefaults; ++i)
   {
@@ -81,7 +81,7 @@ NR_TYPE *GetDefaultsValue(const char target[], const char var[])
 
 /* -------------------------------------------------------------------- */
 void AddToDefaults(const char varName[], const char attrName[],
-        const std::vector<NR_TYPE>& values)
+        const std::vector<float>& values)
 {
   Defaults[nDefaults] = new DEFAULT;
   strcpy(Defaults[nDefaults]->var, varName);

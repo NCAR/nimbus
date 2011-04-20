@@ -26,7 +26,7 @@ static NR_TYPE thdgCorr, pitchCorr;
 /* -------------------------------------------------------------------- */
 void cmigitsInit(var_base *varp)
 {
-  NR_TYPE  *tmp;
+  float *tmp;
 
   if (cfg.isADS3()) return;
 

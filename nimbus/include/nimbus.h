@@ -33,7 +33,7 @@ DESCRIPTION:	Header File declaring Variable and associated processing
 
 
 /* Nimbus Record Info		*/
-typedef float NR_TYPE;
+typedef double NR_TYPE;
 
 
 // OpenProjectFile action values
@@ -54,7 +54,7 @@ typedef struct
 	char	var[NAMELEN];	// Variable which uses this default
 	bool	Used;		// Was it requested by amlib
 	bool	Dirty;		// value changed via GUI
-	std::vector<NR_TYPE> Values;
+	std::vector<float> Values;
 	std::string text;
 	} DEFAULT;
 
@@ -81,7 +81,7 @@ public:
   int LAGstart;		// ads3 only, @see dsm::SyncRecordVariable
 
   size_t SampleRate;	// Sampled rate
-  size_t Length;	// Vector length (used by PMS1D)
+  size_t Length;	// Histogram length, if histogram
 
   size_t ProbeType;	// Is this a probe & which one
   size_t ProbeCount;	// For mulitple identicle probes
@@ -98,7 +98,7 @@ public:
 
   std::vector<std::pair<int, int> > blank_out;
 
-  float	min, max;	// Min and max for this variable over course run.
+  float min, max;	// Min and max for this variable over course run.
 
   size_t badLagCntr;
 };
@@ -123,16 +123,16 @@ public:
   ushort dsmID;		// ADS3/nids A/D temp compensation.
 
   void (*Initializer)(void *); // Function to initialize xlate
-  void (*xlate)(RAWTBL *, void *, float *); // Function to translate data
+  void (*xlate)(RAWTBL *, void *, NR_TYPE *); // Function to translate data
   void (*Average)(...);	// Routine to use to average/sum data
 
   int32_t convertOffset;	// A/D offset
   float	convertFactor;	// A/D slope
-  std::vector<float> cof;
+  std::vector<NR_TYPE> cof;
 
   int StaticLag;	// Static lag in ms to shift data
   int DynamicLag;	// Dynamic lag
-  NR_TYPE SpikeSlope;	// Slope for spike detection
+  float SpikeSlope;	// Slope for spike detection
 
   SYNTHTYPE synthtype;
 };

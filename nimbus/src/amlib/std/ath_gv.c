@@ -47,11 +47,11 @@ void atfhGV_Init(var_base *varp)
   }
 
 
-  std::vector<NR_TYPE> values;
+  std::vector<float> values;
   if (strchr(varp->name, '1'))
-    values.push_back(recfrhGV[0]);	// TTH?1
+    values.push_back((float)recfrhGV[0]);	// TTH?1
   else
-    values.push_back(recfrhGV[1]);	// TTH?2
+    values.push_back((float)recfrhGV[1]);	// TTH?2
 
   AddToDefaults(varp->name, "RecoveryFactor", values);
 

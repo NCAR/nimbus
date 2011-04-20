@@ -26,8 +26,8 @@ static NR_TYPE atfh[nFeedBackTypes] = { 0.0, 0.0 };
 /* -------------------------------------------------------------------- */
 void atfhInit(var_base *varp)
 {
-  std::vector<NR_TYPE> values;
-  values.push_back(recfrh);
+  std::vector<float> values;
+  values.push_back((float)recfrh);
   AddToDefaults(varp->name, "RecoveryFactor", values);
 
 }	/* END CONSTRUCTOR */
@@ -36,9 +36,9 @@ void atfhInit(var_base *varp)
 void tthcInit(var_base *varp)
 {
   memset(atfh, 0, sizeof(atfh));
-  std::vector<NR_TYPE> values;
-  values.push_back(tfher2);
-  values.push_back(tfher1);
+  std::vector<float> values;
+  values.push_back((float)tfher2);
+  values.push_back((float)tfher1);
   AddToDefaults(varp->name, "Calibrations", values);
 
 }	/* END CONSTRUCTOR */

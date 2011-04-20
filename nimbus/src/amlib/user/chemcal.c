@@ -15,10 +15,6 @@ DESCRIPTION:	Calculations for Greg Kok.
 
 INPUT:    
 
-REFERENCES:  none
-
-REFERENCED BY:  compute.c
-
 COPYRIGHT:  University Corporation for Atmospheric Research, 1993,1994,1998
 -------------------------------------------------------------------------
 */
@@ -26,19 +22,19 @@ COPYRIGHT:  University Corporation for Atmospheric Research, 1993,1994,1998
 #include "nimbus.h"
 #include "amlib.h"
 
-static NR_TYPE  *xnoym_cal, *xnom_cal, *xo3f1t_cal;
-
 /*  Values from /home/local/proj/130/Defaults on 29 April 1998     RLR  */
+static const int nCals = 2;
 static NR_TYPE  o3fsm_cal = 9.32, xno2c_cal = 958.0;
-static NR_TYPE  Xnoym_cal[2] = {-20.0, 5.2};
-static NR_TYPE  Xnom_cal[2] = {-10.0, 43.0};
+static NR_TYPE  xnoym_cal[2] = {-20.0, 5.2};
+static NR_TYPE  xnom_cal[2] = {-10.0, 43.0};
 /*  Value from /home/local/proj/818/Defaults on 29 April 1998      RLR  */
-static NR_TYPE  Xo3f1t_cal[2] = {40.0, 0.0184};
+static NR_TYPE  xo3f1t_cal[2] = {40.0, 0.0184};
 
 /* -------------------------------------------------------------------- */
 void kokInit(var_base *varp)
 {
-  NR_TYPE  *tmp;
+  float *tmp;
+
   if ((tmp = GetDefaultsValue("O3FSM_CAL", varp->name)) == NULL)
   {
     sprintf(buffer, "Value set to %f in AMLIB function kokInit.\n", o3fsm_cal);
@@ -46,27 +42,28 @@ void kokInit(var_base *varp)
   }
   else
     o3fsm_cal = tmp[0];
-/*  o3fsm_cal = (GetDefaultsValue("O3FSM_CAL", varp->name))[0]; <-- original code */
 
   if ((tmp = GetDefaultsValue("XNOYM_CAL", varp->name)) == NULL)
   {
-    xnoym_cal = Xnoym_cal;
     sprintf(buffer, "Values set to %f, %f in AMLIB function kokInit.\n", xnoym_cal[0], xnoym_cal[1]);
     LogMessage(buffer);
   }
   else
-    xnoym_cal = tmp;
-/*  xnoym_cal = GetDefaultsValue("XNOYM_CAL", varp->name); <-- original code */
+  {
+    for (int i = 0; i < nCals; ++i)
+      xnoym_cal[i] = tmp[i];
+  }
 
   if ((tmp = GetDefaultsValue("XNOM_CAL", varp->name)) == NULL)
   {
-	xnom_cal = Xnom_cal;
     sprintf(buffer, "Values set to %f, %f in AMLIB function kokInit.\n", xnom_cal[0], xnom_cal[1]);
     LogMessage(buffer);
   }
   else
-    xnom_cal = tmp;
-/*  xnom_cal = GetDefaultsValue("XNOM_CAL", varp->name); <-- original code */
+  {
+    for (int i = 0; i < nCals; ++i)
+      xnom_cal[i] = tmp[i];
+  }
 
   if ((tmp = GetDefaultsValue("XNO2C_CAL", varp->name)) == NULL)
   {
@@ -75,19 +72,18 @@ void kokInit(var_base *varp)
   }
   else
     xno2c_cal = tmp[0];
-/*  xno2c_cal = (GetDefaultsValue("XNO2C_CAL", varp->name))[0]; <-- original code */
 
   if ((tmp = GetDefaultsValue("XO3F1T_CAL", varp->name)) == NULL)
   {
-    xo3f1t_cal = Xo3f1t_cal;
     sprintf(buffer, "Values set to %f in AMLIB function kokInit.\n", xo3f1t_cal[0]);
     LogMessage(buffer);
   }
   else
-    xo3f1t_cal = tmp;
-/*  xo3f1t_cal = GetDefaultsValue("XO3F1T_CAL", varp->name); <-- original code */
-
-}  /* KOKINIT */
+  {
+    for (int i = 0; i < nCals; ++i)
+      xo3f1t_cal[i] = tmp[i];
+  }
+}
 
 /* -------------------------------------------------------------------- */
 void so3fc(DERTBL *varp)

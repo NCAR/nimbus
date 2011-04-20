@@ -39,7 +39,7 @@ static bool returnMissingValue = false;
 /* -------------------------------------------------------------------- */
 void initATC(var_base *varp)
 {
-  NR_TYPE  *tmp;
+  float *tmp;
 
   if ((tmp = GetDefaultsValue("AT_TAU", varp->name)) == NULL)
   {

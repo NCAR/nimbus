@@ -28,9 +28,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 /* -------------------------------------------------------------------- */
 void ReadDespikeFile()
 {
-  int		index;
-  NR_TYPE	slope;
-  char		*spikes[512], target[NAMELEN];
+  int	index;
+  float	slope;
+  char	*spikes[512], target[NAMELEN];
 
   if (AccessProjectFile(SPIKE, "r") == FALSE)
     return;

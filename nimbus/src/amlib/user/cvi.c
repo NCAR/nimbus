@@ -65,7 +65,7 @@ static NR_TYPE  CVTBL = 7.62,
 /* -------------------------------------------------------------------- */
 void cviInit(var_base *varp)
 {
-  NR_TYPE  *tmp;
+  float *tmp;
   if ((tmp = GetDefaultsValue("CVTBL", varp->name)) == NULL)
   {
     sprintf(buffer, "Value set to %f in AMLIB function cviInit.\n", CVTBL);

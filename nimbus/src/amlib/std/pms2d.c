@@ -67,7 +67,7 @@ extern void setProbeCount(const char * location, int count);
 /* -------------------------------------------------------------------- */
 void addDOFtoAttrs(const var_base *varp, NR_TYPE eaw[], NR_TYPE dof[])
 {
-  std::vector<NR_TYPE> dof_v, eaw_v;
+  std::vector<float> dof_v, eaw_v;
   char name[64];
   strcpy(name, varp->name);
   name[0] = 'C';

@@ -36,7 +36,7 @@ void initFlux(DERTBL *varp)
 
   if (firstTime)
   {
-    NR_TYPE  *tmp;
+    float *tmp;
 
     if ((tmp = GetDefaultsValue("FLUX_RUN", varp->name)) == NULL)
     {

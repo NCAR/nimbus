@@ -25,8 +25,8 @@ extern NR_TYPE recfb;	// Recovery Factor, see initAC.c
 /* -------------------------------------------------------------------- */
 void atbInit(var_base *varp)
 {
-  std::vector<NR_TYPE> values;
-  values.push_back(recfb);
+  std::vector<float> values;
+  values.push_back((float)recfb);
   AddToDefaults(varp->name, "RecoveryFactor", values);
 }
 

@@ -20,7 +20,7 @@ NR_TYPE kinglwcc(NR_TYPE plwc, NR_TYPE tasx, NR_TYPE atx, NR_TYPE psxc, NR_TYPE 
 /* -------------------------------------------------------------------- */
 void xrlwccInit(var_base *varp)
 {
-  NR_TYPE  *tmp;
+  float  *tmp;
   if ((tmp = GetDefaultsValue("TWIRE_RAF", varp->name)) == NULL)
   {
     sprintf(buffer, "Value set to %f in AMLIB function xrlwccInit.\n", twire);

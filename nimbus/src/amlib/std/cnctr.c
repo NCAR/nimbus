@@ -24,7 +24,7 @@ static NR_TYPE  DIV = 1.0;  /* counter card prescale factor (none)      */
 /* -------------------------------------------------------------------- */
 void cnctrInit(var_base *varp)
 {
-  NR_TYPE  *tmp;
+  float  *tmp;
 
   if ((tmp = GetDefaultsValue("DIV", varp->name)) == NULL)
     {

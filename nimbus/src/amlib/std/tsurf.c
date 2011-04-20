@@ -6,7 +6,7 @@ static NR_TYPE TSURF_CAL = 0.001933;
 /* -------------------------------------------------------------------- */
 void initTsurf(var_base *varp)
 {
-  NR_TYPE  *tmp;
+  float  *tmp;
   if ((tmp = GetDefaultsValue("TSURF_CAL", varp->name)) == NULL)
   {
     sprintf(buffer, "Value set to %f in AMLIB function initPsurf.\n", TSURF_CAL);

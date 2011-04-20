@@ -147,7 +147,7 @@ void RealTimeLoop3()
 
   extern nidas::dynld::raf::SyncRecordReader* syncRecReader;
 
-  int nExpected = syncRecReader->getNumFloats();
+  int nExpected = syncRecReader->getNumValues();
 
   for (;;)
   {
@@ -192,7 +192,7 @@ void RealTimeLoop3()
       grnd_feed->BroadcastData(timeStamp);
 
     if (cfg.OutputNetCDF())
-      WriteNetCDF_MRF();
+      WriteNetCDF();
 
     UpdateTime(SampledData);
     if (mcStat) {

@@ -56,7 +56,7 @@ static bool returnMissingValue = false;
 /* -------------------------------------------------------------------- */
 void initLATC(var_base *varp)
 {
-  NR_TYPE  *tmp;
+  float  *tmp;
 
   /* Get constant values from Defaults file, if available
    */

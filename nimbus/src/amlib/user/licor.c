@@ -27,14 +27,12 @@ COPYRIGHT:  University Corporation for Atmospheric Research, 1994, 1998
 #include "nimbus.h"
 #include "amlib.h"
 
-static NR_TYPE  *CO2_CAL, *H2O_CAL;
-
 /*  Values from /home/local/proj/defaults/Defaults on 29 April 1998  RLR  */
 static NR_TYPE  C2T = 309.45;
-static NR_TYPE  CO2_cal[5] = {0.15207, 1.032e-5, 7.2522e-9, -9.8728e-13,
+static NR_TYPE  CO2_CAL[5] = {0.15207, 1.032e-5, 7.2522e-9, -9.8728e-13,
                               6.5812e-17};
 static NR_TYPE  H2T = 314.65;
-static NR_TYPE  H2O_cal[3] = {7.1352e-3, 3.6484e-6, -3.8355e-11};
+static NR_TYPE  H2O_CAL[3] = {7.1352e-3, 3.6484e-6, -3.8355e-11};
 
 /*  Values from /home/local/proj/818/Defaults on 29 April 1998     RLR  */
 static NR_TYPE  CAL_FACTOR = 1.475,
@@ -43,7 +41,7 @@ static NR_TYPE  CAL_FACTOR = 1.475,
 /* -------------------------------------------------------------------- */
 void LICORinit(var_base *varp)
 {
-  NR_TYPE  *tmp;
+  float *tmp;
   if ((tmp = GetDefaultsValue("C2T", varp->name)) == NULL)
   {
     sprintf(buffer, "Value set to %f in AMLIB function LICORinit.\n", C2T);
@@ -51,17 +49,17 @@ void LICORinit(var_base *varp)
   }
   else
     C2T = tmp[0];
-/*  C2T = (GetDefaultsValue("C2T", varp->name))[0];  <-- original code */
 
   if ((tmp = GetDefaultsValue("CO2_CAL", varp->name)) == NULL)
   {
-  CO2_CAL = CO2_cal;
     sprintf(buffer, "Values set to %e, %e, %e, %e, %e in AMLIB function LICORinit.\n", CO2_CAL[0], CO2_CAL[1], CO2_CAL[2], CO2_CAL[3], CO2_CAL[4]);
     LogMessage(buffer);
   }
   else
-    CO2_CAL = tmp;
-/*  CO2_CAL = GetDefaultsValue("CO2_CAL", varp->name);  <-- original code */
+  {
+    for (int i = 0; i < 5; ++i)
+      CO2_CAL[i] = tmp[i];
+  }
 
   if ((tmp = GetDefaultsValue("CAL_FACTOR", varp->name)) == NULL)
   {
@@ -70,7 +68,6 @@ void LICORinit(var_base *varp)
   }
   else
     CAL_FACTOR = tmp[0];
-/*  CAL_FACTOR = (GetDefaultsValue("CAL_FACTOR", varp->name))[0];  <-- original code */
 
   if ((tmp = GetDefaultsValue("CO2_OFFSET", varp->name)) == NULL)
   {
@@ -79,7 +76,6 @@ void LICORinit(var_base *varp)
   }
   else
     OFFSET = tmp[0];
-/*  OFFSET = (GetDefaultsValue("CO2_OFFSET", varp->name))[0];  <-- original code */
 
   if ((tmp = GetDefaultsValue("H2T", varp->name)) == NULL)
   {
@@ -88,17 +84,17 @@ void LICORinit(var_base *varp)
   }
   else
     H2T = tmp[0];
-/*  H2T = (GetDefaultsValue("H2T", varp->name))[0];  <-- original code */
 
   if ((tmp = GetDefaultsValue("H2O_CAL", varp->name)) == NULL)
   {
-    H2O_CAL = H2O_cal;
     sprintf(buffer, "Values set to %e, %e, %e in AMLIB function LICORinit.\n", H2O_CAL[0], H2O_CAL[1], H2O_CAL[2]);
     LogMessage(buffer);
   }
   else
-    H2O_CAL = tmp;
-/*  H2O_CAL = GetDefaultsValue("H2O_CAL", varp->name);  <-- original code */
+  {
+    for (int i = 0; i < 3; ++i)
+      H2O_CAL[i] = tmp[i];
+  }
 
 }  /* LICORINIT */
 

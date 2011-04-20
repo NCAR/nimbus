@@ -23,12 +23,16 @@ extern NR_TYPE	*HighRateData, *AveragedData, *SampledData;
 /* -------------------------------------------------------------------- */
 static void _findMinMax(var_base * vp, const NR_TYPE * value, size_t n)
 {
+  double min, max;
+
   for (size_t i = 0; i < n; ++i) {
     if (!isnan(value[i])) {
-      vp->min = std::min(vp->min, value[i]);
-      vp->max = std::max(vp->max, value[i]);
+      min = std::min(min, value[i]);
+      max = std::max(max, value[i]);
     }
   }
+  vp->min = (float)min;
+  vp->max = (float)max;
 }
 
 /* -------------------------------------------------------------------- */
