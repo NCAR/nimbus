@@ -33,24 +33,26 @@ static NR_TYPE	default_teo3_cals[] = { 0.0, 1.0, 0.0, 0.0 };
 /* -------------------------------------------------------------------- */
 void teo3cInit(var_base *varp)
 {
-  NR_TYPE       *tmp;
+  float *tmp;
 
   teo3c_cal = default_teo3_cals;
 
   if ((tmp = GetDefaultsValue("TEO3CAL", varp->name)) == NULL)
-    {
+  {
     sprintf(buffer,"Value set to 0,1,0 in AMLIB function TEO3CAL.\n");
     LogMessage(buffer);
-    }
+  }
   else
-    teo3c_cal = tmp;
-
+  {
+    for (int i = 0; i < nCals; ++i)
+      teo3c_cal[i] = tmp[i];
+  }
 }
 
 /* -------------------------------------------------------------------- */
 void steo3c(DERTBL *varp)
 {
-  NR_TYPE	teo3c, teo3, tep, tet;
+  NR_TYPE teo3c, teo3, tep, tet;
 
   teo3	= GetSample(varp, 0);
   tep	= GetSample(varp, 1);

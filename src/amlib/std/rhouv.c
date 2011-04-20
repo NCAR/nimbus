@@ -17,22 +17,24 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2007
 #include "nimbus.h"
 #include "amlib.h"
 
-static NR_TYPE cx_1[4] = { 0.5, 0.0, 0.0, 0.0 };
-static NR_TYPE  *CX_1;
+static const int nCals = 4;
+static NR_TYPE CX_1[] = { 0.5, 0.0, 0.0, 0.0 };
 
 /* -------------------------------------------------------------------- */
 void rhouvInit(var_base *varp)
 {
-  NR_TYPE	*tmp;
+  float *tmp;
 
   if ((tmp = GetDefaultsValue("RHOUV_CAL", varp->name)) == NULL)
   {
-    CX_1 = cx_1;
     sprintf(buffer, "Values returned = %f, %f, %f in AMLIB function RHOUV_CAL.\n", CX_1[0], CX_1[1], CX_1[2]);
     LogMessage(buffer);
   }
   else
-    CX_1 = tmp;
+  {
+    for (int i = 0; i < nCals; ++i)
+      CX_1[i] = tmp[i];
+  }
 }
 
 /* -------------------------------------------------------------------- */

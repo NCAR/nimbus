@@ -31,7 +31,7 @@ static NR_TYPE	startLat = 28.5,  /*  fixed point was CP-2 radar 7/95  */
 /* -------------------------------------------------------------------- */
 void razInit(var_base *varp)
 {
-  NR_TYPE  *tmp;
+  float *tmp;
 
   if ((tmp = GetDefaultsValue("RAZ_START_LAT", varp->name)) == NULL)
     {

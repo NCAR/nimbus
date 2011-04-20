@@ -20,7 +20,7 @@ extern bool SDP;
 extern void FillListWidget();
 
 
-bool SyntheticData::InjectSyntheticData(float pt)
+bool SyntheticData::InjectSyntheticData(NR_TYPE pt)
 {
   passedtime=pt;
   if((SDF)&(SDC)&(SDP))  //from file, function, and constant
@@ -206,7 +206,7 @@ void SyntheticData::CheckTime()
 
 void SyntheticData::Inject()
 {
-  temptallyfunc=new float[varcount] ;
+  temptallyfunc=new NR_TYPE[varcount] ;
 
  for (int f=0;f<varcount;f++)
    temptallyfunc[f]=0;
@@ -297,7 +297,7 @@ void SyntheticData::InjectConstants()
 
 void SyntheticData::InjectFunctions()
 {
-  float dummyfloat,df;
+  NR_TYPE dummyfloat,df;
   temptally=0;
   for(int i=0;i<funccount;i++)
     {
@@ -921,7 +921,7 @@ void SyntheticData::Injecthr(int m)
     }
 }
 
-void SyntheticData::SetHighData(char t,int ind,int offset,float val)  
+void SyntheticData::SetHighData(char t,int ind,int offset,NR_TYPE val)  
 {
   if (t == 'r')
     HighRateData[(rt[ind]->HRstart)+offset]=val;
@@ -936,21 +936,22 @@ val= the value that is to be stored
 }
 
 
-void SyntheticData::SetSampleData(char t,int ind,int offset,float val)
+void SyntheticData::SetSampleData(char t,int ind,int offset,NR_TYPE val)
 {
   if(t == 'r')
     SampledData[(rt[ind]->SRstart)+offset]=val;
 }
 
-void SyntheticData::SetAverageData(char t,int ind,float val)
+void SyntheticData::SetAverageData(char t,int ind,NR_TYPE val)
 {
   if(t == 'r')
     AveragedData[rt[ind]->LRstart]=val;
 }
 
-float SyntheticData::GetValue(char k,char t,int ind,int offset)
+NR_TYPE SyntheticData::GetValue(char k,char t,int ind,int offset)
 {
-  float z;
+  NR_TYPE z = 0.0;
+
   if(k=='h')//from the highrate 
     {
     if(t=='r')
@@ -968,7 +969,6 @@ float SyntheticData::GetValue(char k,char t,int ind,int offset)
     }
 
   return z;
-
 }
 
 #endif

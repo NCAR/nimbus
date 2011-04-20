@@ -15,7 +15,7 @@ static NR_TYPE  P1_EAW = 3.2, P2_EAW = 3.2;
 /* -------------------------------------------------------------------- */
 void conc2pInit(var_base *varp)
 {
-  NR_TYPE  *tmp;
+  float  *tmp;
   if ((tmp = GetDefaultsValue("P1_EAW", varp->name)) == NULL)
   {
     sprintf(buffer, "Value set to %f in AMLIB function conc2pInit.\n", P1_EAW);

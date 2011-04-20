@@ -120,7 +120,7 @@ int HighRateLoop(time_t startTime, time_t endTime)
         (startTime == BEG_OF_TAPE || thisTime >= startTime))
       {
       FindMinMax();
-      WriteNetCDF_MRF();
+      WriteNetCDF();
       UpdateTime(SampledData);
       }
 

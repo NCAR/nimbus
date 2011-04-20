@@ -38,7 +38,7 @@ static NR_TYPE *CNDIV;
 /* -------------------------------------------------------------------- */
 void initCNs()
 {
-  NR_TYPE  *tmp;
+  float *tmp;
   if ((tmp = GetDefaultsValue("CNDIV")) == NULL)
   {
     if (ProcessingRate == LOW_RATE)

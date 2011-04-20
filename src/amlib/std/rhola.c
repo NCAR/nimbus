@@ -28,15 +28,15 @@ static int  n1[2] = {0, 0};
 static NR_TYPE compute_rhola(int indx, DERTBL *varp, NR_TYPE vla, NR_TYPE psxc, NR_TYPE atx, NR_TYPE qcxc, NR_TYPE rhodt, NR_TYPE XC, NR_TYPE THRSH, NR_TYPE CX[]);
 
 /*  Values from /home/local/proj/Defaults on 23 April 1998           RLR */
-static NR_TYPE cx_1[4] = {4.2, 0.8712, -0.0045, -0.0056};
-static NR_TYPE cx_2[4] = {4.2, 0.8712, -0.0045, -0.0056};
-static NR_TYPE  XC_1 = 0.50, XC_2 = 0.50, THRSH_1 = 900.0, THRSH_2 = 900.0;
-static NR_TYPE  *CX_1, *CX_2;
+static const int nCals = 4;
+static NR_TYPE CX_1[] = {4.2, 0.8712, -0.0045, -0.0056};
+static NR_TYPE CX_2[] = {4.2, 0.8712, -0.0045, -0.0056};
+static NR_TYPE XC_1 = 0.50, XC_2 = 0.50, THRSH_1 = 900.0, THRSH_2 = 900.0;
 
 /* -------------------------------------------------------------------- */
 void lymanInit(var_base *varp)
 {
-  NR_TYPE	*tmp;
+  float *tmp;
 
   if ((tmp = GetDefaultsValue("XC_1", varp->name)) == NULL)
   {
@@ -56,19 +56,20 @@ void lymanInit(var_base *varp)
 
   if ((tmp = GetDefaultsValue("CX_1", varp->name)) == NULL)
   {
-    CX_1 = cx_1;
     sprintf(buffer, "Values returned = %f, %f, %f, %f in AMLIB function lymanInit.\n", CX_1[0], CX_1[1], CX_1[2], CX_1[3]);
     LogMessage(buffer);
   }
   else
-    CX_1 = tmp;
-
+  {
+    for (int i = 0; i < nCals; ++i)
+      CX_1[i] = tmp[i];
+  }
 }  /* END LYMANINIT */
 
 /* -------------------------------------------------------------------- */
 void lyman1Init(var_base *varp)
 {
-  NR_TYPE	*tmp;
+  float *tmp;
 
   if ((tmp = GetDefaultsValue("XC_2", varp->name)) == NULL)
   {
@@ -88,12 +89,14 @@ void lyman1Init(var_base *varp)
 
   if ((tmp = GetDefaultsValue("CX_2", varp->name)) == NULL)
   {
-    CX_2 = cx_2;
     sprintf(buffer, "Values returned = %f, %f, %f, %f in AMLIB function lymanInit.\n", CX_2[0], CX_2[1], CX_2[2], CX_2[3]);
     LogMessage(buffer);
   }
   else
-    CX_2 = tmp;
+  {
+    for (int i = 0; i < nCals; ++i)
+      CX_2[i] = tmp[i];
+  }
 
 }  /* END LYMAN1INIT */
 

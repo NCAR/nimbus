@@ -30,7 +30,7 @@ static NR_TYPE	hi3[nFeedBackTypes] = { 0.0, 0.0 };
 /* -------------------------------------------------------------------- */
 void initWP3(var_base *varp)
 {
-  NR_TYPE * tmp;
+  float * tmp;
 
   if ((tmp = GetDefaultsValue("WP3_TIME_CONSTS", varp->name)) != NULL)
   {

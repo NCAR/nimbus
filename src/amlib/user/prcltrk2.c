@@ -51,7 +51,7 @@ static int  INTRVL = 10;    /* Number of samples in mean winds  */
 /* -------------------------------------------------------------------- */
 void parcelInit(var_base *varp)
 {
-  NR_TYPE  *tmp;
+  float *tmp;
 
   if ((tmp = GetDefaultsValue("PRCLTRK_INTRVL", varp->name)) == NULL)
   {

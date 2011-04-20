@@ -50,7 +50,7 @@ NR_TYPE	tfher1,tfher2;
 /* -------------------------------------------------------------------- */
 void InitAircraftDependencies()
 {
-  NR_TYPE *tmp;
+  float *tmp;
 
   ILOG(("InitAircraftDependencies"));
 

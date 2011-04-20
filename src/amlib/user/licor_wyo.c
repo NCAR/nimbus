@@ -21,13 +21,11 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2002
 #include "nimbus.h"
 #include "amlib.h"
 
-static NR_TYPE  *CO2_CAL, *H2O_CAL;
-
 static NR_TYPE  C2T = 309.45;
-static NR_TYPE  CO2_cal[5] = { 0.15207, 1.032e-5, 7.2522e-9, -9.8728e-13,
+static NR_TYPE  CO2_CAL[5] = { 0.15207, 1.032e-5, 7.2522e-9, -9.8728e-13,
 				6.5812e-17 };
 static NR_TYPE  H2T = 314.65;
-static NR_TYPE  H2O_cal[3] = { 7.1352e-3, 3.6484e-6, -3.8355e-11 };
+static NR_TYPE  H2O_CAL[3] = { 7.1352e-3, 3.6484e-6, -3.8355e-11 };
 
 static NR_TYPE  CAL_FACTOR = 1.475,
                 OFFSET = 0.7;  /*  CO2_OFFSET  */
@@ -35,7 +33,7 @@ static NR_TYPE  CAL_FACTOR = 1.475,
 /* -------------------------------------------------------------------- */
 void UWO_LICORinit(var_base *varp)
 {
-  NR_TYPE  *tmp;
+  float *tmp;
 
   if ((tmp = GetDefaultsValue("C2T", varp->name)) == NULL) {
     sprintf(buffer, "Value set to %f in AMLIB function LICORinit.\n", C2T);
@@ -45,12 +43,14 @@ void UWO_LICORinit(var_base *varp)
     C2T = tmp[0];
 
   if ((tmp = GetDefaultsValue("CO2_CAL", varp->name)) == NULL) {
-  CO2_CAL = CO2_cal;
     sprintf(buffer, "Values set to %e, %e, %e, %e, %e in AMLIB function LICORinit.\n", CO2_CAL[0], CO2_CAL[1], CO2_CAL[2], CO2_CAL[3], CO2_CAL[4]);
     LogMessage(buffer);
   }
   else
-    CO2_CAL = tmp;
+  {
+    for (int i = 0; i < 5; ++i)
+      CO2_CAL[i] = tmp[i];
+  }
 
   if ((tmp = GetDefaultsValue("CAL_FACTOR", varp->name)) == NULL) {
     sprintf(buffer, "Value set to %f in AMLIB function LICORinit.\n", CAL_FACTOR);
@@ -74,14 +74,15 @@ void UWO_LICORinit(var_base *varp)
     H2T = tmp[0];
 
   if ((tmp = GetDefaultsValue("H2O_CAL", varp->name)) == NULL) {
-    H2O_CAL = H2O_cal;
     sprintf(buffer, "Values set to %e, %e, %e in AMLIB function LICORinit.\n", H2O_CAL[0], H2O_CAL[1], H2O_CAL[2]);
     LogMessage(buffer);
   }
   else
-    H2O_CAL = tmp;
-
-}  /* LICORINIT */
+  {
+    for (int i = 0; i < 3; ++i)
+      H2O_CAL[i] = tmp[i];
+  }
+}
 
 /* -------------------------------------------------------------------- */
 void sxwco2c(DERTBL *varp)

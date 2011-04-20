@@ -45,7 +45,7 @@ static NR_TYPE  radcf;  /* radiation correction factor (none) */
 /* -------------------------------------------------------------------- */
 void radcInit(var_base *varp)
 {
-  NR_TYPE  *tmp;
+  float  *tmp;
   if ((tmp = GetDefaultsValue("RAD_PITCH_MAX", varp->name)) == NULL)
   {
     sprintf(buffer, "Value set to %f in AMLIB function radcInit.\n", PMAX);

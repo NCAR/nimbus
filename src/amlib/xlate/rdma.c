@@ -51,7 +51,7 @@ void xlrdmahvps(RAWTBL *varp, void *input, NR_TYPE *np)
   for (size_t i = 0; i < 64; ++i)
     crdma_cnc[i] = floatNAN;
 
-  float *ardma = &SampledData[ardma_varp->SRstart];
+  NR_TYPE *ardma = &SampledData[ardma_varp->SRstart];
 
   /* Two ASCII files will be written.  .rdma will be the raw data, cnts and
    * concentrations, for archival to the MASS Store.  .cnts.rdma is counts

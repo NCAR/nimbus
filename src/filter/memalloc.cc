@@ -47,7 +47,7 @@ void AllocateDataArrays()
 
   // Set nSRfloats to the number already being sent in by SyncRecordReader.
   if (cfg.isADS3())
-    nSRfloats = syncRecReader->getNumFloats();
+    nSRfloats = syncRecReader->getNumValues();
 
   const nidas::dynld::raf::SyncRecordVariable* var;
 

@@ -48,7 +48,7 @@ static double  gain_factor, bbcrad, av_detofset, detem, detsig;
 /* -------------------------------------------------------------------- */
 void ophir3Init(var_base *varp)
 {
-  NR_TYPE  *tmp;
+  float *tmp;
 
   if ((tmp = GetDefaultsValue("A1", varp->name)) == NULL)
   {

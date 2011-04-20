@@ -27,7 +27,7 @@ static NR_TYPE	startLat = 39.913333, startLon = -105.118333;
 /* -------------------------------------------------------------------- */
 void deiInit(var_base *varp)
 {
-  NR_TYPE  *tmp;
+  float  *tmp;
   if ((tmp = GetDefaultsValue("DENI_START_LAT", varp->name)) == NULL)
   {
     sprintf(buffer, "Value set to %f in AMLIB function deiInit.\n", startLat);

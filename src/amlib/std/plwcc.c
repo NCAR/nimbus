@@ -71,7 +71,7 @@ static void add_sample(struct _running_average * ra, NR_TYPE new_value)
 /* -------------------------------------------------------------------- */
 void plwccInit(var_base *varp)
 {
-  NR_TYPE *tmp;
+  float *tmp;
 
   if ((tmp = GetDefaultsValue("TWIRE_PMS", varp->name)) == NULL)
   {
@@ -115,7 +115,7 @@ void plwccInit(var_base *varp)
 /* -------------------------------------------------------------------- */
 void plwcc1Init(var_base *varp)
 {
-  NR_TYPE *tmp;
+  float *tmp;
 
   if ((tmp = GetDefaultsValue("TWIRE_PMS1", varp->name)) == NULL)
   {

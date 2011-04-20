@@ -59,7 +59,7 @@ int32_t FindFirstLogicalADS3(
   {
     try
     {
-      rc = syncRecReader->read(&tt, (float *)record, syncRecReader->getNumFloats());
+      rc = syncRecReader->read(&tt, (NR_TYPE *)record, syncRecReader->getNumValues());
     }
     catch (const nidas::util::IOException& e)
     {
@@ -70,8 +70,8 @@ int32_t FindFirstLogicalADS3(
   }
   while (!(startTime == BEG_OF_TAPE || recTime >= startTime));
 
-  processTimeADS3((float *)record, recTime);
-  return rc * sizeof(float);
+  processTimeADS3((NR_TYPE *)record, recTime);
+  return rc * sizeof(NR_TYPE);
 
 }	// END FINDFIRSTLOGICALADS3
 
@@ -83,7 +83,7 @@ int32_t FindNextLogicalADS3(char record[], time_t endTime)
 
   try
   {
-    rc = syncRecReader->read(&tt, (float *)record, syncRecReader->getNumFloats());
+    rc = syncRecReader->read(&tt, (NR_TYPE *)record, syncRecReader->getNumValues());
   }
   catch (const nidas::util::IOException& e)
   {
@@ -98,8 +98,8 @@ int32_t FindNextLogicalADS3(char record[], time_t endTime)
       return 0;        /* End Of Time Segment  */
   }
 
-  processTimeADS3((float *)record, recTime);
-  return rc * sizeof(float);
+  processTimeADS3((NR_TYPE *)record, recTime);
+  return rc * sizeof(NR_TYPE);
 
 }	// END FINDNEXTLOGICALADS3
 

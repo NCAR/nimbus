@@ -53,7 +53,7 @@ static std::map<int, std::string> _labelMap;
 /* -------------------------------------------------------------------- */
 void irsInit(var_base *varp)
 {
-  NR_TYPE  *tmp;
+  float *tmp;
 
   // Setup ARINC label --> variable map.
   _labelMap[0xc8] = "Latitude";

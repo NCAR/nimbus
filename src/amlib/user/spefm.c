@@ -17,12 +17,12 @@ COPYRIGHT:  University Corporation for Atmospheric Research, 1995, 1998
 #include "nimbus.h"
 #include "amlib.h"
 
-static NR_TYPE  *vft0, *vft1, *vft2, *vfb0, *vfb1, *vfb2,
+static float  *vft0, *vft1, *vft2, *vfb0, *vfb1, *vfb2,
     *vfp0, *vfp1, *vfs0, *vfs1, *vfs2,
     *vnt0, *vnt1, *vnb0, *vnb1, *vnp0, *vnp1, *vns0, *vns1;
 
 /*  Values from /home/local/proj/965/Defaults on 30 April 1998  RLR  */
-static NR_TYPE
+static float
        VFT0[2] = {1.8678523, 0.7281622},
        VFT1[5] = {1.2758189, 1.6866612, -0.5817351, 0.1557366, -0.0153861},
        VFT2[5] = {-0.3178759, 11.1196213, -21.0850239, 19.4571877, -6.6446362},
@@ -68,126 +68,114 @@ static NR_TYPE
 /* -------------------------------------------------------------------- */
 void EFinit(var_base *varp)
 {
-  NR_TYPE  *tmp;
+  float *tmp;
   if ((tmp = GetDefaultsValue("VFT0", varp->name)) == NULL)
   {
-	vft0 = VFT0;
+    vft0 = VFT0;
     sprintf(buffer, "Values set to %f, %f in AMLIB function EFinit.\n", vft0[0], vft0[1]);
     LogMessage(buffer);
   }
   else
     vft0 = tmp;
-/*  vft0 = GetDefaultsValue("VFT0", varp->name);  <-- original code */
 
   if ((tmp = GetDefaultsValue("VFT1", varp->name)) == NULL)
   {
-	vft1 = VFT1;
+    vft1 = VFT1;
     sprintf(buffer, "Values set to %f, %f, %f, %f, %f in AMLIB function EFinit.\n", vft1[0], vft1[1], vft1[2], vft1[3], vft1[4]);
     LogMessage(buffer);
   }
   else
     vft1 = tmp;
-/*  vft1 = GetDefaultsValue("VFT1", varp->name);  <-- original code */
 
   if ((tmp = GetDefaultsValue("VFT2", varp->name)) == NULL)
   {
-	vft2 = VFT2;
+    vft2 = VFT2;
     sprintf(buffer, "Values set to %f, %f, %f, %f, %f in AMLIB function EFinit.\n", vft2[0], vft2[1], vft2[2], vft2[3], vft2[4]);
     LogMessage(buffer);
   }
   else
     vft2 = tmp;
-/*  vft2 = GetDefaultsValue("VFT2", varp->name);  <-- original code */
 
   if ((tmp = GetDefaultsValue("VFB0", varp->name)) == NULL)
   {
-	vfb0 = VFB0;
+    vfb0 = VFB0;
     sprintf(buffer, "Values set to %f, %f in AMLIB function EFinit.\n", vfb0[0], vfb0[1]);
     LogMessage(buffer);
   }
   else
     vfb0 = tmp;
-/*  vfb0 = GetDefaultsValue("VFB0", varp->name);  <-- original code */
 
   if ((tmp = GetDefaultsValue("VFB1", varp->name)) == NULL)
   {
-	vfb1 = VFB1;
+    vfb1 = VFB1;
     sprintf(buffer, "Values set to %f, %f, %f, %f, %f in AMLIB function EFinit.\n", vfb1[0], vfb1[1], vfb1[2], vfb1[3], vfb1[4]);
     LogMessage(buffer);
   }
   else
     vfb1 = tmp;
-/*  vfb1 = GetDefaultsValue("VFB1", varp->name);  <-- original code */
 
   if ((tmp = GetDefaultsValue("VFB2", varp->name)) == NULL)
   {
-	vfb2 = VFB2;
+    vfb2 = VFB2;
     sprintf(buffer, "Values set to %f, %f, %f, %f, %f, %f in AMLIB function EFinit.\n", vfb2[0], vfb2[1], vfb2[2], vfb2[3], vfb2[4], vfb2[5]);
     LogMessage(buffer);
   }
   else
     vfb2 = tmp;
-/*  vfb2 = GetDefaultsValue("VFB2", varp->name);  <-- original code */
 
   if ((tmp = GetDefaultsValue("VFP0", varp->name)) == NULL)
   {
-	vfp0 = VFP0;
+    vfp0 = VFP0;
     sprintf(buffer, "Values set to %f, %f, in AMLIB function EFinit.\n", vfp0[0], vfp0[1]);
     LogMessage(buffer);
   }
   else
     vfp0 = tmp;
-/*  vfp0 = GetDefaultsValue("VFP0", varp->name);  <-- original code */
 
   if ((tmp = GetDefaultsValue("VFP1", varp->name)) == NULL)
   {
-	vfp1 = VFP1;
+    vfp1 = VFP1;
     sprintf(buffer, "Values set to %f, %f, %f, %f, %f in AMLIB function EFinit.\n", vfp1[0], vfp1[1], vfp1[2], vfp1[3], vfp1[4]);
     LogMessage(buffer);
   }
   else
     vfp1 = tmp;
-/*  vfp1 = GetDefaultsValue("VFP1", varp->name);  <-- original code */
 
   if ((tmp = GetDefaultsValue("VFS0", varp->name)) == NULL)
   {
-	vfs0 = VFS0;
+    vfs0 = VFS0;
     sprintf(buffer, "Values set to %f, %f in AMLIB function EFinit.\n", vfs0[0], vfs0[1]);
     LogMessage(buffer);
   }
   else
     vfs0 = tmp;
-/*  vfs0 = GetDefaultsValue("VFS0", varp->name);  <-- original code */
 
   if ((tmp = GetDefaultsValue("VFS1", varp->name)) == NULL)
   {
-	vfs1 = VFS1;
+    vfs1 = VFS1;
     sprintf(buffer, "Values set to %f, %f, %f, %f, %f, %f, in AMLIB function EFinit.\n", vfs1[0], vfs1[1], vfs1[2], vfs1[3], vfs1[4], vfs1[5]);
     LogMessage(buffer);
   }
   else
     vfs1 = tmp;
-/*  vfs1 = GetDefaultsValue("VFS1", varp->name);  <-- original code */
 
   if ((tmp = GetDefaultsValue("VFS2", varp->name)) == NULL)
   {
-	vfs2 = VFS2;
+    vfs2 = VFS2;
     sprintf(buffer, "Values set to %f, %f, %f, %f, in AMLIB function EFinit.\n", vfs2[0], vfs2[1], vfs2[2], vfs2[3]);
     LogMessage(buffer);
   }
   else
     vfs2 = tmp;
-/*  vfs2 = GetDefaultsValue("VFS2", varp->name);  <-- original code */
 
   if ((tmp = GetDefaultsValue("VNT0", varp->name)) == NULL)
   {
-	vnt0 = VNT0;
+    vnt0 = VNT0;
     sprintf(buffer, "Values set to %f, %f, in AMLIB function EFinit.\n", vnt0[0], vnt0[1]);
     LogMessage(buffer);
   }
   else
     vnt0 = tmp;
-/*  vnt0 = GetDefaultsValue("VNT0", varp->name);  <-- original code */
 
   if ((tmp = GetDefaultsValue("VNT1", varp->name)) == NULL)
   {
@@ -197,7 +185,6 @@ void EFinit(var_base *varp)
   }
   else
     vnt1 = tmp;
-/*  vnt1 = GetDefaultsValue("VNT1", varp->name);  <-- original code */
 
   if ((tmp = GetDefaultsValue("VNB0", varp->name)) == NULL)
   {
@@ -207,7 +194,6 @@ void EFinit(var_base *varp)
   }
   else
     vnb0 = tmp;
-/*  vnb0 = GetDefaultsValue("VNB0", varp->name);  <-- original code */
 
   if ((tmp = GetDefaultsValue("VNB1", varp->name)) == NULL)
   {
@@ -217,7 +203,6 @@ void EFinit(var_base *varp)
   }
   else
     vnb1 = tmp;
-/*  vnb1 = GetDefaultsValue("VNB1", varp->name);  <-- original code */
 
   if ((tmp = GetDefaultsValue("VNP0", varp->name)) == NULL)
   {
@@ -227,7 +212,6 @@ void EFinit(var_base *varp)
   }
   else
     vnp0 = tmp;
-/*  vnp0 = GetDefaultsValue("VNP0", varp->name);  <-- original code */
 
   if ((tmp = GetDefaultsValue("VNP1", varp->name)) == NULL)
   {
@@ -237,7 +221,6 @@ void EFinit(var_base *varp)
   }
   else
     vnp1 = tmp;
-/*  vnp1 = GetDefaultsValue("VNP1", varp->name)  <-- original code */;
 
   if ((tmp = GetDefaultsValue("VNS0", varp->name)) == NULL)
   {
@@ -247,7 +230,6 @@ void EFinit(var_base *varp)
   }
   else
     vns0 = tmp;
-/*  vns0 = GetDefaultsValue("VNS0", varp->name)  <-- original code */;
 
   if ((tmp = GetDefaultsValue("VNS1", varp->name)) == NULL)
   {
@@ -257,7 +239,6 @@ void EFinit(var_base *varp)
   }
   else
     vns1 = tmp;
-/*  vns1 = GetDefaultsValue("VNS1", varp->name);  <-- original code */
 
   if ((tmp = GetDefaultsValue("RFZ", varp->name)) == NULL)
   {
@@ -266,7 +247,6 @@ void EFinit(var_base *varp)
   }
   else
     RFZ = tmp[0];
-/*  RFZ = (GetDefaultsValue("RFZ", varp->name))[0];  <-- original code */
 
   if ((tmp = GetDefaultsValue("RFY", varp->name)) == NULL)
   {
@@ -275,7 +255,6 @@ void EFinit(var_base *varp)
   }
   else
     RFY = tmp[0];
-/*  RFY = (GetDefaultsValue("RFY", varp->name))[0];  <-- original code */
 
   if ((tmp = GetDefaultsValue("RNZ", varp->name)) == NULL)
   {
@@ -284,7 +263,6 @@ void EFinit(var_base *varp)
   }
   else
     RNZ = tmp[0];
-/*  RNZ = (GetDefaultsValue("RNZ", varp->name))[0];  <-- original code */
 
   if ((tmp = GetDefaultsValue("RNY", varp->name)) == NULL)
   {
@@ -293,7 +271,6 @@ void EFinit(var_base *varp)
   }
   else
     RNY = tmp[0];
-/*  RNY = (GetDefaultsValue("RNY", varp->name))[0];  <-- original code */
 
   if ((tmp = GetDefaultsValue("CFZ", varp->name)) == NULL)
   {
@@ -302,7 +279,6 @@ void EFinit(var_base *varp)
   }
   else
     CFZ = tmp[0];
-/*  CFZ = (GetDefaultsValue("CFZ", varp->name))[0];  <-- original code */
 
   if ((tmp = GetDefaultsValue("CFY", varp->name)) == NULL)
   {
@@ -311,7 +287,6 @@ void EFinit(var_base *varp)
   }
   else
     CFY = tmp[0];
-/*  CFY = (GetDefaultsValue("CFY", varp->name))[0];  <-- original code */
 
   if ((tmp = GetDefaultsValue("CNZ", varp->name)) == NULL)
   {
@@ -320,7 +295,6 @@ void EFinit(var_base *varp)
   }
   else
     CNZ = tmp[0];
-/*  CNZ = (GetDefaultsValue("CNZ", varp->name))[0]  <-- original code */;
 
   if ((tmp = GetDefaultsValue("CNY", varp->name)) == NULL)
   {
@@ -329,7 +303,6 @@ void EFinit(var_base *varp)
   }
   else
     CNY = tmp[0];
-/*  CNY = (GetDefaultsValue("CNY", varp->name))[0]  <-- original code */;
 
   if ((tmp = GetDefaultsValue("RXZ", varp->name)) == NULL)
   {
@@ -338,7 +311,6 @@ void EFinit(var_base *varp)
   }
   else
     RXZ = tmp[0];
-/*  RXZ = (GetDefaultsValue("RXZ", varp->name))[0];  <-- original code */
 
   if ((tmp = GetDefaultsValue("RXY", varp->name)) == NULL)
   {
@@ -347,7 +319,6 @@ void EFinit(var_base *varp)
   }
   else
     RXY = tmp[0];
-/*  RXY = (GetDefaultsValue("RXY", varp->name))[0];  <-- original code */
 
   if ((tmp = GetDefaultsValue("CXZ", varp->name)) == NULL)
   {
@@ -356,7 +327,6 @@ void EFinit(var_base *varp)
   }
   else
     CXZ = tmp[0];
-/*  CXZ = (GetDefaultsValue("CXZ", varp->name))[0];  <-- original code */
 
   if ((tmp = GetDefaultsValue("CXY", varp->name)) == NULL)
   {
@@ -365,9 +335,7 @@ void EFinit(var_base *varp)
   }
   else
     CXY = tmp[0];
-/*  CXY = (GetDefaultsValue("CXY", varp->name))[0];  <-- original code */
-
-}  /* END EFINIT */
+}
 
 /* -------------------------------------------------------------------- */
 void sefeft(DERTBL *varp)
