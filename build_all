@@ -77,7 +77,7 @@ end
 
 # Programs with "install" target.
 
-foreach file ( psql2xml ads2/hdrbld ncplot ncpp/src vardb/editor ads2/xhd xpms2d/src instruments/rdma ads_utils/edADShdr vardb/utils/vdb2ncml)
+foreach file ( psql2xml ads2/hdrbld ncplot ncpp/src vardb/editor ads2/xhd xpms2d/src instruments/rdma ads_utils/edADShdr vardb/utils/vdb2ncml instruments/sid2h )
   (cd $file; echo ""; make install)
   if ($num > 0) then
     echo "$file BUILT"
@@ -97,21 +97,6 @@ foreach file ( nimbus GoogleEarth/acTrack2kml instruments/pms2d/process2d )
   endif
 end
 
-# Programs withOUT install target.  WINDS requires xview toolkit.
-
-if ( $?WINDS ) then
-  cd ad2
-  foreach file ( ads/disc/src ads/dsm/src winds/src )
-    (cd $file; echo $file; make)
-    if ($num > 0) then
-      echo "$file BUILT"
-      sleep $num
-      reset
-    endif
-  end
-  cd ..
-endif
-
 
 # Programs with "install" target.
 
@@ -125,3 +110,20 @@ foreach file ( asc2cdf flt_time nc_compare ncReorder ncav ncextr ncfillvar ncmer
   endif
 end
 cd ..
+
+
+# Programs withOUT install target.  WINDS requires xview toolkit.
+
+if ( $?WINDS ) then
+  cd ads2
+  foreach file ( ads/disc/src ads/dsm/src winds/src )
+    (cd $file; echo $file; make)
+    if ($num > 0) then
+      echo "$file BUILT"
+      sleep $num
+      reset
+    endif
+  end
+  cd ..
+endif
+
