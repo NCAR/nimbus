@@ -1,8 +1,6 @@
 #!/bin/csh
 
-# Script to run IDL SID2 processing.  This will read raw SID2 files and write
-# histogram and time series data similar to a PMS or OAP probe into the
-# specified netCDF file.
+# Script to run IDL SID2 QC and display GUI.
 
 setenv IDL_STARTUP /tmp/sid2_idl_startup
 
@@ -15,4 +13,5 @@ EOF
 chmod a+rw $IDL_STARTUP
 
 idl -e sid
+
 rm $IDL_STARTUP
