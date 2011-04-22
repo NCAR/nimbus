@@ -1,0 +1,26 @@
+#!/bin/csh
+
+# Script to run IDL SID2 processing.  This will read raw SID2 files and write
+# histogram and time series data similar to a PMS or OAP probe into the
+# specified netCDF file.
+
+if ( $#argv != 3 ) then
+  echo Usage: procsid2h raw_data_directory -o netcdf_file.nc
+  exit 1
+endif
+
+# There may be a better way to do this startup file thing....
+setenv IDL_STARTUP /tmp/sid2_idl_startup
+
+cat > $IDL_STARTUP << EOF
+device, retain=2, decom=0
+loadct,39
+!path=!path+':/opt/local/idl/lib'
+EOF
+
+chmod a+rw $IDL_STARTUP
+
+#idl -e "procsid2h, '$argv[1]'"
+idl -e "procsid2h, '$argv[1]', pthfile='$argv[3]'"
+
+rm $IDL_STARTUP
