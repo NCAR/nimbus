@@ -148,7 +148,7 @@ END
 
 
 
-PRO sid
+PRO sid, h=h
     ;------CHANGE DEFAULT VALUES HERE--------------------------------------
     ;----------------------------------------------------------------------
     defaultgain=1.4
@@ -158,7 +158,7 @@ PRO sid
     ;----------------------------------------------------------------------
     ;----------------------------------------------------------------------
     
-    
+    IF keyword_set(h) THEN print,'=======Parameter /h successfully passed to sid.pro========='
     IF !version.os_family eq 'windows' THEN widget_control,default_font='Helvetica*fixed*12'
     IF !version.os_family eq 'unix' THEN widget_control,default_font='-adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1'
    
