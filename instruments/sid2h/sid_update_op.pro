@@ -12,5 +12,7 @@ PRO sid_update_op, op
    IF total(where(tag_names(op) eq 'MAXSATURATED')) eq -1 THEN op=create_struct(op,'maxsaturated',10)
    IF total(where(tag_names(op) eq 'SPEEDREJECT')) eq -1 THEN op=create_struct(op,'speedreject',0)
    IF total(where(tag_names(op) eq 'PEAK')) eq -1 THEN op=create_struct(op,'peak',0)
+   IF total(where(tag_names(op) eq 'CREATENCDF')) eq -1 THEN op=create_struct(op,'createncdf',0)
+   IF total(where(tag_names(op) eq 'CREATESAV')) eq -1 THEN op=create_struct(op,'createsav',1)
 END
   

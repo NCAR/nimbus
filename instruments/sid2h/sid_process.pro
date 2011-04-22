@@ -456,10 +456,19 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
          smalltrigger:smalltrigger,ntdead:ntdead,eventindex:eventindex,eventtype:eventtype,eventstring:eventstring, $
          tbspec1d:tbspec1d, tbconc1d:tbconc1d, tbendbins:tbendbins, tbmidbins:tbmidbins}
          
-   idlfilename=op.outdir+date.mdy+'_'+string(long(sid_sfm2hms(starttime)),format='(i06)')+'_SID.dat'
-   save, data, file=idlfilename, /compress
-   infoline='Saved file '+idlfilename
-   IF statuswidgetid ne 0 THEN dummy=dialog_message(infoline,dialog_parent=statuswidgetid,/info) ELSE print,infoline
+   IF op.createsav eq 1 THEN BEGIN
+      idlfilename=op.outdir+date.mdy+'_'+string(long(sid_sfm2hms(starttime)),format='(i06)')+'_SID.dat'
+      save, data, file=idlfilename, /compress
+      infoline='Saved file '+idlfilename
+      IF statuswidgetid ne 0 THEN dummy=dialog_message(infoline,dialog_parent=statuswidgetid,/info) ELSE print,infoline
+   ENDIF
+   
+   IF op.createncdf eq 1 THEN BEGIN
+      ncfilename=op.outdir+date.mdy+'_'+string(long(sid_sfm2hms(starttime)),format='(i06)')+'_SID.nc'
+      sid_export_ncdf,data,outfile=ncfilename,ncappend=0
+      infoline='Saved file '+ncfilename
+      IF statuswidgetid ne 0 THEN dummy=dialog_message(infoline,dialog_parent=statuswidgetid,/info) ELSE print,infoline  
+   ENDIF
    
    IF op.textfile eq 1 THEN BEGIN
      free_lun,2

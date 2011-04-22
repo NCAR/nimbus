@@ -1,13 +1,11 @@
-PRO sid_export_ncdf, infile, outdir=outdir, outfile=outfile
+PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
    ;PRO to export a netCDF file with the variables contained in a data structure.
    ;Aaron Bansemer, NCAR, 9/2007
    ;Updated 7/2009 for ncpp compatibility
+   ;Updated 4/2011 to append to existing ncdf file
    
-   restore,infile
-   infile_base=file_basename(infile)
-   p=strpos(infile_base,'.dat')
-   filename=strmid(infile_base,0,p)+'.nc'
-   outfile=outdir+filename  ;data.date+'_'+strtrim(string(long(sid_sfm2hms(data.starttime))),2)+'_SID.nc'
+   ;Prefix for appending to other files
+   IF ncappend THEN prefix='SID_' ELSE prefix=''
   
    ;Create the file
    id=ncdf_create(outfile[0],/clobber)

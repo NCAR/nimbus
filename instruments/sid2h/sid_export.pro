@@ -34,8 +34,13 @@ PRO sid_export_event, ev
             
             outfilelist=strarr(n_elements(fn))
             FOR i=0,n_elements(fn)-1 DO BEGIN
-               widget_control,widget_info(ev.top,find='process'),set_value='Processing file '+strtrim(string(i+1),2)+'...'               sid_export_ncdf,fn[i],outdir=outdir,outfile=outfile
-               outfilelist[i]=outfile
+               widget_control,widget_info(ev.top,find='process'),set_value='Processing file '+strtrim(string(i+1),2)+'...'
+               restore,fn[i]
+               infile_base=file_basename(fn[i])
+               p=strpos(infile_base,'.dat')
+               ncfilename=outdir+strmid(infile_base,0,p)+'.nc'
+               sid_export_ncdf,data,outfile=ncfilename,ncappend=0
+               outfilelist[i]=ncfilename
             ENDFOR
             widget_control,widget_info(ev.top,find='process'),set_value='EXPORT to netCDF'
             dummy=dialog_message('Wrote '+outfilelist,dialog_parent=widget_info(ev.top,find='addfile'),/info)
@@ -48,7 +53,8 @@ END
 
 
 
-PRO sid_export
+PRO sid_export
+
     IF !version.os_family eq 'windows' THEN widget_control,default_font='Helvetica*fixed*12'
     IF !version.os_family eq 'unix' THEN widget_control,default_font='-adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1'
     base = WIDGET_BASE(COLUMN=1,title='Export Data',MBar=menubarID)

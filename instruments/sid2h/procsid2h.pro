@@ -23,7 +23,7 @@ PRO procsid2h, directoryname, pthfile=pthfile, textfile=textfile, fixedtas=fixed
    
    op={fn_orig:fn,  rate:1, sizegain:sizegain, pthfile:pthfile, textfile:textfile, $
        fixedtas:fixedtas, autolevel:autolevel, speedreject:speedreject, outdir:outdir, $
-       maxsaturated:maxsaturated, tastag:tastag, peak:peak}
+       maxsaturated:maxsaturated, tastag:tastag, peak:peak, createncdf:1, createsav:0}
    
    sid_process, op
 END
