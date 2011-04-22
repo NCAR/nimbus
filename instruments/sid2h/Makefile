@@ -12,6 +12,6 @@ ${PROG}:
 install:
 	test -d $(BINDIR) || mkdir $(BINDIR)
 	cp ${PROG} ${BINDIR}
-	test -d $(LIBDIR) || mkdir $(LIBDIR)
+	test -d $(LIBDIR) || mkdir -p $(LIBDIR)
 	cp *.pro ${LIBDIR}
 
