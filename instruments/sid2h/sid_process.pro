@@ -166,6 +166,13 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
    date=(sid_date(firstheader.filestarttime))
    starttime=sid_ft2sfm(firstfooter.acqstart) 
    stoptime=sid_ft2sfm(lastfooter.fileclosetime) 
+   IF op.ncappend THEN BEGIN
+      ;Get start/stop from the ncdf file instead
+      temp=sid_ncdf_getstartstop(op.pthfile)
+      starttime=temp[0]
+      stoptime=temp[1]
+      op.rate=1    ;Must be the same as ncdf files (always 1Hz)
+   ENDIF
    IF stoptime lt starttime THEN stoptime=stoptime+86400
    num=(stoptime-starttime)/rate +1 ;number of records that will be saved
    time=starttime+rate*dindgen(num)  ; this is the start time for each record 
@@ -465,7 +472,8 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
    
    IF op.createncdf eq 1 THEN BEGIN
       ncfilename=op.outdir+date.mdy+'_'+string(long(sid_sfm2hms(starttime)),format='(i06)')+'_SID.nc'
-      sid_export_ncdf,data,outfile=ncfilename,ncappend=0
+      IF op.ncappend THEN ncfilename=op.pthfile
+      sid_export_ncdf,data,outfile=ncfilename,ncappend=op.ncappend
       infoline='Saved file '+ncfilename
       IF statuswidgetid ne 0 THEN dummy=dialog_message(infoline,dialog_parent=statuswidgetid,/info) ELSE print,infoline  
    ENDIF

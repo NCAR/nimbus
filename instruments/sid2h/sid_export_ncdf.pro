@@ -4,81 +4,143 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
    ;Updated 7/2009 for ncpp compatibility
    ;Updated 4/2011 to append to existing ncdf file
    
-   ;Prefix for appending to other files
-   IF ncappend THEN prefix='SID_' ELSE prefix=''
-  
-   ;Create the file
-   id=ncdf_create(outfile[0],/clobber)
+   !quiet=1  ;Suppress annoying messages from ncdf routines
    
-   
-   ;Define the x-dimension, should be used in all variables
-   xdimid=ncdf_dimdef(id,'Time',n_elements(data.time))
-   ;Samples per second
-   sdimid=ncdf_dimdef(id,'sps1',(1.0/data.op.rate)>1)
-   ;This is for numbins
-   ydimid_size=ncdf_dimdef(id,'Vector41',n_elements(data.endbins))
-   ;This is for interarrival
-   ydimid_int=ncdf_dimdef(id,'VectorInterarrivalBinSizes',n_elements(data.intmidbins))
-   ;This is for asphericity
-   ydimid_af=ncdf_dimdef(id,'VectorAsphericityBinSizes',n_elements(data.afmidbins))
-   ;This is for branch counts
-   ydimid_branches=ncdf_dimdef(id,'WaveNumberPeakValue',8)
-   ;This is for time-based size
-   ydimid_tb=ncdf_dimdef(id,'Vectortb',n_elements(data.tbendbins))
+   ;Append SID data to existing ncdf file.
+   ;This assumes that the data rate and start/stop times are
+   ;already synced up with the preexisting file.
+   IF (ncappend eq 1) THEN BEGIN
+      prefix='SID_'   ;Prefix for appending to other files
       
-   ;These are for ncplot compatibility
-   opnames=tag_names(data.op)
-   ms=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
-   month=string(where(ms eq strmid(data.date,2,3))+1,format='(i02)')
-   day=strmid(data.date,0,2)
-   year=strmid(data.date,5,4)
-   days1970=julday(month,day,year)-julday(1,1,1970) 
-   flightdate=month+'/'+day+'/'+year
-
-   tb='0000'+strtrim(string(sid_sfm2hms(min(data.time))),2)
-   te='0000'+strtrim(string(sid_sfm2hms(max(data.time))),2)
-   starttime=strmid(tb,5,2,/r)+':'+strmid(tb,3,2,/r)+':'+strmid(tb,1,2,/r)
-   stoptime=strmid(te,5,2,/r)+':'+strmid(te,3,2,/r)+':'+strmid(te,1,2,/r)
-   str=starttime+'-'+stoptime
-
-   ;Create global attributes
-   ncdf_attput,id,'Source','NCAR SID-2H Processing Software',/global
-   ncdf_attput,id,'Conventions', 'NCAR-RAF/nimbus', /global
-   ncdf_attput,id,'DateCreated',systime(),/global
-   ncdf_attput,id,'FlightDate',flightdate,/global
-   ncdf_attput,id,'DateProcessed',data.date_processed,/global
-   ncdf_attput,id,'TimeInterval',str,/global
-   opnames=tag_names(data.op)                  
-   FOR i=0,n_elements(opnames)-1 DO BEGIN
-      IF string(data.op.(i)[0]) eq '' THEN data.op.(i)[0]='none' ;To avoid an ncdf error (empty string)
-      ncdf_attput,id,opnames[i],data.op.(i)[0],/global      
-   ENDFOR
-
-
-   
-   attname=['long_name','units']
-   attvalue=['Time','seconds since '+year+'-'+month+'-'+day+' '+starttime+' +0000']
-   timeid=ncdf_vardef(id,'Time',xdimid,/long) 
-   FOR k=0,n_elements(attname)-1 DO ncdf_attput,id,timeid,attname[k],attvalue[k]
-
-   attvalue=['Base time','seconds since 01/01/1970']
-   baseid=ncdf_vardef(id,'base_time',/long)
-   FOR k=0,n_elements(attname)-1 DO ncdf_attput,id,baseid,attname[k],attvalue[k]
-
-   attvalue=['UTC time','seconds from midnight of start date']
-   utcid=ncdf_vardef(id,'utc_time',xdimid,/long)
-   FOR k=0,n_elements(attname)-1 DO ncdf_attput,id,utcid,attname[k],attvalue[k]
-
-           
-   ncdf_control,id,/endef                ;put in data mode
-   ncdf_varput,id,utcid,data.time 
-   ncdf_varput,id,baseid,data.time[0]+days1970*86400l
-   ncdf_varput,id,timeid,data.time-data.time[0]  
-   ncdf_control,id,/redef                ;return to define mode
+      ;Open the file for writing
+      id=ncdf_open(outfile,/write)
       
-  ;-------Main structure tags------------------------    
-  tags=tag_names(data)     
-  FOR j=0,n_elements(tags)-1 DO BEGIN
+      ;Get pre-existing dimensions
+      xdimid=ncdf_dimid(id,'Time')
+      sdimid=ncdf_dimid(id,'sps1')
+      
+      ncdf_control,id,/redef                ;put in define mode
+      
+      ;Make new dimensions, this is for numbins
+      name='Vector'+strtrim(string(n_elements(data.endbins)),2)
+      ydimid_size=ncdf_dimid(id, name)
+      IF ydimid_size eq -1 THEN ydimid_size=ncdf_dimdef(id,name,n_elements(data.endbins)) 
+         
+      ;This is for interarrival
+      name='Vector'+strtrim(string(n_elements(data.intmidbins)),2)
+      ydimid_int=ncdf_dimid(id, name)
+      IF ydimid_int eq -1 THEN ydimid_int=ncdf_dimdef(id,name,n_elements(data.intmidbins)) 
+      
+      ;This is for asphericity
+      name='Vector'+strtrim(string(n_elements(data.afmidbins)),2)
+      ydimid_af=ncdf_dimid(id, name)
+      IF ydimid_af eq -1 THEN ydimid_af=ncdf_dimdef(id,name,n_elements(data.afmidbins)) 
+      
+      ;This is for branch counts
+      name='Vector8'
+      ydimid_branches=ncdf_dimid(id, name)
+      IF ydimid_branches eq -1 THEN ydimid_branches=ncdf_dimdef(id,name,8)
+      
+      ;This is for time-based size
+      name='Vector'+strtrim(string(n_elements(data.tbendbins)),2)
+      ydimid_tb=ncdf_dimid(id, name)
+      IF ydimid_tb eq -1 THEN ydimid_tb=ncdf_dimdef(id,name,n_elements(data.tbendbins)) 
+      
+      varid=ncdf_varid(id, 'SID_ATTRIBUTES')
+      IF varid eq -1 THEN varid=ncdf_vardef(id,'SID_ATTRIBUTES',/char)
+      ncdf_control,id,/endef                ;put in data mode
+      ncdf_varput,id,varid,0
+      ncdf_control,id,/redef                ;return to define mode
+      opnames=tag_names(data.op)                  
+      FOR i=0,n_elements(opnames)-1 DO BEGIN
+          IF string(data.op.(i)[0]) eq '' THEN data.op.(i)[0]='none' ;To avoid an ncdf error (empty string)
+          ncdf_attput,id,varid,opnames[i],data.op.(i)[0]
+      ENDFOR
+
+   ENDIF ELSE BEGIN
+      ;-----------Create new file instead-----------------
+      
+      prefix=''
+      ;Create the file
+      id=ncdf_create(outfile[0],/clobber)
+      
+      
+      ;Define the x-dimension, should be used in all variables
+      xdimid=ncdf_dimdef(id,'Time',n_elements(data.time))
+      ;Samples per second
+      sdimid=ncdf_dimdef(id,'sps1',(1.0/data.op.rate)>1)
+      ;This is for numbins
+      name='Vector'+strtrim(string(n_elements(data.endbins)),2)
+      ydimid_size=ncdf_dimdef(id,name,n_elements(data.endbins))
+      ;This is for interarrival
+      name='Vector'+strtrim(string(n_elements(data.intmidbins)),2)
+      ydimid_int=ncdf_dimdef(id,name,n_elements(data.intmidbins))
+      ;This is for asphericity
+      name='Vector'+strtrim(string(n_elements(data.afmidbins)),2)
+      ydimid_af=ncdf_dimdef(id,name,n_elements(data.afmidbins))
+      ;This is for branch counts
+      name='Vector8'
+      ydimid_branches=ncdf_dimdef(id,name,8)
+      ;This is for time-based size
+      name='Vector'+strtrim(string(n_elements(data.tbendbins)),2)
+      ydimid_tb=ncdf_dimdef(id,name,n_elements(data.tbendbins))
+          
+      ;These are for ncplot compatibility
+      opnames=tag_names(data.op)
+      ms=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+      month=string(where(ms eq strmid(data.date,2,3))+1,format='(i02)')
+      day=strmid(data.date,0,2)
+      year=strmid(data.date,5,4)
+      days1970=julday(month,day,year)-julday(1,1,1970) 
+      flightdate=month+'/'+day+'/'+year
+    
+      tb='0000'+strtrim(string(sid_sfm2hms(min(data.time))),2)
+      te='0000'+strtrim(string(sid_sfm2hms(max(data.time))),2)
+      starttime=strmid(tb,5,2,/r)+':'+strmid(tb,3,2,/r)+':'+strmid(tb,1,2,/r)
+      stoptime=strmid(te,5,2,/r)+':'+strmid(te,3,2,/r)+':'+strmid(te,1,2,/r)
+      str=starttime+'-'+stoptime
+    
+      ;Create global attributes
+      ncdf_attput,id,'Source','NCAR SID-2H Processing Software',/global
+      ncdf_attput,id,'Conventions', 'NCAR-RAF/nimbus', /global
+      ncdf_attput,id,'DateCreated',systime(),/global
+      ncdf_attput,id,'FlightDate',flightdate,/global
+      ncdf_attput,id,'DateProcessed',data.date_processed,/global
+      ncdf_attput,id,'TimeInterval',str,/global
+      opnames=tag_names(data.op)                  
+      FOR i=0,n_elements(opnames)-1 DO BEGIN
+          IF string(data.op.(i)[0]) eq '' THEN data.op.(i)[0]='none' ;To avoid an ncdf error (empty string)
+          ncdf_attput,id,opnames[i],data.op.(i)[0],/global      
+      ENDFOR
+    
+    
+      
+      attname=['long_name','units']
+      attvalue=['Time','seconds since '+year+'-'+month+'-'+day+' '+starttime+' +0000']
+      timeid=ncdf_vardef(id,'Time',xdimid,/long) 
+      FOR k=0,n_elements(attname)-1 DO ncdf_attput,id,timeid,attname[k],attvalue[k]
+    
+      attvalue=['Base time','seconds since 01/01/1970']
+      baseid=ncdf_vardef(id,'base_time',/long)
+      FOR k=0,n_elements(attname)-1 DO ncdf_attput,id,baseid,attname[k],attvalue[k]
+    
+      attvalue=['UTC time','seconds from midnight of start date']
+      utcid=ncdf_vardef(id,'utc_time',xdimid,/long)
+      FOR k=0,n_elements(attname)-1 DO ncdf_attput,id,utcid,attname[k],attvalue[k]
+    
+              
+      ncdf_control,id,/endef                ;put in data mode
+      ncdf_varput,id,utcid,data.time 
+      ncdf_varput,id,baseid,data.time[0]+days1970*86400l
+      ncdf_varput,id,timeid,data.time-data.time[0]  
+      ncdf_control,id,/redef                ;return to define mode
+   ENDELSE    
+   
+   
+   ;-------Write data to file, start with main structure tags------------------------    
+   tags=tag_names(data)     
+   
+   FOR j=0,n_elements(tags)-1 DO BEGIN
       ;Write each variable
       skiptag=0
       dims=xdimid
@@ -86,7 +148,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
       attvalue=['Unknown','Unknown']
       unitadjust=1.0
       currentdata=data.(j)
-      tagname=tags[j]
+      tagname=prefix+tags[j]
          
       CASE tags[j] OF
          'AREA':attvalue={a1:'Total Area',a2:'1/m'}
@@ -123,7 +185,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
             conc=fltarr(n_elements(data.time),n_elements(data.endbins))
             conc[*,1:*]=conc_unnorm/1.0e6
             currentdata=reform(transpose(conc),n_elements(data.endbins),1,n_elements(data.time))
-            tagname='CSID_RWO'
+            tagname='CSID_SID'
          END
          'SPEC1D':BEGIN
             attname=['_FillValue','long_name','units','FirstBin','LastBin','CellSizes','CellSizeUnits','Category']
@@ -135,7 +197,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
             spec=fltarr(n_elements(data.time),n_elements(data.endbins))
             spec[*,1:*]=data.spec1d
             currentdata=reform(transpose(spec),n_elements(data.endbins),1,n_elements(data.time))
-            tagname='ASID_RWO'
+            tagname='ASID_SID'
          END
          'TBCONC1D': BEGIN
             attname=['_FillValue','long_name','units','FirstBin','LastBin','CellSizes','CellSizeUnits','Category']
@@ -148,7 +210,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
             conc=fltarr(n_elements(data.time),n_elements(data.tbendbins))
             conc[*,1:*]=conc_unnorm/1.0e6
             currentdata=reform(transpose(conc),n_elements(data.tbendbins),1,n_elements(data.time))
-            tagname='CSIDTB_RWO'
+            tagname='CSIDTB_SID'
          END
          'TBSPEC1D':BEGIN
             attname=['_FillValue','long_name','units','FirstBin','LastBin','CellSizes','CellSizeUnits','Category']
@@ -160,7 +222,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
             spec=fltarr(n_elements(data.time),n_elements(data.tbendbins))
             spec[*,1:*]=data.tbspec1d
             currentdata=reform(transpose(spec),n_elements(data.tbendbins),1,n_elements(data.time))
-            tagname='ASIDTB_RWO'
+            tagname='ASIDTB_SID'
          END
          'AFSPEC':BEGIN
             attvalue={a1:'Particle Count Per Af Bin',a2:'#'}
@@ -194,7 +256,8 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
       ENDCASE
         
       IF not(skiptag) THEN BEGIN                                              
-         varid=ncdf_vardef(id,tagname,dims,/float) 
+         varid=ncdf_varid(id,tagname)  ;Check if this variable already exists
+         IF varid eq -1 THEN varid=ncdf_vardef(id,tagname,dims,/float)         
          FOR k=0,n_elements(attname)-1 DO ncdf_attput,id,varid,attname[k],attvalue.(k)
           
          ncdf_control,id,/endef                ;put in data mode
@@ -211,6 +274,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
       dims=xdimid
       attvalue=['Unknown','Unknown']
       unitadjust=1.0
+      tagname=prefix+tags[j]
          
       CASE tags[j] OF
          'TDETECTOR': BEGIN
@@ -255,7 +319,8 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
       ENDCASE
         
       IF not(skiptag) THEN BEGIN                                      
-         varid=ncdf_vardef(id,tags[j],dims,/float) 
+         varid=ncdf_varid(id,tagname)  ;Check if this variable already exists
+         IF varid eq -1 THEN varid=ncdf_vardef(id,tagname,dims,/float) 
          FOR k=0,n_elements(attname)-1 DO ncdf_attput,id,varid,attname[k],attvalue[k]
           
          ncdf_control,id,/endef                ;put in data mode
@@ -273,6 +338,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
       dims=xdimid
       attvalue=['Unknown','Unknown']
       unitadjust=1.0
+      tagname=prefix+tags[j]
          
       CASE tags[j] OF
          'HABIT_ROUND':BEGIN
@@ -293,7 +359,8 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
          END
       ENDCASE
 
-      varid=ncdf_vardef(id,tags[j],dims,/float) 
+      varid=ncdf_varid(id,tagname)  ;Check if this variable already exists
+      IF varid eq -1 THEN varid=ncdf_vardef(id,tagname,dims,/float) 
       FOR k=0,n_elements(attname)-1 DO ncdf_attput,id,varid,attname[k],attvalue[k]          
       ncdf_control,id,/endef                ;put in data mode
       ncdf_varput,id,varid,currentdata  

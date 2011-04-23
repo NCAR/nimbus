@@ -29,7 +29,7 @@ FUNCTION sid_tas, op, tag=tag   ;fn, starttime,stoptime,rate
    
    ncdf_varget,id,tag[0],tas_in
    bad=where(tas_in eq -32767) & IF bad[0] ne -1 THEN tas_in[bad]=!values.f_nan
-
+   ncdf_close,id
 
    ;-------------------Initialize and QC inputs and variables---------------------
    starttime=long(op.starttime) & stoptime=long(op.stoptime) & rate=long(op.rate)
