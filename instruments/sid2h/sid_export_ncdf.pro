@@ -152,7 +152,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
          
       CASE tags[j] OF
          'AREA':attvalue={a1:'Total Area',a2:'1/m'}
-         'LWC':attvalue={a1:'Liquid Water Content',a2:'g/m3'}
+         'LWC':attvalue={a1:'Liquid Water Content',a2:'gram/m3'}
          'MVD':attvalue={a1:'Median Volume Diameter',a2:'um'}
          'MND':attvalue={a1:'Mean Diameter',a2:'um'}
          'GAIN':attvalue={a1:'PMT Gain',a2:'raw units'}
@@ -278,27 +278,27 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
          
       CASE tags[j] OF
          'TDETECTOR': BEGIN
-            attvalue=['Detector Temperature','degrees C']
+            attvalue=['Detector Temperature','deg_C']
             unitadjust=1/(-34.34)
          END
          'TLASER': BEGIN
-            attvalue=['Laser Temperature','degrees C']
+            attvalue=['Laser Temperature','deg_C']
             unitadjust=1/(-34.34)
          END          
          'TLASERCONTROL': BEGIN
-            attvalue=['Laser Control Temperature','degrees C']
+            attvalue=['Laser Control Temperature','deg_C']
             unitadjust=1/(-34.34)
          END         
          'TFPGAAMBIENT': BEGIN
-            attvalue=['FPGA Temperature','degrees C']
+            attvalue=['FPGA Temperature','deg_C']
             unitadjust=1/(-34.34)
          END          
          'THEADHEATER': BEGIN
-            attvalue=['Head Heater Temperature','degrees C']
+            attvalue=['Head Heater Temperature','deg_C']
             unitadjust=1/(-34.34)
          END          
          'THEADAMBIENT': BEGIN
-            attvalue=['Ambient Head Temperature','degrees C']
+            attvalue=['Ambient Head Temperature','deg_C']
             unitadjust=1/(-34.34)
          END          
          'LASERPOWERMON': BEGIN
@@ -312,7 +312,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
             unitadjust=1.0 
          END         
          'TLASERPOWERMON': BEGIN
-            attvalue=['Laser Power Monitor Temperature','degrees C']
+            attvalue=['Laser Power Monitor Temperature','deg_C']
             unitadjust=1/(-34.34)
          END          
          ELSE:skiptag=1  
