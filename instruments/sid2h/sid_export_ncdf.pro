@@ -10,7 +10,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
    ;This assumes that the data rate and start/stop times are
    ;already synced up with the preexisting file.
    IF (ncappend eq 1) THEN BEGIN
-      prefix='SID_'   ;Prefix for appending to other files
+      suffix='_SID'   ;Suffix for appending to other files
       
       ;Open the file for writing
       id=ncdf_open(outfile,/write)
@@ -60,7 +60,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
    ENDIF ELSE BEGIN
       ;-----------Create new file instead-----------------
       
-      prefix=''
+      suffix=''
       ;Create the file
       id=ncdf_create(outfile[0],/clobber)
       
@@ -148,15 +148,21 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
       attvalue=['Unknown','Unknown']
       unitadjust=1.0
       currentdata=data.(j)
-      tagname=prefix+tags[j]
+      tagname=tags[j]+suffix
          
       CASE tags[j] OF
          'AREA':attvalue={a1:'Total Area',a2:'1/m'}
-         'LWC':attvalue={a1:'Liquid Water Content',a2:'gram/m3'}
+         'LWC': BEGIN
+             attvalue={a1:'Liquid Water Content',a2:'gram/m3'}
+             tagname='PLWC'+suffix
+         END
          'MVD':attvalue={a1:'Median Volume Diameter',a2:'um'}
          'MND':attvalue={a1:'Mean Diameter',a2:'um'}
          'GAIN':attvalue={a1:'PMT Gain',a2:'raw units'}
-         'TRANSITTIME':attvalue={a1:'Average transit time',a2:'s'}
+         'TRANSITTIME': BEGIN
+            attvalue={a1:'Average transit time',a2:'s'}
+            tagname='AVGTRNS'+suffix
+         END
          'MISSED':attvalue={a1:'Number of missed particles',a2:'#'}
          'REJECTCOUNT':attvalue={a1:'Number of rejected particles',a2:'#'}
          'TAS':attvalue={a1:'True air speed',a2:'m/s'}
@@ -173,6 +179,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
          'NT': BEGIN
             attvalue={a1:'Total Number Concentration',a2:'#/cm3'}
             unitadjust=1.0e-6
+            tagname='CONC'+suffix
          END
          'CONC1D': BEGIN
             attname=['_FillValue','long_name','units','FirstBin','LastBin','CellSizes','CellSizeUnits','Category']
@@ -274,7 +281,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
       dims=xdimid
       attvalue=['Unknown','Unknown']
       unitadjust=1.0
-      tagname=prefix+tags[j]
+      tagname=tags[j]+suffix
          
       CASE tags[j] OF
          'TDETECTOR': BEGIN
@@ -338,7 +345,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
       dims=xdimid
       attvalue=['Unknown','Unknown']
       unitadjust=1.0
-      tagname=prefix+tags[j]
+      tagname=tags[j]+suffix
          
       CASE tags[j] OF
          'HABIT_ROUND':BEGIN
