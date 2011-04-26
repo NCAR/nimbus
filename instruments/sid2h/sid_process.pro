@@ -172,6 +172,7 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
       starttime=temp[0]
       stoptime=temp[1]
       op.rate=1    ;Must be the same as ncdf files (always 1Hz)
+      rate=1
    ENDIF
    IF stoptime lt starttime THEN stoptime=stoptime+86400
    num=(stoptime-starttime)/rate +1 ;number of records that will be saved
@@ -251,15 +252,16 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
       footer=sid_read_next(lun)
       point_lun,lun,p.header
       header=sid_read_next(lun)
-      timeoffset=(footer.acqstart-firstfooter.acqstart)*100  ;nanoseconds, this is required to adjust for the possibility of multiple file series
       
       ;Update anything that changed between files
       IF last_acqstart ne footer.acqstart THEN BEGIN ;only make these updates when a new *series* is started
-         index=long((footer.acqstart-firstfooter.acqstart)/10000000)/rate
-         pmtgain[index:*]=footer.initialgain
-         smalltrigger[index:*]=footer.smalltrigger
-         largetrigger[index:*]=footer.largetrigger
-         last_acqstart=footer.acqstart
+         index=(sid_ft2sfm(footer.acqstart) - starttime)/rate
+         IF (index gt 0) and (index lt (num-1)) THEN BEGIN
+            pmtgain[index:*]=footer.initialgain
+            smalltrigger[index:*]=footer.smalltrigger
+            largetrigger[index:*]=footer.largetrigger
+            last_acqstart=footer.acqstart
+         ENDIF
       ENDIF
       
       ;Look for important events later on in the file
@@ -267,8 +269,8 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
          FOR j=0,n_elements(p.gainchange)-1 DO BEGIN
             point_lun,lun,p.gainchange[j]
             newgain=sid_read_next(lun)
-            index=long((newgain.systime-firstfooter.acqstart)/10000000)/rate
-            pmtgain[index:*]=newgain.value
+            index=(sid_ft2sfm(newgain.systime) - starttime)/rate
+            IF (index gt 0) and (index lt (num-1)) THEN pmtgain[index:*]=newgain.value
          ENDFOR
       ENDIF
       
@@ -279,9 +281,12 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
       FOR ievents=0,nevents-1 DO BEGIN
          point_lun,lun,events[ievents]
          ev=sid_read_next(lun)
-         eventindex=[eventindex,long((ev.systime-firstfooter.acqstart)/10000000)/rate]
-         eventtype=[eventtype,ev.type]
-         eventstring=[eventstring,ev.event]
+         index=(sid_ft2sfm(ev.systime) - starttime)/rate
+         IF (index gt 0) and (index lt (num-1)) THEN BEGIN
+            eventindex=[eventindex,index]
+            eventtype=[eventtype,ev.type]
+            eventstring=[eventstring,ev.event]
+         ENDIF
       ENDFOR
       
       ;Process the datablocks for this file
@@ -296,19 +301,19 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
          b=sid_read_next(lun)
          IF b.error eq 0 THEN BEGIN
          ;Update mux values
-         index=long((b.systime-firstfooter.acqstart)/10000000)/rate
-         muxvalue[index,b.mux]=muxvalue[index,b.mux]+b.sensor
-         nbmux[index,b.mux]=nbmux[index,b.mux]+1
-        
+         index=(sid_ft2sfm(b.systime) - starttime)/rate
+         IF (index gt 0) and (index lt (num-1)) THEN BEGIN
+            muxvalue[index,b.mux]=muxvalue[index,b.mux]+b.sensor
+            nbmux[index,b.mux]=nbmux[index,b.mux]+1
+         ENDIF       
+         
          ;Process each particle in the datablock
          FOR i=0,b.num-1 DO BEGIN
+            ;Find time index
+            index=((sid_ft2sfm((b.elaptime[i]-footer.reftime)/100+footer.acqstart)) - starttime)/rate
             ;Skip over 'forced' particles
-            IF (b.forced[i] eq 0) THEN BEGIN  
-               
-               ;Find time index, adjusted scatter
-               index=(b.elaptime[i]-footer.reftime+timeoffset)/1000000000/rate             
-
-                              
+            IF (b.forced[i] eq 0) and (index gt 0) and (index lt (num-1)) THEN BEGIN  
+                                            
                ;Adjust scatter based on calibrations
                scatter_adjusted=(b.scatter[i,*]-detoffset)*detgain   ;Verified correct
                
@@ -439,9 +444,11 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
    ENDIF
    blockpointer=blockpointer[0:blocknum-1]
    filenum=filenum[0:blocknum-1]
-   eventindex=eventindex[1:*]    ;The first value was just a dummy
-   eventtype=eventtype[1:*]
-   eventstring=eventstring[1:*]
+   IF n_elements(eventindex) gt 1 THEN BEGIN
+      eventindex=eventindex[1:*]    ;The first value was just a dummy
+      eventtype=eventtype[1:*]
+      eventstring=eventstring[1:*]
+   ENDIF
    
    units={time:'seconds UTC',endbins:'microns',midbins:'microns',spec1d:'counts',spec2d:'counts',conc1d:'m^-4',$
           area:'1/m',lwc:'g/m^3',mvd:'microns',mnd:'microns',nt:'m^-3',intendbins:'seconds',intmidbins:'seconds',$
