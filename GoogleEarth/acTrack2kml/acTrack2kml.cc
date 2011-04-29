@@ -28,7 +28,7 @@ static std::string	googleEarthDataDir, webHost;
 
 // All datapoints are read from file, but only use every 'TimeStep' points.
 // e.g. 15 would mean use 1 data point for every 15 seconds of data.
-static int TimeStep = 30;
+static int TimeStep = 15;
 
 // True Airspeed cut-off (take-off and landing speed).
 static const float TAS_CutOff = 20.0;
@@ -37,7 +37,7 @@ static const float TAS_CutOff = 20.0;
 static int ts_Freq = 10;
 
 // Frequency of Wind Barbs (in minutes).
-static int barb_Freq = 5;
+static int barb_Freq = 7;
 
 static std::string netCDFinputFile, outputKML, database_host, platform, dbname;
 
@@ -536,6 +536,10 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo)
 	<< " <Folder>\n"
 	<< "  <name>" << projInfo.flightNumber << "</name>\n"
 	<< "  <open>1</open>\n"
+
+/* Greg Stossmeister asked to have this removed.  Only useful to GoogleEarth.
+ * Perhaps move to the wrapper KML RealTimeGV.kml if still desirable.
+
 	<< "  <ScreenOverlay>\n"
 	<< "    <name>Last Camera Image</name>\n"
 	<< "    <Icon>\n"
@@ -546,6 +550,7 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo)
 	<< "    <rotationXY x=\"0\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\" />\n"
 	<< "    <size x=\"0\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\" />\n"
 	<< "  </ScreenOverlay>\n";
+*/
 
   int oneHour = 3600 / projectInfo.groundFeedDataRate;
   int i = 0, n = _date.size() - oneHour;
