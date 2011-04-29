@@ -550,7 +550,7 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo)
 	<< "    <rotationXY x=\"0\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\" />\n"
 	<< "    <size x=\"0\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\" />\n"
 	<< "  </ScreenOverlay>\n";
-*/
+*/;
 
   int oneHour = 3600 / projectInfo.groundFeedDataRate;
   int i = 0, n = _date.size() - oneHour;
