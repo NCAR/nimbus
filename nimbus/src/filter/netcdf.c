@@ -396,7 +396,7 @@ void CreateNetCDF(const char fileName[])
     {
       std::vector<float> cof;
       for (size_t j = 0; j < rp->cof.size(); ++j)
-        cof.push_back((float)rp->cof[i]);
+        cof.push_back((float)rp->cof[j]);
 
       nc_put_att_float(fd, rp->varid, "CalibrationCoefficients", NC_FLOAT,
                cof.size(), &cof[0]);
