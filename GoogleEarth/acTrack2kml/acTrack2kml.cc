@@ -566,7 +566,6 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo)
 	<< "   <styleUrl>#TRACK_YELLOW</styleUrl>\n"
 	<< "   <LineString>\n"
 	<< "    <extrude>1</extrude>\n"
-	<< "    <tessellate>1</tessellate>\n"
 	<< "    <altitudeMode>absolute</altitudeMode>\n"
 	<< "    <coordinates>\n";
 
@@ -589,7 +588,6 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo)
 	<< "   <styleUrl>#TRACK_RED</styleUrl>\n"
 	<< "   <LineString>\n"
 	<< "    <extrude>1</extrude>\n"
-	<< "    <tessellate>1</tessellate>\n"
 	<< "    <altitudeMode>absolute</altitudeMode>\n"
 	<< "    <coordinates>\n";
 
@@ -713,7 +711,6 @@ void WriteGoogleEarthAnimatedKML(std::string & file, const _projInfo& projInfo)
 	<< "   <open>1</open>\n"
 	<< "   <LineString>\n"
 	<< "    <extrude>1</extrude>\n"
-	<< "    <tessellate>1</tessellate>\n"
 	<< "    <altitudeMode>absolute</altitudeMode>\n"
 	<< "    <coordinates>\n";
 
