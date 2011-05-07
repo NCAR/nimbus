@@ -113,8 +113,9 @@ if (debug)
 
   overload = prevHdr[probeIdx].overld;
   output.DASelapsedTime = output.thisTime - prevTime[probeIdx];
+  output.tas = (float)record->tas;
   if (version < 5.09)
-    output.tas = (float)record->tas * 125 / 255;
+    output.tas = output.tas * 125 / 255;
 
   totalLiveTime = 0.0;
   memset(output.accum, 0, sizeof(output.accum));
@@ -360,8 +361,9 @@ printf("\n");
 if (debug)
   printf("H1 %02d:%02d:%02d.%d - ", record->hour, record->minute, record->second, record->msec);
   output.DASelapsedTime = output.thisTime - prevTime[probeIdx];
+  output.tas = (float)record->tas;
   if (version < 5.09)
-    output.tas = (float)record->tas * 125 / 255;
+    output.tas = output.tas * 125 / 255;
 
   totalLiveTime = 0.0;
   memset(output.accum, 0, sizeof(output.accum));
