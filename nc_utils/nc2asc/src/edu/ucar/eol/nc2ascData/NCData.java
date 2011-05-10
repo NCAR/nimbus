@@ -807,14 +807,28 @@ public class NCData {
 
 	/**
 	 * :DateProcessed = "2008-08-29 16:57:38 +0000" ;
+	 * :date_created = "2008-08-29T16:57:38 +0000" ;
 	 * :FlightDate = "08/27/2008" ;
 	 * @return -- yyyy mm dd     yyyy mm nn      (flight date    data processed date) 
 	 */
 	private String getDates() {
 		String ret="";
-		String date = trimBegEndQuotes(""+fin.findGlobalAttribute("FlightDate"));
+		String date = ""+fin.findGlobalAttribute("FlightDate");
+                if (date.equals("null") || date.length() == 0) {
+			date = "01/01/1970";
+		}
+		date = trimBegEndQuotes(date);
 		ret += date.split("/")[2]+ " " +date.split("/")[0] + " "+ date.split("/")[1];
-		String dateProc[] = trimBegEndQuotes(""+fin.findGlobalAttribute("DateProcessed")).split(" ")[0].split("-");
+
+		date = ""+fin.findGlobalAttribute("date_created");
+                if (date.equals("null") || date.length() == 0) {
+			date = ""+fin.findGlobalAttribute("DateProcessed");
+                	if (date.equals("null") || date.length() == 0) {
+				date = "1970-01-01T00:00:00";
+			}
+		}
+		date = trimBegEndQuotes(date).substring(0, 10);
+		String dateProc[] = date.split("-");
 		ret += "  " + dateProc[0]+ " " + dateProc[1]+" "+dateProc[2];
 		return ret;
 	}
