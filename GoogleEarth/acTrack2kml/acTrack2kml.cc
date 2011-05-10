@@ -407,7 +407,7 @@ void WriteWindBarbsKML_Folder(std::ofstream & googleEarth)
 
       googleEarth
         << "  <Placemark>\n"
-	<< "   <description><![CDATA[WD: " << _wd[i] << "<br>WS: " << _ws[i] << "]]></description>\n"
+	<< "   <description><![CDATA[WD: " << _wd[i] << " deg<br>WS: " << _ws[i] << " knots]]></description>\n"
         << "   <Style>\n"
         << "    <IconStyle>\n"
         << "     <scale>3</scale>\n"
