@@ -45,13 +45,13 @@ const size_t MAX_PROBES = 4;
 const uint32_t StandardSyncWord = 0x55000000;
 const uint32_t SyncWordMask = 0xff000000;
 
-const unsigned long long Fast2DC_Sync = 0xAAAAAA0000000000LL;
-const unsigned long long Fast2DC_Overld = 0x5555AA0000000000LL;
+const unsigned long long Fast2D_Sync = 0xAAAAAA0000000000LL;
+const unsigned long long Fast2D_Overld = 0x5555AA0000000000LL;
 
 /* Mask should be all 'F's, but there appears to be an occasional flipped bit
  * at the end.  So use 'E' for the last nibble.
  */
-const unsigned long long Fast2DC_Mask = 0xFFFFFE0000000000LL;
+const unsigned long long Fast2D_Mask = 0xFFFFFE0000000000LL;
 
 const size_t nSlices_32bit = 1024;
 const size_t nSlices_64bit = 512;
@@ -117,11 +117,11 @@ enum { NORMAL, DIAGNOSTIC, ENCHILADA, RAW_RECORD };
 /* Values for "HandleError"		*/
 enum { RETURN, EXIT, IRET };
 
+enum ProbeType { UNKNOWN, PMS2D, HVPS, GREYSCALE, FAST2D };
 
 extern char buffer[], *outFile, DataPath[], *timeSeg, pngPath[], psPath[];
 
 extern bool	Interactive, DataChanged, UTCseconds;
-
 
 void	GetDataFileName(Widget, XtPointer, XtPointer),
 	NewDataFile(Widget, XtPointer, XtPointer),

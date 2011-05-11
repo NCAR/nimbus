@@ -85,6 +85,8 @@ static unsigned short HtestParticle[] = {
 
 static const size_t P2dLRpPR = 1;
 
+ProbeType ProbeType(P2d_rec *record);
+
 /* -------------------------------------------------------------------- */
 ADS_DataFile::ADS_DataFile(const char fName[])
 {
@@ -555,6 +557,7 @@ int ADS_DataFile::NextPhysicalRecord(char buff[])
     case PMS2DP1: case PMS2DP2:
     case PMS2DH1: case PMS2DH2: // HVPS
     case PMS2DC4: case PMS2DC6:	// 64 bit 2DC.
+    case PMS2DC5: case PMS2DP4:	// 64 bit 2DC.
       size = (P2dLRpPR * sizeof(P2d_rec)) - sizeof(short);
       break;
 
@@ -749,14 +752,14 @@ void ADS_DataFile::SwapPMS2D(P2d_rec *buff)
     for (int i = 1; i < 10; ++i)
       sp[i] = ntohs(sp[i]);
 
-    if (htons(buff->id) == PMS2DC4 || htons(buff->id) == PMS2DC6)	// Fast 2DC
+    if (ProbeType(buff) == FAST2D)
     {
       long long *lp = (long long *)buff->data;
       for (size_t i = 0; i < nSlices_64bit; ++i, ++lp)
         *lp = ntohll(lp);
     }
     else
-    if (((char *)&buff->id)[0] == 'H')	// HVPS
+    if (ProbeType(buff) == HVPS)
     {
       sp = (unsigned short *)buff->data;
       for (size_t i = 0; i < 2048; ++i, ++sp)

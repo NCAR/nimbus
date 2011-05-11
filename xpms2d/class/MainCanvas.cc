@@ -15,6 +15,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2006
 #include <raf/XFonts.h>
 #include <raf/XPen.h>
 
+ProbeType ProbeType(P2d_rec *record);
+
 extern Enchilada	*enchiladaWin; 
 extern Histogram	*histogramWin; 
 extern Colors	*color;
@@ -107,11 +109,10 @@ void MainCanvas::draw(P2d_rec *record, struct recStats &stats, float version, in
   else pen->DrawLine(Surface(), 523, y-5, 523, y);
 
 
-  char * p = (char *)record;
-  if (p[0] == 'C' && (p[1] == '4' || p[1] == '6'))	// 64 bit fast 2DC.
-    drawFast2DC(record, stats, version, probeNum, ps);
+  if (ProbeType(record) == FAST2D)
+    drawFast2D(record, stats, version, probeNum, ps);
   else
-  if (((char *)&record->id)[0] == 'H')	// HVPS
+  if (ProbeType(record) == HVPS)
     drawHVPS(record, stats, version, probeNum, ps);
   else
     {
@@ -536,7 +537,7 @@ void MainCanvas::drawHVPS(P2d_rec * record, struct recStats &stats, float versio
 }
 
 /* -------------------------------------------------------------------- */
-void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float version, int probeNum, PostScript *ps)
+void MainCanvas::drawFast2D(P2d_rec * record, struct recStats &stats, float version, int probeNum, PostScript *ps)
 {
   Particle	*cp;
   int		nextColor, cntr = 0;
@@ -559,12 +560,12 @@ void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float ver
     p = (unsigned long long *)record->data;
     for (size_t i = 0; i < nSlices_64bit; ++i, ++p)         /* 2DC and/or 2DP       */
     {
-      if ((*p & Fast2DC_Mask) == Fast2DC_Sync)
+      if ((*p & Fast2D_Mask) == Fast2D_Sync)
       {
         if (ps) ps->SetColor(color->GetColorPS(GREEN));
         else pen->SetColor(color->GetColor(GREEN));
       }
-      if ((*p & Fast2DC_Mask) == Fast2DC_Overld)
+      if ((*p & Fast2D_Mask) == Fast2D_Overld)
       {
         if (ps) ps->SetColor(color->GetColorPS(BLUE));
         else pen->SetColor(color->GetColor(BLUE));
@@ -595,7 +596,7 @@ void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float ver
     else
       nextColor = probeNum;
 
-    if ((*p & Fast2DC_Mask) == Fast2DC_Sync || (*p & Fast2DC_Mask) == Fast2DC_Overld)
+    if ((*p & Fast2D_Mask) == Fast2D_Sync || (*p & Fast2D_Mask) == Fast2D_Overld)
     {
       /**
        * Color code timing words:
@@ -604,7 +605,7 @@ void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float ver
        * 	Red = rejected.
        * 	Blue = overload word, also rejected.
        */
-      if ((*p & Fast2DC_Mask) == Fast2DC_Overld)
+      if ((*p & Fast2D_Mask) == Fast2D_Overld)
       {
         if (ps) ps->SetColor(color->GetColorPS(BLUE));
         else pen->SetColor(color->GetColor(BLUE));
@@ -642,8 +643,8 @@ void MainCanvas::drawFast2DC(P2d_rec * record, struct recStats &stats, float ver
       else
         colorIsBlack = false;
 
-      for (; i < nSlices_64bit && (*p & Fast2DC_Mask) != Fast2DC_Sync
-		&& (*p & Fast2DC_Mask) != Fast2DC_Overld; ++p)
+      for (; i < nSlices_64bit && (*p & Fast2D_Mask) != Fast2D_Sync
+		&& (*p & Fast2D_Mask) != Fast2D_Overld; ++p)
         drawSlice(ps, i++, *p);
 
       if (enchiladaWin)

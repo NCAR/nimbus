@@ -28,19 +28,30 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997
 #define SDI_WORD	0x8681
 #define AVAPS_WORD	0x4156
 
+/* ID values for the id field in each record header.
+ */
+// Traditional 32 diode PMS2D probes.
 #define PMS2DC1		0x4331
 #define PMS2DC2		0x4332
-// 64 bit Fast 2DC, 25um.
-#define PMS2DC4		0x4334
-// 64 bit Fast 2DC, 25um.
-#define PMS2DC6		0x4336
-#define PMS2DG1		0x4731
-#define PMS2DG2		0x4732
-#define PMS2DH1		0x4831
-#define PMS2DH2		0x4832
 #define PMS2DP1		0x5031
 #define PMS2DP2		0x5032
+
+// 64 diode Fast 2DC, 25um.
+#define PMS2DC4		0x4334
+#define PMS2DC5		0x4335
+// 64 diode Fast 2DC, 10um.
+#define PMS2DC6		0x4336
+// 64 diode Fast 2DP, 200um.
+#define PMS2DP4		0x5034
+
+// Greyscale which we never flew.
+#define PMS2DG1		0x4731
+#define PMS2DG2		0x4732
+// SPEC HVPS
+#define PMS2DH1		0x4831
+#define PMS2DH2		0x4832
  
+
 #define PMS2_SIZE	4116
 #define PMS2_RECSIZE	(0x8000 / PMS2_SIZE) * PMS2_SIZE
 

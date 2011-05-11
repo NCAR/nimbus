@@ -32,7 +32,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999-2006
 
 #include <algorithm>
 
-#define Fast2DCTimeWord_Microseconds(slice)	((slice & 0x000000ffffffffffLL) / 12)
+#define Fast2DTimeWord_Microseconds(slice)	((slice & 0x000000ffffffffffLL) / 12)
 
 static bool debug = false;
 
@@ -48,8 +48,9 @@ static struct recStats	output;
 
 extern ControlWindow	*controlWindow;
 
+struct recStats &ProcessFast2D(P2d_rec *record, float version);
+struct recStats &ProcessPMS2D(P2d_rec *record, float version);
 struct recStats &ProcessHVPSrecord(P2d_rec *record, float version);
-struct recStats &ProcessFast2DC(P2d_rec *record, float version);
 
 static void computeDerived(double sv[], size_t nBins, double liveTime);
 static size_t checkRejectionCriteria(Particle * cp, recStats & output);
@@ -58,18 +59,31 @@ FILE *fout;
 
 
 /* -------------------------------------------------------------------- */
+ProbeType ProbeType(P2d_rec *record)
+{
+  char *p = (char *)&record->id;
+
+  if (p[0] == 'C' || p[0] == 'P')
+  {
+    if (p[1] >= '4' && p[1] <= '7')
+      return FAST2D;
+
+    return PMS2D;
+  }
+
+  if (p[0] == 'H')
+    return HVPS;
+
+  if (p[0] == 'G')
+    return GREYSCALE;
+
+  return UNKNOWN;
+}
+
+/* -------------------------------------------------------------------- */
 struct recStats &ProcessRecord(P2d_rec *record, float version)
 {
-  int		startTime, overload;
-  size_t	nBins, probeIdx;
-  uint32_t		*p, slice, ppSlice, pSlice, syncWord, startMilliSec;
-  bool		overloadAdded = false;
-  double	sampleVolume[maxDiodes], totalLiveTime;
-  char		probeType = ((char *)&record->id)[0];
-
-  static P2d_hdr	prevHdr[MAX_PROBES];
-  static uint32_t	prevTime[MAX_PROBES] = { 1,1,1,1 };
-  static uint32_t	prevSlice[MAX_PROBES][2];
+  char	*probeID = (char *)&record->id;
 
   output.tBarElapsedtime = 0;
   output.nTimeBars = 0;
@@ -79,14 +93,66 @@ struct recStats &ProcessRecord(P2d_rec *record, float version)
   output.area = 0;
   output.DOFsampleVolume = 0.0;
   output.duplicate = false;
+  output.tas = (float)record->tas;
+  if (version < 5.09)
+    output.tas = output.tas * 125 / 255;
 
   output.thisTime = (record->hour * 3600 + record->minute * 60 + record->second) * 1000 + record->msec; // in milliseconds
 
-  if (probeType == 'H')
-    return(ProcessHVPSrecord(record, version));
+  nDiodes = 32;
+  if (ProbeType(record) == HVPS)
+    nDiodes = 128;
 
-  if (htons(record->id) == PMS2DC4 ||htons(record->id) == PMS2DC6)	// 64 bit Fast 2DC
-    return(ProcessFast2DC(record, version));
+  if (ProbeType(record) == FAST2D)
+    nDiodes = 64;
+
+  if (probeID[0] == 'P')
+    {
+    output.resolution = 200;
+    output.SampleVolume = 261.0 * (output.resolution * nDiodes / 1000);
+    }
+  else
+  if (probeID[0] == 'C')
+    {
+    output.resolution = 25;
+    if (probeID[1] == '6')
+      output.resolution = 10;
+
+    output.SampleVolume = 61.0 * (output.resolution * nDiodes / 1000);
+    }
+  if (probeID[0] == 'H')
+  {
+    output.resolution = 200;
+  }
+
+  output.frequency = output.resolution / output.tas;
+  output.SampleVolume *= output.tas *
+                        (output.DASelapsedTime - record->overld) * 0.001;
+
+
+  if (ProbeType(record) == FAST2D)
+    return(ProcessFast2D(record, version));
+
+  if (ProbeType(record) == PMS2D)
+    return(ProcessPMS2D(record, version));
+
+  if (ProbeType(record) == HVPS)
+    return(ProcessHVPSrecord(record, version));
+}
+
+/* -------------------------------------------------------------------- */
+struct recStats &ProcessPMS2D(P2d_rec *record, float version)
+{
+  int		startTime, overload;
+  size_t	nBins, probeIdx;
+  uint32_t	*p, slice, ppSlice, pSlice, syncWord, startMilliSec;
+  bool		overloadAdded = false;
+  double	sampleVolume[maxDiodes], totalLiveTime;
+  char		*probeID = (char *)&record->id;
+
+  static P2d_hdr	prevHdr[MAX_PROBES];
+  static uint32_t	prevTime[MAX_PROBES] = { 1,1,1,1 };
+  static uint32_t	prevSlice[MAX_PROBES][2];
 
   if (version < 3.35)
     syncWord = SyncWordMask;
@@ -94,10 +160,8 @@ struct recStats &ProcessRecord(P2d_rec *record, float version)
     syncWord = StandardSyncWord;
 
   probeIdx = ((char *)&record->id)[1] - '1';
-  if (probeType == 'C')
+  if (probeID[0] == 'C')
     probeIdx += 2;
-
-  nDiodes = 32;
 
 //if (record->msec == 397) debug = true; else debug = false;
 
@@ -113,9 +177,6 @@ if (debug)
 
   overload = prevHdr[probeIdx].overld;
   output.DASelapsedTime = output.thisTime - prevTime[probeIdx];
-  output.tas = (float)record->tas;
-  if (version < 5.09)
-    output.tas = output.tas * 125 / 255;
 
   totalLiveTime = 0.0;
   memset(output.accum, 0, sizeof(output.accum));
@@ -130,26 +191,16 @@ if (debug)
   // Compute frequency, which is used to convert timing words from TAS clock
   // pulses to milliseconds.  Most of sample volume is here, time comes in
   // later.
-  if (probeType == 'P')
+  if (probeID[0] == 'P')
     {
-    output.resolution = 200;
-    output.SampleVolume = 261.0 * 6.4;
-
     for (size_t i = 0; i < nBins; ++i)
       sampleVolume[i] = output.tas * sampleAreaP[i] * 0.001;
     }
   else
     {
-    output.resolution = 25;
-    output.SampleVolume = 61.0 * 0.8;
-
     for (size_t i = 0; i < nBins; ++i)
       sampleVolume[i] = output.tas * sampleAreaC[i] * 0.001;
     }
-
-  output.frequency = output.resolution / output.tas;
-  output.SampleVolume *= output.tas *
-			(output.DASelapsedTime - record->overld) * 0.001;
 
   // Scan record, compute tBarElapsedtime and stats.
   p = (uint32_t *)record->data;
@@ -361,9 +412,6 @@ printf("\n");
 if (debug)
   printf("H1 %02d:%02d:%02d.%d - ", record->hour, record->minute, record->second, record->msec);
   output.DASelapsedTime = output.thisTime - prevTime[probeIdx];
-  output.tas = (float)record->tas;
-  if (version < 5.09)
-    output.tas = output.tas * 125 / 255;
 
   totalLiveTime = 0.0;
   memset(output.accum, 0, sizeof(output.accum));
@@ -373,13 +421,8 @@ if (debug)
     default:			nBins = 256;
     }
 
-  // Compute frequency, which is used to convert timing words from TAS clock
-  // pulses to milliseconds.  Most of sample volume is here, time comes in
-  // later.
-  output.resolution = 200;
-  output.SampleVolume = 203.0 * output.resolution * (256-80) * 1.0e-6;
 
-  output.frequency = output.resolution / output.tas;
+  output.SampleVolume = 203.0 * output.resolution * (256-80) * 1.0e-6;
   output.SampleVolume *= (output.tas * TAS_COMPENSATE) *
 			(output.DASelapsedTime - record->overld);
 
@@ -578,7 +621,7 @@ if (debug)
 }	/* END PROCESSHVPSRECORD */
 
 /* -------------------------------------------------------------------- */
-struct recStats &ProcessFast2DC(P2d_rec *record, float version)
+struct recStats &ProcessFast2D(P2d_rec *record, float version)
 {
   int		startTime, overload = 0;
   size_t	nBins, probeIdx = 0;
@@ -600,22 +643,10 @@ struct recStats &ProcessFast2DC(P2d_rec *record, float version)
     return(output);
   }
 
-  nDiodes = 64;
-
 if (debug)
   printf("C4 %02d:%02d:%02d.%d - ", record->hour, record->minute, record->second, record->msec);
 
-  if (htons(record->id) == PMS2DC4)
-    output.resolution = 25;
-  if (htons(record->id) == PMS2DC6)
-    output.resolution = 10;
-
-  output.SampleVolume = 61.0 * 1.6;
   output.DASelapsedTime = output.thisTime - prevTime[probeIdx];
-  output.tas = (float)record->tas;
-  if (version < 5.09)
-    output.tas = output.tas * 125 / 255;
-  output.frequency = output.resolution / output.tas;
 
   totalLiveTime = 0.0;
   memset(output.accum, 0, sizeof(output.accum));
@@ -642,20 +673,20 @@ if (debug)
   
     /* Have particle, will travel.
      */
-    if ((slice & Fast2DC_Mask) == Fast2DC_Sync || (slice & Fast2DC_Mask) == Fast2DC_Overld)
+    if ((slice & Fast2D_Mask) == Fast2D_Sync || (slice & Fast2D_Mask) == Fast2D_Overld)
     {
-      unsigned long long thisTimeWord = Fast2DCTimeWord_Microseconds(slice);
+      unsigned long long thisTimeWord = Fast2DTimeWord_Microseconds(slice);
 
       if (firstTimeWord == 0)
         firstTimeWord = thisTimeWord;
 
-      if ((slice & Fast2DC_Mask) == Fast2DC_Overld)
+      if ((slice & Fast2D_Mask) == Fast2D_Overld)
       {
         // Set 'overload' variable here.  There is no way to determine overload.
         // Leave zero, they are less than a milli-second anyways.
         record->overld = overload = 0;
 
-        printf(">>> Fast2DC overload @ %02d:%02d:%02d.%-3d. <<<\n",
+        printf(">>> Fast2D overload @ %02d:%02d:%02d.%-3d. <<<\n",
 		record->hour, record->minute, record->second, record->msec);
 
         if (cp)
@@ -758,7 +789,7 @@ if (debug)
 
   return(output);
 
-}	// END PROCESSFAST2DC
+}	// END PROCESSFAST2D
 
 /* -------------------------------------------------------------------- */
 static size_t checkRejectionCriteria(Particle * cp, recStats & output)
