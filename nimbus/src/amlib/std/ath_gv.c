@@ -47,13 +47,16 @@ void atfhGV_Init(var_base *varp)
   }
 
 
-  std::vector<float> values;
-  if (strchr(varp->name, '1'))
-    values.push_back((float)recfrhGV[0]);	// TTH?1
-  else
-    values.push_back((float)recfrhGV[1]);	// TTH?2
+  if (strncmp(varp->name, "ATH", 3) == 0)	// HARCO only.
+  {
+    std::vector<float> values;
+    if (strchr(varp->name, '1'))
+      values.push_back((float)recfrhGV[0]);	// TTH?1
+    else
+      values.push_back((float)recfrhGV[1]);	// TTH?2
 
-  AddToDefaults(varp->name, "RecoveryFactor", values);
+    AddToDefaults(varp->name, "RecoveryFactor", values);
+  }
 
   /* Frequently ProbeCount gets set in hdr_decode.c, but we are doing it here for
    * this instrument.
