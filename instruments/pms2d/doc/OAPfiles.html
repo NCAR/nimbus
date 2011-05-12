@@ -108,12 +108,14 @@ The data is stored in big-endian format, so all data will need to be swapped whe
 /* Values currently in use for the 'id' field. */
 #define PMS2D_C1         0x4331		// First PMS-2DC
 #define PMS2D_C2         0x4332		// Second PMS-2DC
-#define PMS2D_C4         0x4334         // RAF 64 diode 25 um Fast 2DC
-#define PMS2D_C6         0x4336         // RAF 64 diode 10 um Fast 2DC
+#define PMS2D_C4         0x4334         // First RAF 64 diode 25 um Fast 2DC
+#define PMS2D_C5         0x4335         // Second RAF 64 diode 25 um Fast 2DC
+#define PMS2D_C6         0x4336         // First RAF 64 diode 10 um Fast 2DC
 #define PMS2D_G1         0x4731		// First 2D Greyscale; unused to date
 #define PMS2D_H1         0x4831		// SPEC HVPS
 #define PMS2D_P1         0x5031		// First PMS-2DP
 #define PMS2D_P2         0x5032		// Second PMS-2DP
+#define PMS2D_P4         0x5034		// First RAF 64 diode 200 um Fast 2DP
 
 struct P2d_rec {
   short id;                             /* 'P1','C1','P2','C2', H1, etc */
@@ -123,7 +125,7 @@ struct P2d_rec {
   short year;                           /* starting in 2007 w/ PACDEX */
   short month;                          /* starting in 2007 w/ PACDEX */
   short day;                            /* starting in 2007 w/ PACDEX */
-  short tas;                            /* true air speed	*/
+  short tas;                            /* true air speed, m/s	*/
   short msec;                           /* msec of this record	*/
   short overld;                         /* overload time, msec	*/
   unsigned char data[4096];		/* image buffer		*/
