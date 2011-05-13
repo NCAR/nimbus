@@ -54,7 +54,7 @@ void Ascii::Update(SetManager& sets, PlotManager *plotMgr)
           sum += (long)set->Accumulation(i, j);
           }
 
-        sprintf(&buffer[strlen(buffer)], ", total=%7d\n", sum);
+        sprintf(&buffer[strlen(buffer)], "  total=%7d\n", sum);
         Append(buffer);
         buffer[0] = '\0';
         }
@@ -81,7 +81,7 @@ void Ascii::Update(SetManager& sets, PlotManager *plotMgr)
         for (; j < set->probe()->VectorLength(); ++j)
           strcat(buffer, dashes);
 
-        sprintf(&buffer[strlen(buffer)], ", total=%9.1f\n", sum);
+        sprintf(&buffer[strlen(buffer)], "  total=%e\n", sum);
         Append(buffer);
         buffer[0] = '\0';
         }
