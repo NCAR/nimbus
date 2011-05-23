@@ -20,7 +20,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2003-06
 
 #include <netinet/in.h>
 
-#include "adsIO.h"
+#include <adsIO.h>
+#include <constants.h>
 
 
 char	buffer[100000];
