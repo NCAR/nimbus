@@ -179,6 +179,19 @@ void PMS1D_SetupForADS3()
   {
     setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
   }
+  else
+  if (cfg.ProjectName().compare("ICE-T") == 0)
+  {
+    setSerialNumberAndProbeType("ACDP", "CDP016", PROBE_PMS1D | PROBE_CDP);
+    setSerialNumberAndProbeType("AS100_LWI", "FSSP109", PROBE_PMS1D | PROBE_FSSP);
+    setSerialNumberAndProbeType("AS200", "PCAS108", PROBE_PMS1D | PROBE_PCASP);
+    setSerialNumberAndProbeType("AS300", "FSSP305", PROBE_PMS1D | PROBE_F300);
+    setSerialNumberAndProbeType("A1DC_LPC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC_LPC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A1DP_RPO", "F2DP001", PROBE_PMS2D | PROBE_2DP);
+    setSerialNumberAndProbeType("A2DP_RPO", "F2DP001", PROBE_PMS2D | PROBE_2DP);
+    setSerialNumberAndProbeType("AUHSAS_CVI", "UHSAS002", PROBE_PMS1D | PROBE_PCASP);
+  }
 }
 
 /* -------------------------------------------------------------------- */
