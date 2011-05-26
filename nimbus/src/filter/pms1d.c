@@ -112,8 +112,8 @@ void PMS1D_SetupForADS3()
   setSerialNumberAndProbeType("AUHSAS", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
   setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
   setSerialNumberAndProbeType("A2DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-  setSerialNumberAndProbeType("A1DP", "2DP10", PROBE_PMS2D | PROBE_2DP);
-  setSerialNumberAndProbeType("A2DP", "2DP10", PROBE_PMS2D | PROBE_2DP);
+  setSerialNumberAndProbeType("A1DP", "F2DP001", PROBE_PMS2D | PROBE_2DP);
+  setSerialNumberAndProbeType("A2DP", "F2DP001", PROBE_PMS2D | PROBE_2DP);
 
   if (cfg.ProjectName().compare("PASE") == 0)
     setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
@@ -139,15 +139,8 @@ void PMS1D_SetupForADS3()
   else
   if (cfg.ProjectName().compare("ADELE/SPRITES") == 0)
   {
-    setSerialNumberAndProbeType("A1DC_RIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC_RIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-  }
-  else
-  if (cfg.ProjectName().compare("HIPPO-2") == 0)
-  {
-    setSerialNumberAndProbeType("A1DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
+    setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
   }
   else
   if (cfg.ProjectName().compare("PLOWS") == 0)
@@ -160,7 +153,15 @@ void PMS1D_SetupForADS3()
     setSerialNumberAndProbeType("AS100_LWO", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
   }
   else
-  if (cfg.ProjectName().compare("HIPPO-3") == 0)
+  if (cfg.ProjectName().compare("HIPPO-2") == 0)
+  {
+    setSerialNumberAndProbeType("A1DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
+  }
+  else
+  if (cfg.ProjectName().compare("HIPPO-3") == 0 ||
+      cfg.ProjectName().compare("HIPPO-4") == 0)
   {
     setSerialNumberAndProbeType("A1DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A2DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
@@ -168,8 +169,8 @@ void PMS1D_SetupForADS3()
   else
   if (cfg.ProjectName().compare("PREDICT") == 0)
   {
-    setSerialNumberAndProbeType("A1DC_LMI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC_LMI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A1DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC", "F2DC003", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("AS200", "OPC001", PROBE_PMS1D | PROBE_PCASP);
     setSerialNumberAndProbeType("AUHSAS_LMO", "UHSAS001", PROBE_PMS1D | PROBE_PCASP);
     setSerialNumberAndProbeType("AUHSAS_CVI", "UHSAS002", PROBE_PMS1D | PROBE_PCASP);
@@ -183,13 +184,13 @@ void PMS1D_SetupForADS3()
   if (cfg.ProjectName().compare("ICE-T") == 0)
   {
     setSerialNumberAndProbeType("ACDP", "CDP016", PROBE_PMS1D | PROBE_CDP);
-    setSerialNumberAndProbeType("AS100_LWI", "FSSP109", PROBE_PMS1D | PROBE_FSSP);
+    setSerialNumberAndProbeType("AS100", "FSSP109", PROBE_PMS1D | PROBE_FSSP);
     setSerialNumberAndProbeType("AS200", "PCAS108", PROBE_PMS1D | PROBE_PCASP);
     setSerialNumberAndProbeType("AS300", "FSSP305", PROBE_PMS1D | PROBE_F300);
-    setSerialNumberAndProbeType("A1DC_LPC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC_LPC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A1DP_RPO", "F2DP001", PROBE_PMS2D | PROBE_2DP);
-    setSerialNumberAndProbeType("A2DP_RPO", "F2DP001", PROBE_PMS2D | PROBE_2DP);
+    setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A1DP", "F2DP001", PROBE_PMS2D | PROBE_2DP);
+    setSerialNumberAndProbeType("A2DP", "F2DP001", PROBE_PMS2D | PROBE_2DP);
     setSerialNumberAndProbeType("AUHSAS_CVI", "UHSAS002", PROBE_PMS1D | PROBE_PCASP);
   }
 }
