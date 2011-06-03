@@ -127,17 +127,23 @@ public class NC2A extends JPanel implements ActionListener {
 		try {
 			ncdata.openFile(fs[1]);
 			ncdata.openOutFile(fs[2]);
-		} catch (Exception e ) {
-			System.out.println("Batch-mode open i/o file fails..."+ e.getStackTrace());
-			return;
+		}
+		catch (Exception e )
+		{
+		  System.out.println("Batch-mode open i/o file fails...");
+		  e.printStackTrace(System.out);
+		  return;
 		}
 
 		int[] range = new int[2];
 		try {
 			range = ncdata.calBatchTmRange(fmt);
-		} catch (Exception ee) {
-			System.out.println("Batch-mode calBatchTmRange fails..."+ ee.getStackTrace());
-			return;
+		} 
+		catch (Exception ee)
+		{
+		  System.out.println("Batch-mode calBatchTmRange fails...");
+		  ee.printStackTrace(System.out);
+		  return;
 		}
 		//System.out.println("bf-selectedVars= \n" +bf.showSelectedVars()+ "\nrange "+ range[0]+ "  "+ range[1]); 
 
