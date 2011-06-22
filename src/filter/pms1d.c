@@ -14,7 +14,7 @@ DESCRIPTION:	AddPMS1dAttrs() adds PMSspecs probe parameters to the
 		netCDF file variable attributes.  The other function is
 		stub for post-processing.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2006
+COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2011
 -------------------------------------------------------------------------
 */
 
@@ -192,6 +192,7 @@ void PMS1D_SetupForADS3()
     setSerialNumberAndProbeType("A1DP", "F2DP001", PROBE_PMS2D | PROBE_2DP);
     setSerialNumberAndProbeType("A2DP", "F2DP001", PROBE_PMS2D | PROBE_2DP);
     setSerialNumberAndProbeType("AUHSAS_CVI", "UHSAS002", PROBE_PMS1D | PROBE_PCASP);
+    setSerialNumberAndProbeType("AUHSAS_GH", "UHSAS003", PROBE_PMS1D | PROBE_PCASP);
   }
 }
 
