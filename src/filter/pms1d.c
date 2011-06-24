@@ -184,7 +184,7 @@ void PMS1D_SetupForADS3()
   if (cfg.ProjectName().compare("ICE-T") == 0)
   {
     setSerialNumberAndProbeType("ACDP", "CDP016", PROBE_PMS1D | PROBE_CDP);
-    setSerialNumberAndProbeType("AS100", "FSSP109", PROBE_PMS1D | PROBE_FSSP);
+    setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
     setSerialNumberAndProbeType("AS200", "PCAS108", PROBE_PMS1D | PROBE_PCASP);
     setSerialNumberAndProbeType("AS300", "FSSP305", PROBE_PMS1D | PROBE_F300);
     setSerialNumberAndProbeType("A1DC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
