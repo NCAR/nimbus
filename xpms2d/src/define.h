@@ -78,22 +78,22 @@ public:
   bool	timeReject;		// Nimbus will reject (because of bad timing bar)
 
   ushort	x1, x2;		// for particles that touch both edges.
-  ulong		timeWord;
-  ulong		deltaTime;	// Amount of time between prev & this particle
-  ulong		liveTime;	// Amount of time consumed by particle
+  uint32_t	timeWord;
+  uint32_t	deltaTime;	// Amount of time between prev & this particle
+  uint32_t	liveTime;	// Amount of time consumed by particle
   };
 
 
 struct recStats
   {
-  ulong thisTime;		// Time of this record in secs since midnight.
-  ulong	DASelapsedTime;		// milliseconds.
-  ulong	tBarElapsedtime;	// milliseconds.
+  uint32_t thisTime;		// Time of this record in secs since midnight.
+  uint32_t DASelapsedTime;	// milliseconds.
+  uint32_t tBarElapsedtime;	// milliseconds.
 
   int	nTimeBars;		// n Particles.
   int	accum[1024];
   int	nonRejectParticles;	// n Particles not rejected.
-  ulong	minBar, maxBar, meanBar;
+  uint32_t minBar, maxBar, meanBar;
 
   double	SampleVolume, DOFsampleVolume;
   double	tas, concentration, lwc, dbz;
