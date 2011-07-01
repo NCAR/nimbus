@@ -83,7 +83,7 @@ void netCDF::CreateNetCDFfile(Config & cfg)
     gmtime_r(&cfg.stoptime, &et);
 
     _file->add_att("institution", "NCAR Research Aviation Facility");
-    _file->add_att("Source", "NCAR/RAF Fast-2DC Processing Software");
+    _file->add_att("Source", "NCAR/RAF Fast-2D Processing Software");
     _file->add_att("Conventions", "NCAR-RAF/nimbus");
     _file->add_att("ConventionsURL", "http://www.eol.ucar.edu/raf/Software/netCDF.html");
     _file->add_att("ProjectName", cfg.project.c_str());
@@ -235,7 +235,7 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
   string varname;
 
   //Total counts and LWC
-  varname="CONC2DCA"+probe.suffix;
+  varname="CONC2DCA"+probe.suffix; varname[6] = probe.id[0];
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
@@ -247,7 +247,7 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
   }
   if (!var->put(&data.all.total_conc[0], data.size())) return netCDF::NC_ERR;
 
-  varname="CONC2DCR"+probe.suffix;
+  varname="CONC2DCR"+probe.suffix; varname[6] = probe.id[0];
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
@@ -259,7 +259,7 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
   }
   if (!var->put(&data.round.total_conc[0], data.size())) return netCDF::NC_ERR;
 
-  varname="PLWC2DCR"+probe.suffix;
+  varname="PLWC2DCR"+probe.suffix; varname[6] = probe.id[0];
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
@@ -271,7 +271,7 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
   }
   if (!var->put(&data.round.lwc[0], data.size())) return netCDF::NC_ERR;
 
-  varname="PLWC2DCA"+probe.suffix;
+  varname="PLWC2DCA"+probe.suffix; varname[6] = probe.id[0];
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
@@ -283,7 +283,7 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
   }
   if (!var->put(&data.all.lwc[0], data.size())) return netCDF::NC_ERR;
 
-  varname="DBAR2DCR"+probe.suffix;
+  varname="DBAR2DCR"+probe.suffix; varname[6] = probe.id[0];
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
@@ -295,7 +295,7 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
   }
   if (!var->put(&data.round.dbar[0], data.size())) return netCDF::NC_ERR;
 
-  varname="DBAR2DCA"+probe.suffix;
+  varname="DBAR2DCA"+probe.suffix; varname[6] = probe.id[0];
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
@@ -307,7 +307,7 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
   }
   if (!var->put(&data.all.dbar[0], data.size())) return netCDF::NC_ERR;
 
-  varname="DISP2DCR"+probe.suffix;
+  varname="DISP2DCR"+probe.suffix; varname[6] = probe.id[0];
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
@@ -319,7 +319,7 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
   }
   if (!var->put(&data.round.disp[0], data.size())) return netCDF::NC_ERR;
 
-  varname="DISP2DCA"+probe.suffix;
+  varname="DISP2DCA"+probe.suffix; varname[6] = probe.id[0];
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
@@ -331,7 +331,7 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
   }
   if (!var->put(&data.all.disp[0], data.size())) return netCDF::NC_ERR;
 
-  varname="DBZ2DCR"+probe.suffix;
+  varname="DBZ2DCR"+probe.suffix; varname[5] = probe.id[0];
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
@@ -343,7 +343,7 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
   }
   if (!var->put(&data.round.dbz[0], data.size())) return netCDF::NC_ERR;
 
-  varname="DBZ2DCA"+probe.suffix;
+  varname="DBZ2DCA"+probe.suffix; varname[5] = probe.id[0];
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
@@ -355,7 +355,7 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
   }
   if (!var->put(&data.all.dbz[0], data.size())) return netCDF::NC_ERR;
 
-  varname="REFF2DCR"+probe.suffix;
+  varname="REFF2DCR"+probe.suffix; varname[6] = probe.id[0];
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
@@ -367,7 +367,7 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
   }
   if (!var->put(&data.round.eff_rad[0], data.size())) return netCDF::NC_ERR;
 
-  varname="REFF2DCA"+probe.suffix;
+  varname="REFF2DCA"+probe.suffix; varname[6] = probe.id[0];
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
@@ -379,7 +379,7 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
   }
   if (!var->put(&data.all.eff_rad[0], data.size())) return netCDF::NC_ERR;
 
-  varname="NACCEPT2DCR"+probe.suffix;
+  varname="NACCEPT2DCR"+probe.suffix; varname[9] = probe.id[0];
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("units", "count")) return netCDF::NC_ERR;
@@ -390,7 +390,7 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
   }
   if (!var->put(&data.round.accepted[0], data.size())) return netCDF::NC_ERR;
 
-  varname="NACCEPT2DCA"+probe.suffix;
+  varname="NACCEPT2DCA"+probe.suffix; varname[9] = probe.id[0];
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("units", "count")) return netCDF::NC_ERR;
@@ -401,7 +401,7 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
   }
   if (!var->put(&data.all.accepted[0], data.size())) return netCDF::NC_ERR;
 
-  varname="NREJECT2DCR"+probe.suffix;
+  varname="NREJECT2DCR"+probe.suffix; varname[9] = probe.id[0];
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("units", "count")) return netCDF::NC_ERR;
@@ -412,7 +412,7 @@ int netCDF::WriteData(ProbeInfo & probe, ProbeData & data)
   }
   if (!var->put(&data.round.rejected[0], data.size())) return netCDF::NC_ERR;
 
-  varname="NREJECT2DCA"+probe.suffix;
+  varname="NREJECT2DCA"+probe.suffix; varname[9] = probe.id[0];
   if ((var = _file->get_var(varname.c_str())) == 0) {
     if (!(var = _file->add_var(varname.c_str(), ncFloat, _timedim))) return netCDF::NC_ERR;
     if (!var->add_att("units", "count")) return netCDF::NC_ERR;

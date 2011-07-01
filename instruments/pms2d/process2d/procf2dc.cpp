@@ -867,7 +867,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   }
 
   // Counts.  These are not in the ProbeData class yet, hence they are written here. @todo
-  varname="A2DCA"+probe.suffix;
+  varname="A2DCA"+probe.suffix; varname[3] = probe.id[0];
   if ((var = dataFile->get_var(varname.c_str())) == 0) {
     if (!(var = dataFile->add_var(varname.c_str(), ncFloat, ncfile.timedim(), ncfile.spsdim(), ncfile.bindim_plusone()))) return netCDF::NC_ERR;
     if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
@@ -885,7 +885,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   }
   if (!var->put(&count_all[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
 
-  varname="A2DCR"+probe.suffix;
+  varname="A2DCR"+probe.suffix; varname[3] = probe.id[0];
   if ((var = dataFile->get_var(varname.c_str())) == 0) {
     if (!(var = dataFile->add_var(varname.c_str(), ncFloat, ncfile.timedim(), ncfile.spsdim(), ncfile.bindim_plusone()))) return netCDF::NC_ERR;
     if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
@@ -903,7 +903,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   }
   if (!var->put(&count_round[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
 
-  varname="I2DCA"+probe.suffix;
+  varname="I2DCA"+probe.suffix; varname[3] = probe.id[0];
   if ((var = dataFile->get_var(varname.c_str())) == 0) {
     if (!(var = dataFile->add_var(varname.c_str(), ncInt, ncfile.timedim(), ncfile.spsdim(), ncfile.intbindim()))) return netCDF::NC_ERR;
     if (!var->add_att("_FillValue", -32767)) return netCDF::NC_ERR;
@@ -914,7 +914,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   if (!var->put(&count_it[0][0], numtimes, 1, cfg.nInterarrivalBins+1)) return netCDF::NC_ERR;
 
   //Concentration
-  varname="C2DCA"+probe.suffix;
+  varname="C2DCA"+probe.suffix; varname[3] = probe.id[0];
   if ((var = dataFile->get_var(varname.c_str())) == 0) {
     if (!(var = dataFile->add_var(varname.c_str(), ncFloat, ncfile.timedim(), ncfile.spsdim(), ncfile.bindim_plusone()))) return netCDF::NC_ERR;
     if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
@@ -933,7 +933,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   }
   if (!var->put(&conc_all[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
 
-  varname="C2DCR"+probe.suffix;
+  varname="C2DCR"+probe.suffix; varname[3] = probe.id[0];
   if ((var = dataFile->get_var(varname.c_str())) == 0) {
     if (!(var = dataFile->add_var(varname.c_str(), ncFloat, ncfile.timedim(), ncfile.spsdim(), ncfile.bindim_plusone()))) return netCDF::NC_ERR;
     if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
@@ -1024,7 +1024,7 @@ void ParseHeader(ifstream & input_file, Config & cfg, vector<ProbeInfo> & probe_
     if (line.find("FlightDate") != string::npos)
       cfg.flightDate = extractElement(line, "FlightDate");
 
-    if (line.find("Fast2DC") != string::npos)	//found a line describing a FAST2D probe
+    if (line.find("Fast2D") != string::npos)	//found a line describing a FAST2D probe
     {
       ProbeInfo thisProbe(extractAttribute(line, "probe id"), nDiodes, numbins, binoffset);
 
