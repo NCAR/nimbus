@@ -186,6 +186,7 @@ PostgreSQL::dropAllTables()
   tablesToDelete.insert(LRT_TABLE);
   tablesToDelete.insert("PMS1D_list");
   tablesToDelete.insert("PMS2D_list");
+  tablesToDelete.insert("parcels");
 
   PGresult* res;
 
@@ -259,6 +260,9 @@ PostgreSQL::createTables()
   _sqlString << "CREATE TABLE PMS2D_list (Name text, SerialNumber text);";
 
   submitCommand(_sqlString.str(), true);
+
+  _sqlString << "CREATE TABLE parcels (id text, datetime timestamp);";
+  submitCommand(_sqlString.str());
 
 }	// END CREATETABLES
 
