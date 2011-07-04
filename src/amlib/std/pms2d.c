@@ -6,21 +6,15 @@ FULL NAME:	Derived computations for the PMS2D C & P probes.
 
 ENTRY POINTS:	sTwodInit()
 		sTwoD()
+		sTwoDInitH()	HVPS
+		sHVPS()		HVPS
+		addDOFtoAttrs()
 
 STATIC FNS:	none
 
 DESCRIPTION:	
 
-DEPENDENCIES:	A2D?	- Actual 2D data
-		TAS	- True Air Speed
-
-OUTPUT:		C2D?	- Concentrations
-		CONC2	- Total concentration
-		DISP2
-		DBAR2
-		PLWC2	- Liquid Water Content
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 2000-2006
+COPYRIGHT:	University Corporation for Atmospheric Research, 2000-2011
 -------------------------------------------------------------------------
 */
 
@@ -194,91 +188,6 @@ void sTwodInit(var_base *varp)
 }	/* END STWODINIT */
 
 /* -------------------------------------------------------------------- */
-void sTwodInitH(var_base *varp)
-{
-  size_t	i, length, probeNum, nDiodes = 0, minRange;
-  char		*p;
-  float		resolution;
-  const char	*serialNumber;
-  NR_TYPE	eaw[maxBins], dof[maxBins];
-
-  for (i = 0; i < MAX_PMS2D; ++i)
-    SampleRate[i] = 1.0;
-
-  /* This function unfortunatly only gets called once, yet we need to
-   * initialaize two probes (sort of) the 1D version and the 2D version.
-   * This function is called from the A1D? xlTwodInit, not A2D?...
-   */
-
-  serialNumber = varp->SerialNumber.c_str();
-  probeNum = varp->ProbeCount;
-
-  MakeProjectFileName(buffer, PMS_SPEC_FILE);
-  InitPMSspecs(buffer);
-
-  /* Perform twice, once for 1DC, and again for 2DC.
-   */
-  if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
-    printf("%s: FIRST_BIN not found.\n", serialNumber); exit(1);
-    }
-  FIRST_BIN[probeNum] = atoi(p);
-
-  if ((p = GetPMSparameter(serialNumber, "LAST_BIN")) == NULL) {
-    printf("%s: LAST_BIN not found.\n", serialNumber); exit(1);
-    }
-  LAST_BIN[probeNum] = atoi(p);
-
-  if ((p = GetPMSparameter(serialNumber, "MIN_RANGE")) == NULL) {
-    printf("%s: MIN_RANGE not found.\n", serialNumber); exit(1);
-    }
-  minRange = atoi(p);
-
-  if ((p = GetPMSparameter(serialNumber, "RANGE_STEP")) == NULL) {
-    printf("%s: RANGE_STEP not found.\n", serialNumber); exit(1);
-    }
-  resolution = atof(p);
-
-  if ((p = GetPMSparameter(serialNumber, "DENS")) == NULL) {
-    printf("%s: DENS not found.\n", serialNumber); exit(1);
-    }
-  DENS[probeNum] = atof(p);
-
-  if ((p = GetPMSparameter(serialNumber, "PLWFAC")) == NULL) {
-    printf("%s: PLWFAC not found.\n", serialNumber); exit(1);
-    }
-  PLWFAC[probeNum] = atof(p);
-
-  if ((p = GetPMSparameter(serialNumber, "DBZFAC")) == NULL) {
-    printf("%s: DBZFAC not found.\n", serialNumber); exit(1);
-    }
-  DBZFAC[probeNum] = atof(p);
-
-  /* 1DC/P has length 32, 2DC/P has length 64.
-   */
-  length = varp->Length;
-                                                                                          
-  ComputePMS1DParams(radius[probeNum], eaw, cell_size[probeNum], dof,
-      minRange, resolution, nDiodes, length, armDistance[probeNum]);
-
-  /* Precompute dia squared and cubed. */
-  for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
-    {
-    cell_size2[probeNum][i] = cell_size[probeNum][i] * cell_size[probeNum][i];
-    cell_size3[probeNum][i] = cell_size2[probeNum][i] * cell_size[probeNum][i];
-    }
-
-  ReleasePMSspecs();
-
-  for (i = 0; i < length; ++i)
-    {
-    // 256 diodes, minus 80 we mask off.
-    sampleArea[probeNum][i] = 203.0 * 200.0 * (256-80) * 1.0e-6;
-    }
-  addDOFtoAttrs(varp, eaw, dof);
-
-}       /* END STWODINITH */
-
-/* -------------------------------------------------------------------- */
 void sTwoD(DERTBL *varp)
 {
   size_t	i, probeNum;
@@ -363,45 +272,6 @@ void sTwoD(DERTBL *varp)
     }
 
 }	/* END STWOD */
-
-/* -------------------------------------------------------------------- */
-void sHVPS(DERTBL *varp)
-{
-  size_t	i, probeNum;
-  NR_TYPE	*concentration, *dia, *dia2, *dia3;
-  NR_TYPE	tas;		/* True Air Speed	*/
-  NR_TYPE	sampleVolume[256];
-  NR_TYPE	deadTime;
-
-  const NR_TYPE * actual = GetVector(varp, 0);
-  tas		= GetSampleFor1D(varp, 1);
-  deadTime	= GetSample(varp, 2);
-
-  probeNum	= varp->ProbeCount;
-  dia		= cell_size[probeNum];
-  dia2		= cell_size2[probeNum];
-  dia3		= cell_size3[probeNum];
-  concentration = &AveragedData[varp->LRstart];
-
-
-  for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
-    {
-    sampleVolume[i] = tas * sampleArea[probeNum][i] * (((float)1000 - deadTime) / 1000);
-
-    if (sampleVolume[i] < 0.0)
-      {
-      printf("HVPS Sample Volume went negative, %f\n", sampleVolume[i]);
-      sampleVolume[i] = 0.0;
-      }
-    }
-
-#define PLWC
-#define DBZ
-#define REFF
-
-#include "pms1d_cv"
-
-}	/* END SHVPS */
 
 /* -------------------------------------------------------------------- */
 void sconc2(DERTBL *varp)
@@ -498,5 +368,125 @@ void sconc2dc150(DERTBL *varp)
 
   PutSample(varp, conc);
 }
+
+
+/* -------------------------------------------------------------------- *
+ * HVPS Below here.
+ * -------------------------------------------------------------------- */
+
+/* -------------------------------------------------------------------- */
+void sTwodInitH(var_base *varp)
+{
+  size_t	i, length, probeNum, nDiodes = 0, minRange;
+  char		*p;
+  float		resolution;
+  const char	*serialNumber;
+
+  for (i = 0; i < MAX_PMS2D; ++i)
+    SampleRate[i] = 1.0;
+
+  /* This function unfortunatly only gets called once, yet we need to
+   * initialaize two probes (sort of) the 1D version and the 2D version.
+   * This function is called from the A1D? xlTwodInit, not A2D?...
+   */
+
+  serialNumber = varp->SerialNumber.c_str();
+  probeNum = varp->ProbeCount;
+
+  MakeProjectFileName(buffer, PMS_SPEC_FILE);
+  InitPMSspecs(buffer);
+
+  /* Perform twice, once for 1DC, and again for 2DC.
+   */
+  if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
+    printf("%s: FIRST_BIN not found.\n", serialNumber); exit(1);
+    }
+  FIRST_BIN[probeNum] = atoi(p);
+
+  if ((p = GetPMSparameter(serialNumber, "LAST_BIN")) == NULL) {
+    printf("%s: LAST_BIN not found.\n", serialNumber); exit(1);
+    }
+  LAST_BIN[probeNum] = atoi(p);
+
+  if ((p = GetPMSparameter(serialNumber, "MIN_RANGE")) == NULL) {
+    printf("%s: MIN_RANGE not found.\n", serialNumber); exit(1);
+    }
+  minRange = atoi(p);
+
+  if ((p = GetPMSparameter(serialNumber, "RANGE_STEP")) == NULL) {
+    printf("%s: RANGE_STEP not found.\n", serialNumber); exit(1);
+    }
+  resolution = atof(p);
+
+  if ((p = GetPMSparameter(serialNumber, "DENS")) == NULL) {
+    printf("%s: DENS not found.\n", serialNumber); exit(1);
+    }
+  DENS[probeNum] = atof(p);
+
+  if ((p = GetPMSparameter(serialNumber, "PLWFAC")) == NULL) {
+    printf("%s: PLWFAC not found.\n", serialNumber); exit(1);
+    }
+  PLWFAC[probeNum] = atof(p);
+
+  if ((p = GetPMSparameter(serialNumber, "DBZFAC")) == NULL) {
+    printf("%s: DBZFAC not found.\n", serialNumber); exit(1);
+    }
+  DBZFAC[probeNum] = atof(p);
+
+  /* Precompute dia squared and cubed. */
+  for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
+    {
+    cell_size2[probeNum][i] = cell_size[probeNum][i] * cell_size[probeNum][i];
+    cell_size3[probeNum][i] = cell_size2[probeNum][i] * cell_size[probeNum][i];
+    }
+
+  ReleasePMSspecs();
+
+  for (i = 0; i < varp->Length; ++i)
+    {
+    // 256 diodes, minus 80 we mask off.
+    sampleArea[probeNum][i] = 203.0 * 200.0 * (256-80) * 1.0e-6;
+    }
+
+}       /* END STWODINITH */
+
+/* -------------------------------------------------------------------- */
+void sHVPS(DERTBL *varp)
+{
+  size_t	i, probeNum;
+  NR_TYPE	*concentration, *dia, *dia2, *dia3;
+  NR_TYPE	tas;		/* True Air Speed	*/
+  NR_TYPE	sampleVolume[256];
+  NR_TYPE	deadTime;
+
+  const NR_TYPE * actual = GetVector(varp, 0);
+  tas		= GetSampleFor1D(varp, 1);
+  deadTime	= GetSample(varp, 2);
+
+  probeNum	= varp->ProbeCount;
+  dia		= cell_size[probeNum];
+  dia2		= cell_size2[probeNum];
+  dia3		= cell_size3[probeNum];
+  concentration = &AveragedData[varp->LRstart];
+
+
+  for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
+    {
+    sampleVolume[i] = tas * sampleArea[probeNum][i] * (((float)1000 - deadTime) / 1000);
+
+    if (sampleVolume[i] < 0.0)
+      {
+      printf("HVPS Sample Volume went negative, %f\n", sampleVolume[i]);
+      sampleVolume[i] = 0.0;
+      }
+    }
+
+#define PLWC
+#define DBZ
+#define REFF
+
+#include "pms1d_cv"
+
+}	/* END SHVPS */
 
 /* END PMS2D.C */
