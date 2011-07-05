@@ -259,10 +259,14 @@ PostgreSQL::createTables()
   _sqlString << "CREATE TABLE PMS1D_list (Name text, SerialNumber text, SampleRateTable text, FirstBin INT, LastBin INT, CellSizes FLOAT[]);";
   _sqlString << "CREATE TABLE PMS2D_list (Name text, SerialNumber text);";
 
+  _sqlString << "CREATE TABLE parcels (id text, datetime timestamp);";
+
   submitCommand(_sqlString.str(), true);
 
-  _sqlString << "CREATE TABLE parcels (id text, datetime timestamp);";
-  submitCommand(_sqlString.str());
+// For future reference when we know we won't want parcels on the ground.
+//fprintf(stderr, "about to create parcels table\n");
+  //_sqlString.clear();
+  //submitCommand(_sqlString.str(), true);
 
 }	// END CREATETABLES
 
@@ -285,6 +289,7 @@ PostgreSQL::initializeGlobalAttributes()
   _sqlString << "INSERT INTO global_attributes VALUES ('FlightNumber', '" << cfg.FlightNumber() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('DateProcessed', '" << dateProcessed << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('latitude_coordinate', '" << cfg.CoordinateLatitude() << "');";
+  _sqlString << "INSERT INTO global_attributes VALUES ('coordinates', 'GGLON GGLAT GGALT Time');";
   _sqlString << "INSERT INTO global_attributes VALUES ('longitude_coordinate', '" << cfg.CoordinateLongitude() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('zaxis_coordinate', '" << cfg.CoordinateAltitude() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('time_coordinate', '" << TIME_VARIABLE << "');";
