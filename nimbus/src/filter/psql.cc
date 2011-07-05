@@ -289,7 +289,6 @@ PostgreSQL::initializeGlobalAttributes()
   _sqlString << "INSERT INTO global_attributes VALUES ('FlightNumber', '" << cfg.FlightNumber() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('DateProcessed', '" << dateProcessed << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('latitude_coordinate', '" << cfg.CoordinateLatitude() << "');";
-  _sqlString << "INSERT INTO global_attributes VALUES ('coordinates', 'GGLON GGLAT GGALT Time');";
   _sqlString << "INSERT INTO global_attributes VALUES ('longitude_coordinate', '" << cfg.CoordinateLongitude() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('zaxis_coordinate', '" << cfg.CoordinateAltitude() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('time_coordinate', '" << TIME_VARIABLE << "');";
