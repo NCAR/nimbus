@@ -214,7 +214,9 @@ void CompareVariables()
 
     // OK, variable exists in both files, read data.
     strcpy(var.name, name);
-    float data1[nPts1], data2[nPts2];
+    float *data1, *data2;
+    data1 = new float[nPts1];
+    data2 = new float[nPts2];
     nc_get_var_float(infd1, var.varID1, data1);
     nc_get_var_float(infd2, var.varID2, data2);
 
