@@ -252,6 +252,7 @@ PostgreSQL::createTables()
   _sqlString << "CREATE TABLE Global_Attributes (key text PRIMARY KEY, value text);";
   _sqlString << "CREATE TABLE Variable_List (Name text PRIMARY KEY, Units text, Uncalibrated_Units text, long_name text, SampleRateTable text, nDims int, dims int[], nCals int, poly_cals float[], missing_value float, data_quality text);";
   _sqlString << "CREATE TABLE Categories (variable text, category text);";
+  _sqlString << "CREATE TABLE parcels (id text, datetime timestamp);";
 
   /*
    * PMS tables.
@@ -259,14 +260,7 @@ PostgreSQL::createTables()
   _sqlString << "CREATE TABLE PMS1D_list (Name text, SerialNumber text, SampleRateTable text, FirstBin INT, LastBin INT, CellSizes FLOAT[]);";
   _sqlString << "CREATE TABLE PMS2D_list (Name text, SerialNumber text);";
 
-  _sqlString << "CREATE TABLE parcels (id text, datetime timestamp);";
-
   submitCommand(_sqlString.str(), true);
-
-// For future reference when we know we won't want parcels on the ground.
-//fprintf(stderr, "about to create parcels table\n");
-  //_sqlString.clear();
-  //submitCommand(_sqlString.str(), true);
 
 }	// END CREATETABLES
 
