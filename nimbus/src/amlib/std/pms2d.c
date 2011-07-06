@@ -377,7 +377,7 @@ void sconc2dc150(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void sTwodInitH(var_base *varp)
 {
-  size_t	i, length, probeNum, nDiodes = 0, minRange;
+  size_t	i, probeNum, minRange;
   char		*p;
   float		resolution;
   const char	*serialNumber;
