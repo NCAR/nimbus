@@ -7,11 +7,12 @@ I2D=	${JLOCAL}/include
 LIBNAME=	raf++
 
 DEFINES=	-DPNG
+INCLUDES=	-I${I2D}
 
 # Solaris & Mac OS X.
 #DEFINES=	-DSVR4
+#INCLUDES=	-I${I2D} -I/usr/OpenMotif/include
 
-INCLUDES=	-I${I2D}
 CXXFLAGS=	-Wall -g -O2 ${INCLUDES} ${DEFINES}
 
 OBJS=	ACconfig.o adsIO.o adsIOrt.o Application.o Canvas.o Cursor.o\
