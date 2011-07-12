@@ -18,23 +18,21 @@ LIB_DIRS= -L${JLOCAL}/lib
 LIBS   = -lraf++ -lXm -lXt -lXext -lX11 -lpng -lz
 ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.RHEL5
 
-#       Mac OS X
+# Mac OS X
+#
+# Requires XCode from Mac App Store, use Macports/porticus to get libpng and netcdf
+# and get OpenMotif from here (OpenMotif from Macports was not working for us):
+#  http://www.ist-inc.com/downloads/motif_download.html
+#
+# setenv LOCAL /opt/local
+# setenv JLOCAL /usr/local
+#
+# Build libraf++ first.
 #
 #DEFINES	= -DPNG
-#INCLUDES= -I${INC} -I${RAFINC} -I/usr/X11R6/include -I/sw/include
-#LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib -L/sw/lib
+#INCLUDES= -I../src -I${INC} -I${RAFINC} -I${LOCAL}/include -I/usr/OpenMotif/include
+#LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib -L${LOCAL}/lib -L/usr/OpenMotif/lib
 #LIBS   = -lraf++ -lXm -lXt -lICE -lXext -lX11 -lpng -lz
-#LIBS   = -lraf++ -lXm -lXt -lICE -lXext -lX11
-
-
-#       Solaris
-#
-#DEFINES	= -DSVR4 -DPNG
-#INCLUDES= -I${INC} -I${RAFINC} -I/usr/dt/include
-#LIB_DIRS= -L${JLOCAL}/lib
-#LIBS    = -lraf++ -Wl,-Bstatic -lpng -lz -Wl,-Bdynamic -R /usr/dt/lib -lXm -lXt -lX11
-#ANONFTP	= /net/ftp/pub/src/bin.Solaris2.9
- 
 
 # Don't use optimization with gcc (2.95.2 and earlier) and C++.
 CXX	= g++
