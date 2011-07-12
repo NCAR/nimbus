@@ -18,22 +18,21 @@ LIB_DIRS= -L${JLOCAL}/lib
 LIBS	= -lraf++ -lXm -lXt -lX11 -lXext -lnetcdf_c++ -lnetcdf -lhdf5 -lhdf5_hl -lpng -lz
 ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.RHEL5
 
-#	Mac OS X
+# Mac OS X
+#
+# Requires XCode from Mac App Store, use Macports/porticus to get libpng and netcdf
+# and get OpenMotif from here (OpenMotif from Macports was not working for us):
+#  http://www.ist-inc.com/downloads/motif_download.html
+#
+# setenv LOCAL /opt/local
+# setenv JLOCAL /usr/local
+#
+# Build libraf++ first.
 #
 #DEFINES	= -DPNG
-#INCLUDES= -I${INC} -I/sw/include -I/usr/X11R6/include -I${RAFINC}
-#LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib -L/sw/lib
-#LIBS	= -lraf++ -lXm -lXt -lX11 -lXext -Wl,-Bstatic -lnetcdf_c++ -lnetcdf -Wl,-Bdynamic -lpng -lz
-#LIBS	= -lraf++ -lXm -lXt -lX11 -lXext -Wl,-Bstatic -lnetcdf_c++ -lnetcdf -Wl,-Bdynamic
-
-
-#	Solaris
-#
-#INCLUDES= -I${INC} -I${RAFINC} -I${LOCAL}/include -I/usr/dt/include
-#LIBS	= -lraf++ -Wl,-Bstatic -lpng -lz -Wl,-Bdynamic -R /usr/dt/lib -lXm -lXt -lX11 -Wl,-Bstatic -lnetcdf_c++ -lnetcdf -Wl,-Bdynamic -lm
-#DEFINES	= -DSVR4 -DPNG
-#ANONFTP	= /net/ftp/pub/archive/RAF-src/bin.Solaris2.9
-
+#INCLUDES= -I${INC} -I/usr/OpenMotif/include -I${RAFINC} -I${LOCAL}/include
+#LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib -L/usr/OpenMotif/lib -L${LOCAL}/lib
+#LIBS	= -lraf++ -lXm -lXt -lX11 -lXext -lnetcdf_c++ -lnetcdf -lpng -lz
 
 CXXFLAGS= -g -O ${INCLUDES} ${DEFINES}
 
