@@ -490,6 +490,9 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
      infoline='Saved file '+textfilename
      IF statuswidgetid ne 0 THEN dummy=dialog_message(infoline,dialog_parent=statuswidgetid,/info) ELSE print,infoline
    ENDIF
+   
+   infoline='Processing complete.'
+   IF statuswidgetid eq 0 THEN print,infoline
 END
    
    

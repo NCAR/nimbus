@@ -6,6 +6,9 @@ PRO procsid2h, directoryname, pthfile=pthfile, textfile=textfile, fixedtas=fixed
    ;Command line only version of sid.pro.  This is mainly for running the
    ;program straight from a terminal/console command line.  
    ;AB 4/2011
+   
+   !except=0  ;Suppress floating point error messages
+   !quiet=1   ;Suppress annoying messages from ncdf routines
 
    ;Get all .srd filenames from the input directory
    fn=file_search(directoryname,'*.srd')  
