@@ -17,7 +17,7 @@ LIBS= -R /usr/dt/lib -lVarDB -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic -lpms -lraf -lh
 INCLUDES= ${JLOCAL}/include -I/usr/X11R6/include
 DEFINES = 
 LIB_DIRS= -L/usr/X11R6/lib -L${JLOCAL}/lib
-LIBS    = -lVarDB -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic -lpms -lraf -lhdr_api -lXm -lXp -lXt -lXext -lX11
+LIBS    = -lVarDB -lnetcdf -lhdf5 -lhdf5_hl -lpms -lraf -lhdr_api -lXm -lXp -lXt -lXext -lX11
 
 CFLAGS=		-g ${DEFINES} -I${INCLUDES}
 
