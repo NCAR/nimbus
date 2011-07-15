@@ -21,6 +21,11 @@ public:
     }
   }
 
+  /**
+   * Compute sample area of a probe for given diameter.
+   * The sample area unit should be meter^2 for all probes.
+   * @param reconstruct Are we doing particle reconstruction, or all-in.
+   */
   void ComputeSamplearea(bool reconstruction);
 
   std::string id;            // Two byte ID at the front of the data-record.

@@ -862,67 +862,48 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
 
   varname = "interarrival_endpoints";
   if ((var = dataFile->get_var(varname.c_str())) == 0) {
-    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, ncfile.intbindim()))) return netCDF::NC_ERR;
-    if (!var->put(it_endpoints, cfg.nInterarrivalBins+1)) return netCDF::NC_ERR; 
+    if ((var = dataFile->add_var(varname.c_str(), ncFloat, ncfile.intbindim())))
+      var->put(it_endpoints, cfg.nInterarrivalBins+1);
   }
 
   // Counts.  These are not in the ProbeData class yet, hence they are written here. @todo
   varname="A2DCA"+probe.suffix; varname[3] = probe.id[0];
-  if ((var = dataFile->get_var(varname.c_str())) == 0) {
-    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, ncfile.timedim(), ncfile.spsdim(), ncfile.bindim_plusone()))) return netCDF::NC_ERR;
-    if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
-    if (!var->add_att("units", "count")) return netCDF::NC_ERR;
-    if (!var->add_att("long_name", "Fast 2DC Corrected Accumulation per Channel, All Particles")) return netCDF::NC_ERR;
-    if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
-    if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
-    if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
+  if ((var = ncfile.addHistogram(varname, probe.serialNumber)))
+  {
     if (!var->add_att("Resolution", (int)probe.resolution)) return netCDF::NC_ERR;
     if (!var->add_att("nDiodes", probe.nDiodes)) return netCDF::NC_ERR;
     if (!var->add_att("ResponseTime", (float)0.4)) return netCDF::NC_ERR;
     if (!var->add_att("ArmDistance", probe.armWidth * 10)) return netCDF::NC_ERR;
-    if (!var->add_att("Rejected", "Roundness below 0.1, interarrival time below 1/20th of distribution peak")) return netCDF::NC_ERR;
+    if (!var->add_att("Rejected", "Roundness below 0.1, interarrival time below 1/20th of distribution peak"))
+      return netCDF::NC_ERR;
     if (!var->add_att("ParticleAcceptMethod", "Reconstruction")) return netCDF::NC_ERR;
   }
-  if (!var->put(&count_all[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
+  var->put(&count_all[0][0], numtimes, 1, probe.numBins+binoffset);
 
   varname="A2DCR"+probe.suffix; varname[3] = probe.id[0];
-  if ((var = dataFile->get_var(varname.c_str())) == 0) {
-    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, ncfile.timedim(), ncfile.spsdim(), ncfile.bindim_plusone()))) return netCDF::NC_ERR;
-    if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
-    if (!var->add_att("units", "count")) return netCDF::NC_ERR;
-    if (!var->add_att("long_name", "Fast 2DC Corrected Accumulation per Channel, Round Particles")) return netCDF::NC_ERR;
-    if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
-    if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
-    if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
+  if ((var = ncfile.addHistogram(varname, probe.serialNumber)))
+  {
     if (!var->add_att("Resolution", (int)probe.resolution)) return netCDF::NC_ERR;
     if (!var->add_att("nDiodes", probe.nDiodes)) return netCDF::NC_ERR;
     if (!var->add_att("ResponseTime", (float)0.4)) return netCDF::NC_ERR;
     if (!var->add_att("ArmDistance", probe.armWidth * 10)) return netCDF::NC_ERR;
-    if (!var->add_att("Rejected", "Roundness below 0.5, interarrival time below 1/20th of distribution peak")) return netCDF::NC_ERR;
+    if (!var->add_att("Rejected", "Roundness below 0.5, interarrival time below 1/20th of distribution peak"))
+      return netCDF::NC_ERR;
     if (!var->add_att("ParticleAcceptMethod", "Reconstruction")) return netCDF::NC_ERR;
   }
-  if (!var->put(&count_round[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
+  var->put(&count_round[0][0], numtimes, 1, probe.numBins+binoffset);
 
   varname="I2DCA"+probe.suffix; varname[3] = probe.id[0];
-  if ((var = dataFile->get_var(varname.c_str())) == 0) {
-    if (!(var = dataFile->add_var(varname.c_str(), ncInt, ncfile.timedim(), ncfile.spsdim(), ncfile.intbindim()))) return netCDF::NC_ERR;
-    if (!var->add_att("_FillValue", -32767)) return netCDF::NC_ERR;
-    if (!var->add_att("units", "count")) return netCDF::NC_ERR;
-    if (!var->add_att("long_name", "Interarrival Time Accumulation, All Particles Including Rejections")) return netCDF::NC_ERR;
+  if ((var = ncfile.addHistogram(varname, probe.serialNumber)))
+  {
     if (!var->add_att("CellSizes", cfg.nInterarrivalBins, it_endpoints)) return netCDF::NC_ERR;
   }
-  if (!var->put(&count_it[0][0], numtimes, 1, cfg.nInterarrivalBins+1)) return netCDF::NC_ERR;
+  var->put(&count_it[0][0], numtimes, 1, cfg.nInterarrivalBins+1);
 
   //Concentration
   varname="C2DCA"+probe.suffix; varname[3] = probe.id[0];
-  if ((var = dataFile->get_var(varname.c_str())) == 0) {
-    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, ncfile.timedim(), ncfile.spsdim(), ncfile.bindim_plusone()))) return netCDF::NC_ERR;
-    if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
-    if (!var->add_att("units", "#/L")) return netCDF::NC_ERR;
-    if (!var->add_att("long_name", "Fast 2DC Concentration per Channel, All Particles")) return netCDF::NC_ERR;
-    if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
-    if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
-    if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
+  if ((var = ncfile.addHistogram(varname, probe.serialNumber)))
+  {
     if (!var->add_att("FirstBin", probe.firstBin)) return netCDF::NC_ERR;
     if (!var->add_att("LastBin", probe.numBins+binoffset-1)) return netCDF::NC_ERR;
     if (!var->add_att("DepthOfField", probe.numBins, &probe.dof[0])) return netCDF::NC_ERR;
@@ -931,17 +912,11 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!var->add_att("CellSizeUnits", "micrometers")) return netCDF::NC_ERR;
     if (!var->add_att("Density", (float)1.0)) return netCDF::NC_ERR;
   }
-  if (!var->put(&conc_all[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
+  var->put(&conc_all[0][0], numtimes, 1, probe.numBins+binoffset);
 
   varname="C2DCR"+probe.suffix; varname[3] = probe.id[0];
-  if ((var = dataFile->get_var(varname.c_str())) == 0) {
-    if (!(var = dataFile->add_var(varname.c_str(), ncFloat, ncfile.timedim(), ncfile.spsdim(), ncfile.bindim_plusone()))) return netCDF::NC_ERR;
-    if (!var->add_att("_FillValue", (float)(-32767.0))) return netCDF::NC_ERR;
-    if (!var->add_att("units", "#/L")) return netCDF::NC_ERR;
-    if (!var->add_att("long_name", "Fast 2DC Concentration per Channel, Round Particles")) return netCDF::NC_ERR;
-    if (!var->add_att("Category", "PMS Probe")) return netCDF::NC_ERR;
-    if (!var->add_att("SerialNumber", probe.serialNumber.c_str())) return netCDF::NC_ERR;
-    if (!var->add_att("DataQuality", "Good")) return netCDF::NC_ERR;
+  if ((var = ncfile.addHistogram(varname, probe.serialNumber)))
+  {
     if (!var->add_att("FirstBin", probe.firstBin)) return netCDF::NC_ERR;
     if (!var->add_att("LastBin", probe.numBins+binoffset-1)) return netCDF::NC_ERR;
     if (!var->add_att("DepthOfField", probe.numBins, &probe.dof[0])) return netCDF::NC_ERR;
@@ -950,7 +925,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     if (!var->add_att("CellSizeUnits", "micrometers")) return netCDF::NC_ERR;
     if (!var->add_att("Density", (float)1.0)) return netCDF::NC_ERR;
   }
-  if (!var->put(&conc_round[0][0], numtimes, 1, probe.numBins+binoffset)) return netCDF::NC_ERR; 
+  var->put(&conc_round[0][0], numtimes, 1, probe.numBins+binoffset);
 
   cout << endl;
 
@@ -1131,7 +1106,7 @@ int main(int argc, char *argv[])
 
   // Return if unreadable file
   if (input_file.eof()) {
-     cerr << "Unable to find XML header.  Valid 2D file?" << endl;
+     cerr << "Unable to find XML header.  Is " << config.inputFile << " a valid 2D file?" << endl;
      return 1;
   }
 

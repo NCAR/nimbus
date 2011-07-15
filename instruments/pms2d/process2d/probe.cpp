@@ -1,13 +1,5 @@
 #include "probe.h"
 
-/**
- * Compute sample area of a probe for given diameter.
- * The sample area unit should be meter^2 for all probes.
- * @param probe
- * @param diam diameter to generate sample volume.
- * @param reconstruct Are doing particle reconstruction, or all-in.
- * @returns sample area
- */
 void ProbeInfo::ComputeSamplearea(bool reconstruct)
 {
   for (int i = 0; i < numBins+1; ++i)
@@ -34,4 +26,3 @@ void ProbeInfo::ComputeSamplearea(bool reconstruct)
     samplearea.push_back(sa);
   }
 }
-

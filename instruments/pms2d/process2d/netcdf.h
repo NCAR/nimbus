@@ -38,17 +38,22 @@ public:
 
   int WriteData(ProbeInfo & probe, ProbeData & data);
 
-
+/*
   NcDim *timedim() const { return _timedim; }
   NcDim *spsdim() const { return _spsdim; }
   NcDim *bindim() const { return _bindim; }
   NcDim *bindim_plusone() const { return _bindim_plusone; }
+*/
   NcDim *intbindim() const { return _intbindim; }
 
+  NcVar *addHistogram(std::string& name, std::string& serialNumber);
+  NcVar *addVariable(std::string& name, std::string& serialNumber);
 
   static const int NC_ERR = 2;
 
 private:
+  void InitVarDB();
+
   void readStartEndTime(Config & cfg);
 
   NcFile *_file;
