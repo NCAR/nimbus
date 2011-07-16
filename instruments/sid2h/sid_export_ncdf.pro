@@ -151,40 +151,40 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
       tagname=tags[j]+suffix
          
       CASE tags[j] OF
-         'AREA':attvalue={a1:'Total Area',a2:'1/m'}
+         'AREA':attvalue={a1:'SID-2H Total Area',a2:'1/m'}
          'LWC': BEGIN
-             attvalue={a1:'Liquid Water Content',a2:'gram/m3'}
+             attvalue={a1:'SID-2H Liquid Water Content',a2:'gram/m3'}
              tagname='PLWC'+suffix
          END
-         'MVD':attvalue={a1:'Median Volume Diameter',a2:'um'}
-         'MND':attvalue={a1:'Mean Diameter',a2:'um'}
-         'GAIN':attvalue={a1:'PMT Gain',a2:'raw units'}
+         'MVD':attvalue={a1:'SID-2H Median Volume Diameter',a2:'um'}
+         'MND':attvalue={a1:'SID-2H Mean Diameter',a2:'um'}
+         'GAIN':attvalue={a1:'SID-2H PMT Gain',a2:'raw units'}
          'TRANSITTIME': BEGIN
-            attvalue={a1:'Average transit time',a2:'s'}
+            attvalue={a1:'SID-2H Average transit time',a2:'s'}
             tagname='AVGTRNS'+suffix
          END
-         'MISSED':attvalue={a1:'Number of missed particles',a2:'#'}
-         'REJECTCOUNT':attvalue={a1:'Number of rejected particles',a2:'#'}
-         'TAS':attvalue={a1:'True air speed',a2:'m/s'}
-         'TRANSITTIME':attvalue={a1:'Average transit time',a2:'s'}
-         'MEANAF':attvalue={a1:'Mean asphericity',a2:'none'}
-         'MISSED':attvalue={a1:'Missed particle count',a2:'#'}
-         'ACCEPT_COUNT':attvalue={a1:'Accepted particle count',a2:'#'}
-         'REJECT_COUNT':attvalue={a1:'Rejected particle count',a2:'#'}
-         'TAS':attvalue={a1:'Air speed used',a2:'m/s'}
-         'ACTIVETIME':attvalue={a1:'Probe activity time',a2:'s'}
-         'PMTGAIN':attvalue={a1:'Photodetector gain setting',a2:'raw unit'}
-         'LARGETRIGGER':attvalue={a1:'Large trigger setting',a2:'raw unit'}
-         'SMALLTRIGGER':attvalue={a1:'Small trigger setting',a2:'raw unit'}
+         'MISSED':attvalue={a1:'SID-2H Number of missed particles',a2:'#'}
+         'REJECTCOUNT':attvalue={a1:'SID-2H Number of rejected particles',a2:'#'}
+         'TAS':attvalue={a1:'SID-2H True air speed',a2:'m/s'}
+         'TRANSITTIME':attvalue={a1:'SID-2H Average transit time',a2:'s'}
+         'MEANAF':attvalue={a1:'SID-2H Mean asphericity',a2:'none'}
+         'MISSED':attvalue={a1:'SID-2H Missed particle count',a2:'#'}
+         'ACCEPT_COUNT':attvalue={a1:'SID-2H Accepted particle count',a2:'#'}
+         'REJECT_COUNT':attvalue={a1:'SID-2H Rejected particle count',a2:'#'}
+         'TAS':attvalue={a1:'SID-2H Air speed used',a2:'m/s'}
+         'ACTIVETIME':attvalue={a1:'SID-2H Probe activity time',a2:'s'}
+         'PMTGAIN':attvalue={a1:'SID-2H Photodetector gain setting',a2:'raw unit'}
+         'LARGETRIGGER':attvalue={a1:'SID-2H Large trigger setting',a2:'raw unit'}
+         'SMALLTRIGGER':attvalue={a1:'SID-2H Small trigger setting',a2:'raw unit'}
          'NT': BEGIN
-            attvalue={a1:'Total Number Concentration',a2:'#/cm3'}
+            attvalue={a1:'SID-2H Total Number Concentration',a2:'#/cm3'}
             unitadjust=1.0e-6
             tagname='CONC'+suffix
          END
          'CONC1D': BEGIN
             attname=['_FillValue','long_name','units','FirstBin','LastBin','CellSizes','CellSizeUnits','Category']
-            attvalue={a0:-32767.,a1:'Particle Concentration Per Bin, Normalized by Bin Width',a2:'#/cm3',a3:1,a4:fix(n_elements(data.midbins)),$
-                      a5:data.endbins,a6:'micrometers',a7:'PMS Probe'}
+            attvalue={a0:-32767.,a1:'SID-2H Particle Concentration Per Bin, Normalized by Bin Width',a2:'#/cm3',$
+			a3:1,a4:fix(n_elements(data.midbins)),a5:data.endbins,a6:'micrometers',a7:'PMS Probe'}
             dims=[ydimid_size,sdimid,xdimid]
             currentdata=transpose(currentdata)
             ;Pad first bin with zeros, convert to #/cc, transpose, and reform to 3-dimensions
@@ -195,9 +195,8 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
             tagname='CSID_SID'
          END
          'SPEC1D':BEGIN
-            attname=['_FillValue','long_name','units','FirstBin','LastBin','CellSizes','CellSizeUnits','Category']
-            attvalue={a0:-32767.,a1:'Particle Count Per Size Bin',a2:'count',a3:1,a4:fix(n_elements(data.midbins)),$
-                      a5:data.endbins,a6:'micrometers',a7:'PMS Probe'}
+            attname=['_FillValue','long_name','units','Category']
+            attvalue={a0:-32767.,a1:'SID-2H Particle Count Per Size Bin',a2:'count',a3:'PMS Probe'}
             dims=[ydimid_size,sdimid,xdimid]
             currentdata=transpose(currentdata)
             ;Pad first bin with zeros, transpose, and reform to 3-dimensions
@@ -208,8 +207,8 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
          END
          'TBCONC1D': BEGIN
             attname=['_FillValue','long_name','units','FirstBin','LastBin','CellSizes','CellSizeUnits','Category']
-            attvalue={a0:-32767.,a1:'Time-based Particle Concentration Per Bin, Normalized by Bin Width',a2:'#/cm3',a3:1,a4:fix(n_elements(data.tbmidbins)),$
-                      a5:data.tbendbins,a6:'micrometers',a7:'PMS Probe'}
+            attvalue={a0:-32767.,a1:'SID-2H Time-based Particle Concentration Per Bin, Normalized by Bin Width',a2:'#/cm3',$
+			a3:1,a4:fix(n_elements(data.tbmidbins)),a5:data.tbendbins,a6:'micrometers',a7:'PMS Probe'}
             dims=[ydimid_tb,sdimid,xdimid]
             currentdata=transpose(currentdata)
             ;Pad first bin with zeros, convert to #/cc, transpose, and reform to 3-dimensions
@@ -220,9 +219,8 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
             tagname='CSIDTB_SID'
          END
          'TBSPEC1D':BEGIN
-            attname=['_FillValue','long_name','units','FirstBin','LastBin','CellSizes','CellSizeUnits','Category']
-            attvalue={a0:-32767.,a1:'Time-based Particle Count Per Size Bin',a2:'count',a3:1,a4:fix(n_elements(data.tbmidbins)),$
-                      a5:data.tbendbins,a6:'micrometers',a7:'PMS Probe'}
+            attname=['_FillValue','long_name','units','Category']
+            attvalue={a0:-32767.,a1:'SID-2H Time-based Particle Count Per Size Bin',a2:'count',a3:'PMS Probe'}
             dims=[ydimid_tb,sdimid,xdimid]
             currentdata=transpose(currentdata)
             ;Pad first bin with zeros, transpose, and reform to 3-dimensions
@@ -232,29 +230,29 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
             tagname='ASIDTB_SID'
          END
          'AFSPEC':BEGIN
-            attvalue={a1:'Particle Count Per Af Bin',a2:'#'}
+            attvalue={a1:'SID-2H Particle Count Per Af Bin',a2:'#'}
             dims=[ydimid_af,xdimid]
             currentdata=transpose(currentdata)
          END
          'INTSPEC':BEGIN
-            attvalue={a1:'Particle Count Per Interarrival Bin',a2:'#'}
+            attvalue={a1:'SID-2H Particle Count Per Interarrival Bin',a2:'#'}
             dims=[ydimid_int,xdimid]
             currentdata=transpose(currentdata)
          END
          'MIDBINS':BEGIN
-            attvalue={a1:'Size Bin Mid-points',a2:'um'}
+            attvalue={a1:'SID-2H Size Bin Mid-points',a2:'um'}
             dims=ydimid_size
          END
          'INTMIDBINS':BEGIN
-            attvalue={a1:'Interarrival Bin Mid-points',a2:'s'}
+            attvalue={a1:'SID-2H Interarrival Bin Mid-points',a2:'s'}
             dims=ydimid_int
          END
          'AFMIDBINS':BEGIN
-            attvalue={a1:'Af Bin Mid-points',a2:'unitless'}
+            attvalue={a1:'SID-2H Af Bin Mid-points',a2:'unitless'}
             dims=ydimid_af
          END
          'BRANCH_COUNT':BEGIN
-            attvalue={a1:'Particle Count by Peak Wave Number (Branches)',a2:'#'}
+            attvalue={a1:'SID-2H Particle Count by Peak Wave Number (Branches)',a2:'#'}
             dims=[ydimid_branches,xdimid]
             currentdata=transpose(currentdata)
          END
@@ -285,31 +283,31 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
          
       CASE tags[j] OF
          'TDETECTOR': BEGIN
-            attvalue=['Detector Temperature','deg_C']
+            attvalue=['SID-2H Detector Temperature','deg_C']
             unitadjust=1/(-34.34)
          END
          'TLASER': BEGIN
-            attvalue=['Laser Temperature','deg_C']
+            attvalue=['SID-2H Laser Temperature','deg_C']
             unitadjust=1/(-34.34)
          END          
          'TLASERCONTROL': BEGIN
-            attvalue=['Laser Control Temperature','deg_C']
+            attvalue=['SID-2H Laser Control Temperature','deg_C']
             unitadjust=1/(-34.34)
          END         
          'TFPGAAMBIENT': BEGIN
-            attvalue=['FPGA Temperature','deg_C']
+            attvalue=['SID-2H FPGA Temperature','deg_C']
             unitadjust=1/(-34.34)
          END          
          'THEADHEATER': BEGIN
-            attvalue=['Head Heater Temperature','deg_C']
+            attvalue=['SID-2H Head Heater Temperature','deg_C']
             unitadjust=1/(-34.34)
          END          
          'THEADAMBIENT': BEGIN
-            attvalue=['Ambient Head Temperature','deg_C']
+            attvalue=['SID-2H Ambient Head Temperature','deg_C']
             unitadjust=1/(-34.34)
          END          
          'LASERPOWERMON': BEGIN
-            attvalue=['Laser Power Monitor','mW']
+            attvalue=['SID-2H Laser Power Monitor','mW']
             ;Compute laser power as in SIDConnect.c from Richard's code
             IF total(tag_names(data) eq 'LASERCAL') THEN lasercal=data.lasercal ELSE lasercal=[0.0, 9.37e-05, -0.00042,0.969304, -100.0, 2047.0]
             ft=data.mux.tlaserpowermon/(-34.34)
@@ -319,7 +317,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
             unitadjust=1.0 
          END         
          'TLASERPOWERMON': BEGIN
-            attvalue=['Laser Power Monitor Temperature','deg_C']
+            attvalue=['SID-2H Laser Power Monitor Temperature','deg_C']
             unitadjust=1/(-34.34)
          END          
          ELSE:skiptag=1  
@@ -349,19 +347,19 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
          
       CASE tags[j] OF
          'HABIT_ROUND':BEGIN
-            attvalue=['Round particle percentage','%']
+            attvalue=['SID-2H Round particle percentage','%']
             currentdata=float(data.branch_count[*,0])/acount*100
          END
          'HABIT_IRREGULAR':BEGIN
-            attvalue=['Irregular particle percentage','%']
+            attvalue=['SID-2H Irregular particle percentage','%']
             currentdata=total(float(data.branch_count[*,[1,2,3,7]]),2)/acount*100
          END
          'HABIT_COLUMN':BEGIN
-            attvalue=['Column particle percentage','%']
+            attvalue=['SID-2H Column particle percentage','%']
             currentdata=float(data.branch_count[*,4])/acount*100
          END
          'HABIT_PLATE':BEGIN
-            attvalue=['Plate particle percentage','%']
+            attvalue=['SID-2H Plate particle percentage','%']
             currentdata=total(float(data.branch_count[*,[5,6]]),2)/acount*100
          END
       ENDCASE
