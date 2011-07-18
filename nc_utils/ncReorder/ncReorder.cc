@@ -142,7 +142,8 @@ int main(int argc, char *argv[])
           break;
 
         default:
-          cerr << "Currently unsupported data type in var attr transfer.\n";
+          cerr << "Currently unsupported data type in var attr transfer; ";
+          cerr << var->name() << ":" << att->name() << endl;
       }
     }
   }
