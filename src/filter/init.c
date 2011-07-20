@@ -75,6 +75,8 @@ bool nimbusIsAlreadyRunning()
     pid_t pid = nidas::util::Process::checkPidFile("/tmp/nimbus.pid");
     if (pid > 0) {
       fprintf(stderr, "nimbus process, pid=%d is already running.\n",pid);
+      fprintf(stderr, "Or possibly nimbus terminated improperly \n");
+      fprintf(stderr, " and /tmp/nimbus.pid file was left behind.\n");
       return true;
     }
   }
