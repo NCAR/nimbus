@@ -77,7 +77,7 @@ end
 
 # Programs with "install" target.
 
-foreach file ( psql2xml ads2/hdrbld ncplot ncpp/src vardb/editor ads2/xhd xpms2d/src instruments/rdma ads_utils/edADShdr vardb/utils/vdb2ncml instruments/sid2h )
+foreach file ( psql2xml ads2/hdrbld ncplot ncpp/src vardb/editor ads2/xhd xpms2d/src instruments/rdma ads_utils/edADShdr vardb/utils/vdb2ncml )
   (cd $file; echo ""; make install)
   if ($num > 0) then
     echo "$file BUILT"
@@ -88,7 +88,7 @@ end
 
 # Programs using "scons".
 
-foreach file ( nimbus GoogleEarth/acTrack2kml instruments/pms2d/process2d )
+foreach file ( nimbus GoogleEarth/acTrack2kml instruments/pms2d/process2d instruments/sid2h )
   (cd $file; echo $file; scons install)
   if ($num > 0) then
     echo "$file BUILT"
