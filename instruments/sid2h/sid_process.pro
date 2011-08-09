@@ -181,6 +181,8 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
    ;Variable initialization
    spec1d=fltarr(num,numbins)     ;counts
    spec2d=fltarr(num,numbins,numafbins)  ;counts
+   spec_round=fltarr(num,numbins)  ;counts, round particles
+   spec_irreg=fltarr(num,numbins)  ;counts, non-round particles
    intspec=fltarr(num,numintbins) ;interarrival time
    afspec=fltarr(num,numafbins)   ;asphericity factor
    aftotal=fltarr(num)            ;for computing the mean Af
@@ -361,6 +363,8 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
                   ici=max(where(a.ci gt ciendbins)) < (numcibins-1) > 0
                   spec1d[index,isize]=spec1d[index,isize]+1
                   spec2d[index,isize,iaf]=spec2d[index,isize,iaf]+1
+                  IF (a.branches eq 0) THEN spec_round[index,isize]=spec_round[index,isize]+1 ELSE $
+                     spec_irreg[index,isize]=spec_irreg[index,isize]+1
                   intspec[index,iint]=intspec[index,iint]+1                  
                   afspec[index,iaf]=afspec[index,iaf]+1
                   aftotal[index]=aftotal[index]+a.af
@@ -410,7 +414,11 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
    
    conc1d=fltarr(num, numbins)  ;size spectra
    tbconc1d=fltarr(num, tbnumbins)  ;time-based size spectra
+   conc_round=fltarr(num, numbins)  ;size spectra round particles
+   conc_irreg=fltarr(num, numbins)  ;size spectra non-round particles
    area=fltarr(num) & lwc=fltarr(num) & nt=fltarr(num) & mvd=fltarr(num) & mnd=fltarr(num)
+   area_round=fltarr(num) & lwc_round=fltarr(num) & nt_round=fltarr(num) & mvd_round=fltarr(num) & mnd_round=fltarr(num)
+   area_irreg=fltarr(num) & lwc_irreg=fltarr(num) & nt_irreg=fltarr(num) & mvd_irreg=fltarr(num) & mnd_irreg=fltarr(num)
    FOR i=0l,num-1 DO BEGIN
       conc_raw=spec1d[i,*]/(sv[i])     ;for computing bulk parameters
       conc1d[i,*]=conc_raw/(binwidth/1.0e6)
@@ -420,6 +428,24 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
       mvd[i]=sid_mvdiam(conc_raw,midbins,/interp)
       mnd[i]=sid_meandiam(conc_raw,midbins)
       nt[i]=total(conc_raw)     ;1/m3
+      
+      ;Repeat above computations for round particle population
+      conc_raw=spec_round[i,*]/(sv[i])     ;for computing bulk parameters
+      conc_round[i,*]=conc_raw/(binwidth/1.0e6)
+      area_round[i]=total(!pi/4*(midbins/1.0e6)^2 * conc_raw) ;1/m
+      lwc_round[i]=total(!pi/6*(midbins/1.0e4)^3 * conc_raw) ;g/m3
+      mvd_round[i]=sid_mvdiam(conc_raw,midbins,/interp)
+      mnd_round[i]=sid_meandiam(conc_raw,midbins)
+      nt_round[i]=total(conc_raw)     ;1/m3
+      
+      ;Repeat for non-round particles
+      conc_raw=spec_irreg[i,*]/(sv[i])     ;for computing bulk parameters
+      conc_irreg[i,*]=conc_raw/(binwidth/1.0e6)
+      area_irreg[i]=total(!pi/4*(midbins/1.0e6)^2 * conc_raw) ;1/m
+      lwc_irreg[i]=total(!pi/6*(midbins/1.0e4)^3 * conc_raw) ;g/m3
+      mvd_irreg[i]=sid_mvdiam(conc_raw,midbins,/interp)
+      mnd_irreg[i]=sid_meandiam(conc_raw,midbins)
+      nt_irreg[i]=total(conc_raw)     ;1/m3
    ENDFOR   
    
    ;----------------Interpolate over missing mux values-----------------
@@ -459,9 +485,12 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
           ntdead:'m^-3'}
 
 
-   data={op:op, software_version:1.0, footer:firstfooter, header:firstheader, mux:mux, units:units, time:time, date:date.dmy, date_processed:systime(), starttime:starttime, $
-         stoptime:stoptime, endbins:endbins, midbins:midbins, spec1d:spec1d, spec2d:spec2d, conc1d:conc1d, area:area,$
-         lwc:lwc, mvd:mvd, mnd:mnd, nt:nt, intendbins:intendbins, intmidbins:intmidbins, intspec:intspec, branch_count:branch_count,$
+   data={op:op, software_version:1.0, footer:firstfooter, header:firstheader, mux:mux, units:units, time:time, $
+         date:date.dmy, date_processed:systime(), starttime:starttime, stoptime:stoptime, endbins:endbins, midbins:midbins, $
+         spec1d:spec1d, spec2d:spec2d, conc1d:conc1d, area:area, lwc:lwc, mvd:mvd, mnd:mnd, nt:nt, $
+         spec_round:spec_round, conc_round:conc_round, area_round:area_round, lwc_round:lwc_round, mvd_round:mvd_round, mnd_round:mnd_round, nt_round:nt_round, $
+         spec_irreg:spec_irreg, conc_irreg:conc_irreg, area_irreg:area_irreg, lwc_irreg:lwc_irreg, mvd_irreg:mvd_irreg, mnd_irreg:mnd_irreg, nt_irreg:nt_irreg, $
+         intendbins:intendbins, intmidbins:intmidbins, intspec:intspec, branch_count:branch_count,$
          afmidbins:afmidbins, afspec:afspec, meanaf:aftotal/(accept_count>1), transittime:transittime, speed:speed, missed:missed, missedhist:missedhist, $
          accept_count:accept_count, reject_count:reject_count, reject_reason:reject_reason, tas:tas, sa:sa, activetime:activetime,$
          totalscatter:totalscatter, tofmidbins:tofmidbins, tofspec:tofspec, cispec:cispec, cimidbins:cimidbins,$

@@ -60,7 +60,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
    ENDIF ELSE BEGIN
       ;-----------Create new file instead-----------------
       
-      suffix=''
+      suffix='_SID'
       ;Create the file
       id=ncdf_create(outfile[0],/clobber)
       
@@ -152,12 +152,26 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
          
       CASE tags[j] OF
          'AREA':attvalue={a1:'SID-2H Total Area',a2:'1/m'}
+         'AREA_ROUND':attvalue={a1:'SID-2H Total Area, Round Particles',a2:'1/m'}
+         'AREA_IRREG':attvalue={a1:'SID-2H Total Area, Irregular Particles',a2:'1/m'}
          'LWC': BEGIN
              attvalue={a1:'SID-2H Liquid Water Content',a2:'gram/m3'}
              tagname='PLWC'+suffix
          END
+         'LWC_ROUND': BEGIN
+             attvalue={a1:'SID-2H Liquid Water Content, Round Particles',a2:'gram/m3'}
+             tagname='PLWC_ROUND'+suffix
+         END
+         'LWC_IRREG': BEGIN
+             attvalue={a1:'SID-2H Liquid Water Content, Irregular Particles',a2:'gram/m3'}
+             tagname='PLWC_IRREG'+suffix
+         END
          'MVD':attvalue={a1:'SID-2H Median Volume Diameter',a2:'um'}
+         'MVD_ROUND':attvalue={a1:'SID-2H Median Volume Diameter, Round Particles',a2:'um'}
+         'MVD_IRREG':attvalue={a1:'SID-2H Median Volume Diameter, Irregular Particles',a2:'um'}
          'MND':attvalue={a1:'SID-2H Mean Diameter',a2:'um'}
+         'MND_ROUND':attvalue={a1:'SID-2H Mean Diameter, Round Particles',a2:'um'}
+         'MND_IRREG':attvalue={a1:'SID-2H Mean Diameter, Irregular Particles',a2:'um'}
          'GAIN':attvalue={a1:'SID-2H PMT Gain',a2:'raw units'}
          'TRANSITTIME': BEGIN
             attvalue={a1:'SID-2H Average transit time',a2:'s'}
@@ -181,53 +195,103 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
             unitadjust=1.0e-6
             tagname='CONC'+suffix
          END
+         'NT_ROUND': BEGIN
+            attvalue={a1:'SID-2H Total Number Concentration, Round Particles',a2:'#/cm3'}
+            unitadjust=1.0e-6
+            tagname='CONC_ROUND'+suffix
+         END
+         'NT_IRREG': BEGIN
+            attvalue={a1:'SID-2H Total Number Concentration, Irregular Particles',a2:'#/cm3'}
+            unitadjust=1.0e-6
+            tagname='CONC_IRREG'+suffix
+         END
          'CONC1D': BEGIN
             attname=['_FillValue','long_name','units','FirstBin','LastBin','CellSizes','CellSizeUnits','Category']
             attvalue={a0:-32767.,a1:'SID-2H Particle Concentration Per Bin, Normalized by Bin Width',a2:'#/cm3',$
 			a3:1,a4:fix(n_elements(data.midbins)),a5:data.endbins,a6:'micrometers',a7:'PMS Probe'}
             dims=[ydimid_size,sdimid,xdimid]
-            currentdata=transpose(currentdata)
             ;Pad first bin with zeros, convert to #/cc, transpose, and reform to 3-dimensions
             conc_unnorm=sid_unnormalize(data.conc1d,data.endbins)
             conc=fltarr(n_elements(data.time),n_elements(data.endbins))
             conc[*,1:*]=conc_unnorm/1.0e6
             currentdata=reform(transpose(conc),n_elements(data.endbins),1,n_elements(data.time))
-            tagname='CSID_SID'
+            tagname='CSID'+suffix
          END
          'SPEC1D':BEGIN
             attname=['_FillValue','long_name','units','Category']
             attvalue={a0:-32767.,a1:'SID-2H Particle Count Per Size Bin',a2:'count',a3:'PMS Probe'}
             dims=[ydimid_size,sdimid,xdimid]
-            currentdata=transpose(currentdata)
             ;Pad first bin with zeros, transpose, and reform to 3-dimensions
             spec=fltarr(n_elements(data.time),n_elements(data.endbins))
             spec[*,1:*]=data.spec1d
             currentdata=reform(transpose(spec),n_elements(data.endbins),1,n_elements(data.time))
-            tagname='ASID_SID'
+            tagname='ASID'+suffix
+         END
+         'CONC_ROUND': BEGIN
+            attname=['_FillValue','long_name','units','FirstBin','LastBin','CellSizes','CellSizeUnits','Category']
+            attvalue={a0:-32767.,a1:'SID-2H Particle Concentration Per Bin, Normalized by Bin Width, Round Particles',a2:'#/cm3',$
+			a3:1,a4:fix(n_elements(data.midbins)),a5:data.endbins,a6:'micrometers',a7:'PMS Probe'}
+            dims=[ydimid_size,sdimid,xdimid]
+            ;Pad first bin with zeros, convert to #/cc, transpose, and reform to 3-dimensions
+            conc_unnorm=sid_unnormalize(data.conc_round,data.endbins)
+            conc=fltarr(n_elements(data.time),n_elements(data.endbins))
+            conc[*,1:*]=conc_unnorm/1.0e6
+            currentdata=reform(transpose(conc),n_elements(data.endbins),1,n_elements(data.time))
+            tagname='CSID_ROUND'+suffix
+         END
+         'SPEC_ROUND':BEGIN
+            attname=['_FillValue','long_name','units','Category']
+            attvalue={a0:-32767.,a1:'SID-2H Particle Count Per Size Bin, Round Particles',a2:'count',a3:'PMS Probe'}
+            dims=[ydimid_size,sdimid,xdimid]
+            ;Pad first bin with zeros, transpose, and reform to 3-dimensions
+            spec=fltarr(n_elements(data.time),n_elements(data.endbins))
+            spec[*,1:*]=data.spec_round
+            currentdata=reform(transpose(spec),n_elements(data.endbins),1,n_elements(data.time))
+            tagname='ASID_ROUND'+suffix
+         END
+         'CONC_IRREG': BEGIN
+            attname=['_FillValue','long_name','units','FirstBin','LastBin','CellSizes','CellSizeUnits','Category']
+            attvalue={a0:-32767.,a1:'SID-2H Particle Concentration Per Bin, Normalized by Bin Width, Irregular Particles',a2:'#/cm3',$
+			a3:1,a4:fix(n_elements(data.midbins)),a5:data.endbins,a6:'micrometers',a7:'PMS Probe'}
+            dims=[ydimid_size,sdimid,xdimid]
+            ;Pad first bin with zeros, convert to #/cc, transpose, and reform to 3-dimensions
+            conc_unnorm=sid_unnormalize(data.conc_irreg,data.endbins)
+            conc=fltarr(n_elements(data.time),n_elements(data.endbins))
+            conc[*,1:*]=conc_unnorm/1.0e6
+            currentdata=reform(transpose(conc),n_elements(data.endbins),1,n_elements(data.time))
+            tagname='CSID_IRREG'+suffix
+         END
+         'SPEC_IRREG':BEGIN
+            attname=['_FillValue','long_name','units','Category']
+            attvalue={a0:-32767.,a1:'SID-2H Particle Count Per Size Bin, Irregular Particles',a2:'count',a3:'PMS Probe'}
+            dims=[ydimid_size,sdimid,xdimid]
+            ;Pad first bin with zeros, transpose, and reform to 3-dimensions
+            spec=fltarr(n_elements(data.time),n_elements(data.endbins))
+            spec[*,1:*]=data.spec_irreg
+            currentdata=reform(transpose(spec),n_elements(data.endbins),1,n_elements(data.time))
+            tagname='ASID_IRREG'+suffix
          END
          'TBCONC1D': BEGIN
             attname=['_FillValue','long_name','units','FirstBin','LastBin','CellSizes','CellSizeUnits','Category']
             attvalue={a0:-32767.,a1:'SID-2H Time-based Particle Concentration Per Bin, Normalized by Bin Width',a2:'#/cm3',$
 			a3:1,a4:fix(n_elements(data.tbmidbins)),a5:data.tbendbins,a6:'micrometers',a7:'PMS Probe'}
             dims=[ydimid_tb,sdimid,xdimid]
-            currentdata=transpose(currentdata)
             ;Pad first bin with zeros, convert to #/cc, transpose, and reform to 3-dimensions
             conc_unnorm=sid_unnormalize(data.tbconc1d,data.tbendbins)
             conc=fltarr(n_elements(data.time),n_elements(data.tbendbins))
             conc[*,1:*]=conc_unnorm/1.0e6
             currentdata=reform(transpose(conc),n_elements(data.tbendbins),1,n_elements(data.time))
-            tagname='CSIDTB_SID'
+            tagname='CSIDTB'+suffix
          END
          'TBSPEC1D':BEGIN
             attname=['_FillValue','long_name','units','Category']
             attvalue={a0:-32767.,a1:'SID-2H Time-based Particle Count Per Size Bin',a2:'count',a3:'PMS Probe'}
             dims=[ydimid_tb,sdimid,xdimid]
-            currentdata=transpose(currentdata)
             ;Pad first bin with zeros, transpose, and reform to 3-dimensions
             spec=fltarr(n_elements(data.time),n_elements(data.tbendbins))
             spec[*,1:*]=data.tbspec1d
             currentdata=reform(transpose(spec),n_elements(data.tbendbins),1,n_elements(data.time))
-            tagname='ASIDTB_SID'
+            tagname='ASIDTB'+suffix
          END
          'AFSPEC':BEGIN
             attvalue={a1:'SID-2H Particle Count Per Af Bin',a2:'#'}
