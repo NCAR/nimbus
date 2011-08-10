@@ -334,9 +334,10 @@ PRO sid_browse
     drawbase5=widget_base(tab,column=1,title='Time Series',uname='tab5')
     plot5=widget_draw(drawbase5,xsize=screen_x,ysize=screen_y-30,uname='w5',/button_events)
     drawbase5b=widget_base(drawbase5,row=1)
-    plottypes=['Total Concentration','LWC','Extinction','Asphericity','Harmonics','Diameter','Color Concentration',$
-       'Color TB Concentration','Color Asphericity','Color Circular Index','Rejection Codes','Particle Counts','Speed','Triggers-Gain',$
-       'Housekeeping1','Housekeeping2']
+    plottypes=['Total Concentration','LWC','Extinction','Asphericity','Harmonics','Diameter',$
+        'Color Concentration','Color Concentration (Round)','Color Concentration (Non-Round)',$
+       'Color TB Concentration','Color Asphericity','Color Circular Index','Rejection Codes',$
+       'Particle Counts','Speed','Triggers-Gain','Housekeeping1','Housekeeping2']
     ts_type1=widget_droplist(drawbase5b,uname='ts_type1',value=plottypes,title='Plot 1',/frame)
     ts_type2=widget_droplist(drawbase5b,uname='ts_type2',value=plottypes,title='Plot 2',/frame)
     widget_control,ts_type2,set_droplist_select=1

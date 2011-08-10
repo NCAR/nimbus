@@ -198,20 +198,29 @@ PRO sid_windowplot,topid,p1,pinfo,pop,noset=noset
                'LWC':BEGIN
                   plot,x,(*p1).lwc[a:b],ytitle='LWC (g/m!u3!n)',/nodata
                   oplot,x,(*p1).lwc[a:b],color=color1
+                  IF total(tag_names((*p1)) eq 'LWC_ROUND') THEN oplot,x,(*p1).lwc_round[a:b],color=color2
+                  IF total(tag_names((*p1)) eq 'LWC_IRREG') THEN oplot,x,(*p1).lwc_irreg[a:b],color=color3
+                  sid_legend,['All','Round','Non-Round'],line=0,color=[color1,color2,color3]
                END
                'Total Concentration':BEGIN
                   y=(*p1).nt[a:b]/1.0e6
                   IF max(y) lt 10 THEN ylog=0 ELSE ylog=1
                   IF max(y) lt 10 THEN yr=[0, max(y)] ELSE yr=[0.1,max(y,/nan)>1]
                   plot,x,(*p1).nt[a:b]/1.0e6,ytitle='N!lt!n (#/cc)',ylog=ylog,yr=yr,/nodata
-                  oplot,x,(*p1).nt[a:b]/1.0e6,color=color2
+                  oplot,x,(*p1).nt[a:b]/1.0e6,color=color1
+                  IF total(tag_names((*p1)) eq 'NT_ROUND') THEN oplot,x,(*p1).nt_round[a:b]/1.0e6,color=color2
+                  IF total(tag_names((*p1)) eq 'NT_IRREG') THEN oplot,x,(*p1).nt_irreg[a:b]/1.0e6,color=color3
+                  sid_legend,['All','Round','Non-Round'],line=0,color=[color1,color2,color3]
                END
                'Extinction':BEGIN
                   y=(*p1).area[a:b]*2000
                   IF max(y) lt 10 THEN ylog=0 ELSE ylog=1
                   IF max(y) lt 10 THEN yr=[0, max(y)] ELSE yr=[0.1,max(y,/nan)>0.1<1000]
                   plot,x,y,ytitle='Extinction (1/km)',ylog=ylog,yr=yr,/nodata
-                  oplot,x,y,color=color3
+                  oplot,x,y,color=color1
+                  IF total(tag_names((*p1)) eq 'AREA_ROUND') THEN oplot,x,(*p1).area_round[a:b]*2000,color=color2
+                  IF total(tag_names((*p1)) eq 'AREA_IRREG') THEN oplot,x,(*p1).area_irreg[a:b]*2000,color=color3
+                  sid_legend,['All','Round','Non-Round'],line=0,color=[color1,color2,color3]
                END
                'Asphericity':BEGIN
                   plot,x,(*p1).meanaf[a:b],ytitle='Mean Asphericity',/yl,yr=afrange,/nodata
@@ -262,6 +271,18 @@ PRO sid_windowplot,topid,p1,pinfo,pop,noset=noset
                'Color Concentration':BEGIN
                    conc=alog10((*p1).conc1d[a:b,*] > 1)
                    contour,conc,x,(*p1).midbins,/cell,nlevels=20,ytitle='Diameter (um)',/yl,/ys,yr=sizerange,min_val=max(conc)-10
+               END
+               'Color Concentration (Round)':BEGIN
+                   IF total(tag_names((*p1)) eq 'CONC_ROUND') THEN BEGIN
+                      conc=alog10((*p1).conc_round[a:b,*] > 1)
+                      contour,conc,x,(*p1).midbins,/cell,nlevels=20,ytitle='Diameter (um)',/yl,/ys,yr=sizerange,min_val=max(conc)-10
+                   ENDIF
+               END
+               'Color Concentration (Non-Round)':BEGIN
+                   IF total(tag_names((*p1)) eq 'CONC_IRREG') THEN BEGIN
+                      conc=alog10((*p1).conc_irreg[a:b,*] > 1)
+                      contour,conc,x,(*p1).midbins,/cell,nlevels=20,ytitle='Diameter (um)',/yl,/ys,yr=sizerange,min_val=max(conc)-10
+                   ENDIF
                END
                'Color Asphericity':BEGIN
                    conc=alog10(((*p1).afspec[a:b,*]*1000) > 1)
