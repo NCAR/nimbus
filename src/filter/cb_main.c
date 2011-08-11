@@ -950,7 +950,7 @@ static void setOutputFileName()
 }	/* END SETOUTPUTFILENAME */
 
 /* -------------------------------------------------------------------- */
-XmString CreateListLineItem(void *pp, int var_type)
+XmString CreateListLineItem(var_base *pp, int var_type)
 {
   RAWTBL	*rp;
   DERTBL	*dp;
@@ -1014,7 +1014,10 @@ void FillListWidget()
     items[cnt++] = CreateListLineItem(raw[i], RAW);
 
   for (size_t i = 0; i < derived.size(); ++i)
+  {
+//printf("  %d %d %d\n", cnt, i, derived.size());
     items[cnt++] = CreateListLineItem(derived[i], DERIVED);
+  }
 
   XmListDeleteAllItems(list1);
   XmListAddItems(list1, items, cnt, 1);

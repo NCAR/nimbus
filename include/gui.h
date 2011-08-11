@@ -94,7 +94,7 @@ void	ApplyVariableMods(Widget w, XtPointer client, XtPointer call),
 	ValidateTime(Widget w, XtPointer client, XtPointer call),
 	VerifyLagText(Widget w, XtPointer client, XmTextVerifyCallbackStruct *call);
 
-XmString	CreateListLineItem(void *pp, int var_type);
+XmString	CreateListLineItem(var_base *pp, int var_type);
 
 void	CreateProbeOutputMenu(), CreateProbeDataQualityMenu(),
 	HandleWarning(const char msg[], XtCallbackProc, XtCallbackProc);

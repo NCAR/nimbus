@@ -229,7 +229,7 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
         rp->cof.insert(rp->cof.begin(), f);
         }
 
-      newAttr = CreateListLineItem((void *)rp, RAW);
+      newAttr = CreateListLineItem(rp, RAW);
       break;
 
     case DERIVED:
@@ -250,7 +250,7 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
         XtFree(p);
         }
 
-      newAttr = CreateListLineItem((void *)dp, DERIVED);
+      newAttr = CreateListLineItem(dp, DERIVED);
       break;
     }
 
