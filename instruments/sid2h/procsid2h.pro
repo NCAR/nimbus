@@ -32,11 +32,12 @@ PRO procsid2h, directoryname, pthfile=pthfile, textfile=textfile, fixedtas=fixed
    IF n_elements(peak) eq 0 THEN peak=1
    IF n_elements(sizegain) eq 0 THEN sizegain=1.4
    IF n_elements(ncappend) eq 0 THEN ncappend=1
+   IF n_elements(finalprocessing) eq 0 THEN finalprocessing=0
    
    op={fn_orig:fn,  rate:1, sizegain:sizegain, pthfile:pthfile, textfile:textfile, $
        fixedtas:fixedtas, autolevel:autolevel, speedreject:speedreject, outdir:outdir, $
        maxsaturated:maxsaturated, tastag:tastag, peak:peak, createncdf:1, createsav:0, $
-       ncappend:ncappend}
+       ncappend:ncappend, finalprocessing:finalprocessing}
    
    sid_process, op
 END

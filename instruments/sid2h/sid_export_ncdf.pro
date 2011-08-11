@@ -1,4 +1,4 @@
-PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
+PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend, finalprocessing=finalprocessing
    ;PRO to export a netCDF file with the variables contained in a data structure.
    ;Aaron Bansemer, NCAR, 9/2007
    ;Updated 7/2009 for ncpp compatibility
@@ -26,36 +26,38 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
       ydimid_size=ncdf_dimid(id, name)
       IF ydimid_size eq -1 THEN ydimid_size=ncdf_dimdef(id,name,n_elements(data.endbins)) 
          
-      ;This is for interarrival
-      name='Vector'+strtrim(string(n_elements(data.intmidbins)),2)
-      ydimid_int=ncdf_dimid(id, name)
-      IF ydimid_int eq -1 THEN ydimid_int=ncdf_dimdef(id,name,n_elements(data.intmidbins)) 
-      
-      ;This is for asphericity
-      name='Vector'+strtrim(string(n_elements(data.afmidbins)),2)
-      ydimid_af=ncdf_dimid(id, name)
-      IF ydimid_af eq -1 THEN ydimid_af=ncdf_dimdef(id,name,n_elements(data.afmidbins)) 
-      
       ;This is for branch counts
       name='Vector8'
       ydimid_branches=ncdf_dimid(id, name)
       IF ydimid_branches eq -1 THEN ydimid_branches=ncdf_dimdef(id,name,8)
-      
-      ;This is for time-based size
-      name='Vector'+strtrim(string(n_elements(data.tbendbins)),2)
-      ydimid_tb=ncdf_dimid(id, name)
-      IF ydimid_tb eq -1 THEN ydimid_tb=ncdf_dimdef(id,name,n_elements(data.tbendbins)) 
-      
-      varid=ncdf_varid(id, 'SID_ATTRIBUTES')
-      IF varid eq -1 THEN varid=ncdf_vardef(id,'SID_ATTRIBUTES',/char)
-      ncdf_control,id,/endef                ;put in data mode
-      ncdf_varput,id,varid,0
-      ncdf_control,id,/redef                ;return to define mode
-      opnames=tag_names(data.op)                  
-      FOR i=0,n_elements(opnames)-1 DO BEGIN
-          IF string(data.op.(i)[0]) eq '' THEN data.op.(i)[0]='none' ;To avoid an ncdf error (empty string)
-          ncdf_attput,id,varid,opnames[i],data.op.(i)[0]
-      ENDFOR
+         
+      IF not(finalprocessing) THEN BEGIN  ;Skip the rest of this for final processing
+         ;This is for interarrival
+         name='Vector'+strtrim(string(n_elements(data.intmidbins)),2)
+         ydimid_int=ncdf_dimid(id, name)
+         IF ydimid_int eq -1 THEN ydimid_int=ncdf_dimdef(id,name,n_elements(data.intmidbins)) 
+         
+         ;This is for asphericity
+         name='Vector'+strtrim(string(n_elements(data.afmidbins)),2)
+         ydimid_af=ncdf_dimid(id, name)
+         IF ydimid_af eq -1 THEN ydimid_af=ncdf_dimdef(id,name,n_elements(data.afmidbins)) 
+         
+         ;This is for time-based size
+         name='Vector'+strtrim(string(n_elements(data.tbendbins)),2)
+         ydimid_tb=ncdf_dimid(id, name)
+         IF ydimid_tb eq -1 THEN ydimid_tb=ncdf_dimdef(id,name,n_elements(data.tbendbins)) 
+         
+         varid=ncdf_varid(id, 'SID_ATTRIBUTES')
+         IF varid eq -1 THEN varid=ncdf_vardef(id,'SID_ATTRIBUTES',/char)
+         ncdf_control,id,/endef                ;put in data mode
+         ncdf_varput,id,varid,0
+         ncdf_control,id,/redef                ;return to define mode
+         opnames=tag_names(data.op)                  
+         FOR i=0,n_elements(opnames)-1 DO BEGIN
+            IF string(data.op.(i)[0]) eq '' THEN data.op.(i)[0]='none' ;To avoid an ncdf error (empty string)
+            ncdf_attput,id,varid,opnames[i],data.op.(i)[0]
+         ENDFOR
+      ENDIF  ;Final processing
 
    ENDIF ELSE BEGIN
       ;-----------Create new file instead-----------------
@@ -151,10 +153,16 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
       tagname=tags[j]+suffix
          
       CASE tags[j] OF
-         'AREA':attvalue={a1:'SID-2H Total Area',a2:'1/m'}
-         'AREA_ROUND':attvalue={a1:'SID-2H Total Area, Round Particles',a2:'1/m'}
-         'AREA_IRREG':attvalue={a1:'SID-2H Total Area, Irregular Particles',a2:'1/m'}
-         'LWC': BEGIN
+         'AREA':BEGIN
+            attvalue={a1:'SID-2H Total Area',a2:'1/m'}
+         END
+         'AREA_ROUND':BEGIN
+            attvalue={a1:'SID-2H Total Area, Round Particles',a2:'1/m'}
+         END
+         'AREA_IRREG':BEGIN
+            attvalue={a1:'SID-2H Total Area, Irregular Particles',a2:'1/m'}
+         END
+         'LWC':BEGIN
              attvalue={a1:'SID-2H Liquid Water Content',a2:'gram/m3'}
              tagname='PLWC'+suffix
          END
@@ -166,30 +174,65 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
              attvalue={a1:'SID-2H Liquid Water Content, Irregular Particles',a2:'gram/m3'}
              tagname='PLWC_IRREG'+suffix
          END
-         'MVD':attvalue={a1:'SID-2H Median Volume Diameter',a2:'um'}
-         'MVD_ROUND':attvalue={a1:'SID-2H Median Volume Diameter, Round Particles',a2:'um'}
-         'MVD_IRREG':attvalue={a1:'SID-2H Median Volume Diameter, Irregular Particles',a2:'um'}
-         'MND':attvalue={a1:'SID-2H Mean Diameter',a2:'um'}
-         'MND_ROUND':attvalue={a1:'SID-2H Mean Diameter, Round Particles',a2:'um'}
-         'MND_IRREG':attvalue={a1:'SID-2H Mean Diameter, Irregular Particles',a2:'um'}
-         'GAIN':attvalue={a1:'SID-2H PMT Gain',a2:'raw units'}
+         'MVD':BEGIN
+            attvalue={a1:'SID-2H Median Volume Diameter',a2:'um'}
+         END
+         'MVD_ROUND':BEGIN
+            attvalue={a1:'SID-2H Median Volume Diameter, Round Particles',a2:'um'}
+         END
+         'MVD_IRREG':BEGIN
+            attvalue={a1:'SID-2H Median Volume Diameter, Irregular Particles',a2:'um'}
+         END
+         'MND':BEGIN
+            attvalue={a1:'SID-2H Mean Diameter',a2:'um'}
+         END
+         'MND_ROUND':BEGIN
+            attvalue={a1:'SID-2H Mean Diameter, Round Particles',a2:'um'}
+         END
+         'MND_IRREG':BEGIN
+            attvalue={a1:'SID-2H Mean Diameter, Irregular Particles',a2:'um'}
+         END
          'TRANSITTIME': BEGIN
             attvalue={a1:'SID-2H Average transit time',a2:'s'}
             tagname='AVGTRNS'+suffix
+            IF finalprocessing THEN skiptag=1
          END
-         'MISSED':attvalue={a1:'SID-2H Number of missed particles',a2:'#'}
-         'REJECTCOUNT':attvalue={a1:'SID-2H Number of rejected particles',a2:'#'}
-         'TAS':attvalue={a1:'SID-2H True air speed',a2:'m/s'}
-         'TRANSITTIME':attvalue={a1:'SID-2H Average transit time',a2:'s'}
-         'MEANAF':attvalue={a1:'SID-2H Mean asphericity',a2:'none'}
-         'MISSED':attvalue={a1:'SID-2H Missed particle count',a2:'#'}
-         'ACCEPT_COUNT':attvalue={a1:'SID-2H Accepted particle count',a2:'#'}
-         'REJECT_COUNT':attvalue={a1:'SID-2H Rejected particle count',a2:'#'}
-         'TAS':attvalue={a1:'SID-2H Air speed used',a2:'m/s'}
-         'ACTIVETIME':attvalue={a1:'SID-2H Probe activity time',a2:'s'}
-         'PMTGAIN':attvalue={a1:'SID-2H Photodetector gain setting',a2:'raw unit'}
-         'LARGETRIGGER':attvalue={a1:'SID-2H Large trigger setting',a2:'raw unit'}
-         'SMALLTRIGGER':attvalue={a1:'SID-2H Small trigger setting',a2:'raw unit'}
+         'MEANAF':BEGIN
+            attvalue={a1:'SID-2H Mean asphericity',a2:'none'}
+            IF finalprocessing THEN skiptag=1
+         END
+         'MISSED':BEGIN
+            attvalue={a1:'SID-2H Missed particle count',a2:'#'}
+            IF finalprocessing THEN skiptag=1
+         END
+         'ACCEPT_COUNT':BEGIN
+            attvalue={a1:'SID-2H Accepted particle count',a2:'#'}
+            IF finalprocessing THEN skiptag=1
+         END
+         'REJECT_COUNT':BEGIN
+            attvalue={a1:'SID-2H Rejected particle count',a2:'#'}
+            IF finalprocessing THEN skiptag=1
+         END
+         'TAS':BEGIN
+            attvalue={a1:'SID-2H Air speed used',a2:'m/s'}
+            IF finalprocessing THEN skiptag=1
+         END
+         'ACTIVETIME':BEGIN
+            attvalue={a1:'SID-2H Probe activity time',a2:'s'}
+            IF finalprocessing THEN skiptag=1
+         END
+         'PMTGAIN':BEGIN
+            attvalue={a1:'SID-2H Photodetector gain setting',a2:'raw unit'}
+            IF finalprocessing THEN skiptag=1
+         END
+         'LARGETRIGGER':BEGIN
+            attvalue={a1:'SID-2H Large trigger setting',a2:'raw unit'}
+            IF finalprocessing THEN skiptag=1
+         END
+         'SMALLTRIGGER':BEGIN
+            attvalue={a1:'SID-2H Small trigger setting',a2:'raw unit'}
+            IF finalprocessing THEN skiptag=1
+         END
          'NT': BEGIN
             attvalue={a1:'SID-2H Total Number Concentration',a2:'#/cm3'}
             unitadjust=1.0e-6
@@ -282,6 +325,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
             conc[*,1:*]=conc_unnorm/1.0e6
             currentdata=reform(transpose(conc),n_elements(data.tbendbins),1,n_elements(data.time))
             tagname='CSIDTB'+suffix
+            IF finalprocessing THEN skiptag=1
          END
          'TBSPEC1D':BEGIN
             attname=['_FillValue','long_name','units','Category']
@@ -292,16 +336,19 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
             spec[*,1:*]=data.tbspec1d
             currentdata=reform(transpose(spec),n_elements(data.tbendbins),1,n_elements(data.time))
             tagname='ASIDTB'+suffix
+            IF finalprocessing THEN skiptag=1
          END
          'AFSPEC':BEGIN
             attvalue={a1:'SID-2H Particle Count Per Af Bin',a2:'#'}
             dims=[ydimid_af,xdimid]
             currentdata=transpose(currentdata)
+            IF finalprocessing THEN skiptag=1
          END
          'INTSPEC':BEGIN
             attvalue={a1:'SID-2H Particle Count Per Interarrival Bin',a2:'#'}
             dims=[ydimid_int,xdimid]
             currentdata=transpose(currentdata)
+            IF finalprocessing THEN skiptag=1
          END
          'MIDBINS':BEGIN
             attvalue={a1:'SID-2H Size Bin Mid-points',a2:'um'}
@@ -310,10 +357,12 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
          'INTMIDBINS':BEGIN
             attvalue={a1:'SID-2H Interarrival Bin Mid-points',a2:'s'}
             dims=ydimid_int
+            IF finalprocessing THEN skiptag=1
          END
          'AFMIDBINS':BEGIN
             attvalue={a1:'SID-2H Af Bin Mid-points',a2:'unitless'}
             dims=ydimid_af
+            IF finalprocessing THEN skiptag=1
          END
          'BRANCH_COUNT':BEGIN
             attvalue={a1:'SID-2H Particle Count by Peak Wave Number (Branches)',a2:'#'}
@@ -340,6 +389,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend
    FOR j=0,n_elements(tags)-1 DO BEGIN
       ;Write each variable
       skiptag=0
+      IF finalprocessing THEN skiptag=1  ;Skip ALL housekeeping for final processing
       dims=xdimid
       attvalue=['Unknown','Unknown']
       unitadjust=1.0

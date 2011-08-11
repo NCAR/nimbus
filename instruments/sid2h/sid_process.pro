@@ -24,6 +24,7 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
    
    ;Warn if a fixed tas is going to be used
    IF file_test(op.pthfile) eq 0 THEN BEGIN
+      IF op.ncappend THEN stop,'Can not find netCDF file for appending.  Stopping.'
       infoline='No flight data found, using fixed TAS of ' + string(op.fixedtas,form='(f5.1)') + ' m/s.'
       choice='Continue'
       IF statuswidgetid ne 0 THEN choice=dialog_message(infoline,dialog_parent=statuswidgetid,/cancel) ELSE print,infoline
@@ -510,7 +511,7 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
    IF op.createncdf eq 1 THEN BEGIN
       ncfilename=op.outdir+date.mdy+'_'+string(long(sid_sfm2hms(starttime)),format='(i06)')+'_SID.nc'
       IF op.ncappend THEN ncfilename=op.pthfile
-      sid_export_ncdf,data,outfile=ncfilename,ncappend=op.ncappend
+      sid_export_ncdf,data,outfile=ncfilename,ncappend=op.ncappend,finalprocessing=op.finalprocessing
       infoline='Saved file '+ncfilename
       IF statuswidgetid ne 0 THEN dummy=dialog_message(infoline,dialog_parent=statuswidgetid,/info) ELSE print,infoline  
    ENDIF

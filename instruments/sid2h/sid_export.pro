@@ -39,7 +39,7 @@ PRO sid_export_event, ev
                infile_base=file_basename(fn[i])
                p=strpos(infile_base,'.dat')
                ncfilename=outdir+strmid(infile_base,0,p)+'.nc'
-               sid_export_ncdf,data,outfile=ncfilename,ncappend=0
+               sid_export_ncdf,data,outfile=ncfilename,ncappend=0,finalprocessing=0
                outfilelist[i]=ncfilename
             ENDFOR
             widget_control,widget_info(ev.top,find='process'),set_value='EXPORT to netCDF'
