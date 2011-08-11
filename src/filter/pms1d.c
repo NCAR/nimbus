@@ -183,9 +183,16 @@ void PMS1D_SetupForADS3()
   else
   if (cfg.ProjectName().compare("ICE-T") == 0)
   {
-    setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
-    if (cfg.FlightNumber().compare("rf06") >= 0)
-       setSerialNumberAndProbeType("ACDP", "CDP016", PROBE_PMS1D | PROBE_CDP);
+    if (cfg.FlightNumber().compare("ff01") >= 0) 
+      setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
+    if (cfg.FlightNumber().compare("ff03") >= 0) 
+      setSerialNumberAndProbeType("ACDP", "CDP016", PROBE_PMS1D | PROBE_CDP);
+    if (cfg.FlightNumber().compare("rf01") >= 0) 
+      setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
+    if (cfg.FlightNumber().compare("rf06") >= 0) 
+      setSerialNumberAndProbeType("ACDP", "CDP016", PROBE_PMS1D | PROBE_CDP);
+    if (cfg.FlightNumber().compare("tf01") >= 0) 
+      setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
     setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
     setSerialNumberAndProbeType("AS200", "PCAS108", PROBE_PMS1D | PROBE_PCASP);
     setSerialNumberAndProbeType("AS300", "FSSP305", PROBE_PMS1D | PROBE_F300);
