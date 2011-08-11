@@ -117,7 +117,7 @@ PRO sid_event, ev
             widget_control,widget_info(ev.top,find='filelist'),get_value=fn
             widget_control,widget_info(ev.top,find='outdir'),get_value=outdir
             widget_control,widget_info(ev.top,find='pthfile'),get_value=pthfile
-print,peak
+
             ;Can add bindistribution to this structure if desired
             op={fn_orig:fn,  rate:rate, sizegain:sizegain, intthreshold:intthreshold,$
             pthfile:pthfile, textfile:textfile, fixedtas:fixedtas, autolevel:autolevel,$            

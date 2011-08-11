@@ -232,7 +232,7 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
       openw,2,textfilename
       printf,2,'Reftime: ',firstfooter.reftime
       printf,2,'Acquisition Start: ',firstfooter.acqstart
-      printf,2,'time elapsed_time diam(um) Af mux sensor tof missed scatter'
+      printf,2,'time diam(um) Af Branches mux sensor tof missed scatter'
    ENDIF
   
    ;------------Read data----------------------------------------------------
@@ -332,8 +332,9 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
               
                ;Find saturated detectors, then size
                a=sid_size(b.scatter[i,*],scatter_adjusted,pmtgain[index],b.tof[i],tas[index],op.sizegain,peak=op.peak) 
-               IF op.textfile eq 1 THEN printf,2,(time[index]),(sid_date((b.elaptime[i]-footer.reftime)/100+footer.acqstart)).time,b.elaptime[i]-footer.reftime,a.size,a.af,b.mux[i],b.sensor[i],b.tof[i],b.missed[i],mean(scatter_adjusted),$
-                  format='(i6,f15.5,i15,2f7.1,i3,i6,i6,i6,i6)' ;scatter_adjusted,,28i5)'
+               IF op.textfile eq 1 THEN printf,2,(sid_date((b.elaptime[i]-footer.reftime)/100+footer.acqstart)).time, $
+                  a.size,a.af,a.branches,b.mux[i],b.sensor[i],b.tof[i],b.missed[i],mean(scatter_adjusted), $ ;b.elaptime[i]-footer.reftime,
+                  format='(f15.5,2f7.1,i3,i3,i6,i6,i6,i6)' 
                         
                ;Find interarrival time
                inttime=(b.elaptime[i]-lastelaptime)/1.0e9
