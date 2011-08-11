@@ -64,7 +64,7 @@ void GenerateProbeListADS3()
   for (size_t i = 0; pmsList[i].label; ++i) {
     for (size_t j = 0; j < raw.size(); ++j) {
       if (strstr(raw[j]->name, pmsList[i].suffix)) {
-        char *p = strchr(raw[j]->name, '_');
+        char *p = strrchr(raw[j]->name, '_');
 
         if (p) {
           struct probelist t;

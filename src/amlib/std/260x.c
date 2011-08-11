@@ -67,7 +67,7 @@ void c260xInit(var_base *varp)
     fprintf(stderr, "260X.c: Exceeded maximum number of 260X probes, change amlib.h.\n"); exit(1);
     }
 
-  p = strchr(varp->name, '_');
+  p = strrchr(varp->name, '_');
   setProbeCount(p, nProbes++);
 
   serialNumber = varp->SerialNumber.c_str();
