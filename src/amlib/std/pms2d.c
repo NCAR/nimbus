@@ -175,7 +175,7 @@ void sTwodInit(var_base *varp)
     cell_size3[probeNum][i] = cell_size2[probeNum][i] * cell_size[probeNum][i];
     }
 
-  if (strstr(varp->name, "2D"))  /* 2DC only (not 1DC). */
+  if (strstr(varp->name, "2D"))  /* 2DC/P only (not 1DC/P). */
     {
     for (i = 0; i < length; ++i)
       eaw[i] = (resolution / 1000) * nDiodes;
