@@ -33,7 +33,7 @@ static void setSerialNumberAndProbeType(const char * name, const char * serialNu
   char tmp[64], * location;
 
   strcpy(tmp, name); tmp[0] = 'C';
-  if (strchr(name, '_'))	// If this is a specific probe & location.
+  if (strrchr(name, '_'))	// If this is a specific probe & location.
   {
     raw_indx = SearchTable(raw, name);
     der_indx = SearchTable(derived, tmp);

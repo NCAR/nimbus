@@ -60,7 +60,7 @@ void cf300Init(var_base *varp)
     fprintf(stderr, "f300.c: Exceeded maximum number of F300 probes, change amlib.h.\n"); exit(1);
     }
 
-  p = strchr(varp->name, '_');
+  p = strrchr(varp->name, '_');
   setProbeCount(p, nProbes++);
 
   serialNumber = varp->SerialNumber.c_str();

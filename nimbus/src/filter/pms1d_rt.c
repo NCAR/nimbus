@@ -84,7 +84,7 @@ void SetUpPMS1D_SHMEM()
     if (PMS1Dprobe[i].type == FSSP)
       {
       strcpy(target, RANGE_NAME);
-      strcat(target, strchr((char *)PMS1Dprobe[i].name, '_'));
+      strcat(target, strrchr((char *)PMS1Dprobe[i].name, '_'));
       strcpy((char *)PMS1Dprobe[i].rangeName, target);
 
 /*    range[i] = raw[SearchTable(raw, target)]; */
@@ -135,7 +135,7 @@ float *SetPMS1DnetCDF(char name[], int length)
       PMS1Dprobe[pcnt].type = FSSP;
       strcpy(PMS1Dprobe[pcnt].SerialNumber, "FSSP_DEF");
       strcpy(PMS1Dprobe[pcnt].rangeName, RANGE_NAME);
-      strcat(PMS1Dprobe[pcnt].rangeName, strchr(name, '_'));
+      strcat(PMS1Dprobe[pcnt].rangeName, strrchr(name, '_'));
       }
     else
     if (memcmp(&name[1], "F300", 4) == 0)

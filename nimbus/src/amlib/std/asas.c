@@ -48,7 +48,7 @@ void casasInit(var_base *varp)
     fprintf(stderr, "asas.c: Exceeded maximum number of ASAS/PCASP/UHSAS probes, change amlib.h.\n"); exit(1);
     }
 
-  p = strchr(varp->name, '_');
+  p = strrchr(varp->name, '_');
   setProbeCount(p, nProbes++);
 
   serialNumber = varp->SerialNumber.c_str();

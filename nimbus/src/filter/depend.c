@@ -60,7 +60,7 @@ void ReadDependencies()
     }
     else
     {
-      if ((s = strchr(name, '_')) != NULL)
+      if ((s = strrchr(name, '_')) != NULL)
         *s = '\0';
 
       s = SearchList(dependlist, name);
@@ -112,7 +112,7 @@ static void setupDependencies(bool set_depends)
 
     strcpy(name, dp->name);
 
-    if ((s = strchr(name, '_')) != NULL)
+    if ((s = strrchr(name, '_')) != NULL)
     {
       strcpy(location, s);
       *s = '\0';

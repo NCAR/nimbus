@@ -75,7 +75,7 @@ void cfsspInit(var_base *varp)
     fprintf(stderr, "fssp.c: Exceeded maximum number of FSSP probes, change amlib.h.\n"); exit(1);
     }
 
-  p = strchr(varp->name, '_');
+  p = strrchr(varp->name, '_');
   setProbeCount(p, nProbes++);
 
   serialNumber = varp->SerialNumber.c_str();

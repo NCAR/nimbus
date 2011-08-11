@@ -403,7 +403,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
 
     char name[64];
     strcpy(name, var->getName().c_str());
-    char * p = strchr(name, '_');
+    char * p = strrchr(name, '_');
     if (p)
     {
       strcpy(location, p);

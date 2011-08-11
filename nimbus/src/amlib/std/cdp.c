@@ -51,7 +51,7 @@ void ccdpInit(var_base *varp)
     fprintf(stderr, "cdp.c: %s has no serial number, fatal.\n", varp->name); exit(1);
     }
 
-  p = strchr(varp->name, '_');
+  p = strrchr(varp->name, '_');
   setProbeCount(p, nProbes++);
 
   serialNumber = varp->SerialNumber.c_str();
