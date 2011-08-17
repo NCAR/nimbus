@@ -8,6 +8,7 @@ FUNCTION sid_reject, a, tof, endbins, inttime, intbins, nsat, maxsaturated, tas,
    IF (a.n lt 20) THEN reject=1                         ;Required number of detectors to have a positive reading
    IF (inttime lt intbins[0]) or (inttime gt max(intbins)) THEN reject=2 ;Out of intbins range
    IF (a.size lt endbins[0]) or (a.size gt max(endbins)) THEN reject=3   ;Out of endbins range
+   IF (a.branches eq 1) THEN reject=4                   ;Vignettes
    IF nsat gt maxsaturated THEN reject=5                ;Too many saturated detectors
    IF tof le 550 THEN reject=6                          ;Get rid of extremely short TOF (minimum possible is 550)
    IF speedreject THEN BEGIN
