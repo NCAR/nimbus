@@ -34,7 +34,7 @@ int usage(char *argv0)
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
-  int		argIndx = 1;
+  int	argIndx = 1;
 
   if (argc < 3)
     return usage(argv[0]);
