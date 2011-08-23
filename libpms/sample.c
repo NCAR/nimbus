@@ -1,20 +1,22 @@
 #include <stdio.h>
 #include "pms.h"
 
-main()
+int main()
 {
-	char	*p;
+  char	*p;
 
-	InitPMSspecs("/jnet/shared/dev/libpms/PMSspecs.v3");
+  InitPMSspecs("/home/local/raf/libpms/PMSspecs.v3");
 
-	if ((p = GetPMSparameter("PCAS108", "CELL_SIZE")) == NULL)
-		{
-		printf("Not found.\n");
-		exit(1);
-		}
+  if ((p = GetPMSparameter("PCAS108", "CELL_SIZE")) == NULL)
+  {
+    printf("Not found.\n");
+    return 1;
+  }
 
-	printf("%s\n", p);
+  printf("%s\n", p);
 
-	ReleasePMSspecs();
+  ReleasePMSspecs();
+
+  return 0;
 
 }
