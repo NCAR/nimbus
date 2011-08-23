@@ -8,7 +8,7 @@ TARGET =
 DESTDIR = /opt/local/bin
 DEPENDPATH += .
 INCLUDEPATH += .
-LIBS += -lnetcdf_c++
+LIBS += -lnetcdf_c++ -lhdf5 -lhdf5_hl
 
 # Input
 SOURCES += nc2iwg1.cc
