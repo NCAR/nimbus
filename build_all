@@ -109,6 +109,16 @@ foreach file ( asc2cdf flt_time nc_compare ncReorder ncav ncextr ncfillvar ncmer
     reset
   endif
 end
+
+# Qt / qmake
+foreach file ( nc2iwg1 )
+  (cd $file; echo $file; qmake; make)
+  if ($num > 0) then
+    echo "$file BUILT"
+    sleep $num
+    reset
+  endif
+end
 cd ..
 
 

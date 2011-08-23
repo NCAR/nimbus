@@ -5,6 +5,7 @@
 QT += network
 TEMPLATE = app
 TARGET = 
+DESTDIR = /opt/local/bin
 DEPENDPATH += .
 INCLUDEPATH += .
 LIBS += -lnetcdf_c++
