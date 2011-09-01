@@ -16,7 +16,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2004-11
 -------------------------------------------------------------------------
 */
 
-#include <netcdf.hh>
+#include <netcdfcpp.h>
 
 #include <cstring>
 
