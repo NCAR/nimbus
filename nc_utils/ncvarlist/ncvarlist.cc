@@ -49,12 +49,12 @@ main(int argc, char *argv[])
     return 1;
   }
 
-  putenv((char *)"TZ=UTC");     // Perform all time calculations at UTC.
   NcError * ncErr = new NcError(NcError::silent_nonfatal);
 
   NcAtt *att;
   cout << argv[argc-1] << endl;
   
+  // Output some basic info about the file.
   att = inFile.get_att("project");
   if (att) cout << att->as_string(0);
   att = inFile.get_att("FlightNumber");
@@ -65,20 +65,24 @@ main(int argc, char *argv[])
 
   size_t longestName = 0, longestUnits = 0;
 
-  vector<NcVar *> var;
-  for (int i = 0; i < inFile.num_vars(); ++i)
+  // Go through var list and determine longest name and units for pretty print.
+  if (!csv)
   {
-    NcVar *var = inFile.get_var(i);
-
-    if (i > 0 && var)
+    for (int i = 0; i < inFile.num_vars(); ++i)
     {
-      longestName = max(longestName, strlen(var->name()));
-      att = var->get_att("units");
-      if (att) longestUnits = max(longestUnits, strlen(att->as_string(0)));
+      NcVar *var = inFile.get_var(i);
+
+      if (i > 0 && var)
+      {
+        longestName = max(longestName, strlen(var->name()));
+        att = var->get_att("units");
+        if (att) longestUnits = max(longestUnits, strlen(att->as_string(0)));
+      }
     }
   }
 
 
+  // Output.
   for (int i = 0; i < inFile.num_vars(); ++i)
   {
     NcVar *var = inFile.get_var(i);
