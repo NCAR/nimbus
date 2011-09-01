@@ -88,7 +88,7 @@ end
 
 # Programs using "scons".
 
-foreach file ( nimbus GoogleEarth/acTrack2kml instruments/pms2d/process2d instruments/sid2h )
+foreach file ( nimbus GoogleEarth/acTrack2kml instruments/pms2d/process2d instruments/sid2h nc_utils/ncReorder nc_utils/ncvarlist)
   (cd $file; echo $file; scons install)
   if ($num > 0) then
     echo "$file BUILT"
@@ -101,7 +101,7 @@ end
 # Programs with "install" target.
 
 cd nc_utils
-foreach file ( asc2cdf flt_time nc_compare ncReorder ncav ncextr ncfillvar ncmerge nc_sane )
+foreach file ( asc2cdf flt_time nc_compare ncav ncextr ncfillvar ncmerge nc_sane )
   (cd $file; echo $file; make install)
   if ($num > 0) then
     echo "$file BUILT"
