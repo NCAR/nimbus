@@ -1,44 +1,28 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:  cvi.c
+OBJECT NAME:	cvi.c
 
-FULL NAME:  Calculate flow out CVI tip (slpm)
+FULL NAME:	Calculate flow out CVI tip (slpm)
 
-ENTRY POINTS:  scvl()
-    scvfcc()
-    scvf2c()
-    scvfhc()
-    scvfxc()
-    scvcnc()
-    scvcno()
-    scfact()
-    scvs4()
-    scvs7()
-    srhcv()
+ENTRY POINTS:	scvl()
+		scvfcc()
+		scvf2c()
+		scvfhc()
+		scvfxc()
+		scvcnc()
+		scvcno()
+		scfact()
+		scvs4()
+		scvs7()
+		srhcv()
+		sconcud()	// 2006 and later CVI.
 
-STATIC FNS:  TempCorrection()
+STATIC FNS:	TempCorrection()
 
-DESCRIPTION:  
+DESCRIPTION:  	Most of these functions are for the original CVI.  concud
+		variable is derived for the new CVI, flown VOCALS and forward.
 
-INPUT:    cvf1 - raw cvi flow 1
-    cvf2 - raw cvi flow 2
-    cvfcn - raw cvi ?
-    cvfh - raw cvi supply flow
-    cvtt - raw cvi tip temperature
-    cvpcn - raw cvi ?
-    cvtemp - raw cvi temperature (from TEMP2 or etc)
-    cvcnt - raw cvi counts
-    tasx - derived true airspeed
-    psxc - derived static pressure
-    qcxc - derived dynamic pressure
-
-OUTPUT:    xcvl - derived distance to stagnation plane
-
-REFERENCES:  none
-
-REFERENCED BY:  ComputeDerived()
-
-COPYRIGHT:  University Corporation for Atmospheric Research, 1994,1998
+COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2011
 -------------------------------------------------------------------------
 */
 
@@ -47,7 +31,6 @@ COPYRIGHT:  University Corporation for Atmospheric Research, 1994,1998
 
 #define CVR4  4e-4
 #define CVR7  7e-4
-#define PI  M_PI  /* defined in math.h  */
 #define RHOD  1.0
 
 static NR_TYPE  cvs7;
@@ -62,6 +45,13 @@ static NR_TYPE  CVTBL = 7.62,
                 CVOFF = 0.0,
                 CVDIV = 1.0;
 
+/* This constant was 1.2 for the VOCALS project.  Subsequent projects (PREDICT
+ * and ICE-T) that have the pressure gauge that Darrin Toohey installed should
+ * pass in two more variables and perform the correction that does not use this
+ * value (see below).  cjw, Aug 2011
+ */
+static const NR_TYPE concud_fudge_factor = 1.2;
+
 /* -------------------------------------------------------------------- */
 void cviInit(var_base *varp)
 {
@@ -73,7 +63,6 @@ void cviInit(var_base *varp)
   }
   else
     CVTBL = tmp[0];
-/*  CVTBL = (GetDefaultsValue("CVTBL", varp->name))[0];  <-- original code */
 
   if ((tmp = GetDefaultsValue("CVTBR", varp->name)) == NULL)
   {
@@ -82,7 +71,6 @@ void cviInit(var_base *varp)
   }
   else
     CVTBR = tmp[0];
-/*  CVTBR = (GetDefaultsValue("CVTBR", varp->name))[0];  <-- original code */
 
   if ((tmp = GetDefaultsValue("CVOFF", varp->name)) == NULL)
   {
@@ -91,7 +79,6 @@ void cviInit(var_base *varp)
   }
   else
     CVOFF = tmp[0];
-/*  CVOFF = (GetDefaultsValue("CVOFF", varp->name))[0];  <-- original code */
 
   if ((tmp = GetDefaultsValue("CVDIV", varp->name)) == NULL)
   {
@@ -100,21 +87,31 @@ void cviInit(var_base *varp)
   }
   else
     CVDIV = tmp[0];
-/*  CVDIV = (GetDefaultsValue("CVDIV", varp->name))[0];  <-- original code */
 
 }  /* END CVIINIT */
 
 /* -------------------------------------------------------------------- */
 void sconcud(DERTBL *varp)
 {
-  // Routine for VOCALS.
-  NR_TYPE  cnts, flow, cvcfact;
+  // Routine for VOCALS and subsequent projects.
 
-  cnts  = GetSample(varp, 0);
-  cvcfact  = GetSample(varp, 1);
-  flow  = GetSample(varp, 2);
+  NR_TYPE cnts = GetSample(varp, 0);
+  NR_TYPE cvcfact = GetSample(varp, 1);
+  NR_TYPE flow = GetSample(varp, 2);
 
-  PutSample(varp, 1.2 * cnts / (flow * cvcfact));
+  NR_TYPE concud = cnts / (flow * cvcfact);
+
+  if (varp->ndep == 5)
+  {
+    NR_TYPE cvpcn = GetSample(varp, 3);
+    NR_TYPE upress = GetSample(varp, 4);
+
+    concud *= (cvpcn / upress);
+  }
+  else
+    concud *= concud_fudge_factor;	// VOCALS. cjw, Aug2011
+  
+  PutSample(varp, concud);
 
 }  /* END SCONCUD */
 
@@ -126,7 +123,7 @@ void scvl(DERTBL *varp)
 
   cvf1  = GetSample(varp, 0);
   cvf2  = GetSample(varp, 1);
-  cvfcn  = GetSample(varp, 2);
+  cvfcn = GetSample(varp, 2);
   cvfh  = GetSample(varp, 3);
   cvfx  = GetSample(varp, 4);
 
@@ -248,7 +245,7 @@ void scfact(DERTBL *varp)
   if (cvftv < 0.0)
     cvftv = 0.001;
 
-  cfact = (tascc * PI * pow(CVTBR, 2.0)) / (cvftv * 1000.0 / 60.0);
+  cfact = (tascc * M_PI * pow(CVTBR, 2.0)) / (cvftv * 1000.0 / 60.0);
 
   PutSample(varp, cfact);
 
@@ -291,7 +288,7 @@ void scvs4(DERTBL *varp)
   else
     cvs4 = CVR4 * EXP_M1P5 * RHOD *
       (pow(re4, 0.333333) * EXP_P5 +
-      atan(pow(re4, -0.333333) * EXP_MP5) - 0.5 * PI) /
+      atan(pow(re4, -0.333333) * EXP_MP5) - 0.5 * M_PI) /
       (3.0 * rhoa);
 
 
@@ -304,7 +301,7 @@ void scvs4(DERTBL *varp)
   else
     cvs7 = CVR7 * EXP_M1P5 * RHOD * (pow(re7, 0.333333) *
       EXP_P5 + atan(pow(re7, -0.333333) *
-      EXP_MP5) - 0.5 * PI) / (3.0 * rhoa);
+      EXP_MP5) - 0.5 * M_PI) / (3.0 * rhoa);
 
   PutSample(varp, cvs4);
 
