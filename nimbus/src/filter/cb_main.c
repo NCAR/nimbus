@@ -1006,9 +1006,12 @@ XmString CreateListLineItem(var_base *pp, int var_type)
 void FillListWidget()
 {
   static int	firstTime = true;
-  XmString	items[MAX_VARIABLES];
+
+  if (cfg.Interactive() == false)
+    return;
 
   size_t cnt = 0;
+  XmString items[MAX_VARIABLES];
 
   for (size_t i = 0; i < raw.size(); ++i)
     items[cnt++] = CreateListLineItem(raw[i], RAW);
