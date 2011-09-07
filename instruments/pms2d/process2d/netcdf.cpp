@@ -259,7 +259,7 @@ NcVar *netCDF::addHistogram(string& varname, string& serialNumber)
 
   if ((var = _file->get_var(varname.c_str())) == 0)
   {
-    if ((var = _file->add_var(varname.c_str(), ncFloat, _timedim, _bindim_plusone)))
+    if ((var = _file->add_var(varname.c_str(), ncFloat, _timedim, _spsdim, _bindim_plusone)))
     {
       var->add_att("_FillValue", (float)(-32767.0));
       var->add_att("units", VarDB_GetUnits(varname.c_str()));
