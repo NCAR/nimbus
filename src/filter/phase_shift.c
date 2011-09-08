@@ -217,6 +217,20 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
   }
 
 
+  // If x (time) values go backwards, then skip this.
+  // Occasional ARINC time data is goofy.
+  for (size_t i = 1; i < goodPoints; ++i)
+  {
+    if (x[i] < x[i-1])
+    {
+    printf("Non-monotonic increasing time values: %s (%d/%d): \n", vp->name, i, goodPoints);
+//    for (size_t j = 0; j < goodPoints; ++j)
+//      printf("%d, %f\n", (int)x[j], y[j]);
+    return;
+    }
+  }
+
+
   gsl_interp_accel *acc = gsl_interp_accel_alloc();
   gsl_interp *linear = 0;
   gsl_spline *spline = 0;
