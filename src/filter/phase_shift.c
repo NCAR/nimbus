@@ -223,7 +223,8 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
   {
     if (x[i] < x[i-1])
     {
-    printf("Non-monotonic increasing time values: %s (%d/%d): \n", vp->name, i, goodPoints);
+    sprintf(buffer, "Non-monotonically increasing time values: %s (%d/%d).", vp->name, i, goodPoints);
+    LogThisRecordMsg(this_rec, buffer);
 //    for (size_t j = 0; j < goodPoints; ++j)
 //      printf("%d, %f\n", (int)x[j], y[j]);
     return;
