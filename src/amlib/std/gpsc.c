@@ -466,16 +466,15 @@ static NR_TYPE filter(double x, double zf[])
 
   if (firstTime[FeedBack])
     {
-    double	b1, b2, c, c2, e, f;
+    double	b1, b2, c, e, f;
 
     if (FeedBack == HIGH_RATE_FEEDBACK)
       TAU *= (float)cfg.ProcessingRate();
 
     a[FeedBack]	= 2.0 * M_PI / TAU;
-    b1		= sqrt(3.0) / 2.0;
+    b1		= sqrt(3.0 / 2.0);
     b2		= sqrt(1.0 / 3.0);
     c		= exp(-0.5 * a[FeedBack]);
-    c2		= c * 2.0;
     e		= a[FeedBack] * b1;
     f		= c * (cos(e) + b2 * sin(e));
     a2[FeedBack]= a[FeedBack] * f;
