@@ -83,6 +83,7 @@ void swi(DERTBL *varp)
     ux[probeCnt] = floatNAN;
     vy[probeCnt] = floatNAN;
     wi = floatNAN;
+    PutSample(varp, wi);
     return;
     }
 
