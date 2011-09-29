@@ -352,7 +352,9 @@ int DecodeHeader3(const char header_file[])
   }
   catch(const nidas::util::Exception& e) {
     PLOG(("Error reading sync record:") << e.what());
-    return ERR;
+    fprintf(stderr, "Fatal error: syncRecReader->getVariables() failed.\n");
+    fprintf(stderr, "  Check XML file, space in project name?  Check units for odd characters.\n");
+    exit(1);
   }
 
   cfg.SetProjectNumber(syncRecReader->getProjectName());
