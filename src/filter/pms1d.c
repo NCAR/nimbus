@@ -181,6 +181,14 @@ void PMS1D_SetupForADS3()
     setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
   }
   else
+  if (cfg.ProjectName().compare("IDEAS-4") == 0)
+  {
+    setSerialNumberAndProbeType("A1DC_LPI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC_LPI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A1DC_LPC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC_LPC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+  }
+  else
   if (cfg.ProjectName().compare("ICE-T") == 0)
   {
     if (cfg.FlightNumber().compare("ff01") >= 0) 
