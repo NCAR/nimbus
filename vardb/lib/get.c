@@ -6,7 +6,7 @@ FULL NAME:	VarDB_Get* functions
 
 DESCRIPTION:	
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2011
 -------------------------------------------------------------------------
 */
 
@@ -20,7 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
 static struct var_v2 defaults =
 	{
 	"", "Unk", "Unk", "No title",
-	FLOATING, {0.0, 100.0}, 200.0, 0.0, 0.0, {0.0, 0.0}, 0, 0, 0
+	false, {-10, 10}, 100.0, 0.0, 0.0, {0.0, 0.0}, 0, 0, 0
 	};
 
 static const float default_FillValue = -32767.0;
@@ -103,7 +103,7 @@ const char *VarDB_GetDependencies(const char vn[])
 }	/* END VARDB_GETDEPENDENCIES */
 
 /* -------------------------------------------------------------------- */
-int VarDB_isRangeFixed(const char vn[])
+bool VarDB_isAnalog(const char vn[])
 {
   int	indx;
   long	type;
@@ -114,63 +114,45 @@ int VarDB_isRangeFixed(const char vn[])
   if (VarDB_NcML > 0)	// Not really supported under ADS3.
     return FALSE;
 
-  type = ntohl(((struct var_v2 *)VarDB)[indx].type);
+  type = ntohl(((struct var_v2 *)VarDB)[indx].is_analog);
 
-  return(type == FIXED ? TRUE : FALSE);
+  return(type);
 
 }	/* END VARDB_ISRANGEFIXED */
 
 /* -------------------------------------------------------------------- */
-int VarDB_isRangeFloating(const char vn[])
-{
-  int	indx;
-  long	type;
-
-  if ((indx = VarDB_lookup(vn)) == ERR)
-    return(TRUE);
-
-  if (VarDB_NcML > 0)	// Not really supported under ADS3.
-    return FALSE;
-
-  type = ntohl(((struct var_v2 *)VarDB)[indx].type);
-
-  return(type == FLOATING ? TRUE : FALSE);
-
-}	/* END VARDB_ISRANGEFLOATING */
-
-/* -------------------------------------------------------------------- */
-float VarDB_GetFixedRangeLower(const char vn[])
+int32_t VarDB_GetVoltageRangeLower(const char vn[])
 {
   int	indx;
 
   if ((indx = VarDB_lookup(vn)) == ERR || VarDB_NcML > 0)
-    return(defaults.FixedRange[0]);
+    return(defaults.voltageRange[0]);
 
-  return(ntohf(((struct var_v2 *)VarDB)[indx].FixedRange[0]));
+  return(ntohl(((struct var_v2 *)VarDB)[indx].voltageRange[0]));
 
 }	/* END VARDB_GETFIXEDRANGELOWER */
 
 /* -------------------------------------------------------------------- */
-float VarDB_GetFixedRangeUpper(const char vn[])
+int32_t VarDB_GetVoltageRangeUpper(const char vn[])
 {
   int	indx;
 
   if ((indx = VarDB_lookup(vn)) == ERR || VarDB_NcML > 0)
-    return(defaults.FixedRange[1]);
+    return(defaults.voltageRange[1]);
 
-  return(ntohf(((struct var_v2 *)VarDB)[indx].FixedRange[1]));
+  return(ntohl(((struct var_v2 *)VarDB)[indx].voltageRange[1]));
 
 }	/* END VARDB_GETFIXEDRANGEUPPER */
 
 /* -------------------------------------------------------------------- */
-float VarDB_GetFloatRange(const char vn[])
+float VarDB_DefaultSampleRate(const char vn[])
 {
   int	indx;
 
   if ((indx = VarDB_lookup(vn)) == ERR || VarDB_NcML > 0)
-    return(defaults.FloatRange);
+    return(defaults.defaultSampleRate);
 
-  return(ntohf(((struct var_v2 *)VarDB)[indx].FloatRange));
+  return(ntohf(((struct var_v2 *)VarDB)[indx].defaultSampleRate));
 
 }	/* END VARDB_GETFLOATRANGE */
 

@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	ccb.c
 
-FULL NAME:	Command Callbacks
+FULL NAME:	Motif Command Callbacks
 
 ENTRY POINTS:	Quit()
 		OpenNewFile()
@@ -17,7 +17,7 @@ STATIC FNS:	none
 
 DESCRIPTION:	
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2011
 -------------------------------------------------------------------------
 */
 
@@ -39,7 +39,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2007
 static int	ChangesMade = FALSE, currentCategory = 0, currentStdName = 0;
 
 extern Widget	catXx, stdNameXx, catMenu, stdNameMenu, list, referenceButton,
-		EFtext[], fixedButton, floatButton;
+		EFtext[], analogButton;
 extern char	buffer[], FileName[], *catList[], *ProjectDirectory,
 		*stdNameList[];
 extern long	VarDB_nRecords, VarDB_RecLength;
@@ -56,7 +56,7 @@ void Quit(Widget w, XtPointer client, XtPointer call)
 {
   if (ChangesMade)
     {
-    WarnUser("You have not saved this file.", (XtCallbackProc)exit, NULL);
+    WarnUser((char *)"You have not saved this file.", (XtCallbackProc)exit, NULL);
     return;
     }
 
@@ -155,7 +155,7 @@ void OpenNewFile_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct
 
     n = 0;
     XtSetArg(args[n], XmNlabelString, name); ++n;
-    b[i] = XmCreatePushButton(catMenu, "opMenB", args, n);
+    b[i] = XmCreatePushButton(catMenu, (char *)"opMenB", args, n);
     XtAddCallback(b[i], XmNactivateCallback, SetCategory, (XtPointer)i);
 
     XmStringFree(name);
@@ -172,7 +172,7 @@ void OpenNewFile_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct
 
     n = 0;
     XtSetArg(args[n], XmNlabelString, name); ++n;
-    b[i] = XmCreatePushButton(stdNameMenu, "opMenB", args, n);
+    b[i] = XmCreatePushButton(stdNameMenu, (char *)"opMenB", args, n);
     XtAddCallback(b[i], XmNactivateCallback, SetStandardName, (XtPointer)i);
 
     XmStringFree(name);
@@ -190,7 +190,7 @@ void OpenNewFile_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct
 void OpenNewFile(Widget w, XtPointer client, XtPointer call)
 {
   sprintf(buffer, "%s/*", ProjectDirectory);
-  QueryFile("Enter file name to load:", buffer, (XtCallbackProc)OpenNewFile_OK);
+  QueryFile((char *)"Enter file name to load:", buffer, (XtCallbackProc)OpenNewFile_OK);
 
 }	/* END OPENNEWFILE */
 
@@ -203,7 +203,7 @@ void SaveFileAs_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct 
   FileCancel((Widget)NULL, (XtPointer)NULL, (XtPointer)NULL);
 
   if (SaveVarDB(file) == ERR)
-    ShowError("Error trying to save, aborted.");
+    ShowError((char *)"Error trying to save, aborted.");
   else
     ChangesMade = FALSE;
 
@@ -213,7 +213,7 @@ void SaveFileAs_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct 
 void SaveFileAs(Widget w, XtPointer client, XtPointer call)
 {
   strcpy(buffer, FileName);
-  QueryFile("Save as:", buffer, (XtCallbackProc)SaveFileAs_OK);
+  QueryFile((char *)"Save as:", buffer, (XtCallbackProc)SaveFileAs_OK);
 
 }	/* END SAVEFILEAS */
 
@@ -221,7 +221,7 @@ void SaveFileAs(Widget w, XtPointer client, XtPointer call)
 void SaveFile(Widget w, XtPointer client, XtPointer call)
 {
   if (SaveVarDB(FileName) == ERR)
-    ShowError("Error trying to save, aborted.");
+    ShowError((char *)"Error trying to save, aborted.");
   else
     ChangesMade = FALSE;
 
@@ -232,7 +232,9 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
 {
   int		pos, *pos_list, pcnt;
   float		fl;
-  static char	*format = "%.6f";
+  int32_t	lv;
+  static const char	*f_format = "%.6f";
+  static const char	*l_format = "%d";
 
   if (XmListGetSelectedPos(list, &pos_list, &pcnt) == FALSE)
     return;
@@ -248,48 +250,41 @@ void EditVariable(Widget w, XtPointer client, XmListCallbackStruct *call)
   XmTextFieldSetString(EFtext[2], ((struct var_v2 *)VarDB)[pos].Units);
   XmTextFieldSetString(EFtext[3], ((struct var_v2 *)VarDB)[pos].AlternateUnits);
 
-  fl = ntohf(((struct var_v2 *)VarDB)[pos].FixedRange[0]);
-  sprintf(buffer, format, fl);
+  lv = ntohl(((struct var_v2 *)VarDB)[pos].voltageRange[0]);
+  sprintf(buffer, l_format, lv);
   XmTextFieldSetString(EFtext[4], buffer);
 
-  fl = ntohf(((struct var_v2 *)VarDB)[pos].FixedRange[1]);
-  sprintf(buffer, format, fl);
+  lv = ntohl(((struct var_v2 *)VarDB)[pos].voltageRange[1]);
+  sprintf(buffer, l_format, lv);
   XmTextFieldSetString(EFtext[5], buffer);
 
-  fl = ntohf(((struct var_v2 *)VarDB)[pos].FloatRange);
-  sprintf(buffer, format, fl);
+  lv = ntohl(((struct var_v2 *)VarDB)[pos].defaultSampleRate);
+  sprintf(buffer, l_format, lv);
   XmTextFieldSetString(EFtext[6], buffer);
 
   fl = ntohf(((struct var_v2 *)VarDB)[pos].MinLimit);
-  sprintf(buffer, format, fl);
+  sprintf(buffer, f_format, fl);
   XmTextFieldSetString(EFtext[7], buffer);
 
   fl = ntohf(((struct var_v2 *)VarDB)[pos].MaxLimit);
-  sprintf(buffer, format, fl);
+  sprintf(buffer, f_format, fl);
   XmTextFieldSetString(EFtext[8], buffer);
 
   fl = ntohf(((struct var_v2 *)VarDB)[pos].CalRange[0]);
-  sprintf(buffer, format, fl);
+  sprintf(buffer, f_format, fl);
   XmTextFieldSetString(EFtext[9], buffer);
 
   fl = ntohf(((struct var_v2 *)VarDB)[pos].CalRange[1]);
-  sprintf(buffer, format, fl);
+  sprintf(buffer, f_format, fl);
   XmTextFieldSetString(EFtext[10], buffer);
 
-  switch (ntohl(((struct var_v2 *)VarDB)[pos].type))
+  if (ntohl(((struct var_v2 *)VarDB)[pos].is_analog))
     {
-    case FIXED:
-      XmToggleButtonSetState(fixedButton, TRUE, FALSE);
-      XmToggleButtonSetState(floatButton, FALSE, FALSE);
-      break;
-
-    case FLOATING:
-      XmToggleButtonSetState(fixedButton, FALSE, FALSE);
-      XmToggleButtonSetState(floatButton, TRUE, FALSE);
-      break;
-
-    default:
-      fprintf(stderr, "Impossible type.\n");
+    XmToggleButtonSetState(analogButton, true, false);
+    }
+  else
+    {
+    XmToggleButtonSetState(analogButton, false, false);
     }
 
   SetCategory(NULL, (XtPointer)ntohl(((struct var_v2 *)VarDB)[pos].Category), NULL);
@@ -308,6 +303,7 @@ void Accept(Widget w, XtPointer client, XtPointer call)
   int		i, pos, *pos_list, pcnt, firstVisPos;
   Arg		args[5];
   float		f;
+  int32_t	l;
 
 
   p = XmTextFieldGetString(EFtext[0]);
@@ -328,7 +324,7 @@ void Accept(Widget w, XtPointer client, XtPointer call)
     if ((tmp = (void *)realloc(VarDB, (unsigned)(VarDB_nRecords+1) *
 				(unsigned)VarDB_RecLength)) == NULL)
       {
-      ShowError("Memory allocation error, failed to ADD variable.");
+      ShowError((char *)"Memory allocation error, failed to ADD variable.");
       return;
       }
 
@@ -364,16 +360,16 @@ void Accept(Widget w, XtPointer client, XtPointer call)
   XtFree(p);
 
 
-  f = atof(p = XmTextFieldGetString(EFtext[4]));
-  (((struct var_v2 *)VarDB)[pos].FixedRange[0]) = htonf(f);
+  l = atoi(p = XmTextFieldGetString(EFtext[4]));
+  (((struct var_v2 *)VarDB)[pos].voltageRange[0]) = htonl(l);
   XtFree(p);
 
-  f = atof(p = XmTextFieldGetString(EFtext[5]));
-  (((struct var_v2 *)VarDB)[pos].FixedRange[1]) = htonf(f);
+  l = atoi(p = XmTextFieldGetString(EFtext[5]));
+  (((struct var_v2 *)VarDB)[pos].voltageRange[1]) = htonl(l);
   XtFree(p);
 
-  f = atof(p = XmTextFieldGetString(EFtext[6]));
-  (((struct var_v2 *)VarDB)[pos].FloatRange) = htonf(f);
+  l = atoi(p = XmTextFieldGetString(EFtext[6]));
+  (((struct var_v2 *)VarDB)[pos].defaultSampleRate) = htonl(l);
   XtFree(p);
 
   f = atof(p = XmTextFieldGetString(EFtext[7]));
@@ -392,10 +388,7 @@ void Accept(Widget w, XtPointer client, XtPointer call)
   (((struct var_v2 *)VarDB)[pos].CalRange[1]) = htonf(f);
   XtFree(p);
 
-  if (XmToggleButtonGetState(fixedButton) == TRUE)
-    ((struct var_v2 *)VarDB)[pos].type = htonl(FIXED);
-  else
-    ((struct var_v2 *)VarDB)[pos].type = htonl(FLOATING);
+  ((struct var_v2 *)VarDB)[pos].is_analog = htonl(XmToggleButtonGetState(analogButton));
 
   XmListDeleteAllItems(list);
 
@@ -426,7 +419,7 @@ void Clear(Widget w, XtPointer client, XtPointer call)
   int	i;
 
   for (i = 0; i < 11; ++i)
-    XmTextFieldSetString(EFtext[i], "");
+    XmTextFieldSetString(EFtext[i], (char *)"");
 
   SetCategory(NULL, 0, NULL);
   SetStandardName(NULL, 0, NULL);
@@ -441,7 +434,7 @@ void Delete(Widget w, XtPointer client, XtPointer call)
 
   if (XmListGetSelectedPos(list, &pos_list, &pcnt) == FALSE)
     {
-    ShowError("No variable selected to delete.");
+    ShowError((char *)"No variable selected to delete.");
     return;
     }
 

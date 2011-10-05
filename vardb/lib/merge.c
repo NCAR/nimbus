@@ -60,17 +60,10 @@ int CreateVarDB(const char Bull9_name[], const char Pattr_name[])
     strcpy(vdb[cnt]->Title, "No title");
     strcpy(vdb[cnt]->AlternateUnits, "");
 
-    if (f1 < 0.0)
-      {
-      vdb[cnt]->type = FLOATING;
-      vdb[cnt]->FloatRange = f1;
-      }
-    else
-      {
-      vdb[cnt]->type = FIXED;
-      vdb[cnt]->FixedRange[0] = f2;
-      vdb[cnt]->FixedRange[1] = f2 + f1;
-      }
+    vdb[cnt]->is_analog = false;
+    vdb[cnt]->voltageRange[0] = -10;
+    vdb[cnt]->voltageRange[1] = 10;
+    vdb[cnt]->defaultSampleRate = 100;
     }
 
 
@@ -96,17 +89,10 @@ int CreateVarDB(const char Bull9_name[], const char Pattr_name[])
 
       strcpy(vdb[cnt]->AlternateUnits, "");
 
-      if (f1 < 0.0)
-        {
-        vdb[cnt]->type = FLOATING;
-        vdb[cnt]->FloatRange = f1;
-        }
-      else
-        {
-        vdb[cnt]->type = FIXED;
-        vdb[cnt]->FixedRange[0] = f2;
-        vdb[cnt]->FixedRange[1] = f2 + f1;
-        }
+      vdb[cnt]->is_analog = false;
+      vdb[cnt]->voltageRange[0] = -10;
+      vdb[cnt]->voltageRange[1] = 10;
+      vdb[cnt]->defaultSampleRate = 100;
 
       ++cnt;
       }

@@ -2,11 +2,11 @@
 -------------------------------------------------------------------------
 OBJECT NAME:	vardb.h
 
-FULL NAME:		Variable DataBase header file
+FULL NAME:	Variable DataBase header file
 
 DESCRIPTION:	
 
-COPYRIGHT:		University Corporation for Atmospheric Research, 1993-95
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2011
 -------------------------------------------------------------------------
 */
 
@@ -64,9 +64,9 @@ struct var_v2
 	char	AlternateUnits[VARDB_UL];
 	char	Title[VARDB_TL];
 
-	int32_t	type;			/* FIXED or FLOATING	*/
-	float	FixedRange[2];
-	float	FloatRange;
+	int32_t	is_analog;	/* bool true/false if analog channel */
+	int32_t	voltageRange[2];
+	int32_t	defaultSampleRate;
 	float	MinLimit;
 	float	MaxLimit;
 
@@ -107,9 +107,7 @@ int	InitializeVarDB(const char fileName[]),
 	VarDB_GetCategoryList(char *list[]),
 	VarDB_GetStandardName(const char vn[]),
 	VarDB_GetStandardNameNumber(const char catagoryName[]),
-	VarDB_GetStandardNameList(char *list[]),
-	VarDB_isRangeFixed(const char vn[]),
-	VarDB_isRangeFloating(const char vn[]);
+	VarDB_GetStandardNameList(char *list[]);
 
 void	SortVarDB(), ReleaseVarDB(), SetCategoryFileName(const char fn[]),
 	SetStandardNameFileName(const char fn[]);
@@ -124,14 +122,17 @@ float	VarDB_GetFixedRangeLower(const char vn[]),
 	VarDB_GetCalRangeUpper(const char vn[]),
 	VarDB_GetSpikeSlope(const char vn[]);
 
+bool	VarDB_isAnalog(const char vn[]);
+//	VarDB_isRangeFixed(const char vn[]),
+//	VarDB_isRangeFloating(const char vn[]);
+
 int	VarDB_SetUnits(const char vn[], char units[]),
 	VarDB_SetAlternateUnits(const char vn[], char units[]),
 	VarDB_SetTitle(const char vn[], char title[]),
-	VarDB_SetRangeFixed(const char vn[]),
-	VarDB_SetRangeFloating(const char vn[]),
-	VarDB_SetFixedRangeLower(const char vn[], float value),
-	VarDB_SetFixedRangeUpper(const char vn[], float value),
-	VarDB_SetFloatRange(const char vn[], float value),
+	VarDB_SetIsAnalog(const char vn[], bool value),
+	VarDB_SetVoltageRangeLower(const char vn[], int32_t value),
+	VarDB_SetVoltageRangeUpper(const char vn[], int32_t value),
+	VarDB_SetDefaultSampleRate(const char vn[], int32_t value),
 	VarDB_SetMinLimit(const char vn[], float value),
 	VarDB_SetMaxLimit(const char vn[], float value),
 	VarDB_SetCalRangeLower(const char vn[], float value),

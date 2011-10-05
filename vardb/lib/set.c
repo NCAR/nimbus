@@ -70,66 +70,53 @@ int VarDB_SetTitle(const char vn[], char title[])
 }	/* END VARDB_SETTITLE */
 
 /* -------------------------------------------------------------------- */
-int VarDB_SetRangeFixed(const char vn[])
+int VarDB_SetIsAnalog(const char vn[], bool analog)
 {
   int	indx;
 
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(ERR);
 
-  ((struct var_v2 *)VarDB)[indx].type = htonl(FIXED);
+  ((struct var_v2 *)VarDB)[indx].is_analog = htonl(analog);
   return(OK);
 
-}	/* END VARDB_ISRANGEFIXED */
+}	/* END VARDB_ISANALOG */
 
 /* -------------------------------------------------------------------- */
-int VarDB_SetRangeFloating(const char vn[])
+int VarDB_SetVoltageRangeLower(const char vn[], int32_t value)
 {
   int	indx;
 
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(ERR);
 
-  ((struct var_v2 *)VarDB)[indx].type = htonl(FLOATING);
-  return(OK);
-
-}	/* END VARDB_ISRANGEFIXED */
-
-/* -------------------------------------------------------------------- */
-int VarDB_SetFixedRangeLower(const char vn[], float value)
-{
-  int	indx;
-
-  if ((indx = VarDB_lookup(vn)) == ERR)
-    return(ERR);
-
-  ((struct var_v2 *)VarDB)[indx].FixedRange[0] = htonf(value);
+  ((struct var_v2 *)VarDB)[indx].voltageRange[0] = htonl(value);
   return(OK);
 
 }	/* END VARDB_SETFIXEDRANGELOWER */
 
 /* -------------------------------------------------------------------- */
-int VarDB_SetFixedRangeUpper(const char vn[], float value)
+int VarDB_SetVoltageRangeUpper(const char vn[], int32_t value)
 {
   int	indx;
 
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(ERR);
 
-  ((struct var_v2 *)VarDB)[indx].FixedRange[1] = htonf(value);
+  ((struct var_v2 *)VarDB)[indx].voltageRange[1] = htonl(value);
   return(OK);
 
 }	/* END VARDB_SETFIXEDRANGEUPPER */
 
 /* -------------------------------------------------------------------- */
-int VarDB_SetFloatRange(const char vn[], float value)
+int VarDB_SetDefaultSampleRate(const char vn[], int32_t value)
 {
   int	indx;
 
   if ((indx = VarDB_lookup(vn)) == ERR)
     return(ERR);
 
-  ((struct var_v2 *)VarDB)[indx].FloatRange = htonf(value);
+  ((struct var_v2 *)VarDB)[indx].defaultSampleRate = htonl(value);
   return(OK);
 
 }	/* END VARDB_SETFLOATRANGE */
