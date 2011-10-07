@@ -164,15 +164,15 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend, finalprocessing=f
          END
          'LWC':BEGIN
              attvalue={a1:'SID-2H Liquid Water Content',a2:'gram/m3'}
-             tagname='PLWC'+suffix
+             tagname='PLWCS'+suffix
          END
          'LWC_ROUND': BEGIN
              attvalue={a1:'SID-2H Liquid Water Content, Round Particles',a2:'gram/m3'}
-             tagname='PLWC_ROUND'+suffix
+             tagname='PLWCS_ROUND'+suffix
          END
          'LWC_IRREG': BEGIN
              attvalue={a1:'SID-2H Liquid Water Content, Irregular Particles',a2:'gram/m3'}
-             tagname='PLWC_IRREG'+suffix
+             tagname='PLWCS_IRREG'+suffix
          END
          'MVD':BEGIN
             attvalue={a1:'SID-2H Median Volume Diameter',a2:'um'}
@@ -185,20 +185,23 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend, finalprocessing=f
          END
          'MND':BEGIN
             attvalue={a1:'SID-2H Mean Diameter',a2:'um'}
+            tagname='DBARS'+suffix
          END
          'MND_ROUND':BEGIN
             attvalue={a1:'SID-2H Mean Diameter, Round Particles',a2:'um'}
+            tagname='DBARS_ROUND'+suffix
          END
          'MND_IRREG':BEGIN
             attvalue={a1:'SID-2H Mean Diameter, Irregular Particles',a2:'um'}
+            tagname='DBARS_IRREG'+suffix
          END
          'TRANSITTIME': BEGIN
             attvalue={a1:'SID-2H Average transit time',a2:'s'}
             tagname='AVGTRNS'+suffix
-            IF finalprocessing THEN skiptag=1
          END
          'MEANAF':BEGIN
             attvalue={a1:'SID-2H Mean asphericity',a2:'none'}
+            tagname='ASPH'+suffix
             IF finalprocessing THEN skiptag=1
          END
          'MISSED':BEGIN
@@ -236,17 +239,17 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend, finalprocessing=f
          'NT': BEGIN
             attvalue={a1:'SID-2H Total Number Concentration',a2:'#/cm3'}
             unitadjust=1.0e-6
-            tagname='CONC'+suffix
+            tagname='CONCS'+suffix
          END
          'NT_ROUND': BEGIN
             attvalue={a1:'SID-2H Total Number Concentration, Round Particles',a2:'#/cm3'}
             unitadjust=1.0e-6
-            tagname='CONC_ROUND'+suffix
+            tagname='CONCS_ROUND'+suffix
          END
          'NT_IRREG': BEGIN
             attvalue={a1:'SID-2H Total Number Concentration, Irregular Particles',a2:'#/cm3'}
             unitadjust=1.0e-6
-            tagname='CONC_IRREG'+suffix
+            tagname='CONCS_IRREG'+suffix
          END
          'CONC1D': BEGIN
             attname=['_FillValue','long_name','units','FirstBin','LastBin','CellSizes','CellSizeUnits','Category']
