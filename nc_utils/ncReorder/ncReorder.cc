@@ -141,6 +141,11 @@ int main(int argc, char *argv[])
 		(const int *)att->values()->base());
           break;
 
+        case ncShort:
+          outFile.get_var(i)->add_att(att->name(), att->num_vals(),
+		(const short *)att->values()->base());
+          break;
+
         default:
           cerr << "Currently unsupported data type in var attr transfer; ";
           cerr << var->name() << ":" << att->name() << endl;
