@@ -23,7 +23,7 @@ extern NR_TYPE	*HighRateData, *AveragedData, *SampledData;
 /* -------------------------------------------------------------------- */
 static void _findMinMax(var_base * vp, const NR_TYPE * value, size_t n)
 {
-  double min, max;
+  double min = vp->min, max = vp->max;
 
   for (size_t i = 0; i < n; ++i) {
     if (!isnan(value[i])) {
