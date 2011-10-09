@@ -55,7 +55,11 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend, finalprocessing=f
          opnames=tag_names(data.op)                  
          FOR i=0,n_elements(opnames)-1 DO BEGIN
             IF string(data.op.(i)[0]) eq '' THEN data.op.(i)[0]='none' ;To avoid an ncdf error (empty string)
-            ncdf_attput,id,varid,opnames[i],data.op.(i)[0]
+            IF size(data.op.(i)[0], /TYPE) eq 2 THEN BEGIN
+                ncdf_attput,id,varid,opnames[i],data.op.(i)[0],/LONG
+            ENDIF ELSE BEGIN
+                ncdf_attput,id,varid,opnames[i],data.op.(i)[0]
+            ENDELSE
          ENDFOR
       ENDIF  ;Final processing
 
@@ -379,7 +383,13 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend, finalprocessing=f
       IF not(skiptag) THEN BEGIN                                              
          varid=ncdf_varid(id,tagname)  ;Check if this variable already exists
          IF varid eq -1 THEN varid=ncdf_vardef(id,tagname,dims,/float)         
-         FOR k=0,n_elements(attname)-1 DO ncdf_attput,id,varid,attname[k],attvalue.(k)
+         FOR k=0,n_elements(attname)-1 DO BEGIN
+            IF size(attvalue.(k), /TYPE) eq 2 THEN BEGIN
+              ncdf_attput,id,varid,attname[k],attvalue.(k),/LONG
+            END ELSE BEGIN
+              ncdf_attput,id,varid,attname[k],attvalue.(k)
+            ENDELSE
+         ENDFOR
           
          ncdf_control,id,/endef                ;put in data mode
          ncdf_varput,id,varid,currentdata*unitadjust   
@@ -443,7 +453,13 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend, finalprocessing=f
       IF not(skiptag) THEN BEGIN                                      
          varid=ncdf_varid(id,tagname)  ;Check if this variable already exists
          IF varid eq -1 THEN varid=ncdf_vardef(id,tagname,dims,/float) 
-         FOR k=0,n_elements(attname)-1 DO ncdf_attput,id,varid,attname[k],attvalue[k]
+         FOR k=0,n_elements(attname)-1 DO BEGIN
+            IF size(attvalue[k], /TYPE) eq 2 THEN BEGIN
+              ncdf_attput,id,varid,attname[k],attvalue[k],/LONG
+            END ELSE BEGIN
+              ncdf_attput,id,varid,attname[k],attvalue[k]
+            ENDELSE
+         ENDFOR
           
          ncdf_control,id,/endef                ;put in data mode
          ncdf_varput,id,varid,data.mux.(j)*unitadjust   
@@ -483,7 +499,14 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend, finalprocessing=f
 
       varid=ncdf_varid(id,tagname)  ;Check if this variable already exists
       IF varid eq -1 THEN varid=ncdf_vardef(id,tagname,dims,/float) 
-      FOR k=0,n_elements(attname)-1 DO ncdf_attput,id,varid,attname[k],attvalue[k]          
+      FOR k=0,n_elements(attname)-1 DO BEGIN
+         IF size(attvalue[k], /TYPE) eq 2 THEN BEGIN
+            ncdf_attput,id,varid,attname[k],attvalue[k],/LONG
+         END ELSE BEGIN
+            ncdf_attput,id,varid,attname[k],attvalue[k]
+         ENDELSE
+      ENDFOR
+
       ncdf_control,id,/endef                ;put in data mode
       ncdf_varput,id,varid,currentdata  
       ncdf_control,id,/redef                ;return to define mode
