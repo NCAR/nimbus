@@ -322,54 +322,60 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend, finalprocessing=f
             tagname='ASID_IRREG'+suffix
          END
          'TBCONC1D': BEGIN
-            attname=['_FillValue','long_name','units','FirstBin','LastBin','CellSizes','CellSizeUnits','Category']
-            attvalue={a0:-32767.,a1:'SID-2H Time-based Particle Concentration Per Bin, Normalized by Bin Width',a2:'#/cm3',$
+            IF not(finalprocessing) THEN BEGIN
+               attname=['_FillValue','long_name','units','FirstBin','LastBin','CellSizes','CellSizeUnits','Category']
+               attvalue={a0:-32767.,a1:'SID-2H Time-based Particle Concentration Per Bin, Normalized by Bin Width',a2:'#/cm3',$
 			a3:1,a4:fix(n_elements(data.tbmidbins)),a5:data.tbendbins,a6:'micrometers',a7:'PMS Probe'}
-            dims=[ydimid_tb,sdimid,xdimid]
-            ;Pad first bin with zeros, convert to #/cc, transpose, and reform to 3-dimensions
-            conc_unnorm=sid_unnormalize(data.tbconc1d,data.tbendbins)
-            conc=fltarr(n_elements(data.time),n_elements(data.tbendbins))
-            conc[*,1:*]=conc_unnorm/1.0e6
-            currentdata=reform(transpose(conc),n_elements(data.tbendbins),1,n_elements(data.time))
-            tagname='CSIDTB'+suffix
-            IF finalprocessing THEN skiptag=1
+               dims=[ydimid_tb,sdimid,xdimid]
+               ;Pad first bin with zeros, convert to #/cc, transpose, and reform to 3-dimensions
+               conc_unnorm=sid_unnormalize(data.tbconc1d,data.tbendbins)
+               conc=fltarr(n_elements(data.time),n_elements(data.tbendbins))
+               conc[*,1:*]=conc_unnorm/1.0e6
+               currentdata=reform(transpose(conc),n_elements(data.tbendbins),1,n_elements(data.time))
+               tagname='CSIDTB'+suffix
+            ENDIF ELSE skiptag=1
          END
          'TBSPEC1D':BEGIN
-            attname=['_FillValue','long_name','units','Category']
-            attvalue={a0:-32767.,a1:'SID-2H Time-based Particle Count Per Size Bin',a2:'count',a3:'PMS Probe'}
-            dims=[ydimid_tb,sdimid,xdimid]
-            ;Pad first bin with zeros, transpose, and reform to 3-dimensions
-            spec=fltarr(n_elements(data.time),n_elements(data.tbendbins))
-            spec[*,1:*]=data.tbspec1d
-            currentdata=reform(transpose(spec),n_elements(data.tbendbins),1,n_elements(data.time))
-            tagname='ASIDTB'+suffix
-            IF finalprocessing THEN skiptag=1
+            IF not(finalprocessing) THEN BEGIN
+               attname=['_FillValue','long_name','units','Category']
+               attvalue={a0:-32767.,a1:'SID-2H Time-based Particle Count Per Size Bin',a2:'count',a3:'PMS Probe'}
+               dims=[ydimid_tb,sdimid,xdimid]
+               ;Pad first bin with zeros, transpose, and reform to 3-dimensions
+               spec=fltarr(n_elements(data.time),n_elements(data.tbendbins))
+               spec[*,1:*]=data.tbspec1d
+               currentdata=reform(transpose(spec),n_elements(data.tbendbins),1,n_elements(data.time))
+               tagname='ASIDTB'+suffix
+            ENDIF ELSE skiptag=1
          END
          'AFSPEC':BEGIN
-            attvalue={a1:'SID-2H Particle Count Per Af Bin',a2:'#'}
-            dims=[ydimid_af,xdimid]
-            currentdata=transpose(currentdata)
-            IF finalprocessing THEN skiptag=1
+            IF not(finalprocessing) THEN BEGIN
+               attvalue={a1:'SID-2H Particle Count Per Af Bin',a2:'#'}
+               dims=[ydimid_af,xdimid]
+               currentdata=transpose(currentdata)
+            ENDIF ELSE skiptag=1
          END
          'INTSPEC':BEGIN
-            attvalue={a1:'SID-2H Particle Count Per Interarrival Bin',a2:'#'}
-            dims=[ydimid_int,xdimid]
-            currentdata=transpose(currentdata)
-            IF finalprocessing THEN skiptag=1
+            IF not(finalprocessing) THEN BEGIN
+               attvalue={a1:'SID-2H Particle Count Per Interarrival Bin',a2:'#'}
+               dims=[ydimid_int,xdimid]
+               currentdata=transpose(currentdata)
+            ENDIF ELSE skiptag=1
          END
          'MIDBINS':BEGIN
             attvalue={a1:'SID-2H Size Bin Mid-points',a2:'um'}
             dims=ydimid_size
          END
          'INTMIDBINS':BEGIN
-            attvalue={a1:'SID-2H Interarrival Bin Mid-points',a2:'s'}
-            dims=ydimid_int
-            IF finalprocessing THEN skiptag=1
+            IF not(finalprocessing) THEN BEGIN
+               attvalue={a1:'SID-2H Interarrival Bin Mid-points',a2:'s'}
+               dims=ydimid_int
+            ENDIF ELSE skiptag=1
          END
          'AFMIDBINS':BEGIN
-            attvalue={a1:'SID-2H Af Bin Mid-points',a2:'unitless'}
-            dims=ydimid_af
-            IF finalprocessing THEN skiptag=1
+            IF not(finalprocessing) THEN BEGIN
+               attvalue={a1:'SID-2H Af Bin Mid-points',a2:'unitless'}
+               dims=ydimid_af
+            ENDIF ELSE skiptag=1
          END
          'BRANCH_COUNT':BEGIN
             attvalue={a1:'SID-2H Particle Count by Peak Wave Number (Branches)',a2:'#'}
@@ -386,7 +392,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend, finalprocessing=f
          FOR k=0,n_elements(attname)-1 DO BEGIN
             IF size(attvalue.(k), /TYPE) eq 2 THEN BEGIN
               ncdf_attput,id,varid,attname[k],attvalue.(k),/LONG
-            END ELSE BEGIN
+            ENDIF ELSE BEGIN
               ncdf_attput,id,varid,attname[k],attvalue.(k)
             ENDELSE
          ENDFOR
@@ -456,7 +462,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend, finalprocessing=f
          FOR k=0,n_elements(attname)-1 DO BEGIN
             IF size(attvalue[k], /TYPE) eq 2 THEN BEGIN
               ncdf_attput,id,varid,attname[k],attvalue[k],/LONG
-            END ELSE BEGIN
+            ENDIF ELSE BEGIN
               ncdf_attput,id,varid,attname[k],attvalue[k]
             ENDELSE
          ENDFOR
@@ -502,7 +508,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend, finalprocessing=f
       FOR k=0,n_elements(attname)-1 DO BEGIN
          IF size(attvalue[k], /TYPE) eq 2 THEN BEGIN
             ncdf_attput,id,varid,attname[k],attvalue[k],/LONG
-         END ELSE BEGIN
+         ENDIF ELSE BEGIN
             ncdf_attput,id,varid,attname[k],attvalue[k]
          ENDELSE
       ENDFOR
