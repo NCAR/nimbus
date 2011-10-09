@@ -159,6 +159,9 @@ int main(int argc, char *argv[])
   long	nVars = inFile.num_vars();
   for (int i = 0; i < nVars; ++i)
   {
+    if (inFile.get_var(i)->num_dims() == 0)
+      continue;
+
     if (verbose)
       cout << inFile.get_var(i)->name() << ", nDims = " << inFile.get_var(i)->num_dims() << endl;
     else
