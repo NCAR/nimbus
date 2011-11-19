@@ -1100,6 +1100,9 @@ void getGlobalAttrData(PGconn * conn)
   if (dataRate <= 0)
     dataRate = 5;	// 5 second data is the default rate onboard.
   projectInfo.groundFeedDataRate = dataRate;
+
+  if (TimeStep < dataRate)
+    TimeStep = dataRate;
 }
 
 /* -------------------------------------------------------------------- */
