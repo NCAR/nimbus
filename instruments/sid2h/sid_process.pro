@@ -510,12 +510,18 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
    
    IF op.createncdf eq 1 THEN BEGIN
       ncfilename=op.outdir+date.mdy+'_'+string(long(sid_sfm2hms(starttime)),format='(i06)')+'_SID.nc'
-      IF op.ncappend THEN ncfilename=op.pthfile
       sid_export_ncdf,data,outfile=ncfilename,ncappend=op.ncappend,finalprocessing=op.finalprocessing
       infoline='Saved file '+ncfilename
       IF statuswidgetid ne 0 THEN dummy=dialog_message(infoline,dialog_parent=statuswidgetid,/info) ELSE print,infoline  
    ENDIF
    
+   IF op.ncappend eq 1 THEN BEGIN
+      ncfilename=op.pthfile
+      sid_export_ncdf,data,outfile=ncfilename,ncappend=op.ncappend,finalprocessing=op.finalprocessing
+      infoline='Saved file '+ncfilename
+      IF statuswidgetid ne 0 THEN dummy=dialog_message(infoline,dialog_parent=statuswidgetid,/info) ELSE print,infoline  
+   ENDIF
+
    IF op.textfile eq 1 THEN BEGIN
      free_lun,2
      infoline='Saved file '+textfilename

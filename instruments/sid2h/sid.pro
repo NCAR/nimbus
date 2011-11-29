@@ -22,15 +22,26 @@ PRO sid_event, ev
             IF file_test(op.pthfile) THEN widget_control,widget_info(ev.top,find='tas'),sensitive=0
             
             ;--------Checkboxes
-            checkboxarray=[0,0,0,0]
+            checkboxarray=[0,0,0]
             id=widget_info(ev.top,find='options')
             widget_control,id,get_uvalue=values
             IF op.autolevel THEN checkboxarray[where(values eq 'Auto-leveling')]=1
-            IF op.textfile THEN checkboxarray[where(values eq 'Create PBP file')]=1
+            ;IF op.textfile THEN checkboxarray[where(values eq 'Create PBP file')]=1
             IF op.speedreject THEN checkboxarray[where(values eq 'Speed Rejection')]=1
-            IF op.peak THEN checkboxarray[where(values eq 'Peak')]=1
-            
+            IF op.peak THEN checkboxarray[where(values eq 'Peak')]=1            
             widget_control,id,set_value=checkboxarray
+
+            ;--------Output checkboxes
+            checkboxarray=[0,0,0,0]
+            id=widget_info(ev.top,find='outputflags')
+            widget_control,id,get_uvalue=values
+            IF op.createsav THEN checkboxarray[where(values eq 'IDL sav')]=1
+            IF op.createncdf THEN checkboxarray[where(values eq 'netCDF')]=1
+            IF op.ncappend THEN checkboxarray[where(values eq 'Appended netCDF')]=1            
+            IF op.textfile THEN checkboxarray[where(values eq 'Particle-by-Particle')]=1
+            widget_control,id,set_value=checkboxarray
+
+
 
             ;--------Filenames
             widget_control,widget_info(ev.top,find='filelist'),set_value=op.fn
@@ -109,9 +120,18 @@ PRO sid_event, ev
             widget_control,id,get_uvalue=values
             widget_control,id,get_value=iadv
             autolevel=iadv[where(values eq 'Auto-leveling')]
-            textfile=iadv[where(values eq 'Create PBP file')]
+            ;textfile=iadv[where(values eq 'Create PBP file')]
             speedreject=iadv[where(values eq 'Speed Rejection')]
             peak=iadv[where(values eq 'Peak')]
+            
+            ;--------Output Flag Checkboxes
+            id=widget_info(ev.top,find='outputflags')
+            widget_control,id,get_uvalue=values
+            widget_control,id,get_value=iadv
+            createsav=iadv[where(values eq 'IDL sav')]
+            textfile=iadv[where(values eq 'Particle-by-Particle')]
+            createncdf=iadv[where(values eq 'netCDF')]
+            ncappend=iadv[where(values eq 'Appended netCDF')]
 
             ;--------Filenames
             widget_control,widget_info(ev.top,find='filelist'),get_value=fn
@@ -122,7 +142,7 @@ PRO sid_event, ev
             op={fn_orig:fn,  rate:rate, sizegain:sizegain, intthreshold:intthreshold,$
             pthfile:pthfile, textfile:textfile, fixedtas:fixedtas, autolevel:autolevel,$            
             speedreject:speedreject, outdir:outdir, maxsaturated:maxsaturated, tastag:tastag,$
-            peak:peak}
+            peak:peak, createsav:createsav, createncdf:createncdf, ncappend:ncappend}
 
             widget_control,widget_info(ev.top,find='process'),set_value='Processing...'
             sid_process, op, statuswidgetid=widget_info(ev.top,find='process')
@@ -176,13 +196,15 @@ PRO sid, h=h
     helpID=widget_button(menubarID, value='Help', /menu,/align_right)
 
     ;-----------File names widget block------------------------------------
-    subbase1=widget_base(base,column=1,/frame)
+    subbase1=widget_base(base,column=1,frame=5)
+    dummy=widget_label(subbase1,value='---SID Data---',/align_left)
     addfile = cw_bgroup(subbase1,['Add file series...','Clear files'], uname='addfile',/row,label_left='Raw data file(s):')
     filelist= widget_text(subbase1,/scroll,uname='filelist',ysize=5,xsize=62,/editable) ;/editable
  
  
     ;------------TAS widget block ------------------------------------
-    subbase3=widget_base(base,column=1,/frame)
+    subbase3=widget_base(base,column=1,frame=5)
+    dummy=widget_label(subbase3,value='---Aircraft Data---',/align_left)
     subbase3a=widget_base(subbase3,row=1)
     subbase3b=widget_base(subbase3,row=1)
     addpthfile=cw_bgroup(subbase3a,['Select...','Clear'], uname='findpthfile',/row,label_left='Flight data file (netCDF):')
@@ -191,8 +213,9 @@ PRO sid, h=h
     tas=cw_field(subbase3,/int, title='or use fixed TAS of (m/s):',uname='tas', value='150', xsize=4)
    
 
-   ;-----------Processing options widget block----------------------------
-    subbase2=widget_base(base,column=1,/frame)
+    ;-----------Processing options widget block----------------------------
+    subbase2=widget_base(base,column=1,frame=5)
+    dummy=widget_label(subbase2,value='---Processing Options---',/align_left)
     subbase2a=widget_base(subbase2,row=1)
     rate=cw_field(subbase2a,/int, title='Averaging Time (s):',uname='rate' , xsize=4, value=defaultrate)
     sizegain=cw_field(subbase2a,/float, title='Size Gain:',uname='sizegain', value=defaultgain, xsize=5)
@@ -200,16 +223,23 @@ PRO sid, h=h
     subbase2b=widget_base(subbase2,row=1)
     rate=cw_field(subbase2b,/int, title='Saturation Max (#):',uname='maxsaturated' , xsize=4, value=defaultsaturation)
     
-    vals=['Speed Rejection','Auto-leveling','Create PBP file','Peak']
-    advanced=cw_bgroup(subbase2b,vals,uname='options',/row,/nonexclusive,uval=vals,set_value=[1,1,0,1]) ;label_left='Options:',
+    vals=['Speed Rejection','Auto-leveling','Peak']
+    advanced=cw_bgroup(subbase2b,vals,uname='options',/row,/nonexclusive,uval=vals,set_value=[1,1,1])
 
 
-	 ;---------Output directory and process button-------------------------
-	 subbase4=widget_base(base,row=1)
-	 cd,current=currentdir
+    ;---------Output directory and process button-------------------------
+    subbase4=widget_base(base,column=1,frame=5)
+    dummy=widget_label(subbase4,value='---Output Options---',/align_left)
+    ;subbase4b=widget_base(subbase4a,row=1)
     
-    outdirID=cw_field(subbase4,/string,  title='Output directory: ',uname='outdir',xsize=52,value=currentdir+path_sep())
-    browse2=widget_button(subbase4,value='Select...',uname='findoutdir')
+    subbase4a=widget_base(subbase4,row=1)
+    vals=['IDL sav','netCDF','Appended netCDF','Particle-by-Particle']
+    outputflags=cw_bgroup(subbase4a,vals,uname='outputflags',/row,/nonexclusive,uval=vals,set_value=[1,0,0,0])
+
+    subbase4b=widget_base(subbase4,row=1)
+    cd,current=currentdir   
+    outdirID=cw_field(subbase4b,/string,  title='Output directory: ',uname='outdir',xsize=52,value=currentdir+path_sep())
+    browse2=widget_button(subbase4b,value='Select...',uname='findoutdir')
     
     process = WIDGET_BUTTON(base, value='BEGIN PROCESSING', uname='process')
 
