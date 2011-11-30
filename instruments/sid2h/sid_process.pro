@@ -179,6 +179,7 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
    num=(stoptime-starttime)/rate +1 ;number of records that will be saved
    time=starttime+rate*dindgen(num)  ; this is the start time for each record 
   
+   
    ;Variable initialization
    spec1d=fltarr(num,numbins)     ;counts
    spec2d=fltarr(num,numbins,numafbins)  ;counts
@@ -228,6 +229,7 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
 
    ;----------Set up text file-------------------------------------------------
    IF op.textfile eq 1 THEN BEGIN
+      pbprange=sid_pbp_timeprompt(starttime,stoptime)
       free_lun,2
       textfilename=op.outdir+date.mdy+'_'+strtrim(string(long(sid_sfm2hms(starttime))),2)+'_SID.txt'
       openw,2,textfilename
@@ -333,9 +335,15 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
               
                ;Find saturated detectors, then size
                a=sid_size(b.scatter[i,*],scatter_adjusted,pmtgain[index],b.tof[i],tas[index],op.sizegain,peak=op.peak) 
-               IF op.textfile eq 1 THEN printf,2,(sid_date((b.elaptime[i]-footer.reftime)/100+footer.acqstart)).time, $
+               
+               ;Print particle-by-particle information
+               IF op.textfile eq 1 THEN BEGIN
+                  ;stop
+                  IF (time[index] gt pbprange.start) and (time[index] lt pbprange.stop) THEN $
+                  printf,2,(sid_date((b.elaptime[i]-footer.reftime)/100+footer.acqstart)).time, $
                   a.size,a.af,a.branches,b.mux[i],b.sensor[i],b.tof[i],b.missed[i],mean(scatter_adjusted), $ ;b.elaptime[i]-footer.reftime,
                   format='(f15.5,2f7.1,i3,i3,i6,i6,i6,i6)' 
+               ENDIF
                         
                ;Find interarrival time
                inttime=(b.elaptime[i]-lastelaptime)/1.0e9
