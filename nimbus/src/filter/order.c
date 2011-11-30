@@ -76,7 +76,7 @@ void GenerateComputeOrder()
 
       if (index == -1)
       {
-        fprintf(stderr, "order.c: There appears to be a dependency on a non-existant variable, %s, fix DependTable, fatal.\n", ComputeOrder[i]->depend[j]);
+        fprintf(stderr, "order.c: Derived var:%s, depends on var: %s which appears to be nonexistent.  Fix DependTable, fatal.\n", ComputeOrder[i]->name, ComputeOrder[i]->depend[j]);
         quit();
       }
 
