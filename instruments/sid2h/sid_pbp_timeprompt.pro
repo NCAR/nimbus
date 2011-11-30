@@ -13,8 +13,8 @@ PRO sid_pbp_timeprompt_event, ev
          widget_control,id,get_value=newstop
          
          widget_control,ev.top,get_uvalue=ptr
-         (*ptr).start=hms2sfm(newstart)
-         (*ptr).stop=hms2sfm(newstop)        
+         (*ptr).start=sid_hms2sfm(newstart)
+         (*ptr).stop=sid_hms2sfm(newstop)        
          widget_control, ev.top, /destroy ;Close GUI and go past XMANAGER command
       END
       ELSE: dummy=0
@@ -24,7 +24,7 @@ END
 FUNCTION sid_pbp_timeprompt, starttime, stoptime
    IF !version.os_family eq 'windows' THEN widget_control,default_font='Helvetica*fixed*12'
    IF !version.os_family eq 'unix' THEN widget_control,default_font='-adobe-helvetica-medium-r-normal--12-120-75-75-p-67-iso8859-1'
-   ptr=ptr_new({start:sfm2hms(starttime), stop:sfm2hms(stoptime)})
+   ptr=ptr_new({start:sid_sfm2hms(starttime), stop:sid_sfm2hms(stoptime)})
    
    ;----------Main widget setup-------------------------------------------
    base = WIDGET_BASE(COLUMN=1,title='SID-2H Processing Software',xoffset=200,yoffset=200,/kbrd_focus_events)
