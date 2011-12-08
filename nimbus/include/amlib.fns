@@ -57,7 +57,6 @@
 # New UV Hygrometer
 # XUVMR was PASE only; MRUV subsequently.
 	"XUVMR",	NULL,           NULL,		suvmr,
-	"MRUV",		NULL,           NULL,		smr,
 	"DPUV",		NULL,           NULL,		sdprho,
 #
 # Cooper UltraFine CN
@@ -632,7 +631,7 @@
 	"UVKRSP",	NULL,		xluvkrsp,	NULL,
 	"UVPVOL",	NULL,		xluvpvol,	NULL,
 	"UVTVOL",	NULL,		xluvtvol,	NULL,
-	"MRUV",		NULL,		xlmruv,		NULL,
+	"MRUV",		NULL,		xlmruv,		smr,
 #
 #	Chemstry vars.
 #
