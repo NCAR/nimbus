@@ -68,11 +68,13 @@ void cfsspInit(var_base *varp)
   NR_TYPE	DOF, beamDiameter;
 
   if (varp->SerialNumber.length() == 0) {
-    fprintf(stderr, "fssp.c: %s has no serial number, fatal.\n", varp->name); exit(1);
+    sprintf(buffer, "fssp.c: %s has no serial number, fatal.", varp->name);
+    HandleFatalError(buffer);
     }
 
   if (nProbes == MAX_FSSP) {
-    fprintf(stderr, "fssp.c: Exceeded maximum number of FSSP probes, change amlib.h.\n"); exit(1);
+    sprintf(buffer, "fssp.c: Exceeded maximum number of FSSP probes, change amlib.h.");
+    HandleFatalError(buffer);
     }
 
   p = strrchr(varp->name, '_');
@@ -88,37 +90,44 @@ void cfsspInit(var_base *varp)
   InitPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
-    fprintf(stderr, "fssp: serial number = [%s]: FIRST_BIN not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "fssp: serial number = [%s]: FIRST_BIN not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   FIRST_BIN[probeNum] = atoi(p);
 
   if ((p = GetPMSparameter(serialNumber, "LAST_BIN")) == NULL) {
-    fprintf(stderr, "fssp: serial number = [%s]: LAST_BIN not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "fssp: serial number = [%s]: LAST_BIN not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   LAST_BIN[probeNum] = atoi(p);
 
   if ((p = GetPMSparameter(serialNumber, "DOF")) == NULL) {
-    fprintf(stderr, "fssp: serial number = [%s]: DOF not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "fssp: serial number = [%s]: DOF not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   DOF = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "BEAM_DIAM")) == NULL) {
-    fprintf(stderr, "fssp: serial number = [%s]: BEAM_DIAM not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "fssp: serial number = [%s]: BEAM_DIAM not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   beamDiameter = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "DENS")) == NULL) {
-    fprintf(stderr, "fssp: serial number = [%s]: DENS not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "fssp: serial number = [%s]: DENS not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   DENS[probeNum] = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "PLWFAC")) == NULL) {
-    fprintf(stderr, "fssp: serial number = [%s]: PLWFAC not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "fssp: serial number = [%s]: PLWFAC not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   PLWFAC[probeNum] = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "DBZFAC")) == NULL) {
-    fprintf(stderr, "fssp: serial number = [%s]: DBZFAC not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "fssp: serial number = [%s]: DBZFAC not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   DBZFAC[probeNum] = atof(p);
 
@@ -126,12 +135,14 @@ void cfsspInit(var_base *varp)
   if (varp->name[1] == 'F')
     {
     if ((p = GetPMSparameter(serialNumber, "TAU1")) == NULL) {
-      fprintf(stderr, "fssp: serial number = [%s]: TAU1 not found.\n", serialNumber); exit(1);
+      sprintf(buffer, "fssp: serial number = [%s]: TAU1 not found.", serialNumber);
+      HandleFatalError(buffer);
       }
     tau1[probeNum] = atof(p);
 
     if ((p = GetPMSparameter(serialNumber, "TAU2")) == NULL) {
-      fprintf(stderr, "fssp: serial number = [%s]: TAU2 not found.\n", serialNumber); exit(1);
+      sprintf(buffer, "fssp: serial number = [%s]: TAU2 not found.", serialNumber);
+      HandleFatalError(buffer);
       }
     tau2[probeNum] = atof(p);
     }
@@ -143,9 +154,10 @@ void cfsspInit(var_base *varp)
      * 0th bin (so 31 bins instead of 30).  ADS3 will not do this.  PMSspecs
      * files should now have FirstBin of 0 instead of 1.  Re: -1 vs. -0 below.
      */
-    sprintf(buffer, "CELL_SIZE_%d", varp->Length - 1);
-    if ((p = GetPMSparameter(serialNumber, buffer)) == NULL) {
-      fprintf(stderr, "fssp: serial number = [%s]: %s not found.\n", serialNumber, buffer); exit(1);
+    char s[32];
+    sprintf(s, "CELL_SIZE_%d", varp->Length - 1);
+    if ((p = GetPMSparameter(serialNumber, s)) == NULL) {
+      sprintf(buffer, "fssp: serial number = [%s]: %s not found.", serialNumber, s);
       }
     }
 

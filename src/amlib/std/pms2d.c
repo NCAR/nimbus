@@ -85,11 +85,12 @@ void sTwodInit(var_base *varp)
   NR_TYPE	eaw[maxBins], dof[maxBins];
 
   if (varp->SerialNumber.length() == 0) {
-    fprintf(stderr, "pms2d.c: %s has no serial number, fatal.\n", varp->name); exit(1);
+    sprintf(buffer, "pms2d.c: %s has no serial number, fatal.", varp->name);
+    HandleFatalError(buffer);
     }
 
   if (nProbes == MAX_PMS2D) {
-    fprintf(stderr, "pms2d.c: Exceeded maximum number of PMS2D probes, change amlib.h.\n"); exit(1);
+    HandleFatalError("pms2d.c: Exceeded maximum number of PMS2D probes, change amlib.h.");
     }
 
   for (i = 0; i < MAX_PMS2D; ++i)
@@ -107,52 +108,62 @@ void sTwodInit(var_base *varp)
   InitPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
-    fprintf(stderr, "pms2d: serial number = [%s]: FIRST_BIN not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "pms2d: serial number = [%s]: FIRST_BIN not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   FIRST_BIN[probeNum] = atoi(p);
 
   if ((p = GetPMSparameter(serialNumber, "LAST_BIN")) == NULL) {
-    fprintf(stderr, "pms2d: serial number = [%s]: LAST_BIN not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "pms2d: serial number = [%s]: LAST_BIN not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   LAST_BIN[probeNum] = atoi(p);
 
   if ((p = GetPMSparameter(serialNumber, "MIN_RANGE")) == NULL) {
-    fprintf(stderr, "pms2d: serial number = [%s]: MIN_RANGE not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "pms2d: serial number = [%s]: MIN_RANGE not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   minRange = atoi(p);
 
   if ((p = GetPMSparameter(serialNumber, "RANGE_STEP")) == NULL) {
-    fprintf(stderr, "pms2d: serial number = [%s]: RANGE_STEP not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "pms2d: serial number = [%s]: RANGE_STEP not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   resolution = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "NDIODES")) == NULL) {
-    fprintf(stderr, "pms2d: serial number = [%s]: NDIODES not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "pms2d: serial number = [%s]: NDIODES not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   nDiodes = atoi(p);
 
   if ((p = GetPMSparameter(serialNumber, "RESPONSE_TIME")) == NULL) {
-    fprintf(stderr, "pms2d: serial number = [%s]: RESPONSE_TIME not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "pms2d: serial number = [%s]: RESPONSE_TIME not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   responseTime[probeNum] = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "ARM_DISTANCE")) == NULL) {
-    fprintf(stderr, "pms2d: serial number = [%s]: ARM_DISTANCE not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "pms2d: serial number = [%s]: ARM_DISTANCE not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   armDistance[probeNum] = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "DENS")) == NULL) {
-    fprintf(stderr, "pms2d: serial number = [%s]: DENS not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "pms2d: serial number = [%s]: DENS not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   DENS[probeNum] = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "PLWFAC")) == NULL) {
-    fprintf(stderr, "pms2d: serial number = [%s]: PLWFAC not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "pms2d: serial number = [%s]: PLWFAC not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   PLWFAC[probeNum] = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "DBZFAC")) == NULL) {
-    fprintf(stderr, "pms2d: serial number = [%s]: DBZFAC not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "pms2d: serial number = [%s]: DBZFAC not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   DBZFAC[probeNum] = atof(p);
 
@@ -400,37 +411,44 @@ void sTwodInitH(var_base *varp)
   /* Perform twice, once for 1DC, and again for 2DC.
    */
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
-    printf("%s: FIRST_BIN not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "%s: FIRST_BIN not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   FIRST_BIN[probeNum] = atoi(p);
 
   if ((p = GetPMSparameter(serialNumber, "LAST_BIN")) == NULL) {
-    printf("%s: LAST_BIN not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "%s: LAST_BIN not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   LAST_BIN[probeNum] = atoi(p);
 
   if ((p = GetPMSparameter(serialNumber, "MIN_RANGE")) == NULL) {
-    printf("%s: MIN_RANGE not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "%s: MIN_RANGE not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   minRange = atoi(p);
 
   if ((p = GetPMSparameter(serialNumber, "RANGE_STEP")) == NULL) {
-    printf("%s: RANGE_STEP not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "%s: RANGE_STEP not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   resolution = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "DENS")) == NULL) {
-    printf("%s: DENS not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "%s: DENS not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   DENS[probeNum] = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "PLWFAC")) == NULL) {
-    printf("%s: PLWFAC not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "%s: PLWFAC not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   PLWFAC[probeNum] = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "DBZFAC")) == NULL) {
-    printf("%s: DBZFAC not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "%s: DBZFAC not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   DBZFAC[probeNum] = atof(p);
 

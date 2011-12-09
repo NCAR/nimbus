@@ -51,8 +51,7 @@ void initAKRD(var_base *varp)
       break;
 
     default:
-      LogMessage("akrd.c: No valid aircraft, no coefficients, exiting.");
-      exit(1);
+      HandleFatalError("akrd.c: No valid aircraft, no coefficients, exiting.");
   }
 }
 

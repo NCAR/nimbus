@@ -58,8 +58,7 @@ void initSSRD(var_base *varp)
       break;
 
     default:
-      LogMessage("ssrd.c: No valid aircraft, no coefficients, exiting.");
-      exit(1);
+      HandleFatalError("ssrd.c: No valid aircraft, no coefficients, exiting.");
   }
 }
 
