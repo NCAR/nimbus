@@ -9,9 +9,9 @@ DESCRIPTION:	Read nimbus/include/amlib.fns file, parse, sort, and generate
 -------------------------------------------------------------------------
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #define INPUT_FILE	"amlib.fns"
 #define OUTPUT_FILE	"amlibfn.h"
@@ -20,13 +20,16 @@ DESCRIPTION:	Read nimbus/include/amlib.fns file, parse, sort, and generate
 
 #define BUFFSIZE	1024
 
+void SortFns(int beg, int end);
+bool CheckForDuplicates(int nRecords);
+
 char	buffer[BUFFSIZE], *file[10000];
 
 /* -------------------------------------------------------------------- */
-main()
+int main(int argc, char *argv[])
 {
   int	i, cnt;
-  char	name[25], constructor[80], xlateFn[80], sFun[80];
+  char	name[80], constructor[80], xlateFn[80], sFun[80];
   FILE	*in, *out, *xlate, *proto;
 
 
@@ -40,7 +43,7 @@ main()
     if (buffer[0] == '#' || strlen(buffer) < 12)
       continue;
 
-    if ((file[cnt] = malloc(strlen(buffer)+1)) == NULL) {
+    if ((file[cnt] = (char *)malloc(strlen(buffer)+1)) == NULL) {
       fprintf(stderr, "make_amlib: out of memory\n");
       exit(1);
       }
@@ -52,8 +55,6 @@ main()
 
 
   SortFns(0, cnt - 1);
-  CheckForDuplicates(cnt);
-
 
   // Generate output files.
   if ((out = fopen(OUTPUT_FILE, "w+")) == NULL) {
@@ -70,6 +71,12 @@ main()
     fprintf(stderr, "make_amlib: can't open %s\n", XLATE_FILE);
     exit(1);
     }
+
+  /* I put this check after destroying the output files, so nimbus will not build.
+   */
+  if (CheckForDuplicates(cnt) == true)
+    return(1);
+
 
   fprintf(out, "/*\n-------------------------------------------------------------------------\n");
   fprintf(out, "OBJECT NAME:\tamlibfn.h\n\n");
@@ -142,7 +149,7 @@ main()
 }	/* END MAIN */
 
 /* -------------------------------------------------------------------- */
-void CheckForDuplicates(int nRecords)
+bool CheckForDuplicates(int nRecords)
 {
   int i;
   char name[50], prevName[50], *s, *e;
@@ -156,21 +163,21 @@ void CheckForDuplicates(int nRecords)
 
     if (i > 0 && strcmp(name, prevName) == 0)
     {
-      printf("WARNING: Duplicate name in amlib.fns!  [%s]\n", name);
+      fprintf(stderr, "WARNING: Duplicate name in amlib.fns!  [%s]\n", name);
+      return true;
     }
     strcpy(prevName, name);
   }
+  return false;
 }
 
 /* -------------------------------------------------------------------- */
 char	*temp, *mid;
 
-SortFns(beg, end)
-int	beg;		/* Beggining array index */
-int	end;		/* Last array index */
+void SortFns(int beg, int end)
 {
-	register	x = beg,
-			y = end;
+	int	x = beg,
+		y = end;
 
 	mid = file[(x + y) / 2];
 
