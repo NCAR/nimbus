@@ -42,8 +42,7 @@ void atfhGV_Init(var_base *varp)
 
   if (ProbeCount > MAX_TT)
   {
-    fprintf(stderr, "\natfh.c: atfhInit: MAX_TT exceeded, get a programmer to fix.  Fatal.\n");
-    exit(1);
+    HandleFatalError("\natfh.c: atfhInit: MAX_TT exceeded, get a programmer to fix.  Fatal.");
   }
 
 
@@ -72,9 +71,9 @@ void atfhGV_Init(var_base *varp)
   }
   else
   {
-    fprintf(stderr, "\natfh.c: atfhInit: Can't find %s, shouldn't happen.  Fatal.\n",
+    sprintf(buffer, "\natfh.c: atfhInit: Can't find %s, shouldn't happen.  Fatal.",
 		((DERTBL *)varp)->depend[0]);
-    exit(1);
+    HandleFatalError(buffer);
   }
 
   varp->ProbeCount = ProbeCount;

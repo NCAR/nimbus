@@ -48,7 +48,8 @@ void ccdpInit(var_base *varp)
   NR_TYPE	dof, beam_dia;
 
   if (varp->SerialNumber.length() == 0) {
-    fprintf(stderr, "cdp.c: %s has no serial number, fatal.\n", varp->name); exit(1);
+    sprintf(buffer, "cdp.c: %s has no serial number, fatal.", varp->name);
+    HandleFatalError(buffer);
     }
 
   p = strrchr(varp->name, '_');
@@ -64,22 +65,26 @@ void ccdpInit(var_base *varp)
   InitPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
-    fprintf(stderr, "cdp: serial number = [%s]: FIRST_BIN not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "cdp: serial number = [%s]: FIRST_BIN not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   FIRST_BIN[probeNum] = atoi(p);
 
   if ((p = GetPMSparameter(serialNumber, "LAST_BIN")) == NULL) {
-    fprintf(stderr, "cdp: serial number = [%s]: LAST_BIN not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "cdp: serial number = [%s]: LAST_BIN not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   LAST_BIN[probeNum] = atoi(p);
 
   if ((p = GetPMSparameter(serialNumber, "DOF")) == NULL) {
-    fprintf(stderr, "cdp: serial number = [%s]: DOF not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "cdp: serial number = [%s]: DOF not found.", serialNumber);
+    HandleFatalError(buffer);
   }
   dof = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "BEAM_DIAM")) == NULL) {
-    fprintf(stderr, "cdp: serial number = [%s]: BEAM_DIAM not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "cdp: serial number = [%s]: BEAM_DIAM not found.", serialNumber);
+    HandleFatalError(buffer);
   }
   beam_dia = atof(p);
 
@@ -87,17 +92,20 @@ void ccdpInit(var_base *varp)
 
 
   if ((p = GetPMSparameter(serialNumber, "DENS")) == NULL) {
-    fprintf(stderr, "cdp: serial number = [%s]: DENS not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "cdp: serial number = [%s]: DENS not found.", serialNumber);
+    HandleFatalError(buffer);
   }
   DENS[probeNum] = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "PLWFAC")) == NULL) {
-    fprintf(stderr, "cdp: serial number = [%s]: PLWFAC not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "cdp: serial number = [%s]: PLWFAC not found.", serialNumber);
+    HandleFatalError(buffer);
   }
   PLWFAC[probeNum] = atof(p);
 
   if ((p = GetPMSparameter(serialNumber, "DBZFAC")) == NULL) {
-    fprintf(stderr, "cdp: serial number = [%s]: DBZFAC not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "cdp: serial number = [%s]: DBZFAC not found.", serialNumber);
+    HandleFatalError(buffer);
   }
   DBZFAC[probeNum] = atof(p);
 
@@ -108,9 +116,11 @@ void ccdpInit(var_base *varp)
      * 0th bin (so 31 bins instead of 30).  ADS3 will not do this.  PMSspecs
      * files should now have FirstBin of 0 instead of 1.  Re: -1 vs. -0 below.
      */
-    sprintf(buffer, "CELL_SIZE_%d", varp->Length - 1);
-    if ((p = GetPMSparameter(serialNumber, buffer)) == NULL) {
-      fprintf(stderr, "cdp: serial number = [%s]: %s not found.\n", serialNumber, buffer); exit(1);
+    char s[32];
+    sprintf(s, "CELL_SIZE_%d", varp->Length - 1);
+    if ((p = GetPMSparameter(serialNumber, s)) == NULL) {
+      sprintf(buffer, "cdp: serial number = [%s]: %s not found.", serialNumber, s);
+      HandleFatalError(buffer);
     }
   }
 

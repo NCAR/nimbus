@@ -41,11 +41,13 @@ void casasInit(var_base *varp)
   char		*p;
 
   if (varp->SerialNumber.length() == 0) {
-    fprintf(stderr, "asas.c: %s has no serial number, fatal.\n", varp->name); exit(1);
+    sprintf(buffer, "asas.c: %s has no serial number, fatal.", varp->name);
+    HandleFatalError(buffer);
     }
 
   if (nProbes == MAX_ASAS) {
-    fprintf(stderr, "asas.c: Exceeded maximum number of ASAS/PCASP/UHSAS probes, change amlib.h.\n"); exit(1);
+    sprintf(buffer, "asas.c: Exceeded maximum number of ASAS/PCASP/UHSAS probes, change amlib.h.");
+    HandleFatalError(buffer);
     }
 
   p = strrchr(varp->name, '_');
@@ -58,12 +60,14 @@ void casasInit(var_base *varp)
   InitPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
-    fprintf(stderr, "pcasp: serial number = [%s]: FIRST_BIN not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "pcasp: serial number = [%s]: FIRST_BIN not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   FIRST_BIN[probeNum] = atoi(p);
 
   if ((p = GetPMSparameter(serialNumber, "LAST_BIN")) == NULL) {
-    fprintf(stderr, "pcasp: serial number = [%s]: LAST_BIN not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "pcasp: serial number = [%s]: LAST_BIN not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   LAST_BIN[probeNum] = atoi(p);
 
@@ -75,7 +79,8 @@ void casasInit(var_base *varp)
      */
     sprintf(buffer, "CELL_SIZE_%d", varp->Length - 1);
     if ((p = GetPMSparameter(serialNumber, buffer)) == NULL) {
-      fprintf(stderr, "pcasp: serial number = [%s]: %s not found.\n", serialNumber, buffer); exit(1);
+      sprintf(buffer, "pcasp: serial number = [%s]: %s not found.", serialNumber, buffer);
+      HandleFatalError(buffer);
       }
     }
 

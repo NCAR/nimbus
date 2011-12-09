@@ -257,8 +257,8 @@ void InitAircraftDependencies()
       break;
 
     default:
-      fprintf(stderr, "Unknown aircraft [%d] encountered.\n", (int)cfg.Aircraft());
-      exit(1);
+      sprintf(buffer, "Unknown aircraft [%d] encountered.\n", (int)cfg.Aircraft());
+      HandleFatalError(buffer);
   }
 
   if ( (tmp = GetDefaultsValue("RECFRH", "INIT_AC")) )

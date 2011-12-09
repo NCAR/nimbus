@@ -53,11 +53,13 @@ void cf300Init(var_base *varp)
   const char	*serialNumber;
 
   if (varp->SerialNumber.length() == 0) {
-    fprintf(stderr, "f300.c: %s has no serial number, fatal.\n", varp->name); exit(1);
+    sprintf(buffer, "f300.c: %s has no serial number, fatal.", varp->name);
+    HandleFatalError(buffer);
     }
 
   if (nProbes == MAX_F300) {
-    fprintf(stderr, "f300.c: Exceeded maximum number of F300 probes, change amlib.h.\n"); exit(1);
+    sprintf(buffer, "f300.c: Exceeded maximum number of F300 probes, change amlib.h.");
+    HandleFatalError(buffer);
     }
 
   p = strrchr(varp->name, '_');
@@ -70,12 +72,14 @@ void cf300Init(var_base *varp)
   InitPMSspecs(buffer);
 
   if ((p = GetPMSparameter(serialNumber, "FIRST_BIN")) == NULL) {
-    fprintf(stderr, "f300: serial number = [%s]: FIRST_BIN not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "f300: serial number = [%s]: FIRST_BIN not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   FIRST_BIN[probeNum] = atoi(p);
 
   if ((p = GetPMSparameter(serialNumber, "LAST_BIN")) == NULL) {
-    fprintf(stderr, "f300: serial number = [%s]: LAST_BIN not found.\n", serialNumber); exit(1);
+    sprintf(buffer, "f300: serial number = [%s]: LAST_BIN not found.", serialNumber);
+    HandleFatalError(buffer);
     }
   LAST_BIN[probeNum] = atoi(p);
 
@@ -90,9 +94,11 @@ void cf300Init(var_base *varp)
      * 0th bin (so 31 bins instead of 30).  ADS3 will not do this.  PMSspecs
      * files should now have FirstBin of 0 instead of 1.  Re: -1 vs. -0 below.
      */
-    sprintf(buffer, "CELL_SIZE_%d", varp->Length - 1);
-    if ((p = GetPMSparameter(serialNumber, buffer)) == NULL) {
-      fprintf(stderr, "f300: serial number = [%s]: %s not found.\n", serialNumber, buffer); exit(1);
+    char s[32];
+    sprintf(s, "CELL_SIZE_%d", varp->Length - 1);
+    if ((p = GetPMSparameter(serialNumber, s)) == NULL) {
+      sprintf(buffer, "f300: serial number = [%s]: %s not found.", serialNumber, s);
+      HandleFatalError(buffer);
       }
     }
 
