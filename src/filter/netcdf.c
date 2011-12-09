@@ -349,7 +349,7 @@ void CreateNetCDF(const char fileName[])
     if (_rateDimIDs.find(rp->OutputRate) == _rateDimIDs.end())
     {
       char tmp[32];
-      sprintf(tmp, "sps%d", rp->OutputRate);
+      sprintf(tmp, "sps%zu", rp->OutputRate);
       nc_def_dim(fd, tmp, rp->OutputRate, &_rateDimIDs[rp->OutputRate]);
     }
 
@@ -365,7 +365,7 @@ void CreateNetCDF(const char fileName[])
       if (_vectorDimIDs.find(rp->Length) == _vectorDimIDs.end())
       {
         char tmp[32];
-        sprintf(tmp, "Vector%d", rp->Length);
+        sprintf(tmp, "Vector%zu", rp->Length);
         nc_def_dim(fd, tmp, rp->Length, &_vectorDimIDs[rp->Length]);
       }
 
@@ -443,7 +443,7 @@ void CreateNetCDF(const char fileName[])
     if (_rateDimIDs.find(dp->OutputRate) == _rateDimIDs.end())
     {
       char tmp[32];
-      sprintf(tmp, "sps%d", dp->OutputRate);
+      sprintf(tmp, "sps%zu", dp->OutputRate);
       nc_def_dim(fd, tmp, dp->OutputRate, &_rateDimIDs[dp->OutputRate]);
     }
 
@@ -459,7 +459,7 @@ void CreateNetCDF(const char fileName[])
       if (_vectorDimIDs.find(dp->Length) == _vectorDimIDs.end())
         {
         char tmp[32];
-        sprintf(tmp, "Vector%d", dp->Length);
+        sprintf(tmp, "Vector%zu", dp->Length);
         nc_def_dim(fd, tmp, dp->Length, &_vectorDimIDs[dp->Length]);
         }
 
@@ -475,7 +475,7 @@ void CreateNetCDF(const char fileName[])
     nc_put_att_text(fd, dp->varid, "DataQuality", strlen(dp->DataQuality)+1,
 		dp->DataQuality);
 
-    sprintf(buffer, "%d", dp->ndep);
+    sprintf(buffer, "%zu", dp->ndep);
     for (size_t j = 0; j < dp->ndep; ++j)
     {
       strcat(buffer, " ");
@@ -963,14 +963,17 @@ static int writeBlank(int varid, size_t start[], size_t count[], int OutputRate)
 /* -------------------------------------------------------------------- */
 static void writeMinMax()
 {
+  float range[2];
+
   for (size_t i = 0; i < raw.size(); ++i)
   {
     RAWTBL * rp = raw[i];
     if (!rp->Output)
       continue;
 
-    nc_put_att_float(fd, rp->varid, "actual_min", NC_FLOAT, 1, &rp->min);
-    nc_put_att_float(fd, rp->varid, "actual_max", NC_FLOAT, 1, &rp->max);
+    range[0] = rp->min;
+    range[1] = rp->max;
+    nc_put_att_float(fd, rp->varid, "actual_range", NC_FLOAT, 2, range);
     if (cfg.CoordinateLatitude().compare(rp->name) == 0) {
       putGlobalAttribute("geospatial_lat_min", &rp->min);
       putGlobalAttribute("geospatial_lat_max", &rp->max);
@@ -990,8 +993,9 @@ static void writeMinMax()
     if (!dp->Output)
       continue;
 
-    nc_put_att_float(fd, dp->varid, "actual_min", NC_FLOAT, 1, &dp->min);
-    nc_put_att_float(fd, dp->varid, "actual_max", NC_FLOAT, 1, &dp->max);
+    range[0] = dp->min;
+    range[1] = dp->max;
+    nc_put_att_float(fd, dp->varid, "actual_range", NC_FLOAT, 2, range);
     if (cfg.CoordinateLatitude().compare(dp->name) == 0) {
       putGlobalAttribute("geospatial_lat_min", &dp->min);
       putGlobalAttribute("geospatial_lat_max", &dp->max);
