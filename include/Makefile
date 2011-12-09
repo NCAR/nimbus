@@ -2,10 +2,10 @@
 #    Makefile for make_amlib program
 #	make_amlib sorts amlib.fns and creates amlibfn.h
 #
-CC=	gcc
+CC=	g++
 CFLAGS=	-O
 
-SRC=	make_amlib.c
+SRC=	make_amlib.cc
 PROG=	make_amlib
 
 all:	amlibfn.h svnInfo.h
@@ -19,8 +19,8 @@ amlibfn.h:	amlib.fns make_amlib
 xlatefns.h:	amlib.fns make_amlib
 	./make_amlib
 
-make_amlib: make_amlib.c
-	${CC} ${CFLAGS} make_amlib.c -o make_amlib
+make_amlib: make_amlib.cc
+	${CC} ${CFLAGS} make_amlib.cc -o make_amlib
 
 clean:
 	rm -f ${PROG} svnInfo.h amlibfn.h xlatefns.h amlibProto.h
