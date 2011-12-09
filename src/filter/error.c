@@ -20,11 +20,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 
 #include <csignal>
 
+void ShutdownSyncServer();
 
 /* -------------------------------------------------------------------- */
 void HandleFatalError(const char err_msg[])
 {
   fprintf(stderr, "%s\n", err_msg);
+  ShutdownSyncServer();
   kill(0, SIGTERM);
   exit(1);
 
