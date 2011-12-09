@@ -4,19 +4,8 @@ OBJECT NAME:	make_amlib.c
 
 FULL NAME:	Make amlibfn.h
 
-ENTRY POINTS:	main()
-
-STATIC FNS:	SortFns
-
-DESCRIPTION:	
-
-INPUT:		
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	Makefile
+DESCRIPTION:	Read nimbus/include/amlib.fns file, parse, sort, and generate
+		include files that are included by nimbus.
 -------------------------------------------------------------------------
 */
 
@@ -41,6 +30,7 @@ main()
   FILE	*in, *out, *xlate, *proto;
 
 
+  // Read nimbus/include/amlib.fns file.
   if ((in = fopen(INPUT_FILE, "r")) == NULL) {
     fprintf(stderr, "make_amlib: can't open %s\n", INPUT_FILE);
     exit(1);
@@ -62,8 +52,10 @@ main()
 
 
   SortFns(0, cnt - 1);
+  CheckForDuplicates(cnt);
 
 
+  // Generate output files.
   if ((out = fopen(OUTPUT_FILE, "w+")) == NULL) {
     fprintf(stderr, "make_amlib: can't open %s\n", OUTPUT_FILE);
     exit(1);
@@ -148,6 +140,27 @@ main()
   return(0);
 
 }	/* END MAIN */
+
+/* -------------------------------------------------------------------- */
+void CheckForDuplicates(int nRecords)
+{
+  int i;
+  char name[50], prevName[50], *s, *e;
+
+  for (i = 0; i < nRecords-1; ++i)
+  {
+    s = strchr(file[i], '"') + 1;
+    e = strchr(s, '"');
+    strncpy(name, s, e-s);
+    name[e-s] = '\0';
+
+    if (i > 0 && strcmp(name, prevName) == 0)
+    {
+      printf("WARNING: Duplicate name in amlib.fns!  [%s]\n", name);
+    }
+    strcpy(prevName, name);
+  }
+}
 
 /* -------------------------------------------------------------------- */
 char	*temp, *mid;
