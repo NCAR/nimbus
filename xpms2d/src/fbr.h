@@ -23,13 +23,13 @@ static String fallback_resources[] =
   "*XmTextField.foreground:		black",
   "*XmForm.horizontalSpacing:		4",
   "*XmForm.verticalSpacing:		4",
-  "*canvasShell.title:			xpms2d 2.6.0",
+  "*canvasShell.title:			xpms2d 2.6.1",
   "*canvasShell.iconName:		xpms2d",
   "*canvasShell.allowShellResize:	True",
   "*canvasShell.x:			25",
   "*canvasShell.y:			250",
   "*controlShell.title:			Probe Selection",
-  "*controlShell.x:			100",
+  "*controlShell.x:			900",
   "*controlShell.y:			25",
 
   "*movieRC*XmScale.orientation:	HORIZONTAL",
@@ -63,7 +63,7 @@ static String fallback_resources[] =
   "*drawForm.XmPushButton.height:	32",
 
   "*canvas.background:			grey",
-  "*canvas.height:			675",
+  "*canvas.height:			880",
   "*canvas.width:			1050",
 
   "*magShell.title:			Magnify Window",
