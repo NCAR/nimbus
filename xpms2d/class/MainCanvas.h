@@ -38,7 +38,7 @@ public:
   int	SpaceAvailable() const	{ return(Height() - y); }
 
 
-private:
+protected:
   void	drawPMS2D(P2d_rec *record, struct recStats &stats, float hdrVer, int probeNum, PostScript *ps);
   void	drawHVPS(P2d_rec *record, struct recStats &stats, float hdrVer, int probeNum, PostScript *ps);
   void	drawFast2D(P2d_rec *record, struct recStats &stats, float hdrVer, int probeNum, PostScript *ps);
@@ -46,6 +46,14 @@ private:
   void	drawSlice(PostScript *ps, int i, uint32_t slice);
   void	drawSlice(PostScript *ps, int i, unsigned long long slice);
   void	enchiladaLineItem(PostScript *ps, int i, int cnt, Particle *cp);
+
+  /**
+   * Count all shadowed diodes across the flight track and display histogram.
+   */
+  void drawDiodeHistogram(P2d_rec *record);
+
+  void drawAccumHistogram(struct recStats &stats);
+
 
   int	y, maxRecs;
   int	displayMode;

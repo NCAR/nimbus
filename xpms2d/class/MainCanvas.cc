@@ -537,7 +537,45 @@ void MainCanvas::drawHVPS(P2d_rec * record, struct recStats &stats, float versio
 }
 
 /* -------------------------------------------------------------------- */
-void MainCanvas::drawFast2D(P2d_rec * record, struct recStats &stats, float version, int probeNum, PostScript *ps)
+void MainCanvas::drawAccumHistogram(struct recStats &stats)
+{
+  pen->SetColor(color->GetColor(BLACK));
+
+  for (size_t i = 0; i < 128; ++i)
+  {
+    if (stats.accum[i] > 0)
+      pen->DrawLine(Surface(), 800+i, y+64, 800+i, y+(64-(stats.accum[i]*2)));
+  }
+}
+
+/* -------------------------------------------------------------------- */
+void MainCanvas::drawDiodeHistogram(P2d_rec *record)
+{
+  int histo[64];
+  memset(histo, 0, sizeof(histo));
+
+  unsigned long long *p = (unsigned long long *)record->data;
+  for (size_t i = 0; i < nSlices_64bit; ++i, ++p)         /* 2DC and/or 2DP       */
+  {
+    if ((*p & Fast2D_Mask) == Fast2D_Sync || (*p & Fast2D_Mask) == Fast2D_Overld)
+      continue;
+
+    for (size_t j = 0; j < 64; ++j)
+      if ( !((*p >> j) & 0x00000001) )
+        histo[j]++;
+  }
+
+  pen->SetColor(color->GetColor(BLACK));
+
+  for (size_t i = 0; i < 64; ++i)
+  {
+    if (histo[i] > 0)
+      pen->DrawLine(Surface(), 800, y+(63-i), 800+histo[i], y+(63-i));
+  }
+}
+
+/* -------------------------------------------------------------------- */
+void MainCanvas::drawFast2D(P2d_rec *record, struct recStats &stats, float version, int probeNum, PostScript *ps)
 {
   Particle	*cp;
   int		nextColor, cntr = 0;
@@ -659,6 +697,11 @@ void MainCanvas::drawFast2D(P2d_rec * record, struct recStats &stats, float vers
     drawSlice(ps, nSlices_64bit+i, ((unsigned long long *)record->data)[i]);
 pen->SetColor(color->GetColor(0)); }
 */
+
+  if (displayMode == DIAGNOSTIC)
+    drawDiodeHistogram(record);
+  else
+    drawAccumHistogram(stats);
 
   y += 32;
   stats.prevTime = prevTime;
