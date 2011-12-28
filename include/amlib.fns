@@ -793,6 +793,7 @@
 	"FXDIST",	(void(*)(void*))razInit,	NULL,		srange,
 	"FXAZIM",	NULL,		NULL,		sazimuth,
 	"DVALU",	NULL,		NULL,		sdiff,
+	"DVALUE",	NULL,		NULL,		sdiff,
 	"EDPC",		(void(*)(void*))edpcInit,	NULL,		sedpc,
 	"EDPUV",	NULL,		NULL,		sedpc,
 #
