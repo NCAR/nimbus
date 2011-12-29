@@ -18,7 +18,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2007
 #include "amlib.h"
 
 static const int nCals = 4;
-static NR_TYPE CX_1[] = { 0.5, 0.0, 0.0, 0.0 };
+static NR_TYPE CX_1[] = { 1.0, 0.0, 0.0, 0.0 };
 
 /* -------------------------------------------------------------------- */
 void rhouvInit(var_base *varp)
@@ -46,7 +46,7 @@ void srhouv(DERTBL *varp)
   NR_TYPE atx = GetSample(varp, 3);
   NR_TYPE rhouv, prev_uv;
 
-  static const int nSeconds = 10;
+  static const int nSeconds = 300;
   static int buffIndex = 0;
   static NR_TYPE uv_buffer[nSeconds], uv_sum;
 
@@ -60,7 +60,7 @@ void srhouv(DERTBL *varp)
     if (diff < -0.5)
       diff = -0.5;
     if (diff > 0.5)
-      diff = 0.25;
+      diff = 0.5;
 
     prev_uv = uv_buffer[buffIndex];
     uv_buffer[buffIndex] = diff;
