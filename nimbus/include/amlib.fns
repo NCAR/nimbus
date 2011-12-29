@@ -794,6 +794,7 @@
 	"FXAZIM",	NULL,		NULL,		sazimuth,
 	"DVALU",	NULL,		NULL,		sdiff,
 	"DVALUE",	NULL,		NULL,		sdiff,
+	"EWX",		NULL,		NULL,		sRefer,
 	"EDPC",		(void(*)(void*))edpcInit,	NULL,		sedpc,
 	"EDPUV",	NULL,		NULL,		sedpc,
 #
