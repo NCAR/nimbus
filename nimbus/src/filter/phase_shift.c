@@ -163,7 +163,7 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
         if (goodPoints > 0 && x[goodPoints] == x[goodPoints-1])
         {
           LogThisRecordMsg(this_rec, "!! Duplicate timestamp from nidas !!");
-          printf(" Duplicate timestamp from nidas! %s: ri=%d i=%d, sr=%d:\n", vp->name, ri, i, vp->SampleRate);
+          printf(" Duplicate timestamp from nidas! %s: ri=%zu i=%zu, sr=%zu:\n", vp->name, ri, i, vp->SampleRate);
           printf("    x=%f y=%f\n", x[goodPoints-1], y[goodPoints-1]);
           printf("    x=%f y=%f\n", x[goodPoints], y[goodPoints]);
           x[goodPoints] += 1;
@@ -223,7 +223,7 @@ resample(RAWTBL *vp, int lag, NR_TYPE *srt_out, NR_TYPE *hrt_out)
   {
     if (x[i] < x[i-1])
     {
-    sprintf(buffer, "Non-monotonically increasing time values: %s (%d/%d).", vp->name, i, goodPoints);
+    sprintf(buffer, "Non-monotonically increasing time values: %s (%zu/%zu).", vp->name, i, goodPoints);
     LogThisRecordMsg(this_rec, buffer);
 //    for (size_t j = 0; j < goodPoints; ++j)
 //      printf("%d, %f\n", (int)x[j], y[j]);

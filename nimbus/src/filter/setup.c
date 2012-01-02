@@ -347,7 +347,7 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
       if (raw[i]->SpikeSlope != 0.0)
         fprintf(fp, "SS=%e ", raw[i]->SpikeSlope);
 
-      fprintf(fp, "DQ=%s OR=%d nCOEF=%d", 
+      fprintf(fp, "DQ=%s OR=%zu nCOEF=%zu", 
 		raw[i]->DataQuality, raw[i]->OutputRate, raw[i]->cof.size());
 
       for (size_t j = 0; j < raw[i]->cof.size(); ++j)
@@ -359,7 +359,7 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
   for (size_t i = 0; i < derived.size(); ++i)
     if (derived[i]->Dirty)
     {
-      fprintf(fp, "DERIVED=%s O=%d DQ=%s OR=%d nDEP=%d",
+      fprintf(fp, "DERIVED=%s O=%d DQ=%s OR=%zu nDEP=%zu",
 				derived[i]->name,
 				derived[i]->Output,
 				derived[i]->DataQuality,

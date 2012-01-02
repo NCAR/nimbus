@@ -824,7 +824,7 @@ int DecodeHeader(const char header_file[])
     else
     if (!strcmp(item_type, NEPH903_STR))
       {
-      sprintf(location, "_%d", ++NephCnt);
+      sprintf(location, "_%zu", ++NephCnt);
       add_raw_names(item_type);
       }
     else
@@ -963,7 +963,7 @@ int DecodeHeader(const char header_file[])
         AVAPS = true;
         for (size_t i = 0; i < 4; ++i)
           {
-          sprintf(location, "_%02d", i);
+          sprintf(location, "_%02zu", i);
           add_raw_names(item_type);
           }
         }
@@ -984,7 +984,7 @@ int DecodeHeader(const char header_file[])
     {
     for (probeCnt = 0; probeCnt < 3; ++probeCnt)
       {
-      sprintf(location, "_%d", probeCnt);
+      sprintf(location, "_%zu", probeCnt);
       add_derived_names("PRCLTRK");
       }
 
@@ -1003,7 +1003,7 @@ int DecodeHeader(const char header_file[])
     int indx = SearchTable(derived, "AQRATIO");
     if (indx == ERR || isDependedUpon(derived[indx]) == false)
     {
-      char *msg = "\nC130 QC & PS variables now require AQRATIO.  Please fix DependTable.\n  Use a newer project as an example.  Older projects were not retro-fitted.\n";
+      const char *msg = "\nC130 QC & PS variables now require AQRATIO.  Please fix DependTable.\n  Use a newer project as an example.  Older projects were not retro-fitted.\n";
       LogMessage(msg);
       fprintf(stderr, msg);
       XtSetSensitive(goButton, false);

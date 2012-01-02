@@ -452,7 +452,7 @@ static int getCellSizes(const var_base * rp, float cellSize[])
      */
 // Note: ADS3 is propogating the problem until netCDF file refactor.
 // Then we should remove all evidence of this 0th bin from ADS2 & ADS3.
-    sprintf(buffer, "CELL_SIZE_%d", rp->Length - 1);
+    sprintf(buffer, "CELL_SIZE_%u", rp->Length - 1);
     p = GetPMSparameter(rp->SerialNumber.c_str(), buffer);
   }
 

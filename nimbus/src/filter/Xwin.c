@@ -559,7 +559,7 @@ Widget CreateEditWindow(Widget parent)
 
   for (i = 0; i < MAXDEPEND; ++i)
     {
-    sprintf(buffer, "ev_text%d", i);
+    sprintf(buffer, "ev_text%zu", i);
     ev_text[i] = XmCreateTextField(evRC[0], buffer, args, n);
 
     XtAddCallback(ev_text[i], XmNlosingFocusCallback, MapCalCof, NULL);
