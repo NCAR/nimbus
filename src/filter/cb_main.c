@@ -1310,7 +1310,7 @@ static void LogLagErrors()
   {
     if (raw[i]->badLagCntr > 0)
     {
-      sprintf(buffer, "%s: %u bad Lags.\n", raw[i]->name, raw[i]->badLagCntr);
+      sprintf(buffer, "%s: %zu bad Lags.\n", raw[i]->name, raw[i]->badLagCntr);
       LogMessage(buffer);
     }
   }

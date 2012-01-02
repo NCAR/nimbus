@@ -66,7 +66,7 @@ void AllocateDataArrays()
     if (raw[i]->Length < 1)	// Sanity check.
     {
       char msg[1000];
-      sprintf(msg, "memalloc.c::AllocateDataArrays:: %s has Length of %d!  Fatal.\n",
+      sprintf(msg, "memalloc.c::AllocateDataArrays:: %s has Length of %zu!  Fatal.\n",
 	raw[i]->name, raw[i]->Length);
       HandleFatalError(msg);
     }
