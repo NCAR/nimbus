@@ -235,7 +235,16 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
       openw,2,textfilename
       printf,2,'Reftime: ',firstfooter.reftime
       printf,2,'Acquisition Start: ',firstfooter.acqstart
-      printf,2,'time diam(um) Af Branches mux sensor tof missed scatter'
+      printf,2,'Data output for each column: '
+      printf,2,'  1: particle time [seconds from midnight]'
+      printf,2,'  2: particle diameter [microns]'
+      printf,2,'  3: asphericity factor [unitless]'
+      printf,2,'  4: FFT branch count [#]'
+      printf,2,'  5: multiplexor sensor number [#]'
+      printf,2,'  6: mux sensor value [raw units]' 
+      printf,2,'  7: transit time [nanoseconds]'
+      printf,2,'  8: mean scatter [raw units]'
+      printf,2,'-------------------------------------------'
    ENDIF
   
    ;------------Read data----------------------------------------------------
