@@ -4,11 +4,9 @@ OBJECT NAME:	dpc.c
 
 FULL NAME:	Dew point
 
-ENTRY POINTS:	dpInit()
+ENTRY POINTS:	dp??Init()
 		sdpc_GG()
 		sdpc_MK()
-
-STATIC FNS:	none
 
 DESCRIPTION:	Computes the difference between dew point and frost point
 		derived from Murphy-Koop vapor pressure equations for plane
@@ -16,14 +14,22 @@ DESCRIPTION:	Computes the difference between dew point and frost point
 		with respect to a plane water surface.  The accuracy of
 		conversion (one sigma) is 0.02C over range of 0C to -80 C.
 
-INPUT:		DP measured, PSXC
+INPUT:		GG <= Raw DP
+		MK <= EW
 
-OUTPUT:		DPC deg_C
+OUTPUT:		Dew/Frost Point in deg_C
 
 REFERENCES:	Suggested Changes to the Algorithms for the Calculation of
 		Vapor Pressure, Al Cooper, February 21, 2011
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2011
+NOTE:		The processing chain has been reversed between Goff-Gratch
+		and Murphy-Koop.  GG took a mirror temperature (raw DP) and
+		produced a dew/frost point.  This was used to produce water
+		vapor pressure.  In Murphy Koop we compute the water vapor
+		pressure first with a pressure correction, then we produce
+		a dew/frost point.
+
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2012
 -------------------------------------------------------------------------
 */
 
@@ -34,8 +40,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2011
 #include <gsl/gsl_spline.h>
 
 double fw(double, double);	// See esubt.c
-
-std::map<std::string, bool> dp_method;
 
 static const size_t TableSize = 300;
 static double ttable[TableSize];
@@ -62,38 +66,29 @@ void sdpc_GG(DERTBL *varp)	// Goff-Gratch.
 /* -------------------------------------------------------------------- */
 void sdpc_MK(DERTBL *varp)	// Murphy-Koop.
 {
-  double dp = GetSample(varp, 0);
-  double psxc = GetSample(varp, 1);
-  double Tk = dp + Kelvin;
-  double e;
+  double e = GetSample(varp, 0);
 
-  // fw() From Murphy and Koop, 2005.  Enhancement factor.  See esubt.c
-  e = WaterVaporPressure(Tk) * fw(Tk, psxc);
-  dp = gsl_interp_eval(linear, etable, ttable, e, acc);
+  NR_TYPE dp = gsl_interp_eval(linear, etable, ttable, e, acc);
 
   PutSample(varp, (NR_TYPE)dp);
 }
 
 /* -------------------------------------------------------------------- */
-void dpInit(var_base *varp)
+void dpggInit(var_base *varp)
 {
-  if (((DERTBL *)varp)->ndep == 1)
-  {
-    dp_method[varp->name] = false;
-    ((DERTBL *)varp)->compute = (void (*)(void*))sdpc_GG;
-    AddToAttributes(varp->name, "Method", "Goff-Gratch");
-  }
-  else
-  {
-    dp_method[varp->name] = true;
-    AddToAttributes(varp->name, "Method", "Murphy-Koop");
-  }
+  AddToAttributes(varp->name, "Method", "Goff-Gratch");
+}
+
+/* -------------------------------------------------------------------- */
+void dpmkInit(var_base *varp)
+{
+  AddToAttributes(varp->name, "Method", "Murphy-Koop");
 
   // Bail out if we've already initialized the interp stuff.  Only needed once.
   if (linear)
     return;
 
-  // Setup temperature / water vapor table in half degC increments.
+  // Setup temperature / water vapor table in half degC increments for Murphy-Koop.
   double t = -100.0;	// -100C
   for (size_t i = 0; i < TableSize; ++i)
   {

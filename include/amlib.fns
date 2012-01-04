@@ -768,13 +768,18 @@
 	"FLOW4C",	NULL,		NULL,		scFlow,
 	"FLOW5C",	NULL,		NULL,		scFlow,
 #
-#	Dew Pointers.
+#	Water Vapor Pressure and Dew Pointers.
 #
-	"DPBC",		(void(*)(void*))dpInit,		NULL,		sdpc_MK,
-	"DPRC",		(void(*)(void*))dpInit,		NULL,		sdpc_MK,
-	"DPLC",		(void(*)(void*))dpInit,		NULL,		sdpc_MK,
-	"DPTC",		(void(*)(void*))dpInit,		NULL,		sdpc_MK,
+	"EDPC",		(void(*)(void*))edpcInit,	NULL,	sedpc,
+	"EDPUV",	(void(*)(void*))edpcInit,	NULL,	sedpc,
+	"EW",		(void(*)(void*))ewInit,		NULL,	sew,
+	"DPTC",		(void(*)(void*))dpggInit,	NULL,	sdpc_GG,
+	"DPBC",		(void(*)(void*))dpggInit,	NULL,	sdpc_GG,
+	"DPLC",		(void(*)(void*))dpggInit,	NULL,	sdpc_GG,
+	"DPRC",		(void(*)(void*))dpggInit,	NULL,	sdpc_GG,
+	"DP",		(void(*)(void*))dpmkInit,	NULL,	sdpc_MK,
 	"DPCRC",	NULL,		NULL,		sdpcrc,
+	"EWX",		NULL,		NULL,		sRefer,
 	"DPXC",		NULL,		NULL,		sRefer,
 #
 #	Others
@@ -794,9 +799,6 @@
 	"FXAZIM",	NULL,		NULL,		sazimuth,
 	"DVALU",	NULL,		NULL,		sdiff,
 	"DVALUE",	NULL,		NULL,		sdiff,
-	"EWX",		NULL,		NULL,		sRefer,
-	"EDPC",		(void(*)(void*))edpcInit,	NULL,		sedpc,
-	"EDPUV",	NULL,		NULL,		sedpc,
 #
 #   NRL P-3 stuff
 	"RALT",		NULL,		NULL,		feet2meters,
