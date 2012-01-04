@@ -5,6 +5,7 @@ OBJECT NAME:	esubt.c
 FULL NAME:	Water Vapor Pressure
 
 ENTRY POINTS:	esubt()
+		ew()
 		sedpc()
 
 DESCRIPTION:	ESUBT function prior to 2011was based on the Goff-Gratch formula
@@ -18,7 +19,12 @@ DESCRIPTION:	ESUBT function prior to 2011was based on the Goff-Gratch formula
 		After Feb 18, the code includes the enhancement factor of Murphy
 		and Koop ("Q. J. Roy. Met. Soc.", Vol. 131, pp. 1539-1565, 2005).
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2011
+NOTE:		esubt() produces a water vapor pressure from a corrected
+		dew/frost point (DPC or such).
+		ew() produces water vapor pressure from a mirror temperature
+		or raw DP value.
+
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2012
 -------------------------------------------------------------------------
 */
 
@@ -82,8 +88,6 @@ double fw(double Tk, double pressure)
   return 1.0 + 1.0e-5 * pressure * (4.923 - 0.0325 * Tk + 5.84e-5 * Tk * Tk);
 }
 
-static bool MurphyKoop = true;
-
 /* -------------------------------------------------------------------- */
 double esubt(double temperature, double pressure)
 {
@@ -93,47 +97,54 @@ double esubt(double temperature, double pressure)
   if (Tk < 1.0)
     Tk = 1.0;
 
-  if (MurphyKoop)
-    ew = WaterVaporPressure(Tk);
-  else
-  {
-    ew = pow(10.0, (
+  ew = pow(10.0, (
 	-7.90298 * ((Ts / Tk) - 1.0)
 	+5.02808 * log10(Ts / Tk)
 	-1.3816e-7 * (pow(10.0, 11.344 * (1.0 - Tk / Ts)) - 1.0)
 	+8.1328e-3 * (pow(10.0, -3.49149 * (Ts / Tk - 1.0)) - 1.0))
 	+log10(StdPress) );
 
-    // Arden Buck's pressure enhancement factor.
-    double fw = 1.0007 + (3.46e-6 * pressure);
-    ew *= fw;
-  }
+  // Arden Buck's pressure enhancement factor.
+  double fw = 1.0007 + (3.46e-6 * pressure);
 
-  return ew;
+  return ew * fw;
+}
+
+/* -------------------------------------------------------------------- */
+void ewInit(var_base *varp)
+{
+  AddToAttributes(varp->name, "Method", "Murphy-Koop");
 }
 
 /* -------------------------------------------------------------------- */
 void edpcInit(var_base *varp)
 {
-  extern std::map<std::string, bool> dp_method;
-  std::string dp(((DERTBL *)((DERTBL *)varp)->depends[0])->depend[0]);
+  AddToAttributes(varp->name, "Method", "Goff-Gratch");
+}
 
-  if (dp_method.count(dp) > 0)
-    MurphyKoop = dp_method[dp];
-
-  if (MurphyKoop)
-    AddToAttributes(varp->name, "Method", "MurphyKoop");
-  else
-    AddToAttributes(varp->name, "Method", "GoffGratch");
+/* -------------------------------------------------------------------- */
+void sew(DERTBL *varp)
+{
+  double Tk = GetSample(varp, 0) + Kelvin;
+  double psxc = GetSample(varp, 1);
+ 
+  // fw() From Murphy and Koop, 2005.  Enhancement factor.  See esubt.c
+  double e = WaterVaporPressure(Tk) * fw(Tk, psxc);
+  if (varp->ndep > 2)
+  {
+    NR_TYPE psdp = GetSample(varp, 2);	// DP Cavity Pressure.
+    NR_TYPE Rx = psxc / psdp;
+    e *= Rx;
+  }
+  
+  PutSample(varp, e);
 }
 
 /* -------------------------------------------------------------------- */
 void sedpc(DERTBL *varp)
 {
-  NR_TYPE	dpxc, psxc;
-
-  dpxc = GetSample(varp, 0);
-  psxc = GetSample(varp, 1);
+  NR_TYPE dpxc = GetSample(varp, 0);
+  NR_TYPE psxc = GetSample(varp, 1);
  
   PutSample(varp, (NR_TYPE)esubt(dpxc, psxc));
 }
