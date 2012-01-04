@@ -102,7 +102,8 @@ void sirc(DERTBL *varp)
      * DTT and DTB.
      */
     dt = dome_temp_cal[0] + dome_temp_cal[1] * log10(dt);
-    PutSample(varp->depends[1], dt);
+    PutSample(varp->depends[1], dt);  // this does not write into SampleRateData, just AveragedData....
+
     PutSample(varp, ((cals[varp->name])[0] * ir - (cals[varp->name])[1]) + SBC * pow(dt+Kelvin, 4.0));
   }
   else	// Eppley Pyrgeometer (up to about 2005).
