@@ -1108,9 +1108,8 @@ static void addCommonVariableAttributes(const var_base *var)
     nc_put_att_float(fd, var->varid, "valid_range", NC_FLOAT, 2, range);
   }
 
-  float zero = 0.0;
-  nc_put_att_float(fd, var->varid, "actual_min", NC_FLOAT, 1, &zero);
-  nc_put_att_float(fd, var->varid, "actual_max", NC_FLOAT, 1, &zero);
+  float zero[2] = { 0.0, 0.0 };
+  nc_put_att_float(fd, var->varid, "actual_range", NC_FLOAT, 2, zero);
 
   if (var->CategoryList.size() > 0)
   {
