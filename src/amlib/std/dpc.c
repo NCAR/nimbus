@@ -39,17 +39,12 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2012
 
 #include <gsl/gsl_spline.h>
 
-double fw(double, double);	// See esubt.c
-
 static const size_t TableSize = 300;
 static double ttable[TableSize];
 static double etable[TableSize];
 
 static gsl_interp_accel *acc;
 static gsl_interp *linear = 0;
-
-double WaterVaporPressure(double Tk);
-double WaterVaporPressureOfWater(double Tk);
 
 
 /* -------------------------------------------------------------------- */
@@ -82,6 +77,9 @@ void dpggInit(var_base *varp)
 /* -------------------------------------------------------------------- */
 void dpmkInit(var_base *varp)
 {
+  double WaterVaporPressure(double Tk);
+  double WaterVaporPressureOfWater(double Tk);
+
   AddToAttributes(varp->name, "Method", "Murphy-Koop");
 
   // Bail out if we've already initialized the interp stuff.  Only needed once.
