@@ -403,9 +403,9 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
   {
     nidas::dynld::raf::SyncRecordVariable *var = const_cast<nidas::dynld::raf::SyncRecordVariable*>(*vi);
 
-    char name[64];
-    strcpy(name, var->getName().c_str());
-    char * p = strrchr(name, '_');
+    char name_sans_location[64];
+    strcpy(name_sans_location, var->getName().c_str());
+    char * p = strrchr(name_sans_location, '_');
     if (p)
     {
       strcpy(location, p);
@@ -420,7 +420,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     {
       char msg[256];
 
-      sprintf(msg, "hdr_decode.c: %s: Assertion `SampleRate > 0' failed.", name);
+      sprintf(msg, "hdr_decode.c: %s: Assertion `SampleRate > 0' failed.", var->getName().c_str());
       LogMessage(msg);
       quit();
     }
@@ -443,7 +443,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     RAWTBL *rp;
     if (var->getConverter() == 0)
     {
-      rp = add_name_to_RAWTBL(name);
+      rp = add_name_to_RAWTBL(name_sans_location);
       rp->LAGstart = var->getLagOffset();
       rp->Units = var->getUnits();
       rp->LongName = var->getLongName();
@@ -454,7 +454,6 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
         rp->OutputRate = rp->SampleRate;
 
       length = 1;
-      add_derived_names(name);
     }
     else
     {
@@ -464,6 +463,8 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
       if (cfg.ProcessingMode() == Config::RealTime)
         rp->OutputRate = rp->SampleRate;
     }
+
+    add_derived_names(name_sans_location);
 
     if (rp->Units.compare("count") == 0)
     {
@@ -538,7 +539,6 @@ static RAWTBL* initSDI_ADS3(nidas::dynld::raf::SyncRecordVariable* var)
     cp->Units = converter->getUnits();
   }
 
-  add_derived_names(cp->name);
   return(cp);
 }
 
@@ -2079,7 +2079,7 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
   {
     char msg[128];
 
-    sprintf(msg, "add_name_to_RAWTBL: Throwing away %s, has no decode function.\n", name);
+    sprintf(msg, "add_name_to_RAWTBL: Throwing away %s, has no decode function.\n", fullName);
     LogMessage(msg);
     return((RAWTBL *)ERR);
   }
@@ -2138,7 +2138,7 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
 /* -------------------------------------------------------------------- */
 static DERTBL *add_name_to_DERTBL(const char name[])
 {
-  int		indx;
+  int	indx;
 
   if ((indx = SearchDERIVEFTNS(name)) == ERR)
   {
