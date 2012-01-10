@@ -2136,18 +2136,24 @@ static RAWTBL *add_name_to_RAWTBL(const char name[])
 }	/* END ADD_NAME_TO_RAWTBL */
 
 /* -------------------------------------------------------------------- */
-static DERTBL *add_name_to_DERTBL(const char name[])
+static DERTBL *add_name_to_DERTBL(const char name_sans_location[])
 {
   int	indx;
 
-  if ((indx = SearchDERIVEFTNS(name)) == ERR)
+  if ((indx = SearchDERIVEFTNS(name_sans_location)) == ERR)
   {
     char	msg[128];
 
-    sprintf(msg, "add_name_to_DERTBL: Throwing away %s, has no compute function.\n", name);
+    sprintf(msg, "add_name_to_DERTBL: Throwing away %s, has no compute function.\n", name_sans_location);
     LogMessage(msg);
     return((DERTBL *)ERR);
   }
+
+  char name[512];
+  strcpy(name, name_sans_location);
+
+  if (*location)
+    strcat(name, location);
 
   if (SearchTable(raw, name) != ERR)
   {
@@ -2181,9 +2187,6 @@ static DERTBL *add_name_to_DERTBL(const char name[])
 
   addUnitsAndLongName(dp);
   dp->CategoryList.push_back("Derived");
-
-  if (*location)
-    strcat(dp->name, location);
 
   dp->Initializer	= deriveftns[indx].constructor;
   dp->compute		= (void (*) (void *))deriveftns[indx].compute;
