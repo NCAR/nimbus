@@ -781,10 +781,6 @@
 	"DPCRC",	NULL,		NULL,		sdpcrc,
 	"EWX",		NULL,		NULL,		sRefer,
 	"DPXC",		NULL,		NULL,		sRefer,
-#	"DPLCRX",	NULL,		NULL,		sdpc_MK,
-#	"DPRCRX",	NULL,		NULL,		sdpc_MK,
-	"EWLCRXF",	NULL,		NULL,		sew_RXF,
-	"EWRCRXF",	NULL,		NULL,		sew_RXF,
 #
 #	Others
 #
