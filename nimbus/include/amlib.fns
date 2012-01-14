@@ -667,7 +667,7 @@
 	"H2O2",		NULL,		NULL,		smissval,
 	"ROOH",		NULL,		NULL,		smissval,
 	"MHPEQ",	NULL,		NULL,		smissval,
-	"XCOMR",	NULL,		NULL,		sco_al,
+	"XCO_AL",	(void(*)(void*))initCOAL,	NULL,		sco_al,
 #
 #
 #	Solar Angle Calculations
@@ -781,6 +781,10 @@
 	"DPCRC",	NULL,		NULL,		sdpcrc,
 	"EWX",		NULL,		NULL,		sRefer,
 	"DPXC",		NULL,		NULL,		sRefer,
+#	"DPLCRX",	NULL,		NULL,		sdpc_MK,
+#	"DPRCRX",	NULL,		NULL,		sdpc_MK,
+	"EWLCRXF",	NULL,		NULL,		sew_RXF,
+	"EWRCRXF",	NULL,		NULL,		sew_RXF,
 #
 #	Others
 #
@@ -884,8 +888,8 @@
 	"CHGME",	NULL,		xlchgme,	NULL,
 	"HGME",		NULL,		xlhgme,		NULL,
 	"HGM",		NULL,		xlhgm,		NULL,
-	"IRBC",		(void(*)(void*))initPyrgeometer, NULL,	sirc,
-	"IRTC",		(void(*)(void*))initPyrgeometer, NULL,	sirc,
+	"IRBC",		(void(*)(void*))initPyrgeometer,	NULL,	sirc,
+	"IRTC",		(void(*)(void*))initPyrgeometer,	NULL,	sirc,
 	"LWCC",		NULL,		NULL,		slwcc,
 	"MR",		NULL,		NULL,		smr,
 	"MRLA",		NULL,		NULL,		smrla,
