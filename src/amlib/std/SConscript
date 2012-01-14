@@ -90,6 +90,7 @@ thetav.c
 thf.c
 tsurf.c
 tvir.c
+vcsel.c
 wd.c
 ws.c
 xmach2.c

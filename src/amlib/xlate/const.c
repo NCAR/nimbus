@@ -53,6 +53,9 @@ const double Lv = -2370.0;
 // Gamma for an ideal gas (do not change this to actually divide Rd/Cpd).
 const double Rd_DIV_Cpd = 2.0 / 7.0;
 
+// Boltzmann's constant
+const double  Boltzmann = 1.380658e-23;
+
 const double WH_GRAVITY = 9.7959;	// Gravity in Woodland Hills
 const double GRAVITY = 9.80621770635;	// Gravity in Michigan
 
