@@ -60,29 +60,40 @@ FULL NAME:	CO Mixing Ratio
 
 ENTRY POINTS:	sco_al()
 
-STATIC FNS:	none
-
-DESCRIPTION:	Calculate CO mixing ration of the AL instrument.
+DESCRIPTION:	Calculate CO mixing ration of the AL instrument.  This
+		just applies a calibration.  Seperate variable so that
+		raw variable is available also.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 2010.
 -------------------------------------------------------------------------
 */
 
+static NR_TYPE CO_CAL[3] = { 7000.0, 170.0, 0.0 };
+
+void initCOAL(var_base *varp)
+{
+  float *tmp;
+
+  if ( (tmp = GetDefaultsValue("CO_CAL", varp->name)) )
+  {
+    for (int i = 0; i < 2; ++i)
+      CO_CAL[i] = tmp[i];
+  }
+}
 
 /* -------------------------------------------------------------------- */
 void sco_al(DERTBL *varp)
 {
+  NR_TYPE	xcoraw_al, xco_al;
 
-	NR_TYPE	xcoraw_al, xco_al;
+  xcoraw_al = GetSample(varp, 0);
 
-	xcoraw_al = GetSample(varp, 0);
-
-        /* CO mixing ratio according to Teresa Campos */
-        xco_al = (xcoraw_al - 8000.0) * 200/36000;
+   /* CO mixing ratio according to Teresa Campos */
+    xco_al = (xcoraw_al - CO_CAL[0]) / CO_CAL[1];
 
 
-	/* co2 concentration calculation - 308.11 is licor std. cal. temp. */
-	PutSample(varp, xco_al);
+  /* co2 concentration calculation - 308.11 is licor std. cal. temp. */
+  PutSample(varp, xco_al);
 
 }	/* END SCO_AL */
 
