@@ -890,6 +890,7 @@
 	"MR",		NULL,		NULL,		smr,
 	"MRLA",		NULL,		NULL,		smrla,
 	"MRLA1",	NULL,		NULL,		smrla,
+	"VMR",		NULL,		NULL,		svmr,
 	"NDVI",		NULL,		NULL,		sndvi,
 	"PALT",		NULL,		NULL,		spalt,
 	"PALTF",	NULL,		NULL,		meters2feet,
