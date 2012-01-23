@@ -403,7 +403,8 @@ void WriteWindBarbsKML_Folder(std::ofstream & googleEarth)
       int iwd = (int)_wd[i];
       char url[512];
 
-      sprintf(url, "<href>http://www.eol.ucar.edu/flight_data/display/windbarbs/%03d/wb_%03d_%03d.png</href>\n", iws, iws, iwd);
+      sprintf(url, "<href>http://%s/flight_data/display/windbarbs/%03d/wb_%03d_%03d.png</href>\n",
+		webHost.c_str(), iws, iws, iwd);
 
       googleEarth
         << "  <Placemark>\n"
@@ -811,7 +812,6 @@ void updateData(PGresult * res, int indx)
   _ws.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WS)) );
   _wd.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WD)) );
   _wi.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WI)) );
-
 }
 
 /*-------------------------------------------------------------------- */
@@ -827,6 +827,7 @@ void GetNewData(PGconn * conn, std::string query)
 // This was originally written to accrete new data, but it didn't keep
 // track correctly.  So for now just refetch all data.
 _lat.clear(); _lon.clear(); _alt.clear(); _date.clear();
+_at.clear(); _tas.clear(); _ws.clear(); _wd.clear(); _wi.clear();
 
   if (_lat.size() == 0)	// First time.
   {
