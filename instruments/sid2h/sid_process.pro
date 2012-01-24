@@ -231,7 +231,7 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
    IF op.textfile eq 1 THEN BEGIN
       pbprange=sid_pbp_timeprompt(starttime,stoptime)
       free_lun,2
-      textfilename=op.outdir+date.mdy+'_'+strtrim(string(long(sid_sfm2hms(starttime))),2)+'_SID.txt'
+      textfilename=op.outdir+date.mdy+'_'+strtrim(string(long(sid_sfm2hms(pbprange.start))),2)+'_SID.txt'
       openw,2,textfilename
       printf,2,'Reftime: ',firstfooter.reftime
       printf,2,'Acquisition Start: ',firstfooter.acqstart
@@ -243,7 +243,8 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
       printf,2,'  5: multiplexor sensor number [#]'
       printf,2,'  6: mux sensor value [raw units]' 
       printf,2,'  7: transit time [nanoseconds]'
-      printf,2,'  8: mean scatter [raw units]'
+      printf,2,'  8: missed particle count [#]'
+      printf,2,'  9: mean scatter [raw units]'
       printf,2,'-------------------------------------------'
    ENDIF
   
@@ -295,7 +296,7 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
       FOR ievents=0,nevents-1 DO BEGIN
          point_lun,lun,events[ievents]
          ev=sid_read_next(lun)
-         index=(sid_ft2sfm(ev.systime) - starttime)/rate
+         index=(sid_ft2sfm(ev.systime) - starttime + op.clockoffset)/rate
          IF (index gt 0) and (index lt (num-1)) THEN BEGIN
             eventindex=[eventindex,index]
             eventtype=[eventtype,ev.type]
@@ -315,7 +316,7 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
          b=sid_read_next(lun)
          IF b.error eq 0 THEN BEGIN
          ;Update mux values
-         index=(sid_ft2sfm(b.systime) - starttime)/rate
+         index=(sid_ft2sfm(b.systime) - starttime + op.clockoffset)/rate
          IF (index gt 0) and (index lt (num-1)) THEN BEGIN
             muxvalue[index,b.mux]=muxvalue[index,b.mux]+b.sensor
             nbmux[index,b.mux]=nbmux[index,b.mux]+1
@@ -324,7 +325,7 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
          ;Process each particle in the datablock
          FOR i=0,b.num-1 DO BEGIN
             ;Find time index
-            index=((sid_ft2sfm((b.elaptime[i]-footer.reftime)/100+footer.acqstart)) - starttime)/rate
+            index=((sid_ft2sfm((b.elaptime[i]-footer.reftime)/100+footer.acqstart)) - starttime + op.clockoffset)/rate
             ;Skip over 'forced' particles
             IF (b.forced[i] eq 0) and (index gt 0) and (index lt (num-1)) THEN BEGIN  
                                             
@@ -349,7 +350,7 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
                IF op.textfile eq 1 THEN BEGIN
                   ;stop
                   IF (time[index] gt pbprange.start) and (time[index] lt pbprange.stop) THEN $
-                  printf,2,(sid_date((b.elaptime[i]-footer.reftime)/100+footer.acqstart)).time, $
+                  printf,2,(sid_date((b.elaptime[i]-footer.reftime)/100+footer.acqstart)).time + op.clockoffset, $
                   a.size,a.af,a.branches,b.mux[i],b.sensor[i],b.tof[i],b.missed[i],mean(scatter_adjusted), $ ;b.elaptime[i]-footer.reftime,
                   format='(f15.5,2f7.1,i3,i3,i6,i6,i6,i6)' 
                ENDIF

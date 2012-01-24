@@ -14,6 +14,7 @@ PRO sid_event, ev
             widget_control,widget_info(ev.top,find='sizegain'),set_value=op.sizegain
             widget_control,widget_info(ev.top,find='intthreshold'),set_value=op.intthreshold
             widget_control,widget_info(ev.top,find='maxsaturated'),set_value=op.maxsaturated
+            widget_control,widget_info(ev.top,find='clockoffset'),set_value=op.clockoffset
             ;--------TAS stuff
             widget_control,widget_info(ev.top,find='tas'),set_value=op.fixedtas
             widget_control,widget_info(ev.top,find='pthfile'),set_value=op.pthfile
@@ -114,6 +115,7 @@ PRO sid_event, ev
             widget_control,widget_info(ev.top,find='sizegain'),get_value=sizegain
             widget_control,widget_info(ev.top,find='intthreshold'),get_value=intthreshold
             widget_control,widget_info(ev.top,find='maxsaturated'),get_value=maxsaturated
+            widget_control,widget_info(ev.top,find='clockoffset'),get_value=clockoffset
 
             ;--------Checkboxes
             id=widget_info(ev.top,find='options')
@@ -142,7 +144,7 @@ PRO sid_event, ev
             op={fn_orig:fn,  rate:rate, sizegain:sizegain, intthreshold:intthreshold,$
             pthfile:pthfile, textfile:textfile, fixedtas:fixedtas, autolevel:autolevel,$            
             speedreject:speedreject, outdir:outdir, maxsaturated:maxsaturated, tastag:tastag,$
-            peak:peak, createsav:createsav, createncdf:createncdf, ncappend:ncappend}
+            peak:peak, createsav:createsav, createncdf:createncdf, ncappend:ncappend, clockoffset:clockoffset}
 
             widget_control,widget_info(ev.top,find='process'),set_value='Processing...'
             sid_process, op, statuswidgetid=widget_info(ev.top,find='process')
@@ -218,13 +220,14 @@ PRO sid, h=h
     dummy=widget_label(subbase2,value='---Processing Options---',/align_left)
     subbase2a=widget_base(subbase2,row=1)
     rate=cw_field(subbase2a,/int, title='Averaging Time (s):',uname='rate' , xsize=4, value=defaultrate)
+    clockoffset=cw_field(subbase2a,/float, title='Clock Correction (s):',uname='clockoffset' , xsize=5, value=0.00)
     sizegain=cw_field(subbase2a,/float, title='Size Gain:',uname='sizegain', value=defaultgain, xsize=5)
-    intthreshold=cw_field(subbase2a,/float, title='Min Interarrival (s):',uname='intthreshold', value=defaultinterarrival, xsize=12)
     subbase2b=widget_base(subbase2,row=1)
     rate=cw_field(subbase2b,/int, title='Saturation Max (#):',uname='maxsaturated' , xsize=4, value=defaultsaturation)
-    
+    intthreshold=cw_field(subbase2b,/float, title='Min Interarrival (s):',uname='intthreshold', value=defaultinterarrival, xsize=12)
+    subbase2c=widget_base(subbase2,row=1)
     vals=['Speed Rejection','Auto-leveling','Peak']
-    advanced=cw_bgroup(subbase2b,vals,uname='options',/row,/nonexclusive,uval=vals,set_value=[1,1,1])
+    advanced=cw_bgroup(subbase2c,vals,uname='options',/row,/nonexclusive,uval=vals,set_value=[1,1,1])
 
 
     ;---------Output directory and process button-------------------------

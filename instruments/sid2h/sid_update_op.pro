@@ -16,5 +16,6 @@ PRO sid_update_op, op
    IF total(where(tag_names(op) eq 'CREATESAV')) eq -1 THEN op=create_struct(op,'createsav',1)
    IF total(where(tag_names(op) eq 'NCAPPEND')) eq -1 THEN op=create_struct(op,'ncappend',0)
    IF total(where(tag_names(op) eq 'FINALPROCESSING')) eq -1 THEN op=create_struct(op,'finalprocessing',0)
+   IF total(where(tag_names(op) eq 'CLOCKOFFSET')) eq -1 THEN op=create_struct(op,'clockoffset',0)
 END
   
