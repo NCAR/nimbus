@@ -40,8 +40,10 @@ void SetNASABaseTime(int hour, int min, int sec)
 
   strftime(buff, 128, "seconds since %F %T %z", &StartFlight);
 
-  nc_put_att_text(ncid, timeVarID, "units", strlen(buff)+1, buff);
-  nc_put_att_text(ncid, timeOffsetID, "units", strlen(buff)+1, buff);
+  status = nc_put_att_text(ncid, timeVarID, "units", strlen(buff)+1, buff);
+  if (status != NC_NOERR) handle_error(status);
+  status = nc_put_att_text(ncid, timeOffsetID, "units", strlen(buff)+1, buff);
+  if (status != NC_NOERR) handle_error(status);
 
 }	/* END SETNASABASETIME */
 
@@ -60,16 +62,19 @@ void CreateNASAamesNetCDF(FILE *fp)
 
   /* Dimensions.
    */
-  nc_def_dim(ncid, "Time", NC_UNLIMITED, &TimeDim);
+  status = nc_def_dim(ncid, "Time", NC_UNLIMITED, &TimeDim);
+  if (status != NC_NOERR) handle_error(status);
 
   sprintf(buffer, "sps%d", dataRate);
-  nc_def_dim(ncid, buffer, dataRate, &RateDim);
+  status = nc_def_dim(ncid, buffer, dataRate, &RateDim);
+  if (status != NC_NOERR) handle_error(status);
 
 
   /* Global Attributes.
    */
   strcpy(buffer, "NCAR-RAF/nimbus");
-  nc_put_att_text(ncid, NC_GLOBAL, "Conventions", strlen(buffer)+1, buffer);
+  status = nc_put_att_text(ncid, NC_GLOBAL, "Conventions", strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
 
   {
   time_t	t;
@@ -78,8 +83,9 @@ void CreateNASAamesNetCDF(FILE *fp)
   t = time(0);
   tm = *gmtime(&t);
   strftime(buffer, 128, "%h %d %R GMT %Y", &tm);
-  nc_put_att_text(ncid, NC_GLOBAL, "DateConvertedFromASCII", 
+  status = nc_put_att_text(ncid, NC_GLOBAL, "DateConvertedFromASCII", 
                   strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
   }
 
 
@@ -97,25 +103,29 @@ void CreateNASAamesNetCDF(FILE *fp)
   /* Get PI */
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
-  nc_put_att_text(ncid, NC_GLOBAL, "PI", strlen(buffer)+1, buffer);
+  status = nc_put_att_text(ncid, NC_GLOBAL, "PI", strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
   printf("PI: %s\n", buffer);
 
   /* Get Data Source Institution */
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
-  nc_put_att_text(ncid, NC_GLOBAL, "Source", strlen(buffer)+1, buffer);
+  status = nc_put_att_text(ncid, NC_GLOBAL, "Source", strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
   printf("Source: %s\n", buffer);
 
   /* Get probe name */
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
-  nc_put_att_text(ncid, NC_GLOBAL, "SNAME", strlen(buffer)+1, buffer);
+  status = nc_put_att_text(ncid, NC_GLOBAL, "SNAME", strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
   printf("SNAME: %s\n", buffer);
 
   /* Get project name */
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
-  nc_put_att_text(ncid, NC_GLOBAL, "ProjectName", strlen(buffer)+1, buffer);
+  status = nc_put_att_text(ncid, NC_GLOBAL, "ProjectName", strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
   printf("ProjectName: %s\n", buffer);
 
 
@@ -140,7 +150,8 @@ void CreateNASAamesNetCDF(FILE *fp)
   StartFlight.tm_mday = day;
 
   sprintf(tmp, "%02d/%02d/%d", month, day, 1900 + year);
-  nc_put_att_text(ncid, NC_GLOBAL, "FlightDate", strlen(tmp)+1, tmp);
+  status = nc_put_att_text(ncid, NC_GLOBAL, "FlightDate", strlen(tmp)+1, tmp);
+  if (status != NC_NOERR) handle_error(status);
 
 
   /* Calculate DateProcessed and write it to netCDF file */
@@ -151,8 +162,10 @@ void CreateNASAamesNetCDF(FILE *fp)
 
   if (year > 1900) year -= 1900;
   sprintf(tmp, "%02d/%02d/%d", month, day, 1900 + year);
-  nc_put_att_text(ncid, NC_GLOBAL, "DateProcessed", strlen(tmp)+1, tmp);
+  status = nc_put_att_text(ncid, NC_GLOBAL, "DateProcessed", strlen(tmp)+1, tmp);
+  if (status != NC_NOERR) handle_error(status);
 
+  if (status != NC_NOERR) handle_error(status);
 
   /* Get uniformity */
   fgets(buffer, BUFFSIZE, fp);
@@ -163,7 +176,8 @@ void CreateNASAamesNetCDF(FILE *fp)
 
   /* Time segments.  Will be updated later.
    */
-  nc_put_att_text(ncid, NC_GLOBAL, "TimeInterval", DEFAULT_TI_LENGTH, buffer);
+  status = nc_put_att_text(ncid, NC_GLOBAL, "TimeInterval", DEFAULT_TI_LENGTH, buffer);
+  if (status != NC_NOERR) handle_error(status);
 
 
   /* First dimension is time dimension.
@@ -201,7 +215,8 @@ void CreateNASAamesNetCDF(FILE *fp)
   if (histogram)
   {
     sprintf(buffer, "Vector%d", nVariables+1);
-    nc_def_dim(ncid, buffer, nVariables+1, &VectorDim);
+    status = nc_def_dim(ncid, buffer, nVariables+1, &VectorDim);
+    if (status != NC_NOERR) handle_error(status);
     dims[2] = VectorDim;
   }
 
@@ -374,7 +389,8 @@ void CreateNASAamesNetCDF(FILE *fp)
 
     // return pointer to next variable in buffer
     p = strtok(NULL, " \t\n\r");
-    nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[i]);
+    status = nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[i]);
+    if (status != NC_NOERR) handle_error(status);
     if (verbose)
       printf("Creating single 2D var [%s] from AMES file\n",p);
 
@@ -384,14 +400,20 @@ void CreateNASAamesNetCDF(FILE *fp)
       printf("Adding variable [%s] with units of [%s]\n", p, units[0]);
 
 
-    nc_put_att_float(ncid,varid[i], "_FillValue",NC_FLOAT, 1, &missing_val);
+    status = nc_put_att_float(ncid,varid[i], "_FillValue",NC_FLOAT, 1, &missing_val);
+    if (status != NC_NOERR) handle_error(status);
     p = units[i];
-    nc_put_att_text(ncid, varid[i], "units", strlen(p)+1, p);
+    status = nc_put_att_text(ncid, varid[i], "units", strlen(p)+1, p);
+    if (status != NC_NOERR) handle_error(status);
     p = titles[i];
-    nc_put_att_text(ncid, varid[i], "long_name", strlen(p)+1, p);
-    nc_put_att_int(ncid, varid[i], "FirstBin",NC_INT, 1, &i);
-    nc_put_att_int(ncid, varid[i], "LastBin",NC_INT, 1, &nVariables);
-    nc_put_att_float(ncid, varid[i], "CellSizes",NC_FLOAT,nCells,cellSizes);
+    status = nc_put_att_text(ncid, varid[i], "long_name", strlen(p)+1, p);
+    if (status != NC_NOERR) handle_error(status);
+    status = nc_put_att_int(ncid, varid[i], "FirstBin",NC_INT, 1, &i);
+    if (status != NC_NOERR) handle_error(status);
+    status = nc_put_att_int(ncid, varid[i], "LastBin",NC_INT, 1, &nVariables);
+    if (status != NC_NOERR) handle_error(status);
+    status = nc_put_att_float(ncid, varid[i], "CellSizes",NC_FLOAT,nCells,cellSizes);
+    if (status != NC_NOERR) handle_error(status);
 
     for (i = 1; i < nVariables; ++i)
     {
@@ -414,17 +436,21 @@ void CreateNASAamesNetCDF(FILE *fp)
     {
       // return pointer to next variable in buffer
       p = strtok(NULL, " \t\n\r");
-      nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[i]);
+      status = nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[i]);
+      if (status != NC_NOERR) handle_error(status);
 
 
       if (verbose)
         printf("Adding variable [%s] with units of [%s]\n", p, units[i]);
 
-      nc_put_att_float(ncid,varid[i], "_FillValue",NC_FLOAT, 1, &missing_val);
+      status = nc_put_att_float(ncid,varid[i], "_FillValue",NC_FLOAT, 1, &missing_val);
+      if (status != NC_NOERR) handle_error(status);
       p = units[i];
-      nc_put_att_text(ncid, varid[i], "units", strlen(p)+1, p);
+      status = nc_put_att_text(ncid, varid[i], "units", strlen(p)+1, p);
+      if (status != NC_NOERR) handle_error(status);
       p = titles[i];
-      nc_put_att_text(ncid, varid[i], "long_name", strlen(p)+1, p);
+      status = nc_put_att_text(ncid, varid[i], "long_name", strlen(p)+1, p);
+      if (status != NC_NOERR) handle_error(status);
 
       free(units[i]);
       free(titles[i]);

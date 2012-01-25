@@ -27,9 +27,11 @@ extern bool	verbose;
 extern bool	histogram;
 
 extern int	SkipNlines;
+extern int	status;
 
 void CreateNASAamesNetCDF(FILE *fp);
 void CreateNASAlangNetCDF(FILE *fp);
 void CreatePlainNetCDF(FILE *fp);
 void SetNASABaseTime(int, int, int), SetPlainBaseTime(void);
 void createTime(int dims[]);
+void handle_error(int);

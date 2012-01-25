@@ -32,7 +32,8 @@ void CreateNASAlangNetCDF(FILE *fp)
   /* Global Attributes.
    */
   strcpy(buffer, "NCAR-RAF/nimbus");
-  nc_put_att_text(ncid, NC_GLOBAL, "Conventions", strlen(buffer)+1, buffer);
+  status = nc_put_att_text(ncid, NC_GLOBAL, "Conventions", strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
 
   {
   time_t	t;
@@ -41,8 +42,9 @@ void CreateNASAlangNetCDF(FILE *fp)
   t = time(0);
   tm = *gmtime(&t);
   strftime(buffer, 128, "%h %d %R GMT %Y", &tm);
-  nc_put_att_text(ncid, NC_GLOBAL, "DateConvertedFromASCII", 
+  status = nc_put_att_text(ncid, NC_GLOBAL, "DateConvertedFromASCII", 
                   strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
   }
 
 
@@ -55,17 +57,20 @@ void CreateNASAlangNetCDF(FILE *fp)
 
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
-  nc_put_att_text(ncid, NC_GLOBAL, "PI", strlen(buffer)+1, buffer);
+  status = nc_put_att_text(ncid, NC_GLOBAL, "PI", strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
   printf("PI: %s\n", buffer);
 
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
-  nc_put_att_text(ncid, NC_GLOBAL, "Species", strlen(buffer)+1, buffer);
+  status = nc_put_att_text(ncid, NC_GLOBAL, "Species", strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
   printf("Species: %s\n", buffer);
 
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
-  nc_put_att_text(ncid, NC_GLOBAL, "ProjectName", strlen(buffer)+1, buffer);
+  status = nc_put_att_text(ncid, NC_GLOBAL, "ProjectName", strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
   printf("ProjectName: %s\n", buffer);
 
   fgets(buffer, BUFFSIZE, fp);
@@ -81,7 +86,8 @@ void CreateNASAlangNetCDF(FILE *fp)
   StartFlight.tm_mday = day;
 
   sprintf(tmp, "%02d/%02d/%d", month, day, 1900 + year);
-  nc_put_att_text(ncid, NC_GLOBAL, "FlightDate", strlen(tmp)+1, tmp);
+  status = nc_put_att_text(ncid, NC_GLOBAL, "FlightDate", strlen(tmp)+1, tmp);
+  if (status != NC_NOERR) handle_error(status);
 
   if (strchr(buffer, ','))
     sscanf(buffer, "%*d , %*d , %*d , %d , %d , %d", &year, &month, &day);
@@ -90,17 +96,20 @@ void CreateNASAlangNetCDF(FILE *fp)
 
   if (year > 1900) year -= 1900;
   sprintf(buffer, "%02d/%02d/%d", month, day, 1900 + year);
-  nc_put_att_text(ncid, NC_GLOBAL, "DateProcessed", strlen(buffer)+1, buffer);
+  status = nc_put_att_text(ncid, NC_GLOBAL, "DateProcessed", strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
 
 
   fgets(buffer, BUFFSIZE, fp);
   sprintf(tmp, "%d", atoi(buffer));
-  nc_put_att_text(ncid, NC_GLOBAL, "FlightNumber", strlen(tmp)+1, tmp);
+  status = nc_put_att_text(ncid, NC_GLOBAL, "FlightNumber", strlen(tmp)+1, tmp);
+  if (status != NC_NOERR) handle_error(status);
   printf("FlightNumber: %s\n", tmp);
 
   /* Time segments.  Will be updated later.
    */
-  nc_put_att_text(ncid, NC_GLOBAL, "TimeInterval", DEFAULT_TI_LENGTH, buffer);
+  status = nc_put_att_text(ncid, NC_GLOBAL, "TimeInterval", DEFAULT_TI_LENGTH, buffer);
+  if (status != NC_NOERR) handle_error(status);
 
 
   fgets(buffer, BUFFSIZE, fp);
@@ -123,7 +132,8 @@ void CreateNASAlangNetCDF(FILE *fp)
    * Second is Rate in Hz.
    * Third is Vector Length.
    */
-  nc_def_dim(ncid, "Time", NC_UNLIMITED, &TimeDim);
+  status = nc_def_dim(ncid, "Time", NC_UNLIMITED, &TimeDim);
+  if (status != NC_NOERR) handle_error(status);
 
   fgets(buffer, BUFFSIZE, fp);	/* Line 11, Averaging Rate	*/
   BaseDataRate = atoi(buffer);
@@ -131,7 +141,8 @@ void CreateNASAlangNetCDF(FILE *fp)
   fgets(buffer, BUFFSIZE, fp);	/* Line 12, Data Rate (Hz)	*/
   dataRate = atoi(buffer);
   sprintf(buffer, "sps%d", dataRate);
-  nc_def_dim(ncid, buffer, dataRate, &RateDim);
+  status = nc_def_dim(ncid, buffer, dataRate, &RateDim);
+  if (status != NC_NOERR) handle_error(status);
 
   ndims = 1;
   dims[0] = TimeDim;
@@ -188,10 +199,14 @@ void CreateNASAlangNetCDF(FILE *fp)
     if (verbose)
       printf("Adding variable [%s] with units of [%s]\n", name, units);
 
-    nc_def_var(ncid, name, NC_FLOAT, ndims, dims, &varid[i]);
-    nc_put_att_float(ncid,varid[i], "_FillValue",NC_FLOAT, 1, &missingVal);
-    nc_put_att_text(ncid, varid[i], "units", strlen(units)+1, units);
-    nc_put_att_text(ncid, varid[i], "long_name", strlen(noTitle)+1, noTitle);
+    status = nc_def_var(ncid, name, NC_FLOAT, ndims, dims, &varid[i]);
+    if (status != NC_NOERR) handle_error(status);
+    status = nc_put_att_float(ncid,varid[i], "_FillValue",NC_FLOAT, 1, &missingVal);
+    if (status != NC_NOERR) handle_error(status);
+    status = nc_put_att_text(ncid, varid[i], "units", strlen(units)+1, units);
+    if (status != NC_NOERR) handle_error(status);
+    status = nc_put_att_text(ncid, varid[i], "long_name", strlen(noTitle)+1, noTitle);
+    if (status != NC_NOERR) handle_error(status);
   }
 }	/* END CREATENASALANGNETCDF */
 

@@ -23,6 +23,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2007
 char	buffer[BUFFSIZE];
 
 int	ncid;
+int	status;
 int	baseTimeID, timeOffsetID, timeVarID, varid[MAX_VARS], nVariables;
 time_t	BaseTime = 0;
 float	scale[MAX_VARS], offset[MAX_VARS], missingVals[MAX_VARS];
@@ -47,6 +48,7 @@ const char	*noTitle = "No Title";
 const char	*noUnits = "Unk";
 
 void addGlobalAttrs(const char *p), WriteBaseTime();
+void handle_error(const int);
 
 static int ProcessArgv(int argc, char **argv);
 static void WriteMissingData(int, int);
@@ -212,8 +214,10 @@ int main(int argc, char *argv[])
 
     dataValue = currSecond - firstSecond;
     size_t rec = int(dataValue);
-    nc_put_var1_float(ncid, timeVarID, &rec, &dataValue);
-    nc_put_var1_float(ncid, timeOffsetID, &rec, &dataValue);
+    status = nc_put_var1_float(ncid, timeVarID, &rec, &dataValue);
+    if (status != NC_NOERR) handle_error(status);
+    status = nc_put_var1_float(ncid, timeOffsetID, &rec, &dataValue);
+    if (status != NC_NOERR) handle_error(status);
     
 
 //    dataValue = (float)(nRecords * BaseDataRate);
@@ -228,7 +232,8 @@ int main(int argc, char *argv[])
       if (histogram) {
 	dataValue = 0;
         index[0] = rec; index[1] = hz; index[2] = 0;
-        nc_put_var1_float(ncid, varid[1], index, &dataValue);
+        status = nc_put_var1_float(ncid, varid[1], index, &dataValue);
+        if (status != NC_NOERR) handle_error(status);
       }
       for (i = 0; i < nVariables; ++i)
         {
@@ -250,12 +255,14 @@ int main(int argc, char *argv[])
 
         if (histogram) {
           index[0] = rec; index[1] = hz; index[2] = i+1;
-          nc_put_var1_float(ncid, varid[1], index, &dataValue);
+          status = nc_put_var1_float(ncid, varid[1], index, &dataValue);
+          if (status != NC_NOERR) handle_error(status);
         }
         else
         {
           index[0] = rec; index[1] = hz;
-          nc_put_var1_float(ncid, varid[i], index, &dataValue);
+          status = nc_put_var1_float(ncid, varid[i], index, &dataValue);
+          if (status != NC_NOERR) handle_error(status);
         }
       }
 
@@ -285,7 +292,8 @@ int main(int argc, char *argv[])
   sprintf(buffer, "%02d:%02d:%02d-%02d:%02d:%02d",
           startHour, startMinute, startSecond, hour, minute, second);
 
-  nc_put_att_text(ncid, NC_GLOBAL, "TimeInterval", strlen(buffer)+1, buffer);
+  status = nc_put_att_text(ncid, NC_GLOBAL, "TimeInterval", strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
   printf("Time interval completed = %s\n", buffer);
   nc_enddef(ncid);
   nc_close(ncid);
@@ -302,12 +310,14 @@ static void WriteMissingData(int currSecond, int lastSecond)
   for (int i = lastSecond; i < currSecond; i += BaseDataRate, ++nRecords)
   {
     dataValue = (float)(nRecords * BaseDataRate);
-    nc_put_var1_float(ncid, timeOffsetID, &nRecords, &dataValue);
+    status = nc_put_var1_float(ncid, timeOffsetID, &nRecords, &dataValue);
+    if (status != NC_NOERR) handle_error(status);
 
     dataValue = MISSING_VALUE;
 
     for (int j = 0; j < nVariables; ++j)
-      nc_put_var1_float(ncid, varid[j], &nRecords, &dataValue);
+      status = nc_put_var1_float(ncid, varid[j], &nRecords, &dataValue);
+      if (status != NC_NOERR) handle_error(status);
   }
 }	/* END WRITEMISSINGDATA */
 

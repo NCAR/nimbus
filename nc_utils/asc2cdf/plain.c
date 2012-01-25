@@ -25,7 +25,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1996-07
 const char *timeUnitsFormat = "seconds since %F %T %z";
 const char *baseTimeUnits = "seconds since 1970-01-01 00:00:00 +0000";
 
-
 /* -------------------------------------------------------------------- */
 void SetPlainBaseTime()
 {
@@ -36,15 +35,18 @@ void SetPlainBaseTime()
 
   printf("\nFlight start time = [%s]\nBaseTime = %lu\n", buffer, BaseTime);
 
-  nc_put_att_text(ncid, timeVarID, "units", strlen(buffer)+1, buffer);
-  nc_put_att_text(ncid, timeOffsetID, "units", strlen(buffer)+1, buffer);
+  status = nc_put_att_text(ncid, timeVarID, "units", strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
+  status = nc_put_att_text(ncid, timeOffsetID, "units", strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
 
 }	/* END SETBASETIME */
 
 /* -------------------------------------------------------------------- */
 void WriteBaseTime()
 {
-  nc_put_var_long(ncid, baseTimeID, &BaseTime);
+  status = nc_put_var_long(ncid, baseTimeID, &BaseTime);
+  if (status != NC_NOERR) handle_error(status);
 }
 
 /* -------------------------------------------------------------------- */
@@ -82,16 +84,19 @@ void CreatePlainNetCDF(FILE *fp)
 
   /* Dimensions.
    */
-  nc_def_dim(ncid, "Time", NC_UNLIMITED, &TimeDim);
+  status = nc_def_dim(ncid, "Time", NC_UNLIMITED, &TimeDim);
+  if (status != NC_NOERR) handle_error(status);
 
   sprintf(buffer, "sps%d", dataRate);
-  nc_def_dim(ncid, buffer, dataRate, &RateDim);
+  status = nc_def_dim(ncid, buffer, dataRate, &RateDim);
+  if (status != NC_NOERR) handle_error(status);
 
 
   /* Global Attributes.
    */
   strcpy(buffer, "NCAR-RAF/nimbus");
-  nc_put_att_text(ncid, NC_GLOBAL, "Conventions", strlen(buffer)+1, buffer);
+  status = nc_put_att_text(ncid, NC_GLOBAL, "Conventions", strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
 
 
   {
@@ -101,18 +106,23 @@ void CreatePlainNetCDF(FILE *fp)
   t = time(0);
   tm = *gmtime(&t);
   strftime(buffer, 128, "%h %d %R GMT %Y", &tm);
-  nc_put_att_text(ncid, NC_GLOBAL, "DateConvertedFromASCII", 
+  status = nc_put_att_text(ncid, NC_GLOBAL, "DateConvertedFromASCII", 
                   strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
   }
 
 
   extern char FlightDate[];
   if (strlen(FlightDate) > 0)
-    nc_put_att_text(ncid, NC_GLOBAL, "FlightDate", strlen(FlightDate)+1, FlightDate);
+  {
+    status = nc_put_att_text(ncid, NC_GLOBAL, "FlightDate", strlen(FlightDate)+1, FlightDate);
+    if (status != NC_NOERR) handle_error(status);
+  }
 
   /* Time segments.  Will be updated later.
    */
-  nc_put_att_text(ncid, NC_GLOBAL, "TimeInterval", DEFAULT_TI_LENGTH, buffer);
+  status = nc_put_att_text(ncid, NC_GLOBAL, "TimeInterval", DEFAULT_TI_LENGTH, buffer);
+  if (status != NC_NOERR) handle_error(status);
 
 
   /* First dimension is time dimension.
@@ -159,22 +169,27 @@ void CreatePlainNetCDF(FILE *fp)
     if (verbose)
       printf("Creating variable [%s]\n", p);
 
-    nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[nVariables]);
-    nc_put_att_float(ncid,varid[nVariables],"_FillValue",NC_FLOAT,1,&missing_val);
+    status=nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[nVariables]);
+    if (status != NC_NOERR) handle_error(status);
+
+    status = nc_put_att_float(ncid,varid[nVariables],"_FillValue",NC_FLOAT,1,&missing_val);
+    if (status != NC_NOERR) handle_error(status);
 
     const char * s1 =
 #ifdef VARDB
 	varDB ? VarDB_GetUnits(p) :
 #endif
 	noUnits;
-    nc_put_att_text(ncid, varid[nVariables], "units", strlen(s1)+1, s1);
+    status = nc_put_att_text(ncid, varid[nVariables], "units", strlen(s1)+1, s1);
+    if (status != NC_NOERR) handle_error(status);
 
     s1 =
 #ifdef VARDB
 	varDB ? VarDB_GetTitle(p) :
 #endif
 	noTitle;
-    nc_put_att_text(ncid, varid[nVariables], "long_name", strlen(s1)+1, s1);
+    status = nc_put_att_text(ncid, varid[nVariables], "long_name", strlen(s1)+1, s1);
+    if (status != NC_NOERR) handle_error(status);
 
     ++nVariables;
   }
@@ -193,29 +208,42 @@ void createTime(int dims[])
 
   /* Time Variables, base_time/time_offset being deprecated.  Feb05
    */
-  nc_def_var(ncid, "base_time", NC_INT, 0, 0, &baseTimeID);
-  nc_put_att_text(ncid, baseTimeID, "units",
+  status = nc_def_var(ncid, "base_time", NC_INT, 0, 0, &baseTimeID);
+  if (status != NC_NOERR) handle_error(status);
+  status = nc_put_att_text(ncid, baseTimeID, "units",
                 strlen(baseTimeUnits)+1, baseTimeUnits);
+  if (status != NC_NOERR) handle_error(status);
   strcpy(buffer, "Start time of data recording.");
-  nc_put_att_text(ncid, baseTimeID, "long_name", strlen(buffer)+1, buffer);
+  status = nc_put_att_text(ncid, baseTimeID, "long_name", strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
 
-  nc_def_var(ncid, "Time", NC_INT, 1, dims, &timeVarID);
-  nc_put_att_int(ncid, timeVarID, "_FillValue", NC_INT, 1, &missing_val_i);
-  nc_put_att_text(ncid, timeVarID, "units",
+  status = nc_def_var(ncid, "Time", NC_INT, 1, dims, &timeVarID);
+  if (status != NC_NOERR) handle_error(status);
+  status = nc_put_att_int(ncid, timeVarID, "_FillValue", NC_INT, 1, &missing_val_i);
+  if (status != NC_NOERR) handle_error(status);
+  status = nc_put_att_text(ncid, timeVarID, "units",
                 strlen(baseTimeUnits)+1, baseTimeUnits);
+  if (status != NC_NOERR) handle_error(status);
   strcpy(buffer, "time");
-  nc_put_att_text(ncid, timeVarID, "standard_name", strlen(buffer)+1, buffer);
+  status = nc_put_att_text(ncid, timeVarID, "standard_name", strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
   strcpy(buffer, "time of measurement");
-  nc_put_att_text(ncid, timeVarID, "long_name", strlen(buffer)+1, buffer);
-  nc_put_att_text(ncid, timeVarID, "strptime_format",
+  status = nc_put_att_text(ncid, timeVarID, "long_name", strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
+  status = nc_put_att_text(ncid, timeVarID, "strptime_format",
 		strlen(timeUnitsFormat)+1, timeUnitsFormat);
+  if (status != NC_NOERR) handle_error(status);
 
-  nc_def_var(ncid, "time_offset", NC_FLOAT, 1, dims, &timeOffsetID);
-  nc_put_att_float(ncid, timeOffsetID, "_FillValue", NC_FLOAT, 1, &missing_val_f);
-  nc_put_att_text(ncid, timeOffsetID, "units",
+  status = nc_def_var(ncid, "time_offset", NC_FLOAT, 1, dims, &timeOffsetID);
+  if (status != NC_NOERR) handle_error(status);
+  status = nc_put_att_float(ncid, timeOffsetID, "_FillValue", NC_FLOAT, 1, &missing_val_f);
+  if (status != NC_NOERR) handle_error(status);
+  status = nc_put_att_text(ncid, timeOffsetID, "units",
                 strlen(baseTimeUnits)+1, baseTimeUnits);
+  if (status != NC_NOERR) handle_error(status);
   strcpy(buffer, "Seconds since base_time.");
-  nc_put_att_text(ncid, timeOffsetID, "long_name", strlen(buffer)+1, buffer);
+  status = nc_put_att_text(ncid, timeOffsetID, "long_name", strlen(buffer)+1, buffer);
+  if (status != NC_NOERR) handle_error(status);
 }
 
 /* -------------------------------------------------------------------- */
@@ -256,7 +284,8 @@ void addGlobalAttrs(const char *fileName)
     for (value = ++p; isspace(*value); ++value)
       ;
 
-    nc_put_att_text(ncid, NC_GLOBAL, attr, strlen(value)+1, value);
+    status = nc_put_att_text(ncid, NC_GLOBAL, attr, strlen(value)+1, value);
+    if (status != NC_NOERR) handle_error(status);
   }
 
   fclose(fp);
