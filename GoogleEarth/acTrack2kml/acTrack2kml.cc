@@ -1018,6 +1018,9 @@ int parseRunstring(int argc, char** argv)
 
   enum {isnt, yes, no} ground_selected = isnt;
 
+  // Default to ground, -p and netCDF mode.
+  webHost = grnd_webHost;
+
   while ((opt_char = getopt(argc, argv, "p:h:s:t:o")) != -1)
   {
     switch (opt_char)
@@ -1040,7 +1043,6 @@ int parseRunstring(int argc, char** argv)
       }
       dbname = "real-time-"+platform;
       googleEarthDataDir = grnd_googleEarthDataDir+platform+"/GE/";
-      webHost            = grnd_webHost;
       break;
 
     case 'h':	// PGHOST over-ride.
