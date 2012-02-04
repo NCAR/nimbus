@@ -28,7 +28,7 @@ void srhum(DERTBL *varp)
   {
     double WaterVaporPressure(double);
     e = GetSample(varp, 1);
-    rhum = (NR_TYPE)WaterVaporPressure(atx);
+    rhum = (NR_TYPE)WaterVaporPressure(atx + Kelvin);
   }
 
   if (rhum != 0.0)
