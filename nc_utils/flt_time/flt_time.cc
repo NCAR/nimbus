@@ -93,8 +93,11 @@ main(int argc, char *argv[])
     return 1;
   }
   
+  NcAtt * project = ncFile->get_att("project");
   NcAtt * flight = ncFile->get_att("FlightNumber");
-  cout << argv[indx] << ":" << flight->as_string(0) << ":\n";
+  cout	<< argv[indx] << ":"
+		<< project->as_string(0) << ":"
+		<< flight->as_string(0) << ":\n";
 
   NcValues * time_data = getData(ncFile, "Time");
   NcValues * tas_data = getData(ncFile, "TASX");
@@ -119,10 +122,15 @@ main(int argc, char *argv[])
     if (tas_data->as_float(i) > tas_cutoff)
     {
       time_t x = start_t + i;
-      cout << "   " << ctime(&x);
+
+      cout << "Takeoff: " << ctime(&x);
 //cout << "take-off indx = " << x << " " << i << endl;
       break;
     }
+
+  // Increment index to move us forward in time to make sure TAS stays
+  // above threshold.
+  i += 60;
 
   // Locate End of Flight
   for (; i < time_var->num_vals(); ++i)
@@ -130,10 +138,18 @@ main(int argc, char *argv[])
     {
       time_t x = start_t + i;
 
-      cout << "   " << ctime(&x);
+      cout << "Landing: " << ctime(&x);
 //cout << "landing indx = " << x << " " << i << endl;
       break;
     }
+
+  if (tas_data->as_float(0) > 90.0)
+    cout	<< endl << " First TAS value is " << tas_data->as_float(0)
+		<< "m/s, incomplete netCDF file?" << endl;
+
+  if (tas_data->as_float(time_var->num_vals()-1) > 90.0)
+    cout << endl << " Last TAS value is " << tas_data->as_float(time_var->num_vals()-1)
+	<< "m/s, incomplete netCDF file?" << endl;
 
   delete time_data;
   delete tas_data;
