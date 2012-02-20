@@ -4,6 +4,8 @@
 
 #include <netcdfcpp.h>
 
+using namespace std;
+
 
 NcValues *
 getData(NcFile * file, const char * name)
@@ -12,7 +14,7 @@ getData(NcFile * file, const char * name)
 
   if (var == 0 || var->is_valid() == false)
   {
-    std::cerr << "No variable " << name << "?" << std::endl;
+    cerr << "No variable " << name << "?" << endl;
     return 0;
   }
 
@@ -20,7 +22,7 @@ getData(NcFile * file, const char * name)
 
   if (data == 0)
   {
-    std::cerr << "No data for variable " << name << "?" << std::endl;
+    cerr << "No data for variable " << name << "?" << endl;
     return 0;
   }
 
@@ -36,7 +38,7 @@ getStartTime(NcVar * time_var)
 
   if (unit_att == 0 || unit_att->is_valid() == false)
   {
-    std::cerr << "Units not present for time variable.\n";
+    cerr << "Units not present for time variable.\n";
     return 0;
   }
 
@@ -51,7 +53,7 @@ getStartTime(NcVar * time_var)
 
   time_t start_t = mktime(&StartFlight);
   if (start_t <= 0)
-    std::cerr << "Problem decoding units from Time variable, _start = " << start_t << std::endl;
+    cerr << "Problem decoding units from Time variable, _start = " << start_t << endl;
 
   return start_t;
 }
@@ -67,8 +69,8 @@ main(int argc, char *argv[])
   // Check arguments / usage.
   if (argc < 2)
   {
-    std::cerr << "Print out take-off and landing times from a netCDF file.\nUses true airspeed above 25 m/s (use -t to change).\n\n";
-    std::cerr << "Usage: flt_time [-t value] netcdf_file\n";
+    cerr << "Print out take-off and landing times from a netCDF file.\nUses true airspeed above 25 m/s (use -t to change).\n\n";
+    cerr << "Usage: flt_time [-t value] netcdf_file\n";
     exit(1);
   }
 
@@ -87,12 +89,12 @@ main(int argc, char *argv[])
   NcFile * ncFile = new NcFile(argv[indx], NcFile::ReadOnly);
   if (ncFile->is_valid() == false)
   {
-    std::cerr << "Could not open NetCDF file '" << argv[indx] << "' for reading.\n";
+    cerr << "Could not open NetCDF file '" << argv[indx] << "' for reading.\n";
     return 1;
   }
   
   NcAtt * flight = ncFile->get_att("FlightNumber");
-  std::cout << argv[indx] << ":" << flight->as_string(0) << ":\n";
+  cout << argv[indx] << ":" << flight->as_string(0) << ":\n";
 
   NcValues * time_data = getData(ncFile, "Time");
   NcValues * tas_data = getData(ncFile, "TASX");
@@ -106,7 +108,7 @@ main(int argc, char *argv[])
 
   if (start_t <= 0)
   {
-    std::cerr << "Invalid start time, fatal.\n";
+    cerr << "Invalid start time, fatal.\n";
     return 1;
   }
 
@@ -117,8 +119,8 @@ main(int argc, char *argv[])
     if (tas_data->as_float(i) > tas_cutoff)
     {
       time_t x = start_t + i;
-      std::cout << "   " << ctime(&x);
-//std::cout << "take-off indx = " << x << " " << i << std::endl;
+      cout << "   " << ctime(&x);
+//cout << "take-off indx = " << x << " " << i << endl;
       break;
     }
 
@@ -128,8 +130,8 @@ main(int argc, char *argv[])
     {
       time_t x = start_t + i;
 
-      std::cout << "   " << ctime(&x);
-//std::cout << "landing indx = " << x << " " << i << std::endl;
+      cout << "   " << ctime(&x);
+//cout << "landing indx = " << x << " " << i << endl;
       break;
     }
 
