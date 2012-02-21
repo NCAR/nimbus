@@ -245,6 +245,9 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
       printf,2,'  7: transit time [nanoseconds]'
       printf,2,'  8: missed particle count [#]'
       printf,2,'  9: mean scatter [raw units]'
+      printf,2,'  10: rejection code [unitless]'
+      printf,2,'  11: number of saturated detectors [#]'
+      printf,2,'  12: time-based diameter [microns]'
       printf,2,'-------------------------------------------'
    ENDIF
   
@@ -346,15 +349,6 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
                ;Find saturated detectors, then size
                a=sid_size(b.scatter[i,*],scatter_adjusted,pmtgain[index],b.tof[i],tas[index],op.sizegain,peak=op.peak) 
                
-               ;Print particle-by-particle information
-               IF op.textfile eq 1 THEN BEGIN
-                  ;stop
-                  IF (time[index] gt pbprange.start) and (time[index] lt pbprange.stop) THEN $
-                  printf,2,(sid_date((b.elaptime[i]-footer.reftime)/100+footer.acqstart)).time + op.clockoffset, $
-                  a.size,a.af,a.branches,b.mux[i],b.sensor[i],b.tof[i],b.missed[i],mean(scatter_adjusted), $ ;b.elaptime[i]-footer.reftime,
-                  format='(f15.5,2f7.1,i3,i3,i6,i6,i6,i6)' 
-               ENDIF
-                        
                ;Find interarrival time
                inttime=(b.elaptime[i]-lastelaptime)/1.0e9
                lastelaptime=b.elaptime[i]
@@ -375,6 +369,15 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
                   itb=itb>0<(tbnumbins-1)
                   tbspec1d[index,itb]=tbspec1d[index,itb]+1
                ENDIF
+               
+               ;Print particle-by-particle information
+               IF op.textfile eq 1 THEN BEGIN
+                  IF (time[index] gt pbprange.start) and (time[index] lt pbprange.stop) THEN $
+                  printf,2,(sid_date((b.elaptime[i]-footer.reftime)/100+footer.acqstart)).time + op.clockoffset, $
+                  a.size,a.af,a.branches,b.mux[i],b.sensor[i],b.tof[i],b.missed[i],mean(scatter_adjusted), reject, a.nsat, a.tbsize,$ ;b.elaptime[i]-footer.reftime,
+                  format='(f15.5,2f7.1,i3,i3,i6,i6,i6,i6,i3,i3,f7.1)' 
+               ENDIF
+                        
                
                ;Update various arrays with accepted particles
                IF reject eq 0 THEN BEGIN  ;make sure we have valid time and size
