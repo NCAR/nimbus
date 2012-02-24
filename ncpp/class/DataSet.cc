@@ -277,7 +277,7 @@ cout << "Count[] = " << countV[0] << ", "<< countV[1]<<", "<< countV[2] << "\n";
           }
         }
 
-      if (conc && avCntr > 0)
+      if (conc && avCntr > 1)
         conc[dest] /= avCntr;
 
       // Convert #/L data to #/cm3 so we have consistant data.

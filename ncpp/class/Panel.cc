@@ -890,19 +890,21 @@ void Panel::PrintHistogram(DataSet *set, int setNum, int idx, DataType dt, PostS
       case COUNTS:
         datumX = (double)i;
         datumY = set->Accumulation(idx, i);
+        total += datumY;
         break;
       case CONCENTRATION:
         datumY = set->Concentration(idx, i);
+        total += datumY * set->NormalizeFactor(i);
         break;
       case SURFACE:
         datumY = set->Surface(idx, i);
+        total += datumY * set->NormalizeFactor(i);
         break;
       case VOLUME:
         datumY = set->Volume(idx, i);
+        total += datumY * set->NormalizeFactor(i);
         break;
       }
-
-    total += datumY;
 
     if (xAxis.logScale)
       datumX = log10(datumX);
