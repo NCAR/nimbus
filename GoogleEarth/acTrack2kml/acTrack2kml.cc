@@ -206,8 +206,6 @@ std::string
 midBubbleCDATA(int i)
 {
   std::stringstream e;
-  std::string s = _date[i];
-  std::string endTime = s.substr(s.find('T')+1);
 
   e << "<![CDATA[";
 
@@ -405,9 +403,11 @@ void WriteWindBarbsKML_Folder(std::ofstream & googleEarth)
 
       sprintf(url, "<href>http://%s/flight_data/display/windbarbs/%03d/wb_%03d_%03d.png</href>\n",
 		webHost.c_str(), iws, iws, iwd);
+      std::string label = _date[i].substr(11, 5);
 
       googleEarth
         << "  <Placemark>\n"
+        << "   <name>" << label << "</name>\n"
 	<< "   <description><![CDATA[WD: " << _wd[i] << " deg<br>WS: " << _ws[i] << " knots]]></description>\n"
         << "   <Style>\n"
         << "    <IconStyle>\n"
@@ -626,8 +626,8 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo)
 	<< "  </Placemark>\n";
 
   WriteLandmarksKML_Folder(googleEarth, projInfo);
-  WriteTimeStampsKML_Folder(googleEarth);
   WriteWindBarbsKML_Folder(googleEarth);
+  WriteTimeStampsKML_Folder(googleEarth);
 
   googleEarth
 		<< "</Folder>\n"
