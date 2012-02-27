@@ -16,15 +16,17 @@
 
 #include "boost/lexical_cast.hpp"
 
+using namespace std;
+
 // Output directories for .xml & .kml files.  Ground.
-static const std::string grnd_googleEarthDataDir = "/net/www/docs/flight_data/";
-static const std::string grnd_webHost = "www.eol.ucar.edu";
+static const string grnd_googleEarthDataDir = "/net/www/docs/flight_data/";
+static const string grnd_webHost = "www.eol.ucar.edu";
 
 // Output directories for .xml & .kml files.  Onboard.
-static const std::string onboard_googleEarthDataDir = "/var/www/html/flight_data/";
-static const std::string onboard_webHost = "acserver.raf.ucar.edu";
+static const string onboard_googleEarthDataDir = "/var/www/html/flight_data/";
+static const string onboard_webHost = "acserver.raf.ucar.edu";
 
-static std::string	googleEarthDataDir, webHost;
+static string	googleEarthDataDir, webHost;
 
 // All datapoints are read from file, but only use every 'TimeStep' points.
 // e.g. 15 would mean use 1 data point for every 15 seconds of data.
@@ -39,7 +41,7 @@ static int ts_Freq = 5;
 // Frequency of Wind Barbs (in minutes).
 static int barb_Freq = 5;
 
-static std::string netCDFinputFile, outputKML, database_host, platform, dbname;
+static string netCDFinputFile, outputKML, database_host, platform, dbname;
 
 static const float missing_value = -32767.0;
 
@@ -49,7 +51,7 @@ static bool PostProcessMode = false;
 // The order of this enum should match the order of the variables
 // being requested in the dataQuery string.
 enum VariablePos { TIME=0, LON, LAT, ALT, AT, DP, TAS, WS, WD, WI };
-static const std::string _dataQuerySuffix = ",atx,dpxc,tasx,wsc,wdc,wic FROM raf_lrt WHERE TASX > ";
+static const string _dataQuerySuffix = ",atx,dpxc,tasx,wsc,wdc,wic FROM raf_lrt WHERE TASX > ";
 
 
 class _projInfo
@@ -57,17 +59,17 @@ class _projInfo
 public:
   _projInfo() : groundFeedDataRate(1) { };
 
-  std::string platform;
-  std::string projectName;
-  std::string flightNumber;
-  std::string landmarks;
+  string platform;
+  string projectName;
+  string flightNumber;
+  string landmarks;
   int groundFeedDataRate;
 } projectInfo;
 
 const char *status[] = { "Pre-flight", "In-flight", "Landed" };
 
-std::vector<std::string> _date;
-std::vector<float> _lat, _lon, _alt, _at, _dp, _tas, _ws, _wd, _wi;
+vector<string> _date;
+vector<float> _lat, _lon, _alt, _at, _dp, _tas, _ws, _wd, _wi;
 float firstAT = 0.0, firstDP = 0.0, firstTAS = -1.0, firstWS = 0.0, firstWD = 0.0, firstWI = 0.0;
 //float latestAT, latestTAS, latestWS, latestWD, latestWI;
 
@@ -89,7 +91,7 @@ extractPQvalue(const char* cpqstring)
 {
   if (! cpqstring)
   {
-    std::cerr << "extractPQvalue: string is null!\n";
+    cerr << "extractPQvalue: string is null!\n";
     return T();
   }
   try
@@ -98,14 +100,14 @@ extractPQvalue(const char* cpqstring)
   }
   catch (const boost::bad_lexical_cast& badcast)
   {
-    std::cerr << "could not parse '" << cpqstring << "': "
-                << badcast.what() << std::endl;
+    cerr << "could not parse '" << cpqstring << "': "
+                << badcast.what() << endl;
   }
   return T();
 }
 
 /* -------------------------------------------------------------------- */
-std::string
+string
 extractPQString(PGresult *result, int tuple, int field)
 {
   const char* pqstring = PQgetvalue(result, tuple, field);
@@ -118,13 +120,13 @@ extractPQString(PGresult *result, int tuple, int field)
           isspace(pqstring[len-1]))
     len--;
 
-  return std::string(pqstring, len);
+  return string(pqstring, len);
 }
 
 /* -------------------------------------------------------------------- */
-std::string getGlobalAttribute(PGconn * conn, std::string attr)
+string getGlobalAttribute(PGconn * conn, string attr)
 {
-  std::string query = "SELECT value FROM global_attributes WHERE key='";
+  string query = "SELECT value FROM global_attributes WHERE key='";
   query += attr + "'";
   PGresult * res = PQexec(conn, query.c_str());
 
@@ -132,10 +134,10 @@ std::string getGlobalAttribute(PGconn * conn, std::string attr)
 
   if (ntuples == 0)
   {
-    std::cerr << "No global attribute " << attr << "!\n";
+    cerr << "No global attribute " << attr << "!\n";
     return "";
   }
-  std::string s = extractPQString(res, 0, 0);
+  string s = extractPQString(res, 0, 0);
   PQclear(res);
   return s;
 }
@@ -145,13 +147,13 @@ std::string getGlobalAttribute(PGconn * conn, std::string attr)
  * Read the 'coordinates' attribute form the database to get the names of
  * the lat, lon and alt variables.
  */
-std::string buildDataQueryString(PGconn * conn)
+string buildDataQueryString(PGconn * conn)
 {
-  std::string dataQuery = "SELECT datetime,";
+  string dataQuery = "SELECT datetime,";
 
-  std::string lat = getGlobalAttribute(conn, "latitude_coordinate");
-  std::string lon = getGlobalAttribute(conn, "longitude_coordinate");
-  std::string alt = getGlobalAttribute(conn, "zaxis_coordinate");
+  string lat = getGlobalAttribute(conn, "latitude_coordinate");
+  string lon = getGlobalAttribute(conn, "longitude_coordinate");
+  string alt = getGlobalAttribute(conn, "zaxis_coordinate");
 
   dataQuery += lon + "," + lat + "," + alt + _dataQuerySuffix;
 
@@ -163,13 +165,13 @@ std::string buildDataQueryString(PGconn * conn)
 }
 
 /* -------------------------------------------------------------------- */
-std::string
+string
 startBubbleCDATA()
 {
-  std::stringstream s;
-  std::string startTime = _date[0].substr(_date[0].find('T')+1);
+  stringstream s;
+  string startTime = _date[0].substr(_date[0].find('T')+1);
 
-  s     << "<![CDATA[" << startTime << std::fixed;
+  s     << "<![CDATA[" << startTime << fixed;
   s.precision(2);
   s	<< "<br>Alt : " << _alt[0]
 	<< " feet<br>Temp : " << firstAT
@@ -181,14 +183,14 @@ startBubbleCDATA()
 }
 
 /* -------------------------------------------------------------------- */
-std::string
+string
 endBubbleCDATA()
 {
-  std::stringstream e;
-  std::string s = _date[_date.size()-1];
-  std::string endTime = s.substr(s.find('T')+1);
+  stringstream e;
+  string s = _date[_date.size()-1];
+  string endTime = s.substr(s.find('T')+1);
 
-  e	<< "<![CDATA[" << endTime << "<br>" << std::fixed
+  e	<< "<![CDATA[" << endTime << "<br>" << fixed
 	<< " Lat : " << _lat[_lat.size()-1]
 	<< " deg_N<br>Lon : " << _lon[_lon.size()-1];
   e.precision(0);
@@ -204,12 +206,12 @@ endBubbleCDATA()
 }
 
 /* -------------------------------------------------------------------- */
-std::string
+string
 midBubbleCDATA(int i)
 {
-  std::stringstream e;
+  stringstream e;
 
-  e	<< std::fixed << "<![CDATA[" << " Lat : " << _lat[i]
+  e	<< fixed << "<![CDATA[" << " Lat : " << _lat[i]
 	<< " deg_N<br>Lon : " << _lon[i];
   e.precision(0);
   e	<< " deg_E<br>Alt : " << _alt[i];
@@ -256,17 +258,17 @@ int barbSpeed(float ws)
 /* -------------------------------------------------------------------- */
 void WriteCurrentPositionKML(const _projInfo& projInfo)
 {
-  std::ofstream googleEarth;
-  std::string file;
+  ofstream googleEarth;
+  string file;
 
   file = googleEarthDataDir + "current_pos.kml";
 
-  std::string temp = googleEarthDataDir + "latest" + ".kml";
+  string temp = googleEarthDataDir + "latest" + ".kml";
 
   googleEarth.open(temp.c_str());
   if (googleEarth.is_open() == false)
   {
-    std::cerr << "Failed to open output file " << temp << std::endl;
+    cerr << "Failed to open output file " << temp << endl;
     return;
   }
 
@@ -309,7 +311,7 @@ void WriteCurrentPositionKML(const _projInfo& projInfo)
 }
 
 /* -------------------------------------------------------------------- */
-void WriteLandmarksKML_Folder(std::ofstream & googleEarth, const _projInfo& projInfo)
+void WriteLandmarksKML_Folder(ofstream & googleEarth, const _projInfo& projInfo)
 {
   if (projInfo.landmarks.size() == 0)
     return;
@@ -346,7 +348,7 @@ void WriteLandmarksKML_Folder(std::ofstream & googleEarth, const _projInfo& proj
 }
 
 /* -------------------------------------------------------------------- */
-void WriteTimeStampsKML_Folder(std::ofstream & googleEarth)
+void WriteTimeStampsKML_Folder(ofstream & googleEarth)
 {
   googleEarth
     << " <Folder>\n"
@@ -355,14 +357,14 @@ void WriteTimeStampsKML_Folder(std::ofstream & googleEarth)
   int this_ts, curr_ts, last_ts = -1;
   for (size_t i = 0; i < _date.size(); i++)
   {
-    std::string hour   = _date[i].substr(11, 2);
-    std::string minute = _date[i].substr(14, 2);
-    std::string second = _date[i].substr(17, 2);
+    string hour   = _date[i].substr(11, 2);
+    string minute = _date[i].substr(14, 2);
+    string second = _date[i].substr(17, 2);
     this_ts = atoi(hour.c_str())*60 + atoi(minute.c_str());
     curr_ts = this_ts / ts_Freq;
     if ( (i == 0) || (curr_ts != last_ts) || (i == _date.size()-1) ) {
       last_ts = curr_ts;
-      std::string label = _date[i].substr(11, 5);
+      string label = _date[i].substr(11, 5);
       googleEarth
         << "  <Placemark>\n"
         << "   <name>" << label << "</name>\n"
@@ -384,7 +386,7 @@ void WriteTimeStampsKML_Folder(std::ofstream & googleEarth)
 }
 
 /* -------------------------------------------------------------------- */
-void WriteWindBarbsKML_Folder(std::ofstream & googleEarth)
+void WriteWindBarbsKML_Folder(ofstream & googleEarth)
 {
   googleEarth
     << " <Folder>\n"
@@ -393,9 +395,9 @@ void WriteWindBarbsKML_Folder(std::ofstream & googleEarth)
   int this_ts, curr_ts, last_ts = -1;
   for (size_t i = 0; i < _date.size(); i++)
   {
-    std::string hour   = _date[i].substr(11, 2);
-    std::string minute = _date[i].substr(14, 2);
-    std::string second = _date[i].substr(17, 2);
+    string hour   = _date[i].substr(11, 2);
+    string minute = _date[i].substr(14, 2);
+    string second = _date[i].substr(17, 2);
     this_ts = atoi(hour.c_str())*60 + atoi(minute.c_str());
     curr_ts = this_ts / barb_Freq;
     if ( (i == 0) || (curr_ts != last_ts) || (i == _date.size()-1) ) {
@@ -406,7 +408,7 @@ void WriteWindBarbsKML_Folder(std::ofstream & googleEarth)
 
       sprintf(url, "<href>http://%s/flight_data/display/windbarbs/%03d/wb_%03d_%03d.png</href>\n",
 		webHost.c_str(), iws, iws, iwd);
-      std::string label = _date[i].substr(11, 5);
+      string label = _date[i].substr(11, 5);
 
       googleEarth
         << "  <Placemark>\n"
@@ -434,9 +436,9 @@ void WriteWindBarbsKML_Folder(std::ofstream & googleEarth)
 /* Copies verbatum from a text file called "include.kml", this allows for
  * user define stuff to be added.
  */
-void WriteSpecialInclude(std::ofstream & googleEarth)
+void WriteSpecialInclude(ofstream & googleEarth)
 {
-  std::ifstream inc;
+  ifstream inc;
 
   inc.open("include.kml");
   if (inc.is_open())
@@ -453,13 +455,13 @@ void WriteSpecialInclude(std::ofstream & googleEarth)
 
 /* -------------------------------------------------------------------- */
 void
-renamefile(std::string file, std::string outFile)
+renamefile(string file, string outFile)
 {
   if (PostProcessMode)	// Don't compress files for netCDF post-processing.
     return;
 
   char buffer[1024];
-  std::string tmptmp(googleEarthDataDir); tmptmp += "tmp.kmz";
+  string tmptmp(googleEarthDataDir); tmptmp += "tmp.kmz";
 
   sprintf(buffer, "zip %s %s", tmptmp.c_str(), file.c_str());
   system(buffer);
@@ -467,19 +469,19 @@ renamefile(std::string file, std::string outFile)
   sprintf(buffer, "chmod g+w %s", tmptmp.c_str());
   system(buffer);
 
-  std::string temp = googleEarthDataDir + outFile + ".kmz";
+  string temp = googleEarthDataDir + outFile + ".kmz";
   rename(tmptmp.c_str(), temp.c_str());
 }
 
 /* -------------------------------------------------------------------- */
-void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo)
+void WriteGoogleEarthKML(string & file, const _projInfo& projInfo)
 {
-  std::ofstream googleEarth;
+  ofstream googleEarth;
 
   googleEarth.open(file.c_str());
   if (googleEarth.is_open() == false)
   {
-    std::cerr << "Failed to open output file " << file << std::endl;
+    cerr << "Failed to open output file " << file << endl;
     return;
   }
 
@@ -643,14 +645,14 @@ void WriteGoogleEarthKML(std::string & file, const _projInfo& projInfo)
 }
 
 /* -------------------------------------------------------------------- */
-void WriteGoogleEarthAnimatedKML(std::string & file, const _projInfo& projInfo)
+void WriteGoogleEarthAnimatedKML(string & file, const _projInfo& projInfo)
 {
-  std::ofstream googleEarth;
+  ofstream googleEarth;
 
   googleEarth.open(file.c_str());
   if (googleEarth.is_open() == false)
   {
-    std::cerr << "Failed to open output file " << file << std::endl;
+    cerr << "Failed to open output file " << file << endl;
     return;
   }
 
@@ -718,11 +720,11 @@ void WriteGoogleEarthAnimatedKML(std::string & file, const _projInfo& projInfo)
 	<< "    <altitudeMode>absolute</altitudeMode>\n"
 	<< "    <coordinates>\n";
 
-    std::string start = _date[i];
+    string start = _date[i];
     for (size_t j = 0; i < _date.size() && j < 120; j += TimeStep, i += TimeStep)
       googleEarth << _lon[i] << "," << _lat[i] << "," << (int)_alt[i] << "\n";
 
-    std::string end = _date[i >= _date.size() ? _date.size()-1 : i];
+    string end = _date[i >= _date.size() ? _date.size()-1 : i];
     start.replace(10, 1, "T");
     end.replace(10, 1, "T");
 
@@ -738,9 +740,9 @@ void WriteGoogleEarthAnimatedKML(std::string & file, const _projInfo& projInfo)
        i -= TimeStep;
   }
 
-  std::string st = _date[0];
+  string st = _date[0];
   st.replace(10, 1, "T");
-  std::string end = _date[_date.size()-1];
+  string end = _date[_date.size()-1];
   end.replace(10, 1, "T");
 
   googleEarth
@@ -803,7 +805,7 @@ void updateData(PGresult * res, int indx)
   if (lat == -32767 || lon == -32767 || alt == -32767)
     return;
 
-  std::string tm(extractPQString(res, indx, TIME)); 
+  string tm(extractPQString(res, indx, TIME)); 
   tm.replace(10, 1, "T");
   _date.push_back(tm);
   _lon.push_back( extractPQvalue<float>(PQgetvalue(res, indx, LON)) );
@@ -823,7 +825,7 @@ void updateData(PGresult * res, int indx)
  * Query the database for fresh data.  If this is the first request for
  * data, then get everything in the database at the moment.
  */
-void GetNewData(PGconn * conn, std::string query)
+void GetNewData(PGconn * conn, string query)
 {
   PGresult * res;
   int ntuples;
@@ -837,7 +839,7 @@ _at.clear(); _dp.clear(); _tas.clear(); _ws.clear(); _wd.clear(); _wi.clear();
   {
     res = PQexec(conn, query.c_str());
 
-    std::cerr << PQerrorMessage(conn);
+    cerr << PQerrorMessage(conn);
 
     ntuples = PQntuples(res);
 
@@ -853,9 +855,9 @@ _at.clear(); _dp.clear(); _tas.clear(); _ws.clear(); _wd.clear(); _wi.clear();
   }
   else
   {
-    static std::string prevEndTime;
+    static string prevEndTime;
 
-    std::string newEndTime = getGlobalAttribute(conn, "EndTime");
+    string newEndTime = getGlobalAttribute(conn, "EndTime");
 
     query += " WHERE datetime = '";
     query += newEndTime.substr(0, 19);
@@ -885,7 +887,7 @@ PGconn * openDataBase()
 
   sprintf(conn_str, "host='%s' dbname='%s' user ='ads'", 
           database_host.c_str(), dbname.c_str());
-  std::cout << "Connect string : [" << conn_str << "]" << std::endl;
+  cout << "Connect string : [" << conn_str << "]" << endl;
   PGconn *conn = PQconnectdb(conn_str);
 
 
@@ -894,7 +896,7 @@ PGconn * openDataBase()
   if (PQstatus(conn) == CONNECTION_BAD)
   {
     PQfinish(conn);
-    std::cerr << "PQconnectdb: Connection failed." << std::endl;
+    cerr << "PQconnectdb: Connection failed." << endl;
     return 0;
   }
 
@@ -902,14 +904,14 @@ PGconn * openDataBase()
 }
 
 /* -------------------------------------------------------------------- */
-void ReadDataFromNetCDF(const std::string & fileName)
+void ReadDataFromNetCDF(const string & fileName)
 {
-  std::cout << "ReadDataFromNetCDF: " << fileName << std::endl;
+  cout << "ReadDataFromNetCDF: " << fileName << endl;
   NcFile file(fileName.c_str());
 
   if (file.is_valid() == false)
   {
-    std::cerr << "Failed to open, or invalid netCDF file.\n";
+    cerr << "Failed to open, or invalid netCDF file.\n";
     return;
   }
 
@@ -1004,7 +1006,7 @@ void ReadDataFromNetCDF(const std::string & fileName)
 /* -------------------------------------------------------------------- */
 int usage(const char* argv0)
 {
-  std::cerr
+  cerr
 	<< "Usage: has two forms, one for real-time use and the other to scan\n"
 	<< "	a netCDF file in post-processing mode.\n\n"
 	<< "Real-time onboard form:\n"
@@ -1036,7 +1038,7 @@ int parseRunstring(int argc, char** argv)
     case 'p':	// platform selection, used to select dbname on ground.
       if ( ground_selected == no )
       {
-        std::cerr << "\n\tDo not select a platform when running onboard (-o).\n\n";
+        cerr << "\n\tDo not select a platform when running onboard (-o).\n\n";
         return usage(argv[0]);
       }
       ground_selected = yes;
@@ -1046,7 +1048,7 @@ int parseRunstring(int argc, char** argv)
            platform.compare("P3") &&
            platform.compare("C130") )
       {
-        std::cerr << "\n\tplatform must be GV, C130, or P3\n\n";
+        cerr << "\n\tplatform must be GV, C130, or P3\n\n";
         return usage(argv[0]);
       }
       dbname = "real-time-"+platform;
@@ -1068,7 +1070,7 @@ int parseRunstring(int argc, char** argv)
     case 'o':	// onboard.  Modify some defaults if this is set.
       if ( ground_selected == yes )
       {
-        std::cerr << "\n\tDo not select a platform when running onboard (-o).\n\n";
+        cerr << "\n\tDo not select a platform when running onboard (-o).\n\n";
         return usage(argv[0]);
       }
       ground_selected = no;
@@ -1106,7 +1108,7 @@ void getGlobalAttrData(PGconn * conn)
     projectInfo.flightNumber = "noflight";
 
   // Get the data rate at which data is being shipped from platform to ground.
-  std::string dr = getGlobalAttribute(conn, "DataRate");
+  string dr = getGlobalAttribute(conn, "DataRate");
   int dataRate = atoi(dr.c_str());
   if (dataRate <= 0)
     dataRate = 5;	// 5 second data is the default rate onboard.
@@ -1139,16 +1141,16 @@ int main(int argc, char *argv[])
     ReadDataFromNetCDF(netCDFinputFile);
     if (_lat.size() > 0)
     {
-      std::cout << "WriteGoogleEarthKML(" << outputKML << ", projectInfo);\n";
+      cout << "WriteGoogleEarthKML(" << outputKML << ", projectInfo);\n";
       WriteGoogleEarthKML(outputKML, projectInfo);
     }
     return 0;
   }
 
 
-  std::cout << "\n  Using database host : " << database_host << std::endl;
-  std::cout << "\n  Output directory : " << googleEarthDataDir << std::endl;
-  std::cout << std::endl;
+  cout << "\n  Using database host : " << database_host << endl;
+  cout << "\n  Output directory : " << googleEarthDataDir << endl;
+  cout << endl;
 
 
   // Real-time mode.
@@ -1162,7 +1164,7 @@ int main(int argc, char *argv[])
 
     getGlobalAttrData(conn);
 
-    std::string dataQuery = buildDataQueryString(conn);
+    string dataQuery = buildDataQueryString(conn);
 
     GetNewData(conn, dataQuery);
     PQfinish(conn);
@@ -1170,7 +1172,7 @@ int main(int argc, char *argv[])
 
     if (_lat.size() > 0)
     {
-      std::string outFile;
+      string outFile;
 
       outFile = googleEarthDataDir + "latest" + ".kml";
 
