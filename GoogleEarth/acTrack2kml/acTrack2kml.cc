@@ -34,10 +34,10 @@ static int TimeStep = 15;
 static const float TAS_CutOff = 20.0;
 
 // Frequency of Time Stamps (in minutes).
-static int ts_Freq = 10;
+static int ts_Freq = 5;
 
 // Frequency of Wind Barbs (in minutes).
-static int barb_Freq = 7;
+static int barb_Freq = 5;
 
 static std::string netCDFinputFile, outputKML, database_host, platform, dbname;
 
@@ -48,8 +48,8 @@ static bool PostProcessMode = false;
 // Our raw data is coming from a PostGreSQL database.....
 // The order of this enum should match the order of the variables
 // being requested in the dataQuery string.
-enum VariablePos { TIME=0, LON, LAT, ALT, AT, TAS, WS, WD, WI };
-static const std::string _dataQuerySuffix = ",atx,tasx,wsc,wdc,wic FROM raf_lrt WHERE TASX > ";
+enum VariablePos { TIME=0, LON, LAT, ALT, AT, DP, TAS, WS, WD, WI };
+static const std::string _dataQuerySuffix = ",atx,dpxc,tasx,wsc,wdc,wic FROM raf_lrt WHERE TASX > ";
 
 
 class _projInfo
@@ -67,8 +67,8 @@ public:
 const char *status[] = { "Pre-flight", "In-flight", "Landed" };
 
 std::vector<std::string> _date;
-std::vector<float> _lat, _lon, _alt, _at, _tas, _ws, _wd, _wi;
-float firstAT = 0.0, firstTAS = -1.0, firstWS = 0.0, firstWD = 0.0, firstWI = 0.0;
+std::vector<float> _lat, _lon, _alt, _at, _dp, _tas, _ws, _wd, _wi;
+float firstAT = 0.0, firstDP = 0.0, firstTAS = -1.0, firstWS = 0.0, firstWD = 0.0, firstWI = 0.0;
 //float latestAT, latestTAS, latestWS, latestWD, latestWI;
 
 
@@ -169,12 +169,13 @@ startBubbleCDATA()
   std::stringstream s;
   std::string startTime = _date[0].substr(_date[0].find('T')+1);
 
-  s     << "<![CDATA[" << startTime
-        << "<br>Alt : " << _alt[0]
-        << " feet<br>Temp : " << firstAT
-        << " C<br>WS : " << firstWS
-        << " m/s<br>WD : " << firstWD
-        << " degree_T<br>WI : " << firstWI << " m/s]]>";
+  s     << "<![CDATA[" << startTime << std::fixed;
+  s.precision(2);
+  s	<< "<br>Alt : " << _alt[0]
+	<< " feet<br>Temp : " << firstAT
+	<< " C<br>WS : " << firstWS
+	<< " m/s<br>WD : " << firstWD
+	<< " degree_T<br>WI : " << firstWI << " m/s]]>";
 
   return s.str();
 }
@@ -187,13 +188,14 @@ endBubbleCDATA()
   std::string s = _date[_date.size()-1];
   std::string endTime = s.substr(s.find('T')+1);
 
-  e << "<![CDATA[";
-
-  e	<< endTime << "<br>" 
+  e	<< "<![CDATA[" << endTime << "<br>" << std::fixed
 	<< " Lat : " << _lat[_lat.size()-1]
-	<< " deg_N<br>Lon : " << _lon[_lon.size()-1]
-	<< " deg_E<br>Alt : " << _alt[_alt.size()-1]
-	<< " feet<br>Temp : " << _at[_at.size()-1]
+	<< " deg_N<br>Lon : " << _lon[_lon.size()-1];
+  e.precision(0);
+  e	<< " deg_E<br>Alt : " << _alt[_alt.size()-1];
+  e.precision(2);
+  e	<< " feet<br>Temp : " << _at[_at.size()-1]
+	<< " C<br>DP : " << _dp[_dp.size()-1]
 	<< " C<br>WS : " << _ws[_ws.size()-1]
 	<< " m/s<br>WD : " << _wd[_wd.size()-1]
 	<< " degree_T<br>WI : " << _wi[_wi.size()-1] << " m/s]]>";
@@ -207,14 +209,15 @@ midBubbleCDATA(int i)
 {
   std::stringstream e;
 
-  e << "<![CDATA[";
-
-  e	<< " Lat : " << _lat[i]
-	<< " deg_N<br>Lon : " << _lon[i]
-	<< " deg_E<br>Alt : " << _alt[i]
-	<< " feet<br>Temp : " << _at[i]
-	<< " C<br>WS : " << _ws[i]
-	<< " m/s<br>WD : " << _wd[i]
+  e	<< std::fixed << "<![CDATA[" << " Lat : " << _lat[i]
+	<< " deg_N<br>Lon : " << _lon[i];
+  e.precision(0);
+  e	<< " deg_E<br>Alt : " << _alt[i];
+  e.precision(1);
+  e	<< " feet<br>Temp : " << _at[i]
+	<< " C<br>DP : " << _dp[i]
+	<< " C<br>WS : " << _ws[i] << " m/s, " << _ws[i] * 1.9438
+	<< " knots<br>WD : " << _wd[i]
 	<< " degree_T<br>WI : " << _wi[i] << " m/s]]>";
 
   return e.str();
@@ -408,7 +411,7 @@ void WriteWindBarbsKML_Folder(std::ofstream & googleEarth)
       googleEarth
         << "  <Placemark>\n"
         << "   <name>" << label << "</name>\n"
-	<< "   <description><![CDATA[WD: " << _wd[i] << " deg<br>WS: " << _ws[i] << " knots]]></description>\n"
+//	<< "   <description><![CDATA[WD: " << _wd[i] << " deg<br>WS: " << _ws[i] * 1.9438 << " knots]]></description>\n"
         << "   <Style>\n"
         << "    <IconStyle>\n"
         << "     <scale>3</scale>\n"
@@ -808,6 +811,7 @@ void updateData(PGresult * res, int indx)
   _alt.push_back( extractPQvalue<float>(PQgetvalue(res, indx, ALT)) * 3.2808);
 
   _at.push_back( extractPQvalue<float>(PQgetvalue(res, indx, AT)) );
+  _dp.push_back( extractPQvalue<float>(PQgetvalue(res, indx, DP)) );
   _tas.push_back( extractPQvalue<float>(PQgetvalue(res, indx, TAS)) );
   _ws.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WS)) );
   _wd.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WD)) );
@@ -827,7 +831,7 @@ void GetNewData(PGconn * conn, std::string query)
 // This was originally written to accrete new data, but it didn't keep
 // track correctly.  So for now just refetch all data.
 _lat.clear(); _lon.clear(); _alt.clear(); _date.clear();
-_at.clear(); _tas.clear(); _ws.clear(); _wd.clear(); _wi.clear();
+_at.clear(); _dp.clear(); _tas.clear(); _ws.clear(); _wd.clear(); _wi.clear();
 
   if (_lat.size() == 0)	// First time.
   {
@@ -837,7 +841,7 @@ _at.clear(); _tas.clear(); _ws.clear(); _wd.clear(); _wi.clear();
 
     ntuples = PQntuples(res);
 
-    firstAT = 0.0, firstTAS = -1.0, firstWS = 0.0, firstWD = 0.0, firstWI = 0.0;
+    firstAT = 0.0, firstDP = 0.0, firstTAS = -1.0, firstWS = 0.0, firstWD = 0.0, firstWI = 0.0;
 
     if (ntuples > 0)
     {
@@ -940,6 +944,7 @@ void ReadDataFromNetCDF(const std::string & fileName)
   NcVar* lon_v = file.get_var(lon);
   NcVar* alt_v = file.get_var(alt);
   NcVar* atx_v = file.get_var("ATX");
+  NcVar* dp_v = file.get_var("DPXC");
   NcVar* ws_v = file.get_var("WSC");
   NcVar* wi_v = file.get_var("WIC");
   NcVar* wd_v = file.get_var("WDC");
@@ -950,6 +955,7 @@ void ReadDataFromNetCDF(const std::string & fileName)
   NcValues *lon_vals = lon_v->values();
   NcValues *alt_vals = alt_v->values();
   NcValues *atx_vals = atx_v->values();
+  NcValues *dp_vals = dp_v->values();
   NcValues *ws_vals = ws_v->values();
   NcValues *wi_vals = wi_v->values();
   NcValues *wd_vals = wd_v->values();
@@ -982,12 +988,14 @@ void ReadDataFromNetCDF(const std::string & fileName)
     _lat.push_back( lat_vals->as_float(i) );
     _alt.push_back( alt_vals->as_float(i) * 3.2808 );
     _at.push_back( atx_vals->as_float(i) );
+    _dp.push_back( dp_vals->as_float(i) );
     _ws.push_back( ws_vals->as_float(i) );
     _wi.push_back( wi_vals->as_float(i) );
     _wd.push_back( wd_vals->as_float(i) );
   }
 
   firstAT = _at[0];
+  firstAT = _dp[0];
   firstWS = _ws[0];
   firstWD = _wd[0];
   firstWI = _wi[0];
