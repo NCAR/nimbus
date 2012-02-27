@@ -199,7 +199,7 @@ endBubbleCDATA()
   e	<< " feet<br>Temp : " << _at[_at.size()-1]
 	<< " C<br>DP : " << _dp[_dp.size()-1]
 	<< " C<br>WS : " << _ws[_ws.size()-1]
-	<< " m/s<br>WD : " << _wd[_wd.size()-1]
+	<< " knots<br>WD : " << _wd[_wd.size()-1]
 	<< " degree_T<br>WI : " << _wi[_wi.size()-1] << " m/s]]>";
 
   return e.str();
@@ -218,7 +218,7 @@ midBubbleCDATA(int i)
   e.precision(1);
   e	<< " feet<br>Temp : " << _at[i]
 	<< " C<br>DP : " << _dp[i]
-	<< " C<br>WS : " << _ws[i] << " m/s, " << _ws[i] * 1.9438
+	<< " C<br>WS : " << _ws[i]
 	<< " knots<br>WD : " << _wd[i]
 	<< " degree_T<br>WI : " << _wi[i] << " m/s]]>";
 
@@ -402,7 +402,7 @@ void WriteWindBarbsKML_Folder(ofstream & googleEarth)
     curr_ts = this_ts / barb_Freq;
     if ( (i == 0) || (curr_ts != last_ts) || (i == _date.size()-1) ) {
       last_ts = curr_ts;
-      int iws = barbSpeed(_ws[i] * 1.9438);	// Knots.
+      int iws = barbSpeed(_ws[i]);	// make sure to pass in knots.
       int iwd = (int)_wd[i];
       char url[512];
 
@@ -413,7 +413,7 @@ void WriteWindBarbsKML_Folder(ofstream & googleEarth)
       googleEarth
         << "  <Placemark>\n"
         << "   <name>" << label << "</name>\n"
-//	<< "   <description><![CDATA[WD: " << _wd[i] << " deg<br>WS: " << _ws[i] * 1.9438 << " knots]]></description>\n"
+//	<< "   <description><![CDATA[WD: " << _wd[i] << " deg<br>WS: " << _ws[i] << " knots]]></description>\n"
         << "   <Style>\n"
         << "    <IconStyle>\n"
         << "     <scale>3</scale>\n"
@@ -810,12 +810,12 @@ void updateData(PGresult * res, int indx)
   _date.push_back(tm);
   _lon.push_back( extractPQvalue<float>(PQgetvalue(res, indx, LON)) );
   _lat.push_back( extractPQvalue<float>(PQgetvalue(res, indx, LAT)) );
-  _alt.push_back( extractPQvalue<float>(PQgetvalue(res, indx, ALT)) * 3.2808);
+  _alt.push_back( extractPQvalue<float>(PQgetvalue(res, indx, ALT)) * 3.2808);	// Feet
 
   _at.push_back( extractPQvalue<float>(PQgetvalue(res, indx, AT)) );
   _dp.push_back( extractPQvalue<float>(PQgetvalue(res, indx, DP)) );
   _tas.push_back( extractPQvalue<float>(PQgetvalue(res, indx, TAS)) );
-  _ws.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WS)) );
+  _ws.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WS)) * 1.9438);	// knots
   _wd.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WD)) );
   _wi.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WI)) );
 }
@@ -988,10 +988,10 @@ void ReadDataFromNetCDF(const string & fileName)
     _date.push_back( buffer );
     _lon.push_back( lon_vals->as_float(i) );
     _lat.push_back( lat_vals->as_float(i) );
-    _alt.push_back( alt_vals->as_float(i) * 3.2808 );
+    _alt.push_back( alt_vals->as_float(i) * 3.2808);	// feet
     _at.push_back( atx_vals->as_float(i) );
     _dp.push_back( dp_vals->as_float(i) );
-    _ws.push_back( ws_vals->as_float(i) );
+    _ws.push_back( ws_vals->as_float(i) * 1.9438);	// knots
     _wi.push_back( wi_vals->as_float(i) );
     _wd.push_back( wd_vals->as_float(i) );
   }
