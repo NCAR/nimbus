@@ -12,12 +12,6 @@ STATIC FNS:	doubleCheck()
 
 DESCRIPTION:	
 
-INPUT:		
-
-OUTPUT:		none
-
-REFERENCES:	SearchList(), SearchTable()
-
 REFERENCED BY:	hdr_decode.c, cb_main.c
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1992
