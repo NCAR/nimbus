@@ -51,35 +51,24 @@ main(int argc, char *argv[])
   for (i = 0; i < VarDB_nRecords; ++i)
   {
     if (tracker)
-      printf("%-12.12s%-8.8s%-60.60s", ((struct var_v2 *)VarDB)[i].Name,
+      printf("%-12.12s%-8.8s%-60.60s\n", ((struct var_v2 *)VarDB)[i].Name,
                ((struct var_v2 *)VarDB)[i].Units, ((struct var_v2 *)VarDB)[i].Title);
     else
+    {
       printf("%-12.12s %-12.12s %-50.50s", ((struct var_v2 *)VarDB)[i].Name,
                ((struct var_v2 *)VarDB)[i].Units, ((struct var_v2 *)VarDB)[i].Title);
 
-    if (ntohl(((struct var_v2 *)VarDB)[i].type) == FLOATING)
-    {
-      ulong	p;
-      float	*rc = (float *)&p;
+      if (ntohl(((struct var_v2 *)VarDB)[i].is_analog) == true)
+      {
+        ulong	p;
 
-      p = ntohl(*((int *)&(((struct var_v2 *)VarDB)[i].FloatRange)));
-      if (!tracker) {
-         printf("%6.1f\n", *rc);
+        printf("%4d sps, ", ntohl(((struct var_v2 *)VarDB)[i].defaultSampleRate));
+        printf("%d %d Vdc",
+		ntohl(((struct var_v2 *)VarDB)[i].voltageRange[0]),
+		ntohl(((struct var_v2 *)VarDB)[i].voltageRange[1]));
       }
+      printf("\n");
     }
-    else
-    {
-      ulong	p0, p1;
-      float	*rc0 = (float *)&p0, *rc1 = (float *)&p1;
-
-      p0 = ntohl(*((int *)&(((struct var_v2 *)VarDB)[i].FixedRange[0])));
-      p1 = ntohl(*((int *)&(((struct var_v2 *)VarDB)[i].FixedRange[1])));
-      if (!tracker)
-         printf("%6.1f %6.1f\n", *rc0, *rc1);
-    }
-
-    if (tracker)
-       printf("\n");
   }
 
   ReleaseVarDB();
