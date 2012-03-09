@@ -16,7 +16,7 @@ void ProbeInfo::ComputeSamplearea(bool reconstruct)
     if (reconstruct)
       eff_wid = resolution*nDiodes+0.72*diam;  //from eq 17 in Heymsfield & Parrish 1978
     else
-      eff_wid = resolution * (nDiodes-1)-diam;   //from eq 6 in HP78
+      eff_wid = std::max(resolution * (nDiodes-1)-diam, resolution);   //from eq 6 in HP78
 
     sa = DoF * eff_wid * 1e-12;  //compute sa and convert to m^2 
 
