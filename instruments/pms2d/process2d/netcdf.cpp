@@ -257,12 +257,20 @@ NcVar *netCDF::addHistogram(string& varname, string& serialNumber)
 {
   NcVar *var;
 
+  const char *units = VarDB_GetUnits(varname.c_str());
+  // Make an attempt at units if VarDB returned 'Unk'.
+  if (strcmp(units, "Unk") == 0)
+  {
+    if (varname.c_str()[0] == 'A') units = "count";
+    if (varname.c_str()[0] == 'C') units = "#/L";
+  }
+
   if ((var = _file->get_var(varname.c_str())) == 0)
   {
     if ((var = _file->add_var(varname.c_str(), ncFloat, _timedim, _spsdim, _bindim_plusone)))
     {
       var->add_att("_FillValue", (float)(-32767.0));
-      var->add_att("units", VarDB_GetUnits(varname.c_str()));
+      var->add_att("units", units);
       var->add_att("long_name", VarDB_GetTitle(varname.c_str()));
       var->add_att("Category", "PMS Probe");
       var->add_att("SerialNumber", serialNumber.c_str());
@@ -276,12 +284,22 @@ NcVar *netCDF::addVariable(string& varname, string& serialNumber)
 {
   NcVar *var;
 
+  const char *units = VarDB_GetUnits(varname.c_str());
+  // Make an attempt at units if VarDB returned 'Unk'.
+  if (strcmp(units, "Unk") == 0)
+  {
+    if (varname.compare(0, 4, "CONC") == 0) units = "#/L";
+    if (varname.compare(0, 4, "PLWC") == 0) units = "gram/m3";
+    if (varname.compare(0, 4, "DBZ") == 0) units = "dBz";
+    if (varname.compare(0, 4, "DBAR") == 0) units = "um";
+  }
+
   if ((var = _file->get_var(varname.c_str())) == 0)
   {
     if ((var = _file->add_var(varname.c_str(), ncFloat, _timedim)))
     {
       var->add_att("_FillValue", (float)(-32767.0));
-      var->add_att("units", VarDB_GetUnits(varname.c_str()));
+      var->add_att("units", units);
       var->add_att("long_name", VarDB_GetTitle(varname.c_str()));
       var->add_att("Category", "PMS Probe");
       var->add_att("SerialNumber", serialNumber.c_str());
