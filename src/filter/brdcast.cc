@@ -117,11 +117,10 @@ void Broadcast::BroadcastData(const std::string & timeStamp)
         bcast << AveragedData[_varList[i]->LRstart];
     }
   }
-  // append ?CALIB, and ?RESCH flags to message
-//std::cout << (getGlobalAttribute("NoCalib") == "TRUE" ? "NO" : "YES") << "CALIB,";
-//std::cout << (getGlobalAttribute("NoResch") == "TRUE" ? "NO" : "YES") << "RESCH" << std::endl;
-  bcast << (getGlobalAttribute("NoCalib") == "TRUE" ? "NO" : "YES") << "CALIB,";
-  bcast << (getGlobalAttribute("NoResch") == "TRUE" ? "NO" : "YES") << "RESCH";
+
+  // append ?CALIB, and ?RESCH flags to message.  DC3/SEAC4RS.
+  bcast << "," << (getGlobalAttribute("DoNotCalibrate") == "TRUE" ? "1" : "0");
+  bcast << "," << (getGlobalAttribute("DoNotRecord") == "TRUE" ? "1" : "0");
 
   bcast << "\r\n";
   for (size_t i = 0; i < _toList.size(); ++i)
