@@ -289,8 +289,8 @@ PostgreSQL::initializeGlobalAttributes()
   _sqlString << "INSERT INTO global_attributes VALUES ('wind_field', '" << cfg.WindFieldVariables() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('landmarks', '" << readLandmarks() << "');";
   _sqlString << "INSERT INTO global_attributes VALUES ('DataRate', '" << cfg.GroundFeedDataRate() << "');";
-  _sqlString << "INSERT INTO global_attributes VALUES ('NoCalib', 'FALSE'";
-  _sqlString << "INSERT INTO global_attributes VALUES ('NoResch', 'FALSE'";
+  _sqlString << "INSERT INTO global_attributes VALUES ('DoNotCalibrate', 'FALSE'";
+  _sqlString << "INSERT INTO global_attributes VALUES ('DoNotRecord', 'FALSE'";
 
   submitCommand(_sqlString.str(), true);
 
