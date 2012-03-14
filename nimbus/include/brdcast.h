@@ -14,9 +14,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 #ifndef _Broadcast_h_
 #define	_Broadcast_h_
 
-#include <string>
-#include <libpq-fe.h>
-
 #include "UDP_Base.h"
 
 
@@ -25,10 +22,6 @@ class Broadcast : public UDP_Base
 {
 public:
   Broadcast();
-
-  std::string extractPQString(PGresult *result, int tuple, int field);
-
-  std::string getGlobalAttribute(std::string attr);
 
   void	BroadcastData(const std::string & timeStamp);
 

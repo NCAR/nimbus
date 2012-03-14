@@ -47,52 +47,6 @@ Broadcast::Broadcast() : UDP_Base(7071)
 }
 
 /* -------------------------------------------------------------------- */
-std::string Broadcast::extractPQString(PGresult *result, int tuple, int field)
-{
-  const char* pqstring = PQgetvalue(result, tuple, field);
-  if (! pqstring)
-    return "";
-
-  int len = strlen(pqstring);
-  while (len > 0 &&
-          isascii(pqstring[len-1]) &&
-          isspace(pqstring[len-1]))
-    len--;
-
-  return std::string(pqstring, len);
-}
-
-/* -------------------------------------------------------------------- */
-std::string Broadcast::getGlobalAttribute(std::string attr)
-{
-  PGconn *conn = PQconnectdb("host='acserver' dbname='real-time' user ='ads'");
-
-  /* check to see that the backend connection was successfully made
-   */
-  if (PQstatus(conn) == CONNECTION_BAD)
-  {
-    PQfinish(conn);
-    std::cerr << "PQconnectdb: Connection failed." << std::endl;
-    return "";
-  }
-  std::string query = "SELECT value FROM global_attributes WHERE key='";
-  query += attr + "'";
-  PGresult * res = PQexec(conn, query.c_str());
-
-  int ntuples = PQntuples(res);
-
-  if (ntuples == 0)
-  {
-    std::cerr << "No global attribute " << attr << "!\n";
-    return "";
-  }
-  std::string s = extractPQString(res, 0, 0);
-  PQclear(res);
-  PQfinish(conn);
-  return s;
-}
-
-/* -------------------------------------------------------------------- */
 void Broadcast::BroadcastData(const std::string & timeStamp) 
 {
   if (_varList.size() == 0)
@@ -117,10 +71,6 @@ void Broadcast::BroadcastData(const std::string & timeStamp)
         bcast << AveragedData[_varList[i]->LRstart];
     }
   }
-
-  // append ?CALIB, and ?RESCH flags to message.  DC3/SEAC4RS.
-  bcast << "," << (getGlobalAttribute("DoNotCalibrate") == "TRUE" ? "1" : "0");
-  bcast << "," << (getGlobalAttribute("DoNotRecord") == "TRUE" ? "1" : "0");
 
   bcast << "\r\n";
   for (size_t i = 0; i < _toList.size(); ++i)
