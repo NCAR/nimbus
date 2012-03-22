@@ -19,6 +19,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 #include <sstream>
 
 const size_t Broadcast::RADAR_ALT_INDX = 5;
+const size_t Broadcast::NOCAL_ALT_INDX = 31;
+const size_t Broadcast::NOREC_ALT_INDX = 32;
 const std::string Broadcast::InterfacePrefix = "192.168";
 
 using namespace nidas::util;
@@ -62,13 +64,26 @@ void Broadcast::BroadcastData(const std::string & timeStamp)
 
   for (size_t i = 0; i < _varList.size(); ++i)
   {
+//  printf("_varList[%d]->name = %s\n", i, _varList[i]->name);
     bcast << ",";
     if (_varList[i])
     {
-      if (i == RADAR_ALT_INDX) // Our radar alt is in m, convert to ft as required by IWG1
-        bcast << AveragedData[_varList[i]->LRstart] * 3.2808;
-      else
-        bcast << AveragedData[_varList[i]->LRstart];
+      switch (i)
+      {
+        case RADAR_ALT_INDX: // Our radar alt is in m, convert to ft as required by IWG1
+          bcast << AveragedData[_varList[i]->LRstart] * 3.2808;
+          break;
+        case NOCAL_ALT_INDX: // Do Not Calibrate flag
+        case NOREC_ALT_INDX: // Do Not Record flag
+          if (isnan(AveragedData[_varList[i]->LRstart]))
+            bcast << 0;
+          else
+            bcast << AveragedData[_varList[i]->LRstart];
+          break;
+        default:
+          bcast << AveragedData[_varList[i]->LRstart];
+          break;
+      }
     }
   }
 
