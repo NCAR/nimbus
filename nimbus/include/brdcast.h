@@ -34,6 +34,10 @@ protected:
    */
   static const size_t RADAR_ALT_INDX;
 
+  /// Do Not Calibrate and Record flags
+  static const size_t NOCAL_ALT_INDX;
+  static const size_t NOREC_ALT_INDX;
+
   static const std::string InterfacePrefix;
 };
 
