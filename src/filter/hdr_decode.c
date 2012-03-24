@@ -2415,6 +2415,7 @@ DERTBL::DERTBL(const char s[]) : var_base(s)
 
 void closeSyncRecordReader()
 {
+  void ShutdownSyncServer();
   ShutdownSyncServer();
   if (syncRecReader)
     delete syncRecReader;
