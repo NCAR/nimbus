@@ -782,6 +782,7 @@
 	"DPCRC",	NULL,		NULL,		sdpcrc,
 	"EWX",		NULL,		NULL,		sRefer,
 	"DPXC",		NULL,		NULL,		sRefer,
+	"CONCV",	(void(*)(void*))vcselInit,	NULL,	sconcv,
 #
 #	Others
 #
