@@ -464,7 +464,7 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
         rp->OutputRate = rp->SampleRate;
     }
 
-    if (strcmp(rp->name, "CONCV_VXL") == 0)
+    if (strcmp(rp->name, "RAWCONC_VXL") == 0)
     {
       SetLookupSuffix(location);
       add_derived_names(name_sans_location);
