@@ -7,7 +7,8 @@ FUNCTION sid_datablock, lun
    q={systime:0ull, numwords:0ul}
    readu,lun,q
    
-   num=q.numwords/21  ;the number of particles in this block
+   num=q.numwords/21                   ;The number of particles in this block
+   IF num eq 0 THEN return,{error:1}   ;Bad block
 
    scatter=intarr(num,28)
    tof=lonarr(num)

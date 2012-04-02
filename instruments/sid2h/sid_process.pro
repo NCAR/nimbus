@@ -222,11 +222,6 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
       tas=sid_tas({fn:op.pthfile,starttime:starttime,stoptime:stoptime,rate:rate},tag=op.tastag)
    ENDIF ELSE tas=fltarr(num)+op.fixedtas 
    
-   ;-----------Auto leveling---------------------------------------------------
-   detgain=lastfooter.cal_coeff
-   detoffset=lastfooter.cal_offset
-   IF op.autolevel THEN detgain=sid_autolevel(op,detoffset,statuswidgetid) 
-
    ;----------Set up text file-------------------------------------------------
    IF op.textfile eq 1 THEN BEGIN
       pbprange=sid_pbp_timeprompt(starttime,stoptime)
@@ -250,7 +245,12 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
       printf,2,'  12: time-based diameter [microns]'
       printf,2,'-------------------------------------------'
    ENDIF
-  
+   
+   ;-----------Auto leveling---------------------------------------------------
+   detgain=lastfooter.cal_coeff
+   detoffset=lastfooter.cal_offset
+   IF op.autolevel THEN detgain=sid_autolevel(op,detoffset,statuswidgetid) 
+
    ;------------Read data----------------------------------------------------
    lastelaptime=0
    blocknum=0
