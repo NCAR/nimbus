@@ -214,8 +214,8 @@ void InitAircraftDependencies()
       { // Post-TREX
         LogMessage("PCORS:  Post-TREX pcors().");
         pcorQCF	= pcorf5_2;      
-        pcorQCR	= pcorq5_2;
-        pcorPSF	= pcorr5_2;
+        pcorQCR = pcorf5_2;
+        pcorPSF	= pcorf5_2;
       }
       else
       { // TREX and earlier.
@@ -324,6 +324,8 @@ NR_TYPE pcorf7(NR_TYPE q, NR_TYPE q1)
 }
 
 /* GV ---------------------------------------------------------------- */
+/* delete pcorr5 and pcorq5  as not used         */
+
 NR_TYPE pcorr5(NR_TYPE q, NR_TYPE q1)
 {
   return (-1.02 + 0.1565*q) + q1*(0.008 + q1*(7.1979e-09*q1 - 1.4072e-05));
@@ -344,77 +346,47 @@ NR_TYPE pcorr5_2(NR_TYPE q, NR_TYPE q1)
 {
   NR_TYPE	pfax;
 
-  pfax = (-1.02 + 0.1565*q) + q1*(0.008 + q1*(7.1979e-09*q1 - 1.4072e-05));  
+  // LAMS PCOR per Al Cooper.  4/6/12
+  pfax = (0.00696 + 0.6678*q) + q1*(-0.05965 + q1*(-0.2833 - 0.2437*q1)); 
 
-/* Friehe pcor parameterization with q = adifr & q1 = mach_a   */
-/*   pfax = (-2.089 + q *(0.196 + 0.00138*q) + q1 *(9.609 - 8.307*q1));  */
   return(pfax);
 }
 
 NR_TYPE pcorq5_2(NR_TYPE q, NR_TYPE q1)
 {
-  return (2.00 -q*(0.023809 + q*0.0001361));
+  // LAMS PCOR per Al Cooper.  4/6/12
+  return (1.37 +q*(-0.01773 - 0.000156*q));
 }
 
 NR_TYPE pcorf5_2(NR_TYPE q, NR_TYPE q1)
 {
   NR_TYPE	pfix;
 
-  pfix = (1.02+q1*(0.215 - 0.04*q/1000.) + q*(-0.003266 + q*1.613e-06)); 
-
-  // Trailing Cone parameterization  
-/*  pfix = (-1.02 + 0.1565*q1) + q*(0.008 + q*(7.1979e-09*q - 1.4072e-05));  */
+  // LAMS PCOR per Al Cooper.  4/6/12
+  pfix = (0.00696 + 0.6678*q) + q1*(-0.05965 + q1*(-0.2833 - 0.2437*q1)); 
 
   return(pfix);
 }
 
 /* C130 --------------------------------------------------------------- */
-NR_TYPE pcorf1(NR_TYPE q, NR_TYPE q1)		/* For PSFD */
+NR_TYPE pcorf1(NR_TYPE q, NR_TYPE q1)	// For PSFD
 {
-  NR_TYPE	pcor;
- 
-  pcor = (4.66 + 11.4405 * q);
-
-  if (q < -0.31)
-    pcor = 1.113;
-
-  return(pcor);
+  return (0.00163 + 0.0214 * q + 0.0145 * pow(q1,0.5));
 }
 
-NR_TYPE pcorr1(NR_TYPE q, NR_TYPE q1)		/* For QCR */
+NR_TYPE pcorr1(NR_TYPE q, NR_TYPE q1)	// For QCR
 {
-  NR_TYPE	pcor;
-
-  pcor = (4.66 + 11.4405 * q);
-
-  if (q < -0.31)
-    pcor = 1.113;
-
-  return(pcor);
+  return (0.00163 + 0.0214 * q + 0.0145 * pow(q1,0.5));
 }
 
-NR_TYPE pcorf1_3(NR_TYPE q, NR_TYPE q1)	/* For new PSF */
+NR_TYPE pcorf1_3(NR_TYPE q, NR_TYPE q1)	// For new PSF
 {
-  NR_TYPE	pcor;
-
-  pcor = (3.29 + q * 0.0273);
-
-  if  (q < 55.0)
-    pcor = 4.7915;
-
-  return(pcor);
+  return (2.79 + q * 0.0273);
 }
 
-NR_TYPE pcorf1_2(NR_TYPE q, NR_TYPE q1)	/* For QCF */
+NR_TYPE pcorf1_2(NR_TYPE q, NR_TYPE q1)	// For QCF
 {
-  NR_TYPE	pcor;
-
-  pcor = (4.66 + 11.4405 * q);
-
-  if (q < -0.31)
-    pcor = 1.113;
-
-  return(pcor);
+  return (0.00163 + 0.0214 * q + 0.0145 * pow(q1,0.5));
 }
 
 /* END INITAC.C */

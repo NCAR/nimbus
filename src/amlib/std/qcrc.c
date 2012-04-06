@@ -21,7 +21,7 @@ extern NR_TYPE	(*pcorQCR)(NR_TYPE, NR_TYPE);
 /* -------------------------------------------------------------------- */
 void sqcrc(DERTBL *varp)
 {
-  NR_TYPE	qcr, akrd, qcrc = 0.0, adifr, bdifr, psf;
+  NR_TYPE	qcr, qcrc = 0.0, adifr, bdifr, psf, mach2, mach, aqratio;
   NR_TYPE	bqcrc, satk3, sbeta3;
   double	atk3, beta3;
 
@@ -31,15 +31,19 @@ void sqcrc(DERTBL *varp)
     qcr = 0.1;
 
   switch (cfg.Aircraft())
-    {
-    case Config::C130:
-      akrd = GetSample(varp, 3);
-      qcrc = qcr - (*pcorQCR)(akrd, 1.0);
+  {
+    case Config::HIAPER:
+      aqratio = GetSample(varp, 1);	// aqratio = qcf / psf
+      psf = GetSample(varp, 2);
+      mach = GetSample(varp, 3);
+      qcrc = qcr - psf * (*pcorQCR)(aqratio, mach);
       break;
 
-    case Config::HIAPER:
-      psf = GetSample(varp, 1);
-      qcrc = qcr - (*pcorQCR)(qcr, psf);
+    case Config::C130:
+      aqratio = GetSample(varp, 1);	// aqratio = adfir / qcf
+      psf = GetSample(varp, 2);
+      mach2 = GetSample(varp, 3);
+      qcrc = qcr - psf * (*pcorQCR)(aqratio, mach2);
       break;
 
     case Config::ELECTRA:
