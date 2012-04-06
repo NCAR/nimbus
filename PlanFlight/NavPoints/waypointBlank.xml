@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<waypointList xmlns="http://www.flighttouch.com/xmlschema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.flighttouch.com/xmlschema http://www.flighttouch.com/xmlschema/waypoint.xsd"
+    version="1.2" count="1">
+    <waypoint>
+        <waypointKey>
+            <countryCode>AU</countryCode>
+            <ident>TEST</ident>
+            <waypointType>1</waypointType>
+        </waypointKey>
+        <name>A Test Waypoint</name>
+        <frequency>999.99</frequency>
+        <latitude>0.0</latitude>
+        <longitude>0.0</longitude>
+        <magVar>0.0</magVar>
+        <elevation>0</elevation>
+        <cycleDate>2000-01-01</cycleDate>
+        <notes>Any notes you want about this waypoint.</notes>
+    </waypoint>
+</waypointList>

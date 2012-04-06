@@ -1,0 +1,260 @@
+To run:
+     python PlanFlight.py [Plan.name]
+ or ./PlanFlight.py [Plan.name]  -- if first made executable via chmod
+
+These notes are preliminary documentation for the PlanFlight routine and
+some guidance for users of the program. The first part of these notes give
+some instructions for using the program; later sections have some more
+detailed information on how this works and what is needed for maintenance.
+
+The Layout:
+
+The main window is laid out in two panels, and also has a menu bar at the 
+top and a status bar at the bottom. The left panel has, in normal order,
+the steps needed to construct a flight plan:
+  1. Select Modules, with characteristics as specified in the right panel.
+  2. Add each module as it is defined to the flight track. 
+  3. Examine the configuration 
+  4. Produce output in the form of a kml file.  
+  5. Start Google Earth with the kml file.
+
+The buttons colored red must be used, along with the 'Select Module'
+ComboBox. The white buttons are optional but aid in checking what has
+been done.
+
+A normal sequence might start by selecting an 'Initial Climb' module,
+define it in terms of the location and altitude, and add it to the
+track. Then if enroute points are desirable they can be added to the track
+also, although they are not necessary what the flight will go directly
+to the next defined maneuver. Next, a maneuver like a 'VerticalSection'
+might be defined and added to the track. When all modules are added, a
+'ReturnToBase' might finish the track definition.
+
+For each module, the 'Module Specs' panel defines its characteristics. Not
+all the entries there apply to every module; for some, a 'NA' or 'None'
+may appear to indicate that the particular entry box does not apply. The
+'Other' button, besides labeling the next entry window, when clicked
+displays some indication of what the various entries, including the
+'Other' entry, mean for a particular module. For example, to define a
+VerticalSection, one would provide the length of the passes by the 'Size'
+entry, give a reference point at which to start the vertical section in
+the 'Anchor' entries, specify the orientation of the first track in the
+'Angle' entry, and give the number of legs in the vertical section in
+'Legs'. The 'Other' entry in this case indicates the altitude change
+between passes, with a negative entry meaning to decrease altitude by
+the specified amount before making the next pass.
+
+There are two check boxes in the right panel. The top one labeled 'deg
+min format' should be checked if you want to work in units of degrees
+and decimal minutes (e.g., -105  7.1 to specify 105 degrees and 7.1
+minutes West longitude) for specifying latitude and longitude. If this
+box is not checked, the units will be decimal degrees (e.g., -105.117 for
+longitude). It can be changed at any time; the displayed numbers will be
+converted to the right format when this is done. The other check box is
+labeled 'drifting' and specifies if the pattern should drift with the
+wind or remain anchored to the track coordinates as specified.
+
+The menu items are: File, Specs, Edit Module, Maps, NavPts, and Help. Each
+will be described next. Note that there are also many shortcuts to these
+menu items: Most can be accessed by using the 'Alt' key with the associated
+underlined item in the menu bar, and many also have an associated 'Ctrl'
+sequence, like 'Ctrl+Q' to quit or 'Ctrl+N' to see the navigation window.
+These shortcuts are defined in the menu items that appear when a menu is
+selected.
+
+File:
+
+The File menu has entries 'New', 'Open', and 'Save' to start a new track,
+load a previously saved track, or save the track definition in a new
+file. The expected name is Plan.xxx where xxx provides a unique identifier
+for the plan, like perhaps the date. When you save a track, you will be
+asked to provide a descriptive comment that will be saved with the track
+and displayed when the track is reloaded. In addition, when you click
+the 'Backup and make kml' button the track is saved to a file called
+'Backup.track'. This is overwritten whenever a new kml file is made,
+so this is not a substitute for saving tracks you might want to re-use.
+
+The next item on the File menu is 'List'. This item causes a new
+window, the 'Waypoint' window, to appear with a listing of the Modules,
+Maneuvers, and Waypoints incorporated into the track as defined. These
+items can be printed or saved to a disk file. The Waypoints window also
+has a button labeled 'List VOR/DME'. Clicking on this button causes the
+display to change to a Waypoint-only listing in which the waypoints are
+specified not only by lat/lon but also relative to the nearest VORs and
+navigation-chart waypoints. This display, which can also be printed,
+can be useful when determining how to specify the track in coordinates
+that the FAA controllers will accept.
+
+Specs:
+
+The 'Edit Specs' item on the 'Specs' menu causes a new window to
+appear on which the general specifications used to construct tracks are
+shown. These include such items as the airport location, assumed flight
+speed and maximum turn tate, wind, fuel load available for research,
+and fuel burn rate. These values can be editied and saved. Some, like
+wind, are dependent on altitude; a value entered here will over-ride
+such specifications and give a fixed value at all altitudes.
+
+The wind is normally defined by a sounding that is downloaded via the
+'Get Sounding' menu item. For now, this button downloads the latest
+DNR sounding from the Wyoming database. This can be replaced by another
+text sounding from that database, which should be placed in a file named
+'Sounding'.
+
+
+Edit Module:
+
+The 'Edit Module' menu has entries for making a copy of a module,
+inserting a new module into the track at a specified location, deleting
+a module, or changing the order of modules. The '#' spin item in
+the Module Specs window can be used to move through the modules of an
+existing track, so it should be used to select the module to be deleted
+or copied or before which to insert a new module. In addition, there is a
+'Recalculate" item that causes the entire track to be recalculated. This
+is done automatically when modules are changed, but forcing recalculation
+may be useful if some of the 'Specs" items are edited after the track
+is defined.
+
+In addition, it is possible to edit the characteristics of any module. To
+do this, display the module to be edited using the '#' spin button, then
+change any characteristic (anchor point, number of legs, drifting or not,
+etc.) and click the 'Add Module to track' button. This will overwrite
+the previous definition of that module in the track.
+
+Maps:
+
+The 'Maps' menu has a single entry now, named 'Airways'. Clicking this
+displays a copy of the high-altitude chart for the local area. As the
+cursor is moved above this map, the corresponding lat/lon coordinates
+are displayed. If the left mouse button is clicked, the appropriate
+coordinates are transfered to the lat/lon entry in the 'Module Specs'
+panel, so this is one way to determine appropriate coordinates for
+modules. Additional maps can be added as needed.
+
+NavPts:
+
+The 'Navigation Points' are another way of specifying the coordinates
+in the 'Module Specs' panel. If the menu item named 'See Nav Points'
+is selected, a new window appears that has some named navigation
+points, like VOR locations or named intersection on the high-altitude
+charts, on the display. If the buttons on this display that have VOR
+or other identifying names are clicked, the corresponding coordinates
+are transferred to the main window, in the panel 'Module Specs' where
+anchor points for modules are defined.
+
+There are tools for manipulating what is displayed:
+
+  a. Any item can be removed from the display via the 'Remove' button
+  to its right. The 'Clear All' button removes all but the RAF button.
+  b. New items can be added by specifying a name (up to 5 characters)
+  and lat/lon coordinates in the text entry windows to the right of the
+  'Add' button. Once specified, clicking on 'Add' adds the new item to
+  the list of navigation points, which is always listed in aphabatical
+  order. When adding a new point, you must (for now) follow this program
+  foible: When using the deg-min format, two spaces must separate the
+  entry for degrees from the entry for minutes.  
+c. If the identifier for a known navigation point, like a VOR, is known, 
+  that name can be entered to the right of the 'Add' button and then 
+  clicking on the 'Find' button causes the lat/lon coordinates to be 
+  updated to the correct values, if the waypoint is in the current database. 
+  After getting the coordinates, the new item can be added to the list of 
+  navigation points.  
+d. The 'Load Nearby' button adds the two VORs and two high-altitude-way-
+  points that are closest to the coordinates displayed on the 'Module Specs'
+  panel to the displayed list. Note that the reference coordinates used
+  are not those at the top of the 'Navigation Points' window but those in
+  the original main window. The reason is that these are intended to be
+  helpful in defining the coordinates for a module.  e. In addition, the
+  waypoint names and navigation points can be saved and reloaded. Files
+  should use the suffix .nav because the file search when reloading is
+  restricted to those files. The file named 'Standard.nav' is loaded
+  when the program first starts.
+
+Performance: Various charts and tools for determining GV performance
+
+5. Specific Range. This is the distance covered per lb of fuel used. The
+   chart shows values for three different altitudes, and in each set the
+   specific range is parameterized by the weight of the aircraft (with
+   fuel), in 1000 lb units; i.e., the line labeled '50' corresponds to a
+   gross weight of 50,000 lb. The orange dots on these plots are the
+   'Long Range' values as specified by Gulfstream; these are values that
+   accept a 1% penalty vs maximum-range values (the peaks in the curves)
+   but in exchange realize about a 3% decrease, on average, in time to
+   reach a destination point. A vertical line is shown at 0.80M because
+   that is a common flight condition fot the GV when the aircraft can
+   reach it.
+Help:
+
+There are three sources of help:
+
+1. A preliminary User's Manual (what you are viewing now).
+2. 'Context Help': On the main window, most of the buttons and text-entry
+   lines have associated hints that can be opened by right-clicking on
+   them. This opens a new window and displays hints and guidance on using
+   that particular item. If no information is available, 'Hints unavailable'
+   appears in the status bar at the bottom of the main window.
+3. A few of the entries have associated 'tips' that become visible if the
+   mouse hovers over them more than just briefly. These are brief comments
+   that are intended to remind users of usage if it is already mostly
+   familiar.
+
+
+----------------------------------------- 
+
+This finishes the section of these notes for new users. The following are 
+some notes regarding internal working of the program that will be useful to 
+anyone forced to look at the code or make changes to it:
+
+1. Two Perl scripts, 'ReviseCoodinates.pl' and 'Nearest.pl', are used to
+implement some of the above functions. The translation of coordinates
+from lat/lon to VOR-relative is done in the former. It is run via a
+system call and the output is written to a file that is read back into
+the main program. 'Nearest.pl' runs similarly; it finds the two VORs
+and two waypoints on the high-altitude charts that are closest to the
+reference point.
+
+2. The 'Airways' map (stored in the directory as 'Airways.png') was
+made via a screen dump from Google Earth after the flight maps were
+loaded into it. After some cropping, the coordinate transformation was
+determined by finding three sets of corresponding coordinates, cursor
+integer vs lat/lon, and then using the program 'Xform.py' to find the
+transformation. That transformation is hard-coded into the routine
+now. New maps could be made in the same way, and if that turns out to
+be needed often the process should be improved and automated.
+
+3. The VOR and FAA-waypoint coordinates are contained in two files,
+VOR.txt and WPT.txt. They are in a subdirectory called 'NavPoints',
+which also contains many of the original .xml files from which these
+coordinates were drawn. The directory is much larger than it meeds to be
+for operation of this program, but I kept these files in case it becomes
+necessary to extract different VORs or WPTs for a new project. Some of
+the programs to do this are still available, I think in DC3 directories
+but maybe also/or in PREDICT or ADELE directories.
+
+4. Many modules are not implemented yet. Because this will be easy to
+add, I put this off until I could get the oher parts of the structure
+to a usable state.
+
+5. This was written using Python 2.7, not installed yet on EOL machines. 
+The major compatibility problem is with the 'format()' function, used
+extensively here but not available in Perl 2.4. It appears to be available
+in 2.6, installed on tikal. wxPython is also installed on tikal, and the
+program will run there but not on machines like shiraz or bora.
+
+6. Glade works with wxpython, so I may consider trying that. However,
+the layouts are fairly straightforward so that may not be efficient or
+needed now.
+
+7. The coordinate display on the Map window is still in the order
+long/lat. This probably should be changed for consistency.
+
+8. There does not seem to be a good way to transfer coordinates from
+the MC display to this program, or from Google Earth. That would be
+handy because then one could position tracks relative to radar or
+satellite images. Chris W. has implemented a waypoints feature on the
+MC display that provides coordinates in a way that can be transferred
+via cut-and-paste; that may be the best we'll be able to do.
+
+9. The main need now is better specification of the aircraft performance:
+    a. fuel burn, e.g., in climbs and descents b. turn radius vs altitude
+    c. maybe, performance vs air density d. additional sounding sources

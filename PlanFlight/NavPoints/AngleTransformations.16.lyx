@@ -1,0 +1,436 @@
+#LyX 2.0.0rc3 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\input colordvi
+\usepackage{color}
+\fancyhead{}
+\fancyfoot[CE,CO]{}
+\newtoks{\topicofnote} \global\topicofnote={}
+\newdimen\longindent \longindent=3.5truein
+\fancyhead[L]{Note re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\renewcommand{\headrulewidth}{0.0pt}
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+\setlength{\leftmargin}{\labelwidth}
+\addtolength{\leftmargin}{\labelsep}
+\renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+\newcommand{\datetoday}{\number\day\space
+     \ifcase\month\or January\or February\or March\or April\or May\or
+     June\or July\or August\or September\or October\or November\or
+     December\fi
+     \space\number\year}
+\newcommand{\ASPmemo}{\null \vskip-1.5truein
+{\raggedright \textsf{\textsc{\large \textcolor{blue}{Advanced Study Program}}}}\par
+{\raggedright \textsf{\textsl{\textcolor{blue}{Memorandum:}}}} \par \vskip6pt
+{\color{blue}{\hrule}}\par
+\vskip0.3truein \leftline{\hskip \longindent \datetoday} \vskip0.2truein
+\thispagestyle{empty}}
+\newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachments:] {#1}
+\end{lyxlist}}
+\newcommand{\cc}[1]{\begin{lyxlist}{Attachments:00}
+\item [cc:] {#1}
+\end{lyxlist}}
+\newcommand{\attach}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachment:] {#1}
+\end{lyxlist}}
+%usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
+\end_preamble
+\use_default_options false
+\language english
+\inputencoding default
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\leftmargin 2.54cm
+\topmargin 3.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 1cm
+\headsep 2cm
+\footskip 0.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+set topicofnote to topic of note
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+topicofnote={coordinate transformations for track displays}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+Note goes here:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The code used is taken from the 
+\begin_inset Quotes eld
+\end_inset
+
+match_radar.c
+\begin_inset Quotes erd
+\end_inset
+
+ routine developed to link an aircraft location (specified in lat/lon and
+ altitude) to a radar-coordinate-system value, specified in azimuth, radial,
+ and altitude.
+\end_layout
+
+\begin_layout Standard
+The input is latitude (
+\begin_inset Formula $l_{1})$
+\end_inset
+
+ longitude (
+\begin_inset Formula $L_{1}$
+\end_inset
+
+) and altitude 
+\begin_inset Formula $z_{1}$
+\end_inset
+
+ of the aircraft, as well as latitude, longitude, and elevation of the radar
+ (
+\begin_inset Formula $l_{0},L_{0},z_{0}).$
+\end_inset
+
+ Then the angle 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ between two lines from the center of the earth to the radar and to the
+ aircraft is given by
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\cos\alpha=\sin l_{1}\sin l_{0}+\cos l_{1}\cos l_{0}\cos(L_{1}-L_{0})\label{eq:cosFormula}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+(Note that, in terms of the usual polar angles, 
+\begin_inset Formula $\sin\theta=\cos l_{1},$
+\end_inset
+
+etc) Then the angle 
+\begin_inset Formula $\beta$
+\end_inset
+
+, between the lines from the aircraft to the radar and from the aircraft
+ to the closest point on the radial through the radar, is given by
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\tan\beta=\frac{(R_{E}+z_{1})\cos\alpha-R_{E}-z_{0}}{(R_{e}+z_{1})\sin\alpha}\label{eq:tan(beta)}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The direct distance from the radar to the aircraft, 
+\begin_inset Formula $R_{1}$
+\end_inset
+
+, is then 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+R_{1}=\frac{(R_{e}+z_{1})\sin\alpha}{\cos\beta}\label{eq:R1}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Next transform to a rectilinear system relative to the earth's axis, with
+ aircraft at coordinates {
+\begin_inset Formula $x_{p},y_{p},z_{p}\}$
+\end_inset
+
+ relative to the radar.
+ Then
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+x{}_{p}=(R_{e}+z_{1})\cos l_{1}\cos L_{1}-L_{0})-(R_{e}+z_{0})\cos l_{0}\label{eq:xp}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+z_{p}=(R_{e}+z_{1})\sin l_{1}-(R_{e}+z_{0})\sin l_{0}\label{eq:zp}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+From this system, transform to the local cylindrical system at the radar,
+ which has origin at {
+\begin_inset Formula $l_{0},L_{0},z_{0}$
+\end_inset
+
+} and is rotated to have axis of symmetry along the {
+\begin_inset Formula $l_{0},L_{0}$
+\end_inset
+
+} direction::
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+y_{rr}=z_{p}\cos l_{0}-x_{p}\sin l_{0}\label{eq:yrr}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+x_{rr}=(R_{e}+z_{1})\cos l_{1}\sin(L_{1}-L_{0})\label{eq:xrr}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+z_{rr}=x_{p}\cos l_{0}+z_{p}\sin l_{0}\label{eq:zrr}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\phi_{1}=atan2(x_{rr},y_{rr})\label{eq:tan(phi)}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Inverting:
+\end_layout
+
+\begin_layout Itemize
+Have 
+\begin_inset Formula $\phi_{1}$
+\end_inset
+
+ so tan(
+\begin_inset Formula $\phi_{1}$
+\end_inset
+
+)=
+\begin_inset Formula $x_{rr}/y_{rr}$
+\end_inset
+
+ or 
+\begin_inset Formula $x_{rr}=y_{rr}\tan\phi_{1}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Also have first guess at {
+\begin_inset Formula $l_{1},L_{1}$
+\end_inset
+
+} from rectilinear approx solution:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+use these to find test 
+\begin_inset Formula $R_{1}^{\prime}$
+\end_inset
+
+ and 
+\begin_inset Formula $\phi^{\prime}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+use Newton-Raphson search to find agreement with desired {
+\begin_inset Formula $R_{1},\phi_{1}$
+\end_inset
+
+).
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attach{attachment}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attachm{first
+\backslash
+
+\backslash
+second}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+cc{first attachment
+\backslash
+
+\backslash
+second
+\backslash
+
+\backslash
+3rd att}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

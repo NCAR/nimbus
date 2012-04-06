@@ -1,0 +1,847 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>VORs</name>
+	<Style id="GMT-4">
+		<IconStyle>
+			<color>ff80c0ff</color>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/triangle.png</href>
+			</Icon>
+		</IconStyle>
+		<LabelStyle>
+			<color>00ffffff</color>
+		</LabelStyle>
+		<LineStyle>
+			<color>ff000000</color>
+		</LineStyle>
+		<PolyStyle>
+			<color>bf80c0ff</color>
+		</PolyStyle>
+	</Style>
+	<Placemark>
+		<name>ABQ</name>
+		<description><![CDATA[Albuquerque<br> Mag. Var. (subt from true): 9.918<br> Lat: N 35 2.6 <br> Lon: W 106 48.9]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-106.816314,35.043796,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>ACH</name>
+		<description><![CDATA[Anton Chico<br> Mag. Var. (subt from true): 9.151<br> Lat: N 35 6.7 <br> Lon: W 105 2.3]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-105.039929,35.111706,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>ADH</name>
+		<description><![CDATA[Ada<br> Mag. Var. (subt from true): 4.55<br> Lat: N 34 48.1 <br> Lon: W 96 40.2]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-96.67008300000001,34.802556,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>ADM</name>
+		<description><![CDATA[Ardmore<br> Mag. Var. (subt from true): 4.871<br> Lat: N 34 12.6 <br> Lon: W 97 10.0]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-97.16832499999998,34.211569,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>AIA</name>
+		<description><![CDATA[Alliance<br> Mag. Var. (subt from true): 8.57<br> Lat: N 42 3.3 <br> Lon: W 102 48.2]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-102.804444,42.055639,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>AKO</name>
+		<description><![CDATA[Akron<br> Mag. Var. (subt from true): 8.651<br> Lat: N 40 9.3 <br> Lon: W 103 10.7]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-103.17974,40.155578,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>ALS</name>
+		<description><![CDATA[Alamosa<br> Mag. Var. (subt from true): 9.75<br> Lat: N 37 20.9 <br> Lon: W 105 48.9]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-105.815536,37.349158,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>ANW</name>
+		<description><![CDATA[Ainsworth<br> Mag. Var. (subt from true): 6.748<br> Lat: N 42 34.1 <br> Lon: W 99 59.3]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-99.989681,42.569111,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>ANY</name>
+		<description><![CDATA[Anthony<br> Mag. Var. (subt from true): 5.488<br> Lat: N 37 9.5 <br> Lon: W 98 10.2]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-98.170733,37.158911,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>BFF</name>
+		<description><![CDATA[Scottsbluff<br> Mag. Var. (subt from true): 8.966<br> Lat: N 41 53.6 <br> Lon: W 103 28.9]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-103.482022,41.894161,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>BFV</name>
+		<description><![CDATA[Burns Flat<br> Mag. Var. (subt from true): 6.106<br> Lat: N 35 14.2 <br> Lon: W 99 12.3]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-99.206164,35.236942,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>BGD</name>
+		<description><![CDATA[Borger<br> Mag. Var. (subt from true): 7.366<br> Lat: N 35 48.4 <br> Lon: W 101 22.9]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-101.382153,35.807072,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>BIE</name>
+		<description><![CDATA[Beatrice<br> Mag. Var. (subt from true): 4.466<br> Lat: N 40 18.0 <br> Lon: W 96 45.2]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-96.754636,40.301417,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>BJC</name>
+		<description><![CDATA[Jeffco<br> Mag. Var. (subt from true): 9.7<br> Lat: N 39 54.7 <br> Lon: W 105 8.3]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-105.138988,39.913041,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>BQZ</name>
+		<description><![CDATA[Robert<br> Mag. Var. (subt from true): 10.63<br> Lat: N 40 27.8 <br> Lon: W 106 52.3]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-106.8722,40.46375,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>BRK</name>
+		<description><![CDATA[Black Forest<br> Mag. Var. (subt from true): 9.336<br> Lat: N 38 56.6 <br> Lon: W 104 38.0]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-104.633467,38.944506,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>BVO</name>
+		<description><![CDATA[Bartlesville<br> Mag. Var. (subt from true): 4.068<br> Lat: N 36 50.0 <br> Lon: W 96 1.0]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-96.01831799999999,36.834248,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>BVR</name>
+		<description><![CDATA[Byers<br> Mag. Var. (subt from true): 9.04<br> Lat: N 39 45.9 <br> Lon: W 103 55.6]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-103.928044,39.765833,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>CDR</name>
+		<description><![CDATA[Chadron<br> Mag. Var. (subt from true): 8.918<br> Lat: N 42 33.5 <br> Lon: W 103 18.7]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-103.312147,42.558772,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>CDS</name>
+		<description><![CDATA[Childress<br> Mag. Var. (subt from true): 6.703<br> Lat: N 34 22.1 <br> Lon: W 100 17.3]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-100.289033,34.369064,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>CIM</name>
+		<description><![CDATA[Cimarron<br> Mag. Var. (subt from true): 9.211<br> Lat: N 36 29.4 <br> Lon: W 104 52.3]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-104.872,36.491397,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>CNX</name>
+		<description><![CDATA[Corona<br> Mag. Var. (subt from true): 9.356<br> Lat: N 34 22.0 <br> Lon: W 105 40.6]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-105.678005,34.367015,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>CUZ</name>
+		<description><![CDATA[Custer County<br> Mag. Var. (subt from true): 6.523<br> Lat: N 41 29.0 <br> Lon: W 99 41.3]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-99.689061,41.483978,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>CYS</name>
+		<description><![CDATA[Cheyenne<br> Mag. Var. (subt from true): 9.641<br> Lat: N 41 12.6 <br> Lon: W 104 46.3]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-104.772911,41.210953,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>CZI</name>
+		<description><![CDATA[Crazy Woman<br> Mag. Var. (subt from true): 10.88<br> Lat: N 43 59.9 <br> Lon: W 106 26.1]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-106.435722,43.999715,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>DBL</name>
+		<description><![CDATA[Red Table<br> Mag. Var. (subt from true): 10.51<br> Lat: N 39 26.3 <br> Lon: W 106 53.6]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-106.89468,39.439345,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>DDC</name>
+		<description><![CDATA[Dodge City<br> Mag. Var. (subt from true): 6.648<br> Lat: N 37 51.0 <br> Lon: W 100 0.3]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-100.005633,37.850575,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>DDY</name>
+		<description><![CDATA[Muddy Mountain<br> Mag. Var. (subt from true): 10.68<br> Lat: N 43 5.4 <br> Lon: W 106 16.6]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-106.277024,43.090856,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>DEN</name>
+		<description><![CDATA[Denver<br> Mag. Var. (subt from true): 9.438<br> Lat: N 39 48.7 <br> Lon: W 104 39.6]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-104.66075,39.8125,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>DHT</name>
+		<description><![CDATA[Dalhart<br> Mag. Var. (subt from true): 8.01<br> Lat: N 36 5.4 <br> Lon: W 102 32.6]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-102.544639,36.091458,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>DUC</name>
+		<description><![CDATA[Duncan<br> Mag. Var. (subt from true): 5.328<br> Lat: N 34 23.0 <br> Lon: W 97 55.0]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-97.916811,34.384475,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>DVV</name>
+		<description><![CDATA[Mile High<br> Mag. Var. (subt from true): 9.428<br> Lat: N 39 53.6 <br> Lon: W 104 37.4]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-104.624333,39.894694,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>EAR</name>
+		<description><![CDATA[Kearney<br> Mag. Var. (subt from true): 6.05<br> Lat: N 40 43.5 <br> Lon: W 99 0.3]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-99.00511400000001,40.725597,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>ECS</name>
+		<description><![CDATA[Newcastle<br> Mag. Var. (subt from true): 9.641<br> Lat: N 43 52.8 <br> Lon: W 104 18.4]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-104.307806,43.881172,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>EMP</name>
+		<description><![CDATA[Emporia<br> Mag. Var. (subt from true): 4.098<br> Lat: N 38 17.4 <br> Lon: W 96 8.2]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-96.13811699999999,38.291144,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>END</name>
+		<description><![CDATA[Vance<br> Mag. Var. (subt from true): 5.328<br> Lat: N 36 20.6 <br> Lon: W 97 55.1]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-97.918339,36.344967,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>FCS</name>
+		<description><![CDATA[Butts<br> Mag. Var. (subt from true): 9.375<br> Lat: N 38 40.8 <br> Lon: W 104 45.4]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-104.756918,38.680663,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>FQF</name>
+		<description><![CDATA[Falcon<br> Mag. Var. (subt from true): 9.405<br> Lat: N 39 41.4 <br> Lon: W 104 37.2]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-104.620972,39.690139,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>FRI</name>
+		<description><![CDATA[Fort Riley<br> Mag. Var. (subt from true): 4.585<br> Lat: N 38 58.2 <br> Lon: W 96 51.6]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-96.86101700000002,38.970228,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>FSD</name>
+		<description><![CDATA[Sioux Falls<br> Mag. Var. (subt from true): 4.341<br> Lat: N 43 38.9 <br> Lon: W 96 46.8]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-96.78116299999999,43.64953,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>FTI</name>
+		<description><![CDATA[Fort Union<br> Mag. Var. (subt from true): 9.25<br> Lat: N 35 39.4 <br> Lon: W 105 8.1]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-105.135589,35.657571,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>GAG</name>
+		<description><![CDATA[Gage<br> Mag. Var. (subt from true): 6.531<br> Lat: N 36 20.6 <br> Lon: W 99 52.8]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-99.880122,36.343733,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>GCK</name>
+		<description><![CDATA[Garden City<br> Mag. Var. (subt from true): 7.03<br> Lat: N 37 55.1 <br> Lon: W 100 43.5]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-100.725064,37.919053,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>GLD</name>
+		<description><![CDATA[Goodland<br> Mag. Var. (subt from true): 7.731<br> Lat: N 39 23.2 <br> Lon: W 101 41.5]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-101.692306,39.387861,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>GLL</name>
+		<description><![CDATA[Gill<br> Mag. Var. (subt from true): 9.45<br> Lat: N 40 30.2 <br> Lon: W 104 33.1]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-104.553013,40.503869,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>GRI</name>
+		<description><![CDATA[Grand Island<br> Mag. Var. (subt from true): 5.568<br> Lat: N 40 59.0 <br> Lon: W 98 18.8]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-98.31477800000002,40.984028,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>HBR</name>
+		<description><![CDATA[Hobart<br> Mag. Var. (subt from true): 6.016<br> Lat: N 34 51.9 <br> Lon: W 99 3.8]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-99.063383,34.866589,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>HCT</name>
+		<description><![CDATA[Hayes Center<br> Mag. Var. (subt from true): 7.308<br> Lat: N 40 27.2 <br> Lon: W 100 55.4]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-100.923575,40.454072,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>HGO</name>
+		<description><![CDATA[Hugo<br> Mag. Var. (subt from true): 8.79<br> Lat: N 38 49.0 <br> Lon: W 103 37.2]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-103.621389,38.8175,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>HLC</name>
+		<description><![CDATA[Hill City<br> Mag. Var. (subt from true): 6.826<br> Lat: N 39 15.5 <br> Lon: W 100 13.5]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-100.22585,39.258747,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>HSI</name>
+		<description><![CDATA[Hastings<br> Mag. Var. (subt from true): 5.651<br> Lat: N 40 36.2 <br> Lon: W 98 25.7]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-98.42961699999999,40.604542,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>HUT</name>
+		<description><![CDATA[Hutchinson<br> Mag. Var. (subt from true): 5.331<br> Lat: N 37 59.8 <br> Lon: W 97 56.0]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-97.934147,37.996919,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>HYS</name>
+		<description><![CDATA[Hays<br> Mag. Var. (subt from true): 6.211<br> Lat: N 38 50.8 <br> Lon: W 99 16.6]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-99.276769,38.84765,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>ICT</name>
+		<description><![CDATA[Wichita<br> Mag. Var. (subt from true): 5.101<br> Lat: N 37 44.7 <br> Lon: W 97 35.0]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-97.583831,37.745256,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>IFI</name>
+		<description><![CDATA[Kingfisher<br> Mag. Var. (subt from true): 5.381<br> Lat: N 35 48.3 <br> Lon: W 98 0.2]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-98.003917,35.805267,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>IIP</name>
+		<description><![CDATA[Hipsher<br> Mag. Var. (subt from true): 10.05<br> Lat: N 42 40.5 <br> Lon: W 105 13.5]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-105.226231,42.676081,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>IRW</name>
+		<description><![CDATA[Will Rogers<br> Mag. Var. (subt from true): 5.136<br> Lat: N 35 21.5 <br> Lon: W 97 36.5]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-97.609233,35.358589,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>ISD</name>
+		<description><![CDATA[Winner<br> Mag. Var. (subt from true): 6.6<br> Lat: N 43 29.2 <br> Lon: W 99 45.6]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-99.761392,43.487914,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>LAA</name>
+		<description><![CDATA[Lamar<br> Mag. Var. (subt from true): 8.231<br> Lat: N 38 11.8 <br> Lon: W 102 41.2]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-102.687533,38.197091,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>LAR</name>
+		<description><![CDATA[Laramie<br> Mag. Var. (subt from true): 10.16<br> Lat: N 41 20.2 <br> Lon: W 105 43.2]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-105.720936,41.337864,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>LAW</name>
+		<description><![CDATA[Lawton<br> Mag. Var. (subt from true): 5.626<br> Lat: N 34 29.7 <br> Lon: W 98 24.7]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-98.41308100000001,34.496189,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>LBF</name>
+		<description><![CDATA[North Platte<br> Mag. Var. (subt from true): 7.216<br> Lat: N 41 2.9 <br> Lon: W 100 44.8]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-100.747158,41.048625,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>LBL</name>
+		<description><![CDATA[Liberal<br> Mag. Var. (subt from true): 7.138<br> Lat: N 37 2.6 <br> Lon: W 100 58.2]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-100.971197,37.044394,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>LNK</name>
+		<description><![CDATA[Lincoln<br> Mag. Var. (subt from true): 4.435<br> Lat: N 40 55.4 <br> Lon: W 96 44.5]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-96.742017,40.923781,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>LTS</name>
+		<description><![CDATA[Altus<br> Mag. Var. (subt from true): 6.133<br> Lat: N 34 39.7 <br> Lon: W 99 16.2]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-99.271164,34.662925,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MBW</name>
+		<description><![CDATA[Medicine Bow<br> Mag. Var. (subt from true): 10.37<br> Lat: N 41 50.7 <br> Lon: W 106 0.2]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-106.004283,41.845522,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MCK</name>
+		<description><![CDATA[Mc Cook<br> Mag. Var. (subt from true): 7.09<br> Lat: N 40 12.2 <br> Lon: W 100 35.6]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-100.594225,40.203797,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MHE</name>
+		<description><![CDATA[Mitchell<br> Mag. Var. (subt from true): 5.315<br> Lat: N 43 46.6 <br> Lon: W 98 2.2]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-98.037564,43.777022,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MHK</name>
+		<description><![CDATA[Manhattan<br> Mag. Var. (subt from true): 4.443<br> Lat: N 39 8.7 <br> Lon: W 96 40.1]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-96.668722,39.145442,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>OBH</name>
+		<description><![CDATA[Wolbach<br> Mag. Var. (subt from true): 5.593<br> Lat: N 41 22.5 <br> Lon: W 98 21.2]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-98.35359399999999,41.375736,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>ODG</name>
+		<description><![CDATA[Woodring<br> Mag. Var. (subt from true): 5.245<br> Lat: N 36 22.4 <br> Lon: W 97 47.2]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-97.78811099999999,36.373784,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>OFK</name>
+		<description><![CDATA[Norfolk<br> Mag. Var. (subt from true): 4.911<br> Lat: N 41 59.2 <br> Lon: W 97 26.0]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-97.434578,41.987925,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>OLU</name>
+		<description><![CDATA[Columbus<br> Mag. Var. (subt from true): 4.858<br> Lat: N 41 27.0 <br> Lon: W 97 20.4]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-97.340819,41.450039,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>ONL</name>
+		<description><![CDATA[O'Neill<br> Mag. Var. (subt from true): 5.821<br> Lat: N 42 28.2 <br> Lon: W 98 41.2]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-98.686922,42.470503,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>ONM</name>
+		<description><![CDATA[Socorro<br> Mag. Var. (subt from true): 9.833<br> Lat: N 34 20.3 <br> Lon: W 106 49.2]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-106.820458,34.338888,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>OTO</name>
+		<description><![CDATA[Otto<br> Mag. Var. (subt from true): 9.546<br> Lat: N 35 4.3 <br> Lon: W 105 56.1]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-105.936043,35.072243,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>OZB</name>
+		<description><![CDATA[Cozad<br> Mag. Var. (subt from true): 6.725<br> Lat: N 40 52.2 <br> Lon: W 100 0.2]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-100.003733,40.870425,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>PER</name>
+		<description><![CDATA[Pioneer<br> Mag. Var. (subt from true): 4.835<br> Lat: N 36 44.7 <br> Lon: W 97 9.6]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-97.16012499999999,36.746507,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>PNH</name>
+		<description><![CDATA[Panhandle<br> Mag. Var. (subt from true): 7.508<br> Lat: N 35 14.1 <br> Lon: W 101 41.9]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-101.699022,35.235072,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>PUB</name>
+		<description><![CDATA[Pueblo<br> Mag. Var. (subt from true): 9.17<br> Lat: N 38 17.6 <br> Lon: W 104 25.7]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-104.429442,38.294252,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>PVW</name>
+		<description><![CDATA[Plainview<br> Mag. Var. (subt from true): 7.491<br> Lat: N 34 5.1 <br> Lon: W 101 47.4]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-101.790186,34.086192,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>PWA</name>
+		<description><![CDATA[Wiley Post<br> Mag. Var. (subt from true): 5.16<br> Lat: N 35 31.9 <br> Lon: W 97 38.8]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-97.647181,35.532945,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>PWE</name>
+		<description><![CDATA[Pawnee City<br> Mag. Var. (subt from true): 4.07<br> Lat: N 40 12.0 <br> Lon: W 96 12.3]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-96.206281,40.200353,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>RAP</name>
+		<description><![CDATA[Rapid City<br> Mag. Var. (subt from true): 8.838<br> Lat: N 43 58.5 <br> Lon: W 103 0.7]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-103.012339,43.976033,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>RLG</name>
+		<description><![CDATA[Kremmling<br> Mag. Var. (subt from true): 10.36<br> Lat: N 40 0.1 <br> Lon: W 106 26.5]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-106.442488,40.002642,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>SAE</name>
+		<description><![CDATA[Searle<br> Mag. Var. (subt from true): 7.875<br> Lat: N 41 7.1 <br> Lon: W 101 46.5]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-101.776031,41.119094,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>SAF</name>
+		<description><![CDATA[Santa Fe<br> Mag. Var. (subt from true): 9.656<br> Lat: N 35 32.4 <br> Lon: W 106 3.8]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-106.064947,35.540542,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>SCB</name>
+		<description><![CDATA[Scribner<br> Mag. Var. (subt from true): 4.323<br> Lat: N 41 36.3 <br> Lon: W 96 37.7]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-96.62861100000001,41.605278,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>SLN</name>
+		<description><![CDATA[Salina<br> Mag. Var. (subt from true): 5.111<br> Lat: N 38 55.5 <br> Lon: W 97 37.2]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-97.62136099999999,38.925139,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>SNY</name>
+		<description><![CDATA[Sidney<br> Mag. Var. (subt from true): 8.608<br> Lat: N 41 5.8 <br> Lon: W 102 58.9]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-102.983017,41.096667,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>SUX</name>
+		<description><![CDATA[Sioux City<br> Mag. Var. (subt from true): 4.053<br> Lat: N 42 20.6 <br> Lon: W 96 19.4]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-96.323644,42.344517,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>SWO</name>
+		<description><![CDATA[Stillwater<br> Mag. Var. (subt from true): 4.79<br> Lat: N 36 13.4 <br> Lon: W 97 4.8]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-97.08126,36.22427,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>SXW</name>
+		<description><![CDATA[Snow<br> Mag. Var. (subt from true): 10.58<br> Lat: N 39 37.7 <br> Lon: W 106 59.4]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-106.991129,39.629485,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>SYO</name>
+		<description><![CDATA[Sayre<br> Mag. Var. (subt from true): 6.361<br> Lat: N 35 20.7 <br> Lon: W 99 38.1]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-99.63534799999999,35.345161,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>TAS</name>
+		<description><![CDATA[Taos<br> Mag. Var. (subt from true): 9.706<br> Lat: N 36 36.5 <br> Lon: W 105 54.3]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-105.90632,36.608769,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>TBE</name>
+		<description><![CDATA[Tobe<br> Mag. Var. (subt from true): 8.648<br> Lat: N 37 15.5 <br> Lon: W 103 36.0]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-103.600056,37.258658,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>TCC</name>
+		<description><![CDATA[Tucumcari<br> Mag. Var. (subt from true): 8.476<br> Lat: N 35 10.9 <br> Lon: W 103 35.9]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-103.598518,35.182139,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>TDD</name>
+		<description><![CDATA[Thedford<br> Mag. Var. (subt from true): 7.23<br> Lat: N 41 58.8 <br> Lon: W 100 43.1]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-100.719033,41.981661,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>TKO</name>
+		<description><![CDATA[Mankato<br> Mag. Var. (subt from true): 5.54<br> Lat: N 39 48.3 <br> Lon: W 98 15.6]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-98.260036,39.806408,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>TQE</name>
+		<description><![CDATA[Tekamah<br> Mag. Var. (subt from true): 3.973<br> Lat: N 41 45.5 <br> Lon: W 96 10.7]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-96.17857200000002,41.7596,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>TXC</name>
+		<description><![CDATA[Thurman<br> Mag. Var. (subt from true): 8.636<br> Lat: N 39 41.8 <br> Lon: W 103 12.8]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-103.214939,39.698318,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>TXO</name>
+		<description><![CDATA[Texico<br> Mag. Var. (subt from true): 8.05<br> Lat: N 34 29.7 <br> Lon: W 102 50.3]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-102.839672,34.495117,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>YKN</name>
+		<description><![CDATA[Yankton<br> Mag. Var. (subt from true): 4.843<br> Lat: N 42 55.1 <br> Lon: W 97 23.0]]></description>
+		<styleUrl>#GMT-4</styleUrl>
+		<Point>
+			<coordinates>-97.384978,42.918375,0</coordinates>
+		</Point>
+	</Placemark>
+</Document>
+</kml>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+	<name>WAC</name>
+	<Style id="WAC">
+		<IconStyle>
+			<scale>1</scale>
+			<color>ff0000ff</color>
+			<Icon>
+			<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+ 			<href>http://maps.google.com/mapfiles/kml/shapes/triangle.png</href>
+#			<href>http://maps.google.com/mapfiles/kml/shapes/shaded_dot.png</href>
+			</Icon>
+		</IconStyle>
+		<LineStyle>
+			<color>ff00ff00</color>
+			<width>2</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>bf80c0ff</color>
+			<fill>1</fill>
+			<outline>1</outline>
+		</PolyStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+			<color>ffffffff</color>
+		</LabelStyle>
+	</Style>

@@ -1,0 +1,1814 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+	<name>VOR</name>
+	<Style id="GMT-4">
+		<IconStyle>
+			<scale>1</scale>
+			<color>ff80c0ff</color>
+			<Icon>
+ 				<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
+#			<href>http://maps.google.com/mapfiles/kml/shapes/triangle.png</href>
+			</Icon>
+		</IconStyle>
+		<LineStyle>
+			<color>ff000000</color>
+			<width>1</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>bf80c0ff</color>
+			<fill>1</fill>
+			<outline>1</outline>
+		</PolyStyle>
+		<LabelStyle>
+			<scale>1</scale>
+			<color>00ffffff</color>
+		</LabelStyle>
+	</Style>
+         <Placemark>
+		    <name>ABQ</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-106.816314,35.043796,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>ABQ</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Albuquerque</value>
+		    </Data>
+		    <Data name="lat">
+			<value>35 2.6</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 106 48.9</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>ACH</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-105.039929,35.111706,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>ACH</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Anton Chico</value>
+		    </Data>
+		    <Data name="lat">
+			<value>35 6.7</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 105 2.3</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>ADM</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-97.168325,34.211569,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>ADM</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Ardmore</value>
+		    </Data>
+		    <Data name="lat">
+			<value>34 12.6</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 97 10.0</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>AIA</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-102.804444,42.055639,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>AIA</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Alliance</value>
+		    </Data>
+		    <Data name="lat">
+			<value>42 3.3</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 102 48.2</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>AKO</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-103.17974,40.155578,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>AKO</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Akron</value>
+		    </Data>
+		    <Data name="lat">
+			<value>40 9.3</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 103 10.7</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>ALS</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-105.815536,37.349158,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>ALS</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Alamosa</value>
+		    </Data>
+		    <Data name="lat">
+			<value>37 20.9</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 105 48.9</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>ANW</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-99.989681,42.569111,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>ANW</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Ainsworth</value>
+		    </Data>
+		    <Data name="lat">
+			<value>42 34.1</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 99 59.3</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>ANY</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-98.170733,37.158911,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>ANY</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Anthony</value>
+		    </Data>
+		    <Data name="lat">
+			<value>37 9.5</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 98 10.2</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>BFF</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-103.482022,41.894161,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>BFF</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Scottsbluff</value>
+		    </Data>
+		    <Data name="lat">
+			<value>41 53.6</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 103 28.9</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>BFV</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-99.206164,35.236942,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>BFV</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Burns Flat</value>
+		    </Data>
+		    <Data name="lat">
+			<value>35 14.2</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 99 12.3</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>BGD</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-101.382153,35.807072,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>BGD</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Borger</value>
+		    </Data>
+		    <Data name="lat">
+			<value>35 48.4</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 101 22.9</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>BJC</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-105.138988,39.913041,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>BJC</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Jeffco</value>
+		    </Data>
+		    <Data name="lat">
+			<value>39 54.7</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 105 8.3</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>BQZ</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-106.8722,40.46375,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>BQZ</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Robert</value>
+		    </Data>
+		    <Data name="lat">
+			<value>40 27.8</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 106 52.3</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>BRK</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-104.633467,38.944506,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>BRK</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Black Forest</value>
+		    </Data>
+		    <Data name="lat">
+			<value>38 56.6</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 104 38.0</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>BVR</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-103.928044,39.765833,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>BVR</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Byers</value>
+		    </Data>
+		    <Data name="lat">
+			<value>39 45.9</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 103 55.6</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>CDR</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-103.312147,42.558772,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>CDR</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Chadron</value>
+		    </Data>
+		    <Data name="lat">
+			<value>42 33.5</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 103 18.7</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>CDS</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-100.289033,34.369064,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>CDS</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Childress</value>
+		    </Data>
+		    <Data name="lat">
+			<value>34 22.1</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 100 17.3</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>CIM</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-104.872,36.491397,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>CIM</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Cimarron</value>
+		    </Data>
+		    <Data name="lat">
+			<value>36 29.4</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 104 52.3</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>CNX</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-105.678005,34.367015,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>CNX</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Corona</value>
+		    </Data>
+		    <Data name="lat">
+			<value>34 22.0</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 105 40.6</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>CUZ</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-99.689061,41.483978,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>CUZ</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Custer County</value>
+		    </Data>
+		    <Data name="lat">
+			<value>41 29.0</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 99 41.3</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>CYS</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-104.772911,41.210953,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>CYS</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Cheyenne</value>
+		    </Data>
+		    <Data name="lat">
+			<value>41 12.6</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 104 46.3</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>DBL</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-106.89468,39.439345,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>DBL</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Red Table</value>
+		    </Data>
+		    <Data name="lat">
+			<value>39 26.3</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 106 53.6</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>DDC</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-100.005633,37.850575,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>DDC</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Dodge City</value>
+		    </Data>
+		    <Data name="lat">
+			<value>37 51.0</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 100 0.3</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>DEN</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-104.66075,39.8125,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>DEN</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Denver</value>
+		    </Data>
+		    <Data name="lat">
+			<value>39 48.7</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 104 39.6</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>DHT</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-102.544639,36.091458,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>DHT</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Dalhart</value>
+		    </Data>
+		    <Data name="lat">
+			<value>36 5.4</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 102 32.6</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>DUC</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-97.916811,34.384475,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>DUC</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Duncan</value>
+		    </Data>
+		    <Data name="lat">
+			<value>34 23.0</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 97 55.0</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>DVV</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-104.624333,39.894694,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>DVV</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Mile High</value>
+		    </Data>
+		    <Data name="lat">
+			<value>39 53.6</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 104 37.4</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>EAR</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-99.005114,40.725597,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>EAR</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Kearney</value>
+		    </Data>
+		    <Data name="lat">
+			<value>40 43.5</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 99 0.3</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>END</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-97.918339,36.344967,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>END</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Vance</value>
+		    </Data>
+		    <Data name="lat">
+			<value>36 20.6</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 97 55.1</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>FCS</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-104.756918,38.680663,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>FCS</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Butts</value>
+		    </Data>
+		    <Data name="lat">
+			<value>38 40.8</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 104 45.4</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>FQF</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-104.620972,39.690139,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>FQF</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Falcon</value>
+		    </Data>
+		    <Data name="lat">
+			<value>39 41.4</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 104 37.2</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>FTI</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-105.135589,35.657571,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>FTI</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Fort Union</value>
+		    </Data>
+		    <Data name="lat">
+			<value>35 39.4</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 105 8.1</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>GAG</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-99.880122,36.343733,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>GAG</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Gage</value>
+		    </Data>
+		    <Data name="lat">
+			<value>36 20.6</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 99 52.8</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>GCK</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-100.725064,37.919053,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>GCK</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Garden City</value>
+		    </Data>
+		    <Data name="lat">
+			<value>37 55.1</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 100 43.5</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>GLD</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-101.692306,39.387861,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>GLD</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Goodland</value>
+		    </Data>
+		    <Data name="lat">
+			<value>39 23.2</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 101 41.5</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>GLL</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-104.553013,40.503869,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>GLL</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Gill</value>
+		    </Data>
+		    <Data name="lat">
+			<value>40 30.2</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 104 33.1</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>GRI</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-98.314778,40.984028,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>GRI</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Grand Island</value>
+		    </Data>
+		    <Data name="lat">
+			<value>40 59.0</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 98 18.8</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>HBR</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-99.063383,34.866589,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>HBR</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Hobart</value>
+		    </Data>
+		    <Data name="lat">
+			<value>34 51.9</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 99 3.8</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>HCT</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-100.923575,40.454072,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>HCT</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Hayes Center</value>
+		    </Data>
+		    <Data name="lat">
+			<value>40 27.2</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 100 55.4</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>HGO</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-103.621389,38.8175,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>HGO</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Hugo</value>
+		    </Data>
+		    <Data name="lat">
+			<value>38 49.0</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 103 37.2</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>HLC</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-100.22585,39.258747,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>HLC</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Hill City</value>
+		    </Data>
+		    <Data name="lat">
+			<value>39 15.5</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 100 13.5</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>HSI</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-98.429617,40.604542,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>HSI</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Hastings</value>
+		    </Data>
+		    <Data name="lat">
+			<value>40 36.2</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 98 25.7</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>HUT</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-97.934147,37.996919,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>HUT</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Hutchinson</value>
+		    </Data>
+		    <Data name="lat">
+			<value>37 59.8</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 97 56.0</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>HYS</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-99.276769,38.84765,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>HYS</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Hays</value>
+		    </Data>
+		    <Data name="lat">
+			<value>38 50.8</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 99 16.6</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>ICT</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-97.583831,37.745256,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>ICT</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Wichita</value>
+		    </Data>
+		    <Data name="lat">
+			<value>37 44.7</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 97 35.0</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>IFI</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-98.003917,35.805267,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>IFI</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Kingfisher</value>
+		    </Data>
+		    <Data name="lat">
+			<value>35 48.3</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 98 0.2</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>IIP</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-105.226231,42.676081,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>IIP</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Hipsher</value>
+		    </Data>
+		    <Data name="lat">
+			<value>42 40.5</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 105 13.5</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>IRW</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-97.609233,35.358589,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>IRW</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Will Rogers</value>
+		    </Data>
+		    <Data name="lat">
+			<value>35 21.5</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 97 36.5</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>LAA</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-102.687533,38.197091,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>LAA</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Lamar</value>
+		    </Data>
+		    <Data name="lat">
+			<value>38 11.8</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 102 41.2</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>LAR</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-105.720936,41.337864,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>LAR</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Laramie</value>
+		    </Data>
+		    <Data name="lat">
+			<value>41 20.2</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 105 43.2</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>LAW</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-98.413081,34.496189,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>LAW</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Lawton</value>
+		    </Data>
+		    <Data name="lat">
+			<value>34 29.7</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 98 24.7</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>LBF</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-100.747158,41.048625,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>LBF</value>
+		    </Data>
+		    <Data name="Name">
+			<value>North Platte</value>
+		    </Data>
+		    <Data name="lat">
+			<value>41 2.9</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 100 44.8</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>LBL</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-100.971197,37.044394,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>LBL</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Liberal</value>
+		    </Data>
+		    <Data name="lat">
+			<value>37 2.6</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 100 58.2</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>LTS</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-99.271164,34.662925,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>LTS</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Altus</value>
+		    </Data>
+		    <Data name="lat">
+			<value>34 39.7</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 99 16.2</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>MBW</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-106.004283,41.845522,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>MBW</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Medicine Bow</value>
+		    </Data>
+		    <Data name="lat">
+			<value>41 50.7</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 106 0.2</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>MCK</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-100.594225,40.203797,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>MCK</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Mc Cook</value>
+		    </Data>
+		    <Data name="lat">
+			<value>40 12.2</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 100 35.6</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>OBH</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-98.353594,41.375736,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>OBH</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Wolbach</value>
+		    </Data>
+		    <Data name="lat">
+			<value>41 22.5</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 98 21.2</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>ODG</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-97.788111,36.373784,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>ODG</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Woodring</value>
+		    </Data>
+		    <Data name="lat">
+			<value>36 22.4</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 97 47.2</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>OFK</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-97.434578,41.987925,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>OFK</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Norfolk</value>
+		    </Data>
+		    <Data name="lat">
+			<value>41 59.2</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 97 26.0</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>OLU</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-97.340819,41.450039,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>OLU</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Columbus</value>
+		    </Data>
+		    <Data name="lat">
+			<value>41 27.0</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 97 20.4</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>ONL</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-98.686922,42.470503,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>ONL</value>
+		    </Data>
+		    <Data name="Name">
+			<value>O'Neill</value>
+		    </Data>
+		    <Data name="lat">
+			<value>42 28.2</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 98 41.2</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>ONM</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-106.820458,34.338888,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>ONM</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Socorro</value>
+		    </Data>
+		    <Data name="lat">
+			<value>34 20.3</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 106 49.2</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>OTO</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-105.936043,35.072243,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>OTO</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Otto</value>
+		    </Data>
+		    <Data name="lat">
+			<value>35 4.3</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 105 56.1</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>OZB</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-100.003733,40.870425,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>OZB</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Cozad</value>
+		    </Data>
+		    <Data name="lat">
+			<value>40 52.2</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 100 0.2</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>PER</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-97.160125,36.746507,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>PER</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Pioneer</value>
+		    </Data>
+		    <Data name="lat">
+			<value>36 44.7</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 97 9.6</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>PNH</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-101.699022,35.235072,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>PNH</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Panhandle</value>
+		    </Data>
+		    <Data name="lat">
+			<value>35 14.1</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 101 41.9</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>PUB</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-104.429442,38.294252,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>PUB</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Pueblo</value>
+		    </Data>
+		    <Data name="lat">
+			<value>38 17.6</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 104 25.7</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>PVW</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-101.790186,34.086192,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>PVW</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Plainview</value>
+		    </Data>
+		    <Data name="lat">
+			<value>34 5.1</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 101 47.4</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>PWA</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-97.647181,35.532945,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>PWA</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Wiley Post</value>
+		    </Data>
+		    <Data name="lat">
+			<value>35 31.9</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 97 38.8</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>RLG</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-106.442488,40.002642,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>RLG</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Kremmling</value>
+		    </Data>
+		    <Data name="lat">
+			<value>40 0.1</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 106 26.5</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>SAE</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-101.776031,41.119094,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>SAE</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Searle</value>
+		    </Data>
+		    <Data name="lat">
+			<value>41 7.1</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 101 46.5</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>SAF</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-106.064947,35.540542,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>SAF</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Santa Fe</value>
+		    </Data>
+		    <Data name="lat">
+			<value>35 32.4</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 106 3.8</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>SLN</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-97.621361,38.925139,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>SLN</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Salina</value>
+		    </Data>
+		    <Data name="lat">
+			<value>38 55.5</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 97 37.2</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>SNY</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-102.983017,41.096667,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>SNY</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Sidney</value>
+		    </Data>
+		    <Data name="lat">
+			<value>41 5.8</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 102 58.9</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>SWO</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-97.08126,36.22427,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>SWO</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Stillwater</value>
+		    </Data>
+		    <Data name="lat">
+			<value>36 13.4</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 97 4.8</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>SXW</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-106.991129,39.629485,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>SXW</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Snow</value>
+		    </Data>
+		    <Data name="lat">
+			<value>39 37.7</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 106 59.4</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>SYO</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-99.635348,35.345161,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>SYO</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Sayre</value>
+		    </Data>
+		    <Data name="lat">
+			<value>35 20.7</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 99 38.1</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>TAS</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-105.90632,36.608769,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>TAS</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Taos</value>
+		    </Data>
+		    <Data name="lat">
+			<value>36 36.5</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 105 54.3</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>TBE</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-103.600056,37.258658,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>TBE</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Tobe</value>
+		    </Data>
+		    <Data name="lat">
+			<value>37 15.5</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 103 36.0</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>TCC</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-103.598518,35.182139,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>TCC</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Tucumcari</value>
+		    </Data>
+		    <Data name="lat">
+			<value>35 10.9</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 103 35.9</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>TDD</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-100.719033,41.981661,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>TDD</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Thedford</value>
+		    </Data>
+		    <Data name="lat">
+			<value>41 58.8</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 100 43.1</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>TKO</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-98.260036,39.806408,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>TKO</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Mankato</value>
+		    </Data>
+		    <Data name="lat">
+			<value>39 48.3</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 98 15.6</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>TXC</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-103.214939,39.698318,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>TXC</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Thurman</value>
+		    </Data>
+		    <Data name="lat">
+			<value>39 41.8</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 103 12.8</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>TXO</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-102.839672,34.495117,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>TXO</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Texico</value>
+		    </Data>
+		    <Data name="lat">
+			<value>34 29.7</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 102 50.3</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+         <Placemark>
+		    <name>YKN</name>
+		    <styleUrl>#GMT-4</styleUrl>
+		    <Point>
+			<coordinates>-97.384978,42.918375,0</coordinates>
+		    </Point>
+		<ExtendedData>
+		    <Data name="ID">
+			<value>YKN</value>
+		    </Data>
+		    <Data name="Name">
+			<value>Yankton</value>
+		    </Data>
+		    <Data name="lat">
+			<value>42 55.1</value>
+		    </Data>
+		    <Data name="lon">
+			<value>W 97 23.0</value>
+		    </Data>
+		</ExtendedData>
+		</Placemark>
+</Document>
+</kml>

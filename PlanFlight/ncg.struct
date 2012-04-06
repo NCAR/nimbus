@@ -1,0 +1,20 @@
+struct	NCG_parameters {
+	float	xlow, xhigh, ylow, yhigh;
+	int 	mjx, mnx, mjy, mny, mode, color;
+	float 	xl1, xl2, yl1, yl2, size_date;
+  	int 	linewidth, cd;
+	float 	xd, yd, xu;
+	float	size_label;
+	float	label_offset_linear, label_offset_log, label_offset_x;
+	int	show_title, show_footnotes, show_id;
+	float	size_title, title_offset;
+	float	size_footnote, x_note_left, x_note_right, 
+		y_note_linear, y_note_log;
+	float	size_id, id_y_linear, id_y_log, id_y_step;
+	float	force_x_low, force_x_high, max_linear_label;
+	float	size_axis_label, x_axis_label_offset, y_axis_label_offset;
+	float	x_raxis_label_offset, y_raxis_label_offset;
+	int	scat_annotate, label_scat_pairs, label_scat_fits;
+	float	scat_size;
+	char	char_set[20];
+	};

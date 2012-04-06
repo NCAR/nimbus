@@ -1,0 +1,160 @@
+**Select Module:**
+
+A 'track' is a complete flight plan. It consists of a set of 'modules',
+selected here, that may be single enroute tracks or multiple passes
+as in a vertical section. Select the module here that you want to use
+for the module number displayed behind '#' to the right, then use the
+entries in the blue panel to specify characteristics for that module.
+For additional help on those characteristics, click on the gray
+'Other' button in that panel. When the module characteristics are
+defined, click on the light-red 'Add module to track' button below
+this item to add it to the track and advance to the next module.
+----- 
+**Add module to track:**
+
+Once a module is defined by selecting its type (above) and specifying
+its characteristics (in the blue panel to the right), it should be
+added to the track using this button. If a module with the displayed
+module number ('#') already exists, it will be overwritten; this makes
+it possible to edit an existing module by selecting it by number,
+changing any of the displayed characteristics (including the module
+type), and then saving it via this button. (The button is light
+red to indicate that it usually must be used when defining a track;
+white buttons are optional.)  
+----- 
+**Show current track:**
+
+Click this button to see the current definition of the full track
+in terms of modules and module characteristics. The track will
+be displayed in a new window, with options to print and save the
+listing. The display also shows the flight time required and the fuel
+remaining for research at the end of each module.  
+----- 
+**Backup and make kml:**
+
+Once a track is fully defined, use this button to make the appropriate
+kml-format file that is suitable for displaying the track in Google
+Earth or Open Street Maps displays. The saved file is named 'Plan.kml'
+so if you want to save different .kml files you will need to rename
+it. A backup of the track is also saved in a file always named
+'Backup.track'. This is just for emergency recovery; you should save
+tracks you want to save using the 'Save' menu item in the 'File' menu.
+A recommended convention is to save these with names like 'Plan.xxx'
+where 'xxx' might be a date or research flight number. (The button is
+colored light red to indicate that is usually must be used because
+generating a .kml file is normally required to see the flight track
+on the Mission Coordinator display. In contrast, buttons that are
+white are optional.)  
+----- 
+**Show in Google Earth:**
+
+Once a file 'Plan.kml' is saved using the button above this one, it
+is possible (on linux machines) to start Google Earth with this input
+file so that you can see the track as defined here. This function is
+not yet implemented for Windows machines; there, start Google Earth and
+read the file 'Plan.kml' in this directory.  
+----- 
+**deg min format:**
+
+Entries for latitude and longitude can be entered in either integer
+degrees and decimal minutes (i.e., 39 56.7) or in decimal degrees
+(i.e., 39.945). Check this box to use the former, and uncheck it to
+use the latter. Whenever this check box is toggled, the displayed
+coordinates will be converted between the two formats, so this also
+provides a quick converter. Note that the flight crew will normally
+want the former format, in integer degrees and not more than one
+fractional digit for the decimal minute (as in 56.7).  
+----- 
+**Size, n mi:**
+
+If the module has a characteristic size, enter it here in units of
+nautical miles. Some module types do not need a size specification
+(e.g., ReturnToBase), so in those cases this entry line is replaced
+by 'NA' or 'None'. In that case, it is not necessary to specify a
+size. Some additional hints regarding the meaning of this size for
+each module type can be seen by clicking the gray 'Other' button at
+the bottom left corner of this blue panel.  
+----- 
+**Anchor (lat, lon, alt) [deg,min, deg,min, ft]:**
+
+The anchor point for a module is the reference point from which legs
+that constitute the module start. When the flight track is generated,
+a first segment will connect the current aircraft location just
+prior to the start of this module to this anchor point, so it is not
+necessary to specify an 'Enroute' module to this starting point unless
+it is desirable to take a route that is different from the direct
+route. The anchor point is specified in terms of the starting latitude,
+longitude and altitude (in the format specified by the 'deg min format'
+check box for latitude and longitude, and in pressure altitude in
+feet for the altitude entry. If the aircraft is not already at this
+altitude, the first leg to this anchor point will include a climb
+to this altitude.  It is best to specify altitudes in increments
+that correspond to flight levels (e.g., 29000 ft to correspond to
+FL290); attempts to enter altitudes with higher resolution than 100
+ft, except for the airport altitude, will be rounded to the nearest
+100 ft. Use negative numbers for south latitude or west longitude,
+but use positive minutes in all cases except when the degree entry
+is zero; then use negative minutes for the minutes entry (e.g.,
+(0 -15.0) for a latitude just south of the equator, but (0 15.0)
+for one just north of the equator).  
+----- 
+**Angle:**
+
+When the module has an orientation, as for example for a
+VerticalSection or the first leg of a Lawnmower pattern, this
+entry gives that orientation in terms of degrees relative to true
+North. Magnetic declination is not included here but would be needed
+if the flight crew needed to fly in a specific direction instead of
+toward a specific waypoint.  
+----- 
+**Legs:**
+
+For patterns consisting of repeated legs, as for example in the
+case of a VerticalSection, this entry specifies the number of legs
+to be included. Use an even number to end on the same side as that
+where the pattern starts. Between legs, there will be some change,
+for example in altitude; this is specified in the module-dependent
+'Other' entry. See the gray 'Other' button for more information on
+the increments between legs.  
+----- 
+**Other Button:***
+
+Click on this button to activate a display that provides additional
+help on the meaning of the entry line to the right of the button,
+which defines a module-dependent characteristic that varies among
+modules. If the entry to the right is 'NA' or 'None' for a particular
+module type, this characteristic is not needed and should not be
+defined for that module type.  
+----- 
+**Other:**
+
+The entry shown to the right of the 'Other' button is an additional
+characteristic that depends on the module type. For example, it
+is the altitude increment (possibly negative) between legs for a
+VerticalSection, and it is the horizontal offset between legs for
+a Lawnmower patters (where a positive value indicates a turn to the
+right at the end of the first leg). Click on the gray 'Other' button
+for more information on the meaning of this entry for various module
+types. If the entry shows 'NA' or 'None' it is not needed for the
+specified module type.  
+----- 
+**Drifting:**
+
+If the 'Drifting' check box is checked, the module will be generated
+as a series of waypoints that drift with the wind at the flight
+altitude as the pattern is flown. A single value of the wind for a
+given altitude is used. This permits definition of tracks that follow
+approximately Lagrangian-drifting locations in the atmosphere. In
+such cases, it may be preferable to activate the GV 'pointer' during
+the first leg and refine the locations on the basis of that pointer,
+but using the 'Drifting' feature still permits flight planning that
+gives approximate locations and times for the flight segments. If the
+flight crew flies between waypoints as defined using the appropriate
+ground tracks, the flight pattern will compensate for the wind (if
+it is appropriately represented in the sounding) in the right way to
+produce Lagrangian tracking. Beware of possible exhaust contamination
+if patterns are flown without displacement between legs because using
+this feature in such cases will attempt to place the aircraft exactly
+along the same drifting track each leg.  
+-----
+
