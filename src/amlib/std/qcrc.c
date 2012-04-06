@@ -94,6 +94,9 @@ void sqcrc(DERTBL *varp)
       break;
 
     case Config::SABRELINER:
+      adifr = GetSample(varp, 1);
+      bdifr = GetSample(varp, 2);
+
       atk3    = fabs((double)adifr / (qcr * 0.057));
       beta3   = fabs((double)bdifr / (qcr * 0.041));
       satk3   = sin(atk3 * DEG_RAD);
