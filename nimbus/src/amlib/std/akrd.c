@@ -87,6 +87,13 @@ void sakrd(DERTBL *varp)
           akcor = 0.42;
  
         akrd = ((ratio + coeff[0]) / coeff[1]) + akcor;
+
+        /* Attempt to repair poor AOA during low/slow flying (high pitch) due
+         * to non perfectly hemispherical radome.  Added by AJS 4/3/12.
+         */
+	if (akrd > 4.0)
+	  akrd = (1.27 + akrd * (0.56714 + 0.028571 * akrd));
+
       }
         break;
 
