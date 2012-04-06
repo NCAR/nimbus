@@ -1093,8 +1093,6 @@ class MainWindow (wx.Frame):
         navmenu.Append  (ID_LF, '&Open', 'Open a specified file')
         navmenu.Append  (ID_S3, '&Save', 'Save to a specified file')
         GVmenu.Append  (ID_TAS, 'TA&S', 'Show TAS for conditions')
-        GVmenu.Append  (ID_XX, 'Tur&bulenceSpeed', 'Show TAS for turbulence')
-        GVmenu.Append  (ID_XX, 'Tur&bulenceCeiling', 'Show ceiling for turbulence')
         GVmenu.Append  (ID_SR, '&Specific Range', 'n mi per lb fuel')
         GVmenu.Append  (ID_CP, 'Climb&Profile', 'Show climb altitude vs time')
         GVmenu.Append  (ID_DP, '&DescentProfile', 'Show max descent vs time')
@@ -2478,12 +2476,14 @@ class MainWindow (wx.Frame):
   
     def OnTAS (self, event):
         'Displays the TAS vs altitude, considering the atmospheric sounding.'
-        yp = []; xp = []
-        for altitude in range (0,50000,1):
+        yp = []; xp = []; xpT = []
+        for altitude in range (0,50000,200):
             xp.append (Specs.FlightSpeed (altitude))
+            xpT.append (Specs.TurbulenceFlightSpeed (altitude))
             yp.append (altitude)
         pylab.clf ()			# clear the plot
         pylab.plot(xp, yp)
+        pylab.plot (xpT, yp, 'red')
         pylab.xlabel('TAS [kts]')
         pylab.ylabel('altitude (ft)')
         pylab.title('Flight Speed vs Altitude')

@@ -564,10 +564,11 @@ def ISADelta (altitude):
         print "WARNING: Sounding missing, using ISA values."
         return (0.)
     iS = 1
-    while Sounding[iS][1] < altitude: iS += 1
+    while Sounding[iS][1] < altitude and iS < len (Sounding) - 1: iS += 1
     if iS >= len(Sounding): iS = len(Sounding)-1
 #				# interpolate (unnecessarily complex?)
-    F = (altitude - Sounding[iS-1][1]) / (Sounding[iS][1] - Sounding[iS-1][1])
+    F = (altitude - Sounding[iS-1][1]) \
+      / (Sounding[iS][1] - Sounding[iS-1][1])
     Ts = Sounding[iS][4] * F + Sounding[iS-1][4] * (1.-F)
     return (Ts - ISAT)
 
@@ -607,11 +608,13 @@ def FlightSpeed (altitude):
 				# find corresponding KIAS:
     ftmp = ((Ps * 288.15) / (1013.25 * (Ts + 273.15)))**0.5
     KIAS = TAS * ftmp
+#	level flight the airspeed is 38.970*M*(273.15+T)**0.5 n mi / h
     if KIAS < 218: 		# (provide margin)
         TAStest = 218. / ftmp
         Mtest = 218. / (ftmp * 38.96991 * (273.15 + Ts)**0.5)
         if Mtest > 0.85:
             TAS = 38.96991 * 0.85 * (273.15 + Ts)**0.5
+        else: TAS = TAStest
 				# also calculate from KIAS = 300/250
     if altitude < 10000.:
         TAS = 250. / ftmp
@@ -619,6 +622,57 @@ def FlightSpeed (altitude):
         TAS2 = 300. / ftmp
         if TAS2 < TAS: TAS = TAS2
     return (TAS)
+
+def TurbulenceFlightSpeed (altitude):
+    "Returns the turbulence-penetration flight speed of the aircraft in knots."
+    global FlightLevelTemperature
+#	The flight speed to use for turbulence is 270 KIAS or 0.8M, 
+#	whichever is lower.
+#	The airspeed is 38.970*M*(273.15+T)**0.5 n mi / h
+#	(See NotesReGVPerformance.pdf)
+#	Find temperature from sounding:
+    if Sounding is None:
+        print "WARNING: Sounding missing; using ISA."
+        if altitude <= 36089.24:
+            ISAT = 15. - altitude * 0.3048 * 0.0065
+            Ps = 1013.25 * (1. - (altitude / 145442.16))**5.255877
+        else:
+            ISAT = -56.5
+            xp = 10.**((altitude - 36089.24) / 47907.22)
+            Ps = 226.3206 / xp
+        if altitude < 10000.:
+            TAS = 250. * (1013.25 * (ISAT+273.15) / (Ps * 288.15))**0.5
+        else:
+            TAS2 = 260. * (1013.25 * (ISAT+273.15) / (Ps * 288.15))**0.5
+            if TAS2 < TAS: TAS = TAS2
+        return (TAS)
+    iS = 1
+#   print len(Sounding)		# yes, len() gives number of quadruples
+    while Sounding[iS][1] < altitude: iS += 1
+    if iS >= len(Sounding): iS = len(Sounding)-1
+#				# interpolate (unnecessarily complex?)
+    F = (altitude - Sounding[iS-1][1]) / (Sounding[iS][1] - Sounding[iS-1][1])
+    Ts = Sounding[iS][4] * F + Sounding[iS-1][4] * (1.-F)
+    FlightLevelTemperature = Ts
+    Ps = Sounding[iS][0] * F + Sounding[iS-1][0] * (1.-F)
+    TAS = 38.96991 * Specs['FlightSpeed'] * (273.15 + Ts)**0.5
+				# find corresponding KIAS:
+    ftmp = ((Ps * 288.15) / (1013.25 * (Ts + 273.15)))**0.5
+    KIAS = TAS * ftmp
+    if KIAS < 218: 		# (provide margin)
+        TAStest = 218. / ftmp
+        Mtest = 218. / (ftmp * 38.96991 * (273.15 + Ts)**0.5)
+        if Mtest > 0.85:
+            TAS = 38.96991 * 0.85 * (273.15 + Ts)**0.5
+        else: TAS = TAStest
+				# also calculate from KIAS = 270/250
+    if altitude < 10000.:
+        TAS = 250. / ftmp
+    else:
+        TAS2 = 270. / ftmp
+        if TAS2 < TAS: TAS = TAS2
+    return (TAS)
+
 
 def MachNumber (altitude):
     'Returns the flight speed in terms of the Mach Number.'
