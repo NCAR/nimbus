@@ -17,15 +17,20 @@ extern NR_TYPE (*pcorPSF)(NR_TYPE, NR_TYPE);
 /* -------------------------------------------------------------------- */
 void spsfc(DERTBL *varp)
 {
-  NR_TYPE	psf, qcx, psfc;
+  NR_TYPE psf, qcx, mach, psfc;
 
   psf = GetSample(varp, 0);
   qcx = GetSample(varp, 1);
 
-  psfc = psf + (*pcorPSF)(qcx, psf);
-
-//  if (qcx < 10.0)
-//    psfc = psf;
+  if (cfg.Aircraft() == Config::HIAPER)
+  {
+    mach = GetSample(varp, 2);
+    psfc = psf * (1.0 + (*pcorPSF)(qcx, mach));
+  }
+  else
+  {
+    psfc = psf + (*pcorPSF)(qcx, psf);
+  }
 
   if (psfc < 50.0)
     psfc = 50.0;

@@ -17,25 +17,27 @@ extern NR_TYPE (*pcorQCF)(NR_TYPE, NR_TYPE);
 /* -------------------------------------------------------------------- */
 void sqcfc(DERTBL *varp)
 {
-  NR_TYPE qcf, qcfc, akrd, aqratio, psf;
+  NR_TYPE qcf, qcfc, aqratio, mach2, mach, psf;
 
   qcf = GetSample(varp, 0);
 
-  switch (cfg.Aircraft())
+  if (cfg.Aircraft() == Config::HIAPER)
   {
-    case Config::HIAPER:
-      aqratio = GetSample(varp, 1);
-      psf = GetSample(varp, 2);
-      qcfc = qcf - (*pcorQCF)(psf, aqratio);
-      break;
-
-    case Config::C130:
-      akrd  = GetSample(varp, 1);
-      qcfc = qcf - (*pcorQCF)(akrd, 1.0);
-      break;
-
-    default:
-      qcfc = qcf - (*pcorQCF)(qcf, 1.0);
+    aqratio = GetSample(varp, 1);	// aqratio = qcf / psf
+    psf = GetSample(varp, 2);
+    mach = GetSample(varp, 3);
+    qcfc = qcf - psf * (*pcorQCF)(aqratio, mach);
+  }
+  else if (cfg.Aircraft() == Config::C130 && varp->ndep > 1)
+  {
+    aqratio  = GetSample(varp, 1);	// aqratio = adifr / qcf
+    psf = GetSample(varp, 2);
+    mach2 = GetSample(varp, 3);
+    qcfc = qcf - psf * (*pcorQCF)(aqratio, mach2);
+  }
+  else
+  {
+    qcfc = qcf - (*pcorQCF)(qcf, 1.0);
   }
 
   if (qcfc < 10.0)
