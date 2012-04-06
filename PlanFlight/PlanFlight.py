@@ -294,9 +294,9 @@ class NavFrame (wx.Frame):
         import re
         global NavItems, frame, frame7
 #			get lat/lon from Module Specs window:
-        frame.DegMin.SetValue (not frame.DegMin.GetValue ())
+        self.DegMin.SetValue (not self.DegMin.GetValue ())
         lg,lt = frame.GetLatLonValues ()
-        frame.DegMin.SetValue (not frame.DegMin.GetValue ())
+        self.DegMin.SetValue (not self.DegMin.GetValue ())
         deg1, min1 = ConvertToDegMin (lt)
         deg2, min2 = ConvertToDegMin (lg)
         s = format (deg1, 'd') + ',' + format (min1, '.1f') + ','
@@ -537,10 +537,10 @@ class WaypointFrame (wx.Frame):
                                 degLon, minLon = ConvertToDegMin (al[0])
                                 degLat, minLat = ConvertToDegMin (al[1])
                                 KML.WaypointNumber += 1
-                                listing += format (degLat, 'd')+'  '\
-                                         + format (minLat, '.1f')\
-                                         + ' ' + format (degLon, 'd')\
-                                         + '  ' + format (minLon, '.1f')\
+                                listing += format (degLon, 'd')+'  '\
+                                         + format (minLon, '.1f')\
+                                         + ' ' + format (degLat, 'd')\
+                                         + '  ' + format (minLat, '.1f')\
                                          + ' ' + format (al[2], '.0f') \
                                          + '\n'
                                 alast = al
@@ -550,10 +550,10 @@ class WaypointFrame (wx.Frame):
                                 degLon, minLon = ConvertToDegMin (an[0])
                                 degLat, minLat = ConvertToDegMin (an[1])
                                 KML.WaypointNumber += 1
-                                listing += format (degLat, 'd') + '  '\
-                                         + format (minLat, '.1f')\
-                                         + ' ' + format (degLon, 'd') \
-                                         + '  ' + format (minLon, '.1f')\
+                                listing += format (degLon, 'd') + '  '\
+                                         + format (minLon, '.1f')\
+                                         + ' ' + format (degLat, 'd') \
+                                         + '  ' + format (minLat, '.1f')\
                                          + ' ' + format (al[2], '.0f')\
                                          + '\n'
                                 alast = an
