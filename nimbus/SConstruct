@@ -4,10 +4,10 @@ import os
 env = Environment(platform = 'posix',ENV= os.environ)
 
 env.realtime = ARGUMENTS.get('rt', 1)
-np = ARGUMENTS.get('NIDAS_PATH', '/opt/local/nidas')
+np = ARGUMENTS.get('NIDAS_PATH', '/opt/nidas')
 # Convert paths to absolute, relative to top directory
 np = env.Dir("#").Dir(env.subst(np)).get_abspath()
-env['NIDAS_PATH'] = os.path.join(np, 'x86')
+env['NIDAS_PATH'] = np
 
 import SCons
 file = "sconsign-%s" % (SCons.__version__)
