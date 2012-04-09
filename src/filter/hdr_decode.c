@@ -326,7 +326,7 @@ int DecodeHeader3(const char header_file[])
 
       files[i] = 0;
 
-      execv("/opt/local/nidas/x86/bin/sync_server", files);
+      execvp("sync_server", files);
       fprintf(stderr, "nimbus: failed to exec sync_server\n");
       _exit(1);
     }
