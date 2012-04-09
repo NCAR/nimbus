@@ -137,7 +137,8 @@ ID_PT11  = 551
 ID_CP    = 552
 ID_DP    = 553
 ID_TAS   = 554
-ID_XX    = 555
+ID_APPEND= 555
+ID_XX    = 556
 IDB      = 1000
 
 # The routine has these classes defining frames:
@@ -1068,22 +1069,24 @@ class MainWindow (wx.Frame):
                          'Start a new flight plan')
         filemenu.Append (ID_OPEN,  '&Open\tCtrl+O', \
                          'Select an existing flight plan')
+        filemenu.Append (ID_APPEND,  '&Append\tCtrl+A', \
+                         'Append an existing flight plan')
         filemenu.Append (ID_SAVE,  "&Save\tCtrl+S", \
                         "Save the flight plan")
         filemenu.Append (ID_PRNT,  "&List\tCtrl+L", \
                         "Make coordinate listing")
         filemenu.AppendSeparator ()
-        filemenu.Append (ID_ABOUT,  "&About", \
+        filemenu.Append (ID_ABOUT,  "About", \
                          "Information about this program")
         filemenu.Append (ID_EXIT, "E&xit\tCtrl+Q", "Quit")
         specsmenu.Append (ID_EDIT, '&Edit\tCtrl+E', \
                           'edit specs (aircraft, airport, wind)')
         specsmenu.Append (ID_GET, '&Get Sounding\tCtrl+W', \
                           'download latest DNR sounding')
-        specsmenu.Append (ID_SND, '&See Sounding\tCtrl+S', \
+        specsmenu.Append (ID_SND, '&See Sounding', \
                           'See sounding in use')
-        editmenu.Append (ID_IS, '&Insert', 'insert a module')
-        editmenu.Append (ID_DX, '&Delete', 'delete a module')
+        editmenu.Append (ID_IS, '&Insert\tCtrl+I', 'insert a module')
+        editmenu.Append (ID_DX, '&Delete\tCtrl+D', 'delete a module')
         editmenu.Append (ID_CY, '&Copy', 'copy a module')
         editmenu.Append (ID_RO, '&Reorder', 'reorder modules')
         editmenu.Append (ID_RC, 'Re&calculate', 'calculate track')
@@ -1112,6 +1115,7 @@ class MainWindow (wx.Frame):
         wx.EVT_MENU (self, ID_ABOUT, self.OnAbout)
         wx.EVT_MENU (self, ID_EXIT, self.OnExit)
         wx.EVT_MENU (self, ID_OPEN, self.OnOpen)
+        wx.EVT_MENU (self, ID_APPEND, self.OnAppend)
         wx.EVT_MENU (self, ID_NEW, self.OnStartTrack)
         wx.EVT_MENU (self, ID_SAVE, self.OnSaveTrack)
         wx.EVT_MENU (self, ID_PRNT, self.OnList)
@@ -2069,6 +2073,34 @@ class MainWindow (wx.Frame):
             ReadTrack (path)
         dlg.Destroy ()
 
+    def OnAppend (self, event): 
+        dlg = wx.FileDialog (self, "Choose a file", os.getcwd (), \
+                             "Plan", "Plan.*", wx.OPEN)
+        if dlg.ShowModal () == wx.ID_OK:
+            path = dlg.GetPath ()
+            mypath = os.path.basename (path)
+            self.SetStatusText ("You selected: %s" % mypath, 1)
+            ExistingTrack = ModuleConstructor.Track
+            ReadTrack (path)
+            NewTrack = ModuleConstructor.Track
+            ModuleConstructor.Track = ExistingTrack
+				# find the highest module number
+            KeyList = ModuleConstructor.Track.keys ()
+            KeyList.sort ()
+            for ky in KeyList:
+                if ('Module' in ky and 'Number' not in ky):
+                    kk = int (ky.replace ('Module',''))
+            KeyList = NewTrack.keys ()
+            KeyList.sort ()
+            for ky in KeyList:
+                if ('Module' in ky and 'Number' not in ky):
+                    m = NewTrack[ky]
+                    kk += 1
+                    key = 'Module' + format(kk, '03d')
+                    ModuleConstructor.Track[key] = m
+            Recalculate ()
+        dlg.Destroy ()
+
     def OnSave (self, event): 
         "Save the text in 'listing' to a file."
         dlg = wx.FileDialog (self, "Provide a file name:", \
@@ -2484,6 +2516,11 @@ class MainWindow (wx.Frame):
         pylab.clf ()			# clear the plot
         pylab.plot(xp, yp)
         pylab.plot (xpT, yp, 'red')
+        pylab.annotate('normal', (400,19000), (410,17000), \
+                       color='blue')
+        pylab.annotate('if turbulent', (400,24500), (340,28000), \
+                       arrowprops=dict(arrowstyle="->", color='red'),\
+                       color='red')
         pylab.xlabel('TAS [kts]')
         pylab.ylabel('altitude (ft)')
         pylab.title('Flight Speed vs Altitude')
