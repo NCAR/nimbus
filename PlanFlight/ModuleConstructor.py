@@ -278,6 +278,144 @@ def Module (t = 'Enroute', s = 100., a = (105.,40.,6000), o = 0., \
                     a = DriftOffset (Tdescent. b)
             icl = 1 - icl
         #end of 'while dd < dist' loop
+    #end of Sawtooth module
+
+				# StairStep: 'Other' is altitude 
+				# change per step. In this case, 'legs'
+				# is the number of steps, each having
+				# an altitude change of 'Other' (ft).
+				# 'Size' is then divided into 'legs'
+				# steps.
+    elif (t == 'StairStep'):
+        if (ManeuverNumber != 0): 	# don't turn if first maneuver
+                                        # Find angle of turn needed to
+                                        # head for the start point
+            dx = (a[0] - AC[0]) * math.cos ((a[1] + AC[1]) * Cradeg / 2.)
+            dy = a[1] - AC[1]
+            oo = math.atan2 (dy, dx) / Cradeg
+            oo = 90. - oo
+            if (oo < 0.): oo += 360.
+            v = Turn (oo)
+            ky = "Manvr" + format (ManeuverNumber, '03d')
+            m[ky] = v
+# transit to start point, a
+        v = Transit (AC, a, False, 0., m)
+        if v != None:
+            ky = "Manvr" + format (ManeuverNumber, '03d')
+            m[ky] = v
+        v = Turn (o)
+        if drift:
+            DT = v['Dimension'] / Specs.FlightSpeed (AC[2])
+            a = DriftOffset (DT, a)
+        ky = "Manvr" + format (ManeuverNumber, '03d')
+        m[ky] = v
+# now fly in direction o for distance s from a
+# (assume Cartesion OK here)
+        b = copy.deepcopy (a)
+        b0 = b[0] + s * math.sin (o * Cradeg) \
+           / (60. * math.cos (b[1] * Cradeg))
+        b1 = b[1] + s * math.cos (o * Cradeg) / 60.
+        b = (b0, b1, b[2]+other*l)
+# dist to specified point
+        (dist, B) = GreatCircle (AC,b)	# b approx = dist
+        NS = 0
+        if l <= 0 or other == 0: return None
+        Dleg = dist / (l + 1)	# 3 stairs means 4 flight segments 
+        Zleg = AC[2]
+        dd = 0.
+				# if descending stairstep, find
+				# distance needed for descent,
+				# to shorten legs:
+        if other < 0.:
+            Tdescent,Fdescent,Ddescent,dx,dy = \
+                Specs.DescentValues (AC[2], AC[2] + other)
+            print 'Descent return, other = %.0f, Ddescent = %.2f, AC[2] = %.0f, Tdescent = %.0f' % (other, Ddescent, AC[2], Tdescent)
+            if drift: pass
+            else:		# get real distance covered in descent
+                wdir = (90. - math.atan2 (dy, dx) / Cradeg)
+                beta = (B - wdir) 	# includes correction to-to-from
+                while beta < 0.: beta += 360.
+                beta *= Cradeg
+                dw = (dx*dx + dy*dy)**0.5
+                sina = dw * math.sin (beta) / Ddescent
+                alpha = math.asin (sina)
+                Ddescent = (Ddescent**2 + dw**2 \
+                  -2. * Ddescent * dw * math.cos (alpha + beta))**0.5
+            dd = Ddescent / 2.
+        elif other > 0.:	# if climbing stairstep, do 1st leg
+            Tclimb,Fclimb,Dclimb,dx,dy = Specs.ClimbValues (AC[2], \
+                           AC[2] + other, 0.)
+            if drift: pass
+            else:		# get real distance covered in climb
+                wdir = (90. - math.atan2 (dy, dx) / Cradeg)
+                beta = (B - wdir) 	# includes correction to-to-from
+                while beta < 0.: beta += 360.
+                beta *= Cradeg
+                dw = (dx*dx + dy*dy)**0.5
+                sina = dw * math.sin (beta) / Dclimb
+                alpha = math.asin (sina)
+                Dclimb = (Dclimb**2 + dw**2 \
+                  -2. * Dclimb * dw * math.cos (alpha + beta))**0.5
+                if Dclimb / 2. > Dleg:
+                    print 'StairStep: not enough distance for climb'\
+                          + '\nClimb needs ' + format (Dclimb, '.0f')\
+                          + ' n mi; leg is ' + format (Dleg, '0f')\
+                          + ' long.'
+				# each stair, fly level first, then do
+				# half of climb in leg, with climb
+				# extending into next step. Do this
+				# (l-1) times, then finish final level
+				# leg
+            dd += Dleg - Dclimb / 2.
+            ap = (a[0] + (b[0] - a[0]) * dd / dist,\
+                  a[1] + (b[1] - a[1]) * dd / dist,\
+                  AC[2])
+            SaveTime = Time
+            v = Transit (AC, ap, drift, 0., m)
+            if v != None:
+                ky = "Manvr" + format (ManeuverNumber, '03d')
+                m[ky] = v
+            if drift: 
+                DT = Time - SaveTime
+                a = DriftOffset (DT, a)
+                b = DriftOffset (DT, b)
+        #end of placement of initial transit for climb
+				# now do l legs
+				# (may be climbs or descents)
+        while NS < l:
+            NS += 1
+            dd += Dleg
+            if NS == l and other > 0.: dd += Dclimb / 2.
+            ap = (a[0] + (b[0] - a[0]) * dd / dist,\
+                  a[1] + (b[1] - a[1]) * dd / dist,\
+                  AC[2] + other)
+            SaveTime = Time
+            v = Transit (AC, ap, drift, 0., m)
+            if v != None:
+                ky = "Manvr" + format (ManeuverNumber, '03d')
+                m[ky] = v
+            if drift: 
+                DT = Time - SaveTime
+                a = DriftOffset (DT, a)
+                b = DriftOffset (DT, b)
+        #end of 'while NS < l' loop
+				# add final descent leg needed to 
+				# complete module
+        if other < 0.:	# final leg for descending StairStep
+            dd += Dleg - Ddescent / 2.
+            ap = (a[0] + (b[0] - a[0]) * dd / dist,\
+                  a[1] + (b[1] - a[1]) * dd / dist,\
+                  AC[2])
+            SaveTime = Time
+            v = Transit (AC, ap, drift, 0., m)
+            if v != None:
+                ky = "Manvr" + format (ManeuverNumber, '03d')
+                m[ky] = v
+            if drift: 
+                DT = Time - SaveTime
+                a = DriftOffset (DT, a)
+                b = DriftOffset (DT, b)
+        #end of final leg of descending StairStep
 
 
 # Climb at specified rate or max rate, staying at starting location   
@@ -921,14 +1059,14 @@ def Transit (a, b, drift = False, limit = 0., modl = None):
     EndPoint = b	# (this gets reset for descent)
     if a[2] < b[2]:	
 			# Put a 'climb' into Maneuvers. This is not
-			# called directly as a mencuber like Transit
+			# called directly as a maneuver like Transit
 			# or Turn; it is put into the
 			# maneuvers as an indication of where it
 			# occurs in the 'Waypoints' listing
         m = Maneuver("Climb", dist, a, B, None, 0., drift)
 			# get the time, fuel, and distance required
 			# for the specified climb:
-        if limit != 0:
+        if limit != 0.:
             Tclimb, Fclimb, Dclimb, dx, dy \
                 = Specs.ClimbValues (a[2], b[2], limit)
         else:
@@ -998,7 +1136,7 @@ def Transit (a, b, drift = False, limit = 0., modl = None):
     # calculation.
     				# Here is the preliminary calculation:
     if a[2] > b[2]:		# Section for a descending track:
-        if limit != 0:
+        if limit != 0.:
             Tdescent, Fdescent, Ddescent, dx, dy \
                 = Specs.DescentValues (a[2], b[2], limit)
         else:

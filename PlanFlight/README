@@ -4,22 +4,21 @@ To run the PlanTrack program, copy this directory to your workspace, then run
 using './PlanTrack.py [Plan.xxx]' where the argument in brackets is optional
 but will load the specified track if it is given.
 
-This program requires python 2.6 or later, and it requires the wxPython package 
-also. Both are available on tikal.eol.ucar.edu, so the program will run there.
+This program requires:
+  *  python 2.6 or later
+  *  wxPython package 
+  *  matplotlib (for some plots; a version without those plots is available)
+  *  numpy (required by matplotlib)
+All are available on tikal.eol.ucar.edu, so the program will run there.
 Python and wxPython are available for many platforms including Windows and
-Mac as well as linux. The reason that Python 2.6+ is required is that the
-'format' command is used extensively and that was not available in earlier
-versions of python. In addition, the package matplotlib is used to generate
-some of the (optional) plots, and to use it with wxpython you will need the
-wxPython 'backend' for python-matplotlib (named python-matplotlib-wx-xxxx) --
-or maybe the WXAgg backend will work? Both work on tikal. If it is not already
-present you will need numpy, also available from sourceforge.net. Note that
-you may need version 1.5.1 to be compatible with Python 2.7; strangely,
-1.6.1 seems only to be compatible with Python 2.6.
+Mac as well as linux; see below for suggested sources. The reason that Python 
+2.6+ is required is that the 'format' command is used extensively and that 
+was not available in earlier versions of python. The package matplotlib is 
+a Matlab-like package used to generate some of the (optional) plots.
 
 The coordinates included in the subdirectory 'NavPoints' are a subset of
 what is available. More points can be generated easily from the full database
-but are not included here.
+but are not included here. Contact: Al Cooper (cooperw@ucar.edu)
 
 The 'Map' menu includes only one map. More can be generated and added to the
 menu; see 'Xform.py' for an aid to determining the transformation from cursor
@@ -30,14 +29,19 @@ program works with linux if google-earth is in the path. For Windows, another
 solution is needed.
 
 I was able to get this to work on a 32-bit Windows machine as follows:
-  1. Download and install 
-     http://www.python.org/ftp/python/2.7.1/python-2.7.1.msi
-  2. Download and install
-     http://downloads.source.forge.net/
-            wxpython/wxPython2.8-win32-unicode-2.8.12.1-py27.exe
-  3. Copy the directory PlanFlight to the windows machine
-  4. Create link on the desktop to PlanFlight.py in the directory
-  5. Double-click on that link.
+  1. Download and install python:
+     http://www.python.org/ftp/python/2.7.2/python-2.7.2.msi
+  2. Download and install wxPython (used by the PlanFlight GUI):
+     http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/wxPython2.8-win32-unicode-2.8.12.1-py27.exe/download
+     (accept option to prepare tools at end of install)
+  3. Download and install matplotlib:
+     http://sourceforge.net/projects/matplotlib/files/matplotlib/matplotlib-1.1.0/matplotlib-1.1.0.win32-py2.7.exe/download
+  4. Download and install numpy:
+     http://sourceforge.net/projects/numpy/files/NumPy/1.6.1/numpy-1.6.1-win32-superpack-python2.7.exe/download
+  5. Copy the directory PlanFlight to the windows machine
+  6. Create link on the desktop to PlanFlight.py in the directory
+  7. Double-click on that link.
+
 It may be necessary to change PlanFlight.py permissions on a linux source 
 directory to remove executable permission (i.e., chmod -x PlanFlight.py)
 before copying, to see the file. Change them back afterward or the file

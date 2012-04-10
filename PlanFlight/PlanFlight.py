@@ -1364,6 +1364,11 @@ class MainWindow (wx.Frame):
             self.InputOR.SetValue ('0.')
             self.InputLEGS.SetValue ('None')
             self.InputOTHER.SetValue ('2000.')
+        elif (module_name == 'StairStep'):
+            self.InputS.SetValue ('150.')
+            self.InputOR.SetValue ('0.')
+            self.InputLEGS.SetValue ('3')
+            self.InputOTHER.SetValue ('500.')
         elif (module_name == 'SpiralProfile'):
             self.InputS.SetValue ('None')
             self.InputOR.SetValue ('None')
@@ -1922,6 +1927,11 @@ class MainWindow (wx.Frame):
                  + 'full length of the leg, \'alt\' is the target\n'\
                  + 'altitude above or below the starting altitude,\n'\
                  + 'and \'Other\' (if > 0) limits the rate of climb.'
+        elif (ModuleConstructor.WorkingModuleName == 'StairStep'):
+            OtherMessage = 'For a StairStep pattern, \'Size\' is the\n'\
+                 + 'full length of the pattern, \'Other\' is the change\n'\
+                 + 'in altitude at each stairstep, and \'legs\' is the,\n'\
+                 + 'number of steps; e.g., \'3\' -> 3 steps, 4 level legs.'
         elif (ModuleConstructor.WorkingModuleName == 'SpiralProfile'):
             OtherMessage = 'For SpiralProfile \'Other\' denotes\n'\
                  + 'the desired rate of climb or descent. The pattern\n'\

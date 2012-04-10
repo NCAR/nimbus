@@ -40,6 +40,7 @@ ModuleType = [
     'OutAndBack',
     'VerticalSection',	
     'Sawtooth',
+    'StairStep',
     'SpiralProfile',
     'Circle',
     'Racetrack',
@@ -894,8 +895,8 @@ def ClimbValues (Z1, Z2, RateLimit = None):
 #       print "Za, Zb, delta, Sum = ", Za, Zb, delta, Sum
         Za = Zb
         Zb += 1000.
-    if Zb < Z2:
-        delta = DeltaClimb (Zb, Z2)
+    if Za < Z2:
+        delta = DeltaClimb (Za, Z2)
         Sum = (Sum[0] + delta[0], Sum[1] + delta[1], Sum[2] + delta[2],\
                Sum[3] + delta[3], Sum[4] + delta[4])
 				# for comparison:
@@ -1029,8 +1030,8 @@ def DescentValues (Z1, Z2, RateLimit = None):
 #       print "Za, Zb, delta, Sum = ", Za, Zb, delta, Sum
         Za = Zb
         Zb -= 1000.
-    if Zb > Z2:
-        delta = DeltaDescent (Zb, Z2)
+    if Za > Z2:
+        delta = DeltaDescent (Za, Z2)
         Sum = (Sum[0] + delta[0], Sum[1] + delta[1], Sum[2] + delta[2],\
                Sum[3] + delta[3], Sum[4] + delta[4])
 				# for comparison:
