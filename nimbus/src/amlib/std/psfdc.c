@@ -17,12 +17,13 @@ extern NR_TYPE (*pcorPSFD)(NR_TYPE, NR_TYPE);
 /* -------------------------------------------------------------------- */
 void spsfdc(DERTBL *varp)
 {
-  NR_TYPE	psfd, aq_ratio, psfdc;
+  NR_TYPE	psfd, aqratio, xmach2, psfdc;
 
   psfd		= GetSample(varp, 0);
-  aq_ratio	= GetSample(varp, 1);
+  aqratio	= GetSample(varp, 1);
+  xmach2	= GetSample(varp, 2);
 
-  psfdc = psfd + (*pcorPSFD)(aq_ratio, 1.0);
+  psfdc = psfd * (1.0  + (*pcorPSFD)(aqratio, xmach2));
 
   PutSample(varp, psfdc);
 
