@@ -467,7 +467,8 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
     if (strcmp(rp->name, "RAWCONC_VXL") == 0)
     {
       SetLookupSuffix(location);
-      add_derived_names(name_sans_location);
+      // Add EW here due to it's different entry in amlib.fns
+      add_name_to_DERTBL("EW");
       SetLookupSuffix((char *)0);
     }
 
