@@ -104,8 +104,6 @@ def PlotWaypoint (KMLFile, KMLACFile, wp, label='', symbol = 'triangle'):
     KMLFile.write("\t\t\t <color>ff00aaff</color>\n")
     KMLFile.write("\t\t\t <width>2</width>\n")
     KMLFile.write("\t\t </LineStyle>\n")
-    KMLFile.write("\t\t <ListStyle>\n")
-    KMLFile.write("\t\t </ListStyle>\n")
     KMLFile.write("\t </Style>\n")
     KMLFile.write("\t <Style id=\"sn_triangle_copy"\
                   +format(WaypointNumber,'d')+"\">\n")
@@ -120,8 +118,6 @@ def PlotWaypoint (KMLFile, KMLACFile, wp, label='', symbol = 'triangle'):
     KMLFile.write("\t\t <LabelStyle>\n")
     KMLFile.write("\t\t\t <color>ff00aaff</color>\n")
     KMLFile.write("\t\t </LabelStyle>\n")
-    KMLFile.write("\t\t <ListStyle>\n")
-    KMLFile.write("\t\t </ListStyle>\n")
     KMLFile.write("\t </Style>\n")
     KMLFile.write("\t<StyleMap id=\"msn_triangle_copy"\
                   +format(WaypointNumber,'d')+"\">\n")
@@ -178,8 +174,6 @@ def PlotWaypoint (KMLFile, KMLACFile, wp, label='', symbol = 'triangle'):
     KMLACFile.write("\t\t\t <color>ff00aaff</color>\n")
     KMLACFile.write("\t\t\t <width>2</width>\n")
     KMLACFile.write("\t\t </LineStyle>\n")
-    KMLACFile.write("\t\t <ListStyle>\n")
-    KMLACFile.write("\t\t </ListStyle>\n")
     KMLACFile.write("\t </Style>\n")
     KMLACFile.write("\t <Style id=\"sn_triangle_copy"\
                   +format(WaypointNumber,'d')+"\">\n")
@@ -194,8 +188,6 @@ def PlotWaypoint (KMLFile, KMLACFile, wp, label='', symbol = 'triangle'):
     KMLACFile.write("\t\t <LabelStyle>\n")
     KMLACFile.write("\t\t\t <color>ff00aaff</color>\n")
     KMLACFile.write("\t\t </LabelStyle>\n")
-    KMLACFile.write("\t\t <ListStyle>\n")
-    KMLACFile.write("\t\t </ListStyle>\n")
     KMLACFile.write("\t </Style>\n")
     KMLACFile.write("\t<StyleMap id=\"msn_triangle_copy"\
                   +format(WaypointNumber,'d')+"\">\n")
