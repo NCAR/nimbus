@@ -150,21 +150,27 @@ public class NC2A extends JPanel implements ActionListener {
 		List<Variable> sublvars= ncdata.getBatchSubVars(bf.getSelVars());
 		ncdata.signBatchVarDataFmt(sublvars,bf.getTmpVarDataFmt());
 
-		if (sublvars.size()<=0) {
+		if (sublvars.size() <= 0) {
 			System.out.println("NO variables are selected...");
 			return;
 		}
-		if (ncdata.getGlobalDataInf()[0]>1 && fmt[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)) { //high rate data NO Ames
-			fmt[DataFmt.HEAD_IDX]=(DataFmt.HEAD);
-			System.out.println(" Warning: High rate data netcdf file. AmesDEF is not supported.  ");
+		if (ncdata.getGlobalDataInf()[0] > 1 &&
+		    (fmt[DataFmt.HEAD_IDX].equals(DataFmt.HDR_AMES) ||
+		     fmt[DataFmt.HEAD_IDX].equals(DataFmt.HDR_ICARTT))) {
+			fmt[DataFmt.HEAD_IDX]=(DataFmt.HDR_PLAIN);
+			System.out.println("Warning: High rate data netcdf file. AmesDEF and ICARTT are not supported at this time.");
 		}
-		if (fmt[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)) {ncdata.writeOut( ncdata.getAmesHead(sublvars)+ "\n"); }
+		if (fmt[DataFmt.HEAD_IDX].equals(DataFmt.HDR_AMES)) {
+			ncdata.writeOut(ncdata.getAmesHeader(sublvars));
+		}
+		if (fmt[DataFmt.HEAD_IDX].equals(DataFmt.HDR_ICARTT)) {
+			ncdata.writeOut(ncdata.getICARTTHeader(sublvars));
+		}
 
 		//System.out.println("bf_fmt_at_printout= \n"+ fmt[0]+ "\n"+ fmt[1]+ "\n"+ fmt[2]+ "\n"+ fmt[3]+ "\n"+ fmt[4]+ "\n"+ fmt[5]+ "\n"+ fmt[6]+ "\n"); 
-		String out= ncdata.genVarName(sublvars, fmt);
+		String out= ncdata.genVarNameList(sublvars, fmt);
 		ncdata.writeOut(out+"\n"); 
 		ncdata.writeDataToFile(sublvars, range, fmt);
-		//System.out.println("Writing is completed.");
 	}
 
 } //eof class NC2A

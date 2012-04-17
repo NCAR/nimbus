@@ -170,9 +170,4 @@ public class NC2Act {
 		cmpt.getTopLevelAncestor().setCursor(Cursor.getDefaultCursor());
 	}
 
-
-
-
-} // eo class
-
-
+}

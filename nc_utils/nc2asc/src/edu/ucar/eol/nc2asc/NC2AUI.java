@@ -369,8 +369,9 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 
 
 	/**
-	 * This method provides the usage for all the components which have the abstractButton's characters
-	 * to easily add the action-listener and its action in teh code
+	 * This method provides the usage for all the components which
+	 * have the abstractButton's characters to easily add the
+	 * action-listener and its action in teh code.
 	 *   
 	 * @param jb  -- an abstractor-component
 	 * @param actStr -- action command
@@ -532,7 +533,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			frm.setLocation(250, 150);
 			String[] demodata = new String[10];
 			try {
-				demodata =ncdata.getDemoData();
+				demodata = ncdata.getDemoData();
 			} catch ( ArrayIndexOutOfBoundsException a){
 				NC2Act.wrtMsg("getDemoData Array index out of bound"+a.getMessage());
 			} catch (NCDataException ee) {
@@ -620,8 +621,10 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 				}
 			} 
 
-			if (ncdata.getGlobalDataInf()[0]>1 && datafmt.getDataFmt()[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)) {
-				datafmt.setDataFmt(DataFmt.HEAD, DataFmt.HEAD_IDX);
+			if (ncdata.getGlobalDataInf()[0] > 1 &&
+			    (datafmt.getDataFmt()[DataFmt.HEAD_IDX].equals(DataFmt.HDR_AMES) ||
+			     datafmt.getDataFmt()[DataFmt.HEAD_IDX].equals(DataFmt.HDR_ICARTT))) {
+				datafmt.setDataFmt(DataFmt.HDR_PLAIN, DataFmt.HEAD_IDX);
 			}
 			ncdata.setMode(true);
 			NC2Act.wrtMsg("  Reading batch file is done.");
@@ -805,11 +808,14 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 			bnProc.setEnabled(false);
 
 			//write out data
-			String[] fmt =datafmt.getDataFmt();
-			if (fmt[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)) {
-				ncdata.writeOut(ncdata.getAmesHead(sublvars)+"\n");
+			String[] fmt = datafmt.getDataFmt();
+			if (fmt[DataFmt.HEAD_IDX].equals(DataFmt.HDR_AMES)) {
+				ncdata.writeOut(ncdata.getAmesHeader(sublvars));
 			}
-			String out= ncdata.genVarName(sublvars, fmt); 
+			if (fmt[DataFmt.HEAD_IDX].equals(DataFmt.HDR_ICARTT)) {
+				ncdata.writeOut(ncdata.getICARTTHeader(sublvars));
+			}
+			String out= ncdata.genVarNameList(sublvars, fmt); 
 			ncdata.writeOut(out+"\n");
 			int[] range = getTmRange();
 			//long t1 = Calendar.getInstance().getTimeInMillis();
@@ -1071,7 +1077,6 @@ class StatusBarMsg extends JLabel   {
 }
 
 
-
 class DataThread extends Thread {
 	DataThread(NCData obj, List<Variable> vrs, int[] rg, String[] ft) {
 		ncdata=obj;
@@ -1088,5 +1093,3 @@ class DataThread extends Thread {
 	private int[] range;
 	private String[] fmt;
 }
-
-

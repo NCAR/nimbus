@@ -22,9 +22,10 @@ public class DataFmt {
 	public final static String MISSVAL = "-32767.0";
 	public final static String PLANK ="";
 
-	public final static String HEAD = "Plain";
-	public final static String HEAD2 = "AmesDEF";
-	public final static String HEAD3 = "NcML";
+	public final static String HDR_PLAIN	= "Plain";
+	public final static String HDR_AMES	= "AmesDEF";
+	public final static String HDR_ICARTT	= "ICARTT";
+	public final static String HDR_NCML	= "NcML";
 
 	public final static String FULLTM = "Full";
 	public final static String SPACE = "Space";
@@ -59,19 +60,19 @@ public class DataFmt {
 	/**
 	 * = yyyy-mm-dd,hh:mm:ss~yyyy-mm-dd,hh:mm:ss   OR FULLTM
 	 */
-	private static String   tmSet =FULLTM; 
+	private static String   tmSet = FULLTM; 
 
 	public DataFmt() {
 		initDataFmt();
 	}
 
 	public void initDataFmt() {
-		dataFmt[DATE_IDX]=DATEDASH;
+		dataFmt[DATE_IDX]=NODATE;
 		dataFmt[TM_IDX]=TIMECOLON;
 		dataFmt[DMTR_IDX]=",";
 		dataFmt[MVAL_IDX]=MISSVAL;
 		dataFmt[TMSET_IDX]=FULLTM; //timeset= 00:00:00~99:99:99[
-		dataFmt[HEAD_IDX]=HEAD;
+		dataFmt[HEAD_IDX]=HDR_PLAIN;
 		dataFmt[AVG_IDX]="1";
 	}
 
@@ -84,14 +85,15 @@ public class DataFmt {
 	public void setDataFmt(String s, int idx){
 		dataFmt[idx] = s;
 	}
+
 	/**
 	 * A overloaded function to copy all the data format 
 	 * ref@ dataFmt definition
 	 * @param fmt - all data formats  ;   tmset= yyyy-mm-dd,hh:mm:ss~yyyy-mm-dd,hh:mm:ss
 	 */
 	public void setDataFmt(String[] fmt, String tmset) {
-		for (int i=0; i< fmt.length; i++) {
-			dataFmt[i]= fmt[i];
+		for (int i = 0; i < fmt.length; i++) {
+			dataFmt[i] = fmt[i];
 		}
 		tmSet= tmset;
 	}
@@ -102,8 +104,8 @@ public class DataFmt {
 	 * @param fmt - all data formats  ;  
 	 */
 	public void setDataFmt(String[] fmt) {
-		for (int i=0; i< fmt.length; i++) {
-			dataFmt[i]= fmt[i];
+		for (int i = 0; i < fmt.length; i++) {
+			dataFmt[i] = fmt[i];
 		}
 	}
 
@@ -131,6 +133,7 @@ public class DataFmt {
 	public String getTmSet() {
 		return tmSet;
 	}
+
 	/**
 	 * This is for users to retrieve the desired data format in simple form
 	 * @return dataFmt
@@ -271,7 +274,7 @@ public class DataFmt {
 	}
 
 
-	/**	return null;
+	/**
 	 * it takes time strings, converts it into desired format
 	 * @param ss -- list of hh mm ss
 	 * @return
@@ -372,6 +375,4 @@ public class DataFmt {
 		}
 		return ret;
 	}
-
-
 }

@@ -16,9 +16,8 @@ import ucar.nc2.Variable;
 import edu.ucar.eol.nc2asc.*;
 
 /**
- * This class is to use netCDF APIs to read and write 
- * netCDF data from files and format the data into 
- * desirable ASCII formats
+ * This class is to use netCDF APIs to read netCDF data from
+ * files and format the data into desirable ASCII formats.
  * @author dongl
  *
  */
@@ -221,7 +220,7 @@ public class NCData {
 		try{
 			fin = NetcdfFile.open(infn);
 		} catch (IOException e){
-			if (fin !=null){ 
+			if (fin != null){ 
 				fin.close();
 				fin = null;
 			}
@@ -243,7 +242,8 @@ public class NCData {
 	}
 
 	/**
-	 * Retrieve attribute information such as name, unit, OR/len, etc for the variables-time var is the first one
+	 * Retrieve attribute information such as name, unit, OR/len, etc
+	 * for the variables-time var is the first one.
 	 * 
 	 * @throws NCDataException ArrayIndexOutOfBoundsException InvalidRangeException IOException
 	 * @throws 
@@ -317,7 +317,7 @@ public class NCData {
 	 */
 	private int getOR(Variable v) {
 		int[] dims = v.getShape();
-		if (dims.length==1){
+		if (dims.length == 1) {
 			return 1;
 		}
 		return dims[1];
@@ -337,17 +337,18 @@ public class NCData {
 		if (lvars==null || lvars.size()==0) {
 			throw new NCDataException("getDemoData encounts empty variable list.");
 		}
+
 		// get 10 example data
 		Variable v1 = lvars.get(1);
 		Variable v2 = lvars.get(2);
-		demoData[0] ="Date,UTC,"+v1.getShortName() +","+v2.getShortName();
+		demoData[0] ="Date,UTC," + v1.getShortName() + "," + v2.getShortName();
 		long milSec;
 		//String[] vdata1, vdata2;
 		milSec = getTimeMilSec();    
 
 		int len =10;
-		for (int i=1; i<len; i++) {
-			demoData[i]= getNewTm(milSec, i)+ DataFmt.COMMAVAL 
+		for (int i = 1; i < len; i++) {
+			demoData[i] = getNewTm(milSec, i) + DataFmt.COMMAVAL 
 			+ DataFmt.MISSVAL + DataFmt.COMMAVAL
 			+ "0.0";
 		}
@@ -415,8 +416,9 @@ public class NCData {
 		//check tm
 		if (tmFmt.equals(DataFmt.TIMESEC)) {
 			long seconds =cl.get(Calendar.HOUR_OF_DAY)* 3600 + cl.get(Calendar.MINUTE)*60 +cl.get(Calendar.SECOND);
-			if (seconds ==0) NC2A.overMidNight=true;
-			if (NC2A.overMidNight && fmt[DataFmt.HEAD_IDX].equals(DataFmt.HEAD2)){
+			if (seconds == 0) NC2A.overMidNight = true;
+			if (NC2A.overMidNight && (fmt[DataFmt.HEAD_IDX].equals(DataFmt.HDR_AMES) ||
+				fmt[DataFmt.HEAD_IDX].equals(DataFmt.HDR_ICARTT))) {
 				seconds += 86400;
 				//NC2Act.wrtMsg("\n overMidNight and AmesDEF... ");
 			}
@@ -734,9 +736,10 @@ public class NCData {
 	} 
 
 	/**
-	 * In the batch mode, the date and time formats are read from the input batch file in the display
-	 * format like yyyy-mm-dd, hh:mm:ss. This method converts it into the form that  will 
-	 * be attached to the output file, for example, "," or ":", etc.
+	 * In the batch mode, the date and time formats are read from the
+	 * input batch file in the display format like yyyy-mm-dd, hh:mm:ss.
+	 * This method converts it into the form that  will be attached to
+	 * the output file, for example, "," or ":", etc.
 	 * @param fmt - entire formats -- ref to dataFmt in DataFmt class.
 	 * @return
 	 */
@@ -766,41 +769,123 @@ public class NCData {
 	}
 
 	/**
-	 *  getAmesHead retrieves data needed from the netcdf in this class, and format into the required head. The 
-	 *  definition is on http://badc.nerc.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html and look for 
+	 *  getAmesHeader retrieves data needed from the netcdf in this class,
+	 *  and format into the required head.  The definition is on
+	 *  http://badc.nerc.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html and look for 
 	 *  FFI = 1001:
 	 */
-	public String getAmesHead(List<Variable> sublvars) {
+	public String getAmesHeader(List<Variable> sublvars) {
 		String ret = "\nLastname Firstname";
-		ret += "\n"+ trimBegEndQuotes(""+ fin.findGlobalAttribute("Source"));
-		ret += "\n"+ trimBegEndQuotes(""+ fin.findGlobalAttribute("Aircraft"));
+		ret += "\n"+ trimBegEndQuotes(""+ fin.findGlobalAttribute("institution"));
+		ret += "\n"+ trimBegEndQuotes(""+ fin.findGlobalAttribute("Platform"));
 		ret += "\n"+ trimBegEndQuotes(""+ fin.findGlobalAttribute("ProjectName"));
 		ret += "\n"+ "1 1";
-		ret += "\n"+getDates();
-		ret += "\n"+"1.0 ";  //lowRate 
-		ret += "\n"+"Time in seconds from 00Z";
-		ret += "\n"+"  "+ sublvars.size();
+		ret += "\n"+ getDates(" ");
+		ret += "\n"+ "1.0 ";  //lowRate 
+		ret += "\n"+ "Time in seconds from 00Z";
+		ret += "\n"+ "  " + sublvars.size();
 		String scaleValues="";
 		for (int i= 0; i<sublvars.size(); i++) {
 			scaleValues += "1.0 ";
 		}
 		ret += "\n" + scaleValues;
 
-		String fillVar=""; String varInf ="";
-		for (int i= 0; i<sublvars.size(); i++) {
+		String fillVar= ""; String varInfo = "";
+		for (int i = 0; i < sublvars.size(); i++) {
 			Variable v = sublvars.get(i);
 			String lname = trimBegEndQuotes(""+v.findAttribute("long_name"));
-			if (lname==null || lname.isEmpty()|| lname.length()<=1) { lname = v.getName();}
-			varInf += "\n" + lname + "   (";
-			varInf += trimBegEndQuotes(""+v.findAttribute("units"))+")";
-			fillVar += v.findAttribute("_FillValue").getNumericValue()+ "  ";
+			if (lname == null || lname.isEmpty() || lname.length() <= 1) {
+				lname = v.getName();
+			}
+			varInfo += "\n" + lname + "  (";
+			varInfo += trimBegEndQuotes(""+v.findAttribute("units")) + ")";
+			fillVar += v.findAttribute("_FillValue").getNumericValue() + " ";
 		}
 		ret += "\n"+fillVar;
-		ret += varInf;
+		ret += varInfo;
 
 		//at last add the first line  -- line number and 1001
 		int lineNum = 12 + sublvars.size() + 3;
-		ret = " " + lineNum + " 1001" + ret + "\n0\n1";
+		ret = lineNum + " 1001" + ret + "\n0\n1\n";
+
+		return ret;
+	}
+
+	/**
+	 * getICARTTHeader retrieves data needed from the netcdf in this class,
+	 * and format into the required head.  The definition is at
+	 * http://www-air.larc.nasa.gov/missions/etc/IcarttDataFormat.htm
+	 *
+	 * ICARTT is an Ames derivative.  Primary diffences between AMES and
+	 * ICARTT is comma separated for ICARTT and a block of specific
+	 * meta-data added to the general comment block.
+	 */
+	public String getICARTTHeader(List<Variable> sublvars) {
+		String ret = "Schanot, Allen\n";
+		ret += trimBegEndQuotes(""+ fin.findGlobalAttribute("institution")) +"\n";
+		ret += trimBegEndQuotes(""+ fin.findGlobalAttribute("Platform")) +"\n";
+		ret += trimBegEndQuotes(""+ fin.findGlobalAttribute("ProjectName")) +"\n";
+		ret += "1, 1\n";
+		ret += getDates(",") + "\n";
+		ret += "1.0\n";  // low rate / 1hz
+		ret += "UTC, seconds\n";
+		ret += sublvars.size() + "\n";
+
+		String scaleValues="1.0";
+		for (int i = 1; i < sublvars.size(); i++) {
+			scaleValues += ", 1.0";
+		}
+		ret += scaleValues + "\n";
+
+		String fillValues=""; String varInfo ="";
+		for (int i = 0; i < sublvars.size(); i++) {
+			Variable v = sublvars.get(i);
+			String lname;
+			varInfo += v.getName() + ",";
+			varInfo += trimBegEndQuotes(""+v.findAttribute("units"));
+			lname = trimBegEndQuotes(""+v.findAttribute("long_name"));
+			if (lname != null || !lname.isEmpty() || lname.length() > 0) {
+				varInfo += "," + lname;
+			}
+			varInfo += "\n";
+			if (i > 0) fillValues += ", ";
+			fillValues += v.findAttribute("_FillValue").getNumericValue();
+		}
+		ret += fillValues + "\n";
+		ret += varInfo;
+
+		// No special comments.
+		ret += "0\n";
+
+		int number_of_lines
+			= 12			// First 12 lines
+			+ sublvars.size()	// number of variables.
+			+ 1;			// # special comment lines
+
+		// Start ICARTT specific meta-data in general comment block.
+		String mdata = "18\n";	// Put # of lines plus one above meta-data
+		number_of_lines += 19;	// mdata lines plus one.
+
+		mdata += "PI_CONTACT_INFO: 303-497-1030, 1850 Table Mesa Dr, Boulder, CO, schanot@ucar.edu\n";
+		mdata += "PLATFORM: " + trimBegEndQuotes(""+ fin.findGlobalAttribute("Platform")) +"\n";
+		mdata += "LOCATION: \n";
+		mdata += "ASSOCIATED_DATA: Full data in netCDF file.\n";
+		mdata += "INSTRIMUNT_INFO: \n";
+		mdata += "DATA_INFO: \n";
+		mdata += "UNCERTAINTY: N/A\n";
+		mdata += "ULOD_FLAG: N/A\n";
+		mdata += "ULOD_VALUE: N/A\n";
+		mdata += "LLOD_FLAG: N/A\n";
+		mdata += "LLOD_VALUE: N/A\n";
+		mdata += "DM_CONTACT_INFO: Janine Aquino, NCAR/EOL, janine@ucar.edu\n";
+		mdata += "PROJECT_INFO: \n";
+		mdata += "STIPULATIONS_OF_USE: \n";
+		mdata += "OTHER_COMMENTS: \n";
+		mdata += "REVISION: R0\n";
+		mdata += "R0: Field Data\n";
+
+		// at last add the first line  -- line number and 1001
+		ret = number_of_lines + ", 1001\n" + ret + mdata;
 
 		return ret;
 	}
@@ -811,14 +896,16 @@ public class NCData {
 	 * :FlightDate = "08/27/2008" ;
 	 * @return -- yyyy mm dd     yyyy mm nn      (flight date    data processed date) 
 	 */
-	private String getDates() {
+	private String getDates(String dmtr) {
 		String ret="";
 		String date = ""+fin.findGlobalAttribute("FlightDate");
                 if (date.equals("null") || date.length() == 0) {
 			date = "01/01/1970";
 		}
 		date = trimBegEndQuotes(date);
-		ret += date.split("/")[2]+ " " +date.split("/")[0] + " "+ date.split("/")[1];
+		ret +=	date.split("/")[2] + dmtr + " " +
+			date.split("/")[0] + dmtr + " " +
+			date.split("/")[1];
 
 		date = ""+fin.findGlobalAttribute("date_created");
                 if (date.equals("null") || date.length() == 0) {
@@ -829,11 +916,12 @@ public class NCData {
 		}
 		date = trimBegEndQuotes(date).substring(0, 10);
 		String dateProc[] = date.split("-");
-		ret += "  " + dateProc[0]+ " " + dateProc[1]+" "+dateProc[2];
+		ret +=	dmtr + "  " + dateProc[0] + dmtr + " " +
+			dateProc[1] + dmtr + " " + dateProc[2];
 		return ret;
 	}
 
-	public String genVarName(List<Variable> sublvars, String[] fmt ){
+	public String genVarNameList(List<Variable> sublvars, String[] fmt) {
 		String varname = "";
 		if (!fmt[DataFmt.DATE_IDX].equals(DataFmt.NODATE)) {
 			varname = "Date" + fmt[DataFmt.DMTR_IDX];
@@ -858,8 +946,4 @@ public class NCData {
 		//nc2asc.NC2Act.wrtMsg("varname_len:"+varname.split(",").length+ " "+varname);
 		return varname;
 	}
-
-} //eofclass
-
-
-
+}

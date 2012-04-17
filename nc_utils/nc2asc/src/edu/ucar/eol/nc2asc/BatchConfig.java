@@ -190,7 +190,7 @@ public class BatchConfig {
 	 * 
 	 * if=	/home/data/231RF10.nc
 	 * of=	junk.asc
-	 * hd= 	Plain/AmesDEF/Xml
+	 * hd= 	Plain/AmesDEF/ICARTT/Xml
 	 * avg= 4
 	 * dt= 	yyyy-mm-dd/yyy mm dd/NoDate
 	 * tm= 	hh:mm:ss/hh mm ss/SecOfDay  
@@ -408,10 +408,14 @@ public class BatchConfig {
 		}
 
 		item = dataFmt[DataFmt.HEAD_IDX];
-		if (item!=null && !item.isEmpty() &&( item.toLowerCase().equals(DataFmt.HEAD.toLowerCase()) || item.toLowerCase().equals(DataFmt.HEAD2.toLowerCase()) || item.toLowerCase().equals(DataFmt.HEAD3.toLowerCase()))) {
+		if (item != null && !item.isEmpty() &&
+			(item.toLowerCase().equals(DataFmt.HDR_PLAIN.toLowerCase()) ||
+			item.toLowerCase().equals(DataFmt.HDR_AMES.toLowerCase()) ||
+			item.toLowerCase().equals(DataFmt.HDR_ICARTT.toLowerCase()) ||
+			item.toLowerCase().equals(DataFmt.HDR_NCML.toLowerCase()))) {
 		} else {
 			if (_dbg) System.out.println("Can not find a good head title. Use default format..."+ item);
-			dataFmt[DataFmt.HEAD_IDX]= DataFmt.HEAD;
+			dataFmt[DataFmt.HEAD_IDX]= DataFmt.HDR_PLAIN;
 		}
 		item = dataFmt[DataFmt.AVG_IDX];
 		if (item==null || item.isEmpty() || Integer.parseInt(item)<1) {
@@ -421,7 +425,7 @@ public class BatchConfig {
 
 		//check AmesDEF, if it is selected, date=NODATE and tm=00Z, seperator=space, missdata=fillvalue,
 		item = dataFmt[DataFmt.HEAD_IDX];
-		if (item.equals(DataFmt.HEAD2)){
+		if (item.equals(DataFmt.HDR_AMES) || item.equals(DataFmt.HDR_ICARTT)) {
 			dataFmt[DataFmt.DATE_IDX]= DataFmt.NODATE;
 			dataFmt[DataFmt.TM_IDX]= DataFmt.TIMESEC;
 			dataFmt[DataFmt.MVAL_IDX]= DataFmt.MISSVAL;
@@ -430,4 +434,4 @@ public class BatchConfig {
 
 	}
 
-}//eof class
+}
