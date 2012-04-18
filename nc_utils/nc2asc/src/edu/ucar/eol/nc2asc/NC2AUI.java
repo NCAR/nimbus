@@ -304,7 +304,7 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 		bnCancel.setForeground(new Color( 150, 0,0));
 		addButtonActCmd(bnCancel, "cancel");
 
-		bnTog = new JButton("Toggle "); bnTog.setForeground(new Color(50, 100,255));
+		bnTog = new JButton("Toggle"); bnTog.setForeground(new Color(50, 100,255));
 		cbSel = new JCheckBox("Select All");
 		cbDesel = new JCheckBox("Clean All");
 		addButtonActCmd(bnTog, TOGGLE);
@@ -741,8 +741,16 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 					statusBar.setText("toggle_idxCount < 1");
 				}
 
-				for (int i=0; i<idxCount; i++) {
+				for (int i = 0; i < idxCount; i++) {
 					if (!tbl.isRowSelected(i)) {continue;}
+
+					// Skip histograms when user selects all.
+					String len = (String)tbl.getValueAt(i, 2);
+					int pos = len.indexOf('/')+1;
+					String len1 = len.substring(pos);
+					if (Integer.parseInt(len1) > 1) {continue;}
+
+
 					String v = (String)tbl.getValueAt(i, 4); 
 					if (v==null || !v.equals("Y")) {
 						tbl.setValueAt("Y", i, 4);
@@ -753,22 +761,23 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 					} 
 				}
 				return;
-			} //if_cbTog
-		}//if_cmd
+			}
+		}
 	}
+
 	private void selAll(ActionEvent e){
 		if (SELALL.equals(e.getActionCommand())) {
 			if (cbSel.isSelected()){
-				statusBar.setText(" Ready");
 				cbDesel.setSelected(false);
 				//tbl.selectAll();
 				int len = idxCount-1;
-				if (idxCount<1) {
+				if (idxCount < 1) {
 					len = dataInf.size()-1;
 				}
 				tbl.clearSelection();
 				tbl.changeSelection(len, 4, false,false);
 				tbl.changeSelection(0, 0, true, true);
+				statusBar.setText(" Ready");
 			} else {
 				tbl.clearSelection();
 			}
@@ -778,10 +787,10 @@ public class NC2AUI  implements ActionListener, PropertyChangeListener{
 	private void deselAll(ActionEvent e){
 		if (DESELALL.equals(e.getActionCommand())) {
 			if (cbDesel.isSelected()){
-				statusBar.setText(" Ready");
 				tbl.clearSelection();
 				cbSel.setSelected(false);
 				cbDesel.setSelected(false);
+				statusBar.setText(" Ready");
 			} 
 		}
 	}

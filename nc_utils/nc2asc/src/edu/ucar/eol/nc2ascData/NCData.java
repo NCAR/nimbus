@@ -261,20 +261,20 @@ public class NCData {
 		int len = lvars.size();
 		gDataInf[0] =1;   
 		dataInf = new ArrayList<String>();	
-		for (int i=0; i<len ; i++){ 
+		for (int i = 0; i < len ; i++){ 
 			String dat = "";
 			Variable v = lvars.get(i);
 			dat += v.getShortName() + DataFmt.COMMAVAL;
 			dat += v.getUnitsString() + DataFmt.COMMAVAL;
 
-			int or = getOR(v); if (or>gDataInf[0]) { gDataInf[0]= or;}
-			dat += or+"/"+getLen(v) + DataFmt.COMMAVAL ;
+			int or = getOR(v); if (or>gDataInf[0]) { gDataInf[0] = or; }
+			dat += or + "/" + getLen(v) + DataFmt.COMMAVAL;
 
-			String lname = ""+v.findAttribute("long_name");  //getStringValue()  -bugs
+			String lname = "" + v.findAttribute("long_name");  //getStringValue() -bugs
 			dat += trimBegEndQuotes(lname);
 			dataInf.add(i,dat);
 			//get record len from t=Time variable
-			if (i==0) {
+			if (i == 0) {
 				//if (v.isUnlimited())	gDataInf[2] = fin.getUnlimitedDimension().getLength();
 				gDataInf[2] = v.getSize();
 			}
