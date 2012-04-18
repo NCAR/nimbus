@@ -157,4 +157,48 @@ if patterns are flown without displacement between legs because using
 this feature in such cases will attempt to place the aircraft exactly
 along the same drifting track each leg.  
 -----
+**Load Nearby:**
 
+When this button is clicked, the program will read the lat/lon from
+the Main Window (NOTE: NOT from this Navigation window) and will
+then search the VOR and Waypoint (WPT) databases for navigation
+points closest to the specified lat/lon. The closest four VORs and
+closest four waypoints will be added to the navigation points that
+are displayed here. A file named Nearest.out will also be written
+to the directory containing this program; that lists the points in
+order starting with the closest, and shows the distance to the
+points. After the points are added, the full list is alphabetized,
+so it is sometimes necessary to search for the added points.
+-----
+**Clear All:**
+
+This button will remove all the navigation points except the RAF
+home location. This action cannot be undone, but it is possible
+to return to a saved set of points by loading them from the NavPts
+menu item 'Open'.
+-----
+**Add Button:**
+
+Use this button to add the specified navigation point (as defined
+by the entries to the right) to the Navigation Points. 
+-----
+**Find Button:**
+
+For a specified VOR or navigation point, this button searches the
+database and, if a match is found, loads the lat/lon coordinates of
+the specified point. For example, to find CYS, enter CYS in the entry
+box just to the right of the 'Add' button, then click 'Find' to see
+the lat/lon of the CYS VOR. The point can then be added to the points
+displayed via the 'Add' button.
+-----
+**Left Button and Remove Button:**
+
+The button to the left of each entry, labeled with the name of the
+VOR or waypoint, will transfer the lat/lon coordinates to the main
+'PlanFlight' window. The displayed navigation points can be used 
+as reference coordinates for defining tracks in this way.
+
+The 'Remove' button erases the associated navigation point from the
+display. There is no mechanism for undoing this removal except by
+adding the point again using the 'Add' or 'Load Nearby' buttons.
+-----

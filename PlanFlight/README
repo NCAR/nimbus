@@ -28,18 +28,29 @@ The button that starts Google Earth with the .kml file produced by this
 program works with linux if google-earth is in the path. For Windows, another
 solution is needed.
 
-I was able to get this to work on a 32-bit Windows machine as follows:
+I was able to get this to work on a 32-bit Windows machine as follows.
+(This is probably the safest route to a working version on a 64-bit
+machine also, although that hasn't been explored as much as the
+32-bit version.)
   1. Download and install python:
      http://www.python.org/ftp/python/2.7.2/python-2.7.2.msi
+     Don't use python-3; that will probably not work.
   2. Download and install wxPython (used by the PlanFlight GUI):
      http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/wxPython2.8-win32-unicode-2.8.12.1-py27.exe/download
+     Be sure to match the Python version; see 'py27' above.
      (accept option to prepare tools at end of install)
   3. Download and install matplotlib:
      http://sourceforge.net/projects/matplotlib/files/matplotlib/matplotlib-1.1.0/matplotlib-1.1.0.win32-py2.7.exe/download
+     Again, it is important to match the python version (py2.7)
   4. Download and install numpy:
      http://sourceforge.net/projects/numpy/files/NumPy/1.6.1/numpy-1.6.1-win32-superpack-python2.7.exe/download
-  5. Copy the directory PlanFlight to the windows machine
-  6. Create link on the desktop to PlanFlight.py in the directory
+     Ditto re Python version.
+  5. Copy the directory PlanFlight to the windows machine. On EOL machines,
+     this is accessible via ~cooperw/PlanFlight; it is also saved as
+     ftp://ftp.eol.ucar.edu/pub/temp/users/cooperw/PlanFlightxx.tgz
+     where xx is the date of the version. It is also available in the
+     EOL SVN repository.
+  6. Create link on the desktop to PlanFlight.py in the above directory
   7. Double-click on that link.
 
 It may be necessary to change PlanFlight.py permissions on a linux source 

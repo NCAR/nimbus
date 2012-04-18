@@ -26,16 +26,17 @@ import sys
 import pickle
 from Frame import frame 	# this makes 'frame' accessible in other
 import Specs			# must follow Frame import
-#from Specs import *
-import pdb
-import matplotlib # http://matplotlib.sourceforge.net/
-matplotlib.use('WXAgg')
+from Specs import *
+#import pdb
+#import matplotlib # http://matplotlib.sourceforge.net/
+#matplotlib.use('WXAgg')
 import numpy
 import pylab
 import KML
 from KML import *
+from Nearest import Nearest
 import ModuleConstructor
-from ModuleConstructor import *
+#from ModuleConstructor import *
 from Printer import Printer
 				# modules
 
@@ -54,8 +55,8 @@ frame12 = None
 
 # the following are overridden by the contents of 'Standard.nav' 
 # if it is present:
-NavItems = {'RAF': (-105.138988, 39.913041),
-            'SLN': (-97.621361, 38.925139)}
+NavItems = {'RAF': (-105.138988, 39.913041, 0., 0.),
+            'SLN': (-97.621361, 38.925139, 0., 0.)}
 
 # Entry of lat/lon can be in two formats:
 # Decimal degrees or integer degrees and decimal minutes.
@@ -138,7 +139,8 @@ ID_CP    = 552
 ID_DP    = 553
 ID_TAS   = 554
 ID_APPEND= 555
-ID_XX    = 556
+ID_RF    = 556
+ID_XX    = 557
 IDB      = 1000
 
 # The routine has these classes defining frames:
@@ -162,7 +164,7 @@ class NavFrame (wx.Frame):
         'Displays a frame with navigation points for use when defining'\
          + ' coordinates.'
         wx.Frame.__init__(self, None, -1, 'Navigation Points', \
-                          size = (400,500))
+                          size = (450,500))
         scrollWin = wx.PyScrolledWindow (self, -1)
 #	use a panel to be able to tab between entries
 #       panel = wx.Panel (scrollWin, -1)
@@ -170,8 +172,9 @@ class NavFrame (wx.Frame):
 #			 of on the scrollWin... so tabs don't work)
         wx.Button (scrollWin, ID_LN, 'Load Nearby', (5,5), (95,32))
         wx.Button (scrollWin, ID_CA, 'Clear All', (100,5), (75,32))
+        wx.Button (scrollWin, ID_RF, "Refresh", (190,5), (75,32))
         self.DegMin = wx.CheckBox (scrollWin, ID_CK2, 'deg min format',\
-                                   (200,5), size = (85,40))
+                                   (290,5), size = (135,40))
         self.DegMin.SetToolTip(wx.ToolTip \
            ('enter lat/lon as int degrees and decimal minutes?\n'\
             + '(If unchecked, lat/lon expected in decimal degrees)'))
@@ -181,6 +184,7 @@ class NavFrame (wx.Frame):
                                   size=(45,32))
         ButtonAddNav.SetBackgroundColour ('Light Grey')
         self.Bind (wx.EVT_BUTTON, self.onAdd, id=ID_AB)
+        self.Bind (wx.EVT_BUTTON, self.OnRefresh, id=ID_RF)
         self.InputID = wx.TextCtrl (scrollWin, ID_ID, 'BJC', (50,40), \
                                     size=(60,32))
         fmt = self.DegMin.GetValue ()
@@ -238,6 +242,8 @@ class NavFrame (wx.Frame):
             DelButtons[nb-1].SetBackgroundColour ('Light Grey')
             self.Bind (wx.EVT_BUTTON, self.onRemove, id = (IDB+4*nb+3))
             self.Bind (wx.EVT_BUTTON, self.onTransfer, id = (IDB+4*nb))
+            lbl = ('%.0f/%.1f') % (ll[2], ll[3])
+            wx.StaticText (scrollWin, -1, lbl, pos=(330,yy))
         self.Buttons = Buttons
         self.Lats = Lats
         self.Lons = Lons
@@ -250,13 +256,14 @@ class NavFrame (wx.Frame):
         scrollWin.SetScrollRate (1,12)
         self.Bind (wx.EVT_BUTTON, self.onClearAll, id = ID_CA)
         self.Bind (wx.EVT_BUTTON, self.onLoadNearby, id = ID_LN)
+        self.Bind (wx.EVT_CONTEXT_MENU, self.OnHint)
     #end __init__ def
 
 #   event handlers for NavFrame:
     def onClearAll (self, event): 
         "Reset the list of nav points to have just RAF"
         global NavItems, frame7
-        NavItems = {'RAF': (-105.138988, 39.913041)}
+        NavItems = {'RAF': (-105.138988, 39.913041, 0., 0.)}
         frame7.Close ()
         frame7 = NavFrame ()
         frame7.Show ()
@@ -276,7 +283,7 @@ class NavFrame (wx.Frame):
         global frame
         i = (event.GetId () - IDB) / 4 - 1
         ID = self.Buttons[i].GetLabel ()
-        lg,lt = NavItems [ID]
+        lg,lt,a,d = NavItems [ID]
 #       now transfer to Module-definition window:
         if frame.DegMin.GetValue ():	# deg-min section
             degrees, minutes = ConvertToDegMin (lg)
@@ -289,35 +296,41 @@ class NavFrame (wx.Frame):
         frame.InputLG.SetValue (slg)
         frame.InputLT.SetValue (slt)
         
+    def OnRefresh (self, event):
+        'Refresh the display of bearing/distance to reference point.'
+                    # retrieve the lat/lon displayed in the MainWindow
+        global frame7, NavItems        
+        lg,lt = frame.GetLatLonValues ()
+        Dmin, Best, BestAz, BestLG, BestLT = Nearest (lt, lg)	
+        Keys = NavItems.keys ()
+        for ky in Keys:
+            NavItems[ky] = (NavItems[ky][0], NavItems[ky][1], -1., -1.)
+            for i in range (len(Best)):
+                if ky == Best[i]:
+                    NavItems[ky] = (NavItems[ky][0], NavItems[ky][1],\
+                                    BestAz[i], Dmin[i])
+                #end of test for match with ky
+            #end of i loop
+        #end of ky loop
+        # now refresh window
+        frame7.Close ()
+        frame7 = NavFrame ()
+        frame7.Show ()
+        
+        
     def onLoadNearby (self, event):
-        'Runs \'Nearest.pl\' and reads its output, then makes new '\
+        'Runs Nearest and reads its output, then makes new '\
          +'entries in Navigation-Points window.'
-        import re
         global NavItems, frame, frame7
 #			get lat/lon from Module Specs window:
-        self.DegMin.SetValue (not self.DegMin.GetValue ())
+#       frame.DegMin.SetValue (not frame.DegMin.GetValue ())
         lg,lt = frame.GetLatLonValues ()
-        self.DegMin.SetValue (not self.DegMin.GetValue ())
-        deg1, min1 = ConvertToDegMin (lt)
-        deg2, min2 = ConvertToDegMin (lg)
-        s = format (deg1, 'd') + ',' + format (min1, '.1f') + ','
-        s += format (deg2, 'd') + ',' + format (min2, '.1f')
-        f = open ('./Nearest.in', 'wb')
-        f.write (s)
-        f.close ()
-        cmd = '/usr/bin/perl Nearest.pl <Nearest.in >Nearest.out'
-        os.system (cmd)
-        f = open ('./Nearest.out', 'rb')
-        for line in f:
-            if 'Closest' in line:
-                l = re.sub (r'.*Closest ... is ' , r'', line)
-                ID = re.sub (r' .*', r'', l )
-                ll = re.sub (r'.*: ', r'', line)
-                ssplit = ll.split (',')
-                lg = float (ssplit[0])
-                lt = float (ssplit[1])
-                NavItems[ID] = (lg,lt)
-        f.close ()
+#       frame.DegMin.SetValue (not frame.DegMin.GetValue ())
+        Dmin, Best, BestAz, BestLG, BestLT = Nearest (lt, lg)	
+#       for line in f:
+        for i in range (len (Best)):
+            ID = Best[i]
+            NavItems[ID] = (BestLG[i], BestLT[i], BestAz[i], Dmin[i])
         frame7.Close ()
         frame7 = NavFrame ()
         frame7.Show ()
@@ -328,7 +341,7 @@ class NavFrame (wx.Frame):
         self.DegMin.SetValue (not self.DegMin.GetValue ())
         lg,lt = self.GetLatLonValues (0)
         self.DegMin.SetValue (not self.DegMin.GetValue ())
-        NavItems[self.InputID.GetValue ()] = (lg,lt)
+        NavItems[self.InputID.GetValue ()] = (lg,lt,0.,0.)
         DefaultDegMin = self.DegMin.GetValue ()
         frame7.Close ()
         frame7 = NavFrame ()
@@ -412,6 +425,39 @@ class NavFrame (wx.Frame):
         result = dlg.ShowModal ()
         dlg.Destroy ()
 
+    def OnHint (self, event):
+        "Display a window with context hints."
+        global frame9
+        CallingID = event.GetId ()
+        if CallingID < 0:
+            frame.SetStatusText ('Hints unavailable for this item', 2)
+            return ()
+        f = open ('./Hint.txt','rb')
+        frame.SetStatusText ('See suggestions in the \'Hints\' window', 2)
+        hint = 'Suggestions:\n\n\n'
+        enable = False
+        for line in f:
+            if CallingID == ID_LN:
+                if '**Load Nearby:**' in line:
+                    enable = True
+            if CallingID == ID_CA:
+                if '**Clear All:**' in line:
+                    enable = True
+            if CallingID == ID_AB:
+                if '**Add Button:**' in line:
+                    enable = True
+            if CallingID == ID_FD:
+                if '**Find Button:**' in line:
+                    enable = True
+            if CallingID >= IDB:
+                if '**Left Button and Remove Button:**' in line:
+                    enable = True
+            if '-----' in line: enable = False
+            if enable: hint += line
+        if frame9 != None and frame9: frame9.Close ()
+        frame9 = WizardFrame (hint)
+        frame9.Show ()
+
     def onCheckBoxChange (self, event):
         "When checkbox changes, change the displayed coordinates also."
         global frame
@@ -492,7 +538,7 @@ class NavFrame (wx.Frame):
 class WaypointFrame (wx.Frame):
     def __init__(self, listing):
         'Displays, with print and save buttons, the waypoints.'
-        wx.Frame.__init__(self, None, -1, 'Waypoints', size = (400,400))
+        wx.Frame.__init__(self, None, -1, 'Waypoints', size = (550,400))
         scrollWin = wx.PyScrolledWindow (self, -1)
         wx.Button (scrollWin, ID_PT, 'Print', (140,8), (60,32))
         wx.Button (scrollWin, ID_FL, 'Save', (205,8), (55,32))
@@ -512,51 +558,34 @@ class WaypointFrame (wx.Frame):
     def onVORDME (self, event):
         "Produce listing with VOR/DME and nav-pt-relative coordinates."
         global frame4
-#	first list to a file in the format required for input to 
-#       ReviseCoordinates.pl
-        TempFile = open ('./.temp.VORDME', 'wb')
+#	first make a list of coordinates needed
         KeyList = ModuleConstructor.Track.keys ()
         KeyList.sort ()
         alast = {}
-        listing = ''
+        clist = []
         KML.WaypointNumber = 0
         for ky in KeyList:
             if ('Module' in ky and 'Number' not in ky):
-                kk = int (ky.replace ('Module', ''))
+#               kk = int (ky.replace ('Module', ''))
                 m = ModuleConstructor.Track[ky]
                 KeyListManeuvers = m.keys ()
                 KeyListManeuvers.sort ()
                 for kym in KeyListManeuvers:
                     if 'Manvr' in kym:
-                        kk = int (kym.replace ('Manvr', ''))
+#                       kk = int (kym.replace ('Manvr', ''))
                         mn = m[kym]
-#							skip turns
+                                  #  skip turns
                         if 'Turn' not in mn['Type']:
                             al = mn['Anchor']
                             if (al != alast):
+                                clist.append ((al[0],al[1]))
 #                               convert to deg and decimal min:
-                                degLon, minLon = ConvertToDegMin (al[0])
-                                degLat, minLat = ConvertToDegMin (al[1])
                                 KML.WaypointNumber += 1
-                                listing += format (degLon, 'd')+'  '\
-                                         + format (minLon, '.1f')\
-                                         + ' ' + format (degLat, 'd')\
-                                         + '  ' + format (minLat, '.1f')\
-                                         + ' ' + format (al[2], '.0f') \
-                                         + '\n'
                                 alast = al
                             an = mn['EndPoint']
                             if (an != alast):
-#                               convert to deg and decimal min:
-                                degLon, minLon = ConvertToDegMin (an[0])
-                                degLat, minLat = ConvertToDegMin (an[1])
+                                clist.append ((an[0],an[1]))
                                 KML.WaypointNumber += 1
-                                listing += format (degLon, 'd') + '  '\
-                                         + format (minLon, '.1f')\
-                                         + ' ' + format (degLat, 'd') \
-                                         + '  ' + format (minLat, '.1f')\
-                                         + ' ' + format (al[2], '.0f')\
-                                         + '\n'
                                 alast = an
                             # end of search for waypoints in maneuver
                         # end of branch for maneuver not Turn
@@ -564,17 +593,25 @@ class WaypointFrame (wx.Frame):
                 # end of loop over Maneuver keys
             # end of module processing
         # end of loop over Track keys
-        TempFile.write (listing)
-        TempFile.close ()
-# run separate perl program that makes a list of VOR-relative coords.
-        os.system ("/usr/bin/perl ReviseCoordinates.pl <.temp.VORDME")
-#	new coordinates are placed in VORDMECoordinates
-        TempFile = open ('./VORDMECoordinates', 'rb')
         listing = 'Waypoints:\n'
         lno = 0
-        for line in TempFile:
+        for al in clist:
             lno += 1
-            listing  += ' WP ' + format (lno) + ' ' + line
+            listing  += ' WP ' + format (lno) + ' ' 
+            d,m = ConvertToDegMin (al[1])
+            listing += format(d, 'd') + ' ' + format (m, '.1f')
+            d,m = ConvertToDegMin (al[0]) 
+            listing += ', ' + format(d, 'd') + ' ' + format (m, '.1f')
+            listing += ' is '
+            Dmin, Best, BestAz, BestLG, BestLT = Nearest (al[1], al[0])
+            listing += Best[0] + ':' + format (BestAz[0], '.0f') + '/' \
+                      + format (Dmin[0], '.1f') + '; '
+            listing += Best[1] + ':' + format (BestAz[1], '.0f') + '/' \
+                      + format (Dmin[1], '.1f') + '; '
+            listing += Best[4] + ':' + format (BestAz[4], '.0f') + '/' \
+                      + format (Dmin[4], '.1f') + '; '
+            listing += Best[5] + ':' + format (BestAz[5], '.0f') + '/' \
+                      + format (Dmin[5], '.1f') + '\n'
         if frame4 != None and frame4: frame4.Close ()
         frame4 = WaypointFrame (listing)
         frame4.Show ()
@@ -958,7 +995,7 @@ class MainWindow (wx.Frame):
         s = str (100.)		# size, n mi
 # anchor point for module: (longitude, latitude, altitude)
         o = str (0.)		# orientation for module, deg true
-        dr = False		# drifting with wind? (True or False)
+#       dr = False		# drifting with wind? (True or False)
         legs = str (2)		# number of legs in pattern, if relevant
         othr = str (50.)	# customizable depending on type
 # dimensions for panel layout:
@@ -995,18 +1032,18 @@ class MainWindow (wx.Frame):
             + '(If unchecked, lat/lon expected in decimal degrees)'))
         self.DegMin.SetValue (True)
         yloc += dely
-        label2a = wx.StaticText (panel2, -1, "#", (Col2+5,yloc), \
+        wx.StaticText (panel2, -1, "#", (Col2+5,yloc), \
                                  size=(75,dely))
         self.sc = wx.SpinCtrl (panel2, -1, '', (Col2+15,yloc), \
                                size=(50,dely))
         self.sc.SetRange (1, 999)
         self.sc.SetValue (1)
-        label2 = wx.StaticText (panel2, -1, "Size, n mi:", \
+        wx.StaticText (panel2, -1, "Size, n mi:", \
                                 (Col2+70,yloc),size=(75,dely))
         self.InputS = wx.TextCtrl (panel2, ID_SZ, s, (Col2+145,yloc), \
                                    size = (100,dely))
         yloc += dely
-        anchorHead = wx.StaticText (panel2, -1, \
+        wx.StaticText (panel2, -1, \
                      "Anchor (lat, lon, alt) [deg,min, deg,min, ft]:", \
                      (Col2+20,yloc+6),size=(280,dely))
         yloc += dely
@@ -1022,11 +1059,11 @@ class MainWindow (wx.Frame):
                                    str (Specs.TakeoffLocation ()[2]), \
                                    (Col2+205,yloc), size = (90,dely))
         yloc += dely
-        label6 = wx.StaticText (panel2, -1, "Angle:", (Col2,yloc),\
+        wx.StaticText (panel2, -1, "Angle:", (Col2,yloc),\
                                 size=(60,dely))
         self.InputOR = wx.TextCtrl (panel2, ID_OR, o, (65,yloc), \
                                     size = (50,dely))
-        label7 = wx.StaticText (panel2, -1, "Legs:", (Col2+130,yloc),\
+        wx.StaticText (panel2, -1, "Legs:", (Col2+130,yloc),\
                                 size=(60,dely))
         self.InputLEGS = wx.TextCtrl (panel2, ID_LGS, legs, \
                                       (Col2+180,yloc), size = (50,dely))
@@ -1543,10 +1580,8 @@ class MainWindow (wx.Frame):
         # print them in order
         KeyList = ModuleConstructor.Track.keys ()
         KeyList.sort ()
-        alast = {}
         for ky in KeyList:
             if ('Module' in ky and 'Number' not in ky):
-                kk = int (ky.replace ('Module',''))
                 m = ModuleConstructor.Track[ky]
                 degLat, minLat = ConvertToDegMin (m['Anchor'][1])
                 degLon, minLon = ConvertToDegMin (m['Anchor'][0])
@@ -1581,7 +1616,6 @@ class MainWindow (wx.Frame):
                 KeyListManeuvers.sort ()
                 for kym in KeyListManeuvers:
                     if (kym.find ('Manvr') != -1): 
-                        kk = int (kym.replace ('Manvr',''))
                         mm = m[kym]
                         time = mm['Time']
                         fuel = mm['Fuel']
@@ -2363,7 +2397,6 @@ class MainWindow (wx.Frame):
 				# also, generate a pylab plot
         altitude = ModuleConstructor.AC[2]
         GW = Specs.GrossWeight () / 1000.
-        TAS = Specs.FlightSpeed (altitude)
 				# get desired altitude and GW
         dlg = wx.TextEntryDialog (self, 'Gross Weight:',\
                                   'Specific Range Parameters')
@@ -2774,12 +2807,12 @@ def ReadNav (path):
         NavItems =  pickle.load (NavFile)
         NavFile.close ()
     except IOError as e:
-        dlg = wx.MessageDialog (self,\
+        dlg = wx.MessageDialog (frame,\
                 'The standard navigation-point file is missing.\n'\
               + 'It can be created using the Save button on the\n'\
               + 'NavPoints menu and saving to \'Standard.nav\'.',\
-                'File Missing', wx.OK|wx.INFORMATION)
-        result = dlg.ShowModal ()
+                'File Missing', wx.OK)
+        dlg.ShowModal ()
         dlg.Destroy ()
 
 
