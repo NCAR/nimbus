@@ -167,6 +167,8 @@ PRO sid_process, op, statuswidgetid=statuswidgetid
    date=(sid_date(firstheader.filestarttime))
    starttime=sid_ft2sfm(firstfooter.acqstart) 
    stoptime=sid_ft2sfm(lastfooter.fileclosetime) 
+   IF total(op.starttime) ne -1 THEN starttime=op.starttime  ;Get from user if specified
+   IF total(op.stoptime) ne -1 THEN stoptime=op.stoptime
    IF op.ncappend THEN BEGIN
       ;Get start/stop from the ncdf file instead
       temp=sid_ncdf_getstartstop(op.pthfile)

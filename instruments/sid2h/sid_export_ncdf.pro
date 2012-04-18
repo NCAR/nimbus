@@ -13,7 +13,7 @@ PRO sid_export_ncdf, data, outfile=outfile, ncappend=ncappend, finalprocessing=f
       suffix='_SID'   ;Suffix for appending to other files
       
       ;Open the file for writing
-      id=ncdf_open(outfile,/write)
+      id=ncdf_open(outfile[0],/write)
       
       ;Get pre-existing dimensions
       xdimid=ncdf_dimid(id,'Time')
