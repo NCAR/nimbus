@@ -79,7 +79,7 @@ Work may continue on a particle frame or record in the future.
 <pre class="CDL">
   &lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
   &lt;OAP version="1"&gt;
-   &lt;Source&gt;ncar.ucar.edu&lt;/Source&gt;
+   &lt;Institution&gt;NCAR Research Aviation Facility&lt;/Institution&gt;
    &lt;FormatURL&gt;http://www.eol.ucar.edu/raf/Software/OAPfiles.html&lt;/FormatURL&gt;
    &lt;Project&gt;PLOWS&lt;/Project&gt;
    &lt;Platform&gt;C130_N130AR&lt;/Platform&gt;
@@ -92,7 +92,73 @@ Work may continue on a particle frame or record in the future.
 </pre>
 
 <p>
-Additional meta-data may present.  Each line is ended with a new-line character ('\n').
+Additional meta-data may present and is encouraged.  Each line is ended with a new-line character ('\n').
+<p>
+
+<h4>Required</h4>
+<table border="1">
+<tr>
+<th>Attribute</th>
+<th></th>
+<th>Description</th>
+</tr>
+<tr>
+<td><pre class="CDL">probe</pre></td>
+<td></td>
+<td>There will be one probe element for each probe that is present in the data file.</td>
+</tr>
+<tr>
+<td></td>
+<td><pre class="CDL">id</pre></td>
+<td>A two letter key or short integer that uniquily identify the probe in the file.  Some standard values are listed below.</td>
+</tr>
+<tr>
+<td></td>
+<td><pre class="CDL">resolution</pre></td>
+<td>Resolution of probe in micrometers.</td>
+</tr>
+<tr>
+<td></td>
+<td><pre class="CDL">nDiodes</pre></td>
+<td>Number of diodes in the probe.  32 for the traditional PMS2D probes.  128 for the 3V-CPI.</td>
+</tr>
+<tr>
+<td></td>
+<td><pre class="CDL">serialNumber</pre></td>
+<td>Highly recommended for documentation purposes or calibration lookup.</td>
+</tr>
+<tr>
+<td></td>
+<td><pre class="CDL">type</pre></td>
+<td>Highly recommended to identify probe type.</td>
+</tr>
+<tr>
+<td></td>
+<td><pre class="CDL">suffix</pre></td>
+<td>Optional (required at NCAR/RAF) for use in identifying location and grouping variables.</td>
+</tr>
+</table>
+
+
+<h4>Highly Recommended</h4>
+<table border="1">
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+</tr>
+<tr>
+<td><pre class="CDL">FormatURL</pre></td>
+<td>URL pointing to this description.</td>
+</tr>
+<tr>
+<td><pre class="CDL">Project</pre></td>
+<td>The scientific project that produced the data.</td>
+</tr>
+<tr>
+<td><pre class="CDL">date_created</pre> or <pre class="CDL">FlightData</pre></td>
+<td>The date on which the data was created.</td>
+</tr>
+</table>
 
 <!--------------------------------------------------------------------------- ABS -->
 
