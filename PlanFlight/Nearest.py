@@ -46,7 +46,7 @@ def Nearest (lat, lon):
     ralt = 0.
     alt = 0.
 #   Pinput = open ('Nearest.in', 'r')
-    Poutput = open ('Nearest.out', 'w')
+#   Poutput = open ('Nearest.out', 'w')
     R_earth = 6.378206e6
     CRADEG = 3.14159265/180.
     Dmin = [R_earth, R_earth, R_earth, R_earth, R_earth, R_earth, R_earth, R_earth]
@@ -105,10 +105,10 @@ def Nearest (lat, lon):
                 BestLT[j] = vline[2]
                 used = True
             j += 1
-    Poutput.write ("\n\n     Closest VOR is %s [%.0f/%.1f]: %.2f, %.2f\n" % (Best[0], BestAz[0], Dmin[0], BestLG[0],BestLT[0]))
-    Poutput.write (" 2nd Closest VOR is %s [%.0f/%.1f]: %.2f, %.2f\n" % (Best[1], BestAz[1], Dmin[1], BestLG[1], BestLT[1]))
-    Poutput.write (" 3rd Closest VOR is %s [%.0f/%.1f]: %.2f, %.2f\n" % (Best[2], BestAz[2], Dmin[2], BestLG[2], BestLT[2]))
-    Poutput.write (" 4th Closest VOR is %s [%.0f/%.1f]: %.2f, %.2f\n" % (Best[3], BestAz[3], Dmin[3], BestLG[3], BestLT[3]))
+#   Poutput.write ("\n\n     Closest VOR is %s [%.0f/%.1f]: %.2f, %.2f\n" % (Best[0], BestAz[0], Dmin[0], BestLG[0],BestLT[0]))
+#   Poutput.write (" 2nd Closest VOR is %s [%.0f/%.1f]: %.2f, %.2f\n" % (Best[1], BestAz[1], Dmin[1], BestLG[1], BestLT[1]))
+#   Poutput.write (" 3rd Closest VOR is %s [%.0f/%.1f]: %.2f, %.2f\n" % (Best[2], BestAz[2], Dmin[2], BestLG[2], BestLT[2]))
+#   Poutput.write (" 4th Closest VOR is %s [%.0f/%.1f]: %.2f, %.2f\n" % (Best[3], BestAz[3], Dmin[3], BestLG[3], BestLT[3]))
     for vline in wlines:
         rlat = vline[2] * CRADEG
         rlon = vline[1] * CRADEG
@@ -158,11 +158,11 @@ def Nearest (lat, lon):
                 BestLT[j] = vline[2]
                 used = True
             j += 1
-    Poutput.write ("\n\n     Closest WPT is %s [%.0f/%.1f]: %.2f, %.2f\n" % (Best[4], BestAz[4], Dmin[4], BestLG[4],BestLT[4]))
-    Poutput.write (" 2nd Closest WPT is %s [%.0f/%.1f]: %.2f, %.2f\n" % (Best[5], BestAz[5], Dmin[5], BestLG[5], BestLT[5]))
-    Poutput.write (" 3rd Closest WPT is %s [%.0f/%.1f]: %.2f, %.2f\n" % (Best[6], BestAz[6], Dmin[6], BestLG[6], BestLT[6]))
-    Poutput.write (" 4th Closest WPT is %s [%.0f/%.1f]: %.2f, %.2f\n" % (Best[7], BestAz[7], Dmin[7], BestLG[7], BestLT[7]))
-    Poutput.close ()
+#   Poutput.write ("\n\n     Closest WPT is %s [%.0f/%.1f]: %.2f, %.2f\n" % (Best[4], BestAz[4], Dmin[4], BestLG[4],BestLT[4]))
+#   Poutput.write (" 2nd Closest WPT is %s [%.0f/%.1f]: %.2f, %.2f\n" % (Best[5], BestAz[5], Dmin[5], BestLG[5], BestLT[5]))
+#   Poutput.write (" 3rd Closest WPT is %s [%.0f/%.1f]: %.2f, %.2f\n" % (Best[6], BestAz[6], Dmin[6], BestLG[6], BestLT[6]))
+#   Poutput.write (" 4th Closest WPT is %s [%.0f/%.1f]: %.2f, %.2f\n" % (Best[7], BestAz[7], Dmin[7], BestLG[7], BestLT[7]))
+#   Poutput.close ()
     return (Dmin, Best, BestAz, BestLG, BestLT)
     
 

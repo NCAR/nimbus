@@ -24,14 +24,15 @@ import wx
 import os
 import sys
 import pickle
+import string
 from Frame import frame 	# this makes 'frame' accessible in other
 import Specs			# must follow Frame import
 from Specs import *
-#import pdb
-#import matplotlib # http://matplotlib.sourceforge.net/
-#matplotlib.use('WXAgg')
-import numpy
+import pdb
+import matplotlib # http://matplotlib.sourceforge.net/
+matplotlib.use('WXAgg')
 import pylab
+import numpy
 import KML
 from KML import *
 from Nearest import Nearest
@@ -52,6 +53,7 @@ frame9 = None
 frame10 = None
 frame11 = None
 frame12 = None
+frame13 = None
 
 # the following are overridden by the contents of 'Standard.nav' 
 # if it is present:
@@ -140,7 +142,7 @@ ID_DP    = 553
 ID_TAS   = 554
 ID_APPEND= 555
 ID_RF    = 556
-ID_XX    = 557
+ID_XX    = 558
 IDB      = 1000
 
 # The routine has these classes defining frames:
@@ -156,6 +158,7 @@ IDB      = 1000
 #    SRFrame       (frame10): 	Chart that shows specific range
 #    SNDFrame      (frame11):   Display the sounding
 #    DLGFrame      (frame12):   Info for Performance displays
+#    PlotFrame     (frame13):   Frame for display of track plot
 #
 #    Most of the code is in MainWindow
 
@@ -813,6 +816,76 @@ class MapFrame (wx.Frame):
     #end __init__ def
 #end MapFrame class    
 
+class PlotFrame (wx.Frame):
+    def __init__(self):
+        'Display the current track in a lat-lon plot'
+        wx.Frame.__init__(self, None, -1, 'Planned Track',\
+                          size = (750,650))
+        panel = wx.Panel (self, -1)
+        png = wx.Image ('./Plan.png', \
+                        wx.BITMAP_TYPE_ANY).ConvertToBitmap ()
+        self.BM = wx.StaticBitmap (panel, -1, png, (10,50), \
+                                  (png.GetWidth (), png.GetHeight ()))
+        self.BM.Bind (wx.EVT_MOTION,  self.OnMove)
+        self.BM.Bind (wx.EVT_LEFT_DOWN, self.OnBitmapLeftDown)
+        wx.StaticText (panel, -1, "Position: ", pos = (16,5))
+        self.posCtrl = wx.TextCtrl (panel, -1, "", size = (130,32), \
+                                   pos = (70,5))
+        wx.StaticText (panel, -1, \
+        "Click point to transfer coordinates \nto long/lat for module",\
+        pos = (200,15))
+#       pdb.set_trace ()
+
+    def OnMove (self, event):
+        'Provides continuous display of the long/lat coordinates of '\
+         + 'the cursor.'
+        pos =event.GetPosition ()
+        a = (pos.x,pos.y)
+#       use the next line to display the integer cursor coordinates
+#       self.posCtrl.SetValue ("%s, %s" % (pos.x, pos.y))	
+# now convert to long/lat:
+        lt = frame.yzero - (pos.y - 540.) * frame.ymag
+        lg = frame.xzero + (pos.x - 100. ) * frame.xmag
+# these transformation coordinates are determined
+# with the help of Xform.py
+#       x0 = -105.35324
+#       y0 =  41.51483
+#       a11 =  0.00671
+#       a12 =   0.00031
+#       a21 =  0.00004
+#       a22 =  -0.00507
+#       lg = x0 + a11 * float (a[0]) + a12 * float (a[1])
+#       lt = y0 + a21 * float (a[0]) + a22 * float (a[1])
+        dp = format (lt, '.2f') + ',' + format (lg, '.2f')
+        self.posCtrl.SetValue (dp)
+
+    def OnBitmapLeftDown (self, event):
+        'On mouse click, transfer the lon/lat coordinates to the '\
+         + 'module-definition window'
+        global frame
+#       b = self.posCtrl.GetValue ()
+        pos = event.GetPosition ()
+        a = (pos.x,pos.y)
+# now convert to long/lat:
+        lt = frame.yzero - (pos.y - 540.) * frame.ymag
+        lg = frame.xzero + (pos.x - 100. ) * frame.xmag
+        MainWindow.SetStatusText (frame, 'clicked on ' \
+                                 + format (lg, '.2f') + ', ' \
+                                 + format (lt, '.2f'), 2)
+#       now transfer to Module-definition window:
+        if frame.DegMin.GetValue ():	# deg-min section
+            degrees, minutes = ConvertToDegMin (lg)
+            slg = format (degrees, 'd') + '  ' + format (minutes, '.1f')
+            degrees, minutes = ConvertToDegMin (lt)
+            slt = format (degrees, 'd') + '  ' + format (minutes, '.1f')
+        else:
+            slg = format (lg, '.3f')
+            slt = format (lt, '.3f')
+        frame.InputLG.SetValue (slg)
+        frame.InputLT.SetValue (slt)
+    #end __init__ def
+#end PlotFrame class    
+
 class SRFrame (wx.Frame):
     def __init__(self):
         'Display a chart showing specific range vs GW, altitude, Mach '\
@@ -1112,6 +1185,8 @@ class MainWindow (wx.Frame):
                         "Save the flight plan")
         filemenu.Append (ID_PRNT,  "&List\tCtrl+L", \
                         "Make coordinate listing")
+        filemenu.Append (ID_SHOW, "&View\tCtrl+V", \
+                        "Display the current track")
         filemenu.AppendSeparator ()
         filemenu.Append (ID_ABOUT,  "About", \
                          "Information about this program")
@@ -2086,8 +2161,10 @@ class MainWindow (wx.Frame):
     def OnAbout (self, event):
         'Short message stating the purpose of the program.'
         d = wx.MessageDialog (self, \
-            " Creates A Flight Plan \n (text and kml)",\
-            " PlanFlight", wx.OK)
+            " Creates A Flight Plan \n (text and kml)"\
+            + "\nContact: Al Cooper (cooperw@ucar.edu)"\
+            + "\n[UCAR policy asks for this, so:]"\
+            + "\nCopyright 2012 UCAR", " PlanFlight", wx.OK)
         d.ShowModal ()
         d.Destroy ()
     def OnExit (self, event):
@@ -2104,6 +2181,7 @@ class MainWindow (wx.Frame):
         if frame10 != None and frame10: frame10.Destroy ()
         if frame11 != None and frame11: frame11.Destroy ()
         if frame12 != None and frame12: frame12.Destroy ()
+        if frame13 != None and frame13: frame13.Destroy ()
 
     def OnOpen (self, event): 
         dlg = wx.FileDialog (self, "Choose a file", os.getcwd (), \
@@ -2264,7 +2342,107 @@ class MainWindow (wx.Frame):
         frame4.Show ()
     # end of OnPrint definition
 
-    def OnShow (self, event): pass
+    def OnShow (self, event): 
+        'Display the constructed track in a plot.'
+        global frame13
+				# construct a list of waypoints
+        KeyList = ModuleConstructor.Track.keys ()
+        KeyList.sort ()
+        alast = {}
+        xp = []
+        yp = []
+        mtype = []
+        anchor = []
+        K = 0
+        for ky in KeyList:
+            if ('Module' in ky and 'Number' not in ky):
+                m = ModuleConstructor.Track[ky]
+                KeyListManeuvers = m.keys ()
+                KeyListManeuvers.sort ()
+                for kym in KeyListManeuvers:
+                    if 'Manvr' in kym:
+#                       kk = int (kym.replace ('Manvr', ''))
+                        mn = m[kym]
+                                  #  skip turns
+                        if 'Turn' not in mn['Type']:
+                            al = mn['Anchor']
+                            if (al != alast):
+                                xp.append (al[0])
+                                yp.append (al[1])
+                                mtype.append (m['Type'])
+                                anchor.append (m['Anchor'])
+#                               convert to deg and decimal min:
+                                K += 1
+                                alast = al
+                            an = mn['EndPoint']
+                            if (an != alast):
+                                xp.append (an[0])
+                                yp.append (an[1])
+                                mtype.append (m['Type'])
+                                anchor.append (m['Anchor'])
+                                K += 1
+                                alast = an
+                            # end of search for waypoints in maneuver
+                        # end of branch for maneuver not Turn
+                    # end of Maneuver procesing
+                # end of loop over Maneuver keys
+            # end of module processing
+        # end of loop over Track keys
+        pylab.clf ()			# clear the plot
+        pylab.plot(xp, yp)
+				# get transformation from cursor coords
+				# to lat/lon coordinates:
+        xmin,xmax,ymin,ymax=pylab.axis()
+        self.xzero = xmin
+        self.yzero = ymin
+        self.xmag = (xmax - xmin) / 620.	#620 = cursor-coords
+        self.ymag = (ymax - ymin) / 480.	#480 = cursor-coords
+        xdel = (xmax - xmin) / 50.
+        ydel = (ymax - ymin) / 50.
+        mlast = ''
+        mindex = 0
+        letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M']
+        for i in range (len(xp)):
+            pylab.plot (xp[i], yp[i], 'bo', color='red')
+            pylab.annotate(str(i+1), (xp[i],yp[i]), \
+                       (xp[i]-xdel,yp[i]+ydel), color='red')
+            if mtype[i] != mlast:
+                xp[i] = anchor[i][0]
+                yp[i] = anchor[i][1]
+                pylab.annotate(letters[mindex], \
+                       (xp[i], yp[i]), \
+                       (xp[i]-2.*xdel,yp[i]+2.*ydel), color='green')
+                pylab.figtext (\
+                       0.65, \
+                       0.90-0.05*mindex,\
+                       letters[mindex]+' '+mtype[i], color='green')
+                mindex += 1
+                mlast = mtype[i]
+            #end of module-type loop
+        #end of waypoint loop
+				# add VORs to plot
+        vlines = open ('./NavPoints/VOR.txt', 'r').readlines ()
+        for i in range (len(vlines)):
+            pts = string.split (vlines[i], ',')
+            pts[1] = float (pts[1])
+            pts[2] = float (pts[2])
+            pts[4] = float (pts[4])
+            if pts[2] > ymin and pts[2] < ymax:
+                if pts[1] > xmin and pts[1] < xmax:
+                    pylab.plot(pts[1], pts[2], 'bo', color='lightgrey')
+                    pylab.annotate (pts[0], (pts[1], pts[2]),\
+                                    (pts[1]-xdel, pts[2]+ydel), color='lightgrey')
+        pylab.xlabel('Longitude')
+        pylab.ylabel('Latitude')
+        pylab.title('Current Track')
+        pylab.grid(True)
+        pylab.savefig('Plan')
+#       pylab.show()
+        pylab.clf ()
+        pylab.close ()
+        if frame13 != None and frame13: frame13.Close ()
+        frame13 = PlotFrame ()
+        frame13.Show ()
 
     def OnEdit (self, event): 
         'Display the specifications for possible modification.'
@@ -2404,7 +2582,7 @@ class MainWindow (wx.Frame):
         if dlg.ShowModal () == wx.ID_OK:
             GW = float (dlg.GetValue ()) / 1000.
             self.SetStatusText ('You entered: %s\n' % GW)
-        dlg = wx.TextEntryDialog (self, 'Altitudet:',\
+        dlg = wx.TextEntryDialog (self, 'Altitude:',\
                                   'Specific Range Parameters')
         dlg.SetValue (format (altitude, '.0f'))
         if dlg.ShowModal () == wx.ID_OK:
@@ -2543,7 +2721,6 @@ class MainWindow (wx.Frame):
         pylab.grid(True)
 #       pylab.savefig('ClimbProfile')
         pylab.show()
-#       pdb.set_trace ()
 #       global frame10
 #       if frame10 != None and frame10: frame10.Close ()
 #       frame10 = CPFrame ()

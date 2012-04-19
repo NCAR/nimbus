@@ -54,13 +54,13 @@ converted to the right format when this is done. The other check box is
 labeled 'drifting' and specifies if the pattern should drift with the
 wind or remain anchored to the track coordinates as specified.
 
-The menu items are: File, Specs, Edit Module, Maps, NavPts, and Help. Each
-will be described next. Note that there are also many shortcuts to these
-menu items: Most can be accessed by using the 'Alt' key with the associated
-underlined item in the menu bar, and many also have an associated 'Ctrl'
-sequence, like 'Ctrl+Q' to quit or 'Ctrl+N' to see the navigation window.
-These shortcuts are defined in the menu items that appear when a menu is
-selected.
+The menu items are: File, Specs, Edit Module, Maps, NavPts, Performance, 
+and Help. Each will be described next. Note that there are also many 
+shortcuts to these menu items: Most can be accessed by using the 'Alt' 
+key with the associated underlined item in the menu bar, and many also 
+have an associated 'Ctrl' sequence, like 'Ctrl+Q' to quit or 'Ctrl+N' 
+to see the navigation window.  These shortcuts are defined in the menu 
+items that appear when a menu is selected.
 
 File:
 
@@ -72,7 +72,14 @@ asked to provide a descriptive comment that will be saved with the track
 and displayed when the track is reloaded. In addition, when you click
 the 'Backup and make kml' button the track is saved to a file called
 'Backup.track'. This is overwritten whenever a new kml file is made,
-so this is not a substitute for saving tracks you might want to re-use.
+and even anytime Google-Earth is started, so this is not a substitute 
+for saving tracks you might want to re-use.
+
+The File menu also include an item called 'Append' that adds a previously
+saved track to the current track. This makes it possible to save
+sequences of modules that are often used together, such as preferred
+waypoint sequences for transit or combinations like 'Lawnmower' and 
+'Stairstep' patterns, and load them into new tracks.
 
 The next item on the File menu is 'List'. This item causes a new
 window, the 'Waypoint' window, to appear with a listing of the Modules,
@@ -84,6 +91,19 @@ specified not only by lat/lon but also relative to the nearest VORs and
 navigation-chart waypoints. This display, which can also be printed,
 can be useful when determining how to specify the track in coordinates
 that the FAA controllers will accept.
+
+The 'View' item on the File menu displays the current track in lat-lon
+coordinates, with waypoints labeled in red and modules labeled in green.
+The plot also shows VOR locations, so reference points for modules can
+be selected at or near VOR locations if that is desired. The display
+has an updating lat/lon display of coordinates showing the location of 
+the cursor. If the mouse is clicked while at a particular location, the 
+coordinates of that location are transferred to the main 'Module Specs' 
+window; this can be used to insert that location into a newly defined
+module prior to saving it, or to revise the coordinates for an existing
+module.  After doing this, you must click the 'Add module to track'
+button to save the new definition to the track; then you can refresh 
+the display via the File menu or 'Ctrl+V' to see the revised track.
 
 Specs:
 
@@ -100,6 +120,13 @@ The wind is normally defined by a sounding that is downloaded via the
 DNR sounding from the Wyoming database. This can be replaced by another
 text sounding from that database, which should be placed in a file named
 'Sounding'.
+
+The 'See Sounding' button displays the sounding in use. It modifies the
+saved sounding by some additions, including pressure altitude, so it
+can be used to determine the expected difference between pressure and
+geometric altitude. It also shows, in the 'ISA' column, the temperature
+departure from standard atmosphere. At the bottom are some characteristics
+from the sounding, including CAPE and Richardson Number.
 
 
 Edit Module:
@@ -172,17 +199,35 @@ d. The 'Load Nearby' button adds the two VORs and two high-altitude-way-
 
 Performance: Various charts and tools for determining GV performance
 
-5. Specific Range. This is the distance covered per lb of fuel used. The
-   chart shows values for three different altitudes, and in each set the
-   specific range is parameterized by the weight of the aircraft (with
-   fuel), in 1000 lb units; i.e., the line labeled '50' corresponds to a
-   gross weight of 50,000 lb. The orange dots on these plots are the
+1. TAS. This displays the TAS used in flight by the GV. It has a separate
+   line to show the reduced airspeed used if turbulence is expected. In
+   addition, it is normal that the GV will not be flown at the upper
+   altitudes when turbulence is likely because of the reduced airspeed
+   range that is acceptable at those altitudes; this will be decided by
+   the pilot in command.
+2. Specific Range. This is the distance covered per lb of fuel used. The
+   gemeral chart shows values for three different altitudes, and in each 
+   set the specific range is parameterized by the weight of the aircraft 
+   (with fuel), in 1000 lb units; i.e., the line labeled '50' corresponds 
+   to a gross weight of 50,000 lb. The orange dots on these plots are the
    'Long Range' values as specified by Gulfstream; these are values that
    accept a 1% penalty vs maximum-range values (the peaks in the curves)
    but in exchange realize about a 3% decrease, on average, in time to
    reach a destination point. A vertical line is shown at 0.80M because
-   that is a common flight condition fot the GV when the aircraft can
-   reach it.
+   that is a common flight condition for the GV when the aircraft can
+   reach it. In addition, when this menu item is selected, the user is
+   asked to enter a gross weight and altitude, and a plot specific to
+   those conditions is produced.
+3. Climb Profile: For current conditions in the definition of the flight
+   plan (gross weight and altitude), the potential climb profile to the
+   service ceiling FOR A CLEAN AIRCRAFT is shown. The cruise ceiling
+   will normally be a little below the service ceiling because flight
+   at the service ceiling leaves too little margin for turbulence to
+   be acceptable in most circumstances.
+3. Descent Profile: Like the climb profile, but this shows the normal
+   descent useful for planning purposes to determine time and distance
+   needed.
+
 Help:
 
 There are three sources of help:
@@ -205,15 +250,7 @@ This finishes the section of these notes for new users. The following are
 some notes regarding internal working of the program that will be useful to 
 anyone forced to look at the code or make changes to it:
 
-1. Two Perl scripts, 'ReviseCoodinates.pl' and 'Nearest.pl', are used to
-implement some of the above functions. The translation of coordinates
-from lat/lon to VOR-relative is done in the former. It is run via a
-system call and the output is written to a file that is read back into
-the main program. 'Nearest.pl' runs similarly; it finds the two VORs
-and two waypoints on the high-altitude charts that are closest to the
-reference point.
-
-2. The 'Airways' map (stored in the directory as 'Airways.png') was
+1. The 'Airways' map (stored in the directory as 'Airways.png') was
 made via a screen dump from Google Earth after the flight maps were
 loaded into it. After some cropping, the coordinate transformation was
 determined by finding three sets of corresponding coordinates, cursor
@@ -222,7 +259,7 @@ transformation. That transformation is hard-coded into the routine
 now. New maps could be made in the same way, and if that turns out to
 be needed often the process should be improved and automated.
 
-3. The VOR and FAA-waypoint coordinates are contained in two files,
+2. The VOR and FAA-waypoint coordinates are contained in two files,
 VOR.txt and WPT.txt. They are in a subdirectory called 'NavPoints',
 which also contains many of the original .xml files from which these
 coordinates were drawn. The directory is much larger than it meeds to be
@@ -231,30 +268,26 @@ necessary to extract different VORs or WPTs for a new project. Some of
 the programs to do this are still available, I think in DC3 directories
 but maybe also/or in PREDICT or ADELE directories.
 
-4. Many modules are not implemented yet. Because this will be easy to
-add, I put this off until I could get the oher parts of the structure
-to a usable state.
-
-5. This was written using Python 2.7, not installed yet on EOL machines. 
+3. This was written using Python 2.7, not installed yet on EOL machines. 
 The major compatibility problem is with the 'format()' function, used
 extensively here but not available in Perl 2.4. It appears to be available
 in 2.6, installed on tikal. wxPython is also installed on tikal, and the
 program will run there but not on machines like shiraz or bora.
 
-6. Glade works with wxpython, so I may consider trying that. However,
+4. Glade works with wxpython, so I may consider trying that. However,
 the layouts are fairly straightforward so that may not be efficient or
 needed now.
 
-7. The coordinate display on the Map window is still in the order
+5. The coordinate display on the Map window is still in the order
 long/lat. This probably should be changed for consistency.
 
-8. There does not seem to be a good way to transfer coordinates from
+6. There does not seem to be a good way to transfer coordinates from
 the MC display to this program, or from Google Earth. That would be
 handy because then one could position tracks relative to radar or
 satellite images. Chris W. has implemented a waypoints feature on the
 MC display that provides coordinates in a way that can be transferred
 via cut-and-paste; that may be the best we'll be able to do.
 
-9. The main need now is better specification of the aircraft performance:
-    a. fuel burn, e.g., in climbs and descents b. turn radius vs altitude
-    c. maybe, performance vs air density d. additional sounding sources
+7. The program is in the Subversion system for EOL under the name
+Planflight. There is also a Bugzilla entry for this program where bugs
+or ideas for enhancements can be entered.
