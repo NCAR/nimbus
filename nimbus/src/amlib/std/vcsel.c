@@ -82,12 +82,18 @@ void vcselInit(var_base *varp)
 void sconcv(DERTBL *varp)
 {
   NR_TYPE p_coeff, *pCoeffs, t_coeff, coeff_light, *liCoeffs;
+  static int mode;
 
   NR_TYPE concv_raw = GetSample(varp, 0);
   NR_TYPE PS_vxl = GetSample(varp, 1) * ps_conv;
   NR_TYPE AT_vxl = GetSample(varp, 2);
   NR_TYPE light_intensity = GetSample(varp, 3);
-  int mode = (int)GetSample(varp, 4);
+
+  /* Only acquire mode in during low_rate entrance.  The mode at 25Hz has
+   * too much ringing, and it should remain a square wave.
+   */
+  if (FeedBack == LOW_RATE_FEEDBACK)
+    mode = (int)GetSample(varp, 4);
 
   switch (mode)
   {
