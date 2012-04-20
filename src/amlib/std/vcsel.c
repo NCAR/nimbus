@@ -23,6 +23,8 @@ static double	P_COEFF_WEAK[2], P_COEFF_DIRECT[2], P_COEFF_STRONG[2],
 		T_COEFF_WEAK, T_COEFF_DIRECT, T_COEFF_STRONG,
 		LI_COEFF_WEAK[3], LI_COEFF_DIRECT[3], LI_COEFF_STRONG[3];
 
+static double	ps_conv = 1.0;
+
 
 /* -------------------------------------------------------------------- */
 static void readDefs(const char varName[], const char line[],
@@ -69,6 +71,10 @@ void vcselInit(var_base *varp)
   readDefs(varp->name, "STRONG", P_COEFF_STRONG, &T_COEFF_STRONG, LI_COEFF_STRONG);
   readDefs(varp->name, "DIRECT", P_COEFF_DIRECT, &T_COEFF_DIRECT, LI_COEFF_DIRECT);
   readDefs(varp->name, "WEAK", P_COEFF_WEAK, &T_COEFF_WEAK, LI_COEFF_WEAK);
+
+  // Conversion factor from torr to hPa.
+  if (((DERTBL *)varp)->depends[1]->Units.compare("torr") == 0)
+    ps_conv = StdPress / 760;
 }
 
 
@@ -78,7 +84,7 @@ void sconcv(DERTBL *varp)
   NR_TYPE p_coeff, *pCoeffs, t_coeff, coeff_light, *liCoeffs;
 
   NR_TYPE concv_raw = GetSample(varp, 0);
-  NR_TYPE PS_vxl = GetSample(varp, 1);
+  NR_TYPE PS_vxl = GetSample(varp, 1) * ps_conv;
   NR_TYPE AT_vxl = GetSample(varp, 2);
   NR_TYPE light_intensity = GetSample(varp, 3);
   int mode = (int)GetSample(varp, 4);
