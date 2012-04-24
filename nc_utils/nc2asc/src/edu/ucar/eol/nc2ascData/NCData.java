@@ -341,7 +341,7 @@ public class NCData {
 		// get 10 example data
 		Variable v1 = lvars.get(1);
 		Variable v2 = lvars.get(2);
-		demoData[0] ="Date,UTC," + v1.getShortName() + "," + v2.getShortName();
+		demoData[0] ="Date,Start_UTC," + v1.getShortName() + "," + v2.getShortName();
 		long milSec;
 		//String[] vdata1, vdata2;
 		milSec = getTimeMilSec();    
@@ -828,7 +828,7 @@ public class NCData {
 		ret += "1, 1\n";
 		ret += getDates(",") + "\n";
 		ret += "1.0\n";  // low rate / 1hz
-		ret += "UTC, seconds\n";
+		ret += "Start_UTC, seconds\n";
 		ret += sublvars.size() + "\n";
 
 		String scaleValues="1.0";
@@ -926,7 +926,7 @@ public class NCData {
 		if (!fmt[DataFmt.DATE_IDX].equals(DataFmt.NODATE)) {
 			varname = "Date" + fmt[DataFmt.DMTR_IDX];
 		}
-		varname += "UTC";
+		varname += "Start_UTC";
 
 		String dmtr = fmt[DataFmt.DMTR_IDX];
 		for (int i =0; i<sublvars.size(); i++) {

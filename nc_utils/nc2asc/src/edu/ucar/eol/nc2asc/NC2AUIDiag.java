@@ -318,7 +318,7 @@ class NC2AUIDiag extends JDialog {
 		//if the demo data is empty, set defaults.
 		if (dDisp[0]==null || dDisp[0].length()==0) {
 			NC2Act.wrtMsg("Input demo data is empty...");
-			dDisp[0]="Date,UTC,A1DC_LWO,A2DC_LWO";
+			dDisp[0]="Date,Start_UTC,A1DC_LWO,A2DC_LWO";
 			String s1 = "2007-5-16,23:44:";
 			String s2 = DataFmt.COMMAVAL + DataFmt.MISSVAL + DataFmt.COMMAVAL+",0.0";
 			int sec = 17;
@@ -819,7 +819,7 @@ class NC2AUIDiag extends JDialog {
 
 		//check new start time
 		if (tfDateSet.isEnabled()) {
-			ddata[0]="Date,UTC,A1DC_LWO,A2DC_LWO";
+			ddata[0]="Date,Start_UTC,A1DC_LWO,A2DC_LWO";
 			String[] tt = tfTmSet.getText().split(":");
 			String s1 = tfDateSet.getText()+DataFmt.COMMAVAL+ tt[0]+":"+tt[1]+":";
 			//add 19 0r 20
