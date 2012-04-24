@@ -79,12 +79,18 @@ void PhaseShift(
   for (size_t i = 0; i < raw.size(); ++i)
   {
     RAWTBL	*rp = raw[i];
-    int		lag = rp->StaticLag + rp->DynamicLag;
+    int		lag = 0;
     bool	noMissingData = true;
 
-    for (size_t j = 0; j < rp->SampleRate; ++j)
-      if (isnan(this_rec[rp->SRstart + j]))
-        noMissingData = false;
+    if (cfg.TimeShifting())
+      lag = rp->StaticLag + rp->DynamicLag;
+
+    if (cfg.Despiking())
+    {
+      for (size_t j = 0; j < rp->SampleRate; ++j)
+        if (isnan(this_rec[rp->SRstart + j]))
+          noMissingData = false;
+    }
 
     if (abs((lag)) > MaxLag)
     {
