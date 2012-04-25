@@ -13,9 +13,11 @@ STATIC FNS:	despike()
 		check1Hz()
 		checkVariable()
 
-DESCRIPTION:	Locate spikes and replace the data with missing_value.
+DESCRIPTION:	Locate spikes and replace the data with missing_value.  This
+		only operates on variables which are listed in the project
+		Despike file, not the entire dataset.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2005
+COPYRIGHT:	University Corporation for Atmospheric Research, 1995-20012
 -------------------------------------------------------------------------
 */
 
