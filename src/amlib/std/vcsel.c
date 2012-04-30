@@ -144,7 +144,7 @@ void svmr(DERTBL *varp)
   NR_TYPE vmr_vxl = floatNAN, h2o_conc_vxl, atx, ps;
 
   h2o_conc_vxl = GetSample(varp, 0);
-  ps = GetSample(varp, 1) * 133.322;	// Torr -> Pascal
+  ps = GetSample(varp, 1) * 100.0;	// hPa -> Pascal
   atx = GetSample(varp, 2) + Kelvin;
 
   if (h2o_conc_vxl > 1.0)
