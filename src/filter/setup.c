@@ -337,6 +337,7 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
 
   for (size_t i = 0; i < raw.size(); ++i)
+  {
     if (raw[i]->Dirty)
     {
       fprintf(fp, "RAW=%s O=%d ", raw[i]->name, raw[i]->Output);
@@ -355,8 +356,13 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
       fprintf(fp, "\n");
     }
+    else
+    if (raw[i]->Output == false)
+      fprintf(fp, "RAW=%s O=%d\n", raw[i]->name, raw[i]->Output);
+  }
 
   for (size_t i = 0; i < derived.size(); ++i)
+  {
     if (derived[i]->Dirty)
     {
       fprintf(fp, "DERIVED=%s O=%d DQ=%s OR=%zu nDEP=%zu",
@@ -371,6 +377,11 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
       fprintf(fp, "\n");
     }
+    else
+    if (derived[i]->Output == false)
+      fprintf(fp, "DERIVED=%s O=%d\n", derived[i]->name, derived[i]->Output);
+  }
+
 
   SaveDefaults(fp);
 

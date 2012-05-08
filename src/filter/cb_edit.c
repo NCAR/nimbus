@@ -202,8 +202,8 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
            }
          }
 
-      rp->Dirty = true;
-      rp->Output = output;
+      if ((rp->Output = output) == true)
+        rp->Dirty = true;
 
       if ((rp->OutputRate = outputRate) == Config::SampleRate)
         rp->OutputRate = rp->SampleRate;
@@ -233,8 +233,9 @@ void ApplyVariableMods(Widget w, XtPointer client, XtPointer call)
       break;
 
     case DERIVED:
-      dp->Dirty = true;
-      dp->Output = output;
+      if ((dp->Output = output) == true)
+        dp->Dirty = true;
+
       dp->OutputRate = outputRate;
       dp->DataQuality = dq;
 
