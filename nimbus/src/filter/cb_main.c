@@ -741,7 +741,7 @@ void ToggleOutput(Widget w, XtPointer client, XtPointer call)
     if (indx >= raw.size())
       {
       DERTBL	*dp = derived[indx-raw.size()];
-      dp->Dirty = true;
+//      dp->Dirty = true;
       dp->Output = 1 - dp->Output;
 
       item = CreateListLineItem(dp, DERIVED);
@@ -749,7 +749,7 @@ void ToggleOutput(Widget w, XtPointer client, XtPointer call)
     else
       {
       RAWTBL	*rp = raw[indx];
-      rp->Dirty = true;
+//      rp->Dirty = true;
       rp->Output = 1 - rp->Output;
 
       item = CreateListLineItem(rp, RAW);
