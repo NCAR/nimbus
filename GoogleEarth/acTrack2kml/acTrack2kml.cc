@@ -49,12 +49,15 @@ static const float missing_value = -32767.0;
 
 static bool PostProcessMode = false;
 
+int showit = 1;
+
 // Our raw data is coming from a PostGreSQL database.....
 // The order of this enum should match the order of the variables
 // being requested in the dataQuery string.
 enum VariablePos { TIME=0, LON, LAT, ALT, AT, DP, TAS, WS, WD, WI };
 static const string _dataQuerySuffix = ",atx,dpxc,tasx,wsc,wdc,wic FROM raf_lrt WHERE TASX > ";
 
+float _convertToFeet = 1.0;
 
 class _projInfo
 {
@@ -145,6 +148,25 @@ string getGlobalAttribute(PGconn * conn, string attr)
 }
 
 /* -------------------------------------------------------------------- */
+string getVariableUnits(PGconn * conn, string name)
+{
+  string query = "SELECT units FROM variable_list WHERE name='";
+  query += name + "'";
+  PGresult * res = PQexec(conn, query.c_str());
+
+  int ntuples = PQntuples(res);
+
+  if (ntuples == 0)
+  {
+    cerr << "No variable named: " << name << "!\n";
+    return "";
+  }
+  string s = extractPQString(res, 0, 0);
+  PQclear(res);
+  return s;
+}
+
+/* -------------------------------------------------------------------- */
 /**
  * Read the 'coordinates' attribute form the database to get the names of
  * the lat, lon and alt variables.
@@ -157,12 +179,21 @@ string buildDataQueryString(PGconn * conn)
   string lon = getGlobalAttribute(conn, "longitude_coordinate");
   string alt = getGlobalAttribute(conn, "zaxis_coordinate");
 
+  if (getVariableUnits(conn, alt) == "m")
+    _convertToFeet = 3.2808; // feet per meter
+
   dataQuery += lon + "," + lat + "," + alt + _dataQuerySuffix;
 
   char tmp[100];
   sprintf(tmp, "%f ORDER BY datetime", TAS_CutOff);
   dataQuery += tmp;
 
+  if (showit) {
+    showit = 0;
+    cout << "dataQuery: " << dataQuery << endl;
+    cout << "alt: " << alt << " units: " << getVariableUnits(conn, alt) << endl;
+    cout << "_convertToFeet: " << _convertToFeet << endl;
+  }
   return dataQuery;
 }
 
@@ -788,7 +819,7 @@ void updateData(PGresult * res, int indx)
   _date.push_back(tm);
   _lon.push_back( extractPQvalue<float>(PQgetvalue(res, indx, LON)) );
   _lat.push_back( extractPQvalue<float>(PQgetvalue(res, indx, LAT)) );
-  _alt.push_back( extractPQvalue<float>(PQgetvalue(res, indx, ALT)) * 3.2808);	// Feet
+  _alt.push_back( extractPQvalue<float>(PQgetvalue(res, indx, ALT)) * _convertToFeet);
 
   _at.push_back( extractPQvalue<float>(PQgetvalue(res, indx, AT)) );
   _dp.push_back( extractPQvalue<float>(PQgetvalue(res, indx, DP)) );
@@ -940,6 +971,13 @@ void ReadDataFromNetCDF(const string & fileName)
   NcValues *wi_vals = wi_v->values();
   NcValues *wd_vals = wd_v->values();
 
+  attr = alt_v->get_att("units");
+  if (strcmp(attr->as_string(0), "m") == 0)
+    _convertToFeet = 3.2808; // feet per meter
+
+  cout << "alt: " << alt << " units: " << attr->as_string(0) << endl;
+  cout << "_convertToFeet: " << _convertToFeet << endl;
+
   attr = tim_v->get_att("units");
   struct tm tm;
   strptime(attr->as_string(0), "seconds since %F %T +0000", &tm);
@@ -966,7 +1004,7 @@ void ReadDataFromNetCDF(const string & fileName)
     _date.push_back( buffer );
     _lon.push_back( lon_vals->as_float(i) );
     _lat.push_back( lat_vals->as_float(i) );
-    _alt.push_back( alt_vals->as_float(i) * 3.2808);	// feet
+    _alt.push_back( alt_vals->as_float(i) * _convertToFeet);
     _at.push_back( atx_vals->as_float(i) );
     _dp.push_back( dp_vals->as_float(i) );
     _ws.push_back( ws_vals->as_float(i) * 1.9438);	// knots
@@ -988,7 +1026,7 @@ int usage(const char* argv0)
 	<< "Usage: has two forms, one for real-time use and the other to scan\n"
 	<< "	a netCDF file in post-processing mode.\n\n"
 	<< "Real-time onboard form:\n"
-	<< "	acTrack2kml -o [-h database_host]\n\n"
+	<< "	acTrack2kml -o [-h database_host] [-p platform]\n\n"
 	<< "Real-time ground form:\n"
 	<< "	acTrack2kml [-h database_host] -p platform\n\n"
 	<< "Post-processing:\n"
@@ -1004,8 +1042,6 @@ int parseRunstring(int argc, char** argv)
   extern int optind;       /* "  "     "     */
   int opt_char;     /* option character */
 
-  enum {isnt, yes, no} ground_selected = isnt;
-
   // Default to ground, -p and netCDF mode.
   webHost = grnd_webHost;
 
@@ -1013,13 +1049,7 @@ int parseRunstring(int argc, char** argv)
   {
     switch (opt_char)
     {
-    case 'p':	// platform selection, used to select dbname on ground.
-      if ( ground_selected == no )
-      {
-        cerr << "\n\tDo not select a platform when running onboard (-o).\n\n";
-        return usage(argv[0]);
-      }
-      ground_selected = yes;
+    case 'p':	// platform selection, used to select dbname
       platform = optarg;
       // TODO query the platforms DB to get a list of these...
       if ( platform.compare("GV") &&
@@ -1027,7 +1057,7 @@ int parseRunstring(int argc, char** argv)
            platform.compare("DC8") &&
            platform.compare("C130") )
       {
-        cerr << "\n\tplatform must be GV, C130, or P3\n\n";
+        cerr << "\n\tplatform must be GV, C130, DC8, or P3\n\n";
         return usage(argv[0]);
       }
       dbname = "real-time-"+platform;
@@ -1047,14 +1077,13 @@ int parseRunstring(int argc, char** argv)
       break;
 
     case 'o':	// onboard.  Modify some defaults if this is set.
-      if ( ground_selected == yes )
-      {
-        cerr << "\n\tDo not select a platform when running onboard (-o).\n\n";
-        return usage(argv[0]);
+      if ( strlen( platform.c_str() ) ) {
+        dbname = "real-time-" + platform;
+        googleEarthDataDir = onboard_googleEarthDataDir + platform + "/GE/";
+      } else {
+        dbname = "real-time";
+        googleEarthDataDir = onboard_googleEarthDataDir + "/GE/";
       }
-      ground_selected = no;
-      dbname = "real-time";
-      googleEarthDataDir = onboard_googleEarthDataDir + "/GE/";
       webHost            = onboard_webHost;
       break;
 
