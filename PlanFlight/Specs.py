@@ -7,12 +7,70 @@ import wx
 import math
 import pickle
 from Frame import frame
+Sounding = None
+def LoadSounding ():
+    'Read the sounding from the file named Sounding.'
+    global Sounding
+###############################################
+#	This section reads the sounding stored in 'Sound' to get the wind 
+#	profile
+
+#	The following code is specific to the text-file format as archived
+#	at the U Wyo sounding archive. It tests for lines to skip on the
+#	basis of that format. Adaptations will be needed for other formats.
+    try:
+        WindFile = open('./Sounding','r')	# now only using wind and T
+        Sounding = []
+        for line in WindFile: 
+#	    #first skip lines not part of sounding
+            if line.find('K') != -1: pass
+            elif line.find('a') != -1: pass
+            elif line.find('----') != -1: pass
+            elif line.find('</PRE>') != -1: break
+            elif line.find('<') != -1: pass
+            else: 
+                f = line.replace('\n','')
+                f = re.sub(r'  *',r' ', f)
+                f = re.sub(r'^ ',r'', f)
+                a = str.split(f,' ')
+					# replace z with pressure alt.
+					# for altitudes at/above FL180
+                if len (a) >= 7:
+                    p = float (a[0])
+                    if p > 226.3206:
+                        alt = 145442.156 * (1. - (p / 1013.25)**0.1902632)
+                        if alt < 18000.: alt = float (a[1]) / 0.3048
+                    else:
+                        alt = 36089.24 + 47907.22 * math.log10 (226.3206 / p)
+                if len(a) > 10:   		# this is a full sounding record
+#                   print a[0]+','+a[1]+','+a[6]+','+a[7]
+#                   b = (float (a[0]), float (a[1]) / 0.3048, float (a[6]),\
+                    b = (float (a[0]), alt, float (a[6]),\
+                         float (a[7]), float (a[2]))
+                    Sounding.append(b)
+                elif len (a) == 7: 		# this is a record where DP is invalid
+#                   print a[0]+','+a[1]+','+a[3]+','+a[4]
+#                   b = (float (a[0]), float (a[1]) / 0.3048, float (a[3]),\
+                    b = (float (a[0]), alt, float (a[3]),\
+                         float (a[4]), float (a[2]))
+                    Sounding.append(b)
+        WindFile.close()
+    except IOError as e:
+        print \
+                'There is no Sounding file. \nCalculations will '\
+              + 'proceed using the single wind value in \'Specs\'.\n'\
+              + 'To avoid this, use the \'Download Sounding\' item in '\
+              + 'the \'Specs\' menu.'
+        Sounding = None
+    return ()
+
+#####################################
 # the following are the keys for the Specs dictionary. This is used mostly
 # to facilitate storing this with the Track:
 SpecsKeys = ['Airport','FlightSpeed','Wind','MaxTurn','FuelBurn','FuelLimit',
              'GrossWeight', 'Extra','FormatCode']
 Specs = dict.fromkeys(SpecsKeys)
-Specs[SpecsKeys[0]] = (-105.1172, 39.9089, 5673)# field location
+Specs[SpecsKeys[0]] =  (-97.652170, 38.790966, 1288.) # field location
 Specs[SpecsKeys[1]] = 0.8   			# flight speed, Mach
 #			wind is superceded by the sounding file if present
 Specs[SpecsKeys[2]] = (270.,30.)		# default wind dir/sp (deg,kts)
@@ -61,59 +119,9 @@ SRdata = None			# this is read from data file; here as
 				# global so it can be passed back to
 				# PlanFlight.py
 
-###############################################
-#	This section reads the sounding stored in 'Sound' to get the wind 
-#	profile
+		# then load the Sounding for use
+LoadSounding ()
 
-#	The following code is specific to the text-file format as archived
-#	at the U Wyo sounding archive. It tests for lines to skip on the
-#	basis of that format. Adaptations will be needed for other formats.
-try:
-    WindFile = open('./Sounding','r')	# now only using wind and T
-    Sounding = []
-    for line in WindFile: 
-#	#first skip lines not part of sounding
-        if line.find('K') != -1: pass
-        elif line.find('a') != -1: pass
-        elif line.find('----') != -1: pass
-        elif line.find('</PRE>') != -1: break
-        elif line.find('<') != -1: pass
-        else: 
-            f = line.replace('\n','')
-            f = re.sub(r'  *',r' ', f)
-            f = re.sub(r'^ ',r'', f)
-            a = str.split(f,' ')
-					# replace z with pressure alt.
-					# for altitudes at/above FL180
-            if len (a) >= 7:
-                p = float (a[0])
-                if p > 226.3206:
-                    alt = 145442.156 * (1. - (p / 1013.25)**0.1902632)
-                    if alt < 18000.: alt = float (a[1]) / 0.3048
-                else:
-                    alt = 36089.24 + 47907.22 * math.log10 (226.3206 / p)
-            if len(a) > 10:   		# this is a full sounding record
-#               print a[0]+','+a[1]+','+a[6]+','+a[7]
-#               b = (float (a[0]), float (a[1]) / 0.3048, float (a[6]),\
-                b = (float (a[0]), alt, float (a[6]),\
-                     float (a[7]), float (a[2]))
-                Sounding.append(b)
-            elif len (a) == 7: 		# this is a record where DP is invalid
-#               print a[0]+','+a[1]+','+a[3]+','+a[4]
-#               b = (float (a[0]), float (a[1]) / 0.3048, float (a[3]),\
-                b = (float (a[0]), alt, float (a[3]),\
-                     float (a[4]), float (a[2]))
-                Sounding.append(b)
-    WindFile.close()
-except IOError as e:
-    print \
-                'There is no Sounding file. \nCalculations will '\
-              + 'proceed using the single wind value in \'Specs\'.\n'\
-              + 'To avoid this, use the \'Download Sounding\' item in '\
-              + 'the \'Specs\' menu.'
-    Sounding = None
-
-#####################################
 #	now read fuel-use table that gives n. mi. per lb fuel as function
 #	of altitude and gross weight:
 #	(this assumes Mach=0.80; superceded by SpecificRange table that 
@@ -553,6 +561,7 @@ except IOError as e:
           + 'Calculations will use instant descent.'
 #end of the section that reads descent information
 
+
 def ISADelta (altitude):
     "Returns the departure in temperature from the ISA profile."
 				# first calculate ISA temperature
@@ -590,10 +599,11 @@ def FlightSpeed (altitude):
             ISAT = -56.5
             xp = 10.**((altitude - 36089.24) / 47907.22)
             Ps = 226.3206 / xp
+        TAS = 38.96991 * Specs['FlightSpeed'] * (273.15 + ISAT)**0.5
         if altitude < 10000.:
             TAS = 250. * (1013.25 * (ISAT+273.15) / (Ps * 288.15))**0.5
         else:
-            TAS2 = 260. * (1013.25 * (ISAT+273.15) / (Ps * 288.15))**0.5
+            TAS2 = 300. * (1013.25 * (ISAT+273.15) / (Ps * 288.15))**0.5
             if TAS2 < TAS: TAS = TAS2
         return (TAS)
     iS = 1
@@ -606,6 +616,7 @@ def FlightSpeed (altitude):
     FlightLevelTemperature = Ts
     Ps = Sounding[iS][0] * F + Sounding[iS-1][0] * (1.-F)
     TAS = 38.96991 * Specs['FlightSpeed'] * (273.15 + Ts)**0.5
+#   print 'flight speed is %.1f, iS=%d, Ts=%.2f, Ps=%.1f\n' % (TAS,iS,Ts,Ps)
 				# find corresponding KIAS:
     ftmp = ((Ps * 288.15) / (1013.25 * (Ts + 273.15)))**0.5
     KIAS = TAS * ftmp
@@ -641,10 +652,11 @@ def TurbulenceFlightSpeed (altitude):
             ISAT = -56.5
             xp = 10.**((altitude - 36089.24) / 47907.22)
             Ps = 226.3206 / xp
+        TAS = 38.96991 * Specs['FlightSpeed'] * (273.15 + ISAT)**0.5
         if altitude < 10000.:
             TAS = 250. * (1013.25 * (ISAT+273.15) / (Ps * 288.15))**0.5
         else:
-            TAS2 = 260. * (1013.25 * (ISAT+273.15) / (Ps * 288.15))**0.5
+            TAS2 = 270. * (1013.25 * (ISAT+273.15) / (Ps * 288.15))**0.5
             if TAS2 < TAS: TAS = TAS2
         return (TAS)
     iS = 1

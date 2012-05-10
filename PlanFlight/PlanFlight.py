@@ -37,7 +37,7 @@ import KML
 from KML import *
 from Nearest import Nearest
 import ModuleConstructor
-#from ModuleConstructor import *
+from ModuleConstructor import *
 from Printer import Printer
 				# modules
 
@@ -1193,8 +1193,24 @@ class MainWindow (wx.Frame):
         filemenu.Append (ID_EXIT, "E&xit\tCtrl+Q", "Quit")
         specsmenu.Append (ID_EDIT, '&Edit\tCtrl+E', \
                           'edit specs (aircraft, airport, wind)')
-        specsmenu.Append (ID_GET, '&Get Sounding\tCtrl+W', \
+        specsmenu.Append (ID_GET+100, 'AMA Sounding', \
+                          'download latest AMA sounding')
+        specsmenu.Append (ID_GET+101, 'BMX (ALA) Sounding', \
+                          'download latest BMX sounding')
+        specsmenu.Append (ID_GET+102, 'DDC Sounding\tCtrl+W', \
+                          'download latest DDC sounding')
+        specsmenu.Append (ID_GET+103, 'DNR Sounding', \
                           'download latest DNR sounding')
+        specsmenu.Append (ID_GET+104, 'JAN (ALA) Sounding', \
+                          'download latest JAN sounding')
+        specsmenu.Append (ID_GET+105, 'LBF Sounding', \
+                          'download latest LBF sounding')
+        specsmenu.Append (ID_GET+106, 'LIX Sounding', \
+                          'download latest LIX sounding')
+        specsmenu.Append (ID_GET+107, 'OUN Sounding', \
+                          'download latest OUN sounding')
+        specsmenu.Append (ID_GET+108, 'SGF Sounding', \
+                          'download latest SGF sounding')
         specsmenu.Append (ID_SND, '&See Sounding', \
                           'See sounding in use')
         editmenu.Append (ID_IS, '&Insert\tCtrl+I', 'insert a module')
@@ -1233,7 +1249,15 @@ class MainWindow (wx.Frame):
         wx.EVT_MENU (self, ID_PRNT, self.OnList)
         wx.EVT_MENU (self, ID_SHOW, self.OnShow)
         wx.EVT_MENU (self, ID_EDIT, self.OnEdit)
-        wx.EVT_MENU (self, ID_GET, self.OnGet)
+        wx.EVT_MENU (self, ID_GET+100, self.OnGet)
+        wx.EVT_MENU (self, ID_GET+101, self.OnGet)
+        wx.EVT_MENU (self, ID_GET+102, self.OnGet)
+        wx.EVT_MENU (self, ID_GET+103, self.OnGet)
+        wx.EVT_MENU (self, ID_GET+104, self.OnGet)
+        wx.EVT_MENU (self, ID_GET+105, self.OnGet)
+        wx.EVT_MENU (self, ID_GET+106, self.OnGet)
+        wx.EVT_MENU (self, ID_GET+107, self.OnGet)
+        wx.EVT_MENU (self, ID_GET+108, self.OnGet)
         wx.EVT_MENU (self, ID_IC, self.OnIC)
         wx.EVT_MENU (self, ID_TR, self.OnTR)
         wx.EVT_MENU (self, ID_OB, self.OnOB)
@@ -2454,20 +2478,22 @@ class MainWindow (wx.Frame):
         "Fetch latest sounding from the UWyo archives."
         import datetime
         from time import sleep
-
+        nsdg = event.GetId ()-ID_GET-100
+        NSTN = [72363, 72230, 72451, 72469, 72235, 72562, 72233, 72357, 72440]
+        STN = NSTN[nsdg]
         now = datetime.datetime.now ()
         if now.hour < 8: h = 0
         else: h = 12
         dh = format (now.day, '02d') + format (h, '02d')
 # station 72469 is the DNR sounding:
         http = \
-'http://weather.uwyo.edu/cgi-bin/sounding?region=naconf&TYPE=TEXT%3ALIST&YEAR=' + str (now.year) + '&MONTH=' + format (now.month, '02d') + '&FROM=' + dh + '&TO='+dh + '&STNM=72469'
-
+'http://weather.uwyo.edu/cgi-bin/sounding?region=naconf&TYPE=TEXT%3ALIST&YEAR=' + str (now.year) + '&MONTH=' + format (now.month, '02d') + '&FROM=' + dh + '&TO='+dh + '&STNM='+format(STN, 'd')
         cmd = 'wget --output-document=./Sounding.UWyo ' + '\'' \
             + http + '\''
         result = True
         while result:
             os.system (cmd)
+            print 'sounding fetch command is ', cmd
             sleep (2.0)
             statinfo = os.stat ('./Sounding.UWyo')
             if statinfo.st_size < 1000:
@@ -2482,6 +2508,7 @@ class MainWindow (wx.Frame):
             else: 
                 result = False
                 os.system ('mv Sounding.UWyo Sounding')
+                Specs.LoadSounding ()
 
     def SetParameters (self, event): pass
 
