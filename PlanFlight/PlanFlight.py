@@ -58,7 +58,7 @@ frame13 = None
 # the following are overridden by the contents of 'Standard.nav' 
 # if it is present:
 NavItems = {'RAF': (-105.138988, 39.913041, 0., 0.),
-            'SLN': (-97.621361, 38.925139, 0., 0.)}
+            'Salina': (-97.621361, 38.925139, 0., 0.)}
 
 # Entry of lat/lon can be in two formats:
 # Decimal degrees or integer degrees and decimal minutes.
@@ -188,7 +188,7 @@ class NavFrame (wx.Frame):
         ButtonAddNav.SetBackgroundColour ('Light Grey')
         self.Bind (wx.EVT_BUTTON, self.onAdd, id=ID_AB)
         self.Bind (wx.EVT_BUTTON, self.OnRefresh, id=ID_RF)
-        self.InputID = wx.TextCtrl (scrollWin, ID_ID, 'BJC', (50,40), \
+        self.InputID = wx.TextCtrl (scrollWin, ID_ID, 'Airport', (50,40), \
                                     size=(60,32))
         fmt = self.DegMin.GetValue ()
         if fmt:
@@ -2377,6 +2377,8 @@ class MainWindow (wx.Frame):
         yp = []
         mtype = []
         anchor = []
+        zp = [Specs.Specs['Airport'][2]]
+        tp = [0.]
         K = 0
         for ky in KeyList:
             if ('Module' in ky and 'Number' not in ky):
@@ -2387,6 +2389,8 @@ class MainWindow (wx.Frame):
                     if 'Manvr' in kym:
 #                       kk = int (kym.replace ('Manvr', ''))
                         mn = m[kym]
+                        tp.append (mn['Time'])
+                        zp.append (mn['EndPoint'][2])
                                   #  skip turns
                         if 'Turn' not in mn['Type']:
                             al = mn['Anchor']
@@ -2412,6 +2416,16 @@ class MainWindow (wx.Frame):
                 # end of loop over Maneuver keys
             # end of module processing
         # end of loop over Track keys
+        pylab.figure (4)
+        pylab.clf ()			# clear the plot
+        pylab.plot(tp, zp)
+        pylab.ylabel('Altitude (ft)')
+        pylab.xlabel('Time (h)')
+        pylab.title('Time-Height Plot')
+        pylab.grid(True)
+        pylab.savefig('THeight')
+        pylab.show()
+        pylab.figure (0)
         pylab.clf ()			# clear the plot
         pylab.plot(xp, yp)
 				# get transformation from cursor coords
@@ -2461,9 +2475,7 @@ class MainWindow (wx.Frame):
         pylab.title('Current Track')
         pylab.grid(True)
         pylab.savefig('Plan')
-#       pylab.show()
-        pylab.clf ()
-        pylab.close ()
+        pylab.close()
         if frame13 != None and frame13: frame13.Close ()
         frame13 = PlotFrame ()
         frame13.Show ()

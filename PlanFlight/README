@@ -33,7 +33,7 @@ I was able to get this to work on a 32-bit Windows machine as follows.
 machine also, although that hasn't been explored as much as the
 32-bit version.)
   1. Download and install python:
-     http://www.python.org/ftp/python/2.7.2/python-2.7.2.msi
+     http://www.python.org/ftp/python/2.7.3/python-2.7.3.msi
      Don't use python-3; that will probably not work.
   2. Download and install wxPython (used by the PlanFlight GUI):
      http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/wxPython2.8-win32-unicode-2.8.12.1-py27.exe/download
