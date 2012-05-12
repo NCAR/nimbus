@@ -601,8 +601,8 @@ def Module (t = 'Enroute', s = 100., a = (105.,40.,6000), o = 0., \
 # required to move through maneuvers required for departure control and
 # other traffic control. Add to time and fuel for this (only approximate
 # for now; update later):
-        Time += 0.2
-        Fuel -= 800.
+        Time += 0.1
+        Fuel -= 400.
 # transit to start point
         v = Transit (AC, a, drift, 0., m)
         if v != None:
@@ -611,6 +611,39 @@ def Module (t = 'Enroute', s = 100., a = (105.,40.,6000), o = 0., \
                 a = DriftOffset (DT, a)
             ky = "Manvr" + format (ManeuverNumber, '03d')
             m[ky] = v
+ 
+    elif (t == 'ClimbToward'):      	# ClimbToward
+# Climb at specified rate or max rate, in specified direction; 
+# stop when altitude reached
+        if (ManeuverNumber != 0): 	# don't turn if first maneuver
+                                        # Find angle of turn needed to
+                                        # head in desired direction
+            oo = o
+            v = Turn (oo)
+# drift not allowed for this maneuver
+            ky = "Manvr" + format (ManeuverNumber, '03d')
+            m[ky] = v
+# transit to start point
+# for simplicity, use normal transit to far-away point, then truncate
+# the track that results to eliminate the level-flight segment
+        b = copy.deepcopy (AC)
+        s = 500.
+        b0 = b[0] + s * math.sin (o * Cradeg) \
+           / (60. * math.cos (b[1] * Cradeg))
+        b1 = b[1] + s * math.cos (o * Cradeg) / 60.
+        b = (b0, b1, a[2])
+        v = Transit (AC, b, drift, 0., m)
+# transit call adds the climb and returns a maneuver in 'v' for the
+# level flight segment, for adding to the module. Just skip that here,
+# but must adjust AC back to end point of previous maneuver (climb).
+# Also, ManeuverNumber was incremented along with Time and Fuel, so
+# must remove those increments:
+        ManeuverNumber -= 1
+        ky = "Manvr" + format (ManeuverNumber, '03d')
+        v = m[ky]
+        AC = v['EndPoint']
+        Fuel = v['Fuel']
+        Time = v['Time']
  
 # Lawnmower is like VerticalSection but with horizontal displacement 
 # (+ve initially to R)

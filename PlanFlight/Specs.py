@@ -93,6 +93,7 @@ ModuleKeys = ["Type","Dimension","Anchor","Orientation","Drift","Legs",\
 #	and information display for each module type.`
 ModuleType = [
     'InitialClimb',	
+    'ClimbToward',	
     'Enroute',         
     'DelayInArea',
     'OutAndBack',

@@ -828,9 +828,14 @@ class PlotFrame (wx.Frame):
                                   (png.GetWidth (), png.GetHeight ()))
         self.BM.Bind (wx.EVT_MOTION,  self.OnMove)
         self.BM.Bind (wx.EVT_LEFT_DOWN, self.OnBitmapLeftDown)
+        self.BM.Bind (wx.EVT_RIGHT_DOWN, self.OnBitmapRightDown)
         wx.StaticText (panel, -1, "Position: ", pos = (16,5))
         self.posCtrl = wx.TextCtrl (panel, -1, "", size = (130,32), \
                                    pos = (70,5))
+        self.xCtrl = wx.TextCtrl (panel, -1, "", size = (100,32), \
+                                   pos = (450,5))
+        wx.StaticText (panel, -1, "n mi from pt set, R-click",
+                                   size = (160,32), pos=(560,15))
         wx.StaticText (panel, -1, \
         "Click point to transfer coordinates \nto long/lat for module",\
         pos = (200,15))
@@ -846,18 +851,28 @@ class PlotFrame (wx.Frame):
 # now convert to long/lat:
         lt = frame.yzero - (pos.y - 540.) * frame.ymag
         lg = frame.xzero + (pos.x - 100. ) * frame.xmag
-# these transformation coordinates are determined
-# with the help of Xform.py
-#       x0 = -105.35324
-#       y0 =  41.51483
-#       a11 =  0.00671
-#       a12 =   0.00031
-#       a21 =  0.00004
-#       a22 =  -0.00507
-#       lg = x0 + a11 * float (a[0]) + a12 * float (a[1])
-#       lt = y0 + a21 * float (a[0]) + a22 * float (a[1])
         dp = format (lt, '.2f') + ',' + format (lg, '.2f')
         self.posCtrl.SetValue (dp)
+# the center latitude and longitude:
+        clat = frame.yzero + 240. * frame.ymag
+        clon = frame.xzero + 310. * frame.xmag
+        dpy = (lt-clat)*60.
+        dpx = (lg-clon)*60.*math.cos(clat*Cradeg)
+        dpy = (frame.cyz-pos.y) * frame.ymag * 60.
+        dpx = (pos.x-frame.cxz) * frame.xmag * 60. * math.cos(clat*Cradeg)
+        if dpx >= 0.:
+            if dpy >= 0.:
+                dp = format (dpx, '.0f') + 'E,' + format (dpy, '.0f') + 'N'
+            else:
+                dp = format (dpx, '.0f') + 'E,' + format (-1.*dpy, '.0f') + 'S'
+        else:
+            if dpy >= 0.:
+                dp = format (-1.*dpx, '.0f') + 'W,' + format (dpy, '.0f') + 'N'
+            else:
+                dp = format (-1.*dpx, '.0f') + 'W,' + format (-1.*dpy, '.0f') + 'S'
+#       dp = format ((lt-clat)*60., '.0f') + ',' + format ((lg-clon)*60.*math.cos(clat*Cradeg), '.0f')
+#       dp = format (pos.y, '.0f') + ',' + format (pos.x, '.0f')
+        self.xCtrl.SetValue (dp)
 
     def OnBitmapLeftDown (self, event):
         'On mouse click, transfer the lon/lat coordinates to the '\
@@ -883,6 +898,22 @@ class PlotFrame (wx.Frame):
             slt = format (lt, '.3f')
         frame.InputLG.SetValue (slg)
         frame.InputLT.SetValue (slt)
+
+    def OnBitmapRightDown (self, event):
+        'On mouse click, reset the zero location for measuring.'
+        global frame
+#       b = self.posCtrl.GetValue ()
+        pos = event.GetPosition ()
+        a = (pos.x,pos.y)
+# now convert to long/lat:
+        lt = frame.yzero - (pos.y - 540.) * frame.ymag
+        lg = frame.xzero + (pos.x - 100. ) * frame.xmag
+        MainWindow.SetStatusText (frame, 'clicked on ' \
+                                 + format (lg, '.2f') + ', ' \
+                                 + format (lt, '.2f'), 2)
+#       print 'right-click values lat/lon=',lt,lg
+        frame.cxz = pos.x
+        frame.cyz = pos.y
     #end __init__ def
 #end PlotFrame class    
 
@@ -1473,6 +1504,15 @@ class MainWindow (wx.Frame):
             self.InputZ.SetValue (str (35000.))
 			# 'Other' is rate of climb, ft/min
             self.InputOTHER.SetValue ('2000.')
+        elif (module_name == 'ClimbToward'):
+            self.InputS.SetValue ('None')
+            self.InputLT.SetValue ('None')
+            self.InputLG.SetValue ('None')
+            self.InputOR.SetValue ('270')
+            self.InputLEGS.SetValue ('None')
+            self.InputZ.SetValue (str (35000.))
+			# 'Other' is rate of climb, ft/min
+            self.InputOTHER.SetValue ('2000.')
         elif (module_name == 'Enroute'):
             self.InputS.SetValue ('None')
             self.InputOTHER.SetValue ('0.')	#climb/desc rate; 0=>any
@@ -1649,6 +1689,8 @@ class MainWindow (wx.Frame):
         if self.DegMin.GetValue ():	# deg-min section
             slg = self.InputLG.GetValue ()
             slt = self.InputLT.GetValue ()
+            if (slg == 'None') or (slt == 'None'): 
+                return (ModuleConstructor.AC[0], ModuleConstructor.AC[1])
             slg = slg.replace (',',' ')
             slt = slt.replace (',',' ')
             ssplit = slg.split ()
@@ -2020,6 +2062,12 @@ class MainWindow (wx.Frame):
         "This button provides information on the \'Other\' entry."
         if (ModuleConstructor.WorkingModuleName == 'InitialClimb'):
             OtherMessage = 'For InitialClimb \'Other\' specifies the\n'\
+                         + 'climb rate in ft/min. If the value\n'\
+                         + 'specified exceeds the maximum for the\n'\
+                         + 'aircraft, then that maximum will be used.\n'\
+                         + 'Entry boxes with \'None\' do not apply.\n'
+        elif (ModuleConstructor.WorkingModuleName == 'ClimbToward'):
+            OtherMessage = 'For ClimbToward \'Other\' specifies the\n'\
                          + 'climb rate in ft/min. If the value\n'\
                          + 'specified exceeds the maximum for the\n'\
                          + 'aircraft, then that maximum will be used.\n'\
@@ -2435,6 +2483,8 @@ class MainWindow (wx.Frame):
         self.yzero = ymin
         self.xmag = (xmax - xmin) / 620.	#620 = cursor-coords
         self.ymag = (ymax - ymin) / 480.	#480 = cursor-coords
+        self.cxz  = 410.			# cursor center-of-plot
+        self.cyz  = 300.
         xdel = (xmax - xmin) / 50.
         ydel = (ymax - ymin) / 50.
         mlast = ''
