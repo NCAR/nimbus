@@ -25,6 +25,7 @@ import os
 import sys
 import pickle
 import string
+import re
 from Frame import frame 	# this makes 'frame' accessible in other
 import Specs			# must follow Frame import
 from Specs import *
@@ -112,7 +113,7 @@ ID_DX    = 523
 ID_CY    = 524
 ID_RM    = 525
 ID_RX    = 526
-ID_MP    = 527
+ID_YY    = 527		#unused at present
 ID_VD    = 528
 ID_CK    = 529
 ID_NV    = 530
@@ -142,7 +143,8 @@ ID_DP    = 553
 ID_TAS   = 554
 ID_APPEND= 555
 ID_RF    = 556
-ID_XX    = 558
+ID_MP    = 557		# reserve 557-567
+ID_XX    = 568
 IDB      = 1000
 
 # The routine has these classes defining frames:
@@ -743,14 +745,33 @@ class ReorderFrame (wx.Frame):
         self.Destroy ()
 
 class MapFrame (wx.Frame):
-    def __init__(self):
+    def __init__(self, nmap):
         'Display maps with cursor that can read coordinates from map '\
          + 'for module definition.'
         wx.Frame.__init__(self, None, -1, 'High Altitude Chart',\
-                          size = (450,450))
+                          size = (1200,850))
         panel = wx.Panel (self, -1)
-        png = wx.Image ('./Airways.png', \
-                        wx.BITMAP_TYPE_ANY).ConvertToBitmap ()
+        self.nmap = nmap
+        if nmap == 0:
+            png = wx.Image ('./Airways.png', \
+                        wx.BITMAP_TYPE_ANY).Scale (width=1200, height=800)
+            png = wx.Image.ConvertToBitmap (png)
+        elif nmap == 1:
+            png = wx.Image ('./ENR_CHILLtrans.png', \
+                        wx.BITMAP_TYPE_ANY).Scale (width=1200, height=800)
+            png = wx.Image.ConvertToBitmap (png)
+        elif nmap == 2:
+            png = wx.Image ('./ENR_OKTXtrans.png', \
+                        wx.BITMAP_TYPE_ANY).Scale (width=1200, height=800)
+            png = wx.Image.ConvertToBitmap (png)
+        elif nmap == 3:
+            png = wx.Image ('./ENR_ALtrans.png', \
+                        wx.BITMAP_TYPE_ANY).Scale (width=1200, height=800)
+            png = wx.Image.ConvertToBitmap (png)
+        elif nmap == 4:
+            png = wx.Image ('./ENR_AL.png', \
+                        wx.BITMAP_TYPE_ANY).Scale (width=1200, height=800)
+            png = wx.Image.ConvertToBitmap (png)
         self.BM = wx.StaticBitmap (panel, -1, png, (10,50), \
                                   (png.GetWidth (), png.GetHeight ()))
         self.BM.Bind (wx.EVT_MOTION,  self.OnMove)
@@ -772,16 +793,55 @@ class MapFrame (wx.Frame):
 # now convert to long/lat:
 # these transformation coordinates are determined
 # with the help of Xform.py
-        x0 = -105.35324
-        y0 =  41.51483
-        a11 =  0.00671
-        a12 =   0.00031
-        a21 =  0.00004
-        a22 =  -0.00507
+        if self.nmap == 0:
+            x0 = -105.35324
+            y0 =  41.51483
+            a11 =  0.00671
+            a12 =   0.00031
+            a21 =  0.00004
+            a22 =  -0.00507
+        elif self.nmap == 1:
+# 0.00434552107628 -4.26687307592e-05 -1.44515309414e-05 -0.00386131874967 -106.703085734 42.2049403855 - from cal
+            x0 = -106.703
+            y0 = 42.2049
+            a11 = 0.0043455
+            a12 = -4.26687e-05
+            a21 = -1.44515e-05
+            a22 = -0.0038613
+        elif self.nmap == 2:
+# 0.00524098496356 2.65106168129e-05 -5.74666871218e-06 -0.0043887305046 -102.420446485 36.8549655203
+            x0 = -102.420446
+            y0 = 36.8549655
+            a11 = 0.00524098496
+            a12 =  2.65106e-05
+            a21 = -5.7466687e-06
+            a22 = -0.0043887
+        elif self.nmap == 3:
+# 0.00412174420909 1.3633660731e-05 -4.40051731683e-05 -0.00483255247302 -90.7195593854 36.5715291575
+            x0 = -90.719559
+            y0 = 36.571529
+            a11 = 0.004121744
+            a12 =  1.363366e-05
+            a21 = -4.4005173e-05
+            a22 = -0.00483255
+        else:
+            x0 = 0.
+            y0 = 0.
+            a11 = 1.
+            a12 = 0.
+            a21 = 0.
+            a22 = 1.
         lg = x0 + a11 * float (a[0]) + a12 * float (a[1])
         lt = y0 + a21 * float (a[0]) + a22 * float (a[1])
         dp = format (lg, '.2f') + ',' + format (lt, '.2f')
         self.posCtrl.SetValue (dp)
+        self.x0 = x0
+        self.y0 = y0
+        self.a11 = a11
+        self.a12 = a12
+        self.a21 = a21
+        self.a22 = a22
+#       self.posCtrl.SetValue ("%s, %s" % (pos.x, pos.y))	
 
     def OnBitmapLeftDown (self, event):
         'On mouse click, transfer the lon/lat coordinates to the '\
@@ -797,8 +857,8 @@ class MapFrame (wx.Frame):
         a12 =   0.00031
         a21 =  0.00004
         a22 =  -0.00507
-        lg = x0 + a11 * float (a[0]) + a12 * float (a[1])
-        lt = y0 + a21 * float (a[0]) + a22 * float (a[1])
+        lg = self.x0 + self.a11 * float (a[0]) + self.a12 * float (a[1])
+        lt = self.y0 + self.a21 * float (a[0]) + self.a22 * float (a[1])
         MainWindow.SetStatusText (frame, 'clicked on ' \
                                  + format (lg, '.2f') + ', ' \
                                  + format (lt, '.2f'), 2)
@@ -1122,7 +1182,7 @@ class MainWindow (wx.Frame):
                         (0,yloc), (Col1,dely))
         B3.SetBackgroundColour ('Pink')
         yloc += dely
-        wx.Button (panel1, ID_GE, 'Show in Google Earth', \
+        wx.Button (panel1, ID_GE, 'GV Only: Show, MC', \
                    (0,yloc), (Col1,dely))
         yloc = 0
         fontBold = wx.Font (12, wx.SWISS, wx.NORMAL,wx.BOLD)
@@ -1250,6 +1310,10 @@ class MainWindow (wx.Frame):
         editmenu.Append (ID_RO, '&Reorder', 'reorder modules')
         editmenu.Append (ID_RC, 'Re&calculate', 'calculate track')
         mapmenu.Append  (ID_MP, '&Airways\tCtrl+M', 'High Altitude Chart')
+        mapmenu.Append  (ID_MP+1, 'CO Area', 'High Altitude Chart')
+        mapmenu.Append  (ID_MP+2, 'OK-TX Area', 'High Altitude Chart')
+        mapmenu.Append  (ID_MP+3, 'AL Area', 'High Altitude Chart')
+#       mapmenu.Append  (ID_MP+4, 'enroute-to-AL', 'High Altitude Chart')
         navmenu.Append  (ID_NV, 'See Nav &Points\tCtrl+P', \
                                 'Reference Points')
         navmenu.Append  (ID_LF, '&Open', 'Open a specified file')
@@ -1305,6 +1369,10 @@ class MainWindow (wx.Frame):
         wx.EVT_MENU (self, ID_RO, self.OnReorder)
         wx.EVT_MENU (self, ID_RC, self.OnRecalculate)
         wx.EVT_MENU (self, ID_MP, self.OnMap)
+        wx.EVT_MENU (self, ID_MP+1, self.OnMap)
+        wx.EVT_MENU (self, ID_MP+2, self.OnMap)
+        wx.EVT_MENU (self, ID_MP+3, self.OnMap)
+        wx.EVT_MENU (self, ID_MP+4, self.OnMap)
         wx.EVT_MENU (self, ID_SR, self.OnSR)
         wx.EVT_MENU (self, ID_CP, self.OnCP)
         wx.EVT_MENU (self, ID_DP, self.OnDP)
@@ -1770,8 +1838,13 @@ class MainWindow (wx.Frame):
         "Start Google Earth and show .kml file"
 			# generate .kml file, in case it is needed
         self.OnMakeOut (event)
+			# see if this is GV system; if so, set
+			# mission-coordinator track to this .kml
+        if os.path.exists('/mnt/ads/GV'):
+            os.system('cp ./PlanAC.kml /mnt/ads/GV/PlanAC.kml')
+        else:
 			# need appropriate replacement for Windows:
-        os.system ("google-earth $PWD/Plan.kml&")
+            os.system ("google-earth $PWD/Plan.kml&")
 
     def OnMakeOut (self, event): 
         'Make .kml output file and save backup copy of Track'
@@ -2476,9 +2549,20 @@ class MainWindow (wx.Frame):
         pylab.figure (0)
         pylab.clf ()			# clear the plot
         pylab.plot(xp, yp)
+				# force lat range to be 1/2 lon range
+        xmin,xmax,ymin,ymax=pylab.axis()
+        if (xmax - xmin) < 2. * (ymax - ymin): 
+            xc = (xmax + xmin) / 2.
+            xmax = xc + (ymax - ymin)
+            xmin = xc - (ymax - ymin)
+            pylab.xlim (xmin = xmin, xmax = xmax)
+        elif (ymax - ymin) < 0.5 * (xmax - xmin):
+            yc = (ymax + ymin) / 2.
+            ymax = yc + 0.25 * (xmax - xmin)
+            ymin = yc - 0.25 * (xmax - xmin)
+            pylab.ylim (ymin = ymin, ymax = ymax)
 				# get transformation from cursor coords
 				# to lat/lon coordinates:
-        xmin,xmax,ymin,ymax=pylab.axis()
         self.xzero = xmin
         self.yzero = ymin
         self.xmag = (xmax - xmin) / 620.	#620 = cursor-coords
@@ -2520,6 +2604,31 @@ class MainWindow (wx.Frame):
                     pylab.plot(pts[1], pts[2], 'bo', color='lightgrey')
                     pylab.annotate (pts[0], (pts[1], pts[2]),\
                                     (pts[1]-xdel, pts[2]+ydel), color='lightgrey')
+				# add FIR boundaries to plot
+        FIRS = open ('./NavPoints/firs.kml', 'r')
+        enable = False
+        for fline in FIRS:
+            if r'<coordinates' in fline: 
+                enable = True
+                fline = re.sub (r' *<coordinates>', '', fline)
+                plat = []
+                plon = []
+                enablePlot = False
+            if enable:
+                fline = fline.replace('\n', '')
+                if r'</coordinates' in fline: 
+                    enable = False
+                    fline = re.sub(r' *</coordinates>',r'', fline)
+                pll = fline.split (',')
+                plon1 = float (pll[0])
+                plat1 = float (pll[1])
+                plon.append (plon1)
+                plat.append (plat1)
+                if plon1 > xmin and plon1 < xmax: 
+                    if plat1 > ymin and plat1 < ymax: enablePlot = True
+                if (not enable) and enablePlot:
+                    pylab.plot(plon, plat, color='cyan')
+        FIRS.close ()
         pylab.xlabel('Longitude')
         pylab.ylabel('Latitude')
         pylab.title('Current Track')
@@ -2652,7 +2761,7 @@ class MainWindow (wx.Frame):
         'Generates and displays the map displays.'
         global frame6
         if frame6 != None and frame6: frame6.Close ()
-        frame6 = MapFrame ()
+        frame6 = MapFrame (event.GetId () - ID_MP)
         frame6.Show ()
   
     def OnSR (self, event):
