@@ -1128,7 +1128,12 @@ class DLGFrame (wx.Frame):
 class MainWindow (wx.Frame):
     def __init__(self, parent, id, title):
         'Defines the primary window for user interaction.'
-        wx.Frame.__init__(self, parent, wx.ID_ANY, title, \
+        if 'win' in sys.platform:
+            wx.Frame.__init__(self, parent, wx.ID_ANY, title, \
+                          size = (500,280),\
+                          style = wx.DEFAULT_FRAME_STYLE)
+        else:
+            wx.Frame.__init__(self, parent, wx.ID_ANY, title, \
                           size = (500,250),\
                           style = wx.DEFAULT_FRAME_STYLE)
         splitter = wx.SplitterWindow (self, -1, pos=(0,100),\
@@ -1197,10 +1202,10 @@ class MainWindow (wx.Frame):
         self.DegMin.SetValue (True)
         yloc += dely
         wx.StaticText (panel2, -1, "#", (Col2+5,yloc), \
-                                 size=(75,dely))
-        self.sc = wx.SpinCtrl (panel2, -1, '', (Col2+15,yloc), \
+                                 size=(5,dely))
+        self.sc = wx.SpinCtrl (panel2, ID_SC, '1', (Col2+15,yloc), \
                                size=(50,dely))
-        self.sc.SetRange (1, 999)
+        self.sc.SetRange (1, 500)
         self.sc.SetValue (1)
         wx.StaticText (panel2, -1, "Size, n mi:", \
                                 (Col2+70,yloc),size=(75,dely))
@@ -1255,7 +1260,10 @@ class MainWindow (wx.Frame):
         self.Bind (wx.EVT_BUTTON, self.OnGoogleEarth, id=ID_GE)
         self.Bind (wx.EVT_BUTTON, self.OnOther, id=ID_OT)
 #       self.Bind (wx.EVT_SPIN, self.OnSpin, id=ID_SC)
-        self.Bind (wx.EVT_SPINCTRL, self.OnSpin, self.sc)
+        self.sc.Bind (wx.EVT_SPINCTRL, self.OnSpin, id=ID_SC)
+#       self.Bind (wx.EVT_SPINCTRL, self.OnSpin, self.sc)
+#       self.Bind (wx.EVT_SPIN_UP, self.OnSpin, self.sc)
+#       self.Bind (wx.EVT_SPIN_DOWN, self.OnSpin, self.sc)
         self.Bind (wx.EVT_CHECKBOX, self.onCheckBoxChange, id=ID_CK) 
 #       self.Centre ()
 # menus:
@@ -1487,6 +1495,9 @@ class MainWindow (wx.Frame):
                     enable = True
             if CallingID == ID_CK: 
                 if '**deg min format:**' in line: 
+                    enable = True
+            if CallingID == ID_SC:
+                if '**Spin Control:**' in line:
                     enable = True
             if CallingID == ID_SZ: 
                 if '**Size, n mi:**' in line: 
@@ -1843,8 +1854,12 @@ class MainWindow (wx.Frame):
         if os.path.exists('/mnt/ads/GV'):
             os.system('cp ./PlanAC.kml /mnt/ads/GV/PlanAC.kml')
         else:
-			# need appropriate replacement for Windows:
-            os.system ("google-earth $PWD/Plan.kml&")
+            if 'win' in sys.platform:
+                cmd = r'"C:\Program Files (x86)\Google\Google Earth\client\googleearth.exe" ' + os.getcwd () + r'\Plan.kml'
+                print 'GE startup command is ',cmd
+                os.system (cmd)
+            else:
+                os.system ("google-earth $PWD/Plan.kml&")
 
     def OnMakeOut (self, event): 
         'Make .kml output file and save backup copy of Track'
@@ -2555,12 +2570,12 @@ class MainWindow (wx.Frame):
             xc = (xmax + xmin) / 2.
             xmax = xc + (ymax - ymin)
             xmin = xc - (ymax - ymin)
-            pylab.xlim (xmin = xmin, xmax = xmax)
+            pylab.xlim (xmin, xmax)
         elif (ymax - ymin) < 0.5 * (xmax - xmin):
             yc = (ymax + ymin) / 2.
             ymax = yc + 0.25 * (xmax - xmin)
             ymin = yc - 0.25 * (xmax - xmin)
-            pylab.ylim (ymin = ymin, ymax = ymax)
+            pylab.ylim (ymin, ymax)
 				# get transformation from cursor coords
 				# to lat/lon coordinates:
         self.xzero = xmin
@@ -2632,6 +2647,8 @@ class MainWindow (wx.Frame):
         pylab.xlabel('Longitude')
         pylab.ylabel('Latitude')
         pylab.title('Current Track')
+        pylab.xlim (xmin, xmax)
+        pylab.ylim (ymin, ymax)
         pylab.grid(True)
         pylab.savefig('Plan')
         pylab.close()
@@ -2659,8 +2676,8 @@ class MainWindow (wx.Frame):
 # station 72469 is the DNR sounding:
         http = \
 'http://weather.uwyo.edu/cgi-bin/sounding?region=naconf&TYPE=TEXT%3ALIST&YEAR=' + str (now.year) + '&MONTH=' + format (now.month, '02d') + '&FROM=' + dh + '&TO='+dh + '&STNM='+format(STN, 'd')
-        cmd = 'wget --output-document=./Sounding.UWyo ' + '\'' \
-            + http + '\''
+        cmd = 'wget --output-document=./Sounding.UWyo ' + '\"' \
+            + http + '\"'
         result = True
         while result:
             os.system (cmd)
@@ -2678,7 +2695,11 @@ class MainWindow (wx.Frame):
                 dlg.Destroy ()
             else: 
                 result = False
-                os.system ('mv Sounding.UWyo Sounding')
+                if 'win' in sys.platform:
+                    os.system ('DEL Sounding')
+                    os.system ('RENAME Sounding.UWyo Sounding')
+                else:
+                    os.system ('mv Sounding.UWyo Sounding')
                 Specs.LoadSounding ()
 
     def SetParameters (self, event): pass
@@ -3211,7 +3232,7 @@ def main ():
     'Specify and edit plans for flight and produce coordinate '\
     + 'listings and .kml plot'
     global frame
-    app = wx.PySimpleApp ()
+    app = wx.App ()
     frame = MainWindow (None, -1, "PlanFlight")
 #   frame.Center ()
     frame.Move ((0,0))

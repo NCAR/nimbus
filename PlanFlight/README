@@ -9,6 +9,7 @@ This program requires:
   *  wxPython package 
   *  matplotlib (for some plots; a version without those plots is available)
   *  numpy (required by matplotlib)
+  *  wget (probably available on linux machines)
 All are available on tikal.eol.ucar.edu, so the program will run there.
 Python and wxPython are available for many platforms including Windows and
 Mac as well as linux; see below for suggested sources. The reason that Python 
@@ -20,23 +21,27 @@ The coordinates included in the subdirectory 'NavPoints' are a subset of
 what is available. More points can be generated easily from the full database
 but are not included here. Contact: Al Cooper (cooperw@ucar.edu)
 
-The 'Map' menu includes only one map. More can be generated and added to the
-menu; see 'Xform.py' for an aid to determining the transformation from cursor
-coordinates to lat/lon as is needed for maps in this format.
+The 'Map' menu includes maps that are project-specific. More can be generated 
+and added to the menu, and some programs are included in the source directory
+to help determine the new coordinate transformations. When I made these maps,
+I used 'gimp' to reduce skewness and parallax to make the map projection
+closer to rectangular in lat-lon.
 
 The button that starts Google Earth with the .kml file produced by this
-program works with linux if google-earth is in the path. For Windows, another
-solution is needed.
+program works with linux if google-earth is in the path, and for Windows if
+the program is located at 
+C:\Program Files (x86)\Google\Google Earth\client\googleearth.exe
+If not, make a link from that location to the program to get this to work.
+This is untested for Macs at present.
 
-I was able to get this to work on a 32-bit Windows machine as follows.
-(This is probably the safest route to a working version on a 64-bit
-machine also, although that hasn't been explored as much as the
-32-bit version.)
+I was able to get this to work on a 32-bit Windows machine and also a
+64-bit machine running Windows 7, as follows: (The sources I used are
+included in the 'PlanFlight.Install' directory.)
   1. Download and install python:
      http://www.python.org/ftp/python/2.7.3/python-2.7.3.msi
      Don't use python-3; that will probably not work.
   2. Download and install wxPython (used by the PlanFlight GUI):
-     http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/wxPython2.8-win32-unicode-2.8.12.1-py27.exe/download
+     http://sourceforge.net/projects/wxpython/files/wxPython/2.9.3.1/wxPython2.9-win32-2.9.3.1-py27.exe
      Be sure to match the Python version; see 'py27' above.
      (accept option to prepare tools at end of install)
   3. Download and install matplotlib:
@@ -45,7 +50,13 @@ machine also, although that hasn't been explored as much as the
   4. Download and install numpy:
      http://sourceforge.net/projects/numpy/files/NumPy/1.6.1/numpy-1.6.1-win32-superpack-python2.7.exe/download
      Ditto re Python version.
-  5. Copy the directory PlanFlight to the windows machine. On EOL machines,
+  5. Download and install wget.exe on Windows machines. (wget is probably 
+     availalable on linux machines.) A possible source is:
+     http://users.ugent.be/~bpuype/cgi-bin/fetch.pl?dl=wget/wget.exe
+     This program must be placed where a call to execute it will find it,
+     for example in C:\Windows on a Windows machine. It is used to fetch
+     soundings.
+  6. Copy the directory PlanFlight to the windows machine. On EOL machines,
      this is accessible via ~cooperw/PlanFlight; it is also saved as
      ftp://ftp.eol.ucar.edu/pub/temp/users/cooperw/PlanFlightxx.tgz
      where xx is the date of the version. It is also available in the
@@ -65,4 +76,5 @@ These files are not used and should be deleted from the archive:
   Sounding.py
   Cursor.py
   Example*.py
+  (some others)
 They were used for study prior to incorporating the code into PlanFlight.py.

@@ -48,11 +48,13 @@ white are optional.)
 ----- 
 **Show in Google Earth:**
 
-Once a file 'Plan.kml' is saved using the button above this one, it
-is possible (on linux machines) to start Google Earth with this input
-file so that you can see the track as defined here. This function is
-not yet implemented for Windows machines; there, start Google Earth and
-read the file 'Plan.kml' in this directory.  
+On linux machines, this button will start Google Earth with the plan 
+(Plan.kml) as defined here. On the GV, this button instead transfers
+PlanAC.kml to become the planned-track display on the Mission Coordinator
+display. 
+
+The Google Earth start-up is not yet implemented for operating
+systems other than linux.
 ----- 
 **deg min format:**
 
@@ -65,6 +67,14 @@ provides a quick converter. Note that the flight crew will normally
 want the former format, in integer degrees and not more than one
 fractional digit for the decimal minute (as in 56.7).  
 ----- 
+**Spin Control:**
+This control determines the module number to display in this right-side
+window. You can either increment/decrement using the arrow buttons or
+enter a number and press return. On some Windows systems, there have
+been problems with this button: A fall-back is to tab through the display
+items (7 tabs from the starting location) to select the spin control item
+and then use the up/down arrows to change it.
+-----
 **Size, n mi:**
 
 If the module has a characteristic size, enter it here in units of
