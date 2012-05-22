@@ -20,6 +20,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 
 #include <fcntl.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "raf/header.h"
 #include "oldhdr.h"
 

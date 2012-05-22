@@ -2,10 +2,10 @@
 #    Makefile for hdrdump & ADScvt
 #
 DESTDIR=
-BINDIR=		/jnet/linux/bin
+BINDIR=		/opt/local/bin
 MANDIR=		/usr/local/man/manl
-INCDIR=		/jnet/shared/include
-LIBS=		-lhdr_api
+INCDIR=		/opt/local/include
+LIBS=		-L/opt/local/lib -lhdr_api
 LINTLIBS=	/usr/local/lib/lint/llib-lhdr_api.ln
 INCLUDES=	-I$(INCDIR)
 CC=		gcc
