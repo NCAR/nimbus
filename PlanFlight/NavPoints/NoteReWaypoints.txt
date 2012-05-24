@@ -1,0 +1,65 @@
+The new file 'HighAltitudeWaypoints.kmz' was generated from the FADDS database,
+the official publication of the FAA. That database identifies 'fixes' according
+to their type and indicates what ARTCC, if any,  uses the fix for high-altitude 
+and low-altitude flight (separated so that high-altitude is FL180 and above). I
+was able to use the files from FADDS to extract the waypoints that are used
+for flight control, and to generate a KML file (HighAltitudeWaypoints.kml)
+for use with Google-Earth and also a text file for input to PlanFlight. These
+are included in the latest update to the SVN repository. and the KML file is
+attached.
+
+I'll provide a little information below on what assumptions I made in making 
+these files, but first: My recommendation is that this file is the one that 
+should be used on the Mission Coordinator displays. I don't think we need 
+another for low-altitude flight because it turns out that all these high-
+altitude fixes are also low-altitude fixes. The reverse is not true: There are 
+many low-altitude fixes that are not usable for high-altitude flight, so 
+another file could be made with more low-altitude fixes. But this is already 
+such a dense set that there isn't need to expand it for low-level flight, 
+although that would be possible (and I already made such a low-altitude kml). 
+
+Some comments about the files:
+
+1. As before, the references to external web sites will need to be changed
+   to 'acserver...' for the GV.
+
+2. I excluded these fixes that were present in the database:
+   a. Any fixes labeled as military.
+   b. Any fixes not labeled as published.
+   c. Computer Navigation Fixes (CNF): The FAA says these are not acceptable 
+      for filing flight plans or for communication with controllers.
+   d. Fixes labeled as 'ATC coordination fixes' -- I'm not sure this was
+      necessary, but there aren't very many of these.
+   e. GPS fixes: Again, that probably wasn't necessary.
+   f. Approach fixes.
+
+3. After these exclusions, almost all the fixes were in three categories: RNAV,
+   Position reporting, and 'NRS waypoints' -- the latter are named waypoints at
+   even values of lat-lon, like 31 deg 30 min, -106 deg. These don't appear
+   on the enroute high-altitude charts but are apparently usable.
+
+4. The KML file uses two different symbols. The larger blue 'target' symbol
+   denotes a fix that also is visible on the enroute charts. (Some of the
+   above-mentioned NRS fixes don't have a name on the charts but their 
+   locations can be found from the lat/lon labels, so they are shown with the
+   large blue symbols also.) These symbols also have associated names visible 
+   in GE. Other symbols that are not present on the Enroute maps but are still 
+   usable appear as smaller circle-and-dot symbols in a reddish-brown color. 
+
+5. I limited the area covered to latitudes of 28 to 45 and longitudes from
+   -107 to -80. This reduced the dataset more than 1/2 vs the full US.
+
+6. All of these have associated bubbles that show the lat/lon in deg-min 
+   formati, the type of fix,  and for fixes that appear on the enroute charts
+   there is a notation in the bubble that lists 'ENROUTE HIGH'.
+
+7. There are so many of these that they should be turned off except when needed.
+   In particular, to zoom or pan, you should turn these off first and wait
+   until you have selected the area you want before turning them back on.
+
+To summarize: This is a very dense set of waypoints, all listed as suitable
+for coordination of high-altitude and low-altitude flight. They are current
+now and I will be notified when there are updates. I think these are
+what we should use. Please let me know of any problems.
+
+  -- Al

@@ -1,28 +1,104 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<kml xmlns="http://www.opengis.net/kml/2.2">
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
 <Document>
-	<name>WAC</name>
+	<name>High Altitude Waypoints</name>
 	<Style id="WAC">
 		<IconStyle>
-			<scale>1</scale>
-			<color>ff0000ff</color>
+			<color>7f9999cc</color>
 			<Icon>
-			<href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>
- 			<href>http://maps.google.com/mapfiles/kml/shapes/triangle.png</href>
-#			<href>http://maps.google.com/mapfiles/kml/shapes/shaded_dot.png</href>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle_highlight.png</href>
 			</Icon>
 		</IconStyle>
+		<LabelStyle>
+			<scale>0</scale>
+		</LabelStyle>
+		<ListStyle>
+		</ListStyle>
 		<LineStyle>
 			<color>ff00ff00</color>
-			<width>2</width>
+			<width>0</width>
 		</LineStyle>
 		<PolyStyle>
 			<color>bf80c0ff</color>
-			<fill>1</fill>
-			<outline>1</outline>
 		</PolyStyle>
+	</Style>
+	<StyleMap id="WAC0">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#WAC1</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#WAC</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="WAC1">
+		<IconStyle>
+			<color>7f9999cc</color>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
 		<LabelStyle>
-			<scale>0.7</scale>
-			<color>ffffffff</color>
+			<scale>0</scale>
 		</LabelStyle>
+		<ListStyle>
+		</ListStyle>
+		<LineStyle>
+			<color>ff00ff00</color>
+			<width>0</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>bf80c0ff</color>
+		</PolyStyle>
+	</Style>
+	<Style id="ENR">
+		<IconStyle>
+			<color>ffffaa55</color>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/target.png</href>
+			</Icon>
+		</IconStyle>
+		<LabelStyle>
+			<scale>1.0</scale>
+		</LabelStyle>
+		<ListStyle>
+		</ListStyle>
+		<LineStyle>
+			<color>ff00ff00</color>
+			<width>0</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>bf80c0ff</color>
+		</PolyStyle>
+	</Style>
+	<StyleMap id="ENR0">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#ENR1</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#ENR</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="ENR1">
+		<IconStyle>
+			<color>ffffaa55</color>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/target.png</href>
+			</Icon>
+		</IconStyle>
+		<LabelStyle>
+			<scale>1.0</scale>
+		</LabelStyle>
+		<ListStyle>
+		</ListStyle>
+		<LineStyle>
+			<color>ff00ff00</color>
+			<width>0</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>bf80c0ff</color>
+		</PolyStyle>
 	</Style>
