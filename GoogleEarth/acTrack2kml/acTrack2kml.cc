@@ -57,7 +57,7 @@ int showit = 1;
 enum VariablePos { TIME=0, LON, LAT, ALT, AT, DP, TAS, WS, WD, WI };
 static const string _dataQuerySuffix = ",atx,dpxc,tasx,wsc,wdc,wic FROM raf_lrt WHERE TASX > ";
 
-float _convertToFeet = 1.0;
+static float _convertToFeet = 1.0;
 
 class _projInfo
 {
@@ -92,7 +92,7 @@ isMissingValue(float target)
 /* -------------------------------------------------------------------- */
 template <typename T>
 T
-extractPQvalue(const char* cpqstring)
+extractPQvalue(const char *cpqstring)
 {
   if (! cpqstring)
   {
@@ -129,7 +129,7 @@ extractPQString(PGresult *result, int tuple, int field)
 }
 
 /* -------------------------------------------------------------------- */
-string getGlobalAttribute(PGconn * conn, string attr)
+string getGlobalAttribute(PGconn *conn, string attr)
 {
   string query = "SELECT value FROM global_attributes WHERE key='";
   query += attr + "'";
@@ -148,7 +148,7 @@ string getGlobalAttribute(PGconn * conn, string attr)
 }
 
 /* -------------------------------------------------------------------- */
-string getVariableUnits(PGconn * conn, string name)
+string getVariableUnits(PGconn *conn, string name)
 {
   string query = "SELECT units FROM variable_list WHERE name='";
   query += name + "'";
@@ -171,7 +171,7 @@ string getVariableUnits(PGconn * conn, string name)
  * Read the 'coordinates' attribute form the database to get the names of
  * the lat, lon and alt variables.
  */
-string buildDataQueryString(PGconn * conn)
+string buildDataQueryString(PGconn *conn)
 {
   string dataQuery = "SELECT datetime,";
 
@@ -330,7 +330,7 @@ void WriteCurrentPositionKML(const _projInfo& projInfo)
 }
 
 /* -------------------------------------------------------------------- */
-void WriteLandmarksKML_Folder(ofstream & googleEarth, const _projInfo& projInfo)
+void WriteLandmarksKML_Folder(ofstream& googleEarth, const _projInfo& projInfo)
 {
   if (projInfo.landmarks.size() == 0)
     return;
@@ -367,7 +367,7 @@ void WriteLandmarksKML_Folder(ofstream & googleEarth, const _projInfo& projInfo)
 }
 
 /* -------------------------------------------------------------------- */
-void WriteTimeStampsKML_Folder(ofstream & googleEarth)
+void WriteTimeStampsKML_Folder(ofstream& googleEarth)
 {
   googleEarth
     << " <Folder>\n"
@@ -405,7 +405,7 @@ void WriteTimeStampsKML_Folder(ofstream & googleEarth)
 }
 
 /* -------------------------------------------------------------------- */
-void WriteWindBarbsKML_Folder(ofstream & googleEarth)
+void WriteWindBarbsKML_Folder(ofstream& googleEarth)
 {
   googleEarth
     << " <Folder>\n"
@@ -458,7 +458,7 @@ void WriteWindBarbsKML_Folder(ofstream & googleEarth)
 /* Copies verbatum from a text file called "include.kml", this allows for
  * user define stuff to be added.
  */
-void WriteSpecialInclude(ofstream & googleEarth)
+void WriteSpecialInclude(ofstream& googleEarth)
 {
   ifstream inc;
 
@@ -496,7 +496,7 @@ renamefile(string file, string outFile)
 }
 
 /* -------------------------------------------------------------------- */
-void WriteGoogleEarthKML(string & file, const _projInfo& projInfo)
+void WriteGoogleEarthKML(string& file, const _projInfo& projInfo)
 {
   ofstream googleEarth;
 
@@ -667,7 +667,7 @@ void WriteGoogleEarthKML(string & file, const _projInfo& projInfo)
 }
 
 /* -------------------------------------------------------------------- */
-void WriteGoogleEarthAnimatedKML(string & file, const _projInfo& projInfo)
+void WriteGoogleEarthAnimatedKML(string& file, const _projInfo& projInfo)
 {
   ofstream googleEarth;
 
@@ -802,7 +802,7 @@ void WriteGoogleEarthAnimatedKML(string & file, const _projInfo& projInfo)
 }
 
 /* -------------------------------------------------------------------- */
-void updateData(PGresult * res, int indx)
+void updateData(PGresult *res, int indx)
 {
   if (_lat.size() == 0)
   {
@@ -847,9 +847,9 @@ void updateData(PGresult * res, int indx)
  * Query the database for fresh data.  If this is the first request for
  * data, then get everything in the database at the moment.
  */
-void GetNewData(PGconn * conn, string query)
+void GetNewData(PGconn *conn, string query)
 {
-  PGresult * res;
+  PGresult *res;
   int ntuples;
 
 // This was originally written to accrete new data, but it didn't keep
@@ -1061,7 +1061,7 @@ void ReadDataFromNetCDF(const string & fileName)
 }
 
 /* -------------------------------------------------------------------- */
-int usage(const char* argv0)
+int usage(const char *argv0)
 {
   cerr
 	<< "Usage: has two forms, one for real-time use and the other to scan\n"
@@ -1086,9 +1086,9 @@ int usage(const char* argv0)
 /* -------------------------------------------------------------------- */
 int parseRunstring(int argc, char** argv)
 {
-  extern char *optarg;       /* set by getopt() */
-  extern int optind;       /* "  "     "     */
-  int opt_char;     /* option character */
+  extern char *optarg;	/* set by getopt() */
+  extern int optind;	/* "  "     "     */
+  int opt_char;		/* option character */
 
   // Default to ground, -p and netCDF mode.
   webHost = grnd_webHost;
@@ -1218,7 +1218,7 @@ int main(int argc, char *argv[])
 
   // Real-time mode.
 
-  PGconn * conn;
+  PGconn *conn;
 
   while (1)
   {
