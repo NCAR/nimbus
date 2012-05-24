@@ -38,7 +38,7 @@ static int TimeStep = 15;
 static const float TAS_CutOff = 20.0;
 
 // Frequency of Time Stamps (in minutes).
-static int ts_Freq = 5;
+static int ts_Freq = 20;
 
 // Frequency of Wind Barbs (in minutes).
 static int barb_Freq = 5;
@@ -177,10 +177,20 @@ string buildDataQueryString(PGconn * conn)
 
   string lat = getGlobalAttribute(conn, "latitude_coordinate");
   string lon = getGlobalAttribute(conn, "longitude_coordinate");
-  string alt = getGlobalAttribute(conn, "zaxis_coordinate");
+  string alt;
 
+  // Search for pressure altitude first, zaxis_coord is typically GPS alt.
+  if (getVariableUnits(conn, "PALTF") != "")
+    alt = "PALTF";
+  else
+  if (getVariableUnits(conn, "PALT") != "")
+    alt = "PALT";
+  else
+    alt = getGlobalAttribute(conn, "zaxis_coordinate");
+  
   if (getVariableUnits(conn, alt) == "m")
-    _convertToFeet = 3.2808; // feet per meter
+    _convertToFeet = 3.2808;    // feet per meter
+
 
   dataQuery += lon + "," + lat + "," + alt + _dataQuerySuffix;
 
@@ -414,6 +424,9 @@ void WriteWindBarbsKML_Folder(ofstream & googleEarth)
       int iws = barbSpeed(_ws[i]);	// make sure to pass in knots.
       int iwd = (int)_wd[i];
       char url[512];
+
+      if (iws < 0) iws = 0;
+      if (iwd < 0 || iwd > 360) iwd = 0;
 
       sprintf(url, "<href>http://%s/flight_data/display/windbarbs/%03d/wb_%03d_%03d.png</href>\n",
 		webHost.c_str(), iws, iws, iwd);
@@ -890,7 +903,7 @@ _at.clear(); _dp.clear(); _tas.clear(); _ws.clear(); _wd.clear(); _wi.clear();
 }
 
 /* -------------------------------------------------------------------- */
-PGconn * openDataBase()
+PGconn *openDataBase()
 {
   char	conn_str[1024];
 
@@ -913,6 +926,20 @@ PGconn * openDataBase()
 }
 
 /* -------------------------------------------------------------------- */
+NcVar *getNetcdfVariable(NcFile& file, const char var_name[])
+{
+  NcVar *var;
+
+  if ((var = file.get_var(var_name)) == 0)
+  {
+    cerr << "acTrack2kml: unable to find variable " << var << " in netCDF file, fatal.\n";
+    exit(1);
+  }
+
+  return var;
+}
+
+/* -------------------------------------------------------------------- */
 void ReadDataFromNetCDF(const string & fileName)
 {
   cout << "ReadDataFromNetCDF: " << fileName << endl;
@@ -923,6 +950,8 @@ void ReadDataFromNetCDF(const string & fileName)
     cerr << "Failed to open, or invalid netCDF file.\n";
     return;
   }
+
+  NcError err(NcError::silent_nonfatal);
 
   NcAtt* attr;
   attr = file.get_att("FlightNumber");
@@ -943,22 +972,34 @@ void ReadDataFromNetCDF(const string & fileName)
   attr = file.get_att("latitude_coordinate");
   char *lat = attr->as_string(0);
 
-  attr = file.get_att("zaxis_coordinate");
-  char *alt = attr->as_string(0);
-
   attr = file.get_att("time_coordinate");
   char *tim = attr->as_string(0);
 
-  NcVar* tim_v = file.get_var(tim);
-  NcVar* tas_v = file.get_var("TASX");
-  NcVar* lat_v = file.get_var(lat);
-  NcVar* lon_v = file.get_var(lon);
-  NcVar* alt_v = file.get_var(alt);
-  NcVar* atx_v = file.get_var("ATX");
-  NcVar* dp_v = file.get_var("DPXC");
-  NcVar* ws_v = file.get_var("WSC");
-  NcVar* wi_v = file.get_var("WIC");
-  NcVar* wd_v = file.get_var("WDC");
+  NcVar *tim_v = getNetcdfVariable(file, tim);
+  NcVar *tas_v = getNetcdfVariable(file, "TASX");
+  NcVar *lat_v = getNetcdfVariable(file, lat);
+  NcVar *lon_v = getNetcdfVariable(file, lon);
+  NcVar *atx_v = getNetcdfVariable(file, "ATX");
+  NcVar *dp_v = getNetcdfVariable(file, "DPXC");
+  NcVar *ws_v = getNetcdfVariable(file, "WSC");
+  NcVar *wi_v = getNetcdfVariable(file, "WIC");
+  NcVar *wd_v = getNetcdfVariable(file, "WDC");
+
+  // Pressure altitutide is preferred.
+  NcVar *alt_v;
+  const char *alt = "PALTF";
+  if ((alt_v = file.get_var(alt)) == 0)
+  {
+    _convertToFeet = 3.2808;
+    alt = "PALT";
+    if ((alt_v = file.get_var(alt)) == 0)
+    {
+      attr = file.get_att("zaxis_coordinate");
+      alt = attr->as_string(0);
+
+      alt_v = getNetcdfVariable(file, alt);
+    }
+  }
 
   NcValues *tim_vals = tim_v->values();
   NcValues *tas_vals = tas_v->values();
@@ -1030,7 +1071,14 @@ int usage(const char* argv0)
 	<< "Real-time ground form:\n"
 	<< "	acTrack2kml [-h database_host] -p platform\n\n"
 	<< "Post-processing:\n"
-	<< "	acTrack2kml infile.nc outfile.kml\n";   
+	<< "	acTrack2kml infile.nc outfile.kml\n\n"
+	<< "Options:\n"
+	<< "  -p platform		Platform name, valid values (C130, DC8, GV, P3).\n"
+	<< "  -h database_host	Database server host with data.\n"
+	<< "  -o			Run onboard, changes webhost to onboard server.\n"
+	<< "  -b barb_freq		Frequency of wind barbs in minutes, default is 5.\n"
+	<< "  -t ts_freq		Frequency of time stamps in minutes, default is 20.\n"
+	<< "  -s time_step		Time interval of data points for track in seconds, default is 30.\n";
 
   return 1;
 }
@@ -1045,7 +1093,7 @@ int parseRunstring(int argc, char** argv)
   // Default to ground, -p and netCDF mode.
   webHost = grnd_webHost;
 
-  while ((opt_char = getopt(argc, argv, "p:h:s:t:o")) != -1)
+  while ((opt_char = getopt(argc, argv, "p:h:b:s:t:o")) != -1)
   {
     switch (opt_char)
     {
@@ -1070,10 +1118,17 @@ int parseRunstring(int argc, char** argv)
 
     case 's':	// Time-step, default is 30 seconds.
       TimeStep = atoi(optarg);
+      if (TimeStep < 5) TimeStep = 5;
       break;
 
-    case 't':	// Time Stamp Frequency, default is 10 minutes.
+    case 'b':	// Windbarb Frequency, default is 5 minutes.
+      barb_Freq = atoi(optarg);
+      if (barb_Freq < 1) barb_Freq = 86400; // 24 hours, basically turn off.
+      break;
+
+    case 't':	// Time Stamp Frequency, default is 20 minutes.
       ts_Freq = atoi(optarg);
+      if (ts_Freq < 1) ts_Freq = 86400; // 24 hours, basically turn off.
       break;
 
     case 'o':	// onboard.  Modify some defaults if this is set.
