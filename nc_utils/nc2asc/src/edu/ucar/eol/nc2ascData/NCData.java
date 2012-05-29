@@ -24,6 +24,8 @@ import edu.ucar.eol.nc2asc.*;
 
 public class NCData {
 
+	public static final double ICARTT_MISS_VAL = -99999.0;
+
 	//constructor
 	public NCData(String ifn, String ofn) {infn = ifn; outfn=ofn;}
 	public NCData(String ifn) {infn = ifn;}
@@ -206,7 +208,7 @@ public class NCData {
 	 * setFileName provides the users with ability to set up netcdf read-only input file name 
 	 * 
 	 */
-	public void setInputFileName(String ifn){infn=ifn;}
+	public void setInputFileName(String ifn) { infn=ifn; }
 
 
 
@@ -449,14 +451,14 @@ public class NCData {
 		}
 
 		// all the time-range data length-should be the seconds in the time range
-		tmPassed=0; bfinish =false; progIdx =0; NC2A.overMidNight=false;
+		tmPassed = 0; bfinish = false; progIdx = 0; NC2A.overMidNight = false;
 
 		int nVariables = sublvars.size(); ///variable name to the first line of out file
 		data = new float [nVariables][];
-		oneDLen= new int[nVariables];
+		oneDLen = new int[nVariables];
 		missVal = new float[nVariables];
 		hRate = new int[nVariables];
-		long milSec= 0;
+		long milSec = 0;
 		Variable var = null;
 		int topRateSubVar = 0; //get the  top rate for the sub-group
 
@@ -466,18 +468,18 @@ public class NCData {
 			for (int i = 0; i < nVariables; i++){
 				if (bfinish) return;
 				var = sublvars.get(i);
-				oneDLen[i]= getLen(var);
-				totVarLen +=oneDLen[i];
+				oneDLen[i] = getLen(var);
+				totVarLen += oneDLen[i];
 				if (var.findAttribute("_FillValue") == null)
 					missVal[i] = -32767.0f;
 				else
-					missVal[i]= var.findAttribute("_FillValue").getNumericValue().floatValue();
+					missVal[i] = var.findAttribute("_FillValue").getNumericValue().floatValue();
 				if (gDataInf[0]>1)  { //find highest rate in subvarlist
-					hRate[i]=getOR(var);
+					hRate[i] = getOR(var);
 					if (hRate[i] >topRateSubVar) {topRateSubVar= hRate[i];}
 				}
 				data[i] = read1DData(var, range[0], range[1]);
-				progIdx ++;
+				progIdx++;
 				//if (bMode) { System.out.println("Reading "+ progIdx);}
 			}
 		} catch (NCDataException e) {
@@ -498,28 +500,35 @@ public class NCData {
 		} else if (Integer.parseInt(fmt[DataFmt.AVG_IDX])>1) {
 			writeLowRateAvgData(range, fmt, milSec, t1, nVariables);
 		} else {
-			writeNormalData (range, fmt, milSec, t1, nVariables) ;
+			writeNormalData(range, fmt, milSec, t1, nVariables);
 		}
 
-		tmPassed =System.currentTimeMillis() - t1;
+		tmPassed = System.currentTimeMillis() - t1;
 		bfinish = true;
-		try { fout.close();} catch (Exception e){}
+		try { fout.close(); } catch (Exception e) {}
 		NC2Act.wrtMsg("\n Writing data is done.");
 	}
 
 	private void writeNormalData(int[] range, String[] fmt, long milSec, long t1, int nVariables) {
 		//regular data - no average& no high rate
-		String dmtr = fmt[DataFmt.DMTR_IDX], mval = fmt[DataFmt.MVAL_IDX];
+		String	dmtr = fmt[DataFmt.DMTR_IDX],
+			mval = fmt[DataFmt.MVAL_IDX],
+			file_frmt = fmt[DataFmt.HEAD_IDX];
+
 		for (int i =0; i<range[1]; i++) {
 			if (bfinish) return;
 			String line = getNewTm(milSec, i+range[0], fmt, false);
 			progIdx++; 
 			for (int j = 0; j < nVariables; j++) {
-				String varFmt= varDatFmt.get(j);
+				String varFmt = varDatFmt.get(j);
 				for (int count = 0; count < oneDLen[j]; ++count) {
 					float f = data[j][oneDLen[j]*i+count];
 					if (f == missVal[j]) {
-						line += dmtr + mval;
+						if (file_frmt.equals(DataFmt.HDR_ICARTT)) {
+							line += dmtr + ICARTT_MISS_VAL;
+						} else {
+							line += dmtr + mval;
+						}
 					} else {
 						line += dmtr + String.format(varFmt, f); 
 					}
@@ -532,18 +541,18 @@ public class NCData {
 	private void writeLowRateAvgData(int[] range, String[] fmt, long milSec, long t1, int nVariables) {
 		int avg = Integer.parseInt(fmt[DataFmt.AVG_IDX]); 
 		long tot = 0;
-		for (int j=0; j<avg; j++) {
+		for (int j = 0; j < avg; j++) {
 			tot += j;
 		}
 		tot = (long) 1000.0 * tot/avg;
 		String dmtr = fmt[DataFmt.DMTR_IDX], mval = fmt[DataFmt.MVAL_IDX]; 
 		float[] totVal= new float[totVarLen]; int totValIdx=0, avgCount =0; float mVal = -99999;
 
-		for (int i =0; i<range[1]; i++) { //data-in the time range
+		for (int i = 0; i < range[1]; i++) { //data-in the time range
 			if (bfinish) return;
-			progIdx ++; totValIdx=0; String lineData="";
+			progIdx++; totValIdx=0; String lineData="";
 			for (int j = 0; j < nVariables; j++) {
-				String varFmt= varDatFmt.get(j);
+				String varFmt = varDatFmt.get(j);
 				for (int count = 0; count<oneDLen[j]; ++count) {
 					float f = data[j][oneDLen[j]*i+count];
 					if (f == missVal[j] || totVal[totValIdx] == mVal) {
@@ -849,7 +858,7 @@ public class NCData {
 			}
 			varInfo += "\n";
 			if (i > 0) fillValues += ", ";
-			fillValues += v.findAttribute("_FillValue").getNumericValue();
+			fillValues += ICARTT_MISS_VAL;
 		}
 		ret += fillValues + "\n";
 		ret += varInfo;
