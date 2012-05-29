@@ -157,14 +157,14 @@ void CreatePlainNetCDF(FILE *fp)
    */
   for (p = buffer; isspace(*p); ++p)
     ;
-  p = strtok(p, " \t\n\r");
+  p = strtok(p, " ,\t\n\r");
 
   nVariables = 0;
 
   if (dataRate > 1)
     ndims = 2;
 
-  while ( (p = strtok(NULL, " \t\n\r")) )
+  while ( (p = strtok(NULL, " ,\t\n\r")) )
   {
     if (verbose)
       printf("Creating variable [%s]\n", p);
