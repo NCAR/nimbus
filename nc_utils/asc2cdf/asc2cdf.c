@@ -101,6 +101,10 @@ int main(int argc, char *argv[])
       CreateNASAamesNetCDF(inFP);
       break;
 
+    case ICARTT:
+      CreateICARTTnetCDF(inFP);
+      break;
+
     case NASA_LANGLEY:
       CreateNASAlangNetCDF(inFP);
       break;
@@ -238,7 +242,7 @@ int main(int argc, char *argv[])
       for (i = 0; i < nVariables; ++i)
         {
         if ((p = strtok(NULL, ", \t\n\r")) == NULL)
-          fprintf(stderr, "Not enough data points in row # %d, check your formating;\n   are there spaces in a variable name on the title line?\n", nRecords);
+          fprintf(stderr, "Not enough data points in row # %zu, check your formating;\n   are there spaces in a variable name on the title line?\n", nRecords);
 
         if (p)
           dataValue = atof(p);
@@ -362,6 +366,11 @@ static int ProcessArgv(int argc, char **argv)
       case 'h':
 	histogram = true;
 	break;
+
+      case 'i':
+        fileType = ICARTT;
+        secondsSinceMidnight = true;
+        break;
 
       case 'l':
         fileType = NASA_LANGLEY;

@@ -1,54 +1,34 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:	nasaAmes.c
+OBJECT NAME:	ICARTT.c
 
-FULL NAME:	NASA Ames ASCII to Nimbus-netCDF Low Rate
+FULL NAME:	ICARTT to Nimbus-netCDF Low Rate
 
-ENTRY POINTS:	SetNASABaseTime()
-		CreateNASAamesNetCDF()
+ENTRY POINTS:	CreateICARTTnetCDF()
 
-STATIC FNS:	none
+DESCRIPTION:	Translate ICARTT file to Nimbus Low Rate netCDF file
 
-DESCRIPTION:	Translate NASA ASCII file to Nimbus Low Rate netCDF file
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1996-07
+COPYRIGHT:	University Corporation for Atmospheric Research, 1996-12
 -------------------------------------------------------------------------
 */
 
 #include "define.h"
 
-struct tm	StartFlight;
 
 void *GetMemory(size_t nbytes);
 
+
 /* -------------------------------------------------------------------- */
-void SetNASABaseTime(int hour, int min, int sec)
+char *trim_trailing_spaces(char s[])
 {
-  struct tm	*gt;
-  char buff[512];
+  while (s[strlen(s)-1] == ' ')
+    s[strlen(s)-1] = '\0';
 
-  StartFlight.tm_hour	= hour;
-  StartFlight.tm_min	= min;
-  StartFlight.tm_sec	= sec;
-  StartFlight.tm_isdst	= -1;
-
-  BaseTime = mktime(&StartFlight);
-  gt = gmtime(&BaseTime);
-  StartFlight.tm_hour += StartFlight.tm_hour - gt->tm_hour;
-
-  BaseTime = mktime(&StartFlight);
-
-  strftime(buff, 128, "seconds since %F %T %z", &StartFlight);
-
-  status = nc_put_att_text(ncid, timeVarID, "units", strlen(buff)+1, buff);
-  if (status != NC_NOERR) handle_error(status);
-  status = nc_put_att_text(ncid, timeOffsetID, "units", strlen(buff)+1, buff);
-  if (status != NC_NOERR) handle_error(status);
-
-}	/* END SETNASABASETIME */
+  return s;
+}
 
 /* -------------------------------------------------------------------- */
-void CreateNASAamesNetCDF(FILE *fp)
+void CreateICARTTnetCDF(FILE *fp)
 {
   int	i, start;
   int	FFI, year, month, day;
@@ -91,7 +71,7 @@ void CreateNASAamesNetCDF(FILE *fp)
 
   /* Get length of header and format type (FFI) */
   fgets(buffer, BUFFSIZE, fp);
-  sscanf(buffer, "%d %d", &SkipNlines, &FFI);
+  sscanf(buffer, "%d, %d", &SkipNlines, &FFI);
   printf("SkipNlines: %d  FFI:%d\n", SkipNlines, FFI);
 
   if (FFI < 1000 || FFI > 1999)
@@ -103,6 +83,7 @@ void CreateNASAamesNetCDF(FILE *fp)
   /* Get PI */
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
+  trim_trailing_spaces(buffer);
   status = nc_put_att_text(ncid, NC_GLOBAL, "PI", strlen(buffer)+1, buffer);
   if (status != NC_NOERR) handle_error(status);
   printf("PI: %s\n", buffer);
@@ -110,6 +91,7 @@ void CreateNASAamesNetCDF(FILE *fp)
   /* Get Data Source Institution */
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
+  trim_trailing_spaces(buffer);
   status = nc_put_att_text(ncid, NC_GLOBAL, "Source", strlen(buffer)+1, buffer);
   if (status != NC_NOERR) handle_error(status);
   printf("Source: %s\n", buffer);
@@ -117,6 +99,7 @@ void CreateNASAamesNetCDF(FILE *fp)
   /* Get probe name */
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
+  trim_trailing_spaces(buffer);
   status = nc_put_att_text(ncid, NC_GLOBAL, "SNAME", strlen(buffer)+1, buffer);
   if (status != NC_NOERR) handle_error(status);
   printf("SNAME: %s\n", buffer);
@@ -124,6 +107,7 @@ void CreateNASAamesNetCDF(FILE *fp)
   /* Get project name */
   fgets(buffer, BUFFSIZE, fp);
   buffer[strlen(buffer)-1] = '\0';
+  trim_trailing_spaces(buffer);
   status = nc_put_att_text(ncid, NC_GLOBAL, "ProjectName", strlen(buffer)+1, buffer);
   if (status != NC_NOERR) handle_error(status);
   printf("ProjectName: %s\n", buffer);
@@ -145,6 +129,7 @@ void CreateNASAamesNetCDF(FILE *fp)
 
   /* Calculate FlightDate and write it to netCDF file */
   if (year > 1900) year -= 1900;
+  extern struct tm StartFlight;
   StartFlight.tm_year = year;
   StartFlight.tm_mon = month - 1;
   StartFlight.tm_mday = day;
@@ -251,24 +236,28 @@ void CreateNASAamesNetCDF(FILE *fp)
   {
     fgets(buffer, BUFFSIZE, fp);
     buffer[strlen(buffer)-1] = '\0';
+    trim_trailing_spaces(buffer);
     titles[i] = (char *)GetMemory(strlen(buffer)+1);
     strcpy(titles[i], buffer);
-    p = strrchr(titles[i], '(');
-    if ( (p = strrchr(titles[i], '(')) )
+    p = strchr(titles[i], ',');
+    if ( (p = strchr(titles[i], ',')) )
       *(p-1) = '\0';
 
-    if ( (p = strrchr(buffer, '(')) && (p1 = strchr(p, ')')))
+    if ( (p = strchr(buffer, ',')) && (p1 = strchr(p+1, ',')))
     {
-      units[i] = (char *)GetMemory(p1 - p + 1);
+      
+      for (++p; *p == ' '; ) ++p;
+      units[i] = (char *)GetMemory(p1 - p);
       *p1 = '\0';
-      strcpy(units[i], p+1);
+      strcpy(units[i], p);
     }
     else
     {
       units[i] = (char *)GetMemory(10);
       strcpy(units[i], "Unk");
     }
-    printf("  titles[%d]: %s\n", i, titles[i]);
+    if (p1) { for (++p1; *p1 == ' '; ) ++p1;  strcpy(titles[i], p1); }
+    printf("  %d units=[%s], title=[%s]\n", i, units[i], titles[i]);
   }
 
 
@@ -311,6 +300,7 @@ void CreateNASAamesNetCDF(FILE *fp)
     {
       fgets(buffer, BUFFSIZE, fp);
       buffer[strlen(buffer)-1] = '\0';
+      trim_trailing_spaces(buffer);
       titles[i] = (char *)GetMemory(strlen(buffer)+1);
       strcpy(titles[i], buffer);
       printf("  auxilary titles[%d]: %s\n", i, titles[i]);
@@ -388,7 +378,7 @@ void CreateNASAamesNetCDF(FILE *fp)
     i=1;
 
     // return pointer to next variable in buffer
-    p = strtok(NULL, " \t\n\r");
+    p = strtok(NULL, " ,\t\n\r");
     status = nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[i]);
     if (status != NC_NOERR) handle_error(status);
     if (verbose)
@@ -435,7 +425,7 @@ void CreateNASAamesNetCDF(FILE *fp)
     for (i = 0; i < nVariables; ++i)
     {
       // return pointer to next variable in buffer
-      p = strtok(NULL, " \t\n\r");
+      p = strtok(NULL, " ,\t\n\r");
       status = nc_def_var(ncid, p, NC_FLOAT, ndims, dims, &varid[i]);
       if (status != NC_NOERR) handle_error(status);
 

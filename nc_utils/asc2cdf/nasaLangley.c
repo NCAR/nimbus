@@ -4,10 +4,7 @@ OBJECT NAME:	nasaLangley.c
 
 FULL NAME:	NASA ASCII to Nimbus-netCDF Low Rate
 
-ENTRY POINTS:	SetNASABaseTime()
-		CreateNASAlangNetCDF()
-
-STATIC FNS:	none
+ENTRY POINTS:	CreateNASAlangNetCDF()
 
 DESCRIPTION:	Translate NASA ASCII file to Nimbus Low Rate netCDF file
 

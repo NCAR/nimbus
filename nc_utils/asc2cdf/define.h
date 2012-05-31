@@ -13,7 +13,7 @@
 #define DEFAULT_TI_LENGTH   (20)
 #define MISSING_VALUE       (-32767.0)
 
-enum InputFileType { PLAIN_FILE, NASA_AMES, NASA_LANGLEY };
+enum InputFileType { PLAIN_FILE, NASA_AMES, NASA_LANGLEY, ICARTT };
 
 extern char	buffer[];
 extern int	ncid, varid[], nVariables, timeOffsetID, timeVarID, baseTimeID;
@@ -31,6 +31,7 @@ extern int	status;
 
 void CreateNASAamesNetCDF(FILE *fp);
 void CreateNASAlangNetCDF(FILE *fp);
+void CreateICARTTnetCDF(FILE *fp);
 void CreatePlainNetCDF(FILE *fp);
 void SetNASABaseTime(int, int, int), SetPlainBaseTime(void);
 void createTime(int dims[]);

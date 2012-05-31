@@ -16,8 +16,8 @@ LIBS=	-L${JLOCAL}/lib -lVarDB -lraf++ -lraf -lnetcdf -lhdf5 -lhdf5_hl
 ANONFTP=/net/ftp/pub/archive/RAF-src/bin.RHEL5
 WWWDOC=	/net/www/raf/Software
 
-SRCS=   asc2cdf.c plain.c nasaAmes.c nasaLangley.c getmem.c error.c
-OBJS=   asc2cdf.o plain.o nasaAmes.o nasaLangley.o getmem.o error.o
+SRCS=   asc2cdf.c plain.c nasaAmes.c nasaLangley.c ICARTT.c getmem.c error.c
+OBJS=   asc2cdf.o plain.o nasaAmes.o nasaLangley.o ICARTT.o getmem.o error.o
 HDRS=	define.h
 
 PROG=	asc2cdf
