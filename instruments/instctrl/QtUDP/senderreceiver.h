@@ -4,6 +4,11 @@
 #include <QtGui>
 #include <QtNetwork/QUdpSocket>
 
+/**
+ * Can send and receive messages in the form of UDP datagrams.
+ * These messages are sent and received from various IP
+ * addresses on a specific UDP port.
+ */
 class SenderReceiver : public QDialog
 {
 	Q_OBJECT;
@@ -20,8 +25,6 @@ private:
 	QUdpSocket *udpSocket_;
 	QPushButton *writeButton_;
 	QPushButton *sendButton_;
-//	QPushButton *readButton_;
-//	QLineEdit *address_;
 	QTextEdit *message_;
 	QLabel *mode_;
 };
