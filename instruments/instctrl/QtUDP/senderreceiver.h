@@ -19,14 +19,24 @@ public:
 public slots:
 	void readPendingDatagrams();
 	void writeMode();
+	void writeToOne();
+	void writeToAll();
 	void writeNewDatagram();
+	void broadcastDatagrams();
 
 private:
 	QUdpSocket *udpSocket_;
 	QPushButton *writeButton_;
-	QPushButton *sendButton_;
+	QPushButton *singleSendButton_;
+	QPushButton *multiSendButton_;
+	QAction *singleSend_;
+	QAction *broadcastSend_;
+	QLineEdit *address_;
 	QTextEdit *message_;
 	QLabel *mode_;
+	QLabel *addressLabel_;
+	QLabel *messageLabel_;
+	QPushButton *writeMode_;
 };
 
 #endif /*SENDERRECEIVER_H*/

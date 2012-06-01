@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'senderreceiver.h'
 **
-** Created: Sat May 26 20:13:17 2012
+** Created: Sat May 26 23:03:38 2012
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.6.2)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_SenderReceiver[] = {
        4,       // revision
        0,       // classname
        0,    0, // classinfo
-       3,   14, // methods
+       6,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -34,13 +34,17 @@ static const uint qt_meta_data_SenderReceiver[] = {
       16,   15,   15,   15, 0x0a,
       39,   15,   15,   15, 0x0a,
       51,   15,   15,   15, 0x0a,
+      64,   15,   15,   15, 0x0a,
+      77,   15,   15,   15, 0x0a,
+      96,   15,   15,   15, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_SenderReceiver[] = {
     "SenderReceiver\0\0readPendingDatagrams()\0"
-    "writeMode()\0writeNewDatagram()\0"
+    "writeMode()\0writeToOne()\0writeToAll()\0"
+    "writeNewDatagram()\0broadcastDatagrams()\0"
 };
 
 const QMetaObject SenderReceiver::staticMetaObject = {
@@ -74,10 +78,13 @@ int SenderReceiver::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         switch (_id) {
         case 0: readPendingDatagrams(); break;
         case 1: writeMode(); break;
-        case 2: writeNewDatagram(); break;
+        case 2: writeToOne(); break;
+        case 3: writeToAll(); break;
+        case 4: writeNewDatagram(); break;
+        case 5: broadcastDatagrams(); break;
         default: ;
         }
-        _id -= 3;
+        _id -= 6;
     }
     return _id;
 }
