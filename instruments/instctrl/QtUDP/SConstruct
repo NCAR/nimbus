@@ -1,0 +1,11 @@
+import os.path
+import eol_scons
+
+env = Environment(tools = ['default', 'qt4'])
+
+qtmods = ['QtSvg', 'QtCore', 'QtGui', 'QtNetwork', 'QtSql', 'QtOpenGL']
+env.EnableQt4Modules(qtmods)
+
+sources = ['main.cpp', 'senderreceiver.cpp']
+
+qtudp = env.Program('qtudp',sources)
