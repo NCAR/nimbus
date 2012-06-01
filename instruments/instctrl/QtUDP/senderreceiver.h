@@ -21,7 +21,7 @@ private:
 	QPushButton *writeButton_;
 	QPushButton *sendButton_;
 //	QPushButton *readButton_;
-	QLineEdit *address_;
+//	QLineEdit *address_;
 	QTextEdit *message_;
 	QLabel *mode_;
 };

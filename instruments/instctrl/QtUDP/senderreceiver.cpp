@@ -14,8 +14,8 @@ SenderReceiver::SenderReceiver(QWidget *parent)
 	mode_ = new QLabel(tr("Reading..."));
 	message_ = new QTextEdit;
 	message_->hide();
-	address_ = new QLineEdit;
-	address_->hide();
+//	address_ = new QLineEdit;
+//	address_->hide();
 	sendButton_->hide();
 
 	QHostAddress host = QHostAddress::Any;
@@ -33,7 +33,7 @@ SenderReceiver::SenderReceiver(QWidget *parent)
 
 	QVBoxLayout *mainLayout = new QVBoxLayout;
 	mainLayout->addWidget(mode_);
-	mainLayout->addWidget(address_);
+//	mainLayout->addWidget(address_);
 	mainLayout->addWidget(message_);
 	mainLayout->addLayout(buttonLayout);
 	setLayout(mainLayout);
@@ -58,8 +58,8 @@ void SenderReceiver::readPendingDatagrams()
 
 void SenderReceiver::writeMode()
 {
-	mode_->setText(tr("Write IP address then message below:"));
-	address_->show();
+	mode_->setText(tr("Write message below:"));
+//	address_->show();
 	message_->show();
 	writeButton_->hide();
 	sendButton_->show();
@@ -67,25 +67,21 @@ void SenderReceiver::writeMode()
 
 void SenderReceiver::writeNewDatagram()
 {
-	QString address = address_->text();
-/*	if (!setAddress(address)) {
-		mode_->setText(tr("Invalid IP address. Retry:"));
-	} else {
-
-	} */
-	QHostAddress ip = QHostAddress(address);
+//	QString address = address_->text();
+//	QHostAddress ip = QHostAddress(address);
 	QString data = message_->toPlainText();
 
 	QByteArray newData("Fawaz: ");
 	newData.append(data);
-	udpSocket_->writeDatagram(newData.data(), newData.size(), ip, port);
+	udpSocket_->writeDatagram(newData.data(), newData.size(),
+								QHostAddress::Broadcast, port);
 
 	mode_->setText(tr("Message sent."));
 	sendButton_->hide();
 	writeButton_->show();
-	address_->hide();
+//	address_->hide();
 	message_->hide();
-	address_->clear();
+//	address_->clear();
 	message_->clear();
 }
 
