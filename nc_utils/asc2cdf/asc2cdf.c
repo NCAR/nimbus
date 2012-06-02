@@ -181,10 +181,6 @@ int main(int argc, char *argv[])
     currSecond = hour * 3600 + minute * 60 + second;
 
 
-    // Watch for midnight wrap around.
-    if (currSecond < firstSecond)
-      currSecond += 86400;
-
     if (prevSecond == -1) // 1st time through loop.
     {
       firstSecond = int(currSecond);
@@ -192,6 +188,10 @@ int main(int argc, char *argv[])
       if (fileType != NASA_AMES)
         BaseTime += int(currSecond);
     }
+
+    // Watch for midnight wrap around.
+    if (currSecond < firstSecond)
+      currSecond += 86400;
 
     if (nRecords == 0)
       {
@@ -215,7 +215,6 @@ int main(int argc, char *argv[])
       }
 
     prevSecond = int(currSecond);
-
     dataValue = currSecond - firstSecond;
     size_t rec = int(dataValue);
     status = nc_put_var1_float(ncid, timeVarID, &rec, &dataValue);
