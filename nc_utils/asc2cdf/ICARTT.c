@@ -209,25 +209,25 @@ void CreateICARTTnetCDF(FILE *fp)
   /* Get Scale Factors. */
   fgets(buffer, BUFFSIZE, fp);
   printf("Scale Factors: %s", buffer);
-  p = strtok(buffer, " \t\n\r");
+  p = strtok(buffer, ", \t\n\r");
   for (i = 0; i < nVariables; ++i)
   {
     scale[i] = atof(p);
     offset[i] = 0.0;
     printf("  scale[%d]: %f\n", i, scale[i]);
-    p = strtok(NULL, " \t\n\r");
+    p = strtok(NULL, ", \t\n\r");
   }
 
   /* Get missing values, these will be translated to nimbus MISSING_VALUES.
    */
   fgets(buffer, BUFFSIZE, fp);
   printf("Missing Values: %s", buffer);
-  p = strtok(buffer, " \t\n\r");
+  p = strtok(buffer, ", \t\n\r");
   for (i = 0; i < nVariables; ++i)
   {
     missingVals[i] = atof(p);
     printf("  missingVals[%d]: %f\n", i, missingVals[i]);
-    p = strtok(NULL, " \t\n\r");
+    p = strtok(NULL, ", \t\n\r");
   }
 
   /* Get Titles. */
@@ -273,25 +273,25 @@ void CreateICARTTnetCDF(FILE *fp)
     /* Get Scale Factors. */
     fgets(buffer, BUFFSIZE, fp);
     printf("Auxilary Scale Factors: %s", buffer);
-    p = strtok(buffer, " \t\n\r");
+    p = strtok(buffer, ", \t\n\r");
     for (i = start; i < nVariables; ++i)
     {
       scale[i] = atof(p);
       offset[i] = 0.0;
       printf("  auxilary scale[%d]: %f\n", i, scale[i]);
-      p = strtok(NULL, " \t\n\r");
+      p = strtok(NULL, ", \t\n\r");
     }
 
     /* Get missing values, these will be xlated to nimbus MISSING_VALUES.
      */
     fgets(buffer, BUFFSIZE, fp);
     printf("Missing Values: %s", buffer);
-    p = strtok(buffer, " \t\n\r");
+    p = strtok(buffer, ", \t\n\r");
     for (i = start; i < nVariables; ++i)
     {
       missingVals[i] = atof(p);
       printf("  missingVals[%d]: %f\n", i, missingVals[i]);
-      p = strtok(NULL, " \t\n\r");
+      p = strtok(NULL, ", \t\n\r");
     }
 
     /* Get Titles. */
@@ -361,7 +361,7 @@ void CreateICARTTnetCDF(FILE *fp)
 
   // split p into tokens and return pointer to first token
   // in this case, time
-  p = strtok(p, " \t\n\r");
+  p = strtok(p, ", \t\n\r");
 
   if (dataRate > 1)
     ndims = 2;
@@ -407,7 +407,7 @@ void CreateICARTTnetCDF(FILE *fp)
 
     for (i = 1; i < nVariables; ++i)
     {
-      p = strtok(NULL, " \t\n\r");
+      p = strtok(NULL, ", \t\n\r");
       //if( p != varName)
       //{
       //  printf("All variable names [%s] must be the same [as %s] in last line of header\n",p,varName);
