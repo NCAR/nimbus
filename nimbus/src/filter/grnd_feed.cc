@@ -22,8 +22,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2005-08
 #include <bzlib.h>
 #include <sys/stat.h>
 
-//const int GroundFeed::GRND_UDP_PORT = 31007;
-// eol-rt-data.guest.ucar.edu
+// eol-rt-data.fl-ext.ucar.edu
 const std::string GroundFeed::DEST_HOST_ADDR = "128.117.188.122";
 
 using namespace nidas::util;
