@@ -9,13 +9,13 @@ SenderReceiver::SenderReceiver(QWidget *parent)
 {
 	udpSocket_ = new QUdpSocket();
 	writeButton_ = new QPushButton(tr("&Write"));
-	singleSendButton_ = new QPushButton(tr("&Send to address"));
+	singleSendButton_ = new QPushButton(tr("&Send"));
 	multiSendButton_ = new QPushButton(tr("&Broadcast"));
 	mode_ = new QLabel(tr("Reading..."));
 
 	addressLabel_ = new QLabel(tr("Address:"));
 	messageLabel_ = new QLabel(tr("Message:"));
-	address_ = new QLineEdit;
+	address_ = new QComboBox;
 	address_->hide();
 	addressLabel_->hide();
 	message_ = new QTextEdit;
@@ -57,7 +57,7 @@ SenderReceiver::SenderReceiver(QWidget *parent)
 	mainLayout->addWidget(message_);
 	mainLayout->addLayout(buttonLayout);
 	setLayout(mainLayout);
-	resize(300, 300);
+	resize(350, 300);
 	setWindowTitle(tr("Sender/Receiver"));
 }
 
@@ -97,13 +97,14 @@ void SenderReceiver::writeToOne()
 	mode_->setText(tr("Write address and message below:"));
 	addressLabel_->show();
 	address_->show();
+	address_->setEditable(true);
 	singleSendButton_->show();
 	multiSendButton_->hide();
 }
 
 void SenderReceiver::writeToAll()
 {
-	mode_->setText(tr("Write message to everyone at port 45454:"));
+	mode_->setText(tr("Write message to everyone at port \"%1\":").arg(port));
 	multiSendButton_->show();
 	addressLabel_->hide();
 	address_->hide();
@@ -113,7 +114,7 @@ void SenderReceiver::writeToAll()
 void SenderReceiver::writeNewDatagram()
 {
 	QString data = message_->toPlainText();
-	QString address = address_->text();
+	QString address = address_->currentText();
 	QHostAddress ip;
 	bool validAddress = ip.setAddress(address);
 
@@ -131,7 +132,8 @@ void SenderReceiver::writeNewDatagram()
 		singleSendButton_->hide();
 		addressLabel_->hide();
 		address_->hide();
-		address_->clear();
+		address_->setEditable(false);
+		address_->addItem(address);
 		writeButton_->show();
 		writeMode_->hide();
 		messageLabel_->hide();

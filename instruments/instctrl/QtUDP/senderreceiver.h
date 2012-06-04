@@ -31,7 +31,7 @@ private:
 	QPushButton *multiSendButton_;
 	QAction *singleSend_;
 	QAction *broadcastSend_;
-	QLineEdit *address_;
+	QComboBox *address_;
 	QTextEdit *message_;
 	QLabel *mode_;
 	QLabel *addressLabel_;
