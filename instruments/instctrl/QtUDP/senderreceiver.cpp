@@ -57,6 +57,7 @@ SenderReceiver::SenderReceiver(QWidget *parent)
 	mainLayout->addWidget(message_);
 	mainLayout->addLayout(buttonLayout);
 	setLayout(mainLayout);
+	resize(300, 300);
 	setWindowTitle(tr("Sender/Receiver"));
 }
 
@@ -64,14 +65,18 @@ void SenderReceiver::readPendingDatagrams()
 {
 	while (udpSocket_->hasPendingDatagrams()) {
 		QByteArray datagram;
+		QHostAddress *sender = new QHostAddress();
 		datagram.resize(udpSocket_->pendingDatagramSize());
-		udpSocket_->readDatagram(datagram.data(), datagram.size());
+		udpSocket_->readDatagram(datagram.data(), datagram.size(), sender);
+		QString address = sender->toString();
 
 		// Filter out messages not sent by this program
 		if (!(strncmp(datagram.data(), "Fawaz: ", 7) == 0)) {
 			return;
 		} else {
-			mode_->setText(tr("Message received: \"%1\"")
+			mode_->setWordWrap(true);
+			mode_->setText(tr("Message received at address \"%1\":\n\n \"%2\"")
+								.arg(address)
 								.arg(datagram.data()));
 		}
 	}
@@ -79,6 +84,7 @@ void SenderReceiver::readPendingDatagrams()
 
 void SenderReceiver::writeMode()
 {
+	mode_->setWordWrap(false);
 	mode_->setText(tr("Choose mode and write message below:"));
 	writeMode_->show();
 	messageLabel_->show();
