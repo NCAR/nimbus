@@ -103,7 +103,7 @@ void SenderReceiver::writeToOne()
 
 void SenderReceiver::writeToAll()
 {
-	mode_->setText(tr("Write message for everyone:"));
+	mode_->setText(tr("Write message to everyone at port 45454:"));
 	multiSendButton_->show();
 	addressLabel_->hide();
 	address_->hide();
@@ -151,7 +151,7 @@ void SenderReceiver::broadcastDatagrams()
 	udpSocket_->writeDatagram(newData.data(), newData.size(),
 								QHostAddress::Broadcast, port);
 
-	mode_->setText(tr("Message sent."));
+	mode_->setText(tr("Message broadcasted."));
 	multiSendButton_->hide();
 	writeButton_->show();
 	writeMode_->hide();
