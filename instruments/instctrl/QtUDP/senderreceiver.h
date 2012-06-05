@@ -2,7 +2,7 @@
 #define SENDERRECEIVER_H
 
 #include <QtGui>
-#include <QtNetwork/QUdpSocket>
+#include <QtNetwork>
 
 /**
  * Can send and receive messages in the form of UDP datagrams.
@@ -17,23 +17,32 @@ public:
 	SenderReceiver(QWidget *parent = 0);
 
 public slots:
+	void readMode();
 	void readPendingDatagrams();
 	void writeMode();
 	void writeToOne();
 	void writeToAll();
 	void writeNewDatagram();
 	void broadcastDatagrams();
+	void switchPortMode();
 
 private:
 	QUdpSocket *udpSocket_;
 	QPushButton *writeButton_;
+	QPushButton *readButton_;
 	QPushButton *singleSendButton_;
 	QPushButton *multiSendButton_;
+	QPushButton *changePortButton_;
 	QAction *singleSend_;
 	QAction *broadcastSend_;
+	QComboBox *port_;
 	QComboBox *address_;
+	QSet<QString> *uniquePorts_;
+	QSet<QString> *uniqueAddresses_;
 	QTextEdit *message_;
+	QLabel *connect_;
 	QLabel *mode_;
+	QLabel *portLabel_;
 	QLabel *addressLabel_;
 	QLabel *messageLabel_;
 	QPushButton *writeMode_;
