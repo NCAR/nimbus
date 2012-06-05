@@ -136,6 +136,8 @@ void SenderReceiver::readPendingDatagrams()
 								.arg(port_->currentText())
 								.arg(address)
 								.arg(datagram.data()));
+			readButton_->show();
+			writeButton_->show();
 		}
 	}
 }

@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'senderreceiver.h'
 **
-** Created: Sun May 27 04:59:38 2012
+** Created: Sun May 27 11:37:55 2012
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.6.2)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_SenderReceiver[] = {
        4,       // revision
        0,       // classname
        0,    0, // classinfo
-       6,   14, // methods
+       8,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -32,19 +32,22 @@ static const uint qt_meta_data_SenderReceiver[] = {
 
  // slots: signature, parameters, type, tag, flags
       16,   15,   15,   15, 0x0a,
-      39,   15,   15,   15, 0x0a,
-      51,   15,   15,   15, 0x0a,
-      64,   15,   15,   15, 0x0a,
-      77,   15,   15,   15, 0x0a,
-      96,   15,   15,   15, 0x0a,
+      27,   15,   15,   15, 0x0a,
+      50,   15,   15,   15, 0x0a,
+      62,   15,   15,   15, 0x0a,
+      75,   15,   15,   15, 0x0a,
+      88,   15,   15,   15, 0x0a,
+     107,   15,   15,   15, 0x0a,
+     128,   15,   15,   15, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_SenderReceiver[] = {
-    "SenderReceiver\0\0readPendingDatagrams()\0"
-    "writeMode()\0writeToOne()\0writeToAll()\0"
-    "writeNewDatagram()\0broadcastDatagrams()\0"
+    "SenderReceiver\0\0readMode()\0"
+    "readPendingDatagrams()\0writeMode()\0"
+    "writeToOne()\0writeToAll()\0writeNewDatagram()\0"
+    "broadcastDatagrams()\0switchPortMode()\0"
 };
 
 const QMetaObject SenderReceiver::staticMetaObject = {
@@ -76,15 +79,17 @@ int SenderReceiver::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
-        case 0: readPendingDatagrams(); break;
-        case 1: writeMode(); break;
-        case 2: writeToOne(); break;
-        case 3: writeToAll(); break;
-        case 4: writeNewDatagram(); break;
-        case 5: broadcastDatagrams(); break;
+        case 0: readMode(); break;
+        case 1: readPendingDatagrams(); break;
+        case 2: writeMode(); break;
+        case 3: writeToOne(); break;
+        case 4: writeToAll(); break;
+        case 5: writeNewDatagram(); break;
+        case 6: broadcastDatagrams(); break;
+        case 7: switchPortMode(); break;
         default: ;
         }
-        _id -= 6;
+        _id -= 8;
     }
     return _id;
 }

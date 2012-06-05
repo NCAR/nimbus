@@ -7,7 +7,7 @@
 /**
  * Can send and receive messages in the form of UDP datagrams.
  * These messages are sent and received from various IP
- * addresses on a specific UDP port.
+ * addresses on a specified UDP port.
  */
 class SenderReceiver : public QDialog
 {
