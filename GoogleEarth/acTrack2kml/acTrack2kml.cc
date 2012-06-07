@@ -835,17 +835,25 @@ void updateData(PGresult *res, int indx)
   if (lat == missing_value || lon == missing_value || alt == missing_value)
     return;
 
+  float value;
   string tm(extractPQString(res, indx, TIME)); 
   tm.replace(10, 1, "T");
   _date.push_back(tm);
   _lon.push_back( extractPQvalue<float>(PQgetvalue(res, indx, LON)) );
   _lat.push_back( extractPQvalue<float>(PQgetvalue(res, indx, LAT)) );
-  _alt.push_back( extractPQvalue<float>(PQgetvalue(res, indx, ALT)) * _convertToFeet);
+  value = extractPQvalue<float>(PQgetvalue(res, indx, ALT));
+  if (value != missing_value)
+    value *= _convertToFeet;
+  _alt.push_back( value );
 
   _at.push_back( extractPQvalue<float>(PQgetvalue(res, indx, AT)) );
   _dp.push_back( extractPQvalue<float>(PQgetvalue(res, indx, DP)) );
   _tas.push_back( extractPQvalue<float>(PQgetvalue(res, indx, TAS)) );
-  _ws.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WS)) * 1.9438);	// knots
+  value = extractPQvalue<float>(PQgetvalue(res, indx, WS));
+  if (value != missing_value)
+    value *= 1.9438;	// convert to knots.
+  _ws.push_back(value);
+  
   _wd.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WD)) );
   _wi.push_back( extractPQvalue<float>(PQgetvalue(res, indx, WI)) );
 }
@@ -1049,14 +1057,21 @@ void ReadDataFromNetCDF(const string & fileName)
 
     char buffer[60];
     time_t thist = t + tim_vals->as_int(i);
+    float value;
     strftime(buffer, 60, "%FT%T", gmtime(&thist));
     _date.push_back( buffer );
     _lon.push_back( lon_vals->as_float(i) );
     _lat.push_back( lat_vals->as_float(i) );
-    _alt.push_back( alt_vals->as_float(i) * _convertToFeet);
+    value = alt_vals->as_float(i);
+    if (value != missing_value)
+      value *= _convertToFeet;
+    _alt.push_back( value );
     _at.push_back( atx_vals->as_float(i) );
     _dp.push_back( dp_vals->as_float(i) );
-    _ws.push_back( ws_vals->as_float(i) * 1.9438);	// knots
+    value = ws_vals->as_float(i);
+    if (value != missing_value)
+      value *= 1.9438;		// conver to knots.
+    _ws.push_back( value );
     _wi.push_back( wi_vals->as_float(i) );
     _wd.push_back( wd_vals->as_float(i) );
   }
