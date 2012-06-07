@@ -214,13 +214,18 @@ startBubbleCDATA()
   stringstream s;
   string startTime = _date[0].substr(_date[0].find('T')+1);
 
-  s     << "<![CDATA[" << startTime << fixed;
+  s << "<![CDATA[" << startTime << fixed
+	<< " Lat : " << _lat[0]
+	<< " deg_N<br>Lon : " << _lon[0] << " deg_E<br>";
+  s.precision(0);
+  if (_alt[0] != missing_value) s << "Alt : " << _alt[0] << " feet<br>";
   s.precision(2);
-  s	<< "<br>Alt : " << _alt[0]
-	<< " feet<br>Temp : " << firstAT
-	<< " C<br>WS : " << firstWS
-	<< " m/s<br>WD : " << firstWD
-	<< " degree_T<br>WI : " << firstWI << " m/s]]>";
+  if (firstAT != missing_value) s << "Temp : " << firstAT << " C<br>";
+  if (firstDP != missing_value) s << "DP : " << firstDP << " C<br>";
+  if (firstWS != missing_value) s << "WS : " << firstWS << " knots<br>";
+  if (firstWD != missing_value) s << "WD : " << firstWD << " degree_T<br>";
+  if (firstWI != missing_value) s << "WI : " << firstWI << " m/s";
+  s << "]]>";
 
   return s.str();
 }
@@ -235,15 +240,16 @@ endBubbleCDATA()
 
   e	<< "<![CDATA[" << endTime << "<br>" << fixed
 	<< " Lat : " << _lat[_lat.size()-1]
-	<< " deg_N<br>Lon : " << _lon[_lon.size()-1];
+	<< " deg_N<br>Lon : " << _lon[_lon.size()-1] << " deg_E<br>";
   e.precision(0);
-  e	<< " deg_E<br>Alt : " << _alt[_alt.size()-1];
+  if (_alt[_alt.size()-1] != missing_value) e << "Alt : " << _alt[_alt.size()-1] << " feet<br>";
   e.precision(2);
-  e	<< " feet<br>Temp : " << _at[_at.size()-1]
-	<< " C<br>DP : " << _dp[_dp.size()-1]
-	<< " C<br>WS : " << _ws[_ws.size()-1]
-	<< " knots<br>WD : " << _wd[_wd.size()-1]
-	<< " degree_T<br>WI : " << _wi[_wi.size()-1] << " m/s]]>";
+  if (_at[_at.size()-1] != missing_value) e << "Temp : " << _at[_at.size()-1] << " C<br>";
+  if (_dp[_dp.size()-1] != missing_value) e << "DP : " << _dp[_dp.size()-1] << " C<br>";
+  if (_ws[_ws.size()-1] != missing_value) e << "WS : " << _ws[_ws.size()-1] << " knots<br>";
+  if (_wd[_wd.size()-1] != missing_value) e << "WD : " << _wd[_wd.size()-1] << " degree_T<br>";
+  if (_wi[_wi.size()-1] != missing_value) e << "WI : " << _wi[_wi.size()-1] << " m/s";
+  e << "]]>";
 
   return e.str();
 }
@@ -255,15 +261,17 @@ midBubbleCDATA(int i)
   stringstream e;
 
   e	<< fixed << "<![CDATA[" << " Lat : " << _lat[i]
-	<< " deg_N<br>Lon : " << _lon[i];
+	<< " deg_N<br>Lon : " << _lon[i] << " deg_E<br>";
   e.precision(0);
-  e	<< " deg_E<br>Alt : " << _alt[i];
-  e.precision(1);
-  e	<< " feet<br>Temp : " << _at[i]
-	<< " C<br>DP : " << _dp[i]
-	<< " C<br>WS : " << _ws[i]
-	<< " knots<br>WD : " << _wd[i]
-	<< " degree_T<br>WI : " << _wi[i] << " m/s]]>";
+  if (_alt[i] != missing_value) e << "Alt : " << _alt[i] << " feet<br>";
+  e.precision(2);
+  if (_at[i] != missing_value) e << "Temp : " << _at[i] << " C<br>";
+  if (_dp[i] != missing_value) e << "DP : " << _dp[i] << " C<br>";
+  if (_ws[i] != missing_value) e << "WS : " << _ws[i] << " knots<br>";
+  if (_wd[i] != missing_value) e << "WD : " << _wd[i] << " degree_T<br>";
+  if (_wi[i] != missing_value) e << "WI : " << _wi[i] << " m/s";
+  e << "]]>";
+
 
   return e.str();
 }
@@ -824,7 +832,7 @@ void updateData(PGresult *res, int indx)
   lon = extractPQvalue<float>(PQgetvalue(res, indx, LON));
   alt = extractPQvalue<float>(PQgetvalue(res, indx, ALT));
 
-  if (lat == -32767 || lon == -32767 || alt == -32767)
+  if (lat == missing_value || lon == missing_value || alt == missing_value)
     return;
 
   string tm(extractPQString(res, indx, TIME)); 
