@@ -443,7 +443,7 @@ void WriteWindBarbsKML_Folder(ofstream& googleEarth)
       googleEarth
         << "  <Placemark>\n"
         << "   <name>" << label << "</name>\n"
-//	<< "   <description><![CDATA[WD: " << _wd[i] << " deg<br>WS: " << _ws[i] << " knots]]></description>\n"
+	<< "   <description>" << midBubbleCDATA(i) << "</description>\n"
         << "   <Style>\n"
         << "    <IconStyle>\n"
         << "     <scale>3</scale>\n"
