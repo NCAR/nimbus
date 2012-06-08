@@ -17,6 +17,8 @@ SenderReceiver::SenderReceiver(QWidget *parent)
 	mode_ = new QLabel(tr("Enter port number and choose mode:"));
 	connect_ = new QLabel(tr("Connection..."));
 	connect_->hide();
+	error_ = new QLabel(tr("Error:"));
+	error_->hide();
 
 	portLabel_ = new QLabel(tr("Port:"));
 	addressLabel_ = new QLabel(tr("Address:"));
@@ -49,6 +51,7 @@ SenderReceiver::SenderReceiver(QWidget *parent)
 	connect(singleSendButton_, SIGNAL(clicked()), this, SLOT(writeNewDatagram()));
 	connect(multiSendButton_, SIGNAL(clicked()), this, SLOT(broadcastDatagrams()));
 	connect(changePortButton_, SIGNAL(clicked()), this, SLOT(switchPortMode()));
+	connect(udpSocket_, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(errorMessage()));
 
 	QHBoxLayout *buttonLayout = new QHBoxLayout;
 	buttonLayout->addWidget(changePortButton_);
@@ -58,6 +61,7 @@ SenderReceiver::SenderReceiver(QWidget *parent)
 	buttonLayout->addWidget(multiSendButton_);
 
 	QVBoxLayout *mainLayout = new QVBoxLayout;
+	mainLayout->addWidget(error_);
 	mainLayout->addWidget(connect_);
 	mainLayout->addWidget(mode_);
 	mainLayout->addWidget(portLabel_);
@@ -108,10 +112,10 @@ void SenderReceiver::readMode()
 				changePortButton_->show();
 				writeButton_->hide();
 				return;
-			} else connect_->setText(tr("Connection to new port successful"));
+			} else connect_->setText(tr("Connection to new port successful."));
 		}
 
-		mode_->setText(tr("Reading at port \"%1\"...").arg(portNumber));
+		mode_->setText(tr("Reading at port %1...").arg(portNumber));
 		writeButton_->show();
 		changePortButton_->show();
 	}
@@ -132,7 +136,7 @@ void SenderReceiver::readPendingDatagrams()
 		} else {
 			connect_->hide();
 			mode_->setWordWrap(true);
-			mode_->setText(tr("Message received at port \"%1\"\nFrom address \"%2\":\n\n\"%3\"")
+			mode_->setText(tr("Message received at port %1\nFrom address %2:\n\n\"%3\"")
 								.arg(port_->currentText())
 								.arg(address)
 								.arg(datagram.data()));
@@ -155,8 +159,8 @@ void SenderReceiver::writeMode()
 		return;
 	} else {
 		mode_->setText(tr("Choose write mode and write message below:"));
-		port_->hide();
-		port_->setEditable(false);
+//		port_->hide();
+//		port_->setEditable(false);
 		portLabel_->hide();
 		readButton_->hide();
 		writeButton_->hide();
@@ -175,7 +179,8 @@ void SenderReceiver::writeMode()
 			bool connection = udpSocket_->bind(portNumber);
 			connect_->show();
 			if (!connection) {
-				connect_->setText(tr("Connection to new port unsuccessful. Retry:"));
+				connect_->setText(tr("Connection to new port unsuccessful.\nError: %1. Retry:")
+									.arg(udpSocket_->errorString()));
 				mode_->hide();
 				changePortButton_->show();
 				return;
@@ -203,7 +208,7 @@ void SenderReceiver::writeToOne()
 void SenderReceiver::writeToAll()
 {
 	connect_->hide();
-	mode_->setText(tr("Write message to everyone at port \"%1\":")
+	mode_->setText(tr("Write message to everyone at port %1:")
 						.arg(port_->currentText()));
 	multiSendButton_->show();
 	addressLabel_->hide();
@@ -230,7 +235,7 @@ void SenderReceiver::writeNewDatagram()
 		// send message to specified address
 		udpSocket_->writeDatagram(newData.data(), newData.size(), ip, portNumber);
 
-		mode_->setText(tr("Message sent to \"%1\" at port \"%2\".")
+		mode_->setText(tr("Message sent to %1 at port %2.")
 							.arg(address).arg(portString));
 		singleSendButton_->hide();
 		addressLabel_->hide();
@@ -248,6 +253,7 @@ void SenderReceiver::writeNewDatagram()
 		messageLabel_->hide();
 		message_->hide();
 		message_->clear();
+		port_->hide();
 	}
 }
 
@@ -260,11 +266,11 @@ void SenderReceiver::broadcastDatagrams()
 	QByteArray newData("Fawaz: ");
 	newData.append(data);
 
-	// send message to broadcast address; received by all network-attached hosts
+	// send message to broadcast address; received by all devices on local network
 	udpSocket_->writeDatagram(newData.data(), newData.size(),
 								QHostAddress::Broadcast, portNumber);
 
-	mode_->setText(tr("Message broadcasted at port \"%1\".").arg(port_->currentText()));
+	mode_->setText(tr("Message broadcasted at port %1.").arg(port_->currentText()));
 	multiSendButton_->hide();
 	readButton_->show();
 	writeButton_->show();
@@ -272,6 +278,7 @@ void SenderReceiver::broadcastDatagrams()
 	messageLabel_->hide();
 	message_->hide();
 	message_->clear();
+	port_->hide();
 }
 
 void SenderReceiver::switchPortMode()
@@ -293,5 +300,11 @@ void SenderReceiver::switchPortMode()
 	address_->hide();
 	message_->hide();
 	writeMode_->hide();
+}
+
+void SenderReceiver::errorMessage()
+{
+	error_->setText(tr("Error: %1").arg(udpSocket_->errorString()));
+	error_->show();
 }
 

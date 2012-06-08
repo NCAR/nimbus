@@ -25,6 +25,7 @@ public slots:
 	void writeNewDatagram();
 	void broadcastDatagrams();
 	void switchPortMode();
+	void errorMessage();
 
 private:
 	QUdpSocket *udpSocket_;
@@ -41,6 +42,7 @@ private:
 	QSet<QString> *uniqueAddresses_;
 	QTextEdit *message_;
 	QLabel *connect_;
+	QLabel *error_;
 	QLabel *mode_;
 	QLabel *portLabel_;
 	QLabel *addressLabel_;

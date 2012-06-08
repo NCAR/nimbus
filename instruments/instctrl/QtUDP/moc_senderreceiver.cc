@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'senderreceiver.h'
 **
-** Created: Sun May 27 11:37:55 2012
+** Created: Thu Jun 7 20:26:15 2012
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.6.2)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_SenderReceiver[] = {
        4,       // revision
        0,       // classname
        0,    0, // classinfo
-       8,   14, // methods
+       9,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -39,6 +39,7 @@ static const uint qt_meta_data_SenderReceiver[] = {
       88,   15,   15,   15, 0x0a,
      107,   15,   15,   15, 0x0a,
      128,   15,   15,   15, 0x0a,
+     145,   15,   15,   15, 0x0a,
 
        0        // eod
 };
@@ -48,6 +49,7 @@ static const char qt_meta_stringdata_SenderReceiver[] = {
     "readPendingDatagrams()\0writeMode()\0"
     "writeToOne()\0writeToAll()\0writeNewDatagram()\0"
     "broadcastDatagrams()\0switchPortMode()\0"
+    "errorMessage()\0"
 };
 
 const QMetaObject SenderReceiver::staticMetaObject = {
@@ -87,9 +89,10 @@ int SenderReceiver::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         case 5: writeNewDatagram(); break;
         case 6: broadcastDatagrams(); break;
         case 7: switchPortMode(); break;
+        case 8: errorMessage(); break;
         default: ;
         }
-        _id -= 8;
+        _id -= 9;
     }
     return _id;
 }
