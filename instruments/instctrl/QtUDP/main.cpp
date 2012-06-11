@@ -1,3 +1,4 @@
+// Copyright NCAR 2012
 #include "senderreceiver.h"
 
 int main(int argc, char** argv)
