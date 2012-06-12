@@ -60,20 +60,19 @@ SenderReceiver::SenderReceiver(QWidget *parent)
 	buttonLayout->addWidget(singleSendButton_);
 	buttonLayout->addWidget(multiSendButton_);
 
-	QVBoxLayout *mainLayout = new QVBoxLayout;
-	mainLayout->addWidget(error_);
-	mainLayout->addWidget(connect_);
-	mainLayout->addWidget(mode_);
-	mainLayout->addWidget(portLabel_);
-	mainLayout->addWidget(port_);
-	mainLayout->addWidget(writeMode_);
-	mainLayout->addWidget(addressLabel_);
-	mainLayout->addWidget(address_);
-	mainLayout->addWidget(messageLabel_);
-	mainLayout->addWidget(message_);
-	mainLayout->addLayout(buttonLayout);
+	QGridLayout *mainLayout = new QGridLayout;
+	mainLayout->addWidget(error_, 0, 0, 1, 2);
+	mainLayout->addWidget(connect_, 1, 0, 1, 2);
+	mainLayout->addWidget(mode_, 2, 0, 1, 2);
+	mainLayout->addWidget(writeMode_, 3, 0, 1, 2);
+	mainLayout->addWidget(portLabel_, 4, 0);
+	mainLayout->addWidget(port_, 4, 1);
+	mainLayout->addWidget(addressLabel_, 5, 0);
+	mainLayout->addWidget(address_, 5, 1);
+	mainLayout->addWidget(messageLabel_, 6, 0);
+	mainLayout->addWidget(message_, 6, 1);
+	mainLayout->addLayout(buttonLayout, 7, 0, 1, 2);
 	setLayout(mainLayout);
-//	resize(350, 300);
 	setWindowTitle(tr("Sender/Receiver"));
 }
 
@@ -159,9 +158,9 @@ void SenderReceiver::writeMode()
 		return;
 	} else {
 		mode_->setText(tr("Choose write mode and write message below:"));
-//		port_->hide();
-//		port_->setEditable(false);
-		portLabel_->hide();
+		port_->show();
+		port_->setEditable(true);
+		portLabel_->show();
 		readButton_->hide();
 		writeButton_->hide();
 
@@ -179,8 +178,7 @@ void SenderReceiver::writeMode()
 			bool connection = udpSocket_->bind(portNumber);
 			connect_->show();
 			if (!connection) {
-				connect_->setText(tr("Connection to new port unsuccessful.\nError: %1. Retry:")
-									.arg(udpSocket_->errorString()));
+				connect_->setText(tr("Connection to new port unsuccessful. Retry:"));
 				mode_->hide();
 				changePortButton_->show();
 				return;
@@ -253,6 +251,7 @@ void SenderReceiver::writeNewDatagram()
 		messageLabel_->hide();
 		message_->hide();
 		message_->clear();
+		portLabel_->hide();
 		port_->hide();
 	}
 }
@@ -278,6 +277,7 @@ void SenderReceiver::broadcastDatagrams()
 	messageLabel_->hide();
 	message_->hide();
 	message_->clear();
+	portLabel_->hide();
 	port_->hide();
 }
 
