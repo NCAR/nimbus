@@ -21,6 +21,7 @@ SslServer::SslServer(QWidget *parent)
 
 	connect(connectButton_, SIGNAL(clicked()), this, SLOT(openSession()));
 	connect(sslServer_, SIGNAL(newConnection()), this, SLOT(connectToClient()));
+	connect(sendButton_, SIGNAL(clicked()), this, SLOT(sendMessage()));
 	connect(changePortButton_, SIGNAL(clicked()), this, SLOT(switchPorts()));
 
 	QHBoxLayout *buttonLayout = new QHBoxLayout;
@@ -64,21 +65,31 @@ void SslServer::openSession()
 								.arg(sslServer_->errorString()));
 			return;
 		}
+
+		status_->setText(tr("The server is running on port %1 at address %2.")
+							.arg(sslServer_->serverPort())
+							.arg(sslServer_->serverAddress().toString()));
+
+		connectButton_->hide();
+		portLabel_->hide();
+		port_->hide();
+		changePortButton_->show();
 	}
-
-	status_->setText(tr("The server is running on port %1 at address %2.")
-						.arg(sslServer_->serverPort())
-						.arg(sslServer_->serverAddress().toString()));
-
-	connectButton_->hide();
-	portLabel_->hide();
-	port_->hide();
-	changePortButton_->show();
 }
 
 void SslServer::connectToClient()
 {
-//	QSslSocket *clientConnection = sslServer_->nextPendingConnection();
+	status_->setText(tr("New client available. Initiating handshake..."));
+	currentSocket_ = sslServer_->nextPendingConnection();
+	connect(currentSocket_, SIGNAL(encrypted()), this, SLOT(sendMode()));
+	connect(currentSocket_, SIGNAL(readyRead()), this, SLOT(readMode()));
+}
+
+void SslServer::sendMode()
+{
+	status_->setText(tr("Client connected. Write message below:"));
+	message_->show();
+	sendButton_->show();
 }
 
 void SslServer::sendMessage()
@@ -86,12 +97,29 @@ void SslServer::sendMessage()
 
 }
 
+void SslServer::readMode()
+{
+	qDebug("Read mode entered.");
+	qint64 available = currentSocket_->bytesAvailable();
+	QString availString;
+	availString.setNum(available);
+	qDebug(availString.toStdString().c_str());
+
+	QByteArray newMessage = currentSocket_->read(available);
+	QString newText(newMessage);
+	qDebug() << "New message: " << newText << "///";
+	status_->setText(newText);
+}
+
 void SslServer::switchPorts()
 {
 	changePortButton_->hide();
 	sendButton_->hide();
+	message_->hide();
 
-	status_->setText(tr("Listen on new port:"));
+	sslServer_->close();
+
+	status_->setText(tr("Server closed. Listen on new port:"));
 	portLabel_->show();
 	port_->show();
 	connectButton_->show();

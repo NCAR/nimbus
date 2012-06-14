@@ -15,11 +15,14 @@ public:
 private slots:
 	void openSession();
 	void connectToClient();
+	void sendMode();
 	void sendMessage();
+	void readMode();
 	void switchPorts();
 
 private:
 	QSslServer *sslServer_;
+	QSslSocket *currentSocket_;
 
 	QLabel *status_;
 	QLabel *portLabel_;

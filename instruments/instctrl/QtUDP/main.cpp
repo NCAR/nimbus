@@ -10,11 +10,11 @@ int main(int argc, char** argv)
 //	SenderReceiver user;
 //	user.show();
 
-	SslServer server;
-	server.show();
-
 	SslClient client;
 	client.show();
+
+	SslServer server;
+	server.show();
 
 	return app.exec();
 	return 0;

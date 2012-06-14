@@ -14,9 +14,11 @@ public:
 private slots:
 	void connectToServer();
 	void sendMode();
+	void sendMessage();
 	void switchHostMode();
 	void displayError(QAbstractSocket::SocketError socketError);
 	void displayError(const QList<QSslError> & errors);
+	void slot_stateChanged(QAbstractSocket::SocketState);
 
 private:
 	QSslSocket *sslSocket_;
@@ -32,6 +34,7 @@ private:
 	QPushButton *connectButton_;
 	QPushButton *sendButton_;
 	QPushButton *switchButton_;
+	QPushButton *writeButton_;
 };
 
 #endif /*SSLCLIENT_H*/

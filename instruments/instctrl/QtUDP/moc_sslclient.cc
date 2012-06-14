@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'sslclient.h'
 **
-** Created: Fri Jun 8 13:20:50 2012
+** Created: Sat Jun 9 00:44:45 2012
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.6.2)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_SslClient[] = {
        4,       // revision
        0,       // classname
        0,    0, // classinfo
-       5,   14, // methods
+       7,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -34,17 +34,20 @@ static const uint qt_meta_data_SslClient[] = {
       11,   10,   10,   10, 0x08,
       29,   10,   10,   10, 0x08,
       40,   10,   10,   10, 0x08,
-      69,   57,   10,   10, 0x08,
-     119,  112,   10,   10, 0x08,
+      54,   10,   10,   10, 0x08,
+      83,   71,   10,   10, 0x08,
+     133,  126,   10,   10, 0x08,
+     164,   10,   10,   10, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_SslClient[] = {
     "SslClient\0\0connectToServer()\0sendMode()\0"
-    "switchHostMode()\0socketError\0"
-    "displayError(QAbstractSocket::SocketError)\0"
+    "sendMessage()\0switchHostMode()\0"
+    "socketError\0displayError(QAbstractSocket::SocketError)\0"
     "errors\0displayError(QList<QSslError>)\0"
+    "slot_stateChanged(QAbstractSocket::SocketState)\0"
 };
 
 const QMetaObject SslClient::staticMetaObject = {
@@ -78,12 +81,14 @@ int SslClient::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         switch (_id) {
         case 0: connectToServer(); break;
         case 1: sendMode(); break;
-        case 2: switchHostMode(); break;
-        case 3: displayError((*reinterpret_cast< QAbstractSocket::SocketError(*)>(_a[1]))); break;
-        case 4: displayError((*reinterpret_cast< const QList<QSslError>(*)>(_a[1]))); break;
+        case 2: sendMessage(); break;
+        case 3: switchHostMode(); break;
+        case 4: displayError((*reinterpret_cast< QAbstractSocket::SocketError(*)>(_a[1]))); break;
+        case 5: displayError((*reinterpret_cast< const QList<QSslError>(*)>(_a[1]))); break;
+        case 6: slot_stateChanged((*reinterpret_cast< QAbstractSocket::SocketState(*)>(_a[1]))); break;
         default: ;
         }
-        _id -= 5;
+        _id -= 7;
     }
     return _id;
 }
