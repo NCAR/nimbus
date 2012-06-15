@@ -15,6 +15,9 @@ public:
 private slots:
 	void openSession();
 	void connectToClient();
+	void clientConnected();
+	void clientEncrypted();
+	void clientDisconnected();
 	void sendMode();
 	void sendMessage();
 	void readMode();
@@ -25,12 +28,14 @@ private:
 	QSslSocket *currentSocket_;
 
 	QLabel *status_;
+	QLabel *connection_;
 	QLabel *portLabel_;
 
 	QComboBox *port_;
 	QSet<QString> *uniquePorts_;
 	QPushButton *connectButton_;
 	QPushButton *sendButton_;
+	QPushButton *writeButton_;
 	QPushButton *changePortButton_;
 	QTextEdit *message_;
 };

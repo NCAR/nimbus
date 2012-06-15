@@ -13,8 +13,12 @@ public:
 
 private slots:
 	void connectToServer();
+	void clientConnected();
+	void clientEncrypted();
+	void clientDisconnected();
 	void sendMode();
 	void sendMessage();
+	void readMode();
 	void switchHostMode();
 	void displayError(QAbstractSocket::SocketError socketError);
 	void displayError(const QList<QSslError> & errors);
@@ -24,6 +28,7 @@ private:
 	QSslSocket *sslSocket_;
 
 	QLabel *status_;
+	QLabel *connection_;
 	QLabel *portLabel_;
 	QLabel *hostLabel_;
 

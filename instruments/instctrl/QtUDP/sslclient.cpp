@@ -4,6 +4,8 @@ SslClient::SslClient(QWidget *parent)
 	: QDialog(parent)
 {
 	status_ = new QLabel(tr("Enter port and server name to connect:"));
+	connection_ = new QLabel;
+	connection_->hide();
 	portLabel_ = new QLabel(tr("Port:"));
 	port_ = new QComboBox;
 	port_->setEditable(true);
@@ -24,9 +26,13 @@ SslClient::SslClient(QWidget *parent)
 	sslSocket_ = new QSslSocket(this);
 
 	connect(connectButton_, SIGNAL(clicked()), this, SLOT(connectToServer()));
+	connect(sslSocket_, SIGNAL(connected()), this, SLOT(clientConnected()));
+	connect(sslSocket_, SIGNAL(encrypted()), this, SLOT(clientEncrypted()));
+	connect(sslSocket_, SIGNAL(disconnected()), this, SLOT(clientDisconnected()));
 	connect(sslSocket_, SIGNAL(encrypted()), this, SLOT(sendMode()));
 	connect(writeButton_, SIGNAL(clicked()), this, SLOT(sendMode()));
 	connect(sendButton_, SIGNAL(clicked()), this, SLOT(sendMessage()));
+	connect(sslSocket_, SIGNAL(readyRead()), this, SLOT(readMode()));
 	connect(switchButton_, SIGNAL(clicked()), this, SLOT(switchHostMode()));
 	connect(sslSocket_, SIGNAL(error(QAbstractSocket::SocketError)), this,
 			SLOT(displayError(QAbstractSocket::SocketError)));
@@ -42,13 +48,14 @@ SslClient::SslClient(QWidget *parent)
 	buttonLayout->addWidget(writeButton_);
 
 	QGridLayout *mainLayout = new QGridLayout;
-	mainLayout->addWidget(status_, 0, 0, 1, 2);
-	mainLayout->addWidget(portLabel_, 1, 0);
-	mainLayout->addWidget(port_, 1, 1);
-	mainLayout->addWidget(hostLabel_, 2, 0);
-	mainLayout->addWidget(hostName_, 2, 1);
-	mainLayout->addWidget(message_, 3, 0, 1, 2);
-	mainLayout->addLayout(buttonLayout, 4, 0, 1, 2);
+	mainLayout->addWidget(connection_, 0, 0, 1, 2);
+	mainLayout->addWidget(status_, 1, 0, 1, 2);
+	mainLayout->addWidget(portLabel_, 2, 0);
+	mainLayout->addWidget(port_, 2, 1);
+	mainLayout->addWidget(hostLabel_, 3, 0);
+	mainLayout->addWidget(hostName_, 3, 1);
+	mainLayout->addWidget(message_, 4, 0, 1, 2);
+	mainLayout->addLayout(buttonLayout, 5, 0, 1, 2);
 	setLayout(mainLayout);
 	setWindowTitle(tr("SSL Client"));
 }
@@ -97,6 +104,29 @@ void SslClient::connectToServer()
 	}
 }
 
+void SslClient::clientConnected()
+{
+	QString host = sslSocket_->localAddress().toString();
+	connection_->setText(tr("Connected to %1 on port %2.")
+							.arg(host).arg(sslSocket_->localPort()));
+	connection_->show();
+}
+
+void SslClient::clientEncrypted()
+{
+	QString host = sslSocket_->localAddress().toString();
+	connection_->setText(tr("Connected and encrypted to %1 on port %2.")
+							.arg(host).arg(sslSocket_->localPort()));
+	connection_->show();
+}
+
+void SslClient::clientDisconnected()
+{
+	QString host = sslSocket_->localAddress().toString();
+	connection_->setText(tr("Disconnected from %1.").arg(host));
+	connection_->show();
+}
+
 void SslClient::sendMode()
 {
 	portLabel_->hide();
@@ -106,11 +136,7 @@ void SslClient::sendMode()
 	connectButton_->hide();
 	writeButton_->hide();
 
-	QString portString = port_->currentText();
-	int portNumber = portString.toInt();
-
-	status_->setText(tr("Connected to %1 on port %2.\n\nWrite message below:")
-						.arg(hostName_->text()).arg(portNumber));
+	status_->setText(tr("Write message below:"));
 
 	message_->show();
 	sendButton_->show();
@@ -121,18 +147,26 @@ void SslClient::sendMessage()
 {
 	message_->hide();
 	sendButton_->hide();
+	connection_->hide();
 
-	QString portString = port_->currentText();
-	int portNumber = portString.toInt();
+	QString host = sslSocket_->localAddress().toString();
 
 	QByteArray block;
 	block.append(message_->toPlainText());
 	sslSocket_->write(block);
 
 	status_->setText(tr("Message sent to %1 on port %2.")
-						.arg(hostName_->text()).arg(portNumber));
+						.arg(host).arg(sslSocket_->localPort()));
 	message_->clear();
 	writeButton_->show();
+}
+
+void SslClient::readMode()
+{
+	qint64 available = sslSocket_->bytesAvailable();
+	QByteArray newMessage = sslSocket_->read(available);
+	status_->setWordWrap(true);
+	status_->setText(tr("New message from server received:\n").append(newMessage));
 }
 
 void SslClient::switchHostMode()
@@ -170,6 +204,7 @@ void SslClient::displayError(QAbstractSocket::SocketError socketError)
 		QMessageBox::information(this, tr("Error"),
 								tr("The following error occurred: %1.")
 								.arg(sslSocket_->errorString()));
+		break;
 	}
 }
 
