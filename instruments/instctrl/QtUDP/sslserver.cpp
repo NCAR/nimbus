@@ -73,7 +73,7 @@ void SslServer::openSession()
 			return;
 		}
 
-		status_->setText(tr("The server is running on port %1 at address %2.")
+		status_->setText(tr("The server is listening on port %1 at address %2.")
 							.arg(sslServer_->serverPort())
 							.arg(sslServer_->serverAddress().toString()));
 

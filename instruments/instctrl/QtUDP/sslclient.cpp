@@ -107,7 +107,7 @@ void SslClient::connectToServer()
 void SslClient::clientConnected()
 {
 	QString host = sslSocket_->localAddress().toString();
-	connection_->setText(tr("Connected to %1 on port %2.")
+	connection_->setText(tr("Connected to %1 at port %2.")
 							.arg(host).arg(sslSocket_->localPort()));
 	connection_->show();
 }
@@ -115,7 +115,7 @@ void SslClient::clientConnected()
 void SslClient::clientEncrypted()
 {
 	QString host = sslSocket_->localAddress().toString();
-	connection_->setText(tr("Connected and encrypted to %1 on port %2.")
+	connection_->setText(tr("Connected and encrypted to %1 at port %2.")
 							.arg(host).arg(sslSocket_->localPort()));
 	connection_->show();
 }
