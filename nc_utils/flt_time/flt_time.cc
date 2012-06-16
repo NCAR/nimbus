@@ -63,7 +63,7 @@ int
 main(int argc, char *argv[])
 {
   int indx = 1;
-  float tas_cutoff = 25.0;	// Default.
+  float speed_cutoff = 25.0;	// Default.
 
 
   // Check arguments / usage.
@@ -77,7 +77,7 @@ main(int argc, char *argv[])
   if (strcmp(argv[indx], "-t") == 0)
   {
     ++indx;
-    tas_cutoff = atof(argv[indx++]);
+    speed_cutoff = atof(argv[indx++]);
   }
 
   // keep program from exiting, if netCDF API doesn't find something.
@@ -100,9 +100,13 @@ main(int argc, char *argv[])
 		<< flight->as_string(0) << ":\n";
 
   NcValues * time_data = getData(ncFile, "Time");
-  NcValues * tas_data = getData(ncFile, "TASX");
 
-  if (time_data == 0 || tas_data == 0)
+  // Try ground speed first, otherwise airspeed.
+  NcValues * speed_data = getData(ncFile, "GSF");
+  if (speed_data == 0)
+    speed_data = getData(ncFile, "TASX");
+
+  if (time_data == 0 || speed_data == 0)
     return 1;
 
   // Get flight start time.
@@ -119,7 +123,7 @@ main(int argc, char *argv[])
   // Locate Start of Flight
   long i;
   for (i = 0; i < time_var->num_vals(); ++i)
-    if (tas_data->as_float(i) > tas_cutoff)
+    if (speed_data->as_float(i) > speed_cutoff)
     {
       time_t x = start_t + i;
 
@@ -134,7 +138,7 @@ main(int argc, char *argv[])
 
   // Locate End of Flight
   for (; i < time_var->num_vals(); ++i)
-    if (tas_data->as_float(i) < tas_cutoff && tas_data->as_float(i) != -32767.0)
+    if (speed_data->as_float(i) < speed_cutoff && speed_data->as_float(i) != -32767.0)
     {
       time_t x = start_t + i;
 
@@ -143,15 +147,15 @@ main(int argc, char *argv[])
       break;
     }
 
-  if (tas_data->as_float(0) > 90.0)
-    cout	<< endl << " First TAS value is " << tas_data->as_float(0)
+  if (speed_data->as_float(0) > 80.0)
+    cout	<< endl << " First TAS value is " << speed_data->as_float(0)
 		<< "m/s, incomplete netCDF file?" << endl;
 
-  if (tas_data->as_float(time_var->num_vals()-1) > 90.0)
-    cout << endl << " Last TAS value is " << tas_data->as_float(time_var->num_vals()-1)
+  if (speed_data->as_float(time_var->num_vals()-1) > 90.0)
+    cout << endl << " Last TAS value is " << speed_data->as_float(time_var->num_vals()-1)
 	<< "m/s, incomplete netCDF file?" << endl;
 
   delete time_data;
-  delete tas_data;
+  delete speed_data;
   delete ncFile;
 }
