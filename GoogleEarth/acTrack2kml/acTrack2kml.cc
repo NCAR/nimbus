@@ -38,7 +38,7 @@ static int TimeStep = 15;
 static const float TAS_CutOff = 20.0;
 
 // Frequency of Time Stamps (in minutes).
-static int ts_Freq = 20;
+static int ts_Freq = 2000;
 
 // Frequency of Wind Barbs (in minutes).
 static int barb_Freq = 5;
@@ -1100,7 +1100,7 @@ int usage(const char *argv0)
 	<< "  -h database_host	Database server host with data.\n"
 	<< "  -o			Run onboard, changes webhost to onboard server.\n"
 	<< "  -b barb_freq		Frequency of wind barbs in minutes, default is 5.\n"
-	<< "  -t ts_freq		Frequency of time stamps in minutes, default is 20.\n"
+	<< "  -t ts_freq		Frequency of time stamps in minutes, default is 2000 (off).\n"
 	<< "  -s time_step		Time interval of data points for track in seconds, default is 30.\n";
 
   return 1;
@@ -1146,12 +1146,12 @@ int parseRunstring(int argc, char** argv)
 
     case 'b':	// Windbarb Frequency, default is 5 minutes.
       barb_Freq = atoi(optarg);
-      if (barb_Freq < 1) barb_Freq = 86400; // 24 hours, basically turn off.
+      if (barb_Freq < 1) barb_Freq = 2000; // 24 hours, basically turn off.
       break;
 
     case 't':	// Time Stamp Frequency, default is 20 minutes.
       ts_Freq = atoi(optarg);
-      if (ts_Freq < 1) ts_Freq = 86400; // 24 hours, basically turn off.
+      if (ts_Freq < 1) ts_Freq = 2000; // 24 hours, basically turn off.
       break;
 
     case 'o':	// onboard.  Modify some defaults if this is set.
