@@ -7,8 +7,6 @@ FULL NAME:	CO2 concentrations
 ENTRY POINTS:	sco2c()
                 xco_al()
 
-STATIC FNS:	none
-
 DESCRIPTION:	As far as I know this is/was only used for project 280,
 		Fires In Brazil.
 

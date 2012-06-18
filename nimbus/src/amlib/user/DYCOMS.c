@@ -1,22 +1,10 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:	ACEASIA.c
+OBJECT NAME:	DYCOMS.c
 
-FULL NAME:	ACE-Asis
-
-ENTRY POINTS:	sfunc()
-
-STATIC FNS:  
+FULL NAME:	DYCOMS Specific calculations
 
 DESCRIPTION:	Template for AMLIB std & user directories.
-
-INPUT:    
-
-OUTPUT:    
-
-REFERENCES:  
-
-REFERENCED BY:	compute.c
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 2001
 -------------------------------------------------------------------------

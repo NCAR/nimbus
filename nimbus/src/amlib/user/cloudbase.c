@@ -6,8 +6,6 @@ FULL NAME:
 
 ENTRY POINTS:	scldbase()
 
-STATIC FNS:	
-
 DESCRIPTION:	Calculation for theoretical cloud base.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 2003

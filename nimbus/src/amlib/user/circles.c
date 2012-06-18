@@ -1,24 +1,14 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:  circles.c
+OBJECT NAME:	circles.c
 
-FULL NAME:  Flying circles
+FULL NAME:	Flying circles
 
-ENTRY POINTS:  sptdrdst(), sptdrtim(), sptdrrad()
+ENTRY POINTS:	sptdrdst(), sptdrtim(), sptdrrad()
 
-STATIC FNS:  none
+DESCRIPTION:	How to fly a large circle.
 
-DESCRIPTION:  How to fly a large circle.
-
-INPUT:    
-
-OUTPUT:    
-
-REFERENCES:  none
-
-REFERENCED BY:  compute.c
-
-COPYRIGHT:  University Corporation for Atmospheric Research, 1995,1998
+COPYRIGHT:	University Corporation for Atmospheric Research, 1995,1998
 -------------------------------------------------------------------------
 */
 

@@ -7,11 +7,7 @@ FULL NAME:	Compute MASP derived paramters
 ENTRY POINTS:	maspInit()
 		scmasp()
 
-STATIC FNS:	none
-
 DESCRIPTION:	
-
-DEPENDANCIES:	none
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 -------------------------------------------------------------------------
