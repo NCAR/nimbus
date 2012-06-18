@@ -6,8 +6,6 @@ FULL NAME:
 
 ENTRY POINTS:	sClimet()
 
-STATIC FNS:	
-
 DESCRIPTION:	Template for AMLIB std & user directories.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 2002

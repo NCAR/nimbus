@@ -6,8 +6,6 @@ FULL NAME:
 
 ENTRY POINTS:	sfunc()
 
-STATIC FNS:  
-
 DESCRIPTION:	Calcs for PASE, Steve Howell
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 2007

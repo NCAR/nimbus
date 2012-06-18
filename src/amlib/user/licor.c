@@ -1,22 +1,14 @@
 /*
 -------------------------------------------------------------------------
-OBJECT NAME:  licor.c
+OBJECT NAME:	licor.c
 
-FULL NAME:  LI-COR 6262
+FULL NAME:	LI-COR 6262
 
-ENTRY POINTS:  sxco2c()
-    sxlh2oc()
-    sxmrli()
+ENTRY POINTS:	sxco2c()
+		sxlh2oc()
+		sxmrli()
 
-STATIC FNS:  none
-
-DESCRIPTION:  Calculations for Chem folks
-
-INPUT:    
-
-REFERENCES:  none
-
-REFERENCED BY:  compute.c
+DESCRIPTION:	Calculations for Chem folks
 
 COPYRIGHT:  University Corporation for Atmospheric Research, 1994, 1998
 -------------------------------------------------------------------------
