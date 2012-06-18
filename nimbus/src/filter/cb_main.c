@@ -954,7 +954,7 @@ XmString CreateListLineItem(var_base *pp, int var_type)
 {
   RAWTBL	*rp;
   DERTBL	*dp;
-  char		tmp[16];
+  char		tmp[100];
 
   switch (var_type)
     {
@@ -969,7 +969,7 @@ XmString CreateListLineItem(var_base *pp, int var_type)
 
       for (size_t i = 0; i < rp->cof.size(); ++i)
         {
-        sprintf(tmp, "%10.4f", rp->cof[i]);
+        sprintf(tmp, "%10.4lf", rp->cof[i]);
         strcat(buffer, tmp);
         }
 
