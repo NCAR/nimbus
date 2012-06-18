@@ -14,9 +14,13 @@ void QSslServer::incomingConnection(int socketDescriptor)
 		QFile keyFile("certs/server.key");
 		QFile clientFile("certs/client.crt");
 		QFile serverFile("certs/server.crt");
+		QFile multiHostClientFile("certs/san_client.crt");
+		QFile multiHostServerFile("certs/san_server.crt");
 		keyFile.open(QIODevice::ReadOnly);
 		clientFile.open(QIODevice::ReadOnly);
 		serverFile.open(QIODevice::ReadOnly);
+		multiHostClientFile.open(QIODevice::ReadOnly);
+		multiHostServerFile.open(QIODevice::ReadOnly);
 
 		QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray("server"));
 
@@ -28,15 +32,19 @@ void QSslServer::incomingConnection(int socketDescriptor)
 
 		QSslCertificate clientCert(&clientFile);
 		QSslCertificate serverCert(&serverFile);
+		QSslCertificate multiHostClientCert(&multiHostClientFile);
+		QSslCertificate multiHostServerCert(&multiHostServerFile);
 
 		connectDebuggingMessages(socket);
 
 		socket->setPrivateKey(key);
-		socket->setLocalCertificate(serverCert);
+		socket->setLocalCertificate(multiHostServerCert);
 
 		QSslError error(QSslError::SelfSignedCertificate, clientCert);
+		QSslError newError(QSslError::SelfSignedCertificate, multiHostClientCert);
 		QList<QSslError> expectedSslErrors;
-		expectedSslErrors.append(QSslError::SelfSignedCertificate);
+		expectedSslErrors.append(error);
+		expectedSslErrors.append(newError);
 
 		socket->ignoreSslErrors(expectedSslErrors);
 		socket->startServerEncryption();

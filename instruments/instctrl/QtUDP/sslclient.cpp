@@ -84,20 +84,28 @@ void SslClient::connectToServer()
 		QFile keyFile("certs/client.key");
 		QFile clientFile("certs/client.crt");
 		QFile serverFile("certs/server.crt");
+		QFile multiHostClientFile("certs/san_client.crt");
+		QFile multiHostServerFile("certs/san_server.crt");
 		keyFile.open(QIODevice::ReadOnly);
 		clientFile.open(QIODevice::ReadOnly);
 		serverFile.open(QIODevice::ReadOnly);
+		multiHostClientFile.open(QIODevice::ReadOnly);
+		multiHostServerFile.open(QIODevice::ReadOnly);
 
 		QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray("client"));
 		QSslCertificate clientCert(&clientFile);
 		QSslCertificate serverCert(&serverFile);
+		QSslCertificate multiHostClientCert(&multiHostClientFile);
+		QSslCertificate multiHostServerCert(&multiHostServerFile);
 
 		sslSocket_->setPrivateKey(key);
-		sslSocket_->setLocalCertificate(clientCert);
+		sslSocket_->setLocalCertificate(multiHostClientCert);
 
 		QSslError error(QSslError::SelfSignedCertificate, serverCert);
+		QSslError newError(QSslError::SelfSignedCertificate, multiHostServerCert);
 		QList<QSslError> expectedSslErrors;
 		expectedSslErrors.append(error);
+		expectedSslErrors.append(newError);
 
 		sslSocket_->ignoreSslErrors(expectedSslErrors);
 		sslSocket_->connectToHostEncrypted(hostName_->text(), portNumber);
