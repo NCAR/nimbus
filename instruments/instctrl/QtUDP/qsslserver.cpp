@@ -35,10 +35,29 @@ void QSslServer::incomingConnection(int socketDescriptor)
 		QSslCertificate multiHostClientCert(&multiHostClientFile);
 		QSslCertificate multiHostServerCert(&multiHostServerFile);
 
+		QList<QSslCertificate> certificates;
+		certificates.append(clientCert);
+		certificates.append(serverCert);
+		certificates.append(multiHostClientCert);
+		certificates.append(multiHostServerCert);
+
+		if (!multiHostServerCert.isValid()) {
+			qDebug("Non-valid server certificate");
+			return;
+		}
+
 		connectDebuggingMessages(socket);
+
+		QMultiMap<QSsl::AlternateNameEntryType, QString> alternates = multiHostServerCert.alternateSubjectNames();
+		if (alternates.isEmpty()) {
+			qDebug("No alternates in server certificate.");
+		} else {
+			qDebug() << "Subject Alternate Names for server:\n" << alternates;
+		}
 
 		socket->setPrivateKey(key);
 		socket->setLocalCertificate(multiHostServerCert);
+		socket->addCaCertificates(certificates);
 
 		QSslError error(QSslError::SelfSignedCertificate, clientCert);
 		QSslError newError(QSslError::SelfSignedCertificate, multiHostClientCert);
@@ -46,8 +65,8 @@ void QSslServer::incomingConnection(int socketDescriptor)
 		expectedSslErrors.append(error);
 		expectedSslErrors.append(newError);
 
-		socket->ignoreSslErrors(expectedSslErrors);
 		socket->startServerEncryption();
+		socket->ignoreSslErrors(expectedSslErrors);
 	} else {
 		delete socket;
 	}
@@ -96,12 +115,12 @@ void QSslServer::slot_modeChanged (QSslSocket::SslMode mode)
 
 void QSslServer::slot_peerVerifyError (const QSslError & err)
 {
-   qDebug() << "QMyServer::slot_peerVerifyError: " << err.errorString();
+   qDebug() << "QMyServer::slot_peerVerifyError:" << err;
 }
 
-void QSslServer::slot_sslErrors (const QList<QSslError> &)
+void QSslServer::slot_sslErrors (const QList<QSslError> & errs)
 {
-   qDebug("QMyServer::slot_sslErrors");
+   qDebug() << "QMyServer::slot_sslErrors:" << errs;
 }
 
 void QSslServer::slot_readyRead ()

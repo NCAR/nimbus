@@ -58,7 +58,7 @@ name_opt 	= ca_default		# Subject Name options
 cert_opt 	= ca_default		# Certificate field options
 
 # Extension copying option: use with caution.
-# copy_extensions = copy
+copy_extensions = copy
 
 # Extensions to add to a CRL. Note: Netscape communicator chokes on V2 CRLs
 # so this is commented out by default to leave a V1 CRL.
@@ -125,25 +125,25 @@ req_extensions = v3_req # The extensions to add to a certificate request
 
 [ req_distinguished_name ]
 countryName			= Country Name (2 letter code)
-countryName_default		= AU
+countryName_default		= US
 countryName_min			= 2
 countryName_max			= 2
 
 stateOrProvinceName		= State or Province Name (full name)
-stateOrProvinceName_default	= Australian Capital Territory
+stateOrProvinceName_default	= Colorado
 
 localityName			= Locality Name (eg, city)
-localityName_default		= QcaLand
+localityName_default		= Broomfield
 
 0.organizationName		= Organization Name (eg, company)
-0.organizationName_default	= Qca Development and Test
+0.organizationName_default	= UCAR
 
 # we can do this but it is not needed normally :-)
 #1.organizationName		= Second Organization Name (eg, company)
 #1.organizationName_default	= World Wide Web Pty Ltd
 
 organizationalUnitName		= Organizational Unit Name (eg, section)
-organizationalUnitName_default	= Certificate Generation Section
+organizationalUnitName_default	= NCAR
 
 commonName			= Common Name (eg, your name or your server\'s hostname)
 commonName_max			= 64
@@ -210,12 +210,11 @@ subjectAltName = @alt_names
 
 [ alt_names ]
 
-IP.1 = 128.117.82.3
-IP.2 = 128.117.82.6
-IP.3 = 128.117.84.23
-IP.4 = 128.117.84.29
-IP.5 = 128.117.84.115
-IP.6 = 128.117.85.151
+DNS.1 = tikal
+DNS.2 = shiraz
+DNS.3 = droplet
+DNS.4 = sloop
+DNS.5 = pepper
 
 [ v3_ca ]
 

@@ -98,17 +98,36 @@ void SslClient::connectToServer()
 		QSslCertificate multiHostClientCert(&multiHostClientFile);
 		QSslCertificate multiHostServerCert(&multiHostServerFile);
 
+		QList<QSslCertificate> certificates;
+		certificates.append(clientCert);
+		certificates.append(serverCert);
+		certificates.append(multiHostClientCert);
+		certificates.append(multiHostServerCert);
+
+		if (!multiHostClientCert.isValid()) {
+			qDebug("Non-valid client certificate");
+			return;
+		}
+
+		QMultiMap<QSsl::AlternateNameEntryType, QString> alternates = multiHostClientCert.alternateSubjectNames();
+		if (alternates.isEmpty()) {
+			qDebug("No alternates in client certificate.");
+		} else {
+			qDebug() << "Subject Alternate Names for server:\n" << alternates;
+		}
+
 		sslSocket_->setPrivateKey(key);
 		sslSocket_->setLocalCertificate(multiHostClientCert);
+		sslSocket_->addCaCertificates(certificates);
 
 		QSslError error(QSslError::SelfSignedCertificate, serverCert);
-		QSslError newError(QSslError::SelfSignedCertificate, multiHostServerCert);
+		QSslError newError(QSslError::SelfSignedCertificate, multiHostClientCert);
 		QList<QSslError> expectedSslErrors;
 		expectedSslErrors.append(error);
 		expectedSslErrors.append(newError);
 
-		sslSocket_->ignoreSslErrors(expectedSslErrors);
 		sslSocket_->connectToHostEncrypted(hostName_->text(), portNumber);
+		sslSocket_->ignoreSslErrors();
 	}
 }
 
