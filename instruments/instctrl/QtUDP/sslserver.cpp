@@ -104,7 +104,33 @@ void SslServer::clientConnected()
 
 void SslServer::clientEncrypted()
 {
-	connection_->setText(tr("Client connected and encrypted."));
+	if (currentSocket_->peerCertificate().isNull()) {
+		connection_->setText(tr("Client connected and encrypted, but certificate is null."));
+	} else {
+		QString subjectInfo;
+		QString issuerInfo;
+
+		//Fetchin the subject info
+		subjectInfo.append(currentSocket_->peerCertificate().issuerInfo(QSslCertificate::Organization));
+		subjectInfo.append(currentSocket_->peerCertificate().issuerInfo(QSslCertificate::CommonName));
+		//Fetching effective and expiry dates
+		subjectInfo.append(currentSocket_->peerCertificate().effectiveDate().toString());
+		subjectInfo.append(currentSocket_->peerCertificate().expiryDate().toString());
+		//Fetching the serial number
+		subjectInfo.append(currentSocket_->peerCertificate().serialNumber());
+
+		//Fetchin the issuer info
+		issuerInfo.append(currentSocket_->peerCertificate().issuerInfo(QSslCertificate::Organization));
+		issuerInfo.append(currentSocket_->peerCertificate().issuerInfo(QSslCertificate::CommonName));
+		//Fetching effective and expiry dates
+		issuerInfo.append(currentSocket_->peerCertificate().effectiveDate().toString());
+		issuerInfo.append(currentSocket_->peerCertificate().expiryDate().toString());
+		//Fetching the serial number
+		issuerInfo.append(currentSocket_->peerCertificate().serialNumber());
+
+		connection_->setText(tr("Client connected and encrypted.\nSubject Info: %1\n\nIssuer Info: %2")
+								.arg(subjectInfo).arg(issuerInfo));
+	}
 	connection_->show();
 }
 

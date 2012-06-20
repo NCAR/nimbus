@@ -56,7 +56,7 @@ void QSslServer::incomingConnection(int socketDescriptor)
 		}
 
 		socket->setPrivateKey(key);
-		socket->setLocalCertificate(multiHostServerCert);
+		socket->setLocalCertificate(serverCert);
 		socket->addCaCertificates(certificates);
 
 		QSslError error(QSslError::SelfSignedCertificate, clientCert);

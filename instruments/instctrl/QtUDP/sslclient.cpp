@@ -113,11 +113,11 @@ void SslClient::connectToServer()
 		if (alternates.isEmpty()) {
 			qDebug("No alternates in client certificate.");
 		} else {
-			qDebug() << "Subject Alternate Names for server:\n" << alternates;
+			qDebug() << "Subject Alternate Names for client:\n" << alternates;
 		}
 
 		sslSocket_->setPrivateKey(key);
-		sslSocket_->setLocalCertificate(multiHostClientCert);
+		sslSocket_->setLocalCertificate(clientCert);
 		sslSocket_->addCaCertificates(certificates);
 
 		QSslError error(QSslError::SelfSignedCertificate, serverCert);
@@ -127,7 +127,7 @@ void SslClient::connectToServer()
 		expectedSslErrors.append(newError);
 
 		sslSocket_->connectToHostEncrypted(hostName_->text(), portNumber);
-		sslSocket_->ignoreSslErrors();
+		sslSocket_->ignoreSslErrors(expectedSslErrors);
 	}
 }
 
@@ -142,8 +142,34 @@ void SslClient::clientConnected()
 void SslClient::clientEncrypted()
 {
 	QString host = sslSocket_->localAddress().toString();
-	connection_->setText(tr("Connected and encrypted to %1 at port %2.")
-							.arg(host).arg(sslSocket_->localPort()));
+	if (sslSocket_->peerCertificate().isNull()) {
+		connection_->setText(tr("Connected and encrypted, but certificate is null."));
+	} else {
+		QString subjectInfo;
+		QString issuerInfo;
+
+		//Fetchin the subject info
+		subjectInfo.append(sslSocket_->peerCertificate().issuerInfo(QSslCertificate::Organization));
+		subjectInfo.append(sslSocket_->peerCertificate().issuerInfo(QSslCertificate::CommonName));
+		//Fetching effective and expiry dates
+		subjectInfo.append(sslSocket_->peerCertificate().effectiveDate().toString());
+		subjectInfo.append(sslSocket_->peerCertificate().expiryDate().toString());
+		//Fetching the serial number
+		subjectInfo.append(sslSocket_->peerCertificate().serialNumber());
+
+		//Fetchin the issuer info
+		issuerInfo.append(sslSocket_->peerCertificate().issuerInfo(QSslCertificate::Organization));
+		issuerInfo.append(sslSocket_->peerCertificate().issuerInfo(QSslCertificate::CommonName));
+		//Fetching effective and expiry dates
+		issuerInfo.append(sslSocket_->peerCertificate().effectiveDate().toString());
+		issuerInfo.append(sslSocket_->peerCertificate().expiryDate().toString());
+		//Fetching the serial number
+		issuerInfo.append(sslSocket_->peerCertificate().serialNumber());
+
+		connection_->setText(tr("Connected and encrypted to %1 at port %2.\nSubject Info: %3\n\nIssuer Info: %4")
+								.arg(host).arg(sslSocket_->localPort())
+								.arg(subjectInfo).arg(issuerInfo));
+	}
 	connection_->show();
 }
 
