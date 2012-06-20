@@ -48,16 +48,16 @@ void QSslServer::incomingConnection(int socketDescriptor)
 
 		connectDebuggingMessages(socket);
 
-		QMultiMap<QSsl::AlternateNameEntryType, QString> alternates = multiHostServerCert.alternateSubjectNames();
-		if (alternates.isEmpty()) {
-			qDebug("No alternates in server certificate.");
-		} else {
-			qDebug() << "Subject Alternate Names for server:\n" << alternates;
-		}
-
 		socket->setPrivateKey(key);
 		socket->setLocalCertificate(serverCert);
 		socket->addCaCertificates(certificates);
+
+		QMultiMap<QSsl::AlternateNameEntryType, QString> alternates = socket->localCertificate().alternateSubjectNames();
+		if (alternates.isEmpty()) {
+			qDebug("No alternates in client certificate.");
+		} else {
+			qDebug() << "Subject Alternate Names for client:\n" << alternates;
+		}
 
 		QSslError error(QSslError::SelfSignedCertificate, clientCert);
 		QSslError newError(QSslError::SelfSignedCertificate, multiHostClientCert);

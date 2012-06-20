@@ -128,7 +128,7 @@ void SslServer::clientEncrypted()
 		//Fetching the serial number
 		issuerInfo.append(currentSocket_->peerCertificate().serialNumber());
 
-		connection_->setText(tr("Client connected and encrypted.\nSubject Info: %1\n\nIssuer Info: %2")
+		connection_->setText(tr("Client connected and encrypted.\nSubject Info: %1\nIssuer Info: %2")
 								.arg(subjectInfo).arg(issuerInfo));
 	}
 	connection_->show();

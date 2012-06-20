@@ -109,16 +109,16 @@ void SslClient::connectToServer()
 			return;
 		}
 
-		QMultiMap<QSsl::AlternateNameEntryType, QString> alternates = multiHostClientCert.alternateSubjectNames();
+		sslSocket_->setPrivateKey(key);
+		sslSocket_->setLocalCertificate(clientCert);
+		sslSocket_->addCaCertificates(certificates);
+
+		QMultiMap<QSsl::AlternateNameEntryType, QString> alternates = sslSocket_->localCertificate().alternateSubjectNames();
 		if (alternates.isEmpty()) {
 			qDebug("No alternates in client certificate.");
 		} else {
 			qDebug() << "Subject Alternate Names for client:\n" << alternates;
 		}
-
-		sslSocket_->setPrivateKey(key);
-		sslSocket_->setLocalCertificate(clientCert);
-		sslSocket_->addCaCertificates(certificates);
 
 		QSslError error(QSslError::SelfSignedCertificate, serverCert);
 		QSslError newError(QSslError::SelfSignedCertificate, multiHostClientCert);
@@ -166,7 +166,7 @@ void SslClient::clientEncrypted()
 		//Fetching the serial number
 		issuerInfo.append(sslSocket_->peerCertificate().serialNumber());
 
-		connection_->setText(tr("Connected and encrypted to %1 at port %2.\nSubject Info: %3\n\nIssuer Info: %4")
+		connection_->setText(tr("Connected and encrypted to %1 at port %2.\nSubject Info: %3\nIssuer Info: %4")
 								.arg(host).arg(sslSocket_->localPort())
 								.arg(subjectInfo).arg(issuerInfo));
 	}
