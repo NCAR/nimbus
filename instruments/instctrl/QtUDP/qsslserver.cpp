@@ -11,18 +11,40 @@ void QSslServer::incomingConnection(int socketDescriptor)
 	if (socket->setSocketDescriptor(socketDescriptor)) {
 		pendingConnections_.append(socket);
 
-		QFile keyFile("certs/server.key");
+//		QFile keyFile("certs/server.key");
 		QFile clientFile("certs/client.crt");
 		QFile serverFile("certs/server.crt");
+		QFile tikalClientFile("certs/tikal_client.crt");
+		QFile tikalServerFile("certs/tikal_server.crt");
+		QFile shirazClientFile("certs/shiraz_client.crt");
+		QFile shirazServerFile("certs/shiraz_server.crt");
+		QFile dropletClientFile("certs/droplet_client.crt");
+		QFile dropletServerFile("certs/droplet_server.crt");
+		QFile sloopClientFile("certs/sloop_client.crt");
+		QFile sloopServerFile("certs/sloop_server.crt");
 		QFile multiHostClientFile("certs/san_client.crt");
 		QFile multiHostServerFile("certs/san_server.crt");
+
+		QFile keyFile("certs/cakey.key");
+		QFile newServerFile("certs/cacert.crt");
+
 		keyFile.open(QIODevice::ReadOnly);
 		clientFile.open(QIODevice::ReadOnly);
 		serverFile.open(QIODevice::ReadOnly);
+		tikalClientFile.open(QIODevice::ReadOnly);
+		tikalServerFile.open(QIODevice::ReadOnly);
+		shirazClientFile.open(QIODevice::ReadOnly);
+		shirazServerFile.open(QIODevice::ReadOnly);
+		dropletClientFile.open(QIODevice::ReadOnly);
+		dropletServerFile.open(QIODevice::ReadOnly);
+		sloopClientFile.open(QIODevice::ReadOnly);
+		sloopServerFile.open(QIODevice::ReadOnly);
 		multiHostClientFile.open(QIODevice::ReadOnly);
 		multiHostServerFile.open(QIODevice::ReadOnly);
 
-		QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray("server"));
+		newServerFile.open(QIODevice::ReadOnly);
+
+		QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray("start"));
 
 		if (key.isNull()) {
 			qWarning("key is null");
@@ -32,25 +54,43 @@ void QSslServer::incomingConnection(int socketDescriptor)
 
 		QSslCertificate clientCert(&clientFile);
 		QSslCertificate serverCert(&serverFile);
+		QSslCertificate tikalClientCert(&tikalClientFile);
+		QSslCertificate tikalServerCert(&tikalServerFile);
+		QSslCertificate shirazClientCert(&shirazClientFile);
+		QSslCertificate shirazServerCert(&shirazServerFile);
+		QSslCertificate dropletClientCert(&dropletClientFile);
+		QSslCertificate dropletServerCert(&dropletServerFile);
+		QSslCertificate sloopClientCert(&sloopClientFile);
+		QSslCertificate sloopServerCert(&sloopServerFile);
 		QSslCertificate multiHostClientCert(&multiHostClientFile);
 		QSslCertificate multiHostServerCert(&multiHostServerFile);
 
-		QList<QSslCertificate> certificates;
-		certificates.append(clientCert);
-		certificates.append(serverCert);
-		certificates.append(multiHostClientCert);
-		certificates.append(multiHostServerCert);
+		QSslCertificate newServerCert(&newServerFile);
 
-		if (!multiHostServerCert.isValid()) {
-			qDebug("Non-valid server certificate");
-			return;
-		}
+		QList<QSslCertificate> clientCertificates;
+		clientCertificates.append(clientCert);
+		clientCertificates.append(tikalClientCert);
+		clientCertificates.append(shirazClientCert);
+		clientCertificates.append(dropletClientCert);
+		clientCertificates.append(sloopClientCert);
+		clientCertificates.append(multiHostClientCert);
+
+		QList<QSslCertificate> serverCertificates;
+		serverCertificates.append(serverCert);
+		serverCertificates.append(tikalServerCert);
+		serverCertificates.append(shirazServerCert);
+		serverCertificates.append(dropletServerCert);
+		serverCertificates.append(sloopServerCert);
+		serverCertificates.append(multiHostServerCert);
+		serverCertificates.append(newServerCert);
 
 		connectDebuggingMessages(socket);
 
 		socket->setPrivateKey(key);
-		socket->setLocalCertificate(serverCert);
-		socket->addCaCertificates(certificates);
+		socket->addCaCertificates(clientCertificates);
+		socket->addCaCertificates(serverCertificates);
+
+		socket->setLocalCertificate(newServerCert);
 
 		QMultiMap<QSsl::AlternateNameEntryType, QString> alternates = socket->localCertificate().alternateSubjectNames();
 		if (alternates.isEmpty()) {
@@ -60,13 +100,21 @@ void QSslServer::incomingConnection(int socketDescriptor)
 		}
 
 		QSslError error(QSslError::SelfSignedCertificate, clientCert);
-		QSslError newError(QSslError::SelfSignedCertificate, multiHostClientCert);
+		QSslError multiHostError(QSslError::SelfSignedCertificate, multiHostClientCert);
+		QSslError tikalError(QSslError::SelfSignedCertificate, tikalClientCert);
+		QSslError shirazError(QSslError::SelfSignedCertificate, shirazClientCert);
+		QSslError dropletError(QSslError::SelfSignedCertificate, dropletClientCert);
+		QSslError sloopError(QSslError::SelfSignedCertificate, sloopClientCert);
+
 		QList<QSslError> expectedSslErrors;
 		expectedSslErrors.append(error);
-		expectedSslErrors.append(newError);
-
+		expectedSslErrors.append(multiHostError);
+		expectedSslErrors.append(tikalError);
+		expectedSslErrors.append(shirazError);
+		expectedSslErrors.append(dropletError);
+		expectedSslErrors.append(sloopError);
 		socket->startServerEncryption();
-		socket->ignoreSslErrors(expectedSslErrors);
+		socket->ignoreSslErrors();
 	} else {
 		delete socket;
 	}
