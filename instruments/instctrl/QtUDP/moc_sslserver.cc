@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'sslserver.h'
 **
-** Created: Sat Jun 9 06:28:21 2012
+** Created: Mon Jun 11 12:19:47 2012
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.6.2)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_SslServer[] = {
        4,       // revision
        0,       // classname
        0,    0, // classinfo
-       9,   14, // methods
+      13,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -34,21 +34,27 @@ static const uint qt_meta_data_SslServer[] = {
       11,   10,   10,   10, 0x08,
       25,   10,   10,   10, 0x08,
       43,   10,   10,   10, 0x08,
-      61,   10,   10,   10, 0x08,
-      79,   10,   10,   10, 0x08,
-     100,   10,   10,   10, 0x08,
-     111,   10,   10,   10, 0x08,
-     125,   10,   10,   10, 0x08,
-     136,   10,   10,   10, 0x08,
+      59,   10,   10,   10, 0x08,
+      77,   10,   10,   10, 0x08,
+      95,   10,   10,   10, 0x08,
+     116,   10,   10,   10, 0x08,
+     127,   10,   10,   10, 0x08,
+     142,   10,   10,   10, 0x08,
+     156,   10,   10,   10, 0x08,
+     175,   10,   10,   10, 0x08,
+     186,   10,   10,   10, 0x08,
+     200,   10,   10,   10, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_SslServer[] = {
     "SslServer\0\0openSession()\0connectToClient()\0"
-    "clientConnected()\0clientEncrypted()\0"
-    "clientDisconnected()\0sendMode()\0"
-    "sendMessage()\0readMode()\0switchPorts()\0"
+    "addClientName()\0clientConnected()\0"
+    "clientEncrypted()\0clientDisconnected()\0"
+    "sendMode()\0sendToClient()\0sendMessage()\0"
+    "broadcastMessage()\0readMode()\0"
+    "switchPorts()\0quitSession()\0"
 };
 
 const QMetaObject SslServer::staticMetaObject = {
@@ -82,16 +88,20 @@ int SslServer::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         switch (_id) {
         case 0: openSession(); break;
         case 1: connectToClient(); break;
-        case 2: clientConnected(); break;
-        case 3: clientEncrypted(); break;
-        case 4: clientDisconnected(); break;
-        case 5: sendMode(); break;
-        case 6: sendMessage(); break;
-        case 7: readMode(); break;
-        case 8: switchPorts(); break;
+        case 2: addClientName(); break;
+        case 3: clientConnected(); break;
+        case 4: clientEncrypted(); break;
+        case 5: clientDisconnected(); break;
+        case 6: sendMode(); break;
+        case 7: sendToClient(); break;
+        case 8: sendMessage(); break;
+        case 9: broadcastMessage(); break;
+        case 10: readMode(); break;
+        case 11: switchPorts(); break;
+        case 12: quitSession(); break;
         default: ;
         }
-        _id -= 9;
+        _id -= 13;
     }
     return _id;
 }

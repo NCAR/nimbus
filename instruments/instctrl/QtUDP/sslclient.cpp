@@ -12,6 +12,8 @@ SslClient::SslClient(QWidget *parent)
 	uniquePorts_ = new QSet<QString>;
 	hostLabel_ = new QLabel(tr("Host Name:"));
 	hostName_ = new QLineEdit;
+	clientLabel_ = new QLabel(tr("Client Name"));
+	clientName_ = new QLineEdit;
 	message_ = new QTextEdit;
 	message_->hide();
 
@@ -22,6 +24,8 @@ SslClient::SslClient(QWidget *parent)
 	sendButton_->hide();
 	writeButton_ = new QPushButton(tr("Write new message"));
 	writeButton_->hide();
+	quitButton_ = new QPushButton(tr("Quit"));
+	quitButton_->hide();
 
 	sslSocket_ = new QSslSocket(this);
 
@@ -34,6 +38,7 @@ SslClient::SslClient(QWidget *parent)
 	connect(sendButton_, SIGNAL(clicked()), this, SLOT(sendMessage()));
 	connect(sslSocket_, SIGNAL(readyRead()), this, SLOT(readMode()));
 	connect(switchButton_, SIGNAL(clicked()), this, SLOT(switchHostMode()));
+	connect(quitButton_, SIGNAL(clicked()), this, SLOT(quitSession()));
 	connect(sslSocket_, SIGNAL(error(QAbstractSocket::SocketError)), this,
 			SLOT(displayError(QAbstractSocket::SocketError)));
 	connect(sslSocket_, SIGNAL(sslErrors(const QList<QSslError> &)), this,
@@ -46,6 +51,7 @@ SslClient::SslClient(QWidget *parent)
 	buttonLayout->addWidget(connectButton_);
 	buttonLayout->addWidget(sendButton_);
 	buttonLayout->addWidget(writeButton_);
+	buttonLayout->addWidget(quitButton_);
 
 	QGridLayout *mainLayout = new QGridLayout;
 	mainLayout->addWidget(connection_, 0, 0, 1, 2);
@@ -54,8 +60,10 @@ SslClient::SslClient(QWidget *parent)
 	mainLayout->addWidget(port_, 2, 1);
 	mainLayout->addWidget(hostLabel_, 3, 0);
 	mainLayout->addWidget(hostName_, 3, 1);
-	mainLayout->addWidget(message_, 4, 0, 1, 2);
-	mainLayout->addLayout(buttonLayout, 5, 0, 1, 2);
+	mainLayout->addWidget(clientLabel_, 4, 0);
+	mainLayout->addWidget(clientName_, 4, 1);
+	mainLayout->addWidget(message_, 5, 0, 1, 2);
+	mainLayout->addLayout(buttonLayout, 6, 0, 1, 2);
 	setLayout(mainLayout);
 	setWindowTitle(tr("SSL Client"));
 }
@@ -151,13 +159,6 @@ void SslClient::connectToServer()
 		sslSocket_->addCaCertificates(clientCertificates);
 		sslSocket_->addCaCertificates(serverCertificates);
 
-/*		for (int i = 0; i < clientCertificates.size(); ++i) {
-			if (clientCertificates[i].subjectInfo(QSslCertificate::CommonName) == hostName_->text()) {
-				sslSocket_->setLocalCertificate(clientCertificates[i]);
-				return;
-			}
-		}*/
-
 		sslSocket_->setLocalCertificate(newClientCert);
 
 		if (!sslSocket_->localCertificate().isValid()) {
@@ -188,6 +189,9 @@ void SslClient::connectToServer()
 
 		sslSocket_->connectToHostEncrypted(hostName_->text(), portNumber);
 		sslSocket_->ignoreSslErrors();
+		QByteArray block;
+		block.append(clientName_->text());
+		sslSocket_->write(block);
 	}
 }
 
@@ -197,6 +201,7 @@ void SslClient::clientConnected()
 	connection_->setText(tr("Connected to %1 at port %2.")
 							.arg(host).arg(sslSocket_->localPort()));
 	connection_->show();
+	quitButton_->show();
 }
 
 void SslClient::clientEncrypted()
@@ -231,10 +236,13 @@ void SslClient::clientEncrypted()
 								.arg(subjectInfo).arg(issuerInfo));
 	}
 	connection_->show();
+	quitButton_->show();
 }
 
 void SslClient::clientDisconnected()
 {
+	status_->hide();
+	message_->hide();
 	QString host = sslSocket_->localAddress().toString();
 	connection_->setText(tr("Disconnected from %1.").arg(host));
 	connection_->show();
@@ -246,11 +254,14 @@ void SslClient::sendMode()
 	port_->hide();
 	hostLabel_->hide();
 	hostName_->hide();
+	clientLabel_->hide();
+	clientName_->hide();
 	connectButton_->hide();
 	writeButton_->hide();
 
 	status_->setText(tr("Write message below:"));
 
+	status_->show();
 	message_->show();
 	sendButton_->show();
 	switchButton_->show();
@@ -280,21 +291,33 @@ void SslClient::readMode()
 	QByteArray newMessage = sslSocket_->read(available);
 	status_->setWordWrap(true);
 	status_->setText(tr("New message from server received:\n").append(newMessage));
+	status_->show();
 }
 
 void SslClient::switchHostMode()
 {
+	connection_->hide();
 	switchButton_->hide();
 	sendButton_->hide();
 	writeButton_->hide();
 	message_->hide();
+
+	sslSocket_->disconnectFromHost();
 
 	status_->setText(tr("Enter new port and host:"));
 	portLabel_->show();
 	port_->show();
 	hostLabel_->show();
 	hostName_->show();
+	clientLabel_->show();
+	clientName_->show();
 	connectButton_->show();
+}
+
+void SslClient::quitSession()
+{
+	sslSocket_->abort();
+	close();
 }
 
 void SslClient::displayError(QAbstractSocket::SocketError socketError)
