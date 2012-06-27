@@ -18,7 +18,7 @@ SslClient::SslClient(QWidget *parent)
 	message_->hide();
 
 	connectButton_ = new QPushButton(tr("Connect"));
-	switchButton_ = new QPushButton(tr("Switch"));
+	switchButton_ = new QPushButton(tr("New Connection"));
 	switchButton_->hide();
 	sendButton_ = new QPushButton(tr("Send"));
 	sendButton_->hide();
@@ -30,15 +30,16 @@ SslClient::SslClient(QWidget *parent)
 	sslSocket_ = new QSslSocket(this);
 
 	connect(connectButton_, SIGNAL(clicked()), this, SLOT(connectToServer()));
+	connect(writeButton_, SIGNAL(clicked()), this, SLOT(sendMode()));
+	connect(sendButton_, SIGNAL(clicked()), this, SLOT(sendMessage()));
+	connect(switchButton_, SIGNAL(clicked()), this, SLOT(switchHostMode()));
+	connect(quitButton_, SIGNAL(clicked()), this, SLOT(quitSession()));
+
 	connect(sslSocket_, SIGNAL(connected()), this, SLOT(clientConnected()));
 	connect(sslSocket_, SIGNAL(encrypted()), this, SLOT(clientEncrypted()));
 	connect(sslSocket_, SIGNAL(disconnected()), this, SLOT(clientDisconnected()));
 	connect(sslSocket_, SIGNAL(encrypted()), this, SLOT(sendMode()));
-	connect(writeButton_, SIGNAL(clicked()), this, SLOT(sendMode()));
-	connect(sendButton_, SIGNAL(clicked()), this, SLOT(sendMessage()));
 	connect(sslSocket_, SIGNAL(readyRead()), this, SLOT(readMode()));
-	connect(switchButton_, SIGNAL(clicked()), this, SLOT(switchHostMode()));
-	connect(quitButton_, SIGNAL(clicked()), this, SLOT(quitSession()));
 	connect(sslSocket_, SIGNAL(error(QAbstractSocket::SocketError)), this,
 			SLOT(displayError(QAbstractSocket::SocketError)));
 	connect(sslSocket_, SIGNAL(sslErrors(const QList<QSslError> &)), this,
@@ -241,7 +242,8 @@ void SslClient::clientEncrypted()
 
 void SslClient::clientDisconnected()
 {
-	status_->hide();
+	sendButton_->hide();
+	writeButton_->hide();
 	message_->hide();
 	QString host = sslSocket_->localAddress().toString();
 	connection_->setText(tr("Disconnected from %1.").arg(host));
@@ -289,8 +291,15 @@ void SslClient::readMode()
 {
 	qint64 available = sslSocket_->bytesAvailable();
 	QByteArray newMessage = sslSocket_->read(available);
-	status_->setWordWrap(true);
-	status_->setText(tr("New message from server received:\n").append(newMessage));
+	QString clientErrorString(tr("This client name is already in use. Reconnect with new name."));
+
+	if (newMessage == clientErrorString) {
+		status_->setText(clientErrorString);
+		sslSocket_->disconnectFromHost();
+	} else {
+		status_->setWordWrap(true);
+		status_->setText(tr("New message from server received:\n").append(newMessage));
+	}
 	status_->show();
 }
 

@@ -101,6 +101,7 @@ void SslServer::openSession()
 		connectButton_->hide();
 		portLabel_->hide();
 		port_->hide();
+		connection_->hide();
 		changePortButton_->show();
 	}
 }
@@ -125,14 +126,21 @@ void SslServer::addClientName()
 	QByteArray name = newClient->read(available);
 	QString clientName(name);
 
-	clients_->addItem(clientName);
-	connectedSockets_.insert(clientName, newClient);
+	if (connectedSockets_.contains(clientName)) {
+		QByteArray block;
+		block.append(tr("This client name is already in use. Reconnect with new name."));
+		newClient->write(block);
+		return;
+	} else {
+		clients_->addItem(clientName);
+		connectedSockets_.insert(clientName, newClient);
 
-	disconnect(newClient, SIGNAL(readyRead()), this, SLOT(addClientName()));
-	connect(newClient, SIGNAL(readyRead()), this, SLOT(readMode()));
+		disconnect(newClient, SIGNAL(readyRead()), this, SLOT(addClientName()));
+		connect(newClient, SIGNAL(readyRead()), this, SLOT(readMode()));
 
-	connectedClient_->setText(tr("Client Name: \"%1\" ").arg(clientName));
-	connectedClient_->show();
+		connectedClient_->setText(tr("Client Name: \"%1\" ").arg(clientName));
+		connectedClient_->show();
+	}
 }
 
 void SslServer::clientConnected()
@@ -196,6 +204,7 @@ void SslServer::clientDisconnected()
 	}
 
 	currentSocket->deleteLater();
+	connectedClient_->hide();
 	connection_->show();
 }
 
