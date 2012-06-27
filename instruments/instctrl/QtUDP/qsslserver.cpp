@@ -25,7 +25,8 @@ void QSslServer::incomingConnection(int socketDescriptor)
 		QFile multiHostClientFile("certs/san_client.crt");
 		QFile multiHostServerFile("certs/san_server.crt");
 
-		QFile keyFile("certs/cakey.key");
+		QFile keyFile("certs/server.key");
+//		QFile keyFile("certs/cakey.key");
 		QFile newServerFile("certs/cacert.crt");
 
 		keyFile.open(QIODevice::ReadOnly);
@@ -44,7 +45,7 @@ void QSslServer::incomingConnection(int socketDescriptor)
 
 		newServerFile.open(QIODevice::ReadOnly);
 
-		QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray("start"));
+		QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray("server"));
 
 		if (key.isNull()) {
 			qWarning("key is null");
@@ -90,7 +91,7 @@ void QSslServer::incomingConnection(int socketDescriptor)
 		socket->addCaCertificates(clientCertificates);
 		socket->addCaCertificates(serverCertificates);
 
-		socket->setLocalCertificate(newServerCert);
+		socket->setLocalCertificate(multiHostServerCert);
 
 		QMultiMap<QSsl::AlternateNameEntryType, QString> alternates = socket->localCertificate().alternateSubjectNames();
 		if (alternates.isEmpty()) {

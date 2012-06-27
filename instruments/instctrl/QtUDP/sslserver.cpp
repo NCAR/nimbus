@@ -103,6 +103,7 @@ void SslServer::openSession()
 		port_->hide();
 		connection_->hide();
 		changePortButton_->show();
+		quitButton_->show();
 	}
 }
 

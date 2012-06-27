@@ -104,7 +104,8 @@ void SslClient::connectToServer()
 		QFile multiHostClientFile("certs/san_client.crt");
 		QFile multiHostServerFile("certs/san_server.crt");
 
-		QFile keyFile("sslcert/cakey.key");
+		QFile keyFile("certs/client.key");
+//		QFile keyFile("sslcert/cakey.key");
 		QFile newClientFile("sslcert/cacert.crt");
 
 		keyFile.open(QIODevice::ReadOnly);
@@ -123,7 +124,7 @@ void SslClient::connectToServer()
 
 		newClientFile.open(QIODevice::ReadOnly);
 
-		QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray("start"));
+		QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray("client"));
 		QSslCertificate clientCert(&clientFile);
 		QSslCertificate serverCert(&serverFile);
 		QSslCertificate tikalClientCert(&tikalClientFile);
@@ -160,7 +161,7 @@ void SslClient::connectToServer()
 		sslSocket_->addCaCertificates(clientCertificates);
 		sslSocket_->addCaCertificates(serverCertificates);
 
-		sslSocket_->setLocalCertificate(newClientCert);
+		sslSocket_->setLocalCertificate(multiHostClientCert);
 
 		if (!sslSocket_->localCertificate().isValid()) {
 			qDebug("Invalid client certificate");
