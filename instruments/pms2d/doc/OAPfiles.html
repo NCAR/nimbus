@@ -100,42 +100,56 @@ Additional meta-data may present and is encouraged.  Each line is ended with a n
 <tr>
 <th>Attribute</th>
 <th></th>
+<th></th>
 <th>Description</th>
 </tr>
 <tr>
 <td><pre class="CDL">probe</pre></td>
+<td></td>
 <td></td>
 <td>There will be one probe element for each probe that is present in the data file.</td>
 </tr>
 <tr>
 <td></td>
 <td><pre class="CDL">id</pre></td>
+<td>Required</td>
 <td>A two letter key or short integer that uniquily identify the probe in the file.  Some standard values are listed below.</td>
 </tr>
 <tr>
 <td></td>
 <td><pre class="CDL">resolution</pre></td>
-<td>Resolution of probe in micrometers.</td>
+<td>Required</td>
+<td>Resolution of probe in micrometers.  Typically diode diameter.</td>
 </tr>
 <tr>
 <td></td>
 <td><pre class="CDL">nDiodes</pre></td>
+<td>Required</td>
 <td>Number of diodes in the probe.  32 for the traditional PMS2D probes.  128 for the 3V-CPI.</td>
 </tr>
 <tr>
 <td></td>
 <td><pre class="CDL">serialNumber</pre></td>
-<td>Highly recommended for documentation purposes or calibration lookup.</td>
+<td>Highly recommended</td>
+<td>Probe serial number, for documentation purposes or calibration lookup.</td>
 </tr>
 <tr>
 <td></td>
 <td><pre class="CDL">type</pre></td>
-<td>Highly recommended to identify probe type.</td>
+<td>Highly recommended</td>
+<td>Short description to identify probe type.</td>
 </tr>
 <tr>
 <td></td>
 <td><pre class="CDL">suffix</pre></td>
-<td>Optional (required at NCAR/RAF) for use in identifying location and grouping variables.</td>
+<td>Optional</td>
+<td>For use in identifying location and grouping variables.  Should start with an undescore. Required for RAF use.</td>
+</tr>
+<tr>
+<td></td>
+<td><pre class="CDL">endian</pre></td>
+<td>Optional</td>
+<td>Identify byte order.  Options are "big" or "little".  Default is "big".</td>
 </tr>
 </table>
 
