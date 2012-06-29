@@ -54,6 +54,9 @@ PostgreSQL::PostgreSQL(std::string specifier)
   {
    _groundDBinitString.str("");
    _groundDBinitString << cfg.AircraftString() << '\n';
+   _groundDBinitString << "CREATE OR REPLACE FUNCTION pg_sleep(int) RETURNS int AS '/lib/libc.so.6', 'sleep' LANGUAGE 'C' STRICT;\n";
+   _groundDBinitString << "NOTIFY killiit;\n";
+   _groundDBinitString << "SELECT pg_sleep(2);\n";
   }
 
   // Don't recreate database if this is the same flight.
