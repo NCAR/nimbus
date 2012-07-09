@@ -158,9 +158,9 @@ void SenderReceiver::writeMode()
 		return;
 	} else {
 		mode_->setText(tr("Choose write mode and write message below:"));
-		port_->show();
-		port_->setEditable(true);
-		portLabel_->show();
+		port_->hide();
+		port_->setEditable(false);
+		portLabel_->hide();
 		readButton_->hide();
 		writeButton_->hide();
 
@@ -292,6 +292,7 @@ void SenderReceiver::switchPortMode()
 	readButton_->show();
 	writeButton_->show();
 	connect_->hide();
+	error_->hide();
 	singleSendButton_->hide();
 	multiSendButton_->hide();
 	changePortButton_->hide();

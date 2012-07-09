@@ -28,6 +28,15 @@ SslClient::SslClient(QWidget *parent)
 	quitButton_->hide();
 
 	sslSocket_ = new QSslSocket(this);
+/*	QList<QSslCipher> cipherList = sslSocket_->ciphers();
+	QList<QSslCipher> supportedCipherList = sslSocket_->supportedCiphers();
+
+	for (QList<QSslCipher>::const_iterator i = cipherList.begin(); i != cipherList.end(); ++i) {
+		qDebug() << "Cipher: " << i->name() << i->encryptionMethod() << i->protocolString();
+	}
+	for (QList<QSslCipher>::const_iterator i = supportedCipherList.begin(); i != supportedCipherList.end(); ++i) {
+		qDebug() << "Supported cipher: " << i->name() << i->encryptionMethod() << i->protocolString();
+	}*/
 
 	connect(connectButton_, SIGNAL(clicked()), this, SLOT(connectToServer()));
 	connect(writeButton_, SIGNAL(clicked()), this, SLOT(sendMode()));
@@ -199,16 +208,16 @@ void SslClient::connectToServer()
 
 void SslClient::clientConnected()
 {
-	QString host = sslSocket_->localAddress().toString();
+	QString host = sslSocket_->peerAddress().toString();
 	connection_->setText(tr("Connected to %1 at port %2.")
-							.arg(host).arg(sslSocket_->localPort()));
+							.arg(host).arg(sslSocket_->peerPort()));
 	connection_->show();
 	quitButton_->show();
 }
 
 void SslClient::clientEncrypted()
 {
-	QString host = sslSocket_->localAddress().toString();
+	QString host = sslSocket_->peerAddress().toString();
 	if (sslSocket_->peerCertificate().isNull()) {
 		connection_->setText(tr("Connected and encrypted, but certificate is null."));
 	} else {
@@ -234,7 +243,7 @@ void SslClient::clientEncrypted()
 		issuerInfo.append(sslSocket_->peerCertificate().serialNumber());
 
 		connection_->setText(tr("Connected and encrypted to %1 at port %2.\nSubject Info: %3\nIssuer Info: %4")
-								.arg(host).arg(sslSocket_->localPort())
+								.arg(host).arg(sslSocket_->peerPort())
 								.arg(subjectInfo).arg(issuerInfo));
 	}
 	connection_->show();
@@ -246,7 +255,7 @@ void SslClient::clientDisconnected()
 	sendButton_->hide();
 	writeButton_->hide();
 	message_->hide();
-	QString host = sslSocket_->localAddress().toString();
+	QString host = sslSocket_->peerAddress().toString();
 	connection_->setText(tr("Disconnected from %1.").arg(host));
 	connection_->show();
 }
@@ -276,14 +285,14 @@ void SslClient::sendMessage()
 	sendButton_->hide();
 	connection_->hide();
 
-	QString host = sslSocket_->localAddress().toString();
+	QString host = sslSocket_->peerAddress().toString();
 
 	QByteArray block;
 	block.append(message_->toPlainText());
 	sslSocket_->write(block);
 
 	status_->setText(tr("Message sent to %1 on port %2.")
-						.arg(host).arg(sslSocket_->localPort()));
+						.arg(host).arg(sslSocket_->peerPort()));
 	message_->clear();
 	writeButton_->show();
 }
