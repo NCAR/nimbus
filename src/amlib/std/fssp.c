@@ -288,7 +288,7 @@ void scs100(DERTBL *varp)
     }
 
   tact[probeNum] = 0.0;
-  for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
+  for (i = 1; i < varp->VectorLength; ++i)
     tact[probeNum] += actual[i];
 
   vol[probeNum] = tas * sa[probeNum];
