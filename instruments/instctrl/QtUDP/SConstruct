@@ -7,6 +7,6 @@ qtmods = ['QtSvg', 'QtCore', 'QtGui', 'QtNetwork', 'QtSql', 'QtOpenGL']
 env.EnableQt4Modules(qtmods)
 
 sources = ['main.cpp', 'senderreceiver.cpp', 'sslserver.cpp', 'qsslserver.cpp',
-           'sslclient.cpp']
+           'sslclient.cpp', 'sendudp.cpp', 'proxy.cpp']
 
 qtudp = env.Program('qtudp',sources)
