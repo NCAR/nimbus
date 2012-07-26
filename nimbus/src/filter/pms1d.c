@@ -115,6 +115,14 @@ void PMS1D_SetupForADS3()
   setSerialNumberAndProbeType("A1DP", "F2DP001", PROBE_PMS2D | PROBE_2DP);
   setSerialNumberAndProbeType("A2DP", "F2DP001", PROBE_PMS2D | PROBE_2DP);
 
+  if (cfg.ProjectName().compare("TEST-C130") == 0)
+  {
+    setSerialNumberAndProbeType("AS100_old", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
+    setSerialNumberAndProbeType("AS100_new", "FSSP109", PROBE_PMS1D | PROBE_FSSP);
+    setSerialNumberAndProbeType("ACDP_16RWO", "CDP016", PROBE_PMS1D | PROBE_CDP);
+    setSerialNumberAndProbeType("ACDP_58RWI", "CDP058", PROBE_PMS1D | PROBE_CDP);
+  }
+  else
   if (cfg.ProjectName().compare("PASE") == 0)
   {
     setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
