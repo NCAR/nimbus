@@ -135,7 +135,7 @@ void PMS1D_SetupForADS3()
   else
   if (cfg.ProjectName().compare("DC3") == 0)
   {
-    setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
+    setSerialNumberAndProbeType("ACDP_LWII", "CDP058", PROBE_PMS1D | PROBE_CDP);
     setSerialNumberAndProbeType("A1DC_LWIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A2DC_LWIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
   }
