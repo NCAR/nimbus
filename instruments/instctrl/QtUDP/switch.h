@@ -1,20 +1,16 @@
-#ifndef SSLSERVER_H
-#define SSLSERVER_H
+#ifndef SWITCH_H
+#define SWITCH_H
 
 #include <QtGui>
 #include <QtNetwork>
 #include "qsslserver.h"
 
-/**
- * To be used with the SslClient application.
- */
-
-class SslServer : public QDialog
+class Switch : public QDialog
 {
 	Q_OBJECT;
 
 public:
-	SslServer(QWidget *parent = 0);
+	Switch(QWidget *parent = 0);
 
 private slots:
 	void openSession();
@@ -23,17 +19,18 @@ private slots:
 	void clientConnected();
 	void clientEncrypted();
 	void clientDisconnected();
-	void sendMode();
-	void sendToClient();
-	void sendMessage();
-	void broadcastMessage();
 	void readMode();
+	void sendToClient();
+	void chooseClient();
+	void showDatagrams();
 	void switchPorts();
 	void quitSession();
 
 private:
 	QSslServer *sslServer_;
 	QMap<QString, QSslSocket *> connectedSockets_;
+	QMap<QSslSocket *, QList<QByteArray> > udpLists_;
+	QUdpSocket *udpSocket_;
 
 	QLabel *status_;
 	QLabel *connection_;
@@ -45,13 +42,10 @@ private:
 	QSet<QString> *uniquePorts_;
 	QComboBox *clients_;
 	QPushButton *connectButton_;
-	QPushButton *sendButton_;
-	QPushButton *sendToClientButton_;
-	QPushButton *broadcastButton_;
-	QPushButton *writeButton_;
+	QPushButton *chooseClientButton_;
+	QPushButton *showDatagramsButton_;
 	QPushButton *changePortButton_;
 	QPushButton *quitButton_;
-	QTextEdit *message_;
 };
 
-#endif /*SSLSERVER_H*/
+#endif /*SWITCH_H*/

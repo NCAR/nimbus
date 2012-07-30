@@ -4,6 +4,12 @@
 #include <QtGui>
 #include <QtNetwork>
 
+/**
+ * To be used with the SslServer application. Makes an secure SSL connection with the
+ * chosen server. Once the encrypted connection has been established, the user can
+ * send and receive messages from the server.
+ */
+
 class SslClient : public QDialog
 {
 	Q_OBJECT;
@@ -23,7 +29,6 @@ private slots:
 	void quitSession();
 	void displayError(QAbstractSocket::SocketError socketError);
 	void displayError(const QList<QSslError> & errors);
-	void slot_stateChanged(QAbstractSocket::SocketState);
 
 private:
 	QSslSocket *sslSocket_;

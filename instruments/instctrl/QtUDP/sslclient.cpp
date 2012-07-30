@@ -28,15 +28,6 @@ SslClient::SslClient(QWidget *parent)
 	quitButton_->hide();
 
 	sslSocket_ = new QSslSocket(this);
-/*	QList<QSslCipher> cipherList = sslSocket_->ciphers();
-	QList<QSslCipher> supportedCipherList = sslSocket_->supportedCiphers();
-
-	for (QList<QSslCipher>::const_iterator i = cipherList.begin(); i != cipherList.end(); ++i) {
-		qDebug() << "Cipher: " << i->name() << i->encryptionMethod() << i->protocolString();
-	}
-	for (QList<QSslCipher>::const_iterator i = supportedCipherList.begin(); i != supportedCipherList.end(); ++i) {
-		qDebug() << "Supported cipher: " << i->name() << i->encryptionMethod() << i->protocolString();
-	}*/
 
 	connect(connectButton_, SIGNAL(clicked()), this, SLOT(connectToServer()));
 	connect(writeButton_, SIGNAL(clicked()), this, SLOT(sendMode()));
@@ -49,12 +40,8 @@ SslClient::SslClient(QWidget *parent)
 	connect(sslSocket_, SIGNAL(disconnected()), this, SLOT(clientDisconnected()));
 	connect(sslSocket_, SIGNAL(encrypted()), this, SLOT(sendMode()));
 	connect(sslSocket_, SIGNAL(readyRead()), this, SLOT(readMode()));
-	connect(sslSocket_, SIGNAL(error(QAbstractSocket::SocketError)), this,
-			SLOT(displayError(QAbstractSocket::SocketError)));
-	connect(sslSocket_, SIGNAL(sslErrors(const QList<QSslError> &)), this,
-			SLOT(displayError(const QList<QSslError> &)));
-	connect(sslSocket_, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
-			this, SLOT(slot_stateChanged(QAbstractSocket::SocketState)));
+	connect(sslSocket_, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
+	connect(sslSocket_, SIGNAL(sslErrors(const QList<QSslError> &)), this, SLOT(displayError(const QList<QSslError> &)));
 
 	QHBoxLayout *buttonLayout = new QHBoxLayout;
 	buttonLayout->addWidget(switchButton_);
@@ -99,7 +86,7 @@ void SslClient::connectToServer()
 		sslSocket_->abort();
 
 		// PUT IN KEY AND CERTIFICATE STUFF HERE
-//		QFile keyFile("certs/client.key");
+		QFile keyFile("certs/client.key");
 		QFile clientFile("certs/client.crt");
 		QFile serverFile("certs/server.crt");
 		QFile tikalClientFile("certs/tikal_client.crt");
@@ -112,10 +99,6 @@ void SslClient::connectToServer()
 		QFile sloopServerFile("certs/sloop_server.crt");
 		QFile multiHostClientFile("certs/san_client.crt");
 		QFile multiHostServerFile("certs/san_server.crt");
-
-		QFile keyFile("certs/client.key");
-//		QFile keyFile("sslcert/cakey.key");
-		QFile newClientFile("sslcert/cacert.crt");
 
 		keyFile.open(QIODevice::ReadOnly);
 		clientFile.open(QIODevice::ReadOnly);
@@ -131,8 +114,6 @@ void SslClient::connectToServer()
 		multiHostClientFile.open(QIODevice::ReadOnly);
 		multiHostServerFile.open(QIODevice::ReadOnly);
 
-		newClientFile.open(QIODevice::ReadOnly);
-
 		QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray("client"));
 		QSslCertificate clientCert(&clientFile);
 		QSslCertificate serverCert(&serverFile);
@@ -147,8 +128,6 @@ void SslClient::connectToServer()
 		QSslCertificate multiHostClientCert(&multiHostClientFile);
 		QSslCertificate multiHostServerCert(&multiHostServerFile);
 
-		QSslCertificate newClientCert(&newClientFile);
-
 		QList<QSslCertificate> clientCertificates;
 		clientCertificates.append(clientCert);
 		clientCertificates.append(tikalClientCert);
@@ -156,7 +135,6 @@ void SslClient::connectToServer()
 		clientCertificates.append(dropletClientCert);
 		clientCertificates.append(sloopClientCert);
 		clientCertificates.append(multiHostClientCert);
-		clientCertificates.append(newClientCert);
 
 		QList<QSslCertificate> serverCertificates;
 		serverCertificates.append(serverCert);
@@ -198,6 +176,7 @@ void SslClient::connectToServer()
 		expectedSslErrors.append(dropletError);
 		expectedSslErrors.append(sloopError);
 
+		// Connect to the server and send desired client name
 		sslSocket_->connectToHostEncrypted(hostName_->text(), portNumber);
 		sslSocket_->ignoreSslErrors();
 		QByteArray block;
@@ -224,7 +203,7 @@ void SslClient::clientEncrypted()
 		QString subjectInfo;
 		QString issuerInfo;
 
-		//Fetchin the subject info
+		//Fetching the subject info
 		subjectInfo.append(sslSocket_->peerCertificate().issuerInfo(QSslCertificate::Organization));
 		subjectInfo.append(sslSocket_->peerCertificate().issuerInfo(QSslCertificate::CommonName));
 		//Fetching effective and expiry dates
@@ -233,7 +212,7 @@ void SslClient::clientEncrypted()
 		//Fetching the serial number
 		subjectInfo.append(sslSocket_->peerCertificate().serialNumber());
 
-		//Fetchin the issuer info
+		//Fetching the issuer info
 		issuerInfo.append(sslSocket_->peerCertificate().issuerInfo(QSslCertificate::Organization));
 		issuerInfo.append(sslSocket_->peerCertificate().issuerInfo(QSslCertificate::CommonName));
 		//Fetching effective and expiry dates
@@ -298,12 +277,15 @@ void SslClient::sendMessage()
 }
 
 void SslClient::readMode()
+// Client enters read mode as soon as server connection is established.
+// All received messages should show up on the QLabel status_.
 {
 	qint64 available = sslSocket_->bytesAvailable();
 	QByteArray newMessage = sslSocket_->read(available);
 	QString clientErrorString(tr("This client name is already in use. Reconnect with new name."));
 
 	if (newMessage == clientErrorString) {
+		// should only ever be received immediately after client connects and sends client name
 		status_->setText(clientErrorString);
 		sslSocket_->disconnectFromHost();
 	} else {
@@ -339,6 +321,8 @@ void SslClient::quitSession()
 	close();
 }
 
+// If any errors happen (SSL or otherwise), a pop up window will appear to
+// inform user what error occurred.
 void SslClient::displayError(QAbstractSocket::SocketError socketError)
 {
 	switch (socketError) {
@@ -370,10 +354,5 @@ void SslClient::displayError(const QList<QSslError> & errors)
 		errorList.append(tr("Error %1: %2.\n").arg(i+1).arg(errors[i].errorString()));
 	}
 	QMessageBox::information(this, tr("SSL Error"), errorList);
-}
-
-void SslClient::slot_stateChanged (QAbstractSocket::SocketState state)
-{
-   qDebug() << "SslClient::slot_stateChanged(" << state << ")";
 }
 

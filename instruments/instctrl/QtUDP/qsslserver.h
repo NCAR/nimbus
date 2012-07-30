@@ -4,6 +4,11 @@
 #include <QtNetwork>
 #include <QtCore>
 
+/**
+ * QTcpServer that has SSL support. Can connect debugging messages
+ * to observe certificate verification process through signals.
+ */
+
 class QSslServer : public QTcpServer
 {
 	Q_OBJECT;

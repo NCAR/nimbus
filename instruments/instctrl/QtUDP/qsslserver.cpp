@@ -11,7 +11,7 @@ void QSslServer::incomingConnection(int socketDescriptor)
 	if (socket->setSocketDescriptor(socketDescriptor)) {
 		pendingConnections_.append(socket);
 
-//		QFile keyFile("certs/server.key");
+		QFile keyFile("certs/server.key");
 		QFile clientFile("certs/client.crt");
 		QFile serverFile("certs/server.crt");
 		QFile tikalClientFile("certs/tikal_client.crt");
@@ -25,9 +25,7 @@ void QSslServer::incomingConnection(int socketDescriptor)
 		QFile multiHostClientFile("certs/san_client.crt");
 		QFile multiHostServerFile("certs/san_server.crt");
 
-		QFile keyFile("certs/server.key");
-//		QFile keyFile("certs/cakey.key");
-		QFile newServerFile("certs/cacert.crt");
+		QFile eolServerFile("certs/eol-rt-data_server.crt");
 
 		keyFile.open(QIODevice::ReadOnly);
 		clientFile.open(QIODevice::ReadOnly);
@@ -43,7 +41,7 @@ void QSslServer::incomingConnection(int socketDescriptor)
 		multiHostClientFile.open(QIODevice::ReadOnly);
 		multiHostServerFile.open(QIODevice::ReadOnly);
 
-		newServerFile.open(QIODevice::ReadOnly);
+		eolServerFile.open(QIODevice::ReadOnly);
 
 		QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray("server"));
 
@@ -66,7 +64,7 @@ void QSslServer::incomingConnection(int socketDescriptor)
 		QSslCertificate multiHostClientCert(&multiHostClientFile);
 		QSslCertificate multiHostServerCert(&multiHostServerFile);
 
-		QSslCertificate newServerCert(&newServerFile);
+		QSslCertificate eolServerCert(&eolServerFile);
 
 		QList<QSslCertificate> clientCertificates;
 		clientCertificates.append(clientCert);
@@ -83,15 +81,17 @@ void QSslServer::incomingConnection(int socketDescriptor)
 		serverCertificates.append(dropletServerCert);
 		serverCertificates.append(sloopServerCert);
 		serverCertificates.append(multiHostServerCert);
-		serverCertificates.append(newServerCert);
+		serverCertificates.append(eolServerCert);
 
-		connectDebuggingMessages(socket);
+		// Can uncomment this line to see debugging messages during
+		// certificate verification process
+		// connectDebuggingMessages(socket);
 
 		socket->setPrivateKey(key);
 		socket->addCaCertificates(clientCertificates);
 		socket->addCaCertificates(serverCertificates);
 
-		socket->setLocalCertificate(multiHostServerCert);
+		socket->setLocalCertificate(eolServerCert);
 
 		QMultiMap<QSsl::AlternateNameEntryType, QString> alternates = socket->localCertificate().alternateSubjectNames();
 		if (alternates.isEmpty()) {

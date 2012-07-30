@@ -1,6 +1,11 @@
-#include "sslserver.h"
+#include "switch.h"
+#include "logx/Logging.h"
 
-SslServer::SslServer(QWidget *parent)
+LOGGING("switch");
+
+static const int udpPort = 54545;
+
+Switch::Switch(QWidget *parent)
 	: QDialog(parent), sslServer_(0)
 {
 	status_ = new QLabel(tr("Enter port to listen for TCP connections:"));
@@ -18,39 +23,31 @@ SslServer::SslServer(QWidget *parent)
 	clients_->hide();
 
 	connectButton_ = new QPushButton(tr("Listen"));
-	sendButton_ = new QPushButton(tr("Send"));
-	sendButton_->hide();
-	sendToClientButton_ = new QPushButton(tr("Send to client"));
-	sendToClientButton_->hide();
-	broadcastButton_ = new QPushButton(tr("Broadcast"));
-	broadcastButton_->hide();
-	writeButton_ = new QPushButton(tr("Write new message"));
-	writeButton_->hide();
+	chooseClientButton_ =  new QPushButton(tr("Show Datagram Log"));
+	chooseClientButton_->hide();
+	showDatagramsButton_ = new QPushButton(tr("Show"));
+	showDatagramsButton_->hide();
 	changePortButton_ = new QPushButton(tr("Change Port"));
 	changePortButton_->hide();
 	quitButton_ = new QPushButton(tr("Quit"));
 	quitButton_->hide();
-	message_ = new QTextEdit;
-	message_->hide();
 
 	sslServer_ = new QSslServer(this);
+	udpSocket_ = new QUdpSocket();
 
 	connect(connectButton_, SIGNAL(clicked()), this, SLOT(openSession()));
 	connect(sslServer_, SIGNAL(newConnection()), this, SLOT(connectToClient()));
-	connect(sendToClientButton_, SIGNAL(clicked()), this, SLOT(sendToClient()));
-	connect(sendButton_, SIGNAL(clicked()), this, SLOT(sendMessage()));
-	connect(broadcastButton_, SIGNAL(clicked()), this, SLOT(broadcastMessage()));
-	connect(writeButton_, SIGNAL(clicked()), this, SLOT(sendMode()));
+	connect(chooseClientButton_, SIGNAL(clicked()), this, SLOT(chooseClient()));
+	connect(showDatagramsButton_, SIGNAL(clicked()), this, SLOT(showDatagrams()));
 	connect(changePortButton_, SIGNAL(clicked()), this, SLOT(switchPorts()));
 	connect(quitButton_, SIGNAL(clicked()), this, SLOT(quitSession()));
+	connect(udpSocket_, SIGNAL(readyRead()), this, SLOT(sendToClient()));
 
 	QHBoxLayout *buttonLayout = new QHBoxLayout;
 	buttonLayout->addWidget(changePortButton_);
 	buttonLayout->addWidget(connectButton_);
-	buttonLayout->addWidget(sendButton_);
-	buttonLayout->addWidget(sendToClientButton_);
-	buttonLayout->addWidget(broadcastButton_);
-	buttonLayout->addWidget(writeButton_);
+	buttonLayout->addWidget(chooseClientButton_);
+	buttonLayout->addWidget(showDatagramsButton_);
 	buttonLayout->addWidget(quitButton_);
 
 	QGridLayout *mainLayout = new QGridLayout;
@@ -61,13 +58,12 @@ SslServer::SslServer(QWidget *parent)
 	mainLayout->addWidget(port_, 3, 1);
 	mainLayout->addWidget(clientsLabel_, 4, 0);
 	mainLayout->addWidget(clients_, 4, 1);
-	mainLayout->addWidget(message_, 5, 0, 1, 2);
-	mainLayout->addLayout(buttonLayout, 6, 0, 1, 2);
+	mainLayout->addLayout(buttonLayout, 5, 0, 1, 2);
 	setLayout(mainLayout);
-	setWindowTitle(tr("SSL Server"));
+	setWindowTitle(tr("Switch"));
 }
 
-void SslServer::openSession()
+void Switch::openSession()
 {
 	QString portString = port_->currentText();
 	bool validPort;
@@ -94,6 +90,7 @@ void SslServer::openSession()
 			return;
 		}
 
+		udpSocket_->bind(udpPort);
 		status_->setText(tr("The server is listening on port %1 at address %2.")
 							.arg(sslServer_->serverPort())
 							.arg(sslServer_->serverAddress().toString()));
@@ -107,7 +104,7 @@ void SslServer::openSession()
 	}
 }
 
-void SslServer::connectToClient()
+void Switch::connectToClient()
 {
 	status_->setText(tr("New client available. Initiating handshake..."));
 	QSslSocket *newClient = sslServer_->nextPendingConnection();
@@ -115,17 +112,17 @@ void SslServer::connectToClient()
 	connect(newClient, SIGNAL(connected()), this, SLOT(clientConnected()));
 	connect(newClient, SIGNAL(encrypted()), this, SLOT(clientEncrypted()));
 	connect(newClient, SIGNAL(disconnected()), this, SLOT(clientDisconnected()));
-	connect(newClient, SIGNAL(encrypted()), this, SLOT(sendMode()));
 	connect(newClient, SIGNAL(readyRead()), this, SLOT(addClientName()));
 }
 
-void SslServer::addClientName()
+void Switch::addClientName()
 {
 	QSslSocket *newClient = qobject_cast<QSslSocket *>(sender());
 
 	qint64 available = newClient->bytesAvailable();
 	QByteArray name = newClient->read(available);
 	QString clientName(name);
+	QList<QByteArray> datagramList;
 
 	if (connectedSockets_.contains(clientName)) {
 		QByteArray block;
@@ -135,60 +132,39 @@ void SslServer::addClientName()
 	} else {
 		clients_->addItem(clientName);
 		connectedSockets_.insert(clientName, newClient);
+		udpLists_.insert(newClient, datagramList);
 
 		disconnect(newClient, SIGNAL(readyRead()), this, SLOT(addClientName()));
 		connect(newClient, SIGNAL(readyRead()), this, SLOT(readMode()));
 
 		connectedClient_->setText(tr("Client Name: \"%1\" ").arg(clientName));
 		connectedClient_->show();
+		chooseClientButton_->show();
 	}
 }
 
-void SslServer::clientConnected()
+void Switch::clientConnected()
 {
 	connection_->setText(tr("Client connected."));
 	connection_->show();
 	quitButton_->show();
 }
 
-void SslServer::clientEncrypted()
+void Switch::clientEncrypted()
 {
+	status_->hide();
 	QSslSocket *currentSocket = qobject_cast<QSslSocket *>(sender());
 	if (!currentSocket)
 		return;
 
-	if (currentSocket->peerCertificate().isNull()) {
-		connection_->setText(tr("Client connected and encrypted, but peer certificate is null."));
-	} else {
-		QString subjectInfo;
-		QString issuerInfo;
-
-		//Fetching the subject info
-		subjectInfo.append(currentSocket->peerCertificate().issuerInfo(QSslCertificate::Organization));
-		subjectInfo.append(currentSocket->peerCertificate().issuerInfo(QSslCertificate::CommonName));
-		//Fetching effective and expiry dates
-		subjectInfo.append(currentSocket->peerCertificate().effectiveDate().toString());
-		subjectInfo.append(currentSocket->peerCertificate().expiryDate().toString());
-		//Fetching the serial number
-		subjectInfo.append(currentSocket->peerCertificate().serialNumber());
-
-		//Fetching the issuer info
-		issuerInfo.append(currentSocket->peerCertificate().issuerInfo(QSslCertificate::Organization));
-		issuerInfo.append(currentSocket->peerCertificate().issuerInfo(QSslCertificate::CommonName));
-		//Fetching effective and expiry dates
-		issuerInfo.append(currentSocket->peerCertificate().effectiveDate().toString());
-		issuerInfo.append(currentSocket->peerCertificate().expiryDate().toString());
-		//Fetching the serial number
-		issuerInfo.append(currentSocket->peerCertificate().serialNumber());
-
-		connection_->setText(tr("Client connected and encrypted.\nSubject Info: %1\nIssuer Info: %2")
-								.arg(subjectInfo).arg(issuerInfo));
-	}
+	QString host = currentSocket->peerAddress().toString();
+	connection_->setText(tr("Connected and encrypted to %1 at port %2.")
+							.arg(host).arg(currentSocket->localPort()));
 	connection_->show();
 	quitButton_->show();
 }
 
-void SslServer::clientDisconnected()
+void Switch::clientDisconnected()
 {
 	QSslSocket *currentSocket = qobject_cast<QSslSocket *>(sender());
 	if (!currentSocket)
@@ -209,79 +185,40 @@ void SslServer::clientDisconnected()
 	connection_->show();
 }
 
-void SslServer::sendMode()
-{
-	writeButton_->hide();
-	status_->setText(tr("Write message below:"));
-	message_->show();
-	sendToClientButton_->show();
-	broadcastButton_->show();
-}
-
-void SslServer::sendToClient()
+void Switch::chooseClient()
 {
 	connection_->hide();
 	connectedClient_->hide();
-	broadcastButton_->hide();
-	sendToClientButton_->hide();
-	status_->setText(tr("Choose client to send message to:"));
+	chooseClientButton_->hide();
+
+	status_->setText(tr("Choose client to view their datagram log:"));
+
+	status_->show();
 	clientsLabel_->show();
 	clients_->show();
-	sendButton_->show();
+	showDatagramsButton_->show();
 }
 
-void SslServer::sendMessage()
+void Switch::showDatagrams()
 {
-	status_->setWordWrap(false);
-	connection_->hide();
-	connectedClient_->hide();
+	showDatagramsButton_->hide();
 	clientsLabel_->hide();
 	clients_->hide();
-	message_->hide();
-	sendButton_->hide();
 
-	QString portString = port_->currentText();
-	int portNumber = portString.toInt();
+	QString log("Log");
 
 	QString clientName = clients_->currentText();
-
-	QByteArray block;
-	block.append(message_->toPlainText());
-	connectedSockets_.value(clientName)->write(block);
-
-	status_->setText(tr("Message sent to \"%1\" over port %2.")
-						.arg(clientName).arg(portNumber));
-	message_->clear();
-	writeButton_->show();
-}
-
-void SslServer::broadcastMessage()
-{
-	status_->setWordWrap(false);
-	connection_->hide();
-	connectedClient_->hide();
-	message_->hide();
-	sendButton_->hide();
-	sendToClientButton_->hide();
-	broadcastButton_->hide();
-
-	QString portString = port_->currentText();
-	int portNumber = portString.toInt();
-
-	QByteArray block;
-	block.append(message_->toPlainText());
-
-	foreach(QSslSocket *client, connectedSockets_) {
-		client->write(block);
+	QSslSocket * client = connectedSockets_.value(clientName);
+	QList<QByteArray> clientLog = udpLists_.value(client);
+	for (QList<QByteArray>::iterator i = clientLog.begin(); i != clientLog.end(); ++i) {
+		qDebug() << (*i).data();
 	}
 
-	status_->setText(tr("Message sent to client over port %1.")
-						.arg(portNumber));
-	message_->clear();
-	writeButton_->show();
+	status_->setText(tr("Datagram log of client \"%1\" printed.").arg(clientName));
+	chooseClientButton_->show();
 }
 
-void SslServer::readMode()
+void Switch::readMode()
 {
 	connection_->hide();
 	connectedClient_->hide();
@@ -292,32 +229,57 @@ void SslServer::readMode()
 
 	qint64 available = currentSocket->bytesAvailable();
 	QByteArray newMessage = currentSocket->read(available);
-	status_->setWordWrap(true);
+
+	QMap<QSslSocket *, QList<QByteArray> >::iterator datagramDestination = udpLists_.find(currentSocket);
+	datagramDestination.value().append(newMessage);
+
+	ILOG << newMessage.data();
 
 	for (QMap<QString, QSslSocket *>::iterator i = connectedSockets_.begin(); i != connectedSockets_.end(); ++i) {
 		if (currentSocket == i.value()) {
-			status_->setText(tr("New message from client \"%1\" received:\n").arg(i.key()).append(newMessage));
+			status_->setText(tr("New datagram from client \"%1\" received and stored.").arg(i.key()));
+			status_->show();
 		}
 	}
 }
 
-void SslServer::switchPorts()
+void Switch::sendToClient()
+{
+	while (udpSocket_->hasPendingDatagrams()) {
+		connection_->hide();
+		connectedClient_->hide();
+		clientsLabel_->hide();
+		clients_->hide();
+
+		QByteArray newDatagram;
+		newDatagram.resize(udpSocket_->pendingDatagramSize());
+		udpSocket_->readDatagram(newDatagram.data(), newDatagram.size());
+
+		QString datagram(newDatagram.data());
+		QString clientName = datagram.section(',', 0, 0);
+
+		connectedSockets_.value(clientName)->write(newDatagram);
+
+		status_->setText(tr("Message sent to client \"%1\".").arg(clientName));
+		status_->show();
+	}
+}
+
+void Switch::switchPorts()
 {
 	status_->setWordWrap(false);
 	connectedClient_->hide();
 	clientsLabel_->hide();
 	clients_->hide();
+	chooseClientButton_->hide();
+	showDatagramsButton_->hide();
 	changePortButton_->hide();
-	sendButton_->hide();
-	sendToClientButton_->hide();
-	broadcastButton_->hide();
-	writeButton_->hide();
-	message_->hide();
 
 	for (QMap<QString, QSslSocket *>::iterator i = connectedSockets_.begin(); i != connectedSockets_.end(); ++i) {
 		i.value()->deleteLater();
 	}
 	connectedSockets_.clear();
+	udpSocket_->disconnectFromHost();
 	sslServer_->close();
 	clients_->clear();
 
@@ -325,12 +287,13 @@ void SslServer::switchPorts()
 		connection_->setText(tr("Clients have been disconnected."));
 	}
 	status_->setText(tr("Server closed. Listen on new port:"));
+	status_->show();
 	portLabel_->show();
 	port_->show();
 	connectButton_->show();
 }
 
-void SslServer::quitSession()
+void Switch::quitSession()
 {
 	for (QMap<QString, QSslSocket *>::iterator i = connectedSockets_.begin(); i != connectedSockets_.end(); ++i) {
 		i.value()->deleteLater();
