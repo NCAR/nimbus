@@ -1,11 +1,11 @@
 #include "proxy.h"
-/*#include "logx/Logging.h"
+#include "logx/Logging.h"
 
 LOGGING("proxy");
-*/
+
 Proxy::Proxy()
 {
-	status_ = new QLabel(tr("Enter port and server name to connect client proxy:"));
+	status_ = new QLabel(tr("Enter port and key to connect client proxy:"));
 	connection_ = new QLabel;
 	connection_->hide();
 	portLabel_ = new QLabel(tr("Port:"));
@@ -37,7 +37,6 @@ Proxy::Proxy()
 	connect(sslSocket_, SIGNAL(readyRead()), this, SLOT(readMode()));
 	connect(sslSocket_, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
 	connect(sslSocket_, SIGNAL(sslErrors(const QList<QSslError> &)), this, SLOT(displayError(const QList<QSslError> &)));
-	connect(sslSocket_, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(slot_stateChanged(QAbstractSocket::SocketState)));
 
 	QHBoxLayout *buttonLayout = new QHBoxLayout;
 	buttonLayout->addWidget(switchButton_);
@@ -161,8 +160,12 @@ void Proxy::connectToServer()
 	expectedSslErrors.append(sloopError);
 	expectedSslErrors.append(eolError);
 
+	// Server connection to eol-rt-data is hardcoded here
+	// Ignore only self-signed error on approved certificates during SSL connection
 	sslSocket_->connectToHostEncrypted("eol-rt-data.guest.ucar.edu", 80);
 	sslSocket_->ignoreSslErrors(expectedSslErrors);
+
+	// Send instrument key to server to identify client
 	QByteArray block;
 	block.append(clientName_->text());
 	sslSocket_->write(block);
@@ -194,10 +197,12 @@ void Proxy::clientDisconnected()
 }
 
 void Proxy::readMode()
+// Data sent over the SslSocket's connection should always be either the multiple instrument
+// host error message or datagram status packets from the instrument
 {
 	qint64 available = sslSocket_->bytesAvailable();
 	QByteArray newMessage = sslSocket_->read(available);
-	QString clientErrorString(tr("This client name is already in use. Reconnect with new name."));
+	QString clientErrorString(tr("This instrument is already in use. Reconnect with new key."));
 
 	if (newMessage == clientErrorString) {
 		status_->setText(clientErrorString);
@@ -205,6 +210,7 @@ void Proxy::readMode()
 	} else {
 		status_->setWordWrap(true);
 		status_->setText(tr("New message from server received:\n").append(newMessage));
+		ILOG << newMessage.data();
 	}
 	status_->show();
 }
@@ -274,6 +280,8 @@ void Proxy::quitSession()
 	close();
 }
 
+// If any errors happen (SSL or otherwise), a pop up window will appear to
+// inform user what error occurred.
 void Proxy::displayError(QAbstractSocket::SocketError socketError)
 {
 	switch (socketError) {
@@ -305,10 +313,5 @@ void Proxy::displayError(const QList<QSslError> & errors)
 		errorList.append(tr("Error %1: %2.\n").arg(i+1).arg(errors[i].errorString()));
 	}
 	QMessageBox::information(this, tr("SSL Error"), errorList);
-}
-
-void Proxy::slot_stateChanged (QAbstractSocket::SocketState state)
-{
-   qDebug() << "Proxy::slot_stateChanged(" << state << ")";
 }
 

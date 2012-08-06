@@ -5,6 +5,13 @@
 #include <QtNetwork>
 #include "qsslserver.h"
 
+/**
+ * The server application for the remote instrument control project, to be run on
+ * eol-rt-data over port 80. Logs datagrams sent by the proxy client over a secure
+ * connection. Datagrams received directly from the aircraft server are identified
+ * by their instrument keys and sent to their respective clients.
+ */
+
 class Switch : public QDialog
 {
 	Q_OBJECT;

@@ -37,11 +37,11 @@ Switch::Switch(QWidget *parent)
 
 	connect(connectButton_, SIGNAL(clicked()), this, SLOT(openSession()));
 	connect(sslServer_, SIGNAL(newConnection()), this, SLOT(connectToClient()));
+	connect(udpSocket_, SIGNAL(readyRead()), this, SLOT(sendToClient()));
 	connect(chooseClientButton_, SIGNAL(clicked()), this, SLOT(chooseClient()));
 	connect(showDatagramsButton_, SIGNAL(clicked()), this, SLOT(showDatagrams()));
 	connect(changePortButton_, SIGNAL(clicked()), this, SLOT(switchPorts()));
 	connect(quitButton_, SIGNAL(clicked()), this, SLOT(quitSession()));
-	connect(udpSocket_, SIGNAL(readyRead()), this, SLOT(sendToClient()));
 
 	QHBoxLayout *buttonLayout = new QHBoxLayout;
 	buttonLayout->addWidget(changePortButton_);
@@ -116,6 +116,9 @@ void Switch::connectToClient()
 }
 
 void Switch::addClientName()
+// First message sent by the proxy will be the instrument key; map the key to the socket
+// pointer and add it to the list of connected sockets, then set the socket up to read
+// messages from the connection normally.
 {
 	QSslSocket *newClient = qobject_cast<QSslSocket *>(sender());
 
@@ -126,7 +129,7 @@ void Switch::addClientName()
 
 	if (connectedSockets_.contains(clientName)) {
 		QByteArray block;
-		block.append(tr("This client name is already in use. Reconnect with new name."));
+		block.append(tr("This instrument is already in use. Reconnect with new key."));
 		newClient->write(block);
 		return;
 	} else {
@@ -205,8 +208,6 @@ void Switch::showDatagrams()
 	clientsLabel_->hide();
 	clients_->hide();
 
-	QString log("Log");
-
 	QString clientName = clients_->currentText();
 	QSslSocket * client = connectedSockets_.value(clientName);
 	QList<QByteArray> clientLog = udpLists_.value(client);
@@ -219,6 +220,8 @@ void Switch::showDatagrams()
 }
 
 void Switch::readMode()
+// Put read datagrams into the proxy sender's datagram list and write the datagram to ILOG
+// (which will write it to Server Datagram Log)
 {
 	connection_->hide();
 	connectedClient_->hide();
@@ -244,6 +247,10 @@ void Switch::readMode()
 }
 
 void Switch::sendToClient()
+// Sends datagrams received from the aircraft server to the respective clients.
+// The first field in the datagram is the instrument key; use it to send the datagram to
+// the right client. If there is no client with the datagram's instrument key, the
+// datagram is sent to the error log for the server.
 {
 	while (udpSocket_->hasPendingDatagrams()) {
 		connection_->hide();
@@ -258,16 +265,19 @@ void Switch::sendToClient()
 		QString datagram(newDatagram.data());
 		QString clientName = datagram.section(',', 0, 0);
 
-		connectedSockets_.value(clientName)->write(newDatagram);
+		if (!connectedSockets_.contains(clientName)) {
+			ELOG << newDatagram.data();
+		} else {
+			connectedSockets_.value(clientName)->write(newDatagram);
 
-		status_->setText(tr("Message sent to client \"%1\".").arg(clientName));
-		status_->show();
+			status_->setText(tr("Message sent to client \"%1\".").arg(clientName));
+			status_->show();
+		}
 	}
 }
 
 void Switch::switchPorts()
 {
-	status_->setWordWrap(false);
 	connectedClient_->hide();
 	clientsLabel_->hide();
 	clients_->hide();
@@ -275,6 +285,7 @@ void Switch::switchPorts()
 	showDatagramsButton_->hide();
 	changePortButton_->hide();
 
+	// Clear all lists and disconnect all sockets before switching to a new port
 	for (QMap<QString, QSslSocket *>::iterator i = connectedSockets_.begin(); i != connectedSockets_.end(); ++i) {
 		i.value()->deleteLater();
 	}

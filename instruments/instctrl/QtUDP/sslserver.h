@@ -6,7 +6,9 @@
 #include "qsslserver.h"
 
 /**
- * To be used with the SslClient application.
+ * To be used with the SslClient application. Can host secure sessions between multiple
+ * clients at once. Able to receive and keep track of messages sent from clients and can
+ * send messages to individual clients or broadcast messages to all connected clients.
  */
 
 class SslServer : public QDialog

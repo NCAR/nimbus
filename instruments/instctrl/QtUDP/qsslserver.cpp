@@ -95,9 +95,9 @@ void QSslServer::incomingConnection(int socketDescriptor)
 
 		QMultiMap<QSsl::AlternateNameEntryType, QString> alternates = socket->localCertificate().alternateSubjectNames();
 		if (alternates.isEmpty()) {
-			qDebug("No alternates in client certificate.");
+			qDebug("No alternates in server certificate.");
 		} else {
-			qDebug() << "Subject Alternate Names for client:\n" << alternates;
+			qDebug() << "Subject Alternate Names for server:\n" << alternates;
 		}
 
 		QSslError error(QSslError::SelfSignedCertificate, clientCert);
