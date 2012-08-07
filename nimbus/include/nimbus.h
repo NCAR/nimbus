@@ -50,7 +50,7 @@ typedef struct
 
 typedef struct
 	{
-	char	Name[20];	// Default name
+	char	*Name;		// Default name
 	char	var[NAMELEN];	// Variable which uses this default
 	bool	Used;		// Was it requested by amlib
 	bool	Dirty;		// value changed via GUI

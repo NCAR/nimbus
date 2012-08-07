@@ -161,6 +161,7 @@ static void process_line(char *line_p, FILE *fp)
 
   size_t nValues = 1;
 
+  Defaults[whichOne]->Name = new char[strlen(name)+1];
   strcpy(Defaults[whichOne]->Name, name);
   Defaults[whichOne]->var[0] = '\0';
   Defaults[whichOne]->Dirty = false;
