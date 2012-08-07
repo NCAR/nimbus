@@ -294,7 +294,7 @@ void scs100(DERTBL *varp)
   vol[probeNum] = tas * sa[probeNum];
 
   if (rejAT > 0 && tact[probeNum] > 0)
-    vol[probeNum] *= (float)(tact[probeNum]) / (float)(tact[probeNum] + rejAT);
+    vol[probeNum] *= (float)(tact[probeNum]) / (float)(tact[probeNum] + rejAT + oflow);
 
   for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
     sampleVolume[i] = vol[probeNum];
@@ -310,16 +310,6 @@ void scs100(DERTBL *varp)
 #define REFF
 
 #include "pms1d_cv"
-
-  if (oflow > 0 && tact[probeNum] > 0 && oflow < 5000)
-    {
-    NR_TYPE ccc = (tact[probeNum]+oflow) / tact[probeNum];
-
-    for (i = FIRST_BIN[probeNum]; i < LAST_BIN[probeNum]; ++i)
-      concentration[i] *= ccc;
-
-    total_concen[probeNum] *= ccc;
-    }
 
 }       /* END SCS100 */
 
