@@ -84,6 +84,7 @@ void AddToDefaults(const char varName[], const char attrName[],
         const std::vector<float>& values)
 {
   Defaults[nDefaults] = new DEFAULT;
+  Defaults[nDefaults]->Name = new char[strlen(attrName)+1];
   strcpy(Defaults[nDefaults]->var, varName);
   strcpy(Defaults[nDefaults]->Name, attrName);
   Defaults[nDefaults]->Dirty = false;
@@ -101,6 +102,7 @@ void AddToAttributes(const char varName[], const char attrName[],
    * file variable attributes.
    */
   Defaults[nDefaults] = new DEFAULT;
+  Defaults[nDefaults]->Name = new char[strlen(attrName)+1];
   strcpy(Defaults[nDefaults]->var, varName);
   strcpy(Defaults[nDefaults]->Name, attrName);
   Defaults[nDefaults]->Dirty = false;
