@@ -40,6 +40,7 @@ private:
 	QLabel *connection_;
 	QLabel *portLabel_;
 	QLabel *clientLabel_;
+	QLabel *addressLabel_;
 
 	QPushButton *connectButton_;
 	QPushButton *switchButton_;
@@ -47,6 +48,7 @@ private:
 
 	QComboBox *port_;
 	QSet<QString> *uniquePorts_;
+	QLineEdit *address_;
 	QLineEdit *clientName_;
 };
 

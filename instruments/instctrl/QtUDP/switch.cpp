@@ -116,34 +116,48 @@ void Switch::connectToClient()
 }
 
 void Switch::addClientName()
-// First message sent by the proxy will be the instrument key; map the key to the socket
+// First message sent by the proxy will be the instrument info; map the key to the socket
 // pointer and add it to the list of connected sockets, then set the socket up to read
 // messages from the connection normally.
 {
 	QSslSocket *newClient = qobject_cast<QSslSocket *>(sender());
 
 	qint64 available = newClient->bytesAvailable();
-	QByteArray name = newClient->read(available);
-	QString clientName(name);
+	QByteArray clientInfo = newClient->read(available);
+	QString clientString(clientInfo);
+	QString clientName = clientString.section(',', 0, 0);
+	QString portString = clientString.section(',', 1, 1);
+	int clientPort = portString.toInt();
+	QString addressString = clientString.section(',', 2, 2);
+	QHostAddress clientAddress(addressString);
 	QList<QByteArray> datagramList;
 
-	if (connectedSockets_.contains(clientName)) {
-		QByteArray block;
-		block.append(tr("This instrument is already in use. Reconnect with new key."));
-		newClient->write(block);
-		return;
-	} else {
-		clients_->addItem(clientName);
-		connectedSockets_.insert(clientName, newClient);
-		udpLists_.insert(newClient, datagramList);
-
-		disconnect(newClient, SIGNAL(readyRead()), this, SLOT(addClientName()));
-		connect(newClient, SIGNAL(readyRead()), this, SLOT(readMode()));
-
-		connectedClient_->setText(tr("Client Name: \"%1\" ").arg(clientName));
-		connectedClient_->show();
-		chooseClientButton_->show();
+	for (QMap<ProxyClient, QSslSocket *>::iterator i = connectedSockets_.begin(); i != connectedSockets_.end(); ++i) {
+		if (i.key().instKey_ == clientName) {
+			QByteArray block;
+			block.append(tr("This instrument is already in use. Reconnect with new key."));
+			newClient->write(block);
+			return;
+		}
 	}
+
+	clients_->addItem(clientName);
+
+	ProxyClient clientProfile;
+	clientProfile.instKey_ = clientName;
+	clientProfile.portNumber_ = clientPort;
+	clientProfile.ipAddress_ = clientAddress;
+
+	connectedSockets_.insert(clientProfile, newClient);
+	udpLists_.insert(newClient, datagramList);
+
+	disconnect(newClient, SIGNAL(readyRead()), this, SLOT(addClientName()));
+	connect(newClient, SIGNAL(readyRead()), this, SLOT(readMode()));
+
+	connectedClient_->setText(tr("Client Name: \"%1\"\nClient Port: \"%2\"\nClient IP: \"%3\"")
+							.arg(clientName).arg(portString).arg(addressString));
+	connectedClient_->show();
+	chooseClientButton_->show();
 }
 
 void Switch::clientConnected()
@@ -173,19 +187,19 @@ void Switch::clientDisconnected()
 	if (!currentSocket)
 		return;
 
-	for (QMap<QString, QSslSocket *>::iterator i = connectedSockets_.begin(); i != connectedSockets_.end(); ++i) {
+	for (QMap<ProxyClient, QSslSocket *>::iterator i = connectedSockets_.begin(); i != connectedSockets_.end(); ++i) {
 		if (currentSocket == i.value()) {
-			int clientIndex = clients_->findText(i.key());
+			int clientIndex = clients_->findText(i.key().instKey_);
 			clients_->removeItem(clientIndex);
-			connection_->setText(tr("Client \"%1\" disconnected.").arg(i.key()));
+			connection_->setText(tr("Client \"%1\" disconnected.").arg(i.key().instKey_));
 			connectedSockets_.erase(i);
+
+			currentSocket->deleteLater();
+			connectedClient_->hide();
+			connection_->show();
 			break;
 		}
 	}
-
-	currentSocket->deleteLater();
-	connectedClient_->hide();
-	connection_->show();
 }
 
 void Switch::chooseClient()
@@ -209,7 +223,16 @@ void Switch::showDatagrams()
 	clients_->hide();
 
 	QString clientName = clients_->currentText();
-	QSslSocket * client = connectedSockets_.value(clientName);
+	ProxyClient currentClient;
+	for (QMap<ProxyClient, QSslSocket *>::iterator i = connectedSockets_.begin(); i != connectedSockets_.end(); ++i) {
+		if (i.key().instKey_ == clientName) {
+			currentClient.instKey_ = i.key().instKey_;
+			currentClient.portNumber_ = i.key().portNumber_;
+			currentClient.ipAddress_ = i.key().ipAddress_;
+			break;
+		}
+	}
+	QSslSocket * client = connectedSockets_.value(currentClient);
 	QList<QByteArray> clientLog = udpLists_.value(client);
 	for (QList<QByteArray>::iterator i = clientLog.begin(); i != clientLog.end(); ++i) {
 		qDebug() << (*i).data();
@@ -238,9 +261,9 @@ void Switch::readMode()
 
 	ILOG << newMessage.data();
 
-	for (QMap<QString, QSslSocket *>::iterator i = connectedSockets_.begin(); i != connectedSockets_.end(); ++i) {
+	for (QMap<ProxyClient, QSslSocket *>::iterator i = connectedSockets_.begin(); i != connectedSockets_.end(); ++i) {
 		if (currentSocket == i.value()) {
-			status_->setText(tr("New datagram from client \"%1\" received and stored.").arg(i.key()));
+			status_->setText(tr("New datagram from client \"%1\" received and stored.").arg(i.key().instKey_));
 			status_->show();
 		}
 	}
@@ -265,14 +288,17 @@ void Switch::sendToClient()
 		QString datagram(newDatagram.data());
 		QString clientName = datagram.section(',', 0, 0);
 
-		if (!connectedSockets_.contains(clientName)) {
-			ELOG << newDatagram.data();
-		} else {
-			connectedSockets_.value(clientName)->write(newDatagram);
+		for (QMap<ProxyClient, QSslSocket *>::iterator i = connectedSockets_.begin(); i != connectedSockets_.end(); ++i) {
+			if (i.key().instKey_ == clientName) {
+				i.value()->write(newDatagram);
 
-			status_->setText(tr("Message sent to client \"%1\".").arg(clientName));
-			status_->show();
+				status_->setText(tr("Message sent to client \"%1\".").arg(clientName));
+				status_->show();
+				return;
+			}
 		}
+
+		ELOG << newDatagram.data();
 	}
 }
 
@@ -286,7 +312,7 @@ void Switch::switchPorts()
 	changePortButton_->hide();
 
 	// Clear all lists and disconnect all sockets before switching to a new port
-	for (QMap<QString, QSslSocket *>::iterator i = connectedSockets_.begin(); i != connectedSockets_.end(); ++i) {
+	for (QMap<ProxyClient, QSslSocket *>::iterator i = connectedSockets_.begin(); i != connectedSockets_.end(); ++i) {
 		i.value()->deleteLater();
 	}
 	connectedSockets_.clear();
@@ -306,7 +332,7 @@ void Switch::switchPorts()
 
 void Switch::quitSession()
 {
-	for (QMap<QString, QSslSocket *>::iterator i = connectedSockets_.begin(); i != connectedSockets_.end(); ++i) {
+	for (QMap<ProxyClient, QSslSocket *>::iterator i = connectedSockets_.begin(); i != connectedSockets_.end(); ++i) {
 		i.value()->deleteLater();
 	}
 	close();

@@ -34,8 +34,17 @@ private slots:
 	void quitSession();
 
 private:
+	struct ProxyClient {
+		QString instKey_;
+		int portNumber_;
+		QHostAddress ipAddress_;
+
+	public:
+		bool operator<(const ProxyClient& rhs) const {return instKey_ < rhs.instKey_;}
+	};
+
 	QSslServer *sslServer_;
-	QMap<QString, QSslSocket *> connectedSockets_;
+	QMap<ProxyClient, QSslSocket *> connectedSockets_;
 	QMap<QSslSocket *, QList<QByteArray> > udpLists_;
 	QUdpSocket *udpSocket_;
 
