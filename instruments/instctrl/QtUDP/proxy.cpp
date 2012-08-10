@@ -80,6 +80,8 @@ void Proxy::connectToServer()
 		QFile keyFile("certs/client.key");
 		QFile clientFile("certs/client.crt");
 		QFile serverFile("certs/server.crt");
+		QFile newClientFile("certs/newclient.crt");
+		QFile newServerFile("certs/newserver.crt");
 		QFile tikalClientFile("certs/tikal_client.crt");
 		QFile tikalServerFile("certs/tikal_server.crt");
 		QFile shirazClientFile("certs/shiraz_client.crt");
@@ -96,6 +98,8 @@ void Proxy::connectToServer()
 		keyFile.open(QIODevice::ReadOnly);
 		clientFile.open(QIODevice::ReadOnly);
 		serverFile.open(QIODevice::ReadOnly);
+		newClientFile.open(QIODevice::ReadOnly);
+		newServerFile.open(QIODevice::ReadOnly);
 		tikalClientFile.open(QIODevice::ReadOnly);
 		tikalServerFile.open(QIODevice::ReadOnly);
 		shirazClientFile.open(QIODevice::ReadOnly);
@@ -112,6 +116,8 @@ void Proxy::connectToServer()
 		QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray("client"));
 		QSslCertificate clientCert(&clientFile);
 		QSslCertificate serverCert(&serverFile);
+		QSslCertificate newClientCert(&newClientFile);
+		QSslCertificate newServerCert(&newServerFile);
 		QSslCertificate tikalClientCert(&tikalClientFile);
 		QSslCertificate tikalServerCert(&tikalServerFile);
 		QSslCertificate shirazClientCert(&shirazClientFile);
@@ -125,28 +131,8 @@ void Proxy::connectToServer()
 
 		QSslCertificate eolServerCert(&eolServerFile);
 
-		QList<QSslCertificate> clientCertificates;
-		clientCertificates.append(clientCert);
-		clientCertificates.append(tikalClientCert);
-		clientCertificates.append(shirazClientCert);
-		clientCertificates.append(dropletClientCert);
-		clientCertificates.append(sloopClientCert);
-		clientCertificates.append(multiHostClientCert);
-
-		QList<QSslCertificate> serverCertificates;
-		serverCertificates.append(serverCert);
-		serverCertificates.append(tikalServerCert);
-		serverCertificates.append(shirazServerCert);
-		serverCertificates.append(dropletServerCert);
-		serverCertificates.append(sloopServerCert);
-		serverCertificates.append(multiHostServerCert);
-		serverCertificates.append(eolServerCert);
-
 		sslSocket_->setPrivateKey(key);
-		sslSocket_->addCaCertificates(clientCertificates);
-		sslSocket_->addCaCertificates(serverCertificates);
-
-		sslSocket_->setLocalCertificate(multiHostClientCert);
+		sslSocket_->setLocalCertificate(newClientCert);
 
 		if (!sslSocket_->localCertificate().isValid()) {
 			qDebug("Invalid client certificate");
@@ -161,7 +147,7 @@ void Proxy::connectToServer()
 		}
 
 		QSslError error(QSslError::SelfSignedCertificate, serverCert);
-		QSslError newError(QSslError::SelfSignedCertificate, multiHostServerCert);
+		QSslError newError(QSslError::SelfSignedCertificate, newServerCert);
 		QSslError tikalError(QSslError::SelfSignedCertificate, tikalServerCert);
 		QSslError shirazError(QSslError::SelfSignedCertificate, shirazServerCert);
 		QSslError dropletError(QSslError::SelfSignedCertificate, dropletServerCert);
@@ -179,7 +165,7 @@ void Proxy::connectToServer()
 
 		// Server connection to eol-rt-data is hardcoded here
 		// Ignore only self-signed error on approved certificates during SSL connection
-		sslSocket_->connectToHostEncrypted("eol-rt-data.guest.ucar.edu", 80);
+		sslSocket_->connectToHostEncrypted("localhost", 54545);
 		sslSocket_->ignoreSslErrors(expectedSslErrors);
 
 		// Send instrument key to server to identify client
