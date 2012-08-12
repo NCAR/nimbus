@@ -15,16 +15,13 @@ namespace sp
 		{
 		}
 		template<class Reader, class Writer>
-		void			Process(Reader& f, Writer& writer);
+		void Process(Reader& f, Writer& writer);
 
-		
 	private:
 		template<class Writer>
-		void			process_block( Block &block, Writer& writer );
+		void process_block( Block &block, Writer& writer );
 
-
-		Log						_log;
-
+		Log _log;
 	};
 }
 
@@ -60,11 +57,11 @@ namespace sp
 	template< class Writer>
 	void Device3VCPI::process_block( Block &block, Writer& writer )
 	{
-			static int PC =0;
-			static int NL = 0;
+		static int PC =0;
+		static int NL = 0;
 	
 		size_t head = 0;
-		static 		ParticleRecord3VCPI particle;
+		static ParticleRecord3VCPI particle;
 		try
 		{
 			Word w;
@@ -79,76 +76,76 @@ namespace sp
 				{
 				case HOUSEKEEPING:
 					{
-						HouseKeeping3VCPI hk;
-						block >> hk;
-						writer << hk;
-				
-					}break;
+					HouseKeeping3VCPI hk;
+					block >> hk;
+					writer << hk;
+					} break;
+
 				case MASK:
 					{
-						MaskData3VCPI md;
-						block >>md;
-					}break;
+					MaskData3VCPI md;
+					block >>md;
+					} break;
+
 				case DATA:
 					{
-					
-						
-						particle.clear();
-						particle.setData(true);
-						block >> particle;
-						writer << particle;
-						PC++;
-						/*if(word(particle.NumSlicesInParticle)  > particle.HorizontalImage._data.size())
-						{
-							_log <<"BAD\n";
-						}*/
-						//	_log << particle2;
-		
-					//	_log << "**ParticleFrame**\n";
-					}break;
+					particle.clear();
+					particle.setData(true);
+					block >> particle;
+					writer << particle;
+					PC++;
+					/*if(word(particle.NumSlicesInParticle)  > particle.HorizontalImage._data.size())
+					{
+						_log <<"BAD\n";
+					}*/
+					//	_log << particle2;
+
+				//	_log << "**ParticleFrame**\n";
+					} break;
+
 				case UNUSED:
 					{
-						/*	if(NL == 185)
-						{
-						NL++;
-						}*/
-						particle.clear();
-						particle.setData(false);
-						block >> particle;
-						NL++;
-					//	_log << "UNUSED FRAME\n";
-					//	block.go_to_end();			
-					}break;
+					/*	if(NL == 185)
+					{
+					NL++;
+					}*/
+					particle.clear();
+					particle.setData(false);
+					block >> particle;
+					NL++;
+				//	_log << "UNUSED FRAME\n";
+				//	block.go_to_end();			
+					} break;
+
 				case 0: //indicates the end of the file it seems?
 					{
-					//	block.go_to_end();	
-					}break;
+				//	block.go_to_end();	
+					} break;
 
 				default:
 					{
-						/*static int count = 0;
-						block.clear();
-						word val= w;
-						char first = val >> 8;
-						char second = val & 0x00ff;
+					/*static int count = 0;
+					block.clear();
+					word val= w;
+					char first = val >> 8;
+					char second = val & 0x00ff;
 
-						_log <<"\n3VCPI (" <<count << ")Got a packet header that isn't recognized : " << word(w) << "  ASCI: " << first << " " << second;
-						count++;*/
-						//head = block.head();
-						//block.go_to(head - sizeof(word)*5);
-						//for(int  i = 0;i<10;++i)
-						//{
-						//	block >> w;
-						//	word val= w;
-						//	char first = val >> 8;
-						//	char second = val & 0x00ff;
+					_log <<"\n3VCPI (" <<count << ")Got a packet header that isn't recognized : " << word(w) << "  ASCI: " << first << " " << second;
+					count++;*/
+					//head = block.head();
+					//block.go_to(head - sizeof(word)*5);
+					//for(int  i = 0;i<10;++i)
+					//{
+					//	block >> w;
+					//	word val= w;
+					//	char first = val >> 8;
+					//	char second = val & 0x00ff;
 
-						//	_log <<"\nGot a packet header that isn't recognized : " << word(w) << "  ASCI: " << first << " " << second;
-						//}
-						//		throw std::exception("bad");
+					//	_log <<"\nGot a packet header that isn't recognized : " << word(w) << "  ASCI: " << first << " " << second;
+					//}
+					//		throw std::exception("bad");
 
-					}break;
-
+					} break;
 				}
 			}
 		}

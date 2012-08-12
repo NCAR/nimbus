@@ -4,15 +4,15 @@
 namespace sp
 {
 	typedef unsigned char	byte;
-	typedef unsigned char ubyte;
+	typedef unsigned char	ubyte;
 	typedef unsigned short	uint16;
 	typedef unsigned int	uint32;
 	typedef unsigned long long uint64;
 
-	typedef uint16			word;	//word which defaults to unsigned
-	typedef word			uword;	//unsigned word
-	typedef short			sword; //signed word
-	typedef float			float32;
+	typedef uint16		word;	//word which defaults to unsigned
+	typedef word		uword;	//unsigned word
+	typedef short		sword; //signed word
+	typedef float		float32;
 
 	enum DataBufferSize
 	{
@@ -31,7 +31,7 @@ namespace sp
 		SYNC_2DS_ENDING = 0x5EADBE3F
 	};
 
-	inline void			swap_endian(byte* bytes, unsigned int nBytes, Endianness source, Endianness dest )
+	inline void swap_endian(byte* bytes, unsigned int nBytes, Endianness source, Endianness dest )
 	{
 		if(source == dest)
 			return;
@@ -50,10 +50,10 @@ namespace sp
 		}
 
 	}
-	inline void			swap_endian_force(byte* bytes, unsigned int nBytes){swap_endian(bytes, nBytes, ENDIAN_LITTLE, ENDIAN_BIG);}
+	inline void swap_endian_force(byte* bytes, unsigned int nBytes){swap_endian(bytes, nBytes, ENDIAN_LITTLE, ENDIAN_BIG);}
 
 	template<class Reader, class T>
-	inline T&		swap_endian(Reader& r, T& v)
+	inline T& swap_endian(Reader& r, T& v)
 	{
 		swap_endian(reinterpret_cast<byte*>(&v), sizeof(v), r.SourceEndian(), r.DestinationEndian());
 		return v;
@@ -61,7 +61,7 @@ namespace sp
 
 
 	template<class T>
-	inline T		swap_endian( T v)
+	inline T swap_endian( T v)
 	{
 		swap_endian(reinterpret_cast<byte*>(&v), sizeof(v), ENDIAN_LITTLE, ENDIAN_BIG);
 		return v;
@@ -87,6 +87,7 @@ namespace sp
 			sprintf(buffer, "%i", v);
 			return std::string(buffer); 
 		}
+
 	private:
 		word	val;
 	};
@@ -280,7 +281,7 @@ namespace sp
 		Word wSecond;
 		Word wMilliseconds;
 
-		double			TimeAsSingleValue()const
+		double TimeAsSingleValue()const
 		{
 			return double(wYear)*60.0*24.0*30.0*12.0 + double(wMonth)*60.0*24.0*30.0 + double(wDay)*60.0*24.0 + double(wHour)*60.0 + double(wMinute) + double(wSecond)*(1.0/60.0) + double(wMilliseconds) /(1000.0);
 		}
@@ -333,25 +334,21 @@ namespace sp
 			
 		}
 
-		bool				InRange(const TimeStamp16& ts)const
+		bool InRange(const TimeStamp16& ts)const
 		{
 			return StartTime < ts && ts < EndTime;
 		}
 
-		TimeStamp16			StartTime;
-		TimeStamp16			EndTime;
-		std::string			OutputDir;
-		bool				Compressed;
-		bool				ascii_art;	//outputs ascii art that lets us see the particles in text form
+		TimeStamp16	StartTime;
+		TimeStamp16	EndTime;
+		std::string	OutputDir;
+		bool		Compressed;
+		bool		ascii_art;	//outputs ascii art that lets us see the particles in text form
 
-		std::string			Platform;
-		std::string			Project;
-		std::string			SerialNumber;
+		std::string	Platform;
+		std::string	Project;
+		std::string	SerialNumber;
 		
-		size_t				MinParticle, MaxParticle; 
+		size_t		MinParticle, MaxParticle; 
 	};
-
-
-	
-
 }

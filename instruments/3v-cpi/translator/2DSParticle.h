@@ -9,11 +9,11 @@ namespace sp
 	{
 		struct Bits
 		{
-			word		NumDataWords:12;
-			word		TimingWordsNotFound:1; //bit 12
-			word		TimingWordMismatch:1;  //only seems to be used on the vertical part..?
-			word		FIFO_Empty:1;	
-			word		HasOverloadTimingWords:1; //indicates that last two words of data record are timing words
+			word	NumDataWords:12;
+			word	TimingWordsNotFound:1; //bit 12
+			word	TimingWordMismatch:1;  //only seems to be used on the vertical part..?
+			word	FIFO_Empty:1;	
+			word	HasOverloadTimingWords:1; //indicates that last two words of data record are timing words
 		};
 		union
 		{
@@ -76,22 +76,16 @@ namespace sp
 		}
 
 		void	SetMaxShade()
-		{
-			*reinterpret_cast<word*>(this) = 0x4000;
-		}
+		{ *reinterpret_cast<word*>(this) = 0x4000; }
 
 		void	SetMaxClear()
-		{
-			*reinterpret_cast<word*>(this) = 0x7FFF;
-		}
+		{ *reinterpret_cast<word*>(this) = 0x7FFF; }
+
 		bool	IsStartOfSlice()const
-		{
-			return StartOfSlice == 1;
-		}
+		{ return StartOfSlice == 1; }
+
 		void	swapEndian()
-		{
-			swap_endian_force(reinterpret_cast<byte*>(this),sizeof(ImageChunk));
-		}
+		{ swap_endian_force(reinterpret_cast<byte*>(this),sizeof(ImageChunk)); }
 
 
 		word NumClearPixels:7;
@@ -101,7 +95,7 @@ namespace sp
 	};
 
 	template<class T>
-	inline T&	operator << (T& writer, ImageChunk& im)
+	inline T& operator << (T& writer, ImageChunk& im)
 	{
 		writer.write(reinterpret_cast<char*>(&im),sizeof(word));
 		return writer;
@@ -109,20 +103,20 @@ namespace sp
 	struct ImageData
 	{
 
-		ParticleInfo				_Description;
+		ParticleInfo _Description;
 		typedef std::vector<ImageChunk>	Data;
-		Data						_data;
-		Timing						_time;
+		Data	_data;
+		Timing	_time;
 
-		void	clear(){_data.clear();}
+		void clear() { _data.clear(); }
 
-		Timing						Time()const
+		Timing Time()const
 		{
 			return _time;
 		}
 	};
 
-	inline Log&	operator << (Log& log, ImageData& out)
+	inline Log& operator << (Log& log, ImageData& out)
 	{
 		return log;
 		//return log << "\nImageWord: " << out.bits.ImageWord <<
@@ -132,7 +126,7 @@ namespace sp
 	};
 
 	template<class T>
-	inline T&	operator >> (T& reader, ImageData& in)
+	inline T& operator >> (T& reader, ImageData& in)
 	{
 		int WordsToRead = in._Description.bits.NumDataWords;
 
@@ -151,10 +145,8 @@ namespace sp
 
 		if(WordsToRead > 0)
 		{
-			
 			in._data.resize(WordsToRead);
 			reader.read(reinterpret_cast<byte*>(&in._data[0]),WordsToRead*sizeof(word) );
-			
 		}
 
 		if(HasTiming)
@@ -166,7 +158,7 @@ namespace sp
 	};
 
 	template<class T>
-	inline T&	operator << (T& writer, ImageData& im)
+	inline T& operator << (T& writer, ImageData& im)
 	{
 		for(size_t i = 0;i<im._data.size();++i)
 		{
@@ -182,43 +174,43 @@ namespace sp
 
 	struct ParticleRecord: public Packet
 	{
-		Word			ParticleCount;
-		Word			NumSlicesInParticle;
+		Word		ParticleCount;
+		Word		NumSlicesInParticle;
 
-		ImageData		HorizontalImage;
-		ImageData		VerticalImage;
+		ImageData	HorizontalImage;
+		ImageData	VerticalImage;
 
-		void			clear(){HorizontalImage.clear(); VerticalImage.clear();}
+		void		clear(){HorizontalImage.clear(); VerticalImage.clear();}
 	};
 
 
 	template<class T>
-	inline T&	operator >> (T& reader, ParticleRecord& in)
+	inline T& operator >> (T& reader, ParticleRecord& in)
 	{
 		 reader >> in.HorizontalImage._Description >> in. VerticalImage._Description >>
 					in.ParticleCount >> in.NumSlicesInParticle;
 
-		// if(in.HorizontalImage._Description.bits.NumDataWords > 0)
+//		if(in.HorizontalImage._Description.bits.NumDataWords > 0)
 		 {
 			 reader >> in.HorizontalImage;
 		 }
-		// if(in.VerticalImage._Description.bits.NumDataWords > 0)
+//		if(in.VerticalImage._Description.bits.NumDataWords > 0)
 		 {
 			 reader >> in.VerticalImage;
 		 }
 		 return reader;
-			//		in.HorizontalImage >> in.VerticalImage;
+//		in.HorizontalImage >> in.VerticalImage;
 	};
 
 
 	template<class T>
-	inline T&	operator << (T& writer, ParticleRecord& pr)
+	inline T& operator << (T& writer, ParticleRecord& pr)
 	{
-		writer << pr.PacketID << pr.HorizontalImage._Description  << pr. VerticalImage._Description  <<
-			pr.ParticleCount  << pr.NumSlicesInParticle;
+		writer	<< pr.PacketID << pr.HorizontalImage._Description 
+			<< pr. VerticalImage._Description
+			<< pr.ParticleCount  << pr.NumSlicesInParticle;
 
 		writer << pr.HorizontalImage;
-		
 		writer << pr.VerticalImage;
 	
 		return writer;

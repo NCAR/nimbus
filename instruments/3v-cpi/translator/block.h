@@ -41,39 +41,46 @@ namespace sp
 		}
 
 
-		Endianness						SourceEndian()const{return _srcEnd;}
-		Endianness						DestinationEndian()const{return _dstEnd;}
+		Endianness	SourceEndian()const{return _srcEnd;}
+		Endianness	DestinationEndian()const{return _dstEnd;}
 
 
-		void							add_line(){_data.resize(_data.size() + _lineSize);}
+		void add_line()
+		{_data.resize(_data.size() + _lineSize);}
 
-		byte*							fill_begin(){return &_data[_data.size() - _lineSize];}
-		unsigned int					fill_length(){return _lineSize;}
-
-
-		size_t							size()const{return _data.size();}
-		size_t							remaining()const{return size() - _head;}
-
-		void							clear(){_data.erase(_data.begin(), _data.begin() + _head); _head = 0;}
+		byte *fill_begin()
+		{return &_data[_data.size() - _lineSize];}
+		unsigned int fill_length()
+		{return _lineSize;}
 
 
-		size_t							head()const{return _head;}
-		void							go_to(size_t s){ _head = s;}
+		size_t size() const
+		{return _data.size();}
+
+		size_t remaining() const
+		{return size() - _head;}
+
+		void clear()
+		{_data.erase(_data.begin(), _data.begin() + _head); _head = 0;}
+
+		size_t head() const
+		{return _head;}
+
+		void go_to(size_t s)
+		{ _head = s;}
 
 
-		void							go_to_end()
-		{
-			_head = size();
-		}
+		void go_to_end()
+		{ _head = size(); }
 
 	private:
 
-		typedef std::vector<byte>		Data;
+		typedef std::vector<byte> Data;
 
-		size_t							_head;
-		unsigned int					_lineSize;
-		Data							_data;
-		Endianness						_srcEnd,_dstEnd;
+		size_t		_head;
+		unsigned int	_lineSize;
+		Data		_data;
+		Endianness	_srcEnd,_dstEnd;
 	};
 
 	template<class T>

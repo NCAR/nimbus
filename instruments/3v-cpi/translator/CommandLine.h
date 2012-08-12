@@ -9,6 +9,8 @@
 #include "directory.h"
 #undef UNICODE
 #include "dirent.h"
+
+
 namespace sp
 {
 	class CommandLine
@@ -40,7 +42,7 @@ namespace sp
 
 			State state = NONE;
 			std::string op;
-			for(int i = 0;i<args;++i)
+			for (int i = 0; i < args; ++i)
 			{
 				op = argv[i];
 				g_Log <<"Option #"<<i+1<<" = " << op <<"\n";
@@ -112,7 +114,7 @@ namespace sp
 		}
 
 		template<class Op>
-		void		for_each_file(Op op)
+		void for_each_file(Op op)
 		{
 			op.options  = &_options;
 			std::for_each(_Files.begin(),_Files.end(), op);
@@ -146,7 +148,7 @@ namespace sp
 			}
 		};
 		template<class Op>
-		void		for_each_directory(Op op)
+		void for_each_directory(Op op)
 		{
 			op.options  = &_options;
 			OpDir<Op> dirDoer(op);
@@ -156,85 +158,85 @@ namespace sp
 
 	private:
 
-		void		ProcessArg(const std::string& op, State state)
+		void ProcessArg(const std::string& op, State state)
 		{
-			switch(state)
+			switch (state)
 			{
 			case FILES:{
 				_Files.push_back(op);
-					   }break;
+				}break;
 			case DIRECTORY:{
 				_Directories.push_back(op);
-						   }break;
+				}break;
 			case OUT_DIR:{
 				_options.OutputDir = op;
 				MakeDirectory(op);
-						   }break;
+				}break;
 			case DATE_START:{
 				ProcessDate(op, _options.StartTime);
-						   }break;
+				}break;
 			case DATE_END:{
 				ProcessDate(op, _options.EndTime);
-							}break;
+				}break;
 			case MINPARTICLE:{
 				_options.MinParticle = atoi(op.c_str());
-						  }break;
+				}break;
 			case MAXPARTICLE:{
-				_options.MaxParticle =atoi(op.c_str());
-						  }break;
+				_options.MaxParticle = atoi(op.c_str());
+				}break;
 			case PROJECT:{
 				_options.Project = op;
-						 }break;
+				}break;
 			case PLATFORM:{
 				_options.Platform = op;
-						}break;
+				}break;
 			case SERIALNUMBER:{
 				_options.SerialNumber = op;
-						  }break;
+				}break;
 			default:{
 
-					}break;
+				}break;
 			}
 		}
 
-		void		ProcessDate(const std::string& date, TimeStamp16& stamp)
+		void ProcessDate(const std::string& date, TimeStamp16& stamp)
 		{
 			word val = atoi(date.c_str());
-			switch(_dateSlot)
+			switch (_dateSlot)
 			{
-				case 0:{stamp.wYear = val;}break;
-				case 1:{stamp.wMonth = val;}break;
-				case 2:{stamp.wDay = val;}break;
-				case 3:{stamp.wHour = val;}break;
-				case 4:{stamp.wMinute = val;}break;
-				case 5:{stamp.wSecond = val;}break;
-				case 6:{stamp.wMilliseconds = val;}break;
+				case 0: {stamp.wYear = val;} break;
+				case 1: {stamp.wMonth = val;} break;
+				case 2: {stamp.wDay = val;} break;
+				case 3: {stamp.wHour = val;} break;
+				case 4: {stamp.wMinute = val;} break;
+				case 5: {stamp.wSecond = val;} break;
+				case 6: {stamp.wMilliseconds = val;} break;
 			}
 			_dateSlot++;
 		}
 
 		typedef std::vector<std::string> Names;
 
-		Names				_Files;
-		Names				_Directories;
-		Options				_options;
-		
-		int					_dateSlot;
+		Names	_Files;
+		Names	_Directories;
+		Options	_options;
+
+		int	_dateSlot;
 
 
-		void				PrintCommandLineOptions()
+		void PrintCommandLineOptions()
 		{
 			std::cout << "Spec Data Converter Options:\n\n" << "Process specific files:  <-f> <file name> <...>\n" <<
-				 "Process Directory:  <-d> <directory name> <...>\n" <<
-				 "Start Time:  <-start_time> <year> <month> <day> <hour> <minute> <millisecond>\n" <<
-				  "End Time:  <-end_time> <year> <month> <day> <hour> <minute> <millisecond>\n" <<
-				  "Set Output Directory:  <-o> <directory name>\n" <<
-				  "Set Project: <-project> <name>\n" <<
-				  "Set Platform: <-platform> <name>\n"<<
-				  "Set Serial Number: <-sn> <name>\n"<<
-				  "Set Min Particle #: <-minparticle> <number>\n"<<
-				  "Set Max Particle #: <-maxparticle> <number>\n"<<
-				  "ASCII art debug: <-asciiart>\n";
+			 "Process Directory:  <-d> <directory name> <...>\n" <<
+			 "Start Time:  <-start_time> <year> <month> <day> <hour> <minute> <millisecond>\n" <<
+			  "End Time:  <-end_time> <year> <month> <day> <hour> <minute> <millisecond>\n" <<
+			  "Set Output Directory:  <-o> <directory name>\n" <<
+			  "Set Project: <-project> <name>\n" <<
+			  "Set Platform: <-platform> <name>\n"<<
+			  "Set Serial Number: <-sn> <name>\n"<<
+			  "Set Min Particle #: <-minparticle> <number>\n"<<
+			  "Set Max Particle #: <-maxparticle> <number>\n"<<
+			  "ASCII art debug: <-asciiart>\n";
 		}
 	};
 }

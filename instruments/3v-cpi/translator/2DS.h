@@ -12,15 +12,15 @@ namespace sp
 	{
 	public:
 		template<class Reader, class Writer>
-		void			Process(Reader& f, Writer& writer);
+		void	Process(Reader& f, Writer& writer);
 
 		
 	private:
 		template<class Writer>
-		void			process_block( Block &block, Writer& writer );
+		void	process_block( Block &block, Writer& writer );
 
 
-		Log			    _log;
+		Log    _log;
 
 	};
 }

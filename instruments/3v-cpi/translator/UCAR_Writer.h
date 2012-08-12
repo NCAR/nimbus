@@ -28,11 +28,11 @@ namespace sp
 		HORIZONTAL_3VCPI = 0x3348,
 		VERTICAL_3VCPI = 0x3356,
 
-		HVPS	=	0x5348,
+		HVPS = 0x5348,
 		SPEC_2D_128 = 0x5337
 	};
 
-	//http://www.eol.ucar.edu/data/software/pms2d/pms2d-data_format
+	// http://www.eol.ucar.edu/data/software/pms2d/pms2d-data_format
 	class UCAR_Writer
 	{
 		typedef std::vector<byte>	Buffer;
@@ -45,29 +45,27 @@ namespace sp
 				_bytes = 0;
 			}
 
-			std::ofstream			_file;
-			Buffer					_buffer;
-			size_t					_bytes;
+			std::ofstream	_file;
+			Buffer		_buffer;
+			size_t		_bytes;
 		};
 
-		int								_VerticalCode;
-		int								_HorizontalCode; 
-		std::string						_ProbeType;
-		std::string						_resolution;
-		std::string						_nDiodes;
-		std::string						_SuffixH, _SuffixV;
+		sword			_VerticalCode;
+		sword			_HorizontalCode; 
+		std::string		_ProbeType;
+		std::string		_resolution;
+		std::string		_nDiodes;
+		std::string		_SuffixH, _SuffixV;
 
 	public:
-		
 
 		UCAR_Writer(const std::string& fileName, const Options& options,
-						int HorizontalCode, int VerticalCode, 
-						const std::string& ProbeType, const std::string& resolution, const std::string& nDiodes,
-						const std::string& SuffixH, const std::string& SuffixV	):_options(options)
+			sword HorizontalCode, sword VerticalCode, 
+			const std::string& ProbeType, const std::string& resolution, const std::string& nDiodes,
+			const std::string& SuffixH, const std::string& SuffixV) : _options(options)
 		{
-			_vChannel._file.open(("temp/" + fileName + "V.bin").c_str(),std::ios::binary);
-			_hChannel._file.open(("temp/" + fileName + "H.bin").c_str(),std::ios::binary);
-
+			_hChannel._file.open(("temp/" + fileName + ".bin").c_str(),std::ios::binary);
+//			_vChannel._file.open(("temp/" + fileName + "V.bin").c_str(),std::ios::binary);
 
 			_FileName = fileName;
 
@@ -89,28 +87,34 @@ namespace sp
 
 	
 			Write(_hChannel,_hImage.Bits(),_HorizontalCode, true );
-			Write(_vChannel,_vImage.Bits(),_VerticalCode, true );
+			Write(_hChannel,_vImage.Bits(),_VerticalCode, true );
 		
 			_hChannel._file.close();
-			_vChannel._file.close();
+//			_vChannel._file.close();
 
-			GenerateXMLHeader("temp/" + _FileName + "H.xml",_HorizontalCode, _SuffixH.c_str());
-			GenerateXMLHeader("temp/" + _FileName + "V.xml",_VerticalCode, _SuffixV.c_str());
+			GenerateXMLHeader(	"temp/" + _FileName + ".xml",
+						(const char *)&_HorizontalCode, _SuffixH,
+						(const char *)&_VerticalCode, _SuffixV);
+//			GenerateXMLHeader("temp/" + _FileName + "V.xml",_VerticalCode, _SuffixV.c_str());
 			
+			std::string outputdir(_options.OutputDir);
+			if (outputdir.size() > 0)
+				outputdir += "/";
 
-			MergeFiles("temp/" + _FileName + "H.xml","temp/" + _FileName + "H.bin", _options.OutputDir + "/" +_FileName + "H.pms");
-			MergeFiles("temp/" + _FileName + "V.xml","temp/" + _FileName + "V.bin", _options.OutputDir + "/" +_FileName + "V.pms");
+			MergeFiles("temp/" + _FileName + ".xml","temp/" + _FileName + ".bin", outputdir + _FileName + ".2d");
+//			MergeFiles("temp/" + _FileName + "V.xml","temp/" + _FileName + "V.bin", outputdir + _FileName + "V.2d");
 			
-			if(!_options.ascii_art)
+			if (!_options.ascii_art)
 			{
-				g_Log <<"HORIZONTAL  PARTICLES FOUND: " << _hImage.NParticlesCompleted() << "\n";
-				g_Log <<"VERTICAL  PARTICLES FOUND: " << _vImage.NParticlesCompleted() << "\n";
-				g_Log <<"TOTAL PARTICLES FOUND: " << _hImage.NParticlesCompleted() + _vImage.NParticlesCompleted()<< "\n";
+				g_Log <<"  HORIZONTAL PARTICLES FOUND: " << _hImage.NParticlesCompleted() << "\n";
+				g_Log <<"  VERTICAL PARTICLES FOUND: " << _vImage.NParticlesCompleted() << "\n";
+				g_Log <<"  TOTAL PARTICLES FOUND: " << _hImage.NParticlesCompleted() + _vImage.NParticlesCompleted()<< "\n";
 			}
-			
 		}
 
-		void GenerateXMLHeader( const std::string& file, word ProbID, const char* suffix)
+		void GenerateXMLHeader(	const std::string& file,
+					const char *hProbID, const std::string& hSuffix,
+					const char *vProbID, const std::string& vSuffix)
 		{
 			std::ofstream xml(file.c_str(),std::ios::binary);
 
@@ -121,15 +125,22 @@ namespace sp
 				"<OAP version=\"" << 1 << "\">\n" << 
 				" <Source>ncar.ucar.edu</Source>\n" << 
 				" <FormatURL>http://www.eol.ucar.edu/raf/Software/OAPfiles.html</FormatURL>\n" << 
-				" <Project>"<<_options.Project<<"</Project>\n" <<
-				" <Platform>"<<_options.Platform<<"</Platform>\n" << 
+				" <Project>" << _options.Project << "</Project>\n" <<
+				" <Platform>" << _options.Platform << "</Platform>\n" << 
 				" <FlightNumber>" << flightNum << "</FlightNumber>\n" <<
 				" <FlightDate>" << _MostRecentTimeStamp.wMonth.ToString() << "/" << _MostRecentTimeStamp.wDay.ToString() << "/" << _MostRecentTimeStamp.wYear.ToString() << "</FlightDate>\n" <<
-				" <probe id=\""<<ProbID<<"\" type=\""<<_ProbeType <<"\" resolution=\"" << _resolution << "\" nDiodes=\"" << _nDiodes <<" \" serialnumber=\""<< _options.SerialNumber<<"\" suffix=\""<< suffix <<"\"/>\n";
+				" <probe id=\"" << hProbID[1] << hProbID[0] << "\" type=\"" << _ProbeType
+						<< "\" resolution=\"" << _resolution
+						<< "\" nDiodes=\"" << _nDiodes
+						<< "\" serialnumber=\"" << _options.SerialNumber
+						<< "\" suffix=\"" << hSuffix << "\"/>\n" <<
 
-			
+				" <probe id=\"" << vProbID[1] << vProbID[0] << "\" type=\"" << _ProbeType
+						<< "\" resolution=\"" << _resolution
+						<< "\" nDiodes=\"" << _nDiodes
+						<< "\" serialnumber=\"" << _options.SerialNumber
+						<< "\" suffix=\"" << vSuffix << "\"/>\n";
 			xml << "</OAP>\n";
-
 		}
 
 
@@ -141,26 +152,26 @@ namespace sp
 
 		UCAR_Writer& operator << (ParticleRecord& pr)
 		{ 
-			if(pr.HorizontalImage._Description.bits.NumDataWords > 0)
+			if (pr.HorizontalImage._Description.bits.NumDataWords > 0)
 			{
 				StoreParticle(_hChannel, pr.HorizontalImage, _hImage, pr.ParticleCount, _HorizontalCode);
 			}
-			else if(pr.VerticalImage._Description.bits.NumDataWords > 0 )
+			else if(pr.VerticalImage._Description.bits.NumDataWords > 0)
 			{
-				StoreParticle(_vChannel, pr.VerticalImage, _vImage, pr.ParticleCount, _VerticalCode);
+				StoreParticle(_hChannel, pr.VerticalImage, _vImage, pr.ParticleCount, _VerticalCode);
 			}
 			return *this;
 		}
 
 		UCAR_Writer& operator << (ParticleRecord3VCPI& pr)
 		{ 
-			if(pr.HorizontalImage._Description.bits.NumDataWords > 0)
+			if (pr.HorizontalImage._Description.bits.NumDataWords > 0)
 			{
 				StoreParticle(_hChannel, pr.HorizontalImage, _hImage, pr.ParticleCount, _HorizontalCode);
 			}
-			else if(pr.VerticalImage._Description.bits.NumDataWords > 0 )
+			else if(pr.VerticalImage._Description.bits.NumDataWords > 0)
 			{
-				StoreParticle(_vChannel, pr.VerticalImage, _vImage, pr.ParticleCount, _VerticalCode);
+				StoreParticle(_hChannel, pr.VerticalImage, _vImage, pr.ParticleCount, _VerticalCode);
 			}
 			return *this;
 		}
@@ -180,9 +191,8 @@ namespace sp
 		}
 	private:
 		//adds the header that matches the PD2 format from UCAR
-		bool					AddHeaderPD2(Channel& channel, word CharacterCode)
+		bool AddHeaderPD2(Channel& channel, word CharacterCode)
 		{
-			
 			const TimeStamp16& timeStamp	= _MostRecentTimeStamp;
 			if(_options.InRange(timeStamp))
 			{
@@ -275,7 +285,6 @@ namespace sp
 
 				size_t remaining = decompressed.size() % 8;
 				decompressed.erase(decompressed.begin(), decompressed.end() - remaining);
-				
 			}
 
 			template<class Image>
@@ -308,7 +317,6 @@ namespace sp
 				}
 				assert(remains >= 0);
 				decompressed.resize(decompressed.size()+size_t(remains),1); 
-				
 			}
 
 			Buffer&	WriteRemainder()
@@ -331,7 +339,6 @@ namespace sp
 			size_t NParticlesCompleted() const { return _nParticlesCompleted; }
 		
 		private:
-
 			void	NextParticle(size_t newCount)
 			{
 				
@@ -363,7 +370,7 @@ namespace sp
 				WriteBlankSlice();
 				WriteBlankSlice();
 				WriteBlankSlice();
-			
+
 				uint32 timingBE = _timing;
 				timingBE &= 0xFF; 
 				swap_endian_force(reinterpret_cast<byte*>(&timingBE), sizeof(timingBE));
@@ -383,7 +390,7 @@ namespace sp
 			}
 
 			template<class T>
-			void			write_buffer(Buffer& buf, T& v)
+			void write_buffer(Buffer& buf, T& v)
 			{
 				byte* end = reinterpret_cast<byte*>(&v)+sizeof(v);
 				for(byte* b = reinterpret_cast<byte*>(&v); b != end;++b )
@@ -392,39 +399,35 @@ namespace sp
 				}
 			}
 
-			Timing	 _timing;
-			Buffer	decompressed;
-			Buffer  bits;
-			Buffer  _empty;
-			size_t	byteCount;
+			Timing		_timing;
+			Buffer		decompressed;
+			Buffer		bits;
+			Buffer		_empty;
+			size_t		byteCount;
 			int		_slice_pixel_count;
 			public:
 			long long	_particleCount;
-			size_t	numWritten;
+			size_t		numWritten;
 			size_t		_nParticlesCompleted;
 
 		};
 
 		template<class T>
-		void					StoreParticle(Channel& channel, const T& imd, ImageSlice& slice, size_t particleCount, word CharacterCode)
+		void StoreParticle(Channel& channel, const T& imd, ImageSlice& slice, size_t particleCount, word CharacterCode)
 		{
-
 			if(particleCount < _options.MinParticle || particleCount > _options.MaxParticle)
 				return;
 
 			const Buffer& in = slice.Decompress(imd._data, particleCount, imd.Time(), _options.ascii_art);
 
 			Write(channel, in, CharacterCode);
-
 		}
 
-		void					Write( Channel &channel, const Buffer &in, word CharacterCode, bool ForceIt = false) 
+		void Write(Channel &channel, const Buffer &in, word CharacterCode, bool ForceIt = false) 
 		{
 			Buffer& out = channel._buffer;
 
 			out.insert(out.end(),in.begin(),in.end());
-
-			
 
 			if(out.size() >= SIZE_DATA_BUF)
 			{
@@ -438,12 +441,9 @@ namespace sp
 				out.resize(SIZE_DATA_BUF, 0);
 				WriteParticle(channel, CharacterCode);
 			}
-			
 		}
 
-
-
-		void					WriteParticle(Channel& channel,word CharacterCode)
+		void WriteParticle(Channel& channel,word CharacterCode)
 		{
 			if(_options.ascii_art)
 			{
@@ -488,35 +488,30 @@ namespace sp
 	
 		}
 
-		void					WriteDebugParticle(Channel& channel)
+		void WriteDebugParticle(Channel& channel)
 		{
 			Buffer& buf = channel._buffer;
-			while(buf.size() >=128)
+			while(buf.size() >= 128)
 			{
 				channel._file.write(reinterpret_cast<const char*>(&buf[0]), 128);
-				channel._file <<"\n";
+				channel._file << "\n";
 				buf.erase(buf.begin(),buf.begin() + 128) ;
 			}
 		}
 
+		std::string		_FileName;
 
+		HouseKeeping		_MostRecentHouseKeeping;
+		TimeStamp16		_MostRecentTimeStamp;	
 
-		std::string				_FileName;
+		Channel			_hChannel;
+//		Channel			_vChannel, _hChannel;
+		ImageSlice		_vImage, _hImage;
 
-		HouseKeeping			_MostRecentHouseKeeping;
-		TimeStamp16				_MostRecentTimeStamp;	
+		std::ofstream		_xmlF;
 
-		Channel					_vChannel, _hChannel;
-		ImageSlice				_vImage, _hImage;
+		word			_TAS, _overloadTimeMS;
 
-		std::ofstream			_xmlF;
-
-		word					_TAS, _overloadTimeMS;
-
-
-		const Options&			_options;
-		
-
-
+		const Options&		_options;
 	};
 }

@@ -1,7 +1,9 @@
 #pragma once
+
 #include "log.h"
 #include <bitset>
 #include "timestamp_ucar.h"
+
 namespace sp
 {
 	class File;
@@ -11,26 +13,24 @@ namespace sp
 	struct CompressedSlice
 	{
 	private:
-		std::bitset<128>	_bits;
+		std::bitset<128> _bits;
 	public:
 
-		bool		all() const
-		{
-			return _bits.count() == 128; //GCC doesn't have all() it seems ..
-		}
-		bool		isEmpty()const
-		{
-			return _bits.none();
-		}
+		bool all() const
+		//GCC doesn't have all() it seems .. 
+		{ return _bits.count() == 128; }
 
-		int			numRecords()const
+		bool isEmpty()const
+		{ return _bits.none(); }
+
+		int numRecords()const
 		{
-			int ns =0;
+			int ns = 0;
 			bool last = false;
-			for(int i = 0;i<128;++i)
+			for(int i = 0; i < 128; ++i)
 			{
 				bool b = _bits[i];
-				if(!last && b)
+				if (!last && b)
 				{
 					ns++;
 				}
@@ -40,7 +40,7 @@ namespace sp
 		}
 
 		//starting from index, tell how many bits it is before the value does not equal V
-		word		countUntilNot(word& index,const bool v) const
+		word countUntilNot(word& index,const bool v) const
 		{
 			word c = 0;
 			for(;index<128;++index,c++)
@@ -54,7 +54,7 @@ namespace sp
 		}
 
 		template<class T>
-		void		print(T& f) const
+		void print(T& f) const
 		{
 			
 			for(int i = 0;i<128;++i)
@@ -71,7 +71,7 @@ namespace sp
 		}
 	};
 	template<class T>
-	inline T&	operator >> (T& reader, CompressedSlice& in)
+	inline T& operator >> (T& reader, CompressedSlice& in)
 	{
 		size_t c = 0;
 		for(int i = 0;i<4;++i)
@@ -108,33 +108,34 @@ namespace sp
 
 	private:
 		template<class Writer>
-		void			process_block( Block &block, Writer& writer );
+		void process_block( Block &block, Writer& writer );
 
 
 		template<class Writer>
-		void			write_particle( Writer& writer, Timing time, std::ofstream& textOut );
+		void write_particle( Writer& writer, Timing time, std::ofstream& textOut );
 
 		template<class Writer>
-		void			Write2DS( Writer& writer );
+		void Write2DS( Writer& writer );
 
-		Log			    _log;
+		Log _log;
 
 	
-		typedef std::vector<TimestampUCAR>		time_stamps;
-		typedef std::vector<CompressedSlice>	slices;
-		typedef std::vector<uint32>				time_slots;
+		typedef std::vector<TimestampUCAR> time_stamps;
+		typedef std::vector<CompressedSlice> slices;
+		typedef std::vector<uint32> time_slots;
 		time_stamps		_time_stamps;
 		time_slots		_time_slots;
 		slices			_slices;
 
-		unsigned long long _particleCount;
-		unsigned long long _particleStartCount;
-		unsigned long long _byteReadCount;
-		Options&			_options;
+		unsigned long long	_particleCount;
+		unsigned long long	_particleStartCount;
+		unsigned long long	_byteReadCount;
+		Options&		_options;
 
 		bool			_LastSliceIncomplete;
 	};
 }
+
 
 #include "File.h"
 #include "block.h"
@@ -147,22 +148,18 @@ namespace sp
 
 namespace sp
 {
-
-
 	template<class Reader, class Writer>
 	void Device2DS_reverse::Process( Reader& f, Writer& writer )
 	{
 
-		
 		{
-			std::ofstream			out_slicedata("temp/slicedata.bin",std::ios::binary);
+			std::ofstream out_slicedata("temp/slicedata.bin",std::ios::binary);
 
-			XMLHeader	xml_header;
+			XMLHeader xml_header;
 			f >> xml_header;
 
-		
-			Word			check_sum;
-			Block			block(SIZE_DATA_BUF, f.SourceEndian(), f.DestinationEndian());
+			Word check_sum;
+			Block block(SIZE_DATA_BUF, f.SourceEndian(), f.DestinationEndian());
 
 			while(!f.empty())
 			{
@@ -178,7 +175,6 @@ namespace sp
 		}
 
 		Write2DS(writer);
-
 	}
 
 	
@@ -409,7 +405,7 @@ namespace sp
 
 
 	template<class Writer>
-	void		 Device2DS_reverse::Write2DS( Writer& writer) 
+	void Device2DS_reverse::Write2DS( Writer& writer) 
 	{
 		std::ifstream in_slicedata("temp/slicedata.bin",std::ios::binary);
 
@@ -435,7 +431,6 @@ namespace sp
 			}
 			writer.write(&data_block[0], SIZE_DATA_BUF);
 
-			
 			writer.write(reinterpret_cast<char*>(&checksum),sizeof(checksum));
 		}
 	}

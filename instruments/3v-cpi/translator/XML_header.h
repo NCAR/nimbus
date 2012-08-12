@@ -2,12 +2,12 @@
 
 #include "Packet.h"
 #include "log.h"
+
 namespace sp
 {
 	//UCAR XML header 
 	struct XMLHeader
 	{
-
 		std::string		_header;
 		
 		std::string		GetFileName() const
@@ -19,11 +19,12 @@ namespace sp
 	template<class T>
 	inline T&	operator >> (T& reader, XMLHeader& in)
 	{
-		std::vector<char>	buf;
+		std::vector<char> buf;
 		const char* xml_end = "</OAP>\n";
 		char t = 0;
 		int max_loops = 100000; //so we don't go forever on invalid file
-		while(max_loops-- && !reader.empty())
+
+		while (max_loops-- && !reader.empty())
 		{
 			reader.read(reinterpret_cast<byte*>(&t),sizeof(t));
 			in._header += t;

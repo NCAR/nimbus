@@ -97,25 +97,22 @@ namespace sp
 	struct ImageData3VCPI
 	{
 
-		ParticleInfo3VCPI						_Description;
-		typedef std::vector<ImageChunk3VCPI>	Data;
-		Data									_data;
-		bool									hasData;
+		ParticleInfo3VCPI _Description;
+		typedef std::vector<ImageChunk3VCPI> Data;
+		Data _data;
+		bool hasData;
 
-		word									_TimingWords[3];
+		word _TimingWords[3];
 
-		Timing									Time()const
-		{
-			return *reinterpret_cast<const Timing*>(&_TimingWords[0]);
-		}
+		Timing Time()const
+		{ return *reinterpret_cast<const Timing*>(&_TimingWords[0]); }
 	
 
-		void	clear(){_data.clear();}
+		void clear()
+		{_data.clear();}
 
-		bool					HasData()const
-		{
-			return hasData /*&& _Description.HasData(*/;
-		}
+		bool HasData()const
+		{ return hasData /*&& _Description.HasData(*/; }
 	};
 
 	inline Log&	operator << (Log& log, ImageData3VCPI& out)
@@ -179,15 +176,16 @@ namespace sp
 	struct ParticleRecord3VCPI: public Packet
 	{
 
-		Word				ParticleCount;
-		Word				NumSlicesInParticle;
+		Word		ParticleCount;
+		Word		NumSlicesInParticle;
 
-		ImageData3VCPI		HorizontalImage;
-		ImageData3VCPI		VerticalImage;
+		ImageData3VCPI	HorizontalImage;
+		ImageData3VCPI	VerticalImage;
 	
-		void			clear(){HorizontalImage.clear(); VerticalImage.clear();}
+		void clear()
+		{HorizontalImage.clear(); VerticalImage.clear();}
 
-		void			setData(bool hasData)
+		void setData(bool hasData)
 		{
 			HorizontalImage.hasData = hasData;
 			VerticalImage.hasData = hasData;

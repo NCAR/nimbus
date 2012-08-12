@@ -7,7 +7,7 @@ namespace sp
 
 	struct HouseKeeping3VCPI: public Packet
 	{
-			word		_data[83];
+		word		_data[83];
 	};
 
 

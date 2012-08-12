@@ -21,13 +21,13 @@ namespace sp
 		TimeStamp16		As2DSTimeStamp() const
 		{
 			TimeStamp16 ts;
-			ts.wDay				=	 swap_endian(Day);
-			ts.wYear			=	 swap_endian(Year);
-			ts.wMonth			=	 swap_endian(Month);
-			ts.wSecond			=	 swap_endian(Second);
+			ts.wDay			=	 swap_endian(Day);
+			ts.wYear		=	 swap_endian(Year);
+			ts.wMonth		=	 swap_endian(Month);
+			ts.wSecond		=	 swap_endian(Second);
 			ts.wMilliseconds	=	 swap_endian(Milliseconds);
-			ts.wHour			=	 swap_endian(Hour);
-			ts.wMinute			=	 swap_endian(Minute);
+			ts.wHour		=	 swap_endian(Hour);
+			ts.wMinute		=	 swap_endian(Minute);
 			ts.wDayOfWeek		=	0;
 			return ts;
 

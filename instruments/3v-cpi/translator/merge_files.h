@@ -33,6 +33,8 @@ namespace sp
 
 		std::ofstream file(new_file_name.c_str(),std::ios::binary);
 
+                std::cout << "  Merging into : " << new_file_name << std::endl;
+
 		if(!tf1.is_open() || !tf2.is_open() || !file.is_open())
 		{
 			g_Log << "Merge files failed with " << file1 <<", "<< file2 <<", "<< new_file_name<<"\n";
