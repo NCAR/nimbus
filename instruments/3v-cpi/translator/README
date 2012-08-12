@@ -1,0 +1,4 @@
+2D_compat_trans_v6.zip is the original code from SPEC.
+  It produces two output files for every input file, splitting H & V into
+  separate files.  We would prefer to have them integrated into a single
+  file, and have all files from a directory in one file.
