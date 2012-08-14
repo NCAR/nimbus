@@ -4,7 +4,7 @@ DECLARE SUB VALVECHG ()
 DECLARE SUB FINETIMER ()
 DECLARE FUNCTION B2I& (BN$)    'CONVERTS FORMATTED BINARY BYTES TO A LONG INTEGER
 DECLARE FUNCTION I2B$ (DEC&)   'CONVERTS LONG INTEGER TO 4 FORMATTED BINARY BYTES
-DECLARE SUB BKGCOLOR ()
+DECLARE SUB INITSCREEN ()
 DECLARE SUB CNTRESET ()
 DECLARE SUB DATAPOINTERS ()
 DECLARE SUB INITCOUNTERS ()
@@ -25,6 +25,11 @@ DECLARE SUB IRIGTIME ()
 DECLARE SUB OPENDATAFILE ()
 DECLARE SUB SETSYSTEMDATE ()
 DECLARE SUB SETSYSTEMTIME ()
+
+'Screen update routines:
+DECLARE SUB PrintNumArr (num#(), fmt$, ind, row, col, clr)
+DECLARE SUB PrintLabel (s$, row, col, clr)
+DECLARE SUB PrintNumLabel (num#, fmt$, row, col, clr)
 
 COMMON SHARED CNTRBASEADDR%, DIFFBASEADDR%, SINGBASEADDR%
 COMMON SHARED LINT&, BN$, DEC&
@@ -63,7 +68,7 @@ DIM SHARED MISSINGCYCLE#(1 TO 100) 'FOR MISSED CYCLE NUMBER
 
 '******************************************************************
 
-CALL BKGCOLOR
+CALL INITSCREEN
 CALL PARAMETERS     'CONTAINS THE EXPERIMENT PARAMETERS
 CALL IOMAP          'DEFINE I/O MAP
 CALL DATAPOINTERS   'DEFINE DATA POINTERS FOR COUNTER BOARD
@@ -219,15 +224,37 @@ B2I& = LINT&
 END FUNCTION
 
 '******************************************************************
-SUB BKGCOLOR        'SETS SCREEN BACKGROUND COLOR
+SUB INITSCREEN        'Configures static part of screen layout
 
-     SCREEN 12
-     BLUE% = 30: GREEN% = 0: RED% = 0
-     VALUE = BLUE% * 65536 + GREEN% * 256 + RED%
-     PALETTE 0, VALUE
-     VM% = 479
-     COLOR 14
-     WIDTH , 30
+	SCREEN 12
+	
+    PRINT
+    PRINT "IRIG Time:   :  :"
+    PRINT "COUNTER A:              1s Delta:            TIME:"
+    PRINT "COUNTER B:              1s Delta:            CYCLE:"
+    PRINT "RATIO A/B:              1s Delta:"
+    PRINT
+    PRINT "Chamber Temperatures"
+    PRINT "Cell A In      Cell A Out      Cell B In      Cell B Out"
+    PRINT
+    PRINT "LAMP           DET             SCRUB"
+    PRINT
+    PRINT "FAN            PS Plate        FAN            CPU"
+	PRINT
+	PRINT
+	PRINT "Voltages"
+	PRINT "5V REF     5V PS     5V PC     +12V     +24V     -24V     +28V     28V I"
+	PRINT
+	PRINT
+	PRINT "Pressures"
+	PRINT "Delta P        Ambient P"
+	PRINT
+	PRINT
+	PRINT "Valve position      Expected position      Skips      Stops"
+	PRINT
+	PRINT
+	PRINT "CPU utilization:    %"
+	PRINT "Peak CPU utilization:    %"
 
 END SUB
 
@@ -985,40 +1012,59 @@ END SUB
 '******************************************************************
 SUB WRITETOSCREEN
 
-      PRINT "IRIG Time"' = (hh:mm:ss:ms)"
-     
-      PRINT "hh:mm:ss.ms"
-      PRINT USING "##:##:##.###"; HH; MM; SS + MS / 1000!
-      PRINT ""
+	PrintNumLabel cdbl(HH), "##", VertOffset% + 2, HorizOffset% + 12, Yellow'RT stamp
+	PrintNumLabel cdbl(MM), "##", VertOffset% + 2, HorizOffset% + 15, Yellow
+	PrintNumLabel cdbl(SS + MS / 1000!), "##.###", VertOffset% + 2, HorizOffset% + 18, Yellow
+	
+	PrintNumLabel cdbl(freqa&), "#######", VertOffset% + 3, HorizOffset% + 12, Green'Freq A
+	PrintNumLabel cdbl(DELTAFREQA&), "####", VertOffset% + 3, HorizOffset% + 34, Green'Delta A
+	PrintNumLabel ENDTIME# - STARTTIME#, "######.#", VertOffset% + 3, HorizOffset% + 53, Green 'Increm time stamp
+	
+	PrintNumLabel cdbl(freqB&), "#######", VertOffset% + 4, HorizOffset% + 12, Green 'Freq B
+	PrintNumLabel cdbl(DELTAFREQB&), "####", VertOffset% + 4, HorizOffset% + 34, Green 'Delta B
+	PrintNumLabel cycleno#, "########", VertOffset% + 4, HorizOffset% + 53, Green 'Cycle counter
+	
+	PrintNumLabel FREQRATIO#, "###.######", VertOffset% + 5, HorizOffset% + 12, Green' Ratio A/B
+	PrintNumLabel PREVRATIO# - FREQRATIO#, "###.######", VertOffset% + 5, HorizOffset% + 34, Green' Delta ratio
+	  
+	PrintNumArr Temperature#(), "##.##", 1, VertOffset% + 9, HorizOffset% + 1, Green
+	PrintNumArr Temperature#(), "##.##", 2, VertOffset% + 9, HorizOffset% + 16, Green
+	PrintNumArr Temperature#(), "##.##", 3, VertOffset% + 9, HorizOffset% + 32, Green
+	PrintNumArr Temperature#(), "##.##", 4, VertOffset% + 9, HorizOffset% + 47, Green
 
-      PRINT "COUNTER A", freqa&, DELTAFREQA&, "TIME =",
-      PRINT USING "######.#"; ENDTIME# - STARTTIME#
-      PRINT "COUNTER B", freqb&, DELTAFREQB&, "CYCLE NO. =", cycleno#
-      PRINT "RATIO A/B ",
-      PRINT USING "###.######"; FREQRATIO#; PREVRATIO# - FREQRATIO#
-      PRINT "CHAMBER TEMPS         ",
-      PRINT USING "#####.##"; TEMPERATURE#(1); TEMPERATURE#(2); TEMPERATURE#(3); TEMPERATURE#(4)
-      PRINT "LAMP, DET, SCRUB",
-      PRINT USING "#####.##"; TEMPERATURE#(5); TEMPERATURE#(6); TEMPERATURE#(7)
-      PRINT "FAN, PS PANEL, BOX, PROC",
-      PRINT USING "#####.##"; TEMPERATURE#(8); TEMPERATURE#(9); TEMPERATURE#(10); TEMPERATURE#(11)
-      PRINT "5V REF, 5V PS, 5V PC, +12V",
-      PRINT USING "#####.##"; VOLTAGE#(1); VOLTAGE#(2); VOLTAGE#(9); VOLTAGE#(8)
-      PRINT "+24V, -24V, +28V, 28V I",
-      PRINT USING "#####.##"; VOLTAGE#(4); VOLTAGE#(5); VOLTAGE#(3); CURRENT#(1)
-      PRINT "DELTA PRES, ATMOS PRES",
-      PRINT USING "#####.##"; PRESSURE#(1); PRESSURE#(2)
-      CALL FINETIMER
-      PCTTIME% = 100 * MICSECS# / 1000000
-      IF PCTEXPIRED% > MAXPCT% THEN MAXPCT% = PCTEXPIRED%
-      PRINT "VALVEQUAD%, EXPECTQUAD%, SKIPS, STOPS) ";
-      PRINT USING "#######"; VALVEQUADRANT%; EXPECTQUADRANT%; VALVESKIPPED%; VALVESTOPPED%
-      'PRINT USING "#######"; VALVEPOS%; EXPECTQUADRANT%; VALVESKIPPED%; VALVESTOPPED%
-      PRINT USING "###.#"; PCTTIME%;
-      PRINT "%  OF 1 SECOND TIME WAS USED: MAX USED WAS";
-      PRINT USING "###.#"; MAXPCT%;
-      PRINT "%"
-
+	PrintNumArr Temperature#(), "##.##", 5, VertOffset% + 11, HorizOffset% + 1, Green
+	PrintNumArr Temperature#(), "##.##", 6, VertOffset% + 11, HorizOffset% + 16, Green
+	PrintNumArr Temperature#(), "##.##", 7, VertOffset% + 11, HorizOffset% + 32, Green
+	  
+	PrintNumArr Temperature#(), "##.##", 8, VertOffset% + 13, HorizOffset% + 1, Green
+	PrintNumArr Temperature#(), "##.##", 9, VertOffset% + 13, HorizOffset% + 16, Green
+	PrintNumArr Temperature#(), "##.##", 10, VertOffset% + 13, HorizOffset% + 32, Green
+	PrintNumArr Temperature#(), "##.##", 11, VertOffset% + 13, HorizOffset% + 47, Green
+	
+	PrintNumArr VOLTAGE#(), "##.##", 1, VertOffset% + 17, HorizOffset% + 1, Green
+	PrintNumArr VOLTAGE#(), "##.##", 2, VertOffset% + 17, HorizOffset% + 10, Green
+	PrintNumArr VOLTAGE#(), "##.##", 9, VertOffset% + 17, HorizOffset% + 20, Green
+	PrintNumArr VOLTAGE#(), "###.##", 8, VertOffset% + 17, HorizOffset% + 30, Green
+	PrintNumArr VOLTAGE#(), "###.##", 4, VertOffset% + 17, HorizOffset% + 39, Green
+	PrintNumArr VOLTAGE#(), "###.##", 5, VertOffset% + 17, HorizOffset% + 48, Green
+	PrintNumArr VOLTAGE#(), "###.##", 3, VertOffset% + 17, HorizOffset% + 57, Green
+	PrintNumArr Current#(), "####", 1, VertOffset% + 17, HorizOffset% + 66, Green
+	
+	PrintNumArr Pressure#(), "####", 1, VertOffset% + 21, HorizOffset% + 1, Green
+	PrintNumArr Pressure#(), "####", 2, VertOffset% + 21, HorizOffset% + 19, Green
+	
+	PrintNumLabel cdbl(VALVEQUADRANT%), "###", VertOffset% + 24, HorizOffset% + 0, Green
+	PrintNumLabel cdbl(EXPECTQUADRANT%), "###", VertOffset% + 24, HorizOffset% + 20, Green
+	PrintNumLabel cdbl(VALVESKIPPED%), "####", VertOffset% + 24, HorizOffset% + 43, Green
+	PrintNumLabel cdbl(VALVESTOPPED%), "####", VertOffset% + 24, HorizOffset% + 54, Green
+	
+	CALL FINETIMER
+	PCTTIME% = 100 * MICSECS# / 1000000
+	IF PCTEXPIRED% > MAXPCT% THEN MAXPCT% = PCTEXPIRED%
+	PrintNumLabel cdbl(PCTTIME%), "###.#", VertOffset% + 26, HorizOffset% + 17, Green
+	PrintNumLabel cdbl(MAXPCT%), "###.#", VertOffset% + 27, HorizOffset% + 22, Green
+	  
+	  
 END SUB
 
 '******************************************************************
@@ -1052,4 +1098,46 @@ SUB WRITETOSERIAL
        PRINT #2, USING "#######"; VALVEPOS%; VALVEQUADRANT%; EXPECTQUADRANT%; VALVESKIPPED%; VALVESTOPPED%
 
 END SUB
+'******************************************************************
+'Print a text label on the screen at specified coordinates.
+SUB PrintLabel (s$, row, col, clr)
+
+    IF (col < 1) THEN col = 1
+    IF (row < 1) THEN row = 1
+    LOCATE row, col
+    COLOR clr
+    PRINT s$
+
+END SUB
+'******************************************************************
+'Print a numeric value on the screen at specified coordinates.
+SUB PrintNumArr (num#(), fmt$, ind, row, col, clr)
+
+    IF (col < 1) THEN col = 1
+    IF (row < 1) THEN row = 1
+    IF (col > 80) THEN col = 80
+    IF (row >= 59) THEN row = 58
+    IF (fmt$ = "") THEN fmt$ = "####"
+
+    LOCATE row, col
+    COLOR clr
+    PRINT USING fmt$; num#(ind)
+
+END SUB
+'******************************************************************
+'Print a numeric value on the screen at specified coordinates.
+SUB PrintNumLabel (num#, fmt$, row, col, clr)
+
+    IF (col < 1) THEN col = 1
+    IF (row < 1) THEN row = 1
+    IF (col > 80) THEN col = 80
+    IF (row >= 59) THEN row = 58
+    IF (fmt$ = "") THEN fmt$ = "####"
+
+    LOCATE row, col
+    COLOR clr
+    PRINT USING fmt$; num#
+
+END SUB
+'******************************************************************
 
