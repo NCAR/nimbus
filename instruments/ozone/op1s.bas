@@ -1,4 +1,5 @@
 DECLARE SUB VALVESLIP ()
+DECLARE SUB VALVESLIP ()
 DECLARE SUB VALVEPOSITION ()
 DECLARE SUB VALVECHG ()
 DECLARE SUB FINETIMER ()
@@ -44,8 +45,7 @@ COMMON SHARED MODE2%, LOAD2%, HOLD2%, HOLDCY2%
 COMMON SHARED MODE3%, LOAD3%, HOLD3%, HOLDCY3%
 COMMON SHARED MODE4%, LOAD4%, HOLD4%, HOLDCY4%
 COMMON SHARED MODE5%, LOAD5%, HOLD5%, HOLDCY5%
-COMMON SHARED ROW%, COLUMN%, VALUE!, ADTEST&
-
+COMMON SHARED row%, COLUMN%, VALUE!, ADTEST&
 
 COMMON SHARED TEMP#, RT#, ADVOLTS#, PRES#, ENGUNITS#, VOLTS#, MILLIAMP#
 COMMON SHARED R1!, R2!, MBARCAL!
@@ -66,9 +66,15 @@ DIM SHARED CURRENT#(1 TO 6)        'EXTRAS INCLUDED
 DIM SHARED MISSINGTIME#(1 TO 100)  'FOR MISSED DATA TIME
 DIM SHARED MISSINGCYCLE#(1 TO 100) 'FOR MISSED CYCLE NUMBER
 
+'Colors
+CONST Black = 0, BLUE = 1, Green = 2, cyan = 3
+CONST RED = 4, Magenta = 5, brown = 6, white = 7
+CONST grey = 8, LBlue = 9, Lgreen = 10, Lcyan = 11
+CONST Lmagenta = 13, Yellow = 14, Bwhite = 15
+CONST PlotBorderColor = Bwhite
+
 '******************************************************************
 
-CALL INITSCREEN
 CALL PARAMETERS     'CONTAINS THE EXPERIMENT PARAMETERS
 CALL IOMAP          'DEFINE I/O MAP
 CALL DATAPOINTERS   'DEFINE DATA POINTERS FOR COUNTER BOARD
@@ -79,7 +85,6 @@ CALL OPENDATAFILE   'OPEN DATA AND ENGDATA FILES FOR WRITING
 CALL IRIGTIME
 
 'CALL SETSYSTEMDATE  'SET THE PC DATE AND TIME.  EVENTUALLY USE IRIG TIME
-
 'CALL SETSYSTEMTIME
 
 cycleno# = 0
@@ -110,6 +115,8 @@ OUT CONT2%, B2I&(LA$)                 'ARM COUNTERS 1,2,3,4,5 CHIP 2
 OPEN "COM1:9600,N,8,1,BIN,CS0,DS0" FOR RANDOM AS #2
 VALVEPOS% = 1    'start valve flag in B position because it gets set to A on first cycle
 
+CALL INITSCREEN
+
 '........................TIME LOOP STARTS HERE!
 
 DO
@@ -126,8 +133,6 @@ DO
     OUT CONT1%, 70                         '70:LOAD CNTR 2,3 CHIP 1
     OUT CONT2%, 70                         '70:LOAD CNTR 2,3 CHIP 2
     
-    CLS
- 
 	IF cycleno# MOD 10 = 0 THEN
 		 CALL VALVECHG
 		 CALL VALVESLIP
@@ -179,7 +184,7 @@ END IF
    'added 1/25/07
    CALL IRIGTIME
 
-   CALL WRITETOSCREEN
+   CALL WRITETOSCREEN 'Added 5/16/2012, screen update re-write
 
    'added 1/25/07
    CALL WRITETOSERIAL
@@ -197,6 +202,9 @@ END
 
 '******************************************************************
 
+'******************************************************************
+
+'******************************************************************
 '******************************************************************
 
 '******************************************************************
@@ -222,41 +230,6 @@ LOOP
 B2I& = LINT&
 
 END FUNCTION
-
-'******************************************************************
-SUB INITSCREEN        'Configures static part of screen layout
-
-	SCREEN 12
-	
-    PRINT
-    PRINT "IRIG Time:   :  :"
-    PRINT "COUNTER A:              1s Delta:            TIME:"
-    PRINT "COUNTER B:              1s Delta:            CYCLE:"
-    PRINT "RATIO A/B:              1s Delta:"
-    PRINT
-    PRINT "Chamber Temperatures"
-    PRINT "Cell A In      Cell A Out      Cell B In      Cell B Out"
-    PRINT
-    PRINT "LAMP           DET             SCRUB"
-    PRINT
-    PRINT "FAN            PS Plate        FAN            CPU"
-	PRINT
-	PRINT
-	PRINT "Voltages"
-	PRINT "5V REF     5V PS     5V PC     +12V     +24V     -24V     +28V     28V I"
-	PRINT
-	PRINT
-	PRINT "Pressures"
-	PRINT "Delta P        Ambient P"
-	PRINT
-	PRINT
-	PRINT "Valve position      Expected position      Skips      Stops"
-	PRINT
-	PRINT
-	PRINT "CPU utilization:    %"
-	PRINT "Peak CPU utilization:    %"
-
-END SUB
 
 '******************************************************************
 SUB CNTRESET               'INITIALIZE/RESET COUNTER BOARD AT STARTUP
@@ -518,6 +491,41 @@ LREG$ = "0000 0000 0000 0000"
 END SUB
 
 '******************************************************************
+SUB INITSCREEN        'Configures static part of screen layout
+
+    SCREEN 12
+	    
+    PRINT
+    PRINT "IRIG Time:   :  :"
+    PRINT "COUNTER A:              1s Delta:            TIME:"
+    PRINT "COUNTER B:              1s Delta:            CYCLE:"
+    PRINT "RATIO A/B:              1s Delta:"
+    PRINT
+    PRINT "Temperatures"
+    PRINT "Cell A In      Cell B In       Cell A Out     Cell B Out"
+    PRINT
+    PRINT "LAMP           DET             SCRUB"
+    PRINT
+    PRINT "FAN            PS Plate        FAN            CPU"
+    PRINT
+    PRINT
+    PRINT "Voltages"
+    PRINT "5V REF     5V PS     5V PC     +12V     +24V     -24V     +28V     28V I"
+    PRINT
+    PRINT
+    PRINT "Pressures"
+    PRINT "Delta P        Ambient P"
+    PRINT
+    PRINT
+    PRINT "Valve position      Expected position      Skips      Stops"
+    PRINT
+    PRINT
+    PRINT "CPU utilization:    %"
+    PRINT "Peak CPU utilization:    %"
+
+END SUB
+
+'******************************************************************
 SUB IOMAP               'SETS I/O BASE PORT ADDRESSES FOR COUNTER BOARD
 DATA1% = CNTRBASEADDR% + 0             'CHIP 1 DATA I/O
 DATA2% = CNTRBASEADDR% + 4             'CHIP 2 DATA I/O
@@ -598,6 +606,38 @@ PRINT #2, USING "####"; VALVEPOS%; ENCODROT%; STEPSTOREF%
 
 END SUB
 
+SUB OPENDATAFILE
+
+TODAY$ = DATE$
+NOW$ = TIME$
+YR$ = MID$(TODAY$, 9, 2)
+MO$ = MID$(TODAY$, 1, 2)
+DA$ = MID$(TODAY$, 4, 2)
+HR$ = MID$(NOW$, 1, 2)
+MN$ = MID$(NOW$, 4, 2)
+SEC$ = MID$(NOW$, 7, 1)
+DATAOUT$ = "C:\DATA\" + YR$ + MO$ + DA$ + HR$ + ".RW" + SEC$
+ENGOUT$ = "C:\DATA\" + YR$ + MO$ + DA$ + HR$ + ".HK" + SEC$
+COMBDATA$ = "C:\DATA\" + YR$ + MO$ + DA$ + HR$ + "." + MN$ + SEC$
+
+'Initialize the data file with column headings.
+OPEN ENGOUT$ FOR APPEND AS #1
+	PRINT #1, "COMP_T       TMPL    TMPD    TMPC    TMPF    TMPPS   TMPB   TMPPC   ";
+	PRINT #1, "V5REF   V5PS    V28M   V24D    V_24D    V15B   V_15B    V12L   V5PC   ";
+	PRINT #1, "I28V     VQ      VEQ     VSQ     VST     PCT"
+CLOSE #1
+
+'Initialize engineering data file with column headings.
+OPEN DATAOUT$ FOR APPEND AS #3
+	PRINT #3, " CYCLE_No      CNT_A   CNT_B   DELP    PABS    PBAR    AIN     BIN     AOUT    BOUT"
+CLOSE #3
+
+'Create an empty file.
+OPEN COMBDATA$ FOR APPEND AS #1
+CLOSE #1
+
+END SUB
+
 '******************************************************************
 SUB PARAMETERS                  'SETS VARIOUS PARAMETERS
 
@@ -619,6 +659,50 @@ SUB PRESSUB (MBARCAL!, ADVOLTS#)
 		    'MBARCAL IS NUMBER OF MILLIBARS/VOLT ON SENSOR
 		    'ADVOLTS IS VOLTAGE MEASURED BY A/D
      PRES# = ADVOLTS# * MBARCAL!
+
+END SUB
+
+'******************************************************************
+'Print a text label on the screen at specified coordinates.
+SUB PrintLabel (s$, row, col, clr)
+
+    IF (col < 1) THEN col = 1
+    IF (row < 1) THEN row = 1
+    LOCATE row, col
+    COLOR clr
+    PRINT s$
+
+END SUB
+
+'******************************************************************
+'Print a numeric value on the screen at specified coordinates.
+SUB PrintNumArr (num#(), fmt$, ind, row, col, clr)
+
+    IF (col < 1) THEN col = 1
+    IF (row < 1) THEN row = 1
+    IF (col > 80) THEN col = 80
+    IF (row >= 59) THEN row = 58
+    IF (fmt$ = "") THEN fmt$ = "####"
+
+    LOCATE row, col
+    COLOR clr
+    PRINT USING fmt$; num#(ind)
+
+END SUB
+
+'******************************************************************
+'Print a numeric value on the screen at specified coordinates.
+SUB PrintNumLabel (num#, fmt$, row, col, clr)
+
+    IF (col < 1) THEN col = 1
+    IF (row < 1) THEN row = 1
+    IF (col > 80) THEN col = 80
+    IF (row >= 59) THEN row = 58
+    IF (fmt$ = "") THEN fmt$ = "####"
+
+    LOCATE row, col
+    COLOR clr
+    PRINT USING fmt$; num#
 
 END SUB
 
@@ -923,40 +1007,6 @@ SUB VOLTSUB (R1!, R2!, ADVOLTS#)    'CONVERTS A/D VOLTS TO ACTUAL VOLTS
 END SUB
 
 '******************************************************************
-
-SUB OPENDATAFILE
-
-TODAY$ = DATE$
-NOW$ = TIME$
-YR$ = MID$(TODAY$, 9, 2)
-MO$ = MID$(TODAY$, 1, 2)
-DA$ = MID$(TODAY$, 4, 2)
-HR$ = MID$(NOW$, 1, 2)
-MN$ = MID$(NOW$, 4, 2)
-SEC$ = MID$(NOW$, 7, 1)
-DATAOUT$ = "C:\DATA\" + YR$ + MO$ + DA$ + HR$ + ".RW" + SEC$
-ENGOUT$ = "C:\DATA\" + YR$ + MO$ + DA$ + HR$ + ".HK" + SEC$
-COMBDATA$ = "C:\DATA\" + YR$ + MO$ + DA$ + HR$ + "." +MN$ + SEC$
-
-'Initialize the data file with column headings.
-OPEN ENGOUT$ FOR APPEND AS #1
-	PRINT #1, "COMP_T       TMPL    TMPD    TMPC    TMPF    TMPPS   TMPB   TMPPC   ";
-	PRINT #1, "V5REF   V5PS    V28M   V24D    V_24D    V15B   V_15B    V12L   V5PC   ";
-	PRINT #1, "I28V     VQ      VEQ     VSQ     VST     PCT"
-CLOSE #1
-
-'Initialize engineering data file with column headings.
-OPEN DATAOUT$ FOR APPEND AS #3
-	PRINT #3, " CYCLE_No      CNT_A   CNT_B   DELP    PABS    PBAR    AIN     BIN     AOUT    BOUT"
-CLOSE #3
-
-'Create an empty file.
-OPEN COMBDATA$ FOR APPEND AS #1
-CLOSE #1
-
-END SUB
-
-'******************************************************************
 SUB WRITETODISK
 	'This is the engineering data for Proffitt format.
 	OPEN ENGOUT$ FOR APPEND AS #1
@@ -972,8 +1022,9 @@ SUB WRITETODISK
 	
 	'This is the data file for Proffitt format.
 	OPEN DATAOUT$ FOR APPEND AS #1
+		PRINT #1, TIMER;
 		PRINT #1, USING "########"; cycleno#; freqa&; freqb&;
-		PRINT #1, USING "#####.##"; PRESSURE#(1); PRESSURE#(2); PRESSURE#(3); TEMPERATURE#(1); TEMPERATURE#(2); TEMPERATURE#(3); TEMPERATURE#(4)
+		PRINT #1, USING "#####.###"; PRESSURE#(1); PRESSURE#(2); PRESSURE#(3); TEMPERATURE#(1); TEMPERATURE#(2); TEMPERATURE#(3); TEMPERATURE#(4)
 	CLOSE #1
 	
 	'This is for PSI format.
@@ -982,7 +1033,7 @@ SUB WRITETODISK
 		PRINT #1, DATE$, TIME$, cycleno#
 		PRINT #1, USING "##:##:##.###"; HH; MM; SS + MS / 1000!
 		'Delta P, Total P (mbar)
-		PRINT #1, USING "#####.##"; PRESSURE#(1); PRESSURE#(2)
+		PRINT #1, USING "#####.###"; PRESSURE#(1); PRESSURE#(2)
 		PRINT #1, USING "########"; freqa&; freqb&
 		'Chamber temps, AInlet, BInlet, Aoutlet, BOutlet
 		PRINT #1, USING "####.##"; TEMPERATURE#(1); TEMPERATURE#(2); TEMPERATURE#(3); TEMPERATURE#(4);
@@ -1012,59 +1063,61 @@ END SUB
 '******************************************************************
 SUB WRITETOSCREEN
 
-	PrintNumLabel cdbl(HH), "##", VertOffset% + 2, HorizOffset% + 12, Yellow'RT stamp
-	PrintNumLabel cdbl(MM), "##", VertOffset% + 2, HorizOffset% + 15, Yellow
-	PrintNumLabel cdbl(SS + MS / 1000!), "##.###", VertOffset% + 2, HorizOffset% + 18, Yellow
+VertOffset% = 0
+HorizOffset% = 0
+
+	PrintNumLabel CDBL(HH), "##", VertOffset% + 2, HorizOffset% + 12, Yellow'RT stamp
+	PrintNumLabel CDBL(MM), "##", VertOffset% + 2, HorizOffset% + 15, Yellow
+	PrintNumLabel CDBL(SS + MS / 1000!), "##.###", VertOffset% + 2, HorizOffset% + 18, Yellow
 	
-	PrintNumLabel cdbl(freqa&), "#######", VertOffset% + 3, HorizOffset% + 12, Green'Freq A
-	PrintNumLabel cdbl(DELTAFREQA&), "####", VertOffset% + 3, HorizOffset% + 34, Green'Delta A
-	PrintNumLabel ENDTIME# - STARTTIME#, "######.#", VertOffset% + 3, HorizOffset% + 53, Green 'Increm time stamp
+	PrintNumLabel CDBL(freqa&), "#######", VertOffset% + 3, HorizOffset% + 12, Green'Freq A
+	PrintNumLabel CDBL(DELTAFREQA&), "#######", VertOffset% + 3, HorizOffset% + 34, Green'Delta A
+	PrintNumLabel (ENDTIME# - STARTTIME#), "######.#", VertOffset% + 3, HorizOffset% + 53, Green 'Increm time stamp
 	
-	PrintNumLabel cdbl(freqB&), "#######", VertOffset% + 4, HorizOffset% + 12, Green 'Freq B
-	PrintNumLabel cdbl(DELTAFREQB&), "####", VertOffset% + 4, HorizOffset% + 34, Green 'Delta B
+	PrintNumLabel CDBL(freqb&), "#######", VertOffset% + 4, HorizOffset% + 12, Green 'Freq B
+	PrintNumLabel CDBL(DELTAFREQB&), "#######", VertOffset% + 4, HorizOffset% + 34, Green 'Delta B
 	PrintNumLabel cycleno#, "########", VertOffset% + 4, HorizOffset% + 53, Green 'Cycle counter
 	
 	PrintNumLabel FREQRATIO#, "###.######", VertOffset% + 5, HorizOffset% + 12, Green' Ratio A/B
-	PrintNumLabel PREVRATIO# - FREQRATIO#, "###.######", VertOffset% + 5, HorizOffset% + 34, Green' Delta ratio
+	PrintNumLabel (PREVRATIO# - FREQRATIO#), "###.######", VertOffset% + 5, HorizOffset% + 34, Green' Delta ratio
 	  
-	PrintNumArr Temperature#(), "##.##", 1, VertOffset% + 9, HorizOffset% + 1, Green
-	PrintNumArr Temperature#(), "##.##", 2, VertOffset% + 9, HorizOffset% + 16, Green
-	PrintNumArr Temperature#(), "##.##", 3, VertOffset% + 9, HorizOffset% + 32, Green
-	PrintNumArr Temperature#(), "##.##", 4, VertOffset% + 9, HorizOffset% + 47, Green
+	PrintNumArr TEMPERATURE#(), "##.##", 1, VertOffset% + 9, HorizOffset% + 1, Green
+	PrintNumArr TEMPERATURE#(), "##.##", 2, VertOffset% + 9, HorizOffset% + 16, Green
+	PrintNumArr TEMPERATURE#(), "##.##", 3, VertOffset% + 9, HorizOffset% + 32, Green
+	PrintNumArr TEMPERATURE#(), "##.##", 4, VertOffset% + 9, HorizOffset% + 47, Green
 
-	PrintNumArr Temperature#(), "##.##", 5, VertOffset% + 11, HorizOffset% + 1, Green
-	PrintNumArr Temperature#(), "##.##", 6, VertOffset% + 11, HorizOffset% + 16, Green
-	PrintNumArr Temperature#(), "##.##", 7, VertOffset% + 11, HorizOffset% + 32, Green
+	PrintNumArr TEMPERATURE#(), "##.##", 5, VertOffset% + 11, HorizOffset% + 1, Green
+	PrintNumArr TEMPERATURE#(), "##.##", 6, VertOffset% + 11, HorizOffset% + 16, Green
+	PrintNumArr TEMPERATURE#(), "##.##", 7, VertOffset% + 11, HorizOffset% + 32, Green
 	  
-	PrintNumArr Temperature#(), "##.##", 8, VertOffset% + 13, HorizOffset% + 1, Green
-	PrintNumArr Temperature#(), "##.##", 9, VertOffset% + 13, HorizOffset% + 16, Green
-	PrintNumArr Temperature#(), "##.##", 10, VertOffset% + 13, HorizOffset% + 32, Green
-	PrintNumArr Temperature#(), "##.##", 11, VertOffset% + 13, HorizOffset% + 47, Green
+	PrintNumArr TEMPERATURE#(), "##.##", 8, VertOffset% + 13, HorizOffset% + 1, Green
+	PrintNumArr TEMPERATURE#(), "##.##", 9, VertOffset% + 13, HorizOffset% + 16, Green
+	PrintNumArr TEMPERATURE#(), "##.##", 10, VertOffset% + 13, HorizOffset% + 32, Green
+	PrintNumArr TEMPERATURE#(), "##.##", 11, VertOffset% + 13, HorizOffset% + 47, Green
 	
 	PrintNumArr VOLTAGE#(), "##.##", 1, VertOffset% + 17, HorizOffset% + 1, Green
-	PrintNumArr VOLTAGE#(), "##.##", 2, VertOffset% + 17, HorizOffset% + 10, Green
-	PrintNumArr VOLTAGE#(), "##.##", 9, VertOffset% + 17, HorizOffset% + 20, Green
+	PrintNumArr VOLTAGE#(), "##.##", 2, VertOffset% + 17, HorizOffset% + 11, Green
+	PrintNumArr VOLTAGE#(), "##.##", 9, VertOffset% + 17, HorizOffset% + 21, Green
 	PrintNumArr VOLTAGE#(), "###.##", 8, VertOffset% + 17, HorizOffset% + 30, Green
-	PrintNumArr VOLTAGE#(), "###.##", 4, VertOffset% + 17, HorizOffset% + 39, Green
-	PrintNumArr VOLTAGE#(), "###.##", 5, VertOffset% + 17, HorizOffset% + 48, Green
-	PrintNumArr VOLTAGE#(), "###.##", 3, VertOffset% + 17, HorizOffset% + 57, Green
-	PrintNumArr Current#(), "####", 1, VertOffset% + 17, HorizOffset% + 66, Green
+	PrintNumArr VOLTAGE#(), "###.##", 4, VertOffset% + 17, HorizOffset% + 40, Green
+	PrintNumArr VOLTAGE#(), "###.##", 5, VertOffset% + 17, HorizOffset% + 49, Green
+	PrintNumArr VOLTAGE#(), "###.##", 3, VertOffset% + 17, HorizOffset% + 58, Green
+	PrintNumArr CURRENT#(), "######", 1, VertOffset% + 17, HorizOffset% + 67, Green
 	
-	PrintNumArr Pressure#(), "####", 1, VertOffset% + 21, HorizOffset% + 1, Green
-	PrintNumArr Pressure#(), "####", 2, VertOffset% + 21, HorizOffset% + 19, Green
+	PrintNumArr PRESSURE#(), "###.###", 1, VertOffset% + 21, HorizOffset% + 1, Green
+	PrintNumArr PRESSURE#(), "####.##", 2, VertOffset% + 21, HorizOffset% + 18, Green
 	
-	PrintNumLabel cdbl(VALVEQUADRANT%), "###", VertOffset% + 24, HorizOffset% + 0, Green
-	PrintNumLabel cdbl(EXPECTQUADRANT%), "###", VertOffset% + 24, HorizOffset% + 20, Green
-	PrintNumLabel cdbl(VALVESKIPPED%), "####", VertOffset% + 24, HorizOffset% + 43, Green
-	PrintNumLabel cdbl(VALVESTOPPED%), "####", VertOffset% + 24, HorizOffset% + 54, Green
+	PrintNumLabel CDBL(VALVEQUADRANT%), "###", VertOffset% + 24, HorizOffset% + 0, Green
+	PrintNumLabel CDBL(EXPECTQUADRANT%), "###", VertOffset% + 24, HorizOffset% + 20, Green
+	PrintNumLabel CDBL(VALVESKIPPED%), "####", VertOffset% + 24, HorizOffset% + 43, Green
+	PrintNumLabel CDBL(VALVESTOPPED%), "####", VertOffset% + 24, HorizOffset% + 54, Green
 	
 	CALL FINETIMER
 	PCTTIME% = 100 * MICSECS# / 1000000
 	IF PCTEXPIRED% > MAXPCT% THEN MAXPCT% = PCTEXPIRED%
-	PrintNumLabel cdbl(PCTTIME%), "###.#", VertOffset% + 26, HorizOffset% + 17, Green
-	PrintNumLabel cdbl(MAXPCT%), "###.#", VertOffset% + 27, HorizOffset% + 22, Green
-	  
-	  
+	PrintNumLabel CDBL(PCTTIME%), "###", VertOffset% + 26, HorizOffset% + 17, Green
+	PrintNumLabel CDBL(MAXPCT%), "###", VertOffset% + 27, HorizOffset% + 22, Green
+     
 END SUB
 
 '******************************************************************
@@ -1098,46 +1151,4 @@ SUB WRITETOSERIAL
        PRINT #2, USING "#######"; VALVEPOS%; VALVEQUADRANT%; EXPECTQUADRANT%; VALVESKIPPED%; VALVESTOPPED%
 
 END SUB
-'******************************************************************
-'Print a text label on the screen at specified coordinates.
-SUB PrintLabel (s$, row, col, clr)
-
-    IF (col < 1) THEN col = 1
-    IF (row < 1) THEN row = 1
-    LOCATE row, col
-    COLOR clr
-    PRINT s$
-
-END SUB
-'******************************************************************
-'Print a numeric value on the screen at specified coordinates.
-SUB PrintNumArr (num#(), fmt$, ind, row, col, clr)
-
-    IF (col < 1) THEN col = 1
-    IF (row < 1) THEN row = 1
-    IF (col > 80) THEN col = 80
-    IF (row >= 59) THEN row = 58
-    IF (fmt$ = "") THEN fmt$ = "####"
-
-    LOCATE row, col
-    COLOR clr
-    PRINT USING fmt$; num#(ind)
-
-END SUB
-'******************************************************************
-'Print a numeric value on the screen at specified coordinates.
-SUB PrintNumLabel (num#, fmt$, row, col, clr)
-
-    IF (col < 1) THEN col = 1
-    IF (row < 1) THEN row = 1
-    IF (col > 80) THEN col = 80
-    IF (row >= 59) THEN row = 58
-    IF (fmt$ = "") THEN fmt$ = "####"
-
-    LOCATE row, col
-    COLOR clr
-    PRINT USING fmt$; num#
-
-END SUB
-'******************************************************************
 
