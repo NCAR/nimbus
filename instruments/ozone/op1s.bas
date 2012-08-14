@@ -1,5 +1,3 @@
-' Code as delivered by PSI.
-'
 DECLARE SUB VALVESLIP ()
 DECLARE SUB VALVEPOSITION ()
 DECLARE SUB VALVECHG ()
@@ -53,6 +51,8 @@ COMMON SHARED MICSECS#, STARTTIME#, ENDTIME#, FIRSTIME#, MILSEC#, cycleno#, NOW#
 COMMON SHARED HH, MM, SS, MS
 
 COMMON SHARED DATAOUT$
+COMMON SHARED ENGOUT$
+COMMON SHARED COMBDATA$
 
 DIM SHARED TEMPERATURE#(1 TO 16)   'EXTRAS INCLUDED
 DIM SHARED PRESSURE#(1 TO 6)       'EXTRAS INCLUDED
@@ -70,7 +70,7 @@ CALL DATAPOINTERS   'DEFINE DATA POINTERS FOR COUNTER BOARD
 CALL CNTRESET       'RESET COUNTER BOARD
 CALL SETMASTER      'SET MASTER MODE FOR BOTH COUNTER CHIPS
 CALL INITCOUNTERS   'INITIALIZE COUNTER MODE REGISTERS
-CALL OPENDATAFILE   'OPEN UNIQUE DATA FILE FOR WRITING
+CALL OPENDATAFILE   'OPEN DATA AND ENGDATA FILES FOR WRITING
 CALL IRIGTIME
 
 'CALL SETSYSTEMDATE  'SET THE PC DATE AND TIME.  EVENTUALLY USE IRIG TIME
@@ -101,12 +101,11 @@ OUT CONT2%, B2I&(LA$)                 'ARM COUNTERS 1,2,3,4,5 CHIP 2
      cycleno# = -1
      MAXPCT% = 0
      PCTEXPIRED% = 0
-  
-'........................TIME LOOP STARTS HERE!
 
 OPEN "COM1:9600,N,8,1,BIN,CS0,DS0" FOR RANDOM AS #2
-
 VALVEPOS% = 1    'start valve flag in B position because it gets set to A on first cycle
+
+'........................TIME LOOP STARTS HERE!
 
 DO
      cycleno# = cycleno# + 1
@@ -176,18 +175,20 @@ END IF
    CALL IRIGTIME
 
    CALL WRITETOSCREEN
-   
+
    'added 1/25/07
    CALL WRITETOSERIAL
-  
-   OPEN DATAOUT$ FOR APPEND AS #1        'OPEN DATA FILE
-   
-   CALL WRITETODISK                      'WRITE TO DISK EVERY SECOND
-		 
-   CLOSE #1                              'CLOSE FILE EVERY SECOND
-       
+
+   CALL WRITETODISK
+
 LOOP UNTIL INKEY$ = CHR$(27)       'ESCAPE KEY
 END
+
+'******************************************************************
+
+'******************************************************************
+
+'******************************************************************
 
 '******************************************************************
 
@@ -506,8 +507,6 @@ END SUB
 
 SUB IRIGTIME
 
-'******************************************************************
-
 DIM timebyte(1 TO 16)
 
 XBASE% = 768            '0x300
@@ -545,14 +544,11 @@ UN100PORT% = 15         '0x0f
 	'ms
 	left1 = (INT(timebyte(3) * (2 ^ 4)) AND 255) / 16
 	MS = left + right + left1
-      
-'*********************************************************************
 
 END SUB
 
+'*********************************************************************
 SUB oldWRITETOSERIAL
-'******************************************************************
-
 
 '''''' opened COM1 as unit 2
 
@@ -572,30 +568,6 @@ PRINT #2, USING "####"; VALVEPOS%; ENCODROT%; STEPSTOREF%
 '      PRINT "DELTA PRES, ATMOS PRES",
 			
 '      PRINT USING "####"; STEPSDONE%; ENCODCNTS%; ENCODROT%; STEPSTOREF%; STEPSLIP%
-
-END SUB
-
-'******************************************************************
-SUB OPENDATAFILE
-
-TODAY$ = DATE$
-NOW$ = TIME$
-YR$ = MID$(DATE$, 9, 2)
-MO$ = MID$(DATE$, 1, 2)
-DA$ = MID$(DATE$, 4, 2)
-HR$ = MID$(NOW$, 1, 2)
-MN$ = MID$(NOW$, 4, 2)
-s$ = MID$(NOW$, 7, 1)
-DATAOUT$ = "C:\DATA\YRMODAHR.MNS"
-MID$(DATAOUT$, 9, 2) = YR$
-MID$(DATAOUT$, 11, 2) = MO$
-MID$(DATAOUT$, 13, 2) = DA$
-MID$(DATAOUT$, 15, 2) = HR$
-MID$(DATAOUT$, 18, 2) = MN$
-MID$(DATAOUT$, 20, 1) = s$
-PRINT DATAOUT$
-OPEN DATAOUT$ FOR OUTPUT AS #1
-CLOSE #1
 
 END SUB
 
@@ -924,39 +896,90 @@ SUB VOLTSUB (R1!, R2!, ADVOLTS#)    'CONVERTS A/D VOLTS TO ACTUAL VOLTS
 END SUB
 
 '******************************************************************
+
+SUB OPENDATAFILE
+
+TODAY$ = DATE$
+NOW$ = TIME$
+YR$ = MID$(TODAY$, 9, 2)
+MO$ = MID$(TODAY$, 1, 2)
+DA$ = MID$(TODAY$, 4, 2)
+HR$ = MID$(NOW$, 1, 2)
+MN$ = MID$(NOW$, 4, 2)
+SEC$ = MID$(NOW$, 7, 1)
+DATAOUT$ = "C:\DATA\" + YR$ + MO$ + DA$ + HR$ + ".RW" + SEC$
+ENGOUT$ = "C:\DATA\" + YR$ + MO$ + DA$ + HR$ + ".HK" + SEC$
+COMBDATA$ = "C:\DATA\" + YR$ + MO$ + DA$ + HR$ + "." +MN$ + SEC$
+
+'Initialize the data file with column headings.
+OPEN ENGOUT$ FOR APPEND AS #1
+	PRINT #1, "COMP_T       TMPL    TMPD    TMPC    TMPF    TMPPS   TMPB   TMPPC   ";
+	PRINT #1, "V5REF   V5PS    V28M   V24D    V_24D    V15B   V_15B    V12L   V5PC   ";
+	PRINT #1, "I28V     VQ      VEQ     VSQ     VST     PCT"
+CLOSE #1
+
+'Initialize engineering data file with column headings.
+OPEN DATAOUT$ FOR APPEND AS #3
+	PRINT #3, " CYCLE_No      CNT_A   CNT_B   DELP    PABS    PBAR    AIN     BIN     AOUT    BOUT"
+CLOSE #3
+
+'Create an empty file.
+OPEN COMBDATA$ FOR APPEND AS #1
+CLOSE #1
+
+END SUB
+
+'******************************************************************
 SUB WRITETODISK
- 
-	PRINT #1, ""
-	PRINT #1, DATE$, TIME$, cycleno#
-       
-	PRINT #1, USING "##:##:##.###"; HH; MM; SS + MS / 1000!
-       
-	'Delta P, Total P (mbar)
-	PRINT #1, USING "#####.##"; PRESSURE#(1); PRESSURE#(2)
+	'This is the engineering data for Proffitt format.
+	OPEN ENGOUT$ FOR APPEND AS #1
+      PRINT #1, TIMER;
+      PRINT #1, USING "####.##"; TEMPERATURE#(5); TEMPERATURE#(6); TEMPERATURE#(7); TEMPERATURE#(8); TEMPERATURE#(9); TEMPERATURE#(10); TEMPERATURE#(11);
+      PRINT #1, USING "####.##"; VOLTAGE#(1); VOLTAGE#(2); VOLTAGE#(3); VOLTAGE#(4); VOLTAGE#(5); VOLTAGE#(6); VOLTAGE#(7); VOLTAGE#(8); VOLTAGE#(9);
+      PRINT #1, USING "#####"; CURRENT#(1);
+      PRINT #1, USING "#######"; VALVEQUADRANT%; EXPECTQUADRANT%; VALVESKIPPED%; VALVESTOPPED%;
+      CALL FINETIMER
+      PCTEXPIRED% = 100 * MICSECS# / 1000000
+      PRINT #1, USING "###.#"; PCTEXPIRED%
+	CLOSE #1
 	
-	PRINT #1, USING "########"; freqa&; freqb&
-	'Chamber temps, AInlet, BInlet, Aoutlet, BOutlet
-	PRINT #1, USING "####.##"; TEMPERATURE#(1); TEMPERATURE#(2); TEMPERATURE#(3); TEMPERATURE#(4);
+	'This is the data file for Proffitt format.
+	OPEN DATAOUT$ FOR APPEND AS #1
+		PRINT #1, USING "########"; cycleno#; freqa&; freqb&;
+		PRINT #1, USING "#####.##"; PRESSURE#(1); PRESSURE#(2); PRESSURE#(3); TEMPERATURE#(1); TEMPERATURE#(2); TEMPERATURE#(3); TEMPERATURE#(4)
+	CLOSE #1
 	
-IF cycleno# MOD 10 = 0 OR cycleno# MOD 10 = 5 THEN
-       'lamp, det, body Temp (C)
-       PRINT #1, USING "####.##"; TEMPERATURE#(5); TEMPERATURE#(6); TEMPERATURE#(7);
-       
-       'fan, ps panel, box, proc
-       PRINT #1, USING "####.##"; TEMPERATURE#(8); TEMPERATURE#(9); TEMPERATURE#(10); TEMPERATURE#(11)
-       
-       '(V)
-       '5V REF, 5V PS, +28V, +24V, -24V, spare1, spare2, +12V", 5V PC104
-       PRINT #1, USING "####.##"; VOLTAGE#(1); VOLTAGE#(2); VOLTAGE#(3); VOLTAGE#(4); VOLTAGE#(5); VOLTAGE#(6); VOLTAGE#(7); VOLTAGE#(8); VOLTAGE#(9)
-       
-       '(mA)
-       PRINT #1, USING "#####"; CURRENT#(1);
-       
-       PRINT #1, USING "#######"; VALVEQUADRANT%; EXPECTQUADRANT%; VALVESKIPPED%; VALVESTOPPED%
-       CALL FINETIMER
-       PCTEXPIRED% = 100 * MICSECS# / 1000000
-       PRINT #1, USING "###.#"; PCTEXPIRED%
-END IF
+	'This is for PSI format.
+	OPEN COMBDATA$ FOR APPEND AS #1
+		PRINT #1, ""
+		PRINT #1, DATE$, TIME$, cycleno#
+		PRINT #1, USING "##:##:##.###"; HH; MM; SS + MS / 1000!
+		'Delta P, Total P (mbar)
+		PRINT #1, USING "#####.##"; PRESSURE#(1); PRESSURE#(2)
+		PRINT #1, USING "########"; freqa&; freqb&
+		'Chamber temps, AInlet, BInlet, Aoutlet, BOutlet
+		PRINT #1, USING "####.##"; TEMPERATURE#(1); TEMPERATURE#(2); TEMPERATURE#(3); TEMPERATURE#(4);
+		IF cycleno# MOD 10 = 0 OR cycleno# MOD 10 = 5 THEN
+			   'lamp, det, body Temp (C)
+			   PRINT #1, USING "####.##"; TEMPERATURE#(5); TEMPERATURE#(6); TEMPERATURE#(7);
+			   
+			   'fan, ps panel, box, proc
+			   PRINT #1, USING "####.##"; TEMPERATURE#(8); TEMPERATURE#(9); TEMPERATURE#(10); TEMPERATURE#(11)
+			   
+			   '(V)
+			   '5V REF, 5V PS, +28V, +24V, -24V, spare1, spare2, +12V", 5V PC104
+			   PRINT #1, USING "####.##"; VOLTAGE#(1); VOLTAGE#(2); VOLTAGE#(3); VOLTAGE#(4); VOLTAGE#(5); VOLTAGE#(6); VOLTAGE#(7); VOLTAGE#(8); VOLTAGE#(9)
+			   
+			   '(mA)
+			   PRINT #1, USING "#####"; CURRENT#(1);
+			   
+			   PRINT #1, USING "#######"; VALVEQUADRANT%; EXPECTQUADRANT%; VALVESKIPPED%; VALVESTOPPED%
+			   CALL FINETIMER
+			   PCTEXPIRED% = 100 * MICSECS# / 1000000
+			   PRINT #1, USING "###.#"; PCTEXPIRED%
+		END IF
+	CLOSE #1
+
 END SUB
 
 '******************************************************************
@@ -1029,3 +1052,4 @@ SUB WRITETOSERIAL
        PRINT #2, USING "#######"; VALVEPOS%; VALVEQUADRANT%; EXPECTQUADRANT%; VALVESKIPPED%; VALVESTOPPED%
 
 END SUB
+
