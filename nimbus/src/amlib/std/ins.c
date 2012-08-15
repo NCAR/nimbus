@@ -91,7 +91,7 @@ void swp3L51(DERTBL *varp)
 		(1.0 + 0.0052885 * (NR_TYPE)pow(sin((double)lat), 2.0));
 
 	acins	= (vzi - vzi0[FeedBack]) / DELT[FeedBack];
-	acz	= acins + (WH_GRAVITY - gfact) + vcorac;
+	acz	= acins + (GRAVITY - gfact) + vcorac;
 	vzi0[FeedBack]	= vzi;
 
 
