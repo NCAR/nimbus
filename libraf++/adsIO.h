@@ -28,14 +28,21 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1998
 #define MCR_WORD	0x4d43
 #define MASP_WORD	0x4450
 
+// PMS2D C (Cloud) Probe
 #define PMS2DC1		0x4331
 #define PMS2DC2		0x4332
+// Greyscale Probe
 #define PMS2DG1		0x4731
 #define PMS2DG2		0x4732
-#define PMS2DH1		0x4831
-#define PMS2DH2		0x4832
+// PMS2D P (Precip) Probe
 #define PMS2DP1		0x5031
 #define PMS2DP2		0x5032
+// SPEC HVPS
+#define PMS2DH1		0x4831
+#define PMS2DH2		0x4832
+// SPEC 3V-CPI (2DS data)
+#define TWODS_H		0x3348
+#define TWODS_V		0x3356
  
 #define PMS2_SIZE	sizeof(P2d_rec)
 #define PMS2_LRPPR	(0x8000 / PMS2_SIZE)
