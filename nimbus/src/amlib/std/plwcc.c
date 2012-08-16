@@ -112,7 +112,7 @@ void plwccInit(var_base *varp)
     AddToDefaults(varp->name, defaultName, values);
   }
   else
-    tau_Nu[probe_index] = tmp[0];
+    tau_Nu[probe_index] = (int)tmp[0];
 
   if ((tmp = GetDefaultsValue("KING_CLOUD_CONC_THRESHOLD", varp->name)) == NULL)
   {
