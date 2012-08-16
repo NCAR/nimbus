@@ -15,8 +15,8 @@ int main(int argc, char** argv)
 
 	QApplication app(argc, argv);
 
-	QString serverLog("Datagram Log");
-	logx::LogToFile(serverLog.toStdString());
+	//QString serverLog("Datagram Log");
+	//logx::LogToFile(serverLog.toStdString());
 
 /*	SenderReceiver user;
 	user.show();
@@ -26,6 +26,7 @@ int main(int argc, char** argv)
 
 	SslClient client;
 	client.show();
+
 */
 	Proxy client;
 	client.show();

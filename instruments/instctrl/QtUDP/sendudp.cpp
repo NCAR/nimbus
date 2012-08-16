@@ -6,7 +6,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
-static const int port = 54545;	// Port we have chosen to use.
+static const int port = 54543;	// Port we have chosen to use.
 
 /* -------------------------------------------------------------------- */
 SendUDP::SendUDP()
@@ -20,7 +20,7 @@ SendUDP::SendUDP()
 	while (1) {
 	QDateTime t = QDateTime::currentDateTime();
 
-	sprintf(writeBuffer, "HARP,%s,command", t.toString(QString("yyyyMMddThhmmss")).toStdString().c_str());
+	sprintf(writeBuffer, "PCIMS,%s,command", t.toString(QString("yyyyMMddThhmmss")).toStdString().c_str());
 	printf("%s\n", writeBuffer);
 	if ((rc = udp->writeDatagram(writeBuffer, strlen(writeBuffer), addr, port)) <= 0)
 		printf("  return= %d\n", rc);

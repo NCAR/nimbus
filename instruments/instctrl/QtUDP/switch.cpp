@@ -3,7 +3,7 @@
 
 LOGGING("switch");
 
-static const int udpPort = 33400;
+static const int udpPort = 54544;
 
 Switch::Switch(QWidget *parent)
 	: QDialog(parent), sslServer_(0)
@@ -169,6 +169,7 @@ void Switch::clientConnected()
 
 void Switch::clientEncrypted()
 {
+	status_->hide();
 	QSslSocket *currentSocket = qobject_cast<QSslSocket *>(sender());
 	if (!currentSocket)
 		return;

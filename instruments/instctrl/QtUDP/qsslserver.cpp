@@ -7,43 +7,42 @@ QSslServer::QSslServer(QObject * parent)
 
 void QSslServer::incomingConnection(int socketDescriptor)
 {
+qDebug("QMyServer::incomingConnection");
 	QSslSocket *socket = new QSslSocket;
 	if (socket->setSocketDescriptor(socketDescriptor)) {
 		pendingConnections_.append(socket);
 
 		QFile keyFile("certs/server.key");
 		QFile clientFile("certs/client.crt");
-		QFile serverFile("certs/server.crt");
-		QFile newClientFile("certs/newclient.crt");
-		QFile newServerFile("certs/newserver.crt");
-		QFile tikalClientFile("certs/tikal_client.crt");
-		QFile tikalServerFile("certs/tikal_server.crt");
+		//QFile serverFile("certs/server.crt");
+		//QFile tikalClientFile("certs/tikal_client.crt");
+		//QFile tikalServerFile("certs/tikal_server.crt");
 		QFile shirazClientFile("certs/shiraz_client.crt");
-		QFile shirazServerFile("certs/shiraz_server.crt");
-		QFile dropletClientFile("certs/droplet_client.crt");
-		QFile dropletServerFile("certs/droplet_server.crt");
-		QFile sloopClientFile("certs/sloop_client.crt");
-		QFile sloopServerFile("certs/sloop_server.crt");
-		QFile multiHostClientFile("certs/san_client.crt");
-		QFile multiHostServerFile("certs/san_server.crt");
+		QFile newshirazClientFile("certs/newshiraz.crt");
+		//QFile shirazServerFile("certs/shiraz_server.crt");
+		//QFile dropletClientFile("certs/droplet_client.crt");
+		//QFile dropletServerFile("certs/droplet_server.crt");
+		//QFile sloopClientFile("certs/sloop_client.crt");
+		//QFile sloopServerFile("certs/sloop_server.crt");
+		//QFile multiHostClientFile("certs/san_client.crt");
+		//QFile multiHostServerFile("certs/san_server.crt");
 
 		QFile eolServerFile("certs/eol-rt-data_server.crt");
 
 		keyFile.open(QIODevice::ReadOnly);
 		clientFile.open(QIODevice::ReadOnly);
-		serverFile.open(QIODevice::ReadOnly);
-		newClientFile.open(QIODevice::ReadOnly);
-		newServerFile.open(QIODevice::ReadOnly);
-		tikalClientFile.open(QIODevice::ReadOnly);
-		tikalServerFile.open(QIODevice::ReadOnly);
+		//serverFile.open(QIODevice::ReadOnly);
+		//tikalClientFile.open(QIODevice::ReadOnly);
+		//tikalServerFile.open(QIODevice::ReadOnly);
 		shirazClientFile.open(QIODevice::ReadOnly);
-		shirazServerFile.open(QIODevice::ReadOnly);
-		dropletClientFile.open(QIODevice::ReadOnly);
-		dropletServerFile.open(QIODevice::ReadOnly);
-		sloopClientFile.open(QIODevice::ReadOnly);
-		sloopServerFile.open(QIODevice::ReadOnly);
-		multiHostClientFile.open(QIODevice::ReadOnly);
-		multiHostServerFile.open(QIODevice::ReadOnly);
+		newshirazClientFile.open(QIODevice::ReadOnly);
+		//shirazServerFile.open(QIODevice::ReadOnly);
+		//dropletClientFile.open(QIODevice::ReadOnly);
+		//dropletServerFile.open(QIODevice::ReadOnly);
+		//sloopClientFile.open(QIODevice::ReadOnly);
+		//sloopServerFile.open(QIODevice::ReadOnly);
+		//multiHostClientFile.open(QIODevice::ReadOnly);
+		//multiHostServerFile.open(QIODevice::ReadOnly);
 
 		eolServerFile.open(QIODevice::ReadOnly);
 
@@ -56,28 +55,50 @@ void QSslServer::incomingConnection(int socketDescriptor)
 		}
 
 		QSslCertificate clientCert(&clientFile);
-		QSslCertificate serverCert(&serverFile);
-		QSslCertificate newClientCert(&newClientFile);
-		QSslCertificate newServerCert(&newServerFile);
-		QSslCertificate tikalClientCert(&tikalClientFile);
-		QSslCertificate tikalServerCert(&tikalServerFile);
+		//QSslCertificate serverCert(&serverFile);
+		//QSslCertificate tikalClientCert(&tikalClientFile);
+		//QSslCertificate tikalServerCert(&tikalServerFile);
 		QSslCertificate shirazClientCert(&shirazClientFile);
-		QSslCertificate shirazServerCert(&shirazServerFile);
-		QSslCertificate dropletClientCert(&dropletClientFile);
-		QSslCertificate dropletServerCert(&dropletServerFile);
-		QSslCertificate sloopClientCert(&sloopClientFile);
-		QSslCertificate sloopServerCert(&sloopServerFile);
-		QSslCertificate multiHostClientCert(&multiHostClientFile);
-		QSslCertificate multiHostServerCert(&multiHostServerFile);
+		QSslCertificate newshirazClientCert(&newshirazClientFile);
+		//QSslCertificate shirazServerCert(&shirazServerFile);
+		//QSslCertificate dropletClientCert(&dropletClientFile);
+		//QSslCertificate dropletServerCert(&dropletServerFile);
+		//QSslCertificate sloopClientCert(&sloopClientFile);
+		//QSslCertificate sloopServerCert(&sloopServerFile);
+		//QSslCertificate multiHostClientCert(&multiHostClientFile);
+		//QSslCertificate multiHostServerCert(&multiHostServerFile);
 
 		QSslCertificate eolServerCert(&eolServerFile);
+
+		QList<QSslCertificate> clientCertificates;
+		clientCertificates.append(clientCert);
+		//clientCertificates.append(tikalClientCert);
+		clientCertificates.append(shirazClientCert);
+		clientCertificates.append(newshirazClientCert);
+		//clientCertificates.append(dropletClientCert);
+		//clientCertificates.append(sloopClientCert);
+		//clientCertificates.append(multiHostClientCert);
+
+		QList<QSslCertificate> serverCertificates;
+		//serverCertificates.append(serverCert);
+		//serverCertificates.append(tikalServerCert);
+		//serverCertificates.append(shirazServerCert);
+		//serverCertificates.append(dropletServerCert);
+		//serverCertificates.append(sloopServerCert);
+		//serverCertificates.append(multiHostServerCert);
+		serverCertificates.append(eolServerCert);
 
 		// Can uncomment this line to see debugging messages during
 		// certificate verification process
 		connectDebuggingMessages(socket);
 
 		socket->setPrivateKey(key);
-		socket->setLocalCertificate(newServerCert);
+		socket->setCaCertificates(clientCertificates);
+		//socket->addCaCertificates(clientCertificates);
+		socket->addCaCertificates(serverCertificates);
+		socket->setPeerVerifyMode(QSslSocket::VerifyPeer);
+
+		socket->setLocalCertificate(eolServerCert);
 
 		QMultiMap<QSsl::AlternateNameEntryType, QString> alternates = socket->localCertificate().alternateSubjectNames();
 		if (alternates.isEmpty()) {
@@ -86,8 +107,24 @@ void QSslServer::incomingConnection(int socketDescriptor)
 			qDebug() << "Subject Alternate Names for server:\n" << alternates;
 		}
 
+		QSslError error(QSslError::SelfSignedCertificate, clientCert);
+		QSslError newshirazerror(QSslError::SelfSignedCertificate, newshirazClientCert);
+		QSslError shirazError(QSslError::SelfSignedCertificate, shirazClientCert);
+		//QSslError multiHostError(QSslError::SelfSignedCertificate, multiHostClientCert);
+		//QSslError tikalError(QSslError::SelfSignedCertificate, tikalClientCert);
+		//QSslError dropletError(QSslError::SelfSignedCertificate, dropletClientCert);
+		//QSslError sloopError(QSslError::SelfSignedCertificate, sloopClientCert);
+
+		QList<QSslError> expectedSslErrors;
+		expectedSslErrors.append(error);
+		//expectedSslErrors.append(multiHostError);
+		//expectedSslErrors.append(tikalError);
+		expectedSslErrors.append(shirazError);
+		expectedSslErrors.append(newshirazerror);
+		//expectedSslErrors.append(dropletError);
+		//expectedSslErrors.append(sloopError);
 		socket->startServerEncryption();
-//		socket->ignoreSslErrors(expectedSslErrors);
+		//socket->ignoreSslErrors(expectedSslErrors);
 	} else {
 		delete socket;
 	}
@@ -95,6 +132,7 @@ void QSslServer::incomingConnection(int socketDescriptor)
 
 QSslSocket *QSslServer::nextPendingConnection()
 {
+qDebug("QMyServer::nextPendingConnection");
 	if (pendingConnections_.isEmpty()) {
 		return 0;
 	}
@@ -103,6 +141,7 @@ QSslSocket *QSslServer::nextPendingConnection()
 
 void QSslServer::connectDebuggingMessages(QSslSocket * serverSocket)
 {
+qDebug("QMyServer::connectDebuggingMessages");
 	connect(serverSocket, SIGNAL(encrypted()), this, SLOT(slot_encrypted()));
 	connect(serverSocket, SIGNAL(encryptedBytesWritten(qint64)), this, SLOT(slot_encryptedBytesWritten(qint64)));
 	connect(serverSocket, SIGNAL(modeChanged(QSslSocket::SslMode)), this, SLOT(slot_modeChanged(QSslSocket::SslMode)));
@@ -141,68 +180,7 @@ void QSslServer::slot_peerVerifyError (const QSslError & err)
 
 void QSslServer::slot_sslErrors (const QList<QSslError> & errs)
 {
-	QSslSocket *currentSocket = qobject_cast<QSslSocket *>(sender());
-
-	qDebug() << "QMyServer::slot_sslErrors:" << errs;
-
-/*	QFile clientFile("certs/client.crt");
-	QFile serverFile("certs/server.crt");
-	QFile tikalClientFile("certs/tikal_client.crt");
-	QFile shirazClientFile("certs/shiraz_client.crt");
-	QFile dropletClientFile("certs/droplet_client.crt");
-	QFile sloopClientFile("certs/sloop_client.crt");
-	QFile multiHostClientFile("certs/san_client.crt");
-
-	clientFile.open(QIODevice::ReadOnly);
-	serverFile.open(QIODevice::ReadOnly);
-	tikalClientFile.open(QIODevice::ReadOnly);
-	shirazClientFile.open(QIODevice::ReadOnly);
-	dropletClientFile.open(QIODevice::ReadOnly);
-	sloopClientFile.open(QIODevice::ReadOnly);
-	multiHostClientFile.open(QIODevice::ReadOnly);
-
-	QSslCertificate clientCert(&clientFile);
-	QSslCertificate serverCert(&serverFile);
-	QSslCertificate tikalClientCert(&tikalClientFile);
-	QSslCertificate shirazClientCert(&shirazClientFile);
-	QSslCertificate dropletClientCert(&dropletClientFile);
-	QSslCertificate sloopClientCert(&sloopClientFile);
-	QSslCertificate multiHostClientCert(&multiHostClientFile);
-
-	QSslError error(QSslError::SelfSignedCertificate, clientCert);
-	QSslError serverError(QSslError::SelfSignedCertificate, serverCert);
-	QSslError multiHostError(QSslError::SelfSignedCertificate, multiHostClientCert);
-	QSslError tikalError(QSslError::SelfSignedCertificate, tikalClientCert);
-	QSslError shirazError(QSslError::SelfSignedCertificate, shirazClientCert);
-	QSslError dropletError(QSslError::SelfSignedCertificate, dropletClientCert);
-	QSslError sloopError(QSslError::SelfSignedCertificate, sloopClientCert);
-
-	QList<QSslError> expectedSslErrors;
-	expectedSslErrors.append(error);
-	expectedSslErrors.append(serverError);
-	expectedSslErrors.append(multiHostError);
-	expectedSslErrors.append(tikalError);
-	expectedSslErrors.append(shirazError);
-	expectedSslErrors.append(dropletError);
-	expectedSslErrors.append(sloopError);
-*/
-	QFile newClientFile("certs/newserver.crt");
-	newClientFile.open(QIODevice::ReadOnly);
-	QSslCertificate newClientCert(&newClientFile);
-
-	QSslError error(QSslError::SelfSignedCertificate, newClientCert);
-	QList<QSslError> expectedSslErrors;
-	expectedSslErrors.append(error);
-
-	for (QList<QSslError>::const_iterator i = errs.begin(); i != errs.end(); ++i) {
-		if (expectedSslErrors.contains(*i)) {
-			qDebug("We found it!"); // <-- Why isn't this happening?
-			//qDebug("This is a non-approved certificate. Disconnecting.");
-			//currentSocket->disconnect();
-			return;
-		}
-	}
-
+   qDebug() << "QMyServer::slot_sslErrors:" << errs;
 }
 
 void QSslServer::slot_readyRead ()
