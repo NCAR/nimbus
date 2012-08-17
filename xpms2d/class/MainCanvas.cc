@@ -295,7 +295,7 @@ void MainCanvas::drawPMS2D(P2d_rec * record, struct recStats &stats, float versi
   ppSlice = prevSlice[0];
   pSlice = prevSlice[1];
 
-  if (memcmp((void *)&record, (void *)&prevRec, sizeof(P2d_rec)) == 0)
+  if (memcmp((void *)record, (void *)&prevRec, sizeof(P2d_rec)) == 0)
     stats.duplicate = true;
 
   if (version < 3.35)
@@ -412,7 +412,7 @@ if (debug) { if (cp) printf("dq: %06lx %lu %lu\n", cp->timeWord, cp->h, cp->w); 
   prevSlice[1] = p[1023];
   stats.prevTime = prevTime;
   prevTime = stats.thisTime;
-  memcpy((void *)&prevRec, (void *)&record, sizeof(P2d_rec));
+  memcpy((void *)&prevRec, (void *)record, sizeof(P2d_rec));
 }
 
 /* -------------------------------------------------------------------- */
@@ -425,7 +425,7 @@ void MainCanvas::drawHVPS(P2d_rec * record, struct recStats &stats, float versio
   static uint32_t	prevTime;
   static P2d_rec	prevRec;
 
-  if (memcmp((void *)&record, (void *)&prevRec, sizeof(P2d_rec)) == 0)
+  if (memcmp((void *)record, (void *)&prevRec, sizeof(P2d_rec)) == 0)
     stats.duplicate = true;
 
   if (*sp == 0xcaaa)
@@ -533,7 +533,7 @@ void MainCanvas::drawHVPS(P2d_rec * record, struct recStats &stats, float versio
   y += 224 - (HVPS_MASKED<<1);
   stats.prevTime = prevTime;
   prevTime = stats.thisTime;
-  memcpy((void *)&prevRec, (void *)&record, sizeof(P2d_rec));
+  memcpy((void *)&prevRec, (void *)record, sizeof(P2d_rec));
 }
 
 /* -------------------------------------------------------------------- */
@@ -585,7 +585,7 @@ void MainCanvas::drawFast2D(P2d_rec *record, struct recStats &stats, float versi
   static unsigned long prevTime;
   static P2d_rec prevRec;
 
-  if (memcmp((void *)&record, (void *)&prevRec, sizeof(P2d_rec)) == 0)
+  if (memcmp((void *)record, (void *)&prevRec, sizeof(P2d_rec)) == 0)
     stats.duplicate = true;
 
   /**
@@ -706,7 +706,7 @@ pen->SetColor(color->GetColor(0)); }
   y += 32;
   stats.prevTime = prevTime;
   prevTime = stats.thisTime;
-  memcpy((void *)&prevRec, (void *)&record, sizeof(P2d_rec));
+  memcpy((void *)&prevRec, (void *)record, sizeof(P2d_rec));
 }
 
 /* -------------------------------------------------------------------- */
