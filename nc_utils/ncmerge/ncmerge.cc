@@ -199,10 +199,10 @@ int main(int argc, char *argv[])
 void CopyVariablesDefinitions(int merge_all)
 {
   int	rc;
-  char	name[32];
-  char  dimname1[32], dimname2[32];
+  char	name[64];
+  char  dimname1[64], dimname2[64];
   nc_type	dataType;
-  int	nVars1, nVars2, nDims, nAtts, dimIDs[8];
+  int	nVars1, nVars2, nDims, nAtts, dimIDs[32];
   float	missing_value = -32767.0;
   int	missing_value_int = -32767;
 
@@ -253,32 +253,48 @@ void CopyVariablesDefinitions(int merge_all)
     {
       if (verbose)
         std::cout << "Creating variable " << name << " with " << nDims << " dimensions\n";
+
       // Figure out the dimID from the primary file that matched the dim taken from 
       // the secondary file.
       int nDims1;
       nc_inq_ndims(infd1, &nDims1);
 
+      // Foreach dimension that this variable from the secondary file has...
       for (int j = 0; j < nDims; ++j)
       {
+        int k;
         nc_inq_dimname(infd2, dimIDs[j], dimname2);
+
         if (verbose)
-	  std::cout	<< "Found dimension " << j << ":" << dimIDs[j] << ":" << dimname2
-			<< " in secondary file\n";
-	for (int k = 0; k < nDims1; ++k)
+	  std::cout	<< " Found dimension " << j << ":" << dimIDs[j] << ":" << dimname2
+			<< " in secondary file.\n";
+
+        // ...does it exist in primary/base file?
+	for (k = 0; k < nDims1; ++k)
 	{
           nc_inq_dimname(infd1, k, dimname1);
 
           if (verbose)
-	    std::cout << "Found dimension " << k << ":" << dimname1 << " in base file\n";
+	    std::cout << "  Found dimension " << k << ":" << dimname1 << " in base file.\n";
 
           if (strcmp(dimname1, dimname2) == 0)
           {
             if (verbose)
-	      std::cout << "Changing dimID " << j << " from " << dimIDs[j] << " to " << k << ".\n";
+	      std::cout << "  Changing dimID " << j << " from " << dimIDs[j] << " to " << k << ".\n";
 
 	    dimIDs[j] = k;
 	    break;
           }
+        }
+
+        if (k == nDims1)	// ...not found, create it.
+        {
+          size_t len;
+          int id;
+          std::cout << "  Dimension " << dimname2 << " not found in base file, creating.\n";
+          nc_inq_dimlen(infd2, dimIDs[j], &len);
+          nc_def_dim(infd1, dimname2, len, &id);
+          nc_inq_ndims(infd1, &nDims1);	// Re-acquire nDims from base file.
         }
       }
 
@@ -366,7 +382,7 @@ void MoveData()
     nc_inq_vartype(infd2, inVarID[i], &dataType);
 
     if (verbose)
-      std::cout << "\nMoving data for variable " << name << " of type " << dataType
+      std::cout << "Moving data for variable " << name << " of type " << dataType
 		<< " with array of size " << size << ".\n";
 
     /* Not sure what this case is about.  Was added when we added capability for INT varibles.
