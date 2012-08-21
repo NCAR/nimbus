@@ -290,10 +290,9 @@ void CopyVariablesDefinitions(int merge_all)
         if (k == nDims1)	// ...not found, create it.
         {
           size_t len;
-          int id;
           std::cout << "  Dimension " << dimname2 << " not found in base file, creating.\n";
           nc_inq_dimlen(infd2, dimIDs[j], &len);
-          nc_def_dim(infd1, dimname2, len, &id);
+          nc_def_dim(infd1, dimname2, len, &dimIDs[j]);
           nc_inq_ndims(infd1, &nDims1);	// Re-acquire nDims from base file.
         }
       }
