@@ -369,7 +369,13 @@ void MoveData()
       std::cout << "\nMoving data for variable " << name << " of type " << dataType
 		<< " with array of size " << size << ".\n";
 
-    if (dataType == NC_INT && strcmp(name,"Time")!=0)
+    /* Not sure what this case is about.  Was added when we added capability for INT varibles.
+     * But size = 1 is confusing, only the deprecated base_time had a size of 1.  I am changing
+     * !strcmp("Time") to strcmp("base_time").  The moving of data of int's works with the
+     * float calls in the else of this statment.  Perhaps we delete this if and keep just
+     * the else....  cjw 8/21/12
+     */
+    if (dataType == NC_INT && strcmp(name, "base_time") == 0)
     {
       size = 1;
       int *data_p_int;
