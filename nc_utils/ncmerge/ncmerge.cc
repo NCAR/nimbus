@@ -339,7 +339,7 @@ void CopyVariablesDefinitions(int merge_all)
 /* -------------------------------------------------------------------- */
 void MoveData()
 {
-  int inRec, outRec, nRecords;
+  int inRec, outRec, nRecords, timeDimID;
   size_t rd_start[3], wr_start[3], count[3], size;
 
   inRec = outRec = 0;
@@ -355,9 +355,7 @@ void MoveData()
     Exit(1);
   }
 
-  count[0] = nRecords;
-  wr_start[0] = outRec; wr_start[1] = wr_start[2] = 0;
-  rd_start[0] = inRec; rd_start[1] = rd_start[2] = 0;
+  nc_inq_dimid(infd2, "Time", &timeDimID);
 
   std::cout << "Starting to move data...\n";
 
@@ -369,13 +367,27 @@ void MoveData()
     nc_inq_vardimid(infd2, inVarID[i], dimids);
     nc_inq_dimlen(infd2, dimids[0], &size);
 
+    count[0] = nRecords;
+    count[1] = count[2] = 0;
+    rd_start[0] = inRec; rd_start[1] = rd_start[2] = 0;
+    wr_start[0] = outRec; wr_start[1] = wr_start[2] = 0;
+
+    // This is for variables that do not use Time as the first dimension.
+    // e.g. interarrival average form SID2, BIN mid points.
+    if (dimids[0] != timeDimID)
+    {
+      count[0] = size;
+      rd_start[0] = wr_start[0] = 0;
+    }
+
+
     for (int j = 1; j < nDims; ++j)
     {
       nc_inq_dimlen(infd2, dimids[j], &count[j]);
       size *= count[j];
     }
 
-    char name[32];
+    char name[64];
     nc_type dataType;
     nc_inq_varname(infd2, inVarID[i], name);
     nc_inq_vartype(infd2, inVarID[i], &dataType);
