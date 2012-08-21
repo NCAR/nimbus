@@ -18,13 +18,13 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-09
 
 #include <algorithm>
 #include <cctype>
-#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <iostream>
 #include <netcdf.h>
 
-#define NAMELEN		32
+#define NAMELEN		64
 #define MAX_IN_VARS	800
 #define MAX_OUT_VARS	1000
 
@@ -35,8 +35,9 @@ void	*inPtrs[MAX_IN_VARS], *outPtrs[MAX_OUT_VARS];
 int	infd1, infd2, VarCnt = 0, xFerCnt = 0;
 time_t	bt1, bt2;
 size_t	et1, et2;
+bool	verbose = true;
 
-void	CopyVariablesDefinitions(int),MoveData();
+void	CopyVariablesDefinitions(int), MoveData();
 
 
 /* -------------------------------------------------------------------- */
@@ -54,13 +55,13 @@ void openFiles(int argc, char *argv[], int argp)
    */
   if (nc_open(argv[argp], NC_WRITE, &infd1) != NC_NOERR)
   {
-    fprintf(stderr, "Can't open primary file %s. Do you have write permission?\n", argv[argp]);
+    std::cerr << "Can't open primary file " << argv[argp] << ". Do you have write permission?\n";
     Exit(1);
   }
 
   if (nc_open(argv[++argp], NC_NOWRITE, &infd2) != NC_NOERR)
   {
-    fprintf(stderr, "Can't open secondary file %s\n", argv[argp]);
+    std::cerr << "Can't open secondary file " << argv[argp] << ".\n";
     Exit(1);
   }
 
@@ -71,7 +72,7 @@ void openFiles(int argc, char *argv[], int argp)
 
   if (strcmp(buffer, &buffer[500]) != 0)
   {
-    fprintf(stderr, "Conventions don't match, invalid merge.\n");
+    std::cerr << "Conventions don't match, invalid merge.\n";
     Exit(1);
   }
 }
@@ -83,15 +84,15 @@ void checkForOverlappingTimeSegments()
 
   if (nc_inq_varid(infd1, "Time", &varID1) != NC_NOERR)
   {
-    fprintf(stderr, "Master file does not contain the variable 'Time', fatal.\n");
-    fprintf(stderr, "  You are probably trying to merge old style RAF netCDF files.\n");
+    std::cerr << "Master file does not contain the variable 'Time', fatal.\n";
+    std::cerr << "  You are probably trying to merge old style RAF netCDF files.\n";
     Exit(1);
   }
 
   if (nc_inq_varid(infd2, "Time", &varID2) != NC_NOERR)
   {
-    fprintf(stderr, "Secondary file does not contain the variable 'Time', fatal.\n");
-    fprintf(stderr, "  You are probably trying to merge old style RAF netCDF files.\n");
+    std::cerr << "Secondary file does not contain the variable 'Time', fatal.\n";
+    std::cerr << "  You are probably trying to merge old style RAF netCDF files.\n";
     Exit(1);
   }
 
@@ -122,10 +123,10 @@ void checkForOverlappingTimeSegments()
 
   if (bt1 == 0 || bt2 == 0)
   {
-    fprintf(stderr, "At least one file has a base_time of 0, this implies asc2cdf was used\nwithout '-b' option.  Merged data may be shifted in time.\n");
+    std::cerr << "At least one file has a base_time of 0, this implies asc2cdf was used\nwithout '-b' option.  Merged data may be shifted in time.\n";
 
     if (bt1 == 0 && bt2 == 0)
-      fprintf(stderr, "Both base_time's are 0, files must have identical start times\nor else merged data will be shifted in time.\n");
+      std::cerr << "Both base_time's are 0, files must have identical start times\nor else merged data will be shifted in time.\n";
   }
 
   et1 += bt1;
@@ -133,13 +134,13 @@ void checkForOverlappingTimeSegments()
 
   if ((time_t)et2 < bt1 || bt2 > (time_t)et1)
   {
-    fprintf(stderr, "No overlapping time segments, nothing to merge.\n");
+    std::cerr << "No overlapping time segments, nothing to merge.\n";
     Exit(1);
   }
 
   if (bt1 != bt2 || et1 != et2)
   {
-    printf("Time segments do not match exactly, this has potential to produce inconsistent results.\n");
+    std::cout << "Time segments do not match exactly, this has potential to produce inconsistent results.\n";
   }
 }
 
@@ -151,7 +152,7 @@ int main(int argc, char *argv[])
 
   if (argc < 3)
   {
-    fprintf(stderr, "Usage: ncmerge [-v var0,var1,..,varn] [-a] primary_file secondary_file\n");
+    std::cerr << "Usage: ncmerge [-v var0,var1,..,varn] [-a] primary_file secondary_file\n";
     exit(1);
   }
 
@@ -173,7 +174,7 @@ int main(int argc, char *argv[])
     while ((p = strtok(NULL, ",")));
   }
   else
-    printf("All variables being merged.\n");
+    std::cout << "All variables being merged.\n";
 
   if (strcmp(argv[argp], "-a") == 0)
   {
@@ -250,23 +251,31 @@ void CopyVariablesDefinitions(int merge_all)
     // See if variable already exists in output file, if not then create it.
     if (nc_inq_varid(infd1, name, &rc) != NC_NOERR)
     {
-
-      //printf("Creating variable %s with %d dimensions\n",name,nDims);
+      if (verbose)
+        std::cout << "Creating variable " << name << " with " << nDims << " dimensions\n";
       // Figure out the dimID from the primary file that matched the dim taken from 
       // the secondary file.
       int nDims1;
-      nc_inq_ndims(infd1,&nDims1);
+      nc_inq_ndims(infd1, &nDims1);
+
       for (int j = 0; j < nDims; ++j)
       {
         nc_inq_dimname(infd2, dimIDs[j], dimname2);
-	//printf("Found dimension %d:%d:%s in secondary file\n",j,dimIDs[j],dimname2); fflush(stdout);
+        if (verbose)
+	  std::cout	<< "Found dimension " << j << ":" << dimIDs[j] << ":" << dimname2
+			<< " in secondary file\n";
 	for (int k = 0; k < nDims1; ++k)
 	{
-          nc_inq_dimname(infd1,k,dimname1);
-	  //printf("Found dimension %d:%s in base file\n",k,dimname1); fflush(stdout);
-          if (strcmp(dimname1,dimname2) == 0)
+          nc_inq_dimname(infd1, k, dimname1);
+
+          if (verbose)
+	    std::cout << "Found dimension " << k << ":" << dimname1 << " in base file\n";
+
+          if (strcmp(dimname1, dimname2) == 0)
           {
-	    //printf("Changing dimID %d from %d to %d\n",j,dimIDs[j],k);
+            if (verbose)
+	      std::cout << "Changing dimID " << j << " from " << dimIDs[j] << " to " << k << ".\n";
+
 	    dimIDs[j] = k;
 	    break;
           }
@@ -275,13 +284,14 @@ void CopyVariablesDefinitions(int merge_all)
 
       if (nc_def_var(infd1, name, dataType, nDims, dimIDs, &rc) != NC_NOERR)
       {
-        fprintf(stderr, "Error in creating variable %s, %s will not be in merged dataset.\n", name, name);
+        std::cerr	<< "Error in creating variable " << name << ", " << name
+			<< " will not be in merged dataset.\n";
         continue;
       }
     }
     else
     {
-      printf("Variable %s exists in primary file, it will be overwritten.\n", name);
+      std::cout << "Variable " << name << " exists in primary file, it will be overwritten.\n";
     }
 
     for (int j = 0; j < nAtts; ++j)
@@ -307,7 +317,7 @@ void CopyVariablesDefinitions(int merge_all)
   if (VarCnt > 0)
     for (int i = 0; i < VarCnt; ++i)
       if (VarList[i][0] != ' ')
-        fprintf(stderr, "%s does not exist in secondary file.\n", VarList[i]);
+        std::cerr << VarList[i] << " does not exist in secondary file.\n";
 
 }	/* END COPYVARIABLES */
 
@@ -324,9 +334,9 @@ void MoveData()
 
   if ((nRecords = std::min(et1, et2) - std::max(bt1, bt2)) == 0)
   {
-    fprintf(stderr, "Computed number of records to merge is zero.  Something is wrong.\n");
-    fprintf(stderr, "  begTimeMaster = %ld, endTimeMaster = %d, nRecords=%lu\n", bt1, et1, et1-bt1);
-    fprintf(stderr, "  begTimeSecond = %ld, endTimeSecond = %d, nRecords=%lu\n", bt2, et2, et2-bt2);
+    std::cerr << "Computed number of records to merge is zero.  Something is wrong.\n";
+    std::cerr << "  begTimeMaster = " << bt1 << ", endTimeMaster = " << et1 << ", nRecords=" << et1-bt1 << ".\n";
+    std::cerr << "  begTimeSecond = " << bt2 << ", endTimeSecond = " << et2 << ", nRecords=" << et2-bt2 << ".\n";
     Exit(1);
   }
 
@@ -334,7 +344,7 @@ void MoveData()
   wr_start[0] = outRec; wr_start[1] = wr_start[2] = 0;
   rd_start[0] = inRec; rd_start[1] = rd_start[2] = 0;
 
-  printf("Starting to move data...\n"); fflush(stdout);
+  std::cout << "Starting to move data...\n";
 
   for (int i = 0; i < xFerCnt; ++i)
   {
@@ -355,11 +365,9 @@ void MoveData()
     nc_inq_varname(infd2, inVarID[i], name);
     nc_inq_vartype(infd2, inVarID[i], &dataType);
 
-    //printf("Moving data for variable %s of type %d with array of size %d\n",name,dataType,size); fflush(stdout);
-    //printf("Type if int is %d\n",NC_INT);fflush(stdout);
-
-    // If you get the error: "terminate called after throwing an instance of 'std::bad_alloc'
-    // what():  St9bad_alloc", then there is not enough memory left in the heap to perform the alloc.
+    if (verbose)
+      std::cout << "\nMoving data for variable " << name << " of type " << dataType
+		<< " with array of size " << size << ".\n";
 
     if (dataType == NC_INT && strcmp(name,"Time")!=0)
     {
@@ -371,8 +379,7 @@ void MoveData()
       }
       catch (const std::bad_alloc)
       {
-        fprintf(stderr, "\n***\nNot enough memory to perform alloc of data_p_int: exiting\n***\n");
-	fflush(stdout);
+        std::cerr << "\n***\nNot enough memory to perform alloc of data_p_int: exiting\n***\n";
         exit(1);
       }
 
@@ -380,16 +387,14 @@ void MoveData()
       if (nc_get_vara_int(infd2, inVarID[i], rd_start, count, data_p_int) != NC_NOERR)
       {
         nc_inq_varname(infd2, inVarID[i], name);
-        fprintf(stderr, "MoveData: failed to read data for variable %s\n", name);
-	fflush(stdout);
+        std::cerr << "\nMoveData: failed to read data for variable " << name << ".\n";
         continue;
       }
 
       if (nc_put_vara_int(infd1, outVarID[i], wr_start, count, data_p_int) != NC_NOERR)
       {
         nc_inq_varname(infd1, outVarID[i], name);
-        fprintf(stderr, "MoveData: failed to write data for variable %s\n", name);
-	fflush(stdout);
+        std::cerr << "\nMoveData: failed to write data for variable " << name << ".\n";
         continue;
       }
       delete [] data_p_int;
@@ -401,8 +406,7 @@ void MoveData()
       }
       catch (const std::bad_alloc)
       {
-        fprintf(stderr, "\n***\nNot enough memory to perform alloc of data_p: exiting\n***\n");
-	fflush(stdout);
+        std::cerr << "\n***\nNot enough memory to perform alloc of data_p: exiting\n***\n";
         exit(1);
       }
 
@@ -410,26 +414,22 @@ void MoveData()
       if (nc_get_vara_float(infd2, inVarID[i], rd_start, count, data_p) != NC_NOERR)
       {
         nc_inq_varname(infd2, inVarID[i], name);
-        fprintf(stderr, "MoveData: failed to read data for variable %s\n", name);
-	fflush(stdout);
+        std::cerr << "\nMoveData: failed to read data for variable " << name << ".\n";
         continue;
       }
 
       if (nc_put_vara_float(infd1, outVarID[i], wr_start, count, data_p) != NC_NOERR)
       {
         nc_inq_varname(infd1, outVarID[i], name);
-        fprintf(stderr, "MoveData: failed to write data for variable %s\n", name);
-	fflush(stdout);
+        std::cerr << "\nMoveData: failed to write data for variable " << name << ".\n";
         continue;
       }
       delete [] data_p;
     }
 
-    printf("."); fflush(stdout);
+    if (!verbose)
+      std::cout << ".";
   }
 
-  printf("\n");
-
-}	/* END MOVEDATA */
-
-/* END NCMERGE.CC */
+  std::cout << "\n";
+}
