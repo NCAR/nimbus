@@ -9,6 +9,8 @@ ENTRY POINTS:	svmr()		Volume Mixing Ratio (ppmv)
 		sEvsel()	Water Vapor Pressure
 
 DESCRIPTION:	Derived calculations for the VCSEL.
+		In DC3 the equation for weak mode changed significantly.
+		Strong and Direct modes will also change in the future.
 
 COPYRIGHT:	University Corporation for Atmospheric Research, 2012
 -------------------------------------------------------------------------
@@ -24,6 +26,8 @@ static double	P_COEFF_WEAK[2], P_COEFF_DIRECT[2], P_COEFF_STRONG[2],
 		LI_COEFF_WEAK[3], LI_COEFF_DIRECT[3], LI_COEFF_STRONG[3];
 
 static double	ps_conv = 1.0;
+
+static char flightDateString[32];
 
 
 /* -------------------------------------------------------------------- */
@@ -63,6 +67,10 @@ static void readDefs(const char varName[], const char line[],
   else
     for (int i = 0; i < 3; ++i)
       LI_COEFF[i] = tmp[i];
+
+  extern int FlightDate[];
+  sprintf(flightDateString, "%04d%02d", FlightDate[2], FlightDate[0]);
+
 }
 
 /* -------------------------------------------------------------------- */
@@ -81,7 +89,7 @@ void vcselInit(var_base *varp)
 /* -------------------------------------------------------------------- */
 void sconcv(DERTBL *varp)
 {
-  NR_TYPE p_coeff, *pCoeffs, t_coeff, coeff_light, *liCoeffs;
+  NR_TYPE concv, p_coeff, *pCoeffs, t_coeff, coeff_light, *liCoeffs;
   static int mode;
 
   NR_TYPE concv_raw = GetSample(varp, 0);
@@ -94,6 +102,18 @@ void sconcv(DERTBL *varp)
    */
   if (FeedBack == LOW_RATE_FEEDBACK)
     mode = (int)GetSample(varp, 4);
+
+  if (mode == WEAK && strcmp(flightDateString, "201204") > 0)	// DC3 and later.
+  {
+    // Will move a subset of these constants to Defaults file when we
+    t_coeff = -0.00217 * AT_vxl + 1.04;
+    p_coeff = 1.07 + (-7.01) * pow(PS_vxl, -2.0/3.0);
+    coeff_light = 0.99745 + (-2402.173) * pow(light_intensity, -3.0/2.0);
+    concv = concv_raw * p_coeff * t_coeff * coeff_light * 1.165;
+    PutSample(varp, concv);
+    return;
+  }
+
 
   switch (mode)
   {
@@ -118,9 +138,9 @@ void sconcv(DERTBL *varp)
   }
 
   p_coeff = (pCoeffs[0] + pCoeffs[1] * PS_vxl) / (pCoeffs[0] + pCoeffs[1] * StdPress);
-  coeff_light =	liCoeffs[0] + liCoeffs[1] * exp(-liCoeffs[2] * light_intensity);
+  coeff_light = liCoeffs[0] + liCoeffs[1] * exp(-liCoeffs[2] * light_intensity);
 
-  NR_TYPE concv = concv_raw / (p_coeff * t_coeff * coeff_light);
+  concv = concv_raw / (p_coeff * t_coeff * coeff_light);
   PutSample(varp, concv);
 }
 
