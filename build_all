@@ -88,7 +88,7 @@ end
 
 # Programs using "scons".
 
-foreach file ( nimbus GoogleEarth/acTrack2kml instruments/pms2d/process2d instruments/sid2h nc_utils/ncReorder nc_utils/ncvarlist)
+foreach file ( nimbus kml_tools/acTrack2kml instruments/pms2d/process2d instruments/pms2d/oapinfo instruments/sid2h nc_utils/ncReorder nc_utils/ncvarlist )
   (cd $file; echo $file; scons install)
   if ($num > 0) then
     echo "$file BUILT"
