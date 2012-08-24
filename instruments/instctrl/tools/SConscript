@@ -1,0 +1,27 @@
+# -*- python -*-
+##  Copyright 2005,2006 UCAR, NCAR, All Rights Reserved
+
+import sys
+
+#env = Environment(tools = ['default', 'qt4', 'logx'])
+
+tools = Split("""
+default qt4 logx
+""")
+
+env = Environment(tools = ['default']+tools)
+
+#Import('env')
+#env = env.Clone(tools = ['default', 'qt4', 'logx'])
+
+qtmods = ['QtSvg', 'QtCore', 'QtGui', 'QtNetwork', 'QtSql', 'QtOpenGL']
+env.EnableQt4Modules(qtmods)
+
+sources = ['instrument.cpp', 'sendudp.cpp']
+#acswsources = ['acswitch.cpp']
+
+instrument = env.Program('instrument',sources)
+#acswitch = env.Program('acswitch',acswsources)
+#qtudp = env.Program('qtudp',sources)
+
+env.Default(instrument)
