@@ -1,0 +1,24 @@
+# -*- python -*-
+##  Copyright 2005,2006 UCAR, NCAR, All Rights Reserved
+
+import sys
+
+#env = Environment(tools = ['default', 'qt4', 'logx'])
+
+tools = Split("""
+default qt4 logx
+""")
+
+env = Environment(tools = ['default']+tools)
+
+#Import('env')
+#env = env.Clone(tools = ['default', 'qt4', 'logx'])
+
+qtmods = ['QtSvg', 'QtCore', 'QtGui', 'QtNetwork', 'QtSql', 'QtOpenGL']
+env.EnableQt4Modules(qtmods)
+
+sources = ['main.cpp', 'proxy.cpp']
+
+proxy= env.Program('proxy',sources)
+
+env.Default(proxy)
