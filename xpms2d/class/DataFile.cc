@@ -697,7 +697,7 @@ void ADS_DataFile::buildIndices()
       rewind(fp);
     }
 
-  printf("\n%d 2d records were found.\n", cnt);
+  printf("\n%zu 2d records were found.\n", cnt);
 
   indices[cnt].index = -1;
 
