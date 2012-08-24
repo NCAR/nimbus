@@ -644,15 +644,12 @@ void ADS_DataFile::buildIndices()
     exit(1);
     }
 
-  if (_fileHeaderType != PMS2D)
-    {
 #ifdef PNG
-    if (_gzipped)
-      gzseek(gz_fd, 0, SEEK_SET);
-    else
+  if (_gzipped)
+    gzseek(gz_fd, 0, SEEK_SET);
+  else
 #endif
-      rewind(fp);
-    }
+    rewind(fp);
 
 
   for (cnt = 0; (rc = NextPhysicalRecord(buffer)); )
