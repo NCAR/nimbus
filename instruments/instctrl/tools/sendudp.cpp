@@ -53,7 +53,8 @@ SendUDP::SendUDP(bool encrypt)
 
 void SendUDP::startSendingPackets()
 {
-	QHostAddress addr("0.0.0.0");	// Stephanie, use localhost addr
+	//QHostAddress addr("0.0.0.0");	// Stephanie, use localhost addr
+	QHostAddress addr("127.0.0.1");	// Stephanie, use localhost addr
 	int rc;
 	QString portString = _port->text();
         bool validPort;
