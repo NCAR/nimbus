@@ -383,9 +383,6 @@ namespace sp
 				//end of last particle 3 blanks then timing word..(blanks are inverted to all 1's)
 				uint32 blank = 0xFFFFFFFF;
 				write_buffer(bits, blank);
-				write_buffer(bits, blank);
-				write_buffer(bits, blank);
-				write_buffer(bits, blank);
 			}
 
 			template<class T>
