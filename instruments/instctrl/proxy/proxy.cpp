@@ -2,6 +2,7 @@
 #include "logx/Logging.h"
 
 LOGGING("proxy");
+static QString certDir("/home/local/raf/instruments/instctrl/QtUDP/certs");
 
 Proxy::Proxy()
 {
@@ -78,29 +79,40 @@ void Proxy::connectToServer()
 		sslSocket_->abort();
 
 		// PUT IN KEY AND CERTIFICATE STUFF HERE
-		QFile keyFile("certs/client.key");
-		//QFile keyFile("certs/shiraz.key");
-		//QFile keyFile("certs/newshiraz.key");
-		QFile clientFile("certs/client.crt");
-		//QFile serverFile("certs/server.crt");
-		//QFile clientFile("certs/newclient.crt");
-		//QFile newServerFile("certs/newserver.crt");
-		//QFile clientFile("certs/tikal_client.crt");
-		//QFile tikalServerFile("certs/tikal_server.crt");
-		//QFile clientFile("certs/newshiraz.crt");
-		//QFile clientFile("certs/shiraz.crt");
-		//QFile shirazServerFile("certs/shiraz_server.crt");
-		//QFile dropletClientFile("certs/droplet_client.crt");
-		//QFile dropletServerFile("certs/droplet_server.crt");
-		//QFile sloopClientFile("certs/sloop_client.crt");
-		//QFile sloopServerFile("certs/sloop_server.crt");
-		//QFile multiHostClientFile("certs/san_client.crt");
-		//QFile multiHostServerFile("certs/san_server.crt");
+		QFile keyFile(certDir + QString("/client.key"));
+		//QFile clientFile(certDir + QString("/client.crt"));
+		//QFile serverFile(certDir + QString("/server.crt"));
+		//QFile clientFile(certDir + QString("/newclient.crt"));
+		//QFile newServerFile(certDir + QString("/newserver.crt"));
+		//QFile clientFile(certDir + QString("/tikal_client.crt"));
+		//QFile tikalServerFile(certDir + QString("/tikal_server.crt"));
+		//QFile clientFile(certDir + QString("/newshiraz.crt"));
+		//QFile clientFile(certDir + QString("/shiraz.crt"));
+		//QFile shirazServerFile(certDir + QString("/shiraz_server.crt"));
+		QFile clientFile(certDir + QString("/droplet_client.crt"));
+		//QFile dropletServerFile(certDir + QString("/droplet_server.crt"));
+		//QFile sloopClientFile(certDir + QString("/sloop_client.crt"));
+		//QFile sloopServerFile(certDir + QString("/sloop_server.crt"));
+		//QFile multiHostClientFile(certDir + QString("/san_client.crt"));
+		//QFile multiHostServerFile(certDir + QString("/san_server.crt"));
 
-		QFile eolServerFile("certs/eol-rt-data_server.crt");
+		QFile eolServerFile(certDir + QString("/eol-rt-data_server.crt"));
+QString notice;
+notice = "Key File: "+keyFile.fileName();
+qDebug(notice.toStdString().c_str());
+notice = "Cert File: "+clientFile.fileName();
+qDebug(notice.toStdString().c_str());
 
-		keyFile.open(QIODevice::ReadOnly);
-		clientFile.open(QIODevice::ReadOnly);
+		if (!keyFile.open(QIODevice::ReadOnly)) {
+		   qDebug("Could not open key file: ");
+                   qDebug(keyFile.fileName().toStdString().c_str());
+		   return;
+                }
+		if (!clientFile.open(QIODevice::ReadOnly)) {
+		   qDebug("Could not open proxy certificate file: ");
+                   qDebug(clientFile.fileName().toStdString().c_str());
+		   return;
+		}
 		//serverFile.open(QIODevice::ReadOnly);
 		//newClientFile.open(QIODevice::ReadOnly);
 		//newServerFile.open(QIODevice::ReadOnly);
