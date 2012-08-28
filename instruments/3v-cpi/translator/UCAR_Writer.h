@@ -355,8 +355,6 @@ namespace sp
 
 				assert((byteCount % 16)==0);
 
-				numWritten++;
-
 				_particleCount = newCount;
 			}
 
@@ -366,11 +364,11 @@ namespace sp
 
 				uint64 timingBE = _timing;
 				timingBE &= 0xFF; 
-				swap_endian_force(reinterpret_cast<byte*>(&timingBE), sizeof(timingBE));
+//				swap_endian_force(reinterpret_cast<byte*>(&timingBE), sizeof(timingBE));
 				write_buffer(bits, timingBE);
 
-				uint64 sync = SYNC_2DS;
-				swap_endian_force(reinterpret_cast<byte*>(&sync), sizeof(sync));
+				uint64 sync = Fast2D_Sync;
+//				swap_endian_force(reinterpret_cast<byte*>(&sync), sizeof(sync));
 				write_buffer(bits, sync);
 
 				_nParticlesCompleted++;
@@ -460,11 +458,11 @@ namespace sp
 					//so search backward for last SYNC marker
 					union Combo
 					{
-						uint32 sync;
-						char   s[4];
+						uint64 sync;
+						char   s[8];
 					};
 					Combo c;
-					c.sync = SYNC_2DS;
+					c.sync = Fast2D_Sync;
 					c.sync=swap_endian(c.sync);
 					char*	rbegin	= &c.s[0];
 					char*	rend	= rbegin + sizeof(c.s);

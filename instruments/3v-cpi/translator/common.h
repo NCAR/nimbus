@@ -25,11 +25,7 @@ namespace sp
 		ENDIAN_LITTLE
 	};
 
-	enum SyncWords
-	{
-		SYNC_2DS = 0x55000000, //used as sync marker, indicating begging of new particle in the 2DS data output to UCAR format
-		SYNC_2DS_ENDING = 0x5EADBE3F
-	};
+	const unsigned long long Fast2D_Sync = 0xAAAAAA0000000000LL;
 
 	inline void swap_endian(byte* bytes, unsigned int nBytes, Endianness source, Endianness dest )
 	{

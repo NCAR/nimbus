@@ -213,11 +213,11 @@ namespace sp
 			{
 				block >> sync;
 
-				if(!(sync == SYNC_2DS))
+				if(!(sync == Fast2D_Sync))
 				{
 					g_Log <<"Reached end of file\n";	
 					break;
-					//g_Log <<"Got (" << sync << ") instead of correct sync uint32 ("<<SYNC_2DS<<"), file is corrupt?\n";
+					//g_Log <<"Got (" << sync << ") instead of correct sync uint32 ("<<Fast2D_Sync<<"), file is corrupt?\n";
 					//block.clear();
 					//throw std::logic_error("corrupt file, shutting down");
 				}
