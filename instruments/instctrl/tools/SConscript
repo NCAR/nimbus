@@ -17,11 +17,20 @@ env = Environment(tools = ['default']+tools)
 qtmods = ['QtSvg', 'QtCore', 'QtGui', 'QtNetwork', 'QtSql', 'QtOpenGL']
 env.EnableQt4Modules(qtmods)
 
+env.AppendUnique(CPPPATH = ['/usr/local/include/QtCrypto'])
+env.AppendUnique(LIBPATH = ['/usr/local/lib'])
+env.AppendUnique(LIBS= ['qca'])
+
 sources = ['instrument.cpp', 'sendudp.cpp']
+gensymkeysrcs = ['gensymkey.cc']
 #acswsources = ['acswitch.cpp']
 
 instrument = env.Program('instrument',sources)
+gensymkey = env.Program('gensymkey', gensymkeysrcs);
 #acswitch = env.Program('acswitch',acswsources)
 #qtudp = env.Program('qtudp',sources)
 
 env.Default(instrument)
+env.Default(gensymkey)
+
+env.AppendENVPath ('LD_LIBRARY_PATH', '/usr/local/lib')
