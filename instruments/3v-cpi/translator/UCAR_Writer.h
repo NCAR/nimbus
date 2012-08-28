@@ -271,7 +271,7 @@ namespace sp
 			void ToBits() 
 			{
 				byte b = 0;
-				for( size_t i = 0;i<decompressed.size();++i)
+				for (size_t i = 0; i < decompressed.size(); ++i)
 				{
 					int slide = i % 8;
 					b |= decompressed[i] << slide;
@@ -295,7 +295,7 @@ namespace sp
 				word clearCount = chunk.GetClearCount();;
 				word shadedCount = chunk.GetShadedCount();
 
-				if(chunk.IsStartOfSlice())
+				if (chunk.IsStartOfSlice())
 				{
 					WriteClearEnding();
 				}
@@ -304,7 +304,7 @@ namespace sp
 				decompressed.resize(decompressed.size()+clearCount,1); //UCAR expects 1 for clear, 0 for shaded
 				decompressed.resize(decompressed.size()+shadedCount,0);
 
-				_slice_pixel_count	+= (clearCount+shadedCount);
+				_slice_pixel_count += (clearCount+shadedCount);
 			}
 
 			void WriteClearEnding() 
@@ -313,24 +313,24 @@ namespace sp
 				int remains = 128 - _slice_pixel_count%128;
 
 				_slice_pixel_count = 0;
-				if(remains == 128)
+				if (remains == 128)
 				{
 					return;
 				}
 				assert(remains >= 0);
-				decompressed.resize(decompressed.size()+size_t(remains),1); 
+				decompressed.resize(decompressed.size()+size_t(remains), 1); 
 			}
 
 			Buffer&	WriteRemainder()
 			{
-				if(numWritten <= 0)
+				if (numWritten <= 0)
 					return bits;
 				WriteClearEnding();
 				ToBits();
 
-				assert((byteCount % 16)==0);
+				assert((byteCount % 16) == 0);
 
-				WriteTiming(); //get last timing section
+				WriteSyncTimingWord(); //get last timing section
 				return bits;
 			}
 
@@ -343,38 +343,36 @@ namespace sp
 		private:
 			void NextParticle(size_t newCount)
 			{
-				if (numWritten > 0)
+				if (numWritten++ > 0)
 				{
 					WriteClearEnding();
 					ToBits();
 
 					assert((byteCount % 16)==0);
 
-					WriteTiming();
+					WriteSyncTimingWord();
 				}
 
 				assert((byteCount % 16)==0);
-
-				//beg of next particle
-				uint32 sync = SYNC_2DS;
-				write_buffer(bits, sync);
 
 				numWritten++;
 
 				_particleCount = newCount;
 			}
 
-			void WriteTiming() 
+			void WriteSyncTimingWord() 
 			{
 //				WriteBlankSlice();
-//				WriteBlankSlice();
-//				WriteBlankSlice();
 
-				uint32 timingBE = _timing;
+				uint64 timingBE = _timing;
 				timingBE &= 0xFF; 
 				swap_endian_force(reinterpret_cast<byte*>(&timingBE), sizeof(timingBE));
-
 				write_buffer(bits, timingBE);
+
+				uint64 sync = SYNC_2DS;
+				swap_endian_force(reinterpret_cast<byte*>(&sync), sizeof(sync));
+				write_buffer(bits, sync);
+
 				_nParticlesCompleted++;
 			}
 
