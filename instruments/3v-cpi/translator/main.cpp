@@ -63,7 +63,7 @@ struct Do2DS
 		outfile.erase(0, outfile.find("base"));	
 		outfile.erase(outfile.end() - 4, outfile.end()); // remove .2ds
 
-		sp::UCAR_Writer writer(	outfile, *options, sp::HORIZONTAL_2DS, sp::VERTICAL_2DS,
+		sp::UCAR_Writer writer(outfile, *options, sp::HORIZONTAL_2DS, sp::VERTICAL_2DS,
 					"2DS", "10", "128", "2H", "2V");
 		device.Process(file, writer);
 	}

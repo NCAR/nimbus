@@ -45,7 +45,7 @@ namespace sp
 				_bytes = 0;
 			}
 
-			std::ofstream	_file;
+//			std::ofstream	_file;	// moved to outer class, since one output file.
 			Buffer		_buffer;
 			size_t		_bytes;
 		};
@@ -57,14 +57,15 @@ namespace sp
 		std::string		_nDiodes;
 		std::string		_SuffixH, _SuffixV;
 
-	public:
 
+	public:
 		UCAR_Writer(const std::string& fileName, const Options& options,
 			sword HorizontalCode, sword VerticalCode, 
 			const std::string& ProbeType, const std::string& resolution, const std::string& nDiodes,
 			const std::string& SuffixH, const std::string& SuffixV) : _options(options)
 		{
-			_hChannel._file.open(("temp/" + fileName + ".bin").c_str(),std::ios::binary);
+			_file.open(("temp/" + fileName + ".bin").c_str(), std::ios::binary);
+//			_hChannel._file.open(("temp/" + fileName + "H.bin").c_str(),std::ios::binary);
 //			_vChannel._file.open(("temp/" + fileName + "V.bin").c_str(),std::ios::binary);
 
 			_FileName = fileName;
@@ -85,25 +86,24 @@ namespace sp
 			_hImage.WriteRemainder();
 			_vImage.WriteRemainder();
 
-	
-			Write(_hChannel,_hImage.Bits(),_HorizontalCode, true );
-			Write(_hChannel,_vImage.Bits(),_VerticalCode, true );
-		
-			_hChannel._file.close();
+			Write(_hChannel, _hImage.Bits(), _HorizontalCode, true);
+			Write(_vChannel, _vImage.Bits(), _VerticalCode, true);
+
+			_file.close();
+//			_hChannel._file.close();
 //			_vChannel._file.close();
 
 			GenerateXMLHeader(	"temp/" + _FileName + ".xml",
 						(const char *)&_HorizontalCode, _SuffixH,
 						(const char *)&_VerticalCode, _SuffixV);
 //			GenerateXMLHeader("temp/" + _FileName + "V.xml",_VerticalCode, _SuffixV.c_str());
-			
+
 			std::string outputdir(_options.OutputDir);
 			if (outputdir.size() > 0)
 				outputdir += "/";
 
 			MergeFiles("temp/" + _FileName + ".xml","temp/" + _FileName + ".bin", outputdir + _FileName + ".2d");
-//			MergeFiles("temp/" + _FileName + "V.xml","temp/" + _FileName + "V.bin", outputdir + _FileName + "V.2d");
-			
+
 			if (!_options.ascii_art)
 			{
 				g_Log <<"  HORIZONTAL PARTICLES FOUND: " << _hImage.NParticlesCompleted() << "\n";
@@ -158,7 +158,7 @@ namespace sp
 			}
 			else if(pr.VerticalImage._Description.bits.NumDataWords > 0)
 			{
-				StoreParticle(_hChannel, pr.VerticalImage, _vImage, pr.ParticleCount, _VerticalCode);
+				StoreParticle(_vChannel, pr.VerticalImage, _vImage, pr.ParticleCount, _VerticalCode);
 			}
 			return *this;
 		}
@@ -171,7 +171,7 @@ namespace sp
 			}
 			else if(pr.VerticalImage._Description.bits.NumDataWords > 0)
 			{
-				StoreParticle(_hChannel, pr.VerticalImage, _vImage, pr.ParticleCount, _VerticalCode);
+				StoreParticle(_vChannel, pr.VerticalImage, _vImage, pr.ParticleCount, _VerticalCode);
 			}
 			return *this;
 		}
@@ -189,20 +189,23 @@ namespace sp
 			//don't really have any use for this data
 			return *this;
 		}
+
 	private:
 		//adds the header that matches the PD2 format from UCAR
 		bool AddHeaderPD2(Channel& channel, word CharacterCode)
 		{
-			const TimeStamp16& timeStamp	= _MostRecentTimeStamp;
+			const TimeStamp16& timeStamp = _MostRecentTimeStamp;
 			if(_options.InRange(timeStamp))
 			{
 				if(_options.ascii_art)
 					return true;
 
 				//NOTE: not sure yet what the overLoad value should be set to
-				word overLoad = 0;//word(_MostRecentHouseKeeping.Timing
-				channel._file ^  CharacterCode ^ timeStamp.wHour ^ timeStamp.wMinute ^  timeStamp.wSecond ^  timeStamp.wYear ^ timeStamp.wMonth ^
-					timeStamp.wDay ^ word(_MostRecentHouseKeeping.TAS) ^ timeStamp.wMilliseconds ^ overLoad;
+				word overLoad = 0;
+				_file	^  CharacterCode ^ timeStamp.wHour ^ timeStamp.wMinute
+					^  timeStamp.wSecond ^  timeStamp.wYear ^ timeStamp.wMonth
+					^ timeStamp.wDay ^ word(_MostRecentHouseKeeping.TAS)
+					^ timeStamp.wMilliseconds ^ overLoad;
 
 				return true;
 			}
@@ -261,7 +264,6 @@ namespace sp
 
 				//makes bytes into bits
 				ToBits();
-
 
 				return bits;
 			}
@@ -337,12 +339,11 @@ namespace sp
 				return bits;
 			}
 			size_t NParticlesCompleted() const { return _nParticlesCompleted; }
-		
+
 		private:
-			void	NextParticle(size_t newCount)
+			void NextParticle(size_t newCount)
 			{
-				
-				if(numWritten > 0)
+				if (numWritten > 0)
 				{
 					WriteClearEnding();
 					ToBits();
@@ -353,23 +354,21 @@ namespace sp
 				}
 
 				assert((byteCount % 16)==0);
-			
+
 				//beg of next particle
 				uint32 sync = SYNC_2DS;
 				write_buffer(bits, sync);
 
 				numWritten++;
-		
-				_particleCount = newCount;
 
-	
+				_particleCount = newCount;
 			}
 
 			void WriteTiming() 
 			{
-				WriteBlankSlice();
-				WriteBlankSlice();
-				WriteBlankSlice();
+//				WriteBlankSlice();
+//				WriteBlankSlice();
+//				WriteBlankSlice();
 
 				uint32 timingBE = _timing;
 				timingBE &= 0xFF; 
@@ -457,7 +456,7 @@ namespace sp
 				if(AddHeaderPD2(channel,CharacterCode))
 				{
 
-					channel._file.write(reinterpret_cast<const char*>(&buf[0]), SIZE_DATA_BUF);
+					_file.write(reinterpret_cast<const char*>(&buf[0]), SIZE_DATA_BUF);
 					buf.erase(buf.begin(),buf.begin() + SIZE_DATA_BUF) ;
 				}
 				else
@@ -493,8 +492,8 @@ namespace sp
 			Buffer& buf = channel._buffer;
 			while(buf.size() >= 128)
 			{
-				channel._file.write(reinterpret_cast<const char*>(&buf[0]), 128);
-				channel._file << "\n";
+				_file.write(reinterpret_cast<const char*>(&buf[0]), 128);
+				_file << "\n";
 				buf.erase(buf.begin(),buf.begin() + 128) ;
 			}
 		}
@@ -504,11 +503,11 @@ namespace sp
 		HouseKeeping		_MostRecentHouseKeeping;
 		TimeStamp16		_MostRecentTimeStamp;	
 
-		Channel			_hChannel;
-//		Channel			_vChannel, _hChannel;
+		Channel			_vChannel, _hChannel;
 		ImageSlice		_vImage, _hImage;
 
-		std::ofstream		_xmlF;
+		/// Output file pointers, xml header and binary data.
+		std::ofstream		_xmlF, _file;
 
 		word			_TAS, _overloadTimeMS;
 
