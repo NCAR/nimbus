@@ -1,5 +1,7 @@
 #include "qsslserver.h"
 
+static QString certDir("/home/local/raf/instruments/instctrl/certs");
+
 QSslServer::QSslServer(QObject * parent)
 	: QTcpServer(parent)
 {
@@ -18,7 +20,7 @@ qDebug("QMyServer::incomingConnection");
 		QFile tikalClientFile("certs/tikal_client.crt");
 		QFile dropletClientFile("certs/droplet_client.crt");
 
-		QFile eolServerFile("certs/eol-rt-data_server.crt");
+		QFile eolServerFile(certDir + QString("/eol-rt-data_server.crt"));
 
 		keyFile.open(QIODevice::ReadOnly);
 		clientFile.open(QIODevice::ReadOnly);
