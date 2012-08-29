@@ -68,7 +68,7 @@ void S100::ComputeConcentration(float *accum, float *conc, long countV[],
     vol = tas[i] / DataRate() * sampleArea;
 
     if (total_cnts > 0 && rejAT[i] > 0.0)
-      vol *= total_cnts / (total_cnts + rejAT[i]);
+      vol *= total_cnts / (total_cnts + rejAT[i] + oFlow[i]);
 
     for (bin = FirstBin(); bin <= LastBin(); ++bin)
       _sampleVolume[bin] = (float)vol;
@@ -79,16 +79,6 @@ void S100::ComputeConcentration(float *accum, float *conc, long countV[],
 #define DBZ
 
 #include "pms1d_cv"
-
-    if (oFlow[i] > 0 && total_cnts > 0 && oFlow[i] < 5000)
-      {
-      float	ccc = (total_cnts + oFlow[i]) / total_cnts;
-
-      for (bin = FirstBin(); bin <= LastBin(); ++bin)
-        concentration[bin] *= ccc;
-
-      _totalConcen *= ccc;
-      }
 
     otherVarData[_concIdx][i] = _totalConcen;
     otherVarData[_lwIdx][i] = _plwc;
