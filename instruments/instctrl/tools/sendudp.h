@@ -3,6 +3,7 @@
 
 #include <QtNetwork>
 #include <QtGui>
+#include <QtCrypto>
 #include <sys/time.h>
 
 class SendUDP : public QDialog
@@ -22,6 +23,13 @@ private:
 	QUdpSocket *udp;
 	char readBuffer[65000];
 	char writeBuffer[65000];
+
+	// key and iv probably should be read from a file that is 
+	// shared between the two switches.
+	QCA::SymmetricKey *_key;
+	QCA::InitializationVector *_iv;
+        QCA::Cipher *_cipher;
+	QCA::Initializer *_init;
 
  	QLabel *status_;
         QLabel *connection_;
