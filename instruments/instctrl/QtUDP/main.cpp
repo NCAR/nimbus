@@ -15,7 +15,7 @@ int main(int argc, char** argv)
 
 	QApplication app(argc, argv);
 
-	//QString serverLog("Datagram Log");
+	//QString serverLog("DatagramLog");
 	//logx::LogToFile(serverLog.toStdString());
 
 /*	SenderReceiver user;

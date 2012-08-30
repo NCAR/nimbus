@@ -5,6 +5,7 @@ LOGGING("proxy");
 
 Proxy::Proxy()
 {
+	logx::LogToFile("ProxyLog");
 	status_ = new QLabel(tr("Enter port and key to connect client proxy:"));
 	connection_ = new QLabel;
 	connection_->hide();
@@ -77,16 +78,16 @@ void Proxy::connectToServer()
 		sslSocket_->abort();
 
 		// PUT IN KEY AND CERTIFICATE STUFF HERE
-		//QFile keyFile("certs/client.key");
+		QFile keyFile("certs/client.key");
 		//QFile keyFile("certs/shiraz.key");
-		QFile keyFile("certs/newshiraz.key");
-		//QFile clientFile("certs/client.crt");
+		//QFile keyFile("certs/newshiraz.key");
+		QFile clientFile("certs/client.crt");
 		//QFile serverFile("certs/server.crt");
 		//QFile clientFile("certs/newclient.crt");
 		//QFile newServerFile("certs/newserver.crt");
 		//QFile clientFile("certs/tikal_client.crt");
 		//QFile tikalServerFile("certs/tikal_server.crt");
-		QFile clientFile("certs/newshiraz.crt");
+		//QFile clientFile("certs/newshiraz.crt");
 		//QFile clientFile("certs/shiraz.crt");
 		//QFile shirazServerFile("certs/shiraz_server.crt");
 		//QFile dropletClientFile("certs/droplet_client.crt");
@@ -117,8 +118,8 @@ void Proxy::connectToServer()
 		eolServerFile.open(QIODevice::ReadOnly);
 
 		//QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray("shiraz"));
-		//QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray("client"));
-		QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey);
+		QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray("client"));
+		//QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey);
 		QSslCertificate clientCert(&clientFile);
 
 qDebug(clientCert.effectiveDate().toString().toStdString().c_str());
@@ -204,6 +205,7 @@ qDebug(clientCert.subjectInfo(QSslCertificate::StateOrProvinceName).toStdString(
 
 void Proxy::clientConnected()
 {
+qDebug("Proxy::clientConnected");
 	QString host = sslSocket_->peerAddress().toString();
 	connection_->setText(tr("Connected to %1 at port %2.")
 							.arg(host).arg(sslSocket_->peerPort()));
@@ -213,6 +215,7 @@ void Proxy::clientConnected()
 
 void Proxy::clientEncrypted()
 {
+qDebug("Proxy::clientEncrypted");
 	QString host = sslSocket_->peerAddress().toString();
 	connection_->setText(tr("Connected and encrypted to %1 at port %2.")
 							.arg(host).arg(sslSocket_->peerPort()));
@@ -222,6 +225,7 @@ void Proxy::clientEncrypted()
 
 void Proxy::clientDisconnected()
 {
+qDebug("Proxy::clientDisconnected");
 	QString host = sslSocket_->peerAddress().toString();
 	connection_->setText(tr("Disconnected from %1.").arg(host));
 	connection_->show();
@@ -231,6 +235,7 @@ void Proxy::readMode()
 // Data sent over the SslSocket's connection should always be either the multiple instrument
 // host error message or datagram status packets from the instrument
 {
+qDebug("Proxy::readMode");
 	qint64 available = sslSocket_->bytesAvailable();
 	QByteArray newMessage = sslSocket_->read(available);
 	QString clientErrorString(tr("This instrument is already in use. Reconnect with new key."));
@@ -248,6 +253,7 @@ void Proxy::readMode()
 
 void Proxy::sendMode()
 {
+qDebug("Proxy::sendMode");
 	portLabel_->hide();
 	port_->hide();
 	addressLabel_->hide();
@@ -281,6 +287,7 @@ void Proxy::sendMode()
 
 void Proxy::sendToServer()
 {
+qDebug("Proxy::sendToServer");
 	while (udpInput_->hasPendingDatagrams()) {
 		QByteArray newDatagram;
 		newDatagram.resize(udpInput_->pendingDatagramSize());
@@ -292,6 +299,7 @@ void Proxy::sendToServer()
 
 void Proxy::switchHostMode()
 {
+qDebug("Proxy::switchHostMode");
 	connection_->hide();
 	switchButton_->hide();
 
@@ -319,6 +327,7 @@ void Proxy::quitSession()
 // inform user what error occurred.
 void Proxy::displayError(QAbstractSocket::SocketError socketError)
 {
+qDebug("Proxy::displayError(single)");
 	switch (socketError) {
 	case QAbstractSocket::RemoteHostClosedError:
 		break;
@@ -343,6 +352,7 @@ void Proxy::displayError(QAbstractSocket::SocketError socketError)
 
 void Proxy::displayError(const QList<QSslError> & errors)
 {
+qDebug("Proxy::displayError(list)");
 	QString errorList;
 	for (int i = 0; i < errors.size(); ++i) {
 		errorList.append(tr("Error %1: %2.\n").arg(i+1).arg(errors[i].errorString()));
