@@ -3,6 +3,7 @@
 
 #include <QtGui>
 #include <QtNetwork>
+#include <QtCrypto>
 #include "qsslserver.h"
 
 /**
@@ -42,6 +43,11 @@ private:
 	public:
 		bool operator<(const ProxyClient& rhs) const {return instKey_ < rhs.instKey_;}
 	};
+
+        QCA::SymmetricKey *_key;
+        QCA::InitializationVector *_iv;
+        QCA::Cipher *_cipher;
+        QCA::Initializer *_init;
 
 	QSslServer *sslServer_;
 	QMap<ProxyClient, QSslSocket *> connectedSockets_;

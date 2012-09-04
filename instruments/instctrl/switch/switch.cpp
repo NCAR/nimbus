@@ -8,6 +8,29 @@ static const int udpPort = 54544;
 Switch::Switch(QWidget *parent)
 	: QDialog(parent), sslServer_(0)
 {
+	// Set up for symmetric decryption capability
+           _init = new QCA::Initializer();
+           if(!QCA::isSupported("aes128-cbc-pkcs7")) {
+              QErrorMessage error(this);
+              error.showMessage("qca-ossl is not installed on this system\n  Exiting...");
+              exit(1);
+           }
+
+        // Set up the key and initialization vectors for the cipher
+        //  Note: it would probably be best to have these in files shared
+        //   between the switch on the ground and the switch on the aircraft.
+        _key = new QCA::SymmetricKey(QCA::hexToArray(
+                "22971df220ce5ade1f7fd7188e64e36ea5bd5e07a463dcd2dc9b8cc271afd6bbdd3dc54a334c2a1728237c1bd1d981902caaaeaa600f4d0ac38c62ee9e464d2822971df220ce5ade1f7fd7188e64e36ea5bd5e07a463dcd2dc9b8cc271afd6bbdd3dc54a334c2a1728237c1bd1d981902caaaeaa600f4d0ac38c62ee9e464d28"));
+        _iv = new QCA::InitializationVector(QCA::hexToArray(
+                "b35b2fd47af10dc72e0ab6c98a1d64825264233493f6f42caa93b0f90641ae59ac9b23f77de34bd639dc4b8a4259d32c2093860ac83e1a219b593e4b2fc83f37"));
+
+        _cipher = new QCA::Cipher(QString("aes128"),QCA::Cipher::CBC,
+                  // use Default padding, which is equivalent to PKCS7 for CBC
+                      QCA::Cipher::DefaultPadding,
+                  // this object will decrypt
+                      QCA::Decode,
+                      *_key, *_iv);
+
 	status_ = new QLabel(tr("Enter port to listen for TCP connections:"));
 	connection_ = new QLabel;
 	connection_->hide();
@@ -281,18 +304,28 @@ void Switch::sendToClient()
 		clientsLabel_->hide();
 		clients_->hide();
 
-		QByteArray newDatagram;
-		newDatagram.resize(udpSocket_->pendingDatagramSize());
-		udpSocket_->readDatagram(newDatagram.data(), newDatagram.size());
+		QCA::SecureArray encodedMsg;
+		encodedMsg.resize(udpSocket_->pendingDatagramSize());
+		udpSocket_->readDatagram(encodedMsg.data(), encodedMsg.size());
+
+		QCA::SecureArray decodedMsg(_cipher->process(encodedMsg));
+
+		if (!_cipher->ok()) { 
+    			printf("Cipher failed\n");
+		}
+printf("Cipher succeeded!\n");
+
+		QByteArray newDatagram(decodedMsg.data());
 
 		QString datagram(newDatagram.data());
 		QString clientName = datagram.section(',', 0, 0);
+printf(" - DG:%s\n", datagram.toStdString().c_str());
 
 		for (QMap<ProxyClient, QSslSocket *>::iterator i = connectedSockets_.begin(); i != connectedSockets_.end(); ++i) {
 			if (i.key().instKey_ == clientName) {
 				i.value()->write(newDatagram);
 
-				status_->setText(tr("Message sent to client \"%1\".").arg(clientName));
+				status_->setText(tr("Message sent to instrument\"%1\".").arg(clientName));
 				status_->show();
 				return;
 			}

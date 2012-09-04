@@ -17,8 +17,15 @@ env = Environment(tools = ['default']+tools)
 qtmods = ['QtSvg', 'QtCore', 'QtGui', 'QtNetwork', 'QtSql', 'QtOpenGL']
 env.EnableQt4Modules(qtmods)
 
+env.AppendUnique(CPPPATH = ['/usr/local/include/QtCrypto'])
+env.AppendUnique(LIBPATH = ['/usr/local/lib'])
+env.AppendUnique(LIBS= ['qca'])
+
 sources = ['main.cpp', 'switch.cpp', 'qsslserver.cpp']
 
 switch= env.Program('switch',sources)
 
 env.Default(switch)
+
+env.AppendENVPath ('LD_LIBRARY_PATH', '/usr/local/lib')
+
