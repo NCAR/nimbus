@@ -131,33 +131,10 @@ ADS_DataFile::ADS_DataFile(const char fName[])
     rewind(fp);
     }
 
+  // Briefly I had the start tag for the 2D universal file as "PMS2D",
+  // switched to "OAP" (Optical Array Probe).
   if (strstr(buffer, "<OAP") || strstr(buffer, "<PMS2D>"))
     {
-    strcpy(_version, "5");
-    char * endHdr = strstr(buffer, "</OAP>");
-    if (endHdr == 0)
-      endHdr = strstr(buffer, "</PMS2D>");
-    else
-    {
-      char *p = strstr(buffer, "<OAP version");
-      int version = 1;
-      if (p)
-        version = atoi(strstr(buffer, "<OAP version")+14);
-      sprintf(_version, "5.%d", version);
-    }
-
-    if (endHdr == 0)
-      {
-        fprintf(stderr, "No end of ADS3 header???\n");
-        exit(1);
-      }
-
-    /* I am not using this at this time, but this is where/how to extract the
-     * OAP file version #.
-     */
-
-    fseeko64(fp, endHdr - buffer + 9, SEEK_SET);
-
     initADS3(buffer);	// the XML header file.
     }
   else
@@ -200,9 +177,9 @@ void ADS_DataFile::initADS2()
   if (_hdr->isValid() == false)
     return;
 
-  for (const void * p = _hdr->GetFirst("PMS2D"); p; p = _hdr->GetNext("PMS2D"))
+  for (const void *p = _hdr->GetFirst("PMS2D"); p; p = _hdr->GetNext("PMS2D"))
     {
-    const char * name = _hdr->VariableName((Pms2 *)p);
+    const char *name = _hdr->VariableName((Pms2 *)p);
 
     if (name[3] == 'P')
       _probeList.push_back(new Probe(_hdr, (Pms2 *)p, ++Pcnt));
@@ -216,13 +193,38 @@ void ADS_DataFile::initADS2()
 }
 
 /* -------------------------------------------------------------------- */
-void ADS_DataFile::initADS3(char * hdrString)
+void ADS_DataFile::initADS3(char *hdrString)
 {
   std::string XMLgetElementValue(const char s[]);
 
   _fileHeaderType = PMS2D;
 
-  char * p;
+  // Extract version number.  ADS2 versions are less than 5.0.
+  strcpy(_version, "5");
+  char *endHdr = strstr(hdrString, "</OAP>");
+  if (endHdr == 0)
+    endHdr = strstr(hdrString, "</PMS2D>");
+  else
+    {
+    char *p = strstr(hdrString, "<OAP version");
+    int version = 1;
+    if (p)
+      version = atoi(strstr(hdrString, "<OAP version")+14);
+    sprintf(_version, "5.%d", version);
+    }
+
+  if (endHdr == 0)
+    {
+    fprintf(stderr, "No end of ADS3 header???\n");
+    exit(1);
+    }
+
+  // Position at first record for buildIndices.
+  fseeko64(fp, endHdr - buffer + strlen("</OAP>\n"), SEEK_SET);
+
+
+  // Read pertinent meta-data from header.
+  char *p;
   for (p = strtok(hdrString, "\n"); p; p = strtok(NULL, "\n"))
     {
     if ( strstr(p, "</OAP>\n") || strstr(p, "</PMS2D>\n") )
@@ -649,7 +651,6 @@ void ADS_DataFile::buildIndices()
     gzseek(gz_fd, 0, SEEK_SET);
   else
 #endif
-    rewind(fp);
 
 
   for (cnt = 0; (rc = NextPhysicalRecord(buffer)); )
@@ -811,7 +812,7 @@ bool ADS_DataFile::isValidProbe(const char *pr) const
 }
 
 /* -------------------------------------------------------------------- */
-long long ADS_DataFile::ntohll(long long * p) const
+long long ADS_DataFile::ntohll(long long *p) const
 {
   union {
     long long v;
