@@ -622,14 +622,14 @@ COMBDATA$ = "C:\DATA\" + YR$ + MO$ + DA$ + HR$ + "." + MN$ + SEC$
 
 'Initialize the data file with column headings.
 OPEN ENGOUT$ FOR APPEND AS #1
-	PRINT #1, "COMP_T       TMPL    TMPD    TMPC    TMPF    TMPPS   TMPB   TMPPC   ";
+	PRINT #1, "COMP_T   TMPL    TMPD    TMPC    TMPF    TMPPS   TMPB   TMPPC   ";
 	PRINT #1, "V5REF   V5PS    V28M   V24D    V_24D    V15B   V_15B    V12L   V5PC   ";
 	PRINT #1, "I28V     VQ      VEQ     VSQ     VST     PCT"
 CLOSE #1
 
 'Initialize engineering data file with column headings.
 OPEN DATAOUT$ FOR APPEND AS #3
-	PRINT #3, " CYCLE_No      CNT_A   CNT_B   DELP    PABS    PBAR    AIN     BIN     AOUT    BOUT"
+	PRINT #3, "COMP_T  CYCLE_No  CNT_A   CNT_B   DELP    PABS    PBAR    AIN     BIN     AOUT    BOUT"
 CLOSE #3
 
 'Create an empty file.
