@@ -93,8 +93,15 @@ void SendUDP::startSendingPackets()
 	while (1) {
 	   QDateTime t = QDateTime::currentDateTime();
 
-	   sprintf(writeBuffer, "%s,%s,command", _instkey->text().toStdString().c_str(), 
-                                t.toString(QString("yyyyMMddThhmmss")).toStdString().c_str());
+	   if (_encrypt)
+	      sprintf(writeBuffer, "%s,%s,status", 
+                        _instkey->text().toStdString().c_str(), 
+                        t.toString(QString("yyyyMMddThhmmss")).toStdString().c_str());
+	   else
+	      sprintf(writeBuffer, "%s,%s,command", 
+                         _instkey->text().toStdString().c_str(), 
+                         t.toString(QString("yyyyMMddThhmmss")).toStdString().c_str());
+
 	   printf("%s\n", writeBuffer);
            status_->setText(QString(writeBuffer));
            this->show();
