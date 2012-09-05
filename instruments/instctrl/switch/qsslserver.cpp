@@ -1,6 +1,6 @@
 #include "qsslserver.h"
 
-static QString certDir("/home/local/raf/instruments/instctrl/certs");
+static QString certDir("/home/tbaltzer/raf/instruments/instctrl/QtUDP/certs");
 
 QSslServer::QSslServer(QObject * parent)
 	: QTcpServer(parent)
@@ -14,21 +14,20 @@ qDebug("QMyServer::incomingConnection");
 	if (socket->setSocketDescriptor(socketDescriptor)) {
 		pendingConnections_.append(socket);
 
-		QFile keyFile("certs/server.key");
-		QFile clientFile("certs/client.crt");
-		QFile shirazClientFile("certs/shiraz_client.crt");
-		QFile tikalClientFile("certs/tikal_client.crt");
-		QFile dropletClientFile("certs/droplet_client.crt");
+		QFile keyFile(certDir + QString("/server.key"));
+		QFile clientFile(certDir + QString("/client.crt"));
+		QFile shirazClientFile(certDir + QString("/shiraz_client.crt"));
+		QFile tikalClientFile(certDir + QString("/tikal_client.crt"));
+		QFile dropletClientFile(certDir + QString("/droplet_client.crt"));
 
 		QFile eolServerFile(certDir + QString("/eol-rt-data_server.crt"));
 
-		keyFile.open(QIODevice::ReadOnly);
-		clientFile.open(QIODevice::ReadOnly);
-		shirazClientFile.open(QIODevice::ReadOnly);
-		tikalClientFile.open(QIODevice::ReadOnly);
-		dropletClientFile.open(QIODevice::ReadOnly);
-
-		eolServerFile.open(QIODevice::ReadOnly);
+		if (!openCertFile(keyFile)) return;
+                if (!openCertFile(clientFile)) return;
+		if (!openCertFile(shirazClientFile)) return;
+                if (!openCertFile(tikalClientFile)) return;
+                if (!openCertFile(dropletClientFile)) return;
+                if (!openCertFile(eolServerFile)) return;
 
 		QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray("server"));
 
@@ -56,7 +55,7 @@ qDebug("QMyServer::incomingConnection");
 
 		// Can uncomment this line to see debugging messages during
 		// certificate verification process
-		connectDebuggingMessages(socket);
+		//connectDebuggingMessages(socket);
 
 		socket->setPrivateKey(key);
 		socket->setCaCertificates(clientCertificates);
@@ -161,6 +160,71 @@ void QSslServer::slot_disconnected ()
 void QSslServer::slot_error (QAbstractSocket::SocketError err)
 {
    qDebug() << "QMyServer::slot_error(" << err << ")";
+   switch (err) {
+      case QAbstractSocket::ConnectionRefusedError:
+         qDebug("The connection was refused by the peer (or timed out).");
+         break;
+      case QAbstractSocket::RemoteHostClosedError:
+         qDebug("The remote host closed the connection. Note that the client socket.");
+         break;
+      case QAbstractSocket::HostNotFoundError:
+         qDebug("The host address was not found.");
+         break;
+      case QAbstractSocket::SocketAccessError:
+         qDebug("The socket operation failed because the application lacked the required privileges.");
+         break;
+      case QAbstractSocket::SocketResourceError:
+         qDebug("The local system ran out of resources (e.g., too many sockets).");
+         break;
+      case QAbstractSocket::SocketTimeoutError:
+         qDebug("The socket operation timed out.");
+         break;
+      case QAbstractSocket::DatagramTooLargeError:
+         qDebug("The datagram was larger than the operating system's limit.");
+         break;
+      case QAbstractSocket::NetworkError:
+         qDebug("An error occurred with the network (e.g., the network cable was accidentally plugged out).");
+         break;
+      case QAbstractSocket::AddressInUseError:
+         qDebug("The address specified to QUdpSocket::bind() is already in use and was set to be exclusive.");
+         break;
+      case QAbstractSocket::SocketAddressNotAvailableError:
+         qDebug("The address specified to QUdpSocket::bind() does not belong to the host.");
+         break;
+      case QAbstractSocket::UnsupportedSocketOperationError:
+         qDebug("The requested socket operation is not supported by the local operating system (e.g., lack of IPv6 support).");
+         break;
+      case QAbstractSocket::ProxyAuthenticationRequiredError:
+         qDebug("The socket is using a proxy, and the proxy requires authentication.");
+         break;
+      case QAbstractSocket::SslHandshakeFailedError:
+         qDebug("The SSL/TLS handshake failed, so the connection was closed (only used in QSslSocket)");
+         break;
+      case QAbstractSocket::UnfinishedSocketOperationError:
+         qDebug("Used by QAbstractSocketEngine only, The last operation attempted has not finished yet (still in progress in the background).");
+         break;
+      case QAbstractSocket::ProxyConnectionRefusedError:
+         qDebug("Could not contact the proxy server because the connection to that server was denied.");
+         break;
+      case QAbstractSocket::ProxyConnectionClosedError:
+         qDebug("The connection to the proxy server was closed unexpectedly (before the connection to the final peer was established)");
+         break;
+      case QAbstractSocket::ProxyConnectionTimeoutError:
+         qDebug("The connection to the proxy server timed out or the proxy server stopped responding in the authentication phase.");
+         break;
+      case QAbstractSocket::ProxyNotFoundError:
+         qDebug("The proxy address set with setProxy() (or the application proxy) was not found.");
+         break;
+      case QAbstractSocket::ProxyProtocolError:
+         qDebug("The connection negotiation with the proxy server because the response from the proxy server could not be understood.");
+         break;
+      case QAbstractSocket::UnknownSocketError:
+         qDebug("An unidentified error occurred.");
+         break;
+     default:
+        qDebug("An unknown QAbstractSocket::SocketError occurred.");
+        break;
+   }
 }
 
 void QSslServer::slot_hostFound ()
@@ -176,4 +240,14 @@ void QSslServer::slot_proxyAuthenticationRequired (const QNetworkProxy &, QAuthe
 void QSslServer::slot_stateChanged (QAbstractSocket::SocketState state)
 {
    qDebug() << "QMyServer::slot_stateChanged(" << state << ")";
+}
+
+bool QSslServer::openCertFile(QFile &certFile)
+{
+   if (!certFile.open(QIODevice::ReadOnly)) {
+      qDebug("Could not open certificate file:");
+      qDebug(certFile.fileName().toStdString().c_str());
+      return false;
+   }
+   return true;
 }

@@ -39,6 +39,7 @@ private slots:
 	void slot_stateChanged (QAbstractSocket::SocketState);
 
 	void slot_readyRead ();
+	bool openCertFile(QFile &certFile);
 };
 
 #endif /*QSSLSERVER_H*/
