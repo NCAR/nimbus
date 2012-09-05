@@ -362,12 +362,12 @@ namespace sp
 			{
 //				WriteBlankSlice();
 
-				uint64 timingBE = _timing;
+				uint64_t timingBE = _timing;
 				timingBE &= 0xFF; 
 //				swap_endian_force(reinterpret_cast<byte*>(&timingBE), sizeof(timingBE));
 				write_buffer(bits, timingBE);
 
-				uint64 sync = Fast2D_Sync;
+				uint64_t sync = Fast2D_Sync;
 //				swap_endian_force(reinterpret_cast<byte*>(&sync), sizeof(sync));
 				write_buffer(bits, sync);
 
@@ -377,7 +377,8 @@ namespace sp
 			void WriteBlankSlice()
 			{
 				//end of last particle 3 blanks then timing word..(blanks are inverted to all 1's)
-				uint32 blank = 0xFFFFFFFF;
+				uint64_t blank = 0xFFFFFFFF;
+				write_buffer(bits, blank);
 				write_buffer(bits, blank);
 			}
 
@@ -458,7 +459,7 @@ namespace sp
 					//so search backward for last SYNC marker
 					union Combo
 					{
-						uint64 sync;
+						uint64_t sync;
 						char   s[8];
 					};
 					Combo c;
@@ -469,7 +470,7 @@ namespace sp
 					Buffer::reverse_iterator ri = std::search(buf.rbegin(), buf.rend(), rbegin, rend);
 					if(ri != buf.rend())
 					{
-						buf.erase(buf.begin(), (ri.base())-sizeof(uint32));
+						buf.erase(buf.begin(), (ri.base())-sizeof(uint32_t));
 					}
 
 					break;

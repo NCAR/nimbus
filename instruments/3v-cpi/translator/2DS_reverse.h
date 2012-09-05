@@ -76,7 +76,7 @@ namespace sp
 		size_t c = 0;
 		for(int i = 0;i<4;++i)
 		{
-			uint32 bits;
+			uint32_t bits;
 			reader >> bits;
 			for(int j = 0;j<32;j++, c++)
 			{
@@ -122,7 +122,7 @@ namespace sp
 	
 		typedef std::vector<TimestampUCAR> time_stamps;
 		typedef std::vector<CompressedSlice> slices;
-		typedef std::vector<uint32> time_slots;
+		typedef std::vector<uint32_t> time_slots;
 		time_stamps		_time_stamps;
 		time_slots		_time_slots;
 		slices			_slices;
@@ -208,7 +208,7 @@ namespace sp
 		
 		try
 		{
-			uint32 sync;
+			uint32_t sync;
 			while(block.remaining() >= sizeof(sync))
 			{
 				block >> sync;
@@ -217,7 +217,7 @@ namespace sp
 				{
 					g_Log <<"Reached end of file\n";	
 					break;
-					//g_Log <<"Got (" << sync << ") instead of correct sync uint32 ("<<Fast2D_Sync<<"), file is corrupt?\n";
+					//g_Log <<"Got (" << sync << ") instead of correct sync uint32_t ("<<Fast2D_Sync<<"), file is corrupt?\n";
 					//block.clear();
 					//throw std::logic_error("corrupt file, shutting down");
 				}
@@ -230,7 +230,7 @@ namespace sp
 				//	g_Log << block.size();
 				//}
 
-				//now we have N particle slices, followed by 3 blank slices, an ending sync uint32 and a timing uint32
+				//now we have N particle slices, followed by 3 blank slices, an ending sync uint32_t and a timing uint64_t
 				//slices are 128 bits each, or 16 bytes
 				IsEndOfParticle endOfParticle;
 				while(!endOfParticle(block,_slices))
@@ -256,13 +256,10 @@ namespace sp
 					asciiOut.close();
 				}*/
 				
-				uint32	time;
+				uint64_t time;
 				block >> time;
 			
 				swap_endian_force(reinterpret_cast<byte*>(&time), sizeof(time)); //convert to little endian
-
-				//the lower byte is just filled with FF per the UCAR spec, which is meaningless to us, so drop it off
-				time &= 0xFFFFFF00;
 
 				_slices.erase(_slices.end()-3, _slices.end()); //remove the last three blank slices
 				while(!_slices.empty())
@@ -293,7 +290,7 @@ namespace sp
 	template< class Writer>
 	void Device2DS_reverse::write_particle(Writer& writer, Timing time, std::ofstream& asciiOut )
 	{
-		static uint32 lineCount = 0;
+		static uint32_t lineCount = 0;
 		size_t nSlices = std::min(_slices.size(), size_t(500)); //only 12 bits for num data words
 	
 		ParticleRecord	pr;
@@ -414,7 +411,7 @@ namespace sp
 		int nBlocks = 0;
 		while(!in_slicedata.bad() && !in_slicedata.eof()/* && nBlocks < _time_stamps.size() */)
 		{
-			uint32 slot = _time_slots[nBlocks++];
+			uint32_t slot = _time_slots[nBlocks++];
 
 			TimestampUCAR& time_stamp = _time_stamps[slot];
 			memset(data_block,0,SIZE_DATA_BUF);

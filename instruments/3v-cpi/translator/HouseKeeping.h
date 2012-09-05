@@ -195,8 +195,8 @@ namespace sp
 			TAS1 >> TAS2>>
 			in.Timing_;
 
-		// uint32 rar = TAS1 + (uint32(TAS2) << 16);
-		 uint32 rar2 = TAS2 + (uint32(TAS1) << 16);
+		// uint32_t rar = TAS1 + (uint32_t(TAS2) << 16);
+		 uint32_t rar2 = TAS2 + (uint32_t(TAS1) << 16);
 		// float t1 = *(float*)&rar;
 		 float t2 = *(float*)&rar2;
 
@@ -205,8 +205,8 @@ namespace sp
 		 //swap_endian_force((byte*)&TAS1,2);
 		 //swap_endian_force((byte*)&TAS2,2);
 
-		 //uint32 rar3 = TAS1 + (uint32(TAS2) << 16);
-		 //uint32 rar4 = TAS2 + (uint32(TAS1) << 16);
+		 //uint32_t rar3 = TAS1 + (uint32_t(TAS2) << 16);
+		 //uint32_t rar4 = TAS2 + (uint32_t(TAS1) << 16);
 		 //float t3 = *(float*)&rar3;
 		 //float t4 = *(float*)&rar4;
 

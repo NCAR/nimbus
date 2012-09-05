@@ -1,15 +1,14 @@
 #pragma once
 #include <string>
 #include <cstring>
+#include <stdint.h>
+
 namespace sp
 {
 	typedef unsigned char	byte;
 	typedef unsigned char	ubyte;
-	typedef unsigned short	uint16;
-	typedef unsigned int	uint32;
-	typedef unsigned long long uint64;
 
-	typedef uint16		word;	//word which defaults to unsigned
+	typedef uint16_t	word;	//word which defaults to unsigned
 	typedef word		uword;	//unsigned word
 	typedef short		sword; //signed word
 	typedef float		float32;
@@ -25,17 +24,17 @@ namespace sp
 		ENDIAN_LITTLE
 	};
 
-	const unsigned long long Fast2D_Sync = 0xAAAAAA0000000000LL;
+	const uint64_t Fast2D_Sync = 0xAAAA000000000000LL;
 
 	inline void swap_endian(byte* bytes, unsigned int nBytes, Endianness source, Endianness dest )
 	{
-		if(source == dest)
+		if (source == dest)
 			return;
 
 		byte* head = bytes;
 		byte* last = bytes + nBytes - 1;
 
-		while(head < last)
+		while (head < last)
 		{
 			byte temp = *head;
 			*head = *last;
@@ -238,11 +237,11 @@ namespace sp
 	struct Timing
 	{
 		Timing(){}
-		Timing(unsigned int v):time(v){}
-		operator unsigned int()const{return time;}
+		Timing(uint64_t v):time(v){}
+		operator uint64_t()const{return time;}
 
 	private:
-		unsigned int	time;
+		uint64_t time;
 	};
 
 		template<class T>

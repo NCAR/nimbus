@@ -16,8 +16,8 @@ namespace sp
 
 		Block&				operator >> (float32& in) {return read(in);}
 		Block&				operator >> (word& in) {return read(in);}
-		Block&				operator >> (uint32& in) {return read(in);}
-		Block&				operator >> (uint64& in) {return read(in);}
+		Block&				operator >> (uint32_t& in) {return read(in);}
+		Block&				operator >> (uint64_t& in) {return read(in);}
 
 		template<class D>
 		Block& read(D& obj)
