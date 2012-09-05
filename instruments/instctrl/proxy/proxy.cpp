@@ -97,11 +97,11 @@ void Proxy::connectToServer()
 		//QFile multiHostServerFile(certDir + QString("/san_server.crt"));
 
 		QFile eolServerFile(certDir + QString("/eol-rt-data_server.crt"));
-QString notice;
-notice = "Key File: "+keyFile.fileName();
-qDebug(notice.toStdString().c_str());
-notice = "Cert File: "+clientFile.fileName();
-qDebug(notice.toStdString().c_str());
+		QString notice;
+		notice = "Key File: "+keyFile.fileName();
+		qDebug(notice.toStdString().c_str());
+		notice = "Cert File: "+clientFile.fileName();
+		qDebug(notice.toStdString().c_str());
 
 		if (!keyFile.open(QIODevice::ReadOnly)) {
 		   qDebug("Could not open key file: ");
@@ -127,21 +127,25 @@ qDebug(notice.toStdString().c_str());
 		//multiHostClientFile.open(QIODevice::ReadOnly);
 		//multiHostServerFile.open(QIODevice::ReadOnly);
 
-		eolServerFile.open(QIODevice::ReadOnly);
+		if (!eolServerFile.open(QIODevice::ReadOnly)) {
+		   qDebug("Could not open server certificate file: ");
+		   qDebug(eolServerFile.fileName().toStdString().c_str());
+                   return;
+                }
 
 		//QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray("shiraz"));
 		QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray("client"));
 		//QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey);
 		QSslCertificate clientCert(&clientFile);
 
-qDebug(clientCert.effectiveDate().toString().toStdString().c_str());
-qDebug(clientCert.expiryDate().toString().toStdString().c_str());
-qDebug(clientCert.subjectInfo(QSslCertificate::Organization).toStdString().c_str());
-qDebug(clientCert.subjectInfo(QSslCertificate::CommonName).toStdString().c_str());
-qDebug(clientCert.subjectInfo(QSslCertificate::LocalityName).toStdString().c_str());
-qDebug(clientCert.subjectInfo(QSslCertificate::OrganizationalUnitName).toStdString().c_str());
-qDebug(clientCert.subjectInfo(QSslCertificate::CountryName).toStdString().c_str());
-qDebug(clientCert.subjectInfo(QSslCertificate::StateOrProvinceName).toStdString().c_str());
+		qDebug(clientCert.effectiveDate().toString().toStdString().c_str());
+		qDebug(clientCert.expiryDate().toString().toStdString().c_str());
+		qDebug(clientCert.subjectInfo(QSslCertificate::Organization).toStdString().c_str());
+		qDebug(clientCert.subjectInfo(QSslCertificate::CommonName).toStdString().c_str());
+		qDebug(clientCert.subjectInfo(QSslCertificate::LocalityName).toStdString().c_str());
+		qDebug(clientCert.subjectInfo(QSslCertificate::OrganizationalUnitName).toStdString().c_str());
+		qDebug(clientCert.subjectInfo(QSslCertificate::CountryName).toStdString().c_str());
+		qDebug(clientCert.subjectInfo(QSslCertificate::StateOrProvinceName).toStdString().c_str());
 		//QSslCertificate serverCert(&serverFile);
 		//QSslCertificate newClientCert(&newClientFile);
 		//QSslCertificate newServerCert(&newServerFile);
@@ -217,7 +221,7 @@ qDebug(clientCert.subjectInfo(QSslCertificate::StateOrProvinceName).toStdString(
 
 void Proxy::clientConnected()
 {
-qDebug("Proxy::clientConnected");
+	//qDebug("Proxy::clientConnected");
 	QString host = sslSocket_->peerAddress().toString();
 	connection_->setText(tr("Connected to %1 at port %2.")
 							.arg(host).arg(sslSocket_->peerPort()));
@@ -227,7 +231,7 @@ qDebug("Proxy::clientConnected");
 
 void Proxy::clientEncrypted()
 {
-qDebug("Proxy::clientEncrypted");
+	//qDebug("Proxy::clientEncrypted");
 	QString host = sslSocket_->peerAddress().toString();
 	connection_->setText(tr("Connected and encrypted to %1 at port %2.")
 							.arg(host).arg(sslSocket_->peerPort()));
@@ -237,7 +241,7 @@ qDebug("Proxy::clientEncrypted");
 
 void Proxy::clientDisconnected()
 {
-qDebug("Proxy::clientDisconnected");
+	//qDebug("Proxy::clientDisconnected");
 	QString host = sslSocket_->peerAddress().toString();
 	connection_->setText(tr("Disconnected from %1.").arg(host));
 	connection_->show();
@@ -247,7 +251,7 @@ void Proxy::readMode()
 // Data sent over the SslSocket's connection should always be either the multiple instrument
 // host error message or datagram status packets from the instrument
 {
-qDebug("Proxy::readMode");
+	//qDebug("Proxy::readMode");
 	qint64 available = sslSocket_->bytesAvailable();
 	QByteArray newMessage = sslSocket_->read(available);
 	QString clientErrorString(tr("This instrument is already in use. Reconnect with new key."));
@@ -265,7 +269,7 @@ qDebug("Proxy::readMode");
 
 void Proxy::sendMode()
 {
-qDebug("Proxy::sendMode");
+	//qDebug("Proxy::sendMode");
 	portLabel_->hide();
 	port_->hide();
 	addressLabel_->hide();
@@ -299,7 +303,7 @@ qDebug("Proxy::sendMode");
 
 void Proxy::sendToServer()
 {
-qDebug("Proxy::sendToServer");
+	//qDebug("Proxy::sendToServer");
 	while (udpInput_->hasPendingDatagrams()) {
 		QByteArray newDatagram;
 		newDatagram.resize(udpInput_->pendingDatagramSize());
@@ -311,7 +315,7 @@ qDebug("Proxy::sendToServer");
 
 void Proxy::switchHostMode()
 {
-qDebug("Proxy::switchHostMode");
+	//qDebug("Proxy::switchHostMode");
 	connection_->hide();
 	switchButton_->hide();
 
@@ -339,9 +343,11 @@ void Proxy::quitSession()
 // inform user what error occurred.
 void Proxy::displayError(QAbstractSocket::SocketError socketError)
 {
-qDebug("Proxy::displayError(single)");
+	//qDebug("Proxy::displayError(single)");
 	switch (socketError) {
 	case QAbstractSocket::RemoteHostClosedError:
+                QMessageBox::information(this, tr("Error"),
+                             tr("The remote host closed the interface"));
 		break;
 	case QAbstractSocket::HostNotFoundError:
 		QMessageBox::information(this, tr("Error"), 
@@ -364,7 +370,7 @@ qDebug("Proxy::displayError(single)");
 
 void Proxy::displayError(const QList<QSslError> & errors)
 {
-qDebug("Proxy::displayError(list)");
+	//qDebug("Proxy::displayError(list)");
 	QString errorList;
 	for (int i = 0; i < errors.size(); ++i) {
 		errorList.append(tr("Error %1: %2.\n").arg(i+1).arg(errors[i].errorString()));
