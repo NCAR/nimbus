@@ -24,7 +24,7 @@ namespace sp
 		ENDIAN_LITTLE
 	};
 
-	const uint64_t Fast2D_Sync = 0xAAAA000000000000LL;
+	const uint64_t Fast2D_Sync = 0xAAAAAA0000000000LL;
 
 	inline void swap_endian(byte* bytes, unsigned int nBytes, Endianness source, Endianness dest )
 	{
@@ -218,7 +218,7 @@ namespace sp
 	};
 
 		template<class T>
-		inline T&	operator >> (T& reader, PSI& in)
+		inline T& operator >> (T& reader, PSI& in)
 		{
 			word temp;
 			reader.read(temp);
@@ -228,7 +228,7 @@ namespace sp
 		}
 
 		template<class T>
-		inline T&	operator << (T& writer, PSI& out)
+		inline T& operator << (T& writer, PSI& out)
 		{
 			return writer << out.val;
 		}
@@ -245,19 +245,19 @@ namespace sp
 	};
 
 		template<class T>
-		inline T&	operator >> (T& reader, Timing& in)
+		inline T& operator >> (T& reader, Timing& in)
 		{
-			unsigned int temp;
-			reader.read( temp);
-			in = Timing( swap_endian(reader, temp));
+			uint64_t temp;
+			reader.read(temp);
+			in = Timing(swap_endian(reader, temp));
 			return reader;
 		}
 
 
 		template<class T>
-		inline T&	operator << (T& writer, Timing& out)
+		inline T& operator << (T& writer, Timing& out)
 		{
-			unsigned int v = out;
+			uint64_t v = out;
 			writer.write(reinterpret_cast<char*>(&v), sizeof(v));
 			return writer;
 		}
@@ -294,14 +294,14 @@ namespace sp
 
 
 		template<class T>
-		inline T&	operator >> (T& reader, TimeStamp16& in)
+		inline T& operator >> (T& reader, TimeStamp16& in)
 		{
 			reader.read(reinterpret_cast<byte*>(&in), sizeof(in));
 			return reader;
 		}
 
 		template<class T>
-		inline T&	operator << (T& writer, TimeStamp16& ts)
+		inline T& operator << (T& writer, TimeStamp16& ts)
 		{
 			return writer << ts.wYear << ts.wMonth << ts.wDayOfWeek << ts.wDay << ts.wHour << ts.wMinute << ts.wSecond << ts.wMilliseconds;
 		}

@@ -110,7 +110,7 @@ namespace sp
 
 		void clear() { _data.clear(); }
 
-		Timing Time()const
+		Timing Time() const
 		{
 			return _time;
 		}
