@@ -1,5 +1,6 @@
 #pragma once
 #include "log.h"
+
 namespace sp
 {
 	class File;
@@ -76,69 +77,69 @@ namespace sp
 				{
 				case HOUSEKEEPING:
 					{
-						HouseKeeping hk;
-						block >> hk;
-						writer << hk;
-						//	_log << hk;
-						nHouses++;
+					HouseKeeping hk;
+					block >> hk;
+					writer << hk;
+					//	_log << hk;
+					nHouses++;
 					//	_log << "HouseK\n";
 					}break;
 				case MASK:
 					{
-						MaskData md;
-						block >>md;
-				//		_log << "(:Mask:)\n";
-						//	_log << md;
+					MaskData md;
+					block >>md;
+					//	_log << "(:Mask:)\n";
+					//	_log << md;
 					}break;
 				case DATA:
 					{
-						static int PC =0;
+					static int PC =0;
 						
-						particle.clear();
+					particle.clear();
 
-						block >> particle;
-						writer << particle;
-						PC++;
-						/*if(word(particle.NumSlicesInParticle)  > particle.HorizontalImage._data.size())
-						{
-							_log <<"BAD\n";
-						}*/
-						//	_log << particle2;
-		
+					block >> particle;
+					writer << particle;
+					PC++;
+					/*if(word(particle.NumSlicesInParticle)  > particle.HorizontalImage._data.size())
+					{
+						_log <<"BAD\n";
+					}*/
+					//	_log << particle2;
+	
 					//	_log << "**ParticleFrame**\n";
 					}break;
 				case UNUSED:
 					{
 					//	_log << "UNUSED FRAME\n";
-						block.go_to_end();			
+					block.go_to_end();			
 					}break;
 				case 0: //indicates the end of the file it seems?
 					{
 					//	_log << "END OF FILE\n";
-						block.go_to_end();	
+					block.go_to_end();	
 					}break;
 				default:
 					{
-						static int count = 0;
-						block.clear();
-						word val= w;
-						char first = val >> 8;
-						char second = val & 0x00ff;
+					static int count = 0;
+					block.clear();
+					word val= w;
+					char first = val >> 8;
+					char second = val & 0x00ff;
 
-						_log <<"\n2DS (" <<count << ")Got a packet header that isn't recognized : " << word(w) << "  ASCI: " << first << " " << second;
-						count++;
-						//head = block.head();
-						//block.go_to(head - sizeof(word)*5);
-						//for(int  i = 0;i<10;++i)
-						//{
-						//	block >> w;
-						//	word val= w;
-						//	char first = val >> 8;
-						//	char second = val & 0x00ff;
+					_log <<"\n2DS (" <<count << ")Got a packet header that isn't recognized : " << word(w) << "  ASCI: " << first << " " << second;
+					count++;
+					//head = block.head();
+					//block.go_to(head - sizeof(word)*5);
+					//for(int  i = 0;i<10;++i)
+					//{
+					//	block >> w;
+					//	word val= w;
+					//	char first = val >> 8;
+					//	char second = val & 0x00ff;
 
-						//	_log <<"\nGot a packet header that isn't recognized : " << word(w) << "  ASCI: " << first << " " << second;
-						//}
-						//		throw std::exception("bad");
+					//	_log <<"\nGot a packet header that isn't recognized : " << word(w) << "  ASCI: " << first << " " << second;
+					//}
+					//		throw std::exception("bad");
 
 					}break;
 

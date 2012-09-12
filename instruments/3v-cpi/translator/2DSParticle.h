@@ -102,7 +102,6 @@ namespace sp
 	}
 	struct ImageData
 	{
-
 		ParticleInfo _Description;
 		typedef std::vector<ImageChunk>	Data;
 		Data	_data;
@@ -187,18 +186,18 @@ namespace sp
 	template<class T>
 	inline T& operator >> (T& reader, ParticleRecord& in)
 	{
-		 reader >> in.HorizontalImage._Description >> in. VerticalImage._Description >>
+		reader >> in.HorizontalImage._Description >> in. VerticalImage._Description >>
 					in.ParticleCount >> in.NumSlicesInParticle;
 
 //		if(in.HorizontalImage._Description.bits.NumDataWords > 0)
-		 {
-			 reader >> in.HorizontalImage;
-		 }
+		{
+			reader >> in.HorizontalImage;
+		}
 //		if(in.VerticalImage._Description.bits.NumDataWords > 0)
-		 {
-			 reader >> in.VerticalImage;
-		 }
-		 return reader;
+		{
+			reader >> in.VerticalImage;
+		}
+		return reader;
 //		in.HorizontalImage >> in.VerticalImage;
 	};
 
