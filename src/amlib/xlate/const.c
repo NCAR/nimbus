@@ -10,12 +10,10 @@ ENTRY POINTS:	FirstPoly()
 		szero()
 		sone()
 
-STATIC FNS:	none
+DESCRIPTION:	Globals file containing misc scientific and engineering
+		constants used by multiple routines.
 
-DESCRIPTION:	Globals file containing misc constants used by multiple
-		routines.
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2011
+COPYRIGHT:	University Corporation for Atmospheric Research, 1996-2012
 -------------------------------------------------------------------------
 */
 
