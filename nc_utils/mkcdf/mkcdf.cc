@@ -5,6 +5,7 @@
  * variables.
  */
 
+#include <cstdio>
 #include <cstdlib>
 #include <netcdfcpp.h>
 
