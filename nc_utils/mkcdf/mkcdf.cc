@@ -6,7 +6,7 @@
  */
 
 #include <cstdlib>
-#include <netcdf.hh>
+#include <netcdfcpp.h>
 
 static const size_t nVariables = 10;
 static const size_t nRecords = 60;
