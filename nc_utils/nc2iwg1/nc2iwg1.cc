@@ -20,7 +20,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2011
 #include <string>
 #include <vector>
 
-#include <netcdf.hh>
+#include <netcdfcpp.h>
 
 using namespace std;
 
