@@ -131,13 +131,24 @@ namespace sp
 			{
 				DIR *dir;
 				struct dirent *ent;
+
 				dir = opendir (dirName.c_str());
-				if (dir != NULL) {
+				if (dir != NULL)
+				{
+					std::vector<std::string> file_list;
 
 					while ((ent = readdir (dir)) != NULL) 
 					{
 						std::string final_file = dirName + "/" + std::string(ent->d_name);
-						(*_op)(final_file);
+						file_list.push_back(final_file);
+					}
+
+					std::sort(file_list.begin(), file_list.end());
+
+					std::vector<std::string>::iterator it;
+					for (it = file_list.begin(); it != file_list.end(); ++it)
+					{
+						(*_op)(*it);
 					}
 					closedir (dir);
 				} else {
