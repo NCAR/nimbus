@@ -309,7 +309,6 @@ namespace sp
 
 			void WriteClearEnding() 
 			{
-
 				int remains = 128 - _slice_pixel_count%128;
 
 				_slice_pixel_count = 0;
@@ -363,7 +362,7 @@ namespace sp
 //				WriteBlankSlice();
 
 				uint64_t timingBE = _timing;
-				timingBE &= 0xFF; 
+				timingBE &= 0x0000FFFFFFFFFFFFLL; 
 //				swap_endian_force(reinterpret_cast<byte*>(&timingBE), sizeof(timingBE));
 				write_buffer(bits, timingBE);
 
@@ -377,7 +376,7 @@ namespace sp
 			void WriteBlankSlice()
 			{
 				//end of last particle 3 blanks then timing word..(blanks are inverted to all 1's)
-				uint64_t blank = 0xFFFFFFFF;
+				uint64_t blank = 0xFFFFFFFFFFFFFFFFLL;
 				write_buffer(bits, blank);
 				write_buffer(bits, blank);
 			}
