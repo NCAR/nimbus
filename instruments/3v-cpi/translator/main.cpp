@@ -28,13 +28,15 @@ struct Do3VCPI
 
 		if (file.is_open() == false) { return; }
 
-		g_Log <<"Generating NCAR OAP .2d from file \"" << file_name <<"\" of size " << file.MegaBytes() <<" MB's\n";
+		g_Log << "Generating NCAR OAP .2d from file \"" << file_name << "\" of size "
+			<< file.MegaBytes() << " MB\n";
 
 		std::string outfile = file_name;
 		outfile.erase(0, outfile.find("base"));	
 		outfile.erase(outfile.end() - 7, outfile.end()); //remove .2dscpi
 
-		sp::UCAR_Writer writer(outfile, *options, sp::HORIZONTAL_3VCPI, sp::VERTICAL_3VCPI, "3V-CPI", "10", "128", "_3H", "_3V");
+		sp::UCAR_Writer writer(outfile, *options, sp::HORIZONTAL_3VCPI, sp::VERTICAL_3VCPI,
+					"3V-CPI", "10", "128", "_3H", "_3V");
 		device.Process(file, writer);
 	}
 };
@@ -57,7 +59,7 @@ struct Do2DS
 		if (file.is_open() == false) { return; }
 
 		g_Log	<< "Generating NCAR OAP .2d from file \"" << file_name << "\" of size "
-			<< file.MegaBytes() << " MB's\n";
+			<< file.MegaBytes() << " MB\n";
 
 		std::string outfile = file_name;
 		outfile.erase(0, outfile.find("base"));	
@@ -108,16 +110,6 @@ struct ProcessFile
 		std::transform(fName.end()-strlen(match), fName.end(), copy.begin(), ::tolower);
 
 		return copy.find(match) != std::string::npos;
-		/*struct LowerCase
-		{
-			bool operator ()(char c1, char c2) const
-			{
-				static std::locale loc;
-				return std::tolower(c1,loc) == std::tolower(c2,loc);
-			}
-		};
-		return std::search(fName.begin(), fName.end(), match.begin(), match.end(), LowerCase()) != fName.end();*/ //<-- gcc can't handle this
-
 	}
 
 	void operator () (const std::string& file_name) const
