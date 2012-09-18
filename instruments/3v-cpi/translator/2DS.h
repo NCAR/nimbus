@@ -108,9 +108,9 @@ namespace sp
 	
 					//	_log << "**ParticleFrame**\n";
 					}break;
-				case UNUSED:
+				case FLUSH:
 					{
-					//	_log << "UNUSED FRAME\n";
+					//	_log << "FLUSH FRAME\n";
 					block.go_to_end();			
 					}break;
 				case 0: //indicates the end of the file it seems?

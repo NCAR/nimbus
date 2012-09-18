@@ -1,5 +1,6 @@
 #pragma once
 #include "log.h"
+
 namespace sp
 {
 	class File;
@@ -43,7 +44,7 @@ namespace sp
 		Word		check_sum;
 		Block		block(SIZE_DATA_BUF, f.SourceEndian(), f.DestinationEndian());
 
-		while(!f.empty())
+		while (!f.empty())
 		{
 			f >> time_stamp;
 			writer << time_stamp;
@@ -57,7 +58,7 @@ namespace sp
 	template< class Writer>
 	void Device3VCPI::process_block( Block &block, Writer& writer )
 	{
-		static int PC =0;
+		static int PC = 0;
 		static int NL = 0;
 	
 		size_t head = 0;
@@ -103,7 +104,7 @@ namespace sp
 				//	_log << "**ParticleFrame**\n";
 					} break;
 
-				case UNUSED:
+				case FLUSH:
 					{
 					/*	if(NL == 185)
 					{
@@ -117,9 +118,8 @@ namespace sp
 				//	block.go_to_end();			
 					} break;
 
-				case 0: //indicates the end of the file it seems?
+				case 0:	// No data.  After a flush.
 					{
-				//	block.go_to_end();	
 					} break;
 
 				default:
@@ -154,9 +154,9 @@ namespace sp
 			//	_log <<"\nBAD READ: " << "head: " << head << "cur: " << block.head();
 			//this means we ran into the end of the block before reading finished
 			block.go_to(head);
-
 		}
 
 		block.clear();
+std::cout <<"\n";
 	}
 }

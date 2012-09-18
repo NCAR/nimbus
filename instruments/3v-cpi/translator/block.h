@@ -1,6 +1,8 @@
 #pragma once
+
 #include <vector>
 #include "common.h"
+
 namespace sp
 {
 
