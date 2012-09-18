@@ -1,6 +1,8 @@
 #pragma once
 #include <sys/stat.h>
+#include <ftw.h>
 #include "log.h"
+
 namespace sp
 {
 	void MakeDirectory(const std::string& name)
@@ -10,14 +12,27 @@ namespace sp
 		int result = system(n.c_str());
 #else
 		int result = mkdir(name.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-	//	mkdir(n);
 #endif
-		
-	//	
-		//if(result != 1)
-		//{
-		//	g_Log <<"Make Directory failed on \"" << name <<"\"\n";
-		//}
+
+		if (result < 0)
+		{
+			g_Log << "Make Directory failed on \"" << name <<"\"\n";
+		}
+	}
+
+	int unlink_cb(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf)
+	{
+		int rv = remove(fpath);
+
+		if (rv)
+		perror(fpath);
+
+		return rv;
+	}
+
+	int rmrf(const char *path)
+	{
+		return nftw(path, unlink_cb, 64, FTW_DEPTH | FTW_PHYS);
 	}
 
 	void DeleteDirectory(const std::string& name)
@@ -28,15 +43,14 @@ namespace sp
 		int result = system(n.c_str()); //windows delete temp directory
 	//	g_Log <<"WIN32\n";
 #else
-		//std::string n = "sudo rm -r " + name;
-		std::string n = "/s /q " + name;
-		int result= rmdir(name.c_str());
-		//int result = system(n.c_str());	  //linux delete all temps
+		std::string n = "rm -rf " + name;
+		int result = rmrf(name.c_str());
 	//	g_Log <<"NO WIN32\n";
 #endif
-	/*	if(result < 1)
+
+		if (result < 0)
 		{
-			g_Log <<"Delete Directory failed on \"" << name <<"\" result =" << result << "\n";
-		}*/
+			g_Log << "Delete Directory failed on \"" << name <<"\" result =" << result << "\n";
+		}
 	}
 }
