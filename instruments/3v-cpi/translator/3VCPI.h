@@ -157,6 +157,5 @@ namespace sp
 		}
 
 		block.clear();
-std::cout <<"\n";
 	}
 }
