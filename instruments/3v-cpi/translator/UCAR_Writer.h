@@ -128,7 +128,7 @@ namespace sp
 				" <Project>" << _options.Project << "</Project>\n" <<
 				" <Platform>" << _options.Platform << "</Platform>\n" << 
 				" <FlightNumber>" << flightNum << "</FlightNumber>\n" <<
-				" <FlightDate>" << _MostRecentTimeStamp.wMonth.ToString() << "/" << _MostRecentTimeStamp.wDay.ToString() << "/" << _MostRecentTimeStamp.wYear.ToString() << "</FlightDate>\n" <<
+				" <FlightDate>" << _MostRecentTimeStamp.wMonth.toString() << "/" << _MostRecentTimeStamp.wDay.toString() << "/" << _MostRecentTimeStamp.wYear.toString() << "</FlightDate>\n" <<
 				" <probe id=\"" << hProbID[1] << hProbID[0] << "\" type=\"" << _ProbeType
 						<< "\" resolution=\"" << _resolution
 						<< "\" nDiodes=\"" << _nDiodes
@@ -202,6 +202,12 @@ namespace sp
 
 				//NOTE: not sure yet what the overLoad value should be set to
 				word overLoad = 0;
+/*
+				std::cout <<  CharacterCode << " " << timeStamp.wHour << ":" << timeStamp.wMinute
+					<< ":" <<  timeStamp.wSecond << "." << timeStamp.wMilliseconds
+					<< " " <<  timeStamp.wYear << "/" << timeStamp.wMonth
+					<< "/" << timeStamp.wDay << std::endl;
+*/
 				_file	^  CharacterCode ^ timeStamp.wHour ^ timeStamp.wMinute
 					^  timeStamp.wSecond ^  timeStamp.wYear ^ timeStamp.wMonth
 					^ timeStamp.wDay ^ word(_MostRecentHouseKeeping.TAS)
@@ -362,7 +368,7 @@ namespace sp
 //				WriteBlankSlice();
 
 				uint64_t timingBE = _timing;
-				timingBE &= 0x0000FFFFFFFFFFFFLL; 
+				timingBE &= 0x0000FFFFFFFFFFFFLL;
 //				swap_endian_force(reinterpret_cast<byte*>(&timingBE), sizeof(timingBE));
 				write_buffer(bits, timingBE);
 

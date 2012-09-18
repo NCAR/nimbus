@@ -2,6 +2,7 @@
 #include <string>
 #include <cstring>
 #include <stdint.h>
+#include <sstream>
 
 namespace sp
 {
@@ -74,7 +75,7 @@ namespace sp
 		bool operator > (const Word& w2) const{return val > w2.val;}
 		bool operator == (const Word& w2) const{return val == w2.val;}
 
-		std::string		ToString()const
+		std::string toString()const
 		{
 			char buffer[100];
 			
@@ -280,12 +281,21 @@ namespace sp
 		{
 			return double(wYear)*60.0*24.0*30.0*12.0 + double(wMonth)*60.0*24.0*30.0 + double(wDay)*60.0*24.0 + double(wHour)*60.0 + double(wMinute) + double(wSecond)*(1.0/60.0) + double(wMilliseconds) /(1000.0);
 		}
+		std::string toSimpleString()
+		{
+			std::stringstream ts;
+			ts << wYear.toString() << "/" << wMonth.toString() << "/" << wDay.toString() << " "
+				<< wHour.toString() << ":" << wMinute.toString() << ":" << wSecond.toString()
+				<< "." << wMilliseconds.toString();
+			return ts.str();
+		}
 		bool operator < (const TimeStamp16& o) const
 		{
 			double v1 = TimeAsSingleValue();
 			double v2 = o.TimeAsSingleValue();
 			return v1 < v2;
 		}
+
 		bool operator > (const TimeStamp16& o) const
 		{
 			return o < *this;
