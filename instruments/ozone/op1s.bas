@@ -339,8 +339,8 @@ OUT DIFFBASEADDR%, 128                      'INITIATE A/D CONVERSION (80H=128)
 	' END IF
 
      IF ADCHANNEL% = 6 THEN
-		CALL PRESSUB(258.26, ADVOLTS#)
-		PRESSURE#(2) = PRES# - 59.55 'ATMOSPHERIC PRESSURE GAUGE
+		CALL PRESSUB(257.68, ADVOLTS#)
+		PRESSURE#(2) = PRES# - 58.386 'ATMOSPHERIC PRESSURE GAUGE
      END IF
 
      IF ADCHANNEL% = 7 THEN
@@ -616,7 +616,7 @@ CLOSE #1
 
 'Initialize engineering data file with column headings.
 OPEN DATAOUT$ FOR APPEND AS #3
-	PRINT #3, " CYCLE_No      CNT_A   CNT_B   DELP    PABS    PBAR    AIN     BIN     AOUT    BOUT"
+	PRINT #3, "COMP_T   CYCLE_No   CNT_A   CNT_B   DELP    PABS    PBAR    AIN     BIN     AOUT    BOUT"
 CLOSE #3
 
 'Create an empty file.
