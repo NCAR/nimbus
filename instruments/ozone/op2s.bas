@@ -481,7 +481,7 @@ CLOSE #1
 
 'Initialize engineering data file with column headings.
 OPEN DATAOUT$ FOR APPEND AS #3
-	PRINT #3, " CYCLE_No      CNT_A   CNT_B   DELP    PABS    PBAR    AIN     BIN     AOUT    BOUT"
+	PRINT #3, "COMP_T   CYCLE_No   CNT_A   CNT_B   DELP    PABS    PBAR    AIN     BIN     AOUT    BOUT"
 CLOSE #3
 
 'Create an empty file.
@@ -915,9 +915,9 @@ HorizOffset% = 0
 	
 	PrintNumArr PRESSURE#(), "###.###", 1, VertOffset% + 21, HorizOffset% + 1, Green
 	PrintNumArr PRESSURE#(), "####.##", 2, VertOffset% + 21, HorizOffset% + 18, Green
-	PrintNumArr PRESSURE#(), "####.##", 3, VertOffset% + 21, HorizOffset% + 38, Green
-	PrintNumArr VOLTAGE#(), "###.##", 6, VertOffset% + 21, HorizOffset% + 53, Green 'Baratron voltage
-	PrintNumArr VOLTAGE#(), "###.##", 7, VertOffset% + 21, HorizOffset% + 61, Green 'Baratron voltage
+	PrintNumArr PRESSURE#(), "####.##", 3, VertOffset% + 21, HorizOffset% + 30, Green
+	PrintNumArr VOLTAGE#(), "###.##", 6, VertOffset% + 21, HorizOffset% + 45, Green 'Baratron voltage
+	PrintNumArr VOLTAGE#(), "###.##", 7, VertOffset% + 21, HorizOffset% + 53, Green 'Baratron voltage
 
 	PrintNumLabel CDBL(VALVEQUADRANT%), "###", VertOffset% + 24, HorizOffset% + 0, Green
 	PrintNumLabel CDBL(EXPECTQUADRANT%), "###", VertOffset% + 24, HorizOffset% + 20, Green
