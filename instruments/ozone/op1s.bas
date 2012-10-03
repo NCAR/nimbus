@@ -491,7 +491,7 @@ SUB INITSCREEN        'Configures static part of screen layout
     PRINT
     PRINT "LAMP           DET             SCRUB"
     PRINT
-    PRINT "FAN            PS Plate        FAN            CPU"
+    PRINT "Vent           PS Plate        T-Contr        PC-104"
     PRINT
     PRINT
     PRINT "Voltages"
@@ -507,6 +507,7 @@ SUB INITSCREEN        'Configures static part of screen layout
     PRINT
     PRINT "CPU utilization:    %"
     PRINT "Peak CPU utilization:    %"
+    PRINT "Files: ", DATAOUT$, ENGOUT$
 
 END SUB
 
