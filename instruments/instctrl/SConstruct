@@ -1,12 +1,42 @@
 # -*- python -*-
 ##  Copyright 2005,2006 UCAR, NCAR, All Rights Reserved
 
-import os, re
+import os, re, sys
 import eol_scons
 
 eolsconscache=1
-env = Environment(tools = ['default', 'qt4', 'logx'])
 qtmods = ['QtSvg', 'QtCore', 'QtGui', 'QtNetwork', 'QtSql', 'QtOpenGL']
+
+def RemoteInstControl(env):
+    # set attributes specific to the OS
+    if sys.platform in ['posix','linux', 'linux2']:
+        pass
+    elif env['PLATFORM'] == 'win32':
+        # Add an include above the qt modules. This is needed since the header files are referenced 
+        # below the module name.
+        qt4include = env['QT4DIR']+'/include'
+        env.AppendUnique(CPPPATH=[qt4include,]) 
+        # add compiler switch to disable the console window
+        env.AppendUnique(LINKFLAGS=['-Wl,-subsystem,windows'])  
+    elif env['PLATFORM'] == 'darwin':
+        # Qt configuration:
+        #    the following uses the frameworks scheme available for gcc on Mac OS
+        #    to provide header, header paths, libraries and library paths. /Library/Frameworks
+        #    and /System/Library/Frameworks are understood by default by gcc.
+        env.AppendUnique(FRAMEWORKPATH=['/usr/local/lib',])
+        qtmods.append('qca')
+        env.AppendUnique(FRAMEWORKS=qtmods)
+       # Unfortunately we have to add these include paths to make qwt
+        # happy, because qwt makes direct reference to Qt headers (e.g. <qglobal.h>)
+        # rather than following the framework approach (i.e. <QtCore/qglobal.h>)
+        for m in qtmods:
+            env.AppendUnique(CPPPATH=['/usr/local/lib/' + m + '.framework/Headers',])
+
+    return env
+
+tools = ['default', 'qt4', 'logx']
+env = Environment(tools = tools, GLOBAL_TOOLS = [RemoteInstControl])
+
 env.EnableQt4Modules(qtmods)
 
 #SConscript("tools/SConscript",exports={'env':env})

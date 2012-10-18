@@ -17,9 +17,11 @@ env = Environment(tools = ['default']+tools)
 qtmods = ['QtSvg', 'QtCore', 'QtGui', 'QtNetwork', 'QtSql', 'QtOpenGL']
 env.EnableQt4Modules(qtmods)
 
-env.AppendUnique(CPPPATH = ['/usr/local/include/QtCrypto'])
-env.AppendUnique(LIBPATH = ['/usr/local/lib'])
-env.AppendUnique(LIBS= ['qca'])
+if (env['PLATFORM'] != 'darwin'):
+    # provided by the frameworks on darwin
+    env.AppendUnique(CPPPATH = ['/usr/local/include/QtCrypto'])
+    env.AppendUnique(LIBPATH = ['/usr/local/lib'])
+    env.AppendUnique(LIBS= ['qca'])
 
 sources = ['instrument.cpp', 'sendudp.cpp']
 gensymkeysrcs = ['gensymkey.cc']
