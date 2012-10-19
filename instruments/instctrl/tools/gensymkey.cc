@@ -13,6 +13,7 @@
 */
 
 #include <QtCrypto>
+#include <stdlib.h>
 #include <stdio.h>
 
 #include <QCoreApplication>
