@@ -49,8 +49,9 @@ SendUDP::SendUDP(bool encrypt)
            setWindowTitle(tr("Aircraft"));
 	   _init = new QCA::Initializer();
 	   if(!QCA::isSupported("aes128-cbc-pkcs7")) {
-	      QErrorMessage error(this);
-	      error.showMessage("qca-ossl is not installed on this system\n  Exiting...");
+	      QMessageBox error(this);
+	      error.setText("qca-ossl is not installed on this system\n  Exiting...");
+	      error.exec();
 	      exit(1);
 	   }
 
