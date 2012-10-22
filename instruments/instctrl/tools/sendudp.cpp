@@ -1,9 +1,8 @@
 #include <cstdio>
+#include <cstring>
 #include <unistd.h>
 #include <QDateTime>
 #include "sendudp.h"
-#include <stdio.h>
-#include <string.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
