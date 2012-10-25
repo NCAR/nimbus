@@ -39,9 +39,8 @@ env = Environment(tools = tools, GLOBAL_TOOLS = [RemoteInstControl])
 
 env.EnableQt4Modules(qtmods)
 
-#SConscript("tools/SConscript",exports={'env':env})
+SConscript("ssl/SConscript")
 SConscript("tools/SConscript")
 SConscript("proxy/SConscript")
 SConscript("switch/SConscript")
-#SConscript("QtUDP/SConscript")
 
