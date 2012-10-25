@@ -16,15 +16,26 @@ class SslServer : public QTcpServer
 	Q_OBJECT;
 
 public:
+	/// @param keyFile Path to the file containing the private key.
+	/// @param certFile Path to the file containing the certificate that matched the private key.
+	/// @param port The server listens on this port.
+	/// @param parent The Qt object parent.
 	SslServer(std::string keyFile, std::string certFile, int port, QObject * parent = 0);
+	/// Destructor.
 	virtual ~SslServer();
 
 protected slots:
 
 protected:
-	void incomingConnection(int socketDescriptor);
+	/// Called when the server has made a socket connection to an
+	/// incoming request.
+	/// @param descriptor File descriptor for the connected socket.
+	void incomingConnection(int descriptor);
+	/// @param keyFile Path to the file containing the private key.
 	std::string _keyFile;
+	/// @param certFile Path to the file containing the certificate that matched the private key.
 	std::string _certFile;
+	/// @param port The server listens on this port.
 	int _port;
 
 };
