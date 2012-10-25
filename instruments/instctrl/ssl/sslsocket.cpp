@@ -77,7 +77,6 @@ void SslSocket::encrypted() {
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::sslErrors(const QList<QSslError>& errors) {
-	qDebug() << "sslErrors: " << errors;
 
 	// we only allow the unsigned certificate error. We can get
 	// multiple ones if both client and server certificates are
@@ -86,8 +85,13 @@ void SslSocket::sslErrors(const QList<QSslError>& errors) {
 		if (errors[i].error() != QSslError::SelfSignedCertificate) {
 			break;
 		}
+
 		// allow this set of SelfSignedCertificate errors to be ignored
 		ignoreSslErrors();
+
+		qDebug() << errors << ", ignored";
 		return;
 	}
+
+	qDebug() << "sslErrors: " << errors;
 }
