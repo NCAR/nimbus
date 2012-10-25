@@ -31,13 +31,12 @@ protected:
 	/// incoming request.
 	/// @param descriptor File descriptor for the connected socket.
 	void incomingConnection(int descriptor);
-	/// @param keyFile Path to the file containing the private key.
+	/// Path to the file containing the private key.
 	std::string _keyFile;
-	/// @param certFile Path to the file containing the certificate that matched the private key.
+	/// Path to the file containing the certificate that matched the private key.
 	std::string _certFile;
-	/// @param port The server listens on this port.
+	/// The server listens on this port.
 	int _port;
-
 };
 
 #endif /* SSLSERVER_H_ */

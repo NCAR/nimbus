@@ -53,6 +53,8 @@ void SslSocket::init() {
 	connect(this, SIGNAL(encrypted()), this, SLOT(encrypted()));
 	connect(this, SIGNAL(sslErrors(const QList<QSslError>&)),
 			this, SLOT(sslErrors(const QList<QSslError>&)));
+
+	setPeerVerifyMode(QSslSocket::VerifyPeer);
 	setPrivateKey(_keyFile.c_str());
 	setLocalCertificate(_certFile.c_str());
 }
@@ -69,7 +71,8 @@ void SslSocket::disconnected() {
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::encrypted() {
-	qDebug() << "encrypted";
+	QSslCertificate peerCert = peerCertificate();
+	qDebug() << "encrypted, peer certificate serial number:" << peerCert.serialNumber();
 }
 
 /////////////////////////////////////////////////////////////////////
