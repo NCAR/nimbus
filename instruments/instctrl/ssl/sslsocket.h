@@ -31,13 +31,17 @@ public:
 	/// socket which can be converted to a QSslSocket. startServerEncryption()
 	/// will be issued.
 	/// @param keyFile Path to the file containing the private key.
+	/// Specify a blank string if no key is provided.
 	/// @param certFile Path to the file containing the certificate that matched the private key.
+	/// Specify a blank string if no certificate is provided.
 	/// @param descriptor File descriptor for the connected socket.
 	/// @param parent The Qt object parent.
 	SslSocket(std::string keyFile, std::string certFile, int descriptor, QObject * parent = 0);
 	/// Constructor for a client type socket. connectToHostEncrypted() will be issued.
 	/// @param keyFile Path to the file containing the private key.
+	/// Specify a blank string if no key is provided.
 	/// @param certFile Path to the file containing the certificate that matched the private key.
+	/// Specify a blank string if no certificate is provided.
 	/// @param serverHost The server host name or IP address.
 	/// @param port The server port number.
 	/// @param parent The Qt object parent.
@@ -50,6 +54,7 @@ protected slots:
 	void disconnected();
 	void encrypted();
 	void sslErrors(const QList<QSslError>& errors);
+	void modeChanged(QSslSocket::SslMode mode);
 
 protected:
 	/// Add the private key and certificate to the QsslSocket. Set up the signal/slot

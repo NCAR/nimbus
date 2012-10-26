@@ -53,10 +53,18 @@ void SslSocket::init() {
 	connect(this, SIGNAL(encrypted()), this, SLOT(encrypted()));
 	connect(this, SIGNAL(sslErrors(const QList<QSslError>&)),
 			this, SLOT(sslErrors(const QList<QSslError>&)));
+	connect(this, SIGNAL(modeChanged(QSslSocket::SslMode)),
+			this, SLOT(modeChanged(QSslSocket::SslMode)));
 
+	// Require the peer to provide a certificate.
 	setPeerVerifyMode(QSslSocket::VerifyPeer);
-	setPrivateKey(_keyFile.c_str());
-	setLocalCertificate(_certFile.c_str());
+
+	if (_keyFile.size() > 0) {
+		setPrivateKey(_keyFile.c_str());
+	}
+	if (_certFile.size() > 0) {
+		setLocalCertificate(_certFile.c_str());
+	}
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -72,7 +80,14 @@ void SslSocket::disconnected() {
 /////////////////////////////////////////////////////////////////////
 void SslSocket::encrypted() {
 	QSslCertificate peerCert = peerCertificate();
-	qDebug() << "encrypted, peer certificate serial number:" << peerCert.serialNumber();
+	QString  O(peerCert.issuerInfo(QSslCertificate::Organization));
+	QString OU(peerCert.issuerInfo(QSslCertificate::OrganizationalUnitName));
+	qDebug() << "encrypted, peer certificate: Organization:" << O << " Unit:" << OU;
+}
+
+/////////////////////////////////////////////////////////////////////
+void SslSocket::modeChanged(QSslSocket::SslMode mode) {
+	qDebug() << "mode changed to " << mode;
 }
 
 /////////////////////////////////////////////////////////////////////
