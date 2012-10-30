@@ -11,14 +11,14 @@ SslSocket::SslSocket(std::string keyFile,
 	_descriptor(descriptor),
 	_serverHost("")
 {
+	qDebug() << "Create a server SslSocket" << descriptor;
 	// Initialize the key and certificate and connect signals
 	init();
 
 	if (setSocketDescriptor(_descriptor)) {
-		setPeerVerifyMode(QSslSocket::VerifyPeer);
 		startServerEncryption();
 	} else {
-		qDebug() << "unable to set socket descriptor for new connection";
+		qDebug() << "Unable to set socket descriptor for new connection";
 	}
 }
 
@@ -35,6 +35,7 @@ SslSocket::SslSocket(std::string keyFile,
 	_descriptor(-1),
 	_serverHost(serverHost)
 {
+	qDebug() << "Create a client SslSocket to server" << serverHost.c_str() << "on port" << port;
 	// Initialize the key and certificate and connect signals
 	init();
 
@@ -51,6 +52,8 @@ void SslSocket::init() {
 	connect(this, SIGNAL(connected()), this, SLOT(connected()));
 	connect(this, SIGNAL(disconnected()), this, SLOT(disconnected()));
 	connect(this, SIGNAL(encrypted()), this, SLOT(encrypted()));
+	connect(this, SIGNAL(peerVerifyError(const QSslError&)),
+			this, SLOT(peerVerifyError(const QSslError&)));
 	connect(this, SIGNAL(sslErrors(const QList<QSslError>&)),
 			this, SLOT(sslErrors(const QList<QSslError>&)));
 	connect(this, SIGNAL(modeChanged(QSslSocket::SslMode)),
@@ -61,20 +64,26 @@ void SslSocket::init() {
 
 	if (_keyFile.size() > 0) {
 		setPrivateKey(_keyFile.c_str());
+		if (privateKey().isNull())
+			qDebug() << "Null key with" << _keyFile.c_str();
 	}
 	if (_certFile.size() > 0) {
 		setLocalCertificate(_certFile.c_str());
+		if (localCertificate().isNull())
+			qDebug() << "Null certificate with" << _certFile.c_str();
+		else if (!localCertificate().isValid())
+			qDebug() << "Invalid certificate with" << _certFile.c_str();
 	}
 }
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::connected() {
-	qDebug() << "connected";
+	qDebug() << "Connected";
 }
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::disconnected() {
-	qDebug() << "disconnected";
+	qDebug() << "Disconnected" << _descriptor;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -82,20 +91,26 @@ void SslSocket::encrypted() {
 	QSslCertificate peerCert = peerCertificate();
 	QString  O(peerCert.issuerInfo(QSslCertificate::Organization));
 	QString OU(peerCert.issuerInfo(QSslCertificate::OrganizationalUnitName));
-	qDebug() << "encrypted, peer certificate: Organization:" << O << " Unit:" << OU;
+	qDebug() << "Encrypted, peer certificate: Organization:" << O << " Unit:" << OU;
 }
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::modeChanged(QSslSocket::SslMode mode) {
-	qDebug() << "mode changed to " << mode;
+	qDebug() << "Mode changed to" << mode;
+}
+
+/////////////////////////////////////////////////////////////////////
+void SslSocket::peerVerifyError(const QSslError& error) {
+	qDebug() << "peerVerifyError:" << error;
+	QList<QSslError> errors;
+	errors.append(error);
+	//sslErrors(errors);
 }
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::sslErrors(const QList<QSslError>& errors) {
-
-	// we only allow the unsigned certificate error. We can get
-	// multiple ones if both client and server certificates are
-	// unsigned
+	// we only allow the selfSignedCertificate error. We can get multiple
+	// ones if both client and server certificates are self-signed.
 	for (int i = 0; i < errors.size(); i++) {
 		if (errors[i].error() != QSslError::SelfSignedCertificate) {
 			break;
@@ -108,5 +123,5 @@ void SslSocket::sslErrors(const QList<QSslError>& errors) {
 		return;
 	}
 
-	qDebug() << "sslErrors: " << errors;
+	qDebug() << "SslErrors:" << errors;
 }

@@ -53,7 +53,7 @@ protected slots:
 	void connected();
 	void disconnected();
 	void encrypted();
-	void sslErrors(QSslError& error);
+	void peerVerifyError(const QSslError& error);
 	void sslErrors(const QList<QSslError>& errors);
 	void modeChanged(QSslSocket::SslMode mode);
 
