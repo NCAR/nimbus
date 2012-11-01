@@ -49,11 +49,14 @@ SslSocket::~SslSocket() {
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::init() {
+
+	//dumpCA();
+
 	connect(this, SIGNAL(connected()), this, SLOT(connected()));
 	connect(this, SIGNAL(disconnected()), this, SLOT(disconnected()));
+	connect(this, SIGNAL(error(QAbstractSocket::SocketError)),
+			this, SLOT(error(QAbstractSocket::SocketError)));
 	connect(this, SIGNAL(encrypted()), this, SLOT(encrypted()));
-	connect(this, SIGNAL(peerVerifyError(const QSslError&)),
-			this, SLOT(peerVerifyError(const QSslError&)));
 	connect(this, SIGNAL(sslErrors(const QList<QSslError>&)),
 			this, SLOT(sslErrors(const QList<QSslError>&)));
 	connect(this, SIGNAL(modeChanged(QSslSocket::SslMode)),
@@ -77,6 +80,22 @@ void SslSocket::init() {
 }
 
 /////////////////////////////////////////////////////////////////////
+void SslSocket::dumpCA() {
+	qDebug() << "***************** CA database *********************";
+	QList<QSslCertificate> certs =  caCertificates();
+	for (int i = 0; i < certs.size(); i++) {
+		qDebug() << certs[i].serialNumber();
+		qDebug() << "  " << "O/" << certs[i].subjectInfo(QSslCertificate::Organization)
+				<< "OU/" << certs[i].subjectInfo(QSslCertificate::OrganizationalUnitName)
+				<< "CN/" << certs[i].subjectInfo(QSslCertificate::CommonName);
+		qDebug() << "  " << "O/" << certs[i].issuerInfo(QSslCertificate::Organization)
+				<< "OU/" << certs[i].issuerInfo(QSslCertificate::OrganizationalUnitName)
+				<< "CN/" << certs[i].issuerInfo(QSslCertificate::CommonName);
+	}
+	qDebug() << "***************************************************";
+}
+
+/////////////////////////////////////////////////////////////////////
 void SslSocket::connected() {
 	qDebug() << "Connected";
 }
@@ -84,6 +103,12 @@ void SslSocket::connected() {
 /////////////////////////////////////////////////////////////////////
 void SslSocket::disconnected() {
 	qDebug() << "Disconnected" << _descriptor;
+}
+
+/////////////////////////////////////////////////////////////////////
+void SslSocket::error(QAbstractSocket::SocketError error) {
+	qDebug() << "error " << error << ", disconnecting";
+	disconnectFromHost();
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -97,14 +122,6 @@ void SslSocket::encrypted() {
 /////////////////////////////////////////////////////////////////////
 void SslSocket::modeChanged(QSslSocket::SslMode mode) {
 	qDebug() << "Mode changed to" << mode;
-}
-
-/////////////////////////////////////////////////////////////////////
-void SslSocket::peerVerifyError(const QSslError& error) {
-	qDebug() << "peerVerifyError:" << error;
-	QList<QSslError> errors;
-	errors.append(error);
-	//sslErrors(errors);
 }
 
 /////////////////////////////////////////////////////////////////////

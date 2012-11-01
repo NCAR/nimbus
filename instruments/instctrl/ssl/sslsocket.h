@@ -52,8 +52,8 @@ public:
 protected slots:
 	void connected();
 	void disconnected();
+	void error (QAbstractSocket::SocketError error);
 	void encrypted();
-	void peerVerifyError(const QSslError& error);
 	void sslErrors(const QList<QSslError>& errors);
 	void modeChanged(QSslSocket::SslMode mode);
 
@@ -61,6 +61,8 @@ protected:
 	/// Add the private key and certificate to the QsslSocket. Set up the signal/slot
 	/// connections.
 	void init();
+	/// Dump the certificate database
+	void dumpCA();
 	/// Path to the file containing the private key.
 	std::string _keyFile;
 	/// Path to the file containing the certificate.
