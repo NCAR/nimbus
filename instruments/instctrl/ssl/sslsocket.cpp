@@ -9,7 +9,8 @@ SslSocket::SslSocket(std::string keyFile,
 	_certFile(certFile),
 	_port(-1),
 	_descriptor(descriptor),
-	_serverHost("")
+	_serverHost(""),
+	_isServer(true)
 {
 	qDebug() << "Create a server SslSocket" << descriptor;
 	// Initialize the key and certificate and connect signals
@@ -33,7 +34,8 @@ SslSocket::SslSocket(std::string keyFile,
 	_certFile(certFile),
 	_port(port),
 	_descriptor(-1),
-	_serverHost(serverHost)
+	_serverHost(serverHost),
+	_isServer(false)
 {
 	qDebug() << "Create a client SslSocket to server" << serverHost.c_str() << "on port" << port;
 	// Initialize the key and certificate and connect signals
@@ -50,7 +52,10 @@ SslSocket::~SslSocket() {
 /////////////////////////////////////////////////////////////////////
 void SslSocket::init() {
 
-	//dumpCA();
+	QList<QSslCertificate> certs;
+	//setCaCertificates (certs);
+
+	dumpCA();
 
 	connect(this, SIGNAL(connected()), this, SLOT(connected()));
 	connect(this, SIGNAL(disconnected()), this, SLOT(disconnected()));
@@ -108,9 +113,14 @@ void SslSocket::disconnected() {
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::socketError(QAbstractSocket::SocketError error) {
-	qDebug() << "SocketError" << error << ", disconnecting";
 	qDebug() << "Connection failed:" << errorString();
-	disconnectFromHost();
+	if (mode() == 1) {
+		qDebug() << "SocketError" << error << ", disconnecting from host";
+		disconnectFromHost();
+	} else {
+		qDebug() << "SocketError" << error << ", disconnecting";
+		disconnect();
+	}
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -141,6 +151,5 @@ void SslSocket::sslErrors(const QList<QSslError>& errors) {
 		qDebug() << errors << ", ignored";
 		return;
 	}
-
 	qDebug() << "SslErrors:" << errors;
 }

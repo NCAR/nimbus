@@ -73,6 +73,8 @@ protected:
 	int _port;
 	/// The server host name or IP address, for client applications.
 	std::string _serverHost;
+	/// Set true for server mode
+	bool _isServer;
 };
 
 #endif /* SSLSOCKET_H_ */
