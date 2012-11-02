@@ -55,7 +55,7 @@ void SslSocket::init() {
 	connect(this, SIGNAL(connected()), this, SLOT(connected()));
 	connect(this, SIGNAL(disconnected()), this, SLOT(disconnected()));
 	connect(this, SIGNAL(error(QAbstractSocket::SocketError)),
-			this, SLOT(error(QAbstractSocket::SocketError)));
+			this, SLOT(socketError(QAbstractSocket::SocketError)));
 	connect(this, SIGNAL(encrypted()), this, SLOT(encrypted()));
 	connect(this, SIGNAL(sslErrors(const QList<QSslError>&)),
 			this, SLOT(sslErrors(const QList<QSslError>&)));
@@ -65,6 +65,7 @@ void SslSocket::init() {
 	// Require the peer to provide a certificate.
 	setPeerVerifyMode(QSslSocket::VerifyPeer);
 
+	// Set and validate private key and certificate
 	if (_keyFile.size() > 0) {
 		setPrivateKey(_keyFile.c_str());
 		if (privateKey().isNull())
@@ -106,8 +107,9 @@ void SslSocket::disconnected() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslSocket::error(QAbstractSocket::SocketError error) {
-	qDebug() << "error " << error << ", disconnecting";
+void SslSocket::socketError(QAbstractSocket::SocketError error) {
+	qDebug() << "SocketError" << error << ", disconnecting";
+	qDebug() << "Connection failed:" << errorString();
 	disconnectFromHost();
 }
 

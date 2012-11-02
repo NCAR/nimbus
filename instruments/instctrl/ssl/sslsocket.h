@@ -52,7 +52,7 @@ public:
 protected slots:
 	void connected();
 	void disconnected();
-	void error (QAbstractSocket::SocketError error);
+	void socketError(QAbstractSocket::SocketError error);
 	void encrypted();
 	void sslErrors(const QList<QSslError>& errors);
 	void modeChanged(QSslSocket::SslMode mode);
