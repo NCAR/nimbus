@@ -52,10 +52,11 @@ SslSocket::~SslSocket() {
 /////////////////////////////////////////////////////////////////////
 void SslSocket::init() {
 
-	QList<QSslCertificate> certs;
+	// The following snippets are retained in case we decide in the future
+	// that we do need to add something to the CA database.
+	//QList<QSslCertificate> certs;
 	//setCaCertificates (certs);
-
-	dumpCA();
+	//dumpCA();
 
 	connect(this, SIGNAL(connected()), this, SLOT(connected()));
 	connect(this, SIGNAL(disconnected()), this, SLOT(disconnected()));
