@@ -3,6 +3,8 @@
 
 #include <QtCore>
 #include <QtNetwork>
+#include <string>
+#include <vector>
 #include "sslsocket.h"
 
 /// SslServer creates a server which listens for connections on a specific
@@ -19,8 +21,9 @@ public:
 	/// @param keyFile Path to the file containing the private key.
 	/// @param certFile Path to the file containing the certificate that matched the private key.
 	/// @param port The server listens on this port.
+	/// @param caDatabase Paths to certs that should be added to the CAdatabase
 	/// @param parent The Qt object parent.
-	SslServer(std::string keyFile, std::string certFile, int port, QObject * parent = 0);
+	SslServer(std::string keyFile, std::string certFile, int port, std::vector<std::string> caDatabase, QObject * parent = 0);
 	/// Destructor.
 	virtual ~SslServer();
 
@@ -37,6 +40,8 @@ protected:
 	std::string _certFile;
 	/// The server listens on this port.
 	int _port;
+	/// Paths to certs that will be added to the CAdatabase
+	std::vector<std::string> _caDatabase;
 };
 
 #endif /* SSLSERVER_H_ */

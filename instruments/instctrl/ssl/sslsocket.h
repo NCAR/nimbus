@@ -4,6 +4,7 @@
 #include <QtCore>
 #include <QtNetwork>
 #include <string>
+#include <vector>
 
 /// SslSocket provides an SSL socket. It can be used either in server
 /// or client mode.
@@ -35,8 +36,9 @@ public:
 	/// @param certFile Path to the file containing the certificate that matched the private key.
 	/// Specify a blank string if no certificate is provided.
 	/// @param descriptor File descriptor for the connected socket.
+	/// @param caDatabase Paths to certs that should be added to the CAdatabase
 	/// @param parent The Qt object parent.
-	SslSocket(std::string keyFile, std::string certFile, int descriptor, QObject * parent = 0);
+	SslSocket(std::string keyFile, std::string certFile, int descriptor, std::vector<std::string> caDatabase, QObject * parent = 0);
 	/// Constructor for a client type socket. connectToHostEncrypted() will be issued.
 	/// @param keyFile Path to the file containing the private key.
 	/// Specify a blank string if no key is provided.
@@ -44,8 +46,9 @@ public:
 	/// Specify a blank string if no certificate is provided.
 	/// @param serverHost The server host name or IP address.
 	/// @param port The server port number.
+	/// @param caDatabase Paths to certs that should be added to the CAdatabase
 	/// @param parent The Qt object parent.
-	SslSocket(std::string keyFile, std::string certFile, std::string serverHost, int port, QObject * parent = 0);
+	SslSocket(std::string keyFile, std::string certFile, std::string serverHost, int port, std::vector<std::string> caDatabase, QObject * parent = 0);
 	/// Destructor
 	virtual ~SslSocket();
 
@@ -61,6 +64,10 @@ protected:
 	/// Add the private key and certificate to the QsslSocket. Set up the signal/slot
 	/// connections.
 	void init();
+	/// set the CA database from the list of certificates in _caDatabase.
+	void setCAdatabase();
+	/// Connect the signals.
+	void connectSignals();
 	/// Dump the certificate database
 	void dumpCA();
 	/// Path to the file containing the private key.
@@ -75,6 +82,8 @@ protected:
 	std::string _serverHost;
 	/// Set true for server mode
 	bool _isServer;
+	/// Paths to certs that will be added to the CAdatabase
+	std::vector<std::string> _caDatabase;
 };
 
 #endif /* SSLSOCKET_H_ */
