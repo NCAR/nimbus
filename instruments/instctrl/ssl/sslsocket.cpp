@@ -87,22 +87,6 @@ void SslSocket::init() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslSocket::dumpCA() {
-	qDebug() << "***************** CA database *********************";
-	QList<QSslCertificate> certs =  caCertificates();
-	for (int i = 0; i < certs.size(); i++) {
-		qDebug() << certs[i].serialNumber();
-		qDebug() << "  " << "O/" << certs[i].subjectInfo(QSslCertificate::Organization)
-				<< "OU/" << certs[i].subjectInfo(QSslCertificate::OrganizationalUnitName)
-				<< "CN/" << certs[i].subjectInfo(QSslCertificate::CommonName);
-		qDebug() << "  " << "O/" << certs[i].issuerInfo(QSslCertificate::Organization)
-				<< "OU/" << certs[i].issuerInfo(QSslCertificate::OrganizationalUnitName)
-				<< "CN/" << certs[i].issuerInfo(QSslCertificate::CommonName);
-	}
-	qDebug() << "***************************************************";
-}
-
-/////////////////////////////////////////////////////////////////////
 void SslSocket::connected() {
 	qDebug() << "Connected";
 }
@@ -154,3 +138,21 @@ void SslSocket::sslErrors(const QList<QSslError>& errors) {
 	}
 	qDebug() << "SslErrors:" << errors;
 }
+
+/////////////////////////////////////////////////////////////////////
+void SslSocket::dumpCA() {
+	qDebug() << "***************** CA database *********************";
+	QList<QSslCertificate> certs =  caCertificates();
+	for (int i = 0; i < certs.size(); i++) {
+		qDebug() << certs[i].serialNumber();
+		qDebug() << "  " << "O/" << certs[i].subjectInfo(QSslCertificate::Organization)
+				<< "OU/" << certs[i].subjectInfo(QSslCertificate::OrganizationalUnitName)
+				<< "CN/" << certs[i].subjectInfo(QSslCertificate::CommonName);
+		qDebug() << "  " << "O/" << certs[i].issuerInfo(QSslCertificate::Organization)
+				<< "OU/" << certs[i].issuerInfo(QSslCertificate::OrganizationalUnitName)
+				<< "CN/" << certs[i].issuerInfo(QSslCertificate::CommonName);
+	}
+	qDebug() << "***************************************************";
+}
+
+
