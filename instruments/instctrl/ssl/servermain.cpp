@@ -25,7 +25,7 @@ int main(int  argc, char** argv)
 		caDatabase.push_back(argv[i]);
 	}
 
-	SslServer server(serverKey, serverCert, 50000, caDatabase);
+	SSL::SslServer server(serverKey, serverCert, 50000, caDatabase);
 
 	return app.exec();
 

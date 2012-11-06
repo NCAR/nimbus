@@ -1,4 +1,7 @@
 #include "sslsocket.h"
+
+using namespace SSL;
+
 /////////////////////////////////////////////////////////////////////
 SslSocket::SslSocket(std::string keyFile,
 		std::string certFile,

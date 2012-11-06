@@ -1,5 +1,7 @@
 #include "sslserver.h"
 
+using namespace SSL;
+
 /////////////////////////////////////////////////////////////////////
 SslServer::SslServer(std::string keyFile,
 		std::string certFile,
@@ -32,4 +34,5 @@ SslServer::~SslServer() {
 void SslServer::incomingConnection(int descriptor) {
 	qDebug() << "incoming Connection on port " << _port << " (descriptor " << descriptor << ")";
 	SslSocket* socket = new SslSocket(_keyFile, _certFile, descriptor, _caDatabase);
+	_sslSockets.push_back(socket);
 }

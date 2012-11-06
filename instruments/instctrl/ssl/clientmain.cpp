@@ -25,7 +25,7 @@ int main(int  argc, char** argv)
 		caDatabase.push_back(argv[i]);
 	}
 
-	SslSocket client(clientKey, clientCert, "localhost", 50000, caDatabase);
+	SSL::SslSocket client(clientKey, clientCert, "localhost", 50000, caDatabase);
 
 	return app.exec();
 
