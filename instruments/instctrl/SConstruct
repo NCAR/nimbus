@@ -41,6 +41,7 @@ env.EnableQt4Modules(qtmods)
 
 SConscript("ssl/SConscript")
 SConscript("tools/SConscript")
-SConscript("proxy/SConscript")
-SConscript("switch/SConscript")
+SConscript("Protocol/SConscript")
+SConscript("Proxy/SConscript")
+SConscript(Switch/SConscript")
 

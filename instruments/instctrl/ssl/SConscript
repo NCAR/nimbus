@@ -17,11 +17,11 @@ if (env['PLATFORM'] != 'darwin'):
     env.AppendUnique(CPPPATH = ['/usr/local/include/QtCrypto'])
     env.AppendUnique(LIBPATH = ['/usr/local/lib'])
 
-serversources = ['servermain.cpp', 'sslserver.cpp', 'sslsocket.cpp']
+serversources = ['servermain.cpp', 'sslserver.cpp', 'sslsocket.cpp', 'Channel.cpp']
 sslserver = env.Program('sslserver', serversources)
 env.Default(sslserver)
 
-clientsources = ['clientmain.cpp', 'sslsocket.cpp']
+clientsources = ['clientmain.cpp', 'sslsocket.cpp', 'Channel.cpp']
 sslclient = env.Program('sslclient', clientsources)
 env.Default(sslclient)
 

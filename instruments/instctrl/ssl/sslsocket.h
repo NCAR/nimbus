@@ -5,6 +5,7 @@
 #include <QtNetwork>
 #include <string>
 #include <vector>
+#include "Channel.h"
 
 namespace SSL {
 
@@ -25,7 +26,7 @@ namespace SSL {
 	///
 	/// SslSocket will allow QSslError::SelfSignedCertificate errors,
 	/// but all other errors cause the connection to be disconnected.
-	class SslSocket : public QSslSocket
+	class SslSocket : public QSslSocket, public Channel
 	{
 		Q_OBJECT;
 
