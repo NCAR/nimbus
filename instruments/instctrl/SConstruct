@@ -43,5 +43,5 @@ SConscript("ssl/SConscript")
 SConscript("tools/SConscript")
 SConscript("Protocol/SConscript")
 SConscript("Proxy/SConscript")
-SConscript(Switch/SConscript")
+SConscript("Switch/SConscript")
 
