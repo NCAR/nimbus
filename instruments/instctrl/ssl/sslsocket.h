@@ -5,7 +5,7 @@
 #include <QtNetwork>
 #include <string>
 #include <vector>
-#include "Channel.h"
+//#include "Channel.h"
 
 namespace SSL {
 
@@ -26,14 +26,21 @@ namespace SSL {
 	///
 	/// SslSocket will allow QSslError::SelfSignedCertificate errors,
 	/// but all other errors cause the connection to be disconnected.
-	class SslSocket : public QSslSocket, public Channel
+	class SslSocket : public QSslSocket//, public Channel
 	{
 		Q_OBJECT;
 
+		/// The state of SslSocket
+		enum SocketState {
+			SS_Unconnected = 0,
+			SS_Connected,
+			SS_Encrypted,
+			SS_Disconnected
+		};
+
 	public:
 		/// Constructor for a server type socket. The descriptor will reference a connected
-		/// socket which can be converted to a QSslSocket. startServerEncryption()
-		/// will be issued.
+		/// socket which can be converted to a QSslSocket. startServerEncryption() will be issued.
 		/// @param keyFile Path to the file containing the private key.
 		/// Specify a blank string if no key is provided.
 		/// @param certFile Path to the file containing the certificate that matched the private key.
@@ -41,7 +48,11 @@ namespace SSL {
 		/// @param descriptor File descriptor for the connected socket.
 		/// @param caDatabase Paths to certs that should be added to the CAdatabase
 		/// @param parent The Qt object parent.
-		SslSocket(std::string keyFile, std::string certFile, int descriptor, std::vector<std::string> caDatabase, QObject * parent = 0);
+		SslSocket(std::string keyFile,
+				  std::string certFile,
+				  int descriptor,
+				  std::vector<std::string> caDatabase,
+				  QObject * parent = 0);
 		/// Constructor for a client type socket. connectToHostEncrypted() will be issued.
 		/// @param keyFile Path to the file containing the private key.
 		/// Specify a blank string if no key is provided.
@@ -50,10 +61,23 @@ namespace SSL {
 		/// @param serverHost The server host name or IP address.
 		/// @param port The server port number.
 		/// @param caDatabase Paths to certs that should be added to the CAdatabase
+		/// @param clientID The client identifier
 		/// @param parent The Qt object parent.
-		SslSocket(std::string keyFile, std::string certFile, std::string serverHost, int port, std::vector<std::string> caDatabase, QObject * parent = 0);
+		SslSocket(std::string keyFile,
+				  std::string certFile,
+				  std::string serverHost,
+				  int port,
+				  std::vector<std::string> caDatabase,
+				  std::string clientID = "Client",
+				  QObject * parent = 0);
 		/// Destructor
 		virtual ~SslSocket();
+		SocketState state();
+		std::string socketID();
+
+	signals:
+		/// emitted when socket state changes
+		void stateChanged(SocketState);
 
 	protected slots:
 		void connected();
@@ -64,8 +88,7 @@ namespace SSL {
 		void modeChanged(QSslSocket::SslMode mode);
 
 	protected:
-		/// Add the private key and certificate to the QsslSocket. Set up the signal/slot
-		/// connections.
+		/// Add the private key and certificate to the QsslSocket. Set up the signal/slot connections.
 		void init();
 		/// set the CA database from the list of certificates in _caDatabase.
 		void setCAdatabase();
@@ -73,6 +96,7 @@ namespace SSL {
 		void connectSignals();
 		/// Dump the certificate database
 		void dumpCA();
+
 		/// Path to the file containing the private key.
 		std::string _keyFile;
 		/// Path to the file containing the certificate.
@@ -83,10 +107,12 @@ namespace SSL {
 		int _port;
 		/// The server host name or IP address, for client applications.
 		std::string _serverHost;
-		/// Set true for server mode
-		bool _isServer;
+		/// Current socket state
+		SocketState _state;
 		/// Paths to certs that will be added to the CAdatabase
 		std::vector<std::string> _caDatabase;
+		/// The socket identifier
+		std::string _socketID;
 	};
 };
 

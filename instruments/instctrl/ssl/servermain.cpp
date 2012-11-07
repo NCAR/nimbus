@@ -3,11 +3,10 @@
 #include <string>
 #include "sslserver.h"
 
-int main(int  argc, char** argv)
+int main(int argc, char** argv)
 {
-
 	if (argc < 3) {
-		std::cout << "usage: " << argv[0] << " private_key_file certificate_file [extra_cert_file ... extra_certFile]" << std::endl;
+		std::cout << "usage: " << argv[0] << " server_key_file server_cert_file [extra_cert_file ... extra_cert_file]" << std::endl;
 		exit(1);
 	}
 
@@ -28,5 +27,4 @@ int main(int  argc, char** argv)
 	SSL::SslServer server(serverKey, serverCert, 50000, caDatabase);
 
 	return app.exec();
-
 }

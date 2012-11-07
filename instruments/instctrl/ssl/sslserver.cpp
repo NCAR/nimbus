@@ -27,12 +27,18 @@ SslServer::SslServer(std::string keyFile,
 
 /////////////////////////////////////////////////////////////////////
 SslServer::~SslServer() {
-
 }
 
 /////////////////////////////////////////////////////////////////////
 void SslServer::incomingConnection(int descriptor) {
-	qDebug() << "incoming Connection on port " << _port << " (descriptor " << descriptor << ")";
+	qDebug() << "Incoming connection on port" << _port << "(descriptor" << descriptor << ")";
 	SslSocket* socket = new SslSocket(_keyFile, _certFile, descriptor, _caDatabase);
 	_sslSockets.push_back(socket);
+}
+
+/////////////////////////////////////////////////////////////////////
+void SslServer::showConnectedSockets() {
+	for (int i = 0; i < _sslSockets.size(); i++) {
+		qDebug() << _sslSockets[i]->socketID().c_str() << ", State:" << _sslSockets[i]->state();
+	}
 }
