@@ -27,8 +27,8 @@ namespace SSL {
 		SslServer(std::string keyFile, std::string certFile, int port, std::vector<std::string> caDatabase, QObject * parent = 0);
 		/// Destructor.
 		virtual ~SslServer();
-		/// List connected clients
-		void showConnectedSockets();
+		/// List the created server sockets
+		void showServerSockets();
 
 	protected slots:
 
@@ -46,7 +46,7 @@ namespace SSL {
 		int _port;
 		/// Paths to certs that will be added to the CAdatabase
 		std::vector<std::string> _caDatabase;
-		/// The list of created sockets.
+		/// The list of created server sockets.
 		std::vector<SslSocket*> _sslSockets;
 	};
 };

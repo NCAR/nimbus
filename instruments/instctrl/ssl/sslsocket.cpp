@@ -1,4 +1,5 @@
 #include "sslsocket.h"
+#include <sstream>
 
 using namespace SSL;
 
@@ -16,16 +17,20 @@ SslSocket::SslSocket(std::string keyFile,
 	_serverHost(""),
 	_state(SS_Unconnected),
 	_caDatabase(caDatabase),
-	_socketID("Server")
+	_socketID("ServerSocket")
 {
-	qDebug() << "Create a server SslSocket" << descriptor;
+	qDebug() << "\nCreate a ServerSocket with descriptor" << descriptor;
 	// Initialize the key and certificate and connect signals
 	init();
 
 	if (setSocketDescriptor(_descriptor)) {
+		std::stringstream ss;
+		ss << _descriptor;
+		_socketID += ss.str();
+
 		startServerEncryption();
 	} else {
-		qDebug() << "Unable to set socket descriptor for new connection";
+		qDebug() << "Unable to set socket descriptor" << descriptor << "for new connection";
 	}
 }
 
@@ -47,7 +52,8 @@ SslSocket::SslSocket(std::string keyFile,
 	_caDatabase(caDatabase),
 	_socketID(clientID)
 {
-	qDebug() << "Create a client SslSocket to server" << serverHost.c_str() << "on port" << port;
+	qDebug() << "Create ClinetSocket \"" << clientID.c_str() << "\" to connect to server \""
+			 << serverHost.c_str() << "\" on port" << port;
 	// Initialize the key and certificate and connect signals
 	init();
 
@@ -91,7 +97,7 @@ void SslSocket::connected() {
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::disconnected() {
-	qDebug() << _socketID.c_str() << "disconnected" << _descriptor;
+	qDebug() << _socketID.c_str() << "disconnected";
 
 	_state = SS_Disconnected;
 	emit stateChanged(_state);
@@ -100,13 +106,7 @@ void SslSocket::disconnected() {
 /////////////////////////////////////////////////////////////////////
 void SslSocket::socketError(QAbstractSocket::SocketError error) {
 	qDebug() << _socketID.c_str() << "connection failed:" << errorString();
-	if (mode() == QSslSocket::SslClientMode) {
-		qDebug() << _socketID.c_str() << "SocketError" << error << ", disconnecting from host";
-		disconnectFromHost();
-	} else {
-		qDebug() << _socketID.c_str() << "SocketError" << error << ", disconnecting";
-		disconnect();
-	}
+	close();
 }
 
 /////////////////////////////////////////////////////////////////////

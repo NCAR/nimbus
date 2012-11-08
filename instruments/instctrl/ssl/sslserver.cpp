@@ -19,9 +19,10 @@ SslServer::SslServer(std::string keyFile,
 	bool validSession = listen(QHostAddress::Any, port);
 
 	if (!validSession) {
-		qDebug() << (tr("Unable to start the server: %1.")
-							.arg(errorString()));
+		qDebug() << (tr("Unable to start the server: %1.").arg(errorString()));
 		exit(1);
+	} else {
+		qDebug() << "Server is ready";
 	}
 }
 
@@ -33,12 +34,13 @@ SslServer::~SslServer() {
 void SslServer::incomingConnection(int descriptor) {
 	qDebug() << "Incoming connection on port" << _port << "(descriptor" << descriptor << ")";
 	SslSocket* socket = new SslSocket(_keyFile, _certFile, descriptor, _caDatabase);
-	_sslSockets.push_back(socket);
+	if (socket->socketDescriptor() != -1)
+		_sslSockets.push_back(socket);
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslServer::showConnectedSockets() {
+void SslServer::showServerSockets() {
 	for (int i = 0; i < _sslSockets.size(); i++) {
-		qDebug() << _sslSockets[i]->socketID().c_str() << ", State:" << _sslSockets[i]->state();
+		qDebug() << "Socket" << _sslSockets[i]->socketDescriptor() << ", State:" << _sslSockets[i]->state();
 	}
 }

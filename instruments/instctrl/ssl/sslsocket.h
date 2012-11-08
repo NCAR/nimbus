@@ -68,7 +68,7 @@ namespace SSL {
 				  std::string serverHost,
 				  int port,
 				  std::vector<std::string> caDatabase,
-				  std::string clientID = "Client",
+				  std::string clientID,
 				  QObject * parent = 0);
 		/// Destructor
 		virtual ~SslSocket();
