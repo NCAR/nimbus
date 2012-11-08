@@ -76,7 +76,7 @@ namespace SSL {
 		std::string socketID();
 
 	signals:
-		/// emitted when socket state changes
+		/// Emitted when socket state changes
 		void stateChanged(SocketState);
 
 	protected slots:

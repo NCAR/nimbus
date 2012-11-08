@@ -36,11 +36,13 @@ void SslServer::incomingConnection(int descriptor) {
 	SslSocket* socket = new SslSocket(_keyFile, _certFile, descriptor, _caDatabase);
 	if (socket->socketDescriptor() != -1)
 		_sslSockets.push_back(socket);
+
+	emit newConnection(descriptor);
 }
 
 /////////////////////////////////////////////////////////////////////
 void SslServer::showServerSockets() {
 	for (int i = 0; i < _sslSockets.size(); i++) {
-		qDebug() << "Socket" << _sslSockets[i]->socketDescriptor() << ", State:" << _sslSockets[i]->state();
+		qDebug() << "** ServerSocket" << _sslSockets[i]->socketDescriptor() << ", State:" << _sslSockets[i]->state();
 	}
 }

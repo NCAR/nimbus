@@ -27,10 +27,15 @@ namespace SSL {
 		SslServer(std::string keyFile, std::string certFile, int port, std::vector<std::string> caDatabase, QObject * parent = 0);
 		/// Destructor.
 		virtual ~SslServer();
-		/// List the created server sockets
-		void showServerSockets();
+
+	signals:
+		/// Emitted when a new connection is made
+		/// @param descriptor The descriptor of the new socket
+		void newConnection(int descriptor);
 
 	protected slots:
+		/// List the created server sockets
+		void showServerSockets();
 
 	protected:
 		/// Called when the server has made a socket connection to an

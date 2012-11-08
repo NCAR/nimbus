@@ -26,5 +26,7 @@ int main(int argc, char** argv)
 
 	SSL::SslServer server(serverKey, serverCert, 50000, caDatabase);
 
+	QObject::connect(&server, SIGNAL(newConnection(int)), &server, SLOT(showServerSockets()));
+
 	return app.exec();
 }
