@@ -1,5 +1,6 @@
 #pragma once
 #include "Packet.h"
+#include <cmath>
 
 namespace sp
 {
