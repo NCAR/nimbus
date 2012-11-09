@@ -17,14 +17,9 @@ struct Do3VCPI
 
 	void operator () (const std::string& file_name) const
 	{
-		/* HACK: trying to ignore the flight data files which are often in the same
-		 * directory, and happen to have the same extension the actual 2ds files
-		 * always seem to start with the word "base", while flight files use "nav"
-		 */
-		if (file_name.find("base") == std::string::npos) { return; }
-
 		sp::Device3VCPI	device;
 		sp::File	file(file_name);
+		sp::File	file_hk(file_name+"HK");
 
 		if (file.is_open() == false) { return; }
 
@@ -37,6 +32,12 @@ struct Do3VCPI
 
 		sp::UCAR_Writer writer(outfile, *options, sp::HORIZONTAL_3VCPI, sp::VERTICAL_3VCPI,
 					"3V-CPI", "10", "128", "_3H", "_3V");
+
+		if (file_hk.is_open())
+		{
+			std::cout << "Processing housekeeping file.\n";
+			device.Process(file_hk, writer);
+		}
 		device.Process(file, writer);
 	}
 };
@@ -47,12 +48,6 @@ struct Do2DS
 
 	void operator () (const std::string& file_name) const
 	{
-		/* HACK: trying to ignore the flight data files which are often in the same
-		 * directory, and happen to have the same extension the actual 2ds files
-		 * always seem to start with the word "base", while flight files use "nav"
-		 */
-		if (file_name.find("base") == std::string::npos) { return; }
-
 		sp::Device2DS	device;
 		sp::File	file(file_name);
 
@@ -114,12 +109,12 @@ struct ProcessFile
 
 	void operator () (const std::string& file_name) const
 	{
-		if(contains(file_name, ".2dscpi"))
+		if(contains(file_name, ".2dscpi") && file_name.find("base") != std::string::npos)
 		{
 			Do3VCPI doit = {options};
 			doit(file_name);
 		}
-		else if(contains(file_name, ".2ds"))
+		else if(contains(file_name, ".2ds") && file_name.find("base") != std::string::npos)
 		{
 			Do2DS doit = {options};
 			doit(file_name);
@@ -133,9 +128,11 @@ struct ProcessFile
 };
 
 
-//-d 2ds -o Spec2d  -date_end 2011 10 31 22 3
-//-d Spec2d -o 2ds_dup -program SpecTest -platform spec -date_end 2013 10 31 22 3
-//-d 3v-cpi -asciiart -o Spec2d -date_end 2013 10 31 22 25 -minparticle 100 -maxparticle 10000
+/**
+ * -d 2ds -o Spec2d  -date_end 2011 10 31 22 3
+ * -d Spec2d -o 2ds_dup -program SpecTest -platform spec -date_end 2013 10 31 22 3
+ * -d 3v-cpi -asciiart -o Spec2d -date_end 2013 10 31 22 25 -minparticle 100 -maxparticle 10000
+ */
 int main(int argc, const char* argv[])
 {
 	g_Log << "Starting up\n";
