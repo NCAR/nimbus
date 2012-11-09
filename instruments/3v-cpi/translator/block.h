@@ -16,10 +16,10 @@ namespace sp
 	public:
 		Block(unsigned int lineSize, Endianness s, Endianness d):_lineSize(lineSize), _head(0), _srcEnd(s), _dstEnd(d){_data.reserve(1024*1024*10);}
 
-		Block&				operator >> (float32& in) {return read(in);}
-		Block&				operator >> (word& in) {return read(in);}
-		Block&				operator >> (uint32_t& in) {return read(in);}
-		Block&				operator >> (uint64_t& in) {return read(in);}
+		Block&	operator >> (float32& in) {return read(in);}
+		Block&	operator >> (word& in) {return read(in);}
+		Block&	operator >> (uint32_t& in) {return read(in);}
+		Block&	operator >> (uint64_t& in) {return read(in);}
 
 		template<class D>
 		Block& read(D& obj)
