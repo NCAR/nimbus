@@ -1,7 +1,7 @@
 # -*- python -*-
 ##  Copyright 2005,2006 UCAR, NCAR, All Rights Reserved
 
-import os, re, sys
+import sys
 import eol_scons
 
 def RemoteInstControl(env):
@@ -23,8 +23,7 @@ def RemoteInstControl(env):
 
     return env
 
-tools = ['default',]
-env = Environment(tools = tools, GLOBAL_TOOLS = [RemoteInstControl])
+env = Environment(tools = ['default'], GLOBAL_TOOLS = [RemoteInstControl])
 
 SConscript("tools/SConscript")
 SConscript("Protocol/SConscript")
