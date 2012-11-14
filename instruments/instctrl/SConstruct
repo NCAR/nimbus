@@ -5,7 +5,8 @@ import os, re, sys
 import eol_scons
 
 eolsconscache=1
-qtmods = ['QtSvg', 'QtCore', 'QtGui', 'QtNetwork', 'QtSql', 'QtOpenGL']
+#qtmods = ['QtSvg', 'QtCore', 'QtGui', 'QtNetwork', 'QtSql', 'QtOpenGL']
+qtmods = []
 
 def RemoteInstControl(env):
     # set attributes specific to the OS
@@ -19,6 +20,11 @@ def RemoteInstControl(env):
         # add compiler switch to disable the console window
         env.AppendUnique(LINKFLAGS=['-Wl,-subsystem,windows'])  
     elif env['PLATFORM'] == 'darwin':
+    	# Mac OSX setup
+        # These flags cause the apps to be runnable on earlier versions of OSX.
+        env.AppendUnique(CCFLAGS=['-mmacosx-version-min=10.6',])
+        env.AppendUnique(LINKFLAGS=['-mmacosx-version-min=10.6',])
+    	
         # Qt configuration:
         #    the following uses the frameworks scheme available for gcc on Mac OS
         #    to provide header, header paths, libraries and library paths. /Library/Frameworks
@@ -26,20 +32,14 @@ def RemoteInstControl(env):
         env.AppendUnique(FRAMEWORKPATH=['/usr/local/lib',])
         qtmods.append('qca')
         env.AppendUnique(FRAMEWORKS=qtmods)
-       # Unfortunately we have to add these include paths to make qwt
-        # happy, because qwt makes direct reference to Qt headers (e.g. <qglobal.h>)
-        # rather than following the framework approach (i.e. <QtCore/qglobal.h>)
-        for m in qtmods:
-            env.AppendUnique(CPPPATH=['/usr/local/lib/' + m + '.framework/Headers',])
 
     return env
 
-tools = ['default', 'qt4', 'logx']
+tools = ['default', 'qt4', 'ssl']
 env = Environment(tools = tools, GLOBAL_TOOLS = [RemoteInstControl])
 
-env.EnableQt4Modules(qtmods)
+#env.EnableQt4Modules(qtmods)
 
-SConscript("ssl/SConscript")
 SConscript("tools/SConscript")
 SConscript("Protocol/SConscript")
 SConscript("Proxy/SConscript")

@@ -6,7 +6,10 @@ import sys
 #env = Environment(tools = ['default', 'qt4', 'logx'])
 
 tools = Split("""
-default qt4 logx
+default
+qt4 
+logx
+qca
 """)
 
 env = Environment(tools = ['default']+tools)

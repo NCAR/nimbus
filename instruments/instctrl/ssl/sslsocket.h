@@ -5,8 +5,6 @@
 #include <QtNetwork>
 #include <string>
 #include <vector>
-//#include "Channel.h"
-
 namespace SSL {
 
 	/// SslSocket provides an SSL socket. It can be used either in server
@@ -26,7 +24,7 @@ namespace SSL {
 	///
 	/// SslSocket will allow QSslError::SelfSignedCertificate errors,
 	/// but all other errors cause the connection to be disconnected.
-	class SslSocket : public QSslSocket//, public Channel
+	class SslSocket : public QSslSocket
 	{
 		Q_OBJECT;
 
