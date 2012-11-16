@@ -23,7 +23,6 @@ public:
 	/// @param port The server port number.
 	/// @param caDatabase Paths to certs that should be added to the CAdatabase
 	/// @param clientID The client identifier
-	/// @param parent The Qt object parent.
 	ClientConnection(std::string keyFile,
 			  std::string certFile,
 			  std::string serverHost,

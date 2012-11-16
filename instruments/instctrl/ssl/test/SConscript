@@ -17,7 +17,7 @@ env.EnableQt4Modules(['QtGui'])
 #    env.AppendUnique(CPPPATH = ['/usr/local/include/QtCrypto'])
 #    env.AppendUnique(LIBPATH = ['/usr/local/lib'])
 
-serversources = ['servermain.cpp', ]
+serversources = ['servermain.cpp', 'Server.cpp', 'ServerConnection.cpp' ]
 sslserver = env.Program('sslserver', serversources)
 env.Default(sslserver)
 

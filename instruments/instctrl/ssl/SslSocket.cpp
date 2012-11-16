@@ -19,7 +19,7 @@ SslSocket::SslSocket(
 	_state(SS_Unconnected),
 	_caDatabase(caDatabase)
 {
-	qDebug() << "\nCreate a ServerSocket with descriptor" << descriptor;
+	qDebug() << "Create a ServerSocket with descriptor" << descriptor;
 	// Initialize the key and certificate and connect signals
 	init();
 
@@ -148,7 +148,7 @@ void SslSocket::setCAdatabase() {
 	addCaCertificates(certs);
 
 	// display the CA database
-	dumpCA();
+	//dumpCA();
 }
 
 /////////////////////////////////////////////////////////////////////

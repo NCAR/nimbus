@@ -1,7 +1,7 @@
 #include <QtGui>
 #include <iostream>
 #include <string>
-#include "SslServer.h"
+#include "Server.h"
 
 int main(int  argc, char** argv)
 {
@@ -25,7 +25,7 @@ int main(int  argc, char** argv)
 		caDatabase.push_back(argv[i]);
 	}
 
-	SSL::SslServer server(serverKey, serverCert, 50000, caDatabase);
+	Server server(serverKey, serverCert, 50000, caDatabase);
 
 	return app.exec();
 

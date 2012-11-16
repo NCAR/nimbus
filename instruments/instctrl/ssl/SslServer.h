@@ -24,14 +24,18 @@ namespace SSL {
 		/// @param port The server listens on this port.
 		/// @param caDatabase Paths to certs that should be added to the CAdatabase
 		/// @param parent The Qt object parent.
-		SslServer(std::string keyFile, std::string certFile, int port, std::vector<std::string> caDatabase, QObject * parent = 0);
+		SslServer(std::string keyFile,
+				std::string certFile,
+				int port,
+				std::vector<std::string> caDatabase,
+				QObject * parent = 0);
 		/// Destructor.
 		virtual ~SslServer();
 
 	signals:
 		/// Emitted when a new connection is made
 		/// @param descriptor Pointer to the new socket
-		void newConnection(SslSocket* socket);
+		void newConnection(SSL::SslSocket* sslSocket);
 
 	protected slots:
 		/// List the created server sockets
