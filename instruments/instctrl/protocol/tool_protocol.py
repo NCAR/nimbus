@@ -1,7 +1,7 @@
 ourDir = Dir('.').abspath
 ourName = 'protocol'
 
-tools = ['doxygen',]
+tools = ['doxygen','json']
 env = Environment(tools = ['default'] + tools)
 
 def protocol(env):
@@ -14,10 +14,12 @@ def protocol(env):
 Export(ourName)
 
 sources = Split("""
+ Message.cpp
  MessagePayload.cpp
 """)
 
 headers = Split("""
+ Message.h
  MessagePayload.h
 """)
 

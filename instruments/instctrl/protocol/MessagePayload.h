@@ -9,13 +9,19 @@
 #define MESSAGEPAYLOAD_H_
 
 #include <string>
+#include "json/json.h"
 
 namespace Protocol {
 
 	class MessagePayload {
 	public:
-		MessagePayload(std::string);
+		MessagePayload(std::string text);
+		MessagePayload(Json::Value& jsonValue);
+		MessagePayload();
 		virtual ~MessagePayload();
+		Json::Value toJson();
+	protected:
+		std::string _text;
 	};
 };
 
