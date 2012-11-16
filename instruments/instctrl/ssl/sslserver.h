@@ -4,7 +4,7 @@
 #include <QtCore>
 #include <QtNetwork>
 #include <string>
-#include <vector>
+#include <map>
 #include "sslsocket.h"
 
 namespace SSL {
@@ -30,8 +30,8 @@ namespace SSL {
 
 	signals:
 		/// Emitted when a new connection is made
-		/// @param descriptor The descriptor of the new socket
-		void newConnection(int descriptor);
+		/// @param descriptor Pointer to the new socket
+		void newConnection(SslSocket* socket);
 
 	protected slots:
 		/// List the created server sockets
@@ -51,8 +51,9 @@ namespace SSL {
 		int _port;
 		/// Paths to certs that will be added to the CAdatabase
 		std::vector<std::string> _caDatabase;
-		/// The list of created server sockets.
-		std::vector<SslSocket*> _sslSockets;
+		/// The list of created server sockets. Use the address of the socket
+		/// to reference it.
+		std::map<SslSocket*, SslSocket*> _sslSockets;
 	};
 };
 

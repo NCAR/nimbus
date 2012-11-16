@@ -33,16 +33,19 @@ SslServer::~SslServer() {
 /////////////////////////////////////////////////////////////////////
 void SslServer::incomingConnection(int descriptor) {
 	qDebug() << "Incoming connection on port" << _port << "(descriptor" << descriptor << ")";
-	SslSocket* socket = new SslSocket(_keyFile, _certFile, descriptor, _caDatabase);
-	if (socket->socketDescriptor() != -1)
-		_sslSockets.push_back(socket);
 
-	emit newConnection(descriptor);
+	SslSocket* socket = new SslSocket(_keyFile, _certFile, descriptor, _caDatabase);
+
+	if (socket->socketDescriptor() != -1) {
+		_sslSockets[socket] = socket;
+		emit newConnection(socket);
+	}
+
 }
 
 /////////////////////////////////////////////////////////////////////
 void SslServer::showServerSockets() {
-	for (int i = 0; i < _sslSockets.size(); i++) {
-		qDebug() << "** ServerSocket" << _sslSockets[i]->socketDescriptor() << ", State:" << _sslSockets[i]->state();
+	for (std::map<SslSocket*, SslSocket*>::iterator i = _sslSockets.begin(); i != _sslSockets.end(); i++) {
+		qDebug() << "** ServerSocket" << i->second->socketDescriptor() << ", State:" << i->second->state();
 	}
 }
