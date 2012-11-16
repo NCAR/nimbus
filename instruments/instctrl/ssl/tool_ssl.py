@@ -17,12 +17,12 @@ def ssl(env):
 Export('ssl')
 
 sources = Split("""
- sslserver.cpp
- sslsocket.cpp
+ SslServer.cpp
+ SslSocket.cpp
 """)
 headers = Split("""
- sslserver.h
- sslsocket.h
+ SslServer.h
+ SslSocket.h
 """)
 
 lib = env.Library('ssl', sources)

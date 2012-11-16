@@ -1,7 +1,7 @@
 #include <QtGui>
 #include <iostream>
 #include <string>
-#include "sslserver.h"
+#include "SslServer.h"
 
 int main(int  argc, char** argv)
 {
