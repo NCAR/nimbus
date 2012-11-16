@@ -1,0 +1,11 @@
+import sys
+
+tools = Split("""
+  protocol
+""")
+
+env = Environment(tools = ['default'] + tools)
+
+sources = ['main.cpp', ]
+test = env.Program('protocoltest', sources)
+env.Default(test)

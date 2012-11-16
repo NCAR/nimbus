@@ -1,9 +1,10 @@
 import sys
 
 tools = Split("""
-default 
-ssl
-qt4
+  default 
+  ssl
+  qt4
+  protocol
 """)
 
 env = Environment(tools = ['default'] + tools)
