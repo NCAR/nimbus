@@ -4,7 +4,8 @@
 using namespace SSL;
 
 /////////////////////////////////////////////////////////////////////
-SslSocket::SslSocket(std::string keyFile,
+SslSocket::SslSocket(
+		std::string keyFile,
 		std::string certFile,
 		int descriptor,
 		std::vector<std::string> caDatabase,
@@ -16,8 +17,7 @@ SslSocket::SslSocket(std::string keyFile,
 	_descriptor(descriptor),
 	_serverHost(""),
 	_state(SS_Unconnected),
-	_caDatabase(caDatabase),
-	_socketID("ServerSocket")
+	_caDatabase(caDatabase)
 {
 	qDebug() << "\nCreate a ServerSocket with descriptor" << descriptor;
 	// Initialize the key and certificate and connect signals
@@ -40,7 +40,6 @@ SslSocket::SslSocket(std::string keyFile,
 		std::string serverHost,
 		int port,
 		std::vector<std::string> caDatabase,
-		std::string clientID,
 		QObject * parent):
 	QSslSocket(parent),
 	_keyFile(keyFile),
@@ -49,10 +48,9 @@ SslSocket::SslSocket(std::string keyFile,
 	_descriptor(-1),
 	_serverHost(serverHost),
 	_state(SS_Unconnected),
-	_caDatabase(caDatabase),
-	_socketID(clientID)
+	_caDatabase(caDatabase)
 {
-	qDebug() << "Create ClinetSocket \"" << clientID.c_str() << "\" to connect to server \""
+	qDebug() << "Create client socket to connect to server \""
 			 << serverHost.c_str() << "\" on port" << port;
 	// Initialize the key and certificate and connect signals
 	init();
@@ -107,6 +105,7 @@ void SslSocket::disconnected() {
 void SslSocket::socketError(QAbstractSocket::SocketError error) {
 	qDebug() << _socketID.c_str() << "connection failed:" << errorString();
 	close();
+	emit stateChanged(SS_SocketError);
 }
 
 /////////////////////////////////////////////////////////////////////

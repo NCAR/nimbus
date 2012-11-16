@@ -27,16 +27,16 @@ namespace SSL {
 	class SslSocket : public QSslSocket
 	{
 		Q_OBJECT;
-
+	public:
 		/// The state of SslSocket
 		enum SocketState {
 			SS_Unconnected = 0,
 			SS_Connected,
 			SS_Encrypted,
-			SS_Disconnected
+			SS_Disconnected,
+			SS_SocketError
 		};
 
-	public:
 		/// Constructor for a server type socket. The descriptor will reference a connected
 		/// socket which can be converted to a QSslSocket. startServerEncryption() will be issued.
 		/// @param keyFile Path to the file containing the private key.
@@ -59,14 +59,12 @@ namespace SSL {
 		/// @param serverHost The server host name or IP address.
 		/// @param port The server port number.
 		/// @param caDatabase Paths to certs that should be added to the CAdatabase
-		/// @param clientID The client identifier
 		/// @param parent The Qt object parent.
 		SslSocket(std::string keyFile,
 				  std::string certFile,
 				  std::string serverHost,
 				  int port,
 				  std::vector<std::string> caDatabase,
-				  std::string clientID,
 				  QObject * parent = 0);
 		/// Destructor
 		virtual ~SslSocket();
@@ -75,7 +73,7 @@ namespace SSL {
 
 	signals:
 		/// Emitted when socket state changes
-		void stateChanged(SocketState);
+		void stateChanged(SSL::SslSocket::SocketState);
 
 	protected slots:
 		void connected();
@@ -109,7 +107,7 @@ namespace SSL {
 		SocketState _state;
 		/// Paths to certs that will be added to the CAdatabase
 		std::vector<std::string> _caDatabase;
-		/// The socket identifier
+		/// A text description of the socket
 		std::string _socketID;
 	};
 };
