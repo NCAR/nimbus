@@ -1,4 +1,3 @@
-#include <QtGui>
 #include <iostream>
 #include <string>
 #include "ClientConnection.h"
@@ -25,7 +24,7 @@ int main(int argc, char** argv)
         caDatabase.push_back(argv[i]);
     }
 
-    ClientConnection client(
+    SSL::ClientConnection client(
     		clientKeyPath,
     		clientCertPath,
     		"localhost",

@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtCore>
 #include <iostream>
 #include <string>
 #include "Server.h"
@@ -11,7 +11,7 @@ int main(int  argc, char** argv)
 		exit(1);
 	}
 
-	QApplication app(argc, argv);
+	QCoreApplication app(argc, argv);
 
 	std::string serverKey(argv[1]);
 	std::string serverCert(argv[2]);

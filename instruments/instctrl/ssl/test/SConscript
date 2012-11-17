@@ -3,25 +3,16 @@ import sys
 tools = Split("""
   default 
   ssl
-  qt4
   protocol
 """)
 
 env = Environment(tools = ['default'] + tools)
 
-env.EnableQt4Modules(['QtGui'])
-
-#if (env['PLATFORM'] != 'darwin'):
-#    # provided by the frameworks on darwin
-#    env.AppendUnique(LIBS= ['qca'])
-#    env.AppendUnique(CPPPATH = ['/usr/local/include/QtCrypto'])
-#    env.AppendUnique(LIBPATH = ['/usr/local/lib'])
-
 serversources = ['servermain.cpp', 'Server.cpp', 'ServerConnection.cpp' ]
 sslserver = env.Program('sslserver', serversources)
 env.Default(sslserver)
 
-clientsources = ['clientmain.cpp', 'ClientConnection.cpp' ]
+clientsources = ['clientmain.cpp', ]
 sslclient = env.Program('sslclient', clientsources)
 env.Default(sslclient)
 
