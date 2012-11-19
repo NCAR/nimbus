@@ -15,7 +15,7 @@ class QSslServer : public QTcpServer
 
 public:
 	QSslServer(QObject * parent = 0);
-	virtual QSslSocket *nextPendingConnection();
+	virtual ~QSslSocket *nextPendingConnection();
 
 protected:
 	void incomingConnection(int socketDescriptor);
