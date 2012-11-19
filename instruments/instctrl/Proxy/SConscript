@@ -1,0 +1,20 @@
+tools = Split("""
+  default 
+  ssl
+  protocol
+""")
+
+env = Environment(tools = ['default'] + tools)
+
+sources = Split("""
+ main.cpp
+ Proxy.cpp
+""")
+
+headers = Split("""
+ Proxy.h
+""")
+
+proxy = env.Program('proxy', sources)
+env.Default(proxy)
+

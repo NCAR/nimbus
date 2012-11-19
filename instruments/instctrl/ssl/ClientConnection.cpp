@@ -6,7 +6,6 @@
  */
 
 #include "ClientConnection.h"
-#include <iostream>
 
 using namespace SSL;
 
@@ -37,7 +36,7 @@ void ClientConnection::socketStateChanged(SSL::SslSocket::SocketState state) {
 
 	switch (state) {
 	case SslSocket::SS_Unconnected: {
-		std::cout << "socket is unconnected, what does this mean?" << std::endl;
+		qDebug() << "socket is unconnected, what does this mean?";
 		break;
 	}
 	case SslSocket::SS_Connected: {
@@ -64,4 +63,25 @@ void ClientConnection::socketStateChanged(SSL::SslSocket::SocketState state) {
 	}
 	};
 
+}
+
+/////////////////////////////////////////////////////////////////////
+bool ClientConnection::send(Protocol::Message& message) {
+
+	qDebug() << message.toStdString().c_str();
+
+	// Convert message to stringified JSON
+	std::string m = message.toStdString();
+
+	// Send the JSON message to the server
+	int n = _sslSocket->write(m.c_str());
+
+	// Verify that the transmission succeeded
+	if (n != m.size()) {
+		qDebug() << n << "bytes written from string of length" << m.size();
+		return false;
+	}
+
+	// OK
+	return true;
 }

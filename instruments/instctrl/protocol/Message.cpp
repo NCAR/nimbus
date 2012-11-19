@@ -1,11 +1,5 @@
-/*
- * Message.cpp
- *
- *  Created on: Nov 15, 2012
- *      Author: martinc
- */
-
 #include "Message.h"
+#include <sstream>
 
 using namespace Protocol;
 
@@ -48,4 +42,13 @@ Json::Value Message::toJson() {
 	root["payload"] = _payload.toJson();
 
 	return root;
+}
+
+std::string Message::toStdString() {
+
+	// turn the message into a string of JSON
+	std::stringstream s;
+	s << toJson();
+	return s.str();
+
 }

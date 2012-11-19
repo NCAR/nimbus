@@ -1,4 +1,4 @@
-tools = ['doxygen', 'qt4']
+tools = ['protocol', 'doxygen', 'qt4']
 env = Environment(tools = ['default'] + tools)
 qtmods = ['QtCore', 'QtGui', 'QtNetwork',]
 env.EnableQt4Modules(qtmods)

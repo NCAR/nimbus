@@ -9,6 +9,7 @@
 #define CLIENTCONNECTION_H_
 
 #include "SslSocket.h"
+#include "Message.h"
 
 namespace SSL {
 	/// Create a client connection to an SslServer using SslSocket. Capture the
@@ -32,6 +33,10 @@ namespace SSL {
 				  std::string clientID);
 
 		virtual ~ClientConnection();
+		/// Send a message to the server.
+		/// @param message The message.
+		/// @returns False if there was an error sending the message.
+		bool send(Protocol::Message& message);
 
 	public slots:
 		void socketStateChanged(SSL::SslSocket::SocketState);
