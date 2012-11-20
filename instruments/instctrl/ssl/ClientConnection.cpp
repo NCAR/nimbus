@@ -82,6 +82,7 @@ bool ClientConnection::send(Protocol::Message& message) {
 		return false;
 	}
 
+	qDebug() << "wrote" << n << "bytes";
 	// OK
 	return true;
 }

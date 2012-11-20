@@ -18,11 +18,13 @@ Export('ssl')
 
 sources = Split("""
  ClientConnection.cpp
+ ServerConnection.cpp
  SslServer.cpp
  SslSocket.cpp
 """)
 headers = Split("""
  ClientConnection.h
+ ServerConnection.h
  SslServer.h
  SslSocket.h
 """)

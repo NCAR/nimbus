@@ -6,7 +6,7 @@ tools = Split("""
 
 env = Environment(tools = ['default'] + tools)
 
-serversources = ['servermain.cpp', 'Server.cpp', 'ServerConnection.cpp' ]
+serversources = ['servermain.cpp', 'Server.cpp',]
 sslserver = env.Program('sslserver', serversources)
 env.Default(sslserver)
 

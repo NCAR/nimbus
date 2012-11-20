@@ -10,14 +10,14 @@ class Server: public SSL::SslServer {
 	Q_OBJECT;
 
 	public:
-		/// @param keyFile Path to the file containing the private key.
-		/// @param certFile Path to the file containing the certificate that matched the private key.
-		/// @param port The server listens on this port.
-		/// @param caDatabase Paths to certs that should be added to the CAdatabase
-		Server(std::string keyFile,
-				std::string certFile,
-				int port,
-				std::vector<std::string> caDatabase);
+	/// @param keyFile Path to the file containing the private key.
+	/// @param certFile Path to the file containing the certificate that matched the private key.
+	/// @param switchPort The server port number.
+	/// @param caDatabase Paths to certs that should be added to the CAdatabase
+	Server(std::string keyFile,
+			std::string certFile,
+			int switchPort,
+			std::vector<std::string> caDatabase);
 		/// Destructor.
 		virtual ~Server();
 

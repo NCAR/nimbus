@@ -1,0 +1,10 @@
+tools = Split("""
+  default 
+  ssl
+""")
+
+env = Environment(tools = ['default'] + tools)
+
+sources = ['main.cpp', 'Switch.cpp', 'Server.cpp' ]
+switch = env.Program('switch', sources)
+env.Default(switch)
