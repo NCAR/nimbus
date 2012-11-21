@@ -12,6 +12,8 @@ ProbeData::ProbeData(size_t size) : _size(size)
   all.accepted.reserve(size);
   all.rejected.reserve(size);
   all.total_conc.reserve(size);
+  all.total_conc100.reserve(size);
+  all.total_conc150.reserve(size);
   all.dbz.reserve(size);
   all.dbar.reserve(size);
   all.disp.reserve(size);
@@ -21,6 +23,8 @@ ProbeData::ProbeData(size_t size) : _size(size)
   round.accepted.reserve(size);
   round.rejected.reserve(size);
   round.total_conc.reserve(size);
+  round.total_conc100.reserve(size);
+  round.total_conc150.reserve(size);
   round.dbz.reserve(size);
   round.dbar.reserve(size);
   round.disp.reserve(size);
@@ -36,6 +40,8 @@ ProbeData::ProbeData(size_t size) : _size(size)
     all.accepted[i] = round.accepted[i] = 0.0;
     all.rejected[i] = round.rejected[i] = 0.0;
     all.total_conc[i] = round.total_conc[i] = 0.0;
+    all.total_conc100[i] = round.total_conc100[i] = 0.0;
+    all.total_conc150[i] = round.total_conc150[i] = 0.0;
     all.disp[i] = round.disp[i] = 0.0;
     all.dbz[i] = round.dbz[i] = -100.0;
     all.dbar[i] = round.dbar[i] = 0.0;

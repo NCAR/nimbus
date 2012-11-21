@@ -794,6 +794,16 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
         conc_all[i][bin+binoffset] = count_all[i][bin+binoffset] / sv / 1000.0;	// #/L
         conc_round[i][bin+binoffset] = count_round[i][bin+binoffset] / sv / 1000.0;	// #/L
 
+        if (bin >= 4) { // 100 um and larger.
+          data.all.total_conc100[i] += conc_all[i][bin+binoffset];
+          data.round.total_conc100[i] += conc_round[i][bin+binoffset];
+        }
+
+        if (bin >= 6) { // 150 um and larger.
+          data.all.total_conc150[i] += conc_all[i][bin+binoffset];
+          data.round.total_conc150[i] += conc_round[i][bin+binoffset];
+        }
+
         if (bin >= probe.firstBin) {
           data.all.total_conc[i] += conc_all[i][bin+binoffset];
           data.all.dbar[i]	+= conc_all[i][bin+binoffset] * probe.bin_midpoints[bin];

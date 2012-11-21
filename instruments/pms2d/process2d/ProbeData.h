@@ -13,6 +13,7 @@ public:
     std::vector<float> accepted;	// Counts of accepted particles.
     std::vector<float> rejected;	// Counts of rejected particles.
     std::vector<float> total_conc, dbz, dbar, disp, lwc, eff_rad;
+    std::vector<float> total_conc100, total_conc150;
   };
 
   ProbeData(size_t size);

@@ -324,6 +324,28 @@ int netCDF::WriteData(ProbeInfo& probe, ProbeData& data)
   if ((var = addVariable(varname, probe.serialNumber)))
     var->put(&data.round.total_conc[0], data.size());
 
+  /* output 100 micron and 150 micron and above total concentrations.
+   * this should be some command line flag at some point.
+   */
+  if (false)
+  {
+    varname="CONC2DCA100"+probe.suffix; varname[6] = probe.id[0];
+    if ((var = addVariable(varname, probe.serialNumber)))
+      var->put(&data.all.total_conc100[0], data.size());
+
+    varname="CONC2DCR100"+probe.suffix; varname[6] = probe.id[0];
+    if ((var = addVariable(varname, probe.serialNumber)))
+      var->put(&data.round.total_conc100[0], data.size());
+
+    varname="CONC2DCA150"+probe.suffix; varname[6] = probe.id[0];
+    if ((var = addVariable(varname, probe.serialNumber)))
+      var->put(&data.all.total_conc150[0], data.size());
+
+    varname="CONC2DCR150"+probe.suffix; varname[6] = probe.id[0];
+    if ((var = addVariable(varname, probe.serialNumber)))
+      var->put(&data.round.total_conc150[0], data.size());
+  }
+
   varname="PLWC2DCR"+probe.suffix; varname[6] = probe.id[0];
   if ((var = addVariable(varname, probe.serialNumber)))
     var->put(&data.round.lwc[0], data.size());
