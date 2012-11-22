@@ -5,7 +5,7 @@
 #include <QtNetwork>
 #include <string>
 #include <map>
-#include "sslsocket.h"
+#include "SslSocket.h"
 
 namespace SSL {
 	/// SslServer creates a server which listens for connections on a specific
