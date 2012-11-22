@@ -5,9 +5,7 @@ using namespace SSL;
 
 /////////////////////////////////////////////////////////////////////
 ServerConnection::ServerConnection(SslSocket* sslSocket):
-	_sslSocket(sslSocket),
-	_braceCount(0),
-	_jsonStarted(false)
+	_sslSocket(sslSocket)
 {
 
 	// react to changes in the state of the SslSocket
@@ -22,7 +20,6 @@ ServerConnection::ServerConnection(SslSocket* sslSocket):
 /////////////////////////////////////////////////////////////////////
 ServerConnection::~ServerConnection() {
 	if (_sslSocket) {
-		_sslSocket->close();
 		delete _sslSocket;
 	}
 }
@@ -65,29 +62,14 @@ void ServerConnection::socketStateChanged(SSL::SslSocket::SocketState state) {
 void ServerConnection::sslReadyRead() {
 
 	QByteArray data = _sslSocket->readAll();
+
 	qDebug() << "read" << data.size() << "bytes";
-	int n = 0;
-	for (int i = 0; i < data.size(); i++) {
-		char c = data[i];
-		if (c == '{') {
-			_braceCount++;
-			if (_msgBuf.size() > 0 && _braceCount == 1) {
-				qDebug() << "JSON parse error" << _msgBuf.c_str();
-				_msgBuf = "";
-			}
-		} else {
-			if (c == '}') {
-				_braceCount--;
-				if (_msgBuf.size() == 0 && _braceCount < 0) {
-					qDebug() << "JSON parse error" << _msgBuf.c_str();
-					_msgBuf = "";
-				}
-			}
-		}
-		_msgBuf += c;;
-		if (_braceCount == 0) {
-			qDebug() << _msgBuf.c_str();
-			_msgBuf = "";
-		}
+
+	// Feed the characters to the protocoldecoder.
+	std::string s = QString(data).toStdString();
+	std::vector<std::string> msgs = _protocol.incoming(s);
+
+	for (int i = 0; i < msgs.size(); i++) {
+		qDebug() << "msg:" << QString(msgs[i].c_str());
 	}
 }

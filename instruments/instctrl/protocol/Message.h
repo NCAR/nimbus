@@ -10,7 +10,7 @@
 
 #include "MessagePayload.h"
 
-namespace Protocol {
+namespace Protocols {
 	/// A class for encapsulating message meta-data and payload data in JSON
     /// format.
     ///

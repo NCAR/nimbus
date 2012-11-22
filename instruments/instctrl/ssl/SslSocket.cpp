@@ -104,7 +104,6 @@ void SslSocket::disconnected() {
 /////////////////////////////////////////////////////////////////////
 void SslSocket::socketError(QAbstractSocket::SocketError error) {
 	qDebug() << _socketID.c_str() << "connection failed:" << errorString();
-	close();
 	emit stateChanged(SS_SocketError);
 }
 

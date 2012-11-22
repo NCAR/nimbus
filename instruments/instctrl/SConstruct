@@ -5,6 +5,8 @@ import sys
 import eol_scons
 
 def RemoteInstControl(env):
+    # set the optimization/debuging
+    env.Replace(CCFLAGS=['-g'])	
     # set attributes specific to the OS
     if sys.platform in ['posix','linux', 'linux2']:
         pass

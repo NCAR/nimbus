@@ -11,7 +11,7 @@
 #include <string>
 #include "json/json.h"
 
-namespace Protocol {
+namespace Protocols {
 
 	class MessagePayload {
 	public:

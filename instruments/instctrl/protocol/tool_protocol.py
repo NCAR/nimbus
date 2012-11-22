@@ -14,13 +14,17 @@ def protocol(env):
 Export(ourName)
 
 sources = Split("""
+ StreamMsgProtocol.cpp
  Message.cpp
  MessagePayload.cpp
+ Protocol.cpp
 """)
 
 headers = Split("""
+ StreamMsgProtocol.h
  Message.h
  MessagePayload.h
+ Protocol.h
 """)
 
 lib = env.Library(ourName, sources)

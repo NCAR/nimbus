@@ -2,7 +2,7 @@
 #include <iostream>
 
 using namespace SSL;
-using namespace Protocol;
+using namespace Protocols;
 
 /////////////////////////////////////////////////////////////////////
 Proxy::Proxy(int udpPort,

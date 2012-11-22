@@ -1,7 +1,7 @@
 #include "Message.h"
 #include <sstream>
 
-using namespace Protocol;
+using namespace Protocols;
 
 Message::Message(std::string from, std::string to, std::string messageText):
 _payload(messageText),

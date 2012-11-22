@@ -2,6 +2,7 @@
 #define SERVERCONNECTION_H_
 
 #include "SslSocket.h"
+#include "StreamMsgProtocol.h"
 
 namespace SSL {
 /// Manage a connection to a client. The socket delivered to the constructor
@@ -31,17 +32,8 @@ namespace SSL {
 	protected:
 		/// The connected SslSocket
 		SSL::SslSocket* _sslSocket;
-		/// The incoming message buffer. Messages are buffered here
-		/// until a complete JSON package is received, which occurs
-		/// when an equal number of open and close braces are received.
-		/// At the point, the new message is emitted.
-		std::string _msgBuf;
-		/// The count of braces. Incremented for left braces and decremented
-		/// for right braces. If it goes negative, there is a message format
-		/// error.
-		int _braceCount;
-		/// Set true if we have detected the opening brace of a JSON message
-		bool _jsonStarted;
+		/// The protocol handler for proxy connections.
+		Protocols::StreamMsgProtocol _protocol;
 	};
 };
 

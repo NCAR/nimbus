@@ -66,23 +66,27 @@ void ClientConnection::socketStateChanged(SSL::SslSocket::SocketState state) {
 }
 
 /////////////////////////////////////////////////////////////////////
-bool ClientConnection::send(Protocol::Message& message) {
+bool ClientConnection::send(Protocols::Message& message) {
 
 	qDebug() << message.toStdString().c_str();
 
 	// Convert message to stringified JSON
 	std::string m = message.toStdString();
 
-	// Send the JSON message to the server
-	int n = _sslSocket->write(m.c_str());
+	// Convert the json string to the protocol messages
+	std::vector<std::string> msgs = _protocol.outgoing(m);
 
-	// Verify that the transmission succeeded
-	if (n != m.size()) {
-		qDebug() << n << "bytes written from string of length" << m.size();
-		return false;
+	// Send the protocol messages to the server
+	for (int i = 0; i < msgs.size(); i++ ) {
+		std::string mm = msgs[i];
+		int n = _sslSocket->write(mm.c_str());
+		// Verify that the transmission succeeded
+		if (n != mm.size()) {
+			qDebug() << n << "bytes written from string of length" << mm.size();
+			return false;
+		}
 	}
 
-	qDebug() << "wrote" << n << "bytes";
 	// OK
 	return true;
 }

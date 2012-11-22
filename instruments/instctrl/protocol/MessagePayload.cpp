@@ -7,7 +7,7 @@
 
 #include "MessagePayload.h"
 
-using namespace Protocol;
+using namespace Protocols;
 
 MessagePayload::MessagePayload(std::string text):
 	_text(text)

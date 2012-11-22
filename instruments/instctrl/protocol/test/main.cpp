@@ -1,7 +1,7 @@
 #include "Message.h"
 #include <iostream>
 
-using namespace Protocol;
+using namespace Protocols;
 
 int main(int argc, char** argv) {
 
