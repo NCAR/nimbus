@@ -25,7 +25,7 @@ int main(int  argc, char** argv)
 		caDatabase.push_back(argv[i]);
 	}
 
-	Switch swtch(serverKey, serverCert, 50000, caDatabase);
+	Switch swtch(serverKey, serverCert, 12345, caDatabase);
 
 	return app.exec();
 

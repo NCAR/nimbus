@@ -25,11 +25,11 @@ int main(int argc, char** argv)
     }
 
     Proxy proxy(
-    		50001,
+    		12346,
     		clientKeyPath,
     		clientCertPath,
     		"localhost",
-    		50000,
+    		12345,
     		caDatabase,
     		clientID);
 
