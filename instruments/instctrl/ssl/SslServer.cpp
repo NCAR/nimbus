@@ -19,7 +19,8 @@ SslServer::SslServer(std::string keyFile,
 	bool validSession = listen(QHostAddress::Any, port);
 
 	if (!validSession) {
-		qDebug() << (tr("Unable to start the server: %1.").arg(errorString()));
+		qDebug() << (tr("Unable to start the server on port %1: %2.")
+				.arg(port).arg(errorString()));
 		exit(1);
 	} else {
 		qDebug() << "Server is ready";

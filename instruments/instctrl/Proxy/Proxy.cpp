@@ -34,7 +34,7 @@ _udpSocket(0)
 Proxy::~Proxy() {
 
 	if (_udpSocket) {
-		delete _udpSocket;
+		_udpSocket->deleteLater();
 	}
 
 	if (_connection) {

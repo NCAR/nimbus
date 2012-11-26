@@ -20,7 +20,7 @@ ServerConnection::ServerConnection(SslSocket* sslSocket):
 /////////////////////////////////////////////////////////////////////
 ServerConnection::~ServerConnection() {
 	if (_sslSocket) {
-		delete _sslSocket;
+		_sslSocket->deleteLater();
 	}
 }
 
