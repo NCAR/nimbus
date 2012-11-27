@@ -10,7 +10,7 @@
 namespace Protocols {
 	class SymCipherProtocol: public Protocol::Protocol, public QObject {
 	public:
-		SymCipherProtocol();
+		SymCipherProtocol(bool hexCoding = true);
 		virtual ~SymCipherProtocol();
 		virtual std::vector<std::string> incoming(std::string s);
 		virtual std::vector<std::string> outgoing(std::string s);
@@ -21,6 +21,7 @@ namespace Protocols {
         QCA::Cipher *_cipherEncrypt;
         QCA::Cipher *_cipherDecrypt;
         QCA::Initializer *_init;
+        bool _hexCoding;
 
 
 	};

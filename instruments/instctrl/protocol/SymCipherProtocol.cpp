@@ -3,7 +3,8 @@
 using namespace Protocols;
 
 /////////////////////////////////////////////////////////////////////
-SymCipherProtocol::SymCipherProtocol()
+SymCipherProtocol::SymCipherProtocol(bool hexCoding):
+_hexCoding(hexCoding)
 {
 	// Set up for symmetric decryption capability
            _init = new QCA::Initializer();
@@ -49,7 +50,8 @@ SymCipherProtocol::~SymCipherProtocol() {
 /////////////////////////////////////////////////////////////////////
 std::vector<std::string> SymCipherProtocol::outgoing(std::string s) {
 
-    QCA::SecureArray f = _cipherEncrypt->process(s.c_str());
+	QByteArray a(s.data(), s.size());
+    QCA::SecureArray f = _cipherEncrypt->process(a);
 
     // We need to check if that update() call worked.
     if (!_cipherEncrypt->ok()) {
@@ -59,7 +61,11 @@ std::vector<std::string> SymCipherProtocol::outgoing(std::string s) {
 
 	std::vector<std::string> results;
 
-	results.push_back(QString(QCA::arrayToHex(f.toByteArray())).toStdString());
+	if (_hexCoding) {
+		results.push_back(QString(QCA::arrayToHex(f.toByteArray())).toStdString());
+	} else {
+		results.push_back(QString(f.toByteArray()).toStdString());
+	}
 
 	return results;
 }
@@ -67,7 +73,13 @@ std::vector<std::string> SymCipherProtocol::outgoing(std::string s) {
 /////////////////////////////////////////////////////////////////////
 std::vector<std::string> SymCipherProtocol::incoming(std::string s) {
 
-    QCA::SecureArray f = _cipherDecrypt->process(QCA::hexToArray(s.c_str()));
+	QByteArray a(s.data(), s.size());
+    QCA::SecureArray f;
+    if (_hexCoding) {
+    	f = _cipherDecrypt->process(QCA::hexToArray(a));
+	} else {
+    	f = _cipherDecrypt->process(a);
+	}
 
     // We need to check if that update() call worked.
     if (!_cipherDecrypt->ok()) {

@@ -2,33 +2,46 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <sstream>
 
 int main(int argc, char** argv) {
 
-	if (argc != 2) {
-		std::cout << "Usage: " << argv[0] << " text" << std::endl;
+	if (argc != 3) {
+		std::cout << "Usage: " << argv[0] << " 1|0(hex coding yes|no)" << " text" << std::endl;
 		exit(1);
 	}
 
-	std::string clearText(argv[1]);
+	// Do we want the encrypted text to be hex coded?
+	bool hexCoding;
+	std::stringstream s;
+	s << argv[1];
+	s >> hexCoding;
 
-	Protocols::SymCipherProtocol cipher;
+	// get the input text
+	std::string clearText(argv[2]);
+	std::cout << "    input: " << clearText << std::endl;
 
+	// create the cipher
+	Protocols::SymCipherProtocol cipher(hexCoding);
+
+	// encrypt
 	std::vector<std::string> codedText;
-
 	codedText = cipher.outgoing(clearText);
 
-	for (int i = 0; i < codedText.size(); i++) {
-		std::cout << "encrypted: " << codedText[i] << std::endl;
+	if (hexCoding) {
+		// don't print binary encrypted text
+		for (int i = 0; i < codedText.size(); i++) {
+			std::cout << "encrypted: " << codedText[i] << std::endl;
+		}
 	}
 
+	// decrypt
 	for (int i = 0; i < codedText.size(); i++) {
 		std::vector<std::string> decodedText;
-
 		decodedText = cipher.incoming(codedText[i]);
+
 		for (int j = 0; j < decodedText.size(); j++) {
 			std::cout << "decrypted: " << decodedText[i] << std::endl;
 		}
 	}
-
 }
