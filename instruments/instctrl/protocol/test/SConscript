@@ -6,6 +6,12 @@ tools = Split("""
 
 env = Environment(tools = ['default'] + tools)
 
-sources = ['main.cpp', ]
-test = env.Program('protocoltest', sources)
+sources = ['message.cpp', ]
+test = env.Program('message', sources)
 env.Default(test)
+
+env = Environment(tools = ['default'] + tools)
+
+symciphersources = ['symcipher.cpp', ]
+symcipher = env.Program('symcipher', symciphersources)
+env.Default(symcipher)
