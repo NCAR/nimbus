@@ -21,11 +21,14 @@ class Server: public SSL::SslServer {
 		/// Destructor.
 		virtual ~Server();
 
+	signals:
+
 	protected slots:
 		/// Called when a new SslSocket has been created.
 		void createConnection(SSL::SslSocket* socket);
 		/// Notify that the socket state has changed for a connection.
 		void connectionStateChanged(SSL::ServerConnection*, SSL::SslSocket::SocketState);
+		void messageFromClientSlot(std::string msg);
 
 	protected:
 		/// Keep track of active connections

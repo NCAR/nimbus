@@ -70,6 +70,6 @@ void ServerConnection::sslReadyRead() {
 	std::vector<std::string> msgs = _protocol.incoming(s);
 
 	for (int i = 0; i < msgs.size(); i++) {
-		qDebug() << "msg:" << QString(msgs[i].c_str());
+		emit messageFromClient(msgs[i]);
 	}
 }

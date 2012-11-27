@@ -1,7 +1,7 @@
 ourDir = Dir('.').abspath
 ourName = 'protocol'
 
-tools = ['doxygen','json']
+tools = ['doxygen','json', 'qca']
 env = Environment(tools = ['default'] + tools)
 
 def protocol(env):
@@ -15,6 +15,7 @@ Export(ourName)
 
 sources = Split("""
  StreamMsgProtocol.cpp
+ SymCipherProtocol.cpp
  Message.cpp
  MessagePayload.cpp
  Protocol.cpp
@@ -22,6 +23,7 @@ sources = Split("""
 
 headers = Split("""
  StreamMsgProtocol.h
+ SymCipherProtocol.h
  Message.h
  MessagePayload.h
  Protocol.h

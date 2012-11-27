@@ -1,6 +1,7 @@
 #include "Server.h"
 #include <assert.h>
 #include <iostream>
+#include "SymCipherProtocol.h"
 
 using namespace SSL;
 
@@ -13,6 +14,7 @@ Server::Server(std::string keyFile,
 {
 	connect(this, SIGNAL(newConnection(SSL::SslSocket*)),
 			this, SLOT(createConnection(SSL::SslSocket*)));
+
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -31,6 +33,9 @@ void Server::createConnection(SSL::SslSocket* sslSocket) {
 
 	// add this connection to our list of connections.
 	_connections.insert(connection);
+
+	// capture new messages from this client
+	connect(connection, SIGNAL(messageFromClient(std::string)), this, SLOT(messageFromClientSlot(std::string)));
 
 	qDebug() << _connections.size() << " active server connections";
 }
@@ -71,6 +76,16 @@ void Server::connectionStateChanged(ServerConnection* connection, SSL::SslSocket
 	};
 
 
+}
+
+/////////////////////////////////////////////////////////////////////
+void Server::messageFromClientSlot(std::string msg) {
+	qDebug() << "Server msg:" << msg.c_str();
+	Protocols::SymCipherProtocol p;
+	std::vector<std::string> msgs = p.outgoing(msg);
+	for (int i = 0; i < msgs.size(); i++) {
+		qDebug() << "encrypted:" << msgs[i].c_str();
+	}
 }
 
 

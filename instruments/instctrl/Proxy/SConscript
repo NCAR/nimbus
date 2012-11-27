@@ -18,3 +18,5 @@ headers = Split("""
 proxy = env.Program('proxy', sources)
 env.Default(proxy)
 
+SConscript("test/SConscript")
+

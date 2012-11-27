@@ -28,7 +28,7 @@ int main(int argc, char** argv)
     caDatabase.push_back(clientCertPath);
 
     // add additional certs to the database
-    for (int i = 4; i < argc; i++) {
+    for (int i = 5; i < argc; i++) {
         caDatabase.push_back(argv[i]);
     }
 

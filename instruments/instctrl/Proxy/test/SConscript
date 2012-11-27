@@ -1,0 +1,10 @@
+tools = Split("""
+  default 
+  protocol
+""")
+
+env = Environment(tools = ['default'] + tools)
+
+symciphersources = ['symcipher.cpp', ]
+symcipher = env.Program('symcipher', symciphersources)
+env.Default(symcipher)

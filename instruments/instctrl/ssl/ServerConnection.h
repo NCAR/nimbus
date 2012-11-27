@@ -21,6 +21,9 @@ namespace SSL {
 		/// Publish a change in the connection state. Currently this is
 		/// simply the state of the underlying SslSocket.
 		void connectionStateChanged(SSL::ServerConnection*, SSL::SslSocket::SocketState);
+		/// Emitted when a new message has been received.
+		/// @param msg The message.
+		void messageFromClient(std::string msg);
 
 	protected slots:
 		/// Capture a change in the SslSocket state.
