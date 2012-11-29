@@ -7,7 +7,7 @@ tools = Split("""
 default
 qt4 
 logx
-qca
+evp
 ssl
 """)
 
@@ -18,17 +18,17 @@ env.EnableQt4Modules(qtmods)
 
 sources = ['instrument.cpp', 'sendudp.cpp']
 gensymkeysrcs = ['gensymkey.cc']
-fakeacsrcs = ['aircraft.cc', 'sendudp.cpp']
+#fakeacsrcs = ['aircraft.cc', 'sendudp.cpp']
 #acswsources = ['acswitch.cpp']
 
-instrument = env.Program('instrument',sources)
+#instrument = env.Program('instrument',sources)
 gensymkey = env.Program('gensymkey', gensymkeysrcs);
-fakeac = env.Program('aircraft', fakeacsrcs);
+#fakeac = env.Program('aircraft', fakeacsrcs);
 #acswitch = env.Program('acswitch',acswsources)
 #qtudp = env.Program('qtudp',sources)
 
-env.Default(instrument)
+#env.Default(instrument)
 env.Default(gensymkey)
-env.Default(fakeac)
+#env.Default(fakeac)
 
-env.AppendENVPath ('LD_LIBRARY_PATH', '/usr/local/lib')
+#env.AppendENVPath ('LD_LIBRARY_PATH', '/usr/local/lib')
