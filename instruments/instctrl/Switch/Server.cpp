@@ -34,7 +34,7 @@ void Server::createConnection(Ssl::SslSocket* sslSocket) {
 	_connections.insert(connection);
 
 	// capture new messages from this client
-	connect(connection, SIGNAL(messageFromClient(std::string)), this, SLOT(messageFromClientSlot(std::string)));
+	connect(connection, SIGNAL(msgFromProxy(std::string)), this, SLOT(msgFromProxySlot(std::string)));
 
 	qDebug() << _connections.size() << " active server connections";
 
@@ -79,8 +79,7 @@ void Server::connectionStateChanged(ServerConnection* connection, Ssl::SslSocket
 }
 
 /////////////////////////////////////////////////////////////////////
-void Server::messageFromClientSlot(std::string msg) {
-	qDebug() << "Server msg:" << msg.c_str();
-	emit messageFromClient(msg);
+void Server::msgFromProxySlot(std::string msg) {
+	emit msgFromProxy(msg);
 	return;
 }

@@ -6,10 +6,10 @@ Switch::Switch(std::string keyFile,
 		int switchPort,
 		std::vector<std::string> caDatabase):
 _server(keyFile, certFile, switchPort, caDatabase),
-_p(true)
+_p(false)
 {
-	connect(&_server, SIGNAL(messageFromClient(std::string)),
-			this, SLOT(messageFromClientSlot(std::string)));
+	connect(&_server, SIGNAL(msgFromProxy(std::string)),
+			this, SLOT(msgFromProxySlot(std::string)));
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -18,11 +18,14 @@ Switch::~Switch() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void Switch::messageFromClientSlot(std::string msg) {
-	qDebug() << "Switch msg:" << msg.c_str();
+void Switch::msgFromProxySlot(std::string msg) {
+	qDebug() << "Proxy msg:" << msg.c_str();
+
+	// create an encrypted message
 	std::vector<std::string> msgs = _p.outgoing(msg);
+
+	// decode the encrypted message
 	for (int i = 0; i < msgs.size(); i++) {
-		qDebug() << "encrypted:" << msgs[i].c_str();
 		std::vector<std::string> decrypted = _p.incoming(msgs[i]);
 		for (int j = 0; j < decrypted.size(); j++) {
 			qDebug() << "decrypted:" << decrypted[i].c_str();

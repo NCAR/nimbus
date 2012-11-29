@@ -14,27 +14,32 @@ int main(int argc, char** argv) {
 	// set the key length
 	int keyLength = 16;
 
-	// Make key and initialization vector
+	// Make key
 	std::vector<unsigned char> key = EVPCipher::makeKey(keyLength);
-	std::vector<unsigned char> iv  = EVPCipher::makeIV(keyLength);
 
 	// Create the cipher
-	EVPCipher cipher(iv, key);
+	EVPCipher cipher(key);
 
-	// Encrypt the text
-	std::vector<unsigned char> encrypted = cipher.encrypt(text);
-	std::string encryptedHex = EVPCipher::toHexString(encrypted);
+	for (int i = 0; i < 10; i++) {
+		// Make initialization vector
+		std::vector<unsigned char> iv  = EVPCipher::makeIV(keyLength);
 
-	// Decrypt the text
-	std::vector<unsigned char> tmp = EVPCipher::fromHexString(encryptedHex);
-	std::vector<unsigned char> decrypted = cipher.decrypt(tmp);
+		// Encrypt the text
+		std::vector<unsigned char> encrypted = cipher.encrypt(iv, text);
+		std::string encryptedHex = EVPCipher::toHexString(encrypted);
 
-	// Results please
-	std::cout << "  iv:" << EVPCipher::toHexString(iv) << std::endl;;
-	std::cout << " key:" << EVPCipher::toHexString(key) << std::endl;;
-	std::cout << "text:" << text << std::endl;
-	std::cout << " enc:" << encryptedHex << std::endl;
-	std::cout << " dec:" << std::string(decrypted.begin(), decrypted.end()) << std::endl;
+		// Decrypt the text
+		std::vector<unsigned char> tmp = EVPCipher::fromHexString(encryptedHex);
+		std::vector<unsigned char> decrypted = cipher.decrypt(iv, tmp);
+
+		// Results please
+		std::cout << "  iv:" << EVPCipher::toHexString(iv) << std::endl;;
+		std::cout << " key:" << EVPCipher::toHexString(key) << std::endl;;
+		std::cout << "text:" << text << std::endl;
+		std::cout << " enc:" << encryptedHex << std::endl;
+		std::cout << " dec:" << std::string(decrypted.begin(), decrypted.end()) << std::endl;
+		std::cout << std::endl;
+	}
 
 	exit(0);
 }

@@ -22,14 +22,14 @@ class Server: public Ssl::SslServer {
 		virtual ~Server();
 
 	signals:
-	void messageFromClient(std::string msg);
+	void msgFromProxy(std::string msg);
 
 	protected slots:
 		/// Called when a new SslSocket has been created.
 		void createConnection(Ssl::SslSocket* socket);
 		/// Notify that the socket state has changed for a connection.
 		void connectionStateChanged(Ssl::ServerConnection*, Ssl::SslSocket::SocketState);
-		void messageFromClientSlot(std::string msg);
+		void msgFromProxySlot(std::string msg);
 
 	protected:
 		/// Keep track of active connections

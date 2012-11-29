@@ -25,7 +25,7 @@ public:
 	virtual ~Switch();
 	
 protected slots:
-	void messageFromClientSlot(std::string msg);
+	void msgFromProxySlot(std::string msg);
 
 protected:
 	/// The server which creates new ServerConnections.

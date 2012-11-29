@@ -1,4 +1,5 @@
 #include "SymCipherProtocol.h"
+#include <iostream>
 
 using namespace Protocols;
 
@@ -8,7 +9,7 @@ _hexCoding(hexCoding)
 {
         _cipherKey = EVPCipher::makeKey(16);
         _cipherIV  = EVPCipher::makeIV(16);
-        _cipher    = new EVPCipher(_cipherIV, _cipherKey);
+        _cipher    = new EVPCipher(_cipherKey);
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -21,7 +22,11 @@ std::vector<std::string> SymCipherProtocol::outgoing(std::string s) {
 
 	std::vector<unsigned char> encrypted;
 
-	encrypted = _cipher->encrypt(s);
+	// encrypt the message
+	encrypted = _cipher->encrypt(_cipherIV, s);
+
+	// prepend the iv
+	encrypted.insert(encrypted.begin(), _cipherIV.begin(), _cipherIV.end());
 
 	std::vector<std::string> results;
 	if (_hexCoding) {
@@ -36,18 +41,25 @@ std::vector<std::string> SymCipherProtocol::outgoing(std::string s) {
 /////////////////////////////////////////////////////////////////////
 std::vector<std::string> SymCipherProtocol::incoming(std::string s) {
 
-	std::vector<unsigned char> decrypted;
-	std::vector<std::string> results;
-
-    if (_hexCoding) {
-    	std::vector<unsigned char> tmp = EVPCipher::fromHexString(s);
-    	decrypted = _cipher->decrypt(tmp);
+	// convert incoming string to vector
+	std::vector<unsigned char> tmp;
+	if (_hexCoding) {
+    	tmp = EVPCipher::fromHexString(s);
     } else {
-    	decrypted = _cipher->decrypt(s);
+    	tmp = std::vector<unsigned char>(s.begin(), s.end());
     }
 
+	// remove the IV
+	/// @todo sanity check that s at least contains a IV
+	std::vector<unsigned char> iv(tmp.begin(), tmp.begin()+16);
+	tmp.erase(tmp.begin(), tmp.begin()+16);
+
+	std::vector<unsigned char> decrypted;
+	decrypted = _cipher->decrypt(iv, tmp);
+
+	std::vector<std::string> results;
 	results.push_back(std::string(decrypted.begin(), decrypted.end()));
 
-	return results;
+	return (results);
 }
 
