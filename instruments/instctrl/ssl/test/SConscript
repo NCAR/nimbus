@@ -14,4 +14,14 @@ clientsources = ['clientmain.cpp', ]
 sslclient = env.Program('sslclient', clientsources)
 env.Default(sslclient)
 
+tools = Split("""
+  default 
+  evp
+""")
+env = Environment(tools = ['default'] + tools)
+
+evpsources = ['evpmain.cpp', ]
+evp = env.Program('evp', evpsources)
+env.Default(evp)
+
 

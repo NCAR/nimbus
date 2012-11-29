@@ -1,6 +1,6 @@
 #include "SslServer.h"
 
-using namespace SSL;
+using namespace Ssl;
 
 /////////////////////////////////////////////////////////////////////
 SslServer::SslServer(std::string keyFile,

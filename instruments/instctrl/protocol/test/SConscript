@@ -2,6 +2,7 @@ import sys
 
 tools = Split("""
   protocol
+  evp
 """)
 
 env = Environment(tools = ['default'] + tools)

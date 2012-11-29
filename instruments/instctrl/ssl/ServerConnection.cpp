@@ -1,7 +1,7 @@
 #include "ServerConnection.h"
 #include <iostream>
 
-using namespace SSL;
+using namespace Ssl;
 
 /////////////////////////////////////////////////////////////////////
 ServerConnection::ServerConnection(SslSocket* sslSocket):
@@ -9,8 +9,8 @@ ServerConnection::ServerConnection(SslSocket* sslSocket):
 {
 
 	// react to changes in the state of the SslSocket
-	connect(_sslSocket, SIGNAL(stateChanged(SSL::SslSocket::SocketState)),
-			this, SLOT(socketStateChanged(SSL::SslSocket::SocketState)));
+	connect(_sslSocket, SIGNAL(stateChanged(Ssl::SslSocket::SocketState)),
+			this, SLOT(socketStateChanged(Ssl::SslSocket::SocketState)));
 
 	// Handle incoming messages from the SslSocket
 	connect(_sslSocket, SIGNAL(readyRead()), this, SLOT(sslReadyRead()));
@@ -25,7 +25,7 @@ ServerConnection::~ServerConnection() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void ServerConnection::socketStateChanged(SSL::SslSocket::SocketState state) {
+void ServerConnection::socketStateChanged(Ssl::SslSocket::SocketState state) {
 
 	switch (state) {
 	case SslSocket::SS_Unconnected: {

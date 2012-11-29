@@ -1,8 +1,9 @@
 ourDir = Dir('.').abspath
 ourName = 'protocol'
 
-tools = ['doxygen','json', 'qca']
+tools = ['doxygen','json', 'evp', 'qt4']
 env = Environment(tools = ['default'] + tools)
+env.EnableQt4Modules(['QtCore'])
 
 def protocol(env):
     env.AppendUnique(CPPPATH = [ourDir,])
@@ -10,6 +11,7 @@ def protocol(env):
     env.AppendUnique(LIBS=['protocol',])
     env.AppendDoxref(doxref[0])
     env.Require(tools)
+    env.EnableQt4Modules(['QtCore'])
 
 Export(ourName)
 

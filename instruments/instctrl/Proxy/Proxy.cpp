@@ -1,7 +1,7 @@
 #include "Proxy.h"
 #include <iostream>
 
-using namespace SSL;
+using namespace Ssl;
 using namespace Protocols;
 
 /////////////////////////////////////////////////////////////////////

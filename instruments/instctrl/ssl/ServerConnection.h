@@ -4,7 +4,7 @@
 #include "SslSocket.h"
 #include "StreamMsgProtocol.h"
 
-namespace SSL {
+namespace Ssl {
 /// Manage a connection to a client. The socket delivered to the constructor
 /// must be in a connected state.
 ///
@@ -13,28 +13,28 @@ namespace SSL {
 		Q_OBJECT
 	public:
 		/// @param sslSocket The encrypted SslSocket.
-		ServerConnection(SSL::SslSocket* sslSocket);
+		ServerConnection(Ssl::SslSocket* sslSocket);
 		/// Destructor
 		virtual ~ServerConnection();
 
 	signals:
 		/// Publish a change in the connection state. Currently this is
 		/// simply the state of the underlying SslSocket.
-		void connectionStateChanged(SSL::ServerConnection*, SSL::SslSocket::SocketState);
+		void connectionStateChanged(Ssl::ServerConnection*, Ssl::SslSocket::SocketState);
 		/// Emitted when a new message has been received.
 		/// @param msg The message.
 		void messageFromClient(std::string msg);
 
 	protected slots:
 		/// Capture a change in the SslSocket state.
-		void socketStateChanged(SSL::SslSocket::SocketState);
+		void socketStateChanged(Ssl::SslSocket::SocketState);
 		/// New data are available on the SSL socket. Append to _msgBuf, and scan
 		/// for a complete JSON package. If complete, emit the JSON message.
 		void sslReadyRead();
 
 	protected:
 		/// The connected SslSocket
-		SSL::SslSocket* _sslSocket;
+		Ssl::SslSocket* _sslSocket;
 		/// The protocol handler for proxy connections.
 		Protocols::StreamMsgProtocol _protocol;
 	};

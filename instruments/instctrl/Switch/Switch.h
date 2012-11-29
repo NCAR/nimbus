@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "Server.h"
+#include "SymCipherProtocol.h"
 
 ///
 class Switch: public QObject {
@@ -24,10 +25,13 @@ public:
 	virtual ~Switch();
 	
 protected slots:
+	void messageFromClientSlot(std::string msg);
 
 protected:
 	/// The server which creates new ServerConnections.
 	Server _server;
+	Protocols::SymCipherProtocol _p;
+
 
 };
 

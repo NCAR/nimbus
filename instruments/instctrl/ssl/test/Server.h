@@ -6,7 +6,7 @@
 #include "SslServer.h"
 #include "ServerConnection.h"
 
-class Server: public SSL::SslServer {
+class Server: public Ssl::SslServer {
 	Q_OBJECT;
 
 	public:
@@ -23,13 +23,13 @@ class Server: public SSL::SslServer {
 
 	protected slots:
 		/// Called when a new SslSocket has been created.
-		void createConnection(SSL::SslSocket* socket);
+		void createConnection(Ssl::SslSocket* socket);
 		/// Notify that the socket state has changed for a connection.
-		void connectionStateChanged(SSL::ServerConnection*, SSL::SslSocket::SocketState);
+		void connectionStateChanged(Ssl::ServerConnection*, Ssl::SslSocket::SocketState);
 
 	protected:
 		/// Keep track of active connections
-		std::set<SSL::ServerConnection*> _connections;
+		std::set<Ssl::ServerConnection*> _connections;
 
 };
 

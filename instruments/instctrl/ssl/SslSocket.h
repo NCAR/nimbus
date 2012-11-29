@@ -5,7 +5,7 @@
 #include <QtNetwork>
 #include <string>
 #include <vector>
-namespace SSL {
+namespace Ssl {
 
 	/// SslSocket provides an SSL socket. It can be used either in server
 	/// or client mode.
@@ -73,7 +73,7 @@ namespace SSL {
 
 	signals:
 		/// Emitted when socket state changes
-		void stateChanged(SSL::SslSocket::SocketState);
+		void stateChanged(Ssl::SslSocket::SocketState);
 
 	protected slots:
 		void connected();

@@ -55,7 +55,7 @@ protected:
 	/// The client identifier
 	std::string _clientID;
 	/// The connection to the switch
-	SSL::ClientConnection* _connection;
+	Ssl::ClientConnection* _connection;
 	/// The datagram socket
 	QUdpSocket* _udpSocket;
 

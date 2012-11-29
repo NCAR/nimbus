@@ -1,7 +1,7 @@
 #include "SslSocket.h"
 #include <sstream>
 
-using namespace SSL;
+using namespace Ssl;
 
 /////////////////////////////////////////////////////////////////////
 SslSocket::SslSocket(
@@ -87,7 +87,7 @@ void SslSocket::init() {
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::connected() {
-	qDebug() << _socketID.c_str() << "connected";
+	qDebug() << "descriptor" << _socketID.c_str() << "connected";
 
 	_state = SS_Connected;
 	emit stateChanged(_state);
@@ -95,15 +95,15 @@ void SslSocket::connected() {
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::disconnected() {
-	qDebug() << _socketID.c_str() << "disconnected";
+	qDebug() << "descriptor" << _socketID.c_str() << "disconnected";
 
 	_state = SS_Disconnected;
 	emit stateChanged(_state);
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslSocket::socketError(QAbstractSocket::SocketError error) {
-	qDebug() << _socketID.c_str() << "connection failed:" << errorString();
+void SslSocket::socketError(QAbstractSocket::SocketError errorCode) {
+	qDebug() << "descriptor" << _socketID.c_str() << "socket error(" << errorCode <<"):" << errorString() << "***";
 	emit stateChanged(SS_SocketError);
 }
 
@@ -112,7 +112,8 @@ void SslSocket::encrypted() {
 	QSslCertificate peerCert = peerCertificate();
 	QString  O(peerCert.issuerInfo(QSslCertificate::Organization));
 	QString OU(peerCert.issuerInfo(QSslCertificate::OrganizationalUnitName));
-	qDebug() << _socketID.c_str() << "encrypted, peer certificate: Organization:" << O << " Unit:" << OU;
+	qDebug() << "descriptor" << _socketID.c_str() << "encrypted, peer certificate: Organization:"
+			<< O << " Unit:" << OU << "***";
 
 	_state = SS_Encrypted;
 	emit stateChanged(_state);
@@ -120,12 +121,12 @@ void SslSocket::encrypted() {
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::modeChanged(QSslSocket::SslMode mode) {
-	qDebug() << _socketID.c_str() << "mode changed to" << mode;
+	qDebug() << "descriptor" << _socketID.c_str() << "mode changed to" << mode << "***";
 }
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::sslErrors(const QList<QSslError>& errors) {
-	qDebug() << _socketID.c_str() << "SslErrors:" << errors;
+	qDebug() << "descriptor" << _socketID.c_str() << "SslErrors:" << errors << "***";
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -137,7 +138,8 @@ void SslSocket::setCAdatabase() {
 		certFile.open(QIODevice::ReadOnly);
 		QSslCertificate cert(&certFile);
 		if (cert.isNull() || !cert.isValid()) {
-			qDebug() << _socketID.c_str() << "invalid certificate specified in" << _caDatabase[i].c_str();
+			qDebug() << "descriptor" << _socketID.c_str() << "invalid certificate specified in"
+					<< _caDatabase[i].c_str() << "***";
 		} else {
 			certs.append(cert);
 		}

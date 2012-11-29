@@ -2,13 +2,15 @@
 #define SYMENCRYPTPROTOCOL_H_
 
 #include <QtCore>
-#include <QtCrypto>
 #include <string>
 #include <vector>
 #include "Protocol.h"
+#include "EVPCipher.h"
 
-namespace Protocols {
-	class SymCipherProtocol: public Protocol::Protocol, public QObject {
+namespace Protocols
+{
+	class SymCipherProtocol: public Protocol::Protocol, public QObject
+	{
 	public:
 		SymCipherProtocol(bool hexCoding = true);
 		virtual ~SymCipherProtocol();
@@ -16,17 +18,12 @@ namespace Protocols {
 		virtual std::vector<std::string> outgoing(std::string s);
 
 	protected:
-        QCA::SymmetricKey *_key;
-        QCA::InitializationVector *_iv;
-        QCA::Cipher *_cipherEncrypt;
-        QCA::Cipher *_cipherDecrypt;
-        QCA::Initializer *_init;
-        bool _hexCoding;
+		bool _hexCoding;
 
-
+		EVPCipher* _cipher;
+		std::vector<unsigned char> _cipherKey;
+		std::vector<unsigned char> _cipherIV;
 	};
 };
-
-
 
 #endif /* SYMENCRYPTPROTOCOL_H_ */

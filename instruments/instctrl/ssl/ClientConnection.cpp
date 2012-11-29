@@ -7,7 +7,7 @@
 
 #include "ClientConnection.h"
 
-using namespace SSL;
+using namespace Ssl;
 
 /////////////////////////////////////////////////////////////////////
 ClientConnection::ClientConnection(
@@ -20,8 +20,8 @@ ClientConnection::ClientConnection(
 
 	_sslSocket = new SslSocket(keyFile, certFile, serverHost, port, caDatabase);
 
-	connect(_sslSocket, SIGNAL(stateChanged(SSL::SslSocket::SocketState)),
-			this, SLOT(socketStateChanged(SSL::SslSocket::SocketState)));
+	connect(_sslSocket, SIGNAL(stateChanged(Ssl::SslSocket::SocketState)),
+			this, SLOT(socketStateChanged(Ssl::SslSocket::SocketState)));
 
 }
 
@@ -32,7 +32,7 @@ ClientConnection::~ClientConnection() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void ClientConnection::socketStateChanged(SSL::SslSocket::SocketState state) {
+void ClientConnection::socketStateChanged(Ssl::SslSocket::SocketState state) {
 
 	switch (state) {
 	case SslSocket::SS_Unconnected: {

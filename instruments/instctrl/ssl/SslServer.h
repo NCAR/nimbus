@@ -7,7 +7,7 @@
 #include <map>
 #include "SslSocket.h"
 
-namespace SSL {
+namespace Ssl {
 	/// SslServer creates a server which listens for connections on a specific
 	/// port. When a connection is made, the socket is converted to a
 	/// SslSocket, which then carries out the SSL handshake.
@@ -35,7 +35,7 @@ namespace SSL {
 	signals:
 		/// Emitted when a new connection is made
 		/// @param descriptor Pointer to the new socket
-		void newConnection(SSL::SslSocket* sslSocket);
+		void newConnection(Ssl::SslSocket* sslSocket);
 
 	protected slots:
 		/// List the created server sockets

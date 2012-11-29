@@ -12,7 +12,7 @@
 #include "Message.h"
 #include "StreamMsgProtocol.h"
 
-namespace SSL {
+namespace Ssl {
 	/// Create a client connection to an SslServer using SslSocket. Capture the
 	/// SslSocket::stateChanged() signal to react to the socket state.
 	class ClientConnection: public QObject {
@@ -41,11 +41,11 @@ namespace SSL {
 		bool send(Protocols::Message& message);
 
 	public slots:
-		void socketStateChanged(SSL::SslSocket::SocketState);
+		void socketStateChanged(Ssl::SslSocket::SocketState);
 
 	protected:
 		/// The connected socket
-		SSL::SslSocket* _sslSocket;
+		Ssl::SslSocket* _sslSocket;
 		/// The protocol for connecting to the switch
 		Protocols::StreamMsgProtocol _protocol;
 

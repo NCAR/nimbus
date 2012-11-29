@@ -1,9 +1,8 @@
 #include "Server.h"
 #include <assert.h>
 #include <iostream>
-#include "SymCipherProtocol.h"
 
-using namespace SSL;
+using namespace Ssl;
 
 /////////////////////////////////////////////////////////////////////
 Server::Server(std::string keyFile,
@@ -12,8 +11,8 @@ Server::Server(std::string keyFile,
 		std::vector<std::string> caDatabase):
 		SslServer(keyFile, certFile, port, caDatabase)
 {
-	connect(this, SIGNAL(newConnection(SSL::SslSocket*)),
-			this, SLOT(createConnection(SSL::SslSocket*)));
+	connect(this, SIGNAL(newConnection(Ssl::SslSocket*)),
+			this, SLOT(createConnection(Ssl::SslSocket*)));
 
 }
 
@@ -23,13 +22,13 @@ Server::~Server() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void Server::createConnection(SSL::SslSocket* sslSocket) {
+void Server::createConnection(Ssl::SslSocket* sslSocket) {
 	// make a new server connection.
 	ServerConnection* connection = new ServerConnection(sslSocket);
 
 	// capture signals whrn the state of the connection changes.
-	connect(connection, SIGNAL(connectionStateChanged(SSL::ServerConnection*, SSL::SslSocket::SocketState)),
-			this, SLOT(connectionStateChanged(SSL::ServerConnection*, SSL::SslSocket::SocketState)));
+	connect(connection, SIGNAL(connectionStateChanged(Ssl::ServerConnection*, Ssl::SslSocket::SocketState)),
+			this, SLOT(connectionStateChanged(Ssl::ServerConnection*, Ssl::SslSocket::SocketState)));
 
 	// add this connection to our list of connections.
 	_connections.insert(connection);
@@ -38,10 +37,11 @@ void Server::createConnection(SSL::SslSocket* sslSocket) {
 	connect(connection, SIGNAL(messageFromClient(std::string)), this, SLOT(messageFromClientSlot(std::string)));
 
 	qDebug() << _connections.size() << " active server connections";
+
 }
 
 /////////////////////////////////////////////////////////////////////
-void Server::connectionStateChanged(ServerConnection* connection, SSL::SslSocket::SocketState state) {
+void Server::connectionStateChanged(ServerConnection* connection, Ssl::SslSocket::SocketState state) {
 
 	switch (state) {
 	case SslSocket::SS_Unconnected:
@@ -81,11 +81,6 @@ void Server::connectionStateChanged(ServerConnection* connection, SSL::SslSocket
 /////////////////////////////////////////////////////////////////////
 void Server::messageFromClientSlot(std::string msg) {
 	qDebug() << "Server msg:" << msg.c_str();
-	Protocols::SymCipherProtocol p;
-	std::vector<std::string> msgs = p.outgoing(msg);
-	for (int i = 0; i < msgs.size(); i++) {
-		qDebug() << "encrypted:" << msgs[i].c_str();
-	}
+	emit messageFromClient(msg);
+	return;
 }
-
-

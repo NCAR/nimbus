@@ -9,7 +9,7 @@
 #include <assert.h>
 #include <iostream>
 
-using namespace SSL;
+using namespace Ssl;
 
 /////////////////////////////////////////////////////////////////////
 Server::Server(std::string keyFile,
@@ -18,8 +18,8 @@ Server::Server(std::string keyFile,
 		std::vector<std::string> caDatabase):
 		SslServer(keyFile, certFile, port, caDatabase)
 {
-	connect(this, SIGNAL(newConnection(SSL::SslSocket*)),
-			this, SLOT(createConnection(SSL::SslSocket*)));
+	connect(this, SIGNAL(newConnection(Ssl::SslSocket*)),
+			this, SLOT(createConnection(Ssl::SslSocket*)));
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -28,13 +28,13 @@ Server::~Server() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void Server::createConnection(SSL::SslSocket* sslSocket) {
+void Server::createConnection(Ssl::SslSocket* sslSocket) {
 	// make a new server connection.
 	ServerConnection* connection = new ServerConnection(sslSocket);
 
 	// capture signals whrn the state of the connection changes.
-	connect(connection, SIGNAL(connectionStateChanged(ServerConnection*, SSL::SslSocket::SocketState)),
-			this, SLOT(connectionStateChanged(ServerConnection*, SSL::SslSocket::SocketState)));
+	connect(connection, SIGNAL(connectionStateChanged(ServerConnection*, Ssl::SslSocket::SocketState)),
+			this, SLOT(connectionStateChanged(ServerConnection*, Ssl::SslSocket::SocketState)));
 
 	// add this connection to our list of connections.
 	_connections.insert(connection);
@@ -43,7 +43,7 @@ void Server::createConnection(SSL::SslSocket* sslSocket) {
 }
 
 /////////////////////////////////////////////////////////////////////
-void Server::connectionStateChanged(ServerConnection* connection, SSL::SslSocket::SocketState state) {
+void Server::connectionStateChanged(ServerConnection* connection, Ssl::SslSocket::SocketState state) {
 
 	switch (state) {
 	case SslSocket::SS_Unconnected:

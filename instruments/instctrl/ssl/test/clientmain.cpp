@@ -24,7 +24,7 @@ int main(int argc, char** argv)
         caDatabase.push_back(argv[i]);
     }
 
-    SSL::ClientConnection client(
+    Ssl::ClientConnection client(
     		clientKeyPath,
     		clientCertPath,
     		"localhost",
