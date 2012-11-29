@@ -12,7 +12,7 @@ namespace Protocols
 	class SymCipherProtocol: public Protocol::Protocol, public QObject
 	{
 	public:
-		SymCipherProtocol(bool hexCoding = true);
+		SymCipherProtocol(std::vector<unsigned char> key, bool hexCoding = true);
 		virtual ~SymCipherProtocol();
 		virtual std::vector<std::string> incoming(std::string s);
 		virtual std::vector<std::string> outgoing(std::string s);
@@ -22,7 +22,6 @@ namespace Protocols
 
 		EVPCipher* _cipher;
 		std::vector<unsigned char> _cipherKey;
-		std::vector<unsigned char> _cipherIV;
 	};
 };
 

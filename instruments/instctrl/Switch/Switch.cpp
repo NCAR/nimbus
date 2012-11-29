@@ -6,7 +6,7 @@ Switch::Switch(std::string keyFile,
 		int switchPort,
 		std::vector<std::string> caDatabase):
 _server(keyFile, certFile, switchPort, caDatabase),
-_p(false)
+_p(EVPCipher::makeKey(16), false)
 {
 	connect(&_server, SIGNAL(msgFromProxy(std::string)),
 			this, SLOT(msgFromProxySlot(std::string)));

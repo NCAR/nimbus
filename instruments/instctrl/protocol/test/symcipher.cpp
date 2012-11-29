@@ -22,7 +22,8 @@ int main(int argc, char** argv) {
 	std::cout << "    input: " << clearText << std::endl;
 
 	// create the cipher
-	Protocols::SymCipherProtocol cipher(hexCoding);
+	std::vector<unsigned char> key = EVPCipher::makeKey(16);
+	Protocols::SymCipherProtocol cipher(key, hexCoding);
 
 	// encrypt
 	std::vector<std::string> codedText;

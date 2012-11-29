@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
 	EVPCipher cipher(key);
 
 	// Make initialization vector
-	std::vector<unsigned char> iv  = EVPCipher::makeIV(keyLength);
+	std::vector<unsigned char> iv  = EVPCipher::makeIV(cipher.blockSize());
 
 	int n = 10;
 

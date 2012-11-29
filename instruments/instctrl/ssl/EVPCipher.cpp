@@ -7,8 +7,17 @@
 EVPCipher::EVPCipher(std::vector<unsigned char>& key):
 _key(key)
 {
+	int status;
+
+	// set the cipher type so that we can determine the bock size.
 	EVP_CIPHER_CTX_init(&_encrypt);
+	status = EVP_EncryptInit_ex(&_encrypt, EVP_aes_128_cbc(), 0, 0, 0);
+
 	EVP_CIPHER_CTX_init(&_decrypt);
+	status = EVP_DecryptInit_ex(&_decrypt, EVP_aes_128_cbc(), 0, 0, 0);
+
+	_blockSize = EVP_CIPHER_CTX_block_size(&_encrypt);
+
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -28,11 +37,13 @@ std::vector<unsigned char> EVPCipher::encrypt(std::vector<unsigned char>& iv, st
 /////////////////////////////////////////////////////////////////////
 std::vector<unsigned char> EVPCipher::encrypt(std::vector<unsigned char>& iv, std::vector<unsigned char>& input) {
 
-	int status;
-	if (iv.size() != _key.size()) {
-		std::cerr << "EVPCipher: key and initilization vector must be of the same size" << std::endl;
+	if (iv.size() != _blockSize) {
+		std::cerr << "EVPCipher: initilization vector must match the cipher block size of "
+				<< _blockSize << std::endl;
 		exit(1);
 	}
+
+	int status;
 
 	// initialize the encryption cipher
 	status = EVP_EncryptInit_ex(&_encrypt, EVP_aes_128_cbc(), 0, 0, 0);
@@ -40,7 +51,7 @@ std::vector<unsigned char> EVPCipher::encrypt(std::vector<unsigned char>& iv, st
 	status = EVP_EncryptInit_ex(&_encrypt, 0, 0, &_key[0], &iv[0]);
 
 	std::vector<unsigned char> result;
-	result.resize(input.size()+EVP_CIPHER_CTX_block_size(&_encrypt));
+	result.resize(input.size()+_blockSize);
 
 	int n;
 	int n_final = 0;
@@ -65,12 +76,13 @@ std::vector<unsigned char> EVPCipher::decrypt(std::vector<unsigned char>& iv, st
 /////////////////////////////////////////////////////////////////////
 std::vector<unsigned char> EVPCipher::decrypt(std::vector<unsigned char>& iv, std::vector<unsigned char>& input) {
 
-	int status;
-
-	if (iv.size() != _key.size()) {
-		std::cerr << "EVPCipher: key and initilization vector must be of the same size" << std::endl;
+	if (iv.size() != _blockSize) {
+		std::cerr << "EVPCipher: initilization vector must match the cipher block size of "
+				<< _blockSize << std::endl;
 		exit(1);
 	}
+
+	int status;
 
 	// initialize the decryption cipher
 	status = EVP_DecryptInit_ex(&_decrypt, EVP_aes_128_cbc(), 0, 0, 0);
@@ -78,7 +90,7 @@ std::vector<unsigned char> EVPCipher::decrypt(std::vector<unsigned char>& iv, st
 	status = EVP_DecryptInit_ex(&_decrypt, 0, 0, &_key[0], &iv[0]);
 
     std::vector<unsigned char> result;
-	result.resize(input.size()+EVP_CIPHER_CTX_block_size(&_decrypt));
+	result.resize(input.size()+_blockSize);
 
 	int n;
 	int n_final = 0;
@@ -90,6 +102,11 @@ std::vector<unsigned char> EVPCipher::decrypt(std::vector<unsigned char>& iv, st
 	result.resize(n_final);
 
 	return result;
+}
+
+/////////////////////////////////////////////////////////////////////
+int EVPCipher::blockSize() {
+	return _blockSize;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -139,6 +156,11 @@ std::vector<unsigned char> EVPCipher::makeKey(int bytes) {
 	status = RAND_bytes(&key[0], key.size());
 
 	return key;
+}
+
+/////////////////////////////////////////////////////////////////////
+std::vector<unsigned char> EVPCipher::makeIV() {
+	return makeIV(_blockSize);
 }
 
 /////////////////////////////////////////////////////////////////////

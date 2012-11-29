@@ -4,11 +4,9 @@
 using namespace Protocols;
 
 /////////////////////////////////////////////////////////////////////
-SymCipherProtocol::SymCipherProtocol(bool hexCoding):
-_hexCoding(hexCoding)
+SymCipherProtocol::SymCipherProtocol(std::vector<unsigned char> key, bool hexCoding):
+_cipherKey(key), _hexCoding(hexCoding)
 {
-        _cipherKey = EVPCipher::makeKey(16);
-        _cipherIV  = EVPCipher::makeIV(16);
         _cipher    = new EVPCipher(_cipherKey);
 }
 
@@ -22,11 +20,13 @@ std::vector<std::string> SymCipherProtocol::outgoing(std::string s) {
 
 	std::vector<unsigned char> encrypted;
 
-	// encrypt the message
-	encrypted = _cipher->encrypt(_cipherIV, s);
+	std::vector<unsigned char> iv  = _cipher->makeIV();
+
+    // encrypt the message
+	encrypted = _cipher->encrypt(iv, s);
 
 	// prepend the iv
-	encrypted.insert(encrypted.begin(), _cipherIV.begin(), _cipherIV.end());
+	encrypted.insert(encrypted.begin(), iv.begin(), iv.end());
 
 	std::vector<std::string> results;
 	if (_hexCoding) {
