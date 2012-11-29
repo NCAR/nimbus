@@ -6,6 +6,14 @@
 
 int main(int  argc, char** argv)
 {
+	QtConfig config("NCAR", "Switch");
+
+	// mkae sure that there are defaults set for the configuration parameters.
+	// Recall that the QtConfig::get functions provide a default value that
+	// will be created if there isn't a value already in the configuration.
+	config.getInt("SwitchPort", 12345);
+	config.getString("SwitchKeyFile", "./switch.key");
+	config.getString("SwitchCertFile", "./switch.cert");
 
 	if (argc < 4) {
 		std::cout << "usage: " << argv[0] << " port private_key_file certificate_file [extra_cert_file ... extra_certFile]" << std::endl;
@@ -31,7 +39,7 @@ int main(int  argc, char** argv)
 
 	QCoreApplication app(argc, argv);
 
-	Switch swtch(serverKey, serverCert, port, caDatabase);
+	Switch swtch(config, serverKey, serverCert, port, caDatabase);
 
 	return app.exec();
 

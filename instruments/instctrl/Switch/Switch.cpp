@@ -1,7 +1,8 @@
 #include "Switch.h"
 
 /////////////////////////////////////////////////////////////////////
-Switch::Switch(std::string keyFile,
+Switch::Switch(QtConfig& config,
+		std::string keyFile,
 		std::string certFile,
 		int switchPort,
 		std::vector<std::string> caDatabase):

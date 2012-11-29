@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "QtConfig.h"
 #include "Server.h"
 #include "SymCipherProtocol.h"
 
@@ -17,7 +18,8 @@ public:
 	/// @param certFile Path to the file containing the certificate that matched the private key.
 	/// @param switchPort The server port number.
 	/// @param caDatabase Paths to certs that should be added to the CAdatabase
-	Switch(std::string keyFile,
+	Switch(QtConfig& config,
+			std::string keyFile,
 			std::string certFile,
 			int switchPort,
 			std::vector<std::string> caDatabase);
