@@ -20,9 +20,18 @@ int main(int argc, char** argv) {
 	// Create the cipher
 	EVPCipher cipher(key);
 
-	for (int i = 0; i < 10; i++) {
-		// Make initialization vector
-		std::vector<unsigned char> iv  = EVPCipher::makeIV(keyLength);
+	// Make initialization vector
+	std::vector<unsigned char> iv  = EVPCipher::makeIV(keyLength);
+
+	int n = 10;
+
+	for (int i = 0; i < n; i++) {
+		std::cout << "***************** pass " << i << " *****************" << std::endl;
+
+		if (i > n/2) {
+			// make a new iv for later iterations
+			iv  = EVPCipher::makeIV(keyLength);
+		}
 
 		// Encrypt the text
 		std::vector<unsigned char> encrypted = cipher.encrypt(iv, text);
@@ -38,7 +47,6 @@ int main(int argc, char** argv) {
 		std::cout << "text:" << text << std::endl;
 		std::cout << " enc:" << encryptedHex << std::endl;
 		std::cout << " dec:" << std::string(decrypted.begin(), decrypted.end()) << std::endl;
-		std::cout << std::endl;
 	}
 
 	exit(0);
