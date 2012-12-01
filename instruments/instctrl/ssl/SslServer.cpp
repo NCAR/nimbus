@@ -23,7 +23,7 @@ SslServer::SslServer(std::string keyFile,
 				.arg(port).arg(errorString()));
 		exit(1);
 	} else {
-		qDebug() << "Server is ready";
+		qDebug() << "Server is ready and listening on port" << port;
 	}
 }
 

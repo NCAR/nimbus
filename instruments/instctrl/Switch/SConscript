@@ -1,6 +1,7 @@
 tools = Split("""
   default 
   ssl
+  qtt_qtconfig
 """)
 
 env = Environment(tools = ['default'] + tools)
