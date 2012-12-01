@@ -6,6 +6,7 @@
 #include "SslServer.h"
 #include "ServerConnection.h"
 
+/// The SSL server that manages SSL connections with Proxy.
 class Server: public Ssl::SslServer {
 	Q_OBJECT;
 

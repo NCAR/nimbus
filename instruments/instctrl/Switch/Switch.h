@@ -9,7 +9,11 @@
 #include "Server.h"
 #include "SymCipherProtocol.h"
 
-///
+/// The application which manages communications between one or more
+/// instances of Proxy and another Switch. The mutiple Proxy clients
+/// may be aggregated within a Switch, or may be remote. When Proxy is
+/// remote, it communicates via an SslSocket. When it is aggregated
+/// withing Switch, there is a direct connection to Proxy.
 class Switch: public QObject {
 	Q_OBJECT
 public:

@@ -2,10 +2,27 @@ tools = Split("""
   default 
   ssl
   qtt_qtconfig
+  doxygen
 """)
 
 env = Environment(tools = ['default'] + tools)
 
-sources = ['main.cpp', 'Switch.cpp', 'Server.cpp' ]
+sources = Split("""
+main.cpp
+Server.cpp
+Switch.cpp
+SwitchConnection.cpp
+""")
+
+headers = Split("""
+Server.h
+Switch.h
+SwitchConnection.h
+""")
+
 switch = env.Program('switch', sources)
 env.Default(switch)
+
+env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Switch" })
+doxref = env.Apidocs(sources + headers)
+
