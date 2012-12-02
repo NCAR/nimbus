@@ -22,6 +22,8 @@ def RemoteInstControl(env):
         # These flags cause the apps to be runnable on earlier versions of OSX.
         env.AppendUnique(CCFLAGS=['-mmacosx-version-min=10.6',])
         env.AppendUnique(LINKFLAGS=['-mmacosx-version-min=10.6',])
+        # Boost libraries have an -mt suffix on OSX
+    	env['BOOST_LIBRARY_SUFFIX'] = '-mt'
 
     return env
 

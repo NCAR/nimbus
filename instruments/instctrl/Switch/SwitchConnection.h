@@ -3,6 +3,7 @@
 
 #include <QtCore>
 #include <QtNetwork>
+#include "SymCipherProtocol.h"
 
 /// The communication connection between two switches.
 class SwitchConnection: public QObject {
