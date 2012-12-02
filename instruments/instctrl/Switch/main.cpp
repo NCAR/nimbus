@@ -3,12 +3,12 @@
 #include <sstream>
 #include <string>
 #include <boost/program_options.hpp>
-
 #include "QtConfig.h"
 #include "Switch.h"
 
 namespace po = boost::program_options;
 
+/////////////////////////////////////////////////////////////////////
 void
 parseCommandLine(int argc, char** argv,
 	std::string& configFile)
@@ -19,6 +19,7 @@ parseCommandLine(int argc, char** argv,
 	po::options_description descripts("Options");
 	descripts.add_options()
 	("config,c", po::value<std::string>(&configFile)->implicit_value(""), "configuration file")
+	("help,h",                                                            "help")
 	;
 
 	po::variables_map vm;
@@ -46,10 +47,11 @@ parseCommandLine(int argc, char** argv,
 	}
 }
 
+/////////////////////////////////////////////////////////////////////
 int main(int  argc, char** argv){
 
+	// Process command line options
 	std::string configFile;
-
 	parseCommandLine(argc, argv, configFile);
 
 	// Get the configuration

@@ -2,10 +2,12 @@ tools = Split("""
   default 
   ssl
   protocol
+  boost
+  boost_program_options
   qtt_qtconfig
 """)
 
-env = Environment(tools = ['default'] + tools)
+env = Environment(tools = tools)
 
 sources = Split("""
  main.cpp
