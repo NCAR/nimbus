@@ -62,10 +62,28 @@ int main(int  argc, char** argv){
 		config = new QtConfig("NCAR", "Switch");
 	}
 
+	// The port for proxy communications
 	int switchProxyPort = config->getInt("SwitchProxyPort", 0);
 
+	// Listen on this port for messages from the remote switch
+	int switchLocalPort = config->getInt("SwitchLocalPort", 0);
+
+	// The destination port for messages to the remote switch
+	int switchRemotePort = config->getInt("SwitchRemotePort", 0);
+
+	// The remote switch IP
+	std::string switchRemoteIP(config->getString("SwitchRemoteIP", "127.0.0.1"));
+
+	// The file containing the private key for the switch to proxy SSL link.
+	// This file must be kept private!
 	std::string serverKey(config->getString("SwitchKeyFile", "./switch.key"));
+
+	// The file containing the private certificate for the switch to proxy SSL link.
 	std::string serverCert(config->getString("SwitchCertFile", "./switch.crt"));
+
+	// The file containing the key for symmetric cipher encryption over SwitchConnection.
+	// This file must be kept private!
+	std::string switchCipherKey(config->getString("SwitchCipherKey", "./udpcipherkey.key"));
 
 	std::vector<std::string> caDatabase;
 	caDatabase.push_back("./proxy.crt");
@@ -82,8 +100,9 @@ int main(int  argc, char** argv){
 	// the application yet. We wait until this point so that all of the default values
 	// will have been added to the configuration file. Force them to take a stab at
 	// configuration.
-	if (switchProxyPort == 0) {
-		std::cout << "Please create a usable configuration by editing " << config->fileName() << std::endl;
+	if (switchProxyPort == 0 || switchLocalPort == 0 || switchRemotePort == 0) {
+		std::cout << "Please create a usable configuration by editing " << config->fileName()
+				<< " (make sure ports and IP addresses are valid)"<< std::endl;
 		exit(1);
 	}
 
@@ -94,7 +113,15 @@ int main(int  argc, char** argv){
 	//  - an SslServer
 	//  - a SwitchConnection to the remote switch
 	//  - SslServer creates connections to Proxies.
-	Switch swtch(serverKey, serverCert, switchProxyPort, caDatabase);
+	Switch swtch(
+			serverKey,
+			serverCert,
+			switchProxyPort,
+			caDatabase,
+			switchLocalPort,
+			switchRemoteIP,
+			switchRemotePort,
+			switchCipherKey);
 
 	// Run the event loop
 	return app.exec();
