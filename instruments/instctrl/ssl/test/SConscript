@@ -24,4 +24,7 @@ evpsources = ['evpmain.cpp', ]
 evp = env.Program('evp', evpsources)
 env.Default(evp)
 
+evpsources = ['base64main.cpp', ]
+base64 = env.Program('base64', evpsources)
+env.Default(base64)
 

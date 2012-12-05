@@ -25,6 +25,8 @@
 
 */
 
+// Now in github: https://github.com/ReneNyffenegger/development_misc/tree/master/base64
+
 #include "base64.h"
 #include <iostream>
 
