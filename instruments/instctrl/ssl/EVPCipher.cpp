@@ -183,3 +183,44 @@ std::vector<unsigned char> EVPCipher::makeIV(int bytes) {
 
 }
 
+/////////////////////////////////////////////////////////////////////
+std::string EVPCipher::toBase64(const std::vector<unsigned char>& input)
+{
+  BIO *bmem, *b64;
+  BUF_MEM *bptr;
+
+  b64 = BIO_new(BIO_f_base64());
+  bmem = BIO_new(BIO_s_mem());
+  b64 = BIO_push(b64, bmem);
+  BIO_write(b64, &input[0], input.size());
+  BIO_flush(b64);
+  BIO_get_mem_ptr(b64, &bptr);
+
+  std::string buff(bptr->data, bptr->length-1);
+
+  BIO_free_all(b64);
+
+  return buff;
+}
+
+/////////////////////////////////////////////////////////////////////
+std::vector<unsigned char> EVPCipher::fromBase64(const std::string& input) {
+
+	std::vector<unsigned char> c(input.begin(), input.end());
+	BIO* bmem = BIO_new_mem_buf(&c[0], input.size());
+
+	std::vector<unsigned char> buffer;
+	buffer.resize(input.size() * 2);
+
+	// push a Base64 filter so that reading from buffer decodes it
+	BIO *bioCmd = BIO_new(BIO_f_base64());
+	// we don't want newlines
+	BIO_set_flags(bioCmd, BIO_FLAGS_BASE64_NO_NL);
+	bmem = BIO_push(bioCmd, bmem);
+
+	int finalLen = BIO_read(bmem, &buffer[0], buffer.size());
+	BIO_free_all(bmem);
+	buffer.resize(finalLen);
+
+	return buffer;
+}

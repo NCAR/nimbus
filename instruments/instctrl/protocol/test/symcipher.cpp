@@ -4,18 +4,35 @@
 #include <iostream>
 #include <sstream>
 
+using namespace Protocols;
 int main(int argc, char** argv) {
 
-	if (argc != 3) {
-		std::cout << "Usage: " << argv[0] << " 1|0(hex coding yes|no)" << " text" << std::endl;
+	char coding;
+	if (argc == 3) {
+		coding = argv[1][0];
+	}
+	if (argc != 3 ||
+			(coding != 'n' &&
+			coding != 'h' &&
+			coding != 'b' ))
+	{
+		std::cout << "Usage: " << argv[0] << " n|h|b(none|hex|base64 coding)" << " text" << std::endl;
 		exit(1);
 	}
 
-	// Do we want the encrypted text to be hex coded?
-	bool hexCoding;
-	std::stringstream s;
-	s << argv[1];
-	s >> hexCoding;
+	// Do we want the encrypted text to be coded?
+	SymCipherProtocol::CODING codingType;
+	switch(coding) {
+	case 'n':
+		codingType = SymCipherProtocol::NO_CODING;
+		break;
+	case 'h':
+		codingType = SymCipherProtocol::HEX_CODING;
+		break;
+	case 'b':
+		codingType = SymCipherProtocol::BASE64_CODING;
+		break;
+	}
 
 	// get the input text
 	std::string clearText(argv[2]);
@@ -23,13 +40,14 @@ int main(int argc, char** argv) {
 
 	// create the cipher
 	std::vector<unsigned char> key = EVPCipher::makeKey(16);
-	Protocols::SymCipherProtocol cipher(key, hexCoding);
+	Protocols::SymCipherProtocol cipher(key, codingType);
 
 	// encrypt
 	std::vector<std::string> codedText;
 	codedText = cipher.outgoing(clearText);
 
-	if (hexCoding) {
+	if (codingType == SymCipherProtocol::HEX_CODING ||
+			codingType == SymCipherProtocol::BASE64_CODING) {
 		// don't print binary encrypted text
 		for (int i = 0; i < codedText.size(); i++) {
 			std::cout << "encrypted: " << codedText[i] << std::endl;

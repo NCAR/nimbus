@@ -5,6 +5,8 @@
 #include <vector>
 #include <openssl/evp.h>
 #include <openssl/rand.h>
+#include <openssl/bio.h>
+#include <openssl/buffer.h>
 
 // The IV must be the same as the block size
 class EVPCipher
@@ -25,6 +27,9 @@ public:
 	std::vector<unsigned char> makeIV();
 	static std::string toHexString(std::vector<unsigned char>& input);
 	static std::vector<unsigned char> fromHexString(std::string s);
+	static std::string toBase64(const std::vector<unsigned char>& input);
+	static std::vector<unsigned char> fromBase64(const std::string& input);
+
 
 protected:
 	std::vector<unsigned char> _key;
