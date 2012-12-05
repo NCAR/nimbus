@@ -22,7 +22,13 @@ public:
 	std::vector<unsigned char> encrypt(std::vector<unsigned char>& iv, std::vector<unsigned char>& input);
 	std::vector<unsigned char> decrypt(std::vector<unsigned char>& iv, std::string& input);
 	std::vector<unsigned char> decrypt(std::vector<unsigned char>& iv, std::vector<unsigned char>& input);
+	/// Make a key. It is simply a random number of the desired length.
+	/// @param bytes The length, in bytes.
+	/// @returns The key.
 	static std::vector<unsigned char> makeKey(int bytes);
+	/// Read a key from a base64 coded file.
+	/// @returns The key.
+	static std::vector<unsigned char> getKey(std::string path);
 	static std::vector<unsigned char> makeIV(int bytes);
 	/// @return an initialization vector of the correct size for this cipher
 	std::vector<unsigned char> makeIV();

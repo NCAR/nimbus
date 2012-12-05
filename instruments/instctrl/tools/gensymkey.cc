@@ -13,8 +13,8 @@ int main(int argc, char **argv)
     std::vector<unsigned char> iv;
     iv = EVPCipher::makeIV(size/8);
 
-	std::cout << "Key:" << EVPCipher::toHexString(key) << std::endl;
-	std::cout << " IV:" << EVPCipher::toHexString(iv) << std::endl;
+	std::cout << "Key:" << EVPCipher::toBase64(key) << std::endl;
+	std::cout << " IV:" << EVPCipher::toBase64(iv) << std::endl;
 
 }
 

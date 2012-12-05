@@ -10,7 +10,7 @@ _localPort(localPort),
 _remoteIP(remoteIP),
 _remotePort(remotePort),
 _switchCipherKey(switchCipherKey),
-_switchToSwitchProtocol(EVPCipher::makeKey(16), Protocols::SymCipherProtocol::BASE64_CODING)
+_switchToSwitchProtocol(EVPCipher::getKey(switchCipherKey), Protocols::SymCipherProtocol::BASE64_CODING)
 {
 	_incomingSocket.bind(QHostAddress::LocalHost, localPort);
 

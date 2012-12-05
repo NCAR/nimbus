@@ -157,6 +157,11 @@ std::vector<unsigned char> EVPCipher::makeKey(int bytes) {
 
 	return key;
 }
+/////////////////////////////////////////////////////////////////////
+std::vector<unsigned char> EVPCipher::getKey(std::string path) {
+	std::vector<unsigned char> key;
+	return key;
+}
 
 /////////////////////////////////////////////////////////////////////
 std::vector<unsigned char> EVPCipher::makeIV() {
