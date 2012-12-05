@@ -1,4 +1,4 @@
-tools = ['doxygen',]
+tools = ['doxygen']
 env = Environment(tools = ['default'] + tools)
 
 evpDir = Dir('.').abspath
@@ -15,10 +15,12 @@ Export('evp')
 
 sources = Split("""
  EVPCipher.cpp
+ base64.cpp
 """)
 
 headers = Split("""
  EVPCipher.h
+ base64.h
 """)
 
 lib = env.Library('evp', sources)

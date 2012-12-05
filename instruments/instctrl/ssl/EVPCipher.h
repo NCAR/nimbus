@@ -7,6 +7,7 @@
 #include <openssl/rand.h>
 #include <openssl/bio.h>
 #include <openssl/buffer.h>
+#include "base64.h"
 
 // The IV must be the same as the block size
 class EVPCipher
