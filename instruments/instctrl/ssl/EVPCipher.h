@@ -37,7 +37,6 @@ public:
 	static std::string toBase64(const std::vector<unsigned char>& input);
 	static std::vector<unsigned char> fromBase64(const std::string& input);
 
-
 protected:
 	std::vector<unsigned char> _key;
 	EVP_CIPHER_CTX _encrypt;

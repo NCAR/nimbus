@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "Message.h"
 #include "ClientConnection.h"
 
 /// Proxy ties together an SSL connection to a server and a local UDP socket.
@@ -33,6 +34,7 @@ public:
 	
 protected slots:
 	void udpReadyRead();
+	void msgFromServerSlot(Protocols::Message);
 
 protected:
 	/// Initialize the connection to the switch

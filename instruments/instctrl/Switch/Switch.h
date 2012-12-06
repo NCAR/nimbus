@@ -39,7 +39,12 @@ public:
 	virtual ~Switch();
 	
 protected slots:
+	/// Handle a new message from the proxy
+	/// @param The incoming message from the proxy.
 	void msgFromProxySlot(std::string msg);
+	/// Handle a new message from the remote switch
+	/// @param The incoming message from the remote switch.
+	void msgFromRemoteSwitch(Protocols::Message msg);
 
 protected:
 	/// The server which creates new ServerConnections to the proxies.

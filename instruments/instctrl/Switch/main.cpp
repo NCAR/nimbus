@@ -83,7 +83,7 @@ int main(int  argc, char** argv){
 
 	// The file containing the key for symmetric cipher encryption over SwitchConnection.
 	// This file must be kept private!
-	std::string switchCipherKey(config->getString("SwitchCipherKey", "./udpcipherkey.key"));
+	std::string switchCipherKey(config->getString("SwitchCipherKey", "./udpcipher.key"));
 
 	std::vector<std::string> caDatabase;
 	caDatabase.push_back("./proxy.crt");

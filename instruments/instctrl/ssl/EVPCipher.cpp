@@ -1,7 +1,9 @@
 #include "EVPCipher.h"
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <iomanip>
+#include <algorithm>
 
 /////////////////////////////////////////////////////////////////////
 EVPCipher::EVPCipher(std::vector<unsigned char>& key):
@@ -157,9 +159,34 @@ std::vector<unsigned char> EVPCipher::makeKey(int bytes) {
 
 	return key;
 }
+
 /////////////////////////////////////////////////////////////////////
 std::vector<unsigned char> EVPCipher::getKey(std::string path) {
+
+	/// @todo catch file open errors
+	std::ifstream file(path.c_str());
+
 	std::vector<unsigned char> key;
+
+	if (file.is_open()) {
+		// get all of the text in the file
+		std::string s;
+		while (file.good()) {
+			char c;
+			file >> std::skipws >> c;
+			if (c == '=' ||
+				c == '+' ||
+				c == '/' ||
+				(c >= 'a' && c <= 'z') ||
+				(c >= 'A' && c <= 'Z') ||
+				(c >= '0' && c <= '9') ) {
+				s += c;
+			}
+		}
+		key = fromBase64(s);
+	}
+
+	/// @todo catch returning no key
 	return key;
 }
 

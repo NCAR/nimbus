@@ -27,15 +27,27 @@ SwitchConnection::~SwitchConnection() {
 /////////////////////////////////////////////////////////////////////
 void SwitchConnection::readyRead() {
     while (_incomingSocket.hasPendingDatagrams()) {
-        QByteArray datagram;
-        _incomingSocket.pendingDatagramSize();
+
+        // Container for the incoming datagram
+    	std::vector<char> datagram;
+        datagram.resize(_incomingSocket.pendingDatagramSize());
+
+        // Read the datagram
         QHostAddress sender;
-        quint16 senderPort;
-
-        _incomingSocket.readDatagram(datagram.data(), datagram.size(),
+         quint16 senderPort;
+       _incomingSocket.readDatagram(&datagram[0], datagram.size(),
                                 &sender, &senderPort);
+       /// @todo Validate that the datagram came from an acceptable sender
 
-        qDebug() << datagram.size() << "bytes received from" << sender << ":" << senderPort;
+        // Decode it
+        std::vector<std::string> decoded =
+        		_switchToSwitchProtocol.incoming(std::string(datagram.begin(), datagram.end()));
+
+        // Send the message to clients
+        for (int i = 0; i < decoded.size(); i++) {
+        	Protocols::Message msg(decoded[i]);
+        	emit msgFromRemoteSwitch(msg);
+        }
     }
 }
 
@@ -45,6 +57,7 @@ void SwitchConnection::sendSwitchMessage(std::string msg) {
 	// Encode the message
 	std::vector<std::string> outMsgs = _switchToSwitchProtocol.outgoing(msg);
 
+	// Send the encoded message to the remote switch
 	for (int i = 0; i < outMsgs.size(); i++) {
 		int sent = _outgoingSocket.writeDatagram(
 				outMsgs[i].c_str(),

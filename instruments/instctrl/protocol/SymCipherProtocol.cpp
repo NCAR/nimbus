@@ -61,11 +61,12 @@ std::vector<std::string> SymCipherProtocol::incoming(std::string s) {
 		break;
 	}
 
-	// remove the IV
+	// Extract the IV
 	/// @todo sanity check that s at least contains a IV
 	std::vector<unsigned char> iv(tmp.begin(), tmp.begin()+16);
 	tmp.erase(tmp.begin(), tmp.begin()+16);
 
+	// Decrypt using the embedded IV and our cipher
 	std::vector<unsigned char> decrypted;
 	decrypted = _cipher->decrypt(iv, tmp);
 

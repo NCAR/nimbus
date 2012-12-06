@@ -2,13 +2,13 @@
 #define SERVERCONNECTION_H_
 
 #include "SslSocket.h"
+#include "Message.h"
 #include "StreamMsgProtocol.h"
 
 namespace Ssl {
-/// Manage a connection to a client. The socket delivered to the constructor
-/// must be in a connected state.
-///
-/// Incoming text on the socket are scanned for the JSON braces.
+/// Manage a server connection to a client using SslSocket. Capture the
+/// SslSocket::stateChanged() signal to react to the socket state. The socket
+/// delivered to the constructor must be in a connected state.
 	class ServerConnection: public QObject {
 		Q_OBJECT
 	public:
@@ -16,6 +16,10 @@ namespace Ssl {
 		ServerConnection(Ssl::SslSocket* sslSocket);
 		/// Destructor
 		virtual ~ServerConnection();
+		/// Send a message to the client.
+		/// @param message The message.
+		/// @returns False if there was an error sending the message.
+		bool send(Protocols::Message& message);
 
 	signals:
 		/// Publish a change in the connection state. Currently this is
@@ -23,20 +27,22 @@ namespace Ssl {
 		void connectionStateChanged(Ssl::ServerConnection*, Ssl::SslSocket::SocketState);
 		/// Emitted when a new message has been received.
 		/// @param msg The message.
-		void msgFromProxy(std::string msg);
+		void msgFromClient(std::string msg);
 
 	protected slots:
 		/// Capture a change in the SslSocket state.
 		void socketStateChanged(Ssl::SslSocket::SocketState);
-		/// New data are available on the SSL socket. Append to _msgBuf, and scan
-		/// for a complete JSON package. If complete, emit the JSON message.
+		/// New data are available on the SSL socket. Feed it to a protocol converter,
+		/// and if complete, emit the message.
 		void sslReadyRead();
 
 	protected:
 		/// The connected SslSocket
 		Ssl::SslSocket* _sslSocket;
-		/// The protocol handler for proxy connections.
-		Protocols::StreamMsgProtocol _protocol;
+		/// The protocol for communication to the server
+		Protocols::StreamMsgProtocol _protocolToClient;
+		/// The protocol for communication from the server
+		Protocols::StreamMsgProtocol _protocolFromClient;
 	};
 };
 

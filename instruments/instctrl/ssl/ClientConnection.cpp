@@ -20,9 +20,12 @@ ClientConnection::ClientConnection(
 
 	_sslSocket = new SslSocket(keyFile, certFile, serverHost, port, caDatabase);
 
+	// react to changes in the state of the SslSocket
 	connect(_sslSocket, SIGNAL(stateChanged(Ssl::SslSocket::SocketState)),
 			this, SLOT(socketStateChanged(Ssl::SslSocket::SocketState)));
 
+	// Handle incoming messages from the SslSocket
+	connect(_sslSocket, SIGNAL(readyRead()), this, SLOT(sslReadyRead()));
 }
 
 
@@ -66,15 +69,29 @@ void ClientConnection::socketStateChanged(Ssl::SslSocket::SocketState state) {
 }
 
 /////////////////////////////////////////////////////////////////////
+void ClientConnection::sslReadyRead() {
+
+	QByteArray data = _sslSocket->readAll();
+
+	// Feed the characters to the protocol decoder.
+	std::string s = QString(data).toStdString();
+	std::vector<std::string> msgs = _protocolFromServer.incoming(s);
+
+	for (int i = 0; i < msgs.size(); i++) {
+		emit msgFromServer(Protocols::Message(msgs[i]));
+	}
+}
+
+/////////////////////////////////////////////////////////////////////
 bool ClientConnection::send(Protocols::Message& message) {
 
-	qDebug() << message.toStdString().c_str();
+	qDebug() << __PRETTY_FUNCTION__;
 
 	// Convert message to stringified JSON
 	std::string m = message.toStdString();
 
 	// Convert the json string to the protocol messages
-	std::vector<std::string> msgs = _protocol.outgoing(m);
+	std::vector<std::string> msgs = _protocolToServer.outgoing(m);
 
 	// Send the protocol messages to the server
 	for (int i = 0; i < msgs.size(); i++ ) {

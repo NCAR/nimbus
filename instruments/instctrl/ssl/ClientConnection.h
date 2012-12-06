@@ -13,7 +13,7 @@
 #include "StreamMsgProtocol.h"
 
 namespace Ssl {
-	/// Create a client connection to an SslServer using SslSocket. Capture the
+	/// Manage a client connection to an SslServer using SslSocket. Capture the
 	/// SslSocket::stateChanged() signal to react to the socket state.
 	class ClientConnection: public QObject {
 		Q_OBJECT
@@ -40,15 +40,25 @@ namespace Ssl {
 		/// @returns False if there was an error sending the message.
 		bool send(Protocols::Message& message);
 
+	signals:
+		/// Emitted when a new message has been received from the server.
+		/// @param msg The message.
+		void msgFromServer(Protocols::Message);
+
 	public slots:
+		/// Capture a change in the SslSocket state.
 		void socketStateChanged(Ssl::SslSocket::SocketState);
+		/// New data are available on the SSL socket. Feed it to a protocol converter,
+		/// and if complete, emit the message.
+		void sslReadyRead();
 
 	protected:
 		/// The connected socket
 		Ssl::SslSocket* _sslSocket;
-		/// The protocol for connecting to the switch
-		Protocols::StreamMsgProtocol _protocol;
-
+		/// The protocol for communication to the server
+		Protocols::StreamMsgProtocol _protocolToServer;
+		/// The protocol for communication from the server
+		Protocols::StreamMsgProtocol _protocolFromServer;
 	};
 };
 

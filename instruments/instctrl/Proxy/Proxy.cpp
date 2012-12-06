@@ -53,6 +53,8 @@ void Proxy::initSwitchConnection() {
     		_caDatabase,
     		_clientID);
 
+	connect(_connection, SIGNAL(msgFromServer(Protocols::Message)), this, SLOT(msgFromServerSlot(Protocols::Message)));
+
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -88,4 +90,9 @@ void Proxy::udpReadyRead() {
 		// send the Message
 		_connection->send(msg);
 	}
+}
+
+/////////////////////////////////////////////////////////////////////
+void Proxy::msgFromServerSlot(Protocols::Message msg) {
+	qDebug() << msg.toStdString().c_str();
 }

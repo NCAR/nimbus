@@ -26,7 +26,7 @@ public:
 
 signals:
 	/// A new message has arrived.
-	void newSwitchMessage(Protocols::Message msg);
+	void msgFromRemoteSwitch(Protocols::Message msg);
 
 protected slots:
 	/// datagram(s) are avaialable on _incomingSocket
