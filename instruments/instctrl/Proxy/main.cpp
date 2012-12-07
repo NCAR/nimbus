@@ -61,22 +61,36 @@ int main(int argc, char** argv)
 		config = new QtConfig("NCAR", "Proxy");
 	}
 
+	// Configuration for one message
+	Proxy::InstMsgInfo msg;
+
 	// Get configuration values. Default values will be created in the
 	// configuration file if they don't exist, so that running the program
 	// for the first time will create a configuration template.
-	std::string instrumentID   = config->getString("InstrumentID",    "TEST");
-	int instUdpPort            = config->getInt   ("ProxyUdpPort",    0);
+	int proxyUdpPort           = config->getInt   ("ProxyUdpPort",    0);
 	std::string proxyKeyFile    (config->getString("ProxyKeyFile",    "./proxy.key"));
 	std::string proxyCertFile   (config->getString("ProxyCertFile",   "./proxy.crt"));
 	int switchProxyPort        = config->getInt   ("SwitchProxyPort", 0);
 	std::string switchHostName = config->getString("SwitchHostName",  "127.0.0.1");
 	std::string switchCertFile = config->getString("SwitchCertFile",  "./switch.crt");
+	std::string instName       = config->getString("InstrumentID",    "INSTRUMENT");
 
-	// If the port number is 0, it indicates that the user has not configured
+	// Configure a message
+	/// @todo Rework the configuration to support multiple messages
+	msg._msgId                 = config->getString("InstMsgID",       "INST");
+	msg._destPort              = config->getInt   ("InstUdpPort",     0);
+	msg._destIP                = config->getString("InstHostName",    "127.0.0.1");
+    msg._broadcast             = config->getBool  ("InstMsgBroadcast", true);
+    msg._instName              = instName;
+
+    std::map<std::string, Proxy::InstMsgInfo> messages;
+    messages[msg._msgId] = msg;
+
+    // If the port number is 0, it indicates that the user has not configured
 	// the application yet. We wait until this point so that all of the default values
 	// will have been added to the configuration file. Force them to take a stab at
 	// configuration.
-	if (switchProxyPort == 0) {
+	if (switchProxyPort == 0 || msg._destPort == 0) {
 		std::cout << "Please create a usable configuration by editing " << config->fileName() << std::endl;
 		exit(1);
 	}
@@ -91,13 +105,14 @@ int main(int argc, char** argv)
 
     // Create the proxy. It will try to connect with the switch.
 	Proxy proxy(
-    		instUdpPort,
+    		proxyUdpPort,
     		proxyKeyFile,
     		proxyCertFile,
     		switchHostName,
     		switchProxyPort,
     		caDatabase,
-    		instrumentID);
+    		instName,
+    		messages);
 
     return app.exec();
 }

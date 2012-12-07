@@ -20,6 +20,7 @@ namespace Protocols {
 		MessagePayload();
 		virtual ~MessagePayload();
 		Json::Value toJson();
+		std::string text();
 	protected:
 		std::string _text;
 	};

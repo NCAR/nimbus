@@ -19,23 +19,27 @@ namespace Protocols {
     class Message {
 	public:
 		/// Create a message from supplied parameters.
-		Message(std::string from, std::string to, std::string messageText);
+		Message(std::string instrumentId, std::string msgId, std::string messageText);
 		/// Create a message from a json text string.
 		Message(std::string jsonString);
 		/// Destructor
 		virtual ~Message();
+		/// @return The message identifier
+		std::string msgId();
 		/// @return As a Json::Value
 		Json::Value toJson();
 		/// @return As a formatted string
 		std::string toStdString();
+		/// @return Reference to the payload
+		MessagePayload& payload();
 
 	protected:
 		/// The message payload
 		MessagePayload _payload;
 		/// The sender identity
-		std::string _from;
+		std::string _instrumentId;
 		/// The recipient identity
-		std::string _to;
+		std::string _msgId;
 	};
 };
 

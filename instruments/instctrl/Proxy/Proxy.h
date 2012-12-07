@@ -5,14 +5,41 @@
 #include <QtNetwork>
 #include <string>
 #include <vector>
+#include <map>
 
 #include "Message.h"
 #include "ClientConnection.h"
 
-/// Proxy ties together an SSL connection to a server and a local UDP socket.
+/// Proxy relays messages between a switch and either an instrument or
+/// an instrument controller. Note that as far as proxy is concerned,
+/// and instrument and a instrument controller look the same.
+///
+/// The connection to the Switch is managed with a ClientConnection.
+/// The instrument/controller will send messages to specific ports, which
+/// the proxy listens on. These messages are forwarded to the switch. Similarly,
+/// messages from the switch are sent as datagrams to the instrument/controller.
 class Proxy: public QObject {
 	Q_OBJECT
+
 public:
+	/// A helper class to manage the handling of message types. One instance
+	/// will be created for each message identifier (_msgId). The
+	/// instrument name (_instName) will be the same for all messages
+	/// from a single instrument.
+	struct InstMsgInfo {
+		/// The instrument name (as used by the Proxy/Switch system
+		std::string _instName;
+		/// The message identifier (e.g. "AVAPS")
+		std::string _msgId;
+		/// Whether this message is delivered via broadcast UDP or unicast UDP.
+		bool _broadcast;
+		/// The destination port for this message.
+		int _destPort;
+		/// The destination name or IP for this message. For broadcast messages,
+		/// it is ignored.
+		std::string _destIP;
+	};
+
 	/// @param udpPort The incoming udp port
 	/// @param keyFile Path to the file containing the private key.
 	/// Specify a blank string if no key is provided.
@@ -20,27 +47,42 @@ public:
 	/// Specify a blank string if no certificate is provided.
 	/// @param serverHost The server host name or IP address.
 	/// @param switchPort The server port number.
-	/// @param caDatabase Paths to certs that should be added to the CAdatabase
-	/// @param clientID The client identifier
-	Proxy(int udpPort,
+	/// @param caDatabase Paths to certs that should be added to the CAdatabase.
+	/// @param instName The instrument name.
+	/// @param messageInfo Routing and processing configuration for message types.
+	Proxy(
+			int udpPort,
 			std::string keyFile,
 			std::string certFile,
 			std::string serverHost,
 			int switchPort,
 			std::vector<std::string> caDatabase,
-			std::string clientID);
+			std::string instName,
+			std::map<std::string, InstMsgInfo> messages);
 
 	virtual ~Proxy();
 	
 protected slots:
+	/// Called when a new message has arrived from the instrument or controller
 	void udpReadyRead();
+	/// Called when there is new data available from the Switch. The message will
+	/// be decoded, and the payload will be sent to the recipient as a datagram.
 	void msgFromServerSlot(Protocols::Message);
 
 protected:
 	/// Initialize the connection to the switch
 	void initSwitchConnection();
-	/// initialize the incoming UDP socket
-	void initUDPsocket();
+	/// Initialize the incoming UDP socket. One socket is required
+	/// per port that we are listening on.
+	void initIncomingUDPsockets();
+	/// Initialize the outgoing UDP socket. One socket can be used to
+	/// transmit to any destination port.
+	void initOutgoingUDPsocket();
+	/// Send a message out to the instrument/controller. The payload text
+	/// in the msg will be broadcast.
+	/// @param info The specifics of where this message should go.
+	/// @param msg The message.
+	void broadcastMsg(InstMsgInfo& info, Protocols::Message& msg);
 
 	/// Port number for incoming datagrams
 	int _udpPort;
@@ -52,14 +94,18 @@ protected:
 	std::string _serverHost;
 	/// The switch port number.
 	int _switchPort;
-	/// Paths to extra certificates to be added to the database
+	/// Paths to extra certificates to be added to the database.
 	std::vector<std::string> _caDatabase;
-	/// The client identifier
-	std::string _clientID;
-	/// The connection to the switch
+	/// The client identifier.
+	std::string _instName;
+	/// The connection to the switch.
 	Ssl::ClientConnection* _connection;
-	/// The datagram socket
-	QUdpSocket* _udpSocket;
+	/// The incoming datagram socket.
+	QUdpSocket* _incomingUdpSocket;
+	/// The outgoing datagram socket.
+	QUdpSocket* _outgoingUdpSocket;
+	/// Routing information for message types.
+	std::map<std::string, InstMsgInfo> _messages;
 
 };
 
