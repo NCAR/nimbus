@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "Server.h"
+#include "SwitchSslServer.h"
 #include "SwitchConnection.h"
 #include "SymCipherProtocol.h"
 
@@ -48,7 +48,7 @@ protected slots:
 
 protected:
 	/// The server which creates new ServerConnections to the proxies.
-	Server _server;
+	SwitchSslServer _server;
 
 	/// The connection between us and the remote switch
 	SwitchConnection _switchConnection;

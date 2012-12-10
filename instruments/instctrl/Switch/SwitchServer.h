@@ -22,22 +22,17 @@ class Server: public Ssl::SslServer {
 		/// Destructor.
 		virtual ~Server();
 		/// Send a message to a client proxy
-		void sendToProxy(Protocols::Message msg);
+		virtual void sendToProxy(Protocols::Message msg) = 0;
 
 	signals:
 		void msgFromProxy(std::string msg);
 
 	protected slots:
-		/// Called when a new SslSocket has been created.
-		void createConnection(Ssl::SslSocket* socket);
-		/// Notify that the socket state has changed for a connection.
-		void connectionStateChanged(Ssl::SslServerConnection*, Ssl::SslSocket::SocketState);
 		/// A message has been received from the proxy
-		void msgFromProxySlot(std::string msg);
+		void msgFromProxySlot(std::string msg) = 0;
 
 	protected:
-		/// Keep track of active connections
-		std::set<Ssl::SslServerConnection*> _connections;
+
 };
 
 #endif /* SERVER_H_ */
