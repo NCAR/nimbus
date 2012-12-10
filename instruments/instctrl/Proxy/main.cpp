@@ -2,7 +2,7 @@
 #include <string>
 #include <sstream>
 #include <boost/program_options.hpp>
-#include "Qtconfig.h"
+#include "QtConfig.h"
 #include "Proxy.h"
 
 namespace po = boost::program_options;

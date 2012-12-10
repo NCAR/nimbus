@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
 
 	if (argc != 3 || (option != "-d" && option != "-e")) {
 		std::cerr << "Usage: " << argv[0] << " -d|-e (decode/encode) text" << std::endl;
-		exit(1);
+		return(1);
 	}
 
 	std::string text(argv[2]);
@@ -26,6 +26,6 @@ int main(int argc, char** argv) {
 		std::cout << base64_decode(text) << std::endl;
 	}
 
-	exit(0);
+	return(0);
 }
 
