@@ -9,13 +9,13 @@ namespace Ssl {
 /// Manage a server connection to a client using SslSocket. Capture the
 /// SslSocket::stateChanged() signal to react to the socket state. The socket
 /// delivered to the constructor must be in a connected state.
-	class ServerConnection: public QObject {
+	class SslServerConnection: public QObject {
 		Q_OBJECT
 	public:
 		/// @param sslSocket The encrypted SslSocket.
-		ServerConnection(Ssl::SslSocket* sslSocket);
+		SslServerConnection(Ssl::SslSocket* sslSocket);
 		/// Destructor
-		virtual ~ServerConnection();
+		virtual ~SslServerConnection();
 		/// Send a message to the client.
 		/// @param message The message.
 		/// @returns False if there was an error sending the message.
@@ -24,7 +24,7 @@ namespace Ssl {
 	signals:
 		/// Publish a change in the connection state. Currently this is
 		/// simply the state of the underlying SslSocket.
-		void connectionStateChanged(Ssl::ServerConnection*, Ssl::SslSocket::SocketState);
+		void connectionStateChanged(Ssl::SslServerConnection*, Ssl::SslSocket::SocketState);
 		/// Emitted when a new message has been received.
 		/// @param msg The message.
 		void msgFromClient(std::string msg);

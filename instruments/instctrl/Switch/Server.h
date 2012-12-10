@@ -4,7 +4,7 @@
 #include <QtCore>
 #include <set>
 #include "SslServer.h"
-#include "ServerConnection.h"
+#include "SslServerConnection.h"
 
 /// The SSL server that manages SSL connections with Proxy.
 class Server: public Ssl::SslServer {
@@ -31,13 +31,13 @@ class Server: public Ssl::SslServer {
 		/// Called when a new SslSocket has been created.
 		void createConnection(Ssl::SslSocket* socket);
 		/// Notify that the socket state has changed for a connection.
-		void connectionStateChanged(Ssl::ServerConnection*, Ssl::SslSocket::SocketState);
+		void connectionStateChanged(Ssl::SslServerConnection*, Ssl::SslSocket::SocketState);
 		/// A message has been received from the proxy
 		void msgFromProxySlot(std::string msg);
 
 	protected:
 		/// Keep track of active connections
-		std::set<Ssl::ServerConnection*> _connections;
+		std::set<Ssl::SslServerConnection*> _connections;
 };
 
 #endif /* SERVER_H_ */

@@ -27,7 +27,7 @@ _incomingUdpSocket(0),
 _outgoingUdpSocket(0)
 {
 
-	// Initialize the connection to the switch. A ClientConnection
+	// Initialize the connection to the switch. A SslClientConnection
 	// will be created, and signals and slots will be connected.
 	initSwitchConnection();
 
@@ -59,7 +59,7 @@ Proxy::~Proxy() {
 /////////////////////////////////////////////////////////////////////
 void Proxy::initSwitchConnection() {
 
-	_connection = new ClientConnection(
+	_connection = new SslClientConnection(
 			_keyFile,
 			_certFile,
 			_serverHost,

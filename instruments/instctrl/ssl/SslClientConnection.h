@@ -1,5 +1,5 @@
 /*
- * ClientConnection.h
+ * SslClientConnection.h
  *
  *  Created on: Nov 16, 2012
  *      Author: martinc
@@ -15,7 +15,7 @@
 namespace Ssl {
 	/// Manage a client connection to an SslServer using SslSocket. Capture the
 	/// SslSocket::stateChanged() signal to react to the socket state.
-	class ClientConnection: public QObject {
+	class SslClientConnection: public QObject {
 		Q_OBJECT
 	public:
 		/// @param keyFile Path to the file containing the private key.
@@ -26,7 +26,7 @@ namespace Ssl {
 		/// @param port The server port number.
 		/// @param caDatabase Paths to certs that should be added to the CAdatabase
 		/// @param clientID The client identifier
-		ClientConnection(std::string keyFile,
+		SslClientConnection(std::string keyFile,
 				  std::string certFile,
 				  std::string serverHost,
 				  int port,
@@ -34,7 +34,7 @@ namespace Ssl {
 				  std::string clientID);
 
 		/// Destructor
-		virtual ~ClientConnection();
+		virtual ~SslClientConnection();
 		/// Send a message to the server.
 		/// @param message The message.
 		/// @returns False if there was an error sending the message.

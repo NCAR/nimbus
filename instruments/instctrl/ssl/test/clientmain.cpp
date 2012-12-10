@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "ClientConnection.h"
+#include "SslClientConnection.h"
 
 int main(int argc, char** argv)
 {
@@ -24,7 +24,7 @@ int main(int argc, char** argv)
         caDatabase.push_back(argv[i]);
     }
 
-    Ssl::ClientConnection client(
+    Ssl::SslClientConnection client(
     		clientKeyPath,
     		clientCertPath,
     		"localhost",

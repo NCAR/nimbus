@@ -30,11 +30,11 @@ Server::~Server() {
 /////////////////////////////////////////////////////////////////////
 void Server::createConnection(Ssl::SslSocket* sslSocket) {
 	// make a new server connection.
-	ServerConnection* connection = new ServerConnection(sslSocket);
+	SslServerConnection* connection = new SslServerConnection(sslSocket);
 
 	// capture signals whrn the state of the connection changes.
-	connect(connection, SIGNAL(connectionStateChanged(ServerConnection*, Ssl::SslSocket::SocketState)),
-			this, SLOT(connectionStateChanged(ServerConnection*, Ssl::SslSocket::SocketState)));
+	connect(connection, SIGNAL(connectionStateChanged(SslServerConnection*, Ssl::SslSocket::SocketState)),
+			this, SLOT(connectionStateChanged(SslServerConnection*, Ssl::SslSocket::SocketState)));
 
 	// add this connection to our list of connections.
 	_connections.insert(connection);
@@ -43,7 +43,7 @@ void Server::createConnection(Ssl::SslSocket* sslSocket) {
 }
 
 /////////////////////////////////////////////////////////////////////
-void Server::connectionStateChanged(ServerConnection* connection, Ssl::SslSocket::SocketState state) {
+void Server::connectionStateChanged(SslServerConnection* connection, Ssl::SslSocket::SocketState state) {
 
 	switch (state) {
 	case SslSocket::SS_Unconnected:
@@ -57,7 +57,7 @@ void Server::connectionStateChanged(ServerConnection* connection, Ssl::SslSocket
 	case SslSocket::SS_SocketError: {
 
 		// find it in our list of connections
-		std::set<ServerConnection*>::iterator p = _connections.find(connection);
+		std::set<SslServerConnection*>::iterator p = _connections.find(connection);
 
 		// big problem if we have lost track of this connection
 		assert (p != _connections.end());

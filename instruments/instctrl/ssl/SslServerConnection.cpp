@@ -1,10 +1,10 @@
-#include "ServerConnection.h"
+#include "SslServerConnection.h"
 #include <iostream>
 
 using namespace Ssl;
 
 /////////////////////////////////////////////////////////////////////
-ServerConnection::ServerConnection(SslSocket* sslSocket):
+SslServerConnection::SslServerConnection(SslSocket* sslSocket):
 	_sslSocket(sslSocket)
 {
 
@@ -18,14 +18,14 @@ ServerConnection::ServerConnection(SslSocket* sslSocket):
 }
 
 /////////////////////////////////////////////////////////////////////
-ServerConnection::~ServerConnection() {
+SslServerConnection::~SslServerConnection() {
 	if (_sslSocket) {
 		_sslSocket->deleteLater();
 	}
 }
 
 /////////////////////////////////////////////////////////////////////
-void ServerConnection::socketStateChanged(Ssl::SslSocket::SocketState state) {
+void SslServerConnection::socketStateChanged(Ssl::SslSocket::SocketState state) {
 
 	switch (state) {
 	case SslSocket::SS_Unconnected: {
@@ -59,7 +59,7 @@ void ServerConnection::socketStateChanged(Ssl::SslSocket::SocketState state) {
 }
 
 /////////////////////////////////////////////////////////////////////
-void ServerConnection::sslReadyRead() {
+void SslServerConnection::sslReadyRead() {
 
 	QByteArray data = _sslSocket->readAll();
 
@@ -73,7 +73,7 @@ void ServerConnection::sslReadyRead() {
 }
 
 /////////////////////////////////////////////////////////////////////
-bool ServerConnection::send(Protocols::Message& message) {
+bool SslServerConnection::send(Protocols::Message& message) {
 
 	qDebug() << __PRETTY_FUNCTION__;
 

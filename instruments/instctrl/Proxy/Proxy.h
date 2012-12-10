@@ -8,13 +8,13 @@
 #include <map>
 
 #include "Message.h"
-#include "ClientConnection.h"
+#include "SslClientConnection.h"
 
 /// Proxy relays messages between a switch and either an instrument or
 /// an instrument controller. Note that as far as proxy is concerned,
 /// and instrument and a instrument controller look the same.
 ///
-/// The connection to the Switch is managed with a ClientConnection.
+/// The connection to the Switch is managed with a SslClientConnection.
 /// The instrument/controller will send messages to specific ports, which
 /// the proxy listens on. These messages are forwarded to the switch. Similarly,
 /// messages from the switch are sent as datagrams to the instrument/controller.
@@ -99,7 +99,7 @@ protected:
 	/// The client identifier.
 	std::string _instName;
 	/// The connection to the switch.
-	Ssl::ClientConnection* _connection;
+	Ssl::SslClientConnection* _connection;
 	/// The incoming datagram socket.
 	QUdpSocket* _incomingUdpSocket;
 	/// The outgoing datagram socket.

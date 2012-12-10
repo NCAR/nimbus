@@ -1,16 +1,16 @@
 /*
- * ClientConnection.cpp
+ * SslClientConnection.cpp
  *
  *  Created on: Nov 16, 2012
  *      Author: martinc
  */
 
-#include "ClientConnection.h"
+#include "SslClientConnection.h"
 
 using namespace Ssl;
 
 /////////////////////////////////////////////////////////////////////
-ClientConnection::ClientConnection(
+SslClientConnection::SslClientConnection(
 		std::string keyFile,
 		std::string certFile,
 		std::string serverHost,
@@ -30,12 +30,12 @@ ClientConnection::ClientConnection(
 
 
 /////////////////////////////////////////////////////////////////////
-ClientConnection::~ClientConnection() {
+SslClientConnection::~SslClientConnection() {
 
 }
 
 /////////////////////////////////////////////////////////////////////
-void ClientConnection::socketStateChanged(Ssl::SslSocket::SocketState state) {
+void SslClientConnection::socketStateChanged(Ssl::SslSocket::SocketState state) {
 
 	switch (state) {
 	case SslSocket::SS_Unconnected: {
@@ -69,7 +69,7 @@ void ClientConnection::socketStateChanged(Ssl::SslSocket::SocketState state) {
 }
 
 /////////////////////////////////////////////////////////////////////
-void ClientConnection::sslReadyRead() {
+void SslClientConnection::sslReadyRead() {
 
 	QByteArray data = _sslSocket->readAll();
 
@@ -83,7 +83,7 @@ void ClientConnection::sslReadyRead() {
 }
 
 /////////////////////////////////////////////////////////////////////
-bool ClientConnection::send(Protocols::Message& message) {
+bool SslClientConnection::send(Protocols::Message& message) {
 
 	qDebug() << __PRETTY_FUNCTION__;
 
