@@ -86,6 +86,8 @@ void Proxy::initIncomingUDPsockets() {
 
 	connect(_incomingUdpSocket, SIGNAL(readyRead()), this, SLOT(udpReadyRead()));
 
+	qDebug() << "Proxy will listen on port " << _udpPort;
+
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -93,6 +95,12 @@ void Proxy::initOutgoingUDPsocket() {
 
 	_outgoingUdpSocket = new QUdpSocket(this);
 
+	std::map<std::string, InstMsgInfo>::iterator it;
+	for (it = _messages.begin(); it != _messages.end(); it++) {
+		qDebug() << "Proxy will send" << it->second._msgId.c_str() <<
+				"to" << it->second._destIP.c_str() << ":" << it->second._destPort
+				<< (it->second._broadcast ?"BROADCAST" : "UNICAST");
+	}
 }
 
 /////////////////////////////////////////////////////////////////////
