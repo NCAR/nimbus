@@ -6,31 +6,55 @@
 #include <string>
 #include <vector>
 
-#include "SwitchSslServer.h"
+#include "EmbeddedProxyServer.h"
+#include "SslProxyServer.h"
 #include "SwitchConnection.h"
 #include "SymCipherProtocol.h"
 
 /// The application which manages communications between one or more
-/// instances of Proxy and another Switch. The mutiple Proxy clients
-/// may be aggregated within a Switch, or may be remote. When Proxy is
-/// remote, it communicates via an SslSocket. When it is aggregated
-/// withing Switch, there is a direct connection to Proxy.
+/// instances of Proxy and another Switch.
+///
+/// There are two types of switch: one which communicates with
+/// the proxies via SSL, and the other which embeds local
+/// proxies within the Switch.
+///
+/// A SwitchConection manages the connection between the two switches.
+///
+/// A SwitchServer manages the connections between the proxies and the switch.
+/// There are two flavors of SwitchServer: the SwitchSslServer for handling
+/// remote proxies, and the SwitchEmbeddedServer for the local aggregated proxies.
 class Switch: public QObject {
 	Q_OBJECT
 public:
-	/// @param keyFile Path to the file containing the private key.
-	/// @param certFile Path to the file containing the certificate that matched the private key.
-	/// @param switchPort The server port number.
-	/// @param caDatabase Paths to certs that should be added to the CAdatabase
-	/// @param localPort The port that we listen for incoming messages on.
-	/// @param remoteIP The remote IP that we send messages to
-	/// @param remotePort The port that we send messages to
-	/// @param switchCipherKey The file containing the key for symmetric cipher encryption over SwitchConnection.
-
-	Switch(std::string keyFile,
+	/// The flavor of Switch for remote proxies that connect via SSL.
+	/// @param keyFile An SSL related parameter: the path to the file containing the private key.
+	/// @param certFile An SSL related parameter: the path to the file containing the certificate that matched the private key.
+	/// @param switchPort An SSL related parameter: the ssl server port number.
+	/// @param caDatabase An SSL related parameter: paths to certs that should be added to the CAdatabase. These will be
+	/// certificates for all allowable proxies.
+	/// @param localPort A SwitchConection related parameter: The port that we listen for incoming messages on.
+	/// @param remoteIP A SwitchConection related parameter: The remote IP that we send messages to.
+	/// @param remotePort A SwitchConection related parameter: The port that we send messages to.
+	/// @param switchCipherKey A SwitchConection related parameter: The file containing the key for symmetric cipher
+	/// encryption over a SwitchConnection.
+	Switch(
+			std::string keyFile,
 			std::string certFile,
 			int switchPort,
 			std::vector<std::string> caDatabase,
+			int _localPort,
+			std::string _remoteIP,
+			int _remotePort,
+			std::string switchCipherKey);
+
+	/// The flavor of switch which contains embedded proxies.
+	/// @param localPort A SwitchConection related parameter: The port that we listen for incoming messages on.
+	/// @param remoteIP A SwitchConection related parameter: The remote IP that we send messages to.
+	/// @param remotePort A SwitchConection related parameter: The port that we send messages to.
+	/// @param switchCipherKey A SwitchConection related parameter: The file containing the key for symmetric cipher
+	/// encryption over a SwitchConnection.
+	Switch(
+			std::vector<std::string> proxySpecs,
 			int _localPort,
 			std::string _remoteIP,
 			int _remotePort,
@@ -47,8 +71,11 @@ protected slots:
 	void msgFromRemoteSwitch(Protocols::Message msg);
 
 protected:
-	/// The server which creates new ServerConnections to the proxies.
-	SwitchSslServer _server;
+	/// Perform the signal/slot connections
+	void init();
+
+	/// The server that manages the connections to the proxies.
+	SwitchServer* _server;
 
 	/// The connection between us and the remote switch
 	SwitchConnection _switchConnection;

@@ -1,5 +1,5 @@
 /*
- * SwitchSslServer.h
+ * SslProxyServer.h
  *
  *  Created on: Dec 10, 2012
  *      Author: martinc
@@ -11,12 +11,12 @@
 
 #include <QtCore>
 #include <set>
-#include "SwitchSslServer.h"
+#include "SwitchServer.h"
 #include "SslServer.h"
 #include "SslServerConnection.h"
 
 /// The SSL server that manages SSL connections with Proxy.
-class SwitchSslServer: public Ssl::SslServer {
+class SslProxyServer: public SwitchServer {
 	Q_OBJECT;
 
 	public:
@@ -24,14 +24,14 @@ class SwitchSslServer: public Ssl::SslServer {
 		/// @param certFile Path to the file containing the certificate that matched the private key.
 		/// @param switchPort The server port number.
 		/// @param caDatabase Paths to certs that should be added to the CAdatabase
-	SwitchSslServer(std::string keyFile,
+	SslProxyServer(std::string keyFile,
 				std::string certFile,
 				int switchPort,
 				std::vector<std::string> caDatabase);
 		/// Destructor.
-		virtual ~SwitchSslServer();
+		virtual ~SslProxyServer();
 		/// Send a message to a client proxy
-		void sendToProxy(Protocols::Message msg);
+		virtual void sendToProxy(Protocols::Message msg);
 
 	signals:
 		void msgFromProxy(std::string msg);
@@ -45,6 +45,7 @@ class SwitchSslServer: public Ssl::SslServer {
 		void msgFromProxySlot(std::string msg);
 
 	protected:
+		Ssl::SslServer* _sslServer;
 		/// Keep track of active connections
 		std::set<Ssl::SslServerConnection*> _connections;
 };

@@ -12,14 +12,20 @@ env = Environment(tools = tools)
 sources = Split("""
 main.cpp
 Switch.cpp
-SwitchSslServer.cpp
+SwitchServer.cpp
+EmbeddedProxyServer.cpp
+EmbeddedProxy.cpp
+SslProxyServer.cpp
 SwitchConnection.cpp
 """)
 
 headers = Split("""
 Switch.h
 SwitchConnection.h
-SwitchSslServer.h
+SwitchServer.h
+EmbeddedProxyServer.h
+EmbeddedProxy.h
+SslProxyServer.h
 """)
 
 switch = env.Program('switch', sources)

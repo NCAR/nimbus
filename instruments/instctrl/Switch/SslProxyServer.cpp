@@ -1,29 +1,30 @@
-#include "SwitchSslServer.h"
+#include "SslProxyServer.h"
 #include <assert.h>
 #include <iostream>
 
 using namespace Ssl;
 
 /////////////////////////////////////////////////////////////////////
-SwitchSslServer::SwitchSslServer(std::string keyFile,
+SslProxyServer::SslProxyServer(std::string keyFile,
 		std::string certFile,
 		int port,
-		std::vector<std::string> caDatabase):
-		SslServer(keyFile, certFile, port, caDatabase)
+		std::vector<std::string> caDatabase)
+//:SslServer(keyFile, certFile, port, caDatabase)
 {
-	connect(this, SIGNAL(newConnection(Ssl::SslSocket*)),
+	_sslServer = new SslServer(keyFile, certFile, port, caDatabase);
+	_sslServer->connect(_sslServer, SIGNAL(newConnection(Ssl::SslSocket*)),
 			this, SLOT(createConnection(Ssl::SslSocket*)));
 
 }
 
 /////////////////////////////////////////////////////////////////////
-SwitchSslServer::~SwitchSslServer() {
+SslProxyServer::~SslProxyServer() {
 
 }
 
 /////////////////////////////////////////////////////////////////////
-void SwitchSslServer::createConnection(Ssl::SslSocket* sslSocket) {
-	// make a new SwitchSslServer connection.
+void SslProxyServer::createConnection(Ssl::SslSocket* sslSocket) {
+	// make a new SslProxyServer connection.
 	SslServerConnection* connection = new SslServerConnection(sslSocket);
 
 	// capture signals whrn the state of the connection changes.
@@ -41,7 +42,7 @@ void SwitchSslServer::createConnection(Ssl::SslSocket* sslSocket) {
 }
 
 /////////////////////////////////////////////////////////////////////
-void SwitchSslServer::connectionStateChanged(SslServerConnection* connection, Ssl::SslSocket::SocketState state) {
+void SslProxyServer::connectionStateChanged(SslServerConnection* connection, Ssl::SslSocket::SocketState state) {
 
 	switch (state) {
 	case SslSocket::SS_Unconnected:
@@ -79,13 +80,13 @@ void SwitchSslServer::connectionStateChanged(SslServerConnection* connection, Ss
 }
 
 /////////////////////////////////////////////////////////////////////
-void SwitchSslServer::msgFromProxySlot(std::string msg) {
+void SslProxyServer::msgFromProxySlot(std::string msg) {
 	emit msgFromProxy(msg);
 	return;
 }
 
 /////////////////////////////////////////////////////////////////////
-void SwitchSslServer::sendToProxy(Protocols::Message msg) {
+void SslProxyServer::sendToProxy(Protocols::Message msg) {
 	if (_connections.size() > 0) {
 		qDebug() << __PRETTY_FUNCTION__;
 		(*_connections.begin())->send(msg);
