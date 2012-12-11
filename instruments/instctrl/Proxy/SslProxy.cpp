@@ -1,21 +1,21 @@
-#include "Proxy.h"
+#include "SslProxy.h"
 #include <iostream>
 
 using namespace Ssl;
 using namespace Protocols;
 
 /////////////////////////////////////////////////////////////////////
-Proxy::Proxy(
-		int udpPort,
-		std::string keyFile,
+SslProxy::SslProxy(
+		int incomingUdpPort,
+		std::string privateKeyFile,
 		std::string certFile,
 		std::string serverHost,
 		int switchPort,
 		std::vector<std::string> caDatabase,
 		std::string instName,
 		std::map<std::string, InstMsgInfo> messages):
-_udpPort(udpPort),
-_keyFile(keyFile),
+_incomingUdpPort(incomingUdpPort),
+_keyFile(privateKeyFile),
 _certFile(certFile),
 _serverHost(serverHost),
 _switchPort(switchPort),
@@ -41,7 +41,7 @@ _outgoingUdpSocket(0)
 
 
 /////////////////////////////////////////////////////////////////////
-Proxy::~Proxy() {
+SslProxy::~SslProxy() {
 
 	if (_incomingUdpSocket) {
 		_incomingUdpSocket->deleteLater();
@@ -57,7 +57,7 @@ Proxy::~Proxy() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void Proxy::initSwitchConnection() {
+void SslProxy::initSwitchConnection() {
 
 	_connection = new SslClientConnection(
 			_keyFile,
@@ -72,26 +72,26 @@ void Proxy::initSwitchConnection() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void Proxy::initIncomingUDPsockets() {
+void SslProxy::initIncomingUDPsockets() {
 
 	_incomingUdpSocket = new QUdpSocket(this);
 
-	bool status = _incomingUdpSocket->bind(QHostAddress::LocalHost, _udpPort,
+	bool status = _incomingUdpSocket->bind(QHostAddress::LocalHost, _incomingUdpPort,
 			QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
 
 	if (!status) {
-		qDebug() << "unable to bind to UDP port " << _udpPort;
+		qDebug() << "unable to bind to UDP port " << _incomingUdpPort;
 		return;
 	}
 
 	connect(_incomingUdpSocket, SIGNAL(readyRead()), this, SLOT(udpReadyRead()));
 
-	qDebug() << "Proxy will listen on port " << _udpPort;
+	qDebug() << "Proxy will listen on port " << _incomingUdpPort;
 
 }
 
 /////////////////////////////////////////////////////////////////////
-void Proxy::initOutgoingUDPsocket() {
+void SslProxy::initOutgoingUDPsocket() {
 
 	_outgoingUdpSocket = new QUdpSocket(this);
 
@@ -104,7 +104,7 @@ void Proxy::initOutgoingUDPsocket() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void Proxy::udpReadyRead() {
+void SslProxy::udpReadyRead() {
 
 	// A message has arrived from the instrument/controller
 	while (_incomingUdpSocket->hasPendingDatagrams()) {
@@ -129,14 +129,14 @@ void Proxy::udpReadyRead() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void Proxy::msgFromServerSlot(Protocols::Message msg) {
+void SslProxy::msgFromServerSlot(Protocols::Message msg) {
 	qDebug() << msg.payload().text().c_str();
 
 	std::string msgId = msg.msgId();
 
 	// find this message in our message dictionary
 	if (_messages.find(msgId) != _messages.end()) {
-		broadcastMsg(_messages[msgId], msg);
+		sendMsg(_messages[msgId], msg);
 	} else {
 		/// @todo Handle appropriately; reporting/logging as needed.
 		qDebug() << "Proxy: Unrecognized message" << msgId.c_str() << "ignored by the proxy";
@@ -145,7 +145,7 @@ void Proxy::msgFromServerSlot(Protocols::Message msg) {
 }
 
 /////////////////////////////////////////////////////////////////////
-void Proxy::broadcastMsg(Proxy::InstMsgInfo& info, Protocols::Message& msg) {
+void SslProxy::sendMsg(SslProxy::InstMsgInfo& info, Protocols::Message& msg) {
 
 	int sent;
 

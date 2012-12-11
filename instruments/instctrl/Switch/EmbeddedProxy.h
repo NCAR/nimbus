@@ -17,6 +17,8 @@ public:
 	EmbeddedProxy();
 	virtual ~EmbeddedProxy();
 
+
+
 };
 
 #endif /* EMBEDDEDPROXY_H_ */

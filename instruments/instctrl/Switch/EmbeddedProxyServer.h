@@ -7,7 +7,7 @@
 #include "SwitchServer.h"
 #include "EmbeddedProxy.h"
 
-/// The SSL server that manages SSL connections with Proxy.
+/// The server that manages connections with an EmbeddedProxy.
 class EmbeddedProxyServer: public SwitchServer {
 	Q_OBJECT;
 

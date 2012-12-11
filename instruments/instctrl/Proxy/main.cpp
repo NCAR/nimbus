@@ -3,7 +3,7 @@
 #include <sstream>
 #include <boost/program_options.hpp>
 #include "QtConfig.h"
-#include "Proxy.h"
+#include "SslProxy.h"
 
 namespace po = boost::program_options;
 
@@ -62,7 +62,7 @@ int main(int argc, char** argv)
 	}
 
 	// Configuration for one message
-	Proxy::InstMsgInfo msg;
+	SslProxy::InstMsgInfo msg;
 
 	// Get configuration values. Default values will be created in the
 	// configuration file if they don't exist, so that running the program
@@ -83,7 +83,7 @@ int main(int argc, char** argv)
     msg._broadcast             = config->getBool  ("InstMsgBroadcast", true);
     msg._instName              = instName;
 
-    std::map<std::string, Proxy::InstMsgInfo> messages;
+    std::map<std::string, SslProxy::InstMsgInfo> messages;
     messages[msg._msgId] = msg;
 
     // If the port number is 0, it indicates that the user has not configured
@@ -104,7 +104,7 @@ int main(int argc, char** argv)
 	QCoreApplication app(argc, argv);
 
     // Create the proxy. It will try to connect with the switch.
-	Proxy proxy(
+	SslProxy proxy(
     		proxyUdpPort,
     		proxyKeyFile,
     		proxyCertFile,

@@ -15,7 +15,7 @@
 #include "SslServer.h"
 #include "SslServerConnection.h"
 
-/// The SSL server that manages SSL connections with Proxy.
+/// The server that manages connections with an SslProxy.
 class SslProxyServer: public SwitchServer {
 	Q_OBJECT;
 
