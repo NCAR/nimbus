@@ -26,6 +26,7 @@ SwitchServer.h
 EmbeddedProxy.h
 EmbeddedProxyServer.h
 SslProxyServer.h
+Overview.h
 """)
 
 switch = env.Program('switch', sources)
