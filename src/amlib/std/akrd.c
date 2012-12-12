@@ -112,6 +112,9 @@ void sakrd(DERTBL *varp)
         akrd = 0.0;
       }
     }
+  else
+  if (isnan(adifr) || isnan(qcxc))
+    akrd = floatNAN;
 
   PutSample(varp, akrd);
 
