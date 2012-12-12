@@ -11,11 +11,9 @@ env = Environment(tools = tools)
 
 sources = Split("""
  main.cpp
- SslProxy.cpp
 """)
 
 headers = Split("""
- SslProxy.h
 """)
 
 proxy = env.Program('proxy', sources)

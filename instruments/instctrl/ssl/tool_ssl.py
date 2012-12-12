@@ -17,12 +17,14 @@ def ssl(env):
 Export('ssl')
 
 sources = Split("""
+ SslProxy.cpp
  SslClientConnection.cpp
  SslServerConnection.cpp
  SslServer.cpp
  SslSocket.cpp
 """)
 headers = Split("""
+ SslProxy.h
  SslClientConnection.h
  SslServerConnection.h
  SslServer.h

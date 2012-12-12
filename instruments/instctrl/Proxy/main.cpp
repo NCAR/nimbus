@@ -67,21 +67,21 @@ int main(int argc, char** argv)
 	// Get configuration values. Default values will be created in the
 	// configuration file if they don't exist, so that running the program
 	// for the first time will create a configuration template.
-	int proxyUdpPort           = config->getInt   ("ProxyUdpPort",    0);
+	std::string proxyID        = config->getString("ProxyID",         "PROXY");
 	std::string proxyKeyFile    (config->getString("ProxyKeyFile",    "./proxy.key"));
 	std::string proxyCertFile   (config->getString("ProxyCertFile",   "./proxy.crt"));
 	int switchProxyPort        = config->getInt   ("SwitchProxyPort", 0);
 	std::string switchHostName = config->getString("SwitchHostName",  "127.0.0.1");
 	std::string switchCertFile = config->getString("SwitchCertFile",  "./switch.crt");
-	std::string instName       = config->getString("InstrumentID",    "INSTRUMENT");
 
 	// Configure a message
 	/// @todo Rework the configuration to support multiple messages
 	msg._msgId                 = config->getString("InstMsgID",       "INST");
-	msg._destPort              = config->getInt   ("InstUdpPort",     0);
+	msg._incomingPort          = config->getInt   ("InstIncomingPort",0);
+	msg._destPort              = config->getInt   ("InstDestPort", 0);
 	msg._destIP                = config->getString("InstHostName",    "127.0.0.1");
     msg._broadcast             = config->getBool  ("InstMsgBroadcast", true);
-    msg._instName              = instName;
+    msg._instName              = config->getString("InstName",    "INSTRUMENT");
 
     std::map<std::string, SslProxy::InstMsgInfo> messages;
     messages[msg._msgId] = msg;
@@ -90,7 +90,7 @@ int main(int argc, char** argv)
 	// the application yet. We wait until this point so that all of the default values
 	// will have been added to the configuration file. Force them to take a stab at
 	// configuration.
-	if (switchProxyPort == 0 || msg._destPort == 0) {
+	if (switchProxyPort == 0 || msg._incomingPort == 0 || msg._destPort == 0) {
 		std::cout << "Please create a usable configuration by editing " << config->fileName() << std::endl;
 		exit(1);
 	}
@@ -105,13 +105,12 @@ int main(int argc, char** argv)
 
     // Create the proxy. It will try to connect with the switch.
 	SslProxy proxy(
-    		proxyUdpPort,
+			proxyID,
     		proxyKeyFile,
     		proxyCertFile,
     		switchHostName,
     		switchProxyPort,
     		caDatabase,
-    		instName,
     		messages);
 
     return app.exec();

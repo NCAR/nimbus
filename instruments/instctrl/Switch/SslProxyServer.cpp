@@ -28,8 +28,8 @@ void SslProxyServer::createConnection(Ssl::SslSocket* sslSocket) {
 	SslServerConnection* connection = new SslServerConnection(sslSocket);
 
 	// capture signals whrn the state of the connection changes.
-	connect(connection, SIGNAL(connectionStateChanged(Ssl::SslSwitchSslServerConnection*, Ssl::SslSocket::SocketState)),
-			this, SLOT(connectionStateChanged(Ssl::SslSwitchSslServerConnection*, Ssl::SslSocket::SocketState)));
+	connect(connection, SIGNAL(connectionStateChanged(Ssl::SslServerConnection*, Ssl::SslSocket::SocketState)),
+			this, SLOT(connectionStateChanged(Ssl::SslServerConnection*, Ssl::SslSocket::SocketState)));
 
 	// add this connection to our list of connections.
 	_connections.insert(connection);

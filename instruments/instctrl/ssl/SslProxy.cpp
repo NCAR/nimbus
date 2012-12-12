@@ -6,30 +6,28 @@ using namespace Protocols;
 
 /////////////////////////////////////////////////////////////////////
 SslProxy::SslProxy(
-		int incomingUdpPort,
+		std::string proxyID,
 		std::string privateKeyFile,
 		std::string certFile,
 		std::string serverHost,
 		int switchPort,
 		std::vector<std::string> caDatabase,
-		std::string instName,
 		std::map<std::string, InstMsgInfo> messages):
-_incomingUdpPort(incomingUdpPort),
+_proxyID(proxyID),
 _keyFile(privateKeyFile),
 _certFile(certFile),
-_serverHost(serverHost),
-_switchPort(switchPort),
+_sslHost(serverHost),
+_sslPort(switchPort),
 _caDatabase(caDatabase),
-_instName(instName),
 _messages(messages),
-_connection(0),
+_sslConnection(0),
 _incomingUdpSocket(0),
 _outgoingUdpSocket(0)
 {
 
 	// Initialize the connection to the switch. A SslClientConnection
 	// will be created, and signals and slots will be connected.
-	initSwitchConnection();
+	initSslConnection();
 
 	// Initialize the incoming UDP socket.
 	initIncomingUDPsockets();
@@ -39,6 +37,24 @@ _outgoingUdpSocket(0)
 
 }
 
+/////////////////////////////////////////////////////////////////////
+SslProxy::SslProxy(
+		std::string proxyID,
+		std::map<std::string, InstMsgInfo> messages):
+_proxyID(proxyID),
+_messages(messages),
+_sslConnection(0),
+_incomingUdpSocket(0),
+_outgoingUdpSocket(0)
+{
+
+	// Initialize the incoming UDP socket.
+	initIncomingUDPsockets();
+
+	// Initialize the outgoing UDP socket.
+	initOutgoingUDPsocket();
+
+}
 
 /////////////////////////////////////////////////////////////////////
 SslProxy::~SslProxy() {
@@ -51,23 +67,23 @@ SslProxy::~SslProxy() {
 		_outgoingUdpSocket->deleteLater();
 	}
 
-	if (_connection) {
-		delete _connection;
+	if (_sslConnection) {
+		delete _sslConnection;
 	}
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslProxy::initSwitchConnection() {
+void SslProxy::initSslConnection() {
 
-	_connection = new SslClientConnection(
+	_sslConnection = new SslClientConnection(
 			_keyFile,
 			_certFile,
-			_serverHost,
-			_switchPort,
+			_sslHost,
+			_sslPort,
     		_caDatabase,
-    		_instName);
+    		_proxyID);
 
-	connect(_connection, SIGNAL(msgFromServer(Protocols::Message)), this, SLOT(msgFromServerSlot(Protocols::Message)));
+	connect(_sslConnection, SIGNAL(msgFromServer(Protocols::Message)), this, SLOT(msgFromServerSlot(Protocols::Message)));
 
 }
 
@@ -76,17 +92,21 @@ void SslProxy::initIncomingUDPsockets() {
 
 	_incomingUdpSocket = new QUdpSocket(this);
 
-	bool status = _incomingUdpSocket->bind(QHostAddress::LocalHost, _incomingUdpPort,
+	/// @todo Actually, this will set up multiple sockets
+	/// for all message types. Right, just use the port
+	/// from the first message.
+	int port = _messages.begin()->second._incomingPort;
+	bool status = _incomingUdpSocket->bind(QHostAddress::LocalHost, port,
 			QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
 
 	if (!status) {
-		qDebug() << "unable to bind to UDP port " << _incomingUdpPort;
+		qDebug() << "unable to bind to UDP port " << port;
 		return;
 	}
 
 	connect(_incomingUdpSocket, SIGNAL(readyRead()), this, SLOT(udpReadyRead()));
 
-	qDebug() << "Proxy will listen on port " << _incomingUdpPort;
+	qDebug() << "Proxy will listen on port " << port;
 
 }
 
@@ -121,10 +141,10 @@ void SslProxy::udpReadyRead() {
 		/// _messages. Right now we will just use the first
 		/// message that we have.
 		std::string msgId = _messages.begin()->second._msgId;
-		Message msg(_instName, msgId, QString(data).toStdString());
+		Message msg(_proxyID, msgId, QString(data).toStdString());
 
-		// send the Message
-		_connection->send(msg);
+		// send the message via the SSL connection.
+		_sslConnection->send(msg);
 	}
 }
 

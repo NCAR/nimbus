@@ -27,7 +27,6 @@ Switch::Switch(std::vector<std::string> proxySpecs,
 		int remotePort,
 		std::string switchCipherKey):
 _switchConnection(localPort, remoteIP, remotePort, switchCipherKey),
-//_sslServer(0),
 _server(0)
 {
 	// Create an embedded proxy server

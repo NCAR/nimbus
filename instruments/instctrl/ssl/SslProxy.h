@@ -24,7 +24,7 @@ class SslProxy: public QObject {
 public:
 	/// A helper class to manage the handling of message types. One instance
 	/// will be created for each message identifier (_msgId). The
-	/// instrument name (_instName) will be the same for all messages
+	/// instrument name (_proxyID) will be the same for all messages
 	/// from a single instrument.
 	struct InstMsgInfo {
 		/// The instrument name (as used by the SslProxy/Switch system
@@ -33,6 +33,8 @@ public:
 		std::string _msgId;
 		/// Whether this message is delivered via broadcast UDP or unicast UDP.
 		bool _broadcast;
+		/// The receive port for this message.
+		int _incomingPort;
 		/// The destination port for this message.
 		int _destPort;
 		/// The destination name or IP for this message. For broadcast messages,
@@ -40,24 +42,28 @@ public:
 		std::string _destIP;
 	};
 
-	/// @param incomingUdpPort The incoming udp port
+    /// @param proxyID An identifier for the proxy.
 	/// @param privateKeyFile Path to the file containing the private key.
 	/// Specify a blank string if no key is provided.
 	/// @param certFile Path to the file containing the certificate that matched the private key.
 	/// Specify a blank string if no certificate is provided.
-	/// @param serverHost The server host name or IP address.
-	/// @param switchPort The server port number.
+	/// @param switchSslHost The server host name or IP address.
+	/// @param switchSslPort The server port number.
 	/// @param caDatabase Paths to certs that should be added to the CAdatabase.
-	/// @param instName The instrument name.
 	/// @param messageInfo Routing and processing configuration for message types.
 	SslProxy(
-			int incomingUdpPort,
+			std::string proxyID,
 			std::string privateKeyFile,
 			std::string certFile,
-			std::string serverHost,
-			int switchPort,
+			std::string switchSslHost,
+			int switchSslPort,
 			std::vector<std::string> caDatabase,
-			std::string instName,
+			std::map<std::string, InstMsgInfo> messages);
+
+    /// @param proxyID An identifier for the proxy.
+	/// @param messageInfo Routing and processing configuration for message types.
+	SslProxy(
+			std::string proxyID,
 			std::map<std::string, InstMsgInfo> messages);
 
 	virtual ~SslProxy();
@@ -71,7 +77,7 @@ protected slots:
 
 protected:
 	/// Initialize the connection to the switch
-	void initSwitchConnection();
+	void initSslConnection();
 	/// Initialize the incoming UDP socket. One socket is required
 	/// per port that we are listening on.
 	void initIncomingUDPsockets();
@@ -84,22 +90,19 @@ protected:
 	/// @param msg The message.
 	void sendMsg(InstMsgInfo& info, Protocols::Message& msg);
 
-	/// Port number for incoming datagrams
-	int _incomingUdpPort;
+	std::string _proxyID;
 	/// Path to the private key.
 	std::string _keyFile;
 	/// Path to the client certificate.
 	std::string _certFile;
 	/// The name or IP of the switch.
-	std::string _serverHost;
+	std::string _sslHost;
 	/// The switch port number.
-	int _switchPort;
+	int _sslPort;
 	/// Paths to extra certificates to be added to the database.
 	std::vector<std::string> _caDatabase;
-	/// The client identifier.
-	std::string _instName;
 	/// The connection to the switch.
-	Ssl::SslClientConnection* _connection;
+	Ssl::SslClientConnection* _sslConnection;
 	/// The incoming datagram socket.
 	QUdpSocket* _incomingUdpSocket;
 	/// The outgoing datagram socket.
