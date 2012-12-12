@@ -78,19 +78,17 @@ void EmbeddedProxy::udpReadyRead() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void EmbeddedProxy::msgFromServerSlot(Protocols::Message msg) {
-	qDebug() << msg.payload().text().c_str();
-
-	std::string msgId = msg.msgId();
+void EmbeddedProxy::send(Protocols::Message msg) {
 
 	// find this message in our message dictionary
+	std::string msgId = msg.msgId();
 	if (_messages.find(msgId) != _messages.end()) {
 		sendMsg(_messages[msgId], msg);
 	} else {
 		/// @todo Handle appropriately; reporting/logging as needed.
-		qDebug() << "Proxy: Unrecognized message" << msgId.c_str() << "ignored by the proxy";
+		qDebug() << "Proxy: Unrecognized message" << msgId.c_str()
+				<< "ignored by the proxy";
 	}
-
 }
 
 /////////////////////////////////////////////////////////////////////

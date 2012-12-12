@@ -39,13 +39,13 @@ public:
 
 	EmbeddedProxy(std::map<std::string, SslProxy::InstMsgInfo> messages);
 	virtual ~EmbeddedProxy();
+	void send(Protocols::Message msg);
 
 signals:
 	void msgFromProxy(std::string);
 
 protected slots:
 	void udpReadyRead();
-	void msgFromServerSlot(Protocols::Message msg);
 
 
 protected:

@@ -32,7 +32,8 @@ EmbeddedProxyServer::~EmbeddedProxyServer() {
 
 /////////////////////////////////////////////////////////////////////
 void EmbeddedProxyServer::sendToProxy(Protocols::Message msg) {
-
+	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	_proxy->send(msg);
 }
 
 /////////////////////////////////////////////////////////////////////
