@@ -29,7 +29,7 @@ namespace Protocols {
 		/// @return As a Json::Value
 		Json::Value toJson();
 		/// @return As a formatted string
-		std::string toStdString();
+		std::string toJsonStdString();
 		/// @return Reference to the payload
 		MessagePayload& payload();
 

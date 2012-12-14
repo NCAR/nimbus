@@ -48,7 +48,7 @@ Json::Value Message::toJson() {
 }
 
 /////////////////////////////////////////////////////////////////////
-std::string Message::toStdString() {
+std::string Message::toJsonStdString() {
 
 	// turn the message into a string of JSON
 	std::stringstream s;
