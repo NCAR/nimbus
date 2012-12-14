@@ -1125,7 +1125,9 @@ int parseRunstring(int argc, char** argv)
       // TODO query the platforms DB to get a list of these...
       if ( platform.compare("GV") &&
            platform.compare("P3") &&
+           platform.compare("G4") &&
            platform.compare("DC8") &&
+           platform.compare("A10") &&
            platform.compare("C130") )
       {
         cerr << "\n\tplatform must be GV, C130, DC8, or P3\n\n";
