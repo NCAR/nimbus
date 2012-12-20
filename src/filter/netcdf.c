@@ -26,7 +26,7 @@ DESCRIPTION:	This file has the routines necessary to Create and write
 		data for distribution of NCAR/RAF aircraft data in netCDF
 		format.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2011
+COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2012
 -------------------------------------------------------------------------
 */
 
@@ -99,6 +99,23 @@ void	AddPMS1dAttrs(int ncid, const var_base * rp), ReadMetaData(int fd),
 std::map<int, int> _rateDimIDs;
 //   VectorLen, DimID
 std::map<int, int> _vectorDimIDs;
+
+/* -------------------------------------------------------------------- */
+long UTSeconds(NR_TYPE *record)	// Seconds since midnight
+{
+  static int prev_day = 0;
+  static int offset = 0;
+
+  if (prev_day > 0 && (int)record[timeIndex[5]] != prev_day)
+    offset += 86400;
+
+  prev_day = (int)record[timeIndex[5]];
+
+  return  (int)record[timeIndex[0]] * 3600
+	+ (int)record[timeIndex[1]] * 60
+	+ (int)record[timeIndex[2]]
+	+ offset;
+}
 
 /* -------------------------------------------------------------------- */
 void SetBaseTime(NR_TYPE *record)
@@ -536,7 +553,9 @@ void WriteNetCDF()
   start[0] = recordNumber; start[1] = start[2] = 0;
   count[0] = 1;
 
-  nc_put_var1_long(fd, timeVarID, start, &TimeVar);
+  // Output Time variable as seconds since midnight (UTSeconds).
+  long ut_seconds = UTSeconds(SampledData);
+  nc_put_var1_long(fd, timeVarID, start, &ut_seconds);
   if (cfg.isADS2())
     nc_put_var1_float(fd, timeOffsetID, start, &TimeOffset);
 
@@ -1015,9 +1034,12 @@ static void writeMinMax()
 static void writeTimeUnits()
 {
   const char *format = "seconds since %F %T %z";
+  struct tm tmp;
 
   StartFlight.tm_isdst = 0;
-  strftime(buffer, 256, format, &StartFlight);
+  tmp = StartFlight;
+  tmp.tm_hour = tmp.tm_min = tmp.tm_sec = 0;
+  strftime(buffer, 256, format, &tmp);
   nc_put_att_text(fd, timeVarID, "units", strlen(buffer)+1, buffer);
   nc_put_att_text(fd, timeVarID, "strptime_format", strlen(format)+1, format);
   if (cfg.isADS2())
