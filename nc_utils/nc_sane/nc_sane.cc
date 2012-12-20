@@ -7,7 +7,7 @@ FULL NAME:	netCDF sanity checker.
 DESCRIPTION:	Check netCDF file for various consistency issues,
 		so far all related to time.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2006
+COPYRIGHT:	University Corporation for Atmospheric Research, 2006-2012
 -------------------------------------------------------------------------
 */
 
@@ -174,12 +174,21 @@ void checkStarts(int fd, const char * fileName)
   if (nc_inq_varid(fd, "Time", &id) == NC_NOERR)
   {
     char att[128], oldAtt[128];
+    const char *format = "seconds since %F %T %z";
+    long UTseconds;
+    struct tm units_tm;
 
     nc_get_att_text(fd, id, "units", oldAtt);
 
-    strftime(att, 128, "seconds since %F %T %z", &StartFlight);
+    nc_get_var1_int(fd, id, edge, (int*)&UTseconds);
+    strptime(oldAtt, format, &units_tm);
+    strftime(att, 128, format, &StartFlight);
 
-    if (strcmp(att, oldAtt) != 0)
+    time_t att_t, hdr_t;
+    hdr_t = mktime(&StartFlight);
+    att_t = mktime(&units_tm);
+
+    if (hdr_t != att_t + UTseconds)
     {
       printf("%s: has incorrect Time:units\n", fileName);
       printf("         is [%s]\n", oldAtt);
