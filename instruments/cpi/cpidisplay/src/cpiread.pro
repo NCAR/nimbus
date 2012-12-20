@@ -97,7 +97,7 @@ pro cpidraw, state, new
             levelmaxy = 0
          endif
          if (finfo.toty gt levelmaxy) then levelmaxy = finfo.toty
-         if (finfo.totx eq 0 or finfo.toty eq 0) then goto, ioerr
+         if (finfo.totx le 0 or finfo.toty le 0) then goto, ioerr
          roidata = bytarr(finfo.totx, finfo.toty)
 ;print, finfo.totx, finfo.toty, savex, savey, checkx
          readu, state.indata, roidata
