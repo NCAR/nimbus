@@ -164,7 +164,6 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
       if (!ProductionSetup || cfg.ProductionRun())
         raw[indx]->Dirty = true;
 
-
       while ( (target = strtok(NULL, " \t")) )
       {
         if (strncmp(target, "O=", 2) == 0)
@@ -186,11 +185,14 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
         if (strncmp(target, "nCOEF=", 6) == 0)
         {
-          size_t order = atoi(strchr(target, '=')+1);
+          if ( strcmp(&cfg.FlightDate()[6], "2013") < 0 || !cfg.ProductionRun() )
+          {
+            size_t order = atoi(strchr(target, '=')+1);
 
-          raw[indx]->cof.clear();
-          for (size_t i = 0; i < order; ++i)
-            raw[indx]->cof.push_back((float)atof(strtok(NULL, " \t")));
+            raw[indx]->cof.clear();
+            for (size_t i = 0; i < order; ++i)
+              raw[indx]->cof.push_back((float)atof(strtok(NULL, " \t")));
+          }
         }
       }
     }
@@ -348,11 +350,17 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
       if (raw[i]->SpikeSlope != 0.0)
         fprintf(fp, "SS=%e ", raw[i]->SpikeSlope);
 
-      fprintf(fp, "DQ=%s OR=%zu nCOEF=%zu", 
+      fprintf(fp, "DQ=%s OR=%zu", 
+		raw[i]->DataQuality, raw[i]->OutputRate);
+
+      if (!cfg.ProductionRun())
+      {
+        fprintf(fp, " nCOEF=%zu", 
 		raw[i]->DataQuality, raw[i]->OutputRate, raw[i]->cof.size());
 
-      for (size_t j = 0; j < raw[i]->cof.size(); ++j)
-        fprintf(fp, " %e", raw[i]->cof[j]);
+        for (size_t j = 0; j < raw[i]->cof.size(); ++j)
+          fprintf(fp, " %e", raw[i]->cof[j]);
+      }
 
       fprintf(fp, "\n");
     }
