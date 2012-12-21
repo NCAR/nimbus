@@ -44,7 +44,7 @@ COMMON SHARED MODE2%, LOAD2%, HOLD2%, HOLDCY2%
 COMMON SHARED MODE3%, LOAD3%, HOLD3%, HOLDCY3%
 COMMON SHARED MODE4%, LOAD4%, HOLD4%, HOLDCY4%
 COMMON SHARED MODE5%, LOAD5%, HOLD5%, HOLDCY5%
-COMMON SHARED ROW%, COLUMN%, VALUE!, ADTEST&
+COMMON SHARED row%, COLUMN%, VALUE!, ADTEST&
 COMMON SHARED TEMP#, RT#, ADVOLTS#, PRES#, ENGUNITS#, VOLTS#, MILLIAMP#
 COMMON SHARED R1!, R2!, MBARCAL!
 COMMON SHARED FREQA&, FREQB&, CNTSREF&, DELTAFREQA&, DELTAFREQB&, FREQRATIO#, PREVRATIO#
@@ -119,7 +119,7 @@ DO
 
      STATUS% = 2                            'SET STATUS OF CNTR 1 CHIP 1
      DO UNTIL STATUS% = 0
-		STATUS% = INP(CONT1%) AND 2		'CHECK STATUS OF CNTR 1 CHIP 1
+		STATUS% = INP(CONT1%) AND 2             'CHECK STATUS OF CNTR 1 CHIP 1
      LOOP
 				'START 1 SEC HERE: CNTR=4000
 
@@ -360,7 +360,7 @@ SUB FINETIMER                          'USEC ELAPSED FROM START OF GATE
      CNTSLOW& = INP(DATA1%)              'READ DATA REGISTERS
      CNTSHI& = INP(DATA1%)
      CNTSFIRST& = 4000 - (CNTSLOW& + CNTSHI& * 256)
-     MICSECS# = CNTSFIRST& * 250	'ONE COUNT IS 250 MICROSECONDS
+     MICSECS# = CNTSFIRST& * 250        'ONE COUNT IS 250 MICROSECONDS
 									'REPRESENTS USEC ELAPSED FROM
 									'START OF GATE
 END SUB
@@ -491,7 +491,7 @@ SUB INITSCREEN        'Configures static part of screen layout
     PRINT
     PRINT "LAMP           DET             SCRUB"
     PRINT
-    PRINT "Vent           PS Plate        T-Contr        PC-104"
+    PRINT "Vent          PS Plate         T-Contr          PC-104"
     PRINT
     PRINT
     PRINT "Voltages"
@@ -534,12 +534,12 @@ DIM timebyte(1 TO 16)
 XBASE% = 768            '0x300
 UN100PORT% = 15         '0x0f
 
-	n% = 0
+	N% = 0
 
 	DO
-	  timebyte(n% + 1) = INP(XBASE% + UN100PORT% - n%)
-	  n% = n% + 1
-	LOOP UNTIL n% = 9
+	  timebyte(N% + 1) = INP(XBASE% + UN100PORT% - N%)
+	  N% = N% + 1
+	LOOP UNTIL N% = 9
 
 	'hh 10s
 	left = (INT(timebyte(7) * (2 ^ 4)) AND 255) / 16
@@ -610,7 +610,7 @@ COMBDATA$ = "C:\DATA\" + YR$ + MO$ + DA$ + HR$ + "." + MN$ + SEC$
 
 'Initialize the data file with column headings.
 OPEN ENGOUT$ FOR APPEND AS #1
-	PRINT #1, "COMP_T       TMPL    TMPD    TMPC    TMPF    TMPPS   TMPB   TMPPC   ";
+	PRINT #1, "COMP_OP1     TMPL    TMPD    TMPC    TMPF    TMPPS   TMPB   TMPPC   ";
 	PRINT #1, "V5REF   V5PS    V28M   V24D    V_24D    V15B   V_15B    V12L   V5PC   ";
 	PRINT #1, "I28V     VQ      VEQ     VSQ     VST     PCT"
 CLOSE #1
