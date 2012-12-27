@@ -67,13 +67,12 @@ void EmbeddedProxy::udpReadyRead() {
 		/// _messages. Right now we will just use the first
 		/// message that we have.
 		SslProxy::InstMsgInfo info = _messages.begin()->second;
-		Protocols::Message msg(info._instName, info._msgId, QString(data).toStdString());
+		Protocols::Message message(info._instName, info._msgId, QString(data).toStdString());
 
-		qDebug() << msg.toJsonStdString().c_str();
+		qDebug() << message.toJsonStdString().c_str();
 
 		// Tell the world that there is a new message!
-
-		emit msgFromProxy(msg);
+		emit msgFromProxy(message);
 	}
 }
 
