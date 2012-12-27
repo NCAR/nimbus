@@ -1,7 +1,34 @@
 /// @mainpage Remote Instrument Control (RIC) Overview
+///
+/// @section RICTerminology Terminology
+/// @ul
+/// @li Instrument - The device which is being remotely monitored and controlled. The command and
+/// status information is transmitted to and from the instruement using UDP datagrams.
+/// @li User Control - A user control application, which sends and receives the
+/// datagrams from the instrument.
+/// @li Proxy - An application or component which can intercept and relay the instrument
+/// datagrams, for networking and security purposes.
+/// @li Switch - An application which is deployed in pairs to consolidate messages into
+/// a single communications channel. The switches at either end of the channel connect to
+/// proxies, aggregate or fan out messages to/from the instruments and user controls.
+/// @el
+///
+/// A proxy may be remote, and communicate with the switch via SSL. Alternatively, it may
+/// be embedded in a switch. The latter allows a a switch and its proxies to be deployed as
+/// a single application in cases where SSL is not required.
+///
+/// Because SSL is implemented with network sockets, the switch can contain an SSL server (SslServer),
+/// to manage the SSL connections to remote proxies. For consistency, a corresponding server
+/// for embedded proxies is implemented as well (EmbeddedProxyServer).
+///
+/// The typical configuration will have one switch on a ground server, taking SSL connections from
+/// remote proxies. This switch will communicate with an aircraft based switch. The aircraft switch
+/// contains embedded proxies.However, it is feasible to any combination of remote proxies, SSL
+/// proxy switches, and embedded proxy switches.
+///
 /// @section RICMessageHandling RIC Message Handling
 ///
-/// The following sections presents metacode describing the message flow from a control program
+/// The following sections presents metacode describing the message flow from a user control program
 /// to the instrument. The code is NOT syntactically correct. A lot of detail is
 /// omitted in the interest of clarity.
 ///
@@ -11,19 +38,17 @@
 /// @li The aircraft switch. This application combines a switch and embedded proxies. There
 /// will be one embedded proxy for each instrument.
 /// @li The ground switch.
-/// @li The ground proxies. There will be one ground proxy for each remote system and instrument control.
-/// @li The instrument control applications.
-/// @ul
+/// @li The ground proxies. There will be one ground proxy for each instrument and user.
+/// @li The user control applications.
+/// @el
 ///
-/// @endcode
-///
-/// @subsection RICInstrumentToControl Message Processing From Instrument to Control
+/// @subsection RICInstrumentToControl Message Processing From Instrument to User
 /// @code
 ///
 /// ------------------------------ Instrument ------------------------------------
-/// Instrument sends a datagram to the remote instrument control.
+/// Instrument sends a datagram to the user.
 ///
-/// --------------------- Airborne Switch w/ Embedded Proxy ----------------------
+/// ----------------- Airborne Switch w/ Embedded Proxy (./switch) -----------------
 /// EmbeddedProxy::udpReadyRead() {
 ///    QByteArray datagram = QUdpSocket::readDatagram();
 ///    Protocols::Message msg(datagram.toStdString());
@@ -46,7 +71,7 @@
 ///         }
 ///    }
 /// }
-/// ------------------------------- Ground Switch --------------------------------
+/// ------------------------ Ground Switch (./switch) ------------------------------
 ///
 /// Encrypted datagrams are delivered to:
 /// SwitchConnection::readyRead() {
@@ -75,20 +100,43 @@
 ///    }
 /// }
 ///
-/// ------------------------------- Remote Proxy ---------------------------------
-/// ----------------------- Instrument Control Program ---------------------------
-/// Instrument control program receives a datagram from the remote instrument.
+/// --------------------------- Remote Proxy (./proxy)-------------------------------
+///
+/// Remote proxy socket write is read by:
+/// SslClientConnection::sslReadyRead() {
+///   QByteArray data = SslSocket::readAll();
+///   std::string s = QString(data).toStdString();
+///   std::vector<std::string> msgs =
+///      Protocols::StreamMsgProtocol::incoming(s);
+///   for m in msgs {
+///      Protocols::Message msg(m);
+///		 emit SslClientConnection::msgFromServer(msg);
+///   }
+/// }
+///
+/// msgFromServer(msg) is delivered to:
+/// SslProxy::msgFromServerSlot(Protocols::Message msg) {
+///    std::string msgId = msg.msgId();
+///    SslProxy::sendMsg(SslProxy::InstMsgInfo[msgId], msg) {
+///       	std::string text = msg.payload().text();
+///         QUdpSocket.writeDatagram(text);
+///    }
+/// }
+///
+/// ---------------------------------- User ---------------------------------------
+///
+/// User program receives the datagram from the remote instrument.
 ///
 /// @endcode
 ///
-/// ------------------------------------------------------------------------------
-/// @subsection RICControlToInstrument Message Processing From Control to Instrument
+/// --------------------------------------------------------------------------------
+/// @subsection RICControlToInstrument Message Processing From User to Instrument
 /// @code
 ///
-/// ----------------------- Instrument Control Program ---------------------------
-/// Instrument control sends a datagram to the remote instrument.
+/// ---------------------------------- User ---------------------------------------
+/// User program sends a datagram to the remote instrument.
 ///
-/// ------------------------------- Remote Proxy ---------------------------------
+/// --------------------------- Remote Proxy (./proxy) -----------------------------
 ///
 /// SslProxy::udpReadyRead() {
 ///    QByteArray datagram = QUdpSocket::readDatagram();
@@ -102,7 +150,7 @@
 ///       }
 ///    }
 /// }
-/// ------------------------------- Ground Switch --------------------------------
+/// --------------------------- Ground Switch (./switch) ----------------------------
 ///
 /// Remote proxy socket write is read by:
 /// SslServerConnection::sslReadyRead() {
@@ -131,7 +179,7 @@
 ///    }
 /// }
 ///
-/// --------------------- Airborne Switch w/ Embedded Proxy ----------------------
+/// ---------------- Airborne Switch w/ Embedded Proxy (./switch) -------------------
 ///
 /// Encrypted datagrams are delivered to:
 /// SwitchConnection::readyRead() {
@@ -160,7 +208,7 @@
 ///
 /// ------------------------------ Instrument ------------------------------------
 ///
-/// Instrument receives the datagram from the instrument control.
+/// Instrument receives the datagram from the user.
 ///
 /// @endcode
 ///
