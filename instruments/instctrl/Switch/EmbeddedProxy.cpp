@@ -69,11 +69,11 @@ void EmbeddedProxy::udpReadyRead() {
 		SslProxy::InstMsgInfo info = _messages.begin()->second;
 		Protocols::Message msg(info._instName, info._msgId, QString(data).toStdString());
 
-		qDebug() << "EmbeddedProxy received" << msg.toJsonStdString().c_str();
+		qDebug() << msg.toJsonStdString().c_str();
 
 		// Tell the world that there is a new message!
 
-		emit msgFromProxy(msg.toJsonStdString());
+		emit msgFromProxy(msg);
 	}
 }
 
@@ -98,6 +98,8 @@ void EmbeddedProxy::sendMsg(SslProxy::InstMsgInfo& info, Protocols::Message& msg
 
 	// Get the text of the message
 	std::string text = msg.payload().text();
+
+	qDebug() << text.c_str();
 
 	if (info._broadcast) {
 		// message will be broadcast

@@ -62,7 +62,7 @@ public:
 protected slots:
 	/// Handle a new message from the proxy
 	/// @param The incoming message from the proxy.
-	void msgFromProxySlot(std::string msg);
+	void msgFromProxySlot(Protocols::Message msg);
 	/// Handle a new message from the remote switch
 	/// @param The incoming message from the remote switch.
 	void msgFromRemoteSwitch(Protocols::Message msg);

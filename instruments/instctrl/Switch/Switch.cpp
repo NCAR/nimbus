@@ -45,8 +45,8 @@ Switch::~Switch() {
 void Switch::init() {
 
 	// The server emits all proxy messages. We will capture them.
-	connect(_server, SIGNAL(msgFromProxy(std::string)),
-			this, SLOT(msgFromProxySlot(std::string)));
+	connect(_server, SIGNAL(msgFromProxy(Protocols::Message)),
+			this, SLOT(msgFromProxySlot(Protocols::Message)));
 
 	// Capture the messages from the remote switch
 	connect(&_switchConnection, SIGNAL(msgFromRemoteSwitch(Protocols::Message)),
@@ -54,9 +54,12 @@ void Switch::init() {
 
 }
 /////////////////////////////////////////////////////////////////////
-void Switch::msgFromProxySlot(std::string msg) {
+void Switch::msgFromProxySlot(Protocols::Message message) {
+
+	std::cout << message.toJsonStdString() << std::endl;
 
 	// A message has been received from the proxy
+	std::string msg = message.toJsonStdString();
 
 	// send the proxy message to the remote switch
 	_switchConnection.sendSwitchMessage(msg);
@@ -64,13 +67,13 @@ void Switch::msgFromProxySlot(std::string msg) {
 }
 
 /////////////////////////////////////////////////////////////////////
-void Switch::msgFromRemoteSwitch(Protocols::Message msg) {
+void Switch::msgFromRemoteSwitch(Protocols::Message message) {
 
 	// A message has been received from the remote switch
 
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
+	std::cout << message.toJsonStdString() << std::endl;
 
 	// Tell the server to forward the message to the proxy
-	_server->sendToProxy(msg);
+	_server->sendToProxy(message);
 
 }

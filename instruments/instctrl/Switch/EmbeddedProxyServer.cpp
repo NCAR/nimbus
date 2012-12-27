@@ -21,7 +21,7 @@ _proxyDefs(proxyDefs)
 	_proxy = new EmbeddedProxy(messages);
 
 	// Capture the proxy messages
-	connect(_proxy, SIGNAL(msgFromProxy(std::string)), this, SLOT(msgFromProxySlot(std::string)));
+	connect(_proxy, SIGNAL(msgFromProxy(Protocols::Message)), this, SLOT(msgFromProxySlot(Protocols::Message)));
 
 }
 
@@ -31,15 +31,14 @@ EmbeddedProxyServer::~EmbeddedProxyServer() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void EmbeddedProxyServer::sendToProxy(Protocols::Message msg) {
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-	_proxy->send(msg);
+void EmbeddedProxyServer::sendToProxy(Protocols::Message message) {
+	_proxy->send(message);
 }
 
 /////////////////////////////////////////////////////////////////////
-void EmbeddedProxyServer::msgFromProxySlot(std::string msg) {
+void EmbeddedProxyServer::msgFromProxySlot(Protocols::Message message) {
 
 	// Forward the proxy message
-	emit msgFromProxy(msg);
+	emit msgFromProxy(message);
 	return;
 }

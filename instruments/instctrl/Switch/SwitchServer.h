@@ -13,11 +13,11 @@ class SwitchServer: public QObject {
 	SwitchServer();
 	virtual  ~SwitchServer();
 	/// Send a message to a client proxy
-	virtual void sendToProxy(Protocols::Message msg) = 0;
+	virtual void sendToProxy(Protocols::Message message) = 0;
 
-//	protected slots:
-		/// A message has been received from the proxy
-		virtual void msgFromProxySlot(std::string msg) = 0;
+	//	protected slots:
+	/// A message has been received from the proxy
+	virtual void msgFromProxySlot(Protocols::Message message) = 0;
 
 };
 

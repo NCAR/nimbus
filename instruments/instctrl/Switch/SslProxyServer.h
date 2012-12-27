@@ -34,15 +34,17 @@ class SslProxyServer: public SwitchServer {
 		virtual void sendToProxy(Protocols::Message msg);
 
 	signals:
-		void msgFromProxy(std::string msg);
+		void msgFromProxy(Protocols::Message msg);
 
 	protected slots:
 		/// Called when a new SslSocket has been created.
 		void createConnection(Ssl::SslSocket* socket);
 		/// Notify that the socket state has changed for a connection.
 		void connectionStateChanged(Ssl::SslServerConnection*, Ssl::SslSocket::SocketState);
-		/// A message has been received from the proxy
-		void msgFromProxySlot(std::string msg);
+		/// Receive a proxy message. Emit it as
+		/// msgFromProxy(Protocols::Message msg)
+		/// @param msg The message
+		void msgFromProxySlot(Protocols::Message message);
 
 	protected:
 		Ssl::SslServer* _sslServer;

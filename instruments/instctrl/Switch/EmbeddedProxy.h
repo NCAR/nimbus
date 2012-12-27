@@ -42,7 +42,7 @@ public:
 	void send(Protocols::Message msg);
 
 signals:
-	void msgFromProxy(std::string);
+	void msgFromProxy(Protocols::Message message);
 
 protected slots:
 	void udpReadyRead();

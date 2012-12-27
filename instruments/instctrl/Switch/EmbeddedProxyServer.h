@@ -21,12 +21,12 @@ class EmbeddedProxyServer: public SwitchServer {
 		virtual void sendToProxy(Protocols::Message msg);
 
 	signals:
-		void msgFromProxy(std::string);
-		void msgFromServer(Protocols::Message msg);
+		void msgFromProxy(Protocols::Message message);
+		void msgFromServer(Protocols::Message message);
 
 	protected slots:
 		/// A message has been received from the proxy
-		void msgFromProxySlot(std::string msg);
+		void msgFromProxySlot(Protocols::Message message);
 
 	protected:
 		EmbeddedProxy* _proxy;

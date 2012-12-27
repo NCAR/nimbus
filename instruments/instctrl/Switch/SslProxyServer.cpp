@@ -36,7 +36,7 @@ void SslProxyServer::createConnection(Ssl::SslSocket* sslSocket) {
 	_connections.insert(connection);
 
 	// capture new messages from this client
-	connect(connection, SIGNAL(msgFromClient(std::string)), this, SLOT(msgFromProxySlot(std::string)));
+	connect(connection, SIGNAL(msgFromClient(Protocols::Message)), this, SLOT(msgFromProxySlot(Protocols::Message)));
 
 	qDebug() << _connections.size() << " active SwitchSslServer connections";
 
@@ -81,15 +81,17 @@ void SslProxyServer::connectionStateChanged(SslServerConnection* connection, Ssl
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslProxyServer::msgFromProxySlot(std::string msg) {
-	emit msgFromProxy(msg);
+void SslProxyServer::msgFromProxySlot(Protocols::Message message) {
+
+	// Emit the Message
+	emit msgFromProxy(message);
+
 	return;
 }
 
 /////////////////////////////////////////////////////////////////////
 void SslProxyServer::sendToProxy(Protocols::Message msg) {
 	if (_connections.size() > 0) {
-		qDebug() << __PRETTY_FUNCTION__;
 		(*_connections.begin())->send(msg);
 	}
 }

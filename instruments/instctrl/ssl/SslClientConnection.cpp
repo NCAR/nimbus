@@ -85,10 +85,10 @@ void SslClientConnection::sslReadyRead() {
 /////////////////////////////////////////////////////////////////////
 bool SslClientConnection::send(Protocols::Message& message) {
 
-	qDebug() << __PRETTY_FUNCTION__;
-
 	// Convert message to stringified JSON
 	std::string m = message.toJsonStdString();
+
+	qDebug() << m.c_str();
 
 	// Convert the json string to the protocol messages
 	std::vector<std::string> msgs = _protocolToServer.outgoing(m);

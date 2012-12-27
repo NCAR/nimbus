@@ -68,14 +68,13 @@ void SslServerConnection::sslReadyRead() {
 	std::vector<std::string> msgs = _protocolFromClient.incoming(s);
 
 	for (int i = 0; i < msgs.size(); i++) {
-		emit msgFromClient(msgs[i]);
+		Protocols::Message message(msgs[i]);
+		emit msgFromClient(message);
 	}
 }
 
 /////////////////////////////////////////////////////////////////////
 bool SslServerConnection::send(Protocols::Message& message) {
-
-	qDebug() << __PRETTY_FUNCTION__;
 
 	// Convert message to stringified JSON
 	std::string m = message.toJsonStdString();
