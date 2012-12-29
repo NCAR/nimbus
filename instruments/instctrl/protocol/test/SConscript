@@ -4,15 +4,29 @@ tools = Split("""
   protocol
   evp
 """)
-
 env = Environment(tools = ['default'] + tools)
 
-sources = ['message.cpp', ]
-test = env.Program('message', sources)
+messagesources = ['message.cpp', ]
+test = env.Program('message', messagesources)
 env.Default(test)
 
+tools = Split("""
+  protocol
+  evp
+""")
 env = Environment(tools = ['default'] + tools)
 
 symciphersources = ['symcipher.cpp', ]
 symcipher = env.Program('symcipher', symciphersources)
 env.Default(symcipher)
+
+tools = Split("""
+  protocol
+  evp
+  qtt_qtconfig
+""")
+env = Environment(tools = ['default'] + tools)
+
+instconfigsources = ['instconfig.cpp', ]
+instconfig = env.Program('instconfig', instconfigsources)
+env.Default(instconfig)

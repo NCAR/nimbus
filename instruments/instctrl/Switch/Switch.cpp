@@ -21,7 +21,7 @@ _server(0)
 }
 
 /////////////////////////////////////////////////////////////////////
-Switch::Switch(std::vector<std::string> proxySpecs,
+Switch::Switch(std::vector<std::string> instFiles,
 		int localPort,
 		std::string remoteIP,
 		int remotePort,
@@ -30,7 +30,7 @@ _switchConnection(localPort, remoteIP, remotePort, switchCipherKey),
 _server(0)
 {
 	// Create an embedded proxy server
-	_server = new EmbeddedProxyServer(proxySpecs);
+	_server = new EmbeddedProxyServer(instFiles);
 
 	// Initialize
 	init();

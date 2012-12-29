@@ -66,3 +66,14 @@ MessagePayload& Message::payload() {
 std::string Message::msgId() {
 	return _msgId;
 }
+/////////////////////////////////////////////////////////////////////
+std::string Message::extractId(std::string s) {
+	size_t c = s.find(',');
+	if (c != std::string::npos) {
+		return s.substr(0, c);
+	}
+
+	return std::string("");
+
+}
+

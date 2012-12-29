@@ -1,21 +1,28 @@
 #include "EmbeddedProxyServer.h"
 
 /////////////////////////////////////////////////////////////////////
-EmbeddedProxyServer::EmbeddedProxyServer(std::vector<std::string> proxyDefs):
-_proxyDefs(proxyDefs)
+EmbeddedProxyServer::EmbeddedProxyServer(std::vector<std::string> instFiles):
+_instFiles(instFiles)
 {
 	std::map<std::string, SslProxy::InstMsgInfo> messages;
 
-	for (int i = 0; i < _proxyDefs.size(); i++) {
-		QtConfig config(proxyDefs[i]);
-		SslProxy::InstMsgInfo msg;
-		msg._msgId                 = config.getString("InstMsgID",       "INST");
-		msg._incomingPort          = config.getInt   ("InstIncomingPort",0);
-		msg._destPort              = config.getInt   ("InstDestPort", 0);
-		msg._destIP                = config.getString("InstHostName",    "127.0.0.1");
-		msg._broadcast             = config.getBool  ("InstMsgBroadcast", true);
-		msg._instName              = config.getString("InstName",    "INSTRUMENT");
-		messages[msg._msgId] = msg;
+	for (int i = 0; i < _instFiles.size(); i++) {
+		QtConfig config(_instFiles[i]);
+		InstConfig instConfig(config);
+
+		// Create a message entry for each message defined in the instrument configuration.
+		std::vector<InstConfig::MessageInfo> instMessages = instConfig.messages();
+		for (int i = 0; i < instMessages.size(); i++) {
+			SslProxy::InstMsgInfo msg;
+			msg._instName              = instConfig.instrumentName();
+			msg._incomingPort          = instConfig.incomingPort();
+			msg._destIP                = instConfig.destIP();
+			msg._destPort              = instConfig.destPort();
+			msg._msgId                 = instMessages[i].msgID;
+			msg._broadcast             = instMessages[i].broadcast;
+			std::cout << "message id:" << msg._msgId << std::endl;
+			messages[msg._msgId] = msg;
+		}
 	}
 
 	_proxy = new EmbeddedProxy(messages);

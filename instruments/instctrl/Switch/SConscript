@@ -10,22 +10,22 @@ tools = Split("""
 env = Environment(tools = tools)
 
 sources = Split("""
-main.cpp
-Switch.cpp
-SwitchServer.cpp
 EmbeddedProxy.cpp
 EmbeddedProxyServer.cpp
-SslProxyServer.cpp
+main.cpp
+Switch.cpp
 SwitchConnection.cpp
+SslProxyServer.cpp
+SwitchServer.cpp
 """)
 
 headers = Split("""
-Switch.h
-SwitchConnection.h
-SwitchServer.h
 EmbeddedProxy.h
 EmbeddedProxyServer.h
+Switch.h
+SwitchConnection.h
 SslProxyServer.h
+SwitchServer.h
 Overview.h
 """)
 
@@ -34,4 +34,7 @@ env.Default(switch)
 
 env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Switch" })
 doxref = env.Apidocs(sources + headers)
+
+SConscript("test/SConscript")
+
 

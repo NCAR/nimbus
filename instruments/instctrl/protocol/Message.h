@@ -32,6 +32,13 @@ namespace Protocols {
 		std::string toJsonStdString();
 		/// @return Reference to the payload
 		MessagePayload& payload();
+		/// Extract the message id from a CSVstring
+		/// @param s The source string.
+		/// @return The first token delimited by a comma. An empty
+		/// string is returned if no token is found.
+		/// @todo This needs to be extended to use a regular expression so that non-CSV messages
+		/// can be recognized. Currently the sounding messages are dropped becasue they are not CSV.
+		static std::string extractId(std::string s);
 
 	protected:
 		/// The message payload

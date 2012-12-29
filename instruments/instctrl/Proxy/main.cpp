@@ -3,6 +3,7 @@
 #include <sstream>
 #include <boost/program_options.hpp>
 #include "QtConfig.h"
+#include "InstConfig.h"
 #include "SslProxy.h"
 
 namespace po = boost::program_options;
@@ -17,7 +18,7 @@ parseCommandLine(int argc, char** argv,
 
 	po::options_description descripts("Options");
 	descripts.add_options()
-	("config,c", po::value<std::string>(&configFile)->implicit_value(""), "configuration file")
+	("config,c", po::value<std::string>(&configFile)->implicit_value(""), "instrument configuration file")
 	("help,h",                                                            "help")
 	;
 
@@ -61,8 +62,6 @@ int main(int argc, char** argv)
 		config = new QtConfig("NCAR", "Proxy");
 	}
 
-	// Configuration for one message
-	SslProxy::InstMsgInfo msg;
 
 	// Get configuration values. Default values will be created in the
 	// configuration file if they don't exist, so that running the program
@@ -74,23 +73,38 @@ int main(int argc, char** argv)
 	std::string switchHostName = config->getString("SwitchHostName",  "127.0.0.1");
 	std::string switchCertFile = config->getString("SwitchCertFile",  "./switch.crt");
 
-	// Configure a message
-	/// @todo Rework the configuration to support multiple messages
-	msg._msgId                 = config->getString("InstMsgID",       "INST");
-	msg._incomingPort          = config->getInt   ("InstIncomingPort",0);
-	msg._destPort              = config->getInt   ("InstDestPort", 0);
-	msg._destIP                = config->getString("InstHostName",    "127.0.0.1");
-    msg._broadcast             = config->getBool  ("InstMsgBroadcast", true);
-    msg._instName              = config->getString("InstName",    "INSTRUMENT");
+	// Get the instrument definition file
+	std::string instrumentFile;
+	instrumentFile = config->getString("InstrumentFile", "");
 
+	// Get the configuration for the instrument.
+	QtConfig instrumentConfig(instrumentFile);
+	InstConfig instConfig(instrumentConfig);
+
+	// Get the messages for this instrument
+	std::vector<InstConfig::MessageInfo> instMsg = instConfig.messages();
+
+	// Build the message list for this proxy
     std::map<std::string, SslProxy::InstMsgInfo> messages;
-    messages[msg._msgId] = msg;
+	for (int i = 0; i < instMsg.size(); i++) {
+		// Configuration for one message
+		SslProxy::InstMsgInfo msg;
+		msg._instName              = instConfig.instrumentName();
+		msg._incomingPort          = instConfig.incomingPort();
+		msg._destPort              = instConfig.destPort();
+		msg._destIP                = instConfig.destIP();
+		msg._msgId                 = instMsg[i].msgID;
+		msg._broadcast             = instMsg[i].broadcast;
+
+		// save the message info
+		messages[msg._msgId] = msg;
+	}
 
     // If the port number is 0, it indicates that the user has not configured
 	// the application yet. We wait until this point so that all of the default values
 	// will have been added to the configuration file. Force them to take a stab at
 	// configuration.
-	if (switchProxyPort == 0 || msg._incomingPort == 0 || msg._destPort == 0) {
+	if (switchProxyPort == 0) {
 		std::cout << "Please create a usable configuration by editing " << config->fileName() << std::endl;
 		exit(1);
 	}

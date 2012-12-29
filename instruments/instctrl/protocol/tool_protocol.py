@@ -1,7 +1,7 @@
 ourDir = Dir('.').abspath
 ourName = 'protocol'
 
-tools = ['doxygen','json', 'evp', 'qt4']
+tools = ['doxygen','json', 'evp', 'qt4', 'qtt_qtconfig']
 env = Environment(tools = ['default'] + tools)
 env.EnableQt4Modules(['QtCore'])
 
@@ -16,6 +16,7 @@ def protocol(env):
 Export(ourName)
 
 sources = Split("""
+ InstConfig.cpp
  StreamMsgProtocol.cpp
  SymCipherProtocol.cpp
  Message.cpp
@@ -24,6 +25,7 @@ sources = Split("""
 """)
 
 headers = Split("""
+ InstConfig.h
  StreamMsgProtocol.h
  SymCipherProtocol.h
  Message.h

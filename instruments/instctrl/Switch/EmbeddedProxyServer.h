@@ -4,7 +4,7 @@
 #include <QtCore>
 #include <string>
 #include <vector>
-#include "QtConfig.h"
+#include "InstConfig.h"
 #include "Message.h"
 #include "SwitchServer.h"
 #include "EmbeddedProxy.h"
@@ -13,8 +13,9 @@
 class EmbeddedProxyServer: public SwitchServer {
 	Q_OBJECT
 	public:
-		/// @param proxyDefs A list of proxy configuration files.
-	EmbeddedProxyServer(std::vector<std::string> proxyDefs);
+		/// @param instFiles A list of instrument configuration files.
+		/// One proxy will be created for each instrument file.
+		EmbeddedProxyServer(std::vector<std::string> instFiles);
 		/// Destructor.
 		virtual ~EmbeddedProxyServer();
 		/// Send a message to a client proxy
@@ -30,7 +31,7 @@ class EmbeddedProxyServer: public SwitchServer {
 
 	protected:
 		EmbeddedProxy* _proxy;
-		std::vector<std::string> _proxyDefs;
+		std::vector<std::string> _instFiles;
 };
 
 #endif /* SWITCHEMBEDDEDSERVER_H_ */

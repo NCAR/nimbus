@@ -22,5 +22,3 @@ env.Default(proxy)
 env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Proxy" })
 doxref = env.Apidocs(sources + headers)
 
-SConscript("test/SConscript")
-

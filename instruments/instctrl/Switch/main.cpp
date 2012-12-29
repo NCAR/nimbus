@@ -90,7 +90,7 @@ void createSslSwitch(
 		int switchRemotePort,
 		std::string switchCipherKey) {
 
-	// Ge the configuration that applies to the Proxy SSL connection
+	// Get the configuration that applies to the Proxy SSL connection
 
 	// The file containing the private key for the switch to proxy SSL link.
 	// This file must be kept private!
@@ -104,11 +104,20 @@ void createSslSwitch(
 
 	// add additional certs to the database
 	std::vector<std::string> caDatabase;
-	// Add a default entry for ClientCerts
-	caDatabase.push_back("./proxy.crt");
-	caDatabase = config->getArray("ClientCerts", "ClientCertFile", caDatabase);
+
+	// Add the ClientCerts
+	//caDatabase.push_back("./proxy.crt");
+	std::vector<std::map<std::string, std::string> > clientCerts;
+	clientCerts = config->getArray("ClientCerts", clientCerts);
+	for (int i = 0; i < clientCerts.size(); i++) {
+		std::map<std::string, std::string>::iterator j;
+		for (j = clientCerts[i].begin(); j != clientCerts[i].end(); j++) {
+			caDatabase.push_back(j->second);
+		}
+	}
 	// add the server certificate to the CA database
 	caDatabase.push_back(serverCert);
+	// add extra certs from the command line
 	for (int i = 3; i < argc; i++) {
 		caDatabase.push_back(argv[i]);
 	}
@@ -138,14 +147,20 @@ void createEmbeddedSwitch(
 		int switchRemotePort,
 		std::string switchCipherKey) {
 
-	std::vector<std::string> proxySpecs;
-	// Add a default entry for EmbeddedProxies
-	proxySpecs.push_back("./EmbeddedProxy.ini");
-	proxySpecs = config->getArray("EmbeddedProxies", "ProxyFile", proxySpecs);
+	// Get the instrument definition files
+	std::vector<std::map<std::string, std::string> > instruments;
+	instruments = config->getArray("Instruments", instruments);
 
+	std::vector<std::string> instrumentFiles;
+	for (int i = 0; i < instruments.size(); i++) {
+		std::map<std::string, std::string>::iterator j;
+		for (j = instruments[i].begin(); j != instruments[i].end(); j++) {
+			instrumentFiles.push_back(j->second);
+		}
+	}
 
 	*swtch = new Switch(
-			proxySpecs,
+			instrumentFiles,
 			switchLocalPort,
 			switchRemoteIP,
 			switchRemotePort,

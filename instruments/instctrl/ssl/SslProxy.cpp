@@ -136,15 +136,20 @@ void SslProxy::udpReadyRead() {
 		_incomingUdpSocket->readDatagram(data.data(), dataSize);
 
 		// create a Message
-		/// @todo Actually, this should extract the message ID from the
-		/// incoming string, and verify that it exists in
-		/// _messages. Right now we will just use the first
-		/// message that we have.
-		std::string msgId = _messages.begin()->second._msgId;
-		Message msg(_proxyID, msgId, QString(data).toStdString());
+		std::string text = QString(data).toStdString();
+		// Extract the message id from the datagram
+		std::string id = Protocols::Message::extractId(text);
+		if (id.size() > 0) {
+			/// @todo Change the logic to search _messages to find the
+			/// instrument name. Right now we will just use the first
+			/// message that we have.
+			Message msg(_proxyID, id, QString(data).toStdString());
 
-		// send the message via the SSL connection.
-		_sslConnection->send(msg);
+			// send the message via the SSL connection.
+			_sslConnection->send(msg);
+		} else {
+			/// @todo No identifier found in datagram; add error handling here
+		}
 	}
 }
 

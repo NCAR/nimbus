@@ -51,7 +51,7 @@ public:
 	/// provide an SSL server, so none of the SSL certificates and keys are
 	/// needed.
 	Switch(
-			std::vector<std::string> proxySpecs,
+			std::vector<std::string> instFiles,
 			int _localPort,
 			std::string _remoteIP,
 			int _remotePort,
