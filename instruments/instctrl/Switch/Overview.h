@@ -1,8 +1,10 @@
 /// @mainpage Remote Instrument Control (RIC) Overview
-///
+/// "RIC" designates "Remote Instrument Control": the collection of applications,
+/// scripts and configuration files which support secure remote communications
+/// between a user and an instrument over the Internet.
 /// @section RICTerminology Terminology
 /// - Instrument - The device which is being remotely monitored and controlled. The command and
-/// status information is transmitted to and from the instruement using UDP datagrams.
+/// status information is transmitted to and from the instrument via UDP datagrams.
 /// - User Control - A user control application, which sends and receives the
 /// datagrams from the instrument. Usually referred to as the 'user'.
 /// - Proxy - An application or component which can intercept and relay the instrument
@@ -23,6 +25,43 @@
 /// remote proxies. This switch will communicate with an aircraft based switch. The aircraft switch
 /// contains embedded proxies. However, it is feasible to any combination of remote proxies, SSL
 /// proxy switches, and embedded proxy switches.
+///
+/// @section RICTesting Testing
+///
+/// With proper configuration and supporting applications, the Remote Instrument Control system can be
+/// tested on a single computer. One such setup is described here. The AVAPS Ground System (AGS) user
+/// interface application and the AGS AVAPS simulator provide the instrument and user functions.
+/// A proxy, an SSL switch, and a switch with embedded proxies simulate the remote user,
+/// ground switch and aircraft switch environments respectively. The documentation on RIC configuration
+/// (see below) shows the configuration settings used for this test.
+///
+/// The testing framework runs three applications, each run from its source directory and
+/// referencing a sample configuration file in that directory. Similarly, these configuration
+/// files will reference sample key, certificate, and instrument definition files in the
+/// source tree.
+///
+/// <em>NOTE: The sample key and certificate files must not be used in actual operations,
+/// since they are to some extent public, through the source code repository.</em>
+///
+/// Aircraft switch:
+/// @code
+/// cd switch
+/// ./switch -c ACSwitch.ini
+/// @endcode
+/// Ground switch:
+/// @code
+/// cd switch
+/// ./switch -c GroundSwitch.ini
+/// @endcode
+/// User proxy:
+/// @code
+/// cd Proxy
+/// ./proxy -c Proxy.ini
+/// @endcode
+///
+/// AVAPS status messages from the AVAPS simulator will transit the aircraft switch, ground switch and proxy, to be delivered to the AGS
+/// application. Messages from the AGS user application will transit the proxy, ground switch and aircraft switch, to be delivered to
+/// the AVAPS simulator.
 ///
 /// @section RICConfiguration Configuration
 /// The switch and proxy applications are configured via configuration files. The location
