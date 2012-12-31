@@ -69,9 +69,9 @@ int main(int argc, char** argv)
 	std::string proxyID        = config->getString("ProxyID",         "PROXY");
 	std::string proxyKeyFile    (config->getString("ProxyKeyFile",    "./proxy.key"));
 	std::string proxyCertFile   (config->getString("ProxyCertFile",   "./proxy.crt"));
-	int switchProxyPort        = config->getInt   ("SwitchProxyPort", 0);
+	int switchProxyPort        = config->getInt   ("SSLProxyPort", 0);
 	std::string switchHostName = config->getString("SwitchHostName",  "127.0.0.1");
-	std::string switchCertFile = config->getString("SwitchCertFile",  "./switch.crt");
+	std::string switchCertFile = config->getString("SwitchSSLCertFile",  "./switch.crt");
 
 	// Get the instrument definition file
 	std::string instrumentFile;

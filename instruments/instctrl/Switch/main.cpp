@@ -94,13 +94,13 @@ void createSslSwitch(
 
 	// The file containing the private key for the switch to proxy SSL link.
 	// This file must be kept private!
-	std::string serverKey(config->getString("SwitchKeyFile", "./switch.key"));
+	std::string serverKey(config->getString("SwitchSSLKeyFile", "./switch.key"));
 
 	// The file containing the private certificate for the switch to proxy SSL link.
-	std::string serverCert(config->getString("SwitchCertFile", "./switch.crt"));
+	std::string serverCert(config->getString("SwitchSSLCertFile", "./switch.crt"));
 
 	// The port for communications to the SslProxy
-	int switchProxyPort = config->getInt("SwitchProxyPort", 0);
+	int switchProxyPort = config->getInt("SSLProxyPort", 0);
 
 	// add additional certs to the database
 	std::vector<std::string> caDatabase;
