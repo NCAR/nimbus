@@ -16,7 +16,9 @@ SslClientConnection::SslClientConnection(
 		std::string serverHost,
 		int port,
 		std::vector<std::string> caDatabase,
-		std::string clientID) {
+		std::string clientID):
+_sslSocket(0)
+{
 
 	_sslSocket = new SslSocket(keyFile, certFile, serverHost, port, caDatabase);
 
@@ -32,6 +34,11 @@ SslClientConnection::SslClientConnection(
 /////////////////////////////////////////////////////////////////////
 SslClientConnection::~SslClientConnection() {
 
+	if (_sslSocket) {
+		_sslSocket->close();
+		delete _sslSocket;
+	}
+
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -39,29 +46,28 @@ void SslClientConnection::socketStateChanged(Ssl::SslSocket::SocketState state) 
 
 	switch (state) {
 	case SslSocket::SS_Unconnected: {
-		qDebug() << "socket is unconnected, what does this mean?";
+		qDebug() << "ssl socket is unconnected, what does this mean?";
 		break;
 	}
 	case SslSocket::SS_Connected: {
-		std::cout << "socket is connected" << std::endl;
+		std::cout << "ssl socket is connected" << std::endl;
 		break;
 	}
 	case SslSocket::SS_Encrypted: {
-		std::cout << "socket is encrypted" << std::endl;
+		std::cout << "ssl socket is encrypted" << std::endl;
 		break;
 	}
 	case SslSocket::SS_Disconnected: {
-		std::cout << "socket is disconnected, exiting" << std::endl;
-		QCoreApplication::quit();
+		std::cout << "ssl socket is disconnected" << std::endl;
 		break;
 	}
 	case SslSocket::SS_SocketError: {
-		std::cout << "socket error, exiting" << std::endl;
+		std::cout << "ssl socket error, exiting" << std::endl;
 		QCoreApplication::quit();
 		break;
 	}
 	default: {
-		std::cout << "socket changed to unknown state:" << state << std::endl;
+		std::cout << "ssl socket changed to unknown state:" << state << std::endl;
 		break;
 	}
 	};

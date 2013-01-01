@@ -2,8 +2,10 @@
 #include <string>
 #include <sstream>
 #include <boost/program_options.hpp>
+#include <QtGui>
 #include "QtConfig.h"
 #include "InstConfig.h"
+#include "ProxyMainWindow.h"
 #include "SslProxy.h"
 
 namespace po = boost::program_options;
@@ -114,11 +116,11 @@ int main(int argc, char** argv)
 	caDatabase.push_back(proxyCertFile);
 	caDatabase.push_back(switchCertFile);
 
-	// Create the Qt application, which proides the event loop
-	QCoreApplication app(argc, argv);
+	// Create the Qt application
+	QApplication app(argc, argv);
 
-    // Create the proxy. It will try to connect with the switch.
-	SslProxy proxy(
+    // Create the SSL proxy. It will wait to connect with the switch.
+	SslProxy sslProxy(
 			proxyID,
     		proxyKeyFile,
     		proxyCertFile,
@@ -127,5 +129,24 @@ int main(int argc, char** argv)
     		caDatabase,
     		messages);
 
-    return app.exec();
+	// Create the Proxy user interface.
+	ProxyMainWindow proxyMainWindow(sslProxy, 0);
+
+	// Connect signals from the interface to the SSL proxy.
+	proxyMainWindow.connect(&proxyMainWindow, SIGNAL(connectToServer()),
+			&sslProxy, SLOT(connectToServer()));
+	proxyMainWindow.connect(&proxyMainWindow, SIGNAL(disconnectFromServer()),
+			&sslProxy, SLOT(disconnectFromServer()));
+
+	// Connect the signals from the SSL proxy to the interface.
+	sslProxy.connect(&sslProxy, SIGNAL(switchMessage(std::string)),
+			&proxyMainWindow, SLOT(switchMessageSlot(std::string)));
+	sslProxy.connect(&sslProxy, SIGNAL(userMessage(std::string)),
+			&proxyMainWindow, SLOT(userMessageSlot(std::string)));
+
+	// Show the user interface
+	proxyMainWindow.show();
+
+    // Hop on the merry-go-round.
+	return app.exec();
 }

@@ -25,10 +25,6 @@ _incomingUdpSocket(0),
 _outgoingUdpSocket(0)
 {
 
-	// Initialize the connection to the switch. A SslClientConnection
-	// will be created, and signals and slots will be connected.
-	initSslConnection();
-
 	// Initialize the incoming UDP socket.
 	initIncomingUDPsockets();
 
@@ -73,7 +69,30 @@ SslProxy::~SslProxy() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslProxy::initSslConnection() {
+void SslProxy::connectToServer() {
+
+	openSslConnection();
+
+}
+
+/////////////////////////////////////////////////////////////////////
+void SslProxy::disconnectFromServer() {
+
+	closeSslConnection();
+
+}
+
+/////////////////////////////////////////////////////////////////////
+void SslProxy::openSslConnection() {
+
+	if (_sslConnection) {
+		std::cerr << __PRETTY_FUNCTION__ << ": "
+				<< "SSL connection requested while there is already an active SSL link" << std::endl;
+		return;
+	}
+
+	// Initialize the connection to the switch. A SslClientConnection
+	// will be created, and signals and slots will be connected.
 
 	_sslConnection = new SslClientConnection(
 			_keyFile,
@@ -84,6 +103,18 @@ void SslProxy::initSslConnection() {
     		_proxyID);
 
 	connect(_sslConnection, SIGNAL(msgFromServer(Protocols::Message)), this, SLOT(msgFromServerSlot(Protocols::Message)));
+
+}
+
+/////////////////////////////////////////////////////////////////////
+void SslProxy::closeSslConnection() {
+
+	if (!_sslConnection) {
+		return;
+	}
+
+	delete _sslConnection;
+	_sslConnection = 0;
 
 }
 
@@ -150,6 +181,8 @@ void SslProxy::udpReadyRead() {
 		} else {
 			/// @todo No identifier found in datagram; add error handling here
 		}
+		// Let others get this message
+		emit userMessage(text);
 	}
 }
 
@@ -166,6 +199,9 @@ void SslProxy::msgFromServerSlot(Protocols::Message msg) {
 		/// @todo Handle appropriately; reporting/logging as needed.
 		qDebug() << "Proxy: Unrecognized message" << msgId.c_str() << "ignored by the proxy";
 	}
+
+	std::string text = msg.payload().text();
+	emit switchMessage(text);
 
 }
 

@@ -4,16 +4,26 @@ tools = Split("""
   protocol
   boost
   boost_program_options
+  qt4
   qtt_qtconfig
 """)
 
 env = Environment(tools = tools)
 
+qtmodules = ['QtGui']
+env.EnableQt4Modules(qtmodules)
+
+uisources = ['ProxyMainWindow.ui']
+env.Uic4(uisources)
+
 sources = Split("""
  main.cpp
+ ProxyMainWindow.cpp
 """)
 
 headers = Split("""
+ ProxyMainWindow.h
+ ui_ProxyMainWindow.h
 """)
 
 proxy = env.Program('proxy', sources)

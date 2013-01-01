@@ -2,6 +2,13 @@
 /// "RIC" designates "Remote Instrument Control": the collection of applications,
 /// scripts and configuration files which support secure remote communications
 /// between a user and an instrument over the Internet.
+///
+/// SSL is used for Internet communications between the user and a ground based server switch program.
+/// The ground switch communicates with an airborne switch by exchanging encrypted datagrams. For
+/// excellent information on encryption and secure communications, see:
+/// - John Viega and Matt Messier, <em>Secure Programming Cookbook for C and C++</em>, 2003, O'Reilley Media. Available on Safari
+/// - John Viega, Matt Messier and Pravir Chandra, <em>Network Security with OpenSSL</em>, 2002, O'Reilley Media. Available on Safari
+///
 /// @section RICTerminology Terminology
 /// - Instrument - The device which is being remotely monitored and controlled. The command and
 /// status information is transmitted to and from the instrument via UDP datagrams.
@@ -60,7 +67,7 @@
 /// @endcode
 ///
 /// AVAPS status messages from the AVAPS simulator will transit the aircraft switch, ground switch and proxy, to be delivered to the AGS
-/// application. Messages from the AGS user application will transit the proxy, ground switch and aircraft switch, to be delivered to
+/// application. Messages from the AGS user application will go through the proxy, ground switch and aircraft switch, to be delivered to
 /// the AVAPS simulator.
 ///
 /// @section RICConfiguration Configuration
@@ -193,7 +200,8 @@
 /// against the allowed IDs. Used by the proxies and switches.
 /// @param [Messages]\1\Broadcast If set, outgoing messages will be broadcast. Used only by the proxies.
 /// @param [Messages]\1\RateLimit A rate limit for this message, in seconds. Fractional values are allowed.
-/// Only one message will be allowed through the switch during this timer interval. Used only by the switches.
+/// Only one message will be allowed through the switch during this timer interval. A value of zero disables
+/// rate limiting so that all messages are transmitted. Used only by the switches.
 /// @param [Messages]size The number of message definitions in the [Messages] array.
 ///
 /// @section RICMessageHandling RIC Message Handling

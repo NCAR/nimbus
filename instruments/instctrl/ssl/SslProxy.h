@@ -68,6 +68,21 @@ public:
 
 	virtual ~SslProxy();
 	
+public slots:
+	/// Connect to the server
+	void connectToServer();
+	/// Disconnect from the server
+	void disconnectFromServer();
+
+signals:
+	/// Emitted when a message is received from the switch
+	/// @param s The text of the message.
+	void switchMessage(std::string s);
+	/// Emitted when a message is received from the user
+	/// @param s The text of the message.
+	void userMessage(std::string s);
+
+
 protected slots:
 	/// Called when a new message has arrived from the instrument or controller
 	void udpReadyRead();
@@ -77,7 +92,9 @@ protected slots:
 
 protected:
 	/// Initialize the connection to the switch
-	void initSslConnection();
+	void openSslConnection();
+	/// Close the connection to the switch
+	void closeSslConnection();
 	/// Initialize the incoming UDP socket. One socket is required
 	/// per port that we are listening on.
 	void initIncomingUDPsockets();
