@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
 	std::string text(argv[1]);
 
 	// set the key length
-	int keyLength = 16;
+	int keyLength = EVPCipher::cipherBlockSize();
 
 	// Make key
 	std::vector<unsigned char> key = EVPCipher::makeKey(keyLength);
@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
 	EVPCipher cipher(key);
 
 	// Make initialization vector
-	std::vector<unsigned char> iv  = EVPCipher::makeIV(cipher.blockSize());
+	std::vector<unsigned char> iv  = EVPCipher::makeIV(keyLength);
 
 	int n = 10;
 

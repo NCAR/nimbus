@@ -7,18 +7,23 @@
 
 /////////////////////////////////////////////////////////////////////
 EVPCipher::EVPCipher(std::vector<unsigned char>& key):
-_key(key)
+_key(key),
+_cipherBlockSize(16)
 {
 	int status;
 
-	// set the cipher type so that we can determine the bock size.
+	// set the cipher type so that we can determine the block size.
 	EVP_CIPHER_CTX_init(&_encrypt);
 	status = EVP_EncryptInit_ex(&_encrypt, EVP_aes_128_cbc(), 0, 0, 0);
 
 	EVP_CIPHER_CTX_init(&_decrypt);
 	status = EVP_DecryptInit_ex(&_decrypt, EVP_aes_128_cbc(), 0, 0, 0);
 
-	_blockSize = EVP_CIPHER_CTX_block_size(&_encrypt);
+	if (key.size() != _cipherBlockSize) {
+		/// @ this should be changed to an exception rather than an exit.
+		std::cerr << __PRETTY_FUNCTION__ << " cipher key length does not match the cipher block length" << std::cerr;
+		exit(1);
+	}
 
 }
 
@@ -39,9 +44,9 @@ std::vector<unsigned char> EVPCipher::encrypt(std::vector<unsigned char>& iv, st
 /////////////////////////////////////////////////////////////////////
 std::vector<unsigned char> EVPCipher::encrypt(std::vector<unsigned char>& iv, std::vector<unsigned char>& input) {
 
-	if (iv.size() != _blockSize) {
+	if (iv.size() != _cipherBlockSize) {
 		std::cerr << "EVPCipher: initilization vector must match the cipher block size of "
-				<< _blockSize << std::endl;
+				<< _cipherBlockSize << std::endl;
 		exit(1);
 	}
 
@@ -53,7 +58,7 @@ std::vector<unsigned char> EVPCipher::encrypt(std::vector<unsigned char>& iv, st
 	status = EVP_EncryptInit_ex(&_encrypt, 0, 0, &_key[0], &iv[0]);
 
 	std::vector<unsigned char> result;
-	result.resize(input.size()+_blockSize);
+	result.resize(input.size()+_cipherBlockSize);
 
 	int n;
 	int n_final = 0;
@@ -78,9 +83,9 @@ std::vector<unsigned char> EVPCipher::decrypt(std::vector<unsigned char>& iv, st
 /////////////////////////////////////////////////////////////////////
 std::vector<unsigned char> EVPCipher::decrypt(std::vector<unsigned char>& iv, std::vector<unsigned char>& input) {
 
-	if (iv.size() != _blockSize) {
+	if (iv.size() != _cipherBlockSize) {
 		std::cerr << "EVPCipher: initilization vector must match the cipher block size of "
-				<< _blockSize << std::endl;
+				<< _cipherBlockSize << std::endl;
 		exit(1);
 	}
 
@@ -92,7 +97,7 @@ std::vector<unsigned char> EVPCipher::decrypt(std::vector<unsigned char>& iv, st
 	status = EVP_DecryptInit_ex(&_decrypt, 0, 0, &_key[0], &iv[0]);
 
     std::vector<unsigned char> result;
-	result.resize(input.size()+_blockSize);
+	result.resize(input.size()+_cipherBlockSize);
 
 	int n;
 	int n_final = 0;
@@ -107,8 +112,8 @@ std::vector<unsigned char> EVPCipher::decrypt(std::vector<unsigned char>& iv, st
 }
 
 /////////////////////////////////////////////////////////////////////
-int EVPCipher::blockSize() {
-	return _blockSize;
+int EVPCipher::cipherBlockSize() {
+	return 16;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -146,7 +151,8 @@ std::vector<unsigned char> EVPCipher::makeKey(int bytes) {
 
 	int status;
 
-	// initialize the random number generator
+	// initialize the random number generator.
+	/// @todo This will probably not work for Windows builds. Correct that.
 	status = RAND_load_file("/dev/urandom", 1024);
 	if (!status) {
 		std::cerr << "Unable to seed the random number generator" << std::endl;
@@ -192,7 +198,7 @@ std::vector<unsigned char> EVPCipher::getKey(std::string path) {
 
 /////////////////////////////////////////////////////////////////////
 std::vector<unsigned char> EVPCipher::makeIV() {
-	return makeIV(_blockSize);
+	return makeIV(_cipherBlockSize);
 }
 
 /////////////////////////////////////////////////////////////////////

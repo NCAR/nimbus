@@ -11,6 +11,10 @@
 namespace po = boost::program_options;
 
 /////////////////////////////////////////////////////////////////////
+/// Parse the command line, and return values through the function parameters.
+/// @param argc The number of arguments in argv
+/// @param argv The command line parameters
+/// @param configFile The path to the configuration file is returned here, if specified.
 void
 parseCommandLine(int argc, char** argv,
 	std::string& configFile)
@@ -56,7 +60,8 @@ int main(int argc, char** argv)
 	std::string configFile;
 	parseCommandLine(argc, argv, configFile);
 
-	// Get the configuration
+	// Get the configuration. Fetch from the specified file
+	// if it was provided, otherwise use the default location.
 	QtConfig* config;
 	if (configFile.size()) {
 		config = new QtConfig(configFile);
@@ -75,7 +80,8 @@ int main(int argc, char** argv)
 	std::string switchHostName = config->getString("SwitchHostName",  "127.0.0.1");
 	std::string switchCertFile = config->getString("SwitchSSLCertFile",  "./switch.crt");
 
-	// Get the instrument definition file
+	// Get the instrument definition file. The proxy program will currently only support
+	// one instrument. This could be changed if necessary.
 	std::string instrumentFile;
 	instrumentFile = config->getString("InstrumentFile", "");
 
@@ -119,7 +125,8 @@ int main(int argc, char** argv)
 	// Create the Qt application
 	QApplication app(argc, argv);
 
-    // Create the SSL proxy. It will wait to connect with the switch.
+    // Create the SSL proxy. It will wait to connect with the switch,
+	// until requested via a call connectToServer().
 	SslProxy sslProxy(
 			proxyID,
     		proxyKeyFile,
