@@ -72,26 +72,31 @@ namespace Ssl {
 		virtual ~SslSocket();
 		/// @returns The state of the socket.
 		SocketState state();
-		/// An identifier for the the socket for any use that the user wishes. Do
-		/// not count on it being unique.
-		//std::string socketID();
 
 	signals:
 		/// Emitted when socket state changes
 		void stateChanged(Ssl::SslSocket::SocketState);
 
 	protected slots:
+		/// Called when the socket is connected. Emit stateChanged(SS_Connected);
 		void connected();
+		/// Called when the socket is disconnected. Emit stateChanged(SS_Disconnected).
 		void disconnected();
+		/// Called when there is an error on the socket. Emit stateChanged(SS_SocketError).
 		void socketError(QAbstractSocket::SocketError error);
+		/// Called when the socket correctly enters the encrypted state. Emit stateChanged(SS_Encrypted).
 		void encrypted();
+		/// Called when SSL errors are encountered. At present does nothing.
+		/// Since the errors are not handled here, if they are critical, the socket
+		/// will be automatically disconnected during the handshake sequence.
 		void sslErrors(const QList<QSslError>& errors);
+		/// Called when the socket mode changes. Does nothing.
 		void modeChanged(QSslSocket::SslMode mode);
 
 	protected:
 		/// Add the private key and certificate to the QsslSocket. Set up the signal/slot connections.
 		void init();
-		/// set the CA database from the list of certificates in _caDatabase.
+		/// Set the CA database from the list of certificates in _caDatabase.
 		void setCAdatabase();
 		/// Connect the signals.
 		void connectSignals();

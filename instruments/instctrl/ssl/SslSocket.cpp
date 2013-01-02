@@ -99,7 +99,7 @@ void SslSocket::disconnected() {
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::socketError(QAbstractSocket::SocketError errorCode) {
-	qDebug() << "socket error(" << errorCode <<"):" << errorString() << "***";
+	qDebug() << "socket error(" << errorCode <<"):" << errorString();
 	emit stateChanged(SS_SocketError);
 }
 
@@ -109,7 +109,7 @@ void SslSocket::encrypted() {
 	QString  O(peerCert.issuerInfo(QSslCertificate::Organization));
 	QString OU(peerCert.issuerInfo(QSslCertificate::OrganizationalUnitName));
 	qDebug() << "encrypted, peer certificate: Organization:"
-			<< O << " Unit:" << OU << "***";
+			<< O << " Unit:" << OU;
 
 	_state = SS_Encrypted;
 	emit stateChanged(_state);
@@ -117,12 +117,12 @@ void SslSocket::encrypted() {
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::modeChanged(QSslSocket::SslMode mode) {
-	qDebug() << "mode changed to" << mode << "***";
+	qDebug() << "mode changed to" << mode;
 }
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::sslErrors(const QList<QSslError>& errors) {
-	qDebug() << "SslErrors:" << errors << "***";
+	qDebug() << "SslErrors:" << errors;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -135,7 +135,7 @@ void SslSocket::setCAdatabase() {
 		QSslCertificate cert(&certFile);
 		if (cert.isNull() || !cert.isValid()) {
 			qDebug() << "invalid certificate specified in"
-					<< _caDatabase[i].c_str() << "***";
+					<< _caDatabase[i].c_str();
 		} else {
 			certs.append(cert);
 		}
@@ -179,8 +179,3 @@ void SslSocket::dumpCA() {
 SslSocket::SocketState SslSocket::state() {
 	return _state;
 }
-
-/////////////////////////////////////////////////////////////////////
-//std::string SslSocket::socketID() {
-//	return _socketID;
-//}

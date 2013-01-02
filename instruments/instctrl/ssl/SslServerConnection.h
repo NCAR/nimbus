@@ -6,9 +6,19 @@
 #include "StreamMsgProtocol.h"
 
 namespace Ssl {
-/// Manage a server connection to a client using SslSocket. Capture the
-/// SslSocket::stateChanged() signal to react to the socket state. The socket
-/// delivered to the constructor must be in a connected state.
+/// An SslServerConnection is created from a socket file descriptor,
+/// when a client asks for an SSL connection.
+/// An SslSocket is created, and manages the protocol for communicating with
+/// the client. The protocol is Protocols::StreamMsgProtocol, which serializes
+/// messages sent over a streaming (i.e. tcp) link.
+///
+/// The send() function is called in order to send a message to the client.
+///
+/// When a complete message has been received from the client, it is emitted
+/// as msgFromClient(Protocols::Message).
+///
+/// SslServerConnection captures the SslSocket::socketStateChanged() signal,
+/// and simply re-emits it so that the object owner can take appropriate action.
 	class SslServerConnection: public QObject {
 		Q_OBJECT
 	public:
@@ -33,7 +43,7 @@ namespace Ssl {
 		/// Capture a change in the SslSocket state.
 		void socketStateChanged(Ssl::SslSocket::SocketState);
 		/// New data are available on the SSL socket. Feed it to a protocol converter,
-		/// and if complete, emit the message.
+		/// and if complete, emit the Protocol::Message.
 		void sslReadyRead();
 
 	protected:
