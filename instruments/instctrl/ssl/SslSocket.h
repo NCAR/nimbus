@@ -11,7 +11,7 @@ namespace Ssl {
 	/// or client mode.
 	/// In server mode, it is created from an already
 	/// open TCP connected socket, and will start the SSL handshake
-	/// using QSslSocket::startServerEncryption. Peer verification is
+	/// using QSslSocket::startServerEncryption(). Peer verification is
 	/// specified for server mode, so that the connected client must be
 	/// able to provide a valid certificate.
 	///
@@ -22,13 +22,15 @@ namespace Ssl {
 	/// The caller supplies files containing the SSL private key and
 	/// certificate.
 	///
-	/// SslSocket will allow QSslError::SelfSignedCertificate errors,
-	/// but all other errors cause the connection to be disconnected.
+	/// Self-signed certificates will generate SSL errors, unless the incoming
+	/// certificates are in the Certificate Authority database. The caDatabase
+    /// parameter to the constructor allows expected certificates to be added
+    /// for this purpose.
 	class SslSocket : public QSslSocket
 	{
 		Q_OBJECT;
 	public:
-		/// The state of SslSocket
+		/// The state of SslSocket.
 		enum SocketState {
 			SS_Unconnected = 0,
 			SS_Connected,
@@ -68,8 +70,11 @@ namespace Ssl {
 				  QObject * parent = 0);
 		/// Destructor
 		virtual ~SslSocket();
+		/// @returns The state of the socket.
 		SocketState state();
-		std::string socketID();
+		/// An identifier for the the socket for any use that the user wishes. Do
+		/// not count on it being unique.
+		//std::string socketID();
 
 	signals:
 		/// Emitted when socket state changes
@@ -107,8 +112,6 @@ namespace Ssl {
 		SocketState _state;
 		/// Paths to certs that will be added to the CAdatabase
 		std::vector<std::string> _caDatabase;
-		/// A text description of the socket
-		std::string _socketID;
 	};
 };
 
