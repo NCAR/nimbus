@@ -1,10 +1,3 @@
-/*
- * SslClientConnection.h
- *
- *  Created on: Nov 16, 2012
- *      Author: martinc
- */
-
 #ifndef CLIENTCONNECTION_H_
 #define CLIENTCONNECTION_H_
 
@@ -13,8 +6,18 @@
 #include "StreamMsgProtocol.h"
 
 namespace Ssl {
-	/// Manage a client connection to an SslServer using SslSocket. Capture the
-	/// SslSocket::stateChanged() signal to react to the socket state.
+	/// An SslClientConnection initiates an SSL connection to a server.
+	/// An SslSocket is created, and manages the protocol for communicating with
+	/// the client. The protocol is Protocols::StreamMsgProtocol, which serializes
+	/// messages sent over a streaming (i.e. tcp) link.
+	///
+	/// The send() function is called in order to send a message to the server.
+	///
+	/// When a complete message has been received from the server, it is emitted
+	/// as msgFromServer(Protocols::Message).
+	///
+	/// SslClientConnection captures the SslSocket::socketStateChanged() signal,
+	/// and simply re-emits it so that the object owner can take appropriate action.
 	class SslClientConnection: public QObject {
 		Q_OBJECT
 	public:
