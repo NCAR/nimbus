@@ -50,7 +50,12 @@ namespace Ssl {
 
 	public slots:
 		/// Capture a change in the SslSocket state.
+		/// @param state The socket state
 		void socketStateChanged(Ssl::SslSocket::SocketState);
+		/// Called when an error is reported on the SslSocket.
+		/// @param errorCode The error code.
+		/// @param errMsg The error explanation.
+		void sslSocketErrorSlot(QAbstractSocket::SocketError errorCode, std::string errMsg);
 		/// New data are available on the SSL socket. Feed it to a protocol converter,
 		/// and if complete, emit the message.
 		void sslReadyRead();

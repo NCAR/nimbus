@@ -44,10 +44,6 @@ void SslServerConnection::socketStateChanged(Ssl::SslSocket::SocketState state) 
 		std::cout << "socket is disconnected" << std::endl;
 		break;
 	}
-	case SslSocket::SS_SocketError: {
-		std::cout << "socket error" << std::endl;
-		break;
-	}
 	default: {
 		std::cout << "socket changed to unknown state:" << state << std::endl;
 		break;

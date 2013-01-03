@@ -26,6 +26,12 @@ _sslSocket(0)
 	connect(_sslSocket, SIGNAL(stateChanged(Ssl::SslSocket::SocketState)),
 			this, SLOT(socketStateChanged(Ssl::SslSocket::SocketState)));
 
+	// capture error indications
+	connect(_sslSocket,
+			SIGNAL(sslSocketError(QAbstractSocket::SocketError, std::string)),
+			this,
+			SLOT(sslSocketErrorSlot(QAbstractSocket::SocketError, std::string)));
+
 	// Handle incoming messages from the SslSocket
 	connect(_sslSocket, SIGNAL(readyRead()), this, SLOT(sslReadyRead()));
 }
@@ -61,17 +67,18 @@ void SslClientConnection::socketStateChanged(Ssl::SslSocket::SocketState state) 
 		std::cout << "ssl socket is disconnected" << std::endl;
 		break;
 	}
-	case SslSocket::SS_SocketError: {
-		std::cout << "ssl socket error, exiting" << std::endl;
-		QCoreApplication::quit();
-		break;
-	}
 	default: {
 		std::cout << "ssl socket changed to unknown state:" << state << std::endl;
 		break;
 	}
 	};
 
+}
+
+/////////////////////////////////////////////////////////////////////
+void SslClientConnection::sslSocketErrorSlot(QAbstractSocket::SocketError errorCode, std::string errMsg) {
+	std::cout << "ssl socket error, exiting" << std::endl;
+	QCoreApplication::quit();
 }
 
 /////////////////////////////////////////////////////////////////////

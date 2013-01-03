@@ -35,8 +35,7 @@ namespace Ssl {
 			SS_Unconnected = 0,
 			SS_Connected,
 			SS_Encrypted,
-			SS_Disconnected,
-			SS_SocketError
+			SS_Disconnected
 		};
 
 		/// Constructor for a server type socket. The descriptor will reference a connected
@@ -76,6 +75,8 @@ namespace Ssl {
 	signals:
 		/// Emitted when socket state changes
 		void stateChanged(Ssl::SslSocket::SocketState);
+		/// Emitted when a socket error is reported:
+		void sslSocketError(QAbstractSocket::SocketError errorCode, std::string errMsg);
 
 	protected slots:
 		/// Called when the socket is connected. Emit stateChanged(SS_Connected);

@@ -50,11 +50,11 @@ void SslProxyServer::connectionStateChanged(SslServerConnection* connection, Ssl
 	case SslSocket::SS_Connected:
 	case SslSocket::SS_Encrypted:
 	{
-		// we don't care about these connections
+		// we don't care about these state changes
 		break;
 	}
 	case SslSocket::SS_Disconnected:
-	case SslSocket::SS_SocketError: {
+	{
 
 		// find it in our list of connections
 		std::set<SslServerConnection*>::iterator p = _connections.find(connection);

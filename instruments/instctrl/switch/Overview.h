@@ -1,18 +1,20 @@
 /// @mainpage Remote Instrument Control (RIC) Overview
-/// "RIC" designates "Remote Instrument Control": the collection of applications,
+/// "RIC" stands for "Remote Instrument Control": the collection of applications,
 /// scripts and configuration files which support secure remote communications
 /// between a user and an instrument over the Internet.
 ///
-/// SSL is used for Internet communications between the user and a ground based server switch program.
-/// The ground switch communicates with an airborne switch by exchanging encrypted datagrams. For
-/// excellent information on encryption and secure communications, see:
+/// SSL is used for Internet communications between the user proxy and a ground based 'switch' program.
+/// The ground switch communicates with an airborne switch by exchanging encrypted datagrams. The
+/// airborne switch (with embedded proxies) relays the messages to/from the instrument.
+///
+/// For excellent information on encryption and secure communications, see:
 /// - John Viega and Matt Messier, <em>Secure Programming Cookbook for C and C++</em>, 2003, O'Reilley Media. Available on Safari
 /// - John Viega, Matt Messier and Pravir Chandra, <em>Network Security with OpenSSL</em>, 2002, O'Reilley Media. Available on Safari
 ///
 /// @section RICTerminology Terminology
 /// - Instrument - The device which is being remotely monitored and controlled. The command and
 /// status information is transmitted to and from the instrument via UDP datagrams.
-/// - User Control - A user control application, which sends and receives the
+/// - User Control - A user control application, which sends commands to and receives status
 /// datagrams from the instrument. Usually referred to as the 'user'.
 /// - Proxy - An application or component which can intercept and relay the instrument
 /// datagrams, for networking and security purposes.
