@@ -30,6 +30,6 @@ def RemoteInstControl(env):
 env = Environment(tools = ['default'], GLOBAL_TOOLS = [RemoteInstControl])
 
 SConscript("tools/SConscript")
-SConscript("Proxy/SConscript")
-SConscript("Switch/SConscript")
+SConscript("proxy/SConscript")
+SConscript("switch/SConscript")
 
