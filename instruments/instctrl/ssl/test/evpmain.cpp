@@ -1,6 +1,7 @@
 #include "EVPCipher.h"
 #include <iostream>
 
+/// Test the EVP encryption class.
 int main(int argc, char** argv) {
 
 	if (argc != 2) {

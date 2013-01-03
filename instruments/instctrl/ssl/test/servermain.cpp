@@ -3,11 +3,14 @@
 #include <string>
 #include "Server.h"
 
+/// A test application for testing SslServer. The server port number is hardwired to 50000.
+/// Use with clientmain.cpp. The client certificate must be provided as an extra cert in order
+/// to avoid self-signed certificate errors.
 int main(int  argc, char** argv)
 {
 
 	if (argc < 3) {
-		std::cout << "usage: " << argv[0] << " private_key_file certificate_file [extra_cert_file ... extra_certFile]" << std::endl;
+		std::cout << "usage: " << argv[0] << " server_private_key_file server_cert_file [extra_cert_file ... extra_certFile]" << std::endl;
 		exit(1);
 	}
 

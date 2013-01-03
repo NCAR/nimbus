@@ -1,10 +1,11 @@
-// Encode/decode to/from base64 input
+// Test the encode/decode to/from base64
 
 #include <string>
 #include <vector>
 #include <iostream>
 #include "base64.h"
 
+/// Test the encode/decode to/from base64
 int main(int argc, char** argv) {
 
 	std::string option;

@@ -2,10 +2,13 @@
 #include <string>
 #include "SslClientConnection.h"
 
+/// Test SslClientConection to an SSL server. The server port is hardwired to 5000.
+/// Use with servermain.cpp. The server certificate must be provided as an extra cert in order
+/// to avoid self-signed certificate errors.
 int main(int argc, char** argv)
 {
     if (argc < 4) {
-        std::cout << "usage: " << argv[0] << " clientID client_key_file client_cert_file [extra_cert_file ... extra_cert_file]" << std::endl;
+        std::cout << "usage: " << argv[0] << " clientID client_private_key_file client_cert_file [extra_cert_file ... extra_cert_file]" << std::endl;
         exit(1);
     }
 

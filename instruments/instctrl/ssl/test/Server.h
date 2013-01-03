@@ -6,6 +6,7 @@
 #include "SslServer.h"
 #include "SslServerConnection.h"
 
+/// A class for testing Ssl::SslServer
 class Server: public Ssl::SslServer {
 	Q_OBJECT;
 

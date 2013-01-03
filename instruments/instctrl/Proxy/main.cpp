@@ -54,6 +54,8 @@ parseCommandLine(int argc, char** argv,
 }
 
 /////////////////////////////////////////////////////////////////////
+/// Create an SSL proxy and connect it with a user interface. Only
+/// one user/instrument is supported.
 int main(int argc, char** argv)
 {
 	// Process command line options
