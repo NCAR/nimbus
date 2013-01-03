@@ -13,19 +13,19 @@ sources = Split("""
 EmbeddedProxy.cpp
 EmbeddedProxyServer.cpp
 main.cpp
+ProxyServer.cpp
 Switch.cpp
 SwitchConnection.cpp
 SslProxyServer.cpp
-SwitchServer.cpp
 """)
 
 headers = Split("""
 EmbeddedProxy.h
 EmbeddedProxyServer.h
+ProxyServer.h
 Switch.h
 SwitchConnection.h
 SslProxyServer.h
-SwitchServer.h
 Overview.h
 """)
 

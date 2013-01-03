@@ -12,7 +12,7 @@
 #include "SymCipherProtocol.h"
 
 /// The application which manages communications between one or more
-/// instances of Proxy and another Switch.
+/// instances of a proxy and another Switch.
 ///
 /// There are two types of switch: one which communicates with
 /// the proxies via SSL, and the other which embeds local
@@ -20,9 +20,16 @@
 ///
 /// A SwitchConection manages the connection between the two switches.
 ///
-/// A SwitchServer manages the connections between the proxies and the switch.
-/// There are two flavors of SwitchServer: the SwitchSslServer for handling
-/// remote proxies, and the SwitchEmbeddedServer for the local aggregated proxies.
+/// All messages which are transferred between the proxies and the switch
+/// connection come through the Switch, so that rate limiting and
+/// message filtering can be centrally managed. This is handled in
+/// msgFromProxySlot() and msgFromRemoteSwitch().
+///
+/// Within the switch is a ProxyServer, which manages the connections between the
+/// proxies and the switch. It is a server because it can dynamically
+/// create connections for proxies. There are two flavors of ProxyServer: the
+/// SslProxyServer for handling remote SSL proxies, and the EmbeddedProxyServer
+/// for the local embedded proxies.
 class Switch: public QObject {
 	Q_OBJECT
 public:
@@ -60,19 +67,19 @@ public:
 	virtual ~Switch();
 	
 protected slots:
-	/// Handle a new message from the proxy
+	/// Handle a new message from a proxy.
 	/// @param The incoming message from the proxy.
 	void msgFromProxySlot(Protocols::Message msg);
-	/// Handle a new message from the remote switch
+	/// Handle a new message from the remote switch.
 	/// @param The incoming message from the remote switch.
 	void msgFromRemoteSwitch(Protocols::Message msg);
 
 protected:
-	/// Perform the signal/slot connections
+	/// Create the signal/slot connections.
 	void init();
 
 	/// The server that manages the connections to the proxies.
-	SwitchServer* _server;
+	ProxyServer* _server;
 
 	/// The connection between us and the remote switch
 	SwitchConnection _switchConnection;

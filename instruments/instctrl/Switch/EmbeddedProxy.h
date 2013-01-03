@@ -10,36 +10,29 @@
 
 using namespace Ssl;
 
+/// An instrument/user proxy which is embedded in a switch. It is used when
+/// the proxies and the switch are located on the same machine, and so
+/// direct communications can be used between the proxy and the switch.
+/// The switch will create one of these for each specified instrument/user.
 class EmbeddedProxy: public QObject {
 	Q_OBJECT
 public:
-	/// A helper class to manage the handling of message types. One instance
-	/// will be created for each message identifier (_msgId). The
-	/// instrument name (_instName) will be the same for all messages
-	/// from a single instrument.
-	struct InstMsgInfo {
-		/// The instrument name (as used by the SslProxy/Switch system
-		std::string _instName;
-		/// The message identifier (e.g. "AVAPS")
-		std::string _msgId;
-		/// Whether this message is delivered via broadcast UDP or unicast UDP.
-		bool _broadcast;
-		/// The destination port for this message.
-		int _destPort;
-		/// The destination name or IP for this message. For broadcast messages,
-		/// it is ignored.
-		std::string _destIP;
-	};
-
-
+	/// Constructor.
+	/// @param messages Details about each message type that this proxy will handle.
 	EmbeddedProxy(std::map<std::string, SslProxy::InstMsgInfo> messages);
+	/// destructor.
 	virtual ~EmbeddedProxy();
+	/// Send a message to the user/instrument
+	/// @param The message that is to be sent as a datagram.
 	void send(Protocols::Message msg);
 
 signals:
+	/// Emitted when the proxy has received a new message from the user/instrument.
+	/// @param message The message.
 	void msgFromProxy(Protocols::Message message);
 
 protected slots:
+	/// Called when there are incoming datagrams available to be read.
 	void udpReadyRead();
 
 
@@ -55,6 +48,7 @@ protected:
 	/// @param info The specifics of where this message should go.
 	/// @param msg The message.
 	void sendMsg(SslProxy::InstMsgInfo& info, Protocols::Message& msg);
+	/// The messages that this proxy can handle.
 	std::map<std::string, SslProxy::InstMsgInfo> _messages;
 	/// Port number for incoming datagrams
 	int _incomingUdpPort;

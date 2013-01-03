@@ -11,17 +11,25 @@
 /// The communication connection between two switches. It is bi-directional,
 /// exchanging messages with a remote instance of the switch.
 ///
-/// The communications are via encrypted datagrams between Switch instances.
+/// The communications are via encrypted datagrams, implemented with
+/// Protocols::SymCipherProtocol.
 ///
-/// Any interface will be listened on for incoming messages.
+/// Any interface will be used to listen for incoming messages.
 class SwitchConnection: public QObject {
 	Q_OBJECT
 public:
+	/// Constructor.
+	/// @param localPort The local port for receiving datagrams from the remote switch.
+	/// @param remoteIp The IP address or name of the remote switch.
+	/// @param remotePort The port number to send datagrams to on the remote switch.
+	/// @param switchCipherKey The symmetric encryption key. It must be of
+	/// length EVPCipher.cipherBlockLength().
 	SwitchConnection(
 			int localPort,
 			std::string remoteIP,
 			int remotePort,
 			std::string switchCipherKey);
+	/// Destructor.
 	virtual ~SwitchConnection();
 
 signals:

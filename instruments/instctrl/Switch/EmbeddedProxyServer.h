@@ -6,11 +6,11 @@
 #include <vector>
 #include "InstConfig.h"
 #include "Message.h"
-#include "SwitchServer.h"
+#include "ProxyServer.h"
 #include "EmbeddedProxy.h"
 
 /// The server that manages connections with an EmbeddedProxy.
-class EmbeddedProxyServer: public SwitchServer {
+class EmbeddedProxyServer: public ProxyServer {
 	Q_OBJECT
 	public:
 		/// @param instFiles A list of instrument configuration files.

@@ -11,12 +11,12 @@
 
 #include <QtCore>
 #include <set>
-#include "SwitchServer.h"
+#include "ProxyServer.h"
 #include "SslServer.h"
 #include "SslServerConnection.h"
 
 /// The server that manages connections with an SslProxy.
-class SslProxyServer: public SwitchServer {
+class SslProxyServer: public ProxyServer {
 	Q_OBJECT;
 
 	public:

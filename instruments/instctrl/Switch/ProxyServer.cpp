@@ -1,11 +1,11 @@
-#include "SwitchServer.h"
+#include "ProxyServer.h"
 
 /////////////////////////////////////////////////////////////////////
-SwitchServer::SwitchServer()
+ProxyServer::ProxyServer()
 {
 }
 
 /////////////////////////////////////////////////////////////////////
-SwitchServer::~SwitchServer() {
+ProxyServer::~ProxyServer() {
 
 }
