@@ -19,12 +19,15 @@ end
 cd ..
 
 cd nc_utils
-foreach file ( asc2cdf flt_time n2asc ncReorder nc_sane ncav ncextr ncfillvar ncmerge )
+foreach file ( asc2cdf flt_time n2asc nc_sane ncav ncextr ncfillvar ncmerge nc2iwg1 )
   (cd $file; echo $file; make clean)
+end
+foreach file ( ncvarlist nc_gap mkcdf ncReorder )
+  (cd $file; echo $file; scons -c)
 end
 cd ..
 
-foreach file ( nimbus GoogleEarth/acTrack2kml )
+foreach file ( nimbus kml_tools/acTrack2kml kml_tools/avaps2kml )
   (cd $file; echo $file; scons -c)
 end
 
