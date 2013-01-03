@@ -1,18 +1,11 @@
-/*
- * Message.h
- *
- *  Created on: Nov 15, 2012
- *      Author: martinc
- */
-
 #ifndef MESSAGE_H_
 #define MESSAGE_H_
 
 #include "MessagePayload.h"
 
 namespace Protocols {
-	/// A class for encapsulating message meta-data and payload data in JSON
-    /// format.
+	/// A class for encapsulating message meta-data and payload data,
+	/// and providing a JSON representation of the structure.
     ///
     /// The JsonCpp package is used for json encoding and decoding. See
     /// http://jsoncpp.sourceforge.net for the documentation
@@ -36,8 +29,6 @@ namespace Protocols {
 		/// @param s The source string.
 		/// @return The first token delimited by a comma. An empty
 		/// string is returned if no token is found.
-		/// @todo This needs to be extended to use a regular expression so that non-CSV messages
-		/// can be recognized. Currently the sounding messages are dropped becasue they are not CSV.
 		static std::string extractId(std::string s);
 
 	protected:

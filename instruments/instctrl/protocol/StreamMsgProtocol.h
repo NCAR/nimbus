@@ -13,22 +13,28 @@
 #include "Protocol.h"
 
 namespace Protocols {
-	/// A simple protocol which simply prepends the message payload with
-    /// the paylod length, followed by a colon.
+	/// A simple protocol where outgoing() simply prepends the message payload with
+    /// the payload length, followed by a colon. The incoming() function counts
+	/// the bytes specified in the length header.
 	class StreamMsgProtocol: public Protocol::Protocol {
 	public:
+		/// Constructor
 		StreamMsgProtocol();
+		/// Destructor
 		virtual ~StreamMsgProtocol();
+		/// Convert an incoming protocol stream into a message.
+		/// @param s The incoming data bytes.
+		/// @return Complete messages, if available.
 		virtual std::vector<std::string> incoming(std::string s);
+		/// Convert a message into an outgoing protocol stream.
+		/// @param msg The message to be sent.
+		/// @return Data block ready for transmision, if available.
 		virtual std::vector<std::string> outgoing(std::string s);
 
 	protected:
-		/// The incoming message buffer. Messages are buffered here
-		/// until a complete JSON package is received, which occurs
-		/// when an equal number of open and close braces are received.
-		/// At the point, the new message is emitted.
+		/// The incoming message buffer.
 		std::list<char> _msgBuf;
-		/// Construct the header here
+		/// Collect the header here
 		std::string _header;
 		/// The number of characters in the message
 		int _msgSize;

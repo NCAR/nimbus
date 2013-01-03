@@ -20,7 +20,7 @@ _config(config)
     std::map<std::string, std::string> entry;
     entry["ID"] = "MSG_ID";
     entry["Broadcast"] = "false";
-    entry["RateLimit"] = "0";
+    entry["RateLimit"] = "0.0";
     defaultValues.push_back(entry);
 
     // Create a default message via getArray().
@@ -90,7 +90,7 @@ std::vector<InstConfig::MessageInfo> InstConfig::messages() {
 			ss << entry["RateLimit"];
 			ss >> info.rateLimit;
 		} else {
-			info.rateLimit = 0;
+			info.rateLimit = 0.0;
 		}
 
 		result.push_back(info);
