@@ -5,6 +5,8 @@
 #include <sstream>
 
 using namespace Protocols;
+
+/// Test the SymCipherProtocol class
 int main(int argc, char** argv) {
 
 	char coding;

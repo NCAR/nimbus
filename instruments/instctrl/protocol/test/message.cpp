@@ -3,6 +3,7 @@
 
 using namespace Protocols;
 
+/// test the Message class, exercising the JSON functionality
 int main(int argc, char** argv) {
 
 	// create a Message

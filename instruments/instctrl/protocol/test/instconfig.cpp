@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 
+/// Test the InstConfig class
 int main(int argc, char** argv) {
 
 	QtConfig config("Test", "InstConfigTest");

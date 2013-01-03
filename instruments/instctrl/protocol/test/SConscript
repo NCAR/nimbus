@@ -3,6 +3,7 @@ import sys
 tools = Split("""
   protocol
   evp
+  doxygen
 """)
 env = Environment(tools = ['default'] + tools)
 
@@ -30,3 +31,9 @@ env = Environment(tools = ['default'] + tools)
 instconfigsources = ['instconfig.cpp', ]
 instconfig = env.Program('instconfig', instconfigsources)
 env.Default(instconfig)
+
+doxysources = ['message.cpp', 'symcipher.cpp', 'instconfig.cpp']
+
+env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "protocol test" })
+doxref = env.Apidocs(doxysources)
+

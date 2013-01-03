@@ -8,7 +8,7 @@
 
 /// Manage the configuration for instrument/user message handling.
 /// This configuration is used by proxies and switches. Some of the
-/// configuration parameters are not applicable to a particular. For
+/// configuration parameters are not applicable to a particular application. For
 /// instance, the broadcast, IP and port parameters are not used
 /// by the switches. Likewise, the rate limit parameter is only used by
 /// the switches and not the proxies. The idea is that one configuration
