@@ -1,10 +1,3 @@
-/*
- * EmbeddedProxy.h
- *
- *  Created on: Dec 10, 2012
- *      Author: martinc
- */
-
 #ifndef EMBEDDEDPROXY_H_
 #define EMBEDDEDPROXY_H_
 
@@ -14,6 +7,8 @@
 #include <string>
 #include "Message.h"
 #include "SslProxy.h"
+
+using namespace Ssl;
 
 class EmbeddedProxy: public QObject {
 	Q_OBJECT

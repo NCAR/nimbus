@@ -5,6 +5,8 @@
 #include "SslProxy.h"
 #include "ui_ProxyMainWindow.h"
 
+using namespace Ssl;
+
 class ProxyMainWindow: public QMainWindow, public Ui::ProxyMainWindow {
 	Q_OBJECT
 public:

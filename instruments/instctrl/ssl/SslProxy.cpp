@@ -55,6 +55,10 @@ _outgoingUdpSocket(0)
 /////////////////////////////////////////////////////////////////////
 SslProxy::~SslProxy() {
 
+	// deleteLater() is used in cases where this delete may
+	// be happening during a slot invocation, and there may be
+	// pending signals for the object being deleted.
+
 	if (_incomingUdpSocket) {
 		_incomingUdpSocket->deleteLater();
 	}

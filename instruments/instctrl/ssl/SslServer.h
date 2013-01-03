@@ -10,7 +10,10 @@
 namespace Ssl {
 	/// SslServer creates a server which listens for connections on a specific
 	/// port. When a connection is made, the socket is converted to a
-	/// SslSocket, which then carries out the SSL handshake.
+	/// SslSocket, which then carries out the SSL handshake. A newConnection(Ssl::SslSocket* sslSocket)
+	/// signal is emitted when the new connection is established. All of the
+	/// QTcpServer base class signals and member functions are available for
+    /// implementing a complete server.
 	///
 	/// The caller supplies files containing the server private key and
 	/// certificate.
