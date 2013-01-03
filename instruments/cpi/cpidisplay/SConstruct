@@ -1,0 +1,12 @@
+# -*- python -*-
+
+import os
+env = Environment(platform = 'posix',ENV= os.environ)
+env['JLOCAL'] = os.environ['JLOCAL']
+
+# Targets are only to install files.
+
+Alias('install', env.Install('$JLOCAL/bin', 'cpidisplay'))
+
+Alias('install', env.Install('$JLOCAL/idl/lib/cpi', ['src/cpidisplay.pro', 'src/cpidraw.pro', 'src/cpiimage.pro',
+	'src/cpiread.pro', 'src/scale.png']))
