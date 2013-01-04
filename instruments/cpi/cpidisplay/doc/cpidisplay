@@ -11,7 +11,7 @@ the program.  It shows the scale of the cpi images.
 cpidisplay.sav is the idl save file that has the *.pro files saved in it.  
 You must keep the cpidisplay.sav program in a different directory from the
 .pro files, otherwise idl will read the .pro files before it will read the 
-.sav file.  I create a new save file when I have a new release of 
+.sav file.  Create a new save file when there is a new release of 
 the programs.
 
 To run the program, cd to the directory where the cpidisplay.sav file resides,
@@ -31,7 +31,7 @@ line 126 contains the directory where the scale.gif image resides.  In
 cpiread.pro, line 204 contains the directory where the gif images that are
 created are placed. 
 
-cpi is the program that I have users run to put them in the directory where the
+cpi is the program that users ican run to put them in the directory where the
 cpidisplay.sav file resides.  It also starts idl for them, then they just have 
 to enter cpidisplay to run the program.
 
@@ -45,4 +45,9 @@ save, /routines, filename="cpidisplay.sav"
 Run 
 idl -vm="cpidisplay.sav" 
 to test the .sav file in the virtual machine environment.
+
+Copy the cpidisplay.sav file to ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/cpidisplay.sav
+
+The download page for the cpidisplay program is located at 
+http://www.eol.ucar.edu/raf/ION/html/cpidata.html
 
