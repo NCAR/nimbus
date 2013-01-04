@@ -33,12 +33,20 @@ void ProxyMainWindow::connectSlot() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void ProxyMainWindow::switchMessageSlot(std::string s){
-	_msgsFromSwitch->setText(s.c_str());
+void ProxyMainWindow::switchMessageSlot(std::string s, bool valid){
+	if (valid) {
+		_validFromSwitch->setText(s.c_str());
+	} else {
+		_invalidFromSwitch->setText(s.c_str());
+	}
 }
 
 /////////////////////////////////////////////////////////////////////
-void ProxyMainWindow::userMessageSlot(std::string s) {
-	_msgsFromUser->setText(s.c_str());
+void ProxyMainWindow::userMessageSlot(std::string s, bool valid) {
+	if (valid) {
+		_validFromUser->setText(s.c_str());
+	} else {
+		_invalidFromUser->setText(s.c_str());
+	}
 }
 

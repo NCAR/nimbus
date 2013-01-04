@@ -85,10 +85,12 @@ namespace Ssl {
 	signals:
 		/// Emitted when a message is received from the switch
 		/// @param s The text of the message.
-		void switchMessage(std::string s);
+		/// @param valid True if this was an accepted message.
+		void switchMessage(std::string s, bool valid);
 		/// Emitted when a message is received from the user
 		/// @param s The text of the message.
-		void userMessage(std::string s);
+		/// @param valid True if this was an accepted message.
+		void userMessage(std::string s, bool valid);
 
 
 	protected slots:

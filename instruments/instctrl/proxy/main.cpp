@@ -148,10 +148,10 @@ int main(int argc, char** argv)
 			&sslProxy, SLOT(disconnectFromServer()));
 
 	// Connect the signals from the SSL proxy to the interface.
-	sslProxy.connect(&sslProxy, SIGNAL(switchMessage(std::string)),
-			&proxyMainWindow, SLOT(switchMessageSlot(std::string)));
-	sslProxy.connect(&sslProxy, SIGNAL(userMessage(std::string)),
-			&proxyMainWindow, SLOT(userMessageSlot(std::string)));
+	sslProxy.connect(&sslProxy, SIGNAL(switchMessage(std::string, bool)),
+			&proxyMainWindow, SLOT(switchMessageSlot(std::string, bool)));
+	sslProxy.connect(&sslProxy, SIGNAL(userMessage(std::string, bool)),
+			&proxyMainWindow, SLOT(userMessageSlot(std::string, bool)));
 
 	// Show the user interface
 	proxyMainWindow.show();

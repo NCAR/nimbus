@@ -101,8 +101,6 @@ bool SslClientConnection::send(Protocols::Message& message) {
 	// Convert message to stringified JSON
 	std::string m = message.toJsonStdString();
 
-	qDebug() << m.c_str();
-
 	// Convert the json string to the protocol messages
 	std::vector<std::string> msgs = _protocolToServer.outgoing(m);
 

@@ -182,30 +182,29 @@ void SslProxy::udpReadyRead() {
 
 			// send the message via the SSL connection.
 			_sslConnection->send(msg);
+
+			// Let others know about this message
+			emit userMessage(text, true);
 		} else {
-			/// @todo No identifier found in datagram; add error handling here
+			// Let others get this message
+			emit userMessage(text, false);
 		}
-		// Let others get this message
-		emit userMessage(text);
 	}
 }
 
 /////////////////////////////////////////////////////////////////////
 void SslProxy::msgFromServerSlot(Protocols::Message msg) {
-	qDebug() << msg.payload().text().c_str();
 
 	std::string msgId = msg.msgId();
 
 	// find this message in our message dictionary
 	if (_messages.find(msgId) != _messages.end()) {
 		sendMsg(_messages[msgId], msg);
+		emit switchMessage(msg.payload().text(), true);
 	} else {
-		/// @todo Handle appropriately; reporting/logging as needed.
-		qDebug() << "Proxy: Unrecognized message" << msgId.c_str() << "ignored by the proxy";
+		emit switchMessage(msg.payload().text(), false);
 	}
 
-	std::string text = msg.payload().text();
-	emit switchMessage(text);
 
 }
 

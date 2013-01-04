@@ -29,11 +29,13 @@ public slots:
 	/// Called when a new message is received from the switch. The text
 	/// is displayed as the most recent instrument message.
 	/// @param s The instrument message text.
-	void switchMessageSlot(std::string s);
+	/// @param valid Set true if this is an accepted message, false otherwise.
+	void switchMessageSlot(std::string s, bool valid);
 	/// Called when a new message is received from the user. The text
 	/// is displayed as the most recent user message.
 	/// @param s The user message text.
-	void userMessageSlot(std::string s);
+	/// @param valid Set true if this is an accepted message, false otherwise.
+	void userMessageSlot(std::string s, bool valid);
 
 protected slots:
 	/// Called when the connect/disconnect button is pressed.
