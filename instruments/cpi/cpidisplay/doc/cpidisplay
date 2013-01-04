@@ -39,4 +39,5 @@ To create the cpidisplay.sav program, cd to the directory where the .pro files
 reside.  Start idl, then type the following commands:
 .compile cpidisplay
 .compile cpiread
+resolve_all
 save, /routines, filename="cpidisplay.sav"
