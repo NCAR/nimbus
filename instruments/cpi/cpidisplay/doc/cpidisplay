@@ -41,3 +41,8 @@ reside.  Start idl, then type the following commands:
 .compile cpiread
 resolve_all
 save, /routines, filename="cpidisplay.sav"
+
+Run 
+idl -vm="cpidisplay.sav" 
+to test the .sav file in the virtual machine environment.
+
