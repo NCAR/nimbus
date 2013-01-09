@@ -249,8 +249,8 @@ PRO cpidisplay
    state.timelw = cw_field(cpiControl, /noedit, title="Time  ")
    wl7 = widget_label(cpiControl, value=separator, /align_center)
    image = ""
-   if findfile('scale.png') ne "" then $
-      image = "scale.png" $
+   if findfile('/opt/local/idl/lib/cpi/scale.png') ne "" then $
+      image = "/opt/local/idl/lib/cpi/scale.png" $
    else if findfile(state.datadir + "/scale.png") ne "" then $
       image = state.datadir + "/scale.png"
    if image ne "" then begin
