@@ -195,9 +195,7 @@ PRO cpidisplay
       screenheight: 0U, screen: lonarr(1000), month: 0U, year: 0U, $
       pngdirl: 0, pnginfo: 0, pngfile: "", pngdir: "", imagecnt: 0U, $
       lenw: 0L, widw: 0L, len: 0.0, wid: 0.0, timelw: 0L, timel: ""}
-   datadir = getenv('DATA_DIR')
-   if datadir eq "" then state.datadir = "/tmp" $
-      else state.datadir = datadir + "/cpi"
+   state.datadir = getenv('RAW_DATA_DIR')
    pngdir = getenv('TMPDIR')
    if pngdir eq "" then pngdir = "/tmp"
    state.pngdir = pngdir + "/"
