@@ -23,8 +23,6 @@ DECLARE SUB DIFFERAD ()
 DECLARE SUB WRITETOSERIAL ()
 DECLARE SUB IRIGTIME ()
 DECLARE SUB OPENDATAFILE ()
-DECLARE SUB SETSYSTEMDATE ()
-DECLARE SUB SETSYSTEMTIME ()
 
 'Screen update routines:
 DECLARE SUB PrintNumArr (num#(), fmt$, ind, row, col, clr)
@@ -34,8 +32,8 @@ DECLARE SUB PrintNumLabel (num#, fmt$, row, col, clr)
 COMMON SHARED CNTRBASEADDR%, DIFFBASEADDR%, SINGBASEADDR%
 COMMON SHARED LINT&, BN$, DEC&
 COMMON SHARED VALVEQUADRANT%, EXPECTQUADRANT%, PREVALVEQUADRANT%, VALVECODE%
-COMMON SHARED VALVESKIPPED%, VALVESTOPPED%, VALVEPOS%
-COMMON SHARED OSCFREQ&, CNTINTERVAL&, DWNCNTS&
+COMMON SHARED VALVESKIPPED%, VALVESTOPPED%
+COMMON SHARED DWNCNTS&
 COMMON SHARED CNTR%, MODE%, MREG&, CHIP%, LOAD%, LREG&
 COMMON SHARED DATA1%, DATA2%, CONT1%, CONT2%, DIG1%, DIG2%
 COMMON SHARED INTERRUPT1%, INTERRUPT2%, STATUS%, MASTERMODE%
@@ -48,14 +46,14 @@ COMMON SHARED row%, COLUMN%, VALUE!, ADTEST&
 COMMON SHARED TEMP#, RT#, ADVOLTS#, PRES#, ENGUNITS#, VOLTS#, MILLIAMP#
 COMMON SHARED R1!, R2!, MBARCAL!
 COMMON SHARED FREQA&, FREQB&, CNTSREF&, DELTAFREQA&, DELTAFREQB&, FREQRATIO#, PREVRATIO#
-COMMON SHARED MAXPCT%, PCTTIME%, PCTEXPIRED%
-COMMON SHARED MICSECS#, STARTTIME#, ENDTIME#, FIRSTIME#, MILSEC#, CYCLENO#, NOW#
+COMMON SHARED MAXPCTUSED!, PCTUSED!, LoopNumber%
+COMMON SHARED STARTTIME#, ENDTIME#, CYCLENO&, PREVTIME#
 
+'ScaleFactor should be changed together with the Frequency Divider bit in the INITCOUNTERS routine.
+COMMON SHARED ScaleFactor%, ValveEnabled% 'ScaleFactor is number of data records per second
 COMMON SHARED HH, MM, SS, MS
-
 COMMON SHARED DATAOUT$
 COMMON SHARED ENGOUT$
-COMMON SHARED COMBDATA$
 
 DIM SHARED TEMPERATURE#(1 TO 16)   'EXTRAS INCLUDED
 DIM SHARED PRESSURE#(1 TO 6)       'EXTRAS INCLUDED
@@ -72,125 +70,128 @@ CONST Lmagenta = 13, Yellow = 14, Bwhite = 15
 CONST PlotBorderColor = Bwhite
 
 '******************************************************************
-
+CLS
 CALL PARAMETERS     'CONTAINS THE EXPERIMENT PARAMETERS
 CALL IOMAP          'DEFINE I/O MAP
 CALL DATAPOINTERS   'DEFINE DATA POINTERS FOR COUNTER BOARD
 CALL CNTRESET       'RESET COUNTER BOARD
 CALL SETMASTER      'SET MASTER MODE FOR BOTH COUNTER CHIPS
-CALL INITCOUNTERS   'INITIALIZE COUNTER MODE REGISTERS
 CALL OPENDATAFILE   'OPEN DATA AND ENGDATA FILES FOR WRITING
-
 CALL IRIGTIME
-'CALL SETSYSTEMDATE  'SET THE PC DATE AND TIME.  EVENTUALLY USE IRIG TIME
-'CALL SETSYSTEMTIME
 
-CYCLENO# = 0
+ValveFlip1% = 10
+ValveFlip2% = 1
+ValveInverted% = 1
+ValveEnabled% = 0
+ScaleFactor% = 10
+CYCLENO& = 0
 PREVALVEQUADRANT% = 1
 VALVESTOPPED% = 0
 VALVESKIPPED% = 0
 CALL VALVEPOSITION
 
-LA$ = "0101 1111"
-OUT CONT1%, B2I&(LA$)                'LOAD COUNTERS(5F) 1,2,3,4,5 CHIP 1 WITH DATA IN LOAD REGISTERS
-LA$ = "0101 1111"
-OUT CONT2%, B2I&(LA$)                'LOAD COUNTERS(3F) 1,2,3,4,5 CHIP 2 WITH DATA IN LOAD REGISTERS
-LA$ = "0011 1111"
-OUT CONT1%, B2I&(LA$)                 'ARM COUNTERS 1,2,3,4,5 CHIP 1
-LA$ = "0011 1111"
-OUT CONT2%, B2I&(LA$)                 'ARM COUNTERS 1,2,3,4,5 CHIP 2
-
    STARTTIME# = TIMER
  
      CLOSED% = 1
-     CYCLENO# = -1
-     MAXPCT% = 0
-     PCTEXPIRED% = 0
+     CYCLENO& = -1
 
-OPEN "COM1:9600,N,8,1,BIN,CS0,DS0" FOR RANDOM AS #2
-VALVEPOS% = 1    'start valve flag in B position because it gets set to A on first cycle
+'OPEN "COM1:9600,N,8,1,BIN,CS0,DS0" FOR RANDOM AS #2 'Turn Off serial output for lab experiments.
+MAXPCTUSED! = 0!
+PCTUSED! = 0!
 
 CALL INITSCREEN
+OPEN DATAOUT$ FOR APPEND AS #1
+OPEN ENGOUT$ FOR APPEND AS #2
+
+CALL INITCOUNTERS   'INITIALIZE COUNTER MODE REGISTERS
+OUT CONT1%, 233         'Set Toggle Out to High on #1, Chip1. This enables hardware Gates to allow counting.
+OUT CONT1%, 127         'Load and arm all 5 counters on Chip1. All of them start counting at this time.
+OUT CONT2%, 127         'Load and arm all 5 counters on Chip2. All of them start counting at this time.
 
 '........................TIME LOOP STARTS HERE!
-
 DO
-     CYCLENO# = CYCLENO# + 1
+     CYCLENO& = CYCLENO& + 1
 
-     STATUS% = 2                            'SET STATUS OF CNTR 1 CHIP 1
-     DO UNTIL STATUS% = 0
-		STATUS% = INP(CONT1%) AND 2             'CHECK STATUS OF CNTR 1 CHIP 1
-     LOOP
-				'START 1 SEC HERE: CNTR=4000
+	DO 
+		STATUS% = INP(CONT1%) AND 2 'Bit 2 will go Low on TC of #1 and stay there since #1 counts once and disarms.
+	LOOP UNTIL STATUS% = 0 'If the OS was busy, this loop will check True instantly. Counters will have sat waiting, stopped counting.
 
-    OUT CONT1%, 166                        '166:SAVE CNTR 2,3 CHIP 1
-    OUT CONT2%, 166                        '166:SAVE CNTR 2,3 CHIP 2
-    OUT CONT1%, 70                         '70:LOAD CNTR 2,3 CHIP 1
-    OUT CONT2%, 70                         '70:LOAD CNTR 2,3 CHIP 2
+	OUT CONT1%, 134         'Disarm and save #2, #3, Chip1
+	OUT CONT2%, 134         'Disarm and save #2, #3, Chip2
+	OUT CONT1%, 95          'Load all counters, Chip1
+	OUT CONT2%, 95          'Load all counters, Chip2
+	OUT CONT1%, 233         'Set Toggle Out to High on #1. This enables hardware Gates to allow counting.
+	OUT CONT1%, 63          'Arm all counters
+	OUT CONT2%, 63          'Arm all counters
+	
 
-
-	IF CYCLENO# MOD 10 = 0 THEN
-		CALL VALVECHG
-		CALL VALVESLIP
-		 VALVEPOS% = ABS(1 - VALVEPOS%)  'flip the state of the Valve flag
+    ENDTIME# = TIMER 'Take time stamp right after counters are recorded.
+	IF ENDTIME# - STARTTIME# < 0 THEN
+		ENDTIME# = ENDTIME# + 86400
 	END IF
 
-    ENDTIME# = TIMER
-    NOW# = ENDTIME#
-    OUT CONT1%, HOLD2%
-     CNTSLOW& = INP(DATA1%)
-     CNTSHI& = INP(DATA1%)
-     CNTS2A& = CNTSLOW& + CNTSHI& * 256
-    
-     OUT CONT1%, HOLD3%
-     CNTSLOW& = INP(DATA1%)
-     CNTSHI& = INP(DATA1%)
-     CNTS3A& = CNTSLOW& * 65536
-     CNTS& = CNTS2A& + CNTS3A&
-     FREQA& = (CNTS& * 10) / CNTINTERVAL&
-     DELTAFREQA& = FREQA& - FREQAPREV&
-     FREQAPREV& = FREQA&
+	'Advance valve every 10 seconds and only if valve operation is Enabled.
+	IF (CYCLENO& MOD 10 * ScaleFactor% * ValveFlip1% = 0) AND ValveEnabled% THEN
+		CALL VALVECHG
+		CALL VALVESLIP
+		SWAP ValveFlip1%, ValveFlip2%
+	END IF
 
-     OUT CONT2%, HOLD2%
-     CNTSLOW& = INP(DATA2%)
-     CNTSHI& = INP(DATA2%)
-     CNTS2B& = CNTSLOW& + CNTSHI& * 256
-     OUT CONT2%, HOLD3%
-     CNTSLOW& = INP(DATA2%)
-     CNTSHI& = INP(DATA2%)
-     CNTS3B& = CNTSLOW& * 65536
-     CNTS& = CNTS2B& + CNTS3B&
-     FREQB& = (CNTS& * 10) / CNTINTERVAL&
-     DELTAFREQB& = FREQB& - FREQBPREV&
-     FREQBPREV& = FREQB&
+    OUT CONT1%, HOLD2%
+	CNTSLOW& = INP(DATA1%)
+	CNTSHI& = INP(DATA1%)
+	CNTS2A& = CNTSLOW& + CNTSHI& * 256
+	
+	OUT CONT1%, HOLD3%
+	CNTSLOW& = INP(DATA1%)
+	CNTSHI& = INP(DATA1%)
+	CNTS3A& = CNTSLOW& * 65536
+	CNTS& = CNTS2A& + CNTS3A&
+	FREQA& = CNTS&
+	DELTAFREQA& = FREQA& - FREQAPREV&
+	FREQAPREV& = FREQA&
+
+	OUT CONT2%, HOLD2%
+	CNTSLOW& = INP(DATA2%)
+	CNTSHI& = INP(DATA2%)
+	CNTS2B& = CNTSLOW& + CNTSHI& * 256
+	OUT CONT2%, HOLD3%
+	CNTSLOW& = INP(DATA2%)
+	CNTSHI& = INP(DATA2%)
+	CNTS3B& = CNTSLOW& * 65536
+	CNTS& = CNTS2B& + CNTS3B&
+	FREQB& = CNTS&
+	DELTAFREQB& = FREQB& - FREQBPREV&
+	FREQBPREV& = FREQB&
 
     CALL SINGLEAD
     CALL DIFFERAD
+	
     PREVRATIO# = FREQRATIO#
+	
 IF FREQB& <> 0 THEN
 	FREQRATIO# = FREQA& / FREQB&
 	ELSE FREQRATIO# = 0
 END IF
 
-IF ENDTIME# - STARTTIME# < 0 THEN
-	ENDTIME# = ENDTIME# + 86400
-END IF
-   CALL VALVEPOSITION
+	CALL VALVEPOSITION
+	CALL WRITETOSCREEN
+	CALL WRITETODISK
+	CALL IRIGTIME
+	PREVTIME# = ENDTIME#
+	
+   'Monitor possible Valve Control command ("v" on keyboard).
+	IF INKEY$ = "v" THEN
+		SWAP ValveEnabled%, ValveInverted%
+	END IF
 
-   'added 1/25/07
-   CALL IRIGTIME
-
-   CALL WRITETOSCREEN 'Added 5/16/2012, screen update re-write
-
-   'added 1/25/07
-   CALL WRITETOSERIAL
-
-   CALL WRITETODISK
+'	CALL WRITETOSERIAL 'Disable serial port output until needed
+	CALL FINETIMER 'This procedure will capture the time used by all procedures in the loop.
 
 LOOP UNTIL INKEY$ = CHR$(27)       'ESCAPE KEY
+CLOSE #1
+CLOSE #2
 END
-
-'******************************************************************
 
 '******************************************************************
 FUNCTION B2I& (BN$)            'INPUT: BINARY STRING BN$ = BBBBXBBBBXBBBB...
@@ -219,25 +220,16 @@ END FUNCTION
 '******************************************************************
 SUB CNTRESET               'INITIALIZE/RESET COUNTER BOARD AT STARTUP
 
-     OUT DIG1%, 0          'ZERO TTL REGISTERS DIG1 & DIG2
-     OUT DIG2%, 0
+	OUT DIG1%, 0          'ZERO TTL REGISTERS DIG1
+	OUT DIG2%, 0          'ZERO TTL REGISTERS DIG2
 
-		 'INITIALIZE CHIP 1
-
-     OUT CONT1%, &HFF      'CHIP 1 MASTER RESET CODE: FFH
-     OUT CONT1%, &H5F      'LOAD ALL CNTRS TO CLEAR TC (TERMINAL COUNT)
-				'STATES:5F
-     OUT CONT1%, &H15      'SET DATA POINTER TO COUNTER 5: 15
-				   
-		  'INITIALIZE CHIP 2
-
-     OUT CONT2%, &HFF      'CHIP 2 MASTER RESET CODE: FFH
-     OUT CONT2%, &H5F      'LOAD ALL COUNTERS TO CLEAR TC STATES:5F
-     OUT CONT2%, &H15      'SET DATA POINTER TO COUNTER 5: 15
-    
-     PRINT "COUNTERS MASTER MODE HAS BEEN RESET"
-     PRINT "COUNTERS LOADED TO CLEAR TERMINAL COUNT STATES"
-     PRINT "COUNTERS DATA POINTER SET TO COUNTER 5"
+	OUT CONT1%, &HFF      'CHIP 1 MASTER RESET CODE: FFH
+	OUT CONT1%, &H5F      'LOAD ALL CNTRS TO CLEAR TC (TERMINAL COUNT) STATES:5F
+	OUT CONT1%, &H15      'SET DATA POINTER TO COUNTER 5: 15
+	
+	OUT CONT2%, &HFF      'CHIP 2 MASTER RESET CODE: FFH
+	OUT CONT2%, &H5F      'LOAD ALL COUNTERS TO CLEAR TC STATES:5F
+	OUT CONT2%, &H15      'SET DATA POINTER TO COUNTER 5: 15
 
 END SUB
 
@@ -332,11 +324,11 @@ OUT DIFFBASEADDR%, 128                      'INITIATE A/D CONVERSION (80H=128)
 		VOLTAGE#(1) = VOLTS#
      END IF
 
-	' IF ADCHANNEL% = 5 THEN          'RESERVED FOR BARITRON
-		' CALL PRESSUB(233.333, ADVOLTS#)
+	IF ADCHANNEL% = 5 THEN          'RESERVED FOR BARITRON
+		CALL PRESSUB(233.333, ADVOLTS#)
 		'((2K+1.5K)/1.5)*1000/10
-		' PRESSURE#(3) = PRES#
-	' END IF
+		PRESSURE#(3) = PRES#
+	END IF
 
      IF ADCHANNEL% = 6 THEN
 		CALL PRESSUB(257.68, ADVOLTS#)
@@ -353,16 +345,19 @@ LOOP UNTIL FIFO% = 0
 END SUB
 
 '******************************************************************
-SUB FINETIMER                          'USEC ELAPSED FROM START OF GATE
+'Calculate time elapsed since the loop timer started till this procedure is called.
+'This procedure is called at the end of all calculations, disk and screen writes to
+'estimate if the CPU is not keeping up with the demand.
+SUB FINETIMER
 
-     OUT CONT1%, 161                    '161:SAVE CNTR 1 CHIP 1 IN HOLD
-     OUT CONT1%, HOLD1%                  'HOLD INTO DATA REGISTERS
-     CNTSLOW& = INP(DATA1%)              'READ DATA REGISTERS
-     CNTSHI& = INP(DATA1%)
-     CNTSFIRST& = 4000 - (CNTSLOW& + CNTSHI& * 256)
-     MICSECS# = CNTSFIRST& * 250        'ONE COUNT IS 250 MICROSECONDS
-									'REPRESENTS USEC ELAPSED FROM
-									'START OF GATE
+	OUT CONT1%, 161 '161:SAVE CNTR 1 CHIP 1 IN HOLD
+	OUT CONT1%, HOLD1% 'HOLD INTO DATA REGISTERS
+	CNTSLOW& = INP(DATA1%) 'READ DATA REGISTERS
+	CNTSHI& = INP(DATA1%)
+	SPENTCOUNTS& = DWNCNTS& - (CNTSLOW& + CNTSHI& * 256) 'Used counts are the difference between DWNCNTS& and the snapshot we just took.
+	PCTUSED! = SPENTCOUNTS& / DWNCNTS& * 100!
+	IF PCTUSED! > MAXPCTUSED! THEN MAXPCTUSED! = PCTUSED!
+
 END SUB
 
 '******************************************************************
@@ -411,67 +406,40 @@ I2B$ = BN$
 END FUNCTION
 
 '******************************************************************
+'This procedure initializes operation of counters. Five are used. #1 serves as 0.01% accurate loop timer to control pulse counting coming into
+'Source2 and Source4 on the QMM board from V-F converters on the detector boards Chan.A and Chan.B. #2 and #3 are linked into a 32 bit
+'V-F counter for Ch. A, #4 and #5 are another 32 bit counter for Ch. B. #2 and #4 are hardware gated on Gate4 and Gate5 respectively by Out1.
 SUB INITCOUNTERS                 'TO INITIALIZE ALL COUNTERS
 
 CHIP% = 1
-CNTR% = 1                         'CONTROLS COUNTING INTERVAL (1 SEC NOM)
-				  'REPETITIVELY COUNTS DOWN FROM "HOLD"
-MREG$ = "0000 1110 1010 0101"     '0EA5 NO GATE,F1/1000,SP,RPT,DN,ACT LO TC
-LREG$ = I2B$(DWNCNTS&)            'SET COUNTER GATE INTERVAL
+CNTR% = 1       'CNTR1 controls loop time. It will count down from DWNCNTS at FREQ set in next line.
+MREG$ = "0000 1100 0000 0010"   'From LSB to MSB: Toggle output on TC; Cnt Down; Binary; Once; Use Load reg; Special Gate Off; F2=1/10 source; Rising edge; No gating
+LREG$ = I2B$(DWNCNTS&)                  'Load register set to DWNCNTS
 CALL SETMODE(CHIP%, CNTR%, MREG$, LREG$)
-PRINT "CNTR 1/1 MODE REGISTERS", MREG$, I2B$(DWNCNTS&)
 
-		    'SET COUNTERS 2 & 3 CHIP 1 FOR 32 BIT FREQ MEASUREMENTS
+'Configure counters #2 and #3 in 32-bit mode on Chip1 for counting ChanA V-F pulses.
 CNTR% = 2                         'LOWER BITS FOR CHANNEL A
-MREG$ = "1001 0010 0010 1000"     '9228
-LREG$ = "0000 0000 0000 0000"     '0000: PRESET TO ZERO
+MREG$ = "1001 0010 0010 1000"     '9228: Output Off; Count Up; Binary; Repeat; Load; Special Gate Off; Source2; Falling edge; Active High Level GateN
+LREG$ = "0000 0000 0000 0000"     '0000: Load register is set to zero.
 CALL SETMODE(CHIP%, CNTR%, MREG$, LREG$)
-PRINT "CNTR 2/1 MODE REGISTERS", MREG$, LREG$
 
 CNTR% = 3                          'UPPER BITS FOR CHANNEL A
-MREG$ = "0001 0000 0010 1000"      '1028
-LREG$ = "0000 0000 0000 0000"      '0000: PRESET TO ZERO
-CALL SETMODE(CHIP%, CNTR%, MREG$, LREG$)
-PRINT "CNTR 3/1 MODE REGISTERS", MREG$, LREG$
-
-CNTR% = 4                          'NOT USED
-MREG$ = "0000 0100 0000 1000"
-LREG$ = "0000 0000 0000 0000"
+MREG$ = "0001 0000 0010 1000"      '1028: Output Off; Count Up; Binary; Repeat; Load; Special Gate Off; Previous counter TC; Falling edge; No gating
+LREG$ = "0000 0000 0000 0000"      '0000: Load register is set to zero.
 CALL SETMODE(CHIP%, CNTR%, MREG$, LREG$)
 
-CNTR% = 5                          'NOT USED
-MREG$ = "0000 0100 0000 1000"
-LREG$ = "0000 0000 0000 0000"
-CALL SETMODE(CHIP%, CNTR%, MREG$, LREG$)
-
+'Counters #4, #5 on Chip1 and #1, #4, #5 on Chip 2 are not used. Leave these at default settings.
+'Configure counters #2 and #3 in 32-bit mode on Chip2 for counting ChanB V-F pulses.
 CHIP% = 2
-CNTR% = 1                         'NOT USED
-MREG$ = "0000 1110 1010 0101"
-LREG$ = I2B$(DWNCNTS&)
-'CALL SETMODE(CHIP%, CNTR%, MREG$, LREG$)
-
-		    'SET COUNTERS 2 & 3 CHIP 1 FOR 32 BIT FREQ MEASUREMENTS
 CNTR% = 2                          'LOWER BITS CHANNEL B
-MREG$ = "1001 0010 0010 1000"      '8BA8
-LREG$ = "0000 0000 0000 0000"      '0000: PRESET TO ZERO
+MREG$ = "1001 0010 0010 1000"      '9228: Output Off; Count Up; Binary; Repeat; Load; Special Gate Off; Source2; Falling edge; Active High Level GateN
+LREG$ = "0000 0000 0000 0000"      '0000: Load register is set to zero.
 CALL SETMODE(CHIP%, CNTR%, MREG$, LREG$)
-PRINT "CNTR 2/2 MODE REGISTERS", MREG$, LREG$
 
 CNTR% = 3                          'UPPER BITS CHANNEL B
-MREG$ = "0001 0000 0010 1000"      '1028
-LREG$ = "0000 0000 0000 0000"      '0000: PRESET TO ZERO
+MREG$ = "0001 0000 0010 1000"      '1028: Output Off; Count Up; Binary; Repeat; Load; Special Gate Off; Previous counter TC; Falling edge; No gating
+LREG$ = "0000 0000 0000 0000"      '0000: Load register is set to zero.
 CALL SETMODE(CHIP%, CNTR%, MREG$, LREG$)
-PRINT "CNTR 3/2 MODE REGISTERS", MREG$, LREG$
-
-CNTR% = 4                          'NOT USED
-MREG$ = "1001 0100 0000 1000"
-LREG$ = "0000 0000 0000 0000"
-CALL SETMODE(CHIP%, CNTR%, MREG$, LREG$)
-
-CNTR% = 5                          'NOT USED
-MREG$ = "0000 0100 0000 1000"
-LREG$ = "0000 0000 0000 0000"
-'CALL SETMODE(CHIP%, CNTR%, MREG$, LREG$)
 
 END SUB
 
@@ -499,7 +467,7 @@ SUB INITSCREEN        'Configures static part of screen layout
     PRINT
     PRINT
     PRINT "Pressures"
-    PRINT "Delta P        Ambient P"
+    PRINT "Delta P        Ambient P        Baratron: P    +15V    -15V"
     PRINT
     PRINT
     PRINT "Valve position      Expected position      Skips      Stops"
@@ -522,75 +490,6 @@ DIG2% = CNTRBASEADDR% + 3              'CHIP 2 TTL I/O
 INTERRUPT1% = CNTRBASEADDR% + 6        'CHIP 1 INTERRUPT NOT USED
 INTERRUPT2% = CNTRBASEADDR% + 7        'CHIP 2 INTERRUPT NOT USED
 
-PRINT "I/O MAP FOR COUNTERS HAS BEEN SET"
-
-END SUB
-
-'******************************************************************
-SUB IRIGTIME
-
-DIM timebyte(1 TO 16)
-
-XBASE% = 768            '0x300
-UN100PORT% = 15         '0x0f
-
-	N% = 0
-
-	DO
-	  timebyte(N% + 1) = INP(XBASE% + UN100PORT% - N%)
-	  N% = N% + 1
-	LOOP UNTIL N% = 9
-
-	'hh 10s
-	left = (INT(timebyte(7) * (2 ^ 4)) AND 255) / 16
-	'hh
-	right = INT(timebyte(6) / (2 ^ 4))
-	HH = left * 10 + right
-       
-	'mm 10s
-	left = (INT(timebyte(6) * (2 ^ 4)) AND 255) / 16
-	'mm
-	right = INT(timebyte(5) / (2 ^ 4))
-	MM = left * 10 + right
-       
-	'ss 10s
-	left = (INT(timebyte(5) * (2 ^ 4)) AND 255) / 16
-	'ss
-	right = INT(timebyte(4) / (2 ^ 4))
-	SS = left * 10 + right
-
-	'ms 100s
-	left = (INT(timebyte(4) * (2 ^ 4)) AND 255) / 16 * 100
-	'ms 10s
-	right = INT(timebyte(3) / (2 ^ 4)) * 10
-	'ms
-	left1 = (INT(timebyte(3) * (2 ^ 4)) AND 255) / 16
-	MS = left + right + left1
-
-END SUB
-
-'*********************************************************************
-SUB oldWRITETOSERIAL
-
-'''''' opened COM1 as unit 2
-
-PRINT #2, DATE$; " "; TIME$; CYCLENO#; FREQA&; FREQB&
-PRINT #2, USING "#####.##"; PRESSURE#(1); PRESSURE#(2); TEMPERATURE#(1); TEMPERATURE#(2); TEMPERATURE#(3);
-PRINT #2, USING "#####.##"; TEMPERATURE#(4); TEMPERATURE#(5); TEMPERATURE#(6); TEMPERATURE#(7); TEMPERATURE#(8);
-PRINT #2, USING "#####.##"; TEMPERATURE#(9); TEMPERATURE#(10); TEMPERATURE#(11); VOLTAGE#(1); VOLTAGE#(2);
-PRINT #2, USING "#####.##"; VOLTAGE#(3); VOLTAGE#(4); VOLTAGE#(5); VOLTAGE#(6); VOLTAGE#(7);
-PRINT #2, USING "######.##"; VOLTAGE#(8); VOLTAGE#(9); CURRENT#(1); CURRENT#(2);
-PRINT #2, USING "####"; VALVEPOS%; ENCODROT%; STEPSTOREF%
-
-'      PRINT "LAMP, DET, SCRUB, PROC",
-'      PRINT "FAN, BOX, PS PANEL    ",
-'      PRINT "5V R, 5V R, +28V, +24V",
-'      PRINT "-24V, 15V, -15V, +12V ",
-'      PRINT "+5V, 28V I, HEAT I    ",
-'      PRINT "DELTA PRES, ATMOS PRES",
-			
-'      PRINT USING "####"; STEPSDONE%; ENCODCNTS%; ENCODROT%; STEPSTOREF%; STEPSLIP%
-
 END SUB
 
 '******************************************************************
@@ -606,7 +505,6 @@ MN$ = MID$(NOW$, 4, 2)
 SEC$ = MID$(NOW$, 7, 1)
 DATAOUT$ = "C:\DATA\" + YR$ + MO$ + DA$ + HR$ + "." + MN$ + "R"
 ENGOUT$ = "C:\DATA\" + YR$ + MO$ + DA$ + HR$ + "." + MN$ + "H"
-COMBDATA$ = "C:\DATA\" + YR$ + MO$ + DA$ + HR$ + "." + MN$ + SEC$
 
 'Initialize the data file with column headings.
 OPEN ENGOUT$ FOR APPEND AS #1
@@ -616,12 +514,8 @@ OPEN ENGOUT$ FOR APPEND AS #1
 CLOSE #1
 
 'Initialize engineering data file with column headings.
-OPEN DATAOUT$ FOR APPEND AS #3
-	PRINT #3, "COMP_T   CYCLE_No   CNT_A   CNT_B   DELP    PABS    PBAR    AIN     BIN     AOUT    BOUT"
-CLOSE #3
-
-'Create an empty file.
-OPEN COMBDATA$ FOR APPEND AS #1
+OPEN DATAOUT$ FOR APPEND AS #1
+	PRINT #1, "COMP_OP1   CYCLE_No   CNT_A   CNT_B   DELP    PABS    PBAR    AIN     BIN     AOUT    BOUT"
 CLOSE #1
 
 END SUB
@@ -629,15 +523,10 @@ END SUB
 '******************************************************************
 SUB PARAMETERS                  'SETS VARIOUS PARAMETERS
 
-CLS
 CNTRBASEADDR% = &H380               'SET COUNTER BASEADDRESS
 DIFFBASEADDR% = &H280               'SET DIFF A/D  BASEADDRESS ON PROMETHEUS
 SINGBASEADDR% = &H340               'SET SING A/D  BASEADDRESS ON PROMETHEUS
-
-OSCFREQ& = 4                       'OSC FREQ IN MHZ
-CNTINTERVAL& = 10                   'SET COUNTER INTERVAL IN TENTHS OF SECOND
-DWNCNTS& = 100 * CNTINTERVAL& * OSCFREQ&'SET DOWN CNTS FOR GATE COUNTER
-DEC& = DWNCNTS&
+DWNCNTS& = 40000                    'This is initial value for CNTR1 to time the main loop from.
 
 END SUB
 
@@ -709,16 +598,13 @@ SUB SETMASTER       'SET MASTERMODE REGISTERS
 OUT CONT1%, MASTERMODE%     'POINT TO MASTERMODE REGISTER CHIP 1
 OUT DATA1%, &HB0            'SET MASTERMODE LOWER BITS CHIP 1 TO B0
 	'B:Fout=F1=OSC. FREQ 0:DISABLE COMP AND TIME OF DAY
-OUT DATA1%, &HC2            'SET MASTERMODE UPPER BITS CHIP 1 TO C2
-	'C: BCD DIV FOR Fout, INC DISAB, 8 BIT BUS, Fout ON
-	'2: Fout DIV BY 2 (TO DET BOARD?)
+OUT DATA1%, &HD2            'SET MASTERMODE UPPER BITS CHIP 1 TO D2
+	'D: BCD DIV FOR Fout, INC DISAB, 8 BIT BUS, Fout OFF
+	'2: Fout DIV BY 2 (TO DET BOARD?) FOUT is not in use, disable it.
 
 OUT CONT2%, MASTERMODE%     'POINT TO MASTERMODE REGISTER CHIP 2
 OUT DATA2%, &HB0            'SET MASTERMODE LOWER BITS CHIP 2 B0
-			    'AS ON CHIP 1
-OUT DATA2%, &HC1            'SET MASTERMODE UPPER BITS CHIP 2 C1
-			    'AS ON CHIP 1 EXCEPT Fout/1
-PRINT "COUNTER BOARD MASTERMODE SET"
+OUT DATA2%, &HD2            'SET MASTERMODE UPPER BITS CHIP 2 to D2
 
 END SUB
 
@@ -791,38 +677,7 @@ OUT DAT%, HIBITS%
 END SUB
 
 '******************************************************************
-SUB SETSYSTEMDATE
 
-PRINT DATE$
-
-PRINT "Enter the date below (default year is 1989)."
-INPUT "    Month:   ", Month$
-INPUT "    Date:    ", Day$
-INPUT "    Year:    ", Year$
-IF Year$ = "" THEN Year$ = "89"
-DATE$ = Month$ + "/" + Day$ + "/" + Year$
-
-END SUB
-
-SUB SETSYSTEMTIME
-
-H$ = STR$(HH + 10)
-M$ = STR$(MM)
-s$ = STR$(SS)
-
-H$ = LTRIM$(RTRIM$(STR$(HH + 10)))
-M$ = LTRIM$(RTRIM$(STR$(MM)))
-s$ = LTRIM$(RTRIM$(STR$(SS)))
-
-'Set the system clock to match the IRIG clock
-
-IF (HH > 0) THEN
-   TIME$ = H$ + ":" + M$ + ":" + s$
-END IF
-
-END SUB
-
-'******************************************************************
 SUB SINGLEAD
 
 SINGBASEADDR% = 832      'BASEADDRESS SET TO 340H IN PARAMETERS SUB
@@ -937,7 +792,7 @@ END SUB
 SUB VALVECHG
 
 OUT DIFFBASEADDR% + 11, 0  'OUTPUT DATA TO TTL PORT B
-IF CYCLENO# MOD 20 = 0 THEN
+IF CYCLENO& MOD 20 * ScaleFactor% = 0 THEN
 	OUT DIFFBASEADDR% + 9, 32  'OUTPUT HI TO TTL PORT B BIT NO 5
 	'SET TTL FOR MODE A (HI LEVEL DURING MODE A)
 ELSE
@@ -966,7 +821,7 @@ CASE 14
 
 END SELECT
 
-EXPECTQUADRANT% = (1 + (CYCLENO# - 5) / 10) MOD 4
+EXPECTQUADRANT% = (1 + (CYCLENO& - 5 * ScaleFactor%) / (10 * ScaleFactor%)) MOD 4
 IF EXPECTQUADRANT% = 0 THEN EXPECTQUADRANT% = 4
 
 END SUB
@@ -994,58 +849,24 @@ SUB VOLTSUB (R1!, R2!, ADVOLTS#)    'CONVERTS A/D VOLTS TO ACTUAL VOLTS
 END SUB
 
 '******************************************************************
+'Write engineering data to disk.
 SUB WRITETODISK
-	'This is the engineering data for Proffitt format.
-	OPEN ENGOUT$ FOR APPEND AS #1
-      PRINT #1, TIMER;
-      PRINT #1, USING "####.##"; TEMPERATURE#(5); TEMPERATURE#(6); TEMPERATURE#(7); TEMPERATURE#(8); TEMPERATURE#(9); TEMPERATURE#(10); TEMPERATURE#(11);
-      PRINT #1, USING "####.##"; VOLTAGE#(1); VOLTAGE#(2); VOLTAGE#(3); VOLTAGE#(4); VOLTAGE#(5); VOLTAGE#(6); VOLTAGE#(7); VOLTAGE#(8); VOLTAGE#(9);
-      PRINT #1, USING "#####"; CURRENT#(1);
-      PRINT #1, USING "#######"; VALVEQUADRANT%; EXPECTQUADRANT%; VALVESKIPPED%; VALVESTOPPED%;
-
-      CALL FINETIMER
-      PCTEXPIRED% = 100 * MICSECS# / 1000000
-      PRINT #1, USING "###.#"; PCTEXPIRED%
-	CLOSE #1
+	'This is the engineering data.
+'        OPEN ENGOUT$ FOR APPEND AS #1
+      PRINT #2, USING "######.###"; ENDTIME#;
+      PRINT #2, USING "####.##"; TEMPERATURE#(5); TEMPERATURE#(6); TEMPERATURE#(7); TEMPERATURE#(8); TEMPERATURE#(9); TEMPERATURE#(10); TEMPERATURE#(11);
+      PRINT #2, USING "####.##"; VOLTAGE#(1); VOLTAGE#(2); VOLTAGE#(3); VOLTAGE#(4); VOLTAGE#(5); VOLTAGE#(6); VOLTAGE#(7); VOLTAGE#(8); VOLTAGE#(9);
+      PRINT #2, USING "#####"; CURRENT#(1);
+      PRINT #2, USING "#######"; VALVEQUADRANT%; EXPECTQUADRANT%; VALVESKIPPED%; VALVESTOPPED%;
+      PRINT #2, USING "###.#"; PCTUSED!
+'        CLOSE #1
 	
-	'This is the data file for Proffitt format.
-	OPEN DATAOUT$ FOR APPEND AS #1
-		PRINT #1, TIMER;
-		PRINT #1, USING "########"; CYCLENO#; FREQA&; FREQB&;
+	'This is the data file.
+'        OPEN DATAOUT$ FOR APPEND AS #1
+		PRINT #1, USING "######.###"; ENDTIME#;
+		PRINT #1, USING "########"; CYCLENO&; FREQA&; FREQB&;
 		PRINT #1, USING "#####.###"; PRESSURE#(1); PRESSURE#(2); PRESSURE#(3); TEMPERATURE#(1); TEMPERATURE#(2); TEMPERATURE#(3); TEMPERATURE#(4)
-	CLOSE #1
-	
-	'This is for PSI format.
-	OPEN COMBDATA$ FOR APPEND AS #1
-		PRINT #1, ""
-		PRINT #1, DATE$, TIME$, CYCLENO#
-		PRINT #1, USING "##:##:##.###"; HH; MM; SS + MS / 1000!
-		'Delta P, Total P (mbar)
-		PRINT #1, USING "#####.###"; PRESSURE#(1); PRESSURE#(2)
-		PRINT #1, USING "########"; FREQA&; FREQB&
-		'Chamber temps, AInlet, BInlet, Aoutlet, BOutlet
-		PRINT #1, USING "####.##"; TEMPERATURE#(1); TEMPERATURE#(2); TEMPERATURE#(3); TEMPERATURE#(4);
-		IF CYCLENO# MOD 10 = 0 OR CYCLENO# MOD 10 = 5 THEN
-			   'lamp, det, body Temp (C)
-			   PRINT #1, USING "####.##"; TEMPERATURE#(5); TEMPERATURE#(6); TEMPERATURE#(7);
-			   
-			   'fan, ps panel, box, proc
-			   PRINT #1, USING "####.##"; TEMPERATURE#(8); TEMPERATURE#(9); TEMPERATURE#(10); TEMPERATURE#(11)
-			   
-			   '(V)
-			   '5V REF, 5V PS, +28V, +24V, -24V, spare1, spare2, +12V", 5V PC104
-			   PRINT #1, USING "####.##"; VOLTAGE#(1); VOLTAGE#(2); VOLTAGE#(3); VOLTAGE#(4); VOLTAGE#(5); VOLTAGE#(6); VOLTAGE#(7); VOLTAGE#(8); VOLTAGE#(9)
-			   
-			   '(mA)
-			   PRINT #1, USING "#####"; CURRENT#(1);
-			   
-			   PRINT #1, USING "#######"; VALVEQUADRANT%; EXPECTQUADRANT%; VALVESKIPPED%; VALVESTOPPED%
-			   CALL FINETIMER
-			   PCTEXPIRED% = 100 * MICSECS# / 1000000
-			   PRINT #1, USING "###.#"; PCTEXPIRED%
-		END IF
-	CLOSE #1
-
+'        CLOSE #1
 END SUB
 
 '******************************************************************
@@ -1053,36 +874,35 @@ SUB WRITETOSCREEN
 
 VertOffset% = 0
 HorizOffset% = 0
-
+IF ValveEnabled% THEN VColor = Green ELSE VColor = RED 'Give visual cue that valve is disabled.
+LoopNumber% = LoopNumber% MOD 6 'LoopNumber will increment and different lines will print on different calls.
+	PrintNumLabel CDBL(CYCLENO&), "########", VertOffset% + 4, HorizOffset% + 53, VColor 'Cycle counter
+SELECT CASE LoopNumber%
+CASE 0
 	PrintNumLabel CDBL(HH), "##", VertOffset% + 2, HorizOffset% + 12, Yellow'RT stamp
 	PrintNumLabel CDBL(MM), "##", VertOffset% + 2, HorizOffset% + 15, Yellow
 	PrintNumLabel CDBL(SS + MS / 1000!), "##.###", VertOffset% + 2, HorizOffset% + 18, Yellow
-	
 	PrintNumLabel CDBL(FREQA&), "#######", VertOffset% + 3, HorizOffset% + 12, Green'Freq A
 	PrintNumLabel CDBL(DELTAFREQA&), "#######", VertOffset% + 3, HorizOffset% + 34, Green'Delta A
-	PrintNumLabel (ENDTIME# - STARTTIME#), "######.#", VertOffset% + 3, HorizOffset% + 53, Green 'Increm time stamp
-	
+	PrintNumLabel (ENDTIME# - PREVTIME#), "######.###", VertOffset% + 3, HorizOffset% + 53, Green'Increm time stamp
 	PrintNumLabel CDBL(FREQB&), "#######", VertOffset% + 4, HorizOffset% + 12, Green 'Freq B
+CASE 1
 	PrintNumLabel CDBL(DELTAFREQB&), "#######", VertOffset% + 4, HorizOffset% + 34, Green 'Delta B
-	PrintNumLabel CYCLENO#, "########", VertOffset% + 4, HorizOffset% + 53, Green 'Cycle counter
-	
 	PrintNumLabel FREQRATIO#, "###.######", VertOffset% + 5, HorizOffset% + 12, Green' Ratio A/B
 	PrintNumLabel (PREVRATIO# - FREQRATIO#), "###.######", VertOffset% + 5, HorizOffset% + 34, Green' Delta ratio
-	  
 	PrintNumArr TEMPERATURE#(), "##.##", 1, VertOffset% + 9, HorizOffset% + 1, Green
 	PrintNumArr TEMPERATURE#(), "##.##", 2, VertOffset% + 9, HorizOffset% + 16, Green
 	PrintNumArr TEMPERATURE#(), "##.##", 3, VertOffset% + 9, HorizOffset% + 32, Green
 	PrintNumArr TEMPERATURE#(), "##.##", 4, VertOffset% + 9, HorizOffset% + 47, Green
-
+CASE 2
 	PrintNumArr TEMPERATURE#(), "##.##", 5, VertOffset% + 11, HorizOffset% + 1, Green
 	PrintNumArr TEMPERATURE#(), "##.##", 6, VertOffset% + 11, HorizOffset% + 16, Green
 	PrintNumArr TEMPERATURE#(), "##.##", 7, VertOffset% + 11, HorizOffset% + 32, Green
-	  
 	PrintNumArr TEMPERATURE#(), "##.##", 8, VertOffset% + 13, HorizOffset% + 1, Green
 	PrintNumArr TEMPERATURE#(), "##.##", 9, VertOffset% + 13, HorizOffset% + 16, Green
 	PrintNumArr TEMPERATURE#(), "##.##", 10, VertOffset% + 13, HorizOffset% + 32, Green
 	PrintNumArr TEMPERATURE#(), "##.##", 11, VertOffset% + 13, HorizOffset% + 47, Green
-	
+CASE 3
 	PrintNumArr VOLTAGE#(), "##.##", 1, VertOffset% + 17, HorizOffset% + 1, Green
 	PrintNumArr VOLTAGE#(), "##.##", 2, VertOffset% + 17, HorizOffset% + 11, Green
 	PrintNumArr VOLTAGE#(), "##.##", 9, VertOffset% + 17, HorizOffset% + 21, Green
@@ -1090,28 +910,28 @@ HorizOffset% = 0
 	PrintNumArr VOLTAGE#(), "###.##", 4, VertOffset% + 17, HorizOffset% + 40, Green
 	PrintNumArr VOLTAGE#(), "###.##", 5, VertOffset% + 17, HorizOffset% + 49, Green
 	PrintNumArr VOLTAGE#(), "###.##", 3, VertOffset% + 17, HorizOffset% + 58, Green
+CASE 4
 	PrintNumArr CURRENT#(), "######", 1, VertOffset% + 17, HorizOffset% + 67, Green
-	
 	PrintNumArr PRESSURE#(), "###.###", 1, VertOffset% + 21, HorizOffset% + 1, Green
 	PrintNumArr PRESSURE#(), "####.##", 2, VertOffset% + 21, HorizOffset% + 18, Green
-	
-	PrintNumLabel CDBL(VALVEQUADRANT%), "###", VertOffset% + 24, HorizOffset% + 0, Green
-	PrintNumLabel CDBL(EXPECTQUADRANT%), "###", VertOffset% + 24, HorizOffset% + 20, Green
+	PrintNumArr PRESSURE#(), "####.##", 3, VertOffset% + 21, HorizOffset% + 30, Green
+	PrintNumArr VOLTAGE#(), "###.##", 6, VertOffset% + 21, HorizOffset% + 45, Green 'Baratron voltage
+	PrintNumArr VOLTAGE#(), "###.##", 7, VertOffset% + 21, HorizOffset% + 53, Green 'Baratron voltage
+CASE ELSE
+	PrintNumLabel CDBL(VALVEQUADRANT%), "###", VertOffset% + 24, HorizOffset% + 0, VColor
+	PrintNumLabel CDBL(EXPECTQUADRANT%), "###", VertOffset% + 24, HorizOffset% + 20, VColor
 	PrintNumLabel CDBL(VALVESKIPPED%), "####", VertOffset% + 24, HorizOffset% + 43, Green
 	PrintNumLabel CDBL(VALVESTOPPED%), "####", VertOffset% + 24, HorizOffset% + 54, Green
-	
-	CALL FINETIMER
-	PCTTIME% = 100 * MICSECS# / 1000000
-	IF PCTEXPIRED% > MAXPCT% THEN MAXPCT% = PCTEXPIRED%
-	PrintNumLabel CDBL(PCTTIME%), "###", VertOffset% + 26, HorizOffset% + 17, Green
-	PrintNumLabel CDBL(MAXPCT%), "###", VertOffset% + 27, HorizOffset% + 22, Green
-     
+	PrintNumLabel CDBL(PCTUSED!), "###", VertOffset% + 26, HorizOffset% + 17, Green
+	PrintNumLabel CDBL(MAXPCTUSED!), "###", VertOffset% + 27, HorizOffset% + 22, Green
+END SELECT
+LoopNumber% = LoopNumber% + 1
 END SUB
 
 '******************************************************************
 SUB WRITETOSERIAL
  
-       PRINT #2, DATE$, TIME$, CYCLENO#
+       PRINT #2, DATE$, TIME$, CYCLENO&
       
        PRINT #2, USING "##:##:##.###"; HH; MM; SS + MS / 1000!
       
@@ -1136,7 +956,51 @@ SUB WRITETOSERIAL
        PRINT #2, USING "#####"; CURRENT#(1)
      
        'PRINT #2, USING "#######"; VALVEQUADRANT%; EXPECTQUADRANT%; VALVESKIPPED%; VALVESTOPPED%
-       PRINT #2, USING "#######"; VALVEPOS%; VALVEQUADRANT%; EXPECTQUADRANT%; VALVESKIPPED%; VALVESTOPPED%
+       PRINT #2, USING "#######"; VALVEQUADRANT%; EXPECTQUADRANT%; VALVESKIPPED%; VALVESTOPPED%
 
 END SUB
 
+'******************************************************************
+SUB IRIGTIME
+
+DIM timebyte(1 TO 16)
+
+XBASE% = 768            '0x300
+UN100PORT% = 15         '0x0f
+
+	N% = 0
+
+	DO
+	  timebyte(N% + 1) = INP(XBASE% + UN100PORT% - N%)
+	  N% = N% + 1
+	LOOP UNTIL N% = 9
+
+	'hh 10s
+	left = (INT(timebyte(7) * (2 ^ 4)) AND 255) / 16
+	'hh
+	right = INT(timebyte(6) / (2 ^ 4))
+	HH = left * 10 + right
+       
+	'mm 10s
+	left = (INT(timebyte(6) * (2 ^ 4)) AND 255) / 16
+	'mm
+	right = INT(timebyte(5) / (2 ^ 4))
+	MM = left * 10 + right
+       
+	'ss 10s
+	left = (INT(timebyte(5) * (2 ^ 4)) AND 255) / 16
+	'ss
+	right = INT(timebyte(4) / (2 ^ 4))
+	SS = left * 10 + right
+
+	'ms 100s
+	left = (INT(timebyte(4) * (2 ^ 4)) AND 255) / 16 * 100
+	'ms 10s
+	right = INT(timebyte(3) / (2 ^ 4)) * 10
+	'ms
+	left1 = (INT(timebyte(3) * (2 ^ 4)) AND 255) / 16
+	MS = left + right + left1
+
+END SUB
+
+'******************************************************************
