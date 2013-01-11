@@ -7,8 +7,7 @@ _instFiles(instFiles)
 	std::map<std::string, SslProxy::InstMsgInfo> messages;
 
 	for (int i = 0; i < _instFiles.size(); i++) {
-		QtConfig config(_instFiles[i]);
-		InstConfig instConfig(config);
+		InstConfig instConfig(_instFiles[i]);
 
 		// Create a message entry for each message defined in the instrument configuration.
 		std::vector<InstConfig::MessageInfo> instMessages = instConfig.messages();

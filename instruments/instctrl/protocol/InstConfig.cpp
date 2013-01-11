@@ -4,16 +4,31 @@
 #include <sstream>
 
 /////////////////////////////////////////////////////////////////////
-InstConfig::InstConfig(QtConfig& config):
-_config(config)
+InstConfig::InstConfig(const std::string configPath):
+_config(configPath)
 {
+	init();
+}
+
+/////////////////////////////////////////////////////////////////////
+InstConfig::InstConfig(const std::string organization, const std::string application):
+	_config(organization, application)
+{
+	init();
+}
+/////////////////////////////////////////////////////////////////////
+InstConfig::~InstConfig() {
+
+}
+/////////////////////////////////////////////////////////////////////
+void InstConfig::init() {
 
 	// If these items don't exist in the configuration,
 	// they will be created as default values.
-    _instName              = config.getString("InstName",    "INSTRUMENT");
-	_incomingPort          = config.getInt   ("InstIncomingPort",0);
-	_destIP                = config.getString("InstHostName",    "127.0.0.1");
-	_destPort              = config.getInt   ("InstDestPort", 0);
+    _instName              = _config.getString("InstName",     "INSTRUMENT");
+	_incomingPort          = _config.getInt   ("InstIncomingPort",0);
+	_destIP                = _config.getString("InstHostName", "127.0.0.1");
+	_destPort              = _config.getInt   ("InstDestPort", 0);
 
     // There will be one entry for each type of message.
     std::vector<std::map<std::string, std::string> > defaultValues;
@@ -25,11 +40,7 @@ _config(config)
 
     // Create a default message via getArray().
     std::vector<std::map<std::string, std::string> > array;
-    array = config.getArray("Messages", defaultValues);
-}
-
-/////////////////////////////////////////////////////////////////////
-InstConfig::~InstConfig() {
+    array = _config.getArray("Messages", defaultValues);
 
 }
 /////////////////////////////////////////////////////////////////////

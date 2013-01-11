@@ -30,12 +30,13 @@ public:
 		double rateLimit;
 	};
 public:
-	/// Constructor
-	/// @param config The configuration that holds the parameters.
-	/// @todo This needs to be changed so that the QtConfig is held
-	/// within InstConfig, and the user can specify a path to the the
-	/// configuration file, or none for the default file.
-	InstConfig(QtConfig& config);
+	/// Constructor for a specified configuration file path.
+	/// @param configFile Path to the configuration file that holds the parameters.
+	InstConfig(const std::string configFile);
+	/// Constructor for a configuration in the default location.
+    /// @param organization The organization.
+    /// @param application The application.
+	InstConfig(const std::string organization, const std::string application);
 	/// destructor
 	virtual ~InstConfig();
 	/// @returns The port number that will be read for incoming message datagrams
@@ -51,8 +52,10 @@ public:
     std::vector<MessageInfo> messages();
 
 protected:
+	/// Common initialization. Read the configuration.
+	void init();
     /// The configuration.
-    QtConfig& _config;
+    QtConfig _config;
     /// The instrument name.
     std::string _instName;
     /// The port number that will be read for incoming message datagrams

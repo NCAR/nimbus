@@ -89,8 +89,7 @@ int main(int argc, char** argv)
 	instrumentFile = config->getString("InstrumentFile", "");
 
 	// Get the configuration for the instrument.
-	QtConfig instrumentConfig(instrumentFile);
-	InstConfig instConfig(instrumentConfig);
+	InstConfig instConfig(instrumentFile);
 
 	// Get the messages for this instrument
 	std::vector<InstConfig::MessageInfo> instMsg = instConfig.messages();

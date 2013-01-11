@@ -5,10 +5,8 @@
 /// Test the InstConfig class
 int main(int argc, char** argv) {
 
-	QtConfig config("Test", "InstConfigTest");
-
 	// Read the proxy configuration
-	InstConfig instConfig(config);
+	InstConfig instConfig("Test", "InstConfigTest");
 
 	// Get the instrument information
 	std::cout << "Instrument name:  " << instConfig.instrumentName() << std::endl;
