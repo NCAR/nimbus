@@ -3,6 +3,7 @@
 #include <sstream>
 #include <boost/program_options.hpp>
 #include <QtGui>
+#include "svnInfo.h"
 #include "QtConfig.h"
 #include "InstConfig.h"
 #include "ProxyMainWindow.h"
@@ -140,6 +141,9 @@ int main(int argc, char** argv)
 
 	// Create the Proxy user interface.
 	ProxyMainWindow proxyMainWindow(sslProxy, 0);
+	QString title("Proxy-");
+	title += SVNREVISION;
+	proxyMainWindow.setWindowTitle(title);
 
 	// Connect signals from the interface to the SSL proxy.
 	proxyMainWindow.connect(&proxyMainWindow, SIGNAL(connectToServer()),
