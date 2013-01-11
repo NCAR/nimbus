@@ -11,7 +11,7 @@ DECLARE SUB INITCOUNTERS ()
 DECLARE SUB IOMAP ()
 DECLARE SUB PARAMETERS ()
 DECLARE SUB SETMASTER ()
-DECLARE SUB SETMODE (CNTR%, MREG$, LREG$)
+DECLARE SUB SETMODE (CHIP%, CNTR%, MREG$, LREG$)
 DECLARE SUB WRITETOSCREEN ()
 DECLARE SUB WRITETODISK ()
 DECLARE SUB VOLTSUB (R1!, R2!, ADVOLTS#)
@@ -32,8 +32,8 @@ COMMON SHARED CNTRBASEADDR%, DIFFBASEADDR%, SINGBASEADDR%
 COMMON SHARED LINT&, BN$, DEC&
 COMMON SHARED VALVEQUADRANT%, EXPECTQUADRANT%, PREVALVEQUADRANT%, VALVECODE%
 COMMON SHARED VALVESKIPPED%, VALVESTOPPED%
-COMMON SHARED XTALFREQ&, DWNCNTS&, XTALDIVIDE&
-COMMON SHARED CNTR%, MODE%, MREG&, LOAD%, LREG&
+COMMON SHARED DWNCNTS&
+COMMON SHARED CNTR%, MODE%, MREG&, CHIP%, LOAD%, LREG&
 COMMON SHARED DATA1%, CONT1%, DIG1%
 COMMON SHARED INTERRUPT1%, INTERRUPT2%, STATUS%, MASTERMODE%
 COMMON SHARED MODE1%, LOAD1%, HOLD1%, HOLDCY1%
@@ -69,7 +69,7 @@ CONST Lmagenta = 13, Yellow = 14, Bwhite = 15
 CONST PlotBorderColor = Bwhite
 
 '******************************************************************
-
+CLS
 CALL PARAMETERS     'CONTAINS THE EXPERIMENT PARAMETERS
 CALL IOMAP          'DEFINE I/O MAP
 CALL DATAPOINTERS   'DEFINE DATA POINTERS FOR COUNTER BOARD
@@ -77,6 +77,8 @@ CALL CNTRESET       'RESET COUNTER BOARD
 CALL SETMASTER      'SET MASTER MODE FOR BOTH COUNTER CHIPS
 CALL OPENDATAFILE   'OPEN DATA AND ENGDATA FILES FOR WRITING
 
+ValveFlip1% = 10
+ValveFlip2% = 1
 ValveInverted% = 1
 ValveEnabled% = 0
 ScaleFactor% = 10
@@ -98,8 +100,8 @@ OPEN DATAOUT$ FOR APPEND AS #1
 OPEN ENGOUT$ FOR APPEND AS #2
 
 CALL INITCOUNTERS   'INITIALIZE COUNTER MODE REGISTERS
-OUT CONT1%, 233         'Set Toggle Out to High on #1. This enables Gate2 and Gate4 to allow counting of #2 and #4.
-OUT CONT1%, 127         'Load and arm all 5 counters. All of them start counting at this time.
+OUT CONT1%, 233         'Set Toggle Out to High on #1, Chip1. This enables hardware Gates to allow counting.
+OUT CONT1%, 127         'Load and arm all 5 counters on Chip1. All of them start counting at this time.
 
 '........................TIME LOOP STARTS HERE!
 DO
@@ -120,9 +122,10 @@ DO
 	END IF
 
 	'Advance valve every 10 seconds and only if valve operation is Enabled.
-	IF (CYCLENO& MOD 10 * ScaleFactor% = 0) AND ValveEnabled% THEN
+	IF (CYCLENO& MOD 10 * ScaleFactor% * ValveFlip1% = 0) AND ValveEnabled% THEN
 		CALL VALVECHG
 		CALL VALVESLIP
+		SWAP ValveFlip1%, ValveFlip2%
 	END IF
 
     OUT CONT1%, HOLD2%
@@ -207,15 +210,12 @@ END FUNCTION
 '******************************************************************
 SUB CNTRESET               'INITIALIZE/RESET COUNTER BOARD AT STARTUP
 
-     OUT DIG1%, 0          'ZERO TTL REGISTERS DIG1 & DIG2
-   
-		 'INITIALIZE COUNTERS
+	OUT DIG1%, 0          'ZERO TTL REGISTERS DIG1
 
-     OUT CONT1%, &HFF      'CHIP 1 MASTER RESET CODE: FFH
-     OUT CONT1%, &H5F      'LOAD ALL CNTRS TO CLEAR TC (TERMINAL COUNT)
-				'STATES:5F
-     OUT CONT1%, &H15      'SET DATA POINTER TO COUNTER 5: 15
-				   
+	OUT CONT1%, &HFF      'CHIP 1 MASTER RESET CODE: FFH
+	OUT CONT1%, &H5F      'LOAD ALL CNTRS TO CLEAR TC (TERMINAL COUNT) STATES:5F
+	OUT CONT1%, &H15      'SET DATA POINTER TO COUNTER 5: 15
+	
 END SUB
 
 '******************************************************************
@@ -396,32 +396,33 @@ END FUNCTION
 'V-F counter for Ch. A, #4 and #5 are another 32 bit counter for Ch. B. #2 and #4 are hardware gated on Gate4 and Gate5 respectively by Out1.
 SUB INITCOUNTERS                 'TO INITIALIZE ALL COUNTERS
 
+CHIP% = 1
 CNTR% = 1       'CNTR1 controls loop time. It will count down from DWNCNTS at FREQ set in next line.
 MREG$ = "0000 1100 0000 0010"   'From LSB to MSB: Toggle output on TC; Cnt Down; Binary; Once; Use Load reg; Special Gate Off; F2=1/10 source; Rising edge; No gating
 LREG$ = I2B$(DWNCNTS&)                  'Load register set to DWNCNTS
-CALL SETMODE(CNTR%, MREG$, LREG$)
+CALL SETMODE(CHIP%, CNTR%, MREG$, LREG$)
 
-'SET COUNTERS 2 & 3 CHIP 1 FOR 32 BIT FREQ MEASUREMENTS
+'Configure counters #2 and #3 in 32-bit mode on Chip1 for counting ChanA V-F pulses.
 CNTR% = 2                         'LOWER BITS FOR CHANNEL A
-MREG$ = "1001 0010 0010 1000"     '9228: Output Off; Count Up; Binary; Repeat; Load; Gate Off; Source2; Falling edge; Active High Level GateN
+MREG$ = "1001 0010 0010 1000"     '9228: Output Off; Count Up; Binary; Repeat; Load; Special Gate Off; Source2; Falling edge; Active High Level GateN
 LREG$ = "0000 0000 0000 0000"     '0000: Load register is set to zero.
-CALL SETMODE(CNTR%, MREG$, LREG$)
+CALL SETMODE(CHIP%, CNTR%, MREG$, LREG$)
 
 CNTR% = 3                          'UPPER BITS FOR CHANNEL A
-MREG$ = "0001 0000 0010 1000"      '1028: Output Off; Count Up; Binary; Repeat; Load; Gate Off; Previous counter TC; Falling edge; No gating
+MREG$ = "0001 0000 0010 1000"      '1028: Output Off; Count Up; Binary; Repeat; Load; Special Gate Off; Previous counter TC; Falling edge; No gating
 LREG$ = "0000 0000 0000 0000"      '0000: Load register is set to zero.
-CALL SETMODE(CNTR%, MREG$, LREG$)
+CALL SETMODE(CHIP%, CNTR%, MREG$, LREG$)
 				 
-'SET COUNTERS 4 & 5 CHIP 1 FOR 32 BIT FREQ MEASUREMENTS
+'Configure counters #4 and #5 in 32-bit mode on Chip1 for counting ChanB V-F pulses.
 CNTR% = 4                         'LOWER BITS FOR CHANNEL B
-MREG$ = "1001 0100 0010 1000"     '9428: Output Off; Count Up; Binary; Repeat; Load; Gate Off; Source4; Falling edge; Active High Level GateN
+MREG$ = "1001 0100 0010 1000"     '9428: Output Off; Count Up; Binary; Repeat; Load; Special Gate Off; Source4; Falling edge; Active High Level GateN
 LREG$ = "0000 0000 0000 0000"     '0000: Load register is set to zero.
-CALL SETMODE(CNTR%, MREG$, LREG$)
+CALL SETMODE(CHIP%, CNTR%, MREG$, LREG$)
 
 CNTR% = 5                          'UPPER BITS FOR CHANNEL B
-MREG$ = "0001 0000 0010 1000"      '1028: Output Off; Count Up; Binary; Repeat; Load; Gate Off; Previous counter TC; Falling edge; No gating
-LREG$ = "0000 0000 0000 0000"      '0000: PLoad register is set to zero.
-CALL SETMODE(CNTR%, MREG$, LREG$)
+MREG$ = "0001 0000 0010 1000"      '1028: Output Off; Count Up; Binary; Repeat; Load; Special Gate Off; Previous counter TC; Falling edge; No gating
+LREG$ = "0000 0000 0000 0000"      '0000: Load register is set to zero.
+CALL SETMODE(CHIP%, CNTR%, MREG$, LREG$)
 
 END SUB
 
@@ -493,7 +494,7 @@ CLOSE #1
 
 'Initialize engineering data file with column headings.
 OPEN DATAOUT$ FOR APPEND AS #1
-	PRINT #1, "COMP_T   CYCLE_No   CNT_A   CNT_B   DELP    PABS    PBAR    AIN     BIN     AOUT    BOUT"
+	PRINT #1, "COMP_OP2   CYCLE_No   CNT_A   CNT_B   DELP    PABS    PBAR    AIN     BIN     AOUT    BOUT"
 CLOSE #1
 
 END SUB
@@ -501,7 +502,6 @@ END SUB
 '******************************************************************
 SUB PARAMETERS                  'SETS VARIOUS PARAMETERS
 
-CLS
 CNTRBASEADDR% = &H380               'SET COUNTER BASEADDRESS
 DIFFBASEADDR% = &H280               'SET DIFF A/D  BASEADDRESS ON PROMETHEUS
 SINGBASEADDR% = &H340               'SET SING A/D  BASEADDRESS ON PROMETHEUS
@@ -584,7 +584,7 @@ OUT DATA1%, &HD2            'SET MASTERMODE UPPER BITS CHIP 1 TO D2
 END SUB
 
 '******************************************************************
-SUB SETMODE (CNTR%, MREG$, LREG$)    'FOR EACH COUNTER
+SUB SETMODE (CHIP%, CNTR%, MREG$, LREG$)    'FOR EACH COUNTER
 
 	'FOR CHIP NO. (CHIP%) AND COUNTER NO. (CNTR%)
 	'LOAD MODE REGISTER WITH HEX STRING (MREG$) AND
@@ -600,9 +600,14 @@ SUB SETMODE (CNTR%, MREG$, LREG$)    'FOR EACH COUNTER
 		'4 COUNT BINARY/BCD  0/1
 		'3 COUNT DOWN/UP   0/1
 		'2,1,0 COUNTERS OUTPUT CONTROL
-     CHIP% = 1
+
+IF CHIP% = 1 THEN
      CONT% = CONT1%
      DAT% = DATA1%
+ELSE
+     CONT% = CONT2%
+     DAT% = DATA2%
+END IF
 
 SELECT CASE CNTR%
      CASE 1
@@ -647,6 +652,7 @@ OUT DAT%, HIBITS%
 END SUB
 
 '******************************************************************
+
 SUB SINGLEAD
 
 SINGBASEADDR% = 832      'BASEADDRESS SET TO 340H IN PARAMETERS SUB
@@ -895,3 +901,4 @@ END SELECT
 LoopNumber% = LoopNumber% + 1
 END SUB
 
+'******************************************************************
