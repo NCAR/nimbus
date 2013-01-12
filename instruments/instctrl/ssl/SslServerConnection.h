@@ -30,6 +30,11 @@ namespace Ssl {
 		/// @param message The message.
 		/// @returns False if there was an error sending the message.
 		bool send(Protocols::Message& message);
+		/// @return The peer certificate. The caller should verify that
+		/// it is non-null and valid.
+		QSslCertificate peerCertificate();
+		/// Close the ssl connection
+		void close();
 
 	signals:
 		/// Publish a change in the connection state. Currently this is
@@ -53,6 +58,8 @@ namespace Ssl {
 		Protocols::StreamMsgProtocol _protocolToClient;
 		/// The protocol for communication from the server
 		Protocols::StreamMsgProtocol _protocolFromClient;
+		/// The peer certificate
+		QSslCertificate _peerCertificate;
 	};
 };
 

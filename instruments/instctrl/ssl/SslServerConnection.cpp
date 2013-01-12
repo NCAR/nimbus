@@ -38,6 +38,7 @@ void SslServerConnection::socketStateChanged(Ssl::SslSocket::SocketState state) 
 	}
 	case SslSocket::SS_Encrypted: {
 		std::cout << "socket is encrypted" << std::endl;
+		_peerCertificate = _sslSocket->peerCertificate();
 		break;
 	}
 	case SslSocket::SS_Disconnected: {
@@ -91,4 +92,15 @@ bool SslServerConnection::send(Protocols::Message& message) {
 
 	// OK
 	return true;
+}
+
+/////////////////////////////////////////////////////////////////////
+QSslCertificate SslServerConnection::peerCertificate() {
+	return _peerCertificate;
+}
+/////////////////////////////////////////////////////////////////////
+void SslServerConnection::close() {
+	if (_sslSocket) {
+		_sslSocket->close();
+	}
 }

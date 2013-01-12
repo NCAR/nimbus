@@ -14,6 +14,7 @@
 #include "ProxyServer.h"
 #include "SslServer.h"
 #include "SslServerConnection.h"
+#include "InstConfig.h"
 
 /// The server that manages connections with an SslProxy.
 class SslProxyServer: public ProxyServer {
@@ -23,7 +24,7 @@ class SslProxyServer: public ProxyServer {
 		/// A helper class for defining a proxy.
 		struct ProxyDef {
 			QSslCertificate _sslCert;
-			std::string _instFile;
+			std::string _instConfigPath;
 		};
 		/// @param keyFile Path to the file containing the private key.
 		/// @param certFile Path to the file containing the certificate that matched the private key.
@@ -52,6 +53,12 @@ class SslProxyServer: public ProxyServer {
 		void msgFromProxySlot(Protocols::Message message);
 
 	protected:
+		/// Verify that a successfully encrypted connection is valid. If
+		/// it isn't, close the connection, which will cause it to be removed
+		/// from _connections. If it is valid, set up the book keeping so that
+		/// the correct messaes are routed to it.
+		/// @param connection The connection that will be validated.
+		void validateConnection(Ssl::SslServerConnection* connection);
 		/// The allowed proxies
 		std::vector<SslProxyServer::ProxyDef> _proxies;
 		/// The SSL server that receives SSL requests

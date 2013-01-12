@@ -54,14 +54,21 @@ void SslProxyServer::createConnection(Ssl::SslSocket* sslSocket) {
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslProxyServer::connectionStateChanged(SslServerConnection* connection, Ssl::SslSocket::SocketState state) {
+void SslProxyServer::connectionStateChanged(SslServerConnection* connection,
+		Ssl::SslSocket::SocketState state) {
 
 	switch (state) {
 	case SslSocket::SS_Unconnected:
 	case SslSocket::SS_Connected:
-	case SslSocket::SS_Encrypted:
 	{
 		// we don't care about these state changes
+		break;
+	}
+	case SslSocket::SS_Encrypted:
+	{
+		// A successful SSL connection has been made. Make sure
+		// that it is from a legitimate user.
+		validateConnection(connection);
 		break;
 	}
 	case SslSocket::SS_Disconnected:
@@ -90,7 +97,37 @@ void SslProxyServer::connectionStateChanged(SslServerConnection* connection, Ssl
 
 
 }
+/////////////////////////////////////////////////////////////////////
+void SslProxyServer::validateConnection(Ssl::SslServerConnection* connection) {
 
+	// Get the peer certificate
+	QSslCertificate peerCert = connection->peerCertificate();
+
+	std::vector<int> proxyIndices;
+	if (!peerCert.isNull() && peerCert.isValid()) {
+		// Look through the accepted certs and see if there is a match. Collect
+		// the indices of all that match
+		for (int i = 0; i < _proxies.size(); i++) {
+			if (peerCert == _proxies[i]._sslCert) {
+				proxyIndices.push_back(i);
+			}
+		}
+	}
+
+	if (proxyIndices.size() == 0) {
+		// Either the certificate  is null, invalid, or not in our list.
+		// Close the ssl connection, and it will trigger the SS_Disconnected
+		// signal which will cause the connection to be removed
+		///@todo Error logging goes here
+		std::cerr << "unrecognized or unavailable proxy certificate, connection closed" << std::endl;
+		connection->close();
+	} else {
+		for (int i = 0; i < proxyIndices.size(); i++) {
+			/// @todo Setup tables so that the correct messages get routed to this connection.
+			std::cout << "Connection received for proxy " << i << std::endl;
+		}
+	}
+}
 /////////////////////////////////////////////////////////////////////
 void SslProxyServer::msgFromProxySlot(Protocols::Message message) {
 
