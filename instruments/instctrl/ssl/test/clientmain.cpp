@@ -18,21 +18,21 @@ int main(int argc, char** argv)
     std::string clientKeyPath(argv[2]);
     std::string clientCertPath(argv[3]);
 
-    std::vector<std::string> caDatabase;
+    std::vector<QSslCertificate> extraCerts;
     // add the client certificate to the CA database
-    caDatabase.push_back(clientCertPath);
+    extraCerts.push_back(QSslCertificate::fromPath(clientCertPath.c_str())[0]);
 
     // add additional certs to the database
     for (int i = 4; i < argc; i++) {
-        caDatabase.push_back(argv[i]);
+    	extraCerts.push_back(QSslCertificate::fromPath(argv[i])[0]);
     }
 
     Ssl::SslClientConnection client(
     		clientKeyPath,
-    		clientCertPath,
+    		QSslCertificate::fromPath(clientCertPath.c_str())[0],
     		"localhost",
     		50000,
-    		caDatabase,
+    		extraCerts,
     		clientID);
 
     return app.exec();

@@ -97,29 +97,34 @@ void createSslSwitch(
 	std::string serverKey(config->getString("SwitchSSLKeyFile", "./switch.key"));
 
 	// The file containing the private certificate for the switch to proxy SSL link.
-	std::string serverCert(config->getString("SwitchSSLCertFile", "./switch.crt"));
+	std::string serverCertFile(config->getString("SwitchSSLCertFile", "./switch.crt"));
+
+	QSslCertificate serverCert(QSslCertificate::fromPath(serverCertFile.c_str())[0]);
+	if (serverCert.isNull() || !serverCert.isValid()) {
+		std::cout << "Invalid certificate specified in "
+				<< serverCertFile << ", switch cannot start" << std::endl;
+		exit(1);
+	}
 
 	// The port for communications to the SslProxy
 	int switchProxyPort = config->getInt("SSLProxyPort", 0);
 
-	// add additional certs to the database
-	std::vector<std::string> caDatabase;
-
-	// Add the ClientCerts
-	//caDatabase.push_back("./proxy.crt");
-	std::vector<std::map<std::string, std::string> > clientCerts;
-	clientCerts = config->getArray("ClientCerts", clientCerts);
-	for (int i = 0; i < clientCerts.size(); i++) {
-		std::map<std::string, std::string>::iterator j;
-		for (j = clientCerts[i].begin(); j != clientCerts[i].end(); j++) {
-			caDatabase.push_back(j->second);
+	// Get the proxy definitions
+	std::vector<std::map<std::string, std::string> > proxiesConfig;
+	proxiesConfig = config->getArray("SSLProxies", proxiesConfig);
+	std::vector<SslProxyServer::ProxyDef> proxies;
+	for (int i = 0; i < proxiesConfig.size(); i++) {
+		SslProxyServer::ProxyDef proxy;
+		std::string sslCertFile = proxiesConfig[i]["SSLCertFile"];
+		QSslCertificate cert(QSslCertificate::fromPath(sslCertFile.c_str())[0]);
+		if (cert.isNull() || !cert.isValid()) {
+			std::cout << "Invalid certificate specified in "
+					<< sslCertFile << ", proxy will not be registered";
+		} else {
+			proxy._sslCert = cert;
+			proxy._instFile = proxiesConfig[i]["InstrumentFile"];
+			proxies.push_back(proxy);
 		}
-	}
-	// add the server certificate to the CA database
-	caDatabase.push_back(serverCert);
-	// add extra certs from the command line
-	for (int i = 3; i < argc; i++) {
-		caDatabase.push_back(argv[i]);
 	}
 
 	// Create the SSL based switch. The switch creates:
@@ -130,7 +135,7 @@ void createSslSwitch(
 			serverKey,
 			serverCert,
 			switchProxyPort,
-			caDatabase,
+			proxies,
 			switchLocalPort,
 			switchRemoteIP,
 			switchRemotePort,

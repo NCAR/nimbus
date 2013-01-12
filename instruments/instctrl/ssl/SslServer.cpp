@@ -4,16 +4,19 @@ using namespace Ssl;
 
 /////////////////////////////////////////////////////////////////////
 SslServer::SslServer(std::string keyFile,
-		std::string certFile,
+		QSslCertificate sslCert,
 		int port,
-		std::vector<std::string> caDatabase,
+		std::vector<QSslCertificate> extraCerts,
 		QObject * parent):
 	QTcpServer(parent),
 	_keyFile(keyFile),
-	_certFile(certFile),
+	_sslCert(sslCert),
 	_port(port),
-	_caDatabase(caDatabase)
+	_extraCerts(extraCerts)
 {
+
+	// Add our certificate to the CA database
+	_extraCerts.push_back(sslCert);
 
 	// Listen on all network interfaces
 	bool validSession = listen(QHostAddress::Any, port);
@@ -35,7 +38,7 @@ SslServer::~SslServer() {
 void SslServer::incomingConnection(int descriptor) {
 	qDebug() << "Incoming connection on port" << _port << "(descriptor" << descriptor << ")";
 
-	SslSocket* socket = new SslSocket(_keyFile, _certFile, descriptor, _caDatabase);
+	SslSocket* socket = new SslSocket(_keyFile, _sslCert, descriptor, _extraCerts);
 
 	if (socket->socketDescriptor() != -1) {
 		_sslSockets[socket] = socket;

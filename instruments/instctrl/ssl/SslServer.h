@@ -23,14 +23,14 @@ namespace Ssl {
 
 	public:
 		/// @param keyFile Path to the file containing the private key.
-		/// @param certFile Path to the file containing the certificate that matched the private key.
+		/// @param sslCert The certificate that matches the private key.
 		/// @param port The server listens on this port.
-		/// @param caDatabase Paths to certs that should be added to the CAdatabase
+		/// @param extraCerts Extra certs that should be added to the CAdatabase
 		/// @param parent The Qt object parent.
 		SslServer(std::string keyFile,
-				std::string certFile,
+				QSslCertificate sslCert,
 				int port,
-				std::vector<std::string> caDatabase,
+				std::vector<QSslCertificate> extraCerts,
 				QObject * parent = 0);
 		/// Destructor.
 		virtual ~SslServer();
@@ -53,11 +53,11 @@ namespace Ssl {
 		/// Path to the file containing the private key.
 		std::string _keyFile;
 		/// Path to the file containing the certificate that matched the private key.
-		std::string _certFile;
+		QSslCertificate _sslCert;
 		/// The server listens on this port.
 		int _port;
-		/// Paths to certs that will be added to the CAdatabase
-		std::vector<std::string> _caDatabase;
+		/// Certs that will be added to the CAdatabase
+		std::vector<QSslCertificate> _extraCerts;
 		/// The list of created server sockets. Use the address of the socket
 		/// to reference it.
 		std::map<SslSocket*, SslSocket*> _sslSockets;

@@ -6,18 +6,18 @@ using namespace Ssl;
 /////////////////////////////////////////////////////////////////////
 SslSocket::SslSocket(
 		std::string keyFile,
-		std::string certFile,
+		QSslCertificate sslCert,
 		int descriptor,
-		std::vector<std::string> caDatabase,
+		std::vector<QSslCertificate> extraCerts,
 		QObject * parent):
 	QSslSocket(parent),
 	_keyFile(keyFile),
-	_certFile(certFile),
+	_sslCert(sslCert),
 	_port(-1),
 	_descriptor(descriptor),
 	_serverHost(""),
 	_state(SS_Unconnected),
-	_caDatabase(caDatabase)
+	_extraCerts(extraCerts)
 {
 	qDebug() << "Create a ServerSocket with descriptor" << descriptor;
 	// Initialize the key and certificate and connect signals
@@ -31,20 +31,21 @@ SslSocket::SslSocket(
 }
 
 /////////////////////////////////////////////////////////////////////
-SslSocket::SslSocket(std::string keyFile,
-		std::string certFile,
+SslSocket::SslSocket(
+		std::string keyFile,
+		QSslCertificate sslCert,
 		std::string serverHost,
 		int port,
-		std::vector<std::string> caDatabase,
+		std::vector<QSslCertificate> extraCerts,
 		QObject * parent):
 	QSslSocket(parent),
 	_keyFile(keyFile),
-	_certFile(certFile),
+	_sslCert(sslCert),
 	_port(port),
 	_descriptor(-1),
 	_serverHost(serverHost),
 	_state(SS_Unconnected),
-	_caDatabase(caDatabase)
+	_extraCerts(extraCerts)
 {
 	qDebug() << "Create client socket to connect to server \""
 			 << serverHost.c_str() << "\" on port" << port;
@@ -75,9 +76,9 @@ void SslSocket::init() {
 		qDebug() << "Invalid key specified in " << _keyFile.c_str();
 	}
 
-	setLocalCertificate(_certFile.c_str());
+	setLocalCertificate(_sslCert);
 	if (localCertificate().isNull() || !localCertificate().isValid()) {
-			qDebug() << "Invalid certificate specified in " << _certFile.c_str();
+			qDebug() << "Invalid certificate specified in " << _sslCert;
 	}
 }
 
@@ -130,16 +131,8 @@ void SslSocket::sslErrors(const QList<QSslError>& errors) {
 void SslSocket::setCAdatabase() {
 	// Collect the certificates
 	QList<QSslCertificate> certs;
-	for (int i = 0; i < _caDatabase.size(); i++) {
-		QFile certFile(_caDatabase[i].c_str());
-		certFile.open(QIODevice::ReadOnly);
-		QSslCertificate cert(&certFile);
-		if (cert.isNull() || !cert.isValid()) {
-			qDebug() << "invalid certificate specified in"
-					<< _caDatabase[i].c_str();
-		} else {
-			certs.append(cert);
-		}
+	for (int i = 0; i < _extraCerts.size(); i++) {
+		certs.append(_extraCerts[i]);
 	}
 
 	// Add these certificates to the CAdatabase

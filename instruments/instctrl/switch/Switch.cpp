@@ -1,10 +1,11 @@
 #include "Switch.h"
 
 /////////////////////////////////////////////////////////////////////
-Switch::Switch(std::string keyFile,
-		std::string certFile,
+// Constructor for SSL proxies
+Switch::Switch(std::string serverSslKeyFile,
+		QSslCertificate serverSslCert,
 		int switchPort,
-		std::vector<std::string> caDatabase,
+		std::vector<SslProxyServer::ProxyDef> proxies,
 		int localPort,
 		std::string remoteIP,
 		int remotePort,
@@ -14,13 +15,14 @@ _server(0)
 {
 
 	// Create an SSL proxy server
-	_server = new SslProxyServer(keyFile, certFile, switchPort, caDatabase);
+	_server = new SslProxyServer(serverSslKeyFile, serverSslCert, switchPort, proxies);
 
 	// Initialize
 	init();
 }
 
 /////////////////////////////////////////////////////////////////////
+// Constructor for embedded proxies
 Switch::Switch(std::vector<std::string> instFiles,
 		int localPort,
 		std::string remoteIP,

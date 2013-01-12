@@ -14,11 +14,11 @@ class Server: public Ssl::SslServer {
 		/// @param keyFile Path to the file containing the private key.
 		/// @param certFile Path to the file containing the certificate that matched the private key.
 		/// @param port The server listens on this port.
-		/// @param caDatabase Paths to certs that should be added to the CAdatabase
+		/// @param extraCerts Extra certs that should be added to the CAdatabase
 		Server(std::string keyFile,
-				std::string certFile,
+				QSslCertificate sslCert,
 				int port,
-				std::vector<std::string> caDatabase);
+				std::vector<QSslCertificate> extraCerts);
 		/// Destructor.
 		virtual ~Server();
 

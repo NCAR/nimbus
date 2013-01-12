@@ -8,22 +8,25 @@ using namespace Protocols;
 SslProxy::SslProxy(
 		std::string proxyID,
 		std::string privateKeyFile,
-		std::string certFile,
+		QSslCertificate sslCert,
 		std::string serverHost,
 		int switchPort,
-		std::vector<std::string> caDatabase,
+		std::vector<QSslCertificate> extraCerts,
 		std::map<std::string, InstMsgInfo> messages):
 _proxyID(proxyID),
 _keyFile(privateKeyFile),
-_certFile(certFile),
+_sslCert(sslCert),
 _sslHost(serverHost),
 _sslPort(switchPort),
-_caDatabase(caDatabase),
+_extraCerts(extraCerts),
 _messages(messages),
 _sslConnection(0),
 _incomingUdpSocket(0),
 _outgoingUdpSocket(0)
 {
+
+	// Add our certificate to the CAdatabase
+	_extraCerts.push_back(sslCert);
 
 	// Initialize the incoming UDP socket.
 	initIncomingUDPsockets();
@@ -100,10 +103,10 @@ void SslProxy::openSslConnection() {
 
 	_sslConnection = new SslClientConnection(
 			_keyFile,
-			_certFile,
+			_sslCert,
 			_sslHost,
 			_sslPort,
-    		_caDatabase,
+    		_extraCerts,
     		_proxyID);
 
 	connect(_sslConnection, SIGNAL(msgFromServer(Protocols::Message)), this, SLOT(msgFromServerSlot(Protocols::Message)));

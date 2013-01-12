@@ -23,17 +23,17 @@ namespace Ssl {
 	public:
 		/// @param keyFile Path to the file containing the private key.
 		/// Specify a blank string if no key is provided.
-		/// @param certFile Path to the file containing the certificate that matched the private key.
+		/// @param sslCert The certificate that matches the private key.
 		/// Specify a blank string if no certificate is provided.
 		/// @param serverHost The server host name or IP address.
 		/// @param port The server port number.
-		/// @param caDatabase Paths to certs that should be added to the CAdatabase
+		/// @param extraCerts Extra certs that should be added to the CAdatabase
 		/// @param clientID The client identifier
 		SslClientConnection(std::string keyFile,
-				  std::string certFile,
+				  QSslCertificate sslCert,
 				  std::string serverHost,
 				  int port,
-				  std::vector<std::string> caDatabase,
+				  std::vector<QSslCertificate> extraCerts,
 				  std::string clientID);
 
 		/// Destructor

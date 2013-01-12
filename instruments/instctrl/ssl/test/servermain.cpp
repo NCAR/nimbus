@@ -17,18 +17,16 @@ int main(int  argc, char** argv)
 	QCoreApplication app(argc, argv);
 
 	std::string serverKey(argv[1]);
-	std::string serverCert(argv[2]);
+	QSslCertificate serverCert(argv[2]);
 
-	std::vector<std::string> caDatabase;
-	// add the server certificate to the CA database
-	caDatabase.push_back(serverCert);
+	std::vector<QSslCertificate> extraCerts;
 
 	// add additional certs to the database
 	for (int i = 3; i < argc; i++) {
-		caDatabase.push_back(argv[i]);
+		extraCerts.push_back(QSslCertificate::fromPath(argv[i])[0]);
 	}
 
-	Server server(serverKey, serverCert, 50000, caDatabase);
+	Server server(serverKey, serverCert, 50000, extraCerts);
 
 	return app.exec();
 

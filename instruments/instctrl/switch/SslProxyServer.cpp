@@ -5,13 +5,24 @@
 using namespace Ssl;
 
 /////////////////////////////////////////////////////////////////////
-SslProxyServer::SslProxyServer(std::string keyFile,
-		std::string certFile,
+SslProxyServer::SslProxyServer(std::string sslKeyFile,
+		QSslCertificate sslCert,
 		int port,
-		std::vector<std::string> caDatabase)
-//:SslServer(keyFile, certFile, port, caDatabase)
+		std::vector<SslProxyServer::ProxyDef> proxies):
+_proxies(proxies)
 {
-	_sslServer = new SslServer(keyFile, certFile, port, caDatabase);
+
+	// A list of certificates that will be added to the CA database in order
+	// to allow self-signed certificates to be accepted.
+	std::vector<QSslCertificate> extraCerts;
+	for (int i = 0; i < _proxies.size(); i++) {
+		extraCerts.push_back(_proxies[i]._sslCert);
+	}
+
+	_sslServer = new SslServer(sslKeyFile, sslCert, port, extraCerts);
+
+	// The newConnection is emitted by the SslServer when a new SSL connection
+	// has been accepted from a proxy.
 	_sslServer->connect(_sslServer, SIGNAL(newConnection(Ssl::SslSocket*)),
 			this, SLOT(createConnection(Ssl::SslSocket*)));
 

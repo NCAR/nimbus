@@ -12,15 +12,15 @@ using namespace Ssl;
 /////////////////////////////////////////////////////////////////////
 SslClientConnection::SslClientConnection(
 		std::string keyFile,
-		std::string certFile,
+		QSslCertificate sslCert,
 		std::string serverHost,
 		int port,
-		std::vector<std::string> caDatabase,
+		std::vector<QSslCertificate> extraCerts,
 		std::string clientID):
 _sslSocket(0)
 {
 
-	_sslSocket = new SslSocket(keyFile, certFile, serverHost, port, caDatabase);
+	_sslSocket = new SslSocket(keyFile, sslCert, serverHost, port, extraCerts);
 
 	// react to changes in the state of the SslSocket
 	connect(_sslSocket, SIGNAL(stateChanged(Ssl::SslSocket::SocketState)),

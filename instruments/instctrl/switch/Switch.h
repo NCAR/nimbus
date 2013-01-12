@@ -34,21 +34,20 @@ class Switch: public QObject {
 	Q_OBJECT
 public:
 	/// The flavor of Switch for remote proxies that connect via SSL.
-	/// @param keyFile An SSL related parameter: the path to the file containing the private key.
-	/// @param certFile An SSL related parameter: the path to the file containing the certificate that matched the private key.
+	/// @param serverSslKeyFile An SSL related parameter: the path to the file containing the SSL private key.
+	/// @param serverSslCert An SSL related parameter: the SSL certificate that matches the private key.
 	/// @param switchPort An SSL related parameter: the ssl server port number.
-	/// @param caDatabase An SSL related parameter: paths to certs that should be added to the CAdatabase. These will be
-	/// certificates for all allowable proxies.
+	/// @param proxies The authorized SSL proxies.
 	/// @param localPort A SwitchConection related parameter: The port that we listen for incoming messages on.
 	/// @param remoteIP A SwitchConection related parameter: The remote IP that we send messages to.
 	/// @param remotePort A SwitchConection related parameter: The port that we send messages to.
 	/// @param switchCipherKey A SwitchConection related parameter: The file containing the key for symmetric cipher
 	/// encryption over a SwitchConnection.
 	Switch(
-			std::string keyFile,
-			std::string certFile,
+			std::string serverSslKeyFile,
+			QSslCertificate serverSslCert,
 			int switchPort,
-			std::vector<std::string> caDatabase,
+			std::vector<SslProxyServer::ProxyDef> proxies,
 			int _localPort,
 			std::string _remoteIP,
 			int _remotePort,

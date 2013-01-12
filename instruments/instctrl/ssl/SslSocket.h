@@ -42,30 +42,30 @@ namespace Ssl {
 		/// socket which can be converted to a QSslSocket. startServerEncryption() will be issued.
 		/// @param keyFile Path to the file containing the private key.
 		/// Specify a blank string if no key is provided.
-		/// @param certFile Path to the file containing the certificate that matched the private key.
+		/// @param sslCert The certificate that matches the private key.
 		/// Specify a blank string if no certificate is provided.
 		/// @param descriptor File descriptor for the connected socket.
-		/// @param caDatabase Paths to certs that should be added to the CAdatabase
+		/// @param extraCerts Extra certs that should be added to the CAdatabase
 		/// @param parent The Qt object parent.
 		SslSocket(std::string keyFile,
-				  std::string certFile,
+				  QSslCertificate sslCert,
 				  int descriptor,
-				  std::vector<std::string> caDatabase,
+				  std::vector<QSslCertificate> extraCerts,
 				  QObject * parent = 0);
 		/// Constructor for a client type socket. connectToHostEncrypted() will be issued.
 		/// @param keyFile Path to the file containing the private key.
 		/// Specify a blank string if no key is provided.
-		/// @param certFile Path to the file containing the certificate that matched the private key.
+		/// @param sslCert The certificate that matches the private key.
 		/// Specify a blank string if no certificate is provided.
 		/// @param serverHost The server host name or IP address.
 		/// @param port The server port number.
-		/// @param caDatabase Paths to certs that should be added to the CAdatabase
+		/// @param extraCerts Extra certs that should be added to the CAdatabase
 		/// @param parent The Qt object parent.
 		SslSocket(std::string keyFile,
-				  std::string certFile,
+				  QSslCertificate sslCert,
 				  std::string serverHost,
 				  int port,
-				  std::vector<std::string> caDatabase,
+				  std::vector<QSslCertificate> extraCerts,
 				  QObject * parent = 0);
 		/// Destructor
 		virtual ~SslSocket();
@@ -97,7 +97,7 @@ namespace Ssl {
 	protected:
 		/// Add the private key and certificate to the QsslSocket. Set up the signal/slot connections.
 		void init();
-		/// Set the CA database from the list of certificates in _caDatabase.
+		/// Set the CA database from the list of certificates in _extraCerts.
 		void setCAdatabase();
 		/// Connect the signals.
 		void connectSignals();
@@ -106,8 +106,8 @@ namespace Ssl {
 
 		/// Path to the file containing the private key.
 		std::string _keyFile;
-		/// Path to the file containing the certificate.
-		std::string _certFile;
+		/// The SSL certificate.
+		QSslCertificate _sslCert;
 		/// The connected socket file descriptor, for server applications.
 		int _descriptor;
 		/// The server port number, for client applications.
@@ -116,8 +116,8 @@ namespace Ssl {
 		std::string _serverHost;
 		/// Current socket state
 		SocketState _state;
-		/// Paths to certs that will be added to the CAdatabase
-		std::vector<std::string> _caDatabase;
+		/// Certificates that will be added to the CAdatabase
+		std::vector<QSslCertificate> _extraCerts;
 	};
 };
 

@@ -52,19 +52,19 @@ namespace Ssl {
 		/// @param proxyID An identifier for the proxy.
 		/// @param privateKeyFile Path to the file containing the private key.
 		/// Specify a blank string if no key is provided.
-		/// @param certFile Path to the file containing the certificate that matched the private key.
+		/// @param sslCert The certificate that matches the private key.
 		/// Specify a blank string if no certificate is provided.
 		/// @param switchSslHost The server host name or IP address.
 		/// @param switchSslPort The server port number.
-		/// @param caDatabase Paths to certs that should be added to the CAdatabase.
+		/// @param extraCerts Extra certs that should be added to the CAdatabase.
 		/// @param messageInfo Routing and processing configuration for message types.
 		SslProxy(
 				std::string proxyID,
 				std::string privateKeyFile,
-				std::string certFile,
+				QSslCertificate sslCert,
 				std::string switchSslHost,
 				int switchSslPort,
-				std::vector<std::string> caDatabase,
+				std::vector<QSslCertificate> extraCerts,
 				std::map<std::string, InstMsgInfo> messages);
 
 		/// @param proxyID An identifier for the proxy.
@@ -121,13 +121,13 @@ namespace Ssl {
 		/// Path to the private key.
 		std::string _keyFile;
 		/// Path to the client certificate.
-		std::string _certFile;
+		QSslCertificate _sslCert;
 		/// The name or IP of the switch.
 		std::string _sslHost;
 		/// The switch port number.
 		int _sslPort;
 		/// Paths to extra certificates to be added to the database.
-		std::vector<std::string> _caDatabase;
+		std::vector<QSslCertificate> _extraCerts;
 		/// The connection to the switch.
 		Ssl::SslClientConnection* _sslConnection;
 		/// The incoming datagram socket.

@@ -20,14 +20,19 @@ class SslProxyServer: public ProxyServer {
 	Q_OBJECT;
 
 	public:
+		/// A helper class for defining a proxy.
+		struct ProxyDef {
+			QSslCertificate _sslCert;
+			std::string _instFile;
+		};
 		/// @param keyFile Path to the file containing the private key.
 		/// @param certFile Path to the file containing the certificate that matched the private key.
 		/// @param switchPort The server port number.
-		/// @param caDatabase Paths to certs that should be added to the CAdatabase
-	SslProxyServer(std::string keyFile,
-				std::string certFile,
+		/// @param proxies The allowable proxies.
+	SslProxyServer(std::string sslKeyFile,
+				QSslCertificate sslCertificate,
 				int switchPort,
-				std::vector<std::string> caDatabase);
+				std::vector<SslProxyServer::ProxyDef> proxies);
 		/// Destructor.
 		virtual ~SslProxyServer();
 		/// Send a message to a client proxy
@@ -47,6 +52,9 @@ class SslProxyServer: public ProxyServer {
 		void msgFromProxySlot(Protocols::Message message);
 
 	protected:
+		/// The allowed proxies
+		std::vector<SslProxyServer::ProxyDef> _proxies;
+		/// The SSL server that receives SSL requests
 		Ssl::SslServer* _sslServer;
 		/// Keep track of active connections
 		std::set<Ssl::SslServerConnection*> _connections;

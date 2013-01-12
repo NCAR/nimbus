@@ -119,10 +119,13 @@ int main(int argc, char** argv)
 		exit(1);
 	}
 
+	// Get the certs
+	QSslCertificate proxyCert(QSslCertificate::fromPath(proxyCertFile.c_str())[0]);
+	QSslCertificate switchCert(QSslCertificate::fromPath(switchCertFile.c_str())[0]);
+
 	// add the server certificate to the CA database
-	std::vector<std::string> caDatabase;
-	caDatabase.push_back(proxyCertFile);
-	caDatabase.push_back(switchCertFile);
+	std::vector<QSslCertificate> extraCerts;
+	extraCerts.push_back(switchCert);
 
 	// Create the Qt application
 	QApplication app(argc, argv);
@@ -132,10 +135,10 @@ int main(int argc, char** argv)
 	SslProxy sslProxy(
 			proxyID,
     		proxyKeyFile,
-    		proxyCertFile,
+    		proxyCert,
     		switchHostName,
     		switchProxyPort,
-    		caDatabase,
+    		extraCerts,
     		messages);
 
 	// Create the Proxy user interface.

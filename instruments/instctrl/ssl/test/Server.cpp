@@ -13,10 +13,10 @@ using namespace Ssl;
 
 /////////////////////////////////////////////////////////////////////
 Server::Server(std::string keyFile,
-		std::string certFile,
+		QSslCertificate sslCert,
 		int port,
-		std::vector<std::string> caDatabase):
-		SslServer(keyFile, certFile, port, caDatabase)
+		std::vector<QSslCertificate> extraCerts):
+		SslServer(keyFile, sslCert, port, extraCerts)
 {
 	connect(this, SIGNAL(newConnection(Ssl::SslSocket*)),
 			this, SLOT(createConnection(Ssl::SslSocket*)));
