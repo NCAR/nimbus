@@ -30,18 +30,20 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2006
 const long	VarDB_MagicCookie	= 0x42756c6c;
 const long	VarDB_CurrentVersion	= 3;
 
-struct vardb_hdr	master_VarDB_Hdr;
-void			*master_VarDB = NULL;
+VarDB_Hdr	master_VarDB_Hdr;
+void		*master_VarDB = NULL;
 
-struct vardb_hdr	VarDB_Hdr;
-void			*VarDB = NULL;
+VarDB_Hdr	varDB_Hdr;
+void		*VarDB = NULL;
 
 int	VarDB_NcML = -1;
 char	VarDB_NcML_text_result[512];
 
 long	VarDB_RecLength, VarDB_nRecords;
 
-static void *readFile(const char fileName[], struct vardb_hdr *vdbHdr);
+static void *readFile(const char fileName[], VarDB_Hdr *vdbHdr);
+static bool checkIfOlderVersionAndConvert(void *varDB, VarDB_Hdr *vdbHdr);
+static bool performCorrections(void *varDB);
 
 
 /* -------------------------------------------------------------------- */
@@ -78,7 +80,7 @@ int InitializeVarDB(const char fileName[])
 
   if (VarDB_NcML < 0)
   {
-    VarDB = readFile(fileName, &VarDB_Hdr);
+    VarDB = readFile(fileName, &varDB_Hdr);
 
     if (VarDB == 0 && master_VarDB == 0)
       return(ERR);
@@ -89,7 +91,7 @@ int InitializeVarDB(const char fileName[])
 }	/* INITIALIZEVARDB */
 
 /* -------------------------------------------------------------------- */
-static void *readFile(const char fileName[], struct vardb_hdr *vdbHdr)
+static void *readFile(const char fileName[], VarDB_Hdr *vdbHdr)
 {
   FILE	*fp;
   int	rc;
@@ -104,7 +106,7 @@ static void *readFile(const char fileName[], struct vardb_hdr *vdbHdr)
     return(0);
   }
 
-  fread((char *)vdbHdr, sizeof(struct vardb_hdr), 1, fp);
+  fread((char *)vdbHdr, sizeof(VarDB_Hdr), 1, fp);
 
   if (ntohl(vdbHdr->MagicCookie) != VarDB_MagicCookie)
   {
@@ -139,13 +141,26 @@ static void *readFile(const char fileName[], struct vardb_hdr *vdbHdr)
 
   fclose(fp);
 
+  if (checkIfOlderVersionAndConvert(varDB, vdbHdr) || performCorrections(varDB))
+  {
+    printf("VarDB modified, saving.\n");
+    VarDB = varDB;
+    SaveVarDB(fileName);
+  }
+
+  return(varDB);
+}
+
+static bool checkIfOlderVersionAndConvert(void *varDB, VarDB_Hdr *vdbHdr)
+{
+  bool modified = false;
+
   if (ntohl(vdbHdr->Version) < VarDB_CurrentVersion)
   {
-    int		i;
 
     fprintf(stderr, "VarDB: File has older version, converting to new version.\n");
 
-    for (i = 0; i < VarDB_nRecords; ++i)
+    for (int i = 0; i < VarDB_nRecords; ++i)
     {
       ((struct var_v2 *)varDB)[i].standard_name = 0;
       ((struct var_v2 *)varDB)[i].reference = FALSE;;
@@ -153,14 +168,47 @@ static void *readFile(const char fileName[], struct vardb_hdr *vdbHdr)
 
     vdbHdr->Version = htonl(VarDB_CurrentVersion);
     vdbHdr->RecordLen = htonl(sizeof(struct var_v2));
-
-    VarDB = varDB;
-    SaveVarDB(fileName);
+    modified = true;
   }
 
-  return(varDB);
+  return(modified);
+}
 
-}	/* END READFILE */
+static bool performCorrections(void *varDB)
+{
+  bool modified = false;
+
+  // Perform some sanity.
+  for (int i = 0; i < VarDB_nRecords; ++i)
+  {
+    struct var_v2 *p = &((struct var_v2 *)varDB)[i];
+
+    if (strcmp(p->Units, "degC") == 0)
+    {
+      modified = true;
+      strcpy(p->Units, "deg_C");
+      printf("%s - degC changed to deg_C\n", p->Name);
+     }
+
+    if (strcmp(p->Units, "mbar") == 0)
+    {
+      modified = true;
+      strcpy(p->Units, "hPa");
+      printf("%s - mbar changed to hPa\n", p->Name);
+     }
+
+    if (p->is_analog == false && p->defaultSampleRate != 0)
+    {
+      modified = true;
+      p->defaultSampleRate = 0;
+      p->voltageRange[0] = 0;
+      p->voltageRange[1] = 0;
+      printf("%s - is !analog cleanup, clear rate/range fields\n", p->Name);
+    }
+  }
+
+  return(modified);
+}
 
 /* -------------------------------------------------------------------- */
 bool VarDB_isNcML()

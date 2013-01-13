@@ -35,10 +35,10 @@ int SaveVarDB(const char fileName[])
     return(ERR);
     }
 
-  VarDB_Hdr.nRecords = htonl(VarDB_nRecords);
-  VarDB_Hdr.RecordLen = htonl(VarDB_RecLength);
+  varDB_Hdr.nRecords = htonl(VarDB_nRecords);
+  varDB_Hdr.RecordLen = htonl(VarDB_RecLength);
 
-  fwrite((char *)&VarDB_Hdr, sizeof(struct vardb_hdr), 1, fp);
+  fwrite((char *)&varDB_Hdr, sizeof(struct vardb_hdr), 1, fp);
 
   if ((rc = fwrite((char *)VarDB, VarDB_RecLength, VarDB_nRecords,fp)) != VarDB_nRecords)
     {

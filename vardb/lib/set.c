@@ -25,10 +25,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993-2005
 #include "vardb.h"
 #include <raf/portable.h>
 
-extern struct vardb_hdr	VarDB_Hdr;
-extern void		*VarDB;
-
-extern long	VarDB_nRecords, VarDB_RecLength;
 
 /* -------------------------------------------------------------------- */
 int VarDB_SetUnits(const char vn[], char units[])

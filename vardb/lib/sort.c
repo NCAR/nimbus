@@ -22,9 +22,6 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 #include <string.h>
 #include "vardb.h"
 
-extern struct vardb_hdr	VarDB_Hdr;
-extern void		*VarDB;
-
 extern long	VarDB_nRecords;
 
 /* -------------------------------------------------------------------- */

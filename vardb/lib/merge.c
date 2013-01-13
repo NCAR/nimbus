@@ -108,10 +108,10 @@ int CreateVarDB(const char Bull9_name[], const char Pattr_name[])
 
   /* Now transfer the data into the VarDB variables provided by the API
    */
-  VarDB_Hdr.MagicCookie = htonl(VarDB_MagicCookie);
-  VarDB_Hdr.Version = htonl(VarDB_CurrentVersion);
-  VarDB_Hdr.nRecords = htonl(cnt);
-  VarDB_Hdr.RecordLen = htonl(sizeof(struct var_v2));
+  varDB_Hdr.MagicCookie = htonl(VarDB_MagicCookie);
+  varDB_Hdr.Version = htonl(VarDB_CurrentVersion);
+  varDB_Hdr.nRecords = htonl(cnt);
+  varDB_Hdr.RecordLen = htonl(sizeof(struct var_v2));
 
   if ((VarDB = (char *)calloc((unsigned)cnt, VarDB_RecLength)) == NULL)
     {
