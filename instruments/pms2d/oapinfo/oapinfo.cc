@@ -95,6 +95,13 @@ int Output(char buff[])
 	((char*)p2d)[0], ((char*)p2d)[1],
 	ntohs(p2d->hour), ntohs(p2d->minute), ntohs(p2d->second), ntohs(p2d->msec),
 	ntohs(p2d->tas), ((short*)p2d->data)[0]);
+
+      for (int i = 0; i < 256; ++i)
+      {
+        printf("%016llX%016llX\n",
+                *(long long *)(&p2d->data[i<<4]),
+                *(long long *)(&p2d->data[(i<<4)+8]));
+      }
       break;
 
     default:
