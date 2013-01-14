@@ -54,8 +54,6 @@ public:
 protected:
 	/// Common initialization. Read the configuration.
 	void init();
-    /// The configuration.
-    QtConfig _config;
     /// The instrument name.
     std::string _instName;
     /// The port number that will be read for incoming message datagrams
@@ -65,6 +63,15 @@ protected:
 	std::string _destIP;
 	/// The port number that outgoing message datagrams will be sent to.
 	int _destPort;
+	/// Our messages
+	std::vector<MessageInfo> _messages;
+	/// The path to the instrument configuration. If blank,
+	/// The standard location will be used with organization, application
+	std::string _instConfigPath;
+	/// Use for configuration organization when path is not provided.
+	std::string _instConfigOrg;
+	/// Use for configuration application when path is not provided
+	std::string _instConfigApp;
 
 };
 

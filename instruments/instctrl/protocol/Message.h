@@ -34,9 +34,9 @@ namespace Protocols {
 	protected:
 		/// The message payload
 		MessagePayload _payload;
-		/// The sender identity
+		/// The instrument identity
 		std::string _instrumentId;
-		/// The recipient identity
+		/// The message identity
 		std::string _msgId;
 	};
 };
