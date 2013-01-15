@@ -30,6 +30,8 @@ public:
 		double rateLimit;
 	};
 public:
+	/// Default constructor.
+	InstConfig();
 	/// Constructor for a specified configuration file path.
 	/// @param configFile Path to the configuration file that holds the parameters.
 	InstConfig(const std::string configFile);

@@ -75,16 +75,29 @@ void SslProxyServer::connectionStateChanged(SslServerConnection* connection,
 	{
 
 		// find it in our list of connections
-		std::set<SslServerConnection*>::iterator p = _connections.find(connection);
+		SslProxyServer::ConnectionList::iterator c = _connections.find(connection);
 
 		// big problem if we have lost track of this connection
-		assert (p != _connections.end());
+		assert (c != _connections.end());
 
 		// kill the connection
-		delete connection;
+		delete *c;
+
+		// Remove all references to this connection in the _msgRouting list.
+		std::map<std::string, ConnectionList >::iterator m;
+		for (m = _msgRouting.begin(); m != _msgRouting.end(); m++) {
+			m->second.erase(*c);
+		}
+
+		// If a message type has no more connections, get rid of it.
+		for (m = _msgRouting.begin(); m != _msgRouting.end(); m++) {
+			if (m->second.size() == 0) {
+				_msgRouting.erase(m);
+			}
+		}
 
 		// remove our record of the connection
-		_connections.erase(p);
+		_connections.erase(c);
 
 		qDebug() << "connection is deleted, " << _connections.size() << " remaining connections";
 		break;
@@ -125,6 +138,10 @@ void SslProxyServer::validateConnection(Ssl::SslServerConnection* connection) {
 		for (int i = 0; i < proxyIndices.size(); i++) {
 			/// @todo Setup tables so that the correct messages get routed to this connection.
 			std::cout << "Connection received for proxy " << i << std::endl;
+			std::vector<InstConfig::MessageInfo> msgs = _proxies[i]._instConfig.messages();
+			for (int j = 0; j < msgs.size(); j++) {
+				std::cout << "   " << msgs[j].msgID << std::endl;
+			}
 		}
 	}
 }

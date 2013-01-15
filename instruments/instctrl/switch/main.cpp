@@ -122,7 +122,7 @@ void createSslSwitch(
 					<< sslCertFile << ", proxy will not be registered";
 		} else {
 			proxy._sslCert = cert;
-			proxy._instConfigPath = proxiesConfig[i]["InstrumentFile"];
+			proxy._instConfig = InstConfig(proxiesConfig[i]["InstrumentFile"]);
 			proxies.push_back(proxy);
 		}
 	}
