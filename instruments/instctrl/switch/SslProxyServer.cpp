@@ -140,7 +140,17 @@ void SslProxyServer::validateConnection(Ssl::SslServerConnection* connection) {
 			std::cout << "Connection received for proxy " << i << std::endl;
 			std::vector<InstConfig::MessageInfo> msgs = _proxies[i]._instConfig.messages();
 			for (int j = 0; j < msgs.size(); j++) {
+				std::string msgID = msgs[j].msgID;
 				std::cout << "   " << msgs[j].msgID << std::endl;
+				// Add this connection to the list for this message identifier.
+				// If there is already a list for this message id, add the connection
+				// to it. Otherwise,create a new list.
+				if (_msgRouting.find(msgID) != _msgRouting.end()) {
+					_msgRouting[msgID].insert(connection);
+				} else {
+					_msgRouting[msgID] = ConnectionList();
+					_msgRouting[msgID].insert(connection);
+				}
 			}
 		}
 	}
@@ -156,8 +166,20 @@ void SslProxyServer::msgFromProxySlot(Protocols::Message message) {
 
 /////////////////////////////////////////////////////////////////////
 void SslProxyServer::sendToProxy(Protocols::Message msg) {
-	if (_connections.size() > 0) {
-		(*_connections.begin())->send(msg);
+	// Get the message identifier
+	std::string msgID = msg.msgId();
+
+	// See if it is in our list of accepted messages
+	if (_msgRouting.find(msgID) != _msgRouting.end()) {
+		// It is a message we are interested in. Send it to the connections.
+		for (ConnectionList::iterator i = _msgRouting[msgID].begin();
+				i != _msgRouting[msgID].end(); i++) {
+			(*i)->send(msg);
+		}
+	} else {
+		// This is an unexpected message.
+		/// @todo Log the unexpected message.
+		std::cout << "There is no proxy registered for " << msgID << std::endl;
 	}
 }
 

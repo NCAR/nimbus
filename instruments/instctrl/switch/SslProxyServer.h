@@ -36,7 +36,10 @@ class SslProxyServer: public ProxyServer {
 				std::vector<SslProxyServer::ProxyDef> proxies);
 		/// Destructor.
 		virtual ~SslProxyServer();
-		/// Send a message to a client proxy
+		/// Send a message to a client proxy. The _msgRouting list
+		/// is searched for the message id. If found, the message is
+		/// sent to all of the SslServerConnections associated with
+		/// the message id.
 		virtual void sendToProxy(Protocols::Message msg);
 
 	signals:
@@ -57,7 +60,7 @@ class SslProxyServer: public ProxyServer {
 		/// Verify that a successfully encrypted connection is valid. If
 		/// it isn't, close the connection, which will cause it to be removed
 		/// from _connections. If it is valid, set up the book keeping so that
-		/// the correct messages are routed to it.
+		/// the correct messages will be routed to it.
 		/// @param connection The connection that will be validated.
 		void validateConnection(Ssl::SslServerConnection* connection);
 		/// The allowed proxies.
@@ -67,7 +70,9 @@ class SslProxyServer: public ProxyServer {
 		/// Keep track of active connections
 		ConnectionList _connections;
 		/// Book keeping which lists all connections which will output a
-		/// a designated message.
+		/// a designated message. The key is the message id. The ConnectionList
+		/// contains pointers to all SslServerConnections that these messages
+		/// should be sent to.
 		std::map<std::string, ConnectionList > _msgRouting;
 };
 
