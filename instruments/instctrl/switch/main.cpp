@@ -112,9 +112,9 @@ void createSslSwitch(
 	// Get the proxy definitions
 	std::vector<std::map<std::string, std::string> > proxiesConfig;
 	proxiesConfig = config->getArray("SSLProxies", proxiesConfig);
-	std::vector<SslProxyServer::ProxyDef> proxies;
+	std::vector<SslProxyServer::SslProxyDef> proxies;
 	for (int i = 0; i < proxiesConfig.size(); i++) {
-		SslProxyServer::ProxyDef proxy;
+		SslProxyServer::SslProxyDef proxy;
 		std::string sslCertFile = proxiesConfig[i]["SSLCertFile"];
 		QSslCertificate cert(QSslCertificate::fromPath(sslCertFile.c_str())[0]);
 		if (cert.isNull() || !cert.isValid()) {

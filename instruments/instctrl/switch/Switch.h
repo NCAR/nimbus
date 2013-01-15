@@ -47,7 +47,7 @@ public:
 			std::string serverSslKeyFile,
 			QSslCertificate serverSslCert,
 			int switchPort,
-			std::vector<SslProxyServer::ProxyDef> proxies,
+			std::vector<SslProxyServer::SslProxyDef> proxies,
 			int _localPort,
 			std::string _remoteIP,
 			int _remotePort,

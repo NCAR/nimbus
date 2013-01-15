@@ -5,7 +5,7 @@
 Switch::Switch(std::string serverSslKeyFile,
 		QSslCertificate serverSslCert,
 		int switchPort,
-		std::vector<SslProxyServer::ProxyDef> proxies,
+		std::vector<SslProxyServer::SslProxyDef> proxies,
 		int localPort,
 		std::string remoteIP,
 		int remotePort,

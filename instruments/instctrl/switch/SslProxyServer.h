@@ -21,8 +21,8 @@ class SslProxyServer: public ProxyServer {
 	Q_OBJECT;
 
 	public:
-		/// A helper class for defining a proxy.
-		struct ProxyDef {
+		/// A helper class for defining an SSL proxy.
+		struct SslProxyDef {
 			QSslCertificate _sslCert;
 			InstConfig _instConfig;
 		};
@@ -33,7 +33,7 @@ class SslProxyServer: public ProxyServer {
 	SslProxyServer(std::string sslKeyFile,
 				QSslCertificate sslCertificate,
 				int switchPort,
-				std::vector<SslProxyServer::ProxyDef> proxies);
+				std::vector<SslProxyServer::SslProxyDef> proxies);
 		/// Destructor.
 		virtual ~SslProxyServer();
 		/// Send a message to a client proxy. The _msgRouting list
@@ -64,7 +64,7 @@ class SslProxyServer: public ProxyServer {
 		/// @param connection The connection that will be validated.
 		void validateConnection(Ssl::SslServerConnection* connection);
 		/// The allowed proxies.
-		std::vector<SslProxyServer::ProxyDef> _proxies;
+		std::vector<SslProxyServer::SslProxyDef> _proxies;
 		/// The SSL server that receives SSL requests
 		Ssl::SslServer* _sslServer;
 		/// Keep track of active connections

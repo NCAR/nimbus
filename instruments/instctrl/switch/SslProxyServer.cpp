@@ -8,7 +8,7 @@ using namespace Ssl;
 SslProxyServer::SslProxyServer(std::string sslKeyFile,
 		QSslCertificate sslCert,
 		int port,
-		std::vector<SslProxyServer::ProxyDef> proxies):
+		std::vector<SslProxyServer::SslProxyDef> proxies):
 _proxies(proxies)
 {
 
