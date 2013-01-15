@@ -55,9 +55,15 @@ public:
 
 	/// The flavor of switch which contains embedded proxies. It does not
 	/// provide an SSL server, so none of the SSL certificates and keys are
-	/// needed.
+	/// needed. A proxy will be created for each instrument configuration.
+	/// @param instConfigs A list of instrument configurations.
+	/// @param localPort A SwitchConection related parameter: The port that we listen for incoming messages on.
+	/// @param remoteIP A SwitchConection related parameter: The remote IP that we send messages to.
+	/// @param remotePort A SwitchConection related parameter: The port that we send messages to.
+	/// @param switchCipherKey A SwitchConection related parameter: The file containing the key for symmetric cipher
+	/// encryption over a SwitchConnection.
 	Switch(
-			std::vector<std::string> instFiles,
+			std::vector<InstConfig> instConfigs,
 			int _localPort,
 			std::string _remoteIP,
 			int _remotePort,

@@ -23,7 +23,7 @@ _server(0)
 
 /////////////////////////////////////////////////////////////////////
 // Constructor for embedded proxies
-Switch::Switch(std::vector<std::string> instFiles,
+Switch::Switch(std::vector<InstConfig> instConfigs,
 		int localPort,
 		std::string remoteIP,
 		int remotePort,
@@ -32,7 +32,7 @@ _switchConnection(localPort, remoteIP, remotePort, switchCipherKey),
 _server(0)
 {
 	// Create an embedded proxy server
-	_server = new EmbeddedProxyServer(instFiles);
+	_server = new EmbeddedProxyServer(instConfigs);
 
 	// Initialize
 	init();

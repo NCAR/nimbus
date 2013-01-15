@@ -1,13 +1,13 @@
 #include "EmbeddedProxyServer.h"
 
 /////////////////////////////////////////////////////////////////////
-EmbeddedProxyServer::EmbeddedProxyServer(std::vector<std::string> instFiles):
-_instFiles(instFiles)
+EmbeddedProxyServer::EmbeddedProxyServer(std::vector<InstConfig> instConfigs):
+_instConfigs(instConfigs)
 {
 	std::map<std::string, SslProxy::InstMsgInfo> messages;
 
-	for (int i = 0; i < _instFiles.size(); i++) {
-		InstConfig instConfig(_instFiles[i]);
+	for (int i = 0; i < _instConfigs.size(); i++) {
+		InstConfig instConfig = _instConfigs[i];
 
 		// Create a message entry for each message defined in the instrument configuration.
 		std::vector<InstConfig::MessageInfo> instMessages = instConfig.messages();

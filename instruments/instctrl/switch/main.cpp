@@ -156,16 +156,17 @@ void createEmbeddedSwitch(
 	std::vector<std::map<std::string, std::string> > instruments;
 	instruments = config->getArray("Instruments", instruments);
 
-	std::vector<std::string> instrumentFiles;
+	// Create the instrument configurations
+	std::vector<InstConfig> instConfigs;
 	for (int i = 0; i < instruments.size(); i++) {
-		std::map<std::string, std::string>::iterator j;
-		for (j = instruments[i].begin(); j != instruments[i].end(); j++) {
-			instrumentFiles.push_back(j->second);
-		}
+		/// @todo Need error checking for missing map key
+		std::string fileName = instruments[i]["InstrumentFile"];
+		/// @todo Need to add error handling to the InstConfig constructor.
+		instConfigs.push_back(InstConfig(fileName));
 	}
 
 	*swtch = new Switch(
-			instrumentFiles,
+			instConfigs,
 			switchLocalPort,
 			switchRemoteIP,
 			switchRemotePort,

@@ -15,7 +15,7 @@ class EmbeddedProxyServer: public ProxyServer {
 	public:
 		/// @param instFiles A list of instrument configuration files.
 		/// One proxy will be created for each instrument file.
-		EmbeddedProxyServer(std::vector<std::string> instFiles);
+		EmbeddedProxyServer(std::vector<InstConfig> instConfigs);
 		/// Destructor.
 		virtual ~EmbeddedProxyServer();
 		/// Send a message to a client proxy
@@ -31,7 +31,7 @@ class EmbeddedProxyServer: public ProxyServer {
 
 	protected:
 		EmbeddedProxy* _proxy;
-		std::vector<std::string> _instFiles;
+		std::vector<InstConfig> _instConfigs;
 };
 
 #endif /* SWITCHEMBEDDEDSERVER_H_ */
