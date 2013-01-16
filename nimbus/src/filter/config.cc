@@ -28,6 +28,7 @@ Config::Config() : _adsFileExtension(".ads")
   SetOutputSQL(false);		// Currently real-time only.
   SetTransmitToGround(false);	// real-time only.
   SetGroundFeedDataRate(5);	// 5 second default
+  SetCalibrationsToBeAppliedBy(NIMBUS);
   SetAsyncFileEnabled(false);
   SetLoadProductionSetup(true);
   SetHoneyWellCleanup(true);
@@ -81,3 +82,15 @@ Config::DefaultPMS2DAreaRatioReject()
 {
   return _defaultPMS2DAreaRatioReject;
 }
+
+void
+Config::SetFlightDate(const std::string s)
+{
+  _flightDate = s;
+
+  // In 2013 we finally migrated to nidas cal files.
+  if (s.substr(6).compare("2013") >= 0)
+    SetCalibrationsToBeAppliedBy(NIDAS);
+}
+
+
