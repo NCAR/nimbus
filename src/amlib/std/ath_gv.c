@@ -140,9 +140,8 @@ void satfhGVharco(DERTBL *varp)
 
   PutSample(varp, atfh);
 
-}	/* END SATFH */
+}
 
-/* END ATFH.C */
 /* -------------------------------------------------------------------- */
 void satfhGVrose(DERTBL *varp)
 {
@@ -157,6 +156,6 @@ void satfhGVrose(DERTBL *varp)
 
   PutSample(varp, atfh);
 
-}	/* END SATFH */
+}
 
 /* END ATFH.C */

@@ -31,6 +31,7 @@ public:
   enum processingRate	{ SampleRate=0, LowRate=1, HighRate=25 };
   enum hrtRate		{ TwentyFive=25, Fifty=50, OneHundred=100 };
   enum groundFeedType	{ LDM, UDP };
+  enum calibrationMode	{ NIDAS, NIMBUS };
 
   enum pms2dProcessing	{ Entire_In=0, Center_In, Reconstruction };
 
@@ -67,6 +68,7 @@ public:
   hrtRate HRTRate() const		{ return _hrtRate; }
   interpolationType InterpolationType() const { return _interpType; }
   groundFeedType GroundFeedType()	const { return _groundFeedType; }
+  calibrationMode CalibrationsAppliedBy() const { return _calibrations; }
 
   pms2dProcessing TwoDProcessingMethod() const { return _pms2dProcessing; }
   float TwoDAreaRejectRatio() const	{ return _twoDrejectRatio; }
@@ -91,33 +93,34 @@ public:
 
   void SetAircraft(aircraft ac)		{ _aircraft = ac; }
   void SetAircraft(int ac)		{ _aircraft = (aircraft)ac; }
-  void SetProcessingMode(processingMode state) { _mode = state; }
-  void SetProcessingRate(processingRate pr) { _processingRate = pr; }
-  void SetHRTRate(hrtRate rate) { _hrtRate = rate; }
-  void SetInterpolationType(interpolationType it) { _interpType = it; }
-  void SetGroundFeedType(groundFeedType type) { _groundFeedType = type; }
+  void SetProcessingMode(processingMode state)		{ _mode = state; }
+  void SetProcessingRate(processingRate pr)		{ _processingRate = pr; }
+  void SetHRTRate(hrtRate rate)				{ _hrtRate = rate; }
+  void SetInterpolationType(interpolationType it)	{ _interpType = it; }
+  void SetGroundFeedType(groundFeedType type)		{ _groundFeedType = type; }
+  void SetCalibrationsToBeAppliedBy(calibrationMode c)	{ _calibrations = c; }
 
   void SetDespikeReporting(bool state)	{ _despikeReporting = state; }
   void SetLagErrorReporting(bool state)	{ _lagReporting = state; }
 
   void SetADSVersion(ADSVersion nv) { _adsVersion = nv; }
 
-  const std::string& ProjectDirectory() const { return _projectDirectory; }
-  const std::string& ProjectName() const { return _projectName; }
-  const std::string& ProjectNumber() const { return _projectNumber; }
-  const std::string& TailNumber() const { return _tailNumber; }
-  const std::string& NIDASrevision() const { return _nidasRevision; }
-  const std::string& FlightNumber() const { return _flightNumber; }
-  const std::string& FlightDate() const { return _flightDate; }
-  const std::string& ADSfileExtension() const { return _adsFileExtension; }
-  const std::string& Checksum() const { return _checksum; }
+  const std::string& ProjectDirectory() const	{ return _projectDirectory; }
+  const std::string& ProjectName() const	{ return _projectName; }
+  const std::string& ProjectNumber() const	{ return _projectNumber; }
+  const std::string& TailNumber() const		{ return _tailNumber; }
+  const std::string& NIDASrevision() const	{ return _nidasRevision; }
+  const std::string& FlightNumber() const	{ return _flightNumber; }
+  const std::string& FlightDate() const		{ return _flightDate; }
+  const std::string& ADSfileExtension() const	{ return _adsFileExtension; }
+  const std::string& Checksum() const		{ return _checksum; }
 
   void SetProjectDirectory(const std::string s)	{ _projectDirectory = s; }
   void SetProjectName(const std::string s)	{ _projectName = s; }
   void SetProjectNumber(const std::string s)	{ _projectNumber = s; }
   void SetTailNumber(const std::string s)	{ _tailNumber = s; }
   void SetFlightNumber(const std::string s)	{ _flightNumber = s; }
-  void SetFlightDate(const std::string s)	{ _flightDate = s; }
+  void SetFlightDate(const std::string s);
   void SetNIDASrevision(const std::string s)	{ _nidasRevision = s; }
   void SetChecksum(const std::string s)		{ _checksum = s; }
 
@@ -138,7 +141,6 @@ public:
   void SetWindVertical(const std::string s)	{ _windWI = s; }
   void SetTwoDProcessingMethod(pms2dProcessing p) { _pms2dProcessing = p; }
   void SetTwoDAreaRejectRatio(float f)		{ _twoDrejectRatio = f; }
-
 
   interpolationType DefaultInterpolationType();
   pms2dProcessing DefaultPMS2DProcessingMethod();
@@ -175,6 +177,7 @@ private:
   hrtRate _hrtRate;
   interpolationType _interpType;
   groundFeedType _groundFeedType;
+  calibrationMode _calibrations;	// cals to be applied by nimbus or nidas.
 
   std::string _projectDirectory;
 
