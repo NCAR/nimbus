@@ -6,20 +6,10 @@ FULL NAME:	Apply Calibration Coefficients
 
 ENTRY POINTS:	ApplyCalCoes()
 
-STATIC FNS:	none
-
 DESCRIPTION:	Perform application of calibration coeffiecients to the
 		AveragedData or SampledData records.
 
-INPUT:		data, int LOW_RATE/SAMPLE_RATE
-
-OUTPUT:		modified input stream
-
-REFERENCES:	none
-
-REFERENCED BY:	LowRateLoop(), HighRateLoop(), winputops.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2005
+COPYRIGHT:	University Corporation for Atmospheric Research, 1994-2012
 -------------------------------------------------------------------------
 */
 
@@ -32,6 +22,9 @@ extern NR_TYPE *SRTvolts, *volts;
 /* -------------------------------------------------------------------- */
 void ApplyCalCoes(NR_TYPE *record)
 {
+  if (cfg.CalibrationsAppliedBy() == NIDAS)
+    return;
+
   for (size_t i = 0; i < raw.size(); ++i)
   {
     // At this time the xlate function is responsible for applying cals
