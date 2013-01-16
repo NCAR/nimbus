@@ -22,7 +22,7 @@ extern NR_TYPE *SRTvolts, *volts;
 /* -------------------------------------------------------------------- */
 void ApplyCalCoes(NR_TYPE *record)
 {
-  if (cfg.CalibrationsAppliedBy() == NIDAS)
+  if (cfg.CalibrationsAppliedBy() == Config::NIDAS)
     return;
 
   for (size_t i = 0; i < raw.size(); ++i)
