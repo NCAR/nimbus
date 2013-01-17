@@ -6,7 +6,6 @@ setenv IDL_STARTUP /tmp/cpi_idl_startup
 
 cat > $IDL_STARTUP << EOF
 device, retain=2, decom=0
-loadct,39
 !path=!path+':/opt/local/idl/lib/cpi'
 EOF
 
