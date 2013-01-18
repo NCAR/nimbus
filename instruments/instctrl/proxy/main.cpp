@@ -120,8 +120,21 @@ int main(int argc, char** argv)
 	}
 
 	// Get the certs
-	QSslCertificate proxyCert(QSslCertificate::fromPath(proxyCertFile.c_str())[0]);
-	QSslCertificate switchCert(QSslCertificate::fromPath(switchCertFile.c_str())[0]);
+	QList<QSslCertificate> certlist;
+
+	certlist = QSslCertificate::fromPath(proxyCertFile.c_str());
+	if (certlist.size() == 0) {
+		std::cerr << "A valid certificate was not found at " << proxyCertFile << std::endl;
+		exit(1);
+	}
+	QSslCertificate proxyCert(certlist[0]);
+
+	certlist = QSslCertificate::fromPath(switchCertFile.c_str());
+	if (certlist.size() == 0) {
+		std::cerr << "A valid certificate was not found at " << switchCertFile << std::endl;
+		exit(1);
+	}
+	QSslCertificate switchCert(certlist[0]);
 
 	// add the server certificate to the CA database
 	std::vector<QSslCertificate> extraCerts;
