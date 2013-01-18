@@ -1,5 +1,5 @@
 import eol_scons
 
 env = Environment(tools=['default', 'osxqtapp'])
-proxyapp = env.OsxQtApp('.', '#/proxy/proxy', 'proxy.icns')
+proxyapp = env.OsxQtApp('.', '#/proxy/proxy', '#/Resources/proxy/proxyIcon.icns')
 Default(proxyapp)
