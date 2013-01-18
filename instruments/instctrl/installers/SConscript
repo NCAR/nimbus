@@ -1,0 +1,5 @@
+import sys
+
+if (sys.platform == 'darwin'):
+	SConscript('mac/SConscript')
+
