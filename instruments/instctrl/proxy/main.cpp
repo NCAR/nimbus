@@ -119,6 +119,9 @@ int main(int argc, char** argv)
 		exit(1);
 	}
 
+	// Create the Qt application
+	QApplication app(argc, argv);
+
 	// Get the certs
 	QList<QSslCertificate> certlist;
 
@@ -139,9 +142,6 @@ int main(int argc, char** argv)
 	// add the server certificate to the CA database
 	std::vector<QSslCertificate> extraCerts;
 	extraCerts.push_back(switchCert);
-
-	// Create the Qt application
-	QApplication app(argc, argv);
 
     // Create the SSL proxy. It will wait to connect with the switch,
 	// until requested via a call connectToServer().
