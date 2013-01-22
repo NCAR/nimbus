@@ -1,3 +1,5 @@
+import sys
+
 tools = Split("""
   default 
   ssl
@@ -28,6 +30,11 @@ headers = Split("""
 
 proxy = env.Program('proxy', sources)
 env.Default(proxy)
+
+# Add proxy to the Linux deploy target
+if (sys.platform in ['posix','linux', 'linux2']):
+    deploy = env.DeployProgram('proxy')
+    env.Default(deploy)
 
 env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Proxy" })
 doxref = env.Apidocs(sources + headers)

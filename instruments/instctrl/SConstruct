@@ -5,19 +5,28 @@ import sys
 import os
 import eol_scons
 
-def RemoteInstControl(env):
+def RIC(env):
     # set the optimization/debuging
     env.Replace(CCFLAGS=['-g'])	
     # set attributes specific to the OS
     if sys.platform in ['posix','linux', 'linux2']:
-    	pass
+        shared_libs = Split("""
+           QtCore
+           QtGui
+           QtNetwork
+           boost_program_options
+		""")
+    	env.AppendUnique(DEPLOY_SHARED_LIBS=shared_libs)
+    	#env['DEPLOY_DIRECTORY'] = '#/installers/linux/RIC'
+
     elif env['PLATFORM'] == 'win32':
         # specializations for windows builds
         # Boost
         env['BOOST_LIBRARY_SUFFIX'] = '-mgw46-mt-1_42'
         env.AppendUnique(CPPPATH=[env['OPT_PREFIX']+'/include/boost-1_42'])
         # add compiler switch to disable the console window
-        #env.AppendUnique(LINKFLAGS=['-Wl,-subsystem,windows'])  
+        #env.AppendUnique(LINKFLAGS=['-Wl,-subsystem,windows']) 
+         
     elif env['PLATFORM'] == 'darwin':
     	# Mac OSX setup
         # These flags cause the apps to be runnable on earlier versions of OSX.
@@ -28,7 +37,7 @@ def RemoteInstControl(env):
 
     return env
 
-env = Environment(tools = ['default', 'svninfo'], GLOBAL_TOOLS = ['prefixoptions', 'deploy', RemoteInstControl])
+env = Environment(tools = ['default', 'svninfo'], GLOBAL_TOOLS = ['prefixoptions', 'deploy', RIC])
 
 # Create SVN info file. Remove the previous one to insure that it is regenerated.
 if os.access('#/svnInfo.h', os.W_OK):

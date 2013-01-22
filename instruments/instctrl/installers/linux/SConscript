@@ -1,3 +1,19 @@
-env = Environment(tools = ['default', 'deploy'])
+env = Environment(tools = ['default',])
 
-env['DEPLOY_DIRECTORY'] = 'distro'
+# Copy other artifacts into the Linux deployment
+sources = Split("""
+  #/Resources/proxy/proxyIcon_512x512x32.png
+  run_switch
+  run_proxy
+""")
+
+targets = Split("""
+   /bin/proxyIcon.png
+  /bin/run_switch
+  /bin/run_proxy
+""")
+
+for t,s in zip(targets, sources):
+    t = env['DEPLOY_DIRECTORY']+t
+    artifact = Command(t , s, Copy("$TARGET","$SOURCE"))
+    env.Default(artifact)

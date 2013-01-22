@@ -34,9 +34,9 @@ Overview.h
 switch = env.Program('switch', sources)
 env.Default(switch)
 
+# Add switch to the Linux deploy target
 if (sys.platform in ['posix','linux', 'linux2']):
-    print 'deploy switch'
-    deploy = env.DeployProgram(switch)
+    deploy = env.DeployProgram('switch')
     env.Default(deploy)
 
 env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Switch" })
