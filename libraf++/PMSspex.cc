@@ -137,7 +137,7 @@ PMSspex::~PMSspex()
     int	i;
 
     for (i = 0; PMSfile[i]; ++i)
-      free(PMSfile[i]);
+      delete [] PMSfile[i];
 
     delete [] PMSfile;
     }
