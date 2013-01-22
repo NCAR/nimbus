@@ -1,5 +1,8 @@
 import sys
 
+if (sys.platform in ['posix','linux', 'linux2']):
+	SConscript('linux/SConscript')
+
 if (sys.platform == 'darwin'):
 	SConscript('mac/SConscript')
 

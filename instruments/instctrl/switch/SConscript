@@ -1,3 +1,5 @@
+import sys
+
 tools = Split("""
   default 
   boost
@@ -31,6 +33,11 @@ Overview.h
 
 switch = env.Program('switch', sources)
 env.Default(switch)
+
+if (sys.platform in ['posix','linux', 'linux2']):
+    print 'deploy switch'
+    deploy = env.DeployProgram(switch)
+    env.Default(deploy)
 
 env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Switch" })
 doxref = env.Apidocs(sources + headers)

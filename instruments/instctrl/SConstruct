@@ -10,7 +10,7 @@ def RemoteInstControl(env):
     env.Replace(CCFLAGS=['-g'])	
     # set attributes specific to the OS
     if sys.platform in ['posix','linux', 'linux2']:
-        pass
+    	pass
     elif env['PLATFORM'] == 'win32':
         # specializations for windows builds
         # Boost
@@ -28,7 +28,7 @@ def RemoteInstControl(env):
 
     return env
 
-env = Environment(tools = ['default', 'svninfo'], GLOBAL_TOOLS = ['prefixoptions', RemoteInstControl])
+env = Environment(tools = ['default', 'svninfo'], GLOBAL_TOOLS = ['prefixoptions', 'deploy', RemoteInstControl])
 
 # Create SVN info file. Remove the previous one to insure that it is regenerated.
 if os.access('#/svnInfo.h', os.W_OK):
