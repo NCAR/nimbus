@@ -27,7 +27,7 @@ void processArgs(char **argv);
 void
 usage()
 {
-  cerr << "netCDF to IWG1.\n  Usage: nc2iwg1 [-c] file.nc\n";
+  cerr << "netCDF variable list.\n  Usage: ncvavrlist [-c] file.nc\n";
   cerr << "    -c: output comma separated values (CSV).\n";
   cerr << "    Read a netCDF file [file.nc] and output variable names, units, and titles.\n";
   exit(1);
