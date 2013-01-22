@@ -1,19 +1,24 @@
 env = Environment(tools = ['default',])
 
 # Copy other artifacts into the Linux deployment
-sources = Split("""
-  #/Resources/proxy/proxyIcon_512x512x32.png
-  run_switch
-  run_proxy
-""")
+sources_targets = [
+  ['run_switch',                                 '/bin/run_switch'            ],
+  ['run_proxy',                                  '/bin/run_proxy'             ],
+  ['#/Resources/proxy/proxyIcon_512x512x32.png', '/resources/proxyIcon.png'   ],
+  ['#/switch/ACSwitch.ini',                      '/resources/ACSwitch.ini'    ],
+  ['#/switch/GroundSwitch.ini',                  '/resources/GroundSwitch.ini'],
+  ['#/switch/Switch-AVAPS.ini',                  '/resources/Switch-AVAPS.ini'],
+  ['#/proxy/Proxy-AVAPS.ini',                    '/resources/Proxy-AVAPS.ini' ],
+  ['#/test_certs/client.crt',                    '/test_certs/client.crt'     ],
+  ['#/test_certs/client.key',                    '/test_certs/client.key'     ],
+  ['#/test_certs/server.crt',                    '/test_certs/server.crt'     ],
+  ['#/test_certs/server.key',                    '/test_certs/server.key'     ],
+  ['#/test_certs/udpcipher.key',                 '/test_certs/udpcipher.key'  ],
+]
 
-targets = Split("""
-   /bin/proxyIcon.png
-  /bin/run_switch
-  /bin/run_proxy
-""")
-
-for t,s in zip(targets, sources):
+for pair in sources_targets:
+    s = pair[0]
+    t = pair[1]
     t = env['DEPLOY_DIRECTORY']+t
     artifact = Command(t , s, Copy("$TARGET","$SOURCE"))
     env.Default(artifact)
