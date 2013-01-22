@@ -174,7 +174,7 @@ void netCDF::readStartEndTime(Config & cfg)
     time_t st, et;
     strptime(units->as_string(0), frmt, &tm);
     st = mktime(&tm) + v->as_int(0);
-    et = st + v->as_int(var->num_vals()-1);
+    et = mktime(&tm) + v->as_int(var->num_vals()-1);
     cout << "NetCDF start time : " << ctime(&st);
     cout << "         end time : " << ctime(&et);
 
