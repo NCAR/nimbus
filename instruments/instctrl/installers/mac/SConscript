@@ -1,5 +1,9 @@
 import eol_scons
 
-env = Environment(tools=['default', 'osxqtapp'])
-proxyapp = env.OsxQtApp('.', '#/proxy/proxy', '#/Resources/proxy/proxyIcon.icns')
+env = Environment(tools=['default', 'osxqtapp', 'svninfo'])
+
+apprevision = env['SVNREVISION']
+appname = 'Proxy-' + apprevision
+
+proxyapp = env.OsxQtApp('.', '#/proxy/proxy', '#/Resources/proxy/proxyIcon.icns', appname, apprevision)
 Default(proxyapp)
