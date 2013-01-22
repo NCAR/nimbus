@@ -1,3 +1,4 @@
+import sys
 tools = ['doxygen']
 env = Environment(tools = ['default'] + tools)
 
@@ -8,6 +9,8 @@ def evp(env):
     env.AppendUnique(LIBPATH=[evpDir])
     env.AppendUnique(LIBS=['evp'])
     env.AppendUnique(LIBS=['crypto'])
+    if (sys.platform=='win32'):
+        env.Append(LIBS=['gdi32'])
 #    env.AppendDoxref(doxref[0])
     env.Require(tools)
 

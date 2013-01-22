@@ -12,10 +12,10 @@ def RemoteInstControl(env):
     if sys.platform in ['posix','linux', 'linux2']:
         pass
     elif env['PLATFORM'] == 'win32':
-        # Add an include above the qt modules. This is needed since the header files are referenced 
-        # below the module name.
-        qt4include = env['QT4DIR']+'/include'
-        env.AppendUnique(CPPPATH=[qt4include,]) 
+        # specializations for windows builds
+        # Boost
+        env['BOOST_LIBRARY_SUFFIX'] = '-mgw46-mt-1_42'
+        env.AppendUnique(CPPPATH=[env['OPT_PREFIX']+'/include/boost-1_42'])
         # add compiler switch to disable the console window
         env.AppendUnique(LINKFLAGS=['-Wl,-subsystem,windows'])  
     elif env['PLATFORM'] == 'darwin':
@@ -28,7 +28,7 @@ def RemoteInstControl(env):
 
     return env
 
-env = Environment(tools = ['default', 'svninfo'], GLOBAL_TOOLS = [RemoteInstControl])
+env = Environment(tools = ['default', 'svninfo'], GLOBAL_TOOLS = ['prefixoptions', RemoteInstControl])
 
 # Create SVN info file. Remove the previous one to insure that it is regenerated.
 if os.access('#/svnInfo.h', os.W_OK):

@@ -1,3 +1,5 @@
+import sys
+
 ourDir = Dir('.').abspath
 ourName = 'protocol'
 
@@ -12,6 +14,9 @@ def protocol(env):
     env.AppendDoxref(doxref[0])
     env.Require(tools)
     env.EnableQt4Modules(['QtCore'])
+    if (sys.platform=='win32'):
+        env.Append(LIBS=['gdi32'])
+    
 
 Export(ourName)
 

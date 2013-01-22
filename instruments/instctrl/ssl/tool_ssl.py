@@ -8,7 +8,7 @@ sslDir = Dir('.').abspath
 def ssl(env):
     env.AppendUnique(CPPPATH = sslDir)
     env.AppendUnique(LIBPATH=[sslDir])
-    env.AppendUnique(LIBS=['ssl'])
+    env.AppendUnique(LIBS=['ricssl'])
     env.AppendDoxref(doxref[0])
     env.Require(tools)
     qtmods = ['QtCore', 'QtNetwork',]
@@ -32,10 +32,10 @@ headers = Split("""
  SslSocket.h
 """)
 
-lib = env.Library('ssl', sources)
+lib = env.Library('ricssl', sources)
 Default(lib)
 
-env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "ssl library" })
+env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "RIC ssl library" })
 doxref = env.Apidocs(sources + headers)
 
 SConscript("test/SConscript")

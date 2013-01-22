@@ -9,6 +9,8 @@ evp
 """)
 
 env = Environment(tools = ['default']+tools)
+if (sys.platform=='win32'):
+    env.Append(LIBS=['gdi32'])
 
 gensymkeysrcs = ['gensymkey.cc']
 gensymkey = env.Program('gensymkey', gensymkeysrcs);
