@@ -916,7 +916,8 @@ void ValidateOutputFile(Widget w, XtPointer client, XtPointer call)
 
   /* Else if it exists, warn user.
    */
-  HandleWarning("Output file exists.", StartProcessing, CancelSetup);
+  sprintf(buffer, "Output file [%s] exists.", OutputFileName);
+  HandleWarning(buffer, StartProcessing, CancelSetup);
 
 }	/* END VALIDATEOUTPUTFILE */
 
