@@ -185,7 +185,7 @@ void LoadSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
 
         if (strncmp(target, "nCOEF=", 6) == 0)
         {
-          if ( strcmp(&cfg.FlightDate()[6], "2013") < 0 || !cfg.ProductionRun() )
+          if (cfg.CalibrationsAppliedBy() == Config::NIMBUS || !cfg.ProductionRun())
           {
             size_t order = atoi(strchr(target, '=')+1);
 
@@ -353,7 +353,7 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
       fprintf(fp, "DQ=%s OR=%zu", 
 		raw[i]->DataQuality, raw[i]->OutputRate);
 
-      if (strcmp(&cfg.FlightDate()[6], "2013") < 0 || !cfg.ProductionRun())
+      if (cfg.CalibrationsAppliedBy() == Config::NIMBUS || !cfg.ProductionRun())
       {
         fprintf(fp, " nCOEF=%zu", raw[i]->cof.size());
 
