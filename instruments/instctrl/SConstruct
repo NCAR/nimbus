@@ -41,7 +41,7 @@ def RIC(env):
 
     return env
 
-env = Environment(tools = ['default', 'svninfo'], GLOBAL_TOOLS = ['prefixoptions', 'deploy', RIC])
+env = Environment(tools = ['default', 'svninfo', 'releaseid'], GLOBAL_TOOLS = ['prefixoptions', 'deploy', RIC])
 
 # Create SVN info file. 
 svnInfo = env.SvnInfo('#/svnInfo.h', '#')
