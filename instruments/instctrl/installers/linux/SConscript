@@ -1,4 +1,4 @@
-env = Environment(tools = ['default',])
+env = Environment(tools = ['default','svninfo'])
 
 # Copy other artifacts into the Linux deployment
 sources_targets = [
@@ -22,3 +22,22 @@ for pair in sources_targets:
     t = env['DEPLOY_DIRECTORY']+t
     artifact = Command(t , s, Copy("$TARGET","$SOURCE"))
     env.Default(artifact)
+
+# Remove the deploy directory on a clean. For lack of a better choice, 
+# tie it to the switch program.
+env.Clean('#/switch/switch', env['DEPLOY_DIRECTORY'])
+
+# Make a trafile from the deploy target
+revision = env['SVNREVISION']
+revision = revision.replace(':','-')
+ricrev = 'RIC-' + revision
+
+tardest = env.Dir('.').get_abspath()+ '/' + ricrev + '.tar.gz'
+
+tarcmd =           'cp -R deploy/ /tmp/' + ricrev +'; '
+tarcmd = tarcmd +  'cd /tmp; '
+tarcmd = tarcmd +  'tar -czvf ' + tardest + ' ' + ricrev + '; '
+tarcmd = tarcmd +  'rm -rf /tmp/' + ricrev + '; '
+tarfile = Command(tardest, '#/deploy', tarcmd)
+env.Default(tarfile)
+
