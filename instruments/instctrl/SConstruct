@@ -5,6 +5,10 @@ import sys
 import os
 import eol_scons
 
+# Remove the previous svnInfo.h to insure that it is regenerated.
+if os.access('#/svnInfo.h', os.W_OK):
+    os.remove('#/svnInfo.h')
+    
 def RIC(env):
     # set the optimization/debuging
     env.Replace(CCFLAGS=['-g'])	
@@ -17,7 +21,7 @@ def RIC(env):
            boost_program_options
 		""")
     	env.AppendUnique(DEPLOY_SHARED_LIBS=shared_libs)
-    	#env['DEPLOY_DIRECTORY'] = '#/installers/linux/RIC'
+    	env['DEPLOY_DIRECTORY'] = env.Dir('#/installers/linux/RIC').get_abspath()
 
     elif env['PLATFORM'] == 'win32':
         # specializations for windows builds
@@ -39,9 +43,7 @@ def RIC(env):
 
 env = Environment(tools = ['default', 'svninfo'], GLOBAL_TOOLS = ['prefixoptions', 'deploy', RIC])
 
-# Create SVN info file. Remove the previous one to insure that it is regenerated.
-if os.access('#/svnInfo.h', os.W_OK):
-    os.remove('#/svnInfo.h')
+# Create SVN info file. 
 svnInfo = env.SvnInfo('#/svnInfo.h', '#')
 
 SConscript("tools/SConscript")
