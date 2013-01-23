@@ -25,8 +25,8 @@ parseCommandLine(int argc, char** argv,
 
 	po::options_description descripts("Options");
 	descripts.add_options()
-	("config,c", po::value<std::string>(&configFile)->implicit_value(""), "instrument configuration file")
-	("help,h",                                                            "help")
+	("config,c", po::value<std::string>(&configFile), "instrument configuration file")
+	("help,h",                                        "help")
 	;
 
 	po::variables_map vm;
