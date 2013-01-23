@@ -9,6 +9,7 @@ sources_targets = [
   ['#/switch/GroundSwitch.ini',                  '/resources/GroundSwitch.ini'],
   ['#/switch/Switch-AVAPS.ini',                  '/resources/Switch-AVAPS.ini'],
   ['#/switch/Switch-HCR.ini',                    '/resources/Switch-HCR.ini'  ],
+  ['#/proxy/Proxy.ini',                          '/resources/Proxy.ini'       ],
   ['#/proxy/Proxy-AVAPS.ini',                    '/resources/Proxy-AVAPS.ini' ],
   ['#/test_certs/client.crt',                    '/test_certs/client.crt'     ],
   ['#/test_certs/client.key',                    '/test_certs/client.key'     ],
