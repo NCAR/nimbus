@@ -353,10 +353,9 @@ void SaveSetup_OK(Widget w, XtPointer client, XmFileSelectionBoxCallbackStruct *
       fprintf(fp, "DQ=%s OR=%zu", 
 		raw[i]->DataQuality, raw[i]->OutputRate);
 
-      if (!cfg.ProductionRun())
+      if (strcmp(&cfg.FlightDate()[6], "2013") < 0 || !cfg.ProductionRun())
       {
-        fprintf(fp, " nCOEF=%zu", 
-		raw[i]->DataQuality, raw[i]->OutputRate, raw[i]->cof.size());
+        fprintf(fp, " nCOEF=%zu", raw[i]->cof.size());
 
         for (size_t j = 0; j < raw[i]->cof.size(); ++j)
           fprintf(fp, " %e", raw[i]->cof[j]);
