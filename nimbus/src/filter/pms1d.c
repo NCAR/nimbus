@@ -115,6 +115,12 @@ void PMS1D_SetupForADS3()
   setSerialNumberAndProbeType("A1DP", "F2DP001", PROBE_PMS2D | PROBE_2DP);
   setSerialNumberAndProbeType("A2DP", "F2DP001", PROBE_PMS2D | PROBE_2DP);
 
+  if (cfg.ProjectName().compare("SAANGRIA-TEST") == 0)
+  {
+    setSerialNumberAndProbeType("A1DC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+  }
+  else
   if (cfg.ProjectName().compare("TEST-C130") == 0)
   {
     setSerialNumberAndProbeType("AS100_old", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
