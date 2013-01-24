@@ -41,7 +41,7 @@ void casasInit(var_base *varp)
   char		*p;
 
   if (varp->SerialNumber.length() == 0) {
-    sprintf(buffer, "asas.c: %s has no serial number, fatal.", varp->name);
+    sprintf(buffer, "asas.c: ASAS, PCASP, or UHSAS %s has no serial number, fatal.", varp->name);
     HandleFatalError(buffer);
     }
 
@@ -77,10 +77,11 @@ void casasInit(var_base *varp)
      * 0th bin (so 31 bins instead of 30).  ADS3 will not do this.  PMSspecs
      * files should now have FirstBin of 0 instead of 1.  Re: -1 vs. -0 below.
      */
-    sprintf(buffer, "CELL_SIZE_%d", varp->Length - 1);
+    sprintf(buffer, "CELL_SIZE_%zu", varp->Length - 1);
     if ((p = GetPMSparameter(serialNumber, buffer)) == NULL) {
-      sprintf(buffer, "pcasp: serial number = [%s]: %s not found.", serialNumber, buffer);
-      HandleFatalError(buffer);
+      char msg[128];
+      sprintf(msg, "pcasp: serial number = [%s]: %s not found.", serialNumber, buffer);
+      HandleFatalError(msg);
       }
     }
 
