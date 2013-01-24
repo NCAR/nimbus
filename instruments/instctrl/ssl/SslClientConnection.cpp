@@ -52,23 +52,23 @@ void SslClientConnection::socketStateChanged(Ssl::SslSocket::SocketState state) 
 
 	switch (state) {
 	case SslSocket::SS_Unconnected: {
-		qDebug() << "ssl socket is unconnected, what does this mean?";
+		qDebug() << "SslSocket is unconnected, what does this mean?";
 		break;
 	}
 	case SslSocket::SS_Connected: {
-		std::cout << "ssl socket is connected" << std::endl;
+		std::cout << "SslSocket is connected" << std::endl;
 		break;
 	}
 	case SslSocket::SS_Encrypted: {
-		std::cout << "ssl socket is encrypted" << std::endl;
+		std::cout << "SslSocket is encrypted" << std::endl;
 		break;
 	}
 	case SslSocket::SS_Disconnected: {
-		std::cout << "ssl socket is disconnected" << std::endl;
+		std::cout << "SslSocket is disconnected" << std::endl;
 		break;
 	}
 	default: {
-		std::cout << "ssl socket changed to unknown state:" << state << std::endl;
+		std::cout << "SslSocket changed to unknown state:" << state << std::endl;
 		break;
 	}
 	};

@@ -19,7 +19,7 @@ SslSocket::SslSocket(
 	_state(SS_Unconnected),
 	_extraCerts(extraCerts)
 {
-	qDebug() << "Create a ServerSocket with descriptor" << descriptor;
+	qDebug() << "Create a Server SslSocket with descriptor" << descriptor;
 	// Initialize the key and certificate and connect signals
 	init();
 
@@ -47,7 +47,7 @@ SslSocket::SslSocket(
 	_state(SS_Unconnected),
 	_extraCerts(extraCerts)
 {
-	qDebug() << "Create client socket to connect to server \""
+	qDebug() << "Create Client SslSocket to connect to server \""
 			 << serverHost.c_str() << "\" on port" << port;
 	// Initialize the key and certificate and connect signals
 	init();
@@ -84,7 +84,7 @@ void SslSocket::init() {
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::connected() {
-	qDebug() << "connected";
+	qDebug() << "SslSocket connected";
 
 	_state = SS_Connected;
 	emit stateChanged(_state);
@@ -92,7 +92,7 @@ void SslSocket::connected() {
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::disconnected() {
-	qDebug() << "disconnected";
+	qDebug() << "SslSocket disconnected";
 
 	_state = SS_Disconnected;
 	emit stateChanged(_state);
@@ -101,7 +101,7 @@ void SslSocket::disconnected() {
 /////////////////////////////////////////////////////////////////////
 void SslSocket::socketError(QAbstractSocket::SocketError errorCode) {
 	std::string errorMsg = errorString().toStdString();
-	qDebug() << "socket error(" << errorCode <<"):" << errorMsg.c_str();
+	qDebug() << "SslSocket error(" << errorCode <<"):" << errorMsg.c_str();
 	emit sslSocketError(errorCode, errorMsg);
 }
 
@@ -110,7 +110,7 @@ void SslSocket::encrypted() {
 	QSslCertificate peerCert = peerCertificate();
 	QString  O(peerCert.issuerInfo(QSslCertificate::Organization));
 	QString OU(peerCert.issuerInfo(QSslCertificate::OrganizationalUnitName));
-	qDebug() << "encrypted, peer certificate: Organization:"
+	qDebug() << "SslSocket encrypted, peer certificate: Organization:"
 			<< O << " Unit:" << OU;
 
 	_state = SS_Encrypted;
@@ -119,12 +119,15 @@ void SslSocket::encrypted() {
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::modeChanged(QSslSocket::SslMode mode) {
-	qDebug() << "mode changed to" << mode;
+	if (mode == QSslSocket::SslClientMode)
+		qDebug() << "SslSocket changed to Client mode";
+	if (mode == QSslSocket::SslServerMode)
+		qDebug() << "SslSocket changed to Server mode";
 }
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::sslErrors(const QList<QSslError>& errors) {
-	qDebug() << "SslErrors:" << errors;
+	qDebug() << "SslSocket sslErrors:" << errors;
 }
 
 /////////////////////////////////////////////////////////////////////

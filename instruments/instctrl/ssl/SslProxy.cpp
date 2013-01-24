@@ -145,7 +145,7 @@ void SslProxy::initIncomingUDPsockets() {
 
 	connect(_incomingUdpSocket, SIGNAL(readyRead()), this, SLOT(udpReadyRead()));
 
-	qDebug() << "Proxy will listen on port " << port;
+	qDebug() << "Proxy will listen on port" << port;
 
 }
 
