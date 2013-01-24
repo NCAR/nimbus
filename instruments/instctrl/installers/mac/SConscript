@@ -3,7 +3,11 @@ import eol_scons
 env = Environment(tools=['default', 'osxqtapp', 'svninfo'])
 
 apprevision = env['SVNREVISION']
-appname = 'Proxy-' + apprevision
 
-proxyapp = env.OsxQtApp('.', '#/proxy/proxy', '#/Resources/proxy/proxyIcon.icns', appname, apprevision)
+proxyappname = 'Proxy-' + apprevision
+proxyapp = env.OsxQtApp('.', '#/proxy/proxy', '#/Resources/proxy/proxyIcon.icns', proxyappname, apprevision)
 Default(proxyapp)
+
+switchappname = 'Switch-' + apprevision
+switchapp = env.OsxQtApp('.', '#/switch/switch', '#/Resources/proxy/proxyIcon.icns', switchappname, apprevision)
+Default(switchapp)
