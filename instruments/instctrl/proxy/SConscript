@@ -28,12 +28,12 @@ headers = Split("""
  ui_ProxyMainWindow.h
 """)
 
-proxy = env.Program('proxy', sources)
+proxy = env.Program('ric_proxy', sources)
 env.Default(proxy)
 
 # Add proxy to the Linux deploy target
 if (sys.platform in ['posix','linux', 'linux2']):
-    deploy = env.DeployProgram('proxy')
+    deploy = env.DeployProgram('ric_proxy')
     env.Default(deploy)
 
 env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Proxy" })

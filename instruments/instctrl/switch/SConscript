@@ -31,12 +31,12 @@ SslProxyServer.h
 Overview.h
 """)
 
-switch = env.Program('switch', sources)
-env.Default(switch)
+ric_switch = env.Program('ric_switch', sources)
+env.Default(ric_switch)
 
 # Add switch to the Linux deploy target
 if (sys.platform in ['posix','linux', 'linux2']):
-    deploy = env.DeployProgram('switch')
+    deploy = env.DeployProgram('ric_switch')
     env.Default(deploy)
 
 env['DOXYFILE_DICT'].update({ "PROJECT_NAME" : "Switch" })

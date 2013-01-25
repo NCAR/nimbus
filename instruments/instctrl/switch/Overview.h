@@ -55,17 +55,17 @@
 /// Aircraft switch:
 /// @code
 /// cd switch
-/// ./switch -c ACSwitch.ini
+/// ./ric_switch -c ACSwitch.ini
 /// @endcode
 /// Ground switch:
 /// @code
 /// cd switch
-/// ./switch -c GroundSwitch.ini
+/// ./ric_switch -c GroundSwitch.ini
 /// @endcode
 /// User proxy:
 /// @code
 /// cd Proxy
-/// ./proxy -c Proxy.ini
+/// ./ric_proxy -c Proxy.ini
 /// @endcode
 ///
 /// AVAPS status messages from the AVAPS simulator will transit the aircraft switch, ground switch and proxy, to be delivered to the AGS
