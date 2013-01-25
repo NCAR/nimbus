@@ -31,14 +31,14 @@ public:
 	};
 public:
 	/// Default constructor.
-	InstConfig();
+	InstConfig() throw (std::string);
 	/// Constructor for a specified configuration file path.
 	/// @param configFile Path to the configuration file that holds the parameters.
-	InstConfig(const std::string configFile);
+	InstConfig(const std::string configFile) throw (std::string);
 	/// Constructor for a configuration in the default location.
     /// @param organization The organization.
     /// @param application The application.
-	InstConfig(const std::string organization, const std::string application);
+	InstConfig(const std::string organization, const std::string application) throw (std::string);
 	/// destructor
 	virtual ~InstConfig();
 	/// @returns The port number that will be read for incoming message datagrams

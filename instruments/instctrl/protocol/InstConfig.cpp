@@ -4,18 +4,18 @@
 #include <sstream>
 
 /////////////////////////////////////////////////////////////////////
-InstConfig::InstConfig() {
+InstConfig::InstConfig() throw (std::string) {
 
 }
 /////////////////////////////////////////////////////////////////////
-InstConfig::InstConfig(const std::string configPath):
+InstConfig::InstConfig(const std::string configPath) throw (std::string):
 _instConfigPath(configPath)
 {
 	init();
 }
 
 /////////////////////////////////////////////////////////////////////
-InstConfig::InstConfig(const std::string organization, const std::string application):
+InstConfig::InstConfig(const std::string organization, const std::string application) throw (std::string):
 	_instConfigOrg(organization),
 	_instConfigApp(application)
 {
