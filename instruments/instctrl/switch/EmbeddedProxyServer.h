@@ -32,6 +32,9 @@ class EmbeddedProxyServer: public ProxyServer {
 	protected:
 		EmbeddedProxy* _proxy;
 		std::vector<InstConfig> _instConfigs;
+		/// Book keeping lists of message and the proxy that
+		/// should be output. The key is the message ID
+		std::map<std::string, EmbeddedProxy*> _msgRouting;
 };
 
 #endif /* SWITCHEMBEDDEDSERVER_H_ */

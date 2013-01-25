@@ -4,7 +4,6 @@
 EmbeddedProxy::EmbeddedProxy(std::map<std::string, SslProxy::InstMsgInfo> messages):
 _messages(messages)
 {
-
 	initIncomingUDPsockets();
 
 	initOutgoingUDPsocket();
@@ -32,8 +31,7 @@ void EmbeddedProxy::initIncomingUDPsockets() {
 
 	connect(_incomingUdpSocket, SIGNAL(readyRead()), this, SLOT(udpReadyRead()));
 
-	qDebug() << "Proxy will listen on port " << _incomingUdpPort;
-
+	qDebug() << "Proxy will listen on port" << _incomingUdpPort;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -129,4 +127,3 @@ void EmbeddedProxy::sendMsg(SslProxy::InstMsgInfo& info, Protocols::Message& msg
 		}
 	}
 }
-

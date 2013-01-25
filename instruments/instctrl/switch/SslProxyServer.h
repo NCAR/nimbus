@@ -30,7 +30,7 @@ class SslProxyServer: public ProxyServer {
 		/// @param certFile Path to the file containing the certificate that matched the private key.
 		/// @param switchPort The server port number.
 		/// @param proxies The allowable proxies.
-	SslProxyServer(std::string sslKeyFile,
+		SslProxyServer(std::string sslKeyFile,
 				QSslCertificate sslCertificate,
 				int switchPort,
 				std::vector<SslProxyServer::SslProxyDef> proxies);
