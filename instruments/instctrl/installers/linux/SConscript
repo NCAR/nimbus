@@ -11,11 +11,7 @@ sources_targets = [
   ['#/switch/Switch-HCR.ini',                    '/resources/Switch-HCR.ini'  ],
   ['#/proxy/Proxy.ini',                          '/resources/Proxy.ini'       ],
   ['#/proxy/Proxy-AVAPS.ini',                    '/resources/Proxy-AVAPS.ini' ],
-  ['#/test_certs/client.crt',                    '/test_certs/client.crt'     ],
-  ['#/test_certs/client.key',                    '/test_certs/client.key'     ],
-  ['#/test_certs/server.crt',                    '/test_certs/server.crt'     ],
-  ['#/test_certs/server.key',                    '/test_certs/server.key'     ],
-  ['#/test_certs/udpcipher.key',                 '/test_certs/udpcipher.key'  ],
+  ['#/test_certs',                               '/test_certs                 ],
 ]
 
 for pair in sources_targets:
