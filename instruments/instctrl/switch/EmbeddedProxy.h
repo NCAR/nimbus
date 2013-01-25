@@ -18,10 +18,13 @@ class EmbeddedProxy: public QObject {
 	Q_OBJECT
 public:
 	/// Constructor.
+	/// @param Id The ID for the proxy, usually the name of instrument/user
 	/// @param messages Details about each message type that this proxy will handle.
-	EmbeddedProxy(std::map<std::string, SslProxy::InstMsgInfo> messages);
+	EmbeddedProxy(std::string Id, std::map<std::string, SslProxy::InstMsgInfo> messages);
 	/// destructor.
 	virtual ~EmbeddedProxy();
+	/// @return the ID of proxy
+	std::string Id();
 	/// Send a message to the user/instrument
 	/// @param The message that is to be sent as a datagram.
 	void send(Protocols::Message msg);
@@ -35,7 +38,6 @@ protected slots:
 	/// Called when there are incoming datagrams available to be read.
 	void udpReadyRead();
 
-
 protected:
 	/// Initialize the incoming UDP socket. One socket is required
 	/// per port that we are listening on.
@@ -48,6 +50,8 @@ protected:
 	/// @param info The specifics of where this message should go.
 	/// @param msg The message.
 	void sendMsg(SslProxy::InstMsgInfo& info, Protocols::Message& msg);
+	/// The proxy ID - usually the name of instrument/user
+	std::string _Id;
 	/// The messages that this proxy can handle.
 	std::map<std::string, SslProxy::InstMsgInfo> _messages;
 	/// Port number for incoming datagrams
@@ -56,7 +60,6 @@ protected:
 	QUdpSocket* _incomingUdpSocket;
 	/// The outgoing datagram socket.
 	QUdpSocket* _outgoingUdpSocket;
-
 
 };
 

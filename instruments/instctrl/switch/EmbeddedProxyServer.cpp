@@ -19,12 +19,12 @@ _instConfigs(instConfigs)
 			msg._destPort              = instConfig.destPort();
 			msg._msgId                 = instMessages[i].msgID;
 			msg._broadcast             = instMessages[i].broadcast;
-			std::cout << "message id: " << msg._msgId << std::endl;
+			std::cout << "Message id: " << msg._msgId << std::endl;
 			messages[msg._msgId] = msg;
 			msgIds.push_back(instMessages[i].msgID);
 		}
 
-		_proxy = new EmbeddedProxy(messages);
+		_proxy = new EmbeddedProxy(instConfig.instrumentName(), messages);
 
 		// Capture the proxy messages
 		connect(_proxy, SIGNAL(msgFromProxy(Protocols::Message)), this, SLOT(msgFromProxySlot(Protocols::Message)));
@@ -46,6 +46,7 @@ void EmbeddedProxyServer::sendToProxy(Protocols::Message message) {
 
 	// See if it is in our list of accepted messages
 	if (_msgRouting.find(msgID) != _msgRouting.end()) {
+		//std::cout << "Routing " << msgID << " via proxy " << _msgRouting[msgID]->Id() << std::endl;
 		// It is a message we are interested in. Send it via the proxy.
 		_msgRouting[msgID]->send(message);
 	} else {

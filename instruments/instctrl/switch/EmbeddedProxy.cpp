@@ -1,7 +1,9 @@
 #include "EmbeddedProxy.h"
 
 /////////////////////////////////////////////////////////////////////
-EmbeddedProxy::EmbeddedProxy(std::map<std::string, SslProxy::InstMsgInfo> messages):
+EmbeddedProxy::EmbeddedProxy(std::string Id,
+		std::map<std::string, SslProxy::InstMsgInfo> messages) :
+_Id(Id),
 _messages(messages)
 {
 	initIncomingUDPsockets();
@@ -13,6 +15,12 @@ _messages(messages)
 EmbeddedProxy::~EmbeddedProxy() {
 
 }
+
+/////////////////////////////////////////////////////////////////////
+std::string EmbeddedProxy::Id() {
+	return _Id;
+}
+
 /////////////////////////////////////////////////////////////////////
 void EmbeddedProxy::initIncomingUDPsockets() {
 
@@ -25,13 +33,13 @@ void EmbeddedProxy::initIncomingUDPsockets() {
 			QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
 
 	if (!status) {
-		qDebug() << "unable to bind to UDP port " << _incomingUdpPort;
+		qDebug() << "Unable to bind to UDP port " << _incomingUdpPort;
 		return;
 	}
 
 	connect(_incomingUdpSocket, SIGNAL(readyRead()), this, SLOT(udpReadyRead()));
 
-	qDebug() << "Proxy will listen on port" << _incomingUdpPort;
+	qDebug() << "Proxy" << _Id.c_str() << "will listen on port" << _incomingUdpPort;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -41,7 +49,7 @@ void EmbeddedProxy::initOutgoingUDPsocket() {
 
 	std::map<std::string, SslProxy::InstMsgInfo>::iterator it;
 	for (it = _messages.begin(); it != _messages.end(); it++) {
-		qDebug() << "Proxy will send" << it->second._msgId.c_str() <<
+		qDebug() << "Proxy" << _Id.c_str() << "will send" << it->second._msgId.c_str() <<
 				"to" << it->second._destIP.c_str() << ":" << it->second._destPort
 				<< (it->second._broadcast ?"BROADCAST" : "UNICAST");
 	}
@@ -89,8 +97,8 @@ void EmbeddedProxy::send(Protocols::Message msg) {
 		sendMsg(_messages[msgId], msg);
 	} else {
 		/// @todo Handle appropriately; reporting/logging as needed.
-		qDebug() << "Proxy: Unrecognized message" << msgId.c_str()
-				<< "ignored by the proxy";
+		qDebug() << "Proxy" << _Id.c_str() << ": Unrecognized message"
+				 << msgId.c_str() << "ignored by the proxy";
 	}
 }
 
