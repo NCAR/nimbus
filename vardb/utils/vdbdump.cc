@@ -18,7 +18,10 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1993
 
 #include <raf/vardb.h>
 
-extern long	VarDB_nRecords;
+extern "C" {
+  extern long	VarDB_nRecords;
+}
+
 bool tracker = false;
 
 /* -------------------------------------------------------------------- */
@@ -45,7 +48,7 @@ main(int argc, char *argv[])
   }
 
 
-  printf("Version %d, with %d records.\n", ntohl(VarDB_Hdr.Version),
+  printf("Version %d, with %d records.\n", ntohl(varDB_Hdr.Version),
 						VarDB_nRecords);
 
   for (i = 0; i < VarDB_nRecords; ++i)

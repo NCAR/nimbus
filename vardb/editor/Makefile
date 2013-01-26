@@ -8,9 +8,6 @@ LINTLIBS=	${LIBS}
 INCLUDES=	-I${JLOCAL}/include -I/usr/X11R6/include
 CFLAGS=		-Wall -g -O2 ${INCLUDES}
 
-# Solaris
-#LIBS=		-lVarDB -lraf -Wl,-Bstatic -lnetcdf -Wl,-Bdynamic -lXm -lXt -lX11
-
 #Linux
 LIBS=		-L../lib -L${JLOCAL}/lib -L/usr/X11R6/lib -lVarDB -lraf -lnetcdf -lXm -lXt -lX11 -lXext
 
