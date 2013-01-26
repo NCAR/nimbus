@@ -78,6 +78,8 @@ struct var_v2
 	};
 
 
+extern "C" {
+
 typedef struct vardb_hdr VarDB_Hdr;
 
 extern VarDB_Hdr	master_VarDB_Hdr;
@@ -143,5 +145,6 @@ int	VarDB_SetUnits(const char vn[], char units[]),
 	VarDB_SetStandardName(const char vn[], uint32_t value),
 	VarDB_SetReference(const char vn[], uint32_t value),
 	VarDB_SetSpikeSlope(const char vn[], float value);
+}
 
 #endif
