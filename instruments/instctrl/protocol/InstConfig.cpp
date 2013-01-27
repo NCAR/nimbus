@@ -26,11 +26,13 @@ InstConfig::~InstConfig() {
 
 }
 /////////////////////////////////////////////////////////////////////
-void InstConfig::init() {
+void InstConfig::init() throw (std::string) {
 
 	// Get the instrument configuration
 	QtConfig* config;
 	if (_instConfigPath.size() > 0) {
+		// This will create the file if it doesn't already exist. But
+		// the user will need to edit it.
 		config = new QtConfig(_instConfigPath);
 	} else {
 		config = new QtConfig(_instConfigOrg, _instConfigApp);
@@ -42,7 +44,12 @@ void InstConfig::init() {
 	_incomingPort          = config->getInt   ("InstIncomingPort",0);
 	_destHost                = config->getString("InstHostName", "127.0.0.1");
 	_destPort              = config->getInt   ("InstDestPort", 0);
-
+	if (_instName == "INSTRUMENT" || _incomingPort == 0 || _destPort == 0) {
+		std::string errmsg = "The instrument configuration file ";
+		errmsg += config->fileName();
+		errmsg += " contains errors.";
+		throw (errmsg);
+	}
     // Get the message definitions. Create a default entry in case
 	// none are there yet.
     std::vector<std::map<std::string, std::string> > allMsgs;

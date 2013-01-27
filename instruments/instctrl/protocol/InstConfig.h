@@ -54,8 +54,9 @@ public:
     std::vector<MessageInfo> messages();
 
 protected:
-	/// Common initialization. Read the configuration.
-	void init();
+	/// Common initialization. Read the configuration. Throw an exception
+    /// error message if there is a problem with the configuration.
+	void init() throw (std::string);
     /// The instrument name.
     std::string _instName;
     /// The port number that will be read for incoming message datagrams
