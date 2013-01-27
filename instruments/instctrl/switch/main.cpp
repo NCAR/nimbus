@@ -176,79 +176,86 @@ void createEmbeddedSwitch(
 /////////////////////////////////////////////////////////////////////
 int main(int  argc, char** argv){
 
+	try {
 
-	/////////////////////////////////////////////////////////////////
-	// Create the Qt application (i.e. event loop)
-	QCoreApplication app(argc, argv);
+		/////////////////////////////////////////////////////////////////
+		// Create the Qt application (i.e. event loop)
+		QCoreApplication app(argc, argv);
 
 
-	/////////////////////////////////////////////////////////////////
-	// Process command line options
-	std::string configFile;
-	parseCommandLine(argc, argv, configFile);
+		/////////////////////////////////////////////////////////////////
+		// Process command line options
+		std::string configFile;
+		parseCommandLine(argc, argv, configFile);
 
-	/////////////////////////////////////////////////////////////////
-	// Get the configuration
-	QtConfig* config;
-	if (configFile.size()) {
-		config = new QtConfig(configFile);
-	} else {
-		config = new QtConfig("NCAR", "Switch");
-	}
+		/////////////////////////////////////////////////////////////////
+		// Get the configuration
+		QtConfig* config;
+		if (configFile.size()) {
+			config = new QtConfig(configFile);
+		} else {
+			config = new QtConfig("NCAR", "Switch");
+		}
 
-	/////////////////////////////////////////////////////////////////
-	// Get configuration parameters that are used by both types of switch
+		/////////////////////////////////////////////////////////////////
+		// Get configuration parameters that are used by both types of switch
 
-	// Listen on this port for messages from the remote switch
-	int switchLocalPort;
+		// Listen on this port for messages from the remote switch
+		int switchLocalPort;
 
-	// The remote switch IP
-	std::string switchRemoteIP;
+		// The remote switch IP
+		std::string switchRemoteIP;
 
-	// The destination port for messages to the remote switch
-	int switchRemotePort;
+		// The destination port for messages to the remote switch
+		int switchRemotePort;
 
-	// The file containing the key for symmetric cipher encryption over
-	// SwitchConnection. This file must be kept private!
-	std::string switchCipherKey;
+		// The file containing the key for symmetric cipher encryption over
+		// SwitchConnection. This file must be kept private!
+		std::string switchCipherKey;
 
-	getCommonConfig(
-			config,
-			switchLocalPort,
-			switchRemoteIP,
-			switchRemotePort,
-			switchCipherKey);
-
-	/////////////////////////////////////////////////////////////////
-	// Create the desired switch type
-
-	// If SslProxy is true, we will be an SSL proxy switch. Otherwise, we
-	// we will be an embedded proxy switch.
-	bool sslSwitch = config->getBool("SslProxy", true);
-
-	Switch* swtch;
-
-	if (sslSwitch) {
-		createSslSwitch(
-				argc,
-				argv,
+		getCommonConfig(
 				config,
-				&swtch,
 				switchLocalPort,
 				switchRemoteIP,
 				switchRemotePort,
 				switchCipherKey);
-	} else {
-		createEmbeddedSwitch(
-				config,
-				&swtch,
-				switchLocalPort,
-				switchRemoteIP,
-				switchRemotePort,
-				switchCipherKey);
+
+		/////////////////////////////////////////////////////////////////
+		// Create the desired switch type
+
+		// If SslProxy is true, we will be an SSL proxy switch. Otherwise, we
+		// we will be an embedded proxy switch.
+		bool sslSwitch = config->getBool("SslProxy", true);
+
+		Switch* swtch;
+
+		if (sslSwitch) {
+			createSslSwitch(
+					argc,
+					argv,
+					config,
+					&swtch,
+					switchLocalPort,
+					switchRemoteIP,
+					switchRemotePort,
+					switchCipherKey);
+		} else {
+			createEmbeddedSwitch(
+					config,
+					&swtch,
+					switchLocalPort,
+					switchRemoteIP,
+					switchRemotePort,
+					switchCipherKey);
+		}
+
+		// Run the event loop
+		return app.exec();
+	}
+	catch (std::string msg) {
+		std::cerr << msg << std::endl;
+		return 1;
 	}
 
-	// Run the event loop
-	return app.exec();
 
 }
