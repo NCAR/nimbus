@@ -46,7 +46,9 @@ namespace Ssl {
 			int _destPort;
 			/// The destination name or IP for this message. For broadcast messages,
 			/// it is ignored.
-			std::string _destIP;
+			std::string _destHost;
+			/// The IP of the destination, determined from _destHost.
+			QHostAddress _destAddress;
 		};
 
 		/// @param proxyID An identifier for the proxy.

@@ -157,7 +157,7 @@ void SslProxy::initOutgoingUDPsocket() {
 	std::map<std::string, InstMsgInfo>::iterator it;
 	for (it = _messages.begin(); it != _messages.end(); it++) {
 		qDebug() << "Proxy will send" << it->second._msgId.c_str() <<
-				"to" << it->second._destIP.c_str() << ":" << it->second._destPort
+				"to" << it->second._destHost.c_str() << ":" << it->second._destPort
 				<< (it->second._broadcast ?"BROADCAST" : "UNICAST");
 	}
 }
@@ -232,7 +232,7 @@ void SslProxy::sendMsg(SslProxy::InstMsgInfo& info, Protocols::Message& msg) {
 		sent = _outgoingUdpSocket->writeDatagram(
 				text.c_str(),
 				text.size(),
-				QHostAddress(info._destIP.c_str()),
+				info._destAddress,
 				info._destPort);
 	}
 	if (sent != text.size()) {

@@ -7,6 +7,7 @@
 #include <vector>
 #include "Message.h"
 #include "SymCipherProtocol.h"
+#include "QtAddress.h"
 
 /// The communication connection between two switches. It is bi-directional,
 /// exchanging messages with a remote instance of the switch.
@@ -20,15 +21,15 @@ class SwitchConnection: public QObject {
 public:
 	/// Constructor.
 	/// @param localPort The local port for receiving datagrams from the remote switch.
-	/// @param remoteIp The IP address or name of the remote switch.
+	/// @param remoteHost The IP address or name of the remote switch.
 	/// @param remotePort The port number to send datagrams to on the remote switch.
 	/// @param switchCipherKey The symmetric encryption key. It must be of
 	/// length EVPCipher.cipherBlockLength().
 	SwitchConnection(
 			int localPort,
-			std::string remoteIP,
+			std::string remoteHost,
 			int remotePort,
-			std::string switchCipherKey);
+			std::string switchCipherKey) throw(std::string);
 	/// Destructor.
 	virtual ~SwitchConnection();
 
@@ -51,8 +52,10 @@ protected:
 	QUdpSocket _outgoingSocket;
 	/// The port that we listen for incoming messages on.
 	int _localPort;
-	/// The remote IP that we send messages to
-	std::string _remoteIP;
+	/// The remote host that we send messages to.
+	std::string _remoteHost;
+	/// The remote address that we send messages to.
+	QHostAddress _remoteAddress;
 	/// The port that we send messages to
 	int _remotePort;
 	/// The protocol used for message transfers with the remote switch.

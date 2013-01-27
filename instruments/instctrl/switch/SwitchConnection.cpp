@@ -3,18 +3,23 @@
 /////////////////////////////////////////////////////////////////////
 SwitchConnection::SwitchConnection(
 		int localPort,
-		std::string remoteIP,
+		std::string remoteHost,
 		int remotePort,
-		std::string switchCipherKey):
+		std::string switchCipherKey) throw(std::string):
 _localPort(localPort),
-_remoteIP(remoteIP),
+_remoteHost(remoteHost),
 _remotePort(remotePort),
 _switchCipherKey(switchCipherKey),
 _switchToSwitchProtocol(EVPCipher::getKey(switchCipherKey), Protocols::SymCipherProtocol::BASE64_CODING)
 {
+	// Determine the address of the remote host.
+	_remoteAddress = QtAddress::address(_remoteHost);
+
+	// bind the listening port.
 	_incomingSocket.bind(localPort);
 
-    connect(&_incomingSocket, SIGNAL(readyRead()),
+    // catch incoming data on the socket.
+	connect(&_incomingSocket, SIGNAL(readyRead()),
             this, SLOT(readyRead()));
 
 }
@@ -62,12 +67,12 @@ void SwitchConnection::sendSwitchMessage(std::string msg) {
 		int sent = _outgoingSocket.writeDatagram(
 				outMsgs[i].c_str(),
 				outMsgs[i].size(),
-				QHostAddress(_remoteIP.c_str()),
+				_remoteAddress,
 				_remotePort);
 
 		if (sent != outMsgs[i].size()) {
 			qDebug() << "Warning, only" << sent << "bytes out of" << outMsgs[i].size() <<
-					"were sent to" << _remoteIP.c_str() << ":" << _remotePort;
+					"were sent to" << _remoteHost.c_str() << ":" << _remotePort;
 			if (sent == -1) {
 				qDebug() << "The socket error is:" << _outgoingSocket.error();
 			}

@@ -11,8 +11,8 @@ int main(int argc, char** argv) {
 	// Get the instrument information
 	std::cout << "Instrument name:  " << instConfig.instrumentName() << std::endl;
 	std::cout << "Incoming port:    " << instConfig.incomingPort() << std::endl;
+	std::cout << "Destination host:   " << instConfig.destHost() << std::endl;
 	std::cout << "Destination port: " << instConfig.destPort() << std::endl;
-	std::cout << "Destination IP:   " << instConfig.destIP() << std::endl;
 
 	// Get the message definitions
 	std::vector<InstConfig::MessageInfo> messages = instConfig.messages();

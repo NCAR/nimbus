@@ -40,7 +40,7 @@ void InstConfig::init() {
 	// they will be created as default values.
     _instName              = config->getString("InstName",     "INSTRUMENT");
 	_incomingPort          = config->getInt   ("InstIncomingPort",0);
-	_destIP                = config->getString("InstHostName", "127.0.0.1");
+	_destHost                = config->getString("InstHostName", "127.0.0.1");
 	_destPort              = config->getInt   ("InstDestPort", 0);
 
     // Get the message definitions. Create a default entry in case
@@ -99,8 +99,8 @@ int InstConfig::incomingPort() {
 	return _incomingPort;
 }
 /////////////////////////////////////////////////////////////////////
-std::string InstConfig::destIP() {
-	return _destIP;
+std::string InstConfig::destHost() {
+	return _destHost;
 }
 /////////////////////////////////////////////////////////////////////
 int InstConfig::destPort() {

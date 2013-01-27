@@ -47,7 +47,7 @@ public:
 	/// @returns The port number that outgoing message datagrams will be sent to.
 	int destPort();
 	/// @returns The IP name or address of the destination for outgoing message datagrams.
-	std::string destIP();
+	std::string destHost();
 	/// @returns The instrument name.
     std::string instrumentName();
     /// @returns The collection of defined messagfes for this instrument.
@@ -62,7 +62,7 @@ protected:
 	/// from the user or instrument.
 	int _incomingPort;
 	/// The IP name or address of the destination for outgoing message datagrams.
-	std::string _destIP;
+	std::string _destHost;
 	/// The port number that outgoing message datagrams will be sent to.
 	int _destPort;
 	/// Our messages

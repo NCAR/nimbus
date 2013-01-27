@@ -8,6 +8,7 @@
 #include "Message.h"
 #include "ProxyServer.h"
 #include "EmbeddedProxy.h"
+#include "QtAddress.h"
 
 /// The server that manages connections with an EmbeddedProxy.
 class EmbeddedProxyServer: public ProxyServer {
@@ -15,7 +16,7 @@ class EmbeddedProxyServer: public ProxyServer {
 	public:
 		/// @param instFiles A list of instrument configuration files.
 		/// One proxy will be created for each instrument file.
-		EmbeddedProxyServer(std::vector<InstConfig> instConfigs);
+		EmbeddedProxyServer(std::vector<InstConfig> instConfigs) throw(std::string);
 		/// Destructor.
 		virtual ~EmbeddedProxyServer();
 		/// Send a message to a client proxy

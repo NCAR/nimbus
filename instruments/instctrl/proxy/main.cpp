@@ -8,6 +8,7 @@
 #include "InstConfig.h"
 #include "ProxyMainWindow.h"
 #include "SslProxy.h"
+#include "QtAddress.h"
 
 namespace po = boost::program_options;
 
@@ -102,9 +103,10 @@ int main(int argc, char** argv)
 			msg._instName              = instConfig.instrumentName();
 			msg._incomingPort          = instConfig.incomingPort();
 			msg._destPort              = instConfig.destPort();
-			msg._destIP                = instConfig.destIP();
+			msg._destHost              = instConfig.destHost();
 			msg._msgId                 = instMsg[i].msgID;
 			msg._broadcast             = instMsg[i].broadcast;
+			msg._destAddress           = QtAddress::address(instConfig.destHost());
 
 			// save the message info
 			messages[msg._msgId] = msg;

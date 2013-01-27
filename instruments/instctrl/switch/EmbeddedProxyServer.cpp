@@ -1,7 +1,7 @@
 #include "EmbeddedProxyServer.h"
 
 /////////////////////////////////////////////////////////////////////
-EmbeddedProxyServer::EmbeddedProxyServer(std::vector<InstConfig> instConfigs):
+EmbeddedProxyServer::EmbeddedProxyServer(std::vector<InstConfig> instConfigs) throw(std::string):
 _instConfigs(instConfigs)
 {
 	for (int i = 0; i < _instConfigs.size(); i++) {
@@ -15,10 +15,12 @@ _instConfigs(instConfigs)
 			SslProxy::InstMsgInfo msg;
 			msg._instName              = instConfig.instrumentName();
 			msg._incomingPort          = instConfig.incomingPort();
-			msg._destIP                = instConfig.destIP();
+			msg._destHost              = instConfig.destHost();
 			msg._destPort              = instConfig.destPort();
 			msg._msgId                 = instMessages[i].msgID;
 			msg._broadcast             = instMessages[i].broadcast;
+			msg._destAddress           = QtAddress::address(instConfig.destHost());
+
 			std::cout << "Message id: " << msg._msgId << std::endl;
 			messages[msg._msgId] = msg;
 			msgIds.push_back(instMessages[i].msgID);

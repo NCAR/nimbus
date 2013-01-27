@@ -8,6 +8,7 @@ tools = Split("""
   boost_program_options
   qt4
   qtt_qtconfig
+  ricutil
 """)
 
 env = Environment(tools = tools)

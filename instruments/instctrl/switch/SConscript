@@ -7,6 +7,7 @@ tools = Split("""
   ssl
   qtt_qtconfig
   doxygen
+  ricutil
 """)
 
 env = Environment(tools = tools)
