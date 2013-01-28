@@ -162,7 +162,7 @@ int main(int argc, char** argv)
 
 		// Create the Proxy user interface.
 		ProxyMainWindow proxyMainWindow(sslProxy, 0);
-		QString title("Proxy-");
+		QString title("NCAR/EOL RIC Proxy-");
 		title += SVNREVISION;
 		proxyMainWindow.setWindowTitle(title);
 
