@@ -56,6 +56,8 @@ protected:
 	SslProxy& _sslProxy;
 	/// Set true when the SslProxy is connected.
 	bool _sslConnected;
+	/// The window icon
+	QIcon _windowIcon;
 
 };
 

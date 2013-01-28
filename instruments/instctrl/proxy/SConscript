@@ -29,7 +29,10 @@ headers = Split("""
  ui_ProxyMainWindow.h
 """)
 
-proxy = env.Program('ric_proxy', sources)
+# Create the Qt resource file. The source file name will be returned.
+resources  = env.Qrc(['proxy.qrc',])
+
+proxy = env.Program('ric_proxy', [sources, resources])
 env.Default(proxy)
 
 # Add proxy to the Linux deploy target
