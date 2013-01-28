@@ -9,6 +9,7 @@
 
 #include "Message.h"
 #include "SslClientConnection.h"
+#include "RicLogger.h"
 
 namespace Ssl {
 	/// SslProxy relays messages between an SSL switch and either an instrument or
@@ -138,6 +139,8 @@ namespace Ssl {
 		QUdpSocket* _outgoingUdpSocket;
 		/// Routing information for message types.
 		std::map<std::string, InstMsgInfo> _messages;
+		/// The system logger
+		RicLogger _logger;
 
 	};
 };

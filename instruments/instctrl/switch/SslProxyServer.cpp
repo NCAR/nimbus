@@ -149,6 +149,12 @@ void SslProxyServer::validateConnection(Ssl::SslServerConnection* connection) {
 				}
 			}
 		}
+
+		// Send a message to the system log
+		QString info = peerCert.subjectInfo(QSslCertificate::CommonName);
+		QString msg = QString("SSL connection established for %1").arg(info);
+		_logger.log(msg.toStdString());
+
 	}
 }
 

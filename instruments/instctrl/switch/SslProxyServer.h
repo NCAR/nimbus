@@ -15,6 +15,7 @@
 #include "SslServer.h"
 #include "SslServerConnection.h"
 #include "InstConfig.h"
+#include "RicLogger.h"
 
 /// The server that manages connections with an SslProxy.
 class SslProxyServer: public ProxyServer {
@@ -74,6 +75,8 @@ class SslProxyServer: public ProxyServer {
 		/// contains pointers to all SslServerConnections that these messages
 		/// should be sent to.
 		std::map<std::string, ConnectionList > _msgRouting;
+		/// System message logger
+		RicLogger _logger;
 };
 
 

@@ -33,6 +33,8 @@ _outgoingUdpSocket(0)
 	// Initialize the outgoing UDP socket.
 	initOutgoingUDPsocket();
 
+	_logger.log("SSL Proxy was initialized");
+
 }
 
 /////////////////////////////////////////////////////////////////////

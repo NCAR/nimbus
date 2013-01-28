@@ -9,6 +9,7 @@
 #include "ProxyMainWindow.h"
 #include "SslProxy.h"
 #include "QtAddress.h"
+#include "RicLogger.h"
 
 namespace po = boost::program_options;
 
@@ -60,6 +61,9 @@ parseCommandLine(int argc, char** argv,
 /// one user/instrument is supported.
 int main(int argc, char** argv)
 {
+	RicLogger logger("RICProxy");
+	logger.log("Starting a Remote Instrument Control SSL Proxy");
+
     try {
 		// Process command line options
 		std::string configFile;

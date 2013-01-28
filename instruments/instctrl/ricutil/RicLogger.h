@@ -5,6 +5,11 @@
 #include <string>
 
 /// A logging facility for the Remote Instrument Control package.
+/// The first instantiation of RicLogger will establish the log message
+/// identifier; for this reason it is best to create a RicLogger in
+/// main. Subsequent calls to RicLogger will not change the identifier.
+/// This ir is advisable to use the default constructor, which does not
+/// specify an identifier, when RicLogger is used in classes.
 /// @todo This class has a memory leak, due to needing to keep a
 /// copy of _ident arround. Will need to add reference counting
 /// in order to know when to delete it.

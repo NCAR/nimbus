@@ -6,6 +6,7 @@
 #include <string>
 #include <map>
 #include "SslSocket.h"
+#include "RicLogger.h"
 
 namespace Ssl {
 	/// SslServer creates a server which listens for connections on a specific
@@ -61,6 +62,8 @@ namespace Ssl {
 		/// The list of created server sockets. Use the address of the socket
 		/// to reference it.
 		std::map<SslSocket*, SslSocket*> _sslSockets;
+		/// The system message logger
+		RicLogger _logger;
 	};
 };
 

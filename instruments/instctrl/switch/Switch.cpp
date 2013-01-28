@@ -19,7 +19,7 @@ _server(0)
 	// Initialize
 	init();
 
-	_logger.log("EmbeddedProxy switch was initilized");
+	_logger.log("SSL switch was initilized");
 
 }
 
@@ -39,7 +39,7 @@ _server(0)
 	// Initialize
 	init();
 
-	_logger.log("SSL switch was initilized");
+	_logger.log("EmbeddedProxy switch was initilized");
 
 }
 
