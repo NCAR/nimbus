@@ -24,8 +24,6 @@ _sslConnection(0),
 _incomingUdpSocket(0),
 _outgoingUdpSocket(0)
 {
-	qDebug() << "Proxy certificate is " << sslCert;
-
 	// Add our certificate to the CAdatabase
 	_extraCerts.push_back(sslCert);
 
