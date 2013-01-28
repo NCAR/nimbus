@@ -10,6 +10,7 @@
 #include "SslProxyServer.h"
 #include "SwitchConnection.h"
 #include "SymCipherProtocol.h"
+#include "RicLogger.h"
 
 /// The application which manages communications between one or more
 /// instances of a proxy and another Switch.
@@ -88,6 +89,9 @@ protected:
 
 	/// The connection between us and the remote switch
 	SwitchConnection _switchConnection;
+
+	/// The loggin facility
+	RicLogger _logger;
 
 };
 

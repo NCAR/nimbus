@@ -22,10 +22,12 @@ Export(ourName)
 
 sources = Split("""
  QtAddress.cpp
+ RicLogger.cpp
 """)
 
 headers = Split("""
  QtAddress.h
+ RicLogger.h
 """)
 
 lib = env.Library(ourName, sources)

@@ -13,12 +13,14 @@ Switch::Switch(std::string serverSslKeyFile,
 _switchConnection(localPort, remoteIP, remotePort, switchCipherKey),
 _server(0)
 {
-
 	// Create an SSL proxy server
 	_server = new SslProxyServer(serverSslKeyFile, serverSslCert, switchPort, proxies);
 
 	// Initialize
 	init();
+
+	_logger.log("EmbeddedProxy switch was initilized");
+
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -36,6 +38,9 @@ _server(0)
 
 	// Initialize
 	init();
+
+	_logger.log("SSL switch was initilized");
+
 }
 
 /////////////////////////////////////////////////////////////////////

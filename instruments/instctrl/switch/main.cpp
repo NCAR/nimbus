@@ -5,6 +5,7 @@
 #include <boost/program_options.hpp>
 #include "QtConfig.h"
 #include "Switch.h"
+#include "RicLogger.h"
 
 namespace po = boost::program_options;
 
@@ -177,6 +178,9 @@ void createEmbeddedSwitch(
 int main(int  argc, char** argv){
 
 	try {
+
+		RicLogger logger("RICSwitch");
+		logger.log("Starting a Remote Instrument Control Switch");
 
 		/////////////////////////////////////////////////////////////////
 		// Create the Qt application (i.e. event loop)
