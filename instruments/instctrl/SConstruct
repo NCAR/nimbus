@@ -46,8 +46,8 @@ env = Environment(tools = ['default', 'svninfo', 'releaseid'], GLOBAL_TOOLS = ['
 # Create SVN info file. 
 svnInfo = env.SvnInfo('#/svnInfo.h', '#')
 
-SConscript("tools/SConscript")
 SConscript("proxy/SConscript")
 SConscript("switch/SConscript")
 SConscript("installers/SConscript")
+SConscript("ricutil/SConscript")
 
