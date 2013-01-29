@@ -1,7 +1,10 @@
 #ifndef RICLOGGER_H_
 #define RICLOGGER_H_
 
+#ifndef WIN32
 #include <syslog.h>
+#endif
+
 #include <string>
 
 /// A logging facility for the Remote Instrument Control package.
