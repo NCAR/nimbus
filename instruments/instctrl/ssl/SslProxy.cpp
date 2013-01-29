@@ -135,7 +135,7 @@ void SslProxy::initIncomingUDPsockets() {
 	/// for all message types. Right, just use the port
 	/// from the first message.
 	int port = _messages.begin()->second._incomingPort;
-	bool status = _incomingUdpSocket->bind(QHostAddress::LocalHost, port,
+	bool status = _incomingUdpSocket->bind(QHostAddress::Any, port,
 			QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
 
 	if (!status) {

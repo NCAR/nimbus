@@ -29,7 +29,7 @@ void EmbeddedProxy::initIncomingUDPsockets() {
 
 	_incomingUdpSocket = new QUdpSocket(this);
 
-	bool status = _incomingUdpSocket->bind(QHostAddress::LocalHost, _incomingUdpPort,
+	bool status = _incomingUdpSocket->bind(QHostAddress::Any, _incomingUdpPort,
 			QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
 
 	if (!status) {
