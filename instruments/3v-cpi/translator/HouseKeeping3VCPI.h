@@ -4,15 +4,15 @@
 
 namespace sp
 {
-
 	struct HouseKeeping3VCPI: public Packet
 	{
-		word	_data[83];
+		// Skip ID, len, and check_sum
+		word	_data[80];
 
 		float true_airspeed()
 		{
 			float tas;
-			short *s = (short *)&_data[74];
+			short *s = (short *)&_data[73];
 			short *d = (short *)&tas;
 			d[0] = s[1];
 			d[1] = s[0];
@@ -21,7 +21,7 @@ namespace sp
 
 		float relative_humidity()
 		{
-			float rh = 0.002515185 * _data[27] - 28.02198;
+			float rh = 0.002515185 * _data[26] - 28.02198;
 			return rh;
 		}
 
@@ -29,7 +29,7 @@ namespace sp
 		long long fclk()
 		{
 			long long fclk = 0;
-			short *s = (short *)&_data[71];
+			short *s = (short *)&_data[70];
 			fclk += s[0]; fclk <<= 16;
 			fclk += s[1]; fclk <<= 16;
 			fclk += s[2];
@@ -39,7 +39,7 @@ namespace sp
 		/// First 26 shorts of the housekeeping packet are all temperatures.
 		float temperature(int i)
 		{
-			if (i < 1 && i > 25)
+			if (i < 0 && i > 24)
 				return NAN;
 
 			float rt = 6.5536e9 * (1.0 - (float)_data[i]/65536.0) / (5.0*_data[i]);

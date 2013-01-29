@@ -7,7 +7,7 @@ namespace sp
 
 	struct MaskData3VCPI: public Packet
 	{
-		word _data[28];
+		word _data[25];
 	};
 
 	template<class T>

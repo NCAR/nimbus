@@ -17,7 +17,8 @@ namespace sp
 	enum DataBufferSize
 	{
 		SIZE_DATA_BUF = 4096,
-		SIZE_HSKP_BUF = 164
+		SIZE_HSKP_BUF = 164,
+		SIZE_MASK_BUF = 54
 	};
 
 	enum Endianness
