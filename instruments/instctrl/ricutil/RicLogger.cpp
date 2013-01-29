@@ -6,18 +6,6 @@ bool RicLogger::_isOpen = false;
 std::string* RicLogger::_ident = 0;
 
 /////////////////////////////////////////////////////////////////////
-RicLogger::RicLogger()
-{
-	if (!_isOpen) {
-		_isOpen = true;
-#ifndef WIN32
-		openlog(0, LOG_PID, LOG_USER);
-#endif
-	}
-
-}
-
-/////////////////////////////////////////////////////////////////////
 RicLogger::RicLogger(std::string logId)
 {
 	if (_ident) {
@@ -29,7 +17,11 @@ RicLogger::RicLogger(std::string logId)
 	if (!_isOpen) {
 		_isOpen = true;
 #ifndef WIN32
-		openlog(_ident->c_str(), LOG_PID, LOG_USER);
+		if (*_ident == std::string("")) {
+			openlog(_ident->c_str(), LOG_PID, LOG_USER);
+		} else {
+			openlog(0, LOG_PID, LOG_USER);
+		}
 #endif
 	}
 

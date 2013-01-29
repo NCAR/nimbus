@@ -4,7 +4,13 @@
 #ifndef WIN32
 #include <syslog.h>
 #endif
-
+#include "log4cpp/Category.hh"
+#include "log4cpp/Appender.hh"
+#include "log4cpp/FileAppender.hh"
+#include "log4cpp/OstreamAppender.hh"
+#include "log4cpp/Layout.hh"
+#include "log4cpp/BasicLayout.hh"
+#include "log4cpp/Priority.hh"
 #include <string>
 
 /// A logging facility for the Remote Instrument Control package.
@@ -20,9 +26,7 @@ class RicLogger {
 public:
 	/// Constructor
 	/// @param logId The log message identifier.
-	RicLogger(std::string logId);
-	/// Constructor
-	RicLogger();
+	RicLogger(std::string logId = std::string(""));
 	/// Destructor
 	virtual ~RicLogger();
 	/// Log a message
