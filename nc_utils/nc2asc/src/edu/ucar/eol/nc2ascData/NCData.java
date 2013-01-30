@@ -97,7 +97,7 @@ public class NCData {
 	private int[] oneDLen, hRate;
 
 	/**
-	 * 	Global information about the netcdf file
+	 *  Global information about the netcdf file
 	 *  idx 0--high rate data
 	 *  idx 1--start time in milli second
 	 *  idx 2--size of the records
@@ -248,7 +248,6 @@ public class NCData {
 	 * for the variables-time var is the first one.
 	 * 
 	 * @throws NCDataException ArrayIndexOutOfBoundsException InvalidRangeException IOException
-	 * @throws 
 	 */
 	public void readDataInf() throws NCDataException, ArrayIndexOutOfBoundsException, InvalidRangeException, IOException{			
 
@@ -257,19 +256,19 @@ public class NCData {
 		}
 
 		lvars = new ArrayList<Variable>();
-		List<Variable> tmp =  new ArrayList<Variable>();
+		List<Variable> tmp = new ArrayList<Variable>();
 		tmp = fin.getVariables();
 		checklvars(tmp, lvars); //check the time-base and time_offset && sign valid vars to lvars
 		int len = lvars.size();
-		gDataInf[0] =1;   
-		dataInf = new ArrayList<String>();	
-		for (int i = 0; i < len ; i++){ 
+		gDataInf[0] = 1;
+		dataInf = new ArrayList<String>();
+		for (int i = 0; i < len; i++){
 			String dat = "";
 			Variable v = lvars.get(i);
 			dat += v.getShortName() + DataFmt.COMMAVAL;
 			dat += v.getUnitsString() + DataFmt.COMMAVAL;
 
-			int or = getOR(v); if (or>gDataInf[0]) { gDataInf[0] = or; }
+			int or = getOR(v); if (or > gDataInf[0]) { gDataInf[0] = or; }
 			dat += or + "/" + getLen(v) + DataFmt.COMMAVAL;
 
 			String lname = "" + v.findAttribute("long_name");  //getStringValue() -bugs
@@ -282,7 +281,7 @@ public class NCData {
 			}
 		}
 		//init global data info
-		gDataInf[1] = getTimeMilSec(); 
+		gDataInf[1] = getTimeMilSec();
 		//gDataInf[2] = fin.getUnlimitedDimension().getLength();
 	}
 
@@ -295,25 +294,24 @@ public class NCData {
 	 * @throws InvalidRangeException
 	 * @throws IOException
 	 */
-	public float[] read1DData (Variable v, int start, int len) throws InvalidRangeException, IOException {
+	public float[] read1DData(Variable v, int start, int len) throws InvalidRangeException, IOException {
 		//set orig and size
 		int[] shape = v.getShape();
-		int[] origin=new int[shape.length], size=new int[shape.length];
+		int[] origin = new int[shape.length], size = new int[shape.length];
 
-		origin[0] =  start;
+		origin[0] = start;
 		size[0] = len;
-		for (int i=1; i<shape.length; i++) {
-			origin[i]=0;
-			size[i]  =shape[i];
+		for (int i = 1; i<shape.length; i++) {
+			origin[i] = 0;
+			size[i] = shape[i];
 		}		
 
 		Array data = v.read(origin, size);
-		data=data.reduce();
+		data = data.reduce();
 		return  (float [])data.copyTo1DJavaArray();
 	}
 
 	/**
-	 * 
 	 * @param variable
 	 * @return
 	 */
@@ -515,7 +513,7 @@ public class NCData {
 			mval = fmt[DataFmt.MVAL_IDX],
 			file_frmt = fmt[DataFmt.HEAD_IDX];
 
-		for (int i =0; i<range[1]; i++) {
+		for (int i = 0; i < range[1]; i++) {
 			if (bfinish) return;
 			String line = getNewTm(milSec, i+range[0], fmt, false);
 			progIdx++; 
@@ -711,35 +709,35 @@ public class NCData {
 	 * @throws Exception
 	 */
 	public int[] calBatchTmRange(String[] fmt) throws NCDataException {
-		if (fin==null) {
+		if (fin == null) {
 			System.out.println("The netcdf file is not opened.");
 			System.exit(-1);
 		}
 		//get time variable, 
 		Variable v = fin.findVariable("Time");
-		dataInf= new ArrayList<String>();
+		dataInf = new ArrayList<String>();
 		dataInf.add(0, v.getShortName()+ DataFmt.COMMAVAL+ v.getUnitsString());
 		long ncBegIdx = getTimeMilSec();
 
 		//selected tmset
 		int[] tmRange = new int[2];
 		String dfmt = fmt[DataFmt.TMSET_IDX];
-		if (dfmt==null || dfmt.isEmpty() || dfmt.equals(DataFmt.FULLTM)) {
-			tmRange[0]=0;
-			tmRange[1] =(int) v.getSize();
+		if (dfmt == null || dfmt.isEmpty() || dfmt.equals(DataFmt.FULLTM)) {
+			tmRange[0] = 0;
+			tmRange[1] = (int)v.getSize();
 			return tmRange;
 		}
 		String[] selectTm = dfmt.split(DataFmt.TMSETDELIMIT);
-		if (selectTm[0]==null || selectTm[0].isEmpty()) {
-			tmRange[0]=0;
+		if (selectTm[0] == null || selectTm[0].isEmpty()) {
+			tmRange[0] = 0;
 		} else {
 			long selBegIdx = Long.parseLong(selectTm[0].trim());
-			tmRange[0]= (int)((selBegIdx - ncBegIdx)/1000);
+			tmRange[0] = (int)((selBegIdx - ncBegIdx)/1000);
 		}
-		if (selectTm[1]==null || selectTm[1].isEmpty()) {
-			tmRange[1] =(int) v.getSize();
+		if (selectTm[1] == null || selectTm[1].isEmpty()) {
+			tmRange[1] = (int)v.getSize();
 		} else {
-			tmRange[1]= Integer.parseInt(selectTm[1].trim());
+			tmRange[1] = Integer.parseInt(selectTm[1].trim());
 		}
 		return tmRange;
 	} 
@@ -770,7 +768,7 @@ public class NCData {
 	private String trimBegEndQuotes(String str) {
 		str = str.substring(str.indexOf('\"')+1);  //take off the first "
 		int idx = str.indexOf('\"');  				//takeoff the second "
-		if (idx >0 ) {
+		if (idx > 0) {
 			return str.substring(0, idx);
 		} else {
 			return " ";
