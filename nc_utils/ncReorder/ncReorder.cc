@@ -76,9 +76,16 @@ int main(int argc, char *argv[])
 
 
   // Transfer global attributes.
+  if (verbose)
+    cout << "Transfering global attributes.\n";
+
   for (int i = 0; i < inFile.num_atts(); ++i)
   {
     NcAtt *att = inFile.get_att(i);
+
+    if (verbose)
+      cout << att->name() << endl;
+
     switch (att->type())
     {
       case ncChar:
@@ -97,10 +104,15 @@ int main(int argc, char *argv[])
   // Transfer Variables.
   NcVar	*var;
   NcDim *dims[6];
+  if (verbose)
+    cout << "Transfering variables.\n";
+
   for (int i = 0; i < inFile.num_vars(); ++i)
   {
     var = inFile.get_var(i);
-//cerr << var->name()<<endl;
+
+    if (verbose)
+      cerr << var->name() << endl;
 
     // Transfer dims for the var.
     for (int j = 0; j < var->num_dims(); ++j)
