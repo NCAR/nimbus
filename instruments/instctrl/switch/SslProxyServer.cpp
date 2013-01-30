@@ -88,9 +88,6 @@ void SslProxyServer::validateConnection(Ssl::SslServerConnection* connection) {
 	// Get the peer certificate
 	QSslCertificate peerCert = connection->peerCertificate();
 
-	// dump the certificate
-	std::cout << "Connection request received for:" << std::endl;
-	dumpCert(peerCert);
 
 	std::vector<int> proxyIndices;
 	if (!peerCert.isNull() && peerCert.isValid()) {
@@ -135,6 +132,8 @@ void SslProxyServer::validateConnection(Ssl::SslServerConnection* connection) {
 		QString msg = QString("SSL connection established for %1").arg(info);
 		_logger.log(msg.toStdString());
 
+		std::cout << msg.toStdString() << std::endl;
+
 	}
 }
 
@@ -143,12 +142,6 @@ void SslProxyServer::removeConnection(Ssl::SslServerConnection* connection) {
 
 	// Notify the world that a disconnect has been received.
 	QSslCertificate peerCert = connection->peerCertificate();
-	std::cout << "Disconnect received for:" << std::endl;
-	dumpCert(peerCert);
-
-	QString info = peerCert.subjectInfo(QSslCertificate::CommonName);
-	QString msg = QString("SSL disconnection registered for %1").arg(info);
-	_logger.log(msg.toStdString());
 
 	// find it in our list of connections
 	SslProxyServer::ConnectionList::iterator c = _connections.find(connection);
@@ -179,7 +172,15 @@ void SslProxyServer::removeConnection(Ssl::SslServerConnection* connection) {
 	// remove our record of the connection
 	_connections.erase(c);
 
-	std::cout << "SwitchSslServer connection deleted," << _connections.size() << "remaining connections" << std::endl;
+	QString info = peerCert.subjectInfo(QSslCertificate::CommonName);
+
+	QString msg1 = QString("SSL disconnect from %1").arg(info);
+	_logger.log(msg1.toStdString());
+	QString msg2 = QString("%1 remaining connections").arg(_connections.size());
+	_logger.log(msg2.toStdString());
+
+	std::cout << msg1.toStdString() << std::endl;
+	std::cout << msg2.toStdString() << std::endl;
 }
 
 /////////////////////////////////////////////////////////////////////
