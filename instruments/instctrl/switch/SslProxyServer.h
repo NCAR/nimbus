@@ -56,6 +56,9 @@ class SslProxyServer: public ProxyServer {
 		void msgFromProxySlot(Protocols::Message message);
 
 	protected:
+	protected:
+		/// Dumpt the certificate to stdout
+		void dumpCert(const QSslCertificate &cert);
 		/// A list of connections.
 		typedef std::multiset<Ssl::SslServerConnection*> ConnectionList;
 		/// Verify that a successfully encrypted connection is valid. If
@@ -64,6 +67,9 @@ class SslProxyServer: public ProxyServer {
 		/// the correct messages will be routed to it.
 		/// @param connection The connection that will be validated.
 		void validateConnection(Ssl::SslServerConnection* connection);
+		/// Handle the SslSocket::SS_Disconnected state change.
+		/// @param connection The connection that has been disconnected.
+		void removeConnection(Ssl::SslServerConnection* connection);
 		/// The allowed proxies.
 		std::vector<SslProxyServer::SslProxyDef> _proxies;
 		/// The SSL server that receives SSL requests

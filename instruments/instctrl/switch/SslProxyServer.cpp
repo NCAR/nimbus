@@ -71,32 +71,8 @@ void SslProxyServer::connectionStateChanged(SslServerConnection* connection,
 	}
 	case SslSocket::SS_Disconnected:
 	{
-		// find it in our list of connections
-		SslProxyServer::ConnectionList::iterator c = _connections.find(connection);
-
-		// big problem if we have lost track of this connection
-		assert (c != _connections.end());
-
-		// kill the connection
-		delete *c;
-
-		// Remove all references to this connection in the _msgRouting list.
-		std::map<std::string, ConnectionList >::iterator m;
-		for (m = _msgRouting.begin(); m != _msgRouting.end(); m++) {
-			m->second.erase(*c);
-		}
-
-		// If a message type has no more connections, get rid of it.
-		for (m = _msgRouting.begin(); m != _msgRouting.end(); m++) {
-			if (m->second.size() == 0) {
-				_msgRouting.erase(m);
-			}
-		}
-
-		// remove our record of the connection
-		_connections.erase(c);
-
-		qDebug() << "SwitchSslServer connection is deleted," << _connections.size() << "remaining connections";
+		/// Clean up the connection accounting.
+		removeConnection(connection);
 		break;
 	}
 	default: {
@@ -111,6 +87,10 @@ void SslProxyServer::validateConnection(Ssl::SslServerConnection* connection) {
 
 	// Get the peer certificate
 	QSslCertificate peerCert = connection->peerCertificate();
+
+	// dump the certificate
+	std::cout << "Connection request received for:" << std::endl;
+	dumpCert(peerCert);
 
 	std::vector<int> proxyIndices;
 	if (!peerCert.isNull() && peerCert.isValid()) {
@@ -159,6 +139,50 @@ void SslProxyServer::validateConnection(Ssl::SslServerConnection* connection) {
 }
 
 /////////////////////////////////////////////////////////////////////
+void SslProxyServer::removeConnection(Ssl::SslServerConnection* connection) {
+
+	// Notify the world that a disconnect has been received.
+	QSslCertificate peerCert = connection->peerCertificate();
+	std::cout << "Disconnect received for:" << std::endl;
+	dumpCert(peerCert);
+
+	QString info = peerCert.subjectInfo(QSslCertificate::CommonName);
+	QString msg = QString("SSL disconnection registered for %1").arg(info);
+	_logger.log(msg.toStdString());
+
+	// find it in our list of connections
+	SslProxyServer::ConnectionList::iterator c = _connections.find(connection);
+
+	// big problem if we have lost track of this connection
+	if (c == _connections.end()) {
+		std::string msg("Serious error, an unregistered connection has been disconnected.");
+		std::cerr << msg << std::endl;
+		_logger.log(msg);
+	}
+
+	// kill the connection
+	delete *c;
+
+	// Remove all references to this connection in the _msgRouting list.
+	std::map<std::string, ConnectionList >::iterator m;
+	for (m = _msgRouting.begin(); m != _msgRouting.end(); m++) {
+		m->second.erase(*c);
+	}
+
+	// If a message type has no more connections, get rid of it.
+	for (m = _msgRouting.begin(); m != _msgRouting.end(); m++) {
+		if (m->second.size() == 0) {
+			_msgRouting.erase(m);
+		}
+	}
+
+	// remove our record of the connection
+	_connections.erase(c);
+
+	std::cout << "SwitchSslServer connection deleted," << _connections.size() << "remaining connections";
+}
+
+/////////////////////////////////////////////////////////////////////
 void SslProxyServer::msgFromProxySlot(Protocols::Message message) {
 
 	// Emit the Message
@@ -184,4 +208,43 @@ void SslProxyServer::sendToProxy(Protocols::Message msg) {
 		/// @todo Log the unexpected message.
 		std::cout << "There is no proxy registered for " << msgID << std::endl;
 	}
+}
+
+/////////////////////////////////////////////////////////////////////
+void SslProxyServer::dumpCert( const QSslCertificate &cert )
+{
+    qDebug() << cert.toPem();
+
+    qDebug() << "== Subject Info ==\b";
+    qDebug() << "CommonName:\t\t" << cert.subjectInfo( QSslCertificate::CommonName );
+    qDebug() << "Organization:\t\t" << cert.subjectInfo( QSslCertificate::Organization );
+    qDebug() << "LocalityName:\t\t" << cert.subjectInfo( QSslCertificate::LocalityName );
+    qDebug() << "OrganizationalUnitName:\t" << cert.subjectInfo( QSslCertificate::OrganizationalUnitName );
+    qDebug() << "StateOrProvinceName:\t" << cert.subjectInfo( QSslCertificate::StateOrProvinceName );
+
+    QMultiMap<QSsl::AlternateNameEntryType, QString> altNames = cert.alternateSubjectNames();
+    if ( !altNames.isEmpty() ) {
+        qDebug() << "Alternate Subject Names (DNS):";
+        foreach (const QString &altName, altNames.values(QSsl::DnsEntry)) {
+            qDebug() << altName;
+        }
+
+        qDebug() << "Alternate Subject Names (Email):";
+        foreach (const QString &altName, altNames.values(QSsl::EmailEntry)) {
+            qDebug() << altName;
+        }
+    }
+
+    qDebug() << "\n== Issuer Info ==";
+    qDebug() << "CommonName:\t\t" << cert.issuerInfo( QSslCertificate::CommonName );
+    qDebug() << "Organization:\t\t" << cert.issuerInfo( QSslCertificate::Organization );
+    qDebug() << "LocalityName:\t\t" << cert.issuerInfo( QSslCertificate::LocalityName );
+    qDebug() << "OrganizationalUnitName:\t" << cert.issuerInfo( QSslCertificate::OrganizationalUnitName );
+    qDebug() << "StateOrProvinceName:\t" << cert.issuerInfo( QSslCertificate::StateOrProvinceName );
+
+    qDebug() << "\n== Certificate ==";
+    //qDebug() << "Serial Number:\t\t" << cert.serialNumber(); // This seems buggy
+    qDebug() << "Effective Date:\t\t" << cert.effectiveDate().toString();
+    qDebug() << "Expiry Date:\t\t" << cert.expiryDate().toString();
+    qDebug() << "Valid:\t\t\t" << (cert.isValid() ? "Yes" : "No");
 }
