@@ -87,6 +87,12 @@ public class NCData {
 	private float[][] data;
 
 	/**
+	 * Keep the Time variable and data separate.
+	 */
+	private Variable timeVar;
+	private float[] timeData;
+
+	/**
 	 * The represent of each variable's miss value
 	 */
 	private float[] missVal;
@@ -232,7 +238,7 @@ public class NCData {
 	}
 
 	/**
-	 * Open a output file to write data
+	 * Open an output file to write data
 	 * @param fn -- output file name 
 	 * @throws IOException
 	 */
@@ -262,6 +268,7 @@ public class NCData {
 		int len = lvars.size();
 		gDataInf[0] = 1;
 		dataInf = new ArrayList<String>();
+
 		for (int i = 0; i < len; i++){
 			String dat = "";
 			Variable v = lvars.get(i);
@@ -301,14 +308,15 @@ public class NCData {
 
 		origin[0] = start;
 		size[0] = len;
-		for (int i = 1; i<shape.length; i++) {
+		for (int i = 1; i < shape.length; i++) {
 			origin[i] = 0;
 			size[i] = shape[i];
-		}		
+		}
 
 		Array data = v.read(origin, size);
 		data = data.reduce();
-		return  (float [])data.copyTo1DJavaArray();
+		return  (float [])data.get1DJavaArray(float.class);
+//		return  (float [])data.copyTo1DJavaArray();
 	}
 
 	/**
@@ -463,6 +471,7 @@ public class NCData {
 		long t1 = System.currentTimeMillis();
 		try {
 			milSec = getTimeMilSec(); 
+			timeData = read1DData(timeVar, range[0], range[1]);
 			for (int i = 0; i < nVariables; i++){
 				if (bfinish) return;
 				var = sublvars.get(i);
@@ -515,7 +524,7 @@ public class NCData {
 
 		for (int i = 0; i < range[1]; i++) {
 			if (bfinish) return;
-			String line = getNewTm(milSec, i+range[0], fmt, false);
+			String line = getNewTm(milSec, (int)timeData[i], fmt, false);
 			progIdx++; 
 			for (int j = 0; j < nVariables; j++) {
 				String varFmt = varDatFmt.get(j);
@@ -637,17 +646,20 @@ public class NCData {
 	/**
 	 * Scan all the variables from the netcdf file, skip the base_time and time_offset variables, 
 	 * because they are old data formats. 
-	 * @param allVars
-	 * @param vars
+	 * @param allVars - input list
+	 * @param vars - ouput list
 	 */
 	private void checklvars(List<Variable> allVars, List<Variable> vars) {
-		int idx =0;
-		for (int i =0; i<allVars.size(); i++) {
+		for (int i = 0; i < allVars.size(); i++) {
 			Variable v = allVars.get(i);
-			if (v.getName().equals("base_time")||v.getName().equals("time_offset")) {
+
+			if (v.getName().equals("base_time") || v.getName().equals("time_offset")) {
 				continue;
 			}
-			vars.add(v); idx ++;
+			if (v.getName().equals("Time") || v.getName().equals("time")) {
+				timeVar = v;
+			}
+			vars.add(v);
 		}
 	}
 
