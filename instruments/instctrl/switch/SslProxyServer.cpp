@@ -179,7 +179,7 @@ void SslProxyServer::removeConnection(Ssl::SslServerConnection* connection) {
 	// remove our record of the connection
 	_connections.erase(c);
 
-	std::cout << "SwitchSslServer connection deleted," << _connections.size() << "remaining connections";
+	std::cout << "SwitchSslServer connection deleted," << _connections.size() << "remaining connections" << std::endl;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -235,14 +235,14 @@ void SslProxyServer::dumpCert( const QSslCertificate &cert )
         }
     }
 
-    qDebug() << "\n== Issuer Info ==";
+    qDebug() << "== Issuer Info ==";
     qDebug() << "CommonName:\t\t" << cert.issuerInfo( QSslCertificate::CommonName );
     qDebug() << "Organization:\t\t" << cert.issuerInfo( QSslCertificate::Organization );
     qDebug() << "LocalityName:\t\t" << cert.issuerInfo( QSslCertificate::LocalityName );
     qDebug() << "OrganizationalUnitName:\t" << cert.issuerInfo( QSslCertificate::OrganizationalUnitName );
     qDebug() << "StateOrProvinceName:\t" << cert.issuerInfo( QSslCertificate::StateOrProvinceName );
 
-    qDebug() << "\n== Certificate ==";
+    qDebug() << "== Certificate ==";
     //qDebug() << "Serial Number:\t\t" << cert.serialNumber(); // This seems buggy
     qDebug() << "Effective Date:\t\t" << cert.effectiveDate().toString();
     qDebug() << "Expiry Date:\t\t" << cert.expiryDate().toString();
