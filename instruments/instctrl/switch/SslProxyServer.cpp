@@ -24,6 +24,10 @@ _proxies(proxies)
 	// has been accepted from a proxy.
 	_sslServer->connect(_sslServer, SIGNAL(newConnection(Ssl::SslSocket*)),
 			this, SLOT(createConnection(Ssl::SslSocket*)));
+
+	std::string msg("SslProxyServer started");
+	logAndPrint(msg);
+
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -46,8 +50,6 @@ void SslProxyServer::createConnection(Ssl::SslSocket* sslSocket) {
 
 	// capture new messages from this client
 	connect(connection, SIGNAL(msgFromClient(Protocols::Message)), this, SLOT(msgFromProxySlot(Protocols::Message)));
-
-	qDebug() << _connections.size() << "active SwitchSslServer connections";
 
 }
 
@@ -87,7 +89,6 @@ void SslProxyServer::validateConnection(Ssl::SslServerConnection* connection) {
 
 	// Get the peer certificate
 	QSslCertificate peerCert = connection->peerCertificate();
-
 
 	std::vector<int> proxyIndices;
 	if (!peerCert.isNull() && peerCert.isValid()) {
@@ -129,10 +130,12 @@ void SslProxyServer::validateConnection(Ssl::SslServerConnection* connection) {
 
 		// Send a message to the system log
 		QString info = peerCert.subjectInfo(QSslCertificate::CommonName);
-		QString msg = QString("SSL connection established for %1").arg(info);
-		_logger.log(msg.toStdString());
+		QString msg;
+		msg = QString("SSL connection established for %1").arg(info);
+		logAndPrint(msg);
+		msg = QString("%1 active SSL connections").arg(_connections.size());
+		logAndPrint(msg);
 
-		std::cout << msg.toStdString() << std::endl;
 
 	}
 }
@@ -140,7 +143,7 @@ void SslProxyServer::validateConnection(Ssl::SslServerConnection* connection) {
 /////////////////////////////////////////////////////////////////////
 void SslProxyServer::removeConnection(Ssl::SslServerConnection* connection) {
 
-	// Notify the world that a disconnect has been received.
+	// get the peer certificate.
 	QSslCertificate peerCert = connection->peerCertificate();
 
 	// find it in our list of connections
@@ -150,7 +153,7 @@ void SslProxyServer::removeConnection(Ssl::SslServerConnection* connection) {
 	if (c == _connections.end()) {
 		std::string msg("Serious error, an unregistered connection has been disconnected.");
 		std::cerr << msg << std::endl;
-		_logger.log(msg);
+		logAndPrint(msg);
 	}
 
 	// kill the connection
@@ -172,15 +175,14 @@ void SslProxyServer::removeConnection(Ssl::SslServerConnection* connection) {
 	// remove our record of the connection
 	_connections.erase(c);
 
+	// Notify the world that a disconnect has been received.
 	QString info = peerCert.subjectInfo(QSslCertificate::CommonName);
 
-	QString msg1 = QString("SSL disconnect from %1").arg(info);
-	_logger.log(msg1.toStdString());
-	QString msg2 = QString("%1 remaining connections").arg(_connections.size());
-	_logger.log(msg2.toStdString());
-
-	std::cout << msg1.toStdString() << std::endl;
-	std::cout << msg2.toStdString() << std::endl;
+	QString msg;
+	msg = QString("SSL disconnect from %1").arg(info);
+	logAndPrint(msg);
+	msg = QString("%1 active SSL connections").arg(_connections.size());
+	logAndPrint(msg);
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -209,6 +211,22 @@ void SslProxyServer::sendToProxy(Protocols::Message msg) {
 		/// @todo Log the unexpected message.
 		std::cout << "There is no proxy registered for " << msgID << std::endl;
 	}
+}
+
+/////////////////////////////////////////////////////////////////////
+void SslProxyServer::logAndPrint(std::string msg) {
+
+	// Send the message to the system log
+	_logger.log(msg);
+
+	// And send the message to stdout
+	QDateTime date = QDateTime::currentDateTime().toUTC();
+	std::cout << date.toString().toStdString() << " UTC: " << msg << std::endl;
+}
+
+/////////////////////////////////////////////////////////////////////
+void SslProxyServer::logAndPrint(QString msg) {
+	logAndPrint(msg.toStdString());
 }
 
 /////////////////////////////////////////////////////////////////////

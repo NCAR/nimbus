@@ -70,6 +70,12 @@ class SslProxyServer: public ProxyServer {
 		/// Handle the SslSocket::SS_Disconnected state change.
 		/// @param connection The connection that has been disconnected.
 		void removeConnection(Ssl::SslServerConnection* connection);
+		/// Log and print a message. _logger is used for the logging.
+		/// @param msg The message.
+		void logAndPrint(std::string msg);
+		/// Log and print a message. _logger is used for the logging.
+		/// @param msg The message.
+		void logAndPrint(QString msg);
 		/// The allowed proxies.
 		std::vector<SslProxyServer::SslProxyDef> _proxies;
 		/// The SSL server that receives SSL requests
