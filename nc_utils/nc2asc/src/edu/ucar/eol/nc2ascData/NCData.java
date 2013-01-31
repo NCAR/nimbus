@@ -471,6 +471,7 @@ public class NCData {
 		long t1 = System.currentTimeMillis();
 		try {
 			milSec = getTimeMilSec(); 
+	                readDataInf();
 			timeData = read1DData(timeVar, range[0], range[1]);
 			for (int i = 0; i < nVariables; i++){
 				if (bfinish) return;
@@ -657,7 +658,9 @@ public class NCData {
 				continue;
 			}
 			if (v.getName().equals("Time") || v.getName().equals("time")) {
+				System.out.println(v);
 				timeVar = v;
+				System.out.println(timeVar);
 			}
 			vars.add(v);
 		}

@@ -27,6 +27,10 @@ public class DataFmt {
 	public final static String HDR_ICARTT	= "ICARTT";
 	public final static String HDR_NCML	= "NcML";
 
+	public final static String PINAME = "Lastname, Firstname";
+	public final static String DMNAME = "Lastname, Firstname";
+	public final static String PROJ_INFO = "Project dates and location";
+
 	public final static String FULLTM = "Full";
 	public final static String SPACE = "Space";
 	public final static String COMMA = "Comma";
@@ -38,6 +42,10 @@ public class DataFmt {
 	public final static int DMTR_IDX = 4;
 	public final static int MVAL_IDX = 5;
 	public final static int TMSET_IDX = 6;
+	public final static int PI_NAME = 7;
+	public final static int DM_NAME = 8;
+	public final static int PROJINFO = 9;
+	public final static int nopts = 10;
 
 	public final static String SPACEVAL =" ";
 	public final static String COMMAVAL =",";
@@ -48,6 +56,7 @@ public class DataFmt {
 	/**
 	 * This is the definition for all the data formats
 	 *  dataFmt[DATE_IDX]
+	 *  dataFmt[PI_NAME]
 	 *	dataFmt[TM_IDX]
 	 *	dataFmt[DMTR_IDX]
 	 *	dataFmt[MVAL_IDX]
@@ -55,7 +64,7 @@ public class DataFmt {
 	 *	dataFmt[HEAD_IDX]
 	 *	dataFmt[AVG_IDX]
 	 */
-	private static String[] dataFmt = new String[7];
+	private static String[] dataFmt = new String[nopts];
 
 	/**
 	 * = yyyy-mm-dd,hh:mm:ss~yyyy-mm-dd,hh:mm:ss   OR FULLTM
@@ -73,6 +82,10 @@ public class DataFmt {
 		dataFmt[MVAL_IDX]=MISSVAL;
 		dataFmt[TMSET_IDX]=FULLTM; //timeset= 00:00:00~99:99:99[
 		dataFmt[HEAD_IDX]=HDR_PLAIN;
+		dataFmt[PI_NAME]=PINAME;
+		dataFmt[DM_NAME]=DMNAME;
+		dataFmt[PROJINFO]=PROJ_INFO;
+		dataFmt[nopts]=String.valueOf(nopts);
 		dataFmt[AVG_IDX]="1";
 	}
 
@@ -140,7 +153,7 @@ public class DataFmt {
 	 */
 	public String[] getNewDataFmt(){
 		//return dataFmt;
-		String[] dfmt = new String[7];
+		String[] dfmt = new String[nopts];
 		if (dataFmt[DATE_IDX]==DATEDASH) {
 			dfmt[DATE_IDX]=DASHVAL;
 		}  else if (dataFmt[DATE_IDX]==DATESPACE) {
@@ -174,7 +187,7 @@ public class DataFmt {
 	public void showNewDataFmt() {
 		String[] fstr = getNewDataFmt();
 		String str="";
-		for (int i=0; i<7; i++) {
+		for (int i=0; i<nopts; i++) {
 			str += fstr[i]+"     ";
 		}
 		NC2Act.wrtMsg(str);
@@ -182,7 +195,7 @@ public class DataFmt {
 
 	public void showDataFmt() {
 		String str="";
-		for (int i=0; i<7; i++) {
+		for (int i=0; i<nopts; i++) {
 			str += dataFmt[i]+"\n";
 		}
 		NC2Act.wrtMsg(str);
