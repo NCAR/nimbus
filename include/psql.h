@@ -115,12 +115,6 @@ protected:
    */
   rateTableList	_ratesTables;
 
-//@{
-  UdpSocket* _brdcst;
-
-  static const int RT_UDP_PORT;
-
-//@}
   static const std::string TIME_VARIABLE;
   static const std::string GLOBAL_ATTR_TABLE;
   static const std::string VARIABLE_LIST_TABLE;
