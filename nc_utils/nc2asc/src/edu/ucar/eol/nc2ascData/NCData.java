@@ -658,9 +658,7 @@ public class NCData {
 				continue;
 			}
 			if (v.getName().equals("Time") || v.getName().equals("time")) {
-				System.out.println(v);
 				timeVar = v;
-				System.out.println(timeVar);
 			}
 			vars.add(v);
 		}
