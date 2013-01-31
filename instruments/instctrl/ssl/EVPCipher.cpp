@@ -102,8 +102,14 @@ std::vector<unsigned char> EVPCipher::decrypt(std::vector<unsigned char>& iv, st
 	int n;
 	int n_final = 0;
 	status = EVP_DecryptUpdate(&_decrypt, &result[0], &n, &input[0], input.size());
+	if (!status) {
+		std::cerr << __PRETTY_FUNCTION__ << ":" << __LINE__ << " decryption error" << std::endl;
+	}
 	n_final += n;
 	status = EVP_DecryptFinal_ex(&_decrypt, &result[n], &n);
+	if (!status) {
+		std::cerr << __PRETTY_FUNCTION__ << ":" << __LINE__ << " decryption error" << std::endl;
+	}
 	n_final += n;
 
 	result.resize(n_final);
