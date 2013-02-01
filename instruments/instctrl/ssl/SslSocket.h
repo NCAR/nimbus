@@ -17,7 +17,7 @@ namespace Ssl {
 	///
 	/// In client mode, SslSocket will initiate a socket connect to a host using
 	/// QSslSocket::connectToHostEncypted(). The client must have a valid
-	/// certificate that will be provided to the connecting server.
+	/// certificate that will be transmitted to the connecting server.
 	///
 	/// The caller supplies files containing the SSL private key and
 	/// certificate.

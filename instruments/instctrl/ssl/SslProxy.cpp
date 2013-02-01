@@ -110,8 +110,12 @@ void SslProxy::openSslConnection() {
     		_extraCerts,
     		_proxyID);
 
+	// Capture incoming messages
 	connect(_sslConnection, SIGNAL(msgFromServer(Protocols::Message)), this, SLOT(msgFromServerSlot(Protocols::Message)));
 
+	// Capture changes in the connection state
+	connect(_sslConnection, SIGNAL(connectionStateChanged(Ssl::SslSocket::SocketState)),
+			this, SLOT(connectionStateChangedSlot(Ssl::SslSocket::SocketState)));
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -145,7 +149,8 @@ void SslProxy::initIncomingUDPsockets() {
 
 	connect(_incomingUdpSocket, SIGNAL(readyRead()), this, SLOT(udpReadyRead()));
 
-	qDebug() << "Proxy will listen on port" << port;
+	QString msg = QString("Proxy will listen on port %1").arg(port);
+	_logger.log(msg.toStdString());
 
 }
 
@@ -156,10 +161,47 @@ void SslProxy::initOutgoingUDPsocket() {
 
 	std::map<std::string, InstMsgInfo>::iterator it;
 	for (it = _messages.begin(); it != _messages.end(); it++) {
-		qDebug() << "Proxy will send" << it->second._msgId.c_str() <<
-				"to" << it->second._destHost.c_str() << ":" << it->second._destPort
-				<< (it->second._broadcast ?"BROADCAST" : "UNICAST");
+
+		QString msgId = QString(it->second._msgId.c_str());
+		QString dest = QString(it->second._destHost.c_str());
+		int port = it->second._destPort;
+		QString msgType = QString((it->second._broadcast ?"BROADCAST" : "UNICAST"));
+
+		QString logmsg = QString("Proxy will send %1 to %2:%3 %4").arg(msgId).arg(dest).arg(port).arg(msgType);
+		_logger.log(logmsg.toStdString());
+
 	}
+}
+
+/////////////////////////////////////////////////////////////////////
+void SslProxy::connectionStateChangedSlot(Ssl::SslSocket::SocketState socketState) {
+
+	switch (socketState) {
+	case SslSocket::SS_Unconnected: {
+		qDebug() << "SslSocket is unconnected, what does this mean?";
+		break;
+	}
+	case SslSocket::SS_Connected: {
+		std::cout << "SslSocket is connected" << std::endl;
+		break;
+	}
+	case SslSocket::SS_Encrypted: {
+		std::cout << "SslSocket is encrypted" << std::endl;
+		break;
+	}
+	case SslSocket::SS_Disconnected: {
+		std::cout << "SslSocket is disconnected" << std::endl;
+		break;
+	}
+	default: {
+		std::cout << "SslSocket changed to unknown state:" << socketState << std::endl;
+		break;
+	}
+	};
+
+	// Pass on the state change.
+	emit connectionStateChanged(socketState);
+
 }
 
 /////////////////////////////////////////////////////////////////////

@@ -42,8 +42,13 @@ namespace Ssl {
 		/// @param message The message.
 		/// @returns False if there was an error sending the message.
 		bool send(Protocols::Message& message);
+		/// @return The state of the connection.
+		Ssl::SslSocket::SocketState connectionState();
 
 	signals:
+		/// Publish a change in the connection state. Currently this is
+		/// simply the state of the underlying SslSocket.
+		void connectionStateChanged(Ssl::SslSocket::SocketState);
 		/// Emitted when a new message has been received from the server.
 		/// @param msg The message.
 		void msgFromServer(Protocols::Message);

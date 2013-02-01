@@ -19,7 +19,6 @@ SslSocket::SslSocket(
 	_state(SS_Unconnected),
 	_extraCerts(extraCerts)
 {
-	qDebug() << "Create a Server SslSocket with descriptor" << descriptor;
 	// Initialize the key and certificate and connect signals
 	init();
 
@@ -47,11 +46,12 @@ SslSocket::SslSocket(
 	_state(SS_Unconnected),
 	_extraCerts(extraCerts)
 {
-	qDebug() << "Create Client SslSocket to connect to server \""
-			 << serverHost.c_str() << "\" on port" << port;
-	// Initialize the key and certificate and connect signals
+
+	// Initialize the key and certificate and connect signals.
 	init();
 
+	// Initiate the SSSL connection. connectToHostEncrypted() is
+	// a function if QSslSocket.
 	connectToHostEncrypted(_serverHost.c_str(), _port);
 }
 
@@ -84,16 +84,12 @@ void SslSocket::init() {
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::connected() {
-	qDebug() << "SslSocket connected";
-
 	_state = SS_Connected;
 	emit stateChanged(_state);
 }
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::disconnected() {
-	qDebug() << "SslSocket disconnected";
-
 	_state = SS_Disconnected;
 	emit stateChanged(_state);
 }
@@ -108,10 +104,10 @@ void SslSocket::socketError(QAbstractSocket::SocketError errorCode) {
 /////////////////////////////////////////////////////////////////////
 void SslSocket::encrypted() {
 	QSslCertificate peerCert = peerCertificate();
-	QString  O(peerCert.issuerInfo(QSslCertificate::Organization));
-	QString OU(peerCert.issuerInfo(QSslCertificate::OrganizationalUnitName));
-	qDebug() << "SslSocket encrypted, peer certificate: Organization:"
-			<< O << " Unit:" << OU;
+	//QString  O(peerCert.issuerInfo(QSslCertificate::Organization));
+	//QString OU(peerCert.issuerInfo(QSslCertificate::OrganizationalUnitName));
+	//qDebug() << "SslSocket encrypted, peer certificate: Organization:"
+	//		<< O << " Unit:" << OU;
 
 	_state = SS_Encrypted;
 	emit stateChanged(_state);
@@ -119,10 +115,10 @@ void SslSocket::encrypted() {
 
 /////////////////////////////////////////////////////////////////////
 void SslSocket::modeChanged(QSslSocket::SslMode mode) {
-	if (mode == QSslSocket::SslClientMode)
-		qDebug() << "SslSocket changed to Client mode";
-	if (mode == QSslSocket::SslServerMode)
-		qDebug() << "SslSocket changed to Server mode";
+	//if (mode == QSslSocket::SslClientMode)
+	//	qDebug() << "SslSocket changed to Client mode";
+	//if (mode == QSslSocket::SslServerMode)
+	//	qDebug() << "SslSocket changed to Server mode";
 }
 
 /////////////////////////////////////////////////////////////////////

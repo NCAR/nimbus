@@ -94,6 +94,8 @@ namespace Ssl {
 		/// @param s The text of the message.
 		/// @param valid True if this was an accepted message.
 		void userMessage(std::string s, bool valid);
+		/// Publish a change in the connection state.
+		void connectionStateChanged(Ssl::SslSocket::SocketState);
 
 
 	protected slots:
@@ -102,6 +104,9 @@ namespace Ssl {
 		/// Called when there is new data available from the Switch. The message will
 		/// be decoded, and the payload will be sent to the recipient as a datagram.
 		void msgFromServerSlot(Protocols::Message);
+		/// Called when the connection state changes. It will emit a connectionStateChanged()
+		/// signal.
+		void connectionStateChangedSlot(Ssl::SslSocket::SocketState);
 
 	protected:
 		/// Initialize the connection to the switch

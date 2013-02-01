@@ -50,29 +50,8 @@ SslClientConnection::~SslClientConnection() {
 /////////////////////////////////////////////////////////////////////
 void SslClientConnection::socketStateChanged(Ssl::SslSocket::SocketState state) {
 
-	switch (state) {
-	case SslSocket::SS_Unconnected: {
-		qDebug() << "SslSocket is unconnected, what does this mean?";
-		break;
-	}
-	case SslSocket::SS_Connected: {
-		std::cout << "SslSocket is connected" << std::endl;
-		break;
-	}
-	case SslSocket::SS_Encrypted: {
-		std::cout << "SslSocket is encrypted" << std::endl;
-		break;
-	}
-	case SslSocket::SS_Disconnected: {
-		std::cout << "SslSocket is disconnected" << std::endl;
-		break;
-	}
-	default: {
-		std::cout << "SslSocket changed to unknown state:" << state << std::endl;
-		break;
-	}
-	};
-
+	// just pass on the socket state change
+	emit connectionStateChanged(state);
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -118,3 +97,12 @@ bool SslClientConnection::send(Protocols::Message& message) {
 	// OK
 	return true;
 }
+
+/////////////////////////////////////////////////////////////////////
+Ssl::SslSocket::SocketState SslClientConnection::connectionState() {
+	if (!_sslSocket) {
+		return (Ssl::SslSocket::SS_Unconnected);
+	}
+	return _sslSocket->state();
+}
+
