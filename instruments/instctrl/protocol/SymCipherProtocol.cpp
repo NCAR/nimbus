@@ -19,14 +19,15 @@ SymCipherProtocol::~SymCipherProtocol() {
 std::vector<std::string> SymCipherProtocol::outgoing(std::string s) {
 
 	// Compress the outgoing string
-	s = ZlibCompress::compress(s);
+	std::string ss = s;
+	//ss = ZlibCompress::compress(ss);
 
 	// Create an initialization vector
 	std::vector<unsigned char> iv  = _cipher->makeIV();
 
     // encrypt the message
 	std::vector<unsigned char> encrypted;
-	encrypted = _cipher->encrypt(iv, s);
+	encrypted = _cipher->encrypt(iv, ss);
 
 	// prepend the iv
 	encrypted.insert(encrypted.begin(), iv.begin(), iv.end());
@@ -76,12 +77,12 @@ std::vector<std::string> SymCipherProtocol::incoming(std::string s) {
 	decrypted = _cipher->decrypt(iv, tmp);
 
 	// Uncompress the decrypted result
-	std::string s(decrypted.begin(), decrypted.end());
-	std::string uncompressed = ZlibCompress::uncompress(s);
+	std::string ss(decrypted.begin(), decrypted.end());
+	//ss = ZlibCompress::uncompress(ss);
 
 	// return the uncompressed, decrypted result
 	std::vector<std::string> results;
-	results.push_back(uncompressed);
+	results.push_back(ss);
 
 	return (results);
 }
