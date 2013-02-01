@@ -18,16 +18,20 @@ SymCipherProtocol::~SymCipherProtocol() {
 /////////////////////////////////////////////////////////////////////
 std::vector<std::string> SymCipherProtocol::outgoing(std::string s) {
 
-	std::vector<unsigned char> encrypted;
+	// Compress the outgoing string
+	s = ZlibCompress::compress(s);
 
+	// Create an initialization vector
 	std::vector<unsigned char> iv  = _cipher->makeIV();
 
     // encrypt the message
+	std::vector<unsigned char> encrypted;
 	encrypted = _cipher->encrypt(iv, s);
 
 	// prepend the iv
 	encrypted.insert(encrypted.begin(), iv.begin(), iv.end());
 
+	// Perform coding conversion
 	std::vector<std::string> results;
 	switch(_coding) {
 	case NO_CODING:
@@ -41,13 +45,14 @@ std::vector<std::string> SymCipherProtocol::outgoing(std::string s) {
 		break;
 	}
 
+	// Return result
 	return results;
 }
 
 /////////////////////////////////////////////////////////////////////
 std::vector<std::string> SymCipherProtocol::incoming(std::string s) {
 
-	// convert incoming string to vector
+	// Perform the inverse encoding
 	std::vector<unsigned char> tmp;
 	switch(_coding) {
 	case NO_CODING:
@@ -62,7 +67,7 @@ std::vector<std::string> SymCipherProtocol::incoming(std::string s) {
 	}
 
 	// Extract the IV
-	/// @todo sanity check that s at least contains a IV
+	/// @todo Add sanity check that s at least contains a IV
 	std::vector<unsigned char> iv(tmp.begin(), tmp.begin()+16);
 	tmp.erase(tmp.begin(), tmp.begin()+16);
 
@@ -70,8 +75,13 @@ std::vector<std::string> SymCipherProtocol::incoming(std::string s) {
 	std::vector<unsigned char> decrypted;
 	decrypted = _cipher->decrypt(iv, tmp);
 
+	// Uncompress the decrypted result
+	std::string s(decrypted.begin(), decrypted.end());
+	std::string uncompressed = ZlibCompress::uncompress(s);
+
+	// return the uncompressed, decrypted result
 	std::vector<std::string> results;
-	results.push_back(std::string(decrypted.begin(), decrypted.end()));
+	results.push_back(uncompressed);
 
 	return (results);
 }

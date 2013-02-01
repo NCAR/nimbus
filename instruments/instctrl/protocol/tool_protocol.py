@@ -3,7 +3,7 @@ import sys
 ourDir = Dir('.').abspath
 ourName = 'protocol'
 
-tools = ['doxygen','jsoncpp', 'evp', 'qt4', 'qtt_qtconfig']
+tools = ['doxygen','jsoncpp', 'ricutil', 'evp', 'qt4', 'qtt_qtconfig']
 env = Environment(tools = ['default'] + tools)
 env.EnableQt4Modules(['QtCore'])
 

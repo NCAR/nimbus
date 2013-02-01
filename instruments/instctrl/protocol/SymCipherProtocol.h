@@ -6,6 +6,7 @@
 #include <vector>
 #include "Protocol.h"
 #include "EVPCipher.h"
+#include "ZlibCompress.h"
 
 namespace Protocols
 {
