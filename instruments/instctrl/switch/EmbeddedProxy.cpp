@@ -114,8 +114,6 @@ void EmbeddedProxy::sendMsg(SslProxy::InstMsgInfo& info, Protocols::Message& msg
 	// Get the text of the message
 	std::string text = msg.payload().text();
 
-	qDebug() << text.c_str();
-
 	if (info._broadcast) {
 		// message will be broadcast
 		sent = _outgoingUdpSocket->writeDatagram(
