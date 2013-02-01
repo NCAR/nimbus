@@ -9,16 +9,9 @@
 /// use DNS. Currently only the static address() function provides
 /// any functionality.
 
-class QtAddress: QObject {
-	Q_OBJECT;
+class QtAddress {
 
 public:
-	/// Constructor
-	QtAddress() { }
-
-	/// Destructor
-	virtual ~QtAddress() { };
-
 	/// Find host information using DNS if necessary. If the name can't be resolved,
 	/// an error message is thrown as an exception.
 	/// @param name The host name or ip address.
