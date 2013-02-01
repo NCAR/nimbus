@@ -19,7 +19,13 @@ _server(0)
 	// Initialize
 	init();
 
-	_logger.log("SSL switch was initilized");
+	_logger.log("SSL switch was initialized");
+	QString msg;
+	msg = QString("Inter-switch messages received on port %1").arg(localPort);
+	_logger.log(msg.toStdString());
+	QString ip = QtAddress::address(remoteIP).toString();
+	msg = QString("Inter-switch messages sent to %1:%2").arg(ip).arg(remotePort);
+	_logger.log(msg.toStdString());
 
 }
 
@@ -39,7 +45,13 @@ _server(0)
 	// Initialize
 	init();
 
-	_logger.log("EmbeddedProxy switch was initilized");
+	_logger.log("EmbeddedProxy switch was initialized");
+	QString msg;
+	msg = QString("Inter-switch messages received on port %1").arg(localPort);
+	_logger.log(msg.toStdString());
+	QString ip = QtAddress::address(remoteIP).toString();
+	msg = QString("Inter-switch messages sent to %1:%2").arg(ip).arg(remotePort);
+	_logger.log(msg.toStdString());
 
 }
 

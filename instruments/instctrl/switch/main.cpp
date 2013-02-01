@@ -179,7 +179,7 @@ int main(int  argc, char** argv){
 
 	try {
 
-		RicLogger logger("RICSwitch");
+		RicLogger logger("RICSwitch", true);
 		logger.log("Starting a Remote Instrument Control Switch");
 
 		/////////////////////////////////////////////////////////////////

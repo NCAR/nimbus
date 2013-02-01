@@ -1,21 +1,21 @@
 #include "RicLogger.h"
 #include <iostream>
 
-// Track when the openlog request has occured.
+// Track when the openlog request has occurred.
 bool RicLogger::_isOpen = false;
 std::string* RicLogger::_ident = 0;
+bool RicLogger::_toStdOut = false;
 
 /////////////////////////////////////////////////////////////////////
-RicLogger::RicLogger(std::string logId)
+RicLogger::RicLogger(std::string logId, bool toStdOut)
 {
-	if (_ident) {
-		delete _ident;
-		_ident = 0;
-	}
-	_ident = new std::string(logId);
-
 	if (!_isOpen) {
+		if (_ident) {
+			delete _ident;
+		}
+		_ident = new std::string(logId);
 		_isOpen = true;
+		_toStdOut = toStdOut;
 #ifndef WIN32
 		if (*_ident == std::string("")) {
 			openlog(_ident->c_str(), LOG_PID, LOG_USER);
@@ -35,9 +35,16 @@ RicLogger::~RicLogger() {
 /////////////////////////////////////////////////////////////////////
 void
 RicLogger::log(std::string msg) {
+	// Get the identifier, if present.
+	std::string id = _ident? *_ident:"";
 #ifndef WIN32
 	syslog(LOG_INFO, "%s", msg.c_str());
+	if (_toStdOut) {
+		std::cout << id << ": " << msg << std::endl;
+	}
 #else
-	std::cout << *_ident << ": " << msg << std::endl;
+	if (_toStdOut) {
+		std::cout << id << ": " << msg << std::endl;
+	}
 #endif
 	}

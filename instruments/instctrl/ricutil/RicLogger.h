@@ -26,7 +26,8 @@ class RicLogger {
 public:
 	/// Constructor
 	/// @param logId The log message identifier.
-	RicLogger(std::string logId = std::string(""));
+	/// @param toStdOut If true, the messages are also written to stdout
+	RicLogger(std::string logId = std::string(""), bool toStdOut = false);
 	/// Destructor
 	virtual ~RicLogger();
 	/// Log a message
@@ -39,6 +40,8 @@ protected:
 	/// The ident string. This must exist for the life of the process,
 	/// because syslog references it.
 	static std::string* _ident;
+	/// Set true if the messages are to be echoed to stdout
+	static bool _toStdOut;
 
 };
 

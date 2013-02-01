@@ -61,8 +61,8 @@ parseCommandLine(int argc, char** argv,
 /// one user/instrument is supported.
 int main(int argc, char** argv)
 {
-	RicLogger logger("RICProxy");
-	logger.log("Starting a Remote Instrument Control SSL Proxy");
+	RicLogger logger("RICProxy", true);
+	logger.log("Starting Remote Instrument Control SSL Proxy");
 
     try {
 		// Process command line options

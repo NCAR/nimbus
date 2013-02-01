@@ -44,7 +44,7 @@ void SwitchConnection::readyRead() {
                                 &sender, &senderPort);
        /// @todo Validate that the datagram came from an acceptable sender
 
-        // Decode it
+       // Decode it
         std::vector<std::string> decoded =
         		_switchToSwitchProtocol.incoming(std::string(datagram.begin(), datagram.end()));
 
