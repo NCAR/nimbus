@@ -29,20 +29,16 @@ void SslServerConnection::socketStateChanged(Ssl::SslSocket::SocketState state) 
 
 	switch (state) {
 	case SslSocket::SS_Unconnected: {
-		std::cout << "SslSocket is unconnected, what does this mean?" << std::endl;
 		break;
 	}
 	case SslSocket::SS_Connected: {
-		std::cout << "SslSocket is connected" << std::endl;
 		break;
 	}
 	case SslSocket::SS_Encrypted: {
-		std::cout << "SslSocket is encrypted" << std::endl;
 		_peerCertificate = _sslSocket->peerCertificate();
 		break;
 	}
 	case SslSocket::SS_Disconnected: {
-		std::cout << "SslSocket is disconnected" << std::endl;
 		break;
 	}
 	default: {
