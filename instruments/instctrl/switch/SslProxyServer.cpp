@@ -26,7 +26,7 @@ _proxies(proxies)
 			this, SLOT(createConnection(Ssl::SslSocket*)));
 
 	std::string msg("SslProxyServer started");
-	logAndPrint(msg);
+	_logger.log(msg);
 
 }
 
@@ -132,11 +132,9 @@ void SslProxyServer::validateConnection(Ssl::SslServerConnection* connection) {
 		QString info = peerCert.subjectInfo(QSslCertificate::CommonName);
 		QString msg;
 		msg = QString("SSL connection established for %1").arg(info);
-		logAndPrint(msg);
+		_logger.log(msg.toStdString());
 		msg = QString("%1 active SSL connections").arg(_connections.size());
-		logAndPrint(msg);
-
-
+		_logger.log(msg.toStdString());
 	}
 }
 
@@ -153,7 +151,7 @@ void SslProxyServer::removeConnection(Ssl::SslServerConnection* connection) {
 	if (c == _connections.end()) {
 		std::string msg("Serious error, an unregistered connection has been disconnected.");
 		std::cerr << msg << std::endl;
-		logAndPrint(msg);
+		_logger.log(msg);
 	}
 
 	// kill the connection
@@ -180,9 +178,9 @@ void SslProxyServer::removeConnection(Ssl::SslServerConnection* connection) {
 
 	QString msg;
 	msg = QString("SSL disconnect from %1").arg(info);
-	logAndPrint(msg);
+	_logger.log(msg.toStdString());
 	msg = QString("%1 active SSL connections").arg(_connections.size());
-	logAndPrint(msg);
+	_logger.log(msg.toStdString());
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -211,22 +209,6 @@ void SslProxyServer::sendToProxy(Protocols::Message msg) {
 		/// @todo Log the unexpected message.
 		std::cout << "There is no proxy registered for " << msgID << std::endl;
 	}
-}
-
-/////////////////////////////////////////////////////////////////////
-void SslProxyServer::logAndPrint(std::string msg) {
-
-	// Send the message to the system log
-	_logger.log(msg);
-
-	// And send the message to stdout
-	QDateTime date = QDateTime::currentDateTime().toUTC();
-	std::cout << date.toString().toStdString() << " UTC: " << msg << std::endl;
-}
-
-/////////////////////////////////////////////////////////////////////
-void SslProxyServer::logAndPrint(QString msg) {
-	logAndPrint(msg.toStdString());
 }
 
 /////////////////////////////////////////////////////////////////////
