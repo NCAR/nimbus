@@ -45,14 +45,12 @@ GroundFeed::GroundFeed(int rate) : UDP_Base(31007), _dataRate(rate)
   _socket = new nidas::util::DatagramSocket;
   _to = new Inet4SocketAddress(Inet4Address::getByName(DEST_HOST_ADDR), UDP_PORT);
 
-  // Initialize vectors used for averaging
+  // Initialize vectors used for monitoring NaN values
   for (size_t i = 0; i < _varList.size(); ++i)
   {
      for (size_t j = 0; j < _varList[i]->Length; j++)
      {
-       _summedData.push_back(0.0);
        _lastGoodData.push_back(-32767);
-       _summedDataCount.push_back(0);
        _lastGoodDataIncrement.push_back(0);
      }
   }
@@ -91,27 +89,6 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
 
   extern NR_TYPE * AveragedData;
 
-  // Accumulate data so we can send an average.
-  size_t counter = 0;
-  for (size_t i = 0; i < _varList.size(); ++i)
-  {
-    // @todo when legacy zeroth bin goes away, then start with j = 0.
-    size_t s = _varList[i]->Length > 1 ? 1 : 0;
-    for (size_t j = s; j < _varList[i]->Length; j++)
-    {
-      if (!isnan(AveragedData[(_varList[i]->LRstart)+j]))
-      { 
-        _summedData[counter] += AveragedData[(_varList[i]->LRstart)+j];
-        _summedDataCount[counter]++;
-        counter++;
-      }
-      else
-      {
-        counter++;
-      }
-    }
-  }
-
   // Only send every so often.
   if ((rate_cntr % _dataRate) != 0)
     return;
@@ -136,7 +113,8 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
 
   groundString << "," << timeStamp;
 
-  counter = 0;
+  // Send data
+  size_t index = 0;
   for (size_t i = 0; i < _varList.size(); ++i)
   {
     if (_varList[i]->Length > 1) 
@@ -146,24 +124,24 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
       size_t s = 1;
       for (size_t j = s; j < _varList[i]->Length; j++) 
       {
-        if (_summedDataCount[counter] > 0)
+        if (!isnan(AveragedData[(_varList[i]->LRstart)+j]))
         {
-          _lastGoodData[counter] = _summedData[counter] / _summedDataCount[counter];
+          _lastGoodData[index] = AveragedData[(_varList[i]->LRstart)+j];
           if (j == s) 
-            groundString << ",'{" << _lastGoodData[counter];
+            groundString << ",'{" << _lastGoodData[index];
           else 
-            groundString << "," << _lastGoodData[counter];
-          _lastGoodDataIncrement[counter] = 0;
+            groundString << "," << _lastGoodData[index];
+          _lastGoodDataIncrement[index] = 0;
         } else
         {
           // Ship last good value unless we've seen NaNs for quite a while (60 increments = 5 minutes if 5 second intervals)
-          if (_lastGoodDataIncrement[counter] < 60)
+          if (_lastGoodDataIncrement[index] < (int) (300/_dataRate))  
           {
             if (j == s)
-              groundString << ",'{" << _lastGoodData[counter];
+              groundString << ",'{" << _lastGoodData[index];
             else 
-              groundString << "," << _lastGoodData[counter];
-            _lastGoodDataIncrement[counter]++;
+              groundString << "," << _lastGoodData[index];
+            _lastGoodDataIncrement[index]++;
           }
           else
           {
@@ -173,35 +151,31 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
               groundString << "," << "-32767";
           }
         }
-        _summedData[counter] = 0.0;
-        _summedDataCount[counter] = 0;
-        counter++;
+        index++;
       }
       groundString << "}'";
     } else {
       // Scalar data
-      if (_summedDataCount[counter] > 0)
+      if (!isnan(AveragedData[(_varList[i]->LRstart)]))
       {
-        _lastGoodData[counter] = _summedData[counter] / _summedDataCount[counter];
-        groundString << "," << _lastGoodData[counter];
-        _lastGoodDataIncrement[counter] = 0;
+        _lastGoodData[index] = AveragedData[(_varList[i]->LRstart)];
+        groundString << "," << _lastGoodData[index];
+        _lastGoodDataIncrement[index] = 0;
       }
       else
       {
-        // Ship last good data so long as it's been less than 300 seconds (5 min) since last seen.
-        if (_lastGoodDataIncrement[counter] < (int) (300/_dataRate))  
+        // Ship last good value unless we've seen NaNs for quite a while (60 increments = 5 minutes if 5 second intervals)
+        if (_lastGoodDataIncrement[index] < (int) (300/_dataRate))  
         {
-          groundString << "," << _lastGoodData[counter];
-          _lastGoodDataIncrement[counter]++;
+          groundString << "," << _lastGoodData[index];
+          _lastGoodDataIncrement[index]++;
         }
         else
         {
           groundString << "," << "-32767";
         }
       }
-      _summedData[counter] = 0.0;
-      _summedDataCount[counter] = 0;
-      counter++;
+      index++;
     }
   }
   groundString << "\n";
