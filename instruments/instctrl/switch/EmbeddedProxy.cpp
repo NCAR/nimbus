@@ -2,9 +2,12 @@
 
 /////////////////////////////////////////////////////////////////////
 EmbeddedProxy::EmbeddedProxy(std::string Id,
-		std::map<std::string, SslProxy::InstMsgInfo> messages) :
+		std::map<std::string,
+		SslProxy::InstMsgInfo> messages,
+		bool verbose) :
 _Id(Id),
-_messages(messages)
+_messages(messages),
+_verbose(verbose)
 {
 	initIncomingUDPsockets();
 
@@ -78,7 +81,8 @@ void EmbeddedProxy::udpReadyRead() {
 			SslProxy::InstMsgInfo info = _messages.begin()->second;
 			Protocols::Message message(info._instName, id, text);
 
-			qDebug() << message.toJsonStdString().c_str();
+			if (_verbose)
+				qDebug() << message.toJsonStdString().c_str();
 
 			// Tell the world that there is a new message!
 			emit msgFromProxy(message);

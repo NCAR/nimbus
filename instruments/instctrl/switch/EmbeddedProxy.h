@@ -20,7 +20,8 @@ public:
 	/// Constructor.
 	/// @param Id The ID for the proxy, usually the name of instrument/user
 	/// @param messages Details about each message type that this proxy will handle.
-	EmbeddedProxy(std::string Id, std::map<std::string, SslProxy::InstMsgInfo> messages);
+	/// @param verbose True to print messages passing through the proxy
+	EmbeddedProxy(std::string Id, std::map<std::string, SslProxy::InstMsgInfo> messages, bool verbose);
 	/// destructor.
 	virtual ~EmbeddedProxy();
 	/// @return the ID of proxy
@@ -60,6 +61,8 @@ protected:
 	QUdpSocket* _incomingUdpSocket;
 	/// The outgoing datagram socket.
 	QUdpSocket* _outgoingUdpSocket;
+	/// Ture to print message passing through the proxy
+	bool _verbose;
 
 };
 

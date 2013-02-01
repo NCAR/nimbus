@@ -1,7 +1,8 @@
 #include "EmbeddedProxyServer.h"
 
 /////////////////////////////////////////////////////////////////////
-EmbeddedProxyServer::EmbeddedProxyServer(std::vector<InstConfig> instConfigs) throw(std::string):
+EmbeddedProxyServer::EmbeddedProxyServer(std::vector<InstConfig> instConfigs,
+		bool verbose) throw(std::string):
 _instConfigs(instConfigs)
 {
 	for (int i = 0; i < _instConfigs.size(); i++) {
@@ -26,7 +27,7 @@ _instConfigs(instConfigs)
 			msgIds.push_back(instMessages[i].msgID);
 		}
 
-		_proxy = new EmbeddedProxy(instConfig.instrumentName(), messages);
+		_proxy = new EmbeddedProxy(instConfig.instrumentName(), messages, verbose);
 
 		// Capture the proxy messages
 		connect(_proxy, SIGNAL(msgFromProxy(Protocols::Message)), this, SLOT(msgFromProxySlot(Protocols::Message)));

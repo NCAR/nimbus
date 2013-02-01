@@ -43,7 +43,7 @@ _server(0),
 _verbose(verbose)
 {
 	// Create an embedded proxy server
-	_server = new EmbeddedProxyServer(instConfigs);
+	_server = new EmbeddedProxyServer(instConfigs, _verbose);
 
 	// Initialize
 	init();
