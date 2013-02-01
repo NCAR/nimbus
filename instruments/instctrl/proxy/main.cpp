@@ -173,14 +173,22 @@ int main(int argc, char** argv)
 		// Connect signals from the interface to the SSL proxy.
 		proxyMainWindow.connect(&proxyMainWindow, SIGNAL(connectToServer()),
 				&sslProxy, SLOT(connectToServer()));
+
 		proxyMainWindow.connect(&proxyMainWindow, SIGNAL(disconnectFromServer()),
 				&sslProxy, SLOT(disconnectFromServer()));
 
 		// Connect the signals from the SSL proxy to the interface.
 		sslProxy.connect(&sslProxy, SIGNAL(switchMessage(std::string, bool)),
 				&proxyMainWindow, SLOT(switchMessageSlot(std::string, bool)));
+
 		sslProxy.connect(&sslProxy, SIGNAL(userMessage(std::string, bool)),
 				&proxyMainWindow, SLOT(userMessageSlot(std::string, bool)));
+
+		sslProxy.connect(&sslProxy, SIGNAL(proxyStateChanged(Ssl::SslProxy::ProxyState)),
+				&proxyMainWindow, SLOT(proxyStateChangedSlot(Ssl::SslProxy::ProxyState)));
+
+		sslProxy.connect(&sslProxy, SIGNAL(proxyError(QAbstractSocket::SocketError, std::string)),
+				&proxyMainWindow, SLOT(proxyErrorSlot(QAbstractSocket::SocketError, std::string)));
 
 		// Show the user interface
 		proxyMainWindow.show();

@@ -13,6 +13,7 @@ SslProxy::SslProxy(
 		int switchPort,
 		std::vector<QSslCertificate> extraCerts,
 		std::map<std::string, InstMsgInfo> messages):
+_proxyState(PROXY_Unconnected),
 _proxyID(proxyID),
 _keyFile(privateKeyFile),
 _sslCert(sslCert),
@@ -93,6 +94,12 @@ void SslProxy::disconnectFromServer() {
 /////////////////////////////////////////////////////////////////////
 void SslProxy::openSslConnection() {
 
+	// Put us in the connecting state.
+	_proxyState = PROXY_Connecting;
+
+	// Notify that we are connecting.
+	emit proxyStateChanged(_proxyState);
+
 	if (_sslConnection) {
 		std::cerr << __PRETTY_FUNCTION__ << ": "
 				<< "SSL connection requested while there is already an active SSL link" << std::endl;
@@ -116,6 +123,11 @@ void SslProxy::openSslConnection() {
 	// Capture changes in the connection state
 	connect(_sslConnection, SIGNAL(connectionStateChanged(Ssl::SslSocket::SocketState)),
 			this, SLOT(connectionStateChangedSlot(Ssl::SslSocket::SocketState)));
+
+	// Capture the connection error signal
+	connect(_sslConnection, SIGNAL(connectionError(QAbstractSocket::SocketError, std::string)),
+			this, SLOT(connectionErrorSlot(QAbstractSocket::SocketError, std::string)));
+
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -125,7 +137,7 @@ void SslProxy::closeSslConnection() {
 		return;
 	}
 
-	delete _sslConnection;
+	_sslConnection->deleteLater();
 	_sslConnection = 0;
 
 }
@@ -178,30 +190,49 @@ void SslProxy::connectionStateChangedSlot(Ssl::SslSocket::SocketState socketStat
 
 	switch (socketState) {
 	case SslSocket::SS_Unconnected: {
-		qDebug() << "SslSocket is unconnected, what does this mean?";
+		if (_proxyState != PROXY_Unconnected) {
+			_proxyState = PROXY_Unconnected;
+			// Pass on the state change.
+			emit proxyStateChanged(_proxyState);
+		}
 		break;
 	}
 	case SslSocket::SS_Connected: {
-		std::cout << "SslSocket is connected" << std::endl;
+		// SS_Connected  is an intermediate condition when the socket is
+		// connected but before the handshake is completed.
 		break;
 	}
 	case SslSocket::SS_Encrypted: {
-		std::cout << "SslSocket is encrypted" << std::endl;
+		if (_proxyState != PROXY_Connected) {
+			_proxyState = PROXY_Connected;
+			// Pass on the state change.
+			emit proxyStateChanged(_proxyState);
+		}
 		break;
 	}
 	case SslSocket::SS_Disconnected: {
-		std::cout << "SslSocket is disconnected" << std::endl;
+		if (_proxyState != PROXY_Unconnected) {
+			_proxyState = PROXY_Unconnected;
+			closeSslConnection();
+			// Pass on the state change.
+			emit proxyStateChanged(_proxyState);
+		}
 		break;
 	}
 	default: {
-		std::cout << "SslSocket changed to unknown state:" << socketState << std::endl;
+		_proxyState = PROXY_Unconnected;
+		// Pass on the state change.
+		emit proxyStateChanged(_proxyState);
 		break;
 	}
 	};
 
-	// Pass on the state change.
-	emit connectionStateChanged(socketState);
 
+}
+
+/////////////////////////////////////////////////////////////////////
+void SslProxy::connectionErrorSlot(QAbstractSocket::SocketError err, std::string errmsg) {
+	emit proxyError(err, errmsg);
 }
 
 /////////////////////////////////////////////////////////////////////

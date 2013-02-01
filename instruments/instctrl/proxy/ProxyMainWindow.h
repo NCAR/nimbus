@@ -36,6 +36,10 @@ public slots:
 	/// @param s The user message text.
 	/// @param valid Set true if this is an accepted message, false otherwise.
 	void userMessageSlot(std::string s, bool valid);
+	/// Notify us that the proxy has changed state
+	void proxyStateChangedSlot(Ssl::SslProxy::ProxyState);
+	/// Notify us that the proxy has encountered an error
+	void proxyErrorSlot(QAbstractSocket::SocketError, std::string);
 
 protected slots:
 	/// Called when the connect/disconnect button is pressed.
@@ -54,10 +58,19 @@ protected:
 	/// The SSL proxy that manages the SSL connection to the switch and
 	/// the reading and writing of the UDP datagrams.
 	SslProxy& _sslProxy;
-	/// Set true when the SslProxy is connected.
-	bool _sslConnected;
+	/// Contains the proxy state
+	Ssl::SslProxy::ProxyState _proxyState;
 	/// The window icon
 	QIcon _windowIcon;
+	/// Style sheet green
+	QString _green;
+	/// Style sheet dark green
+	QString _dgreen;
+	/// Style sheet red
+	QString _red;
+	/// Style sheet yellow
+	QString _yellow;
+
 
 };
 

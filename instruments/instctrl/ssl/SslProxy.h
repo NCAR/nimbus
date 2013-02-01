@@ -30,6 +30,13 @@ namespace Ssl {
 		Q_OBJECT
 
 	public:
+		/// The state of the proxy.
+		enum ProxyState {
+			PROXY_Unconnected,
+			PROXY_Connecting,
+			PROXY_Connected
+		};
+
 		/// A helper class to manage the handling of message types. One instance
 		/// will be created for each message identifier (_msgId). The
 		/// instrument name (_proxyID) will be the same for all messages
@@ -95,7 +102,10 @@ namespace Ssl {
 		/// @param valid True if this was an accepted message.
 		void userMessage(std::string s, bool valid);
 		/// Publish a change in the connection state.
-		void connectionStateChanged(Ssl::SslSocket::SocketState);
+		void proxyStateChanged(Ssl::SslProxy::ProxyState);
+		/// Publish a proxy error.
+		void proxyError(QAbstractSocket::SocketError, std::string);
+
 
 
 	protected slots:
@@ -107,11 +117,15 @@ namespace Ssl {
 		/// Called when the connection state changes. It will emit a connectionStateChanged()
 		/// signal.
 		void connectionStateChangedSlot(Ssl::SslSocket::SocketState);
+		/// Called when their is an error in the connection.
+		/// It will emit a proxyError signal.
+		void connectionErrorSlot(QAbstractSocket::SocketError, std::string);
 
 	protected:
-		/// Initialize the connection to the switch
+		/// Initialize the connection to the switch. The state is
+		/// changed to PROXY_Connecting.
 		void openSslConnection();
-		/// Close the connection to the switch
+		/// Close the connection to the switch.
 		void closeSslConnection();
 		/// Initialize the incoming UDP socket. One socket is required
 		/// per port that we are listening on.
@@ -125,6 +139,9 @@ namespace Ssl {
 		/// @param msg The message.
 		void sendMsg(InstMsgInfo& info, Protocols::Message& msg);
 
+		/// The current state of the proxy
+		ProxyState _proxyState;
+		/// The proxy identifier. Initialized from the configuration.
 		std::string _proxyID;
 		/// Path to the private key.
 		std::string _keyFile;

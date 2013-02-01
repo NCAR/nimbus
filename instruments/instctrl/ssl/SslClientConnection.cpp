@@ -58,6 +58,9 @@ void SslClientConnection::socketStateChanged(Ssl::SslSocket::SocketState state) 
 void SslClientConnection::sslSocketErrorSlot(QAbstractSocket::SocketError errorCode,
 		std::string errMsg) {
 
+	// Pass on the socket error
+	emit connectionError(errorCode, errMsg);
+
 }
 
 /////////////////////////////////////////////////////////////////////

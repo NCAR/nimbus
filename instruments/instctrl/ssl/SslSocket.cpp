@@ -97,8 +97,12 @@ void SslSocket::disconnected() {
 /////////////////////////////////////////////////////////////////////
 void SslSocket::socketError(QAbstractSocket::SocketError errorCode) {
 	std::string errorMsg = errorString().toStdString();
-	// qDebug() << "SslSocket error(" << errorCode <<"):" << errorMsg.c_str();
 	emit sslSocketError(errorCode, errorMsg);
+}
+
+/////////////////////////////////////////////////////////////////////
+void SslSocket::sslErrors(const QList<QSslError>& errors) {
+	qDebug() << "sslErrors:" << errors;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -119,11 +123,6 @@ void SslSocket::modeChanged(QSslSocket::SslMode mode) {
 	//	qDebug() << "SslSocket changed to Client mode";
 	//if (mode == QSslSocket::SslServerMode)
 	//	qDebug() << "SslSocket changed to Server mode";
-}
-
-/////////////////////////////////////////////////////////////////////
-void SslSocket::sslErrors(const QList<QSslError>& errors) {
-	// qDebug() << "SslSocket sslErrors:" << errors;
 }
 
 /////////////////////////////////////////////////////////////////////

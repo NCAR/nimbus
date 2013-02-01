@@ -52,6 +52,10 @@ namespace Ssl {
 		/// Emitted when a new message has been received from the server.
 		/// @param msg The message.
 		void msgFromServer(Protocols::Message);
+		/// Emmitted when there has been an error in the connection.
+		/// Right now just pass on the Qt socket error. Perhaps we will later change
+		/// this to something specific to SslClientConnection.
+		void connectionError(QAbstractSocket::SocketError, std::string);
 
 	public slots:
 		/// Capture a change in the SslSocket state.
