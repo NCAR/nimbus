@@ -44,6 +44,7 @@ public:
 	/// @param remotePort A SwitchConection related parameter: The port that we send messages to.
 	/// @param switchCipherKey A SwitchConection related parameter: The file containing the key for symmetric cipher
 	/// encryption over a SwitchConnection.
+	/// @param verbose If true print messages passing through the switch
 	Switch(
 			std::string serverSslKeyFile,
 			QSslCertificate serverSslCert,
@@ -52,7 +53,8 @@ public:
 			int _localPort,
 			std::string _remoteIP,
 			int _remotePort,
-			std::string switchCipherKey);
+			std::string switchCipherKey,
+			bool verbose);
 
 	/// The flavor of switch which contains embedded proxies. It does not
 	/// provide an SSL server, so none of the SSL certificates and keys are
@@ -63,12 +65,14 @@ public:
 	/// @param remotePort A SwitchConection related parameter: The port that we send messages to.
 	/// @param switchCipherKey A SwitchConection related parameter: The file containing the key for symmetric cipher
 	/// encryption over a SwitchConnection.
+	/// @param verbose If true print messages passing through the switch
 	Switch(
 			std::vector<InstConfig> instConfigs,
 			int _localPort,
 			std::string _remoteIP,
 			int _remotePort,
-			std::string switchCipherKey);
+			std::string switchCipherKey,
+			bool verbose);
 
 	virtual ~Switch();
 	
@@ -89,6 +93,9 @@ protected:
 
 	/// The connection between us and the remote switch
 	SwitchConnection _switchConnection;
+
+	/// Ture to print message passing through the switch
+	bool _verbose;
 
 	/// The loggin facility
 	RicLogger _logger;

@@ -9,9 +9,11 @@ Switch::Switch(std::string serverSslKeyFile,
 		int localPort,
 		std::string remoteIP,
 		int remotePort,
-		std::string switchCipherKey):
+		std::string switchCipherKey,
+		bool verbose):
 _switchConnection(localPort, remoteIP, remotePort, switchCipherKey),
-_server(0)
+_server(0),
+_verbose(verbose)
 {
 	// Create an SSL proxy server
 	_server = new SslProxyServer(serverSslKeyFile, serverSslCert, switchPort, proxies);
@@ -26,7 +28,6 @@ _server(0)
 	QString ip = QtAddress::address(remoteIP).toString();
 	msg = QString("Inter-switch messages sent to %1:%2").arg(ip).arg(remotePort);
 	_logger.log(msg.toStdString());
-
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -35,9 +36,11 @@ Switch::Switch(std::vector<InstConfig> instConfigs,
 		int localPort,
 		std::string remoteIP,
 		int remotePort,
-		std::string switchCipherKey):
+		std::string switchCipherKey,
+		bool verbose):
 _switchConnection(localPort, remoteIP, remotePort, switchCipherKey),
-_server(0)
+_server(0),
+_verbose(_verbose)
 {
 	// Create an embedded proxy server
 	_server = new EmbeddedProxyServer(instConfigs);
@@ -52,7 +55,6 @@ _server(0)
 	QString ip = QtAddress::address(remoteIP).toString();
 	msg = QString("Inter-switch messages sent to %1:%2").arg(ip).arg(remotePort);
 	_logger.log(msg.toStdString());
-
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -70,29 +72,28 @@ void Switch::init() {
 	// Capture the messages from the remote switch
 	connect(&_switchConnection, SIGNAL(msgFromRemoteSwitch(Protocols::Message)),
 			this, SLOT(msgFromRemoteSwitch(Protocols::Message)));
-
 }
+
 /////////////////////////////////////////////////////////////////////
 void Switch::msgFromProxySlot(Protocols::Message message) {
 
-	std::cout << message.toJsonStdString() << std::endl;
+	if (_verbose)
+		std::cout << message.toJsonStdString() << std::endl;
 
 	// A message has been received from the proxy
 	std::string msg = message.toJsonStdString();
 
 	// send the proxy message to the remote switch
 	_switchConnection.sendSwitchMessage(msg);
-
 }
 
 /////////////////////////////////////////////////////////////////////
 void Switch::msgFromRemoteSwitch(Protocols::Message message) {
 
 	// A message has been received from the remote switch
-
-	std::cout << message.toJsonStdString() << std::endl;
+	if (_verbose)
+		std::cout << message.toJsonStdString() << std::endl;
 
 	// Tell the server to forward the message to the proxy
 	_server->sendToProxy(message);
-
 }

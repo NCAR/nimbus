@@ -12,14 +12,17 @@ namespace po = boost::program_options;
 /////////////////////////////////////////////////////////////////////
 void
 parseCommandLine(int argc, char** argv,
-	std::string& configFile)
+	std::string& configFile,
+	bool& verbose)
 {
   	const char *optarg;
    	bool err = false;
+  	verbose = false;
 
 	po::options_description descripts("Options");
 	descripts.add_options()
 	("config,c", po::value<std::string>(&configFile), "configuration file")
+	("verbose,v",                                     "verbose enabled")
 	("help,h",                                        "help")
 	;
 
@@ -41,6 +44,9 @@ parseCommandLine(int argc, char** argv,
 		}
 	}
 
+	if (vm.count("verbose"))
+		verbose = true;
+
 	if (vm.count("help") || err) {
 		std::cout << descripts << std::endl;
 		std::cout << "Edit the configuration file (typically ~/.config/NCAR/Switch.ini) to set configuration parameters" << std::endl;
@@ -55,8 +61,8 @@ void getCommonConfig(
 		std::string& switchRemoteIP,
 		int& switchRemotePort,
 		std::string& switchCipherKey
-		) {
-
+		)
+{
 	// Listen on this port for messages from the remote switch
 	switchLocalPort = config->getInt("SwitchLocalPort", 0);
 
@@ -80,6 +86,7 @@ void getCommonConfig(
 		exit(1);
 	}
 }
+
 /////////////////////////////////////////////////////////////////////
 void createSslSwitch(
 		int argc,
@@ -89,8 +96,9 @@ void createSslSwitch(
 		int switchLocalPort,
 	    std::string switchRemoteIP,
 		int switchRemotePort,
-		std::string switchCipherKey) {
-
+		std::string switchCipherKey,
+		bool verbose)
+{
 	// Get the configuration that applies to the Proxy SSL connection
 
 	// The file containing the private key for the switch to proxy SSL link.
@@ -140,8 +148,8 @@ void createSslSwitch(
 			switchLocalPort,
 			switchRemoteIP,
 			switchRemotePort,
-			switchCipherKey);
-
+			switchCipherKey,
+			verbose);
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -151,7 +159,8 @@ void createEmbeddedSwitch(
 		int switchLocalPort,
 	    std::string switchRemoteIP,
 		int switchRemotePort,
-		std::string switchCipherKey) {
+		std::string switchCipherKey,
+		bool verbose) {
 
 	// Get the instrument definition files
 	std::vector<std::map<std::string, std::string> > instruments;
@@ -171,12 +180,13 @@ void createEmbeddedSwitch(
 			switchLocalPort,
 			switchRemoteIP,
 			switchRemotePort,
-			switchCipherKey);
-
+			switchCipherKey,
+			verbose);
 }
-/////////////////////////////////////////////////////////////////////
-int main(int  argc, char** argv){
 
+/////////////////////////////////////////////////////////////////////
+int main(int  argc, char** argv)
+{
 	try {
 
 		RicLogger logger("RICSwitch", true);
@@ -186,11 +196,12 @@ int main(int  argc, char** argv){
 		// Create the Qt application (i.e. event loop)
 		QCoreApplication app(argc, argv);
 
-
 		/////////////////////////////////////////////////////////////////
 		// Process command line options
 		std::string configFile;
-		parseCommandLine(argc, argv, configFile);
+	  	bool verbose;
+		parseCommandLine(argc, argv, configFile, verbose);
+		qDebug() << verbose;
 
 		/////////////////////////////////////////////////////////////////
 		// Get the configuration
@@ -242,7 +253,8 @@ int main(int  argc, char** argv){
 					switchLocalPort,
 					switchRemoteIP,
 					switchRemotePort,
-					switchCipherKey);
+					switchCipherKey,
+					verbose);
 		} else {
 			createEmbeddedSwitch(
 					config,
@@ -250,7 +262,8 @@ int main(int  argc, char** argv){
 					switchLocalPort,
 					switchRemoteIP,
 					switchRemotePort,
-					switchCipherKey);
+					switchCipherKey,
+					verbose);
 		}
 
 		// Run the event loop
@@ -260,6 +273,4 @@ int main(int  argc, char** argv){
 		std::cerr << msg << std::endl;
 		return 1;
 	}
-
-
 }
