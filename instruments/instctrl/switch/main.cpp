@@ -201,7 +201,6 @@ int main(int  argc, char** argv)
 		std::string configFile;
 	  	bool verbose;
 		parseCommandLine(argc, argv, configFile, verbose);
-		qDebug() << verbose;
 
 		/////////////////////////////////////////////////////////////////
 		// Get the configuration

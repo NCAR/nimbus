@@ -40,7 +40,7 @@ Switch::Switch(std::vector<InstConfig> instConfigs,
 		bool verbose):
 _switchConnection(localPort, remoteIP, remotePort, switchCipherKey),
 _server(0),
-_verbose(_verbose)
+_verbose(verbose)
 {
 	// Create an embedded proxy server
 	_server = new EmbeddedProxyServer(instConfigs);
