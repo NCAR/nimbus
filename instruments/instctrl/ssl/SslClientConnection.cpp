@@ -55,9 +55,9 @@ void SslClientConnection::socketStateChanged(Ssl::SslSocket::SocketState state) 
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslClientConnection::sslSocketErrorSlot(QAbstractSocket::SocketError errorCode, std::string errMsg) {
-	std::cout << "SslSocket error, exiting" << std::endl;
-	QCoreApplication::quit();
+void SslClientConnection::sslSocketErrorSlot(QAbstractSocket::SocketError errorCode,
+		std::string errMsg) {
+
 }
 
 /////////////////////////////////////////////////////////////////////
