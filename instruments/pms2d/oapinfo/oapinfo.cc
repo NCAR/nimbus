@@ -75,36 +75,44 @@ int main(int argc, char *argv[])
 int Output(char buff[])
 {
   P2d_rec *p2d = (P2d_rec *)buffer;
+  int nDiodes = 0;
 
   switch (ntohs(*(unsigned short *)buff))
   {
     case 0x4331:	// PMS2D C Probes.
     case 0x4332:
-    case 0x4334:	// USB 25um C probe.
-    case 0x4336:	// USB 10um C probe.
     case 0x5031:	// PMS2D P Probes.
     case 0x5032:
+      nDiodes = 32;
+      break;
+    case 0x4334:	// USB 25um C probe.
+    case 0x4336:	// USB 10um C probe.
     case 0x5034:	// USB P Probe.
-    case 0x4731:	// Greyscale
-    case 0x4732:
-    case 0x4831:	// HVPS
-    case 0x4832:
+      nDiodes = 64;
+      break;
+//    case 0x4831:	// HVPS
+//    case 0x4832:
     case 0x3348:	// 3V-CPI / 2DS Horizontal.
     case 0x3356:	// 3V-CPI / 2DS Vertical.
-      printf("  %c%c %02d:%02d:%02d.%03d, tas=%d  %x\n",
+      nDiodes = 128;
+      break;
+    default:
+      std::cout << "Unrecognized record id=" << buff[0] << buff[1] << std::endl;
+  }
+
+  printf("  %c%c %02d:%02d:%02d.%03d, tas=%d  %x\n",
 	((char*)p2d)[0], ((char*)p2d)[1],
 	ntohs(p2d->hour), ntohs(p2d->minute), ntohs(p2d->second), ntohs(p2d->msec),
 	ntohs(p2d->tas), ((short*)p2d->data)[0]);
 
-      for (int i = 0; i < 256; ++i)
-      {
-        printf("%016llX%016llX\n",
-                *(long long *)(&p2d->data[i<<4]),
-                *(long long *)(&p2d->data[(i<<4)+8]));
-      }
-      break;
-
-    default:
-      std::cout << "Unrecognized record id=" << buff[0] << buff[1] << std::endl;
+  int bytesPerSlice = nDiodes / 8;
+  int nSlices = 4096 / bytesPerSlice;
+  for (int i = 0; i < nSlices; ++i)
+  {
+    for (int j = 0; j < bytesPerSlice; ++j)
+    {
+      printf("%02X", p2d->data[(i*bytesPerSlice) + j]);
+    }
+    printf("\n");
   }
 }
