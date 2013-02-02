@@ -46,7 +46,8 @@ protected slots:
 	/// It will in emit either the connectToServer() or disconnectFromServer()
 	/// signal.
 	void connectSlot();
-
+	/// Toggle between min and max views.
+	void viewSlot();
 
 signals:
 	/// Emitted to request that the SslProxy connect to the switch.
@@ -60,6 +61,8 @@ protected:
 	SslProxy& _sslProxy;
 	/// Contains the proxy state
 	Ssl::SslProxy::ProxyState _proxyState;
+	/// Set true when we are in full view mode.
+	bool _fullView;
 	/// The window icon
 	QIcon _windowIcon;
 	/// Style sheet green
@@ -70,6 +73,8 @@ protected:
 	QString _red;
 	/// Style sheet yellow
 	QString _yellow;
+	int _width;
+	int _height;
 
 
 };

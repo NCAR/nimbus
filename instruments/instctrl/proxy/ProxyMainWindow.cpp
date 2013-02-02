@@ -5,6 +5,7 @@ ProxyMainWindow::ProxyMainWindow(SslProxy& sslProxy, QWidget* parent):
 QMainWindow(parent),
 _sslProxy(sslProxy),
 _proxyState(Ssl::SslProxy::PROXY_Unconnected),
+_fullView(true),
 _windowIcon(QString(":/proxyIcon.png")),
 _green  (tr("background-color: #00CC66")),
 _dgreen (tr("background-color: #00AA88")),
@@ -17,16 +18,78 @@ _yellow (tr("background-color: #EEEE00"))
 	// Set our icon
 	setWindowIcon(_windowIcon);
 
+	// Set the view button image
+	_view->setIcon(_windowIcon);
+
+	// Set the focus back to the connect button.
+	_connect->setFocus();
+
 	// Initial status
 	proxyStateChangedSlot(Ssl::SslProxy::PROXY_Unconnected);
 
 	// Handle the control button
 	connect (_connect, SIGNAL(released()), this, SLOT(connectSlot()));
+
+	// Handle the view button.
+	connect(_view, SIGNAL(released()), this, SLOT(viewSlot()));
 }
 
 /////////////////////////////////////////////////////////////////////
 ProxyMainWindow::~ProxyMainWindow() {
 
+}
+
+/////////////////////////////////////////////////////////////////////
+void ProxyMainWindow::viewSlot() {
+
+	_fullView = !_fullView;
+
+	if (!_fullView) {
+		_width = this->width();
+		_height = this->height();
+	}
+
+	if (_fullView) {
+		_validGroup->show();
+		_invalidGroup->show();
+		statusBar()->show();
+	} else {
+		_validGroup->hide();
+		_invalidGroup->hide();
+		statusBar()->hide();
+	}
+
+	// Set the focus back to the connect button.
+	_connect->setFocus();
+
+
+	// The following is used to resize the mainwindow
+	// to account for the hidden/shown widgets.
+	QWidget *parent;
+	_validGroup->parentWidget()->layout()->invalidate();
+	parent = _validGroup->parentWidget();
+	while (parent) {
+		parent->adjustSize();
+		parent = parent->parentWidget();
+	}
+
+	_invalidGroup->parentWidget()->layout()->invalidate();
+	parent = _invalidGroup->parentWidget();
+	while (parent) {
+		parent->adjustSize();
+		parent = parent->parentWidget();
+	}
+
+	statusBar()->parentWidget()->layout()->invalidate();
+	parent = statusBar()->parentWidget();
+	while (parent) {
+		parent->adjustSize();
+		parent = parent->parentWidget();
+	}
+
+	if (_fullView) {
+		this->resize(_width, _height);
+	}
 }
 
 /////////////////////////////////////////////////////////////////////
