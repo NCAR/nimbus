@@ -11,12 +11,13 @@
 class ProbeInfo
 {
 public:
-  ProbeInfo(std::string new_id, int ndiodes, int numbins, int binoffset)
-  : id(new_id), nDiodes(ndiodes), numBins(numbins), firstBin(binoffset),
-    lastBin(numbins), resolution(25), armWidth(6.1)
+  ProbeInfo(std::string new_id, std::string sn, int ndiodes, float res,
+		std::string sfx, int binoffset, int numbins)
+
+  : id(new_id), serialNumber(sn), suffix(sfx), nDiodes(ndiodes), resolution(res),
+	numBins(numbins), firstBin(binoffset), lastBin(numbins), armWidth(6.1)
   {
     if (id[0] == 'P') {
-      resolution = 200;
       armWidth = 26.1;
     }
   }
@@ -32,9 +33,9 @@ public:
   std::string serialNumber;
   std::string suffix;
   int nDiodes;          // 32 or 64 at this time.
+  float resolution;     // micrometers
   int numBins;
   int firstBin, lastBin;
-  float resolution;     // micrometers
   float armWidth;       // cm
 
   std::vector<float> bin_endpoints;

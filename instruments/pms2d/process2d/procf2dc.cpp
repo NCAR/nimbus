@@ -7,7 +7,7 @@
     c++ procf2dc.cpp -o procf2dc -I/usr/local/netcdf-3.6.0-p1/include 
         -L/usr/local/netcdf-3.6.0-p1/lib -lnetcdf_c++ -lnetcdf
 
-    Last changed: ARB, 6/2010
+    Authors: Aaron Bansemer, Chris Webster
 
  ******************************************************************
 */
@@ -33,11 +33,10 @@
 
 using namespace std;
    
-const int nDiodes = 64;
-const int numbins = 128;
 const int binoffset = 1;  // Offset for RAF conventions, number of empty bins before counting begins 
-const int slicesPerRecord = 512;
 const string markerline = "</OAP>";  // Marks end of XML header
+
+const char syncString[3] = { 0xaa, 0xaa, 0xaa };
 
 
 struct struct_particle {
@@ -195,7 +194,7 @@ double dpoisson_fit(float x[], float y[], double a[3], int n){
 
 
 // ----------------CIRCLE SIZE ROUTINE----------------
-struct_particle findsize(short img[][nDiodes], short nslices, float res){
+struct_particle findsize(short *img[], int nslices, int nDiodes, float res){
    // Based on http://tog.acm.org/resources/GraphicsGems/gems/BoundSphere.c 
    // Graphics Gems I, Article by Ritter
 
@@ -211,7 +210,7 @@ struct_particle findsize(short img[][nDiodes], short nslices, float res){
    
    //Stuff x and y vectors, find x and y size, area, check for edge touching
    //May want to erode image to outline to increase performance.
-   for (int i=0; i<nslices; i++) for(int j=0; j<nDiodes; j++) {
+   for (int i = 0; i < nslices; i++) for(int j = 0; j < nDiodes; j++) {
       if(img[i][j]==foreval) {
          y.push_back(i); 
          x.push_back(j);
@@ -306,7 +305,8 @@ struct_particle findsize(short img[][nDiodes], short nslices, float res){
 
 
 // ----------------HOLE FILL ROUTINE----------------
-short fillholes2(short img_original[][nDiodes], short nslices){
+short fillholes2(short *img_original[], int nslices, int nDiodes)
+{
   short img[nslices][nDiodes]; //create a new image for processing 
   short backval=1, foreval=0;  //values that indicate background and foreground 
   short label=1, area_added=0;
@@ -482,9 +482,9 @@ void showparticle(struct_particle& x){
 } 
 
 //----------------Display particle image to screen--------
-void showroi(short img[][nDiodes], short nslices)
+void showroi(short *img[], int nslices, int nDiodes)
 {
-  for (int i = 0; i < nslices;i++){
+  for (int i = 0; i < nslices; i++){
     for (int j = 0; j < nDiodes; j++) cout<<img[i][j]; 
     cout<<endl;
   }
@@ -523,8 +523,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   type_buffer buffer;  
   ifstream input_file;
   string line;
-  short roi[slicesPerRecord][nDiodes];
-  short slice_count=0, firstday;
+  int slice_count=0, firstday;
   unsigned long long slice, firsttimeline, lasttimeline=0, timeline, difftimeline, particle_count=0;
   double lastbuffertime, buffertime = 0, nextit = 0;
   bool firsttimeflag = true;
@@ -535,9 +534,12 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   char probetype = probe.id[0];  
   char probenumber = probe.id[1];
 
-  //Set up array of powers of 2, starting with 1
-  unsigned long long powerof2[64];
-  for (int i=0; i<64; i++) {powerof2[i]=1ULL; for (int j=0; j<i;j++) powerof2[i]=powerof2[i]*2ULL;} 
+  // allocate space for roi.
+  int bytesPerSlice = probe.nDiodes / 8;
+  int slicesPerRecord = 4096 / bytesPerSlice;
+  short *roi[slicesPerRecord];
+  for (int i = 0; i < slicesPerRecord; ++i)
+    roi[i] = new short[probe.nDiodes];
 
   probe.ComputeSamplearea(cfg.recon);
 
@@ -575,9 +577,9 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
 
   ProbeData data(numtimes);
 
-  //Shattering correction and interarrival setup
-  const int nitq=400; //number of interarrival times to keep for fitting
-  int iitq=0;   //current index of itq
+  // Shattering correction and interarrival setup
+  const int nitq=400;	// number of interarrival times to keep for fitting
+  int iitq=0;		// current index of itq
   double bestfit[3]={0};
   double itq[nitq]={1};
   float it_endpoints[cfg.nInterarrivalBins+1], it_midpoints[cfg.nInterarrivalBins], fitspec[cfg.nInterarrivalBins];
@@ -600,7 +602,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
 
   while (!input_file.eof())
   {
-     //Read next buffer, compute buffer times
+     // Read next buffer, compute buffer times
      do
      {
        input_file.read((char*)(&buffer), sizeof(buffer));
@@ -621,27 +623,48 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
 
      firsttimeflag = true;
      //Scroll through each slice, look for sync/time slices
-     for (int islice=0; islice<slicesPerRecord; islice++){
-        slice=endianswap_ull(((unsigned long long *)buffer.image)[islice]);
 
-        if ((slice & 0xffffff0000000000ULL) == 0xaaaaaa0000000000ULL) {           
-           //Found a sync line
-           timeline = slice & 0x000000ffffffffffULL;
+     for (int islice = 0; islice < slicesPerRecord; islice++)
+     {
+        bool syncWord = false;
+
+        if (probetype == '3')		// 3V-CPI
+        {
+           slice = ((unsigned long long *)buffer.image)[islice];
+
+           // Stored little-endian, check far side of 16 bytes.
+           if (memcmp((void *)&buffer.image[(islice*bytesPerSlice)+bytesPerSlice-3], syncString, 3) == 0) {
+              syncWord = true;
+              timeline = slice & 0x000000ffffffffffULL;
+           }
+        }
+        else				// Fast2D C/P
+        {
+           slice = endianswap_ull(((unsigned long long *)buffer.image)[islice]);
+
+           // Stored big-endian, check near side of 8 bytes.
+           if (memcmp(&buffer.image[islice*bytesPerSlice], syncString, 3) == 0) {
+              syncWord = true;
+              timeline = slice & 0x000000ffffffffffULL;
+           }
+        }
+
+        if (syncWord) {	//Found a sync line
            if (firsttimeflag) {
               firsttimeline = timeline; 
               firsttimeflag = false;
            }
 
            //Look for negative interarrival time, set to zero instead
-           if (timeline < firsttimeline) difftimeline=0;
+           if (timeline < firsttimeline) difftimeline = 0;
            else difftimeline=timeline-firsttimeline;
 
            //Process the roi
-           long time1hz=(long) (lastbuffertime+difftimeline/(12.0e6));
+           long time1hz = (long)(lastbuffertime+difftimeline / (12.0e6));
            if (time1hz >= cfg.starttime){
-              particle=findsize(roi,slice_count,probe.resolution);
-              particle.holearea=fillholes2(roi,slice_count);           
-              particle.inttime=(timeline-lasttimeline)/12.0e6;
+              particle=findsize(roi, slice_count, probe.nDiodes, probe.resolution);
+              particle.holearea=fillholes2(roi, slice_count, probe.nDiodes);           
+              particle.inttime=(timeline - lasttimeline) / 12.0e6;
               particle.time1hz=time1hz;
 
               //Decide which size to use
@@ -659,7 +682,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
            if ((buffcount == -100)) {
               cout<<islice<<endl;
               showparticle(particle);
-              showroi(roi,slice_count);
+              showroi(roi, slice_count, probe.nDiodes);
            }
 
            //Check the particle time to see if a new 1-s period has been crossed.
@@ -668,7 +691,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
               itime = last_time1hz - cfg.starttime;  //time index
 
               //Make sure particles are in correct time range
-              if (itime>=0){
+              if (itime >= 0){
                  if (ncfile.hasTASX() == false)
                    data.tas[itime]=((float)ntohs(buffer.tas));
 
@@ -735,7 +758,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
 
               // Restart particle stack
               particle_stack.clear();
-              last_time1hz=time1hz;
+              last_time1hz = time1hz;
            } // End crossed into new time period
 
            // Add this particle to vector
@@ -743,19 +766,32 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
 
            // Start a new particle
            particle_count++;
-           lasttimeline=timeline;
-           slice_count=0;
+           lasttimeline = timeline;
+           slice_count = 0;
         } // end of image processing after detection of sync line 
         else {
            // Found an image slice, make the next slice part of binary image
-           for (int idiode = 0; idiode < nDiodes; idiode++)
-               roi[slice_count][idiode]=((slice & powerof2[63-idiode])/powerof2[63-idiode]);
-           slice_count=min(slice_count+1,511);  //Increment slice_count, limit to 511
-        }
 
+           int diode = 0;
+           if (probetype == '3')
+           {
+             for (int byte = bytesPerSlice-1; byte >= 0; byte++)
+               for (int bit = 7; bit >= 0; bit--)
+                 roi[slice_count][diode++] = (bool)(buffer.image[slice_count*bytesPerSlice+byte] & (0x01 << bit));
+           }
+           else
+           {
+             for (int byte = 0; byte < bytesPerSlice; byte++)
+               for (int bit = 7; bit >= 0; bit--)
+                 roi[slice_count][diode++] = (bool)(buffer.image[islice*bytesPerSlice+byte] & (0x01 << bit));
+           }
+
+           slice_count=min(slice_count+1, 511);  // Increment slice_count, limit to 511
+        }
      } //end slice loop
+
      buffcount++;  //Update buffer counter
-     if (!cfg.verbose && (buffcount % 100==0))
+     if (!cfg.verbose && (buffcount % 100 == 0))
        cout	<< ntohs(buffer.hour) << ':' << ntohs(buffer.minute)
 		<< ':' << ntohs(buffer.second) << " - " << buffcount
 		<< " records  \r" << flush;
@@ -763,6 +799,11 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
  
   // Close raw data file
   input_file.close();
+
+
+  // Free space.
+  for (int i = 0; i < slicesPerRecord; ++i)
+    delete [] roi[i];
 
 
   
@@ -1009,13 +1050,17 @@ void ParseHeader(ifstream & input_file, Config & cfg, vector<ProbeInfo> & probe_
     if (line.find("FlightDate") != string::npos)
       cfg.flightDate = extractElement(line, "FlightDate");
 
-    if (line.find("Fast2D") != string::npos)	//found a line describing a FAST2D probe
+    if (line.find("Fast2D") != string::npos ||	// Found a line describing a FAST2D probe
+        line.find("3V-CPI") != string::npos)	// or a 3V-CPI
     {
-      ProbeInfo thisProbe(extractAttribute(line, "probe id"), nDiodes, numbins, binoffset);
+      int ndiodes = atoi(extractAttribute(line, "nDiodes").c_str());
 
-      thisProbe.resolution = atof(extractAttribute(line, "resolution").c_str());
-      thisProbe.suffix = extractAttribute(line, "suffix");
-      thisProbe.serialNumber = extractAttribute(line, "serialnumber");
+      ProbeInfo thisProbe(	extractAttribute(line, "probe id"),
+      				extractAttribute(line, "serialnumber"),
+				ndiodes,
+				atof(extractAttribute(line, "resolution").c_str()),
+      				extractAttribute(line, "suffix"),
+				binoffset, ndiodes * 2);
 
       // Attempt to read RAF PMSspecs file.
       char *proj_dir = getenv("PROJ_DIR");
