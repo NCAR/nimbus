@@ -3,7 +3,7 @@ import sys
 ourDir = Dir('.').abspath
 ourName = 'ricutil'
 
-tools = ['doxygen', 'qt4',]
+tools = ['doxygen', 'qt4', 'boost_date_time']
 env = Environment(tools = ['default'] + tools)
 env.EnableQt4Modules(['QtCore', 'QtNetwork'])
 

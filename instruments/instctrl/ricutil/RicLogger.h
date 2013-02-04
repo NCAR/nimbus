@@ -4,13 +4,8 @@
 #ifndef WIN32
 #include <syslog.h>
 #endif
-#include "log4cpp/Category.hh"
-#include "log4cpp/Appender.hh"
-#include "log4cpp/FileAppender.hh"
-#include "log4cpp/OstreamAppender.hh"
-#include "log4cpp/Layout.hh"
-#include "log4cpp/BasicLayout.hh"
-#include "log4cpp/Priority.hh"
+
+#include "boost/date_time/posix_time/posix_time.hpp"
 #include <string>
 
 /// A logging facility for the Remote Instrument Control package.

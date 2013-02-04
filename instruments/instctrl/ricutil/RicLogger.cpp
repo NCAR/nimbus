@@ -35,16 +35,20 @@ RicLogger::~RicLogger() {
 /////////////////////////////////////////////////////////////////////
 void
 RicLogger::log(std::string msg) {
+
+	boost::posix_time::ptime t = boost::posix_time::second_clock::universal_time();
+	std::string st = boost::posix_time::to_simple_string(t);
+
 	// Get the identifier, if present.
 	std::string id = _ident? *_ident:"";
 #ifndef WIN32
 	syslog(LOG_INFO, "%s", msg.c_str());
 	if (_toStdOut) {
-		std::cout << id << ": " << msg << std::endl;
+		std::cout << st << " " << id << ": " << msg << std::endl;
 	}
 #else
 	if (_toStdOut) {
-		std::cout << id << ": " << msg << std::endl;
+		std::cout << st << " " << id << ": " << msg << std::endl;
 	}
 #endif
 	}
