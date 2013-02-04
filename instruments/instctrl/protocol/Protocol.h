@@ -16,13 +16,13 @@ namespace Protocols {
     /// The protocol is given a message, and it will
     /// package that into discrete blocks for transmitting. Likewise,
 	/// the protocol will convert an incoming stream of bytes back into
-	/// a message.
+	/// one or more messages.
 	///
 	/// For outgoing messages, give a message to outgoing(). If it is
 	/// ready, the function will return a block of bytes that can
 	/// be transmitted.
 	///
-	/// Similarly, the bytes from an icoming data stream are fed to
+	/// Similarly, the bytes from an incoming data stream are fed to
 	/// incoming(). If one or more complete messages have been received,
 	/// they are returned by the function.
 	///

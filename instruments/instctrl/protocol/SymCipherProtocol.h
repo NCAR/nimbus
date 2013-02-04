@@ -15,6 +15,7 @@ namespace Protocols
 	/// input data. The initialization vector is prepended to the beginning
 	/// of the encrypted data, and this is returned as a single packet.
 	///
+    /// The message string is compressed using zlib prior to the encryption.
 	/// The byte representation of the encrypted messages can be created in
 	/// raw (NO_CODING), hex (HEX_CODING) or base64 (BASE64_CODING) encoding.
 	/// The alphanumeric codings make it easier to view the encrypted values.

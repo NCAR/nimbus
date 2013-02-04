@@ -15,7 +15,15 @@
 namespace Protocols {
 	/// A simple protocol where outgoing() simply prepends the message payload with
     /// the payload length, followed by a colon. The incoming() function counts
-	/// the bytes specified in the length header.
+	/// the bytes specified in the length header, and then extracts the following
+	/// bytes.
+	///
+	/// StreamMsgProtocol is intended to be used with stream connections, such
+    /// as TCP, where the underlying transport does not create discreet messages.
+	///
+	/// @todo Make StreamMsgProtocol resilient to dropped characters. Right now
+    /// it willjust fall apart if this happens. Would need to add
+    /// a synchronization sequence to the messages and logic to processes them.
 	class StreamMsgProtocol: public Protocol::Protocol {
 	public:
 		/// Constructor
