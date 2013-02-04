@@ -257,8 +257,10 @@ void SslProxy::udpReadyRead() {
 			/// message that we have.
 			Message msg(_proxyID, id, QString(data).toStdString());
 
-			// send the message via the SSL connection.
-			_sslConnection->send(msg);
+			// send the message via the SSL connection, if it is open.
+			if (_sslConnection) {
+				_sslConnection->send(msg);
+			}
 
 			// Let others know about this message
 			emit userMessage(text, true);
