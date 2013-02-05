@@ -10,7 +10,7 @@ _localPort(localPort),
 _remoteHost(remoteHost),
 _remotePort(remotePort),
 _switchCipherKey(switchCipherKey),
-_switchToSwitchProtocol(EVPCipher::getKey(switchCipherKey), Protocols::SymCipherProtocol::BASE64_CODING)
+_switchToSwitchProtocol(EVPCipher::getKey(switchCipherKey), Protocols::SymCipherProtocol::NO_CODING)
 {
 	// Determine the address of the remote host.
 	_remoteAddress = QtAddress::address(_remoteHost);
