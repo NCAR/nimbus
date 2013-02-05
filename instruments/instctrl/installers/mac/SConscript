@@ -5,7 +5,7 @@ env = Environment(tools=['default', 'osxqtapp', 'svninfo'])
 apprevision = env['SVNREVISION']
 
 proxyappname = 'RICProxy-' + apprevision
-proxyapp = env.OsxQtApp('.', '#/proxy/ric_proxy', '#/Resources/proxy/proxyIcon.icns', proxyappname, apprevision)
+proxyapp = env.OsxQtApp('#/installers/mac', '#/proxy/ric_proxy', '#/Resources/proxy/proxyIcon.icns', proxyappname, apprevision)
 Default(proxyapp)
 
 switchappname = 'RICSwitch-' + apprevision
