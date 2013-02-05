@@ -10,7 +10,10 @@ env.EnableQt4Modules(['QtCore', 'QtNetwork'])
 def ricutil(env):
     env.AppendUnique(CPPPATH = [ourDir,])
     env.AppendUnique(LIBPATH=[ourDir,])
-    env.AppendUnique(LIBS=[ourName,'z'])
+    # The zlib library
+    env.Append(LIBS=[ourName,'z'])
+    # The bzip2 library
+    env.Append(LIBS=[ourName,'bz2'])    
     #env.AppendDoxref(doxref[0])
     env.Require(tools)
     env.EnableQt4Modules(['QtCore'])
@@ -21,12 +24,14 @@ def ricutil(env):
 Export(ourName)
 
 sources = Split("""
+ BzipCompress.cpp
  QtAddress.cpp
  RicLogger.cpp
  ZlibCompress.cpp
 """)
 
 headers = Split("""
+ BzipCompress.h
  QtAddress.h
  RicLogger.h
  ZlibCompress.h

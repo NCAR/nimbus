@@ -7,6 +7,7 @@
 #include "Protocol.h"
 #include "EVPCipher.h"
 #include "ZlibCompress.h"
+#include "BzipCompress.h"
 
 namespace Protocols
 {
