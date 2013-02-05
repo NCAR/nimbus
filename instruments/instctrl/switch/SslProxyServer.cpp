@@ -104,18 +104,15 @@ void SslProxyServer::validateConnection(Ssl::SslServerConnection* connection) {
 	if (proxyIndices.size() == 0) {
 		// Either the certificate  is null, invalid, or not in our list.
 		// Close the ssl connection, and it will trigger the SS_Disconnected
-		// signal which will cause the connection to be removed
-		///@todo Error logging goes here
-		std::cerr << "Unrecognized or unavailable proxy certificate, connection closed" << std::endl;
+		// signal which will cause the connection to be removed.
+		///@todo Add information about the rejected connection to the log message.
+		_logger.log("Unrecognized or unavailable proxy certificate, connection closed");
 		connection->close();
 	} else {
 		for (int i = 0; i < proxyIndices.size(); i++) {
-			/// @todo Setup tables so that the correct messages get routed to this connection.
-			std::cout << "Connection received for proxy " << i << std::endl;
 			std::vector<InstConfig::MessageInfo> msgs = _proxies[i]._instConfig.messages();
 			for (int j = 0; j < msgs.size(); j++) {
 				std::string msgID = msgs[j].msgID;
-				std::cout << "   " << msgs[j].msgID << std::endl;
 				// Add this connection to the list for this message identifier.
 				// If there is already a list for this message id, add the connection
 				// to it. Otherwise,create a new list.
@@ -206,8 +203,7 @@ void SslProxyServer::sendToProxy(Protocols::Message msg) {
 		}
 	} else {
 		// This is an unexpected message.
-		/// @todo Log the unexpected message.
-		std::cout << "There is no proxy registered for " << msgID << std::endl;
+		/// @todo Maintain some book keeping and reporting on unexpected messages.
 	}
 }
 

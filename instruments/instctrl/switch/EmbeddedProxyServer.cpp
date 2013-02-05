@@ -54,8 +54,7 @@ void EmbeddedProxyServer::sendToProxy(Protocols::Message message) {
 		_msgRouting[msgID]->send(message);
 	} else {
 		// This is an unexpected message.
-		/// @todo Log the unexpected message.
-		std::cout << "There is no proxy registered for " << msgID << std::endl;
+		/// @todo Maintain some book keeping and reporting on unexpected messages.
 	}
 }
 
