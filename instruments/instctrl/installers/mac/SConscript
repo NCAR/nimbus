@@ -3,6 +3,7 @@ import eol_scons
 env = Environment(tools=['default', 'osxqtapp', 'svninfo'])
 
 apprevision = env['SVNREVISION']
+apprevision = apprevision.replace(':','-')
 
 proxyappname = 'RICProxy-' + apprevision
 proxyapp = env.OsxQtApp('#/installers/mac', '#/proxy/ric_proxy', '#/Resources/proxy/proxyIcon.icns', proxyappname, apprevision)
