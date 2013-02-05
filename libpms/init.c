@@ -72,7 +72,10 @@ void InitPMSspecs(const char fileName[])
         strcpy(p1+1, p);
 
       if ((fp[++fCnt] = fopen(newName, "r")) == NULL)
+        {
         fprintf(stderr, "libpms: Can't open PMSspecs include file [%s], continuing.\n", newName);
+        --fCnt;
+        }
 
       continue;
       }
