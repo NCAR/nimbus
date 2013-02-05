@@ -62,7 +62,10 @@ parseCommandLine(int argc, char** argv,
 int main(int argc, char** argv)
 {
 	RicLogger logger("RICProxy", true);
-	logger.log("Starting Remote Instrument Control SSL Proxy");
+	std::string msg("Starting SSL RIC proxy: ");
+	msg += std::string(argv[0]);
+	msg += std::string(" r") + std::string(SVNREVISION);
+	logger.log(msg);
 
     try {
 		// Process command line options

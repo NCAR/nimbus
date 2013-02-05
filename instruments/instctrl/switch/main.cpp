@@ -6,6 +6,7 @@
 #include "QtConfig.h"
 #include "Switch.h"
 #include "RicLogger.h"
+#include "svnInfo.h"
 
 namespace po = boost::program_options;
 
@@ -190,7 +191,10 @@ int main(int  argc, char** argv)
 	try {
 
 		RicLogger logger("RICSwitch", true);
-		logger.log("Starting a Remote Instrument Control Switch");
+		std::string msg("Starting RIC switch: ");
+		msg += std::string(argv[0]);
+		msg += std::string(" r") + std::string(SVNREVISION);
+		logger.log(msg);
 
 		/////////////////////////////////////////////////////////////////
 		// Create the Qt application (i.e. event loop)
