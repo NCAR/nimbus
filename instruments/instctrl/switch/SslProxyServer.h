@@ -56,8 +56,9 @@ class SslProxyServer: public ProxyServer {
 		void msgFromProxySlot(Protocols::Message message);
 
 	protected:
-	protected:
-		/// Dumpt the certificate to stdout
+		/// Log the currently active SSL connections.
+		void logOpenConnections();
+		/// Dump the certificate to stdout
 		void dumpCert(const QSslCertificate &cert);
 		/// A list of connections.
 		typedef std::multiset<Ssl::SslServerConnection*> ConnectionList;

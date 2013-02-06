@@ -91,6 +91,17 @@ bool SslServerConnection::send(Protocols::Message& message) {
 }
 
 /////////////////////////////////////////////////////////////////////
+QHostAddress SslServerConnection::peerAddress() {
+	QHostAddress addy;
+
+	if (_sslSocket) {
+		addy = _sslSocket->peerAddress();
+	}
+
+	return addy;
+}
+
+/////////////////////////////////////////////////////////////////////
 QSslCertificate SslServerConnection::peerCertificate() {
 	return _peerCertificate;
 }

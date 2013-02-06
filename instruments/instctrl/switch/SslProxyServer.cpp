@@ -130,8 +130,9 @@ void SslProxyServer::validateConnection(Ssl::SslServerConnection* connection) {
 		QString msg;
 		msg = QString("SSL connection established for %1").arg(info);
 		_logger.log(msg.toStdString());
-		msg = QString("%1 active SSL connections").arg(_connections.size());
-		_logger.log(msg.toStdString());
+
+		// And log all of the currently open connections.
+		logOpenConnections();
 	}
 }
 
@@ -172,11 +173,24 @@ void SslProxyServer::removeConnection(Ssl::SslServerConnection* connection) {
 
 	// Notify the world that a disconnect has been received.
 	QString info = peerCert.subjectInfo(QSslCertificate::CommonName);
-
 	QString msg;
 	msg = QString("SSL disconnect from %1").arg(info);
-	_logger.log(msg.toStdString());
-	msg = QString("%1 active SSL connections").arg(_connections.size());
+
+	// And log all of the currently open connections.
+	logOpenConnections();
+}
+
+/////////////////////////////////////////////////////////////////////
+void SslProxyServer::logOpenConnections() {
+
+	QString msg = QString("%1 active SSL connections ").arg(_connections.size());
+
+	SslProxyServer::ConnectionList::iterator c;
+	for (c = _connections.begin(); c != _connections.end(); c++) {
+		QString peer = (*c)->peerAddress().toString();
+		msg += " " + peer;
+	}
+
 	_logger.log(msg.toStdString());
 }
 

@@ -35,6 +35,8 @@ namespace Ssl {
 		QSslCertificate peerCertificate();
 		/// Close the ssl connection
 		void close();
+		/// @return The peer address of the remote ssl connection.
+		QHostAddress peerAddress();
 
 	signals:
 		/// Publish a change in the connection state. Currently this is
