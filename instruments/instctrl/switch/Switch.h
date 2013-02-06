@@ -46,6 +46,7 @@ public:
 	/// @param switchCipherKey A SwitchConection related parameter: The file containing the key for symmetric cipher
 	/// encryption over a SwitchConnection.
 	/// @param verbose If true print messages passing through the switch
+	/// @param reportPeriodSecs The system log reporting period, in seconds.
 	Switch(
 			std::string serverSslKeyFile,
 			QSslCertificate serverSslCert,
@@ -55,7 +56,8 @@ public:
 			std::string _remoteIP,
 			int _remotePort,
 			std::string switchCipherKey,
-			bool verbose);
+			bool verbose,
+			int reportPeriodSecs=60);
 
 	/// The flavor of switch which contains embedded proxies. It does not
 	/// provide an SSL server, so none of the SSL certificates and keys are
@@ -66,14 +68,16 @@ public:
 	/// @param remotePort A SwitchConection related parameter: The port that we send messages to.
 	/// @param switchCipherKey A SwitchConection related parameter: The file containing the key for symmetric cipher
 	/// encryption over a SwitchConnection.
-	/// @param verbose If true print messages passing through the switch
+	/// @param verbose If true print messages passing through the switch.
+	/// @param reportPeriodSecs The system log reporting period, in secods.
 	Switch(
 			std::vector<InstConfig> instConfigs,
 			int _localPort,
 			std::string _remoteIP,
 			int _remotePort,
 			std::string switchCipherKey,
-			bool verbose);
+			bool verbose,
+			int reportPeriodSecs=60);
 
 	virtual ~Switch();
 	

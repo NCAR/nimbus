@@ -45,7 +45,7 @@ class SwitchMonitor: public QObject {
 		const int& _fromProxies;
 		/// Reference to a variable containing a total count of
 		/// messages that were sent to proxies.
-		int _toProxies;
+		const int& _toProxies;
 		/// Last count of messages that were received from proxies.
 		int _lastFromProxies;
 		/// Last count of messages that were sent to the remote switch.

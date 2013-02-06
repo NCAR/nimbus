@@ -10,7 +10,8 @@ Switch::Switch(std::string serverSslKeyFile,
 		std::string remoteIP,
 		int remotePort,
 		std::string switchCipherKey,
-		bool verbose):
+		bool verbose,
+		int reportPeriodSecs):
 _switchConnection(localPort, remoteIP, remotePort, switchCipherKey),
 _server(0),
 _verbose(verbose),
@@ -18,7 +19,7 @@ _msgsFromProxies(0),
 _msgsToSwitch(0),
 _msgsFromSwitch(0),
 _msgsToProxies(0),
-_monitor(30, _msgsFromProxies, _msgsToSwitch, _msgsFromSwitch, _msgsToProxies)
+_monitor(reportPeriodSecs, _msgsFromProxies, _msgsToSwitch, _msgsFromSwitch, _msgsToProxies)
 
 {
 	// Create an SSL proxy server
@@ -43,7 +44,8 @@ Switch::Switch(std::vector<InstConfig> instConfigs,
 		std::string remoteIP,
 		int remotePort,
 		std::string switchCipherKey,
-		bool verbose):
+		bool verbose,
+		int reportPeriodSecs):
 _switchConnection(localPort, remoteIP, remotePort, switchCipherKey),
 _server(0),
 _verbose(verbose),
@@ -51,7 +53,7 @@ _msgsFromProxies(0),
 _msgsToSwitch(0),
 _msgsFromSwitch(0),
 _msgsToProxies(0),
-_monitor(30, _msgsFromProxies, _msgsToSwitch, _msgsFromSwitch, _msgsToProxies)
+_monitor(reportPeriodSecs, _msgsFromProxies, _msgsToSwitch, _msgsFromSwitch, _msgsToProxies)
 {
 	// Create an embedded proxy server
 	_server = new EmbeddedProxyServer(instConfigs, _verbose);
