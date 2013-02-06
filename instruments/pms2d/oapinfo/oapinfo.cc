@@ -26,6 +26,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2012
 
 
 char	buffer[50000];
+bool	hdrsOnly = false;
 
 int Output(char buff[]);
 
@@ -33,9 +34,15 @@ int Output(char buff[]);
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
-  int	rc, nBytes;
+  int	rc, nBytes, aCnt = 1;
   std::string	sourceFile;
   FILE *fp;
+
+  if (strcmp(argv[aCnt], "-t") == 0)
+  {
+    aCnt++;
+    hdrsOnly = true;
+  }
 
   if (argc < 2)
   {
@@ -43,7 +50,8 @@ int main(int argc, char *argv[])
     std::cin >> sourceFile;
   }
   else
-    sourceFile = argv[1];
+    sourceFile = argv[aCnt];
+
 
   if ((fp = fopen(sourceFile.c_str(), "rb")) == NULL)
   {
@@ -105,14 +113,17 @@ int Output(char buff[])
 	ntohs(p2d->hour), ntohs(p2d->minute), ntohs(p2d->second), ntohs(p2d->msec),
 	ntohs(p2d->tas), ((short*)p2d->data)[0]);
 
-  int bytesPerSlice = nDiodes / 8;
-  int nSlices = 4096 / bytesPerSlice;
-  for (int i = 0; i < nSlices; ++i)
+  if (hdrsOnly == false)
   {
-    for (int j = 0; j < bytesPerSlice; ++j)
+    int bytesPerSlice = nDiodes / 8;
+    int nSlices = 4096 / bytesPerSlice;
+    for (int i = 0; i < nSlices; ++i)
     {
-      printf("%02X", p2d->data[(i*bytesPerSlice) + j]);
+      for (int j = 0; j < bytesPerSlice; ++j)
+      {
+        printf("%02X", p2d->data[(i*bytesPerSlice) + j]);
+      }
+      printf("\n");
     }
-    printf("\n");
   }
 }
