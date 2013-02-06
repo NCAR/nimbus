@@ -660,7 +660,7 @@ void ADS_DataFile::buildIndices()
     if (_fileHeaderType != NoHeader)
       {
       for (i = 0; i < _probeList.size(); ++i)
-        if (strcmp(_probeList[i]->Code(), buffer) == 0)
+        if (memcmp(_probeList[i]->Code(), buffer, 2) == 0)
           break;
 
       if (i == _probeList.size())	// shouldn't get here?
@@ -669,7 +669,7 @@ void ADS_DataFile::buildIndices()
     else
       {
       for (i = 0; i < _probeList.size(); ++i)
-        if (strcmp(_probeList[i]->Code(), buffer) == 0)
+        if (memcmp(_probeList[i]->Code(), buffer, 2) == 0)
           break;
 
       // Sanity check.
