@@ -4,19 +4,19 @@
 /////////////////////////////////////////////////////////////////////
 SwitchMonitor::SwitchMonitor(
 		int reportRateSeconds,
-		const int &fromSwitchCount,
-		const int &toSwitchCount,
-		const int &fromProxyCount,
-		const int &toProxyCount):
+		const int &fromProxies,
+		const int &toSwitch,
+		const int &fromSwitch,
+		const int &toProxies):
 _reportRateSeconds(reportRateSeconds),
-_fromSwitchCount(fromSwitchCount),
-_toSwitchCount(toSwitchCount),
-_fromProxyCount(fromProxyCount),
-_toProxyCount(toProxyCount),
-_lastFromSwitchCount(0),
-_lastToSwitchCount(0),
-_lastFromProxyCount(0),
-_lastToProxyCount(0)
+_fromProxies(fromProxies),
+_toSwitch(toSwitch),
+_fromSwitch(fromSwitch),
+_toProxies(toProxies),
+_lastFromSwitch(0),
+_lastToSwitch(0),
+_lastFromProxies(0),
+_lastToProxies(0)
 
 {
 	// Don't allow nonsense reporting rates
@@ -41,22 +41,22 @@ SwitchMonitor::~SwitchMonitor() {
 /////////////////////////////////////////////////////////////////////
 void SwitchMonitor::reportSlot() {
 
-	int fromSwitchDelta = _fromSwitchCount - _lastFromSwitchCount;
-	int toSwitchDelta   = _toSwitchCount   - _lastToSwitchCount;
-	int fromProxyDelta  = _fromProxyCount  - _lastFromProxyCount;
-	int toProxyDelta    = _toProxyCount    - _lastToProxyCount;
+	int fromSwitchDelta = _fromSwitch - _lastFromSwitch;
+	int toSwitchDelta   = _toSwitch   - _lastToSwitch;
+	int fromProxyDelta  = _fromProxies  - _lastFromProxies;
+	int toProxyDelta    = _toProxies    - _lastToProxies;
 
-	_lastFromSwitchCount = _fromSwitchCount;
-	_lastToSwitchCount   = _toSwitchCount;
-	_lastFromProxyCount  = _fromProxyCount;
-	_lastToProxyCount    = _toProxyCount;
+	_lastFromSwitch  = _fromSwitch;
+	_lastToSwitch    = _toSwitch;
+	_lastFromProxies = _fromProxies;
+	_lastToProxies   = _toProxies;
 
 	// Create the report.
-	QString msg = QString("Rates from switch:%1 to switch:%2  from proxies:%3 to proxies:%4")
+	QString msg = QString("Msgs from switch:%1 to proxies:%2, from proxies:%3 to switch:%4")
 			.arg(fromSwitchDelta)
-			.arg(toSwitchDelta)
+			.arg(toProxyDelta)
 			.arg(fromProxyDelta)
-			.arg(toProxyDelta);
+			.arg(toSwitchDelta);
 
 	// Log it.
 	_logger.log(msg.toStdString());
