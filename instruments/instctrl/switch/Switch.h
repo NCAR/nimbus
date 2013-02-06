@@ -9,6 +9,7 @@
 #include "EmbeddedProxyServer.h"
 #include "SslProxyServer.h"
 #include "SwitchConnection.h"
+#include "SwitchMonitor.h"
 #include "SymCipherProtocol.h"
 #include "RicLogger.h"
 
@@ -87,18 +88,24 @@ protected slots:
 protected:
 	/// Create the signal/slot connections.
 	void init();
-
 	/// The server that manages the connections to the proxies.
 	ProxyServer* _server;
-
 	/// The connection between us and the remote switch
 	SwitchConnection _switchConnection;
-
 	/// Ture to print message passing through the switch
 	bool _verbose;
-
-	/// The loggin facility
+	/// The logging facility
 	RicLogger _logger;
+	/// The total number of messages to switch .
+	int _msgsToSwitch;
+	/// The total number of messages from switch.
+	int _msgsFromSwitch;
+	/// The total number of messages to proxy.
+	int _msgsToProxies;
+	/// The total number of messages from proxy.
+	int _msgsFromProxies;
+	/// The switch monitor.
+	SwitchMonitor _monitor;
 
 };
 

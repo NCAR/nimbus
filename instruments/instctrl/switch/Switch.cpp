@@ -13,7 +13,13 @@ Switch::Switch(std::string serverSslKeyFile,
 		bool verbose):
 _switchConnection(localPort, remoteIP, remotePort, switchCipherKey),
 _server(0),
-_verbose(verbose)
+_verbose(verbose),
+_msgsToSwitch(0),
+_msgsFromSwitch(0),
+_msgsToProxies(0),
+_msgsFromProxies(0),
+_monitor(30, _msgsToSwitch, _msgsFromSwitch, _msgsToProxies, _msgsFromProxies)
+
 {
 	// Create an SSL proxy server
 	_server = new SslProxyServer(serverSslKeyFile, serverSslCert, switchPort, proxies);
@@ -40,7 +46,12 @@ Switch::Switch(std::vector<InstConfig> instConfigs,
 		bool verbose):
 _switchConnection(localPort, remoteIP, remotePort, switchCipherKey),
 _server(0),
-_verbose(verbose)
+_verbose(verbose),
+_msgsToSwitch(0),
+_msgsFromSwitch(0),
+_msgsToProxies(0),
+_msgsFromProxies(0),
+_monitor(30, _msgsToSwitch, _msgsFromSwitch, _msgsToProxies, _msgsFromProxies)
 {
 	// Create an embedded proxy server
 	_server = new EmbeddedProxyServer(instConfigs, _verbose);
@@ -77,11 +88,15 @@ void Switch::init() {
 /////////////////////////////////////////////////////////////////////
 void Switch::msgFromProxySlot(Protocols::Message message) {
 
-	if (_verbose)
+	if (_verbose) {
 		std::cout << message.toJsonStdString() << std::endl;
+	}
 
 	// A message has been received from the proxy
 	std::string msg = message.toJsonStdString();
+
+	_msgsFromProxies++;
+	_msgsToSwitch++;
 
 	// send the proxy message to the remote switch
 	_switchConnection.sendSwitchMessage(msg);
@@ -91,8 +106,12 @@ void Switch::msgFromProxySlot(Protocols::Message message) {
 void Switch::msgFromRemoteSwitch(Protocols::Message message) {
 
 	// A message has been received from the remote switch
-	if (_verbose)
+	if (_verbose) {
 		std::cout << message.toJsonStdString() << std::endl;
+	}
+
+	_msgsFromSwitch++;
+	_msgsToProxies++;
 
 	// Tell the server to forward the message to the proxy
 	_server->sendToProxy(message);
