@@ -26,7 +26,15 @@ public:
   void	BroadcastData(const std::string & timeStamp);
 
 protected:
+  /**
+   * addresses to which we send broadcast packets
+   */
   std::vector<nidas::util::Inet4SocketAddress *> _toList;
+
+  /**
+   * interfaces to which we send multicast packets
+   */
+  std::vector<nidas::util::Inet4NetworkInterface> _mcInterfaces;
 
   /**
    * In order to conform to the IWGADTS IWG1 packet, radar altimeter needs to be

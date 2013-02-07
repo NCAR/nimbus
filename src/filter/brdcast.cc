@@ -30,8 +30,9 @@ Broadcast::Broadcast() : UDP_Base(7071)
 {
   _varList = readFile(BROADCAST);
 
-  _socket = new DatagramSocket;
+  _socket = new MulticastSocket;
   _socket->setBroadcastEnable(true);
+  _socket->setTimeToLive(2);
 
   // We want to broadcast on all ethernet interfaces.
   // Get list here.
@@ -43,7 +44,9 @@ Broadcast::Broadcast() : UDP_Base(7071)
     {
       _toList.push_back(new
 	Inet4SocketAddress(Inet4Address((*it).getBroadcastAddress().getInAddrPtr()), UDP_PORT));
-	std::cerr << "broadcast to " << _toList.back()->toString() << std::endl;
+      std::cerr << "broadcast to " << _toList.back()->toString() << std::endl;
+      // we also want to multicast to this interface
+      _mcInterfaces.push_back(*it);
     }
   }
 }
@@ -95,6 +98,20 @@ void Broadcast::BroadcastData(const std::string & timeStamp)
     }
     catch (const nidas::util::IOException& e) {
       fprintf(stderr, "nimbus::Broadcast: %s\n", e.what());
+    }
+  }
+  // Now multicast to interfaces in our multicast interface list
+  Inet4Address mcAddr(Inet4Address::getByName("239.0.0.10"));
+  Inet4SocketAddress mcSockAddr(mcAddr, UDP_PORT);
+
+  for (size_t i = 0; i < _mcInterfaces.size(); ++i)
+  {
+    _socket->setInterface(mcAddr, _mcInterfaces[i]);
+    try {
+      _socket->sendto(bcast.str().c_str(), bcast.str().length(), 0, mcSockAddr);
+    }
+    catch (const nidas::util::IOException& e) {
+      fprintf(stderr, "nimbus::Broadcast multicast: %s\n", e.what());
     }
   }
 
