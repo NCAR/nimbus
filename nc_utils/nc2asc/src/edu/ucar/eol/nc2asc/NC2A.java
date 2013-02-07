@@ -157,8 +157,8 @@ public class NC2A extends JPanel implements ActionListener {
 		if (ncdata.getGlobalDataInf()[0] > 1 &&
 		    (fmt[DataFmt.HEAD_IDX].equals(DataFmt.HDR_AMES) ||
 		     fmt[DataFmt.HEAD_IDX].equals(DataFmt.HDR_ICARTT))) {
-			fmt[DataFmt.HEAD_IDX]=(DataFmt.HDR_PLAIN);
-			System.out.println("Warning: High rate data netcdf file. AmesDEF and ICARTT are not supported at this time.");
+			//fmt[DataFmt.HEAD_IDX]=(DataFmt.HDR_PLAIN);
+			//System.out.println("Warning: High rate data netcdf file. AmesDEF and ICARTT are not supported at this time.");
 		}
 		if (fmt[DataFmt.HEAD_IDX].equals(DataFmt.HDR_AMES)) {
 			ncdata.writeOut(ncdata.getAmesHeader(sublvars));

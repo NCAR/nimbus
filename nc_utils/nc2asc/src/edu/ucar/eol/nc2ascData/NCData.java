@@ -432,6 +432,9 @@ public class NCData {
 			}
 
 			dtm += seconds;
+			if (milsec) {
+			    dtm+="." + msec;
+			}
 		} else {
 			if (milsec) {
 				dtm += h+ tmFmt + mm + tmFmt + s + "." + msec;
@@ -594,7 +597,8 @@ public class NCData {
 
 
 	private void writeHighRateData(int[] range, String[] fmt, long milSec, long t1, int nVariables) {
-		String dmtr = fmt[DataFmt.DMTR_IDX], mval = fmt[DataFmt.MVAL_IDX]; 
+		String dmtr = fmt[DataFmt.DMTR_IDX], mval = fmt[DataFmt.MVAL_IDX],
+			file_frmt = fmt[DataFmt.HEAD_IDX];
 		float[] valKp= new float[totVarLen];
 
 		for (int i = 0; i < range[1]; i++) { //data-in the time range
@@ -604,9 +608,10 @@ public class NCData {
 			int topRate = (int)gDataInf[0];
 			for (int k = 0; k < topRate; k++) {  //highest rate
 				int varIdx = 0;
-				String line = getNewTm(milSec + (long)(range[0]+i)*1000
-						+ (k * (1000/topRate)), 0, fmt, true);
-
+				//String line = getNewTm(milSec + (long)(range[0]+i)*1000
+				//		+ (k * (1000/topRate)), 0, fmt, true);
+			        String line = getNewTm(milSec + (long)((timeData[i] 
+					      + (k * (1./topRate)))*1000), 0, fmt, true); 
 				for (int j = 0; j < nVariables; j++) { //variables
 					String varFmt = varDatFmt.get(j);
 					int dataInterval = topRate / hRate[j]; 
@@ -614,12 +619,21 @@ public class NCData {
 						if (k % dataInterval==0) {
 							int idx = (i * hRate[j]) + (k / dataInterval);
 							valKp[varIdx] = data[j][oneDLen[j]*idx + count];
-							line += dmtr + String.format(varFmt,valKp[varIdx]);
+							String val = String.valueOf(valKp[varIdx]);
+							if (val.equals(mval)) {
+							        line += dmtr + ICARTT_MISS_VAL;
+							} else {
+							        line += dmtr + String.format(varFmt,valKp[varIdx]);
+							}
 						} else {
 							if (mval != null && mval.equals(DataFmt.REPLICATE)) {
 								line += dmtr + String.format(varFmt,valKp[varIdx]);
 							} else {
-								line += dmtr + mval;
+						               if (file_frmt.equals(DataFmt.HDR_ICARTT)) {
+							               line += dmtr + ICARTT_MISS_VAL;
+						               } else {
+							               line += dmtr + mval;
+						               }
 							}
 						}
 						varIdx++;        //tot-var-len
