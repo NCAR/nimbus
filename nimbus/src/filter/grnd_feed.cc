@@ -42,7 +42,7 @@ GroundFeed::GroundFeed(int rate) : UDP_Base(31007), _dataRate(rate)
 
   setCoordinatesFrom(_varList);
 
-  _socket = new nidas::util::DatagramSocket;
+  _socket = new nidas::util::MulticastSocket;
   _to = new Inet4SocketAddress(Inet4Address::getByName(DEST_HOST_ADDR), UDP_PORT);
 
   // Initialize vectors used for monitoring NaN values

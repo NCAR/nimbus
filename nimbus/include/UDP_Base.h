@@ -39,7 +39,7 @@ protected:
   virtual
   std::vector<var_base *> readFile(const std::string & fileName) const;
 
-  nidas::util::DatagramSocket * _socket;
+  nidas::util::MulticastSocket * _socket;
 
   /// Destination UDP.
   nidas::util::Inet4SocketAddress * _to;
