@@ -815,7 +815,13 @@ public class NCData {
 		ret += "\n"+ trimBegEndQuotes(""+ fin.findGlobalAttribute("ProjectName"));
 		ret += "\n"+ "1 1";
 		ret += "\n"+ getDates(" ");
-		ret += "\n"+ "1.0 ";  //lowRate 
+		// Not sure this is complete logic. If there is 25Hz data, then assume HRT, else
+		// assume LRT.
+	        if (fin.findDimension("sps25") != null) {
+		    ret += "\n"+ "0.04 ";  //highRate 
+	        } else {
+		    ret += "\n"+ "1.0 ";  //lowRate 
+		}
 		ret += "\n"+ "Time in seconds from 00Z";
 		ret += "\n"+ "  " + sublvars.size();
 		String scaleValues="";
@@ -861,7 +867,13 @@ public class NCData {
 		ret += trimBegEndQuotes(""+ fin.findGlobalAttribute("ProjectName")) +"\n";
 		ret += "1, 1\n";
 		ret += getDates(",") + "\n";
-		ret += "1.0\n";  // low rate / 1hz
+		// Not sure this is complete logic. If there is 25Hz data, then assume HRT, else
+		// assume LRT.
+	        if (fin.findDimension("sps25") != null) {
+		    ret += "0.04 "+"\n";  //highRate 
+	        } else {
+		    ret += "1.0 "+"\n";  //lowRate 
+		}
 		ret += "Start_UTC, seconds\n";
 		ret += sublvars.size() + "\n";
 
