@@ -881,7 +881,7 @@ public class NCData {
 	        } else {
 		    ret += "1.0 "+"\n";  //lowRate 
 		}
-		ret += "Start_UTC, seconds, Start_UTC,seconds, Start measurement period given in UTC seconds from the midnight\n";
+		ret += "Start_UTC, seconds, Start measurement period given in UTC seconds from the midnight\n";
 		ret += sublvars.size() + "\n";
 
 		String scaleValues="1.0";
