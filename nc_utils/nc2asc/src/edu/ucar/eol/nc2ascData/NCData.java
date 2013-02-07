@@ -861,9 +861,16 @@ public class NCData {
 	 * meta-data added to the general comment block.
 	 */
 	public String getICARTTHeader(List<Variable> sublvars) {
+	        String platform = trimBegEndQuotes(""+fin.findGlobalAttribute("Platform"));
+		if (platform.equals("N677F")) {
+		    platform += " - NSF GV";
+		}
+		if (platform.equals("N130AR")) {
+		    platform += " - NSF C-130";
+		}
 		String ret = "Schanot, Allen\n";
 		ret += trimBegEndQuotes(""+ fin.findGlobalAttribute("institution")) +"\n";
-		ret += trimBegEndQuotes(""+ fin.findGlobalAttribute("Platform")) +"\n";
+		ret += "RAF instruments on "+ platform +"\n";
 		ret += trimBegEndQuotes(""+ fin.findGlobalAttribute("ProjectName")) +"\n";
 		ret += "1, 1\n";
 		ret += getDates(",") + "\n";
@@ -874,7 +881,7 @@ public class NCData {
 	        } else {
 		    ret += "1.0 "+"\n";  //lowRate 
 		}
-		ret += "Start_UTC, seconds\n";
+		ret += "Start_UTC, seconds, Start_UTC,seconds, Start measurement period given in UTC seconds from the midnight\n";
 		ret += sublvars.size() + "\n";
 
 		String scaleValues="1.0";
@@ -913,20 +920,20 @@ public class NCData {
 		number_of_lines += 19;	// mdata lines plus one.
 
 		mdata += "PI_CONTACT_INFO: 303-497-1030, 1850 Table Mesa Dr, Boulder, CO, schanot@ucar.edu\n";
-		mdata += "PLATFORM: " + trimBegEndQuotes(""+ fin.findGlobalAttribute("Platform")) +"\n";
-		mdata += "LOCATION: \n";
+		mdata += "PLATFORM: " + platform +"\n";
+		mdata += "LOCATION: Aircraft location data is given in GV nav data file\n";
 		mdata += "ASSOCIATED_DATA: Full data in netCDF file.\n";
-		mdata += "INSTRIMUNT_INFO: \n";
-		mdata += "DATA_INFO: \n";
-		mdata += "UNCERTAINTY: N/A\n";
-		mdata += "ULOD_FLAG: N/A\n";
+		mdata += "INSTRUMENT_INFO: \n";
+		mdata += "DATA_INFO: data reported in ambient condition, ambient temperature and pressure are given for conversion to STP (273.15K and 1013 mb)\n";
+		mdata += "UNCERTAINTY: contact PI Allen Schanot or Jorgen Jensen, jbj@ucar.edu, 303-497-1028\n";
+		mdata += "ULOD_FLAG: -77777\n";
 		mdata += "ULOD_VALUE: N/A\n";
-		mdata += "LLOD_FLAG: N/A\n";
+		mdata += "LLOD_FLAG: -88888\n";
 		mdata += "LLOD_VALUE: N/A\n";
 		mdata += "DM_CONTACT_INFO: Janine Aquino, NCAR/EOL, janine@ucar.edu\n";
 		mdata += "PROJECT_INFO: \n";
-		mdata += "STIPULATIONS_OF_USE: \n";
-		mdata += "OTHER_COMMENTS: \n";
+		mdata += "STIPULATIONS_ON_USE: Final data for publication use\n";
+		mdata += "OTHER_COMMENTS: none\n";
 		mdata += "REVISION: R0\n";
 		mdata += "R0: Field Data\n";
 
