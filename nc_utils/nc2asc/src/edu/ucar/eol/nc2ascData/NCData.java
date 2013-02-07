@@ -610,8 +610,8 @@ public class NCData {
 				int varIdx = 0;
 				//String line = getNewTm(milSec + (long)(range[0]+i)*1000
 				//		+ (k * (1000/topRate)), 0, fmt, true);
-			        String line = getNewTm(milSec + (long)((timeData[i] 
-					      + (k * (1./topRate)))*1000), 0, fmt, true); 
+			        String line = getNewTm(milSec + (long)(Math.round((timeData[i]
+					      + (k * (1./topRate)))*1000)), 0, fmt, true); 
 				for (int j = 0; j < nVariables; j++) { //variables
 					String varFmt = varDatFmt.get(j);
 					int dataInterval = topRate / hRate[j]; 

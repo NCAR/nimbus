@@ -85,7 +85,7 @@ public class DataFmt {
 		dataFmt[PI_NAME]=PINAME;
 		dataFmt[DM_NAME]=DMNAME;
 		dataFmt[PROJINFO]=PROJ_INFO;
-		dataFmt[nopts]=String.valueOf(nopts);
+		//dataFmt[nopts]=String.valueOf(nopts);
 		dataFmt[AVG_IDX]="1";
 	}
 
