@@ -179,6 +179,7 @@ void SslProxyServer::removeConnection(Ssl::SslServerConnection* connection) {
 	QString info = peerCert.subjectInfo(QSslCertificate::CommonName);
 	QString msg;
 	msg = QString("SSL disconnect from %1 at %2").arg(info).arg(IP);
+	_logger.log(msg.toStdString());
 
 	// And log all of the currently open connections.
 	logOpenConnections();
