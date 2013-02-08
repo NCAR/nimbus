@@ -127,8 +127,9 @@ void SslProxyServer::validateConnection(Ssl::SslServerConnection* connection) {
 
 		// Send a message to the system log
 		QString info = peerCert.subjectInfo(QSslCertificate::CommonName);
+		QString IP = connection->peerAddress().toString();
 		QString msg;
-		msg = QString("SSL connection established for %1").arg(info);
+		msg = QString("SSL connection established for %1 at %2").arg(info).arg(IP);
 		_logger.log(msg.toStdString());
 
 		// And log all of the currently open connections.
@@ -152,6 +153,9 @@ void SslProxyServer::removeConnection(Ssl::SslServerConnection* connection) {
 		_logger.log(msg);
 	}
 
+	// Get the IP
+	QString IP = (*c)->peerAddress().toString();
+
 	// kill the connection
 	delete *c;
 
@@ -174,7 +178,7 @@ void SslProxyServer::removeConnection(Ssl::SslServerConnection* connection) {
 	// Notify the world that a disconnect has been received.
 	QString info = peerCert.subjectInfo(QSslCertificate::CommonName);
 	QString msg;
-	msg = QString("SSL disconnect from %1").arg(info);
+	msg = QString("SSL disconnect from %1 at %2").arg(info).arg(IP);
 
 	// And log all of the currently open connections.
 	logOpenConnections();
