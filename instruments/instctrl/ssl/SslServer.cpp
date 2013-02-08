@@ -35,7 +35,6 @@ SslServer::~SslServer() {
 
 /////////////////////////////////////////////////////////////////////
 void SslServer::incomingConnection(int descriptor) {
-	qDebug() << "Incoming connection on port" << _port << "(descriptor" << descriptor << ")";
 
 	SslSocket* socket = new SslSocket(_keyFile, _sslCert, descriptor, _extraCerts);
 
