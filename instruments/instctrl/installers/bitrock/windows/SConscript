@@ -1,0 +1,10 @@
+import eol_scons
+
+env = Environment(tools=['default', 'bitrock', 'svninfo'])
+
+svnrevision = env['SVNREVISION']
+svnrevision = svnrevision.replace(':','-')
+
+installername = 'RIC-' + svnrevision + '.exe'
+installer = env.BitRock(installername, '../RICBitRock.xml', ['#/proxy/ric_proxy.exe'], svnrevision)
+Default(installer)

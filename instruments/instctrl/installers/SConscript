@@ -6,3 +6,6 @@ if (sys.platform in ['posix','linux', 'linux2']):
 if (sys.platform == 'darwin'):
 	SConscript('mac/SConscript')
 
+if (sys.platform == 'win32'):
+    SConscript('bitrock/SConscript')
+

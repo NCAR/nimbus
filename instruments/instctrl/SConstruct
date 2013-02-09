@@ -46,6 +46,6 @@ svnInfo = env.SvnInfo('#/svnInfo.h', '#')
 
 SConscript("proxy/SConscript")
 SConscript("switch/SConscript")
-SConscript("installers/SConscript")
 SConscript("ricutil/SConscript")
+SConscript("installers/SConscript")
 
