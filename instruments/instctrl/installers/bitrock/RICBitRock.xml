@@ -3,8 +3,8 @@
     <fullName>Remote Instrument Control</fullName>
     <version>1.0</version>
     <installerFilename>${product_shortname}-${svnversion}.${platform_exec_suffix}</installerFilename>
-    <leftImage>../../Resources/proxy/proxyIcon.png</leftImage>
-    <logoImage>../../Resources/proxy/proxyIcon.png</logoImage>
+    <leftImage>../../Resources/proxy/proxyLeft.png</leftImage>
+    <logoImage>../../Resources/proxy/proxy48.png</logoImage>
     <splashImage>../../Resources/proxy/proxyIcon.png</splashImage>
     <preBuildActionList>
         <setInstallerVariable>
@@ -133,7 +133,27 @@
                         </distributionFile>
                     </distributionFileList>
                 </folder>
+                <folder>
+                    <description>Configuration Files</description>
+                    <destination>${windows_folder_appdata}/NCAR</destination>
+                    <name>NCARConfigFiles</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>../../proxy/Proxy-windows.ini</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>../../proxy/Proxy-AVAPS.ini</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
             </folderList>
+            <postInstallationActionList>
+                <renameFile>
+                    <destination>${windows_folder_appdata}/NCAR/Proxy.ini</destination>
+                    <origin>${windows_folder_appdata}/NCAR/Proxy-windows.ini</origin>
+                </renameFile>
+            </postInstallationActionList>
             <startMenuShortcutList>
                 <startMenuShortcut>
                     <comment>Uninstall ${product_fullname}</comment>
