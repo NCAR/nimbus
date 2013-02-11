@@ -1,5 +1,5 @@
-#ifndef PROXYCONFIG_H_
-#define PROXYCONFIG_H_
+#ifndef INSTCONFIG_H_
+#define INSTCONFIG_H_
 
 #include <string>
 #include <vector>
@@ -8,28 +8,29 @@
 
 /// Manage the configuration for instrument/user message handling.
 /// This configuration is used by proxies and switches. Some of the
-/// configuration parameters are not applicable to a particular application. For
-/// instance, the broadcast, IP and port parameters are not used
+/// configuration parameters are not applicable to a particular application.
+/// For instance, the broadcast, IP and port parameters are not used
 /// by the switches. Likewise, the rate limit parameter is only used by
 /// the switches and not the proxies. The idea is that one configuration
 /// file can (mostly) be shared by all applications.
 /// @todo Should be derived from QtConfig?
 class InstConfig {
+
 public:
 	/// A helper class for holding a description of a single message type.
 	struct MessageInfo {
 		/// The message identifier. Messages must be self-identifying, and
-		/// the id extracted from the message will be compared agains this.
+		/// the id extracted from the message will be compared against this.
 		std::string msgID;
 		/// Set true if outgoing copies of this message should be broadcast.
-		/// Flase for unicast.
+		/// False for unicast.
 		bool broadcast;
 		/// The rate limit in seconds. The message rate limiter will only
 		/// allow one message through within this time period. Set to 0
 		/// for no rate limiting.
 		double rateLimit;
 	};
-public:
+
 	/// Default constructor.
 	InstConfig() throw (std::string);
 	/// Constructor for a specified configuration file path.
@@ -50,7 +51,7 @@ public:
 	std::string destHost();
 	/// @returns The instrument name.
     std::string instrumentName();
-    /// @returns The collection of defined messagfes for this instrument.
+    /// @returns The collection of defined messages for this instrument.
     std::vector<MessageInfo> messages();
 
 protected:
@@ -78,5 +79,4 @@ protected:
 
 };
 
-
-#endif /* PROXYCONFIG_H_ */
+#endif /* INSTCONFIG_H_ */

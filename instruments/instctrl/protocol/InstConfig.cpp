@@ -7,6 +7,7 @@
 InstConfig::InstConfig() throw (std::string) {
 
 }
+
 /////////////////////////////////////////////////////////////////////
 InstConfig::InstConfig(const std::string configPath) throw (std::string):
 _instConfigPath(configPath)
@@ -21,10 +22,12 @@ InstConfig::InstConfig(const std::string organization, const std::string applica
 {
 	init();
 }
+
 /////////////////////////////////////////////////////////////////////
 InstConfig::~InstConfig() {
 
 }
+
 /////////////////////////////////////////////////////////////////////
 void InstConfig::init() throw (std::string) {
 
@@ -40,16 +43,17 @@ void InstConfig::init() throw (std::string) {
 
 	// If these items don't exist in the configuration,
 	// they will be created as default values.
-    _instName              = config->getString("InstName",     "INSTRUMENT");
-	_incomingPort          = config->getInt   ("InstIncomingPort",0);
-	_destHost                = config->getString("InstHostName", "127.0.0.1");
-	_destPort              = config->getInt   ("InstDestPort", 0);
+    _instName     = config->getString("InstName",         "INSTRUMENT");
+	_incomingPort = config->getInt   ("InstIncomingPort", 0);
+	_destHost     = config->getString("InstHostName",     "127.0.0.1");
+	_destPort     = config->getInt   ("InstDestPort",     0);
 	if (_instName == "INSTRUMENT" || _incomingPort == 0 || _destPort == 0) {
 		std::string errmsg = "The instrument configuration file ";
 		errmsg += config->fileName();
 		errmsg += " contains errors.";
 		throw (errmsg);
 	}
+
     // Get the message definitions. Create a default entry in case
 	// none are there yet.
     std::vector<std::map<std::string, std::string> > allMsgs;
@@ -96,27 +100,29 @@ void InstConfig::init() throw (std::string) {
 	delete config;
 
 }
+
 /////////////////////////////////////////////////////////////////////
 std::string InstConfig::instrumentName() {
 	// The default value was set in the constructor
 	return _instName;
 }
+
 /////////////////////////////////////////////////////////////////////
 int InstConfig::incomingPort() {
 	return _incomingPort;
 }
+
 /////////////////////////////////////////////////////////////////////
 std::string InstConfig::destHost() {
 	return _destHost;
 }
+
 /////////////////////////////////////////////////////////////////////
 int InstConfig::destPort() {
 	return _destPort;
 }
+
 /////////////////////////////////////////////////////////////////////
 std::vector<InstConfig::MessageInfo> InstConfig::messages() {
 	return _messages;
 }
-
-
-

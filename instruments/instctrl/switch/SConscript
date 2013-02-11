@@ -20,6 +20,7 @@ ProxyServer.cpp
 Switch.cpp
 SwitchConnection.cpp
 SwitchMonitor.cpp
+SwitchConfig.cpp
 SslProxyServer.cpp
 """)
 
@@ -30,6 +31,7 @@ ProxyServer.h
 Switch.h
 SwitchConnection.h
 SwitchMonitor.h
+SwitchConfig.h
 SslProxyServer.h
 Overview.h
 """)
