@@ -12,3 +12,9 @@ Default(proxyapp)
 switchappname = 'RICSwitch-' + apprevision
 switchapp = env.OsxQtApp('.', '#/switch/ric_switch', '#/Resources/proxy/proxyIcon.icns', switchappname, apprevision)
 Default(switchapp)
+
+proxydmgname = env.Dir('#/Installers/mac/').abspath + '/' + proxyappname + '.dmg'
+proxyappdir  = env.Dir('#/Installers/mac/').abspath + '/' + proxyappname + '.app'
+dmgcmd = 'rm -rf ' + str(proxydmgname) + '; ' + 'hdiutil create ' + str(proxydmgname) + ' -srcfolder ' + proxyappdir + ' -volname ' + proxyappname + '; '
+proxydmg = env.Command(proxydmgname, [env.Dir(proxyappdir).abspath,], dmgcmd)
+env.Default(proxydmg)
