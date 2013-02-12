@@ -108,6 +108,12 @@
                         <distributionFile>
                             <origin>../../Resources/proxy/proxyIcon.ico</origin>
                         </distributionFile>
+                        <distributionFile>
+                            <origin>../../../../Tools/MinGW/msys/1.0/local/bin/ssleay32.dll</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>../../../../Tools/MinGW/msys/1.0/local/bin/libeay32.dll</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
