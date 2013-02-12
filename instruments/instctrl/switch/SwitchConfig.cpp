@@ -4,12 +4,6 @@
 #include <sstream>
 
 /////////////////////////////////////////////////////////////////////
-SwitchConfig::SwitchConfig() throw (std::string) :
-QtConfig("NCAR", "Switch")
-{
-}
-
-/////////////////////////////////////////////////////////////////////
 SwitchConfig::SwitchConfig(const std::string configPath) throw (std::string) :
 QtConfig(configPath)
 {
@@ -17,19 +11,26 @@ QtConfig(configPath)
 }
 
 /////////////////////////////////////////////////////////////////////
-SwitchConfig::~SwitchConfig()
+SwitchConfig::SwitchConfig(const std::string organization, const std::string application) throw (std::string) :
+QtConfig(organization, application)
 {
 	init();
 }
 
 /////////////////////////////////////////////////////////////////////
+SwitchConfig::~SwitchConfig()
+{
+}
+
+/////////////////////////////////////////////////////////////////////
 void SwitchConfig::init() throw (std::string)
 {
+	// Get parameters shared by SSL proxy switch and embedded proxy switch
 	_localPort  = getInt   ("SwitchLocalPort",  0);
 	_remoteIP   = getString("SwitchRemoteIP",   "127.0.0.1");
 	_remotePort = getInt   ("SwitchRemotePort", 0);
 	_cipherKey  = getString("SwitchCipherKey",  "./udpcipher.key");
-	_sslSwitch  = getBool  ("SslProxy",         true);
+	_sslProxy   = getBool  ("SslProxy",         true);
 
 	// If the port number is 0, it indicates that the user has not configured
 	// the application yet. We wait until this point so that all of the default values
@@ -39,6 +40,19 @@ void SwitchConfig::init() throw (std::string)
 		std::string errmsg = "Please create a usable configuration by editing ";
 		errmsg += fileName();
 		errmsg += " (make sure ports and IP addresses are valid)";
+	}
+
+	if (_sslProxy) {
+		// Get parameters for SSL proxy switch
+		_proxyPort      = getInt   ("SSLProxyPort",      0);
+		_serverKeyFile  = getString("SwitchSSLKeyFile",  "./switch.key");
+		_serverCertFile = getString("SwitchSSLCertFile", "./switch.crt");
+
+		// Get the proxy definitions
+		_proxies = getArray("SSLProxies", _proxies);
+	} else {
+		// Get the instrument definition files for embedded proxy switch
+		_instruments = getArray("Instruments", _instruments);
 	}
 }
 
@@ -67,7 +81,37 @@ std::string SwitchConfig::cipherKey()
 }
 
 /////////////////////////////////////////////////////////////////////
-bool SwitchConfig::sslSwitch()
+bool SwitchConfig::sslProxy()
 {
-	return _sslSwitch;
+	return _sslProxy;
+}
+
+/////////////////////////////////////////////////////////////////////
+int SwitchConfig::proxyPort()
+{
+	return _proxyPort;
+}
+
+/////////////////////////////////////////////////////////////////////
+std::string SwitchConfig::serverKeyFile()
+{
+	return _serverKeyFile;
+}
+
+/////////////////////////////////////////////////////////////////////
+std::string SwitchConfig::serverCertFile()
+{
+	return _serverCertFile;
+}
+
+/////////////////////////////////////////////////////////////////////
+std::vector<std::map<std::string, std::string> > SwitchConfig::proxies()
+{
+	return _proxies;
+}
+
+/////////////////////////////////////////////////////////////////////
+std::vector<std::map<std::string, std::string> > SwitchConfig::instruments()
+{
+	return _instruments;
 }

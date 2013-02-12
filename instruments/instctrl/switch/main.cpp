@@ -3,8 +3,8 @@
 #include <sstream>
 #include <string>
 #include <boost/program_options.hpp>
-#include "QtConfig.h"
 #include "Switch.h"
+#include "SwitchConfig.h"
 #include "RicLogger.h"
 #include "svnInfo.h"
 
@@ -56,58 +56,16 @@ parseCommandLine(int argc, char** argv,
 }
 
 /////////////////////////////////////////////////////////////////////
-void getCommonConfig(
-		QtConfig* config,
-		int& switchLocalPort,
-		std::string& switchRemoteIP,
-		int& switchRemotePort,
-		std::string& switchCipherKey
-		)
-{
-	// Listen on this port for messages from the remote switch
-	switchLocalPort = config->getInt("SwitchLocalPort", 0);
-
-	// The remote switch IP
-	switchRemoteIP = config->getString("SwitchRemoteIP", "127.0.0.1");
-
-	// The destination port for messages to the remote switch
-	switchRemotePort = config->getInt("SwitchRemotePort", 0);
-
-	// The file containing the key for symmetric cipher encryption over SwitchConnection.
-	// This file must be kept private!
-	switchCipherKey = config->getString("SwitchCipherKey", "./udpcipher.key");
-
-	// If the port number is 0, it indicates that the user has not configured
-	// the application yet. We wait until this point so that all of the default values
-	// will have been added to the configuration file. Force them to take a stab at
-	// configuration.
-	if (switchLocalPort == 0 || switchRemotePort == 0) {
-		std::cout << "Please create a usable configuration by editing " << config->fileName()
-				<< " (make sure ports and IP addresses are valid)"<< std::endl;
-		exit(1);
-	}
-}
-
-/////////////////////////////////////////////////////////////////////
-void createSslSwitch(
-		int argc,
-		char** argv,
-		QtConfig* config,
-		Switch** swtch,
-		int switchLocalPort,
-	    std::string switchRemoteIP,
-		int switchRemotePort,
-		std::string switchCipherKey,
-		bool verbose)
+void createSslSwitch(SwitchConfig* config, Switch* swtch, bool verbose)
 {
 	// Get the configuration that applies to the Proxy SSL connection
 
 	// The file containing the private key for the switch to proxy SSL link.
 	// This file must be kept private!
-	std::string serverKey(config->getString("SwitchSSLKeyFile", "./switch.key"));
+	std::string serverKey(config->serverKeyFile());
 
 	// The file containing the private certificate for the switch to proxy SSL link.
-	std::string serverCertFile(config->getString("SwitchSSLCertFile", "./switch.crt"));
+	std::string serverCertFile(config->serverCertFile());
 
 	QSslCertificate serverCert(QSslCertificate::fromPath(serverCertFile.c_str())[0]);
 	if (serverCert.isNull() || !serverCert.isValid()) {
@@ -116,12 +74,9 @@ void createSslSwitch(
 		exit(1);
 	}
 
-	// The port for communications to the SslProxy
-	int switchProxyPort = config->getInt("SSLProxyPort", 0);
-
 	// Get the proxy definitions
 	std::vector<std::map<std::string, std::string> > proxiesConfig;
-	proxiesConfig = config->getArray("SSLProxies", proxiesConfig);
+	proxiesConfig = config->proxies();
 	std::vector<SslProxyServer::SslProxyDef> proxies;
 	for (int i = 0; i < proxiesConfig.size(); i++) {
 		SslProxyServer::SslProxyDef proxy;
@@ -141,31 +96,24 @@ void createSslSwitch(
 	//  - an SslServer
 	//  - a SwitchConnection to the remote switch
 	//  - SslServer creates connections to Proxies.
-	*swtch = new Switch(
+	swtch = new Switch(
 			serverKey,
 			serverCert,
-			switchProxyPort,
+			config->proxyPort(),
 			proxies,
-			switchLocalPort,
-			switchRemoteIP,
-			switchRemotePort,
-			switchCipherKey,
+			config->localPort(),
+			config->remoteIP(),
+			config->remotePort(),
+			config->cipherKey(),
 			verbose);
 }
 
 /////////////////////////////////////////////////////////////////////
-void createEmbeddedSwitch(
-		QtConfig* config,
-		Switch** swtch,
-		int switchLocalPort,
-	    std::string switchRemoteIP,
-		int switchRemotePort,
-		std::string switchCipherKey,
-		bool verbose) {
-
+void createEmbeddedSwitch(SwitchConfig* config, Switch* swtch, bool verbose)
+{
 	// Get the instrument definition files
 	std::vector<std::map<std::string, std::string> > instruments;
-	instruments = config->getArray("Instruments", instruments);
+	instruments = config->instruments();
 
 	// Create the instrument configurations
 	std::vector<InstConfig> instConfigs;
@@ -176,12 +124,12 @@ void createEmbeddedSwitch(
 		instConfigs.push_back(InstConfig(fileName));
 	}
 
-	*swtch = new Switch(
+	swtch = new Switch(
 			instConfigs,
-			switchLocalPort,
-			switchRemoteIP,
-			switchRemotePort,
-			switchCipherKey,
+			config->localPort(),
+			config->remoteIP(),
+			config->remotePort(),
+			config->cipherKey(),
 			verbose);
 }
 
@@ -189,7 +137,6 @@ void createEmbeddedSwitch(
 int main(int  argc, char** argv)
 {
 	try {
-
 		RicLogger logger("RICSwitch", true);
 		std::string msg("Starting RIC switch: ");
 		msg += std::string(argv[0]);
@@ -208,65 +155,22 @@ int main(int  argc, char** argv)
 
 		/////////////////////////////////////////////////////////////////
 		// Get the configuration
-		QtConfig* config;
+		SwitchConfig* config;
 		if (configFile.size()) {
-			config = new QtConfig(configFile);
+			config = new SwitchConfig(configFile);
 		} else {
-			config = new QtConfig("NCAR", "Switch");
+			config = new SwitchConfig("NCAR", "Switch");
 		}
 
 		/////////////////////////////////////////////////////////////////
-		// Get configuration parameters that are used by both types of switch
-
-		// Listen on this port for messages from the remote switch
-		int switchLocalPort;
-
-		// The remote switch IP
-		std::string switchRemoteIP;
-
-		// The destination port for messages to the remote switch
-		int switchRemotePort;
-
-		// The file containing the key for symmetric cipher encryption over
-		// SwitchConnection. This file must be kept private!
-		std::string switchCipherKey;
-
-		getCommonConfig(
-				config,
-				switchLocalPort,
-				switchRemoteIP,
-				switchRemotePort,
-				switchCipherKey);
-
-		/////////////////////////////////////////////////////////////////
 		// Create the desired switch type
-
-		// If SslProxy is true, we will be an SSL proxy switch. Otherwise, we
-		// we will be an embedded proxy switch.
-		bool sslSwitch = config->getBool("SslProxy", true);
-
 		Switch* swtch;
-
-		if (sslSwitch) {
-			createSslSwitch(
-					argc,
-					argv,
-					config,
-					&swtch,
-					switchLocalPort,
-					switchRemoteIP,
-					switchRemotePort,
-					switchCipherKey,
-					verbose);
+		// If SslProxy is true, an SSL proxy switch is created. Otherwise,
+		// an embedded proxy switch is created.
+		if (config->sslProxy()) {
+			createSslSwitch(config, swtch, verbose);
 		} else {
-			createEmbeddedSwitch(
-					config,
-					&swtch,
-					switchLocalPort,
-					switchRemoteIP,
-					switchRemotePort,
-					switchCipherKey,
-					verbose);
+			createEmbeddedSwitch(config, swtch, verbose);
 		}
 
 		// Run the event loop
