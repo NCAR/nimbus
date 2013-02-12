@@ -17,8 +17,11 @@ public:
   : id(new_id), serialNumber(sn), suffix(sfx), nDiodes(ndiodes), resolution(res),
 	numBins(numbins), firstBin(binoffset), lastBin(numbins), armWidth(6.1)
   {
-    if (id[0] == 'P') {
+    if (id[0] == 'P') {		// 2DP
       armWidth = 26.1;
+    }
+    if (id[0] == '3') {		// 3V-CPI
+      armWidth = 5.08;
     }
   }
 
@@ -32,7 +35,7 @@ public:
   std::string id;            // Two byte ID at the front of the data-record.
   std::string serialNumber;
   std::string suffix;
-  int nDiodes;          // 32 or 64 at this time.
+  int nDiodes;          // 32, 64, or 128 at this time.
   float resolution;     // micrometers
   int numBins;
   int firstBin, lastBin;
