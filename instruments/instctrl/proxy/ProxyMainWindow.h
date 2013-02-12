@@ -20,8 +20,10 @@ public:
 	/// Constructor
 	/// @param sslProxy The sslProxy which is managing the communications
 	/// between the user and the switch
+	/// @param sslHost The host name or IP for the SSL host.
+	/// @param sslPort The port number for the SSL connection on the SSL host.
 	/// @param parent The window parent.
-	ProxyMainWindow(SslProxy& sslProxy, QWidget* parent = 0);
+	ProxyMainWindow(SslProxy& sslProxy, std::string sslHost, int sslPort, QWidget* parent = 0);
 	/// Destructor
 	virtual ~ProxyMainWindow();
 
@@ -59,6 +61,10 @@ protected:
 	/// The SSL proxy that manages the SSL connection to the switch and
 	/// the reading and writing of the UDP datagrams.
 	SslProxy& _sslProxy;
+	/// The host name or IP for the SSL host.
+	std::string _sslHost;
+	/// The port number for the SSL connection on the SSL host.
+	int _sslPort;
 	/// Contains the proxy state
 	Ssl::SslProxy::ProxyState _proxyState;
 	/// Set true when we are in full view mode.

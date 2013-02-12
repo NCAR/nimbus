@@ -1,9 +1,14 @@
 #include "ProxyMainWindow.h"
 
 /////////////////////////////////////////////////////////////////////
-ProxyMainWindow::ProxyMainWindow(SslProxy& sslProxy, QWidget* parent):
+ProxyMainWindow::ProxyMainWindow(SslProxy& sslProxy,
+		std::string sslHost,
+		int sslPort,
+		QWidget* parent):
 QMainWindow(parent),
 _sslProxy(sslProxy),
+_sslHost(sslHost),
+_sslPort(sslPort),
 _proxyState(Ssl::SslProxy::PROXY_Unconnected),
 _fullView(true),
 _windowIcon(QString(":/proxyIcon.png")),
@@ -20,6 +25,10 @@ _yellow (tr("background-color: #EEEE00"))
 
 	// Set the view button image
 	_view->setIcon(_windowIcon);
+
+	// Display the SSL host specifications
+	QString hostInfo = QString("%1:%2").arg(QString(_sslHost.c_str())).arg(_sslPort);
+	_sslHostInfo->setText(hostInfo);
 
 	// Set the focus back to the connect button.
 	_connect->setFocus();
