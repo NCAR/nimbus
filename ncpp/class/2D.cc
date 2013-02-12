@@ -19,7 +19,7 @@ TwoDC::TwoDC(NcFile *file, NcVar *av) : TwoD(file, av)
   if (_resolution == 0)
     _resolution = 0.025;
   if (_armDistance == 0)
-    _resolution = 61;
+    _armDistance = 61;
 }
 
 /* -------------------------------------------------------------------- */
@@ -29,7 +29,7 @@ TwoDP::TwoDP(NcFile *file, NcVar *av)
   if (_resolution == 0)
     _resolution = 0.2;
   if (_armDistance == 0)
-    _resolution = 261;
+    _armDistance = 261;
 }
 
 /* -------------------------------------------------------------------- */
