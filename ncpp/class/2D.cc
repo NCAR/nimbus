@@ -4,14 +4,23 @@ OBJECT NAME:	2D.cc
 
 FULL NAME:	2D Class
 
-DESCRIPTION:	
+DESCRIPTION:	Probe classes for 2DC, 2DP, and 2DS/3V-CPI.
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2000
+COPYRIGHT:	University Corporation for Atmospheric Research, 2000-2013
 -------------------------------------------------------------------------
 */
 
 #include "2D.h"
 
+
+/* -------------------------------------------------------------------- */
+TwoDS::TwoDS(NcFile *file, NcVar *av) : TwoD(file, av)
+{
+  if (_resolution == 0)
+    _resolution = 0.010;
+  if (_armDistance == 0)
+    _resolution = 61;	// @todo this needs verification.
+}
 
 /* -------------------------------------------------------------------- */
 TwoDC::TwoDC(NcFile *file, NcVar *av) : TwoD(file, av)

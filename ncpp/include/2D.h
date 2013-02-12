@@ -4,9 +4,9 @@ OBJECT NAME:	2D.h
 
 FULL NAME:	2D
 
-TYPE:		Derived class
+TYPE:		Derived class for 2DC, 2DP, and 2DS (3V-CPI).
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 2000
+COPYRIGHT:	University Corporation for Atmospheric Research, 2000-2013
 -------------------------------------------------------------------------
 */
 
@@ -25,8 +25,15 @@ public:
   void	ComputeConcentration(float *accum, float *conc, long countV[],
 		const std::vector<float *> & otherVarData);
 
-};	// END 2D.H
+};
 
+
+// SPEC 2DS and/or 3V-CPI
+class TwoDS : public TwoD
+{
+public:
+	TwoDS(NcFile *file, NcVar *av);
+};
 
 class TwoDC : public TwoD
 {

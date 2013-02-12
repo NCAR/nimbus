@@ -93,6 +93,9 @@ Probe::Probe(NcFile *file, NcVar *av) : _avar(av), _firstBin(0), _lastBin(Vector
   if (_name.find("2DP") != _name.npos || _name.find("1DP") != _name.npos)
     _type = TWODP;
   else
+  if (_name.find("2D3") != _name.npos || _name.find("1D3") != _name.npos)
+    _type = TWODS;
+  else
   if (_name.find("HVPS") != _name.npos)
     _type = HVPS;
   else
@@ -181,7 +184,7 @@ Probe::Probe(NcFile *file, NcVar *av) : _avar(av), _firstBin(0), _lastBin(Vector
 
     if (Type() == X260)
       for (i = 0; i < 64; ++i)
-        _diameter[i] = 5 + i * 10;
+        _diameter[i] = 5 + i * 10;	// start 5um w/ 10um pixel/diode size.
     else
     if (Type() == X200)
       for (i = 0; i < 16; ++i)
@@ -210,6 +213,10 @@ Probe::Probe(NcFile *file, NcVar *av) : _avar(av), _firstBin(0), _lastBin(Vector
     if (Type() == TWODP)
       for (i = 0; i < 64; ++i)
         _diameter[i] = 100 + i * 200;
+    else
+    if (Type() == TWODS)
+      for (i = 0; i < 256; ++i)
+        _diameter[i] = 5 + i * 10;
     else
     if (Type() == HVPS)
       for (i = 0; i < 256; ++i)

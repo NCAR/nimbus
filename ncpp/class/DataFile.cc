@@ -6,7 +6,7 @@ FULL NAME:	netCDF Data File Class
 
 DESCRIPTION:	
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1997-09
+COPYRIGHT:	University Corporation for Atmospheric Research, 1997-2013
 -------------------------------------------------------------------------
 */
 
@@ -22,7 +22,7 @@ static const char *validProbeNames[] = {
 	"AFSSP","AF300","APCAS","A260X","AASAS","A200X","A200Y","A300X",
 	"AMASP","A1DC","A2DC","A1DP","A2DP","AS100","AS200","AS300",
 	"ACDP", "ARDMA","ACLMT","ACMCA","AHVPS","AUHSAS","ASID","ACAPS",
-	"APDI", NULL };
+	"APDI", "A2D3", NULL };
 
 
 /* -------------------------------------------------------------------- */
@@ -143,6 +143,10 @@ DataFile::DataFile(const char fName[]) : fileName(fName)
       if (strncmp("A2DP", avar->name(), 4) == 0 ||
           strncmp("A1DP", avar->name(), 4) == 0)
         probe[nProbes++] = new TwoDP(file, avar);
+      else
+      if (strncmp("A2D3", avar->name(), 4) == 0 ||	// 3V-CPI
+          strncmp("A1D3", avar->name(), 4) == 0)
+        probe[nProbes++] = new TwoDS(file, avar);
       else
         probe[nProbes++] = new Probe(file, avar);
       }

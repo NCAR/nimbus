@@ -214,6 +214,7 @@ void EditDiameters::SetDiameters(Probe *probe)
     case Probe::X260:
     case Probe::TWODP:
     case Probe::TWODC:
+    case Probe::TWODS:
       setSpex("DBZ Factor", cnt++, ((Probe200 *)probe)->_DBZfac);
 
     case Probe::X200:
