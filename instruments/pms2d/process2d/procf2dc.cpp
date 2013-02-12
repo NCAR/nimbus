@@ -823,40 +823,40 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     float dbar2_all = 0.0, dbar2_round = 0.0;
     float z_all = 0.0, z_round = 0.0;
 
-    for (int bin = 0; bin < probe.numBins; bin++)
+    for (int bin = binoffset; bin < probe.numBins+binoffset; bin++)
     {
       if (data.tas[i] > 0.0) {
-        float sv = probe.samplearea[bin] * data.tas[i];  // Sample volume (m3)
+        float sv = probe.samplearea[bin-binoffset] * data.tas[i];  // Sample volume (m3)
 
         // Correct counts for the poisson fitting
         if (std::isnan(data.corrfac[i])) data.corrfac[i]=1.0;  //Filter out bad correction factors
-        count_all[i][bin+binoffset] *= data.corrfac[i];
-        count_round[i][bin+binoffset] *= data.corrfac[i];
-        conc_all[i][bin+binoffset] = count_all[i][bin+binoffset] / sv / 1000.0;	// #/L
-        conc_round[i][bin+binoffset] = count_round[i][bin+binoffset] / sv / 1000.0;	// #/L
+        count_all[i][bin] *= data.corrfac[i];
+        count_round[i][bin] *= data.corrfac[i];
+        conc_all[i][bin] = count_all[i][bin] / sv / 1000.0;	// #/L
+        conc_round[i][bin] = count_round[i][bin] / sv / 1000.0;	// #/L
 
         if (bin >= 4) { // 100 um and larger.
-          data.all.total_conc100[i] += conc_all[i][bin+binoffset];
-          data.round.total_conc100[i] += conc_round[i][bin+binoffset];
+          data.all.total_conc100[i] += conc_all[i][bin];
+          data.round.total_conc100[i] += conc_round[i][bin];
         }
 
         if (bin >= 6) { // 150 um and larger.
-          data.all.total_conc150[i] += conc_all[i][bin+binoffset];
-          data.round.total_conc150[i] += conc_round[i][bin+binoffset];
+          data.all.total_conc150[i] += conc_all[i][bin];
+          data.round.total_conc150[i] += conc_round[i][bin];
         }
 
         if (bin >= probe.firstBin) {
-          data.all.total_conc[i] += conc_all[i][bin+binoffset];
-          data.all.dbar[i]	+= conc_all[i][bin+binoffset] * probe.bin_midpoints[bin];
-          dbar2_all		+= conc_all[i][bin+binoffset] * dia2[bin];
-          data.all.lwc[i]	+= conc_all[i][bin+binoffset] * dia3[bin];
-          z_all			+= conc_all[i][bin+binoffset] * zFac[bin];
+          data.all.total_conc[i] += conc_all[i][bin];
+          data.all.dbar[i]	+= conc_all[i][bin] * probe.bin_midpoints[bin-binoffset];
+          dbar2_all		+= conc_all[i][bin] * dia2[bin-binoffset];
+          data.all.lwc[i]	+= conc_all[i][bin] * dia3[bin-binoffset];
+          z_all			+= conc_all[i][bin] * zFac[bin-binoffset];
 
-          data.round.total_conc[i] += conc_round[i][bin+binoffset];
-          data.round.dbar[i]	+= conc_round[i][bin+binoffset] * probe.bin_midpoints[bin];
-          dbar2_round		+= conc_round[i][bin+binoffset] * dia2[bin];
-          data.round.lwc[i]	+= conc_round[i][bin+binoffset] * dia3[bin];
-          z_round		+= conc_round[i][bin+binoffset] * zFac[bin];
+          data.round.total_conc[i] += conc_round[i][bin];
+          data.round.dbar[i]	+= conc_round[i][bin] * probe.bin_midpoints[bin-binoffset];
+          dbar2_round		+= conc_round[i][bin] * dia2[bin-binoffset];
+          data.round.lwc[i]	+= conc_round[i][bin] * dia3[bin-binoffset];
+          z_round		+= conc_round[i][bin] * zFac[bin-binoffset];
         }
       }
     }
