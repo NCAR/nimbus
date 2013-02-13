@@ -16,7 +16,6 @@ _green  (tr("background-color: #00CC66")),
 _dgreen (tr("background-color: #00AA88")),
 _red    (tr("background-color: #FF3300")),
 _yellow (tr("background-color: #EEEE00"))
-
 {
 	setupUi(this);
 
@@ -58,14 +57,20 @@ void ProxyMainWindow::viewSlot() {
 		_height = this->height();
 	}
 
+	Qt::WindowFlags flags = this->windowFlags();
 	if (_fullView) {
 		_validGroup->show();
 		_invalidGroup->show();
 		statusBar()->show();
+        this->setWindowFlags(flags ^ (Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+        this->show();
 	} else {
 		_validGroup->hide();
 		_invalidGroup->hide();
 		statusBar()->hide();
+		// Put on top if not in full view
+		this->setWindowFlags(flags | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+		this->show();
 	}
 
 	// Set the focus back to the connect button.
@@ -188,4 +193,3 @@ void ProxyMainWindow::proxyErrorSlot(QAbstractSocket::SocketError err, std::stri
 	statusBar()->showMessage(tr(errmsg.c_str()));
 
 }
-
