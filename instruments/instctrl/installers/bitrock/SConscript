@@ -2,8 +2,27 @@ import sys
 
 # Run the bitrock install builder for specific architectures.
 
+env = Environment(tools=['default', 'bitrock', 'svninfo'])
+
+svnrevision = env['SVNREVISION']
+svnrevision = svnrevision.replace(':','-')
+
+# The bitrock recipe, which has logic that is based on the machine architecture.
+bitrockxml = 'RICBitRock.xml'
+
+# Add extra dependencies if you wish, although it seems that it gets built no matter what.
+sources = []
+
 if sys.platform == 'win32':
-    SConscript('windows/SConscript')
+    installername = 'RIC-' + svnrevision + '.exe'
+    sources.append(['#/proxy/ric_proxy.exe'])
     
 if sys.platform == 'darwin':
-    SConscript('mac/SConscript')
+    # installername = 'RIC-' + svnrevision + '.app'
+    installername = 'RIC-' + svnrevision
+
+# Create the installer
+if sys.platform == 'win32' or sys.platform == 'darwin':
+    installer = env.BitRock(installername, bitrockxml, sources, svnrevision)
+    Default(installer)
+    
