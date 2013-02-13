@@ -2,7 +2,7 @@ import sys
 
 # Run the bitrock install builder for specific architectures.
 
-env = Environment(tools=['default', 'bitrock', 'svninfo'])
+env = Environment(tools=['default', 'bitrock', 'osxdmg', 'svninfo'])
 
 svnrevision = env['SVNREVISION']
 svnrevision = svnrevision.replace(':','-')
@@ -16,13 +16,11 @@ sources = []
 if sys.platform == 'win32':
     installername = 'RIC-' + svnrevision + '.exe'
     sources.append(['#/proxy/ric_proxy.exe'])
-    
-if sys.platform == 'darwin':
-    # installername = 'RIC-' + svnrevision + '.app'
-    installername = 'RIC-' + svnrevision
-
-# Create the installer
-if sys.platform == 'win32' or sys.platform == 'darwin':
     installer = env.BitRock(installername, bitrockxml, sources, svnrevision)
     Default(installer)
     
+if sys.platform == 'darwin':
+    installerdir = Dir('RIC-' + svnrevision + '.app')
+    installer = env.BitRock(installerdir, bitrockxml, sources, svnrevision)
+    dmg = env.OsxDmg('RIC-' + svnrevision, installerdir)
+    Default(dmg)

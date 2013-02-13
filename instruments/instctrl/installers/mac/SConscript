@@ -1,6 +1,8 @@
 import eol_scons
 import os
 
+# Create application bundles on OSX.
+
 env = Environment(tools=['default', 'osxqtapp', 'svninfo'])
 
 apprevision = env['SVNREVISION']
@@ -13,36 +15,3 @@ Default(proxyapp)
 switchappname = 'RICSwitch-' + apprevision
 switchapp = env.OsxQtApp('.', '#/switch/ric_switch', '#/Resources/proxy/proxyIcon.icns', switchappname, apprevision)
 Default(switchapp)
-
-# Create the DotConfig directory to hold certificate and configuration files
-configDir = env.Dir('DotConfig')
-env.Execute(Delete(configDir))
-env.Execute(Mkdir(configDir))
-
-# Create a list of destination and source file names
-files = []
-files.append(['Certificates/eol-rt-data.crt', '#/test_certs/eol-rt-data.crt'])
-files.append(['Certificates/client.crt',      '#/test_certs/client.crt'])
-files.append(['Certificates/client.key',      '#/test_certs/client.key'])
-files.append(['Proxy.ini', '#/proxy/Proxy-OSX.ini'])
-files.append(['Proxy-AVAPS.ini', '#/proxy/Proxy-AVAPS.ini'])
-
-# Copy the files int the directory
-for pair in files:
-    dir = str(configDir) + '/' + os.path.dirname(pair[0])
-    if (dir != ""):
-        env.Execute(Mkdir(dir))
-    env.Execute(Copy(str(configDir) + '/' + pair[0], env.File(pair[1])))
-
-# Create a disk image containing the aplication and the configuration files
-proxydmgname = env.Dir('#/Installers/mac/').abspath + '/' + proxyappname + '.dmg'
-proxyappdir  = env.Dir('#/Installers/mac/').abspath + '/' + proxyappname + '.app'
-testcertsdir = env.Dir('#/test_certs').abspath
-dmgcmd = ' ' + \
-    'rm -rf ' + str(proxydmgname) + '; ' + \
-    'hdiutil create ' + str(proxydmgname) + \
-    ' -srcfolder ' + proxyappdir + \
-    ' -srcfolder ' + configDir.abspath + \
-    ' -volname ' + proxyappname + '; '
-proxydmg = env.Command(proxydmgname, [env.Dir(proxyappdir).abspath,], dmgcmd)
-env.Default(proxydmg)
