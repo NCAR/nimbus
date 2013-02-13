@@ -48,7 +48,7 @@ void InstConfig::init() throw (std::string) {
 	_destHost     = config->getString("InstHostName",     "127.0.0.1");
 	_destPort     = config->getInt   ("InstDestPort",     0);
 	if (_instName == "INSTRUMENT" || _incomingPort == 0 || _destPort == 0) {
-		std::string errmsg = "The instrument configuration file ";
+		std::string errmsg = "InstConfig: The instrument configuration file ";
 		errmsg += config->fileName();
 		errmsg += " contains errors.";
 		throw (errmsg);

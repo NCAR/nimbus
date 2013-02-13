@@ -3,7 +3,6 @@
 
 #include <string>
 #include <vector>
-#include <QtCore>
 #include "QtConfig.h"
 
 /// Manage the configuration for a switch.
@@ -40,7 +39,7 @@ public:
 	/// @returns The proxy definitions
 	std::vector<std::map<std::string, std::string> > proxies();
 
-    /// @returns the instrument definition files
+    /// @returns The instrument definition files
     std::vector<std::map<std::string, std::string> > instruments();
 
 protected:

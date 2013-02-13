@@ -25,6 +25,10 @@ SwitchConfig::~SwitchConfig()
 /////////////////////////////////////////////////////////////////////
 void SwitchConfig::init() throw (std::string)
 {
+	// Get configuration values. Default values will be created in the
+	// configuration file if they don't exist, so that running the program
+	// for the first time will create a configuration template.
+
 	// Get parameters shared by SSL proxy switch and embedded proxy switch
 	_localPort  = getInt   ("SwitchLocalPort",  0);
 	_remoteIP   = getString("SwitchRemoteIP",   "127.0.0.1");
@@ -32,14 +36,15 @@ void SwitchConfig::init() throw (std::string)
 	_cipherKey  = getString("SwitchCipherKey",  "./udpcipher.key");
 	_sslProxy   = getBool  ("SslProxy",         true);
 
-	// If the port number is 0, it indicates that the user has not configured
-	// the application yet. We wait until this point so that all of the default values
-	// will have been added to the configuration file. Force them to take a stab at
-	// configuration.
-	if (_localPort == 0 || _remotePort == 0) {
-		std::string errmsg = "Please create a usable configuration by editing ";
+	// If the port number is 0 or no IP address, it indicates that the user
+	// has not configured the application yet. We wait until this point so
+	// that all of the default values will have been added to the configuration
+	// file. Force them to take a stab at configuration.
+	if (_localPort == 0 || _remotePort == 0 || _remoteIP.empty()) {
+		std::string errmsg = "SwitchConfig: Please create a usable configuration by editing ";
 		errmsg += fileName();
 		errmsg += " (make sure ports and IP addresses are valid)";
+		throw (errmsg);
 	}
 
 	if (_sslProxy) {

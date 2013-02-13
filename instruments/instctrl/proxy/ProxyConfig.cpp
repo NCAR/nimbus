@@ -36,14 +36,14 @@ void ProxyConfig::init() throw (std::string)
 	_switchHostName = getString("SwitchHostName",    "127.0.0.1");
 	_switchCertFile = getString("SwitchSSLCertFile", "./switch.crt");
 
-	// If the port number is 0, it indicates that the user has not configured
-	// the application yet. We wait until this point so that all of the default
-	// values will have been added to the configuration file. Force them to
-	// take a stab at configuration.
-	if (_proxyPort == 0) {
-		std::string errmsg = "Please create a usable configuration by editing ";
+	// If the port number is 0 or no hostname, it indicates that the user
+	// has not configured the application yet. We wait until this point so
+	// that all of the default values will have been added to the configuration
+	// file. Force them to take a stab at configuration.
+	if (_proxyPort == 0 || _switchHostName.empty()) {
+		std::string errmsg = "ProxyConfig: Please create a usable configuration by editing ";
 		errmsg += fileName();
-		errmsg += " (make sure port is valid)";
+		errmsg += " (make sure port and hostname are valid)";
 		throw (errmsg);
 	}
 
