@@ -1,25 +1,11 @@
 <project>
     <shortName>RIC</shortName>
-    <fullName>Remote Instrument Control</fullName>
+    <fullName>NCAR/EOL/CDS Remote Instrument Control</fullName>
     <version>1.0</version>
     <installerFilename>${product_shortname}-${svnversion}.${platform_exec_suffix}</installerFilename>
     <leftImage>../../Resources/proxy/proxyLeft.png</leftImage>
     <logoImage>../../Resources/proxy/proxy48.png</logoImage>
     <splashImage>../../Resources/proxy/proxyIcon.png</splashImage>
-    <preBuildActionList>
-        <setInstallerVariable>
-            <name>${product_version}</name>
-            <persist>1</persist>
-            <value>${product_version}-${svnversion}</value>
-        </setInstallerVariable>
-    </preBuildActionList>
-    <enableRollback>1</enableRollback>
-    <enableTimestamp>1</enableTimestamp>
-    <outputDirectory>${build_project_directory}/windows</outputDirectory>
-    <requestedExecutionLevel>asInvoker</requestedExecutionLevel>
-    <saveRelativePaths>1</saveRelativePaths>
-    <startMenuGroupName>${product_fullname}-${svnversion}</startMenuGroupName>
-    <vendor>NCAR</vendor>
     <componentList>
         <component>
             <name>default</name>
@@ -121,11 +107,16 @@
                     <destination>${installdir}</destination>
                     <name>programfilesosx</name>
                     <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>../mac/RICProxy-${svnversion}.app</origin>
+                        </distributionFile>
+                    </distributionFileList>
                 </folder>
                 <folder>
                     <description>Certificates</description>
                     <destination>${windows_folder_appdata}/NCAR/Certificates</destination>
-                    <name>Certificates</name>
+                    <name>WinCertificates</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
@@ -140,13 +131,44 @@
                     </distributionFileList>
                 </folder>
                 <folder>
-                    <description>Configuration Files</description>
+                    <description>Certificates</description>
+                    <destination>${user_home_directory}/.config/NCAR/Certificates</destination>
+                    <name>OsxCertificates</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>../../test_certs/client.crt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>../../test_certs/client.key</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>../../test_certs/eol-rt-data.crt</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Windows Configuration Files</description>
                     <destination>${windows_folder_appdata}/NCAR</destination>
-                    <name>NCARConfigFiles</name>
+                    <name>WinConfigFiles</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
                             <origin>../../proxy/Proxy-Win.ini</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>../../proxy/Proxy-AVAPS.ini</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>OSX Configuration Files</description>
+                    <destination>${user_home_directory}/.config/NCAR</destination>
+                    <name>OsxConfigFiles</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>../../proxy/Proxy-OSX.ini</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>../../proxy/Proxy-AVAPS.ini</origin>
@@ -158,6 +180,16 @@
                 <renameFile>
                     <destination>${windows_folder_appdata}/NCAR/Proxy.ini</destination>
                     <origin>${windows_folder_appdata}/NCAR/Proxy-Win.ini</origin>
+                    <ruleList>
+                        <platformTest type="windows"/>
+                    </ruleList>
+                </renameFile>
+                <renameFile>
+                    <destination>${user_home_directory}/.config/NCAR/Proxy.ini</destination>
+                    <origin>${user_home_directory}/.config/NCAR/Proxy-OSX.ini</origin>
+                    <ruleList>
+                        <platformTest type="osx"/>
+                    </ruleList>
                 </renameFile>
             </postInstallationActionList>
             <startMenuShortcutList>
@@ -184,6 +216,20 @@
             </startMenuShortcutList>
         </component>
     </componentList>
+    <preBuildActionList>
+        <setInstallerVariable>
+            <name>${product_version}</name>
+            <persist>1</persist>
+            <value>${product_version}-${svnversion}</value>
+        </setInstallerVariable>
+    </preBuildActionList>
+    <enableRollback>1</enableRollback>
+    <enableTimestamp>1</enableTimestamp>
+    <outputDirectory>${build_project_directory}</outputDirectory>
+    <requestedExecutionLevel>asInvoker</requestedExecutionLevel>
+    <saveRelativePaths>1</saveRelativePaths>
+    <startMenuGroupName>${product_fullname}-${svnversion}</startMenuGroupName>
+    <vendor>NCAR</vendor>
     <parameterList>
         <stringParameter name="svnversion" value="">
             <description></description>

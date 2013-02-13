@@ -1,4 +1,9 @@
 import sys
 
+# Run the bitrock install builder for specific architectures.
+
 if sys.platform == 'win32':
     SConscript('windows/SConscript')
+    
+if sys.platform == 'darwin':
+    SConscript('mac/SConscript')
