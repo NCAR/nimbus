@@ -4,8 +4,8 @@
 #include <boost/program_options.hpp>
 #include <QtGui>
 #include "svnInfo.h"
-#include "QtConfig.h"
 #include "InstConfig.h"
+#include "ProxyConfig.h"
 #include "ProxyMainWindow.h"
 #include "SslProxy.h"
 #include "QtAddress.h"
@@ -18,9 +18,7 @@ namespace po = boost::program_options;
 /// @param argc The number of arguments in argv
 /// @param argv The command line parameters
 /// @param configFile The path to the configuration file is returned here, if specified.
-void
-parseCommandLine(int argc, char** argv,
-	std::string& configFile)
+void parseCommandLine(int argc, char** argv, std::string& configFile)
 {
   	const char *optarg;
    	bool err = false;
@@ -74,30 +72,15 @@ int main(int argc, char** argv)
 
 		// Get the configuration. Fetch from the specified file
 		// if it was provided, otherwise use the default location.
-		QtConfig* config;
+		ProxyConfig* config;
 		if (configFile.size()) {
-			config = new QtConfig(configFile);
+			config = new ProxyConfig(configFile);
 		} else {
-			config = new QtConfig("NCAR", "Proxy");
+			config = new ProxyConfig("NCAR", "Proxy");
 		}
 
-		// Get configuration values. Default values will be created in the
-		// configuration file if they don't exist, so that running the program
-		// for the first time will create a configuration template.
-		std::string proxyID        = config->getString("ProxyID",         "PROXY");
-		std::string proxyKeyFile    (config->getString("ProxyKeyFile",    "./proxy.key"));
-		std::string proxyCertFile   (config->getString("ProxyCertFile",   "./proxy.crt"));
-		int switchProxyPort        = config->getInt   ("SSLProxyPort", 0);
-		std::string switchHostName = config->getString("SwitchHostName",  "127.0.0.1");
-		std::string switchCertFile = config->getString("SwitchSSLCertFile",  "./switch.crt");
-
-		// Get the instrument definition file. The proxy program will currently only support
-		// one instrument. This could be changed if necessary.
-		std::string instrumentFile;
-		instrumentFile = config->getString("InstrumentFile", "");
-
 		// Get the configuration for the instrument.
-		InstConfig instConfig(instrumentFile);
+		InstConfig instConfig(config->instrumentFile());
 
 		// Get the messages for this instrument
 		std::vector<InstConfig::MessageInfo> instMsg = instConfig.messages();
@@ -119,21 +102,13 @@ int main(int argc, char** argv)
 			messages[msg._msgId] = msg;
 		}
 
-		// If the port number is 0, it indicates that the user has not configured
-		// the application yet. We wait until this point so that all of the default values
-		// will have been added to the configuration file. Force them to take a stab at
-		// configuration.
-		if (switchProxyPort == 0) {
-			std::cout << "Please create a usable configuration by editing " << config->fileName() << std::endl;
-			exit(1);
-		}
-
 		// Create the Qt application
 		QApplication app(argc, argv);
 
 		// Get the certs
 		QList<QSslCertificate> certlist;
 
+		std::string proxyCertFile = config->certFile();
 		certlist = QSslCertificate::fromPath(proxyCertFile.c_str());
 		if (certlist.size() == 0) {
 			std::string errmsg;
@@ -143,6 +118,7 @@ int main(int argc, char** argv)
 		}
 		QSslCertificate proxyCert(certlist[0]);
 
+		std::string switchCertFile = config->switchCertFile();
 		certlist = QSslCertificate::fromPath(switchCertFile.c_str());
 		if (certlist.size() == 0) {
 			std::string errmsg;
@@ -156,11 +132,13 @@ int main(int argc, char** argv)
 		std::vector<QSslCertificate> extraCerts;
 		extraCerts.push_back(switchCert);
 
-			// Create the SSL proxy. It will wait to connect with the switch,
+		// Create the SSL proxy. It will wait to connect with the switch,
 		// until requested via a call connectToServer().
+		int switchProxyPort = config->proxyPort();
+		std::string switchHostName = config->switchHostName();
 		SslProxy sslProxy(
-				proxyID,
-				proxyKeyFile,
+				config->id(),
+				config->keyFile(),
 				proxyCert,
 				switchHostName,
 				switchProxyPort,
@@ -168,7 +146,7 @@ int main(int argc, char** argv)
 				messages);
 
 		// Create the Proxy user interface.
-		ProxyMainWindow proxyMainWindow(sslProxy,switchHostName, switchProxyPort, 0);
+		ProxyMainWindow proxyMainWindow(sslProxy, switchHostName, switchProxyPort, 0);
 		QString title("NCAR/EOL RIC Proxy-");
 		title += SVNREVISION;
 		proxyMainWindow.setWindowTitle(title);
@@ -199,9 +177,7 @@ int main(int argc, char** argv)
 		// Hop on the merry-go-round.
 		return app.exec();
     }
-
     catch (std::string& errmsg) {
-
 		// An error occurred. Pop up an error message box.
 
         // Create the Qt application
@@ -209,6 +185,5 @@ int main(int argc, char** argv)
 
 		QMessageBox::critical(0, "RIC Proxy Error", errmsg.c_str(),  QMessageBox::Close);
 		return 1;
-
     }
 }

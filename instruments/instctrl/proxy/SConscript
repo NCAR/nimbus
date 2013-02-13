@@ -21,12 +21,13 @@ env.Uic4(uisources)
 
 sources = Split("""
  main.cpp
+ ProxyConfig.cpp
  ProxyMainWindow.cpp
 """)
 
 headers = Split("""
+ ProxyConfig.h
  ProxyMainWindow.h
- ui_ProxyMainWindow.h
 """)
 
 # Create the Qt resource file. The source file name will be returned.
