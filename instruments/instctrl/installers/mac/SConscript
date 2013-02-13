@@ -9,9 +9,11 @@ apprevision = env['SVNREVISION']
 apprevision = apprevision.replace(':','-')
 
 proxyappname = 'RICProxy-' + apprevision
-proxyapp = env.OsxQtApp('#/installers/mac', '#/proxy/ric_proxy', '#/Resources/proxy/proxyIcon.icns', proxyappname, apprevision)
+proxyappdir = Dir(proxyappname+'.app')
+proxyapp = env.OsxQtApp(proxyappdir, '#/proxy/ric_proxy', '#/Resources/proxy/proxyIcon.icns', proxyappname, apprevision)
 Default(proxyapp)
 
 switchappname = 'RICSwitch-' + apprevision
-switchapp = env.OsxQtApp('.', '#/switch/ric_switch', '#/Resources/proxy/proxyIcon.icns', switchappname, apprevision)
+switchappdir = Dir(switchappname+'.app')
+switchapp = env.OsxQtApp(switchappdir, '#/switch/ric_switch', '#/Resources/proxy/proxyIcon.icns', switchappname, apprevision)
 Default(switchapp)

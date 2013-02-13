@@ -10,17 +10,16 @@ svnrevision = svnrevision.replace(':','-')
 # The bitrock recipe, which has logic that is based on the machine architecture.
 bitrockxml = 'RICBitRock.xml'
 
-# Add extra dependencies if you wish, although it seems that it gets built no matter what.
-sources = []
-
 if sys.platform == 'win32':
     installername = 'RIC-' + svnrevision + '.exe'
-    sources.append(['#/proxy/ric_proxy.exe'])
+    sources = ['#/proxy/ric_proxy.exe']
     installer = env.BitRock(installername, bitrockxml, sources, svnrevision)
     Default(installer)
     
 if sys.platform == 'darwin':
     installerdir = Dir('RIC-' + svnrevision + '.app')
-    installer = env.BitRock(installerdir, bitrockxml, sources, svnrevision)
+    sources = Dir('#/installers/mac/RICProxy-' + svnrevision + '.app')
+    installer = env.BitRock(installerdir, bitrockxml, [sources], svnrevision)
+    # Create a disk image containing the installer.
     dmg = env.OsxDmg('RIC-' + svnrevision, installerdir)
     Default(dmg)
