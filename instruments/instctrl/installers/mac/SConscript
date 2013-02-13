@@ -24,7 +24,7 @@ files = []
 files.append(['Certificates/eol-rt-data.crt', '#/test_certs/eol-rt-data.crt'])
 files.append(['Certificates/client.crt',      '#/test_certs/client.crt'])
 files.append(['Certificates/client.key',      '#/test_certs/client.key'])
-files.append(['Proxy.ini', '#/proxy/Proxy.ini'])
+files.append(['Proxy.ini', '#/proxy/Proxy-OSX.ini'])
 files.append(['Proxy-AVAPS.ini', '#/proxy/Proxy-AVAPS.ini'])
 
 # Copy the files int the directory

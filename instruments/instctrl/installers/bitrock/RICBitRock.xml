@@ -146,7 +146,7 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>../../proxy/Proxy-windows.ini</origin>
+                            <origin>../../proxy/Proxy-Win.ini</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>../../proxy/Proxy-AVAPS.ini</origin>
@@ -157,7 +157,7 @@
             <postInstallationActionList>
                 <renameFile>
                     <destination>${windows_folder_appdata}/NCAR/Proxy.ini</destination>
-                    <origin>${windows_folder_appdata}/NCAR/Proxy-windows.ini</origin>
+                    <origin>${windows_folder_appdata}/NCAR/Proxy-Win.ini</origin>
                 </renameFile>
             </postInstallationActionList>
             <startMenuShortcutList>
