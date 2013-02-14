@@ -7,6 +7,9 @@
 #include <vector>
 #include <map>
 
+#include "proxy/ProxyConfig.h"
+#include "InstConfig.h"
+#include "QtAddress.h"
 #include "Message.h"
 #include "SslClientConnection.h"
 #include "RicLogger.h"
@@ -26,7 +29,7 @@ namespace Ssl {
 	/// The user will send messages via UDP datagrams to specific ports that
 	/// are monitored by SslProxy. These messages are forwarded to the switch. Similarly,
 	/// messages received from the switch are sent as datagrams to the user.
-	class SslProxy: public QObject {
+	class SslProxy : public QObject {
 		Q_OBJECT
 
 	public:
@@ -59,30 +62,9 @@ namespace Ssl {
 			QHostAddress _destAddress;
 		};
 
-		/// @param proxyID An identifier for the proxy.
-		/// @param privateKeyFile Path to the file containing the private key.
-		/// Specify a blank string if no key is provided.
-		/// @param sslCert The certificate that matches the private key.
-		/// Specify a blank string if no certificate is provided.
-		/// @param switchSslHost The server host name or IP address.
-		/// @param switchSslPort The server port number.
-		/// @param extraCerts Extra certs that should be added to the CAdatabase.
-		/// @param messageInfo Routing and processing configuration for message types.
-		SslProxy(
-				std::string proxyID,
-				std::string privateKeyFile,
-				QSslCertificate sslCert,
-				std::string switchSslHost,
-				int switchSslPort,
-				std::vector<QSslCertificate> extraCerts,
-				std::map<std::string, InstMsgInfo> messages);
-
-		/// @param proxyID An identifier for the proxy.
-		/// @param messages Routing and processing configuration for message types.
-		SslProxy(
-				std::string proxyID,
-				std::map<std::string, InstMsgInfo> messages);
-
+		/// Constructor
+		/// @param config The proxy configuration
+		SslProxy(ProxyConfig* config);
 		/// Destructor
 		virtual ~SslProxy();
 
@@ -105,8 +87,6 @@ namespace Ssl {
 		void proxyStateChanged(Ssl::SslProxy::ProxyState);
 		/// Publish a proxy error.
 		void proxyError(QAbstractSocket::SocketError, std::string);
-
-
 
 	protected slots:
 		/// Called when a new message has arrived from the instrument or controller

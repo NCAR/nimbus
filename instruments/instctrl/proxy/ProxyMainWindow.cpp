@@ -40,6 +40,8 @@ _yellow (tr("background-color: #EEEE00"))
 
 	// Handle the view button.
 	connect(_view, SIGNAL(released()), this, SLOT(viewSlot()));
+
+	_statusbar->hide();
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -72,6 +74,7 @@ void ProxyMainWindow::viewSlot() {
 		this->setWindowFlags(flags | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
 		this->show();
 	}
+	_statusbar->hide();
 
 	// Set the focus back to the connect button.
 	_connect->setFocus();

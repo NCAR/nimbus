@@ -5,28 +5,65 @@ using namespace Ssl;
 using namespace Protocols;
 
 /////////////////////////////////////////////////////////////////////
-SslProxy::SslProxy(
-		std::string proxyID,
-		std::string privateKeyFile,
-		QSslCertificate sslCert,
-		std::string serverHost,
-		int switchPort,
-		std::vector<QSslCertificate> extraCerts,
-		std::map<std::string, InstMsgInfo> messages):
+SslProxy::SslProxy(ProxyConfig* config) :
 _proxyState(PROXY_Unconnected),
-_proxyID(proxyID),
-_keyFile(privateKeyFile),
-_sslCert(sslCert),
-_sslHost(serverHost),
-_sslPort(switchPort),
-_extraCerts(extraCerts),
-_messages(messages),
 _sslConnection(0),
 _incomingUdpSocket(0),
 _outgoingUdpSocket(0)
 {
-	// Add our certificate to the CAdatabase
-	_extraCerts.push_back(sslCert);
+	_proxyID = config->id();
+	_keyFile = config->keyFile();
+	_sslHost = config->switchHostName();
+	_sslPort = config->proxyPort();
+
+	// Get the configuration for the instrument.
+	InstConfig instConfig(config->instrumentFile());
+
+	// Get the messages for this instrument
+	std::vector<InstConfig::MessageInfo> instMsg = instConfig.messages();
+
+	// Build the message list for this proxy
+	for (int i = 0; i < instMsg.size(); i++) {
+		// Configuration for one message
+		SslProxy::InstMsgInfo msg;
+		msg._instName              = instConfig.instrumentName();
+		msg._incomingPort          = instConfig.incomingPort();
+		msg._destPort              = instConfig.destPort();
+		msg._destHost              = instConfig.destHost();
+		msg._msgId                 = instMsg[i].msgID;
+		msg._broadcast             = instMsg[i].broadcast;
+		msg._destAddress           = QtAddress::address(instConfig.destHost());
+
+		// save the message info
+		_messages[msg._msgId] = msg;
+	}
+
+	// Get the certs
+	QList<QSslCertificate> certlist;
+
+	std::string proxyCertFile = config->certFile();
+	certlist = QSslCertificate::fromPath(proxyCertFile.c_str());
+	if (certlist.size() == 0) {
+		std::string errmsg;
+		errmsg += "A valid certificate was not found at ";
+		errmsg += proxyCertFile;
+		throw errmsg;
+	}
+	_sslCert = QSslCertificate(certlist[0]);
+
+	std::string switchCertFile = config->switchCertFile();
+	certlist = QSslCertificate::fromPath(switchCertFile.c_str());
+	if (certlist.size() == 0) {
+		std::string errmsg;
+		errmsg += "A valid certificate was not found at ";
+		errmsg += switchCertFile;
+		throw errmsg;
+	}
+	QSslCertificate switchCert(certlist[0]);
+
+	// add the our certificate and server certificate to the CA database
+	_extraCerts.push_back(switchCert);
+	_extraCerts.push_back(_sslCert);
 
 	// Initialize the incoming UDP socket.
 	initIncomingUDPsockets();
@@ -35,31 +72,11 @@ _outgoingUdpSocket(0)
 	initOutgoingUDPsocket();
 
 	_logger.log("SSL Proxy was initialized");
-
 }
 
 /////////////////////////////////////////////////////////////////////
-SslProxy::SslProxy(
-		std::string proxyID,
-		std::map<std::string, InstMsgInfo> messages):
-_proxyID(proxyID),
-_messages(messages),
-_sslConnection(0),
-_incomingUdpSocket(0),
-_outgoingUdpSocket(0)
+SslProxy::~SslProxy()
 {
-
-	// Initialize the incoming UDP socket.
-	initIncomingUDPsockets();
-
-	// Initialize the outgoing UDP socket.
-	initOutgoingUDPsocket();
-
-}
-
-/////////////////////////////////////////////////////////////////////
-SslProxy::~SslProxy() {
-
 	// deleteLater() is used in cases where this delete may
 	// be happening during a slot invocation, and there may be
 	// pending signals for the object being deleted.
@@ -78,22 +95,20 @@ SslProxy::~SslProxy() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslProxy::connectToServer() {
-
+void SslProxy::connectToServer()
+{
 	openSslConnection();
-
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslProxy::disconnectFromServer() {
-
+void SslProxy::disconnectFromServer()
+{
 	closeSslConnection();
-
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslProxy::openSslConnection() {
-
+void SslProxy::openSslConnection()
+{
 	// Put us in the connecting state.
 	_proxyState = PROXY_Connecting;
 
@@ -131,20 +146,19 @@ void SslProxy::openSslConnection() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslProxy::closeSslConnection() {
-
+void SslProxy::closeSslConnection()
+{
 	if (!_sslConnection) {
 		return;
 	}
 
 	_sslConnection->deleteLater();
 	_sslConnection = 0;
-
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslProxy::initIncomingUDPsockets() {
-
+void SslProxy::initIncomingUDPsockets()
+{
 	_incomingUdpSocket = new QUdpSocket(this);
 
 	/// @todo Actually, this will set up multiple sockets
@@ -163,12 +177,11 @@ void SslProxy::initIncomingUDPsockets() {
 
 	QString msg = QString("Proxy will listen on port %1").arg(port);
 	_logger.log(msg.toStdString());
-
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslProxy::initOutgoingUDPsocket() {
-
+void SslProxy::initOutgoingUDPsocket()
+{
 	_outgoingUdpSocket = new QUdpSocket(this);
 
 	std::map<std::string, InstMsgInfo>::iterator it;
@@ -181,13 +194,12 @@ void SslProxy::initOutgoingUDPsocket() {
 
 		QString logmsg = QString("Proxy will send %1 to %2:%3 %4").arg(msgId).arg(dest).arg(port).arg(msgType);
 		_logger.log(logmsg.toStdString());
-
 	}
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslProxy::connectionStateChangedSlot(Ssl::SslSocket::SocketState socketState) {
-
+void SslProxy::connectionStateChangedSlot(Ssl::SslSocket::SocketState socketState)
+{
 	switch (socketState) {
 	case SslSocket::SS_Unconnected: {
 		if (_proxyState != PROXY_Unconnected) {
@@ -226,21 +238,19 @@ void SslProxy::connectionStateChangedSlot(Ssl::SslSocket::SocketState socketStat
 		break;
 	}
 	};
-
-
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslProxy::connectionErrorSlot(QAbstractSocket::SocketError err, std::string errmsg) {
+void SslProxy::connectionErrorSlot(QAbstractSocket::SocketError err, std::string errmsg)
+{
 	emit proxyError(err, errmsg);
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslProxy::udpReadyRead() {
-
+void SslProxy::udpReadyRead()
+{
 	// A message has arrived from the instrument/controller
 	while (_incomingUdpSocket->hasPendingDatagrams()) {
-
 		// read the datagram
 		int dataSize = _incomingUdpSocket->pendingDatagramSize();
 		QByteArray data;
@@ -272,8 +282,8 @@ void SslProxy::udpReadyRead() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslProxy::msgFromServerSlot(Protocols::Message msg) {
-
+void SslProxy::msgFromServerSlot(Protocols::Message msg)
+{
 	std::string msgId = msg.msgId();
 
 	// find this message in our message dictionary
@@ -283,13 +293,11 @@ void SslProxy::msgFromServerSlot(Protocols::Message msg) {
 	} else {
 		emit switchMessage(msg.payload().text(), false);
 	}
-
-
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslProxy::sendMsg(SslProxy::InstMsgInfo& info, Protocols::Message& msg) {
-
+void SslProxy::sendMsg(SslProxy::InstMsgInfo& info, Protocols::Message& msg)
+{
 	int sent;
 
 	// Get the text of the message
@@ -318,4 +326,3 @@ void SslProxy::sendMsg(SslProxy::InstMsgInfo& info, Protocols::Message& msg) {
 		}
 	}
 }
-
