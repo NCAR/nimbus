@@ -1,95 +1,135 @@
 #include "Switch.h"
 
 /////////////////////////////////////////////////////////////////////
-// Constructor for SSL proxies
-Switch::Switch(std::string serverSslKeyFile,
-		QSslCertificate serverSslCert,
-		int switchPort,
-		std::vector<SslProxyServer::SslProxyDef> proxies,
-		int localPort,
-		std::string remoteIP,
-		int remotePort,
-		std::string switchCipherKey,
-		bool verbose,
-		int reportPeriodSecs):
-_switchConnection(localPort, remoteIP, remotePort, switchCipherKey),
-_server(0),
+Switch::Switch(SwitchConfig* config, bool verbose, int reportPeriodSecs) :
 _verbose(verbose),
 _msgsFromProxies(0),
 _msgsToSwitch(0),
 _msgsFromSwitch(0),
-_msgsToProxies(0),
-_monitor(reportPeriodSecs, _msgsFromProxies, _msgsToSwitch, _msgsFromSwitch, _msgsToProxies)
-
+_msgsToProxies(0)
 {
-	// Create an SSL proxy server
-	_server = new SslProxyServer(serverSslKeyFile, serverSslCert, switchPort, proxies);
+	// Create the SwichConnection between this switch and the remote switch
+	_switchConnection = new SwitchConnection(config->localPort(),
+		          	  	  	  	  	  	     config->remoteIP(),
+		          	  	  	  	  	  	     config->remotePort(),
+		          	  	  	  	  	  	     config->cipherKey());
 
-	// Initialize
+	// Create the SwitchMonitor
+	_switchMonitor = new SwitchMonitor(reportPeriodSecs,
+									   _msgsFromProxies,
+									   _msgsToSwitch,
+									   _msgsFromSwitch,
+									   _msgsToProxies);
+
+	// The SslProxy parameter in the configuration determines the type
+	// of switch to be created. If SslProxy is true, an SSL proxy switch
+	// is created. Otherwise, an embedded proxy switch is created.
+
+	if (config->sslProxy()) {
+		/// The flavor of Switch for remote proxies that connect via SSL.
+
+		// The file containing the private key for the switch to proxy SSL link.
+		// This file must be kept private!
+		std::string serverKey(config->serverKeyFile());
+
+		// The file containing the private certificate for the switch to proxy SSL link.
+		std::string serverCertFile(config->serverCertFile());
+
+		QSslCertificate serverCert(QSslCertificate::fromPath(serverCertFile.c_str())[0]);
+		if (serverCert.isNull() || !serverCert.isValid()) {
+			std::cout << "Invalid certificate specified in "
+					<< serverCertFile << ", switch cannot start" << std::endl;
+			exit(1);
+		}
+
+		// Get the proxy definitions
+		std::vector<std::map<std::string, std::string> > proxiesConfig;
+		proxiesConfig = config->proxies();
+		std::vector<SslProxyServer::SslProxyDef> proxies;
+		for (int i = 0; i < proxiesConfig.size(); i++) {
+			SslProxyServer::SslProxyDef proxy;
+			std::string sslCertFile = proxiesConfig[i]["SSLCertFile"];
+			QSslCertificate cert(QSslCertificate::fromPath(sslCertFile.c_str())[0]);
+			if (cert.isNull() || !cert.isValid()) {
+				std::cout << "Invalid certificate specified in "
+						<< sslCertFile << ", proxy will not be registered";
+			} else {
+				proxy._sslCert = cert;
+				proxy._instConfig = InstConfig(proxiesConfig[i]["InstrumentFile"]);
+				proxies.push_back(proxy);
+			}
+		}
+
+		// Create the SSL based switch. The switch creates:
+		//  - an SslServer
+		//  - a SwitchConnection to the remote switch
+		//  - SslServer creates connections to Proxies.
+		// Create an SSL proxy server
+		_server = new SslProxyServer(serverKey,
+									 serverCert,
+									 config->proxyPort(),
+									 proxies);
+
+		_logger.log("SSL switch was initialized");
+	}
+	else {
+		/// The flavor of switch which contains embedded proxies. It does not
+		/// provide an SSL server, so none of the SSL certificates and keys are
+		/// needed. A proxy will be created for each instrument configuration.
+
+		// Get the instrument definition files
+		std::vector<std::map<std::string, std::string> > instruments;
+		instruments = config->instruments();
+
+		// Create the instrument configurations
+		std::vector<InstConfig> instConfigs;
+		for (int i = 0; i < instruments.size(); i++) {
+			/// @todo Need error checking for missing map key
+			std::string fileName = instruments[i]["InstrumentFile"];
+			/// @todo Need to add error handling to the InstConfig constructor.
+			instConfigs.push_back(InstConfig(fileName));
+		}
+
+		// Create an embedded proxy server
+		_server = new EmbeddedProxyServer(instConfigs, _verbose);
+
+		_logger.log("EmbeddedProxy switch was initialized");
+	}
+
+	// Initialize the switch
 	init();
 
-	_logger.log("SSL switch was initialized");
 	QString msg;
-	msg = QString("Inter-switch messages received on port %1").arg(localPort);
+	msg = QString("Inter-switch messages received on port %1").arg(config->localPort());
 	_logger.log(msg.toStdString());
-	QString ip = QtAddress::address(remoteIP).toString();
-	msg = QString("Inter-switch messages sent to %1:%2").arg(ip).arg(remotePort);
+	QString ip = QtAddress::address(config->remoteIP()).toString();
+	msg = QString("Inter-switch messages sent to %1:%2").arg(ip).arg(config->remotePort());
 	_logger.log(msg.toStdString());
 }
 
 /////////////////////////////////////////////////////////////////////
-// Constructor for embedded proxies
-Switch::Switch(std::vector<InstConfig> instConfigs,
-		int localPort,
-		std::string remoteIP,
-		int remotePort,
-		std::string switchCipherKey,
-		bool verbose,
-		int reportPeriodSecs):
-_switchConnection(localPort, remoteIP, remotePort, switchCipherKey),
-_server(0),
-_verbose(verbose),
-_msgsFromProxies(0),
-_msgsToSwitch(0),
-_msgsFromSwitch(0),
-_msgsToProxies(0),
-_monitor(reportPeriodSecs, _msgsFromProxies, _msgsToSwitch, _msgsFromSwitch, _msgsToProxies)
+Switch::~Switch()
 {
-	// Create an embedded proxy server
-	_server = new EmbeddedProxyServer(instConfigs, _verbose);
-
-	// Initialize
-	init();
-
-	_logger.log("EmbeddedProxy switch was initialized");
-	QString msg;
-	msg = QString("Inter-switch messages received on port %1").arg(localPort);
-	_logger.log(msg.toStdString());
-	QString ip = QtAddress::address(remoteIP).toString();
-	msg = QString("Inter-switch messages sent to %1:%2").arg(ip).arg(remotePort);
-	_logger.log(msg.toStdString());
-}
-
-/////////////////////////////////////////////////////////////////////
-Switch::~Switch() {
 	delete _server;
+	delete _switchConnection;
+	delete _switchMonitor;
 }
 
 /////////////////////////////////////////////////////////////////////
-void Switch::init() {
-
+void Switch::init()
+{
 	// The server emits all proxy messages. We will capture them.
 	connect(_server, SIGNAL(msgFromProxy(Protocols::Message)),
 			this, SLOT(msgFromProxySlot(Protocols::Message)));
 
 	// Capture the messages from the remote switch
-	connect(&_switchConnection, SIGNAL(msgFromRemoteSwitch(Protocols::Message)),
+	connect(_switchConnection, SIGNAL(msgFromRemoteSwitch(Protocols::Message)),
 			this, SLOT(msgFromRemoteSwitch(Protocols::Message)));
 }
 
 /////////////////////////////////////////////////////////////////////
-void Switch::msgFromProxySlot(Protocols::Message message) {
-
+void Switch::msgFromProxySlot(Protocols::Message message)
+{
 	if (_verbose) {
 		std::cout << message.toJsonStdString() << std::endl;
 	}
@@ -101,12 +141,12 @@ void Switch::msgFromProxySlot(Protocols::Message message) {
 	_msgsToSwitch++;
 
 	// send the proxy message to the remote switch
-	_switchConnection.sendSwitchMessage(msg);
+	_switchConnection->sendSwitchMessage(msg);
 }
 
 /////////////////////////////////////////////////////////////////////
-void Switch::msgFromRemoteSwitch(Protocols::Message message) {
-
+void Switch::msgFromRemoteSwitch(Protocols::Message message)
+{
 	// A message has been received from the remote switch
 	if (_verbose) {
 		std::cout << message.toJsonStdString() << std::endl;

@@ -8,6 +8,7 @@
 
 #include "EmbeddedProxyServer.h"
 #include "SslProxyServer.h"
+#include "SwitchConfig.h"
 #include "SwitchConnection.h"
 #include "SwitchMonitor.h"
 #include "SymCipherProtocol.h"
@@ -35,50 +36,12 @@
 class Switch: public QObject {
 	Q_OBJECT
 public:
-	/// The flavor of Switch for remote proxies that connect via SSL.
-	/// @param serverSslKeyFile An SSL related parameter: the path to the file containing the SSL private key.
-	/// @param serverSslCert An SSL related parameter: the SSL certificate that matches the private key.
-	/// @param switchPort An SSL related parameter: the ssl server port number.
-	/// @param proxies The authorized SSL proxies.
-	/// @param localPort A SwitchConection related parameter: The port that we listen for incoming messages on.
-	/// @param remoteIP A SwitchConection related parameter: The remote IP that we send messages to.
-	/// @param remotePort A SwitchConection related parameter: The port that we send messages to.
-	/// @param switchCipherKey A SwitchConection related parameter: The file containing the key for symmetric cipher
-	/// encryption over a SwitchConnection.
-	/// @param verbose If true print messages passing through the switch
-	/// @param reportPeriodSecs The system log reporting period, in seconds.
-	Switch(
-			std::string serverSslKeyFile,
-			QSslCertificate serverSslCert,
-			int switchPort,
-			std::vector<SslProxyServer::SslProxyDef> proxies,
-			int _localPort,
-			std::string _remoteIP,
-			int _remotePort,
-			std::string switchCipherKey,
-			bool verbose,
-			int reportPeriodSecs=60);
-
-	/// The flavor of switch which contains embedded proxies. It does not
-	/// provide an SSL server, so none of the SSL certificates and keys are
-	/// needed. A proxy will be created for each instrument configuration.
-	/// @param instConfigs A list of instrument configurations.
-	/// @param localPort A SwitchConection related parameter: The port that we listen for incoming messages on.
-	/// @param remoteIP A SwitchConection related parameter: The remote IP that we send messages to.
-	/// @param remotePort A SwitchConection related parameter: The port that we send messages to.
-	/// @param switchCipherKey A SwitchConection related parameter: The file containing the key for symmetric cipher
-	/// encryption over a SwitchConnection.
+	/// Constructor
+	/// @param config The switch configuration
 	/// @param verbose If true print messages passing through the switch.
 	/// @param reportPeriodSecs The system log reporting period, in secods.
-	Switch(
-			std::vector<InstConfig> instConfigs,
-			int _localPort,
-			std::string _remoteIP,
-			int _remotePort,
-			std::string switchCipherKey,
-			bool verbose,
-			int reportPeriodSecs=60);
-
+	Switch(SwitchConfig* config, bool verbose, int reportPeriodSecs = 60);
+	/// Destructor
 	virtual ~Switch();
 	
 protected slots:
@@ -95,11 +58,13 @@ protected:
 	/// The server that manages the connections to the proxies.
 	ProxyServer* _server;
 	/// The connection between us and the remote switch
-	SwitchConnection _switchConnection;
-	/// Ture to print message passing through the switch
-	bool _verbose;
+	SwitchConnection* _switchConnection;
+	/// The switch monitor.
+	SwitchMonitor* _switchMonitor;
 	/// The logging facility
 	RicLogger _logger;
+	/// Ture to print message passing through the switch
+	bool _verbose;
 	/// The total number of messages to switch .
 	int _msgsToSwitch;
 	/// The total number of messages from switch.
@@ -108,8 +73,6 @@ protected:
 	int _msgsToProxies;
 	/// The total number of messages from proxy.
 	int _msgsFromProxies;
-	/// The switch monitor.
-	SwitchMonitor _monitor;
 
 };
 
