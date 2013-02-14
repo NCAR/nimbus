@@ -22,9 +22,6 @@ extern NR_TYPE *SRTvolts, *volts;
 /* -------------------------------------------------------------------- */
 void ApplyCalCoes(NR_TYPE *record)
 {
-  if (cfg.CalibrationsAppliedBy() == Config::NIDAS)
-    return;
-
   for (size_t i = 0; i < raw.size(); ++i)
   {
     // At this time the xlate function is responsible for applying cals
@@ -43,7 +40,7 @@ void ApplyCalCoes(NR_TYPE *record)
       else
         SRTvolts[pos] = record[pos];
 
-      if (sp->cof.size() > 0)
+      if (cfg.CalibrationsAppliedBy() == Config::NIMBUS && sp->cof.size() > 0)
       {
         int corder = sp->cof.size() - 1;
         NR_TYPE out = sp->cof[corder];
