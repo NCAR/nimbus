@@ -1197,7 +1197,7 @@ Reference(C), Harco 708094A(Ohm), Harco 708094B(Ohm), Rosemount 2984(Ohm)
         // stuff the new record
         record.setValue(clm_rid,           rid);
         record.setValue(clm_pid,           "");
-        record.setValue(clm_site,          "FL1");
+        record.setValue(clm_site,          "Lab_FL1");
         record.setValue(clm_pulled,        "1");
         record.setValue(clm_removed,       "0");
         record.setValue(clm_exported,      "0");
