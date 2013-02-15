@@ -127,7 +127,7 @@ namespace sp
 				" <FormatURL>http://www.eol.ucar.edu/raf/Software/OAPfiles.html</FormatURL>\n" << 
 				" <Project>" << _options.Project << "</Project>\n" <<
 				" <Platform>" << _options.Platform << "</Platform>\n" << 
-				" <FlightNumber>" << flightNum << "</FlightNumber>\n" <<
+				" <FlightNumber>" << _options.FlightNumber << "</FlightNumber>\n" <<
 				" <FlightDate>" << _MostRecentTimeStamp.wMonth.toString() << "/" << _MostRecentTimeStamp.wDay.toString() << "/" << _MostRecentTimeStamp.wYear.toString() << "</FlightDate>\n" <<
 				" <probe id=\"" << hProbID[1] << hProbID[0] << "\" type=\"" << _ProbeType
 						<< "\" resolution=\"" << _resolution

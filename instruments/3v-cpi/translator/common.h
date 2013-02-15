@@ -335,7 +335,8 @@ namespace sp
 			EndTime.wSecond = 60;
 			Platform = "?";
 			Project = "?";
-			SerialNumber = "SPEC?";
+			FlightNumber = "?";
+			SerialNumber = "SPEC001";
 			MinParticle = 0;
 			MaxParticle = 0xFFFFFFFF;//std::numeric_limits<size_t>::max(); <-- limits appears to be missing from some cygwin installs
 			
@@ -354,6 +355,7 @@ namespace sp
 
 		std::string	Platform;
 		std::string	Project;
+		std::string	FlightNumber;
 		std::string	SerialNumber;
 		
 		size_t		MinParticle, MaxParticle; 

@@ -24,6 +24,7 @@ namespace sp
 			OUT_DIR,
 			PROJECT,
 			PLATFORM,
+			FLIGHT_NUMBER,
 			SERIALNUMBER,
 			MINPARTICLE,
 			MAXPARTICLE,
@@ -93,6 +94,10 @@ namespace sp
 				else if(op == "-platform")
 				{
 					state = PLATFORM;
+				}
+				else if(op == "-flight")
+				{
+					state = FLIGHT_NUMBER;
 				}
 				else if(op == "-sn")
 				{
@@ -201,6 +206,9 @@ namespace sp
 			case PLATFORM:{
 				_options.Platform = op;
 				}break;
+			case FLIGHT_NUMBER:{
+				_options.FlightNumber = op;
+				}break;
 			case SERIALNUMBER:{
 				_options.SerialNumber = op;
 				}break;
@@ -244,6 +252,7 @@ namespace sp
 			  "Set Output Directory:  <-o> <directory name>\n" <<
 			  "Set Project: <-project> <name>\n" <<
 			  "Set Platform: <-platform> <name>\n"<<
+			  "Set Flight Number: <-flight> <number>\n"<<
 			  "Set Serial Number: <-sn> <name>\n"<<
 			  "Set Min Particle #: <-minparticle> <number>\n"<<
 			  "Set Max Particle #: <-maxparticle> <number>\n"<<
