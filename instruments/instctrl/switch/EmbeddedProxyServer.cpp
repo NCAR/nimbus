@@ -13,8 +13,8 @@ EmbeddedProxyServer::EmbeddedProxyServer(std::vector<InstConfig> instConfigs,
 
 		// Build message routing table
 		std::vector<InstConfig::MessageInfo> instMessages = instConfig.messages();
-		for (int i = 0; i < instMessages.size(); i++) {
-			_msgRouting[instMessages[i].msgID] = _proxy;
+		for (int j = 0; j < instMessages.size(); j++) {
+			_msgRouting[instMessages[j].msgID] = _proxy;
 		}
 
 		// Capture the proxy messages

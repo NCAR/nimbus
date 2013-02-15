@@ -11,7 +11,6 @@ _verbose(verbose)
 
 	// Create a message entry for each message defined in the instrument configuration.
 	std::vector<InstConfig::MessageInfo> instMessages = config.messages();
-	std::vector<std::string> msgIds;
 	for (int i = 0; i < instMessages.size(); i++) {
 		std::cout << "Message id: " << instMessages[i].msgID << std::endl;
 		std::string msgID = instMessages[i].msgID;
