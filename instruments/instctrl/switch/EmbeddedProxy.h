@@ -5,10 +5,9 @@
 #include <QtNetwork>
 #include <map>
 #include <string>
+#include "InstConfig.h"
 #include "Message.h"
-#include "SslProxy.h"
-
-using namespace Ssl;
+#include "QtAddress.h"
 
 /// An instrument/user proxy which is embedded in a switch. It is used when
 /// the proxies and the switch are located on the same machine, and so
@@ -18,10 +17,9 @@ class EmbeddedProxy: public QObject {
 	Q_OBJECT
 public:
 	/// Constructor.
-	/// @param Id The ID for the proxy, usually the name of instrument/user
-	/// @param messages Details about each message type that this proxy will handle.
+	/// @param config The configuration for the instrument that connects to the proxy
 	/// @param verbose True to print messages passing through the proxy
-	EmbeddedProxy(std::string Id, std::map<std::string, SslProxy::InstMsgInfo> messages, bool verbose);
+	EmbeddedProxy(InstConfig& config, bool verbose);
 	/// destructor.
 	virtual ~EmbeddedProxy();
 	/// @return the ID of proxy
@@ -50,15 +48,19 @@ protected:
 	/// in the msg will be broadcast.
 	/// @param info The specifics of where this message should go.
 	/// @param msg The message.
-	void sendMsg(SslProxy::InstMsgInfo& info, Protocols::Message& msg);
+	void sendMsg(InstConfig::MessageInfo& info, Protocols::Message& msg);
 	/// The proxy ID - usually the name of instrument/user
-	std::string _Id;
+	std::string _proxyId;
 	/// The messages that this proxy can handle.
-	std::map<std::string, SslProxy::InstMsgInfo> _messages;
+	std::map<std::string, InstConfig::MessageInfo> _messages;
 	/// Port number for incoming datagrams
 	int _incomingUdpPort;
 	/// The incoming datagram socket.
 	QUdpSocket* _incomingUdpSocket;
+	/// Destination IP or hostname for outgoing datagrams
+	std::string _destHost;
+	/// Port number for outgoing datagrams
+	int _destPort;
 	/// The outgoing datagram socket.
 	QUdpSocket* _outgoingUdpSocket;
 	/// Ture to print message passing through the proxy

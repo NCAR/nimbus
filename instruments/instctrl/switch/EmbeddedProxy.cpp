@@ -1,35 +1,42 @@
 #include "EmbeddedProxy.h"
 
 /////////////////////////////////////////////////////////////////////
-EmbeddedProxy::EmbeddedProxy(std::string Id,
-		std::map<std::string,
-		SslProxy::InstMsgInfo> messages,
-		bool verbose) :
-_Id(Id),
-_messages(messages),
+EmbeddedProxy::EmbeddedProxy(InstConfig& config, bool verbose) :
 _verbose(verbose)
 {
+	_proxyId         = config.instrumentName();
+	_incomingUdpPort = config.incomingPort();
+	_destHost        = config.destHost();
+	_destPort        = config.destPort();
+
+	// Create a message entry for each message defined in the instrument configuration.
+	std::vector<InstConfig::MessageInfo> instMessages = config.messages();
+	std::vector<std::string> msgIds;
+	for (int i = 0; i < instMessages.size(); i++) {
+		std::cout << "Message id: " << instMessages[i].msgID << std::endl;
+		std::string msgID = instMessages[i].msgID;
+		_messages[msgID] = instMessages[i];
+	}
+
 	initIncomingUDPsockets();
 
 	initOutgoingUDPsocket();
 }
 
 /////////////////////////////////////////////////////////////////////
-EmbeddedProxy::~EmbeddedProxy() {
-
+EmbeddedProxy::~EmbeddedProxy()
+{
 }
 
 /////////////////////////////////////////////////////////////////////
-std::string EmbeddedProxy::Id() {
-	return _Id;
+std::string EmbeddedProxy::Id()
+{
+	return _proxyId;
 }
 
 /////////////////////////////////////////////////////////////////////
-void EmbeddedProxy::initIncomingUDPsockets() {
-
-	SslProxy::InstMsgInfo info = _messages.begin()->second;
-	_incomingUdpPort = info._incomingPort;
-
+void EmbeddedProxy::initIncomingUDPsockets()
+{
 	_incomingUdpSocket = new QUdpSocket(this);
 
 	bool status = _incomingUdpSocket->bind(QHostAddress::Any, _incomingUdpPort,
@@ -42,25 +49,25 @@ void EmbeddedProxy::initIncomingUDPsockets() {
 
 	connect(_incomingUdpSocket, SIGNAL(readyRead()), this, SLOT(udpReadyRead()));
 
-	qDebug() << "Proxy" << _Id.c_str() << "will listen on port" << _incomingUdpPort;
+	qDebug() << "Proxy" << _proxyId.c_str() << "will listen on port" << _incomingUdpPort;
 }
 
 /////////////////////////////////////////////////////////////////////
-void EmbeddedProxy::initOutgoingUDPsocket() {
-
+void EmbeddedProxy::initOutgoingUDPsocket()
+{
 	_outgoingUdpSocket = new QUdpSocket(this);
 
-	std::map<std::string, SslProxy::InstMsgInfo>::iterator it;
+	std::map<std::string, InstConfig::MessageInfo>::iterator it;
 	for (it = _messages.begin(); it != _messages.end(); it++) {
-		qDebug() << "Proxy" << _Id.c_str() << "will send" << it->second._msgId.c_str() <<
-				"to" << it->second._destHost.c_str() << ":" << it->second._destPort
-				<< (it->second._broadcast ?"BROADCAST" : "UNICAST");
+		qDebug() << "Proxy" << _proxyId.c_str() << "will send" << it->second.msgID.c_str() <<
+				"to" << _destHost.c_str() << ":" << _destPort
+				<< (it->second.broadcast ?"BROADCAST" : "UNICAST");
 	}
 }
 
 /////////////////////////////////////////////////////////////////////
-void EmbeddedProxy::udpReadyRead() {
-
+void EmbeddedProxy::udpReadyRead()
+{
 	// A message has arrived from the instrument/controller
 	while (_incomingUdpSocket->hasPendingDatagrams()) {
 
@@ -73,13 +80,9 @@ void EmbeddedProxy::udpReadyRead() {
 		// create a Message
 		std::string text = QString(data).toStdString();
 		// Extract the message id from the datagram
-		std::string id = Protocols::Message::extractId(text);
-		if (id.size() > 0) {
-			/// @todo Change the logic to search _messages to find the
-			/// instrument name. Right now we will just use the first
-			/// message that we have.
-			SslProxy::InstMsgInfo info = _messages.begin()->second;
-			Protocols::Message message(info._instName, id, text);
+		std::string msgId = Protocols::Message::extractId(text);
+		if (msgId.size() > 0) {
+			Protocols::Message message(_proxyId, msgId, text);
 
 			if (_verbose)
 				qDebug() << message.toJsonStdString().c_str();
@@ -93,45 +96,45 @@ void EmbeddedProxy::udpReadyRead() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void EmbeddedProxy::send(Protocols::Message msg) {
-
+void EmbeddedProxy::send(Protocols::Message msg)
+{
 	// find this message in our message dictionary
 	std::string msgId = msg.msgId();
 	if (_messages.find(msgId) != _messages.end()) {
 		sendMsg(_messages[msgId], msg);
 	} else {
 		/// @todo Handle appropriately; reporting/logging as needed.
-		qDebug() << "Proxy" << _Id.c_str() << ": Unrecognized message"
+		qDebug() << "Proxy" << _proxyId.c_str() << ": Unrecognized message"
 				 << msgId.c_str() << "ignored by the proxy";
 	}
 }
 
 /////////////////////////////////////////////////////////////////////
-void EmbeddedProxy::sendMsg(SslProxy::InstMsgInfo& info, Protocols::Message& msg) {
-
+void EmbeddedProxy::sendMsg(InstConfig::MessageInfo& info, Protocols::Message& msg)
+{
 	int sent;
 
 	// Get the text of the message
 	std::string text = msg.payload().text();
 
-	if (info._broadcast) {
+	if (info.broadcast) {
 		// message will be broadcast
 		sent = _outgoingUdpSocket->writeDatagram(
 				text.c_str(),
 				text.size(),
 				QHostAddress::Broadcast,
-				info._destPort);
+				_destPort);
 	} else {
 		// message will be unicast
 		sent = _outgoingUdpSocket->writeDatagram(
 				text.c_str(),
 				text.size(),
-				info._destAddress,
-				info._destPort);
+				QtAddress::address(_destHost),
+				_destPort);
 	}
 	if (sent != text.size()) {
 		qDebug() << "Warning, only" << sent << "bytes out of" << text.size() <<
-				"were sent to port" << info._destPort << "for message ID " << info._msgId.c_str();
+				"were sent to port" << _destPort << "for message ID " << info.msgID.c_str();
 		if (sent == -1) {
 			qDebug() << "The socket error is:" << _outgoingUdpSocket->error();
 		}
