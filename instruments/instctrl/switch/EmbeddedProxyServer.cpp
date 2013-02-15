@@ -7,7 +7,7 @@ EmbeddedProxyServer::EmbeddedProxyServer(std::vector<InstConfig> instConfigs,
 	// Create one proxy for each instrument
 	for (int i = 0; i < instConfigs.size(); i++) {
 		InstConfig instConfig = instConfigs[i];
-		std::cout << "Create proxy for " << instConfig.instrumentName() << std::endl;
+		std::cout << "Create embedded proxy for " << instConfig.instrumentName() << std::endl;
 		// Create a proxy for the instrument
 		_proxy = new EmbeddedProxy(instConfig, verbose);
 

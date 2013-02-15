@@ -53,13 +53,13 @@ protected:
 	std::string _proxyId;
 	/// The messages that this proxy can handle.
 	std::map<std::string, InstConfig::MessageInfo> _messages;
-	/// Port number for incoming datagrams
+	/// Port number for incoming datagrams (from instrument)
 	int _incomingUdpPort;
 	/// The incoming datagram socket.
 	QUdpSocket* _incomingUdpSocket;
-	/// Destination IP or hostname for outgoing datagrams
+	/// Destination IP or hostname for outgoing datagrams (to instrument)
 	std::string _destHost;
-	/// Port number for outgoing datagrams
+	/// Port number for outgoing datagrams (to instrument)
 	int _destPort;
 	/// The outgoing datagram socket.
 	QUdpSocket* _outgoingUdpSocket;

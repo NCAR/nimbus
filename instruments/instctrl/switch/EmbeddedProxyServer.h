@@ -13,29 +13,30 @@
 /// The server that manages connections with an EmbeddedProxy.
 class EmbeddedProxyServer: public ProxyServer {
 	Q_OBJECT
-	public:
-		/// @param instFiles A list of instrument configuration files.
-		/// One proxy will be created for each instrument file.
-		/// @param verbose True to print messages passing through the proxy
-		EmbeddedProxyServer(std::vector<InstConfig> instConfigs, bool verbose) throw(std::string);
-		/// Destructor.
-		virtual ~EmbeddedProxyServer();
-		/// Send a message to a client proxy
-		virtual void sendToProxy(Protocols::Message msg);
+public:
+	/// @param instFiles A list of instrument configuration files.
+	/// One proxy will be created for each instrument file.
+	/// @param verbose True to print messages passing through the proxy
+	EmbeddedProxyServer(std::vector<InstConfig> instConfigs, bool verbose) throw(std::string);
+	/// Destructor.
+	virtual ~EmbeddedProxyServer();
+	/// Send a message to a client proxy
+	virtual void sendToProxy(Protocols::Message msg);
 
-	signals:
-		void msgFromProxy(Protocols::Message message);
-		void msgFromServer(Protocols::Message message);
+signals:
+	void msgFromProxy(Protocols::Message message);
+	void msgFromServer(Protocols::Message message);
 
-	protected slots:
-		/// A message has been received from the proxy
-		void msgFromProxySlot(Protocols::Message message);
+protected slots:
+	/// A message has been received from the proxy
+	void msgFromProxySlot(Protocols::Message message);
 
-	protected:
-		EmbeddedProxy* _proxy;
-		/// Book keeping lists of message and the proxy that
-		/// should be output. The key is the message ID
-		std::map<std::string, EmbeddedProxy*> _msgRouting;
+protected:
+	EmbeddedProxy* _proxy;
+	/// Book keeping lists of message and the proxy that
+	/// should be output. The key is the message ID
+	std::map<std::string, EmbeddedProxy*> _msgRouting;
+
 };
 
 #endif /* SWITCHEMBEDDEDSERVER_H_ */

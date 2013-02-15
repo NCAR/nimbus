@@ -58,9 +58,9 @@ void EmbeddedProxy::initOutgoingUDPsocket()
 
 	std::map<std::string, InstConfig::MessageInfo>::iterator it;
 	for (it = _messages.begin(); it != _messages.end(); it++) {
-		qDebug() << "Proxy" << _proxyId.c_str() << "will send" << it->second.msgID.c_str() <<
-				"to" << _destHost.c_str() << ":" << _destPort
-				<< (it->second.broadcast ?"BROADCAST" : "UNICAST");
+		std::cout << "Proxy " << _proxyId.c_str() << " will send " << it->second.msgID.c_str()
+				  << " to " << _destHost.c_str() << ":" << _destPort
+				  << (it->second.broadcast ? " BROADCAST" : " UNICAST") << std::endl;
 	}
 }
 

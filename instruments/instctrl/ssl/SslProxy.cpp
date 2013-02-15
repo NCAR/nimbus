@@ -18,24 +18,18 @@ _outgoingUdpSocket(0)
 
 	// Get the configuration for the instrument.
 	InstConfig instConfig(config->instrumentFile());
+	_incomingUdpPort = instConfig.incomingPort();
+	_destHost        = instConfig.destHost();
+	_destPort        = instConfig.destPort();
 
 	// Get the messages for this instrument
-	std::vector<InstConfig::MessageInfo> instMsg = instConfig.messages();
+	std::vector<InstConfig::MessageInfo> instMessages = instConfig.messages();
 
 	// Build the message list for this proxy
-	for (int i = 0; i < instMsg.size(); i++) {
-		// Configuration for one message
-		SslProxy::InstMsgInfo msg;
-		msg._instName              = instConfig.instrumentName();
-		msg._incomingPort          = instConfig.incomingPort();
-		msg._destPort              = instConfig.destPort();
-		msg._destHost              = instConfig.destHost();
-		msg._msgId                 = instMsg[i].msgID;
-		msg._broadcast             = instMsg[i].broadcast;
-		msg._destAddress           = QtAddress::address(instConfig.destHost());
-
-		// save the message info
-		_messages[msg._msgId] = msg;
+	for (int i = 0; i < instMessages.size(); i++) {
+		std::cout << "Message id: " << instMessages[i].msgID << std::endl;
+		std::string msgID = instMessages[i].msgID;
+		_imessages[msgID] = instMessages[i];
 	}
 
 	// Get the certs
@@ -123,7 +117,6 @@ void SslProxy::openSslConnection()
 
 	// Initialize the connection to the switch. A SslClientConnection
 	// will be created, and signals and slots will be connected.
-
 	_sslConnection = new SslClientConnection(
 			_keyFile,
 			_sslCert,
@@ -142,7 +135,6 @@ void SslProxy::openSslConnection()
 	// Capture the connection error signal
 	connect(_sslConnection, SIGNAL(connectionError(QAbstractSocket::SocketError, std::string)),
 			this, SLOT(connectionErrorSlot(QAbstractSocket::SocketError, std::string)));
-
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -161,21 +153,18 @@ void SslProxy::initIncomingUDPsockets()
 {
 	_incomingUdpSocket = new QUdpSocket(this);
 
-	/// @todo Actually, this will set up multiple sockets
-	/// for all message types. Right, just use the port
-	/// from the first message.
-	int port = _messages.begin()->second._incomingPort;
-	bool status = _incomingUdpSocket->bind(QHostAddress::Any, port,
+	bool status = _incomingUdpSocket->bind(QHostAddress::Any, _incomingUdpPort,
 			QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
 
 	if (!status) {
-		qDebug() << "unable to bind to UDP port " << port;
+		qDebug() << "unable to bind to UDP port " << _incomingUdpPort;
 		return;
 	}
 
 	connect(_incomingUdpSocket, SIGNAL(readyRead()), this, SLOT(udpReadyRead()));
 
-	QString msg = QString("Proxy will listen on port %1").arg(port);
+	QString msg = QString("Proxy %1 will listen on port %2")
+			      .arg(_proxyID.c_str()).arg(_incomingUdpPort);
 	_logger.log(msg.toStdString());
 }
 
@@ -184,15 +173,14 @@ void SslProxy::initOutgoingUDPsocket()
 {
 	_outgoingUdpSocket = new QUdpSocket(this);
 
-	std::map<std::string, InstMsgInfo>::iterator it;
-	for (it = _messages.begin(); it != _messages.end(); it++) {
+	std::map<std::string, InstConfig::MessageInfo>::iterator it;
+	for (it = _imessages.begin(); it != _imessages.end(); it++) {
+		QString msgId = QString(it->second.msgID.c_str());
+		QString msgType = QString((it->second.broadcast ?"BROADCAST" : "UNICAST"));
 
-		QString msgId = QString(it->second._msgId.c_str());
-		QString dest = QString(it->second._destHost.c_str());
-		int port = it->second._destPort;
-		QString msgType = QString((it->second._broadcast ?"BROADCAST" : "UNICAST"));
-
-		QString logmsg = QString("Proxy will send %1 to %2:%3 %4").arg(msgId).arg(dest).arg(port).arg(msgType);
+		QString logmsg = QString("Proxy %1 will send %2 to %3:%4 %5")
+				.arg(_proxyID.c_str()).arg(msgId).
+				arg(_destHost.c_str()).arg(_destPort).arg(msgType);
 		_logger.log(logmsg.toStdString());
 	}
 }
@@ -287,8 +275,8 @@ void SslProxy::msgFromServerSlot(Protocols::Message msg)
 	std::string msgId = msg.msgId();
 
 	// find this message in our message dictionary
-	if (_messages.find(msgId) != _messages.end()) {
-		sendMsg(_messages[msgId], msg);
+	if (_imessages.find(msgId) != _imessages.end()) {
+		sendMsg(_imessages[msgId], msg);
 		emit switchMessage(msg.payload().text(), true);
 	} else {
 		emit switchMessage(msg.payload().text(), false);
@@ -296,31 +284,31 @@ void SslProxy::msgFromServerSlot(Protocols::Message msg)
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslProxy::sendMsg(SslProxy::InstMsgInfo& info, Protocols::Message& msg)
+void SslProxy::sendMsg(InstConfig::MessageInfo& info, Protocols::Message& msg)
 {
 	int sent;
 
 	// Get the text of the message
 	std::string text = msg.payload().text();
 
-	if (info._broadcast) {
+	if (info.broadcast) {
 		// message will be broadcast
 		sent = _outgoingUdpSocket->writeDatagram(
 				text.c_str(),
 				text.size(),
 				QHostAddress::Broadcast,
-				info._destPort);
+				_destPort);
 	} else {
 		// message will be unicast
 		sent = _outgoingUdpSocket->writeDatagram(
 				text.c_str(),
 				text.size(),
-				info._destAddress,
-				info._destPort);
+				QtAddress::address(_destHost),
+				_destPort);
 	}
 	if (sent != text.size()) {
 		qDebug() << "Warning, only" << sent << "bytes out of" << text.size() <<
-				"were sent to port" << info._destPort << "for message ID " << info._msgId.c_str();
+				"were sent to port" << _destPort << "for message ID " << info.msgID.c_str();
 		if (sent == -1) {
 			qDebug() << "The socket error is:" << _outgoingUdpSocket->error();
 		}
