@@ -77,7 +77,8 @@ CALL CNTRESET       'RESET COUNTER BOARD
 CALL SETMASTER      'SET MASTER MODE FOR BOTH COUNTER CHIPS
 CALL OPENDATAFILE   'OPEN DATA AND ENGDATA FILES FOR WRITING
 
-ValveFlip1% = 10
+'ValveFlip is the number, in 10s increments, to advance the valve.
+ValveFlip1% = 1 'For testing, set valve operation to 10 s.
 ValveFlip2% = 1
 ValveInverted% = 1
 ValveEnabled% = 0
@@ -273,12 +274,12 @@ OUT DIFFBASEADDR%, 16            'RESET FIFO (FIRST IN FIRST OUT)
 'OUT DIFFBASEADDR% + 2, 112       'I/O CHANNEL TO START AT 0 END 7 (70H)
 'OUT DIFFBASEADDR% + 3, 6         'SET ANALOG INPUT RANGE TO GAIN = 4
 
-DO	'WAIT FOR SETTLING TIME
+DO      'WAIT FOR SETTLING TIME
 	STATUS% = INP(DIFFBASEADDR% + 3) AND 32
 LOOP UNTIL STATUS% = 0
 
-OUT DIFFBASEADDR%, 128	'INITIATE A/D CONVERSION
-DO	'WAIT FOR CONVERSION TO FINISH
+OUT DIFFBASEADDR%, 128  'INITIATE A/D CONVERSION
+DO      'WAIT FOR CONVERSION TO FINISH
 	STATUS% = INP(DIFFBASEADDR% + 3) AND 128 'Bit 7 of the status register goes to 0 when all channels are scanned.
 LOOP UNTIL STATUS% = 0
 
@@ -289,8 +290,11 @@ DO
     LSB& = INP(DIFFBASEADDR%) 'Read the LSB and MSB...
     MSB& = INP(DIFFBASEADDR% + 1)
     ADVALUE& = LSB& + MSB& * 256 '..and combine them into the 16-bit value.
-	ADVOLTS# = (ADVALUE& + 32768) / 65536 * 5.0 'Convert A/D readout to volts. A/D readout is 2s complement.
-
+    IF ADVALUE& > 32767 THEN
+	ADVOLTS# = (ADVALUE& - 32768) / 13107  'Convert A/D readout to volts. A/D readout is 2s complement.
+    ELSE
+	ADVOLTS# = (ADVALUE& + 32768) / 13107  'Convert A/D readout to volts. A/D readout is 2s complement.
+    END IF
     IF ADCHANNEL% < 4 THEN        'AIN, BIN, AOUT, BOUT TEMPS
 		CALL TEMPSUB(10, 10, ADVOLTS#)
 		TEMPERATURE#(ADCHANNEL% + 1) = TEMP#
@@ -307,7 +311,7 @@ DO
 		PRESSURE#(3) = PRES#
 	END IF
 
-	IF ADCHANNEL% = 6 THEN	'This is Channel B Absolute Pressure
+	IF ADCHANNEL% = 6 THEN  'This is Channel B Absolute Pressure
 		'CALL PRESSUB(257.83, ADVOLTS#)
 		'PRESSURE#(2) = PRES# - 54.226 'ATMOSPHERIC PRESSURE GAUGE
 		PRESSURE#(2) = 517.1059 * ADVOLTS# - 258.5529 'TrueStability series transfer function
@@ -443,7 +447,7 @@ SUB INITSCREEN        'Configures static part of screen layout
     PRINT
     PRINT
     PRINT "Pressures"
-    PRINT "Delta P        Ambient P        Baratron: P    +15V    -15V"
+    PRINT "P ChanA           P ChanB     Baratron P    +15V    -15V"
     PRINT
     PRINT
     PRINT "Valve position      Expected position      Skips      Stops"
@@ -683,7 +687,7 @@ DO                                 'LOOP THROUGH ALL CHANNELS TO SAMPLE
 		TEMPERATURE#(ADCHANNEL% + 5) = TEMP#
 	END IF
 
-	IF ADCHANNEL% = 7 THEN	'This is Channel A Absolute Pressure
+	IF ADCHANNEL% = 7 THEN  'This is Channel A Absolute Pressure
 		'CALL PRESSUB(1.25, ADVOLTS# - 2.25) 'DELTA P GAUGE
 		'PRESSURE#(1) = PRES#
 		PRESSURE#(1) = 517.1059 * ADVOLTS# - 258.5529 ' TrueStability series transfer function
@@ -876,7 +880,7 @@ CASE 3
 	PrintNumArr VOLTAGE#(), "###.##", 5, VertOffset% + 17, HorizOffset% + 49, Green
 	PrintNumArr VOLTAGE#(), "###.##", 3, VertOffset% + 17, HorizOffset% + 58, Green
 CASE 4
-	PrintNumArr CURRENT#(), "######", 1, VertOffset% + 17, HorizOffset% + 67, Green
+	PrintNumArr CURRENT#(), "####.#", 1, VertOffset% + 17, HorizOffset% + 67, Green
 	PrintNumArr PRESSURE#(), "####.##", 1, VertOffset% + 21, HorizOffset% + 1, Green
 	PrintNumArr PRESSURE#(), "####.##", 2, VertOffset% + 21, HorizOffset% + 18, Green
 	PrintNumArr PRESSURE#(), "####.##", 3, VertOffset% + 21, HorizOffset% + 30, Green
@@ -893,4 +897,3 @@ END SELECT
 LoopNumber% = LoopNumber% + 1
 END SUB
 
-'******************************************************************
