@@ -18,16 +18,14 @@ Export('ssl')
 
 sources = Split("""
  SslProxy.cpp
- SslClientConnection.cpp
- SslServerConnection.cpp
+ SslConnection.cpp
  SslServer.cpp
  SslSocket.cpp
 """)
 
 headers = Split("""
  SslProxy.h
- SslClientConnection.h
- SslServerConnection.h
+ SslConnection.h
  SslServer.h
  SslSocket.h
 """)
