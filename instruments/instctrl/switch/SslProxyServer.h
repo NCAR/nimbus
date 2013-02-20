@@ -13,7 +13,7 @@
 #include <set>
 #include "ProxyServer.h"
 #include "SslServer.h"
-#include "SslServerConnection.h"
+#include "SslConnection.h"
 #include "InstConfig.h"
 #include "RicLogger.h"
 
@@ -37,10 +37,9 @@ class SslProxyServer: public ProxyServer {
 				std::vector<SslProxyServer::SslProxyDef> proxies);
 		/// Destructor.
 		virtual ~SslProxyServer();
-		/// Send a message to a client proxy. The _msgRouting list
-		/// is searched for the message id. If found, the message is
-		/// sent to all of the SslServerConnections associated with
-		/// the message id.
+		/// Send a message to a client proxy. The _msgRouting list is
+		/// searched for the message id. If found, the message is sent
+		/// to all of the SslConnections associated with the message id.
 		virtual void sendToProxy(Protocols::Message msg);
 
 	signals:
@@ -50,7 +49,7 @@ class SslProxyServer: public ProxyServer {
 		/// Called when a new SslSocket has been created.
 		void createConnection(Ssl::SslSocket* socket);
 		/// Notify that the socket state has changed for a connection.
-		void connectionStateChanged(Ssl::SslServerConnection*, Ssl::SslSocket::SocketState);
+		void connectionStateChanged(Ssl::SslConnection*, Ssl::SslSocket::SocketState);
 		/// Receive a proxy message. Emit it as: msgFromProxy(Protocols::Message)
 		/// @param msg The message
 		void msgFromProxySlot(Protocols::Message message);
@@ -61,16 +60,16 @@ class SslProxyServer: public ProxyServer {
 		/// Dump the certificate to stdout
 		void dumpCert(const QSslCertificate &cert);
 		/// A list of connections.
-		typedef std::multiset<Ssl::SslServerConnection*> ConnectionList;
+		typedef std::multiset<Ssl::SslConnection*> ConnectionList;
 		/// Verify that a successfully encrypted connection is valid. If
 		/// it isn't, close the connection, which will cause it to be removed
 		/// from _connections. If it is valid, set up the book keeping so that
 		/// the correct messages will be routed to it.
 		/// @param connection The connection that will be validated.
-		void validateConnection(Ssl::SslServerConnection* connection);
+		void validateConnection(Ssl::SslConnection* connection);
 		/// Handle the SslSocket::SS_Disconnected state change.
 		/// @param connection The connection that has been disconnected.
-		void removeConnection(Ssl::SslServerConnection* connection);
+		void removeConnection(Ssl::SslConnection* connection);
 		/// The allowed proxies.
 		std::vector<SslProxyServer::SslProxyDef> _proxies;
 		/// The SSL server that receives SSL requests
@@ -78,8 +77,8 @@ class SslProxyServer: public ProxyServer {
 		/// Keep track of active connections
 		ConnectionList _connections;
 		/// Book keeping which lists all connections which will output a
-		/// a designated message. The key is the message id. The ConnectionList
-		/// contains pointers to all SslServerConnections that these messages
+		/// designated message. The key is the message id. The ConnectionList
+		/// contains pointers to all SslConnections that these messages
 		/// should be sent to.
 		std::map<std::string, ConnectionList > _msgRouting;
 		/// System message logger

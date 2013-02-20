@@ -11,7 +11,7 @@
 #include "InstConfig.h"
 #include "QtAddress.h"
 #include "Message.h"
-#include "SslClientConnection.h"
+#include "SslConnection.h"
 #include "RicLogger.h"
 
 namespace Ssl {
@@ -25,7 +25,7 @@ namespace Ssl {
 	/// be interfaced with the user, since the instrument will usually be communicating
 	/// with a switch configured for EmbeddedProxy connections.
 	///
-	/// The connection to the switch is managed with a SslClientConnection.
+	/// The connection to the switch is managed with a SslConnection.
 	/// The user will send messages via UDP datagrams to specific ports that
 	/// are monitored by SslProxy. These messages are forwarded to the switch. Similarly,
 	/// messages received from the switch are sent as datagrams to the user.
@@ -74,7 +74,7 @@ namespace Ssl {
 		void msgFromServerSlot(Protocols::Message);
 		/// Called when the connection state changes. It will emit a connectionStateChanged()
 		/// signal.
-		void connectionStateChangedSlot(Ssl::SslSocket::SocketState);
+		void connectionStateChangedSlot(Ssl::SslConnection*, Ssl::SslSocket::SocketState);
 		/// Called when their is an error in the connection.
 		/// It will emit a proxyError signal.
 		void connectionErrorSlot(QAbstractSocket::SocketError, std::string);
@@ -112,7 +112,7 @@ namespace Ssl {
 		/// Paths to extra certificates to be added to the database.
 		std::vector<QSslCertificate> _extraCerts;
 		/// The connection to the switch.
-		Ssl::SslClientConnection* _sslConnection;
+		Ssl::SslConnection* _sslConnection;
 		/// Port number for incoming datagrams (from user)
 		int _incomingUdpPort;
 		/// The incoming datagram socket.

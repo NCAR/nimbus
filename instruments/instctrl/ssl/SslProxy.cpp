@@ -115,9 +115,9 @@ void SslProxy::openSslConnection()
 		return;
 	}
 
-	// Initialize the connection to the switch. A SslClientConnection
+	// Initialize the connection to the switch. A SslConnection
 	// will be created, and signals and slots will be connected.
-	_sslConnection = new SslClientConnection(
+	_sslConnection = new SslConnection(
 			_keyFile,
 			_sslCert,
 			_sslHost,
@@ -126,11 +126,11 @@ void SslProxy::openSslConnection()
     		_proxyID);
 
 	// Capture incoming messages
-	connect(_sslConnection, SIGNAL(msgFromServer(Protocols::Message)), this, SLOT(msgFromServerSlot(Protocols::Message)));
+	connect(_sslConnection, SIGNAL(msgFromSslLink(Protocols::Message)), this, SLOT(msgFromServerSlot(Protocols::Message)));
 
 	// Capture changes in the connection state
-	connect(_sslConnection, SIGNAL(connectionStateChanged(Ssl::SslSocket::SocketState)),
-			this, SLOT(connectionStateChangedSlot(Ssl::SslSocket::SocketState)));
+	connect(_sslConnection, SIGNAL(connectionStateChanged(Ssl::SslConnection*, Ssl::SslSocket::SocketState)),
+			this, SLOT(connectionStateChangedSlot(Ssl::SslConnection*, Ssl::SslSocket::SocketState)));
 
 	// Capture the connection error signal
 	connect(_sslConnection, SIGNAL(connectionError(QAbstractSocket::SocketError, std::string)),
@@ -186,7 +186,8 @@ void SslProxy::initOutgoingUDPsocket()
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslProxy::connectionStateChangedSlot(Ssl::SslSocket::SocketState socketState)
+void SslProxy::connectionStateChangedSlot(Ssl::SslConnection* connection,
+		Ssl::SslSocket::SocketState socketState)
 {
 	switch (socketState) {
 	case SslSocket::SS_Unconnected: {

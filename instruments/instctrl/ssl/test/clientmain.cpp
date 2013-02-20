@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "SslClientConnection.h"
+#include "SslConnection.h"
 
 /// Test SslClientConection to an SSL server. The server port is hardwired to 5000.
 /// Use with servermain.cpp. The server certificate must be provided as an extra cert in order
@@ -27,7 +27,7 @@ int main(int argc, char** argv)
     	extraCerts.push_back(QSslCertificate::fromPath(argv[i])[0]);
     }
 
-    Ssl::SslClientConnection client(
+    Ssl::SslConnection client(
     		clientKeyPath,
     		QSslCertificate::fromPath(clientCertPath.c_str())[0],
     		"localhost",

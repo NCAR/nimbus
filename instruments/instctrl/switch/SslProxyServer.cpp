@@ -38,23 +38,23 @@ SslProxyServer::~SslProxyServer() {
 /////////////////////////////////////////////////////////////////////
 void SslProxyServer::createConnection(Ssl::SslSocket* sslSocket) {
 
-	// make a new SslServerConnection connection.
-	SslServerConnection* connection = new SslServerConnection(sslSocket);
+	// make a new SslConnection connection.
+	SslConnection* connection = new SslConnection(sslSocket);
 
 	// capture signals when the state of the connection changes.
-	connect(connection, SIGNAL(connectionStateChanged(Ssl::SslServerConnection*, Ssl::SslSocket::SocketState)),
-			this, SLOT(connectionStateChanged(Ssl::SslServerConnection*, Ssl::SslSocket::SocketState)));
+	connect(connection, SIGNAL(connectionStateChanged(Ssl::SslConnection*, Ssl::SslSocket::SocketState)),
+			this, SLOT(connectionStateChanged(Ssl::SslConnection*, Ssl::SslSocket::SocketState)));
 
 	// add this connection to our list of connections.
 	_connections.insert(connection);
 
 	// capture new messages from this client
-	connect(connection, SIGNAL(msgFromClient(Protocols::Message)), this, SLOT(msgFromProxySlot(Protocols::Message)));
+	connect(connection, SIGNAL(msgFromSslLink(Protocols::Message)), this, SLOT(msgFromProxySlot(Protocols::Message)));
 
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslProxyServer::connectionStateChanged(SslServerConnection* connection,
+void SslProxyServer::connectionStateChanged(SslConnection* connection,
 		Ssl::SslSocket::SocketState state) {
 
 	switch (state) {
@@ -85,7 +85,7 @@ void SslProxyServer::connectionStateChanged(SslServerConnection* connection,
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslProxyServer::validateConnection(Ssl::SslServerConnection* connection) {
+void SslProxyServer::validateConnection(Ssl::SslConnection* connection) {
 
 	// Get the peer certificate
 	QSslCertificate peerCert = connection->peerCertificate();
@@ -138,7 +138,7 @@ void SslProxyServer::validateConnection(Ssl::SslServerConnection* connection) {
 }
 
 /////////////////////////////////////////////////////////////////////
-void SslProxyServer::removeConnection(Ssl::SslServerConnection* connection) {
+void SslProxyServer::removeConnection(Ssl::SslConnection* connection) {
 
 	// get the peer certificate.
 	QSslCertificate peerCert = connection->peerCertificate();

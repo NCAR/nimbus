@@ -267,7 +267,7 @@
 /// msgFromRemoteSwitch(msg) is delivered to:
 /// Switch::msgFromRemoteSwitch(Protocols::Message msg) {
 ///     SslProxyServer::sendToProxy(msg) {
-///        SslServerConnection::send(msg) {
+///        SslConnection::send(msg) {
 /// 	      std::string m = msg.toJsonStdString();
 ///           std::vector<std::string> msgs = _protocolToClient.outgoing(m);
 ///           for m in msgs {
@@ -281,18 +281,18 @@
 /// --------------------------- Remote Proxy (./proxy)-------------------------------
 ///
 /// Remote proxy socket write is read by:
-/// SslClientConnection::sslReadyRead() {
+/// SslConnection::sslReadyRead() {
 ///   QByteArray data = SslSocket::readAll();
 ///   std::string s = QString(data).toStdString();
 ///   std::vector<std::string> msgs =
 ///      Protocols::StreamMsgProtocol::incoming(s);
 ///   for m in msgs {
 ///      Protocols::Message msg(m);
-///		 emit SslClientConnection::msgFromServer(msg);
+///		 emit SslConnection::msgFromSslLink(msg);
 ///   }
 /// }
 ///
-/// msgFromServer(msg) is delivered to:
+/// msgFromSslLink(msg) is delivered to:
 /// SslProxy::msgFromServerSlot(Protocols::Message msg) {
 ///    std::string msgId = msg.msgId();
 ///    SslProxy::sendMsg(SslProxy::InstMsgInfo[msgId], msg) {
@@ -319,7 +319,7 @@
 /// SslProxy::udpReadyRead() {
 ///    QByteArray datagram = QUdpSocket::readDatagram();
 ///    Protocols::Message msg(datagram.toStdString());
-///    SslClientConnection::send(msg) {
+///    SslConnection::send(msg) {
 ///       std::string s = message.toJsonStdString();
 ///       std::vector<std::string> msgs =
 ///          StreamMsgProtocol::outgoing(s);
@@ -331,17 +331,17 @@
 /// --------------------------- Ground Switch (./switch) ----------------------------
 ///
 /// Remote proxy socket write is read by:
-/// SslServerConnection::sslReadyRead() {
+/// SslConnection::sslReadyRead() {
 ///   QByteArray data = SslSocket::readAll();
 ///   std::string s = QString(data).toStdString();
 ///   std::vector<std::string> msgs =
 ///      Protocols::StreamMsgProtocol::incoming(s);
 ///   for m in msgs {
-///		 emit SslServerConnection::msgFromClient(m);
+///		 emit SslConnection::msgFromSslLink(m);
 ///   }
 /// }
 ///
-/// msgFromClient(m) signal is delivered to:
+/// msgFromSslLink(m) signal is delivered to:
 /// SslProxyServer::msgFromProxySlot(std::string msg) {
 ///    emit SslProxyServer::msgFromProxy(msg);
 /// }
