@@ -429,7 +429,7 @@ public class BatchConfig {
 			dataFmt[DataFmt.DATE_IDX]= DataFmt.NODATE;
 			dataFmt[DataFmt.TM_IDX]= DataFmt.TIMESEC;
 			dataFmt[DataFmt.MVAL_IDX]= DataFmt.MISSVAL;
-			dataFmt[DataFmt.DMTR_IDX]= DataFmt.COMMAVAL;
+			dataFmt[DataFmt.DMTR_IDX]= DataFmt.SPACEVAL;
 		}
 		if (item.equals(DataFmt.HDR_ICARTT)) {
 			dataFmt[DataFmt.DMTR_IDX]= DataFmt.COMMAVAL;
