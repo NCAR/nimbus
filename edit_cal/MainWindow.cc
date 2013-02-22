@@ -831,7 +831,7 @@ void MainWindow::setupMenus()
 
 /* -------------------------------------------------------------------- */
 
-bool MainWindow::openDatabase(QString hostname)
+void MainWindow::openDatabase(QString hostname)
 {
     std::cout << __PRETTY_FUNCTION__ << " hostname: " << hostname.toStdString() << std::endl;
 
@@ -839,27 +839,40 @@ bool MainWindow::openDatabase(QString hostname)
     db.setDatabaseName(DB_NAME);
     db.setHostName(hostname);
     db.setUserName(DB_USER);
-    if (!db.open())
-    {
+    if (!db.open()) {
+
         std::ostringstream ostr;
-        ostr << tr("Failed to open calibration database.\nto: ").toStdString();
+        ostr << tr("Failed to open calibration database on:\n").toStdString();
         ostr << hostname.toStdString() << std::endl;
-        ostr << tr(db.lastError().text().toAscii().data()).toStdString();
+        QString errMsg =  db.lastError().text();
+        if (errMsg.contains("FATAL:  too many connections for database ")) {
 
-        std::cerr << ostr.str() << std::endl;
-        QMessageBox::critical(0, tr("open"), ostr.str().c_str());
+            // determine who is currently accessing it
+            db.setDatabaseName("postgres");
+            if (db.open()) {
 
+                QSqlQuery query(QSqlDatabase::database());
+                QString cmd("SELECT usename,client_addr from pg_stat_activity WHERE datname='calibrations'");
+
+                QString currentUser = errMsg;
+                if (query.exec(cmd) && query.first())
+                    currentUser = "\nCurrent user: " + query.value(0).toString()
+                                + "\nLogged in from: " + query.value(1).toString();
+                query.finish();
+                ostr << tr(currentUser.toStdString().c_str()).toStdString();
+            } else {
+                ostr << tr("Cannot determine who has the database open.").toStdString();
+            }
+        } else {
+            // unknown error
+            ostr << tr(errMsg.toAscii().data()).toStdString();
+        }
         db = QSqlDatabase();
         QSqlDatabase::removeDatabase(hostname);
 
-        std::cout << __PRETTY_FUNCTION__ << " FAILED" << std::endl;
-        return false;
+        QMessageBox::critical(0, tr("open"), ostr.str().c_str());
+        exit(1);
     }
-    std::cout << __PRETTY_FUNCTION__ << " SUCCESS" << std::endl;
-    foreach( QString connectionName, QSqlDatabase::connectionNames() )
-        std::cout << "connectionName: " << connectionName.toStdString() << std::endl;
-
-    return true;
 }
 
 /* -------------------------------------------------------------------- */
@@ -1813,7 +1826,7 @@ void MainWindow::viewCalButtonClicked()
     else 
         return;
 
-    viewFile(filename, tr("Calibration File Viewer"));
+    viewFile(filename);
 }
 
 /* -------------------------------------------------------------------- */
@@ -1831,19 +1844,19 @@ void MainWindow::viewCsvButtonClicked()
     QString filename = csvfile_dir;
     filename += site + "_" + var_name + ".csv";
 
-    viewFile(filename, tr("CSV File Viewer"));
+    viewFile(filename);
 }
 
 /* -------------------------------------------------------------------- */
 
-void MainWindow::viewFile(QString filename, QString title)
+void MainWindow::viewFile(QString filename)
 {
-    std::cout << "filename: " <<  filename.toStdString() << std::endl;
+    qDebug() << "filename: " <<  filename;
     QFile file(filename);
     if (file.open(QFile::ReadOnly)) {
         QTextStream in(&file);
         const QString data = in.readAll();
-        viewText(data, title);
+        viewText(data, filename);
     }
     else
         QMessageBox::information(0, tr("notice"),
@@ -2160,6 +2173,7 @@ void MainWindow::exportCalFile(QString filename, std::string contents)
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 
     QMessageBox::information(0, tr("Exporting cal into file:"), filename);
+    qDebug() << "filename: " << filename;
 
     // this matches: 2008 Jun 09 19:47:05
     QRegExp rxDateTime("^([12][0-9][0-9][0-9] ... [ 0-3][0-9] "
@@ -2170,13 +2184,13 @@ void MainWindow::exportCalFile(QString filename, std::string contents)
     // Find datetime stamp in the new calibration entry.
     QString qstr(contents.c_str());
     QStringList qsl = qstr.split("\n");
-    QString calLine = qsl[qsl.size()-2];
-    std::cout << "calLine: " << calLine.toStdString() << std::endl;
+    QString calLine = qsl[qsl.size()-1];
+    qDebug() << "calLine: " << calLine;
     if (rxDateTime.indexIn( calLine ) == -1)
         return;
 
     ct = QDateTime::fromString(rxDateTime.cap(1), "yyyy MMM dd HH:mm:ss");
-//  std::cout << "ct: " << ct.toString().toStdString() << " (" << rxDateTime.cap(1).toStdString() << ")" << std::endl;
+    qDebug() << "ct: " << ct.toString();
 
     // Open the selected calfile (it's ok if it doesn't exist yet).
     std::ifstream calfile ( filename.toStdString().c_str() );

@@ -40,7 +40,7 @@ public:
     MainWindow();
     ~MainWindow();
 
-    bool openDatabase(QString hostname);
+    void openDatabase(QString hostname);
 
     /// Set a column filter pattern for a given column in the table view.
     void setFilterFixedString(int column, const QString &pattern);
@@ -199,7 +199,7 @@ private:
 
     void exportCalFile(QString filename, std::string contents);
     void saveFileAs(QString filename, QString title, std::string contents);
-    void viewFile(QString filename, QString title);
+    void viewFile(QString filename);
     void viewText(QString text, QString title);
 
     /// Imports a remote calibration table into the master database.
