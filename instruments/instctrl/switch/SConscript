@@ -22,6 +22,7 @@ SwitchConnection.cpp
 SwitchMonitor.cpp
 SwitchConfig.cpp
 SslProxyServer.cpp
+RateLimiter.cpp
 """)
 
 headers = Split("""
@@ -33,6 +34,7 @@ SwitchConnection.h
 SwitchMonitor.h
 SwitchConfig.h
 SslProxyServer.h
+RateLimiter.h
 Overview.h
 """)
 
