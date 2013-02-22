@@ -12,6 +12,7 @@
 #include "SwitchConnection.h"
 #include "SwitchMonitor.h"
 #include "SymCipherProtocol.h"
+#include "RateLimiter.h"
 #include "RicLogger.h"
 
 /// The application which manages communications between one or more
@@ -55,12 +56,16 @@ protected slots:
 protected:
 	/// Create the signal/slot connections.
 	void init();
+	/// Set up rate limiter for the switch
+	void setRateLimiter(SwitchConfig* config);
 	/// The server that manages the connections to the proxies.
 	ProxyServer* _server;
 	/// The connection between us and the remote switch
 	SwitchConnection* _switchConnection;
 	/// The switch monitor.
 	SwitchMonitor* _switchMonitor;
+	/// The rate limiter
+	RateLimiter* _rateLimiter;
 	/// The logging facility
 	RicLogger _logger;
 	/// Ture to print message passing through the switch

@@ -21,6 +21,9 @@ _msgsToProxies(0)
 									   _msgsFromSwitch,
 									   _msgsToProxies);
 
+	// Set up switch rate limiter
+	setRateLimiter(config);
+
 	// The SslProxy parameter in the configuration determines the type
 	// of switch to be created. If SslProxy is true, an SSL proxy switch
 	// is created. Otherwise, an embedded proxy switch is created.
@@ -112,6 +115,7 @@ Switch::~Switch()
 {
 	delete _server;
 	delete _switchConnection;
+	delete _rateLimiter;
 	delete _switchMonitor;
 }
 
@@ -128,6 +132,36 @@ void Switch::init()
 }
 
 /////////////////////////////////////////////////////////////////////
+void Switch::setRateLimiter(SwitchConfig* config)
+{
+	// Create the rate limiter
+	_rateLimiter = new RateLimiter();
+
+	// Add all message types passing through the switch to rate limiter
+	if (config->sslProxy()) {
+		std::vector<std::map<std::string, std::string> > proxiesConfig;
+		proxiesConfig = config->proxies();
+
+		for (int i = 0; i < proxiesConfig.size(); i++) {
+			InstConfig* instConfig = new InstConfig(proxiesConfig[i]["InstrumentFile"]);
+			std::vector<InstConfig::MessageInfo> msgs = instConfig->messages();
+			for (int j = 0; j < msgs.size(); j++)
+				_rateLimiter->addMsgType(msgs[j].msgID, msgs[j].rateLimit);
+		}
+	} else {
+		std::vector<std::map<std::string, std::string> > instruments;
+		instruments = config->instruments();
+
+		for (int i = 0; i < instruments.size(); i++) {
+			InstConfig* instConfig = new InstConfig(instruments[i]["InstrumentFile"]);
+			std::vector<InstConfig::MessageInfo> msgs = instConfig->messages();
+			for (int j = 0; j < msgs.size(); j++)
+				_rateLimiter->addMsgType(msgs[j].msgID, msgs[j].rateLimit);
+		}
+	}
+}
+
+/////////////////////////////////////////////////////////////////////
 void Switch::msgFromProxySlot(Protocols::Message message)
 {
 	if (_verbose) {
@@ -135,13 +169,19 @@ void Switch::msgFromProxySlot(Protocols::Message message)
 	}
 
 	// A message has been received from the proxy
-	std::string msg = message.toJsonStdString();
-
 	_msgsFromProxies++;
-	_msgsToSwitch++;
 
-	// send the proxy message to the remote switch
-	_switchConnection->sendSwitchMessage(msg);
+	if (_rateLimiter->checkLimit(message)) {
+		std::cout << "Message " << message.msgId() << " forwarded." << std::endl;
+		// The message is OK to be forwarded to the switch
+		_msgsToSwitch++;
+
+		// send the proxy message to the remote switch
+		std::string msg = message.toJsonStdString();
+		_switchConnection->sendSwitchMessage(msg);
+	}
+	else
+		std::cout << "Message " << message.msgId() << " dropped." << std::endl;
 }
 
 /////////////////////////////////////////////////////////////////////
