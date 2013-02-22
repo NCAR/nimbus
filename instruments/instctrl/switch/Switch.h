@@ -70,14 +70,16 @@ protected:
 	RicLogger _logger;
 	/// Ture to print message passing through the switch
 	bool _verbose;
-	/// The total number of messages to switch .
+	/// The total number of messages to remote switch.
 	int _msgsToSwitch;
-	/// The total number of messages from switch.
+	/// The total number of messages from remote switch.
 	int _msgsFromSwitch;
-	/// The total number of messages to proxy.
+	/// The total number of messages to proxies.
 	int _msgsToProxies;
-	/// The total number of messages from proxy.
+	/// The total number of messages from proxies.
 	int _msgsFromProxies;
+	/// The total number of messages from proxies that got dropped
+	int _msgsFromProxiesDropped;
 
 };
 

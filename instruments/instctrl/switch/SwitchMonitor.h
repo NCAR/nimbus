@@ -19,11 +19,14 @@ class SwitchMonitor: public QObject {
 		///    messages that were received from proxies.
 		/// @param toSwitch Reference to a variable containing a total count of
 		///    messages that were sent to the remote switch.
+		/// @param fromProxiesDrpped Reference to a variable containing a total count of
+		///    messages that were received from proxies but got dropped
 		SwitchMonitor(int reportRateSeconds,
 				const int &fromSwitch,
 				const int &toProxies,
 				const int &fromProxies,
-				const int &toSwitch);
+				const int &toSwitch,
+				const int &fromProxiesDropped);
 		/// Destructor.
 		virtual ~SwitchMonitor();
 
@@ -46,6 +49,9 @@ class SwitchMonitor: public QObject {
 		/// Reference to a variable containing a total count of
 		/// messages that were sent to proxies.
 		const int& _toProxies;
+		/// Reference to a variable containing a total count of
+		/// messages that were received from proxies but dropped.
+		const int& _fromProxiesDropped;
 		/// Last count of messages that were received from proxies.
 		int _lastFromProxies;
 		/// Last count of messages that were sent to the remote switch.
@@ -54,6 +60,8 @@ class SwitchMonitor: public QObject {
 		int _lastFromSwitch;
 		/// Last count of messages that were sent to proxies.
 		int _lastToProxies;
+		/// Last count of messages that were received from proxies but dropped.
+		int _lastFromProxiesDropped;
 		/// System logger.
 		RicLogger _logger;
 		/// The report timer.

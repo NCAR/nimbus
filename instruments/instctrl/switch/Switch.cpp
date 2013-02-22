@@ -6,7 +6,8 @@ _verbose(verbose),
 _msgsFromProxies(0),
 _msgsToSwitch(0),
 _msgsFromSwitch(0),
-_msgsToProxies(0)
+_msgsToProxies(0),
+_msgsFromProxiesDropped(0)
 {
 	// Create the SwichConnection between this switch and the remote switch
 	_switchConnection = new SwitchConnection(config->localPort(),
@@ -19,7 +20,8 @@ _msgsToProxies(0)
 									   _msgsFromProxies,
 									   _msgsToSwitch,
 									   _msgsFromSwitch,
-									   _msgsToProxies);
+									   _msgsToProxies,
+									   _msgsFromProxiesDropped);
 
 	// Set up switch rate limiter
 	setRateLimiter(config);
@@ -172,7 +174,7 @@ void Switch::msgFromProxySlot(Protocols::Message message)
 	_msgsFromProxies++;
 
 	if (_rateLimiter->checkLimit(message)) {
-		std::cout << "Message " << message.msgId() << " forwarded." << std::endl;
+		//std::cout << "Message " << message.msgId() << " forwarded." << std::endl;
 		// The message is OK to be forwarded to the switch
 		_msgsToSwitch++;
 
@@ -180,8 +182,10 @@ void Switch::msgFromProxySlot(Protocols::Message message)
 		std::string msg = message.toJsonStdString();
 		_switchConnection->sendSwitchMessage(msg);
 	}
-	else
-		std::cout << "Message " << message.msgId() << " dropped." << std::endl;
+	else {
+		//std::cout << "Message " << message.msgId() << " dropped." << std::endl;
+		_msgsFromProxiesDropped++;
+	}
 }
 
 /////////////////////////////////////////////////////////////////////
