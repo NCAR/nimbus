@@ -40,9 +40,9 @@ const char syncString[3] = { 0xaa, 0xaa, 0xaa };
 
 
 struct struct_particle {
-   long time1hz; 
-   double inttime; 
-   float size, csize, xsize, ysize, area, holearea, circlearea; 
+   long time1hz;
+   double inttime; 	// Interarrival time (diff of surrounding time words).
+   float size, csize, xsize, ysize, area, holearea, circlearea;
    bool allin, wreject, ireject;
 };
 
@@ -405,7 +405,7 @@ float poisson_spot_correction(float area_img, float area_hole, bool allin){
      ratio = sqrt(area_hole/(area_img+area_hole));
      int ip=1;
      while(ratio > Dspot_Dedge[ip]) ip++;
-	  //cout<<Zd[ip-1]<<endl;
+//cout<<Zd[ip-1]<<endl;
      correction = Dedge_D0[ip-1];
    }
    return correction;
@@ -436,8 +436,9 @@ void reject_particle(struct_particle& x, float cutoff, float nextinttime, float 
 }
 
 // ----------------TIME CONVERSION ---------------------------
-int hms2sfm(int hms){
-   //Convert hhmmss to seconds from midnight
+int hms2sfm(int hms)
+{
+   // Convert hhmmss to seconds from midnight
    int hour = hms / 10000;
    int minute = (hms-hour*10000) / 100;
    int second = hms - hour*10000 - minute*100;
@@ -461,24 +462,28 @@ time_t TwoDtime(const P2d_rec *rec)
 
 
 //----------------Display particle properties to screen--------
-void showparticle(struct_particle& x){
+void showparticle(struct_particle& x)
+{
    float ar;
+   char tbuff[32];
+
    ar=(x.holearea+x.area)/x.circlearea;
-   cout<<setprecision(2);
-   cout<<x.time1hz<<" "<<scientific<<x.inttime;
-   cout<<fixed;
-   cout<<" C="<<setw(8)<<x.csize<<
-         " X="<<setw(8)<<x.xsize<<
-         " Y="<<setw(8)<<x.ysize<<
-         " AR="<<setw(8)<<ar<<
-    //     " A="<<setw(10)<<x.area<<
-    //     " HA="<<setw(10)<<x.holearea<<
-    //     " CA="<<setw(10)<<x.circlearea<<
-    //     " Int="<<x.inttime<<
-         " AI="<<x.allin<<
-         " IR="<<x.ireject<<
-         " WR="<<x.wreject<<
-         endl;
+   cout << setprecision(2);
+   strftime(tbuff, 32, "%H:%M:%S ", gmtime(&x.time1hz));
+   cout << tbuff << x.time1hz << " " << scientific << x.inttime;
+   cout << fixed;
+   cout <<	" C=" << setw(8) << x.csize <<
+		" X=" << setw(8) << x.xsize <<
+		" Y=" << setw(8) << x.ysize <<
+		" AR=" << setw(8) << ar <<
+		//     " A=" << setw(10)< < x.area <<
+		//     " HA=" << setw(10) << x.holearea <<
+		//     " CA=" << setw(10) << x.circlearea <<
+		" Int=" << scientific << x.inttime <<
+		" AI=" << x.allin <<
+		" IR=" << x.ireject <<
+		" WR=" << x.wreject <<
+		endl;
 } 
 
 //----------------Display particle image to screen--------
@@ -488,7 +493,7 @@ void showroi(short *img[], int nslices, int nDiodes)
     for (int j = 0; j < nDiodes; j++) cout<<img[i][j]; 
     cout<<endl;
   }
-  cout<<endl;
+  cout<<flush<<endl;
 }
 
 // ----------------A FEW BYTE SWAPPING ROUTINES----------------
@@ -524,7 +529,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   ifstream input_file;
   string line;
   int slice_count=0, firstday;
-  unsigned long long slice, firsttimeline, lasttimeline=0, timeline, difftimeline, particle_count=0;
+  unsigned long long slice, firsttimeline=0, lasttimeline=0, timeline, difftimeline;
   double lastbuffertime, buffertime = 0, nextit = 0;
   bool firsttimeflag = true;
   float wc;
@@ -537,8 +542,8 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   // allocate space for roi.
   int bytesPerSlice = probe.nDiodes / 8;
   int slicesPerRecord = 4096 / bytesPerSlice;
-  short *roi[slicesPerRecord];
-  for (int i = 0; i < slicesPerRecord; ++i)
+  short *roi[slicesPerRecord*8];
+  for (int i = 0; i < slicesPerRecord*8; ++i)
     roi[i] = new short[probe.nDiodes];
 
   probe.ComputeSamplearea(cfg.recon);
@@ -598,9 +603,9 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   //Skip the XML header
   do getline(input_file, line); while (line.compare(markerline)!=0);
 
-  int buffcount = 0;
+  int buffcount;
 
-  while (!input_file.eof())
+  for (buffcount = 0; !input_file.eof(); ++buffcount)
   {
      // Read next buffer, compute buffer times
      do
@@ -612,30 +617,40 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
      if (input_file.gcount() < (int)sizeof(buffer))
        break;
 
-     //Record first buffer day for midnight crossings
-     if(buffcount == 0) firstday=ntohs(buffer.day); 
+     // Record first buffer day for midnight crossings
+     if(buffcount == 0) firstday = ntohs(buffer.day); 
 
      lastbuffertime = buffertime;
      buffertime = TwoDtime(&buffer) + ((double)ntohs(buffer.msec) / 1000);
 
      if (buffertime >= cfg.stoptime)
+     {
+       cout << "\n2D record time exceeds netCDF time, exiting loop.\n";
        break;
+     }
 
-     firsttimeflag = true;
-     //Scroll through each slice, look for sync/time slices
+     if (buffertime != lastbuffertime)
+       firsttimeflag = true;
 
+     if (cfg.debug)
+          cout << "New buffer : " << fixed << buffertime-1338900000 << " msec=" << ntohs(buffer.msec) << " : " << firsttimeline <<"\n";
+
+     // Scroll through each slice, look for sync/time slices
      for (int islice = 0; islice < slicesPerRecord; islice++)
      {
         bool syncWord = false;
+        double timeline_divisor = 12.0e+06;	// Default to Fast2D value.
 
         if (probetype == '3')		// 3V-CPI
         {
-           slice = ((unsigned long long *)buffer.image)[islice];
+           slice = *(unsigned long long *)&buffer.image[islice*bytesPerSlice];
 
            // Stored little-endian, check far side of 16 bytes.
-           if (memcmp((void *)&buffer.image[(islice*bytesPerSlice)+bytesPerSlice-3], syncString, 3) == 0) {
-              syncWord = true;
+           if (memcmp(&buffer.image[(islice*bytesPerSlice)+bytesPerSlice-3], syncString, 3) == 0) {
               timeline = slice & 0x000000ffffffffffULL;
+              timeline_divisor = 2.0e+07;
+              if (timeline > lasttimeline)
+                syncWord = true;
            }
         }
         else				// Fast2D C/P
@@ -646,51 +661,53 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
            if (memcmp(&buffer.image[islice*bytesPerSlice], syncString, 3) == 0) {
               syncWord = true;
               timeline = slice & 0x000000ffffffffffULL;
+              timeline_divisor = 12.0e+06;
            }
         }
 
-        if (syncWord) {	//Found a sync line
+        if (syncWord) {	// Found a sync line
            if (firsttimeflag) {
               firsttimeline = timeline; 
               firsttimeflag = false;
            }
 
-           //Look for negative interarrival time, set to zero instead
+           // Look for negative interarrival time, set to zero instead
            if (timeline < firsttimeline) difftimeline = 0;
            else difftimeline=timeline-firsttimeline;
 
-           //Process the roi
-           long time1hz = (long)(lastbuffertime+difftimeline / (12.0e6));
+           // Process the roi
+           long time1hz = (long)(lastbuffertime+difftimeline / (timeline_divisor));
            if (time1hz >= cfg.starttime){
               particle=findsize(roi, slice_count, probe.nDiodes, probe.resolution);
               particle.holearea=fillholes2(roi, slice_count, probe.nDiodes);           
-              particle.inttime=(timeline - lasttimeline) / 12.0e6;
+              particle.inttime=(timeline - lasttimeline) / timeline_divisor;
               particle.time1hz=time1hz;
 
-              //Decide which size to use
+
+              // Decide which size to use
               particle.size=particle.csize;  //Default
               if (cfg.smethod=='x') particle.size=particle.xsize;
               if (cfg.smethod=='y') particle.size=particle.ysize;           
 
-              //Update interarrival queue
+              // Update interarrival queue
               itq[iitq]=particle.inttime;
               iitq++;
               if (iitq > (nitq-1)) iitq=0;
            }
 
-           //Debugging output
-           if ((buffcount == -100)) {
+           // Debugging output
+           if (cfg.debug) {
               cout<<islice<<endl;
               showparticle(particle);
               showroi(roi, slice_count, probe.nDiodes);
            }
 
-           //Check the particle time to see if a new 1-s period has been crossed.
-           //If so, place all particles in count matrix
-           if (time1hz != last_time1hz){
-              itime = last_time1hz - cfg.starttime;  //time index
+           // Check the particle time to see if a new 1-s period has been crossed.
+           // If so, place all particles in count matrix
+           if (time1hz != last_time1hz) {
+              itime = last_time1hz - cfg.starttime;  // time index
 
-              //Make sure particles are in correct time range
+              // Make sure particles are in correct time range
               if (itime >= 0){
                  if (ncfile.hasTASX() == false)
                    data.tas[itime]=((float)ntohs(buffer.tas));
@@ -729,6 +746,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
                  if (cfg.verbose) cout<<itime+cfg.starttime<<" "<<time1hz<<" "<<particle_stack.size()<<" "<<bestfit[0]<<" "<<bestfit[1]<<" "<<bestfit[2]<<endl;
 
                  // Sort through all particles in this stack
+                 if (cfg.debug) cout << "particle stack size : " << particle_stack.size() << endl;
                  for (size_t i = 0; i < particle_stack.size(); i++) {
                     //Find water size correction
                     wc=poisson_spot_correction(particle_stack[i].area,particle_stack[i].holearea,particle_stack[i].allin);
@@ -765,19 +783,17 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
            particle_stack.push_back(particle);
 
            // Start a new particle
-           particle_count++;
            lasttimeline = timeline;
            slice_count = 0;
         } // end of image processing after detection of sync line 
         else {
            // Found an image slice, make the next slice part of binary image
-
            int diode = 0;
            if (probetype == '3')
            {
-             for (int byte = bytesPerSlice-1; byte >= 0; byte++)
+             for (int byte = bytesPerSlice-1; byte >= 0; byte--)
                for (int bit = 7; bit >= 0; bit--)
-                 roi[slice_count][diode++] = (bool)(buffer.image[slice_count*bytesPerSlice+byte] & (0x01 << bit));
+                 roi[slice_count][diode++] = (bool)(buffer.image[islice*bytesPerSlice+byte] & (0x01 << bit));
            }
            else
            {
@@ -785,17 +801,14 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
                for (int bit = 7; bit >= 0; bit--)
                  roi[slice_count][diode++] = (bool)(buffer.image[islice*bytesPerSlice+byte] & (0x01 << bit));
            }
-
-           slice_count=min(slice_count+1, 511);  // Increment slice_count, limit to 511
+           slice_count=min(slice_count+1, slicesPerRecord*8);  // Increment slice_count, limit to 511
         }
-     } //end slice loop
-
-     buffcount++;  //Update buffer counter
+     } // end slice loop
      if (!cfg.verbose && (buffcount % 100 == 0))
        cout	<< ntohs(buffer.hour) << ':' << ntohs(buffer.minute)
 		<< ':' << ntohs(buffer.second) << " - " << buffcount
-		<< " records  \r" << flush;
-  } //end buffer loop
+		<< " records, itime=" << itime << "   \r" << flush;
+  } // end buffer loop
  
   // Close raw data file
   input_file.close();
@@ -806,7 +819,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     delete [] roi[i];
 
 
-  
+
   //=========Compute sample volume, concentration, total number, and LWC======
   cout << "\nComputing derived parameters...";
 
@@ -835,12 +848,12 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
         conc_all[i][bin] = count_all[i][bin] / sv / 1000.0;	// #/L
         conc_round[i][bin] = count_round[i][bin] / sv / 1000.0;	// #/L
 
-        if (bin >= 4) { // 100 um and larger.
+        if (bin >= 4) { // 100 um and larger (for 2DC).
           data.all.total_conc100[i] += conc_all[i][bin];
           data.round.total_conc100[i] += conc_round[i][bin];
         }
 
-        if (bin >= 6) { // 150 um and larger.
+        if (bin >= 6) { // 150 um and larger (for 2DC).
           data.all.total_conc150[i] += conc_all[i][bin];
           data.round.total_conc150[i] += conc_round[i][bin];
         }
@@ -892,7 +905,6 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
     data.all.lwc[i] *= M_PI / 6.0 * 1.0e-9;
     data.round.lwc[i] *= M_PI / 6.0 * 1.0e-9;
   }
-
 
 
   //=============Write to netCDF==============================================
