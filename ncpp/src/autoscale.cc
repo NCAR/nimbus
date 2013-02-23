@@ -62,11 +62,15 @@ void AutoScaleConc(SetManager& sets, Panel *panel)
 
   if (panel->yAxis.logScale)
     {
+    if (sets.maxConc <= 0.0)
+      panel->yAxis.max = 1.0;
+    else
+      panel->yAxis.max = pow(10.0, ceil(log10(sets.maxConc)));
+
     if (sets.minConc <= 0.0)
-      panel->yAxis.min = 0.01;
+      panel->yAxis.min = panel->yAxis.max / 10000;	// 5 decades less than max.
     else
       panel->yAxis.min = pow(10.0, floor(log10(sets.minConc)));
-    panel->yAxis.max = pow(10.0, ceil(log10(sets.maxConc)));
     }
   else
     {
@@ -75,7 +79,7 @@ void AutoScaleConc(SetManager& sets, Panel *panel)
     }
 
   if (sets.maxConc == 0.0)
-    panel->yAxis.max = 10.0;
+    panel->yAxis.max = 1.0;
 
   if (panel->yAxis.min == panel->yAxis.max)
     panel->yAxis.max += 10.0;

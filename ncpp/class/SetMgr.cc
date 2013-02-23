@@ -13,6 +13,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1997-8
 #include "SetMgr.h"
 
 #include <algorithm>
+#include <cfloat>
 
 /* -------------------------------------------------------------------- */
 SetManager::SetManager()
@@ -264,19 +265,30 @@ void SetManager::findMinMax()
       for (i = prb->VectorLength()-1; prb->CellSize(i) == 0; --i);
       maxCell = prb->CellSize(i);
 
-      minConc = set[0]->minConc;
-      maxConc = set[0]->maxConc;
-
-      for (int i = 1; i < numberSets; ++i)
+      for (i = 1; i < numberSets; ++i)
         {
-        minConc = std::min(minConc, set[i]->minConc);
-        maxConc = std::max(maxConc, set[i]->maxConc);
-
         prb = set[i]->probe();
 
         minCell = std::min(minCell, prb->CellSize(0));
         maxCell = std::max(maxCell, prb->CellSize(prb->VectorLength()-1));
         }
+
+
+      minConc = FLT_MAX;
+      maxConc = -FLT_MAX;
+
+      for (i = 0; i < numberSets; ++i)
+        {
+        if (set[i]->minConc > 0)
+          minConc = std::min(minConc, set[i]->minConc);
+        if (set[i]->maxConc > 0)
+          maxConc = std::max(maxConc, set[i]->maxConc);
+        }
+
+      if (maxConc == -FLT_MAX)
+        maxConc = 1.0;
+      if (minConc == FLT_MAX)
+        minConc = maxConc / 1000;
       }
 
     if (minCell == 0.0)
