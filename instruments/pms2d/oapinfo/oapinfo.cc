@@ -31,6 +31,12 @@ bool	hdrsOnly = false;
 int Output(char buff[]);
 
 
+void Usage()
+{
+  fprintf(stderr, "Usage: oapinfo [-t] file.2d\n");
+  exit(1);
+}
+
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
@@ -38,19 +44,20 @@ int main(int argc, char *argv[])
   std::string	sourceFile;
   FILE *fp;
 
+  if (argc < 2)
+    Usage();
+
+
   if (strcmp(argv[aCnt], "-t") == 0)
   {
     aCnt++;
     hdrsOnly = true;
   }
 
-  if (argc < 2)
-  {
-    std::cout << "Enter file : ";
-    std::cin >> sourceFile;
-  }
-  else
-    sourceFile = argv[aCnt];
+  if (argc <= aCnt)
+    Usage();
+
+  sourceFile = argv[aCnt];
 
 
   if ((fp = fopen(sourceFile.c_str(), "rb")) == NULL)
