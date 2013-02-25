@@ -542,8 +542,8 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   // allocate space for roi.
   int bytesPerSlice = probe.nDiodes / 8;
   int slicesPerRecord = 4096 / bytesPerSlice;
-  short *roi[slicesPerRecord*8];
-  for (int i = 0; i < slicesPerRecord*8; ++i)
+  short *roi[slicesPerRecord];
+  for (int i = 0; i < slicesPerRecord; ++i)
     roi[i] = new short[probe.nDiodes];
 
   probe.ComputeSamplearea(cfg.recon);
@@ -801,7 +801,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
                for (int bit = 7; bit >= 0; bit--)
                  roi[slice_count][diode++] = (bool)(buffer.image[islice*bytesPerSlice+byte] & (0x01 << bit));
            }
-           slice_count=min(slice_count+1, slicesPerRecord*8);  // Increment slice_count, limit to 511
+           slice_count=min(slice_count+1, slicesPerRecord-1);  // Increment slice_count, limit to 511
         }
      } // end slice loop
      if (!cfg.verbose && (buffcount % 100 == 0))
