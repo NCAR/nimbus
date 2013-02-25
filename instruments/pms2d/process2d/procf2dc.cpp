@@ -617,11 +617,26 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
      if (input_file.gcount() < (int)sizeof(buffer))
        break;
 
-     // Record first buffer day for midnight crossings
-     if(buffcount == 0) firstday = ntohs(buffer.day); 
+     /* set next buffer time.  3V-CPI will decompress into many buffers with
+      * same time stamp.  don't assign lastbuffertime until we have processed
+      * all of them.
+      */
+     {
+     long newbuffertime = TwoDtime(&buffer) + ((double)ntohs(buffer.msec) / 1000);
+     if (newbuffertime != buffertime)
+     {
+       buffertime = newbuffertime;
+       lastbuffertime = buffertime;
+     }
+     }
 
-     lastbuffertime = buffertime;
-     buffertime = TwoDtime(&buffer) + ((double)ntohs(buffer.msec) / 1000);
+     // Record first buffer day for midnight crossings, do not process first record.
+     if (buffcount == 0)
+     {
+       firstday = ntohs(buffer.day);
+       last_time1hz = buffertime;
+       continue;
+     }
 
      if (buffertime >= cfg.stoptime)
      {
