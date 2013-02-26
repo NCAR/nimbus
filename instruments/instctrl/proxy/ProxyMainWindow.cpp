@@ -41,17 +41,18 @@ _yellow (tr("background-color: #EEEE00"))
 	// Handle the view button.
 	connect(_view, SIGNAL(released()), this, SLOT(viewSlot()));
 
-	_statusbar->hide();
+	// Handle "Stay On Top" selection
+	connect(_onTop, SIGNAL(stateChanged(int)), this, SLOT(stayOnTop()));
 }
 
 /////////////////////////////////////////////////////////////////////
-ProxyMainWindow::~ProxyMainWindow() {
-
+ProxyMainWindow::~ProxyMainWindow()
+{
 }
 
 /////////////////////////////////////////////////////////////////////
-void ProxyMainWindow::viewSlot() {
-
+void ProxyMainWindow::viewSlot()
+{
 	_fullView = !_fullView;
 
 	if (!_fullView) {
@@ -59,25 +60,18 @@ void ProxyMainWindow::viewSlot() {
 		_height = this->height();
 	}
 
-	Qt::WindowFlags flags = this->windowFlags();
 	if (_fullView) {
 		_validGroup->show();
 		_invalidGroup->show();
 		statusBar()->show();
-        this->setWindowFlags(flags ^ (Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-        this->show();
 	} else {
 		_validGroup->hide();
 		_invalidGroup->hide();
 		statusBar()->hide();
-		// Put on top if not in full view
-		this->setWindowFlags(flags | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-		this->show();
 	}
 
 	// Set the focus back to the connect button.
 	_connect->setFocus();
-
 
 	// The following is used to resize the mainwindow
 	// to account for the hidden/shown widgets.
@@ -109,8 +103,19 @@ void ProxyMainWindow::viewSlot() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void ProxyMainWindow::connectSlot() {
+void ProxyMainWindow::stayOnTop()
+{
+	Qt::WindowFlags flags = this->windowFlags();
+	if (_onTop->isChecked())
+		this->setWindowFlags(flags | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+	else
+        this->setWindowFlags(flags ^ (Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+	this->show();
+}
 
+/////////////////////////////////////////////////////////////////////
+void ProxyMainWindow::connectSlot()
+{
 	switch (_proxyState) {
 	case Ssl::SslProxy::PROXY_Unconnected:
 		emit connectToServer();
@@ -133,7 +138,8 @@ void ProxyMainWindow::connectSlot() {
 }
 
 /////////////////////////////////////////////////////////////////////
-void ProxyMainWindow::switchMessageSlot(std::string s, bool valid) {
+void ProxyMainWindow::switchMessageSlot(std::string s, bool valid)
+{
 	if (valid) {
 		_validFromSwitch->setText(s.c_str());
 	} else {
@@ -142,7 +148,8 @@ void ProxyMainWindow::switchMessageSlot(std::string s, bool valid) {
 }
 
 /////////////////////////////////////////////////////////////////////
-void ProxyMainWindow::userMessageSlot(std::string s, bool valid) {
+void ProxyMainWindow::userMessageSlot(std::string s, bool valid)
+{
 	if (valid) {
 		_validFromUser->setText(s.c_str());
 	} else {
@@ -151,8 +158,8 @@ void ProxyMainWindow::userMessageSlot(std::string s, bool valid) {
 }
 
 /////////////////////////////////////////////////////////////////////
-void ProxyMainWindow::proxyStateChangedSlot(Ssl::SslProxy::ProxyState state) {
-
+void ProxyMainWindow::proxyStateChangedSlot(Ssl::SslProxy::ProxyState state)
+{
 	switch (state) {
 	case Ssl::SslProxy::PROXY_Unconnected:
 		_proxyStatus->setText("Unconnected");
@@ -180,18 +187,16 @@ void ProxyMainWindow::proxyStateChangedSlot(Ssl::SslProxy::ProxyState state) {
 
 	default:
 		break;
-
 	}
 }
 
 /////////////////////////////////////////////////////////////////////
-void ProxyMainWindow::proxyErrorSlot(QAbstractSocket::SocketError err, std::string errmsg) {
-
+void ProxyMainWindow::proxyErrorSlot(QAbstractSocket::SocketError err, std::string errmsg)
+{
 	emit disconnectFromServer();
 
 	_connect->setEnabled(true);
 
 	// Show the error message in the status bar
 	statusBar()->showMessage(tr(errmsg.c_str()));
-
 }

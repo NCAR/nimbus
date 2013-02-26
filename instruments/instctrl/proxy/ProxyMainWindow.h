@@ -1,5 +1,5 @@
-#ifndef PROXY_H_
-#define PROXY_H_
+#ifndef PROXYMAINWINDOW_H_
+#define PROXYMAINWINDOW_H_
 
 #include <QtGui>
 #include "SslProxy.h"
@@ -14,7 +14,8 @@ using namespace Ssl;
 /// @todo Add logic to capture and correctly handle the state changes from SslProxy.
 /// Right now, we just assume that when a connect request is issued, it connects
 /// correctly. This is just plain wrong.
-class ProxyMainWindow: public QMainWindow, public Ui::ProxyMainWindow {
+class ProxyMainWindow: public QMainWindow, public Ui::ProxyMainWindow
+{
 	Q_OBJECT
 public:
 	/// Constructor
@@ -45,11 +46,12 @@ public slots:
 
 protected slots:
 	/// Called when the connect/disconnect button is pressed.
-	/// It will in emit either the connectToServer() or disconnectFromServer()
-	/// signal.
+	/// It will emit either the connectToServer() or disconnectFromServer() signal.
 	void connectSlot();
 	/// Toggle between min and max views.
 	void viewSlot();
+	/// Handle "Stay On Top" selection
+	void stayOnTop();
 
 signals:
 	/// Emitted to request that the SslProxy connect to the switch.
@@ -82,9 +84,6 @@ protected:
 	int _width;
 	int _height;
 
-
 };
 
-
-
-#endif /* PROXY_H_ */
+#endif /* PROXYMAINWINDOW_H_ */
