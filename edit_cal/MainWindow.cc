@@ -1917,7 +1917,7 @@ void MainWindow::exportInstrument(int row)
 #endif
     filename += var_name + ".dat";
 
-    exportCalFile(filename, cal_date, ostr.str());
+    exportCalFile(filename, ostr.str());
 }
 
 /* -------------------------------------------------------------------- */
@@ -2087,7 +2087,7 @@ void MainWindow::exportAnalog(int row)
 #endif
     filename += "A2D" + serial_number + ".dat";
 
-    exportCalFile(filename, cal_date, ostr.str());
+    exportCalFile(filename, ostr.str());
 }
 
 /* -------------------------------------------------------------------- */
@@ -2168,13 +2168,12 @@ void MainWindow::exportBath(int row)
 
 /* -------------------------------------------------------------------- */
 
-void MainWindow::exportCalFile(QString filename, QString cal_date, std::string contents)
+void MainWindow::exportCalFile(QString filename, std::string contents)
 {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 
     QMessageBox::information(0, tr("Exporting cal into file:"), filename);
     qDebug() << "filename: " << filename;
-    qDebug() << "cal_date: " << cal_date;
     qDebug() << "contents: " << contents.c_str();
 
     // this matches date and time stamps like this: 2008 Jun 09 19:47:05
