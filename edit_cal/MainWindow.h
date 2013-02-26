@@ -197,7 +197,7 @@ private:
     void exportAnalog(int currentRow);
     void exportBath(int currentRow);
 
-    void exportCalFile(QString filename, std::string contents);
+    void exportCalFile(QString filename, QString cal_date, std::string contents);
     void saveFileAs(QString filename, QString title, std::string contents);
     void viewFile(QString filename);
     void viewText(QString text, QString title);

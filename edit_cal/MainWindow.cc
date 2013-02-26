@@ -1917,7 +1917,7 @@ void MainWindow::exportInstrument(int row)
 #endif
     filename += var_name + ".dat";
 
-    exportCalFile(filename, ostr.str());
+    exportCalFile(filename, cal_date, ostr.str());
 }
 
 /* -------------------------------------------------------------------- */
@@ -2087,7 +2087,7 @@ void MainWindow::exportAnalog(int row)
 #endif
     filename += "A2D" + serial_number + ".dat";
 
-    exportCalFile(filename, ostr.str());
+    exportCalFile(filename, cal_date, ostr.str());
 }
 
 /* -------------------------------------------------------------------- */
@@ -2168,25 +2168,30 @@ void MainWindow::exportBath(int row)
 
 /* -------------------------------------------------------------------- */
 
-void MainWindow::exportCalFile(QString filename, std::string contents)
+void MainWindow::exportCalFile(QString filename, QString cal_date, std::string contents)
 {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 
     QMessageBox::information(0, tr("Exporting cal into file:"), filename);
     qDebug() << "filename: " << filename;
+    qDebug() << "cal_date: " << cal_date;
+    qDebug() << "contents: " << contents.c_str();
 
-    // this matches: 2008 Jun 09 19:47:05
+    // this matches date and time stamps like this: 2008 Jun 09 19:47:05
     QRegExp rxDateTime("^([12][0-9][0-9][0-9] ... [ 0-3][0-9] "
                        "[ 0-2][0-9]:[0-5][0-9]:[0-5][0-9])");
 
     QDateTime bt, ct, et(QDate(2999,1,1),QTime(0,0,0));
 
-    // Find datetime stamp in the new calibration entry.
-    QString qstr(contents.c_str());
+    // Find the actual singular calibration line in the new contents.
+    QString calLine, qstr(contents.c_str());
     QStringList qsl = qstr.split("\n");
-    QString calLine = qsl[qsl.size()-1];
-    qDebug() << "calLine: " << calLine;
-    if (rxDateTime.indexIn( calLine ) == -1)
+    foreach (calLine, qsl) {
+        qDebug() << "calLine: " << calLine;
+        if ( calLine.contains(rxDateTime) )
+            break;
+    }
+    if ( not calLine.contains(rxDateTime) )
         return;
 
     ct = QDateTime::fromString(rxDateTime.cap(1), "yyyy MMM dd HH:mm:ss");
