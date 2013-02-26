@@ -74,7 +74,6 @@ void ProxyMainWindow::viewSlot() {
 		this->setWindowFlags(flags | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
 		this->show();
 	}
-	_statusbar->hide();
 
 	// Set the focus back to the connect button.
 	_connect->setFocus();
