@@ -1959,11 +1959,7 @@ void MainWindow::exportAnalog(int row)
     do {
         if (--topRow < 0) break;
         QString removed = modelData(topRow, clm_removed);
-        if (removed == "1") {
-            QMessageBox::information(0, tr("notice"),
-              tr("You cannot export a calibration with a removed row."));
-            return;
-        }
+        if (removed == "1") break;
         if (serial_number != modelData(topRow, clm_serial_number)) break;
         if      ("analog" != modelData(topRow, clm_cal_type)) break;
         if      (gainbplr != modelData(topRow, clm_gainbplr)) break;
@@ -1994,11 +1990,7 @@ void MainWindow::exportAnalog(int row)
     do {
         if (++btmRow > numRows) break;
         QString removed = modelData(btmRow, clm_removed);
-        if (removed == "1") {
-            QMessageBox::information(0, tr("notice"),
-              tr("You cannot export a calibration with a removed row."));
-            return;
-        }
+        if (removed == "1") break;
         if (serial_number != modelData(btmRow, clm_serial_number)) break;
         if      ("analog" != modelData(btmRow, clm_cal_type)) break;
         if      (gainbplr != modelData(btmRow, clm_gainbplr)) break;
