@@ -1,5 +1,6 @@
 #include <sys/stat.h>
 #include <locale>
+
 #include "File.h"
 #include "2DS.h"
 #include "2DS_reverse.h"
@@ -32,13 +33,14 @@ struct Do3VCPI
 
 		sp::UCAR_Writer writer(outfile, *options, sp::HORIZONTAL_3VCPI, sp::VERTICAL_3VCPI,
 					"3V-CPI", "10", "128", "_3H", "_3V");
-
+/*
 		if (file_hk.is_open())
 		{
 			std::cout << "Processing housekeeping file.\n";
-			device.Process(file_hk, writer);
+			device.ProcessHK(file_hk, writer);
 		}
-		device.Process(file, writer);
+*/
+		device.ProcessData(file, writer);
 	}
 };
 
