@@ -52,6 +52,14 @@ namespace sp
 		word	GetClearCount()const
 		{
 			const word* all = reinterpret_cast<const word*>(this);
+                        if(0x4000 == *all)
+                        {
+                                return 0;
+                        }
+                        else if(0x7FFF == *all)
+                        {
+                                return -1;	// signal uncompressed data
+                        }
 	
 			return NumClearPixels;
 		}
@@ -59,7 +67,14 @@ namespace sp
 		word	GetShadedCount()const
 		{
 			const word* all = reinterpret_cast<const word*>(this);
-
+                        if(0x4000 == *all)
+                        {
+                                return 128;
+                        }
+                        else if(0x7FFF == *all)
+                        {
+                                return -1;	// signal uncompressed data
+                        }
 			return NumShadedPixels;
 		}
 
@@ -72,7 +87,11 @@ namespace sp
 		{
 			*reinterpret_cast<word*>(this) = 0x7FFF;
 		}
-		bool	IsStartOfSlice()const
+		bool	IsUncompressed() const
+		{
+			return *reinterpret_cast<const word*>(this) == 0x7FFF;
+		}
+		bool	IsStartOfSlice() const
 		{
 			return StartOfSlice == 1;
 		}
@@ -84,8 +103,8 @@ namespace sp
 
 		word NumClearPixels:7;
 		word NumShadedPixels:7;
-		word StartOfSlice:1;  //1 for start of slice, 0 for continuation
-		word ImageWord:1;	   //0 indicates image word..?
+		word StartOfSlice:1;	//1 for start of slice, 0 for continuation
+		word ImageWord:1;	//0 indicates image word..?
 	};
 
 	template<class T>
@@ -96,7 +115,6 @@ namespace sp
 	}
 	struct ImageData3VCPI
 	{
-
 		ParticleInfo3VCPI _Description;
 		typedef std::vector<ImageChunk3VCPI> Data;
 		Data _data;
@@ -134,17 +152,15 @@ namespace sp
 			return reader;
 		}
 
-
 		bool HasTiming = in._Description.HasTimingWord() && WordsToRead >= 3;
 		if(HasTiming)
 		{
-			assert(WordsToRead >2);
+			assert(WordsToRead > 2);
 			WordsToRead -= 3;
 		}
 
 		if(WordsToRead > 0 && in.HasData())
 		{
-
 			in._data.resize(WordsToRead);
 			reader.read(reinterpret_cast<byte*>(&in._data[0]),WordsToRead*sizeof(word) );
 
@@ -175,7 +191,6 @@ namespace sp
 
 	struct ParticleRecord3VCPI: public Packet
 	{
-
 		Word		ParticleCount;
 		Word		NumSlicesInParticle;
 
