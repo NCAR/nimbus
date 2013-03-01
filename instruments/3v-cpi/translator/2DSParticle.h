@@ -81,7 +81,10 @@ namespace sp
 		void	SetMaxClear()
 		{ *reinterpret_cast<word*>(this) = 0x7FFF; }
 
-		bool	IsStartOfSlice()const
+                bool    IsUncompressed() const
+                { return *reinterpret_cast<const word*>(this) == 0x7FFF; }
+
+		bool	IsStartOfSlice() const
 		{ return StartOfSlice == 1; }
 
 		void	swapEndian()
