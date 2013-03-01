@@ -16,7 +16,7 @@ namespace sp
 		{
 		}
 		template<class Reader, class Writer>
-		void Process(Reader& f, Writer& writer);
+		void ProcessData(Reader& f, Writer& writer);
 
 	private:
 		template<class Writer>
@@ -38,7 +38,7 @@ namespace sp
 {
 
 	template<class Reader, class Writer>
-	void Device3VCPI::Process( Reader& f, Writer& writer )
+	void Device3VCPI::ProcessData( Reader& f, Writer& writer )
 	{
 		TimeStamp16	time_stamp;
 		Word		check_sum;
