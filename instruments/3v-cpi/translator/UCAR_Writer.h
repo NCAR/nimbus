@@ -16,7 +16,7 @@ namespace sp
 	template<class T>
 	inline std::ofstream& operator ^ (std::ofstream& s, T out)
 	{
-		 swap_endian_force(reinterpret_cast<byte*>(&out), sizeof(out)); //UCHAR wants data in big endian format
+		 swap_endian_force(reinterpret_cast<byte*>(&out), sizeof(out)); // UCAR wants data in big endian format
 		 s.write(reinterpret_cast<const char*>(&out),sizeof(out));
 		 return s;
 	}
@@ -230,7 +230,6 @@ namespace sp
 				_nParticlesCompleted = 0;
 				numWritten = 0;
 				_particleCount = -1;
-
 			}
 
 			template<class BufferImage>
@@ -255,11 +254,35 @@ namespace sp
 					NextParticle(nParticles);
 				}
 
-				for(typename BufferImage::const_iterator i = src.begin();i!= src.end();++i)
+				for(typename BufferImage::const_iterator i = src.begin(); i != src.end(); ++i)
 				{
 					const typename BufferImage::value_type& chunk = *i;
-					AddChunk(chunk);
+					if (chunk.GetShadedCount() == 128)
+					{
+						WriteClearEnding();
+						decompressed.resize(decompressed.size()+128, 0);
+						_slice_pixel_count += 128;
+					}
+					else
+					if (chunk.IsUncompressed())
+					{
+						WriteClearEnding();
+						size_t j, size = 16 / sizeof(word);
+						for (j = 0; j < size; ++j)
+						{
+							if (i+1 == src.end())
+								break;
+							const typename BufferImage::value_type& chunk = *(++i);
+							AddUncompressedChunk(*(word *)&chunk);
+						}
+						WriteClearEnding();
+					}
+					else
+					{
+						AddChunk(chunk);
+					}
 				}
+				WriteClearEnding();
 
 				if(asciiArt)
 				{
@@ -274,7 +297,15 @@ namespace sp
 				return bits;
 			}
 
-			void ToBits() 
+			void AddUncompressedChunk(const word chunk)
+			{
+				size_t size = sizeof(word)*8;
+				for (size_t i = 0; i < size; ++i)
+					decompressed.resize(decompressed.size()+1, ((word)chunk >> i) & 0x01);
+				_slice_pixel_count += size;
+			}
+
+			void ToBits()
 			{
 				byte b = 0;
 				for (size_t i = 0; i < decompressed.size(); ++i)
@@ -298,14 +329,13 @@ namespace sp
 			template<class Image>
 			void AddChunk( const Image &chunk ) 
 			{
-				word clearCount = chunk.GetClearCount();;
+				word clearCount = chunk.GetClearCount();
 				word shadedCount = chunk.GetShadedCount();
 
 				if (chunk.IsStartOfSlice())
 				{
 					WriteClearEnding();
 				}
-
 
 				decompressed.resize(decompressed.size()+clearCount,1); //UCAR expects 1 for clear, 0 for shaded
 				decompressed.resize(decompressed.size()+shadedCount,0);
