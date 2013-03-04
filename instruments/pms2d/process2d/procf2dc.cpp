@@ -533,7 +533,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
   double lastbuffertime, buffertime = 0, nextit = 0;
   bool firsttimeflag = true;
   float wc;
-  long last_time1hz=0, itime, isize, wsize, iit;
+  long last_time1hz=0, itime=0, isize, wsize, iit;
   struct_particle particle;
   vector<struct_particle> particle_stack;
   char probetype = probe.id[0];  
@@ -648,7 +648,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
        firsttimeflag = true;
 
      if (cfg.debug)
-          cout << "New buffer : " << fixed << buffertime-1338900000 << " msec=" << ntohs(buffer.msec) << " : " << firsttimeline <<"\n";
+       cout << "New buffer : " << fixed << buffertime << " msec=" << ntohs(buffer.msec) << endl;
 
      // Scroll through each slice, look for sync/time slices
      for (int islice = 0; islice < slicesPerRecord; islice++)
@@ -819,10 +819,12 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
            slice_count=min(slice_count+1, slicesPerRecord-1);  // Increment slice_count, limit to 511
         }
      } // end slice loop
+
      if (!cfg.verbose && (buffcount % 100 == 0))
        cout	<< ntohs(buffer.hour) << ':' << ntohs(buffer.minute)
-		<< ':' << ntohs(buffer.second) << " - " << buffcount
-		<< " records, itime=" << itime << "   \r" << flush;
+		<< ':' << ntohs(buffer.second) << "." << ntohs(buffer.msec)
+		<< " - " << buffcount << " records    \r" << flush;
+
   } // end buffer loop
  
   // Close raw data file
