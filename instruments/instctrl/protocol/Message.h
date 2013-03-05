@@ -9,14 +9,21 @@ namespace Protocols {
     ///
     /// The JsonCpp package is used for json encoding and decoding. See
     /// http://jsoncpp.sourceforge.net for the documentation
-    class Message {
+    class Message
+    {
 	public:
+    	enum MESSAGE_TYPE { SYS, INST };
 		/// Create a message from supplied parameters.
-		Message(std::string instrumentId, std::string msgId, std::string messageText);
+		Message(MESSAGE_TYPE msgType,
+				std::string  instrumentId,
+				std::string  msgId,
+				std::string  messageText);
 		/// Create a message from a json text string.
 		Message(std::string jsonString);
 		/// Destructor
 		virtual ~Message();
+		/// @return The message type
+		MESSAGE_TYPE msgType();
 		/// @return The message identifier
 		std::string msgId();
 		/// @return As a Json::Value
@@ -32,12 +39,14 @@ namespace Protocols {
 		static std::string extractId(std::string s);
 
 	protected:
-		/// The message payload
-		MessagePayload _payload;
+		/// The message type, i.e. SYS vs INST
+		MESSAGE_TYPE _msgType;
 		/// The instrument identity
 		std::string _instrumentId;
 		/// The message identity
 		std::string _msgId;
+		/// The message payload
+		MessagePayload _payload;
 	};
 };
 

@@ -81,7 +81,7 @@ void EmbeddedProxy::udpReadyRead()
 		// Extract the message id from the datagram
 		std::string msgId = Protocols::Message::extractId(text);
 		if (msgId.size() > 0) {
-			Protocols::Message message(_proxyId, msgId, text);
+			Protocols::Message message(Protocols::Message::INST, _proxyId, msgId, text);
 
 			if (_verbose)
 				qDebug() << message.toJsonStdString().c_str();

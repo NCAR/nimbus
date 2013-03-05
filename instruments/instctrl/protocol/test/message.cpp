@@ -8,7 +8,7 @@ int main(int argc, char** argv) {
 
 	// create a Message
 	std::cout << "message 1:" << std::endl;
-	Message message1("sender", "recipient", "this is a test message");
+	Message message1(Message::INST, "sender", "recipient", "this is a test message");
 	std::cout << message1.toJsonStdString() << std::endl;;
 
 	// get the stringified json encoding of the message

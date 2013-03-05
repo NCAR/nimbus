@@ -254,7 +254,7 @@ void SslProxy::udpReadyRead()
 			/// @todo Change the logic to search _messages to find the
 			/// instrument name. Right now we will just use the first
 			/// message that we have.
-			Message msg(_proxyID, id, QString(data).toStdString());
+			Message msg(Message::INST, _proxyID, id, QString(data).toStdString());
 
 			// send the message via the SSL connection, if it is open.
 			if (_sslConnection) {
