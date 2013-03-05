@@ -96,7 +96,7 @@ _msgsFromProxiesDropped(0)
 		}
 
 		// Create an embedded proxy server
-		_server = new EmbeddedProxyServer(instConfigs, _verbose);
+		_server = new EmbeddedProxyServer(instConfigs);
 
 		_logger.log("EmbeddedProxy switch was initialized");
 	}

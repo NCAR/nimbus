@@ -18,8 +18,7 @@ class EmbeddedProxy: public QObject {
 public:
 	/// Constructor.
 	/// @param config The configuration for the instrument that connects to the proxy
-	/// @param verbose True to print messages passing through the proxy
-	EmbeddedProxy(InstConfig& config, bool verbose);
+	EmbeddedProxy(InstConfig& config);
 	/// destructor.
 	virtual ~EmbeddedProxy();
 	/// @return the ID of proxy
@@ -63,8 +62,6 @@ protected:
 	int _destPort;
 	/// The outgoing datagram socket.
 	QUdpSocket* _outgoingUdpSocket;
-	/// Ture to print message passing through the proxy
-	bool _verbose;
 
 };
 

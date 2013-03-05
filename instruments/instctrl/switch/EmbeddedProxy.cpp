@@ -1,8 +1,7 @@
 #include "EmbeddedProxy.h"
 
 /////////////////////////////////////////////////////////////////////
-EmbeddedProxy::EmbeddedProxy(InstConfig& config, bool verbose) :
-_verbose(verbose)
+EmbeddedProxy::EmbeddedProxy(InstConfig& config)
 {
 	_proxyId         = config.instrumentName();
 	_incomingUdpPort = config.incomingPort();
@@ -82,9 +81,6 @@ void EmbeddedProxy::udpReadyRead()
 		std::string msgId = Protocols::Message::extractId(text);
 		if (msgId.size() > 0) {
 			Protocols::Message message(Protocols::Message::INST, _proxyId, msgId, text);
-
-			if (_verbose)
-				qDebug() << message.toJsonStdString().c_str();
 
 			// Tell the world that there is a new message!
 			emit msgFromProxy(message);

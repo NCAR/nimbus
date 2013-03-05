@@ -85,15 +85,17 @@ bool RateLimiter::checkLimit(Protocols::Message msg)
 	bool okFlag;
 	if (_okFlags.find(msgId) != _okFlags.end()) {
 		okFlag = *_okFlags[msgId];
-		// If the message has a rate limit of 0, always forward it
-		if (*_timers[msgId] == -1.0)
+		if (*_timers[msgId] == -1.0) {
+			// If the message has a rate limit of 0, always forward it
 			okFlag = true;
-		else
+		}
+		else {
 			// Set the OK flag to false for this message type
 			*_okFlags[msgId] = false;
+		}
 	}
 	else {
-		// This is an unknown message type, pass it anyway
+		// This is an unknown message type, forward it anyway
 		okFlag = true;
 	}
 

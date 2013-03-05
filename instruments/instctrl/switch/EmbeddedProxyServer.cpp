@@ -1,15 +1,14 @@
 #include "EmbeddedProxyServer.h"
 
 /////////////////////////////////////////////////////////////////////
-EmbeddedProxyServer::EmbeddedProxyServer(std::vector<InstConfig> instConfigs,
-										 bool verbose) throw(std::string)
+EmbeddedProxyServer::EmbeddedProxyServer(std::vector<InstConfig> instConfigs) throw(std::string)
 {
 	// Create one proxy for each instrument
 	for (int i = 0; i < instConfigs.size(); i++) {
 		InstConfig instConfig = instConfigs[i];
 		std::cout << "Create embedded proxy for " << instConfig.instrumentName() << std::endl;
 		// Create a proxy for the instrument
-		_proxy = new EmbeddedProxy(instConfig, verbose);
+		_proxy = new EmbeddedProxy(instConfig);
 
 		// Build message routing table
 		std::vector<InstConfig::MessageInfo> instMessages = instConfig.messages();

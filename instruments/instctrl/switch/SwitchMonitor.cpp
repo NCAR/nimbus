@@ -20,7 +20,6 @@ _lastToSwitch(0),
 _lastFromProxies(0),
 _lastToProxies(0),
 _lastFromProxiesDropped(0)
-
 {
 	// Don't allow nonsense reporting rates
 	if (_reportRateSeconds <= 0) {
@@ -33,17 +32,16 @@ _lastFromProxiesDropped(0)
 
 	// Start timer.
 	_reportTimer.start();
-
 }
 
 /////////////////////////////////////////////////////////////////////
-SwitchMonitor::~SwitchMonitor() {
-
+SwitchMonitor::~SwitchMonitor()
+{
 }
 
 /////////////////////////////////////////////////////////////////////
-void SwitchMonitor::reportSlot() {
-
+void SwitchMonitor::reportSlot()
+{
 	int fromSwitchDelta = _fromSwitch - _lastFromSwitch;
 	int toSwitchDelta   = _toSwitch   - _lastToSwitch;
 	int fromProxyDelta  = _fromProxies  - _lastFromProxies;

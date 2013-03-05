@@ -16,8 +16,7 @@ class EmbeddedProxyServer: public ProxyServer {
 public:
 	/// @param instFiles A list of instrument configuration files.
 	/// One proxy will be created for each instrument file.
-	/// @param verbose True to print messages passing through the proxy
-	EmbeddedProxyServer(std::vector<InstConfig> instConfigs, bool verbose) throw(std::string);
+	EmbeddedProxyServer(std::vector<InstConfig> instConfigs) throw(std::string);
 	/// Destructor.
 	virtual ~EmbeddedProxyServer();
 	/// Send a message to a client proxy
