@@ -140,6 +140,7 @@ string getGlobalAttribute(PGconn *conn, string attr)
   if (ntuples == 0)
   {
     cerr << "No global attribute " << attr << "!\n";
+    PQclear(res);
     return "";
   }
   string s = extractPQString(res, 0, 0);
@@ -159,6 +160,7 @@ string getVariableUnits(PGconn *conn, string name)
   if (ntuples == 0)
   {
     cerr << "No variable named: " << name << "!\n";
+    PQclear(res);
     return "";
   }
   string s = extractPQString(res, 0, 0);
