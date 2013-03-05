@@ -45,6 +45,8 @@ public:
 	/// Destructor
 	virtual ~Switch();
 	
+	virtual void timerEvent(QTimerEvent* event);
+
 protected slots:
 	/// Handle a new message from a proxy.
 	/// @param The incoming message from the proxy.
@@ -58,6 +60,10 @@ protected:
 	void init();
 	/// Set up rate limiter for the switch
 	void setRateLimiter(SwitchConfig* config);
+	/// Send a SYS message to remote switch
+	/// @param msgId The SYS message ID
+	/// @param text The SYS message content
+	void sendSysMsg(std::string msgId, std::string text="");
 	/// The server that manages the connections to the proxies.
 	ProxyServer* _server;
 	/// The connection between us and the remote switch
@@ -68,6 +74,9 @@ protected:
 	RateLimiter* _rateLimiter;
 	/// The logging facility
 	RicLogger _logger;
+	/// If if the switch is an SSL proxy switch, otherwise the
+	/// switch is an embedded proxy switch.
+	bool _SslProxy;
 	/// Ture to print message passing through the switch
 	bool _verbose;
 	/// The total number of messages to remote switch.
@@ -80,6 +89,8 @@ protected:
 	int _msgsFromProxies;
 	/// The total number of messages from proxies that got dropped
 	int _msgsFromProxiesDropped;
+	/// The heartbeat timer
+	int _heartbeat;
 
 };
 

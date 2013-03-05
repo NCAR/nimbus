@@ -29,6 +29,10 @@ EmbeddedProxyServer::~EmbeddedProxyServer()
 /////////////////////////////////////////////////////////////////////
 void EmbeddedProxyServer::sendToProxy(Protocols::Message message)
 {
+	// Do not forward SYS message to the instrument
+	if (message.msgType() == Protocols::Message::SYS)
+		return;
+
 	// Get the message identifier
 	std::string msgID = message.msgId();
 

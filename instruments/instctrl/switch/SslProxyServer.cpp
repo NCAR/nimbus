@@ -213,6 +213,17 @@ void SslProxyServer::sendToProxy(Protocols::Message msg) {
 	// Get the message identifier
 	std::string msgID = msg.msgId();
 
+	// If a switch RESPONSE message, forward it to all connections.
+	if (msg.msgId() == "RESPONSE") {
+		std::map<std::string, ConnectionList>::iterator it;
+		for (it = _msgRouting.begin(); it != _msgRouting.end(); it++) {
+			for (ConnectionList::iterator i = it->second.begin();
+					i != it->second.end(); i++) {
+				(*i)->send(msg);
+			}
+		}
+	}
+
 	// See if it is in our list of accepted messages
 	if (_msgRouting.find(msgID) != _msgRouting.end()) {
 		// It is a message we are interested in. Send it to the connections.
