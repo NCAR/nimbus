@@ -1,7 +1,7 @@
 Summary: Spec file for xpms2d
 Name: xpms2d
 Version: 2.6
-Release: 0
+Release: 1
 License: GPL
 Group: System Environment/Daemons
 Url: http://www.eol.ucar.edu/
@@ -9,7 +9,7 @@ Packager: Chris Webster <cjw@ucar.edu>
 # becomes RPM_BUILD_ROOT
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Vendor: UCAR
-BuildArch: i386
+BuildArch: x86_64
 Requires: openmotif libpng
 Source: ftp://ftp.eol.ucar.edu/pub/archive/RAF-src/%{name}.tar.gz
 
