@@ -664,8 +664,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
            if (memcmp(&buffer.image[(islice*bytesPerSlice)+bytesPerSlice-3], syncString, 3) == 0) {
               timeline = slice & 0x000000ffffffffffULL;
               timeline_divisor = 2.0e+07;
-              if (timeline > lasttimeline)
-                syncWord = true;
+              syncWord = true;
            }
         }
         else				// Fast2D C/P
@@ -691,8 +690,9 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
            else difftimeline=timeline-firsttimeline;
 
            // Process the roi
-           long time1hz = (long)(lastbuffertime+difftimeline / (timeline_divisor));
-           if (time1hz >= cfg.starttime){
+           long time1hz = min((long)(lastbuffertime+difftimeline / (timeline_divisor)), (long)buffertime);
+
+           if (time1hz >= cfg.starttime) {
               particle=findsize(roi, slice_count, probe.nDiodes, probe.resolution);
               particle.holearea=fillholes2(roi, slice_count, probe.nDiodes);           
               particle.inttime=(timeline - lasttimeline) / timeline_divisor;
