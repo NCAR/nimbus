@@ -1117,15 +1117,15 @@ void processArgs(int argc, char *argv[], Config & config)
   for (int i = 1; i < argc; i++)
   {
      string arg = argv[i];
-     if ((arg.find("-sta")!=string::npos) && (i<(argc-1))) config.starttime=atoi(argv[++i]); else
-     if ((arg.find("-sto")!=string::npos) && (i<(argc-1))) config.stoptime=atoi(argv[++i]); else
-     if (arg.find("-n")!=string::npos) config.shattercorrect=0; else
-     if (arg.find("-a")!=string::npos) config.recon=0; else
-     if (arg.find("-x")!=string::npos) config.smethod='x'; else
-     if (arg.find("-y")!=string::npos) config.smethod='y'; else
-     if (arg.find("-v")!=string::npos) config.verbose=1; else
-     if (arg.find("-d")!=string::npos) config.debug=1; else
-     if (arg.find("-o")!=string::npos) config.outputFile=argv[++i]; else
+     if ((arg.find("-sta") == 0) && (i<(argc-1))) config.starttime=atoi(argv[++i]); else
+     if ((arg.find("-sto") == 0) && (i<(argc-1))) config.stoptime=atoi(argv[++i]); else
+     if (arg.find("-n") == 0) config.shattercorrect=0; else
+     if (arg.find("-a") == 0) config.recon=0; else
+     if (arg.find("-x") == 0) config.smethod='x'; else
+     if (arg.find("-y") == 0) config.smethod='y'; else
+     if (arg.find("-v") == 0) config.verbose=1; else
+     if (arg.find("-d") == 0) config.debug=1; else
+     if (arg.find("-o") == 0) config.outputFile=argv[++i]; else
      config.inputFile = arg;
   }
 }
