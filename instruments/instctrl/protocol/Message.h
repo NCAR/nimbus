@@ -50,6 +50,4 @@ namespace Protocols {
 	};
 };
 
-
-
 #endif /* MESSAGE_H_ */

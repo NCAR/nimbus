@@ -103,7 +103,7 @@ _msgsFromProxiesDropped(0)
 	}
 
 	// Start switch heartbeat
-	sendSysMsg("HEARTBEAT", "Heartbeat");
+	sendSysMsg("HEARTBEAT");
 	_heartbeat = startTimer(reportPeriodSecs * 1000);
 	
 	// Initialize the switch
@@ -132,7 +132,7 @@ Switch::~Switch()
 void Switch::timerEvent(QTimerEvent* event)
 {
 	if (event->timerId() == _heartbeat)
-		sendSysMsg("HEARTBEAT", "Heartbeat");
+		sendSysMsg("HEARTBEAT");
 }
 
 /////////////////////////////////////////////////////////////////////

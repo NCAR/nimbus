@@ -44,9 +44,10 @@ Json::Value Message::toJson()
 {
 	Json::Value root;
 
+	root["msgType"] = _msgType;
 	if (!_instrumentId.empty())
 		root["instId"]  = _instrumentId.c_str();
-	root["msgId"]   = _msgId.c_str();
+	root["msgId"] = _msgId.c_str();
 	if (!_payload.text().empty())
 		root["payload"] = _payload.toJson();
 
