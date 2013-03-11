@@ -183,24 +183,24 @@ void ProxyMainWindow::proxyStateChangedSlot(Ssl::SslProxy::ProxyState state)
 {
 	switch (state) {
 	case Ssl::SslProxy::PROXY_Unconnected:
-		_proxyStatus->setText("Unconnected");
-		_proxyStatus->setStyleSheet(_red);
+		_sslStatus->setText("Unconnected");
+		_sslStatus->setStyleSheet(_red);
 		_proxyState = Ssl::SslProxy::PROXY_Unconnected;
 		_connect->setText("Connect");
 		_connect->setEnabled(true);
 		break;
 
 	case Ssl::SslProxy::PROXY_Connecting:
-		_proxyStatus->setText("Connecting...");
-		_proxyStatus->setStyleSheet(_yellow);
+		_sslStatus->setText("Connecting...");
+		_sslStatus->setStyleSheet(_yellow);
 		_connect->setText("Cancel");
 		_proxyState = Ssl::SslProxy::PROXY_Connecting;
 		_connect->setEnabled(true);
 		break;
 
 	case Ssl::SslProxy::PROXY_Connected:
-		_proxyStatus->setText("Connected");
-		_proxyStatus->setStyleSheet(_green);
+		_sslStatus->setText("Connected");
+		_sslStatus->setStyleSheet(_green);
 		_connect->setText("Disconnect");
 		_proxyState = Ssl::SslProxy::PROXY_Connected;
 		_connect->setEnabled(true);
@@ -250,5 +250,5 @@ void ProxyMainWindow::setHeartbeatAge()
 		text += "</font></p>";
 	}
 
-	_responseAge->setText(text);
+	_heartbeatAge->setText(text);
 }
