@@ -43,11 +43,26 @@ _yellow (tr("background-color: #EEEE00"))
 
 	// Handle "Stay On Top" selection
 	connect(_onTop, SIGNAL(stateChanged(int)), this, SLOT(stayOnTop()));
+
+	// start the timer for updating the remote heartbeat age display
+	_rhbTimerId = startTimer(1000);
+	// initialize the remote heartbeat age display
+	setHeartbeatAge();
 }
 
 /////////////////////////////////////////////////////////////////////
 ProxyMainWindow::~ProxyMainWindow()
 {
+	killTimer(_rhbTimerId);
+}
+
+/////////////////////////////////////////////////////////////////////
+void ProxyMainWindow::timerEvent(QTimerEvent* event)
+{
+	if (event->timerId() == _rhbTimerId) {
+		// update the remote heartbeat ags display
+		setHeartbeatAge();
+	}
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -140,6 +155,12 @@ void ProxyMainWindow::connectSlot()
 /////////////////////////////////////////////////////////////////////
 void ProxyMainWindow::switchMessageSlot(std::string s, bool valid)
 {
+	// Get latest remote heartbeat time
+	if (s.find("RESPONSE") != std::string::npos) {
+		_lastRhbTime = QDateTime::currentDateTime();
+		return;
+	}
+
 	if (valid) {
 		_validFromSwitch->setText(s.c_str());
 	} else {
@@ -199,4 +220,35 @@ void ProxyMainWindow::proxyErrorSlot(QAbstractSocket::SocketError err, std::stri
 
 	// Show the error message in the status bar
 	statusBar()->showMessage(tr(errmsg.c_str()));
+}
+
+/////////////////////////////////////////////////////////////////////
+void ProxyMainWindow::setHeartbeatAge()
+{
+	// get the current time
+	QDateTime currentTime = QDateTime::currentDateTime();
+
+	QString text("<p>Time Since<br/>Last Remote<br/>Heartbeat<br/>");
+
+	if (_lastRhbTime == QDateTime()) {
+		text += "<font color=\"red\">never</font></p>";
+	} else {
+		int delta = currentTime.toTime_t() - _lastRhbTime.toTime_t();
+		if (delta == 0) delta = 1;
+		QTime t = QTime().addSecs(delta);
+		text += "<font color=\"";
+
+		if (delta < 300) {
+			text += "green";
+		} else if (delta < 600) {
+			text += "blue";
+		} else {
+			text += "red";
+		}
+		text += "\">";
+		text += t.toString("hh:mm:ss");
+		text += "</font></p>";
+	}
+
+	_responseAge->setText(text);
 }

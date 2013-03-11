@@ -28,6 +28,8 @@ public:
 	/// Destructor
 	virtual ~ProxyMainWindow();
 
+	virtual void timerEvent(QTimerEvent* event);
+
 public slots:
 	/// Called when a new message is received from the switch. The text
 	/// is displayed as the most recent instrument message.
@@ -60,6 +62,9 @@ signals:
 	void disconnectFromServer();
 
 protected:
+	/// Set the remote heartbeat age
+	void setHeartbeatAge();
+
 	/// The SSL proxy that manages the SSL connection to the switch and
 	/// the reading and writing of the UDP datagrams.
 	SslProxy& _sslProxy;
@@ -83,6 +88,10 @@ protected:
 	QString _yellow;
 	int _width;
 	int _height;
+	/// The last time that a remote heartbeat is received
+	QDateTime _lastRhbTime;
+	/// Timer id for updating the remote heartbeat age display
+	int _rhbTimerId;
 
 };
 

@@ -199,7 +199,7 @@ void SslProxy::connectionStateChangedSlot(Ssl::SslConnection* connection,
 		break;
 	}
 	case SslSocket::SS_Connected: {
-		// SS_Connected  is an intermediate condition when the socket is
+		// SS_Connected is an intermediate condition when the socket is
 		// connected but before the handshake is completed.
 		break;
 	}
@@ -208,6 +208,7 @@ void SslProxy::connectionStateChangedSlot(Ssl::SslConnection* connection,
 			_proxyState = PROXY_Connected;
 			// Pass on the state change.
 			emit proxyStateChanged(_proxyState);
+			_logger.log("SSL connection was encrypted");
 		}
 		break;
 	}
@@ -217,6 +218,7 @@ void SslProxy::connectionStateChangedSlot(Ssl::SslConnection* connection,
 			closeSslConnection();
 			// Pass on the state change.
 			emit proxyStateChanged(_proxyState);
+			_logger.log("SSL connection was disconnected");
 		}
 		break;
 	}
@@ -279,7 +281,11 @@ void SslProxy::msgFromServerSlot(Protocols::Message msg)
 	if (_imessages.find(msgId) != _imessages.end()) {
 		sendMsg(_imessages[msgId], msg);
 		emit switchMessage(msg.payload().text(), true);
-	} else {
+	}
+	else if (msgId == "RESPONSE") {
+		emit switchMessage("RESPONSE", false);
+	}
+	else {
 		emit switchMessage(msg.payload().text(), false);
 	}
 }
