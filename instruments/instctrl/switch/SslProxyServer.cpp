@@ -215,13 +215,9 @@ void SslProxyServer::sendToProxy(Protocols::Message msg) {
 
 	// If a switch RESPONSE message, forward it to all connections.
 	if (msgID == "RESPONSE") {
-		std::map<std::string, ConnectionList>::iterator it;
-		for (it = _msgRouting.begin(); it != _msgRouting.end(); it++) {
-			for (ConnectionList::iterator i = it->second.begin();
-					i != it->second.end(); i++) {
-				(*i)->send(msg);
-			}
-		}
+		std::multiset<Ssl::SslConnection*>::iterator it;
+		for (it = _connections.begin(); it != _connections.end(); it++)
+			(*it)->send(msg);
 	}
 
 	// See if it is in our list of accepted messages
