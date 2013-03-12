@@ -102,7 +102,7 @@ _msgsFromProxiesDropped(0)
 		_logger.log("EmbeddedProxy switch was initialized");
 	}
 
-	// Start switch heartbeat
+	// Send a heartbeat and start switch heartbeat timer
 	sendSysMsg("HEARTBEAT");
 	_heartbeat = startTimer(reportPeriodSecs * 1000);
 	
@@ -190,11 +190,20 @@ void Switch::sendSysMsg(std::string msgId, std::string text)
 /////////////////////////////////////////////////////////////////////
 void Switch::msgFromProxySlot(Protocols::Message message)
 {
+	// A message has been received from the proxy
 	if (_verbose) {
 		std::cout << message.toJsonStdString() << std::endl;
 	}
 
-	// A message has been received from the proxy
+	// The SSL proxy switch will send a HEARTBEAT message
+	// to the remote switch when receiving a SYS message
+	// (i.e REQUEST) from the proxy.
+	if (_SslProxy && message.msgType() == Protocols::Message::SYS) {
+		sendSysMsg("HEARTBEAT");
+		// Do not forward the REQUEST message to the remote switch
+		return;
+	}
+
 	_msgsFromProxies++;
 
 	if (_rateLimiter->checkLimit(message)) {
@@ -220,8 +229,9 @@ void Switch::msgFromRemoteSwitch(Protocols::Message message)
 		std::cout << message.toJsonStdString() << std::endl;
 	}
 
-	// The embedded proxy switch send a RESPONSE message to the
-	// remote switch when receiving a SYS message (i.e HEARTBEAT)
+	// The embedded proxy switch will send a RESPONSE message
+	// to the remote switch when receiving a SYS message (i.e
+	// HEARTBEAT) from the remote switch.
 	if (!_SslProxy && message.msgType() == Protocols::Message::SYS)
 		sendSysMsg("RESPONSE", "Response");
 

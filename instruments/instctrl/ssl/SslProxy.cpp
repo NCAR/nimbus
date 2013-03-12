@@ -199,8 +199,8 @@ void SslProxy::connectionStateChangedSlot(Ssl::SslConnection* connection,
 		break;
 	}
 	case SslSocket::SS_Connected: {
-		// SS_Connected is an intermediate condition when the socket is
-		// connected but before the handshake is completed.
+		// SS_Connected is an intermediate condition when the
+		// socket is connected but before the handshake is completed.
 		break;
 	}
 	case SslSocket::SS_Encrypted: {
@@ -209,6 +209,16 @@ void SslProxy::connectionStateChangedSlot(Ssl::SslConnection* connection,
 			// Pass on the state change.
 			emit proxyStateChanged(_proxyState);
 			_logger.log("SSL connection was encrypted");
+
+			// Once proxy is connected, send a SYS message to the
+			// connected switch to REQUEST (force) a heartbeat to
+			// the remote switch. In this way, the proxy can provide
+			// status update of the remote switch when started.
+			Protocols::Message msg(Protocols::Message::SYS, _proxyID, "REQUEST", "");
+			// send the message via the SSL connection, if it is open.
+			if (_sslConnection) {
+				_sslConnection->send(msg);
+			}
 		}
 		break;
 	}
