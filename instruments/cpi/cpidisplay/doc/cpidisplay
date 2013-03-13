@@ -31,7 +31,7 @@ line 126 contains the directory where the scale.gif image resides.  In
 cpiread.pro, line 204 contains the directory where the gif images that are
 created are placed. 
 
-cpi is the program that users ican run to put them in the directory where the
+cpi is the program that users can run to put them in the directory where the
 cpidisplay.sav file resides.  It also starts idl for them, then they just have 
 to enter cpidisplay to run the program.
 
