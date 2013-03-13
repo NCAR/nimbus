@@ -129,6 +129,7 @@ pro cpiread, finfo
       type:0U, startx:0U, starty:0U, endx:0U, endy:0U, $
       info:bytarr(74)} 
    H = {HOUSEKEEPING, blksize:0UL, version:0U, info:bytarr(98)} 
+   H2 = {HOUSEKEEPING2, blksize:0UL, version:0U, info:bytarr(172)} 
    R = {ROIIMAGE, blksize:0UL, version:0U, startx:0U, starty:0U,  $
       endx:0U, endy:0U, pixbytes:0, flags:0U, length:0.0, $
       startlen:0UL, endlen:0UL, width:0.0, startwidth:0UL, $
@@ -149,6 +150,10 @@ pro cpiread, finfo
          'A1D7'XU: BEGIN
             finfo.badcount = 0
             readu, finfo.indata, H
+         END
+         'A1D9'XU: BEGIN
+            finfo.badcount = 0
+            readu, finfo.indata, H2
          END
 ; ROI Image
          'B2E6'XU: BEGIN
