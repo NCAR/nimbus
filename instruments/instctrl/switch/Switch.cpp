@@ -233,7 +233,7 @@ void Switch::msgFromRemoteSwitch(Protocols::Message message)
 	// to the remote switch when receiving a SYS message (i.e
 	// HEARTBEAT) from the remote switch.
 	if (!_SslProxy && message.msgType() == Protocols::Message::SYS)
-		sendSysMsg("RESPONSE", "Response");
+		sendSysMsg("RESPONSE");
 
 	_msgsFromSwitch++;
 	_msgsToProxies++;
