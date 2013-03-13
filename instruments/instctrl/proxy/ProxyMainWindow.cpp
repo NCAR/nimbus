@@ -228,7 +228,7 @@ void ProxyMainWindow::setHeartbeatAge()
 	// get the current time
 	QDateTime currentTime = QDateTime::currentDateTime();
 
-	QString text("<p>Time Since<br/>Last Remote<br/>Heartbeat<br/>");
+	QString text("<p>Time Since Last<br/>Remote Heartbeat<br/>");
 
 	if (_lastRhbTime == QDateTime()) {
 		text += "<font color=\"red\">never</font></p>";
