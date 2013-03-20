@@ -39,7 +39,7 @@ static float	fsspDefSize[] =
 
 
 /* -------------------------------------------------------------------- */
-Probe::Probe(NcFile *file, NcVar *av) : _avar(av), _firstBin(0), _lastBin(VectorLength())
+Probe::Probe(NcFile *file, NcVar *av) : _avar(av), _firstBin(0), _lastBin(VectorLength()), _missing_value(-32767)
 {
   std::string	cname;
   int		i;
@@ -150,6 +150,9 @@ Probe::Probe(NcFile *file, NcVar *av) : _avar(av), _firstBin(0), _lastBin(Vector
 
   if ((attr = _avar->get_att("SerialNumber")))
     _serialNum = attr->as_string(0);
+
+  if ((attr = _avar->get_att("_FillValue")))
+    _missing_value = attr->as_float(0);
 
   if ((attr = _cvar->get_att("FirstBin")) || (attr = _avar->get_att("FirstBin")))
     _firstBin = attr->as_short(0);

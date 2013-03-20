@@ -34,7 +34,7 @@ public:
 
   size_t VectorLength() const	{ return(_vectorLength); }
   size_t DataRate() const	{ return(_dataRate); }
-  float FillValue() const	{ return -32767.0; }
+  float FillValue() const	{ return _missing_value; }
 
   short	FirstBin() const	{ return(_firstBin); }
   short	LastBin() const		{ return(_lastBin); }
@@ -77,6 +77,7 @@ protected:
   std::string	_name;
   std::string	_serialNum;
   std::string	_units;
+  float		_missing_value;
 
   size_t _vectorLength;
   size_t _dataRate;
