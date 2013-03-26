@@ -19,7 +19,7 @@ TwoDS::TwoDS(NcFile *file, NcVar *av) : TwoD(file, av)
   if (_resolution == 0)
     _resolution = 0.010;
   if (_armDistance == 0)
-    _resolution = 61;	// @todo this needs verification.
+    _armDistance = 50.8;
 }
 
 /* -------------------------------------------------------------------- */
