@@ -17,52 +17,79 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2012
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <map>
 #include <string>
 #include <unistd.h>
 
 #include <netinet/in.h>
 
-#include </opt/local/include/raf/header.h>
+#include "/opt/local/include/raf/header.h"
 
+using namespace std;
 
 char	buffer[50000];
-bool	hdrsOnly = false;
 
-int Output(char buff[]);
+class Config
+{
+public:
+  Config() : fullHex(false), histo(false) { }
+
+  bool	fullHex;
+  bool	histo;
+
+  string sourceFile;
+} cfg;
+
+void Output(char buff[]);
+void ParticleCount(P2d_rec *p2d, int nDiodes);
 
 
 void Usage()
 {
-  fprintf(stderr, "Usage: oapinfo [-t] file.2d\n");
+  std::cerr << "Usage: oapinfo [-h] [-c] file.2d" << std::endl;
+  std::cerr << "  -x: full hex dump of each record." << std::endl;
+  std::cerr << "  -c: histogram count totals, per record and per second." << std::endl;
   exit(1);
 }
 
 /* -------------------------------------------------------------------- */
-int main(int argc, char *argv[])
+void processArgs(int argc, char *argv[])
 {
-  int	rc, nBytes, aCnt = 1;
-  std::string	sourceFile;
-  FILE *fp;
-
   if (argc < 2)
     Usage();
 
-
-  if (strcmp(argv[aCnt], "-t") == 0)
+  for (size_t aCnt = 1; aCnt < argc; ++aCnt)
   {
-    aCnt++;
-    hdrsOnly = true;
+    if (argv[aCnt][0] == '-')
+    {
+      if (strcmp(argv[aCnt], "-x") == 0)
+        cfg.fullHex = true;
+      else
+      if (strcmp(argv[aCnt], "-c") == 0)
+        cfg.histo = true;
+      else
+        Usage();
+    }
+    else
+      cfg.sourceFile = argv[aCnt];
   }
 
-  if (argc <= aCnt)
+  if (cfg.sourceFile.length() == 0)
     Usage();
+}
 
-  sourceFile = argv[aCnt];
 
+/* -------------------------------------------------------------------- */
+int main(int argc, char *argv[])
+{
+  int	rc, nBytes;
+  FILE *fp;
 
-  if ((fp = fopen(sourceFile.c_str(), "rb")) == NULL)
+  processArgs(argc, argv);
+
+  if ((fp = fopen(cfg.sourceFile.c_str(), "rb")) == NULL)
   {
-    std::cerr << "Unable to open input file : " << sourceFile << std::endl;
+    std::cerr << "Unable to open input file : " << cfg.sourceFile << std::endl;
     exit(1);
   }
 
@@ -87,7 +114,7 @@ int main(int argc, char *argv[])
 }	/* END MAIN */
 
 /* -------------------------------------------------------------------- */
-int Output(char buff[])
+void Output(char buff[])
 {
   P2d_rec *p2d = (P2d_rec *)buffer;
   int nDiodes = 0;
@@ -115,12 +142,15 @@ int Output(char buff[])
       std::cout << "Unrecognized record id=" << buff[0] << buff[1] << std::endl;
   }
 
-  printf("  %c%c %02d:%02d:%02d.%03d, tas=%d  %x\n",
+  if (cfg.histo)
+    ParticleCount(p2d, nDiodes);
+  else
+    printf("  %c%c %02d:%02d:%02d.%03d, tas=%d  %x\n",
 	((char*)p2d)[0], ((char*)p2d)[1],
 	ntohs(p2d->hour), ntohs(p2d->minute), ntohs(p2d->second), ntohs(p2d->msec),
 	ntohs(p2d->tas), ((short*)p2d->data)[0]);
 
-  if (hdrsOnly == false)
+  if (cfg.fullHex)
   {
     int bytesPerSlice = nDiodes / 8;
     int nSlices = 4096 / bytesPerSlice;
@@ -133,4 +163,69 @@ int Output(char buff[])
       printf("\n");
     }
   }
+}
+
+/* -------------------------------------------------------------------- */
+void OutputParticleCount(P2d_hdr *p, size_t counts[], size_t n)
+{
+  int total = 0;
+
+  printf("%02d:%02d:%02d - ", ntohs(p->hour), ntohs(p->minute), ntohs(p->second));
+  for (int i = 0; i < n; ++i)
+  {
+     printf("%d ", counts[i]);
+     total += counts[i];
+  }
+
+  printf(" - total = %d\n", total);
+}
+
+/* -------------------------------------------------------------------- */
+static const char syncWord[] = { 0xAA, 0xAA, 0xAA };
+static const size_t nSyncB = 3;
+
+
+void ParticleCount(P2d_rec *p2d, int nDiodes)
+{
+  static bool firstTime = true;
+  static size_t	perSecondCounts[512], sizeCounter = 0;
+  static P2d_hdr prevRec;
+  size_t recordCounts[512];
+
+  if (firstTime)
+  {
+    firstTime = false;
+    memset((void *)perSecondCounts, 0, sizeof(perSecondCounts));
+  }
+
+  memset(recordCounts, 0, sizeof(recordCounts));
+  
+  // Output 1 second totals.
+  if (memcmp((void *)&p2d->hour, (void *)&prevRec.hour, 6) != 0)
+  {
+    OutputParticleCount(&prevRec, perSecondCounts, nDiodes);
+    memset((void *)perSecondCounts, 0, sizeof(perSecondCounts));
+    printf("\n");
+  }
+
+  int bytesPerSlice = nDiodes / 8;
+  int nSlices = 4096 / bytesPerSlice;
+  for (int i = 0; i < nSlices; ++i)
+  {
+    // Check both little and big endian.
+    if (memcmp(&p2d->data[i*bytesPerSlice+bytesPerSlice-3], syncWord, nSyncB) == 0 ||
+        memcmp(&p2d->data[i*bytesPerSlice], syncWord, nSyncB) == 0)
+    {
+      if (sizeCounter > 511) sizeCounter = 511;
+      ++perSecondCounts[sizeCounter];
+      ++recordCounts[sizeCounter];
+      sizeCounter = 0;
+    }
+    else
+      ++sizeCounter;
+  }
+
+  printf("%c%c - ", ((char*)p2d)[0], ((char*)p2d)[1]);
+  OutputParticleCount((P2d_hdr *)p2d, recordCounts, nDiodes);
+  memcpy((void *)&prevRec, (void *)p2d, sizeof(P2d_hdr));
 }
