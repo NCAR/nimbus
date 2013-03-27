@@ -17,7 +17,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2012
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
-#include <map>
+#include <iomanip>
 #include <string>
 #include <unistd.h>
 
@@ -32,10 +32,13 @@ char	buffer[50000];
 class Config
 {
 public:
-  Config() : fullHex(false), histo(false) { }
+  Config() : hdrOnly(false), fullHex(false), histo(false), probe(0) { }
 
+  bool	hdrOnly;
   bool	fullHex;
   bool	histo;
+
+  int16_t probe;	// 0 means all probes.
 
   string sourceFile;
 } cfg;
@@ -46,9 +49,11 @@ void ParticleCount(P2d_rec *p2d, int nDiodes);
 
 void Usage()
 {
-  std::cerr << "Usage: oapinfo [-h] [-c] file.2d" << std::endl;
-  std::cerr << "  -x: full hex dump of each record." << std::endl;
-  std::cerr << "  -c: histogram count totals, per record and per second." << std::endl;
+  cerr << "Usage: oapinfo [-h] [-x] [-c] [-p ID] file.2d" << endl;
+  cerr << "  -h: XML File header only." << endl;
+  cerr << "  -x: Full hex dump of each record." << endl;
+  cerr << "  -c: histogram count totals, per record and per second." << endl;
+  cerr << "  -p ID : Output a single probe where ID is probe ID, e.g. C1, P1, C4, 3H, 3V." << endl;
   exit(1);
 }
 
@@ -62,11 +67,17 @@ void processArgs(int argc, char *argv[])
   {
     if (argv[aCnt][0] == '-')
     {
+      if (strcmp(argv[aCnt], "-h") == 0)
+        cfg.hdrOnly = true;
+      else
       if (strcmp(argv[aCnt], "-x") == 0)
         cfg.fullHex = true;
       else
       if (strcmp(argv[aCnt], "-c") == 0)
         cfg.histo = true;
+      else
+      if (strcmp(argv[aCnt], "-p") == 0)
+        cfg.probe = ntohs(*((int16_t *)argv[++aCnt]));
       else
         Usage();
     }
@@ -82,34 +93,32 @@ void processArgs(int argc, char *argv[])
 /* -------------------------------------------------------------------- */
 int main(int argc, char *argv[])
 {
-  int	rc, nBytes;
   FILE *fp;
 
   processArgs(argc, argv);
 
   if ((fp = fopen(cfg.sourceFile.c_str(), "rb")) == NULL)
   {
-    std::cerr << "Unable to open input file : " << cfg.sourceFile << std::endl;
+    cerr << "Unable to open input file : " << cfg.sourceFile << endl;
     exit(1);
   }
 
-
-  rc = 0;	/* Return Code	*/
-
+  // Output file header.
   do
   {
     fgets(buffer, 5000, fp);
-    std::cout << buffer;
+    cout << buffer;
   }
   while (strstr(buffer, "</OAP>") == 0);
 
 
-  while (fread(buffer, sizeof(P2d_rec), 1, fp) == 1)
-    Output(buffer);
+  if (!cfg.hdrOnly)
+    while (fread(buffer, sizeof(P2d_rec), 1, fp) == 1)
+      Output(buffer);
 
   fclose(fp);
 
-  return(0);
+  return 0;
 
 }	/* END MAIN */
 
@@ -139,16 +148,22 @@ void Output(char buff[])
       nDiodes = 128;
       break;
     default:
-      std::cout << "Unrecognized record id=" << buff[0] << buff[1] << std::endl;
+      cout << "Unrecognized record id=" << buff[0] << buff[1] << endl;
   }
+
+  // If specific probe selected, then check here.
+  if (cfg.probe != 0 && cfg.probe != ntohs(*(unsigned short *)buff))
+    return;
 
   if (cfg.histo)
     ParticleCount(p2d, nDiodes);
   else
-    printf("  %c%c %02d:%02d:%02d.%03d, tas=%d  %x\n",
-	((char*)p2d)[0], ((char*)p2d)[1],
-	ntohs(p2d->hour), ntohs(p2d->minute), ntohs(p2d->second), ntohs(p2d->msec),
-	ntohs(p2d->tas), ((short*)p2d->data)[0]);
+  {
+    cout << "  " << ((char*)p2d)[0] << ((char*)p2d)[1] << " ";
+    cout << setw(2) << setfill('0') << ntohs(p2d->hour) << ':' << ntohs(p2d->minute) << ':' << ntohs(p2d->second);
+    cout << '.' << setw(3) << setfill('0') << ntohs(p2d->msec);
+    cout << ", tas=" << ntohs(p2d->tas) << endl;
+  }
 
   if (cfg.fullHex)
   {
@@ -158,9 +173,9 @@ void Output(char buff[])
     {
       for (int j = 0; j < bytesPerSlice; ++j)
       {
-        printf("%02X", p2d->data[(i*bytesPerSlice) + j]);
+        cout << hex << setw(2) << setfill('0') << (int)p2d->data[(i*bytesPerSlice) + j];
       }
-      printf("\n");
+      cout << endl;
     }
   }
 }
@@ -170,14 +185,14 @@ void OutputParticleCount(P2d_hdr *p, size_t counts[], size_t n)
 {
   int total = 0;
 
-  printf("%02d:%02d:%02d - ", ntohs(p->hour), ntohs(p->minute), ntohs(p->second));
+  cout << setw(2) << setfill('0') << ntohs(p->hour) << ':' << ntohs(p->minute) << ':' << ntohs(p->second) << " - ";
   for (int i = 0; i < n; ++i)
   {
-     printf("%d ", counts[i]);
+     cout << counts[i] << ' ';
      total += counts[i];
   }
 
-  printf(" - total = %d\n", total);
+  cout << " - total = " << total << endl;
 }
 
 /* -------------------------------------------------------------------- */
@@ -205,7 +220,7 @@ void ParticleCount(P2d_rec *p2d, int nDiodes)
   {
     OutputParticleCount(&prevRec, perSecondCounts, nDiodes);
     memset((void *)perSecondCounts, 0, sizeof(perSecondCounts));
-    printf("\n");
+    cout << endl;
   }
 
   int bytesPerSlice = nDiodes / 8;
@@ -225,7 +240,7 @@ void ParticleCount(P2d_rec *p2d, int nDiodes)
       ++sizeCounter;
   }
 
-  printf("%c%c - ", ((char*)p2d)[0], ((char*)p2d)[1]);
+  cout << ((char*)p2d)[0] << ((char*)p2d)[1] << " - ";
   OutputParticleCount((P2d_hdr *)p2d, recordCounts, nDiodes);
   memcpy((void *)&prevRec, (void *)p2d, sizeof(P2d_hdr));
 }
