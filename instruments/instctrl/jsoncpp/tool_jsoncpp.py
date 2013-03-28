@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 
 # Unpack and build jsoncpp. The distribution should be in this directory.
@@ -37,9 +38,15 @@ json_libfilename = 'lib'+json_libname+'.a'
 
 # The name of dynamic library file
 json_dynlibfilename = 'lib'+json_libname+'.so'
+if sys.platform == 'darwin':
+	json_dynlibfilename = 'lib'+json_libname+'.dylib'
 
 # The library directory, as used by the linker -L switch
 json_libdir = this_dir + '/' + json_name+'/libs/' + gcc_prefix
+
+scons = "scons"
+if sys.platform == 'darwin':
+	scons = '/usr/local/bin/scons'
 
 def build_jsoncpp(env):
     """Unpack and build jsoncpp, if the library is not found"""
@@ -49,7 +56,7 @@ def build_jsoncpp(env):
     		return
 		# Clean jsoncpp.
     	cdcmd = "cd " + json_name + ";"
-    	sconscmd = "scons -c platform=linux-gcc"
+    	sconscmd = scons + " -c platform=linux-gcc"
     	print runcmd(cdcmd + sconscmd, shell=True)
     	return
 
@@ -66,7 +73,7 @@ def build_jsoncpp(env):
     
     # Use scons to build jsoncpp.
     cdcmd = "cd " + json_name + ";"
-    sconscmd = "scons platform=linux-gcc"
+    sconscmd = scons + " platform=linux-gcc"
     print runcmd(cdcmd + sconscmd, shell=True)
 
     # Remove the shared object library, to force static linking.
