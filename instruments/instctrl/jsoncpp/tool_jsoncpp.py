@@ -1,49 +1,85 @@
 import os
-import commands
+import subprocess
 
+# Unpack and build jsoncpp. The distribution should be in this directory.
+# Jsoncpp is built using scons.
 
-# The jsoncpp prefix is the name of the jsoncpp tarfile,
+# The jsoncpp prefix is the basename of the jsoncpp tarfile,
+# e.g. jsoncpp-src-0.6.0-rc2.tar.gz,
 # as well as the directory that it is unpacked into.
-jsoncpp_prefix = 'jsoncpp-src-0.6.0-rc2'
+json_name = 'jsoncpp-src-0.6.0-rc2'
+
+def runcmd(args, shell=False):
+	proc = subprocess.Popen(args, stdout=subprocess.PIPE, shell=shell)
+	out, err = proc.communicate()
+	out = out.rstrip()
+	return out
 
 # The jsoncpp scons build uses the compiler name
 # in the library name, an also places the built library
 # in a subdirectory with this name.
-gccversion = commands.getoutput('g++ -dumpversion')
-gcc_prefix = 'linux-gcc-'+gccversion
+gcc_version = runcmd(['g++', '-dumpversion'])
+gcc_prefix = 'linux-gcc-'+gcc_version
 
-# The generatd library name, as passed to the linker
-jsoncpplib = "json_"+gcc_prefix+"_libmt"
+env = Environment()
 
-ourDir = Dir('.').abspath
+# Our directory
+this_dir = Dir('.').abspath
+
+# The top level of the unpacked distribution
+json_dir = this_dir+'/'+json_name
+
+# The library name, as used by the linker -lswitch
+json_libname = "json_"+gcc_prefix+"_libmt"
+
+# The name of library file
+json_libfilename = 'lib'+json_libname+'.a'
+
+# The name of dynamic library file
+json_dynlibfilename = 'lib'+json_libname+'.so'
+
+# The library directory, as used by the linker -L switch
+json_libdir = this_dir + '/' + json_name+'/libs/' + gcc_prefix
 
 def build_jsoncpp(env):
     """Unpack and build jsoncpp, if the library is not found"""
-    
-    libname = 'lib'+jsoncpplib+'.a'
-    libdir = ourDir + '/' + jsoncpp_prefix+'/libs/' + gcc_prefix
-    print 'looking for ', libname, 'in', libdir
-    node = env.FindFile(libname, libdir)
-    if node != None:
+
+    if (env.GetOption('clean')):
+    	if env.FindFile(json_name, '.'):
+    		return
+		# Clean jsoncpp.
+    	cdcmd = "cd " + json_name + ";"
+    	sconscmd = "scons -c platform=linux-gcc"
+    	print runcmd(cdcmd + sconscmd, shell=True)
+    	return
+
+    # See if the library file exists, indicating that the build
+    # was already performed.
+    lib = env.FindFile(json_libfilename, json_libdir)
+    if lib != None:
         return
-    
-    tarfile = jsoncpp_prefix + ".tar.gz"
+
+    # Unpack the distribution tarfile.
+    tarfile = json_name + ".tar.gz"
     tarcmd = "tar -xvf " + tarfile
-    os.system(tarcmd)
-    cdcmd = "cd " + jsoncpp_prefix + ";"
+    print runcmd(tarcmd, shell=True)
+    
+    # Use scons to build jsoncpp.
+    cdcmd = "cd " + json_name + ";"
     sconscmd = "scons platform=linux-gcc"
-    os.system(cdcmd + sconscmd)
+    print runcmd(cdcmd + sconscmd, shell=True)
 
+    # Remove the shared object library, to force static linking.
+    print runcmd('rm -f ' + json_libdir+'/'+json_dynlibfilename, shell=True)
+ 
+# Unpack and build or clean jsoncpp
+build_jsoncpp(env)	
 
-# The tool definition
+# The jsoncpp tool definition.
 def jsoncpp(env):
-    env.Append(LIBS=[jsoncpplib,])
-    jsoncppdir = ourDir+'/'+jsoncpp_prefix
-    env.Append(LIBPATH=[jsoncppdir+'/libs/'+gcc_prefix,])
-    env.AppendUnique(CPPPATH=[jsoncppdir+'/include',])
+    env.Append(LIBS=[json_libname,])
+    env.Append(LIBPATH=[json_libdir,])
+    env.AppendUnique(CPPPATH=[json_dir+'/include',])
     
 Export('jsoncpp')
 
-# Unpack and build jsoncpp, as needed
-env = Environment()
-build_jsoncpp(env)	
