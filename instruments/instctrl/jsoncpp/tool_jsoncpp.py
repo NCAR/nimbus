@@ -38,7 +38,7 @@ def build_jsoncpp(env):
 # The tool definition
 def jsoncpp(env):
     env.Append(LIBS=[jsoncpplib,])
-    jsoncppdir = '#/json/'+jsoncpp_prefix
+    jsoncppdir = ourDir+'/'+jsoncpp_prefix
     env.Append(LIBPATH=[jsoncppdir+'/libs/'+gcc_prefix,])
     env.AppendUnique(CPPPATH=[jsoncppdir+'/include',])
     
