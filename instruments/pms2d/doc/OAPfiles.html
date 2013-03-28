@@ -200,16 +200,16 @@ The data is stored in big-endian format, so all data will need to be swapped whe
 #define PMS2D_3H         0x3356		// 3V-CPI 2DS Horizontal
 
 struct P2d_rec {
-  int16_t id;                             /* 'P1','C1','P2','C2', H1, etc */
+  int16_t id;				/* 'P1','C1','P2','C2', H1, etc */
   int16_t hour;
   int16_t minute;
   int16_t second;
-  int16_t year;                           /* starting in 2007 w/ PACDEX */
-  int16_t month;                          /* starting in 2007 w/ PACDEX */
-  int16_t day;                            /* starting in 2007 w/ PACDEX */
-  int16_t tas;                            /* true air speed, m/s	*/
-  int16_t msec;                           /* msec of this record	*/
-  int16_t overld;                         /* overload time, msec	*/
+  int16_t year;				/* starting in 2007 w/ PACDEX */
+  int16_t month;			/* starting in 2007 w/ PACDEX */
+  int16_t day;				/* starting in 2007 w/ PACDEX */
+  int16_t tas;				/* true air speed, m/s	*/
+  int16_t msec;				/* msec of this record	*/
+  int16_t overld;			/* overload time, msec	*/
   unsigned char data[4096];		/* image buffer		*/
   };
 typedef struct P2d_rec P2d_rec;
@@ -222,9 +222,13 @@ typedef struct P2d_rec P2d_rec;
 <h5>True Air Speed</h5> The true air speed (tas) truncated or rounded to the nearest meter per second.
 <p>
 <h5>Overload</h5> The overld value is the amount of time in milliseconds the probe was shut off while the interface card was unloading data.
-
-
+<p>
+<hr>
+<b>oapinfo</b> utility program
+<p>
+We have developed a useful command line utility program in C++ for ouputting data from these files.  Either just the XML file header, or the id, timestamp, and tas from each record header, or full hex dump, or simple histgram data of particle counts.  Please contact us for a copy.
 <!--------------------------------------------------------------------------- ABS -->
+<p>
 <hr>
 For further information contact:
 <p>
@@ -237,7 +241,7 @@ Research Aviation Facility<br>
 <hr>
 <font size=2>
 Last update:
-Sat Mar 26 11:24:11 MDT 2011
+Thu Mar 28 10:36:34 MDT 2013
 </font>
 </body>
 </html>
