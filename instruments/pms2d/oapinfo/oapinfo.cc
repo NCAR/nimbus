@@ -137,8 +137,9 @@ void Output(char buff[])
       nDiodes = 32;
       break;
     case 0x4334:	// USB 25um C probe.
+    case 0x4335:	// USB 25um C probe (2nd one).
     case 0x4336:	// USB 10um C probe.
-    case 0x5034:	// USB P Probe.
+    case 0x5034:	// USB 200um P Probe.
       nDiodes = 64;
       break;
 //    case 0x4831:	// HVPS
