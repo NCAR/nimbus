@@ -32,7 +32,7 @@ void QMM_SetAddresses( WORD base )
 	
 /* ************************************
 QMM counter board data aquisition program. The value is 32 bits long. */
-int QMM_Read(unsigned int data[])
+int QMM_Read(unsigned int data[], BYTE isOP1)
 {
 	unsigned int temp;
 	
@@ -40,8 +40,16 @@ int QMM_Read(unsigned int data[])
 	temp = (QMM_Get_Register8( QMM_CONTROL_CHIP1, QMM_DATA_CHIP1, QMM_REG_HOLD3 ) << 16) | temp; //Get upper two bytes chan A and shift.
 	data[0] = temp;
 	
-	temp = QMM_Get_Register8( QMM_CONTROL_CHIP1, QMM_DATA_CHIP1, QMM_REG_HOLD4 ); //Get lower 2 bytes, chan B
-	temp = (QMM_Get_Register8( QMM_CONTROL_CHIP1, QMM_DATA_CHIP1, QMM_REG_HOLD5 ) << 16) | temp; //Get upper two bytes chan B and shift.
+	if ( isOP1 ) //OP1 has Channel B data in Counters #2 and #3 on Chip 2.
+	{
+		temp = QMM_Get_Register8( QMM_CONTROL_CHIP2, QMM_DATA_CHIP2, QMM_REG_HOLD2 ); //Get lower 2 bytes, chan B
+		temp = (QMM_Get_Register8( QMM_CONTROL_CHIP2, QMM_DATA_CHIP2, QMM_REG_HOLD3 ) << 16) | temp; //Get upper two bytes chan B and shift.		
+	}
+	else
+	{
+		temp = QMM_Get_Register8( QMM_CONTROL_CHIP1, QMM_DATA_CHIP1, QMM_REG_HOLD4 ); //Get lower 2 bytes, chan B
+		temp = (QMM_Get_Register8( QMM_CONTROL_CHIP1, QMM_DATA_CHIP1, QMM_REG_HOLD5 ) << 16) | temp; //Get upper two bytes chan B and shift.
+	}
 	data[1] = temp;
 	return 0;
 }

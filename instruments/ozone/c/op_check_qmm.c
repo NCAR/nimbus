@@ -49,7 +49,7 @@ int main(int argc, const char* argv[])
 		
 		QMM_Restart_Counters( isOP1 ); // Store count data, restart counters.
 		
-		QMM_Read( data[i] ); //Read the counter data.
+		QMM_Read( data[i], isOP1 ); //Read the counter data.
 		
 		if ( iSleep )
 			usleep(iSleep); // Sleep for most of the time, rather than loop.

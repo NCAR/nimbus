@@ -56,7 +56,7 @@ int main(int argc, const char* argv[])
 	{
 		iWaitLoop = QMM_WaitForTC1(); // Wait for the hardware loop counter to reach zero.
 		QMM_Restart_Counters( isOP1 ); // Store count data, restart counters.
-		QMM_Read( data[i] ); //Read the counter data. data[i] is the 1d array of floats.
+		QMM_Read( data[i], isOP1 ); //Read the counter data. data[i] is the 1d array of floats.
 		
 		nStateParams = GetStateParams( stateParams[i] ); // Get state parameters: cell pressure and temperature.
 		

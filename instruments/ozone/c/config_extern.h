@@ -32,7 +32,7 @@ extern BYTE Valve_GetPosition( WORD base );
 
 //QMM counter board functions.
 extern void QMM_SetAddresses( WORD base );
-extern int QMM_Read(unsigned int data[]);
+extern int QMM_Read(unsigned int data[], BYTE isOP1);
 extern int QMM_Setup(WORD base, BYTE isOP1, unsigned int DOWN_COUNTS );
 extern int QMM_Set_Register8(WORD ControlReg, WORD DataReg, WORD Pointer, WORD Data);
 extern unsigned int QMM_Get_Register8(WORD ControlReg, WORD DataReg, WORD Pointer);
