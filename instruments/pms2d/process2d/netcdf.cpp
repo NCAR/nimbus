@@ -249,13 +249,13 @@ void netCDF::CreateDimensions(int numtimes, ProbeInfo &probe, Config &cfg)
   sprintf(tmp, "Vector%d", probe.numBins+1);
   _bindim_plusone = addDimension(tmp, probe.numBins+1);
   _intbindim = addDimension("interarrival_endpoints", cfg.nInterarrivalBins+1);
-
 }
 
 
 NcVar *netCDF::addHistogram(string& varname, string& serialNumber)
 {
   NcVar *var;
+  NcDim *len_dim = _bindim_plusone;
 
   const char *units = VarDB_GetUnits(varname.c_str());
   // Make an attempt at units if VarDB returned 'Unk'.
@@ -265,9 +265,11 @@ NcVar *netCDF::addHistogram(string& varname, string& serialNumber)
     if (varname.c_str()[0] == 'C') units = "#/L";
   }
 
+  if (varname.c_str()[0] == 'I') len_dim = _intbindim;
+
   if ((var = _file->get_var(varname.c_str())) == 0)
   {
-    if ((var = _file->add_var(varname.c_str(), ncFloat, _timedim, _spsdim, _bindim_plusone)))
+    if ((var = _file->add_var(varname.c_str(), ncFloat, _timedim, _spsdim, len_dim)))
     {
       var->add_att("_FillValue", (float)(-32767.0));
       var->add_att("units", units);
