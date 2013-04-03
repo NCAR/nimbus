@@ -15,7 +15,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1999
 const float Probe200::DiodeDiameter = 0.2;
 
 /* -------------------------------------------------------------------- */
-Probe200::Probe200(NcFile *file, NcVar *av) : Probe(file, av), _nDiodes(0), _resolution(0)
+Probe200::Probe200(NcFile *file, NcVar *av) : Probe(file, av), _nDiodes(0), _resolution(0), _dof_const(2.37)
 {
   NcAtt *attr;
 
@@ -136,7 +136,7 @@ void Probe200::ComputeWidths()
     {
     _radius[i]   = _midPointDiam[i] / 2000;
     _esw[i]      = DiodeDiameter * (_nDiodes - i - 1) / _mag;
-    _dof[i]      = 2.37 * _midPointDiam[i] * _midPointDiam[i] / 1000.0;
+    _dof[i]      = _dof_const * _midPointDiam[i] * _midPointDiam[i] / 1000.0;
     if (_dof[i] > _armDistance)
       _dof[i] = (float)_armDistance;
     }

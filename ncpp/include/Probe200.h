@@ -44,6 +44,7 @@ protected:
 
   int	_nDiodes;
   float _resolution;	// in meters (0.025 or 0.2)
+  float _dof_const;	// 2.37 for standard 2DC probes, 5.13 for SPEC 2DS
 
   float	_responseTime, _armDistance, _PLWfac, _DENS, _DBZfac;
   std::vector<float> _radius, _esw, _dof;

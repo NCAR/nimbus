@@ -16,6 +16,8 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2000-2013
 /* -------------------------------------------------------------------- */
 TwoDS::TwoDS(NcFile *file, NcVar *av) : TwoD(file, av)
 {
+  _dof_const = 5.13;
+
   if (_resolution == 0)
     _resolution = 0.010;
   if (_armDistance == 0)
