@@ -34,8 +34,7 @@ TwoDC::TwoDC(NcFile *file, NcVar *av) : TwoD(file, av)
 }
 
 /* -------------------------------------------------------------------- */
-TwoDP::TwoDP(NcFile *file, NcVar *av)
- : TwoD(file, av)
+TwoDP::TwoDP(NcFile *file, NcVar *av) : TwoD(file, av)
 {
   if (_resolution == 0)
     _resolution = 0.2;
