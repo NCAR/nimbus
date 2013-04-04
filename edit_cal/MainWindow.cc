@@ -1905,7 +1905,7 @@ void MainWindow::exportInstrument(int row)
     foreach (QString coeff, list_cal)
         ostr << " " << std::setw(9) << coeff.toStdString();
 
-    ostr << " # " << getenv("USERNAME");
+    ostr << " # " << QString(getenv("USERNAME")).toStdString();
     ostr << " " << modelData(row, clm_project_name).toStdString();
     ostr << " " << modelData(row, clm_comment).toStdString();
     ostr << std::endl;
