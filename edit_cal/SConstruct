@@ -46,3 +46,7 @@ name = env.subst("${TARGET.filebase}", target=edit_cal)
 
 inode = env.Install('/opt/local/bin',edit_cal)
 env.Clean('install',inode)
+
+options = env.GlobalOptions()
+options.Update(env)
+Help(options.GenerateHelpText(env))
