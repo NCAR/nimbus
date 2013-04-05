@@ -30,7 +30,7 @@ static const size_t MAX_PMS2D = 8;
 static const NR_TYPE shadowLevel = 0.55;
 
 // Use a fixed DOF, not what the manual specifies, until such time that a "research
-// project" can be done.  Al Cooper, Jorgen Jenson 6/26/06
+// project" can be done.  Al Cooper, Jorgen Jensen 6/26/06
 
 static const size_t maxBins = 130;
 
