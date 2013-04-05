@@ -18,9 +18,6 @@ void ProbeInfo::ComputeSamplearea(bool reconstruct)
     else
       eff_wid = std::max(resolution * (nDiodes-1)-diam, resolution);   //from eq 6 in HP78
 
-//DoF = std::min((5.13f * diam*diam), prht);  // in microns, limit on dof is physical distance between arms
-//eff_wid = std::max((float)(nDiodes+i) * resolution, resolution);
-
     sa = DoF * eff_wid * 1e-12;  //compute sa and convert to m^2 
 
     bin_midpoints.push_back(diam);
