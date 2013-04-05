@@ -15,13 +15,14 @@ public:
 		std::string sfx, int binoffset, int numbins)
 
   : id(new_id), serialNumber(sn), suffix(sfx), nDiodes(ndiodes), resolution(res),
-	numBins(numbins), firstBin(binoffset), lastBin(numbins), armWidth(6.1)
+	numBins(numbins), firstBin(binoffset), lastBin(numbins), armWidth(6.1), dof_const(2.37)
   {
     if (id[0] == 'P') {		// 2DP
       armWidth = 26.1;
     }
     if (id[0] == '3') {		// 3V-CPI
       armWidth = 5.08;
+      dof_const = 5.13;
     }
   }
 
@@ -40,6 +41,7 @@ public:
   int numBins;
   int firstBin, lastBin;
   float armWidth;       // cm
+  float dof_const;
 
   std::vector<float> bin_endpoints;
   std::vector<float> bin_midpoints;

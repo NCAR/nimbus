@@ -12,11 +12,14 @@ void ProbeInfo::ComputeSamplearea(bool reconstruct)
     diam = (bin_endpoints[i] + bin_endpoints[i+1]) / 2.0;
 
     prht = armWidth * 1.0e4;  //convert cm to microns
-    DoF = std::min((2.37f * diam*diam), prht);  // in microns, limit on dof is physical distance between arms
+    DoF = std::min((dof_const * diam*diam), prht);  // in microns, limit on dof is physical distance between arms
     if (reconstruct)
       eff_wid = resolution*nDiodes+0.72*diam;  //from eq 17 in Heymsfield & Parrish 1978
     else
       eff_wid = std::max(resolution * (nDiodes-1)-diam, resolution);   //from eq 6 in HP78
+
+//DoF = std::min((5.13f * diam*diam), prht);  // in microns, limit on dof is physical distance between arms
+//eff_wid = std::max((float)(nDiodes+i) * resolution, resolution);
 
     sa = DoF * eff_wid * 1e-12;  //compute sa and convert to m^2 
 
