@@ -36,7 +36,7 @@ DESCRIPTION:
 #define NAMELEN		20
 
 #define MAX_DATAFILES	3
-#define MAX_PROBES	12
+#define MAX_PROBES	15
 #define MAX_DATASETS	MAX_PROBES
 #define MAX_PANELS	4
 
