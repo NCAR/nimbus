@@ -49,6 +49,6 @@ env = conf.Finish()
 
 # print env.Dump()
 
-procf2dc = env.Program('procf2dc', ['procf2dc.cpp', 'netcdf.cpp', 'probe.cpp', 'ProbeData.cpp'])
+process2d = env.Program('process2d', ['process2d.cpp', 'netcdf.cpp', 'probe.cpp', 'ProbeData.cpp'])
 
-Alias('install', env.Install('$JLOCAL/bin', procf2dc))
+Alias('install', env.Install('$JLOCAL/bin', process2d))
