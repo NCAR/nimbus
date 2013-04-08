@@ -623,7 +623,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
       * all of them.
       */
      {
-     long newbuffertime = TwoDtime(&buffer) + ((double)ntohs(buffer.msec) / 1000);
+     double newbuffertime = TwoDtime(&buffer) + ((double)ntohs(buffer.msec) / 1000);
      if (newbuffertime != buffertime)
      {
        buffertime = newbuffertime;
@@ -635,7 +635,7 @@ int process2d(Config & cfg, netCDF & ncfile, ProbeInfo & probe)
      if (buffcount == 0)
      {
        firstday = ntohs(buffer.day);
-       last_time1hz = buffertime;
+       last_time1hz = (long)buffertime;
        continue;
      }
 
