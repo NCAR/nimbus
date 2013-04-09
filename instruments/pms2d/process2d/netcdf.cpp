@@ -261,11 +261,14 @@ NcVar *netCDF::addHistogram(string& varname, string& serialNumber)
   // Make an attempt at units if VarDB returned 'Unk'.
   if (strcmp(units, "Unk") == 0)
   {
-    if (varname.c_str()[0] == 'A') units = "count";
-    if (varname.c_str()[0] == 'C') units = "#/L";
+    if (varname.compare(0, 3, "A2D") == 0) units = "count";
+    if (varname.compare(0, 3, "C2D") == 0) units = "#/L";
   }
 
-  if (varname.c_str()[0] == 'I') len_dim = _intbindim;
+  /* Inter-arrival time array has a different histogram length,
+   * kind of cheesy way to handle it...
+   */
+  if (varname.compare(0, 3, "I2D") == 0) len_dim = _intbindim;
 
   if ((var = _file->get_var(varname.c_str())) == 0)
   {
