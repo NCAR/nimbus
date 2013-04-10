@@ -24,6 +24,8 @@ op_check_qmm.c - main program to check operation of the QMM counter board.
 
 op_check_dio.c - main program to check operation of the valve using the DIO on Prometheus.
 
+op_check_time.c - main program to verify time stamp operation.
+
 
 
 op_func_dmm.c - DMM board control and DAQ functions for housekeeping data AD.
@@ -33,4 +35,6 @@ op_func_dio.c - Prometheus DIO functions to control valve motor motion.
 op_func_qmm.c - QMM counter board functions for Channel A and B counts reading.
 
 op_func_ad.c - AD functions to convert voltages to P, T etc. Used by both DMM and Prometheus AD converters.
+
+op_func_time.c - functions to generate a time and date stamps for data recording.
 
