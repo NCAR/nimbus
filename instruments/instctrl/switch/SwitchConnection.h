@@ -54,8 +54,6 @@ protected:
 	int _localPort;
 	/// The remote host that we send messages to.
 	std::string _remoteHost;
-	/// The remote address that we send messages to.
-	QHostAddress _remoteAddress;
 	/// The port that we send messages to
 	int _remotePort;
 	/// The protocol used for message transfers with the remote switch.

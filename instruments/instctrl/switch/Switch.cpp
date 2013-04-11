@@ -109,11 +109,11 @@ _msgsFromProxiesDropped(0)
 	// Initialize the switch
 	init();
 
+	// Log a few details about the switch to switch connection
 	QString msg;
 	msg = QString("Inter-switch messages received on port %1").arg(config->localPort());
 	_logger.log(msg.toStdString());
-	QString ip = QtAddress::address(config->remoteIP()).toString();
-	msg = QString("Inter-switch messages sent to %1:%2").arg(ip).arg(config->remotePort());
+	msg = QString("Inter-switch messages sent to %1:%2").arg(config->remoteIP().c_str()).arg(config->remotePort());
 	_logger.log(msg.toStdString());
 }
 

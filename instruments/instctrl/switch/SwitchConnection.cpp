@@ -12,8 +12,6 @@ _remotePort(remotePort),
 _switchCipherKey(switchCipherKey),
 _switchToSwitchProtocol(EVPCipher::getKey(switchCipherKey), Protocols::SymCipherProtocol::NO_CODING)
 {
-	// Determine the address of the remote host.
-	_remoteAddress = QtAddress::address(_remoteHost);
 
 	// bind the listening port.
 	_incomingSocket.bind(localPort);
@@ -59,6 +57,9 @@ void SwitchConnection::readyRead() {
 /////////////////////////////////////////////////////////////////////
 void SwitchConnection::sendSwitchMessage(std::string msg) {
 
+	// Determine the address of the remote host.
+	QHostAddress remoteAddress = QtAddress::address(_remoteHost);
+
 	// Encode the message
 	std::vector<std::string> outMsgs = _switchToSwitchProtocol.outgoing(msg);
 
@@ -67,7 +68,7 @@ void SwitchConnection::sendSwitchMessage(std::string msg) {
 		int sent = _outgoingSocket.writeDatagram(
 				outMsgs[i].c_str(),
 				outMsgs[i].size(),
-				_remoteAddress,
+				remoteAddress,
 				_remotePort);
 
 		if (sent != outMsgs[i].size()) {
