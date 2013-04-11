@@ -56,7 +56,8 @@ int Valve_Check( BYTE valve_position, unsigned int * nSkips, unsigned int * nSto
 
 /* ************************************
 Reads current valve position from the valve control board. The DIO port reading valve position is port C.
-Valve position value is returned. */
+Valve position value is returned. On a typical error, zero will be returned because it means that the position
+was read before one of the sensors activated (between valve positions, zero position value). */
 BYTE Valve_GetPosition( WORD base )
 {
 	BYTE valve_position;
