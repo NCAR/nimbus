@@ -38,3 +38,5 @@ op_func_ad.c - AD functions to convert voltages to P, T etc. Used by both DMM an
 
 op_func_time.c - functions to generate a time and date stamps for data recording.
 
+
+op_main.c - main instrument data acquisition program. This is the one that runs in flight.
