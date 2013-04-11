@@ -8,6 +8,7 @@
 #include <set>
 
 #include "Message.h"
+#include "RicLogger.h"
 
 /// The RateLimiter class performs the limiting of messages allowed
 /// to be forwarded from the proxy to the switch.  Each message type
@@ -44,7 +45,8 @@ protected:
 	std::map<double, int*> _rates;
 	/// Map each message type with its associated timer
 	std::map<std::string, int*> _timers;
-
+	/// System message logger
+	RicLogger _logger;
 };
 
 #endif /* RATELIMITER_H_ */

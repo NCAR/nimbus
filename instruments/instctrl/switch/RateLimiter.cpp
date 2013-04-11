@@ -1,4 +1,5 @@
 #include "RateLimiter.h"
+#include <sstream>
 
 /////////////////////////////////////////////////////////////////////
 RateLimiter::RateLimiter()
@@ -44,30 +45,41 @@ void RateLimiter::addMsgType(std::string msgId, double rate)
 {
 	// If this is a new rate
 	if (_rates.find(rate) == _rates.end()) {
-		qDebug() << "RateLimiter::addMsgType" << msgId.c_str() << "rate" << rate << "(new)";
-		int* timer;
-		if (rate == 0) {
-			// If rate = 0, set the timer to -1.0 for identification
-			timer = new int(-1.0);
-		}
-		else {
-			// Create the timer for this rate and start the timer
-			timer = new int();
-			*timer = startTimer(rate * 1000);
-		}
-		// Map the message type to the timer
-		_timers[msgId] = timer;
 
-		// Map the rate to its timer
-		_rates[rate] = timer;
-	}
-	// If we already have a timer for this rate
-	else {
-		qDebug() << "RateLimiter::addMsgType" << msgId.c_str() << "rate" << rate << "(existing)";
-		// Map the message type to the timer
-		_timers[msgId] = _rates[rate];
-	}
+	  // log a message about this new entry
+	  std::stringstream logMsg;
+	  logMsg << "RateLimiter::addMsgType" << msgId.c_str() << "rate" << rate << "(new)";
+	  _logger.log(logMsg.str()); 
 
+	  int* timer;
+	  if (rate == 0) {
+	    // If rate = 0, set the timer to -1.0 for identification
+	    timer = new int(-1);
+	  } else {
+	    // Create the timer for this rate and start the timer
+	    timer = new int();
+	    *timer = startTimer(int(rate * 1000));
+	  }
+	  // Map the message type to the timer
+	  _timers[msgId] = timer;
+	  
+	  // Map the rate to its timer
+	  _rates[rate] = timer;
+
+	} else {
+
+	  // If we already have a timer for this rate
+
+	  // log a message about this existing entry
+	  std::stringstream logMsg;
+	  logMsg << "RateLimiter::addMsgType" << msgId.c_str() << "rate" << rate << "(existing)";
+	  _logger.log(logMsg.str()); 
+
+	  // Map the message type to the timer
+	  _timers[msgId] = _rates[rate];
+
+	}
+	
 	// Create the OK flag for this message type and set it to true
 	bool* okFlag = new bool();
 	*okFlag = true;
