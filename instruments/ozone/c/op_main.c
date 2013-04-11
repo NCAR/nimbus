@@ -7,18 +7,22 @@
 
 BYTE GetStateParams ( float Result[] );
 BYTE GetEngData( float Result[] );
+BYTE ValveAdvance ( BYTE secA, BYTE secB );
+static int prev_position; // Define persistent valve operation flags.
 
 /* ************************************
 Main OP instrument control and DAQ program.
+Call: op_main 10, 15
+where 10 is the number of seconds to sample channel A, 15 is the number of seconds to sample channel B.
 Must be executed as root or sudo. */
 int main(int argc, const char* argv[])
 {
-	unsigned int n_iter=50;
-	unsigned int i, ii, iWaitLoop=0, iSleep=50000, iRemCnts, iRC[n_iter], iSL[n_iter], iWL[n_iter];
-	float fCntRatio, fCR[n_iter];
-	unsigned int data[n_iter][2];
-	float stateParams[n_iter][8], engData[n_iter][16]; // State parameters from Prometheus and AD housekeeping data from DMM.
-	BYTE nStateParams, nEngParams;
+	unsigned int n_iter=5000;
+	unsigned int i, iWaitLoop=0, iSleep=50000, iRemCnts, secA=10, secB=10;
+	float fCntRatio;
+	unsigned int data[2];
+	float stateParams[8], engData[16]; // State parameters from Prometheus and AD housekeeping data from DMM.
+	BYTE nStateParams, nEngParams, CurrPosition;
 	
 		if (ioperm( BASE_QMM, 6, 1 )) //Set hardware port access for QMM board if possible.
 		{
@@ -36,9 +40,11 @@ int main(int argc, const char* argv[])
 			return -1;
 		}
 	
-	if (argc == 1)
-		;
-	else iSleep = atoi(argv[1]); // Is the number of wait mic secs provided?
+	if (argc > 1) // Command line parameters.
+	{
+		secA = atoi(argv[1]);
+		secB = atoi(argv[2]);
+	}
 	
 	QMM_SetAddresses( BASE_QMM ); // Set control register addresses.
 	
@@ -52,18 +58,26 @@ int main(int argc, const char* argv[])
 	QMM_Setup( BASE_QMM, isOP1, DOWN_COUNTS ); //Set up the counter board and individual counter configurations.
 	QMM_Restart_Counters( isOP1 ); //Set up the counters for the first time.
 	
+	prev_position = Valve_GetPosition( BASE_PROM_DAQ ); // Record starting valve position.
+	
 	for ( i=0; i < n_iter; i++ ) // Main DAQ loop. Should be infinite in the actual application.
 	{
 		iWaitLoop = QMM_WaitForTC1(); // Wait for the hardware loop counter to reach zero.
 		QMM_Restart_Counters( isOP1 ); // Store count data, restart counters.
-		QMM_Read( data[i], isOP1 ); //Read the counter data. data[i] is the 1d array of floats.
 		
-		nStateParams = GetStateParams( stateParams[i] ); // Get state parameters: cell pressure and temperature.
+		ValveAdvance ( secA, secB ); // Advance the valve if needed.
 		
-		nEngParams = GetEngData( engData[i] );
+		QMM_Read( data, isOP1 ); //Read the counter data. data[i] is the 1d array of floats.
+		nStateParams = GetStateParams( stateParams ); // Get state parameters: cell pressure and temperature.
+		nEngParams = GetEngData( engData );
 		
-		if ( iSleep )
-			usleep(iSleep); // Sleep for most of the time, rather than loop.
+		usleep(iSleep); // Sleep for most of the time, rather than loop.
+		
+		// Check valve position after sleeping. Hopefully valve has finished moving and its position is now accurate.
+		CurrPosition = Valve_GetPosition( BASE_PROM_DAQ );
+		if ( CurrPosition != 15 )
+			prev_position = CurrPosition; // If read before valve stops, position will be 15.
+		//printf("Prev. pos.: %d; Curr. pos: %d; ", prev_position, CurrPosition);
 		
 		iRemCnts = QMM_ReadTimer(); // Get current value of the loop timer, which counts down from DOWN_COUNTS to 0.
 		
@@ -77,23 +91,6 @@ int main(int argc, const char* argv[])
 			iSleep = iSleep + 100;
 		else if ( fCntRatio < 0.05 ) //Decrease sleep time slowly
 			iSleep = iSleep - 100;
-		
-		/* Record individual values to print them out outside the DAQ loop. */
-		iWL[i] = iWaitLoop;
-		fCR[i] = fCntRatio;
-		iSL[i] = iSleep;
-		iRC[i] = iRemCnts;
-	}
-	for ( i=0; i < n_iter; i++ ) //Get the printing loop outside of the DAQ loop, where it can mess up things.
-	{
-		//printf("Counts A: %d, B: %d. Waited: %d ; RemCnts: %d ; Ratio: %.3f ; set sleep to: %d\n", data[i][0], data[i][1], iWL[i], iRC[i], fCR[i], iSL[i]);
-		printf("Ch.A: %d; Ch.B: %d;\n", data[i][0], data[i][1]);
-		for ( ii=0; ii<=15; ii++ )
-			printf("%.2f ", engData[i][ii]);
-		printf("\n");
-		for ( ii=0; ii<=7; ii++ )
-			printf("%.2f ", stateParams[i][ii]);
-		printf("\n");
 	}
 	return 0;
 }
@@ -112,8 +109,10 @@ BYTE GetStateParams ( float Result[] )
 	unsigned int i;
 	struct CHAN_CONFIG chan_Conf[nChannels];
 	static unsigned short nAverages = 10;
+	static short isFirstRun=1;
 	
-	PRM_Chan_Config( chan_Conf, nChannels ); // Fill in channel information once.
+	//if ( isFirstRun )
+		isFirstRun = PRM_Chan_Config( chan_Conf, nChannels ); // Fill in channel information once.
 	
 	for ( i=0; i<nChannels; i++ ) // Reset the output array.
 		Result[i] = 0;
@@ -150,8 +149,10 @@ BYTE GetEngData( float Result[] )
 	unsigned int i;
 	struct CHAN_CONFIG chan_Conf[nChannels];
 	static unsigned short nAverages = 10;
+	static short isFirstRun=1;
 	
-	DMM_Chan_Config( chan_Conf, nChannels ); // Fill in channel information.
+	//if ( isFirstRun )
+		isFirstRun = DMM_Chan_Config( chan_Conf, nChannels ); // Fill in channel information.
 	
 	for ( i=0; i<nChannels; i++ ) // Reset the output array.
 		Result[i] = 0;
@@ -169,4 +170,38 @@ BYTE GetEngData( float Result[] )
 		Result[i] = (*chan_Conf[i].Func) ( Result[i], chan_Conf[i].R1, chan_Conf[i].R2, vRef );
 
 	return nChannels;
+}
+
+/* ************************************
+Valve operation wrapper. Implements valve advancing and status read. Note: valve position read-out can be inaccurate
+if it occurs immediately after the valve moved. It takes some time for valve to rotate and for the sensor to output
+the position. If a read is performed in the meantime a value with several position bits set may result.
+Returns: expected valve position. May be the same as previous or advanced by one.
+Parameters:
+secA: number of seconds to flow ambient sample through cell A (valve pos. odd);
+secB: number of seconds to flow ambient sample through cell B (valve pos. even);
+cycle_number: cycle number of the main DAQ loop. */
+BYTE ValveAdvance ( BYTE secA, BYTE secB )
+{
+	BYTE dio_conf = 1; // B is the output port; DIRCL is the input port; others are not used.
+	BYTE expectedPos, currChannel;
+	static short isFirstRun=1, cntr=0;
+	
+	if ( isFirstRun )
+		isFirstRun = DIO_Config( BASE_PROM_DAQ, dio_conf ); //First time, set up DIO ports: A,B,CH for output, CL for input.
+	
+	currChannel = prev_position % 2 ? secA : secB; // Flowing ambient air, odd position, A; even position, B.
+	cntr++;
+	
+	//Move valve if cycle number is a multiple of channel wait time and timer loop period.
+	if ( (cntr % (MAIN_FREQ / DOWN_COUNTS * currChannel)) == 0 )
+	{
+		Valve_Fwd( BASE_PROM_DAQ, prev_position );
+		expectedPos = (prev_position % 4) + 1;
+		cntr = 0;
+	}
+	else
+		expectedPos = prev_position;
+	
+	return expectedPos;
 }
