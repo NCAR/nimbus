@@ -57,7 +57,8 @@ parseCommandLine(int argc, char** argv,
 int main(int  argc, char** argv)
 {
 	try {
-		RicLogger logger("RICSwitch", true);
+                std::string logId = "RICSwitch-" + std::string(SVNREVISION);
+		RicLogger logger(logId, true);
 		std::string msg("Starting RIC switch: ");
 		msg += std::string(argv[0]);
 		msg += std::string(" r") + std::string(SVNREVISION);

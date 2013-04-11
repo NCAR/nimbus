@@ -58,7 +58,8 @@ void parseCommandLine(int argc, char** argv, std::string& configFile)
 int main(int argc, char** argv)
 {
     try {
-    	RicLogger logger("RICProxy", true);
+        std::string logId = "RICProxy-" + std::string(SVNREVISION);
+	RicLogger logger(logId, true);
     	std::string msg("Starting SSL RIC proxy: ");
     	msg += std::string(argv[0]);
     	msg += std::string(" r") + std::string(SVNREVISION);
