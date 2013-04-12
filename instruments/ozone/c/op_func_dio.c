@@ -62,7 +62,10 @@ BYTE Valve_GetPosition( WORD base )
 {
 	BYTE valve_position;
 	
-	valve_position = inb( base + 10 ); // Reading from port C.
+	/* Read valve photosensor info from port C.
+	valve_position is a 4 bit value with the position bit being zero, e.g. 1011 meaning position 3. If the valve
+	did not reach one of the proto sensors, the read will return 1111. We will convert it to position 0 if this is encountered.*/
+	valve_position = inb( base + 10 );
 	
 	if ( valve_position == 7 )
 		return 4;
@@ -73,5 +76,7 @@ BYTE Valve_GetPosition( WORD base )
 	else if ( valve_position == 14 )
 		return 1;
 	else
-		return valve_position; // If the value read doesn't make sense, return the actual incorrect value.
+		/* If no photosensor was lit, it usually means the valve is in motion and hasn't reach any position yet. But in case of malfunction,
+		the set bits in the return value will indicate the photosensors that have produced signal. */
+		return &valve_position & 15;
 }
