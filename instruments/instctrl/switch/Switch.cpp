@@ -9,6 +9,12 @@ _msgsFromSwitch(0),
 _msgsToProxies(0),
 _msgsFromProxiesDropped(0)
 {
+
+	// The SslProxy parameter in the configuration determines the type
+	// of switch to be created. If SslProxy is true, an SSL proxy switch
+	// is created. Otherwise, an embedded proxy switch is created.
+	_SslProxy = config->sslProxy();
+
 	// Create the SwichConnection between this switch and the remote switch
 	_switchConnection = new SwitchConnection(config->localPort(),
 		          	  	  	  	  	  	     config->remoteIP(),
@@ -25,11 +31,6 @@ _msgsFromProxiesDropped(0)
 
 	// Set up switch rate limiter
 	setRateLimiter(config);
-
-	// The SslProxy parameter in the configuration determines the type
-	// of switch to be created. If SslProxy is true, an SSL proxy switch
-	// is created. Otherwise, an embedded proxy switch is created.
-	_SslProxy = config->sslProxy();
 
 	if (_SslProxy) {
 		/// The flavor of Switch for remote proxies that connect via SSL.
