@@ -78,5 +78,5 @@ BYTE Valve_GetPosition( WORD base )
 	else
 		/* If no photosensor was lit, it usually means the valve is in motion and hasn't reach any position yet. But in case of malfunction,
 		the set bits in the return value will indicate the photosensors that have produced signal. */
-		return &valve_position & 15;
+		return ~valve_position & 15;
 }
