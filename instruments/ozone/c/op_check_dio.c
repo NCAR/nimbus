@@ -6,7 +6,7 @@
 #include "config_extern.h"
 
 BYTE ValveAdvance ( BYTE secA, BYTE secB );
-static int nSkips=0, nStops=0, prev_position=1; // Define persistent valve operation flags.
+static unsigned int nSkips=0, nStops=0, prev_position=1; // Define persistent valve operation flags.
 
 /* ************************************
 Usage:
