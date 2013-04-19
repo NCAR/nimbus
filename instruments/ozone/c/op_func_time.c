@@ -34,13 +34,13 @@ float getTimeStamp ( time_t *t )
 /* ************************************
 Function for time stamping data records.
 It will provide a time stamp in the form of both human readable date and time and seconds since midnight in UTC. */
-char * getDate ( time_t *t )
+char * getDate ( time_t *t, char * sFormat )
 {
 	struct tm *currDate;
-	static char out[21];
+	static char out[50];
 	
 	currDate = gmtime( t ); //localtime( &t ); // Convert t to date and time.
-	strftime( out, 21, "%F %T", currDate ); // Present currDate in desired format.
+	strftime( out, 50, sFormat, currDate ); // Present currDate in desired format.
 	
 	return out;
 }
