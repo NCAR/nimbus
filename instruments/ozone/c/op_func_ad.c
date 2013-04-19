@@ -65,3 +65,12 @@ float CurrentCalc( float inData, float R1, float R2, float vRange )
 {
 	return inData / R2 * 1000;
 }
+
+/* ************************************
+Calculate Temperature from AD voltage using the Steinhart-Hart equation for the Unicurve type 16 thermocouple.
+Return the temperature in degrees C. inData is the AD voltage, R1 and R2 are Vref and Ground plane resistances in the 4-wire configuration,
+vRange is the Vref voltage (5V in our case, typically). */
+float PressureBaratron( float inData, float R1, float R2, float vRange )
+{
+	return inData * 300;
+}
