@@ -1,9 +1,14 @@
+#include <time.h>
+#include <sys/time.h>
+
 //Define widely used types.
 typedef unsigned short int WORD;
 typedef unsigned char BYTE;
 
 //AD channel configuration data type.
 struct CHAN_CONFIG {
+	char *varName;
+	char *varNameLong;
 	float (*Func)(float, float, float, float);
 	float R1;
 	float R2;
@@ -20,6 +25,7 @@ extern float VoltageCalc( float inData, float R1, float R2, float vRange );
 extern float PressureCalc( float inData, float R1, float R2, float vRange );
 extern float TemperatureCalc( float inData, float R1, float R2, float vRange );
 extern float CurrentCalc( float inData, float R1, float R2, float vRange );
+extern float PressureBaratron( float inData, float R1, float R2, float vRange );
 
 //Prometheus DAQ circuit functions...
 extern int PRM_AD_Scan ( WORD base, BYTE ChannelLow, BYTE ChannelHigh, WORD nAverages, WORD nDelay, float Result[]);
@@ -40,3 +46,7 @@ extern int QMM_Restart_Counters( BYTE isOP1 );
 extern int QMM_ReadTimer();
 extern BYTE QMM_CheckVersion();
 extern int QMM_WaitForTC1();
+
+//Time stamp functions.
+extern char * getDate ( time_t *t, char * sFormat );
+extern float getTimeStamp ( time_t *t );
