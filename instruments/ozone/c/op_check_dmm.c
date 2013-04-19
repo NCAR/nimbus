@@ -35,6 +35,7 @@ int main(int argc, const char* argv[])
 	unsigned int nAverages = doPrint ? doPrint : 10;
 	
 	DMM_Chan_Config( chan_Conf, nChannels ); // Fill in channel information.
+	
 	if (ioperm( BASE_DMM, 15, 1 )) //Set hardware port access if possible.
 	{
 		printf("Access to hardware ports denied, exiting.\n");
@@ -44,7 +45,11 @@ int main(int argc, const char* argv[])
 	for ( i=startChan; i<=endChan; i++ )
 		Result[i] = 0;
 	
-	//printf ("Starting AD conversion\n");
+	printf ("Starting AD conversion\n");
+	
+	for ( ii=0; ii<nChannels; ii++ ) // Print var names.
+		printf ("%s ", chan_Conf[ii].varName);
+	printf("\n");
 	
 	for ( i=0; i < 10000; i++ )
 	{

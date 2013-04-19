@@ -43,7 +43,11 @@ int main (int argc, const char* argv[])
 	for ( i=startChan; i<=endChan; i++ )
 		Result[i] = 0;
 	
-	//printf ("Starting AD conversion\n");
+	printf ("Starting AD conversion\n");
+	
+	for ( ii=0; ii<nChannels; ii++ ) // Print var names.
+		printf ("%s ", chan_Conf[ii].varName);
+	printf("\n");
 	
 	for ( i=0; i < 10000; i++ )
 	{
@@ -59,7 +63,7 @@ int main (int argc, const char* argv[])
 		for ( ii=0; ii<nChannels; ii++ ) //Calculate actual values for each channel according to its data type.
 			Result[ii] = (*chan_Conf[ii].Func) ( Result[ii], chan_Conf[ii].R1, chan_Conf[ii].R2, vRef );
 		
-		Result[5] *= 300;
+		//Result[5] *= 300; PressureBaratron was added, this calculation is now performed uniformly with the rest of them.
 		
 		if ( !(i % 5) && doPrint ) // Print data one per second.
 		{
