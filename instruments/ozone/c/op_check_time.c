@@ -1,8 +1,9 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 #include <sys/time.h>
-
-extern float getTimeStamp ( time_t *t );
-extern char * getDate ( time_t *t );
+#include <unistd.h>
+#include "config_extern.h"
 
 int main ( void )
 {
@@ -13,7 +14,7 @@ int main ( void )
 	{
 		printf("SSM: %.3f; ", getTimeStamp( &t ));
 		
-		printf("Date: %s\n", getDate( &t ) );
+		printf("Date: %s\n", getDate( &t, "%Y%m%d_%H%M%S" ) );
 		sleep ( 2 );
 	}
 	return 0;
