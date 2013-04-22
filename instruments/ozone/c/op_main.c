@@ -16,19 +16,18 @@ where 10 is the number of seconds to sample channel A, 15 is the number of secon
 Must be executed as root or sudo. */
 int main(int argc, const char* argv[])
 {
-	unsigned int n_iter=99;
+	unsigned int n_iter=999;
 	unsigned int i, ii, iWaitLoop=0, iSleep=20000, iRemCnts, secA=10, secB=10;
 	float fCntRatio, timeStamp;
 	BYTE CurrPos, ExpectedPos=0; // Define valve position variables. ExpectedPos set to 0 to trap possible valve failure at init time.
 	FILE *dataFile;
-	time_t *t; // Time stamp data storage.
-	char *dataFName;
+	time_t t; // Time stamp data storage.
+	char dataFName[50];
 	// Definitions for counters and AD data.
 	BYTE nChanPRM=8, nChanDMM=16; // Define number of channels.
 	unsigned int data[2]; // Storage for QMM counts.
 	float stateParams[nChanPRM], engData[nChanDMM]; // State parameters from Prometheus and AD housekeeping data from DMM.
 	struct CHAN_CONFIG dmmChanConf[nChanDMM], prmChanConf[nChanPRM];
-	unsigned int arrSleep[n_iter];
 	
 		if (ioperm( BASE_QMM, 6, 1 )) //Set hardware port access for QMM board if possible.
 		{
@@ -48,15 +47,16 @@ int main(int argc, const char* argv[])
 	
 	if (argc > 1) // Command line parameters are used to set the flow times for each channel.
 	{
-		secA = atoi(argv[1]);
-		secB = atoi(argv[2]);
+		secA = atoi(argv[1]); // Seconds to sample in CellA. Defaults to 10.
+		secB = atoi(argv[2]); // Seconds to sample in CellB. Defaults to 10.
+		n_iter = atoi(argv[3]); // Number of iterations. Defaults to 999, typically 100s.
 	}
 	
 	QMM_SetAddresses( BASE_QMM ); // Set control register addresses.
 	DMM_Chan_Config( dmmChanConf, nChanDMM ); // Fill in DMM channel information.
 	PRM_Chan_Config( prmChanConf, nChanPRM ); // Fill in PRM channel information.
 	
-	timeStamp = getTimeStamp ( t ); // Get the time stamp to create file names.
+	timeStamp = getTimeStamp ( &t ); // Get the time stamp to create file names.
 	
 	/* Determine which data system this code is running on. OP-2 has QMM5 with 1 counter chip; OP-1 has QMM10 with 2 counter chips.
 	Depending on the instrument, create output file names. */
@@ -64,19 +64,19 @@ int main(int argc, const char* argv[])
 	if ( isOP1 )
 	{
 		fprintf(stderr, "Instrument is OP1\n");
-		sprintf( dataFName, getDate( t, "OP1_%Y%m%d_%H%M%S.dat") );
+		sprintf( dataFName, getDate( &t, "OP1_%Y%m%d_%H%M%S.dat") );
 	}
 	else
 	{
 		fprintf(stderr, "Instrument is OP2\n");
-		sprintf( dataFName, getDate( t, "OP2_%Y%m%d_%H%M%S.dat") );
+		sprintf( dataFName, getDate( &t, "OP2_%Y%m%d_%H%M%S.dat") );
 	}
 	
 	// Open output files.
 	dataFile = fopen( dataFName, "w");
 	
 		// Write column names into data file.
-		fprintf( dataFile, "Tsecs	CountA	CountB" );
+		fprintf( dataFile, "Tsecs	CountA	CountB	iSleep	ValvePos	" );
 		for (i=0; i<nChanPRM; i++) // State parameters will go in first.
 			fprintf( dataFile, "	%s", prmChanConf[i].varName );
 		for (i=0; i<nChanDMM; i++) // Eng data will go in next.
@@ -95,7 +95,7 @@ int main(int argc, const char* argv[])
 	{
 		iWaitLoop = QMM_WaitForTC1(); // Wait for the hardware loop counter to reach zero. iWaitLoop records how many interations the loop took.
 		QMM_Restart_Counters( isOP1 ); // Store count data, restart counters.
-		timeStamp = getTimeStamp ( t ); // Get the time stamp for the moment the data are stored.
+		timeStamp = getTimeStamp ( &t ); // Get the time stamp for the moment the data are stored.
 		
 		/* Valve operation. It is physically slow, so we start it immediately once the counters were latched into Hold regirters.
 		There are a few things that can happen. If CurrPos has not reached a good value, we use the ExpectedPos to provide ValveAdvance
@@ -113,6 +113,9 @@ int main(int argc, const char* argv[])
 		fprintf( dataFile, "%.3f	", timeStamp );
 		for ( ii=0; ii<2; ii++ ) // Write counter data.
 			fprintf( dataFile, "%d	", data[ii] );
+		
+		fprintf( dataFile, "%d	", iSleep ); // Record iSleep for now, see how that changes.
+		fprintf( dataFile, "%d	", CurrPos ); // Record valve position. CurrPos at this point in code applies to the data taken above.
 			
 		for ( ii=0; ii<nChanPRM; ii++ ) // Write state parameters.
 			fprintf( dataFile, "%.2f	", stateParams[ii] );
@@ -139,10 +142,7 @@ int main(int argc, const char* argv[])
 		else if ( fCntRatio < 0.05 ) //Decrease sleep time slowly
 			iSleep = iSleep - 100;
 		
-		arrSleep[i] = iSleep;
 	} // =============== Main DAQ loop end. Should be infinite in the actual application. ==================
-	for( i=0; i<n_iter; i++ )
-		printf( "Sleep for: %d\n", arrSleep[i]);
 	exit(0);
 }
 
