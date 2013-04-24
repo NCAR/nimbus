@@ -15,8 +15,6 @@ int PRM_Chan_Config(struct CHAN_CONFIG chan_Conf[], BYTE nChannels)
 	
 	for ( i=0; i < nChannels; i++ ) //Set default values for all channels to calculate voltages.
 	{
-		chan_Conf[i].varNameLong = "PRM AD Chan, V"; // Give channels default var names if we forget to define them below.
-		chan_Conf[i].varName = "PRMchan";
 		chan_Conf[i].R1 = 0; //Not all channels have dividers.
 		chan_Conf[i].R2 = 1;
 		chan_Conf[i].Func = VoltageCalc; //Initialize all processing functions to calc voltage. We will define P, T below.
@@ -32,12 +30,12 @@ int PRM_Chan_Config(struct CHAN_CONFIG chan_Conf[], BYTE nChannels)
 	chan_Conf[1].varName = "TBin";
 	chan_Conf[2].varName = "TAout";
 	chan_Conf[3].varName = "TBout";
-	chan_Conf[0].varNameLong = "Temp of air cell A in, C";
-	chan_Conf[1].varNameLong = "Temp of air cell B in, C";
-	chan_Conf[2].varNameLong = "Temp of air cell A out, C";
-	chan_Conf[3].varNameLong = "Temp of air cell B out, C";
+	chan_Conf[0].varNameLong = "Temperature of air in cell A inlet, C";
+	chan_Conf[1].varNameLong = "Temperature of air in cell B inlet, C";
+	chan_Conf[2].varNameLong = "Temperature of air in cell A outlet, C";
+	chan_Conf[3].varNameLong = "Temperature of air in cell B outlet, C";
 	
-	chan_Conf[4].varNameLong = "+5V Press Reference, V";
+	chan_Conf[4].varNameLong = "Reference +5V for pressure transducers, V";
 	chan_Conf[4].varName = "VrefP5V";
 	chan_Conf[4].R1 = 0.5; //Channel 4 is the 5V reference for the pressure transducers.
 	chan_Conf[4].R2 = 2;
@@ -71,8 +69,6 @@ int DMM_Chan_Config(struct CHAN_CONFIG chan_Conf[], BYTE nChannels)
 	
 	for ( i=0; i < nChannels; i++ ) //Set default values to calculate voltages.
 	{
-		chan_Conf[i].varNameLong = "DMM AD Chan, V"; // Give channels default var names if we forget to define them below.
-		chan_Conf[i].varName = "DMMchan";
 		chan_Conf[i].R1 = 0; //Not all channels have dividers.
 		chan_Conf[i].R2 = 1;
 		chan_Conf[i].Func = VoltageCalc; //Initialize all processing functions to calc voltage. We will define P, T below.
@@ -105,28 +101,28 @@ int DMM_Chan_Config(struct CHAN_CONFIG chan_Conf[], BYTE nChannels)
 	
 	chan_Conf[8].R1 = chan_Conf[15].R1 = 10; //5V power supply, PC104 5VDC
 	chan_Conf[8].R2 = chan_Conf[15].R2 = 20;
-	chan_Conf[8].varNameLong = "+5V Power supply, V";
-	chan_Conf[15].varNameLong = "+5V PC104 Power supply, V";
-	chan_Conf[8].varName = "Volt+5V";
-	chan_Conf[15].varName = "VoltPC+5V";
+	chan_Conf[8].varNameLong = "Power supply general +5V, V";
+	chan_Conf[15].varNameLong = "Power supply at PC104 +5V, V";
+	chan_Conf[8].varName = "VPos5V";
+	chan_Conf[15].varName = "VPosPC+5V";
 	
 	chan_Conf[9].R1 = chan_Conf[10].R1 = chan_Conf[11].R1 = 10; //+28, +24, -24VDC
 	chan_Conf[9].R2 = chan_Conf[10].R2 = chan_Conf[11].R2 = 2;
-	chan_Conf[9].varNameLong = "+28V Power supply, V";
-	chan_Conf[10].varNameLong = "+24V Detector board supply, V";
-	chan_Conf[11].varNameLong = "-24V Detector board supply, V";
-	chan_Conf[9].varName = "Volt+28V";
-	chan_Conf[10].varName = "volt+24V";
-	chan_Conf[11].varName = "Volt-24V";
+	chan_Conf[9].varNameLong = "Power supply +28V, V";
+	chan_Conf[10].varNameLong = "Power supply detector board +24V, V";
+	chan_Conf[11].varNameLong = "Power supply detector board -24V, V";
+	chan_Conf[9].varName = "VPos28V";
+	chan_Conf[10].varName = "SPos24V";
+	chan_Conf[11].varName = "VNeg24V";
 	
 	chan_Conf[12].R1 = chan_Conf[13].R1 = chan_Conf[14].R1 = 20; //+15, -15, +12VDC
 	chan_Conf[12].R2 = chan_Conf[13].R2 = chan_Conf[14].R2 = 10;
-	chan_Conf[12].varNameLong = "+15V Baratron supply, V";
-	chan_Conf[13].varNameLong = "-15V Baratron supply, V";
-	chan_Conf[14].varNameLong = "+12V Power supply, V";
-	chan_Conf[12].varName = "VoltBar+15V";
-	chan_Conf[13].varName = "VoltBar-15V";
-	chan_Conf[14].varName = "Volt+12V";
+	chan_Conf[12].varNameLong = "Power supply Baratron +15V, V";
+	chan_Conf[13].varNameLong = "Power supply Baratron -15V, V";
+	chan_Conf[14].varNameLong = "Power supply +12V, V";
+	chan_Conf[12].varName = "VPosBar15V";
+	chan_Conf[13].varName = "VNegBar15V";
+	chan_Conf[14].varName = "VPos12V";
 
 	return 0;
 }
