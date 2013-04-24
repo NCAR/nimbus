@@ -8,20 +8,12 @@ ENTRY POINTS:	SearchDERIVEFTNS()
 		SetLookupSuffix()
 		RunAMLIBinitializers()
 
-STATIC FNS:	none
-
 DESCRIPTION:	This module performs all lookups into the list of variables
 		that have xlate or compute functions (deriveftns[]).
 
-INPUT:		target variable
-
-OUTPUT:		index / ERR
-
-REFERENCES:	none
-
 REFERENCED BY:	hdr_decode.c
 
-COPYRIGHT:	University Corporation for Atmospheric Research, 1992
+COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2012
 -------------------------------------------------------------------------
 */
 
