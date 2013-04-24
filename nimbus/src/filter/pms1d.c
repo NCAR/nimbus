@@ -246,7 +246,7 @@ void PMS1D_SetupForADS3()
     setSerialNumberAndProbeType("AUHSAS_GH", "UHSAS003", PROBE_PMS1D | PROBE_PCASP);
   }
   else
-  if (cfg.ProjectName().compare("ICE-T") == 0)
+  if (cfg.ProjectName().compare("NOMADSS") == 0)
   {
     setSerialNumberAndProbeType("AS100", "FSSP122", PROBE_PMS1D | PROBE_FSSP);
   }
