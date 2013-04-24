@@ -47,6 +47,8 @@ json_libdir = this_dir + '/' + json_name+'/libs/' + gcc_prefix
 scons = "scons"
 if sys.platform == 'darwin':
 	scons = '/usr/local/bin/scons'
+if sys.platform == 'win32':
+	scons = '/c/Tools/Python27/Scripts/scons.bat'
 
 def build_jsoncpp(env):
     """Unpack and build jsoncpp, if the library is not found"""
@@ -74,6 +76,7 @@ def build_jsoncpp(env):
     # Use scons to build jsoncpp.
     cdcmd = "cd " + json_name + ";"
     sconscmd = scons + " platform=linux-gcc"
+    print sconscmd
     print runcmd(cdcmd + sconscmd, shell=True)
 
     # Remove the shared object library, to force static linking.
