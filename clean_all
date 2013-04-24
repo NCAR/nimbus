@@ -27,7 +27,7 @@ foreach file ( ncvarlist nc_gap mkcdf ncReorder )
 end
 cd ..
 
-foreach file ( nimbus kml_tools/acTrack2kml kml_tools/avaps2kml )
+foreach file ( nimbus kml_tools/acTrack2kml kml_tools/avaps2kml edit_cal )
   (cd $file; echo $file; scons -c)
 end
 
