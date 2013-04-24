@@ -29,7 +29,7 @@ def RIC(env):
         env['BOOST_LIBRARY_SUFFIX'] = '-mgw46-mt-1_42'
         env.AppendUnique(CPPPATH=[env['OPT_PREFIX']+'/include/boost-1_42'])
         # add compiler switch to disable the console window
-        #env.AppendUnique(LINKFLAGS=['-Wl,-subsystem,windows']) 
+        env.AppendUnique(LINKFLAGS=['-Wl,-subsystem,windows']) 
          
     elif env['PLATFORM'] == 'darwin':
     	# Mac OSX setup
