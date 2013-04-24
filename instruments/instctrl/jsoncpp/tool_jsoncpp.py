@@ -16,8 +16,11 @@ def runcmd(args, shell=False):
 	out = out.rstrip()
 	return out
 
+# The configuration variables specified next are for Linux. OS 
+# specializations follow.
+
 # The jsoncpp scons build uses the compiler name
-# in the library name, an also places the built library
+# in the library name, and also places the built library
 # in a subdirectory with this name.
 gcc_version = runcmd(['g++', '-dumpversion'])
 gcc_prefix = 'linux-gcc-'+gcc_version
@@ -38,28 +41,37 @@ json_libfilename = 'lib'+json_libname+'.a'
 
 # The name of dynamic library file
 json_dynlibfilename = 'lib'+json_libname+'.so'
-if sys.platform == 'darwin':
-	json_dynlibfilename = 'lib'+json_libname+'.dylib'
 
 # The library directory, as used by the linker -L switch
 json_libdir = this_dir + '/' + json_name+'/libs/' + gcc_prefix
 
-scons = "scons"
+# The command to do a scons build
+scons_bldcmd   = "cd " + json_name + "; scons    platform=linux-gcc"
+
+# The command to do a scons clean
+scons_cleancmd = "cd " + json_name + "; scons -c platform=linux-gcc"
+
+# OSX customization
 if sys.platform == 'darwin':
 	scons = '/usr/local/bin/scons'
-if sys.platform == 'win32':
-	scons = '/c/Tools/Python27/Scripts/scons.bat'
+	json_dynlibfilename = 'lib'+json_libname+'.dylib'
 
+# Windows customization
+if sys.platform == 'win32':
+	scons_bldcmd   = "cd " + json_name + "& scons    platform=mingw"
+	scons_cleancmd = "cd " + json_name + "& scons -c platform=mingw"
+	json_libname   = "json_mingw_libmt"
+	json_libdir    = this_dir + '/' + json_name + '/libs/mingw'	
+
+# Unpack and build jsoncpp
 def build_jsoncpp(env):
     """Unpack and build jsoncpp, if the library is not found"""
-
+    
     if (env.GetOption('clean')):
     	if env.FindFile(json_name, '.'):
     		return
 		# Clean jsoncpp.
-    	cdcmd = "cd " + json_name + ";"
-    	sconscmd = scons + " -c platform=linux-gcc"
-    	print runcmd(cdcmd + sconscmd, shell=True)
+    	print runcmd(scons_cleancmd, shell=True)
     	return
 
     # See if the library file exists, indicating that the build
@@ -74,10 +86,8 @@ def build_jsoncpp(env):
     print runcmd(tarcmd, shell=True)
     
     # Use scons to build jsoncpp.
-    cdcmd = "cd " + json_name + ";"
-    sconscmd = scons + " platform=linux-gcc"
-    print sconscmd
-    print runcmd(cdcmd + sconscmd, shell=True)
+    cdcmd = "cd " + json_name + "&"
+    print runcmd(scons_bldcmd, shell=True)
 
     # Remove the shared object library, to force static linking.
     print runcmd('rm -f ' + json_libdir+'/'+json_dynlibfilename, shell=True)
