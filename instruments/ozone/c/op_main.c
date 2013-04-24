@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <sys/io.h> //For INB, OUTB
 #include <unistd.h>
+#include <string.h>
 #include "config_base.h"
 #include "config_extern.h"
 
@@ -11,45 +12,53 @@ BYTE ValveAdvance ( BYTE secA, BYTE secB, BYTE curr_position );
 
 /* ************************************
 Main OP instrument control and DAQ program.
-Call: op_main 10, 15
-where 10 is the number of seconds to sample channel A, 15 is the number of seconds to sample channel B.
+Call: op_main 10 15 60
+where 10 is the number of seconds to sample channel A, 15 is the number of seconds to sample channel B, 60 is the number of minutes to aquire data.
 Must be executed as root or sudo. */
 int main(int argc, const char* argv[])
 {
-	unsigned int n_iter=999;
+	unsigned int n_iter=99;
 	unsigned int i, ii, iWaitLoop=0, iSleep=20000, iRemCnts, secA=10, secB=10;
 	float fCntRatio, timeStamp;
 	BYTE CurrPos, ExpectedPos=0; // Define valve position variables. ExpectedPos set to 0 to trap possible valve failure at init time.
+	
 	FILE *dataFile;
 	time_t t; // Time stamp data storage.
 	char dataFName[50];
+	
 	// Definitions for counters and AD data.
-	BYTE nChanPRM=8, nChanDMM=16; // Define number of channels.
+	unsigned int nChanPRM=8, nChanDMM=16; // Define number of channels.
+	
+	unsigned int nAuxVars=5; // Definitions of non-AD variables.
+	unsigned int nDependentVars = nChanPRM + nChanDMM + nAuxVars - 1; // Number of dependent variables.
+	char *auxVars[] = {"Tsecs","CountA","CountB","iSleep","ValvePos"};
+	char *auxVarsLong[] = {"Elapsed time since 00:00:00 GMT, s","Counts channel A","Counts channel B","Idle time in the DAQ loop, usec","Stream selection valve position"};
+	
 	unsigned int data[2]; // Storage for QMM counts.
 	float stateParams[nChanPRM], engData[nChanDMM]; // State parameters from Prometheus and AD housekeeping data from DMM.
 	struct CHAN_CONFIG dmmChanConf[nChanDMM], prmChanConf[nChanPRM];
 	
 		if (ioperm( BASE_QMM, 6, 1 )) //Set hardware port access for QMM board if possible.
 		{
-			printf("Access to QMM ports denied, exiting. Are you root or sudo?\n");
+			printf("Access to QMM AD ports denied, exiting. Are you root or sudo?\n");
 			return -1;
 		}
 		if (ioperm( BASE_PROM_DAQ, 15, 1 )) //Set hardware port access for Prometheus if possible.
 		{
-			printf("Access to Prometheus ports denied, exiting. Are you root or sudo?\n");
+			printf("Access to Prometheus AD ports denied, exiting. Are you root or sudo?\n");
 			return -1;
 		}
 		if (ioperm( BASE_DMM, 15, 1 )) //Set hardware port access for DMM board if possible.
 		{
-			printf("Access to hardware ports denied, exiting.\n");
+			printf("Access to Prometheus DIO ports denied, exiting. Are you root or sudo?\n");
 			return -1;
 		}
 	
-	if (argc > 1) // Command line parameters are used to set the flow times for each channel.
+	if (argc > 1) // Command line parameters are used to set the flow times for each channel and total run time.
 	{
 		secA = atoi(argv[1]); // Seconds to sample in CellA. Defaults to 10.
 		secB = atoi(argv[2]); // Seconds to sample in CellB. Defaults to 10.
-		n_iter = atoi(argv[3]); // Number of iterations. Defaults to 999, typically 100s.
+		n_iter = atoi(argv[3]) * 60 * ( MAIN_FREQ / DOWN_COUNTS ); // Number of iterations. Defaults to 99, or 10s, above.
 	}
 	
 	QMM_SetAddresses( BASE_QMM ); // Set control register addresses.
@@ -72,16 +81,40 @@ int main(int argc, const char* argv[])
 		sprintf( dataFName, getDate( &t, "OP2_%Y%m%d_%H%M%S.dat") );
 	}
 	
-	// Open output files.
+	// Prepare output file.
 	dataFile = fopen( dataFName, "w");
 	
-		// Write column names into data file.
-		fprintf( dataFile, "Tsecs	CountA	CountB	iSleep	ValvePos	" );
-		for (i=0; i<nChanPRM; i++) // State parameters will go in first.
-			fprintf( dataFile, "	%s", prmChanConf[i].varName );
-		for (i=0; i<nChanDMM; i++) // Eng data will go in next.
-			fprintf( dataFile, "	%s", dmmChanConf[i].varName );
-		fprintf( dataFile, "\n" );
+	fprintf( dataFile, "%d 1001\n", nDependentVars + 16 ); // First line; Add the number of non-var name lines in the header, subtract indep. var.
+	fprintf( dataFile, "Romashkin, Pavel; pavel@ucar.edu\n");
+	fprintf( dataFile, "National Center for Atmospheric Research, Research Aviation Facility\n");
+	fprintf( dataFile, "Airborne Ozone Photometer %s\n", isOP1 ? "OP1" : "OP2");
+	fprintf( dataFile, "Project data file\n"); // Project name.
+	fprintf( dataFile, "1 1\n");
+	fprintf( dataFile, "%s   %s\n", getDate( &t, "%Y %m %d"), getDate( &t, "%Y %m %d") ); // Date of acquisition and processing is the same in this case.
+	fprintf( dataFile, "0\n%s\n", auxVarsLong[0]); // Independent variable name.
+	fprintf( dataFile, "%d\n", nDependentVars ); // Number of dependent variables. Less one for independent variable.
+	for (i=0; i<nDependentVars; i++ )
+		fprintf( dataFile, "1.0 "); // Scale factors.
+	fprintf( dataFile, "\n");
+	for (i=0; i<nDependentVars; i++ )
+		fprintf( dataFile, "%d ", 999); // Missing value.
+	fprintf( dataFile, "\n");
+	for (i=1; i<nAuxVars; i++ )
+		fprintf( dataFile, "%s\n", auxVarsLong[i]); // Aux var names. Skip the first name - it is the indfependent variable.
+	for (i=0; i<nChanPRM; i++ )
+		fprintf( dataFile, "%s\n", prmChanConf[i].varNameLong); // PRM var names.
+	for (i=0; i<nChanDMM; i++ )
+		fprintf( dataFile, "%s\n", dmmChanConf[i].varNameLong); // DMM var names.
+	fprintf( dataFile, "1\nThis file contains raw data from the RAF %s instrument.\n1\n", isOP1 ? "OP1" : "OP2"); // Comment line
+	
+	// Write column names into data file.
+	for (i=0; i<nAuxVars; i++ )
+		fprintf( dataFile, "%s	", auxVars[i] ); // Aux var names.
+	for (i=0; i<nChanPRM; i++) // State parameters will go in first.
+		fprintf( dataFile, "%s	", prmChanConf[i].varName );
+	for (i=0; i<nChanDMM; i++) // Eng data will go in next.
+		fprintf( dataFile, "%s	", dmmChanConf[i].varName );
+	fprintf( dataFile, "\n" );
 	
 	QMM_Setup( BASE_QMM, isOP1, DOWN_COUNTS ); //Set up the counter board and individual counter configurations.
 	QMM_Restart_Counters( isOP1 ); //Set up the counters for the first time.
@@ -179,10 +212,7 @@ BYTE GetStateParams ( float Result[], struct CHAN_CONFIG chan_Conf[], BYTE nChan
 	
 	for ( i=0; i<nChannels; i++ ) //Calculate actual values for each channel according to its data type.
 		Result[i] = (*chan_Conf[i].Func) ( Result[i], chan_Conf[i].R1, chan_Conf[i].R2, vRef );
-	
-	// This channel is Baratron P. There is no plan to keep it in the future, so there is no transfer function for it in the op_func_ad.c
-	Result[5] *= 300;
-	
+		
 	return nChannels;
 }
 
