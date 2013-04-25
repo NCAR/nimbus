@@ -8,6 +8,7 @@
 #include "InstConfig.h"
 #include "Message.h"
 #include "QtAddress.h"
+#include "RicLogger.h"
 
 /// An instrument/user proxy which is embedded in a switch. It is used when
 /// the proxies and the switch are located on the same machine, and so
@@ -62,6 +63,8 @@ protected:
 	int _destPort;
 	/// The outgoing datagram socket.
 	QUdpSocket* _outgoingUdpSocket;
+	/// The system logger
+	RicLogger _logger;
 
 };
 

@@ -185,7 +185,14 @@ void Switch::sendSysMsg(std::string msgId, std::string text)
 	_msgsToSwitch++;
 	Protocols::Message message(Protocols::Message::SYS, "", msgId, text);
 	std::string msg = message.toJsonStdString();
-	_switchConnection->sendSwitchMessage(msg);
+
+	try {
+		_switchConnection->sendSwitchMessage(msg);
+	}
+	catch (std::string& emsg) {
+		_logger.log("Error sending SYS message to the remote switch:");
+		_logger.log(emsg);
+	}
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -214,7 +221,13 @@ void Switch::msgFromProxySlot(Protocols::Message message)
 
 		// send the proxy message to the remote switch
 		std::string msg = message.toJsonStdString();
-		_switchConnection->sendSwitchMessage(msg);
+		try {
+			_switchConnection->sendSwitchMessage(msg);
+		}
+		catch (std::string& emsg) {
+			_logger.log("Error sending proxy message to the remote switch:");
+			_logger.log(emsg);
+		}
 	}
 	else {
 		//std::cout << "Message " << message.msgId() << " dropped." << std::endl;

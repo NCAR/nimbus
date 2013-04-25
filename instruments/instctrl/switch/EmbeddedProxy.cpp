@@ -96,7 +96,13 @@ void EmbeddedProxy::send(Protocols::Message msg)
 	// find this message in our message dictionary
 	std::string msgId = msg.msgId();
 	if (_messages.find(msgId) != _messages.end()) {
-		sendMsg(_messages[msgId], msg);
+		try {
+			sendMsg(_messages[msgId], msg);
+		}
+		catch (std::string& emsg) {
+			_logger.log("EmbeddedProxy::send(), error sending message to embedded proxy:");
+			_logger.log(emsg);
+		}
 	} else {
 		/// @todo Handle appropriately; reporting/logging as needed.
 		qDebug() << "Proxy" << _proxyId.c_str() << ": Unrecognized message"

@@ -289,14 +289,23 @@ void SslProxy::msgFromServerSlot(Protocols::Message msg)
 
 	// find this message in our message dictionary
 	if (_imessages.find(msgId) != _imessages.end()) {
-		sendMsg(_imessages[msgId], msg);
+		// This is a registered message. Send it on to the recipient.
+		try {
+			sendMsg(_imessages[msgId], msg);
+		}
+		catch (std::string& emsg) {
+			_logger.log("SslProxy::msgFromServerSlot(), error sending message to SSL proxy:");
+			_logger.log(emsg);
+		}
+
 		emit switchMessage(msg.payload().text(), true);
-	}
-	else if (msgId == "RESPONSE") {
-		emit switchMessage("RESPONSE", false);
-	}
-	else {
-		emit switchMessage(msg.payload().text(), false);
+
+	} else {
+		if (msgId == "RESPONSE") {
+			emit switchMessage("RESPONSE", false);
+		} else {
+			emit switchMessage(msg.payload().text(), false);
+		}
 	}
 }
 

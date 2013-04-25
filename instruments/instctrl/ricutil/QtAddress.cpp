@@ -7,7 +7,7 @@ QHostAddress QtAddress::address(std::string name) throw (std::string)
 	QHostInfo info = QHostInfo::fromName(name.c_str());
 	QList<QHostAddress>	addys = info.addresses();
 	if (addys.size() == 0) {
-		std::string errmsg("QtAddress: Unable to determine IP address for host: ");
+		std::string errmsg("QtAddress::address(), Unable to determine IP address for host: ");
 		errmsg += name;
 		throw (errmsg);
 	}
