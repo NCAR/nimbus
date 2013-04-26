@@ -6,6 +6,20 @@
     <leftImage>../../Resources/proxy/proxyLeft.png</leftImage>
     <logoImage>../../Resources/proxy/proxy48.png</logoImage>
     <splashImage>../../Resources/proxy/proxyIcon.png</splashImage>
+        <preBuildActionList>
+        <setInstallerVariable>
+            <name>${product_version}</name>
+            <persist>1</persist>
+            <value>${product_version}-${svnversion}</value>
+        </setInstallerVariable>
+    </preBuildActionList>
+    <enableRollback>1</enableRollback>
+    <enableTimestamp>1</enableTimestamp>
+    <outputDirectory>${build_project_directory}</outputDirectory>
+    <requestedExecutionLevel>asInvoker</requestedExecutionLevel>
+    <saveRelativePaths>1</saveRelativePaths>
+    <startMenuGroupName>${product_fullname}-${svnversion}</startMenuGroupName>
+    <vendor>NCAR</vendor>
     <componentList>
         <component>
             <name>default</name>
@@ -216,20 +230,6 @@
             </startMenuShortcutList>
         </component>
     </componentList>
-    <preBuildActionList>
-        <setInstallerVariable>
-            <name>${product_version}</name>
-            <persist>1</persist>
-            <value>${product_version}-${svnversion}</value>
-        </setInstallerVariable>
-    </preBuildActionList>
-    <enableRollback>1</enableRollback>
-    <enableTimestamp>1</enableTimestamp>
-    <outputDirectory>${build_project_directory}</outputDirectory>
-    <requestedExecutionLevel>asInvoker</requestedExecutionLevel>
-    <saveRelativePaths>1</saveRelativePaths>
-    <startMenuGroupName>${product_fullname}-${svnversion}</startMenuGroupName>
-    <vendor>NCAR</vendor>
     <parameterList>
         <stringParameter name="svnversion" value="">
             <description></description>
