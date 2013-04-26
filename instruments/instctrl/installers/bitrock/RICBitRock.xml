@@ -6,7 +6,7 @@
     <leftImage>../../Resources/proxy/proxyLeft.png</leftImage>
     <logoImage>../../Resources/proxy/proxy48.png</logoImage>
     <splashImage>../../Resources/proxy/proxyIcon.png</splashImage>
-        <preBuildActionList>
+    <preBuildActionList>
         <setInstallerVariable>
             <name>${product_version}</name>
             <persist>1</persist>
@@ -18,7 +18,7 @@
     <outputDirectory>${build_project_directory}</outputDirectory>
     <requestedExecutionLevel>asInvoker</requestedExecutionLevel>
     <saveRelativePaths>1</saveRelativePaths>
-    <startMenuGroupName>${product_fullname}-${svnversion}</startMenuGroupName>
+    <startMenuGroupName>${product_shortname}-${svnversion}</startMenuGroupName>
     <vendor>NCAR</vendor>
     <componentList>
         <component>
@@ -37,10 +37,10 @@
                     <platforms>all</platforms>
                     <runAsAdmin>0</runAsAdmin>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec></windowsExec>
+                    <windowsExec>${installdir}/ric_proxy.exe</windowsExec>
                     <windowsExecArgs></windowsExecArgs>
                     <windowsIcon>${installdir}/proxyIcon.ico</windowsIcon>
-                    <windowsPath></windowsPath>
+                    <windowsPath>${install_dir}</windowsPath>
                 </shortcut>
             </desktopShortcutList>
             <folderList>
@@ -54,7 +54,7 @@
                             <comment>Uninstall</comment>
                             <exec>${installdir}/${uninstallerName}</exec>
                             <icon></icon>
-                            <name>Uninstall ${product_fullname}</name>
+                            <name>Uninstall ${product_shortname}</name>
                             <path>${installdir}</path>
                             <platforms>all</platforms>
                             <runAsAdmin>0</runAsAdmin>
@@ -208,21 +208,21 @@
             </postInstallationActionList>
             <startMenuShortcutList>
                 <startMenuShortcut>
-                    <comment>Uninstall ${product_fullname}</comment>
-                    <name>Uninstall ${product_fullname}</name>
-                    <runAsAdmin>0</runAsAdmin>
-                    <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}/${uninstallerName}.exe</windowsExec>
-                    <windowsExecArgs></windowsExecArgs>
-                    <windowsIcon></windowsIcon>
-                    <windowsPath>${installdir}/</windowsPath>
-                </startMenuShortcut>
-                <startMenuShortcut>
                     <comment>Remote Instrument Control</comment>
                     <name>${product_shortname}-${svnversion}</name>
                     <runAsAdmin>0</runAsAdmin>
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>${installdir}/ric_proxy.exe</windowsExec>
+                    <windowsExecArgs></windowsExecArgs>
+                    <windowsIcon>${installdir}/proxyIcon.ico</windowsIcon>
+                    <windowsPath>${installdir}</windowsPath>
+                </startMenuShortcut>
+                <startMenuShortcut>
+                    <comment>Uninstall ${product_shortname}</comment>
+                    <name>Uninstall ${product_shortname}</name>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}/${uninstallerName}.exe</windowsExec>
                     <windowsExecArgs></windowsExecArgs>
                     <windowsIcon>${installdir}/proxyIcon.ico</windowsIcon>
                     <windowsPath>${installdir}</windowsPath>
