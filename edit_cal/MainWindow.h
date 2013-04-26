@@ -43,7 +43,7 @@ public:
     void openDatabase(QString hostname);
 
     /// Set a column filter pattern for a given column in the table view.
-    void setFilterFixedString(int column, const QString &pattern);
+    void setFilter(int column, const QString &pattern);
 
 signals:
   void submitForm();
@@ -52,7 +52,7 @@ signals:
 protected slots:
 
     /// Remember what the last item selected was.
-    void tableItemPressed(const QModelIndex &index);
+    void tableItemPressed(const QModelIndex &);
 
     /// Toggle the row's hidden state selected by cal type.
     void toggleRow(int id);
@@ -77,6 +77,12 @@ protected slots:
     /// Saves changes to the local database.
     /// @returns 0 on success.
     int saveButtonClicked();
+
+    /// Scroll to the top of the table
+    void scrollToHome();
+
+    /// Scroll to the bottom of the table
+    void scrollToEnd();
 
     /// Scroll to the last selected item.
     void scrollToLastClicked();
@@ -164,14 +170,17 @@ private:
     /// Unplot calibration for this row
     void unplotCalButtonClicked(int row);
 
+    /// Scroll to row for the given RID.
+    void scrollToRid(QString rid);
+
     QSqlTableModel*          _model;
     SortFilterProxyModel*    _proxy;
     QTableView*              _table;
     CalibrationPlot*         _plot;
     CalibrationForm*         _form;
     BackgroundColorDelegate* _delegate;
-    QModelIndex              _lastIndex;
-    QModelIndex              _editIndex;
+    QString                  _lastRid;
+    QString                  _editRid;
 
     QActionGroup *colsGrp;
 

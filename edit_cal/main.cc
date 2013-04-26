@@ -70,8 +70,8 @@ int main(int argc, char *argv[])
         app.installTranslator(translator);
     
     MainWindow window;
-    window.setFilterFixedString( clm_site,     siteNameFilter );
-    window.setFilterFixedString( clm_var_name, varNameFilter  );
+    window.setFilter( clm_site,     siteNameFilter );
+    window.setFilter( clm_var_name, varNameFilter  );
     window.show();
     res = app.exec();
     std::cout << __PRETTY_FUNCTION__ << " EXITING" << std::endl;

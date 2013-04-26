@@ -8,16 +8,26 @@ SortFilterProxyModel::SortFilterProxyModel(QObject *parent) : QSortFilterProxyMo
 
 /* -------------------------------------------------------------------- */
 
-void SortFilterProxyModel::setFilterFixedString(int column, const QString &pattern)
+void SortFilterProxyModel::setFilter(int column, const QString &pattern)
 {
     qDebug() << __PRETTY_FUNCTION__ << "column:" << column  << "pattern:" << pattern;
 
     if (pattern.isEmpty())
         m_columnPatterns.remove(column);
     else
-        m_columnPatterns[column] = pattern;
+        m_columnPatterns[column] = QRegExp(pattern, Qt::CaseInsensitive);
 
     invalidateFilter();
+}
+
+/* -------------------------------------------------------------------- */
+
+QString SortFilterProxyModel::filterAt(int column)
+{
+    if (m_columnPatterns.contains(column))
+        return m_columnPatterns[column].pattern();
+    else
+        return "";
 }
 
 /* -------------------------------------------------------------------- */
@@ -49,11 +59,11 @@ bool SortFilterProxyModel::filterAcceptsRow(int sourceRow,
 
     bool ret = false;
 
-    for(QMap<int, QString>::const_iterator iter = m_columnPatterns.constBegin();
+    for(QMap<int, QRegExp>::const_iterator iter = m_columnPatterns.constBegin();
         iter != m_columnPatterns.constEnd(); ++iter)
     {
         QModelIndex index = sourceModel()->index(sourceRow, iter.key(), sourceParent);
-        ret = index.data().toString().contains(iter.value(), filterCaseSensitivity());
+        ret = index.data().toString().contains(iter.value());
 
         if(!ret)
             return ret;

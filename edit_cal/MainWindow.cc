@@ -54,6 +54,7 @@
 #define MAX_BATH_PROBES 10
 #define PATH_TO_BATH_CALS "/Configuration/raf/cal_files/Bath"
 #define DECADE_BOX_WIRE_RESISTANCE 0.03 // Ohms
+//#define DECADE_BOX_WIRE_RESISTANCE 0  // Remove resistance when requested by Friesen
 
 
 /* -------------------------------------------------------------------- */
@@ -112,6 +113,12 @@ MainWindow::MainWindow() : _model(0), changeDetected(false)
 {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 
+    // Seed the random number generator used to create UUIDs.
+    qsrand(time(0));
+    qDebug() << QUuid::createUuid();
+    qDebug() << QUuid::createUuid();
+    qDebug() << QUuid::createUuid();
+
     setupDatabase();
 
     setupModels();
@@ -152,9 +159,10 @@ void MainWindow::setupDatabase()
     siteList << "hyper.raf-guest.ucar.edu";
     siteList << "hercules.raf-guest.ucar.edu";
 
-    tailNumIdx[0] = "N600";
-    tailNumIdx[1] = "N677F";
-    tailNumIdx[2] = "N130AR";
+    tailNumIdx[0] = "Lab_N600";
+    tailNumIdx[1] = "GV_N677F";
+    tailNumIdx[2] = "C130_N130AR";
+    tailNumIdx[3] = "Lab_FL1";
 
     // deny editing local calibration databases
     foreach(QString site, siteList) {
@@ -418,19 +426,18 @@ void MainWindow::filterBy()
     bool ok;
     QString pattern = QInputDialog::getText(this, filterBy,
                            tr("Pressing OK with nothing entered unfilters this column."),
-                           QLineEdit::Normal, "", &ok);
+                           QLineEdit::Normal, _proxy->filterAt(_column), &ok);
 
     if (!ok) return;
 
-    setFilterFixedString( _column, pattern);
+    setFilter( _column, pattern);
 }
 
 /* -------------------------------------------------------------------- */
 
-void MainWindow::setFilterFixedString(int column, const QString &pattern)
+void MainWindow::setFilter(int column, const QString &pattern)
 {
-    _proxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
-    _proxy->setFilterFixedString(column, pattern);
+    _proxy->setFilter(column, pattern);
 }
 
 /* -------------------------------------------------------------------- */
@@ -581,6 +588,7 @@ void MainWindow::addRowAction(QMenu *menu, const QString &text,
     else if (id == n++) showTailNum[0] = checked;
     else if (id == n++) showTailNum[1] = checked;
     else if (id == n++) showTailNum[2] = checked;
+    else if (id == n++) showTailNum[3] = checked;
     else if (id == n++) showCloned     = checked;
     else if (id == n++) showRemoved    = checked;
     else if (id == n++) showExported   = checked;
@@ -656,10 +664,14 @@ QString MainWindow::extractStringWithinBraced(QString string)
 
 /* -------------------------------------------------------------------- */
 
-void MainWindow::tableItemPressed(const QModelIndex &index)
+void MainWindow::tableItemPressed(const QModelIndex &)
 {
 //  std::cout << __PRETTY_FUNCTION__ << std::endl;
-    _lastIndex  = index;
+
+    // get selected row number
+    int row = _table->selectionModel()->currentIndex().row();
+
+    _lastRid = modelData(row, clm_rid);
 }
 
 /* -------------------------------------------------------------------- */
@@ -677,6 +689,7 @@ void MainWindow::toggleRow(int id)
     else if (id == n++) showTailNum[0] = !showTailNum[0];
     else if (id == n++) showTailNum[1] = !showTailNum[1];
     else if (id == n++) showTailNum[2] = !showTailNum[2];
+    else if (id == n++) showTailNum[3] = !showTailNum[3];
     else if (id == n++) showCloned     = !showCloned;
     else if (id == n++) showRemoved    = !showRemoved;
     else if (id == n++) showExported   = !showExported;
@@ -690,33 +703,41 @@ void MainWindow::hideRows()
 {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 
-    for (int row = 0; row < _proxy->rowCount(); row++) {
+    QStringList cal_type_filters;
+    if (showAnalog)     cal_type_filters << "analog";
+    if (showBath)       cal_type_filters << "bath";
+    if (showInstrument) cal_type_filters << "instrument";
+    if (cal_type_filters.isEmpty())
+        setFilter(clm_cal_type, "");
+    else
+        setFilter(clm_cal_type, cal_type_filters.join("|"));
 
-        QString pid      = modelData(row, clm_pid);
-        QString site     = modelData(row, clm_site);
-        QString removed  = modelData(row, clm_removed);
-        QString exported = modelData(row, clm_exported);
-        QString cal_type = modelData(row, clm_cal_type);
+    QStringList tailNumbers;
+    if (showTailNum[0]) tailNumbers << tailNumIdx[0];
+    if (showTailNum[1]) tailNumbers << tailNumIdx[1];
+    if (showTailNum[2]) tailNumbers << tailNumIdx[2];
+    if (showTailNum[3]) tailNumbers << tailNumIdx[3];
+    if (tailNumbers.isEmpty())
+        setFilter(clm_site, "");
+    else
+        setFilter(clm_site, tailNumbers.join("|"));
 
-        bool shownType = false;
-        shownType |= ((cal_type == "analog")     && showAnalog);
-        shownType |= ((cal_type == "bath")       && showBath);
-        shownType |= ((cal_type == "instrument") && showInstrument);
+    if (showCloned)
+        setFilter(clm_pid, "");
+    else
+        setFilter(clm_pid, " ");
 
-        bool shownSite = false;
-        shownSite |= ((site == tailNumIdx[0]) && showTailNum[0]);
-        shownSite |= ((site == tailNumIdx[1]) && showTailNum[1]);
-        shownSite |= ((site == tailNumIdx[2]) && showTailNum[2]);
+    if (showRemoved)
+        setFilter(clm_removed, "");
+    else
+        setFilter(clm_removed, "0");
 
-        bool C = ((pid      != "")  && showCloned);
-        bool R = ((removed  == "1") && showRemoved);
-        bool E = ((exported == "1") && showExported);
-        bool shownStatus = C | R | E | (!C & !R & !E);
+    if (showExported)
+        setFilter(clm_exported, "");
+    else
+        setFilter(clm_exported, "0");
 
-        bool shown;
-        shown = shownStatus & shownType & shownSite;
-//      _table->setRowHidden(row, !shown);
-    }
+    _proxy->refreshFilters();
 }
 
 /* -------------------------------------------------------------------- */
@@ -771,8 +792,9 @@ void MainWindow::setupMenus()
 
     // true == unhidden
     int i = 0;
+    rowsMenu->addAction(tr("select &start of table"),  this, SLOT(scrollToHome()),        Qt::Key_Home);
+    rowsMenu->addAction(tr("select &end of table"),    this, SLOT(scrollToEnd()),         Qt::Key_End);
     rowsMenu->addAction(tr("select &last clicked"),    this, SLOT(scrollToLastClicked()), Qt::Key_ScrollLock);
-    rowsMenu->addAction(tr("show &only checked rows"), this, SLOT(hideRows()));
     rowsMenu->addSeparator();
     addRowAction(rowsMenu, tr("analog"),        rowsGrp, rowsMapper, i++, true);
     addRowAction(rowsMenu, tr("bath"),          rowsGrp, rowsMapper, i++, true);
@@ -781,6 +803,7 @@ void MainWindow::setupMenus()
     addRowAction(rowsMenu, tailNumIdx[0],       rowsGrp, rowsMapper, i++, true);
     addRowAction(rowsMenu, tailNumIdx[1],       rowsGrp, rowsMapper, i++, true);
     addRowAction(rowsMenu, tailNumIdx[2],       rowsGrp, rowsMapper, i++, true);
+    addRowAction(rowsMenu, tailNumIdx[3],       rowsGrp, rowsMapper, i++, true);
     rowsMenu->addSeparator();
     addRowAction(rowsMenu, tr("cloned"),        rowsGrp, rowsMapper, i++, true);
     addRowAction(rowsMenu, tr("removed"),       rowsGrp, rowsMapper, i++, false);
@@ -1095,13 +1118,15 @@ Reference(C), Harco 708094A(Ohm), Harco 708094B(Ohm), Rosemount 2984(Ohm)
         QStringList sensors = header.split(",");
         QRegExp rxVarName(" (.*) (.*)\\((.*)\\)");
 
-        nVariables = sensors.length()-1;
+        // trim off the initial 'Reference(C)' from the list of sensors
+        sensors.removeFirst();
+
+        nVariables = sensors.length();
         foreach (QString varName, sensors) {
             if (rxVarName.indexIn(varName) != -1) {
                 sensor_types   << rxVarName.cap(1);
                 serial_numbers << rxVarName.cap(2);
                 QString units   = rxVarName.cap(3); // unused
-                qDebug() << units;                  // unused
             }
         }
         double setPointVal[nDataPerSetPoint];
@@ -1239,7 +1264,8 @@ Reference(C), Harco 708094A(Ohm), Harco 708094B(Ohm), Rosemount 2984(Ohm)
         _model->setRecord(row+1, record);
 
         // re-apply any filtering after inserting a new row
-        _lastIndex = _proxy->index(row+1,0);
+        _lastRid = rid;
+        qDebug() << "_lastRid:" << _lastRid;
         _proxy->refreshFilters();
         scrollToLastClicked();
     }
@@ -1294,20 +1320,52 @@ int MainWindow::saveButtonClicked()
 
 /* -------------------------------------------------------------------- */
 
+void MainWindow::scrollToHome()
+{
+    QModelIndex index = _proxy->index(0, 0);
+    _table->scrollTo(index, QAbstractItemView::EnsureVisible);
+    _table->selectRow(index.row());
+}
+
+/* -------------------------------------------------------------------- */
+
+void MainWindow::scrollToEnd()
+{
+    QModelIndex index = _proxy->index(_proxy->rowCount()-1, 0);
+    _table->scrollTo(index, QAbstractItemView::EnsureVisible);
+    _table->selectRow(index.row());
+}
+
+/* -------------------------------------------------------------------- */
+
 void MainWindow::scrollToLastClicked()
 {
-//  std::cout << __PRETTY_FUNCTION__ << std::endl;
-    _table->scrollTo(_lastIndex);
-    _table->selectRow(_lastIndex.row());
+    scrollToRid(_lastRid);
 }
 
 /* -------------------------------------------------------------------- */
 
 void MainWindow::scrollToEditedRow()
 {
-//  std::cout << __PRETTY_FUNCTION__ << std::endl;
-    _table->scrollTo(_editIndex);
-    _table->selectRow(_editIndex.row());
+    scrollToRid(_editRid);
+}
+
+/* -------------------------------------------------------------------- */
+
+void MainWindow::scrollToRid(QString rid)
+{
+    QModelIndex index;
+    for (int row = 0; row < _proxy->rowCount(); row++)
+        if (modelData(row, clm_rid) == rid)
+            index = _proxy->index(row, 0);
+
+    if (!index.isValid()) {
+        QMessageBox::warning(0, tr("hidden"),
+          tr("Cannot reselect, row is hidden."));
+        return;
+    }
+    _table->scrollTo(index, QAbstractItemView::EnsureVisible);
+    _table->selectRow(index.row());
 }
 
 /* -------------------------------------------------------------------- */
@@ -1318,13 +1376,11 @@ void MainWindow::editCalButtonClicked()
 
     unsubmittedFormQuery(tr("Edit"));
 
-    _editIndex = _table->selectionModel()->currentIndex();
-
     // get selected row number
-    int row = _editIndex.row();
+    int row = _table->selectionModel()->currentIndex().row();
 
-    QString rid = modelData(row, clm_rid);
-    if (!_editable.contains(rid)) {
+    _editRid = modelData(row, clm_rid);
+    if (!_editable.contains(_editRid)) {
         _form->setEnabled(false);
         QMessageBox::warning(0, tr("edit"),
            tr("Cannot edit content, clone it first then edit that line."));
@@ -1516,7 +1572,7 @@ void MainWindow::plotCalButtonClicked(int row)
     legend->setItemMode(QwtLegend::CheckableItem);
 #endif
 
-    _plot->qwtPlot->insertLegend(legend, QwtPlot::RightLegend);
+    _plot->qwtPlot->insertLegend(legend, QwtPlot::BottomLegend);
 
     QStringList list_set_points;
     QStringList list_averages;
@@ -1524,7 +1580,7 @@ void MainWindow::plotCalButtonClicked(int row)
 
     // if row is currently being edited in the form then plot the unsubmitted
     // data instead on the model data
-    if (row == _editIndex.row()) {
+    if (rid == _editRid) {
         list_set_points = extractListFromBracedCSV(form_set_points);
         list_averages   = extractListFromBracedCSV(form_averages);
         list_cal        = extractListFromBracedCSV(form_cal);
@@ -1957,12 +2013,11 @@ void MainWindow::exportAnalog(int row)
     // search for the other channels and continue extracting coefficients...
     int topRow = row;
     do {
-        if (--topRow < 0) break;
-        QString removed = modelData(topRow, clm_removed);
-        if (removed == "1") break;
+        if (--topRow < 0)                                          break;
+        if           ("1" == modelData(topRow, clm_removed))       continue;
         if (serial_number != modelData(topRow, clm_serial_number)) break;
-        if      ("analog" != modelData(topRow, clm_cal_type)) break;
-        if      (gainbplr != modelData(topRow, clm_gainbplr)) break;
+        if      ("analog" != modelData(topRow, clm_cal_type))      break;
+        if      (gainbplr != modelData(topRow, clm_gainbplr))      break;
 
         cal_date = modelData(topRow, clm_cal_date);
         ut = QDateTime::fromString(cal_date, Qt::ISODate);
@@ -1982,18 +2037,21 @@ void MainWindow::exportAnalog(int row)
         offst[channel] = rxCoeff2.cap(1);
         slope[channel] = rxCoeff2.cap(2);
         chnMask |= 1 << channel;
+
+        // select the rows of what's found
+        _table->selectionModel()->select(_proxy->index(topRow, 0),
+            QItemSelectionModel::Select | QItemSelectionModel::Rows);
     } while (true);
     topRow++;
 
     int numRows = _proxy->rowCount() - 1;
     int btmRow = row;
     do {
-        if (++btmRow > numRows) break;
-        QString removed = modelData(btmRow, clm_removed);
-        if (removed == "1") break;
+        if (++btmRow > numRows)                                    break;
+        if           ("1" == modelData(btmRow, clm_removed))       continue;
         if (serial_number != modelData(btmRow, clm_serial_number)) break;
-        if      ("analog" != modelData(btmRow, clm_cal_type)) break;
-        if      (gainbplr != modelData(btmRow, clm_gainbplr)) break;
+        if      ("analog" != modelData(btmRow, clm_cal_type))      break;
+        if      (gainbplr != modelData(btmRow, clm_gainbplr))      break;
 
         cal_date = modelData(btmRow, clm_cal_date);
         ut = QDateTime::fromString(cal_date, Qt::ISODate);
@@ -2013,15 +2071,12 @@ void MainWindow::exportAnalog(int row)
         offst[channel] = rxCoeff2.cap(1);
         slope[channel] = rxCoeff2.cap(2);
         chnMask |= 1 << channel;
+
+        // select the rows of what's found
+        _table->selectionModel()->select(_proxy->index(btmRow, 0),
+            QItemSelectionModel::Select | QItemSelectionModel::Rows);
     } while (true);
     btmRow--;
-
-    // select the rows of what's found
-    QModelIndex topRowIdx = _proxy->index(topRow, 0);
-    QModelIndex btmRowIdx = _proxy->index(btmRow, 0);
-    QItemSelection rowSelection(topRowIdx, btmRowIdx);
-    _table->selectionModel()->select(rowSelection,
-        QItemSelectionModel::Select | QItemSelectionModel::Rows);
 
     // complain if the found selection is discontiguous or an undistinct set of 8
     int numFound  = btmRow - topRow + 1;
@@ -2386,7 +2441,8 @@ void MainWindow::cloneButtonClicked()
     _model->setRecord(row+1, record);
 
     // re-apply any filtering after inserting a new row
-    _lastIndex = _proxy->index(row+1,0);
+    _lastRid = rid;
+    qDebug() << "_lastRid:" << _lastRid;
     _proxy->refreshFilters();
     scrollToLastClicked();
 
