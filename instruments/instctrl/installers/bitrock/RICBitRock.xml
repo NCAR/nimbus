@@ -39,7 +39,7 @@
                     <runInTerminal>0</runInTerminal>
                     <windowsExec></windowsExec>
                     <windowsExecArgs></windowsExecArgs>
-                    <windowsIcon></windowsIcon>
+                    <windowsIcon>${installdir}/proxyIcon.ico</windowsIcon>
                     <windowsPath></windowsPath>
                 </shortcut>
             </desktopShortcutList>
