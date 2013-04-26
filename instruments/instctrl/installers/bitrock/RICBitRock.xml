@@ -61,7 +61,7 @@
                             <runInTerminal>0</runInTerminal>
                             <windowsExec>${installdir}/${uninstallerName}.exe</windowsExec>
                             <windowsExecArgs></windowsExecArgs>
-                            <windowsIcon></windowsIcon>
+                            <windowsIcon>${installdir}/proxyIcon.ico</windowsIcon>
                             <windowsPath>${installdir}</windowsPath>
                         </shortcut>
                     </shortcutList>
