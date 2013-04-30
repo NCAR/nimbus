@@ -104,7 +104,7 @@ int DMM_Chan_Config(struct CHAN_CONFIG chan_Conf[], BYTE nChannels)
 	chan_Conf[8].varNameLong = "Power supply general +5V, V";
 	chan_Conf[15].varNameLong = "Power supply at PC104 +5V, V";
 	chan_Conf[8].varName = "VPos5V";
-	chan_Conf[15].varName = "VPosPC+5V";
+	chan_Conf[15].varName = "VPosPC5V";
 	
 	chan_Conf[9].R1 = chan_Conf[10].R1 = chan_Conf[11].R1 = 10; //+28, +24, -24VDC
 	chan_Conf[9].R2 = chan_Conf[10].R2 = chan_Conf[11].R2 = 2;
@@ -112,7 +112,7 @@ int DMM_Chan_Config(struct CHAN_CONFIG chan_Conf[], BYTE nChannels)
 	chan_Conf[10].varNameLong = "Power supply detector board +24V, V";
 	chan_Conf[11].varNameLong = "Power supply detector board -24V, V";
 	chan_Conf[9].varName = "VPos28V";
-	chan_Conf[10].varName = "SPos24V";
+	chan_Conf[10].varName = "VPos24V";
 	chan_Conf[11].varName = "VNeg24V";
 	
 	chan_Conf[12].R1 = chan_Conf[13].R1 = chan_Conf[14].R1 = 20; //+15, -15, +12VDC
