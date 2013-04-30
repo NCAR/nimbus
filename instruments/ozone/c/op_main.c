@@ -73,12 +73,12 @@ int main(int argc, const char* argv[])
 	if ( isOP1 )
 	{
 		fprintf(stderr, "Instrument is OP1\n");
-		sprintf( dataFName, getDate( &t, "OP1_%Y%m%d_%H%M%S.dat") );
+		sprintf( dataFName, getDate( &t, "/mnt/hda1/data/OP1_%Y%m%d_%H%M%S.dat") );
 	}
 	else
 	{
 		fprintf(stderr, "Instrument is OP2\n");
-		sprintf( dataFName, getDate( &t, "OP2_%Y%m%d_%H%M%S.dat") );
+		sprintf( dataFName, getDate( &t, "/mnt/hda1/data/OP2_%Y%m%d_%H%M%S.dat") );
 	}
 	
 	// Prepare output file.
