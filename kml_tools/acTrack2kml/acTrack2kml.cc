@@ -191,7 +191,9 @@ string buildDataQueryString(PGconn *conn)
     alt = getGlobalAttribute(conn, "zaxis_coordinate");
   
   if (getVariableUnits(conn, alt) == "m")
-    _convertToFeet = 3.2808;    // feet per meter
+    _convertToFeet = 3.2808;	// feet per meter
+  else
+    _convertToFeet = 1.0;	// no-op (feet to feet)
 
 
   dataQuery += lon + "," + lat + "," + alt + _dataQuerySuffix;
