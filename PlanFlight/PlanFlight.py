@@ -242,7 +242,7 @@ class NavFrame (wx.Frame):
                 ll = NavItems[Ky]
             else:
                 ll = DropItems[Ky]
-                print Ky, 'drop item: ', ll
+#               print Ky, 'drop item: ', ll
             nb += 1
             yy = 40 * (nb + 1)
             Buttons.append (wx.Button (scrollWin, IDB + 4 * nb, Ky, \
@@ -1498,7 +1498,10 @@ class MainWindow (wx.Frame):
             mypath = os.path.basename (path)
             self.SetStatusText ("Selected path: %s" % mypath, 1)
             f = open (path, 'wb')
-            pickle.dump (NavItems, f)
+            if (GlobalFlag == 0):
+                pickle.dump (NavItems, f)
+            else:
+                pickle.dump (DropItems, f)
             f.close ()
         dlg.Destroy ()
 
@@ -1628,7 +1631,7 @@ class MainWindow (wx.Frame):
             self.InputS.SetValue ('None')
             self.InputOR.SetValue ('None')
             self.InputLEGS.SetValue ('None')
-            self.InputZ.SetValue (str (35000.))
+            self.InputZ.SetValue (str (41000.))
 			# 'Other' is rate of climb, ft/min
             self.InputOTHER.SetValue ('2000.')
         elif (module_name == 'ClimbToward'):
@@ -1637,7 +1640,7 @@ class MainWindow (wx.Frame):
             self.InputLG.SetValue ('None')
             self.InputOR.SetValue ('270')
             self.InputLEGS.SetValue ('None')
-            self.InputZ.SetValue (str (35000.))
+            self.InputZ.SetValue (str (41000.))
 			# 'Other' is rate of climb, ft/min
             self.InputOTHER.SetValue ('2000.')
         elif (module_name == 'Enroute'):
