@@ -157,7 +157,7 @@ void MainWindow::setupDatabase()
     QStringList siteList;
     siteList << "thumper.eol.ucar.edu";
     siteList << "hyper.raf-guest.ucar.edu";
-    siteList << "hercules.raf-guest.ucar.edu";
+    siteList << "hercules.raf-ext.ucar.edu";
 
     tailNumIdx[0] = "Lab_N600";
     tailNumIdx[1] = "GV_N677F";
@@ -994,7 +994,7 @@ void MainWindow::importRemoteCalibTable(QString remote)
       "'SELECT * FROM "DB_TABLE" WHERE pulled=\\'0\\' ORDER BY cal_date') AS ("
       "rid character(36),"
       "pid character(36),"
-      "site character varying(10),"
+      "site character varying(20),"
       "pulled character(1),"
       "removed character(1),"
       "exported character(1),"
@@ -1016,25 +1016,21 @@ void MainWindow::importRemoteCalibTable(QString remote)
       "cal double precision[],"
       "temperature double precision,"
       "comment character varying(256));").arg(connectStr);
-    qDebug() << "insertStr:" << insertStr;
 
     QString pulledStr = QString(
       "SELECT cal_date, site, var_name FROM "DB_TABLE""
       " WHERE pulled=\'0\' ORDER BY cal_date");
-    qDebug() << "pulledStr:" << pulledStr;
 
     QString updateMasterStr = QString(
       "UPDATE "DB_TABLE" SET pulled=\\'1\\' WHERE pulled=\\'0\\'");
-    qDebug() << "updateMasterStr:" << updateMasterStr;
 
     QString updateRemoteStr = QString("SELECT * FROM dblink_exec(%1, '%2')")
       .arg(connectStr, updateMasterStr);
-    qDebug() << "updateRemoteStr:" << updateRemoteStr;
 
     updateMasterStr.replace("\\", "");
-    qDebug() << "updateMasterStr:" << updateMasterStr;
 
     // insert unpulled rows from remote database
+    qDebug() << "insertStr:" << insertStr;
     qDebug() << "insert unpulled rows from remote database";
     if (!query.exec(insertStr)) {
         QMessageBox::information(0, tr("remote database query failed"),
@@ -1044,6 +1040,7 @@ void MainWindow::importRemoteCalibTable(QString remote)
     query.finish();
 
     // briefly show what was just pulled in
+    qDebug() << "pulledStr:" << pulledStr;
     qDebug() << "briefly show what was just pulled in";
     std::ostringstream brief;
     QSqlQuery briefQuery(pulledStr);
@@ -1056,6 +1053,7 @@ void MainWindow::importRemoteCalibTable(QString remote)
         viewText( QString(brief.str().c_str()), tr("pulled records"));
 
     // mark rows as pulled on remote database
+    qDebug() << "updateRemoteStr:" << updateRemoteStr;
     qDebug() << "mark rows as pulled on remote database";
     if (!query.exec(updateRemoteStr)) {
         QMessageBox::information(0, tr("remote database update failed"),
@@ -1065,6 +1063,7 @@ void MainWindow::importRemoteCalibTable(QString remote)
     query.finish();
 
     // mark rows as pulled on master database
+    qDebug() << "updateMasterStr:" << updateMasterStr;
     qDebug() << "mark rows as pulled on master database";
     if (!query.exec(updateMasterStr)) {
         QMessageBox::information(0, tr("master database update failed"),

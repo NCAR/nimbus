@@ -7,7 +7,7 @@ if [[ $? -ne 0 ]] ; then
   exit
 fi
 
-for server in thumper hyper.raf-guest.ucar.edu hercules.raf-guest.ucar.edu; do
+for server in thumper hyper.raf-guest.ucar.edu hercules.raf-ext.ucar.edu; do
   echo "Pushing bath cals to:" $server
   ping -c 1 $server
   if [[ $? -eq 0 ]] ; then
