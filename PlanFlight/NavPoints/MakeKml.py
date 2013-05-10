@@ -4,7 +4,7 @@
 
 import re
 Airspace = 'High'       # set to 'Low' for low-altitude waypoints
-f = open ('FIX.txt', 'r')
+f = open ('/home/cooperw/Research/DC3/FADDS/FIX.txt', 'r')
 if Airspace == 'Low':
     ECK = 'ENROUTE LOW'
                                 # Some notes about these header files:
@@ -14,9 +14,9 @@ if Airspace == 'Low':
                                 # with a smaller symbol and a red/tan color.
                                 # Bubbles indicate the type of fix and if
                                 # the fix is on the enroute map.
-    h = open ('../kml.header.low', 'r') # header file to copy for .kml
+    h = open ('./kml.header.low', 'r') # header file to copy for .kml
 else:
-    h = open ('../kml.header', 'r')
+    h = open ('./kml.header', 'r')
     ECK = 'ENROUTE HIGH'
 o = open ('WptsFADDS', 'w')     # text listing suitable for PlanFlight
 k = open ('NewWPTS.kml', 'w')   # output kml for input to Google-Earth

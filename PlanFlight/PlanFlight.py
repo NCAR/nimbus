@@ -60,6 +60,9 @@ frame13 = None
 # if it is present:
 NavItems = {'RAF': (-105.138988, 39.913041, 0., 0.),
             'Salina': (-97.621361, 38.925139, 0., 0.)}
+DropItems = {'RAF': (-105.138988, 39.913041, 0., 0.),
+            'Salina': (-97.621361, 38.925139, 0., 0.)}
+GlobalFlag = 0
 
 # Entry of lat/lon can be in two formats:
 # Decimal degrees or integer degrees and decimal minutes.
@@ -144,7 +147,9 @@ ID_TAS   = 554
 ID_APPEND= 555
 ID_RF    = 556
 ID_MP    = 557		# reserve 557-567
-ID_XX    = 568
+ID_RWPT  = 568
+ID_DROP  = 569
+ID_XX    = 570
 IDB      = 1000
 
 # The routine has these classes defining frames:
@@ -165,17 +170,24 @@ IDB      = 1000
 #    Most of the code is in MainWindow
 
 class NavFrame (wx.Frame):
-    def __init__(self):
+    def __init__(self, flag):	#flag=0 for nav, 1 for drops
         'Displays a frame with navigation points for use when defining'\
          + ' coordinates.'
-        wx.Frame.__init__(self, None, -1, 'Navigation Points', \
+        global GlobalFlag
+        GlobalFlag = flag
+        if (flag == 0):
+            wx.Frame.__init__(self, None, -1, 'Navigation Points', \
+                          size = (450,500))
+        else:
+            wx.Frame.__init__(self, None, -1, 'Dropsonde Points', \
                           size = (450,500))
         scrollWin = wx.PyScrolledWindow (self, -1)
 #	use a panel to be able to tab between entries
 #       panel = wx.Panel (scrollWin, -1)
 #	(didn't work to put everything on the panel instead
 #			 of on the scrollWin... so tabs don't work)
-        wx.Button (scrollWin, ID_LN, 'Load Nearby', (5,5), (95,32))
+        if (flag == 0):
+            wx.Button (scrollWin, ID_LN, 'Load Nearby', (5,5), (95,32))
         wx.Button (scrollWin, ID_CA, 'Clear All', (100,5), (75,32))
         wx.Button (scrollWin, ID_RF, "Refresh", (190,5), (75,32))
         self.DegMin = wx.CheckBox (scrollWin, ID_CK2, 'deg min format',\
@@ -207,12 +219,16 @@ class NavFrame (wx.Frame):
                                     size = (90,32))
         self.InputLG = wx.TextCtrl (scrollWin, ID_LG2, slg, (200,40), \
                                     size = (90,32))
-        ButtonFindNav = wx.Button (scrollWin, ID_FD, 'Find', (290,40),\
+        if (flag == 0):
+            ButtonFindNav = wx.Button (scrollWin, ID_FD, 'Find', (290,40),\
                                    size = (50,32))
-        ButtonFindNav.SetBackgroundColour ('Light Grey')
-        self.Bind (wx.EVT_BUTTON, self.onFind, id=ID_FD)
+            ButtonFindNav.SetBackgroundColour ('Light Grey')
+            self.Bind (wx.EVT_BUTTON, self.onFind, id=ID_FD)
 # now create line for each point in NavItems{}
-        Keys = NavItems.keys ()
+        if (flag == 0):
+            Keys = NavItems.keys ()
+        else:
+            Keys = DropItems.keys ()
         Keys.sort ()
         self.Keys = Keys	#attach it for use in checkbox callback
         nb = 0
@@ -222,7 +238,11 @@ class NavFrame (wx.Frame):
         Lons = []
         DelButtons = []
         for Ky in Keys:
-            ll = NavItems[Ky]
+            if (flag == 0):
+                ll = NavItems[Ky]
+            else:
+                ll = DropItems[Ky]
+                print Ky, 'drop item: ', ll
             nb += 1
             yy = 40 * (nb + 1)
             Buttons.append (wx.Button (scrollWin, IDB + 4 * nb, Ky, \
@@ -260,27 +280,34 @@ class NavFrame (wx.Frame):
         scrollWin.SetScrollbars (0, 12, 0, h/12+2)
         scrollWin.SetScrollRate (1,12)
         self.Bind (wx.EVT_BUTTON, self.onClearAll, id = ID_CA)
-        self.Bind (wx.EVT_BUTTON, self.onLoadNearby, id = ID_LN)
+        if (flag == 0):
+            self.Bind (wx.EVT_BUTTON, self.onLoadNearby, id = ID_LN)
         self.Bind (wx.EVT_CONTEXT_MENU, self.OnHint)
     #end __init__ def
 
 #   event handlers for NavFrame:
     def onClearAll (self, event): 
         "Reset the list of nav points to have just RAF"
-        global NavItems, frame7
-        NavItems = {'RAF': (-105.138988, 39.913041, 0., 0.)}
+        global NavItems, DropItems, frame7
+        if (GlobalFlag == 0):
+            NavItems = {'RAF': (-105.138988, 39.913041, 0., 0.)}
+        else:
+            DropItems = {'RAF': (-105.138988, 39.913041, 0., 0.)}
         frame7.Close ()
-        frame7 = NavFrame ()
+        frame7 = NavFrame (GlobalFlag)
         frame7.Show ()
 
     def onRemove (self, event):
         "Remove the nav point from NavItems and from NavPoints window."
-        global frame7, NavItems
+        global frame7, NavItems, DropItems
         i = (event.GetId () - IDB - 3) / 4 - 1
         ID = self.Buttons [i].GetLabel ()
-        del NavItems[ID]
+        if (GlobalFlag == 0):
+            del NavItems[ID]
+        else:
+            del DropItems[ID]
         frame7.Close ()
-        frame7 = NavFrame ()
+        frame7 = NavFrame (GlobalFlag)
         frame7.Show ()
 
     def onTransfer (self, event):
@@ -288,7 +315,10 @@ class NavFrame (wx.Frame):
         global frame
         i = (event.GetId () - IDB) / 4 - 1
         ID = self.Buttons[i].GetLabel ()
-        lg,lt,a,d = NavItems [ID]
+        if (GlobalFlag == 0):
+            lg,lt,a,d = NavItems [ID]
+        else:
+            lg,lt,a,d = DropItems [ID]
 #       now transfer to Module-definition window:
         if frame.DegMin.GetValue ():	# deg-min section
             degrees, minutes = ConvertToDegMin (lg)
@@ -304,22 +334,32 @@ class NavFrame (wx.Frame):
     def OnRefresh (self, event):
         'Refresh the display of bearing/distance to reference point.'
                     # retrieve the lat/lon displayed in the MainWindow
-        global frame7, NavItems        
+        global frame7, NavItems, DropItems
         lg,lt = frame.GetLatLonValues ()
         Dmin, Best, BestAz, BestLG, BestLT = Nearest (lt, lg)	
-        Keys = NavItems.keys ()
+        if (GlobalFlag == 0):
+            Keys = NavItems.keys ()
+        else:
+            Keys = DropItems.keys ()
         for ky in Keys:
-            NavItems[ky] = (NavItems[ky][0], NavItems[ky][1], -1., -1.)
-            for i in range (len(Best)):
-                if ky == Best[i]:
-                    NavItems[ky] = (NavItems[ky][0], NavItems[ky][1],\
+            if (GlobalFlag == 0):
+                NavItems[ky] = (NavItems[ky][0], NavItems[ky][1], -1., -1.)
+                for i in range (len(Best)):
+                    if ky == Best[i]:
+                        NavItems[ky] = (NavItems[ky][0], NavItems[ky][1],\
+                                    BestAz[i], Dmin[i])
+            else:
+                DropItems[ky] = (DropItems[ky][0], DropItems[ky][1], -1., -1.)
+                for i in range (len(Best)):
+                    if ky == Best[i]:
+                        DropItems[ky] = (DropItems[ky][0], DropItems[ky][1],\
                                     BestAz[i], Dmin[i])
                 #end of test for match with ky
             #end of i loop
         #end of ky loop
         # now refresh window
         frame7.Close ()
-        frame7 = NavFrame ()
+        frame7 = NavFrame (GlobalFlag)
         frame7.Show ()
         
         
@@ -337,7 +377,7 @@ class NavFrame (wx.Frame):
             ID = Best[i]
             NavItems[ID] = (BestLG[i], BestLT[i], BestAz[i], Dmin[i])
         frame7.Close ()
-        frame7 = NavFrame ()
+        frame7 = NavFrame (GlobalFlag)
         frame7.Show ()
         
     def onAdd (self, event):
@@ -346,10 +386,13 @@ class NavFrame (wx.Frame):
         self.DegMin.SetValue (not self.DegMin.GetValue ())
         lg,lt = self.GetLatLonValues (0)
         self.DegMin.SetValue (not self.DegMin.GetValue ())
-        NavItems[self.InputID.GetValue ()] = (lg,lt,0.,0.)
+        if (GlobalFlag == 0):
+            NavItems[self.InputID.GetValue ()] = (lg,lt,0.,0.)
+        else:
+            DropItems[self.InputID.GetValue ()] = (lg,lt,0.,0.)
         DefaultDegMin = self.DegMin.GetValue ()
         frame7.Close ()
-        frame7 = NavFrame ()
+        frame7 = NavFrame (GlobalFlag)
         frame7.Show ()
             
     def onFind (self, event):
@@ -1280,6 +1323,8 @@ class MainWindow (wx.Frame):
                          'Select an existing flight plan')
         filemenu.Append (ID_APPEND,  '&Append\tCtrl+A', \
                          'Append an existing flight plan')
+        filemenu.Append (ID_RWPT,  '&Read Wpts\tCtrl+R', \
+                         'Read Waypoint(s)')
         filemenu.Append (ID_SAVE,  "&Save\tCtrl+S", \
                         "Save the flight plan")
         filemenu.Append (ID_PRNT,  "&List\tCtrl+L", \
@@ -1324,6 +1369,7 @@ class MainWindow (wx.Frame):
 #       mapmenu.Append  (ID_MP+4, 'enroute-to-AL', 'High Altitude Chart')
         navmenu.Append  (ID_NV, 'See Nav &Points\tCtrl+P', \
                                 'Reference Points')
+        navmenu.Append  (ID_DROP, 'Dropsonde Pts', 'Drop locations')
         navmenu.Append  (ID_LF, '&Open', 'Open a specified file')
         navmenu.Append  (ID_S3, '&Save', 'Save to a specified file')
         GVmenu.Append  (ID_TAS, 'TA&S', 'Show TAS for conditions')
@@ -1347,6 +1393,7 @@ class MainWindow (wx.Frame):
         wx.EVT_MENU (self, ID_EXIT, self.OnExit)
         wx.EVT_MENU (self, ID_OPEN, self.OnOpen)
         wx.EVT_MENU (self, ID_APPEND, self.OnAppend)
+        wx.EVT_MENU (self, ID_RWPT, self.OnRWPT)
         wx.EVT_MENU (self, ID_NEW, self.OnStartTrack)
         wx.EVT_MENU (self, ID_SAVE, self.OnSaveTrack)
         wx.EVT_MENU (self, ID_PRNT, self.OnList)
@@ -1385,6 +1432,7 @@ class MainWindow (wx.Frame):
         wx.EVT_MENU (self, ID_CP, self.OnCP)
         wx.EVT_MENU (self, ID_DP, self.OnDP)
         wx.EVT_MENU (self, ID_NV, self.OnNav)
+        wx.EVT_MENU (self, ID_DROP, self.OnDrop)
         wx.EVT_MENU (self, ID_LF, self.onLoadNav)
         wx.EVT_MENU (self, ID_S3, self.onSave3)
         wx.EVT_MENU (self, ID_HP, self.onHelp)
@@ -1437,7 +1485,7 @@ class MainWindow (wx.Frame):
             NavItems = pickle.load (f)
             f.close ()
             frame7.Close ()
-            frame7 = NavFrame ()
+            frame7 = NavFrame (GlobalFlag)
             frame7.Show ()
         dlg.Destroy ()
 
@@ -2383,6 +2431,90 @@ class MainWindow (wx.Frame):
             Recalculate ()
         dlg.Destroy ()
 
+    def OnRWPT (self, event): 
+        dlg = wx.FileDialog (self, "Choose a file", os.getcwd (), \
+                             "WP", "WP.*", wx.OPEN)
+        if dlg.ShowModal () == wx.ID_OK:
+            path = dlg.GetPath ()
+            mypath = os.path.basename (path)
+            self.SetStatusText ("You selected: %s" % mypath, 1)
+        dlg.Destroy ()
+        if True:	# just for indentation purposes...
+            TextLines = open (path, 'r').readlines ()
+            TextLine = TextLines[0]
+				# edit the list of waypoints here
+            dlg = wx.TextEntryDialog (None, 'Waypoint list', 'WPT editor', TextLine, style=wx.OK|wx.CANCEL)
+            if dlg.ShowModal () == wx.ID_OK:
+                tline = dlg.GetValue ()
+            dlg.Destroy ()
+				# find the highest module number
+            KeyList = ModuleConstructor.Track.keys ()
+            KeyList.sort ()
+            for ky in KeyList:
+                if ('Module' in ky and 'Number' not in ky):
+                    kk = int (ky.replace ('Module',''))
+            VORlines = open ("./NavPoints/VOR.txt",'r').readlines ()
+            WPTlines = open ("./NavPoints/WPTS.txt",'r').readlines ()
+            if True:
+                tl = tline.split(' ')
+                for ID in tl:
+                    match = False
+                    ID = re.sub (r' *', '', ID)
+                    ID = re.sub (r'\n', '', ID)
+#                   print 'wpt to add is ', ID, '.'
+				# get lat/lon for this wpt:
+                    for line in VORlines:
+                        if ID in line:		# found right line; get lat/lon
+                            ssplit = line.split (',')
+                            if ssplit[0] != ID: continue
+                            lg = float (ssplit[1])
+                            lt = float (ssplit[2])
+#                           dlg = wx.MessageDialog (self,\
+#                           'Found ' + ID + ' at lat/long of ' + format (lt, '.3f') \
+#                           + ',' + format (lg, '.3f') + '\n'\
+#                           'Full name is ' + ssplit[3] + '\n'\
+#                           +'Click OK to use it, CANCEL to keep searching',\
+#                           'Confirm Point', wx.OK|wx.CANCEL|wx.ICON_QUESTION)
+#                           result = dlg.ShowModal ()
+#                           dlg.Destroy ()
+#                           if result == wx.ID_OK:
+                            match = True
+                            # end of result==OK section
+                        # end of ID-in-line section
+                    # end of loop over VORfile lines; now do same for WPTS.txt
+                    for line in WPTlines:
+                        if ID in line:		# found right line; get lat/lon
+                            ssplit = line.split (',')
+                            if ssplit[0] != ID: continue
+                            lg = float (ssplit[1])
+                            lt = float (ssplit[2])
+                            match = True
+                            # end of result==OK section
+                        # end of ID-in-line section
+                    # end of loop over WPTfile lines
+                    if match == True:
+				# add an enroute module with these coordinates:
+                        md = ModuleConstructor.Module \
+                            ('Enroute', 'NA',\
+                             (lg, lt, 39000.),\
+                             'NA', False, 'NA', 'NA',\
+                             frame)
+                        ky = "Module" + format (ModuleConstructor.ModuleNumber, '03d')
+                        ModuleConstructor.Track[ky] = md
+                        ModuleConstructor.WorkingModule = md
+#       increment the displayed module number
+                        self.sc.SetValue (ModuleConstructor.ModuleNumber + 1)
+#		If the new module number represents and existing module,
+#		load its values into the combobox and text-entry windows:
+                        self.OnSpin (self)
+                    else:
+                        dlg = wx.MessageDialog (self,\
+                        'No match found for ' + ID, 'Search Error', \
+                        wx.OK|wx.ICON_INFORMATION)
+                        result = dlg.ShowModal ()
+                        dlg.Destroy ()
+        Recalculate ()
+
     def OnSave (self, event): 
         "Save the text in 'listing' to a file."
         dlg = wx.FileDialog (self, "Provide a file name:", \
@@ -2560,7 +2692,7 @@ class MainWindow (wx.Frame):
         pylab.title('Time-Height Plot')
         pylab.grid(True)
         pylab.savefig('THeight')
-        pylab.show()
+#       pylab.show()		# don't show, just leave plot for reference
         pylab.figure (0)
         pylab.clf ()			# clear the plot
         pylab.plot(xp, yp)
@@ -2743,17 +2875,24 @@ class MainWindow (wx.Frame):
         if ModuleConstructor.ModuleNumber == 0: return () 
         KeyList = ModuleConstructor.Track.keys ()
         KeyList.sort ()
+        print 'deleting module number ', ModuleConstructor.ModuleNumber
         for Key in KeyList:
             if ('Module' in Key and 'Number' not in Key):
                 kk = int (Key.replace ('Module',''))
+                print 'in Module Delete: kk = ', kk, ', ModNum = ', ModuleConstructor.ModuleNumber
                 if kk > ModuleConstructor.ModuleNumber + 1 :
                     mx = ModuleConstructor.Track[Key]
                     newKey = 'Module' + format (kk-1, '03d')
                     ModuleConstructor.Track[newKey] = mx
+                    print 'new module number is ', newKey
 #			remove old item; this only matters for the last
                     del ModuleConstructor.Track[Key]
             #end of Module loop
         #end of Key loop 
+	# kk is the highest module number
+        if kk == ModuleConstructor.ModuleNumber + 1: 
+            newKey = 'Module' + format (kk, '03d')
+            del ModuleConstructor.Track[newKey]
         Recalculate ()
 #				now show the new item:
         MainWindow.OnSpin (self, event)
@@ -2775,7 +2914,14 @@ class MainWindow (wx.Frame):
         'Generates and displays the navigation frame.'
         global frame7
         if frame7 != None and frame7: frame7.Close ()
-        frame7 = NavFrame ()
+        frame7 = NavFrame (0)
+        frame7.Show ()
+
+    def OnDrop (self, event):
+        'Generates and displays the drop-location frame.'
+        global frame7
+        if frame7 != None and frame7: frame7.Close ()
+        frame7 = NavFrame (1)
         frame7.Show ()
 
     def OnMap (self, event):
@@ -3196,7 +3342,7 @@ def Recalculate ():
     ModuleConstructor.AC = MCAC
 
 def ReadNav (path):
-    "Read saved file of navigation coordiantes, list in the Nav window."
+    "Read saved file of navigation coordinates, list in the Nav window."
     global NavItems
     try:
         NavFile = open (path, 'rb')
@@ -3205,6 +3351,22 @@ def ReadNav (path):
     except IOError as e:
         dlg = wx.MessageDialog (frame,\
                 'The standard navigation-point file is missing.\n'\
+              + 'It can be created using the Save button on the\n'\
+              + 'NavPoints menu and saving to \'Standard.nav\'.',\
+                'File Missing', wx.OK)
+        dlg.ShowModal ()
+        dlg.Destroy ()
+
+def ReadDrop (path):
+    "Read saved file of drop coordinates."
+    global DropItems
+    try:
+        DropFile = open (path, 'rb')
+        DropItems =  pickle.load (DropFile)
+        DropFile.close ()
+    except IOError as e:
+        dlg = wx.MessageDialog (frame,\
+                'The standard dropsonde-point file is missing.\n'\
               + 'It can be created using the Save button on the\n'\
               + 'NavPoints menu and saving to \'Standard.nav\'.',\
                 'File Missing', wx.OK)
@@ -3241,6 +3403,7 @@ def main ():
         ReadTrack (sys.argv[1])
 #			Read the standard list of nav points
     ReadNav ('Standard.nav')
+    ReadDrop ('Standard.drop')
     app.MainLoop ()
 
 if __name__ == '__main__':

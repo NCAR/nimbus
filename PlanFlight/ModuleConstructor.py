@@ -665,7 +665,7 @@ def Module (t = 'Enroute', s = 100., a = (105.,40.,6000), o = 0., \
             ky = "Manvr" + format (ManeuverNumber, '03d')
             m[ky] = v
         HorizontalIncrement = other
-        if (HorizontalIncrement >= 0): iturn = 1
+        if (HorizontalIncrement >= 0.): iturn = 1
         else: iturn = -1
         v = Turn (o)		# drift suppressed
         ky = "Manvr" + format (ManeuverNumber, '03d')
