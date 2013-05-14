@@ -17,8 +17,12 @@ static size_t timeCount = 0;
 static NR_TYPE PSTcor, PSQcor;
 
 static NR_TYPE ak_coeff[] = { -0.0478, 0.1299 };
-static NR_TYPE ss_coeff[] = { -0.1564, 0.09218 };	// Left Wing
-//static NR_TYPE ss_coeff[] = { 0.1662, 0.09218 };	// Right Wing
+
+// ADELE & PREDICT #'s - left wing.
+//static NR_TYPE ss_coeff[] = { -0.1564, 0.09218 };
+
+// DC3 - right wing
+static NR_TYPE ss_coeff[] = { 0.1662, 0.09218 };
 
 static NR_TYPE recfx = 0.985;
 
