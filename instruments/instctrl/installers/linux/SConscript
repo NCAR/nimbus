@@ -2,16 +2,13 @@ env = Environment(tools = ['default','svninfo'])
 
 # Copy other artifacts into the Linux deployment
 sources_targets = [
-  ['run_switch',                                 '/bin/run_switch'            ],
-  ['run_proxy',                                  '/bin/run_proxy'             ],
-  ['#/Resources/proxy/proxyIcon_512x512x32.png', '/resources/proxyIcon.png'   ],
-  ['#/switch/ACSwitch.ini',                      '/resources/ACSwitch.ini'    ],
-  ['#/switch/GroundSwitch.ini',                  '/resources/GroundSwitch.ini'],
-  ['#/switch/Switch-AVAPS.ini',                  '/resources/Switch-AVAPS.ini'],
-  ['#/switch/Switch-HCR.ini',                    '/resources/Switch-HCR.ini'  ],
-  ['#/proxy/Proxy.ini',                          '/resources/Proxy.ini'       ],
-  ['#/proxy/Proxy-AVAPS.ini',                    '/resources/Proxy-AVAPS.ini' ],
-  ['#/test_certs',                               '/test_certs'                ],
+  ['run_proxy',                                  '/bin/run_proxy'              ],
+  ['#/Resources/proxy/proxyIcon_512x512x32.png', '/resources/proxyIcon.png'    ],
+  ['#/proxy/Proxy.ini',                          '/resources/Proxy.ini'        ],
+  ['#/proxy/Proxy-AVAPS.ini',                    '/resources/Proxy-AVAPS.ini'  ],
+  ['#/test_certs/client.key',                     '/test_certs/client.key'     ],
+  ['#/test_certs/client.crt',                     '/test_certs/client.crt'     ],
+  ['#/test_certs/eol-rt-data.crt',                '/test_certs/eol-rt-data.crt'],
 ]
 
 for pair in sources_targets:
@@ -22,8 +19,8 @@ for pair in sources_targets:
     env.Default(artifact)
 
 # Remove the deploy directory on a clean. For lack of a better choice, 
-# tie it to the switch program.
-env.Clean('#/switch/switch', env['DEPLOY_DIRECTORY'])
+# tie it to the proxy program.
+env.Clean('#/proxy/ric_proxy', env['DEPLOY_DIRECTORY'])
 
 # Make a tarfile from the deploy target
 revision = env['SVNREVISION']
