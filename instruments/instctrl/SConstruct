@@ -19,6 +19,8 @@ def RIC(env):
            QtGui
            QtNetwork
            boost_program_options
+           boost_system
+           boost_date_time
 		""")
     	env.AppendUnique(DEPLOY_SHARED_LIBS=shared_libs)
     	env['DEPLOY_DIRECTORY'] = env.Dir('#/installers/linux/RIC').get_abspath()
