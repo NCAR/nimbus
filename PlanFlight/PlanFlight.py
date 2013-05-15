@@ -42,6 +42,7 @@ from ModuleConstructor import *
 from Printer import Printer
 				# modules
 
+MainWindowRef = None
 # the following are made global for easy dismissal in callback functions
 frame2 = None
 frame3 = None
@@ -330,6 +331,7 @@ class NavFrame (wx.Frame):
             slt = format (lt, '.3f')
         frame.InputLG.SetValue (slg)
         frame.InputLT.SetValue (slt)
+        MainWindow.OnAddModule(MainWindowRef, 1)
         
     def OnRefresh (self, event):
         'Refresh the display of bearing/distance to reference point.'
@@ -1171,6 +1173,8 @@ class DLGFrame (wx.Frame):
 class MainWindow (wx.Frame):
     def __init__(self, parent, id, title):
         'Defines the primary window for user interaction.'
+        global MainWindowRef
+        MainWindowRef = self
         if 'win' in sys.platform:
             wx.Frame.__init__(self, parent, wx.ID_ANY, title, \
                           size = (500,280),\
@@ -2726,8 +2730,8 @@ class MainWindow (wx.Frame):
         letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M']
         for i in range (len(xp)):
             pylab.plot (xp[i], yp[i], 'bo', color='red')
-            pylab.annotate(str(i+1), (xp[i],yp[i]), \
-                       (xp[i]-xdel,yp[i]+ydel), color='red')
+#           pylab.annotate(str(i+1), (xp[i],yp[i]), \
+#                      (xp[i]-xdel,yp[i]+ydel), color='red')
             if mtype[i] != mlast:
                 xp[i] = anchor[i][0]
                 yp[i] = anchor[i][1]
@@ -2743,7 +2747,10 @@ class MainWindow (wx.Frame):
             #end of module-type loop
         #end of waypoint loop
 				# add VORs to plot
-        vlines = open ('./NavPoints/VOR.txt', 'r').readlines ()
+        if (GlobalFlag == 0):
+            vlines = open ('./NavPoints/VOR.txt', 'r').readlines ()
+        else:
+            vlines = open ('./NavPoints/DropLocations.csv', 'r').readlines ()
         for i in range (len(vlines)):
             pts = string.split (vlines[i], ',')
             pts[1] = float (pts[1])

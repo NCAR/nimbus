@@ -70,7 +70,7 @@ def LoadSounding ():
 SpecsKeys = ['Airport','FlightSpeed','Wind','MaxTurn','FuelBurn','FuelLimit',
              'GrossWeight', 'Extra','FormatCode']
 Specs = dict.fromkeys(SpecsKeys)
-Specs[SpecsKeys[0]] =  (-97.652170, 38.790966, 1288.) # field location
+Specs[SpecsKeys[0]] =  (-105.138, 39.913, 5653.) # field location, BJC
 Specs[SpecsKeys[1]] = 0.8   			# flight speed, Mach
 #			wind is superceded by the sounding file if present
 Specs[SpecsKeys[2]] = (270.,30.)		# default wind dir/sp (deg,kts)
