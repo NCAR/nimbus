@@ -74,7 +74,8 @@ void Broadcast::BroadcastData(const std::string & timeStamp)
       switch (i)
       {
         case RADAR_ALT_INDX: // Our radar alt is in m, convert to ft as required by IWG1
-          bcast << AveragedData[_varList[i]->LRstart] * 3.2808;
+          if (!isnan(AveragedData[_varList[i]->LRstart]))
+            bcast << AveragedData[_varList[i]->LRstart] * 3.2808;
           break;
         case NOCAL_ALT_INDX: // Do Not Calibrate flag
         case NOREC_ALT_INDX: // Do Not Record flag
@@ -84,7 +85,8 @@ void Broadcast::BroadcastData(const std::string & timeStamp)
             bcast << AveragedData[_varList[i]->LRstart];
           break;
         default:
-          bcast << AveragedData[_varList[i]->LRstart];
+          if (!isnan(AveragedData[_varList[i]->LRstart]))
+            bcast << AveragedData[_varList[i]->LRstart];
           break;
       }
     }
