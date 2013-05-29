@@ -1,7 +1,7 @@
 /// @mainpage Remote Instrument Control (RIC) Overview
 /// "RIC" stands for "Remote Instrument Control": the collection of applications,
-/// scripts and configuration files which support secure remote communications
-/// between a user and an instrument over the Internet.
+/// scripts and configuration files which support secure Internet remote communications
+/// between a user and an instrument.
 ///
 /// SSL is used for Internet communications between the user proxy and a ground based 'switch' program.
 /// The ground switch communicates with an airborne switch by exchanging encrypted datagrams. The
@@ -17,7 +17,7 @@
 /// - User Control - A user control application, which sends commands to and receives status
 /// datagrams from the instrument. Usually referred to as the 'user'.
 /// - Proxy - An application or component which can intercept and relay the instrument
-/// datagrams, for networking and security purposes.
+/// datagrams, for networking and security purposes. This is implmented by ProxyMainWindow.
 /// - Switch - An application which is deployed in pairs to consolidate messages into
 /// a single communications channel. The switches at either end of the channel connect to
 /// proxies, aggregate or fan out messages to/from the instruments and user controls.
@@ -26,13 +26,13 @@
 /// be embedded within a switch. The latter allows a switch and its proxies to be deployed as
 /// a single application in cases where SSL is not required; e.g. on the aircraft.
 ///
-/// Because SSL is implemented with network sockets, the switch can contain an SSL server (SslServer),
+/// Because SSL is implemented with network sockets, the switch can contain an SSL server (SslProxyServer),
 /// to manage the SSL connections to remote proxies. For consistency, a corresponding server
 /// for embedded proxies is implemented as well (EmbeddedProxyServer).
 ///
 /// The typical configuration will have one switch on a ground server, taking SSL connections from
-/// remote proxies. This switch will communicate with an aircraft based switch. The aircraft switch
-/// contains embedded proxies. However, it is feasible to any combination of remote proxies, SSL
+/// remote SSL proxies. This switch will communicate with an aircraft based switch. The aircraft switch
+/// contains embedded proxies. However, it is feasible to combine any combination of remote proxies, SSL
 /// proxy switches, and embedded proxy switches.
 ///
 /// @section RICTesting Testing
@@ -78,7 +78,7 @@
 /// not so specified, it defaults to the standard QSettings location (~/.config on Linux and OSX).
 /// It's a bad idea to use the default location. If the configuration file does not exist when
 /// the application is first run, a file containing default values will be created. The defaults values
-/// are generally useless, and must be edited in order for the application to function properly.
+/// are generally incomplete, and must be edited in order for the application to function properly.
 ///
 /// The configuration file format is based on the Qt QSettings class, which implements a fairly
 /// generic .ini format. The format is pretty straightforward, but the QSettings
@@ -101,14 +101,14 @@
 /// SwitchCipherKey=../ssl/test/test_certs/udpcipher.key
 /// SslProxy=true
 ///
-/// [ClientCerts]
-/// 1\ClientSSLCertFile=../ssl/test/test_certs/EOL_AVAPS.crt
-/// 2\ClientSSLCertFile=../ssl/test/test_certs/EOL_HSRL.crt
-/// size=2
+/// [SSLProxies]
+/// 1\SSLCertFile=../test_certs/client.crt
+/// 1\InstrumentFile=./Switch-AVAPS.ini
+/// size=1
 ///
 /// [Instruments]
-/// 1\InstrumentFile=./AVAPS.ini
-/// 1\InstrumentFile=./HSRL.ini
+/// 1\InstrumentFile=./Switch-AVAPS.ini
+/// 2\InstrumentFile=./Switch-HCR.ini
 /// size=2
 /// @endcode
 /// @param [General]\SSLProxyPort The port that will be used for SSL connections to SSL proxies. This parameter is
@@ -126,14 +126,19 @@
 /// datagram communication.
 /// @param [General]\SslProxy Set to "true" if the switch connects to SSL proxies. Set to false when configured for embedded proxy
 /// usage.
-/// @param [ClientCerts]\ClientSSLCertFile The path to a file containing an authorized SSL proxy client. There will be one entry for
+/// @param [SSLProxies]\SSLCertFile The path to a file containing an authorized SSL proxy client. There will be one entry for
 /// each authorized proxy. This same file will be given to the user who will be running that proxy. A useful
-/// convention is to name the certificate file after the user and instrument. This is not
-/// used and is ignored in an embedded proxy switch configuration.
-/// @param [ClientCerts]\size Size specifies the number of entries in the ClientCerts array.
+/// convention is to name the certificate file after the user and instrument.
+/// Ignored in an embedded proxy switch configuration.
+/// @param [SSLProxies]\InstrumentFile The path to a file defining instrument processing.
+/// Ignored in an embedded proxy switch configuration.
+/// @param [SSLProxies]\size Size specifies the number of entries in the SSLProxies array.
+/// Ignored in an embedded proxy switch configuration.
 /// @param [Instruments]\InstrumentFile The path to a file containing an instrument definition.
-/// See below. This is not used and is ignored in an SSL proxy switch configuration.
+/// See below.
+/// Ignored in an SSL proxy switch configuration.
 /// @param [Instruments]\size Size specifies the number of entries in the Instruments array.
+/// Ignored in an SSL proxy switch configuration.
 ///
 /// @subsection RICProxyConfiguration SSL Proxy Configuration
 /// The SSL proxy application configuration file has the following format. Like the embedded proxy switch
