@@ -22,7 +22,7 @@ cd nc_utils
 foreach file ( asc2cdf flt_time n2asc nc_sane ncav ncextr ncfillvar ncmerge nc2iwg1 )
   (cd $file; echo $file; make clean)
 end
-foreach file ( ncvarlist nc_gap mkcdf ncReorder )
+foreach file ( ncvarlist nc_gap mkcdf ncReorder nc_gap )
   (cd $file; echo $file; scons -c)
 end
 cd ..
