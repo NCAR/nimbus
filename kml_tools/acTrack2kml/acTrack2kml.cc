@@ -526,7 +526,7 @@ renamefile(string file, string outFile)
     char buffer[1024];
     string tmptmp(cfg.googleEarthDataDir); tmptmp += "tmp.kmz";
 
-    sprintf(buffer, "zip %s %s", tmptmp.c_str(), file.c_str());
+    sprintf(buffer, "zip %s %s", tmptmp.c_str(), temp.c_str());
     system(buffer);
 
     sprintf(buffer, "chmod g+w %s", tmptmp.c_str());
