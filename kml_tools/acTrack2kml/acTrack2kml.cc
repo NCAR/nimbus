@@ -28,28 +28,46 @@ static const string grnd_webHost = "www.eol.ucar.edu";
 static const string onboard_googleEarthDataDir = "/var/www/html/flight_data/";
 static const string onboard_webHost = "acserver.raf.ucar.edu";
 
-static string	googleEarthDataDir, webHost;
-
-// All datapoints are read from file, but only use every 'TimeStep' points.
-// e.g. 15 would mean use 1 data point for every 15 seconds of data.
-static int TimeStep = 15;
-
-// True Airspeed cut-off (take-off and landing speed).
-static const float TAS_CutOff = 20.0;
-
-// Frequency of Time Stamps (in minutes).
-static int ts_Freq = 2000;
-
-// Frequency of Wind Barbs (in minutes).
-static int barb_Freq = 5;
-
-static string netCDFinputFile, outputKML, database_host, platform, dbname;
-
 static const float missing_value = -32767.0;
 
-static bool PostProcessMode = false;
+class Config
+{
+public:
+  Config() : TimeStep(15), TAS_CutOff(20.0), ts_Freq(2000), barb_Freq(5), altMode("absolute"), postProcessMode(false), convertToFeet(1.0), showit(true)
+  { }
 
-int showit = 1;
+
+  string	googleEarthDataDir, webHost;
+
+  // All datapoints are read from file, but only use every 'TimeStep' points.
+  // e.g. 15 would mean use 1 data point for every 15 seconds of data.
+  int TimeStep;
+
+  // True Airspeed cut-off (take-off and landing speed).
+  float TAS_CutOff;
+
+  // Frequency of Time Stamps (in minutes).
+  int ts_Freq;
+
+  // Frequency of Wind Barbs (in minutes).
+  int barb_Freq;
+
+  // Should we use KML clampToGround or ABSOLUTE.
+  string altMode;
+
+  string netCDFinputFile, outputKML, database_host, platform, dbname;
+
+
+  bool postProcessMode;
+
+  // If alt is in meters this gets changed to 3.28.
+  float convertToFeet;
+
+  bool showit;
+};
+
+static Config cfg;
+
 
 // Our raw data is coming from a PostGreSQL database.....
 // The order of this enum should match the order of the variables
@@ -57,7 +75,7 @@ int showit = 1;
 enum VariablePos { TIME=0, LON, LAT, ALT, AT, DP, TAS, WS, WD, WI };
 static const string _dataQuerySuffix = ",atx,dpxc,tasx,wsc,wdc,wic FROM raf_lrt WHERE TASX > ";
 
-static float _convertToFeet = 1.0;
+
 
 class _projInfo
 {
@@ -191,22 +209,22 @@ string buildDataQueryString(PGconn *conn)
     alt = getGlobalAttribute(conn, "zaxis_coordinate");
   
   if (getVariableUnits(conn, alt) == "m")
-    _convertToFeet = 3.2808;	// feet per meter
+    cfg.convertToFeet = 3.2808;	// feet per meter
   else
-    _convertToFeet = 1.0;	// no-op (feet to feet)
+    cfg.convertToFeet = 1.0;	// no-op (feet to feet)
 
 
   dataQuery += lon + "," + lat + "," + alt + _dataQuerySuffix;
 
   char tmp[100];
-  sprintf(tmp, "%f ORDER BY datetime", TAS_CutOff);
+  sprintf(tmp, "%f ORDER BY datetime", cfg.TAS_CutOff);
   dataQuery += tmp;
 
-  if (showit) {
-    showit = 0;
+  if (cfg.showit) {
+    cfg.showit = 0;
     cout << "dataQuery: " << dataQuery << endl;
     cout << "alt: " << alt << " units: " << getVariableUnits(conn, alt) << endl;
-    cout << "_convertToFeet: " << _convertToFeet << endl;
+    cout << "cfg.convertToFeet: " << cfg.convertToFeet << endl;
   }
   return dataQuery;
 }
@@ -292,9 +310,9 @@ void WriteCurrentPositionKML(const _projInfo& projInfo)
   ofstream googleEarth;
   string file;
 
-  file = googleEarthDataDir + "current_pos.kml";
+  file = cfg.googleEarthDataDir + "current_pos.kml";
 
-  string temp = googleEarthDataDir + "latest" + ".kml";
+  string temp = cfg.googleEarthDataDir + "latest" + ".kml";
 
   googleEarth.open(temp.c_str());
   if (googleEarth.is_open() == false)
@@ -313,7 +331,7 @@ void WriteCurrentPositionKML(const _projInfo& projInfo)
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
 	<< "   <Icon>\n"
-	<< "    <href>http://" << webHost << "/flight_data/display/red.png</href>\n"
+	<< "    <href>http://" << cfg.webHost << "/flight_data/display/red.png</href>\n"
 	<< "   </Icon>\n"
 	<< "  </IconStyle>\n"
 	<< " </Style>\n"
@@ -324,8 +342,7 @@ void WriteCurrentPositionKML(const _projInfo& projInfo)
 	<< "   <name>GV</name>\n"
 	<< "   <styleUrl>#PM1</styleUrl>\n"
 	<< "   <Point>\n"
-	<< "    <altitudeMode>absolute</altitudeMode>\n"
-
+	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
 	<< "    <coordinates>"
 		<< _lon[_lon.size()-1] << ","
 		<< _lat[_lat.size()-1] << ","
@@ -392,7 +409,7 @@ void WriteTimeStampsKML_Folder(ofstream& googleEarth)
     string minute = _date[i].substr(14, 2);
     string second = _date[i].substr(17, 2);
     this_ts = atoi(hour.c_str())*60 + atoi(minute.c_str());
-    curr_ts = this_ts / ts_Freq;
+    curr_ts = this_ts / cfg.ts_Freq;
     if ( (i == 0) || (curr_ts != last_ts) || (i == _date.size()-1) ) {
       last_ts = curr_ts;
       string label = _date[i].substr(11, 5);
@@ -405,7 +422,7 @@ void WriteTimeStampsKML_Folder(ofstream& googleEarth)
         << "   </TimeStamp>\n"
         << "   <styleUrl>#PM1</styleUrl>\n"
         << "   <Point>\n"
-	<< "    <altitudeMode>absolute</altitudeMode>\n"
+	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
         << "    <coordinates>"
         << _lon[i] << "," << _lat[i] << "," << (int)_alt[i] << "</coordinates>\n"
         << "   </Point>\n"
@@ -430,7 +447,7 @@ void WriteWindBarbsKML_Folder(ofstream& googleEarth)
     string minute = _date[i].substr(14, 2);
     string second = _date[i].substr(17, 2);
     this_ts = atoi(hour.c_str())*60 + atoi(minute.c_str());
-    curr_ts = this_ts / barb_Freq;
+    curr_ts = this_ts / cfg.barb_Freq;
     if ( (i == 0) || (curr_ts != last_ts) || (i == _date.size()-1) ) {
       last_ts = curr_ts;
       int iws = barbSpeed(_ws[i]);	// make sure to pass in knots.
@@ -441,7 +458,7 @@ void WriteWindBarbsKML_Folder(ofstream& googleEarth)
       if (iwd < 0 || iwd > 360) iwd = 0;
 
       sprintf(url, "<href>http://%s/flight_data/display/windbarbs/%03d/wb_%03d_%03d.png</href>\n",
-		webHost.c_str(), iws, iws, iwd);
+		cfg.webHost.c_str(), iws, iws, iwd);
       string label = _date[i].substr(11, 5);
 
       googleEarth
@@ -455,7 +472,7 @@ void WriteWindBarbsKML_Folder(ofstream& googleEarth)
         << "    </IconStyle>\n"
         << "   </Style>\n"
         << "   <Point>\n"
-	<< "    <altitudeMode>absolute</altitudeMode>\n"
+	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
         << "    <coordinates>"
         << _lon[i] << "," << _lat[i] << "," << (int)_alt[i] << "</coordinates>\n"
         << "   </Point>\n"
@@ -491,20 +508,33 @@ void WriteSpecialInclude(ofstream& googleEarth)
 void
 renamefile(string file, string outFile)
 {
-  if (PostProcessMode)	// Don't compress files for netCDF post-processing.
+  if (cfg.postProcessMode)	// Don't compress files for netCDF post-processing.
     return;
 
-  char buffer[1024];
-  string tmptmp(googleEarthDataDir); tmptmp += "tmp.kmz";
+  // Rename kml first.
+  string temp = cfg.googleEarthDataDir + outFile + ".kml";
+  rename(file.c_str(), temp.c_str());
 
-  sprintf(buffer, "zip %s %s", tmptmp.c_str(), file.c_str());
-  system(buffer);
+  /**
+   * Producing kmz files may not by useful for mission coordinator.  kmz is uncompressed
+   * server side and sent to client, so there is no bandwidth savings to using for web
+   * applications.  GoogleEarth can take advantage of it, but we are mostly web based
+   * at this time.  cjw 5/31/2013.
+   */
+  if (1)	// Compress to kmz.
+  {
+    char buffer[1024];
+    string tmptmp(cfg.googleEarthDataDir); tmptmp += "tmp.kmz";
 
-  sprintf(buffer, "chmod g+w %s", tmptmp.c_str());
-  system(buffer);
+    sprintf(buffer, "zip %s %s", tmptmp.c_str(), file.c_str());
+    system(buffer);
 
-  string temp = googleEarthDataDir + outFile + ".kmz";
-  rename(tmptmp.c_str(), temp.c_str());
+    sprintf(buffer, "chmod g+w %s", tmptmp.c_str());
+    system(buffer);
+
+    temp = cfg.googleEarthDataDir + outFile + ".kmz";
+    rename(tmptmp.c_str(), temp.c_str());
+  }
 }
 
 /* -------------------------------------------------------------------- */
@@ -528,7 +558,7 @@ void WriteGoogleEarthKML(string& file, const _projInfo& projInfo)
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
 	<< "   <Icon>\n"
-	<< "    <href>http://" << webHost << "/flight_data/display/red.png</href>\n"
+	<< "    <href>http://" << cfg.webHost << "/flight_data/display/red.png</href>\n"
 	<< "   </Icon>\n"
 	<< "  </IconStyle>\n"
 	<< " </Style>\n"
@@ -536,7 +566,7 @@ void WriteGoogleEarthKML(string& file, const _projInfo& projInfo)
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
 	<< "   <Icon>\n"
-	<< "    <href>http://" << webHost << "/flight_data/display/white.png</href>\n"
+	<< "    <href>http://" << cfg.webHost << "/flight_data/display/white.png</href>\n"
 	<< "   </Icon>\n"
 	<< "  </IconStyle>\n"
 	<< " </Style>\n"
@@ -594,7 +624,7 @@ void WriteGoogleEarthKML(string& file, const _projInfo& projInfo)
 
   int oneHour = 3600 / projectInfo.groundFeedDataRate;
   int i = 0, n = _date.size() - oneHour;
-  int step = TimeStep / projectInfo.groundFeedDataRate;
+  int step = cfg.TimeStep / projectInfo.groundFeedDataRate;
 
   if (n > 0)
   {
@@ -606,7 +636,7 @@ void WriteGoogleEarthKML(string& file, const _projInfo& projInfo)
 	<< "   <styleUrl>#TRACK_YELLOW</styleUrl>\n"
 	<< "   <LineString>\n"
 	<< "    <extrude>1</extrude>\n"
-	<< "    <altitudeMode>absolute</altitudeMode>\n"
+	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
 	<< "    <coordinates>\n";
 
     for (i = 0; i < n; i += step)
@@ -628,7 +658,7 @@ void WriteGoogleEarthKML(string& file, const _projInfo& projInfo)
 	<< "   <styleUrl>#TRACK_RED</styleUrl>\n"
 	<< "   <LineString>\n"
 	<< "    <extrude>1</extrude>\n"
-	<< "    <altitudeMode>absolute</altitudeMode>\n"
+	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
 	<< "    <coordinates>\n";
 
   // Output last hour of track, in red.
@@ -650,7 +680,7 @@ void WriteGoogleEarthKML(string& file, const _projInfo& projInfo)
 	<< "   <description>" << endBubbleCDATA() << "</description>\n"
 	<< "   <styleUrl>#PM1</styleUrl>\n"
 	<< "   <Point>\n"
-	<< "    <altitudeMode>absolute</altitudeMode>\n"
+	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
 	<< "    <coordinates>" << _lon[_lon.size()-1] << "," << _lat[_lat.size()-1] << "," << _alt[_alt.size()-1] << "</coordinates>\n"
 	<< "   </Point>\n"
 	<< "  </Placemark>\n"
@@ -659,7 +689,7 @@ void WriteGoogleEarthKML(string& file, const _projInfo& projInfo)
 	<< "   <description>" << startBubbleCDATA() << "</description>\n"
 	<< "   <styleUrl>#PM2</styleUrl>\n"
 	<< "   <Point>\n"
-	<< "    <altitudeMode>absolute</altitudeMode>\n"
+	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
 	<< "    <coordinates>" << _lon[0] << "," << _lat[0] << "," << _alt[0] << "</coordinates>\n"
 	<< "   </Point>\n"
 	<< "  </Placemark>\n";
@@ -700,7 +730,7 @@ void WriteGoogleEarthAnimatedKML(string& file, const _projInfo& projInfo)
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
 	<< "   <Icon>\n"
-	<< "    <href>http://" << webHost << "/flight_data/display/red.png</href>\n"
+	<< "    <href>http://" << cfg.webHost << "/flight_data/display/red.png</href>\n"
 	<< "   </Icon>\n"
 	<< "  </IconStyle>\n"
 	<< " </Style>\n"
@@ -708,7 +738,7 @@ void WriteGoogleEarthAnimatedKML(string& file, const _projInfo& projInfo)
 	<< "  <IconStyle>\n"
 	<< "   <scale>0.5</scale>\n"
 	<< "   <Icon>\n"
-	<< "    <href>http://" << webHost << "/flight_data/display/white.png</href>\n"
+	<< "    <href>http://" << cfg.webHost << "/flight_data/display/white.png</href>\n"
 	<< "   </Icon>\n"
 	<< "  </IconStyle>\n"
 	<< " </Style>\n"
@@ -751,11 +781,11 @@ void WriteGoogleEarthAnimatedKML(string& file, const _projInfo& projInfo)
 	<< "   <open>1</open>\n"
 	<< "   <LineString>\n"
 	<< "    <extrude>1</extrude>\n"
-	<< "    <altitudeMode>absolute</altitudeMode>\n"
+	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
 	<< "    <coordinates>\n";
 
     string start = _date[i];
-    for (size_t j = 0; i < _date.size() && j < 120; j += TimeStep, i += TimeStep)
+    for (size_t j = 0; i < _date.size() && j < 120; j += cfg.TimeStep, i += cfg.TimeStep)
       googleEarth << _lon[i] << "," << _lat[i] << "," << (int)_alt[i] << "\n";
 
     string end = _date[i >= _date.size() ? _date.size()-1 : i];
@@ -771,7 +801,7 @@ void WriteGoogleEarthAnimatedKML(string& file, const _projInfo& projInfo)
 	<< "  </Placemark>\n";
 
      if (i < _date.size())
-       i -= TimeStep;
+       i -= cfg.TimeStep;
   }
 
   string st = _date[0];
@@ -785,7 +815,7 @@ void WriteGoogleEarthAnimatedKML(string& file, const _projInfo& projInfo)
 	<< "   <description>" << endBubbleCDATA() << "</description>\n"
 	<< "   <styleUrl>#PM1</styleUrl>\n"
 	<< "   <Point>\n"
-	<< "    <altitudeMode>absolute</altitudeMode>\n"
+	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
 	<< "    <coordinates>" << _lon[_lon.size()-1] << "," << _lat[_lat.size()-1] << "," << _alt[_alt.size()-1] << "</coordinates>\n"
 	<< "   </Point>\n"
 	<< "  </Placemark>\n"
@@ -794,7 +824,7 @@ void WriteGoogleEarthAnimatedKML(string& file, const _projInfo& projInfo)
 	<< "   <description>" << startBubbleCDATA() << "</description>\n"
 	<< "   <styleUrl>#PM2</styleUrl>\n"
 	<< "   <Point>\n"
-	<< "    <altitudeMode>absolute</altitudeMode>\n"
+	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
 	<< "    <coordinates>" << _lon[0] << "," << _lat[0] << "," << _alt[0] << "</coordinates>\n"
 	<< "   </Point>\n"
 	<< "  </Placemark>\n";
@@ -847,7 +877,7 @@ void updateData(PGresult *res, int indx)
   _lat.push_back( extractPQvalue<float>(PQgetvalue(res, indx, LAT)) );
   value = extractPQvalue<float>(PQgetvalue(res, indx, ALT));
   if (value != missing_value)
-    value *= _convertToFeet;
+    value *= cfg.convertToFeet;
   _alt.push_back( value );
 
   _at.push_back( extractPQvalue<float>(PQgetvalue(res, indx, AT)) );
@@ -928,7 +958,7 @@ PGconn *openDataBase()
   char	conn_str[1024];
 
   sprintf(conn_str, "host='%s' dbname='%s' user ='ads'", 
-          database_host.c_str(), dbname.c_str());
+          cfg.database_host.c_str(), cfg.dbname.c_str());
   cout << "Connect string : [" << conn_str << "]" << endl;
   PGconn *conn = PQconnectdb(conn_str);
 
@@ -1010,7 +1040,7 @@ void ReadDataFromNetCDF(const string & fileName)
   const char *alt = "PALTF";
   if ((alt_v = file.get_var(alt)) == 0)
   {
-    _convertToFeet = 3.2808;
+    cfg.convertToFeet = 3.2808;
     alt = "PALT";
     if ((alt_v = file.get_var(alt)) == 0)
     {
@@ -1034,10 +1064,10 @@ void ReadDataFromNetCDF(const string & fileName)
 
   attr = alt_v->get_att("units");
   if (strcmp(attr->as_string(0), "m") == 0)
-    _convertToFeet = 3.2808; // feet per meter
+    cfg.convertToFeet = 3.2808; // feet per meter
 
   cout << "alt: " << alt << " units: " << attr->as_string(0) << endl;
-  cout << "_convertToFeet: " << _convertToFeet << endl;
+  cout << "cfg.convertToFeet: " << cfg.convertToFeet << endl;
 
   attr = tim_v->get_att("units");
   struct tm tm;
@@ -1047,7 +1077,7 @@ void ReadDataFromNetCDF(const string & fileName)
   size_t n = tim_vals->num();
   for (size_t i = 0; i < n; ++i)
   {
-    for (; i < n && tas_vals->as_float(i) < TAS_CutOff; ++i)
+    for (; i < n && tas_vals->as_float(i) < cfg.TAS_CutOff; ++i)
       ;
 
     for (; i < n &&
@@ -1068,7 +1098,7 @@ void ReadDataFromNetCDF(const string & fileName)
     _lat.push_back( lat_vals->as_float(i) );
     value = alt_vals->as_float(i);
     if (value != missing_value)
-      value *= _convertToFeet;
+      value *= cfg.convertToFeet;
     _alt.push_back( value );
     _at.push_back( atx_vals->as_float(i) );
     _dp.push_back( dp_vals->as_float(i) );
@@ -1104,6 +1134,7 @@ int usage(const char *argv0)
 	<< "  -h database_host	Database server host with data.\n"
 	<< "  -o			Run onboard, changes webhost to onboard server.\n"
 	<< "  -b barb_freq		Frequency of wind barbs in minutes, default is 5.\n"
+	<< "  -c			Clamp track to ground, ignore altitude.\n"
 	<< "  -t ts_freq		Frequency of time stamps in minutes, default is 2000 (off).\n"
 	<< "  -s time_step		Time interval of data points for track in seconds, default is 30.\n";
 
@@ -1118,57 +1149,61 @@ int parseRunstring(int argc, char** argv)
   int opt_char;		/* option character */
 
   // Default to ground, -p and netCDF mode.
-  webHost = grnd_webHost;
+  cfg.webHost = grnd_webHost;
 
-  while ((opt_char = getopt(argc, argv, "p:h:b:s:t:o")) != -1)
+  while ((opt_char = getopt(argc, argv, "p:h:b:s:t:o:c")) != -1)
   {
     switch (opt_char)
     {
     case 'p':	// platform selection, used to select dbname
-      platform = optarg;
+      cfg.platform = optarg;
       // TODO query the platforms DB to get a list of these...
-      if ( platform.compare("GV") &&
-           platform.compare("P3") &&
-           platform.compare("G4") &&
-           platform.compare("DC8") &&
-           platform.compare("A10") &&
-           platform.compare("C130") )
+      if ( cfg.platform.compare("GV") &&
+           cfg.platform.compare("P3") &&
+           cfg.platform.compare("G4") &&
+           cfg.platform.compare("DC8") &&
+           cfg.platform.compare("A10") &&
+           cfg.platform.compare("C130") )
       {
         cerr << "\n\tplatform must be GV, C130, DC8, or P3\n\n";
         return usage(argv[0]);
       }
-      dbname = "real-time-"+platform;
-      googleEarthDataDir = grnd_googleEarthDataDir+platform+"/GE/";
+      cfg.dbname = "real-time-"+cfg.platform;
+      cfg.googleEarthDataDir = grnd_googleEarthDataDir+cfg.platform+"/GE/";
       break;
 
     case 'h':	// PGHOST over-ride.
-      database_host = optarg;
+      cfg.database_host = optarg;
       break;
 
     case 's':	// Time-step, default is 30 seconds.
-      TimeStep = atoi(optarg);
-      if (TimeStep < 5) TimeStep = 5;
+      cfg.TimeStep = atoi(optarg);
+      if (cfg.TimeStep < 5) cfg.TimeStep = 5;
       break;
 
     case 'b':	// Windbarb Frequency, default is 5 minutes.
-      barb_Freq = atoi(optarg);
-      if (barb_Freq < 1) barb_Freq = 2000; // 24 hours, basically turn off.
+      cfg.barb_Freq = atoi(optarg);
+      if (cfg.barb_Freq < 1) cfg.barb_Freq = 2000; // 24 hours, basically turn off.
       break;
 
     case 't':	// Time Stamp Frequency, default is 20 minutes.
-      ts_Freq = atoi(optarg);
-      if (ts_Freq < 1) ts_Freq = 2000; // 24 hours, basically turn off.
+      cfg.ts_Freq = atoi(optarg);
+      if (cfg.ts_Freq < 1) cfg.ts_Freq = 2000; // 24 hours, basically turn off.
       break;
 
     case 'o':	// onboard.  Modify some defaults if this is set.
-      if ( strlen( platform.c_str() ) ) {
-        dbname = "real-time-" + platform;
-        googleEarthDataDir = onboard_googleEarthDataDir + platform + "/GE/";
+      if ( strlen( cfg.platform.c_str() ) ) {
+        cfg.dbname = "real-time-" + cfg.platform;
+        cfg.googleEarthDataDir = onboard_googleEarthDataDir + cfg.platform + "/GE/";
       } else {
-        dbname = "real-time";
-        googleEarthDataDir = onboard_googleEarthDataDir + "/GE/";
+        cfg.dbname = "real-time";
+        cfg.googleEarthDataDir = onboard_googleEarthDataDir + "/GE/";
       }
-      webHost            = onboard_webHost;
+      cfg.webHost            = onboard_webHost;
+      break;
+
+    case 'c':	// Clamp to ground
+      cfg.altMode = "clampToGround";
       break;
 
     case '?':
@@ -1179,8 +1214,8 @@ int parseRunstring(int argc, char** argv)
 
   if ((optind+2) == argc)	// netCDF mode.
   {
-    netCDFinputFile = argv[optind];
-    outputKML = argv[optind+1];
+    cfg.netCDFinputFile = argv[optind];
+    cfg.outputKML = argv[optind+1];
   }
 
   if ((optind+1) == argc)	// netCDF mode, but they left off output file.
@@ -1206,8 +1241,8 @@ void getGlobalAttrData(PGconn * conn)
     dataRate = 5;	// 5 second data is the default rate onboard.
   projectInfo.groundFeedDataRate = dataRate;
 
-  if (TimeStep < dataRate)
-    TimeStep = dataRate;
+  if (cfg.TimeStep < dataRate)
+    cfg.TimeStep = dataRate;
 }
 
 /* -------------------------------------------------------------------- */
@@ -1216,7 +1251,7 @@ int main(int argc, char *argv[])
   int rc;
 
   char *p = getenv("PGHOST");
-  if (p) database_host = p;
+  if (p) cfg.database_host = p;
 
   if (argc == 1 || strstr(argv[1], "usage") || strstr(argv[1], "help"))
     return usage(argv[0]);
@@ -1227,21 +1262,21 @@ int main(int argc, char *argv[])
       return rc;
   }
 
-  if (netCDFinputFile.length() > 0)
+  if (cfg.netCDFinputFile.length() > 0)
   {
-    PostProcessMode = true;
-    ReadDataFromNetCDF(netCDFinputFile);
+    cfg.postProcessMode = true;
+    ReadDataFromNetCDF(cfg.netCDFinputFile);
     if (_lat.size() > 0)
     {
-      cout << "WriteGoogleEarthKML(" << outputKML << ", projectInfo);\n";
-      WriteGoogleEarthKML(outputKML, projectInfo);
+      cout << "WriteGoogleEarthKML(" << cfg.outputKML << ", projectInfo);\n";
+      WriteGoogleEarthKML(cfg.outputKML, projectInfo);
     }
     return 0;
   }
 
 
-  cout << "\n  Using database host : " << database_host << endl;
-  cout << "\n  Output directory : " << googleEarthDataDir << endl;
+  cout << "\n  Using database host : " << cfg.database_host << endl;
+  cout << "\n  Output directory : " << cfg.googleEarthDataDir << endl;
   cout << endl;
 
 
@@ -1266,7 +1301,7 @@ int main(int argc, char *argv[])
     {
       string outFile;
 
-      outFile = googleEarthDataDir + "latest" + ".kml";
+      outFile = cfg.googleEarthDataDir + "latest" + ".kml";
 
       WriteGoogleEarthKML(outFile, projectInfo);
       WriteGoogleEarthAnimatedKML(outFile, projectInfo);
