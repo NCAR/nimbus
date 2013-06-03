@@ -68,7 +68,7 @@ void initPyrgeometer(var_base *varp)
 
   cals[varp->name] = cal;
 
-  // Get cals for DTB/DTT.
+  // Get cals for IRTHT/IRBHT.
   cal.clear();
   sprintf(name, "%s_CAL", dp->depend[1]);
   if ((tmp = GetDefaultsValue(name, dp->depend[1])) == NULL)
@@ -99,10 +99,10 @@ void sirc(DERTBL *varp)
 
     /* Since the cal for Dome Temp has a log in it and I didn't want to
      * create an interim variable, we will apply the cal here and back-write
-     * DTT and DTB.
+     * IRTHT and IRBHT (formerly known DTT/DTB).
      */
     dt = dome_temp_cal[0] + dome_temp_cal[1] * log10(dt);
-    PutSample(varp->depends[1], dt);  // this does not write into SampleRateData, just AveragedData....
+    PutSample(varp->depends[1], dt);  // this does not write into SampleRateData, just AveragedData.
 
     PutSample(varp, ((cals[varp->name])[0] * ir - (cals[varp->name])[1]) + SBC * pow(dt+Kelvin, 4.0));
   }
