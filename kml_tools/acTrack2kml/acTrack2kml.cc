@@ -339,7 +339,7 @@ void WriteCurrentPositionKML(const _projInfo& projInfo)
 	<< " <Folder>\n"
 	<< "  <name>Current Position</name>\n"
 	<< "  <Placemark>\n"
-	<< "   <name>GV</name>\n"
+	<< "   <name>" << projectInfo.platform << "</name>\n"
 	<< "   <styleUrl>#PM1</styleUrl>\n"
 	<< "   <Point>\n"
 	<< "    <altitudeMode>" << cfg.altMode << "</altitudeMode>\n"
