@@ -6,6 +6,7 @@ sources = Split("""
 IDEAS2.c
 ACEASIA.c
 DYCOMS.c
+NOMADSS.c
 PASE.c
 RICO.c
 VOCALS.c
