@@ -7,6 +7,9 @@
 #	Name		Constructor	xlate fn	compute fn
 # ----------------------------------------------------------------------------
 #
+# NOMADSS
+	"XRHCAB",	NULL,           NULL,		srhcab,
+
 # VOCALS.
 #
 	"CONCUD",	NULL,           NULL,		sconcud,
