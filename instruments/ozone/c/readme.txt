@@ -14,6 +14,8 @@ config_extern.h - header to define data types and external functions.
 
 config_qmm.h - header to define hardware specific data for the counter board.
 
+config_ad.c - configuration of the AD channels. This is where conversion functions are assigned to AD channels.
+
 
 
 op_check_dmm.c - main function to check AD operation of the DMM board.
