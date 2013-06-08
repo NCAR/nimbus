@@ -20,10 +20,10 @@ int PRM_Chan_Config(struct CHAN_CONFIG chan_Conf[], BYTE nChannels)
 		chan_Conf[i].Func = VoltageCalc; //Initialize all processing functions to calc voltage. We will define P, T below.
 	}
 	
-	for ( i=0; i < 4; i++ ) //The first 4 channels are temperatures.
+	for ( i=0; i < 4; i++ ) //The first 4 channels are sample air temperatures.
 	{
 		chan_Conf[i].R1 = 10; //R1 is resistance between thermistor and VREF.
-		chan_Conf[i].R2 = 10; //R2 is ressitance between thermistor and ground (zero in case of single ended AD.
+		chan_Conf[i].R2 = 10; //R2 is ressitance between thermistor and ground (zero in case of single ended AD).
 		chan_Conf[i].Func = TemperatureCalc;
 	}
 	chan_Conf[0].varName = "TAin";
@@ -42,8 +42,7 @@ int PRM_Chan_Config(struct CHAN_CONFIG chan_Conf[], BYTE nChannels)
 	
 	chan_Conf[5].varNameLong = "Pressure Cell A, mbar";
 	chan_Conf[5].varName = "PressA";
-	chan_Conf[5].Func = PressureCalc; // Channel 5 is Baratron. It uses simply 300 * ADvoltage for its Func. Do it in Main above.
-	//Resistances don't need to be defined for the Baratron channel, default values are fine.
+	chan_Conf[5].Func = PressureCalc; // Chan. 5 is Cell A pressure. R1 and R2 are not used.
 	
 	chan_Conf[6].varNameLong = "Pressure cell B, mbar";
 	chan_Conf[6].varName = "PressB";
@@ -97,7 +96,7 @@ int DMM_Chan_Config(struct CHAN_CONFIG chan_Conf[], BYTE nChannels)
 	
 	chan_Conf[7].varNameLong = "Sample Flow, slpm";
 	chan_Conf[7].varName = "Flow";
-	chan_Conf[7].Func = VoltageCalc; //Channel 7 is is Cell A Absolute Pressure. R1 and R2 are not used and don't matter.
+	chan_Conf[7].Func = FlowCalc; //Channel 7 is Sample Flow. R1 and R2 not used.
 	
 	chan_Conf[8].R1 = chan_Conf[15].R1 = 10; //5V power supply, PC104 5VDC
 	chan_Conf[8].R2 = chan_Conf[15].R2 = 20;
