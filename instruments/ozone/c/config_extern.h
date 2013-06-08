@@ -26,6 +26,7 @@ extern float PressureCalc( float inData, float R1, float R2, float vRange );
 extern float TemperatureCalc( float inData, float R1, float R2, float vRange );
 extern float CurrentCalc( float inData, float R1, float R2, float vRange );
 extern float PressureBaratron( float inData, float R1, float R2, float vRange );
+extern float FlowCalc( float inData, float R1, float R2, float vRange );
 
 //Prometheus DAQ circuit functions...
 extern int PRM_AD_Scan ( WORD base, BYTE ChannelLow, BYTE ChannelHigh, WORD nAverages, WORD nDelay, float Result[]);
