@@ -15,10 +15,10 @@ No arguments. Typing r reads the valve state; f advances the valve; q exits the 
 Main DIO program for OP valve control and monitoring. */
 int main ()
 {
-	char action = 'r';
+	char action = 'r', portID = 'A';
 	BYTE dio_conf = 1; //B is the output port; DIRCL is the input port; others are not used.
 	BYTE CurrPosition;
-	int i;
+	int i, bitID;
 	
 	if (ioperm( BASE_PROM_DAQ, 15, 1 )) //Set hardware port access if possible.
 	{
@@ -26,9 +26,10 @@ int main ()
 		return -1;
 	}
 	
+	DIO_Config( BASE_PROM_DAQ, dio_conf ); //First time, set up DIO ports: A,B,CH for output, CL for input.
 	prev_position = Valve_GetPosition( BASE_PROM_DAQ );
 	
-	for ( i=1; i<300; i++ )
+	/*for ( i=1; i<300; i++ )
 	{
 		printf("Expected valve pos.: %d; ", ValveAdvance ( 2, 3 )); // Advance the valve.
 		usleep ( 100000 ); // Less than 150 ms does not give valve enough time to reach position.
@@ -39,10 +40,9 @@ int main ()
 		//Valve_Check( CurrPosition, &nSkips, &nStops, &prev_position ); // Valve_Check increments nStops every time it is called.
 		//printf("N-stops: %d; N-skips: %d, iteration: %d\n", nStops, nSkips, i);
 	}
-	return 0;
+	return 0; */
 
 	
-	DIO_Config( BASE_PROM_DAQ, dio_conf ); //First time, set up DIO ports: A,B,CH for output, CL for input.
 	// Action loop. Typing r reads the valve state; f advances the valve; q exits the program.
 	for ( ; action != 'q'; )
 	{
@@ -59,6 +59,25 @@ int main ()
 		}
 		action = getchar();
 	}
+	
+	//Flip flop pins for selected port.
+	for ( ; action != 'q'; )
+	{
+		printf("Enter port ID: ");
+		portID = getchar();
+		if ( portID == 'a')
+			bitID = 8;
+		else if ( portID == 'b' )
+			bitID = 9;
+		else if ( portID == 'c' )
+			bitID = 10;
+		for ( i=0; i<10; i++ )
+		{
+			outb( 255 * (i % 2), BASE_PROM_DAQ + bitID );
+			usleep(100000);
+		}
+	}
+	
 	return 0;
 }
 
