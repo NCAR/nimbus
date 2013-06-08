@@ -60,7 +60,7 @@ float TemperatureCalc( float inData, float R1, float R2, float vRange )
 }
 
 /* ************************************
-Calculate Voltage based on the voltage divider configuration. */
+Calculate Current based on the voltage divider configuration. */
 float CurrentCalc( float inData, float R1, float R2, float vRange )
 {
 	return inData / R2 * 1000;
@@ -73,4 +73,10 @@ vRange is the Vref voltage (5V in our case, typically). */
 float PressureBaratron( float inData, float R1, float R2, float vRange )
 {
 	return inData * 300;
+}
+/* ************************************
+Calculate Flow using the 5000 series Honeywell flow meter transfer function. The meter is supposed to return 1V at 0 slpm and 5V at 5 slpm. */
+float FlowCalc( float inData, float R1, float R2, float vRange )
+{
+	return 1.25 * inData - 1.25;
 }
