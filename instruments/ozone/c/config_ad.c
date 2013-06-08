@@ -40,9 +40,9 @@ int PRM_Chan_Config(struct CHAN_CONFIG chan_Conf[], BYTE nChannels)
 	chan_Conf[4].R1 = 0.5; //Channel 4 is the 5V reference for the pressure transducers.
 	chan_Conf[4].R2 = 2;
 	
-	chan_Conf[5].varNameLong = "Pressure Baratron, mbar";
-	chan_Conf[5].varName = "PressBrt";
-	chan_Conf[5].Func = PressureBaratron; // Channel 5 is Baratron. It uses simply 300 * ADvoltage for its Func. Do it in Main above.
+	chan_Conf[5].varNameLong = "Pressure Cell A, mbar";
+	chan_Conf[5].varName = "PressA";
+	chan_Conf[5].Func = PressureCalc; // Channel 5 is Baratron. It uses simply 300 * ADvoltage for its Func. Do it in Main above.
 	//Resistances don't need to be defined for the Baratron channel, default values are fine.
 	
 	chan_Conf[6].varNameLong = "Pressure cell B, mbar";
@@ -95,9 +95,9 @@ int DMM_Chan_Config(struct CHAN_CONFIG chan_Conf[], BYTE nChannels)
 	chan_Conf[5].varName = "TdsmTcontr";
 	chan_Conf[6].varName = "TdsmPC104";
 	
-	chan_Conf[7].varNameLong = "Pressure cell A, mbar";
-	chan_Conf[7].varName = "PressA";
-	chan_Conf[7].Func = PressureCalc; //Channel 7 is is Cell A Absolute Pressure. R1 and R2 are not used and don't matter.
+	chan_Conf[7].varNameLong = "Sample Flow, slpm";
+	chan_Conf[7].varName = "Flow";
+	chan_Conf[7].Func = VoltageCalc; //Channel 7 is is Cell A Absolute Pressure. R1 and R2 are not used and don't matter.
 	
 	chan_Conf[8].R1 = chan_Conf[15].R1 = 10; //5V power supply, PC104 5VDC
 	chan_Conf[8].R2 = chan_Conf[15].R2 = 20;
