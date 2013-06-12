@@ -89,10 +89,6 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
 
   extern NR_TYPE * AveragedData;
 
-  // Only send every so often.
-  if ((rate_cntr % _dataRate) != 0)
-    return;
-
   // Only send data if ground connection is verified
   struct stat stFileInfo;
   std::string noconnFile("");
@@ -179,6 +175,10 @@ void GroundFeed::BroadcastData(const std::string & timeStamp)
     }
   }
   groundString << "\n";
+
+  // Only send every so often.
+  if ((rate_cntr % _dataRate) != 0)
+    return;
 
   // compress the stream before sending it to the ground
   char buffer[32000];
