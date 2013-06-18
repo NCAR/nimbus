@@ -1130,7 +1130,7 @@ int usage(const char *argv0)
 	<< "Post-processing:\n"
 	<< "	acTrack2kml infile.nc outfile.kml\n\n"
 	<< "Options:\n"
-	<< "  -p platform		Platform name, valid values (C130, DC8, GV, P3).\n"
+	<< "  -p platform		Platform name, valid values (C130, DC8, GV, A10, N42RF, N43RF).\n"
 	<< "  -h database_host	Database server host with data.\n"
 	<< "  -o			Run onboard, changes webhost to onboard server.\n"
 	<< "  -b barb_freq		Frequency of wind barbs in minutes, default is 5.\n"
@@ -1159,13 +1159,14 @@ int parseRunstring(int argc, char** argv)
       cfg.platform = optarg;
       // TODO query the platforms DB to get a list of these...
       if ( cfg.platform.compare("GV") &&
-           cfg.platform.compare("P3") &&
+           cfg.platform.compare("N42RF") &&
+           cfg.platform.compare("N43RF") &&
            cfg.platform.compare("G4") &&
            cfg.platform.compare("DC8") &&
            cfg.platform.compare("A10") &&
            cfg.platform.compare("C130") )
       {
-        cerr << "\n\tplatform must be GV, C130, DC8, or P3\n\n";
+        cerr << "\n\tplatform must be GV, C130, DC8, A10, N42RF, N43RF\n\n";
         return usage(argv[0]);
       }
       cfg.dbname = "real-time-"+cfg.platform;
