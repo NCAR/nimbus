@@ -866,18 +866,25 @@ void updateData(PGresult *res, int indx)
   lon = extractPQvalue<float>(PQgetvalue(res, indx, LON));
   alt = extractPQvalue<float>(PQgetvalue(res, indx, ALT));
 
-  if (lat == missing_value || lon == missing_value || alt == missing_value)
+  if (lat == missing_value || lon == missing_value)
     return;
 
-  float value;
+  if (cfg.altMode == "absolute" && alt == missing_value)
+    return;
+
   string tm(extractPQString(res, indx, TIME)); 
   tm.replace(10, 1, "T");
   _date.push_back(tm);
   _lon.push_back( extractPQvalue<float>(PQgetvalue(res, indx, LON)) );
   _lat.push_back( extractPQvalue<float>(PQgetvalue(res, indx, LAT)) );
-  value = extractPQvalue<float>(PQgetvalue(res, indx, ALT));
-  if (value != missing_value)
-    value *= cfg.convertToFeet;
+
+  float value = 0.0;
+  if (cfg.altMode == "absolute")
+  {
+    value = extractPQvalue<float>(PQgetvalue(res, indx, ALT));
+    if (value != missing_value)
+      value *= cfg.convertToFeet;
+  }
   _alt.push_back( value );
 
   _at.push_back( extractPQvalue<float>(PQgetvalue(res, indx, AT)) );
