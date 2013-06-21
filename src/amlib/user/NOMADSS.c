@@ -38,32 +38,4 @@ void srhcab(DERTBL *varp)
   //printf("rhcab calculation. %f*(%f/%f) = %f\n", rhum, numerator, denominator, rhum20cab);
 
   PutSample(varp, rhum20cab);
-
 }
-
-/* -------------------------------------------------------------------- */
-//  A calculation based on information from Stuart Beaton in an e-mail to
-//  Jorgen on 6/11/2013
-
-
-void sewuvh(DERTBL *varp)
-{
-  NR_TYPE	xsigv, xcelltemp, psx, xcellpres, n, ewcell, ewuvh;
-
-  xsigv = GetSample(varp, 0);
-  xcelltemp = GetSample(varp, 1);
-  psx = GetSample(varp, 1);
-  xcellpres = GetSample(varp, 1);
-
-  n = -2e17*log((xsigv - 0.34)/1.055);
-  ewcell = n * 1.38065e-23 * (xcelltemp+273.14)*10000;
-  ewuvh = ewcell*(psx/xcellpres);
-
-  //printf("rhcab calculation. %f*(%f/%f) = %f\n", rhum, numerator, denominator, rhum20cab);
-
-  PutSample(varp, ewuvh);
-
-}
-
-/* -------------------------------------------------------------------- */
-
