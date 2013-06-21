@@ -8,9 +8,9 @@
 # ----------------------------------------------------------------------------
 #
 # NOMADSS
+#
 	"XRHCAB",	NULL,           NULL,		srhcab,
-	"XEW_UVH",	NULL,           NULL,		sewuvh,
-
+#
 # VOCALS.
 #
 	"CONCUD",	NULL,           NULL,		sconcud,
@@ -787,6 +787,7 @@
 	"EWX",		NULL,		NULL,		sRefer,
 	"DPXC",		NULL,		NULL,		sRefer,
 	"CONCV",	(void(*)(void*))vcselInit,	NULL,	sconcv,
+	"CONCH",	(void(*)(void*))uvhInit,	NULL,	sconch,
 #
 #	Others
 #
