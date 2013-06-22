@@ -28,12 +28,22 @@ static const string grnd_webHost = "www.eol.ucar.edu";
 static const string onboard_googleEarthDataDir = "/var/www/html/flight_data/";
 static const string onboard_webHost = "acserver.raf.ucar.edu";
 
+// Our raw data is coming from a PostGreSQL database.....
+// The order of this enum should match the order of the variables
+// being requested in the dataQuery string.
+enum VariablePos { TIME=0, LON, LAT, ALT, AT, DP, TAS, WS, WD, WI };
+static const string _dataQuerySuffixRAF = ",atx,dpxc,tasx,wsc,wdc,wic FROM raf_lrt WHERE TASX > ";
+
+// NOAA AOC string
+static const string _dataQuerySuffixAOC = ",ta,td,tas,ws,wd,uwz FROM raf_lrt WHERE tas > ";
+
+
 static const float missing_value = -32767.0;
 
 class Config
 {
 public:
-  Config() : TimeStep(15), TAS_CutOff(20.0), ts_Freq(2000), barb_Freq(5), altMode("absolute"), postProcessMode(false), convertToFeet(1.0), showit(true)
+  Config() : TimeStep(15), TAS_CutOff(20.0), ts_Freq(2000), barb_Freq(5), altMode("absolute"), dataQuerySuffix(_dataQuerySuffixRAF), postProcessMode(false), convertToFeet(1.0), showit(true)
   { }
 
 
@@ -55,7 +65,7 @@ public:
   // Should we use KML clampToGround or ABSOLUTE.
   string altMode;
 
-  string netCDFinputFile, outputKML, database_host, platform, dbname;
+  string netCDFinputFile, outputKML, database_host, platform, dbname, dataQuerySuffix;
 
 
   bool postProcessMode;
@@ -67,14 +77,6 @@ public:
 };
 
 static Config cfg;
-
-
-// Our raw data is coming from a PostGreSQL database.....
-// The order of this enum should match the order of the variables
-// being requested in the dataQuery string.
-enum VariablePos { TIME=0, LON, LAT, ALT, AT, DP, TAS, WS, WD, WI };
-static const string _dataQuerySuffix = ",atx,dpxc,tasx,wsc,wdc,wic FROM raf_lrt WHERE TASX > ";
-
 
 
 class _projInfo
@@ -214,7 +216,7 @@ string buildDataQueryString(PGconn *conn)
     cfg.convertToFeet = 1.0;	// no-op (feet to feet)
 
 
-  dataQuery += lon + "," + lat + "," + alt + _dataQuerySuffix;
+  dataQuery += lon + "," + lat + "," + alt + cfg.dataQuerySuffix;
 
   char tmp[100];
   sprintf(tmp, "%f ORDER BY datetime", cfg.TAS_CutOff);
@@ -1166,18 +1168,24 @@ int parseRunstring(int argc, char** argv)
       cfg.platform = optarg;
       // TODO query the platforms DB to get a list of these...
       if ( cfg.platform.compare("GV") &&
-           cfg.platform.compare("N42RF") &&
-           cfg.platform.compare("N43RF") &&
-           cfg.platform.compare("G4") &&
+           cfg.platform.compare("N42RF") &&	// NOAA AOC P3 - Kermit
+           cfg.platform.compare("N43RF") &&	// NOAA AOC P3 - Miss Piggy
+           cfg.platform.compare("N49RF") &&	// NOAA AOC G4
            cfg.platform.compare("DC8") &&
            cfg.platform.compare("A10") &&
            cfg.platform.compare("C130") )
       {
-        cerr << "\n\tplatform must be GV, C130, DC8, A10, N42RF, N43RF\n\n";
+        cerr << "\n\tplatform must be GV, C130, DC8, A10, N42RF, N43RF, N49RF\n\n";
         return usage(argv[0]);
       }
       cfg.dbname = "real-time-"+cfg.platform;
       cfg.googleEarthDataDir = grnd_googleEarthDataDir+cfg.platform+"/GE/";
+
+      if (cfg.platform.compare("N42RF") == 0 || cfg.platform.compare("N43RF") == 0 || cfg.platform.compare("N49RF") == 0)
+        cfg.dataQuerySuffix = _dataQuerySuffixAOC;
+      else
+        cfg.dataQuerySuffix = _dataQuerySuffixRAF;
+
       break;
 
     case 'h':	// PGHOST over-ride.
