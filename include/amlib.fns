@@ -777,7 +777,6 @@
 	"EDPC",		(void(*)(void*))edpcInit,	NULL,	sedpc,
 	"EDPUV",	(void(*)(void*))edpcInit,	NULL,	sedpc,
 	"EW",		(void(*)(void*))ewInit,		NULL,	sew,
-	"EW_VXL",	(void(*)(void*))ewInit,		NULL,	sEvcsel,
 	"DPTC",		(void(*)(void*))dpggInit,	NULL,	sdpc_GG,
 	"DPBC",		(void(*)(void*))dpggInit,	NULL,	sdpc_GG,
 	"DPLC",		(void(*)(void*))dpggInit,	NULL,	sdpc_GG,

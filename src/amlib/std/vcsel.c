@@ -188,20 +188,6 @@ void sconcv(DERTBL *varp)
 }
 
 /* -------------------------------------------------------------------- */
-void sEvcsel(DERTBL *varp)
-{
-  NR_TYPE E_vcsel = floatNAN, h2o_conc_vxl, atx;
-
-  h2o_conc_vxl = GetSample(varp, 0);
-  atx = GetSample(varp, 1);
-
-  if (h2o_conc_vxl > 1.0)
-    E_vcsel = Boltzmann * (atx+Kelvin) * (h2o_conc_vxl * 1.0e6) * 1.0e-2;
-
-  PutSample(varp, E_vcsel);
-}
-
-/* -------------------------------------------------------------------- */
 void svmr(DERTBL *varp)
 {
   NR_TYPE vmr_vxl = floatNAN, h2o_conc_vxl, atx, ps;

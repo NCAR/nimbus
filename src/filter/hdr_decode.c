@@ -464,14 +464,6 @@ printf("FlightNumber: %s\n", cfg.FlightNumber().c_str());
         rp->OutputRate = rp->SampleRate;
     }
 
-    if (strcmp(rp->name, "RAWCONC_VXL") == 0)
-    {
-      SetLookupSuffix(location);
-      // Add EW here due to it's different entry in amlib.fns
-      add_name_to_DERTBL("EW");
-      SetLookupSuffix((char *)0);
-    }
-
     add_derived_names(name_sans_location);
 
     if (rp->Units.compare("count") == 0)

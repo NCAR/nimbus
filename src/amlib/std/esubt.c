@@ -125,18 +125,37 @@ void edpcInit(var_base *varp)
 /* -------------------------------------------------------------------- */
 void sew(DERTBL *varp)
 {
-  double Tk = GetSample(varp, 0) + Kelvin;
-  double psxc = GetSample(varp, 1);
- 
-  // fw() From Murphy and Koop, 2005.  Enhancement factor.  See esubt.c
-  double e = WaterVaporPressure(Tk) * fw(Tk, psxc);
-  if (varp->ndep > 2)
+  double e = floatNAN;
+
+  if (varp->depends[0]->Units.compare("#/cm3") == 0)
   {
-    NR_TYPE psdp = GetSample(varp, 2);	// DP Cavity Pressure.
-    NR_TYPE Rx = psxc / psdp;
-    e *= Rx;
+    // E from Density.
+
+    NR_TYPE h2o_conc_vxl, atx;
+
+    h2o_conc_vxl = GetSample(varp, 0);
+    atx = GetSample(varp, 1);
+
+    if (h2o_conc_vxl > 1.0)
+      e = Boltzmann * (atx+Kelvin) * (h2o_conc_vxl * 1.0e6) * 1.0e-2;
   }
-  
+  else
+  {
+    // E from mirror temperature.
+
+    double Tk = GetSample(varp, 0) + Kelvin;
+    double psxc = GetSample(varp, 1);
+ 
+    // fw() From Murphy and Koop, 2005.  Enhancement factor.  See esubt.c
+    e = WaterVaporPressure(Tk) * fw(Tk, psxc);
+    if (varp->ndep > 2)
+    {
+      NR_TYPE psdp = GetSample(varp, 2);	// DP Cavity Pressure.
+      NR_TYPE Rx = psxc / psdp;
+      e *= Rx;
+    }
+  }
+
   PutSample(varp, e);
 }
 
