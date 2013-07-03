@@ -17,9 +17,9 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2007
 #include "nimbus.h"
 #include "amlib.h"
 
-static NR_TYPE sigma = 1.406E+17;
-static NR_TYPE offset = 0.2662;
-static NR_TYPE gain = 1.0554;
+static NR_TYPE sigma = 1.158e-17;
+static NR_TYPE offset = 0.21;
+static NR_TYPE gain = 0.9;
 static NR_TYPE pathlength = 0.4318;
 
 
@@ -86,7 +86,7 @@ void sconch(DERTBL *varp)
   NR_TYPE       xsigv, conc;
 
   xsigv = GetSample(varp, 0);
-  conc = -sigma * pathlength * log((xsigv - offset) / gain);
+  conc = log((xsigv - offset) / gain) / (-sigma * pathlength);
   if (conc <= 0.0)
     conc = floatNAN;
 

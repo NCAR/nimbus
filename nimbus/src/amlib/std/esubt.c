@@ -138,6 +138,11 @@ void sew(DERTBL *varp)
 
     if (h2o_conc_vxl > 1.0)
       e = Boltzmann * (atx+Kelvin) * (h2o_conc_vxl * 1.0e6) * 1.0e-2;
+
+    if (varp->ndep == 4)	// Last two should be pressures.  UVH uses this, VCSEL does not.
+    {
+      e *= GetSample(varp, 2) / GetSample(varp, 3);	// (PSXC / XCELLPRES_UVH)
+    }
   }
   else
   {
