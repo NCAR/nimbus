@@ -12,7 +12,7 @@ STATIC FNS:     none
 DESCRIPTION:    Ambient Temperature for anti-iced sensors:
 			GV	Harco anti-iced sensor
 
-NOTES:		TTHR1 and TTHL1 have different zee computation and recovory
+NOTES:		TTHR1 and TTHL1 have different zee computation and recovery
 		factors than TTHR2 and TTHL2. Warning: Code hack using strchr()
 		to determine which probe.
 
@@ -126,17 +126,17 @@ void stthcGV(DERTBL *varp)	// HARCO
 /* -------------------------------------------------------------------- */
 void satfhGVharco(DERTBL *varp)
 {
-  NR_TYPE ttfh, xmach2, recovory, atfh;
+  NR_TYPE ttfh, xmach2, recovery, atfh;
 
   ttfh = GetSample(varp, 0);
   xmach2 = GetSample(varp, 1);
 
   if (strchr(varp->name, '1'))
-    recovory = recfrhGV[0];	// TTH?1
+    recovery = recfrhGV[0];	// TTH?1
   else
-    recovory = recfrhGV[1];	// TTH?2
+    recovery = recfrhGV[1];	// TTH?2
 
-  atfh = AMBIENT(ttfh, recovory, xmach2);
+  atfh = AMBIENT(ttfh, recovery, xmach2);
 
   PutSample(varp, atfh);
 
@@ -145,14 +145,14 @@ void satfhGVharco(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void satfhGVrose(DERTBL *varp)
 {
-  NR_TYPE ttfh, xmach2, recovory, atfh;
+  NR_TYPE ttfh, xmach2, recovery, atfh;
 
   ttfh = GetSample(varp, 0);
   xmach2 = GetSample(varp, 1);
 
-  recovory = 0.988 + 0.036 * (log10(xmach2) / 2);
+  recovery = 0.988 + 0.036 * (log10(xmach2) / 2);
 
-  atfh = AMBIENT(ttfh, recovory, xmach2);
+  atfh = AMBIENT(ttfh, recovery, xmach2);
 
   PutSample(varp, atfh);
 
