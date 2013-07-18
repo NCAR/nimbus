@@ -28,12 +28,17 @@ void sqcfc(DERTBL *varp)
     mach = GetSample(varp, 3);
     qcfc = qcf - psf * (*pcorQCF)(aqratio, mach);
   }
-  else if (cfg.Aircraft() == Config::C130 && varp->ndep > 1)
+  else if (cfg.Aircraft() == Config::C130 && varp->ndep > 2)
   {
     aqratio  = GetSample(varp, 1);	// aqratio = adifr / qcf
     psf = GetSample(varp, 2);
     mach2 = GetSample(varp, 3);
     qcfc = qcf - psf * (*pcorQCF)(aqratio, mach2);
+  }
+  else if (cfg.Aircraft() == Config::C130 && varp->ndep > 1)	// Older C130 (ICE-T and older).
+  {
+    NR_TYPE akrd  = GetSample(varp, 1);
+    qcfc = qcf - (*pcorQCF)(akrd, 1.0);
   }
   else
   {
