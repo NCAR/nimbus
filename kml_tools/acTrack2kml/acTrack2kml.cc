@@ -218,7 +218,7 @@ string buildDataQueryString(PGconn *conn)
 
   dataQuery += lon + "," + lat + "," + alt + cfg.dataQuerySuffix;
 
-  char tmp[100];
+  char tmp[8192];
   sprintf(tmp, "%f ORDER BY datetime", cfg.TAS_CutOff);
   dataQuery += tmp;
 
@@ -370,14 +370,14 @@ void WriteLandmarksKML_Folder(ofstream& googleEarth, const _projInfo& projInfo)
     << " <Folder>\n"
     << "  <name>Landmarks</name>\n";
 
-  char buff[1028];
+  char buff[8192];
   strcpy(buff, projInfo.landmarks.c_str());
   char * p = strtok(buff, ",");
 
   while (p)
   {
     float lat, lon;
-    char label[256];
+    char label[8192];
 
     sscanf(p, "%f %f %s", &lat, &lon, label);
 
@@ -454,7 +454,7 @@ void WriteWindBarbsKML_Folder(ofstream& googleEarth)
       last_ts = curr_ts;
       int iws = barbSpeed(_ws[i]);	// make sure to pass in knots.
       int iwd = (int)_wd[i];
-      char url[512];
+      char url[8192];
 
       if (iws < 0) iws = 0;
       if (iwd < 0 || iwd > 360) iwd = 0;
@@ -496,10 +496,10 @@ void WriteSpecialInclude(ofstream& googleEarth)
   inc.open("include.kml");
   if (inc.is_open())
   {
-    char buff[1028];
+    char buff[8192];
     while (!inc.eof())
     {
-      inc.getline(buff, 1028);
+      inc.getline(buff, 8192);
       googleEarth << buff;
     }
     inc.close();
@@ -525,7 +525,7 @@ renamefile(string file, string outFile)
    */
   if (1)	// Compress to kmz.
   {
-    char buffer[1024];
+    char buffer[8192];
     string tmptmp(cfg.googleEarthDataDir); tmptmp += "tmp.kmz";
 
     sprintf(buffer, "zip %s %s", tmptmp.c_str(), temp.c_str());
@@ -964,7 +964,7 @@ _at.clear(); _dp.clear(); _tas.clear(); _ws.clear(); _wd.clear(); _wi.clear();
 /* -------------------------------------------------------------------- */
 PGconn *openDataBase()
 {
-  char	conn_str[1024];
+  char	conn_str[8192];
 
   sprintf(conn_str, "host='%s' dbname='%s' user ='ads'", 
           cfg.database_host.c_str(), cfg.dbname.c_str());
