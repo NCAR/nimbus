@@ -7,8 +7,8 @@ typedef unsigned char BYTE;
 
 //AD channel configuration data type.
 struct CHAN_CONFIG {
-	const char *varName;
-	const char *varNameLong;
+	char *varName;
+	char *varNameLong;
 	float (*Func)(float, float, float, float);
 	float R1;
 	float R2;
