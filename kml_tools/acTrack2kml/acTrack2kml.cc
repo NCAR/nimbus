@@ -1139,7 +1139,7 @@ int usage(const char *argv0)
 	<< "Post-processing:\n"
 	<< "	acTrack2kml infile.nc outfile.kml\n\n"
 	<< "Options:\n"
-	<< "  -p platform		Platform name, valid values (C130, DC8, GV, A10, N42RF, N43RF).\n"
+	<< "  -p platform		Platform name, valid values (C130, DC8, GV, WKA, A10, N42RF, N43RF, B146).\n"
 	<< "  -h database_host	Database server host with data.\n"
 	<< "  -o			Run onboard, changes webhost to onboard server.\n"
 	<< "  -b barb_freq		Frequency of wind barbs in minutes, default is 5.\n"
@@ -1173,9 +1173,11 @@ int parseRunstring(int argc, char** argv)
            cfg.platform.compare("N49RF") &&	// NOAA AOC G4
            cfg.platform.compare("DC8") &&
            cfg.platform.compare("A10") &&
+           cfg.platform.compare("WKA") &&	// Wyoming King Air
+           cfg.platform.compare("B146") &&	// UK BAE146
            cfg.platform.compare("C130") )
       {
-        cerr << "\n\tplatform must be GV, C130, DC8, A10, N42RF, N43RF, N49RF\n\n";
+        cerr << "\n\tplatform must be GV, C130, WKA, DC8, A10, N42RF, N43RF, N49RF, B146\n\n";
         return usage(argv[0]);
       }
       cfg.dbname = "real-time-"+cfg.platform;
