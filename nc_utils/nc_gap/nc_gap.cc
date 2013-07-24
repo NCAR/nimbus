@@ -20,14 +20,17 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 2011
 
 using namespace std;
 
+static bool checkWholeFile = false;	// Just check when speed above 25 m/s (take-off).
+
 void processArgs(char **argv);
 
 /* -------------------------------------------------------------------- */
 void
 usage()
 {
-  cerr << "netCDF to IWG1.\n  Usage: nc_gap file.nc\n";
+  cerr << "netCDF to IWG1.\n  Usage: nc_gap [-a] file.nc\n";
   cerr << "    Scan a netCDF file for time gaps and output gaps by variable.\n";
+  cerr << "    -a : Check whole file.  By default only check GSF/TAS abouve 25 m/s.\n";
   exit(1);
 }
 
@@ -60,18 +63,33 @@ formatTime(NcVar *var, float *data, size_t index)
 }
 
 
-void
+size_t
 printStartTimes(NcFile & inFile, NcVar *timeVar, float *time_data)
 {
   cout	<< "Start time data file : " << formatTime(timeVar, time_data, 0) << ", "
 	<< timeVar->num_vals() << " seconds long.\n";
 
+  if (checkWholeFile)
+    return 0;
+
   // Get ground speed.
-  NcVar *gspdVar =  inFile.get_var("Time");
+  NcVar *gspdVar =  inFile.get_var("GSF");
+  if (gspdVar == 0)
+  {
+    cerr << "GSF not found, trying TASX\n";
+    gspdVar = inFile.get_var("TASX");
+  }
+
+  if (gspdVar == 0)
+  {
+    cerr << "TASX not found\n";
+    return 0;
+  }
+
   float *gspd_data = new float[gspdVar->num_vals()];
   gspdVar->get(gspd_data, gspdVar->edges());
 
-  int spd_indx;
+  size_t spd_indx;
   for (spd_indx = 0; spd_indx < gspdVar->num_vals(); ++spd_indx)
   {
     if (gspd_data[spd_indx] > 5.0)
@@ -89,6 +107,7 @@ printStartTimes(NcFile & inFile, NcVar *timeVar, float *time_data)
       break;
     }
   }
+  return spd_indx;
 }
 
 int
@@ -115,7 +134,7 @@ main(int argc, char *argv[])
   float *time_data = new float[timeVar->num_vals()];
   timeVar->get(time_data, timeVar->edges());
 
-  printStartTimes(inFile, timeVar, time_data);
+  int start_indx = printStartTimes(inFile, timeVar, time_data);
 
   for (int i = 0; inFile.num_vars(); ++i)
   {
@@ -127,9 +146,6 @@ main(int argc, char *argv[])
     if (var->num_dims() > 1)	// Stick to time-series scalars for the time being.
       continue;
 
-    if (strcmp(var->name(), "ATX") == 0)
-      break;
-
     if (var->get_att("Dependencies"))	// Skip derived vars for now.
       continue;
 
@@ -137,7 +153,7 @@ main(int argc, char *argv[])
     float *data = new float[var->num_vals()];
     var->get(data, var->edges());
 
-    for (int j = 0; j < var->num_vals(); ++j)
+    for (int j = start_indx; j < var->num_vals(); ++j)
     {
       if (data[j] == -32767.0)	// Get missing value first.
       {
@@ -168,6 +184,10 @@ processArgs(char **argv)
     if ((*argv)[0] == '-')
       switch ((*argv)[1])
         {
+        case 'a':
+          checkWholeFile = true;	// normally just check starting at take-off
+          break;
+
         case 'h':
           usage();
           break;
