@@ -136,7 +136,7 @@ main(int argc, char *argv[])
 
   int start_indx = printStartTimes(inFile, timeVar, time_data);
 
-  for (int i = 0; inFile.num_vars(); ++i)
+  for (int i = 0; i < inFile.num_vars(); ++i)
   {
     NcVar *var = inFile.get_var(i);
 
