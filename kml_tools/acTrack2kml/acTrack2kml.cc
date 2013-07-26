@@ -1160,7 +1160,7 @@ int parseRunstring(int argc, char** argv)
   // Default to ground, -p and netCDF mode.
   cfg.webHost = grnd_webHost;
 
-  while ((opt_char = getopt(argc, argv, "p:h:b:s:t:o:c")) != -1)
+  while ((opt_char = getopt(argc, argv, "p:h:b:s:t:oc")) != -1)
   {
     switch (opt_char)
     {
