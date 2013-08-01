@@ -4,7 +4,7 @@
 CC=		g++
 DESTDIR=
 BINDIR=		/jnet/local/bin
-ANONFTP=	/net/ftp/pub/archive/RAF-src/bin.RHEL5
+ANONFTP=	/net/ftp/pub/archive/RAF-src/bin.RHEL6
 MANDIR=		/jnet/local/man/man1
 LIBS=		-L${JLOCAL}/lib -lVarDB -lnetcdf -lhdf5 -lhdf5_hl -lraf
 LINTLIBS=	${LIBS}

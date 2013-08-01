@@ -19,7 +19,7 @@ INCLUDES= -I${JLOCAL}/include
 DEFINES =
 LIB_DIRS= -L${JLOCAL}/lib
 LIBS    = -lraf -lXm -lXp -lXt -lXext -lX11 -lnetcdf -lhdf5 -lhdf5_hl
-ANONFTP = /net/ftp/pub/archive/RAF-src/bin.RHEL5
+ANONFTP = /net/ftp/pub/archive/RAF-src/bin.RHEL6
 
 
 CFLAGS=         -O2 ${INCLUDES} ${DEFINES}
