@@ -1,6 +1,6 @@
 #!/bin/sh
 
-master="shiraz"
+master="barolo"
 ping -c 1 $master
 if [[ $? -ne 0 ]] ; then
   echo "Master calibration database server '"$master"' is offline."
