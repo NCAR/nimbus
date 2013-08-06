@@ -1293,10 +1293,10 @@ int MainWindow::saveButtonClicked()
     QSqlQuery query(QSqlDatabase::database());
 
     QString script =
-      "CREATE TABLE resorted (LIKE "DB_TABLE");"
+      "CREATE TABLE resorted (LIKE "DB_TABLE" INCLUDING INDEXES);"
       "INSERT INTO resorted SELECT * FROM "DB_TABLE" ORDER BY cal_date;"
       "DROP TABLE "DB_TABLE";"
-      "CREATE TABLE "DB_TABLE" (LIKE resorted);"
+      "CREATE TABLE "DB_TABLE" (LIKE resorted INCLUDING INDEXES);"
       "INSERT INTO "DB_TABLE" SELECT * FROM resorted;"
       "DROP TABLE resorted;";
 
