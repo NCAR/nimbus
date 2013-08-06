@@ -13,15 +13,7 @@ DESCRIPTION:	TASX is used by other parameters to compute their values.
 		method allows users to set TASX to what ever is working
 		or most accurate.
 
-INPUT:		True Airspeed to use
-
-OUTPUT:		
-
-REFERENCES:	none
-
-REFERENCED BY:	compute.c
-
-COPYRIGHT:	University Corporation for Atmospheric Research, 1995
+COPYRIGHT:	University Corporation for Atmospheric Research, 1995-2013
 -------------------------------------------------------------------------
 */
 
@@ -31,25 +23,21 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1995
 /* -------------------------------------------------------------------- */
 void stash(DERTBL *varp)
 {
-	NR_TYPE	tas, mr;
+  NR_TYPE	tas, mr;
 
-	tas	= GetSample(varp, 0);
-	mr	= GetSample(varp, 1);
+  tas	= GetSample(varp, 0);
+  mr	= GetSample(varp, 1);
 
-	PutSample(varp, tas / (1.0 - 0.3039e-03 * mr));
-
-}	/* END STASH */
+  PutSample(varp, tas / (1.0 - 0.3039e-03 * mr));
+}
 
 /* -------------------------------------------------------------------- */
 void sxtashc(DERTBL *varp)
 {
-	NR_TYPE	tas, sphum;
+  NR_TYPE	tas, sphum;
 
-	tas	= GetSample(varp, 0);
-	sphum	= GetSample(varp, 1);
+  tas	= GetSample(varp, 0);
+  sphum	= GetSample(varp, 1);
 
-	PutSample(varp, tas * (1.0 + 0.000304 * sphum));
-
-}	/* END STASH */
-
-/* END TASH.C */
+  PutSample(varp, tas * (1.0 + 0.000304 * sphum));
+}

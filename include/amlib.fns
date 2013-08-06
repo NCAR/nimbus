@@ -959,7 +959,11 @@
 	"TASHC",	NULL,		NULL,		stash,
 	"IAS",		NULL,		NULL,		sias,
 	"CAS",		NULL,		NULL,		sias,
-	"XMACH2",	NULL,		NULL,		sxmach2,
+	"MACHB",	NULL,		NULL,		smach,
+	"MACHF",	NULL,		NULL,		smach,
+	"MACHR",	NULL,		NULL,		smach,
+	"MACHW",	NULL,		NULL,		smach,
+	"MACHX",	NULL,		NULL,		sRefer,
 #
 #	Ozone
 #

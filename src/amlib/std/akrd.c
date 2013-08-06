@@ -80,8 +80,8 @@ void sakrd(DERTBL *varp)
 
       case Config::HIAPER:
       {
-        double xmach2 = GetSample(varp, 2);
-        double akcor = (0.6195 - 1.02758 * xmach2);
+        NR_TYPE mach = GetSample(varp, 2);
+        double akcor = (0.6195 - 1.02758 * mach*mach);
 
         if (akcor > 0.42)
           akcor = 0.42;
@@ -100,11 +100,9 @@ void sakrd(DERTBL *varp)
       case Config::SABRELINER:
       case Config::B57:
         {
-        double    xmach2;
-
-        xmach2 = GetSample(varp, 2);
+        NR_TYPE mach = GetSample(varp, 2);
         akrd = adifr / (qcxc * (0.0719786 - 0.0331033 *
-                      sqrt(xmach2) + 0.0109213 * xmach2));
+                      mach + 0.0109213 * mach*mach));
         }
         break;
 

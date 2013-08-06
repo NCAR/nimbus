@@ -26,7 +26,7 @@ static NR_TYPE ss_coeff[] = { 0.1662, 0.09218 };
 
 static NR_TYPE recfx = 0.985;
 
-NR_TYPE tas(NR_TYPE, NR_TYPE, NR_TYPE);
+NR_TYPE compute_tas(NR_TYPE, NR_TYPE, NR_TYPE);
 
 
 /* -------------------------------------------------------------------- */
@@ -122,7 +122,7 @@ void stas_gp(DERTBL *varp)	// True airspeed
   tt	= GetSample(varp, 2);
 
   fmach2 = XMAC2(qc / ps);
-  tasg	= tas(tt, recfx, fmach2);
+  tasg	= compute_tas(tt, recfx, fmach2);
 
   PutSample(varp, tasg);
 }

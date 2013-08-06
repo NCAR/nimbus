@@ -3,7 +3,7 @@
         Input:
                 bdifr - raw radome differential pressure
                 qcxc - corrected dynamic pressure for radome calcs
-                xmach2 - derived mach number (Sabreliner and B-57 only)
+                mach - derived mach number (Sabreliner and B-57 only)
         Output:
                 ssrd - attack angle of the radome (deg)
 */
@@ -81,10 +81,9 @@ void sssrd(DERTBL *varp)
       case Config::SABRELINER:
       case Config::B57:
       {
-        NR_TYPE xmach2 = GetSample(varp, 2);
-        double xmach = sqrt(xmach2);
-        ssrd = (ratio + 0.0241628 * xmach - 0.0754196)
-		/ (0.030640 + 0.0664595 * xmach - 0.0881156 * xmach2);
+        NR_TYPE mach = GetSample(varp, 2);
+        ssrd = (ratio + 0.0241628 * mach - 0.0754196)
+		/ (0.030640 + 0.0664595 * mach - 0.0881156 * mach*mach);
       }
         break;
 

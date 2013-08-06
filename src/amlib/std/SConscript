@@ -44,6 +44,7 @@ irc.c
 irs.c
 kinglwc.c
 lwcc.c
+mach.c
 mr.c
 mrla.c
 nevzorov.c
@@ -93,7 +94,6 @@ tvir.c
 vcsel.c
 wd.c
 ws.c
-xmach2.c
 """)
 
 std = env.StaticLibrary('std' , sources)

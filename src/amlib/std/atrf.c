@@ -25,13 +25,13 @@ extern NR_TYPE	recfrn;	// Recovery Factor, see initAC.c
 /* -------------------------------------------------------------------- */
 void satrf(DERTBL * varp)
 {
-  NR_TYPE ttrf, xmach2;
+  NR_TYPE ttrf, mach;
 
   ttrf = GetSample(varp, 0);
-  xmach2 = GetSample(varp, 1);
+  mach = GetSample(varp, 1);
 	
   if (ttrf < -Kelvin)
     ttrf  = -Kelvin;
 
-  PutSample(varp, AMBIENT(ttrf, recfrn, xmach2));
+  PutSample(varp, AMBIENT(ttrf, recfrn, mach*mach));
 }

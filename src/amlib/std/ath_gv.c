@@ -84,14 +84,14 @@ void atfhGV_Init(var_base *varp)
 /* -------------------------------------------------------------------- */
 void stthcGV(DERTBL *varp)	// HARCO
 {
-  NR_TYPE zee, tth, xmach2, psxc;
+  NR_TYPE zee, tth, mach, psxc;
   static bool firstTime[nFeedBackTypes] = { true, true };
 
-  tth = GetSample(varp, 0);
-  xmach2 = GetSample(varp, 1);
-  psxc = GetSample(varp, 2);
+  tth	= GetSample(varp, 0);
+  mach	= GetSample(varp, 1);
+  psxc	= GetSample(varp, 2);
 
-  if (isnan(tth) || isnan(xmach2))
+  if (isnan(tth) || isnan(mach))
   {
     PutSample(varp, floatNAN);
     return;
@@ -106,8 +106,8 @@ void stthcGV(DERTBL *varp)	// HARCO
   if (tth < -Kelvin)
     tth = -Kelvin;
 
-  if (xmach2 <= 0.0 || isnan(xmach2))
-    xmach2 = 0.0001;
+  if (mach <= 0.0 || isnan(mach))
+    mach = 0.0001;
 
   if (strchr(varp->name, '1'))
 //    zee = (1.007093  + psxc * (-0.00001809 + 0.00000001 * psxc));	// TTH?1
@@ -126,17 +126,17 @@ void stthcGV(DERTBL *varp)	// HARCO
 /* -------------------------------------------------------------------- */
 void satfhGVharco(DERTBL *varp)
 {
-  NR_TYPE ttfh, xmach2, recovery, atfh;
+  NR_TYPE ttfh, mach, recovery, atfh;
 
-  ttfh = GetSample(varp, 0);
-  xmach2 = GetSample(varp, 1);
+  ttfh	= GetSample(varp, 0);
+  mach	= GetSample(varp, 1);
 
   if (strchr(varp->name, '1'))
     recovery = recfrhGV[0];	// TTH?1
   else
     recovery = recfrhGV[1];	// TTH?2
 
-  atfh = AMBIENT(ttfh, recovery, xmach2);
+  atfh = AMBIENT(ttfh, recovery, mach*mach);
 
   PutSample(varp, atfh);
 
@@ -145,17 +145,17 @@ void satfhGVharco(DERTBL *varp)
 /* -------------------------------------------------------------------- */
 void satfhGVrose(DERTBL *varp)
 {
-  NR_TYPE ttfh, xmach2, recovery, atfh;
+  NR_TYPE ttfh, mach, recovery, atfh;
 
   ttfh = GetSample(varp, 0);
-  xmach2 = GetSample(varp, 1);
+  mach = GetSample(varp, 1);
 
-  recovery = 0.988 + 0.036 * (log10(xmach2) / 2);
+  recovery = 0.988 + 0.036 * (log10(mach*mach) / 2);
 
-  atfh = AMBIENT(ttfh, recovery, xmach2);
+  atfh = AMBIENT(ttfh, recovery, mach*mach);
 
   PutSample(varp, atfh);
 
 }
 
-/* END ATFH.C */
+/* END ATH_GV.C */

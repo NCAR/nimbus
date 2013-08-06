@@ -23,13 +23,13 @@ extern NR_TYPE recfkp;	// Recovery Factor, see initAC.c
 /* -------------------------------------------------------------------- */
 void satkp(DERTBL * varp)
 {
-  NR_TYPE ttkp, xmach2;
+  NR_TYPE ttkp, mach;
 
-  ttkp = GetSample(varp, 0);
-  xmach2 = GetSample(varp, 1);
+  ttkp	= GetSample(varp, 0);
+  mach	= GetSample(varp, 1);
 	
   if (ttkp < -Kelvin)
     ttkp  = -Kelvin;
 
-  PutSample(varp, AMBIENT(ttkp, recfkp, xmach2));
+  PutSample(varp, AMBIENT(ttkp, recfkp, mach*mach));
 }
