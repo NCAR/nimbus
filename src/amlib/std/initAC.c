@@ -19,7 +19,7 @@ COPYRIGHT:	University Corporation for Atmospheric Research, 1992-2009
 
 static const NR_TYPE XMPHMS = 0.44704; // conversion factor mph to meters/sec
 
-// P3 PCORS made available to Deafults file starting with TPARC.
+// P3 PCORS made available to Defaults file starting with TPARC.
 static NR_TYPE P3_RADOME_PCORS[2] = { 0.0, 0.02 };
 static NR_TYPE P3_FUSELAGE_PCORS[3] = { -0.046, -0.0265, 0.000087 };
 
