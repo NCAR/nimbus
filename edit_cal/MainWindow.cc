@@ -1802,6 +1802,9 @@ void MainWindow::exportCalButtonClicked()
 
     if (cal_type == "bath")
         exportBath(row);
+
+    // immediately view what's exported
+    viewCalButtonClicked();
 }
 
 /* -------------------------------------------------------------------- */
@@ -2194,13 +2197,13 @@ void MainWindow::exportBath(int row)
     ostr << "-----------------------------------------------------------\n";
 
     while (iP.hasNext() && iA.hasNext()) {
-        double x = iP.next().toDouble();
-        double y = iA.next().toDouble();
+        double p = iP.next().toDouble();
+        double a = iA.next().toDouble();
         double d = iD.next().toDouble();
         QString line;
         line.sprintf("\n  %7.3f         %6.3f           %9.6f"
                      "     _________\n",
-                     x, y - DECADE_BOX_WIRE_RESISTANCE, d);
+                     p, a - DECADE_BOX_WIRE_RESISTANCE, d);
         ostr << line.toStdString();
     }
     QString filename = csvfile_dir;
