@@ -21,7 +21,7 @@ extern NR_TYPE	(*pcorQCR)(NR_TYPE, NR_TYPE);
 /* -------------------------------------------------------------------- */
 void sqcrc(DERTBL *varp)
 {
-  NR_TYPE	qcr, qcrc = 0.0, adifr, bdifr, psf, mach2, mach, aqratio;
+  NR_TYPE	qcr, qcrc = 0.0, adifr, bdifr, psf, mach, aqratio;
   NR_TYPE	bqcrc, satk3, sbeta3;
   double	atk3, beta3;
 
@@ -42,8 +42,8 @@ void sqcrc(DERTBL *varp)
     case Config::C130:
       aqratio = GetSample(varp, 1);	// aqratio = adfir / qcf
       psf = GetSample(varp, 2);
-      mach2 = GetSample(varp, 3);
-      qcrc = qcr - psf * (*pcorQCR)(aqratio, mach2);
+      mach = GetSample(varp, 3);
+      qcrc = qcr - psf * (*pcorQCR)(aqratio, mach*mach);
       break;
 
     case Config::ELECTRA:
