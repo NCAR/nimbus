@@ -44,6 +44,7 @@ irc.c
 irs.c
 kinglwc.c
 lwcc.c
+mach.c
 mr.c
 mrla.c
 nevzorov.c
