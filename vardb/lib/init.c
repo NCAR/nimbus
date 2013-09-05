@@ -155,15 +155,20 @@ static bool checkIfOlderVersionAndConvert(void *varDB, VarDB_Hdr *vdbHdr)
 {
   bool modified = false;
 
+  if (ntohl(vdbHdr->Version) == 1)
+  {
+    fprintf(stderr, "VarDB: File is version 1, cannot convert at this time.\n");
+    exit(1);
+  }
+
   if (ntohl(vdbHdr->Version) < VarDB_CurrentVersion)
   {
-
     fprintf(stderr, "VarDB: File has older version, converting to new version.\n");
 
     for (int i = 0; i < VarDB_nRecords; ++i)
     {
       ((struct var_v2 *)varDB)[i].standard_name = 0;
-      ((struct var_v2 *)varDB)[i].reference = FALSE;;
+      ((struct var_v2 *)varDB)[i].reference = false;
     }
 
     vdbHdr->Version = htonl(VarDB_CurrentVersion);
