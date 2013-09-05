@@ -44,6 +44,7 @@ long	VarDB_RecLength, VarDB_nRecords;
 static void *readFile(const char fileName[], VarDB_Hdr *vdbHdr);
 static bool checkIfOlderVersionAndConvert(void *varDB, VarDB_Hdr *vdbHdr);
 static bool performCorrections(void *varDB);
+static void addVariable(void *vardb, var_v2 *p);
 
 
 /* -------------------------------------------------------------------- */
@@ -143,7 +144,7 @@ static void *readFile(const char fileName[], VarDB_Hdr *vdbHdr)
 
   if (checkIfOlderVersionAndConvert(varDB, vdbHdr) || performCorrections(varDB))
   {
-    printf("VarDB modified, saving.\n");
+    fprintf(stderr, "VarDB modified, saving.\n");
     VarDB = varDB;
     SaveVarDB(fileName);
   }
@@ -193,14 +194,14 @@ static bool performCorrections(void *varDB)
       modified = true;
       strcpy(p->Units, "deg_C");
       printf("%s - degC changed to deg_C\n", p->Name);
-     }
+    }
 
     if (strcmp(p->Units, "mbar") == 0)
     {
       modified = true;
       strcpy(p->Units, "hPa");
       printf("%s - mbar changed to hPa\n", p->Name);
-     }
+    }
 
     if (p->is_analog == false && p->defaultSampleRate != 0)
     {
@@ -212,7 +213,53 @@ static bool performCorrections(void *varDB)
     }
   }
 
+/*
+  struct var_v2 mach;
+  memset(&mach, 0, sizeof(mach));
+  strcpy(mach.Name, "THETAP");
+  strcpy(mach.Units, "K");
+  strcpy(mach.Title, "Pseudo-adiabatic Equivalent Potential Temperature");
+  mach.is_analog = false;
+  mach.Category = 2;
+  mach.standard_name = 25;
+  mach.reference = false;
+  addVariable(varDB, &mach);
+modified = true;
+*/
+
   return(modified);
+}
+
+static void addVariable(void *varDB, var_v2 *p)
+{
+  void	*tmp;
+  int	pos;
+
+  // Don't add if already exists.
+  for (pos = 0; pos < VarDB_nRecords; ++pos)
+    if (strcmp(p->Name, ((struct var_v2 *)varDB)[pos].Name) == 0)
+      return;
+
+  if ((tmp = (void *)realloc(varDB, (unsigned)(VarDB_nRecords+1) *
+                                (unsigned)VarDB_RecLength)) == NULL)
+    return;
+
+  varDB = tmp;
+
+  // Add in sorted position
+  for (pos = VarDB_nRecords-1; pos >= 0; --pos)
+{
+    if (strcmp(p->Name, ((struct var_v2 *)varDB)[pos].Name) < 0)
+      memcpy( &((struct var_v2 *)varDB)[pos+1],
+                &((struct var_v2 *)varDB)[pos],
+                sizeof(struct var_v2));
+    else
+      break;
+}
+
+  ++pos;
+  ++VarDB_nRecords;
+  memcpy(&((struct var_v2 *)varDB)[pos], p, sizeof(var_v2));
 }
 
 /* -------------------------------------------------------------------- */
