@@ -47,6 +47,15 @@ void uvhInit(var_base *varp)
 {
   float *tmp;
 
+
+  if (cfg.ProjectName().compare("NOMADSS") == 0)	// NOMADSS only.
+  {
+    LogMessage("UVHygrometer: NOMADSS specific multiplier being applied to XSIGV.");
+    AddToAttributes("XSIGV_UVH", "NOTE", "NOMADSS specific: XSIGV is converted to g/cm3, multiplied by 3.3427e16 to convert to #/cm3");
+  }
+
+
+
   if ((tmp = GetDefaultsValue("UV_SIGMA", varp->name)) == NULL)
   {
     sprintf(buffer, "UV_SIGMA set to %f in AMLIB function uvhyg.\n", sigma);
@@ -86,7 +95,16 @@ void sconch(DERTBL *varp)
   NR_TYPE       xsigv, conc;
 
   xsigv = GetSample(varp, 0);
-  conc = log((xsigv - offset) / gain) / (-sigma * pathlength);
+
+  /* New UVHYG code note fully ready for NOMADSS.  nidas cal files for
+   * XSIGV convert it to g/cm3.  CONCH will just convert this from g/cm3
+   * to #/cm3 with below convertion.
+   */
+  if (cfg.ProjectName().compare("NOMADSS") == 0)	// NOMADSS only.
+    conc = xsigv * 3.3427E+16;	// convert from g/cm3 to #/cm3.
+  else
+    conc = log((xsigv - offset) / gain) / (-sigma * pathlength);
+
   if (conc <= 0.0)
     conc = floatNAN;
 
