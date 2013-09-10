@@ -11,6 +11,9 @@
 #include "nimbus.h"
 #include "amlib.h"
 
+// Serial number for GV radome.  #2 was installed in January of 2013.
+static int      gv_radome_ssn = 1;      // default to first radome.
+
 static NR_TYPE coeff[2];
 
 extern int	FlightDate[];
@@ -53,8 +56,16 @@ void initSSRD(var_base *varp)
       break;
 
     case Config::HIAPER:
+      float *tmp;
+      if ( (tmp = GetDefaultsValue("GV_RADOME_SSN", varp->name)) )
+        gv_radome_ssn = (int)tmp[0];
+
       coeff[0] = -0.0025;
       coeff[1] = 0.04727;
+      if (gv_radome_ssn == 1)
+      {
+        coeff[0] = 0.004971;
+      }
       break;
 
     default:
