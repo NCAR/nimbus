@@ -215,12 +215,20 @@ void PMS1D_SetupForADS3()
     setSerialNumberAndProbeType("ACDP", "CDP058", PROBE_PMS1D | PROBE_CDP);
   }
   else
-  if (cfg.ProjectName().compare("IDEAS-4") == 0)
+  if (cfg.ProjectName().compare("IDEAS-4") == 0 && cfg.Aircraft() == Config::C130)
   {
     setSerialNumberAndProbeType("A1DC_LPC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A2DC_LPC", "F2DC001", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A1DC_LPI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
     setSerialNumberAndProbeType("A2DC_LPI", "F2DC003", PROBE_PMS2D | PROBE_2DC);
+  }
+  else
+  if (cfg.ProjectName().compare("IDEAS-4") == 0 && cfg.Aircraft() == Config::HIAPER)
+  {
+    setSerialNumberAndProbeType("A1DC_LWIO", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC_LWIO", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A1DC_RWOO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC_RWOO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
   }
   else
   if (cfg.ProjectName().compare("ICE-T") == 0)
@@ -489,7 +497,7 @@ static int getCellSizes(const var_base * rp, float cellSize[])
      */
 // Note: ADS3 is propogating the problem until netCDF file refactor.
 // Then we should remove all evidence of this 0th bin from ADS2 & ADS3.
-    sprintf(buffer, "CELL_SIZE_%u", rp->Length - 1);
+    sprintf(buffer, "CELL_SIZE_%lu", rp->Length - 1);
     p = GetPMSparameter(rp->SerialNumber.c_str(), buffer);
   }
 
