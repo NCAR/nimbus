@@ -322,11 +322,14 @@ PostgreSQL::initializeVariableList()
     std::string        name;
 
     if (isdigit(raw[i]->name[0])) // Can't support vars starting with number.
-    {	// Use 'H' for Houskeeping..... ?
-      name = "H" + std::string(raw[i]->name);
+    {
+      fprintf(stderr,
+	"psql.cc: PostGreSQL does not support variables starting with a numeric [%s]\n",
+	raw[i]->name);
+      exit(1);
     }
-    else
-      name = raw[i]->name;
+
+    name = raw[i]->name;
 
     /* If PMS2D then add to the PMS2D table.
      */
@@ -386,6 +389,14 @@ PostgreSQL::initializeVariableList()
    */
   for (size_t i = 0; i < derived.size(); ++i)
   {
+    if (isdigit(derived[i]->name[0])) // Can't support vars starting with number.
+    {
+      fprintf(stderr,
+	"psql.cc: PostGreSQL does not support variables starting with a numeric [%s]\n",
+	derived[i]->name);
+      exit(1);
+    }
+
     if (derived[i]->Length > 1)
     {
       nDims = 2;
