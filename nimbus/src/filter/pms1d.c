@@ -225,10 +225,10 @@ void PMS1D_SetupForADS3()
   else
   if (cfg.ProjectName().compare("IDEAS-4") == 0 && cfg.Aircraft() == Config::HIAPER)
   {
-    setSerialNumberAndProbeType("A1DC_LWIO", "F2DC002", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC_LWIO", "F2DC002", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A1DC_RWOO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
-    setSerialNumberAndProbeType("A2DC_RWOO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A1DC_LWIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC_LWIO", "F2DC001", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A1DC_RWOI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
+    setSerialNumberAndProbeType("A2DC_RWOI", "F2DC002", PROBE_PMS2D | PROBE_2DC);
   }
   else
   if (cfg.ProjectName().compare("ICE-T") == 0)
