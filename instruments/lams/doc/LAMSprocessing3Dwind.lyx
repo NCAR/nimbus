@@ -1,0 +1,1154 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\input colordvi
+\usepackage{color}
+\fancyhead{}
+\fancyfoot[CE,CO]{}
+\newtoks{\topicofnote} \global\topicofnote={}
+\newdimen\longindent \longindent=3.5truein
+\fancyhead[L]{Note re: \the\topicofnote \\ \datetoday \\ Page \thepage \hfill}
+\renewcommand{\headrulewidth}{0.0pt}
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+\setlength{\leftmargin}{\labelwidth}
+\addtolength{\leftmargin}{\labelsep}
+\renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+\newcommand{\datetoday}{\number\day\space
+     \ifcase\month\or January\or February\or March\or April\or May\or
+     June\or July\or August\or September\or October\or November\or
+     December\fi
+     \space\number\year}
+\newcommand{\ASPmemo}{\null \vskip-1.5truein
+{\raggedright \textsf{\textsc{\large \textcolor{blue}{Advanced Study Program}}}}\par
+{\raggedright \textsf{\textsl{\textcolor{blue}{Memorandum:}}}} \par \vskip6pt
+{\color{blue}{\hrule}}\par
+\vskip0.3truein \leftline{\hskip \longindent \datetoday} \vskip0.2truein
+\thispagestyle{empty}}
+\newcommand{\attachm}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachments:] {#1}
+\end{lyxlist}}
+\newcommand{\cc}[1]{\begin{lyxlist}{Attachments:00}
+\item [cc:] {#1}
+\end{lyxlist}}
+\newcommand{\attach}[1]{\begin{lyxlist}{Attachments:00}
+\item [Attachment:] {#1}
+\end{lyxlist}}
+%usage: \encl{A\\B\\C} or \cc{ma,e1\\name2\\name3}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding default
+\fontencoding global
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\use_mhchem 0
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.54cm
+\topmargin 3.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 1cm
+\headsep 2cm
+\footskip 0.5cm
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+set topicofnote to topic of note
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+topicofnote={Data processing for 3D LAMS}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+Note goes here:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+THIS IS A REVISION, 7 Oct 2013
+\end_layout
+
+\begin_layout Standard
+This note outlines how to obtain relative wind and ground-referenced wind
+ from the LAMS measurements.
+ 
+\end_layout
+
+\begin_layout Standard
+Start in the reference frame of the LAMS, with wind components {
+\begin_inset Formula $u,\, v,\, w$
+\end_inset
+
+} in that frame.
+ Relative to LAMS, 
+\begin_inset Formula $u$
+\end_inset
+
+ is the longitudinal wind (toward the tail), 
+\begin_inset Formula $v$
+\end_inset
+
+ the lateral wind (toward the port wing), and 
+\begin_inset Formula $w$
+\end_inset
+
+ the vertical wind (toward the upward direction).
+ The underlying coordinate system is {
+\begin_inset Formula $x,\, y,\, z$
+\end_inset
+
+} with 
+\begin_inset Formula $x$
+\end_inset
+
+ in the forward direction, 
+\begin_inset Formula $y$
+\end_inset
+
+ in the starboard direction, and 
+\begin_inset Formula $z$
+\end_inset
+
+ downward.
+ In this coordinate system, call 
+\begin_inset Formula $\Theta$
+\end_inset
+
+ the angle from the 
+\begin_inset Formula $x$
+\end_inset
+
+-axis and 
+\begin_inset Formula $\Phi$
+\end_inset
+
+ the azimuthal rotation angle about the 
+\begin_inset Formula $x$
+\end_inset
+
+-axis in the right-hand sense from the 
+\begin_inset Formula $z$
+\end_inset
+
+ axis.
+ Then the sensing volumes of the three LAMS beams are approximately at {
+\begin_inset Formula $L_{i}\cos\Theta_{i}$
+\end_inset
+
+, 
+\begin_inset Formula $-L_{i}\sin\Theta_{i}\sin\Phi_{i}$
+\end_inset
+
+, 
+\begin_inset Formula $L_{i}sin\Theta_{i}\cos\Phi_{i}$
+\end_inset
+
+}.
+ The configuration selected for testing in the September IDEAS flights is,
+ approximately, {
+\begin_inset Formula $\Theta,\,\Phi\}$
+\end_inset
+
+ = {{35, 180}, {35, -60}, {35, +60}} for the three beams (named here in
+ the order {1,2,3}).
+ The three measurements 
+\begin_inset Formula $\{a_{1},\, a_{2},\, a_{3}\}$
+\end_inset
+
+ then are related to {
+\begin_inset Formula $u,\, v,$
+\end_inset
+
+w} by the matrix of direction cosines, 
+\begin_inset Formula $\sigma$
+\end_inset
+
+, each element of which gives the contribution of one component of {
+\begin_inset Formula $u,\, v,\, w$
+\end_inset
+
+} to one component of the measurements 
+\begin_inset Formula $\{a_{1},\, a_{2},\, a_{3}\}$
+\end_inset
+
+.
+ Each direction cosine is the dot product between one of the unit vectors
+ {
+\begin_inset Formula $\hat{i},\,\hat{j},\,\hat{k}$
+\end_inset
+
+} representing the rectilinear 
+\begin_inset Quotes eld
+\end_inset
+
+LAMS
+\begin_inset Quotes erd
+\end_inset
+
+ coordinate system and one of the unit vectors {
+\begin_inset Formula $\hat{b}_{1},\,\hat{b}_{2},\,\hat{b}_{3}$
+\end_inset
+
+}.
+ Note that the sense of the relative wind is that positive wind is inward
+ along the axis, so for example 
+\begin_inset Formula $\hat{i}\bullet\hat{b}_{1}$
+\end_inset
+
+ is the positive quantity 
+\begin_inset Formula $L_{1}\cos\Theta_{1}$
+\end_inset
+
+ and represents the contribution of 
+\begin_inset Formula $u$
+\end_inset
+
+ to the inward velocity measured in beam #1.
+ The complete set of direction cosines is then the matrix 
+\begin_inset Formula $\mathbf{S}$
+\end_inset
+
+ giving the relationship between the rectilinear components {
+\begin_inset Formula $u,\, v,\, w$
+\end_inset
+
+} and the measured inward airspeeds in the three beams {
+\begin_inset Formula $a_{1},\, a_{2},\, a_{3}$
+\end_inset
+
+}:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\begin{pmatrix}a_{1}\\
+a_{2}\\
+a_{3}
+\end{pmatrix}=\mathbf{S\,}\begin{pmatrix}u\\
+v\\
+w
+\end{pmatrix}\label{eq:1}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Evaluating these components gives
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\mathbf{S}=\left(\begin{array}{ccc}
+\cos\Theta_{1} & -\sin\Theta_{1}\sin\Phi_{1} & \sin\Theta_{1}\cos\Phi_{1}\\
+\cos\Theta_{2} & -\sin\Theta_{2}\sin\Phi_{2} & \sin\Theta_{2}\cos\Phi_{2}\\
+\cos\Theta_{3} & -\sin\Theta_{3}\sin\Phi_{3} & \sin\Theta_{3}\cos\Phi_{3}
+\end{array}\right)\,\,\,.\label{eq:2}
+\end{equation}
+
+\end_inset
+
+For 
+\begin_inset Formula $\Theta_{1}=\Theta_{2}=\Theta_{3}=35^{\circ}$
+\end_inset
+
+ and {
+\begin_inset Formula $\Phi_{i}$
+\end_inset
+
+}={180, -60, 60}, the matrix becomes approximately
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\mathbf{S}=\left(\begin{array}{ccc}
+0.819 & 0 & -0.574\\
+0.819 & 0.497 & 0.287\\
+0.819 & -0.497 & 0.287
+\end{array}\right)\,\,\,.\label{eq:2-1}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Inverting 
+\begin_inset Formula $\sigma$
+\end_inset
+
+ then gives the wind components relative to the LAMS coordinate system in
+ terms of the measured components:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\begin{pmatrix}u\\
+v\\
+w
+\end{pmatrix}=\mathbf{S}^{-1}\begin{pmatrix}a_{1}\\
+a_{2}\\
+a_{3}
+\end{pmatrix}\label{eq:3}
+\end{equation}
+
+\end_inset
+
+where
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\mathbf{S^{-1}}=\left(\begin{array}{ccc}
+0.4069249 & 0.40692490 & 0.4069249\\
+0 & 1.0065795 & -1.0065795\\
+-1.1622979 & 0.5811489 & 0.5811489
+\end{array}\right)\label{eq:4}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Once the wind components relative to LAMS are obtained, the next step is
+ to transform these to the aircraft reference frame for comparison to the
+ radome-derived gust components.
+ Two transformations are needed: (i) to correct for the difference in wind
+ vectors at the LAMS and at the IRS that results from rotation of the aircraft
+ and the offset of the LAMS sensing volumes from the location of the IRS;
+ and (ii) to correct for differences in attitude angles between LAMS and
+ the aircraft.
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+(i) Correction for rotation:
+\end_layout
+
+\begin_layout Standard
+For the first, Bulletin 23 gives the required correction to the relative
+ wind:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\vec{v}_{a}^{\prime}=\vec{v}_{a}+\vec{\Omega}_{p}\times\vec{R}\label{eq:RelWindCorrection}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $\vec{\Omega}_{p}$
+\end_inset
+
+ is the angular rotation rate or angular velocity of the aircraft
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Bulletin 23 says this is the angular acceleration but later equations make
+ it clear that rotation rates like 
+\begin_inset Formula $\dot{\phi}$
+\end_inset
+
+ are used.
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Formula $\vec{R}$
+\end_inset
+
+ is the distance from the IRS to the wind sensor.
+ This footnote
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+In the case of LAMS, the instrument is mounted on the wing but the sensed
+ wind is located at three locations ahead of the aircraft, so this transformatio
+n is not as straightforward as in Bulletin 23.
+ The three components {
+\begin_inset Formula $a_{i}$
+\end_inset
+
+} measured by LAMS need to be transformed separately, each with its own
+ 
+\begin_inset Formula $\vec{R_{i}}={X_{{\rm LAMS}}+L_{i}\cos\Theta_{i},\, Y_{{\rm LAMS}}-L_{i}\sin\Theta_{i}\sin\Phi_{i},\, Z_{{\rm LAMS}}+L_{i}sin\Theta_{i}\cos\Phi_{i}}$
+\end_inset
+
+ given by the vector from the location of the IRS to the location of the
+ volume sensed by the 
+\begin_inset Formula $i$
+\end_inset
+
+th beam.
+ In this formula, {
+\begin_inset Formula $X_{{\rm LAMS}},\, Y_{{\rm LAMS}},\, Z_{{\rm LAMS}}$
+\end_inset
+
+} is the location of the LAMS relative to the IRS.
+ These need to be determined accurately, but for the present purposes of
+ this note I will make the guess that the coordinates of the LAMS are {-5.,
+ -8., +1} m; i.e., LAMS is behind, to port, and below the IRS.
+ The distances from LAMS to the focal points {
+\begin_inset Formula $L_{i}$
+\end_inset
+
+} will all be taken to be 30 m, pending better information.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+The rotation vector of the aircraft has components given respectively by
+ the rates of change of ROLL, PITCH, and THDG (heading), expressed of course
+ in radians.
+ Examination of some flight data led to these approximations: {4, 0,25 2.}
+ degrees per second.
+ These will be used here to estimate the importance of including these correctio
+ns, but for real data the derivatives of the measured attitude angles should
+ be used.
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+and this then affects the direction cosines entering (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:2"
+
+\end_inset
+
+).
+ Each direction cosine arises from the dot product between the unit vector
+ along the beam, 
+\begin_inset Formula $\hat{b}_{i}$
+\end_inset
+
+, and 
+\begin_inset Formula $\hat{u}_{i}$
+\end_inset
+
+, the unit vector along each component of the relative wind: 
+\begin_inset Formula $\cos\alpha_{ij}=\vec{b_{i}}\bullet\vec{u_{j}}$
+\end_inset
+
+.
+ However,
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+The wind component sensed by the 
+\begin_inset Formula $i$
+\end_inset
+
+th beam is then the dot product of the unit vector along the beam (
+\begin_inset Formula $\hat{b}_{i}$
+\end_inset
+
+) with the relative wind vector given by (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:RelWindCorrection"
+
+\end_inset
+
+).
+ For the 
+\begin_inset Formula $i$
+\end_inset
+
+th measured component, 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+a_{i}=\sum_{j}S_{ij}(v_{j}+[\vec{\Omega}_{p}\times\vec{R}_{i}]\bullet\hat{m}_{j})\label{eq:a_i}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $\hat{m}_{j}$
+\end_inset
+
+ is the appropriate unit vector from the set {
+\begin_inset Formula $\hat{i},\,\hat{j},\,\hat{k}$
+\end_inset
+
+}.
+ The transformation from 
+\begin_inset Formula $\mathbf{v^{\prime}}$
+\end_inset
+
+ to 
+\begin_inset Formula $\mathbf{a}$
+\end_inset
+
+ can then be written
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\mathbf{a}=\mathbf{S\, v}+\mathbf{C}\label{eq:9}
+\end{equation}
+
+\end_inset
+
+where
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+C_{i}=\sum_{j}S_{ij}\,[\vec{\Omega}_{p}\times\vec{R}_{i}]\bullet\hat{m}_{j})\label{eq:Csubi}
+\end{equation}
+
+\end_inset
+
+are then the component contributions, arising from rotation, to the airspeeds
+ sensed in the three beams.
+ 
+\end_layout
+
+\end_inset
+
+ is what we discussed at our first meeting, but I now realize that it is
+ unnecessarily complex.
+ The vector 
+\begin_inset Formula $\vec{R}$
+\end_inset
+
+ needed in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:RelWindCorrection"
+
+\end_inset
+
+) is only the vector from the IRS to the LAMS, without the additional extension
+ to the three sample volumes, because the motion of the LAMS determines
+ the rotational contribution to the measurements.
+ The other components introduced by the extension from LAMS to the sample
+ volumes only produce extra contributions orthogonal to the beams, and these
+ then vanish when the results are multiplied to 
+\begin_inset Formula $\mathbf{S}$
+\end_inset
+
+ to get the measured components from the rectilinear components.
+ I verified this by calculation, and also verified that the calculation
+ produces the same results if, instead of (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Csubi"
+
+\end_inset
+
+), the following equation is used:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\mathbf{C}=\mathbf{S}\,\vec{\Omega}\times\vec{R}\label{eq:}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+or 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\mathbf{a}=\mathbf{S}\,(\mathbf{v}+\vec{\Omega}_{p}\times\vec{R})\,\,\,.\label{eq:MeasurementWithRotation}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Then the solution is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\mathbf{v}=\mathbf{S}^{-1}\mathbf{a\,-\,}\vec{\Omega}\times\vec{R}\,\,\,.\label{eq:vFromRotation}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Technically, the rotation vector should be transformed into the LAMS coordinate
+ frame from the aircraft frame before calculating this, but because this
+ is expected to be a small correction this step will be omitted.
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+(ii) Correction for differences in orientation angles: (REVISED FROM EARLIER
+ NOTE)
+\end_layout
+
+\begin_layout Standard
+The LAMS orientation is measured by a CMIGIT in the LAMS pod, while the
+ aircraft orientation is measured by a fuselage-mounted IRS.
+ Each measures heading, pitch, and roll.
+ Transformation to the aircraft system involves transforming from the LAMS
+ reference system to the aircraft reference system.
+ The required transformations are described by three rotation matrices,
+ defined in Bulletin 23 Eqs.
+ 2.5 and 2.6:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+T_{1}=\left(\begin{array}{ccc}
+1 & 0 & 0\\
+0 & \cos\phi & -\sin\phi\\
+0 & \sin\phi & \cos\phi
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+T_{2}=\left(\begin{array}{ccc}
+\cos\theta & 0 & \sin\theta\\
+0 & 1 & 0\\
+-\sin\theta & 0 & \cos\theta
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+T_{3}=\left(\begin{array}{ccc}
+\cos\psi & -\sin\psi & 0\\
+\sin\psi & \cos\psi & 0\\
+0 & 0 & 1
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where {
+\begin_inset Formula $\phi,\,\theta,\,\psi$
+\end_inset
+
+} are {pitch, roll, heading.
+\end_layout
+
+\begin_layout Standard
+Because the LAMS (CMIGITS unit) is not aligned perfectly with the aircraft
+ reference frame as defined by the Honeywell IRU, the relative-wind components
+ measured by LAMS should first be transformed from the CMIGITS (LAMS) coordinate
+ frame (attitude angles {
+\begin_inset Formula $\phi^{\prime},\,\theta^{\prime},\,\psi^{\prime}$
+\end_inset
+
+}) to an earth reference frame while following the proper order of transformatio
+ns that corresponds to the definitions of the attitude angles.
+ Then the resulting coordinates should be transformed to the Honeywell (aircraft
+) coordinate system.
+ Specifially, the transformation is made in the following order: 
+\end_layout
+
+\begin_layout Enumerate
+Rotate by 
+\begin_inset Formula $T_{1}$
+\end_inset
+
+ using the CMIGITS roll angle 
+\begin_inset Formula $\phi^{\prime}$
+\end_inset
+
+ to level the wings: 
+\end_layout
+
+\begin_layout Enumerate
+Rotate by 
+\begin_inset Formula $T_{2}$
+\end_inset
+
+ using the CMIGITS pitch angle 
+\begin_inset Formula $\theta^{\prime}$
+\end_inset
+
+ to level the aircraft.
+\end_layout
+
+\begin_layout Enumerate
+Rotate by 
+\begin_inset Formula $T_{3}$
+\end_inset
+
+ using the CMIGITS heading angle 
+\begin_inset Formula $\psi^{\prime}$
+\end_inset
+
+ to obtain components in a true-north reference frame.
+ At this point, the relative-wind vector in an Earth-reference coordinate
+ system is is 
+\begin_inset Formula $v_{r}=T_{3}(T_{2}(T_{1}v))$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Rotate by 
+\begin_inset Formula $T_{3}$
+\end_inset
+
+ using the negative of the aircraft heading angle 
+\begin_inset Formula $\psi$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Rotate by 
+\begin_inset Formula $T_{2}$
+\end_inset
+
+ using the negative of the aircraft pitch angle 
+\begin_inset Formula $\theta$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Rotate by 
+\begin_inset Formula $T_{1}$
+\end_inset
+
+ using the negative of the aircraft roll angle 
+\begin_inset Formula $\phi$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+This results in relative-wind components in the reference frame of the aircraft,
+ so the results can be compared to standard measurements where the relative
+ wind components are {TAS, TAS*tan(SSLIP), TAS*tan(ATTACK)}.
+ 
+\end_layout
+
+\begin_layout Standard
+The wind components in a ground reference frame are already found at the
+ end of step 3 so these should be saved for use in creating new Earth-relative
+ winds.
+ The procedure is relatively simple compared to routine 'gust.c' because
+ all the work of rotation and transformation to Earth-reference coordinates
+ has already been done, although the components are still in a coordinate
+ system with {
+\begin_inset Formula $x$
+\end_inset
+
+, 
+\begin_inset Formula $y$
+\end_inset
+
+, 
+\begin_inset Formula $z$
+\end_inset
+
+} {north, east, down}.
+ For example, the equations to get variables {WD_LAMS, WS_LAMS, WI_LAMS)
+ analogous to {WDC, WSC, WIC} are:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+v_{g}=v_{r}+\left(\begin{array}{c}
+-\mathrm{VNSC}\\
+-\mathrm{VEWC}\\
+\mathrm{VSPD}
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\mathrm{WD_{LAMS}=\arctan2(v_{g,y},}v_{g,x})
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\mathrm{WS_{LAMS}=\sqrt{(v_{g,x}^{2}+v_{g,y}^{2})}}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\mathrm{WI_{LAMS}=v_{g,z}}
+\]
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A python routine that implements the preceding procedure is saved as LAMSprocess
+or.py in the directory ~cooperw/LAMS.
+ See also the files LAMSprocessor.ipynb and LAMSnotebook.pdf, the former for
+ implementation in ipython notebook format and the latter a screen capture
+ of the output from that notebook.
+\end_layout
+
+\begin_layout Standard
+Comments:
+\end_layout
+
+\begin_layout Enumerate
+Re S:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+u makes an equal contribution to all beams, as expected.
+\end_layout
+
+\begin_layout Enumerate
+the (2,1) element, with e-17, should be zero except for machine-precision
+ errors.
+\end_layout
+
+\begin_layout Enumerate
+v makes equal and opposite contributions to beams 2 and 3.
+\end_layout
+
+\begin_layout Enumerate
+w makes positive contributions to beams 2 and 3 but a negative contribution
+ to beam 1.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Re Si (the inverse of S):
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+The longitudinal component of the wind, 
+\begin_inset Formula $u$
+\end_inset
+
+ or TAS, is recovered by dividing the average of the three measurements
+ by cos 35
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+The lateral component (
+\begin_inset Formula $v$
+\end_inset
+
+) is almost the difference between beams 2 and 3.
+ (The term with e-16 should be zero except for machine-precision errors.)
+\end_layout
+
+\begin_layout Enumerate
+All three measurements must be used to obtain the vertical wind.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+The 'Omega x R' terms give the contributions to the measured airspeeds from
+ rotation, in umits of m/s.
+ This rotation can produce corrections of about 0.5 m/s in the 
+\begin_inset Formula $w$
+\end_inset
+
+ component; although the correction is small it should not be neglected.
+ Because the corrections are proportional to the lever arms for the rotations,
+ this also indicates that knowledge of these distances to perhaps 10% is
+ adequate.
+\end_layout
+
+\begin_layout Enumerate
+Differences in orientation angles between the IRS and CMIGIT reference frames
+ of about 1
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ have little effect on the measured 
+\begin_inset Formula $u$
+\end_inset
+
+ component but can change 
+\begin_inset Formula $v$
+\end_inset
+
+ and 
+\begin_inset Formula $w$
+\end_inset
+
+ by more than 1.5 m/s.
+ This is because a small rotation moves the large 
+\begin_inset Formula $u$
+\end_inset
+
+ component to make a significant contribution to 
+\begin_inset Formula $v$
+\end_inset
+
+ and 
+\begin_inset Formula $w$
+\end_inset
+
+ but only has a cosine-of-rotation-angle effect on 
+\begin_inset Formula $u$
+\end_inset
+
+.
+ The relative orientation angles need to be known with low uncertainty if
+ the lateral components of the wind are to be measured with low uncertainty.
+ A rough estimate from this calculation is that we need to know the orientation
+ angles to around 0.1
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ to determine the lateral wind components to 0.15 m/s.
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attach{attachment}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+attachm{first
+\backslash
+
+\backslash
+second}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+cc{first attachment
+\backslash
+
+\backslash
+second
+\backslash
+
+\backslash
+3rd att}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

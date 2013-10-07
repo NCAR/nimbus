@@ -1,0 +1,1349 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass beamerWAC
+\begin_preamble
+\usetheme{WAC}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{footline}[default]{}
+\setbeamertemplate{navigation symbols}{}
+%\setbeamercovered{transparent}
+\setbeamercovered{opaque}
+\setbeamertemplate{enumerate subitem}{(\alph{enumii})}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language british
+\language_package auto
+\inputencoding auto
+\fontencoding global
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 2
+\use_esint 0
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setbeamercolor{normal text}{bg=yellow!10}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Title
+Data Processing for 3D LAMS
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+LAMS algorithms
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+optional, use only with long paper titles
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+Al Cooper
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize
+Give the names in the same order as the appear in the paper.
+ 
+\end_layout
+
+\begin_layout Itemize
+Use the 
+\begin_inset Quotes eld
+\end_inset
+
+Institute mark
+\begin_inset Quotes erd
+\end_inset
+
+ inset (
+\family sans
+Insert\SpecialChar \menuseparator
+Custom Insets\SpecialChar \menuseparator
+InstituteMark
+\family default
+) only if the authors have different affiliations.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Date
+RAF Instrumentation Meeting 16 Sept 2013
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+If you have a file called "institution-logo-filename.xxx", where xxx is a
+ graphic format that can be processed by latex or pdflatex, resp., then you
+ can add a logo by uncommenting the following:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%
+\backslash
+pgfdeclareimage[height=0.5cm]{institution-logo}{institution-logo-filename}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+logo{
+\backslash
+pgfuseimage{institution-logo}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+If you wish to uncover everything in a step-wise fashion, uncomment the
+ following command:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%
+\backslash
+beamerdefaultoverlayspecification{<+->}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Outline
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Structuring a talk is a difficult task and the following structure may not
+ be suitable.
+ Here are some rules that apply for this solution: 
+\end_layout
+
+\begin_layout Itemize
+Exactly two or three sections (other than the summary).
+ 
+\end_layout
+
+\begin_layout Itemize
+At *most* three subsections per section.
+ 
+\end_layout
+
+\begin_layout Itemize
+Talk about 30s to 2min per frame.
+ So there should be between about 15 and 30 frames, all told.
+\end_layout
+
+\begin_layout Itemize
+A conference audience is likely to know very little of what you are going
+ to talk about.
+ So *simplify*! 
+\end_layout
+
+\begin_layout Itemize
+In a 20min talk, getting the main ideas across is hard enough.
+ Leave out details, even if it means being less precise than you think necessary.
+ 
+\end_layout
+
+\begin_layout Itemize
+If you omit details that are vital to the proof/implementation, just say
+ so once.
+ Everybody will be happy with that.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Interfacing with Existing Code
+\end_layout
+
+\begin_layout Subsection
+Overview of Wind Processing
+\end_layout
+
+\begin_layout BeginFrame
+NORMAL WIND PROCESSING
+\end_layout
+
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Component Measurements
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+Relative
+\begin_inset space ~
+\end_inset
+
+Wind: air motion relative to the aircraft
+\end_layout
+
+\begin_layout Description
+Ground
+\begin_inset space ~
+\end_inset
+
+Velocity: motion of the aircraft relative to the ground
+\end_layout
+
+\begin_layout Description
+Sum: motion of air relative to the ground = wind
+\end_layout
+
+\end_deeper
+\begin_layout AlertBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{}
+\end_layout
+
+\end_inset
+
+LAMS provides an alternate measurement of relative wind
+\end_layout
+
+\begin_layout Pause
+
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+5 cm
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Radome gust system:
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Pitot tubes for true airspeed;
+\end_layout
+
+\begin_layout Standard
+Radome for flow angles;
+\end_layout
+
+\begin_layout Standard
+Combine to get relative wind
+\end_layout
+
+\end_deeper
+\begin_layout Column
+5 cm
+\end_layout
+
+\begin_layout Pause
+
+\end_layout
+
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+LAMS:
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Measurements in 3 beams;
+\end_layout
+
+\begin_layout Standard
+Not orthogonal system;
+\end_layout
+
+\begin_layout Standard
+Need usual 3-component wind
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Subsection
+New Aspects with LAMS
+\end_layout
+
+\begin_layout BeginFrame
+STEPS REQUIRED TO USE LAMS FOR WIND
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%
+\backslash
+beamerdefaultoverlayspecification{<+->}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\lang english
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setbeamercolor{alerted text}{fg=blue}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+-|visible@+-|alert@+>
+\end_layout
+
+\end_inset
+
+Determine the geometry with precision:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Pointing angles
+\end_layout
+
+\begin_layout Enumerate
+Relative location, LAMS vs IRS
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+-|visible@+-|alert@+>
+\end_layout
+
+\end_inset
+
+From the three available measurements, find the rectilinear wind components
+ (u,v,w}.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+-|visible@+-|alert@+>
+\end_layout
+
+\end_inset
+
+Correct for false wind introduced by angular motion of the aircraft.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+-|visible@+-|alert@+>
+\end_layout
+
+\end_inset
+
+Correct for changes in orientation, LAMS vs IRS.
+\end_layout
+
+\end_deeper
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+-|visible@+>{
+\end_layout
+
+\end_inset
+
+At this point:
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+have the usual relative-wind components
+\end_layout
+
+\begin_layout Itemize
+existing processing will give wind
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Details for the Four Steps
+\end_layout
+
+\begin_layout Subsection
+Geometry
+\end_layout
+
+\begin_layout BeginFrame
+THE COORDINATE SYSTEM
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename RelWindCoords.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $x$
+\end_inset
+
+ is forward along the longitudinal axis of the aircraft;
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $y$
+\end_inset
+
+ is to starboard;
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $z$
+\end_inset
+
+ is downward (to provide a right-handed cooredinate system).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $u,\, v,\, w$
+\end_inset
+
+ have positive sign if 
+\emph on
+inward
+\emph default
+ along the respective axes.
+\end_layout
+
+\begin_layout BeginFrame
+THE THREE BEAMS
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename LAMSbeams.png
+	lyxscale 50
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{Orientation of the Three Beams:}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+
+\color red
+Upward: 35
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ from the 
+\begin_inset Formula $x$
+\end_inset
+
+ axis and 120
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ from the 
+\begin_inset Formula $z$
+\end_inset
+
+ axis
+\end_layout
+
+\begin_layout Enumerate
+
+\color green
+Downward right: 35
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ from the 
+\begin_inset Formula $x$
+\end_inset
+
+ axis and 
+\begin_inset Formula $-60$
+\end_inset
+
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ from the 
+\begin_inset Formula $z$
+\end_inset
+
+ axis
+\end_layout
+
+\begin_layout Enumerate
+
+\color blue
+Downward left: 35
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ from the 
+\begin_inset Formula $x$
+\end_inset
+
+ axis and 
+\begin_inset Formula $+60$
+\end_inset
+
+
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ from the 
+\begin_inset Formula $z$
+\end_inset
+
+ axis
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+ANOTHER VIEW
+\end_layout
+
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<1,2>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Graphics
+	filename LAMSbeams2.png
+	lyxscale 50
+	width 8cm
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Only
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<2>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vskip-6cm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_layout Columns
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+7 cm
+\end_layout
+
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Column
+4 cm
+\end_layout
+
+\begin_layout AlertBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Step 1: Careful Survey Conducted:
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+beam angles relative to housing (which contains a CMIGIT IRS)
+\end_layout
+
+\begin_layout Itemize
+location of housing relative to IRS
+\end_layout
+
+\end_deeper
+\end_deeper
+\end_deeper
+\begin_layout Subsection
+Obtaining Rectilinear Components
+\end_layout
+
+\begin_layout BeginFrame
+TRANSFORM FROM {u, v, w} TO BEAMS
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+->{Direction Cosines}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+Definition: cosine of angle between two unit vectors
+\end_layout
+
+\begin_layout Description
+Each
+\begin_inset space ~
+\end_inset
+
+beam: contributions from {u,v,w}
+\end_layout
+
+\begin_layout Description
+Write
+\begin_inset space ~
+\end_inset
+
+as
+\begin_inset space ~
+\end_inset
+
+matrix: 3x3
+\end_layout
+
+\end_deeper
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+->{The Direction Cosine Matrix, 
+\backslash
+bf{S}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\begin{pmatrix}a_{1}\\
+a_{2}\\
+a_{3}
+\end{pmatrix}=\mathbf{S\,}\begin{pmatrix}u\\
+v\\
+w
+\end{pmatrix}\label{eq:1}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\mathbf{S}=\left(\begin{array}{ccc}
+\cos\Theta & 0 & -\sin\Theta\\
+\cos\Theta & \sin\Theta\sin\Phi & -\sin\Theta\cos\Phi\\
+\cos\Theta & -\sin\Theta\sin\Phi & -\sin\Theta\cos\Phi
+\end{array}\right)\label{eq:2}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+SOLVING FOR {u, v, w}
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+->{Invert the matrix:}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\begin{pmatrix}u\\
+v\\
+w
+\end{pmatrix}=\mathbf{S}^{-1}\begin{pmatrix}a_{1}\\
+a_{2}\\
+a_{3}
+\end{pmatrix}\label{eq:3}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\mathbf{S^{-1}}=\left(\begin{array}{ccc}
+0.4069249 & 0.40692490 & 0.4069249\\
+0 & 1.0065795 & -1.0065795\\
+-1.1622979 & 0.5811489 & 0.5811489
+\end{array}\right)\label{eq:4}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+->{Step-2 Result:}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Quote
+Relative wind components in a rectilinear coordinate system relative to
+ the LAMS housing.
+\end_layout
+
+\end_deeper
+\begin_layout Subsection
+Correcting for Angular Motion
+\end_layout
+
+\begin_layout BeginFrame
+STEP 3: WHY ANGULAR MOTION MATTERS
+\end_layout
+
+\begin_layout Block
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+->{Effect of heading change in still air:}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Quotation
+The rotation will cause a false indication of wind toward LAMS.
+\end_layout
+
+\end_deeper
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+->{
+\end_layout
+
+\end_inset
+
+Correction provided by Bulletin 23
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula 
+\[
+\vec{\Omega}_{p}\times\vec{R}
+\]
+
+\end_inset
+
+
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+(False contribution to be 
+\emph on
+subtracted
+\emph default
+ from measured wind)
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Quote
+\begin_inset Formula $\vec{\Omega}_{p}$
+\end_inset
+
+ has three components corresponding to change in roll, pitch, and heading,
+ all such that a positive change gives a positive component in 
+\begin_inset Formula $\vec{\Omega}_{p}$
+\end_inset
+
+.
+\end_layout
+
+\end_deeper
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<+->{Result through step 3:}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+
+\lang english
+\begin_inset Formula 
+\begin{equation}
+\mathbf{v}=\mathbf{S}^{-1}\mathbf{a\,-\,}\vec{\Omega}\times\vec{R}\,\,\,.\label{eq:vFromRotation}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Subsection
+Transforming to the IRS coordinate system
+\end_layout
+
+\begin_layout BeginFrame
+FINAL TRANSFORMATION TO IRS COORDINATES
+\end_layout
+
+\begin_layout Quote
+The orientation of the LAMS is measured and so can be compared to that of
+ the aircraft reference frame.
+ The three-component correction needed is given by this product of rotation
+ matrices from Bulletin 23:
+\end_layout
+
+\begin_layout Standard
+
+\size footnotesize
+\color blue
+\begin_inset Formula 
+\[
+\left(\begin{array}{ccc}
+\cos\delta\psi & -\sin\delta\psi & 0\\
+\sin\delta\psi & \cos\delta\psi & 0\\
+0 & 0 & 1
+\end{array}\right)\left(\begin{array}{ccc}
+\cos\delta\theta & 0 & \sin\delta\theta\\
+0 & 1 & 0\\
+-\sin\delta\theta & 0 & \cos\delta\theta
+\end{array}\right)\left(\begin{array}{ccc}
+1 & 0 & 0\\
+0 & \cos\delta\phi & -\sin\delta\phi\\
+0 & \sin\delta\phi & \cos\delta\phi
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where {
+\begin_inset Formula $\delta\phi,\,\delta\theta,\,\delta\psi$
+\end_inset
+
+} are the respective differences in roll, pitch, and heading.
+ Angle differences of 1
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+ can changed 
+\begin_inset Formula $v$
+\end_inset
+
+ and 
+\begin_inset Formula $w$
+\end_inset
+
+ by 1.5
+\begin_inset space ~
+\end_inset
+
+m/s, so are significant.
+\end_layout
+
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<2>{Final result: If the above matrix is 
+\backslash
+bf{T}:}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+
+\lang english
+\begin_inset Formula 
+\begin{equation}
+\mathbf{v}=\mathbf{T\:}(\mathbf{S}^{-1}\mathbf{a\,-\,}\vec{\Omega}\times\vec{R})\,\,\,.
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+FURTHER DOCUMENTATION
+\end_layout
+
+\begin_layout SummaryBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{RAF Science Wiki:}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+This presentation
+\end_layout
+
+\begin_layout Itemize
+A memo with more details
+\end_layout
+
+\begin_layout Itemize
+A python routine used to test these matrix transformations
+\end_layout
+
+\end_deeper
+\begin_layout EndFrame
+
+\end_layout
+
+\end_body
+\end_document

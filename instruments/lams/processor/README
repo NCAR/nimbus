@@ -1,0 +1,5 @@
+There are two ways to run the LAMS processor:
+  1. ipython LAMSprocessor.py
+  2. ipython notebook
+--------> then select the LAMSprocessing notebook to open it,
+          and under 'Cell' select 'Run all'
