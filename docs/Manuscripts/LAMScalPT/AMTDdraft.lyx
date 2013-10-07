@@ -1,0 +1,8947 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass copernicus
+\options amtd,latin9
+\use_default_options true
+\maintain_unincluded_children false
+\language british
+\language_package default
+\inputencoding default
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize default
+\use_geometry false
+\use_amsmath 0
+\use_esint 0
+\use_mhchem 0
+\use_mathdots 0
+\cite_engine natbib_authoryear
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes true
+\output_changes true
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\author 1934758928 "Al Cooper" cooperw@ucar.edu
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Note:
+\series default
+ The journal where you want to sumit is specified in the document class
+ options of this file.
+ The allowed jounal abbreviations are listed in the file 
+\family sans
+Copernicus_Latex_Manual.pd
+\family default
+f that is part of the copernicus LaTeX-package.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Title
+Calibrating 
+\change_inserted 1934758928 1378589124
+airborne 
+\change_unchanged
+measurements 
+\change_deleted 1934758928 1378589138
+from a research aircraft 
+\change_inserted 1934758928 1378589167
+of airspeed, pressure and temperature 
+\change_unchanged
+using a Doppler laser air-motion sensor
+\end_layout
+
+\begin_layout Author
+W.
+ A.
+ Cooper
+\end_layout
+
+\begin_layout Author
+S.
+ Spuler
+\end_layout
+
+\begin_layout Author
+M.
+ Spowart
+\end_layout
+
+\begin_layout Author
+D.
+ H.
+ Lenschow
+\end_layout
+
+\begin_layout Author
+R.
+ B.
+ Friesen
+\end_layout
+
+\begin_layout Affiliation
+National Center for Atmospheric Research, Boulder CO, U.
+ S.
+ A.
+\end_layout
+
+\begin_layout Running title
+Calibrations with a laser air-motion sensor
+\end_layout
+
+\begin_layout Running author
+W.
+ A.
+ Cooper et al.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+list here the authors when there are only two authors
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Correspondence
+W.
+ A.
+ Cooper
+\begin_inset Newline newline
+\end_inset
+
+(cooperw@ucar.edu)
+\end_layout
+
+\begin_layout Abstract
+A new laser air-motion sensor measures the true airspeed with an uncertainty
+ of less than 0.1
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+ (standard error) and so reduces uncertainty in the measured component of
+ the 
+\change_inserted 1934758928 1378589237
+relative 
+\change_unchanged
+wind along the 
+\change_inserted 1934758928 1378589243
+longitudinal 
+\change_unchanged
+axis of the aircraft to about the same level.
+ The calculated 
+\change_deleted 1934758928 1378589331
+excess 
+\change_unchanged
+pressure 
+\change_deleted 1934758928 1378589370
+produced by that airspeed 
+\change_inserted 1934758928 1378589423
+expected from that airspeed 
+\change_unchanged
+at the inlet of a pitot tube then provides a basis for calibrating the measureme
+nts of dynamic and static pressure, reducing uncertainty in those measurements
+ to less than 0.3
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa and the precision applicable to steady flight conditions to about 0.1
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa.
+ These improved measurements of pressure, combined with high-resolution
+ measurements of geometric altitude from the Global Positioning System,
+ then indicate (via integrations of the hydrostatic equation during climbs
+ and descents) that the offset and uncertainty in temperature measurement
+ for one research aircraft is +0.3
+\begin_inset Formula $\pm0.3\unit{\degree C}$
+\end_inset
+
+.
+ 
+\change_inserted 1934758928 1378589647
+In airspeed, pressure and temperature these are significant reductions in
+ previous uncertainties obtained by standard calibration techniques.
+ 
+\change_unchanged
+Finally, it is shown that the new sensor, combined with parametrized fits
+ to correction factors for the measured dynamic and ambient pressure, provides
+ a measurement of temperature that is independent of any other temperature
+ sensor.
+\end_layout
+
+\begin_layout Introduction
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Keep entries with green labels empty!
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Many of the core measurements made from research aircraft are interconnected.
+ To measure temperature, corrections must be made for dynamic heating caused
+ by the motion of the aircraft; to measure airspeed, measurements of dynamic
+ pressure, ambient pressure and temperature are needed; corrections are
+ often made to the measured pressure that depend on the airspeed and/or
+ orientation of the aircraft; accurate measurement of airspeed depends on
+ knowing the humidity of the air and so the appropriate gas constants and
+ specific heats; measurements of humidity by dew-point sensors must be corrected
+ for differences between ambient and sensor pressures; etc.
+ There are seldom standards or reliable references for any of these, so
+ uncertainty analyses involve complicated and multi-dimensional examinations
+ of these interactions and of how flight conditions might influence measurements
+ from otherwise carefully calibrated sensors.
+\end_layout
+
+\begin_layout Standard
+If one could obtain a reliable reference for any of these interlinked measuremen
+ts, it could be of great value in reducing measurement uncertainty.
+ A new instrument, a Laser Air Motion Sensor (LAMS), now provides such a
+ reference on the National Science Foundation / National Center for Atmospheric
+ Research (NSF/NCAR) Gulfstream 
+\change_inserted 1934758928 1378543852
+G
+\change_unchanged
+V and C-130 research aircraft (hereafter referred to as the GV and C-130).
+ This paper explores how measurements from that instrument can reduce measuremen
+t uncertainties in some key measurements made on those aircraft.
+
+\change_inserted 1934758928 1378590155
+ The new sensor is compact and designed to be mounted in standard instrument
+ canisters, so the measurements and approach taken here can be extended
+ readily to most other research aircraft.
+ 
+\change_unchanged
+
+\end_layout
+
+\begin_layout Standard
+Calibration techniques that have been used
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+, in particular of ambient (or 
+\begin_inset Quotes eld
+\end_inset
+
+static
+\begin_inset Quotes erd
+\end_inset
+
+) and dynamic pressure (the excess pressure above ambient pressure present
+ at a forward-facing pitot tube where the air is brought to the same speed
+ as the aircraft),
+\end_layout
+
+\end_inset
+
+ to reduce uncertainties in measurements of pressure include the following:
+\end_layout
+
+\begin_layout Enumerate
+
+\emph on
+The trailing cone.
+
+\emph default
+ This is usually considered the best standard.
+ A tube with inlets around its circumference is trailed so as to be aligned
+ with its long axis along the airflow.
+ A cone is attached to the end of the line to keep the end of the line aligned
+ along the airflow, and the sensor is trailed behind the aircraft at a distance
+ and vertical displacement sufficient to be outside airflow effects of the
+ aircraft, The inlets are connected by tubing to sensors inside the aircraft,
+ and the measurement so obtained is compared to that from the sensors being
+ calibrated.
+ For an example and early description, see 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "IkhtiariMarth1964"
+
+\end_inset
+
+\SpecialChar \@.
+ The system can be used while the aircraft airspeed, altitude and attitude
+ angles are changed through the normal flight envelope.
+ Disadvantages are that the system usually requires a special and difficult
+ installation, which can be particularly problematic for a pressurized aircraft
+ flying at low pressure, and the trailing cone is not suitable for routine
+ measurement.
+\end_layout
+
+\begin_layout Enumerate
+
+\emph on
+Inter-comparisons.
+
+\emph default
+ Research aircraft are often flown in formation to collect measurements
+ that identify differences.
+ There are many published examples, but most identify differences outside
+ the claimed error limits and seldom are able to determine which measurement
+ is at fault.
+\end_layout
+
+\begin_layout Enumerate
+
+\emph on
+Flight past towers.
+
+\emph default
+ Flight past high towers or tethered balloon sensors can provide limited
+ checks on the accuracy of measured pressures, but these are only possible
+ at low altitude and low airspeed so are not suited to calibration of an
+ aircraft like the GV.
+\end_layout
+
+\begin_layout Enumerate
+
+\emph on
+Calibration by the Global Positioning System (GPS) where the wind is known
+\emph default
+\bar under
+.
+
+\bar default
+ If the wind is known accurately by independent measurement, the drift measured
+ by GPS can be compared to the drift expected in the wind measured by the
+ aircraft, and the associated dynamic pressure can be corrected to minimize
+ the difference from the independent measurement of wind.
+ Examples are discussed by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "FosterCunningham2010"
+
+\end_inset
+
+ and by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "MartosEtAl2011"
+
+\end_inset
+
+, where dynamic pressure was calibrated by comparing wind measured on the
+ aircraft to that measured from a tethered balloon.
+ GPS measurements have also been used without an independent reference,
+ with flight manoeuvres and Kalman filtering, to calibrate dynamic pressure
+ (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "ISI:000286931800009"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Enumerate
+
+\emph on
+Use of measurements at ports around a sphere.
+
+\emph default
+ 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "RodiLeon2012"
+
+\end_inset
+
+ showed that multiple measurements of pressure at ports on the surface of
+ a sphere can be used to determine the error in measured ambient pressure
+ and, when combined with GPS measurements, can lead to corrections for errors
+ introduced by accelerated motion of the aircraft.
+ 
+\end_layout
+
+\begin_layout Standard
+The analysis that follows demonstrates that the LAMS provides another means
+ of calibrating pressure, one that 
+\change_inserted 1934758928 1378590553
+matches the trailing cone for accuracy while providing calibrations that
+ 
+\change_unchanged
+can be available 
+\change_inserted 1934758928 1378590586
+for 
+\change_unchanged
+routine
+\change_deleted 1934758928 1378590590
+ly
+\change_inserted 1934758928 1378590593
+ use
+\change_unchanged
+.
+ The operating principles of the LAMS are discussed in the next section.
+ The absolute measurement of airspeed that the LAMS provides makes it possible
+ to deduce the expected dynamic pressure (or the pressure increase above
+ ambient or 
+\begin_inset Quotes eld
+\end_inset
+
+static
+\begin_inset Quotes erd
+\end_inset
+
+ pressure that occurs when air is brought to a stagnation point in flight)
+ with improved accuracy.
+ It will be argued that this measured correction to the dynamic pressure
+ can then be used to improve measurements of the ambient pressure.
+ Once pressure is known with small uncertainty, temperature differences
+ can be determined during altitude changes by integration of the hydrostatic
+ pressure between flight levels because the geometric altitudes of the bounding
+ flight levels are also known with improved accuracy from recent improvements
+ in measurements from the global positioning system.
+ Finally, it is shown that the LAMS can provide a measurement of temperature
+ that is independent of normal temperature sensors.
+ This measurement should be valid during cloud penetrations as well as in
+ clear air.
+ The conclusions of the paper then will summarize how this analysis has
+ reduced measurement uncertainty for key state-parameter measurements from
+ these research aircraft.
+\end_layout
+
+\begin_layout Section
+The NCAR laser air-motion sensor
+\end_layout
+
+\begin_layout Standard
+The laser air-motion sensor (LAMS) used in this study is that described
+ by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "SpulerEtAl2011"
+
+\end_inset
+
+.
+ It is a single-beam system in which a laser is focused ahead of the aircraft
+ in undisturbed air so that, from the Doppler shift in laser light returned
+ from 
+\change_inserted 1934758928 1378590743
+ambient 
+\change_unchanged
+aerosols, the airspeed can be measured outside the disturbed airflow caused
+ by the aircraft.
+ Two different configurations were used in this study.
+ In both cases, the instrument was mounted on the wing and was aligned about
+ 3
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+unit{
+\backslash
+degree}
+\end_layout
+
+\end_inset
+
+ downward relative to the aircraft centre line to compensate for the normal
+ angle-of-attack.
+ For the GV, the focus was 30
+\begin_inset space \thinspace{}
+\end_inset
+
+m ahead of the instrument, or 16
+\begin_inset space \thinspace{}
+\end_inset
+
+m ahead of the nose of the aircraft.
+ For the C-130, the focal distance was 15
+\begin_inset space \thinspace{}
+\end_inset
+
+m ahead of the instrument.
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+The wing pod design was changed between the August 2010 flights on the GV
+ and the Nov 2011 flights on the C130.
+ The flights on the GV used 2" window and had a 30 m range to focus (16
+ meters ahead of the nose.) The C-130 flights used the new wing pod design
+ which uses a 1" window with a distance to focus of 15 meters (not sure
+ how far ahead of the nose this is on the C130).
+ The sample volume is the same for both.
+\end_layout
+
+\end_inset
+
+In both cases, the returned signal was dominantly from a volume extending
+ about 2.5
+\begin_inset space \thinspace{}
+\end_inset
+
+m along the direction of flight, as given by the full-width-half-maximum
+ distance of the telescope gain pattern.
+ A small inertial system mounted in the wing pod housing the instrument
+ measured deviations in orientation caused by wing flex or other vibration
+ of the pod relative to the aircraft centre axis, where the aircraft orientation
+ was measured by a separate inertial reference system.
+\end_layout
+
+\begin_layout Standard
+Earlier versions of laser wind sensors operating at 10.6
+\begin_inset space \thinspace{}
+\end_inset
+
+μm wavelength were designed for use on NCAR aircraft in the 1980s and 1990s,
+ as discussed by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "KeelerEtAl1987"
+
+\end_inset
+
+, 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "KristensenLenschow1987"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "MayorEtAl1997"
+
+\end_inset
+
+, but developments in fibre optics now have made a much improved system
+ practical.
+ For the present system, the wavelength used is about 1.56
+\begin_inset space \thinspace{}
+\end_inset
+
+μm; 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "SpulerEtAl2011"
+
+\end_inset
+
+ estimated that a particle concentration of about 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+2
+\backslash
+,$
+\backslash
+unit{cm^{-3}}$
+\end_layout
+
+\end_inset
+
+ with diameter in the range from 0.1--3
+\begin_inset space \thinspace{}
+\end_inset
+
+μm are needed to provide a detectable signal, but the sensitivity has been
+ improved since that early test.
+ Successful detection of the backscattered signal has been possible at altitudes
+ extending to above 13
+\begin_inset space \thinspace{}
+\end_inset
+
+km, although with present sensitivity there are still times when the signal
+ is lost during flight.
+ 
+\end_layout
+
+\begin_layout Standard
+The precision estimated in 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "SpulerEtAl2011"
+
+\end_inset
+
+ is <0.05
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+ for 1-s samples (as will be used in the present analyses), although the
+ system can provide data at much higher rates because individual samples
+ are recorded at 100 Hz after averaging of individual spectra sampled at
+ rates of about 200
+\begin_inset space \thinspace{}
+\end_inset
+
+kHz.
+ The light source is a distributed feedback fibre laser module (NKT Basik
+ E15) with wavelength 1559.996
+\begin_inset space \thinspace{}
+\end_inset
+
+nm in vacuum and 0.1
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+unit{pm
+\backslash
+,(
+\backslash
+degree C)^{-1}}$
+\end_layout
+
+\end_inset
+
+ stability.
+ The laser is maintained within 1
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+unit{
+\backslash
+degree C}$
+\end_layout
+
+\end_inset
+
+ of a constant temperature, so wavelength drift is below 0.001
+\begin_inset space \thinspace{}
+\end_inset
+
+nm.
+ The conversion from measured Doppler shift to airspeed involves only the
+ wavelength of the laser and the speed of light, 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+There may be some concern about the stability of the laser wavelength since
+ we claim it is known with high accuracy.
+ Perhaps more information could be added.
+ It is a DFB fibre laser module (NKT Basik E15) with a wavelength 1559.996
+ nm (vac) with 0.1 pm/C wavelength stability.
+ The unit is temperature stabilized with a TEC to < 1 deg C so drifts are
+ much less than 0.001 nm.
+\end_layout
+
+\end_inset
+
+so the conversion from Doppler frequency shift to airspeed introduces negligible
+ error.
+ 
+\end_layout
+
+\begin_layout Standard
+The peak Doppler frequency can be measured to an accuracy that, converted
+ to airspeed, is better than 0.1
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+.
+ The precision estimate from 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "SpulerEtAl2011"
+
+\end_inset
+
+ also supports an accuracy estimate in this range if there is no bias in
+ the selection of the peak in the shifted frequency spectrum, as is supported
+ by careful examination of the recorded spectra and the operation of the
+ algorithm that identifies the peak.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+[xxx expand here, check on this, be sure this is OK]
+\end_layout
+
+\end_inset
+
+ When the signal-to-noise ratio indicates that there is inadequate signal
+ from which to obtain a Doppler shift, the measurements are flagged as missing
+ and are not used in the analysis to follow.
+\end_layout
+
+\begin_layout Section
+Calibrating the pressure-sensing system
+\end_layout
+
+\begin_layout Subsection
+Dynamic pressure
+\end_layout
+
+\begin_layout Standard
+The most straightforward application of measurements from the LAMS is to
+ predict the dynamic pressure 
+\begin_inset Formula $q$
+\end_inset
+
+.
+ If 
+\begin_inset Formula $p$
+\end_inset
+
+ is the ambient pressure, 
+\begin_inset Formula $c_{v}$
+\end_inset
+
+ and 
+\begin_inset Formula $c_{p}$
+\end_inset
+
+ the respective specific heats of air at constant volume or constant pressure,
+ 
+\begin_inset Formula $T$
+\end_inset
+
+ the absolute temperature, and 
+\begin_inset Formula $R_{a}$
+\end_inset
+
+ the gas constant for air, the Mach number 
+\begin_inset Formula $M$
+\end_inset
+
+ (ratio of flight speed 
+\begin_inset Formula $v$
+\end_inset
+
+ to the speed of sound 
+\begin_inset Formula $\sqrt{\gamma R_{a}T}$
+\end_inset
+
+, with 
+\begin_inset Formula $\gamma=c_{p}/c_{v}$
+\end_inset
+
+) is given by the following equation (cf., e.g., 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "NCAR_OpenSky_TECH-NOTE-000-000-000-064"
+
+\end_inset
+
+)
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+, which arises from conservation of energy and depends only on the gas behaving
+ approximately as a perfect gas [give reference]
+\end_layout
+
+\end_inset
+
+:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+M=\frac{v}{\sqrt{\gamma R_{a}T}}=\left\{ \left(\frac{2c_{v}}{R_{a}}\right)\left[\left(\frac{p+q}{p}\right)^{R_{a}/c_{p}}-1\right]\right\} ^{1/2}\,\,.\label{eq:MachEq-1}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Solving for the dynamic pressure gives
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+q=p\left\{ \left(\frac{v^{2}}{2c_{p}T}+1\right)^{c_{p}/R_{a}}-1\right\} \label{eq:qFromLAMS-1}
+\end{equation}
+
+\end_inset
+
+which shows that, with knowledge of 
+\begin_inset Formula $p$
+\end_inset
+
+ and 
+\begin_inset Formula $T$
+\end_inset
+
+, LAMS (measuring 
+\begin_inset Formula $v$
+\end_inset
+
+) can provide an independent prediction of the dynamic pressure 
+\begin_inset Formula $q$
+\end_inset
+
+.
+ Furthermore, small errors in 
+\begin_inset Formula $p$
+\end_inset
+
+ and 
+\begin_inset Formula $T$
+\end_inset
+
+ will have a small effect on the deduced dynamic pressure because expected
+ errors are a small fraction of the total ambient pressure or the absolute
+ temperature.
+\end_layout
+
+\begin_layout Standard
+Corrections are usually applied to measurements of dynamic pressure on research
+ aircraft, including the NSF/NCAR research aircraft, so comparing 
+\begin_inset Formula $q$
+\end_inset
+
+ as provided by (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:qFromLAMS-1"
+
+\end_inset
+
+) to the direct measurement of dynamic pressure is an exaggeration of the
+ improvement that LAMS provides.
+ Nevertheless, Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:QvsQLAMS"
+
+\end_inset
+
+ shows that the difference between the predicted value from LAMS using (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:qFromLAMS-1"
+
+\end_inset
+
+) and the direct measurement (from one of the pitot tubes on the C-130 reference
+d to the static pressure source) is substantial and exhibits both a large
+ bias and significant scatter.
+ Applying corrections to the direct measurement is therefore important if
+ the air motion relative to the aircraft is to be determined accurately.
+\end_layout
+
+\begin_layout Subsection
+Ambient or static pressure
+\end_layout
+
+\begin_layout Standard
+The normal measurement of total pressure 
+\begin_inset Formula $p_{t}=p+q$
+\end_inset
+
+ is obtained on the GV
+\change_inserted 1934758928 1378591006
+ and C-130
+\change_unchanged
+ and most
+\change_inserted 1934758928 1378591010
+ other
+\change_unchanged
+ research aircraft by measuring the pressure delivered by a pitot tube aligned
+ approximately along the airflow.
+ 
+\change_deleted 1934758928 1378591046
+On the GV,
+\change_unchanged
+ 
+\change_deleted 1934758928 1378591050
+t
+\change_inserted 1934758928 1378591051
+T
+\change_unchanged
+his measurement is made by adding two measurements, 
+\change_deleted 1934758928 1378591082
+that
+\change_inserted 1934758928 1378591088
+one of ambient pressure
+\change_deleted 1934758928 1378591092
+ of
+\change_unchanged
+ 
+\begin_inset Formula $p$
+\end_inset
+
+ (measured by a Parascientific Model 1000 absolute pressure transducer with
+ 
+\change_deleted 1934758928 1378591236
+accuracy
+\change_inserted 1934758928 1378591239
+measurement uncertainty
+\change_unchanged
+ 0.1
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa, connected 
+\change_inserted 1934758928 1378591313
+in parallel 
+\change_unchanged
+to static ports on 
+\change_inserted 1934758928 1378591117
+each side of 
+\change_unchanged
+the fuselage of the aircraft) and 
+\change_inserted 1934758928 1378591127
+a second
+\change_deleted 1934758928 1378591131
+that
+\change_unchanged
+ of 
+\change_inserted 1934758928 1378591143
+dynamic pressure
+\change_unchanged
+
+\begin_inset Formula $q$
+\end_inset
+
+ (measured by a Mensor Model 6100 differential sensor with 
+\change_deleted 1934758928 1378591250
+accuracy
+\change_inserted 1934758928 1378591254
+measurement uncertainty
+\change_unchanged
+ 0.02
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa, connected between the static ports and the pressure delivered by a
+ pitot tube).
+ 
+\change_inserted 1934758928 1378591431
+Two independent systems, with separate static ports, are available on the
+ C-130, but only one on the GV.
+ On both, there are also measurements from another independent system that
+ supplies information to the flight crew but is also recorded for research
+ use.
+\change_unchanged
+
+\end_layout
+
+\begin_layout Standard
+Pitot tubes are generally insensitive to small deviations from normal flow
+ angles, typically delivering accurate total pressure within about 0.1% for
+ flow angles up to several degrees from the centreline of the pitot tube
+ (e.g., 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "NACATN2331"
+
+\end_inset
+
+, 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "balachandran2006fundamentals"
+
+\end_inset
+
+, 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "springerhdbk2007"
+
+\end_inset
+
+;
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+http://www.unitedsensorcorp.com/pitot-properties.html
+\end_layout
+
+\end_inset
+
+ see also Appendix B).
+ However, static ports can deliver pressures that depart much more from
+ the true ambient pressure at the flight level when flow around the fuselage
+ varies, and they can also produce biases even at normal flight angles,
+ so the largest error is expected in 
+\begin_inset Formula $p$
+\end_inset
+
+ and consequently in 
+\begin_inset Formula $q$
+\end_inset
+
+ while their sum 
+\begin_inset Formula $p_{t}$
+\end_inset
+
+ has a substantially smaller error.
+ This was checked on the GV and on the C-130 by comparing redundant sources
+ for these measurements.
+ For example, on the NSF/NCAR C-130, there are two independent sets of static
+ ports and pitot tubes, and on the GV there are also redundant sensors as
+ part of the avionics package for the aircraft.
+ Comparisons examining these independent pairs showed that the results for
+ 
+\begin_inset Formula $p_{t}$
+\end_inset
+
+ were remarkably consistent among all pairs (agreeing to within 0.1
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa) but there was significant variability in the redundant measurements
+ of both 
+\begin_inset Formula $p$
+\end_inset
+
+ and 
+\begin_inset Formula $q$
+\end_inset
+
+, often at the few-hPa level.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+The quantities plotted are (PSFDR+QCFR) vs (PSFD+QCF), both before any correctio
+ns beyond calibration coefficients are applied to the raw measurements.
+\end_layout
+
+\end_inset
+
+For example, Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Pt-comparison"
+
+\end_inset
+
+ compares the redundant measurements of total pressure on the C-130, each
+ based on a different pitot source and static source.
+ This and other similar comparisons suggest that a good approximation is
+ to consider 
+\begin_inset Formula $p_{t}$
+\end_inset
+
+ accurately measured and to assume that 
+\begin_inset Formula $\Delta q$
+\end_inset
+
+, the error in the measurement 
+\begin_inset Formula $q_{m}$
+\end_inset
+
+ of dynamic pressure, is equal to the negative of 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+, the error in the measurement 
+\begin_inset Formula $p_{m}$
+\end_inset
+
+ of ambient pressure, because both arise from the 
+\begin_inset Quotes eld
+\end_inset
+
+static defect
+\begin_inset Quotes erd
+\end_inset
+
+ or error in the pressure present at the static source:
+\begin_inset Formula 
+\begin{equation}
+\Delta q=q_{m}-q=-\Delta p=-(p_{m}-p)\,\,\,.\label{eq:PCOR1-1}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As a result, the correction to dynamic pressure obtained from LAMS also
+ provides a correction to ambient pressure, and these corrections can be
+ applied simultaneously in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR1-1"
+
+\end_inset
+
+) using (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:qFromLAMS-1"
+
+\end_inset
+
+):
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\Delta q=q_{m}-p\chi(v,T)
+\]
+
+\end_inset
+
+where, to simplify the notation, 
+\begin_inset Formula $\chi(v,T)$
+\end_inset
+
+ is 
+\begin_inset Formula 
+\begin{equation}
+\chi(v,T)=\left(\frac{v^{2}}{2c_{p}T}+1\right)^{c_{p}/R_{a}}-1\,\,\,.\label{eq:ChiEquation-1}
+\end{equation}
+
+\end_inset
+
+Then, because 
+\begin_inset Formula $p=p_{m}-\Delta p,$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+p_{c}=-\Delta p=\frac{q_{m}-p_{m}\chi}{1+\chi}\label{eq:PCOR2-1}
+\end{equation}
+
+\end_inset
+
+which gives the correction to ambient pressure 
+\begin_inset Formula $p_{c}$
+\end_inset
+
+ in terms of the measurements of ambient and dynamic pressure, the airspeed
+ measured by the LAMS and the absolute temperature.
+ The negative sign arises because the correction needed is the negative
+ of the measurement error.
+\end_layout
+
+\begin_layout Standard
+The temperature is needed to calculate 
+\begin_inset Formula $\chi$
+\end_inset
+
+, but it can be assumed tentatively that the accuracy of the temperature
+ measurement is adequate for this analysis.
+ Once pressure corrections are found, the accuracy of this assumption can
+ be checked and the process can be iterated as necessary.
+ Equations (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ChiEquation-1"
+
+\end_inset
+
+) and (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR2-1"
+
+\end_inset
+
+) can then can be used with measurements from the LAMS to estimate both
+ the correction to be applied to the ambient pressure and, with reversed
+ sign, the correction to be applied to the dynamic pressure.
+ 
+\end_layout
+
+\begin_layout Subsection
+Some 
+\change_deleted 1934758928 1378545016
+necessary 
+\change_unchanged
+refinements
+\end_layout
+
+\begin_layout Standard
+The goal of these analyses is to determine characteristics like pressure
+ significantly more accurately than has been possible in the past, so this
+ objective requires attention to some minor error sources.
+ Specifically, it was necessary to consider: (i) the humidity of the air
+ and its effect on thermodynamic properties like the gas constant and specific
+ heats; (ii) possible effects of flow angles on the total pressure measured
+ by the pitot tube; and (iii) the effect of small departures of the pointing
+ angle of the LAMS beam from the direction of the relative wind.
+ 
+\end_layout
+
+\begin_layout Standard
+(i).
+ 
+\bar under
+Effects of humidity.
+
+\bar default
+ The first was determined in a straightforward way by considering the properties
+ determined from weighted averages of the properties of dry air and humid
+ air, in standard ways (described in Appendix A).
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+this may not be necessary, but the approach is not quite that of Friehe
+ et al.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+(ii.) Effect of flow not parallel to the pitot tube.
+
+\bar default
+ According to information provided by manufacturers, the typical sensitivity
+ of a pitot tube to flow direction is less than 1% at flow angles up to
+ 10
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+unit{
+\backslash
+degree}
+\end_layout
+
+\end_inset
+
+ and less than 0.2% for flow angles up to 5
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+unit{
+\backslash
+degree}
+\end_layout
+
+\end_inset
+
+.
+ The error is in the direction of measuring too low a total pressure as
+ the flow angle increases, and to some extent it is compensated by orienting
+ the pitot tubes along the average flow direction expected in normal flight.
+ To verify that the pitot-tube measurements are insensitive to the variations
+ in flow angles expected in normal flight, an analysis is presented in Appendix
+ B based on yaw manoeuvres flown with the LAMS\SpecialChar \@.
+ The analysis supports the
+ insensitivity of the total-pressure measurement to flow angles at angles
+ from 0--3
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+unit{
+\backslash
+degree}
+\end_layout
+
+\end_inset
+
+ from the centreline of the pitot tube, as is characteristic of most flight
+ conditions on the 
+\change_deleted 1934758928 1378591498
+RAF
+\change_inserted 1934758928 1378591503
+GV and C-130
+\change_deleted 1934758928 1378591511
+ aircraft
+\change_unchanged
+.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+can this be tested vs AOA using measurements? a) LAMS gives predicted value
+ along longitudinal axis; after correction, gives magnitude of relative
+ wind and so predicted value for q.
+ If LAMS is used directly for the correction (i.e., not the fit, which includes
+ an AOA dependence), a plot of mean correction factor vs AOA should characterize
+ this dependence.
+ Use manoeuvres for this to minimize effect of other factors like Mach No?
+ Alas, no, because manoeuvre probably affects static defect so there will
+ be an effect on predicted vs measured q arising from that, and that can't
+ be separated from an effect on AOA.
+ Still, if no mean dependence is found, that would argue for validity of
+ both (and lack of dependence on attach or sideslip in fits for PCORS argues
+ for this.
+ Worth a look, if regions are controlled for Mach No and q which are shown
+ significant dependences in the fits.
+ Use GV, where there is no dependence found on adifr and bdifr.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+(iii).
+ Effects of LAMS orientation.
+
+\bar default
+ Because there was an inertial reference system mounted on the same under-wing
+ pylon that carried the LAMS, it was possible to correct for small departures
+ in pointing angle relative to the aircraft reference line, the orientation
+ of which was also measured by a separate inertial reference system.
+ In addition, a correction is needed if the airflow angle is not along the
+ centreline of the pitot tube, as when the angle of attack differs from
+ that represented by the orientation of the pitot tube.
+ Although the pitot tube is relatively insensitive to flow angles and so
+ measures the total dynamic pressure, LAMS measures the relative wind in
+ a specific direction.
+ For LAMS, the effect of a flow angle 
+\begin_inset Formula $\theta$
+\end_inset
+
+ relative to the beam is that it measures 
+\begin_inset Formula $v_{l}=v\,\cos(\theta)$
+\end_inset
+
+.
+ The beam is oriented close to but slightly offset from the longitudinal
+ axis of the aircraft, at viewing angles 
+\begin_inset Formula $\theta_{1}$
+\end_inset
+
+ above and 
+\begin_inset Formula $\theta_{2}$
+\end_inset
+
+ to the starboard side of the longitudinal axis.
+ Then, with side-slip 
+\begin_inset Formula $\beta$
+\end_inset
+
+ positive for relative wind approaching from the starboard side of the aircraft,
+ to a sufficient approximation 
+\begin_inset Formula $\cos\theta=\cos(\theta_{1}+\alpha)\cos(\theta_{2}-\beta)$
+\end_inset
+
+ with 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ the angle of attack.
+ The resulting equations for the pressure correction are then (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ChiEquation-1"
+
+\end_inset
+
+) and (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR2-1"
+
+\end_inset
+
+) where, in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ChiEquation-1"
+
+\end_inset
+
+), 
+\begin_inset Formula $v$
+\end_inset
+
+ is replaced by 
+\begin_inset Formula $v_{l}/\cos\theta$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+correction1=cos(abs((Pitch-Cpitch)-Attack)*pi/180); %correct for attack
+ angle and wing flex correction2=cos(abs(Slip-h_off_angle)*pi/180); %correct
+ for horizontal offset LAMS_speed_corrected = LAMS_speed./correction1./correction2
+\end_layout
+
+\begin_layout Plain Layout
+order: rotate about z by heading, to north; rotate about x, pitch, to longitudin
+al axis level; rotate about y, roll, to wings level.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Determining-the-Corrections"
+
+\end_inset
+
+
+\change_deleted 1934758928 1378546359
+Determining the corrections and f
+\change_inserted 1934758928 1378546359
+F
+\change_unchanged
+its to the corrections
+\end_layout
+
+\begin_layout Standard
+When the LAMS is operating, the corrections to ambient and dynamic pressure
+ can be determined directly from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR1-1"
+
+\end_inset
+
+) and (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR2-1"
+
+\end_inset
+
+), so this provides results for both that have much stronger justification
+ than empirical corrections used previously.
+ The LAMS evaluation (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "SpulerEtAl2011"
+
+\end_inset
+
+) suggests that the uncertainty in 
+\begin_inset Formula $v$
+\end_inset
+
+ is about 0.1
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+, so this is directly the uncertainty in the component of the relative wind
+ along the axis of LAMS\SpecialChar \@.
+ The total derivative of (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:qFromLAMS-1"
+
+\end_inset
+
+) provides a basis for evaluating the uncertainty in the value of 
+\begin_inset Formula $q$
+\end_inset
+
+ estimated from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:qFromLAMS-1"
+
+\end_inset
+
+):
+\begin_inset Formula 
+\begin{equation}
+\frac{\delta q}{p}=\left(\frac{v^{2}}{2c_{p}T}+1\right)^{\frac{c_{p}}{R_{a}}-1}\frac{v^{2}}{R_{a}T}\left(\frac{\delta v}{v}-\frac{1}{2}\frac{\Delta T}{T}\right)\,\,\,.\label{eq:qDerivative}
+\end{equation}
+
+\end_inset
+
+This shows that the temperature uncertainty contributes significantly to
+ the uncertainty in 
+\begin_inset Formula $q$
+\end_inset
+
+, often more than the uncertainty in 
+\begin_inset Formula $v$
+\end_inset
+
+ from LAMS, because 
+\begin_inset Formula $\delta v/v\approx0.1/220\approx0.000$
+\end_inset
+
+45 while for temperature an uncertainty of 0.3
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+unit{
+\backslash
+degree C}
+\end_layout
+
+\end_inset
+
+ contributes typically a comparable fractional contribution of 0.5
+\begin_inset Formula $\times0.3/223$
+\end_inset
+
+
+\begin_inset Formula $\approx$
+\end_inset
+
+0.00067 (for the GV).
+ To reduce the uncertainty in temperature used in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:qFromLAMS-1"
+
+\end_inset
+
+), the airspeed from LAMS can be used directly in the correction for dynamic
+ heating, avoiding uncertainty in the conventional airspeed arising from
+ error in measured dynamic pressure.
+ That is, the temperature should be determined directly from
+\begin_inset Formula 
+\begin{equation}
+T=T_{r}-\frac{v_{l}^{2}}{2c_{p}}\label{eq:dynHeatingcorrUsingLAMS}
+\end{equation}
+
+\end_inset
+
+with 
+\begin_inset Formula $T_{r}$
+\end_inset
+
+ the measured or 
+\begin_inset Quotes eld
+\end_inset
+
+recovery
+\begin_inset Quotes erd
+\end_inset
+
+ temperature and 
+\begin_inset Formula $v_{l}^{2}$
+\end_inset
+
+ provided by LAMS rather than the conventional solution for the Mach number
+ determined from ambient and dynamic pressure.
+\end_layout
+
+\begin_layout Standard
+Interpreted as an uncertainty in dynamic pressure 
+\begin_inset Formula $q$
+\end_inset
+
+, the uncertainty in the prediction of 
+\begin_inset Formula $q$
+\end_inset
+
+ from LAMS determined from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:qDerivative"
+
+\end_inset
+
+) is typically about 0.13
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa (for flight at 125
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+ where the pressure is 760
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa and the temperature 0
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+unit{
+\backslash
+degree C}$
+\end_layout
+
+\end_inset
+
+).
+ Other indications are that the uncertainty in total pressure measurement
+ is also about 0.1
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa, so using the LAMS correction yields a correction to the ambient pressure
+ that has an uncertainty of around 0.15
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa.
+ Another case more representative of higher-level flight of the GV is flight
+ at a pressure level of 150
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa, with temperature -60
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+unit{
+\backslash
+degree C}
+\end_layout
+
+\end_inset
+
+, at an airspeed of about 235
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+; this leads to an uncertainty in total pressure measurement after correction
+ via LAMS of about 0.15
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa also.
+ When LAMS is present, it is thus possible to be confident that the measurements
+ of the longitudinal component of the relative wind and of the ambient pressure
+ have associated uncertainties of only about 0.1
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+ and 0.15
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa, respectively.
+\end_layout
+
+\begin_layout Standard
+There is still value i
+\change_deleted 1934758928 1378543852
+s
+\change_inserted 1934758928 1378543852
+n
+\change_unchanged
+ determining fits to the corrections provided by LAMS in terms of flight
+ characteristics like flight level, angle of attack, Mach number, etc., because
+ then corrections can be applied in cases where the LAMS is not present
+ or does not detect enough signal to provide a valid airspeed.
+ Such fits can be applied retrospectively to data collected before the LAMS
+ was available, and the fits can also be compared to other means of estimating
+ the corrections.
+ A further reason for developing fits is that the LAMS measurement, being
+ offset from the nose of the aircraft, can sense fluctuations from the condition
+s present at the nose, and averaging over such fluctuations as provided
+ by functional fits smooths the predicted corrections.
+ Fits to the measurements can therefore be more accurate than those corrected
+ directly using the LAMS airspeed 
+\begin_inset Formula $v_{l}$
+\end_inset
+
+
+\change_deleted 1934758928 1378543852
+,
+\change_inserted 1934758928 1378543852
+.
+
+\change_unchanged
+ For these reasons, fits to the measurements provided by (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR2-1"
+
+\end_inset
+
+) were explored until adequate representations of the predicted fits were
+ found.
+ Dependent variables in the fits included ambient pressure, dynamic pressure,
+ Mach number, angle of attack, side-slip, airspeed, and other characteristics
+ of flight.
+ The following analyses use flights during which the LAMS provided valid
+ measurements almost continuously and during which there were many altitude
+ changes and speed variations.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+
+\series bold
+GV
+\end_layout
+
+\begin_layout Standard
+For the GV, the best representation of 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+, obtained after trying many options, was 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+iftwocol{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{eqnarray}
+\frac{\Delta p}{p} & = & a_{0}+a_{1}M^{2}+a_{2}M^{3}\label{eq:PCORforGV}\\
+ &  & +a_{3}\frac{\Delta p_{\alpha}}{\Delta q_{r}}+a_{4}\left(\frac{\Delta p_{\alpha}}{\Delta q_{r}}\right)^{2}+a_{5}\left(\frac{\Delta p_{\alpha}}{\Delta q_{r}}\right)^{3}\nonumber 
+\end{eqnarray}
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{eqnarray}
+\frac{\Delta p}{p} & = & a_{0}+a_{1}M^{2}+a_{2}M^{3}+a_{3}\frac{\Delta p_{\alpha}}{\Delta q_{r}}+a_{4}\left(\frac{\Delta p_{\alpha}}{\Delta q_{r}}\right)^{2}+a_{5}\left(\frac{\Delta p_{\alpha}}{\Delta q_{r}}\right)^{3}\label{eq:PCORforGV-1}
+\end{eqnarray}
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+where 
+\begin_inset Formula $\Delta p_{\alpha}$
+\end_inset
+
+ is the pressure difference between vertically extreme pressure ports on
+ the radome (normally used to calculate the angle of attack; cf.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "BrownFrieheLenschow1983"
+
+\end_inset
+
+) and 
+\begin_inset Formula $\Delta q_{r}$
+\end_inset
+
+ is the pressure difference measured between the centre port on the radome
+ and the static source.
+ The terms involving 
+\begin_inset Formula $\Delta p_{\alpha}/\Delta q_{r}$
+\end_inset
+
+ introduce dependence on angle-of-attack.
+ The dimensionless coefficients {
+\begin_inset Formula $a_{0}$
+\end_inset
+
+, 
+\begin_inset Formula $a_{1}$
+\end_inset
+
+, 
+\begin_inset Formula $a_{2}$
+\end_inset
+
+, 
+\begin_inset Formula $a_{3}$
+\end_inset
+
+, 
+\begin_inset Formula $a_{4}$
+\end_inset
+
+, 
+\begin_inset Formula $a_{5}$
+\end_inset
+
+} for the best fit to the measurements from a GV flight with LAMS operating
+ were, respectively, {-0.0134, 0.0426, -0.0718, -0.363, -3.62, -9.7}
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+{-0.01343857 0.04260635 -0.07180959 -0.36311573 -3.62423418 -9.75309883}
+\end_layout
+
+\end_inset
+
+, where the quoted significant digits reflect the standard error in determining
+ these coefficients.
+ In the analysis of significance for the fit, all these coefficients were
+ significant as being needed to represent the variance, at significance
+ levels less than 0.001.
+ The correlation coefficient between the measured pressure corrections and
+ those predicted by (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+iftwocol{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV-1"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+) was 0.98 and the standard error was 0.00089 (i.e., 0.089% of the measured pressure,
+ or about 0.3
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa at a typical ambient pressure of 
+\begin_inset Formula $p=350$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa).
+ This standard error reflects individual measurements, for which some scatter
+ arises because the LAMS and pressure-sensing systems detect air parcels
+ slightly displaced from each other and so potentially having different
+ air motions.
+ Because the fit determining the coefficients in (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+iftwocol{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV-1"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+) is based on more than 10,000 measurements each characterizing one second,
+ but with correlations among the measurements likely extending over 10--100
+\begin_inset space \thinspace{}
+\end_inset
+
+s, one would expect the uncertainty in predictions from the fit to be at
+ least 10--30 times smaller than the standard error, or typically less than
+ 0.03
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa.
+ The high correlation coefficient indicates that the fit accounts for >96%
+ of the variance between the predicted and measured pressure corrections.
+ Because including additional functional dependence terms in (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+iftwocol{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV-1"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+) did not reduce the residual variance beyond this limit, the remaining
+ variance likely arises from real variance in airspeed in parcels at the
+ radome vs.
+\begin_inset space ~
+\end_inset
+
+those in the sample volume ahead of the LAMS.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+The range of ADIFR/QCR used here was (-0.2, -0.03) and the fit extrapolates
+ poorly beyond that range, apparently introducing significant errors at
+ larger values, so this correction should be limited to this range and not
+ applied to the highest cases of AOA.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The LAMS measurements indicate that
+\change_inserted 1934758928 1378544608
+, for this set of flight conditions, the ambient pressure should be corrected
+ by
+\change_unchanged
+ 
+\change_deleted 1934758928 1378544629
+the mean correction required to the ambient pressure, for this set of flight
+ conditions, is 
+\change_unchanged
+3.5
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa and the standard deviation in that correction is 1.45
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa.
+ If (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+iftwocol{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV-1"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+) accounts for 96% of that variance, the remaining variance is equivalent
+ to a residual standard deviation of <0.3
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa.
+ Because most of that variance arises from turbulent regions where the volumes
+ sampled by the LAMS and the pressure-sensing system can be moving differently,
+ this can be interpreted as an upper limit to the uncertainty in the pressure
+ correction.
+ Thus using the LAMS measurement of airspeed has removed a 3.5
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa error and reduced the residual uncertainty (from this source alone)
+ to <0.3
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+The RMS difference between the direct measurement of 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ from LAMS via (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR2-1"
+
+\end_inset
+
+)and the fit provided by (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV"
+
+\end_inset
+
+) was 0.00081 or, for a typical pressure of about 350 hPa, about 0.3 hPa.
+ Some part of this scatter likely results from variance in the LAMS measurement,
+ perhaps arising from sensing a different air volume vs that arriving at
+ the pitot tube, but more likely indicating some resolution problem in determini
+ng the LAMS prediction because the variance spectrum showed some indication
+ of resolution noise at 1 Hz.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+IDEAS data were reprocessed at higher resolution; it would be useful to
+ get this file reprocessed also.
+\end_layout
+
+\end_inset
+
+ This result did not improve significantly with the inclusion of angle of
+ attack, side-slip angle, or the absolute value of side-slip angle, and
+ it did not improve significatly with higher powers of QCF/PSF or of 
+\begin_inset Formula $M$
+\end_inset
+
+.
+ However, the cubic polynomial in Mach number was required; omitting any
+ of the terms in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV"
+
+\end_inset
+
+) led to significant reduction in the correlation coefficient and significant
+ increase in the standard error of the fit.
+ The correlation coefficient between the LAMS prediction and this formula
+ was 0.97, showing that this parameterization accounts for around 94% of
+ the variance in 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+.
+ This formula with these coefficients thus appears to be a good representation
+ of PCOR on a flight with many altitude changes and maneuvers.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A concern regarding (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+iftwocol{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV-1"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+) is that, during the flight from which this fit was determined, the variable
+ 
+\begin_inset Formula $\Delta p_{\alpha}/\Delta q_{r}$
+\end_inset
+
+ varied only from about -0.2 to -0.03, while the full flight envelope of the
+ GV spans a larger range.
+ There is danger that the cubic dependence on this term in (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+iftwocol{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV-1"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+) might extrapolate to erroneous corrections outside that range.
+ To guard against such errors, other fits were developed that, although
+ slightly less accurate, should extrapolate to new conditions better.
+ One example was the following:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\frac{\Delta p}{p}=a_{0}^{\prime}+a_{1}^{\prime}\frac{q_{m}}{p_{m}}+a_{2}^{\prime}M^{3}+a_{3}^{\prime}\frac{\Delta p_{\alpha}}{\Delta q_{r}}\label{eq:PCOR_GV_simple}
+\end{equation}
+
+\end_inset
+
+with values of the coefficients {
+\begin_inset Formula $a_{i,i=0-3}^{\prime}$
+\end_inset
+
+} respectively {-0.00071, 0.073, -0.0861, 0.0460}.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+-0.000708841 0.072565108 -0.086116903 0.046020203 
+\end_layout
+
+\end_inset
+
+This fit to the LAMS measurements accounted for 95% of the variance, vs
+ 96% for (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+iftwocol{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV-1"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+), so it may be preferable to use (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR_GV_simple"
+
+\end_inset
+
+) in cases where flight conditions might fall outside the normal range of
+ angle of attack used to determine (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+iftwocol{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV-1"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Subsubsection
+
+\series bold
+C-130
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+For IDEAS-4 flight 8, times 2000-2440, f
+\end_layout
+
+\end_inset
+
+Fits to the values of (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR2-1"
+
+\end_inset
+
+) obtained as above were also explored for a C-130 flight with LAMS operating.
+ For one pair of measurements of ambient pressure and dynamic pressure,
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+PSFD and QCF, 
+\end_layout
+
+\end_inset
+
+the best fit with all coefficients highly significant (significance level
+ <0.001) was the following:
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+iftwocol{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{eqnarray}
+\frac{\Delta p}{p} & = & b_{0}+b_{1}\frac{\Delta p_{\alpha}}{\Delta q_{r}}+b_{2}M\label{eq:PCORfitQCF-1}\\
+ &  & +b_{3}M^{2}+b_{4}M^{3}+b_{5}\frac{q}{p}+b_{6}\frac{\Delta p_{\beta}}{\Delta q_{r}}\nonumber 
+\end{eqnarray}
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\frac{\Delta p}{p}=b_{0}+b_{1}\frac{\Delta p_{\alpha}}{\Delta q_{r}}+b_{2}M+b_{3}M^{2}+b_{4}M^{3}+b_{5}\frac{q}{p}+b_{6}\frac{\Delta p_{\beta}}{\Delta q_{r}}\label{eq:PCORfigQCF1col}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+where 
+\begin_inset Formula $\Delta p_{\beta}$
+\end_inset
+
+ is analogous to 
+\begin_inset Formula $\Delta p_{\alpha}$
+\end_inset
+
+ but for the side-slip angle.
+ The 
+\change_deleted 1934758928 1378545180
+best-fit coefficients were {
+\begin_inset Formula $b_{i,i=0-6}$
+\end_inset
+
+}={-0.04165, 0.01485, 0.3730, -1.170, 0.9016, 0.2315, 0.002394}
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+reduce significant figures quoted here
+\end_layout
+
+\end_inset
+
+, and the 
+\change_inserted 1934758928 1378545180
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+
+\change_inserted 1934758928 1378545315
+best-fit coefficients were {
+\begin_inset Formula $b_{i,i=0-6}$
+\end_inset
+
+}={0.0146, 0.0204, -0.101, 0.342, -0.338, 0.00185}, and the 
+\change_unchanged
+
+\end_layout
+
+\end_inset
+
+
+\change_unchanged
+standard error for this fit was 0.00042, corresponding to a pressure uncertainty
+ at 700
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa of about 0.3
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa for the individual measurements.
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+The data constrained the mean of the function to more than a factor of 100
+ smaller uncertainty than this.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ The second term gave the largest reduction in residual error; using this
+ variation alone gave a residual standard error of 0.00050.
+ The least significant was the last term, only reducing the residual standard
+ error by 0.000013 for a typical effect on pressure of 0.01
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa, so this term will be dropped even though the fit indicated that it
+ was a significant contributor.
+ Omitting the term with coefficient 
+\begin_inset Formula $b_{5}$
+\end_inset
+
+ also had an insignificant effect on the result because the dependence on
+ this term is already represented partially by the Mach-number variation.
+ 
+\end_layout
+
+\begin_layout Standard
+An adequate and simpler fit using only the first three terms on the right
+ side of (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+iftwocol{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORfitQCF-1"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORfigQCF1col"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+) gave a residual standard error of 0.00044 or an additional error contribution
+ to the corrected pressure of typically 0.014
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa, which is insignificant in comparison to other expected error sources.
+ The recommended coefficients (with quoted significant digits determined
+ with consideration the standard errors in the fit) are {
+\begin_inset Formula $b_{0}^{\prime},\, b_{1}^{\prime},\, b_{2}^{\prime}$
+\end_inset
+
+}={
+\change_deleted 1934758928 1378545409
+0.00163, 0.0214, 0.0145
+\change_inserted 1934758928 1378545485
+0.00186, 0.0202, 0.0135
+\change_unchanged
+}.
+ While the residuals from this fit are small, the mean offset it produces
+ is about 2
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa, so (as illustrated by Fig.\SpecialChar \-
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:QvsQLAMS"
+
+\end_inset
+
+) the effect on the measurements of ambient and dynamic pressure is quite
+ significant.
+\end_layout
+
+\begin_layout Standard
+For both aircraft, direct use of the LAMS measurements can reduce the uncertaint
+y in measurements of ambient and dynamic pressure to around 0.15
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa.
+ Even when the LAMS is not present, parametric fits to LAMS measurements
+ can reduce the uncertainty in pressure to less than 0.3
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa.
+ 
+\end_layout
+
+\begin_layout Subsection
+Comparisons to Other Evidence
+\end_layout
+
+\begin_layout Standard
+There are several comparisons possible that can test these results.
+ Three are discussed in this section.
+\end_layout
+
+\begin_layout Subsubsection
+Wind measurements in reverse-heading manoeuvres
+\end_layout
+
+\begin_layout Standard
+A reverse-heading manoeuvre is one in which a straight-and-level flight
+ leg is flown for a short time (2--5
+\begin_inset space \thinspace{}
+\end_inset
+
+min) and then the aircraft reverses course and flies the same leg in the
+ opposite direction.
+ Usually these are flown approximately along and against the wind direction.
+ A test of the accuracy of the measurement of dynamic pressure is that the
+ longitudinal component of the wind should reverse direction but have the
+ same magnitude in reverse-heading manoeuvres when the aircraft is flown
+ over the same (drifting) flight leg twice with opposite headings.
+ To isolate the effect of the measurement of 
+\begin_inset Formula $q$
+\end_inset
+
+ and hence true airspeed, the best wind component to use is that along the
+ axis of the aircraft, which is 
+\begin_inset Formula $v_{g}\cos\delta-v_{t}$
+\end_inset
+
+ where 
+\begin_inset Formula $v_{g}$
+\end_inset
+
+ is the ground speed of the aircraft, 
+\begin_inset Formula $v_{t}$
+\end_inset
+
+ the true airspeed relative to the air, and 
+\begin_inset Formula $\delta$
+\end_inset
+
+ is the angle between the ground-speed vector and the heading of the aircraft.
+ The GPS system provides the ground-speed
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+ in variables GGSPD and GGTRK (magnitude and direction),
+\end_layout
+
+\end_inset
+
+ magnitude 
+\begin_inset Formula $v_{g}$
+\end_inset
+
+ and the ground track angle 
+\begin_inset Formula $\Phi$
+\end_inset
+
+, so 
+\begin_inset Formula $\delta=$
+\end_inset
+
+
+\begin_inset Formula $\Phi-\Psi$
+\end_inset
+
+ where 
+\begin_inset Formula $\Psi$
+\end_inset
+
+ is the heading of the aircraft.
+ Then the wind component along the longitudinal axis of the aircraft is
+\begin_inset Formula 
+\begin{equation}
+v_{x}=v_{g}\cos(\Phi-\Psi)-v_{t}\label{eq:LongWindEq}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $v_{t}$
+\end_inset
+
+ is provided either directly from LAMS or from the corrected dynamic pressure
+ via (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+iftwocol{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV-1"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+) for the GV or (
+\change_inserted 1934758928 1378543852
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 1934758928 1378543852
+
+
+\backslash
+iftwocol{
+\end_layout
+
+\end_inset
+
+
+\change_unchanged
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORfitQCF-1"
+
+\end_inset
+
+
+\change_inserted 1934758928 1378543852
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 1934758928 1378543852
+
+}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORfigQCF1col"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 1934758928 1378543852
+
+}
+\end_layout
+
+\end_inset
+
+
+\change_unchanged
+) for the C-130.
+ The expectation is that the longitudinal component of the wind given by
+ (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:LongWindEq"
+
+\end_inset
+
+) will reverse sign between the two legs of the reverse-heading manoeuvre.
+ Within statistics imposed by atmospheric fluctuations, this is then a test
+ of the validity of the longitudinal component of the wind measurements.
+ 
+\end_layout
+
+\begin_layout Standard
+A GV flight 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+predict test flight #4
+\end_layout
+
+\end_inset
+
+with a large number of reverse-heading manoeuvres, but without the LAMS,
+ was used for the test described in this section.
+ Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Pairs-of-reverse-heading"
+
+\end_inset
+
+ shows the results for 12 reverse-heading pairs of legs from this flight.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+The simplified fit (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR_GV_simple"
+
+\end_inset
+
+) was used, and some additional pairs of legs were excluded because the
+ angle of attack was extreme compared to normal flight conditions.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ The mean difference on legs along opposing headings was -0.12
+\begin_inset Formula $\pm0.91$
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+, but there are two pairs of legs (marked with asterisks in the table) that
+ appear to be outliers such as would be expected if the wind conditions
+ changed between the two legs.
+ If these are excluded, the remainder give a standard deviation such that
+ the excluded legs would be more than two standard deviations from the mean.
+ Excluding these two legs gives 10 legs with a mean difference of -0.26
+\begin_inset Formula $\pm0.43$
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+, with standard error in the mean of 0.14
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+.
+ This result suggests that the error in measurement of longitudinal wind
+ is -0.13
+\begin_inset Formula $\pm0.07$
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+, which is consistent with estimates of the uncertainty associated with
+ the LAMS measurements of airspeed on which these corrections are based.
+ This provides evidence that the standard-error uncertainty in the measurement
+ of the longitudinal component of the relative wind after correction is
+ about 0.1
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+The avionics pressure system of the GV
+\end_layout
+
+\begin_layout Standard
+The ambient pressure measurement from the avionics system on the GV is more
+ reliable than those on many research aircraft because the GV is certified
+ to fly on RVSM (reduced vertical separation minimum) levels so must meet
+ strict Federal Aviation Administration requirements.
+ Appendix G to Federal Aviation Regulations Part 91 specifies that the maximum
+ allowable error in altitude is 80
+\begin_inset space \thinspace{}
+\end_inset
+
+ft, or about 24
+\begin_inset space \thinspace{}
+\end_inset
+
+m.
+ In the RVSM altitude range (flight levels 290 to 410), this corresponds
+ to a requirement that the error in pressure be in the range from about
+ 0.68
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa (near FL410) to 1.1
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa (near FL290).
+ For the GV flight used above, the mean difference between the pressure
+ provided by the avionics system and that measured with correction by LAMS,
+ for the RVSM altitude range, was +0.36
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa with standard deviation 0.19
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa, so within the tolerance required by RVSM standards the avionics pressure
+ is consistent with the measured pressure as calibrated in this study.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset Quotes eld
+\end_inset
+
+D-Value
+\begin_inset Quotes erd
+\end_inset
+
+ measurements during speed runs
+\end_layout
+
+\begin_layout Standard
+The dominant dependence in the pressure correction represented in (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+iftwocol{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV-1"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+) is that on Mach number, so testing that dependence is a useful constraint
+ on the validity of the corrections.
+ Repeatedly during the flight used to determine the pressure calibration
+ in this study, the GV was flown in level flight moving from near its low-speed
+ limit to near its high-speed limit.
+ If the pressure corrections are adequate, such manoeuvres should not introduce
+ perturbations into the measured pressure fields.
+ A stringent test of this expected independence of Mach number is to consider
+ the difference between the geometric altitude and the pressure altitude,
+ or 
+\begin_inset Quotes eld
+\end_inset
+
+d-value
+\begin_inset Quotes erd
+\end_inset
+
+ (cf.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "Bellamy1945"
+
+\end_inset
+
+) during the manoeuvre.
+ This compensates for small altitude changes of the aircraft and should
+ show a continuous change not perturbed by the airspeed changes or small
+ altitude changes.
+\end_layout
+
+\begin_layout Standard
+When the aircraft, at about 450
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa flight altitude, was slowed to its minimum speed of about 0.45 Mach,
+ there was a clear perturbation in the d-value plot during the transitions
+ from and back to flight at Mach 0.67 to Mach 0.73, as shown in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:D-value-measurements"
+
+\end_inset
+
+.
+ However, during the flight segments at steady speed the various measurements
+ of d-value are consistent to within about 3
+\begin_inset space \thinspace{}
+\end_inset
+
+m, a change in d-value corresponding to a pressure change of only about
+ 0.2
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa.
+ In the higher Mach-number range of the flight envelope, deviations were
+ still smaller, consistent with linear change with time to within about
+ 0.1
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa.
+ This is an indication that the larger deviations of the fit from the LAMS-measu
+red values occur at the extremes of the flight envelope, and that errors
+ in the corrections represented by (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+iftwocol{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV-1"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+) are reduced if the aircraft remains close to its normal flight envelope
+ in unaccelerated flight.
+ However, the consistency of the trend suggests that the dependence of the
+ correction on Mach number is appropriate to within an uncertainty of about
+ 0.2
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+The correction determined in this way can be used, with the airspeed measurement
+ from LAMS, to calculate the temperature.
+ The procedure is to first calculate the Mach number 
+\begin_inset Formula $M$
+\end_inset
+
+ from the uncorrected measurements of ambient and dynamic pressure, use
+ the above fit to calculate the pressure correction term 
+\begin_inset Formula $P_{c}$
+\end_inset
+
+, apply that correction to the uncorrected ambient and dynamic pressures
+ to obtain corrected values, use those corrected values to recalculate 
+\begin_inset Formula $M$
+\end_inset
+
+, and iterate to stable values.
+ (Five iterations typically gave machine-precision results.) Then use the
+ resulting value of 
+\begin_inset Formula $p$
+\end_inset
+
+ with (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:qFromLAMS-1"
+
+\end_inset
+
+) rewritten in the form
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\begin{equation}
+T=\frac{v_{L}^{2}}{2c_{p}\left[\left(\frac{p_{t}}{p}\right)^{Ra/cp}-1\right]}\label{eq:TfromVL}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+to find the temperature without any reference to temperature sensors on
+ the aircraft.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename /home/cooperw/Xanadu/PREDICT/ATLvsATX.png
+	lyxscale 50
+	width 8cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:ATLvsATX"
+
+\end_inset
+
+The temperature calculated using the LAMS-measured airspeed in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:TfromVL"
+
+\end_inset
+
+), plotted as a function of the corresponding direct temperature measurement
+ 'ATX', for PREDICT flight from Colorado to St.
+ Croix on 12 August 2010.
+ The best linear fit is ATL=3.61+1.033
+\begin_inset space \thinspace{}
+\end_inset
+
+ATX (orange line).
+ A 1:1 line (red) is also shown.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+When this is done for PREDICT ferry flight #1, which included flight at
+ many different altitudes and airspeeds for studies such as this, and for
+ which LAMS was present, the resulting comparison between the archived temperatu
+re 'ATX' and the LAMS-calculated temperature 'ATL' is shown in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:ATLvsATX"
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+
+\change_inserted 1934758928 1378551071
+Correcting the measured airspeed
+\end_layout
+
+\begin_layout Standard
+
+\change_inserted 1934758928 1378553294
+The LAMS provides a direct measurement of airspeed, but it is still useful
+ to use the pressures as determined in the preceding section to determine
+ airspeed by solving (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:qFromLAMS-1"
+
+\end_inset
+
+) for 
+\begin_inset Formula $v$
+\end_inset
+
+ as a function of 
+\begin_inset Formula $p$
+\end_inset
+
+ and 
+\begin_inset Formula $q$
+\end_inset
+
+.
+ Because the volume in which LAMS senses the airspeed is displaced from
+ the nose of the aircraft, the airspeed that it senses may differ slightly
+ from that sensed at the radome of the aircraft.
+ For the GV, the difference between the airspeed measured by LAMS and that
+ determined from the corrected dynamic and ambient pressures has a standard
+ deviation of 0.35
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 1934758928 1378553031
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+, and estimates based on measured turbulence levels indicate that this is
+ similar to the difference expected for sample locations separated by about
+ 16 m, the distance between the LAMS sensing volume and the nose of the
+ GV.
+ For this reason, airspeed used to determine the wind is better if based
+ on the corrected pressures even when LAMS is present.
+\end_layout
+
+\begin_layout Standard
+
+\change_inserted 1934758928 1378553113
+On the GV, the mean change in true airspeed introduced by this calibration
+ is -0.8
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 1934758928 1378553051
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+.
+ The standard error in determination of this offset is much smaller than
+ the expected uncertainty in the measurement from LAMS (which is <0.1
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 1934758928 1378553063
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+), so calibration using LAMS has removed a -0.8
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 1934758928 1378553072
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+ error and reduced the uncertainty in this measurement to <0.1
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 1934758928 1378553079
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+.
+ For the C-130, the corresponding correction is +0.5
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 1934758928 1378553093
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+.
+ These measurements are used along with measurements from GPS and an inertial
+ reference system (IRS) to determine the wind, and the GPS/IRS also provides
+ measurements with an uncertainty of about 0.1
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 1934758928 1378553107
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+, so the calibration based on LAMS has reduced the uncertainty in the component
+ of the wind along the aircraft axis to <0.2
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 1934758928 1378553113
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+.
+\change_unchanged
+
+\end_layout
+
+\begin_layout Section
+Checking the calibrations of thermometers
+\end_layout
+
+\begin_layout Standard
+With accurate measurements of both pressure and geometric altitude, it is
+ possible to test calibrations of the temperature sensors on the research
+ aircraft by calculating height differences from integration of the hydrostatic
+ equation and comparing to measured height differences.
+ The latter are provided with low uncertainty by modern GPS measurements
+ of geometric altitude.
+ The improved accuracy in the measurement of pressure provided by LAMS reduces
+ the uncertainty in the measurement of pressure differences and enables
+ a more stringent test of the validity of the measurements of temperature.
+ 
+\end_layout
+
+\begin_layout Standard
+The hydrostatic equation can be expressed in this form:
+\begin_inset Formula 
+\begin{equation}
+\delta p_{i}=-\frac{g\, p_{i}}{R_{a}T_{i}}\delta z_{i}\label{eq:hydrostaticEq-1}
+\end{equation}
+
+\end_inset
+
+where {
+\begin_inset Formula $p_{i},\, T_{i}$
+\end_inset
+
+} are the values of ambient pressure and absolute temperature for the 
+\begin_inset Formula $i$
+\end_inset
+
+-th measurement and 
+\begin_inset Formula $\delta p_{i}$
+\end_inset
+
+ is the change in pressure for the 
+\begin_inset Formula $i$
+\end_inset
+
+-th step, during which the geometric altitude changes by 
+\begin_inset Formula $\delta z_{i}$
+\end_inset
+
+.
+ This equation can be rearranged to obtain an estimate of the temperature:
+\begin_inset Formula 
+\begin{equation}
+T_{i}=-\frac{g\,}{R_{a}}\frac{\delta z_{i}}{\delta\ln p_{i}}\,\,\,.\label{eq:Tfromdzdp-1}
+\end{equation}
+
+\end_inset
+
+Measurement uncertainty of 0.1% in derived temperature (i.e., a typical uncertainty
+ of 0.3
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+unit{
+\backslash
+degree C}$
+\end_layout
+
+\end_inset
+
+) requires at least 0.1% accuracy in the measurement of 
+\begin_inset Formula $\delta z$
+\end_inset
+
+, an accuracy readily obtained by differential GPS over intervals as small
+ as 10
+\begin_inset space \thinspace{}
+\end_inset
+
+m.
+ The requirement is more stringent on the measurement of pressure.
+ In 1
+\begin_inset space \thinspace{}
+\end_inset
+
+s at 10
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+ climb the pressure change is less than 1
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa, and it seems likely that differences in pressure cannot be measured
+ confidently to better than 0.1
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa, so this would introduce an error of 10% in the deduced (absolute) temperatu
+re.
+ This is inadequate, so larger differences (or the average of many measurements)
+ are required to obtain a useful estimate of the temperature.
+\end_layout
+
+\begin_layout Subsubsection*
+C-130:
+\end_layout
+
+\begin_layout Standard
+About 30
+\begin_inset space \thinspace{}
+\end_inset
+
+min of flight 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+flight #8 of IDEAS-4 (2309-2341)
+\end_layout
+
+\end_inset
+
+with the LAMS on the C-130 was devoted to repeated climbs and descents and
+ included about 1800 measurements of 1-s differences, so it might be expected
+ that the standard error in the determination of temperature from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Tfromdzdp-1"
+
+\end_inset
+
+) could be reduced by 
+\begin_inset Formula $\sqrt{1800}=42$
+\end_inset
+
+, or to around 0.5
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+unit{
+\backslash
+degree C}$
+\end_layout
+
+\end_inset
+
+, by this procedure.
+ Alternately, an appropriately weighted 
+\begin_inset Quotes eld
+\end_inset
+
+mean
+\begin_inset Quotes erd
+\end_inset
+
+ temperature between two levels can be determined from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Tfromdzdp-1"
+
+\end_inset
+
+); for this flight segment, climbs were repeated from about 12000--16000
+\begin_inset space \thinspace{}
+\end_inset
+
+ft, or over a pressure range of about 100
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa.
+ An uncertainty of 0.1
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa in a 100-hPa pressure change leads to about an uncertainty of 0.1% or,
+ in absolute temperature, an uncertainty of about 0.3
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+unit{
+\backslash
+degree C}$
+\end_layout
+
+\end_inset
+
+ in the mean temperature between the layers.
+ It should therefore be possible to test the temperature measurements with
+ about this level of confidence.
+ 
+\end_layout
+
+\begin_layout Standard
+Specifically, three sums were calculated between different flight levels:
+\begin_inset Formula 
+\begin{equation}
+S_{1}=\sum_{i}\frac{R_{a,i}}{g_{i}}\ln\left(\frac{p_{i}}{p_{i-1}}\right)\label{eq:Sum1}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+S_{2}=\sum_{i}(z_{i}-z_{i-1})\label{eq:Sum2}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+S_{3}=\sum_{i}\frac{z_{i}-z_{i-1}}{T_{m,i}}\label{eq:Sum3}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $R_{a,i}$
+\end_inset
+
+ and 
+\begin_inset Formula $g_{i}$
+\end_inset
+
+ are respectively the gas constant (adjusted for humidity) and the acceleration
+ of gravity (adjusted for latitude and altitude) and 
+\begin_inset Formula $T_{m,i}$
+\end_inset
+
+ is the measured temperature in absolute units, corrected for airspeed but
+ based on the standard sensors being tested.
+ The predicted mean temperature for the layer, weighted by altitude, is
+ given by 
+\begin_inset Formula $T_{p}=-S_{1}/S_{2}$
+\end_inset
+
+, while the corresponding weighted-mean measured temperature is 
+\begin_inset Formula $\overline{T}_{m}=S_{2}/S_{3}$
+\end_inset
+
+, so a comparison of 
+\begin_inset Formula $\overline{T}_{m}$
+\end_inset
+
+ to 
+\begin_inset Formula $T_{p}$
+\end_inset
+
+ tests the validity of the temperature measurement.
+\end_layout
+
+\begin_layout Standard
+Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:C-130-climbs"
+
+\end_inset
+
+ shows some measurements from selected flight legs of the C-130.
+ The evidence from these climbs indicates that the measured temperature
+ was about 0.5
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,
+\backslash
+unit{
+\backslash
+degree C}
+\end_layout
+
+\end_inset
+
+ too high and that the offset perhaps increases as the temperature decreases.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+For the record: I did try to fit a linear correction using the measurements
+ of RF08, IDEAS-4.
+ A least-squares minimization procedure was used: Find the values of 
+\begin_inset Formula $c_{0}$
+\end_inset
+
+ and 
+\begin_inset Formula $c_{1}$
+\end_inset
+
+ that minimize the variance 
+\begin_inset Formula ${\displaystyle \chi^{2}=\sum_{i}}\left(T_{m,i}+c_{0}+c_{1}T_{m,i}-T_{a,i}\right)^{2}$
+\end_inset
+
+.
+ However, the 1-s values were so variable that the attempt to calculate
+ fit coefficients led to a singular inversion, which presumably arose from
+ the large numbers entering the fit.
+ It may be possible to return to this, but the preceding evidence suggested
+ that the temperature measurements are approximately within expected errors
+ so I didn't pursue this for the C-130.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ Investigation after this result was obtained discovered a calibration error
+ of about this magnitude.
+\end_layout
+
+\begin_layout Subsubsection*
+GV:
+\end_layout
+
+\begin_layout Standard
+A similar approach could be taken for the GV, with promise of a larger range
+ of calibration points because of the large altitude changes present on
+ many of the flights.
+ However, because there have been many flights with frequent altitude changes
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+ (e.g., from HIPPO)
+\end_layout
+
+\end_inset
+
+, it was decided instead to use a large data set with many climbs and descents
+ to determine a polynomial correction to the temperature via minimization
+ of the error between actual altitude changes and those predicted from integrati
+on of the hydrostatic equation.
+ The chi-square (
+\begin_inset Formula $\chi^{2}$
+\end_inset
+
+) to be minimized was
+\begin_inset Formula 
+\begin{equation}
+\chi^{2}=\sum_{i}\frac{1}{\sigma_{z}^{2}}(h_{i}-Z_{i})^{2}\label{eq:ChiSq Equation-1}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $Z_{i}$
+\end_inset
+
+ is the geometric altitude measured by GPS, 
+\begin_inset Formula $\sigma_{z}$
+\end_inset
+
+ is the uncertainty in the height measurement, and the predicted height
+ 
+\begin_inset Formula $h_{i}$
+\end_inset
+
+ was determined by integration of the hydrostatic equation in the form
+\begin_inset Formula 
+\begin{equation}
+h_{i}=h_{i-1}-\frac{R_{a}(f(T_{i}))}{g}\ln\frac{p_{i}}{p_{i-1}}\label{eq:AltitudeChangeEquation-1}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+f(T_{i})=\frac{\left(c_{0}+(1+c_{1})T_{i}+T_{0}\right)}{1+\alpha\frac{R_{a}}{2C_{v}}M^{2}}\,\,.\label{eq:RecoveryCorrection}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $c_{0}$
+\end_inset
+
+ and 
+\begin_inset Formula $c_{1}$
+\end_inset
+
+ are coefficients to be found by minimization of (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ChiSq Equation-1"
+
+\end_inset
+
+) In these equations, 
+\begin_inset Formula $R_{a}$
+\end_inset
+
+ is the moist-air gas constant, 
+\begin_inset Formula $g$
+\end_inset
+
+ the acceleration of gravity (adjusted for latitude and altitude), and 
+\begin_inset Formula $\{p_{i}\}$
+\end_inset
+
+ is the time sequence of measured pressures.
+ The function 
+\begin_inset Formula $f(T_{i})$
+\end_inset
+
+ allows the adjustable coefficients 
+\begin_inset Formula $c_{0}$
+\end_inset
+
+ and 
+\begin_inset Formula $c_{1}$
+\end_inset
+
+ to be applied to the measured temperature 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+, with conversion to ambient temperature on the basis of the recovery factor
+ (
+\begin_inset Formula $\alpha$
+\end_inset
+
+), the Mach number (
+\begin_inset Formula $M$
+\end_inset
+
+) and the specific heat at constant volume (
+\begin_inset Formula $c_{v})$
+\end_inset
+
+.
+ The resulting temperature is converted to an absolute temperature by the
+ addition of 
+\begin_inset Formula $T_{0}=273.15$
+\end_inset
+
+
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+unit{K}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Because the climbs and descents were made en route and so spanned some horizonta
+l distance, the vertical integration will match the pressure change only
+ if the atmosphere is horizontally homogeneous.
+ If not, the results will be biased as the fit attempts to compensate for
+ horizontal gradients, and this can introduce an error into the minimization
+ results.
+ To consider how serious this problem is, it is useful to assess how a pressure
+ gradient will affect the results.
+ Suppose the horizontal pressure gradient along the flight path is 
+\begin_inset Formula $dp/ds=G_{p}$
+\end_inset
+
+.
+ Then there will be a contribution to the pressure change arising just from
+ the pressure gradient over a period 
+\begin_inset Formula $\Delta t$
+\end_inset
+
+, of magnitude 
+\begin_inset Formula $G_{p}v\Delta t$
+\end_inset
+
+, where 
+\begin_inset Formula $v$
+\end_inset
+
+ is the airspeed., Therefore in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:AltitudeChangeEquation-1"
+
+\end_inset
+
+) the pressure ratio in the logarithmic factor must be modified to be 
+\begin_inset Formula $(p_{i}-G_{p}v_{i}\Delta t)/p_{i-1}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+It is useful to express this in terms of d-value, the difference between
+ geometric altitude and pressure altitude
+\change_deleted 1934758928 1378543852
+.
+\change_inserted 1934758928 1378543852
+,
+\change_unchanged
+ because that is measured routinely.
+ Part of the change in d-value during a climb results from the horizontal
+ pressure gradient, while another part arises from the climb in an atmosphere
+ that differs from the standard atmosphere.
+ The expected change in 
+\begin_inset Formula $d_{i}$
+\end_inset
+
+, the measurement of d-value, is then
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+iftwocol{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{eqnarray}
+d_{i}-d_{i-1} & = & -\left(\frac{R_{a}f(T_{i})}{g}-\frac{R_{s}T_{s}(p)}{g_{s}}\right)\ln\frac{p_{i}}{p_{i-1}}\label{eq:DvalueIteration}\\
+ &  & -\frac{G_{p}R_{a}T_{i}v_{i}\Delta t}{gp_{i}}\nonumber 
+\end{eqnarray}
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{eqnarray}
+d_{i}-d_{i-1} & = & -\left(\frac{R_{a}f(T_{i})}{g}-\frac{R_{s}T_{s}(p)}{g_{s}}\right)\ln\frac{p_{i}}{p_{i-1}}-\frac{G_{p}R_{a}T_{i}v_{i}\Delta t}{gp_{i}}\label{eq:DvalueIteration-1}
+\end{eqnarray}
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+where 
+\begin_inset Formula $R_{s}$
+\end_inset
+
+ and 
+\begin_inset Formula $g_{s}$
+\end_inset
+
+ are the gas constant and acceleration of gravity defined in the definition
+ of the U.
+ S.
+ standard atmosphere and 
+\begin_inset Formula $T_{s}(p)$
+\end_inset
+
+ is the absolute temperature corresponding in the standard atmosphere to
+ pressure 
+\begin_inset Formula $p$
+\end_inset
+
+.
+ The first term on the right side arises from the climb or descent, while
+ the last term is the contribution from the horizontal pressure gradient.
+ The horizontal pressure gradient 
+\begin_inset Formula $G_{p}$
+\end_inset
+
+ can then be deduced from the measurements of d-value by rearranging (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+iftwocol{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:DvalueIteration"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:DvalueIteration-1"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+):
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+iftwocol{
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{eqnarray}
+G_{p}v{}_{i}\Delta t & = & \frac{gp_{i}}{R_{a}T_{i}}.\times\label{eq:GpEquation}\\
+ &  & \biggl\{-\left(\frac{R_{a}f(T_{i})}{g}-\frac{R_{s}T_{s}(p_{i})}{g_{s}}\right)\ln\frac{p_{i}}{p_{i-1}}\nonumber \\
+ &  & -(d_{i}-d_{i-1})\biggr\}\,\,\,.\nonumber 
+\end{eqnarray}
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{eqnarray}
+G_{p}v{}_{i}\Delta t & = & \frac{gp_{i}}{R_{a}T_{i}}.\biggl\{-\left(\frac{R_{a}f(T_{i})}{g}-\frac{R_{s}T_{s}(p_{i})}{g_{s}}\right)\ln\frac{p_{i}}{p_{i-1}}-(d_{i}-d_{i-1})\biggr\}\,\,\,.\label{eq:GpEquation-1}
+\end{eqnarray}
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+This function is 288.15-0.0065h for h < 11000 m and 216.65 for h > 11000 m,
+ and 
+\begin_inset Formula $R_{s}=8.31432x10^{3}$
+\end_inset
+
+ and 
+\begin_inset Formula $g_{s}=9.80665m/s^{2}$
+\end_inset
+
+ as incorporated into the definition of the standard atmosphere.
+ To evaluate (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:GpEquation"
+
+\end_inset
+
+), it is first necessary to find the pressure altitude 
+\begin_inset Formula $h_{i}^{\prime}$
+\end_inset
+
+ that corresponds to the pressure 
+\begin_inset Formula $p_{i},$
+\end_inset
+
+using the definition of the standard atmosphere:.
+ Below 11000 m, 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+h_{i}^{\prime}=\frac{T_{SA}}{\lambda}\left[\left(\frac{p}{p_{0}}\right)^{-\lambda R/g}-1\right]=a_{z}\left[1-\left(\frac{p}{p_{0}}\right)^{b_{p}}\right]
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $a_{z}=-T_{SA}/\lambda$
+\end_inset
+
+ is 44330.77 m and 
+\begin_inset Formula $b_{p}=-\lambda R_{s}/g_{s}$
+\end_inset
+
+ is 0.1902632 (dimensionless).
+ Above 11000 m, 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+h_{i}^{\prime}=h_{t}-\frac{RT_{t}}{g}\ln\left(\frac{p}{p_{t}}\right)=h_{t}-c_{z}\ln\left(\frac{p_{i}}{p_{t}}\right)
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $h_{t}=11000$
+\end_inset
+
+ m, 
+\begin_inset Formula $p_{1}=226.3206$
+\end_inset
+
+ hPa, 
+\begin_inset Formula $T_{t}=216.65K,$
+\end_inset
+
+and 
+\begin_inset Formula $c_{z}=(RT_{1}/g)=6341.620m.$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ Then, the altitude-change equation (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:AltitudeChangeEquation-1"
+
+\end_inset
+
+) should be replaced by
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+h_{i}=h_{i-1}-\frac{R_{a}(f(T_{i}))}{g}\ln\left(\frac{p_{i}-G_{p}v_{i}\Delta t}{p_{i-1}}\right)\label{eq:AltitudeChangeModifiedForG}
+\end{equation}
+
+\end_inset
+
+with 
+\begin_inset Formula $G_{p}v{}_{i}\Delta t$
+\end_inset
+
+ evaluated using (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+iftwocol{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:GpEquation"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:GpEquation-1"
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+).
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The measurements used were from 10 flights that comprised the fifth circuit
+ of the HIAPER Pole to Pole (HIPPO) experiment (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "wofsy2011hia"
+
+\end_inset
+
+), starting and ending in Colorado, USA, but extending north of the Arctic
+ Circle and south to beyond New Zealand.
+ The flight patterns featured repeated climbs and descents to measure profiles
+ through the atmosphere, so the 122 profiles measured (many covering more
+ than 8km in altitude) provided a good set of measurements for this study.
+ Several data-quality restrictions were applied to avoid periods of problematic
+ data, notably when ice accumulation or frozen water affected the wind-sensing
+ system and so the measurement of attack angle (needed for the correction
+ to ambient pressure).
+ Periods with climb or descent rates less than 2
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ were excluded, as were periods of rapid climbs or descents exceeding 7.5
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+.
+ Flight periods with airspeed less than 130
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ were also excluded to avoid times when the flaps might have been deployed,
+ potentially affecting the pressure measurements.
+ With these exclusions, the data set consisted of about 26,000 measurements
+ during climbs and descents.
+\end_layout
+
+\begin_layout Standard
+For measurements made at a rate of 1
+\begin_inset space \thinspace{}
+\end_inset
+
+Hz, the uncertainty 
+\begin_inset Formula $\sigma_{z}$
+\end_inset
+
+ in measurement of the height difference arises primarily from the uncertainty
+ in the pressure change, as discussed above.
+ The best-fit value of 
+\begin_inset Formula $\chi^{2}$
+\end_inset
+
+ as defined by (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ChiSq Equation-1"
+
+\end_inset
+
+) was consistent with a value of about 1.6
+\begin_inset space \thinspace{}
+\end_inset
+
+m for 
+\begin_inset Formula $\sigma_{z}$
+\end_inset
+
+, and this would be appropriate if the uncertainty in pressure (at a representat
+ive altitude of about 300--500
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa) is about 0.1
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa, so this uncertainty in altitude is consistent with other estimates
+ in this paper.
+ The minimization was done in various ways, including evaluating results
+ over matrices of values of the fit parameters 
+\begin_inset Formula $c_{0}$
+\end_inset
+
+ and 
+\begin_inset Formula $c_{1}$
+\end_inset
+
+, conjugate-gradient stepping, and use of the 
+\begin_inset Quotes eld
+\end_inset
+
+R
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+R Core Team (2013).
+ R: A language and environment for statistical computing.
+ R Foundation for Statistical Computing, Vienna, Austria.
+ URL http://www.R-project.org/.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ routine 
+\emph on
+optim
+\change_deleted 1934758928 1378592044
+()
+\change_unchanged
+
+\emph default
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+@Manual{, title = {R: A Language and Environment for Statistical Computing},
+ author = {{R Core Team}}, organization = {R Foundation for Statistical
+ Computing}, address = {Vienna, Austria}, year = {2013}, url = {http://www.R-proj
+ect.org/}, } 
+\end_layout
+
+\end_inset
+
+(
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "Rlanguage"
+
+\end_inset
+
+) which implements the 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "NelderMead1965"
+
+\end_inset
+
+ minimization algorithm.
+ All produced consistent results, with convergence to values of {
+\begin_inset Formula $c_{0},\, c_{1}\}=\{0.32\,\unit{\degree C},\,0.007\}$
+\end_inset
+
+.
+ This adjustment from the measurements would change the measured total temperatu
+re, over the course of these flights, by +0.29
+\begin_inset Formula $\pm0.13$
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{K}$
+\end_layout
+
+\end_inset
+
+, so the fit indicates that the error in the measured temperature is within
+ these limits.
+ This result applies to the measurement of total temperature, but the minimizati
+on of (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ChiSq Equation-1"
+
+\end_inset
+
+) depended on the accuracy of the ambient temperature after application
+ of the recovery factor, so the constraint on measurement uncertainty includes
+ uncertainty in the recovery factor as well as the calibration of the temperatur
+e sensor and digitization system.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+The recovery factor used for this HARCO unheated sensor, model 102, was
+ taken from the technical note that describes the wind-tunnel measurements
+ of recovery factor for the similar Rosemount unheated sensor.
+ The recovery factor is dependent on the Mach number, so the published graphs
+ are represented by the following fit: 
+\begin_inset Formula $\alpha=0.988+0.053\log_{10}M+0.090\log_{10}M^{2}+0.091\log_{10}M^{3}$
+\end_inset
+
+.
+ The probes are physically similar but not identical, but no similar study
+ is available to characterize the recovery factor of the sensor being used.
+ This recovery factor has been tested using flight legs that include speed
+ changes in a region having apparently consistent temperature, and those
+ tests are consistent with the fit being used.
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The uncertainty in the determination of the fit parameters {
+\begin_inset Formula $c_{0},\, c_{1}$
+\end_inset
+
+} is about {0.02, 0.001}, but the uncertainty matrix is highly correlated
+ such that the range of values giving an increase in 
+\begin_inset Formula $\chi^{2}$
+\end_inset
+
+ equal to the mean contribution from each point spans from {0.030, 0.006}
+ to {0.034, 0.008}.
+ Within this range, the mean change in temperature implied by the fit remains
+ in the range 0.28--0.31
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,
+\backslash
+unit{K}
+\end_layout
+
+\end_inset
+
+ and the standard deviation in the correction remains smaller than 0.15
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,
+\backslash
+unit{K}
+\end_layout
+
+\end_inset
+
+, so there is low uncertainty in the implied adjustment needed for temperature.
+ A more significant source of error, however, is the effect of measurements
+ that for some reason are questionable or erroneous.
+ As discussed above, such measurements were excluded where they were identified,
+ but some may remain.
+ To check on the effects of variations in the measurements entering the
+ minimization, the sequence of measurements was split into five segments
+ and fit coefficients were determined for each.
+ The means of these fit coefficients were {0.37, 0.018} and when used individually
+ to evaluate the adjustment needed in the full data set these fits indicated
+ an adjustment of 0.30
+\begin_inset Formula $\pm$
+\end_inset
+
+0.30.
+ These estimates of uncertainty then indicate a required adjustment in temperatu
+re of about +0.3
+\begin_inset Formula $\pm0.3$
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,
+\backslash
+unit{
+\backslash
+degree C}
+\end_layout
+
+\end_inset
+
+, with the adjusted total absolute temperature 
+\begin_inset Formula $T^{\prime}$
+\end_inset
+
+ given in relation to measured total temperature 
+\begin_inset Formula $T$
+\end_inset
+
+ by 
+\begin_inset Formula $T^{\prime}=T_{0}+c_{0}+\left(1+c_{1}\right)\left(T-T_{0}\right)$
+\end_inset
+
+ where 
+\begin_inset Formula $c_{0}=0.32\,\unit{\degree C}$
+\end_inset
+
+ and 
+\begin_inset Formula $c_{1}$
+\end_inset
+
+=0.007.
+ This estimated correction and associated uncertainty, obtained because
+ the LAMS provides a calibration of the pressure-sensing system and so with
+ GPS supports confident integration of the hydrostatic equation, is obtained
+ independent of reference standards or inter-comparisons with other sensors
+ and is the best available estimate of uncertainty in the temperature measuremen
+t from the GV.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Enumerate
+Calculate new data files that have corrected values of pressure and dynamic
+ pressure, Mach number, and temperature based on the fits (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCORforGV"
+
+\end_inset
+
+) or (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PCOR_GV_simple"
+
+\end_inset
+
+) that give 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ and 
+\begin_inset Formula $\Delta q$
+\end_inset
+
+.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+In addition, add the altitude variable 
+\begin_inset Quotes eld
+\end_inset
+
+ALTV
+\begin_inset Quotes erd
+\end_inset
+
+ described in a separate memo.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Construct 
+\begin_inset Quotes eld
+\end_inset
+
+R
+\begin_inset Quotes erd
+\end_inset
+
+ data files that have the preceding variables and in addition include the
+ water vapour pressure (for calculation of the humidity-adjusted specific
+ heats), latitude (for calculation of the latitude-adjusted acceleration
+ of gravity), GPS-measured altitude, the true airspeed (for validation that
+ the aircraft is above flight speeds where the flaps might be extended),
+ and the measured total temperature measurement.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+specifically, TTHR1 for HIPPO-5
+\end_layout
+
+\end_inset
+
+Include also 
+\begin_inset Quotes eld
+\end_inset
+
+d-value
+\begin_inset Quotes erd
+\end_inset
+
+ (actual altitude minus the pressure altitude) measurements, for information
+ on the horizontal pressure gradient, as explained below.
+\end_layout
+
+\begin_layout Enumerate
+Use the 
+\begin_inset Quotes eld
+\end_inset
+
+R
+\begin_inset Quotes erd
+\end_inset
+
+ routine 
+\begin_inset Quotes eld
+\end_inset
+
+optim
+\begin_inset Quotes erd
+\end_inset
+
+ to minimize a chi-square (
+\begin_inset Formula $\chi^{2}$
+\end_inset
+
+) function defined as the sum of the squared differences between the predicted
+ and measured altitudes, where the predicted altitude is determined by integrati
+on of the hydrostatic equation::
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Fortunately, there is a way to measure the horizontal pressure gradient
+ because it will be reflected in the change in DVALUE.
+ For example, in level flight the change in DVALUE will measure the pressure
+ gradient; similarly, in a climb, the change in d-value can be compared
+ to that expected for the measured temperature vs that of a standard atmosphere,
+ so that also can be used as a measure of the pressure gradient.
+ For horizontal or nearly horizontal motion (e.g., along pressure surfaces),
+ 
+\begin_inset Formula $(dp/ds=-\rho g\, dH_{p}/ds$
+\end_inset
+
+ where 
+\begin_inset Formula $H_{p}$
+\end_inset
+
+ is the height at pressure 
+\begin_inset Formula $p$
+\end_inset
+
+.
+ The change 
+\begin_inset Formula $dH_{p}$
+\end_inset
+
+ is the same as the change in d-value.
+ The term needed to correct the pressure used in the hydrostatic equation
+ is thus 
+\begin_inset Formula $G_{p}V\Delta T=-\rho gV\Delta T(dH_{p}/ds)=-\rho g\Delta H_{p}$
+\end_inset
+
+.
+ In a climb, however, the same correction is not possible because a change
+ caused by a horizontal pressure gradient can't be distinguished from one
+ caused by a different temperature along the flight path.
+ Even at 40,000 ft, though, the GV climbs at above 5 m/s, so the ratio of
+ contributions from the horizontal and vertical gradients will be
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{-\rho g\Delta H_{p}}{-\rho g\Delta z}=\frac{V(dH_{p}/ds)}{W}\simeq40\frac{dH_{p}}{ds}
+\]
+
+\end_inset
+
+For example, an upper limit to the horizontal height gradient might be 10
+ m/100 km or <10
+\begin_inset Formula $^{-4}$
+\end_inset
+
+; most level flight segments in the HIPPO flights show less than this gradient.
+ In this case the vertical gradient would be changed by about 0.004, and
+ a temperature change of around 1
+\begin_inset Formula $^{\circ}$
+\end_inset
+
+C would be required to produce the same change in the gradient.
+ At this level of effect, it seems reasonable to expect that the measurements
+ will tend to average toward the correct answer, especially if repeated
+ climbs and descents are flown in the same direction so that the effects
+ of the horizontal pressure gradient on climbs and descents tend to cancel.
+ However, if all points including those from level legs are included, the
+ trend that will be present in the horizontal gradient for flights that
+ do not return to the starting base can easily be large enough to bias the
+ deduced temperature by 
+\begin_inset Formula $1^{\circ}\mathrm{C}$
+\end_inset
+
+ or so.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+There are several steps that can be taken to compensate for the horizontal
+ pressure gradient:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Use only periods when the climb rate exceeds some threshold (e.g., 2 m/s).
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Use DVALUE measurements from level flight segments to estimate the gradient.
+\end_layout
+
+\begin_layout Enumerate
+Use a comparison between pressure measured during climb and descent to estimate
+ and remove the gradient.
+ For example, it would be possible to determine the height of fixed pressure
+ surfaces on climb and again on descent, then use the difference as an estimate
+ of the pressure gradient between those locations.
+\end_layout
+
+\begin_layout Enumerate
+Use the whole-flight average DVALUE (perhaps only from level legs) to determine
+ the pressure gradient, and apply a correction.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Use only flights not returning to the takeoff point, to avoid cases where
+ it is not straightforward to determine the gradient.
+\end_layout
+
+\begin_layout Plain Layout
+The strategy that will be tried first is the following: Require fabsf(VSPD)>2.0
+ or some other tolerance.
+ If the results seem adequate and consistent, stop; otherwise, on each climb
+ store values of ALTV at fixed pressures separated by 50 hPa, and store
+ the locations (lat/long).
+ Make a 2nd pass that uses the stored values to determine the pressure gradients
+ as a function of time through the flight and adds these to the data files.
+ Then use those horizontal pressure gradients to correct the values entering
+ (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ChiSq Equation-1"
+
+\end_inset
+
+) via (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:AltitudeChangeEquation-1"
+
+\end_inset
+
+).
+\end_layout
+
+\end_deeper
+\end_deeper
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Using the LAMS to Measure Temperature
+\end_layout
+
+\begin_layout Standard
+As discussed above, the LAMS provides a direct measurement of the longitudinal
+ component of the relative wind, 
+\begin_inset Formula $v_{l}$
+\end_inset
+
+, and also enables corrections that improve the measurements of the ambient
+ and dynamic pressure.
+ Those two pressures are sufficient to determine the Mach number 
+\begin_inset Formula $M=v_{l}/v_{s}$
+\end_inset
+
+ where 
+\begin_inset Formula $v_{S}=\sqrt{\gamma R_{a}T}$
+\end_inset
+
+ is the speed of sound in air.
+ An equation for temperature can be obtained from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:qFromLAMS-1"
+
+\end_inset
+
+) rewritten in the form
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+T=\frac{v_{l}^{2}}{2c_{p}\left[\left(\frac{p_{t}}{p}\right)^{R_{a}/c_{p}}-1\right]}\,\,\,.\label{eq:TfromVL-1}
+\end{equation}
+
+\end_inset
+
+Measurements of 
+\begin_inset Formula $v_{l}$
+\end_inset
+
+, 
+\begin_inset Formula $p$
+\end_inset
+
+ and 
+\begin_inset Formula $p_{t}$
+\end_inset
+
+ thus determine the temperature without any reference to temperature sensors
+ on the aircraft.
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+The initial determination of the functional form of the correction factor
+ used to calibrate 
+\begin_inset Formula $p$
+\end_inset
+
+ and 
+\begin_inset Formula $q$
+\end_inset
+
+ does need a measured temperature and so depends on its validity, but subsequent
+ applications of (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:TfromVL-1"
+
+\end_inset
+
+) then can be made without any reference to a temperature probe.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:ATL"
+
+\end_inset
+
+ shows the measurements obtained using (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:TfromVL-1"
+
+\end_inset
+
+) in comparison to the primary conventional measurement of temperature.
+ The mean difference (LAMS temperature minus conventional temperature) is
+ 0.02
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,
+\backslash
+unit{
+\backslash
+degree C}
+\end_layout
+
+\end_inset
+
+ and the standard deviation is 1.1
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,
+\backslash
+unit{
+\backslash
+degree C}
+\end_layout
+
+\end_inset
+
+.
+ The fairly large standard deviation arises mostly from areas of significant
+ turbulence, where larger errors can arise because the sample volumes represente
+d by the dynamic pressure 
+\begin_inset Formula $q$
+\end_inset
+
+ and the sensed airspeed 
+\begin_inset Formula $v_{L}$
+\end_inset
+
+ are different.
+ A histogram of the difference shows that the central peak is characterized
+ by a standard deviation of about 0.5
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,
+\backslash
+unit{
+\backslash
+degree C}
+\end_layout
+
+\end_inset
+
+ and extremes account for the increase to 1.1
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,
+\backslash
+unit{
+\backslash
+degree C}
+\end_layout
+
+\end_inset
+
+ in the full sample.
+ 
+\end_layout
+
+\begin_layout Standard
+Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:TLAMSvsATX"
+
+\end_inset
+
+ shows a comparison of the temperature determined from the LAMS and that
+ measured directly during a portion of a flight of the C-130.
+ The variance is higher in the LAMS-determined temperature for the flight
+ segment in the boundary layer (near 2100Z) because the flow conditions
+ at the pitot tube and in the air sampled by LAMS tend to have lower coherence
+ at high rate, leading to a noisier estimate of the temperature.
+ 
+\end_layout
+
+\begin_layout Standard
+This new measurement of temperature is valuable as a check on the temperature
+ sensors, because miscalibration or changes in the sensors will appear as
+ a discrepancy in comparison to this measurement.
+ However, temperature measurement by LAMS also has a very useful potential
+ application in clouds, where backscatter from the cloud particles makes
+ the LAMS signal very strong and where this measurement should continue
+ to be valid.
+ Measurement of temperature in cloud has been challenging because immersion
+ sensors can become wet and, in the dynamically heated airflow, experience
+ wet-bulb cooling to a variable extent dependent on the wetting (e.g., 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "heymsJAM79"
+
+\end_inset
+
+).
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+get UWyo reference here
+\end_layout
+
+\end_inset
+
+ If the measurement of temperature available from LAMS remains valid in
+ cloud, it can provide important information on the buoyancy of clouds and
+ would support studies of entrainment via mixing-diagram analysis of the
+ type undertaken by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "paluch1979"
+
+\end_inset
+
+ or 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "betts:1983"
+
+\end_inset
+
+, which can be compromised when using conventional temperature sensors.
+ 
+\end_layout
+
+\begin_layout Standard
+Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:ATLinCirrus"
+
+\end_inset
+
+ illustrates the capability of the LAMS to measure temperature in cirrus
+ cloud.
+ These measurements were made during a descent through a cirrus layer, where
+ the backscattered signal was dominated by the ice crystals that were present
+ in concentrations varying from about 0.1
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+unit{L^{-1}}$
+\end_layout
+
+\end_inset
+
+ to more than 100
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+unit{L^{-1}}$
+\end_layout
+
+\end_inset
+
+.
+ This demonstrates that the LAMS is able to continue to operate in such
+ conditions and that it continues to provide a useful temperature independent
+ of the immersion temperature probes.
+ 
+\end_layout
+
+\begin_layout Standard
+At this time, it is less certain how the system will perform in water clouds
+ because almost all water clouds encountered with the LAMS have been supercooled
+ and heating of the window is not adequate to prevent accumulation of ice
+ on the window.
+ An example of measurements in water cloud is shown in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:ATLinWaterCloud"
+
+\end_inset
+
+.
+ The gap in measurements at about 22:13:15 was caused by loss of signal
+ as a result of icing on the window, but even before that the measured temperatu
+re from LAMS was erratic and often systematically about 1
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+unit{
+\backslash
+degree C}
+\end_layout
+
+\end_inset
+
+ too low.
+ More heating or data from warmer clouds will be needed to test the potential
+ for measurements in water cloud.
+ It is not yet clear that this will be a useful measurement because the
+ backscattered return in dense cloud might be dominated by regions closer
+ than the focal point of the system, where airflow distortion could be important.
+ The change in the location of the sample volume of a laser system was recognize
+d by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Werner:84"
+
+\end_inset
+
+, and the possible error in sensed airspeed was discussed by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "KeelerEtAl1987"
+
+\end_inset
+
+ who recommended modified processing techniques selecting the peak rather
+ than the mean in the shifted wavelength spectrum for measurements in cloud.
+ Indeed, too low a measurement of airspeed would cause the deduced temperature
+ to be too low, as is the trend in this figure.
+ The small extinction lengths shown in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:ATLinWaterCloud"
+
+\end_inset
+
+, from 10--20
+\begin_inset space \thinspace{}
+\end_inset
+
+m in the more dense parts of this cloud, support this explanation.
+ However, the apparent error in temperature does not correlate with the
+ extinction length as well as would be expected if this is the cause.
+ The performance in water clouds therefore is not yet understood and will
+ need further investigation and additional measurements..
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+note that the measurements plotted for ATL have been smoothed by an 11-point
+ window about each measurement to reduce scatter from noise
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Conclusions
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Keep entries with green labels empty!
+\end_layout
+
+\end_inset
+
+
+\begin_inset Argument
+status collapsed
+
+\begin_layout Plain Layout
+Summary and conclusions
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+When a short title is given, it is used instead of the word 
+\begin_inset Quotes eld
+\end_inset
+
+Conclusions
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A new laser air-motion sensor, capable of measuring airspeed via the Doppler
+ shift in a laser beam focussed about 15--30
+\begin_inset space \thinspace{}
+\end_inset
+
+m ahead of the aircraft, has been used to determine corrections to be applied
+ to the wind component along the axis of the aircraft.
+ With these corrections, the uncertainty in this component of the wind has
+ been reduced to less than 0.1
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+.
+ Fits to the corrections deduced from this system, as functions of the measureme
+nts of ambient and dynamic pressure as well as angle of attack, support
+ this level of accuracy even when the LAMS system is not available.
+ Because the basis for the measurement is the Doppler shift in the frequency
+ of backscattered light, the measurement is not dependent on calibration,
+ and because the measurement is made well ahead of the aircraft it is unaffected
+ by flow distortion around the aircraft.
+\end_layout
+
+\begin_layout Standard
+Once an accurate measurement of airspeed is available, the 
+\change_deleted 1934758928 1378592125
+excess 
+\change_unchanged
+pressure 
+\change_inserted 1934758928 1378592135
+excess above ambient 
+\change_unchanged
+produced by that airflow at the inlet of a pitot tube can be calculated.
+ The pressure at flight level can then be determined with low uncertainty
+ by subtracting that excess pressure from the measured total pressure at
+ the pitot tube.
+ The estimated uncertainty in that measurement is less than 0.3
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa, and the precision (relevant to pressure mapping while the aircraft
+ remains in steady flight conditions) is about 0.1
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa.
+ Calibration to this level of precision and accuracy enables the measurement
+ of mesoscale pressure fields in the atmosphere, as demonstrated by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "ParishEtAl2007"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "ParishLeon2013"
+
+\end_inset
+
+ based on GPS technology and by earlier authors including 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "BrownEtAl1981"
+
+\end_inset
+
+, 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "ShapiroKennedy1981"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "LemoneTarleton1986"
+
+\end_inset
+
+ on the basis of other measurements of geometric altitude.
+ 
+\end_layout
+
+\begin_layout Standard
+With accurate measurement of pressure, combined with excellent measurements
+ of geometric altitude from modern GPS, it is possible to deduce constraints
+ on the temperature measurement from integrations of the hydrostatic equation
+ during climbs and descents.
+ For the GV, a dataset consisting of 122 extended climbs and descents, typically
+ through >8
+\begin_inset space \thinspace{}
+\end_inset
+
+km, was used to determine that the measured temperature was within about
+ 0.3
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+unit{
+\backslash
+degree C}
+\end_layout
+
+\end_inset
+
+ of the values required to minimize differences between calculated and true
+ altitude changes.
+ The correction required was a function of temperature but typically was
+ +0.3
+\begin_inset Formula $\pm0.3\unit{\degree C}$
+\end_inset
+
+.
+ This correction included all effects entering the measurement of ambient
+ temperature at flight level, including corrections dependent on the recovery
+ factor of the temperature probes, which are a significant source of uncertainty
+ because of the large (often 25
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+unit{
+\backslash
+degree C}$
+\end_layout
+
+\end_inset
+
+) corrections required for dynamic heating at GV flight speeds.
+\end_layout
+
+\begin_layout Standard
+Finally, it was shown that the LAMS, combined with parametrized fits to
+ correction factors for the measured dynamic and ambient pressure, can provide
+ a measurement of temperature that is independent of any other temperature
+ sensor.
+ That measurement continues to be valid in all-ice clouds, but the limited
+ measurements available in water clouds appear less satisfactory.
+ The latter problem is not understood but is worth further investigation
+ because most immersion sensors are affected by cloud water and produce
+ erroneously low values in water clouds.
+ 
+\end_layout
+
+\begin_layout Standard
+A three-dimensional version of the LAMS is now under development and will
+ be ready for flight testing soon.
+ That will extend the improvements available from LAMS to all three components
+ of the measured wind.
+\end_layout
+
+\begin_layout Acknowledgements
+The instrument development and data collection were supported by the NCAR
+ Earth Observing Laboratory.
+ Data used in this study were collected during field campaigns led by S.
+\begin_inset space ~
+\end_inset
+
+Wofsy et al.
+ (HIPPO), C.
+\begin_inset space ~
+\end_inset
+
+Davis et al.
+ (PREDICT), and J.
+\begin_inset space ~
+\end_inset
+
+Stith (IDEAS), during which the Research Aviation Facility pilots, mechanics,
+ technicians, and software engineers operated the Gulfstream
+\begin_inset space ~
+\end_inset
+
+
+\change_inserted 1934758928 1378543852
+G
+\change_unchanged
+V and Lockheed C-130 research aircraft.
+ The National Center for Atmospheric Research is sponsored by the National
+ Science Foundation.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+appendix%
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Properties of moist air
+\end_layout
+
+\begin_layout Standard
+For accurate calculation in humid air, the values used for the gas constant
+ and specific heats should be those for moist air, although the characteristics
+ of dry air at the same pressure and temperature are often used.
+ The density of moist air having vapour pressure 
+\begin_inset Formula $e$
+\end_inset
+
+ (and so mixing ratio 
+\begin_inset Formula $r=\epsilon e/(p-e)$
+\end_inset
+
+ where 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ is the ratio of the molecular weight of water to that of dry air) is
+\begin_inset Formula 
+\begin{eqnarray}
+\rho_{a} & = & \frac{(p-e)}{R_{d}T}+\frac{e}{R_{w}T}=\frac{p}{R_{d}T}\left(1-\frac{e}{p}+\frac{e\epsilon}{p}\right)\label{eq:MoistAirDensity-1}\\
+ & = & \frac{p}{R_{d}T}\left(1+(\epsilon-1)\frac{e}{p}\right)\nonumber 
+\end{eqnarray}
+
+\end_inset
+
+where 
+\begin_inset Formula $R_{d}$
+\end_inset
+
+ is the gas constant for dry air and 
+\begin_inset Formula $R_{w}$
+\end_inset
+
+ that for water vapour, so the gas constant that will satisfy the perfect
+ gas equation for moist air is
+\begin_inset Formula 
+\begin{equation}
+R_{a}=R_{d}/[1+(\epsilon-1)\frac{e}{p}]\,\,\,.\label{eq:moistR-1}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For air the specific heats 
+\begin_inset Formula $c_{pd}$
+\end_inset
+
+ and 
+\begin_inset Formula $c_{vp}$
+\end_inset
+
+are very close to those for a diatomic molecule with five degrees of freedom,
+ while for water the values are approximately those for six degrees of freedom
+ (i.e., 
+\begin_inset Formula $c_{v}=3R_{w})$
+\end_inset
+
+, so similar results for 
+\begin_inset Formula $c_{p}$
+\end_inset
+
+, 
+\begin_inset Formula $c_{v}$
+\end_inset
+
+ and 
+\begin_inset Formula $\gamma=c_{p}/c_{v}$
+\end_inset
+
+ for humid air are averages weighted by the mass fraction of each constituent,
+ as follows:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{eqnarray}
+c_{v} & = & \frac{(p-e)R_{a}}{pR_{d}}\frac{5R_{u}}{2M_{d}}+\frac{eR_{a}}{pR_{w}}\frac{3R_{u}}{M_{w}}\label{eq:moistcv-1}\\
+ & = & c_{vd}\frac{R_{a}}{R_{d}}\left(1+(\frac{6}{5\epsilon}-1)\frac{e}{p}\right)\nonumber \\
+ & \simeq & c_{vd}\frac{R_{a}}{R_{d}}(1+0.92926\,\frac{e}{p})\nonumber 
+\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray}
+c_{p} & = & c_{pd}\frac{R_{a}}{R_{d}}\left(1+(\frac{8}{7\epsilon}-1)\frac{e}{p}\right)\label{eq:moistcp-1}\\
+ & \simeq & c_{pd}\frac{R_{a}}{R_{d}}(1+0.83739\,\frac{e}{p})\nonumber 
+\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\gamma=\gamma_{d}\frac{1+(\frac{8}{7\epsilon}-1)\frac{e}{p}}{1+(\frac{6}{5\epsilon}-1)\frac{e}{p}}\simeq\gamma_{d}\frac{1+0.83739\frac{e}{p}}{1+0.92926\frac{e}{p}}\label{eq:moistgamma-1}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In this paper, the values used for 
+\begin_inset Formula $R_{d}$
+\end_inset
+
+ and 
+\begin_inset Formula $c_{pd}$
+\end_inset
+
+ are, respectively, 287.0653
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{J
+\backslash
+,kg^{-1}
+\backslash
+,K^{-1}}$
+\end_layout
+
+\end_inset
+
+ and 1004.73
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{J
+\backslash
+,kg^{-1}
+\backslash
+,K^{-1}}$
+\end_layout
+
+\end_inset
+
+.
+ The preceding moist-air equations for 
+\begin_inset Formula $R_{a}$
+\end_inset
+
+, 
+\begin_inset Formula $c_{p}$
+\end_inset
+
+ and 
+\begin_inset Formula $\gamma$
+\end_inset
+
+ were then used, adjusted for the humidity at each 1-Hz measurement, in
+ the equations of this paper.
+ These values do not differ significantly from the approximate formulas
+ of 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "KhelifEtAl1999"
+
+\end_inset
+
+ for the same quantities, but the equations used here are exact (within
+ the approximations used for the specific heats).
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Khelif, D., S.P.
+ Burns, and C.A.
+ Friehe, 1999: Improved wind measurements on research aircraft.
+ Journal of Atmospheric and Oceanic Technology, 16, 860–875.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+The effect of flow angle on measured total pressure from a pitot tube
+\end_layout
+
+\begin_layout Standard
+Pitot tubes are designed to be insensitive to airflow conditions at small
+ angles from their centrelines and are assumed to deliver the correct total
+ pressure under such conditions.
+ To check this, a flight segment with LAMS operational included yaw manoeuvres
+ in which the aircraft was flown in conditions of small side-slip (<3
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+unit{
+\backslash
+degree}$
+\end_layout
+
+\end_inset
+
+) in cross-controlled conditions so that the aircraft continued in approximately
+ the same direction and at approximately the same airspeed.
+ Under those conditions, one would expect that the total pressure measured
+ by the pitot tube would not show a dependence on side-slip angle.
+\end_layout
+
+\begin_layout Standard
+Because a high-accuracy test is desired, small corrections are needed for
+ the observed departures from steady flight speed and in altitude.
+ Over the course of the manoeuvre, GPS measurements of altitude were used
+ with the hydrostatic equation to estimate and correct for changes in the
+ ambient pressure using 
+\begin_inset Formula $\delta p=-(p/R_{a}T)g\delta z$
+\end_inset
+
+ where 
+\begin_inset Formula $\delta z$
+\end_inset
+
+ is the change in altitude from the start of the flight segment, 
+\begin_inset Formula $p$
+\end_inset
+
+ is the ambient pressure, 
+\begin_inset Formula $R_{a}$
+\end_inset
+
+ the gas constant for air, 
+\begin_inset Formula $T$
+\end_inset
+
+ the absolute temperature, and 
+\begin_inset Formula $g$
+\end_inset
+
+ the acceleration of gravity.
+ In addition, a correction was made for the expected change in total pressure
+ arising from small changes in airspeed, as measured by the LAMS\SpecialChar \@.
+ This is
+ an independent measurement of airspeed that does not rely on the aircraft
+ measurements of ambient and dynamic pressure, so the correction is not
+ affected by possible errors in the measurement of dynamic pressure.
+ The correction applied is given by the following equation:
+\begin_inset Formula 
+\begin{equation}
+\delta q=\left(\frac{p}{R_{a}T}\left(\frac{v_{l}^{2}}{2c_{p}T}+1\right)^{\frac{c_{p}}{R_{a}}-1}v_{l}\right)\delta v_{l}\label{eq:CorrectionInSideslipFigure}
+\end{equation}
+
+\end_inset
+
+which is obtained by differentiating (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:qFromLAMS-1"
+
+\end_inset
+
+).
+ In this equation, 
+\begin_inset Formula $v_{l}$
+\end_inset
+
+ is the airspeed measured by LAMS and the increment is referenced to the
+ arbitrary starting value in the time series so that corrections are made
+ for the non-steady flight speed during the manoeuvres.
+ 
+\end_layout
+
+\begin_layout Standard
+With these corrections, the average total pressure measurements as a function
+ of the magnitude of the side-slip angle are as shown in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:PtvsSSLIP"
+
+\end_inset
+
+.
+ Within a limit of about 0.1
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa, there is no dependence on side-slip angle out to about 3
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+unit{
+\backslash
+degree}
+\end_layout
+
+\end_inset
+
+, a range in side-slip angles and also in attack angles from the mean that
+ is characteristic of normal flight of both NCAR aircraft.
+ This is justification for neglecting possible dependence of the total pressure
+ measurement on flow angles, at least for the small angles characteristic
+ of normal flight conditions.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "AMT"
+options "copernicus"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Pairs-of-reverse-heading"
+
+\end_inset
+
+Pairs of reverse-heading manoeuvres.
+ Average values for altitude, heading, and the longitudinal component of
+ the wind (
+\begin_inset Formula $v_{x})$
+\end_inset
+
+ are listed.
+ Data from the GV flight of August 6 2010.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset VSpace 2mm
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="25" columns="5">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0pt">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+TIME
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+ALTITUDE (m)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+HEADING
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\begin_inset Formula $v_{x}$
+\end_inset
+
+ (
+\series default
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+
+\series bold
+)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\begin_inset Formula $\Delta v_{x}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+173845--173945
+\begin_inset Formula $^{*}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8835
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+240
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-12.305
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+174230--174330
+\begin_inset Formula $^{*}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8832
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+57
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+14.678
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.373
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+174630--174730
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10060
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+240
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-23.930
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+175030--175130
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10070
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+57
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+23.433
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.497
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+175500--175600
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10980
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+241
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-18.904
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+175900--180000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10980 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+57
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+18.520
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.384
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+180300--180400
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+11900
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+240
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-26.330
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+180715--180815
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+11900 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+57
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+26.309
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.022
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+181700--181900
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+12830
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+59
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+19.993
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+182800--183000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+12820
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+239
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-19.542
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.451
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+183100--183300
+\begin_inset Formula $^{*}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+12810
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+239
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-19.948
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+183615--183815
+\begin_inset Formula $^{*}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+12810
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+59
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+18.823
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-1.125
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+184500--184700
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+12810
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+239
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-19.294
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.471
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+184800--185000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+12800
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+240
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-19.477
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+185300--185500
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+12800
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+59
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+18.711
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.766
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+185400--185600
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+12800
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+59
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+19.015
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+190130--190330
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+12800 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+239
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-19.147
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.131
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+192000--192200
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4227
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.522
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+192700--192900
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4228 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+190
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-1.827
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.305
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+192800--193000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4228
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+189
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-1.341
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+193300--193500
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4242
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.678
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.337
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+194100--194300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4242
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+190
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-2.542
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.864
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+MEAN
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.113
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+MEAN w/0 2 largest (
+\begin_inset Formula $^{*}$
+\end_inset
+
+)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.261
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:C-130-climbs"
+
+\end_inset
+
+Comparisons of predicted and measured temperatures from climbs and descents.
+ of the C-130.
+ The segments are from flights RF05, RF06, and RF08 flown respectively on
+ 7, 15, and 17 November 2011.
+ 
+\begin_inset Formula $T_{p}$
+\end_inset
+
+ is the predicted temperature and 
+\begin_inset Formula $\overline{T_{m}}$
+\end_inset
+
+ is the weighted mean of the measured values of temperature, as defined
+ in the text.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset VSpace 2mm*
+\end_inset
+
+
+\begin_inset Tabular
+<lyxtabular version="3" rows="10" columns="4">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Flight number, times UTC
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{p}$
+\end_inset
+
+ [
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+unit{
+\backslash
+degree C}
+\end_layout
+
+\end_inset
+
+]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\overline{T}_{m}$
+\end_inset
+
+ [
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+unit{
+\backslash
+degree C}
+\end_layout
+
+\end_inset
+
+]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{p}-\overline{T_{m}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF05, 205800--211100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-10.98
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-10.37
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.5
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF07, 212510--213300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-6.36
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-5.89
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.47
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF07, 212510--212900
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.27
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2.42
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.15
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF07, 212900--213300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-12.85
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-12.15
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.70
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF08, 214500--215300
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.9
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.4
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF08, 233700--234130
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-6.5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-6.3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.4
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF08, 234500--235000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-9.4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-8.8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.6
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RF08, 235600--240100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-9.5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-8.4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-1.1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+mean offset, 
+\begin_inset Formula $T_{p}-\overline{T}_{m}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+-0.55
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset VSpace 2mm*
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Fig1.png
+	lyxscale 75
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:QvsQLAMS"
+
+\end_inset
+
+The direct measurement of dynamic pressure on the C-130 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+QCF
+\end_layout
+
+\end_inset
+
+vs that deduced using the LAMS measurement of airspeed.
+ All one-second-average points from one C-130 research flight on which the
+ LAMS was tested (17 November 2011) are shown.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset VSpace 2mm*
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Fig2.png
+	lyxscale 50
+	height 60pheight%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Pt-comparison"
+
+\end_inset
+
+Measurements made at 1
+\begin_inset space \thinspace{}
+\end_inset
+
+Hz during 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+flight 8 of IDEAS-4
+\end_layout
+
+\end_inset
+
+the 17 Nov 2011 flight of the C-130.
+ All measurements are included for times when the true airspeed exceeded
+ 50
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+,$
+\backslash
+unit{m
+\backslash
+,s^{-1}}$
+\end_layout
+
+\end_inset
+
+ (to exclude a short period with flaps deployed at the end of the flight).
+ The measurements plotted are the total pressure 
+\begin_inset Formula $p_{t}$
+\end_inset
+
+ measured by two independent systems using two different pitot tubes and
+ sets of static buttons.
+ The orange line is a reference 1:1 line.
+ The root-mean-square deviation from this line is 0.1
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa, and the similar deviation from a best-fit line is less than 0.04
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset VSpace 2mm*
+\end_inset
+
+
+\begin_inset Graphics
+	filename Fig3.png
+	lyxscale 50
+	height 65pheight%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:D-value-measurements"
+
+\end_inset
+
+D-value measurements (small black dots) as a function of time for a flight
+ segment at about 450
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa, and the corresponding values of the Mach number (large blue dots, plotted
+ relative to the right axis).
+ It might be expected that the d-value would change smoothly, as suggested
+ by the solid red line.
+ GV flight of 12 Aug 2010, Boulder CO to St.
+ Croix, Virgin Islands.
+ Gaps in data show portions omitted because the LAMS signal was too weak
+ to be reliable.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+enlarge labels and tick labels
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset VSpace 2mm*
+\end_inset
+
+
+\begin_inset Graphics
+	filename Fig4.png
+	lyxscale 50
+	height 60pheight%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:ATL"
+
+\end_inset
+
+Temperature determined from LAMS using (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:TfromVL-1"
+
+\end_inset
+
+) plotted as a function of the corresponding direct measurement of temperature
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+(ATHR1C) 
+\end_layout
+
+\end_inset
+
+for the ferry flight from Colorado to St.
+\begin_inset space ~
+\end_inset
+
+Croix, Virgin Islands, on 10 August 2010.
+ Each plotted point represents a measurement over one second of flight.
+ The red line is a reference line indicating equality of the two measurements.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset VSpace 2mm*
+\end_inset
+
+
+\begin_inset Graphics
+	filename Fig5.png
+	lyxscale 50
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:TLAMSvsATX"
+
+\end_inset
+
+Temperature determined from LAMS (blue line) and the standard measurement
+ of temperature (red thick line) for a flight segment from IDEAS-4 Flight
+ 8.
+ The bottom panel shows the 1-Hz measurements from LAMS; in the top panel,
+ these have been smoothed by an 11-s box average.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset VSpace 2mm*
+\end_inset
+
+
+\begin_inset Graphics
+	filename Fig6.png
+	lyxscale 50
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:ATLinCirrus"
+
+\end_inset
+
+Top panel: (blue line) Temperature determined from LAMS measurements of
+ airspeed, using (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:TfromVL-1"
+
+\end_inset
+
+), compared to the temperature measured by a normal immersion temperature
+ sensor (red line), during a descent through a cirrus cloud layer.
+ Bottom panel: The measured ice concentration from a two-dimensional cloud
+ (2DC) imaging probe.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset VSpace 2mm*
+\end_inset
+
+
+\begin_inset Graphics
+	filename Fig7.png
+	lyxscale 50
+	width 90col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:ATLinWaterCloud"
+
+\end_inset
+
+Top panel: Temperature determined by the LAMS (solid blue line) during a
+ C-130 cloud pass on 15 November 2011.
+ The temperature measured by a conventional temperature probe is also shown
+ as the dotted red line.
+ Middle panel: Extinction length or distance corresponding to unity optical
+ depth, determined from the measured droplet size distribution.
+ Bottom panel: Cloud droplet concentration measured by a cloud droplet probe
+ is shown in the bottom panel.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setcounter{figure}{0}%
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+def
+\backslash
+thefigure{
+\backslash
+thesection 1}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+def
+\backslash
+thefigure{B1}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+appendix
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+addtocounter{section}{1}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset VSpace 2mm*
+\end_inset
+
+
+\begin_inset Graphics
+	filename PtYawDependence.png
+	lyxscale 50
+	height 60pheight%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:PtvsSSLIP"
+
+\end_inset
+
+The total pressure (from the sum of the ambient pressure measurement and
+ the dynamic pressure measurement) on the C-130 as a function of the magnitude
+ of the side-slip angle during yaw manoeuvres in which sideslip angles were
+ forced by rudder action while the aircraft continued on approximately a
+ straight-and-level course.
+ The mean total pressure of 760
+\change_inserted 1934758928 1378587969
+.6
+\change_unchanged
+
+\begin_inset space \thinspace{}
+\end_inset
+
+hPa has been subtracted from the measurements.
+ Error bars are standard deviations in the measurements for the total-pressure
+ axis and are the range of the bin used in sideslip.
+ Corrections for deviations from a level course and for small variations
+ in airspeed have been applied, as discussed in the text.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

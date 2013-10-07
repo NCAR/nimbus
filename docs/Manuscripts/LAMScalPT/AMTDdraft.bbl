@@ -1,0 +1,175 @@
+\begin{thebibliography}{28}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{{\tt #1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+
+\bibitem[{Balachandran(2006)}]{balachandran2006fundamentals}
+Balachandran, P.: {Fundamentals of Compressible Fluid Dynamics}, Prentice-Hall
+  of India Pvt-Ltd,
+  \urlprefix\url{http://books.google.com/books?id=KEzdXmXgaHkC}, 2006.
+
+\bibitem[{Bellamy(1945)}]{Bellamy1945}
+Bellamy, J.~C.: {The use of pressure altitude and altimeter corrections in
+  meteorology}, {J.~Meteorol.}, 2, 1--79,
+  \doi{10.1175/1520-0469(1945)002<0001:TUOPAA>2.0.CO;2}, 1945.
+
+\bibitem[{Betts({1983})}]{betts:1983}
+Betts, A.~K.: {Thermodynamics of mixed stratocumulus layers - Saturation point
+  budgets}, {J. Atmos. Sci.}, {40}, {2655--2670},
+  \doi{{10.1175/1520-0469(1983)040<2655:TOMSLS>2.0.CO;2}}, {1983}.
+
+\bibitem[{Brown et~al.({1981})Brown, Shapiro, Kennedy, and
+  Friehe}]{BrownEtAl1981}
+Brown, E.~N., Shapiro, M.~A., Kennedy, P.~J., and Friehe, C.~A.: {The
+  application of airborne radar altimetry to the measurement of height and
+  slope of isobaric surfaces}, {J. Appl. Meteorol.}, {20}, {1070--1075},
+  \doi{10.1175/1520-0450(1981)020<1070:TAOARA>2.0.CO;2}, {1981}.
+
+\bibitem[{Brown et~al.({1983})Brown, Friehe, and
+  Lenschow}]{BrownFrieheLenschow1983}
+Brown, E.~N., Friehe, C.~A., and Lenschow, D.~H.: {The use of
+  pressure-fluctuations on the nose of an aircraft for measuring air motion},
+  {J. Clim. Appl. Meteorol.}, {22}, {171--180},
+  \doi{10.1175/1520-0450(1983)022<0171:TUOPFO>2.0.CO;2}, {1983}.
+
+\bibitem[{Cho et~al.({2011})Cho, Kim, Lee, and Kee}]{ISI:000286931800009}
+Cho, A., Kim, J., Lee, S., and Kee, C.: {Wind Estimation and Airspeed
+  Calibration using a UAV with a Single-Antenna GPS Receiver and Pitot Tube},
+  {IEEE Trans. Aerosp. Electron. Syst.}, {47}, {109--117},
+  \doi{10.1109/TAES.2011.5705663}, {2011}.
+
+\bibitem[{Foster and Cunningham(2010)}]{FosterCunningham2010}
+Foster, J. and Cunningham, K.: {A GPS-based pitot-static calibration method
+  using global output error optimization}, {Aerospace Sciences Meetings},
+  American Institute of Aeronautics and Astronautics,
+  \doi{10.2514/6.2010-1350}, doi:10.2514/6.2010-1350, 2010.
+
+\bibitem[{Gracey et~al.(1951)Gracey, Letko, and Russell}]{NACATN2331}
+Gracey, W., Letko, W., and Russell, W.~R.: {Wind Tunnel Investigation of a
+  Number of Total-Pressure Tubes at High Angles of Attack, Subsonic Speeds},
+  no. 2331 in {NACA Technical Note}, National Advisory Committee for
+  Aeronautics, 1951.
+
+\bibitem[{Heymsfield et~al.(1979)Heymsfield, Dye, and Biter}]{heymsJAM79}
+Heymsfield, A.~J., Dye, J.~E., and Biter, C.~J.: {Overestimates of entrainment
+  from wetting of aircraft temperature sensors in cloud}, {J. Appl. Meteorol.},
+  18, 92--95, \doi{{10.1175/1520-0450(1979)018<0092:OOEFWO>2.0.CO;2}}, doi:
+  10.1175/1520-0450(1979)018<0092:OOEFWO>2.0.CO;2, 1979.
+
+\bibitem[{Ikhtiari and Marth(1964)}]{IkhtiariMarth1964}
+Ikhtiari, P.~A. and Marth, V.~G.: {Trailing cone static pressure measurement
+  device}, {J. Aircraft}, 1, 93--94, \doi{10.2514/3.43563}, doi:
+  10.2514/3.43563, 1964.
+
+\bibitem[{Keeler et~al.(1987)Keeler, Serafin, Schwiesow, Lenschow, Vaughan, and
+  Woodfield}]{KeelerEtAl1987}
+Keeler, R.~J., Serafin, R.~J., Schwiesow, R.~L., Lenschow, D.~H., Vaughan,
+  J.~M., and Woodfield, A.: {An airborne laser air motion sensing system. Part
+  I: Concept and preliminary experiment}, {J. Atmos. Ocean. Technol.}, 4,
+  113--127, \doi{10.1175/1520-0426(1987)004<0113:AALAMS>2.0.CO;2}, 1987.
+
+\bibitem[{Khelif et~al.({1999})Khelif, Burns, and Friehe}]{KhelifEtAl1999}
+Khelif, D., Burns, S.~P., and Friehe, C.~A.: {Improved wind measurements on
+  research aircraft}, {J. Atmos. Ocean. Technol.}, {16}, {860--875},
+  \doi{10.1175/1520-0426(1999)016<0860:IWMORA>2.0.CO;2}, {1999}.
+
+\bibitem[{Kristensen and Lenschow(1987)}]{KristensenLenschow1987}
+Kristensen, L. and Lenschow, D.~H.: {An airborne laser air motion sensing
+  system. Part II: Design criteria and measurement possibilities}, {J. Atmos.
+  Ocean. Technol.}, 4, 128--138,
+  \doi{10.1175/1520-0426(1987)004<0128:AALAMS>2.0.CO;2}, 1987.
+
+\bibitem[{LeMone and Tarleton({1986})}]{LemoneTarleton1986}
+LeMone, M.~A. and Tarleton, L.~F.: {The use of inertial altitude in the
+  determination of the convective-scale pressure field over land}, {J. Atmos.
+  Ocean. Technol.}, {3}, {650--661},
+  \doi{10.1175/1520-0426(1986)003<0650:TUOIAI>2.0.CO;2}, {1986}.
+
+\bibitem[{Lenschow(1972)}]{NCAR_OpenSky_TECH-NOTE-000-000-000-064}
+Lenschow, D.~H.: {The measurement of air velocity and temperature using the
+  NCAR Buffalo Aircraft Measuring System}, Tech. rep., \doi{10.5065/D6C8277W},
+  \urlprefix\url{http://nldr.library.ucar.edu/repository/collections/TECH-NOTE-000-000-000-064},
+  1972.
+
+\bibitem[{Martos et~al.(2011)Martos, Kiszely, and Foster}]{MartosEtAl2011}
+Martos, B., Kiszely, P., and Foster, J.: {Flight test results of a GPS-based
+  pitot-static calibration method using output-error optimization for a light
+  twin-engine airplane}, {Guidance, Navigation, and Control and Co-located
+  Conferences}, American Institute of Aeronautics and Astronautics,
+  \doi{10.2514/6.2011-6669}, 2011.
+
+\bibitem[{Mayor et~al.({1997})Mayor, Lenschow, Schwiesow, Mann, Frush, and
+  Simon}]{MayorEtAl1997}
+Mayor, S.~D., Lenschow, D.~H., Schwiesow, R.~L., Mann, J., Frush, C.~L., and
+  Simon, M.~K.: {Validation of NCAR 10.6-$\mu$m CO$_2$ Doppler lidar radial
+  velocity measurements and comparison with a 915-MHz profiler}, {J. Atmos.
+  Ocean. Technol.}, {14}, {1110--1126},
+  \doi{10.1175/1520-0426(1997)014<1110:VONMCD>2.0.CO;2}, {1997}.
+
+\bibitem[{Nelder and Mead({1965})}]{NelderMead1965}
+Nelder, J.~A. and Mead, R.: {A simplex-method for function minimization},
+  {Comput. J.}, {7}, {308--313}, {1965}.
+
+\bibitem[{Paluch({1979})}]{paluch1979}
+Paluch, I.~R.: {Entrainment mechanism in Colorado cumuli}, {J. Atmos. Sci.},
+  {36}, {2467--2478}, \doi{{10.1175/1520-0469(1979)036<2467:TEMICC>2.0.CO;2}},
+  {1979}.
+
+\bibitem[{Parish and Leon({2013})}]{ParishLeon2013}
+Parish, T.~R. and Leon, D.~C.: {Measurement of cloud perturbation pressures
+  using an instrumented aircraft}, {J. Atmos. Ocean. Technol.}, {30},
+  {215--229}, \doi{10.1175/JTECH-D-12-00011.1}, {2013}.
+
+\bibitem[{Parish et~al.({2007})Parish, Burkhart, and Rodi}]{ParishEtAl2007}
+Parish, T.~R., Burkhart, M.~D., and Rodi, A.~R.: {Determination of the
+  horizontal pressure gradient force using global positioning system on board
+  an instrumented aircraft}, {J. Atmos. Ocean. Technol.}, {24}, {521--528},
+  \doi{10.1175/JTECH1986.1}, {2007}.
+
+\bibitem[{{{R Core Team}}(2013)}]{Rlanguage}
+{{R Core Team}}: {R: A language and environment for statistical computing}, R
+  Foundation for Statistical Computing, Vienna, Austria,
+  \urlprefix\url{http://www.R-project.org}, 2013.
+
+\bibitem[{Rodi and Leon({2012})}]{RodiLeon2012}
+Rodi, A.~R. and Leon, D.~C.: {Correction of static pressure on a research
+  aircraft in accelerated flight using differential pressure measurements},
+  {Atmos. Meas. Tech.}, {5}, {2569--2579}, \doi{10.5194/amt-5-2569-2012},
+  {2012}.
+
+\bibitem[{Shapiro and Kennedy({1981})}]{ShapiroKennedy1981}
+Shapiro, M.~A. and Kennedy, P.~J.: {Research aircraft measurements of
+  jet-streamgeostrophic and ageostrophic winds}, {J. Atmos. Sci.}, {38},
+  {2642--2652}, \doi{10.1175/1520-0469(1981)038<2642:RAMOJS>2.0.CO;2}, {1981}.
+
+\bibitem[{Spuler et~al.({2011})Spuler, Richter, Spowart, and
+  Rieken}]{SpulerEtAl2011}
+Spuler, S.~M., Richter, D., Spowart, M.~P., and Rieken, K.: {Optical
+  fiber-based laser remote sensor for airborne measurement of wind velocity and
+  turbulence}, {Appl. Optics}, {50}, {842--851}, \doi{10.1364/AO.50.000842},
+  {2011}.
+
+\bibitem[{Tropez et~al.(2007)Tropez, Yarin, and Foss}]{springerhdbk2007}
+Tropez, C., Yarin, A.~L., and Foss, J.~F., eds.: {Springer Handbook of
+  Experimental Fluid Mechanics}, Springer Berlin Heidelberg,
+  \doi{10.1007/978-3-540-30299-5}, 2007.
+
+\bibitem[{Werner et~al.(1984)Werner, K{\"o}pp, and Schwiesow}]{Werner:84}
+Werner, C., K{\"o}pp, F., and Schwiesow, R.~L.: {Influence of clouds and fog on
+  LDA wind measurements}, Appl. Optics, 23, 2482--2484,
+  \doi{10.1364/AO.23.002482},
+  \urlprefix\url{http://ao.osa.org/abstract.cfm?URI=ao-23-15-2482}, 1984.
+
+\bibitem[{Wofsy et~al.(2011)Wofsy, Daube, Jimenez, and {The HIPPO Science Team
+  and Cooperating Modellers and Satellite Teams}}]{wofsy2011hia}
+Wofsy, S.~C., Daube, B.~C., Jimenez, R., and {The HIPPO Science Team and
+  Cooperating Modellers and Satellite Teams}: {HIAPER Pole-to-Pole Observations
+  (HIPPO): fine-grained, global-scale measurements of climatically important
+  atmospheric gases and aerosols.}, Philos. Trans. A Math. Phys. Eng. Sci.,
+  369, 2073--86, \doi{{10.1098/rsta.2010.0313}}, 2011.
+
+\end{thebibliography}

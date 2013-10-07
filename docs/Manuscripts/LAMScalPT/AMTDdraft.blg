@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99d (TeX Live 2013/dev)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: AMTDdraft.aux
+The style file: copernicus.bst
+Database file #1: AMT.bib
+Warning--empty chapter and pages in FosterCunningham2010
+Warning--missing institution in NCAR_OpenSky_TECH-NOTE-000-000-000-064
+Warning--empty chapter and pages in MartosEtAl2011
+You've used 28 entries,
+            2811 wiz_defined-function locations,
+            1239 strings with 15295 characters,
+and the built_in function-call counts, 27593 in all, are:
+= -- 3355
+> -- 739
+< -- 15
++ -- 383
+- -- 222
+* -- 1598
+:= -- 2542
+add.period$ -- 28
+call.type$ -- 28
+change.case$ -- 134
+chr.to.int$ -- 28
+cite$ -- 87
+duplicate$ -- 2965
+empty$ -- 1468
+format.name$ -- 310
+if$ -- 5499
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 267
+newline$ -- 93
+num.names$ -- 113
+pop$ -- 1033
+preamble$ -- 1
+purify$ -- 130
+quote$ -- 0
+skip$ -- 1890
+stack$ -- 0
+substring$ -- 1322
+swap$ -- 2610
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 237
+warning$ -- 3
+while$ -- 146
+width$ -- 0
+write$ -- 344
+(There were 3 warnings)

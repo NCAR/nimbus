@@ -1,0 +1,670 @@
+@comment{x-kbibtex-personnameformatting=<%f ><%l>< %s>}
+
+@book{balachandran2006fundamentals,
+  title={Fundamentals of compressible fluid dynamics},
+  author={Balachandran, P.},
+  isbn={9788120328570},
+  url={http://books.google.com/books?id=KEzdXmXgaHkC},
+  year={2006},
+  pages = {579}
+  publisher={Prentice-Hall of India Pvt.Ltd}
+}
+
+@article{Bellamy1945,
+	author = {Bellamy, JC},
+	doi = {10.1175/1520-0469(1945)002<0001:TUOPAA>2.0.CO;2},
+	issn = {0095-9634},
+	journal = {Journal of Meteorology},
+	number = {1},
+	pages = {1--79},
+	publisher = {American Meteorological Society},
+	risfield_0_da = {1945/03/01},
+	risfield_1_do = {10.1175/1520-0469(1945)002<0001:TUOPAA>2.0.CO;2},
+	risfield_2_t2 = {Journal of Meteorology},
+	risfield_3_m3 = {doi: 10.1175/1520-0469(1945)002<0001:TUOPAA>2.0.CO;2},
+	title = {{The use of pressure altitude and altimeter corrections in meteorology}},
+	volume = {2},
+	year = {1945}
+}
+
+@Article{         betts:1983,
+  author        = {Betts, AK},
+  title         = {{Thermodynamics of mixed stratocumulus layers - Saturation
+                  point budgets}},
+  journal       = {{Journal of the Atmospheric Sciences}},
+  year          = {{1983}},
+  volume        = {{40}},
+  number        = {{11}},
+  pages         = {{2655-2670}},
+  type          = {{Article}},
+  issn          = {{0022-4928}},
+  subject-category={{Meteorology \& Atmospheric Sciences}},
+  journal-iso   = {{J. Atmos. Sci.}},
+  unique-id     = {{ISI:A1983SA62500007}}
+}
+
+
+@article{Blanchard1971,
+	author = {Blanchard, RL},
+	doi = {10.1109/TAES.1971.310216},
+	issn = {{0018-9251}},
+	journal = {{IEEE Transactions on Aerospace and Electronic Systems}},
+	journal-iso = {{IEEE Trans. Aerosp. Electron. Syst.}},
+	number = {{6}},
+	pages = {{1143--\&}},
+	title = {{New algorithm for computing inertial altitude and vertical velocity}},
+	type = {{Article}},
+	unique-id = {{ISI:A1971L638600015}},
+	volume = {{AES7}},
+	year = {{1971}}
+}
+
+@article{BogelBaumann1991,
+	affiliation = {{Bogel, W (Reprint Author), DLR,NE PA,German Aerosp res Estab,Inst Phys Atmosphere,W-8031 Oberpfaffenhofen,Germany.}},
+	author = {Bogel, W and R Baumann},
+	doi = {10.1175/1520-0426(1991)008<0005:TACOTD>2.0.CO;2},
+	issn = {{0739-0572}},
+	journal = {{Journal of Atmospheric and Oceanic Technology}},
+	journal-iso = {{J. Atmos. Ocean. Technol.}},
+	month = {{Feb}},
+	number = {{1}},
+	pages = {{5--18}},
+	title = {{Test and calibration of the DLR Falcon wind measuring system by maneuvers}},
+	type = {{Article}},
+	unique-id = {{ISI:A1991FC51500002}},
+	volume = {{8}},
+	year = {{1991}}
+}
+
+@article{BrownFrieheLenschow1983,
+	affiliation = {{Brown, EN (Reprint Author), Natl Ctr ATmospher Res,Res Aviat Facil,Boulder,CO 80307, USA.}},
+	author = {Brown, E. N. and Friehe, C. A. and Lenschow, D. H.},
+	doi = {10.1175/1520-0450(1983)022<0171:TUOPFO>2.0.CO;2},
+	issn = {{0733-3021}},
+	journal = {{Journal of Climate and Applied Meteorology}},
+	number = {{1}},
+	pages = {{171--180}},
+	title = {{The use of pressure-fluctuations on the nose of an aircraft for measuring air motion}},
+	type = {{Article}},
+	unique-id = {{ISI:A1983QK21400016}},
+	volume = {{22}},
+	year = {{1983}}
+}
+
+@article{BrownEtAl1981,
+	affiliation = {{Brown, EN (Reprint Author), Natl Ctr Atmospher Res,Boulder,CO 80307, USA.}},
+	author = {Brown, EN and {MA Shapiro} and {PJ Kennedy} and {CA Friehe}},
+	doi = {10.1175/1520-0450(1981)020<1070:TAOARA>2.0.CO;2},
+	issn = {{0894-8763}},
+	journal = {{Journal of Applied Meteorology}},
+	journal-iso = {{J. Appl. Meteorol.}},
+	number = {{9}},
+	pages = {{1070--1075}},
+	title = {{The application of airborne radar altimetry to the measurement of height and slope of isobaric surfaces}},
+	type = {{Article}},
+	unique-id = {{ISI:A1981MS23900009}},
+	volume = {{20}},
+	year = {{1981}}
+}
+
+@article{Buck1981,
+	affiliation = {{Buck, AL (Reprint Author), Natl Ctr Atmospher Res,Boulder,CO 80307, USA.}},
+	author = {Buck, AL},
+	doi = {10.1175/1520-0450(1981)020<1527:NEFCVP>2.0.CO;2},
+	issn = {{0894-8763}},
+	journal = {{Journal of Applied Meteorology}},
+	journal-iso = {{J. Appl. Meteorol.}},
+	number = {{12}},
+	pages = {{1527--1532}},
+	title = {{New equations for computing vapor-pressure and enhancement factor}},
+	type = {{Note}},
+	unique-id = {{ISI:A1981NF51300020}},
+	volume = {{20}},
+	year = {{1981}}
+}
+
+@article{CrawfordEtAl1996,
+	affiliation = {{Crawford, TL (Reprint Author), NOAA,Air Resources Lab,Atmospher Turbulence \& Diffus Div,POB 2456,Oak Ridge,TN 37831, USA.}},
+	author = {Crawford, TL and {RJ Dobosy} and {EJ Dumas}},
+	doi = {10.1007/BF00119012},
+	issn = {{0006-8314}},
+	journal = {{Boundary-Layer Meteorology}},
+	journal-iso = {{Bound.-Layer Meteor.}},
+	keywords-plus = {{atmospheric-turbulence measurements; induced flow distortion; probe; flux}},
+	month = {{JUL}},
+	number = {{1-2}},
+	pages = {{79--94}},
+	title = {{Aircraft wind measurement considering lift-induced upwash}},
+	type = {{Article}},
+	unique-id = {{ISI:A1996VR82400004}},
+	volume = {{80}},
+	year = {{1996}}
+}
+
+@inbook{FosterCunningham2010,
+	author = {Foster, J and K Cunningham},
+	doi = {10.2514/6.2010-1350},
+	month = {jan},
+	note = {doi:10.2514/6.2010-1350},
+	publisher = {American Institute of Aeronautics and Astronautics},
+	risfield_0_m1 = {0},
+	risfield_1_do = {doi:10.2514/6.2010-1350},
+	risfield_2_m3 = {doi:10.2514/6.2010-1350},
+	risfield_3_t2 = {48th AIAA Aerospace Sciences Meeting Including the New Horizons Forum and Aerospace Exposition},
+	series = {{Aerospace Sciences Meetings}},
+	title = {{A GPS-based pitot-static calibration method using global output error optimization}},
+	year = {2010}
+}
+
+@article{FrieheKhelif1992,
+	affiliation = {{Friehe, CA (Reprint Author), Univ Calif Irvine,Dept Mech Engn,Irvine,CA 92717, USA.}},
+	author = {Friehe, CA and D Khelif},
+	doi = {10.1175/1520-0426(1992)009<0784:FRATS>2.0.CO;2},
+	issn = {{0739-0572}},
+	journal = {{Journal of Atmospheric and Oceanic Technology}},
+	journal-iso = {{J. Atmos. Ocean. Technol.}},
+	month = {{DEC}},
+	number = {{6}},
+	pages = {{784--795}},
+	title = {{Fast-response aircraft temperature sensors}},
+	type = {{Article}},
+	unique-id = {{ISI:A1992KR03700005}},
+	volume = {{9}},
+	year = {{1992}}
+}
+
+@article{GiezEtAl1999,
+	affiliation = {{Giez, A (Reprint Author), DLR, Inst Phys Atmosphare, Postfach 116, D-82230 Wessling, Germany. DLR, Inst Atmospher Phys, Oberpfaffenhofen, Germany. Natl Ctr Atmospher Res, Boulder, CO 80307 USA.}},
+	author = {Giez, A and {G Ehret} and {RL Schwiesow} and {KJ Davis} and and {DH Lenschow}},
+	author-email = {{andreas.giez@dlr.de}},
+	doi = {10.1175/1520-0426(1999)016<0237:WVFMFG>2.0.CO;2},
+	issn = {{0739-0572}},
+	journal = {{Journal of Atmospheric and Oceanic Technology}},
+	journal-iso = {{J. Atmos. Ocean. Technol.}},
+	keywords-plus = {{CONVECTIVE BOUNDARY-LAYER; 720-NM WAVELENGTH REGION; SYSTEM; TROPOSPHERE; TURBULENCE}},
+	month = {{FEB}},
+	number = {{2}},
+	pages = {{237--250}},
+	title = {{Water vapor flux measurements from ground-based vertically pointed water vapor differential absorption and Doppler lidars}},
+	type = {{Article}},
+	unique-id = {{ISI:000078683100005}},
+	volume = {{16}},
+	year = {{1999}}
+}
+
+@comment{x-kbibtex-personnameformatting=<%f ><%l>< %s>}
+
+@article{heymsJAM79,
+	risfield_0_da = {1979/01/01},
+	risfield_1_do = {10.1175/1520-0450(1979)018<0092:OOEFWO>2.0.CO;2},
+	risfield_2_t2 = {Journal of Applied Meteorology},
+	risfield_3_m3 = {doi: 10.1175/1520-0450(1979)018<0092:OOEFWO>2.0.CO;2},
+	author = {AJ Heymsfield and JE Dye and CJ Biter},
+	issn = {0021-8952},
+	journal = {Journal of Applied Meteorology},
+	note = {doi: 10.1175/1520-0450(1979)018<0092:OOEFWO>2.0.CO;2},
+	number = {1},
+	pages = {92--95},
+	publisher = {American Meteorological Society},
+	title = {{Overestimates of Entrainment From Wetting of Aircraft Temperature Sensors in Cloud}},
+	volume = {18},
+	year = {1979}
+}
+
+@article{IkhtiariMarth1964,
+	author = {Ikhtiari, PA and VG Marth},
+	doi = {10.2514/3.43563},
+	issn = {0021-8669},
+	journal = {Journal of Aircraft},
+	note = {doi: 10.2514/3.43563},
+	number = {2},
+	pages = {93--94},
+	publisher = {American Institute of Aeronautics and Astronautics},
+	risfield_0_da = {1964/03/01},
+	risfield_1_do = {10.2514/3.43563},
+	risfield_2_t2 = {Journal of Aircraft},
+	risfield_3_m3 = {doi: 10.2514/3.43563},
+	title = {{Trailing cone static pressure measurement device}},
+	volume = {1},
+	year = {1964}
+}
+
+@article{KeelerEtAl1987,
+	author = {Keeler, RJ and {RJ Serafin} and {RL Schwiesow} and {DH Lenschow} and {JM Vaughan} and {A Woodfield}},
+	doi = {10.1175/1520-0426(1987)004<0113:AALAMS>2.0.CO;2},
+	issn = {0739-0572},
+	journal = {Journal of Atmospheric and Oceanic Technology},
+	number = {1},
+	pages = {113--127},
+	publisher = {American Meteorological Society},
+	risfield_0_da = {1987/03/01},
+	risfield_1_do = {10.1175/1520-0426(1987)004<0113:AALAMS>2.0.CO;2},
+	risfield_2_t2 = {Journal of Atmospheric and Oceanic Technology},
+	risfield_3_m3 = {doi: 10.1175/1520-0426(1987)004<0113:AALAMS>2.0.CO;2},
+	title = {{An airborne laser air motion sensing system. Part I: Concept and preliminary experiment}},
+	volume = {4},
+	year = {1987}
+}
+
+@article{KhelifEtAl1999,
+	affiliation = {{Khelif, D (Reprint Author), Univ Calif Irvine, Dept Mech \& Aerosp Engn, Irvine, CA 92697 USA. Univ Calif Irvine, Dept Mech \& Aerosp Engn, Irvine, CA 92697 USA.}},
+	author = {Khelif, D and {SP Burns} and {CA Friehe}},
+	doi = {10.1175/1520-0426(1999)016<0860:IWMORA>2.0.CO;2},
+	issn = {{0739-0572}},
+	journal = {{Journal of Atmospheric and Oceanic Technology}},
+	journal-iso = {{J. Atmos. Ocean. Technol.}},
+	keywords-plus = {{BOUNDARY-LAYER RESEARCH; NOAAS P-3 AIRCRAFT; AIR-MOTION SYSTEM; INERTIAL NAVIGATION; TURBULENCE MEASUREMENTS; LORAN-C; PRESSURE}},
+	month = {{JUL}},
+	number = {{7}},
+	pages = {{860--875}},
+	researcherid-numbers = {{Burns, Sean/A-9352-2008}},
+	title = {{Improved wind measurements on research aircraft}},
+	type = {{Article}},
+	unique-id = {{ISI:000081507700006}},
+	volume = {{16}},
+	year = {{1999}}
+}
+
+@article{KristensenLenschow1987,
+	author = {Kristensen, L and DH Lenschow},
+	doi = {10.1175/1520-0426(1987)004<0128:AALAMS>2.0.CO;2},
+	issn = {0739-0572},
+	journal = {Journal of Atmospheric and Oceanic Technology},
+	number = {1},
+	pages = {128--138},
+	publisher = {American Meteorological Society},
+	risfield_0_da = {1987/03/01},
+	risfield_1_do = {10.1175/1520-0426(1987)004<0128:AALAMS>2.0.CO;2},
+	risfield_2_t2 = {Journal of Atmospheric and Oceanic Technology},
+	risfield_3_m3 = {doi: 10.1175/1520-0426(1987)004<0128:AALAMS>2.0.CO;2},
+	title = {{An airborne laser air motion sensing system. Part II: Design criteria and measurement possibilities}},
+	volume = {4},
+	year = {1987}
+}
+
+@article{LeachMacpherson1991,
+	affiliation = {{LEACH, BW (Reprint Author), NATL RES COUNCIL CANADA,NATL AERONAUT ESTAB,FLIGHT RES LAB,NRC BLDG U-61,MONTREAL RD,OTTAWA K1A 0R6,ONTARIO,CANADA.}},
+	author = {Leach, BW and JI MacPherson},
+	doi = {10.1175/1520-0426(1991)008<0051:AAOKFT>2.0.CO;2},
+	issn = {{0739-0572}},
+	journal = {{Journal of Atmospheric and Oceanic Technology}},
+	journal-iso = {{J. Atmos. Ocean. Technol.}},
+	month = {{FEB}},
+	number = {{1}},
+	pages = {{51--65}},
+	title = {{An application of Kalman filtering to airborne wind measurement}},
+	type = {{Article}},
+	unique-id = {{ISI:A1991FC51500005}},
+	volume = {{8}},
+	year = {{1991}}
+}
+
+@article{LemoneTarleton1986,
+	affiliation = {{LeMone, MA (Reprint Author), Natl Ctr Atmospher Res, POB 3000, Boulder, CO 80307 USA. LeMone, Margaret A.; Tarleton, Lesley F., Natl Ctr Atmospher Res, Boulder, CO 80307 USA.}},
+	author = {LeMone, MA and LF Tarleton},
+	doi = {10.1175/1520-0426(1986)003<0650:TUOIAI>2.0.CO;2},
+	issn = {{0739-0572}},
+	journal = {{Journal of Atmospheric and Oceanic Technology}},
+	journal-iso = {{J. Atmos. Ocean. Technol.}},
+	month = {{DEC}},
+	number = {{4}},
+	pages = {{650--661}},
+	title = {{The Use of Inertial Altitude in the Determination of the Convective-Scale Pressure Field over Land}},
+	type = {{Article}},
+	unique-id = {{ISI:000208419500009}},
+	volume = {{3}},
+	year = {{1986}}
+}
+
+@article{LemoneEtAl1988,
+	affiliation = {{LEMONE, MA (Reprint Author), NATL CTR ATMOSPHER RES,POB 3000,BOULDER,CO 80307, USA.}},
+	author = {LeMone, MA and {LF Tarleton} and {GM Barnes}},
+	doi = {10.1175/1520-0493(1988)116<2062:PPATBO>2.0.CO;2},
+	issn = {{0027-0644}},
+	journal = {{Monthly Weather Review}},
+	journal-iso = {{Mon. Weather Rev.}},
+	month = {{OCT}},
+	number = {{10}},
+	pages = {{2062--2068}},
+	title = {{Perturbation pressure at the base of cumulus clouds in low shear}},
+	type = {{Article}},
+	unique-id = {{ISI:A1988Q992500015}},
+	volume = {{116}},
+	year = {{1988}}
+}
+
+@techreport{NCAR_OpenSky_TECH-NOTE-000-000-000-064,
+	abstract = {This report describes methods used to measure air velocity and temperature from an aircraft and their applications to the measuring system on the NCAR Buffalo aircraft. Main Component of this system are inertial navigation systems, air sensing probe, and a second pitot-static tube. Equations used in calculations, use, limitations, and errors in measurement are discussed.},
+	author = {Lenschow, DH},
+	copyright = {Copyright 1972 Author. All rights reserved. The user is granted the right to use this resource for non-commerical, non-profit research, or educational purposes only, as are more fully described in the UCAR Terms of Use.},
+	doi = {10.5065/D6C8277W},
+	language = {en},
+	lccn = {02653},
+	publisher = {University Corporation for Atmospheric Research},
+	series = {{NCAR Technical Note}},
+	title = {{The measurement of air velocity and temperature using the NCAR Buffalo Aircraft Measuring System}},
+	url = {http://nldr.library.ucar.edu/repository/collections/TECH-NOTE-000-000-000-064},
+	year = {1972}
+}
+
+@inbook{MartosEtAl2011,
+	author = {Martos, B and {P Kiszely} and {J Foster}},
+	doi = {10.2514/6.2011-6669},
+	month = {aug},
+	publisher = {American Institute of Aeronautics and Astronautics},
+	risfield_0_m1 = {0},
+	risfield_1_do = {doi:10.2514/6.2011-6669},
+	risfield_2_m3 = {doi:10.2514/6.2011-6669},
+	risfield_3_t2 = {AIAA Atmospheric Flight Mechanics Conference},
+	series = {{Guidance, Navigation, and Control and Co-located Conferences}},
+	title = {{Flight test results of a GPS-based pitot-static calibration method using output-error optimization for a light twin-engine airplane}},
+	year = {2011}
+}
+
+@article{MayorEtAl1997,
+	affiliation = {{NATL CTR ATMOSPHER RES,BOULDER,CO 80307. BALL AEROSP \& TECHNOL CORP,BOULDER,CO. RISO NATL LAB,DK-4000 ROSKILDE,DENMARK. NOAA,BOULDER,CO.}},
+	author = {Mayor, SD and {DH Lenschow} and {RL Schwiesow} and {J Mann} and {CL Frush} and {MK Simon}},
+	doi = {10.1175/1520-0426(1997)014<1110:VONMCD>2.0.CO;2},
+	issn = {{0739-0572}},
+	journal = {{Journal of Atmospheric and Oceanic Technology}},
+	journal-iso = {{J. Atmos. Ocean. Technol.}},
+	keywords-plus = {{COHERENT LASER-RADAR; BOUNDARY-LAYER; SOUNDING SYSTEM; WIND PROFILER; PERFORMANCE; FLUXES; 2-MU-M; HEAT}},
+	month = {{OCT}},
+	number = {{5}},
+	pages = {{1110--1126}},
+	title = {{Validation of NCAR 10.6-$\mu$m CO$_2$ Doppler lidar radial velocity measurements and comparison with a 915-MHz profiler}},
+	type = {{Article}},
+	unique-id = {{ISI:A1997XX16200009}},
+	volume = {{14}},
+	year = {{1997}}
+}
+
+@book{NACATN2331,
+	title={Wind Tunnel Investigation of a Number of Total-Pressure Tubes at High Angles of Attack, Subsonic Speeds},
+	author={Gracey, W and W Letko and WR Russell},
+	institution = {United States National Advisory Committee for Aeronautics},
+  	number={2331},
+	series={NACA Technical Note},
+	publisher={National Advisory Committee for Aeronautics},
+	year={1951},
+	type = {techreport}
+}
+
+@article{NelderMead1965,
+	author = {Nelder, JA and R Mead},
+	issn = {{0010-4620}},
+	journal = {{Computer Journal}},
+	journal-iso = {{Comput. J.}},
+	number = {{4}},
+	pages = {{308--313}},
+	title = {{A simplex-method for function minimization}},
+	type = {{Article}},
+	unique-id = {{ISI:A1965CLA3200015}},
+	volume = {{7}},
+	year = {{1965}}
+}
+
+@Article{         paluch:1978,
+  author        = {Paluch, IR},
+  title         = {{Entrainment in some Colorado multicell storms}},
+  journal       = {{Bulletin of the American Meteorological Society}},
+  year          = {{1978}},
+  volume        = {{59}},
+  number        = {{4}},
+  pages         = {{529}},
+  type          = {{Meeting Abstract}},
+  issn          = {{0003-0007}},
+  subject-category={{Meteorology \& Atmospheric Sciences}},
+  journal-iso   = {{Bull. Amer. Meteorol. Soc.}},
+  unique-id     = {{ISI:A1978FA27500215}}
+}
+
+@article{ParishEtAl2007,
+	affiliation = {{Parish, TR (Reprint Author), Univ Wyoming, Dept Atmospher Sci, Laramie, WY 82071 USA. Univ Wyoming, Dept Atmospher Sci, Laramie, WY 82071 USA.}},
+	author = {Parish, TR and {MD Burkhart} and {AR Rodi}},
+	author-email = {{parish@uwyo.edu}},
+	doi = {10.1175/JTECH1986.1},
+	issn = {{0739-0572}},
+	journal = {{Journal of Atmospheric and Oceanic Technology}},
+	journal-iso = {{J. Atmos. Ocean. Technol.}},
+	keywords-plus = {{AGEOSTROPHIC WINDS; JET}},
+	month = {{MAR}},
+	number = {{3}},
+	pages = {{521--528}},
+	title = {{Determination of the horizontal pressure gradient force using global positioning system on board an instrumented aircraft}},
+	type = {{Article}},
+	unique-id = {{ISI:000245222000015}},
+	volume = {{24}},
+	year = {{2007}}
+}
+
+@article{ParishLeon2013,
+	affiliation = {{Parish, TR (Reprint Author), Univ Wyoming, Dept Atmospher Sci, 1000 E Univ Ave, Laramie, WY 82071 USA. Parish, Thomas R.; Leon, David, Univ Wyoming, Dept Atmospher Sci, Laramie, WY 82071 USA.}},
+	author = {Parish, TR and DC Leon},
+	author-email = {{parish@uwyo.edu}},
+	doi = {10.1175/JTECH-D-12-00011.1},
+	issn = {{0739-0572}},
+	journal = {{Journal of Atmospheric and Oceanic Technology}},
+	journal-iso = {{J. Atmos. Ocean. Technol.}},
+	keywords-plus = {{TRAPPED WIND REVERSAL; AGEOSTROPHIC WINDS; INERTIAL ALTITUDE; JET; STRATOCUMULUS; BASE}},
+	month = {{FEB}},
+	number = {{2}},
+	pages = {{215--229}},
+	title = {{Measurement of cloud perturbation pressures using an instrumented aircraft}},
+	type = {{Article}},
+	unique-id = {{ISI:000315197500004}},
+	volume = {{30}},
+	year = {{2013}}
+}
+
+@article{RodiLeon2012,
+	affiliation = {{Rodi, AR (Reprint Author), Univ Wyoming, Dept Atmospher Sci, Laramie, WY 82071 USA. Rodi, A. R.; Leon, D. C., Univ Wyoming, Dept Atmospher Sci, Laramie, WY 82071 USA.}},
+	author = {Rodi, AR and DC Leon},
+	author-email = {{rodi@uwyo.edu}},
+	doi = {10.5194/amt-5-2569-2012},
+	issn = {{1867-1381}},
+	journal = {{Atmospheric Measurement Techniques}},
+	journal-iso = {{Atmos. Meas. Tech.}},
+	keywords-plus = {{LOW-LEVEL JET; SYSTEM}},
+	number = {{11}},
+	pages = {{2569--2579}},
+	title = {{Correction of static pressure on a research aircraft in accelerated flight using differential pressure measurements}},
+	type = {{Article}},
+	unique-id = {{ISI:000311804400001}},
+	volume = {{5}},
+	year = {{2012}}
+}
+
+@article{ShapiroKennedy1981,
+	affiliation = {{Shapiro, MA (Reprint Author), NATL CTR ATMOSPHER RES,POB 3000,Boulder,CO 80307, USA.}},
+	author = {Shapiro, MA and PJ Kennedy},
+	doi = {10.1175/1520-0469(1981)038<2642:RAMOJS>2.0.CO;2},
+	issn = {{0022-4928}},
+	journal = {{Journal of the Atmospheric Sciences}},
+	journal-iso = {{J. Atmos. Sci.}},
+	number = {{12}},
+	pages = {{2642--2652}},
+	title = {{Research aircraft measurements of jet-streamgeostrophic and ageostrophic winds}},
+	type = {{Article}},
+	unique-id = {{ISI:A1981NC38100007}},
+	volume = {{38}},
+	year = {{1981}}
+}
+
+@book{springerhdbk2007,
+	title = {Springer handbook of experimental fluid mechanics},
+	editor = {Tropez, C and AL Yarin and JF Foss},
+	isbn = {978-3-540-25141-5},
+	doi = {10.1007/978-3-540-30299-5},
+	year = {2007},
+	publisher = {Springer Berlin Heidelberg},
+	pages = {1557}
+}
+
+@article{SpulerEtAl2011,
+	affiliation = {{Spuler, SM (Reprint Author), Natl Ctr Atmospher Res, Earth Observing Lab, POB 3000, Boulder, CO 80307 USA. Spuler, Scott M.; Richter, Dirk; Spowart, Michael P.; Rieken, Kathrin, Natl Ctr Atmospher Res, Earth Observing Lab, Boulder, CO 80307 USA.}},
+	author = {Spuler, S. M. and Richter, D. and Spowart, M. P. and Rieken, K.},
+	author-email = {{spuler@ucar.edu}},
+	doi = {10.1364/AO.50.000842},
+	issn = {{1559-128X}},
+	journal = {{Applied Optics}},
+	journal-iso = {{Appl. Optics}},
+	keywords-plus = {{BACKSCATTER; AEROSOL}},
+	month = {{FEB 20}},
+	number = {{6}},
+	pages = {{842--851}},
+	title = {{Optical fiber-based laser remote sensor for airborne measurement of wind velocity and turbulence}},
+	type = {{Article}},
+	unique-id = {{ISI:000287574600008}},
+	volume = {{50}},
+	year = {{2011}}
+}
+
+@article{TraubRediniotis2003,
+	affiliation = {{Traub, LW (Reprint Author), Texas A\&M Univ, Dept Aerosp Engn, College Stn, TX 77843 USA. Texas A\&M Univ, Dept Aerosp Engn, College Stn, TX 77843 USA.}},
+	author = {Traub, LW and O Rediniotis},
+	doi = {10.2514/2.3168},
+	issn = {{0021-8669}},
+	journal = {{Journal of Aircraft}},
+	journal-iso = {{J. Aircr.}},
+	keywords-plus = {{VORTEX BREAKDOWN; DELTA-WINGS}},
+	month = {{JUL-AUG}},
+	number = {{4}},
+	pages = {{645--652}},
+	title = {{Analytic prediction of surface pressures over a hemisphere-cylinder at incidence}},
+	type = {{Article}},
+	unique-id = {{ISI:000184637900006}},
+	volume = {{40}},
+	year = {{2003}}
+}
+
+@article{Werner:84, 
+author = {Werner, C and Friedrich K\"{o}pp and Ronald L. Schwiesow}, 
+journal = {Appl. Opt.}, 
+keywords = {},
+number = {15}, 
+pages = {2482--2484}, 
+publisher = {OSA},
+title = {Influence of clouds and fog on LDA wind measurements}, 
+volume = {23}, 
+month = {Aug},
+year = {1984},
+url = {http://ao.osa.org/abstract.cfm?URI=ao-23-15-2482},
+doi = {10.1364/AO.23.002482},
+abstract = {The influence of clouds and ground fog on CO2 cw laser Doppler wind measurements in the atmosphere is discussed. There is an influence if the focal volume of a laser Doppler anemometer is outside the cloud or fog region. Limitations of the application of the LDA to routine remote wind sensing are presented.},
+}
+
+@article{wofsy2011hia,
+title={HIAPER Pole-to-Pole Observations (HIPPO): fine-grained, global-scale measurements of climatically important atmospheric gases and aerosols.},
+	author={Wofsy, S.C. and Daube BC and Jimenez R and {The HIPPO Science Team and Cooperating Modellers and Satellite Teams} },
+	journal={Philos Trans A Math Phys Eng Sci},
+	volume={369},
+	number={1943},
+	pages={2073-86},
+	year={2011},
+	abstract={The HIAPER Pole-to-Pole Observations (HIPPO) programme has completed three of five planned aircraft transects spanning the Pacific from 85 ° N to 67 ° S, with vertical profiles every approximately 2.2 ° of latitude. Measurements include greenhouse gases, long-lived tracers, reactive species, O(2)/N(2) ratio, black carbon (BC), aerosols and CO(2) isotopes. Our goals are to address the problem of determining surface emissions, transport strength and patterns, and removal rates of atmospheric trace gases and aerosols at global scales and to provide strong tests of satellite data and global models. HIPPO data show dense pollution and BC at high altitudes over the Arctic, imprints of large N(2)O sources from tropical lands and convective storms, sources of pollution and biogenic CH(4) in the Arctic, and summertime uptake of CO(2) and sources for O(2) at high southern latitudes. Global chemical signatures of atmospheric transport are imaged, showing remarkably sharp horizontal gradients at air mass boundaries, weak vertical gradients and inverted profiles (maxima aloft) in both hemispheres. These features challenge satellite algorithms, global models and inversion analyses to derive surface fluxes. HIPPO data can play a crucial role in identifying and resolving questions of global sources, sinks and transport of atmospheric gases and aerosols. }
+}
+
+
+@article{ ISI:000286931800009,
+Author = {Cho, Am and Kim, Jihoon and Lee, Sanghyo and Kee, Changdon},
+Title = {{Wind Estimation and Airspeed Calibration using a UAV with a
+   Single-Antenna GPS Receiver and Pitot Tube}},
+Journal = {{IEEE TRANSACTIONS ON AEROSPACE AND ELECTRONIC SYSTEMS}},
+Year = {{2011}},
+Volume = {{47}},
+Number = {{1}},
+Pages = {{109-117}},
+Month = {{JAN}},
+Abstract = {{This paper proposes a method that uses an aircraft with a single-antenna
+   GPS receiver and Pitot tube to estimate wind speed and direction and to
+   calibrate the airspeed. This sensor combination alone does not determine
+   the true attitude of the aircraft, so the wind parameters cannot be
+   obtained directly from the measurements. However, if the aircraft flies
+   at different headings, such as in banking turns or circle maneuvers, the
+   wind magnitude and direction can be estimated from the geometrical
+   relation between the wind and the measurements. An extended Kalman
+   filter (EKF) is applied to estimate wind parameters. The EKF can also
+   estimate the scaling factor used to convert dynamic pressure to
+   airspeed. This is useful for the operation of small unmanned aerial
+   vehicles (UAVs) because of difficulty in determining the airspeed
+   scaling factor of a low-cost UAV. Simulations are performed for a
+   constant 2-D wind. To test the effectiveness of the proposed method,
+   flight tests of a small UAV are conducted. Simulations and flight test
+   results show that the proposed method is effective.}},
+Type = {{Article}},
+Affiliation = {{Cho, A (Reprint Author), Seoul Natl Univ, Sch Mech \& Aerosp Engn, 302 Dong 418-2 Ho, Seoul 151744, South Korea.
+   Cho, Am; Kim, Jihoon; Lee, Sanghyo, Seoul Natl Univ, Sch Mech \& Aerosp Engn, Seoul 151744, South Korea.
+   Kee, Changdon, Seoul Natl Univ, Sch Mech \& Aerosp Engn, Seoul 151744, South Korea.}},
+DOI = {{10.1109/TAES.2011.5705663}},
+ISSN = {{0018-9251}},
+Author-Email = {{cho1838@snu.ac.kr}},
+Journal-ISO = {{IEEE Trans. Aerosp. Electron. Syst.}},
+Unique-ID = {{ISI:000286931800009}},
+}
+
+@article{ ISI:000077686900003,
+Author = {Klopfenstein, R},
+Title = {{Air velocity and flow measurement using a Pitot tube}},
+Journal = {{ISA TRANSACTIONS}},
+Year = {{1998}},
+Volume = {{37}},
+Number = {{4}},
+Pages = {{257-263}},
+Abstract = {{The accurate measurement of both air velocity and volumetric airflow can
+   be accomplished using a Pitot tube, a differential pressure transducer,
+   and a computer system which includes the necessary hardware and software
+   to convert the raw transducer signals into the proper engineering units.
+   The incorporation of sensors to measure the air temperature, barometric
+   pressure, and relative humidity can further increase the accuracy of the
+   velocity and flow measurements. The Pitot tube measures air velocity
+   directly by means of a pressure transducer which generates an electrical
+   signal which is proportional to the difference between the pressure
+   generated by the total pressure and the still air (static pressure). The
+   volumetric flow is then calculated by measuring the average velocity of
+   an air stream passing through a passage of a known diameter. When
+   measuring volumetric how, the `passage of a known diameter' must be
+   designed to reduce air turbulence as the air mass flows over the Pitot
+   tube. Also, the placement of the pitot tube in the passage will
+   influence how accurately the measured flow tracks the actual Bow through
+   the passage. Calibrating the measurement system in a wind tunnel can
+   further increase the accuracy of the velocity and the flow measurements.
+   This objective of this paper is to provide the field engineer with
+   single, concise source of information on Bow measurement using a Pitot
+   tube. (C) 1998 Elsevier Science Ltd. All rights reserved.}},
+Type = {{Article}},
+Affiliation = {{Klopfenstein, R (Reprint Author), King Ind Inc, 500 Lehman Ave, Bowling Green, OH 43402 USA.
+   King Ind Inc, Bowling Green, OH 43402 USA.}},
+DOI = {{10.1016/S0019-0578(98)00036-6}},
+ISSN = {{0019-0578}},
+Keywords = {{air flow measurement; Pitot tube}},
+Journal-ISO = {{ISA Trans.}},
+Unique-ID = {{ISI:000077686900003}},
+}
+
+@article{ ISI:A1990DG18500030,
+Author = {KASSAB, SZ},
+Title = {{PITOT-TUBE AS A CALIBRATION DEVICE FOR TURBULENCE MEASUREMENT}},
+Journal = {{REVIEW OF SCIENTIFIC INSTRUMENTS}},
+Year = {{1990}},
+Volume = {{61}},
+Number = {{6}},
+Pages = {{1757-1759}},
+Month = {{JUN}},
+Type = {{Note}},
+Affiliation = {{KASSAB, SZ (Reprint Author), ALEXANDRIA UNIV,FAC ENGN,DEPT MECH ENGN,ALEXANDRIA 21544,EGYPT.}},
+DOI = {{10.1063/1.1141095}},
+ISSN = {{0034-6748}},
+Journal-ISO = {{Rev. Sci. Instrum.}},
+Unique-ID = {{ISI:A1990DG18500030}},
+}
+
+@Manual{Rlanguage,
+       title        = {R: A Language and Environment for Statistical
+                       Computing},
+       author       = {{{R Core Team}}},
+       organization = {R Foundation for Statistical Computing},
+       address      = {Vienna, Austria},
+       year         = 2013,
+       url          = {http://www.R-project.org}
+     }
